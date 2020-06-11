@@ -26,7 +26,7 @@ pupilService.fetchOnePupilBySlug = async (urlSlug, schoolId) => {
 /**
  * Get pupils with full names in school.
  * @param {Number} schoolId
- * @returns {Array}
+ * @returns {Promise<Array>}
  */
 pupilService.getPupilsWithFullNames = async (schoolId) => {
   if (!schoolId) {

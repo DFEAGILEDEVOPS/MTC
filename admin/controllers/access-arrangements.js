@@ -143,7 +143,7 @@ controller.postSubmitAccessArrangements = async (req, res, next) => {
  * @param error
  * @returns {Promise.<void>}
  */
-controller.getEditAccessArrangements = async (req, res, next, error) => {
+controller.getEditAccessArrangements = async (req, res, next, error = null) => {
   res.locals.pageTitle = 'Edit access arrangement for pupil'
   req.breadcrumbs('Enable access arrangements for pupils who need them', '/access-arrangements/overview')
   req.breadcrumbs('Edit pupils and access arrangements')

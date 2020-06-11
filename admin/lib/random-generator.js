@@ -6,7 +6,7 @@ const randomNumber = require('random-number-csprng')
 const random = {
   /**
    * @description Returns a random string
-   * @param {int} length - length of random string to generate
+   * @param {number} length - length of random string to generate
    * @param {string} chars - string of allowable characters
    * @return {string}
    * @throws {Error}
@@ -18,7 +18,7 @@ const random = {
 
     const charsLength = chars.length
     if (charsLength > 256) {
-      throw new Error(`Argument 'chars' should not have more than 256 characters, 
+      throw new Error(`Argument 'chars' should not have more than 256 characters,
       otherwise unpredictability will be broken`)
     }
 
@@ -38,8 +38,8 @@ const random = {
    * @description Get a cryptographically secure random number in a range (inclusive)
    * By wrapping this function we also make it testable
    * It can also be swapped out for other implementations
-   * @param {int} min - minimum integer in the range inclusive
-   * @param {int} max = maximum integer in the range inclusive
+   * @param {number} min - minimum integer in the range inclusive
+   * @param {number} max = maximum integer in the range inclusive
    * @return {Promise.<number>}
    */
   getRandomIntInRange: async function (min, max) {

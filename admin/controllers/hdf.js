@@ -57,6 +57,7 @@ controller.getResults = async (req, res, next) => {
 // TODO: refactor this into a service call
 controller.downloadResults = async (req, res, next) => {
   // TODO: refactor to make it smaller
+  // @ts-ignore needs refactoring to csv.format() - https://c2fo.io/fast-csv/docs/migration-guides/v2.x-to-v3.x/
   const csvStream = csv.createWriteStream()
   const pupils = await pupilService.findPupilsBySchoolId(req.user.schoolId)
   const schoolData = await schoolService.findOneById(pupils[0].school_id)

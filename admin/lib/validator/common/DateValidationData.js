@@ -1,10 +1,11 @@
+// @ts-nocheck
 /**
  * Creates date validation data based on parameters
  */
 const DateValidationData = class {
   /**
    * @param {String} day displayed in two digits
-   * @returns {Object}
+   * @returns {any}
    */
   day (day) {
     this.day = day

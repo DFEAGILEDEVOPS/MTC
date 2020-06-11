@@ -15,7 +15,7 @@ const pupilCensusService = {}
 /**
  * Checks pupil census file for errors
  * @param {Object} uploadFile
- * @return {Object} validation error
+ * @return {Promise<Object>} validation error
  */
 pupilCensusService.process = async (uploadFile) => {
   return fileValidator.validate(uploadFile, 'file-upload')
@@ -115,7 +115,7 @@ pupilCensusService.updateJobOutput = async (jobId, submissionResult) => {
 
 /**
  * Gets existing pupil census file
- * @return {Object}
+ * @return {Promise<Object>}
  */
 pupilCensusService.getUploadedFile = async () => {
   const jobType = await jobTypeDataService.sqlFindOneByTypeCode('CEN')
@@ -134,8 +134,8 @@ pupilCensusService.getUploadedFile = async () => {
 /**
  * Remove a pupil census file record
  * @deprecated
- * @param {String} pupilCensusId
- * @return {Object}
+ * @param {Number} pupilCensusId
+ * @return {Promise<Object>}
  */
 pupilCensusService.remove = async (pupilCensusId) => {
   if (!pupilCensusId) {

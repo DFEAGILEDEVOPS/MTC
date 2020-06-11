@@ -17,7 +17,7 @@ uploadedFileService.getFilesize = (file) => {
 /**
  * Get azure blob file size in KB.
  * @param {String} blob
- * @return {Number} size
+ * @return {Promise<Number>} size
  */
 uploadedFileService.getAzureBlobFileSize = async (blob) => {
   if (!blob) {
@@ -27,6 +27,7 @@ uploadedFileService.getAzureBlobFileSize = async (blob) => {
   if (!blobFile || !blobFile.contentLength) {
     throw new Error('Blob file not found or invalid file')
   }
+  // @ts-ignore need to create definition for promisified object
   return Math.round(R.divide(blobFile.contentLength, 1024) * 100) / 100
 }
 

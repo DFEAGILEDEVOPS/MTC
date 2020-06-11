@@ -54,11 +54,11 @@ const pupilsNotTakingCheckService = {
    * 1: string: 'abc-def' (single selection)
    * 2: array of strings: ['abc-def', 'foo-bar'] (multiple selection)
    * 3: object with properties/values: { 0: 'abc-def, 1: 'foo-bar' } (using checkbox "Select all")
-   * @param reqBody
-   * @returns {string}
+   * @param {any} reqBody
+   * @returns {any}
    */
   getPupilSlugs: (reqBody) => {
-    let postedPupilSlugs = ''
+    let postedPupilSlugs
     if (typeof reqBody === 'object') {
       if (Array.isArray(reqBody)) {
         postedPupilSlugs = reqBody

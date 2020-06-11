@@ -7,7 +7,7 @@ const restartValidator = {}
  * Validate restart reason
  * @param {String} restartCode
  * @param {String} reason
- * @returns {Boolean}
+ * @returns {ValidationError}
  */
 restartValidator.validateReason = (restartCode, reason) => {
   const validationError = new ValidationError()

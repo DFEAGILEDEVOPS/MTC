@@ -13,7 +13,7 @@ const service = {
   /**
    * @description create a new connection pool
    * @param {string} poolName the unique name of the pool
-   * @returns {ConnectionPool} the active connection pool
+   * @returns {import('mssql').ConnectionPool} the active connection pool
    */
   createPool: function createPool (poolName, readonly = false) {
     const internalPoolName = buildPoolName(poolName, readonly)
@@ -42,7 +42,7 @@ const service = {
    * @description get a pool by name. will auto create if specified.
    * @param {string} poolName the name of the pool to fetch
    * @param {Boolean} createIfNotFound if the pool does not exist, it will be created
-   * @returns {ConnectionPool} the specified pool, if it exists
+   * @returns {import('mssql').ConnectionPool} the specified pool, if it exists
    */
   getPool: function getPool (poolName, createIfNotFound = false, readonly = false) {
     const internalPoolName = buildPoolName(poolName, readonly)

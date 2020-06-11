@@ -9,7 +9,7 @@ const pupilAccessArrangementsService = {}
 /**
  * Returns pupils with associated access arrangements
  * @param {Number} schoolId
- * @returns {Array}
+ * @returns {Promise<Array>}
  */
 pupilAccessArrangementsService.getPupils = async (schoolId) => {
   const accessArrangementsData = await pupilAccessArrangementsDataService.sqFindPupilsWithAccessArrangements(schoolId)
@@ -34,7 +34,7 @@ pupilAccessArrangementsService.getPupils = async (schoolId) => {
 /**
  * Returns pupils with eligible for access arrangements
  * @param {Number} schoolId
- * @returns {Array}
+ * @returns {Promise<Array>}
  */
 pupilAccessArrangementsService.getEligiblePupilsWithFullNames = async (schoolId) => {
   if (!schoolId) {
@@ -50,7 +50,7 @@ pupilAccessArrangementsService.getEligiblePupilsWithFullNames = async (schoolId)
 /**
  * Returns pupils edit form data
  * @param {String} urlSlug
- * @returns {Object}
+ * @returns {Promise<Object>}
  */
 pupilAccessArrangementsService.getPupilEditFormData = async (urlSlug) => {
   if (!urlSlug) {
@@ -76,7 +76,7 @@ pupilAccessArrangementsService.getPupilEditFormData = async (urlSlug) => {
  * Delete pupil's access arrangements
  * @param {String} pupilUrlSlug
  * @param {Number} schoolId
- * @returns {Object}
+ * @returns {Promise<Object>}
  */
 pupilAccessArrangementsService.deletePupilAccessArrangements = async (pupilUrlSlug, schoolId) => {
   if (!pupilUrlSlug) {

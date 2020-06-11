@@ -1,5 +1,5 @@
 'use strict'
-const moment = require('moment')
+
 const pupilIdentificationFlag = require('../services/pupil-identification-flag.service')
 
 const pupilPresenter = {}
@@ -10,7 +10,8 @@ const pupilPresenter = {}
  */
 pupilPresenter.getPupilExampleYear = () => {
   const deductionYears = 8
-  return moment.utc().format('YYYY') - deductionYears
+  const currentYear = (new Date()).getFullYear() // returns number
+  return currentYear - deductionYears
 }
 
 pupilPresenter.getPupilsSortedWithIdentificationFlags = (pupils) => {

@@ -1,26 +1,19 @@
 {
   "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
     "allowJs": true,
+    "baseUrl": ".",
     "checkJs": true,
-    "noImplicitAny": false,
-    "outDir": "./dist",
     "module": "commonjs",
     "moduleResolution": "node",
+    "noImplicitAny": false,
+    "outDir": "./dist",
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
     "sourceMap": true,
-    "target": "es6",
-    "baseUrl": ".",
-    "paths": {
-      "*": [
-        "node_modules/*",
-        "types/*"
-      ]
-    }
+    "target": "es6"
   },
-  "include": [
-    "services/data-access"
-  ],
   "exclude": [
-   /*
     ".nyc_output",
     ".vscode",
     "assets",
@@ -28,13 +21,14 @@
     "coverage",
     "data",
     "dist",
+    "karma.conf.js",
+    "newrelic.js",
+    "node_modules",
     "public",
+    "run-jasmine.js",
     "spec",
     "tests-integration",
     "views",
-    "karma.conf.js",
-    "newrelic.js",
-    "run-jasmine.js",
-    "wallaby.conf.js" */
+    "wallaby.conf.js"
   ]
 }

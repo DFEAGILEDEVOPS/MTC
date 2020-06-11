@@ -29,7 +29,7 @@ const pupilRegisterV2Service = {
    * Store the pupil register view data in redis and return the data set
    * @param {Number} schoolId
    * @param {String} pupilRegisterRedisKey
-   * @return {Array}
+   * @return {Promise<Array>}
    */
   getPupilRegisterViewData: async function (schoolId, pupilRegisterRedisKey) {
     const pupilRegisterData = await pupilRegisterV2DataService.getPupilRegister(schoolId)
