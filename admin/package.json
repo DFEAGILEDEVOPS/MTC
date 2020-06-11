@@ -5,7 +5,7 @@
   "license": "GPL-3.0",
   "scripts": {
     "build": "./build.sh",
-    "clean": "rm -rf dist; rm .env",
+    "clean": "rm -rf dist; rm -f .env",
     "debug": "node --inspect=0.0.0.0:9229 ./server.js",
     "lint": "standard",
     "lintAndBuild": "standard && tsc",
@@ -22,12 +22,12 @@
     "test:nocoverage": "yarn lint && yarn jest --coverage=no",
     "test:integration": "yarn jest --config ./tests-integration/jest.integration.config.js",
     "test:frontend": "karma start karma.conf.js",
-    "test:all": "yarn test && yarn test:integration && yarn test:frontend",
+    "test:all": "yarn clean && yarn test && yarn test:integration && yarn test:frontend && yarn build",
     "watch": "yarn test:watch",
     "watch:integration": "yarn jest --watch --coverage=no --config ./tests-integration/jest.integration.config.js"
   },
   "mtc": {
-    "assets-version": "e9a5320543847e1023ae6f30d2b150c7"
+    "assets-version": "c57c7cfdcaa3ac01233a893dd3c84632"
   },
   "engines": {
     "node": ">= 10.16.3"
