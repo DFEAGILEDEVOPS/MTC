@@ -21,7 +21,7 @@
                         <tr class="govuk-table__row">
                             <th scope="col"><a class="sortingLink">Pupil<span class="sort-icon asc"></span></a></th>
                             <th scope="col"><a class="sortingLink">Status<span class="sort-icon"></span></a></th>
-                            <th></th>
+                            <th> &nbsp; </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -45,6 +45,7 @@
                                 <% } %>
                             </td>
                             <td>
+                                &nbsp; &nbsp;
                                 <% if (pupil.reason) { %>
                                     <a class="govuk-link" href="/attendance/edit-reason/<%= pupil.urlSlug %>">Edit</a>
                                 <% } %>
