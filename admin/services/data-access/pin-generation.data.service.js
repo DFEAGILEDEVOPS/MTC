@@ -40,10 +40,21 @@ const serviceToExport = {
   },
 
   /**
+   * @typedef CreateCheck
+   * @property {number} checkForm_id
+   * @property {number} checkWindow_id
+   * @property {import('moment').Moment} createdBy_userId
+   * @property {boolean} isLiveCheck
+   * @property {import('moment').Moment} pinExpiresAt
+   * @property {number} pupil_id
+   * @property {number} school_id
+   */
+
+  /**
    * Batch create checks with pins, now using a stored procedure
    * A pin will be randomly allocated
    *
-   * @param {[{pupil_id, checkForm_id, checkWindow_id, isLiveCheck, pinExpiresAt, school_id, createdBy_userId}]} checks - array of check objects to create
+   * @param {Array<CreateCheck>} checks - array of check objects to create
    * @return {Promise<object>}
    */
   sqlCreateBatch: async (checks) => {

@@ -9,7 +9,7 @@ const pupilAccessArrangementsEditService = {}
  * @param {Object} submittedData
  * @param {String} pupilUrlSlug
  * @param {Number} dfeNumber
- * @returns {Object}
+ * @returns {Promise<Object>}
  */
 pupilAccessArrangementsEditService.getEditData = async (submittedData, pupilUrlSlug, dfeNumber) => {
   if (!pupilUrlSlug) {

@@ -11,7 +11,7 @@ describe('school-pin-service', () => {
 
   test('it should throw an error if urlSlug parameter is not defined', async () => {
     try {
-      await sut.generateSchoolPin()
+      await sut.generateSchoolPin(undefined)
       fail('error should have been thrown')
     } catch (error) {
       expect(error).toBeDefined()

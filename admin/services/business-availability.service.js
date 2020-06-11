@@ -27,6 +27,7 @@ businessAvailabilityService.isPinGenerationAllowed = (isLiveCheck, checkWindowDa
 /**
  * Return restarts availability
  * @param {Object} checkWindowData
+ * @param {string} timezone
  * @returns {Boolean} live pin generation allowance
  * @throws Will throw an error if the argument passed is not boolean type
  */
@@ -41,7 +42,7 @@ businessAvailabilityService.areRestartsAllowed = (checkWindowData, timezone) => 
  * @returns {Boolean} groups allowance
  */
 businessAvailabilityService.areGroupsAllowed = (checkWindowData) => {
-  const pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
+  const pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData, undefined)
   return pinGenerationEligibilityData.isGroupsPageAccessible
 }
 
@@ -51,7 +52,7 @@ businessAvailabilityService.areGroupsAllowed = (checkWindowData) => {
  * @returns {Boolean} groups allowance
  */
 businessAvailabilityService.areAccessArrangementsAllowed = (checkWindowData) => {
-  const pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
+  const pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData, undefined)
   return pinGenerationEligibilityData.isAccessArrangementsPageAccessible
 }
 
@@ -75,7 +76,7 @@ businessAvailabilityService.determinePinGenerationEligibility = (isLiveCheck, ch
  * @throws Will throw an error if areRestartsAllowed is false
  */
 businessAvailabilityService.determineRestartsEligibility = (checkWindowData) => {
-  const areRestartsAllowed = businessAvailabilityService.areRestartsAllowed(checkWindowData)
+  const areRestartsAllowed = businessAvailabilityService.areRestartsAllowed(checkWindowData, undefined)
   if (!areRestartsAllowed && !config.OVERRIDE_AVAILABILITY_CHECKS) {
     throw new Error('Restarts are not allowed')
   }
@@ -106,13 +107,32 @@ businessAvailabilityService.determineAccessArrangementsEligibility = (checkWindo
 }
 
 /**
+ * @typedef BusinessAvailabilityInfo
+ * @property {boolean} accessArrangementsAvailable
+ * @property {boolean} adminWindowClosed
+ * @property {boolean} adminWindowStarted
+ * @property {boolean} canEditArrangements
+ * @property {boolean} checkWindowClosed
+ * @property {boolean} checkWindowStarted
+ * @property {string} checkWindowYear
+ * @property {boolean} familiarisationPinsAvailable
+ * @property {boolean} familiarisationWindowStarted
+ * @property {boolean} familiarisationWindowClosed
+ * @property {boolean} groupsAvailable
+ * @property {boolean} hdfAvailable
+ * @property {boolean} hdfSubmitted
+ * @property {boolean} livePinsAvailable
+ * @property {boolean} restartsAvailable
+ */
+
+/**
  * Returns data for the availability partial
  * @param {Number} schoolId
  * @param {Object} checkWindowData
- * @param timezone
- * @returns {Object}
+ * @param {string} timezone
+ * @returns {Promise<BusinessAvailabilityInfo>}
  */
-businessAvailabilityService.getAvailabilityData = async (schoolId, checkWindowData, timezone) => {
+businessAvailabilityService.getAvailabilityData = async (schoolId, checkWindowData, timezone = undefined) => {
   const currentDate = moment.tz(timezone || config.DEFAULT_TIMEZONE)
   const isWithinOpeningHours = currentDate.hour() >= 6 && currentDate.hour() < 16
   const hdfSubmitted = await headteacherDeclarationService.isHdfSubmittedForCheck(schoolId, checkWindowData.id)

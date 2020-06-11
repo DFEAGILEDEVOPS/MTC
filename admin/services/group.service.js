@@ -46,7 +46,7 @@ groupService.getGroupsAsArray = async function (schoolId) {
  * @param groupIdToInclude optionally include a single group from the returned set
  * @returns {Promise<*>}
  */
-groupService.getPupils = async function (schoolId, groupIdToInclude) {
+groupService.getPupils = async function (schoolId, groupIdToInclude = undefined) {
   if (!schoolId) {
     throw new Error('schoolId is required')
   }
@@ -103,7 +103,7 @@ groupService.update = async (id, group, schoolId) => {
  * @param groupName
  * @param groupPupils
  * @param schoolId
- * @returns {number} id of inserted group
+ * @returns {Promise<number>} id of inserted group
  */
 groupService.create = async (groupName, groupPupils, schoolId) => {
   if (!groupName || !schoolId) {

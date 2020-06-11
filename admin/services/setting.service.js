@@ -11,9 +11,9 @@ const settingsRedisKey = 'settings'
 
 /**
  * Update check settings
- * @param {number} loadingTimeLimit
- * @param {number} questionTimeLimit
- * @param {number} checkTimeLimit
+ * @param {number} updatedLoadingTimeLimit
+ * @param {number} updatedQuestionTimeLimit
+ * @param {number} updatedCheckTimeLimit
  * @param {number} userId
  */
 
@@ -28,8 +28,16 @@ settingService.update = async (updatedLoadingTimeLimit, updatedQuestionTimeLimit
 }
 
 /**
- * Get check settings
- * @returns {questionTimeLimit: number, loadingTimeLimit: number, checkTimeLimit: number}
+ * Check Settings Object
+ * @typedef {Object} CheckSettings
+ * @property {number} loadingTimeLimit - time in seconds between questions
+ * @property {number} checkTimeLimit - total allowed check time in minutes
+ * @property {number} questionTimeLimit - time in seconds allowed for each question to be displayed
+ */
+
+/**
+ * @description Get check settings
+ * @returns {Promise<CheckSettings>}
  */
 settingService.get = async () => {
   const cachedSettings = await redisCacheService.get(settingsRedisKey)

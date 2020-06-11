@@ -8,7 +8,7 @@ const checkWindowSanityCheckService = {}
 /**
  * Detects possible check form and check window error that should prevent pin generation
  * @param {Boolean} isLiveCheck
- * @returns {String}
+ * @returns {Promise<String>}
  */
 
 checkWindowSanityCheckService.check = async (isLiveCheck) => {

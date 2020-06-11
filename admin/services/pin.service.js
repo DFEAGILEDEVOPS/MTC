@@ -1,4 +1,4 @@
-const moment = require('moment-timezone')
+const momentTz = require('moment-timezone')
 const dateService = require('../services/date.service')
 
 const schoolDataService = require('../services/data-access/school.data.service')
@@ -8,7 +8,7 @@ const pinService = {}
 /**
  * Get active school Password
  * @param {number} dfeNumber
- * @returns {String}
+ * @returns {Promise<String>}
  */
 pinService.getActiveSchool = async (dfeNumber) => {
   const school = await schoolDataService.sqlFindOneByDfeNumber(dfeNumber)
@@ -21,10 +21,10 @@ pinService.getActiveSchool = async (dfeNumber) => {
 /**
  * Generate timestamp value based on parameters
  * @param {boolean} overrideEnabled
- * @param {moment} overrideValue
- * @param {moment} defaultValue
+ * @param {import('moment').Moment} overrideValue
+ * @param {import('moment').Moment} defaultValue
  * @param {string} schoolTimezone
- * @return {moment} pinTimestamp
+ * @returns {import('moment').Moment}
  */
 
 pinService.generatePinTimestamp = (overrideEnabled, overrideValue, defaultValue, schoolTimezone = null) => {
@@ -36,7 +36,7 @@ pinService.generatePinTimestamp = (overrideEnabled, overrideValue, defaultValue,
   }
   if (schoolTimezone) {
     // needed to parse the date in the specified timezone and convert to utc for storing
-    pinTimestamp = moment.tz(dateService.formatIso8601WithoutTimezone(pinTimestamp), schoolTimezone).utc()
+    pinTimestamp = momentTz.tz(dateService.formatIso8601WithoutTimezone(pinTimestamp), schoolTimezone).utc()
   }
   return pinTimestamp
 }

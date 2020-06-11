@@ -11,6 +11,14 @@ const sortService = require('../helpers/table-sorting')
 const pupilIdentificationFlagService = require('./pupil-identification-flag.service')
 const schoolResultsTtl = 60 * 60 * 24 * 180 // cache school results for 180 days
 
+/**
+ * @typedef {object} PupilRestart
+ * @property {boolean} restartAvailable
+ * @property {number} currentCheckId
+ * @property {boolean} checkComplete
+ * @property {string} attendanceReason
+ */
+
 const resultService = {
   status: Object.freeze({
     restartNotTaken: 'Did not attempt the restart',
@@ -25,7 +33,7 @@ const resultService = {
 
   /**
    * Construct the result status for the pupil
-   * @param {restartAvailable: boolean, currentCheckId: number, checkComplete: boolean, attendanceReason: string} pupil
+   * @param {PupilRestart} pupil
    * @return {string}
    */
   assignStatus: function assignStatus (pupil) {
@@ -85,7 +93,7 @@ const resultService = {
   /**
    * Find pupils with results based on school id and merge with pupil register data
    * @param {Number} schoolId
-   * @returns {Object} requestData
+   * @returns {Promise<object>} requestData
    */
   getPupilResultData: async function getPupilResultData (schoolId) {
     if (!schoolId) {

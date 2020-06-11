@@ -26,7 +26,7 @@ const serviceToExport = {
    * Return a list of pupils who have an active pin - one that can be used to take a check
    * @param {number} schoolId
    * @param {boolean} isLiveCheck
-   * @return {Promise<void>}
+   * @return {Promise<Array<any>>}
    */
   getPupilsWithActivePins: async function getPupilsWithActivePins (schoolId, isLiveCheck) {
     const pupils = await pinGenerationDataService.sqlFindPupilsWithActivePins(schoolId, isLiveCheck)

@@ -12,7 +12,7 @@ const checkWindowV2Service = {}
 /**
  * Get check window based on urlSlug
  * @param {String} urlSlug
- * @returns {Object|Error} Check window object or error object
+ * @returns {Promise<Object|Error>} Check window object or error object
  */
 checkWindowV2Service.getCheckWindow = async (urlSlug) => {
   if (!urlSlug || !validate(urlSlug)) {
@@ -48,7 +48,7 @@ checkWindowV2Service.getLatestCheckWindow = async () => {
 
 /**
  * Get all check windows recorded in the database with their status
- * @returns {Array} List of check windows
+ * @returns {Promise<Array>} List of check windows
  */
 checkWindowV2Service.getCheckWindows = async () => {
   const checkWindows = await checkWindowDataService.sqlFindCheckWindowsWithStatus()
@@ -58,7 +58,7 @@ checkWindowV2Service.getCheckWindows = async () => {
 
 /**
  * Get present and future check windows
- * @returns {Array} List of check windows
+ * @returns {Promise<Array>} List of check windows
  */
 checkWindowV2Service.getPresentAndFutureCheckWindows = async () => {
   const checkWindows = await checkWindowDataService.sqlFindCheckWindowsWithStatusAndFormCountByType()
@@ -68,7 +68,7 @@ checkWindowV2Service.getPresentAndFutureCheckWindows = async () => {
 /**
  * Mark check window as deleted based on url slug
  * @param {String} urlSlug
- * @returns {Object|Error} Either a successful message or throws an exception
+ * @returns {Promise<Object|Error>} Either a successful message or throws an exception
  */
 checkWindowV2Service.markDeleted = async (urlSlug) => {
   if (!urlSlug || !validate(urlSlug)) {
