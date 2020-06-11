@@ -4,6 +4,8 @@ RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 COPY . .
 RUN yarn install --ignore-engines --frozen-lockfile
+RUN yarn build
+RUN rm -rf node_modules
 RUN yarn global add pm2
 
 # ssh
