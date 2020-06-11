@@ -5,11 +5,16 @@ const R = require('ramda')
 const payloadDataService = require('./data-access/payload.data.service')
 const compressionService = require('./compression.service')
 
+/**
+ * @typedef {Object} ClientTimestamp
+ * @property {moment.Moment} clientTimestamp
+*/
+
 const payloadService = {
   /**
    * Add relative timings to an array of objects that have 'clientTimestamp' property
-   * @param {{clientTimeStamp}[]} objects
-   * @return {Array}
+   * @param {Array<ClientTimestamp>} objects
+   * @return {Array<ClientTimestamp>}
    */
   addRelativeTimingsToSection: function addRelativeTimingsToSection (objects) {
     let lastTime, current
@@ -52,9 +57,15 @@ const payloadService = {
   },
 
   /**
+   * @typedef {Object} Question
+   * @property {number} f1
+   * @property {number} f2
+   */
+
+  /**
    * Return a copy of the data with updated 'inputs' and 'audit' arrays that have relativeTiming added
    * @param check
-   * @return {f2|f1}
+   * @return {Question}
    */
   addRelativeTimings: function addRelativeTimings (check) {
     const r1 = R.assoc('inputs', this.addRelativeTimingsToSection(check.inputs), check)

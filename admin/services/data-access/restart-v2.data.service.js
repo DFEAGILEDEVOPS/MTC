@@ -148,19 +148,19 @@ module.exports.restartTransactionForPupils = async function restartTransactionFo
     ]
 
     const sql = `INSERT INTO [mtc_admin].[pupilRestart] (
-                classDisruptionInformation, 
-                didNotCompleteInformation, 
-                furtherInformation, 
-                pupil_id, 
-                pupilRestartReason_id, 
+                classDisruptionInformation,
+                didNotCompleteInformation,
+                furtherInformation,
+                pupil_id,
+                pupilRestartReason_id,
                 recordedByUser_id,
                 originCheck_id
            ) VALUES (
                 @cd${idx},
-                @dnc${idx}, 
-                @fi${idx}, 
-                @pid${idx}, 
-                (SELECT id from [mtc_admin].[pupilRestartReason] where code = @prrCode${idx}), 
+                @dnc${idx},
+                @fi${idx},
+                @pid${idx},
+                (SELECT id from [mtc_admin].[pupilRestartReason] where code = @prrCode${idx}),
                 @rbu${idx},
                 @oc${idx}
             );`
@@ -175,22 +175,22 @@ module.exports.restartTransactionForPupils = async function restartTransactionFo
 
   const sql = `
      DELETE FROM [mtc_admin].[checkPin] WHERE check_id IN (${checkParamIdentifiers.join(', ')});
-     
-     UPDATE [mtc_admin].[check] 
-        SET checkStatus_id = (SELECT TOP 1 id FROM [mtc_admin].[checkStatus] WHERE CODE = 'VOD') 
+
+     UPDATE [mtc_admin].[check]
+        SET checkStatus_id = (SELECT TOP 1 id FROM [mtc_admin].[checkStatus] WHERE CODE = 'VOD')
         WHERE id IN (${checkParamIdentifiers.join(', ')});
-     
+
      ${pupilRestartSqls.join('\n')}
-    
-     UPDATE [mtc_admin].[pupil] 
+
+     UPDATE [mtc_admin].[pupil]
         SET restartAvailable = 1, checkComplete = 0, currentCheckId = NULL
         WHERE id IN (${pupilIdentifiers.join(', ')});
-     
+
      SELECT id, urlSlug FROM [mtc_admin].[pupil] where id in (${pupilIdentifiers.join(', ')});
   `
 
   const allParams = checkParams.concat(pupilRestartParams).concat(pupilParams)
-  const res = await sqlService.modifyWithTransactionAndResponse(sql, allParams)
+  const res = await sqlService.modifyWithTransactionAndResponse([sql], allParams)
   return Array.isArray(res.response) ? res.response : []
 }
 
@@ -202,16 +202,16 @@ module.exports.restartTransactionForPupils = async function restartTransactionFo
 module.exports.getLiveCheckDataByPupilId = async function getLiveCheckDataByPupilId (pupilsList) {
   const { params, paramIdentifiers } = sqlService.buildParameterList(pupilsList, TYPES.Int)
   const sql = `
-    select 
+    select
       c.id as checkId,
       pp.id as pupilId,
       p.val as pupilPin,
       s.pin as schoolPin
-    from 
-        [mtc_admin].[pupil] pp JOIN 
-        [mtc_admin].[school] s ON (pp.school_id = s.id) JOIN 
+    from
+        [mtc_admin].[pupil] pp JOIN
+        [mtc_admin].[school] s ON (pp.school_id = s.id) JOIN
         [mtc_admin].[check] c ON (pp.currentCheckId = c.id) LEFT JOIN
-        -- the checkPin may already have been deleted by the time the restart happens            
+        -- the checkPin may already have been deleted by the time the restart happens
         [mtc_admin].[checkPin] cp ON (c.id = cp.check_id) LEFT JOIN
         [mtc_admin].[pin] p on (cp.pin_id = p.id)
     where

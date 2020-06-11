@@ -47,7 +47,7 @@ const attendanceService = {
    *
    * @param pupilId
    * @param pinEnv
-   * @return {boolean}
+   * @return {Promise<boolean>}
    */
   hasAttendance: async (pupilId, pinEnv) => {
     const pupilAttendance = await pupilAttendanceDataService.findOneByPupilId(pupilId)

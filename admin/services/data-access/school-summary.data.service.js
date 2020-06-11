@@ -9,9 +9,9 @@ const service = {}
 /**
  * Pupil Register Data Object
  * @typedef {Object} RegisterData
- * @property {number} totalCount - total number of pupils on register
- * @property {string} schoolName - name of the school
  * @property {string} dfeNumber - school dfe number (LA + Estab Code)
+ * @property {string} schoolName - name of the school
+ * @property {number} totalCount - total number of pupils on register
  */
 
 /**
@@ -36,16 +36,17 @@ service.getRegisterData = async function getRegisterData (schoolId) {
     WHERE p.school_id = @schoolId
     GROUP BY p.school_id`
   const result = await sqlService.readonlyQuery(sql, [schoolIdParam])
+  // @ts-ignore
   return R.head(result)
 }
 
 /**
  * Pupil Register Data Object
  * @typedef {Object} LiveCheckData
- * @property {Date} date - short string formatted date
- * @property {number} pinsGenerated - number of pupil pins generated
- * @property {number} loggedIn - number of pupils that have logged in
  * @property {number} complete - number of pupils that have completed the check
+ * @property {Date} date - short string formatted date
+ * @property {number} loggedIn - number of pupils that have logged in
+ * @property {number} pinsGenerated - number of pupil pins generated
  */
 
 /**

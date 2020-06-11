@@ -155,8 +155,8 @@ const postGeneratePins = async function postGeneratePins (req, res, next) {
       req.user.schoolId,
       req.user.id,
       isLiveCheck,
-      school.timezone,
-      checkWindowData
+      checkWindowData,
+      school.timezone
     )
     const pupilsText = pupilsList.length === 1 ? '1 pupil' : `${pupilsList.length} pupils`
     req.flash('info', `PINs generated for ${pupilsText}`)

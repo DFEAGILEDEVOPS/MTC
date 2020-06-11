@@ -5,7 +5,7 @@ const scoreService = {}
 /**
  * Returns the score of a pupil's check.
  * @param {String} pupilId
- * @returns {String}
+ * @returns {Promise<String>}
  */
 scoreService.getScorePercentage = async (pupilId) => {
   // find the score, if they have one

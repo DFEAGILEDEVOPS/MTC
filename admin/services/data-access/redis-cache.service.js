@@ -86,8 +86,15 @@ redisCacheService.drop = async (cacheKeys = []) => {
 }
 
 /**
+ * @typedef {object} RedisItem
+ * @property {string} key
+ * @property {any} value
+ * @property {number | undefined} ttl
+ */
+
+/**
  * @description set many items in one atomic operation, with optional expiry
- * @param {[{key:string, value:object, ttl:number | undefined}]} items a dictionary of items to add to redis
+ * @param {Array<RedisItem>} items a dictionary of items to add to redis
  * @returns {Promise<void>}
  */
 redisCacheService.setMany = async (items) => {

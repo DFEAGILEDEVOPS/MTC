@@ -10,7 +10,7 @@ const schoolImpersonationService = {}
  * Validate and assign school to helpdesk session
  * @param {object} user
  * @param {string} dfeNumber
- * @returns {Object}
+ * @returns {Promise<Object>}
  */
 schoolImpersonationService.setSchoolImpersonation = async (user, dfeNumber) => {
   if (typeof dfeNumber === 'string') {

@@ -10,9 +10,10 @@ const authModes = require('../lib/consts/auth-modes')
 
 /**
  * Asynchronous setup of DfE signin with retry strategy for issuer discovery
- * @returns {Strategy} configured Passport Strategy
+ * @returns {Promise<Strategy>} configured Passport Strategy
  */
 const initSignOnAsync = async () => {
+  // @ts-ignore Still appears to be valid, even though undocumented - https://github.com/okta/okta-oidc-js/pull/126/files
   Issuer.defaultHttpOptions = { timeout: config.Auth.dfeSignIn.issuerDiscoveryTimeoutMs }
   let issuer
   try {
@@ -57,6 +58,7 @@ const initSignOnAsync = async () => {
  * @returns {void}
  */
 const initSignOnSync = () => {
+  // @ts-ignore Still appears to be valid, even though undocumented - https://github.com/okta/okta-oidc-js/pull/126/files
   Issuer.defaultHttpOptions = { timeout: config.Auth.dfeSignIn.issuerDiscoveryTimeoutMs }
   logger.debug('discovering dfe signin service issuer...')
   Issuer.discover(config.Auth.dfeSignIn.issuerUrl)

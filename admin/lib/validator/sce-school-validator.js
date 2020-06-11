@@ -5,9 +5,17 @@ const sceErrorMessages = require('../errors/sce')
 const sceSchoolValidator = {}
 
 /**
+ * @typedef {object} RestartData
+ * @property {string} schoolName
+ * @property {string} urn
+ * @property {string} timezone
+ */
+
+/**
  * Validate restart reason
- * @param {String} restartCode
- * @param {String} reason
+ * @param {RestartData} data
+ * @param {Array<string>} schoolNames
+ * @param {Array<number>} schoolUrns
  * @returns {Promise<ValidationError>}
  */
 sceSchoolValidator.validate = async (data, schoolNames, schoolUrns) => {
