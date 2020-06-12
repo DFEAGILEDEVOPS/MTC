@@ -14,7 +14,8 @@
                 Review the status of the pupils to ensure the pupils have all successfully completed the check before
                 you sign the headteacher declaration form.
             </p>
-            <div id="red-card" class="govuk-panel govuk-panel custom-card red-card">
+
+            <div id="red-card" class="govuk-panel govuk-panel custom-card red-card" tabindex="0">
                 <div class="govuk-panel__body custom-card-small-text">
                     Checks with errors
                 </div>
@@ -25,7 +26,8 @@
                     of <%= pupilStatusViewData.totalPupilsCount %> pupils
                 </div>
             </div>
-            <div id="orange-card" class="govuk-panel govuk-panel custom-card orange-card">
+
+            <div id="orange-card" class="govuk-panel govuk-panel custom-card orange-card" tabindex="0">
                 <div class="govuk-panel__body custom-card-small-text">
                     Pupils that have not started yet
                 </div>
@@ -36,7 +38,8 @@
                     of <%= pupilStatusViewData.totalPupilsCount %> pupils
                 </div>
             </div>
-            <div id="blue-card" class="govuk-panel govuk-panel custom-card blue-card">
+
+            <div id="blue-card" class="govuk-panel govuk-panel custom-card blue-card" tabindex="0">
                 <div class="govuk-panel__body custom-card-small-text">
                     Pupils not taking the check
                 </div>
@@ -47,7 +50,8 @@
                     of <%= pupilStatusViewData.totalPupilsCount %> pupils
                 </div>
             </div>
-            <div id="green-card" class="govuk-panel govuk-panel custom-card green-card">
+
+            <div id="green-card" class="govuk-panel govuk-panel custom-card green-card" tabindex="0">
                 <div class="govuk-panel__body custom-card-small-text">
                     Completed checks
                 </div>
@@ -58,6 +62,7 @@
                     of <%= pupilStatusViewData.totalPupilsCount %> pupils
                 </div>
             </div>
+
             <details id="red-card-details" class=" govuk-!-margin-top-5 govuk-details red-card-details"
                      data-module="govuk-details">
                 <summary class="govuk-details__summary">
@@ -67,7 +72,7 @@
                 </summary>
                 <div class="govuk-details__text">
                     <% if (pupilStatusViewData.pupilsWithErrors && pupilStatusViewData.pupilsWithErrors.length > 0) { %>
-                        <table id="pupil-status" name="filterablePupilsList"
+                        <table id="pupil-status" data-name="filterablePupilsList"
                                class="govuk-!-margin-top-0 govuk-table govuk-spacious">
                             <caption class="govuk-body govuk-table__caption"></caption>
                             <thead class="govuk-table__head">
@@ -101,6 +106,7 @@
                     <% } %>
                 </div>
             </details>
+
             <details id="orange-card-details" class="govuk-details orange-card-details" data-module="govuk-details">
                 <summary class="govuk-details__summary">
                         <span class="govuk-details__summary-text">
@@ -109,7 +115,20 @@
                 </summary>
                 <div class="govuk-details__text">
                     <% if (pupilStatusViewData.pupilsNotStarted && pupilStatusViewData.pupilsNotStarted.length > 0) { %>
-                        <table id="pupil-status" name="filterablePupilsList"
+
+                        <% if (pupilStatusViewData.pupilsNotStartedCount > 0) { %>
+                            <p class="govuk-body govuk-!-font-weight-bold">
+                                    <span class="govuk-warning-text__icon warning-text__icon-small"
+                                          aria-hidden="true">!</span>
+                                The check window ends in <%= pupilStatusViewData.remainingLiveCheckDays %> days.
+                                Please ensure pupils have taken the official check before 4pm
+                                on <%= pupilStatusViewData.liveCheckEndDate %>.
+                                Go to <a href="/pupil-pin/generate-live-pins-overview">generate school passwords and
+                                    PINs for the check</a> to continue.
+                            </p>
+                        <% } %>
+
+                        <table id="pupil-status" data-name="filterablePupilsList"
                                class="govuk-!-margin-top-0 govuk-table govuk-spacious">
                             <caption class="govuk-body govuk-table__caption"></caption>
                             <thead class="govuk-table__head">
@@ -122,20 +141,9 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <% if (pupilStatusViewData.pupilsNotStartedCount > 0) { %>
-                                <p class="govuk-body govuk-!-font-weight-bold">
-                                    <span class="govuk-warning-text__icon warning-text__icon-small"
-                                          aria-hidden="true">!</span>
-                                    The check window ends in <%= pupilStatusViewData.remainingLiveCheckDays %> days.
-                                    Please ensure pupils have taken the official check before 4pm
-                                    on <%= pupilStatusViewData.liveCheckEndDate %>.
-                                    Go to <a href="/pupil-pin/generate-live-pins-overview">generate school passwords and
-                                        PINs for the check</a> to continue.
-                                </p>
-                            <% } %>
                             <% pupilStatusViewData.pupilsNotStarted.forEach((p) => { %>
                                 <tr class="govuk-table__row">
-                                    <td scope="row" class="govuk-table__cell">
+                                    <td class="govuk-table__cell">
                                         <span class="govuk-!-font-weight-bold name-text-wrap"><%= p.fullName %></span>
                                         <% if (p.showDoB) { %>
                                             <div class="govuk-font-greyed-out govuk-!-font-size-16">Date of
@@ -154,6 +162,7 @@
                     <% } %>
                 </div>
             </details>
+
             <details id="blue-card-details" class="govuk-details blue-card-details" data-module="govuk-details">
                 <summary class="govuk-details__summary">
                         <span class="govuk-details__summary-text">
@@ -162,7 +171,7 @@
                 </summary>
                 <div class="govuk-details__text">
                     <% if (pupilStatusViewData.pupilsNotAttending && pupilStatusViewData.pupilsNotAttending.length > 0) { %>
-                        <table id="pupil-status" name="filterablePupilsList"
+                        <table id="pupil-status" data-name="filterablePupilsList"
                                class="govuk-!-margin-top-0 govuk-table govuk-spacious">
                             <caption class="govuk-body govuk-table__caption"></caption>
                             <thead class="govuk-table__head">
@@ -177,7 +186,7 @@
                             <tbody>
                             <% pupilStatusViewData.pupilsNotAttending.forEach((p) => { %>
                                 <tr class="govuk-table__row">
-                                    <td scope="row" class="govuk-table__cell">
+                                    <td class="govuk-table__cell">
                                         <span class="govuk-!-font-weight-bold name-text-wrap"><%= p.fullName %></span>
                                         <% if (p.showDoB) { %>
                                             <div class="govuk-font-greyed-out govuk-!-font-size-16">Date of
@@ -196,6 +205,7 @@
                     <% } %>
                 </div>
             </details>
+
             <details id="green-card-details" class="govuk-details green-card-details" data-module="govuk-details">
                 <summary class="govuk-details__summary">
                         <span class="govuk-details__summary-text">
@@ -204,7 +214,7 @@
                 </summary>
                 <div class="govuk-details__text">
                     <% if (pupilStatusViewData.pupilsCompleted && pupilStatusViewData.pupilsCompleted.length > 0) { %>
-                        <table id="pupil-status" name="filterablePupilsList"
+                        <table id="pupil-status" data-name="filterablePupilsList"
                                class="govuk-!-margin-top-0 govuk-table govuk-spacious">
                             <caption class="govuk-body govuk-table__caption"></caption>
                             <thead class="govuk-table__head">
@@ -219,7 +229,7 @@
                             <tbody>
                             <% pupilStatusViewData.pupilsCompleted.forEach((p) => { %>
                                 <tr class="govuk-table__row">
-                                    <td scope="row" class="govuk-table__cell">
+                                    <td class="govuk-table__cell">
                                         <span class="govuk-!-font-weight-bold name-text-wrap"><%= p.fullName %></span>
                                         <% if (p.showDoB) { %>
                                             <div class="govuk-font-greyed-out govuk-!-font-size-16">Date of
@@ -242,6 +252,7 @@
                     <% } %>
                 </div>
             </details>
+
             <div class="govuk-back-to-top">
                 <a class="govuk-link govuk-link--no-visited-state app-back-to-top__link" href="#top">
                     <svg role="presentation" focusable="false" class="app-back-to-top__icon"
@@ -252,6 +263,7 @@
                 </a>
             </div>
         </div>
+
         <div class="govuk-grid-column-one-third" aria-label="sidebar">
             <div class="app-step-nav-related app-step-nav-related--singular-v2">
                 <h2 class="app-step-nav-related__heading">
