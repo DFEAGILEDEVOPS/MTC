@@ -4,7 +4,8 @@
       "name": "myTimer",
       "type": "timerTrigger",
       "direction": "in",
-      "schedule": "0 */1 * * * *"
+      "scheduleDesc": "Run at 8pm every night",
+      "schedule": "0 0 20 * * *"
     }
   ]
 }
