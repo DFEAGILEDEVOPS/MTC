@@ -90,7 +90,6 @@ const resultService = {
     if (!schoolId) {
       throw new Error('school id not found')
     }
-    console.log('Setting redis logger', logger)
     redisCacheService.setLogger(logger)
     const redisKey = redisKeyService.getSchoolResultsKey(schoolId)
     let result = await redisCacheService.get(redisKey)

@@ -13,8 +13,8 @@ const v1 = {
     if (RA.isArray(schools) && schools.length) {
       logger(`${name} ${schools.length} schools to process`)
       schoolService.setLogger(context.log)
+      /** @var { {name:string, id:number, error:undefined|Error success:boolean}[] } result **/
       const result = await mapLimit(schools, asyncLimit, schoolService.processOne)
-      console.log('result', result)
       return {
         processCount: result.filter(o => o.success === true).length,
         errorCount: result.filter(o => o.success === false).length

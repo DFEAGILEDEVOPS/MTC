@@ -15,7 +15,6 @@ const schoolService = {
   },
 
   processOne: async function processOne (school) {
-    console.log(`Processing ${school.id} - ${school.name}`)
     // if we throw from here the remaining schools will not be processed
     try {
       await resultService.cacheResultData(school.id, schoolService.logger)
@@ -25,6 +24,7 @@ const schoolService = {
         success: true
       }
     } catch (error) {
+      this.logger.error(error)
       return {
         id: school.id,
         name: school.name,
