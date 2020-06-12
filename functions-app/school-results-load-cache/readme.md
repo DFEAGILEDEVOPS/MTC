@@ -1,11 +1,12 @@
-# TimerTrigger - JavaScript
+# school-results-load-cache
 
-The `TimerTrigger` makes it incredibly easy to have your functions executed on a schedule. This sample demonstrates a simple use case of calling your function every 5 minutes.
+Implemented on a TimerTrigger, this function will load the cache overnight so that school results are available for the
+start of the day.
 
-## How it works
+## Configuration
 
-For a `TimerTrigger` to work, you provide a schedule in the form of a [cron expression](https://en.wikipedia.org/wiki/Cron#CRON_expression)(See the link for full details). A cron expression is a string with 6 separate expressions which represent a given schedule via patterns. The pattern we use to represent every 5 minutes is `0 */5 * * * *`. This, in plain text, means: "When seconds is equal to 0, minutes is divisible by 5, for any hour, day of the month, month, day of the week, or year".
+* env var `SCHOOL_RESULTS_CACHE_LOAD_ASYNC_LIMIT` - int - determines the number of concurrent schools that are
+  processed. Default is 6.
 
-## Learn more
-
-<TODO> Documentation
+* env var `REDIS_RESULTS_EXPIRY_IN_SECONDS` - int - determines the TTL in seconds the school result data is cached for
+  in Redis.  Default is 15778800 seconds - 6 months.

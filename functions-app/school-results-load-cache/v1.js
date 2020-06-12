@@ -1,10 +1,10 @@
 'use strict'
 const RA = require('ramda-adjunct')
-const schoolService = require('./services/school.service')
+const config = require('../config')
 const mapLimit = require('async/mapLimit')
+const schoolService = require('./services/school.service')
 
 const name = 'school-results-load-cache:v1'
-const asyncLimit = 5 // number of async operations to do at a time
 
 const v1 = {
   process: async (context) => {
@@ -14,7 +14,7 @@ const v1 = {
       logger(`${name} ${schools.length} schools to process`)
       schoolService.setLogger(context.log)
       /** @var { {name:string, id:number, error:undefined|Error success:boolean}[] } result **/
-      const result = await mapLimit(schools, asyncLimit, schoolService.processOne)
+      const result = await mapLimit(schools, config.SchoolResultsCacheLoadAsyncLimit, schoolService.processOne)
       return {
         processCount: result.filter(o => o.success === true).length,
         errorCount: result.filter(o => o.success === false).length

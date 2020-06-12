@@ -7,7 +7,7 @@ const redisKeyService = require('./redis-key.service')
 const resultDataService = require('./data-access/result.data.service')
 const sortService = require('../../lib/table-sorting')
 const pupilIdentificationFlagService = require('./pupil-identification-flag.service')
-const schoolResultsTtl = 60 * 60 * 24 * 180 // cache school results for 180 days
+const config = require('../../config')
 
 const resultService = {
   status: Object.freeze({
@@ -96,7 +96,7 @@ const resultService = {
     if (!result) {
       result = await this.getPupilResultDataFromDb(schoolId)
       try {
-        await redisCacheService.set(redisKey, result, schoolResultsTtl)
+        await redisCacheService.set(redisKey, result, config.RedisResultsExpiryInSeconds)
       } catch (ignored) {}
     }
   }

@@ -2,6 +2,7 @@
 const path = require('path')
 const fs = require('fs')
 const globalDotEnvFile = path.join(__dirname, '..', '.env')
+const { cast, getEnvWithTypeOrDefault } = require('./lib/get-env')
 
 try {
   if (fs.existsSync(globalDotEnvFile)) {
@@ -14,7 +15,6 @@ try {
   console.error(error)
 }
 const os = require('os')
-const toBool = require('to-bool')
 const oneMinuteInMilliseconds = 60000
 const fiveMinutesInMilliseconds = oneMinuteInMilliseconds * 5
 const twoHoursInMilliseconds = oneMinuteInMilliseconds * 120
@@ -25,17 +25,17 @@ const getEnvironment = () => {
 
 module.exports = {
   AZURE_STORAGE_CONNECTION_STRING: process.env.AZURE_STORAGE_CONNECTION_STRING,
-  PsReportTemp: {}.hasOwnProperty.call(process.env, 'PS_REPORT_TEMP_ROOT') ? process.env.PS_REPORT_TEMP_ROOT : '',
+  PsReportTemp: getEnvWithTypeOrDefault('PS_REPORT_TEMP_ROOT', null, '', process.env),
   Sql: {
     Database: process.env.SQL_DATABASE || 'mtc',
     Server: process.env.SQL_SERVER || 'localhost',
     Port: process.env.SQL_PORT || 1433,
     Timeout: process.env.SQL_TIMEOUT || oneMinuteInMilliseconds,
-    requestTimeout: parseInt(process.env.SQL_REQUEST_TIMEOUT, 10) || fiveMinutesInMilliseconds,
-    censusRequestTimeout: parseInt(process.env.SQL_CENSUS_REQUEST_TIMEOUT, 10) || twoHoursInMilliseconds,
-    connectionTimeout: parseInt(process.env.SQL_CONNECTION_TIMEOUT, 10) || oneMinuteInMilliseconds,
-    Encrypt: {}.hasOwnProperty.call(process.env, 'SQL_ENCRYPT') ? toBool(process.env.SQL_ENCRYPT) : true,
-    EnableArithAbort: {}.hasOwnProperty.call(process.env, 'SQL_ENABLE_ARITH_ABORT') ? toBool(process.env.SQL_ENABLE_ARITH_ABORT) : true,
+    requestTimeout: getEnvWithTypeOrDefault('SQL_REQUEST_TIMEOUT', cast.toInt, fiveMinutesInMilliseconds, process.env),
+    censusRequestTimeout: getEnvWithTypeOrDefault('SQL_CENSUS_REQUEST_TIMEOUT', cast.toInt, twoHoursInMilliseconds, process.env),
+    connectionTimeout: getEnvWithTypeOrDefault('SQL_CONNECTION_TIMEOUT', cast.toInt, oneMinuteInMilliseconds, process.env),
+    Encrypt: getEnvWithTypeOrDefault('SQL_ENCRYPT', cast.toBoolean, true, process.env),
+    EnableArithAbort: getEnvWithTypeOrDefault('SQL_ENABLE_ARITH_ABORT', cast.toBoolean, true, process.env),
     Application: {
       Name: process.env.SQL_APP_NAME || 'mtc-local-dev', // docker default
       Username: process.env.SQL_APP_USER || 'mtcAdminUser', // docker default
@@ -48,16 +48,16 @@ module.exports = {
     Pooling: {
       MinCount: parseInt(process.env.SQL_POOL_MIN_COUNT, 10) || 5,
       MaxCount: parseInt(process.env.SQL_POOL_MAX_COUNT, 10) || 10,
-      LoggingEnabled: {}.hasOwnProperty.call(process.env, 'SQL_POOL_LOG_ENABLED') ? toBool(process.env.SQL_POOL_LOG_ENABLED) : true
+      LoggingEnabled: getEnvWithTypeOrDefault('SQL_POOL_LOG_ENABLED', cast.toBoolean, true, process.env)
     },
     Azure: {
       Scale: process.env.SQL_AZURE_SCALE
     }
   },
   DatabaseRetry: {
-    MaxRetryAttempts: parseInt(process.env.RETRY_MAX_ATTEMPTS, 10) || 3,
-    InitialPauseMs: parseInt(process.env.RETRY_PAUSE_MS, 10) || 5000,
-    PauseMultiplier: parseFloat(process.env.RETRY_PAUSE_MULTIPLIER) || 1.5
+    MaxRetryAttempts: getEnvWithTypeOrDefault('RETRY_MAX_ATTEMPTS', cast.toInt, 3, process.env),
+    InitialPauseMs: getEnvWithTypeOrDefault('RETRY_PAUSE_MS', cast.toInt, 5000, process.env),
+    PauseMultiplier: getEnvWithTypeOrDefault('RETRY_PAUSE_MULTIPLIER', cast.toNumber, 1.5, process.env)
   },
   Logging: {
     LogLevel: process.env.LOG_LEVEL || 'debug',
@@ -78,7 +78,8 @@ module.exports = {
     }
   },
   Environment: getEnvironment(),
-  REDIS_RESULTS_EXPIRY_IN_SECONDS: {}.hasOwnProperty.call(process.env, 'REDIS_RESULTS_EXPIRY_IN_SECONDS') ? parseInt(process.env.REDIS_RESULTS_EXPIRY_IN_SECONDS, 10) : 172800,
+  RedisResultsExpiryInSeconds: getEnvWithTypeOrDefault('REDIS_RESULTS_EXPIRY_IN_SECONDS', cast.toInt, 15778800, process.env),
+  SchoolResultsCacheLoadAsyncLimit: getEnvWithTypeOrDefault('SCHOOL_RESULTS_CACHE_LOAD_ASYNC_LIMIT', cast.toInt, 6, process.env),
   Redis: {
     Host: process.env.REDIS_HOST || 'localhost',
     Port: process.env.REDIS_PORT || 6379,
