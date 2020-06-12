@@ -37,6 +37,7 @@ module.exports = {
   options: {
     appName: `${config.Sql.Application.name}:Readonly`,
     encrypt: config.Sql.Encrypt,
-    readOnlyIntent: {}.hasOwnProperty.call(process.env, 'SQL_READONLY_INTENT') ? toBool(process.env.SQL_READONLY_INTENT) : true
+    readOnlyIntent: {}.hasOwnProperty.call(process.env, 'SQL_READONLY_INTENT') ? toBool(process.env.SQL_READONLY_INTENT) : true,
+    enableArithAbort: {}.hasOwnProperty.call(process.env, 'SQL_ENABLE_ARITH_ABORT') ? toBool(process.env.SQL_ENABLE_ARITH_ABORT) : true
   }
 }

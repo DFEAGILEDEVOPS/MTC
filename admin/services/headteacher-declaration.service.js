@@ -15,22 +15,23 @@ const settingService = require('./setting.service')
 
 /**
  * @typedef {Object} hdfPupil
- * @property {string} checkStatusCode
- * @property {Moment.moment} dateOfBirth
+ * @property {number} pupilId
  * @property {string } foreName
- * @property {number|null} group_id
  * @property {string} lastName
  * @property {string|null} middleNames
- * @property {pupilStatusCode} pupilStatusCode
+ * @property {moment.Moment} dateOfBirth
+ * @property {string} urlSlug
+ * @property {string} checkStatusCode
+ * @property {number|null} group_id
  * @property {string|null} reason
  * @property {string|null} reasonCode
- * @property {string} urlSlug
+ * @property {string} status - pupil status
  */
 
 /**
  * Find the pupils for the given dfe number
  * @param schoolId
- * @return {Promise<any>}
+ * @return {Promise<hdfPupil[]>}
  */
 headteacherDeclarationService.findPupilsForSchool = async (schoolId) => {
   if (!schoolId) {
