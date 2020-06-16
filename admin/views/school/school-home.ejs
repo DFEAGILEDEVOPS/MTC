@@ -102,7 +102,7 @@
                 <li class="govuk-!-margin-bottom-4">
                     <% if (featureEligibilityData.isHdfPageAccessible) { %>
                     <h2 class="govuk-heading-s arrow-up"><a class="govuk-link" href="/attendance/declaration-form">Complete the headteacher's declaration form</a></h2>
-                    <p>All pupils must have a status 'Completed' or a reason for not taking the check.</p>
+                    <p>Open on <%= featureEligibilityData.liveCheckStartDate %>.</p>
                     <% } else { %>
                     <h2 class="govuk-heading-s arrow-up govuk-!-margin-bottom-0"><a class="govuk-font-greyed-out govuk-disabled-link">Complete the headteacher's declaration form</a></h2>
                     <strong class="disabled-banner">UNAVAILABLE</strong>
