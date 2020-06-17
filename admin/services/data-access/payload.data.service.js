@@ -22,6 +22,9 @@ const payloadDataService = {
       value: checkCode
     }]
     const res = await sqlService.readonlyQuery(sql, params)
+    if (res.length === 0) {
+      return
+    }
     const schoolUrlSlug = res[0].urlSlug
     const table = 'receivedCheck'
     const tableService = azureTableService.getPromisifiedAzureTableService()
