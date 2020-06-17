@@ -74,9 +74,18 @@ if (!window.MTCAdmin) {
 
       // Display sorting class based on sorting behavior
       if (headerEl.asc === undefined) {
-        headerEl.getElementsByTagName('span')[0].className = 'sort-icon desc'
+        // TODO: assuming that "th > span" is an sort icon is brittle and doesn't work for the checkbox column.
+        // Suggest re-writing this to select on a positive `js-` prefixed class name like `js-sort-icon` or some better
+        // method.
+        const spans = headerEl.getElementsByTagName('span')
+        if (spans.length > 0) {
+          spans[0].className = 'sort-icon desc'
+        }
       } else {
-        headerEl.getElementsByTagName('span')[0].className = !headerEl.asc ? 'sort-icon asc' : 'sort-icon desc'
+        const spans = headerEl.getElementsByTagName('span')
+        if (spans.length > 0) {
+          spans[0].className = !headerEl.asc ? 'sort-icon asc' : 'sort-icon desc'
+        }
       }
     },
 
@@ -97,6 +106,7 @@ if (!window.MTCAdmin) {
     },
 
     setUpClickHandler: function (th, i, tableId, config) {
+      // TODO: don't sort the whole table when clicking the `tickAllCheckboxes` checkbox
       th.addEventListener('click', function () {
         window.MTCAdmin.tableSort.applySortClass(this)
         var tbody = document.querySelector('#' + tableId + ' tbody')
