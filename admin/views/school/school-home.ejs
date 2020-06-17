@@ -102,11 +102,10 @@
                 <li class="govuk-!-margin-bottom-4">
                     <% if (featureEligibilityData.isHdfPageAccessible) { %>
                     <h2 class="govuk-heading-s arrow-up"><a class="govuk-link" href="/attendance/declaration-form">Complete the headteacher's declaration form</a></h2>
-                    <p>Open on <%= featureEligibilityData.liveCheckStartDate %>.</p>
                     <% } else { %>
                     <h2 class="govuk-heading-s arrow-up govuk-!-margin-bottom-0"><a class="govuk-font-greyed-out govuk-disabled-link">Complete the headteacher's declaration form</a></h2>
                     <strong class="disabled-banner">UNAVAILABLE</strong>
-                    <span class="govuk-!-font-size-14 govuk-font-greyed-out">Opens <%= featureEligibilityData.liveCheckStartDate %></span>
+                    <span class="govuk-!-font-size-14 govuk-font-greyed-out">Opens on <%= featureEligibilityData.liveCheckStartDate %></span>
                     <% } %>
                 </li>
                 <li class="govuk-!-margin-bottom-4">
