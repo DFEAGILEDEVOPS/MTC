@@ -15,6 +15,15 @@ describe('payload.service', () => {
       }
     })
 
+    it('throws an error when checkCode is not valid UUID', async () => {
+      try {
+        await service.getPayload('abc')
+        fail('expected to throw')
+      } catch (error) {
+        expect(error.message).toEqual('checkCode is not a valid UUID')
+      }
+    })
+
     xit('adds relativeTimings', async () => {
       spyOn(service, 'addRelativeTimings')
       spyOn(payloadDataService, 'sqlFindOneByCheckCode').and.returnValue({
