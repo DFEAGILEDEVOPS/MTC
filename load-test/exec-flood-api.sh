@@ -2,6 +2,7 @@
 set -e
 
 FLOOD_NAME=$1 # name of stream to run
+FLOOD_API_TOKEN=$2 # auth token
 
 # Check we have the jq binary to make parsing JSON responses a bit easier
 command -v jq >/dev/null 2>&1 || \
