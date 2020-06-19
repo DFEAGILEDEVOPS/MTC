@@ -32,7 +32,6 @@ const config = require('./config')
 // These files will get uglified and packaged into `app.js`
 const jsBundleFiles = [
   './node_modules/govuk-frontend/govuk/all.js',
-  // './assets/javascripts/jquery-1.12.4.js',
   './assets/javascripts/jquery-3.5.1.js',
   './assets/javascripts/gds-cookie-functions.js',
   './assets/javascripts/gds-cookie-settings.js',
