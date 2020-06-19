@@ -13,7 +13,7 @@ if (config.Redis.useTLS) {
   redisConfig.tls = { host: config.Redis.Host }
 }
 
-let redis = false
+let redis
 
 const redisConnect = () => {
   if (!redis) {
@@ -21,6 +21,116 @@ const redisConnect = () => {
   }
 }
 
+const redisCacheService = {}
+
+/**
+ * Returns the data from a Redis key entry
+ * @param key - the full Redis key to get
+ * @returns {Promise<any>}
+ */
+redisCacheService.get = async function redisGet (key) {
+  redisConnect()
+  try {
+    this.logger.verbose(`REDIS (get): retrieving ${key}`)
+    const cacheEntry = await redis.get(key)
+    return unwrap(cacheEntry)
+  } catch (err) {
+    this.logger.error(`REDIS (get): Error getting ${key}: ${err.message}`)
+    throw err
+  }
+}
+
+/**
+ * Stores data for a Redis key
+ * @param key {string} - the redis key to set
+ * @param value {any} - data to insert
+ * @param ttl {number} - optional. time to expiry in seconds
+ * @returns {Promise<void>}
+ */
+redisCacheService.set = async function redisSet (key, value, ttl = undefined) {
+  redisConnect()
+  try {
+    this.logger.verbose(`REDIS (set): adding ${key} ttl:${ttl}`)
+    const storageItemString = prepareCacheEntry(value)
+    if (ttl) {
+      await redis.setex(key, ttl, storageItemString)
+    } else {
+      await redis.set(key, storageItemString)
+    }
+  } catch (err) {
+    this.logger.error(`REDIS (set): Error setting ${key}: ${err.message}`)
+    throw err
+  }
+}
+
+/**
+ * Drops any supplied caches - so they can be re-queried
+ * @param {string|string[]} cacheKeys - A single string or array of strings
+ * @returns {Promise<Boolean>}
+ */
+redisCacheService.drop = async function redisDrop (cacheKeys = []) {
+  if (Array.isArray(cacheKeys) && cacheKeys.length === 0) {
+    return false
+  }
+  redisConnect()
+  if (typeof cacheKeys === 'string') {
+    cacheKeys = [cacheKeys]
+  }
+  const pipeline = redis.pipeline()
+  cacheKeys.forEach(c => {
+    pipeline.del(c)
+  })
+  await pipeline.exec()
+  this.logger.verbose(`REDIS (drop): Dropped \`${cacheKeys.join('`, `')}\``)
+  return true
+}
+
+/**
+ * @description set many items in one atomic operation, with optional expiry
+ * @param {[{key:string, value:object, ttl:number | undefined}]} items a dictionary of items to add to redis
+ * @returns {Promise<void>}
+ */
+redisCacheService.setMany = async function setMany (items) {
+  if (!Array.isArray(items)) {
+    throw new Error('items is not an array')
+  }
+  redisConnect()
+  const multi = redis.multi()
+  for (let index = 0; index < items.length; index++) {
+    const item = items[index]
+    const storageItem = prepareCacheEntry(item.value)
+    if (item.ttl !== undefined) {
+      this.logger.verbose(`REDIS (multi:setex): adding ${item.key} ttl:${item.ttl}`)
+      multi.setex(item.key, item.ttl, storageItem)
+    } else {
+      multi.set(item.key, storageItem)
+    }
+  }
+  this.logger.verbose('REDIS (multi:exec)')
+  return multi.exec()
+}
+
+/**
+ * Fetch many redis keys by their keys in one network trip
+ * @param keys
+ * @return {Promise<*>}
+ */
+redisCacheService.getMany = async function getMany (keys) {
+  if (!Array.isArray(keys)) {
+    throw new Error('keys is not an array')
+  }
+  redisConnect()
+  const rawData = await redis.mget(...keys)
+  const data = rawData.map(raw => unwrap(raw))
+  this.logger.verbose(`(redis) getMany ${keys.join(', ')}`)
+  return data
+}
+
+/**
+ * Wrap a value for storing in redis with type information
+ * @param value
+ * @return {string}
+ */
 function prepareCacheEntry (value) {
   const dataType = typeof value
   let cacheItemDataType
@@ -47,108 +157,29 @@ function prepareCacheEntry (value) {
   return JSON.stringify(storageItem)
 }
 
-const redisCacheService = {
-
-  /**
- * Returns the data from a Redis key entry
- * @param key - the full Redis key to get
- * @returns {Promise<any>}
+/**
+ * Unwrap a cached entry, returning the original type
+ * @param cacheEntry
+ * @return {number|any|undefined}
  */
-  get: async function (key) {
-    redisConnect()
-    try {
-      const cacheEntry = await redis.get(key)
-      if (cacheEntry === null) return undefined
-      const cacheItem = JSON.parse(cacheEntry)
-      switch (cacheItem.meta.type) {
-        case 'string':
-          return cacheItem.value
-        case 'number':
-          return Number(cacheItem.value)
-        case 'object':
-          try {
-            const hydratedObject = JSON.parse(cacheItem.value)
-            return hydratedObject
-          } catch (e) {
-            this.logger.error(`failed to parse redis cache item: ${cacheItem.value}.`)
-            throw e
-          }
-        default:
-          throw new Error(`unsupported cache item type:${cacheItem.meta.type}`)
+function unwrap (cacheEntry) {
+  if (cacheEntry === null) return undefined
+  const cacheItem = JSON.parse(cacheEntry)
+  switch (cacheItem.meta.type) {
+    case 'string':
+      return cacheItem.value
+    case 'number':
+      return Number(cacheItem.value)
+    case 'object':
+      try {
+        const hydratedObject = JSON.parse(cacheItem.value)
+        return hydratedObject
+      } catch (e) {
+        this.logger.error(`failed to parse redis cache item: ${cacheItem.value}.`)
+        throw e
       }
-    } catch (err) {
-      this.logger.error(`REDIS (get): Error getting ${key}: ${err.message}`)
-      throw err
-    }
-  },
-
-  /**
- * Stores data for a Redis key
- * @param key {string} - the redis key to set
- * @param value {any} - data to insert
- * @param ttl {number} - optional. time to expiry in seconds
- * @returns {Promise<void>}
- */
-  set: async function (key, value, ttl = undefined) {
-    redisConnect()
-    try {
-      const storageItemString = prepareCacheEntry(value)
-      if (ttl) {
-        await redis.setex(key, ttl, storageItemString)
-      } else {
-        await redis.set(key, storageItemString)
-      }
-    } catch (err) {
-      this.logger.error(`REDIS (set): Error setting ${key}: ${err.message}`)
-      throw err
-    }
-  },
-
-  /**
-   * Drops any supplied caches - so they can be re-queried
-   * @param caches - A single string or array of strings
-   * @returns {Boolean}
-   */
-  drop: async function (caches = []) {
-    if (Array.isArray(caches) && caches.length === 0) {
-      return false
-    }
-    redisConnect()
-    if (typeof caches === 'string') {
-      caches = [caches]
-    }
-    const pipeline = redis.pipeline()
-    caches.forEach(c => {
-      pipeline.del(c)
-    })
-    await pipeline.exec()
-    this.logger.info(`REDIS (drop): Dropped \`${caches.join('`, `')}\``)
-    return true
-  },
-
-  /**
- * @description set many items in one atomic operation, with optional expiry
- * @param {[{key:string, value:object, ttl:number | undefined}]} items a dictionary of items to add to redis
- * @returns {Promise<void>}
- */
-  setMany: async function (items) {
-    if (!Array.isArray(items)) {
-      throw new Error('items is not an array')
-    }
-    redisConnect()
-    const multi = redis.multi()
-    for (let index = 0; index < items.length; index++) {
-      const item = items[index]
-      const storageItem = prepareCacheEntry(item.value)
-      if (item.ttl !== undefined) {
-        this.logger.info(`REDIS (multi:setex): adding ${item.key} ttl:${item.ttl}`)
-        multi.setex(item.key, item.ttl, storageItem)
-      } else {
-        multi.set(item.key, storageItem)
-      }
-    }
-    this.logger.info('REDIS (multi:exec)')
-    return multi.exec()
+    default:
+      throw new Error(`unsupported cache item type:${cacheItem.meta.type}`)
   }
 }
 
