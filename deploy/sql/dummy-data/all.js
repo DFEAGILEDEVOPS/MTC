@@ -81,7 +81,8 @@ pool.connect()
     const axiosConfig = {
       baseURL: defaultFunctionBaseUrl,
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'x-functions-key': process.env.FUNCTION_MASTER_KEY || ''
       }
     }
     await axios.post('/admin/functions/school-pin-generator', {}, axiosConfig)

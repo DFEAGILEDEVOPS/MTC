@@ -5,7 +5,8 @@ set -e
 FLOOD_NAME=$1
 # Flood Api auth token
 FLOOD_API_TOKEN=$2
-FUNCTION_CONSUMPTION_HOST_URL = $3 #
+FUNCTION_CONSUMPTION_HOST_URL = $3 # function host url
+FUNCTION_MASTER_KEY = $4 # auth key for functions
 
 # Check we have the jq binary to make parsing JSON responses a bit easier
 command -v jq >/dev/null 2>&1 || \
@@ -14,7 +15,7 @@ command -v jq >/dev/null 2>&1 || \
 # Start a flood
 echo
 echo "[$(date +%FT%T)+00:00] Starting flood"
-flood_uuid=$(curl -H "Accept: application/vnd.flood.v2+json" -u flood_live_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx: -X POST https://api.flood.io/floods \
+flood_uuid=$(curl -H "Accept: application/vnd.flood.v2+json" -u $FLOOD_API_TOKEN: -X POST https://api.flood.io/floods \
 -F "flood[tool]=jmeter" \
 -F "flood[threads]=20" \
 -F "flood[project]=MTC" \
@@ -47,4 +48,4 @@ echo "$flood_report"
 # Optionally store the CSV results
 echo
 echo "[$(date +%FT%T)+00:00] Storing CSV results at results.csv"
-curl --silent --user $FLOOD_API_TOKEN: https://api.flood.io/floods/$flood_uuid/result.csv > result.csv
+curl --silent --user $FLOOD_API_TOKEN: https://api.flood.io/floods/$flood_uuid/result.csv > flood-result.csv
