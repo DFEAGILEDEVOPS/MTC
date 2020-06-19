@@ -128,7 +128,7 @@
   },
   "standard": {
     "ignore": [
-      "assets/javascripts/jquery-1.12.4.js"
+      "assets/javascripts/jquery-3.5.1.js"
     ]
   },
   "jest": {
