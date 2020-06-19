@@ -1,8 +1,11 @@
 #!/bin/bash
 set -e
 
-FLOOD_NAME=$1 # name of stream to run
-FLOOD_API_TOKEN=$2 # auth token
+# name of stream to run
+FLOOD_NAME=$1
+# Flood Api auth token
+FLOOD_API_TOKEN=$2
+FUNCTION_CONSUMPTION_HOST_URL = $3 #
 
 # Check we have the jq binary to make parsing JSON responses a bit easier
 command -v jq >/dev/null 2>&1 || \
@@ -11,17 +14,17 @@ command -v jq >/dev/null 2>&1 || \
 # Start a flood
 echo
 echo "[$(date +%FT%T)+00:00] Starting flood"
-flood_uuid=$(curl -u flood_live_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx: -X POST https://api.flood.io/floods \
+flood_uuid=$(curl -H "Accept: application/vnd.flood.v2+json" -u flood_live_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx: -X POST https://api.flood.io/floods \
 -F "flood[tool]=jmeter" \
--F "flood[threads]=5" \
+-F "flood[threads]=20" \
 -F "flood[project]=MTC" \
 #-F "flood[privacy]=public" \
 -F "flood[name]=$FLOOD_NAME" \
--F "flood_files[]=@data.csv" \
--F "flood_files[]=@basic.jmx" \
+#-F "flood_files[]=@data.csv" \
+-F "flood_files[]=@scenarios/_2020/live-long-teacher-journey-with-check-submit.jmx" \
 -F "flood[grids][][infrastructure]=demand" \
 -F "flood[grids][][instance_quantity]=1" \
--F "flood[grids][][region]=eu-west-2" \
+-F "flood[grids][][region]=uk-south-london" \
 -F "flood[grids][][instance_type]=m5.xlarge" \
 -F "flood[grids][][stop_after]=15" | jq -r ".uuid")
 

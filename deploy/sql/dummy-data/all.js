@@ -11,7 +11,7 @@ const schoolCount = config.DummyData.SchoolCount
 const schoolOffset = config.DummyData.SchoolOffset
 const schoolUpperLimit = schoolCount + schoolOffset
 const pupilCountPerSchool = 300
-const defaultFunctionBaseUrl = 'http://localhost:7071'
+const defaultFunctionBaseUrl = process.env.FUNCTION_CONSUMPTION_HOST_URL || 'http://localhost:7071'
 
 const password = '$2a$10$.WsawgZpWSAQVaa6Vz3P1.XO.1YntYJLd6Da5lrXCAkVxhhLpkOHK'
 const teacherRoleId = 3
@@ -85,6 +85,10 @@ pool.connect()
       }
     }
     await axios.post('/admin/functions/school-pin-generator', {}, axiosConfig)
+    const asyncDelay = time => () => new Promise(resolve => setTimeout(resolve, time, time))
+    const waitTimeMs = 15000
+    console.log(`waiting ${waitTimeMs}ms to allow school pins to be generated...`)
+    await asyncDelay(waitTimeMs)
     console.log('done')
     return firstInsertedSchoolDfeNumber
   })
