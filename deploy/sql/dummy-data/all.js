@@ -5,14 +5,13 @@ const config = require('../config')
 const { performance } = require('perf_hooks')
 const upnService = require('../../../admin/services/upn.service')
 const moment = require('moment')
-const request = require('request')
-const util = require('util')
+const axios = require('axios')
 
 const schoolCount = config.DummyData.SchoolCount
 const schoolOffset = config.DummyData.SchoolOffset
 const schoolUpperLimit = schoolCount + schoolOffset
 const pupilCountPerSchool = 300
-const defaultSchoolPasswordGeneratorUrl = 'http://localhost:7071/admin/functions/school-pin-generator'
+const defaultFunctionBaseUrl = 'http://localhost:7071'
 
 const password = '$2a$10$.WsawgZpWSAQVaa6Vz3P1.XO.1YntYJLd6Da5lrXCAkVxhhLpkOHK'
 const teacherRoleId = 3
@@ -79,8 +78,13 @@ pool.connect()
     const timeStamp = new Date().toISOString()
     console.log(`bulk school insert: ${timeStamp} completed in ${durationInMilliseconds} ms`)
     console.log('triggering school pin generation...')
-    const triggerSchoolPinGenFunction = util.promisify(request)
-    await triggerSchoolPinGenFunction(defaultSchoolPasswordGeneratorUrl)
+    const axiosConfig = {
+      baseURL: defaultFunctionBaseUrl,
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }
+    await axios.post('/admin/functions/school-pin-generator', {}, axiosConfig)
     console.log('done')
     return firstInsertedSchoolDfeNumber
   })
