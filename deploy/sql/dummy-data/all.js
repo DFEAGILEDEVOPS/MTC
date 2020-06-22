@@ -3,7 +3,7 @@
 const sql = require('mssql')
 const config = require('../config')
 const { performance } = require('perf_hooks')
-const upnService = require('../../../admin/services/upn.service')
+const upnService = require('./upn.service')
 const moment = require('moment')
 const axios = require('axios')
 
