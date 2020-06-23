@@ -29,8 +29,9 @@ command -v jq >/dev/null 2>&1 || \
 
 # Start a flood
 echo
+echo "executing flood $FLOOD_NAME..."
 echo "[$(date +%FT%T)+00:00] Starting flood"
-flood_uuid=$(curl -H Accept: application/vnd.flood.v2+json -u $FLOOD_API_TOKEN: -X POST https://api.flood.io/floods \
+flood_uuid=$(curl -u $FLOOD_API_TOKEN: -X POST https://api.flood.io/floods \
 -F "flood[tool]=jmeter" \
 -F "flood[threads]=20" \
 -F "flood[project]=MTC" \
