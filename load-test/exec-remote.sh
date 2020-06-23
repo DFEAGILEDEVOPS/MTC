@@ -62,5 +62,5 @@ echo "$flood_report"
 
 # Optionally store the CSV results
 echo
-echo "[$(date +%FT%T)+00:00] Storing CSV results at results.csv"
+echo "[$(date +%FT%T)+00:00] Storing CSV results at flood-result.csv"
 curl --silent --user $FLOOD_API_TOKEN: https://api.flood.io/floods/$flood_uuid/result.csv > flood-result.csv
