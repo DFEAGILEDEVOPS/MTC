@@ -1,12 +1,27 @@
 #!/bin/bash
 set -e
 
+# web service protocol
+WEB_PROTOCOL='https'
+# web service port
+WEB_PORT=443
+
 # name of stream to run
 FLOOD_NAME=$1
 # Flood Api auth token
 FLOOD_API_TOKEN=$2
-FUNCTION_CONSUMPTION_HOST_URL = $3 # function host url
-FUNCTION_MASTER_KEY = $4 # auth key for functions
+# admin app url
+ADMIN_APP_HOST=$3
+# pupil api url
+PUPIL_API_HOST=$4
+# pupil api port
+# pupil spa host (for CORS on pupil api)
+PUPIL_SPA_HOST=$5
+# check submit proxy function host
+CHECK_SUBMIT_HOST=$6
+# check submit proxy auth token
+CHECK_SUBMIT_AUTH_TOKEN=$7
+
 
 # Check we have the jq binary to make parsing JSON responses a bit easier
 command -v jq >/dev/null 2>&1 || \
