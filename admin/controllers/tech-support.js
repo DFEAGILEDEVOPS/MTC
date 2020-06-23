@@ -89,13 +89,12 @@ const controller = {
     let payload
     try {
       payload = await payloadService.getPayload(checkCode)
-      console.log('GUY: payload is...')
-      console.dir(payload)
+      res.type('json')
+      res.send(JSON.stringify(payload, null, '    '))
     } catch (error) {
-      next(error)
+      res.type('txt')
+      res.send(`${error}`)
     }
-    res.type('json')
-    res.send(JSON.stringify(payload, null, '    '))
   }
 }
 
