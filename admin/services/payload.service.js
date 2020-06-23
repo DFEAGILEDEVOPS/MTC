@@ -4,6 +4,7 @@ const R = require('ramda')
 
 const payloadDataService = require('./data-access/payload.data.service')
 const compressionService = require('./compression.service')
+const uuidValidator = require('../lib/validator/common/uuid-validator')
 
 /**
  * @typedef {Object} ClientTimestamp
@@ -82,7 +83,13 @@ const payloadService = {
       throw new Error('Missing checkCode')
     }
 
+    const validationError = uuidValidator.validate(checkCode, 'checkCode')
+    if (validationError && validationError.hasError && validationError.hasError()) {
+      throw new Error('checkCode is not a valid UUID')
+    }
+
     const entity = await payloadDataService.sqlFindOneByCheckCode(checkCode)
+
     const archive = R.pathOr('', ['result', 'archive', '_'], entity)
 
     if (archive.length === 0) {
