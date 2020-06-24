@@ -7,15 +7,11 @@ module.exports = function (config) {
       { pattern: 'public/javascripts/app.js', watched: false },
       'spec/front-end/*.spec.js'
     ],
-    frameworks: [
-      'jasmine',
-      'jquery-1.12.4'
-    ],
+    frameworks: ['jasmine'],
     browsers: ['ChromeHeadless'],
     plugins: [
       'karma-jasmine',
-      'karma-chrome-launcher',
-      'karma-jquery'
+      'karma-chrome-launcher'
     ]
   })
 }

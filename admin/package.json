@@ -27,7 +27,7 @@
     "watch:integration": "yarn jest --watch --coverage=no --config ./tests-integration/jest.integration.config.js"
   },
   "mtc": {
-    "assets-version": "07483dfbecb710f5a1343ba2333aa7fb"
+    "assets-version": "612e2e0ee76e058364a4813cedcd8f3e"
   },
   "engines": {
     "node": ">= 10.16.3"
@@ -113,11 +113,7 @@
     "jest": "^25.1.0",
     "karma": "^4.4.1",
     "karma-chrome-launcher": "^3.1.0",
-    "karma-firefox-launcher": "^1.1.0",
-    "karma-ie-launcher": "^1.0.0",
     "karma-jasmine": "^3.1.1",
-    "karma-jquery": "^0.2.3",
-    "karma-safari-launcher": "^1.0.0",
     "madge": "^3.2.0",
     "node-mocks-http": "^1.6.6",
     "proxyquire": "^2.1.0",

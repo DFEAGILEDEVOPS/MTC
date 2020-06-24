@@ -52,7 +52,6 @@ const jsBundleFiles = [
   './assets/javascripts/session-expiry.js', // here be dragons
   './assets/javascripts/autocomplete.js',
   './assets/javascripts/pupil-access-arrangements-selection.js',
-  './assets/javascripts/check-forms.js',
   './assets/javascripts/pupil-form.js',
   './assets/javascripts/pupil-status-selection.js'
 ]
