@@ -1,13 +1,9 @@
 #!/bin/bash
 set -e
 
-# web service protocol
-WEB_PROTOCOL='https'
-# web service port
-WEB_PORT=443
 
 # name of stream to run
-FLOOD_NAME=$1
+FLOOD_NAME=${1:AzureDevOps_Pipeline}
 # Flood Api auth token
 FLOOD_API_TOKEN=$2
 # admin app url
@@ -21,23 +17,30 @@ PUPIL_SPA_HOST=$5
 CHECK_SUBMIT_HOST=$6
 # check submit proxy auth token
 CHECK_SUBMIT_AUTH_TOKEN=$7
-
+# web service protocol
+WEB_PROTOCOL=${8:-https}
+# web service port
+WEB_PORT=${9:-443}
 
 # Check we have the jq binary to make parsing JSON responses a bit easier
 command -v jq >/dev/null 2>&1 || \
 { echo >&2 "Please install http://stedolan.github.io/jq/download/  Aborting."; exit 1; }
 
+echo
+echo "preparing to execute $FLOOD_NAME"
+echo "admin app:${WEB_PROTOCOL}://${ADMIN_APP_HOST}:${WEB_PORT}"
+echo "pupil api host:${WEB_PROTOCOL}://${PUPIL_API_HOST}:${WEB_PORT}"
+echo "pupil spa (for api cors):${WEB_PROTOCOL}://$PUPIL_SPA_HOST}:${WEB_PORT}"
+echo "check submit host:${WEB_PROTOCOL}://${CHECK_SUBMIT_HOST}:${WEB_PORT}"
+
 # Start a flood
 echo
-echo "executing flood $FLOOD_NAME..."
 echo "[$(date +%FT%T)+00:00] Starting flood"
 flood_uuid=$(curl -u $FLOOD_API_TOKEN: -X POST https://api.flood.io/floods \
 -F "flood[tool]=jmeter" \
 -F "flood[threads]=20" \
 -F "flood[project]=MTC" \
-#-F "flood[privacy]=public" \
 -F "flood[name]=$FLOOD_NAME" \
-#-F "flood_files[]=@data.csv" \
 -F "flood_files[]=@scenarios/_2020/live-long-teacher-journey-with-check-submit.jmx" \
 -F "flood[grids][][infrastructure]=demand" \
 -F "flood[grids][][instance_quantity]=1" \
