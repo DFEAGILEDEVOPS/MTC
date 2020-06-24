@@ -18,7 +18,7 @@ const controller = {}
  * @param next
  * @returns {Promise.<*>}
  */
-controller.getViewResultsPage = async (req, res, next) => {
+controller.getViewResultsPage = async function getViewResultsPage (req, res, next) {
   res.locals.pageTitle = 'Provisional results'
   req.breadcrumbs('Results')
   let pupilResultData
@@ -79,6 +79,10 @@ controller.getViewResultsPage = async (req, res, next) => {
     groups,
     breadcrumbs: req.breadcrumbs()
   })
+}
+
+controller.getCtfDownload = function getCtfDownload (req, res, next) {
+  res.send('Hello from CTF Download')
 }
 
 module.exports = controller

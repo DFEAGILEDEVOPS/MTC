@@ -195,4 +195,10 @@ describe('results controller:', () => {
       expect(res.render).toHaveBeenCalledWith('results/view-results-not-found', { breadcrumbs: undefined })
     })
   })
+
+  describe('getCtfDownload', () => {
+    it('is defined', () => {
+      expect(controller.getCtfDownload).toBeDefined()
+    })
+  })
 })
