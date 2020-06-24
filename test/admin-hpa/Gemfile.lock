@@ -154,8 +154,8 @@ DEPENDENCIES
   azure-storage-queue
   azure-storage-table
   browserstack-local
-  capybara
-  capybara-screenshot
+  capybara (>= 3.32.2)
+  capybara-screenshot (>= 1.0.24)
   colorize
   cucumber
   httparty
@@ -172,7 +172,7 @@ DEPENDENCIES
   rspec
   selenium-webdriver (= 4.0.0.alpha1)
   settingslogic
-  site_prism
+  site_prism (>= 3.4.2)
   tiny_tds
   waitutil
   webdrivers (~> 4.0)
