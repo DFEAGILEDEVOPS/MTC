@@ -4,7 +4,7 @@ module.exports = function (config) {
     singleRun: true,
     autoWatch: false,
     files: [
-      { pattern: 'public/javascripts/app.js', watched: false },
+      { pattern: 'public/javascripts/app.js', watched: false, included: true },
       'spec/front-end/*.spec.js'
     ],
     frameworks: ['jasmine'],
