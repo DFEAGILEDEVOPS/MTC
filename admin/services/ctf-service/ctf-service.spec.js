@@ -6,6 +6,7 @@ const sut = require('./ctf.service')
 const ctfDataService = require('./data-access/ctf.data.service')
 const checkWindowV2Service = require('../check-window-v2.service')
 const resultsPageAvailabilityService = require('../results-page-availability.service')
+const NotAvailableError = require('../../error-types/not-available')
 
 describe('ctfService', () => {
   const mockCheckWindow = {
@@ -29,6 +30,7 @@ describe('ctfService', () => {
       fail('Expected to throw')
     } catch (error) {
       expect(error.message).toMatch(/the HDF has not been signed/i)
+      expect(error instanceof NotAvailableError).toBe(true)
     }
   })
 
@@ -41,6 +43,7 @@ describe('ctfService', () => {
       fail('Expected to throw')
     } catch (error) {
       expect(error.message).toMatch(/the Results page is not yet available/i)
+      expect(error instanceof NotAvailableError).toBe(true)
     }
   })
 })
