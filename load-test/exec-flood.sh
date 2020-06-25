@@ -42,6 +42,7 @@ flood_uuid=$(curl -u $FLOOD_API_TOKEN: -X POST https://api.flood.io/floods \
 -F "flood[project]=MTC" \
 -F "flood[name]=$FLOOD_NAME" \
 -F "flood_files[]=@./scenarios/_2020/live-long-teacher-journey-with-check-submit.jmx" \
+-F "flood[override_parameters]=-JadminAppHost=${ADMIN_APP_HOST},-Jprotocol=${WEB_PROTOCOL},-Jport=${WEB_PORT},-JpupilApiHost=${PUPIL_API_HOST},-JproxyFunctionHost=${CHECK_SUBMIT_HOST},-JpupilSiteUrl=${PUPIL_SPA_HOST}" \
 -F "flood[grids][][infrastructure]=demand" \
 -F "flood[grids][][instance_quantity]=1" \
 -F "flood[grids][][region]=uk-south-london" \
