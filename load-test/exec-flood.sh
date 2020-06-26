@@ -1,7 +1,6 @@
 #!/bin/bash
 set -e
 
-
 # name of stream to run
 FLOOD_NAME=${1:AzureDevOps_Pipeline}
 # Flood Api auth token
