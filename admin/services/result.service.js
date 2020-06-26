@@ -71,7 +71,9 @@ const resultService = {
         dateOfBirth: o.dateOfBirth,
         score: o.mark,
         status: this.assignStatus(o),
-        urlSlug: o.urlSlug
+        urlSlug: o.urlSlug,
+        // attendanceCode is used to determine the pupil result in the CTF XML file
+        attendanceCode: o.attendanceCode
       }
     })
   },
