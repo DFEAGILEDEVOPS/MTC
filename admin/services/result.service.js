@@ -10,6 +10,7 @@ const resultDataService = require('../services/data-access/result.data.service')
 const sortService = require('../helpers/table-sorting')
 const pupilIdentificationFlagService = require('./pupil-identification-flag.service')
 const schoolResultsTtl = 60 * 60 * 24 * 180 // cache school results for 180 days
+const resultsStrings = require('../lib/consts/mtc-results')
 
 /**
  * @typedef {object} PupilRestart
@@ -20,13 +21,6 @@ const schoolResultsTtl = 60 * 60 * 24 * 180 // cache school results for 180 days
  */
 
 const resultService = {
-  status: Object.freeze({
-    restartNotTaken: 'Did not attempt the restart',
-    incomplete: 'Incomplete',
-    didNotParticipate: 'Did not participate',
-    complete: ''
-  }),
-
   sort: function sort (data) {
     return sortService.sortByProps(['lastName', 'foreName', 'dateOfBirth', 'middleNames'], data)
   },
@@ -38,20 +32,20 @@ const resultService = {
    */
   assignStatus: function assignStatus (pupil) {
     if (pupil.restartAvailable) {
-      return resultService.status.restartNotTaken
+      return resultsStrings.restartNotTaken
     }
 
     if (pupil.currentCheckId) {
       if (pupil.checkComplete === true) {
-        return resultService.status.complete
+        return resultsStrings.complete
       } else {
-        return resultService.status.incomplete
+        return resultsStrings.incomplete
       }
     } else {
       if (pupil.attendanceReason) {
         return pupil.attendanceReason
       } else {
-        return resultService.status.didNotParticipate
+        return resultsStrings.didNotParticipate
       }
     }
   },

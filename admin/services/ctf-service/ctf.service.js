@@ -1,11 +1,17 @@
 'use strict'
 const moment = require('moment-timezone')
+const R = require('ramda')
+const RA = require('ramda-adjunct')
 
 const checkWindowV2Service = require('../check-window-v2.service')
 const config = require('../../config')
 const ctfDataService = require('./data-access/ctf.data.service')
 const resultsPageAvailablilityService = require('../results-page-availability.service')
+const resultsService = require('../result.service')
 const NotAvailableError = require('../../error-types/not-available')
+const pupilAttendanceCodes = require('../../lib/consts/pupil-attendance-codes')
+const ctfResults = require('../../lib/consts/ctf-results')
+const mtcResultsStrings = require('../../lib/consts/mtc-results')
 
 const ctfService = {
   /**
@@ -39,9 +45,53 @@ const ctfService = {
     // If they get this far they can download the xml file
   },
 
+  getCtfResult: function getCtfResult (o) {
+    // if they have a score they took the check
+    if (RA.isNotNil(o.score)) {
+      return o.score
+    }
+
+    // Handle pupil not attending codes
+    switch (o.pupilAttendanceCode) {
+      case pupilAttendanceCodes.absent.code:
+        return ctfResults.absent.code
+
+      case pupilAttendanceCodes.workingBelowExpectation.code:
+        return ctfResults.workingBelowExpectation.code
+
+      case pupilAttendanceCodes.justArrived.code:
+        return ctfResults.justArrived.code
+
+      case pupilAttendanceCodes.left.code:
+        return ctfResults.left.code
+
+      case pupilAttendanceCodes.unableToAccess.code:
+        return ctfResults.unableToAccess.code
+
+      case pupilAttendanceCodes.incorrectRegistration.code:
+        return ctfResults.incorrectRegistration.code
+    }
+
+    // handle not taken check
+    if (o.status === mtcResultsStrings.didNotParticipate ||
+      o.status === mtcResultsStrings.incomplete ||
+      o.status === mtcResultsStrings.restartNotTaken) {
+      return ctfResults.notTaken.code
+    }
+  },
+
   getSchoolResultDataAsXmlString: async function getSchoolResultDataAsXmlString (schoolId, timezone) {
     const checkWindow = await checkWindowV2Service.getActiveCheckWindow()
     await ctfService.throwErrorIfDownloadNotAllowed(schoolId, checkWindow, timezone)
+
+    // Fetch the results. This dataset is the same as that for showing the results on screen, so should
+    // already have been cached in Redis.  If not, the data will be fetched from the SQL DB.
+    const schoolResults = await resultsService.getPupilResultData(schoolId)
+    const xmlResults = schoolResults.map(o => {
+      return R.assoc('xmlResult', this.getCtfResult(o), o)
+    })
+    // transform xmlResults to XML String
+    return xmlResults.toString()
   }
 }
 
