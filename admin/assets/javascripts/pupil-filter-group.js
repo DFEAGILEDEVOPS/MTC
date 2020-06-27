@@ -35,8 +35,8 @@ $(function () {
     })
 
     $('.group-count').each(function () {
-      var totalPupils = $('.' + $(this).context.id).length
-      $('#' + $(this).context.id).text('(' + totalPupils + ' pupil' + (totalPupils === 1 ? '' : 's') + ')')
+      var totalPupils = $('.' + this.id).length
+      $('#' + this.id).text('(' + totalPupils + ' pupil' + (totalPupils === 1 ? '' : 's') + ')')
     })
   }
 })

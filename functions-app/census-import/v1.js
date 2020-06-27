@@ -2,7 +2,7 @@
 const csvString = require('csv-string')
 const moment = require('moment')
 const R = require('ramda')
-const uuidv4 = require('uuid/v4')
+const { v4: uuidv4 } = require('uuid')
 
 const censusImportDataService = require('./census-import.data.service')
 const azureStorageHelper = require('../lib/azure-storage-helper')

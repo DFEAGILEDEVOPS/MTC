@@ -1,0 +1,11 @@
+{
+  "bindings": [
+    {
+      "name": "myTimer",
+      "type": "timerTrigger",
+      "direction": "in",
+      "scheduleDesc": "Run at 8pm every night",
+      "schedule": "0 0 20 * * *"
+    }
+  ]
+}

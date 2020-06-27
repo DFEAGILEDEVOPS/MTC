@@ -32,7 +32,7 @@ const config = require('./config')
 // These files will get uglified and packaged into `app.js`
 const jsBundleFiles = [
   './node_modules/govuk-frontend/govuk/all.js',
-  './assets/javascripts/jquery-1.12.4.js',
+  './assets/javascripts/jquery-3.5.1.js',
   './assets/javascripts/gds-cookie-functions.js',
   './assets/javascripts/gds-cookie-settings.js',
   './assets/javascripts/gds-cookie-banner.js',
@@ -50,9 +50,7 @@ const jsBundleFiles = [
   './assets/javascripts/print-popup.js',
   './assets/javascripts/step-by-step-navigation.js',
   './assets/javascripts/session-expiry.js', // here be dragons
-  './assets/javascripts/autocomplete.js',
   './assets/javascripts/pupil-access-arrangements-selection.js',
-  './assets/javascripts/check-forms.js',
   './assets/javascripts/pupil-form.js',
   './assets/javascripts/pupil-status-selection.js'
 ]

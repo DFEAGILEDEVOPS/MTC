@@ -75,7 +75,7 @@ describe('check-forms', function () {
   beforeEach(() => {
     $('body').empty()
     initUploadCheckFormElements()
-    window.GOVUK.checkForms()
+    window.MTCAdmin.checkForms()
     formSubmitSpy = spyOn($.fn, 'submit')
     spyOn(checkFormSubmit, 'click').and.returnValue(false)
   })
