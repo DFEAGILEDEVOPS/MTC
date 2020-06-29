@@ -47,7 +47,7 @@ const ctfService = {
 
   /**
    * Get the value to be placed in the CTF XML file <ResultStatus> element
-   * @param {score: null|number, pupilAttendanceCode: undefined|string, status: string} pupilResult
+   * @param {{score: null|number, pupilAttendanceCode: undefined|string, status: string}} pupilResult
    * @return {string|*}
    */
   getCtfResult: function getCtfResult (pupilResult) {
