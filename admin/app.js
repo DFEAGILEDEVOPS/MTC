@@ -42,6 +42,7 @@ const preventDuplicateFormSubmission = require('./helpers/prevent-duplicate-subm
 const uuidV4 = require('uuid/v4')
 const authModes = require('./lib/consts/auth-modes')
 const dfeSignInStrategy = require('./authentication/dfe-signin-strategy')
+const redisCacheService = require('./services/data-access/redis-cache.service')
 
 const logger = require('./services/log.service').getLogger()
 const sqlService = require('./services/data-access/sql.service')
@@ -181,22 +182,15 @@ app.use(express.static(path.join(__dirname, 'public'), {
   }
 }))
 
+const redisClient = redisCacheService.getRedisClient() // ioredis
+redisClient.on('error', logger.error)
+
 if (!config.Redis.useTLS) {
   logger.warn('redis running in non-secure mode')
 }
 
 const RedisStore = require('connect-redis')(session)
-const options = {
-  host: config.Redis.Host,
-  port: config.Redis.Port
-}
-if (config.Redis.Key) {
-  options.auth_pass = config.Redis.Key
-}
-if (config.Redis.useTLS) {
-  options.tls = { servername: config.Redis.Host }
-}
-const sessionStore = new RedisStore(options)
+const sessionStore = new RedisStore({ client: redisClient })
 
 const sessionOptions = {
   name: 'mtc-admin-session-id',

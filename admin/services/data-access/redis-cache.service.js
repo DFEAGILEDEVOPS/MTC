@@ -118,6 +118,15 @@ redisCacheService.setMany = async (items) => {
 }
 
 /**
+ * Return the raw Redis client
+ * @return {*}
+ */
+redisCacheService.getRedisClient = () => {
+  redisConnect()
+  return redis
+}
+
+/**
  * Fetch many redis keys by their keys in one network trip
  * @param keys
  * @return {Promise<*>}
