@@ -67,7 +67,7 @@ echo
 echo "[$(date +%FT%T)+00:00] Detailed results at https://flood.io/$flood_uuid"
 echo "$flood_summmary"
 echo
-echo "mean response time: $mean_response_item"
+echo "mean response time: $mean_response_time"
 
 # Optionally store the CSV results
 echo
