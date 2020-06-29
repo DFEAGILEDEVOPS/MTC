@@ -185,12 +185,14 @@ describe('pupil-access-arrangements-selection', function () {
       expect(textArea2.val()).toBe('')
       expect(textArea2.val()).toBe('')
     })
-    it('it should show the modal when the user submitts with no checkboxes are checked', function () {
+
+    it('it should show the modal when the user submits with no checkboxes are checked', function () {
       const el = $('#save-access-arrangement')
       $(el).trigger('click')
       expect($('#js-modal-box')[0].classList[1]).toBe('show')
     })
   })
+
   it('it should add show-checkbox-content if relevant checkbox is checked on page load', function () {
     initAAElements()
     const el = $('.checkbox-list').find('input:checkbox')[3]

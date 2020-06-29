@@ -72,6 +72,7 @@ if (!window.MTCAdmin) {
      * @param {Array} source
      * @param {Number} minLength
      * @param {String} linkedContainer
+     * @param findValueFunc
      * @returns {void}
      */
     createLinkedComponent: function (autoCompleteContainer, id, source, minLength, linkedContainer, findValueFunc) {
@@ -92,7 +93,8 @@ if (!window.MTCAdmin) {
     /**
       * Sets up the custom on confirm event handler
       * @param {String} autoCompleteContainer
-      * @param {String} linkedContainer
+      * @param {String} linkedContainer]
+      * @param findValueFunc
       * @returns {void}
       */
     setupLinkedConfirm: function (autoCompleteContainer, linkedContainer, findValueFunc) {
