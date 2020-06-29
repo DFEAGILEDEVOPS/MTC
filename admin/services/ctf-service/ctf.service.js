@@ -45,14 +45,19 @@ const ctfService = {
     // If they get this far they can download the xml file
   },
 
-  getCtfResult: function getCtfResult (o) {
+  /**
+   * Get the value to be placed in the CTF XML file <ResultStatus> element
+   * @param {score: null|number, pupilAttendanceCode: undefined|string, status: string} pupilResult
+   * @return {string|*}
+   */
+  getCtfResult: function getCtfResult (pupilResult) {
     // if they have a score they took the check
-    if (RA.isNotNil(o.score)) {
-      return o.score
+    if (RA.isNotNil(pupilResult.score)) {
+      return pupilResult.score
     }
 
     // Handle pupil not attending codes
-    switch (o.pupilAttendanceCode) {
+    switch (pupilResult.pupilAttendanceCode) {
       case pupilAttendanceCodes.absent.code:
         return ctfResults.absent.code
 
@@ -62,8 +67,8 @@ const ctfService = {
       case pupilAttendanceCodes.justArrived.code:
         return ctfResults.justArrived.code
 
-      case pupilAttendanceCodes.left.code:
-        return ctfResults.left.code
+      case pupilAttendanceCodes.leftSchool.code:
+        return ctfResults.leftSchool.code
 
       case pupilAttendanceCodes.unableToAccess.code:
         return ctfResults.unableToAccess.code
@@ -73,9 +78,9 @@ const ctfService = {
     }
 
     // handle not taken check
-    if (o.status === mtcResultsStrings.didNotParticipate ||
-      o.status === mtcResultsStrings.incomplete ||
-      o.status === mtcResultsStrings.restartNotTaken) {
+    if (pupilResult.status === mtcResultsStrings.didNotParticipate ||
+      pupilResult.status === mtcResultsStrings.incomplete ||
+      pupilResult.status === mtcResultsStrings.restartNotTaken) {
       return ctfResults.notTaken.code
     }
   },
