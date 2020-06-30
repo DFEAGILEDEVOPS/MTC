@@ -57,15 +57,14 @@ while [ $(curl --silent --user $FLOOD_API_TOKEN: https://api.flood.io/floods/$fl
 done
 
 # Get the summary report
-flood_report=$(curl --silent --user $FLOOD_API_TOKEN: https://api.flood.io/floods/$flood_uuid/report | \
-  jq -r ".summary")
+flood_report=$(curl --silent --user $FLOOD_API_TOKEN: https://api.flood.io/floods/$flood_uuid/report)
 
 flood_summary=$(echo $flood_report | jq -r ".summary")
 mean_response_time=$(echo $flood_report | jq -r ".mean_response_time")
 
 echo
 echo "[$(date +%FT%T)+00:00] Detailed results at https://flood.io/$flood_uuid"
-echo "$flood_summmary"
+echo "[$(date +%FT%T)+00:00] $flood_summary"
 echo
 echo "mean response time: $mean_response_time"
 
