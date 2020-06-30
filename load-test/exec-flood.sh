@@ -67,8 +67,3 @@ echo "[$(date +%FT%T)+00:00] Detailed results at https://flood.io/$flood_uuid"
 echo "[$(date +%FT%T)+00:00] $flood_summary"
 echo
 echo "mean response time: $mean_response_time"
-
-# Optionally store the CSV results
-echo
-echo "[$(date +%FT%T)+00:00] Storing CSV results at flood-result.csv"
-curl --silent --user $FLOOD_API_TOKEN: https://api.flood.io/floods/$flood_uuid/results.csv > ${flood_uuid}-flood-result.csv
