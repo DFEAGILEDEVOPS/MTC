@@ -87,11 +87,13 @@ controller.getCtfDownload = async function getCtfDownload (req, res, next) {
   if (!R.path(['user', 'schoolId'], req)) {
     return next(new Error('School ID Missing'))
   }
-  const dfeNumber = req.user.School
-
   try {
     const xml = await ctfService.getSchoolResultDataAsXmlString(req.user.schoolId, req.user.timezone)
-    res.attachment(`DfE_KS2_${dfeNumber}_001.xml`)
+    const dfeNumber = req.user.School
+    if (!req.query.inline) {
+      res.attachment(`DfE_KS2_${dfeNumber}_001.xml`)
+    }
+    res.header('Content-type', 'text/xml')
     res.send(xml)
   } catch (error) {
     next(error)
