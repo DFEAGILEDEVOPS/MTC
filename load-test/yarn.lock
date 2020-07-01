@@ -140,10 +140,10 @@ artillery-plugin-statsd@^2.2.1:
     lodash "^4.17.11"
     lynx "^0.2.0"
 
-artillery@^1.6.0-12:
-  version "1.6.0-29"
-  resolved "https://registry.yarnpkg.com/artillery/-/artillery-1.6.0-29.tgz#504f90cb594a3f1358beb53049372c2840e184c5"
-  integrity sha512-gCGVINzIuMQlMYAXJ49/Jc60tPYD5Q443SZombPG32tjROqYqbeJvvPX9e34zL65I8cXS4/lhQ4SndxbkPpQ3A==
+artillery@^1.6.0:
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/artillery/-/artillery-1.6.0.tgz#6f92c7dccf881cac8fba30d799483312e37f5e58"
+  integrity sha512-vapCO+TR3EDf1Vg30xUEl+JasTBjctck9Hh3pvMW8RUDvXUv5gF+LanhsfkpZE3AwPGN1sEZ/9tbmnYGR913NQ==
   dependencies:
     arrivals "^2.1.2"
     artillery-plugin-statsd "^2.2.1"
@@ -235,6 +235,13 @@ axios@^0.19.0:
   dependencies:
     follow-redirects "1.5.10"
     is-buffer "^2.0.2"
+
+axios@^0.19.2:
+  version "0.19.2"
+  resolved "https://registry.yarnpkg.com/axios/-/axios-0.19.2.tgz#3ea36c5d8818d0d5f8a8a97a6d36b86cdc00cb27"
+  integrity sha512-fjgm5MvRHLhx+osE2xoekY70AhARk3a6hkN+3Io1jc00jtquGvxYlKlsFUhmUET0V5te6CcZI7lcv2Ym61mjHA==
+  dependencies:
+    follow-redirects "1.5.10"
 
 azure-storage@^2.10.2:
   version "2.10.3"

@@ -3,13 +3,15 @@
 const sql = require('mssql')
 const config = require('../config')
 const { performance } = require('perf_hooks')
-const upnService = require('../../../admin/services/upn.service')
+const upnService = require('./upn.service')
 const moment = require('moment')
+const axios = require('axios')
 
 const schoolCount = config.DummyData.SchoolCount
 const schoolOffset = config.DummyData.SchoolOffset
 const schoolUpperLimit = schoolCount + schoolOffset
 const pupilCountPerSchool = 300
+const defaultFunctionBaseUrl = process.env.FUNCTION_CONSUMPTION_HOST_URL || 'http://localhost:7071'
 
 const password = '$2a$10$.WsawgZpWSAQVaa6Vz3P1.XO.1YntYJLd6Da5lrXCAkVxhhLpkOHK'
 const teacherRoleId = 3
@@ -52,6 +54,7 @@ pool.connect()
     let estabBase = 1000
     let urnBase = 10000
     let leaCode = 880
+
     const firstInsertedSchoolDfeNumber = `${leaCode}${estabBase}`
     for (let idx = schoolOffset; idx < schoolUpperLimit; idx++) {
       if (estabBase > 9999) {
@@ -74,6 +77,20 @@ pool.connect()
     const durationInMilliseconds = end - start
     const timeStamp = new Date().toISOString()
     console.log(`bulk school insert: ${timeStamp} completed in ${durationInMilliseconds} ms`)
+    console.log('triggering school pin generation...')
+    const axiosConfig = {
+      baseURL: defaultFunctionBaseUrl,
+      headers: {
+        'Content-Type': 'application/json',
+        'x-functions-key': process.env.FUNCTION_MASTER_KEY || ''
+      }
+    }
+    await axios.post('/admin/functions/school-pin-generator', {}, axiosConfig)
+    const asyncDelay = time => () => new Promise(resolve => setTimeout(resolve, time, time))
+    const waitTimeMs = 15000
+    console.log(`waiting ${waitTimeMs}ms to allow school pins to be generated...`)
+    await asyncDelay(waitTimeMs)
+    console.log('done')
     return firstInsertedSchoolDfeNumber
   })
   .then(async (firstInsertedSchoolDfeNumber) => {
