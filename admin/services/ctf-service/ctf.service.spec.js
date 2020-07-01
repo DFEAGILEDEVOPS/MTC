@@ -1,7 +1,7 @@
 'use strict'
 /* global describe expect it fail spyOn beforeAll */
 const moment = require('moment')
-const xmlbuilder2 = require('xmlBuilder2')
+const xmlbuilder2 = require('xmlbuilder2')
 
 const sut = require('./ctf.service')
 const ctfDataService = require('./data-access/ctf.data.service')

@@ -2,7 +2,7 @@
 const moment = require('moment-timezone')
 const R = require('ramda')
 const RA = require('ramda-adjunct')
-const xmlBuilder2 = require('xmlbuilder2')
+const xmlbuilder2 = require('xmlbuilder2')
 
 const checkWindowV2Service = require('../check-window-v2.service')
 const config = require('../../config')
@@ -97,7 +97,7 @@ const ctfService = {
    * @return {*}
    */
   buildXmlString: function buildXmlString (school, pupilData, academicYear) {
-    const root = xmlBuilder2.create({ version: '1.0', encoding: 'utf-8' })
+    const root = xmlbuilder2.create({ version: '1.0', encoding: 'utf-8' })
       .ele('CTfile')
       .ele('Header')
       .ele('DocumentName').txt('Common Transfer File').up()
