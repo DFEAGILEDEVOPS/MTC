@@ -53,7 +53,7 @@ const resultService = {
   /**
    * Return pupil data showing mark, and status
    * @param pupils
-   * @return {*}
+   * @return {*} // TODO update return type
    */
   createPupilData: function createViewData (pupils) {
     return pupils.map(o => {
@@ -67,7 +67,9 @@ const resultService = {
         status: this.assignStatus(o),
         urlSlug: o.urlSlug,
         // attendanceCode is used to determine the pupil result in the CTF XML file
-        attendanceCode: o.attendanceCode
+        attendanceCode: o.attendanceCode,
+        upn: o.upn,
+        gender: o.gender
       }
     })
   },
