@@ -51,11 +51,46 @@ const resultService = {
   },
 
   /**
-   * Return pupil data showing mark, and status
-   * @param pupils
-   * @return {*} // TODO update return type
+   * @typedef {object} CreatePupilDataParam
+   * @property {?string} attendanceCode
+   * @property {number} attendanceId
+   * @property {?string} attendanceReason
+   * @property {boolean} checkComplete
+   * @property {number} currentCheckId
+   * @property {moment.Moment} dateOfBirth
+   * @property {string} foreName
+   * @property {string} gender
+   * @property {?number} group_id
+   * @property {string} lastName
+   * @property {?number} mark
+   * @property {string} middleNames
+   * @property {number} pupilId
+   * @property {boolean} restartAvailable
+   * @property {number} school_id
+   * @property {string} upn
+   * @property {string} urlSlug
    */
-  createPupilData: function createViewData (pupils) {
+
+  /**
+   * @typedef {object} CreatePupilDataRetval
+   * @property {?string} attendanceCode
+   * @property {moment.Moment} dateOfBirth
+   * @property {string} foreName
+   * @property {string} gender
+   * @property {?number} group_id
+   * @property {string} lastName
+   * @property {string} middleNames
+   * @property {?number} score
+   * @property {string} status
+   * @property {string} urlSlug
+   * @property {string} upn
+   */
+  /**
+   * Return pupil data showing mark, and status
+   * @param {CreatePupilDataParam[]} pupils - array of pupil(ish) objects from the db mtc_admin.pupil
+   * @return {CreatePupilDataRetval[]} - subset of the above, now with `score` and `status` props
+   */
+  createPupilData: function createPupilData (pupils) {
     return pupils.map(o => {
       return {
         foreName: o.foreName,
