@@ -183,7 +183,7 @@ app.use(express.static(path.join(__dirname, 'public'), {
 }))
 
 const redisClient = redisCacheService.getRedisClient() // ioredis
-redisClient.on('error', logger.error)
+redisClient.on('error', function (error) { logger.error(error.message, error) })
 
 if (!config.Redis.useTLS) {
   logger.warn('redis running in non-secure mode')
