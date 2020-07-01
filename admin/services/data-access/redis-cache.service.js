@@ -1,6 +1,8 @@
 const Redis = require('ioredis')
 const config = require('../../config')
 const logger = require('../log.service').getLogger()
+const moment = require('moment')
+const simpleIso8601Regex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/
 
 const redisConfig = {
   port: config.Redis.Port,
@@ -173,6 +175,20 @@ function prepareCacheEntry (value) {
   return JSON.stringify(storageItem)
 }
 
+function reviver (key, value) {
+  if (value && typeof value === 'string') {
+    if (simpleIso8601Regex.test(value)) {
+      try {
+        const d = moment(value)
+        if (d && d.isValid()) {
+          return d
+        }
+      } catch (ignored) {}
+    }
+  }
+  return value
+}
+
 /**
  * Unwrap a cached entry, returning the original type
  * @param cacheEntry
@@ -180,7 +196,7 @@ function prepareCacheEntry (value) {
  */
 function unwrap (cacheEntry) {
   if (cacheEntry === null) return undefined
-  const cacheItem = JSON.parse(cacheEntry)
+  const cacheItem = JSON.parse(cacheEntry, reviver)
   switch (cacheItem.meta.type) {
     case 'string':
       return cacheItem.value
@@ -188,7 +204,7 @@ function unwrap (cacheEntry) {
       return Number(cacheItem.value)
     case 'object':
       try {
-        const hydratedObject = JSON.parse(cacheItem.value)
+        const hydratedObject = JSON.parse(cacheItem.value, reviver)
         return hydratedObject
       } catch (e) {
         logger.error(`failed to parse redis cache item: ${cacheItem.value}.`)
