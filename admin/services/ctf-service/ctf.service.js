@@ -160,7 +160,6 @@ const ctfService = {
 
     // Fetch the results. This dataset is the same as that for showing the results on screen, so should
     // already have been cached in Redis.  If not, the data will be fetched from the SQL DB.
-
     const [pupilData, schoolData, academicYear] = await Promise.all([
       resultsService.getPupilResultData(schoolId),
       ctfDataService.getSchoolData(schoolId),

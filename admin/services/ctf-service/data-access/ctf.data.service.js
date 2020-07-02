@@ -38,17 +38,13 @@ const ctfDataService = {
    * @return {Promise<?{id:number, name:string, leaCode:number, estabCode:string, dfeNumber:number, urn:number}>}
    */
   getSchoolData: async function getSchoolData (schoolId) {
-    // This method uses a work-around to avoid the bad code in sqlService.transformData which causes some strings
-    // to be interpreted as Dates. Once that has been corrected, estabCode will no longer need to converted to int and
-    // back to string.
-    const sql = `SELECT id, name, leaCode, CAST(estabCode as Int) as estabCode, dfeNumber, urn
+    const sql = `SELECT id, name, leaCode, estabCode, dfeNumber, urn
                    FROM [mtc_admin].[school]
                   WHERE id = @schoolId`
     const params = { name: 'schoolId', value: schoolId, type: TYPES.Int }
     const data = await sqlService.readonlyQuery(sql, [params])
-    const school = R.head(data)
     // @ts-ignore
-    return R.assoc('estabCode', school.estabCode.toString().padStart(4, '0'), school)
+    return R.head(data)
   },
 
   /**

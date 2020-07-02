@@ -143,10 +143,7 @@ const convertMomentToJsDate = (m) => {
  * Useful for converting Data during UPDATES and INSERTS
  */
 const convertDateToMoment = (d) => {
-  if (
-    d instanceof Date ||
-    (typeof d === 'string' && moment(d, moment.ISO_8601).isValid())
-  ) {
+  if (d instanceof Date) {
     return moment.utc(d)
   }
   return d
