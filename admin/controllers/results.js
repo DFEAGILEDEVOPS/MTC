@@ -76,6 +76,7 @@ controller.getViewResultsPage = async function getViewResultsPage (req, res, nex
 
   return res.render('results/view-results', {
     pupilData: pupilResultData,
+    isHdfSubmitted,
     generatedAt,
     maxMark: config.LINES_PER_CHECK_FORM,
     groups,
