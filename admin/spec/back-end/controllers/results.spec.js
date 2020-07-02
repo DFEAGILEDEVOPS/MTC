@@ -75,6 +75,7 @@ describe('results controller:', () => {
       expect(res.locals.pageTitle).toBe('Provisional results')
       expect(res.render).toHaveBeenCalledWith('results/view-results', {
         pupilData: mockPupilData.pupils,
+        isHdfSubmitted: true,
         generatedAt: '1 July 2020 4:12am',
         maxMark: config.LINES_PER_CHECK_FORM,
         groups: mockGroups,
@@ -146,6 +147,7 @@ describe('results controller:', () => {
       expect(res.locals.pageTitle).toBe('Provisional results')
       expect(res.render).toHaveBeenCalledWith('results/view-results', {
         pupilData: mockPupilData.pupils,
+        isHdfSubmitted: false,
         generatedAt: '1 July 2020 4:12am',
         maxMark: config.LINES_PER_CHECK_FORM,
         groups: mockGroups,
