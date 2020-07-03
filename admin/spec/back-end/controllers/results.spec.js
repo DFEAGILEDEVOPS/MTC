@@ -12,6 +12,7 @@ const groupService = require('../../../services/group.service')
 const headteacherDeclarationService = require('../../../services/headteacher-declaration.service')
 const resultPageAvailabilityService = require('../../../services/results-page-availability.service')
 const resultService = require('../../../services/result.service')
+const ctfService = require('../../../services/ctf-service/ctf.service')
 
 describe('results controller:', () => {
   let next
@@ -199,8 +200,75 @@ describe('results controller:', () => {
   })
 
   describe('getCtfDownload', () => {
+    const reqParams = {
+      method: 'GET',
+      url: '/results/ctf-download'
+    }
+
     it('is defined', () => {
       expect(controller.getCtfDownload).toBeDefined()
+    })
+
+    it('calls next() if the schoolId is missing', async () => {
+      const res = getRes()
+      const req = getReq(reqParams)
+      await controller.getCtfDownload(req, res, next)
+      const error = next.calls.first().args[0]
+      expect(error.message).toBe('School ID Missing')
+    })
+
+    it('calls ctfService.getSchoolResultDataAsXmlString to get the data', async () => {
+      const res = getRes()
+      res.attachment = jasmine.createSpy('attachment')
+      const req = getReq(reqParams)
+      req.user = { schoolId: 42 }
+      spyOn(ctfService, 'getSchoolResultDataAsXmlString').and.returnValue('<CTfile>mock</CTfile>')
+      await controller.getCtfDownload(req, res, next)
+      expect(ctfService.getSchoolResultDataAsXmlString).toHaveBeenCalled()
+    })
+
+    it('sends the download file as an attachment', async () => {
+      const res = getRes()
+      res.attachment = jasmine.createSpy('attachment')
+      const req = getReq(reqParams)
+      req.user = { schoolId: 42 }
+      spyOn(ctfService, 'getSchoolResultDataAsXmlString').and.returnValue('<CTfile>mock</CTfile>')
+      await controller.getCtfDownload(req, res, next)
+      expect(res.attachment).toHaveBeenCalled()
+    })
+
+    it('sets the Content-type to text/xml', async () => {
+      const res = getRes()
+      res.attachment = jasmine.createSpy('attachment')
+      const req = getReq(reqParams)
+      req.user = { schoolId: 42 }
+      spyOn(ctfService, 'getSchoolResultDataAsXmlString').and.returnValue('<CTfile>mock</CTfile>')
+      await controller.getCtfDownload(req, res, next)
+      expect(res.get('Content-Type')).toBe('text/xml')
+    })
+
+    it('sends the XML file out as the attachment', async () => {
+      const res = getRes()
+      res.attachment = jasmine.createSpy('attachment')
+      res.send = jasmine.createSpy('send')
+      const req = getReq(reqParams)
+      req.user = { schoolId: 42 }
+      spyOn(ctfService, 'getSchoolResultDataAsXmlString').and.returnValue('<CTfile>mock</CTfile>')
+      await controller.getCtfDownload(req, res, next)
+      const response = res.send.calls.first().args[0]
+      expect(response).toBe('<CTfile>mock</CTfile>')
+    })
+
+    it('calls next() if there is an error thrown from processing', async () => {
+      const res = getRes()
+      res.attachment = jasmine.createSpy('attachment')
+      const req = getReq(reqParams)
+      req.user = { schoolId: 42 }
+      spyOn(ctfService, 'getSchoolResultDataAsXmlString').and.throwError('mock error')
+      await controller.getCtfDownload(req, res, next)
+      expect(next).toHaveBeenCalled()
+      const error = next.calls.first().args[0]
+      expect(error.message).toBe('mock error')
     })
   })
 })
