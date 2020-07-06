@@ -23,6 +23,7 @@ def run_in_groups(group_size = 1)
   nodes = NODES.to_i
   array_of_features.each {|s| features_to_run.push s}
   parent_rerun_file = "reports/parent_rerun_#{driver}.txt"
+  File.delete(parent_rerun_file) if File.exists?(parent_rerun_file)
   File.open(parent_rerun_file, 'w')
   start_time = "Start at : #{Time.now}"
   workers = (0...nodes).map do
