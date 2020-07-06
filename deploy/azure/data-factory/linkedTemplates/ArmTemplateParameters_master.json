@@ -3,7 +3,7 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "factoryName": {
-            "value": "ps-report-poc"
+            "value": "ps-report-2019-load"
         },
         "blobstorage_connectionString": {
             "value": ""

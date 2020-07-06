@@ -5,7 +5,7 @@
         "factoryName": {
             "type": "string",
             "metadata": "Data Factory name",
-            "defaultValue": "ps-report-poc"
+            "defaultValue": "ps-report-2019-load"
         },
         "blobstorage_connectionString": {
             "type": "secureString",
