@@ -85,7 +85,6 @@ const ctfService = {
       return ctfResults.notTaken.code
     }
 
-    // We could potentially throw here, as at this point we have run out of potential codes
     // to give to the pupil.  There is no 'unknown' or 'error' code to provide.
   },
 

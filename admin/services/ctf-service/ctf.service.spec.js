@@ -149,6 +149,16 @@ describe('ctfService', () => {
       const res = sut.getCtfResult(mockCtfResult)
       expect(res).toBe('X')
     })
+
+    it('returns "X" by default if we can\'t determine anything better', () => {
+      const mockCtfResult = {
+        score: null,
+        attendanceCode: null,
+        status: ''
+      }
+      const res = sut.getCtfResult(mockCtfResult)
+      expect(res).toBe('X')
+    })
   })
 
   describe('buildXmlString', () => {
