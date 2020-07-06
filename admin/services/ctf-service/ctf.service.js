@@ -136,7 +136,7 @@ const ctfService = {
         .ele('Component').txt('MTC').up()
         .ele('ResultStatus').txt('R').up()
         .ele('ResultQualifier').txt('MT').up()
-        .ele('Result').txt(p.ctfResult.toString()).up()
+        .ele('Result').txt(p.ctfResult && p.ctfResult.toString()).up()
         .up() // StageAssessment
         .up() // KeyStage
         .up() // StageAssessments
