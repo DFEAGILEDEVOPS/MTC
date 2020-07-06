@@ -11,7 +11,7 @@ const ctfResults = require('../../lib/consts/ctf-results')
 const mtcResultsStrings = require('../../lib/consts/mtc-results')
 const NotAvailableError = require('../../error-types/not-available')
 const pupilAttendanceCodes = require('../../lib/consts/pupil-attendance-codes')
-const resultsPageAvailablilityService = require('../results-page-availability.service')
+const resultsPageAvailabilityService = require('../results-page-availability.service')
 const resultsService = require('../result.service')
 
 const ctfService = {
@@ -34,9 +34,9 @@ const ctfService = {
 
     const now = moment.tz(timezone || config.DEFAULT_TIMEZONE)
 
-    const isResultsPageVisible = resultsPageAvailablilityService.isResultsFeatureAccessible(
+    const isResultsPageVisible = resultsPageAvailabilityService.isResultsFeatureAccessible(
       now,
-      resultsPageAvailablilityService.getResultsOpeningDate(now, checkWindow.checkEndDate)
+      resultsPageAvailabilityService.getResultsOpeningDate(now, checkWindow.checkEndDate)
     )
 
     if (!isResultsPageVisible) {
