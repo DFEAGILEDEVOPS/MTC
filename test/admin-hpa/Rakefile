@@ -6,35 +6,75 @@ require 'capybara'
 require 'colorize'
 require_relative 'features/support/browserstack_settings'
 
+
+GROUP_SIZE = ENV['GROUP_SIZE'] || 1
+NODES = ENV['NODES'] || 1
+
 File.truncate('rerun.txt', 0) if File.exist?('rerun.txt')
 File.truncate('rerun0.txt', 0) if File.exist?('rerun0.txt')
 
+def run_in_groups(group_size = 1)
+  driver = Rake.application.top_level_tasks.first.split(':').last.gsub('parallel_', 'bs_')
+  @exit_code_array = []
+  features = Dir["features/*"]
+  array_of_features = features.each_slice(group_size.to_i).to_a
+  group_index = 0
+  features_to_run = Queue.new
+  nodes = NODES.to_i
+  array_of_features.each {|s| features_to_run.push s}
+  parent_rerun_file = "reports/parent_rerun_#{driver}.txt"
+  File.open(parent_rerun_file, 'w')
+  File.delete(parent_rerun_file) if File.exists?(parent_rerun_file)
+  start_time = "Start at : #{Time.now}"
+  workers = (0...nodes).map do
+    Thread.new do
+      begin
+        while feature_under_run = features_to_run.pop(true)
+          group_index += 1
+          feature_under_run = feature_under_run.join(' ')
+          rerun_file = "reports/#{driver}_run_#{group_index}.txt"
+          File.open(rerun_file, 'w')
+          command = "bundle exec cucumber --retry 2 -f pretty #{feature_under_run} -r features/step_definitions -r features/support -f rerun -o #{rerun_file} DRIVER=#{driver}"
+          sh command do
+
+          end
+          @exit_code_array << $?.exitstatus
+          IO.write(parent_rerun_file, "#{File.read(rerun_file)} ", mode: 'a')
+          File.delete(rerun_file)
+        end
+      rescue ThreadError
+      end
+    end
+  end
+
+  workers.map(&:join)
+  p start_time
+  p "End at : #{Time.now}"
+  p @exit_code_array
+end
+
 Cucumber::Rake::Task.new(:features) do |t|
   @start_time = Time.now
-  t.cucumber_opts = "--format pretty -f rerun -o rerun.txt DRIVER=#{(ENV['DRIVER']) ? ENV['DRIVER'] : 'headless_chrome'}"
+  t.cucumber_opts = "--format pretty --retry 2 -f rerun -o rerun.txt DRIVER=#{(ENV['DRIVER']) ? ENV['DRIVER'] : 'headless_chrome'}"
   t.cucumber_opts << " #{ENV['OPTS']}" unless ENV['OPTS'].nil?
 end
 
-
-BrowserstackSettings.browser_caps.keys.each_with_index do |browser, index|
-  Cucumber::Rake::Task.new("bs_#{browser}".to_sym) do |task|
-    task.cucumber_opts = "--format=pretty DRIVER=bs_#{browser} -f rerun -o rerun.txt"
+  BrowserstackSettings.browser_caps.keys.each_with_index do |browser, index|
+    Cucumber::Rake::Task.new(browser.to_sym, "Runs test for " + browser) do |task|
+      task.cucumber_opts = "--format=pretty DRIVER=bs_#{browser} -f rerun -o rerun.txt"
     task.cucumber_opts << " #{ENV['OPTS']}" unless ENV['OPTS'].nil?
-  end
-end
+    end
 
-desc 're run failing test'
-Cucumber::Rake::Task.new :failing_tests, 'Re-run failing tests from the rerun.txt file' do |t|
-  t.cucumber_opts = "@rerun.txt -f html -o #{'reports/rerun_output_' + Time.now.strftime('%I_%M_%S_%L') + '.html'} -f pretty DRIVER=#{(ENV['DRIVER']) ? ENV['DRIVER'] : 'headless_chrome'}"
-end
+    desc 'Run tests in groups'
+    task("group_#{browser}".to_sym) do
+      run_in_groups(GROUP_SIZE)
+    end
+  end
 
 at_exit do
   puts "\n**** RE RUNNING FAILING TESTS ****\n\n" unless File.read('rerun.txt').empty?
   system("cucumber @rerun.txt -f rerun -o rerun0.txt -f pretty") unless File.read('rerun.txt').empty? or Rake.application.top_level_tasks.first.include? 'bs'
   system("cucumber @rerun.txt -f rerun -o rerun0.txt -f pretty DRIVER=#{Rake.application.top_level_tasks.first}") if !File.read('rerun.txt').empty? and Rake.application.top_level_tasks.first.include? 'bs'
-  puts "\n**** RE RUNNING FAILING TESTS ONE MORE TIME ****\n\n" unless File.read('rerun0.txt').empty?
-  system("cucumber @rerun0.txt -f rerun -o rerun.txt -f pretty") unless File.read('rerun0.txt').empty? or Rake.application.top_level_tasks.first.include? 'bs'
-  system("cucumber @rerun0.txt -f rerun -o rerun.txt -f pretty DRIVER=#{Rake.application.top_level_tasks.first}") if !File.read('rerun0.txt').empty? and Rake.application.top_level_tasks.first.include? 'bs'
   exit_code = @exit_code.nil? ? $?.exitstatus : @exit_code
   colour = exit_code == 0 ? 'green' : 'red'
   puts "## Suite took #{(Time.now - @start_time) / 60}"
