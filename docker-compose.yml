@@ -9,8 +9,51 @@ services:
       SA_PASSWORD: "Mtc-D3v.5ql_S3rv3r"
       ACCEPT_EULA: "Y"
       HOMEBREW_NO_ENV_FILTERING: 1
+  migration:
+#    image: mtc_admin
+    build: ./admin
+    container_name: mtc_admin_migration
+    volumes:
+      - "./:/usr/src/app"
+    environment:
+      SQL_SERVER: 'sqldb'
+    depends_on:
+      - sqldb
+    command: /bin/bash /usr/src/app/admin/run-dev-migrations.sh
   redis:
     image: "redis:4.0-alpine"
     container_name: mtc_redis
     ports:
       - "6379:6379"
+    depends_on:
+      - sqldb
+      - migration
+  functions-app:
+    build: ./functions-app
+    container_name: "mtc_functions_app"
+    ports:
+      - 7072:7072
+    volumes:
+      - "./:/mtc"
+    environment:
+      SQL_SERVER: 'sqldb'
+      REDIS_HOST: 'redis'
+    depends_on:
+      - sqldb
+      - migration
+      - redis
+  func-consumption:
+#    image: "mtc-func-consumption"
+    build: ./func-consumption
+    container_name: "mtc_func_consumption"
+    ports:
+      - 7071:7071
+    volumes:
+      - "./:/mtc"
+    environment:
+      SQL_SERVER: 'sqldb'
+      REDIS_HOST: 'redis'
+    depends_on:
+      - sqldb
+      - migration
+      - redis
