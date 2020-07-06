@@ -84,8 +84,7 @@ const ctfService = {
       pupilResult.status === mtcResultsStrings.restartNotTaken) {
       return ctfResults.notTaken.code
     }
-
-    // to give to the pupil.  There is no 'unknown' or 'error' code to provide.
+    return ctfResults.notTaken.code
   },
 
   /**
