@@ -1,0 +1,1886 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "factoryName": {
+            "type": "string",
+            "metadata": "Data Factory name",
+            "defaultValue": "ps-report-poc"
+        },
+        "blobstorage_connectionString": {
+            "type": "secureString",
+            "metadata": "Secure string for 'connectionString' of 'blobstorage'"
+        },
+        "sqldb_connectionString": {
+            "type": "secureString",
+            "metadata": "Secure string for 'connectionString' of 'sqldb'"
+        }
+    },
+    "variables": {
+        "factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+    },
+    "resources": [
+        {
+            "name": "[concat(parameters('factoryName'), '/blobstorage')]",
+            "type": "Microsoft.DataFactory/factories/linkedServices",
+            "apiVersion": "2018-06-01",
+            "properties": {
+                "annotations": [],
+                "type": "AzureBlobStorage",
+                "typeProperties": {
+                    "connectionString": "[parameters('blobstorage_connectionString')]"
+                }
+            },
+            "dependsOn": []
+        },
+        {
+            "name": "[concat(parameters('factoryName'), '/sqldb')]",
+            "type": "Microsoft.DataFactory/factories/linkedServices",
+            "apiVersion": "2018-06-01",
+            "properties": {
+                "annotations": [],
+                "type": "AzureSqlDatabase",
+                "typeProperties": {
+                    "connectionString": "[parameters('sqldb_connectionString')]"
+                }
+            },
+            "dependsOn": []
+        },
+        {
+            "name": "[concat(parameters('factoryName'), '/MTC_SqlAzure_Database')]",
+            "type": "Microsoft.DataFactory/factories/datasets",
+            "apiVersion": "2018-06-01",
+            "properties": {
+                "linkedServiceName": {
+                    "referenceName": "sqldb",
+                    "type": "LinkedServiceReference"
+                },
+                "annotations": [],
+                "type": "AzureSqlTable",
+                "schema": [],
+                "typeProperties": {
+                    "schema": "mtc_analysis",
+                    "table": "PsReport2019"
+                }
+            },
+            "dependsOn": [
+                "[concat(variables('factoryId'), '/linkedServices/sqldb')]"
+            ]
+        },
+        {
+            "name": "[concat(parameters('factoryName'), '/PsReportBlob')]",
+            "type": "Microsoft.DataFactory/factories/datasets",
+            "apiVersion": "2018-06-01",
+            "properties": {
+                "linkedServiceName": {
+                    "referenceName": "blobstorage",
+                    "type": "LinkedServiceReference"
+                },
+                "annotations": [],
+                "type": "DelimitedText",
+                "typeProperties": {
+                    "location": {
+                        "type": "AzureBlobStorageLocation",
+                        "fileName": "dummyps.csv",
+                        "container": "data-exchange"
+                    },
+                    "columnDelimiter": ",",
+                    "escapeChar": "\\",
+                    "firstRowAsHeader": true,
+                    "quoteChar": "\""
+                },
+                "schema": [
+                    {
+                        "name": "DOB",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Gender",
+                        "type": "String"
+                    },
+                    {
+                        "name": "PupilId",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Forename",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Surname",
+                        "type": "String"
+                    },
+                    {
+                        "name": "FormMark",
+                        "type": "String"
+                    },
+                    {
+                        "name": "QDisplayTime",
+                        "type": "String"
+                    },
+                    {
+                        "name": "PauseLength",
+                        "type": "String"
+                    },
+                    {
+                        "name": "AccessArr",
+                        "type": "String"
+                    },
+                    {
+                        "name": "RestartReason",
+                        "type": "String"
+                    },
+                    {
+                        "name": "RestartNumber",
+                        "type": "String"
+                    },
+                    {
+                        "name": "ReasonNotTakingCheck",
+                        "type": "String"
+                    },
+                    {
+                        "name": "PupilStatus",
+                        "type": "String"
+                    },
+                    {
+                        "name": "DeviceType",
+                        "type": "String"
+                    },
+                    {
+                        "name": "DeviceTypeModel",
+                        "type": "String"
+                    },
+                    {
+                        "name": "DeviceId",
+                        "type": "String"
+                    },
+                    {
+                        "name": "BrowserType",
+                        "type": "String"
+                    },
+                    {
+                        "name": "School Name",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Estab",
+                        "type": "String"
+                    },
+                    {
+                        "name": "School URN",
+                        "type": "String"
+                    },
+                    {
+                        "name": "LA Num",
+                        "type": "String"
+                    },
+                    {
+                        "name": "AttemptId",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Form ID",
+                        "type": "String"
+                    },
+                    {
+                        "name": "TestDate",
+                        "type": "String"
+                    },
+                    {
+                        "name": "TimeStart",
+                        "type": "String"
+                    },
+                    {
+                        "name": "TimeComplete",
+                        "type": "String"
+                    },
+                    {
+                        "name": "TimeTaken",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q1ID",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q1Response",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q1InputMethods",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q1K",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q1Sco",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q1ResponseTime",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q1TimeOut",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q1TimeOutResponse",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q1TimeOutSco",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q1tLoad",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q1tFirstKey",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q1tLastKey",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q1OverallTime",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q1RecallTime",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q1ReaderStart",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q1ReaderEnd",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q2ID",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q2Response",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q2InputMethods",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q2K",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q2Sco",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q2ResponseTime",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q2TimeOut",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q2TimeOutResponse",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q2TimeOutSco",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q2tLoad",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q2tFirstKey",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q2tLastKey",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q2OverallTime",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q2RecallTime",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q2ReaderStart",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q2ReaderEnd",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q3ID",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q3Response",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q3InputMethods",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q3K",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q3Sco",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q3ResponseTime",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q3TimeOut",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q3TimeOutResponse",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q3TimeOutSco",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q3tLoad",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q3tFirstKey",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q3tLastKey",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q3OverallTime",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q3RecallTime",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q3ReaderStart",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q3ReaderEnd",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q4ID",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q4Response",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q4InputMethods",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q4K",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q4Sco",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q4ResponseTime",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q4TimeOut",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q4TimeOutResponse",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q4TimeOutSco",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q4tLoad",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q4tFirstKey",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q4tLastKey",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q4OverallTime",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q4RecallTime",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q4ReaderStart",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q4ReaderEnd",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q5ID",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q5Response",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q5InputMethods",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q5K",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q5Sco",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q5ResponseTime",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q5TimeOut",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q5TimeOutResponse",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q5TimeOutSco",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q5tLoad",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q5tFirstKey",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q5tLastKey",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q5OverallTime",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q5RecallTime",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q5ReaderStart",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q5ReaderEnd",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q6ID",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q6Response",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q6InputMethods",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q6K",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q6Sco",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q6ResponseTime",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q6TimeOut",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q6TimeOutResponse",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q6TimeOutSco",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q6tLoad",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q6tFirstKey",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q6tLastKey",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q6OverallTime",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q6RecallTime",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q6ReaderStart",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q6ReaderEnd",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q7ID",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q7Response",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q7InputMethods",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q7K",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q7Sco",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q7ResponseTime",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q7TimeOut",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q7TimeOutResponse",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q7TimeOutSco",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q7tLoad",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q7tFirstKey",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q7tLastKey",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q7OverallTime",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q7RecallTime",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q7ReaderStart",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q7ReaderEnd",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q8ID",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q8Response",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q8InputMethods",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q8K",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q8Sco",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q8ResponseTime",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q8TimeOut",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q8TimeOutResponse",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q8TimeOutSco",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q8tLoad",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q8tFirstKey",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q8tLastKey",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q8OverallTime",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q8RecallTime",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q8ReaderStart",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q8ReaderEnd",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q9ID",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q9Response",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q9InputMethods",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q9K",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q9Sco",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q9ResponseTime",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q9TimeOut",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q9TimeOutResponse",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q9TimeOutSco",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q9tLoad",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q9tFirstKey",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q9tLastKey",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q9OverallTime",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q9RecallTime",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q9ReaderStart",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q9ReaderEnd",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q10ID",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q10Response",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q10InputMethods",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q10K",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q10Sco",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q10ResponseTime",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q10TimeOut",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q10TimeOutResponse",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q10TimeOutSco",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q10tLoad",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q10tFirstKey",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q10tLastKey",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q10OverallTime",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q10RecallTime",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q10ReaderStart",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q10ReaderEnd",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q11ID",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q11Response",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q11InputMethods",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q11K",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q11Sco",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q11ResponseTime",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q11TimeOut",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q11TimeOutResponse",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q11TimeOutSco",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q11tLoad",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q11tFirstKey",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q11tLastKey",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q11OverallTime",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q11RecallTime",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q11ReaderStart",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q11ReaderEnd",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q12ID",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q12Response",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q12InputMethods",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q12K",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q12Sco",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q12ResponseTime",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q12TimeOut",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q12TimeOutResponse",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q12TimeOutSco",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q12tLoad",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q12tFirstKey",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q12tLastKey",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q12OverallTime",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q12RecallTime",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q12ReaderStart",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q12ReaderEnd",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q13ID",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q13Response",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q13InputMethods",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q13K",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q13Sco",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q13ResponseTime",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q13TimeOut",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q13TimeOutResponse",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q13TimeOutSco",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q13tLoad",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q13tFirstKey",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q13tLastKey",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q13OverallTime",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q13RecallTime",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q13ReaderStart",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q13ReaderEnd",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q14ID",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q14Response",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q14InputMethods",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q14K",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q14Sco",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q14ResponseTime",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q14TimeOut",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q14TimeOutResponse",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q14TimeOutSco",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q14tLoad",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q14tFirstKey",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q14tLastKey",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q14OverallTime",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q14RecallTime",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q14ReaderStart",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q14ReaderEnd",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q15ID",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q15Response",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q15InputMethods",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q15K",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q15Sco",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q15ResponseTime",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q15TimeOut",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q15TimeOutResponse",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q15TimeOutSco",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q15tLoad",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q15tFirstKey",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q15tLastKey",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q15OverallTime",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q15RecallTime",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q15ReaderStart",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q15ReaderEnd",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q16ID",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q16Response",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q16InputMethods",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q16K",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q16Sco",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q16ResponseTime",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q16TimeOut",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q16TimeOutResponse",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q16TimeOutSco",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q16tLoad",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q16tFirstKey",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q16tLastKey",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q16OverallTime",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q16RecallTime",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q16ReaderStart",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q16ReaderEnd",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q17ID",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q17Response",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q17InputMethods",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q17K",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q17Sco",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q17ResponseTime",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q17TimeOut",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q17TimeOutResponse",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q17TimeOutSco",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q17tLoad",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q17tFirstKey",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q17tLastKey",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q17OverallTime",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q17RecallTime",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q17ReaderStart",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q17ReaderEnd",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q18ID",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q18Response",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q18InputMethods",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q18K",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q18Sco",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q18ResponseTime",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q18TimeOut",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q18TimeOutResponse",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q18TimeOutSco",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q18tLoad",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q18tFirstKey",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q18tLastKey",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q18OverallTime",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q18RecallTime",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q18ReaderStart",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q18ReaderEnd",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q19ID",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q19Response",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q19InputMethods",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q19K",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q19Sco",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q19ResponseTime",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q19TimeOut",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q19TimeOutResponse",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q19TimeOutSco",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q19tLoad",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q19tFirstKey",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q19tLastKey",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q19OverallTime",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q19RecallTime",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q19ReaderStart",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q19ReaderEnd",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q20ID",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q20Response",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q20InputMethods",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q20K",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q20Sco",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q20ResponseTime",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q20TimeOut",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q20TimeOutResponse",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q20TimeOutSco",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q20tLoad",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q20tFirstKey",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q20tLastKey",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q20OverallTime",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q20RecallTime",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q20ReaderStart",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q20ReaderEnd",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q21ID",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q21Response",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q21InputMethods",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q21K",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q21Sco",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q21ResponseTime",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q21TimeOut",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q21TimeOutResponse",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q21TimeOutSco",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q21tLoad",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q21tFirstKey",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q21tLastKey",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q21OverallTime",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q21RecallTime",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q21ReaderStart",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q21ReaderEnd",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q22ID",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q22Response",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q22InputMethods",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q22K",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q22Sco",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q22ResponseTime",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q22TimeOut",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q22TimeOutResponse",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q22TimeOutSco",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q22tLoad",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q22tFirstKey",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q22tLastKey",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q22OverallTime",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q22RecallTime",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q22ReaderStart",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q22ReaderEnd",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q23ID",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q23Response",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q23InputMethods",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q23K",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q23Sco",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q23ResponseTime",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q23TimeOut",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q23TimeOutResponse",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q23TimeOutSco",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q23tLoad",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q23tFirstKey",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q23tLastKey",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q23OverallTime",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q23RecallTime",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q23ReaderStart",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q23ReaderEnd",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q24ID",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q24Response",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q24InputMethods",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q24K",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q24Sco",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q24ResponseTime",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q24TimeOut",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q24TimeOutResponse",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q24TimeOutSco",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q24tLoad",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q24tFirstKey",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q24tLastKey",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q24OverallTime",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q24RecallTime",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q24ReaderStart",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q24ReaderEnd",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q25ID",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q25Response",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q25InputMethods",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q25K",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q25Sco",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q25ResponseTime",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q25TimeOut",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q25TimeOutResponse",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q25TimeOutSco",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q25tLoad",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q25tFirstKey",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q25tLastKey",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q25OverallTime",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q25RecallTime",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q25ReaderStart",
+                        "type": "String"
+                    },
+                    {
+                        "name": "Q25ReaderEnd",
+                        "type": "String"
+                    }
+                ]
+            },
+            "dependsOn": [
+                "[concat(variables('factoryId'), '/linkedServices/blobstorage')]"
+            ]
+        },
+        {
+            "name": "[concat(parameters('factoryName'), '/psreport-csv-to-sql')]",
+            "type": "Microsoft.DataFactory/factories/pipelines",
+            "apiVersion": "2018-06-01",
+            "properties": {
+                "description": "copy psreport csv from blob storage to sql azure",
+                "activities": [
+                    {
+                        "name": "Copy_2e2",
+                        "type": "Copy",
+                        "dependsOn": [],
+                        "policy": {
+                            "timeout": "7.00:00:00",
+                            "retry": 0,
+                            "retryIntervalInSeconds": 30,
+                            "secureOutput": false,
+                            "secureInput": false
+                        },
+                        "userProperties": [
+                            {
+                                "name": "Source",
+                                "value": "data-exchange//dummyps.csv"
+                            },
+                            {
+                                "name": "Destination",
+                                "value": "mtc_analysis.PsReport2019"
+                            }
+                        ],
+                        "typeProperties": {
+                            "source": {
+                                "type": "DelimitedTextSource",
+                                "storeSettings": {
+                                    "type": "AzureBlobStorageReadSettings",
+                                    "recursive": true
+                                },
+                                "formatSettings": {
+                                    "type": "DelimitedTextReadSettings",
+                                    "skipLineCount": "0"
+                                }
+                            },
+                            "sink": {
+                                "type": "AzureSqlSink",
+                                "tableOption": "autoCreate"
+                            },
+                            "enableStaging": false,
+                            "enableSkipIncompatibleRow": true,
+                            "redirectIncompatibleRowSettings": {
+                                "linkedServiceName": {
+                                    "referenceName": "blobstorage",
+                                    "type": "LinkedServiceReference"
+                                },
+                                "path": "data-exchange"
+                            }
+                        },
+                        "inputs": [
+                            {
+                                "referenceName": "PsReportBlob",
+                                "type": "DatasetReference",
+                                "parameters": {}
+                            }
+                        ],
+                        "outputs": [
+                            {
+                                "referenceName": "MTC_SqlAzure_Database",
+                                "type": "DatasetReference",
+                                "parameters": {}
+                            }
+                        ]
+                    }
+                ],
+                "annotations": []
+            },
+            "dependsOn": [
+                "[concat(variables('factoryId'), '/datasets/PsReportBlob')]",
+                "[concat(variables('factoryId'), '/datasets/MTC_SqlAzure_Database')]",
+                "[concat(variables('factoryId'), '/linkedServices/blobstorage')]"
+            ]
+        }
+    ]
+}
