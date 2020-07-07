@@ -1,0 +1,12 @@
+{
+    "name": "sqlazuredb",
+    "type": "Microsoft.DataFactory/factories/linkedservices",
+    "properties": {
+        "annotations": [],
+        "type": "AzureSqlDatabase",
+        "typeProperties": {
+            "connectionString": "TODO-PARAMETERISE",
+            "encryptedCredential": "TODO-PARAMETERISE"
+        }
+    }
+}
