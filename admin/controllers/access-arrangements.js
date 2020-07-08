@@ -230,8 +230,14 @@ controller.getAddInputAssistant = async (req, res, next) => {
   return res.render('access-arrangements/retro-add-input-assistant', {
     breadcrumbs: req.breadcrumbs(),
     pupils,
-    error: new ValidationError()
+    error: new ValidationError(),
+    formData: {}
   })
+}
+
+controller.postSubmitInputAssistant = async (req, res, next) => {
+  console.dir(req.body)
+  return res.send(405)
 }
 
 module.exports = controller

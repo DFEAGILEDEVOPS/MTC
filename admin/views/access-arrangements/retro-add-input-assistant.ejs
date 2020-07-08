@@ -20,9 +20,9 @@
       <% } %>
       <h1 class="govuk-heading-xl"><%= pageTitle %></h1>
       <%- partial('partials/_gds_session_expiry') %>
-      <form id="submitAccessArrangements" method="post" action="/access-arrangements/?" autocomplete="off">
+      <form id="submitAccessArrangements" method="post" action="/access-arrangements/retro-add-input-assistant-submit" autocomplete="off">
         <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
-          <div id="selectAccessArrangementsPupil"
+<!--           <div id="selectAccessArrangementsPupil"
             class="govuk-form-group <%= error.isError('pupil-autocomplete-container') ? 'govuk-form-group--error' : '' %>">
             <h2 class="govuk-heading-l">1. Search for pupil name</h2>
             <div id="pupilFormControl" class="govuk-body govuk-!-width-one-half">
@@ -35,6 +35,20 @@
                 <% }) %>
               </select>
             </div>
+          </div> -->
+          <div id="selectAccessArrangementsPupil"
+                class="govuk-form-group <%= error.isError('pupil-autocomplete-container') ? 'govuk-form-group--error' : '' %>">
+              <h2 class="govuk-heading-l">2. Search for pupil name</h2>
+              <div id="pupilFormControl" class="govuk-body govuk-!-width-one-half">
+                  <span class="govuk-error-message"><%= error.get('pupil-autocomplete-container') %></span>
+                  <select class="govuk-select" name="pupilUrlSlug" id="pupil-autocomplete-container">
+                      <option value="">Select a pupil</option>
+                      <% pupils.map(p => { %>
+                          <option
+                                  value="<%= p.urlSlug %>" <%= p.urlSlug === formData['pupilUrlSlug'] && 'selected' %>><%= p.fullName %></option>
+                      <% }) %>
+                  </select>
+              </div>
           </div>
           <button type="submit" id="save-input-assistant" class="govuk-button govuk-!-margin-right-2">Save</button>
           <a href="/access-arrangements/select-access-arrangements" role="button" draggable="false"

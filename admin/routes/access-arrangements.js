@@ -46,6 +46,12 @@ if (featureToggles.isFeatureEnabled('accessArrangements')) {
     isAdminWindowAvailable,
     (req, res, next) => accessArrangementsController.getAddInputAssistant(req, res, next)
   )
+  router.post(
+    '/retro-add-input-assistant-submit',
+    isAuthenticated([roles.teacher, roles.helpdesk]),
+    isAdminWindowAvailable,
+    (req, res, next) => accessArrangementsController.postSubmitInputAssistant(req, res, next)
+  )
 }
 
 module.exports = router
