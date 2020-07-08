@@ -237,7 +237,7 @@ controller.getAddInputAssistant = async (req, res, next) => {
 
 controller.postSubmitInputAssistant = async (req, res, next) => {
   console.dir(req.body)
-  return res.send(405)
+  return res.send(501)
 }
 
 module.exports = controller
