@@ -1,8 +1,12 @@
-#!/bin/bash -x
+#!/bin/bash
 
-echo "Starting SSH..."
-service ssh start
+set -e
+set -x
 
-sleep 15
-cd /usr/src/app/admin
+until ./wait-for-it.sh -h $SQL_SERVER -p $SQL_PORT -s -q -t 300
+do
+    echo "sqldb not available, sleeping..."
+    sleep 2
+done
+echo "sqldb is available, starting migrations"
 yarn migrate-and-seed-sql

@@ -5,6 +5,6 @@ if [[ "${WAIT_FOR_SQL_SERVER:=false}" != "false" ]]; then
 
   until [[ "$(curl -sS $SQL_SERVER:$SQL_PORT 2>/dev/stdout)" =~ "(52)" ]]; do
     printf '.'
-    sleep 5
+    sleep 2
   done
 fi
