@@ -25,7 +25,6 @@ require 'azure/storage/blob'
 require_relative '../../features/support/azure_blob_helper'
 require 'redis'
 require 'lz_string'
-require 'browserstack-fast-selenium'
 
 require_relative 'helpers'
 include Helpers

@@ -12,7 +12,8 @@ const headteacherDeclarationDataService = require('./data-access/headteacher-dec
 const pupilStatusDataService = require('./data-access/pupil-status.data.service')
 const headteacherDeclarationService = {}
 const settingService = require('./setting.service')
-
+const redisCacheService = require('../services/data-access/redis-cache.service')
+const redisKeyService = require('../services/redis-key.service')
 /**
  * @typedef {Object} hdfPupil
  * @property {number} pupilId
@@ -175,7 +176,7 @@ headteacherDeclarationService.isHdfSubmittedForCheck = async (schoolId, checkWin
  * @param userId
  * @return {Promise<object>}
  */
-headteacherDeclarationService.updatePupilsAttendanceCode = async (pupilIds, code, userId) => {
+headteacherDeclarationService.updatePupilsAttendanceCode = async (pupilIds, code, userId, schoolId) => {
   if (!pupilIds || !code || !userId) {
     throw new Error('pupilIds, code and userId are required')
   }
@@ -183,7 +184,8 @@ headteacherDeclarationService.updatePupilsAttendanceCode = async (pupilIds, code
   if (!attendanceCode) {
     throw new Error(`attendanceCode not found: ${code}`)
   }
-  return pupilAttendanceDataService.sqlUpdateBatch(pupilIds, attendanceCode.id, userId)
+  await pupilAttendanceDataService.sqlUpdateBatch(pupilIds, attendanceCode.id, userId)
+  await redisCacheService.drop(redisKeyService.getSchoolResultsKey(schoolId))
 }
 
 module.exports = headteacherDeclarationService

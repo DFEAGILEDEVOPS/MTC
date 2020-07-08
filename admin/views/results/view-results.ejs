@@ -11,6 +11,17 @@
       <p class="govuk-body">
         Each score is out of <%= maxMark %>.
       </p>
+      <% if (isHdfSubmitted) { %>
+        <p>
+          <span class="mtc-icon-download"></span>
+          <a href="/results/ctf-download">Download result data</a>
+        <p>
+      <% } else { %>
+        <p>
+          <span class="mtc-icon-download"></span>
+          <span class="mtc-disabled-link">Download result data (You must sign the HDF to be able to download the results data)</span>
+        <p>
+      <% } %>
       <%- partial('partials/_gds_groups_filter', { groups: groups }) %>
       <table id="resultsList" class="govuk-table govuk-spacious" role="listbox" aria-label="Results list.">
         <caption class="govuk-body govuk-table__caption">Pupil results</caption>
