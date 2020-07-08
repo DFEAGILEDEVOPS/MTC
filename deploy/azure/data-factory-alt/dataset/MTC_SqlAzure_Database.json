@@ -1,0 +1,17 @@
+{
+    "name": "MTC_SqlAzure_Database",
+    "properties": {
+        "linkedServiceName": {
+            "referenceName": "sqldb",
+            "type": "LinkedServiceReference"
+        },
+        "annotations": [],
+        "type": "AzureSqlTable",
+        "schema": [],
+        "typeProperties": {
+            "schema": "TODO-PARAMETERISE",
+            "table": "TODO-PARAMETERISE"
+        }
+    },
+    "type": "Microsoft.DataFactory/factories/datasets"
+}
