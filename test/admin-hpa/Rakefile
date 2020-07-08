@@ -59,22 +59,27 @@ Cucumber::Rake::Task.new(:features) do |t|
   t.cucumber_opts << " #{ENV['OPTS']}" unless ENV['OPTS'].nil?
 end
 
-  BrowserstackSettings.browser_caps.keys.each_with_index do |browser, index|
-    Cucumber::Rake::Task.new(browser.to_sym, "Runs test for " + browser) do |task|
-      task.cucumber_opts = "--format=pretty DRIVER=bs_#{browser} -f rerun -o rerun.txt"
+BrowserstackSettings.browser_caps.keys.each_with_index do |browser, index|
+  Cucumber::Rake::Task.new(browser.to_sym, "Runs test for " + browser) do |task|
+    task.cucumber_opts = "--format=pretty DRIVER=bs_#{browser} -f rerun -o rerun.txt"
     task.cucumber_opts << " #{ENV['OPTS']}" unless ENV['OPTS'].nil?
-    end
-
-    desc 'Run tests in groups'
-    task("group_#{browser}".to_sym) do
-      run_in_groups(GROUP_SIZE)
-    end
   end
 
+  desc 'Run tests in groups'
+  task("group_#{browser}".to_sym) do
+    run_in_groups(GROUP_SIZE)
+  end
+end
+
 at_exit do
-  puts "\n**** RE RUNNING FAILING TESTS ****\n\n" unless File.read('rerun.txt').empty?
-  system("cucumber @rerun.txt -f rerun -o rerun0.txt -f pretty") unless File.read('rerun.txt').empty? or Rake.application.top_level_tasks.first.include? 'bs'
-  system("cucumber @rerun.txt -f rerun -o rerun0.txt -f pretty DRIVER=#{Rake.application.top_level_tasks.first}") if !File.read('rerun.txt').empty? and Rake.application.top_level_tasks.first.include? 'bs'
+  if $?.exitstatus != 0
+    puts "\n**** RE RUNNING FAILING TESTS ****\n\n" unless File.read('rerun.txt').empty?
+    system("cucumber @rerun.txt -f rerun -o rerun0.txt -f pretty") unless File.read('rerun.txt').empty? or Rake.application.top_level_tasks.first.include? 'bs'
+    system("cucumber @rerun.txt -f rerun -o rerun0.txt -f pretty DRIVER=#{Rake.application.top_level_tasks.first}") if !File.read('rerun.txt').empty? and Rake.application.top_level_tasks.first.include? 'bs'
+    puts "\n**** RE RUNNING FAILING TESTS ONE MORE TIME ****\n\n" unless File.read('rerun0.txt').empty?
+    system("cucumber @rerun0.txt -f rerun -o rerun.txt -f pretty") unless File.read('rerun0.txt').empty? or Rake.application.top_level_tasks.first.include? 'bs'
+    system("cucumber @rerun0.txt -f rerun -o rerun.txt -f pretty DRIVER=#{Rake.application.top_level_tasks.first}") if !File.read('rerun0.txt').empty? and Rake.application.top_level_tasks.first.include? 'bs'
+  end
   exit_code = @exit_code.nil? ? $?.exitstatus : @exit_code
   colour = exit_code == 0 ? 'green' : 'red'
   puts "## Suite took #{(Time.now - @start_time) / 60}"
