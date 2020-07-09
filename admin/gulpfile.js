@@ -51,6 +51,7 @@ const jsBundleFiles = [
   './assets/javascripts/step-by-step-navigation.js',
   './assets/javascripts/session-expiry.js', // here be dragons
   './assets/javascripts/pupil-access-arrangements-selection.js',
+  './assets/javascripts/pupil-retro-input-assistant.js',
   './assets/javascripts/pupil-form.js',
   './assets/javascripts/pupil-status-selection.js'
 ]
