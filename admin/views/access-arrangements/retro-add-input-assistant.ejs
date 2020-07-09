@@ -20,8 +20,7 @@
       <% } %>
       <h1 class="govuk-heading-xl"><%= pageTitle %></h1>
       <%- partial('partials/_gds_session_expiry') %>
-      <form id="submitAccessArrangements" method="post" action="/access-arrangements/retro-add-input-assistant-submit"
-        autocomplete="off">
+      <form id="submitAccessArrangements" method="post" action="/access-arrangements/retro-add-input-assistant-submit" autocomplete="off">
         <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
         <div id="selectAccessArrangementsPupil"
           class="govuk-form-group <%= error.isError('pupil-autocomplete-container') ? 'govuk-form-group--error' : '' %>">
