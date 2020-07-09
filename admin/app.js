@@ -126,7 +126,7 @@ const techSupport = require('./routes/tech-support')
 
 if (process.env.NODE_ENV === 'development') {
   piping({
-    ignore: [/test/, '/coverage/']
+    ignore: [/test/, /coverage/, /.*\.spec.js/]
   })
 }
 
