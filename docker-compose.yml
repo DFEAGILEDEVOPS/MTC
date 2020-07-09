@@ -92,8 +92,18 @@ services:
       - "./:/mtc"
     environment:
       REDIS_HOST: 'redis'
+    command: ["./docker-start-dev.sh"]
+  pupil_api:
+    build:
+      context: ./pupil-api
+      dockerfile: dev.Dockerfile
+    container_name: "mtc_pupil_api_dev"
+    ports:
+      - 3003:3003
+    environment:
+      REDIS_HOST: 'redis'
     depends_on:
-      - sqldb
-      - migration
       - redis
+    volumes:
+      - "./:/mtc"
     command: ["./docker-start-dev.sh"]
