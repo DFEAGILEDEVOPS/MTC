@@ -53,16 +53,13 @@ pupilRestartDataService.sqlFindLatestRestart = async function (pupilId) {
 
 /**
  * Find pupil's restart codes
- * @return {Promise.<void>}
+ * @return {Promise.<{id:number, code:string, description: string}[]>}
  */
 pupilRestartDataService.sqlFindRestartCodes = async function () {
   const sql = `
-  SELECT
-    id,
-    code,
-    description
-  FROM ${sqlService.adminSchema}.[pupilRestartCode]
-  ORDER BY description ASC`
+      SELECT id, code, description
+        FROM [mtc_admin].[pupilRestartCode]
+       ORDER BY description ASC`
   return sqlService.query(sql)
 }
 

@@ -10,6 +10,7 @@ const resultDataService = require('../services/data-access/result.data.service')
 const sortService = require('../helpers/table-sorting')
 const pupilIdentificationFlagService = require('./pupil-identification-flag.service')
 const schoolResultsTtl = 60 * 60 * 24 * 180 // cache school results for 180 days
+const resultsStrings = require('../lib/consts/mtc-results')
 
 /**
  * @typedef {object} PupilRestart
@@ -20,13 +21,6 @@ const schoolResultsTtl = 60 * 60 * 24 * 180 // cache school results for 180 days
  */
 
 const resultService = {
-  status: Object.freeze({
-    restartNotTaken: 'Did not attempt the restart',
-    incomplete: 'Incomplete',
-    didNotParticipate: 'Did not participate',
-    complete: ''
-  }),
-
   sort: function sort (data) {
     return sortService.sortByProps(['lastName', 'foreName', 'dateOfBirth', 'middleNames'], data)
   },
@@ -38,30 +32,65 @@ const resultService = {
    */
   assignStatus: function assignStatus (pupil) {
     if (pupil.restartAvailable) {
-      return resultService.status.restartNotTaken
+      return resultsStrings.restartNotTaken
     }
 
     if (pupil.currentCheckId) {
       if (pupil.checkComplete === true) {
-        return resultService.status.complete
+        return resultsStrings.complete
       } else {
-        return resultService.status.incomplete
+        return resultsStrings.incomplete
       }
     } else {
       if (pupil.attendanceReason) {
         return pupil.attendanceReason
       } else {
-        return resultService.status.didNotParticipate
+        return resultsStrings.didNotParticipate
       }
     }
   },
 
   /**
-   * Return pupil data showing mark, and status
-   * @param pupils
-   * @return {*}
+   * @typedef {object} CreatePupilDataParam
+   * @property {?string} attendanceCode
+   * @property {number} attendanceId
+   * @property {?string} attendanceReason
+   * @property {boolean} checkComplete
+   * @property {number} currentCheckId
+   * @property {moment.Moment} dateOfBirth
+   * @property {string} foreName
+   * @property {string} gender
+   * @property {?number} group_id
+   * @property {string} lastName
+   * @property {?number} mark
+   * @property {string} middleNames
+   * @property {number} pupilId
+   * @property {boolean} restartAvailable
+   * @property {number} school_id
+   * @property {string} upn
+   * @property {string} urlSlug
    */
-  createPupilData: function createViewData (pupils) {
+
+  /**
+   * @typedef {object} CreatePupilDataRetval
+   * @property {?string} attendanceCode
+   * @property {moment.Moment} dateOfBirth
+   * @property {string} foreName
+   * @property {string} gender
+   * @property {?number} group_id
+   * @property {string} lastName
+   * @property {string} middleNames
+   * @property {?number} score
+   * @property {string} status
+   * @property {string} urlSlug
+   * @property {string} upn
+   */
+  /**
+   * Return pupil data showing mark, and status
+   * @param {CreatePupilDataParam[]} pupils - array of pupil(ish) objects from the db mtc_admin.pupil
+   * @return {CreatePupilDataRetval[]} - subset of the above, now with `score` and `status` props
+   */
+  createPupilData: function createPupilData (pupils) {
     return pupils.map(o => {
       return {
         foreName: o.foreName,
@@ -71,7 +100,11 @@ const resultService = {
         dateOfBirth: o.dateOfBirth,
         score: o.mark,
         status: this.assignStatus(o),
-        urlSlug: o.urlSlug
+        urlSlug: o.urlSlug,
+        // attendanceCode is used to determine the pupil result in the CTF XML file
+        attendanceCode: o.attendanceCode,
+        upn: o.upn,
+        gender: o.gender
       }
     })
   },

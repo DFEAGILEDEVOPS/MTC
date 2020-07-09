@@ -1,13 +1,15 @@
 'use strict'
 const moment = require('moment-timezone')
+const R = require('ramda')
 
-const config = require('../config')
-const groupService = require('../services/group.service')
 const checkWindowV2Service = require('../services/check-window-v2.service')
-const resultService = require('../services/result.service')
-const resultPresenter = require('../helpers/result-presenter')
+const config = require('../config')
+const ctfService = require('../services/ctf-service/ctf.service')
+const groupService = require('../services/group.service')
 const headteacherDeclarationService = require('../services/headteacher-declaration.service')
 const resultPageAvailabilityService = require('../services/results-page-availability.service')
+const resultPresenter = require('../helpers/result-presenter')
+const resultService = require('../services/result.service')
 
 const controller = {}
 
@@ -18,7 +20,7 @@ const controller = {}
  * @param next
  * @returns {Promise.<*>}
  */
-controller.getViewResultsPage = async (req, res, next) => {
+controller.getViewResultsPage = async function getViewResultsPage (req, res, next) {
   res.locals.pageTitle = 'Provisional results'
   req.breadcrumbs('Results')
   let pupilResultData
@@ -74,11 +76,29 @@ controller.getViewResultsPage = async (req, res, next) => {
 
   return res.render('results/view-results', {
     pupilData: pupilResultData,
+    isHdfSubmitted,
     generatedAt,
     maxMark: config.LINES_PER_CHECK_FORM,
     groups,
     breadcrumbs: req.breadcrumbs()
   })
+}
+
+controller.getCtfDownload = async function getCtfDownload (req, res, next) {
+  if (!R.path(['user', 'schoolId'], req)) {
+    return next(new Error('School ID Missing'))
+  }
+  try {
+    const xml = await ctfService.getSchoolResultDataAsXmlString(req.user.schoolId, req.user.timezone)
+    const dfeNumber = req.user.School
+    if (!req.query.inline) {
+      res.attachment(`DfE_KS2_${dfeNumber}_001.xml`)
+    }
+    res.header('Content-type', 'text/xml')
+    res.send(xml)
+  } catch (error) {
+    next(error)
+  }
 }
 
 module.exports = controller

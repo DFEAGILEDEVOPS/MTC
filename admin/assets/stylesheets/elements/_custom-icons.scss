@@ -11,3 +11,17 @@
     position: relative;
   }
 }
+
+.mtc-icon-download {
+  &:before {
+    content: " ";
+    background-image: url('/images/custom-download-2.svg');
+    background-size: 23px 25px;
+    background-repeat: no-repeat;
+    display: inline-block;
+    height: 26px;
+    width: 30px;
+    top: 6px;
+    position: relative;
+  }
+}

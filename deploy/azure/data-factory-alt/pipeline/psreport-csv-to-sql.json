@@ -1,0 +1,70 @@
+{
+    "name": "psreport-csv-to-sql",
+    "properties": {
+        "description": "copy psreport csv from blob storage to sql azure",
+        "activities": [
+            {
+                "name": "Copy_2e2",
+                "type": "Copy",
+                "dependsOn": [],
+                "policy": {
+                    "timeout": "7.00:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [
+                    {
+                        "name": "Source",
+                        "value": "TODO-PARAMETERISE//TODO-PARAMETERISE.csv"
+                    },
+                    {
+                        "name": "Destination",
+                        "value": "TODO-PARAMETERISE.TODO-PARAMETERISE"
+                    }
+                ],
+                "typeProperties": {
+                    "source": {
+                        "type": "DelimitedTextSource",
+                        "storeSettings": {
+                            "type": "AzureBlobStorageReadSettings",
+                            "recursive": true
+                        },
+                        "formatSettings": {
+                            "type": "DelimitedTextReadSettings",
+                            "skipLineCount": "0"
+                        }
+                    },
+                    "sink": {
+                        "type": "AzureSqlSink",
+                        "tableOption": "autoCreate"
+                    },
+                    "enableStaging": false,
+                    "enableSkipIncompatibleRow": true,
+                    "redirectIncompatibleRowSettings": {
+                        "linkedServiceName": {
+                            "referenceName": "sqlazuredb",
+                            "type": "LinkedServiceReference"
+                        },
+                        "path": "data-exchange"
+                    }
+                },
+                "inputs": [
+                    {
+                        "referenceName": "PsReportBlob",
+                        "type": "DatasetReference"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "referenceName": "MTC_SqlAzure_Database",
+                        "type": "DatasetReference"
+                    }
+                ]
+            }
+        ],
+        "annotations": []
+    },
+    "type": "Microsoft.DataFactory/factories/pipelines"
+}

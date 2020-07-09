@@ -4,12 +4,14 @@
 const pupilDataService = require('../../../services/data-access/pupil.data.service')
 const pupilMock = require('../mocks/pupil')
 const pupilAttendanceDataService = require('../../../services/data-access/pupil-attendance.data.service')
+const redisCacheService = require('../../../services/data-access/redis-cache.service')
 
 const service = require('../../../services/attendance.service')
 
 describe('attendanceService', () => {
   describe('#updatePupilAttendanceBySlug', () => {
     it('just calls the data service', async () => {
+      spyOn(redisCacheService, 'drop')
       const slugs = ['slug1', 'slug2', 'slug3']
       const code = 'ABSNT'
       const userId = 1
@@ -27,6 +29,7 @@ describe('attendanceService', () => {
     it('makes a call to get the pupil', async () => {
       spyOn(pupilDataService, 'sqlFindOneBySlugAndSchool').and.returnValue({})
       spyOn(pupilAttendanceDataService, 'sqlDeleteOneByPupilId').and.returnValue(Promise.resolve())
+      spyOn(redisCacheService, 'drop')
       try {
         await service.unsetAttendanceCode(pupilSlug, dfeNumber)
         expect(pupilDataService.sqlFindOneBySlugAndSchool).toHaveBeenCalled()
@@ -37,6 +40,7 @@ describe('attendanceService', () => {
 
     it('throws if the pupil is not found', async () => {
       spyOn(pupilDataService, 'sqlFindOneBySlugAndSchool')
+      spyOn(redisCacheService, 'drop')
       try {
         await service.unsetAttendanceCode(pupilSlug, dfeNumber)
         fail('expected to throw')
@@ -48,6 +52,7 @@ describe('attendanceService', () => {
     it('makes a call to delete the pupilAttendance record if the pupil is found', async () => {
       spyOn(pupilDataService, 'sqlFindOneBySlugAndSchool').and.returnValue(Promise.resolve(pupilMock))
       spyOn(pupilAttendanceDataService, 'sqlDeleteOneByPupilId').and.returnValue()
+      spyOn(redisCacheService, 'drop')
       await service.unsetAttendanceCode(pupilSlug, dfeNumber)
       expect(pupilAttendanceDataService.sqlDeleteOneByPupilId).toHaveBeenCalledWith(pupilMock.id)
     })

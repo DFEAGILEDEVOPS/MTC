@@ -143,10 +143,7 @@ const convertMomentToJsDate = (m) => {
  * Useful for converting Data during UPDATES and INSERTS
  */
 const convertDateToMoment = (d) => {
-  if (
-    d instanceof Date ||
-    (typeof d === 'string' && moment(d, moment.ISO_8601).isValid())
-  ) {
+  if (d instanceof Date) {
     return moment.utc(d)
   }
   return d
@@ -296,7 +293,7 @@ const sqlService = {
  * @param {array} params - Array of parameters for SQL statement
  * @param {string} redisKey - Redis key to cache resultset against
  * @param {string} userRole - optional. obtain a connection for a specific user role
- * @return {Promise<*>}
+ * @return {Promise<Object[]>}
  */
   query: async function query (sql, params = [], redisKey = undefined, userRole = roles.teacher) {
     if (config.Logging.DebugVerbosity > 1) {

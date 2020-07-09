@@ -11,18 +11,20 @@ const resultDataService = {
    */
   sqlFindPupilResultsForSchool: async function sqlFindPupilResultsForSchool (schoolId) {
     const sql = `SELECT
-    p.id AS pupilId,
-    p.foreName,
-    p.middleNames,
-    p.lastName,
-    p.group_id,
-    p.dateOfBirth,
-    p.urlSlug,
+    p.attendanceId,
     p.checkComplete,
     p.currentCheckId,
+    p.dateOfBirth,
+    p.foreName,
+    p.gender,
+    p.group_id,
+    p.id AS pupilId,
+    p.lastName,
+    p.middleNames,
     p.restartAvailable,
-    p.attendanceId,
     p.school_id,
+    p.upn,
+    p.urlSlug,
     cs.mark,
     ac.code as attendanceCode,
     ac.reason as attendanceReason

@@ -30,7 +30,6 @@ require 'azure/storage/blob'
 require 'azure/storage/queue'
 require 'lz_string'
 require_relative '../../features/support/azure_blob_helper'
-require 'browserstack-fast-selenium'
 require_relative 'helpers'
 include Helpers
 
