@@ -44,13 +44,13 @@ if (featureToggles.isFeatureEnabled('accessArrangements')) {
     '/retro-add-input-assistant',
     isAuthenticated([roles.teacher, roles.helpdesk]),
     isAdminWindowAvailable,
-    (req, res, next) => accessArrangementsController.getAddInputAssistant(req, res, next)
+    (req, res, next) => accessArrangementsController.getAddRetroInputAssistant(req, res, next)
   )
   router.post(
     '/retro-add-input-assistant-submit',
     isAuthenticated([roles.teacher, roles.helpdesk]),
     isAdminWindowAvailable,
-    (req, res, next) => accessArrangementsController.postSubmitInputAssistant(req, res, next)
+    (req, res, next) => accessArrangementsController.postSubmitRetroInputAssistant(req, res, next)
   )
 }
 

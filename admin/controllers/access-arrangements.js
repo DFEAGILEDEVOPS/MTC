@@ -209,7 +209,7 @@ controller.getDeleteAccessArrangements = async (req, res, next) => {
   return res.redirect(`/access-arrangements/overview?hl=${pupil.urlSlug}`)
 }
 
-controller.getAddInputAssistant = async (req, res, next) => {
+controller.getAddRetroInputAssistant = async (req, res, next) => {
   res.locals.pageTitle = 'Record input assistant used for official check'
   req.breadcrumbs('Select pupils and access arrangements', 'select-access-arrangements')
   req.breadcrumbs('Record input assistant')
@@ -235,7 +235,7 @@ controller.getAddInputAssistant = async (req, res, next) => {
   })
 }
 
-controller.postSubmitInputAssistant = async (req, res, next) => {
+controller.postSubmitRetroInputAssistant = async (req, res, next) => {
   console.dir(req.body)
   return res.send(501)
 }

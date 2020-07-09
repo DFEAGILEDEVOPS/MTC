@@ -43,7 +43,7 @@
               <label class="govuk-label" for="input-assistant-firstname">
                 First name of input assistant
               </label>
-              <input class="govuk-input govuk-!-width-one-half" id="input-assistant-firstname" type="text"
+              <input class="govuk-input govuk-!-width-one-half" id="input-assistant-firstname" name="input-assistant-firstname" type="text"
                 aria-required="true" aria-label="Enter first name of input assistant." spellcheck="false"
                 autocorrect="off">
             </div>
@@ -52,7 +52,7 @@
               <label class="govuk-label" for="input-assistant-lastname">
                 Last name of input assistant
               </label>
-              <input class="govuk-input govuk-!-width-one-half" id="input-assistant-lastname" type="text"
+              <input class="govuk-input govuk-!-width-one-half" id="input-assistant-lastname" name="input-assistant-lastname" type="text"
                 aria-required="true" aria-label="Enter last name of input assistant." spellcheck="false"
                 autocorrect="off">
             </div>
@@ -61,7 +61,7 @@
               <label class="govuk-label" for="input-assistant-reason">
                 Please explain why the pupil needed this arrangement
               </label>
-              <textarea class="govuk-input govuk-!-width-one-half" id="input-assistant-reason" rows="3"
+              <textarea class="govuk-input govuk-!-width-one-half" id="input-assistant-reason" name="input-assistant-reason" rows="3"
                 aria-required="true" aria-label="Enter reason for input assistance." spellcheck="false"
                 autocorrect="off"></textarea>
             </div>
@@ -87,6 +87,6 @@
 <script>
   document.addEventListener('DOMContentLoaded', function () {
     window.MTCAdmin.autoComplete.createNameComponent('#pupil-autocomplete-container', 2)
-    window.MTCAdmin.accessArrangements()
+    // window.MTCAdmin.accessArrangements()
   })
 </script>
