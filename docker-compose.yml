@@ -34,7 +34,9 @@ services:
       - sqldb
       - migration
   functions_app:
-    build: ./functions-app
+    build:
+      context: ./functions-app
+      dockerfile: dev.Dockerfile
     container_name: "mtc_functions_app"
     ports:
       - 7072:7072
@@ -49,7 +51,9 @@ services:
       - redis
     command: ["./wait-for-db.sh", "sqldb", "yarn", "start"]
   func_consumption:
-    build: ./func-consumption
+    build:
+      context: ./func-consumption
+      dockerfile: dev.Dockerfile
     container_name: "mtc_func_consumption"
     ports:
       - 7071:7071
