@@ -88,4 +88,25 @@ describe('retro input assistant service', () => {
       expect(error.message).toBe('checkId is required')
     }
   })
+
+  it('should throw if pupilUuid is undefined', async () => {
+    try {
+      await sut.save('john', 'smith', 'reason', 1, undefined)
+      fail('error should have been thrown')
+    } catch (error) {
+      expect(error).toBeDefined()
+      expect(error.message).toBe('valid pupil uuid is required')
+    }
+  })
+
+  it('should throw if checkId is less than 1', async () => {
+    try {
+      fail('replace with uuid validator')
+      await sut.save('john', 'smith', 'reason', 1, '')
+      fail('error should have been thrown')
+    } catch (error) {
+      expect(error).toBeDefined()
+      expect(error.message).toBe('valid pupil uuid is required')
+    }
+  })
 })

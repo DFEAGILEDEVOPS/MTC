@@ -7,9 +7,10 @@ const service = {
    * @param {string} lastName
    * @param {string} reason
    * @param {number} checkId
+   * @param {string} pupilUuid
    * @returns {Promise<Void>}
    */
-  save: async function add (firstName, lastName, reason, checkId) {
+  save: async function add (firstName, lastName, reason, checkId, pupilUuid) {
     if (!firstName || firstName.length === 0) {
       throw new Error('input assistant first name is required')
     }
@@ -21,6 +22,9 @@ const service = {
     }
     if (!checkId || checkId === 0) {
       throw new Error('checkId is required')
+    }
+    if (!pupilUuid || pupilUuid.length === 0) {
+      throw new Error('valid pupil uuid is required')
     }
   }
 }
