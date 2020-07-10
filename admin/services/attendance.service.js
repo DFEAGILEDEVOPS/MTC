@@ -3,6 +3,8 @@
 const attendanceCodeDataService = require('./data-access/attendance-code.data.service')
 const pupilAttendanceDataService = require('./data-access/pupil-attendance.data.service')
 const pupilDataService = require('./data-access/pupil.data.service')
+const redisCacheService = require('./data-access/redis-cache.service')
+const redisKeyService = require('./redis-key.service')
 
 const attendanceService = {
   /**
@@ -13,7 +15,9 @@ const attendanceService = {
    * @returns {Promise<void>}
    */
   updatePupilAttendanceBySlug: async (slugs, code, userId, schoolId) => {
-    return pupilAttendanceDataService.markAsNotAttending(slugs, code, userId, schoolId)
+    await pupilAttendanceDataService.markAsNotAttending(slugs, code, userId, schoolId)
+    // Drop the now invalid cache for the school results if it exists
+    await redisCacheService.drop(redisKeyService.getSchoolResultsKey(schoolId))
   },
 
   /**
@@ -27,7 +31,9 @@ const attendanceService = {
     if (!pupil) {
       throw new Error(`Pupil with id ${pupilSlug} and school ${schoolId} not found`)
     }
-    return pupilAttendanceDataService.sqlDeleteOneByPupilId(pupil.id)
+    await pupilAttendanceDataService.sqlDeleteOneByPupilId(pupil.id)
+    // Drop the now invalid cache for the school results if it exists
+    await redisCacheService.drop(redisKeyService.getSchoolResultsKey(schoolId))
   },
 
   /**

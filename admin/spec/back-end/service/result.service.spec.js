@@ -231,7 +231,8 @@ describe('result.service', () => {
           dateOfBirth: moment.utc('2020-01-01'),
           mark: 9,
           foo: 'bar',
-          urlSlug: 'aaa'
+          urlSlug: 'aaa',
+          attendanceCode: 'LEFTT'
         }
       ]
       const result = resultService.createPupilData(data) // sut
@@ -243,7 +244,8 @@ describe('result.service', () => {
         middleNames: 'bbb',
         score: 9,
         status: 'Did not participate',
-        urlSlug: 'aaa'
+        urlSlug: 'aaa',
+        attendanceCode: 'LEFTT'
       }))
 
       // Handle the dateOfBirth prop as a special case as moment objects are not equal even if they have the same date

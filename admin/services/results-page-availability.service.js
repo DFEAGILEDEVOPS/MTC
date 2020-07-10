@@ -2,9 +2,9 @@ const resultPageAvailabilityService = {}
 
 /**
  * Determine results page opening date
- * @param {Object} currentDate
- * @param {Object} checkEndDate
- * @returns {Object}
+ * @param {moment.Moment} currentDate
+ * @param {moment.Moment} checkEndDate
+ * @returns {moment.Moment}
  */
 
 resultPageAvailabilityService.getResultsOpeningDate = (currentDate, checkEndDate) => {

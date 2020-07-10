@@ -39,8 +39,7 @@ ENV["PUPIL_API_BASE_URL"] ||= 'http://localhost:3003'
 ENV['WAIT_TIME'] ||= '300'
 
 # Webdrivers::Chromedriver.required_version='83.0.4103.39'
-Webdrivers.logger.level = :DEBUG
-
+Webdrivers.logger.level = :FATAL
 Capybara.configure do |config|
   config.default_driver = ENV["DRIVER"].to_sym
   config.app_host = ENV["ADMIN_BASE_URL"]

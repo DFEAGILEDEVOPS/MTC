@@ -16,6 +16,7 @@ const hdfMock = require('../mocks/sql-hdf')
 const checkWindowMock = require('../mocks/check-window')
 const settingsService = require('../../../services/setting.service')
 const pupilStatusService = require('../../../services/pupil-status.service')
+const redisCacheService = require('../../../services/data-access/redis-cache.service')
 
 describe('headteacherDeclarationService', () => {
   describe('#getEligibilityForSchool', () => {
@@ -292,11 +293,13 @@ describe('headteacherDeclarationService', () => {
     const pupilIds = [1]
     const userId = 1
     const attendanceCode = 'XXX'
+    const schoolId = 42
     const service = require('../../../services/headteacher-declaration.service')
 
     it('throws an error when no pupilIds are provided', async () => {
       try {
-        await service.updatePupilsAttendanceCode(null, attendanceCode, userId)
+        spyOn(redisCacheService, 'drop')
+        await service.updatePupilsAttendanceCode(null, attendanceCode, userId, schoolId)
         fail('expected to throw')
       } catch (error) {
         expect(error.message).toBe('pupilIds, code and userId are required')
@@ -305,7 +308,8 @@ describe('headteacherDeclarationService', () => {
 
     it('throws an error when no code is provided', async () => {
       try {
-        await service.updatePupilsAttendanceCode(pupilIds, null, userId)
+        spyOn(redisCacheService, 'drop')
+        await service.updatePupilsAttendanceCode(pupilIds, null, userId, schoolId)
         fail('expected to throw')
       } catch (error) {
         expect(error.message).toBe('pupilIds, code and userId are required')
@@ -314,7 +318,8 @@ describe('headteacherDeclarationService', () => {
 
     it('throws an error when no userId is provided', async () => {
       try {
-        await service.updatePupilsAttendanceCode(pupilIds, attendanceCode, null)
+        spyOn(redisCacheService, 'drop')
+        await service.updatePupilsAttendanceCode(pupilIds, attendanceCode, null, schoolId)
         fail('expected to throw')
       } catch (error) {
         expect(error.message).toBe('pupilIds, code and userId are required')
@@ -323,8 +328,9 @@ describe('headteacherDeclarationService', () => {
 
     it('throws an error when an invalid attendance code is provided', async () => {
       try {
+        spyOn(redisCacheService, 'drop')
         spyOn(attendanceCodeDataService, 'sqlFindOneAttendanceCodeByCode').and.throwError('Attendance code not found')
-        await service.updatePupilsAttendanceCode(pupilIds, attendanceCode, userId)
+        await service.updatePupilsAttendanceCode(pupilIds, attendanceCode, userId, schoolId)
         fail('expected to throw')
       } catch (error) {
         expect(attendanceCodeDataService.sqlFindOneAttendanceCodeByCode).toHaveBeenCalledWith(attendanceCode)
@@ -334,12 +340,21 @@ describe('headteacherDeclarationService', () => {
 
     it('calls pupilAttendanceDataService.sqlUpdateBatch', async () => {
       const attendanceCodeMock = { id: 99 }
+      spyOn(redisCacheService, 'drop')
       spyOn(attendanceCodeDataService, 'sqlFindOneAttendanceCodeByCode').and.returnValue(attendanceCodeMock)
       spyOn(pupilAttendanceDataService, 'sqlUpdateBatch').and.returnValue('Mock result')
-      const result = await service.updatePupilsAttendanceCode(pupilIds, attendanceCode, userId)
+      await service.updatePupilsAttendanceCode(pupilIds, attendanceCode, userId, schoolId)
       expect(attendanceCodeDataService.sqlFindOneAttendanceCodeByCode).toHaveBeenCalledWith(attendanceCode)
       expect(pupilAttendanceDataService.sqlUpdateBatch).toHaveBeenCalledWith(pupilIds, attendanceCodeMock.id, userId)
-      expect(result).toEqual('Mock result')
+    })
+
+    it('drops the school results cache', async () => {
+      const attendanceCodeMock = { id: 99 }
+      spyOn(attendanceCodeDataService, 'sqlFindOneAttendanceCodeByCode').and.returnValue(attendanceCodeMock)
+      spyOn(pupilAttendanceDataService, 'sqlUpdateBatch').and.returnValue('Mock result')
+      spyOn(redisCacheService, 'drop')
+      await service.updatePupilsAttendanceCode(pupilIds, attendanceCode, userId, schoolId)
+      expect(redisCacheService.drop).toHaveBeenCalled()
     })
   })
 })
