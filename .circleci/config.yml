@@ -7,7 +7,8 @@ jobs:
   build:
     working_directory: ~/repo/
     docker:
-      - image: circleci/node:10-browsers
+#      - image: circleci/node:10-browsers
+      - image: ovix/mtc_circleci:latest
     environment:
       TZ: Europe/London
     steps:
@@ -31,7 +32,7 @@ jobs:
           command: cd admin; yarn add --dev jest-junit
       - run:
           name: Admin unit tests with JUnit as reporter
-          command: cd admin; ./node_modules/.bin/jest --ci --runInBand --reporters=default --reporters=jest-junit --collectCoverage=true
+          command: cd admin; nvm use v12.18.2; ./node_modules/.bin/jest --ci --runInBand --reporters=default --reporters=jest-junit --collectCoverage=true
           environment:
             JEST_JUNIT_OUTPUT_DIR: "reports/junit/js-test-results.xml"
       - run: cd pupil-spa; yarn install --frozen-lockfile
@@ -42,7 +43,7 @@ jobs:
       - run: cd functions-app; yarn test
       - run: cd tslib; yarn install --frozen-lockfile
       - run: cd tslib; yarn test:throttle
-      - run: cd admin; yarn test:frontend
+      - run: cd admin; nvm use v12.18.2; yarn test:frontend
       - save_cache:
           key: v1-node-admin-deps-{{ checksum "admin/yarn.lock" }}
           paths:
