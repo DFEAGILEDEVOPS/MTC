@@ -23,3 +23,5 @@ RUN wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor 
 RUN apt-get update && apt-get install dotnet-sdk-2.2 azure-functions-core-tools-2 -y
 
 RUN func --version
+
+RUN echo "export DOTNET_CLI_TELEMETRY_OPTOUT=1" >> /root/.bashrc
