@@ -13,7 +13,8 @@ describe('retro input assistant validator', () => {
       lastName: 'smith',
       reason: 'reason',
       checkId: 1,
-      pupilUuid: 'f6275694-267c-449e-b73b-69160c568dbc'
+      pupilUuid: 'f6275694-267c-449e-b73b-69160c568dbc',
+      userId: 1
     }
   })
 
@@ -104,5 +105,21 @@ describe('retro input assistant validator', () => {
     expect(validationResult.hasError()).toBe(true)
     const pupilUuidError = validationResult.get('pupilUuid')
     expect(pupilUuidError).toEqual(errorMessages.invalidPupilUuid)
+  })
+
+  it('should throw if userId is undefined', async () => {
+    retroInputAssistantData.userId = undefined
+    const validationResult = await sut.validate(retroInputAssistantData)
+    expect(validationResult.hasError()).toBe(true)
+    const checkIdError = validationResult.get('userId')
+    expect(checkIdError).toEqual(errorMessages.userId)
+  })
+
+  it('should throw if userId is less than 1', async () => {
+    retroInputAssistantData.userId = 0
+    const validationResult = await sut.validate(retroInputAssistantData)
+    expect(validationResult.hasError()).toBe(true)
+    const checkIdError = validationResult.get('userId')
+    expect(checkIdError).toEqual(errorMessages.userId)
   })
 })

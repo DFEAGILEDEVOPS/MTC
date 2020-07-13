@@ -18,7 +18,7 @@ describe('retro input assistant service', () => {
     const validationResult = await sut.save({})
     expect(validationResult.hasError()).toBe(true)
     const errors = validationResult.getFields()
-    expect(errors.length).toBe(5)
+    expect(errors.length).toBe(6)
   })
 
   it('should persist valid input', async () => {
@@ -27,7 +27,8 @@ describe('retro input assistant service', () => {
       lastName: 'bar',
       reason: 'baz',
       checkId: 5,
-      pupilUuid: '6d94ad35-d240-42eb-a945-9a325758349b'
+      pupilUuid: '6d94ad35-d240-42eb-a945-9a325758349b',
+      userId: 1
     })
     expect(dataService.create).toHaveBeenCalled()
   })

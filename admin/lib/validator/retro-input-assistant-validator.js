@@ -15,7 +15,8 @@ module.exports.validate = (retroInputAssistantData) => {
     lastName,
     reason,
     pupilUuid,
-    checkId
+    checkId,
+    userId
   } = retroInputAssistantData
 
   if (!firstName || firstName.length === 0) {
@@ -33,6 +34,9 @@ module.exports.validate = (retroInputAssistantData) => {
   const uuidValidationResult = uuidValidator.validate(pupilUuid, 'pupilUuid')
   if (uuidValidationResult.hasError()) {
     validationError.addError('pupilUuid', errorMessages.invalidPupilUuid)
+  }
+  if (!userId || userId < 1) {
+    validationError.addError('userId', errorMessages.userId)
   }
 
   return validationError

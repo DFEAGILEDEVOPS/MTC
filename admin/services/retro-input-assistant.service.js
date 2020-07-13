@@ -11,6 +11,7 @@ const service = {
    * @property {string} reason
    * @property {number} checkId
    * @property {string} pupilUuid
+   * @property {number} userId
    */
 
   /**
