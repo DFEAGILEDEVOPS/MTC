@@ -1,9 +1,13 @@
+require 'rubygems'
+require 'cucumber'
 require 'cucumber/rake/task'
-require_relative 'features/support/browserstack_settings'
-require 'json'
 require 'pry'
-require 'parallel'
+require 'capybara'
 require 'colorize'
+require 'sys-proctable'
+require 'securerandom'
+require 'os'
+require_relative 'features/support/browserstack_settings'
 
 GROUP_SIZE = ENV['GROUP_SIZE'] || 1
 NODES = ENV['NODES'] || 1
@@ -11,11 +15,41 @@ NODES = ENV['NODES'] || 1
 File.truncate('rerun.txt', 0) if File.exist?('rerun.txt')
 File.truncate('rerun0.txt', 0) if File.exist?('rerun0.txt')
 
+def current_platform
+  if OS.mac?
+    'mac'
+  elsif OS.linux?
+    'linux'
+  elsif OS.windows?
+    'win'
+  else
+    raise 'un-supported platform'
+  end
+end
+
+def start_binary(bs)
+  binary_path = File.expand_path(File.join(File.dirname(__FILE__), 'bin', "#{current_platform}"))
+  command = "cd #{binary_path}; ./BrowserStackLocal LpVpY8EsmpKG1Hyz9Jq6 -force -forcelocal -localIdentifier #{bs}"
+  system command
+  system 'sleep 5'
+  system "echo start #{bs}"
+end
+
+def kill_binary(local_id)
+  local_id ||= ENV['BS_ID']
+  Sys::ProcTable.ps do |s|
+    if s.cmdline && s.cmdline.include?(local_id)
+      puts "Killing browser stack binary with id #{local_id}"
+      Process.kill(9, s.pid)
+    end
+  end
+end
+
 def run_in_groups(group_size = 1)
-  driver = Rake.application.top_level_tasks.first.split(':').last.gsub('parallel_', 'bs_')
+  driver = Rake.application.top_level_tasks.first.split(':').last.gsub('bs_group_', 'bs_')
   @exit_code_array = []
-  features = Dir["features/*"]
-  array_of_features = features.each_slice(group_size.to_i).to_a
+  features = Dir["features/*.feature"]
+  array_of_features = features.each_slice(group_size.to_i).to_a.sort
   group_index = 0
   features_to_run = Queue.new
   nodes = NODES.to_i
@@ -32,11 +66,15 @@ def run_in_groups(group_size = 1)
           feature_under_run = feature_under_run.join(' ')
           rerun_file = "reports/#{driver}_run_#{group_index}.txt"
           File.open(rerun_file, 'w')
-          command = "bundle exec cucumber --retry 2 -f pretty #{feature_under_run} -r features/step_definitions -r features/support -f rerun -o #{rerun_file} DRIVER=#{driver}"
+          bs = SecureRandom.uuid
+          start_binary(bs)
+          command = "bundle exec cucumber --retry 1 -f pretty #{feature_under_run} -r features/step_definitions -r features/support -f rerun -o #{rerun_file} DRIVER=#{driver} BS_ID=#{bs}"
+          p command
           sh command do
 
           end
           @exit_code_array << $?.exitstatus
+          kill_binary(bs)
           IO.write(parent_rerun_file, "#{File.read(rerun_file)} ", mode: 'a')
           File.delete(rerun_file)
         end
@@ -64,21 +102,26 @@ BrowserstackSettings.browser_caps.keys.each_with_index do |browser, index|
   end
 
   desc 'Run tests in groups'
-  task("group_#{browser}".to_sym) do
+  task("bs_group_#{browser}".to_sym) do
     run_in_groups(GROUP_SIZE)
   end
 end
 
 at_exit do
-  if $?.exitstatus != 0
-    puts "\n**** RE RUNNING FAILING TESTS ****\n\n" unless File.read('rerun.txt').empty?
-    system("cucumber @rerun.txt -f rerun -o rerun0.txt -f pretty") unless File.read('rerun.txt').empty? or Rake.application.top_level_tasks.first.include? 'bs'
-    system("cucumber @rerun.txt -f rerun -o rerun0.txt -f pretty DRIVER=#{Rake.application.top_level_tasks.first}") if !File.read('rerun.txt').empty? and Rake.application.top_level_tasks.first.include? 'bs'
-    puts "\n**** RE RUNNING FAILING TESTS ONE MORE TIME ****\n\n" unless File.read('rerun0.txt').empty?
-    system("cucumber @rerun0.txt -f rerun -o rerun.txt -f pretty") unless File.read('rerun0.txt').empty? or Rake.application.top_level_tasks.first.include? 'bs'
-    system("cucumber @rerun0.txt -f rerun -o rerun.txt -f pretty DRIVER=#{Rake.application.top_level_tasks.first}") if !File.read('rerun0.txt').empty? and Rake.application.top_level_tasks.first.include? 'bs'
+  if Rake.application.top_level_tasks.first.include? 'bs'
+    exit_code = @exit_code_array.uniq.include? 1
+    exit_code = exit_code ? 1 : 0
+  else
+    if $?.exitstatus != 0
+      puts "\n**** RE RUNNING FAILING TESTS ****\n\n" unless File.read('rerun.txt').empty?
+      system("cucumber @rerun.txt -f rerun -o rerun0.txt -f pretty") unless File.read('rerun.txt').empty? or Rake.application.top_level_tasks.first.include? 'bs'
+      system("cucumber @rerun.txt -f rerun -o rerun0.txt -f pretty DRIVER=#{Rake.application.top_level_tasks.first}") if !File.read('rerun.txt').empty? and Rake.application.top_level_tasks.first.include? 'bs'
+      puts "\n**** RE RUNNING FAILING TESTS ONE MORE TIME ****\n\n" unless File.read('rerun0.txt').empty?
+      system("cucumber @rerun0.txt -f rerun -o rerun.txt -f pretty") unless File.read('rerun0.txt').empty? or Rake.application.top_level_tasks.first.include? 'bs'
+      system("cucumber @rerun0.txt -f rerun -o rerun.txt -f pretty DRIVER=#{Rake.application.top_level_tasks.first}") if !File.read('rerun0.txt').empty? and Rake.application.top_level_tasks.first.include? 'bs'
+    end
+    exit_code = @exit_code.nil? ? $?.exitstatus : @exit_code
   end
-  exit_code = @exit_code.nil? ? $?.exitstatus : @exit_code
   colour = exit_code == 0 ? 'green' : 'red'
   puts "## Suite took #{(Time.now - @start_time) / 60}"
   puts "\n#################################".send(colour)
@@ -86,3 +129,4 @@ at_exit do
   puts "#################################\n\n".send(colour)
   exit exit_code
 end
+

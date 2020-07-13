@@ -1,5 +1,6 @@
 require 'rubygems'
 require 'active_support'
+require 'sys/proctable'
 require 'active_support/all'
 require 'capybara'
 require 'capybara/cucumber'
