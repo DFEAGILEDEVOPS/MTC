@@ -1,31 +1,28 @@
 'use strict'
 
+const validator = require('../lib/validator/retro-input-assistant-validator')
+const dataService = require('./data-access/retro-input-assistant.data.service')
+
 const service = {
   /**
-   * @description persists the input assistant added retrospectively
-   * @param {string} firstName
-   * @param {string} lastName
-   * @param {string} reason
-   * @param {number} checkId
-   * @param {string} pupilUuid
-   * @returns {Promise<Void>}
+   * @typedef {object} retroInputAssistantData
+   * @property {string} firstName
+   * @property {string} lastName
+   * @property {string} reason
+   * @property {number} checkId
+   * @property {string} pupilUuid
    */
-  save: async function add (firstName, lastName, reason, checkId, pupilUuid) {
-    if (!firstName || firstName.length === 0) {
-      throw new Error('input assistant first name is required')
+
+  /**
+    * @description persists retrospective input assistant data
+    * @param {retroInputAssistantData} retroInputAssistantData
+    */
+  save: async function add (retroInputAssistantData) {
+    const validationResult = validator.validate(retroInputAssistantData)
+    if (validationResult.hasError()) {
+      return validationResult
     }
-    if (!lastName || lastName.length === 0) {
-      throw new Error('input assistant last name is required')
-    }
-    if (!reason || reason.length === 0) {
-      throw new Error('input assistant reason is required')
-    }
-    if (!checkId || checkId === 0) {
-      throw new Error('checkId is required')
-    }
-    if (!pupilUuid || pupilUuid.length === 0) {
-      throw new Error('valid pupil uuid is required')
-    }
+    return dataService.create(retroInputAssistantData)
   }
 }
 
