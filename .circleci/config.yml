@@ -7,8 +7,7 @@ jobs:
   build:
     working_directory: ~/repo/
     docker:
-#      - image: circleci/node:10-browsers
-      - image: ovix/mtc_circleci:latest
+      - image: stamtc/mtc_circleci:latest
     environment:
       TZ: Europe/London
     steps:

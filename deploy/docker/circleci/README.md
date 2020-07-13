@@ -13,10 +13,10 @@ This docker image needs to be made publicly available so we can pull it in when 
 
 1. Build it
 
-$ docker build . -t ovix/mtc_circleci
+$ docker build . -t stamtc/mtc_circleci
 
 2. Push it
 
-$ docker push ovix/mtc_circleci:latest
+$ docker push stamtc/mtc_circleci:latest
 
 
