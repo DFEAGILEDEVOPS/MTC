@@ -16,7 +16,6 @@ const service = {
    */
 
   /**
-   *
    * @param {retroInputAssistantData} data
    * @returns {Promise<any>}
    */
