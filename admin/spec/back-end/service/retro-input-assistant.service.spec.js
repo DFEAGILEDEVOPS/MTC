@@ -1,6 +1,6 @@
 'use strict'
 
-/* global describe it expect beforeEach spyOn */
+/* global describe it expect beforeEach spyOn fail */
 
 const sut = require('../../../services/retro-input-assistant.service')
 const dataService = require('../../../services/data-access/retro-input-assistant.data.service.js')
@@ -14,11 +14,15 @@ describe('retro input assistant service', () => {
     expect(sut).toBeDefined()
   })
 
-  it('should perform validation on input', async () => {
-    const validationResult = await sut.save({})
-    expect(validationResult.hasError()).toBe(true)
-    const errors = validationResult.getFields()
-    expect(errors.length).toBe(6)
+  it('should throw an error when validation fails', async () => {
+    try {
+      await sut.save({})
+      fail('error should have been thrown')
+    } catch (error) {
+      expect(error.name).toBe('ValidationError')
+      const validationErrors = error.getFields()
+      expect(validationErrors.length).toBe(6)
+    }
   })
 
   it('should persist valid input', async () => {

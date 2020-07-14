@@ -21,7 +21,7 @@ const service = {
   save: async function add (retroInputAssistantData) {
     const validationResult = validator.validate(retroInputAssistantData)
     if (validationResult.hasError()) {
-      return validationResult
+      throw validationResult
     }
     return dataService.create(retroInputAssistantData)
   }

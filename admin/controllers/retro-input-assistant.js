@@ -8,7 +8,7 @@ const retroInputAssistantService = require('../services/retro-input-assistant.se
 
 const controller = {}
 
-controller.getAddRetroInputAssistant = async (req, res, next) => {
+controller.getAddRetroInputAssistant = async (req, res, next, error = null) => {
   res.locals.pageTitle = 'Record input assistant used for official check'
   req.breadcrumbs('Select pupils and access arrangements', 'select-access-arrangements')
   req.breadcrumbs('Record input assistant')
@@ -29,14 +29,31 @@ controller.getAddRetroInputAssistant = async (req, res, next) => {
   return res.render('access-arrangements/retro-add-input-assistant', {
     breadcrumbs: req.breadcrumbs(),
     pupils,
-    error: new ValidationError(),
+    error: error || new ValidationError(),
     formData: {}
   })
 }
 
 controller.postSubmitRetroInputAssistant = async (req, res, next) => {
   console.dir(req.body)
-  await retroInputAssistantService.save(req.body)
+  const saveData = {
+    firstName: req.body.firstName,
+    lastName: req.body.lastName,
+    reason: req.body.reason,
+    checkId: 0,
+    pupilUuid: req.body.pupilUrlSlug,
+    userId: req.user.id
+  }
+
+  try {
+    await retroInputAssistantService.save(saveData)
+  } catch (error) {
+    if (error.name === 'ValidationError') {
+      return controller.getAddRetroInputAssistant(req, res, next, error)
+    }
+    return next(error)
+  }
+  req.flash('info', 'Retrospective Input assistant added')
   res.redirect('/access-arrangements/overview')
 }
 
