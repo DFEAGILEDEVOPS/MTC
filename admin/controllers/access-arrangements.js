@@ -218,7 +218,7 @@ controller.getAddRetroInputAssistant = async (req, res, next) => {
     const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
     await businessAvailabilityService.determineAccessArrangementsEligibility(checkWindowData)
   } catch (error) {
-    next(error)
+    return next(error)
   }
 
   let pupils

@@ -2,6 +2,7 @@
 
 const sqlService = require('./sql.service')
 const TYPES = require('./sql.service').TYPES
+const aaDataService = require('./access-arrangements.data.service')
 
 const service = {
   /**
@@ -30,8 +31,8 @@ const service = {
     if (!pupilId) {
       throw new Error(`Unable to save retro input assistant to database.\npupil with urlSlug:${data.pupilUuid} not found`)
     }
-    // TODO fix
-    const retroInputAssistantTypeId = 7
+
+    const retroInputAssistantTypeId = await aaDataService.sqlFindAccessArrangementsIdsWithCodes([aaDataService.CODES.RETRO_INPUT_ASSISTANT])[0].id
     const insertData = {
       pupil_id: pupilId,
       recordedBy_user_id: data.userId,

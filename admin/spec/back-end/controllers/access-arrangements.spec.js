@@ -310,4 +310,40 @@ describe('access arrangements controller:', () => {
       expect(next).toHaveBeenCalledWith(error)
     })
   })
+  describe('getAddRetroInputAssistant route', () => {
+    const reqParams = () => {
+      return {
+        method: 'GET',
+        url: '/access-arrangements/retro-add-input-assistant'
+      }
+    }
+    it('displays the retro input assistant page', async () => {
+      const res = getRes()
+      const req = getReq(reqParams)
+      spyOn(res, 'render')
+      spyOn(checkWindowV2Service, 'getActiveCheckWindow')
+      spyOn(businessAvailabilityService, 'determineAccessArrangementsEligibility')
+      spyOn(pupilAccessArrangementsService, 'getEligiblePupilsWithFullNames')
+      await controller.getAddRetroInputAssistant(req, res, next)
+      expect(res.locals.pageTitle).toBe('Record input assistant used for official check')
+      expect(res.render).toHaveBeenCalled()
+      expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
+      expect(businessAvailabilityService.determineAccessArrangementsEligibility).toHaveBeenCalled()
+      expect(pupilAccessArrangementsService.getEligiblePupilsWithFullNames).toHaveBeenCalled()
+    })
+    it('calls next when an error occurs during service call', async () => {
+      const res = getRes()
+      const req = getReq(reqParams)
+      spyOn(res, 'render')
+      const error = new Error('error')
+      spyOn(checkWindowV2Service, 'getActiveCheckWindow').and.returnValue(Promise.reject(error))
+      spyOn(businessAvailabilityService, 'determineAccessArrangementsEligibility')
+      spyOn(pupilAccessArrangementsService, 'getEligiblePupilsWithFullNames')
+      await controller.getAddRetroInputAssistant(req, res, next)
+      expect(res.render).not.toHaveBeenCalled()
+      expect(next).toHaveBeenCalledWith(error)
+      expect(pupilAccessArrangementsService.getEligiblePupilsWithFullNames).not.toHaveBeenCalled()
+      expect(businessAvailabilityService.determineAccessArrangementsEligibility).not.toHaveBeenCalled()
+    })
+  })
 })
