@@ -1,6 +1,6 @@
 FROM node:10.14.1
 
-SHELL ["/bin/bash", "-c"]
+# SHELL ["/bin/bash", "-c"]
 
 # RUN apt-get update && \
 #     apt-get install libunwind8 && \
@@ -20,5 +20,8 @@ RUN wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor 
     chown root:root /etc/apt/trusted.gpg.d/microsoft.asc.gpg && \
     chown root:root /etc/apt/sources.list.d/microsoft-prod.list
 
-RUN apt-get update && apt-get install dotnet-sdk-2.2 -y && \
-    yarn global add azure-functions-core-tools@core --unsafe-perm true
+RUN apt-get update && apt-get install dotnet-sdk-2.2 azure-functions-core-tools-2 -y
+
+RUN func --version
+
+RUN echo "export DOTNET_CLI_TELEMETRY_OPTOUT=1" >> /root/.bashrc

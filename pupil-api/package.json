@@ -13,7 +13,7 @@
     "clean": "rm -rf ./dist"
   },
   "engines": {
-    "node": ">= 8.4"
+    "node": ">= 12"
   },
   "dependencies": {
     "@azure/service-bus": "^1.1.1",
