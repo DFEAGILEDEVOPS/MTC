@@ -40,7 +40,6 @@ controller.postSubmitRetroInputAssistant = async (req, res, next) => {
     firstName: req.body.firstname,
     lastName: req.body.lastname,
     reason: req.body.reason,
-    checkId: 0,
     pupilUuid: req.body.pupilUrlSlug,
     userId: req.user.id
   }

@@ -9,7 +9,6 @@ const service = {
    * @property {string} firstName
    * @property {string} lastName
    * @property {string} reason
-   * @property {number} checkId
    * @property {string} pupilUuid
    * @property {number} userId
    */
@@ -19,11 +18,21 @@ const service = {
     * @param {retroInputAssistantData} retroInputAssistantData
     */
   save: async function add (retroInputAssistantData) {
-    const validationResult = validator.validate(retroInputAssistantData)
+    const pupilData = await dataService.getPupilIdAndCurrentCheckIdByUrlSlug(retroInputAssistantData.pupilUuid)
+    console.dir(pupilData)
+    const data = {
+      firstName: retroInputAssistantData.firstName,
+      lastName: retroInputAssistantData.lastName,
+      reason: retroInputAssistantData.reason,
+      pupilId: pupilData.pupilId,
+      userId: retroInputAssistantData.userId,
+      checkId: pupilData.currentCheckId
+    }
+    const validationResult = validator.validate(data)
     if (validationResult.hasError()) {
       throw validationResult
     }
-    return dataService.create(retroInputAssistantData)
+    return dataService.create(data)
   }
 }
 

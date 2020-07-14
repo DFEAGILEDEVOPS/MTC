@@ -8,6 +8,10 @@ const dataService = require('../../../services/data-access/retro-input-assistant
 describe('retro input assistant service', () => {
   beforeEach(() => {
     spyOn(dataService, 'create')
+    spyOn(dataService, 'getPupilIdAndCurrentCheckIdByUrlSlug').and.returnValue({
+      pupilId: 123,
+      currentCheckId: 456
+    })
   })
 
   it('should be defined', () => {
@@ -20,9 +24,18 @@ describe('retro input assistant service', () => {
       fail('error should have been thrown')
     } catch (error) {
       expect(error.name).toBe('ValidationError')
-      const validationErrors = error.getFields()
-      expect(validationErrors.length).toBe(6)
     }
+  })
+
+  it('should lookup pupil id and current check id from url slug', async () => {
+    await sut.save({
+      firstName: 'foo',
+      lastName: 'bar',
+      reason: 'baz',
+      pupilUuid: '6d94ad35-d240-42eb-a945-9a325758349b',
+      userId: 1
+    })
+    expect(dataService.getPupilIdAndCurrentCheckIdByUrlSlug).toHaveBeenCalled()
   })
 
   it('should persist valid input', async () => {
@@ -30,7 +43,6 @@ describe('retro input assistant service', () => {
       firstName: 'foo',
       lastName: 'bar',
       reason: 'baz',
-      checkId: 5,
       pupilUuid: '6d94ad35-d240-42eb-a945-9a325758349b',
       userId: 1
     })
