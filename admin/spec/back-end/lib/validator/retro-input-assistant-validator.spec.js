@@ -13,7 +13,7 @@ describe('retro input assistant validator', () => {
       lastName: 'smith',
       reason: 'reason',
       checkId: 1,
-      pupilUuid: 'f6275694-267c-449e-b73b-69160c568dbc',
+      pupilId: 1,
       userId: 1
     }
   })
@@ -91,20 +91,20 @@ describe('retro input assistant validator', () => {
     expect(checkIdError).toEqual(errorMessages.invalidCheckId)
   })
 
-  it('should throw if pupilUuid is undefined', async () => {
-    retroInputAssistantData.pupilUuid = undefined
+  it('should throw if pupil id is undefined', async () => {
+    retroInputAssistantData.pupilId = undefined
     const validationResult = await sut.validate(retroInputAssistantData)
     expect(validationResult.hasError()).toBe(true)
-    const pupilUuidError = validationResult.get('pupilUuid')
-    expect(pupilUuidError).toEqual(errorMessages.invalidPupilUuid)
+    const pupilIdError = validationResult.get('pupilId')
+    expect(pupilIdError).toEqual(errorMessages.invalidPupilId)
   })
 
-  it('should throw if pupilUuid is not a valid uuid', async () => {
-    retroInputAssistantData.pupilUuid = 'foo'
+  it('should throw if pupil id is less than 1', async () => {
+    retroInputAssistantData.pupilId = 0
     const validationResult = await sut.validate(retroInputAssistantData)
     expect(validationResult.hasError()).toBe(true)
-    const pupilUuidError = validationResult.get('pupilUuid')
-    expect(pupilUuidError).toEqual(errorMessages.invalidPupilUuid)
+    const pupilIdError = validationResult.get('pupilId')
+    expect(pupilIdError).toEqual(errorMessages.invalidPupilId)
   })
 
   it('should throw if userId is undefined', async () => {

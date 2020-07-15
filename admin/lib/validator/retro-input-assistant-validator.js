@@ -1,7 +1,6 @@
 'use strict'
 
 const ValidationError = require('../validation-error')
-const uuidValidator = require('./common/uuid-validator')
 const errorMessages = require('../errors/retro-input-assistant')
 
 const validator = {
@@ -16,7 +15,7 @@ const validator = {
       firstName,
       lastName,
       reason,
-      pupilUuid,
+      pupilId,
       checkId,
       userId
     } = retroInputAssistantData
@@ -33,9 +32,8 @@ const validator = {
     if (!checkId || checkId < 1) {
       validationError.addError('checkId', errorMessages.invalidCheckId)
     }
-    const uuidValidationResult = uuidValidator.validate(pupilUuid, 'pupilUuid')
-    if (uuidValidationResult.hasError()) {
-      validationError.addError('pupilUuid', errorMessages.invalidPupilUuid)
+    if (!pupilId || pupilId < 1) {
+      validationError.addError('pupilId', errorMessages.invalidPupilId)
     }
     if (!userId || userId < 1) {
       validationError.addError('userId', errorMessages.userId)

@@ -19,7 +19,6 @@ const service = {
     */
   save: async function add (retroInputAssistantData) {
     const pupilData = await dataService.getPupilIdAndCurrentCheckIdByUrlSlug(retroInputAssistantData.pupilUuid)
-    console.dir(pupilData)
     const data = {
       firstName: retroInputAssistantData.firstName,
       lastName: retroInputAssistantData.lastName,
