@@ -44,6 +44,34 @@ const service = {
       type: TYPES.UniqueIdentifier,
       value: pupilUrlSlug
     }])
+  },
+  sqlFindEligiblePupilsBySchoolId: async function sqlFindEligiblePupilsBySchoolId (schoolId) {
+    const params = [
+      {
+        name: 'schoolId',
+        value: schoolId,
+        type: TYPES.Int
+      }
+    ]
+    const sql = `
+        SELECT
+            p.id,
+            p.foreName,
+            p.lastName,
+            p.middleNames,
+            p.dateOfBirth,
+            p.group_id,
+            p.urlSlug
+          FROM
+              [mtc_admin].[pupil] p
+              LEFT JOIN [mtc_admin].[pupilAccessArrangements] paa ON (paa.pupil_id = p.id)
+         WHERE p.school_id = @schoolId
+           AND p.attendanceId IS NULL
+           AND p.checkComplete = 1
+           AND paa.pupil_id IS NULL
+         ORDER BY lastName;
+    `
+    return sqlService.readonlyQuery(sql, params)
   }
 }
 

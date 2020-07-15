@@ -1,7 +1,6 @@
 'use strict'
 
 const checkWindowV2Service = require('../services/check-window-v2.service')
-const pupilAccessArrangementsService = require('../services/pupil-access-arrangements.service')
 const businessAvailabilityService = require('../services/business-availability.service')
 const ValidationError = require('../lib/validation-error')
 const retroInputAssistantService = require('../services/retro-input-assistant.service')
@@ -22,7 +21,7 @@ controller.getAddRetroInputAssistant = async (req, res, next, error = null) => {
 
   let pupils
   try {
-    pupils = await pupilAccessArrangementsService.getEligiblePupilsWithFullNames(req.user.schoolId)
+    pupils = await retroInputAssistantService.getEligiblePupilsWithFullNames(req.user.schoolId)
   } catch (error) {
     return next(error)
   }

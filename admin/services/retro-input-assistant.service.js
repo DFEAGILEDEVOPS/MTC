@@ -32,6 +32,21 @@ const service = {
       throw validationResult
     }
     return dataService.create(data)
+  },
+  /**
+ * Returns pupils with eligible for access arrangements
+ * @param {Number} schoolId
+ * @returns {Promise<Array>}
+ */
+  getEligiblePupilsWithFullNames: async function getEligiblePupilsWithFullNames (schoolId) {
+    if (!schoolId) {
+      throw new Error('schoolId is not provided')
+    }
+    const pupils = await dataService.sqlFindEligiblePupilsBySchoolId(schoolId)
+    return pupils.map(p => ({
+      fullName: `${p.lastName} ${p.foreName}${p.middleNames ? ' ' + p.middleNames : ''}`,
+      urlSlug: p.urlSlug
+    }))
   }
 }
 
