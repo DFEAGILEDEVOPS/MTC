@@ -30,7 +30,7 @@
     "assets-version": "ac5c1095790e2b6e65491ce656242b57"
   },
   "engines": {
-    "node": ">= 10.16.3"
+    "node": ">= 12"
   },
   "dependencies": {
     "@azure/service-bus": "^1.1.0",
