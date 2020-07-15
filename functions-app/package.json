@@ -6,6 +6,7 @@
   "license": "GPL-3.0",
   "scripts": {
     "start": "func host start --port 7072",
+    "prestart": "func extensions install",
     "test": "yarn lint && yarn run nyc --exclude '*.spec.js' -r html jasmine **/*.spec.js */**/*.spec.js */**/**/*.spec.js",
     "lint": "standard",
     "pack": "funcpack pack .",
