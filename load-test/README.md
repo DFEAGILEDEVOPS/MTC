@@ -14,8 +14,8 @@ We use JMeter 5, as this is now the default for flood.io
 ### Linux
 * Run `sudo apt-get update` to refresh packages metadata
 * Install JDK 7 or later
-* Download JMeter 5: `wget -c http://www-us.apache.org/dist/jmeter/binaries/apache-jmeter-4.0.tgz`
-* Unpack JMeter `tar -xf apache-jmeter-4.0.tgz`
+* Download JMeter 5: `wget -c http://www-us.apache.org/dist/jmeter/binaries/apache-jmeter-5.3.tgz`
+* Unpack JMeter `tar -xf apache-jmeter-5.3.tgz`
 * Ensure JMeter works by running a simple test:
 `apache-jmeter-5.3/bin/jmeter -n -t apache-jmeter-5.3/extras/Test.jmx`
 
