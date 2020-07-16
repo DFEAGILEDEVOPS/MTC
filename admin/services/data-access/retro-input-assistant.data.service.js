@@ -20,7 +20,9 @@ const service = {
    * @returns {Promise<any>}
    */
   create: async function create (data) {
-    const retroInputAssistantTypeId = await aaDataService.sqlFindAccessArrangementsIdsWithCodes([aaDataService.CODES.RETRO_INPUT_ASSISTANT])[0].id
+    const arrangementType = await aaDataService.sqlFindAccessArrangementsIdsWithCodes([aaDataService.CODES.RETRO_INPUT_ASSISTANT])
+    const retroInputAssistantTypeId = arrangementType[0].id
+
     const insertData = {
       pupil_id: data.pupilId,
       recordedBy_user_id: data.userId,

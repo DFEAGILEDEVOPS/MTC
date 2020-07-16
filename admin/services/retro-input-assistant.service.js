@@ -19,14 +19,25 @@ const service = {
     */
   save: async function add (retroInputAssistantData) {
     const pupilData = await dataService.getPupilIdAndCurrentCheckIdByUrlSlug(retroInputAssistantData.pupilUuid)
+    console.log('pupil data...')
+    console.dir(pupilData)
+    if (!pupilData || pupilData.length === 0) {
+
+    }
+    const pupilInfo = {
+      pupilId: pupilData[0].id,
+      currentCheckId: pupilData[0].currentCheckId
+    }
     const data = {
       firstName: retroInputAssistantData.firstName,
       lastName: retroInputAssistantData.lastName,
       reason: retroInputAssistantData.reason,
-      pupilId: pupilData.pupilId,
+      pupilId: pupilInfo.pupilId,
       userId: retroInputAssistantData.userId,
-      checkId: pupilData.currentCheckId
+      checkId: pupilInfo.currentCheckId
     }
+    console.log('data to save....')
+    console.dir(data)
     const validationResult = validator.validate(data)
     if (validationResult.hasError()) {
       throw validationResult

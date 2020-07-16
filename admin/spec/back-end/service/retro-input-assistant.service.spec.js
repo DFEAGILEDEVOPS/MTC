@@ -47,6 +47,9 @@ describe('retro input assistant service', () => {
       })
       expect(dataService.create).toHaveBeenCalled()
     })
+    it('should throw if pupil details cannot be found', async () => {
+      fail('not implemented')
+    })
   })
   describe('getEligiblePupilsWithFullNames', () => {
     it('should throw an error if school id not provided', async () => {
