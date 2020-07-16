@@ -4,7 +4,7 @@
 
 We use JMeter 5, as this is now the default for flood.io
 
-### Mac OS
+### MacOS
 * Install JDK 8 or later
 * Install v5 JMeter...
 * via Homebrew: `brew install jmeter`
@@ -17,7 +17,7 @@ We use JMeter 5, as this is now the default for flood.io
 * Download JMeter 5: `wget -c http://www-us.apache.org/dist/jmeter/binaries/apache-jmeter-4.0.tgz`
 * Unpack JMeter `tar -xf apache-jmeter-4.0.tgz`
 * Ensure JMeter works by running a simple test:
-`apache-jmeter-4.0/bin/./jmeter -n -t apache-jmeter-4.0/extras/Test.jmx`
+`apache-jmeter-5.3/bin/jmeter -n -t apache-jmeter-5.3/extras/Test.jmx`
 
 ### Windows
 * Install JDK 8 or later
