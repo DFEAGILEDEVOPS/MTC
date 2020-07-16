@@ -19,10 +19,8 @@ const service = {
     */
   save: async function add (retroInputAssistantData) {
     const pupilData = await dataService.getPupilIdAndCurrentCheckIdByUrlSlug(retroInputAssistantData.pupilUuid)
-    console.log('pupil data...')
-    console.dir(pupilData)
     if (!pupilData || pupilData.length === 0) {
-
+      throw new Error('pupil lookup failed')
     }
     const pupilInfo = {
       pupilId: pupilData[0].id,
@@ -36,8 +34,6 @@ const service = {
       userId: retroInputAssistantData.userId,
       checkId: pupilInfo.currentCheckId
     }
-    console.log('data to save....')
-    console.dir(data)
     const validationResult = validator.validate(data)
     if (validationResult.hasError()) {
       throw validationResult

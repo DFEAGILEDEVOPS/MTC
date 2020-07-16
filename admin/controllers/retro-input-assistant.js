@@ -34,7 +34,6 @@ controller.getAddRetroInputAssistant = async (req, res, next, error = null) => {
 }
 
 controller.postSubmitRetroInputAssistant = async (req, res, next) => {
-  console.dir(req.body)
   const saveData = {
     firstName: req.body.firstname,
     lastName: req.body.lastname,
