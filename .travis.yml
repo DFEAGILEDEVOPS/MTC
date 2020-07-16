@@ -4,7 +4,7 @@ language: node_js
 services:
 - docker
 node_js:
-- 10.16.3
+- 12.18.2
 env:
   jobs:
   - IMAGE=admin
