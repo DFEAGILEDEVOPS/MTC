@@ -1,5 +1,5 @@
 'use strict'
-/* global describe, it, expect spyOn */
+/* global describe, it, expect spyOn fail */
 
 const accessArrangementsService = require('../../../services/access-arrangements.service')
 const accessArrangementsDataService = require('../../../services/data-access/access-arrangements.data.service')
@@ -25,7 +25,28 @@ describe('accessArrangementsService', () => {
       spyOn(accessArrangementsDataService, 'sqlFindAccessArrangements').and.returnValue(accessArrangements)
       const result = await accessArrangementsService.getAccessArrangements()
       expect(accessArrangementsDataService.sqlFindAccessArrangements).toHaveBeenCalled()
-      expect(result).toBe(accessArrangements)
+      expect(result).toStrictEqual(accessArrangements)
+    })
+    it('does not return the retro input assistant item', async () => {
+      const accessArrangements = [
+        {
+          id: 1,
+          displayOrder: 1,
+          description: 'description',
+          code: 'COD'
+        },
+        {
+          id: 2,
+          displayOrder: 2,
+          description: 'retro input assistant',
+          code: 'RIA'
+        }
+      ]
+      spyOn(accessArrangementsDataService, 'sqlFindAccessArrangements').and.returnValue(Promise.resolve(accessArrangements))
+      const result = await accessArrangementsService.getAccessArrangements()
+      expect(accessArrangementsDataService.sqlFindAccessArrangements).toHaveBeenCalled()
+      expect(result.length).toBe(1)
+      expect(result[0].code === 'COD').toBe(true)
     })
   })
   describe('submit', () => {
