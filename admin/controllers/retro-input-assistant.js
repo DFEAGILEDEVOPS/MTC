@@ -29,7 +29,7 @@ controller.getAddRetroInputAssistant = async (req, res, next, error = null) => {
     breadcrumbs: req.breadcrumbs(),
     pupils,
     error: error || new ValidationError(),
-    formData: {}
+    formData: req.body
   })
 }
 

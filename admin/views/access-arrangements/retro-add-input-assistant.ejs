@@ -47,7 +47,7 @@
                 First name of input assistant
               </label>
               <input id="input-assistant-firstname" name="firstname" class="govuk-input govuk-!-width-three-quarters" type="text" aria-required="true"
-                aria-label="Enter first name of input assistant." spellcheck="false" autocorrect="off">
+                aria-label="Enter first name of input assistant." spellcheck="false" autocorrect="off" value="<%= formData.firstname %>">
             </div>
 
             <div class="govuk-form-group">
@@ -56,7 +56,7 @@
                 Last name of input assistant
               </label>
               <input id="input-assistant-lastname" name="lastname" class="govuk-input govuk-!-width-three-quarters" type="text" aria-required="true"
-                aria-label="Enter last name of input assistant." spellcheck="false" autocorrect="off">
+                aria-label="Enter last name of input assistant." spellcheck="false" autocorrect="off" value="<%= formData.lastname %>">
             </div>
 
             <div class="govuk-form-group">
@@ -65,7 +65,7 @@
                 Please explain why the pupil needed this arrangement
               </label>
               <textarea id="input-assistant-reason" name="reason" class="govuk-textarea govuk-!-width-three-quarters" rows="3" maxlength="1000" aria-required="true"
-                aria-label="Enter reason for input assistance." spellcheck="false" autocorrect="off"></textarea>
+                aria-label="Enter reason for input assistance." spellcheck="false" autocorrect="off"><%= formData['reason'] && formData['reason'].trim() %></textarea>
             </div>
 
           </div>

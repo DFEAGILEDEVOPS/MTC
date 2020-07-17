@@ -2,6 +2,7 @@
 
 const validator = require('../lib/validator/retro-input-assistant-validator')
 const dataService = require('./data-access/retro-input-assistant.data.service')
+const uuidValidator = require('../lib/validator/common/uuid-validator')
 
 const service = {
   /**
@@ -18,6 +19,10 @@ const service = {
     * @param {retroInputAssistantData} retroInputAssistantData
     */
   save: async function add (retroInputAssistantData) {
+    const uuidValidationResult = uuidValidator.validate(retroInputAssistantData.pupilUuid, 'pupilUuid')
+    if (uuidValidationResult.hasError()) {
+      throw uuidValidationResult
+    }
     const pupilData = await dataService.getPupilIdAndCurrentCheckIdByUrlSlug(retroInputAssistantData.pupilUuid)
     if (!pupilData || pupilData.length === 0) {
       throw new Error('pupil lookup failed')

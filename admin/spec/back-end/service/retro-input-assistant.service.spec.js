@@ -31,6 +31,34 @@ describe('retro input assistant service', () => {
         expect(error.name).toBe('ValidationError')
       }
     })
+    it('should throw when pupilUuid is undefined', async () => {
+      try {
+        await sut.save({
+          firstName: 'foo',
+          lastName: 'bar',
+          reason: 'baz',
+          pupilUuid: undefined,
+          userId: 1
+        })
+        fail('expected error to be thrown')
+      } catch (error) {
+        expect(error.name).toBe('ValidationError')
+      }
+    })
+    it('should throw when pupilUuid is not a valid UUID', async () => {
+      try {
+        await sut.save({
+          firstName: 'foo',
+          lastName: 'bar',
+          reason: 'baz',
+          pupilUuid: 'quix',
+          userId: 1
+        })
+        fail('expected error to be thrown')
+      } catch (error) {
+        expect(error.name).toBe('ValidationError')
+      }
+    })
     it('should lookup pupil id and current check id from url slug', async () => {
       setupPupilLookupSpy()
       await sut.save({
