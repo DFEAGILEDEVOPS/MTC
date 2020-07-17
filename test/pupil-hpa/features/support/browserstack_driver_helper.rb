@@ -13,8 +13,6 @@ BrowserstackSettings.browser_caps.keys.each do |browser|
       bs_local_args = {"key" => "#{ENV['BROWSERSTACK_ACCESS_KEY']}", "force" => 'true', 'localidentifier'=> ENV['BS_ID']}
       @bs_local.start(bs_local_args)
     end
-    fail 'Browserstack access key should be alphanumeric' if ENV['BROWSERSTACK_ACCESS_KEY'].match(/\A[a-zA-Z0-9]*\z/).nil?
-    fail 'Browserstack username should be alphanumeric' if ENV['BROWSERSTACK_USERNAME'].match(/\A[a-zA-Z0-9]*\z/).nil?
     url = "http://#{ENV['BROWSERSTACK_USERNAME']}:#{ENV['BROWSERSTACK_ACCESS_KEY']}@#{BrowserstackSettings.server}/wd/hub"
     Capybara::Selenium::Driver.new(app, browser: :remote,
                                    url: url,
