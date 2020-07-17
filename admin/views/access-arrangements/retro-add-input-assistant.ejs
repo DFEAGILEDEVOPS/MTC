@@ -20,58 +20,62 @@
       <% } %>
       <h1 class="govuk-heading-xl"><%= pageTitle %></h1>
       <%- partial('partials/_gds_session_expiry') %>
-      <form id="submitAccessArrangements" method="post" action="/access-arrangements/retro-add-input-assistant-submit" autocomplete="off">
-        <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
-          <div id="selectAccessArrangementsPupil"
-                class="govuk-form-group <%= error.isError('pupil-autocomplete-container') ? 'govuk-form-group--error' : '' %>">
-              <h2 class="govuk-heading-l">1. Search for pupil name</h2>
-              <div id="pupilFormControl" class="govuk-body govuk-!-width-one-half">
-                  <span class="govuk-error-message"><%= error.get('pupil-autocomplete-container') %></span>
-                  <select class="govuk-select" name="pupilUrlSlug" id="pupil-autocomplete-container">
-                      <option value="">Select a pupil</option>
-                      <% pupils.map(p => { %>
-                          <option
-                                  value="<%= p.urlSlug %>" <%= p.urlSlug === formData['pupilUrlSlug'] && 'selected' %>><%= p.fullName %></option>
-                      <% }) %>
-                  </select>
-              </div>
+
+        <form id="submitAccessArrangements" method="post" action="/access-arrangements/retro-add-input-assistant-submit"
+          autocomplete="off">
+
+          <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
+          <div id="selectAccessArrangementsPupil"  class="govuk-form-group <%= error.isError('pupil-autocomplete-container') ? 'govuk-form-group--error' : '' %>">
+            <h2 class="govuk-heading-l">1. Search for pupil name</h2>
+            <div id="pupilFormControl" class="govuk-!-width-three-quarters">
+              <span class="govuk-error-message"><%= error.get('pupil-autocomplete-container') %></span>
+              <select class="govuk-select" name="pupilUrlSlug" id="pupil-autocomplete-container">
+                <option value="">Select a pupil</option>
+                <% pupils.map(p => { %>
+                <option value="<%= p.urlSlug %>" <%= p.urlSlug === formData['pupilUrlSlug'] && 'selected' %>>
+                  <%= p.fullName %></option>
+                <% }) %>
+              </select>
+            </div>
           </div>
           <h2 class="govuk-heading-l">2. Input assistant details</h2>
-          <div id="inputAssistantDetails" class="govuk-body govuk-!-width-one-half">
+          <div id="inputAssistantDetails">
+
             <div class="govuk-form-group">
               <span class="govuk-error-message"><%= error.get('input-assistant-firstname') %></span>
               <label class="govuk-label" for="input-assistant-firstname">
                 First name of input assistant
               </label>
-              <input class="govuk-input govuk-!-width-three-quarters" id="input-assistant-firstname"
-                name="firstname" type="text" aria-required="true"
+              <input id="input-assistant-firstname" name="firstname" class="govuk-input govuk-!-width-three-quarters" type="text" aria-required="true"
                 aria-label="Enter first name of input assistant." spellcheck="false" autocorrect="off">
             </div>
+
             <div class="govuk-form-group">
               <span class="govuk-error-message"><%= error.get('input-assistant-lastname') %></span>
               <label class="govuk-label" for="input-assistant-lastname">
                 Last name of input assistant
               </label>
-              <input class="govuk-input govuk-!-width-three-quarters" id="input-assistant-lastname"
-                name="lastname" type="text" aria-required="true"
+              <input id="input-assistant-lastname" name="lastname" class="govuk-input govuk-!-width-three-quarters" type="text" aria-required="true"
                 aria-label="Enter last name of input assistant." spellcheck="false" autocorrect="off">
             </div>
+
             <div class="govuk-form-group">
               <span class="govuk-error-message"><%= error.get('input-assistant-reason') %></span>
               <label class="govuk-label" for="input-assistant-reason">
                 Please explain why the pupil needed this arrangement
               </label>
-              <textarea class="govuk-textarea govuk-!-width-three-quarters" id="input-assistant-reason"
-                name="reason" rows="3" maxlength="1000" aria-required="true"
+              <textarea id="input-assistant-reason" name="reason" class="govuk-textarea govuk-!-width-three-quarters" rows="3" maxlength="1000" aria-required="true"
                 aria-label="Enter reason for input assistance." spellcheck="false" autocorrect="off"></textarea>
             </div>
+
           </div>
           <button type="submit" id="save-input-assistant" class="govuk-button govuk-!-margin-right-2">Save</button>
           <a href="/access-arrangements/select-access-arrangements" role="button" draggable="false"
             class="govuk-button govuk-button--secondary" data-module="govuk-button">
             Cancel
           </a>
-      </form>
+        </form>
+
       <div class="govuk-back-to-top">
         <a class="govuk-link govuk-link--no-visited-state app-back-to-top__link" href="#top">
           <svg role="presentation" focusable="false" class="app-back-to-top__icon" xmlns="http://www.w3.org/2000/svg"
@@ -84,7 +88,7 @@
   </div>
 </main>
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
+  document.addEventListener('DOMContentLoaded', function () {
     window.MTCAdmin.autoComplete.createNameComponent('#pupil-autocomplete-container', 2)
     window.MTCAdmin.retroInputAssistant()
   })
