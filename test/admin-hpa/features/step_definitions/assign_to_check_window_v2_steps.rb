@@ -18,7 +18,7 @@ Then(/^I should see assign check window v2 page as per design$/) do
     fam_end_date = SqlDbHelper.check_window_details(window_name)['familiarisationCheckEndDate']
     fam_end_date = fam_end_date.utc_offset > 0 ? fam_end_date.in_time_zone(-1).strftime("%-d %B %Y") : fam_end_date.strftime("%-d %B %Y")
     check_start_date = SqlDbHelper.check_window_details(window_name)['checkStartDate'].strftime("%-d %B %Y")
-    check_end_date = SqlDbHelper.check_window_details(window_name)['familiarisationCheckEndDate']
+    check_end_date = SqlDbHelper.check_window_details(window_name)['checkEndDate']
     check_end_date = check_end_date.utc_offset > 0 ? check_end_date.in_time_zone(-1).strftime("%-d %B %Y") : check_end_date.strftime("%-d %B %Y")
     expect(mtc_check_date).to eql check_start_date + ' to ' + check_end_date
     expect(try_it_out_check_date).to eql fam_start_date + ' to ' + fam_end_date
