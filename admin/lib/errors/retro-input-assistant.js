@@ -5,6 +5,6 @@ module.exports = {
   missingLastName: 'input assistant last name is required',
   missingReason: 'reason for input assistant is required',
   invalidCheckId: 'associated check id is missing',
-  invalidPupilId: 'associated pupil id is missing or invalid',
+  invalidPupilUuid: 'associated pupil id is missing or invalid',
   userId: 'userId is required'
 }

@@ -12,8 +12,7 @@ describe('retro input assistant validator', () => {
       firstName: 'john',
       lastName: 'smith',
       reason: 'reason',
-      checkId: 1,
-      pupilId: 1,
+      pupilUuid: '9495e6b6-234c-4a2a-83a1-9671358fad80',
       userId: 1
     }
   })
@@ -27,7 +26,7 @@ describe('retro input assistant validator', () => {
     expect(validationResult.hasError()).toBe(false)
   })
 
-  it('should throw if input assistant first name is undefined', async () => {
+  it('should invalidate if input assistant first name is undefined', async () => {
     retroInputAssistantData.firstName = undefined
     const validationResult = await sut.validate(retroInputAssistantData)
     expect(validationResult.hasError()).toBe(true)
@@ -35,7 +34,7 @@ describe('retro input assistant validator', () => {
     expect(firstNameError).toEqual(errorMessages.missingFirstName)
   })
 
-  it('should throw if input assistant first name is an empty string', async () => {
+  it('should invalidate if input assistant first name is an empty string', async () => {
     retroInputAssistantData.firstName = ''
     const validationResult = await sut.validate(retroInputAssistantData)
     expect(validationResult.hasError()).toBe(true)
@@ -43,7 +42,7 @@ describe('retro input assistant validator', () => {
     expect(firstNameError).toEqual(errorMessages.missingFirstName)
   })
 
-  it('should throw if input assistant last name is undefined', async () => {
+  it('should invalidate if input assistant last name is undefined', async () => {
     retroInputAssistantData.lastName = undefined
     const validationResult = await sut.validate(retroInputAssistantData)
     expect(validationResult.hasError()).toBe(true)
@@ -51,7 +50,7 @@ describe('retro input assistant validator', () => {
     expect(lastNameError).toEqual(errorMessages.missingLastName)
   })
 
-  it('should throw if input assistant last name is an empty string', async () => {
+  it('should invalidate if input assistant last name is an empty string', async () => {
     retroInputAssistantData.lastName = ''
     const validationResult = await sut.validate(retroInputAssistantData)
     expect(validationResult.hasError()).toBe(true)
@@ -59,7 +58,7 @@ describe('retro input assistant validator', () => {
     expect(lastNameError).toEqual(errorMessages.missingLastName)
   })
 
-  it('should throw if input assistant reason is undefined', async () => {
+  it('should invalidate if input assistant reason is undefined', async () => {
     retroInputAssistantData.reason = undefined
     const validationResult = await sut.validate(retroInputAssistantData)
     expect(validationResult.hasError()).toBe(true)
@@ -67,7 +66,7 @@ describe('retro input assistant validator', () => {
     expect(reasonError).toEqual(errorMessages.missingReason)
   })
 
-  it('should throw if input assistant reason is an empty string', async () => {
+  it('should invalidate if input assistant reason is an empty string', async () => {
     retroInputAssistantData.reason = ''
     const validationResult = await sut.validate(retroInputAssistantData)
     expect(validationResult.hasError()).toBe(true)
@@ -75,39 +74,23 @@ describe('retro input assistant validator', () => {
     expect(reasonError).toEqual(errorMessages.missingReason)
   })
 
-  it('should throw if checkId is undefined', async () => {
-    retroInputAssistantData.checkId = undefined
+  it('should invalidate if pupilUuid is undefined', async () => {
+    retroInputAssistantData.pupilUuid = undefined
     const validationResult = await sut.validate(retroInputAssistantData)
     expect(validationResult.hasError()).toBe(true)
-    const checkIdError = validationResult.get('checkId')
-    expect(checkIdError).toEqual(errorMessages.invalidCheckId)
+    const pupilIdError = validationResult.get('pupilUuid')
+    expect(pupilIdError).toEqual(errorMessages.invalidPupilUuid)
   })
 
-  it('should throw if checkId is less than 1', async () => {
-    retroInputAssistantData.checkId = 0
+  it('should invalidate if pupil id is not a valid UUID', async () => {
+    retroInputAssistantData.pupilUuid = 'foo'
     const validationResult = await sut.validate(retroInputAssistantData)
     expect(validationResult.hasError()).toBe(true)
-    const checkIdError = validationResult.get('checkId')
-    expect(checkIdError).toEqual(errorMessages.invalidCheckId)
+    const pupilIdError = validationResult.get('pupilUuid')
+    expect(pupilIdError).toEqual(errorMessages.invalidPupilUuid)
   })
 
-  it('should throw if pupil id is undefined', async () => {
-    retroInputAssistantData.pupilId = undefined
-    const validationResult = await sut.validate(retroInputAssistantData)
-    expect(validationResult.hasError()).toBe(true)
-    const pupilIdError = validationResult.get('pupilId')
-    expect(pupilIdError).toEqual(errorMessages.invalidPupilId)
-  })
-
-  it('should throw if pupil id is less than 1', async () => {
-    retroInputAssistantData.pupilId = 0
-    const validationResult = await sut.validate(retroInputAssistantData)
-    expect(validationResult.hasError()).toBe(true)
-    const pupilIdError = validationResult.get('pupilId')
-    expect(pupilIdError).toEqual(errorMessages.invalidPupilId)
-  })
-
-  it('should throw if userId is undefined', async () => {
+  it('should invalidate if userId is undefined', async () => {
     retroInputAssistantData.userId = undefined
     const validationResult = await sut.validate(retroInputAssistantData)
     expect(validationResult.hasError()).toBe(true)
@@ -115,7 +98,7 @@ describe('retro input assistant validator', () => {
     expect(checkIdError).toEqual(errorMessages.userId)
   })
 
-  it('should throw if userId is less than 1', async () => {
+  it('should invalidate if userId is less than 1', async () => {
     retroInputAssistantData.userId = 0
     const validationResult = await sut.validate(retroInputAssistantData)
     expect(validationResult.hasError()).toBe(true)

@@ -1,5 +1,5 @@
 'use strict'
-/* global describe, it, expect spyOn fail */
+/* global describe, it, expect spyOn */
 
 const accessArrangementsService = require('../../../services/access-arrangements.service')
 const accessArrangementsDataService = require('../../../services/data-access/access-arrangements.data.service')

@@ -2,7 +2,6 @@
 
 const validator = require('../lib/validator/retro-input-assistant-validator')
 const dataService = require('./data-access/retro-input-assistant.data.service')
-const uuidValidator = require('../lib/validator/common/uuid-validator')
 
 const service = {
   /**
@@ -19,31 +18,34 @@ const service = {
     * @param {retroInputAssistantData} retroInputAssistantData
     */
   save: async function add (retroInputAssistantData) {
-    const uuidValidationResult = uuidValidator.validate(retroInputAssistantData.pupilUuid, 'pupilUuid')
-    if (uuidValidationResult.hasError()) {
-      throw uuidValidationResult
+    const validationResult = validator.validate(retroInputAssistantData)
+    if (validationResult.hasError()) {
+      throw validationResult
     }
+
     const pupilData = await dataService.getPupilIdAndCurrentCheckIdByUrlSlug(retroInputAssistantData.pupilUuid)
     if (!pupilData || pupilData.length === 0) {
       throw new Error('pupil lookup failed')
     }
-    const pupilInfo = {
-      pupilId: pupilData[0].id,
-      currentCheckId: pupilData[0].currentCheckId
+    const pupilInfo = pupilData[0]
+
+    if (!pupilInfo.id || pupilInfo.id < 1) {
+      throw new Error(`invalid pupil.id returned from lookup: id:${pupilInfo.id}`)
     }
-    const data = {
+
+    if (!pupilInfo.currentCheckId || pupilInfo.currentCheckId < 1) {
+      throw new Error(`invalid pupil.currentCheckId returned from lookup: id:${pupilInfo.currentCheckId}`)
+    }
+
+    const saveData = {
       firstName: retroInputAssistantData.firstName,
       lastName: retroInputAssistantData.lastName,
       reason: retroInputAssistantData.reason,
-      pupilId: pupilInfo.pupilId,
+      pupilId: pupilInfo.id,
       userId: retroInputAssistantData.userId,
       checkId: pupilInfo.currentCheckId
     }
-    const validationResult = validator.validate(data)
-    if (validationResult.hasError()) {
-      throw validationResult
-    }
-    return dataService.create(data)
+    return dataService.create(saveData)
   },
   /**
  * Returns pupils with eligible for access arrangements

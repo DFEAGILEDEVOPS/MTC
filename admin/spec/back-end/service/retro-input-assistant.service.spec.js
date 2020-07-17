@@ -96,7 +96,44 @@ describe('retro input assistant service', () => {
         expect(error.message).toBe('pupil lookup failed')
       }
     })
+    it('should throw if lookedup pupil id is not a number greater than zero', async () => {
+      spyOn(dataService, 'getPupilIdAndCurrentCheckIdByUrlSlug').and.returnValue([{
+        id: undefined,
+        currentCheckId: 1
+      }])
+      try {
+        await sut.save({
+          firstName: 'foo',
+          lastName: 'bar',
+          reason: 'baz',
+          pupilUuid: '6d94ad35-d240-42eb-a945-9a325758349b',
+          userId: 1
+        })
+        fail('error should have been thrown')
+      } catch (error) {
+        expect(error.message).toBe('invalid pupil.id returned from lookup: id:undefined')
+      }
+    })
+    it('should throw if lookedup current check id is not a number greater than zero', async () => {
+      spyOn(dataService, 'getPupilIdAndCurrentCheckIdByUrlSlug').and.returnValue([{
+        id: 1,
+        currentCheckId: undefined
+      }])
+      try {
+        await sut.save({
+          firstName: 'foo',
+          lastName: 'bar',
+          reason: 'baz',
+          pupilUuid: '6d94ad35-d240-42eb-a945-9a325758349b',
+          userId: 1
+        })
+        fail('error should have been thrown')
+      } catch (error) {
+        expect(error.message).toBe('invalid pupil.currentCheckId returned from lookup: id:undefined')
+      }
+    })
   })
+
   describe('getEligiblePupilsWithFullNames', () => {
     it('should throw an error if school id not provided', async () => {
       setupPupilLookupSpy()
