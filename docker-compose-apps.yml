@@ -1,0 +1,96 @@
+version: '3'
+services:
+  functions_base:
+    build: ./deploy/docker/functions-base
+    command: echo "mtc-functions-base built"
+  migration:
+    build:
+      context: ./admin
+      dockerfile: dev.Dockerfile
+    container_name: mtc_admin_dev_migration
+    volumes:
+      - "./:/mtc"
+    environment:
+      SQL_SERVER: 'sqldb'
+      SQL_PORT: '1433'
+    depends_on:
+      - sqldb
+    command: /bin/bash /mtc/admin/run-dev-migrations.sh
+  functions_app:
+    build:
+      context: ./functions-app
+      dockerfile: dev.Dockerfile
+    container_name: "mtc_functions_app"
+    ports:
+      - 7072:7072
+    volumes:
+      - "./:/mtc"
+    environment:
+      SQL_SERVER: 'sqldb'
+      REDIS_HOST: 'redis'
+    depends_on:
+      - sqldb
+      - migration
+      - redis
+    command: ["./wait-for-db.sh", "sqldb", "yarn", "start"]
+  func_consumption:
+    build:
+      context: ./func-consumption
+      dockerfile: dev.Dockerfile
+    container_name: "mtc_func_consumption"
+    ports:
+      - 7071:7071
+    volumes:
+      - "./:/mtc"
+    environment:
+      SQL_SERVER: 'sqldb'
+      REDIS_HOST: 'redis'
+    depends_on:
+      - sqldb
+      - migration
+      - redis
+    command: ["./wait-for-db.sh", "sqldb", "yarn", "start"]
+  admin_dev:
+      build:
+        context: ./admin
+        dockerfile: dev.Dockerfile
+      container_name: "mtc_admin_dev"
+      ports:
+        - 3001:3001
+      volumes:
+        - "./:/mtc"
+      environment:
+        SQL_SERVER: 'sqldb'
+        REDIS_HOST: 'redis'
+      depends_on:
+        - sqldb
+        - migration
+        - redis
+      restart: always
+      command: ["./wait-for-db.sh", "sqldb", "./docker-start-dev.sh"]
+  spa_dev:
+    build:
+      context: ./pupil-spa
+      dockerfile: dev.Dockerfile
+    container_name: "mtc_spa_dev"
+    ports:
+      - 4200:4200
+    volumes:
+      - "./:/mtc"
+    environment:
+      REDIS_HOST: 'redis'
+    command: ["./docker-start-dev.sh"]
+  pupil_api:
+    build:
+      context: ./pupil-api
+      dockerfile: dev.Dockerfile
+    container_name: "mtc_pupil_api_dev"
+    ports:
+      - 3003:3003
+    environment:
+      REDIS_HOST: 'redis'
+    depends_on:
+      - redis
+    volumes:
+      - "./:/mtc"
+    command: ["./docker-start-dev.sh"]
