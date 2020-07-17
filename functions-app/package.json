@@ -12,6 +12,9 @@
     "pack": "funcpack pack .",
     "install-bindings": "func extensions install"
   },
+  "resolutions": {
+    "**/**/lodash": "^4.17.19"
+  },
   "dependencies": {
     "archiver": "^4.0.1",
     "async": "^3.2.0",
