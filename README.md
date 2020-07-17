@@ -29,7 +29,7 @@ There are 2 docker-compose files...
 The default, which runs just SQL Server (main data store) and Redis (express session store)
 Stand up the database containers with: `docker-compose up`
 
-### docker-compose-other-dev.yml
+### docker-compose-apps.yml
 Stands up the pupil-api, pupil-spa, admin app, functions-app, func-consumption app, and automatically runs the db migrations
 
 Start: `docker-compose -f docker-compose.yml -f docker-compose-other-dev.yml up`
