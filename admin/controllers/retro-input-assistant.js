@@ -22,7 +22,6 @@ controller.getAddRetroInputAssistant = async (req, res, next, error = null) => {
   let pupils
   try {
     pupils = await retroInputAssistantService.getEligiblePupilsWithFullNames(req.user.schoolId)
-    console.dir(pupils)
   } catch (error) {
     return next(error)
   }
