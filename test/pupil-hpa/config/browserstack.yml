@@ -14,3 +14,10 @@ browser_caps:
     "browser": "Chrome"
     "resolution": "1024x768"
     "browserstack.selenium_version": "4.0.0-alpha-1"
+  win10_edge_latest:
+    "os": "Windows"
+    "os_version": "10"
+    "browser": "Edge"
+    "resolution": "1024x768"
+    "browserstack.selenium_version": "4.0.0-alpha-1"
+
