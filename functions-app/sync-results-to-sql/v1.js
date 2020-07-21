@@ -13,9 +13,18 @@ const service = {
   processSchool: async function processSchool (school) {
     // Find all outstanding checks in the school
     const newChecks = await resultsService.getNewChecks(school.id)
+
+    // Retrieve the entire schools marking data from Table Storage, for new and old checks
     const markedChecks = await resultsService.getSchoolResults(school.schoolGuid)
+
+    // Filter the marking data to only the new checks we need
     const newMarkedChecks = await resultsService.findNewMarkedChecks(newChecks, markedChecks)
+
     await resultsService.persistMarkingData(newMarkedChecks)
+
+    // Invalidate caches: e.g. school result data
+    await resultsService.dropCaches(school.id)
+
     return newChecks.length
   },
 
