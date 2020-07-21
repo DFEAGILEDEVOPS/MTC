@@ -22,6 +22,9 @@
     "node": ">= 10.14.1"
   },
   "description": "Root MTC Typescript project.  Contains all shared components and azure function implementations",
+  "resolutions": {
+    "**/**/lodash": "^4.17.19"
+  },
   "devDependencies": {
     "@azure/functions": "^1.0.3",
     "@types/bluebird": "^3.5.27",

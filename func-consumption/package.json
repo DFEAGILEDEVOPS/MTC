@@ -18,6 +18,9 @@
     "start": "yarn start:host",
     "start:dev": "echo \"Deprecated: please use 'yarn start' instead\" && yarn start"
   },
+  "resolutions": {
+    "**/**/lodash": "^4.17.19"
+  },
   "devDependencies": {
     "@azure/functions": "^1.0.3",
     "@types/bluebird": "^3.5.27",

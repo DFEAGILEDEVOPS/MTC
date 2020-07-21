@@ -32,6 +32,9 @@
   "engines": {
     "node": ">= 12"
   },
+  "resolutions": {
+    "**/**/lodash": "^4.17.19"
+  },
   "dependencies": {
     "@azure/service-bus": "^1.1.0",
     "applicationinsights": "^1.8.0",

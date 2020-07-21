@@ -5,6 +5,9 @@
   "scripts": {
     "start": "node ./bin/www"
   },
+  "resolutions": {
+    "**/**/lodash": "^4.17.19"
+  },
   "dependencies": {
     "cluster": "^0.7.7",
     "cookie-parser": "~1.4.3",

@@ -28,3 +28,4 @@ gem 'numbers_in_words', '>= 0.4.0'
 gem 'colorize'
 gem 'lz_string'
 gem 'redis'
+gem "rack", ">= 2.2.3"
