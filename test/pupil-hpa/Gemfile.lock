@@ -69,7 +69,6 @@ GEM
       multipart-post (>= 1.2, < 3)
     faraday_middleware (0.13.1)
       faraday (>= 0.7.4, < 1.0)
-    ffi (1.13.1)
     gherkin (5.1.0)
     httparty (0.17.0)
       mime-types (~> 3.0)
@@ -96,7 +95,6 @@ GEM
       mini_portile2 (~> 2.4.0)
     numbers_in_words (0.4.0)
       activesupport
-    os (1.1.0)
     parallel (1.17.0)
     parallel_tests (2.29.1)
       parallel
@@ -108,7 +106,7 @@ GEM
       coderay (~> 1.1.0)
       method_source (~> 0.9.0)
     public_suffix (4.0.5)
-    rack (2.2.2)
+    rack (2.2.3)
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
     rake (12.3.3)
@@ -141,8 +139,6 @@ GEM
       capybara (~> 3.3)
       site_prism-all_there (~> 0.1.0)
     site_prism-all_there (0.1.1)
-    sys-proctable (1.2.5)
-      ffi
     thread_safe (0.3.6)
     tiny_tds (2.1.2)
     tzinfo (1.2.7)
@@ -175,11 +171,11 @@ DEPENDENCIES
   lz_string
   mongo
   numbers_in_words (>= 0.4.0)
-  os
   parallel
   parallel_tests
   poltergeist (>= 1.18.1)
   pry
+  rack (>= 2.2.3)
   rake
   rb-readline
   redis
@@ -189,7 +185,6 @@ DEPENDENCIES
   settingslogic
   show_me_the_cookies (>= 5.0.0)
   site_prism (>= 3.3)
-  sys-proctable
   tiny_tds
   waitutil
   webdrivers (~> 4.0)
