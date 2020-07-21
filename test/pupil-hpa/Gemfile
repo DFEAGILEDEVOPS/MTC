@@ -30,5 +30,4 @@ gem 'azure-storage-queue'
 gem 'azure-storage-blob'
 gem 'redis'
 gem 'lz_string'
-gem 'sys-proctable'
-gem 'os'
+gem "rack", ">= 2.2.3"
