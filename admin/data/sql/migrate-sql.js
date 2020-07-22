@@ -77,7 +77,7 @@ const migratorConfig = {
   },
   validateChecksums: false
 }
-console.log('Migrration cfg', migratorConfig)
+
 const runMigrations = async (version) => {
   await createDatabaseIfNotExists()
 
