@@ -105,6 +105,10 @@ SQL Server specific environment variables
 * SQL_PORT - the port to connect on, defaults to 1433
 * SQL_TIMEOUT - the time in milliseconds before an operation times out
 * SQL_AZURE_SCALE - the azure specific scale setting for the database.  Such as S1, S2, S3 etc.  When this is left blank, migrations are assumed to be running in a docker instance of SQL Server
+* SQL_TRUST_SERVER_CERTIFICATE - if true tedious will verify the server SSL cert.  Defaults to false. See the [docs](https://tediousjs.github.io/tedious/api-connection.html)
+* SQL_ENABLE_ARITH_ABORT - defaults to true. See the [docs](https://tediousjs.github.io/tedious/api-connection.html)
+* SQL_ENCRYPT - use encryption to connect to the DB.  Defaults to true.
+
 
 `config.js` contains defaults for a local sql server instance with matching credentials for the docker compose instance.
 
