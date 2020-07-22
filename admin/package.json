@@ -85,7 +85,6 @@
     "ramda-adjunct": "^2.21.0",
     "random-number-csprng": "^1.0.2",
     "serve-favicon": "^2.4.5",
-    "tedious": "^8.0.1",
     "to-bool": "^0.0.1",
     "useragent": "^2.3.0",
     "uuid": "^3.1.0",

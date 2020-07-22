@@ -1316,11 +1316,6 @@
     "@types/yargs" "^15.0.0"
     chalk "^4.0.0"
 
-"@js-joda/core@^2.0.0":
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/@js-joda/core/-/core-2.0.0.tgz#e9a351ee6feb91262770e2a3d085aa0219ad6afb"
-  integrity sha512-OWm/xa9O9e4ugzNHoRT3IsXZZYfaV6Ia1aRwctOmCQ2GYWMnhKBzMC1WomqCh/oGxEZKNtPy5xv5//VIAOgMqw==
-
 "@oozcitak/dom@1.15.8":
   version "1.15.8"
   resolved "https://registry.yarnpkg.com/@oozcitak/dom/-/dom-1.15.8.tgz#0c0c7bb54cfdaadc07fd637913e706101721d15d"
@@ -8794,7 +8789,7 @@ readable-stream@^2.0.1, readable-stream@^2.0.2, readable-stream@^2.0.6, readable
     string_decoder "~1.1.1"
     util-deprecate "~1.0.1"
 
-readable-stream@^3.0.1, readable-stream@^3.4.0, readable-stream@^3.6.0:
+readable-stream@^3.0.1, readable-stream@^3.4.0:
   version "3.6.0"
   resolved "https://registry.yarnpkg.com/readable-stream/-/readable-stream-3.6.0.tgz#337bbda3adc0706bd3e024426a286d4b4b2c9198"
   integrity sha512-BViHy7LKeTz4oNnkcLJ+lVSL6vpiFeX6/d3oSH8zCW7UxP2onchk+vTGB143xuFjHS3deTgkKoXXymXqymiIdA==
@@ -10138,22 +10133,6 @@ tedious@^6.6.2:
     native-duplexpair "^1.0.0"
     punycode "^2.1.0"
     readable-stream "^3.4.0"
-    sprintf-js "^1.1.2"
-
-tedious@^8.0.1:
-  version "8.3.0"
-  resolved "https://registry.yarnpkg.com/tedious/-/tedious-8.3.0.tgz#74d3d434638b0bdd02b6266f041c003ceca93f67"
-  integrity sha512-v46Q9SRVgz6IolyPdlsxQtfm9q/sqDs+y4aRFK0ET1iKitbpzCCQRHb6rnVcR1FLnLR0Y7AgcqnWUoMPUXz9HA==
-  dependencies:
-    "@azure/ms-rest-nodeauth" "2.0.2"
-    "@js-joda/core" "^2.0.0"
-    bl "^3.0.0"
-    depd "^2.0.0"
-    iconv-lite "^0.5.0"
-    jsbi "^3.1.1"
-    native-duplexpair "^1.0.0"
-    punycode "^2.1.0"
-    readable-stream "^3.6.0"
     sprintf-js "^1.1.2"
 
 temp@~0.4.0:

@@ -14,7 +14,8 @@ const adminConfig = {
     requestTimeout: config.Sql.Migrator.Timeout,
     port: sqlConfig.port,
     connectTimeout: config.Sql.Migrator.Timeout,
-    trustServerCertificate: sqlConfig.options.trustServerCertificate
+    trustServerCertificate: sqlConfig.options.trustServerCertificate,
+    enableArithAbort: sqlConfig.options.enableArithAbort
   },
   authentication: {
     type: 'default',
