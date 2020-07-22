@@ -87,7 +87,7 @@ The solution will fail to operate correctly without the following environment va
 * SAS_TIMEOUT_HOURS - number - the timeout in hours of the SAS token used to submit the completed check to the client
 * AZURE_QUEUE_PREFIX - string - a prefix used to construct environment-specific queue names: e.g. `prefix` or `some-prefix`
 * AZURE_TABLE_PREFIX - string - a prefix used to construct environment-specific table names: e.g. `prefix` or `somPrefix`
-* DEFAULT_ADMIN_PASSWORDHASH - string - a password hash which will be used to overwrite all the `[mtc_admin].[user].[passwordHash]` values when running seeds (`node data/sql/seed-sql.js`)
+* DEFAULT_ADMIN_PASSWORDHASH - string - a bcrypt password hash which will be used to overwrite all the `[mtc_admin].[user].[passwordHash]` values when running seeds (`node data/sql/seed-sql.js`)
 * WEBSITE_OFFLINE - boolean - disables the admin app and shows a downtime message
 * FEATURE_TOGGLE_SCHOOL_RESULTS_ALLOW_FETCH_FROM_DB - allow the schools results to be retrieved from the DB if not in Redis
 
@@ -107,7 +107,7 @@ SQL Server specific environment variables
 * SQL_PORT - the port to connect on, defaults to 1433
 * SQL_SERVER - the server to connect to
 * SQL_TIMEOUT - the time in milliseconds before an operation times out
-* SQL_TRUST_SERVER_CERTIFICATE - if true tedious will verify the server SSL cert.  Defaults to false. See the [docs](https://tediousjs.github.io/tedious/api-connection.html)
+* SQL_TRUST_SERVER_CERTIFICATE - if false tedious will verify the server SSL cert.  Defaults to false. See the [docs](https://tediousjs.github.io/tedious/api-connection.html)
 
 
 `config.js` contains defaults for a local sql server instance with matching credentials for the docker compose instance.
