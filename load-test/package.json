@@ -9,6 +9,9 @@
   "scripts": {
     "purgestorage": "bin/init-dev-storage.js"
   },
+  "resolutions": {
+    "**/**/lodash": "^4.17.19"
+  },
   "dependencies": {
     "artillery": "^1.6.0",
     "axios": "^0.19.2",
