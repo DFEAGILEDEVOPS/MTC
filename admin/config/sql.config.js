@@ -36,6 +36,7 @@ module.exports = {
   options: {
     appName: process.env.SQL_APP_NAME || 'mtc-local-dev', // docker default
     encrypt: {}.hasOwnProperty.call(process.env, 'SQL_ENCRYPT') ? toBool(process.env.SQL_ENCRYPT) : true,
-    enableArithAbort: {}.hasOwnProperty.call(process.env, 'SQL_ENABLE_ARITH_ABORT') ? toBool(process.env.SQL_ENABLE_ARITH_ABORT) : true
+    enableArithAbort: {}.hasOwnProperty.call(process.env, 'SQL_ENABLE_ARITH_ABORT') ? toBool(process.env.SQL_ENABLE_ARITH_ABORT) : true,
+    trustServerCertificate: {}.hasOwnProperty.call(process.env, 'SQL_TRUST_SERVER_CERTIFICATE') ? toBool(process.env.SQL_TRUST_SERVER_CERTIFICATE) : false
   }
 }
