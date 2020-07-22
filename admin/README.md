@@ -116,8 +116,6 @@ SQL Server specific environment variables
 
 We use [tedious](http://tediousjs.github.io/tedious/) package for SQL Server data operations.  This has been abstracted with a connection pool implementation and methods for querying and modifying data have been surfaced via the [sqlService](./services/data-access/sql.service.js) object.
 
-Example usage can be found [here](./sql.usage.example.js)
-
 ### Running the test suite
 
 `yarn test`
