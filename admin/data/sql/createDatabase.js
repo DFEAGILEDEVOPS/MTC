@@ -12,7 +12,8 @@ const adminConfig = {
     encrypt: config.Sql.Encrypt,
     requestTimeout: config.Sql.Migrator.Timeout,
     port: config.Sql.Port,
-    connectTimeout: config.Sql.Migrator.Timeout
+    connectTimeout: config.Sql.Migrator.Timeout,
+    trustServerCertificate: config.Sql.TrustServerCertificate
   },
   authentication: {
     type: 'default',
