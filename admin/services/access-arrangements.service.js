@@ -101,6 +101,14 @@ const accessArrangementsService = {
       await pupilAccessArrangementsDataService.sqlInsertAccessArrangements(pupilAccessArrangements)
     }
     return { urlSlug, foreName, lastName }
+  },
+  /**
+   * @param {moment.Moment} currentDate
+   * @param {Object} checkWindowData
+   * @returns {boolean}
+   */
+  canBeEdited: function canBeEdited (currentDate, checkWindowData) {
+    return currentDate.isBetween(checkWindowData.adminStartDate, checkWindowData.checkEndDate)
   }
 }
 
