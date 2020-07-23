@@ -1,11 +1,12 @@
 'use strict'
 
 const helmet = require('helmet')
+const nocache = require('nocache')
 const config = require('../config')
 
 const init = (app) => {
   app.use(helmet())
-  app.use(helmet.noCache())
+  app.use(nocache())
   const scriptSources = ["'self'", "'unsafe-inline'", 'https://www.google-analytics.com', 'https://www.googletagmanager.com', 'https://az416426.vo.msecnd.net']
   const styleSources = ["'self'", "'unsafe-inline'"]
   const imgSources = ["'self'", 'https://www.google-analytics.com', 'https://www.googletagmanager.com', 'data:']

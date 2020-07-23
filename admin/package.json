@@ -71,6 +71,7 @@
     "moment-timezone": "^0.5.23",
     "morgan": "~1.10.0",
     "mssql": "6.2.0",
+    "nocache": "^2.1.0",
     "node-dir": "^0.1.17",
     "openid-client": "^3.12.2",
     "passport": "^0.4.0",
@@ -120,6 +121,7 @@
     "proxyquire": "^2.1.0",
     "sinon": "^9.0.0",
     "standard": "^14.3.1",
+    "supertest": "^4.0.2",
     "tslint": "^6.1.2",
     "typescript": "^3.5.3"
   },
