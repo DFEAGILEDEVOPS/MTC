@@ -5,6 +5,8 @@ const questionReaderReasonsDataService = require('../services/data-access/questi
 const preparedCheckSyncService = require('../services/prepared-check-sync.service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
 const accessArrangementsValidator = require('../lib/validator/access-arrangements-validator.js')
+const config = require('../config')
+const moment = require('moment-timezone')
 
 const accessArrangementsService = {
 /**
@@ -107,7 +109,8 @@ const accessArrangementsService = {
    * @param {Object} checkWindowData
    * @returns {boolean}
    */
-  canBeEdited: function canBeEdited (currentDate, checkWindowData) {
+  canBeEdited: function canBeEdited (checkWindowData, timezone) {
+    const currentDate = moment.tz(timezone || config.DEFAULT_TIMEZONE)
     return currentDate.isBetween(checkWindowData.adminStartDate, checkWindowData.checkEndDate)
   }
 }

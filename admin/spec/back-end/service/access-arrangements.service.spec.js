@@ -1,5 +1,5 @@
 'use strict'
-/* global describe, it, expect spyOn fail */
+/* global describe, it, expect spyOn beforeAll */
 
 const sut = require('../../../services/access-arrangements.service')
 const accessArrangementsDataService = require('../../../services/data-access/access-arrangements.data.service')
@@ -10,7 +10,7 @@ const accessArrangementsValidator = require('../../../lib/validator/access-arran
 const ValidationError = require('../../../lib/validation-error')
 const accessArrangementsErrorMessages = require('../../../lib/errors/access-arrangements')
 const preparedCheckSyncService = require('../../../services/prepared-check-sync.service')
-const moment = require('moment')
+const moment = require('moment-timezone')
 
 describe('accessArrangementsService', () => {
   describe('getAccessArrangements', () => {
@@ -279,21 +279,22 @@ describe('accessArrangementsService', () => {
     })
   })
   describe('canBeEdited', () => {
+    beforeAll(() => {
+      spyOn(moment, 'tz').and.returnValue(moment('2020-07-23'))
+    })
     it('should return true if check window is open', () => {
-      const currentDate = moment('2020-07-23')
       const checkWindowData = {
         adminStartDate: moment('2020-01-01'),
         checkEndDate: moment('2020-08-01')
       }
-      expect(sut.canBeEdited(currentDate, checkWindowData)).toBe(true)
+      expect(sut.canBeEdited(checkWindowData)).toBe(true)
     })
     it('should return false if check window is closed', () => {
-      const currentDate = moment('2020-07-23')
       const checkWindowData = {
         adminStartDate: moment('2020-03-01'),
         checkEndDate: moment('2020-07-01')
       }
-      expect(sut.canBeEdited(currentDate, checkWindowData)).toBe(false)
+      expect(sut.canBeEdited(checkWindowData)).toBe(false)
     })
   })
 })
