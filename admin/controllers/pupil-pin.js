@@ -13,7 +13,7 @@ const pupilPinPresenter = require('../helpers/pupil-pin-presenter')
 const qrService = require('../services/qr.service')
 const schoolService = require('../services/school.service')
 
-const getGeneratePinsOverview = async (req, res, next) => {
+const getGeneratePinsOverview = async function getGeneratePinsOverview (req, res, next) {
   if (!req.params || !req.params.pinEnv) {
     const error = new Error('Pin environment not provided')
     return next(error)
@@ -63,7 +63,7 @@ const getGeneratePinsOverview = async (req, res, next) => {
  * @param next
  * @return {Promise<*>}
  */
-const getGeneratePinsList = async (req, res, next) => {
+const getGeneratePinsList = async function getGeneratePinsList (req, res, next) {
   if (!req.params || !req.params.pinEnv) {
     const error = new Error('Pin environment not provided')
     return next(error)
@@ -166,7 +166,7 @@ const postGeneratePins = async function postGeneratePins (req, res, next) {
   return res.redirect(`/pupil-pin/view-and-custom-print-${pinEnv}-pins`)
 }
 
-const getViewAndCustomPrintPins = async (req, res, next) => {
+const getViewAndCustomPrintPins = async function getViewAndCustomPrintPins (req, res, next) {
   if (!req.params || !req.params.pinEnv) {
     const error = new Error('Pin environment not provided')
     return next(error)

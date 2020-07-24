@@ -15,25 +15,25 @@ router.get(
   '/generate-:pinEnv-pins-overview',
   isAuthenticated([roles.teacher, roles.helpdesk]),
   isAdminWindowAvailable,
-  (req, res, next) => getGeneratePinsOverview(req, res, next)
+  getGeneratePinsOverview
 )
 router.get(
   '/generate-:pinEnv-pins-list/:groupIds?',
   isAuthenticated([roles.teacher, roles.helpdesk]),
   isAdminWindowAvailable,
-  (req, res, next) => getGeneratePinsList(req, res, next)
+  getGeneratePinsList
 )
 router.post(
   '/generate-:pinEnv-pins',
   isAuthenticated([roles.teacher, roles.helpdesk]),
   isAdminWindowAvailable,
-  (req, res, next) => postGeneratePins(req, res, next)
+  postGeneratePins
 )
 router.get(
   '/view-and-custom-print-:pinEnv-pins',
   isAuthenticated([roles.teacher, roles.helpdesk]),
   isAdminWindowAvailable,
-  (req, res, next) => getViewAndCustomPrintPins(req, res, next)
+  getViewAndCustomPrintPins
 )
 
 module.exports = router
