@@ -1,21 +1,17 @@
 'use strict'
-/* global describe beforeEach afterEach expect it spyOn fail */
+/* global describe beforeEach expect it spyOn fail */
 
-const sinon = require('sinon')
-const proxyquire = require('proxyquire').noCallThru()
 const pupilValidator = require('../../../lib/validator/pupil-validator')
 const pupilDataService = require('../../../services/data-access/pupil.data.service')
 const pupilAgeReasonDataService = require('../../../services/data-access/pupil-age-reason.data.service')
 const ValidationError = require('../../../lib/validation-error')
-const sqlResponse = require('../mocks/sql-modify-response')
-const pupilMock = require('../mocks/pupil')
 const redisCacheService = require('../../../services/data-access/redis-cache.service')
-const redisKeyService = require('../../../services/redis-key.service')
 
-let pupilData
+let reqBody
 
 describe('pupil-add-service', () => {
-  let sandbox, service, pupilValidatorSpy, saveSpy
+  const service = require('../../../services/pupil-add-service')
+
   const validationFunctionResolves = function () {
     return Promise.resolve(new ValidationError())
   }
@@ -26,9 +22,7 @@ describe('pupil-add-service', () => {
   }
 
   beforeEach(() => {
-    sandbox = sinon.createSandbox()
-    pupilData = {
-      school: 9991001,
+    reqBody = {
       upn: 'L860100210012',
       foreName: 'test',
       lastName: 'test',
@@ -39,101 +33,96 @@ describe('pupil-add-service', () => {
       'dob-month': '6',
       'dob-day': '30',
       'dob-year': '2009',
-      pin: null,
-      pinExpired: false,
       ageReason: null
     }
   })
 
-  function getService (validationFn) {
-    pupilValidatorSpy = sandbox.stub(pupilValidator, 'validate').callsFake(validationFn)
-    saveSpy = sandbox.stub(pupilDataService, 'sqlCreate').resolves(sqlResponse)
-    spyOn(pupilDataService, 'sqlFindOneById').and.returnValue(pupilMock)
-    spyOn(pupilAgeReasonDataService, 'sqlInsertPupilAgeReason')
-    spyOn(redisCacheService, 'drop')
-    spyOn(redisKeyService, 'getPupilRegisterViewDataKey')
-    service = proxyquire('../../../services/pupil-add-service', {
-      '../lib/validator/pupil-validator': pupilValidator
+  describe('#addPupil', () => {
+    it('throws if the school is not supplied', async () => {
+      try {
+        await service.addPupil(reqBody, undefined)
+      } catch (error) {
+        expect(error.message).toMatch(/Saving pupil failed/)
+      }
     })
-    return service
-  }
 
-  afterEach(() => {
-    sandbox.restore()
-  })
+    it('throws if the pupil params are not supplied', async () => {
+      try {
+        await service.addPupil({}, 1)
+      } catch (error) {
+        expect(error.message).toMatch(/Saving pupil failed/)
+      }
+    })
 
-  it('validates the pupil data', async () => {
-    service = getService(validationFunctionResolves)
-    const schoolId = 999001
-    await service.addPupil(pupilData, schoolId)
-    expect(pupilValidatorSpy.called).toBeTruthy()
-  })
+    it('validates the pupil data', async () => {
+      spyOn(pupilValidator, 'validate').and.callFake(validationFunctionResolves)
+      spyOn(pupilDataService, 'sqlCreate').and.returnValue({ insertId: 1 })
+      spyOn(pupilDataService, 'sqlFindOneById')
+      spyOn(redisCacheService, 'drop')
+      const schoolId = 999001
+      try {
+        await service.addPupil(reqBody, schoolId)
+      } catch (error) {
+        fail(error) // shouldn't throw
+      }
+    })
 
-  it('throws a validation error if the pupil data does not validate', async () => {
-    service = getService(validationFunctionThrows)
-    try {
-      await service.addPupil(pupilData)
-      expect('this').toBe('thrown')
-    } catch (error) {
-      expect(error.name).toBe('Error')
-    }
-  })
+    it('throws a validation error if the pupil data does not validate', async () => {
+      spyOn(pupilValidator, 'validate').and.callFake(validationFunctionThrows)
+      const schoolId = 999001
+      try {
+        await service.addPupil(reqBody, schoolId)
+        fail('expected to throw')
+      } catch (error) {
+        expect(error.name).toBe('ValidationError')
+      }
+    })
 
-  it('saves the pupil data', async () => {
-    service = getService(validationFunctionResolves)
-    try {
-      await service.addPupil(pupilData, 1234)
-      expect(saveSpy.calledOnce).toBeTruthy()
-      const saveArg = saveSpy.args[0][0]
+    it('saves the pupil data', async () => {
+      spyOn(pupilValidator, 'validate').and.callFake(validationFunctionResolves)
+      spyOn(pupilDataService, 'sqlCreate').and.returnValue({ insertId: 1 })
+      spyOn(pupilDataService, 'sqlFindOneById')
+      spyOn(pupilAgeReasonDataService, 'sqlInsertPupilAgeReason')
+      spyOn(redisCacheService, 'drop')
+
+      await service.addPupil(reqBody, 1234)
+      expect(pupilDataService.sqlCreate).toHaveBeenCalledTimes(1)
+      const saveArg = pupilDataService.sqlCreate.calls.argsFor(0)[0]
+
       // Check that the data of birth has been added
       expect(saveArg.dateOfBirth).toBeDefined()
       expect(saveArg.dateOfBirth.toISOString()).toBe('2009-06-30T00:00:00.000Z')
+
       // Check that the UI fields have been removed
       expect(saveArg['dob-day']).toBeUndefined()
       expect(saveArg['dob-month']).toBeUndefined()
       expect(saveArg['dob-year']).toBeUndefined()
-      expect(pupilAgeReasonDataService.sqlInsertPupilAgeReason).not.toHaveBeenCalled()
-    } catch (error) {
-      expect('Error: Invalid req.body and/or school id. Saving pupil failed.').toBe(error.toString())
-    }
-  })
 
-  it('calls sqlInsertPupilAgeReason before it saves the pupil data if ageReason is supplied', async () => {
-    service = getService(validationFunctionResolves)
-    try {
-      pupilData.ageReason = 'reason'
-      await service.addPupil(pupilData, 1234)
-      expect(saveSpy.calledOnce).toBeTruthy()
-      const saveArg = saveSpy.args[0][0]
+      expect(pupilAgeReasonDataService.sqlInsertPupilAgeReason).not.toHaveBeenCalled()
+    })
+
+    it('calls sqlInsertPupilAgeReason before it saves the pupil data if ageReason is supplied', async () => {
+      spyOn(pupilValidator, 'validate').and.callFake(validationFunctionResolves)
+      spyOn(pupilDataService, 'sqlCreate').and.returnValue({ insertId: 1 })
+      spyOn(pupilDataService, 'sqlFindOneById')
+      spyOn(pupilAgeReasonDataService, 'sqlInsertPupilAgeReason')
+      spyOn(redisCacheService, 'drop')
+      reqBody.ageReason = 'reason'
+
+      await service.addPupil(reqBody, 1234)
+
+      expect(pupilDataService.sqlCreate).toHaveBeenCalled()
+      const saveArg = pupilDataService.sqlCreate.calls.argsFor(0)[0]
+
       // Check that the data of birth has been added
       expect(saveArg.dateOfBirth).toBeDefined()
       expect(saveArg.dateOfBirth.toISOString()).toBe('2009-06-30T00:00:00.000Z')
+
       // Check that the UI fields have been removed
       expect(saveArg['dob-day']).toBeUndefined()
       expect(saveArg['dob-month']).toBeUndefined()
       expect(saveArg['dob-year']).toBeUndefined()
       expect(pupilAgeReasonDataService.sqlInsertPupilAgeReason).toHaveBeenCalled()
-    } catch (error) {
-      expect('Error: Invalid req.body and/or school id. Saving pupil failed.').toBe(error.toString())
-    }
-  })
-
-  it('does not save the pupil data if arguments are missing', async () => {
-    service = getService(validationFunctionResolves)
-    try {
-      await service.addPupil(pupilData, 1234)
-      expect(saveSpy.calledOnce).toBeTruthy()
-      const saveArg = saveSpy.args[0][0]
-      // Check that the data of birth has been added
-      expect(saveArg.dateOfBirth).toBeDefined()
-      expect(saveArg.dateOfBirth.toISOString()).toBe('2009-06-30T00:00:00.000Z')
-      // check that the UI fields have been removed
-      expect(saveArg['dob-day']).toBeUndefined()
-      expect(saveArg['dob-month']).toBeUndefined()
-      expect(saveArg['dob-year']).toBeUndefined()
-      expect(pupilAgeReasonDataService.sqlInsertPupilAgeReason).not.toHaveBeenCalled()
-    } catch (error) {
-      fail('not expected to throw')
-    }
+    })
   })
 })
