@@ -19,7 +19,7 @@ const controller = {}
  * @param next
  * @returns {Promise.<void>}
  */
-controller.getOverview = async (req, res, next) => {
+controller.getOverview = async function getOverview (req, res, next) {
   res.locals.pageTitle = 'Enable access arrangements for pupils who need them'
   req.breadcrumbs(res.locals.pageTitle)
   let pupils
@@ -63,7 +63,7 @@ controller.getOverview = async (req, res, next) => {
  * @param error
  * @returns {Promise.<void>}
  */
-controller.getSelectAccessArrangements = async (req, res, next, error = null) => {
+controller.getSelectAccessArrangements = async function getSelectAccessArrangements (req, res, next, error = null) {
   res.locals.pageTitle = 'Select access arrangement for pupil'
   req.breadcrumbs('Enable access arrangements for pupils who need them', '/access-arrangements/overview')
   req.breadcrumbs('Select pupils and access arrangements')
@@ -104,7 +104,7 @@ controller.getSelectAccessArrangements = async (req, res, next, error = null) =>
  * @param next
  * @returns {Promise.<void>}
  */
-controller.postSubmitAccessArrangements = async (req, res, next) => {
+controller.postSubmitAccessArrangements = async function postSubmitAccessArrangements (req, res, next) {
   let pupil
   try {
     const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
@@ -143,7 +143,7 @@ controller.postSubmitAccessArrangements = async (req, res, next) => {
  * @param error
  * @returns {Promise.<void>}
  */
-controller.getEditAccessArrangements = async (req, res, next, error = null) => {
+controller.getEditAccessArrangements = async function getEditAccessArrangements (req, res, next, error = null) {
   res.locals.pageTitle = 'Edit access arrangement for pupil'
   req.breadcrumbs('Enable access arrangements for pupils who need them', '/access-arrangements/overview')
   req.breadcrumbs('Edit pupils and access arrangements')
@@ -195,7 +195,7 @@ controller.getEditAccessArrangements = async (req, res, next, error = null) => {
  * @param next
  * @returns {Promise.<void>}
  */
-controller.getDeleteAccessArrangements = async (req, res, next) => {
+controller.getDeleteAccessArrangements = async function getDeleteAccessArrangements (req, res, next) {
   let pupil
   try {
     const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
@@ -209,7 +209,7 @@ controller.getDeleteAccessArrangements = async (req, res, next) => {
   return res.redirect(`/access-arrangements/overview?hl=${pupil.urlSlug}`)
 }
 
-controller.getAddInputAssistant = async (req, res, next) => {
+controller.getAddInputAssistant = async function (req, res, next) {
   res.locals.pageTitle = 'Record input assistant used for official check'
   req.breadcrumbs('Select pupils and access arrangements', 'select-access-arrangements')
   req.breadcrumbs('Record input assistant')
