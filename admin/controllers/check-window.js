@@ -18,7 +18,7 @@ const controller = {
    * @param next
    * @returns {Promise.<void>}
    */
-  getManageCheckWindows: async (req, res, next) => {
+  getManageCheckWindows: async function getManageCheckWindows (req, res, next) {
     res.locals.pageTitle = 'Manage check windows'
     req.breadcrumbs(res.locals.pageTitle)
     let checkWindows
@@ -41,7 +41,7 @@ const controller = {
    * @param next
    * @returns {Promise.<void>}
    */
-  createCheckWindow: async (req, res, next) => {
+  createCheckWindow: async function createCheckWindow (req, res, next) {
     res.locals.pageTitle = 'Create check window'
     req.breadcrumbs('Manage check windows', '/check-window/manage-check-windows')
     req.breadcrumbs(res.locals.pageTitle)
@@ -60,7 +60,7 @@ const controller = {
    * @param next
    * @returns {Promise.<void>}
    */
-  submitCheckWindow: async (req, res, next) => {
+  submitCheckWindow: async function submitCheckWindow (req, res, next) {
     const requestData = req.body
     const { checkWindowUrlSlug } = requestData
     let flashMessage
@@ -102,7 +102,7 @@ const controller = {
    * @param next
    * @returns {Promise.<*>}
    */
-  removeCheckWindow: async (req, res, next) => {
+  removeCheckWindow: async function removeCheckWindow (req, res, next) {
     const urlSlug = req.params.checkWindowUrlSlug
     let checkWindow
     try {
@@ -123,7 +123,7 @@ const controller = {
    * @returns {Promise.<void>}
    */
 
-  getCheckWindowEditForm: async (req, res, next) => {
+  getCheckWindowEditForm: async function getCheckWindowEditForm (req, res, next) {
     req.breadcrumbs('Manage check windows', '/check-window/manage-check-windows')
     res.locals.pageTitle = 'Edit check window'
     req.breadcrumbs(res.locals.pageTitle)

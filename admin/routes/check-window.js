@@ -9,11 +9,26 @@ const featureToggles = require('feature-toggles')
 
 if (featureToggles.isFeatureEnabled('newCheckWindow')) {
   /* Check Window routing */
-  router.get('/manage-check-windows', isAuthenticated(roles.serviceManager), (req, res, next) => checkWindowController.getManageCheckWindows(req, res, next))
-  router.get('/create-check-window', isAuthenticated(roles.serviceManager), (req, res, next) => checkWindowController.createCheckWindow(req, res, next))
-  router.post('/submit-check-window', isAuthenticated(roles.serviceManager), (req, res, next) => checkWindowController.submitCheckWindow(req, res, next))
-  router.get('/remove/:checkWindowUrlSlug', isAuthenticated(roles.serviceManager), (req, res, next) => checkWindowController.removeCheckWindow(req, res, next))
-  router.get('/edit/:checkWindowUrlSlug', isAuthenticated(roles.serviceManager), (req, res, next) => checkWindowController.getCheckWindowEditForm(req, res, next))
+  router.get('/manage-check-windows',
+    isAuthenticated(roles.serviceManager),
+    checkWindowController.getManageCheckWindows
+  )
+  router.get('/create-check-window',
+    isAuthenticated(roles.serviceManager),
+    checkWindowController.createCheckWindow
+  )
+  router.post('/submit-check-window',
+    isAuthenticated(roles.serviceManager),
+    checkWindowController.submitCheckWindow
+  )
+  router.get('/remove/:checkWindowUrlSlug',
+    isAuthenticated(roles.serviceManager),
+    checkWindowController.removeCheckWindow
+  )
+  router.get('/edit/:checkWindowUrlSlug',
+    isAuthenticated(roles.serviceManager),
+    checkWindowController.getCheckWindowEditForm
+  )
 }
 
 module.exports = router
