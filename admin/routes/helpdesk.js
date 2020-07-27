@@ -23,10 +23,12 @@ router.post('/remove-school-impersonation',
   isAuthenticated(roles.helpdesk),
   helpdeskImpersonationController.postRemoveSchoolImpersonation
 )
-router.get('/home',
-  isAuthenticated(roles.helpdesk),
-  helpdeskImpersonationController.getSchoolLandingPage
-)
+
+// router.get('/home',
+//   isAuthenticated(roles.helpdesk),
+//   helpdeskImpersonationController.getSchoolLandingPage
+// )
+
 router.get('/school-summary',
   isAuthenticated(roles.helpdesk),
   helpdeskSummaryController.getSummary
