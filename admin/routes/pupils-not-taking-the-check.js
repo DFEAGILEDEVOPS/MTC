@@ -10,19 +10,19 @@ router.get(
   '/select-pupils/:groupIds?',
   isAuthenticated([roles.teacher, roles.helpdesk]),
   isAdminWindowAvailable,
-  (req, res, next) => pupilsNotTakingTheCheck.getSelectPupilNotTakingCheck(req, res, next)
+  pupilsNotTakingTheCheck.getSelectPupilNotTakingCheck
 )
 router.get(
   '/save-pupils',
   isAuthenticated([roles.teacher, roles.helpdesk]),
   isAdminWindowAvailable,
-  (req, res, next) => pupilsNotTakingTheCheck.getSelectPupilNotTakingCheck(req, res, next)
+  pupilsNotTakingTheCheck.getSelectPupilNotTakingCheck
 )
 router.post(
   '/save-pupils',
   isAuthenticated([roles.teacher, roles.helpdesk]),
   isAdminWindowAvailable,
-  (req, res, next) => pupilsNotTakingTheCheck.savePupilNotTakingCheck(req, res, next)
+  pupilsNotTakingTheCheck.savePupilNotTakingCheck
 )
 router.get(
   '/remove/:pupilId',
@@ -34,19 +34,19 @@ router.get(
   '/view',
   isAuthenticated([roles.teacher, roles.helpdesk]),
   isAdminWindowAvailable,
-  (req, res, next) => pupilsNotTakingTheCheck.viewPupilsNotTakingTheCheck(req, res, next)
+  pupilsNotTakingTheCheck.viewPupilsNotTakingTheCheck
 )
 router.get(
   ['/', '/pupils-list'],
   isAuthenticated([roles.teacher, roles.helpdesk]),
   isAdminWindowAvailable,
-  (req, res, next) => pupilsNotTakingTheCheck.getPupilNotTakingCheck(req, res, next)
+  pupilsNotTakingTheCheck.getPupilNotTakingCheck
 )
 router.get(
   '/:removed',
   isAuthenticated([roles.teacher, roles.helpdesk]),
   isAdminWindowAvailable,
-  (req, res, next) => pupilsNotTakingTheCheck.getPupilNotTakingCheck(req, res, next)
+  pupilsNotTakingTheCheck.getPupilNotTakingCheck
 )
 
 module.exports = router

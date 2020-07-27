@@ -11,7 +11,7 @@ const controller = {}
  * @param next
  * @returns {Promise.<*>}
  */
-controller.getViewPupilStatus = async (req, res, next) => {
+controller.getViewPupilStatus = async function getViewPupilStatus (req, res, next) {
   res.locals.pageTitle = 'See how many pupils have completed the official check'
   req.breadcrumbs(res.locals.pageTitle)
   let pupilStatusData

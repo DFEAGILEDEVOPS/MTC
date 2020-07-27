@@ -7,18 +7,69 @@ const roles = require('../lib/consts/roles')
 const serviceManagerController = require('../controllers/service-manager')
 
 /* Service Manager routing */
-router.get('/home', isAuthenticated(roles.serviceManager), (req, res, next) => serviceManagerController.getServiceManagerHome(req, res, next))
-router.get('/check-settings', isAuthenticated(roles.serviceManager), (req, res, next) => serviceManagerController.getUpdateTiming(req, res, next))
-router.get('/check-settings/:status', isAuthenticated(roles.serviceManager), (req, res, next) => serviceManagerController.getUpdateTiming(req, res, next))
-router.post('/check-settings', isAuthenticated(roles.serviceManager), (req, res, next) => serviceManagerController.setUpdateTiming(req, res, next))
-router.get('/upload-pupil-census', isAuthenticated(roles.serviceManager), (req, res, next) => serviceManagerController.getUploadPupilCensus(req, res, next))
-router.post('/upload-pupil-census/upload', isAuthenticated(roles.serviceManager), (req, res, next) => serviceManagerController.postUploadPupilCensus(req, res, next))
-router.get('/upload-pupil-census/delete/:pupilCensusId', isAuthenticated(roles.serviceManager), (req, res, next) => serviceManagerController.getRemovePupilCensus(req, res, next))
-router.get('/mod-settings', isAuthenticated(roles.serviceManager), (req, res, next) => serviceManagerController.getSceSettings(req, res, next))
-router.post('/mod-settings', isAuthenticated(roles.serviceManager), (req, res, next) => serviceManagerController.postSceSettings(req, res, next))
-router.get('/mod-settings/cancel', isAuthenticated(roles.serviceManager), (req, res) => serviceManagerController.cancelSceSettings(req, res))
-router.get('/mod-settings/add-school', isAuthenticated(roles.serviceManager), (req, res, next) => serviceManagerController.getSceAddSchool(req, res, next))
-router.post('/mod-settings/add-school', isAuthenticated(roles.serviceManager), (req, res, next) => serviceManagerController.postSceAddSchool(req, res, next))
-router.get('/mod-settings/remove-school/:urn', isAuthenticated(roles.serviceManager), (req, res, next) => serviceManagerController.getSceRemoveSchool(req, res, next))
+router.get('/home',
+  isAuthenticated(roles.serviceManager),
+  serviceManagerController.getServiceManagerHome
+)
+
+router.get('/check-settings',
+  isAuthenticated(roles.serviceManager),
+  serviceManagerController.getUpdateTiming
+)
+
+router.get('/check-settings/:status',
+  isAuthenticated(roles.serviceManager),
+  serviceManagerController.getUpdateTiming
+)
+
+router.post('/check-settings',
+  isAuthenticated(roles.serviceManager),
+  serviceManagerController.setUpdateTiming
+)
+
+router.get('/upload-pupil-census',
+  isAuthenticated(roles.serviceManager),
+  serviceManagerController.getUploadPupilCensus
+)
+
+router.post('/upload-pupil-census/upload',
+  isAuthenticated(roles.serviceManager),
+  serviceManagerController.postUploadPupilCensus
+)
+
+router.get('/upload-pupil-census/delete/:pupilCensusId',
+  isAuthenticated(roles.serviceManager),
+  serviceManagerController.getRemovePupilCensus
+)
+
+router.get('/mod-settings',
+  isAuthenticated(roles.serviceManager),
+  serviceManagerController.getSceSettings
+)
+
+router.post('/mod-settings',
+  isAuthenticated(roles.serviceManager),
+  serviceManagerController.postSceSettings
+)
+
+router.get('/mod-settings/cancel',
+  isAuthenticated(roles.serviceManager),
+  serviceManagerController.cancelSceSettings
+)
+
+router.get('/mod-settings/add-school',
+  isAuthenticated(roles.serviceManager),
+  serviceManagerController.getSceAddSchool
+)
+
+router.post('/mod-settings/add-school',
+  isAuthenticated(roles.serviceManager),
+  serviceManagerController.postSceAddSchool
+)
+
+router.get('/mod-settings/remove-school/:urn',
+  isAuthenticated(roles.serviceManager),
+  serviceManagerController.getSceRemoveSchool
+)
 
 module.exports = router

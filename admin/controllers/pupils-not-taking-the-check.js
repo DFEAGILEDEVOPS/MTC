@@ -17,7 +17,7 @@ const attendanceCodesPresenter = require('../helpers/attendance-codes-presenter'
  * @param next
  * @returns {Promise.<void>}
  */
-const getPupilNotTakingCheck = async (req, res, next) => {
+const getPupilNotTakingCheck = async function getPupilNotTakingCheck (req, res, next) {
   res.locals.pageTitle = 'Give a reason why a pupil is not taking the check'
   req.breadcrumbs(res.locals.pageTitle)
   let checkWindowData
@@ -50,7 +50,7 @@ const getPupilNotTakingCheck = async (req, res, next) => {
  * @param next
  * @returns {Promise.<*>}
  */
-const getSelectPupilNotTakingCheck = async (req, res, next) => {
+const getSelectPupilNotTakingCheck = async function getSelectPupilNotTakingCheck (req, res, next) {
   res.locals.pageTitle = 'Select pupil and reason'
   req.breadcrumbs('Give a reason why a pupil is not taking the check', '/pupils-not-taking-the-check')
   req.breadcrumbs(res.locals.pageTitle)
@@ -100,7 +100,7 @@ const getSelectPupilNotTakingCheck = async (req, res, next) => {
  * @param next
  * @returns {Promise.<*>}
  */
-const savePupilNotTakingCheck = async (req, res, next) => {
+const savePupilNotTakingCheck = async function savePupilNotTakingCheck (req, res, next) {
   res.locals.pageTitle = 'Save pupils not taking the check'
   req.breadcrumbs(res.locals.pageTitle)
 
@@ -135,7 +135,7 @@ const savePupilNotTakingCheck = async (req, res, next) => {
  * @param next
  * @returns {Promise.<*>}
  */
-const removePupilNotTakingCheck = async (req, res, next) => {
+const removePupilNotTakingCheck = async function removePupilNotTakingCheck (req, res, next) {
   if (!req.params.pupilId || !req.user.School) {
     return res.redirect('/pupils-not-taking-the-check/select-pupils')
   }
@@ -158,7 +158,7 @@ const removePupilNotTakingCheck = async (req, res, next) => {
  * @param next
  * @return {Promise<*>}
  */
-const viewPupilsNotTakingTheCheck = async (req, res, next) => {
+const viewPupilsNotTakingTheCheck = async function viewPupilsNotTakingTheCheck (req, res, next) {
   res.locals.pageTitle = 'Give a reason why a pupil is not taking the check'
   req.breadcrumbs(res.locals.pageTitle)
   const highlight = req.query.hl || []
