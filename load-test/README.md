@@ -4,7 +4,7 @@
 
 We use JMeter 5, as this is now the default for flood.io
 
-### Mac OS
+### MacOS
 * Install JDK 8 or later
 * Install v5 JMeter...
 * via Homebrew: `brew install jmeter`
@@ -14,10 +14,10 @@ We use JMeter 5, as this is now the default for flood.io
 ### Linux
 * Run `sudo apt-get update` to refresh packages metadata
 * Install JDK 7 or later
-* Download JMeter 5: `wget -c http://www-us.apache.org/dist/jmeter/binaries/apache-jmeter-4.0.tgz`
-* Unpack JMeter `tar -xf apache-jmeter-4.0.tgz`
+* Download JMeter 5: `wget -c http://www-us.apache.org/dist/jmeter/binaries/apache-jmeter-5.3.tgz`
+* Unpack JMeter `tar -xf apache-jmeter-5.3.tgz`
 * Ensure JMeter works by running a simple test:
-`apache-jmeter-4.0/bin/./jmeter -n -t apache-jmeter-4.0/extras/Test.jmx`
+`apache-jmeter-5.3/bin/jmeter -n -t apache-jmeter-5.3/extras/Test.jmx`
 
 ### Windows
 * Install JDK 8 or later
@@ -67,17 +67,18 @@ Running Jmeter from the command line...
 
 MTC Specific parameters, commonly used in the jmx files...
 
-- **waitTimeMs** the time to wait in milliseconds at each defined pause step. defaults to `5000`
-- **adminAppHost** the domain of the admin app. defaults to `localhost`
-- **port** the port of the admin app. defaults to `3001`
-- **protocol** the protocol of the admin app. defaults to `http`
-- **threads** number of threads to run. defaults to 5
-- **rampup** ramp up period, in seconds. defaults to 5
-- **duration** test run duration, in seconds. defaults to 300 (5 minutes)
-- **pupilApiHost** the domain of the pupil auth Api. defaults to `localhost`
-- **pupilApiPort** the port of the pupil auth Api. defaults to `3003`
-- **proxyFunctionHost** the domain of the function proxy api. defaults to `localhost`
-- **proxyFunctionPort** the port of the function proxy api. defaults to `7073`
+- **`adminAppHost`** the domain of the admin app. defaults to `localhost`
+- **`duration`** test run duration, in seconds. defaults to 300 (5 minutes)
+- **`port`** the port of the admin app. defaults to `3001`
+- **`protocol`** the protocol of the admin app. defaults to `http`
+- **`proxyFunctionHost`** the domain of the function proxy api. defaults to `localhost`
+- **`proxyFunctionPort`** the port of the function proxy api. defaults to `7073`
+- **`pupilApiHost`** the domain of the pupil auth Api. defaults to `localhost`
+- **`pupilApiPort`** the port of the pupil auth Api. defaults to `3003`
+- **`queueDomain`** host for Azure storage queues
+- **`rampup`** ramp up period, in seconds. defaults to 5
+- **`threads`** number of threads to run. defaults to 5
+- **`waitTimeMs`** the time to wait in milliseconds at each defined pause step. defaults to `5000`
 
 # Data seeding
 If you are running a local run of 5 users or less (useful for debugging jmx scenarios) you do not need to pre-load the system as 5 users are created with the default seeding as part of `/start.sh`.
