@@ -56,22 +56,23 @@ const service = {
       }
     ]
     const sql = `
-        SELECT
-            p.id,
-            p.foreName,
-            p.lastName,
-            p.middleNames,
-            p.dateOfBirth,
-            p.group_id,
-            p.urlSlug
-          FROM
-              [mtc_admin].[pupil] p
-              LEFT JOIN [mtc_admin].[pupilAccessArrangements] paa ON (paa.pupil_id = p.id)
-         WHERE p.school_id = @schoolId
-           AND p.attendanceId IS NULL
-           AND p.checkComplete = 1
-           AND paa.pupil_id IS NULL
-         ORDER BY lastName;
+    SELECT
+      p.id,
+      p.foreName,
+      p.lastName,
+      p.middleNames,
+      p.dateOfBirth,
+      p.group_id,
+      p.urlSlug
+    FROM
+      [mtc_admin].[pupil] p
+      INNER JOIN [mtc_admin].[check] chk ON (p.currentCheckId = chk.id)
+      LEFT JOIN [mtc_admin].pupilAccessArrangements paa ON (chk.id = paa.retroInputAssistant_check_id)
+    WHERE p.school_id = @schoolId
+      AND p.attendanceId IS NULL
+      AND paa.id IS NULL
+      AND chk.complete = 1
+    ORDER BY lastName;
     `
     return sqlService.readonlyQuery(sql, params)
   }
