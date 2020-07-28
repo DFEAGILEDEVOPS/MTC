@@ -5,6 +5,7 @@
       "type": "timerTrigger",
       "direction": "in",
       "schedule-description": "Run at 6pm every night",
+      "dev-schedule": "0 */2 * * * *",
       "schedule": "0 0 18 * * *"
     }
   ]
