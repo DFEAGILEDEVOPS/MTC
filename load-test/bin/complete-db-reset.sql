@@ -19,7 +19,7 @@ TRUNCATE TABLE mtc_admin.pupilAttendance
 DELETE FROM mtc_admin.pupilResultsDiagnosticCache
 DELETE FROM mtc_admin.pupilRestart
 DELETE FROM mtc_admin.[hdf]
-DELETE FROM mtc_admin.[schoolScore]
+DELETE FROM mtc_admin.[checkScore]
 DELETE FROM mtc_admin.[serviceMessage]
 UPDATE mtc_admin.pupil SET pupilAgeReason_id=NULL, group_id=NULL, attendanceId=NULL, currentCheckId=NULL
 DELETE FROM mtc_admin.pupilAgeReason

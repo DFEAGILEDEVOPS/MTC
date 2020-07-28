@@ -43,8 +43,8 @@ const service = {
     for (const school of schools) {
       this.logger(`${name}: Processing school [${school.id}] ${school.name}`)
       try {
-        const numChecksProccessed = await this.processSchool(school)
-        meta.checksProcessed += numChecksProccessed
+        const numChecksProcessed = await this.processSchool(school)
+        meta.checksProcessed += numChecksProcessed
       } catch (error) {
         this.logger.error(`Error processing school [${school.id}] ${school.name}`, error)
         meta.errors += 1
