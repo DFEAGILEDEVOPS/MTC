@@ -23,7 +23,7 @@ checkWindowV2Service.getCheckWindow = async (urlSlug) => {
 
 /**
  * Get active check window
- * @return {Promise<Object>} Check window object
+ * @return {Promise<any>} Check window object
  */
 let cachedActiveCheckWindow
 let cachedActiveCheckWindowExpiresAt

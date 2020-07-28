@@ -283,21 +283,21 @@ describe('accessArrangementsService', () => {
     beforeAll(() => {
       spyOn(moment, 'tz').and.returnValue(moment('2020-07-23'))
     })
-    it('should return true if check window is open', () => {
+    it('should return true if check window is open', async () => {
       const checkWindowData = {
         adminStartDate: moment('2020-01-01'),
         checkEndDate: moment('2020-08-01')
       }
       spyOn(checkWindowService, 'getActiveCheckWindow').and.returnValue(checkWindowData)
-      expect(sut.canBeEdited()).toBe(true)
+      expect(await sut.canBeEdited()).toBe(true)
     })
-    it('should return false if check window is closed', () => {
+    it('should return false if check window is closed', async () => {
       const checkWindowData = {
         adminStartDate: moment('2020-03-01'),
         checkEndDate: moment('2020-07-01')
       }
       spyOn(checkWindowService, 'getActiveCheckWindow').and.returnValue(checkWindowData)
-      expect(sut.canBeEdited()).toBe(false)
+      expect(await sut.canBeEdited()).toBe(false)
     })
   })
 })

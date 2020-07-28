@@ -109,11 +109,11 @@ const accessArrangementsService = {
    * @description determines if existing access arrangements can be edited based upon check window state
    * @param {moment.Moment} currentDate
    * @param {Object} checkWindowData
-   * @returns {boolean}
+   * @returns {Promise<boolean>}
    */
-  canBeEdited: function canBeEdited (timezone) {
+  canBeEdited: async function canBeEdited (timezone) {
     const currentDate = moment.tz(timezone || config.DEFAULT_TIMEZONE)
-    const currentCheckWindow = checkWindowService.getActiveCheckWindow()
+    const currentCheckWindow = await checkWindowService.getActiveCheckWindow()
     return currentDate.isBetween(currentCheckWindow.adminStartDate, currentCheckWindow.checkEndDate)
   }
 }
