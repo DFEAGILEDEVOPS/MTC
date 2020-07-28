@@ -11,6 +11,7 @@ const ValidationError = require('../../../lib/validation-error')
 const accessArrangementsErrorMessages = require('../../../lib/errors/access-arrangements')
 const preparedCheckSyncService = require('../../../services/prepared-check-sync.service')
 const moment = require('moment-timezone')
+const checkWindowService = require('../../../services/check-window-v2.service')
 
 describe('accessArrangementsService', () => {
   describe('getAccessArrangements', () => {
@@ -287,14 +288,16 @@ describe('accessArrangementsService', () => {
         adminStartDate: moment('2020-01-01'),
         checkEndDate: moment('2020-08-01')
       }
-      expect(sut.canBeEdited(checkWindowData)).toBe(true)
+      spyOn(checkWindowService, 'getActiveCheckWindow').and.returnValue(checkWindowData)
+      expect(sut.canBeEdited()).toBe(true)
     })
     it('should return false if check window is closed', () => {
       const checkWindowData = {
         adminStartDate: moment('2020-03-01'),
         checkEndDate: moment('2020-07-01')
       }
-      expect(sut.canBeEdited(checkWindowData)).toBe(false)
+      spyOn(checkWindowService, 'getActiveCheckWindow').and.returnValue(checkWindowData)
+      expect(sut.canBeEdited()).toBe(false)
     })
   })
 })

@@ -7,6 +7,7 @@ const pupilDataService = require('../services/data-access/pupil.data.service')
 const accessArrangementsValidator = require('../lib/validator/access-arrangements-validator.js')
 const config = require('../config')
 const moment = require('moment-timezone')
+const checkWindowService = require('./check-window-v2.service')
 
 const accessArrangementsService = {
 /**
@@ -105,13 +106,15 @@ const accessArrangementsService = {
     return { urlSlug, foreName, lastName }
   },
   /**
+   * @description determines if existing access arrangements can be edited based upon check window state
    * @param {moment.Moment} currentDate
    * @param {Object} checkWindowData
    * @returns {boolean}
    */
-  canBeEdited: function canBeEdited (checkWindowData, timezone) {
+  canBeEdited: function canBeEdited (timezone) {
     const currentDate = moment.tz(timezone || config.DEFAULT_TIMEZONE)
-    return currentDate.isBetween(checkWindowData.adminStartDate, checkWindowData.checkEndDate)
+    const currentCheckWindow = checkWindowService.getActiveCheckWindow()
+    return currentDate.isBetween(currentCheckWindow.adminStartDate, currentCheckWindow.checkEndDate)
   }
 }
 
