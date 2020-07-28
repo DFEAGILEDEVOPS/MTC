@@ -8,6 +8,7 @@ const accessArrangementsValidator = require('../lib/validator/access-arrangement
 const config = require('../config')
 const moment = require('moment-timezone')
 const checkWindowService = require('./check-window-v2.service')
+const aaViewModes = require('../lib/consts/access-arrangements-view-mode')
 
 const accessArrangementsService = {
 /**
@@ -106,15 +107,29 @@ const accessArrangementsService = {
     return { urlSlug, foreName, lastName }
   },
   /**
+   * @deprecated use getCurrentViewMode
    * @description determines if existing access arrangements can be edited based upon check window state
-   * @param {moment.Moment} currentDate
-   * @param {Object} checkWindowData
+   * @param {string} timezone
    * @returns {Promise<boolean>}
    */
   canBeEdited: async function canBeEdited (timezone) {
     const currentDate = moment.tz(timezone || config.DEFAULT_TIMEZONE)
     const currentCheckWindow = await checkWindowService.getActiveCheckWindow()
     return currentDate.isBetween(currentCheckWindow.adminStartDate, currentCheckWindow.checkEndDate)
+  },
+  /**
+   * @description determines whether AA module is editable, readonly or unavailable
+   * @param {string} timezone
+   * @returns {Promise<string>}
+   */
+  getCurrentViewMode: async function getCurrentViewMode (timezone) {
+    const currentDate = moment.tz(timezone || config.DEFAULT_TIMEZONE)
+    const currentCheckWindow = await checkWindowService.getActiveCheckWindow()
+    const checkWindowIsActive = currentDate.isBetween(currentCheckWindow.adminStartDate, currentCheckWindow.checkEndDate)
+    const checkWindowClosedAdminActive = currentDate.isBetween(currentCheckWindow.checkEndDate, currentCheckWindow.adminEndDate)
+    if (checkWindowIsActive) return aaViewModes.edit
+    if (checkWindowClosedAdminActive) return aaViewModes.readonly
+    return aaViewModes.unavailable
   }
 }
 

@@ -22,8 +22,25 @@ checkWindowV2Service.getCheckWindow = async (urlSlug) => {
 }
 
 /**
+ * @typedef {object} CheckWindowData
+ * @property {number} id
+ * @property {Date} createdAt
+ * @property {Date} updatedAt
+ * @property {object} version
+ * @property {string} name
+ * @property {Date} adminStartDate
+ * @property {Date} adminEndDate
+ * @property {Date} checkStartDate
+ * @property {Date} checkEndDate
+ * @property {boolean} isDeleted
+ * @property {string} urlSlug
+ * @property {Date} familiarisationCheckStartDate
+ * @property {Date} familiarisationCheckEndDate
+ */
+
+/**
  * Get active check window
- * @return {Promise<any>} Check window object
+ * @returns {Promise<CheckWindowData>} Check window object
  */
 let cachedActiveCheckWindow
 let cachedActiveCheckWindowExpiresAt
@@ -40,7 +57,7 @@ checkWindowV2Service.getActiveCheckWindow = async (cacheBust = false) => {
 
 /**
  * Get latest check window
- * @return {Promise<Object>} Check window object
+ * @returns {Promise<Object>} Check window object
  */
 checkWindowV2Service.getLatestCheckWindow = async () => {
   return checkWindowDataService.sqlFindLatestCheckWindow()

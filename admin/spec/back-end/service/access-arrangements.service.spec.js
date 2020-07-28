@@ -300,4 +300,26 @@ describe('accessArrangementsService', () => {
       expect(await sut.canBeEdited()).toBe(false)
     })
   })
+  describe('getCurrentViewMode', () => {
+    beforeAll(() => {
+      spyOn(moment, 'tz').and.returnValue(moment('2020-07-01'))
+    })
+    it('should return \'edit\' if current date within check start and check end date', async () => {
+      const checkWindowData = {
+        adminStartDate: moment('2020-01-01'),
+        checkEndDate: moment('2020-08-01')
+      }
+      spyOn(checkWindowService, 'getActiveCheckWindow').and.returnValue(checkWindowData)
+      expect(await sut.getCurrentViewMode()).toBe('edit')
+    })
+    it('should return \'readonly\' if current date past check end date but before admin end date', async () => {
+      const checkWindowData = {
+        adminStartDate: moment('2020-01-01'),
+        adminEndDate: moment('2020-09-01'),
+        checkEndDate: moment('2020-08-01')
+      }
+      spyOn(checkWindowService, 'getActiveCheckWindow').and.returnValue(checkWindowData)
+      expect(await sut.getCurrentViewMode()).toBe('edit')
+    })
+  })
 })

@@ -1,6 +1,6 @@
 'use strict'
 
-/* global describe beforeEach it expect jasmine spyOn */
+/* global describe beforeEach it expect jasmine spyOn fail */
 
 const httpMocks = require('node-mocks-http')
 const R = require('ramda')
@@ -78,6 +78,29 @@ describe('access arrangements controller:', () => {
       expect(accessArrangementsOverviewPresenter.getPresentationData).not.toHaveBeenCalled()
       expect(res.render).toHaveBeenCalledWith('access-arrangements/unavailable-access-arrangements', {
         availabilityData: { accessArrangementsAvailable: false },
+        breadcrumbs: undefined,
+        title: 'Enable access arrangements for pupils who need them'
+      })
+    })
+    it('displays the overview in readonly mode when editing is no longer permitted', async () => {
+      fail('not implemented')
+      const res = getRes()
+      const req = getReq(reqParams)
+      spyOn(res, 'render')
+      spyOn(pupilAccessArrangementsService, 'getPupils').and.returnValue([])
+      spyOn(checkWindowV2Service, 'getActiveCheckWindow')
+      spyOn(schoolHomeFeatureEligibilityPresenter, 'getPresentationData')
+      spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ accessArrangementsAvailable: true })
+      spyOn(accessArrangementsOverviewPresenter, 'getPresentationData')
+      spyOn(accessArrangementsService, 'canBeEdited').and.returnValue(Promise.resolve(false))
+      await controller.getOverview(req, res, next)
+      expect(res.locals.pageTitle).toBe('Enable access arrangements for pupils who need them')
+      expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
+      expect(businessAvailabilityService.getAvailabilityData).toHaveBeenCalled()
+      expect(schoolHomeFeatureEligibilityPresenter.getPresentationData).toHaveBeenCalled()
+      expect(accessArrangementsOverviewPresenter.getPresentationData).not.toHaveBeenCalled()
+      expect(res.render).toHaveBeenCalledWith('access-arrangements/overview', {
+        availabilityData: { accessArrangementsAvailable: true },
         breadcrumbs: undefined,
         title: 'Enable access arrangements for pupils who need them'
       })
