@@ -30,6 +30,7 @@ describe('sync-results-to-sql:v1', () => {
       spyOn(resultsService, 'getSchoolResults')
       spyOn(resultsService, 'findNewMarkedChecks')
       spyOn(resultsService, 'persistMarkingData')
+      spyOn(resultsService, 'dropCaches')
     })
 
     it('is defined', () => {
@@ -39,6 +40,11 @@ describe('sync-results-to-sql:v1', () => {
     it('calls a service to persist the data to the SQL DB', async () => {
       await sut.processSchool({ id: 1, name: 'Test', schoolGuid: uuidv4() })
       expect(resultsService.persistMarkingData).toHaveBeenCalledTimes(1)
+    })
+
+    it('calls a service to invalidate the redis cache', async () => {
+      await sut.processSchool({ id: 1, name: 'Test', schoolGuid: uuidv4() })
+      expect(resultsService.dropCaches).toHaveBeenCalledTimes(1)
     })
   })
 })
