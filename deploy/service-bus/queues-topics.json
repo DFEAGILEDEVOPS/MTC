@@ -5,6 +5,8 @@
     "check-notification",
     "check-sync",
     "check-validation",
-    "pupil-login"
+    "pupil-login",
+    "sync-results-to-db-complete",
+    "school-results-cache"
   ]
 }
