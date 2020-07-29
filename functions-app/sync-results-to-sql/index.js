@@ -12,6 +12,12 @@ module.exports = async function schoolImportIndex (context, myTimer) {
   let meta
   try {
     meta = await v1.process(context.log)
+
+    // Send a message saying this function has completed its run
+    context.bindings.syncResultsToDbComplete = []
+    context.bindings.syncResultsToDbComplete.push({
+      completedAt: (new Date()).toISOString()
+    })
   } catch (error) {
     meta = {}
     context.log.error(`${name}: ERROR: ${error.message}`, error)
