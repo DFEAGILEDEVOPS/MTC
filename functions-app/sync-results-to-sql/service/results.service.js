@@ -6,6 +6,9 @@ const azureStorageHelper = require('../../lib/azure-storage-helper')
 const base = require('../../lib/logger')
 const dataService = require('./data-access/data.service')
 const MarkedCheck = require('../marked-check.class')
+const redisCacheService = require('../../lib/redis-cache.service')
+const redisKeyService = require('../../lib/redis-key.service')
+
 const markingTable = 'checkResult'
 const name = 'sync-results-to-sql'
 
@@ -85,6 +88,16 @@ const service = {
       dataService.setLogger(this.logger)
     }
     return dataService.sqlPersistMarkingData(markedChecks)
+  },
+
+  /**
+   * Drop Redis cache (school result data)
+   * @param {Number} schoolId
+   * @return {Promise<void>}
+   */
+  dropCaches: async function dropCaches (schoolId) {
+    const key = redisKeyService.getSchoolResultsKey(schoolId)
+    await redisCacheService.drop(key)
   }
 }
 
