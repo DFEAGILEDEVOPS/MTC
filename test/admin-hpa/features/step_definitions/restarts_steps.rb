@@ -61,7 +61,7 @@ end
 When(/^I select a pupil for restarts$/) do
   pupil = restarts_page.find_pupil_row(@details_hash[:first_name])
   @pupil_name = pupil.name.text
-  pupil.checkbox.click
+    pupil.checkbox.click
 end
 
 When(/^I select all pupils for Restarts$/) do
@@ -267,8 +267,8 @@ end
 
 Given(/^pupil logs in and completed the check$/) do
   pupil_detail = SqlDbHelper.pupil_details(@details_hash[:upn])
-  pupil_id = pupil_detail['id']
-  check_entry = SqlDbHelper.check_details(pupil_id)
+  @pupil_id = pupil_detail['id']
+  check_entry = SqlDbHelper.check_details(@pupil_id)
   pupil_pin_detail = SqlDbHelper.get_pupil_pin(check_entry['id'])
   pupil_pin = pupil_pin_detail['val']
   school_password = SqlDbHelper.find_school(pupil_detail['school_id'])['pin']
