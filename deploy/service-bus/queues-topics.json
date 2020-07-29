@@ -6,7 +6,7 @@
     "check-sync",
     "check-validation",
     "pupil-login",
-    "sync-results-to-db-complete",
-    "school-results-cache"
+    "school-results-cache",
+    "sync-results-to-db-complete"
   ]
 }
