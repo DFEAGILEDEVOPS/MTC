@@ -75,12 +75,13 @@ describe('retro input assistant controller:', () => {
     }
     it('passes the request body to service for processing and redirects', async () => {
       const req = getReq(reqParams)
+      req.body.pupilUrlSlug = 'slug'
       const res = getRes()
       spyOn(res, 'redirect')
       spyOn(retroInputAssistantService, 'save')
       await sut.postSubmitRetroInputAssistant(req, res, next)
       expect(retroInputAssistantService.save).toHaveBeenCalledTimes(1)
-      expect(res.redirect).toHaveBeenCalledWith('/access-arrangements/overview')
+      expect(res.redirect).toHaveBeenCalledWith('/access-arrangements/overview?hl=slug')
     })
   })
 })
