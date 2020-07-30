@@ -1,10 +1,10 @@
 'use strict'
 
 module.exports = {
-  missingFirstName: 'input assistant first name is required',
-  missingLastName: 'input assistant last name is required',
-  missingReason: 'reason for input assistant is required',
+  missingFirstName: 'Enter a first name of input assistance',
+  missingLastName: 'Enter a last name of input assistance',
+  missingReason: 'Enter an explanation for input assistance',
   invalidCheckId: 'associated check id is missing',
-  invalidPupilUuid: 'associated pupil id is missing or invalid',
+  invalidPupilUuid: 'Enter a pupil name',
   userId: 'userId is required'
 }
