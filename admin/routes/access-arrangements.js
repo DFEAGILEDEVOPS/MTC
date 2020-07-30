@@ -7,6 +7,7 @@ const isAdminWindowAvailable = require('../availability/middleware')
 const featureToggles = require('feature-toggles')
 const roles = require('../lib/consts/roles')
 const accessArrangementsController = require('../controllers/access-arrangements')
+const retroInputAssistantController = require('../controllers/retro-input-assistant')
 
 if (featureToggles.isFeatureEnabled('accessArrangements')) {
   /* Access arrangements routing */
@@ -44,7 +45,13 @@ if (featureToggles.isFeatureEnabled('accessArrangements')) {
     '/retro-add-input-assistant',
     isAuthenticated([roles.teacher, roles.helpdesk]),
     isAdminWindowAvailable,
-    (req, res, next) => accessArrangementsController.getAddInputAssistant(req, res, next)
+    (req, res, next) => retroInputAssistantController.getAddRetroInputAssistant(req, res, next)
+  )
+  router.post(
+    '/retro-add-input-assistant-submit',
+    isAuthenticated([roles.teacher, roles.helpdesk]),
+    isAdminWindowAvailable,
+    (req, res, next) => retroInputAssistantController.postSubmitRetroInputAssistant(req, res, next)
   )
 }
 

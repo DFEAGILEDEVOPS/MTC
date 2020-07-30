@@ -1,6 +1,6 @@
 'use strict'
 
-/* global describe beforeEach it expect jasmine spyOn */
+/* global describe beforeEach it expect jasmine spyOn fail */
 
 const httpMocks = require('node-mocks-http')
 const R = require('ramda')
