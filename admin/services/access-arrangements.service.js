@@ -125,10 +125,10 @@ const accessArrangementsService = {
   getCurrentViewMode: async function getCurrentViewMode (timezone) {
     const currentDate = moment.tz(timezone || config.DEFAULT_TIMEZONE)
     const currentCheckWindow = await checkWindowService.getActiveCheckWindow()
-    const checkWindowIsActive = currentDate.isBetween(currentCheckWindow.adminStartDate, currentCheckWindow.checkEndDate)
-    const checkWindowClosedAdminActive = currentDate.isBetween(currentCheckWindow.checkEndDate, currentCheckWindow.adminEndDate)
-    if (checkWindowIsActive) return aaViewModes.edit
-    if (checkWindowClosedAdminActive) return aaViewModes.readonly
+    const checkActive = currentDate.isBetween(currentCheckWindow.checkStartDate, currentCheckWindow.checkEndDate)
+    const adminActive = currentDate.isBetween(currentCheckWindow.adminStartDate, currentCheckWindow.adminEndDate)
+    if (checkActive && adminActive) return aaViewModes.edit
+    if (adminActive && !checkActive) return aaViewModes.readonly
     return aaViewModes.unavailable
   }
 }

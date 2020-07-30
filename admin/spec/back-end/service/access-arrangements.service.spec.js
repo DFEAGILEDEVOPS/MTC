@@ -304,9 +304,11 @@ describe('accessArrangementsService', () => {
     beforeAll(() => {
       spyOn(moment, 'tz').and.returnValue(moment('2020-07-01'))
     })
-    it('should return \'edit\' if current date within check start and check end date', async () => {
+    it('should return \'edit\' if current date within admin start and check end dates', async () => {
       const checkWindowData = {
         adminStartDate: moment('2020-01-01'),
+        adminEndDate: moment('2020-09-01'),
+        checkStartDate: moment('2020-05-01'),
         checkEndDate: moment('2020-08-01')
       }
       spyOn(checkWindowService, 'getActiveCheckWindow').and.returnValue(checkWindowData)
@@ -316,10 +318,31 @@ describe('accessArrangementsService', () => {
       const checkWindowData = {
         adminStartDate: moment('2020-01-01'),
         adminEndDate: moment('2020-09-01'),
-        checkEndDate: moment('2020-08-01')
+        checkStartDate: moment('2020-05-01'),
+        checkEndDate: moment('2020-06-01')
       }
       spyOn(checkWindowService, 'getActiveCheckWindow').and.returnValue(checkWindowData)
-      expect(await sut.getCurrentViewMode()).toBe('edit')
+      expect(await sut.getCurrentViewMode()).toBe('readonly')
+    })
+    it('should return \'unavailable\' if current date before admin start date', async () => {
+      const checkWindowData = {
+        adminStartDate: moment('2020-08-01'),
+        adminEndDate: moment('2020-10-01'),
+        checkStartDate: moment('2020-08-10'),
+        checkEndDate: moment('2020-09-01')
+      }
+      spyOn(checkWindowService, 'getActiveCheckWindow').and.returnValue(checkWindowData)
+      expect(await sut.getCurrentViewMode()).toBe('unavailable')
+    })
+    it('should return \'unavailable\' if current date after admin end date', async () => {
+      const checkWindowData = {
+        adminStartDate: moment('2020-01-01'),
+        adminEndDate: moment('2020-04-01'),
+        checkStartDate: moment('2020-02-10'),
+        checkEndDate: moment('2020-03-01')
+      }
+      spyOn(checkWindowService, 'getActiveCheckWindow').and.returnValue(checkWindowData)
+      expect(await sut.getCurrentViewMode()).toBe('unavailable')
     })
   })
 })
