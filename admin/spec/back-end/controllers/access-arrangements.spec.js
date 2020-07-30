@@ -257,6 +257,9 @@ describe('access arrangements controller:', () => {
         }
       }
     }
+    it('throws an error if edit mode not available', () => {
+      fail('not implemented')
+    })
     it('displays the edit access arrangements page', async () => {
       const res = getRes()
       const req = getReq(reqParams('urlSlug'))
@@ -301,6 +304,9 @@ describe('access arrangements controller:', () => {
         }
       }
     }
+    it('throws an error if edit mode not available', () => {
+      fail('not implemented')
+    })
     it('redirects to overview page when successfully deleting', async () => {
       const res = getRes()
       const req = getReq(reqParams('urlSlug'))
