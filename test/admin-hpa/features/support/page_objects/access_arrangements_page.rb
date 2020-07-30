@@ -26,8 +26,10 @@ class AccessArrangementsPage < SitePrism::Page
   end
 
   def remove_all_pupils
-    removable_rows = pupil_list.rows.map{|row| row if row.has_remove?}.compact
-    removable_rows.size.times {|a| all('a', text: 'Remove')[0].click; modal.confirm.click} unless has_no_pupils_message?
+    unless has_no_pupils_message?
+      removable_rows = pupil_list.rows.map{|row| row if row.has_remove?}.compact
+      removable_rows.size.times {|a| all('a', text: 'Remove')[0].click; modal.confirm.click}
+    end
   end
 
   def find_pupil_row(name)
