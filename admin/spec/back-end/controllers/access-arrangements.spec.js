@@ -1,6 +1,6 @@
 'use strict'
 
-/* global describe beforeEach it expect jasmine spyOn fail */
+/* global describe beforeEach it expect jasmine spyOn */
 
 const httpMocks = require('node-mocks-http')
 const R = require('ramda')
@@ -16,6 +16,7 @@ const accessArrangementsOverviewPresenter = require('../../../helpers/access-arr
 const businessAvailabilityService = require('../../../services/business-availability.service')
 const ValidationError = require('../../../lib/validation-error')
 const accessArrangementsDescriptionsPresenter = require('../../../helpers/access-arrangements-descriptions-presenter')
+const aaViewModes = require('../../../lib/consts/access-arrangements-view-mode')
 
 describe('access arrangements controller:', () => {
   let next
@@ -51,6 +52,7 @@ describe('access arrangements controller:', () => {
       spyOn(pupilAccessArrangementsService, 'getPupils').and.returnValue([])
       spyOn(checkWindowV2Service, 'getActiveCheckWindow')
       spyOn(schoolHomeFeatureEligibilityPresenter, 'getPresentationData')
+      spyOn(accessArrangementsService, 'getCurrentViewMode').and.returnValue(aaViewModes.edit)
       spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ accessArrangementsAvailable: true })
       spyOn(accessArrangementsOverviewPresenter, 'getPresentationData')
       await controller.getOverview(req, res, next)
@@ -58,6 +60,7 @@ describe('access arrangements controller:', () => {
       expect(res.render).toHaveBeenCalled()
       expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
       expect(businessAvailabilityService.getAvailabilityData).toHaveBeenCalled()
+      expect(accessArrangementsService.getCurrentViewMode).toHaveBeenCalled()
       expect(schoolHomeFeatureEligibilityPresenter.getPresentationData).toHaveBeenCalled()
       expect(accessArrangementsOverviewPresenter.getPresentationData).toHaveBeenCalled()
     })
@@ -68,40 +71,30 @@ describe('access arrangements controller:', () => {
       spyOn(pupilAccessArrangementsService, 'getPupils').and.returnValue([])
       spyOn(checkWindowV2Service, 'getActiveCheckWindow')
       spyOn(schoolHomeFeatureEligibilityPresenter, 'getPresentationData')
-      spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ accessArrangementsAvailable: false })
+      spyOn(accessArrangementsService, 'getCurrentViewMode').and.returnValue(aaViewModes.unavailable)
       spyOn(accessArrangementsOverviewPresenter, 'getPresentationData')
       await controller.getOverview(req, res, next)
-      expect(res.locals.pageTitle).toBe('Enable access arrangements for pupils who need them')
-      expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
-      expect(businessAvailabilityService.getAvailabilityData).toHaveBeenCalled()
-      expect(schoolHomeFeatureEligibilityPresenter.getPresentationData).toHaveBeenCalled()
-      expect(accessArrangementsOverviewPresenter.getPresentationData).not.toHaveBeenCalled()
       expect(res.render).toHaveBeenCalledWith('access-arrangements/unavailable-access-arrangements', {
-        availabilityData: { accessArrangementsAvailable: false },
+        aaViewMode: aaViewModes.unavailable,
         breadcrumbs: undefined,
         title: 'Enable access arrangements for pupils who need them'
       })
     })
     it('displays the overview in readonly mode when editing is no longer permitted', async () => {
-      fail('not implemented')
       const res = getRes()
       const req = getReq(reqParams)
       spyOn(res, 'render')
       spyOn(pupilAccessArrangementsService, 'getPupils').and.returnValue([])
       spyOn(checkWindowV2Service, 'getActiveCheckWindow')
+      spyOn(accessArrangementsService, 'getCurrentViewMode').and.returnValue(aaViewModes.readonly)
       spyOn(schoolHomeFeatureEligibilityPresenter, 'getPresentationData')
       spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ accessArrangementsAvailable: true })
       spyOn(accessArrangementsOverviewPresenter, 'getPresentationData')
-      spyOn(accessArrangementsService, 'canBeEdited').and.returnValue(Promise.resolve(false))
       await controller.getOverview(req, res, next)
-      expect(res.locals.pageTitle).toBe('Enable access arrangements for pupils who need them')
-      expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
-      expect(businessAvailabilityService.getAvailabilityData).toHaveBeenCalled()
-      expect(schoolHomeFeatureEligibilityPresenter.getPresentationData).toHaveBeenCalled()
-      expect(accessArrangementsOverviewPresenter.getPresentationData).not.toHaveBeenCalled()
       expect(res.render).toHaveBeenCalledWith('access-arrangements/overview', {
-        availabilityData: { accessArrangementsAvailable: true },
+        aaViewMode: aaViewModes.readonly,
         breadcrumbs: undefined,
+        highlight: undefined,
         title: 'Enable access arrangements for pupils who need them'
       })
     })
@@ -109,6 +102,7 @@ describe('access arrangements controller:', () => {
       const res = getRes()
       const req = getReq(reqParams)
       spyOn(res, 'render')
+      spyOn(accessArrangementsService, 'getCurrentViewMode').and.returnValue(aaViewModes.edit)
       spyOn(pupilAccessArrangementsService, 'getPupils').and.returnValue(Promise.reject(new Error('error')))
       spyOn(checkWindowV2Service, 'getActiveCheckWindow')
       spyOn(schoolHomeFeatureEligibilityPresenter, 'getPresentationData')

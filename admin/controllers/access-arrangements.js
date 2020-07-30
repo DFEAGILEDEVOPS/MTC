@@ -9,6 +9,7 @@ const accessArrangementsOverviewPresenter = require('../helpers/access-arrangeme
 const businessAvailabilityService = require('../services/business-availability.service')
 const ValidationError = require('../lib/validation-error')
 const accessArrangementsDescriptionsPresenter = require('../helpers/access-arrangements-descriptions-presenter')
+const aaViewModes = require('../lib/consts/access-arrangements-view-mode')
 
 const controller = {}
 
@@ -23,19 +24,17 @@ controller.getOverview = async (req, res, next) => {
   res.locals.pageTitle = 'Enable access arrangements for pupils who need them'
   req.breadcrumbs(res.locals.pageTitle)
   let pupils
-  let pinGenerationEligibilityData
-  let checkWindowData
-  let availabilityData
+
+  const aaViewMode = await accessArrangementsService.getCurrentViewMode(req.user.timezone)
+
   try {
     pupils = await pupilAccessArrangementsService.getPupils(req.user.schoolId)
-    checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
-    pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData, req.user.timezone)
-    availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.schoolId, checkWindowData, req.user.timezone)
-    if (!availabilityData.accessArrangementsAvailable) {
+    // short circuit if unavailable
+    if (aaViewMode === aaViewModes.unavailable) {
       return res.render('access-arrangements/unavailable-access-arrangements', {
         title: res.locals.pageTitle,
         breadcrumbs: req.breadcrumbs(),
-        availabilityData
+        aaViewMode
       })
     }
   } catch (error) {
@@ -43,6 +42,9 @@ controller.getOverview = async (req, res, next) => {
   }
   const { hl } = req.query
 
+  const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
+  const pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData, req.user.timezone)
+  const availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.schoolId, checkWindowData, req.user.timezone)
   const pupilsFormatted = accessArrangementsOverviewPresenter.getPresentationData(pupils, availabilityData, hl)
 
   return res.render('access-arrangements/overview', {
@@ -51,7 +53,8 @@ controller.getOverview = async (req, res, next) => {
     breadcrumbs: req.breadcrumbs(),
     pinGenerationEligibilityData,
     pupilsFormatted,
-    availabilityData
+    aaViewMode,
+    title: res.locals.pageTitle
   })
 }
 
