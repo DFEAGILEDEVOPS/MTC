@@ -18,7 +18,7 @@
             <p class="govuk-body">
                 Modify the multiplication tables check for pupils with specific needs. The arrangements that are applied can be practised and configured by the pupils when the try it out area is open.
             </p>
-        <% if (!availabilityData.canEditArrangements) { %>
+        <% if (aaViewMode === 'readonly') { %>
             <button type="submit" disabled="disabled" aria-disabled="true" class="govuk-button govuk-button--disabled" data-module="govuk-button">
                 View pupils and assign arrangement
             </button>
@@ -63,7 +63,7 @@
                                     Completed Check
                                 <% } else if(p.notTakingCheck) { %>
                                     Not taking check
-                                <% } else if (availabilityData.canEditArrangements) { %>
+                                <% } else if (availabilityData.canEditArrangements && aaViewMode === 'edit') { %>
                                     <a class="govuk-link modal-link" id="js-modal-link" href="/access-arrangements/delete-access-arrangements/<%= p.urlSlug %>">Remove</a>
                                 <% } %>
                                 </td>

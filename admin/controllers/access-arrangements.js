@@ -54,7 +54,8 @@ controller.getOverview = async (req, res, next) => {
     pinGenerationEligibilityData,
     pupilsFormatted,
     aaViewMode,
-    title: res.locals.pageTitle
+    title: res.locals.pageTitle,
+    availabilityData
   })
 }
 
