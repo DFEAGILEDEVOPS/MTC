@@ -10,6 +10,7 @@ const businessAvailabilityService = require('../services/business-availability.s
 const ValidationError = require('../lib/validation-error')
 const accessArrangementsDescriptionsPresenter = require('../helpers/access-arrangements-descriptions-presenter')
 const aaViewModes = require('../lib/consts/access-arrangements-view-mode')
+const { AccessArrangementsNotEditableError } = require('../error-types/access-arrangements-not-editable-error')
 
 const controller = {
   /**
@@ -109,7 +110,7 @@ const controller = {
   postSubmitAccessArrangements: async function postSubmitAccessArrangements (req, res, next) {
     const aaViewMode = await accessArrangementsService.getCurrentViewMode(req.user.timezone)
     if (aaViewMode !== aaViewModes.edit) {
-      throw new Error('access arrangements edit mode currently unavailable')
+      throw new AccessArrangementsNotEditableError()
     }
     let pupil
     try {
@@ -151,7 +152,7 @@ const controller = {
   getEditAccessArrangements: async function getEditAccessArrangements (req, res, next, error = null) {
     const aaViewMode = await accessArrangementsService.getCurrentViewMode(req.user.timezone)
     if (aaViewMode !== aaViewModes.edit) {
-      throw new Error('access arrangements edit mode currently unavailable')
+      throw new AccessArrangementsNotEditableError()
     }
     res.locals.pageTitle = 'Edit access arrangement for pupil'
     req.breadcrumbs('Enable access arrangements for pupils who need them', '/access-arrangements/overview')
@@ -206,7 +207,7 @@ const controller = {
   getDeleteAccessArrangements: async function getDeleteAccessArrangements (req, res, next) {
     const aaViewMode = await accessArrangementsService.getCurrentViewMode(req.user.timezone)
     if (aaViewMode !== aaViewModes.edit) {
-      throw new Error('access arrangements edit mode currently unavailable')
+      throw new AccessArrangementsNotEditableError()
     }
     let pupil
     try {

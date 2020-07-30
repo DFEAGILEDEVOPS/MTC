@@ -187,7 +187,7 @@ describe('access arrangements controller:', () => {
         await controller.postSubmitAccessArrangements(req, res, next)
         fail('error should have been thrown to prevent edit')
       } catch (error) {
-        expect(error.message).toBe('access arrangements edit mode currently unavailable')
+        expect(error.name).toBe('AccessArrangementsNotEditableError')
       }
     })
     it('submits pupils access arrangements', async () => {
@@ -286,7 +286,7 @@ describe('access arrangements controller:', () => {
         await controller.getEditAccessArrangements(req, res, next)
         fail('error should have been thrown to prevent edit')
       } catch (error) {
-        expect(error.message).toBe('access arrangements edit mode currently unavailable')
+        expect(error.name).toBe('AccessArrangementsNotEditableError')
       }
     })
     it('displays the edit access arrangements page', async () => {
@@ -343,7 +343,7 @@ describe('access arrangements controller:', () => {
         await controller.getDeleteAccessArrangements(req, res, next)
         fail('error should have been thrown to prevent edit')
       } catch (error) {
-        expect(error.message).toBe('access arrangements edit mode currently unavailable')
+        expect(error.name).toBe('AccessArrangementsNotEditableError')
       }
     })
     it('redirects to overview page when successfully deleting', async () => {
