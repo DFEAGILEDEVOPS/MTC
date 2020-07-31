@@ -31,7 +31,7 @@ describe('retro input assistant validator', () => {
     const validationResult = await sut.validate(retroInputAssistantData)
     expect(validationResult.hasError()).toBe(true)
     const firstNameError = validationResult.get('firstName')
-    expect(firstNameError).toEqual(errorMessages.missingFirstName)
+    expect(firstNameError).toEqual(errorMessages.invalidFirstName)
   })
 
   it('should invalidate if input assistant first name is an empty string', async () => {
@@ -39,7 +39,15 @@ describe('retro input assistant validator', () => {
     const validationResult = await sut.validate(retroInputAssistantData)
     expect(validationResult.hasError()).toBe(true)
     const firstNameError = validationResult.get('firstName')
-    expect(firstNameError).toEqual(errorMessages.missingFirstName)
+    expect(firstNameError).toEqual(errorMessages.invalidFirstName)
+  })
+
+  it('should invalidate if input assistant first name is longer than 128 chars', async () => {
+    retroInputAssistantData.firstName = 'x'.repeat(129)
+    const validationResult = await sut.validate(retroInputAssistantData)
+    expect(validationResult.hasError()).toBe(true)
+    const firstNameError = validationResult.get('firstName')
+    expect(firstNameError).toEqual(errorMessages.invalidFirstName)
   })
 
   it('should invalidate if input assistant last name is undefined', async () => {
@@ -47,7 +55,7 @@ describe('retro input assistant validator', () => {
     const validationResult = await sut.validate(retroInputAssistantData)
     expect(validationResult.hasError()).toBe(true)
     const lastNameError = validationResult.get('lastName')
-    expect(lastNameError).toEqual(errorMessages.missingLastName)
+    expect(lastNameError).toEqual(errorMessages.invalidLastName)
   })
 
   it('should invalidate if input assistant last name is an empty string', async () => {
@@ -55,7 +63,15 @@ describe('retro input assistant validator', () => {
     const validationResult = await sut.validate(retroInputAssistantData)
     expect(validationResult.hasError()).toBe(true)
     const lastNameError = validationResult.get('lastName')
-    expect(lastNameError).toEqual(errorMessages.missingLastName)
+    expect(lastNameError).toEqual(errorMessages.invalidLastName)
+  })
+
+  it('should invalidate if input assistant last name is longer than 128 chars', async () => {
+    retroInputAssistantData.lastName = 'x'.repeat(129)
+    const validationResult = await sut.validate(retroInputAssistantData)
+    expect(validationResult.hasError()).toBe(true)
+    const firstNameError = validationResult.get('lastName')
+    expect(firstNameError).toEqual(errorMessages.invalidLastName)
   })
 
   it('should invalidate if input assistant reason is undefined', async () => {

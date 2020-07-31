@@ -20,11 +20,11 @@ const validator = {
       userId
     } = retroInputAssistantData
 
-    if (!firstName || firstName.length === 0) {
-      validationError.addError('firstName', errorMessages.missingFirstName)
+    if (!firstName || firstName.length === 0 || firstName.length > 128) {
+      validationError.addError('firstName', errorMessages.invalidFirstName)
     }
-    if (!lastName || lastName.length === 0) {
-      validationError.addError('lastName', errorMessages.missingLastName)
+    if (!lastName || lastName.length === 0 || lastName.length > 128) {
+      validationError.addError('lastName', errorMessages.invalidLastName)
     }
     if (!reason || reason.length === 0) {
       validationError.addError('reason', errorMessages.missingReason)
