@@ -1,6 +1,6 @@
 'use strict'
 
-/* global describe beforeEach it expect jasmine spyOn */
+/* global describe beforeEach it expect jasmine spyOn fail */
 
 const httpMocks = require('node-mocks-http')
 const checkWindowV2Service = require('../../../services/check-window-v2.service')
@@ -41,28 +41,44 @@ describe('retro input assistant controller:', () => {
       const req = getReq(reqParams)
       spyOn(res, 'render')
       spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-      spyOn(businessAvailabilityService, 'determineAccessArrangementsEligibility')
+      spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({
+        hdfSubmitted: false
+      })
       spyOn(retroInputAssistantService, 'getEligiblePupilsWithFullNames')
       await sut.getAddRetroInputAssistant(req, res, next)
       expect(res.locals.pageTitle).toBe('Record input assistant used for official check')
       expect(res.render).toHaveBeenCalled()
       expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
-      expect(businessAvailabilityService.determineAccessArrangementsEligibility).toHaveBeenCalled()
       expect(retroInputAssistantService.getEligiblePupilsWithFullNames).toHaveBeenCalled()
+    })
+    it('throws an error if access is attempted when the hdf has been signed', async () => {
+      const res = getRes()
+      const req = getReq(reqParams)
+      spyOn(res, 'render')
+      spyOn(checkWindowV2Service, 'getActiveCheckWindow')
+      spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({
+        hdfSubmitted: true
+      })
+      try {
+        await sut.getAddRetroInputAssistant(req, res, next)
+        fail('error should have been thrown')
+      } catch (error) {
+        expect(error.name).toBe('AccessArrangementsNotEditableError')
+      }
     })
     it('calls next when an error occurs during service call', async () => {
       const res = getRes()
       const req = getReq(reqParams)
       spyOn(res, 'render')
+      spyOn(checkWindowV2Service, 'getActiveCheckWindow')
+      spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({
+        hdfSubmitted: false
+      })
       const error = new Error('error')
-      spyOn(checkWindowV2Service, 'getActiveCheckWindow').and.returnValue(Promise.reject(error))
-      spyOn(businessAvailabilityService, 'determineAccessArrangementsEligibility')
-      spyOn(retroInputAssistantService, 'getEligiblePupilsWithFullNames')
+      spyOn(retroInputAssistantService, 'getEligiblePupilsWithFullNames').and.throwError(error)
       await sut.getAddRetroInputAssistant(req, res, next)
       expect(res.render).not.toHaveBeenCalled()
       expect(next).toHaveBeenCalledWith(error)
-      expect(retroInputAssistantService.getEligiblePupilsWithFullNames).not.toHaveBeenCalled()
-      expect(businessAvailabilityService.determineAccessArrangementsEligibility).not.toHaveBeenCalled()
     })
   })
 

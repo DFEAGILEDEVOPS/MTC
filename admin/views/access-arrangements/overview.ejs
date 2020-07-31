@@ -74,6 +74,13 @@
         <% } else { %>
             <p class="govuk-body govuk-!-margin-top-4 govuk-!-margin-bottom-9">No pupils with access arrangements.</p>
         <% } %>
+        <% if (!availabilityData.hdfSubmitted) { %>
+          <div id="retroAddInputAssistantInfo">
+            <p>
+              If you need to assign an input assistant after the pupil has taken the official check go to <a href="/access-arrangements/retro-add-input-assistant">Record input assistant used for official check</a>.
+            </p>
+          </div>
+        <% } %>
             <div class="govuk-back-to-top">
                 <a class="govuk-link govuk-link--no-visited-state app-back-to-top__link" href="#top">
                     <svg role="presentation" focusable="false" class="app-back-to-top__icon" xmlns="http://www.w3.org/2000/svg" width="13" height="17" viewBox="0 0 13 17">
