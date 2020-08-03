@@ -32,8 +32,8 @@ Stand up the database containers with: `docker-compose up`
 ### docker-compose-apps.yml
 Stands up the pupil-api, pupil-spa, admin app, functions-app, func-consumption app, and automatically runs the db migrations
 
-Start: `docker-compose -f docker-compose.yml -f docker-compose-other-dev.yml up`
-Teardown: `docker-compose -f docker-compose.yml -f docker-compose-other-dev.yml down`
+Start: `docker-compose -f docker-compose.yml -f docker-compose-apps.yml up`
+Teardown: `docker-compose -f docker-compose.yml -f docker-compose-apps.yml down`
 
 ## Solution
 
