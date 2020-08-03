@@ -34,6 +34,10 @@ class SelectAccessArrangementsPage < SitePrism::Page
     element :error_text, 'ul li a'
   end
 
+  section :retro_input, '#retroAddInputAssistantInfo' do
+    element :link, "a[href='/access-arrangements/retro-add-input-assistant']"
+  end
+
   def select_access_arrangement(access_arrangment_name)
     access_arrangment_type = find_access_arrangement_row(access_arrangment_name)
     access_arrangment_type.checkbox.click
