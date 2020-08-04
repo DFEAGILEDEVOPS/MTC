@@ -12,7 +12,7 @@ const config = require('../config')
  * @param next
  * @returns {Promise.<void>}
  */
-const getTestDeveloperHomePage = async (req, res, next) => {
+const getTestDeveloperHomePage = async function getTestDeveloperHomePage (req, res, next) {
   res.locals.pageTitle = 'MTC for test development'
   try {
     req.breadcrumbs(res.locals.pageTitle)
@@ -31,7 +31,7 @@ const getTestDeveloperHomePage = async (req, res, next) => {
  * @param next
  * @returns {Promise.<void>}
  */
-const getDownloadPupilCheckData = async (req, res, next) => {
+const getDownloadPupilCheckData = async function getDownloadPupilCheckData (req, res, next) {
   res.locals.pageTitle = 'Download pupil check data'
   req.breadcrumbs(res.locals.pageTitle)
 
@@ -60,7 +60,7 @@ const getDownloadPupilCheckData = async (req, res, next) => {
  * @param next
  * @returns {Promise.<void>}
  */
-const getFileDownloadPupilCheckData = async (req, res, next) => {
+const getFileDownloadPupilCheckData = async function getFileDownloadPupilCheckData (req, res, next) {
   let psychometricianReport
   try {
     psychometricianReport = await testDeveloperReportService.getReportMeta(req.params.urlSlug)

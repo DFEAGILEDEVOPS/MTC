@@ -9,25 +9,25 @@ const techSupportController = require('../controllers/tech-support')
 router.get(
   '/home',
   isAuthenticated([roles.techSupport]),
-  (req, res, next) => techSupportController.getHomePage(req, res, next)
+  techSupportController.getHomePage
 )
 
 router.get(
   '/checkview',
   isAuthenticated([roles.techSupport]),
-  (req, res, next) => techSupportController.getCheckViewPage(req, res, next)
+  techSupportController.getCheckViewPage
 )
 
 router.post(
   '/checkview',
   isAuthenticated([roles.techSupport]),
-  (req, res, next) => techSupportController.postCheckViewPage(req, res, next)
+  techSupportController.postCheckViewPage
 )
 
 router.get(
   '/received-check-payload',
   isAuthenticated([roles.techSupport]),
-  (req, res, next) => techSupportController.getReceivedCheckPayload(req, res, next)
+  techSupportController.getReceivedCheckPayload
 )
 
 module.exports = router

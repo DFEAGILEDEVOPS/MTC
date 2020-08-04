@@ -98,8 +98,10 @@ const createParamIdentifiers = R.compose(
  */
 const createMultipleParamIdentifiers = (data) => data.map((d, idx) => R.compose(
   R.join(' , '),
+  // @ts-ignore
   R.map(paramNameWithIdx(idx)),
   R.keys
+// @ts-ignore
 )(d))
 
 /**

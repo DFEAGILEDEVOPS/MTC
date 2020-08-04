@@ -22,7 +22,7 @@ const controller = {
    * @param next
    * @returns {Promise.<void>}
    */
-  getServiceManagerHome: async (req, res, next) => {
+  getServiceManagerHome: async function getServiceManagerHome (req, res, next) {
     res.locals.pageTitle = 'MTC Administration Homepage'
     const isNewCheckWindow = featureToggles.isFeatureEnabled('newCheckWindow')
     try {
@@ -43,7 +43,7 @@ const controller = {
    * @param next
    * @returns {Promise.<*>}
    */
-  getUpdateTiming: async (req, res, next) => {
+  getUpdateTiming: async function getUpdateTiming (req, res, next) {
     res.locals.pageTitle = 'Settings on pupil check'
     const successfulPost = req.params.status || false
     let settings
@@ -73,7 +73,7 @@ const controller = {
    * @param next
    * @returns {Promise.<*>}
    */
-  setUpdateTiming: async (req, res, next) => {
+  setUpdateTiming: async function setUpdateTiming (req, res, next) {
     res.locals.pageTitle = 'Settings on pupil check'
     try {
       const validationError = await settingsValidator.validate(req.body)
@@ -102,7 +102,7 @@ const controller = {
    * @param error
    * @returns {Promise.<void>}
    */
-  getUploadPupilCensus: async (req, res, next, error = null) => {
+  getUploadPupilCensus: async function getUploadPupilCensus (req, res, next, error = null) {
     res.locals.pageTitle = 'Upload pupil census'
     req.breadcrumbs(res.locals.pageTitle)
     let pupilCensus
@@ -130,7 +130,7 @@ const controller = {
    * @param next
    * @returns {Promise<*>}
    */
-  postUploadPupilCensus: async (req, res, next) => {
+  postUploadPupilCensus: async function postUploadPupilCensus (req, res, next) {
     const uploadFile = req.files && req.files.csvPupilCensusFile
     try {
       const validationError = await pupilCensusService.process(uploadFile)
@@ -152,7 +152,7 @@ const controller = {
    * @param next
    * @returns {Promise<*>}
    */
-  getRemovePupilCensus: async (req, res, next) => {
+  getRemovePupilCensus: async function getRemovePupilCensus (req, res, next) {
     const pupilCensusId = req.params && req.params.pupilCensusId
     try {
       await pupilCensusService.remove(pupilCensusId)
@@ -170,7 +170,7 @@ const controller = {
    * @param next
    * @returns {Promise.<void>}
    */
-  getSceSettings: async (req, res, next) => {
+  getSceSettings: async function getSceSettings (req, res, next) {
     res.locals.pageTitle = 'Settings for MOD'
     req.breadcrumbs(res.locals.pageTitle)
     const { hl } = req.query
@@ -195,7 +195,7 @@ const controller = {
    * @param next
    * @returns {Promise.<void>}
    */
-  cancelSceSettings: async (req, res) => {
+  cancelSceSettings: async function cancelSceSettings (req, res) {
     return res.redirect('/service-manager')
   },
 
@@ -206,7 +206,7 @@ const controller = {
    * @param next
    * @returns {Promise.<void>}
    */
-  postSceSettings: async (req, res, next) => {
+  postSceSettings: async function postSceSettings (req, res, next) {
     const sceSchools = await sceService.getSceSchools()
     try {
       req.body.urn.forEach((urn, i) => {
@@ -231,7 +231,7 @@ const controller = {
    * @param next
    * @returns {Promise.<void>}
    */
-  getSceRemoveSchool: async (req, res, next) => {
+  getSceRemoveSchool: async function getSceRemoveSchool (req, res, next) {
     const { urn } = req.params
     let school
 
@@ -252,7 +252,7 @@ const controller = {
    * @param next
    * @returns {Promise.<void>}
    */
-  getSceAddSchool: async (req, res, next) => {
+  getSceAddSchool: async function getSceAddSchool (req, res, next) {
     req.breadcrumbs('Settings for MOD', '/service-manager/mod-settings')
     res.locals.pageTitle = 'Convert school to MOD'
     req.breadcrumbs(res.locals.pageTitle)
@@ -280,7 +280,7 @@ const controller = {
    * @param next
    * @returns {Promise.<void>}
    */
-  postSceAddSchool: async (req, res, next) => {
+  postSceAddSchool: async function postSceAddSchool (req, res, next) {
     const schools = await sceService.getSchools()
     const schoolNames = schools.map(s => s.name)
     const schoolUrns = schools.map(s => s.urn)

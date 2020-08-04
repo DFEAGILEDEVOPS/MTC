@@ -3,7 +3,6 @@
 /* global beforeEach, describe, it, expect */
 
 const settingsValidator = require('../../../../lib/validator/settings-validator')
-const expressValidator = require('express-validator')()
 
 describe('Settings validator', function () {
   let req = null
@@ -25,10 +24,6 @@ describe('Settings validator', function () {
         this.params[name] = name
       }
     }
-
-    return expressValidator(req, {}, function () {
-
-    })
   })
 
   it('should allow a valid request', async () => {

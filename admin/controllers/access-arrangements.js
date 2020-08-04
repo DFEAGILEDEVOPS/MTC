@@ -222,4 +222,29 @@ const controller = {
   }
 }
 
+controller.getAddInputAssistant = async function (req, res, next) {
+  res.locals.pageTitle = 'Record input assistant used for official check'
+  req.breadcrumbs('Select pupils and access arrangements', 'select-access-arrangements')
+  req.breadcrumbs('Record input assistant')
+
+  try {
+    const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
+    await businessAvailabilityService.determineAccessArrangementsEligibility(checkWindowData)
+  } catch (error) {
+    next(error)
+  }
+
+  let pupils
+  try {
+    pupils = await pupilAccessArrangementsService.getEligiblePupilsWithFullNames(req.user.schoolId)
+  } catch (error) {
+    return next(error)
+  }
+  return res.render('access-arrangements/retro-add-input-assistant', {
+    breadcrumbs: req.breadcrumbs(),
+    pupils,
+    error: new ValidationError()
+  })
+}
+
 module.exports = controller
