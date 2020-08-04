@@ -114,7 +114,7 @@ const dateService = {
    * @param {number|string} day
    * @param {number|string} month
    * @param {number|string} year
-   * @returns {moment.Moment}
+   * @returns {null|moment.Moment}
    */
   createLocalTimeFromDayMonthYear: function (day, month, year) {
     const paddedDay = (+day).toString().padStart(2, '0')
@@ -131,7 +131,7 @@ const dateService = {
    * @param {number|string} day
    * @param {number|string} month
    * @param {number|string} year
-   * @returns {moment.Moment}
+   * @returns {null|moment.Moment}
    */
   createUTCFromDayMonthYear: function (day, month, year) {
     const paddedDay = (+day).toString().padStart(2, '0')

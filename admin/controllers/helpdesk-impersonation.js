@@ -13,7 +13,7 @@ const controller = {}
  * @param {object} error
  * @returns {Promise.<void>}
  */
-controller.getSchoolImpersonation = async (req, res, next, error = null) => {
+controller.getSchoolImpersonation = async function getSchoolImpersonation (req, res, next, error = null) {
   res.locals.pageTitle = 'MTC Helpdesk School Impersonation'
   try {
     res.locals.isSubmitImpersonationUrl = true
@@ -34,7 +34,7 @@ controller.getSchoolImpersonation = async (req, res, next, error = null) => {
  * @param {function} next
  * @returns {Promise.<void>}
  */
-controller.postAddSchoolImpersonation = async (req, res, next) => {
+controller.postAddSchoolImpersonation = async function postAddSchoolImpersonation (req, res, next) {
   const { dfeNumber } = req.body
   try {
     const validationError = await schoolImpersonationService.setSchoolImpersonation(req.user, dfeNumber)
@@ -54,7 +54,7 @@ controller.postAddSchoolImpersonation = async (req, res, next) => {
  * @param {function} next
  * @returns {Promise.<void>}
  */
-controller.postRemoveSchoolImpersonation = async (req, res, next) => {
+controller.postRemoveSchoolImpersonation = async function postRemoveSchoolImpersonation (req, res, next) {
   try {
     schoolImpersonationService.removeImpersonation(req.user)
     req.flash('info', 'School impersonation has been removed')

@@ -25,7 +25,7 @@ const logger = require('../services/log.service').getLogger()
  * @param error
  * @returns {Promise<void>}
  */
-const getAddPupil = async (req, res, next, error = null) => {
+const getAddPupil = async function getAddPupil (req, res, next, error = null) {
   res.locals.pageTitle = 'Add pupil'
   try {
     const pupilExampleYear = pupilPresenter.getPupilExampleYear()
@@ -57,7 +57,7 @@ const getAddPupil = async (req, res, next, error = null) => {
  * @param next
  * @returns {Promise<void>}
  */
-const postAddPupil = async (req, res, next) => {
+const postAddPupil = async function postAddPupil (req, res, next) {
   res.locals.pageTitle = 'Add pupil'
   try {
     const pupil = await pupilAddService.addPupil(req.body, req.user.schoolId)
@@ -79,7 +79,7 @@ const postAddPupil = async (req, res, next) => {
  * @param res
  * @param next
  */
-const getAddMultiplePupils = async (req, res, next) => {
+const getAddMultiplePupils = async function getAddMultiplePupils (req, res, next) {
   res.locals.pageTitle = 'Add multiple pupils'
   const { hasError, fileErrors } = res
   let templateFileSize
@@ -118,7 +118,7 @@ const getAddMultiplePupils = async (req, res, next) => {
  * @param next
  * @returns {Promise<*>}
  */
-const postAddMultiplePupils = async (req, res, next) => {
+const postAddMultiplePupils = async function postAddMultiplePupils (req, res, next) {
   let school
   try {
     school = await schoolService.findOneById(req.user.schoolId)
@@ -173,7 +173,7 @@ const postAddMultiplePupils = async (req, res, next) => {
  * @param res
  * @returns {Promise<void>}
  */
-const getErrorCSVFile = async (req, res) => {
+const getErrorCSVFile = async function getErrorCSVFile (req, res) {
   const blobFile = await azureFileDataService.azureDownloadFile('csvuploads', req.session.csvErrorFile)
   res.setHeader('Content-type', 'text/csv')
   res.setHeader('Content-disposition', 'attachment; filename=multiple_pupils_errors.csv')
@@ -188,7 +188,7 @@ const getErrorCSVFile = async (req, res) => {
  * @param next
  * @returns {Promise<*>}
  */
-const getEditPupilById = async (req, res, next) => {
+const getEditPupilById = async function getEditPupilById (req, res, next) {
   res.locals.pageTitle = 'Edit pupil data'
   let pupilExampleYear
   try {
@@ -220,7 +220,7 @@ const getEditPupilById = async (req, res, next) => {
  * @param next
  * @returns {Promise<*>}
  */
-const postEditPupil = async (req, res, next) => {
+const postEditPupil = async function postEditPupil (req, res, next) {
   let pupil
   let school
   let validationError

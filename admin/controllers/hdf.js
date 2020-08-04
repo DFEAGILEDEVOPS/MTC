@@ -19,7 +19,7 @@ const attendanceCodeService = require('../services/attendance.service')
 
 const controller = {}
 
-controller.getResults = async (req, res, next) => {
+controller.getResults = async function getResults (req, res, next) {
   res.locals.pageTitle = 'Results'
   const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
   const pupils = await pupilService.findPupilsBySchoolId(req.user.schoolId)
@@ -55,7 +55,7 @@ controller.getResults = async (req, res, next) => {
 }
 
 // TODO: refactor this into a service call
-controller.downloadResults = async (req, res, next) => {
+controller.downloadResults = async function downloadResults (req, res, next) {
   // TODO: refactor to make it smaller
   // @ts-ignore needs refactoring to csv.format() - https://c2fo.io/fast-csv/docs/migration-guides/v2.x-to-v3.x/
   const csvStream = csv.createWriteStream()
@@ -128,7 +128,7 @@ controller.downloadResults = async (req, res, next) => {
   csvStream.end()
 }
 
-controller.getReviewPupilDetails = async (req, res, next) => {
+controller.getReviewPupilDetails = async function getReviewPupilDetails (req, res, next) {
   res.locals.pageTitle = 'Review pupil details'
   req.breadcrumbs("Headteacher's declaration form", '/attendance/declaration-form')
   req.breadcrumbs(res.locals.pageTitle)
@@ -147,7 +147,7 @@ controller.getReviewPupilDetails = async (req, res, next) => {
   }
 }
 
-controller.getEditReason = async (req, res, next) => {
+controller.getEditReason = async function getEditReason (req, res, next) {
   res.locals.pageTitle = 'Edit reason for not taking the check'
   req.breadcrumbs("Headteacher's declaration form", '/attendance/declaration-form')
   req.breadcrumbs('Review pupil details', '/attendance/review-pupil-details')
@@ -175,7 +175,7 @@ controller.getEditReason = async (req, res, next) => {
   })
 }
 
-controller.postSubmitEditReason = async (req, res, next) => {
+controller.postSubmitEditReason = async function postSubmitEditReason (req, res, next) {
   const { urlSlug, attendanceCode } = req.body
   try {
     const pupil = await headteacherDeclarationService.findPupilBySlugAndSchoolId(urlSlug, req.user.schoolId)
@@ -188,7 +188,7 @@ controller.postSubmitEditReason = async (req, res, next) => {
   }
 }
 
-controller.getConfirmSubmit = async (req, res, next) => {
+controller.getConfirmSubmit = async function getConfirmSubmit (req, res, next) {
   res.locals.pageTitle = 'Confirm and submit'
   req.breadcrumbs("Headteacher's declaration form", '/attendance/declaration-form')
   req.breadcrumbs('Review pupil details', '/attendance/review-pupil-details')
@@ -222,7 +222,7 @@ controller.getConfirmSubmit = async (req, res, next) => {
   }
 }
 
-controller.postConfirmSubmit = async (req, res, next) => {
+controller.postConfirmSubmit = async function postConfirmSubmit (req, res, next) {
   let validationError = await hdfConfirmValidator.validate(req.body)
   if (validationError.hasError()) {
     res.error = validationError
@@ -247,7 +247,7 @@ controller.postConfirmSubmit = async (req, res, next) => {
   return res.redirect('/attendance/submitted')
 }
 
-controller.getDeclarationForm = async (req, res, next) => {
+controller.getDeclarationForm = async function getDeclarationForm (req, res, next) {
   res.locals.pageTitle = "Headteacher's declaration form"
   req.breadcrumbs(res.locals.pageTitle)
 
@@ -278,7 +278,7 @@ controller.getDeclarationForm = async (req, res, next) => {
   })
 }
 
-controller.postDeclarationForm = async (req, res, next) => {
+controller.postDeclarationForm = async function postDeclarationForm (req, res, next) {
   const { firstName, lastName, isHeadteacher, jobTitle } = req.body
   const form = { firstName, lastName, isHeadteacher, jobTitle }
   const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
@@ -307,7 +307,7 @@ controller.postDeclarationForm = async (req, res, next) => {
   return res.redirect('/attendance/review-pupil-details')
 }
 
-controller.getHDFSubmitted = async (req, res, next) => {
+controller.getHDFSubmitted = async function getHDFSubmitted (req, res, next) {
   res.locals.pageTitle = "Headteacher's declaration form"
   req.breadcrumbs(res.locals.pageTitle)
   try {
@@ -327,7 +327,7 @@ controller.getHDFSubmitted = async (req, res, next) => {
   }
 }
 
-controller.getHDFSubmittedForm = async (req, res, next) => {
+controller.getHDFSubmittedForm = async function getHDFSubmittedForm (req, res, next) {
   res.locals.pageTitle = 'View submission'
   req.breadcrumbs("Headteacher's declaration form", '/attendance/declaration-form')
   req.breadcrumbs(res.locals.pageTitle)

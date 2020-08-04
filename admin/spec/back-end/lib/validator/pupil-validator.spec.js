@@ -1,14 +1,11 @@
 'use strict'
 
-/* global beforeEach, afterEach, describe, it, expect, spyOn jest */
-const sinon = require('sinon')
+/* global beforeEach, describe, it, expect, spyOn jest */
 
 const pupilValidator = require('../../../../lib/validator/pupil-validator')
 const pupilDataService = require('../../../../services/data-access/pupil.data.service')
 const pupilMock = require('../../mocks/pupil')
 const pupilErrors = require('../../../../lib/errors/pupil')
-
-let sandbox
 
 describe('pupil validator', function () {
   let req = null
@@ -43,13 +40,6 @@ describe('pupil validator', function () {
         this.params[name] = name
       }
     }
-
-    // Mock the call to check uniqueness on the pupil
-    sandbox = sinon.createSandbox()
-  })
-
-  afterEach(() => {
-    sandbox.restore()
   })
 
   describe('and the pupil uniqueness check passes', () => {

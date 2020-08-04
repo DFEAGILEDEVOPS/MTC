@@ -11,7 +11,7 @@ const logger = require('../services/log.service').getLogger()
 
 const controller = {}
 
-controller.getRestartOverview = async (req, res, next) => {
+controller.getRestartOverview = async function getRestartOverview (req, res, next) {
   res.locals.pageTitle = 'Select pupils to restart the check'
   req.breadcrumbs(res.locals.pageTitle)
 
@@ -46,7 +46,7 @@ controller.getRestartOverview = async (req, res, next) => {
   })
 }
 
-controller.getSelectRestartList = async (req, res, next) => {
+controller.getSelectRestartList = async function getSelectRestartList (req, res, next) {
   res.locals.pageTitle = 'Select pupils for restart'
   req.breadcrumbs('Select pupils to restart the check', '/restart/overview')
   req.breadcrumbs(res.locals.pageTitle)
@@ -83,7 +83,7 @@ controller.getSelectRestartList = async (req, res, next) => {
   })
 }
 
-controller.postSubmitRestartList = async (req, res, next) => {
+controller.postSubmitRestartList = async function postSubmitRestartList (req, res, next) {
   const { pupil: pupilsList, restartReason, classDisruptionInfo, didNotCompleteInfo, restartFurtherInfo } = req.body
   if (!pupilsList || pupilsList.length === 0) {
     return res.redirect('/restart/select-restart-list')
@@ -147,7 +147,7 @@ controller.postSubmitRestartList = async (req, res, next) => {
   return res.redirect(`/restart/overview?hl=${pupilsToHighlight}`)
 }
 
-controller.postDeleteRestart = async (req, res, next) => {
+controller.postDeleteRestart = async function postDeleteRestart (req, res, next) {
   let pupil
   const pupilSlug = req.body && req.body.pupil
   try {
