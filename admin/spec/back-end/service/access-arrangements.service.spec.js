@@ -300,27 +300,6 @@ describe('accessArrangementsService', () => {
       expect(pupilAccessArrangementsDataService.sqlInsertAccessArrangements).toHaveBeenCalledWith({}, true)
     })
   })
-  describe('canBeEdited', () => {
-    beforeAll(() => {
-      spyOn(moment, 'tz').and.returnValue(moment('2020-07-23'))
-    })
-    it('should return true if check window is open', async () => {
-      const checkWindowData = {
-        adminStartDate: moment('2020-01-01'),
-        checkEndDate: moment('2020-08-01')
-      }
-      spyOn(checkWindowService, 'getActiveCheckWindow').and.returnValue(checkWindowData)
-      expect(await sut.canBeEdited()).toBe(true)
-    })
-    it('should return false if check window is closed', async () => {
-      const checkWindowData = {
-        adminStartDate: moment('2020-03-01'),
-        checkEndDate: moment('2020-07-01')
-      }
-      spyOn(checkWindowService, 'getActiveCheckWindow').and.returnValue(checkWindowData)
-      expect(await sut.canBeEdited()).toBe(false)
-    })
-  })
   describe('getCurrentViewMode', () => {
     beforeAll(() => {
       spyOn(moment, 'tz').and.returnValue(moment('2020-07-01'))

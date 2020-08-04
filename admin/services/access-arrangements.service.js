@@ -112,17 +112,6 @@ const accessArrangementsService = {
     return { urlSlug, foreName, lastName }
   },
   /**
-   * @deprecated use getCurrentViewMode
-   * @description determines if existing access arrangements can be edited based upon check window state
-   * @param {string} timezone
-   * @returns {Promise<boolean>}
-   */
-  canBeEdited: async function canBeEdited (timezone) {
-    const currentDate = moment.tz(timezone || config.DEFAULT_TIMEZONE)
-    const currentCheckWindow = await checkWindowService.getActiveCheckWindow()
-    return currentDate.isBetween(currentCheckWindow.adminStartDate, currentCheckWindow.checkEndDate)
-  },
-  /**
    * @description determines whether AA module is editable, readonly or unavailable
    * @param {string} timezone
    * @returns {Promise<string>}
