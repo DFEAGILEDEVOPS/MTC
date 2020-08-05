@@ -8,7 +8,7 @@ const headers = {
   'method': 'POST',
   'user-agent': 'mtc-soap-service',
   'Content-Type': 'text/xmlcharset=UTF-8',
-  'soapAction': `${process.env.WSDL_URL}/GetEstablishment`
+  'soapAction': `${process.env.WS_URL}/GetEstablishment`
 }
 
 /* const soapAction = 'GetEstablishment'
@@ -33,7 +33,7 @@ const soapEnvelope = `<soapenv:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSch
                           </soapenv:Header>
                           <soapenv:Body>
                             <ws:GetEstablishment>
-                              <ws:Id>100044</ws:Id>
+                              <ws:Urn>100044</ws:Urn>
                             </ws:GetEstablishment>
                           </soapenv:Body>
                       </soapenv:Envelope>`
