@@ -9,7 +9,10 @@ const headers = {
   'soapAction': `${process.env.WSDL_URL}#GetEstablishment`
 }
 
-const soapAction = 'GetEstablishment'
+/* const soapAction = 'GetEstablishment'
+const actionParams = {
+  Id: 100044 // st michaels school
+} */
 
 const soapEnvelope = `<soapenv:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
@@ -27,7 +30,9 @@ const soapEnvelope = `<soapenv:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSch
                               </wsse:Security>
                           </soapenv:Header>
                           <soapenv:Body>
-                            <ws:${soapAction}>
+                            <ws:GetEstablishment>
+                              <ws:Id>100044</ws:Id>
+                            </ws:GetEstablishment>
                           </soapenv:Body>
                       </soapenv:Envelope>`
 const oneSecondInMilliseconds = 1000
