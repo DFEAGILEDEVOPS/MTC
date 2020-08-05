@@ -13,7 +13,7 @@ const businessAvailabilityService = require('../services/business-availability.s
  * @param next
  * @returns {Promise<void>}
  */
-const groupPupilsPage = async (req, res, next) => {
+const groupPupilsPage = async function groupPupilsPage (req, res, next) {
   res.locals.pageTitle = 'Organise pupils into groups'
 
   let checkWindowData
@@ -53,7 +53,7 @@ const groupPupilsPage = async (req, res, next) => {
  * @param next
  * @returns {Promise<void>}
  */
-const manageGroupPage = async (req, res, next) => {
+const manageGroupPage = async function manageGroupPage (req, res, next) {
   let pupilsList
   const selectedPupils = []
   let group
@@ -109,7 +109,7 @@ const manageGroupPage = async (req, res, next) => {
  * @param next
  * @returns {Promise<*>}
  */
-const addGroup = async (req, res, next) => {
+const addGroup = async function addGroup (req, res, next) {
   if (!req.body.name || !req.body.pupil) {
     req.flash('error', 'Missing fields.')
     return res.redirect('/group/pupils-list/add')
@@ -182,7 +182,7 @@ const addGroup = async (req, res, next) => {
  * @param next
  * @returns {Promise<*>}
  */
-const editGroup = async (req, res, next) => {
+const editGroup = async function editGroup (req, res, next) {
   if (!req.body.name || !req.body.pupil || !req.body.groupId) {
     req.flash('error', 'Missing fields.')
     return res.redirect('/group/pupils-list/edit')
@@ -254,7 +254,7 @@ const editGroup = async (req, res, next) => {
   return res.redirect('/group/pupils-list')
 }
 
-const removeGroup = async (req, res, next) => {
+const removeGroup = async function (req, res, next) {
   if (!req.params.groupId) {
     req.flash('error', 'Missing group id.')
     return res.redirect('/group/pupils-list')

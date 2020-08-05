@@ -87,32 +87,34 @@ The solution will fail to operate correctly without the following environment va
 * SAS_TIMEOUT_HOURS - number - the timeout in hours of the SAS token used to submit the completed check to the client
 * AZURE_QUEUE_PREFIX - string - a prefix used to construct environment-specific queue names: e.g. `prefix` or `some-prefix`
 * AZURE_TABLE_PREFIX - string - a prefix used to construct environment-specific table names: e.g. `prefix` or `somPrefix`
-* DEFAULT_ADMIN_PASSWORDHASH - string - a password hash which will be used to overwrite all the `[mtc_admin].[user].[passwordHash]` values when running seeds (`node data/sql/seed-sql.js`)
+* DEFAULT_ADMIN_PASSWORDHASH - string - a bcrypt password hash which will be used to overwrite all the `[mtc_admin].[user].[passwordHash]` values when running seeds (`node data/sql/seed-sql.js`)
 * WEBSITE_OFFLINE - boolean - disables the admin app and shows a downtime message
 * FEATURE_TOGGLE_SCHOOL_RESULTS_ALLOW_FETCH_FROM_DB - allow the schools results to be retrieved from the DB if not in Redis
 
 SQL Server specific environment variables
-* SQL_POOL_MIN_COUNT - the minimum number of connections in the pool
-* SQL_POOL_MAX_COUNT - the maximum number of connections in the pool
-* SQL_POOL_LOG_ENABLED - enables console logging of connection pool activity
+* SQL_ADMIN_USER - the server level user account used to perform database migrations.
+* SQL_ADMIN_USER_PASSWORD - password for the SQL_ADMIN_USER_PASSWORD.
 * SQL_APP_NAME - the name of the application added to log traces.  very useful for debugging
 * SQL_APP_USER - the username that the application connects as (should be a database level user _only_)
 * SQL_APP_USER_PASSWORD - password for the SQL_APP_USER
-* SQL_ADMIN_USER - the server level user account used to perform database migrations.
-* SQL_ADMIN_USER_PASSWORD - password for the SQL_ADMIN_USER_PASSWORD.
-* SQL_SERVER - the server to connect to
-* SQL_DATABASE - the database to connect to
-* SQL_PORT - the port to connect on, defaults to 1433
-* SQL_TIMEOUT - the time in milliseconds before an operation times out
 * SQL_AZURE_SCALE - the azure specific scale setting for the database.  Such as S1, S2, S3 etc.  When this is left blank, migrations are assumed to be running in a docker instance of SQL Server
+* SQL_DATABASE - the database to connect to
+* SQL_ENABLE_ARITH_ABORT - defaults to true. See the [docs](https://tediousjs.github.io/tedious/api-connection.html)
+* SQL_ENCRYPT - use encryption to connect to the DB.  Defaults to true.
+* SQL_POOL_LOG_ENABLED - enables console logging of connection pool activity
+* SQL_POOL_MAX_COUNT - the maximum number of connections in the pool
+* SQL_POOL_MIN_COUNT - the minimum number of connections in the pool
+* SQL_PORT - the port to connect on, defaults to 1433
+* SQL_SERVER - the server to connect to
+* SQL_TIMEOUT - the time in milliseconds before an operation times out
+* SQL_TRUST_SERVER_CERTIFICATE - if false tedious will verify the server SSL cert.  Defaults to false. See the [docs](https://tediousjs.github.io/tedious/api-connection.html)
+
 
 `config.js` contains defaults for a local sql server instance with matching credentials for the docker compose instance.
 
 #### Using SQL Server
 
 We use [tedious](http://tediousjs.github.io/tedious/) package for SQL Server data operations.  This has been abstracted with a connection pool implementation and methods for querying and modifying data have been surfaced via the [sqlService](./services/data-access/sql.service.js) object.
-
-Example usage can be found [here](./sql.usage.example.js)
 
 ### Running the test suite
 

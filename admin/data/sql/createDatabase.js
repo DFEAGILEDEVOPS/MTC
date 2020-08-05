@@ -3,16 +3,19 @@
 const Request = require('tedious').Request
 const Connection = require('tedious').Connection
 const config = require('../../config')
+const sqlConfig = require('../../config/sql.config')
 const logger = require('../../services/log.service').getLogger()
 
 const adminConfig = {
   server: config.Sql.Server,
   options: {
     database: 'master',
-    encrypt: config.Sql.Encrypt,
+    encrypt: sqlConfig.options.encrypt,
     requestTimeout: config.Sql.Migrator.Timeout,
-    port: config.Sql.Port,
-    connectTimeout: config.Sql.Migrator.Timeout
+    port: sqlConfig.port,
+    connectTimeout: config.Sql.Migrator.Timeout,
+    trustServerCertificate: sqlConfig.options.trustServerCertificate,
+    enableArithAbort: sqlConfig.options.enableArithAbort
   },
   authentication: {
     type: 'default',

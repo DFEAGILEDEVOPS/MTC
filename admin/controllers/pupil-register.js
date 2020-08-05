@@ -5,7 +5,7 @@ const checkWindowV2Service = require('../services/check-window-v2.service')
 const businessAvailabilityService = require('../services/business-availability.service')
 const incompleteChecksPresenter = require('../helpers/incomplete-checks-presenter')
 
-const listPupils = async (req, res, next) => {
+const listPupils = async function listPupils (req, res, next) {
   res.locals.pageTitle = 'View, add or edit pupils on your school\'s register'
 
   let checkWindowData

@@ -1,0 +1,2 @@
+ALTER TABLE [mtc_admin].[pupilAccessArrangements] DROP CONSTRAINT FK_pupilAccessArrangements_check_id
+ALTER TABLE [mtc_admin].[pupilAccessArrangements] DROP COLUMN retroInputAssistantFirstName, retroInputAssistantLastName, retroInputAssistantReason, retroInputAssistant_check_id
