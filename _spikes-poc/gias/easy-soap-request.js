@@ -3,7 +3,7 @@
 require('dotenv').config()
 const soapRequest = require('easy-soap-request')
 
-const url = process.env.WS_URL
+const url = process.env.WS_ENDPOINT
 const headers = {
   'method': 'POST',
   'user-agent': 'mtc-soap-service',
