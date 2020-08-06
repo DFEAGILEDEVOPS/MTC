@@ -1,27 +1,5 @@
 'use strict'
 
-const lpad = (value, length = 2) => {
-  let padded = value.toString()
-  if (padded.length > length) {
-    return padded.substr(padded.length - length)
-  }
-  while (padded.length < length) {
-    padded = '0' + padded
-  }
-  return padded
-}
-const formatDate = (date) => {
-  const yyyy = date.getUTCFullYear()
-  const mm = date.getUTCMonth() + 1
-  const dd = date.getUTCDate()
-  const hh = date.getUTCHours()
-  const mi = date.getUTCMinutes()
-  const ss = date.getUTCSeconds()
-  const ms = date.getUTCMilliseconds()
-
-  return `${yyyy}-${lpad(mm)}-${lpad(dd)}T${lpad(hh)}:${lpad(mi)}:${lpad(ss)}.${lpad(ms, 3)}Z`
-}
-
 class SoapMessage {
   constructor (action, parameters) {
     this.action = action
@@ -58,8 +36,8 @@ class SoapMessage {
       const expires = new Date(Date.now() + this.messageExpiresInMilliseconds)
 
       xml = `${xml}<wsu:Timestamp wsu:Id="XWSSGID-${created.getTime()}" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd">`
-      xml = `${xml}<wsu:Created>${formatDate(created)}</wsu:Created>`
-      xml = `${xml}<wsu:Expires>${formatDate(expires)}</wsu:Expires>`
+      xml = `${xml}<wsu:Created>${created.toISOString()}</wsu:Created>`
+      xml = `${xml}<wsu:Expires>${expires.toISOString()}</wsu:Expires>`
       xml = `${xml}</wsu:Timestamp>`
     }
     if (this.credentials) {

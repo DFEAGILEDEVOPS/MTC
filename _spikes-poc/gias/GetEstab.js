@@ -29,6 +29,7 @@ soapRequest({
   timeout: timeoutInMilliseconds
 }).then((resolve, reject) => {
   console.dir(resolve)
-  console.dir(reject)
+}).catch((error) => {
+  console.error(error)
 })
 
