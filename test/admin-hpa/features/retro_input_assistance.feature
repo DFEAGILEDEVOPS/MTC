@@ -23,3 +23,29 @@ Feature:
     When I am on the retro input page
     Then I should be able to add input assistant against the third check
 
+  @pupil_not_taking_check @live_tio_expired @declaration_confirm @hdf @reset_hdf_submission
+  Scenario: Retro input assistance cant be added after the HDF is signed
+    Given I have signed the hdf
+    Then I should not be able to add retro input assistance to any pupils
+
+  @pupil_not_taking_check @live_tio_expired @declaration_confirm @hdf @reset_hdf_submission
+  Scenario: Retro input assistance can be added if the check window is closed
+    Given the check window is now closed
+    Then I should be able to add an input assistant retrospectively
+    And the access arrangement pupil list should be read only
+
+  Scenario: First name and last name fields are limited to 128 chars
+    Given I have completed the check
+    When I add an input assistant details which are over 128 chars for first name and last name
+    Then I should see validation errors relating to the first name and last name fields
+
+  Scenario: First name and last name fields are not allowed to include special chars
+    Given I have completed the check
+    When I add an input assistant details which include special chars for first name and last name
+    Then I should see validation errors relating to special chars in the first name and last name fields
+
+  Scenario: Retro input requires a first and last name, a reason, and a pupil name
+    Given I am on the retro input assitance page
+    When I submit the form with no values
+    Then I should see some errors
+

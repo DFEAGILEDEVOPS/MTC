@@ -2,8 +2,7 @@ Given(/^I have retrospectively added an input assistant$/) do
   step 'I am on the complete page'
   step 'I login to the admin app with teacher1'
   visit ENV["ADMIN_BASE_URL"] + access_arrangements_page.url
-  access_arrangements_page.select_pupil_and_arrangement_btn.click
-  select_access_arrangements_page.retro_input.link.click
+  access_arrangements_page.retro_input.link.click
   Timeout.timeout(ENV['WAIT_TIME'].to_i) {(visit current_url; retro_input_page.search_pupil.set(@details_hash[:first_name])) until
     retro_input_page.auto_search_list[0].text.include? @details_hash[:first_name]}
   retro_input_page.search_pupil.set(@details_hash[:first_name])
@@ -42,7 +41,6 @@ When(/^I complete a check after a restart$/) do
   mtc_check_start_page.start_now.click
   step 'I should be able to use the on screen keyboard to complete the test'
 end
-
 
 Then(/^I should not have any retro input assistant recorded against the current check$/) do
   latest_check_taken = SqlDbHelper.check_details(@pupil_id)['id']
