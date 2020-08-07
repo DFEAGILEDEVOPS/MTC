@@ -50,6 +50,14 @@ describe('retro input assistant validator', () => {
     expect(firstNameError).toEqual(errorMessages.invalidFirstName)
   })
 
+  it('should invalidate if input assistant first name contains special characters', async () => {
+    retroInputAssistantData.firstName = 'gary%'
+    const validationResult = await sut.validate(retroInputAssistantData)
+    expect(validationResult.hasError()).toBe(true)
+    const firstNameError = validationResult.get('firstName')
+    expect(firstNameError).toEqual(errorMessages.firstNameNoSpecialChars)
+  })
+
   it('should invalidate if input assistant last name is undefined', async () => {
     retroInputAssistantData.lastName = undefined
     const validationResult = await sut.validate(retroInputAssistantData)
@@ -72,6 +80,14 @@ describe('retro input assistant validator', () => {
     expect(validationResult.hasError()).toBe(true)
     const firstNameError = validationResult.get('lastName')
     expect(firstNameError).toEqual(errorMessages.invalidLastName)
+  })
+
+  it('should invalidate if input assistant last name contains special characters', async () => {
+    retroInputAssistantData.lastName = 'smith#'
+    const validationResult = await sut.validate(retroInputAssistantData)
+    expect(validationResult.hasError()).toBe(true)
+    const firstNameError = validationResult.get('lastName')
+    expect(firstNameError).toEqual(errorMessages.lastNameNoSpecialChars)
   })
 
   it('should invalidate if input assistant reason is undefined', async () => {
