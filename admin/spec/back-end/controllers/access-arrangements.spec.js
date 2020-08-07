@@ -1,6 +1,6 @@
 'use strict'
 
-/* global describe beforeEach it expect jasmine spyOn */
+/* global describe beforeEach it expect jasmine spyOn fail */
 
 const httpMocks = require('node-mocks-http')
 const R = require('ramda')
@@ -16,6 +16,7 @@ const accessArrangementsOverviewPresenter = require('../../../helpers/access-arr
 const businessAvailabilityService = require('../../../services/business-availability.service')
 const ValidationError = require('../../../lib/validation-error')
 const accessArrangementsDescriptionsPresenter = require('../../../helpers/access-arrangements-descriptions-presenter')
+const aaViewModes = require('../../../lib/consts/access-arrangements-view-mode')
 
 describe('access arrangements controller:', () => {
   let next
@@ -51,6 +52,7 @@ describe('access arrangements controller:', () => {
       spyOn(pupilAccessArrangementsService, 'getPupils').and.returnValue([])
       spyOn(checkWindowV2Service, 'getActiveCheckWindow')
       spyOn(schoolHomeFeatureEligibilityPresenter, 'getPresentationData')
+      spyOn(accessArrangementsService, 'getCurrentViewMode').and.returnValue(aaViewModes.edit)
       spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ accessArrangementsAvailable: true })
       spyOn(accessArrangementsOverviewPresenter, 'getPresentationData')
       await controller.getOverview(req, res, next)
@@ -58,6 +60,7 @@ describe('access arrangements controller:', () => {
       expect(res.render).toHaveBeenCalled()
       expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
       expect(businessAvailabilityService.getAvailabilityData).toHaveBeenCalled()
+      expect(accessArrangementsService.getCurrentViewMode).toHaveBeenCalled()
       expect(schoolHomeFeatureEligibilityPresenter.getPresentationData).toHaveBeenCalled()
       expect(accessArrangementsOverviewPresenter.getPresentationData).toHaveBeenCalled()
     })
@@ -68,17 +71,36 @@ describe('access arrangements controller:', () => {
       spyOn(pupilAccessArrangementsService, 'getPupils').and.returnValue([])
       spyOn(checkWindowV2Service, 'getActiveCheckWindow')
       spyOn(schoolHomeFeatureEligibilityPresenter, 'getPresentationData')
-      spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ accessArrangementsAvailable: false })
+      spyOn(accessArrangementsService, 'getCurrentViewMode').and.returnValue(aaViewModes.unavailable)
       spyOn(accessArrangementsOverviewPresenter, 'getPresentationData')
       await controller.getOverview(req, res, next)
-      expect(res.locals.pageTitle).toBe('Enable access arrangements for pupils who need them')
-      expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
-      expect(businessAvailabilityService.getAvailabilityData).toHaveBeenCalled()
-      expect(schoolHomeFeatureEligibilityPresenter.getPresentationData).toHaveBeenCalled()
-      expect(accessArrangementsOverviewPresenter.getPresentationData).not.toHaveBeenCalled()
       expect(res.render).toHaveBeenCalledWith('access-arrangements/unavailable-access-arrangements', {
-        availabilityData: { accessArrangementsAvailable: false },
+        aaViewMode: aaViewModes.unavailable,
         breadcrumbs: undefined,
+        title: 'Enable access arrangements for pupils who need them'
+      })
+    })
+    it('displays the overview in readonly mode when editing is no longer permitted', async () => {
+      const res = getRes()
+      const req = getReq(reqParams)
+      spyOn(res, 'render')
+      spyOn(pupilAccessArrangementsService, 'getPupils').and.returnValue([])
+      spyOn(checkWindowV2Service, 'getActiveCheckWindow')
+      spyOn(accessArrangementsService, 'getCurrentViewMode').and.returnValue(aaViewModes.readonly)
+      spyOn(schoolHomeFeatureEligibilityPresenter, 'getPresentationData')
+      spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ accessArrangementsAvailable: true })
+      spyOn(accessArrangementsOverviewPresenter, 'getPresentationData')
+      await controller.getOverview(req, res, next)
+      expect(res.render).toHaveBeenCalledWith('access-arrangements/overview', {
+        aaViewMode: aaViewModes.readonly,
+        availabilityData: {
+          accessArrangementsAvailable: true
+        },
+        messages: undefined,
+        pinGenerationEligibilityData: undefined,
+        pupilsFormatted: undefined,
+        breadcrumbs: undefined,
+        highlight: undefined,
         title: 'Enable access arrangements for pupils who need them'
       })
     })
@@ -86,6 +108,7 @@ describe('access arrangements controller:', () => {
       const res = getRes()
       const req = getReq(reqParams)
       spyOn(res, 'render')
+      spyOn(accessArrangementsService, 'getCurrentViewMode').and.returnValue(aaViewModes.edit)
       spyOn(pupilAccessArrangementsService, 'getPupils').and.returnValue(Promise.reject(new Error('error')))
       spyOn(checkWindowV2Service, 'getActiveCheckWindow')
       spyOn(schoolHomeFeatureEligibilityPresenter, 'getPresentationData')
@@ -156,10 +179,22 @@ describe('access arrangements controller:', () => {
         School: 1
       }
     }
+    it('should fail when edit mode unavailable', async () => {
+      spyOn(accessArrangementsService, 'getCurrentViewMode').and.returnValue(aaViewModes.readonly)
+      const req = getReq(reqParams)
+      const res = getRes()
+      try {
+        await controller.postSubmitAccessArrangements(req, res, next)
+        fail('error should have been thrown to prevent edit')
+      } catch (error) {
+        expect(error.name).toBe('AccessArrangementsNotEditableError')
+      }
+    })
     it('submits pupils access arrangements', async () => {
       const res = getRes()
       const req = getReq(reqParams)
       spyOn(res, 'redirect')
+      spyOn(accessArrangementsService, 'getCurrentViewMode').and.returnValue(aaViewModes.edit)
       spyOn(accessArrangementsService, 'submit').and.returnValue({ id: 1, foreName: 'foreName', lastName: 'lastName' })
       spyOn(checkWindowV2Service, 'getActiveCheckWindow')
       spyOn(businessAvailabilityService, 'determineAccessArrangementsEligibility')
@@ -175,6 +210,7 @@ describe('access arrangements controller:', () => {
       const req = getReq(reqParams)
       spyOn(res, 'redirect')
       const error = new Error('error')
+      spyOn(accessArrangementsService, 'getCurrentViewMode').and.returnValue(aaViewModes.edit)
       spyOn(accessArrangementsService, 'submit').and.returnValue(Promise.reject(error))
       spyOn(checkWindowV2Service, 'getActiveCheckWindow')
       spyOn(businessAvailabilityService, 'determineAccessArrangementsEligibility')
@@ -193,6 +229,7 @@ describe('access arrangements controller:', () => {
       spyOn(res, 'redirect')
       spyOn(controller, 'getSelectAccessArrangements')
       spyOn(checkWindowV2Service, 'getActiveCheckWindow')
+      spyOn(accessArrangementsService, 'getCurrentViewMode').and.returnValue(aaViewModes.edit)
       spyOn(businessAvailabilityService, 'determineAccessArrangementsEligibility')
       spyOn(accessArrangementsService, 'submit').and.returnValue(Promise.reject(new ValidationError()))
       try {
@@ -216,6 +253,7 @@ describe('access arrangements controller:', () => {
       spyOn(controller, 'getSelectAccessArrangements')
       spyOn(controller, 'getEditAccessArrangements')
       spyOn(checkWindowV2Service, 'getActiveCheckWindow')
+      spyOn(accessArrangementsService, 'getCurrentViewMode').and.returnValue(aaViewModes.edit)
       spyOn(businessAvailabilityService, 'determineAccessArrangementsEligibility')
       spyOn(accessArrangementsService, 'submit').and.returnValue(Promise.reject(new ValidationError()))
       try {
@@ -240,11 +278,23 @@ describe('access arrangements controller:', () => {
         }
       }
     }
+    it('throws an error if edit mode not available', async () => {
+      spyOn(accessArrangementsService, 'getCurrentViewMode').and.returnValue(aaViewModes.readonly)
+      const req = getReq(reqParams)
+      const res = getRes()
+      try {
+        await controller.getEditAccessArrangements(req, res, next)
+        fail('error should have been thrown to prevent edit')
+      } catch (error) {
+        expect(error.name).toBe('AccessArrangementsNotEditableError')
+      }
+    })
     it('displays the edit access arrangements page', async () => {
       const res = getRes()
       const req = getReq(reqParams('urlSlug'))
       spyOn(res, 'render')
       spyOn(accessArrangementsService, 'getAccessArrangements')
+      spyOn(accessArrangementsService, 'getCurrentViewMode').and.returnValue(aaViewModes.edit)
       spyOn(accessArrangementsDescriptionsPresenter, 'getPresentationData')
       spyOn(accessArrangementsDescriptionsPresenter, 'addReasonRequiredIndication')
       spyOn(questionReaderReasonsService, 'getQuestionReaderReasons')
@@ -263,6 +313,7 @@ describe('access arrangements controller:', () => {
       spyOn(res, 'render')
       const error = new Error('error')
       spyOn(accessArrangementsService, 'getAccessArrangements')
+      spyOn(accessArrangementsService, 'getCurrentViewMode').and.returnValue(aaViewModes.edit)
       spyOn(accessArrangementsDescriptionsPresenter, 'getPresentationData')
       spyOn(accessArrangementsDescriptionsPresenter, 'addReasonRequiredIndication')
       spyOn(questionReaderReasonsService, 'getQuestionReaderReasons')
@@ -284,12 +335,24 @@ describe('access arrangements controller:', () => {
         }
       }
     }
+    it('throws an error if edit mode not available', async () => {
+      spyOn(accessArrangementsService, 'getCurrentViewMode').and.returnValue(aaViewModes.readonly)
+      const req = getReq(reqParams)
+      const res = getRes()
+      try {
+        await controller.getDeleteAccessArrangements(req, res, next)
+        fail('error should have been thrown to prevent edit')
+      } catch (error) {
+        expect(error.name).toBe('AccessArrangementsNotEditableError')
+      }
+    })
     it('redirects to overview page when successfully deleting', async () => {
       const res = getRes()
       const req = getReq(reqParams('urlSlug'))
       spyOn(res, 'redirect')
       spyOn(checkWindowV2Service, 'getActiveCheckWindow')
       spyOn(businessAvailabilityService, 'determineAccessArrangementsEligibility')
+      spyOn(accessArrangementsService, 'getCurrentViewMode').and.returnValue(aaViewModes.edit)
       spyOn(pupilAccessArrangementsService, 'deletePupilAccessArrangements').and.returnValue({ id: 1, foreName: 'foreName', lastName: 'lastName' })
       await controller.getDeleteAccessArrangements(req, res, next)
       expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
@@ -303,6 +366,7 @@ describe('access arrangements controller:', () => {
       spyOn(res, 'redirect')
       spyOn(checkWindowV2Service, 'getActiveCheckWindow')
       spyOn(businessAvailabilityService, 'determineAccessArrangementsEligibility')
+      spyOn(accessArrangementsService, 'getCurrentViewMode').and.returnValue(aaViewModes.edit)
       const error = new Error('error')
       spyOn(pupilAccessArrangementsService, 'deletePupilAccessArrangements').and.returnValue(Promise.reject(error))
       await controller.getDeleteAccessArrangements(req, res, next)
