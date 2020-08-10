@@ -6,6 +6,13 @@
       "direction": "in",
       "queueName": "sync-results-to-db-complete",
       "connection": "AZURE_SERVICE_BUS_CONNECTION_STRING"
+    },
+    {
+      "name": "schoolResultsCache",
+      "type": "serviceBus",
+      "direction": "out",
+      "queueName": "school-results-cache",
+      "connection": "AZURE_SERVICE_BUS_CONNECTION_STRING"
     }
   ],
   "scriptFile": "../dist/functions/school-results-cache-determiner/index.js"

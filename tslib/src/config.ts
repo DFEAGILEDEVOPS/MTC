@@ -14,6 +14,7 @@ try {
   console.error(error)
 }
 import * as toBool from './common/to-bool'
+import * as schoolResultsCacheDeterminerConfig from './functions/school-results-cache-determiner/config'
 
 const getEnvironment = () => {
   return process.env.ENVIRONMENT_NAME || 'Local-Dev'
@@ -80,5 +81,8 @@ export default {
     OverridePinExpiry: {}.hasOwnProperty.call(process.env, 'OVERRIDE_PIN_EXPIRY') ? toBool.primitiveToBoolean(process.env.OVERRIDE_PIN_EXPIRY) : false,
     PinUpdateMaxAttempts: parseInt(optionalValueParser(process.env.PIN_UPDATE_MAX_ATTEMPTS,0), 10),
     DigitChars: '23456789'
+  },
+  SchoolResultsCacheDeterminer: {
+    cache: Number(process.env.SCHOOL_RESULTS_CACHE) || schoolResultsCacheDeterminerConfig.cache.cacheIfInDate
   }
 }
