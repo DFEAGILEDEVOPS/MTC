@@ -11,7 +11,7 @@ const controller = {}
  * @param {function} next
  * @returns {Promise.<void>}
  */
-controller.getSummary = async (req, res, next) => {
+controller.getSummary = async function getSummary (req, res, next) {
   res.locals.pageTitle = 'School Summary'
   try {
     const summaryData = await schoolSummaryService.getSummary(req.user.schoolId)

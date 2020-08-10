@@ -7,6 +7,9 @@ const roles = require('../lib/consts/roles')
 const pupilStatusController = require('../controllers/pupil-status')
 
 /* Pupil Status routing */
-router.get('/', isAuthenticated([roles.teacher, roles.helpdesk]), (req, res, next) => pupilStatusController.getViewPupilStatus(req, res, next))
+router.get('/',
+  isAuthenticated([roles.teacher, roles.helpdesk]),
+  pupilStatusController.getViewPupilStatus
+)
 
 module.exports = router

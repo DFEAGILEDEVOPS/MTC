@@ -14,7 +14,7 @@ const controller = {
    * @param next
    * @returns {Promise.<void>}
    */
-  getServiceMessage: async (req, res, next) => {
+  getServiceMessage: async function getServiceMessage (req, res, next) {
     res.locals.pageTitle = 'Manage service message'
     req.breadcrumbs(res.locals.pageTitle)
     let serviceMessage
@@ -37,7 +37,7 @@ const controller = {
    * @param err
    * @returns {Promise.<void>}
    */
-  getServiceMessageForm: async (req, res, next, err = undefined) => {
+  getServiceMessageForm: async function getServiceMessageForm (req, res, next, err = undefined) {
     req.breadcrumbs('Manage service message', '/service-message')
     res.locals.pageTitle = 'Create service message'
     req.breadcrumbs(res.locals.pageTitle)
@@ -55,7 +55,7 @@ const controller = {
    * @param next
    * @returns {Promise.<void>}
    */
-  postSubmitServiceMessage: async (req, res, next) => {
+  postSubmitServiceMessage: async function postSubmitServiceMessage (req, res, next) {
     const requestData = req.body
     try {
       const result = await administrationMessageService.setMessage(requestData, req.user.id)
@@ -77,7 +77,7 @@ const controller = {
    * @param next
    * @returns {Promise.<void>}
    */
-  postRemoveServiceMessage: async (req, res, next) => {
+  postRemoveServiceMessage: async function postRemoveServiceMessage (req, res, next) {
     try {
       await administrationMessageService.dropMessage(req.user.id)
       req.flash('info', 'Service message has successfully been removed')

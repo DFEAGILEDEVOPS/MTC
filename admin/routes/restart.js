@@ -9,25 +9,25 @@ router.get(
   '/overview',
   isAuthenticated([roles.teacher, roles.helpdesk]),
   isAdminWindowAvailable,
-  (req, res, next) => restartController.getRestartOverview(req, res, next)
+  restartController.getRestartOverview
 )
 router.get(
   '/select-restart-list',
   isAuthenticated([roles.teacher, roles.helpdesk]),
   isAdminWindowAvailable,
-  (req, res, next) => restartController.getSelectRestartList(req, res, next)
+  restartController.getSelectRestartList
 )
 router.post(
   '/submit-restart-list',
   isAuthenticated([roles.teacher, roles.helpdesk]),
   isAdminWindowAvailable,
-  (req, res, next) => restartController.postSubmitRestartList(req, res, next)
+  restartController.postSubmitRestartList
 )
 router.post(
   '/delete',
   isAuthenticated([roles.teacher, roles.helpdesk]),
   isAdminWindowAvailable,
-  (req, res, next) => restartController.postDeleteRestart(req, res, next)
+  restartController.postDeleteRestart
 )
 
 module.exports = router

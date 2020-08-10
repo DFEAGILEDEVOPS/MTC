@@ -1,7 +1,7 @@
 'use strict'
-/* global describe, it, expect spyOn */
+/* global describe, it, expect spyOn beforeAll */
 
-const accessArrangementsService = require('../../../services/access-arrangements.service')
+const sut = require('../../../services/access-arrangements.service')
 const accessArrangementsDataService = require('../../../services/data-access/access-arrangements.data.service')
 const questionReaderReasonsDataService = require('../../../services/data-access/question-reader-reasons.data.service')
 const pupilAccessArrangementsDataService = require('../../../services/data-access/pupil-access-arrangements.data.service')
@@ -10,6 +10,8 @@ const accessArrangementsValidator = require('../../../lib/validator/access-arran
 const ValidationError = require('../../../lib/validation-error')
 const accessArrangementsErrorMessages = require('../../../lib/errors/access-arrangements')
 const preparedCheckSyncService = require('../../../services/prepared-check-sync.service')
+const moment = require('moment-timezone')
+const checkWindowService = require('../../../services/check-window-v2.service')
 
 describe('accessArrangementsService', () => {
   describe('getAccessArrangements', () => {
@@ -23,23 +25,44 @@ describe('accessArrangementsService', () => {
         }
       ]
       spyOn(accessArrangementsDataService, 'sqlFindAccessArrangements').and.returnValue(accessArrangements)
-      const result = await accessArrangementsService.getAccessArrangements()
+      const result = await sut.getAccessArrangements()
       expect(accessArrangementsDataService.sqlFindAccessArrangements).toHaveBeenCalled()
-      expect(result).toBe(accessArrangements)
+      expect(result).toStrictEqual(accessArrangements)
+    })
+    it('does not return the retro input assistant item', async () => {
+      const accessArrangements = [
+        {
+          id: 1,
+          displayOrder: 1,
+          description: 'description',
+          code: 'COD'
+        },
+        {
+          id: 2,
+          displayOrder: 2,
+          description: 'retro input assistant',
+          code: 'RIA'
+        }
+      ]
+      spyOn(accessArrangementsDataService, 'sqlFindAccessArrangements').and.returnValue(Promise.resolve(accessArrangements))
+      const result = await sut.getAccessArrangements()
+      expect(accessArrangementsDataService.sqlFindAccessArrangements).toHaveBeenCalled()
+      expect(result.length).toBe(1)
+      expect(result[0].code === 'COD').toBe(true)
     })
   })
   describe('submit', () => {
     it('calls preparedCheckSync service and returns access arrangements list', async () => {
       spyOn(accessArrangementsValidator, 'validate').and.returnValue((new ValidationError()))
-      spyOn(accessArrangementsService, 'prepareData')
+      spyOn(sut, 'prepareData')
       spyOn(pupilDataService, 'sqlFindOneBySlugAndSchool').and.returnValue({ id: 1 })
-      spyOn(accessArrangementsService, 'save')
+      spyOn(sut, 'save')
       spyOn(preparedCheckSyncService, 'addMessages')
-      await accessArrangementsService.submit({}, 12345, 1)
+      await sut.submit({}, 12345, 1)
       expect(accessArrangementsValidator.validate).toHaveBeenCalled()
       expect(pupilDataService.sqlFindOneBySlugAndSchool).toHaveBeenCalled()
-      expect(accessArrangementsService.prepareData).toHaveBeenCalled()
-      expect(accessArrangementsService.save).toHaveBeenCalled()
+      expect(sut.prepareData).toHaveBeenCalled()
+      expect(sut.save).toHaveBeenCalled()
       expect(preparedCheckSyncService.addMessages).toHaveBeenCalled()
     })
     it('throws a validation error if validation is unsuccessful', async () => {
@@ -47,19 +70,19 @@ describe('accessArrangementsService', () => {
       validationError.addError('pupil-autocomplete-container', accessArrangementsErrorMessages.missingPupilName)
       validationError.addError('accessArrangementsList', accessArrangementsErrorMessages.missingAccessArrangements)
       spyOn(accessArrangementsValidator, 'validate').and.returnValue(validationError)
-      spyOn(accessArrangementsService, 'prepareData')
+      spyOn(sut, 'prepareData')
       spyOn(pupilDataService, 'sqlFindOneBySlugAndSchool').and.returnValue({ id: 1 })
-      spyOn(accessArrangementsService, 'save')
+      spyOn(sut, 'save')
       spyOn(preparedCheckSyncService, 'addMessages')
       try {
-        await accessArrangementsService.submit({}, 12345, 1)
+        await sut.submit({}, 12345, 1)
       } catch (error) {
         expect(error.name).toBe('ValidationError')
       }
       expect(accessArrangementsValidator.validate).toHaveBeenCalled()
       expect(pupilDataService.sqlFindOneBySlugAndSchool).not.toHaveBeenCalled()
-      expect(accessArrangementsService.prepareData).not.toHaveBeenCalled()
-      expect(accessArrangementsService.save).not.toHaveBeenCalled()
+      expect(sut.prepareData).not.toHaveBeenCalled()
+      expect(sut.save).not.toHaveBeenCalled()
       expect(preparedCheckSyncService.addMessages).not.toHaveBeenCalled()
     })
   })
@@ -76,7 +99,7 @@ describe('accessArrangementsService', () => {
       spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsIdsWithCodes').and.returnValue([{ id: 1, code: 'ATA' }])
       spyOn(pupilAccessArrangementsDataService, 'sqlFindPupilColourContrastsId')
       spyOn(pupilAccessArrangementsDataService, 'sqlFindPupilFontSizesId')
-      const result = await accessArrangementsService.prepareData(requestData, { id: 1 }, 12345, 1)
+      const result = await sut.prepareData(requestData, { id: 1 }, 12345, 1)
       expect(accessArrangementsDataService.sqlFindAccessArrangementsIdsWithCodes).toHaveBeenCalled()
       expect(result).toEqual(Object({
         pupil_id: 1,
@@ -98,7 +121,7 @@ describe('accessArrangementsService', () => {
       }
       spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsIdsWithCodes').and.returnValue([])
       try {
-        await accessArrangementsService.prepareData(requestData, { id: 1 }, 12345, 1)
+        await sut.prepareData(requestData, { id: 1 }, 12345, 1)
       } catch (error) {
         expect(error.message).toBe('No access arrangements found')
       }
@@ -114,7 +137,7 @@ describe('accessArrangementsService', () => {
       }
       spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsIdsWithCodes').and.returnValue([1])
       try {
-        await accessArrangementsService.prepareData(requestData, {}, 12345, 1)
+        await sut.prepareData(requestData, {}, 12345, 1)
       } catch (error) {
         expect(error.message).toBe('Pupil object is not found')
       }
@@ -132,7 +155,7 @@ describe('accessArrangementsService', () => {
         questionReaderOtherInformation: ''
       }
       spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsIdsWithCodes').and.returnValue([{ id: 1, code: 'ATA' }, { id: 2, code: 'ITA' }])
-      const result = await accessArrangementsService.prepareData(requestData, { id: 1 }, 12345, 1)
+      const result = await sut.prepareData(requestData, { id: 1 }, 12345, 1)
       expect(result).toEqual(Object({
         pupil_id: 1,
         accessArrangementsIdsWithCodes: [
@@ -157,7 +180,7 @@ describe('accessArrangementsService', () => {
         questionReaderOtherInformation: ''
       }
       spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsIdsWithCodes').and.returnValue([{ id: 1, code: 'ATA' }, { id: 2, code: 'NBQ' }])
-      const result = await accessArrangementsService.prepareData(requestData, { id: 1 }, 12345, 1)
+      const result = await sut.prepareData(requestData, { id: 1 }, 12345, 1)
       expect(result).toEqual(Object({
         pupil_id: 1,
         accessArrangementsIdsWithCodes: [
@@ -186,7 +209,7 @@ describe('accessArrangementsService', () => {
         { id: 3, code: accessArrangementsDataService.CODES.QUESTION_READER }
       ])
       spyOn(questionReaderReasonsDataService, 'sqlFindQuestionReaderReasonIdByCode').and.returnValue(1)
-      const result = await accessArrangementsService.prepareData(requestData, { id: 1 }, 12345, 1)
+      const result = await sut.prepareData(requestData, { id: 1 }, 12345, 1)
       expect(questionReaderReasonsDataService.sqlFindQuestionReaderReasonIdByCode).toHaveBeenCalled()
       expect(result).toEqual(Object({
         pupil_id: 1,
@@ -216,7 +239,7 @@ describe('accessArrangementsService', () => {
         { id: 3, code: accessArrangementsDataService.CODES.QUESTION_READER }
       ])
       spyOn(questionReaderReasonsDataService, 'sqlFindQuestionReaderReasonIdByCode').and.returnValue(4)
-      const result = await accessArrangementsService.prepareData(requestData, { id: 1 }, 12345, 1)
+      const result = await sut.prepareData(requestData, { id: 1 }, 12345, 1)
       expect(result).toEqual(Object({
         pupil_id: 1,
         accessArrangementsIdsWithCodes: [
@@ -247,7 +270,7 @@ describe('accessArrangementsService', () => {
         { id: 2, code: accessArrangementsDataService.CODES.COLOUR_CONTRAST },
         { id: 3, code: accessArrangementsDataService.CODES.FONT_SIZE }
       ])
-      const result = await accessArrangementsService.prepareData(requestData, { id: 1 }, 12345, 1)
+      const result = await sut.prepareData(requestData, { id: 1 }, 12345, 1)
       expect(pupilAccessArrangementsDataService.sqlFindPupilColourContrastsId).toHaveBeenCalled()
       expect(pupilAccessArrangementsDataService.sqlFindPupilFontSizesId).toHaveBeenCalled()
       expect(result).toEqual(Object({
@@ -266,15 +289,60 @@ describe('accessArrangementsService', () => {
     it('calls sqlInsertAccessArrangements without isUpdated boolean if pupilAccessArrangement record does not exist', async () => {
       spyOn(pupilAccessArrangementsDataService, 'sqlFindPupilAccessArrangementsByPupilId')
       spyOn(pupilAccessArrangementsDataService, 'sqlInsertAccessArrangements')
-      const pupil = await accessArrangementsService.save({}, { id: '1', urlSlug: 'pupilUrlSlug' })
+      const pupil = await sut.save({}, { id: '1', urlSlug: 'pupilUrlSlug' })
       expect(pupilAccessArrangementsDataService.sqlInsertAccessArrangements).toHaveBeenCalledWith({})
       expect(pupil.urlSlug).toBe('pupilUrlSlug')
     })
     it('calls sqlInsertAccessArrangements with isUpdated boolean if pupilAccessArrangement record exists', async () => {
       spyOn(pupilAccessArrangementsDataService, 'sqlFindPupilAccessArrangementsByPupilId').and.returnValue([{ pupil_id: 1 }])
       spyOn(pupilAccessArrangementsDataService, 'sqlInsertAccessArrangements')
-      await accessArrangementsService.save({}, { id: '1', urlSlug: 'pupilUrlSlug' })
+      await sut.save({}, { id: '1', urlSlug: 'pupilUrlSlug' })
       expect(pupilAccessArrangementsDataService.sqlInsertAccessArrangements).toHaveBeenCalledWith({}, true)
+    })
+  })
+  describe('getCurrentViewMode', () => {
+    beforeAll(() => {
+      spyOn(moment, 'tz').and.returnValue(moment('2020-07-01'))
+    })
+    it('should return \'edit\' if current date within admin start and check end dates', async () => {
+      const checkWindowData = {
+        adminStartDate: moment('2020-01-01'),
+        adminEndDate: moment('2020-09-01'),
+        checkStartDate: moment('2020-05-01'),
+        checkEndDate: moment('2020-08-01')
+      }
+      spyOn(checkWindowService, 'getActiveCheckWindow').and.returnValue(checkWindowData)
+      expect(await sut.getCurrentViewMode()).toBe('edit')
+    })
+    it('should return \'readonly\' if current date past check end date but before admin end date', async () => {
+      const checkWindowData = {
+        adminStartDate: moment('2020-01-01'),
+        adminEndDate: moment('2020-09-01'),
+        checkStartDate: moment('2020-05-01'),
+        checkEndDate: moment('2020-06-01')
+      }
+      spyOn(checkWindowService, 'getActiveCheckWindow').and.returnValue(checkWindowData)
+      expect(await sut.getCurrentViewMode()).toBe('readonly')
+    })
+    it('should return \'unavailable\' if current date before admin start date', async () => {
+      const checkWindowData = {
+        adminStartDate: moment('2020-08-01'),
+        adminEndDate: moment('2020-10-01'),
+        checkStartDate: moment('2020-08-10'),
+        checkEndDate: moment('2020-09-01')
+      }
+      spyOn(checkWindowService, 'getActiveCheckWindow').and.returnValue(checkWindowData)
+      expect(await sut.getCurrentViewMode()).toBe('unavailable')
+    })
+    it('should return \'unavailable\' if current date after admin end date', async () => {
+      const checkWindowData = {
+        adminStartDate: moment('2020-01-01'),
+        adminEndDate: moment('2020-04-01'),
+        checkStartDate: moment('2020-02-10'),
+        checkEndDate: moment('2020-03-01')
+      }
+      spyOn(checkWindowService, 'getActiveCheckWindow').and.returnValue(checkWindowData)
+      expect(await sut.getCurrentViewMode()).toBe('unavailable')
     })
   })
 })

@@ -22,11 +22,15 @@ class AccessArrangementsPage < SitePrism::Page
     element :contents, '.modal-content p'
     element :cancel, '#js-modal-cancel-button'
     element :confirm, '#js-modal-confirmation-button'
+  end
 
+  section :retro_input, '#retroAddInputAssistantInfo' do
+    element :link, "a[href='/access-arrangements/retro-add-input-assistant']"
   end
 
   def remove_all_pupils
-    pupil_list.rows.each.size.times {|a| pupil_list.rows.first.remove.click; modal.confirm.click } unless has_no_pupils_message?
+    removable_rows = pupil_list.rows.map{|row| row if row.has_remove?}.compact
+    removable_rows.size.times {|a| all('a', text: 'Remove')[0].click; modal.confirm.click} unless has_no_pupils_message?
   end
 
   def find_pupil_row(name)

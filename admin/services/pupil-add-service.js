@@ -4,7 +4,6 @@ const R = require('ramda')
 const pupilValidator = require('../lib/validator/pupil-validator')
 const dateService = require('./date.service')
 const pupilDataService = require('./data-access/pupil.data.service')
-const schoolDataService = require('./data-access/school.data.service')
 const pupilAgeReasonDataService = require('./data-access/pupil-age-reason.data.service')
 const redisCacheService = require('../services/data-access/redis-cache.service')
 const redisKeyService = require('../services/redis-key.service')
@@ -16,8 +15,8 @@ const pupilAddService = {
    * @param schoolId
    * @returns {Promise<any>}
    */
-  addPupil: async (reqBody, schoolId) => {
-    if (!reqBody || reqBody.length < 1 || !schoolId || schoolId.length < 1) {
+  addPupil: async function addPupil (reqBody, schoolId) {
+    if (!reqBody || Object.keys(reqBody).length < 11 || !schoolId || schoolId.length < 1) {
       throw new Error('Invalid req.body and/or school id. Saving pupil failed.')
     }
 
@@ -58,29 +57,11 @@ const pupilAddService = {
   },
 
   /**
-   * Find school by DFE number.
-   * @param dfeNumber
-   * @returns {Promise<Array>}
-   */
-  findSchoolByDfeNumber: async (dfeNumber) => {
-    let school = []
-    if (!dfeNumber || dfeNumber.length < 1) {
-      return school
-    }
-    try {
-      school = await schoolDataService.sqlFindOneByDfeNumber(dfeNumber)
-    } catch (error) {
-      throw new Error(`School [${dfeNumber}] not found`)
-    }
-    return school
-  },
-
-  /**
    * Format pupil's date of birth.
    * @param pupil
    * @returns {Array}
    */
-  formatPupilData: (pupil) => {
+  formatPupilData: function formatPupilData (pupil) {
     let pupilData = []
     if (!pupil || pupil.length < 1) {
       return pupilData

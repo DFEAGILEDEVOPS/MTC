@@ -4,6 +4,7 @@ class AccessArrangementsPage < SitePrism::Page
   element :heading, '.govuk-heading-xl', text: 'Enable access arrangements for pupils who need them'
   element :information, '.govuk-body', text: "Modify the multiplication tables check for pupils with specific needs. The arrangements that are applied can be practised and configured by the pupils when the try it out area is open."
   element :select_pupil_and_arrangement_btn, 'a[href="/access-arrangements/select-access-arrangements"]'
+  element :diasbled_select_pupil_and_arrangement_btn, 'button.govuk-button--disabled'
 
   element :success_message, '.govuk-info-message'
   element :no_pupils_message, '.govuk-body', text: 'No pupils with access arrangements.'
@@ -22,11 +23,17 @@ class AccessArrangementsPage < SitePrism::Page
     element :contents, '.modal-content p'
     element :cancel, '#js-modal-cancel-button'
     element :confirm, '#js-modal-confirmation-button'
+  end
 
+  section :retro_input, '#retroAddInputAssistantInfo' do
+    element :link, "a[href='/access-arrangements/retro-add-input-assistant']"
   end
 
   def remove_all_pupils
-    pupil_list.rows.each.size.times {|a| pupil_list.rows.first.remove.click; modal.confirm.click } unless has_no_pupils_message?
+    unless has_no_pupils_message?
+      removable_rows = pupil_list.rows.map{|row| row if row.has_remove?}.compact
+      removable_rows.size.times {|a| all('a', text: 'Remove')[0].click; modal.confirm.click}
+    end
   end
 
   def find_pupil_row(name)

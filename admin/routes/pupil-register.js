@@ -13,49 +13,49 @@ router.get(
   ['/', '/pupils-list'],
   isAuthenticated([roles.teacher, roles.helpdesk]),
   isAdminWindowAvailable,
-  (req, res, next) => pupilRegister.listPupils(req, res, next)
+  pupilRegister.listPupils
 )
 router.get(
   '/pupil/add',
   isAuthenticated([roles.teacher, roles.helpdesk]),
   isAdminWindowAvailable,
-  (req, res, next) => pupilController.getAddPupil(req, res, next)
+  pupilController.getAddPupil
 )
 router.post(
   '/pupil/add',
   isAuthenticated([roles.teacher, roles.helpdesk]),
   isAdminWindowAvailable,
-  (req, res, next) => pupilController.postAddPupil(req, res, next)
+  pupilController.postAddPupil
 )
 router.get(
   '/pupil/add-batch-pupils',
   isAuthenticated([roles.teacher, roles.helpdesk]),
   isAdminWindowAvailable,
-  (req, res, next) => pupilController.getAddMultiplePupils(req, res, next)
+  pupilController.getAddMultiplePupils
 )
 router.post(
   '/pupil/add-batch-pupils',
   isAuthenticated([roles.teacher, roles.helpdesk]),
   isAdminWindowAvailable,
-  (req, res, next) => pupilController.postAddMultiplePupils(req, res, next)
+  pupilController.postAddMultiplePupils
 )
 router.get(
   '/pupil/download-error-csv',
   isAuthenticated([roles.teacher, roles.helpdesk]),
   isAdminWindowAvailable,
-  (req, res) => pupilController.getErrorCSVFile(req, res)
+  pupilController.getErrorCSVFile
 )
 router.get(
   '/pupil/edit/:id',
   isAuthenticated([roles.teacher, roles.helpdesk]),
   isAdminWindowAvailable,
-  (req, res, next) => pupilController.getEditPupilById(req, res, next)
+  pupilController.getEditPupilById
 )
 router.post(
   '/pupil/edit',
   isAuthenticated([roles.teacher, roles.helpdesk]),
   isAdminWindowAvailable,
-  (req, res, next) => pupilController.postEditPupil(req, res, next)
+  pupilController.postEditPupil
 )
 
 module.exports = router

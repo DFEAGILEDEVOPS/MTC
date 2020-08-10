@@ -15,6 +15,7 @@ try {
   console.error(error)
 }
 const config = require('../../config')
+const sqlConfig = require('../../config/sql.config')
 const logger = require('../../services/log.service').getLogger()
 const Postgrator = require('postgrator')
 const {
@@ -70,7 +71,9 @@ const migratorConfig = {
   // Schema table name. Optional. Default is schemaversion
   schemaTable: 'migrationLog',
   options: {
-    encrypt: true
+    encrypt: sqlConfig.options.encrypt,
+    enableArithAbort: sqlConfig.options.enableArithAbort,
+    trustServerCertificate: sqlConfig.options.trustServerCertificate
   },
   validateChecksums: false
 }

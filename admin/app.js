@@ -28,7 +28,6 @@ const busboy = require('express-busboy')
 const config = require('./config')
 const csurf = require('csurf')
 const express = require('express')
-const expressValidator = require('express-validator')
 const featureToggles = require('feature-toggles')
 const flash = require('connect-flash')
 const LocalStrategy = require('passport-local').Strategy
@@ -210,7 +209,6 @@ app.use(session(sessionOptions))
 app.use(passport.initialize())
 app.use(passport.session())
 app.use(flash())
-app.use(expressValidator())
 
 // Breadcrumbs
 app.use(breadcrumbs.init())

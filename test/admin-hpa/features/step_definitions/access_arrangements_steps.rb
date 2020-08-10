@@ -7,6 +7,8 @@ Then(/^the access arrangements page is displayed as per the design$/) do
   expect(access_arrangements_page).to have_heading
   expect(access_arrangements_page).to have_information
   expect(access_arrangements_page).to have_select_pupil_and_arrangement_btn
+  expect(access_arrangements_page).to have_retro_input
+
 end
 
 Given(/^I am on the select access arrangements page$/) do
@@ -17,9 +19,8 @@ end
 
 Then(/^I should see the select access arrangements page matches design$/) do
   expected_list = SqlDbHelper.access_arrangements.map{|a| a['description']}
-  p expected_list
   actual_list = select_access_arrangements_page.access_arrangements.row.map {|a| a.arrangement_name.text.split(' (')[0]}
-  p actual_list
+  actual_list << "Retrospective Input assistance"
   expect(actual_list).to eql expected_list.sort
   expect(select_access_arrangements_page).to have_drop_down
   expect(select_access_arrangements_page).to have_save
@@ -161,7 +162,7 @@ Given(/^I have a pupil who needs all possible access arrangements$/) do
   select_access_arrangements_page.search_pupil.set(@pupil_name.gsub(',', ''))
   select_access_arrangements_page.auto_search_list[0].click
   SqlDbHelper.access_arrangements.map{|a| a['description']}.each do |aa|
-    select_access_arrangements_page.select_access_arrangement(aa)
+    select_access_arrangements_page.select_access_arrangement(aa) unless aa == 'Retrospective Input assistance'
   end
   select_access_arrangements_page.input_assistance_reason.set 'This is a reason for input assistance'
   select_access_arrangements_page.next_button_reason.set 'This is a reason for next between questions'
@@ -172,7 +173,7 @@ end
 
 Then(/^the arrangements should be listed against the pupil$/) do
   pupil_row = access_arrangements_page.find_pupil_row(@pupil_name)
-  aa_array = SqlDbHelper.access_arrangements.map{|a| a['description'].gsub('(reason required)','').strip}
+  aa_array = SqlDbHelper.access_arrangements.map{|a| a['description'].gsub('(reason required)','').strip unless a['description'] == "Retrospective Input assistance"}.compact
   expect(aa_array.sort).to eql pupil_row.access_arrangement_name.map{|a| a.text}
 end
 
@@ -220,13 +221,13 @@ end
 
 Then(/^the pupil is removed from the access arrangmenet pupil list$/) do
   expect(access_arrangements_page.success_message.text.eql?("Access arrangements removed for #{@details_hash[:last_name]}, #{@details_hash[:first_name]}"))
-  pupils_from_page = access_arrangements_page.pupil_list.rows.map {|x| x.pupil_name.text} if access_arrangements_page.has_pupil_list?
+  pupils_from_page = access_arrangements_page.pupil_list.rows.map {|x| x.text} if access_arrangements_page.has_pupil_list?
   expect(pupils_from_page.include?(@details_hash[:first_name])).to be_falsy, "#{@details_hash[:first_name]} is displayed in the list ... Expected - It Shouldn't" if access_arrangements_page.has_pupil_list?
   expect(access_arrangements_page).to have_no_pupils_message unless access_arrangements_page.has_pupil_list?
 end
 
 Then(/^the pupil is not removed from the access arrangmenet pupil list$/) do
-  pupils_from_page = access_arrangements_page.pupil_list.rows.map {|x| x.pupil_name.text}
+  pupils_from_page = access_arrangements_page.pupil_list.rows.map {|x| x.text}
   expect(pupils_from_page.join.include?(@details_hash[:first_name])).to be_truthy, "#{@details_hash[:first_name]} is not displayed in the list ... Expected - It Should"
 end
 

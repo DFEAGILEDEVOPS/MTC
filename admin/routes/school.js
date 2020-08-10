@@ -12,7 +12,7 @@ router.get(
   ['/', '/school-home'],
   isAuthenticated([roles.teacher, roles.helpdesk]),
   isAdminWindowAvailable,
-  (req, res, next) => schoolController.getSchoolLandingPage(req, res, next)
+  schoolController.getSchoolLandingPage
 )
 
 module.exports = router

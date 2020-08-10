@@ -12,7 +12,7 @@ const controller = {}
  * @param next
  * @returns {Promise.<*>}
  */
-controller.getViewFormsPage = async (req, res, next) => {
+controller.getViewFormsPage = async function getViewFormsPage (req, res, next) {
   res.locals.pageTitle = 'Upload and view forms'
   let checkForms
   try {
@@ -36,7 +36,7 @@ controller.getViewFormsPage = async (req, res, next) => {
  * @param error
  * @returns {Promise.<void>}
  */
-controller.getUploadNewFormsPage = async (req, res, next, error = null) => {
+controller.getUploadNewFormsPage = async function getUploadNewFormsPage (req, res, next, error = null) {
   req.breadcrumbs('Upload and view forms', '/test-developer/view-forms')
   res.locals.pageTitle = 'Upload new form'
   let hasExistingFamiliarisationCheckForm
@@ -61,7 +61,7 @@ controller.getUploadNewFormsPage = async (req, res, next, error = null) => {
  * @param next
  * @returns {Promise.<*>}
  */
-controller.postUpload = async (req, res, next) => {
+controller.postUpload = async function postUpload (req, res, next) {
   const uploadData = req.files && req.files.csvFiles
   const requestData = req.body
   try {
@@ -84,7 +84,7 @@ controller.postUpload = async (req, res, next) => {
  * @param next
  * @returns {Promise.<*>}
  */
-controller.getDelete = async (req, res, next) => {
+controller.getDelete = async function getDelete (req, res, next) {
   const urlSlug = req.params && req.params.urlSlug
   let checkFormName
   try {
@@ -105,7 +105,7 @@ controller.getDelete = async (req, res, next) => {
  * @param next
  * @returns {Promise.<void>}
  */
-controller.getViewFormPage = async (req, res, next) => {
+controller.getViewFormPage = async function getViewFormPage (req, res, next) {
   req.breadcrumbs('Upload and view forms', '/test-developer/view-forms')
   const urlSlug = req.params && req.params.urlSlug
   let checkFormData
@@ -129,7 +129,7 @@ controller.getViewFormPage = async (req, res, next) => {
  * @param next
  * @returns {Promise.<void>}
  */
-controller.getAssignFormsPage = async (req, res, next) => {
+controller.getAssignFormsPage = async function getAssignFormsPage (req, res, next) {
   res.locals.pageTitle = 'Assign forms to check window'
   req.breadcrumbs(res.locals.pageTitle)
   let checkWindows
@@ -160,7 +160,7 @@ controller.getAssignFormsPage = async (req, res, next) => {
  * @param next
  * @returns {Promise.<void>}
  */
-controller.getSelectFormPage = async (req, res, next) => {
+controller.getSelectFormPage = async function getSelectFormPage (req, res, next) {
   const checkWindowUrlSlug = req.params && req.params.checkWindowUrlSlug
   const checkFormType = req.params && req.params.checkFormType
   let checkWindow
@@ -197,7 +197,7 @@ controller.getSelectFormPage = async (req, res, next) => {
  * @param next
  * @returns {Promise.<void>}
  */
-controller.postAssignForms = async (req, res, next) => {
+controller.postAssignForms = async function postAssignForms (req, res, next) {
   const checkWindowUrlSlug = req.params && req.params.checkWindowUrlSlug
   const checkFormType = req.params && req.params.checkFormType
   const requestData = req.body
