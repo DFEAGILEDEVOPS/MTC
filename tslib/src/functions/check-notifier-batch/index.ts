@@ -8,8 +8,7 @@ import { BatchCheckNotifier } from './batch-check-notifier.service'
 import * as RA from 'ramda-adjunct'
 
 /*
-* This is a poc with certain assumptions...
-* The function is running as a singleton, and the receiver is therefore exclusive
+ * The function is running as a singleton, and the receiver is therefore exclusive
   we do not expect another receive operation to be in progress.
   if the message is abandoned 10 times (the current 'max delivery count') it will be
   put on the dead letter queue automatically.
