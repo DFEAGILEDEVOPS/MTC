@@ -84,5 +84,9 @@ export default {
   },
   SchoolResultsCacheDeterminer: {
     cache: Number(process.env.SCHOOL_RESULTS_CACHE) || schoolResultsCacheDeterminerConfig.cache.cacheIfInDate
+  },
+  SchoolResultsCache: {
+    BatchesPerExecution: Number(process.env.SCHOOL_RESULTS_CACHE_BATCHS_PER_EXEC) || 10,
+    MessagesPerBatch: Number(process.env.SCHOOL_RESULTS_CACHE_MSGS_PER_BATCH) || 32
   }
 }
