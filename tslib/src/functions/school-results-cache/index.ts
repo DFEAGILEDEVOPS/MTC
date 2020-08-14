@@ -5,6 +5,8 @@ import config from '../../config'
 // import { ICheckNotificationMessage } from '../check-notifier/check-notification-message'
 // import { BatchCheckNotifier } from './batch-check-notifier.service'
 import { ISchoolResultsCacheMessage } from '../school-results-cache-determiner/school-results-cache-determiner.service'
+const resultService = require('./services/result.service')
+
 import * as RA from 'ramda-adjunct'
 const functionName = 'school-results-cache'
 
@@ -75,7 +77,8 @@ async function process (notifications: ISchoolResultsCacheMessage[], context: Co
   for (const msg of messages) {
     // process an individual message at a time
     try {
-      console.log('Message processed ' + msg.messageId)
+      // console.log('Message processed ' + msg.messageId)
+      await resultService.cacheResultData(msg.body.schoolGuid, context.log)
       await completeMessages([msg], context)
     } catch (error) {
       // sql transaction failed, abandon...
@@ -83,16 +86,6 @@ async function process (notifications: ISchoolResultsCacheMessage[], context: Co
       await abandonMessages([msg], context)
     }
   }
-  // try {
-  //   // TODO: add work here
-  //
-  //   console.log('Message completed', messages)
-  //
-  //   await completeMessages(messages, context)
-  // } catch (error) {
-  //   // sql transaction failed, abandon...
-  //   await abandonMessages(messages, context)
-  // }
 }
 
 async function completeMessages (messageBatch: sb.ServiceBusMessage[], context: Context): Promise<void> {
