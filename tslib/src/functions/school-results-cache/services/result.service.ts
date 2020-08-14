@@ -1,10 +1,10 @@
 import moment from 'moment-timezone'
 import * as R from 'ramda'
 
-const sortService = require('../../../common/table-sorting')
 import config from '../../../config'
 import pupilIdentificationService, { IdentifiedPupilResult } from './pupil-identification.service'
 import redisKeyService from './redis-key.service'
+import sortService from '../../../common/table-sorting'
 import { ConsoleLogger, ILogger } from '../../../common/logger'
 import { IRedisService, RedisService } from '../../../caching/redis-service'
 import { ResultDataService, IResultDataService, IRawPupilResult } from './data-access/result.data.service'

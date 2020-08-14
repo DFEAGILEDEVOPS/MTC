@@ -96,33 +96,6 @@ describe('result.service', () => {
     test('it has a method called sort', () => {
       expect(typeof sut.sort).toBe('function')
     })
-
-    test('sort calls `sortByProps` of the sortService', () => {
-      const sortService = require('../../../common/table-sorting')
-      const saved = sortService.sortByProps
-      sortService.sortByProps = jest.fn()
-      sut.sort([{
-        foreName: 'fore',
-        lastName: 'last',
-        middleNames: '',
-        group_id: null,
-        dateOfBirth: moment().subtract(8.5, 'years'),
-        score: null,
-        status: '',
-        urlSlug: 'aaa'
-      }, {
-        foreName: 'fore',
-        lastName: 'last',
-        middleNames: '',
-        group_id: null,
-        dateOfBirth: moment().subtract(8.5, 'years'),
-        score: null,
-        status: '',
-        urlSlug: 'bbb'
-      }])
-      expect(sortService.sortByProps).toHaveBeenCalled()
-      sortService.sortByProps = saved
-    })
   })
 
   describe('getPupilResultDataFromDb', () => {

@@ -1,8 +1,8 @@
-'use strict'
+import * as R from 'ramda'
+import moment from 'moment'
+import { TYPES } from 'mssql'
 
 import { SqlService, ISqlService } from '../../../../sql/sql.service'
-import { TYPES } from 'mssql'
-import * as moment from 'moment'
 
 export interface IResultDataService {
   sqlFindPupilResultsForSchool (schoolId: number): Promise<Array<IRawPupilResult>>,
