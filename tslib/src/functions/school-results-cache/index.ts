@@ -51,7 +51,7 @@ const sbMessageReceiver: AzureFunction = async function sbMessageReceiver (conte
 
   for (let batchIndex = 0; batchIndex < config.SchoolResultsCache.BatchesPerExecution; batchIndex++) {
     context.log(`${functionName}: starting batch ${batchIndex + 1} of ${config.SchoolResultsCache.BatchesPerExecution}...`)
-    const messageBatch = await receiver.receiveMessages(config.SchoolResultsCache.BatchesPerExecution)
+    const messageBatch = await receiver.receiveMessages(config.SchoolResultsCache.MessagesPerBatch)
     if (RA.isNilOrEmpty(messageBatch)) {
       context.log(`${functionName}: no messages to process`)
       await disconnect()
