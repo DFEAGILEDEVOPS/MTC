@@ -1,22 +1,16 @@
-'use strict'
-
-// const RA = require('ramda-adjunct')
-// const moment = require('moment')
-
-// const redisCacheService = require('../../lib/redis-cache.service')
-// const resultService = require('./result.service')
-// const logger = require('../../lib/logger')
-
-import { ResultService } from './result.service'
 import moment from 'moment'
-import { IRawPupilResult, IResultDataService } from './data-access/result.data.service'
+import * as RA from 'ramda-adjunct'
 
-// const resultDataService = require('./data-access/result.data.service')
+import { ConsoleLogger } from '../../../common/logger'
+import { IRawPupilResult, IResultDataService } from './data-access/result.data.service'
+import { IRedisService } from '../../../caching/redis-service'
+import { RedisServiceMock } from '../../../caching/redis-service.mock'
+import { ResultService } from './result.service'
 
 describe('result.service', () => {
   let sut: ResultService
   let mockResultDataService: IResultDataService
-
+  let mockRedisService: IRedisService
   const mockPupils: Array<IRawPupilResult> = [
     {
       lastName: 'Smith',
@@ -73,9 +67,12 @@ describe('result.service', () => {
 
   beforeEach(() => {
     mockResultDataService = {
-      sqlFindPupilResultsForSchool: jest.fn().mockReturnValue(mockPupils)
+      sqlFindPupilResultsForSchool: jest.fn().mockReturnValue(mockPupils),
+      sqlFindSchool: jest.fn().mockReturnValue({ id: 1, name: 'Example School', timezone: null })
     }
-    sut = new ResultService(mockResultDataService)
+    mockRedisService = new RedisServiceMock()
+    const consoleLogger = new ConsoleLogger()
+    sut = new ResultService(consoleLogger, mockResultDataService, mockRedisService)
   })
 
   describe('status', () => {
@@ -129,21 +126,31 @@ describe('result.service', () => {
   })
 
   describe('getPupilResultDataFromDb', () => {
-    const schoolId = 0
+    const schoolGuid = 'aaa-bbb-ccc-ddd'
 
     test('returns an object', async () => {
-      const res = await sut.getPupilResultDataFromDb(schoolId)
+      const res = await sut.getPupilResultDataFromDb(schoolGuid)
       expect(typeof res).toBe('object')
     })
 
     test('it has a generatedAt prop', async () => {
-      const res = await sut.getPupilResultDataFromDb(schoolId)
+      const res = await sut.getPupilResultDataFromDb(schoolGuid)
       expect(moment.isMoment(res.generatedAt)).toBe(true)
     })
 
-    test('it has a schoolId prop', async () => {
-      const res = await sut.getPupilResultDataFromDb(schoolId)
-      expect(res.schoolId).toBe(schoolId)
+    test('it has a schoolGuid prop', async () => {
+      const res = await sut.getPupilResultDataFromDb(schoolGuid)
+      expect(res.schoolId).toBeTruthy()
+    })
+
+    test('it throws an error if the school is not found', async () => {
+      mockResultDataService.sqlFindSchool = jest.fn().mockReturnValue(undefined)
+      try {
+        await sut.getPupilResultDataFromDb('a fake guid')
+        fail('expected to throw')
+      } catch (error) {
+        expect(error.message).toBe('Unable to find school with Guid a fake guid')
+      }
     })
 
     test('it sorts the pupils alphabetically', async () => {
@@ -155,7 +162,7 @@ describe('result.service', () => {
 
       mockResultDataService.sqlFindPupilResultsForSchool = jest.fn().mockReturnValue(mockResultData)
 
-      const res = await sut.getPupilResultDataFromDb(schoolId)
+      const res = await sut.getPupilResultDataFromDb(schoolGuid)
 
       expect(res.pupils[0].lastName).toBe('Anchovy')
       expect(res.pupils[1].lastName).toBe('Smith')
@@ -171,7 +178,7 @@ describe('result.service', () => {
 
       mockResultDataService.sqlFindPupilResultsForSchool = jest.fn().mockReturnValue(mockResultData)
 
-      const res = await sut.getPupilResultDataFromDb(schoolId)
+      const res = await sut.getPupilResultDataFromDb(schoolGuid)
 
       expect(res.pupils[0].lastName).toBe('Anchovy')
       expect(res.pupils[1]).toMatchObject({ lastName: 'Smith', foreName: 'Mario' })
@@ -187,7 +194,7 @@ describe('result.service', () => {
 
       mockResultDataService.sqlFindPupilResultsForSchool = jest.fn().mockReturnValue(mockResultData)
 
-      const res = await sut.getPupilResultDataFromDb(schoolId)
+      const res = await sut.getPupilResultDataFromDb(schoolGuid)
 
       expect(res.pupils[0]).toMatchObject({
         lastName: 'Smith',
@@ -210,7 +217,7 @@ describe('result.service', () => {
       ]
       mockResultDataService.sqlFindPupilResultsForSchool = jest.fn().mockReturnValue(mockResultData)
 
-      const res = await sut.getPupilResultDataFromDb(schoolId)
+      const res = await sut.getPupilResultDataFromDb(schoolGuid)
 
       expect(res.pupils[0].middleNames).toEqual('Bea')
       expect(res.pupils[1].middleNames).toEqual('Xani')
@@ -223,7 +230,7 @@ describe('result.service', () => {
       ]
       mockResultDataService.sqlFindPupilResultsForSchool = jest.fn().mockReturnValue(mockResultData)
 
-      const res = await sut.getPupilResultDataFromDb(schoolId)
+      const res = await sut.getPupilResultDataFromDb(schoolGuid)
 
       expect(res.pupils[0].group_id).toBe(42)
     })
@@ -234,7 +241,7 @@ describe('result.service', () => {
       ]
       mockResultDataService.sqlFindPupilResultsForSchool = jest.fn().mockReturnValue(mockResultData)
 
-      const res = await sut.getPupilResultDataFromDb(schoolId)
+      const res = await sut.getPupilResultDataFromDb(schoolGuid)
 
       expect(res.pupils[0].fullName).toBe('Smith, Jack')
     })
@@ -247,14 +254,14 @@ describe('result.service', () => {
       ]
       mockResultDataService.sqlFindPupilResultsForSchool = jest.fn().mockReturnValue(mockResultData)
 
-      const res = await sut.getPupilResultDataFromDb(schoolId)
+      const res = await sut.getPupilResultDataFromDb(schoolGuid)
 
       expect(res.pupils[0].fullName).toBe('Smith, Jack A')
       expect(res.pupils[1].fullName).toBe('Smith, Jack B')
       expect(res.pupils[2].fullName).toBe('Smith, Jack C')
     })
 
-    it('returns a status field for each pupil', async () => {
+    test('it returns a status field for each pupil', async () => {
       const mockResultData = [
         {
           lastName: 'Smith',
@@ -289,7 +296,7 @@ describe('result.service', () => {
       ]
       mockResultDataService.sqlFindPupilResultsForSchool = jest.fn().mockReturnValue(mockResultData)
 
-      const res = await sut.getPupilResultDataFromDb(schoolId)
+      const res = await sut.getPupilResultDataFromDb(schoolGuid)
       res.pupils.forEach((result, i) => {
         expect(result.status).toBeDefined()
         expect(typeof result.status).toBe('string')
@@ -300,7 +307,7 @@ describe('result.service', () => {
       })
     })
 
-    it('returns a score field for each pupil that took the check', async () => {
+    test('it returns a score field for each pupil that took the check', async () => {
       const mockResultData = [
         { lastName: 'Smith', foreName: 'Jack', dateOfBirth: moment('2012-01-01'), middleNames: 'C', mark: 5 },
         { lastName: 'Wall', foreName: 'Jane', dateOfBirth: moment('2012-07-01'), middleNames: '', mark: 8 },
@@ -317,7 +324,7 @@ describe('result.service', () => {
       ]
       mockResultDataService.sqlFindPupilResultsForSchool = jest.fn().mockReturnValue(mockResultData)
 
-      const res = await sut.getPupilResultDataFromDb(schoolId)
+      const res = await sut.getPupilResultDataFromDb(schoolGuid)
 
       expect(res.pupils[0].score).toBe(5) // Jack Smith #1
       expect(res.pupils[1].score).toBeUndefined() // Jane Wall #2
@@ -326,137 +333,145 @@ describe('result.service', () => {
   })
 
   describe('cacheResultData', () => {
-    it('calls redisCacheService get when school id is provided', async () => {
-      spyOn(redisCacheService, 'get').and.returnValue('[{}]')
-      const schoolId = 2
+    test('it throws an error if schoolGuid is not provided', async () => {
+      const schoolGuid = undefined
       try {
-        await resultService.cacheResultData(schoolId, logger)
+        // @ts-ignore
+        await sut.cacheResultData(schoolGuid)
+        fail()
       } catch (error) {
-        fail(error)
+        expect(error.message).toBe('schoolGuid not found')
       }
-      expect(redisCacheService.get).toHaveBeenCalled()
+      expect(mockRedisService.setex).not.toHaveBeenCalled()
     })
 
-    // it('throws an error if school id is not provided', async () => {
-    //   spyOn(redisCacheService, 'get')
-    //   const schoolId = undefined
-    //   try {
-    //     await resultService.cacheResultData(schoolId, logger)
-    //     fail()
-    //   } catch (error) {
-    //     expect(error.message).toBe('school id not found')
-    //   }
-    //   expect(redisCacheService.get).not.toHaveBeenCalled()
-    // })
-    //
-    // it('returns undefined if parsing the redis response fails', async () => {
-    //   spyOn(redisCacheService, 'get')
-    //   spyOn(resultDataService, 'sqlFindPupilResultsForSchool').and.returnValue([])
-    //   const schoolId = 1
-    //   let result
-    //   try {
-    //     result = await resultService.cacheResultData(schoolId, logger)
-    //   } catch (error) {
-    //     fail()
-    //   }
-    //   expect(result).toBeUndefined()
-    // })
+    test('it saves the result to redis if it queried the database', async () => {
+      // setup
+      const schoolGuid = 'aaa'
 
-    // it('saves the result to redis if it queried the database', async () => {
-    //   // setup
-    //   const schoolId = 1
-    //   spyOn(redisCacheService, 'get').and.returnValue(undefined) // initial cache miss from redis
-    //   spyOn(redisCacheService, 'set') // spy on the write to redis
-    //   const resultData = {
-    //     generatedAt: moment('2020-06-03T11:23:45'),
-    //     schoolId: schoolId,
-    //     pupils: [
-    //       { fullName: 'Smith, Jon', score: 10, status: '', group_id: 4, urlSlug: 'aaa' },
-    //       { fullName: 'Everett, Katy', score: 9, status: '', group_id: 4, urlSlug: 'bbb' }
-    //     ]
-    //   }
-    //   spyOn(resultService, 'getPupilResultDataFromDb').and.returnValue(resultData)
-    //
-    //   // exec
-    //   await resultService.cacheResultData(schoolId, logger)
-    //
-    //   // test
-    //   expect(resultService.getPupilResultDataFromDb).toHaveBeenCalledTimes(1)
-    //   expect(redisCacheService.set).toHaveBeenCalledTimes(1)
-    // })
+      // exec
+      await sut.cacheResultData(schoolGuid)
+
+      // test
+      expect(mockResultDataService.sqlFindPupilResultsForSchool).toHaveBeenCalledTimes(1)
+      expect(mockRedisService.setex).toHaveBeenCalledTimes(1)
+    })
   })
 
   describe('createPupilData', () => {
-    // it('assigns a score to a pupil with a completed check', () => {
-    //   const data = [
-    //     { pupilId: 1, mark: 10, foreName: 'Joe', lastName: 'Test' }
-    //   ]
-    //   const result = resultService.createPupilData(data) // sut
-    //   expect(RA.isArray(result)).toBe(true)
-    // })
-    //
-    // it('returns the right shaped object', () => {
-    //   const data = [
-    //     {
-    //       foreName: 'Jon',
-    //       lastName: 'Programmer',
-    //       middleNames: 'bbb',
-    //       group_id: 12,
-    //       dateOfBirth: moment.utc('2020-01-01'),
-    //       mark: 9,
-    //       foo: 'bar',
-    //       urlSlug: 'aaa'
-    //     }
-    //   ]
-    //   const result = resultService.createPupilData(data) // sut
-    //   expect(result[0]).toEqual(jasmine.objectContaining({
-    //     // dateOfBirth: '2020-01-01T00:00:00.000Z',
-    //     foreName: 'Jon',
-    //     group_id: 12,
-    //     lastName: 'Programmer',
-    //     middleNames: 'bbb',
-    //     score: 9,
-    //     status: 'Did not participate',
-    //     urlSlug: 'aaa'
-    //   }))
-    //
-    //   // Handle the dateOfBirth prop as a special case as moment objects are not equal even if they have the same date
-    //   // It should be output as a moment object just the same as the input - passed through
-    //   expect(moment.isMoment(result[0].dateOfBirth)).toBe(true)
-    //   expect(result[0].dateOfBirth.unix()).toBe(1577836800) // > moment.utc('2020-01-01').unix() = 1577836800
-    // })
+    test('it assigns a score to a pupil with a completed check', () => {
+      const data = [
+        {
+          pupilId: 1,
+          mark: 10,
+          foreName: 'Joe',
+          lastName: 'Test',
+          middleNames: '',
+          attendanceCode: null,
+          attendanceId: null,
+          attendanceReason: null,
+          currentCheckId: 1,
+          checkComplete: true,
+          group_id: null,
+          dateOfBirth: moment().subtract(8.2, 'years'),
+          restartAvailable: false,
+          school_id: 1,
+          urlSlug: 'aaa-bbb'
+        }
+      ]
+      const result = sut.createPupilData(data)
+      expect(RA.isArray(result)).toBe(true)
+    })
   })
 
-  // describe('assignStatus', () => {
-  //   const sut = resultService.assignStatus
-  //
-  //   it('describes complete pupils with no status', () => {
-  //     const pupil = { restartAvailable: false, currentCheckId: 1, checkComplete: true }
-  //     const status = sut(pupil)
-  //     expect(status).toBe('')
-  //   })
-  //
-  //   it('describes incomplete pupils with an incomplete status', () => {
-  //     const pupil = { restartAvailable: false, currentCheckId: 2, checkComplete: false }
-  //     const status = sut(pupil)
-  //     expect(status).toBe('Incomplete')
-  //   })
-  //
-  //   it('describes pupils who did not take a check', () => {
-  //     const pupil = { restartAvailable: false, currentCheckId: null, checkComplete: false, attendanceId: false }
-  //     const status = sut(pupil)
-  //     expect(status).toBe('Did not participate')
-  //   })
-  //
-  //   it('describes pupils who are marked as not attending', () => {
-  //     const pupil = {
-  //       restartAvailable: false,
-  //       currentCheckId: null,
-  //       checkComplete: false,
-  //       attendanceReason: 'any of the reasons for not attending'
-  //     }
-  //     const status = sut(pupil)
-  //     expect(status).toBe('any of the reasons for not attending')
-  //   })
-  // })
+  describe('assignStatus', () => {
+
+    test('it describes complete pupils with no status', () => {
+      const pupil = {
+        pupilId: 1,
+        mark: 10,
+        foreName: 'Joe',
+        lastName: 'Test',
+        middleNames: '',
+        attendanceCode: null,
+        attendanceId: null,
+        attendanceReason: null,
+        currentCheckId: 1,
+        checkComplete: true,
+        group_id: null,
+        dateOfBirth: moment().subtract(8.2, 'years'),
+        restartAvailable: false,
+        school_id: 1,
+        urlSlug: 'aaa-bbb'
+      }
+      const status = sut.assignStatus(pupil)
+      expect(status).toBe('')
+    })
+
+    test('it describes incomplete pupils with an incomplete status', () => {
+      const pupil = {
+        pupilId: 1,
+        mark: 10,
+        foreName: 'Joe',
+        lastName: 'Test',
+        middleNames: '',
+        attendanceCode: null,
+        attendanceId: null,
+        attendanceReason: null,
+        currentCheckId: 2,
+        checkComplete: false,
+        group_id: null,
+        dateOfBirth: moment().subtract(8.2, 'years'),
+        restartAvailable: false,
+        school_id: 1,
+        urlSlug: 'aaa-bbb'
+      }
+      const status = sut.assignStatus(pupil)
+      expect(status).toBe('Incomplete')
+    })
+
+    test('it describes pupils who did not take a check', () => {
+      const pupil = {
+        pupilId: 1,
+        mark: 10,
+        foreName: 'Joe',
+        lastName: 'Test',
+        middleNames: '',
+        attendanceCode: null,
+        attendanceId: null,
+        attendanceReason: null,
+        currentCheckId: null,
+        checkComplete: false,
+        group_id: null,
+        dateOfBirth: moment().subtract(8.2, 'years'),
+        restartAvailable: false,
+        school_id: 1,
+        urlSlug: 'aaa-bbb'
+      }
+      const status = sut.assignStatus(pupil)
+      expect(status).toBe('Did not participate')
+    })
+
+    test('it describes pupils who are marked as not attending', () => {
+      const pupil = {
+        pupilId: 1,
+        mark: 10,
+        foreName: 'Joe',
+        lastName: 'Test',
+        middleNames: '',
+        attendanceCode: null,
+        attendanceId: 4,
+        attendanceReason: 'any of the reasons for not attending',
+        currentCheckId: null,
+        checkComplete: false,
+        group_id: null,
+        dateOfBirth: moment().subtract(8.2, 'years'),
+        restartAvailable: false,
+        school_id: 1,
+        urlSlug: 'aaa-bbb'
+      }
+      const status = sut.assignStatus(pupil)
+      expect(status).toBe('any of the reasons for not attending')
+    })
+  })
 }) // end result service

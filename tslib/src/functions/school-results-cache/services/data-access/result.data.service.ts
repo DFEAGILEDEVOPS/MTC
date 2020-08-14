@@ -4,7 +4,13 @@ import { SqlService, ISqlService } from '../../../../sql/sql.service'
 import { TYPES } from 'mssql'
 import * as moment from 'moment'
 
-export class ResultDataService {
+export interface IResultDataService {
+  sqlFindPupilResultsForSchool (schoolId: number): Promise<Array<IRawPupilResult>>,
+
+  sqlFindSchool (schoolGuid: string): Promise<ISchool | undefined>
+}
+
+export class ResultDataService implements IResultDataService {
   private sqlService: ISqlService
 
   constructor (sqlService?: ISqlService) {
@@ -16,7 +22,7 @@ export class ResultDataService {
 
   /**
    * Provide the raw data for pupil scores (pupil details, scores, not attending info, and data for determining the results status)
-   * @param {number} schoolId - school.id from database
+   * @param {number} schoolId - school.id from the database
    * @return {Promise<*>}
    */
   async sqlFindPupilResultsForSchool (schoolId: number): Promise<Array<IRawPupilResult>> {
@@ -36,7 +42,7 @@ export class ResultDataService {
                      cs.mark,
                      ac.code AS attendanceCode,
                      ac.reason AS attendanceReason
-                   FROM mtc_admin.[pupil] p
+                   FROM mtc_admin.pupil p
                         LEFT JOIN mtc_admin.checkScore cs ON (cs.checkId = p.currentCheckId)
                         LEFT JOIN mtc_admin.attendanceCode ac ON (ac.id = p.attendanceId)
                   WHERE p.school_id = @schoolId;`
@@ -48,6 +54,24 @@ export class ResultDataService {
       }
     ]
     return this.sqlService.query(sql, params)
+  }
+
+  async sqlFindSchool (schoolGuid: string): Promise<ISchool | undefined> {
+    const sql = `SELECT s.id, s.name, sce.timezone
+                   FROM mtc_admin.school s
+                        LEFT JOIN mtc_admin.sce ON (s.id = sce.school_id)
+                  WHERE s.urlSlug = @schoolGuid
+    `
+    const params = [
+      {
+        name: 'schoolGuid',
+        value: schoolGuid,
+        type: TYPES.UniqueIdentifier
+      }
+    ]
+    const result = await this.sqlService.query(sql, params)
+    // @ts-ignore
+    return R.head(result)
   }
 }
 
@@ -73,6 +97,8 @@ export interface IRawPupilResult {
   urlSlug: string,
 }
 
-export interface IResultDataService {
-  sqlFindPupilResultsForSchool (schoolId: number): Promise<Array<IRawPupilResult>>
+export interface ISchool {
+  id: number,
+  name: string,
+  timezone: string
 }

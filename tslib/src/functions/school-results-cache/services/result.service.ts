@@ -1,21 +1,21 @@
-'use strict'
-
-// const moment = require('moment')
-
-// import { RedisService } from '../../../caching/redis-service'
-// const redisService = new RedisService()
-//
-// const redisKeyService = require('./redis-key.service')
-// const config = require('../../config')
+import moment from 'moment-timezone'
+import * as R from 'ramda'
 
 const sortService = require('../../../common/table-sorting')
-import pupilIdentificationService from './pupil-identification.service'
-
+import config from '../../../config'
+import pupilIdentificationService, { IdentifiedPupilResult } from './pupil-identification.service'
+import redisKeyService from './redis-key.service'
+import { ConsoleLogger, ILogger } from '../../../common/logger'
+import { IRedisService, RedisService } from '../../../caching/redis-service'
 import { ResultDataService, IResultDataService, IRawPupilResult } from './data-access/result.data.service'
-import moment from 'moment'
+
+const defaultTimeZone = 'Europe/London'
+const logPrefix = 'school-results-cache: result.service'
 
 export class ResultService {
   private resultDataService: IResultDataService
+  private redisService: IRedisService
+  private logger: ILogger
 
   public readonly status: IResultsServicePupilStatus = Object.freeze({
     restartNotTaken: 'Did not attempt the restart',
@@ -24,11 +24,21 @@ export class ResultService {
     complete: ''
   })
 
-  constructor (resultDataService?: IResultDataService) {
+  constructor (logService?: ILogger, resultDataService?: IResultDataService, redisCacheService?: IRedisService) {
+    if (logService === undefined) {
+      logService = new ConsoleLogger()
+    }
+    this.logger = logService
+
     if (resultDataService === undefined) {
       resultDataService = new ResultDataService()
     }
     this.resultDataService = resultDataService
+
+    if (redisCacheService === undefined) {
+      redisCacheService = new RedisService()
+    }
+    this.redisService = redisCacheService
   }
 
   sort (data: Array<IPupilResult>): Array<IPupilResult> {
@@ -78,41 +88,49 @@ export class ResultService {
     })
   }
 
-  /**
-   *
-   * @param schoolId
-   * @return {Promise<{pupils: {foreName:string, middleNames:string, lastName:string, group_id:null|number, dateOfBirth: Moment.moment, mark:null|number, status:string}[], schoolId: number, generatedAt: (*|moment.Moment)}>}
-   */
-  async getPupilResultDataFromDb (schoolId: number) {
-    const data = await this.resultDataService.sqlFindPupilResultsForSchool(schoolId)
+  async getPupilResultDataFromDb (schoolGuid: string): Promise<{ generatedAt: moment.Moment, schoolId: number, pupils: Array<IdentifiedPupilResult> }> {
+    const school = await this.resultDataService.sqlFindSchool(schoolGuid)
+    if (!school) {
+      throw new Error(`Unable to find school with Guid ${schoolGuid}`)
+    }
+    const data = await this.resultDataService.sqlFindPupilResultsForSchool(school.id)
     return {
-      generatedAt: moment(),
-      schoolId: schoolId,
+      // Date generated should be in user's locale
+      generatedAt: moment.tz(school.timezone || defaultTimeZone),
+      // @ts-ignore
+      schoolId: R.prop('school_id', R.head(data)),
       pupils: pupilIdentificationService.addIdentificationFlags(this.sort(this.createPupilData(data)))
     }
   }
 
-  //
-  // /**
-  //  * Find pupils with results based on school id and merge with pupil register data
-  //  * @param {Number} schoolId
-  //  * @param {function} logger
-  //  * @return {Promise<void>}
-  //  */
-  // cacheResultData: async function getPupilResultData (schoolId, logger) {
-  //   if (!schoolId) {
-  //     throw new Error('school id not found')
-  //   }
-  //   redisCacheService.setLogger(logger)
-  //   const redisKey = redisKeyService.getSchoolResultsKey(schoolId)
-  //   let result = await redisCacheService.get(redisKey)
-  //   if (!result) {
-  //     result = await this.getPupilResultDataFromDb(schoolId)
-  //     try {
-  //       await redisCacheService.set(redisKey, result, config.RedisResultsExpiryInSeconds)
-  //     } catch (ignored) {}
-  //   }
-  // }
+  /**
+   * Find pupils with results based on school id and merge with pupil register data
+   * @param {Number} schoolId
+   * @param {function} logger
+   * @return {Promise<void>}
+   */
+  async cacheResultData (schoolGuid: string) {
+    if (!schoolGuid) {
+      throw new Error('schoolGuid not found')
+    }
+
+    // The message is an instruction to cache the latest data for the school.  Therefore, we don't check
+    // whether existing data exists, we will overwrite it, should it exist.
+    const result = await this.getPupilResultDataFromDb(schoolGuid)
+    if (!(result.pupils && result.pupils.length > 0)) {
+      this.logger.warn(`${logPrefix}: No pupils found for school ${schoolGuid}`)
+      return
+    }
+    const redisKey = redisKeyService.getSchoolResultsKey(result.schoolId)
+    try {
+      await this.redisService.setex(redisKey, result, config.SchoolResultsCache.RedisResultsExpiryInSeconds)
+    } catch (error) {
+      this.logger.error(`${logPrefix}: Failed to write to Redis: ${error.message}`)
+      // This is likely a temporary error.  We should throw here, and let the message
+      // be delivered and processed again.
+      throw error
+    }
+  }
 }
 
 export interface IResultsServicePupilStatus {

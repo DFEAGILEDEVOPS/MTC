@@ -5,7 +5,7 @@ import * as dotenv from 'dotenv'
 const globalDotEnvFile = path.join(__dirname, '..', '..', '.env')
 try {
   if (fs.existsSync(globalDotEnvFile)) {
-    console.log('globalDotEnvFile found', globalDotEnvFile)
+    // console.log('globalDotEnvFile found', globalDotEnvFile)
     dotenv.config({ path: globalDotEnvFile })
   } else {
     console.log('No .env file found at project root')
@@ -21,6 +21,7 @@ const getEnvironment = () => {
 }
 
 const oneMinuteInMilliseconds = 60000
+const sixMonthsInSeconds = 15778800
 
 function optionalValueParser (input: any, substitute: number): string {
   if (input) {
@@ -87,6 +88,7 @@ export default {
   },
   SchoolResultsCache: {
     BatchesPerExecution: Number(process.env.SCHOOL_RESULTS_CACHE_BATCHS_PER_EXEC) || 10,
-    MessagesPerBatch: Number(process.env.SCHOOL_RESULTS_CACHE_MSGS_PER_BATCH) || 32
+    MessagesPerBatch: Number(process.env.SCHOOL_RESULTS_CACHE_MSGS_PER_BATCH) || 32,
+    RedisResultsExpiryInSeconds: Number(process.env.REDIS_RESULTS_EXPIRY_IN_SECONDS) || sixMonthsInSeconds
   }
 }

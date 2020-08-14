@@ -78,7 +78,6 @@ module.exports = {
     }
   },
   Environment: getEnvironment(),
-  RedisResultsExpiryInSeconds: getEnvWithTypeOrDefault('REDIS_RESULTS_EXPIRY_IN_SECONDS', cast.toInt, 15778800, process.env),
   SchoolResultsCacheLoadAsyncLimit: getEnvWithTypeOrDefault('SCHOOL_RESULTS_CACHE_LOAD_ASYNC_LIMIT', cast.toInt, 6, process.env),
   Redis: {
     Host: process.env.REDIS_HOST || 'localhost',

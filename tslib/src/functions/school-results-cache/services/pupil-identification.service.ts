@@ -22,13 +22,6 @@ export interface IPupilIdentificationService {
   addIdentificationFlags (pupils: Array<IPupilResult>): Array<IdentifiedPupilResult>
 }
 
-export interface PupilType {
-  foreName: string,
-  middleNames: string,
-  lastName: string,
-  dateOfBirth: moment.Moment
-}
-
 interface InternalIdentifiedPupilType extends IPupilResult {
   // determine if the GUI should show the middle names for pupil disambiguation
   showMiddleNames: boolean,
