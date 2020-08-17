@@ -18,7 +18,7 @@
             <p class="govuk-body">
                 Modify the multiplication tables check for pupils with specific needs. The arrangements that are applied can be practised and configured by the pupils when the try it out area is open.
             </p>
-        <% if (!availabilityData.canEditArrangements) { %>
+        <% if (aaViewMode === 'readonly') { %>
             <button type="submit" disabled="disabled" aria-disabled="true" class="govuk-button govuk-button--disabled" data-module="govuk-button">
                 View pupils and assign arrangement
             </button>
@@ -63,7 +63,7 @@
                                     Completed Check
                                 <% } else if(p.notTakingCheck) { %>
                                     Not taking check
-                                <% } else if (availabilityData.canEditArrangements) { %>
+                                <% } else if (availabilityData.canEditArrangements && aaViewMode === 'edit') { %>
                                     <a class="govuk-link modal-link" id="js-modal-link" href="/access-arrangements/delete-access-arrangements/<%= p.urlSlug %>">Remove</a>
                                 <% } %>
                                 </td>
@@ -73,6 +73,13 @@
                     </table>
         <% } else { %>
             <p class="govuk-body govuk-!-margin-top-4 govuk-!-margin-bottom-9">No pupils with access arrangements.</p>
+        <% } %>
+        <% if (!availabilityData.hdfSubmitted) { %>
+          <div id="retroAddInputAssistantInfo">
+            <p>
+              If you need to assign an input assistant after the pupil has taken the official check go to <a href="/access-arrangements/retro-add-input-assistant">Record input assistant used for official check</a>.
+            </p>
+          </div>
         <% } %>
             <div class="govuk-back-to-top">
                 <a class="govuk-link govuk-link--no-visited-state app-back-to-top__link" href="#top">
