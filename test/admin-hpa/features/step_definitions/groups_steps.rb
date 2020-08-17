@@ -77,11 +77,13 @@ Then(/^I can enter the following special characters as the group name$/) do |tab
 end
 
 Given(/^I have added already added a pupil to another group$/) do
-  step 'I am on the create group page'
+  step 'I have signed in with teacher5'
+  step 'I have added a pupil'
+  group_pupils_page.load
+  group_pupils_page.create_group.click
   add_edit_groups_page.group_name.set 'Group1'+ (rand(23243)).to_s
-  pupil = add_edit_groups_page.pupil_list.rows.last
-  pupil.checkbox.click
-  @pupil_name = pupil.name.text
+  add_edit_groups_page.select_pupil_for_a_group(@details_hash[:first_name])
+  @pupil_name = @details_hash[:first_name]
   add_edit_groups_page.sticky_banner.confirm.click
   expect(group_pupils_page.info_message.text).to eql 'New group created'
 end
