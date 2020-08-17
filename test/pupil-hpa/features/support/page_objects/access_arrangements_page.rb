@@ -22,7 +22,10 @@ class AccessArrangementsPage < SitePrism::Page
     element :contents, '.modal-content p'
     element :cancel, '#js-modal-cancel-button'
     element :confirm, '#js-modal-confirmation-button'
+  end
 
+  section :retro_input, '#retroAddInputAssistantInfo' do
+    element :link, "a[href='/access-arrangements/retro-add-input-assistant']"
   end
 
   def remove_all_pupils

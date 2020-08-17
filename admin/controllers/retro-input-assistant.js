@@ -4,6 +4,7 @@ const checkWindowV2Service = require('../services/check-window-v2.service')
 const businessAvailabilityService = require('../services/business-availability.service')
 const ValidationError = require('../lib/validation-error')
 const retroInputAssistantService = require('../services/retro-input-assistant.service')
+const { AccessArrangementsNotEditableError } = require('../error-types/access-arrangements-not-editable-error')
 
 const controller = {
   getAddRetroInputAssistant: async function getAddRetroInputAssistant (req, res, next, error = null) {
@@ -11,11 +12,10 @@ const controller = {
     req.breadcrumbs('Select pupils and access arrangements', 'select-access-arrangements')
     req.breadcrumbs('Record input assistant')
 
-    try {
-      const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
-      await businessAvailabilityService.determineAccessArrangementsEligibility(checkWindowData)
-    } catch (error) {
-      return next(error)
+    const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
+    const availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.schoolId, checkWindowData, req.user.timezone)
+    if (availabilityData.hdfSubmitted === true) {
+      throw new AccessArrangementsNotEditableError()
     }
 
     let pupils

@@ -9,6 +9,8 @@ class RetroInputPage < SitePrism::Page
   element :reason, "#input-assistant-reason"
   element :save, '#save-input-assistant'
   element :cancel, 'a[href="/access-arrangements/select-access-arrangements"]', text: 'Cancel'
+  elements :error_summary,'.govuk-error-summary__list li'
+
 
   def enter_input_assistant_details
     first_name.set 'Input'

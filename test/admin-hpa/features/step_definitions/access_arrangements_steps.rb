@@ -7,6 +7,8 @@ Then(/^the access arrangements page is displayed as per the design$/) do
   expect(access_arrangements_page).to have_heading
   expect(access_arrangements_page).to have_information
   expect(access_arrangements_page).to have_select_pupil_and_arrangement_btn
+  expect(access_arrangements_page).to have_retro_input
+
 end
 
 Given(/^I am on the select access arrangements page$/) do
@@ -18,7 +20,7 @@ end
 Then(/^I should see the select access arrangements page matches design$/) do
   expected_list = SqlDbHelper.access_arrangements.map{|a| a['description']}
   actual_list = select_access_arrangements_page.access_arrangements.row.map {|a| a.arrangement_name.text.split(' (')[0]}
-  actual_list << "Retrospective Input assistance" if select_access_arrangements_page.has_retro_input?
+  actual_list << "Retrospective Input assistance"
   expect(actual_list).to eql expected_list.sort
   expect(select_access_arrangements_page).to have_drop_down
   expect(select_access_arrangements_page).to have_save
