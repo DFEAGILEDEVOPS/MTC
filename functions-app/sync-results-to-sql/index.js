@@ -8,6 +8,10 @@ const name = 'sync-results-to-sql'
 module.exports = async function schoolImportIndex (context, myTimer) {
   const start = performance.now()
   context.log(`${name} started`)
+  if (myTimer.IsPastDue) {
+    context.log(`${name} timer is past due - exiting`)
+    return
+  }
 
   let meta
   try {
