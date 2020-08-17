@@ -10,7 +10,7 @@
     "purgestorage": "bin/init-dev-storage.js"
   },
   "resolutions": {
-    "**/**/lodash": "^4.17.19"
+    "**/**/lodash": "^4.17.20"
   },
   "dependencies": {
     "artillery": "^1.6.0",
