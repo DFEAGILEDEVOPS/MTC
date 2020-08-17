@@ -16,7 +16,7 @@
     "node": ">= 12"
   },
   "resolutions": {
-    "**/**/lodash": "^4.17.19"
+    "**/**/lodash": "^4.17.20"
   },
   "dependencies": {
     "@azure/service-bus": "^1.1.1",
