@@ -2,7 +2,7 @@ import { AzureFunction, Context } from '@azure/functions'
 import { performance } from 'perf_hooks'
 const functionName = 'gias-sync'
 import { SqlService } from '../../sql/sql.service'
-import { CheckPinExpiryService as GiasSyncService } from './gias-sync.service'
+import { CheckPinExpiryService as GiasSyncService } from './gias.service'
 
 const timerTrigger: AzureFunction = async function (context: Context, timer: any): Promise<void> {
   const start = performance.now()
