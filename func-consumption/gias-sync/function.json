@@ -1,0 +1,12 @@
+{
+  "bindings": [
+    {
+      "_ref": "sec, min, hour, day, month, dow",
+      "name": "giasSync",
+      "type": "timerTrigger",
+      "direction": "in",
+      "schedule": "0 10 18,4 * * *"
+    }
+  ],
+  "scriptFile": "../dist/functions/gias-sync/index.js"
+}
