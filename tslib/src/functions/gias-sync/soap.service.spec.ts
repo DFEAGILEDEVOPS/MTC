@@ -3,9 +3,17 @@ import { v4 as uuid } from 'uuid'
 import * as xmlParser from 'fast-xml-parser'
 import * as he from 'he'
 import { IDateTimeService } from '../../common/datetime.service'
+import moment from 'moment'
+
+const DateTimeServiceMock = jest.fn<IDateTimeService, any>(() => ({
+  utcNow: jest.fn(),
+  formatIso8601: jest.fn(),
+  convertDateToMoment: jest.fn(),
+  convertMomentToJsDate: jest.fn()
+}))
 
 let sut: SoapService
-let dateTimeServiceMock: jest.Mock<IDateTimeService>
+let dateTimeServiceMock: IDateTimeService
 
 const xmlParserOptions = {
   attributeNamePrefix : '',
@@ -30,7 +38,8 @@ let namespace: string
 
 describe('soap.service', () => {
   beforeEach(() => {
-    sut = new SoapService()
+    dateTimeServiceMock = new DateTimeServiceMock()
+    sut = new SoapService(dateTimeServiceMock)
     namespace = uuid()
   })
 
@@ -74,9 +83,12 @@ describe('soap.service', () => {
     expect(usernameToken['wsse:Password'].value).toEqual(password)
   })
 
-  test('when message expiry specified a security header is included with expiry value', () => {
+  test('when message expiry specified security header details creation and expiry values', () => {
     const expiryValue = 1234
-    const now = Date.now()
+    const mockNow = moment()
+    dateTimeServiceMock.utcNow = jest.fn(() => {
+      return mockNow
+    })
     const messageSpec: ISoapMessageSpecification = {
       action: 'action',
       namespace: namespace,
@@ -91,10 +103,41 @@ describe('soap.service', () => {
     const timestampElement = securityElement['wsu:Timestamp']
     expect(timestampElement).toBeDefined()
     const expiryDateTime = timestampElement['wsu:Expires']
+    const createdDateTime = timestampElement['wsu:Created']
     expect(expiryDateTime).toBeDefined()
-    const expectedExpiryDateTime = new Date(now + expiryValue)
+    expect(createdDateTime).toBeDefined()
+    const expectedExpiryDateTime = mockNow.clone().add(expiryValue, 'milliseconds').toDate()
     expect(expiryDateTime).toEqual(expectedExpiryDateTime.toISOString())
-    console.log(expiryDateTime)
-    console.dir(timestampElement)
+    expect(createdDateTime).toEqual(mockNow.toISOString())
+  })
+
+  test('message should have a body defined', () => {
+    const messageSpec: ISoapMessageSpecification = {
+      action: 'action',
+      namespace: namespace,
+      messageExpiryMs: 0
+    }
+    const builderOutput = sut.buildMessage(messageSpec)
+    const xml = xmlParser.parse(builderOutput, xmlParserOptions)
+    const soapBody = xml['soapenv:Envelope']['soapenv:Body']
+    expect(soapBody['ws:action']).toBeDefined()
+  })
+
+  test('body should contain parameters when specified', () => {
+    const paramValue = 1234
+    const messageSpec: ISoapMessageSpecification = {
+      action: 'action',
+      parameters: {
+        Id: paramValue
+      },
+      namespace: namespace,
+      messageExpiryMs: 0
+    }
+    const builderOutput = sut.buildMessage(messageSpec)
+    const xml = xmlParser.parse(builderOutput, xmlParserOptions)
+    const soapBody = xml['soapenv:Envelope']['soapenv:Body']
+    const params = soapBody['ws:action']
+    expect(params).toBeDefined()
+    expect(params['ws:Id']).toEqual(paramValue)
   })
 })
