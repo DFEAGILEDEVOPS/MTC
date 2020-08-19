@@ -23,7 +23,7 @@
   },
   "description": "Root MTC Typescript project.  Contains all shared components and azure function implementations",
   "resolutions": {
-    "**/**/lodash": "^4.17.19"
+    "**/**/lodash": "^4.17.20"
   },
   "devDependencies": {
     "@azure/functions": "^1.0.3",

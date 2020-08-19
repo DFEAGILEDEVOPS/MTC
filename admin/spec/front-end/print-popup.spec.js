@@ -20,13 +20,19 @@ describe('printPopup', function () {
     afterEach(() => {
       fixture.remove()
     })
-    it('should remove the hidden class from checked pupils', function () {
-      window.GOVUK.printPopup.hideUncheckedPupils('.container')
-      expect($('.pupil-1').hasClass('hidden')).toBe(false)
+    it('should remove the hidden class from checked pupils', function (done) {
+      $(function () {
+        window.GOVUK.printPopup.hideUncheckedPupils('.container')
+        expect($('.pupil-1').hasClass('hidden')).toBe(false)
+        done()
+      })
     })
-    it('should add the hidden class from unchecked pupils', function () {
-      window.GOVUK.printPopup.hideUncheckedPupils('.container')
-      expect($('.pupil-2').hasClass('hidden')).toBe(true)
+    it('should add the hidden class from unchecked pupils', function (done) {
+      $(function () {
+        window.GOVUK.printPopup.hideUncheckedPupils('.container')
+        expect($('.pupil-2').hasClass('hidden')).toBe(true)
+        done()
+      })
     })
   })
 })
