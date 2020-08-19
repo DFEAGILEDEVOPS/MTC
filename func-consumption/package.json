@@ -19,7 +19,7 @@
     "start:dev": "env $(cat disable-functions.env | grep Azure | xargs ) yarn start"
   },
   "resolutions": {
-    "**/**/lodash": "^4.17.19"
+    "**/**/lodash": "^4.17.20"
   },
   "devDependencies": {
     "@azure/functions": "^1.0.3",
