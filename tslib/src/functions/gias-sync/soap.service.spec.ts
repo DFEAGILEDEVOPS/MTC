@@ -2,8 +2,10 @@ import { SoapService, ISoapMessageSpecification } from './soap.service'
 import { v4 as uuid } from 'uuid'
 import * as xmlParser from 'fast-xml-parser'
 import * as he from 'he'
+import { IDateTimeService } from '../../common/datetime.service'
 
 let sut: SoapService
+let dateTimeServiceMock: jest.Mock<IDateTimeService>
 
 const xmlParserOptions = {
   attributeNamePrefix : '',
@@ -60,16 +62,39 @@ describe('soap.service', () => {
         password: password
       }
     }
-    const receivedOutput = sut.buildMessage(messageSpec)
-    expect(receivedOutput).toBeDefined()
-    const xml = xmlParser.parse(receivedOutput, xmlParserOptions)
+    const builderOutput = sut.buildMessage(messageSpec)
+    expect(builderOutput).toBeDefined()
+    const xml = xmlParser.parse(builderOutput, xmlParserOptions)
     const soapHeader = xml['soapenv:Envelope']['soapenv:Header']
     expect(soapHeader).toBeDefined()
     const securityElement = soapHeader['wsse:Security']
-    console.dir(securityElement)
     expect(securityElement).toBeDefined()
     const usernameToken = securityElement['wsse:UsernameToken']
     expect(usernameToken['wsse:Username']).toEqual(username)
     expect(usernameToken['wsse:Password'].value).toEqual(password)
+  })
+
+  test('when message expiry specified a security header is included with expiry value', () => {
+    const expiryValue = 1234
+    const now = Date.now()
+    const messageSpec: ISoapMessageSpecification = {
+      action: 'action',
+      namespace: namespace,
+      messageExpiryMs: expiryValue
+    }
+    const builderOutput = sut.buildMessage(messageSpec)
+    const xml = xmlParser.parse(builderOutput, xmlParserOptions)
+    const soapHeader = xml['soapenv:Envelope']['soapenv:Header']
+    expect(soapHeader).toBeDefined()
+    const securityElement = soapHeader['wsse:Security']
+    expect(securityElement).toBeDefined()
+    const timestampElement = securityElement['wsu:Timestamp']
+    expect(timestampElement).toBeDefined()
+    const expiryDateTime = timestampElement['wsu:Expires']
+    expect(expiryDateTime).toBeDefined()
+    const expectedExpiryDateTime = new Date(now + expiryValue)
+    expect(expiryDateTime).toEqual(expectedExpiryDateTime.toISOString())
+    console.log(expiryDateTime)
+    console.dir(timestampElement)
   })
 })
