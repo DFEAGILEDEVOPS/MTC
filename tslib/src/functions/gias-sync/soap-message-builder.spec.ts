@@ -1,4 +1,4 @@
-import { SoapService, ISoapMessageSpecification } from './soap.service'
+import { SoapMessageBuilder, ISoapMessageSpecification } from './soap-message-builder'
 import { v4 as uuid } from 'uuid'
 import * as xmlParser from 'fast-xml-parser'
 import * as he from 'he'
@@ -12,7 +12,7 @@ const DateTimeServiceMock = jest.fn<IDateTimeService, any>(() => ({
   convertMomentToJsDate: jest.fn()
 }))
 
-let sut: SoapService
+let sut: SoapMessageBuilder
 let dateTimeServiceMock: IDateTimeService
 
 const xmlParserOptions = {
@@ -36,10 +36,10 @@ const xmlParserOptions = {
 
 let namespace: string
 
-describe('soap.service', () => {
+describe('soap-message-builder', () => {
   beforeEach(() => {
     dateTimeServiceMock = new DateTimeServiceMock()
-    sut = new SoapService(dateTimeServiceMock)
+    sut = new SoapMessageBuilder(dateTimeServiceMock)
     namespace = uuid()
   })
 

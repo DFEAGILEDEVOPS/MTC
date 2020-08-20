@@ -1,6 +1,6 @@
 import { IDateTimeService, DateTimeService } from '../../common/datetime.service'
 
-export class SoapService {
+export class SoapMessageBuilder {
 
   private dateTimeService: IDateTimeService
 
