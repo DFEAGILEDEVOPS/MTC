@@ -1,6 +1,10 @@
 import { IDateTimeService, DateTimeService } from '../../common/datetime.service'
 
-export class SoapMessageBuilder {
+export interface ISoapMessageBuilder {
+  buildMessage (messageSpec: ISoapMessageSpecification): string
+}
+
+export class SoapMessageBuilder implements ISoapMessageBuilder {
 
   private dateTimeService: IDateTimeService
 
