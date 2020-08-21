@@ -20,11 +20,13 @@ export class GiasService {
       }
     })
     return Promise.resolve({
-      extractId: extractId
+      extractId: extractId,
+      data: []
     })
   }
 }
 
 export interface IExtractResult {
-  extractId: string
+  extractId: string,
+  data: Array<any>
 }

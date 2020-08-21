@@ -24,6 +24,8 @@ describe('GiasSyncService', () => {
     const extractResult = await sut.GetExtract(extractId)
     expect(extractResult).toBeDefined()
     expect(extractResult.extractId).toEqual(extractId)
+    expect(extractResult.data).toBeDefined()
+    expect(extractResult.data.length).toBe(0)
   })
 
   test('GetExtract:should propogate original error details when a fault occurs', async () => {
