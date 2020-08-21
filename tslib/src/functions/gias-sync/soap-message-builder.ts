@@ -16,9 +16,7 @@ export class SoapMessageBuilder implements ISoapMessageBuilder {
   }
 
   buildMessage (messageSpec: ISoapMessageSpecification): string {
-    let xml = `
-      <?xml version="1.0"?>
-        <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+    let xml = `<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
           xmlns:ws="${messageSpec.namespace}">`
     xml = `${xml}${this.buildHeader(messageSpec)}`
     xml = `${xml}${this.buildBody(messageSpec)}`

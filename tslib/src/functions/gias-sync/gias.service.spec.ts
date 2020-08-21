@@ -1,6 +1,7 @@
 import { GiasService } from './gias.service'
-import { ISoapMessageBuilder, ISoapMessageSpecification } from './soap-message-builder'
+import { ISoapMessageBuilder, ISoapMessageSpecification, SoapMessageBuilder } from './soap-message-builder'
 import { v4 as uuid } from 'uuid'
+import { SoapRequestService } from './soap-request.service'
 
 const SoapMessageBuilderMock = jest.fn<ISoapMessageBuilder, any>(() => ({
   buildMessage: jest.fn()
@@ -58,5 +59,35 @@ describe('GiasSyncService', () => {
   })
 
   test.todo('GetExtract: verify returned data structure')
+
+  test.skip('make actual call', async () => {
+    require('dotenv').config()
+    const messageSpec: ISoapMessageSpecification = {
+      action: 'GetEstablishment',
+      messageExpiryMs: 10000,
+      namespace: process.env.WS_NS || '',
+      credentials: {
+        username: process.env.WS_USERNAME || '',
+        password: process.env.WS_PASSWORD || ''
+      },
+      parameters: {
+        Urn: 100044
+      }
+    }
+    console.dir(messageSpec)
+
+    const soapMessageBuilder = new SoapMessageBuilder()
+    const soapMessage = soapMessageBuilder.buildMessage(messageSpec)
+    console.dir(soapMessage)
+    const svc = new SoapRequestService()
+    const response = await svc.execute({
+      action: messageSpec.action,
+      namespace: messageSpec.namespace,
+      serviceUrl: process.env.WS_ENDPOINT || '',
+      soapXml: soapMessage,
+      timeout: messageSpec.messageExpiryMs
+    })
+    console.dir(response)
+  })
 
 })

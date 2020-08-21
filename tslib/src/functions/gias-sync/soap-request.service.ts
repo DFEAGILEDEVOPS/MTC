@@ -1,4 +1,4 @@
-import * as soapReqest from 'easy-soap-request'
+import * as easySoap from 'easy-soap-request'
 
 export class SoapRequestService {
   async execute (request: ISoapRequest): Promise<ISoapResponse> {
@@ -7,7 +7,7 @@ export class SoapRequestService {
       'Content-Type': 'text/xml;charset=UTF-8',
       'SOAPAction': `${request.namespace}/${request.action}`
     }
-    return soapReqest({
+    return easySoap.default({
       url: request.serviceUrl,
       headers: headers,
       xml: request.soapXml,
