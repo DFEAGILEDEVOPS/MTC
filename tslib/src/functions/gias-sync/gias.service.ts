@@ -12,9 +12,12 @@ export class GiasService {
 
   async GetExtract (extractId: string): Promise<IExtractResult> {
     this.soapMessageBuilder.buildMessage({
-      action: 'hello',
+      action: 'GetExtract',
       messageExpiryMs: 0,
-      namespace: 'test'
+      namespace: 'test',
+      parameters: {
+        Id: extractId
+      }
     })
     return Promise.resolve({
       extractId: extractId

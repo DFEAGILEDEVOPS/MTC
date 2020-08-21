@@ -1,5 +1,5 @@
 import { GiasService } from './gias.service'
-import { ISoapMessageBuilder } from './soap-message-builder'
+import { ISoapMessageBuilder, ISoapMessageSpecification } from './soap-message-builder'
 import { v4 as uuid } from 'uuid'
 
 const SoapMessageBuilderMock = jest.fn<ISoapMessageBuilder, any>(() => ({
@@ -38,7 +38,22 @@ describe('GiasSyncService', () => {
     }
   })
 
-  test.todo('GetExtract: soapMessage specification should reflect inputs')
+  test('GetExtract: soapMessage should reflect extract specification', async () => {
+    let capturedSpecification: ISoapMessageSpecification = {
+      action: '',
+      messageExpiryMs: 0,
+      namespace: ''
+    }
+    soapMessageBuilderMock.buildMessage = jest.fn((messageSpec) => {
+      capturedSpecification = messageSpec
+      return ''
+    })
+    await sut.GetExtract(extractId)
+    expect(capturedSpecification).toBeDefined()
+    expect(capturedSpecification.action).toEqual('GetExtract')
+    expect(capturedSpecification.parameters).toBeDefined()
+    expect(capturedSpecification.parameters['Id']).toEqual(extractId)
+  })
   test.todo('GetExtract: soap response should be converted into an object')
 
 })
