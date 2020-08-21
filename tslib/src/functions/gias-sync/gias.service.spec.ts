@@ -56,6 +56,7 @@ describe('GiasSyncService', () => {
     expect(capturedSpecification.parameters).toBeDefined()
     expect(capturedSpecification.parameters['Id']).toEqual(extractId)
   })
-  test.todo('GetExtract: soap response should be converted into an object')
+
+  test.todo('GetExtract: verify returned data structure')
 
 })
