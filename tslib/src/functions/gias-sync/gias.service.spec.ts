@@ -78,7 +78,6 @@ describe('GiasSyncService', () => {
 
     const soapMessageBuilder = new SoapMessageBuilder()
     const soapMessage = soapMessageBuilder.buildMessage(messageSpec)
-    console.dir(soapMessage)
     const svc = new SoapRequestService()
     const response = await svc.execute({
       action: messageSpec.action,
