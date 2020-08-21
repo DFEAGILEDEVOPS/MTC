@@ -50,6 +50,7 @@
     "azure-storage": "^2.10.3",
     "bluebird": "^3.7.0",
     "dotenv": "^8.1.0",
+    "easy-soap-request": "^3.3.3",
     "fast-xml-parser": "^3.17.4",
     "ioredis": "^4.14.1",
     "lz-string": "^1.4.4",

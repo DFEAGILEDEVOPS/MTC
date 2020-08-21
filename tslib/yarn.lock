@@ -883,7 +883,7 @@ aws4@^1.8.0:
   resolved "https://registry.yarnpkg.com/aws4/-/aws4-1.10.0.tgz#a17b3a8ea811060e74d47d306122400ad4497ae2"
   integrity sha512-3YDiu347mtVtjpyV3u5kVqQLP242c06zwDOgpeRnybmXlYYsLbtTrUBUm8i8srONt+FWobl5aibnU1030PeeuA==
 
-axios@^0.19.0:
+axios@^0.19.0, axios@^0.19.2:
   version "0.19.2"
   resolved "https://registry.yarnpkg.com/axios/-/axios-0.19.2.tgz#3ea36c5d8818d0d5f8a8a97a6d36b86cdc00cb27"
   integrity sha512-fjgm5MvRHLhx+osE2xoekY70AhARk3a6hkN+3Io1jc00jtquGvxYlKlsFUhmUET0V5te6CcZI7lcv2Ym61mjHA==
@@ -1500,6 +1500,13 @@ dotenv@^8.1.0:
   version "8.2.0"
   resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-8.2.0.tgz#97e619259ada750eea3e4ea3e26bceea5424b16a"
   integrity sha512-8sJ78ElpbDJBHNeBzUbUVLsqKdccaa/BXF1uPTw3GrvQTBgrQrtObr2mUrE38vzYd8cEv+m/JBfDLioYcfXoaw==
+
+easy-soap-request@^3.3.3:
+  version "3.3.3"
+  resolved "https://registry.yarnpkg.com/easy-soap-request/-/easy-soap-request-3.3.3.tgz#2608e910669fc7a50e5290fa696a776880e015b2"
+  integrity sha512-Oqw05JcvWrsm8nVm59fZddO82IKY2n/Rong2UxqHQTNh6Ls54CgTAQ2WxnGxBvow4eDvyIdPFaaMrUW7SVCTMw==
+  dependencies:
+    axios "^0.19.2"
 
 ecc-jsbn@~0.1.1:
   version "0.1.2"
