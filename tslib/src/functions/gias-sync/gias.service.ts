@@ -63,6 +63,12 @@ export class GiasService {
     if (config.Gias.ServiceUrl === undefined) {
       throw new Error('gias service url is required')
     }
+    if (config.Gias.Username === undefined) {
+      throw new Error('gias username is required')
+    }
+    if (config.Gias.Password === undefined) {
+      throw new Error('gias password is required')
+    }
     const wsActionId = 'GetEstablishment'
     const messageXml = this.soapMessageBuilder.buildMessage({
       action: wsActionId,
@@ -70,6 +76,10 @@ export class GiasService {
       namespace: config.Gias.Namespace,
       parameters: {
         Urn: urn
+      },
+      credentials: {
+        username: config.Gias.Username,
+        password: config.Gias.Password
       }
     })
     return this.soapRequestService.execute({
