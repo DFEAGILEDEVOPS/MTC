@@ -1,7 +1,7 @@
 import * as easySoap from 'easy-soap-request'
 
 export class SoapRequestService implements ISoapRequestService {
-  async execute (request: ISoapRequest): Promise<ISoapResponse> {
+  async execute (request: ISoapRequest): Promise<any> {
     const headers = {
       'method': 'POST',
       'Content-Type': 'text/xml;charset=UTF-8',
@@ -17,7 +17,7 @@ export class SoapRequestService implements ISoapRequestService {
 }
 
 export interface ISoapRequestService {
-  execute (request: ISoapRequest): Promise<ISoapResponse>
+  execute (request: ISoapRequest): Promise<any>
 }
 
 export interface ISoapResponse {}

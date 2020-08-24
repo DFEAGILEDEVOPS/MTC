@@ -1,7 +1,7 @@
 import { GiasService } from './gias.service'
-import { ISoapMessageBuilder, ISoapMessageSpecification, SoapMessageBuilder } from './soap-message-builder'
+import { ISoapMessageBuilder, ISoapMessageSpecification } from './soap-message-builder'
 import { v4 as uuid } from 'uuid'
-import { SoapRequestService, ISoapRequestService } from './soap-request.service'
+import { ISoapRequestService } from './soap-request.service'
 import config from '../../config'
 
 const SoapMessageBuilderMock = jest.fn<ISoapMessageBuilder, any>(() => ({
@@ -114,41 +114,13 @@ describe('GiasSyncService', () => {
     expect(extractResult.data.length).toBe(0)
   })
 
-  test.only('gias e2e call', async () => {
+  test.skip('gias e2e call', async () => {
     config.Gias.Namespace = process.env.GIAS_WS_NAMESPACE || ''
     config.Gias.ServiceUrl = process.env.GIAS_WS_SERVICE_URL || ''
     config.Gias.Username = process.env.GIAS_WS_USERNAME || ''
     config.Gias.Password = process.env.GIAS_WS_PASSWORD || ''
     const gias = new GiasService()
     const response = await gias.GetEstablishment(100044)
-    console.dir(response)
-  })
-
-  test.skip('to remove: e2e call', async () => {
-    require('dotenv').config()
-    const messageSpec: ISoapMessageSpecification = {
-      action: 'GetEstablishment',
-      messageExpiryMs: 10000,
-      namespace: process.env.WS_NS || '',
-      credentials: {
-        username: process.env.WS_USERNAME || '',
-        password: process.env.WS_PASSWORD || ''
-      },
-      parameters: {
-        Urn: 100044
-      }
-    }
-
-    const soapMessageBuilder = new SoapMessageBuilder()
-    const soapMessage = soapMessageBuilder.buildMessage(messageSpec)
-    const svc = new SoapRequestService()
-    const response = await svc.execute({
-      action: messageSpec.action,
-      namespace: messageSpec.namespace,
-      serviceUrl: process.env.WS_ENDPOINT || '',
-      soapXml: soapMessage,
-      timeout: messageSpec.messageExpiryMs
-    })
     console.dir(response)
   })
 
