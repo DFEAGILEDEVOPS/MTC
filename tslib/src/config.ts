@@ -84,6 +84,9 @@ export default {
   Gias: {
     Namespace: process.env.GIAS_WS_NAMESPACE,
     ServiceUrl: process.env.GIAS_WS_SERVICE_URL,
-    MessageExpiryInMilliseconds: parseInt(optionalValueParser(process.env.GIAS_WS_MESSAGE_EXPIRY_MS, 10000), 10)
+    MessageExpiryInMilliseconds: parseInt(optionalValueParser(process.env.GIAS_WS_MESSAGE_EXPIRY_MS, 10000), 10),
+    RequestTimeoutInMilliseconds: parseInt(optionalValueParser(process.env.GIAS_WS_REQUEST_TIMEOUT, 30000), 10),
+    Username: process.env.GIAS_WS_USERNAME,
+    Password: process.env.GIAS_WS_PASSWORD
   }
 }
