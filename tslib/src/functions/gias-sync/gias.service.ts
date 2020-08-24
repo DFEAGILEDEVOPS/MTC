@@ -1,4 +1,5 @@
 import { ISoapMessageBuilder, SoapMessageBuilder } from './soap-message-builder'
+import config from '../../config'
 
 export class GiasService {
   private soapMessageBuilder: ISoapMessageBuilder
@@ -11,10 +12,13 @@ export class GiasService {
   }
 
   async GetExtract (extractId: string): Promise<IExtractResult> {
+    if (config.Gias.Namespace === undefined) {
+      throw new Error('gias web service namespace is required')
+    }
     this.soapMessageBuilder.buildMessage({
       action: 'GetExtract',
-      messageExpiryMs: 0,
-      namespace: 'test',
+      messageExpiryMs: config.Gias.MessageExpiryInMilliseconds,
+      namespace: config.Gias.Namespace || '',
       parameters: {
         Id: extractId
       }

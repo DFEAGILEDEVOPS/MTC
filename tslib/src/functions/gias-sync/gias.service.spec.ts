@@ -2,6 +2,7 @@ import { GiasService } from './gias.service'
 import { ISoapMessageBuilder, ISoapMessageSpecification, SoapMessageBuilder } from './soap-message-builder'
 import { v4 as uuid } from 'uuid'
 import { SoapRequestService } from './soap-request.service'
+import config from '../../config'
 
 const SoapMessageBuilderMock = jest.fn<ISoapMessageBuilder, any>(() => ({
   buildMessage: jest.fn()
@@ -13,6 +14,7 @@ const extractId = 'extractId'
 
 describe('GiasSyncService', () => {
   beforeEach(() => {
+    config.Gias.Namespace = 'gias.ns'
     soapMessageBuilderMock = new SoapMessageBuilderMock()
     sut = new GiasService(soapMessageBuilderMock)
   })
@@ -56,6 +58,17 @@ describe('GiasSyncService', () => {
     expect(capturedSpecification.action).toEqual('GetExtract')
     expect(capturedSpecification.parameters).toBeDefined()
     expect(capturedSpecification.parameters['Id']).toEqual(extractId)
+  })
+
+  test('when configured namespace is not defined an error is thrown', async () => {
+    try {
+      config.Gias.Namespace = undefined
+      await sut.GetExtract(extractId)
+      fail('error was expected to be thrown')
+    } catch (error) {
+      expect(error).toBeDefined()
+      expect(error.message).toEqual('gias web service namespace is required')
+    }
   })
 
   test.todo('GetExtract: verify returned data structure')

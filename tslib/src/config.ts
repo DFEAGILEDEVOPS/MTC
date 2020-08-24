@@ -80,5 +80,10 @@ export default {
     OverridePinExpiry: {}.hasOwnProperty.call(process.env, 'OVERRIDE_PIN_EXPIRY') ? toBool.primitiveToBoolean(process.env.OVERRIDE_PIN_EXPIRY) : false,
     PinUpdateMaxAttempts: parseInt(optionalValueParser(process.env.PIN_UPDATE_MAX_ATTEMPTS,0), 10),
     DigitChars: '23456789'
+  },
+  Gias: {
+    Namespace: process.env.GIAS_WS_NAMESPACE,
+    ServiceUrl: process.env.GIAS_WS_SERVICE_URL,
+    MessageExpiryInMilliseconds: parseInt(optionalValueParser(process.env.GIAS_WS_MESSAGE_EXPIRY_MS, 10000), 10)
   }
 }
