@@ -1,33 +1,16 @@
 import { ISoapMessageBuilder, SoapMessageBuilder } from './soap-message-builder'
 import config from '../../config'
 import { ISoapRequestService, SoapRequestService } from './soap-request.service'
-import * as xmlParser from 'fast-xml-parser'
-import * as he from 'he'
-
-const xmlParserOptions = {
-  attributeNamePrefix : '',
-  attrNodeName: 'attr', // default is 'false'
-  textNodeName : 'value',
-  ignoreAttributes : false,
-  ignoreNameSpace : true,
-  allowBooleanAttributes : false,
-  parseNodeValue : true,
-  parseAttributeValue : false,
-  trimValues: true,
-  cdataTagName: '__cdata', // default is 'false'
-  cdataPositionChar: '\\c',
-  parseTrueNumberOnly: false,
-  arrayMode: false, // "strict"
-  attrValueProcessor: (val: any, attrName: string) => he.decode(val, { isAttributeValue: true }),// default is a=>a
-  tagValueProcessor : (val: any, tagName: string) => he.decode(val), // default is a=>a
-  stopNodes: ['parse-me-as-string']
-}
+import { IXmlParser, XmlParser } from './xml-parser'
 
 export class GiasService {
   private soapMessageBuilder: ISoapMessageBuilder
   private soapRequestService: ISoapRequestService
+  private xmlParser: IXmlParser
 
-  constructor (soapMessageBuilder?: ISoapMessageBuilder, soapRequestService?: ISoapRequestService) {
+  constructor (soapMessageBuilder?: ISoapMessageBuilder,
+                soapRequestService?: ISoapRequestService,
+                xmlParser?: IXmlParser) {
     if (soapMessageBuilder === undefined) {
       soapMessageBuilder = new SoapMessageBuilder()
     }
@@ -36,6 +19,10 @@ export class GiasService {
       soapRequestService = new SoapRequestService()
     }
     this.soapRequestService = soapRequestService
+    if (xmlParser === undefined) {
+      xmlParser = new XmlParser()
+    }
+    this.xmlParser = xmlParser
   }
 
   private async makeRequest (actionId: string, params: any) {
@@ -68,13 +55,14 @@ export class GiasService {
       soapXml: messageXml,
       timeout: config.Gias.RequestTimeoutInMilliseconds
     })
-    return xmlParser.parse(response.body, xmlParserOptions)
+    return this.xmlParser.parse(response.body)
   }
 
   async GetExtract (extractId: string): Promise<any> {
-    return this.makeRequest('GetExtract', {
+    const response = await this.makeRequest('GetExtract', {
       Id: extractId
     })
+    return response.Envelope.Body.GetExtractResponse
   }
 
   async GetEstablishment (urn: number): Promise<any> {

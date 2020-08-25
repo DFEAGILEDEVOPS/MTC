@@ -1,8 +1,9 @@
 import { GiasService } from './gias.service'
 import { ISoapMessageBuilder, ISoapMessageSpecification } from './soap-message-builder'
 import { v4 as uuid } from 'uuid'
-import { ISoapRequestService } from './soap-request.service'
+import { ISoapRequestService, ISoapRequest } from './soap-request.service'
 import config from '../../config'
+import { IXmlParser } from './xml-parser'
 
 const SoapMessageBuilderMock = jest.fn<ISoapMessageBuilder, any>(() => ({
   buildMessage: jest.fn()
@@ -10,9 +11,13 @@ const SoapMessageBuilderMock = jest.fn<ISoapMessageBuilder, any>(() => ({
 const SoapRequestServiceMock = jest.fn<ISoapRequestService, any>(() => ({
   execute: jest.fn()
 }))
+const XmlParserMock = jest.fn<IXmlParser, any>(() => ({
+  parse: jest.fn()
+}))
 let sut: GiasService
 let soapMessageBuilderMock: ISoapMessageBuilder
 let soapRequestServiceMock: ISoapRequestService
+let xmlParserMock: IXmlParser
 
 const extractId = 'extractId'
 
@@ -24,7 +29,21 @@ describe('GiasSyncService', () => {
     config.Gias.Password = 'bar'
     soapMessageBuilderMock = new SoapMessageBuilderMock()
     soapRequestServiceMock = new SoapRequestServiceMock()
-    sut = new GiasService(soapMessageBuilderMock, soapRequestServiceMock)
+    soapRequestServiceMock.execute = jest.fn((request: ISoapRequest) => {
+      const soapXml = {
+        body: ''
+      }
+      return Promise.resolve(soapXml)
+    })
+    xmlParserMock = new XmlParserMock()
+    xmlParserMock.parse = jest.fn((xml: string) => {
+      return {
+        Envelope: {
+          Body: {}
+        }
+      }
+    })
+    sut = new GiasService(soapMessageBuilderMock, soapRequestServiceMock, xmlParserMock)
   })
 
   test('subject should be defined', () => {
@@ -114,7 +133,7 @@ describe('GiasSyncService', () => {
     expect(extractResult.data.length).toBe(0)
   })
 
-  test.only('e2e:GetEstablishment', async () => {
+  test.skip('e2e:GetEstablishment', async () => {
     config.Gias.Namespace = process.env.GIAS_WS_NAMESPACE || ''
     config.Gias.ServiceUrl = process.env.GIAS_WS_SERVICE_URL || ''
     config.Gias.Username = process.env.GIAS_WS_USERNAME || ''
