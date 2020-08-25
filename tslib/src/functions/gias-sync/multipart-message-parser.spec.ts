@@ -53,7 +53,7 @@ describe('multipart message parser', () => {
     let parts = new Array<MultipartMessagePart>()
     sut = new MultipartMessage(parts)
   })
-  test('subject should be defined', () => {
+  test.skip('subject should be defined', () => {
     expect(sut).toBeDefined()
   })
 })
