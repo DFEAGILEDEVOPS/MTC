@@ -7,12 +7,13 @@ export class SoapRequestService implements ISoapRequestService {
       'Content-Type': 'text/xml;charset=UTF-8',
       'SOAPAction': `${request.namespace}/${request.action}`
     }
-    return easySoap.default({
+    const response = await easySoap.default({
       url: request.serviceUrl,
       headers: headers,
       xml: request.soapXml,
       timeout: request.timeout
     })
+    return response.response
   }
 }
 

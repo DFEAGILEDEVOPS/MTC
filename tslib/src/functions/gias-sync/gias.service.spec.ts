@@ -114,7 +114,7 @@ describe('GiasSyncService', () => {
     expect(extractResult.data.length).toBe(0)
   })
 
-  test.skip('gias e2e call', async () => {
+  test.only('gias e2e call', async () => {
     config.Gias.Namespace = process.env.GIAS_WS_NAMESPACE || ''
     config.Gias.ServiceUrl = process.env.GIAS_WS_SERVICE_URL || ''
     config.Gias.Username = process.env.GIAS_WS_USERNAME || ''

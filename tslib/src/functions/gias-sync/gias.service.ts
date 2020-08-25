@@ -103,15 +103,18 @@ export class GiasService {
         password: config.Gias.Password
       }
     })
-    const xmlResponse = await this.soapRequestService.execute({
+    const response = await this.soapRequestService.execute({
       action: wsActionId,
       namespace: config.Gias.Namespace,
       serviceUrl: config.Gias.ServiceUrl,
       soapXml: messageXml,
       timeout: config.Gias.RequestTimeoutInMilliseconds
     })
-    console.dir(xmlResponse)
-    return xmlParser.parse(xmlResponse, xmlParserOptions)
+/*     const fs = require('fs')
+    fs.writeFile('data.xml', response.body, (err: Error) => {
+      if (err) console.error(err)
+    }) */
+    return xmlParser.parse(response.body, xmlParserOptions)
   }
 }
 
