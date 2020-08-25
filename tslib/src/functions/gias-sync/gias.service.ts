@@ -9,7 +9,7 @@ const xmlParserOptions = {
   attrNodeName: 'attr', // default is 'false'
   textNodeName : 'value',
   ignoreAttributes : false,
-  ignoreNameSpace : false,
+  ignoreNameSpace : true,
   allowBooleanAttributes : false,
   parseNodeValue : true,
   parseAttributeValue : false,
@@ -68,10 +68,6 @@ export class GiasService {
       soapXml: messageXml,
       timeout: config.Gias.RequestTimeoutInMilliseconds
     })
-/*     const fs = require('fs')
-    fs.writeFile('data.xml', response.body, (err: Error) => {
-      if (err) console.error(err)
-    }) */
     return xmlParser.parse(response.body, xmlParserOptions)
   }
 
@@ -85,7 +81,7 @@ export class GiasService {
     const response = await this.makeRequest('GetEstablishment', {
       Urn: urn
     })
-    return response['SOAP-ENV:Envelope']['SOAP-ENV:Body']['ns2:GetEstablishmentResponse']
+    return response.Envelope.Body.GetEstablishmentResponse.Establishment
   }
 }
 
