@@ -38,7 +38,7 @@ export class GiasService {
     this.soapRequestService = soapRequestService
   }
 
-  async GetExtract (extractId: string): Promise<IExtractResult> {
+  private async makeRequest (actionId: string, params: any) {
     if (config.Gias.Namespace === undefined) {
       throw new Error('gias web service namespace is required')
     }
@@ -51,60 +51,18 @@ export class GiasService {
     if (config.Gias.Password === undefined) {
       throw new Error('gias password is required')
     }
-    const wsActionId = 'GetExtract'
     const messageXml = this.soapMessageBuilder.buildMessage({
-      action: wsActionId,
+      action: actionId,
       messageExpiryMs: config.Gias.MessageExpiryInMilliseconds,
       namespace: config.Gias.Namespace,
-      parameters: {
-        Id: extractId
-      },
+      parameters: params,
       credentials: {
         username: config.Gias.Username,
         password: config.Gias.Password
       }
     })
     const response = await this.soapRequestService.execute({
-      action: wsActionId,
-      namespace: config.Gias.Namespace,
-      serviceUrl: config.Gias.ServiceUrl,
-      soapXml: messageXml,
-      timeout: config.Gias.RequestTimeoutInMilliseconds
-    })
-    return {
-      extractId: extractId,
-      data: response
-    }
-  }
-
-  async GetEstablishment (urn: number): Promise<any> {
-    if (config.Gias.Namespace === undefined) {
-      throw new Error('gias web service namespace is required')
-    }
-    if (config.Gias.ServiceUrl === undefined) {
-      throw new Error('gias service url is required')
-    }
-    if (config.Gias.Username === undefined) {
-      throw new Error('gias username is required')
-    }
-    if (config.Gias.Password === undefined) {
-      throw new Error('gias password is required')
-    }
-    const wsActionId = 'GetEstablishment'
-    const messageXml = this.soapMessageBuilder.buildMessage({
-      action: wsActionId,
-      messageExpiryMs: config.Gias.MessageExpiryInMilliseconds,
-      namespace: config.Gias.Namespace,
-      parameters: {
-        Urn: urn
-      },
-      credentials: {
-        username: config.Gias.Username,
-        password: config.Gias.Password
-      }
-    })
-    const response = await this.soapRequestService.execute({
-      action: wsActionId,
+      action: actionId,
       namespace: config.Gias.Namespace,
       serviceUrl: config.Gias.ServiceUrl,
       soapXml: messageXml,
@@ -115,6 +73,19 @@ export class GiasService {
       if (err) console.error(err)
     }) */
     return xmlParser.parse(response.body, xmlParserOptions)
+  }
+
+  async GetExtract (extractId: string): Promise<any> {
+    return this.makeRequest('GetExtract', {
+      Id: extractId
+    })
+  }
+
+  async GetEstablishment (urn: number): Promise<any> {
+    const response = await this.makeRequest('GetEstablishment', {
+      Urn: urn
+    })
+    return response['SOAP-ENV:Envelope']['SOAP-ENV:Body']['ns2:GetEstablishmentResponse']
   }
 }
 

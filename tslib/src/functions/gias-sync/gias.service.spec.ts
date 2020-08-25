@@ -114,13 +114,23 @@ describe('GiasSyncService', () => {
     expect(extractResult.data.length).toBe(0)
   })
 
-  test.only('gias e2e call', async () => {
+  test.only('e2e:GetEstablishment', async () => {
     config.Gias.Namespace = process.env.GIAS_WS_NAMESPACE || ''
     config.Gias.ServiceUrl = process.env.GIAS_WS_SERVICE_URL || ''
     config.Gias.Username = process.env.GIAS_WS_USERNAME || ''
     config.Gias.Password = process.env.GIAS_WS_PASSWORD || ''
     const gias = new GiasService()
     const response = await gias.GetEstablishment(100044)
+    console.dir(response)
+  })
+
+  test.skip('e2e:GetExtract', async () => {
+    config.Gias.Namespace = process.env.GIAS_WS_NAMESPACE || ''
+    config.Gias.ServiceUrl = process.env.GIAS_WS_SERVICE_URL || ''
+    config.Gias.Username = process.env.GIAS_WS_USERNAME || ''
+    config.Gias.Password = process.env.GIAS_WS_PASSWORD || ''
+    const gias = new GiasService()
+    const response = await gias.GetExtract(process.env.GIAS_WS_EXTRACT_ID || '')
     console.dir(response)
   })
 

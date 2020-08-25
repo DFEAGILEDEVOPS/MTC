@@ -87,6 +87,7 @@ export default {
     MessageExpiryInMilliseconds: parseInt(optionalValueParser(process.env.GIAS_WS_MESSAGE_EXPIRY_MS, 10000), 10),
     RequestTimeoutInMilliseconds: parseInt(optionalValueParser(process.env.GIAS_WS_REQUEST_TIMEOUT, 30000), 10),
     Username: process.env.GIAS_WS_USERNAME,
-    Password: process.env.GIAS_WS_PASSWORD
+    Password: process.env.GIAS_WS_PASSWORD,
+    ExtractId: process.env.GIAS_WS_EXTRACT_ID
   }
 }
