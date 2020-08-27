@@ -62,8 +62,6 @@ export class GiasService {
     const response = await this.makeRequest('GetExtract', {
       Id: extractId
     })
-    console.log(`body length:${response.body.length}`)
-    delete response.body
     return response
     // return response.Envelope.Body.GetExtractResponse
   }

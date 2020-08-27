@@ -150,6 +150,11 @@ describe('GiasSyncService', () => {
     config.Gias.Password = process.env.GIAS_WS_PASSWORD || ''
     const gias = new GiasService()
     const response = await gias.GetExtract(process.env.GIAS_WS_EXTRACT_ID || '')
+/*     const fs = require('fs')
+    fs.writeFile('extract-body.txt', JSON.stringify(response, null, 2), (err: Error) => {
+      if (err) throw err
+    }) */
+    delete response.body
     console.dir(response)
   })
 
