@@ -103,7 +103,7 @@ export class MultipartMessagePart {
 export class MultipartMessage {
   private _parts?: Array<MultipartMessagePart>
 
-  constructor(parts?: Array<MultipartMessagePart>) {
+  constructor (parts?: Array<MultipartMessagePart>) {
     this._parts = parts
   }
 

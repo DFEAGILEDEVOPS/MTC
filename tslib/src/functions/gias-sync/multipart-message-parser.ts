@@ -1,7 +1,8 @@
 
 export class MultipartMessageParser {
   parse (response: IResponse): any {
-    return response
+    const boundaryId = this.extractBoundaryIdFrom(response)
+    return boundaryId
   }
 
   extractBoundaryIdFrom (response: IResponse): string {
@@ -13,7 +14,11 @@ export class MultipartMessageParser {
     if (contentTypeDetail[0].toLowerCase() !== 'multipart/related') {
       throw new Error('response is not a multipart message')
     }
-    return ''
+    const boundaryInfo = contentTypeDetail.find(x => x.toLowerCase().startsWith('boundary='))
+    if (boundaryInfo === undefined) {
+      throw new Error('boundary id not defined')
+    }
+    return boundaryInfo.substr(0, boundaryInfo.length - 1).substr(10)
   }
 }
 
