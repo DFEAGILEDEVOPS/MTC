@@ -64,7 +64,7 @@ export class MultipartMessagePart {
   private _content: string | Buffer
   private _id?: string
 
-  constructor(contentType: string, content: string | Buffer, id?: string) {
+  constructor (contentType: string, content: string | Buffer, id?: string) {
     this._contentType = contentType
     this._content = content
     this._id = id
