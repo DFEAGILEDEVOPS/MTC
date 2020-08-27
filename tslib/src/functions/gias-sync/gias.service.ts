@@ -55,21 +55,25 @@ export class GiasService {
       soapXml: messageXml,
       timeout: config.Gias.RequestTimeoutInMilliseconds
     })
-    return this.xmlParser.parse(response.body)
+    return response
   }
 
   async GetExtract (extractId: string): Promise<any> {
     const response = await this.makeRequest('GetExtract', {
       Id: extractId
     })
-    return response.Envelope.Body.GetExtractResponse
+    console.log(`body length:${response.body.length}`)
+    delete response.body
+    return response
+    // return response.Envelope.Body.GetExtractResponse
   }
 
   async GetEstablishment (urn: number): Promise<any> {
     const response = await this.makeRequest('GetEstablishment', {
       Urn: urn
     })
-    return response.Envelope.Body.GetEstablishmentResponse.Establishment
+    const parsed = this.xmlParser.parse(response.body)
+    return parsed.Envelope.Body.GetEstablishmentResponse.Establishment
   }
 }
 

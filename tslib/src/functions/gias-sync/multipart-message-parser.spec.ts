@@ -1,4 +1,4 @@
-import { MultipartMessage, MultipartMessagePart } from './multipart-message-parser'
+import { MultipartMessageParser, IResponse } from './multipart-message-parser'
 
 /*
 From: Some One <someone@example.com>
@@ -46,14 +46,48 @@ Content-Disposition: text/plain;
 --12345--
 */
 
-let sut: MultipartMessage
+let sut: MultipartMessageParser
 
 describe('multipart message parser', () => {
   beforeEach(() => {
-    let parts = new Array<MultipartMessagePart>()
-    sut = new MultipartMessage(parts)
+    sut = new MultipartMessageParser()
   })
-  test.skip('subject should be defined', () => {
+  test('subject should be defined', () => {
     expect(sut).toBeDefined()
+  })
+
+  describe('extractBoundaryIdFrom', () => {
+    test('error thrown if content-type not found', () => {
+      try {
+        const response: IResponse = {
+          body: {},
+          headers: {
+            'accept': 'text/xml'
+          },
+          statusCode: 200
+        }
+        sut.extractBoundaryIdFrom(response)
+        fail('error should have been thrown')
+      } catch (error) {
+        expect(error).toBeDefined()
+        expect(error.message).toEqual('content-type header not found on response')
+      }
+    })
+    test('throw error if response not multipart message', () => {
+      try {
+        const response: IResponse = {
+          body: {},
+          headers: {
+            'content-type': 'text/xml'
+          },
+          statusCode: 200
+        }
+        sut.extractBoundaryIdFrom(response)
+        fail('error should have been thrown')
+      } catch (error) {
+        expect(error).toBeDefined()
+        expect(error.message).toEqual('response is not a multipart message')
+      }
+    })
   })
 })
