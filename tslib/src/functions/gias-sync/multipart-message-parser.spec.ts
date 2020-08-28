@@ -1,29 +1,7 @@
 import { MultipartMessageParser, IResponse } from './multipart-message-parser'
 import { v4 as uuid } from 'uuid'
 import { GiasService } from './gias.service'
-
-/*
-POST / HTTP/1.1
-HOST: host.example.com
-Cookie: some_cookies...
-Connection: Keep-Alive
-Content-Type: multipart/mixed; boundary=12345
-
---12345
-Content-Disposition: text/plain;
-
-Hello,
-
---12345
-Content-Disposition: text/plain;
-How...
-
---12345
-Content-Disposition: text/plain;
-
-...are you?
---12345--
-*/
+import { XmlParser } from './xml-parser'
 
 let sut: MultipartMessageParser
 
@@ -102,7 +80,7 @@ describe('multipart message parser', () => {
   })
 
   describe('parse', () => {
-    test('returns parts array', () => {
+    test.skip('returns parts array', () => {
       const boundaryId = uuid()
       // body: `--${boundaryId}\r\nContent-Type: application/xop+xml; charset=utf-8; type=\"text/xml\"\r\n\r\n<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"><SOAP-ENV:Header>\r\n</SOAP-ENV:Header><SOAP-ENV:Body><ns2:GetExtractResponse xmlns:ns2=\"http:/mtc.com\" xmlns:ns3=\"http://mtc.com/DataTypes\" xmlns:ns4=\"http://mtc.com/Establishment\"><ns2:Extract><xop:Include xmlns:xop=\"http://www.w3.org/2004/08/xop/include\" href=\"cid:41d57290-f016-4066-8dc0-9dfa5ad78663%40mtc.com\"/></ns2:Extract></ns2:GetExtractResponse></SOAP-ENV:Body></SOAP-ENV:Envelope>\r\n--${boundaryId}\r\nContent-Type: application/octet-stream\r\nContent-ID: <41d57290-f016-4066-8dc0-9dfa5ad78663@mtc.com>\r\n--${boundaryId}`,
       const response: IResponse = {
@@ -129,11 +107,22 @@ describe('multipart message parser', () => {
       expect(actual.length).toBe(3)
     })
 
-    test.skip('e2e issue', async () => {
+    test('e2e issue', async () => {
       const gias = new GiasService()
-      const response = await gias.GetExtract(process.env.GIAS_WS_EXTRACT_ID || '')
-      const actual = sut.parse(response)
-      expect(actual).toBeDefined()
+      const soapResponse = await gias.GetExtract(process.env.GIAS_WS_EXTRACT_ID || '')
+      let parts = sut.parse(soapResponse)
+      expect(parts).toBeDefined()
+      parts.splice(0,2)
+      console.log(`there are ${parts.length} parts`)
+      console.dir(parts)
+      const parser = new XmlParser()
+      const parsedXml = parser.parse(parts[0].content.toString())
+      expect(parsedXml).toBeDefined()
+      console.dir(parsedXml.Envelope.Body.GetExtractResponse.Extract)
+      const attachmentId = parsedXml.Envelope.Body.GetExtractResponse.Extract.Include.attr.href.substr(4).replace('%40', '@')
+      console.log(`attachmentId:${attachmentId}`)
+      const attachment = parts.find(x => x.id === attachmentId)
+      console.dir(attachment)
     })
   })
 })
