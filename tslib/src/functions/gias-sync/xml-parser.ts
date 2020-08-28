@@ -1,5 +1,4 @@
 import * as xmlParser from 'fast-xml-parser'
-import * as he from 'he'
 
 const xmlParserOptions = {
   attributeNamePrefix : '',
@@ -15,9 +14,9 @@ const xmlParserOptions = {
   cdataPositionChar: '\\c',
   parseTrueNumberOnly: false,
   arrayMode: false, // "strict"
-  attrValueProcessor: (val: any, attrName: string) => he.decode(val, { isAttributeValue: true }),// default is a=>a
-  tagValueProcessor : (val: any, tagName: string) => he.decode(val), // default is a=>a
-  stopNodes: ['parse-me-as-string']
+  attrValueProcessor: (a: any, attrName: string) => a,
+  tagValueProcessor : (t: any, tagName: string) => t,
+  stopNodes: []
 }
 
 export class XmlParser implements IXmlParser {
