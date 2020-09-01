@@ -3,19 +3,20 @@ export class MultipartMessageParser {
   parse (response: IResponse): Array<IMessagePart> {
     const boundaryId = this.extractBoundaryIdFrom(response)
     const boundary = Buffer.from(`--${boundaryId}`, 'utf8')
-    const body = Buffer.from(response.body, 'utf8')
-    const parts = this.splitDataIndexParts(body, boundary)
-    const newParts = new Array<IMessagePart>(parts.length)
-    for (let index = 0; index < parts.length; index++) {
-      const part = parts[index]
-      newParts.push(this.parsePart(part))
+    const bufferParts = this.splitDataIndexParts(response.body, boundary)
+    const messageParts = new Array<IMessagePart>()
+    for (let index = 0; index < bufferParts.length; index++) {
+      const part = bufferParts[index]
+      if (part !== undefined) {
+        const messagePart = this.parsePart(part)
+        messageParts.push(messagePart)
+      }
     }
-    return newParts
-    // return parts.map(this.parsePart)
+    return messageParts
   }
 
   private parsePart (part: Buffer): IMessagePart {
-    const index = this.bufferIndexOf(part, Buffer.from('\r\n\r\n'))
+    const index = this.indexOf(part, Buffer.from('\r\n\r\n'))
 
     const headerBuffer = Buffer.alloc(index)
     part.copy(headerBuffer, 0, 0, index)
@@ -50,10 +51,10 @@ export class MultipartMessageParser {
     return boundaryInfo.substr(0, boundaryInfo.length - 1).substr(10)
   }
 
-  private splitDataIndexParts (data: Buffer, boundary: Buffer): Array<Buffer> {
+  private splitDataIndexParts (data: Buffer, boundary: Buffer): Array<Buffer | undefined> {
     const partBuffers = []
     let prevIndex = -1
-    let index = this.bufferIndexOf(data, boundary, 0)
+    let index = this.indexOf(data, boundary, 0)
     while (index > -1) {
       if (prevIndex > -1) {
         const start = prevIndex + boundary.length + 2
@@ -63,12 +64,12 @@ export class MultipartMessageParser {
         partBuffers.push(part)
       }
       prevIndex = index
-      index = this.bufferIndexOf(data, boundary, prevIndex + 1)
+      index = this.indexOf(data, boundary, prevIndex + 1)
     }
     return partBuffers
   }
 
-  private bufferIndexOf (value: Buffer, criteria: Buffer, start = 0): number {
+  private indexOf (value: Buffer, criteria: Buffer, start = 0): number {
     const block = Buffer.alloc(criteria.length)
     let index = start
     let found = false

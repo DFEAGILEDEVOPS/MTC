@@ -2,8 +2,7 @@ import { MultipartMessageParser, IResponse } from './multipart-message-parser'
 import { v4 as uuid } from 'uuid'
 import { GiasService } from './gias.service'
 import { XmlParser } from './xml-parser'
-import { ReadableStream } from 'memory-streams'
-import * as unzip from 'unzipper'
+import * as z from 'adm-zip'
 
 let sut: MultipartMessageParser
 
@@ -114,46 +113,15 @@ describe('multipart message parser', () => {
       const soapResponse = await gias.GetExtract(process.env.GIAS_WS_EXTRACT_ID || '')
       let parts = sut.parse(soapResponse)
       expect(parts).toBeDefined()
-      parts.splice(0, 2)
       const parser = new XmlParser()
       const parsedXml = parser.parse(parts[0].content.toString())
       expect(parsedXml).toBeDefined()
       const attachmentId = parsedXml.Envelope.Body.GetExtractResponse.Extract.Include.attr.href.substr(4).replace('%40', '@')
-      console.log(`attachmentId:${attachmentId}`)
-      const attachment = parts.find(x => x.id === attachmentId)
-      expect(attachment).toBeDefined()
-      if (attachment === undefined) return
-      const p = new Promise((resolve, reject) => {
-        const input = new ReadableStream(attachment.content.toString())
-        const files = new Array<any>()
-        input
-          .pipe(unzip.Parse())
-          .on('entry', (entry) => {
-            entry.buffer().then((content: any) => {
-              files.push({
-                name: entry.path,
-                content
-              })
-            })
-            /* if (attachmentNames.find(x => x === entry.path)) {
-              entry.buffer().then((content) => {
-                files.push({
-                  name: entry.path,
-                  content,
-                })
-              })
-            } else {
-              entry.autodrain()
-            } */
-          })
-          .on('error', (e) => {
-            reject(e)
-          })
-          .on('finish', () => {
-            resolve(files)
-          })
-      })
-      await p
+      const attachmentPart = parts.find(x => x.id === attachmentId)
+      expect(attachmentPart).toBeDefined()
+      if (attachmentPart === undefined) throw new Error(`could not find attachment part with id:${attachmentId}`)
+      const x = new z.default(attachmentPart.content)
+      x.extractAllTo('./')
     })
   })
 })

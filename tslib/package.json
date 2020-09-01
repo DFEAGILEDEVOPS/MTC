@@ -27,6 +27,7 @@
   },
   "devDependencies": {
     "@azure/functions": "^1.0.3",
+    "@types/adm-zip": "^0.4.33",
     "@types/bluebird": "^3.5.27",
     "@types/he": "^1.1.1",
     "@types/ioredis": "^4.0.18",
@@ -48,10 +49,11 @@
   },
   "dependencies": {
     "@azure/service-bus": "^1.1.2",
+    "adm-zip": "^0.4.16",
+    "axios": "^0.20.0",
     "azure-storage": "^2.10.3",
     "bluebird": "^3.7.0",
     "dotenv": "^8.1.0",
-    "easy-soap-request": "^3.3.3",
     "fast-xml-parser": "^3.17.4",
     "ioredis": "^4.14.1",
     "lz-string": "^1.4.4",

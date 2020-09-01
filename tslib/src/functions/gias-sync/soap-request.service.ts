@@ -1,19 +1,25 @@
-import * as easySoap from 'easy-soap-request'
+import axios, { AxiosRequestConfig } from 'axios'
 
 export class SoapRequestService implements ISoapRequestService {
-  async execute (request: ISoapRequest): Promise<any> {
+
+  async execute (request: ISoapRequest): Promise<ISoapResponse> {
     const headers = {
-      'method': 'POST',
       'Content-Type': 'text/xml;charset=UTF-8',
       'SOAPAction': `${request.namespace}/${request.action}`
     }
-    const response = await easySoap.default({
-      url: request.serviceUrl,
+    const config: AxiosRequestConfig = {
+      method: 'POST',
       headers: headers,
-      xml: request.soapXml,
-      timeout: request.timeout
-    })
-    return response.response
+      url: request.serviceUrl,
+      data: request.soapXml,
+      timeout: request.timeout,
+      responseType: 'arraybuffer'
+    }
+    const response = await axios(config)
+    return {
+      body: response.data,
+      headers: response.headers
+    }
   }
 }
 
@@ -21,7 +27,10 @@ export interface ISoapRequestService {
   execute (request: ISoapRequest): Promise<any>
 }
 
-export interface ISoapResponse {}
+export interface ISoapResponse {
+  body: any
+  headers: any
+}
 
 export interface ISoapRequest {
   namespace: string,
