@@ -4,6 +4,8 @@ import { v4 as uuid } from 'uuid'
 import { ISoapRequestService, ISoapRequest } from './soap-request.service'
 import config from '../../config'
 import { IXmlParser } from './xml-parser'
+import { IMultipartMessageParser, IResponse, IMessagePart } from './multipart-message-parser'
+import { IZipService } from './zip.service'
 
 const SoapMessageBuilderMock = jest.fn<ISoapMessageBuilder, any>(() => ({
   buildMessage: jest.fn()
@@ -14,10 +16,22 @@ const SoapRequestServiceMock = jest.fn<ISoapRequestService, any>(() => ({
 const XmlParserMock = jest.fn<IXmlParser, any>(() => ({
   parse: jest.fn()
 }))
+
+const MultipartMessageParserMock = jest.fn<IMultipartMessageParser, any>(() => ({
+  extractBoundaryIdFrom: jest.fn(),
+  parse: jest.fn()
+}))
+
+const ZipServiceMock = jest.fn<IZipService, any>(() => ({
+  extractEntriesFromZipBuffer: jest.fn()
+}))
+
 let sut: GiasService
 let soapMessageBuilderMock: ISoapMessageBuilder
 let soapRequestServiceMock: ISoapRequestService
 let xmlParserMock: IXmlParser
+let multipartMessageParserMock: IMultipartMessageParser
+let zipServiceMock: IZipService
 
 const extractId = 'extractId'
 
@@ -29,21 +43,64 @@ describe('GiasSyncService', () => {
     config.Gias.Password = 'bar'
     soapMessageBuilderMock = new SoapMessageBuilderMock()
     soapRequestServiceMock = new SoapRequestServiceMock()
+    zipServiceMock = new ZipServiceMock()
+
     soapRequestServiceMock.execute = jest.fn((request: ISoapRequest) => {
       const soapXml = {
         body: ''
       }
       return Promise.resolve(soapXml)
     })
+    const extractHrefValue = 'cid:9cd380a3-db54-46f7-98db-8f65a269bbd4%40myfile.com'
+    const attachmentPartId = extractHrefValue.substr(4).replace('%40', '@')
     xmlParserMock = new XmlParserMock()
     xmlParserMock.parse = jest.fn((xml: string) => {
       return {
         Envelope: {
-          Body: {}
+          Body: {
+            GetExtractResponse: {
+              Extract: {
+                Include: {
+                  attr: {
+                    href: extractHrefValue
+                  }
+                }
+              }
+            }
+          }
         }
       }
     })
-    sut = new GiasService(soapMessageBuilderMock, soapRequestServiceMock, xmlParserMock)
+    multipartMessageParserMock = new MultipartMessageParserMock()
+    multipartMessageParserMock.extractBoundaryIdFrom = jest.fn((response: IResponse) => {
+      return 'boundaryId'
+    })
+    multipartMessageParserMock.parse = jest.fn((response: IResponse) => {
+      const parts = new Array<IMessagePart>()
+      parts.push({
+        content: 'content',
+        contentType: 'text/xml'
+      })
+      parts.push({
+        id: attachmentPartId,
+        content: 'content',
+        contentType: 'type'
+      })
+      return parts
+    })
+
+    zipServiceMock.extractEntriesFromZipBuffer = jest.fn((data: Buffer) => {
+      const entries = new Array<Buffer>()
+      entries.push(Buffer.from('foo'))
+      return entries
+    })
+
+    sut = new GiasService(
+                soapMessageBuilderMock,
+                soapRequestServiceMock,
+                xmlParserMock,
+                multipartMessageParserMock,
+                zipServiceMock)
   })
 
   test('subject should be defined', () => {
@@ -128,9 +185,7 @@ describe('GiasSyncService', () => {
   test.skip('GetExtract:should return an empty object if no results', async () => {
     const extractResult = await sut.GetExtract(extractId)
     expect(extractResult).toBeDefined()
-    expect(extractResult.extractId).toEqual(extractId)
-    expect(extractResult.data).toBeDefined()
-    expect(extractResult.data.length).toBe(0)
+    expect(extractResult.length).toBe(0)
   })
 
   test.skip('e2e:GetEstablishment', async () => {
@@ -150,11 +205,6 @@ describe('GiasSyncService', () => {
     config.Gias.Password = process.env.GIAS_WS_PASSWORD || ''
     const gias = new GiasService()
     const response = await gias.GetExtract(process.env.GIAS_WS_EXTRACT_ID || '')
-/*     const fs = require('fs')
-    fs.writeFile('extract-body.txt', JSON.stringify(response, null, 2), (err: Error) => {
-      if (err) throw err
-    }) */
-    delete response.body
     console.dir(response)
   })
 

@@ -1,5 +1,10 @@
 
-export class MultipartMessageParser {
+export interface IMultipartMessageParser {
+  parse (response: IResponse): Array<IMessagePart>
+  extractBoundaryIdFrom (response: IResponse): string
+}
+
+export class MultipartMessageParser implements IMultipartMessageParser {
   parse (response: IResponse): Array<IMessagePart> {
     const boundaryId = this.extractBoundaryIdFrom(response)
     const boundary = Buffer.from(`--${boundaryId}`, 'utf8')

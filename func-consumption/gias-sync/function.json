@@ -6,6 +6,13 @@
       "type": "timerTrigger",
       "direction": "in",
       "schedule": "0 10 18,4 * * *"
+    },
+    {
+      "name": "giasExtractFile",
+      "type": "blob",
+      "path": "gias-extract/{DateTime}",
+      "connection": "AZURE_STORAGE_CONNECTION_STRING",
+      "direction": "out"
     }
   ],
   "scriptFile": "../dist/functions/gias-sync/index.js"

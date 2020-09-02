@@ -2,15 +2,21 @@ import { ISoapMessageBuilder, SoapMessageBuilder } from './soap-message-builder'
 import config from '../../config'
 import { ISoapRequestService, SoapRequestService } from './soap-request.service'
 import { IXmlParser, XmlParser } from './xml-parser'
+import { IMultipartMessageParser, MultipartMessageParser } from './multipart-message-parser'
+import { IZipService, ZipService } from './zip.service'
 
 export class GiasService {
   private soapMessageBuilder: ISoapMessageBuilder
   private soapRequestService: ISoapRequestService
   private xmlParser: IXmlParser
+  private multipartMessageParser: IMultipartMessageParser
+  private zipService: IZipService
 
-  constructor (soapMessageBuilder?: ISoapMessageBuilder,
-                soapRequestService?: ISoapRequestService,
-                xmlParser?: IXmlParser) {
+  constructor(soapMessageBuilder?: ISoapMessageBuilder,
+    soapRequestService?: ISoapRequestService,
+    xmlParser?: IXmlParser,
+    multipartMessageParser?: IMultipartMessageParser,
+    zipService?: IZipService) {
     if (soapMessageBuilder === undefined) {
       soapMessageBuilder = new SoapMessageBuilder()
     }
@@ -23,6 +29,14 @@ export class GiasService {
       xmlParser = new XmlParser()
     }
     this.xmlParser = xmlParser
+    if (multipartMessageParser === undefined) {
+      multipartMessageParser = new MultipartMessageParser()
+    }
+    this.multipartMessageParser = multipartMessageParser
+    if (zipService === undefined) {
+      zipService = new ZipService()
+    }
+    this.zipService = zipService
   }
 
   private async makeRequest (actionId: string, params: any) {
@@ -48,22 +62,33 @@ export class GiasService {
         password: config.Gias.Password
       }
     })
-    const response = await this.soapRequestService.execute({
+    return this.soapRequestService.execute({
       action: actionId,
       namespace: config.Gias.Namespace,
       serviceUrl: config.Gias.ServiceUrl,
       soapXml: messageXml,
       timeout: config.Gias.RequestTimeoutInMilliseconds
     })
-    return response
   }
 
-  async GetExtract (extractId: string): Promise<any> {
-    const response = await this.makeRequest('GetExtract', {
+  async GetExtract (extractId: string): Promise<string> {
+    const soapResponse = await this.makeRequest('GetExtract', {
       Id: extractId
     })
-    return response
-    // return response.Envelope.Body.GetExtractResponse
+    const parts = this.multipartMessageParser.parse(soapResponse)
+    const parsedXmlPart = this.xmlParser.parse(parts[0].content.toString('utf8'))
+    const attachmentId = parsedXmlPart.Envelope.Body.GetExtractResponse.Extract.Include.attr.href.substr(4).replace('%40', '@')
+    const attachmentPart = parts.find(x => x.id === attachmentId)
+    if (attachmentPart === undefined) throw new Error(`could not find attachment part with id:${attachmentId}`)
+    /*     const zipFile = new admZip.default(attachmentPart.content)
+        const zipEntries = zipFile.getEntries()
+        */
+    const zipBuffer = Buffer.from(attachmentPart.content)
+    const zipEntries = this.zipService.extractEntriesFromZipBuffer(zipBuffer)
+    if (zipEntries.length === 0) {
+      throw new Error('no valid entries found in zip file')
+    }
+    return zipEntries[0].toString('utf8')
   }
 
   async GetEstablishment (urn: number): Promise<any> {

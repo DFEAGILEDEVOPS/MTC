@@ -1,8 +1,5 @@
 import { MultipartMessageParser, IResponse } from './multipart-message-parser'
 import { v4 as uuid } from 'uuid'
-import { GiasService } from './gias.service'
-import { XmlParser } from './xml-parser'
-import * as z from 'adm-zip'
 
 let sut: MultipartMessageParser
 
@@ -106,22 +103,6 @@ describe('multipart message parser', () => {
       }
       const actual = sut.parse(response)
       expect(actual.length).toBe(3)
-    })
-
-    test('e2e issue', async () => {
-      const gias = new GiasService()
-      const soapResponse = await gias.GetExtract(process.env.GIAS_WS_EXTRACT_ID || '')
-      let parts = sut.parse(soapResponse)
-      expect(parts).toBeDefined()
-      const parser = new XmlParser()
-      const parsedXml = parser.parse(parts[0].content.toString())
-      expect(parsedXml).toBeDefined()
-      const attachmentId = parsedXml.Envelope.Body.GetExtractResponse.Extract.Include.attr.href.substr(4).replace('%40', '@')
-      const attachmentPart = parts.find(x => x.id === attachmentId)
-      expect(attachmentPart).toBeDefined()
-      if (attachmentPart === undefined) throw new Error(`could not find attachment part with id:${attachmentId}`)
-      const x = new z.default(attachmentPart.content)
-      x.extractAllTo('./')
     })
   })
 })
