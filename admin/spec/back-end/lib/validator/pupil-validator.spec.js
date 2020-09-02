@@ -296,11 +296,13 @@ describe('pupil validator', function () {
     })
 
     describe('then date of birth:', () => {
+      const validYear = (new Date()).getFullYear() - 9
+
       it('accepts single digit days and months', async () => {
         req.body = getBody()
         req.body['dob-day'] = '1'
         req.body['dob-month'] = '1'
-        req.body['dob-year'] = '2010'
+        req.body['dob-year'] = validYear.toString()
         const schoolId = 2
         const validationError = await pupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(false)
@@ -310,7 +312,7 @@ describe('pupil validator', function () {
         req.body = getBody()
         req.body['dob-day'] = '7'
         req.body['dob-month'] = '07'
-        req.body['dob-year'] = '2010'
+        req.body['dob-year'] = validYear.toString()
         const schoolId = 2
         const validationError = await pupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(false)
@@ -320,7 +322,7 @@ describe('pupil validator', function () {
         req.body = getBody()
         req.body['dob-day'] = '10'
         req.body['dob-month'] = '7'
-        req.body['dob-year'] = '2010'
+        req.body['dob-year'] = validYear.toString()
         const schoolId = 2
         const validationError = await pupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(false)
@@ -346,7 +348,7 @@ describe('pupil validator', function () {
         req.body = getBody()
         req.body['dob-day'] = ''
         req.body['dob-month'] = '12'
-        req.body['dob-year'] = '2010'
+        req.body['dob-year'] = validYear.toString()
         const schoolId = 2
         const validationError = await pupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(true)
@@ -360,7 +362,7 @@ describe('pupil validator', function () {
         req.body = getBody()
         req.body['dob-day'] = '21'
         req.body['dob-month'] = ''
-        req.body['dob-year'] = '2010'
+        req.body['dob-year'] = validYear.toString()
         const schoolId = 2
         const validationError = await pupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(true)
@@ -386,6 +388,8 @@ describe('pupil validator', function () {
     })
 
     describe('date of birth:', () => {
+      const validYear = (new Date()).getFullYear() - 9
+
       it('Can\'t be in the future', async () => {
         req.body = getBody()
         req.body['dob-day'] = '01'
@@ -406,7 +410,7 @@ describe('pupil validator', function () {
         req.body = getBody()
         req.body['dob-day'] = '02'
         req.body['dob-month'] = 'a'
-        req.body['dob-year'] = '2010'
+        req.body['dob-year'] = validYear.toString()
         const schoolId = 2
         const validationError = await pupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(true)
@@ -434,7 +438,7 @@ describe('pupil validator', function () {
         req.body = getBody()
         req.body['dob-day'] = '29'
         req.body['dob-month'] = '02'
-        req.body['dob-year'] = '2010'
+        req.body['dob-year'] = validYear.toString()
         const schoolId = 2
         const validationError = await pupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(true)
@@ -450,7 +454,7 @@ describe('pupil validator', function () {
         req.body = getBody()
         req.body['dob-day'] = '022'
         req.body['dob-month'] = '02'
-        req.body['dob-year'] = '2010'
+        req.body['dob-year'] = validYear.toString()
         const schoolId = 2
         const validationError = await pupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(true)
@@ -464,7 +468,7 @@ describe('pupil validator', function () {
         req.body = getBody()
         req.body['dob-day'] = '02'
         req.body['dob-month'] = '010'
-        req.body['dob-year'] = '2010'
+        req.body['dob-year'] = validYear.toString()
         const schoolId = 2
         const validationError = await pupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(true)
@@ -550,7 +554,7 @@ describe('pupil validator', function () {
         expect(validationError.get('dob-month')).toBe(pupilErrors.addPupil.dobOutOfRange)
         expect(validationError.get('dob-year')).toBe(pupilErrors.addPupil.dobOutOfRange)
       })
-      it('should display for multiple pupils submission an error message when a pupil is year 7 years on the academic year', async () => {
+      it('should display for multiple pupils submission an error message when a pupil is 7 years on the academic year', async () => {
         const currentYear = (new Date()).getFullYear()
         const baseTime = new Date(currentYear, 11, 31)
         const schoolId = 2
