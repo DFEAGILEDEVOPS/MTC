@@ -41,7 +41,8 @@ export default {
     options: {
       encrypt: process.env.hasOwnProperty('SQL_ENCRYPT') ? toBool.primitiveToBoolean(process.env.SQL_ENCRYPT) : true,
       useUTC: true,
-      appName: process.env.SQL_APP_NAME || 'mtc-local-dev' // docker default
+      appName: process.env.SQL_APP_NAME || 'mtc-local-dev', // docker default
+      enableArithAbort: {}.hasOwnProperty.call(process.env, 'SQL_ENABLE_ARITH_ABORT') ? toBool.primitiveToBoolean(process.env.SQL_ENABLE_ARITH_ABORT) : true
     },
     Pooling: {
       MinCount: Number(process.env.SQL_POOL_MIN_COUNT) || 5,
