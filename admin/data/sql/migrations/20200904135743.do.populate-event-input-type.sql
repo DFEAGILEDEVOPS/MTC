@@ -1,6 +1,6 @@
 DELETE
-  FROM [mtc_admin].[userInputType];
-INSERT INTO [mtc_admin].[userInputType] (name, code)
+  FROM mtc_reports.userInputType;
+INSERT INTO mtc_reports.userInputType (name, code)
 VALUES ('Mouse', 'M'),
        ('Keyboard', 'K'),
        ('Touch', 'T'),
