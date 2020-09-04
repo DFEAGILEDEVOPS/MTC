@@ -1,1 +1,1 @@
-DROP SCHEMA IF EXISTS mtc_reports;
+DROP SCHEMA IF EXISTS mtc_results;

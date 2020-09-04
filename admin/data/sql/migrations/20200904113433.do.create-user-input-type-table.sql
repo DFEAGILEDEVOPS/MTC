@@ -1,6 +1,6 @@
-DROP TABLE IF EXISTS mtc_reports.userInputType;
+DROP TABLE IF EXISTS mtc_results.userInputType;
 
-CREATE TABLE mtc_reports.userInputType
+CREATE TABLE mtc_results.userInputType
 ([id]        INT IDENTITY ( 1, 1 ) NOT NULL,
  [createdAt] DATETIMEOFFSET(3)     NOT NULL DEFAULT GETUTCDATE(),
  [updatedAt] DATETIMEOFFSET(3)     NOT NULL DEFAULT GETUTCDATE(),

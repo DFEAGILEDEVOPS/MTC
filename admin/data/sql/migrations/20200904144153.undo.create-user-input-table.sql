@@ -1,1 +1,1 @@
-DROP TABLE IF EXISTS mtc_reports.userInput;
+DROP TABLE IF EXISTS mtc_results.userInput;

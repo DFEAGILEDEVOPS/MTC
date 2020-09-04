@@ -1,1 +1,1 @@
-DROP TRIGGER IF EXISTS mtc_reports.userInputUpdatedAtTrigger;
+DROP TRIGGER IF EXISTS mtc_results.userInputUpdatedAtTrigger;

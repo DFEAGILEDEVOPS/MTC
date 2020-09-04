@@ -1,1 +1,1 @@
-CREATE SCHEMA mtc_reports;
+CREATE SCHEMA mtc_results;
