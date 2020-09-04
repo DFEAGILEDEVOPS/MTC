@@ -33,7 +33,7 @@ let xmlParserMock: IXmlParser
 let multipartMessageParserMock: IMultipartMessageParser
 let zipServiceMock: IZipService
 
-const extractId = 'extractId'
+const extractId = 1234
 
 describe('GiasSyncService', () => {
   beforeEach(() => {
@@ -204,8 +204,8 @@ describe('GiasSyncService', () => {
     config.Gias.Username = process.env.GIAS_WS_USERNAME || ''
     config.Gias.Password = process.env.GIAS_WS_PASSWORD || ''
     const gias = new GiasService()
-    const response = await gias.GetExtract(process.env.GIAS_WS_EXTRACT_ID || '')
-    console.dir(response)
+    const response = await gias.GetExtract(parseInt(process.env.GIAS_WS_EXTRACT_ID || '',10))
+    console.log(`the xml is ${response.length} chars long`)
   })
 
 })

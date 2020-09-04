@@ -88,6 +88,6 @@ export default {
     RequestTimeoutInMilliseconds: parseInt(optionalValueParser(process.env.GIAS_WS_REQUEST_TIMEOUT, 30000), 10),
     Username: process.env.GIAS_WS_USERNAME,
     Password: process.env.GIAS_WS_PASSWORD,
-    ExtractId: process.env.GIAS_WS_EXTRACT_ID
+    ExtractId: parseInt(optionalValueParser(process.env.GIAS_WS_EXTRACT_ID, 0), 10)
   }
 }

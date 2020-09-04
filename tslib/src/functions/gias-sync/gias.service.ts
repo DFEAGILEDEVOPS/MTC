@@ -12,7 +12,7 @@ export class GiasService {
   private multipartMessageParser: IMultipartMessageParser
   private zipService: IZipService
 
-  constructor(soapMessageBuilder?: ISoapMessageBuilder,
+  constructor (soapMessageBuilder?: ISoapMessageBuilder,
     soapRequestService?: ISoapRequestService,
     xmlParser?: IXmlParser,
     multipartMessageParser?: IMultipartMessageParser,
@@ -71,7 +71,7 @@ export class GiasService {
     })
   }
 
-  async GetExtract (extractId: string): Promise<string> {
+  async GetExtract (extractId: number): Promise<string> {
     const soapResponse = await this.makeRequest('GetExtract', {
       Id: extractId
     })
@@ -80,15 +80,17 @@ export class GiasService {
     const attachmentId = parsedXmlPart.Envelope.Body.GetExtractResponse.Extract.Include.attr.href.substr(4).replace('%40', '@')
     const attachmentPart = parts.find(x => x.id === attachmentId)
     if (attachmentPart === undefined) throw new Error(`could not find attachment part with id:${attachmentId}`)
-    /*     const zipFile = new admZip.default(attachmentPart.content)
-        const zipEntries = zipFile.getEntries()
-        */
     const zipBuffer = Buffer.from(attachmentPart.content)
     const zipEntries = this.zipService.extractEntriesFromZipBuffer(zipBuffer)
     if (zipEntries.length === 0) {
       throw new Error('no valid entries found in zip file')
+    } else {
+      console.log(`there are ${zipEntries.length} in the zip`)
     }
-    return zipEntries[0].toString('utf8')
+    const extractFile = zipEntries[0]
+    console.log(`extractFile is ${extractFile.length} bytes`)
+    const bufferString = extractFile.toString()
+    return bufferString
   }
 
   async GetEstablishment (urn: number): Promise<any> {
