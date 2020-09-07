@@ -1,1 +1,1 @@
-DROP TABLE IF EXISTS [mtc_results].[userDevice];
+DROP TABLE IF EXISTS mtc_results.userDevice;
