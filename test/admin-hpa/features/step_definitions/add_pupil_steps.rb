@@ -59,7 +59,7 @@ When(/^I submit the form without completing the optional fields$/) do
                         last_name: 'last',
                         female: true,
                         day: '18',
-                        month: '02',
+                        month: '09',
                         year: '2010',
                         upn: (@page == edit_pupil_page ? @upn : UpnGenerator.generate)
                       })
@@ -153,7 +153,7 @@ Then(/^I should see a validation error$/) do
 end
 
 When(/^I have submitted valid pupil details$/) do
-  today_date = Date.today
+  today_date = Date.today + 1 
   @upn = UpnGenerator.generate
   pupil_name = (0...8).map {(65 + rand(26)).chr}.join
   @details_hash = {first_name: pupil_name, middle_name: pupil_name, last_name: pupil_name, upn: @upn, female: true, day: "#{today_date.day}", month: "#{today_date.month}", year: "#{today_date.year - 10}"}
@@ -193,7 +193,7 @@ Then(/^the pupil details should not be stored$/) do
 end
 
 When(/^I submit the form with the name fields set as (.*)$/) do |value|
-  today_date = Date.today
+  today_date = Date.today + 1
   @upn = UpnGenerator.generate unless @page == edit_pupil_page
   @details_hash = {first_name: value, middle_name: value, last_name: value, first_name_alias: value, last_name_alias: value,  upn: @upn, female: true, day: "#{today_date.day}", month: "#{today_date.month}", year: "#{today_date.year - 10}"}
   @page.enter_details(@details_hash)
