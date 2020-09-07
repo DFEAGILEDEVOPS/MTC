@@ -38,7 +38,7 @@ describe('attachmentId parser', () => {
     }
   })
 
-  test('error is thrown when extract data not found', () => {
+  test('error is thrown when extract data incomplete', () => {
     try {
       delete mockExtractStructure.Envelope.Body
       sut.parse(mockExtractStructure)

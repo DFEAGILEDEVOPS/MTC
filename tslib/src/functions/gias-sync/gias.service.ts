@@ -4,6 +4,7 @@ import { ISoapRequestService, SoapRequestService } from './soap-request.service'
 import { IXmlParser, XmlParser } from './xml-parser'
 import { IMultipartMessageParser, MultipartMessageParser } from './multipart-message-parser'
 import { IZipService, ZipService } from './zip.service'
+import { AttachmentIdParser } from './attachmentId.parser'
 
 export class GiasService {
   private soapMessageBuilder: ISoapMessageBuilder
@@ -11,6 +12,7 @@ export class GiasService {
   private xmlParser: IXmlParser
   private multipartMessageParser: IMultipartMessageParser
   private zipService: IZipService
+  private attachmentParser: AttachmentIdParser
 
   constructor (soapMessageBuilder?: ISoapMessageBuilder,
     soapRequestService?: ISoapRequestService,
@@ -37,6 +39,7 @@ export class GiasService {
       zipService = new ZipService()
     }
     this.zipService = zipService
+    this.attachmentParser = new AttachmentIdParser()
   }
 
   private async makeRequest (actionId: string, params: any) {
@@ -77,18 +80,15 @@ export class GiasService {
     })
     const parts = this.multipartMessageParser.parse(soapResponse)
     const parsedXmlPart = this.xmlParser.parse(parts[0].content.toString('utf8'))
-    const attachmentId = parsedXmlPart.Envelope.Body.GetExtractResponse.Extract.Include.attr.href.substr(4).replace('%40', '@')
+    const attachmentId = this.attachmentParser.parse(parsedXmlPart)
     const attachmentPart = parts.find(x => x.id === attachmentId)
     if (attachmentPart === undefined) throw new Error(`could not find attachment part with id:${attachmentId}`)
     const zipBuffer = Buffer.from(attachmentPart.content)
     const zipEntries = this.zipService.extractEntriesFromZipBuffer(zipBuffer)
     if (zipEntries.length === 0) {
       throw new Error('no valid entries found in zip file')
-    } else {
-      console.log(`there are ${zipEntries.length} in the zip`)
     }
     const extractFile = zipEntries[0]
-    console.log(`extractFile is ${extractFile.length} bytes`)
     const bufferString = extractFile.toString()
     return bufferString
   }

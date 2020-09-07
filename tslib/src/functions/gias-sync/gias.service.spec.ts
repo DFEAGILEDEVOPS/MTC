@@ -180,14 +180,17 @@ describe('GiasSyncService', () => {
     }
   })
 
+  // work in progress for final implementation
   test.todo('GetExtract: verify returned data structure')
 
+  // work in progress for final implementation
   test.skip('GetExtract:should return an empty object if no results', async () => {
     const extractResult = await sut.GetExtract(extractId)
     expect(extractResult).toBeDefined()
     expect(extractResult.length).toBe(0)
   })
 
+  // integration test, work in progress for final implementation
   test.skip('e2e:GetEstablishment', async () => {
     config.Gias.Namespace = process.env.GIAS_WS_NAMESPACE || ''
     config.Gias.ServiceUrl = process.env.GIAS_WS_SERVICE_URL || ''
@@ -198,6 +201,7 @@ describe('GiasSyncService', () => {
     console.dir(response)
   })
 
+  // integration test, work in progress for final implementation
   test.skip('e2e:GetExtract', async () => {
     config.Gias.Namespace = process.env.GIAS_WS_NAMESPACE || ''
     config.Gias.ServiceUrl = process.env.GIAS_WS_SERVICE_URL || ''
