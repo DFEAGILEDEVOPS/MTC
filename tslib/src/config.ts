@@ -5,7 +5,7 @@ import * as dotenv from 'dotenv'
 const globalDotEnvFile = path.join(__dirname, '..', '..', '.env')
 try {
   if (fs.existsSync(globalDotEnvFile)) {
-    console.log('globalDotEnvFile found', globalDotEnvFile)
+    // console.log('globalDotEnvFile found', globalDotEnvFile)
     dotenv.config({ path: globalDotEnvFile })
   } else {
     console.log('No .env file found at project root')
@@ -14,12 +14,14 @@ try {
   console.error(error)
 }
 import * as toBool from './common/to-bool'
+import * as schoolResultsCacheDeterminerConfig from './functions/school-results-cache-determiner/config'
 
 const getEnvironment = () => {
   return process.env.ENVIRONMENT_NAME || 'Local-Dev'
 }
 
 const oneMinuteInMilliseconds = 60000
+const sixMonthsInSeconds = 15778800
 
 function optionalValueParser (input: any, substitute: number): string {
   if (input) {
@@ -90,5 +92,13 @@ export default {
     Username: process.env.GIAS_WS_USERNAME,
     Password: process.env.GIAS_WS_PASSWORD,
     ExtractId: parseInt(optionalValueParser(process.env.GIAS_WS_EXTRACT_ID, 0), 10)
+  },
+  SchoolResultsCacheDeterminer: {
+    cache: Number(process.env.SCHOOL_RESULTS_CACHE) || schoolResultsCacheDeterminerConfig.cache.cacheIfInDate
+  },
+  SchoolResultsCache: {
+    BatchesPerExecution: Number(process.env.SCHOOL_RESULTS_CACHE_BATCHS_PER_EXEC) || 10,
+    MessagesPerBatch: Number(process.env.SCHOOL_RESULTS_CACHE_MSGS_PER_BATCH) || 32,
+    RedisResultsExpiryInSeconds: Number(process.env.REDIS_RESULTS_EXPIRY_IN_SECONDS) || sixMonthsInSeconds
   }
 }

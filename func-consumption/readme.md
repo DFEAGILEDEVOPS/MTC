@@ -32,3 +32,9 @@ a local.settings.json file is required in the root of the project, with a minimu
   "ConnectionStrings": {}
 }
 ```
+
+## Disabling functions Locally
+
+1. You need an environment variable named `AzureWebJobs.<function-name>.Disabled` set to 'true'
+2. There is an example env file `disable-functions.env` that may be used:
+    * `env $(cat disable-functions.env | grep Azure | xargs ) yarn start`

@@ -6,7 +6,15 @@
       "direction": "in",
       "schedule-description": "Run at 6pm every night",
       "dev-schedule": "0 */2 * * * *",
+      "prod-schedule": "0 0 18 * * *",
       "schedule": "0 0 18 * * *"
+    },
+    {
+      "direction": "out",
+      "type": "serviceBus",
+      "name": "syncResultsToDbComplete",
+      "queueName": "sync-results-to-db-complete",
+      "connection": "AZURE_SERVICE_BUS_CONNECTION_STRING"
     }
   ]
 }

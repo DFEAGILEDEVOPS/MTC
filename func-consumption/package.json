@@ -16,7 +16,7 @@
     "prestart": "yarn build",
     "start:host": "func start",
     "start": "yarn start:host",
-    "start:dev": "echo \"Deprecated: please use 'yarn start' instead\" && yarn start"
+    "start:dev": "env $(cat disable-functions.env | grep Azure | xargs ) yarn start"
   },
   "resolutions": {
     "**/**/lodash": "^4.17.20"
