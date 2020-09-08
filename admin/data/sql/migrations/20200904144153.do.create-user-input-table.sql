@@ -4,6 +4,7 @@ CREATE TABLE mtc_results.userInput
 ([id]                 INT IDENTITY ( 1, 1 ) NOT NULL,
  [createdAt]          DATETIMEOFFSET(3)     NOT NULL DEFAULT GETUTCDATE(),
  [updatedAt]          DATETIMEOFFSET(3)     NOT NULL DEFAULT GETUTCDATE(),
+ [version]            ROWVERSION,
  [check_id]           INT                   NOT NULL,
  [question_id]        INT                   NOT NULL,
  [questionNumber]     INT                   NOT NULL,
