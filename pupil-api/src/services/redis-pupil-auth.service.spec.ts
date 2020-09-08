@@ -142,6 +142,8 @@ describe('redis-pupil-auth.service', () => {
     const thirtyMinutesInSeconds = 1800
     const expectedPayload = {
       checkCode: '1111-2222-AAAA-4444',
+      pinExpiresAtUtc: moment.utc().add(1, 'hour'),  // valid
+      pinValidFromUtc: moment.utc().subtract(1, 'hour'), // valid
       config: {
         practice: false
       }
@@ -164,6 +166,8 @@ describe('redis-pupil-auth.service', () => {
   test('no redis expiry is set if config.practice is true', async () => {
     const expectedPayload = {
       checkCode: '1111-2222-AAAA-4444',
+      pinExpiresAtUtc: moment.utc().add(1, 'hour'),  // valid
+      pinValidFromUtc: moment.utc().subtract(1, 'hour'), // valid
       config: {
         practice: true
       }
@@ -189,6 +193,8 @@ describe('redis-pupil-auth.service', () => {
   test('no redis expiry is set if config.practice does not exist', async () => {
     const expectedPayload = {
       checkCode: '1111-2222-AAAA-4444',
+      pinExpiresAtUtc: moment.utc().add(1, 'hour'),  // valid
+      pinValidFromUtc: moment.utc().subtract(1, 'hour'), // valid
       config: {}
     }
 
@@ -212,6 +218,8 @@ describe('redis-pupil-auth.service', () => {
   test('no redis expiry is set if config.practice is undefined', async () => {
     const expectedPayload = {
       checkCode: '1111-2222-AAAA-4444',
+      pinExpiresAtUtc: moment.utc().add(1, 'hour'),  // valid
+      pinValidFromUtc: moment.utc().subtract(1, 'hour'), // valid
       config: {
         practice: undefined
       }
@@ -237,6 +245,8 @@ describe('redis-pupil-auth.service', () => {
   test('pupil-login message should be dispatched upon successful authentication', async () => {
     const expectedPayload = {
       checkCode: 'check-code',
+      pinExpiresAtUtc: moment.utc().add(1, 'hour'),  // valid
+      pinValidFromUtc: moment.utc().subtract(1, 'hour'), // valid
       config: {
         practice: true
       }

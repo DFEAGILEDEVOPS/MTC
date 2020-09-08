@@ -1,11 +1,13 @@
 import { AzureFunction, Context } from '@azure/functions'
 import { performance } from 'perf_hooks'
-const functionName = 'check-notifier-batch'
-import * as sb from '@azure/service-bus'
-import config from '../../config'
-import { ICheckNotificationMessage } from '../check-notifier/check-notification-message'
-import { BatchCheckNotifier } from './batch-check-notifier.service'
 import * as RA from 'ramda-adjunct'
+import * as sb from '@azure/service-bus'
+
+import config from '../../config'
+import { ISchoolResultsCacheMessage } from '../school-results-cache-determiner/school-results-cache-determiner.service'
+const { ResultService } = require('./services/result.service')
+
+const functionName = 'school-results-cache'
 
 /*
  * The function is running as a singleton, and the receiver is therefore exclusive
@@ -13,21 +15,21 @@ import * as RA from 'ramda-adjunct'
   if the message is abandoned 10 times (the current 'max delivery count') it will be
   put on the dead letter queue automatically.
 */
-const batchCheckNotifier: AzureFunction = async function (context: Context, timer: any): Promise<void> {
+const sbMessageReceiver: AzureFunction = async function sbMessageReceiver (context: Context, timer: any): Promise<void> {
 
   if (timer.IsPastDue) {
-    context.log(`${functionName}: timer is past due, exiting.`)
+    context.log(`${functionName} timer is past due, exiting...`)
     return
   }
   const start = performance.now()
-
   if (!config.ServiceBus.ConnectionString) {
-    throw new Error(`${functionName}: ServiceBusConnection env var is missing`)
+    throw new Error(`${functionName} ServiceBusConnection env var is missing`)
   }
 
   let busClient: sb.ServiceBusClient
   let queueClient: sb.QueueClient
   let receiver: sb.Receiver
+  const receiveQueueName = 'school-results-cache'
 
   const disconnect = async () => {
     await receiver.close()
@@ -37,9 +39,9 @@ const batchCheckNotifier: AzureFunction = async function (context: Context, time
 
   // connect to service bus...
   try {
-    context.log(`${functionName}: connecting to service bus...`)
+    context.log.verbose(`${functionName}: connecting to service bus...`)
     busClient = sb.ServiceBusClient.createFromConnectionString(config.ServiceBus.ConnectionString)
-    queueClient = busClient.createQueueClient('check-notification')
+    queueClient = busClient.createQueueClient(receiveQueueName)
     receiver = queueClient.createReceiver(sb.ReceiveMode.peekLock)
     context.log(`${functionName}: connected to service bus instance ${busClient.name}`)
   } catch (error) {
@@ -47,9 +49,9 @@ const batchCheckNotifier: AzureFunction = async function (context: Context, time
     throw error
   }
 
-  for (let batchIndex = 0; batchIndex < config.CheckNotifier.BatchesPerExecution; batchIndex++) {
-    context.log(`${functionName}: starting batch ${batchIndex + 1} of ${config.CheckNotifier.BatchesPerExecution}...`)
-    const messageBatch = await receiver.receiveMessages(config.CheckNotifier.MessagesPerBatch)
+  for (let batchIndex = 0; batchIndex < config.SchoolResultsCache.BatchesPerExecution; batchIndex++) {
+    context.log(`${functionName}: starting batch ${batchIndex + 1} of ${config.SchoolResultsCache.BatchesPerExecution}...`)
+    const messageBatch = await receiver.receiveMessages(config.SchoolResultsCache.MessagesPerBatch)
     if (RA.isNilOrEmpty(messageBatch)) {
       context.log(`${functionName}: no messages to process`)
       await disconnect()
@@ -57,7 +59,7 @@ const batchCheckNotifier: AzureFunction = async function (context: Context, time
       return
     }
     context.log(`${functionName}: received batch of ${messageBatch.length} messages`)
-    const notifications = messageBatch.map(m => m.body as ICheckNotificationMessage)
+    const notifications = messageBatch.map(m => m.body as ISchoolResultsCacheMessage)
     await process(notifications, context, messageBatch)
   }
 
@@ -65,14 +67,25 @@ const batchCheckNotifier: AzureFunction = async function (context: Context, time
   finish(start, context)
 }
 
-async function process (notifications: ICheckNotificationMessage[], context: Context, messages: sb.ServiceBusMessage[]): Promise<void> {
-  try {
-    const batchNotifier = new BatchCheckNotifier()
-    await batchNotifier.notify(notifications)
-    await completeMessages(messages, context)
-  } catch (error) {
-    // sql transaction failed, abandon...
-    await abandonMessages(messages, context)
+async function process (notifications: ISchoolResultsCacheMessage[], context: Context, messages: sb.ServiceBusMessage[]): Promise<void> {
+  if (!RA.isArray(messages)) {
+    context.log(`${functionName}: process called with invalid message type`)
+    return
+  }
+
+  const resultService = new ResultService(context.log)
+
+  for (const msg of messages) {
+    // process an individual message at a time
+    try {
+      await resultService.cacheResultData(msg.body.schoolGuid)
+      await completeMessages([msg], context)
+    } catch (error) {
+      // sql transaction failed, abandon...
+      context.log.warn(`${functionName}: error processing message ${msg}\n Error was: ${error}`)
+      console.error(error)
+      await abandonMessages([msg], context)
+    }
   }
 }
 
@@ -81,7 +94,6 @@ async function completeMessages (messageBatch: sb.ServiceBusMessage[], context: 
   // if any completes fail, just abandon.
   // the sql updates are idempotent and as such replaying a message
   // will not have an adverse effect.
-  context.log(`${functionName}: batch processed successfully, completing all messages in batch`)
   for (let index = 0; index < messageBatch.length; index++) {
     const msg = messageBatch[index]
     try {
@@ -104,7 +116,7 @@ async function abandonMessages (messageBatch: sb.ServiceBusMessage[], context: C
     try {
       await msg.abandon()
     } catch (error) {
-      context.log.error(`${functionName}: unable to abandon message:${error.message}`)
+      context.log.error(`${functionName}: abandonMessages(): unable to abandon message: ${error.message}`)
     }
   }
 }
@@ -116,4 +128,4 @@ function finish (start: number, context: Context) {
   context.log(`${functionName}: ${timeStamp} run complete: ${durationInMilliseconds} ms`)
 }
 
-export default batchCheckNotifier
+export default sbMessageReceiver

@@ -2,6 +2,7 @@
 const path = require('path')
 const fs = require('fs')
 const globalDotEnvFile = path.join(__dirname, '..', '..', '.env')
+const R = require('ramda')
 
 try {
   if (fs.existsSync(globalDotEnvFile)) {
@@ -45,7 +46,13 @@ const createQueue = (queueName, queueOptions) => (new Promise((resolve, reject) 
 }))
 
 async function main () {
-  const promises = queues.map(q => createQueue(q, defaultQueueOptions))
+  const promises = queues.map(q => {
+    const queueOptions = R.clone(defaultQueueOptions)
+    if (q === 'sync-results-to-db-complete') {
+      queueOptions.DefaultMessageTimeToLive = oneDay
+    }
+    return createQueue(q, queueOptions)
+  })
   await Promise.all(promises)
 }
 
