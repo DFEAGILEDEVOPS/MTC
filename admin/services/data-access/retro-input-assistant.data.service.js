@@ -82,7 +82,8 @@ const service = {
    */
   markLatestCompleteCheckAsInputAssistantAddedRetrospectively (checkId) {
     return sqlService.update('[check]', {
-      id: checkId
+      id: checkId,
+      inputAssistantAddedRetrospectively: 1
     })
   }
 }
