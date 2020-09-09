@@ -1,1 +1,1 @@
-DROP TABLE IF EXISTS mtc_results.userInputType;
+DROP TABLE IF EXISTS mtc_results.userInputTypeLookup;

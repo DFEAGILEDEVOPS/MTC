@@ -97,7 +97,7 @@ EXEC sys.sp_addextendedproperty @name = N'MS_Description',
      @level1name = 'navigatorPlatformLookup', @level2type = N'Column', @level2name = 'updatedAt';
 
 EXEC sys.sp_addextendedproperty @name = N'MS_Description',
-     @value = 'Platform setting exactly as reported by the web browser. e.g. Win32', @level0type = N'Schema',
+     @value = 'Platform setting as reported by the web browser. e.g. WIN32', @level0type = N'Schema',
      @level0name = 'mtc_results', @level1type = N'Table', @level1name = 'navigatorPlatformLookup',
      @level2type = N'Column', @level2name = 'platform';
 

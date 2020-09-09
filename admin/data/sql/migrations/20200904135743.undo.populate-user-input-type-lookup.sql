@@ -1,1 +1,1 @@
-DELETE FROM mtc_results.userInputType;
+DELETE FROM mtc_results.userInputTypeLookup;
