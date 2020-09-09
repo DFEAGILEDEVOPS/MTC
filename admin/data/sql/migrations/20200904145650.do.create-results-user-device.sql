@@ -45,7 +45,3 @@ CREATE TABLE mtc_results.userDevice
  CONSTRAINT [FK_networkConnectionEffectiveType_id] FOREIGN KEY (networkConnectionEffectiveTypeLookup_id) REFERENCES [mtc_results].[networkConnectionEffectiveTypeLookup] (id),
  CONSTRAINT [FK_deviceOrientationLookup_id] FOREIGN KEY (deviceOrientationLookup_id) REFERENCES [mtc_results].[deviceOrientationLookup] (id)
 );
-
-EXEC sp_addextendedproperty @name = N'MS_Description', @value = 'Total screen width in pixels', @level0type = N'Schema',
-     @level0name = 'mtc_results', @level1type = N'Table', @level1name = 'userDevice', @level2type = N'Column',
-     @level2name = 'screenWidth';
