@@ -75,6 +75,15 @@ const service = {
     ORDER BY lastName;
     `
     return sqlService.readonlyQuery(sql, params)
+  },
+  /**
+   * @description marks the latest complete check as input assistant being added after check taken
+   * @param {number} checkId
+   */
+  markLatestCompleteCheckAsInputAssistantAddedRetrospectively (checkId) {
+    return sqlService.update('[check]', {
+      id: checkId
+    })
   }
 }
 

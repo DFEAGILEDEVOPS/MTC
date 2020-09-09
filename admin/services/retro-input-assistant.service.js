@@ -17,7 +17,7 @@ const service = {
     * @description persists retrospective input assistant data
     * @param {retroInputAssistantData} retroInputAssistantData
     */
-  save: async function add (retroInputAssistantData) {
+  save: async function save (retroInputAssistantData) {
     const validationResult = validator.validate(retroInputAssistantData)
     if (validationResult.hasError()) {
       throw validationResult
@@ -36,6 +36,8 @@ const service = {
     if (!pupilInfo.currentCheckId || pupilInfo.currentCheckId < 1) {
       throw new Error(`invalid pupil.currentCheckId returned from lookup: id:${pupilInfo.currentCheckId}`)
     }
+
+    await dataService.markLatestCompleteCheckAsInputAssistantAddedRetrospectively(pupilInfo.currentCheckId)
 
     const saveData = {
       firstName: retroInputAssistantData.firstName,
