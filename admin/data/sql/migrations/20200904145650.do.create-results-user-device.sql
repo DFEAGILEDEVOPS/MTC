@@ -33,7 +33,7 @@ CREATE TABLE mtc_results.userDevice
  [outerHeight]                             INT,     -- height of the browser window including toolbars
  [innerWidth]                              INT,     -- width of the browser window available for content in pixels
  [innerHeight]                             INT,     -- height of the browser window available for content in pixels <https://developer.mozilla.org/en-US/docs/Web/API/Window/outerHeight>
- [colorDepth]                              TINYINT,
+ [colourDepth]                             TINYINT,
  [deviceOrientationLookup_id]              INT,
  [appUsageCount]                           TINYINT, -- number of checks taken since app was initialised
  CONSTRAINT [PK_userDevice] PRIMARY KEY CLUSTERED ([id] ASC) WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON),
