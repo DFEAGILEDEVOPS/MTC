@@ -1,6 +1,6 @@
 'use strict'
 
-/* global describe it expect beforeEach spyOn fail */
+/* global describe test expect beforeEach spyOn fail */
 
 const sut = require('../../../services/retro-input-assistant.service')
 const dataService = require('../../../services/data-access/retro-input-assistant.data.service.js')
@@ -17,12 +17,12 @@ describe('retro input assistant service', () => {
     spyOn(dataService, 'create')
   })
 
-  it('should be defined', () => {
+  test('should be defined', () => {
     expect(sut).toBeDefined()
   })
 
   describe('save', () => {
-    it('should throw an error when validation fails', async () => {
+    test('should throw an error when validation fails', async () => {
       setupPupilLookupSpy()
       try {
         await sut.save({})
@@ -31,7 +31,7 @@ describe('retro input assistant service', () => {
         expect(error.name).toBe('ValidationError')
       }
     })
-    it('should throw when pupilUuid is undefined', async () => {
+    test('should throw when pupilUuid is undefined', async () => {
       try {
         await sut.save({
           firstName: 'foo',
@@ -45,7 +45,7 @@ describe('retro input assistant service', () => {
         expect(error.name).toBe('ValidationError')
       }
     })
-    it('should throw when pupilUuid is not a valid UUID', async () => {
+    test('should throw when pupilUuid is not a valid UUID', async () => {
       try {
         await sut.save({
           firstName: 'foo',
@@ -59,7 +59,7 @@ describe('retro input assistant service', () => {
         expect(error.name).toBe('ValidationError')
       }
     })
-    it('should lookup pupil id and current check id from url slug', async () => {
+    test('should lookup pupil id and current check id from url slug', async () => {
       setupPupilLookupSpy()
       await sut.save({
         firstName: 'foo',
@@ -70,7 +70,7 @@ describe('retro input assistant service', () => {
       })
       expect(dataService.getPupilIdAndCurrentCheckIdByUrlSlug).toHaveBeenCalled()
     })
-    it('should persist valid input', async () => {
+    test('should persist valid input', async () => {
       setupPupilLookupSpy()
       await sut.save({
         firstName: 'foo',
@@ -81,7 +81,7 @@ describe('retro input assistant service', () => {
       })
       expect(dataService.create).toHaveBeenCalled()
     })
-    it('should throw if pupil details cannot be found', async () => {
+    test('should throw if pupil details cannot be found', async () => {
       spyOn(dataService, 'getPupilIdAndCurrentCheckIdByUrlSlug').and.returnValue()
       try {
         await sut.save({
@@ -96,7 +96,7 @@ describe('retro input assistant service', () => {
         expect(error.message).toBe('pupil lookup failed')
       }
     })
-    it('should throw if lookedup pupil id is not a number greater than zero', async () => {
+    test('should throw if lookedup pupil id is not a number greater than zero', async () => {
       spyOn(dataService, 'getPupilIdAndCurrentCheckIdByUrlSlug').and.returnValue([{
         id: undefined,
         currentCheckId: 1
@@ -114,7 +114,7 @@ describe('retro input assistant service', () => {
         expect(error.message).toBe('invalid pupil.id returned from lookup: id:undefined')
       }
     })
-    it('should throw if lookedup current check id is not a number greater than zero', async () => {
+    test('should throw if lookedup current check id is not a number greater than zero', async () => {
       spyOn(dataService, 'getPupilIdAndCurrentCheckIdByUrlSlug').and.returnValue([{
         id: 1,
         currentCheckId: undefined
@@ -132,10 +132,12 @@ describe('retro input assistant service', () => {
         expect(error.message).toBe('invalid pupil.currentCheckId returned from lookup: id:undefined')
       }
     })
+    test.todo('should create standard input assistant against pupil')
+    test.todo('should mark existing live check as added retrospectively')
   })
 
   describe('getEligiblePupilsWithFullNames', () => {
-    it('should throw an error if school id not provided', async () => {
+    test('should throw an error if school id not provided', async () => {
       setupPupilLookupSpy()
       try {
         await sut.getEligiblePupilsWithFullNames()
