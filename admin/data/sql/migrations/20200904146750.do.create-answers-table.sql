@@ -1,6 +1,6 @@
 DROP TABLE IF EXISTS mtc_results.answer;
 
-CREATE TABLE [mtc_results].answer
+CREATE TABLE mtc_results.answer
 (id             INT IDENTITY (1,1) NOT NULL,
  createdAt      DATETIMEOFFSET(3)  NOT NULL DEFAULT GETUTCDATE(),
  updatedAt      DATETIMEOFFSET(3)  NOT NULL DEFAULT GETUTCDATE(),
