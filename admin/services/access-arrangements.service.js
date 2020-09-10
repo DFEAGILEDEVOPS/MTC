@@ -16,12 +16,7 @@ const accessArrangementsService = {
  * @returns {Promise<Array>}
  */
   getAccessArrangements: async function getAccessArrangements () {
-    let aaData = await accessArrangementsDataService.sqlFindAccessArrangements()
-    const retroInputAssistantItemIndex = R.findIndex(R.propEq('code', 'RIA'))(aaData)
-    if (retroInputAssistantItemIndex > -1) {
-      aaData = R.remove(retroInputAssistantItemIndex, 1, aaData)
-    }
-    return aaData
+    return accessArrangementsDataService.sqlFindAccessArrangements()
   },
   /**
  * Submit access arrangements for single pupil
