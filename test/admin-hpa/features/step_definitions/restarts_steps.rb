@@ -118,6 +118,7 @@ Given(/^I submitted pupils for Restart$/) do
   step 'I select a pupil for restarts'
   restarts_page.reason_1.click
   restarts_page.sticky_banner.confirm.click
+  expect(restarts_page).to have_flash_message
 end
 
 Then(/^I should see a flash message to state the pupil has been submitted for restart$/) do
