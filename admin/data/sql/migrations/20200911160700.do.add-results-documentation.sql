@@ -286,11 +286,6 @@ EXEC sys.sp_addextendedproperty @name = N'MS_Description', @value = 'Set to 1 if
      @level2type = N'Column', @level2name = 'navigatorCookieEnabled';
 
 EXEC sys.sp_addextendedproperty @name = N'MS_Description',
-     @value = 'Set to 1 if the browser has the DoNotTrack flag set.', @level0type = N'Schema',
-     @level0name = 'mtc_results', @level1type = N'Table', @level1name = 'userDevice', @level2type = N'Column',
-     @level2name = 'navigatorDoNotTrack';
-
-EXEC sys.sp_addextendedproperty @name = N'MS_Description',
      @value = 'Download speed measured in Mb/s rounded to nearest 25 kbps. NB Chrome caps this at 10 Mbps as an anti-fingerprinting measure.',
      @level0type = N'Schema', @level0name = 'mtc_results', @level1type = N'Table', @level1name = 'userDevice',
      @level2type = N'Column', @level2name = 'networkConnectionDownlink';
