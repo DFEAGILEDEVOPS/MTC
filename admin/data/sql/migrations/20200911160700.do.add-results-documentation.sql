@@ -191,10 +191,6 @@ EXEC sys.sp_addextendedproperty @name = N'MS_Description',
 EXEC sys.sp_addextendedproperty @name = N'MS_Description', @value = N'Capture browser and device properties',
      @level0type = N'SCHEMA', @level0name = 'mtc_results', @level1type = N'TABLE', @level1name = 'userDevice';
 
-EXEC sys.sp_addextendedproperty @name = N'MS_Description', @value = 'Synthetic ID', @level0type = N'Schema',
-     @level0name = 'mtc_results', @level1type = N'Table', @level1name = 'userDevice', @level2type = N'Column',
-     @level2name = 'id';
-
 EXEC sys.sp_addextendedproperty @name = N'MS_Description',
      @value = 'Timestamp when the record was created. Not for application use.', @level0type = N'Schema',
      @level0name = 'mtc_results', @level1type = N'Table', @level1name = 'userDevice', @level2type = N'Column',
@@ -205,9 +201,9 @@ EXEC sys.sp_addextendedproperty @name = N'MS_Description',
      @level0type = N'Schema', @level0name = 'mtc_results', @level1type = N'Table', @level1name = 'userDevice',
      @level2type = N'Column', @level2name = 'updatedAt';
 
-EXEC sys.sp_addextendedproperty @name = N'MS_Description', @value = 'FK to mtc_admin.check.id', @level0type = N'Schema',
-     @level0name = 'mtc_results', @level1type = N'Table', @level1name = 'userDevice', @level2type = N'Column',
-     @level2name = 'check_id';
+-- EXEC sys.sp_addextendedproperty @name = N'MS_Description', @value = 'FK to mtc_admin.check.id', @level0type = N'Schema',
+--      @level0name = 'mtc_results', @level1type = N'Table', @level1name = 'userDevice', @level2type = N'Column',
+--      @level2name = 'check_id';
 
 EXEC sys.sp_addextendedproperty @name = N'MS_Description',
      @value = 'Only set if the device has a battery and is charging and is reported by the browser.',
@@ -372,20 +368,20 @@ EXEC sys.sp_addextendedproperty @name = N'MS_Description',
      @level0type = N'Schema', @level0name = 'mtc_results', @level1type = N'Table', @level1name = 'userInput',
      @level2type = N'Column', @level2name = 'updatedAt';
 
-EXEC sys.sp_addextendedproperty @name = N'MS_Description',
-     @value = 'FK to mtc_admin.check table',
-     @level0type = N'Schema', @level0name = 'mtc_results', @level1type = N'Table', @level1name = 'userInput',
-     @level2type = N'Column', @level2name = 'check_id';
+-- EXEC sys.sp_addextendedproperty @name = N'MS_Description',
+--      @value = 'FK to mtc_admin.check table',
+--      @level0type = N'Schema', @level0name = 'mtc_results', @level1type = N'Table', @level1name = 'userInput',
+--      @level2type = N'Column', @level2name = 'check_id';
 
-EXEC sys.sp_addextendedproperty @name = N'MS_Description',
-     @value = 'FK to the mtc_admin.question table.  Provides the two factors in the multiplication.',
-     @level0type = N'Schema', @level0name = 'mtc_results', @level1type = N'Table', @level1name = 'userInput',
-     @level2type = N'Column', @level2name = 'question_id';
+-- EXEC sys.sp_addextendedproperty @name = N'MS_Description',
+--      @value = 'FK to the mtc_admin.question table.  Provides the two factors in the multiplication.',
+--      @level0type = N'Schema', @level0name = 'mtc_results', @level1type = N'Table', @level1name = 'userInput',
+--      @level2type = N'Column', @level2name = 'question_id';
 
-EXEC sys.sp_addextendedproperty @name = N'MS_Description',
-     @value = 'The sequence in the form that the question appeared.  E.g. 1st of 25 questions.',
-     @level0type = N'Schema', @level0name = 'mtc_results', @level1type = N'Table', @level1name = 'userInput',
-     @level2type = N'Column', @level2name = 'questionNumber';
+-- EXEC sys.sp_addextendedproperty @name = N'MS_Description',
+--      @value = 'The sequence in the form that the question appeared.  E.g. 1st of 25 questions.',
+--      @level0type = N'Schema', @level0name = 'mtc_results', @level1type = N'Table', @level1name = 'userInput',
+--      @level2type = N'Column', @level2name = 'questionNumber';
 
 -- EXEC sys.sp_addextendedproperty @name = N'MS_Description',
 --      @value = 'A single input the user entered when answering this question. Some keys are spelled out, e.g. "Enter" for key of the same name.',
