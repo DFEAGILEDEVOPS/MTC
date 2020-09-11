@@ -13,3 +13,7 @@ CREATE TABLE mtc_results.userInput
  CONSTRAINT [FK_userInput_answer_id] FOREIGN KEY (answer_id) REFERENCES [mtc_results].[answer] (id),
  CONSTRAINT [FK_userInput_userInputTypeLookup_id] FOREIGN KEY (userInputTypeLookup_id) REFERENCES [mtc_results].[userInputTypeLookup] (id)
 );
+
+
+CREATE INDEX ix_event_userInput_id ON mtc_results.userInput (answer_id);
+CREATE INDEX ix_event_userInputTypeLookup_id ON mtc_results.userInput (userInputTypeLookup_id);

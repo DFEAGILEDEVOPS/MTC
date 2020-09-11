@@ -15,3 +15,6 @@ CREATE TABLE mtc_results.checkResult
  CONSTRAINT FK_checkResult_userDevice_id FOREIGN KEY (userDevice_id) REFERENCES mtc_results.userDevice (id),
  CONSTRAINT checkResult_userDevice_uindex UNIQUE(userDevice_id)
  );
+
+CREATE INDEX ix_checkResult_check_id ON mtc_results.checkResult (check_id);
+CREATE INDEX ix_checkResult_userDevice_id ON mtc_results.checkResult (userDevice_id);

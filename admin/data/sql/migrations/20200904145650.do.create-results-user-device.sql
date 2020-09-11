@@ -10,7 +10,6 @@ CREATE TABLE mtc_results.userDevice
  [batteryChargingTimeSecs]                 INT,     -- charging time in seconds until full
  [batteryDischargingTimeSecs]              INT,     -- discharge time in seconds until empty
  [cpuHardwareConcurrency]                  TINYINT, -- number of logical processors
- [userAgentLookup_id]                      INT,
  [browserFamilyLookup_id]                  INT,     -- reference to the browser family: Opera, Safari, Chrome, ...
  [browserMajorVersion]                     INT,
  [browserMinorVersion]                     INT,
@@ -34,12 +33,21 @@ CREATE TABLE mtc_results.userDevice
  [colourDepth]                             TINYINT,
  [deviceOrientationLookup_id]              INT,
  [appUsageCount]                           TINYINT, -- number of checks taken since app was initialised
+ [userAgentLookup_id]                      INT,
  CONSTRAINT [PK_userDevice] PRIMARY KEY CLUSTERED ([id] ASC) WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON),
  CONSTRAINT [FK_userAgentLookup_id] FOREIGN KEY (userAgentLookup_id) REFERENCES [mtc_results].[userAgentLookup] (id),
  CONSTRAINT [FK_browserFamilyLookup_id] FOREIGN KEY (browserFamilyLookup_id) REFERENCES [mtc_results].[browserFamilyLookup] (id),
  CONSTRAINT [FK_navigatorPlatformLookup_id] FOREIGN KEY (navigatorPlatformLookup_id) REFERENCES [mtc_results].[navigatorPlatformLookup] (id),
  CONSTRAINT [FK_navigatorLanguageLookup_id] FOREIGN KEY (navigatorLanguageLookup_id) REFERENCES [mtc_results].[navigatorLanguageLookup] (id),
- CONSTRAINT [FK_networkConnectionEffectiveType_id] FOREIGN KEY (networkConnectionEffectiveTypeLookup_id) REFERENCES [mtc_results].[networkConnectionEffectiveTypeLookup] (id),
+ CONSTRAINT [FK_networkConnectionEffectiveTypeLookup_id] FOREIGN KEY (networkConnectionEffectiveTypeLookup_id) REFERENCES [mtc_results].[networkConnectionEffectiveTypeLookup] (id),
  CONSTRAINT [FK_deviceOrientationLookup_id] FOREIGN KEY (deviceOrientationLookup_id) REFERENCES [mtc_results].[deviceOrientationLookup] (id),
  CONSTRAINT [FK_uaOperatingSystemLookup_id] FOREIGN KEY (uaOperatingSystemLookup_id) REFERENCES [mtc_results].[uaOperatingSystemLookup] (id)
 );
+
+CREATE INDEX userDevice_useragentLookup_id ON mtc_results.userDevice (useragentLookup_id);
+CREATE INDEX userDevice_browserFamilyLookup_id ON mtc_results.userDevice (browserFamilyLookup_id);
+CREATE INDEX userDevice_navigatorPlatformLookup_id ON mtc_results.userDevice (navigatorPlatformLookup_id);
+CREATE INDEX userDevice_navigatorLanguageLookup_id ON mtc_results.userDevice (navigatorLanguageLookup_id);
+CREATE INDEX userDevice_networkConnectionEffectiveType_id ON mtc_results.userDevice (networkConnectionEffectiveTypeLookup_id);
+CREATE INDEX userDevice_deviceOrientationLookup_id ON mtc_results.userDevice (deviceOrientationLookup_id);
+CREATE INDEX userDevice_uaOperatingSystemLookup_id ON mtc_results.userDevice (uaOperatingSystemLookup_id);
