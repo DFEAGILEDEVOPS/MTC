@@ -22,7 +22,6 @@ CREATE TABLE mtc_results.userDevice
  [navigatorPlatformLookup_id]              INT,
  [navigatorLanguageLookup_id]              INT,
  [navigatorCookieEnabled]                  BIT,
- [navigatorDoNotTrack]                     BIT,
  [networkConnectionDownlink]               FLOAT,   -- Download speed, Mb/s rounded to nearest 25 kbps. NB Chrome caps this at 10 Mbps as an anti-fingerprinting measure
  [networkConnectionEffectiveTypeLookup_id] INT,
  [networkConnectionRtt]                    TINYINT, -- round trip time, ms
