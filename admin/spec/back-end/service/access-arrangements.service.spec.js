@@ -21,34 +21,19 @@ describe('accessArrangementsService', () => {
           id: 1,
           displayOrder: 1,
           description: 'description',
-          code: 'COD'
+          code: 'ABC'
+        },
+        {
+          id: 2,
+          displayOrder: 2,
+          description: '2nd item',
+          code: 'XYZ'
         }
       ]
       spyOn(accessArrangementsDataService, 'sqlFindAccessArrangements').and.returnValue(accessArrangements)
       const result = await sut.getAccessArrangements()
       expect(accessArrangementsDataService.sqlFindAccessArrangements).toHaveBeenCalled()
       expect(result).toStrictEqual(accessArrangements)
-    })
-    it('does not return the retro input assistant item', async () => {
-      const accessArrangements = [
-        {
-          id: 1,
-          displayOrder: 1,
-          description: 'description',
-          code: 'COD'
-        },
-        {
-          id: 2,
-          displayOrder: 2,
-          description: 'retro input assistant',
-          code: 'RIA'
-        }
-      ]
-      spyOn(accessArrangementsDataService, 'sqlFindAccessArrangements').and.returnValue(Promise.resolve(accessArrangements))
-      const result = await sut.getAccessArrangements()
-      expect(accessArrangementsDataService.sqlFindAccessArrangements).toHaveBeenCalled()
-      expect(result.length).toBe(1)
-      expect(result[0].code === 'COD').toBe(true)
     })
   })
   describe('submit', () => {
