@@ -387,3 +387,131 @@ EXEC sys.sp_addextendedproperty @name = N'MS_Description',
 --      @value = 'FK to the user input type table.',
 --      @level0type = N'Schema', @level0name = 'mtc_results', @level1type = N'Table', @level1name = 'userInput',
 --      @level2type = N'Column', @level2name = 'userInputType_id';
+
+-- Document answer table
+--
+EXEC sys.sp_addextendedproperty @name = N'MS_Description', @value = N'Capture user answers for the check',
+     @level0type = N'SCHEMA', @level0name = 'mtc_results', @level1type = N'TABLE', @level1name = 'answer';
+
+EXEC sys.sp_addextendedproperty @name = N'MS_Description', @value = 'Synthetic ID', @level0type = N'Schema',
+     @level0name = 'mtc_results', @level1type = N'Table', @level1name = 'answer', @level2type = N'Column',
+     @level2name = 'id';
+
+EXEC sys.sp_addextendedproperty @name = N'MS_Description',
+     @value = 'Timestamp when the record was created. Not for application use.', @level0type = N'Schema',
+     @level0name = 'mtc_results', @level1type = N'Table', @level1name = 'answer', @level2type = N'Column',
+     @level2name = 'createdAt';
+
+EXEC sys.sp_addextendedproperty @name = N'MS_Description',
+     @value = 'Timestamp when the record was last updated. Not for application use.  Uses a trigger.',
+     @level0type = N'Schema', @level0name = 'mtc_results', @level1type = N'Table', @level1name = 'answer',
+     @level2type = N'Column', @level2name = 'updatedAt';
+
+EXEC sys.sp_addextendedproperty @name = N'MS_Description',
+     @value = 'FK to checkResult table.',
+     @level0type = N'Schema', @level0name = 'mtc_results', @level1type = N'Table', @level1name = 'answer',
+     @level2type = N'Column', @level2name = 'checkResult_id';
+
+EXEC sys.sp_addextendedproperty @name = N'MS_Description',
+     @value = 'The sequence in the form that the question appeared.  E.g. 1st of 25 questions.',
+     @level0type = N'Schema', @level0name = 'mtc_results', @level1type = N'Table', @level1name = 'answer',
+     @level2type = N'Column', @level2name = 'questionNumber';
+
+EXEC sys.sp_addextendedproperty @name = N'MS_Description',
+     @value = 'The response from the pupil as an answer to a question.',
+     @level0type = N'Schema', @level0name = 'mtc_results', @level1type = N'Table', @level1name = 'answer',
+     @level2type = N'Column', @level2name = 'answer';
+
+EXEC sys.sp_addextendedproperty @name = N'MS_Description',
+     @value = 'FK to the question table detailing the question that was asked.',
+     @level0type = N'Schema', @level0name = 'mtc_results', @level1type = N'Table', @level1name = 'answer',
+     @level2type = N'Column', @level2name = 'question_id';
+
+EXEC sys.sp_addextendedproperty @name = N'MS_Description',
+     @value = 'Set to true if the answer to the question is correct.',
+     @level0type = N'Schema', @level0name = 'mtc_results', @level1type = N'Table', @level1name = 'answer',
+     @level2type = N'Column', @level2name = 'isCorrect';
+
+EXEC sys.sp_addextendedproperty @name = N'MS_Description',
+     @value = 'The timestamp the answer was provided, either because the pupil hit enter, or ran out of time.  This data is sourced from the pupils computer.',
+     @level0type = N'Schema', @level0name = 'mtc_results', @level1type = N'Table', @level1name = 'answer',
+     @level2type = N'Column', @level2name = 'browserTimestamp';
+
+-- Document checkResult table
+--
+EXEC sys.sp_addextendedproperty @name = N'MS_Description', @value = N'Store the check results once the pupil has taken the check.',
+     @level0type = N'SCHEMA', @level0name = 'mtc_results', @level1type = N'TABLE', @level1name = 'checkResult';
+
+EXEC sys.sp_addextendedproperty @name = N'MS_Description', @value = 'Synthetic ID', @level0type = N'Schema',
+     @level0name = 'mtc_results', @level1type = N'Table', @level1name = 'checkResult', @level2type = N'Column',
+     @level2name = 'id';
+
+EXEC sys.sp_addextendedproperty @name = N'MS_Description',
+     @value = 'Timestamp when the record was created. Not for application use.', @level0type = N'Schema',
+     @level0name = 'mtc_results', @level1type = N'Table', @level1name = 'checkResult', @level2type = N'Column',
+     @level2name = 'createdAt';
+
+EXEC sys.sp_addextendedproperty @name = N'MS_Description',
+     @value = 'Timestamp when the record was last updated. Not for application use.  Uses a trigger.',
+     @level0type = N'Schema', @level0name = 'mtc_results', @level1type = N'Table', @level1name = 'checkResult',
+     @level2type = N'Column', @level2name = 'updatedAt';
+
+EXEC sys.sp_addextendedproperty @name = N'MS_Description',
+     @value = 'FK to the check table.',
+     @level0type = N'Schema', @level0name = 'mtc_results', @level1type = N'Table', @level1name = 'checkResult',
+     @level2type = N'Column', @level2name = 'check_id';
+
+EXEC sys.sp_addextendedproperty @name = N'MS_Description',
+     @value = 'The marks awarded for the check.  For MTC this equals the number of correctly answered questions.',
+     @level0type = N'Schema', @level0name = 'mtc_results', @level1type = N'Table', @level1name = 'checkResult',
+     @level2type = N'Column', @level2name = 'mark';
+
+EXEC sys.sp_addextendedproperty @name = N'MS_Description',
+     @value = 'The server timestamp when the marking was applied.',
+     @level0type = N'Schema', @level0name = 'mtc_results', @level1type = N'Table', @level1name = 'checkResult',
+     @level2type = N'Column', @level2name = 'markedAt';
+
+EXEC sys.sp_addextendedproperty @name = N'MS_Description',
+     @value = 'FK to the userDevice table.',
+     @level0type = N'Schema', @level0name = 'mtc_results', @level1type = N'Table', @level1name = 'checkResult',
+     @level2type = N'Column', @level2name = 'userDevice_id';
+
+-- Document event table
+--
+EXEC sys.sp_addextendedproperty @name = N'MS_Description', @value = N'Store the check results once the pupil has taken the check.',
+     @level0type = N'SCHEMA', @level0name = 'mtc_results', @level1type = N'TABLE', @level1name = 'event';
+
+EXEC sys.sp_addextendedproperty @name = N'MS_Description', @value = 'Synthetic ID', @level0type = N'Schema',
+     @level0name = 'mtc_results', @level1type = N'Table', @level1name = 'event', @level2type = N'Column',
+     @level2name = 'id';
+
+EXEC sys.sp_addextendedproperty @name = N'MS_Description',
+     @value = 'Timestamp when the record was created. Not for application use.', @level0type = N'Schema',
+     @level0name = 'mtc_results', @level1type = N'Table', @level1name = 'event', @level2type = N'Column',
+     @level2name = 'createdAt';
+
+EXEC sys.sp_addextendedproperty @name = N'MS_Description',
+     @value = 'Timestamp when the record was last updated. Not for application use.  Uses a trigger.',
+     @level0type = N'Schema', @level0name = 'mtc_results', @level1type = N'Table', @level1name = 'event',
+     @level2type = N'Column', @level2name = 'updatedAt';
+
+EXEC sys.sp_addextendedproperty @name = N'MS_Description',
+     @value = 'FK to the checkResult table.',
+     @level0type = N'Schema', @level0name = 'mtc_results', @level1type = N'Table', @level1name = 'event',
+     @level2type = N'Column', @level2name = 'checkResult_id';
+
+EXEC sys.sp_addextendedproperty @name = N'MS_Description',
+     @value = 'FK to the event type lookup.',
+     @level0type = N'Schema', @level0name = 'mtc_results', @level1type = N'Table', @level1name = 'event',
+     @level2type = N'Column', @level2name = 'eventTypeLookup_id';
+
+EXEC sys.sp_addextendedproperty @name = N'MS_Description',
+     @value = 'The timestamp the event was triggered.  This data is sourced from the pupils computer.',
+     @level0type = N'Schema', @level0name = 'mtc_results', @level1type = N'Table', @level1name = 'event',
+     @level2type = N'Column', @level2name = 'browserTimestamp';
+
+EXEC sys.sp_addextendedproperty @name = N'MS_Description',
+     @value = 'JSON event-specific data',
+     @level0type = N'Schema', @level0name = 'mtc_results', @level1type = N'Table', @level1name = 'event',
+     @level2type = N'Column', @level2name = 'eventData';
+
