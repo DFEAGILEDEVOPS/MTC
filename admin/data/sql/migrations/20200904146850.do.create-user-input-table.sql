@@ -6,7 +6,7 @@ CREATE TABLE mtc_results.userInput
  [updatedAt]              DATETIMEOFFSET(3)     NOT NULL DEFAULT GETUTCDATE(),
  [version]                ROWVERSION,
  [answer_id]              INT                   NOT NULL,
- [userInput]              NVARCHAR(10)          NOT NULL, -- 'input' clashes with a future reserved word
+ [userInput]              NVARCHAR(40)          NOT NULL, -- 'input' clashes with a future reserved word
  [userInputTypeLookup_id] INT                   NOT NULL,
  [browserTimestamp]       DATETIMEOFFSET(3)     NOT NULL, -- client timestamp, from the pupil's device. Not server time.
  CONSTRAINT [PK_userInput] PRIMARY KEY CLUSTERED ([id] ASC) WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON),
