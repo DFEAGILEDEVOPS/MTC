@@ -201,10 +201,6 @@ EXEC sys.sp_addextendedproperty @name = N'MS_Description',
      @level0type = N'Schema', @level0name = 'mtc_results', @level1type = N'Table', @level1name = 'userDevice',
      @level2type = N'Column', @level2name = 'updatedAt';
 
--- EXEC sys.sp_addextendedproperty @name = N'MS_Description', @value = 'FK to mtc_admin.check.id', @level0type = N'Schema',
---      @level0name = 'mtc_results', @level1type = N'Table', @level1name = 'userDevice', @level2type = N'Column',
---      @level2name = 'check_id';
-
 EXEC sys.sp_addextendedproperty @name = N'MS_Description',
      @value = 'Only set if the device has a battery and is charging and is reported by the browser.',
      @level0type = N'Schema', @level0name = 'mtc_results', @level1type = N'Table', @level1name = 'userDevice',
@@ -363,30 +359,25 @@ EXEC sys.sp_addextendedproperty @name = N'MS_Description',
      @level0type = N'Schema', @level0name = 'mtc_results', @level1type = N'Table', @level1name = 'userInput',
      @level2type = N'Column', @level2name = 'updatedAt';
 
--- EXEC sys.sp_addextendedproperty @name = N'MS_Description',
---      @value = 'FK to mtc_admin.check table',
---      @level0type = N'Schema', @level0name = 'mtc_results', @level1type = N'Table', @level1name = 'userInput',
---      @level2type = N'Column', @level2name = 'check_id';
+EXEC sys.sp_addextendedproperty @name = N'MS_Description',
+     @value = 'FK to the answer table - all user input is collected when the timer for a particular answer.',
+     @level0type = N'Schema', @level0name = 'mtc_results', @level1type = N'Table', @level1name = 'userInput',
+     @level2type = N'Column', @level2name = 'answer_id';
 
--- EXEC sys.sp_addextendedproperty @name = N'MS_Description',
---      @value = 'FK to the mtc_admin.question table.  Provides the two factors in the multiplication.',
---      @level0type = N'Schema', @level0name = 'mtc_results', @level1type = N'Table', @level1name = 'userInput',
---      @level2type = N'Column', @level2name = 'question_id';
+EXEC sys.sp_addextendedproperty @name = N'MS_Description',
+     @value = 'Short text field.  Usually input will be a single number or a character. Some keys are stored as the english name: Enter, Delete and so on.',
+     @level0type = N'Schema', @level0name = 'mtc_results', @level1type = N'Table', @level1name = 'userInput',
+     @level2type = N'Column', @level2name = 'userInput';
 
--- EXEC sys.sp_addextendedproperty @name = N'MS_Description',
---      @value = 'The sequence in the form that the question appeared.  E.g. 1st of 25 questions.',
---      @level0type = N'Schema', @level0name = 'mtc_results', @level1type = N'Table', @level1name = 'userInput',
---      @level2type = N'Column', @level2name = 'questionNumber';
+EXEC sys.sp_addextendedproperty @name = N'MS_Description',
+     @value = 'FK to the userInputTypeLookup table which classifies the input as one of Mouse, Keyboard or Touch events.',
+     @level0type = N'Schema', @level0name = 'mtc_results', @level1type = N'Table', @level1name = 'userInput',
+     @level2type = N'Column', @level2name = 'userInputTypeLookup_id';
 
--- EXEC sys.sp_addextendedproperty @name = N'MS_Description',
---      @value = 'A single input the user entered when answering this question. Some keys are spelled out, e.g. "Enter" for key of the same name.',
---      @level0type = N'Schema', @level0name = 'mtc_results', @level1type = N'Table', @level1name = 'userInput',
---      @level2type = N'Column', @level2name = 'userInput';
---
--- EXEC sys.sp_addextendedproperty @name = N'MS_Description',
---      @value = 'FK to the user input type table.',
---      @level0type = N'Schema', @level0name = 'mtc_results', @level1type = N'Table', @level1name = 'userInput',
---      @level2type = N'Column', @level2name = 'userInputType_id';
+EXEC sys.sp_addextendedproperty @name = N'MS_Description',
+     @value = 'The timestamp from the pupil''s browser when the user input was entered.',
+     @level0type = N'Schema', @level0name = 'mtc_results', @level1type = N'Table', @level1name = 'userInput',
+     @level2type = N'Column', @level2name = 'browserTimestamp';
 
 -- Document answer table
 --
@@ -515,3 +506,61 @@ EXEC sys.sp_addextendedproperty @name = N'MS_Description',
      @level0type = N'Schema', @level0name = 'mtc_results', @level1type = N'Table', @level1name = 'event',
      @level2type = N'Column', @level2name = 'eventData';
 
+-- Document eventTypeLookup table
+--
+EXEC sys.sp_addextendedproperty @name = N'MS_Description', @value = N'Lookup table to store events generated in the pupil app',
+     @level0type = N'SCHEMA', @level0name = 'mtc_results', @level1type = N'TABLE', @level1name = 'eventTypeLookup';
+
+EXEC sys.sp_addextendedproperty @name = N'MS_Description', @value = 'Synthetic ID', @level0type = N'Schema',
+     @level0name = 'mtc_results', @level1type = N'Table', @level1name = 'eventTypeLookup', @level2type = N'Column',
+     @level2name = 'id';
+
+EXEC sys.sp_addextendedproperty @name = N'MS_Description',
+     @value = 'Timestamp when the record was created. Not for application use.', @level0type = N'Schema',
+     @level0name = 'mtc_results', @level1type = N'Table', @level1name = 'eventTypeLookup', @level2type = N'Column',
+     @level2name = 'createdAt';
+
+EXEC sys.sp_addextendedproperty @name = N'MS_Description',
+     @value = 'Timestamp when the record was last updated. Not for application use.  Uses a trigger.',
+     @level0type = N'Schema', @level0name = 'mtc_results', @level1type = N'Table', @level1name = 'eventTypeLookup',
+     @level2type = N'Column', @level2name = 'updatedAt';
+
+EXEC sys.sp_addextendedproperty @name = N'MS_Description',
+     @value = 'Event code, e.g. PageRendered',
+     @level0type = N'Schema', @level0name = 'mtc_results', @level1type = N'Table', @level1name = 'eventTypeLookup',
+     @level2type = N'Column', @level2name = 'eventType';
+
+EXEC sys.sp_addextendedproperty @name = N'MS_Description',
+     @value = 'A long description describing the event (which happens in the pupil app)',
+     @level0type = N'Schema', @level0name = 'mtc_results', @level1type = N'Table', @level1name = 'eventTypeLookup',
+     @level2type = N'Column', @level2name = 'eventDescription';
+
+
+-- Document userInputTypeLookup lookup
+--
+EXEC sys.sp_addextendedproperty @name = N'MS_Description', @value = N'Lookup table to store events generated in the pupil app',
+     @level0type = N'SCHEMA', @level0name = 'mtc_results', @level1type = N'TABLE', @level1name = 'userInputTypeLookup';
+
+EXEC sys.sp_addextendedproperty @name = N'MS_Description', @value = 'Synthetic ID', @level0type = N'Schema',
+     @level0name = 'mtc_results', @level1type = N'Table', @level1name = 'userInputTypeLookup', @level2type = N'Column',
+     @level2name = 'id';
+
+EXEC sys.sp_addextendedproperty @name = N'MS_Description',
+     @value = 'Timestamp when the record was created. Not for application use.', @level0type = N'Schema',
+     @level0name = 'mtc_results', @level1type = N'Table', @level1name = 'userInputTypeLookup', @level2type = N'Column',
+     @level2name = 'createdAt';
+
+EXEC sys.sp_addextendedproperty @name = N'MS_Description',
+     @value = 'Timestamp when the record was last updated. Not for application use.  Uses a trigger.',
+     @level0type = N'Schema', @level0name = 'mtc_results', @level1type = N'Table', @level1name = 'userInputTypeLookup',
+     @level2type = N'Column', @level2name = 'updatedAt';
+
+EXEC sys.sp_addextendedproperty @name = N'MS_Description',
+     @value = 'Short text name for the type of user input: e.g. one of Mouse, Keyboard, Touch.',
+     @level0type = N'Schema', @level0name = 'mtc_results', @level1type = N'Table', @level1name = 'userInputTypeLookup',
+     @level2type = N'Column', @level2name = 'name';
+
+EXEC sys.sp_addextendedproperty @name = N'MS_Description',
+     @value = 'Unique single character code for the type of user input.',
+     @level0type = N'Schema', @level0name = 'mtc_results', @level1type = N'Table', @level1name = 'userInputTypeLookup',
+     @level2type = N'Column', @level2name = 'code';
