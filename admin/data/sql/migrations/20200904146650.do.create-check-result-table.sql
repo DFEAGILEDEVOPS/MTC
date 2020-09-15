@@ -13,8 +13,8 @@ CREATE TABLE mtc_results.checkResult
  CONSTRAINT FK_checkResult_check_id_check_id FOREIGN KEY (check_id) REFERENCES mtc_admin.[check] (id),
  CONSTRAINT result_check_id_uindex UNIQUE(check_id),
  CONSTRAINT FK_checkResult_userDevice_id FOREIGN KEY (userDevice_id) REFERENCES mtc_results.userDevice (id),
- CONSTRAINT checkResult_userDevice_uindex UNIQUE(userDevice_id)
  );
 
 CREATE INDEX ix_checkResult_check_id ON mtc_results.checkResult (check_id);
 CREATE INDEX ix_checkResult_userDevice_id ON mtc_results.checkResult (userDevice_id);
+CREATE UNIQUE NONCLUSTERED INDEX checkResult_userDevice_uindex ON mtc_results.checkResult (userDevice_id) WHERE userDevice_id IS NOT NULL;

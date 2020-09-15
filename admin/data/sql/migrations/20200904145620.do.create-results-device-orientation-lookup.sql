@@ -5,7 +5,7 @@ CREATE TABLE mtc_results.deviceOrientationLookup
  [createdAt]   DATETIMEOFFSET(3)     NOT NULL DEFAULT GETUTCDATE(),
  [updatedAt]   DATETIMEOFFSET(3)     NOT NULL DEFAULT GETUTCDATE(),
  [version]     ROWVERSION,
- [orientation] NVARCHAR(32),
+ [orientation] NVARCHAR(32)          NOT NULL,
  CONSTRAINT [PK_deviceOrientationLookup] PRIMARY KEY CLUSTERED ([id] ASC) WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON),
  CONSTRAINT [deviceOrientationLookup_orientation_uindex] UNIQUE (orientation)
 );
