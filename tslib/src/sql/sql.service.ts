@@ -18,7 +18,7 @@ declare class SqlServerError extends Error {
 /**
  * static class for serving single instance of a connection pool
  */
-class ConnectionPoolService {
+export class ConnectionPoolService {
   private static pool: ConnectionPool
   // pool can still be connecting when first used...
   // https://github.com/tediousjs/node-mssql/issues/934
