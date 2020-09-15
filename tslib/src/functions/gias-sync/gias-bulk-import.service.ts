@@ -9,13 +9,17 @@ export class GiasBulkImport {
     const table = new sql.Table('mtc_admin.giasStaging')
     table.create = false
     table.columns.add('leaCode', sql.Int)
-    table.columns.add('estabCode', sql.NVarChar)
+    // @ts-ignore
+    table.columns.add('estabCode', sql.NVarChar, { length: 'max' })
     table.columns.add('urn', sql.Int, { nullable: false })
     table.columns.add('dfeNumber', sql.Int, { nullable: false })
-    table.columns.add('name', sql.NVarChar, { nullable: false })
+    // @ts-ignore
+    table.columns.add('name', sql.NVarChar, { length: 'max', nullable: false })
     for (let index = 0; index < extract.length; index++) {
       const entry = extract[index]
-      table.rows.add(entry.leaCode, entry.estabCode, entry.urn, entry.dfeNumber, entry.name)
+      const estabNumber = typeof entry.EstablishmentNumber === 'number' ? entry.EstablishmentNumber : 'nil-'
+      const dfeNumber = `${entry.LA.Code}${estabNumber}`
+      table.rows.add(entry.LA.Code, estabNumber, entry.URN, dfeNumber, entry.EstablishmentName)
     }
     const request = new sql.Request(pool)
     await request.bulk(table)

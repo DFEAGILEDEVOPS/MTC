@@ -6,7 +6,9 @@
       "direction": "in",
       "_ref": "sec, min, hour, day, month, dow",
       "schedule_description": "4am every day",
-      "schedule": "0 0 4 * * *"
+      "schedule": "*/120 * * * * *",
+      "dev_schedule_description": "every 30 seconds",
+      "dev_schedule": "*/120 * * * * *"
     },
     {
       "name": "giasExtractFile",
