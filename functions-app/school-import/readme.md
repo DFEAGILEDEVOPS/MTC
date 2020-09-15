@@ -1,6 +1,6 @@
 # School-Import
 
-Public data can be downloaded from https://get-information-schools.service.gov.uk/Downloads  
+Public data can be downloaded from [https://get-information-schools.service.gov.uk/Downloads](https://get-information-schools.service.gov.uk/Downloads)
 
 E.g. 'All Establishment Data', choose establishment fields CSV (around 54MB).
 

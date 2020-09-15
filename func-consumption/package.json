@@ -16,7 +16,7 @@
     "prestart": "yarn build",
     "start:host": "func start",
     "start": "yarn start:host",
-    "start:dev": "echo \"Deprecated: please use 'yarn start' instead\" && yarn start"
+    "start:dev": "env $(cat disable-functions.env | grep Azure | xargs ) yarn start"
   },
   "resolutions": {
     "**/**/lodash": "^4.17.20"
@@ -46,9 +46,12 @@
   },
   "dependencies": {
     "@azure/service-bus": "^1.1.2",
+    "adm-zip": "^0.4.16",
+    "axios": "^0.20.0",
     "azure-storage": "^2.10.3",
     "bluebird": "^3.7.0",
     "dotenv": "^8.1.0",
+    "fast-xml-parser": "^3.17.4",
     "ioredis": "^4.14.1",
     "lz-string": "^1.4.4",
     "moment": "^2.24.0",

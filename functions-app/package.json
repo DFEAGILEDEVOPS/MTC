@@ -10,7 +10,8 @@
     "test": "yarn lint && yarn run nyc --exclude '*.spec.js' -r html jasmine **/*.spec.js */**/*.spec.js */**/**/*.spec.js",
     "lint": "standard",
     "pack": "funcpack pack .",
-    "install-bindings": "func extensions install"
+    "install-bindings": "func extensions install",
+    "start:dev": "env $(cat disable-functions.env | grep Azure | xargs ) yarn start"
   },
   "resolutions": {
     "**/**/lodash": "^4.17.20"
