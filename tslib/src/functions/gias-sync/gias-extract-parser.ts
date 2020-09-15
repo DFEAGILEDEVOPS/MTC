@@ -9,7 +9,8 @@ export class GiasExtractParser {
     }
     this.xmlParser = xmlParser
   }
-  parse (extractXml: string): any {
-    return this.xmlParser.parse(extractXml)
+  parse (extractXml: string): Array<any> {
+    const parsed = this.xmlParser.parse(extractXml)
+    return parsed.Establishments.Establishment
   }
 }

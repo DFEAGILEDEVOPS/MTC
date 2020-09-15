@@ -4,7 +4,7 @@ import * as sql from 'mssql'
 import { ConnectionPoolService } from '../../sql/sql.service'
 
 export class GiasBulkImport {
-  async importExtract (extract: any): Promise<any> {
+  async importExtract (extract: Array<any>): Promise<any> {
     const pool = await ConnectionPoolService.getInstance()
     const table = new sql.Table('mtc_admin.giasStaging')
     table.create = false
