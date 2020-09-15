@@ -506,6 +506,16 @@ EXEC sys.sp_addextendedproperty @name = N'MS_Description',
      @level0type = N'Schema', @level0name = 'mtc_results', @level1type = N'Table', @level1name = 'event',
      @level2type = N'Column', @level2name = 'eventData';
 
+EXEC sys.sp_addextendedproperty @name = N'MS_Description',
+     @value = 'FK to the mtc_admin.question table',
+     @level0type = N'Schema', @level0name = 'mtc_results', @level1type = N'Table', @level1name = 'event',
+     @level2type = N'Column', @level2name = 'question_id';
+
+EXEC sys.sp_addextendedproperty @name = N'MS_Description',
+     @value = 'The sequence in the form that the question appeared.  E.g. 1st of 25 questions.',
+     @level0type = N'Schema', @level0name = 'mtc_results', @level1type = N'Table', @level1name = 'event',
+     @level2type = N'Column', @level2name = 'questionNumber';
+
 -- Document eventTypeLookup table
 --
 EXEC sys.sp_addextendedproperty @name = N'MS_Description', @value = N'Lookup table to store events generated in the pupil app',

@@ -57,13 +57,17 @@ CREATE TABLE mtc_results.event
  eventTypeLookup_id INT                NOT NULL,
  browserTimestamp   DATETIMEOFFSET(3)  NOT NULL, -- client timestamp from the browser/javascript
  eventData          NVARCHAR(max),
+ question_id        INT,
+ questionNumber     SMALLINT,
  CONSTRAINT PK_event PRIMARY KEY CLUSTERED ([id] ASC) WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON),
  CONSTRAINT FK_event_checkResult_id FOREIGN KEY (checkResult_id) REFERENCES mtc_results.checkResult (id),
  CONSTRAINT FK_event_eventTypeLookup_id FOREIGN KEY (eventTypeLookup_id) REFERENCES mtc_results.eventTypeLookup,
+ CONSTRAINT FK_event_question_id FOREIGN KEY (question_id) REFERENCES mtc_admin.question (id),
 );
 
 CREATE INDEX ix_event_eventTypeLookup_id ON mtc_results.event (eventTypeLookup_id);
 CREATE INDEX ix_event_checkResult_id ON mtc_results.event (checkResult_id);
+CREATE INDEX ix_event_question_id ON mtc_results.event (question_id);
 
 
 
