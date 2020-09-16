@@ -1,3 +1,4 @@
+import { IEstablishment } from './IEstablishment'
 import { IXmlParser, XmlParser } from './xml-parser'
 
 export class GiasExtractParser {
@@ -9,7 +10,7 @@ export class GiasExtractParser {
     }
     this.xmlParser = xmlParser
   }
-  parse (extractXml: string): Array<any> {
+  parse (extractXml: string): Array<IEstablishment> {
     const parsed = this.xmlParser.parse(extractXml)
     return parsed.Establishments.Establishment
   }
