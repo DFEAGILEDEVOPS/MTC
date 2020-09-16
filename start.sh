@@ -8,6 +8,9 @@ scriptDir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 echo "Purging Azure Storage..."
 (cd ${scriptDir}/admin && yarn purgestorage)
 
+echo "Installing service bus..."
+cd ${scriptDir}/deploy/service-bus && yarn install --frozen-lockfile
+
 echo "Purging Service Bus..."
 (cd ${scriptDir}/deploy/service-bus && yarn deleteqs)
 (cd ${scriptDir}/deploy/service-bus && yarn createqs)

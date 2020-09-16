@@ -36,6 +36,15 @@ export class SchoolPinSampler {
       reducedZoneset = allZones.splice(0, size)
     }
 
+    function checkNullOrUndefined (o: any) {
+      return o === null || o === undefined
+    }
+
+    if (reducedZoneset.some(checkNullOrUndefined)) {
+      console.error('Invalid reducedZoneset', reducedZoneset)
+      throw new Error('reducedZoneset contains some bottom values')
+    }
+
     return reducedZoneset.map((z: tzutil.Timezone) => {
       const upd: SchoolPinSample = {
         pin: pinGenerator.generate(),
