@@ -27,6 +27,7 @@ describe('gias extract parser', () => {
     const actual = sut.parse(mockExtractXml)
     console.dir(actual[0])
     console.dir(actual[1])
+    console.dir(actual[1].EstablishmentLinkList.EstablishmentLink.LinkType)
     expect(actual).toBeDefined()
     expect(actual.length).toEqual(2)
   })
