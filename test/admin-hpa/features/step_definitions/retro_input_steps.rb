@@ -14,14 +14,14 @@ When(/^I add an input assistant after taking the check$/) do  access_arrangement
   expect(access_arrangements_page).to be_displayed
   hightlighted_row = access_arrangements_page.pupil_list.rows.find {|row| row.has_highlighted_pupil?}
   expect(hightlighted_row.text).to include("#{@details_hash[:last_name]}, #{@details_hash[:first_name]}")
-  expect(hightlighted_row.text).to include('Retrospective Input assistance')
+  expect(hightlighted_row.text).to include('Input assistance')
 end
 
 Then(/^the input assistant should be stored$/) do
   db_record = SqlDbHelper.get_access_arrangements_for_a_pupil(@pupil_id)
   expect(db_record.first['retroInputAssistantFirstName']).to eql 'Input'
   expect(db_record.first['retroInputAssistantLastName']).to eql 'Assistant'
-  expect(db_record.first['retroInputAssistantReason']).to eql 'Input Assistant Reason'
+  expect(db_record.first['inputAssistanceInformation']).to eql 'Input Assistant Reason'
   check_id = SqlDbHelper.check_details(@pupil_id)['id']
   expect(db_record.first['retroInputAssistant_check_id']).to eql check_id
 end
@@ -82,7 +82,7 @@ Then(/^I should be able to add an input assistant retrospectively$/) do
   expect(access_arrangements_page).to be_displayed
   hightlighted_row = access_arrangements_page.pupil_list.rows.find {|row| row.has_highlighted_pupil?}
   expect(hightlighted_row.text).to include("#{@pupil_names_arr.first}")
-  expect(hightlighted_row.text).to include('Retrospective Input assistance')
+  expect(hightlighted_row.text).to include('Input assistance')
 end
 
 And(/^the access arrangement pupil list should be read only$/) do

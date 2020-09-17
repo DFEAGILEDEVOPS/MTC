@@ -13,7 +13,7 @@ Given(/^I have retrospectively added an input assistant$/) do
   db_record = SqlDbHelper.get_access_arrangements_for_a_pupil(@pupil_id)
   expect(db_record.first['retroInputAssistantFirstName']).to eql 'Input'
   expect(db_record.first['retroInputAssistantLastName']).to eql 'Assistant'
-  expect(db_record.first['retroInputAssistantReason']).to eql 'Input Assistant Reason'
+  expect(db_record.first['inputAssistanceInformation']).to eql 'Input Assistant Reason'
   check_id = SqlDbHelper.check_details(@pupil_id)['id']
   expect(db_record.first['retroInputAssistant_check_id']).to eql check_id
 end
@@ -34,6 +34,9 @@ When(/^I complete a check after a restart$/) do
   AzureTableHelper.wait_for_prepared_check(@pupil_credentials[:school_password],@pupil_credentials[:pin])
   step 'I have logged in'
   confirmation_page.read_instructions.click
+  access_arrangements_setting_page.input_assistance_first_name.set 'James'
+  access_arrangements_setting_page.input_assistance_last_name.set 'Elliot'
+  access_arrangements_setting_page.next_btn.click
   start_page.start_warm_up.click
   warm_up_page.start_now.click
   step "I complete the warm up questions using the keyboard"
@@ -46,5 +49,11 @@ Then(/^I should not have any retro input assistant recorded against the current 
   latest_check_taken = SqlDbHelper.check_details(@pupil_id)['id']
   retro_input_check_id_array = SqlDbHelper.get_access_arrangements_for_a_pupil(@pupil_id).map {|aa| aa['retroInputAssistant_check_id']}
   expect(retro_input_check_id_array).to_not include latest_check_taken
+  storage_school = JSON.parse page.evaluate_script('window.localStorage.getItem("school");')
+  storage_pupil = JSON.parse page.evaluate_script('window.localStorage.getItem("pupil");')
+  check_result = AzureTableHelper.wait_for_received_check(storage_school['uuid'], storage_pupil['checkCode'])
+  check = JSON.parse(LZString::UTF16.decompress(check_result['archive']))
+  expect(check['pupil']['inputAssistant']['firstName']).to eql 'James'
+  expect(check['pupil']['inputAssistant']['lastName']).to eql 'Elliot'
 end
 

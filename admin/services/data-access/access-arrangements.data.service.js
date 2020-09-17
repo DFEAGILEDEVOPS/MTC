@@ -14,8 +14,7 @@ accessArrangementsDataService.CODES = Object.freeze({
   INPUT_ASSISTANCE: 'ITA',
   NEXT_BETWEEN_QUESTIONS: 'NBQ',
   QUESTION_READER: 'QNR',
-  NUMPAD_REMOVAL: 'RON',
-  RETRO_INPUT_ASSISTANT: 'RIA'
+  NUMPAD_REMOVAL: 'RON'
 })
 
 /**
