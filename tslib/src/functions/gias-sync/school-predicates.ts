@@ -46,6 +46,8 @@ export default {
       serviceChildrensEducation: 26
     }
 
+    const schoolsInGibraltarLaCode = 704
+
     switch (school.EstablishmentTypeGroup.Code) {
       case estabTypeGroupCodes.localAuthorityMaintainedSchools:
       case estabTypeGroupCodes.academies:
@@ -56,7 +58,7 @@ export default {
           school.TypeOfEstablishment.Code === estabTypeCodes.foundationSpecialSchool
       case estabTypeGroupCodes.otherTypes:
         return school.TypeOfEstablishment.Code === estabTypeCodes.serviceChildrensEducation &&
-          school.LA.Code !== 704
+          school.LA.Code !== schoolsInGibraltarLaCode
       default:
         logger.info(`Excluding school ${school.URN} estab filter ${JSON.stringify(school)}`)
         return false
