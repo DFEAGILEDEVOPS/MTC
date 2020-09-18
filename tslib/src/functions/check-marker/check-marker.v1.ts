@@ -80,9 +80,11 @@ export class CheckMarkerV1 {
           markedCheck: checkResult
         })
       } catch (error) {
+        console.error(error)
         logger.error(`${functionName}: checkCode [${validatedCheck.RowKey}] failed to send data to results queue: ${error.message}`)
       }
     } else {
+      console.error('No archive')
       logger.error(`${functionName}: checkCode [${validatedCheck.RowKey}] failed to detect an archive property.  Results are not available.`)
     }
   }

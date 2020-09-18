@@ -9,6 +9,9 @@ import { ICheckMarkerFunctionBindings } from './models'
 import checkSchema from '../../schemas/complete-check.v1.json'
 import { CheckNotificationType, ICheckNotificationMessage } from '../check-notifier/check-notification-message'
 import { ReceivedCheckTableEntity } from '../../schemas/models'
+import { CompressionService } from '../../common/compression-service'
+
+const compressionService = new CompressionService()
 
 const TableServiceMock = jest.fn<IAsyncTableService, any>(() => ({
   replaceEntityAsync: jest.fn(),
@@ -67,7 +70,7 @@ describe('check-marker/v1', () => {
     const validatedCheckEntity: ReceivedCheckTableEntity = {
       PartitionKey: uuid.v4(),
       RowKey: uuid.v4(),
-      archive: 'foo',
+      archive: compressionService.compress(JSON.stringify({})),
       checkReceivedAt: moment().toDate(),
       checkVersion: 1,
       isValid: true,
@@ -104,7 +107,7 @@ describe('check-marker/v1', () => {
     const validatedCheckEntity: ReceivedCheckTableEntity = {
       PartitionKey: uuid.v4(),
       RowKey: uuid.v4(),
-      archive: 'foo',
+      archive: compressionService.compress(JSON.stringify({})),
       checkReceivedAt: moment().toDate(),
       checkVersion: 1,
       isValid: true,
@@ -141,7 +144,7 @@ describe('check-marker/v1', () => {
     const validatedCheckEntity: ReceivedCheckTableEntity = {
       PartitionKey: uuid.v4(),
       RowKey: uuid.v4(),
-      archive: 'foo',
+      archive: compressionService.compress(JSON.stringify({})),
       checkReceivedAt: moment().toDate(),
       checkVersion: 1,
       isValid: true,
@@ -182,7 +185,7 @@ describe('check-marker/v1', () => {
     const validatedCheckEntity: ReceivedCheckTableEntity = {
       PartitionKey: uuid.v4(),
       RowKey: uuid.v4(),
-      archive: 'foo',
+      archive: compressionService.compress(JSON.stringify({})),
       checkReceivedAt: moment().toDate(),
       checkVersion: 1,
       isValid: true,
@@ -223,7 +226,7 @@ describe('check-marker/v1', () => {
     const validatedCheckEntity: ReceivedCheckTableEntity = {
       PartitionKey: uuid.v4(),
       RowKey: uuid.v4(),
-      archive: 'foo',
+      archive: compressionService.compress(JSON.stringify({})),
       checkReceivedAt: moment().toDate(),
       checkVersion: 1,
       isValid: true,
@@ -265,7 +268,7 @@ describe('check-marker/v1', () => {
     const validatedCheckEntity: ReceivedCheckTableEntity = {
       PartitionKey: uuid.v4(),
       RowKey: uuid.v4(),
-      archive: 'foo',
+      archive: compressionService.compress(JSON.stringify({})),
       checkReceivedAt: moment().toDate(),
       checkVersion: 1,
       isValid: true,
@@ -334,7 +337,7 @@ describe('check-marker/v1', () => {
     const validatedCheckEntity: ReceivedCheckTableEntity = {
       PartitionKey: uuid.v4(),
       RowKey: uuid.v4(),
-      archive: 'foo',
+      archive: compressionService.compress(JSON.stringify({})),
       checkReceivedAt: moment().toDate(),
       checkVersion: 1,
       isValid: true,
@@ -397,7 +400,7 @@ describe('check-marker/v1', () => {
     const validatedCheckEntity: ReceivedCheckTableEntity = {
       PartitionKey: uuid.v4(),
       RowKey: uuid.v4(),
-      archive: 'foo',
+      archive: compressionService.compress(JSON.stringify({})),
       checkReceivedAt: moment().toDate(),
       checkVersion: 1,
       isValid: true,
@@ -460,7 +463,7 @@ describe('check-marker/v1', () => {
     const validatedCheckEntity: ReceivedCheckTableEntity = {
       PartitionKey: uuid.v4(),
       RowKey: uuid.v4(),
-      archive: 'foo',
+      archive: compressionService.compress(JSON.stringify({})),
       checkReceivedAt: moment().toDate(),
       checkVersion: 1,
       isValid: true,
@@ -517,7 +520,7 @@ describe('check-marker/v1', () => {
     const validatedCheckEntity: ReceivedCheckTableEntity = {
       PartitionKey: uuid.v4(),
       RowKey: uuid.v4(),
-      archive: 'foo',
+      archive: compressionService.compress(JSON.stringify({})),
       checkReceivedAt: moment().toDate(),
       checkVersion: 1,
       isValid: true,
@@ -552,7 +555,7 @@ describe('check-marker/v1', () => {
     const validatedCheckEntity: ReceivedCheckTableEntity = {
       PartitionKey: uuid.v4(),
       RowKey: checkCode,
-      archive: 'foo',
+      archive: compressionService.compress(JSON.stringify({})),
       checkReceivedAt: moment().toDate(),
       checkVersion: 1,
       isValid: true,
@@ -604,7 +607,7 @@ describe('check-marker/v1', () => {
     const validatedCheckEntity: ReceivedCheckTableEntity = {
       PartitionKey: uuid.v4(),
       RowKey: uuid.v4(),
-      archive: 'foo',
+      archive: compressionService.compress(JSON.stringify({})),
       checkReceivedAt: moment().toDate(),
       checkVersion: 1,
       isValid: true,
@@ -664,7 +667,7 @@ describe('check-marker/v1', () => {
     const validatedCheckEntity: ReceivedCheckTableEntity = {
       PartitionKey: uuid.v4(),
       RowKey: uuid.v4(),
-      archive: 'foo',
+      archive: compressionService.compress(JSON.stringify({})),
       checkReceivedAt: moment().toDate(),
       checkVersion: 1,
       isValid: true,
@@ -721,7 +724,6 @@ describe('check-marker/v1', () => {
     persistMarkSpy.mockRestore()
   })
 
-  // jms
   test('the payload and the marked check data are sent to the check-completion queue', async () => {
     const answers = [
       {
@@ -736,7 +738,7 @@ describe('check-marker/v1', () => {
     const validatedCheckEntity: ReceivedCheckTableEntity = {
       PartitionKey: uuid.v4(),
       RowKey: uuid.v4(),
-      archive: 'foo',
+      archive: compressionService.compress(JSON.stringify({})),
       checkReceivedAt: moment().toDate(),
       checkVersion: 1,
       isValid: true,
@@ -765,8 +767,9 @@ describe('check-marker/v1', () => {
     const persistMarkSpy = jest.spyOn<any, any>(sut, 'persistMark')
     await sut.mark(functionBindings, loggerMock)
 
-    console.log('JMS')
-    console.log(functionBindings.checkCompletionQueue)
+    expect(functionBindings.checkCompletionQueue.length).toBe(1)
+    expect(functionBindings.checkCompletionQueue[0]).toHaveProperty('validatedCheck')
+    expect(functionBindings.checkCompletionQueue[0]).toHaveProperty('markedCheck')
 
     persistMarkSpy.mockRestore()
   })
