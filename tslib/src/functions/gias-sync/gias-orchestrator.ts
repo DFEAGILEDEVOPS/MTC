@@ -1,16 +1,14 @@
-import { ConsoleLogger, ILogger } from '../../common/logger'
+import { IEstablishmentFilter, MtcEstablishmentFilter } from './establishment-type-age.filter'
 import { GiasExtractParser, IGiasExtractParser } from './gias-extract-parser'
 import { GiasWebService, IGiasWebService } from './gias-web.service'
-import { IEstablishment } from './IEstablishment'
-import predicates from './school-predicates'
 
 export class GiasOrchestrator {
 
   private giasWebService: IGiasWebService
   private extractParser: IGiasExtractParser
-  private logger: ILogger
+  private estabFilter: IEstablishmentFilter
 
-  constructor(giasWebService?: IGiasWebService, extractParser?: IGiasExtractParser, logger?: ILogger) {
+  constructor(giasWebService?: IGiasWebService, extractParser?: IGiasExtractParser, estabFilter?: IEstablishmentFilter) {
     if (giasWebService === undefined) {
       giasWebService = new GiasWebService()
     }
@@ -19,28 +17,16 @@ export class GiasOrchestrator {
       extractParser = new GiasExtractParser()
     }
     this.extractParser = extractParser
-    if (logger === undefined) {
-      logger = new ConsoleLogger()
+    if (estabFilter === undefined) {
+      estabFilter = new MtcEstablishmentFilter()
     }
-    this.logger = logger
+    this.estabFilter = estabFilter
   }
 
-  async execute (): Promise<Array<IEstablishment>> {
+  async execute (): Promise<any> {
     const extract = await this.giasWebService.GetExtract(12345)
     const establishments = this.extractParser.parse(extract)
-    const filteredSchools = new Array<IEstablishment>()
-    establishments.forEach(school => {
-      if (this.isCorrectTypeAndAgeRange(school, this.logger)) {
-        filteredSchools.push(school)
-      }
-    })
-    return filteredSchools
-  }
-
-  private isCorrectTypeAndAgeRange (school: IEstablishment, logger: ILogger): boolean {
-    const targetAge = 9
-    return predicates.isSchoolOpen(logger, school) &&
-      predicates.isRequiredEstablishmentTypeGroup(logger, school) &&
-      predicates.isAgeInRange(logger, targetAge, school)
+    const filteredSchools = this.estabFilter.byTypeAndAgeRange(establishments)
+    console.dir(filteredSchools)
   }
 }

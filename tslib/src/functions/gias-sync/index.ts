@@ -7,7 +7,6 @@ import { GiasExtractParser } from './gias-extract-parser'
 import { GiasBulkImport } from './gias-bulk-import.service'
 import { IEstablishment } from './IEstablishment'
 import predicates from './school-predicates'
-import { ILogger } from '../../common/logger'
 
 const timerTrigger: AzureFunction = async function (context: Context, timer: any): Promise<void> {
   const start = performance.now()
@@ -20,7 +19,7 @@ const timerTrigger: AzureFunction = async function (context: Context, timer: any
   const schools = xmlParser.parse(extractXml)
   const filteredSchools = new Array<IEstablishment>()
   schools.forEach(school => {
-    if (isPredicated(school, context.log)) {
+    if (isPredicated(school)) {
       filteredSchools.push(school)
     }
   })
@@ -33,11 +32,11 @@ const timerTrigger: AzureFunction = async function (context: Context, timer: any
   context.log(`${functionName}: ${timeStamp} run complete: ${durationInMilliseconds} ms`)
 }
 
-const isPredicated = function isPredicated (school: IEstablishment, logger: ILogger): boolean {
+const isPredicated = function isPredicated (school: IEstablishment): boolean {
   const targetAge = 9
-  return predicates.isSchoolOpen(logger, school) &&
-    predicates.isRequiredEstablishmentTypeGroup(logger, school) &&
-    predicates.isAgeInRange(logger, targetAge, school)
+  return predicates.isSchoolOpen(school) &&
+    predicates.isRequiredEstablishmentTypeGroup(school) &&
+    predicates.isAgeInRange(targetAge, school)
 }
 
 export default timerTrigger
