@@ -6,7 +6,11 @@ import { IMultipartMessageParser, MultipartMessageParser } from './multipart-mes
 import { IZipService, ZipService } from './zip.service'
 import { AttachmentIdParser } from './attachmentId.parser'
 
-export class GiasService {
+export interface IGiasWebService {
+  GetExtract (extractId: number): Promise<string>
+}
+
+export class GiasWebService implements IGiasWebService {
   private soapMessageBuilder: ISoapMessageBuilder
   private soapRequestService: ISoapRequestService
   private xmlParser: IXmlParser

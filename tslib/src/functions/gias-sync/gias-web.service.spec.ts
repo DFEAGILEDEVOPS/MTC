@@ -1,4 +1,4 @@
-import { GiasService } from './gias.service'
+import { GiasWebService } from './gias-web.service'
 import { ISoapMessageBuilder, ISoapMessageSpecification } from './soap-message-builder'
 import { v4 as uuid } from 'uuid'
 import { ISoapRequestService, ISoapRequest } from './soap-request.service'
@@ -26,7 +26,7 @@ const ZipServiceMock = jest.fn<IZipService, any>(() => ({
   extractEntriesFromZipBuffer: jest.fn()
 }))
 
-let sut: GiasService
+let sut: GiasWebService
 let soapMessageBuilderMock: ISoapMessageBuilder
 let soapRequestServiceMock: ISoapRequestService
 let xmlParserMock: IXmlParser
@@ -35,7 +35,7 @@ let zipServiceMock: IZipService
 
 const extractId = 1234
 
-describe('GiasSyncService', () => {
+describe('GiasWebService', () => {
   beforeEach(() => {
     config.Gias.Namespace = 'gias.ns'
     config.Gias.ServiceUrl = 'gias.url'
@@ -95,7 +95,7 @@ describe('GiasSyncService', () => {
       return entries
     })
 
-    sut = new GiasService(
+    sut = new GiasWebService(
                 soapMessageBuilderMock,
                 soapRequestServiceMock,
                 xmlParserMock,
@@ -196,7 +196,7 @@ describe('GiasSyncService', () => {
     config.Gias.ServiceUrl = process.env.GIAS_WS_SERVICE_URL || ''
     config.Gias.Username = process.env.GIAS_WS_USERNAME || ''
     config.Gias.Password = process.env.GIAS_WS_PASSWORD || ''
-    const gias = new GiasService()
+    const gias = new GiasWebService()
     const response = await gias.GetEstablishment(100044)
     console.dir(response)
   })
@@ -207,7 +207,7 @@ describe('GiasSyncService', () => {
     config.Gias.ServiceUrl = process.env.GIAS_WS_SERVICE_URL || ''
     config.Gias.Username = process.env.GIAS_WS_USERNAME || ''
     config.Gias.Password = process.env.GIAS_WS_PASSWORD || ''
-    const gias = new GiasService()
+    const gias = new GiasWebService()
     const response = await gias.GetExtract(parseInt(process.env.GIAS_WS_EXTRACT_ID || '',10))
     console.log(`the xml is ${response.length} chars long`)
   })

@@ -1,6 +1,10 @@
 import { IEstablishment } from './IEstablishment'
 import { IXmlParser, XmlParser } from './xml-parser'
 
+export interface IGiasExtractParser {
+  parse (extractXml: string): Array<IEstablishment>
+}
+
 export class GiasExtractParser {
   private xmlParser: IXmlParser
 
