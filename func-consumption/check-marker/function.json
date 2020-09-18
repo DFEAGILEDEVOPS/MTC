@@ -33,7 +33,7 @@
     {
       "direction": "out",
       "type": "serviceBus",
-      "name": "checkCompletion",
+      "name": "checkCompletionQueue",
       "queueName": "check-completion",
       "connection": "AZURE_SERVICE_BUS_CONNECTION_STRING"
     }

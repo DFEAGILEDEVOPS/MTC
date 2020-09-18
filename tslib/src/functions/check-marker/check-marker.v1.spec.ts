@@ -53,7 +53,7 @@ describe('check-marker/v1', () => {
         receivedCheckTable: [],
         checkNotificationQueue: [],
         checkResultTable: [],
-        checkCompletion: []
+        checkCompletionQueue: []
       }
       await sut.mark(functionBindings, loggerMock)
       fail('error should have been thrown due to empty receivedCheckData')
@@ -79,7 +79,7 @@ describe('check-marker/v1', () => {
       receivedCheckTable: [validatedCheckEntity],
       checkNotificationQueue: [],
       checkResultTable: [],
-      checkCompletion: []
+      checkCompletionQueue: []
     }
 
     let actualTableName: string | undefined
@@ -116,7 +116,7 @@ describe('check-marker/v1', () => {
       receivedCheckTable: [validatedCheckEntity],
       checkNotificationQueue: [],
       checkResultTable: [],
-      checkCompletion: []
+      checkCompletionQueue: []
     }
 
     let actualTableName: string | undefined
@@ -153,7 +153,7 @@ describe('check-marker/v1', () => {
       receivedCheckTable: [validatedCheckEntity],
       checkNotificationQueue: [],
       checkResultTable: [],
-      checkCompletion: []
+      checkCompletionQueue: []
     }
 
     let actualTableName: string | undefined
@@ -194,7 +194,7 @@ describe('check-marker/v1', () => {
       receivedCheckTable: [validatedCheckEntity],
       checkNotificationQueue: [],
       checkResultTable: [],
-      checkCompletion: []
+      checkCompletionQueue: []
     }
 
     let actualTableName: string | undefined
@@ -235,7 +235,7 @@ describe('check-marker/v1', () => {
       receivedCheckTable: [validatedCheckEntity],
       checkNotificationQueue: [],
       checkResultTable: [],
-      checkCompletion: []
+      checkCompletionQueue: []
     }
 
     let actualTableName: string | undefined
@@ -277,7 +277,7 @@ describe('check-marker/v1', () => {
       receivedCheckTable: [validatedCheckEntity],
       checkNotificationQueue: [],
       checkResultTable: [],
-      checkCompletion: []
+      checkCompletionQueue: []
     }
 
     let actualTableName: string | undefined
@@ -346,7 +346,7 @@ describe('check-marker/v1', () => {
       receivedCheckTable: [validatedCheckEntity],
       checkNotificationQueue: [],
       checkResultTable: [],
-      checkCompletion: []
+      checkCompletionQueue: []
     }
 
     sqlServiceMock.getCheckFormDataByCheckCode = jest.fn(async (checkCode: string) => {
@@ -409,7 +409,7 @@ describe('check-marker/v1', () => {
       receivedCheckTable: [validatedCheckEntity],
       checkNotificationQueue: [],
       checkResultTable: [],
-      checkCompletion: []
+      checkCompletionQueue: []
     }
 
     sqlServiceMock.getCheckFormDataByCheckCode = jest.fn(async (checkCode: string) => {
@@ -472,7 +472,7 @@ describe('check-marker/v1', () => {
       receivedCheckTable: [validatedCheckEntity],
       checkNotificationQueue: [],
       checkResultTable: [],
-      checkCompletion: []
+      checkCompletionQueue: []
     }
 
     sqlServiceMock.getCheckFormDataByCheckCode = jest.fn(async (checkCode: string) => {
@@ -529,7 +529,7 @@ describe('check-marker/v1', () => {
       receivedCheckTable: [validatedCheckEntity],
       checkNotificationQueue: [],
       checkResultTable: [],
-      checkCompletion: []
+      checkCompletionQueue: []
     }
 
     sqlServiceMock.getCheckFormDataByCheckCode = jest.fn(async (checkCode: string) => {
@@ -564,7 +564,7 @@ describe('check-marker/v1', () => {
       receivedCheckTable: [validatedCheckEntity],
       checkNotificationQueue: [],
       checkResultTable: [],
-      checkCompletion: []
+      checkCompletionQueue: []
     }
 
     await sut.mark(functionBindings, loggerMock)
@@ -616,7 +616,7 @@ describe('check-marker/v1', () => {
       receivedCheckTable: [validatedCheckEntity],
       checkNotificationQueue: [],
       checkResultTable: [],
-      checkCompletion: []
+      checkCompletionQueue: []
     }
 
     sqlServiceMock.getCheckFormDataByCheckCode = jest.fn(async (checkCode: string) => {
@@ -676,7 +676,7 @@ describe('check-marker/v1', () => {
       receivedCheckTable: [validatedCheckEntity],
       checkNotificationQueue: [],
       checkResultTable: [],
-      checkCompletion: []
+      checkCompletionQueue: []
     }
 
     sqlServiceMock.getCheckFormDataByCheckCode = jest.fn(async (checkCode: string) => {
@@ -718,6 +718,56 @@ describe('check-marker/v1', () => {
 
     expect(checkResult.mark).toBe(1)
     expect(checkResult.maxMarks).toBe(2)
+    persistMarkSpy.mockRestore()
+  })
+
+  // jms
+  test('the payload and the marked check data are sent to the check-completion queue', async () => {
+    const answers = [
+      {
+        factor1: 5,
+        factor2: 5,
+        answer: '25',
+        sequenceNumber: 2,
+        question: '2x5',
+        clientTimestamp: '2018-09-24T12:00:00.811Z'
+      }
+    ]
+    const validatedCheckEntity: ReceivedCheckTableEntity = {
+      PartitionKey: uuid.v4(),
+      RowKey: uuid.v4(),
+      archive: 'foo',
+      checkReceivedAt: moment().toDate(),
+      checkVersion: 1,
+      isValid: true,
+      validatedAt: moment().toDate(),
+      answers: JSON.stringify(answers)
+    }
+
+    const functionBindings: ICheckMarkerFunctionBindings = {
+      receivedCheckTable: [validatedCheckEntity],
+      checkNotificationQueue: [],
+      checkResultTable: [],
+      checkCompletionQueue: []
+    }
+
+    sqlServiceMock.getCheckFormDataByCheckCode = jest.fn(async (checkCode: string) => {
+      return JSON.stringify([
+        {
+          f1: 2,
+          f2: 5
+        },
+        {
+          f1: 5,
+          f2: 5
+        }])
+    })
+    const persistMarkSpy = jest.spyOn<any, any>(sut, 'persistMark')
+    await sut.mark(functionBindings, loggerMock)
+
+    console.log('JMS')
+    console.log(functionBindings.checkCompletionQueue)
+
     persistMarkSpy.mockRestore()
   })
 })

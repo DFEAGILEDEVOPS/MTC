@@ -47,7 +47,7 @@ export class CheckMarkerV1 {
     const markingData = await this.validateData(functionBindings, validatedCheck, logger)
     functionBindings.checkResultTable = []
     functionBindings.checkNotificationQueue = []
-    functionBindings.checkCompletion = []
+    functionBindings.checkCompletionQueue = []
     if (markingData === undefined) {
       this.notifyProcessingFailure(validatedCheck, functionBindings)
       return
@@ -75,7 +75,7 @@ export class CheckMarkerV1 {
         const payloadString = this.compressionService.decompress(validatedCheck.archive)
         const payload = JSON.parse(payloadString)
         logger.verbose(`mark() setting data for results processing on check-completion queue`)
-        functionBindings.checkCompletion.push({
+        functionBindings.checkCompletionQueue.push({
           validatedCheck: payload,
           markedCheck: checkResult
         })
