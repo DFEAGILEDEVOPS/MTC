@@ -1,7 +1,7 @@
 import { AzureFunction, Context } from '@azure/functions'
 import { performance } from 'perf_hooks'
 const functionName = 'gias-sync'
-import { GiasWebService } from './gias-web.service'
+import { GiasWebService } from './web/gias-web.service'
 import config from '../../config'
 import { GiasExtractParser } from './gias-extract-parser'
 import { GiasBulkImport } from './gias-bulk-import.service'

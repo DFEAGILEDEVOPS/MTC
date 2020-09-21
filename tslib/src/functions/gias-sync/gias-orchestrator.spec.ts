@@ -1,7 +1,7 @@
 import { IEstablishmentFilter } from './establishment-type-age.filter'
 import { IGiasExtractParser } from './gias-extract-parser'
 import { GiasOrchestrator } from './gias-orchestrator'
-import { IGiasWebService } from './gias-web.service'
+import { IGiasWebService } from './web/gias-web.service'
 import { IEstablishment } from './IEstablishment'
 
 let sut: GiasOrchestrator

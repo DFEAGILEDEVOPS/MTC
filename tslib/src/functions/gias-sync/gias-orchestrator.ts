@@ -1,6 +1,6 @@
 import { IEstablishmentFilter, MtcEstablishmentFilter } from './establishment-type-age.filter'
 import { GiasExtractParser, IGiasExtractParser } from './gias-extract-parser'
-import { GiasWebService, IGiasWebService } from './gias-web.service'
+import { GiasWebService, IGiasWebService } from './web/gias-web.service'
 
 export class GiasOrchestrator {
 
