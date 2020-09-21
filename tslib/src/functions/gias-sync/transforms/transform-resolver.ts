@@ -1,4 +1,5 @@
 import { IEstablishmentLink } from '../IEstablishment'
+import { EstablishmentLinkType } from './EstablishmentLinkType'
 import { ISchoolTransformer, NullTransformer, PredecessorTransformer, SuccessorTransformer } from './school-transformer'
 
 export class SchoolTransformResolver {
@@ -17,9 +18,9 @@ export class SchoolTransformResolver {
     switch (estabLink.LinkType.Code) {
       case undefined:
         return this.nullTransformer
-      case 1:
+      case EstablishmentLinkType.Predecessor:
         return this.predecessorTransformer
-      case 2:
+      case EstablishmentLinkType.Successor:
         return this.successorTransformer
       default:
         throw new Error(`unknown link type:${estabLink.LinkType.Code}:${estabLink.LinkType.DisplayName}`)

@@ -20,7 +20,7 @@ describe('school transform resolver', () => {
     const transformer = sut.resolve({
       EstablishedDate: new Date(),
       LinkType: {
-        Code: 1,
+        Code: '1',
         DisplayName: 'Predecessor'
       },
       LinkUrn: 123
@@ -32,7 +32,7 @@ describe('school transform resolver', () => {
     const transformer = sut.resolve({
       EstablishedDate: new Date(),
       LinkType: {
-        Code: 2,
+        Code: '2',
         DisplayName: 'Successor'
       },
       LinkUrn: 123

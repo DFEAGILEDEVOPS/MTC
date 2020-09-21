@@ -20,7 +20,7 @@ export interface IEstablishmentLink {
 }
 
 export interface IEstablishmentLinkType {
-  Code: number
+  Code: string
   DisplayName: string
 }
 
