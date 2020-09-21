@@ -1,4 +1,7 @@
 
+/**
+  Temporary for gias exploration. will be removed before PR finalised
+**/
 CREATE TABLE [mtc_admin].[giasStaging](
 	[id] [int] IDENTITY(1,1) NOT NULL PRIMARY KEY,
 	[createdAt] [datetimeoffset](3) NOT NULL DEFAULT GETUTCDATE(),
