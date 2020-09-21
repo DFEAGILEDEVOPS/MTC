@@ -31,6 +31,7 @@ require 'azure/storage/queue'
 require 'lz_string'
 require_relative '../../features/support/azure_blob_helper'
 require_relative 'helpers'
+require_relative '../../features/support/app'
 include Helpers
 
 ENV["ADMIN_BASE_URL"] ||= 'http://localhost:3001'

@@ -1,0 +1,2 @@
+-- Automatically removed when the tables are dropped
+--
