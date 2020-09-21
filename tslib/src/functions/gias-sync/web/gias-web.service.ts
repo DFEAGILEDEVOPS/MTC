@@ -1,9 +1,9 @@
 import { ISoapMessageBuilder, SoapMessageBuilder } from './soap-message-builder'
-import config from '../../config'
+import config from '../../../config'
 import { ISoapRequestService, SoapRequestService } from './soap-request.service'
-import { IXmlParser, XmlParser } from './xml-parser'
+import { IXmlParser, XmlParser } from '../xml-parser'
 import { IMultipartMessageParser, MultipartMessageParser } from './multipart-message-parser'
-import { IZipService, ZipService } from './zip.service'
+import { IZipService, ZipService } from '../zip.service'
 import { AttachmentIdParser } from './attachmentId.parser'
 
 export interface IGiasWebService {

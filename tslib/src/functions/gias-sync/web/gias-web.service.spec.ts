@@ -2,10 +2,10 @@ import { GiasWebService } from './gias-web.service'
 import { ISoapMessageBuilder, ISoapMessageSpecification } from './soap-message-builder'
 import { v4 as uuid } from 'uuid'
 import { ISoapRequestService, ISoapRequest } from './soap-request.service'
-import config from '../../config'
-import { IXmlParser } from './xml-parser'
+import config from '../../../config'
+import { IXmlParser } from '../xml-parser'
 import { IMultipartMessageParser, IResponse, IMessagePart } from './multipart-message-parser'
-import { IZipService } from './zip.service'
+import { IZipService } from '../zip.service'
 
 const SoapMessageBuilderMock = jest.fn<ISoapMessageBuilder, any>(() => ({
   buildMessage: jest.fn()
