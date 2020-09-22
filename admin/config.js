@@ -80,10 +80,10 @@ module.exports = {
       Username: sql.user,
       Password: sql.password
     },
-    ResultsSync: {
+    FunctionsApp: {
       // used by the etl function to sync the table storage results to sql server
-      Username: process.env.SQL_RESULTS_SYNC_USER || 'resultsSyncUser',
-      Password: process.env.SQL_RESULTS_SYNC_USER_PASSWORD || 'r3su1tsSyncP4ssw0rd!' // default only for local docker
+      Username: process.env.SQL_FUNCTIONS_APP_USER || 'functionsAppSystemUser',
+      Password: process.env.SQL_FUNCTIONS_APP_USER_PASSWORD || 'functionsAppSystemP4ssw0rd!' // default only for local docker
     },
     Pooling: {
       MinCount: sql.pool.min,

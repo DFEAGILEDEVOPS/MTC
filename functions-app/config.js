@@ -37,9 +37,9 @@ module.exports = {
     Encrypt: getEnvWithTypeOrDefault('SQL_ENCRYPT', cast.toBoolean, true, process.env),
     EnableArithAbort: getEnvWithTypeOrDefault('SQL_ENABLE_ARITH_ABORT', cast.toBoolean, true, process.env),
     Application: {
-      Name: process.env.SQL_APP_NAME || 'mtc-local-dev', // docker default
-      Username: process.env.SQL_APP_USER || 'mtcAdminUser', // docker default
-      Password: process.env.SQL_APP_USER_PASSWORD || 'your-chosen*P4ssw0rd_for_dev_env!' // docker default
+      Name: process.env.SQL_APP_NAME || 'functions-app', // docker default
+      Username: process.env.SQL_FUNCTIONS_APP_USER || 'functionsAppSystemUser', // docker default
+      Password: process.env.SQL_FUNCTIONS_APP_USER_PASSWORD || 'functionsAppSystemP4ssw0rd!' // docker default
     },
     PupilCensus: {
       Username: process.env.SQL_PUPIL_CENSUS_USER || 'CensusImportUser',
