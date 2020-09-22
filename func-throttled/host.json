@@ -1,0 +1,30 @@
+{
+  "version": "2.0",
+  "logging": {
+    "logLevel": {
+      "default": "Information",
+      "Function": "Trace"
+    }
+  },
+  "extensions": {
+    "http": {
+      "routePrefix": "api",
+      "maxOutstandingRequests": -1,
+      "maxConcurrentRequests": -1,
+      "dynamicThrottlesEnabled": false,
+      "hsts": {
+        "isEnabled": true,
+        "maxAge": "43200",
+        "includeSubDomains": true,
+        "preload": true
+      },
+      "customHeaders": {
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "SAMEORIGIN",
+        "X-Download-Options": "noopen",
+        "X-XSS-Protection": "1; mode=block",
+        "X-DNS-Prefetch-Control": "off"
+      }
+    }
+  }
+}
