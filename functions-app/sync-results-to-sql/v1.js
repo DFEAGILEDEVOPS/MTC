@@ -17,9 +17,6 @@ const service = {
       resultsService.setLogger(loggerFunc)
     }
 
-    console.log('message received: ', checkCompletionMessage)
-    console.log('markedAnswers', checkCompletionMessage.markedCheck.markedAnswers)
-
     this.logger.info(`${name}: message received for check [${checkCompletionMessage.markedCheck.checkCode}]`)
 
     // Retrieve the entire list of questions, and cache it.
