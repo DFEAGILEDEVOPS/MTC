@@ -8,4 +8,4 @@ Using a combination of [jest](https://jestjs.io/) and [jq](https://stedolan.gith
 
 ## 2. Trim output to just test names and source file with jq
 
-`> jq '.testResults[] | "---------------------------",  .name,  .assertionResults[].fullName '  tests.json > example-output.txt`
+`> jq '.testResults[] | "---------------------------",  .name,  .assertionResults[].fullName '  tests.json > test-output.txt`
