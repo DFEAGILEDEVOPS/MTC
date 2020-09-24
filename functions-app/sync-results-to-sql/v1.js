@@ -21,7 +21,7 @@ const service = {
 
     // Retrieve the entire list of questions, and cache it.
     if (!questionHash) {
-      console.info(`${name}: fetching question data`)
+      this.logger.info(`${name}: fetching question data`)
       questionHash = await resultsService.getQuestionData()
     }
 

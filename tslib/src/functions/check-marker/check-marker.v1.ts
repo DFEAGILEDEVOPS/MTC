@@ -29,10 +29,10 @@ export class CheckMarkerV1 {
       this.sqlService = sqlService
     }
 
-    if (sqlService === undefined) {
+    if (compressionService === undefined) {
       this.compressionService = new CompressionService()
     } else {
-      this.compressionService = new CompressionService()
+      this.compressionService = compressionService
     }
   }
 

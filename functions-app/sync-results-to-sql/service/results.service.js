@@ -12,7 +12,6 @@ const service = {
   },
 
   prepareCheckResult: function prepareCheckResult (markedCheck) {
-    console.log('prepareCheckResult: ', markedCheck)
     const sql = `
         DECLARE @checkId Int;
         DECLARE @checkResultId Int;
