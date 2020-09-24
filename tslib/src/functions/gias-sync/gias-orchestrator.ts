@@ -27,6 +27,6 @@ export class GiasOrchestrator {
     const extract = await this.giasWebService.GetExtract(12345)
     const establishments = this.extractParser.parse(extract)
     const filteredSchools = this.estabFilter.byTypeAndAgeRange(establishments)
-    console.dir(filteredSchools)
+    return filteredSchools
   }
 }
