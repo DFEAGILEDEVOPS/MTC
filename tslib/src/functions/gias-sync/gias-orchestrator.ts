@@ -8,7 +8,7 @@ export class GiasOrchestrator {
   private extractParser: IGiasExtractParser
   private estabFilter: IEstablishmentFilter
 
-  constructor(giasWebService?: IGiasWebService, extractParser?: IGiasExtractParser, estabFilter?: IEstablishmentFilter) {
+  constructor (giasWebService?: IGiasWebService, extractParser?: IGiasExtractParser, estabFilter?: IEstablishmentFilter) {
     if (giasWebService === undefined) {
       giasWebService = new GiasWebService()
     }
