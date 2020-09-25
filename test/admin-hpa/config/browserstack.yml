@@ -6,6 +6,7 @@ common_caps:
   "browserstack.ie.driver": "2.21"
   "browserstack.idleTimeout": 300
   "project": "MTC"
+  "browserstack.console": "errors"
   "build": "AdminTests"
 
 browser_caps:
