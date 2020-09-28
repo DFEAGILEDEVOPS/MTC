@@ -1,13 +1,11 @@
 {
   "bindings": [
     {
-      "name": "resultsTimer",
-      "type": "timerTrigger",
       "direction": "in",
-      "schedule-description": "Run at 6pm every night",
-      "dev-schedule": "0 */2 * * * *",
-      "prod-schedule": "0 0 18 * * *",
-      "schedule": "0 0 18 * * *"
+      "type": "serviceBusTrigger",
+      "name": "checkCompletionQueueTrigger",
+      "queueName": "check-completion",
+      "connection": "AZURE_SERVICE_BUS_CONNECTION_STRING"
     },
     {
       "direction": "out",
