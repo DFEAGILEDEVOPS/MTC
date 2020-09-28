@@ -1,103 +1,60 @@
 'use strict'
 
-const azureStorage = require('azure-storage')
+const R = require('ramda')
 
-const azureStorageHelper = require('../../lib/azure-storage-helper')
 const base = require('../../lib/logger')
 const dataService = require('./data-access/data.service')
-const MarkedCheck = require('../marked-check.class')
-const redisCacheService = require('../../lib/redis-cache.service')
-const redisKeyService = require('../../lib/redis-key.service')
-
-const markingTable = 'checkResult'
-const name = 'sync-results-to-sql'
+const { TYPES } = require('../../lib/sql/sql.service')
 
 const service = {
-  /**
-   * Fetch checks for a school
-   * @param {number} schoolId
-   * @return {Promise<{id: number, checkCode: string}[]>}
-   */
-  getNewChecks: async function getNewChecks (schoolId) {
-    return dataService.sqlGetNewChecks(schoolId)
+  getQuestionData: function sqlGetQuestionData () {
+    return dataService.sqlGetQuestionData()
   },
 
-  /**
-   * Fetch indexed marking data from Table Storage `checkResult` table for a given school
-   * @param guid
-   * @return {Promise<MarkedCheck[]>}
-   */
-  getSchoolResults: async function (guid) {
-    const tableService = azureStorageHelper.getPromisifiedAzureTableService()
-    const query = new azureStorage.TableQuery()
-      .top(1000)
-      .where('PartitionKey eq ? or PartitionKey eq ?', guid.toLowerCase(), guid.toUpperCase()) // accommodate any case
+  prepareCheckResult: function prepareCheckResult (markedCheck) {
+    const sql = `
+        DECLARE @checkId Int;
+        DECLARE @checkResultId Int;
 
-    const result = await tableService.queryEntitiesAsync(markingTable, query, null) // TODO: jms add retry handling
+        SET @checkId = (SELECT id
+                          FROM mtc_admin.[check]
+                         WHERE checkCode = @checkCode);
+        IF (@checkId IS NULL) THROW 510001, 'Check ID not found', 1;
 
-    const parsedEntities = result.result.entries.map(o => {
-      return new MarkedCheck(o.RowKey._, guid, o.markedAnswers._, o.mark._, o.markedAt._)
+        INSERT INTO mtc_results.checkResult (check_id, mark, markedAt)
+        VALUES (@checkId, @mark, @markedAt);
+
+        SET @checkResultId = (SELECT SCOPE_IDENTITY());
+    `
+    const params = [
+      { name: 'checkCode', value: markedCheck.checkCode, type: TYPES.UniqueIdentifier },
+      { name: 'mark', value: markedCheck.mark, type: TYPES.TinyInt },
+      { name: 'markedAt', value: markedCheck.markedAt, type: TYPES.DateTimeOffset }
+    ]
+    return [sql, params]
+  },
+
+  prepareAnswers: function prepareAnswers (markedCheck, questionHash) {
+    const answerSql = markedCheck.markedAnswers.map((o, j) => {
+      return `INSERT INTO mtc_results.[answer] (checkResult_id, questionNumber, answer,  question_id, isCorrect, browserTimestamp) VALUES
+                  (@checkResultId, @answerQuestionNumber${j}, @answer${j},  @answerQuestionId${j}, @answerIsCorrect${j}, @answerBrowserTimestamp${j});`
     })
-    return parsedEntities
-  },
 
-  /**
-   * Get schools that have new checks to process
-   * Defined as having completed checks in the DB, but where the marking data (checkScores table) is missing.
-   * @return {Promise<{id: number, name: string, schoolGuid: string}>}
-   */
-  getSchoolsWithNewChecks: async function getSchoolsWithNewChecks () {
-    return dataService.sqlGetSchoolsWithNewChecks()
-  },
-
-  /**
-   * Filter the new marked checks from all the marked checks
-   * @param {{id:number, checkCode: string}[]} newChecks
-   * @param {MarkedCheck[]} markedChecks
-   * @return {MarkedCheck[]}
-   */
-  findNewMarkedChecks: function findNewMarkedChecks (newChecks, markedChecks) {
-    // Create a Map so we can lookup by checkCode efficiently
-    const newCheckMap = new Map()
-    newChecks.forEach(o => { newCheckMap.set(o.checkCode.toLowerCase(), 0) })
-
-    const filteredChecks = markedChecks.filter(o => {
-      if (newCheckMap.has(o.checkCode.toLowerCase())) {
-        newCheckMap.set(o.checkCode, 1)
-        return true
+    const params = markedCheck.markedAnswers.map((o, j) => {
+      const question = questionHash[o.question]
+      if (!question) {
+        throw new Error(`Unable to find valid question for [${o.question}] from checkCode [${markedCheck.checkCode}]`)
       }
-      return false
+      return [
+        { name: `answerQuestionNumber${j}`, value: o.sequenceNumber, type: TYPES.SmallInt },
+        { name: `answer${j}`, value: o.answer, type: TYPES.NVarChar },
+        { name: `answerQuestionId${j}`, value: question.id, type: TYPES.Int },
+        { name: `answerIsCorrect${j}`, value: o.isCorrect, type: TYPES.Bit },
+        { name: `answerBrowserTimestamp${j}`, value: o.clientTimestamp, type: TYPES.DateTimeOffset }
+      ]
     })
 
-    newCheckMap.forEach((val, key) => {
-      if (val === 0) {
-        // this key was not present in the MarkedChecks - we don't have marking data for it
-        this.logger.error(`${name}: ERROR: Marking data not found for checkCode ${key}`)
-      }
-    })
-    return filteredChecks
-  },
-
-  /**
-   * Calls the data-access layer to persist the marked checks
-   * @param {MarkedCheck[]} markedChecks
-   * @return {Promise<void>}
-   */
-  persistMarkingData: async function persistMarkingData (markedChecks) {
-    if (this.logger && typeof this.logger === 'function') {
-      dataService.setLogger(this.logger)
-    }
-    return dataService.sqlPersistMarkingData(markedChecks)
-  },
-
-  /**
-   * Drop Redis cache (school result data)
-   * @param {Number} schoolId
-   * @return {Promise<void>}
-   */
-  dropCaches: async function dropCaches (schoolId) {
-    const key = redisKeyService.getSchoolResultsKey(schoolId)
-    await redisCacheService.drop(key)
+    return [answerSql.join('\n'), R.flatten(params)]
   }
 }
 
