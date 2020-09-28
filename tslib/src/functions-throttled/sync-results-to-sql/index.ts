@@ -83,8 +83,8 @@ const timerTrigger: AzureFunction = async function (context: Context, timer: any
 
 async function process (checkCompletionMessages: ICheckCompletionMessage[], context: Context, queueMessages: sb.ServiceBusMessage[]): Promise<void> {
   try {
-    console.log('Processing message', checkCompletionMessages) // TODO: the actual processing work
-
+    console.log('Processing messages', checkCompletionMessages) // TODO: the actual processing work
+    meta.checksProcessed += checkCompletionMessages.length
     // Work done, consume the messages from the queue
     await completeMessages(queueMessages, context)
   } catch (error) {
