@@ -1,0 +1,13 @@
+{
+  "bindings": [
+    {
+      "name": "censusImport",
+      "type": "blobTrigger",
+      "direction": "in",
+      "path": "census"
+    }
+  ],
+  "tracing": {
+    "consoleLevel": "verbose"
+  }
+}
