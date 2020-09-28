@@ -9,6 +9,9 @@ import { ICheckMarkerFunctionBindings } from './models'
 import checkSchema from '../../schemas/complete-check.v1.json'
 import { CheckNotificationType, ICheckNotificationMessage } from '../check-notifier/check-notification-message'
 import { ReceivedCheckTableEntity } from '../../schemas/models'
+import { CompressionService } from '../../common/compression-service'
+
+const compressionService = new CompressionService()
 
 const TableServiceMock = jest.fn<IAsyncTableService, any>(() => ({
   replaceEntityAsync: jest.fn(),
@@ -52,7 +55,8 @@ describe('check-marker/v1', () => {
       const functionBindings: ICheckMarkerFunctionBindings = {
         receivedCheckTable: [],
         checkNotificationQueue: [],
-        checkResultTable: []
+        checkResultTable: [],
+        checkCompletionQueue: []
       }
       await sut.mark(functionBindings, loggerMock)
       fail('error should have been thrown due to empty receivedCheckData')
@@ -66,7 +70,7 @@ describe('check-marker/v1', () => {
     const validatedCheckEntity: ReceivedCheckTableEntity = {
       PartitionKey: uuid.v4(),
       RowKey: uuid.v4(),
-      archive: 'foo',
+      archive: compressionService.compress(JSON.stringify({})),
       checkReceivedAt: moment().toDate(),
       checkVersion: 1,
       isValid: true,
@@ -77,7 +81,8 @@ describe('check-marker/v1', () => {
     const functionBindings: ICheckMarkerFunctionBindings = {
       receivedCheckTable: [validatedCheckEntity],
       checkNotificationQueue: [],
-      checkResultTable: []
+      checkResultTable: [],
+      checkCompletionQueue: []
     }
 
     let actualTableName: string | undefined
@@ -102,7 +107,7 @@ describe('check-marker/v1', () => {
     const validatedCheckEntity: ReceivedCheckTableEntity = {
       PartitionKey: uuid.v4(),
       RowKey: uuid.v4(),
-      archive: 'foo',
+      archive: compressionService.compress(JSON.stringify({})),
       checkReceivedAt: moment().toDate(),
       checkVersion: 1,
       isValid: true,
@@ -113,7 +118,8 @@ describe('check-marker/v1', () => {
     const functionBindings: ICheckMarkerFunctionBindings = {
       receivedCheckTable: [validatedCheckEntity],
       checkNotificationQueue: [],
-      checkResultTable: []
+      checkResultTable: [],
+      checkCompletionQueue: []
     }
 
     let actualTableName: string | undefined
@@ -138,7 +144,7 @@ describe('check-marker/v1', () => {
     const validatedCheckEntity: ReceivedCheckTableEntity = {
       PartitionKey: uuid.v4(),
       RowKey: uuid.v4(),
-      archive: 'foo',
+      archive: compressionService.compress(JSON.stringify({})),
       checkReceivedAt: moment().toDate(),
       checkVersion: 1,
       isValid: true,
@@ -149,7 +155,8 @@ describe('check-marker/v1', () => {
     const functionBindings: ICheckMarkerFunctionBindings = {
       receivedCheckTable: [validatedCheckEntity],
       checkNotificationQueue: [],
-      checkResultTable: []
+      checkResultTable: [],
+      checkCompletionQueue: []
     }
 
     let actualTableName: string | undefined
@@ -178,7 +185,7 @@ describe('check-marker/v1', () => {
     const validatedCheckEntity: ReceivedCheckTableEntity = {
       PartitionKey: uuid.v4(),
       RowKey: uuid.v4(),
-      archive: 'foo',
+      archive: compressionService.compress(JSON.stringify({})),
       checkReceivedAt: moment().toDate(),
       checkVersion: 1,
       isValid: true,
@@ -189,7 +196,8 @@ describe('check-marker/v1', () => {
     const functionBindings: ICheckMarkerFunctionBindings = {
       receivedCheckTable: [validatedCheckEntity],
       checkNotificationQueue: [],
-      checkResultTable: []
+      checkResultTable: [],
+      checkCompletionQueue: []
     }
 
     let actualTableName: string | undefined
@@ -218,7 +226,7 @@ describe('check-marker/v1', () => {
     const validatedCheckEntity: ReceivedCheckTableEntity = {
       PartitionKey: uuid.v4(),
       RowKey: uuid.v4(),
-      archive: 'foo',
+      archive: compressionService.compress(JSON.stringify({})),
       checkReceivedAt: moment().toDate(),
       checkVersion: 1,
       isValid: true,
@@ -229,7 +237,8 @@ describe('check-marker/v1', () => {
     const functionBindings: ICheckMarkerFunctionBindings = {
       receivedCheckTable: [validatedCheckEntity],
       checkNotificationQueue: [],
-      checkResultTable: []
+      checkResultTable: [],
+      checkCompletionQueue: []
     }
 
     let actualTableName: string | undefined
@@ -259,7 +268,7 @@ describe('check-marker/v1', () => {
     const validatedCheckEntity: ReceivedCheckTableEntity = {
       PartitionKey: uuid.v4(),
       RowKey: uuid.v4(),
-      archive: 'foo',
+      archive: compressionService.compress(JSON.stringify({})),
       checkReceivedAt: moment().toDate(),
       checkVersion: 1,
       isValid: true,
@@ -270,7 +279,8 @@ describe('check-marker/v1', () => {
     const functionBindings: ICheckMarkerFunctionBindings = {
       receivedCheckTable: [validatedCheckEntity],
       checkNotificationQueue: [],
-      checkResultTable: []
+      checkResultTable: [],
+      checkCompletionQueue: []
     }
 
     let actualTableName: string | undefined
@@ -327,7 +337,7 @@ describe('check-marker/v1', () => {
     const validatedCheckEntity: ReceivedCheckTableEntity = {
       PartitionKey: uuid.v4(),
       RowKey: uuid.v4(),
-      archive: 'foo',
+      archive: compressionService.compress(JSON.stringify({})),
       checkReceivedAt: moment().toDate(),
       checkVersion: 1,
       isValid: true,
@@ -338,7 +348,8 @@ describe('check-marker/v1', () => {
     const functionBindings: ICheckMarkerFunctionBindings = {
       receivedCheckTable: [validatedCheckEntity],
       checkNotificationQueue: [],
-      checkResultTable: []
+      checkResultTable: [],
+      checkCompletionQueue: []
     }
 
     sqlServiceMock.getCheckFormDataByCheckCode = jest.fn(async (checkCode: string) => {
@@ -389,7 +400,7 @@ describe('check-marker/v1', () => {
     const validatedCheckEntity: ReceivedCheckTableEntity = {
       PartitionKey: uuid.v4(),
       RowKey: uuid.v4(),
-      archive: 'foo',
+      archive: compressionService.compress(JSON.stringify({})),
       checkReceivedAt: moment().toDate(),
       checkVersion: 1,
       isValid: true,
@@ -400,7 +411,8 @@ describe('check-marker/v1', () => {
     const functionBindings: ICheckMarkerFunctionBindings = {
       receivedCheckTable: [validatedCheckEntity],
       checkNotificationQueue: [],
-      checkResultTable: []
+      checkResultTable: [],
+      checkCompletionQueue: []
     }
 
     sqlServiceMock.getCheckFormDataByCheckCode = jest.fn(async (checkCode: string) => {
@@ -451,7 +463,7 @@ describe('check-marker/v1', () => {
     const validatedCheckEntity: ReceivedCheckTableEntity = {
       PartitionKey: uuid.v4(),
       RowKey: uuid.v4(),
-      archive: 'foo',
+      archive: compressionService.compress(JSON.stringify({})),
       checkReceivedAt: moment().toDate(),
       checkVersion: 1,
       isValid: true,
@@ -462,7 +474,8 @@ describe('check-marker/v1', () => {
     const functionBindings: ICheckMarkerFunctionBindings = {
       receivedCheckTable: [validatedCheckEntity],
       checkNotificationQueue: [],
-      checkResultTable: []
+      checkResultTable: [],
+      checkCompletionQueue: []
     }
 
     sqlServiceMock.getCheckFormDataByCheckCode = jest.fn(async (checkCode: string) => {
@@ -507,7 +520,7 @@ describe('check-marker/v1', () => {
     const validatedCheckEntity: ReceivedCheckTableEntity = {
       PartitionKey: uuid.v4(),
       RowKey: uuid.v4(),
-      archive: 'foo',
+      archive: compressionService.compress(JSON.stringify({})),
       checkReceivedAt: moment().toDate(),
       checkVersion: 1,
       isValid: true,
@@ -518,7 +531,8 @@ describe('check-marker/v1', () => {
     const functionBindings: ICheckMarkerFunctionBindings = {
       receivedCheckTable: [validatedCheckEntity],
       checkNotificationQueue: [],
-      checkResultTable: []
+      checkResultTable: [],
+      checkCompletionQueue: []
     }
 
     sqlServiceMock.getCheckFormDataByCheckCode = jest.fn(async (checkCode: string) => {
@@ -541,7 +555,7 @@ describe('check-marker/v1', () => {
     const validatedCheckEntity: ReceivedCheckTableEntity = {
       PartitionKey: uuid.v4(),
       RowKey: checkCode,
-      archive: 'foo',
+      archive: compressionService.compress(JSON.stringify({})),
       checkReceivedAt: moment().toDate(),
       checkVersion: 1,
       isValid: true,
@@ -552,7 +566,8 @@ describe('check-marker/v1', () => {
     const functionBindings: ICheckMarkerFunctionBindings = {
       receivedCheckTable: [validatedCheckEntity],
       checkNotificationQueue: [],
-      checkResultTable: []
+      checkResultTable: [],
+      checkCompletionQueue: []
     }
 
     await sut.mark(functionBindings, loggerMock)
@@ -592,7 +607,7 @@ describe('check-marker/v1', () => {
     const validatedCheckEntity: ReceivedCheckTableEntity = {
       PartitionKey: uuid.v4(),
       RowKey: uuid.v4(),
-      archive: 'foo',
+      archive: compressionService.compress(JSON.stringify({})),
       checkReceivedAt: moment().toDate(),
       checkVersion: 1,
       isValid: true,
@@ -603,7 +618,8 @@ describe('check-marker/v1', () => {
     const functionBindings: ICheckMarkerFunctionBindings = {
       receivedCheckTable: [validatedCheckEntity],
       checkNotificationQueue: [],
-      checkResultTable: []
+      checkResultTable: [],
+      checkCompletionQueue: []
     }
 
     sqlServiceMock.getCheckFormDataByCheckCode = jest.fn(async (checkCode: string) => {
@@ -651,7 +667,7 @@ describe('check-marker/v1', () => {
     const validatedCheckEntity: ReceivedCheckTableEntity = {
       PartitionKey: uuid.v4(),
       RowKey: uuid.v4(),
-      archive: 'foo',
+      archive: compressionService.compress(JSON.stringify({})),
       checkReceivedAt: moment().toDate(),
       checkVersion: 1,
       isValid: true,
@@ -662,7 +678,8 @@ describe('check-marker/v1', () => {
     const functionBindings: ICheckMarkerFunctionBindings = {
       receivedCheckTable: [validatedCheckEntity],
       checkNotificationQueue: [],
-      checkResultTable: []
+      checkResultTable: [],
+      checkCompletionQueue: []
     }
 
     sqlServiceMock.getCheckFormDataByCheckCode = jest.fn(async (checkCode: string) => {
@@ -704,6 +721,56 @@ describe('check-marker/v1', () => {
 
     expect(checkResult.mark).toBe(1)
     expect(checkResult.maxMarks).toBe(2)
+    persistMarkSpy.mockRestore()
+  })
+
+  test('the payload and the marked check data are sent to the check-completion queue', async () => {
+    const answers = [
+      {
+        factor1: 5,
+        factor2: 5,
+        answer: '25',
+        sequenceNumber: 2,
+        question: '2x5',
+        clientTimestamp: '2018-09-24T12:00:00.811Z'
+      }
+    ]
+    const validatedCheckEntity: ReceivedCheckTableEntity = {
+      PartitionKey: uuid.v4(),
+      RowKey: uuid.v4(),
+      archive: compressionService.compress(JSON.stringify({})),
+      checkReceivedAt: moment().toDate(),
+      checkVersion: 1,
+      isValid: true,
+      validatedAt: moment().toDate(),
+      answers: JSON.stringify(answers)
+    }
+
+    const functionBindings: ICheckMarkerFunctionBindings = {
+      receivedCheckTable: [validatedCheckEntity],
+      checkNotificationQueue: [],
+      checkResultTable: [],
+      checkCompletionQueue: []
+    }
+
+    sqlServiceMock.getCheckFormDataByCheckCode = jest.fn(async (checkCode: string) => {
+      return JSON.stringify([
+        {
+          f1: 2,
+          f2: 5
+        },
+        {
+          f1: 5,
+          f2: 5
+        }])
+    })
+    const persistMarkSpy = jest.spyOn<any, any>(sut, 'persistMark')
+    await sut.mark(functionBindings, loggerMock)
+
+    expect(functionBindings.checkCompletionQueue.length).toBe(1)
+    expect(functionBindings.checkCompletionQueue[0]).toHaveProperty('validatedCheck')
+    expect(functionBindings.checkCompletionQueue[0]).toHaveProperty('markedCheck')
+
     persistMarkSpy.mockRestore()
   })
 })
