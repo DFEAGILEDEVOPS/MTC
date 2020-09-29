@@ -1,0 +1,56 @@
+{
+  "name": "func-throttled",
+  "description": "runtime host for functions defined in tslib that are designed to run on a throttled app plan in Azure",
+  "version": "0.1.0",
+  "license": "GPL-3.0",
+  "engines": {
+    "node": ">= 10.14.1"
+  },
+  "scripts": {
+    "build": "yarn sync && yarn run gulp && yarn delete-specs && func extensions install",
+    "prod:clean": "rm -rf ./node_modules && yarn install --frozen-lockfile --production",
+    "rebuild": "yarn clean && yarn build",
+    "sync": "node ./sync-tslib-deps.js && yarn install",
+    "delete-specs": "find . -name \"*.spec.js\" -type f -delete",
+    "clean": "rm -rf ./dist",
+    "prestart": "yarn build",
+    "start:host": "func start",
+    "start": "yarn start:host",
+    "start:dev": "env $(cat disable-functions.env | grep Azure | xargs ) yarn start"
+  },
+  "resolutions": {
+    "**/**/lodash": "^4.17.20"
+  },
+  "devDependencies": {
+    "edit-json-file": "^1.3.1",
+    "gulp": "^4.0.2",
+    "gulp-typescript": "^5.0.1",
+    "gulp-yarn": "^2.0.0",
+    "jest": "^24.9.0",
+    "rimraf": "^3.0.0",
+    "standard": "^14.3.1",
+    "ts-jest": "^24.1.0",
+    "tslint": "^5.20.0",
+    "tslint-config-standard": "^8.0.1",
+    "typescript": "^3.6.3",
+    "typescript-tslint-plugin": "^0.5.4"
+  },
+  "dependencies": {
+    "@azure/service-bus": "^1.1.2",
+    "adm-zip": "^0.4.16",
+    "axios": "^0.20.0",
+    "azure-storage": "^2.10.3",
+    "bluebird": "^3.7.0",
+    "dotenv": "^8.1.0",
+    "fast-xml-parser": "^3.17.4",
+    "ioredis": "^4.14.1",
+    "lz-string": "^1.4.4",
+    "moment": "^2.24.0",
+    "moment-timezone": "^0.5.27",
+    "mssql": "^6.2.1",
+    "ramda": "^0.27.0",
+    "ramda-adjunct": "^2.21.0",
+    "random-number-csprng": "^1.0.2",
+    "uuid": "^3.3.3"
+  }
+}
