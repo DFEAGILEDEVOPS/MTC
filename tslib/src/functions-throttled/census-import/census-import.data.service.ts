@@ -1,9 +1,16 @@
 import { Context } from '@azure/functions'
 import * as mssql from 'mssql'
 import config from '../../config'
-const R = require('ramda')
+import * as R from 'ramda'
 
-export class CensusImportDataService {
+export interface ICensusImportDataService {
+  initPool (context: Context): Promise<mssql.ConnectionPool>
+  loadStagingTable (context: Context, pool: mssql.ConnectionPool, censusTable: any, blobContent: any): Promise<number>
+  loadPupilsFromStaging (context: Context, pool: mssql.ConnectionPool, censusTable: string, jobId: string): Promise<any>
+  deleteStagingTable (context: Context, pool: mssql.ConnectionPool, censusTable: string): Promise<mssql.IResult<any>>
+}
+
+export class CensusImportDataService implements ICensusImportDataService {
 
   private pool: mssql.ConnectionPool
 
@@ -43,7 +50,7 @@ export class CensusImportDataService {
    * @param {Array} blobContent
    * @return {Object}
    */
-  async sqlLoadStagingTable (context: Context, pool: mssql.ConnectionPool, censusTable: any, blobContent: any): Promise<number> {
+  async loadStagingTable (context: Context, pool: mssql.ConnectionPool, censusTable: any, blobContent: any): Promise<number> {
     if (!pool) {
       await this.initPool(context)
     }
@@ -76,7 +83,7 @@ export class CensusImportDataService {
    * @param {Number} jobId
    * @return {Object}
    */
-  async sqlLoadPupilsFromStaging (context: Context, pool: mssql.ConnectionPool, censusTable: string, jobId: string): Promise<any> {
+  async loadPupilsFromStaging (context: Context, pool: mssql.ConnectionPool, censusTable: string, jobId: string): Promise<any> {
     if (!pool) {
       await this.initPool(context)
     }
@@ -97,7 +104,7 @@ export class CensusImportDataService {
    * @param {String} censusTable
    * @return {Object}
    */
-  async sqlDeleteStagingTable (context: Context, pool: mssql.ConnectionPool, censusTable: string): Promise<mssql.IResult<any>> {
+  async deleteStagingTable (context: Context, pool: mssql.ConnectionPool, censusTable: string): Promise<mssql.IResult<any>> {
     const request = new mssql.Request(pool)
     const sql = `DROP TABLE ${censusTable};`
     return request.query(sql)

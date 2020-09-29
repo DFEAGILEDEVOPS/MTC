@@ -106,5 +106,8 @@ export default {
     BatchesPerExecution: Number(process.env.SCHOOL_RESULTS_CACHE_BATCHS_PER_EXEC) || 10,
     MessagesPerBatch: Number(process.env.SCHOOL_RESULTS_CACHE_MSGS_PER_BATCH) || 32,
     RedisResultsExpiryInSeconds: Number(process.env.REDIS_RESULTS_EXPIRY_IN_SECONDS) || sixMonthsInSeconds
+  },
+  AzureStorage: {
+    ConnectionString: process.env.AZURE_STORAGE_CONNECTION_STRING || ''
   }
 }
