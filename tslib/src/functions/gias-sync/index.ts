@@ -12,7 +12,7 @@ const timerTrigger: AzureFunction = async function (context: Context, timer: any
   const start = performance.now()
 
   const giasService = new GiasWebService()
-  const extractXml = await giasService.GetExtract(config.Gias.ExtractId)
+  const extractXml = await giasService.getExtract(config.Gias.ExtractId)
   context.bindings.giasExtractFile = extractXml
 
   const xmlParser = new GiasExtractParser()

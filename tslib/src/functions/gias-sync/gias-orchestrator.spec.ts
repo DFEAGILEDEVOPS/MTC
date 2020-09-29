@@ -16,7 +16,7 @@ const ExtractParserMock = jest.fn<IGiasExtractParser, any>(() => ({
 }))
 
 const GiasWebServiceMock = jest.fn<IGiasWebService, any>(() => ({
-  GetExtract: jest.fn()
+  getExtract: jest.fn()
 }))
 
 const EstablishmentFilterMock = jest.fn<IEstablishmentFilter, any>(() => ({
@@ -37,11 +37,11 @@ describe('gias orchestrator', () => {
 
   test('parses xml extract into array of establishments', async () => {
     const extractXml = '<xml />'
-    giasWebServiceMock.GetExtract = jest.fn((extractId) => {
+    giasWebServiceMock.getExtract = jest.fn((extractId) => {
       return Promise.resolve(extractXml)
     })
     await sut.execute()
-    expect(giasWebServiceMock.GetExtract).toHaveBeenCalledTimes(1)
+    expect(giasWebServiceMock.getExtract).toHaveBeenCalledTimes(1)
     expect(extractParserMock.parse).toHaveBeenCalledWith(extractXml)
   })
 

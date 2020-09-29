@@ -7,7 +7,7 @@ import { IZipService, ZipService } from '../zip.service'
 import { AttachmentIdParser } from './attachmentId.parser'
 
 export interface IGiasWebService {
-  GetExtract (extractId: number): Promise<string>
+  getExtract (extractId: number): Promise<string>
 }
 
 export class GiasWebService implements IGiasWebService {
@@ -78,7 +78,7 @@ export class GiasWebService implements IGiasWebService {
     })
   }
 
-  async GetExtract (extractId: number): Promise<string> {
+  async getExtract (extractId: number): Promise<string> {
     const soapResponse = await this.makeRequest('GetExtract', {
       Id: extractId
     })

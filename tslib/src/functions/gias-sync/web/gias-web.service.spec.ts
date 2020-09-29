@@ -111,7 +111,7 @@ describe('GiasWebService', () => {
     const errorInfo = `errorId:${uuid()}`
     try {
       soapMessageBuilderMock.buildMessage = jest.fn(() => { throw new Error(errorInfo) })
-      await sut.GetExtract(extractId)
+      await sut.getExtract(extractId)
       fail('error should have been thrown')
     } catch (error) {
       expect(error).toBeDefined()
@@ -129,7 +129,7 @@ describe('GiasWebService', () => {
       capturedSpecification = messageSpec
       return ''
     })
-    await sut.GetExtract(extractId)
+    await sut.getExtract(extractId)
     expect(capturedSpecification).toBeDefined()
     expect(capturedSpecification.action).toEqual('GetExtract')
     expect(capturedSpecification.parameters).toBeDefined()
@@ -139,7 +139,7 @@ describe('GiasWebService', () => {
   test('when namespace is not defined an error is thrown', async () => {
     try {
       config.Gias.Namespace = undefined
-      await sut.GetExtract(extractId)
+      await sut.getExtract(extractId)
       fail('error was expected to be thrown')
     } catch (error) {
       expect(error).toBeDefined()
@@ -150,7 +150,7 @@ describe('GiasWebService', () => {
   test('when serviceUrl is not defined an error is thrown', async () => {
     try {
       config.Gias.ServiceUrl = undefined
-      await sut.GetExtract(extractId)
+      await sut.getExtract(extractId)
       fail('error was expected to be thrown')
     } catch (error) {
       expect(error).toBeDefined()
@@ -161,7 +161,7 @@ describe('GiasWebService', () => {
   test('when username is not defined an error is thrown', async () => {
     try {
       config.Gias.Username = undefined
-      await sut.GetExtract(extractId)
+      await sut.getExtract(extractId)
       fail('error was expected to be thrown')
     } catch (error) {
       expect(error).toBeDefined()
@@ -172,7 +172,7 @@ describe('GiasWebService', () => {
   test('when password is not defined an error is thrown', async () => {
     try {
       config.Gias.Password = undefined
-      await sut.GetExtract(extractId)
+      await sut.getExtract(extractId)
       fail('error was expected to be thrown')
     } catch (error) {
       expect(error).toBeDefined()
@@ -185,7 +185,7 @@ describe('GiasWebService', () => {
 
   // work in progress for final implementation
   test.skip('GetExtract:should return an empty object if no results', async () => {
-    const extractResult = await sut.GetExtract(extractId)
+    const extractResult = await sut.getExtract(extractId)
     expect(extractResult).toBeDefined()
     expect(extractResult.length).toBe(0)
   })
@@ -208,7 +208,7 @@ describe('GiasWebService', () => {
     config.Gias.Username = process.env.GIAS_WS_USERNAME || ''
     config.Gias.Password = process.env.GIAS_WS_PASSWORD || ''
     const gias = new GiasWebService()
-    const response = await gias.GetExtract(parseInt(process.env.GIAS_WS_EXTRACT_ID || '',10))
+    const response = await gias.getExtract(parseInt(process.env.GIAS_WS_EXTRACT_ID || '',10))
     console.log(`the xml is ${response.length} chars long`)
   })
 

@@ -24,7 +24,7 @@ export class GiasOrchestrator {
   }
 
   async execute (): Promise<any> {
-    const extract = await this.giasWebService.GetExtract(12345)
+    const extract = await this.giasWebService.getExtract(12345)
     const establishments = this.extractParser.parse(extract)
     const filteredSchools = this.estabFilter.byTypeAndAgeRange(establishments)
     return filteredSchools
