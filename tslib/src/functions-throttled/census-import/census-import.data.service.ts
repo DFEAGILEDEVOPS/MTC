@@ -1,62 +1,40 @@
-import { Context } from '@azure/functions'
 import * as mssql from 'mssql'
-import config from '../../config'
 import * as R from 'ramda'
 
 export interface ICensusImportDataService {
-  initPool (context: Context): Promise<mssql.ConnectionPool>
-  loadStagingTable (context: Context, pool: mssql.ConnectionPool, censusTable: any, blobContent: any): Promise<number>
-  loadPupilsFromStaging (context: Context, pool: mssql.ConnectionPool, censusTable: string, jobId: string): Promise<any>
-  deleteStagingTable (context: Context, pool: mssql.ConnectionPool, censusTable: string): Promise<mssql.IResult<any>>
+  loadStagingTable (tableName: string, blobContent: any): Promise<number>
+  loadPupilsFromStaging (tableName: string, jobId: string): Promise<any>
+  deleteStagingTable (tableName: string): Promise<mssql.IResult<any>>
+}
+
+export interface IColumnOptionsExtended extends mssql.IColumnOptions {
+  identity?: boolean
 }
 
 export class CensusImportDataService implements ICensusImportDataService {
 
   private pool: mssql.ConnectionPool
 
-  async initPool (context: Context): Promise<mssql.ConnectionPool> {
-    // TODO check for init first?
-    const poolConfig = {
-      database: config.Sql.database,
-      server: config.Sql.server,
-      port: config.Sql.port,
-      requestTimeout: config.Sql.censusRequestTimeout,
-      connectionTimeout: config.Sql.connectionTimeout,
-      user: config.Sql.PupilCensus.Username,
-      password: config.Sql.PupilCensus.Password,
-      pool: {
-        min: config.Sql.Pooling.MinCount,
-        max: config.Sql.Pooling.MaxCount
-      },
-      options: {
-        appName: config.Sql.options.appName, // docker default
-        encrypt: config.Sql.options.encrypt
-      }
-    }
-
-    this.pool = new mssql.ConnectionPool(poolConfig)
-    this.pool.on('error', err => {
-      context.log('SQL Pool Error:', err)
-    })
-    await this.pool.connect()
-    return this.pool
+  constructor (pool: mssql.ConnectionPool) {
+    this.pool = pool
   }
 
   /**
    * Create census import staging table
-   * @param {Object} context
    * @param {Object} pool
    * @param {String} censusTable
    * @param {Array} blobContent
    * @return {Object}
    */
-  async loadStagingTable (context: Context, pool: mssql.ConnectionPool, censusTable: any, blobContent: any): Promise<number> {
-    if (!pool) {
-      await this.initPool(context)
-    }
-    const table = new mssql.Table(censusTable)
+  async loadStagingTable (tableName: string, blobContent: any): Promise<number> {
+    const table = new mssql.Table(tableName)
     table.create = true
-    table.columns.add('id', mssql.Int, { nullable: false, primary: true, identity: true }) // TODO extend?
+    const idOptions: IColumnOptionsExtended = {
+      nullable: false,
+      primary: true,
+      identity: true
+    }
+    table.columns.add('id', mssql.Int, idOptions)
     table.columns.add('lea', mssql.NVarChar(mssql.MAX), { nullable: false })
     table.columns.add('estab', mssql.NVarChar(mssql.MAX), { nullable: false })
     table.columns.add('upn', mssql.NVarChar(mssql.MAX), { nullable: false })
@@ -70,7 +48,7 @@ export class CensusImportDataService implements ICensusImportDataService {
       table.rows.add(i, row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8])
     }
 
-    const request = new mssql.Request(pool)
+    const request = new mssql.Request(this.pool)
     const result = await request.bulk(table)
     return result.rowsAffected
   }
@@ -83,16 +61,13 @@ export class CensusImportDataService implements ICensusImportDataService {
    * @param {Number} jobId
    * @return {Object}
    */
-  async loadPupilsFromStaging (context: Context, pool: mssql.ConnectionPool, censusTable: string, jobId: string): Promise<any> {
-    if (!pool) {
-      await this.initPool(context)
-    }
+  async loadPupilsFromStaging (tableName: string, jobId: string): Promise<any> {
     const sql = `
     DECLARE @citt mtc_census_import.censusImportTableType
-    INSERT INTO @citt SELECT * FROM ${censusTable}
+    INSERT INTO @citt SELECT * FROM ${tableName}
     EXEC mtc_census_import.spPupilCensusImportFromStaging @censusImportTable = @citt, @jobId = ${jobId}
     `
-    const request = new mssql.Request(pool)
+    const request = new mssql.Request(this.pool)
     const result = await request.query(sql)
     return R.head(result.recordset)
   }
@@ -104,9 +79,9 @@ export class CensusImportDataService implements ICensusImportDataService {
    * @param {String} censusTable
    * @return {Object}
    */
-  async deleteStagingTable (context: Context, pool: mssql.ConnectionPool, censusTable: string): Promise<mssql.IResult<any>> {
-    const request = new mssql.Request(pool)
-    const sql = `DROP TABLE ${censusTable};`
+  async deleteStagingTable (tableName: string): Promise<mssql.IResult<any>> {
+    const request = new mssql.Request(this.pool)
+    const sql = `DROP TABLE ${tableName};`
     return request.query(sql)
   }
 }
