@@ -1,6 +1,5 @@
 
-import { Context } from '@azure/functions'
-import csvString from 'csv-string'
+import * as csvString from 'csv-string'
 import moment from 'moment'
 import * as R from 'ramda'
 import { v4 as uuidv4 } from 'uuid'
@@ -8,6 +7,7 @@ import { AsyncBlobService, IBlobStorageService } from '../../azure/storage-helpe
 import { CensusImportDataService, ICensusImportDataService } from './census-import.data.service'
 import { IJobDataService, JobDataService } from './job.data.service'
 import * as mssql from 'mssql'
+import { ConsoleLogger, ILogger } from '../../common/logger'
 
 export class CensusImportV1 {
 
@@ -15,8 +15,13 @@ export class CensusImportV1 {
   private censusImportDataService: ICensusImportDataService
   private jobDataService: IJobDataService
   private blobStorageService: IBlobStorageService
+  private logger: ILogger
 
-  constructor (pool: mssql.ConnectionPool, censusImportDataService?: ICensusImportDataService, jobDataService?: IJobDataService, blobStorageService?: IBlobStorageService) {
+  constructor (pool: mssql.ConnectionPool,
+    censusImportDataService?: ICensusImportDataService,
+    jobDataService?: IJobDataService,
+    blobStorageService?: IBlobStorageService,
+    logger?: ILogger) {
 
     this.pool = pool
 
@@ -34,17 +39,22 @@ export class CensusImportV1 {
       blobStorageService = new AsyncBlobService()
     }
     this.blobStorageService = blobStorageService
+
+    if (logger === undefined) {
+      logger = new ConsoleLogger()
+    }
+    this.logger = logger
   }
 
-  async process (context: Context, blob: any) {
-    const rowsAffected = await this.handleCensusImport(context, blob)
+  async process (blob: any, blobUri: string) {
+    const rowsAffected = await this.handleCensusImport(blob, blobUri)
     return {
       processCount: rowsAffected
     }
   }
 
-  private async handleCensusImport (context: Context, blob: any): Promise<number> {
-    const jobUrlSlug = R.compose((arr: any[]) => arr[arr.length - 1], (r: string) => r.split('/'))(context.bindingData.uri)
+  private async handleCensusImport (blob: any, blobUri: string): Promise<number> {
+    const jobUrlSlug = R.compose((arr: any[]) => arr[arr.length - 1], (r: string) => r.split('/'))(blobUri)
 
     // Update job status to Processing
     const jobId = await this.jobDataService.updateStatus(jobUrlSlug, 'PRC')
@@ -62,7 +72,7 @@ export class CensusImportV1 {
     if (stagingInsertCount !== pupilMeta.insertCount) {
       const errorOutput = pupilMeta.errorText
       await this.jobDataService.updateStatus(jobUrlSlug, 'CWR', jobOutput, errorOutput)
-      context.log.warn(`census-import: ${stagingInsertCount} rows staged, but only ${pupilMeta.insertCount} rows inserted to pupil table`)
+      this.logger.warn(`census-import: ${stagingInsertCount} rows staged, but only ${pupilMeta.insertCount} rows inserted to pupil table`)
     } else {
       const jobOutput = `${stagingInsertCount} rows staged and ${pupilMeta.insertCount} rows inserted to pupil table`
       await this.jobDataService.updateStatus(jobUrlSlug, 'COM', jobOutput)
