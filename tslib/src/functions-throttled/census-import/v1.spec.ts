@@ -77,6 +77,4 @@ describe('census-import: v1', () => {
     expect(typeof output).toBe('string')
     console.dir(output)
   })
-
-
 })

@@ -7,10 +7,6 @@ export interface ICensusImportDataService {
   deleteStagingTable (tableName: string): Promise<mssql.IResult<any>>
 }
 
-export interface IColumnOptionsExtended extends mssql.IColumnOptions {
-  identity?: boolean
-}
-
 export class CensusImportDataService implements ICensusImportDataService {
 
   private pool: mssql.ConnectionPool
@@ -29,12 +25,7 @@ export class CensusImportDataService implements ICensusImportDataService {
   async loadStagingTable (tableName: string, blobContent: any): Promise<number> {
     const table = new mssql.Table(tableName)
     table.create = true
-    const idOptions: IColumnOptionsExtended = {
-      nullable: false,
-      primary: true,
-      identity: true
-    }
-    table.columns.add('id', mssql.Int, idOptions)
+    table.columns.add('id', mssql.Int, { nullable: false, primary: true, identity: true })
     table.columns.add('lea', mssql.NVarChar(mssql.MAX), { nullable: false })
     table.columns.add('estab', mssql.NVarChar(mssql.MAX), { nullable: false })
     table.columns.add('upn', mssql.NVarChar(mssql.MAX), { nullable: false })
