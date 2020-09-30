@@ -7,12 +7,16 @@ import { ICheckFormService, CheckFormService } from './check-form.service'
 import { ILogger } from '../../common/logger'
 import { ICheckMarkerFunctionBindings, MarkingData, CheckResult, MarkedAnswer } from './models'
 import { ICheckNotificationMessage, CheckNotificationType } from '../check-notifier/check-notification-message'
+import { ICompressionService, CompressionService } from '../../common/compression-service'
+
+const functionName = 'check-marker'
 
 export class CheckMarkerV1 {
   private tableService: IAsyncTableService
   private sqlService: ICheckFormService
+  private compressionService: ICompressionService
 
-  constructor (tableService?: IAsyncTableService, sqlService?: ICheckFormService) {
+  constructor (tableService?: IAsyncTableService, sqlService?: ICheckFormService, compressionService?: ICompressionService) {
     if (tableService === undefined) {
       this.tableService = new AsyncTableService()
     } else {
@@ -24,20 +28,33 @@ export class CheckMarkerV1 {
     } else {
       this.sqlService = sqlService
     }
+
+    if (compressionService === undefined) {
+      this.compressionService = new CompressionService()
+    } else {
+      this.compressionService = compressionService
+    }
   }
 
+  /**
+   * This is the main entry-point called from index.ts
+   * @param functionBindings
+   * @param logger
+   */
   async mark (functionBindings: ICheckMarkerFunctionBindings, logger: ILogger): Promise<void> {
     logger.verbose('mark() called')
     const validatedCheck = this.findValidatedCheck(functionBindings.receivedCheckTable)
     const markingData = await this.validateData(functionBindings, validatedCheck, logger)
     functionBindings.checkResultTable = []
     functionBindings.checkNotificationQueue = []
+    functionBindings.checkCompletionQueue = []
     if (markingData === undefined) {
       this.notifyProcessingFailure(validatedCheck, functionBindings)
       return
     }
+    let checkResult: CheckResult
     try {
-      const checkResult = this.markCheck(markingData, validatedCheck.RowKey)
+      checkResult = this.markCheck(markingData, validatedCheck.RowKey)
       logger.verbose(`mark(): results ${JSON.stringify(checkResult)}`)
       this.persistMark(checkResult, functionBindings, validatedCheck.PartitionKey)
     } catch (error) {
@@ -51,6 +68,25 @@ export class CheckMarkerV1 {
     }
     logger.verbose(`mark() setting notification msg to ${JSON.stringify(notification)}`)
     functionBindings.checkNotificationQueue.push(notification)
+
+    // Output the markedCheck and the payload to be sent to the results schema
+    if (validatedCheck.hasOwnProperty('archive')) {
+      try {
+        const payloadString = this.compressionService.decompress(validatedCheck.archive)
+        const payload = JSON.parse(payloadString)
+        logger.verbose(`mark() setting data for results processing on check-completion queue`)
+        functionBindings.checkCompletionQueue.push({
+          validatedCheck: payload,
+          markedCheck: checkResult
+        })
+      } catch (error) {
+        console.error(error)
+        logger.error(`${functionName}: checkCode [${validatedCheck.RowKey}] failed to send data to results queue: ${error.message}`)
+      }
+    } else {
+      console.error('No archive')
+      logger.error(`${functionName}: checkCode [${validatedCheck.RowKey}] failed to detect an archive property.  Results are not available.`)
+    }
   }
 
   private notifyProcessingFailure (validatedCheck: ReceivedCheckTableEntity, functionBindings: ICheckMarkerFunctionBindings) {
