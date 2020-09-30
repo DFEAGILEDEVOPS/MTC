@@ -1,5 +1,5 @@
 
-import * as csvString from 'csv-string'
+import * as csv from '@fast-csv/parse'
 import moment from 'moment'
 import * as R from 'ramda'
 import { v4 as uuidv4 } from 'uuid'
@@ -58,8 +58,8 @@ export class CensusImportV1 {
 
     // Update job status to Processing
     const jobId = await this.jobDataService.updateStatus(jobUrlSlug, 'PRC')
-
-    const blobContent = csvString.parse(blob.toString())
+    // TODO test output
+    const blobContent = csv.parseString(blob.toString(), { headers: true })
     const censusTable = `[mtc_census_import].[census_import_${moment.utc().format('YYYYMMDDHHMMSS')}_${uuidv4()}]`
     const stagingInsertCount = await this.censusImportDataService.loadStagingTable(censusTable, blobContent)
     const pupilMeta = await this.censusImportDataService.loadPupilsFromStaging(censusTable, jobId)

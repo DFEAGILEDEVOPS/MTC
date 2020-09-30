@@ -49,11 +49,11 @@
   },
   "dependencies": {
     "@azure/service-bus": "^1.1.2",
+    "@fast-csv/parse": "^4.3.2",
     "adm-zip": "^0.4.16",
     "axios": "^0.20.0",
     "azure-storage": "^2.10.3",
     "bluebird": "^3.7.0",
-    "csv-string": "^4.0.1",
     "dotenv": "^8.1.0",
     "fast-xml-parser": "^3.17.4",
     "ioredis": "^4.14.1",
