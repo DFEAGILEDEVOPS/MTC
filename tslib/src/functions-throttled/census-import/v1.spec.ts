@@ -3,9 +3,6 @@
 import { ConnectionPool } from 'mssql'
 /* global describe expect it spyOn */
 
-// remove...
-import * as csv from '@fast-csv/parse'
-
 import { CensusImportV1 } from './v1'
 import config from '../../config'
 import { ICensusImportDataService } from './census-import.data.service'
@@ -70,11 +67,7 @@ describe('census-import: v1', () => {
     expect(jobDataServiceMock.updateStatus).toHaveBeenCalledTimes(2)
   })
 
-  test('csv parser works on raw csv string', () => {
-    const input = 'foo,bar,buz,bar\nabc,def,ghi,jkl'
-    const output = csv.parseString(input)
-    expect(output).toBeDefined()
-    expect(typeof output).toBe('string')
-    console.dir(output)
-  })
+  test.todo('unhappy paths with job logging')
+  test.todo('parser mock with call verification?')
+  test.todo('persistence verification?')
 })
