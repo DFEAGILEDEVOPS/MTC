@@ -2,7 +2,7 @@ import * as mssql from 'mssql'
 import * as R from 'ramda'
 
 export interface IJobDataService {
-  updateStatus (urlSlug: string, jobStatusCode: string, jobOutput?: string, errorOutput?: string): Promise<any>
+  updateStatus (urlSlug: string, jobStatusCode: string, jobOutput?: string, errorOutput?: string): Promise<number>
 }
 
 export class JobDataService implements IJobDataService {
@@ -22,7 +22,7 @@ export class JobDataService implements IJobDataService {
    * @param {String} errorOutput
    * @return {Promise}
    */
-  async updateStatus (urlSlug: string, jobStatusCode: string, jobOutput?: string, errorOutput?: string): Promise<any> {
+  async updateStatus (urlSlug: string, jobStatusCode: string, jobOutput?: string, errorOutput?: string): Promise<number> {
     const sql = `UPDATE [mtc_admin].[job] SET jobStatus_id =
     (SELECT id FROM [mtc_admin].[jobStatus] WHERE jobStatusCode = @jobStatusCode),
         jobOutput=@jobOutput, errorOutput=@errorOutput
@@ -37,6 +37,6 @@ export class JobDataService implements IJobDataService {
     request.input('errorOutput', mssql.NVarChar(mssql.MAX), errorOutput)
     const result = await request.query(sql)
     const recordset: any = R.path(['recordset'], result)
-    return R.path(['id'], R.head(recordset))
+    return R.path(['id'], R.head(recordset)) as number
   }
 }

@@ -18,10 +18,10 @@ export class CensusImportV1 {
   private logger: ILogger
 
   constructor (pool: mssql.ConnectionPool,
+    logger?: ILogger,
     censusImportDataService?: ICensusImportDataService,
     jobDataService?: IJobDataService,
-    blobStorageService?: IBlobStorageService,
-    logger?: ILogger) {
+    blobStorageService?: IBlobStorageService) {
 
     this.pool = pool
 
@@ -55,20 +55,16 @@ export class CensusImportV1 {
 
   private async handleCensusImport (blob: any, blobUri: string): Promise<number> {
     const jobUrlSlug = R.compose((arr: any[]) => arr[arr.length - 1], (r: string) => r.split('/'))(blobUri)
-
     // Update job status to Processing
     const jobId = await this.jobDataService.updateStatus(jobUrlSlug, 'PRC')
-    // TODO test output
     const blobContent = csvString.parse(blob.toString())
     const censusTable = `[mtc_census_import].[census_import_${moment.utc().format('YYYYMMDDHHMMSS')}_${uuidv4()}]`
     const stagingInsertCount = await this.censusImportDataService.loadStagingTable(censusTable, blobContent)
     const pupilMeta = await this.censusImportDataService.loadPupilsFromStaging(censusTable, jobId)
-
     await this.censusImportDataService.deleteStagingTable(censusTable)
     await this.blobStorageService.deleteContainerAsync('census')
 
     const jobOutput = `${stagingInsertCount} rows in uploaded file, ${pupilMeta.insertCount} inserted to pupil table, ${pupilMeta.errorCount} rows containing errors`
-
     if (stagingInsertCount !== pupilMeta.insertCount) {
       const errorOutput = pupilMeta.errorText
       await this.jobDataService.updateStatus(jobUrlSlug, 'CWR', jobOutput, errorOutput)

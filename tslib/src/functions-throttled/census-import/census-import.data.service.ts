@@ -3,7 +3,7 @@ import * as R from 'ramda'
 
 export interface ICensusImportDataService {
   loadStagingTable (tableName: string, blobContent: any): Promise<number>
-  loadPupilsFromStaging (tableName: string, jobId: string): Promise<any>
+  loadPupilsFromStaging (tableName: string, jobId: number): Promise<any>
   deleteStagingTable (tableName: string): Promise<mssql.IResult<any>>
 }
 
@@ -52,7 +52,7 @@ export class CensusImportDataService implements ICensusImportDataService {
    * @param {Number} jobId
    * @return {Object}
    */
-  async loadPupilsFromStaging (tableName: string, jobId: string): Promise<any> {
+  async loadPupilsFromStaging (tableName: string, jobId: number): Promise<any> {
     const sql = `
     DECLARE @citt mtc_census_import.censusImportTableType
     INSERT INTO @citt SELECT * FROM ${tableName}
