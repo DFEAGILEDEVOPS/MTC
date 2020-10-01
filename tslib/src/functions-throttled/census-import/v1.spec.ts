@@ -10,7 +10,6 @@ import { IJobDataService } from './job.data.service'
 import { IBlobStorageService } from '../../azure/storage-helper'
 import { ILogger } from '../../common/logger'
 
-
 const CensusImportDataServiceMock = jest.fn<ICensusImportDataService, any>(() => ({
   deleteStagingTable: jest.fn(),
   loadPupilsFromStaging: jest.fn(),
