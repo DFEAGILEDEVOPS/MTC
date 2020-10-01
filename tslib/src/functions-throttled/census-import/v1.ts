@@ -67,10 +67,12 @@ export class CensusImportV1 {
     const jobOutput = `${stagingInsertCount} rows in uploaded file, ${pupilMeta.insertCount} inserted to pupil table, ${pupilMeta.errorCount} rows containing errors`
     if (stagingInsertCount !== pupilMeta.insertCount) {
       const errorOutput = pupilMeta.errorText
+      // update job to failed
       await this.jobDataService.updateStatus(jobUrlSlug, 'CWR', jobOutput, errorOutput)
       this.logger.warn(`census-import: ${stagingInsertCount} rows staged, but only ${pupilMeta.insertCount} rows inserted to pupil table`)
     } else {
       const jobOutput = `${stagingInsertCount} rows staged and ${pupilMeta.insertCount} rows inserted to pupil table`
+      // update job to complete
       await this.jobDataService.updateStatus(jobUrlSlug, 'COM', jobOutput)
     }
     return pupilMeta.insertCount
