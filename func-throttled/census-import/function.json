@@ -9,5 +9,6 @@
   ],
   "tracing": {
     "consoleLevel": "verbose"
-  }
+  },
+  "scriptFile": "../dist/functions-throttled/census-import/index.js"
 }
