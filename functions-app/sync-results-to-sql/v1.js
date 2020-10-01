@@ -18,6 +18,8 @@ const service = {
     }
 
     this.logger.info(`${name}: message received for check [${checkCompletionMessage.markedCheck.checkCode}]`)
+    const fs = require('fs')
+    fs.writeFileSync('/tmp/jms.json', JSON.stringify(checkCompletionMessage, ' ', 2))
 
     // Retrieve the entire list of questions, and cache it.
     if (!questionHash) {

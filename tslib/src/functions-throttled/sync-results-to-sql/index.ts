@@ -1,12 +1,14 @@
+import * as sb from '@azure/service-bus'
+import * as RA from 'ramda-adjunct'
 import { AzureFunction, Context } from '@azure/functions'
 import { performance } from 'perf_hooks'
 
-const functionName = 'sync-results-to-sql'
-import * as sb from '@azure/service-bus'
+import { SyncResultsService } from './sync-results.service'
 import config from '../../config'
-import * as RA from 'ramda-adjunct'
 import { ICheckCompletionMessage } from './models'
-const meta = { checksProcessed: 0, checksErrored: 0, errorCheckCodes: [] }
+
+const meta = { checksProcessed: 0, checksErrored: 0, errorCheckCodes: [] as string[] }
+const functionName = 'sync-results-to-sql'
 
 /*
  * The function is running as a singleton, and the receiver is therefore exclusive
@@ -82,14 +84,24 @@ const timerTrigger: AzureFunction = async function (context: Context, timer: any
 }
 
 async function process (checkCompletionMessages: ICheckCompletionMessage[], context: Context, queueMessages: sb.ServiceBusMessage[]): Promise<void> {
-  try {
-    console.log('Processing messages', checkCompletionMessages) // TODO: the actual processing work
-    meta.checksProcessed += checkCompletionMessages.length
-    // Work done, consume the messages from the queue
-    await completeMessages(queueMessages, context)
-  } catch (error) {
-    // sql transaction failed, abandon...
-    await abandonMessages(queueMessages, context)
+  console.log('Processing messages', checkCompletionMessages)
+  const syncResultsService = new SyncResultsService(context.log)
+  for (let i in checkCompletionMessages) {
+    const msg = checkCompletionMessages[i]
+    const queueMessage = queueMessages[i]
+
+    try {
+      await syncResultsService.process(msg)
+      meta.checksProcessed += 1
+      // Work done, consume the messages from the queue
+      await completeMessages([queueMessage], context)
+    } catch (error) {
+      console.log('error in message', error)
+      meta.checksErrored += 1
+      meta.errorCheckCodes.push(msg.markedCheck.checkCode)
+      // sql transaction failed, abandon...
+      await abandonMessages([queueMessage], context)
+    }
   }
 }
 

@@ -1,9 +1,8 @@
-
 import { ICheckCompletionMessage, DBQuestion } from './models'
 import { ISyncResultsDataService, SyncResultsDataService } from './sync-results.data.service'
 import { ConsoleLogger, ILogger } from '../../common/logger'
 
-const name = 'SyncResultsService'
+const name = 'SyncResultsService (throttled)'
 
 export class SyncResultsService {
   private logger: ILogger
@@ -31,5 +30,10 @@ export class SyncResultsService {
       this.logger.info(`${name}: fetching question data`)
       this.questionHash = await this.syncResultsDataService.sqlGetQuestionData()
     }
+
+    // Prepare checkResult insert statement
+    const checkResTran = this.syncResultsDataService.prepareCheckResult(checkCompletionMessage.markedCheck)
+
+    await this.syncResultsDataService.insertToDatabase([checkResTran])
   }
 }

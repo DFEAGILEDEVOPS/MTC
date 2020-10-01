@@ -1,8 +1,11 @@
-import { ISqlService, SqlService } from '../../sql/sql.service'
-import { DBQuestion } from './models'
+import { ISqlService, ITransactionRequest, SqlService } from '../../sql/sql.service'
+import { DBQuestion, MarkedCheck } from './models'
+import { TYPES } from 'mssql'
 
 export interface ISyncResultsDataService {
   sqlGetQuestionData (): Promise<Map<string, DBQuestion>>
+  insertToDatabase (requests: ITransactionRequest[]): Promise<void>
+  prepareCheckResult (markedCheck: MarkedCheck): ITransactionRequest
 }
 
 export class SyncResultsDataService implements ISyncResultsDataService {
@@ -26,5 +29,33 @@ export class SyncResultsDataService implements ISyncResultsDataService {
       }
     })
     return map
+  }
+
+  public async insertToDatabase (requests: ITransactionRequest[]): Promise<void> {
+    console.log('call insertToDatabase with', requests)
+    return this.sqlService.modifyWithTransaction(requests)
+  }
+
+  public prepareCheckResult (markedCheck: MarkedCheck): ITransactionRequest {
+    const sql = `
+        DECLARE @checkId Int;
+        DECLARE @checkResultId Int;
+
+        SET @checkId = (SELECT id
+                          FROM mtc_admin.[check]
+                         WHERE checkCode = @checkCode);
+        IF (@checkId IS NULL) THROW 510001, 'Check ID not found', 1;
+
+        INSERT INTO mtc_results.checkResult (check_id, mark, markedAt)
+        VALUES (@checkId, @mark, @markedAt);
+
+        SET @checkResultId = (SELECT SCOPE_IDENTITY());
+    `
+    const params = [
+      { name: 'checkCode', value: markedCheck.checkCode, type: TYPES.UniqueIdentifier },
+      { name: 'mark', value: markedCheck.mark, type: TYPES.TinyInt },
+      { name: 'markedAt', value: markedCheck.markedAt, type: TYPES.DateTimeOffset }
+    ]
+    return { sql, params } as ITransactionRequest
   }
 }
