@@ -1,11 +1,16 @@
 import { ISqlService, ITransactionRequest, SqlService } from '../../sql/sql.service'
 import { DBQuestion, MarkedCheck } from './models'
 import { TYPES } from 'mssql'
+import * as R from 'ramda'
 
 export interface ISyncResultsDataService {
   sqlGetQuestionData (): Promise<Map<string, DBQuestion>>
+
   insertToDatabase (requests: ITransactionRequest[]): Promise<void>
+
   prepareCheckResult (markedCheck: MarkedCheck): ITransactionRequest
+
+  prepareAnswers (markedheck: MarkedCheck, questionHash: Map<string, DBQuestion>): ITransactionRequest
 }
 
 export class SyncResultsDataService implements ISyncResultsDataService {
@@ -57,5 +62,28 @@ export class SyncResultsDataService implements ISyncResultsDataService {
       { name: 'markedAt', value: markedCheck.markedAt, type: TYPES.DateTimeOffset }
     ]
     return { sql, params } as ITransactionRequest
+  }
+
+  public prepareAnswers (markedCheck: MarkedCheck, questionHash: Map<string, DBQuestion>): ITransactionRequest {
+    const answerSql = markedCheck.markedAnswers.map((o, j) => {
+      return `INSERT INTO mtc_results.[answer] (checkResult_id, questionNumber, answer,  question_id, isCorrect, browserTimestamp) VALUES
+                  (@checkResultId, @answerQuestionNumber${j}, @answer${j},  @answerQuestionId${j}, @answerIsCorrect${j}, @answerBrowserTimestamp${j});`
+    })
+
+    const params = markedCheck.markedAnswers.map((o, j) => {
+      const question = questionHash.get(o.question)
+      if (!question) {
+        throw new Error(`Unable to find valid question for [${o.question}] from checkCode [${markedCheck.checkCode}]`)
+      }
+      return [
+        { name: `answerQuestionNumber${j}`, value: o.sequenceNumber, type: TYPES.SmallInt },
+        { name: `answer${j}`, value: o.answer, type: TYPES.NVarChar },
+        { name: `answerQuestionId${j}`, value: question.id, type: TYPES.Int },
+        { name: `answerIsCorrect${j}`, value: o.isCorrect, type: TYPES.Bit },
+        { name: `answerBrowserTimestamp${j}`, value: o.clientTimestamp, type: TYPES.DateTimeOffset }
+      ]
+    })
+
+    return { sql: answerSql.join('\n'), params: R.flatten(params) }
   }
 }

@@ -2,6 +2,8 @@ import { SyncResultsService } from './sync-results.service'
 import { mockCompletionCheckMessage } from './mocks/completed-check.message'
 import { ConsoleLogger } from '../../common/logger'
 import { SyncResultsDataService } from './sync-results.data.service'
+import { ITransactionRequest } from '../../sql/sql.service'
+import { TYPES } from 'mssql'
 jest.mock('./sync-results.data.service')
 
 const mockQuestionData = new Map()
@@ -10,12 +12,20 @@ mockQuestionData.set('1x1', { id: 1, factor1: 1, factor2: 2, isWarmup: false, co
 describe('SyncResultsService', () => {
   let sut: SyncResultsService
   let mockSyncResultsDataService: SyncResultsDataService
+  const mockTransaction: ITransactionRequest = {
+    sql: 'SELECT * FROM table',
+    params: [
+      { name: 'test', value: 'test', type: TYPES.NVarChar }
+    ]
+  }
 
   beforeEach(() => {
     // @ts-ignore
     SyncResultsDataService.mockClear()
     const logger = new ConsoleLogger()
     mockSyncResultsDataService = new SyncResultsDataService()
+    ;(mockSyncResultsDataService.prepareCheckResult as jest.Mock).mockReturnValueOnce(mockTransaction)
+    ;(mockSyncResultsDataService.prepareAnswers as jest.Mock).mockReturnValueOnce(mockTransaction)
     sut = new SyncResultsService(logger, mockSyncResultsDataService)
   })
 
@@ -30,6 +40,12 @@ describe('SyncResultsService', () => {
     (mockSyncResultsDataService.sqlGetQuestionData as jest.Mock).mockReturnValueOnce(Promise.resolve(mockQuestionData))
     await sut.process(mockCompletionCheckMessage)
     expect(mockSyncResultsDataService.prepareCheckResult).toHaveBeenCalledTimes(1)
+  })
+
+  test('it makes a call to prepare the data for the answers table', async () => {
+    (mockSyncResultsDataService.sqlGetQuestionData as jest.Mock).mockReturnValueOnce(Promise.resolve(mockQuestionData))
+    await sut.process(mockCompletionCheckMessage)
+    expect(mockSyncResultsDataService.prepareAnswers).toHaveBeenCalledTimes(1)
   })
 
   test('it makes a call persist all the prepared data in the database', async () => {

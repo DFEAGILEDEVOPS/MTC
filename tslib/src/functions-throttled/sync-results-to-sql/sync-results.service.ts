@@ -1,6 +1,7 @@
 import { ICheckCompletionMessage, DBQuestion } from './models'
 import { ISyncResultsDataService, SyncResultsDataService } from './sync-results.data.service'
 import { ConsoleLogger, ILogger } from '../../common/logger'
+import { ITransactionRequest } from '../../sql/sql.service'
 
 const name = 'SyncResultsService (throttled)'
 
@@ -34,6 +35,23 @@ export class SyncResultsService {
     // Prepare checkResult insert statement
     const checkResTran = this.syncResultsDataService.prepareCheckResult(checkCompletionMessage.markedCheck)
 
-    await this.syncResultsDataService.insertToDatabase([checkResTran])
+    // Prepare SQL statements and variables for the Answers
+    const answerTran = this.syncResultsDataService.prepareAnswers(checkCompletionMessage.markedCheck, this.questionHash)
+
+    const flattenedTransaction = flattenTransactions([
+      checkResTran,
+      answerTran
+    ])
+
+    await this.syncResultsDataService.insertToDatabase([flattenedTransaction])
   }
+}
+
+function flattenTransactions (transactions: ITransactionRequest[]): ITransactionRequest {
+  return transactions.reduce((accumulator, currentValue) => {
+    return {
+      sql: accumulator.sql.concat('\n', currentValue.sql),
+      params: accumulator.params.concat(currentValue.params)
+    }
+  })
 }
