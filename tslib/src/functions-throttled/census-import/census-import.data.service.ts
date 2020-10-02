@@ -2,7 +2,7 @@ import * as mssql from 'mssql'
 import * as R from 'ramda'
 
 export interface ICensusImportDataService {
-  loadStagingTable (tableName: string, blobContent: any): Promise<number>
+  loadStagingTable (tableName: string, blobContent: string[][]): Promise<number>
   loadPupilsFromStaging (tableName: string, jobId: number): Promise<any>
   deleteStagingTable (tableName: string): Promise<mssql.IResult<any>>
 }
@@ -17,12 +17,11 @@ export class CensusImportDataService implements ICensusImportDataService {
 
   /**
    * Create census import staging table
-   * @param {Object} pool
-   * @param {String} censusTable
-   * @param {Array} blobContent
+   * @param {String} tableName
+   * @param {Array<string[]>} blobContent
    * @return {Object}
    */
-  async loadStagingTable (tableName: string, blobContent: any): Promise<number> {
+  async loadStagingTable (tableName: string, blobContent: string[][]): Promise<number> {
     const table = new mssql.Table(tableName)
     table.create = true
     table.columns.add('id', mssql.Int, { nullable: false, primary: true, identity: true })
@@ -34,21 +33,20 @@ export class CensusImportDataService implements ICensusImportDataService {
     table.columns.add('middlenames', mssql.NVarChar(mssql.MAX), { nullable: false })
     table.columns.add('gender', mssql.NVarChar(mssql.MAX), { nullable: false })
     table.columns.add('dob', mssql.NVarChar(mssql.MAX), { nullable: false })
+    // skip zero index entry, as its a header row
     for (let i = 1; i < blobContent.length; i++) {
       const row = blobContent[i]
       table.rows.add(i, row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8])
     }
-
     const request = new mssql.Request(this.pool)
     const result = await request.bulk(table)
+    console.log(`bulk result:${JSON.stringify(result, null, 2)}`)
     return result.rowsAffected
   }
 
   /**
    * Execute stored procedure to load pupils from staging to pupils table
-   * @param {Object} context
-   * @param {Object} pool
-   * @param {String} censusTable
+   * @param {String} tableName
    * @param {Number} jobId
    * @return {Object}
    */
@@ -65,9 +63,7 @@ export class CensusImportDataService implements ICensusImportDataService {
 
   /**
    * Delete census import staging table
-   * @param {Object} context
-   * @param {Object} pool
-   * @param {String} censusTable
+   * @param {String} tableName
    * @return {Object}
    */
   async deleteStagingTable (tableName: string): Promise<mssql.IResult<any>> {

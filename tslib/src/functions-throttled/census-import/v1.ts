@@ -60,6 +60,7 @@ export class CensusImportV1 {
     const jobId = await this.jobDataService.updateStatus(jobUrlSlug, 'PRC')
     this.logger.info(`jobId:${jobId}`)
     const blobContent = csvString.parse(blob.toString())
+    this.logger.info(JSON.stringify(blobContent, null, 2))
     const censusTable = `[mtc_census_import].[census_import_${moment.utc().format('YYYYMMDDHHMMSS')}_${uuidv4()}]`
     this.logger.info(`censusTable:${censusTable}`)
     this.logger.info('inserting data to staging table...')
