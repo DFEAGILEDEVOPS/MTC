@@ -60,21 +60,22 @@ export class CensusImportV1 {
     const jobId = await this.jobDataService.updateStatus(jobUrlSlug, 'PRC')
     this.logger.info(`jobId:${jobId}`)
     const blobContent = csvString.parse(blob.toString())
-    this.logger.info(JSON.stringify(blobContent, null, 2))
     const censusTable = `[mtc_census_import].[census_import_${moment.utc().format('YYYYMMDDHHMMSS')}_${uuidv4()}]`
     this.logger.info(`censusTable:${censusTable}`)
     this.logger.info('inserting data to staging table...')
     const stagingInsertCount = await this.censusImportDataService.loadStagingTable(censusTable, blobContent)
     this.logger.info(`stagingInsertCount:${stagingInsertCount}`)
+
     const pupilMeta = await this.censusImportDataService.loadPupilsFromStaging(censusTable, jobId)
-    this.logger.info(`pupilMeta:${JSON.stringify(pupilMeta, null, 2)}`)
     await this.censusImportDataService.deleteStagingTable(censusTable)
     await this.blobStorageService.deleteContainerAsync('census')
 
     const jobOutput = `${stagingInsertCount} rows in uploaded file, ${pupilMeta.insertCount} inserted to pupil table, ${pupilMeta.errorCount} rows containing errors`
-    this.logger.info(`jobOutput:${jobOutput}`)
     if (stagingInsertCount !== pupilMeta.insertCount) {
-      const errorOutput = pupilMeta.errorText
+      if (pupilMeta.errorText === undefined) {
+        pupilMeta.errorText = ''
+      }
+      const errorOutput = `${pupilMeta.errorText}\nTip: Ensure all schools in the uploaded file have a matching entry in the MTC database.`
       // update job to failed
       await this.jobDataService.updateStatus(jobUrlSlug, 'CWR', jobOutput, errorOutput)
       this.logger.warn(`census-import: ${stagingInsertCount} rows staged, but only ${pupilMeta.insertCount} rows inserted to pupil table`)

@@ -52,9 +52,9 @@ export class CensusImportDataService implements ICensusImportDataService {
    */
   async loadPupilsFromStaging (tableName: string, jobId: number): Promise<any> {
     const sql = `
-    DECLARE @citt mtc_census_import.censusImportTableType
+    DECLARE @citt [mtc_census_import].censusImportTableType
     INSERT INTO @citt SELECT * FROM ${tableName}
-    EXEC mtc_census_import.spPupilCensusImportFromStaging @censusImportTable = @citt, @jobId = ${jobId}
+    EXEC [mtc_census_import].[spPupilCensusImportFromStaging] @censusImportTable = @citt, @jobId = ${jobId}
     `
     const request = new mssql.Request(this.pool)
     const result = await request.query(sql)

@@ -90,6 +90,6 @@ describe('census-import: v1', () => {
       return Promise.resolve(loadAndInsertCount - 1)
     })
     await sut.process('foo,bar',blobUri)
-    expect(jobDataServiceMock.updateStatus).toHaveBeenLastCalledWith(expect.any(String), 'CWR', expect.any(String), undefined)
+    expect(jobDataServiceMock.updateStatus).toHaveBeenLastCalledWith(expect.any(String), 'CWR', expect.any(String), expect.any(String))
   })
 })
