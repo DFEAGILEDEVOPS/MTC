@@ -1,13 +1,25 @@
-'use strict'
-
 /* global describe expect it spyOn */
 
-const predicates = require('./predicates')
-const sut = require('./school.data.service')
+import { Predicates } from './predicates'
+import { SchoolDataService } from './school.data.service'
 
-describe('#getMappedData', () => {
-  it('is defined', () => {
-    expect(sut.getMappedData).toBeDefined()
+let sut: SchoolDataService
+let predicates: Predicates
+
+const school = {
+  urn: '1',
+  name: 'test school',
+  leaCode: '999',
+  estabTypeGroupCode: '9',
+  estabTypeCode: '26',
+  estabStatusCode: '1',
+  statLowAge: '7',
+  statHighAge: '12'
+}
+
+describe('SchoolDataService', () => {
+  it('should be defined', () => {
+    expect(sut).toBeInstanceOf(SchoolDataService)
   })
 
   it('returns a mapped object with keys as per the mapping object', () => {
@@ -23,23 +35,6 @@ describe('#getMappedData', () => {
       dfeNumber: 9991111
     })
   })
-})
-
-describe('#isPredicated', () => {
-  it('is defined', () => {
-    expect(sut.isPredicated).toBeDefined()
-  })
-
-  const school = {
-    urn: '1',
-    name: 'test school',
-    leaCode: '999',
-    estabTypeGroupCode: '9',
-    estabTypeCode: '26',
-    estabStatusCode: '1',
-    statLowAge: '7',
-    statHighAge: '12'
-  }
 
   it('calls the predicates', () => {
     spyOn(predicates, 'isSchoolOpen').and.callThrough()

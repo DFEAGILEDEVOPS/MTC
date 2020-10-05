@@ -1,9 +1,10 @@
-'use strict'
+
 /* global describe, expect, it, jasmine, beforeEach */
 
-const sut = require('./predicates')
+import { Predicates } from './predicates'
 
-let mockLogger
+let mockLogger: any
+let sut: Predicates
 
 describe('#isSchoolOpen', () => {
   beforeEach(() => {
@@ -11,7 +12,7 @@ describe('#isSchoolOpen', () => {
   })
 
   it('is defined', () => {
-    expect(sut.isSchoolOpen).toBeDefined()
+    expect(sut).toBeInstanceOf(Predicates)
   })
 
   it('returns false when the school is closed', () => {

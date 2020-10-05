@@ -1,12 +1,41 @@
-'use strict'
 import { Context } from '@azure/functions'
+import { ConnectionPool } from 'mssql'
 import * as csv from 'csv-string'
-import SchoolDataService from './data-access/school.data.service'
+import { ISchoolDataService, SchoolDataService } from './data-access/school.data.service'
+import { ConsoleLogger, ILogger } from '../../common/logger'
+import { SchoolImportJobResult } from './ISchoolImportJobResult'
+
 const name = 'school-import'
 
 export class SchoolImportService {
-  async process (context: Context, blob: any) {
-    context.log.verbose('school-import.v1.process() called')
+
+  private schoolDataService: ISchoolDataService
+  private logger: ILogger
+  private jobResult: SchoolImportJobResult
+
+  constructor (pool: ConnectionPool, schoolDataService?: ISchoolDataService) {
+    if (schoolDataService === undefined) {
+      schoolDataService = new SchoolDataService(pool)
+    }
+    this.schoolDataService = schoolDataService
+    // temp fix, will inject
+    this.logger = new ConsoleLogger()
+    this.jobResult = {
+      stderr: [],
+      stdout: [],
+      schoolsLoaded: 0,
+      linesProcessed: 0
+    }
+  }
+
+  async process (context: Context, blob: any): Promise<SchoolImportJobResult> {
+    this.jobResult = {
+      stderr: [],
+      stdout: [],
+      schoolsLoaded: 0,
+      linesProcessed: 0
+    }
+    this.logger.verbose('school-import.v1.process() called')
     const csvParsed = csv.parse(blob.toString())
     const mapper = [
       ['URN', 'urn'],
@@ -23,18 +52,19 @@ export class SchoolImportService {
     let mapping
     try {
       mapping = this.mapColumns(csvParsed.shift(), mapper)
-      context.log.verbose(`${name} mapping `, mapping)
+      this.logger.verbose(`${name} mapping `, mapping)
     } catch (error) {
-      this.exportJobResults(context, { stderr: [`Failed to map columns, error raised was ${error.message}`] })
+      this.jobResult.stderr = [`Failed to map columns, error raised was ${error.message}`]
+      this.exportJobResults(context, this.jobResult)
       throw error
     }
 
     try {
-      const jobResult = await schoolDataService.bulkUpload(context, csvParsed, mapping)
-      context.log.verbose(`${name}  bulkUpload complete`)
-      this.exportJobResults(context, jobResult)
-      context.log.verbose(`${name} job results exported`)
-      return { linesProcessed: jobResult.linesProcessed, processCount: jobResult.schoolsLoaded }
+      this.jobResult = await this.schoolDataService.bulkUpload(context.log, csvParsed, mapping, this.jobResult)
+      this.logger.verbose(`${name}  bulkUpload complete`)
+      this.exportJobResults(context, this.jobResult)
+      this.logger.verbose(`${name} job results exported`)
+      return this.jobResult
     } catch (error) {
       if (error.jobResult) {
         this.exportJobResults(context, error.jobResult)
@@ -57,7 +87,7 @@ export class SchoolImportService {
     const mapping: any = {}
     const missingHeaders = new Array<any>()
 
-    headers.forEach(pair => {
+    headers.forEach((pair: any) => {
       const n = cols.indexOf(pair[0])
       if (n === -1) {
         missingHeaders.push(pair[0])
@@ -76,18 +106,10 @@ export class SchoolImportService {
    * @param context
    * @param jobResult
    */
-  private exportJobResults (context: Context, jobResult: any) {
-    context.log.verbose(`${name} exportJobResults() called`)
-    if (!jobResult) {
-      console.log(`${name} exportJobResults() - missing jobResult param`)
-      return
-    }
-    if (Array.isArray(jobResult.stdout) && jobResult.stdout.length > 0) {
-      context.bindings.schoolImportStdout = jobResult.stdout.join('\n')
-    }
-    if (Array.isArray(jobResult.stderr) && jobResult.stderr.length > 0) {
-      context.bindings.schoolImportStderr = jobResult.stderr.join('\n')
-    }
+  private exportJobResults (context: Context, jobResult: SchoolImportJobResult) {
+    this.logger.verbose(`${name} exportJobResults() called`)
+    context.bindings.schoolImportStdout = jobResult.stdout.join('\n')
+    context.bindings.schoolImportStderr = jobResult.stderr.join('\n')
   }
 }
 
