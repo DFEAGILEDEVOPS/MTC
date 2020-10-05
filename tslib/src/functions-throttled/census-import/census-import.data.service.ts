@@ -40,7 +40,6 @@ export class CensusImportDataService implements ICensusImportDataService {
     }
     const request = new mssql.Request(this.pool)
     const result = await request.bulk(table)
-    console.log(`bulk result:${JSON.stringify(result, null, 2)}`)
     return result.rowsAffected
   }
 
