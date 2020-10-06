@@ -1,5 +1,5 @@
 
-import { EstabTypeCode, EstabTypeGroupCode, ISchoolRecord } from './data-access/ISchoolRecord'
+import { EstabTypeCode, EstabTypeGroupCode, ISchoolRecord, EstabStatusCode } from './data-access/ISchoolRecord'
 /* global describe, expect, it, jasmine, beforeEach */
 
 import { Predicates } from './predicates'
@@ -32,33 +32,33 @@ describe('School Import Predicates', () => {
 
   describe('isSchoolOpen', () => {
     it('returns false when the school is closed', () => {
-      school.estabStatusCode = 2
+      school.estabStatusCode = EstabStatusCode.Closed
       expect(sut.isSchoolOpen(mockLogger, school)).toBe(false)
     })
 
     it('logs when it returns false', () => {
-      school.estabStatusCode = 2
+      school.estabStatusCode = EstabStatusCode.Closed
       expect(sut.isSchoolOpen(mockLogger, school)).toBe(false)
       expect(mockLogger).toHaveBeenCalledTimes(1)
     })
 
     it('returns true when the school is open', () => {
-      school.estabStatusCode = 1
+      school.estabStatusCode = EstabStatusCode.Open
       expect(sut.isSchoolOpen(mockLogger, school)).toBe(true)
     })
 
     it('returns true when the school is open but proposed to close', () => {
-      school.estabStatusCode = 3
+      school.estabStatusCode = EstabStatusCode.ProposedToClose
       expect(sut.isSchoolOpen(mockLogger, school)).toBe(true)
     })
 
     it('returns true when the school is proposed to open', () => {
-      school.estabStatusCode = 4
+      school.estabStatusCode = EstabStatusCode.ProposedToOpen
       expect(sut.isSchoolOpen(mockLogger, school)).toBe(true)
     })
 
     it('does not log when it returns true', () => {
-      school.estabStatusCode = 1
+      school.estabStatusCode = EstabStatusCode.Open
       expect(sut.isSchoolOpen(mockLogger, school)).toBe(true)
       expect(mockLogger).not.toHaveBeenCalled()
     })

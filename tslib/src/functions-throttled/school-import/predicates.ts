@@ -1,5 +1,5 @@
 import * as RA from 'ramda-adjunct'
-import { ISchoolRecord, EstabTypeCode, EstabTypeGroupCode } from './data-access/ISchoolRecord'
+import { ISchoolRecord, EstabTypeCode, EstabTypeGroupCode, EstabStatusCode } from './data-access/ISchoolRecord'
 export type LogFunc = (msg: string) => void
 
 export interface ISchoolImportPredicates {
@@ -11,10 +11,9 @@ export interface ISchoolImportPredicates {
 
 export class Predicates implements ISchoolImportPredicates {
   isSchoolOpen (logger: LogFunc, school: ISchoolRecord): boolean {
-    const schoolClosed = 2
     // we want to load all schools that are open, proposed to open, proposed to close
     // this is the same as every school that isn't closed
-    if (Number(school.estabStatusCode) === schoolClosed) {
+    if (school.estabStatusCode === EstabStatusCode.Closed) {
       // 1 - open, 2 - closed, 3 - open proposed to close, 4 - Proposed to open
       logger(`Excluding school ${school.urn} it is closed - estabStatusCode is [${school.estabStatusCode}]`)
       return false

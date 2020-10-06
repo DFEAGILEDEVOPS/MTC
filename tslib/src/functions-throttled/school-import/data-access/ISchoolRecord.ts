@@ -11,6 +11,13 @@ export interface ISchoolRecord {
   statHighAge?: number
 }
 
+export enum EstabStatusCode {
+  Open = 1,
+  Closed = 2,
+  ProposedToClose = 3,
+  ProposedToOpen = 4
+}
+
 export enum EstabTypeGroupCode {
   college = 1,
   university = 2,
