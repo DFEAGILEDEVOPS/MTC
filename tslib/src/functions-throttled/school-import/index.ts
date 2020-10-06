@@ -31,7 +31,7 @@ const blobTrigger: AzureFunction = async function schoolImportIndex (context: Co
         max: config.Sql.Pooling.MaxCount
       },
       options: {
-        appName: config.Sql.options.appName, // docker default
+        appName: config.Sql.options.appName,
         encrypt: config.Sql.options.encrypt
       }
     }

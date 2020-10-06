@@ -8,6 +8,7 @@ let sut: Predicates
 
 describe('#isSchoolOpen', () => {
   beforeEach(() => {
+    sut = new Predicates()
     mockLogger = jasmine.createSpy('mockLogger')
   })
 

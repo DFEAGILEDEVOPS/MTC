@@ -15,9 +15,9 @@ export class SchoolDataService implements ISchoolDataService {
   private predicates: Predicates
   private jobResult: SchoolImportJobResult
 
-  constructor (pool: mssql.ConnectionPool, jobResult: SchoolImportJobResult) {
+  constructor (pool: mssql.ConnectionPool, jobResult: SchoolImportJobResult, predicates: Predicates) {
     this.pool = pool
-    this.predicates = new Predicates()
+    this.predicates = predicates
     this.jobResult = jobResult
   }
 

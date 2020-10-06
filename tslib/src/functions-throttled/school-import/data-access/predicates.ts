@@ -1,5 +1,4 @@
-import RA from 'ramda-adjunct'
-
+import * as RA from 'ramda-adjunct'
 export type LogFunc = (msg: string) => void
 
 export class Predicates {

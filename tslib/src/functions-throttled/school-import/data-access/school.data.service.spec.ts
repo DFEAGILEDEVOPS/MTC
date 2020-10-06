@@ -1,10 +1,23 @@
 /* global describe expect it spyOn */
-
+import { ConnectionPool } from 'mssql'
+import config from '../../../config'
+import { SchoolImportJobResult } from '../ISchoolImportJobResult'
 import { Predicates } from './predicates'
 import { SchoolDataService } from './school.data.service'
 
 let sut: SchoolDataService
 let predicates: Predicates
+
+export interface ISchoolRecord {
+  urn: number
+  name: string
+  leaCode: number
+  estabTypeGroupCode: string
+  estabTypeCode: number
+  estabStatusCode: string
+  statLowAge: number
+  statHighAge: number
+}
 
 const school = {
   urn: '1',
@@ -17,7 +30,16 @@ const school = {
   statHighAge: '12'
 }
 
+let jobResult: SchoolImportJobResult
+
 describe('SchoolDataService', () => {
+
+  beforeEach(() => {
+    jobResult = new SchoolImportJobResult()
+    predicates = new Predicates()
+    sut = new SchoolDataService(new ConnectionPool(config.Sql), jobResult, predicates)
+  })
+
   it('should be defined', () => {
     expect(sut).toBeInstanceOf(SchoolDataService)
   })
@@ -40,8 +62,8 @@ describe('SchoolDataService', () => {
     spyOn(predicates, 'isSchoolOpen').and.callThrough()
     spyOn(predicates, 'isAgeInRange').and.callThrough()
     spyOn(predicates, 'isRequiredEstablishmentTypeGroup').and.callThrough()
-    const res = sut.isPredicated(school)
-    expect(res).toBe(true)
+    const result = sut.isPredicated(school)
+    expect(result).toBe(true)
     expect(predicates.isSchoolOpen).toHaveBeenCalled()
     expect(predicates.isAgeInRange).toHaveBeenCalled()
     expect(predicates.isRequiredEstablishmentTypeGroup).toHaveBeenCalled()

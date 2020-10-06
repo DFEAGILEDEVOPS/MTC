@@ -107,5 +107,3 @@ export class SchoolImportService {
     context.bindings.schoolImportStderr = jobResult.stderr.join('\n')
   }
 }
-
-export default schoolImport
