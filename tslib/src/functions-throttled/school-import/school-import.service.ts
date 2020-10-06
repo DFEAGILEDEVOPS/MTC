@@ -3,7 +3,9 @@ import { ConnectionPool } from 'mssql'
 import * as csv from 'csv-string'
 import { ISchoolDataService, SchoolDataService } from './data-access/school.data.service'
 import { ConsoleLogger, ILogger } from '../../common/logger'
-import { SchoolImportJobResult } from './ISchoolImportJobResult'
+import { SchoolImportJobResult } from './SchoolImportJobResult'
+import { ISchoolImportPredicates, Predicates } from './predicates'
+import { SchoolRecordMapper } from './school-mapper'
 
 const name = 'school-import'
 
@@ -12,15 +14,29 @@ export class SchoolImportService {
   private schoolDataService: ISchoolDataService
   private logger: ILogger
   private jobResult: SchoolImportJobResult
+  private predicates: ISchoolImportPredicates
+  private schoolRecordMapper: SchoolRecordMapper
 
-  constructor (pool: ConnectionPool, jobResult: SchoolImportJobResult, schoolDataService?: ISchoolDataService) {
+  constructor (pool: ConnectionPool,
+                jobResult: SchoolImportJobResult,
+                schoolDataService?: ISchoolDataService,
+                predicates?: ISchoolImportPredicates,
+                logger?: ILogger) {
+
     if (schoolDataService === undefined) {
       schoolDataService = new SchoolDataService(pool, jobResult)
     }
     this.schoolDataService = schoolDataService
-    // temp fix, will inject
-    this.logger = new ConsoleLogger()
+    if (predicates === undefined) {
+      predicates = new Predicates()
+    }
+    this.predicates = predicates
+    if (logger === undefined) {
+      logger = new ConsoleLogger()
+    }
+    this.logger = logger
     this.jobResult = jobResult
+    this.schoolRecordMapper = new SchoolRecordMapper()
   }
 
   async process (context: Context, blob: any): Promise<SchoolImportJobResult> {
@@ -55,7 +71,15 @@ export class SchoolImportService {
     }
 
     try {
-      this.jobResult = await this.schoolDataService.bulkUpload(context.log, csvParsed, mapping, this.jobResult)
+      const filteredSchools = new Array<any>()
+      for (let index = 0; index < csvParsed.length; index++) {
+        const row = csvParsed[index]
+        const mappedRow = this.schoolRecordMapper.mapRow(row, mapping)
+        if (this.isPredicated(mappedRow)) {
+          filteredSchools.push(mappedRow)
+        }
+      }
+      this.jobResult = await this.schoolDataService.bulkUpload(context.log, filteredSchools, mapping)
       this.logger.verbose(`${name}  bulkUpload complete`)
       this.exportJobResults(context, this.jobResult)
       this.logger.verbose(`${name} job results exported`)
@@ -66,6 +90,22 @@ export class SchoolImportService {
       }
       throw error
     }
+  }
+
+  private log (msg: string): void {
+    this.jobResult.stdout.push(`${(new Date()).toISOString()} school-import: ${msg}`)
+  }
+
+  /**
+   * Determine if the record should be loaded
+   * @param school - school attributes with our mapped property names
+   * @return {boolean}
+   */
+  private isPredicated (school: any): boolean {
+    const targetAge = 9
+    return this.predicates.isSchoolOpen(this.log, school) &&
+      this.predicates.isRequiredEstablishmentTypeGroup(this.log, school) &&
+      this.predicates.isAgeInRange(this.log, targetAge, school)
   }
 
   /**

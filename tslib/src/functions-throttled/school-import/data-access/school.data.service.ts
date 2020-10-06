@@ -1,58 +1,26 @@
 import * as mssql from 'mssql'
 import { ILogger } from '../../../common/logger'
-import { SchoolImportJobResult } from '../ISchoolImportJobResult'
-import { Predicates } from './predicates'
+import { SchoolImportJobResult } from '../SchoolImportJobResult'
+import { ISchoolRecord } from './ISchoolRecord'
 
 export interface ISchoolDataService {
-  getMappedData (row: any, mapping: any): any
-  isPredicated (school: any): boolean
-  bulkUpload (logger: ILogger, data: any, mapping: any, jobResult: SchoolImportJobResult): Promise<SchoolImportJobResult>
+  bulkUpload (logger: ILogger, data: any, jobResult: SchoolImportJobResult): Promise<SchoolImportJobResult>
 }
 
 export class SchoolDataService implements ISchoolDataService {
 
   private pool: mssql.ConnectionPool
-  private predicates: Predicates
   private jobResult: SchoolImportJobResult
 
-  constructor (pool: mssql.ConnectionPool, jobResult: SchoolImportJobResult, predicates: Predicates) {
+  constructor (pool: mssql.ConnectionPool, jobResult: SchoolImportJobResult) {
     this.pool = pool
-    this.predicates = predicates
     this.jobResult = jobResult
   }
 
-  private log (msg: string): void {
-    this.jobResult.stdout.push(`${(new Date()).toISOString()} school-import: ${msg}`)
-  }
+
 
   private logError (msg: string): void {
     this.jobResult.stderr.push(`${(new Date()).toISOString()} school-import: ${msg}`)
-  }
-
-  /**
-   * Return a domain-mapped object from a
-   * @param {Array} row - csv row as array ['1001', 'Sometown Primary school', 'csv', 'array', ... ]
-   * @param {Object} mapping - mapping object { urn: 0, name: 1, ... }
-   * @return {Object} - mapped object of string values E.g. { urn: '1001', 'name': 'Sometown Primary School' ... }
-   */
-  getMappedData (row: any, mapping: any): any {
-    const o: any = {}
-    Object.keys(mapping).forEach(k => {
-      o[k] = row[mapping[k]]
-    })
-    return o
-  }
-
-  /**
-   * Determine if the record should be loaded
-   * @param school - school attributes with our mapped property names
-   * @return {boolean}
-   */
-  isPredicated (school: any): boolean {
-    const targetAge = 9
-    return this.predicates.isSchoolOpen(this.log, school) &&
-      this.predicates.isRequiredEstablishmentTypeGroup(this.log, school) &&
-      this.predicates.isAgeInRange(this.log, targetAge, school)
   }
 
   /**
@@ -62,7 +30,7 @@ export class SchoolDataService implements ISchoolDataService {
    * @param mapping - the mapping between our domain and the input file
    * @return {Promise<{linesProcessed: number, schoolsLoaded: number}>}
    */
-  async bulkUpload (logger: ILogger, data: any, mapping: any): Promise<SchoolImportJobResult> {
+  async bulkUpload (logger: ILogger, data: Array<ISchoolRecord>): Promise<SchoolImportJobResult> {
     logger.verbose(`${name}.school.data.service.bulkUpload() called`)
 
     const table = new mssql.Table('[mtc_admin].[school]')
@@ -74,17 +42,14 @@ export class SchoolDataService implements ISchoolDataService {
     table.columns.add('urn', mssql.Int, { nullable: false })
 
     for (let i = 0; i < data.length; i++) {
-      const mapped = this.getMappedData(data[i], mapping)
+      const mapped = data[i]
       this.jobResult.linesProcessed += 1
-
-      if (this.isPredicated(mapped)) {
-        this.jobResult.schoolsLoaded += 1
-        const dfeNumber = parseInt('' + mapped.leaCode + mapped.estabCode, 10)
-        if (dfeNumber.toString().length !== 7) {
-          this.logError(`WARN: ${name} school [${mapped.urn}] has an unusual dfeNumber [${dfeNumber}]`)
-        }
-        table.rows.add(dfeNumber, mapped.estabCode, parseInt(mapped.leaCode, 10), mapped.name, parseInt(mapped.urn, 10))
+      this.jobResult.schoolsLoaded += 1
+      const dfeNumber = `${mapped.leaCode}${mapped.estabCode}`
+      if (dfeNumber.toString().length !== 7) {
+        this.logError(`WARN: ${name} school [${mapped.urn}] has an unusual dfeNumber [${dfeNumber}]`)
       }
+      table.rows.add(dfeNumber, mapped.estabCode, mapped.leaCode, 10, mapped.name, mapped.urn, 10)
     }
     logger.verbose(`${name} data rows added for bulk upload`)
     const request = new mssql.Request(this.pool)

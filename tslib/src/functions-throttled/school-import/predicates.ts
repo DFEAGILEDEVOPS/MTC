@@ -1,8 +1,14 @@
 import * as RA from 'ramda-adjunct'
 export type LogFunc = (msg: string) => void
 
-export class Predicates {
-  isSchoolOpen (logger: LogFunc, school: any) {
+export interface ISchoolImportPredicates {
+  isSchoolOpen (logger: LogFunc, school: any): boolean
+  isAgeInRange (logger: LogFunc, targetAge: number, school: any): boolean
+  isRequiredEstablishmentTypeGroup (logger: LogFunc, school: any): boolean
+}
+
+export class Predicates implements ISchoolImportPredicates {
+  isSchoolOpen (logger: LogFunc, school: any): boolean {
     const schoolClosed = 2
     // we want to load all schools that are open, proposed to open, proposed to close
     // this is the same as every school that isn't closed
@@ -14,7 +20,7 @@ export class Predicates {
     return true
   }
 
-  isAgeInRange (logger: LogFunc, targetAge: number, school: any) {
+  isAgeInRange (logger: LogFunc, targetAge: number, school: any): boolean {
     if (RA.isNilOrEmpty(school.statLowAge) || RA.isNilOrEmpty(school.statHighAge)) {
       logger(`Excluding school [${school.urn}] due to missing age fields: obj ${JSON.stringify(school)}`)
       return false
@@ -28,7 +34,7 @@ export class Predicates {
     return false
   }
 
-  isRequiredEstablishmentTypeGroup (logger: LogFunc, school: any) {
+  isRequiredEstablishmentTypeGroup (logger: LogFunc, school: any): boolean {
     const estabTypeGroupCodes = {
       academies: '10',
       freeSchools: '11',

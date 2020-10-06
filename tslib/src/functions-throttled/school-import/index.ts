@@ -6,7 +6,7 @@ import { SchoolImportService } from './school-import.service'
 import * as mssql from 'mssql'
 import config from '../../config'
 import { ConnectionPoolService } from '../../sql/sql.service'
-import { SchoolImportJobResult } from './ISchoolImportJobResult'
+import { SchoolImportJobResult } from './SchoolImportJobResult'
 
 const name = 'school-import'
 

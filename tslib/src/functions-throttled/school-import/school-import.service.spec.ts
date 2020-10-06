@@ -3,7 +3,7 @@
 import { SchoolImportService } from './school-import.service'
 import { ConnectionPool } from 'mssql'
 import config from '../../config'
-import { SchoolImportJobResult } from './ISchoolImportJobResult'
+import { SchoolImportJobResult } from './SchoolImportJobResult'
 import { ISchoolDataService } from './data-access/school.data.service'
 
 let sut: SchoolImportService
