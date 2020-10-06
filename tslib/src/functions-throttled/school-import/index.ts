@@ -15,7 +15,7 @@ const blobTrigger: AzureFunction = async function schoolImportIndex (context: Co
   const start = performance.now()
   context.log(`${name} started for blob \n Name: ${context.bindingData.name} \n Blob Size: ${blob.length} Bytes`)
   let pool: mssql.ConnectionPool
-  let meta = new SchoolImportJobResult()
+  let jobResult = new SchoolImportJobResult()
 
   try {
     const sqlConfig: mssql.config = {
@@ -36,8 +36,8 @@ const blobTrigger: AzureFunction = async function schoolImportIndex (context: Co
       }
     }
     pool = await ConnectionPoolService.getInstanceWithConfig(sqlConfig, context.log)
-    const svc = new SchoolImportService(pool)
-    meta = await svc.process(context, blob)
+    const svc = new SchoolImportService(pool, jobResult)
+    jobResult = await svc.process(context, blob)
     await pool.close()
   } catch (error) {
     context.log.error(`${name}: ERROR: ${error.message}`, error)
@@ -46,7 +46,7 @@ const blobTrigger: AzureFunction = async function schoolImportIndex (context: Co
   const end = performance.now()
   const durationInMilliseconds = end - start
   const timeStamp = new Date().toISOString()
-  context.log(`${name}: ${timeStamp} processed ${meta.linesProcessed} schools, run took ${durationInMilliseconds} ms`)
+  context.log(`${name}: ${timeStamp} processed ${jobResult.linesProcessed} schools, run took ${durationInMilliseconds} ms`)
 }
 
 export default blobTrigger

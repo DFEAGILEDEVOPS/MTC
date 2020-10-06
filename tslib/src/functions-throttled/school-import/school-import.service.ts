@@ -13,19 +13,14 @@ export class SchoolImportService {
   private logger: ILogger
   private jobResult: SchoolImportJobResult
 
-  constructor (pool: ConnectionPool, schoolDataService?: ISchoolDataService) {
+  constructor (pool: ConnectionPool, jobResult: SchoolImportJobResult, schoolDataService?: ISchoolDataService) {
     if (schoolDataService === undefined) {
-      schoolDataService = new SchoolDataService(pool)
+      schoolDataService = new SchoolDataService(pool, jobResult)
     }
     this.schoolDataService = schoolDataService
     // temp fix, will inject
     this.logger = new ConsoleLogger()
-    this.jobResult = {
-      stderr: [],
-      stdout: [],
-      schoolsLoaded: 0,
-      linesProcessed: 0
-    }
+    this.jobResult = jobResult
   }
 
   async process (context: Context, blob: any): Promise<SchoolImportJobResult> {

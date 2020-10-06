@@ -13,18 +13,20 @@ export class SchoolDataService implements ISchoolDataService {
 
   private pool: mssql.ConnectionPool
   private predicates: Predicates
+  private jobResult: SchoolImportJobResult
 
-  constructor (pool: mssql.ConnectionPool) {
+  constructor (pool: mssql.ConnectionPool, jobResult: SchoolImportJobResult) {
     this.pool = pool
     this.predicates = new Predicates()
+    this.jobResult = jobResult
   }
 
-  private log (msg: string, jobResult: SchoolImportJobResult) {
-    jobResult.stdout.push(`${(new Date()).toISOString()} school-import: ${msg}`)
+  private log (msg: string): void {
+    this.jobResult.stdout.push(`${(new Date()).toISOString()} school-import: ${msg}`)
   }
 
-  private logError (msg: string, jobResult: SchoolImportJobResult) {
-    jobResult.stderr.push(`${(new Date()).toISOString()} school-import: ${msg}`)
+  private logError (msg: string): void {
+    this.jobResult.stderr.push(`${(new Date()).toISOString()} school-import: ${msg}`)
   }
 
   /**
@@ -60,7 +62,7 @@ export class SchoolDataService implements ISchoolDataService {
    * @param mapping - the mapping between our domain and the input file
    * @return {Promise<{linesProcessed: number, schoolsLoaded: number}>}
    */
-  async bulkUpload (logger: ILogger, data: any, mapping: any, jobResult: SchoolImportJobResult): Promise<SchoolImportJobResult> {
+  async bulkUpload (logger: ILogger, data: any, mapping: any): Promise<SchoolImportJobResult> {
     logger.verbose(`${name}.school.data.service.bulkUpload() called`)
 
     const table = new mssql.Table('[mtc_admin].[school]')
@@ -73,13 +75,13 @@ export class SchoolDataService implements ISchoolDataService {
 
     for (let i = 0; i < data.length; i++) {
       const mapped = this.getMappedData(data[i], mapping)
-      jobResult.linesProcessed += 1
+      this.jobResult.linesProcessed += 1
 
       if (this.isPredicated(mapped)) {
-        jobResult.schoolsLoaded += 1
+        this.jobResult.schoolsLoaded += 1
         const dfeNumber = parseInt('' + mapped.leaCode + mapped.estabCode, 10)
         if (dfeNumber.toString().length !== 7) {
-          this.logError(`WARN: ${name} school [${mapped.urn}] has an unusual dfeNumber [${dfeNumber}]`, jobResult)
+          this.logError(`WARN: ${name} school [${mapped.urn}] has an unusual dfeNumber [${dfeNumber}]`)
         }
         table.rows.add(dfeNumber, mapped.estabCode, parseInt(mapped.leaCode, 10), mapped.name, parseInt(mapped.urn, 10))
       }
@@ -87,16 +89,17 @@ export class SchoolDataService implements ISchoolDataService {
     logger.verbose(`${name} data rows added for bulk upload`)
     const request = new mssql.Request(this.pool)
     logger.verbose(`${name} new request obj created`)
-    if (jobResult.schoolsLoaded > 0) {
+    if (this.jobResult.schoolsLoaded > 0) {
       try {
         const res = await request.bulk(table)
         logger.info(`${name} bulk request complete: `, res)
       } catch (error) {
-        this.logError(`Bulk request failed. Error was:\n ${error.message}`, jobResult)
-        error.jobResult = jobResult
+        this.logError(`Bulk request failed. Error was:\n ${error.message}`)
+        // TODO used?
+        error.jobResult = this.jobResult
         throw error
       }
     }
-    return jobResult
+    return this.jobResult
   }
 }
