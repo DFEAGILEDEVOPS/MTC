@@ -28,7 +28,7 @@ export class SchoolDataService implements ISchoolDataService {
    * @param context - function context object
    * @param data - the csv parsed to array or arrays without header row
    * @param mapping - the mapping between our domain and the input file
-   * @return {Promise<{linesProcessed: number, schoolsLoaded: number}>}
+   * @return {SchoolImportJobResult}
    */
   async bulkUpload (logger: ILogger, data: Array<ISchoolRecord>): Promise<SchoolImportJobResult> {
     logger.verbose(`${name}.school.data.service.bulkUpload() called`)

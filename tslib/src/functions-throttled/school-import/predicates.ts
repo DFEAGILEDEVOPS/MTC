@@ -1,10 +1,12 @@
 import * as RA from 'ramda-adjunct'
+import { ISchoolRecord } from './data-access/ISchoolRecord'
 export type LogFunc = (msg: string) => void
 
 export interface ISchoolImportPredicates {
   isSchoolOpen (logger: LogFunc, school: any): boolean
   isAgeInRange (logger: LogFunc, targetAge: number, school: any): boolean
   isRequiredEstablishmentTypeGroup (logger: LogFunc, school: any): boolean
+  matchesAll (logger: LogFunc, school: ISchoolRecord): boolean
 }
 
 export class Predicates implements ISchoolImportPredicates {
@@ -64,5 +66,12 @@ export class Predicates implements ISchoolImportPredicates {
         logger(`Excluding school ${school.urn} estab filter ${JSON.stringify(school)}`)
         return false
     }
+  }
+
+  matchesAll (logger: LogFunc, school: any): boolean {
+    const targetAge = 9
+    return this.isSchoolOpen(logger, school) &&
+      this.isRequiredEstablishmentTypeGroup(logger, school) &&
+      this.isAgeInRange(logger, targetAge, school)
   }
 }

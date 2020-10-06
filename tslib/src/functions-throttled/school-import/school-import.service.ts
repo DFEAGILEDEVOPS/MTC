@@ -75,7 +75,7 @@ export class SchoolImportService {
       for (let index = 0; index < csvParsed.length; index++) {
         const row = csvParsed[index]
         const mappedRow = this.schoolRecordMapper.mapRow(row, mapping)
-        if (this.isPredicated(mappedRow)) {
+        if (this.predicates.matchesAll(this.log, mappedRow)) {
           filteredSchools.push(mappedRow)
         }
       }
@@ -94,18 +94,6 @@ export class SchoolImportService {
 
   private log (msg: string): void {
     this.jobResult.stdout.push(`${(new Date()).toISOString()} school-import: ${msg}`)
-  }
-
-  /**
-   * Determine if the record should be loaded
-   * @param school - school attributes with our mapped property names
-   * @return {boolean}
-   */
-  private isPredicated (school: any): boolean {
-    const targetAge = 9
-    return this.predicates.isSchoolOpen(this.log, school) &&
-      this.predicates.isRequiredEstablishmentTypeGroup(this.log, school) &&
-      this.predicates.isAgeInRange(this.log, targetAge, school)
   }
 
   /**

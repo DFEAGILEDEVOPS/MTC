@@ -1,3 +1,5 @@
+import { ISchoolRecord } from './data-access/ISchoolRecord'
+
 export class SchoolRecordMapper {
   /**
    * Return a domain-mapped object from a
@@ -5,7 +7,7 @@ export class SchoolRecordMapper {
    * @param {Object} mapping - mapping object { urn: 0, name: 1, ... }
    * @return {Object} - mapped object of string values E.g. { urn: '1001', 'name': 'Sometown Primary School' ... }
    */
-  mapRow (row: Array<string | number>, mapping: any): object {
+  mapRow (row: Array<string | number>, mapping: any): ISchoolRecord {
     const o: any = {}
     Object.keys(mapping).forEach(k => {
       o[k] = row[mapping[k]]
