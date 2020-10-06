@@ -1,16 +1,16 @@
 import * as RA from 'ramda-adjunct'
-import { ISchoolRecord } from './data-access/ISchoolRecord'
+import { ISchoolRecord, EstabTypeCode, EstabTypeGroupCode } from './data-access/ISchoolRecord'
 export type LogFunc = (msg: string) => void
 
 export interface ISchoolImportPredicates {
-  isSchoolOpen (logger: LogFunc, school: any): boolean
-  isAgeInRange (logger: LogFunc, targetAge: number, school: any): boolean
-  isRequiredEstablishmentTypeGroup (logger: LogFunc, school: any): boolean
+  isSchoolOpen (logger: LogFunc, school: ISchoolRecord): boolean
+  isAgeInRange (logger: LogFunc, targetAge: number, school: ISchoolRecord): boolean
+  isRequiredEstablishmentTypeGroup (logger: LogFunc, school: ISchoolRecord): boolean
   matchesAll (logger: LogFunc, school: ISchoolRecord): boolean
 }
 
 export class Predicates implements ISchoolImportPredicates {
-  isSchoolOpen (logger: LogFunc, school: any): boolean {
+  isSchoolOpen (logger: LogFunc, school: ISchoolRecord): boolean {
     const schoolClosed = 2
     // we want to load all schools that are open, proposed to open, proposed to close
     // this is the same as every school that isn't closed
@@ -22,7 +22,7 @@ export class Predicates implements ISchoolImportPredicates {
     return true
   }
 
-  isAgeInRange (logger: LogFunc, targetAge: number, school: any): boolean {
+  isAgeInRange (logger: LogFunc, targetAge: number, school: ISchoolRecord): boolean {
     if (RA.isNilOrEmpty(school.statLowAge) || RA.isNilOrEmpty(school.statHighAge)) {
       logger(`Excluding school [${school.urn}] due to missing age fields: obj ${JSON.stringify(school)}`)
       return false
@@ -36,32 +36,19 @@ export class Predicates implements ISchoolImportPredicates {
     return false
   }
 
-  isRequiredEstablishmentTypeGroup (logger: LogFunc, school: any): boolean {
-    const estabTypeGroupCodes = {
-      academies: '10',
-      freeSchools: '11',
-      localAuthorityMaintainedSchools: '4',
-      otherTypes: '9',
-      specialSchools: '5'
-    }
-
-    const estabTypeCodes = {
-      communitySpecialSchool: '7',
-      foundationSpecialSchool: '12',
-      serviceChildrensEducation: '26'
-    }
+  isRequiredEstablishmentTypeGroup (logger: LogFunc, school: ISchoolRecord): boolean {
 
     switch (school.estabTypeGroupCode) {
-      case estabTypeGroupCodes.localAuthorityMaintainedSchools:
-      case estabTypeGroupCodes.academies:
-      case estabTypeGroupCodes.freeSchools:
+      case EstabTypeGroupCode.localAuthorityMaintainedSchool:
+      case EstabTypeGroupCode.academies:
+      case EstabTypeGroupCode.freeSchool:
         return true
-      case estabTypeGroupCodes.specialSchools:
-        return school.estabTypeCode === estabTypeCodes.communitySpecialSchool ||
-          school.estabTypeCode === estabTypeCodes.foundationSpecialSchool
-      case estabTypeGroupCodes.otherTypes:
-        return school.estabTypeCode === estabTypeCodes.serviceChildrensEducation &&
-          school.leaCode !== '704'
+      case EstabTypeGroupCode.specialSchool:
+        return school.estabTypeCode === EstabTypeCode.communitySpecialSchool ||
+          school.estabTypeCode === EstabTypeCode.foundationSpecialSchool
+      case EstabTypeGroupCode.otherTypes:
+        return school.estabTypeCode === EstabTypeCode.serviceChildrensEducation &&
+          school.leaCode !== 704
       default:
         logger(`Excluding school ${school.urn} estab filter ${JSON.stringify(school)}`)
         return false

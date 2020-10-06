@@ -62,7 +62,11 @@ export class SchoolImportService {
 
     let mapping
     try {
-      mapping = this.schoolRecordMapper.mapColumns(csvParsed.shift(), mapper)
+      const dataWithoutHeader = csvParsed.shift()
+      if (dataWithoutHeader === undefined) {
+        throw new Error('no data after removing header row')
+      }
+      mapping = this.schoolRecordMapper.mapColumns(dataWithoutHeader, mapper)
       this.logger.verbose(`${name} mapping `, mapping)
     } catch (error) {
       this.jobResult.stderr = [`Failed to map columns, error raised was ${error.message}`]

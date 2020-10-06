@@ -17,8 +17,6 @@ export class SchoolDataService implements ISchoolDataService {
     this.jobResult = jobResult
   }
 
-
-
   private logError (msg: string): void {
     this.jobResult.stderr.push(`${(new Date()).toISOString()} school-import: ${msg}`)
   }
