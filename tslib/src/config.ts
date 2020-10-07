@@ -33,8 +33,8 @@ function optionalValueParser (input: any, substitute: number): string {
 export default {
   Environment: getEnvironment(),
   Sql: {
-    user: process.env.SQL_APP_USER || 'mtcAdminUser', // docker default
-    password: process.env.SQL_APP_USER_PASSWORD || 'your-chosen*P4ssw0rd_for_dev_env!', // docker default
+    user: process.env.SQL_FUNCTIONS_APP_USER,
+    password: process.env.SQL_FUNCTIONS_APP_USER_PASSWORD,
     server: process.env.SQL_SERVER || 'localhost',
     port: parseInt(optionalValueParser(process.env.SQL_PORT, 1433), 10),
     database: process.env.SQL_DATABASE || 'mtc',
@@ -43,7 +43,7 @@ export default {
     options: {
       encrypt: process.env.hasOwnProperty('SQL_ENCRYPT') ? toBool.primitiveToBoolean(process.env.SQL_ENCRYPT) : true,
       useUTC: true,
-      appName: process.env.SQL_APP_NAME || 'mtc-local-dev', // docker default
+      appName: process.env.SQL_APP_NAME || 'mtc-functions', // docker default
       enableArithAbort: {}.hasOwnProperty.call(process.env, 'SQL_ENABLE_ARITH_ABORT') ? toBool.primitiveToBoolean(process.env.SQL_ENABLE_ARITH_ABORT) : true
     },
     Pooling: {
