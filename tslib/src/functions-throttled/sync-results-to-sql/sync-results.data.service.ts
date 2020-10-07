@@ -47,6 +47,10 @@ export class SyncResultsDataService implements ISyncResultsDataService {
     return map
   }
 
+  /**
+   * Prepare the event SQL and Parameters from the raw payload
+   * @param {ValidatedCheck} validatedCheck
+   */
   public async prepareEvents (validatedCheck: ValidatedCheck): Promise<ITransactionRequest> {
     const audits: Audit[] = R.propOr([], 'audit', validatedCheck)
     const auditParams = []
@@ -212,6 +216,12 @@ export class SyncResultsDataService implements ISyncResultsDataService {
     await this.sqlService.modify(sql, params)
   }
 
+  /**
+   * Find a question from the database given a string representing the question, like '1x2'
+   * Useful for creating the FKs to the question.  Uses the questionData cache.
+   * @param question
+   * @private
+   */
   private findQuestion (question: string): DBQuestion {
     if (!this.questionData.has(question)) {
       throw new Error(`Unable to find question: ${question}`)
