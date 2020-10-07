@@ -6,6 +6,7 @@ import { ConsoleLogger, ILogger } from '../../common/logger'
 import { SchoolImportJobResult } from './SchoolImportJobResult'
 import { ISchoolImportPredicates, Predicates } from './predicates'
 import { SchoolRecordMapper } from './school-mapper'
+import { SchoolImportError } from './SchoolImportError'
 
 const name = 'school-import'
 
@@ -40,12 +41,7 @@ export class SchoolImportService {
   }
 
   async process (context: Context, blob: any): Promise<SchoolImportJobResult> {
-    this.jobResult = {
-      stderr: [],
-      stdout: [],
-      schoolsLoaded: 0,
-      linesProcessed: 0
-    }
+    this.jobResult.reset()
     this.logger.verbose('school-import.v1.process() called')
     const csvParsed = csv.parse(blob.toString())
     const mapper = [
@@ -70,8 +66,7 @@ export class SchoolImportService {
       this.logger.verbose(`${name} mapping `, mapping)
     } catch (error) {
       this.jobResult.stderr = [`Failed to map columns, error raised was ${error.message}`]
-      this.exportJobResults(context, this.jobResult)
-      throw error
+      throw new SchoolImportError(this.jobResult, error.message)
     }
 
     try {
@@ -85,29 +80,13 @@ export class SchoolImportService {
       }
       this.jobResult = await this.schoolDataService.bulkUpload(context.log, filteredSchools, mapping)
       this.logger.verbose(`${name}  bulkUpload complete`)
-      this.exportJobResults(context, this.jobResult)
-      this.logger.verbose(`${name} job results exported`)
       return this.jobResult
     } catch (error) {
-      if (error.jobResult) {
-        this.exportJobResults(context, error.jobResult)
-      }
-      throw error
+      throw new SchoolImportError(this.jobResult, error.message)
     }
   }
 
   private log (msg: string): void {
     this.jobResult.stdout.push(`${(new Date()).toISOString()} school-import: ${msg}`)
-  }
-
-  /**
-   * Write to output bindings so that they can be written to blob storage
-   * @param context
-   * @param jobResult
-   */
-  private exportJobResults (context: Context, jobResult: SchoolImportJobResult) {
-    this.logger.verbose(`${name} exportJobResults() called`)
-    context.bindings.schoolImportStdout = jobResult.stdout.join('\n')
-    context.bindings.schoolImportStderr = jobResult.stderr.join('\n')
   }
 }

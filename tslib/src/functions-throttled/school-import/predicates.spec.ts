@@ -18,11 +18,11 @@ describe('School Import Predicates', () => {
       name: 'mock school',
       leaCode: 1,
       estabCode: 2,
-      estabTypeGroupCode: 3,
-      estabTypeCode: 4,
-      estabStatusCode: 1,
-      statLowAge: 7,
-      statHighAge: 12
+      estabTypeGroupCode: EstabTypeGroupCode.independent,
+      estabTypeCode: EstabTypeCode.communitySpecialSchool,
+      estabStatusCode: EstabStatusCode.Open,
+      statLowAge: targetAge - 1,
+      statHighAge: targetAge + 1
     }
   })
 
