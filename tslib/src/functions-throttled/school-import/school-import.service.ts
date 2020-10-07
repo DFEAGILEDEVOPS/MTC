@@ -7,8 +7,10 @@ import { SchoolImportJobResult } from './SchoolImportJobResult'
 import { ISchoolImportPredicates, Predicates } from './predicates'
 import { SchoolRecordMapper } from './school-mapper'
 import { SchoolImportError } from './SchoolImportError'
+import { ISchoolRecord } from './data-access/ISchoolRecord'
 
 const name = 'school-import'
+const targetAge = 9
 
 export class SchoolImportService {
 
@@ -73,9 +75,17 @@ export class SchoolImportService {
       const filteredSchools = new Array<any>()
       for (let index = 0; index < csvParsed.length; index++) {
         const row = csvParsed[index]
-        const mappedRow = this.schoolRecordMapper.mapRow(row, mapping)
-        if (this.predicates.matchesAll(this.log, mappedRow)) {
-          filteredSchools.push(mappedRow)
+        const schoolRecord = this.schoolRecordMapper.mapRow(row, mapping)
+        const isOpen = this.predicates.isSchoolOpen(schoolRecord)
+        const isCorrectTypeGroup = this.predicates.isRequiredEstablishmentTypeGroup(schoolRecord)
+        const isCorrectAgeRange = this.predicates.isAgeInRange(targetAge, schoolRecord)
+        const matchesAll = isOpen.isMatch && isCorrectTypeGroup.isMatch && isCorrectAgeRange.isMatch
+        if (matchesAll) {
+          filteredSchools.push(schoolRecord)
+        } else {
+          this.jobResult.stdout.push(this.createLogEntry(isOpen.message))
+          this.jobResult.stdout.push(this.createLogEntry(isCorrectTypeGroup.message))
+          this.jobResult.stdout.push(this.createLogEntry(isCorrectAgeRange.message))
         }
       }
       this.jobResult = await this.schoolDataService.bulkUpload(context.log, filteredSchools, mapping)
@@ -86,7 +96,17 @@ export class SchoolImportService {
     }
   }
 
-  private log (msg: string): void {
-    this.jobResult.stdout.push(`${(new Date()).toISOString()} school-import: ${msg}`)
+  private createLogEntry (msg: string): string {
+    if (msg.length > 0) {
+      return `${(new Date()).toISOString()} school-import: ${msg}`
+    }
+    return ''
+  }
+
+  isPredicated (school: ISchoolRecord): boolean {
+    const result = this.predicates.isSchoolOpen(school).isMatch &&
+      this.predicates.isRequiredEstablishmentTypeGroup(school).isMatch &&
+      this.predicates.isAgeInRange(targetAge, school).isMatch
+    throw new Error(`result:${result} incomplete - we need the messages!`)
   }
 }
