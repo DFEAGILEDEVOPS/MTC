@@ -7,6 +7,7 @@ import * as mssql from 'mssql'
 import config from '../../config'
 import { ConnectionPoolService } from '../../sql/sql.service'
 import { SchoolImportJobResult } from './SchoolImportJobResult'
+import { SchoolImportError } from './SchoolImportError'
 
 const name = 'school-import'
 
@@ -41,7 +42,14 @@ const blobTrigger: AzureFunction = async function schoolImportIndex (context: Co
     await pool.close()
   } catch (error) {
     context.log.error(`${name}: ERROR: ${error.message}`, error)
+    if (error instanceof SchoolImportError) {
+      context.bindingData.schoolImportStderr = error.jobResult.getErrorOutput()
+      context.bindingData.schoolImportStdout = error.jobResult.getStandardOutput()
+    }
   }
+
+  context.bindingData.schoolImportStderr = jobResult.getErrorOutput()
+  context.bindingData.schoolImportStdout = jobResult.getStandardOutput()
 
   const end = performance.now()
   const durationInMilliseconds = end - start
