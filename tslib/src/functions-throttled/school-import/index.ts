@@ -1,5 +1,3 @@
-'use strict'
-
 import { AzureFunction, Context } from '@azure/functions'
 import { performance } from 'perf_hooks'
 import { SchoolImportService } from './school-import.service'

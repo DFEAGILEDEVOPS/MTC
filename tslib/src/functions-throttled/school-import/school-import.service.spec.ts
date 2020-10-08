@@ -1,4 +1,3 @@
-
 import { SchoolImportService } from './school-import.service'
 import { ConnectionPool } from 'mssql'
 import config from '../../config'

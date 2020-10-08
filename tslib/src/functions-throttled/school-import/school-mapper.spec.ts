@@ -1,4 +1,3 @@
-
 import { SchoolRecordMapper } from './school-mapper'
 import * as csv from 'csv-string'
 

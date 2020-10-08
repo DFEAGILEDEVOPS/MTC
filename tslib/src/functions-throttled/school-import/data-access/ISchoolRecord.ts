@@ -1,4 +1,3 @@
-
 export interface ISchoolRecord {
   urn: number
   name: string
