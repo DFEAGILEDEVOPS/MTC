@@ -158,7 +158,6 @@ export class SyncResultsDataService implements ISyncResultsDataService {
    * @param requests
    */
   public async insertToDatabase (requests: ITransactionRequest[]): Promise<void> {
-    // console.log('call insertToDatabase with', requests)
     return this.sqlService.modifyWithTransaction(requests)
   }
 
