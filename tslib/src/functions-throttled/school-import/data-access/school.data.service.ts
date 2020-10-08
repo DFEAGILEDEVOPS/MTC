@@ -24,11 +24,11 @@ export class SchoolDataService implements ISchoolDataService {
   /**
    * Perform a bulk upload to the school table, inserting new schools
    * @param context - function context object
-   * @param data - the csv parsed to array or arrays without header row
+   * @param schoolData - the csv parsed to array or arrays without header row
    * @param mapping - the mapping between our domain and the input file
    * @return {SchoolImportJobResult}
    */
-  async bulkUpload (logger: ILogger, data: Array<ISchoolRecord>): Promise<SchoolImportJobResult> {
+  async bulkUpload (logger: ILogger, schoolData: Array<ISchoolRecord>): Promise<SchoolImportJobResult> {
     logger.verbose('SchoolDataService.bulkUpload() called')
 
     const table = new mssql.Table('[mtc_admin].[school]')
@@ -39,15 +39,15 @@ export class SchoolDataService implements ISchoolDataService {
     table.columns.add('name', mssql.NVarChar(mssql.MAX), { nullable: false })
     table.columns.add('urn', mssql.Int, { nullable: false })
 
-    for (let i = 0; i < data.length; i++) {
-      const mapped = data[i]
+    for (let i = 0; i < schoolData.length; i++) {
+      const school = schoolData[i]
       this.jobResult.linesProcessed += 1
       this.jobResult.schoolsLoaded += 1
-      const dfeNumber = `${mapped.leaCode}${mapped.estabCode}`
+      const dfeNumber = `${school.leaCode}${school.estabCode}`
       if (dfeNumber.toString().length !== 7) {
-        this.logError(`WARN: school [${mapped.urn}] has an unusual dfeNumber [${dfeNumber}]`)
+        this.logError(`WARN: school [${school.urn}] has an unusual dfeNumber [${dfeNumber}]`)
       }
-      table.rows.add(dfeNumber, mapped.estabCode, mapped.leaCode, 10, mapped.name, mapped.urn, 10)
+      table.rows.add(dfeNumber, school.estabCode, school.leaCode, school.name, school.urn)
     }
     const request = new mssql.Request(this.pool)
     if (this.jobResult.schoolsLoaded > 0) {

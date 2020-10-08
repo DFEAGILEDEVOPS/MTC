@@ -17,6 +17,8 @@ const blobTrigger: AzureFunction = async function schoolImportIndex (context: Co
   context.log(`${name} started for blob \n Name: ${context.bindingData.name} \n Blob Size: ${blob.length} Bytes`)
   let pool: mssql.ConnectionPool
   let jobResult = new SchoolImportJobResult()
+  let standardOutput = ''
+  let errorOutput = ''
 
   try {
     const sqlConfig: mssql.config = {
@@ -43,14 +45,17 @@ const blobTrigger: AzureFunction = async function schoolImportIndex (context: Co
   } catch (error) {
     context.log.error(`${name}: ERROR: ${error.message}`, error)
     if (error instanceof SchoolImportError) {
-      context.bindingData.schoolImportStderr = error.jobResult.getErrorOutput()
-      context.bindingData.schoolImportStdout = error.jobResult.getStandardOutput()
-      context.log.error(error.innerError.stack)
+      jobResult.stderr.push(...error.jobResult.stderr)
+      jobResult.stdout.push(...error.jobResult.stdout)
     }
   }
 
-  context.bindingData.schoolImportStderr = jobResult.getErrorOutput()
-  context.bindingData.schoolImportStdout = jobResult.getStandardOutput()
+  standardOutput = jobResult.getStandardOutput()
+  errorOutput = jobResult.getErrorOutput()
+/*   context.log.info(`standardOutput:${standardOutput}`)
+  context.log.info(`errorOutput:${errorOutput}`) */
+  context.bindings.schoolImportStderr = standardOutput
+  context.bindings.schoolImportStdout = errorOutput
 
   const end = performance.now()
   const durationInMilliseconds = end - start
