@@ -1,6 +1,5 @@
 import * as RA from 'ramda-adjunct'
 import { ISchoolRecord, EstabTypeCode, EstabTypeGroupCode, EstabStatusCode } from './data-access/ISchoolRecord'
-export type LogFunc = (msg: string) => void
 
 const schoolsInGibraltarLaCode = 704
 

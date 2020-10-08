@@ -1,4 +1,3 @@
-
 export class SchoolImportJobResult {
   constructor () {
     this.stderr = []

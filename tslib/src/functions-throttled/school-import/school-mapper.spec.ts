@@ -1,6 +1,4 @@
 
-/* global describe expect it beforeEach */
-
 import { SchoolRecordMapper } from './school-mapper'
 import * as csv from 'csv-string'
 

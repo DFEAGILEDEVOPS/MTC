@@ -1,7 +1,4 @@
-
 import { EstabTypeCode, EstabTypeGroupCode, ISchoolRecord, EstabStatusCode } from './data-access/ISchoolRecord'
-/* global describe, expect, it, jasmine, beforeEach */
-
 import { Predicates } from './predicates'
 
 let sut: Predicates

@@ -1,4 +1,3 @@
-/* global describe, it, expect */
 
 import { SchoolImportService } from './school-import.service'
 import { ConnectionPool } from 'mssql'
