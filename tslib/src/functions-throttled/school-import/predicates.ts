@@ -2,6 +2,8 @@ import * as RA from 'ramda-adjunct'
 import { ISchoolRecord, EstabTypeCode, EstabTypeGroupCode, EstabStatusCode } from './data-access/ISchoolRecord'
 export type LogFunc = (msg: string) => void
 
+const schoolsInGibraltarLaCode = 704
+
 export interface ISchoolImportPredicates {
   isSchoolOpen (school: ISchoolRecord): SchoolPredicateResult
   isAgeInRange (targetAge: number, school: ISchoolRecord): SchoolPredicateResult
@@ -48,13 +50,22 @@ export class Predicates implements ISchoolImportPredicates {
       case EstabTypeGroupCode.freeSchool:
         return new SchoolPredicateResult(true)
       case EstabTypeGroupCode.specialSchool:
-        return new SchoolPredicateResult(school.estabTypeCode === EstabTypeCode.communitySpecialSchool ||
-          school.estabTypeCode === EstabTypeCode.foundationSpecialSchool)
+        const isCommunityOrFoundationSpecial = school.estabTypeCode === EstabTypeCode.communitySpecialSchool ||
+        school.estabTypeCode === EstabTypeCode.foundationSpecialSchool
+        if (isCommunityOrFoundationSpecial) {
+          return new SchoolPredicateResult(true)
+        } else {
+          return new SchoolPredicateResult(false,
+            `Excluding school ${school.urn} based on EstabTypeCode:${school.estabTypeCode} EstabTypeGroupCode:${school.estabTypeGroupCode}`)
+        }
       case EstabTypeGroupCode.otherTypes:
-        return new SchoolPredicateResult(school.estabTypeCode === EstabTypeCode.serviceChildrensEducation &&
-          school.leaCode !== 704)
+        const isServiceChildrensEducationNotInGibraltar = school.estabTypeCode === EstabTypeCode.serviceChildrensEducation &&
+        school.leaCode !== schoolsInGibraltarLaCode
+        if (isServiceChildrensEducationNotInGibraltar) return new SchoolPredicateResult(true)
+        return new SchoolPredicateResult(false,
+          `Excluding school ${school.urn} based on EstabTypeCode:${school.estabTypeCode} LA:${school.leaCode}`)
       default:
-        return new SchoolPredicateResult(false, `Excluding school ${school.urn} estab filter ${JSON.stringify(school)}`)
+        return new SchoolPredicateResult(false, `Excluding school ${school.urn} based on EstabTypeGroupCode ${JSON.stringify(school)}`)
     }
   }
 }

@@ -68,7 +68,7 @@ export class SchoolImportService {
       this.logger.verbose(`${name} mapping `, mapping)
     } catch (error) {
       this.jobResult.stderr = [`Failed to map columns, error raised was ${error.message}`]
-      throw new SchoolImportError(this.jobResult, error.message)
+      throw new SchoolImportError(this.jobResult, error)
     }
 
     try {
@@ -92,7 +92,7 @@ export class SchoolImportService {
       this.logger.verbose(`${name}  bulkUpload complete`)
       return this.jobResult
     } catch (error) {
-      throw new SchoolImportError(this.jobResult, error.message)
+      throw new SchoolImportError(this.jobResult, error)
     }
   }
 

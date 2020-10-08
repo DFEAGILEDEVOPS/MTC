@@ -7,6 +7,7 @@ import { Predicates } from './predicates'
 let sut: Predicates
 let school: ISchoolRecord
 const targetAge = 9
+const schoolsInGibraltarLaCode = 704
 
 describe('School Import Predicates', () => {
   beforeEach(() => {
@@ -168,10 +169,10 @@ describe('School Import Predicates', () => {
       expect(result.isMatch).toBe(false)
     })
 
-    it('loads estabTypeGroupCode 9 for estabTypeCode 26 only with LA code of 704', () => {
+    it('loads estabTypeGroupCode 9 for estabTypeCode 26 only with LA code that matches schools in Gibraltar', () => {
       school.estabTypeGroupCode = EstabTypeGroupCode.otherTypes
       school.estabTypeCode = EstabTypeCode.serviceChildrensEducation
-      school.leaCode = 704
+      school.leaCode = schoolsInGibraltarLaCode
       const result = sut.isRequiredEstablishmentTypeGroup(school)
       expect(result.isMatch).toBe(false)
     })

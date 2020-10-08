@@ -1,18 +1,39 @@
 import { ISchoolRecord } from './data-access/ISchoolRecord'
 
 export class SchoolRecordMapper {
+
   /**
    * Return a domain-mapped object from a
    * @param {Array<string | number>} row - csv row as array ['1001', 'Sometown Primary school', 'csv', 'array', ... ]
    * @param {Object} mapping - mapping object { urn: 0, name: 1, ... }
    * @return {ISchoolRecord} - mapped object of string values E.g. { urn: '1001', 'name': 'Sometown Primary School' ... }
    */
-  mapRow (row: Array<string | number>, mapping: any): ISchoolRecord {
+  mapRow (row: Array<any>, csvMapping: any): ISchoolRecord {
     const o: any = {}
-    Object.keys(mapping).forEach(k => {
-      o[k] = row[mapping[k]]
+    Object.keys(csvMapping).forEach(k => {
+      const mappingValue = row[csvMapping[k]]
+      if (!isNaN(mappingValue)) {
+        o[k] = Number(mappingValue)
+      } else {
+        o[k] = mappingValue
+      }
     })
     return o
+  }
+
+  mapRow2 (row: Array<string | number>, mapping: any): ISchoolRecord {
+    const rec: ISchoolRecord = {
+      estabCode: 1,
+      estabStatusCode: 1,
+      estabTypeCode: 1,
+      estabTypeGroupCode: 1,
+      leaCode: 1,
+      name: 'x',
+      urn: 1,
+      statHighAge: 1,
+      statLowAge: 1
+    }
+    return rec
   }
 
   /**

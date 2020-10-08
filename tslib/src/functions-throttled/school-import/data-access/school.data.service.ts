@@ -29,7 +29,7 @@ export class SchoolDataService implements ISchoolDataService {
    * @return {SchoolImportJobResult}
    */
   async bulkUpload (logger: ILogger, data: Array<ISchoolRecord>): Promise<SchoolImportJobResult> {
-    logger.verbose(`${name}.school.data.service.bulkUpload() called`)
+    logger.verbose('SchoolDataService.bulkUpload() called')
 
     const table = new mssql.Table('[mtc_admin].[school]')
     table.create = false
@@ -45,20 +45,17 @@ export class SchoolDataService implements ISchoolDataService {
       this.jobResult.schoolsLoaded += 1
       const dfeNumber = `${mapped.leaCode}${mapped.estabCode}`
       if (dfeNumber.toString().length !== 7) {
-        this.logError(`WARN: ${name} school [${mapped.urn}] has an unusual dfeNumber [${dfeNumber}]`)
+        this.logError(`WARN: school [${mapped.urn}] has an unusual dfeNumber [${dfeNumber}]`)
       }
       table.rows.add(dfeNumber, mapped.estabCode, mapped.leaCode, 10, mapped.name, mapped.urn, 10)
     }
-    logger.verbose(`${name} data rows added for bulk upload`)
     const request = new mssql.Request(this.pool)
-    logger.verbose(`${name} new request obj created`)
     if (this.jobResult.schoolsLoaded > 0) {
       try {
         const res = await request.bulk(table)
-        logger.info(`${name} bulk request complete: `, res)
+        logger.info(`bulk request complete: `, res)
       } catch (error) {
         this.logError(`Bulk request failed. Error was:\n ${error.message}`)
-        // TODO used?
         error.jobResult = this.jobResult
         throw error
       }
