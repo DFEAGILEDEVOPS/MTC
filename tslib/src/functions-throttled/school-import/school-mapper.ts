@@ -21,21 +21,6 @@ export class SchoolRecordMapper {
     return o
   }
 
-  mapRow2 (row: Array<string | number>, mapping: any): ISchoolRecord {
-    const rec: ISchoolRecord = {
-      estabCode: 1,
-      estabStatusCode: 1,
-      estabTypeCode: 1,
-      estabTypeGroupCode: 1,
-      leaCode: 1,
-      name: 'x',
-      urn: 1,
-      statHighAge: 1,
-      statLowAge: 1
-    }
-    return rec
-  }
-
   /**
    * Find the array indexes we need out of the entire CSV
    * @param {string[]} cols - Header row of csv file as an array of strings
