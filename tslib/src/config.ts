@@ -21,6 +21,7 @@ const getEnvironment = () => {
 }
 
 const oneMinuteInMilliseconds = 60000
+const twoHoursInMilliseconds = oneMinuteInMilliseconds * 120
 const sixMonthsInSeconds = 15778800
 
 function optionalValueParser (input: any, substitute: number): string {
@@ -39,6 +40,7 @@ export default {
     port: parseInt(optionalValueParser(process.env.SQL_PORT, 1433), 10),
     database: process.env.SQL_DATABASE || 'mtc',
     connectionTimeout: parseInt(optionalValueParser(process.env.SQL_CONNECTION_TIMEOUT, oneMinuteInMilliseconds), 10),
+    censusRequestTimeout: parseInt(optionalValueParser(process.env.SQL_CENSUS_REQUEST_TIMEOUT,twoHoursInMilliseconds), 10),
     requestTimeout: parseInt(optionalValueParser(process.env.SQL_REQUEST_TIMEOUT,oneMinuteInMilliseconds), 10),
     options: {
       encrypt: process.env.hasOwnProperty('SQL_ENCRYPT') ? toBool.primitiveToBoolean(process.env.SQL_ENCRYPT) : true,
@@ -50,6 +52,10 @@ export default {
       MinCount: Number(process.env.SQL_POOL_MIN_COUNT) || 5,
       MaxCount: Number(process.env.SQL_POOL_MAX_COUNT) || 10,
       LoggingEnabled: process.env.hasOwnProperty('SQL_POOL_LOG_ENABLED') ? toBool.primitiveToBoolean(process.env.SQL_POOL_LOG_ENABLED) : true
+    },
+    PupilCensus: {
+      Username: process.env.SQL_PUPIL_CENSUS_USER || 'CensusImportUser',
+      Password: process.env.SQL_PUPIL_CENSUS_USER_PASSWORD
     }
   },
   DatabaseRetry: {
@@ -100,5 +106,8 @@ export default {
     BatchesPerExecution: Number(process.env.SCHOOL_RESULTS_CACHE_BATCHS_PER_EXEC) || 10,
     MessagesPerBatch: Number(process.env.SCHOOL_RESULTS_CACHE_MSGS_PER_BATCH) || 32,
     RedisResultsExpiryInSeconds: Number(process.env.REDIS_RESULTS_EXPIRY_IN_SECONDS) || sixMonthsInSeconds
+  },
+  AzureStorage: {
+    ConnectionString: process.env.AZURE_STORAGE_CONNECTION_STRING || ''
   }
 }
