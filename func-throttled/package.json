@@ -14,7 +14,7 @@
     "delete-specs": "find . -name \"*.spec.js\" -type f -delete",
     "clean": "rm -rf ./dist",
     "prestart": "yarn build",
-    "start:host": "func start",
+    "start:host": "func host start --port 7073",
     "start": "yarn start:host",
     "start:dev": "env $(cat disable-functions.env | grep Azure | xargs ) yarn start"
   },
