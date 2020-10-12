@@ -57,7 +57,7 @@ describe('check-window.service', () => {
   })
 
   test('check window is returned straight from cache when present', async () => {
-    redisServiceMock.get = jest.fn((key: string) => {
+    redisServiceMock.get = jest.fn(() => {
       return Promise.resolve({
         id: 1
       })

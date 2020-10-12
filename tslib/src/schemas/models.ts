@@ -1,13 +1,13 @@
 export interface SubmittedCheckV1 {
-  answers: Array<object>
-  audit: Array<object>
-  config: object
-  device: object
-  inputs: Array<object>
-  pupil: object
-  questions: Array<object>
-  school: object
-  tokens: object
+  answers: Record<string, unknown>[]
+  audit: Record<string, unknown>[]
+  config: Record<string, unknown>
+  device: Record<string, unknown>
+  inputs: Record<string, unknown>[]
+  pupil: Record<string, unknown>
+  questions: Record<string, unknown>[]
+  school: Record<string, unknown>
+  tokens: Record<string, unknown>
   checkCode: string
 }
 
