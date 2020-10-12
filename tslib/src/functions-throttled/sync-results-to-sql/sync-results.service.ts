@@ -38,9 +38,13 @@ export class SyncResultsService {
     // Prepare SQL statements and variables for the Answers
     const answerTran = this.syncResultsDataService.prepareAnswers(checkCompletionMessage.markedCheck, this.questionHash)
 
+    // Prepare Events
+    const eventTran = await this.syncResultsDataService.prepareEvents(checkCompletionMessage.validatedCheck)
+
     const flattenedTransaction = flattenTransactions([
       checkResTran,
-      answerTran
+      answerTran,
+      eventTran
     ])
 
     await this.syncResultsDataService.insertToDatabase([flattenedTransaction])

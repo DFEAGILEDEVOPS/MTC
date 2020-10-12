@@ -1,9 +1,10 @@
+import { TYPES } from 'mssql'
+
 import { SyncResultsService } from './sync-results.service'
 import { mockCompletionCheckMessage } from './mocks/completed-check.message'
 import { ConsoleLogger } from '../../common/logger'
 import { SyncResultsDataService } from './sync-results.data.service'
 import { ITransactionRequest } from '../../sql/sql.service'
-import { TYPES } from 'mssql'
 jest.mock('./sync-results.data.service')
 
 const mockQuestionData = new Map()
@@ -26,6 +27,7 @@ describe('SyncResultsService', () => {
     mockSyncResultsDataService = new SyncResultsDataService()
     ;(mockSyncResultsDataService.prepareCheckResult as jest.Mock).mockReturnValueOnce(mockTransaction)
     ;(mockSyncResultsDataService.prepareAnswers as jest.Mock).mockReturnValueOnce(mockTransaction)
+    ;(mockSyncResultsDataService.prepareEvents as jest.Mock).mockReturnValueOnce(mockTransaction)
     sut = new SyncResultsService(logger, mockSyncResultsDataService)
   })
 
