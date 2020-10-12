@@ -165,3 +165,9 @@ export interface DBQuestion {
   code: string,
   isWarmup: boolean
 }
+
+export interface DBEventType {
+  id: number,
+  eventType: string,
+  eventDescription: string
+}
