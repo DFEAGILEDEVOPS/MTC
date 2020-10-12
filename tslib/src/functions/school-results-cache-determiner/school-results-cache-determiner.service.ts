@@ -75,7 +75,7 @@ export class SchoolResultsCacheDeterminerService {
     }
   }
 
-  async execute () {
+  async execute (): Promise<void> {
     switch (config.SchoolResultsCacheDeterminer.cache) {
       case 0:
         // never cache

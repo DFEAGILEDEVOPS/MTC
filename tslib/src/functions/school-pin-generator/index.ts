@@ -10,7 +10,7 @@ function finish (start: number, context: Context) {
   context.log(`${functionName}: ${timeStamp} run complete: ${durationInMilliseconds} ms`)
 }
 
-const schoolPinGenerator: AzureFunction = async function (context: Context, timer: any): Promise<void> {
+const schoolPinGenerator: AzureFunction = async function (context: Context): Promise<void> {
 
   const start = performance.now()
   const replenishmentService = new SchoolPinReplenishmnentService()

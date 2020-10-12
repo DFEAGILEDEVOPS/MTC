@@ -14,7 +14,7 @@ const PupilPrefsDataServiceMock = jest.fn<IPupilPrefsDataService, any>(() => ({
 
 let sut: PupilPrefsService
 let dataServiceMock: IPupilPrefsDataService
-let functionBindings: IPupilPrefsFunctionBindings = {
+const functionBindings: IPupilPrefsFunctionBindings = {
   checkSyncQueue: []
 }
 

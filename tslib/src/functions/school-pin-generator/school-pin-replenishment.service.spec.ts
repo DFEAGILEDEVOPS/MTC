@@ -20,7 +20,7 @@ const configProviderMock: IConfigProvider = {
 
 let sut: SchoolPinReplenishmnentService
 let dataService: ISchoolPinReplenishmentDataService
-let logger: ILogger = new ConsoleLogger()
+const logger: ILogger = new ConsoleLogger()
 
 describe('school-pin-replenishment.service', () => {
 
@@ -85,7 +85,7 @@ describe('school-pin-replenishment.service', () => {
     dataService.getAllSchools = jest.fn(async () => {
       return schools
     })
-    dataService.updatePin = jest.fn(async (schoolUpdate) => {
+    dataService.updatePin = jest.fn(async () => {
       throw new Error('mock error')
     })
     await sut.process(logger)
@@ -101,7 +101,7 @@ describe('school-pin-replenishment.service', () => {
   })
 
   test('only updates single school specified when schoolUUID passed as param', async () => {
-    dataService.getSchoolById = jest.fn(async (id: number) => {
+    dataService.getSchoolById = jest.fn(async () => {
       const school: School = {
         id: 1,
         name: 'x'
@@ -115,7 +115,7 @@ describe('school-pin-replenishment.service', () => {
   })
 
   test('returns generated pin when single schoolUUID passed as param', async () => {
-    dataService.getSchoolById = jest.fn(async (id: number) => {
+    dataService.getSchoolById = jest.fn(async () => {
       const school: School = {
         id: 1,
         name: 'x'

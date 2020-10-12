@@ -3,7 +3,7 @@ import { PupilLoginService, IPupilLoginMessage, IPupilLoginFunctionBindings, IPu
 
 let sut: PupilLoginService
 let dataServiceMock: IPupilLoginDataService
-let bindings: IPupilLoginFunctionBindings = {
+const bindings: IPupilLoginFunctionBindings = {
   pupilEventTable: []
 }
 

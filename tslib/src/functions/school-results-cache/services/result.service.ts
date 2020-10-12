@@ -97,7 +97,7 @@ export class ResultService {
     return {
       // Date generated should be in user's locale
       generatedAt: moment.tz(school.timezone || defaultTimeZone),
-      // @ts-ignore
+      // @ts-ignore Ramda does not have good typescript support
       schoolId: R.prop('school_id', R.head(data)),
       pupils: pupilIdentificationService.addIdentificationFlags(this.sort(this.createPupilData(data)))
     }
@@ -109,7 +109,7 @@ export class ResultService {
    * @param {function} logger
    * @return {Promise<void>}
    */
-  async cacheResultData (schoolGuid: string) {
+  async cacheResultData (schoolGuid: string): Promise<void> {
     if (!schoolGuid) {
       throw new Error('schoolGuid not found')
     }

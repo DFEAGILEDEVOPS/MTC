@@ -5,7 +5,7 @@ import * as sb from '@azure/service-bus'
 
 import config from '../../config'
 import { ISchoolResultsCacheMessage } from '../school-results-cache-determiner/school-results-cache-determiner.service'
-const { ResultService } = require('./services/result.service')
+import { ResultService } from './services/result.service'
 
 const functionName = 'school-results-cache'
 

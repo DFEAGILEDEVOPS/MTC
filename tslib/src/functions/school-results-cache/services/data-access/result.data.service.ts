@@ -70,7 +70,7 @@ export class ResultDataService implements IResultDataService {
       }
     ]
     const result = await this.sqlService.query(sql, params)
-    // @ts-ignore
+    // @ts-ignore ramda does not have good typescript support
     return R.head(result)
   }
 }
