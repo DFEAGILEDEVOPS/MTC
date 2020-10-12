@@ -50,8 +50,6 @@ const blobTrigger: AzureFunction = async function schoolImportIndex (context: Co
 
   standardOutput = jobResult.getStandardOutput()
   errorOutput = jobResult.getErrorOutput()
-/*   context.log.info(`standardOutput:${standardOutput}`)
-  context.log.info(`errorOutput:${errorOutput}`) */
   context.bindings.schoolImportStderr = standardOutput
   context.bindings.schoolImportStdout = errorOutput
 

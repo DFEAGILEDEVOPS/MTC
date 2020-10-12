@@ -22,7 +22,7 @@ describe('#SchoolImportService', () => {
     sut = new SchoolImportService(new ConnectionPool(config.Sql), jobResult, schoolDataServiceMock)
   })
 
-  it('is defined', () => {
+  test('is defined', () => {
     expect(sut).toBeInstanceOf(SchoolImportService)
   })
 

@@ -8,11 +8,11 @@ describe('SchoolDataService', () => {
     sut = new SchoolRecordMapper()
   })
 
-  it('should be defined', () => {
+  test('should be defined', () => {
     expect(sut).toBeInstanceOf(SchoolRecordMapper)
   })
 
-  it('returns a mapped object with keys as per the mapping object', () => {
+  test('returns a mapped object with keys as per the mapping object', () => {
     const row = ['Town Primary School', 123456, 'extra', 'data', 9991111]
     const mapping = {
       name: 0,
@@ -26,7 +26,7 @@ describe('SchoolDataService', () => {
     })
   })
 
-  it('returns the column index for the desired columns', () => {
+  test('returns the column index for the desired columns', () => {
     const headerRow = ['Row A', 'ROW (B)', 'Stuff', '&', 'Nonsense', 'Row ("C")']
     const desiredRows = [
       ['Row A', 'rowA'],
@@ -41,7 +41,7 @@ describe('SchoolDataService', () => {
     })
   })
 
-  it('throws an error with all the headers it cant find', () => {
+  test('throws an error with all the headers it cant find', () => {
     const headerRow = ['a', 'b', 'c']
     const desiredRows = [
       ['d', 'd'],
@@ -52,7 +52,6 @@ describe('SchoolDataService', () => {
   })
 
   test('mapRow is returning object with correct types', () => {
-    // const headerRow = ['urn', 'leaCode', 'estabCode', 'name', 'statLowAge', 'statHighAge', 'estabStatusCode', 'estabTypeCode', 'estabTypeGroupCode']
     const data = `URN,LA (code),EstablishmentNumber,EstablishmentName,StatutoryLowAge,StatutoryHighAge,EstablishmentStatus (code),TypeOfEstablishment (code),EstablishmentTypeGroup (code)
     99900,999,9000,Guys School 1,8,10,1,7,4
     99901,999,9001,Guys Closed School,8,10,2,7,4`
