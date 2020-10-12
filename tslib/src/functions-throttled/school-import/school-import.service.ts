@@ -1,4 +1,3 @@
-import { Context } from '@azure/functions'
 import { ConnectionPool } from 'mssql'
 import * as csv from 'csv-string'
 import { ISchoolDataService, SchoolDataService } from './data-access/school.data.service'
@@ -22,9 +21,9 @@ export class SchoolImportService {
 
   constructor (pool: ConnectionPool,
                 jobResult: SchoolImportJobResult,
+                logger?: ILogger,
                 schoolDataService?: ISchoolDataService,
-                predicates?: ISchoolImportPredicates,
-                logger?: ILogger) {
+                predicates?: ISchoolImportPredicates) {
 
     if (schoolDataService === undefined) {
       schoolDataService = new SchoolDataService(pool, jobResult)
@@ -42,9 +41,7 @@ export class SchoolImportService {
     this.schoolRecordMapper = new SchoolRecordMapper()
   }
 
-  async process (context: Context, blob: any): Promise<SchoolImportJobResult> {
-    this.jobResult.reset()
-    this.logger.verbose('school-import.v1.process() called')
+  async process (blob: any): Promise<SchoolImportJobResult> {
     const csvParsed = csv.parse(blob.toString())
     const mapper = [
       ['URN', 'urn'],
@@ -60,12 +57,11 @@ export class SchoolImportService {
 
     let mapping
     try {
-      const dataWithoutHeader = csvParsed.shift()
-      if (dataWithoutHeader === undefined) {
-        throw new Error('no data after removing header row')
+      const columnHeaders = csvParsed.shift()
+      if (columnHeaders === undefined || columnHeaders.length === 0) {
+        throw new Error('no header row found')
       }
-      mapping = this.schoolRecordMapper.mapColumns(dataWithoutHeader, mapper)
-      this.logger.verbose(`${name} mapping `, mapping)
+      mapping = this.schoolRecordMapper.mapColumns(columnHeaders, mapper)
     } catch (error) {
       this.jobResult.stderr = [`Failed to map columns, error raised was ${error.message}`]
       throw new SchoolImportError(this.jobResult, error)
@@ -88,7 +84,9 @@ export class SchoolImportService {
           this.jobResult.stdout.push(this.createLogEntry(isCorrectAgeRange.message))
         }
       }
-      this.jobResult = await this.schoolDataService.bulkUpload(context.log, filteredSchools, mapping)
+      const dataResult = await this.schoolDataService.bulkUpload(this.logger, filteredSchools, mapping)
+      this.jobResult.stdout.push(...dataResult.stdout)
+      this.jobResult.stderr.push(...dataResult.stderr)
       this.logger.verbose(`${name}  bulkUpload complete`)
       return this.jobResult
     } catch (error) {
