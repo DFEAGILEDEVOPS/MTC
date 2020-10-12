@@ -34,7 +34,7 @@ describe('prepared-check-sync.service', () => {
 
   test('active checks for pupil are looked up and returns early if none found', async () => {
     const pupilUUID = 'pupilUUID'
-    dataServiceMock.getActiveCheckReferencesByPupilUuid = jest.fn(async (pupilUUID: string) => {
+    dataServiceMock.getActiveCheckReferencesByPupilUuid = jest.fn(async () => {
       return []
     })
     await sut.process(pupilUUID)
@@ -44,7 +44,7 @@ describe('prepared-check-sync.service', () => {
 
   test('each active check is sent to the merger service', async () => {
     const pupilUUID = 'pupilUUID'
-    dataServiceMock.getActiveCheckReferencesByPupilUuid = jest.fn(async (pupilUUID: string) => {
+    dataServiceMock.getActiveCheckReferencesByPupilUuid = jest.fn(async () => {
       const refs: Array<IActiveCheckReference> = [
         {
           checkCode: 'checkCode',
@@ -64,7 +64,7 @@ describe('prepared-check-sync.service', () => {
       ]
       return refs
     })
-    redisServiceMock.get = jest.fn(async (key: string) => {
+    redisServiceMock.get = jest.fn(async () => {
       return {
         checkCode: 'checkCode'
       }
@@ -82,11 +82,11 @@ describe('prepared-check-sync.service', () => {
       schoolPin: 'abc12def'
     }
     const cacheKey = `preparedCheck:${activeCheckReference.schoolPin}:${activeCheckReference.pupilPin}`
-    dataServiceMock.getActiveCheckReferencesByPupilUuid = jest.fn(async (pupilUUID: string) => {
+    dataServiceMock.getActiveCheckReferencesByPupilUuid = jest.fn(async () => {
       return [activeCheckReference]
     })
 
-    redisServiceMock.ttl = jest.fn(async (key: string) => {
+    redisServiceMock.ttl = jest.fn(async () => {
       return originalTTL
     })
 
@@ -104,7 +104,7 @@ describe('prepared-check-sync.service', () => {
       nextBetweenQuestions: false
     }
 
-    redisServiceMock.get = jest.fn(async (key: string) => {
+    redisServiceMock.get = jest.fn(async () => {
       return {
         config: checkConfig
       }
@@ -130,15 +130,15 @@ describe('prepared-check-sync.service', () => {
       pupilPin: '1234',
       schoolPin: 'abc12def'
     }
-    dataServiceMock.getActiveCheckReferencesByPupilUuid = jest.fn(async (pupilUUID: string) => {
+    dataServiceMock.getActiveCheckReferencesByPupilUuid = jest.fn(async () => {
       return [checkRef]
     })
 
-    redisServiceMock.ttl = jest.fn(async (key: string) => {
+    redisServiceMock.ttl = jest.fn(async () => {
       return originalTTL
     })
 
-    redisServiceMock.get = jest.fn(async (key: string) => {
+    redisServiceMock.get = jest.fn(async () => {
       return null
     })
 
@@ -157,15 +157,15 @@ describe('prepared-check-sync.service', () => {
       pupilPin: '1234',
       schoolPin: 'abc12def'
     }
-    dataServiceMock.getActiveCheckReferencesByPupilUuid = jest.fn(async (pupilUUID: string) => {
+    dataServiceMock.getActiveCheckReferencesByPupilUuid = jest.fn(async () => {
       return [checkRef]
     })
 
-    redisServiceMock.ttl = jest.fn(async (key: string) => {
+    redisServiceMock.ttl = jest.fn(async () => {
       return null
     })
 
-    redisServiceMock.get = jest.fn(async (key: string) => {
+    redisServiceMock.get = jest.fn(async () => {
       return {
         pupilPin: 1234,
         schoolPin: 'abc34def'

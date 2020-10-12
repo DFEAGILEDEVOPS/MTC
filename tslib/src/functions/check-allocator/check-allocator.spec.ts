@@ -79,10 +79,10 @@ describe('check-allocator/v1', () => {
 
   test('it should fetch all pupils within specified school from data service', async () => {
 
-    checkAllocationDataServiceMock.getPupilsBySchoolUuid = jest.fn(async (schoolUUID) => {
+    checkAllocationDataServiceMock.getPupilsBySchoolUuid = jest.fn(async () => {
       return Promise.resolve(pupilData)
     })
-    redisServiceMock.get = jest.fn(async (key) => {
+    redisServiceMock.get = jest.fn(async () => {
       return Promise.resolve({
         pupils: []
       })
@@ -93,10 +93,10 @@ describe('check-allocator/v1', () => {
 
   test('an allocation is created for all pupils when none have one', async () => {
 
-    checkAllocationDataServiceMock.getPupilsBySchoolUuid = jest.fn(async (schoolUUID: string) => {
+    checkAllocationDataServiceMock.getPupilsBySchoolUuid = jest.fn(async () => {
       return Promise.resolve(pupilData)
     })
-    redisServiceMock.get = jest.fn(async (key: string) => {
+    redisServiceMock.get = jest.fn(async () => {
       return {
         pupils: []
       }
@@ -107,10 +107,10 @@ describe('check-allocator/v1', () => {
 
   test('an allocation is only created for pupils that do not currently have one', async () => {
 
-    checkAllocationDataServiceMock.getPupilsBySchoolUuid = jest.fn((schoolUUID: string) => {
+    checkAllocationDataServiceMock.getPupilsBySchoolUuid = jest.fn(() => {
       return Promise.resolve(pupilData)
     })
-    redisServiceMock.get = jest.fn(async (key: string) => {
+    redisServiceMock.get = jest.fn(async () => {
       return {
         pupils: [
           pupilData[2]
@@ -123,10 +123,10 @@ describe('check-allocator/v1', () => {
 
   test('the top level object is stamped with last utc datetime of last replenishment', async () => {
 
-    checkAllocationDataServiceMock.getPupilsBySchoolUuid = jest.fn(async (schoolUUID: string) => {
+    checkAllocationDataServiceMock.getPupilsBySchoolUuid = jest.fn(async () => {
       return Promise.resolve(pupilData)
     })
-    redisServiceMock.get = jest.fn(async (key: string) => {
+    redisServiceMock.get = jest.fn(async () => {
       return {
         pupils: []
       }
@@ -136,7 +136,7 @@ describe('check-allocator/v1', () => {
       pupils: [],
       schoolUUID: uuid.v4()
     }
-    redisServiceMock.setex = jest.fn(async (key: string, value: any, ttl: number) => {
+    redisServiceMock.setex = jest.fn(async (key: string, value: any) => {
       persistedRedisObject = value
     })
     const millenium = '2000-01-01 00:00'
@@ -150,7 +150,7 @@ describe('check-allocator/v1', () => {
 
   test('the cache is updated with all school pupils', async () => {
 
-    checkAllocationDataServiceMock.getPupilsBySchoolUuid = jest.fn(async (schoolUUID: string) => {
+    checkAllocationDataServiceMock.getPupilsBySchoolUuid = jest.fn(async () => {
       return Promise.resolve(pupilData)
     })
     const existingRedisObject = {
@@ -170,7 +170,7 @@ describe('check-allocator/v1', () => {
         }
       ]
     }
-    redisServiceMock.get = jest.fn((key) => {
+    redisServiceMock.get = jest.fn(() => {
       return Promise.resolve(existingRedisObject)
     })
     let redisSetKey

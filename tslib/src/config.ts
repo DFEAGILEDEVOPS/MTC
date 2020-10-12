@@ -1,6 +1,5 @@
 import * as path from 'path'
 import * as fs from 'fs'
-// @ts-ignore
 import * as dotenv from 'dotenv'
 const globalDotEnvFile = path.join(__dirname, '..', '..', '.env')
 try {
@@ -43,7 +42,7 @@ export default {
     censusRequestTimeout: parseInt(optionalValueParser(process.env.SQL_CENSUS_REQUEST_TIMEOUT,twoHoursInMilliseconds), 10),
     requestTimeout: parseInt(optionalValueParser(process.env.SQL_REQUEST_TIMEOUT,oneMinuteInMilliseconds), 10),
     options: {
-      encrypt: process.env.hasOwnProperty('SQL_ENCRYPT') ? toBool.primitiveToBoolean(process.env.SQL_ENCRYPT) : true,
+      encrypt: {}.hasOwnProperty.call(process.env, 'SQL_ENCRYPT') === true ? toBool.primitiveToBoolean(process.env.SQL_ENCRYPT) : true,
       useUTC: true,
       appName: process.env.SQL_APP_NAME || 'mtc-functions', // docker default
       enableArithAbort: {}.hasOwnProperty.call(process.env, 'SQL_ENABLE_ARITH_ABORT') ? toBool.primitiveToBoolean(process.env.SQL_ENABLE_ARITH_ABORT) : true
@@ -51,7 +50,7 @@ export default {
     Pooling: {
       MinCount: Number(process.env.SQL_POOL_MIN_COUNT) || 5,
       MaxCount: Number(process.env.SQL_POOL_MAX_COUNT) || 10,
-      LoggingEnabled: process.env.hasOwnProperty('SQL_POOL_LOG_ENABLED') ? toBool.primitiveToBoolean(process.env.SQL_POOL_LOG_ENABLED) : true
+      LoggingEnabled: {}.hasOwnProperty.call(process.env, 'SQL_POOL_LOG_ENABLED') ? toBool.primitiveToBoolean(process.env.SQL_POOL_LOG_ENABLED) : true
     },
     PupilCensus: {
       Username: process.env.SQL_PUPIL_CENSUS_USER || 'CensusImportUser',

@@ -1,5 +1,4 @@
 import { TYPES } from 'mssql'
-
 import { SyncResultsService } from './sync-results.service'
 import { mockCompletionCheckMessage } from './mocks/completed-check.message'
 import { ConsoleLogger } from '../../common/logger'
@@ -21,7 +20,7 @@ describe('SyncResultsService', () => {
   }
 
   beforeEach(() => {
-    // @ts-ignore
+    // @ts-ignore exists for mocking
     SyncResultsDataService.mockClear()
     const logger = new ConsoleLogger()
     mockSyncResultsDataService = new SyncResultsDataService()
@@ -35,7 +34,10 @@ describe('SyncResultsService', () => {
     (mockSyncResultsDataService.sqlGetQuestionData as jest.Mock).mockReturnValueOnce(Promise.resolve(mockQuestionData))
     await sut.process(mockCompletionCheckMessage)
     expect(mockSyncResultsDataService.sqlGetQuestionData).toHaveBeenCalledTimes(1)
-    expect(sut.questionHash!.size).toBe(1)
+    if (sut.questionHash === undefined) {
+      fail('questionHash should be defined')
+    }
+    expect(sut.questionHash.size).toBe(1)
   })
 
   test('it makes a call to prepare the data for the checkResult table', async () => {

@@ -14,8 +14,8 @@ const xmlParserOptions = {
   cdataPositionChar: '\\c',
   parseTrueNumberOnly: false,
   arrayMode: false, // "strict"
-  attrValueProcessor: (a: any, attrName: string) => a,
-  tagValueProcessor : (t: any, tagName: string) => t,
+  attrValueProcessor: (a: any) => a,
+  tagValueProcessor : (t: any) => t,
   stopNodes: []
 }
 

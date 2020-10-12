@@ -4,7 +4,7 @@ const functionName = 'gias-sync'
 import { GiasService } from './gias.service'
 import config from '../../config'
 
-const timerTrigger: AzureFunction = async function (context: Context, timer: any): Promise<void> {
+const timerTrigger: AzureFunction = async function (context: Context): Promise<void> {
   const start = performance.now()
 
   const giasService = new GiasService()

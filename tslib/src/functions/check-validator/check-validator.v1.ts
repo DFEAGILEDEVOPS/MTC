@@ -98,18 +98,18 @@ export class CheckValidatorV1 {
     return receivedCheckRef[0]
   }
 
-  private detectArchive (message: object) {
-    if (!message.hasOwnProperty('archive')) {
+  private detectArchive (message: Record<string, unknown>) {
+    if ('archive' in message === false) {
       throw new Error('message is missing [archive] property')
     }
   }
 
-  private validateCheckStructure (check: object) {
+  private validateCheckStructure (check: Record<string, unknown>) {
     const errorMessagePrefix = 'submitted check is missing the following properties:'
     const missingProperties: string[] = []
     for (let index = 0; index < requiredSubmittedCheckProperties.length; index++) {
       const propertyName = requiredSubmittedCheckProperties[index]
-      if (!check.hasOwnProperty(propertyName)) {
+      if (propertyName in check === false) {
         missingProperties.push(propertyName)
       }
     }

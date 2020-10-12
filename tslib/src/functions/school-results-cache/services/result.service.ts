@@ -109,8 +109,8 @@ export class ResultService {
    * @param {function} logger
    * @return {Promise<void>}
    */
-  async cacheResultData (schoolGuid: string): Promise<void> {
-    if (!schoolGuid) {
+  async cacheResultData (schoolGuid: string | undefined): Promise<void> {
+    if (schoolGuid === undefined) {
       throw new Error('schoolGuid not found')
     }
 

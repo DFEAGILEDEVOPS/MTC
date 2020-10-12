@@ -1,6 +1,5 @@
 import * as path from 'path'
 import * as fs from 'fs'
-// @ts-ignore
 import * as dotenv from 'dotenv'
 import config from '../config'
 
@@ -39,7 +38,7 @@ export interface IAsyncTableService {
 }
 export class AsyncTableService extends az.TableService implements IAsyncTableService {
 
-  replaceEntityAsync (table: string, entity: any): Promise<any> {
+  replaceEntityAsync (table: string, entity: unknown): Promise<any> {
     return new Promise((resolve, reject) => {
       this.replaceEntity(table, entity, (error, result) => {
         if (error) {
@@ -63,7 +62,7 @@ export class AsyncTableService extends az.TableService implements IAsyncTableSer
     })
   }
 
-  deleteEntityAsync (table: string, entityDescriptor: any): Promise<Error | DeleteResponse> {
+  deleteEntityAsync (table: string, entityDescriptor: unknown): Promise<Error | DeleteResponse> {
     return new Promise((resolve, reject) => {
       this.deleteEntity(table, entityDescriptor, (error, result) => {
         if (error) {
@@ -104,7 +103,7 @@ export class AsyncBlobService extends az.BlobService implements IBlobStorageServ
 
   deleteContainerAsync (container: string): Promise<void> {
     return new Promise((resolve, reject) => {
-      this.deleteContainer(container, (error, response) => {
+      this.deleteContainer(container, (error) => {
         if (error) {
           reject(error)
         } else {

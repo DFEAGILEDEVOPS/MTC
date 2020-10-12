@@ -18,7 +18,7 @@ export interface IRedisService {
    * @throws when the incoming item datatype is not supported and when the setex redis operation fails
    * @returns {Promise<void} an awaitable promise
    */
-  set (key: string, value: string | Record<string, unknown>): Promise<void>
+  set (key: string, value: string | Record<string, any>): Promise<void>
   /**
    * @description drop a series of items from the cache
    * @param {Array<string>} keys an array of keys to invalidate
@@ -32,7 +32,7 @@ export interface IRedisService {
    * @throws when the incoming item datatype is not supported and when the setex redis operation fails
    * @returns {Promise<void} an awaitable promise
    */
-  setex (key: string, value: string | Record<string, unknown>, ttl: number): Promise<void>
+  setex (key: string, value: string | any, ttl: number): Promise<void>
   /**
    * @description drop a series of items from the cache
    * @param {Array<string>} keys an array of keys to invalidate

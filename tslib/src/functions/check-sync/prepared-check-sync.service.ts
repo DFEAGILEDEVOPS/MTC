@@ -38,7 +38,7 @@ export class PreparedCheckSyncService {
       const ref = checkReferences[index]
       this.logger.info(`syncing check. checkCode:${ref.checkCode}`)
       const cacheKey = this.buildPreparedCheckCacheKey(ref)
-      const preparedCheck: IPreparedCheck | null = await this.redisService.get(cacheKey)
+      const preparedCheck: IPreparedCheck | any = await this.redisService.get(cacheKey)
       if (preparedCheck === null) {
         throw new Error(`unable to find preparedCheck in redis. checkCode:${ref.checkCode}`)
       }

@@ -48,7 +48,7 @@ export class PreparedCheckMergeService implements IPreparedCheckMergeService {
     }
     this.dataService = dataService
   }
-  async merge (oldConfig: ICheckConfig, newConfig: any): Promise<ICheckConfig> {
+  async merge (oldConfig: ICheckConfig, newConfig: Record<string, any>): Promise<ICheckConfig> {
     if (oldConfig.colourContrastCode) {
       delete oldConfig.colourContrastCode
     }
@@ -72,12 +72,8 @@ export class PreparedCheckMergeService implements IPreparedCheckMergeService {
     const fontSizeAa = newConfig.find((aa: any) => aa.pupilFontSizeCode)
     const colourContrastAa = newConfig.find((aa: any) => aa.pupilColourContrastCode)
     const newAaIds = newConfig.map((aa: any) => aa.accessArrangements_id)
-    let aaCodes
-    try {
-      aaCodes = await this.dataService.getAccessArrangementsCodesByIds(newAaIds)
-    } catch (error) {
-      throw error
-    }
+    const aaCodes = await this.dataService.getAccessArrangementsCodesByIds(newAaIds)
+
     if (aaCodes.length === 0) {
       throw new Error('no access arrangement codes found')
     }

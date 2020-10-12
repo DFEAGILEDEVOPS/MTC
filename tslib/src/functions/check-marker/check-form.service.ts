@@ -15,7 +15,7 @@ export class CheckFormService implements ICheckFormService {
     this.sqlService = new SqlService()
   }
 
-  async getCheckFormDataByCheckCode (checkCode: string) {
+  async getCheckFormDataByCheckCode (checkCode: string): Promise<any> {
 
     const sql = `SELECT TOP 1 f.formData
               FROM mtc_admin.[check] chk

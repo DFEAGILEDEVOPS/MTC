@@ -1,4 +1,3 @@
-
 import * as csvString from 'csv-string'
 import moment from 'moment'
 import * as R from 'ramda'
@@ -8,6 +7,10 @@ import { CensusImportDataService, ICensusImportDataService } from './census-impo
 import { IJobDataService, JobDataService } from './job.data.service'
 import * as mssql from 'mssql'
 import { ConsoleLogger, ILogger } from '../../common/logger'
+
+export interface IJobResult {
+  processCount: number
+}
 
 export class CensusImportV1 {
 
@@ -46,7 +49,7 @@ export class CensusImportV1 {
     this.logger = logger
   }
 
-  async process (blob: any, blobUri: string) {
+  async process (blob: unknown, blobUri: string): Promise<IJobResult> {
     const rowsAffected = await this.handleCensusImport(blob, blobUri)
     return {
       processCount: rowsAffected

@@ -1,10 +1,10 @@
 import { GiasService } from './gias.service'
 import { ISoapMessageBuilder, ISoapMessageSpecification } from './soap-message-builder'
 import { v4 as uuid } from 'uuid'
-import { ISoapRequestService, ISoapRequest } from './soap-request.service'
+import { ISoapRequestService } from './soap-request.service'
 import config from '../../config'
 import { IXmlParser } from './xml-parser'
-import { IMultipartMessageParser, IResponse, IMessagePart } from './multipart-message-parser'
+import { IMultipartMessageParser, IMessagePart } from './multipart-message-parser'
 import { IZipService } from './zip.service'
 
 const SoapMessageBuilderMock = jest.fn<ISoapMessageBuilder, any>(() => ({
@@ -45,7 +45,7 @@ describe('GiasSyncService', () => {
     soapRequestServiceMock = new SoapRequestServiceMock()
     zipServiceMock = new ZipServiceMock()
 
-    soapRequestServiceMock.execute = jest.fn((request: ISoapRequest) => {
+    soapRequestServiceMock.execute = jest.fn(() => {
       const soapXml = {
         body: ''
       }
@@ -54,7 +54,7 @@ describe('GiasSyncService', () => {
     const extractHrefValue = 'cid:9cd380a3-db54-46f7-98db-8f65a269bbd4%40myfile.com'
     const attachmentPartId = extractHrefValue.substr(4).replace('%40', '@')
     xmlParserMock = new XmlParserMock()
-    xmlParserMock.parse = jest.fn((xml: string) => {
+    xmlParserMock.parse = jest.fn(() => {
       return {
         Envelope: {
           Body: {
@@ -72,10 +72,10 @@ describe('GiasSyncService', () => {
       }
     })
     multipartMessageParserMock = new MultipartMessageParserMock()
-    multipartMessageParserMock.extractBoundaryIdFrom = jest.fn((response: IResponse) => {
+    multipartMessageParserMock.extractBoundaryIdFrom = jest.fn(() => {
       return 'boundaryId'
     })
-    multipartMessageParserMock.parse = jest.fn((response: IResponse) => {
+    multipartMessageParserMock.parse = jest.fn(() => {
       const parts = new Array<IMessagePart>()
       parts.push({
         content: 'content',
@@ -89,7 +89,7 @@ describe('GiasSyncService', () => {
       return parts
     })
 
-    zipServiceMock.extractEntriesFromZipBuffer = jest.fn((data: Buffer) => {
+    zipServiceMock.extractEntriesFromZipBuffer = jest.fn(() => {
       const entries = new Array<Buffer>()
       entries.push(Buffer.from('foo'))
       return entries

@@ -80,7 +80,16 @@ describe('multipart message parser', () => {
   describe('parse', () => {
     test.skip('returns parts array', () => {
       const boundaryId = uuid()
-      // body: `--${boundaryId}\r\nContent-Type: application/xop+xml; charset=utf-8; type=\"text/xml\"\r\n\r\n<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"><SOAP-ENV:Header>\r\n</SOAP-ENV:Header><SOAP-ENV:Body><ns2:GetExtractResponse xmlns:ns2=\"http:/mtc.com\" xmlns:ns3=\"http://mtc.com/DataTypes\" xmlns:ns4=\"http://mtc.com/Establishment\"><ns2:Extract><xop:Include xmlns:xop=\"http://www.w3.org/2004/08/xop/include\" href=\"cid:41d57290-f016-4066-8dc0-9dfa5ad78663%40mtc.com\"/></ns2:Extract></ns2:GetExtractResponse></SOAP-ENV:Body></SOAP-ENV:Envelope>\r\n--${boundaryId}\r\nContent-Type: application/octet-stream\r\nContent-ID: <41d57290-f016-4066-8dc0-9dfa5ad78663@mtc.com>\r\n--${boundaryId}`,
+      /*
+        body: `--${boundaryId}\r\nContent-Type:
+        application/xop+xml; charset=utf-8;
+        type=\"text/xml\"\r\n\r\n<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\">
+        <SOAP-ENV:Header>\r\n</SOAP-ENV:Header><SOAP-ENV:Body><ns2:GetExtractResponse xmlns:ns2=\"http:/mtc.com\"
+        xmlns:ns3=\"http://mtc.com/DataTypes\" xmlns:ns4=\"http://mtc.com/Establishment\"><ns2:Extract><xop:Include
+        xmlns:xop=\"http://www.w3.org/2004/08/xop/include\" href=\"cid:41d57290-f016-4066-8dc0-9dfa5ad78663%40mtc.com\"/>
+        </ns2:Extract></ns2:GetExtractResponse></SOAP-ENV:Body></SOAP-ENV:Envelope>\r\n--${boundaryId}\r\nContent-Type:
+        application/octet-stream\r\nContent-ID: <41d57290-f016-4066-8dc0-9dfa5ad78663@mtc.com>\r\n--${boundaryId}`
+      */
       const response: IResponse = {
         body: `--${boundaryId}
         Content-Disposition: text/plain;
@@ -97,7 +106,7 @@ describe('multipart message parser', () => {
         ...are you?
         --${boundaryId}--`,
         headers: {
-          'content-type': `Multipart/Related; boundary=\"${boundaryId}\"; type=\"text/plan\"; start-info=\"text/plain\"`
+          'content-type': `Multipart/Related; boundary="${boundaryId}"; type="text/plan"; start-info="text/plain"`
         },
         statusCode: 200
       }

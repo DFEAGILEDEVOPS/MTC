@@ -7,7 +7,7 @@ export class CheckPinExpiryService {
     this.sqlService = theSqlService
   }
 
-  async process () {
+  async process (): Promise<any> {
     const sql = `DELETE FROM [mtc_admin].[checkPin] WHERE pinExpiresAt < GETUTCDATE()`
     return this.sqlService.modify(sql, [])
   }

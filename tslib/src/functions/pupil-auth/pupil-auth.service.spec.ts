@@ -93,7 +93,7 @@ describe('pupil-auth.service', () => {
         practice: false
       }
     }
-    redisMock.get = jest.fn(async (key) => {
+    redisMock.get = jest.fn(async () => {
       return preparedCheck
     })
     const res = await sut.authenticate(bindings, req)
@@ -108,7 +108,7 @@ describe('pupil-auth.service', () => {
         practice: false
       }
     }
-    redisMock.get = jest.fn(async (key) => {
+    redisMock.get = jest.fn(async () => {
       return preparedCheck
     })
     const expectedKey = `preparedCheck:${req.body.schoolPin}:${req.body.pupilPin}`
@@ -123,7 +123,7 @@ describe('pupil-auth.service', () => {
         practice: false
       }
     }
-    redisMock.get = jest.fn(async (key) => {
+    redisMock.get = jest.fn(async () => {
       return preparedCheck
     })
     const res = await sut.authenticate(bindings, req)
@@ -142,7 +142,7 @@ describe('pupil-auth.service', () => {
         practice: false
       }
     }
-    redisMock.get = jest.fn(async (key) => {
+    redisMock.get = jest.fn(async () => {
       return preparedCheck
     })
     const res = await sut.authenticate(bindings, req)

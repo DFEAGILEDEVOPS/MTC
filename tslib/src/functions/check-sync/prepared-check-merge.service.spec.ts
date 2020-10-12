@@ -58,7 +58,7 @@ describe('prepared-check-merge.service', () => {
   })
 
   test('creates a new config based on the new aa settings and the config supplied', async () => {
-    dataServiceMock.getAccessArrangementsCodesByIds = jest.fn(async (ids: number[]) => {
+    dataServiceMock.getAccessArrangementsCodesByIds = jest.fn(async () => {
       return ['FTS', 'CCT']
     })
     const config = await sut.merge(checkConfig, pupilAccessArrangements)

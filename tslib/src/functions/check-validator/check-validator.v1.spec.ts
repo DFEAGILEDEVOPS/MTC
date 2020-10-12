@@ -145,7 +145,7 @@ describe('check-validator/v1', () => {
         RowKey: uuid.v4()
       }
     })
-    compressionServiceMock.decompress = jest.fn((input: string) => {
+    compressionServiceMock.decompress = jest.fn(() => {
       return JSON.stringify({
         foo: 'bar'
       })
@@ -173,7 +173,7 @@ describe('check-validator/v1', () => {
     }
 
     tableServiceMock.replaceEntityAsync = jest.fn()
-    compressionServiceMock.decompress = jest.fn((input: string) => {
+    compressionServiceMock.decompress = jest.fn(() => {
       return JSON.stringify({
         foo: 'bar'
       })
@@ -210,7 +210,7 @@ describe('check-validator/v1', () => {
         RowKey: uuid.v4()
       }
     })
-    compressionServiceMock.decompress = jest.fn((input: string) => {
+    compressionServiceMock.decompress = jest.fn(() => {
       return JSON.stringify(checkSchema)
     })
     const functionBindings: CheckValidator.ICheckValidatorFunctionBindings = {
@@ -242,7 +242,7 @@ describe('check-validator/v1', () => {
         RowKey: uuid.v4()
       }
     })
-    compressionServiceMock.decompress = jest.fn((input: string) => {
+    compressionServiceMock.decompress = jest.fn(() => {
       return JSON.stringify(checkSchema)
     })
     const functionBindings: CheckValidator.ICheckValidatorFunctionBindings = {
@@ -264,7 +264,7 @@ describe('check-validator/v1', () => {
       checkReceivedAt: moment().toDate(),
       checkVersion: 1
     }
-    compressionServiceMock.decompress = jest.fn((input: string) => {
+    compressionServiceMock.decompress = jest.fn(() => {
       return JSON.stringify(checkSchema)
     })
     const functionBindings: CheckValidator.ICheckValidatorFunctionBindings = {

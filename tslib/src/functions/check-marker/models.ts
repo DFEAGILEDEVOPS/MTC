@@ -3,7 +3,7 @@ export interface ICheckMarkerFunctionBindings {
   receivedCheckTable: Array<any>
   checkNotificationQueue: Array<any>
   checkResultTable: Array<any>
-  checkCompletionQueue: Array<{}>
+  checkCompletionQueue: Array<unknown>
 }
 
 export interface Answer {

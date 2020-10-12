@@ -98,7 +98,7 @@ describe('check-started.service', () => {
       version: 1
     }
 
-    redisServiceMock.get = jest.fn(async (key: string) => {
+    redisServiceMock.get = jest.fn(async () => {
       return null
     })
     await sut.process(message, functionBindings)

@@ -120,7 +120,7 @@ export class SchoolResultsCacheDeterminerDataService implements ISchoolResultsCa
                     AND GETUTCDATE() > adminStartDate
                     AND GETUTCDATE() < adminEndDate`
     const result = await this.sqlService.query(sql, [])
-    // @ts-ignore
+    // @ts-ignore ramda has low type support
     return R.head(result)
   }
 

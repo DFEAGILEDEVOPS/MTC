@@ -170,7 +170,7 @@ describe('check-marker/v1', () => {
       }
     })
 
-    sqlServiceMock.getCheckFormDataByCheckCode = jest.fn(async (checkCode: string) => {
+    sqlServiceMock.getCheckFormDataByCheckCode = jest.fn(async () => {
       return
     })
 
@@ -211,7 +211,7 @@ describe('check-marker/v1', () => {
       }
     })
 
-    sqlServiceMock.getCheckFormDataByCheckCode = jest.fn(async (checkCode: string) => {
+    sqlServiceMock.getCheckFormDataByCheckCode = jest.fn(async () => {
       return 'not JSON'
     })
 
@@ -253,7 +253,7 @@ describe('check-marker/v1', () => {
     })
 
     const expectedErrorMessage = 'sql error'
-    sqlServiceMock.getCheckFormDataByCheckCode = jest.fn(async (checkCode: string) => {
+    sqlServiceMock.getCheckFormDataByCheckCode = jest.fn(async () => {
       throw new Error(expectedErrorMessage)
     })
 
@@ -294,7 +294,7 @@ describe('check-marker/v1', () => {
       }
     })
 
-    sqlServiceMock.getCheckFormDataByCheckCode = jest.fn(async (checkCode: string) => {
+    sqlServiceMock.getCheckFormDataByCheckCode = jest.fn(async () => {
       return JSON.stringify([])
     })
 
@@ -304,7 +304,7 @@ describe('check-marker/v1', () => {
     expect(actualEntity.processingError).toBe('check form data is either empty or not an array')
     expect(actualEntity.markedAt).toBeTruthy()
 
-    sqlServiceMock.getCheckFormDataByCheckCode = jest.fn(async (checkCode: string) => {
+    sqlServiceMock.getCheckFormDataByCheckCode = jest.fn(async () => {
       return JSON.stringify({ not: 'array' })
     })
 
@@ -352,7 +352,7 @@ describe('check-marker/v1', () => {
       checkCompletionQueue: []
     }
 
-    sqlServiceMock.getCheckFormDataByCheckCode = jest.fn(async (checkCode: string) => {
+    sqlServiceMock.getCheckFormDataByCheckCode = jest.fn(async () => {
       return JSON.stringify([
         {
           f1: 2,
@@ -415,7 +415,7 @@ describe('check-marker/v1', () => {
       checkCompletionQueue: []
     }
 
-    sqlServiceMock.getCheckFormDataByCheckCode = jest.fn(async (checkCode: string) => {
+    sqlServiceMock.getCheckFormDataByCheckCode = jest.fn(async () => {
       return JSON.stringify([
         {
           f1: 2,
@@ -478,7 +478,7 @@ describe('check-marker/v1', () => {
       checkCompletionQueue: []
     }
 
-    sqlServiceMock.getCheckFormDataByCheckCode = jest.fn(async (checkCode: string) => {
+    sqlServiceMock.getCheckFormDataByCheckCode = jest.fn(async () => {
       return JSON.stringify([
         {
           f1: 2,
@@ -535,7 +535,7 @@ describe('check-marker/v1', () => {
       checkCompletionQueue: []
     }
 
-    sqlServiceMock.getCheckFormDataByCheckCode = jest.fn(async (checkCode: string) => {
+    sqlServiceMock.getCheckFormDataByCheckCode = jest.fn(async () => {
       return JSON.stringify([
         {
           f1: 2,
@@ -622,7 +622,7 @@ describe('check-marker/v1', () => {
       checkCompletionQueue: []
     }
 
-    sqlServiceMock.getCheckFormDataByCheckCode = jest.fn(async (checkCode: string) => {
+    sqlServiceMock.getCheckFormDataByCheckCode = jest.fn(async () => {
       return JSON.stringify([
         {
           f1: 2,
@@ -682,7 +682,7 @@ describe('check-marker/v1', () => {
       checkCompletionQueue: []
     }
 
-    sqlServiceMock.getCheckFormDataByCheckCode = jest.fn(async (checkCode: string) => {
+    sqlServiceMock.getCheckFormDataByCheckCode = jest.fn(async () => {
       return JSON.stringify([
         {
           f1: 2,
@@ -753,7 +753,7 @@ describe('check-marker/v1', () => {
       checkCompletionQueue: []
     }
 
-    sqlServiceMock.getCheckFormDataByCheckCode = jest.fn(async (checkCode: string) => {
+    sqlServiceMock.getCheckFormDataByCheckCode = jest.fn(async () => {
       return JSON.stringify([
         {
           f1: 2,

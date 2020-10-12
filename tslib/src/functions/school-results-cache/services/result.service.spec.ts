@@ -309,7 +309,6 @@ describe('result.service', () => {
     test('it throws an error if schoolGuid is not provided', async () => {
       const schoolGuid = undefined
       try {
-        // @ts-ignore
         await sut.cacheResultData(schoolGuid)
         fail()
       } catch (error) {

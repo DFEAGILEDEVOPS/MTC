@@ -1,8 +1,4 @@
-'use strict'
-
 import { ConnectionPool } from 'mssql'
-/* global describe expect it spyOn */
-
 import { CensusImportV1 } from './v1'
 import config from '../../config'
 import { ICensusImportDataService } from './census-import.data.service'
@@ -41,16 +37,16 @@ const loadAndInsertCount = 5
 describe('census-import: v1', () => {
   beforeEach(() => {
     censusImportDataServiceMock = new CensusImportDataServiceMock()
-    censusImportDataServiceMock.loadPupilsFromStaging = jest.fn((tableName: string, jobId: number) => {
+    censusImportDataServiceMock.loadPupilsFromStaging = jest.fn(() => {
       return Promise.resolve({
         insertCount: loadAndInsertCount
       })
     })
-    censusImportDataServiceMock.loadStagingTable = jest.fn((tableName: string, blob: any) => {
+    censusImportDataServiceMock.loadStagingTable = jest.fn(() => {
       return Promise.resolve(loadAndInsertCount)
     })
     jobDataServiceMock = new JobDataServiceMock()
-    jobDataServiceMock.updateStatus = jest.fn((urlSlug: string, jobStatusCode: string, jobOutput?: string, errorOutput?: string) => {
+    jobDataServiceMock.updateStatus = jest.fn(() => {
       return Promise.resolve(123)
     })
     blobStorageServiceMock = new BlobStorageServiceMock()
@@ -86,7 +82,7 @@ describe('census-import: v1', () => {
   })
 
   test('when insert counts do not match, job is reported as failed', async () => {
-    censusImportDataServiceMock.loadStagingTable = jest.fn((tableName: string, blob: any) => {
+    censusImportDataServiceMock.loadStagingTable = jest.fn(() => {
       return Promise.resolve(loadAndInsertCount - 1)
     })
     await sut.process('foo,bar',blobUri)

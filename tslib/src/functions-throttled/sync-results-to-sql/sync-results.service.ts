@@ -24,7 +24,7 @@ export class SyncResultsService {
     }
   }
 
-  public async process (checkCompletionMessage: ICheckCompletionMessage) {
+  public async process (checkCompletionMessage: ICheckCompletionMessage): Promise<void> {
     this.logger.info(`${name}: message received for check [${checkCompletionMessage.markedCheck.checkCode}]`)
 
     if (this.questionHash === undefined) {

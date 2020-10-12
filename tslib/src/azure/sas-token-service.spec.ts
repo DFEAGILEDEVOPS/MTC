@@ -1,10 +1,9 @@
 import { IQueueService, SasTokenService } from './sas-token-service'
-import * as azurestorage from 'azure-storage'
 import moment from 'moment'
 
 const mockQService: IQueueService = {
   getUrl () { return 'url' },
-  generateSharedAccessSignature (queueName: string, sharedAccessPolicy: azurestorage.common.SharedAccessPolicy) {
+  generateSharedAccessSignature () {
     return 'sas'
   }
 }

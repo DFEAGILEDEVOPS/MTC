@@ -26,6 +26,7 @@ export class CheckAllocationDataService implements ICheckAllocationDataService {
   }
 
   async getFormsUsedByPupil (pupilUUID: string): Promise<any[]> {
+    console.log(pupilUUID)
     throw new Error('Method not implemented.')
   }
 
