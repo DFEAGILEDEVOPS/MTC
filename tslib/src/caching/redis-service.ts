@@ -18,7 +18,7 @@ export interface IRedisService {
    * @throws when the incoming item datatype is not supported and when the setex redis operation fails
    * @returns {Promise<void} an awaitable promise
    */
-  set (key: string, value: string | object): Promise<void>
+  set (key: string, value: string | Record<string, unknown>): Promise<void>
   /**
    * @description drop a series of items from the cache
    * @param {Array<string>} keys an array of keys to invalidate
@@ -32,7 +32,7 @@ export interface IRedisService {
    * @throws when the incoming item datatype is not supported and when the setex redis operation fails
    * @returns {Promise<void} an awaitable promise
    */
-  setex (key: string, value: string | object, ttl: number): Promise<void>
+  setex (key: string, value: string | Record<string, unknown>, ttl: number): Promise<void>
   /**
    * @description drop a series of items from the cache
    * @param {Array<string>} keys an array of keys to invalidate
@@ -105,8 +105,8 @@ export class RedisService implements IRedisService {
     }
   }
 
-  prepareForStorage (value: string | object | number): any {
-    let dataType = typeof(value)
+  prepareForStorage (value: string | Record<string, unknown> | number): any {
+    const dataType = typeof(value)
     let cacheItemDataType: RedisItemDataType
     switch (dataType) {
       case 'string':
@@ -132,7 +132,7 @@ export class RedisService implements IRedisService {
     return storageItemString
   }
 
-  async setex (key: string, value: string | number | object, ttl: number): Promise<void> {
+  async setex (key: string, value: string | number | Record<string, unknown>, ttl: number): Promise<void> {
     try {
       const storageItem = this.prepareForStorage(value)
       await this.redis.setex(key, ttl, storageItem)
@@ -142,7 +142,7 @@ export class RedisService implements IRedisService {
     }
   }
 
-  async set (key: string, value: string | number | object): Promise<void> {
+  async set (key: string, value: string | number | Record<string, unknown>): Promise<void> {
     try {
       const storageItem = this.prepareForStorage(value)
       await this.redis.set(key, storageItem)

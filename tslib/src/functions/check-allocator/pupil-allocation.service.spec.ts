@@ -43,7 +43,7 @@ describe('PupilAllocationService', () => {
   })
 
   test('a pin should be generated for a pupil', async () => {
-    let pupil: IPupil = {
+    const pupil: IPupil = {
       id: 123
     }
     await sut.allocate(pupil)
@@ -51,7 +51,7 @@ describe('PupilAllocationService', () => {
   })
 
   test('a form should be allocated for a pupil', async () => {
-    let pupil: IPupil = {
+    const pupil: IPupil = {
       id: 123
     }
     await sut.allocate(pupil)
@@ -60,7 +60,7 @@ describe('PupilAllocationService', () => {
   })
 
   test('the allocation should be timestamped with current UTC', async () => {
-    let pupil: IPupil = {
+    const pupil: IPupil = {
       id: 123
     }
     const expectedTimestamp = moment(theSeventies)

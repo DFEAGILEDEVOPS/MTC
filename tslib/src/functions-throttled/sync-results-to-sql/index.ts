@@ -86,7 +86,7 @@ const timerTrigger: AzureFunction = async function (context: Context, timer: any
 async function process (checkCompletionMessages: ICheckCompletionMessage[], context: Context, queueMessages: sb.ServiceBusMessage[]): Promise<void> {
   console.log('Processing messages', checkCompletionMessages)
   const syncResultsService = new SyncResultsService(context.log)
-  for (let i in checkCompletionMessages) {
+  for (const i in checkCompletionMessages) {
     const msg = checkCompletionMessages[i]
     const queueMessage = queueMessages[i]
 

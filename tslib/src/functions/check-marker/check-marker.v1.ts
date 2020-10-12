@@ -70,7 +70,8 @@ export class CheckMarkerV1 {
     functionBindings.checkNotificationQueue.push(notification)
 
     // Output the markedCheck and the payload to be sent to the results schema
-    if (validatedCheck.hasOwnProperty('archive')) {
+    const hasArchiveProperty = Object.prototype.hasOwnProperty.call(validatedCheck, 'archive')
+    if (hasArchiveProperty) {
       try {
         const payloadString = this.compressionService.decompress(validatedCheck.archive)
         const payload = JSON.parse(payloadString)
@@ -107,7 +108,8 @@ export class CheckMarkerV1 {
     try {
       // tsc does not recognise the RA.IsNilOrEmpty check above
       // therefore we use the exclamation to assert non null guarantee
-      parsedAnswersJson = JSON.parse(validatedCheck.answers!)
+      //@ts-ignore Ramda does not work well with type checking
+      parsedAnswersJson = JSON.parse(validatedCheck.answers)
     } catch (error) {
       logger.error(error)
       await this.updateReceivedCheckWithMarkingError(validatedCheck, 'answers data is not valid JSON')
@@ -172,7 +174,7 @@ export class CheckMarkerV1 {
     }
 
     let questionNumber = 1
-    for (let question of markingData.formQuestions) {
+    for (const question of markingData.formQuestions) {
       const answerRecord = markingData.answers.find(o => o.sequenceNumber === questionNumber &&
         o.factor1 === question.f1 &&
         o.factor2 === question.f2)

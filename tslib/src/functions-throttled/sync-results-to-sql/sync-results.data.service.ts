@@ -179,7 +179,7 @@ export class SyncResultsDataService implements ISyncResultsDataService {
    * @param {string} eventTypeToFind
    * @private
    */
-  private async findEventTypeId (eventTypeToFind: string): Promise<Number> {
+  private async findEventTypeId (eventTypeToFind: string): Promise<number> {
     if (this.eventType.size === 0) {
       await this.refreshEventTypes()
     }

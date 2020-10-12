@@ -40,8 +40,8 @@ export class SchoolPinReplenishmnentService {
 
   async process (logger: ILogger, schoolId?: number): Promise<void | string> {
     let schoolsToProcess: Array<School>
-    let returnGeneratedPin: boolean = false
-    let pinToReturn: string = ''
+    let returnGeneratedPin = false
+    let pinToReturn = ''
     if (schoolId === undefined) {
       schoolsToProcess = await this.dataService.getAllSchools()
     } else {
