@@ -1,5 +1,5 @@
-import moment = require('moment')
 import { Moment } from 'moment'
+import moment = require('moment')
 
 const iso8601WithMsPrecisionAndTimeZone = 'YYYY-MM-DDTHH:mm:ss.SSSZ'
 
@@ -10,7 +10,6 @@ export interface IDateTimeService {
   convertMomentToJsDate (m: Moment): Date
 }
 export class DateTimeService implements IDateTimeService {
-
   utcNow (): moment.Moment {
     return moment.utc()
   }

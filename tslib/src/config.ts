@@ -1,6 +1,8 @@
 import * as path from 'path'
 import * as fs from 'fs'
 import * as dotenv from 'dotenv'
+import * as toBool from './common/to-bool'
+import * as schoolResultsCacheDeterminerConfig from './functions/school-results-cache-determiner/config'
 const globalDotEnvFile = path.join(__dirname, '..', '..', '.env')
 try {
   if (fs.existsSync(globalDotEnvFile)) {
@@ -12,8 +14,6 @@ try {
 } catch (error) {
   console.error(error)
 }
-import * as toBool from './common/to-bool'
-import * as schoolResultsCacheDeterminerConfig from './functions/school-results-cache-determiner/config'
 
 const getEnvironment = () => {
   return process.env.ENVIRONMENT_NAME || 'Local-Dev'
@@ -39,10 +39,10 @@ export default {
     port: parseInt(optionalValueParser(process.env.SQL_PORT, 1433), 10),
     database: process.env.SQL_DATABASE || 'mtc',
     connectionTimeout: parseInt(optionalValueParser(process.env.SQL_CONNECTION_TIMEOUT, oneMinuteInMilliseconds), 10),
-    censusRequestTimeout: parseInt(optionalValueParser(process.env.SQL_CENSUS_REQUEST_TIMEOUT,twoHoursInMilliseconds), 10),
-    requestTimeout: parseInt(optionalValueParser(process.env.SQL_REQUEST_TIMEOUT,oneMinuteInMilliseconds), 10),
+    censusRequestTimeout: parseInt(optionalValueParser(process.env.SQL_CENSUS_REQUEST_TIMEOUT, twoHoursInMilliseconds), 10),
+    requestTimeout: parseInt(optionalValueParser(process.env.SQL_REQUEST_TIMEOUT, oneMinuteInMilliseconds), 10),
     options: {
-      encrypt: {}.hasOwnProperty.call(process.env, 'SQL_ENCRYPT') === true ? toBool.primitiveToBoolean(process.env.SQL_ENCRYPT) : true,
+      encrypt: {}.hasOwnProperty.call(process.env, 'SQL_ENCRYPT') ? toBool.primitiveToBoolean(process.env.SQL_ENCRYPT) : true,
       useUTC: true,
       appName: process.env.SQL_APP_NAME || 'mtc-functions', // docker default
       enableArithAbort: {}.hasOwnProperty.call(process.env, 'SQL_ENABLE_ARITH_ABORT') ? toBool.primitiveToBoolean(process.env.SQL_ENABLE_ARITH_ABORT) : true
@@ -66,7 +66,7 @@ export default {
     Host: process.env.REDIS_HOST || 'localhost',
     Port: Number(process.env.REDIS_PORT) || 6379,
     Key: process.env.REDIS_KEY,
-    useTLS: getEnvironment() === 'Local-Dev' ? false : true
+    useTLS: getEnvironment() !== 'Local-Dev'
   },
   CheckAllocation: {
     ExpiryTimeInSeconds: Number(process.env.CHECK_ALLOCATION_EXPIRY_SECONDS) || 15778476 // 6 months
@@ -86,7 +86,7 @@ export default {
     AllowedWords: process.env.ALLOWED_WORDS || 'aaa,bbb,ccc,ddd,eee,dim',
     BannedWords: process.env.BANNED_WORDS || 'dim',
     OverridePinExpiry: {}.hasOwnProperty.call(process.env, 'OVERRIDE_PIN_EXPIRY') ? toBool.primitiveToBoolean(process.env.OVERRIDE_PIN_EXPIRY) : false,
-    PinUpdateMaxAttempts: parseInt(optionalValueParser(process.env.PIN_UPDATE_MAX_ATTEMPTS,0), 10),
+    PinUpdateMaxAttempts: parseInt(optionalValueParser(process.env.PIN_UPDATE_MAX_ATTEMPTS, 0), 10),
     DigitChars: '23456789'
   },
   Gias: {

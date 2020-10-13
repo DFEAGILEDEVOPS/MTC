@@ -38,7 +38,7 @@ export interface IRedisService {
    * @param {Array<string>} keys an array of keys to invalidate
    * @returns {Promise<void>}
    */
-  drop (keys: Array<string>): Promise<Array<[Error | null, any]> | undefined>
+  drop (keys: string[]): Promise<Array<[Error | null, any]> | undefined>
   /**
    * @description cleans up the underlying redis client implementation
    * @returns void
@@ -59,9 +59,8 @@ export interface IRedisService {
 }
 
 export class RedisService implements IRedisService {
-
-  private redis: Redis.Redis
-  private logger: Logger.ILogger
+  private readonly redis: Redis.Redis
+  private readonly logger: Logger.ILogger
 
   constructor () {
     const options: RedisOptions = {
@@ -106,7 +105,7 @@ export class RedisService implements IRedisService {
   }
 
   prepareForStorage (value: string | Record<string, unknown> | number): any {
-    const dataType = typeof(value)
+    const dataType = typeof (value)
     let cacheItemDataType: RedisItemDataType
     switch (dataType) {
       case 'string':

@@ -2,6 +2,7 @@ import * as path from 'path'
 import * as fs from 'fs'
 import * as dotenv from 'dotenv'
 import config from '../config'
+import * as az from 'azure-storage'
 
 const globalDotEnvFile = path.join(__dirname, '..', '..', '..', '.env')
 try {
@@ -14,10 +15,9 @@ try {
 } catch (error) {
   console.error(error)
 }
-import * as az from 'azure-storage'
 
 export interface TableStorageEntity {
-  PartitionKey: string,
+  PartitionKey: string
   RowKey: string
 }
 
@@ -26,7 +26,7 @@ export interface InsertResponse {
 }
 
 export interface DeleteResponse {
-  isSuccessful: boolean,
+  isSuccessful: boolean
   statusCode: number // e.g. 204
 }
 
@@ -37,11 +37,10 @@ export interface IAsyncTableService {
   insertEntityAsync (table: string, entityDescriptor: unknown, options?: az.TableService.InsertEntityRequestOptions): Promise<Error | InsertResponse>
 }
 export class AsyncTableService extends az.TableService implements IAsyncTableService {
-
-  replaceEntityAsync (table: string, entity: unknown): Promise<any> {
-    return new Promise((resolve, reject) => {
+  async replaceEntityAsync (table: string, entity: unknown): Promise<any> {
+    return await new Promise((resolve, reject) => {
       this.replaceEntity(table, entity, (error, result) => {
-        if (error) {
+        if (error !== undefined) {
           reject(error)
         } else {
           resolve(result)
@@ -50,10 +49,10 @@ export class AsyncTableService extends az.TableService implements IAsyncTableSer
     })
   }
 
-  queryEntitiesAsync (table: string, tableQuery: az.TableQuery, currentToken: az.TableService.TableContinuationToken): Promise<Error | any> {
-    return new Promise((resolve, reject) => {
+  async queryEntitiesAsync (table: string, tableQuery: az.TableQuery, currentToken: az.TableService.TableContinuationToken): Promise<Error | any> {
+    return await new Promise((resolve, reject) => {
       this.queryEntities(table, tableQuery, currentToken, (error, result) => {
-        if (error) {
+        if (error !== undefined) {
           reject(error)
         } else {
           resolve(result)
@@ -62,10 +61,10 @@ export class AsyncTableService extends az.TableService implements IAsyncTableSer
     })
   }
 
-  deleteEntityAsync (table: string, entityDescriptor: unknown): Promise<Error | DeleteResponse> {
-    return new Promise((resolve, reject) => {
+  async deleteEntityAsync (table: string, entityDescriptor: unknown): Promise<Error | DeleteResponse> {
+    return await new Promise((resolve, reject) => {
       this.deleteEntity(table, entityDescriptor, (error, result) => {
-        if (error) {
+        if (error !== undefined) {
           reject(error)
         } else {
           resolve(result)
@@ -74,10 +73,10 @@ export class AsyncTableService extends az.TableService implements IAsyncTableSer
     })
   }
 
-  insertEntityAsync (table: string, entityDescriptor: unknown): Promise<Error | InsertResponse> {
-    return new Promise((resolve, reject) => {
+  async insertEntityAsync (table: string, entityDescriptor: unknown): Promise<Error | InsertResponse> {
+    return await new Promise((resolve, reject) => {
       this.insertEntity(table, entityDescriptor, (error, result) => {
-        if (error) {
+        if (error !== undefined) {
           reject(error)
         } else {
           resolve(result)
@@ -96,15 +95,14 @@ export interface IBlobStorageHelper {
 }
 
 export class AsyncBlobService extends az.BlobService implements IBlobStorageService {
-
   constructor () {
     super(config.AzureStorage.ConnectionString)
   }
 
-  deleteContainerAsync (container: string): Promise<void> {
-    return new Promise((resolve, reject) => {
+  async deleteContainerAsync (container: string): Promise<void> {
+    return await new Promise((resolve, reject) => {
       this.deleteContainer(container, (error) => {
-        if (error) {
+        if (error !== undefined) {
           reject(error)
         } else {
           resolve()

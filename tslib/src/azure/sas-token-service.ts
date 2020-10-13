@@ -13,14 +13,15 @@ export class SasToken {
     this.token = token
     this.url = url
   }
+
   token: string
   url: string
 }
 
 export class SasTokenService {
-  private qService: IQueueService
+  private readonly qService: IQueueService
   constructor (queueService?: IQueueService) {
-    if (!queueService) {
+    if (queueService === undefined) {
       this.qService = azure.createQueueService()
     } else {
       this.qService = queueService
