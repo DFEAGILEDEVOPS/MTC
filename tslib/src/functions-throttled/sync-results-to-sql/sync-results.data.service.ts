@@ -1,5 +1,5 @@
 import { ISqlService, ITransactionRequest, SqlService } from '../../sql/sql.service'
-import { Audit, DBEventType, DBQuestion, MarkedCheck, ValidatedCheck } from './models'
+import { Audit, DBEventType, DBQuestion, Device, MarkedCheck, ValidatedCheck } from './models'
 import { NVarChar, TYPES } from 'mssql'
 import * as R from 'ramda'
 
@@ -97,6 +97,49 @@ export class SyncResultsDataService implements ISyncResultsDataService {
       j += 1
     }
     return { sql: auditSqls.join('\n'), params: auditParams }
+  }
+
+  public async prepareDeviceData (validatedCheck: ValidatedCheck): Promise<ITransactionRequest> {
+    const device: Device = R.propOr({}, 'device', validatedCheck)
+    const params = []
+
+    const batteryIsCharging = R.pathOr(null, ['battery', 'isCharging'], device)
+    const batteryLevelPercent = R.pathOr(null, ['battery', 'levelPercent'], device)
+    const batteryChargingTimeSecs = R.pathOr(null, ['battery', 'chargingTime'], device)
+    const batteryDischargingTimeSecs = R.pathOr(null, ['battery', 'dischargingTime'], device)
+
+    params.push({ name: 'batteryIsCharging', type: TYPES.Bit, value: batteryIsCharging })
+    params.push({ name: 'batteryLevelPercent', type: TYPES.TinyInt, value: batteryLevelPercent })
+    params.push({ name: 'batteryChargingTimeSecs', type: TYPES.Int, value: batteryChargingTimeSecs })
+    params.push({ name: 'batteryDischargingTimeSecs', type: TYPES.Int, value: batteryDischargingTimeSecs })
+
+    console.log('batterDischargingTime value is ', batteryDischargingTimeSecs)
+
+    // throw new Error('JMS says')
+
+    // tslint:disable:no-trailing-whitespace
+    const sql = `
+        DECLARE @userDeviceId INT
+        --
+        -- Insert the data into the userDevice table
+        --
+        INSERT INTO mtc_results.userDevice (batteryIsCharging,
+                                            batteryLevelPercent,
+                                            batteryChargingTimeSecs,
+                                            batteryDischargingTimeSecs)
+        VALUES (@batteryIsCharging,
+                @batteryLevelPercent,
+                @batteryChargingTimeSecs,
+                @batteryDischargingTimeSecs);
+
+        SET @userDeviceId = (SELECT SCOPE_IDENTITY());
+
+        UPDATE mtc_results.checkResult
+           SET userDevice_id = @userDeviceId
+         WHERE id = @checkResultId;
+    `
+    // tslint:enable:no-trailing-whitespace
+    return { sql, params: params }
   }
 
   /**
