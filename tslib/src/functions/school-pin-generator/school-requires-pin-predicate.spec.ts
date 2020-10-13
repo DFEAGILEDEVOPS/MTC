@@ -18,15 +18,6 @@ describe('school-requires-new-pin-predicate', () => {
       id: 1,
       name: 'school'
     }
-    const isRequired = sut.isRequired(school)
-    expect(isRequired).toBe(true)
-  })
-
-  test('indicates pin required when pin is undefined', () => {
-    const school: School = {
-      id: 1,
-      name: 'school'
-    }
     expect(sut.isRequired(school)).toBe(true)
   })
 

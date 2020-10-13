@@ -10,7 +10,8 @@ module.exports = {
     warnOnUnsupportedTypeScriptVersion: true
   },
   plugins: [
-    '@typescript-eslint'
+      '@typescript-eslint',
+      'jest'
   ],
   extends: [
     'eslint:recommended',
@@ -28,6 +29,11 @@ module.exports = {
         'ts-check': false,
         minimumDescriptionLength: 5,
       },
-    ]
+    ],
+    "jest/no-disabled-tests": "warn",
+    "jest/no-focused-tests": "error",
+    "jest/no-identical-title": "error",
+    "jest/prefer-to-have-length": "warn",
+    "jest/valid-expect": "error"
   }
 }

@@ -30,7 +30,7 @@ describe('school-pin-generator', () => {
 
   test('school pin must be 8 chars in length', () => {
     const actual = sut.generate()
-    expect(actual.length).toBe(8)
+    expect(actual).toHaveLength(8)
   })
 
   test('school pin must be 3 char word + 2 digits + 3 char word', () => {

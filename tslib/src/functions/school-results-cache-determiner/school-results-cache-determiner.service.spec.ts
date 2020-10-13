@@ -65,7 +65,7 @@ describe('school-results-cache-determiner.service', () => {
 
     await sut.execute()
     expect('schoolResultsCache' in mockContext.bindings).toBeTruthy()
-    expect(mockContext.bindings.schoolResultsCache.length).toBe(3)
+    expect(mockContext.bindings.schoolResultsCache).toHaveLength(3)
     expect(mockContext.bindings.schoolResultsCache).toEqual(schoolData)
   })
 
@@ -153,7 +153,7 @@ describe('school-results-cache-determiner.service', () => {
     await sut.execute()
 
     // Expect 3 output bindings
-    expect(mockContext.bindings.schoolResultsCache.length).toBe(3)
+    expect(mockContext.bindings.schoolResultsCache).toHaveLength(3)
     expect(mockContext.bindings.schoolResultsCache).toEqual(schoolData)
   })
 

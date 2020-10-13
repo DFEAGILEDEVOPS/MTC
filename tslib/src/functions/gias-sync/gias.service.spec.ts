@@ -187,7 +187,7 @@ describe('GiasSyncService', () => {
   test.skip('GetExtract:should return an empty object if no results', async () => {
     const extractResult = await sut.GetExtract(extractId)
     expect(extractResult).toBeDefined()
-    expect(extractResult.length).toBe(0)
+    expect(extractResult).toHaveLength(0)
   })
 
   // integration test, work in progress for final implementation

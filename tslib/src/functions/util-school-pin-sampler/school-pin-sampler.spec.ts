@@ -16,7 +16,7 @@ describe('school-pin-sampler', () => {
   test('returns a set of generated pins equal to the size requested', () => {
     const sampleSizeRequested = 5
     const samples = sut.generateSample(sampleSizeRequested, moment.utc())
-    expect(samples.length).toBe(sampleSizeRequested)
+    expect(samples).toHaveLength(sampleSizeRequested)
   })
 
   test('throws error if sample size is larger than all available timezones', () => {
@@ -36,7 +36,7 @@ describe('school-pin-sampler', () => {
     for (let index = 0; index < sampleSizeRequested; index++) {
       const sample = samples[index]
       expect(sample.pin).toBeTruthy()
-      expect(sample.pin.length).toBe(8)
+      expect(sample.pin).toHaveLength(8)
       expect(sample.pinExpiresAt).toBeTruthy()
       expect(sample.timezone).toBeTruthy()
     }
@@ -45,7 +45,7 @@ describe('school-pin-sampler', () => {
   test('does not randomise if not specified', () => {
     const sampleSizeRequested = 5
     const samples = sut.generateSample(sampleSizeRequested, moment.utc())
-    expect(samples.length).toEqual(sampleSizeRequested)
+    expect(samples).toHaveLength(sampleSizeRequested)
     const tzUtil = new TimezoneUtil()
     const zones = tzUtil.getTimezoneList()
     expect(samples[0].timezone).toEqual(zones[0].name)
@@ -59,8 +59,8 @@ describe('school-pin-sampler', () => {
     const sampleSizeRequested = 10
     const nonRandomSamples = sut.generateSample(sampleSizeRequested, moment.utc(), false)
     const randomSamples = sut.generateSample(sampleSizeRequested, moment.utc(), true)
-    expect(nonRandomSamples.length).toBe(sampleSizeRequested)
-    expect(randomSamples.length).toBe(sampleSizeRequested)
+    expect(nonRandomSamples).toHaveLength(sampleSizeRequested)
+    expect(randomSamples).toHaveLength(sampleSizeRequested)
     const nonRandomZones = nonRandomSamples.map(s => s.timezone).join('-')
     const randomZones = randomSamples.map(s => s.timezone).join('-')
     expect(nonRandomZones).not.toEqual(randomZones)

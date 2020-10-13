@@ -185,7 +185,7 @@ describe('check-validator/v1', () => {
     }
     await sut.validate(functionBindings, validateReceivedCheckQueueMessage, loggerMock)
     expect(functionBindings.checkNotificationQueue).toBeDefined()
-    expect(functionBindings.checkNotificationQueue.length).toBe(1)
+    expect(functionBindings.checkNotificationQueue).toHaveLength(1)
     const validationFailureMessage = functionBindings.checkNotificationQueue[0]
     expect(validationFailureMessage.checkCode).toEqual(validateReceivedCheckQueueMessage.checkCode)
     expect(validationFailureMessage.notificationType).toBe(CheckNotificationType.checkInvalid)
@@ -273,7 +273,7 @@ describe('check-validator/v1', () => {
       checkNotificationQueue: []
     }
     await sut.validate(functionBindings, validateReceivedCheckQueueMessage, loggerMock)
-    expect(functionBindings.checkMarkingQueue.length).toBe(1)
+    expect(functionBindings.checkMarkingQueue).toHaveLength(1)
     const checkMarkingMessage: MarkCheckMessageV1 = functionBindings.checkMarkingQueue[0]
     expect(checkMarkingMessage.checkCode).toEqual(validateReceivedCheckQueueMessage.checkCode)
     expect(checkMarkingMessage.schoolUUID).toEqual(validateReceivedCheckQueueMessage.schoolUUID)

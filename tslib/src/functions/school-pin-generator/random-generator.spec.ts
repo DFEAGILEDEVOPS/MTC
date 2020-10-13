@@ -17,7 +17,7 @@ describe('random-generator', () => {
       const len = 10
       const chars = 'abcdefghijklmnop'
       const r1 = sut.generateFromChars(len, chars)
-      expect(r1.length).toBe(len)
+      expect(r1).toHaveLength(len)
       expect(r1.match(/^[a-p]{10}$/)).toBeTruthy()
     })
 

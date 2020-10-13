@@ -544,7 +544,7 @@ describe('check-marker/v1', () => {
     })
 
     await sut.mark(functionBindings, loggerMock)
-    expect(functionBindings.checkNotificationQueue.length).toBe(1)
+    expect(functionBindings.checkNotificationQueue).toHaveLength(1)
     const notificationQueueMessage: ICheckNotificationMessage = R.head(functionBindings.checkNotificationQueue)
     expect(notificationQueueMessage.checkCode).toBeDefined()
     expect(notificationQueueMessage.notificationType).toBe(CheckNotificationType.checkComplete)
@@ -571,7 +571,7 @@ describe('check-marker/v1', () => {
     }
 
     await sut.mark(functionBindings, loggerMock)
-    expect(functionBindings.checkNotificationQueue.length).toBe(1)
+    expect(functionBindings.checkNotificationQueue).toHaveLength(1)
     const notificationQueueMessage: ICheckNotificationMessage = R.head(functionBindings.checkNotificationQueue)
     expect(notificationQueueMessage.checkCode).toBe(checkCode)
     expect(notificationQueueMessage.notificationType).toBe(CheckNotificationType.checkInvalid)
@@ -767,7 +767,7 @@ describe('check-marker/v1', () => {
     const persistMarkSpy = jest.spyOn<any, any>(sut, 'persistMark')
     await sut.mark(functionBindings, loggerMock)
 
-    expect(functionBindings.checkCompletionQueue.length).toBe(1)
+    expect(functionBindings.checkCompletionQueue).toHaveLength(1)
     expect(functionBindings.checkCompletionQueue[0]).toHaveProperty('validatedCheck')
     expect(functionBindings.checkCompletionQueue[0]).toHaveProperty('markedCheck')
 

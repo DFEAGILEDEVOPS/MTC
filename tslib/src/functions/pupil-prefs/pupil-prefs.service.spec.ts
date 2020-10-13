@@ -1,4 +1,3 @@
-
 import {
   PupilPrefsService,
   IPupilPrefsDataService,
@@ -44,7 +43,7 @@ describe('pupil-prefs.service', () => {
     }
     await sut.update(update, functionBindings)
     expect(dataServiceMock.updatePupilPreferences).toHaveBeenCalledTimes(1)
-    expect(dataUpdates.length).toBe(2)
+    expect(dataUpdates).toHaveLength(2)
   })
 
   test('colour contrast only update makes relevant data change', async () => {
@@ -62,12 +61,12 @@ describe('pupil-prefs.service', () => {
     }
     await sut.update(update, functionBindings)
     expect(dataServiceMock.updatePupilPreferences).toHaveBeenCalledTimes(1)
-    expect(dataUpdates.length).toBe(1)
+    expect(dataUpdates).toHaveLength(1)
     expect(dataUpdates[0].prefTable).toBe('[pupilColourContrasts]')
     expect(dataUpdates[0].prefField).toBe('pupilColourContrasts_id')
   })
 
-  test('colour contrast only update makes relevant data change', async () => {
+  test('font size only update makes relevant data change', async () => {
 
     let dataUpdates: Array<IPupilPreferenceDataUpdate> = []
     dataServiceMock.updatePupilPreferences = jest.fn((updates) => {
@@ -82,7 +81,7 @@ describe('pupil-prefs.service', () => {
     }
     await sut.update(update, functionBindings)
     expect(dataServiceMock.updatePupilPreferences).toHaveBeenCalledTimes(1)
-    expect(dataUpdates.length).toBe(1)
+    expect(dataUpdates).toHaveLength(1)
     expect(dataUpdates[0].prefTable).toBe('[pupilFontSizes]')
     expect(dataUpdates[0].prefField).toBe('pupilfontSizes_id')
   })

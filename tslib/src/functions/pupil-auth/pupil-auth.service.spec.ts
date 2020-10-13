@@ -128,7 +128,7 @@ describe('pupil-auth.service', () => {
     })
     const res = await sut.authenticate(bindings, req)
     expect(res.status).toBe(200)
-    expect(bindings.pupilLoginQueue.length).toBe(1)
+    expect(bindings.pupilLoginQueue).toHaveLength(1)
     const pupilLoginMessage = bindings.pupilLoginQueue[0]
     expect(pupilLoginMessage.checkCode).toBe(preparedCheck.checkCode)
     expect(pupilLoginMessage.loginAt).toBeDefined()

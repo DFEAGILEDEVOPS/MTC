@@ -101,7 +101,7 @@ describe('batch-request-builder/v2', () => {
       }
     ])
     expect(createdRequests).toBeDefined()
-    expect(createdRequests.length).toBe(4)
+    expect(createdRequests).toHaveLength(4)
   })
 
 })

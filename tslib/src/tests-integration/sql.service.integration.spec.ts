@@ -25,7 +25,7 @@ describe('SqlService', () => {
     const result = await sut.query(sql)
     expect(result).toBeDefined()
     expect(RA.isArray(result)).toBe(true)
-    expect(result.length).toBe(1)
+    expect(result).toHaveLength(1)
   })
 
   test('multi row results are transformed and returned as a single array', async () => {
@@ -33,7 +33,7 @@ describe('SqlService', () => {
     const result = await sut.query(sql)
     expect(result).toBeDefined()
     expect(RA.isArray(result)).toBe(true)
-    expect(result.length).toBe(4)
+    expect(result).toHaveLength(4)
   })
 
   test('date columns are converted to moment objects', async () => {
@@ -41,7 +41,7 @@ describe('SqlService', () => {
     const result = await sut.query(sql)
     expect(result).toBeDefined()
     expect(RA.isArray(result)).toBe(true)
-    expect(result.length).toBe(1)
+    expect(result).toHaveLength(1)
     const school = result[0]
     expect(RA.isObj(school)).toBe(true)
     expect(school.createdAt).toBeDefined()
@@ -62,7 +62,7 @@ describe('SqlService', () => {
     const result = await sut.query(sql, params)
     expect(result).toBeDefined()
     expect(RA.isArray(result)).toBe(true)
-    expect(result.length).toBe(1)
+    expect(result).toHaveLength(1)
     const school = result[0]
     expect(RA.isObj(school)).toBe(true)
     expect(school.id).toEqual(schoolId)
@@ -157,6 +157,6 @@ describe('SqlService', () => {
     }]
     const result = await sut.query(sql, params)
     expect(RA.isArray(result)).toBe(true)
-    expect(result.length).toBe(2)
+    expect(result).toHaveLength(2)
   })
 })

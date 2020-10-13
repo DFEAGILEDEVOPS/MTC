@@ -40,7 +40,7 @@ describe('check-started.service', () => {
       }
     })
     await sut.process(message, functionBindings)
-    expect(functionBindings.checkStartedTable.length).toBe(1)
+    expect(functionBindings.checkStartedTable).toHaveLength(1)
   })
 
   test('it drops preparedCheck from redis if a live check', async () => {

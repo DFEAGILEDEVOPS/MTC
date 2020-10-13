@@ -145,7 +145,7 @@ describe('RedisService', () => {
     }
     await sut.drop(cacheKeys)
     const foundKeys = await ioRedis.keys(`${redisItemKey}:*`)
-    expect(foundKeys.length).toBe(0)
+    expect(foundKeys).toHaveLength(0)
   })
 
   test('returns null when redis item is not found', async () => {

@@ -111,7 +111,7 @@ describe('multipart message parser', () => {
         statusCode: 200
       }
       const actual = sut.parse(response)
-      expect(actual.length).toBe(3)
+      expect(actual).toHaveLength(3)
     })
   })
 })
