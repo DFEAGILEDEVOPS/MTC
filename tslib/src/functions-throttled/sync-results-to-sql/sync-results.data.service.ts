@@ -107,13 +107,14 @@ export class SyncResultsDataService implements ISyncResultsDataService {
     const batteryLevelPercent = R.pathOr(null, ['battery', 'levelPercent'], device)
     const batteryChargingTimeSecs = R.pathOr(null, ['battery', 'chargingTime'], device)
     const batteryDischargingTimeSecs = R.pathOr(null, ['battery', 'dischargingTime'], device)
+    const cpuHardwareConcurrency = R.pathOr(null, ['cpu', 'hardwareConcurrency'], device)
 
     params.push({ name: 'batteryIsCharging', type: TYPES.Bit, value: batteryIsCharging })
     params.push({ name: 'batteryLevelPercent', type: TYPES.TinyInt, value: batteryLevelPercent })
     params.push({ name: 'batteryChargingTimeSecs', type: TYPES.Int, value: batteryChargingTimeSecs })
     params.push({ name: 'batteryDischargingTimeSecs', type: TYPES.Int, value: batteryDischargingTimeSecs })
+    params.push({ name: 'cpuHardwareConcurrency', type: TYPES.TinyInt, value: batteryDischargingTimeSecs })
 
-    console.log('batterDischargingTime value is ', batteryDischargingTimeSecs)
 
     // throw new Error('JMS says')
 
@@ -126,11 +127,13 @@ export class SyncResultsDataService implements ISyncResultsDataService {
         INSERT INTO mtc_results.userDevice (batteryIsCharging,
                                             batteryLevelPercent,
                                             batteryChargingTimeSecs,
-                                            batteryDischargingTimeSecs)
+                                            batteryDischargingTimeSecs,
+                                            cpuHardwareConcurrency)
         VALUES (@batteryIsCharging,
                 @batteryLevelPercent,
                 @batteryChargingTimeSecs,
-                @batteryDischargingTimeSecs);
+                @batteryDischargingTimeSecs,
+                @cpuHardwareConcurrency);
 
         SET @userDeviceId = (SELECT SCOPE_IDENTITY());
 
