@@ -10,9 +10,9 @@ export interface ISyncResultsDataService {
 
   prepareCheckResult (markedCheck: MarkedCheck): ITransactionRequest
 
-  prepareEvents (validatedCheck: ValidatedCheck): Promise<ITransactionRequest>
-
   prepareDeviceData (validatedCheck: ValidatedCheck): Promise<ITransactionRequest>
+
+  prepareEvents (validatedCheck: ValidatedCheck): Promise<ITransactionRequest>
 
   sqlGetQuestionData (): Promise<Map<string, DBQuestion>>
 }
