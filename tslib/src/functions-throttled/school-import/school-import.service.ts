@@ -6,7 +6,6 @@ import { SchoolImportJobResult } from './SchoolImportJobResult'
 import { ISchoolImportPredicates, Predicates } from './predicates'
 import { SchoolRecordMapper } from './school-mapper'
 import { SchoolImportError } from './SchoolImportError'
-import { ISchoolRecord } from './data-access/ISchoolRecord'
 
 const name = 'school-import'
 const targetAge = 9
@@ -99,12 +98,5 @@ export class SchoolImportService {
       return `${(new Date()).toISOString()} school-import: ${msg}`
     }
     return ''
-  }
-
-  isPredicated (school: ISchoolRecord): boolean {
-    const result = this.predicates.isSchoolOpen(school).isMatch &&
-      this.predicates.isRequiredEstablishmentTypeGroup(school).isMatch &&
-      this.predicates.isAgeInRange(targetAge, school).isMatch
-    throw new Error(`result:${result} incomplete - we need the messages!`)
   }
 }

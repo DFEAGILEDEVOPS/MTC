@@ -11,9 +11,7 @@ let jobResult: SchoolImportJobResult
 let schoolDataServiceMock: ISchoolDataService
 
 const SchoolDataServiceMock = jest.fn<ISchoolDataService, any>(() => ({
-  bulkUpload: jest.fn(),
-  getMappedData: jest.fn(),
-  isPredicated: jest.fn()
+  bulkUpload: jest.fn()
 }))
 
 describe('#SchoolImportService', () => {
