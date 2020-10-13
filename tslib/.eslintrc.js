@@ -6,20 +6,24 @@ module.exports = {
   parser: '@typescript-eslint/parser',
   parserOptions: {
     tsconfigRootDir: __dirname,
-    project: ['./tsconfig.json'],
+    project: './tsconfig.json',
     warnOnUnsupportedTypeScriptVersion: true
   },
   plugins: [
       '@typescript-eslint',
       'jest'
   ],
+  // eslint full: 693 errors, 4 warnings
+  // standard: 1617 errors, 4 warnings
   extends: [
-    'eslint:recommended',
-    'plugin:@typescript-eslint/recommended',
+    'standard-with-typescript',
+    // 'eslint:recommended',
+    // 'plugin:@typescript-eslint/recommended',
     // 'plugin:@typescript-eslint/recommended-requiring-type-checking'
   ],
   rules: {
     '@typescript-eslint/no-explicit-any': 'off',
+    '@typescript-eslint/method-signature-style': 'off',
     '@typescript-eslint/ban-ts-comment': [
       'warn',
       {
