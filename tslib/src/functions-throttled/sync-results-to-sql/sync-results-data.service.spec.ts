@@ -70,10 +70,12 @@ describe('SyncResultsDataService', () => {
     expect(sut['findQuestion'] as jest.Mock).toHaveBeenCalledTimes(2)
     // expect a param called `questionId0` set to 1
     const pq0 = trans.params.find(o => o.name === 'questionId0')
-    expect(pq0!.value).toBe(3)
+    if (pq0 === undefined) fail('could not find question')
+    expect(pq0.value).toBe(3)
     // expect a param called `questionId1` set to 2
     const pq1 = trans.params.find(o => o.name === 'questionId1')
-    expect(pq1!.value).toBe(4)
+    if (pq1 === undefined) fail('could not find question')
+    expect(pq1.value).toBe(4)
   })
 
   it('sqlGetQuestionData returns a map indexed by question', async () => {

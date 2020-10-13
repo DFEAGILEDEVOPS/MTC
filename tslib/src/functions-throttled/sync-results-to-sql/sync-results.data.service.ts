@@ -222,9 +222,10 @@ export class SyncResultsDataService implements ISyncResultsDataService {
    * @private
    */
   private findQuestion (question: string): DBQuestion {
-    if (!this.questionData.has(question)) {
+    const questionData = this.questionData.get(question)
+    if (questionData === undefined) {
       throw new Error(`Unable to find question: ${question}`)
     }
-    return this.questionData.get(question)!
+    return questionData
   }
 }
