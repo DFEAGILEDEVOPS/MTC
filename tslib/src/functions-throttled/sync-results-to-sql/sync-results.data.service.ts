@@ -12,6 +12,8 @@ export interface ISyncResultsDataService {
 
   prepareEvents (validatedCheck: ValidatedCheck): Promise<ITransactionRequest>
 
+  prepareDeviceData (validatedCheck: ValidatedCheck): Promise<ITransactionRequest>
+
   sqlGetQuestionData (): Promise<Map<string, DBQuestion>>
 }
 
