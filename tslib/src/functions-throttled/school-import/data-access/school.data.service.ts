@@ -44,6 +44,8 @@ export class SchoolDataService implements ISchoolDataService {
       this.jobResult.linesProcessed += 1
       this.jobResult.schoolsLoaded += 1
       const dfeNumber = `${school.leaCode}${school.estabCode}`
+      // leaCode and estabCode are currently nullable, hence the check.
+      // this will change in ticket #43900
       if (dfeNumber.toString().length !== 7) {
         this.logError(`WARN: school [${school.urn}] has an unusual dfeNumber [${dfeNumber}]`)
       }
