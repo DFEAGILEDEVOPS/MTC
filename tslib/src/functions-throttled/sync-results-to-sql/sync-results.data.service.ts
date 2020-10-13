@@ -113,7 +113,7 @@ export class SyncResultsDataService implements ISyncResultsDataService {
     params.push({ name: 'batteryLevelPercent', type: TYPES.TinyInt, value: batteryLevelPercent })
     params.push({ name: 'batteryChargingTimeSecs', type: TYPES.Int, value: batteryChargingTimeSecs })
     params.push({ name: 'batteryDischargingTimeSecs', type: TYPES.Int, value: batteryDischargingTimeSecs })
-    params.push({ name: 'cpuHardwareConcurrency', type: TYPES.TinyInt, value: batteryDischargingTimeSecs })
+    params.push({ name: 'cpuHardwareConcurrency', type: TYPES.TinyInt, value: cpuHardwareConcurrency })
 
 
     // throw new Error('JMS says')
