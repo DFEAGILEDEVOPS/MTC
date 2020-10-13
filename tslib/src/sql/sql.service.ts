@@ -1,4 +1,4 @@
-import { Request, TYPES, ConnectionPool, Transaction } from 'mssql'
+import { Request, TYPES, ConnectionPool, Transaction, config as sqlConfig } from 'mssql'
 import { ILogger, ConsoleLogger } from '../common/logger'
 import retry from './async-retry'
 import config from '../config'
@@ -20,16 +20,25 @@ declare class SqlServerError extends Error {
  */
 export class ConnectionPoolService {
   private static pool: ConnectionPool
+
+  static async getInstance (logger?: ILogger): Promise<ConnectionPool> {
+    return ConnectionPoolService.getInstanceWithConfig(config.Sql, logger)
+  }
+
   // pool can still be connecting when first used...
   // https://github.com/tediousjs/node-mssql/issues/934
-  static async getInstance (): Promise<ConnectionPool> {
+  static async getInstanceWithConfig (sqlConfig: sqlConfig, logger?: ILogger): Promise<ConnectionPool> {
+
+    if (logger === undefined) {
+      logger = new ConsoleLogger()
+    }
 
     // tslint:disable-next-line: strict-type-predicates
     if (this.pool === undefined) {
-      this.pool = new ConnectionPool(config.Sql)
+      this.pool = new ConnectionPool(sqlConfig)
       await this.pool.connect()
       this.pool.on('error', (error) => {
-        console.error(`Sql Connection Pool Error Raised:${error.message}`)
+        logger?.error(`Sql Connection Pool Error Raised:${error.message}`)
       })
     }
 
