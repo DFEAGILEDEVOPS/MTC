@@ -20,14 +20,14 @@ const requiredSubmittedCheckProperties = [
 ]
 
 export interface ICheckValidatorFunctionBindings {
-  receivedCheckTable: Array<any>
-  checkMarkingQueue: Array<any>
-  checkNotificationQueue: Array<ICheckNotificationMessage>
+  receivedCheckTable: any[]
+  checkMarkingQueue: any[]
+  checkNotificationQueue: ICheckNotificationMessage[]
 }
 
 export class CheckValidatorV1 {
-  private tableService: IAsyncTableService
-  private compressionService: ICompressionService
+  private readonly tableService: IAsyncTableService
+  private readonly compressionService: ICompressionService
 
   constructor (tableService?: IAsyncTableService, compressionService?: ICompressionService) {
     if (tableService !== undefined) {
@@ -77,39 +77,39 @@ export class CheckValidatorV1 {
     functionBindings.checkMarkingQueue = [markingMessage]
   }
 
-  private async setReceivedCheckAsValid (receivedCheckTableEntity: ReceivedCheckTableEntity, checkData: any) {
+  private async setReceivedCheckAsValid (receivedCheckTableEntity: ReceivedCheckTableEntity, checkData: any): Promise<void> {
     receivedCheckTableEntity.validatedAt = Moment().toDate()
     receivedCheckTableEntity.isValid = true
     receivedCheckTableEntity.answers = JSON.stringify(checkData.answers)
     await this.tableService.replaceEntityAsync('receivedCheck', receivedCheckTableEntity)
   }
 
-  private async setReceivedCheckAsInvalid (errorMessage: string, receivedCheck: ReceivedCheckTableEntity) {
+  private async setReceivedCheckAsInvalid (errorMessage: string, receivedCheck: ReceivedCheckTableEntity): Promise<void> {
     receivedCheck.processingError = errorMessage
     receivedCheck.validatedAt = Moment().toDate()
     receivedCheck.isValid = false
     await this.tableService.replaceEntityAsync('receivedCheck', receivedCheck)
   }
 
-  private findReceivedCheck (receivedCheckRef: Array<any>): any {
+  private findReceivedCheck (receivedCheckRef: any[]): any {
     if (RA.isEmptyArray(receivedCheckRef)) {
       throw new Error('received check reference is empty')
     }
     return receivedCheckRef[0]
   }
 
-  private detectArchive (message: Record<string, unknown>) {
-    if ('archive' in message === false) {
+  private detectArchive (message: Record<string, unknown>): void {
+    if (!('archive' in message)) {
       throw new Error('message is missing [archive] property')
     }
   }
 
-  private validateCheckStructure (check: Record<string, unknown>) {
+  private validateCheckStructure (check: Record<string, unknown>): void {
     const errorMessagePrefix = 'submitted check is missing the following properties:'
     const missingProperties: string[] = []
     for (let index = 0; index < requiredSubmittedCheckProperties.length; index++) {
       const propertyName = requiredSubmittedCheckProperties[index]
-      if (propertyName in check === false) {
+      if (!(propertyName in check)) {
         missingProperties.push(propertyName)
       }
     }

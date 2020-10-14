@@ -20,7 +20,6 @@ const PreparedCheckMergeServiceMock = jest.fn<IPreparedCheckMergeService, any>((
 }))
 
 describe('prepared-check-sync.service', () => {
-
   beforeEach(() => {
     redisServiceMock = new RedisServiceMock()
     dataServiceMock = new PreparedCheckSyncDataServiceMock()
@@ -45,7 +44,7 @@ describe('prepared-check-sync.service', () => {
   test('each active check is sent to the merger service', async () => {
     const pupilUUID = 'pupilUUID'
     dataServiceMock.getActiveCheckReferencesByPupilUuid = jest.fn(async () => {
-      const refs: Array<IActiveCheckReference> = [
+      const refs: IActiveCheckReference[] = [
         {
           checkCode: 'checkCode',
           pupilPin: '1234',

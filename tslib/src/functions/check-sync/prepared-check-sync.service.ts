@@ -4,10 +4,10 @@ import { IRedisService, RedisService } from '../../caching/redis-service'
 import { ILogger, ConsoleLogger } from '../../common/logger'
 
 export class PreparedCheckSyncService {
-  private dataService: IPreparedCheckSyncDataService
-  private mergeService: IPreparedCheckMergeService
-  private redisService: IRedisService
-  private logger: ILogger
+  private readonly dataService: IPreparedCheckSyncDataService
+  private readonly mergeService: IPreparedCheckMergeService
+  private readonly redisService: IRedisService
+  private readonly logger: ILogger
 
   constructor (dataService?: IPreparedCheckSyncDataService, mergeService?: IPreparedCheckMergeService,
     redisService?: IRedisService, logger?: ILogger) {

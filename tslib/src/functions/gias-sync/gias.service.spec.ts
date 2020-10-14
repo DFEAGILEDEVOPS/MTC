@@ -96,11 +96,11 @@ describe('GiasSyncService', () => {
     })
 
     sut = new GiasService(
-                soapMessageBuilderMock,
-                soapRequestServiceMock,
-                xmlParserMock,
-                multipartMessageParserMock,
-                zipServiceMock)
+      soapMessageBuilderMock,
+      soapRequestServiceMock,
+      xmlParserMock,
+      multipartMessageParserMock,
+      zipServiceMock)
   })
 
   test('subject should be defined', () => {
@@ -133,7 +133,7 @@ describe('GiasSyncService', () => {
     expect(capturedSpecification).toBeDefined()
     expect(capturedSpecification.action).toEqual('GetExtract')
     expect(capturedSpecification.parameters).toBeDefined()
-    expect(capturedSpecification.parameters['Id']).toEqual(extractId)
+    expect(capturedSpecification.parameters.Id).toEqual(extractId)
   })
 
   test('when namespace is not defined an error is thrown', async () => {
@@ -192,10 +192,10 @@ describe('GiasSyncService', () => {
 
   // integration test, work in progress for final implementation
   test.skip('e2e:GetEstablishment', async () => {
-    config.Gias.Namespace = process.env.GIAS_WS_NAMESPACE || ''
-    config.Gias.ServiceUrl = process.env.GIAS_WS_SERVICE_URL || ''
-    config.Gias.Username = process.env.GIAS_WS_USERNAME || ''
-    config.Gias.Password = process.env.GIAS_WS_PASSWORD || ''
+    config.Gias.Namespace = process.env.GIAS_WS_NAMESPACE ?? ''
+    config.Gias.ServiceUrl = process.env.GIAS_WS_SERVICE_URL ?? ''
+    config.Gias.Username = process.env.GIAS_WS_USERNAME ?? ''
+    config.Gias.Password = process.env.GIAS_WS_PASSWORD ?? ''
     const gias = new GiasService()
     const response = await gias.GetEstablishment(100044)
     console.dir(response)
@@ -203,13 +203,12 @@ describe('GiasSyncService', () => {
 
   // integration test, work in progress for final implementation
   test.skip('e2e:GetExtract', async () => {
-    config.Gias.Namespace = process.env.GIAS_WS_NAMESPACE || ''
-    config.Gias.ServiceUrl = process.env.GIAS_WS_SERVICE_URL || ''
-    config.Gias.Username = process.env.GIAS_WS_USERNAME || ''
-    config.Gias.Password = process.env.GIAS_WS_PASSWORD || ''
+    config.Gias.Namespace = process.env.GIAS_WS_NAMESPACE ?? ''
+    config.Gias.ServiceUrl = process.env.GIAS_WS_SERVICE_URL ?? ''
+    config.Gias.Username = process.env.GIAS_WS_USERNAME ?? ''
+    config.Gias.Password = process.env.GIAS_WS_PASSWORD ?? ''
     const gias = new GiasService()
-    const response = await gias.GetExtract(parseInt(process.env.GIAS_WS_EXTRACT_ID || '',10))
+    const response = await gias.GetExtract(parseInt(process.env.GIAS_WS_EXTRACT_ID ?? '', 10))
     console.log(`the xml is ${response.length} chars long`)
   })
-
 })

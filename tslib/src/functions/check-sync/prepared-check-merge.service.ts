@@ -1,9 +1,9 @@
 import * as R from 'ramda'
-import moment = require('moment')
 import { SqlService } from '../../sql/sql.service'
+import moment = require('moment')
 
 export interface IPreparedCheckMergeDataService {
-  getAccessArrangementsCodesByIds (aaIds: Array<number>): Promise<Array<string>>
+  getAccessArrangementsCodesByIds (aaIds: number[]): Promise<string[]>
 }
 
 interface IAccessArrangementCode {
@@ -13,17 +13,18 @@ interface IAccessArrangementCode {
 
 export class PreparedCheckMergeDataService implements IPreparedCheckMergeDataService {
   private static aaCodes = new Array<IAccessArrangementCode>()
-  private sqlService: SqlService
+  private readonly sqlService: SqlService
 
   constructor () {
     this.sqlService = new SqlService()
   }
-  async getAccessArrangementsCodesByIds (aaIds: Array<number>): Promise<string[]> {
+
+  async getAccessArrangementsCodesByIds (aaIds: number[]): Promise<string[]> {
     if (PreparedCheckMergeDataService.aaCodes.length === 0) {
       await this.initCodes()
     }
     return Object.keys(PreparedCheckMergeDataService.aaCodes).filter((code: any) =>
-      PreparedCheckMergeDataService.aaCodes[code] && aaIds.includes(PreparedCheckMergeDataService.aaCodes[code].id)
+      PreparedCheckMergeDataService.aaCodes[code] !== undefined && aaIds.includes(PreparedCheckMergeDataService.aaCodes[code].id)
     )
   }
 
@@ -40,19 +41,19 @@ export interface IPreparedCheckMergeService {
   merge (preparedCheck: any, newAaConfig: any): Promise<ICheckConfig>
 }
 export class PreparedCheckMergeService implements IPreparedCheckMergeService {
-
-  private dataService: IPreparedCheckMergeDataService
+  private readonly dataService: IPreparedCheckMergeDataService
   constructor (dataService?: IPreparedCheckMergeDataService) {
     if (dataService === undefined) {
       dataService = new PreparedCheckMergeDataService()
     }
     this.dataService = dataService
   }
+
   async merge (oldConfig: ICheckConfig, newConfig: Record<string, any>): Promise<ICheckConfig> {
-    if (oldConfig.colourContrastCode) {
+    if (oldConfig.colourContrastCode !== undefined) {
       delete oldConfig.colourContrastCode
     }
-    if (oldConfig.fontSizeCode) {
+    if (oldConfig.fontSizeCode !== undefined) {
       delete oldConfig.fontSizeCode
     }
     const baseConfig = {
@@ -66,7 +67,7 @@ export class PreparedCheckMergeService implements IPreparedCheckMergeService {
       fontSizeCode: undefined,
       colourContrastCode: undefined
     }
-    if (!newConfig || newConfig.length === 0) {
+    if (newConfig === undefined || newConfig.length === 0) {
       return R.merge(oldConfig, baseConfig)
     }
     const fontSizeAa = newConfig.find((aa: any) => aa.pupilFontSizeCode)
@@ -84,13 +85,13 @@ export class PreparedCheckMergeService implements IPreparedCheckMergeService {
       if (code === AccessArrangementCodes.FONT_SIZE) {
         baseConfig.fontSize = true
       }
-      if (fontSizeAa && fontSizeAa.pupilFontSizeCode) {
+      if (fontSizeAa?.pupilFontSizeCode !== undefined) {
         baseConfig.fontSizeCode = fontSizeAa.pupilFontSizeCode
       }
       if (code === AccessArrangementCodes.COLOUR_CONTRAST) {
         baseConfig.colourContrast = true
       }
-      if (colourContrastAa && colourContrastAa.pupilColourContrastCode) {
+      if (colourContrastAa?.pupilColourContrastCode !== undefined) {
         baseConfig.colourContrastCode = colourContrastAa.pupilColourContrastCode
       }
       if (code === AccessArrangementCodes.QUESTION_READER) baseConfig.questionReader = true
@@ -116,16 +117,16 @@ export interface IPreparedCheck {
   createdAt: moment.Moment
   pinExpiresAt: moment.Moment
   pupil: {
-    firstName: string,
-    lastName: string,
-    dob: string,
+    firstName: string
+    lastName: string
+    dob: string
     checkCode: string
   }
   pupilId: number
-  questions: Array<ICheckQuestion>
+  questions: ICheckQuestion[]
   school: {
-    id: number,
-    name: string,
+    id: number
+    name: string
     uuid: string
   }
   schoolId: number
@@ -133,19 +134,19 @@ export interface IPreparedCheck {
     checkStarted: {
       token: string
       url: string
-    },
+    }
     pupilPreferences: {
       token: string
       url: string
-    },
+    }
     pupilFeedback: {
       token: string
       url: string
-    },
+    }
     jwt: {
       token: string
     }
-  },
+  }
   updatedAt: moment.Moment
 }
 

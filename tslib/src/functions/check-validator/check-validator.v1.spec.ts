@@ -163,7 +163,6 @@ describe('check-validator/v1', () => {
   })
 
   test('validation errors are reported to check notification queue', async () => {
-
     const receivedCheckEntity: ReceivedCheckTableEntity = {
       PartitionKey: validateReceivedCheckQueueMessage.schoolUUID,
       RowKey: validateReceivedCheckQueueMessage.checkCode,
@@ -278,6 +277,5 @@ describe('check-validator/v1', () => {
     expect(checkMarkingMessage.checkCode).toEqual(validateReceivedCheckQueueMessage.checkCode)
     expect(checkMarkingMessage.schoolUUID).toEqual(validateReceivedCheckQueueMessage.schoolUUID)
     expect(checkMarkingMessage.version).toBe(1)
-
   })
 })

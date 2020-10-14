@@ -1,8 +1,8 @@
 import { AzureFunction, Context } from '@azure/functions'
 import { performance } from 'perf_hooks'
-const functionName = 'gias-sync'
 import { GiasService } from './gias.service'
 import config from '../../config'
+const functionName = 'gias-sync'
 
 const timerTrigger: AzureFunction = async function (context: Context): Promise<void> {
   const start = performance.now()
