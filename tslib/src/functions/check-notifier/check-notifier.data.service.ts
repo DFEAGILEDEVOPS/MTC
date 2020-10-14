@@ -8,13 +8,13 @@ export interface ICheckNotifierDataService {
 }
 
 export class CheckNotifierDataService implements ICheckNotifierDataService {
-  private sqlService: SqlService
+  private readonly sqlService: SqlService
 
   constructor () {
     this.sqlService = new SqlService()
   }
 
-  markCheckAsProcessingFailed (checkCode: string): Promise<void> {
+  async markCheckAsProcessingFailed (checkCode: string): Promise<void> {
     const checkCodeParam: ISqlParameter = {
       type: mssql.UniqueIdentifier,
       name: 'checkCode',
@@ -30,7 +30,7 @@ export class CheckNotifierDataService implements ICheckNotifierDataService {
     return this.sqlService.modify(sql, [checkCodeParam])
   }
 
-  updateCheckAsComplete (checkCode: string): Promise<void> {
+  async updateCheckAsComplete (checkCode: string): Promise<void> {
     const checkCodeParam: ISqlParameter = {
       type: mssql.UniqueIdentifier,
       name: 'checkCode',
@@ -64,7 +64,7 @@ export class CheckNotifierDataService implements ICheckNotifierDataService {
     return this.sqlService.modifyWithTransaction([checkRequest, pupilRequest])
   }
 
-  markCheckAsReceived (checkCode: string): Promise<void> {
+  async markCheckAsReceived (checkCode: string): Promise<void> {
     const checkCodeParam: ISqlParameter = {
       type: mssql.UniqueIdentifier,
       name: 'checkCode',

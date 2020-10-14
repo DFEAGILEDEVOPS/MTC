@@ -1,6 +1,4 @@
 import * as Subject from './check-marker.v1'
-import uuid = require('uuid')
-import moment = require('moment')
 import { IAsyncTableService, TableStorageEntity } from '../../azure/storage-helper'
 import { ICheckFormService } from './check-form.service'
 import * as R from 'ramda'
@@ -10,6 +8,8 @@ import checkSchema from '../../schemas/complete-check.v1.json'
 import { CheckNotificationType, ICheckNotificationMessage } from '../check-notifier/check-notification-message'
 import { ReceivedCheckTableEntity } from '../../schemas/models'
 import { CompressionService } from '../../common/compression-service'
+import uuid = require('uuid')
+import moment = require('moment')
 
 const compressionService = new CompressionService()
 
@@ -38,7 +38,6 @@ let sqlServiceMock: ICheckFormService
 let loggerMock: ILogger
 
 describe('check-marker/v1', () => {
-
   beforeEach(() => {
     tableServiceMock = new TableServiceMock()
     sqlServiceMock = new SqlServiceMock()
@@ -66,7 +65,6 @@ describe('check-marker/v1', () => {
   })
 
   test('error is recorded against entity when answers is empty', async () => {
-
     const validatedCheckEntity: ReceivedCheckTableEntity = {
       PartitionKey: uuid.v4(),
       RowKey: uuid.v4(),
@@ -171,7 +169,7 @@ describe('check-marker/v1', () => {
     })
 
     sqlServiceMock.getCheckFormDataByCheckCode = jest.fn(async () => {
-      return
+
     })
 
     await sut.mark(functionBindings, loggerMock)

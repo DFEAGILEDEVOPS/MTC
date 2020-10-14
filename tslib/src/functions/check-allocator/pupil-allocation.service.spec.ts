@@ -28,7 +28,6 @@ let dateTimeServiceMock: IDateTimeService
 let checkFormAllocationServiceMock: ICheckFormAllocationService
 
 describe('PupilAllocationService', () => {
-
   beforeEach(() => {
     pupilPinGenerationServiceMock = new PupilPinGenerationServiceMock()
     dateTimeServiceMock = new DateTimeServiceMock()

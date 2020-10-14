@@ -12,19 +12,18 @@ import { IPupilAllocationService, PupilAllocationService } from './pupil-allocat
  * Used solely by the check-allocator function
  */
 export class SchoolCheckAllocationService {
-  private dataService: ICheckAllocationDataService
-  private redisService: IRedisService
-  private dateTimeService: IDateTimeService
-  private pupilAllocationService: IPupilAllocationService
-  private uuidV4RegexPattern = new RegExp(/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i)
-  private redisAllocationsKeyPrefix = 'pupil-allocations:'
+  private readonly dataService: ICheckAllocationDataService
+  private readonly redisService: IRedisService
+  private readonly dateTimeService: IDateTimeService
+  private readonly pupilAllocationService: IPupilAllocationService
+  private readonly uuidV4RegexPattern = new RegExp(/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i)
+  private readonly redisAllocationsKeyPrefix = 'pupil-allocations:'
 
   constructor (
     checkAllocatorDataService?: ICheckAllocationDataService,
     redisService?: IRedisService,
     dateTimeService?: IDateTimeService,
     pupilAllocationService?: IPupilAllocationService) {
-
     if (checkAllocatorDataService === undefined) {
       checkAllocatorDataService = new CheckAllocationDataService()
     }
@@ -51,7 +50,7 @@ export class SchoolCheckAllocationService {
    * @param schoolUUID urlSlug of the school to perform allocation over
    */
   async allocate (schoolUUID: string): Promise<void> {
-    if (!schoolUUID.match(this.uuidV4RegexPattern)) {
+    if (schoolUUID.match(this.uuidV4RegexPattern) === null) {
       throw new Error('schoolUUID argument was not a v4 UUID')
     }
 
