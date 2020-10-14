@@ -11,7 +11,7 @@ export class RandomGenerator implements IRandomGenerator {
   }
 
   generateFromChars (length: number, chars: string): string {
-    if (chars === undefined) {
+    if (chars === undefined || chars.length === 0) {
       throw new Error('Argument \'chars\' is undefined')
     }
     const charsLength = chars.length

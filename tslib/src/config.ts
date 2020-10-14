@@ -6,7 +6,7 @@ import * as schoolResultsCacheDeterminerConfig from './functions/school-results-
 const globalDotEnvFile = path.join(__dirname, '..', '..', '.env')
 try {
   if (fs.existsSync(globalDotEnvFile)) {
-    // console.log('globalDotEnvFile found', globalDotEnvFile)
+    console.log('globalDotEnvFile found', globalDotEnvFile)
     dotenv.config({ path: globalDotEnvFile })
   } else {
     console.log('No .env file found at project root')

@@ -5,7 +5,7 @@ import { performance } from 'perf_hooks'
 import { CensusImportV1 } from './v1'
 import * as mssql from 'mssql'
 import config from '../../config'
-import { ConnectionPoolService } from '../../sql/sql.service'
+import * as connectionPoolService from '../../sql/pool.service'
 
 const blobTrigger: AzureFunction = async function (context: Context, blob: any): Promise<void> {
   const start = performance.now()
@@ -29,7 +29,7 @@ const blobTrigger: AzureFunction = async function (context: Context, blob: any):
         encrypt: config.Sql.options.encrypt
       }
     }
-    pool = await ConnectionPoolService.getInstanceWithConfig(sqlConfig, context.log)
+    pool = await connectionPoolService.getInstanceWithConfig(sqlConfig, context.log)
     const v1 = new CensusImportV1(pool, context.log)
     meta = await v1.process(blob, context.bindingData.uri)
     await pool.close()
