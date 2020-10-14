@@ -11,7 +11,7 @@ describe('result.service', () => {
   let sut: ResultService
   let mockResultDataService: IResultDataService
   let mockRedisService: IRedisService
-  const mockPupils: Array<IRawPupilResult> = [
+  const mockPupils: IRawPupilResult[] = [
     {
       lastName: 'Smith',
       foreName: 'Jack',
@@ -357,7 +357,6 @@ describe('result.service', () => {
   })
 
   describe('assignStatus', () => {
-
     test('it describes complete pupils with no status', () => {
       const pupil = {
         pupilId: 1,

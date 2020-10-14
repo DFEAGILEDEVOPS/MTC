@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/dot-notation */
 
 import { SchoolResultsCacheDeterminerService } from './school-results-cache-determiner.service'
-import { ConsoleLogger } from '../../common/logger'
+import { ConsoleLogger, ILogger } from '../../common/logger'
 import config from '../../config'
 import moment from 'moment'
 
@@ -12,7 +13,12 @@ const schoolData = [
 
 let mockDataService: any
 
-function getMockContext () {
+interface IMockContext {
+  bindings: Record<string, unknown>
+  log: ILogger
+}
+
+function getMockContext (): IMockContext {
   const functionBindings: any = {}
   const context = {
     bindings: functionBindings,

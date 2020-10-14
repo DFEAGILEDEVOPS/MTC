@@ -5,13 +5,13 @@ import { TYPES } from 'mssql'
 import { SqlService, ISqlService } from '../../../../sql/sql.service'
 
 export interface IResultDataService {
-  sqlFindPupilResultsForSchool (schoolId: number): Promise<Array<IRawPupilResult>>,
+  sqlFindPupilResultsForSchool (schoolId: number): Promise<IRawPupilResult[]>
 
   sqlFindSchool (schoolGuid: string): Promise<ISchool | undefined>
 }
 
 export class ResultDataService implements IResultDataService {
-  private sqlService: ISqlService
+  private readonly sqlService: ISqlService
 
   constructor (sqlService?: ISqlService) {
     if (sqlService === undefined) {
@@ -25,7 +25,7 @@ export class ResultDataService implements IResultDataService {
    * @param {number} schoolId - school.id from the database
    * @return {Promise<*>}
    */
-  async sqlFindPupilResultsForSchool (schoolId: number): Promise<Array<IRawPupilResult>> {
+  async sqlFindPupilResultsForSchool (schoolId: number): Promise<IRawPupilResult[]> {
     const sql = `SELECT
                      p.id AS pupilId,
                      p.foreName,
@@ -80,25 +80,25 @@ export class ResultDataService implements IResultDataService {
  * and some additional fields so we can work out the pupil's status.
  */
 export interface IRawPupilResult {
-  attendanceCode: null | string,
-  attendanceId: null | number,
+  attendanceCode: null | string
+  attendanceId: null | number
   attendanceReason: null | string
-  checkComplete: boolean,
-  currentCheckId: null | number,
-  dateOfBirth: moment.Moment,
-  foreName: string,
-  group_id: null | number,
-  lastName: string,
-  mark: null | number,
-  middleNames: string,
-  pupilId: number,
-  restartAvailable: boolean,
-  school_id: number,
-  urlSlug: string,
+  checkComplete: boolean
+  currentCheckId: null | number
+  dateOfBirth: moment.Moment
+  foreName: string
+  group_id: null | number
+  lastName: string
+  mark: null | number
+  middleNames: string
+  pupilId: number
+  restartAvailable: boolean
+  school_id: number
+  urlSlug: string
 }
 
 export interface ISchool {
-  id: number,
-  name: string,
+  id: number
+  name: string
   timezone: string
 }

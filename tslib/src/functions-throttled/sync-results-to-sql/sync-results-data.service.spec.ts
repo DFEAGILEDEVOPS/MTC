@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/dot-notation */
 import * as R from 'ramda'
 import { mockCompletionCheckMessage } from './mocks/completed-check.message'
 import { SyncResultsDataService } from './sync-results.data.service'

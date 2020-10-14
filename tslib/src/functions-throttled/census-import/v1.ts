@@ -13,19 +13,17 @@ export interface IJobResult {
 }
 
 export class CensusImportV1 {
-
-  private pool: mssql.ConnectionPool
-  private censusImportDataService: ICensusImportDataService
-  private jobDataService: IJobDataService
-  private blobStorageService: IBlobStorageService
-  private logger: ILogger
+  private readonly pool: mssql.ConnectionPool
+  private readonly censusImportDataService: ICensusImportDataService
+  private readonly jobDataService: IJobDataService
+  private readonly blobStorageService: IBlobStorageService
+  private readonly logger: ILogger
 
   constructor (pool: mssql.ConnectionPool,
     logger?: ILogger,
     censusImportDataService?: ICensusImportDataService,
     jobDataService?: IJobDataService,
     blobStorageService?: IBlobStorageService) {
-
     this.pool = pool
 
     if (censusImportDataService === undefined) {

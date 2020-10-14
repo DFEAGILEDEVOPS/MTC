@@ -8,27 +8,26 @@ import config from '../../config'
 const functionName = 'school-results-cache-determiner'
 
 export interface ISchoolResultsCacheMessage {
-  schoolName: string,
+  schoolName: string
   schoolGuid: string
 }
 
 export interface ISchoolResultsCacheDeterminerFunctionBindings {
-  schoolResultsCache: Array<ISchoolResultsCacheMessage>
+  schoolResultsCache: ISchoolResultsCacheMessage[]
 }
 
 export class SchoolResultsCacheDeterminerService {
-
-  private dataService: ISchoolResultsCacheDeterminerDataService
+  private readonly dataService: ISchoolResultsCacheDeterminerDataService
   private readonly logger: ILogger
   private functionBindings: ISchoolResultsCacheDeterminerFunctionBindings
 
   constructor (functionBindings: ISchoolResultsCacheDeterminerFunctionBindings | any, logger?: ILogger, dataService?: ISchoolResultsCacheDeterminerDataService) {
     this.functionBindings = functionBindings
-    this.logger = logger ? logger : (new ConsoleLogger())
-    this.dataService = dataService ? dataService : (new SchoolResultsCacheDeterminerDataService(this.logger))
+    this.logger = logger ?? new ConsoleLogger()
+    this.dataService = dataService ?? new SchoolResultsCacheDeterminerDataService(this.logger)
   }
 
-  private async isInDateRangeForCaching () {
+  private async isInDateRangeForCaching (): Promise<boolean> {
     const checkWindow = await this.dataService.sqlFindActiveCheckWindow()
     const now = moment()
     this.logger.verbose('NOW is ', now)
@@ -51,7 +50,7 @@ export class SchoolResultsCacheDeterminerService {
     return true
   }
 
-  private async addMessagesToSchoolResultsCacheQueue () {
+  private async addMessagesToSchoolResultsCacheQueue (): Promise<void> {
     this.logger.info(`${functionName}: addMessagesToSchoolResultsCacheQueue() called`)
     const schools = await this.dataService.sqlGetSchoolGuids()
     if (!Array.isArray(schools)) {
@@ -68,7 +67,7 @@ export class SchoolResultsCacheDeterminerService {
     this.logger.info(`${functionName}: addMessagesToSchoolResultsCacheQueue() ${schools.length} schools`)
   }
 
-  private async dateRangeCheckAndCache () {
+  private async dateRangeCheckAndCache (): Promise<void> {
     const shouldCache = await this.isInDateRangeForCaching()
     if (shouldCache) {
       await this.addMessagesToSchoolResultsCacheQueue()
@@ -100,20 +99,17 @@ export class SchoolResultsCacheDeterminerService {
 
 export interface ISchoolResultsCacheDeterminerDataService {
   sqlFindActiveCheckWindow (): Promise<any>
-  sqlGetSchoolGuids (): Promise<{schoolName: string, schoolGuid: string}[]>
+  sqlGetSchoolGuids (): Promise<Array<{schoolName: string, schoolGuid: string}>>
 }
 
 export class SchoolResultsCacheDeterminerDataService implements ISchoolResultsCacheDeterminerDataService {
-  private sqlService: SqlService
+  private readonly sqlService: SqlService
 
   constructor (logger?: ILogger) {
     this.sqlService = new SqlService(logger)
   }
 
-  async sqlFindActiveCheckWindow (): Promise<{
-    id: number, name: string, isDeleted: boolean, checkEndDate: moment.Moment,
-    adminEndDate: moment.Moment
-  }> {
+  async sqlFindActiveCheckWindow (): Promise<ICheckWindow> {
     const sql = `SELECT TOP 1 id, name, isDeleted, checkEndDate, adminEndDate
                    FROM [mtc_admin].[checkWindow]
                   WHERE isDeleted = 0
@@ -124,8 +120,16 @@ export class SchoolResultsCacheDeterminerDataService implements ISchoolResultsCa
     return R.head(result)
   }
 
-  async sqlGetSchoolGuids (): Promise<{schoolName: string, schoolGuid: string}[]> {
+  async sqlGetSchoolGuids (): Promise<Array<{schoolName: string, schoolGuid: string}>> {
     const sql = 'SELECT name as schoolName, urlSlug as schoolGuid FROM mtc_admin.school'
     return this.sqlService.query(sql)
   }
+}
+
+export interface ICheckWindow {
+  id: number
+  name: string
+  isDeleted: boolean
+  checkEndDate: moment.Moment
+  adminEndDate: moment.Moment
 }

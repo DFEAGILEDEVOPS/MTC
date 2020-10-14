@@ -1,6 +1,6 @@
 import { SchoolPinSampler } from './school-pin-sampler'
-import moment = require('moment')
 import { TimezoneUtil } from '../school-pin-generator/timezone-util'
+import moment = require('moment')
 
 let sut: SchoolPinSampler
 
