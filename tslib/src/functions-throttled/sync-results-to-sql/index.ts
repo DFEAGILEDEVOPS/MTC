@@ -138,7 +138,7 @@ async function abandonMessages (messageBatch: sb.ServiceBusMessage[], context: C
   }
 }
 
-function finish (start: number, context: Context) {
+function finish (start: number, context: Context): void {
   const end = performance.now()
   const durationInMilliseconds = end - start
   const timeStamp = new Date().toISOString()
@@ -147,7 +147,7 @@ function finish (start: number, context: Context) {
   context.log(`${functionName}: ${timeStamp} run complete: ${durationInMilliseconds} ms`)
 }
 
-function sleep (ms: number) {
+async function sleep (ms: number): Promise<any> {
   return new Promise(resolve => setTimeout(resolve, ms))
 }
 

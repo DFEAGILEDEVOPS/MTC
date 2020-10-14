@@ -125,6 +125,7 @@ export class RedisService implements IRedisService {
       meta: {
         type: cacheItemDataType
       },
+      // eslint-disable-next-line @typescript-eslint/no-base-to-string
       value: value.toString()
     }
     const storageItemString = JSON.stringify(storageItem)
@@ -162,15 +163,15 @@ export class RedisService implements IRedisService {
     return pipeline.exec()
   }
 
-  quit (): Promise<string> {
+  async quit (): Promise<string> {
     return this.redis.quit()
   }
 
-  ttl (key: string): Promise<number | null> {
+  async ttl (key: string): Promise<number | null> {
     return this.redis.ttl(key)
   }
 
-  expire (key: string, ttl: number): Promise<any> {
+  async expire (key: string, ttl: number): Promise<any> {
     return this.redis.expire(key, ttl)
   }
 }
