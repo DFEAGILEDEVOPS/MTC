@@ -5,8 +5,7 @@ export interface ISoapMessageBuilder {
 }
 
 export class SoapMessageBuilder implements ISoapMessageBuilder {
-
-  private dateTimeService: IDateTimeService
+  private readonly dateTimeService: IDateTimeService
 
   constructor (dateTimeService?: IDateTimeService) {
     if (dateTimeService === undefined) {
@@ -26,7 +25,7 @@ export class SoapMessageBuilder implements ISoapMessageBuilder {
   private buildBody (messageSpec: ISoapMessageSpecification): string {
     let xml = '<soapenv:Body>'
     xml = `${xml}<ws:${messageSpec.action}>`
-    if (messageSpec.parameters) {
+    if (messageSpec.parameters !== undefined) {
       const paramNames = Object.keys(messageSpec.parameters)
       paramNames.forEach((name) => {
         const value = messageSpec.parameters[name]
@@ -38,8 +37,8 @@ export class SoapMessageBuilder implements ISoapMessageBuilder {
   }
 
   private buildHeader (messageSpec: ISoapMessageSpecification): string {
-    let xml = `<soapenv:Header>`
-    if (messageSpec.credentials || messageSpec.messageExpiryMs > 0) {
+    let xml = '<soapenv:Header>'
+    if (messageSpec.credentials !== undefined || messageSpec.messageExpiryMs > 0) {
       xml = `${xml}<wsse:Security soapenv:mustUnderstand="1"
         xmlns:wsse="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd">`
 
@@ -53,7 +52,7 @@ export class SoapMessageBuilder implements ISoapMessageBuilder {
         xml = `${xml}</wsu:Timestamp>`
       }
 
-      if (messageSpec.credentials) {
+      if (messageSpec.credentials !== undefined) {
         xml = `${xml}<wsse:UsernameToken>`
         xml = `${xml}<wsse:Username>${messageSpec.credentials.username}</wsse:Username>`
         xml = `${xml}<wsse:Password Type="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordText">${messageSpec.credentials.password}</wsse:Password>`

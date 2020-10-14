@@ -17,7 +17,7 @@ describe('multipart message parser', () => {
         const response: IResponse = {
           body: {},
           headers: {
-            'accept': 'text/xml'
+            accept: 'text/xml'
           },
           statusCode: 200
         }

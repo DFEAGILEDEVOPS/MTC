@@ -1,11 +1,11 @@
 
 export interface IMultipartMessageParser {
-  parse (response: IResponse): Array<IMessagePart>
+  parse (response: IResponse): IMessagePart[]
   extractBoundaryIdFrom (response: IResponse): string
 }
 
 export class MultipartMessageParser implements IMultipartMessageParser {
-  parse (response: IResponse): Array<IMessagePart> {
+  parse (response: IResponse): IMessagePart[] {
     const boundaryId = this.extractBoundaryIdFrom(response)
     const boundary = Buffer.from(`--${boundaryId}`, 'utf8')
     const bufferParts = this.splitDataIndexParts(response.body, boundary)
@@ -30,7 +30,7 @@ export class MultipartMessageParser implements IMultipartMessageParser {
     const body = Buffer.alloc(part.length - index - 4)
     part.copy(body, 0, index + 4, part.length)
 
-    const contentType = this.extractContentTypeFromHeaders(headers) || 'application/octet-stream'
+    const contentType = this.extractContentTypeFromHeaders(headers) ?? 'application/octet-stream'
     const content = contentType.toLowerCase() === 'application/octet-stream' ? body : body.toString('utf8')
     const id = this.extractContentIdFromHeaders(headers)
     return {
@@ -91,7 +91,7 @@ export class MultipartMessageParser implements IMultipartMessageParser {
     return found ? index : -1
   }
 
-  private extractContentTypeFromHeaders (headers: Array<string>): string | undefined {
+  private extractContentTypeFromHeaders (headers: string[]): string | undefined {
     let contentType = headers.find(x => x.toLowerCase().startsWith('content-type:'))
     if (!contentType) {
       return undefined
@@ -102,9 +102,9 @@ export class MultipartMessageParser implements IMultipartMessageParser {
     return semiIndex > -1 ? contentType.substr(0, semiIndex) : contentType
   }
 
-  private extractContentIdFromHeaders (headers: Array<string>): string | undefined {
+  private extractContentIdFromHeaders (headers: string[]): string | undefined {
     let contentId = headers.find(x => x.toLowerCase().startsWith('content-id:'))
-    if (!contentId) {
+    if (contentId === undefined) {
       return undefined
     }
     contentId = contentId.substr(11).trim()
@@ -125,14 +125,14 @@ export interface IMessagePart {
 }
 
 export interface IResponseHeader {
-  'transfer-encoding'?: string,
-  'content-type'?: string,
-  'set-cookie'?: Array<string>
-  accept?: string,
+  'transfer-encoding'?: string
+  'content-type'?: string
+  'set-cookie'?: string[]
+  accept?: string
 }
 
 export interface IResponse {
-  body: any,
-  headers: IResponseHeader,
+  body: any
+  headers: IResponseHeader
   statusCode: number
 }
