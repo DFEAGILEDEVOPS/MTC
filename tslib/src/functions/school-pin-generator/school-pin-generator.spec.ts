@@ -18,7 +18,6 @@ const RandomGeneratorMock = jest.fn<IRandomGenerator, any>(() => ({
 }))
 
 describe('school-pin-generator', () => {
-
   beforeEach(() => {
     randomGeneratorMock = new RandomGeneratorMock()
     sut = new SchoolPinGenerator(configProviderMock, randomGeneratorMock)
@@ -44,5 +43,4 @@ describe('school-pin-generator', () => {
     expect(randomGeneratorMock.generateFromChars).toHaveBeenCalledTimes(2)
     expect(randomGeneratorMock.generateNumberFromRangeInclusive).toHaveBeenCalledTimes(4)
   })
-
 })

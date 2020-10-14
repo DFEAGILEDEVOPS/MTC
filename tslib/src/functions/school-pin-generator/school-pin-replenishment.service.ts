@@ -8,14 +8,13 @@ import { SchoolRequiresNewPinPredicate } from './school-requires-pin-predicate'
 import { MaxAttemptsCalculator } from './max-attempts-calculator'
 import { AllowedWordsService } from './allowed-words.service'
 export class SchoolPinReplenishmnentService {
-
-  private dataService: ISchoolPinReplenishmentDataService
-  private newPinRequiredPredicate: SchoolRequiresNewPinPredicate
-  private pinGenerator: ISchoolPinGenerator
-  private expiryGenerator: SchoolPinExpiryGenerator
-  private configProvider: IConfigProvider
-  private maxAttemptsCalculator: MaxAttemptsCalculator
-  private allowedWordsService: AllowedWordsService
+  private readonly dataService: ISchoolPinReplenishmentDataService
+  private readonly newPinRequiredPredicate: SchoolRequiresNewPinPredicate
+  private readonly pinGenerator: ISchoolPinGenerator
+  private readonly expiryGenerator: SchoolPinExpiryGenerator
+  private readonly configProvider: IConfigProvider
+  private readonly maxAttemptsCalculator: MaxAttemptsCalculator
+  private readonly allowedWordsService: AllowedWordsService
 
   constructor (dataService?: ISchoolPinReplenishmentDataService, pinGenerator?: ISchoolPinGenerator,
     configProvider?: IConfigProvider) {
@@ -38,8 +37,8 @@ export class SchoolPinReplenishmnentService {
     this.allowedWordsService = new AllowedWordsService()
   }
 
-  async process (logger: ILogger, schoolId?: number): Promise<void | string> {
-    let schoolsToProcess: Array<School>
+  async process (logger: ILogger, schoolId?: number): Promise<string | undefined> {
+    let schoolsToProcess: School[]
     let returnGeneratedPin = false
     let pinToReturn = ''
     if (schoolId === undefined) {
@@ -54,7 +53,7 @@ export class SchoolPinReplenishmnentService {
     }
     if (schoolsToProcess.length === 0) {
       logger.info('no schools to process, exiting...')
-      return
+      return undefined
     }
     logger.info(`identified ${schoolsToProcess.length} schools to process...`)
     const allowedWords = this.allowedWordsService.parse(this.configProvider.AllowedWords, this.configProvider.BannedWords)
@@ -73,7 +72,7 @@ export class SchoolPinReplenishmnentService {
           newPin: this.pinGenerator.generate(),
           attempts: maxAttemptsAtSchoolPinUpdate
         }
-        if (returnGeneratedPin === true) {
+        if (returnGeneratedPin) {
           pinToReturn = update.newPin
         }
         let attemptsMade = 0
@@ -91,6 +90,7 @@ export class SchoolPinReplenishmnentService {
       }
     }
     if (returnGeneratedPin) return pinToReturn
+    return undefined
   }
 }
 

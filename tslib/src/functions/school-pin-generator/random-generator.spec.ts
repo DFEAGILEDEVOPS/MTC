@@ -30,7 +30,7 @@ describe('random-generator', () => {
     test('throws an error if chars are too long', () => {
       expect(
         function () { sut.generateFromChars(10, 'c'.repeat(257)) }
-      ).toThrowError(`Argument 'chars' should not have more than 256 characters, otherwise unpredictability will be broken`)
+      ).toThrowError('Argument \'chars\' should not have more than 256 characters, otherwise unpredictability will be broken')
     })
   })
 
@@ -41,5 +41,4 @@ describe('random-generator', () => {
       expect(actual >= 0 || actual <= 6).toBeTruthy()
     })
   })
-
 })

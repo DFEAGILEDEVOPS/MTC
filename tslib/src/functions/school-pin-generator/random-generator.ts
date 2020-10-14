@@ -4,7 +4,6 @@ export interface IRandomGenerator {
   generateNumberFromRangeInclusive (minimum: number, maximum: number): number
 }
 export class RandomGenerator implements IRandomGenerator {
-
   generateNumberFromRangeInclusive (minimum: number, maximum: number): number {
     const maxDec = 281474976710656
     const randBytes = parseInt(crypto.randomBytes(6).toString('hex'), 16)
@@ -12,12 +11,12 @@ export class RandomGenerator implements IRandomGenerator {
   }
 
   generateFromChars (length: number, chars: string): string {
-    if (!chars) {
+    if (chars === undefined) {
       throw new Error('Argument \'chars\' is undefined')
     }
     const charsLength = chars.length
     if (charsLength > 256) {
-      throw new Error(`Argument 'chars' should not have more than 256 characters, otherwise unpredictability will be broken`)
+      throw new Error('Argument \'chars\' should not have more than 256 characters, otherwise unpredictability will be broken')
     }
     const randomBytes = crypto.randomBytes(length)
     const result = []

@@ -23,7 +23,6 @@ let dataService: ISchoolPinReplenishmentDataService
 const logger: ILogger = new ConsoleLogger()
 
 describe('school-pin-replenishment.service', () => {
-
   beforeEach(() => {
     dataService = new SchoolPinGeneratorDataServiceMock()
     sut = new SchoolPinReplenishmnentService(dataService, undefined, configProviderMock)
@@ -68,7 +67,7 @@ describe('school-pin-replenishment.service', () => {
     expect(dataService.updatePin).toHaveBeenCalledTimes(1)
     expect(update).toBeDefined()
     // optional chaining not currently supported in our ts-jest setup
-    expect(update ? update.id : undefined).toEqual(2)
+    expect(update?.id).toEqual(2)
   })
 
   test('it should fail after making configured number of attempts', async () => {

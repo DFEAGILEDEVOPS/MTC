@@ -64,7 +64,6 @@ describe('school-pin-expiry-generator', () => {
   })
 
   describe('sce schools', () => {
-
     test('if current time between 0000 - 1600, set to 1600 same day', () => {
       const timeBefore4pm = moment('2020-02-06 03:55')
       dateTimeServiceMock.utcNow = jest.fn(() => {
