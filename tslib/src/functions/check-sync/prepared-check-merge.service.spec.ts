@@ -39,7 +39,6 @@ const pupilAccessArrangements = [
 ]
 
 describe('prepared-check-merge.service', () => {
-
   beforeEach(() => {
     dataServiceMock = new PreparedCheckMergeDataServiceMock()
     sut = new PreparedCheckMergeService(dataServiceMock)

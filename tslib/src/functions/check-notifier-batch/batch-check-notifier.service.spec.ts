@@ -14,7 +14,6 @@ let sut: BatchCheckNotifier
 let dataService: IBatchCheckNotifierDataService
 
 describe('batch-request-builder/v2', () => {
-
   beforeEach(() => {
     dataService = new CheckNotifyDataServiceMock()
     sut = new BatchCheckNotifier(dataService)
@@ -103,5 +102,4 @@ describe('batch-request-builder/v2', () => {
     expect(createdRequests).toBeDefined()
     expect(createdRequests).toHaveLength(4)
   })
-
 })

@@ -3,12 +3,11 @@ import v4 from 'uuid/v4'
 import * as R from 'ramda'
 
 export interface ICheckStartedFunctionBindings {
-  checkStartedTable: Array<any>
+  checkStartedTable: any[]
 }
 
 export class CheckStartedService {
-
-  private redisService: IRedisService
+  private readonly redisService: IRedisService
 
   constructor (redisService?: IRedisService) {
     if (redisService === undefined) {
@@ -30,7 +29,6 @@ export class CheckStartedService {
 
     if (R.path(['config', 'practice'], preparedCheck) === false) {
       await this.redisService.drop([preparedCheckKey])
-      return
     }
   }
 

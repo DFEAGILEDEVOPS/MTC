@@ -2,7 +2,7 @@ import { CheckNotificationType, ICheckNotificationMessage } from './check-notifi
 import { CheckNotifierDataService, ICheckNotifierDataService } from './check-notifier.data.service'
 
 export class CheckNotifier {
-  private checkNotifierDataService: ICheckNotifierDataService
+  private readonly checkNotifierDataService: ICheckNotifierDataService
 
   constructor (checkNotifierDataService?: ICheckNotifierDataService) {
     if (checkNotifierDataService === undefined) {

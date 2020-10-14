@@ -7,7 +7,6 @@ let redisServiceMock: IRedisService
 let functionBindings: ICheckStartedFunctionBindings
 
 describe('check-started.service', () => {
-
   beforeEach(() => {
     redisServiceMock = new RedisServiceMock()
     sut = new CheckStartedService(redisServiceMock)
@@ -76,7 +75,6 @@ describe('check-started.service', () => {
     const preparedCheckKey = 'prepared-check-key'
 
     redisServiceMock.get = jest.fn(async (key: string) => {
-
       if (key.startsWith('prepared-check-lookup')) {
         return preparedCheckKey
       } else {
