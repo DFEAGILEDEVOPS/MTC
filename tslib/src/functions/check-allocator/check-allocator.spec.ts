@@ -9,7 +9,7 @@ import { IPupilAllocationService } from './pupil-allocation.service'
 import { IRedisService } from '../../caching/redis-service'
 import { RedisServiceMock } from '../../caching/redis-service.mock'
 
-const pupilData: Array<IPupil> = [
+const pupilData: IPupil[] = [
   {
     id: 123
   },
@@ -78,7 +78,6 @@ describe('check-allocator/v1', () => {
   })
 
   test('it should fetch all pupils within specified school from data service', async () => {
-
     checkAllocationDataServiceMock.getPupilsBySchoolUuid = jest.fn(async () => {
       return Promise.resolve(pupilData)
     })
@@ -92,7 +91,6 @@ describe('check-allocator/v1', () => {
   })
 
   test('an allocation is created for all pupils when none have one', async () => {
-
     checkAllocationDataServiceMock.getPupilsBySchoolUuid = jest.fn(async () => {
       return Promise.resolve(pupilData)
     })
@@ -106,8 +104,7 @@ describe('check-allocator/v1', () => {
   })
 
   test('an allocation is only created for pupils that do not currently have one', async () => {
-
-    checkAllocationDataServiceMock.getPupilsBySchoolUuid = jest.fn(() => {
+    checkAllocationDataServiceMock.getPupilsBySchoolUuid = jest.fn(async () => {
       return Promise.resolve(pupilData)
     })
     redisServiceMock.get = jest.fn(async () => {
@@ -122,7 +119,6 @@ describe('check-allocator/v1', () => {
   })
 
   test('the top level object is stamped with last utc datetime of last replenishment', async () => {
-
     checkAllocationDataServiceMock.getPupilsBySchoolUuid = jest.fn(async () => {
       return Promise.resolve(pupilData)
     })
@@ -149,7 +145,6 @@ describe('check-allocator/v1', () => {
   })
 
   test('the cache is updated with all school pupils', async () => {
-
     checkAllocationDataServiceMock.getPupilsBySchoolUuid = jest.fn(async () => {
       return Promise.resolve(pupilData)
     })
@@ -170,13 +165,13 @@ describe('check-allocator/v1', () => {
         }
       ]
     }
-    redisServiceMock.get = jest.fn(() => {
+    redisServiceMock.get = jest.fn(async () => {
       return Promise.resolve(existingRedisObject)
     })
     let redisSetKey
     let redisSetTtl
 
-    redisServiceMock.setex = jest.fn((key, value, ttl) => {
+    redisServiceMock.setex = jest.fn(async (key, value, ttl) => {
       redisSetKey = key
       redisSetTtl = ttl
       return Promise.resolve()

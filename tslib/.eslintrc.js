@@ -17,6 +17,8 @@ module.exports = {
     'standard-with-typescript',
   ],
   rules: {
+    'no-return-await': 'off',
+    '@typescript-eslint/return-await': ['error', 'in-try-catch'],
     '@typescript-eslint/prefer-ts-expect-error': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/method-signature-style': 'off',
