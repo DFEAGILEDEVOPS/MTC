@@ -50,7 +50,7 @@ jspm_packages
 /test/reports/
 
 # ignore personal vscode configs and workspace files
-.code-workspace
+*.code-workspace
 .vscode/**
 
 # ignore jsdoc output folder
