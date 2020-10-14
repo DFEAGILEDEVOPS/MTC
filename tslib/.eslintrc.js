@@ -13,13 +13,8 @@ module.exports = {
       '@typescript-eslint',
       'jest'
   ],
-  // eslint full: 693 errors, 4 warnings
-  // standard: 1617 errors, 4 warnings
   extends: [
     'standard-with-typescript',
-    // 'eslint:recommended',
-    // 'plugin:@typescript-eslint/recommended',
-    // 'plugin:@typescript-eslint/recommended-requiring-type-checking'
   ],
   rules: {
     '@typescript-eslint/prefer-ts-expect-error': 'off',

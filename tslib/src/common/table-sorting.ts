@@ -13,10 +13,9 @@ class TableSorting {
    * E.g.sortByProps(["a","b","c"], [{a:1,b:2,c:3}, {a:10,b:10,c:10}, {a:10,b:6,c:0}, {a:1, b:2, c:1}, {a:100}])
    * => [{"a":1,"b":2,"c":1},{"a":1,"b":2,"c":3},{"a":10,"b":6,"c":0},{"a":10,"b":10,"c":10},{"a":100}]
    */
-  // @ts-ignore ramda type support is a known problem
-  sortByProps (props, list): unknown {
-    // @ts-ignore ramda type support is a known problem
-    return R.sort(firstTruthy(R.map(makeComparator, props)), list)
+  sortByProps<T> (props: string[], data: T[]): T[] {
+    // @ts-ignore ramda type support is limited
+    return R.sort(firstTruthy(R.map(makeComparator, props)), data)
   }
 }
 
