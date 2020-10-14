@@ -82,7 +82,7 @@ async function process (notifications: ISchoolResultsCacheMessage[], context: Co
       await completeMessages([msg], context)
     } catch (error) {
       // sql transaction failed, abandon...
-      context.log.warn(`${functionName}: error processing message ${msg}\n Error was: ${error}`)
+      context.log.warn(`${functionName}: error processing message ${JSON.stringify(msg)}\n Error was: ${error}`)
       console.error(error)
       await abandonMessages([msg], context)
     }

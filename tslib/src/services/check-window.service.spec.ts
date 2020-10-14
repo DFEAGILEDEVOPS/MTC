@@ -24,12 +24,12 @@ describe('check-window.service', () => {
   })
 
   test('check window is retrieved from database when not found in cache', async () => {
-    checkWindowDataServiceMock.getActiveCheckWindow = jest.fn(() => {
+    checkWindowDataServiceMock.getActiveCheckWindow = jest.fn(async () => {
       return Promise.resolve({
         id: 1
       })
     })
-    redisServiceMock.setex = jest.fn(() => {
+    redisServiceMock.setex = jest.fn(async () => {
       return Promise.resolve()
     })
     const window = await sut.getActiveCheckWindow()
@@ -39,12 +39,12 @@ describe('check-window.service', () => {
   })
 
   test('check window is added to cache after retrieving from database', async () => {
-    checkWindowDataServiceMock.getActiveCheckWindow = jest.fn(() => {
+    checkWindowDataServiceMock.getActiveCheckWindow = jest.fn(async () => {
       return Promise.resolve({
         id: 1
       })
     })
-    redisServiceMock.setex = jest.fn(() => {
+    redisServiceMock.setex = jest.fn(async () => {
       return Promise.resolve()
     })
     const twentyFourHoursInSeconds = 86400
@@ -57,7 +57,7 @@ describe('check-window.service', () => {
   })
 
   test('check window is returned straight from cache when present', async () => {
-    redisServiceMock.get = jest.fn(() => {
+    redisServiceMock.get = jest.fn(async () => {
       return Promise.resolve({
         id: 1
       })

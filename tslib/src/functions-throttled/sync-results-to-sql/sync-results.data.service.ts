@@ -192,7 +192,7 @@ export class SyncResultsDataService implements ISyncResultsDataService {
       await this.refreshEventTypes()
     }
     const evnt = this.eventType.get(eventTypeToFind)
-    if (!evnt) {
+    if (evnt === undefined) {
       throw new Error(`Failed to find event ${eventTypeToFind}`)
     }
     return evnt.id

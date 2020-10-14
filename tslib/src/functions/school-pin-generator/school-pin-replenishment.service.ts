@@ -78,7 +78,7 @@ export class SchoolPinReplenishmnentService {
         let attemptsMade = 0
         while (!pinUpdated && (attemptsMade < update.attempts)) {
           try {
-            logger.info(`school update attempt #${attemptsMade + 1} - id:${update.id} expiry:${update.pinExpiresAt} pin:${update.newPin}`)
+            logger.info(`school update attempt #${attemptsMade + 1} - id:${update.id} expiry:${update.pinExpiresAt.toISOString()} pin:${update.newPin}`)
             await this.dataService.updatePin(update)
             pinUpdated = true
           } catch (error) {

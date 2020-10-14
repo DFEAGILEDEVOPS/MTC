@@ -6,7 +6,7 @@ import { CheckNotificationType, ICheckNotificationMessage } from '../check-notif
 const tableService = new az.AsyncTableService()
 
 class CheckReceiver {
-  async process (context: Context, receivedCheck: SubmittedCheckMessageV3) {
+  async process (context: Context, receivedCheck: SubmittedCheckMessageV3): Promise<void> {
     const receivedCheckEntity: ReceivedCheckTableEntity = {
       PartitionKey: receivedCheck.schoolUUID.toLowerCase(),
       RowKey: receivedCheck.checkCode.toLowerCase(),

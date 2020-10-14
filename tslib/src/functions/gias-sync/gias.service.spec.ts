@@ -45,7 +45,7 @@ describe('GiasSyncService', () => {
     soapRequestServiceMock = new SoapRequestServiceMock()
     zipServiceMock = new ZipServiceMock()
 
-    soapRequestServiceMock.execute = jest.fn(() => {
+    soapRequestServiceMock.execute = jest.fn(async () => {
       const soapXml = {
         body: ''
       }

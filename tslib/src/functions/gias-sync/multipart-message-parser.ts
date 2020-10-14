@@ -93,7 +93,7 @@ export class MultipartMessageParser implements IMultipartMessageParser {
 
   private extractContentTypeFromHeaders (headers: string[]): string | undefined {
     let contentType = headers.find(x => x.toLowerCase().startsWith('content-type:'))
-    if (!contentType) {
+    if (contentType === undefined) {
       return undefined
     }
     contentType = contentType.substr(13).trim()
