@@ -8,10 +8,10 @@ export interface ICheckWindowService {
 }
 
 export class CheckWindowService {
-  private redisService: IRedisService
-  private checkWindowDataService: ICheckWindowDataService
-  private logger: ILogger
-  private twentyFourHoursInSeconds = 86400
+  private readonly redisService: IRedisService
+  private readonly checkWindowDataService: ICheckWindowDataService
+  private readonly logger: ILogger
+  private readonly twentyFourHoursInSeconds = 86400
 
   constructor (redisService?: IRedisService, checkWindowDataService?: ICheckWindowDataService, logger?: ILogger) {
     if (redisService === undefined) {
@@ -37,7 +37,7 @@ export class CheckWindowService {
     } catch (error) {
       this.logger.error(error)
     }
-    if (!cachedWindow) {
+    if (cachedWindow === undefined) {
       const window = await this.checkWindowDataService.getActiveCheckWindow()
       // tslint:disable-next-line: no-floating-promises
       this.redisService.setex('activeCheckWindow', window, this.twentyFourHoursInSeconds)

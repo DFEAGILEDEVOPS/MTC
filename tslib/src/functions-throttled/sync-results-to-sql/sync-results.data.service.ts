@@ -16,12 +16,14 @@ export interface ISyncResultsDataService {
 }
 
 export class SyncResultsDataService implements ISyncResultsDataService {
-  private sqlService: ISqlService
+  private readonly sqlService: ISqlService
+  // override rule, as this is accessed via reflection for mocking
+  // eslint-disable-next-line @typescript-eslint/prefer-readonly
   private eventType: Map<string, DBEventType> = new Map()
   private questionData: Map<string, DBQuestion> = new Map()
 
   constructor (sqlService?: ISqlService) {
-    if (!sqlService) {
+    if (sqlService === undefined) {
       this.sqlService = new SqlService()
     } else {
       this.sqlService = sqlService
@@ -39,7 +41,7 @@ export class SyncResultsDataService implements ISyncResultsDataService {
     const data: DBQuestion[] = await this.sqlService.query(sql)
     const map = new Map<string, DBQuestion>()
     data.forEach(o => {
-      if (o.isWarmup === false) {
+      if (!o.isWarmup) {
         map.set(`${o.factor1}x${o.factor2}`, Object.freeze(o))
       }
     })
@@ -66,9 +68,9 @@ export class SyncResultsDataService implements ISyncResultsDataService {
       let questionNumber = null
       let eventData: string | null = null
 
-      if (audit.data) {
+      if (audit.data !== undefined) {
         eventData = JSON.stringify(audit.data)
-        if (audit.data.question && audit.data.sequenceNumber) {
+        if (audit.data.question !== undefined && audit.data.sequenceNumber !== undefined) {
           question = this.findQuestion(audit.data.question)
           questionId = question.id
           questionNumber = audit.data.sequenceNumber
@@ -121,7 +123,8 @@ export class SyncResultsDataService implements ISyncResultsDataService {
       { name: 'mark', value: markedCheck.mark, type: TYPES.TinyInt },
       { name: 'markedAt', value: markedCheck.markedAt, type: TYPES.DateTimeOffset }
     ]
-    return { sql, params } as ITransactionRequest
+    const req: ITransactionRequest = { sql, params }
+    return req
   }
 
   /**
@@ -137,7 +140,7 @@ export class SyncResultsDataService implements ISyncResultsDataService {
 
     const params = markedCheck.markedAnswers.map((o, j) => {
       const question = questionHash.get(o.question)
-      if (!question) {
+      if (question === undefined) {
         throw new Error(`Unable to find valid question for [${o.question}] from checkCode [${markedCheck.checkCode}]`)
       }
       return [
@@ -164,7 +167,7 @@ export class SyncResultsDataService implements ISyncResultsDataService {
   /**
    * Cache the database event types as a side effect.
    */
-  private async refreshEventTypes () {
+  private async refreshEventTypes (): Promise<void> {
     const sql = 'SELECT id, eventType, eventDescription FROM mtc_results.eventTypeLookup'
     const data: DBEventType[] = await this.sqlService.query(sql)
     data.forEach(o => {
@@ -200,7 +203,7 @@ export class SyncResultsDataService implements ISyncResultsDataService {
    *
    * @param eventType
    */
-  private async createNewEventType (eventType: string) {
+  private async createNewEventType (eventType: string): Promise<void> {
     const sql = `
         INSERT INTO mtc_results.eventTypeLookup (eventType, eventDescription)
         VALUES (@eventType, @eventDescription)

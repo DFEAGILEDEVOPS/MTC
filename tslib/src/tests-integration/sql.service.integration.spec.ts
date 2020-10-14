@@ -2,8 +2,8 @@ import * as sql from '../sql/sql.service'
 import * as RA from 'ramda-adjunct'
 import { isMoment } from 'moment'
 import * as mssql from 'mssql'
-import moment = require('moment')
 import v4 from 'uuid'
+import moment = require('moment')
 
 let sut: sql.SqlService
 
@@ -118,7 +118,7 @@ describe('SqlService', () => {
       expect(error.message).toBeDefined()
     }
     const sql = 'SELECT * FROM mtc_admin.integrationTest WHERE tNvarCharMax=@rowData'
-    const params: Array<sql.ISqlParameter> = [{
+    const params: sql.ISqlParameter[] = [{
       name: 'rowData',
       type: mssql.NVarChar,
       value: uuid
@@ -150,7 +150,7 @@ describe('SqlService', () => {
       fail(`an error should not have been thrown:${error.message}`)
     }
     const sql = 'SELECT * FROM mtc_admin.integrationTest WHERE tNvarCharMax=@uuid'
-    const params: Array<sql.ISqlParameter> = [{
+    const params: sql.ISqlParameter[] = [{
       name: 'uuid',
       type: mssql.NVarChar,
       value: uuid

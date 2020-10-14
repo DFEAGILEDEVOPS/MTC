@@ -6,22 +6,13 @@ import { ITransactionRequest } from '../../sql/sql.service'
 const name = 'SyncResultsService (throttled)'
 
 export class SyncResultsService {
-  private logger: ILogger
-  private syncResultsDataService: ISyncResultsDataService
+  private readonly logger: ILogger
+  private readonly syncResultsDataService: ISyncResultsDataService
   public questionHash: Map<string, DBQuestion> | undefined
 
   constructor (logger?: ILogger, syncResultsDataService?: SyncResultsDataService) {
-    if (!logger) {
-      this.logger = new ConsoleLogger()
-    } else {
-      this.logger = logger
-    }
-
-    if (!syncResultsDataService) {
-      this.syncResultsDataService = new SyncResultsDataService()
-    } else {
-      this.syncResultsDataService = syncResultsDataService
-    }
+    this.logger = logger ?? new ConsoleLogger()
+    this.syncResultsDataService = syncResultsDataService ?? new SyncResultsDataService()
   }
 
   public async process (checkCompletionMessage: ICheckCompletionMessage): Promise<void> {

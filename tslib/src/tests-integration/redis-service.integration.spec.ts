@@ -8,7 +8,6 @@ let ioRedis: Redis.Redis
 const redisItemKey = 'INTEGRATION_TEST'
 
 describe('RedisService', () => {
-
   beforeAll(() => {
     const options: RedisOptions = {
       port: Number(config.Redis.Port),
@@ -55,7 +54,7 @@ describe('RedisService', () => {
       value: cachedValue
     }
     const actualStoredItemString = await ioRedis.get(redisItemKey)
-    if (!actualStoredItemString) {
+    if (actualStoredItemString === null) {
       throw new Error('no item found with specified key')
     }
     const storedItemAsObject = JSON.parse(actualStoredItemString)
@@ -73,7 +72,7 @@ describe('RedisService', () => {
       value: cachedValue.toString()
     }
     const actualStoredItemString = await ioRedis.get(redisItemKey)
-    if (!actualStoredItemString) {
+    if (actualStoredItemString === null) {
       throw new Error('no item found with specified key')
     }
     const storedItemAsObject = JSON.parse(actualStoredItemString)
@@ -96,7 +95,7 @@ describe('RedisService', () => {
       value: JSON.stringify(cachedValue)
     }
     const actualStoredItemString = await ioRedis.get(redisItemKey)
-    if (!actualStoredItemString) {
+    if (actualStoredItemString === null) {
       throw new Error('no item found with specified key')
     }
     const storedItemAsObject = JSON.parse(actualStoredItemString)

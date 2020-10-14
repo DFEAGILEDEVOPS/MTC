@@ -1,12 +1,11 @@
 import { PreparedStatementError, TransactionError, ConnectionError, RequestError } from 'mssql'
-const waitAsync = (milliSeconds: number) => new Promise(res => setTimeout(res, milliSeconds))
+
+const waitAsync = async (milliSeconds: number): Promise<any> => new Promise((resolve) => setTimeout(resolve, milliSeconds))
 
 /**
  * @description function signature for retry condition implementations
  */
-export interface IRetryPredicate {
-  (error: Error): boolean
-}
+export type IRetryPredicate = (error: Error) => boolean
 
 /**
  * default condition: do not retry
@@ -59,7 +58,7 @@ async function asyncRetryHandler<T> (asyncMethod: () => Promise<T>,
   } catch (error) {
     if (retryStrategy.attempts > 1 && retryPredicate(error)) {
       await waitAsync(retryStrategy.pauseTimeMs)
-      retryStrategy.attempts --
+      retryStrategy.attempts--
       retryStrategy.pauseTimeMs *= retryStrategy.pauseMultiplier
       result = await asyncRetryHandler(asyncMethod, retryStrategy, retryPredicate)
     } else {
