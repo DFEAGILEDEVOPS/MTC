@@ -2,11 +2,11 @@ import { PupilAuthService, IPupilAuthFunctionBindings } from './pupil-auth.servi
 import { IRedisService } from '../../caching/redis-service'
 import { RedisServiceMock } from '../../caching/redis-service.mock'
 import { HttpRequest } from '@azure/functions'
+import config from '../../config'
 let sut: PupilAuthService
 let redisMock: IRedisService
 let req: HttpRequest
 let bindings: IPupilAuthFunctionBindings
-import config from '../../config'
 
 describe('pupil-auth.service', () => {
   beforeEach(() => {
@@ -67,9 +67,9 @@ describe('pupil-auth.service', () => {
     const res = await sut.authenticate(bindings, req)
     expect(res.body).toBe('')
     expect(res.headers).toStrictEqual({
-      'Access-Control-Allow-Methods' : 'POST,OPTIONS',
-      'Access-Control-Allow-Headers' : 'content-type',
-      'Access-Control-Allow-Origin' : ''
+      'Access-Control-Allow-Methods': 'POST,OPTIONS',
+      'Access-Control-Allow-Headers': 'content-type',
+      'Access-Control-Allow-Origin': ''
     })
     expect(res.status).toBe(204)
     config.PupilAuth.CorsWhitelist = savedCorsWhitelist

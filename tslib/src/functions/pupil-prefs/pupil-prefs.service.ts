@@ -5,9 +5,8 @@ import { RedisService } from '../../caching/redis-service'
 import { ILogger } from '../../common/logger'
 
 export class PupilPrefsService {
-
-  private dataService: IPupilPrefsDataService
-  private logger: ILogger | undefined
+  private readonly dataService: IPupilPrefsDataService
+  private readonly logger: ILogger | undefined
 
   constructor (pupilPrefsDataService?: IPupilPrefsDataService, logger?: ILogger) {
     if (logger !== undefined) {
@@ -20,10 +19,9 @@ export class PupilPrefsService {
   }
 
   async update (preferenceUpdate: IPupilPreferenceUpdate, functionBindings: IPupilPrefsFunctionBindings): Promise<void> {
-
     const dataUpdates = new Array<IPupilPreferenceDataUpdate>()
 
-    if (preferenceUpdate.preferences.colourContrastCode) {
+    if (preferenceUpdate.preferences.colourContrastCode !== undefined) {
       const colourContrastDataUpdate: IPupilPreferenceDataUpdate = {
         aaCode: 'CCT',
         checkCode: preferenceUpdate.checkCode,
@@ -34,7 +32,7 @@ export class PupilPrefsService {
       dataUpdates.push(colourContrastDataUpdate)
     }
 
-    if (preferenceUpdate.preferences.fontSizeCode) {
+    if (preferenceUpdate.preferences.fontSizeCode !== undefined) {
       const fontSizeDataUpdate: IPupilPreferenceDataUpdate = {
         aaCode: 'FTS',
         checkCode: preferenceUpdate.checkCode,
@@ -71,22 +69,21 @@ export interface IPupilPreferenceDataUpdate {
 }
 
 export interface IPupilPrefsDataService {
-  updatePupilPreferences (dataUpdates: Array<IPupilPreferenceDataUpdate>): Promise<void>
+  updatePupilPreferences (dataUpdates: IPupilPreferenceDataUpdate[]): Promise<void>
   getPupilUUIDByCheckCode (checkCode: string): Promise<any>
 }
 
 export class PupilPrefsDataService implements IPupilPrefsDataService {
-
-  private sqlService: SqlService
-  private redisService: RedisService
+  private readonly sqlService: SqlService
+  private readonly redisService: RedisService
 
   constructor (logger?: ILogger) {
     this.sqlService = new SqlService(logger)
     this.redisService = new RedisService()
   }
 
-  updatePupilPreferences (dataUpdates: Array<IPupilPreferenceDataUpdate>): Promise<void> {
-    const requests: Array<ITransactionRequest> = dataUpdates.map(upd => {
+  async updatePupilPreferences (dataUpdates: IPupilPreferenceDataUpdate[]): Promise<void> {
+    const requests: ITransactionRequest[] = dataUpdates.map(upd => {
       return this.buildUpdateRequest(upd)
     })
     return this.sqlService.modifyWithTransaction(requests)
