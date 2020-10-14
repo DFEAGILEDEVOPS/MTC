@@ -36,6 +36,7 @@
     "@types/mssql": "6.0.5",
     "@types/node": "^12.7.9",
     "@types/ramda": "^0.26.33",
+    "@types/ua-parser-js": "^0.7.33",
     "@types/unzipper": "^0.10.3",
     "@types/uuid": "^3.4.5",
     "he": "^1.2.0",
@@ -64,6 +65,7 @@
     "ramda": "^0.27.0",
     "ramda-adjunct": "^2.21.0",
     "random-number-csprng": "^1.0.2",
+    "ua-parser-js": "^0.7.22",
     "uuid": "^3.3.3"
   },
   "jest": {

@@ -2,6 +2,7 @@ import { ISqlService, ITransactionRequest, SqlService } from '../../sql/sql.serv
 import { Audit, DBEventType, DBQuestion, Device, MarkedCheck, ValidatedCheck } from './models'
 import { NVarChar, TYPES } from 'mssql'
 import * as R from 'ramda'
+import { UserAgentParser } from './user-agent-parser'
 
 export interface ISyncResultsDataService {
   insertToDatabase (requests: ITransactionRequest[]): Promise<void>
@@ -102,6 +103,7 @@ export class SyncResultsDataService implements ISyncResultsDataService {
   public async prepareDeviceData (validatedCheck: ValidatedCheck): Promise<ITransactionRequest> {
     const device: Device = R.propOr({}, 'device', validatedCheck)
     const params = []
+    let agent: UserAgentParser | undefined = undefined
 
     const batteryIsCharging = R.pathOr(null, ['battery', 'isCharging'], device)
     const batteryLevelPercent = R.pathOr(null, ['battery', 'levelPercent'], device)
@@ -109,18 +111,38 @@ export class SyncResultsDataService implements ISyncResultsDataService {
     const batteryDischargingTimeSecs = R.pathOr(null, ['battery', 'dischargingTime'], device)
     const cpuHardwareConcurrency = R.pathOr(null, ['cpu', 'hardwareConcurrency'], device)
 
+    // Parse the user-agent
+    const userAgent = R.pathOr(null, ['navigator', 'userAgent'], device)
+    if (userAgent) {
+      agent = new UserAgentParser(userAgent)
+    }
+
     params.push({ name: 'batteryIsCharging', type: TYPES.Bit, value: batteryIsCharging })
     params.push({ name: 'batteryLevelPercent', type: TYPES.TinyInt, value: batteryLevelPercent })
     params.push({ name: 'batteryChargingTimeSecs', type: TYPES.Int, value: batteryChargingTimeSecs })
     params.push({ name: 'batteryDischargingTimeSecs', type: TYPES.Int, value: batteryDischargingTimeSecs })
     params.push({ name: 'cpuHardwareConcurrency', type: TYPES.TinyInt, value: cpuHardwareConcurrency })
-
-
-    // throw new Error('JMS says')
+    params.push({ name: 'browserFamily', type: TYPES.NVarChar, value: agent ? agent.getBrowserFamily() : null })
+    params.push({ name: 'browserMajorVersion', type: TYPES.Int, value: agent ? agent.getBrowserMajorVersion() : null })
+    params.push({ name: 'browserMinorVersion', type: TYPES.Int, value: agent ? agent.getBrowserMinorVersion() : null })
+    params.push({ name: 'browserPatchVersion', type: TYPES.Int, value: agent ? agent.getBrowserPatchVersion() : null })
 
     // tslint:disable:no-trailing-whitespace
     const sql = `
         DECLARE @userDeviceId INT
+        DECLARE @browserFamily_lookup_id INT
+        
+        -- 
+        -- See if we can find an existing id for the browser family; create a new one if not
+        --
+        SET @browserFamily_lookup_id = (SELECT id FROM mtc_results.browserFamilyLookup WHERE family = UPPER(TRIM(@browserFamily)))
+        IF (@browserFamily_lookup_id IS NULL)
+            BEGIN
+               -- Create a new browser family
+                INSERT INTO mtc_results.browserFamilyLookup (family) VALUES( UPPER(TRIM(@browserFamily)) );
+                SET @browserFamily_lookup_id = (SELECT SCOPE_IDENTITY());
+            END
+        
         --
         -- Insert the data into the userDevice table
         --
@@ -128,12 +150,20 @@ export class SyncResultsDataService implements ISyncResultsDataService {
                                             batteryLevelPercent,
                                             batteryChargingTimeSecs,
                                             batteryDischargingTimeSecs,
-                                            cpuHardwareConcurrency)
+                                            cpuHardwareConcurrency,
+                                            browserFamilyLookup_id,
+                                            browserMajorVersion,
+                                            browserMinorVersion,
+                                            browserPatchVersion)
         VALUES (@batteryIsCharging,
                 @batteryLevelPercent,
                 @batteryChargingTimeSecs,
                 @batteryDischargingTimeSecs,
-                @cpuHardwareConcurrency);
+                @cpuHardwareConcurrency,
+                @browserFamily_lookup_id,
+                @browserMajorVersion,
+                @browserMinorVersion,
+                @browserPatchVersion);
 
         SET @userDeviceId = (SELECT SCOPE_IDENTITY());
 
