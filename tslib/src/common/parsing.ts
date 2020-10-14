@@ -14,7 +14,9 @@ export function propertyExists (value: Record<string, unknown>, property: string
   return {}.hasOwnProperty.call(value, property)
 }
 
-export function valueOrSubstitue (input: unknown, substitute: string | number): string {
+export type StringOrNumber = string | number
+
+export function valueOrSubstitute (input: unknown, substitute: string | number): string {
   if (typeof input === 'number') return input.toString()
   if (typeof input === 'string' && input.length > 0) return input
 

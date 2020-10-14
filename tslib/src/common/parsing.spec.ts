@@ -42,15 +42,15 @@ describe('propertyExists', () => {
 
 describe('valueOrSubstitue', () => {
   test('should return number as string if valid number', () => {
-    expect(parser.valueOrSubstitue(42, 23)).toEqual('42')
+    expect(parser.valueOrSubstitute(42, 23)).toEqual('42')
   })
   test('should return replacement if value undefined', () => {
-    expect(parser.valueOrSubstitue(undefined, 23)).toEqual('23')
+    expect(parser.valueOrSubstitute(undefined, 23)).toEqual('23')
   })
   test('should return replacement if value null', () => {
-    expect(parser.valueOrSubstitue(null, 23)).toEqual('23')
+    expect(parser.valueOrSubstitute(null, 23)).toEqual('23')
   })
   test('should return replacement if value empty string', () => {
-    expect(parser.valueOrSubstitue('', 23)).toEqual('23')
+    expect(parser.valueOrSubstitute('', 23)).toEqual('23')
   })
 })
