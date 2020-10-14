@@ -1,7 +1,7 @@
 import * as path from 'path'
 import * as fs from 'fs'
 import * as dotenv from 'dotenv'
-import * as toBool from './common/to-bool'
+import * as parser from './common/parsing'
 import * as schoolResultsCacheDeterminerConfig from './functions/school-results-cache-determiner/config'
 const globalDotEnvFile = path.join(__dirname, '..', '..', '.env')
 try {
@@ -15,98 +15,91 @@ try {
   console.error(error)
 }
 
-const getEnvironment = () => {
-  return process.env.ENVIRONMENT_NAME || 'Local-Dev'
+const getEnvironment = (): string => {
+  return parser.valueOrSubstitute(process.env.ENVIRONMENT_NAME, 'Local-Dev')
 }
 
 const oneMinuteInMilliseconds = 60000
 const twoHoursInMilliseconds = oneMinuteInMilliseconds * 120
 const sixMonthsInSeconds = 15778800
 
-function optionalValueParser (input: any, substitute: number): string {
-  if (input) {
-    return input
-  }
-  return substitute.toString()
-}
-
 export default {
   Environment: getEnvironment(),
   Sql: {
     user: process.env.SQL_FUNCTIONS_APP_USER,
     password: process.env.SQL_FUNCTIONS_APP_USER_PASSWORD,
-    server: process.env.SQL_SERVER || 'localhost',
-    port: parseInt(optionalValueParser(process.env.SQL_PORT, 1433), 10),
-    database: process.env.SQL_DATABASE || 'mtc',
-    connectionTimeout: parseInt(optionalValueParser(process.env.SQL_CONNECTION_TIMEOUT, oneMinuteInMilliseconds), 10),
-    censusRequestTimeout: parseInt(optionalValueParser(process.env.SQL_CENSUS_REQUEST_TIMEOUT, twoHoursInMilliseconds), 10),
-    requestTimeout: parseInt(optionalValueParser(process.env.SQL_REQUEST_TIMEOUT, oneMinuteInMilliseconds), 10),
+    server: process.env.SQL_SERVER ?? 'localhost',
+    port: parseInt(parser.valueOrSubstitute(process.env.SQL_PORT, 1433), 10),
+    database: process.env.SQL_DATABASE ?? 'mtc',
+    connectionTimeout: parseInt(parser.valueOrSubstitute(process.env.SQL_CONNECTION_TIMEOUT, oneMinuteInMilliseconds), 10),
+    censusRequestTimeout: parseInt(parser.valueOrSubstitute(process.env.SQL_CENSUS_REQUEST_TIMEOUT, twoHoursInMilliseconds), 10),
+    requestTimeout: parseInt(parser.valueOrSubstitute(process.env.SQL_REQUEST_TIMEOUT, oneMinuteInMilliseconds), 10),
     options: {
-      encrypt: {}.hasOwnProperty.call(process.env, 'SQL_ENCRYPT') ? toBool.primitiveToBoolean(process.env.SQL_ENCRYPT) : true,
+      encrypt: parser.propertyExists(process.env, 'SQL_ENCRYPT') ? parser.primitiveToBoolean(process.env.SQL_ENCRYPT) : true,
       useUTC: true,
-      appName: process.env.SQL_APP_NAME || 'mtc-functions', // docker default
-      enableArithAbort: {}.hasOwnProperty.call(process.env, 'SQL_ENABLE_ARITH_ABORT') ? toBool.primitiveToBoolean(process.env.SQL_ENABLE_ARITH_ABORT) : true
+      appName: parser.valueOrSubstitute(process.env.SQL_APP_NAME, 'mtc-functions'), // docker default
+      enableArithAbort: parser.propertyExists(process.env, 'SQL_ENABLE_ARITH_ABORT') ? parser.primitiveToBoolean(process.env.SQL_ENABLE_ARITH_ABORT) : true
     },
     Pooling: {
-      MinCount: Number(process.env.SQL_POOL_MIN_COUNT) || 5,
-      MaxCount: Number(process.env.SQL_POOL_MAX_COUNT) || 10,
-      LoggingEnabled: {}.hasOwnProperty.call(process.env, 'SQL_POOL_LOG_ENABLED') ? toBool.primitiveToBoolean(process.env.SQL_POOL_LOG_ENABLED) : true
+      MinCount: Number(parser.valueOrSubstitute(process.env.SQL_POOL_MIN_COUNT, 5)),
+      MaxCount: Number(parser.valueOrSubstitute(process.env.SQL_POOL_MAX_COUNT, 10)),
+      LoggingEnabled: parser.propertyExists(process.env, 'SQL_POOL_LOG_ENABLED') ? parser.primitiveToBoolean(process.env.SQL_POOL_LOG_ENABLED) : true
     },
     PupilCensus: {
-      Username: process.env.SQL_PUPIL_CENSUS_USER || 'CensusImportUser',
+      Username: process.env.SQL_PUPIL_CENSUS_USER ?? 'CensusImportUser',
       Password: process.env.SQL_PUPIL_CENSUS_USER_PASSWORD
     }
   },
   DatabaseRetry: {
-    MaxRetryAttempts: parseInt(optionalValueParser(process.env.RETRY_MAX_ATTEMPTS, 3), 10),
-    InitialPauseMs: parseInt(optionalValueParser(process.env.RETRY_PAUSE_MS, 5000), 10),
-    PauseMultiplier: parseFloat(optionalValueParser(process.env.RETRY_PAUSE_MULTIPLIER, 1.5))
+    MaxRetryAttempts: parseInt(parser.valueOrSubstitute(process.env.RETRY_MAX_ATTEMPTS, 3), 10),
+    InitialPauseMs: parseInt(parser.valueOrSubstitute(process.env.RETRY_PAUSE_MS, 5000), 10),
+    PauseMultiplier: parseFloat(parser.valueOrSubstitute(process.env.RETRY_PAUSE_MULTIPLIER, 1.5))
   },
   Redis: {
-    Host: process.env.REDIS_HOST || 'localhost',
-    Port: Number(process.env.REDIS_PORT) || 6379,
+    Host: process.env.REDIS_HOST ?? 'localhost',
+    Port: Number(parser.valueOrSubstitute(process.env.REDIS_PORT, 6379)),
     Key: process.env.REDIS_KEY,
     useTLS: getEnvironment() !== 'Local-Dev'
   },
   CheckAllocation: {
-    ExpiryTimeInSeconds: Number(process.env.CHECK_ALLOCATION_EXPIRY_SECONDS) || 15778476 // 6 months
+    ExpiryTimeInSeconds: Number(parser.valueOrSubstitute(process.env.CHECK_ALLOCATION_EXPIRY_SECONDS, 15778476)) // 6 months
   },
   PupilAuth: {
-    PreparedCheckExpiryAfterLoginSeconds: parseInt(optionalValueParser(process.env.PREPARED_CHECK_EXPIRY_SECONDS, 1800), 10),
-    CorsWhitelist: process.env.CORS_WHITELIST || ''
+    PreparedCheckExpiryAfterLoginSeconds: parseInt(parser.valueOrSubstitute(process.env.PREPARED_CHECK_EXPIRY_SECONDS, 1800), 10),
+    CorsWhitelist: process.env.CORS_WHITELIST ?? ''
   },
   ServiceBus: {
     ConnectionString: process.env.AZURE_SERVICE_BUS_CONNECTION_STRING
   },
   CheckNotifier: {
-    MessagesPerBatch: parseInt(optionalValueParser(process.env.CHECK_NOTIFIER_MESSAGES_PER_BATCH, 32), 10),
-    BatchesPerExecution: parseInt(optionalValueParser(process.env.CHECK_NOTIFIER_BATCH_COUNT, 5), 10)
+    MessagesPerBatch: parseInt(parser.valueOrSubstitute(process.env.CHECK_NOTIFIER_MESSAGES_PER_BATCH, 32), 10),
+    BatchesPerExecution: parseInt(parser.valueOrSubstitute(process.env.CHECK_NOTIFIER_BATCH_COUNT, 5), 10)
   },
   SchoolPinGenerator: {
-    AllowedWords: process.env.ALLOWED_WORDS || 'aaa,bbb,ccc,ddd,eee,dim',
-    BannedWords: process.env.BANNED_WORDS || 'dim',
-    OverridePinExpiry: {}.hasOwnProperty.call(process.env, 'OVERRIDE_PIN_EXPIRY') ? toBool.primitiveToBoolean(process.env.OVERRIDE_PIN_EXPIRY) : false,
-    PinUpdateMaxAttempts: parseInt(optionalValueParser(process.env.PIN_UPDATE_MAX_ATTEMPTS, 0), 10),
+    AllowedWords: process.env.ALLOWED_WORDS ?? 'aaa,bbb,ccc,ddd,eee,dim',
+    BannedWords: process.env.BANNED_WORDS ?? 'dim',
+    OverridePinExpiry: parser.propertyExists(process.env, 'OVERRIDE_PIN_EXPIRY') ? parser.primitiveToBoolean(process.env.OVERRIDE_PIN_EXPIRY) : false,
+    PinUpdateMaxAttempts: parseInt(parser.valueOrSubstitute(process.env.PIN_UPDATE_MAX_ATTEMPTS, 0), 10),
     DigitChars: '23456789'
   },
   Gias: {
     Namespace: process.env.GIAS_WS_NAMESPACE,
     ServiceUrl: process.env.GIAS_WS_SERVICE_URL,
-    MessageExpiryInMilliseconds: parseInt(optionalValueParser(process.env.GIAS_WS_MESSAGE_EXPIRY_MS, 10000), 10),
-    RequestTimeoutInMilliseconds: parseInt(optionalValueParser(process.env.GIAS_WS_REQUEST_TIMEOUT, 30000), 10),
+    MessageExpiryInMilliseconds: parseInt(parser.valueOrSubstitute(process.env.GIAS_WS_MESSAGE_EXPIRY_MS, 10000), 10),
+    RequestTimeoutInMilliseconds: parseInt(parser.valueOrSubstitute(process.env.GIAS_WS_REQUEST_TIMEOUT, 30000), 10),
     Username: process.env.GIAS_WS_USERNAME,
     Password: process.env.GIAS_WS_PASSWORD,
-    ExtractId: parseInt(optionalValueParser(process.env.GIAS_WS_EXTRACT_ID, 0), 10)
+    ExtractId: parseInt(parser.valueOrSubstitute(process.env.GIAS_WS_EXTRACT_ID, 0), 10)
   },
   SchoolResultsCacheDeterminer: {
-    cache: Number(process.env.SCHOOL_RESULTS_CACHE) || schoolResultsCacheDeterminerConfig.cache.cacheIfInDate
+    cache: Number(parser.valueOrSubstitute(process.env.SCHOOL_RESULTS_CACHE, schoolResultsCacheDeterminerConfig.cache.cacheIfInDate))
   },
   SchoolResultsCache: {
-    BatchesPerExecution: Number(process.env.SCHOOL_RESULTS_CACHE_BATCHS_PER_EXEC) || 10,
-    MessagesPerBatch: Number(process.env.SCHOOL_RESULTS_CACHE_MSGS_PER_BATCH) || 32,
-    RedisResultsExpiryInSeconds: Number(process.env.REDIS_RESULTS_EXPIRY_IN_SECONDS) || sixMonthsInSeconds
+    BatchesPerExecution: Number(parser.valueOrSubstitute(process.env.SCHOOL_RESULTS_CACHE_BATCHS_PER_EXEC, 10)),
+    MessagesPerBatch: Number(parser.valueOrSubstitute(process.env.SCHOOL_RESULTS_CACHE_MSGS_PER_BATCH, 32)),
+    RedisResultsExpiryInSeconds: Number(parser.valueOrSubstitute(process.env.REDIS_RESULTS_EXPIRY_IN_SECONDS, sixMonthsInSeconds))
   },
   AzureStorage: {
-    ConnectionString: process.env.AZURE_STORAGE_CONNECTION_STRING || ''
+    ConnectionString: process.env.AZURE_STORAGE_CONNECTION_STRING ?? ''
   }
 }

@@ -8,7 +8,7 @@
     "build:watch": "tsc -b --v -w",
     "rebuild": "yarn clean && yarn build",
     "lint": "yarn eslint . --ext .js,.jsx,.ts,.tsx",
-    "lint:autofix": "yarn eslint . --ext .js,.jsx,.ts,.tsx --fix",
+    "lint:fix": "yarn eslint . --ext .js,.jsx,.ts,.tsx --fix",
     "test": "yarn lint && yarn jest",
     "test:throttle": "yarn lint && yarn jest --maxWorkers=2",
     "test:watch": "yarn watch",
