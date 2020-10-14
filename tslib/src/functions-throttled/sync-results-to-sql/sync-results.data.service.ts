@@ -94,7 +94,7 @@ export class SyncResultsDataService implements ISyncResultsDataService {
                               @browserTimestamp${j},
                               @eventData${j},
                               @questionId${j},
-                              @questionNumber${j})`)
+                              @questionNumber${j});`)
       j += 1
     }
     return { sql: auditSqls.join('\n'), params: auditParams }
@@ -126,22 +126,42 @@ export class SyncResultsDataService implements ISyncResultsDataService {
     params.push({ name: 'browserMajorVersion', type: TYPES.Int, value: agent ? agent.getBrowserMajorVersion() : null })
     params.push({ name: 'browserMinorVersion', type: TYPES.Int, value: agent ? agent.getBrowserMinorVersion() : null })
     params.push({ name: 'browserPatchVersion', type: TYPES.Int, value: agent ? agent.getBrowserPatchVersion() : null })
+    params.push({ name: 'uaOperatingSystem', type: TYPES.NVarChar, value: agent ? agent.getOperatingSystem() : null })
+    params.push({ name: 'uaOperatingSystemMajorVersion', type: TYPES.Int, value: agent ? agent.getOperatingSystemMajorVersion() : null })
+    params.push({ name: 'uaOperatingSystemMinorVersion', type: TYPES.Int, value: agent ? agent.getOperatingSystemMinorVersion() : null })
+    params.push({ name: 'uaOperatingSystemPatchVersion', type: TYPES.Int, value: agent ? agent.getOperatingSystemPatchVersion() : null })
 
     // tslint:disable:no-trailing-whitespace
     const sql = `
-        DECLARE @userDeviceId INT
-        DECLARE @browserFamily_lookup_id INT
+
+        DECLARE @userDeviceId INT;
+        DECLARE @browserFamily_lookup_id INT;
+        DECLARE @uaOperatingSystemLookup_id INT;
+        
         
         -- 
         -- See if we can find an existing id for the browser family; create a new one if not
         --
-        SET @browserFamily_lookup_id = (SELECT id FROM mtc_results.browserFamilyLookup WHERE family = UPPER(TRIM(@browserFamily)))
+        SET @browserFamily_lookup_id = (SELECT id FROM mtc_results.browserFamilyLookup WHERE family = UPPER(TRIM(@browserFamily)));
         IF (@browserFamily_lookup_id IS NULL)
             BEGIN
                -- Create a new browser family
-                INSERT INTO mtc_results.browserFamilyLookup (family) VALUES( UPPER(TRIM(@browserFamily)) );
+                INSERT INTO mtc_results.browserFamilyLookup (family) VALUES (UPPER(TRIM(@browserFamily)));
                 SET @browserFamily_lookup_id = (SELECT SCOPE_IDENTITY());
             END
+        
+        
+        -- 
+        -- See if we can find an Operating System Lookup id, or if not, create a new one
+        -- 
+        SET @uaOperatingSystemLookup_id = (SELECT id FROM mtc_results.uaOperatingSystemLookup WHERE os = UPPER(TRIM(@uaOperatingSystem)));
+        IF (@uaOperatingSystemLookup_id IS NULL)
+            BEGIN
+                -- Create a new operating system entry
+                INSERT INTO mtc_results.uaOperatingSystemLookup (os) VALUES (UPPER(TRIM(@uaOperatingSystem)));
+                SET @uaOperatingSystemLookup_id = (SELECT SCOPE_IDENTITY());                
+            END
+            
         
         --
         -- Insert the data into the userDevice table
@@ -154,7 +174,11 @@ export class SyncResultsDataService implements ISyncResultsDataService {
                                             browserFamilyLookup_id,
                                             browserMajorVersion,
                                             browserMinorVersion,
-                                            browserPatchVersion)
+                                            browserPatchVersion,
+                                            uaOperatingSystemLookup_id,
+                                            uaOperatingSystemMajorVersion,
+                                            uaOperatingSystemMinorVersion,
+                                            uaOperatingSystemPatchVersion)
         VALUES (@batteryIsCharging,
                 @batteryLevelPercent,
                 @batteryChargingTimeSecs,
@@ -163,7 +187,11 @@ export class SyncResultsDataService implements ISyncResultsDataService {
                 @browserFamily_lookup_id,
                 @browserMajorVersion,
                 @browserMinorVersion,
-                @browserPatchVersion);
+                @browserPatchVersion,
+                @uaOperatingSystemLookup_id,
+                @uaOperatingSystemMajorVersion,
+                @uaOperatingSystemMinorVersion,
+                @uaOperatingSystemPatchVersion);
 
         SET @userDeviceId = (SELECT SCOPE_IDENTITY());
 

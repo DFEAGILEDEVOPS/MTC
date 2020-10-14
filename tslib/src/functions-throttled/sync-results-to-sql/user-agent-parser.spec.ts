@@ -28,4 +28,20 @@ describe('UserAgentParser', () => {
   test('it returns 4240 for the browser patch version', () => {
     expect(sut.getBrowserPatchVersion()).toBe(4240)
   })
+
+  test('it returns macOS for the operating system', () => {
+    expect(sut.getOperatingSystem()).toBe('Mac OS')
+  })
+
+  test('it returns 10 for the operating system major version', () => {
+    expect(sut.getOperatingSystemMajorVersion()).toBe(10)
+  })
+
+  test('it returns 15 for the operating system minor version', () => {
+    expect(sut.getOperatingSystemMinorVersion()).toBe(15)
+  })
+
+  test('it returns 7 for the operating system patch version', () => {
+    expect(sut.getOperatingSystemPatchVersion()).toBe(7)
+  })
 })
