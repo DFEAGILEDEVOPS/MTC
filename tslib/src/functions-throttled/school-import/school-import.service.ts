@@ -83,9 +83,7 @@ export class SchoolImportService {
           this.jobResult.stdout.push(this.createLogEntry(isCorrectAgeRange.message))
         }
       }
-      const dataResult = await this.schoolDataService.bulkUpload(this.logger, filteredSchools, mapping)
-      this.jobResult.stdout.push(...dataResult.stdout)
-      this.jobResult.stderr.push(...dataResult.stderr)
+      await this.schoolDataService.bulkUpload(this.logger, filteredSchools, mapping)
       this.logger.verbose(`${name}  bulkUpload complete`)
       return this.jobResult
     } catch (error) {

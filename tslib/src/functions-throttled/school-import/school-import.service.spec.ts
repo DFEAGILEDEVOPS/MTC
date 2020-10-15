@@ -51,8 +51,20 @@ describe('#SchoolImportService', () => {
     const csv = `URN,LA (code),EstablishmentNumber,EstablishmentName,StatutoryLowAge,StatutoryHighAge,EstablishmentStatus (code),TypeOfEstablishment (code),EstablishmentTypeGroup (code)
     12345,123,4567,My School,9,9,4,3,4`
     const jobResult = await sut.process(csv)
-    console.log('process finished')
     expect(jobResult).toBeInstanceOf(SchoolImportJobResult)
     expect(jobResult.getErrorOutput().length).toBe(0)
+  })
+
+  test('when missing header error occurs, only 1 entry is logged to error output', async () => {
+    const csv = `12345,123,4567,My School,9,9,4,3,4`
+    try {
+      await sut.process(csv)
+      fail('should have thrown due to no column header row')
+    } catch (error) {
+      expect(error).toBeInstanceOf(SchoolImportError)
+      const jobResult = (error as SchoolImportError).jobResult
+      expect(jobResult.stderr).toHaveLength(1)
+      expect(jobResult.stdout).toHaveLength(0)
+    }
   })
 })
