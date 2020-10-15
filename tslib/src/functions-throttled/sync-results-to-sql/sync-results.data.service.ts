@@ -125,8 +125,6 @@ export class SyncResultsDataService implements ISyncResultsDataService {
     const colourDepth = R.pathOr(null, ['screen', 'colorDepth'], device)
     const deviceOrientation = R.pathOr(null, ['screen', 'orientation'], device)
     const appUsageCount = R.propOr(null, 'appUsageCounter', device)
-
-    // Parse the user-agent
     const userAgent = R.pathOr(null, ['navigator', 'userAgent'], device)
     if (userAgent) {
       agent = new UserAgentParser(userAgent)
@@ -160,6 +158,7 @@ export class SyncResultsDataService implements ISyncResultsDataService {
     params.push({ name: 'colourDepth', type: TYPES.Int, value: colourDepth })
     params.push({ name: 'deviceOrientation', type: TYPES.NVarChar, value: deviceOrientation })
     params.push({ name: 'appUsageCount', type: TYPES.TinyInt, value: appUsageCount })
+    params.push({ name: 'userAgent', type: TYPES.NVarChar, value: userAgent })
 
     // tslint:disable:no-trailing-whitespace
     const sql = `
@@ -171,6 +170,8 @@ export class SyncResultsDataService implements ISyncResultsDataService {
         DECLARE @navigatorLanguageLookup_id INT;
         DECLARE @networkConnectionEffectiveTypeLookup_id INT;
         DECLARE @deviceOrientationLookup_id INT;
+        DECLARE @userAgentHash VARBINARY;
+        DECLARE @userAgentLookup_id INT;
                 
         -- 
         -- See if we can find an existing id for the browser family; create a new one if not
@@ -233,6 +234,18 @@ export class SyncResultsDataService implements ISyncResultsDataService {
                 SET @deviceOrientationLookup_id = (SELECT SCOPE_IDENTITY());
             END
         
+        
+        -- 
+        -- See if we have seen the user agent before, or if not create a new user agent lookup
+        -- 
+        SET @userAgentHash = HASHBYTES('SHA2_256', @userAgent);
+        SET @userAgentLookup_id = (SELECT id from mtc_results.userAgentLookup WHERE userAgentHash = @userAgentHash);
+        IF (@userAgentLookup_id IS NULL AND @userAgent IS NOT NULL) 
+            BEGIN
+                INSERT INTO mtc_results.userAgentLookup (userAgent, userAgentHash) VALUES (@userAgent, @userAgentHash);
+                SELECT @userAgentLookup_id = (SELECT SCOPE_IDENTITY());
+            END
+        
         --
         -- Insert the data into the userDevice table
         --
@@ -263,7 +276,8 @@ export class SyncResultsDataService implements ISyncResultsDataService {
                                             innerHeight,
                                             colourDepth,
                                             deviceOrientationLookup_id,
-                                            appUsageCount)
+                                            appUsageCount,
+                                            userAgentLookup_id)
         VALUES (@batteryIsCharging,
                 @batteryLevelPercent,
                 @batteryChargingTimeSecs,
@@ -291,7 +305,8 @@ export class SyncResultsDataService implements ISyncResultsDataService {
                 @innerHeight,
                 @colourDepth,
                 @deviceOrientationLookup_id,
-                @appUsageCount);
+                @appUsageCount,
+                @userAgentLookup_id);
 
         SET @userDeviceId = (SELECT SCOPE_IDENTITY());
 
