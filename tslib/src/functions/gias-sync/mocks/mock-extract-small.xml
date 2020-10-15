@@ -1,0 +1,53 @@
+<Establishments xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://ws.ns.com"
+  xmlns:tns="http://ws.ns.com/Establishment"
+  xmlns:dt="http://ws.ns.com/DataTypes">
+  <tns:Establishment>
+    <tns:URN>12345</tns:URN>
+    <tns:EstablishmentName>Test School</tns:EstablishmentName>
+    <tns:EstablishmentNumber xsi:nil="true"/>
+    <tns:EstablishmentStatus>
+      <dt:Code>1</dt:Code>
+    </tns:EstablishmentStatus>
+    <tns:EstablishmentTypeGroup>
+      <dt:Code>12</dt:Code>
+    </tns:EstablishmentTypeGroup>
+    <tns:LA>
+      <dt:Code>456</dt:Code>
+    </tns:LA>
+    <tns:StatutoryHighAge xsi:nil="true"/>
+    <tns:StatutoryLowAge xsi:nil="true"/>
+    <tns:TypeOfEstablishment>
+      <dt:Code>47</dt:Code>
+    </tns:TypeOfEstablishment>
+  </tns:Establishment>
+  <tns:Establishment>
+    <tns:URN>140822</tns:URN>
+    <tns:EstablishmentName>Test Primary School</tns:EstablishmentName>
+    <tns:EstablishmentNumber>2017</tns:EstablishmentNumber>
+    <tns:EstablishmentStatus>
+        <dt:Code>1</dt:Code>
+    </tns:EstablishmentStatus>
+    <tns:EstablishmentTypeGroup>
+        <dt:Code>10</dt:Code>
+    </tns:EstablishmentTypeGroup>
+    <tns:LA>
+        <dt:Code>935</dt:Code>
+    </tns:LA>
+    <tns:StatutoryHighAge>11</tns:StatutoryHighAge>
+    <tns:StatutoryLowAge>4</tns:StatutoryLowAge>
+    <tns:TypeOfEstablishment>
+        <dt:Code>28</dt:Code>
+    </tns:TypeOfEstablishment>
+    <tns:EstablishmentLinkList>
+        <tns:EstablishmentLink>
+            <tns:LinkUrn>124656</tns:LinkUrn>
+            <tns:EstablishedDate>2014-04-09T00:00:00+01:00</tns:EstablishedDate>
+            <tns:LinkType>
+                <dt:Code>1</dt:Code>
+                <dt:DisplayName>Predecessor</dt:DisplayName>
+            </tns:LinkType>
+        </tns:EstablishmentLink>
+    </tns:EstablishmentLinkList>
+</tns:Establishment>
+</Establishments>
