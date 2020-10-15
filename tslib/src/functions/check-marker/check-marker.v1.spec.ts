@@ -98,7 +98,7 @@ describe('check-marker/v1', () => {
     expect(tableServiceMock.replaceEntityAsync).toHaveBeenCalledTimes(1)
     expect(actualTableName).toBe('receivedCheck')
     expect(actualEntity.processingError).toBe('answers property not populated')
-    expect(actualEntity.markedAt).toBeTruthy()
+    expect(actualEntity.markedAt).toBeDefined()
   })
 
   test('error is recorded against entity when answers is not an array', async () => {
@@ -135,7 +135,7 @@ describe('check-marker/v1', () => {
     expect(tableServiceMock.replaceEntityAsync).toHaveBeenCalledTimes(1)
     expect(actualTableName).toBe('receivedCheck')
     expect(actualEntity.processingError).toBe('answers data is not an array')
-    expect(actualEntity.markedAt).toBeTruthy()
+    expect(actualEntity.markedAt).toBeDefined()
   })
 
   test('error is recorded against entity when checkForm cannot be found by checkCode', async () => {
@@ -176,7 +176,7 @@ describe('check-marker/v1', () => {
     expect(tableServiceMock.replaceEntityAsync).toHaveBeenCalledTimes(1)
     expect(actualTableName).toBe('receivedCheck')
     expect(actualEntity.processingError).toBe('associated checkForm could not be found by checkCode')
-    expect(actualEntity.markedAt).toBeTruthy()
+    expect(actualEntity.markedAt).toBeDefined()
   })
 
   test('error is recorded against entity when checkForm data is not valid JSON', async () => {
@@ -217,7 +217,7 @@ describe('check-marker/v1', () => {
     expect(tableServiceMock.replaceEntityAsync).toHaveBeenCalledTimes(1)
     expect(actualTableName).toBe('receivedCheck')
     expect(actualEntity.processingError).toBe('associated checkForm data is not valid JSON')
-    expect(actualEntity.markedAt).toBeTruthy()
+    expect(actualEntity.markedAt).toBeDefined()
   })
 
   test('error is recorded against entity when checkForm lookup throws error', async () => {
@@ -259,7 +259,7 @@ describe('check-marker/v1', () => {
     expect(tableServiceMock.replaceEntityAsync).toHaveBeenCalledTimes(1)
     expect(actualTableName).toBe('receivedCheck')
     expect(actualEntity.processingError).toBe(`checkForm lookup failed:${expectedErrorMessage}`)
-    expect(actualEntity.markedAt).toBeTruthy()
+    expect(actualEntity.markedAt).toBeDefined()
   })
 
   test('error is recorded against entity when checkForm data is not a populated array', async () => {
@@ -300,7 +300,7 @@ describe('check-marker/v1', () => {
     expect(tableServiceMock.replaceEntityAsync).toHaveBeenCalledTimes(1)
     expect(actualTableName).toBe('receivedCheck')
     expect(actualEntity.processingError).toBe('check form data is either empty or not an array')
-    expect(actualEntity.markedAt).toBeTruthy()
+    expect(actualEntity.markedAt).toBeDefined()
 
     sqlServiceMock.getCheckFormDataByCheckCode = jest.fn(async () => {
       return JSON.stringify({ not: 'array' })
@@ -310,7 +310,7 @@ describe('check-marker/v1', () => {
     expect(tableServiceMock.replaceEntityAsync).toHaveBeenCalledTimes(2)
     expect(actualTableName).toBe('receivedCheck')
     expect(actualEntity.processingError).toBe('check form data is either empty or not an array')
-    expect(actualEntity.markedAt).toBeTruthy()
+    expect(actualEntity.markedAt).toBeDefined()
   })
 
   test('marking updates entity with mark, maxMarks and timestamp: both answers correct', async () => {
@@ -369,7 +369,7 @@ describe('check-marker/v1', () => {
     expect(checkResult.mark).toBe(2)
     expect(checkResult.maxMarks).toBe(2)
     expect(checkResult.processingError).toBeUndefined()
-    expect(checkResult.markedAt).toBeTruthy()
+    expect(checkResult.markedAt).toBeDefined()
     expect(checkResult.markedAnswers[0].isCorrect).toBe(true)
     expect(checkResult.markedAnswers[1].isCorrect).toBe(true)
 

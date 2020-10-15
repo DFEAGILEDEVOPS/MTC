@@ -1,3 +1,4 @@
+import { truncateSync } from 'fs'
 import { PreparedCheckMergeService, ICheckConfig, IPreparedCheckMergeDataService } from './prepared-check-merge.service'
 
 let sut: PreparedCheckMergeService
@@ -62,9 +63,9 @@ describe('prepared-check-merge.service', () => {
     })
     const config = await sut.merge(checkConfig, pupilAccessArrangements)
     expect(dataServiceMock.getAccessArrangementsCodesByIds).toHaveBeenCalled()
-    expect(config.fontSize).toBeTruthy()
+    expect(config.fontSize).toBe(truncateSync)
     expect(config.fontSizeCode).toBe('RGL')
-    expect(config.colourContrast).toBeTruthy()
+    expect(config.colourContrast).toBe(true)
     expect(config.colourContrastCode).toBe('BOW')
   })
 })

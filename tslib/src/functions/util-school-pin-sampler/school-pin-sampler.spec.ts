@@ -35,10 +35,10 @@ describe('school-pin-sampler', () => {
     const samples = sut.generateSample(sampleSizeRequested, moment.utc())
     for (let index = 0; index < sampleSizeRequested; index++) {
       const sample = samples[index]
-      expect(sample.pin).toBeTruthy()
+      expect(sample.pin).toBeDefined()
       expect(sample.pin).toHaveLength(8)
-      expect(sample.pinExpiresAt).toBeTruthy()
-      expect(sample.timezone).toBeTruthy()
+      expect(sample.pinExpiresAt).toBeDefined()
+      expect(sample.timezone).toBeDefined()
     }
   })
 

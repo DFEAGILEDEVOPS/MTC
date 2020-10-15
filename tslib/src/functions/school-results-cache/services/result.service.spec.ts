@@ -113,7 +113,7 @@ describe('result.service', () => {
 
     test('it has a schoolGuid prop', async () => {
       const res = await sut.getPupilResultDataFromDb(schoolGuid)
-      expect(res.schoolId).toBeTruthy()
+      expect(res.schoolId).toBeDefined()
     })
 
     test('it throws an error if the school is not found', async () => {

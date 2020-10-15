@@ -18,6 +18,8 @@ We use [eslint](https://eslint.org/) via [typescript-eslint](https://github.com/
 General configuration and rule exceptions are defined in the [eslint run commands](./.eslintrc.js) file.
 
 ### Testing
+Run `yarn test` to execute the unit test suite.  This will execute the linter first, and will not proceed to unit tests if linting fails.
+
 We use [jest](https://jestjs.io/) via [ts-jest](https://github.com/kulshekhar/ts-jest) for unit testing. Spec files should be located next to the test subject file with a `.spec.ts` extension.
 
 

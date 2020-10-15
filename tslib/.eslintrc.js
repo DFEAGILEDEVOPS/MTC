@@ -37,6 +37,21 @@ module.exports = {
     "jest/no-focused-tests": "error",
     "jest/no-identical-title": "error",
     "jest/prefer-to-have-length": "warn",
-    "jest/valid-expect": "error"
+    "jest/valid-expect": "error",
+    "jest/expect-expect": "error",
+    "jest/no-alias-methods": "error",
+    "jest/no-commented-out-tests": "error",
+    // "jest/no-jasmine-globals": "error", (disallows use of fail, unfortunately)
+    "jest/no-jest-import": "error",
+    "jest/no-mocks-import": "error",
+    "jest/no-restricted-matchers": [
+      "error",
+      {
+        "toBeFalsy": "Ambiguous expectation. Use `toBe(false)` for boolean and `toBeDefined()` for instance verification.",
+        "toBeTruthy": "Ambiguous expectation. Use `toBe(true)` for boolean and `toBeDefined()` for instance verification.",
+        "resolves": "Use `expect(await promise)` instead.",
+        "not.toHaveBeenCalledWith": null
+      }
+    ]
   }
 }

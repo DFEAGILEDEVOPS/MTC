@@ -86,7 +86,7 @@ describe('SyncResultsDataService', () => {
     const res = await sut.sqlGetQuestionData()
 
     // expect
-    expect(res).toBeTruthy()
+    expect(res).toBeDefined()
     // we expect it to be a map
     expect(res.size).toBe(1)
     expect(res.has('1x1')).toBe(true)

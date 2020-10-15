@@ -70,7 +70,7 @@ describe('school-results-cache-determiner.service', () => {
     config.SchoolResultsCacheDeterminer.cache = 2
 
     await sut.execute()
-    expect('schoolResultsCache' in mockContext.bindings).toBeTruthy()
+    expect('schoolResultsCache' in mockContext.bindings).toBeDefined()
     expect(mockContext.bindings.schoolResultsCache).toHaveLength(3)
     expect(mockContext.bindings.schoolResultsCache).toEqual(schoolData)
   })
