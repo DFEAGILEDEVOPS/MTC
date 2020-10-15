@@ -57,11 +57,11 @@ describe('prepared-check-merge.service', () => {
   })
 
   test('creates a new config based on the new aa settings and the config supplied', async () => {
-    dataServiceMock.getAccessArrangementsCodesByIds = jest.fn(async () => {
+    jest.spyOn(dataServiceMock, 'getAccessArrangementsCodesByIds').mockImplementation(async () => {
       return ['FTS', 'CCT']
     })
     const config = await sut.merge(checkConfig, pupilAccessArrangements)
-    expect(dataServiceMock.getAccessArrangementsCodesByIds).toHaveBeenCalled()
+    expect(dataServiceMock.getAccessArrangementsCodesByIds).toHaveBeenCalledWith(expect.any(Array))
     expect(config.fontSize).toBe(true)
     expect(config.fontSizeCode).toBe('RGL')
     expect(config.colourContrast).toBe(true)

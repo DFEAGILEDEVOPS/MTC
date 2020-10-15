@@ -45,7 +45,7 @@ describe('GiasWebService', () => {
     soapRequestServiceMock = new SoapRequestServiceMock()
     zipServiceMock = new ZipServiceMock()
 
-    soapRequestServiceMock.execute = jest.fn(async () => {
+    jest.spyOn(soapRequestServiceMock, 'execute').mockImplementation(async () => {
       const soapXml = {
         body: ''
       }
@@ -54,7 +54,7 @@ describe('GiasWebService', () => {
     const extractHrefValue = 'cid:9cd380a3-db54-46f7-98db-8f65a269bbd4%40myfile.com'
     const attachmentPartId = extractHrefValue.substr(4).replace('%40', '@')
     xmlParserMock = new XmlParserMock()
-    xmlParserMock.parse = jest.fn(() => {
+    jest.spyOn(xmlParserMock, 'parse').mockImplementation(() => {
       return {
         Envelope: {
           Body: {
@@ -72,10 +72,8 @@ describe('GiasWebService', () => {
       }
     })
     multipartMessageParserMock = new MultipartMessageParserMock()
-    multipartMessageParserMock.extractBoundaryIdFrom = jest.fn(() => {
-      return 'boundaryId'
-    })
-    multipartMessageParserMock.parse = jest.fn(() => {
+    jest.spyOn(multipartMessageParserMock, 'extractBoundaryIdFrom').mockImplementation(() => 'boundaryId')
+    jest.spyOn(multipartMessageParserMock, 'parse').mockImplementation(() => {
       const parts = new Array<IMessagePart>()
       parts.push({
         content: 'content',
@@ -89,7 +87,7 @@ describe('GiasWebService', () => {
       return parts
     })
 
-    zipServiceMock.extractEntriesFromZipBuffer = jest.fn(() => {
+    jest.spyOn(zipServiceMock, 'extractEntriesFromZipBuffer').mockImplementation(() => {
       const entries = new Array<Buffer>()
       entries.push(Buffer.from('foo'))
       return entries
@@ -110,7 +108,7 @@ describe('GiasWebService', () => {
   test('GetExtract:should propogate original error details when a fault occurs', async () => {
     const errorInfo = `errorId:${uuid()}`
     try {
-      soapMessageBuilderMock.buildMessage = jest.fn(() => { throw new Error(errorInfo) })
+      jest.spyOn(soapMessageBuilderMock, 'buildMessage').mockImplementation(() => { throw new Error(errorInfo) })
       await sut.getExtract(extractId)
       fail('error should have been thrown')
     } catch (error) {
@@ -125,15 +123,15 @@ describe('GiasWebService', () => {
       messageExpiryMs: 0,
       namespace: ''
     }
-    soapMessageBuilderMock.buildMessage = jest.fn((messageSpec) => {
+    jest.spyOn(soapMessageBuilderMock, 'buildMessage').mockImplementation((messageSpec) => {
       capturedSpecification = messageSpec
       return ''
     })
     await sut.getExtract(extractId)
     expect(capturedSpecification).toBeDefined()
-    expect(capturedSpecification.action).toEqual('GetExtract')
+    expect(capturedSpecification.action).toStrictEqual('GetExtract')
     expect(capturedSpecification.parameters).toBeDefined()
-    expect(capturedSpecification.parameters.Id).toEqual(extractId)
+    expect(capturedSpecification.parameters.Id).toStrictEqual(extractId)
   })
 
   test('when namespace is not defined an error is thrown', async () => {

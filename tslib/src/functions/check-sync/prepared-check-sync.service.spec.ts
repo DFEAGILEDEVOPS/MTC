@@ -33,17 +33,17 @@ describe('prepared-check-sync.service', () => {
 
   test('active checks for pupil are looked up and returns early if none found', async () => {
     const pupilUUID = 'pupilUUID'
-    dataServiceMock.getActiveCheckReferencesByPupilUuid = jest.fn(async () => {
+    jest.spyOn(dataServiceMock, 'getActiveCheckReferencesByPupilUuid').mockImplementation(async () => {
       return []
     })
     await sut.process(pupilUUID)
-    expect(dataServiceMock.getActiveCheckReferencesByPupilUuid).toHaveBeenCalled()
+    expect(dataServiceMock.getActiveCheckReferencesByPupilUuid).toHaveBeenCalledWith(expect.any(String))
     expect(redisServiceMock.setex).not.toHaveBeenCalled()
   })
 
   test('each active check is sent to the merger service', async () => {
     const pupilUUID = 'pupilUUID'
-    dataServiceMock.getActiveCheckReferencesByPupilUuid = jest.fn(async () => {
+    jest.spyOn(dataServiceMock, 'getActiveCheckReferencesByPupilUuid').mockImplementation(async () => {
       const refs: IActiveCheckReference[] = [
         {
           checkCode: 'checkCode',
@@ -63,7 +63,7 @@ describe('prepared-check-sync.service', () => {
       ]
       return refs
     })
-    redisServiceMock.get = jest.fn(async () => {
+    jest.spyOn(redisServiceMock, 'get').mockImplementation(async () => {
       return {
         checkCode: 'checkCode'
       }
@@ -81,11 +81,11 @@ describe('prepared-check-sync.service', () => {
       schoolPin: 'abc12def'
     }
     const cacheKey = `preparedCheck:${activeCheckReference.schoolPin}:${activeCheckReference.pupilPin}`
-    dataServiceMock.getActiveCheckReferencesByPupilUuid = jest.fn(async () => {
+    jest.spyOn(dataServiceMock, 'getActiveCheckReferencesByPupilUuid').mockImplementation(async () => {
       return [activeCheckReference]
     })
 
-    redisServiceMock.ttl = jest.fn(async () => {
+    jest.spyOn(redisServiceMock, 'ttl').mockImplementation(async () => {
       return originalTTL
     })
 
@@ -103,13 +103,13 @@ describe('prepared-check-sync.service', () => {
       nextBetweenQuestions: false
     }
 
-    redisServiceMock.get = jest.fn(async () => {
+    jest.spyOn(redisServiceMock, 'get').mockImplementation(async () => {
       return {
         config: checkConfig
       }
     })
 
-    mergeServiceMock.merge = jest.fn(async (checkConfig: any) => {
+    jest.spyOn(mergeServiceMock, 'merge').mockImplementation(async (checkConfig: any) => {
       return checkConfig
     })
 
@@ -129,17 +129,11 @@ describe('prepared-check-sync.service', () => {
       pupilPin: '1234',
       schoolPin: 'abc12def'
     }
-    dataServiceMock.getActiveCheckReferencesByPupilUuid = jest.fn(async () => {
-      return [checkRef]
-    })
+    jest.spyOn(dataServiceMock, 'getActiveCheckReferencesByPupilUuid').mockImplementation(async () => [checkRef])
 
-    redisServiceMock.ttl = jest.fn(async () => {
-      return originalTTL
-    })
+    jest.spyOn(redisServiceMock, 'ttl').mockImplementation(async () => originalTTL)
 
-    redisServiceMock.get = jest.fn(async () => {
-      return null
-    })
+    jest.spyOn(redisServiceMock, 'get').mockImplementation(async () => null)
 
     try {
       await sut.process(pupilUUID)
@@ -156,15 +150,11 @@ describe('prepared-check-sync.service', () => {
       pupilPin: '1234',
       schoolPin: 'abc12def'
     }
-    dataServiceMock.getActiveCheckReferencesByPupilUuid = jest.fn(async () => {
-      return [checkRef]
-    })
+    jest.spyOn(dataServiceMock, 'getActiveCheckReferencesByPupilUuid').mockImplementation(async () => [checkRef])
 
-    redisServiceMock.ttl = jest.fn(async () => {
-      return null
-    })
+    jest.spyOn(redisServiceMock, 'ttl').mockImplementation(async () => null)
 
-    redisServiceMock.get = jest.fn(async () => {
+    jest.spyOn(redisServiceMock, 'get').mockImplementation(async () => {
       return {
         pupilPin: 1234,
         schoolPin: 'abc34def'

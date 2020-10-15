@@ -90,7 +90,7 @@ describe('check-validator/v1', () => {
   test('validation error is recorded on receivedCheck entity when archive property is missing', async () => {
     let actualTableName: string | undefined
     let actualEntity: any
-    tableServiceMock.replaceEntityAsync = jest.fn(async (table: string, entity: any) => {
+    jest.spyOn(tableServiceMock, 'replaceEntityAsync').mockImplementation(async (table: string, entity: any) => {
       actualTableName = table
       actualEntity = entity
       return {
@@ -137,7 +137,7 @@ describe('check-validator/v1', () => {
     }
     let actualTableName: string | undefined
     let actualEntity: any
-    tableServiceMock.replaceEntityAsync = jest.fn(async (table: string, entity: any) => {
+    jest.spyOn(tableServiceMock, 'replaceEntityAsync').mockImplementation(async (table: string, entity: any) => {
       actualTableName = table
       actualEntity = entity
       return {
@@ -145,7 +145,7 @@ describe('check-validator/v1', () => {
         RowKey: uuid.v4()
       }
     })
-    compressionServiceMock.decompress = jest.fn(() => {
+    jest.spyOn(compressionServiceMock, 'decompress').mockImplementation(() => {
       return JSON.stringify({
         foo: 'bar'
       })
@@ -171,8 +171,8 @@ describe('check-validator/v1', () => {
       checkVersion: 1
     }
 
-    tableServiceMock.replaceEntityAsync = jest.fn()
-    compressionServiceMock.decompress = jest.fn(() => {
+    jest.spyOn(tableServiceMock, 'replaceEntityAsync').mockImplementation()
+    jest.spyOn(compressionServiceMock, 'decompress').mockImplementation(() => {
       return JSON.stringify({
         foo: 'bar'
       })
@@ -201,7 +201,7 @@ describe('check-validator/v1', () => {
     }
     let actualTableName: string | undefined
     let actualEntity: any
-    tableServiceMock.replaceEntityAsync = jest.fn(async (table: string, entity: any) => {
+    jest.spyOn(tableServiceMock, 'replaceEntityAsync').mockImplementation(async (table: string, entity: any) => {
       actualTableName = table
       actualEntity = entity
       return {
@@ -209,7 +209,7 @@ describe('check-validator/v1', () => {
         RowKey: uuid.v4()
       }
     })
-    compressionServiceMock.decompress = jest.fn(() => {
+    jest.spyOn(compressionServiceMock, 'decompress').mockImplementation(() => {
       return JSON.stringify(checkSchema)
     })
     const functionBindings: CheckValidator.ICheckValidatorFunctionBindings = {
@@ -233,7 +233,7 @@ describe('check-validator/v1', () => {
     }
     let actualTableName: string | undefined
     let actualEntity: any
-    tableServiceMock.replaceEntityAsync = jest.fn(async (table: string, entity: any) => {
+    jest.spyOn(tableServiceMock, 'replaceEntityAsync').mockImplementation(async (table: string, entity: any) => {
       actualTableName = table
       actualEntity = entity
       return {
@@ -241,7 +241,7 @@ describe('check-validator/v1', () => {
         RowKey: uuid.v4()
       }
     })
-    compressionServiceMock.decompress = jest.fn(() => {
+    jest.spyOn(compressionServiceMock, 'decompress').mockImplementation(() => {
       return JSON.stringify(checkSchema)
     })
     const functionBindings: CheckValidator.ICheckValidatorFunctionBindings = {
@@ -263,7 +263,7 @@ describe('check-validator/v1', () => {
       checkReceivedAt: moment().toDate(),
       checkVersion: 1
     }
-    compressionServiceMock.decompress = jest.fn(() => {
+    jest.spyOn(compressionServiceMock, 'decompress').mockImplementation(() => {
       return JSON.stringify(checkSchema)
     })
     const functionBindings: CheckValidator.ICheckValidatorFunctionBindings = {

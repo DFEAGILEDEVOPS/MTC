@@ -24,7 +24,7 @@ describe('SyncResultsDataService', () => {
     date = new Date()
   })
 
-  it('calls `createNewEvent` if a new event is seen in the audit log when preparing events', async () => {
+  test('calls `createNewEvent` if a new event is seen in the audit log when preparing events', async () => {
     // setup
     const eventTypes = new Map<string, DBEventType>()
     eventTypes.set('TestEvent1', { id: 1, eventType: 'TestEvent1', eventDescription: '' })
@@ -58,7 +58,7 @@ describe('SyncResultsDataService', () => {
     expect(sut['createNewEventType'] as jest.Mock).toHaveBeenCalledWith('TestEvent3')
   })
 
-  it('extracts the questionNumber and question from the event if present', async () => {
+  test('extracts the questionNumber and question from the event if present', async () => {
     jest.spyOn(sut, 'sqlGetQuestionData').mockResolvedValue(mockQuestionData)
     const vc = R.clone(validatedCheck)
     vc.audit = [] // we don't want to have to mock the entire event type lookup
@@ -79,7 +79,7 @@ describe('SyncResultsDataService', () => {
     expect(pq1.value).toBe(4)
   })
 
-  it('sqlGetQuestionData returns a map indexed by question', async () => {
+  test('sqlGetQuestionData returns a map indexed by question', async () => {
     jest.spyOn(sut['sqlService'], 'query').mockResolvedValue([{ id: 1, factor1: 1, factor2: 1, code: 'Q001', isWarmup: false }])
 
     // test
@@ -90,16 +90,16 @@ describe('SyncResultsDataService', () => {
     // we expect it to be a map
     expect(res.size).toBe(1)
     expect(res.has('1x1')).toBe(true)
-    expect(res.get('1x1')).toEqual({ id: 1, factor1: 1, factor2: 1, code: 'Q001', isWarmup: false })
+    expect(res.get('1x1')).toStrictEqual({ id: 1, factor1: 1, factor2: 1, code: 'Q001', isWarmup: false })
   })
 
-  it('sqlGetQuestionData caches data so it does not need to keep fetching the same data', async () => {
+  test('sqlGetQuestionData caches data so it does not need to keep fetching the same data', async () => {
     jest.spyOn(sut['sqlService'], 'query').mockResolvedValue([{ id: 1, factor1: 1, factor2: 1, code: 'Q001', isWarmup: false }])
 
     const r1 = await sut.sqlGetQuestionData()
     const r2 = await sut.sqlGetQuestionData()
 
     expect(sut['sqlService'].query as jest.Mock).toHaveBeenCalledTimes(1)
-    expect(r1).toEqual(r2)
+    expect(r1).toStrictEqual(r2)
   })
 })

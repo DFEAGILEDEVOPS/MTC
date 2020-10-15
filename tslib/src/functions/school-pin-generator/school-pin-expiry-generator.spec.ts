@@ -36,65 +36,65 @@ describe('school-pin-expiry-generator', () => {
 
   test('if current time between 0000 - 1600, set to 1600 same day', () => {
     const timeBefore4pm = moment('2020-02-06 03:55')
-    dateTimeServiceMock.utcNow = jest.fn(() => {
+    jest.spyOn(dateTimeServiceMock, 'utcNow').mockImplementation(() => {
       return timeBefore4pm
     })
     const actual = sut.generate()
-    expect(actual.toISOString().substring(0, 16)).toEqual('2020-02-06T16:00')
+    expect(actual.toISOString().substring(0, 16)).toStrictEqual('2020-02-06T16:00')
   })
 
   test('if current time between 1600 - 2359, set to 1600 next day', () => {
     const timeAfter4pm = moment('2020-02-06 16:55')
-    dateTimeServiceMock.utcNow = jest.fn(() => {
+    jest.spyOn(dateTimeServiceMock, 'utcNow').mockImplementation(() => {
       return timeAfter4pm
     })
     const actual = sut.generate()
-    expect(actual.toISOString().substring(0, 16)).toEqual('2020-02-07T16:00')
+    expect(actual.toISOString().substring(0, 16)).toStrictEqual('2020-02-07T16:00')
   })
 
   test('if override expiry flag set to true, expire at end of day', () => {
     const endOfDay = moment('2020-02-06').endOf('day').toISOString()
     configProviderMock.OverridePinExpiry = true
     const timeBefore4pm = moment('2020-02-06 03:55')
-    dateTimeServiceMock.utcNow = jest.fn(() => {
+    jest.spyOn(dateTimeServiceMock, 'utcNow').mockImplementation(() => {
       return timeBefore4pm
     })
     const actual = sut.generate().toISOString()
-    expect(actual).toEqual(endOfDay)
+    expect(actual).toStrictEqual(endOfDay)
   })
 
   describe('sce schools', () => {
     test('if current time between 0000 - 1600, set to 1600 same day', () => {
       const timeBefore4pm = moment('2020-02-06 03:55')
-      dateTimeServiceMock.utcNow = jest.fn(() => {
+      jest.spyOn(dateTimeServiceMock, 'utcNow').mockImplementation(() => {
         return timeBefore4pm
       })
       const timezoneFourHoursAheadOfUtc = 'Asia/Dubai'
       const expected = timeBefore4pm.clone().startOf('day').add(16 - 4, 'hours').toISOString()
       const actual = sut.generate(timezoneFourHoursAheadOfUtc).toISOString()
-      expect(actual).toEqual(expected)
+      expect(actual).toStrictEqual(expected)
     })
 
     test('if current time between 1600 - 2359, set to 1600 next day', () => {
       const timeAfter4pm = moment('2020-02-06 16:55')
-      dateTimeServiceMock.utcNow = jest.fn(() => {
+      jest.spyOn(dateTimeServiceMock, 'utcNow').mockImplementation(() => {
         return timeAfter4pm
       })
       const timezoneFourHoursAheadOfUtc = 'Asia/Dubai'
       const actual = sut.generate(timezoneFourHoursAheadOfUtc)
-      expect(actual.toISOString().substring(0, 16)).toEqual('2020-02-07T12:00')
+      expect(actual.toISOString().substring(0, 16)).toStrictEqual('2020-02-07T12:00')
     })
 
     test('if override expiry flag set to true, expire at end of day', () => {
       configProviderMock.OverridePinExpiry = true
       const timeBefore4pm = moment('2020-02-06 03:55')
-      dateTimeServiceMock.utcNow = jest.fn(() => {
+      jest.spyOn(dateTimeServiceMock, 'utcNow').mockImplementation(() => {
         return timeBefore4pm
       })
       const timezoneFourHoursAheadOfUtc = 'Asia/Dubai'
       const expected = moment('2020-02-06').endOf('day').subtract(4, 'hours').toISOString()
       const actual = sut.generate(timezoneFourHoursAheadOfUtc).toISOString()
-      expect(actual).toEqual(expected)
+      expect(actual).toStrictEqual(expected)
     })
   })
 })

@@ -86,9 +86,7 @@ describe('soap-message-builder', () => {
   test('when message expiry specified security header details creation and expiry values', () => {
     const expiryValue = 1234
     const mockNow = moment()
-    dateTimeServiceMock.utcNow = jest.fn(() => {
-      return mockNow
-    })
+    jest.spyOn(dateTimeServiceMock, 'utcNow').mockImplementation(() => mockNow)
     const messageSpec: ISoapMessageSpecification = {
       action: 'action',
       namespace: namespace,
@@ -107,8 +105,8 @@ describe('soap-message-builder', () => {
     expect(expiryDateTime).toBeDefined()
     expect(createdDateTime).toBeDefined()
     const expectedExpiryDateTime = mockNow.clone().add(expiryValue, 'milliseconds').toDate()
-    expect(expiryDateTime).toEqual(expectedExpiryDateTime.toISOString())
-    expect(createdDateTime).toEqual(mockNow.toISOString())
+    expect(expiryDateTime).toStrictEqual(expectedExpiryDateTime.toISOString())
+    expect(createdDateTime).toStrictEqual(mockNow.toISOString())
   })
 
   test('message should have a body defined', () => {
@@ -138,6 +136,6 @@ describe('soap-message-builder', () => {
     const soapBody = xml['soapenv:Envelope']['soapenv:Body']
     const params = soapBody['ws:action']
     expect(params).toBeDefined()
-    expect(params['ws:Id']).toEqual(paramValue)
+    expect(params['ws:Id']).toStrictEqual(paramValue)
   })
 })

@@ -93,12 +93,10 @@ describe('pupil-auth.service', () => {
         practice: false
       }
     }
-    redisMock.get = jest.fn(async () => {
-      return preparedCheck
-    })
+    jest.spyOn(redisMock, 'get').mockImplementation(async () => preparedCheck)
     const res = await sut.authenticate(bindings, req)
     expect(res.status).toBe(200)
-    expect(res.body).toEqual(preparedCheck)
+    expect(res.body).toStrictEqual(preparedCheck)
   })
 
   test('expire if live check', async () => {
@@ -108,9 +106,7 @@ describe('pupil-auth.service', () => {
         practice: false
       }
     }
-    redisMock.get = jest.fn(async () => {
-      return preparedCheck
-    })
+    jest.spyOn(redisMock, 'get').mockImplementation(async () => preparedCheck)
     const expectedKey = `preparedCheck:${req.body.schoolPin}:${req.body.pupilPin}`
     await sut.authenticate(bindings, req)
     expect(redisMock.expire).toHaveBeenCalledWith(expectedKey, 1800)
@@ -123,9 +119,7 @@ describe('pupil-auth.service', () => {
         practice: false
       }
     }
-    redisMock.get = jest.fn(async () => {
-      return preparedCheck
-    })
+    jest.spyOn(redisMock, 'get').mockImplementation(async () => preparedCheck)
     const res = await sut.authenticate(bindings, req)
     expect(res.status).toBe(200)
     expect(bindings.pupilLoginQueue).toHaveLength(1)
@@ -142,9 +136,7 @@ describe('pupil-auth.service', () => {
         practice: false
       }
     }
-    redisMock.get = jest.fn(async () => {
-      return preparedCheck
-    })
+    jest.spyOn(redisMock, 'get').mockImplementation(async () => preparedCheck)
     const res = await sut.authenticate(bindings, req)
     expect(res.status).toBe(200)
     expect(res.headers).toStrictEqual({

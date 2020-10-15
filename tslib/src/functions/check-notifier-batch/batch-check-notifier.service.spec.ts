@@ -17,7 +17,7 @@ describe('batch-request-builder/v2', () => {
   beforeEach(() => {
     dataService = new CheckNotifyDataServiceMock()
     sut = new BatchCheckNotifier(dataService)
-    dataService.createCheckCompleteRequest = jest.fn(() => {
+    jest.spyOn(dataService, 'createCheckCompleteRequest').mockImplementation(() => {
       return [
         {
           sql: '',
@@ -29,13 +29,13 @@ describe('batch-request-builder/v2', () => {
         }
       ]
     })
-    dataService.createCheckReceivedRequest = jest.fn(() => {
+    jest.spyOn(dataService, 'createCheckReceivedRequest').mockImplementation(() => {
       return {
         sql: '',
         params: []
       }
     })
-    dataService.createProcessingFailedRequest = jest.fn(() => {
+    jest.spyOn(dataService, 'createProcessingFailedRequest').mockImplementation(() => {
       return {
         sql: '',
         params: []
@@ -79,7 +79,7 @@ describe('batch-request-builder/v2', () => {
 
   test('processing multiple message should create corresponding number of requests', async () => {
     let createdRequests: ITransactionRequest[] = []
-    dataService.executeRequestsInTransaction = jest.fn(async (requests) => {
+    jest.spyOn(dataService, 'executeRequestsInTransaction').mockImplementation(async (requests) => {
       createdRequests = requests
     })
     await sut.notify([

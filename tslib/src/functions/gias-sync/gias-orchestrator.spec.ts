@@ -37,9 +37,7 @@ describe('gias orchestrator', () => {
 
   test('parses xml extract into array of establishments', async () => {
     const extractXml = '<xml />'
-    giasWebServiceMock.getExtract = jest.fn(async () => {
-      return Promise.resolve(extractXml)
-    })
+    jest.spyOn(giasWebServiceMock, 'getExtract').mockImplementation(async () => Promise.resolve(extractXml))
     await sut.execute()
     expect(giasWebServiceMock.getExtract).toHaveBeenCalledTimes(1)
     expect(extractParserMock.parse).toHaveBeenCalledWith(extractXml)
@@ -47,9 +45,7 @@ describe('gias orchestrator', () => {
 
   test('establishments are filtered to exclude irrelevant types and age ranges', async () => {
     const establishments = new Array<IEstablishment>()
-    extractParserMock.parse = jest.fn((xml: string) => {
-      return establishments
-    })
+    jest.spyOn(extractParserMock, 'parse').mockImplementation((xml: string) => establishments)
     await sut.execute()
     expect(establishmentFilter.byTypeAndAgeRange).toHaveBeenCalledWith(establishments)
   })

@@ -27,7 +27,7 @@ describe('check-started.service', () => {
     }
     const preparedCheckKey = 'prepared-check-key'
 
-    redisServiceMock.get = jest.fn(async (key: string) => {
+    jest.spyOn(redisServiceMock, 'get').mockImplementation(async (key: string) => {
       if (key.startsWith('prepared-check-lookup')) {
         return preparedCheckKey
       } else {
@@ -50,7 +50,7 @@ describe('check-started.service', () => {
     }
     const preparedCheckKey = 'prepared-check-key'
 
-    redisServiceMock.get = jest.fn(async (key: string) => {
+    jest.spyOn(redisServiceMock, 'get').mockImplementation(async (key: string) => {
       if (key.startsWith('prepared-check-lookup')) {
         return preparedCheckKey
       } else {
@@ -74,7 +74,7 @@ describe('check-started.service', () => {
     }
     const preparedCheckKey = 'prepared-check-key'
 
-    redisServiceMock.get = jest.fn(async (key: string) => {
+    jest.spyOn(redisServiceMock, 'get').mockImplementation(async (key: string) => {
       if (key.startsWith('prepared-check-lookup')) {
         return preparedCheckKey
       } else {
@@ -96,7 +96,7 @@ describe('check-started.service', () => {
       version: 1
     }
 
-    redisServiceMock.get = jest.fn(async () => {
+    jest.spyOn(redisServiceMock, 'get').mockImplementation(async () => {
       return null
     })
     await sut.process(message, functionBindings)

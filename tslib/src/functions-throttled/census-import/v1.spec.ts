@@ -37,13 +37,10 @@ const loadAndInsertCount = 5
 describe('census-import: v1', () => {
   beforeEach(() => {
     censusImportDataServiceMock = new CensusImportDataServiceMock()
-    jest.spyOn(censusImportDataServiceMock, 'loadPupilsFromStaging').mockReturnValue(
-      Promise.resolve({
-        insertCount: loadAndInsertCount
-      }))
-    jest.spyOn(censusImportDataServiceMock,'loadStagingTable').mockReturnValue(Promise.resolve(loadAndInsertCount))
+    jest.spyOn(censusImportDataServiceMock, 'loadPupilsFromStaging').mockImplementation(async () => Promise.resolve({ insertCount: loadAndInsertCount }))
+    jest.spyOn(censusImportDataServiceMock, 'loadStagingTable').mockImplementation(async () => Promise.resolve(loadAndInsertCount))
     jobDataServiceMock = new JobDataServiceMock()
-    jest.spyOn(jobDataServiceMock, 'updateStatus').mockReturnValue(Promise.resolve(123))
+    jest.spyOn(jobDataServiceMock, 'updateStatus').mockImplementation(async () => Promise.resolve(123))
     blobStorageServiceMock = new BlobStorageServiceMock()
     loggerMock = new LoggerMock()
     sut = new CensusImportV1(new ConnectionPool(config.Sql),
@@ -77,7 +74,7 @@ describe('census-import: v1', () => {
   })
 
   test('when insert counts do not match, job is reported as failed', async () => {
-    jest.spyOn(censusImportDataServiceMock, 'loadStagingTable').mockReturnValue(Promise.resolve(loadAndInsertCount - 1))
+    jest.spyOn(censusImportDataServiceMock, 'loadStagingTable').mockImplementation(async () => Promise.resolve(loadAndInsertCount - 1))
     await sut.process('foo,bar', blobUri)
     expect(jobDataServiceMock.updateStatus).toHaveBeenLastCalledWith(expect.any(String), 'CWR', expect.any(String), expect.any(String))
   })

@@ -24,27 +24,27 @@ describe('check-window.service', () => {
   })
 
   test('check window is retrieved from database when not found in cache', async () => {
-    checkWindowDataServiceMock.getActiveCheckWindow = jest.fn(async () => {
+    jest.spyOn(checkWindowDataServiceMock, 'getActiveCheckWindow').mockImplementation(async () => {
       return Promise.resolve({
         id: 1
       })
     })
-    redisServiceMock.setex = jest.fn(async () => {
+    jest.spyOn(redisServiceMock, 'setex').mockImplementation(async () => {
       return Promise.resolve()
     })
     const window = await sut.getActiveCheckWindow()
     expect(window).toBeDefined()
     expect(redisServiceMock.get).toHaveBeenCalledWith('activeCheckWindow')
-    expect(checkWindowDataServiceMock.getActiveCheckWindow).toHaveBeenCalled()
+    expect(checkWindowDataServiceMock.getActiveCheckWindow).toHaveBeenCalledWith()
   })
 
   test('check window is added to cache after retrieving from database', async () => {
-    checkWindowDataServiceMock.getActiveCheckWindow = jest.fn(async () => {
+    jest.spyOn(checkWindowDataServiceMock, 'getActiveCheckWindow').mockImplementation(async () => {
       return Promise.resolve({
         id: 1
       })
     })
-    redisServiceMock.setex = jest.fn(async () => {
+    jest.spyOn(redisServiceMock, 'setex').mockImplementation(async () => {
       return Promise.resolve()
     })
     const twentyFourHoursInSeconds = 86400
@@ -53,11 +53,11 @@ describe('check-window.service', () => {
     expect(redisServiceMock.get).toHaveBeenCalledWith('activeCheckWindow')
     expect(redisServiceMock.setex)
       .toHaveBeenCalledWith(redisCheckWindowKey, { id: 1 }, twentyFourHoursInSeconds)
-    expect(checkWindowDataServiceMock.getActiveCheckWindow).toHaveBeenCalled()
+    expect(checkWindowDataServiceMock.getActiveCheckWindow).toHaveBeenCalledWith()
   })
 
   test('check window is returned straight from cache when present', async () => {
-    redisServiceMock.get = jest.fn(async () => {
+    jest.spyOn(redisServiceMock, 'get').mockImplementation(async () => {
       return Promise.resolve({
         id: 1
       })
