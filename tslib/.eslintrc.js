@@ -53,6 +53,7 @@ module.exports = {
         'not.toHaveBeenCalledWith': null
       }
     ],
-    'jest/no-test-prefixes': 'error'
+    'jest/no-test-prefixes': 'error',
+    'jest/no-test-return-statement': 'error'
   }
 }
