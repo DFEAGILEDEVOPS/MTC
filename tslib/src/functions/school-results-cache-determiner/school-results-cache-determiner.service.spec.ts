@@ -64,7 +64,7 @@ describe('school-results-cache-determiner.service', () => {
     expect(mockDataService.sqlGetSchoolGuids).not.toHaveBeenCalled()
   })
 
-  test('it sends messages to cache all schools when the config is set to 2 ', async () => {
+  test('it sends messages to cache all schools when the config is set to 2', async () => {
     const mockContext = getMockContext()
     const sut = new SchoolResultsCacheDeterminerService(mockContext.bindings, mockContext.log, mockDataService)
     config.SchoolResultsCacheDeterminer.cache = 2
