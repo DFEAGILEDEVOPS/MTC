@@ -14,22 +14,28 @@ export class UserAgentParser {
     return browser.name
   }
 
-  private getBrowserVersionField (semver: SemanticVersion): Number | null {
-    const browser = this.uaParsed.getBrowser()
-    const matches = browser.version.split('.')
-    if (matches && matches[semver]) {
+  private parseVersionField (field: string | undefined, semver: SemanticVersion): Number | null {
+    if (field === '' || field === undefined) {
+      return null
+    }
+    const matches = field.split('.')
+    if (matches.length === 0) {
+      return null
+    }
+    if (matches && matches[semver]) {  // this works because matches[semver] will be a string, so sometimes e.g. '0' will be truthy
       return Number(matches[semver])
     }
     return null
   }
 
+  private getBrowserVersionField (semver: SemanticVersion): Number | null {
+    const browser = this.uaParsed.getBrowser()
+    return this.parseVersionField(browser.version, semver)
+  }
+
   private getOSVersionField (semver: SemanticVersion): Number | null {
     const os = this.uaParsed.getOS()
-    const matches = os.version.split('.')
-    if (matches && matches[semver]) {
-      return Number(matches[semver])
-    }
-    return null
+    return this.parseVersionField(os.version, semver)
   }
 
   public getBrowserMajorVersion (): Number | null {
