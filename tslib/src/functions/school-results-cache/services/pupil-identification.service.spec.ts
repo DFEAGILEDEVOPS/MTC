@@ -78,7 +78,7 @@ describe('pupil-identification.service', () => {
     expect(result[0].fullName).toBe('Burton, Greg Zoro')
     expect(result[1].showMiddleNames).toBe(false)
     expect(result[1].fullName).toBe('Chapman, Bruce')
-    expect(result[1].showDoB).toBe(true)
+    expect(result[1].showDoB).toBe(false)
     expect(result[2].showMiddleNames).toBe(true)
     expect(result[2].showDoB).toBe(false)
     expect(result[2].fullName).toBe('Burton, Greg Alfredo')
