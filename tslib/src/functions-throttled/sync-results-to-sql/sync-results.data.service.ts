@@ -122,8 +122,9 @@ export class SyncResultsDataService implements ISyncResultsDataService {
     const outerHeight = R.pathOr(null, ['screen', 'outerHeight'], device)
     const innerWidth = R.pathOr(null, ['screen', 'innerWidth'], device)
     const innerHeight = R.pathOr(null, ['screen', 'innerHeight'], device)
-    const colorDepth = R.pathOr(null, ['screen', 'colorDepth'], device)
-    const deviceOrientation = R.pathOr(null, ['device', 'orientation'], device)
+    const colourDepth = R.pathOr(null, ['screen', 'colorDepth'], device)
+    const deviceOrientation = R.pathOr(null, ['screen', 'orientation'], device)
+    const appUsageCount = R.propOr(null, 'appUsageCounter', device)
 
     // Parse the user-agent
     const userAgent = R.pathOr(null, ['navigator', 'userAgent'], device)
@@ -156,8 +157,9 @@ export class SyncResultsDataService implements ISyncResultsDataService {
     params.push({ name: 'outerHeight', type: TYPES.Int, value: outerHeight })
     params.push({ name: 'innerWidth', type: TYPES.Int, value: innerWidth })
     params.push({ name: 'innerHeight', type: TYPES.Int, value: innerHeight })
-    params.push({ name: 'colorDepth', type: TYPES.Int, value: colorDepth })
+    params.push({ name: 'colourDepth', type: TYPES.Int, value: colourDepth })
     params.push({ name: 'deviceOrientation', type: TYPES.NVarChar, value: deviceOrientation })
+    params.push({ name: 'appUsageCount', type: TYPES.TinyInt, value: appUsageCount })
 
     // tslint:disable:no-trailing-whitespace
     const sql = `
@@ -224,7 +226,12 @@ export class SyncResultsDataService implements ISyncResultsDataService {
         -- 
         -- See if we can lookup the device orientation id, or create a new orientation if needed
         -- 
-        SET @deviceOrientationLookup_id = (SELECT id FROM mtc_results.deviceOrientationLookup WHERE orientation = TRIM)
+        SET @deviceOrientationLookup_id = (SELECT id FROM mtc_results.deviceOrientationLookup WHERE orientation = UPPER(TRIM(@deviceOrientation)));
+        IF (@deviceOrientationLookup_id IS NULL AND @deviceOrientation IS NOT NULL) 
+            BEGIN
+                INSERT INTO mtc_results.deviceOrientationLookup (orientation) VALUES (UPPER(TRIM(@deviceOrientation)));
+                SET @deviceOrientationLookup_id = (SELECT SCOPE_IDENTITY());
+            END
         
         --
         -- Insert the data into the userDevice table
@@ -254,7 +261,9 @@ export class SyncResultsDataService implements ISyncResultsDataService {
                                             outerHeight,
                                             innerWidth,
                                             innerHeight,
-                                            colorDepth)
+                                            colourDepth,
+                                            deviceOrientationLookup_id,
+                                            appUsageCount)
         VALUES (@batteryIsCharging,
                 @batteryLevelPercent,
                 @batteryChargingTimeSecs,
@@ -280,7 +289,9 @@ export class SyncResultsDataService implements ISyncResultsDataService {
                 @outerHeight,
                 @innerWidth,
                 @innerHeight,
-                @colorDepth);
+                @colourDepth,
+                @deviceOrientationLookup_id,
+                @appUsageCount);
 
         SET @userDeviceId = (SELECT SCOPE_IDENTITY());
 
