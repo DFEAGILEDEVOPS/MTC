@@ -115,6 +115,15 @@ export class SyncResultsDataService implements ISyncResultsDataService {
     const cookieEnabled = R.pathOr(null, ['navigator', 'cookieEnabled'], device)
     const networkConnectionDownlink = R.pathOr(null, ['networkConnection', 'downlink'], device)
     const networkConnectionEffectiveType = R.pathOr(null, ['networkConnection', 'effectiveType'], device)
+    const networkConnectionRoundTripTimeMs = R.pathOr(null, ['networkConnection', 'rtt'], device)
+    const screenWidth = R.pathOr(null, ['screen', 'screenWidth'], device)
+    const screenHeight = R.pathOr(null, ['screen', 'screenHeight'], device)
+    const outerWidth = R.pathOr(null, ['screen', 'outerWidth'], device)
+    const outerHeight = R.pathOr(null, ['screen', 'outerHeight'], device)
+    const innerWidth = R.pathOr(null, ['screen', 'innerWidth'], device)
+    const innerHeight = R.pathOr(null, ['screen', 'innerHeight'], device)
+    const colorDepth = R.pathOr(null, ['screen', 'colorDepth'], device)
+    const deviceOrientation = R.pathOr(null, ['device', 'orientation'], device)
 
     // Parse the user-agent
     const userAgent = R.pathOr(null, ['navigator', 'userAgent'], device)
@@ -140,6 +149,15 @@ export class SyncResultsDataService implements ISyncResultsDataService {
     params.push({ name: 'cookieEnabled', type: TYPES.Bit, value: cookieEnabled })
     params.push({ name: 'networkConnectionDownlink', type: TYPES.Float, value: networkConnectionDownlink })
     params.push({ name: 'networkConnectionEffectiveType', type: TYPES.NVarChar(10), value: networkConnectionEffectiveType })
+    params.push({ name: 'networkConnectionRoundTripTimeMs', type: TYPES.Float, value: networkConnectionRoundTripTimeMs })
+    params.push({ name: 'screenWidth', type: TYPES.Int, value: screenWidth })
+    params.push({ name: 'screenHeight', type: TYPES.Int, value: screenHeight })
+    params.push({ name: 'outerWidth', type: TYPES.Int, value: outerWidth })
+    params.push({ name: 'outerHeight', type: TYPES.Int, value: outerHeight })
+    params.push({ name: 'innerWidth', type: TYPES.Int, value: innerWidth })
+    params.push({ name: 'innerHeight', type: TYPES.Int, value: innerHeight })
+    params.push({ name: 'colorDepth', type: TYPES.Int, value: colorDepth })
+    params.push({ name: 'deviceOrientation', type: TYPES.NVarChar, value: deviceOrientation })
 
     // tslint:disable:no-trailing-whitespace
     const sql = `
@@ -150,6 +168,7 @@ export class SyncResultsDataService implements ISyncResultsDataService {
         DECLARE @navigatorPlatformLookup_id INT;
         DECLARE @navigatorLanguageLookup_id INT;
         DECLARE @networkConnectionEffectiveTypeLookup_id INT;
+        DECLARE @deviceOrientationLookup_id INT;
                 
         -- 
         -- See if we can find an existing id for the browser family; create a new one if not
@@ -202,6 +221,11 @@ export class SyncResultsDataService implements ISyncResultsDataService {
                 SET @networkConnectionEffectiveTypeLookup_id = (SELECT SCOPE_IDENTITY());
             END
         
+        -- 
+        -- See if we can lookup the device orientation id, or create a new orientation if needed
+        -- 
+        SET @deviceOrientationLookup_id = (SELECT id FROM mtc_results.deviceOrientationLookup WHERE orientation = TRIM)
+        
         --
         -- Insert the data into the userDevice table
         --
@@ -222,7 +246,15 @@ export class SyncResultsDataService implements ISyncResultsDataService {
                                             navigatorLanguageLookup_id,
                                             navigatorCookieEnabled,
                                             networkConnectionDownlink,
-                                            networkConnectionEffectiveTypeLookup_id)
+                                            networkConnectionEffectiveTypeLookup_id,
+                                            networkConnectionRtt,
+                                            screenWidth,
+                                            screenHeight,
+                                            outerWidth,
+                                            outerHeight,
+                                            innerWidth,
+                                            innerHeight,
+                                            colorDepth)
         VALUES (@batteryIsCharging,
                 @batteryLevelPercent,
                 @batteryChargingTimeSecs,
@@ -240,7 +272,15 @@ export class SyncResultsDataService implements ISyncResultsDataService {
                 @navigatorLanguageLookup_id,
                 @cookieEnabled,
                 @networkConnectionDownlink,
-                @networkConnectionEffectiveTypeLookup_id);
+                @networkConnectionEffectiveTypeLookup_id,
+                @networkConnectionRoundTripTimeMs,
+                @screenWidth,
+                @screenHeight,
+                @outerWidth,
+                @outerHeight,
+                @innerWidth,
+                @innerHeight,
+                @colorDepth);
 
         SET @userDeviceId = (SELECT SCOPE_IDENTITY());
 
