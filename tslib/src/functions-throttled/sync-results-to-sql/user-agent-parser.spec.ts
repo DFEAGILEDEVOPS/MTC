@@ -13,7 +13,6 @@ describe('UserAgentParser', () => {
   })
 
   test('it returns `Chrome` for the browser family', () => {
-    // console.log(sut.uaParsed.getResult())
     expect(sut.getBrowserFamily()).toEqual('Chrome') // would be nice if it recognised Brave
   })
 
