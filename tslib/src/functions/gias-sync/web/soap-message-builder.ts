@@ -1,4 +1,4 @@
-import { IDateTimeService, DateTimeService } from '../../common/datetime.service'
+import { IDateTimeService, DateTimeService } from '../../../common/datetime.service'
 
 export interface ISoapMessageBuilder {
   buildMessage (messageSpec: ISoapMessageSpecification): string
