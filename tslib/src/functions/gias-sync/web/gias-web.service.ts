@@ -1,12 +1,16 @@
 import { ISoapMessageBuilder, SoapMessageBuilder } from './soap-message-builder'
-import config from '../../config'
+import config from '../../../config'
 import { ISoapRequestService, SoapRequestService } from './soap-request.service'
-import { IXmlParser, XmlParser } from './xml-parser'
+import { IXmlParser, XmlParser } from '../xml-parser'
 import { IMultipartMessageParser, MultipartMessageParser } from './multipart-message-parser'
-import { IZipService, ZipService } from './zip.service'
+import { IZipService, ZipService } from '../zip.service'
 import { AttachmentIdParser } from './attachmentId.parser'
 
-export class GiasService {
+export interface IGiasWebService {
+  getExtract (extractId: number): Promise<string>
+}
+
+export class GiasWebService implements IGiasWebService {
   private readonly soapMessageBuilder: ISoapMessageBuilder
   private readonly soapRequestService: ISoapRequestService
   private readonly xmlParser: IXmlParser
@@ -74,7 +78,7 @@ export class GiasService {
     })
   }
 
-  async GetExtract (extractId: number): Promise<string> {
+  async getExtract (extractId: number): Promise<string> {
     const soapResponse = await this.makeRequest('GetExtract', {
       Id: extractId
     })

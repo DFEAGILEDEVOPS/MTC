@@ -2,7 +2,7 @@ import { SoapMessageBuilder, ISoapMessageSpecification } from './soap-message-bu
 import { v4 as uuid } from 'uuid'
 import * as xmlParser from 'fast-xml-parser'
 import * as he from 'he'
-import { IDateTimeService } from '../../common/datetime.service'
+import { IDateTimeService } from '../../../common/datetime.service'
 import moment from 'moment'
 
 const DateTimeServiceMock = jest.fn<IDateTimeService, any>(() => ({
