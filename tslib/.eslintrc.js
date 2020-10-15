@@ -41,7 +41,17 @@ module.exports = {
       'withinDescribe': 'test'
     }],
     'jest/no-conditional-expect': 'off',
+    'jest/no-restricted-matchers': [
+      'error',
+      {
+        'toBeFalsy': 'Ambiguous expectation. Use `toBe(false)` for boolean and `toBeDefined()` for instance verification.',
+        'toBeTruthy': 'Ambiguous expectation. Use `toBe(true)` for boolean and `toBeDefined()` for instance verification.',
+        'resolves': 'Use `expect(await promise)` instead.',
+        'not.toHaveBeenCalledWith': 'narrow expectation by using `toHaveBeenCalledWith`'
+      }
+    ],
     'jest/no-test-return-statement': 'error',
+    'jest/prefer-called-with': 'warn',
     'jest/prefer-spy-on': 'warn',
     'jest/prefer-strict-equal': 'warn',
     'jest/prefer-todo': 'error',

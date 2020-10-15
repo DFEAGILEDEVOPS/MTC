@@ -37,18 +37,13 @@ const loadAndInsertCount = 5
 describe('census-import: v1', () => {
   beforeEach(() => {
     censusImportDataServiceMock = new CensusImportDataServiceMock()
-    censusImportDataServiceMock.loadPupilsFromStaging = jest.fn(async () => {
-      return Promise.resolve({
+    jest.spyOn(censusImportDataServiceMock, 'loadPupilsFromStaging').mockReturnValue(
+      Promise.resolve({
         insertCount: loadAndInsertCount
-      })
-    })
-    censusImportDataServiceMock.loadStagingTable = jest.fn(async () => {
-      return Promise.resolve(loadAndInsertCount)
-    })
+      }))
+    jest.spyOn(censusImportDataServiceMock,'loadStagingTable').mockReturnValue(Promise.resolve(loadAndInsertCount))
     jobDataServiceMock = new JobDataServiceMock()
-    jobDataServiceMock.updateStatus = jest.fn(async () => {
-      return Promise.resolve(123)
-    })
+    jest.spyOn(jobDataServiceMock, 'updateStatus').mockReturnValue(Promise.resolve(123))
     blobStorageServiceMock = new BlobStorageServiceMock()
     loggerMock = new LoggerMock()
     sut = new CensusImportV1(new ConnectionPool(config.Sql),
@@ -68,7 +63,7 @@ describe('census-import: v1', () => {
     const output = await sut.process('foo,bar', blobUri)
     expect(jobDataServiceMock.updateStatus).toHaveBeenCalledTimes(2)
     expect(jobDataServiceMock.updateStatus).toHaveBeenLastCalledWith(expect.any(String), 'COM', expect.any(String))
-    expect(output.processCount).toEqual(loadAndInsertCount)
+    expect(output.processCount).toStrictEqual(loadAndInsertCount)
   })
 
   test('staging table is deleted at end of a successful run', async () => {
@@ -82,9 +77,7 @@ describe('census-import: v1', () => {
   })
 
   test('when insert counts do not match, job is reported as failed', async () => {
-    censusImportDataServiceMock.loadStagingTable = jest.fn(async () => {
-      return Promise.resolve(loadAndInsertCount - 1)
-    })
+    jest.spyOn(censusImportDataServiceMock, 'loadStagingTable').mockReturnValue(Promise.resolve(loadAndInsertCount - 1))
     await sut.process('foo,bar', blobUri)
     expect(jobDataServiceMock.updateStatus).toHaveBeenLastCalledWith(expect.any(String), 'CWR', expect.any(String), expect.any(String))
   })
