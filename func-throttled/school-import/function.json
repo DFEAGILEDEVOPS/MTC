@@ -10,16 +10,17 @@
     {
       "name": "schoolImportStdout",
       "type": "blob",
-      "path": "school-import/{name}-output-log.txt",
+      "path": "school-import/{DateTime}-{name}-output-log.txt",
       "connection": "AzureWebJobsStorage",
       "direction": "out"
     },
     {
       "name": "schoolImportStderr",
       "type": "blob",
-      "path": "school-import/{name}-error-log.txt",
+      "path": "school-import/{DateTime}-{name}-error-log.txt",
       "connection": "AzureWebJobsStorage",
       "direction": "out"
     }
-  ]
+  ],
+  "scriptFile": "../dist/functions-throttled/school-import/index.js"
 }
