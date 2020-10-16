@@ -41,7 +41,7 @@ module.exports = {
       'withinDescribe': 'test'
     }],
     'jest/no-conditional-expect': 'off',
-    'jest/no-jasmine-globals': 'warn', // must be addressed soon, as Jasmine API is due to be phased out from Jest internals.
+    'jest/no-jasmine-globals': 'off', // must be addressed soon, as Jasmine API is due to be phased out from Jest internals.
     'jest/no-restricted-matchers': [
       'error',
       {
@@ -52,7 +52,7 @@ module.exports = {
       }
     ],
     'jest/no-test-return-statement': 'error',
-    'jest/no-try-expect': 'warn', // a lot of code to change due to usage of fail.  removing use of fail ties in with [no-jasmine-globals] rule, as its jasmine API
+    'jest/no-try-expect': 'off', // a lot of code to change due to usage of fail.  removing use of fail ties in with [no-jasmine-globals] rule, as its jasmine API
     'jest/prefer-called-with': 'warn',
     'jest/prefer-spy-on': 'warn',
     'jest/prefer-strict-equal': 'warn',

@@ -80,16 +80,16 @@ export class ResultDataService implements IResultDataService {
  * and some additional fields so we can work out the pupil's status.
  */
 export interface IRawPupilResult {
-  attendanceCode: null | string
-  attendanceId: null | number
-  attendanceReason: null | string
+  attendanceCode?: null | string
+  attendanceId?: null | number
+  attendanceReason?: null | string
   checkComplete: boolean
-  currentCheckId: null | number
+  currentCheckId?: null | number
   dateOfBirth: moment.Moment
   foreName: string
-  group_id: null | number
+  group_id?: null | number
   lastName: string
-  mark: null | number
+  mark?: null | number
   middleNames: string
   pupilId: number
   restartAvailable: boolean

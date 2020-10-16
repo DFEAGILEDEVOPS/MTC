@@ -75,16 +75,17 @@ export class ResultService {
    */
   createPupilData (pupils: IRawPupilResult[]): IPupilResult[] {
     return pupils.map(o => {
-      return {
+      const p: IPupilResult = {
         foreName: o.foreName,
         middleNames: o.middleNames,
         lastName: o.lastName,
-        group_id: o.group_id,
+        group_id: o.group_id ?? null,
         dateOfBirth: o.dateOfBirth,
-        score: o.mark,
+        score: o.mark ?? null,
         status: this.assignStatus(o),
         urlSlug: o.urlSlug
       }
+      return p
     })
   }
 

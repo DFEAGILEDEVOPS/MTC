@@ -21,8 +21,8 @@ export class SchoolImportJobResult {
     this.schoolsLoaded = 0
   }
 
-  stdout: Array<string>
-  stderr: Array<string>
+  stdout: string[]
+  stderr: string[]
   schoolsLoaded: number
   linesProcessed: number
 }

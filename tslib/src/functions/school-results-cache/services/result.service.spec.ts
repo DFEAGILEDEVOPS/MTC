@@ -117,7 +117,7 @@ describe('result.service', () => {
     })
 
     test('it throws an error if the school is not found', async () => {
-      mockResultDataService.sqlFindSchool = jest.fn().mockReturnValue(undefined)
+      jest.spyOn(mockResultDataService, 'sqlFindSchool').mockImplementation().mockReturnValue(Promise.resolve(undefined))
       try {
         await sut.getPupilResultDataFromDb('a fake guid')
         fail('expected to throw')
@@ -127,13 +127,61 @@ describe('result.service', () => {
     })
 
     test('it sorts the pupils alphabetically', async () => {
-      const mockResultData = [
-        { lastName: 'Smith', foreName: '' },
-        { lastName: 'Talon', foreName: '' },
-        { lastName: 'Anchovy', foreName: '' }
+      const mockResultData: IRawPupilResult[] = [
+        {
+          lastName: 'Smith',
+          foreName: '',
+          group_id: null,
+          attendanceCode: null,
+          attendanceReason: null,
+          attendanceId: null,
+          checkComplete: true,
+          restartAvailable: false,
+          currentCheckId: 2,
+          mark: 1,
+          pupilId: 2,
+          school_id: 1,
+          urlSlug: 'urlSlug',
+          dateOfBirth: moment('2012-01-01'),
+          middleNames: ''
+        },
+        {
+          lastName: 'Talon',
+          foreName: '',
+          group_id: null,
+          attendanceCode: null,
+          attendanceReason: null,
+          attendanceId: null,
+          checkComplete: true,
+          restartAvailable: false,
+          currentCheckId: 2,
+          mark: 1,
+          pupilId: 2,
+          school_id: 1,
+          urlSlug: 'urlSlug',
+          dateOfBirth: moment('2012-01-01'),
+          middleNames: ''
+        },
+        {
+          lastName: 'Anchovy',
+          foreName: '',
+          group_id: null,
+          attendanceCode: null,
+          attendanceReason: null,
+          attendanceId: null,
+          checkComplete: true,
+          restartAvailable: false,
+          currentCheckId: 2,
+          mark: 1,
+          pupilId: 2,
+          school_id: 1,
+          urlSlug: 'urlSlug',
+          dateOfBirth: moment('2012-01-01'),
+          middleNames: ''
+        }
       ]
 
-      mockResultDataService.sqlFindPupilResultsForSchool = jest.fn().mockReturnValue(mockResultData)
+      jest.spyOn(mockResultDataService, 'sqlFindPupilResultsForSchool').mockImplementation().mockReturnValue(Promise.resolve(mockResultData))
 
       const res = await sut.getPupilResultDataFromDb(schoolGuid)
 
@@ -143,13 +191,61 @@ describe('result.service', () => {
     })
 
     test('it sorts the pupils alphabetically - if the lastNames are the same it then sorts by foreName', async () => {
-      const mockResultData = [
-        { lastName: 'Smith', foreName: 'Toad' },
-        { lastName: 'Smith', foreName: 'Mario' },
-        { lastName: 'Anchovy', foreName: 'Zeus' }
+      const mockResultData: IRawPupilResult[] = [
+        {
+          lastName: 'Smith',
+          foreName: 'Toad',
+          group_id: null,
+          attendanceCode: null,
+          attendanceReason: null,
+          attendanceId: null,
+          checkComplete: true,
+          restartAvailable: false,
+          currentCheckId: 2,
+          mark: 1,
+          pupilId: 2,
+          school_id: 1,
+          urlSlug: 'urlSlug',
+          dateOfBirth: moment('2012-01-01'),
+          middleNames: ''
+        },
+        {
+          lastName: 'Smith',
+          foreName: 'Mario',
+          group_id: null,
+          attendanceCode: null,
+          attendanceReason: null,
+          attendanceId: null,
+          checkComplete: true,
+          restartAvailable: false,
+          currentCheckId: 2,
+          mark: 1,
+          pupilId: 2,
+          school_id: 1,
+          urlSlug: 'urlSlug',
+          dateOfBirth: moment('2012-01-01'),
+          middleNames: ''
+        },
+        {
+          lastName: 'Anchovy',
+          foreName: 'Zeus',
+          group_id: null,
+          attendanceCode: null,
+          attendanceReason: null,
+          attendanceId: null,
+          checkComplete: true,
+          restartAvailable: false,
+          currentCheckId: 2,
+          mark: 1,
+          pupilId: 2,
+          school_id: 1,
+          urlSlug: 'urlSlug',
+          dateOfBirth: moment('2012-01-01'),
+          middleNames: ''
+        }
       ]
 
-      mockResultDataService.sqlFindPupilResultsForSchool = jest.fn().mockReturnValue(mockResultData)
+      jest.spyOn(mockResultDataService, 'sqlFindPupilResultsForSchool').mockImplementation().mockReturnValue(Promise.resolve(mockResultData))
 
       const res = await sut.getPupilResultDataFromDb(schoolGuid)
 
@@ -159,13 +255,61 @@ describe('result.service', () => {
     })
 
     test('sorts the pupils alphabetically - if the lastname and forenames are the same it sorts by dob', async () => {
-      const mockResultData = [
-        { lastName: 'Smith', foreName: 'John', dateOfBirth: moment('1970-01-01') },
-        { lastName: 'Smith', foreName: 'Jack', dateOfBirth: moment('2010-01-02') },
-        { lastName: 'Smith', foreName: 'Jack', dateOfBirth: moment('2010-01-01') }
+      const mockResultData: IRawPupilResult[] = [
+        {
+          lastName: 'Smith',
+          foreName: 'John',
+          dateOfBirth: moment('1970-01-01'),
+          group_id: null,
+          attendanceCode: null,
+          attendanceReason: null,
+          attendanceId: null,
+          checkComplete: true,
+          restartAvailable: false,
+          currentCheckId: 2,
+          mark: 1,
+          pupilId: 2,
+          school_id: 1,
+          urlSlug: 'urlSlug',
+          middleNames: ''
+        },
+        {
+          lastName: 'Smith',
+          foreName: 'Jack',
+          dateOfBirth: moment('2010-01-02'),
+          group_id: null,
+          attendanceCode: null,
+          attendanceReason: null,
+          attendanceId: null,
+          checkComplete: true,
+          restartAvailable: false,
+          currentCheckId: 2,
+          mark: 1,
+          pupilId: 2,
+          school_id: 1,
+          urlSlug: 'urlSlug',
+          middleNames: ''
+        },
+        {
+          lastName: 'Smith',
+          foreName: 'Jack',
+          dateOfBirth: moment('2010-01-01'),
+          group_id: null,
+          attendanceCode: null,
+          attendanceReason: null,
+          attendanceId: null,
+          checkComplete: true,
+          restartAvailable: false,
+          currentCheckId: 2,
+          mark: 1,
+          pupilId: 2,
+          school_id: 1,
+          urlSlug: 'urlSlug',
+          middleNames: ''
+        }
       ]
 
-      mockResultDataService.sqlFindPupilResultsForSchool = jest.fn().mockReturnValue(mockResultData)
+      jest.spyOn(mockResultDataService, 'sqlFindPupilResultsForSchool').mockImplementation().mockReturnValue(Promise.resolve(mockResultData))
 
       const res = await sut.getPupilResultDataFromDb(schoolGuid)
 
@@ -183,25 +327,89 @@ describe('result.service', () => {
     })
 
     test('sorts the pupils alphabetically - if the lastname, forename and dob are the same it sorts by middlenames', async () => {
-      const mockResultData = [
-        { lastName: 'Smith', foreName: 'Jack', dateOfBirth: moment('2013-01-01'), middleNames: 'Zebra' },
-        { lastName: 'Smith', foreName: 'Jack', dateOfBirth: moment('2013-01-01'), middleNames: 'Xani' },
-        { lastName: 'Smith', foreName: 'Jack', dateOfBirth: moment('2013-01-01'), middleNames: 'Bea' }
+      const mockResultData: IRawPupilResult[] = [
+        {
+          lastName: 'Smith',
+          foreName: 'Jack',
+          dateOfBirth: moment('2013-01-01'),
+          middleNames: 'Zebra',
+          currentCheckId: null,
+          checkComplete: false,
+          attendanceReason: '',
+          attendanceCode: null,
+          attendanceId: null,
+          restartAvailable: true,
+          group_id: null,
+          mark: null,
+          pupilId: 3,
+          school_id: 1,
+          urlSlug: ''
+        },
+        {
+          lastName: 'Smith',
+          foreName: 'Jack',
+          dateOfBirth: moment('2013-01-01'),
+          middleNames: 'Xani',
+          currentCheckId: null,
+          checkComplete: false,
+          attendanceReason: '',
+          attendanceCode: null,
+          attendanceId: null,
+          restartAvailable: true,
+          group_id: null,
+          mark: null,
+          pupilId: 3,
+          school_id: 1,
+          urlSlug: ''
+        },
+        {
+          lastName: 'Smith',
+          foreName: 'Jack',
+          dateOfBirth: moment('2013-01-01'),
+          middleNames: 'Bea',
+          currentCheckId: null,
+          checkComplete: false,
+          attendanceReason: '',
+          attendanceCode: null,
+          attendanceId: null,
+          restartAvailable: true,
+          group_id: null,
+          mark: null,
+          pupilId: 3,
+          school_id: 1,
+          urlSlug: ''
+        }
       ]
-      mockResultDataService.sqlFindPupilResultsForSchool = jest.fn().mockReturnValue(mockResultData)
+      jest.spyOn(mockResultDataService, 'sqlFindPupilResultsForSchool').mockImplementation().mockReturnValue(Promise.resolve(mockResultData))
 
       const res = await sut.getPupilResultDataFromDb(schoolGuid)
 
-      expect(res.pupils[0].middleNames).toEqual('Bea')
-      expect(res.pupils[1].middleNames).toEqual('Xani')
-      expect(res.pupils[2].middleNames).toEqual('Zebra')
+      expect(res.pupils[0].middleNames).toStrictEqual('Bea')
+      expect(res.pupils[1].middleNames).toStrictEqual('Xani')
+      expect(res.pupils[2].middleNames).toStrictEqual('Zebra')
     })
 
     test('returns the pupil group_id', async () => {
-      const mockResultData = [
-        { foreName: 'Jack', middleNames: '', lastName: 'Smith', dateOfBirth: '', group_id: 42 }
+      const mockResultData: IRawPupilResult[] = [
+        {
+          foreName: 'Jack',
+          middleNames: '',
+          lastName: 'Smith',
+          dateOfBirth: moment('2012-01-01'),
+          group_id: 42,
+          currentCheckId: null,
+          checkComplete: false,
+          attendanceReason: '',
+          attendanceCode: null,
+          attendanceId: null,
+          restartAvailable: true,
+          mark: null,
+          pupilId: 3,
+          school_id: 1,
+          urlSlug: ''
+        }
       ]
-      mockResultDataService.sqlFindPupilResultsForSchool = jest.fn().mockReturnValue(mockResultData)
+      jest.spyOn(mockResultDataService, 'sqlFindPupilResultsForSchool').mockImplementation().mockReturnValue(Promise.resolve(mockResultData))
 
       const res = await sut.getPupilResultDataFromDb(schoolGuid)
 
@@ -209,10 +417,26 @@ describe('result.service', () => {
     })
 
     test('returns the pupil full name', async () => {
-      const mockResultData = [
-        { foreName: 'Jack', middleNames: '', lastName: 'Smith', dateOfBirth: '', group_id: 42 }
+      const mockResultData: IRawPupilResult[] = [
+        {
+          foreName: 'Jack',
+          middleNames: '',
+          lastName: 'Smith',
+          dateOfBirth: moment('2012-01-01'),
+          group_id: 42,
+          currentCheckId: null,
+          checkComplete: false,
+          attendanceReason: '',
+          attendanceCode: null,
+          attendanceId: null,
+          restartAvailable: true,
+          mark: null,
+          pupilId: 3,
+          school_id: 1,
+          urlSlug: ''
+        }
       ]
-      mockResultDataService.sqlFindPupilResultsForSchool = jest.fn().mockReturnValue(mockResultData)
+      jest.spyOn(mockResultDataService, 'sqlFindPupilResultsForSchool').mockImplementation().mockReturnValue(Promise.resolve(mockResultData))
 
       const res = await sut.getPupilResultDataFromDb(schoolGuid)
 
@@ -220,12 +444,54 @@ describe('result.service', () => {
     })
 
     test('returns the pupil full name with middle names if pupil differentiation requires a middleName sort', async () => {
-      const mockResultData = [
-        { lastName: 'Smith', foreName: 'Jack', dateOfBirth: moment('2012-01-01'), middleNames: 'C' },
-        { lastName: 'Smith', foreName: 'Jack', dateOfBirth: moment('2012-01-01'), middleNames: 'B' },
-        { lastName: 'Smith', foreName: 'Jack', dateOfBirth: moment('2012-01-01'), middleNames: 'A' }
+      const mockResultData: IRawPupilResult[] = [
+        {
+          lastName: 'Smith',
+          foreName: 'Jack',
+          dateOfBirth: moment('2012-01-01'),
+          middleNames: 'C',
+          currentCheckId: null,
+          checkComplete: false,
+          attendanceReason: '',
+          attendanceCode: null,
+          attendanceId: null,
+          restartAvailable: true,
+          group_id: null,
+          mark: null,
+          pupilId: 3,
+          school_id: 1,
+          urlSlug: ''
+        },
+        {
+          lastName: 'Smith',
+          foreName: 'Jack',
+          dateOfBirth: moment('2012-01-01'),
+          middleNames: 'B',
+          currentCheckId: null,
+          checkComplete: false,
+          restartAvailable: true,
+          group_id: null,
+          mark: null,
+          pupilId: 3,
+          school_id: 1,
+          urlSlug: ''
+        },
+        {
+          lastName: 'Smith',
+          foreName: 'Jack',
+          dateOfBirth: moment('2012-01-01'),
+          middleNames: 'A',
+          currentCheckId: null,
+          checkComplete: false,
+          restartAvailable: true,
+          group_id: null,
+          mark: null,
+          pupilId: 3,
+          school_id: 1,
+          urlSlug: ''
+        }
       ]
-      mockResultDataService.sqlFindPupilResultsForSchool = jest.fn().mockReturnValue(mockResultData)
+      jest.spyOn(mockResultDataService, 'sqlFindPupilResultsForSchool').mockImplementation().mockReturnValue(Promise.resolve(mockResultData))
 
       const res = await sut.getPupilResultDataFromDb(schoolGuid)
 
@@ -235,7 +501,7 @@ describe('result.service', () => {
     })
 
     test('it returns a status field for each pupil', async () => {
-      const mockResultData = [
+      const mockResultData: IRawPupilResult[] = [
         {
           lastName: 'Smith',
           foreName: 'Jack',
@@ -244,7 +510,14 @@ describe('result.service', () => {
           currentCheckId: 1,
           checkComplete: true,
           attendanceReason: null,
-          restartAvailable: false
+          restartAvailable: false,
+          attendanceCode: null,
+          attendanceId: null,
+          group_id: null,
+          mark: null,
+          pupilId: 3,
+          school_id: 1,
+          urlSlug: ''
         },
         {
           lastName: 'Testsuite',
@@ -254,7 +527,14 @@ describe('result.service', () => {
           currentCheckId: null,
           checkComplete: false,
           attendanceReason: 'Not attending',
-          restartAvailable: false
+          restartAvailable: false,
+          attendanceCode: null,
+          attendanceId: null,
+          group_id: null,
+          mark: null,
+          pupilId: 3,
+          school_id: 1,
+          urlSlug: ''
         },
         {
           lastName: 'Testsuite',
@@ -264,10 +544,18 @@ describe('result.service', () => {
           currentCheckId: null,
           checkComplete: false,
           attendanceReason: '',
-          restartAvailable: true
+          restartAvailable: true,
+          attendanceCode: null,
+          attendanceId: null,
+          group_id: null,
+          mark: null,
+          pupilId: 3,
+          school_id: 1,
+          urlSlug: ''
         }
       ]
-      mockResultDataService.sqlFindPupilResultsForSchool = jest.fn().mockReturnValue(mockResultData)
+      jest.spyOn(mockResultDataService, 'sqlFindPupilResultsForSchool')
+        .mockImplementation().mockReturnValue(Promise.resolve(mockResultData))
 
       const res = await sut.getPupilResultDataFromDb(schoolGuid)
       res.pupils.forEach((result, i) => {
@@ -281,9 +569,41 @@ describe('result.service', () => {
     })
 
     test('it returns a score field for each pupil that took the check', async () => {
-      const mockResultData = [
-        { lastName: 'Smith', foreName: 'Jack', dateOfBirth: moment('2012-01-01'), middleNames: 'C', mark: 5 },
-        { lastName: 'Wall', foreName: 'Jane', dateOfBirth: moment('2012-07-01'), middleNames: '', mark: 8 },
+      const mockResultData: IRawPupilResult[] = [
+        {
+          lastName: 'Smith',
+          foreName: 'Jack',
+          dateOfBirth: moment('2012-01-01'),
+          middleNames: 'C',
+          mark: 5,
+          currentCheckId: null,
+          checkComplete: false,
+          attendanceReason: '',
+          attendanceCode: null,
+          attendanceId: null,
+          restartAvailable: true,
+          group_id: null,
+          pupilId: 3,
+          school_id: 1,
+          urlSlug: ''
+        },
+        {
+          lastName: 'Wall',
+          foreName: 'Jane',
+          dateOfBirth: moment('2012-07-01'),
+          middleNames: '',
+          mark: 8,
+          currentCheckId: null,
+          checkComplete: false,
+          attendanceReason: '',
+          attendanceCode: null,
+          attendanceId: null,
+          restartAvailable: true,
+          group_id: null,
+          pupilId: 3,
+          school_id: 1,
+          urlSlug: ''
+        },
         {
           lastName: 'Testsuite',
           foreName: 'Jasmine',
@@ -292,15 +612,23 @@ describe('result.service', () => {
           currentCheckId: null,
           checkComplete: false,
           attendanceReason: '',
-          restartAvailable: true
+          attendanceCode: null,
+          attendanceId: null,
+          restartAvailable: true,
+          group_id: null,
+          mark: null,
+          pupilId: 3,
+          school_id: 1,
+          urlSlug: ''
         }
       ]
-      mockResultDataService.sqlFindPupilResultsForSchool = jest.fn().mockReturnValue(mockResultData)
+      jest.spyOn(mockResultDataService, 'sqlFindPupilResultsForSchool')
+        .mockImplementation().mockReturnValue(Promise.resolve(mockResultData))
 
       const res = await sut.getPupilResultDataFromDb(schoolGuid)
 
       expect(res.pupils[0].score).toBe(5) // Jack Smith #1
-      expect(res.pupils[1].score).toBeUndefined() // Jane Wall #2
+      expect(res.pupils[1].score).toBeNull() // Jane Wall #2
       expect(res.pupils[2].score).toBe(8) // Jasmine Testsuite #3 after sorting
     })
   })
