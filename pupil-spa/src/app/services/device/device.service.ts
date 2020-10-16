@@ -1,13 +1,18 @@
 import { Injectable } from '@angular/core';
 import { StorageService } from '../storage/storage.service';
 import { WindowRefService } from '../window-ref/window-ref.service';
+import { v4 as uuidv4 } from 'uuid';
+import { CookieService } from 'ngx-cookie-service';
 
 @Injectable()
 export class DeviceService {
   private window;
+  private readonly deviceCookieName = 'deviceId';
+  private readonly deviceCookiePath = '/';
 
   constructor(private storageService: StorageService,
-              private windowRefService: WindowRefService) {
+              private windowRefService: WindowRefService,
+              private cookieService: CookieService) {
     this.window = windowRefService.nativeWindow;
   }
 
@@ -23,6 +28,7 @@ export class DeviceService {
         navigator: this.getNavigatorProperties(),
         networkConnection: this.getNetworkInformation(),
         screen: this.getScreenProperties(),
+        deviceId: this.getDeviceId()
       });
   }
 
@@ -118,5 +124,35 @@ export class DeviceService {
   isUnsupportedBrowser(): boolean {
     const userAgent = this.window.navigator.userAgent;
     return userAgent.indexOf('MSIE') >= 0;
+  }
+
+  /**
+   * Return the device id string (a UUID) from the cookie
+   */
+  public getDeviceId(): string | null {
+    const deviceId = this.cookieService.get(this.deviceCookieName);
+    return deviceId ?? null;
+  }
+
+  /**
+   * Set a new device id, or refresh the far-future expiry of the existing cookie.
+   */
+  public setupDeviceCookie (): void {
+    const threeYearsFromNow = new Date();
+    threeYearsFromNow.setTime(threeYearsFromNow.getTime() + (3 * 365 * 24 * 60 * 60 * 1000));
+    let deviceId: string;
+
+    if (!this.cookieService.check(this.deviceCookieName)) {
+      // No device cookie found
+      deviceId = uuidv4();
+    } else {
+      deviceId =  this.cookieService.get(this.deviceCookieName);
+    }
+
+    this.cookieService.set(this.deviceCookieName, deviceId, {
+      path: this.deviceCookiePath,
+      expires: threeYearsFromNow,
+      sameSite: 'Strict'
+    });
   }
 }

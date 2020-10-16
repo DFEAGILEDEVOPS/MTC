@@ -1,11 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 import { StorageService } from '../storage/storage.service';
 import { WindowRefService } from '../window-ref/window-ref.service';
+import { CookieService } from 'ngx-cookie-service';
 
 import { DeviceService } from './device.service';
 
 describe('DeviceService', () => {
-  let service, storageService, windowRefService;
+  let service, storageService, windowRefService, cookieService: CookieService;
 
   beforeEach(() => {
     const windowRefServiceMock = {
@@ -21,14 +22,17 @@ describe('DeviceService', () => {
       providers: [
         DeviceService,
         StorageService,
-        { provide: WindowRefService, useValue: windowRefServiceMock }
+        { provide: WindowRefService, useValue: windowRefServiceMock },
+        CookieService
       ]
     });
     storageService = injector.get(StorageService);
     windowRefService = injector.get(WindowRefService);
+    cookieService = injector.get(CookieService);
     service = new DeviceService(
       storageService,
-      injector.get(WindowRefService)
+      injector.get(WindowRefService),
+      cookieService
     );
   });
 
@@ -40,6 +44,7 @@ describe('DeviceService', () => {
     await service.capture();
     const deviceInfo = storageService.getDeviceData();
     expect(deviceInfo).toBeTruthy();
+    expect(deviceInfo.deviceId.length).toBe(36); // uuid as string
   });
 
   describe('isUnsupportedBrowser', () => {
@@ -86,5 +91,35 @@ describe('DeviceService', () => {
       const isUnsupportedBrowser = service.isUnsupportedBrowser();
       expect(isUnsupportedBrowser).toBeFalsy();
     });
+  });
+
+  describe('setupDeviceCookie', () => {
+    beforeEach(() => {
+      spyOn(service['cookieService'], 'check');
+      spyOn(service['cookieService'], 'set');
+    });
+
+    it('calls cookieService.check to see if there is an existing cookie', () => {
+      service.setupDeviceCookie();
+      expect(service['cookieService'].check).toHaveBeenCalledTimes(1);
+    });
+
+    it('calls cookieService.set to set or refresh the cookie', () => {
+      service.setupDeviceCookie();
+      expect(service['cookieService'].set).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('getDeviceId', () => {
+    it('calls the cookieService to get the deviceId of the cookie', () => {
+      spyOn(service['cookieService'], 'get');
+      service.getDeviceId();
+      expect(service['cookieService'].get).toHaveBeenCalledWith('deviceId');
+    });
+  });
+  it('returns null if the cookie is not found', () => {
+    spyOn(service['cookieService'], 'get').and.returnValue(undefined);
+    const res = service.getDeviceId();
+    expect(res).toBeNull();
   });
 });

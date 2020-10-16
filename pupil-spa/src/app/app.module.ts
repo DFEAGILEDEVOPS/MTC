@@ -5,6 +5,7 @@ import { NgModule, ErrorHandler, APP_INITIALIZER } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { GlobalErrorHandler } from './error-handler';
 import { AppConfigService, loadConfigService } from './services/config/config.service';
+import { CookieService } from 'ngx-cookie-service';
 
 import { AccessibilityStatementComponent } from './accessibility-statement/accessibility-statement.component';
 import { AnswerService } from './services/answer/answer.service';
@@ -180,6 +181,7 @@ const appRoutes: Routes = [
     CheckStatusService,
     ConnectivityCheckGuard,
     ConnectivityService,
+    CookieService,
     DeviceService,
     FeedbackService,
     LoggedInGuard,

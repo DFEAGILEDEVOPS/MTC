@@ -231,19 +231,28 @@ describe('LoginComponent', () => {
       });
     });
   });
+
   describe('ngOnInit', () => {
     it('should set the loginPending to false', async () => {
       component.ngOnInit();
       expect(component.loginPending).toBeFalsy();
     });
+
     it('should navigate to check path with query params if an unfinished check is detected', () => {
       hasUnfinishedCheckSpy.and.returnValue(true);
       component.ngOnInit();
       expect(mockRouter.navigate).toHaveBeenCalledWith(['check'], { queryParams: { unfinishedCheck: true } });
     });
+
     it('should not navigate to check path if a completed check is detected', () => {
       component.ngOnInit();
       expect(mockRouter.navigate).toHaveBeenCalledTimes(0);
+    });
+
+    it('should set-up the device cookie', () => {
+      spyOn(component['deviceService'], 'setupDeviceCookie');
+      component.ngOnInit();
+      expect(component['deviceService'].setupDeviceCookie).toHaveBeenCalledTimes(1);
     });
   });
 });

@@ -38,7 +38,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
     private warmupQuestionService: WarmupQuestionService,
     private elRef: ElementRef,
     private checkStatusService: CheckStatusService,
-    private pupilPrefsService: PupilPrefsService
+    private pupilPrefsService: PupilPrefsService,
   ) {
     const { loginPendingViewMinDisplay } = APP_CONFIG;
     this.loginPendingViewMinDisplay = loginPendingViewMinDisplay;
@@ -52,6 +52,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
       this.router.navigate(['check'], { queryParams: { unfinishedCheck: true } });
     }
     this.loginErrorService.currentErrorMessage.subscribe(message => this.errorMessage = message);
+    this.deviceService.setupDeviceCookie();
   }
 
   ngAfterViewInit() {

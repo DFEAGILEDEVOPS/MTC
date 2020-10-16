@@ -129,6 +129,7 @@ export class SyncResultsDataService implements ISyncResultsDataService {
     if (userAgent) {
       agent = new UserAgentParser(userAgent)
     }
+    const deviceId = R.propOr('', 'deviceId', device)
 
     params.push({ name: 'batteryIsCharging', type: TYPES.Bit, value: batteryIsCharging })
     params.push({ name: 'batteryLevelPercent', type: TYPES.TinyInt, value: batteryLevelPercent })
@@ -159,6 +160,7 @@ export class SyncResultsDataService implements ISyncResultsDataService {
     params.push({ name: 'deviceOrientation', type: TYPES.NVarChar, value: deviceOrientation })
     params.push({ name: 'appUsageCount', type: TYPES.TinyInt, value: appUsageCount })
     params.push({ name: 'userAgent', type: TYPES.NVarChar, value: userAgent })
+    params.push({ name: 'ident', type: TYPES.NVarChar, value: deviceId })
 
     // tslint:disable:no-trailing-whitespace
     const sql = `
@@ -277,7 +279,8 @@ export class SyncResultsDataService implements ISyncResultsDataService {
                                             colourDepth,
                                             deviceOrientationLookup_id,
                                             appUsageCount,
-                                            userAgentLookup_id)
+                                            userAgentLookup_id,
+                                            ident)
         VALUES (@batteryIsCharging,
                 @batteryLevelPercent,
                 @batteryChargingTimeSecs,
@@ -306,7 +309,8 @@ export class SyncResultsDataService implements ISyncResultsDataService {
                 @colourDepth,
                 @deviceOrientationLookup_id,
                 @appUsageCount,
-                @userAgentLookup_id);
+                @userAgentLookup_id,
+                @ident);
 
         SET @userDeviceId = (SELECT SCOPE_IDENTITY());
 
