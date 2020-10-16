@@ -13,6 +13,17 @@ Before('@service_manager_message') do
   visit ENV['ADMIN_BASE_URL']
 end
 
+Before("@delete_school_import") do
+  files = AZURE_BLOB_CLIENT.list_blobs('school-import').map {|a| a.name}
+  files.each do |filename|
+    AZURE_BLOB_CLIENT.delete_blob('school-import', filename)
+  end
+end
+
+Before("@delete_school_import") do
+  SqlDbHelper.delete_schools_imported
+end
+
 Before('@incomplete_pupil') do
   REDIS_CLIENT.del 'settings'
   SqlDbHelper.set_check_time_limit(1)

@@ -1,6 +1,7 @@
 # throttled app plan function runtime host
 
 - This app serves as a runtime host for the functions maintained under `/tslib/src/functions-throttled`
+- uses Azure Functions V3
 - No implementation of functional code should be defined or stored in this project.
 - devDependencies are to be maintained separately from `tslib`, as this project has unique requirements
 

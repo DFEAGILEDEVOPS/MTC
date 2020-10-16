@@ -14,9 +14,9 @@
     "delete-specs": "find . -name \"*.spec.js\" -type f -delete",
     "clean": "rm -rf ./dist",
     "prestart": "yarn build",
-    "start:host": "func start",
+    "start:host": "func host start --port 7073",
     "start": "yarn start:host",
-    "start:dev": "env $(cat disable-functions.env | grep Azure | xargs ) yarn start"
+    "start:dev": "env $(cat disable-functions.env | grep Azure | xargs ) yarn start --verbose"
   },
   "resolutions": {
     "**/**/lodash": "^4.17.20"
@@ -41,6 +41,7 @@
     "axios": "^0.20.0",
     "azure-storage": "^2.10.3",
     "bluebird": "^3.7.0",
+    "csv-string": "^4.0.1",
     "dotenv": "^8.1.0",
     "fast-xml-parser": "^3.17.4",
     "ioredis": "^4.14.1",

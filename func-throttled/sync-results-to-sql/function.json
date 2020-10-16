@@ -1,0 +1,13 @@
+{
+  "bindings": [
+    {
+      "name": "syncResultsToSql",
+      "type": "timerTrigger",
+      "direction": "in",
+      "dev-schedule": "0 */5 * * * *",
+      "prod-schedule": "0 18 * * * *",
+      "schedule": "0 18 * * * *"
+    }
+  ],
+  "scriptFile": "../dist/functions-throttled/sync-results-to-sql/index.js"
+}
