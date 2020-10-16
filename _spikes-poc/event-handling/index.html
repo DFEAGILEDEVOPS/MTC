@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Differentiate Touch and Mouse Events</title>
+    <style>
+        body {
+            font-family: sans-serif;
+        }
+        .button {
+            background-color: #4CAF50; /* Green */
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            touch-action: manipulation; /* see https://webkit.org/blog/5610/more-responsive-tapping-on-ios/ */
+        }
+        #results {
+            width: 500px;
+            min-height: 250px;
+            background-color: #ffcccc;
+            color: #000099;
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+<button id='myButton' class='button' data-value='42'>42</button>
+<div id='results'>
+    <h1>Results</h1>
+</div>
+
+
+<script>
+  // Disable Zoom out in Safari on iOS and macOS (reverse pinch)
+  document.addEventListener('gesturestart', function (e) {
+    e.preventDefault();
+  })
+
+  // Disable Zoom on Chrome, Opera and FF on the touchpad
+  document.addEventListener('wheel', function (e) {
+    if (e.ctrlKey === true) {
+      e.preventDefault();
+    }
+  })
+
+  function whatClass (obj) {
+    return obj.toString().match(/ (\w+)/)[1];
+  }
+
+  function getEventType(event) {
+    if (event.pointerType) {
+      return event.pointerType // mouse, pen, touch, '' (if can't determine), or vendor prefixed
+      // https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent
+    }
+
+    // Not a Pointer Event - should be MouseEvent or TouchEvent
+    if (event instanceof MouseEvent) {
+      return 'mouse'
+    } else if (event instanceof TouchEvent) {
+      return 'touch'
+    } else if (event instanceof KeyboardEvent) {
+      return 'keyboard'
+    }
+    const type = whatClass(event)
+    return type ? 'other (' + type + ')' : 'other'
+  }
+
+  function keyHandler (event) {
+    console.log(event)
+    console.log('Got key ' + event.key)
+    log('Got key ' + event.key)
+    event.preventDefault();
+  }
+
+  function onPointerUp (event) {
+    console.log('Pointer up event ', event)
+    console.log('Got pointer up event of type ' + getEventType(event))
+    log('Got pointer up event of type ' + getEventType(event))
+    event.preventDefault();
+  }
+
+  function clickHandler (event) {
+    console.log(event)
+    console.log('Button clicked by ' + getEventType(event) + ' with value ' + event.target.dataset.value)
+    log('Button clicked by (default clickHandler) ' + getEventType(event) + ' with value ' + event.target.dataset.value)
+    event.preventDefault();
+  }
+
+  function log (str) {
+    var resultEl = document.getElementById('results')
+    var p = document.createElement('p')
+    var t = document.createTextNode(str)
+    p.appendChild(t)
+    resultEl.appendChild(p)
+  }
+
+  // Listen to mouse events from the button clicks
+  const button = document.getElementById('myButton')
+
+
+  // Primarily detect and use the PointerEvents API
+  if ('onpointerup' in window) {
+    button.addEventListener('pointerup', onPointerUp, false)
+  } else {
+    // Fall back to click events
+    button.addEventListener('click', clickHandler, false)
+  }
+
+  document.addEventListener('keydown', keyHandler, false)
+</script>
+</body>
+</html>
