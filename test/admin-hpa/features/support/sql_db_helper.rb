@@ -54,6 +54,14 @@ class SqlDbHelper
     school_res
   end
 
+  def self.find_school_by_urn(urn)
+    sql = "SELECT * FROM [mtc_admin].[school] WHERE urn='#{urn}'"
+    result = SQL_CLIENT.execute(sql)
+    school_res = result.first
+    result.cancel
+    school_res
+  end
+
   def self.list_of_pupils_from_school(school_id)
     @array_of_pupils = []
     sql = "SELECT * FROM [mtc_admin].[pupil] WHERE school_id='#{school_id}'"
@@ -318,8 +326,6 @@ class SqlDbHelper
     sql = "DELETE FROM [mtc_admin].[pupilAttendance]"
     result = SQL_CLIENT.execute(sql)
     result.do
-
-
   end
 
 
@@ -345,6 +351,12 @@ class SqlDbHelper
 
   def self.delete_from_hdf(school_id)
     sql = "DELETE from [mtc_admin].[hdf] where school_id='#{school_id}'"
+    result = SQL_CLIENT.execute(sql)
+    result.do
+  end
+
+  def self.delete_schools_imported
+    sql = "DELETE from [mtc_admin].[school] where id NOT in (1,2,3,4,5,6)"
     result = SQL_CLIENT.execute(sql)
     result.do
   end
