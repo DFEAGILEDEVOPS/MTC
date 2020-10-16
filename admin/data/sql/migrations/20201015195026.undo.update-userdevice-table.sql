@@ -1,1 +1,1 @@
-ALTER TABLE [mtc_results].[userDevice] DROP COLUMN IF EXISTS  [ident];
+ALTER TABLE [mtc_results].[userDevice] DROP COLUMN IF EXISTS [ident];
