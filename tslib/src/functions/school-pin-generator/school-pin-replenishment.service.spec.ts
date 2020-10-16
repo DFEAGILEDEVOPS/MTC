@@ -67,7 +67,7 @@ describe('school-pin-replenishment.service', () => {
     expect(dataService.updatePin).toHaveBeenCalledTimes(1)
     expect(update).toBeDefined()
     // optional chaining not currently supported in our ts-jest setup
-    expect(update?.id).toEqual(2)
+    expect(update?.id).toStrictEqual(2)
   })
 
   test('it should fail after making configured number of attempts', async () => {

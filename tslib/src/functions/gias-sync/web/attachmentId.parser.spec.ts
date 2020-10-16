@@ -50,13 +50,13 @@ describe('attachmentId parser', () => {
 
   test('attachment id is returned when found', () => {
     const actual = sut.parse(mockExtractStructure)
-    expect(actual).toEqual(attachmentId)
+    expect(actual).toStrictEqual(attachmentId)
   })
 
   test('html encoded @ char is decoded before return', () => {
     const idPrefix = 'cid:xyz%40'
     mockExtractStructure.Envelope.Body.GetExtractResponse.Extract.Include.attr.href = `${idPrefix}${attachmentId}`
     const actual = sut.parse(mockExtractStructure)
-    expect(actual).toEqual(`xyz@${attachmentId}`)
+    expect(actual).toStrictEqual(`xyz@${attachmentId}`)
   })
 })

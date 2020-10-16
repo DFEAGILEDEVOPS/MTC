@@ -635,7 +635,7 @@ describe('check-marker/v1', () => {
     expect(persistMarkSpy).toHaveBeenCalledTimes(1)
     const checkResult: any = persistMarkSpy.mock.calls[0][0]
 
-    expect(checkResult.markedAnswers[0]).toEqual({
+    expect(checkResult.markedAnswers[0]).toStrictEqual({
       factor1: 2,
       factor2: 5,
       answer: '10',

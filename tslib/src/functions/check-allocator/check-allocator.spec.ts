@@ -139,7 +139,7 @@ describe('check-allocator/v1', () => {
     })
     await sut.allocate(schoolUUID)
     expect(persistedRedisObject).toHaveProperty('lastReplenishmentUtc')
-    expect(persistedRedisObject.lastReplenishmentUtc).toEqual(moment(millenium))
+    expect(persistedRedisObject.lastReplenishmentUtc).toStrictEqual(moment(millenium))
   })
 
   test('the cache is updated with all school pupils', async () => {

@@ -24,7 +24,7 @@ describe('multipart message parser', () => {
         fail('error should have been thrown')
       } catch (error) {
         expect(error).toBeDefined()
-        expect(error.message).toEqual('content-type header not found on response')
+        expect(error.message).toStrictEqual('content-type header not found on response')
       }
     })
 
@@ -41,7 +41,7 @@ describe('multipart message parser', () => {
         fail('error should have been thrown')
       } catch (error) {
         expect(error).toBeDefined()
-        expect(error.message).toEqual('response is not a multipart message')
+        expect(error.message).toStrictEqual('response is not a multipart message')
       }
     })
 
@@ -58,7 +58,7 @@ describe('multipart message parser', () => {
         fail('error should have been thrown')
       } catch (error) {
         expect(error).toBeDefined()
-        expect(error.message).toEqual('boundary id not defined')
+        expect(error.message).toStrictEqual('boundary id not defined')
       }
     })
 
@@ -72,7 +72,7 @@ describe('multipart message parser', () => {
         statusCode: 200
       }
       const extracted = sut.extractBoundaryIdFrom(response)
-      expect(extracted).toEqual(boundaryId)
+      expect(extracted).toStrictEqual(boundaryId)
     })
   })
 })

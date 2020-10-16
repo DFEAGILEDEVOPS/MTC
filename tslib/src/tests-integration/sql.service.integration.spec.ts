@@ -65,7 +65,7 @@ describe('SqlService', () => {
     expect(result).toHaveLength(1)
     const school = result[0]
     expect(RA.isObj(school)).toBe(true)
-    expect(school.id).toEqual(schoolId)
+    expect(school.id).toStrictEqual(schoolId)
   })
 
   test('datetime is stored with hundred millisecond accuracy', async () => {

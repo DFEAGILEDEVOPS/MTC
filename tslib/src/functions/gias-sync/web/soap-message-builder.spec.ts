@@ -56,7 +56,7 @@ describe('soap-message-builder', () => {
     const receivedOutput = sut.buildMessage(messageSpec)
     expect(receivedOutput).toBeDefined()
     const xml = xmlParser.parse(receivedOutput, xmlParserOptions)
-    expect(xml['soapenv:Envelope'].attr['xmlns:ws']).toEqual(namespace)
+    expect(xml['soapenv:Envelope'].attr['xmlns:ws']).toStrictEqual(namespace)
   })
 
   test('when credentials specified a security header is included containing credentials', () => {
@@ -79,8 +79,8 @@ describe('soap-message-builder', () => {
     const securityElement = soapHeader['wsse:Security']
     expect(securityElement).toBeDefined()
     const usernameToken = securityElement['wsse:UsernameToken']
-    expect(usernameToken['wsse:Username']).toEqual(username)
-    expect(usernameToken['wsse:Password'].value).toEqual(password)
+    expect(usernameToken['wsse:Username']).toStrictEqual(username)
+    expect(usernameToken['wsse:Password'].value).toStrictEqual(password)
   })
 
   test('when message expiry specified security header details creation and expiry values', () => {

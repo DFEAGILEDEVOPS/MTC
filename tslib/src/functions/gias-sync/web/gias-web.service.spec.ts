@@ -113,7 +113,7 @@ describe('GiasWebService', () => {
       fail('error should have been thrown')
     } catch (error) {
       expect(error).toBeDefined()
-      expect(error.message).toEqual(errorInfo)
+      expect(error.message).toStrictEqual(errorInfo)
     }
   })
 
@@ -141,7 +141,7 @@ describe('GiasWebService', () => {
       fail('error was expected to be thrown')
     } catch (error) {
       expect(error).toBeDefined()
-      expect(error.message).toEqual('gias web service namespace is required')
+      expect(error.message).toStrictEqual('gias web service namespace is required')
     }
   })
 
@@ -152,7 +152,7 @@ describe('GiasWebService', () => {
       fail('error was expected to be thrown')
     } catch (error) {
       expect(error).toBeDefined()
-      expect(error.message).toEqual('gias service url is required')
+      expect(error.message).toStrictEqual('gias service url is required')
     }
   })
 
@@ -163,7 +163,7 @@ describe('GiasWebService', () => {
       fail('error was expected to be thrown')
     } catch (error) {
       expect(error).toBeDefined()
-      expect(error.message).toEqual('gias username is required')
+      expect(error.message).toStrictEqual('gias username is required')
     }
   })
 
@@ -174,7 +174,7 @@ describe('GiasWebService', () => {
       fail('error was expected to be thrown')
     } catch (error) {
       expect(error).toBeDefined()
-      expect(error.message).toEqual('gias password is required')
+      expect(error.message).toStrictEqual('gias password is required')
     }
   })
 })

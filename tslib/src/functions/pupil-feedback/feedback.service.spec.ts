@@ -42,12 +42,12 @@ describe('pupil feedback service', () => {
   test('all expected message properties should be inserted into feedback table', () => {
     sut.process(bindings, message)
     const entity = bindings.feedbackTable[0] as IPupilFeedbackTableEntity
-    expect(entity.PartitionKey).toEqual(message.checkCode)
+    expect(entity.PartitionKey).toStrictEqual(message.checkCode)
     expect(entity.RowKey).toBeDefined()
     expect(entity.RowKey).toHaveLength(v4().length)
-    expect(entity.checkCode).toEqual(message.checkCode)
-    expect(entity.inputType).toEqual(message.inputType)
-    expect(entity.satisfactionRating).toEqual(message.satisfactionRating)
-    expect(entity.comments).toEqual(message.comments)
+    expect(entity.checkCode).toStrictEqual(message.checkCode)
+    expect(entity.inputType).toStrictEqual(message.inputType)
+    expect(entity.satisfactionRating).toStrictEqual(message.satisfactionRating)
+    expect(entity.comments).toStrictEqual(message.comments)
   })
 })

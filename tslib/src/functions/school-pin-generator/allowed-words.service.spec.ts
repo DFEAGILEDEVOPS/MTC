@@ -23,6 +23,6 @@ describe('allowed-words.service', () => {
   test('allowed words must be sanitised for banned words before use', () => {
     const actual = sut.parse('foo,bar,baz,qix,pix,gem', 'gem')
     const expected = new Set<string>(['foo', 'bar', 'baz', 'qix', 'pix'])
-    expect(actual).toEqual(expected)
+    expect(actual).toStrictEqual(expected)
   })
 })

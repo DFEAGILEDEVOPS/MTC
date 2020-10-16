@@ -60,7 +60,7 @@ describe('school-results-cache-determiner.service', () => {
 
     await sut.execute()
 
-    expect(mockContext.bindings).toEqual({})
+    expect(mockContext.bindings).toStrictEqual({})
     expect(mockDataService.sqlGetSchoolGuids).not.toHaveBeenCalled()
   })
 
@@ -127,7 +127,7 @@ describe('school-results-cache-determiner.service', () => {
     await sut.execute()
 
     // Expect no output messages at this time
-    expect(mockContext.bindings).toEqual({})
+    expect(mockContext.bindings).toStrictEqual({})
   })
 
   test('it sends messages to cache schools when the config is set to 1 (default) and the date is between the live check close and the first monday after at 6am', async () => {

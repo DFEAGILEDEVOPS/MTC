@@ -68,10 +68,10 @@ describe('pupil-login.service', () => {
     await sut.process(message, bindings)
     expect(bindings.pupilEventTable).toHaveLength(1)
     const entry = bindings.pupilEventTable[0] as IPupilEvent
-    expect(entry.PartitionKey).toEqual(message.checkCode)
+    expect(entry.PartitionKey).toStrictEqual(message.checkCode)
     expect(entry.RowKey).toBeDefined()
-    expect(entry.eventType).toEqual('pupil-login')
-    expect(entry.payload).toEqual(message)
+    expect(entry.eventType).toStrictEqual('pupil-login')
+    expect(entry.payload).toStrictEqual(message)
     expect(entry.processedAt).toBeDefined()
   })
 })
