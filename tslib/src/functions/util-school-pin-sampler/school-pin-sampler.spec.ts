@@ -19,7 +19,7 @@ describe('school-pin-sampler', () => {
     expect(samples).toHaveLength(sampleSizeRequested)
   })
 
-  test('throws error if sample size is larger than all available timezones', () => {
+  test('throws error if sample size is larger than all available timezones', async () => {
     const tzUtil = new TimezoneUtil()
     const maximumSampleSize = tzUtil.getTimezoneList().length
     try {
@@ -48,11 +48,11 @@ describe('school-pin-sampler', () => {
     expect(samples).toHaveLength(sampleSizeRequested)
     const tzUtil = new TimezoneUtil()
     const zones = tzUtil.getTimezoneList()
-    expect(samples[0].timezone).toEqual(zones[0].name)
-    expect(samples[1].timezone).toEqual(zones[1].name)
-    expect(samples[2].timezone).toEqual(zones[2].name)
-    expect(samples[3].timezone).toEqual(zones[3].name)
-    expect(samples[4].timezone).toEqual(zones[4].name)
+    expect(samples[0].timezone).toStrictEqual(zones[0].name)
+    expect(samples[1].timezone).toStrictEqual(zones[1].name)
+    expect(samples[2].timezone).toStrictEqual(zones[2].name)
+    expect(samples[3].timezone).toStrictEqual(zones[3].name)
+    expect(samples[4].timezone).toStrictEqual(zones[4].name)
   })
 
   test('does randomise if specified', () => {
@@ -63,6 +63,6 @@ describe('school-pin-sampler', () => {
     expect(randomSamples).toHaveLength(sampleSizeRequested)
     const nonRandomZones = nonRandomSamples.map(s => s.timezone).join('-')
     const randomZones = randomSamples.map(s => s.timezone).join('-')
-    expect(nonRandomZones).not.toEqual(randomZones)
+    expect(nonRandomZones).not.toStrictEqual(randomZones)
   })
 })

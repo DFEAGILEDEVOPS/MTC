@@ -58,7 +58,7 @@ describe('RedisService', () => {
       throw new Error('no item found with specified key')
     }
     const storedItemAsObject = JSON.parse(actualStoredItemString)
-    expect(storedItemAsObject).toEqual(expectedObjectToStore)
+    expect(storedItemAsObject).toStrictEqual(expectedObjectToStore)
   })
 
   test('setex: stores a number with expected metadata', async () => {
@@ -76,7 +76,7 @@ describe('RedisService', () => {
       throw new Error('no item found with specified key')
     }
     const storedItemAsObject = JSON.parse(actualStoredItemString)
-    expect(storedItemAsObject).toEqual(expectedObjectToStore)
+    expect(storedItemAsObject).toStrictEqual(expectedObjectToStore)
   })
 
   test('setex: stores an object with expected metadata', async () => {
@@ -99,7 +99,7 @@ describe('RedisService', () => {
       throw new Error('no item found with specified key')
     }
     const storedItemAsObject = JSON.parse(actualStoredItemString)
-    expect(storedItemAsObject).toEqual(expectedObjectToStore)
+    expect(storedItemAsObject).toStrictEqual(expectedObjectToStore)
   })
 
   test('get: string preservation intact on retrieval', async () => {

@@ -124,7 +124,7 @@ describe('SqlService', () => {
       value: uuid
     }]
     const result = await sut.query(sql, params)
-    expect(result).toEqual([])
+    expect(result).toStrictEqual([])
   })
 
   test('modifyWithTransaction: commits all statements in the batch when no errors are raised', async () => {
