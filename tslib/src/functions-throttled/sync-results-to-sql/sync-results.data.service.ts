@@ -129,7 +129,7 @@ export class SyncResultsDataService implements ISyncResultsDataService {
     if (userAgent) {
       agent = new UserAgentParser(userAgent)
     }
-    const deviceId = R.propOr('', 'deviceId', device)
+    const deviceId = R.propOr(null, 'deviceId', device)
 
     params.push({ name: 'batteryIsCharging', type: TYPES.Bit, value: batteryIsCharging })
     params.push({ name: 'batteryLevelPercent', type: TYPES.TinyInt, value: batteryLevelPercent })

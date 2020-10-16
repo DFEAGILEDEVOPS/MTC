@@ -146,7 +146,7 @@ export class DeviceService {
       // No device cookie found
       deviceId = uuidv4();
     } else {
-      deviceId =  this.cookieService.get(this.deviceCookieName);
+      deviceId = this.cookieService.get(this.deviceCookieName);
     }
 
     this.cookieService.set(this.deviceCookieName, deviceId, {
