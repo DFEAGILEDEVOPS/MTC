@@ -227,7 +227,7 @@ describe('result.service', () => {
           middleNames: ''
         },
         {
-          lastName: 'Anchovy',
+          lastName: 'Adam',
           foreName: 'Zeus',
           group_id: null,
           attendanceCode: null,
