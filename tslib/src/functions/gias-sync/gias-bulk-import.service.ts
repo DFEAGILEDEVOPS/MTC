@@ -10,7 +10,7 @@ export class GiasBulkImport {
     table.create = false
     table.columns.add('leaCode', sql.Int)
     // @ts-ignore
-    table.columns.add('estabCode', sql.NVarChar, { length: 'max' })
+    table.columns.add('estabCode', sql.Int)
     table.columns.add('urn', sql.Int, { nullable: false })
     table.columns.add('dfeNumber', sql.Int, { nullable: false })
     // @ts-ignore

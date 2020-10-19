@@ -56,7 +56,7 @@ fs.createReadStream('../NCATools_EduBase_20180604.txt')
     const urn = data.DfENumber
 
     insertStatements.push(`INSERT [mtc_admin].[school] (leaCode, estabCode, name, urlSlug, dfeNumber, urn)
-      VALUES ('${data.LEANUMBER}', '${estabCode}', '${schoolNameEscaped}', '${randUrlSlug}', '${data.DfENumber}', '${urn}');`)
+      VALUES (${data.LEANUMBER}, ${estabCode}, '${schoolNameEscaped}', '${randUrlSlug}', '${data.DfENumber}', '${urn}');`)
     // delete by the unique random generated url slug, to be sure we're deleting exactly what we added
     deleteStatements.push(`DELETE FROM [mtc_admin].[school] WHERE urlSlug='${randUrlSlug}';`)
   })

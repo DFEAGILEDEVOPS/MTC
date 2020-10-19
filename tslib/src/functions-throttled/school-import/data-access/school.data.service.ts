@@ -34,7 +34,7 @@ export class SchoolDataService implements ISchoolDataService {
     const table = new mssql.Table('[mtc_admin].[school]')
     table.create = false
     table.columns.add('dfeNumber', mssql.Int, { nullable: false })
-    table.columns.add('estabCode', mssql.NVarChar(mssql.MAX), { nullable: true })
+    table.columns.add('estabCode', mssql.Int, { nullable: false })
     table.columns.add('leaCode', mssql.Int, { nullable: true })
     table.columns.add('name', mssql.NVarChar(mssql.MAX), { nullable: false })
     table.columns.add('urn', mssql.Int, { nullable: false })
@@ -44,8 +44,6 @@ export class SchoolDataService implements ISchoolDataService {
       this.jobResult.linesProcessed += 1
       this.jobResult.schoolsLoaded += 1
       const dfeNumber = `${school.leaCode}${school.estabCode}`
-      // leaCode and estabCode are currently nullable, hence the check.
-      // this will change in ticket #43900
       if (dfeNumber.toString().length !== 7) {
         this.logError(`WARN: school [${school.urn}] has an unusual dfeNumber [${dfeNumber}]`)
       }
