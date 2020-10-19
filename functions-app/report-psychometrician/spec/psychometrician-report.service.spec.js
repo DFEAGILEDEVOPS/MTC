@@ -324,7 +324,7 @@ describe('psychometricians-report.service', () => {
 
     it('outputs the school estab code', () => {
       const out = service.produceReportDataV2(row)
-      expect(out.Estab).toBe('1999')
+      expect(out.Estab).toBe(1999)
     })
 
     it('outputs the school URN', () => {
