@@ -194,7 +194,7 @@ describe('result.service', () => {
       const mockResultData: IRawPupilResult[] = [
         {
           lastName: 'Smith',
-          foreName: 'Toad',
+          foreName: 'Thomas',
           group_id: null,
           attendanceCode: null,
           attendanceReason: null,
