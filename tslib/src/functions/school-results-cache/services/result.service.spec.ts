@@ -249,9 +249,9 @@ describe('result.service', () => {
 
       const res = await sut.getPupilResultDataFromDb(schoolGuid)
 
-      expect(res.pupils[0].lastName).toBe('Anchovy')
+      expect(res.pupils[0].lastName).toBe('Adam')
       expect(res.pupils[1]).toMatchObject({ lastName: 'Smith', foreName: 'Mario' })
-      expect(res.pupils[2]).toMatchObject({ lastName: 'Smith', foreName: 'Toad' })
+      expect(res.pupils[2]).toMatchObject({ lastName: 'Smith', foreName: 'Thomas' })
     })
 
     test('sorts the pupils alphabetically - if the lastname and forenames are the same it sorts by dob', async () => {
