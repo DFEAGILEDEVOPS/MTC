@@ -49,38 +49,38 @@ export class QuestionComponent extends PracticeQuestionComponent implements OnIn
     this.startTimer();
   }
 
-  /**
-   * Track all mouse click activity
-   */
-  @HostListener('document:mousedown', [ '$event' ])
-  handleMouseEvent(event: MouseEvent) {
-    if (this.submitted) {
-      return;
-    }
-    const questionData = {
-      questionNumber: this.sequenceNumber,
-      factor1: this.factor1,
-      factor2: this.factor2
-    };
-    this.registerInputService.addEntry(event, questionData);
-  }
+  // /**
+  //  * Track all mouse click activity
+  //  */
+  // @HostListener('document:mousedown', [ '$event' ])
+  // handleMouseEvent(event: MouseEvent) {
+  //   if (this.submitted) {
+  //     return;
+  //   }
+  //   const questionData = {
+  //     questionNumber: this.sequenceNumber,
+  //     factor1: this.factor1,
+  //     factor2: this.factor2
+  //   };
+  //   this.registerInputService.addEntry(event, questionData);
+  // }
 
-  /**
-   * Track all taps (touch events)
-   * @param {TouchEvent} event
-   */
-  @HostListener('document:touchstart', [ '$event' ])
-  handleTouchEvent(event) {
-    if (this.submitted) {
-      return;
-    }
-    const questionData = {
-      questionNumber: this.sequenceNumber,
-      factor1: this.factor1,
-      factor2: this.factor2
-    };
-    this.registerInputService.addEntry(event, questionData);
-  }
+  // /**
+  //  * Track all taps (touch events)
+  //  * @param {TouchEvent} event
+  //  */
+  // @HostListener('document:touchstart', [ '$event' ])
+  // handleTouchEvent(event) {
+  //   if (this.submitted) {
+  //     return;
+  //   }
+  //   const questionData = {
+  //     questionNumber: this.sequenceNumber,
+  //     factor1: this.factor1,
+  //     factor2: this.factor2
+  //   };
+  //   this.registerInputService.addEntry(event, questionData);
+  // }
 
   /**
    * Called from clicking a number button on the virtual keypad
