@@ -55,7 +55,7 @@ module.exports = {
     'jest/no-try-expect': 'off', // a lot of code to change due to usage of fail.  removing use of fail ties in with [no-jasmine-globals] rule, as its jasmine API
     'jest/prefer-called-with': 'warn',
     'jest/prefer-spy-on': 'warn',
-    'jest/prefer-strict-equal': 'warn',
+    'jest/prefer-strict-equal': 'error',
     'jest/prefer-todo': 'error',
     'jest/require-to-throw-message': 'warn',
     'jest/require-top-level-describe': 'error'
