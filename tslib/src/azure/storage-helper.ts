@@ -3,6 +3,7 @@ import * as fs from 'fs'
 import * as dotenv from 'dotenv'
 import config from '../config'
 import * as az from 'azure-storage'
+import { isNotNil } from 'ramda-adjunct'
 
 const globalDotEnvFile = path.join(__dirname, '..', '..', '..', '.env')
 try {
@@ -40,7 +41,7 @@ export class AsyncTableService extends az.TableService implements IAsyncTableSer
   async replaceEntityAsync (table: string, entity: unknown): Promise<any> {
     return new Promise((resolve, reject) => {
       this.replaceEntity(table, entity, (error, result) => {
-        if (error !== undefined) {
+        if (isNotNil(error)) {
           reject(error)
         } else {
           resolve(result)
@@ -52,7 +53,7 @@ export class AsyncTableService extends az.TableService implements IAsyncTableSer
   async queryEntitiesAsync (table: string, tableQuery: az.TableQuery, currentToken: az.TableService.TableContinuationToken): Promise<Error | any> {
     return new Promise((resolve, reject) => {
       this.queryEntities(table, tableQuery, currentToken, (error, result) => {
-        if (error !== undefined) {
+        if (isNotNil(error)) {
           reject(error)
         } else {
           resolve(result)
@@ -64,7 +65,7 @@ export class AsyncTableService extends az.TableService implements IAsyncTableSer
   async deleteEntityAsync (table: string, entityDescriptor: unknown): Promise<Error | DeleteResponse> {
     return new Promise((resolve, reject) => {
       this.deleteEntity(table, entityDescriptor, (error, result) => {
-        if (error !== undefined) {
+        if (isNotNil(error)) {
           reject(error)
         } else {
           resolve(result)
@@ -76,7 +77,7 @@ export class AsyncTableService extends az.TableService implements IAsyncTableSer
   async insertEntityAsync (table: string, entityDescriptor: unknown): Promise<Error | InsertResponse> {
     return new Promise((resolve, reject) => {
       this.insertEntity(table, entityDescriptor, (error, result) => {
-        if (error !== undefined) {
+        if (isNotNil(error)) {
           reject(error)
         } else {
           resolve(result)
@@ -102,7 +103,7 @@ export class AsyncBlobService extends az.BlobService implements IBlobStorageServ
   async deleteContainerAsync (container: string): Promise<void> {
     return new Promise((resolve, reject) => {
       this.deleteContainer(container, (error) => {
-        if (error !== undefined) {
+        if (isNotNil(error)) {
           reject(error)
         } else {
           resolve()

@@ -11,7 +11,7 @@ export interface SubmittedCheckV1 {
   checkCode: string
 }
 
-export interface SubmittedCheckMessageV3 {
+export interface SubmittedCheckMessageV2 {
   version: number
   checkCode: string
   schoolUUID: string

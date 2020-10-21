@@ -21,11 +21,7 @@ export class SasToken {
 export class SasTokenService {
   private readonly qService: IQueueService
   constructor (queueService?: IQueueService) {
-    if (queueService === undefined) {
-      this.qService = azure.createQueueService()
-    } else {
-      this.qService = queueService
-    }
+    this.qService = queueService ?? azure.createQueueService()
   }
 
   generateSasToken (queueName: string, expiryDate: moment.Moment): SasToken {

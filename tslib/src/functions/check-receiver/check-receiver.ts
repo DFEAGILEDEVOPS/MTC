@@ -1,12 +1,12 @@
 import { Context } from '@azure/functions'
 import Moment from 'moment'
 import * as az from '../../azure/storage-helper'
-import { SubmittedCheckMessageV3, ReceivedCheckTableEntity, ValidateCheckMessageV1 } from '../../schemas/models'
+import { SubmittedCheckMessageV2, ReceivedCheckTableEntity, ValidateCheckMessageV1 } from '../../schemas/models'
 import { CheckNotificationType, ICheckNotificationMessage } from '../check-notifier/check-notification-message'
 const tableService = new az.AsyncTableService()
 
-class CheckReceiver {
-  async process (context: Context, receivedCheck: SubmittedCheckMessageV3): Promise<void> {
+export class CheckReceiver {
+  async process (context: Context, receivedCheck: SubmittedCheckMessageV2): Promise<void> {
     const receivedCheckEntity: ReceivedCheckTableEntity = {
       PartitionKey: receivedCheck.schoolUUID.toLowerCase(),
       RowKey: receivedCheck.checkCode.toLowerCase(),
@@ -33,5 +33,3 @@ class CheckReceiver {
     context.bindings.checkValidationQueue = [message]
   }
 }
-
-export default new CheckReceiver()
