@@ -2,15 +2,16 @@ import Redis, { RedisOptions } from 'ioredis'
 import config from '../config'
 import * as Logger from '../common/logger'
 import { RedisCacheItem, RedisItemDataType } from './RedisCacheItemMetadata'
+import { isNil } from 'ramda'
 
 export interface IRedisService {
   /**
    * @description retrieve an item from the cache, under the given key
    * @param {string} key the unique string key of the redis entry to fetch
    * @throws when the data type of the retrieved value is unsupported
-   * @returns {Promise<string | null>} an awaitable promise containing the item if it exists, or undefined if it does not
+   * @returns {Promise<unknown | undefined>} an awaitable promise containing the item if it exists, or undefined if it does not
    */
-  get (key: string): Promise<any | null>
+  get (key: string): Promise<unknown | undefined>
   /**
    * @description insert or ovewrite an item in the cache, which lives indefinitely
    * @param {string} key the unique string key of the redis entry to persist
@@ -77,10 +78,10 @@ export class RedisService implements IRedisService {
     this.logger = new Logger.ConsoleLogger()
   }
 
-  async get (key: string): Promise<any | null> {
+  async get (key: string): Promise<unknown | undefined> {
     try {
       const cacheEntry = await this.redis.get(key)
-      if (cacheEntry === null) return undefined
+      if (isNil(cacheEntry)) return
       const cacheItem: RedisCacheItem = JSON.parse(cacheEntry)
       switch (cacheItem.meta.type) {
         case RedisItemDataType.string:

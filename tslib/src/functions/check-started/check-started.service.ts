@@ -18,7 +18,7 @@ export class CheckStartedService {
 
   async process (checkStartedMessage: ICheckStartedMessage, functionBindings: ICheckStartedFunctionBindings): Promise<void> {
     const cacheLookupKey = this.buildCacheKey(checkStartedMessage.checkCode)
-    const preparedCheckKey = await this.redisService.get(cacheLookupKey)
+    const preparedCheckKey = await this.redisService.get(cacheLookupKey) as string
     functionBindings.checkStartedTable = []
     functionBindings.checkStartedTable.push({
       PartitionKey: checkStartedMessage.checkCode.toLowerCase(),

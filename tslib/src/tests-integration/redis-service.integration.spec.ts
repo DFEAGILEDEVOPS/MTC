@@ -147,7 +147,7 @@ describe('RedisService', () => {
     expect(foundKeys).toHaveLength(0)
   })
 
-  test('returns null when redis item is not found', async () => {
+  test('returns undefined when redis item is not found', async () => {
     const randomCacheKey = uuid.default()
     const response = await sut.get(randomCacheKey)
     expect(response).toBeUndefined()

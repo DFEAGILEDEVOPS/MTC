@@ -33,7 +33,7 @@ export class CheckWindowService {
   async getActiveCheckWindow (): Promise<ICheckWindow> {
     let cachedWindow
     try {
-      cachedWindow = await this.redisService.get('activeCheckWindow')
+      cachedWindow = await this.redisService.get('activeCheckWindow') as ICheckWindow
     } catch (error) {
       this.logger.error(error)
     }

@@ -57,7 +57,7 @@ export class SchoolCheckAllocationService {
     const pupils = await this.dataService.getPupilsBySchoolUuid(schoolUUID)
     if (RA.isNilOrEmpty(pupils)) return
     const schoolKey = this.redisAllocationsKeyPrefix.concat(schoolUUID)
-    const allocationCache = await this.redisService.get(schoolKey)
+    const allocationCache = await this.redisService.get(schoolKey) as IAllocationCacheItem
 
     for (let pupilIndex = 0; pupilIndex < pupils.length; pupilIndex++) {
       const pupil = pupils[pupilIndex]
@@ -69,4 +69,9 @@ export class SchoolCheckAllocationService {
     await this.redisService.setex(schoolKey, allocationCache,
       +config.CheckAllocation.ExpiryTimeInSeconds)
   }
+}
+
+interface IAllocationCacheItem {
+  pupils: any[]
+  lastReplenishmentUtc: moment.Moment
 }
