@@ -35,7 +35,7 @@ export class SchoolDataService implements ISchoolDataService {
     table.create = false
     table.columns.add('dfeNumber', mssql.Int, { nullable: false })
     table.columns.add('estabCode', mssql.Int, { nullable: false })
-    table.columns.add('leaCode', mssql.Int, { nullable: true })
+    table.columns.add('leaCode', mssql.Int, { nullable: false })
     table.columns.add('name', mssql.NVarChar(mssql.MAX), { nullable: false })
     table.columns.add('urn', mssql.Int, { nullable: false })
 
