@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, HostListener } from '@angular/core';
+import { Component, OnInit, AfterViewInit, HostListener, Renderer2 } from '@angular/core';
 import { AnswerService } from '../services/answer/answer.service';
 import { Answer } from '../services/answer/answer.model';
 import { AuditService } from '../services/audit/audit.service';
@@ -15,8 +15,8 @@ import { WindowRefService } from '../services/window-ref/window-ref.service';
   templateUrl: './question.component.html',
   styleUrls: ['./question.component.css']
 })
-export class QuestionComponent extends PracticeQuestionComponent implements OnInit, AfterViewInit {
 
+export class QuestionComponent extends PracticeQuestionComponent implements OnInit, AfterViewInit {
   /**
    * Do not show 'practice' label on top left.
    */
@@ -28,8 +28,9 @@ export class QuestionComponent extends PracticeQuestionComponent implements OnIn
               protected storageService: StorageService,
               protected speechService: SpeechService,
               protected answerService: AnswerService,
-              protected registerInputService: RegisterInputService) {
-    super(auditService, windowRefService, questionService, storageService, speechService, answerService, registerInputService);
+              protected registerInputService: RegisterInputService,
+              protected renderer: Renderer2) {
+    super(auditService, windowRefService, questionService, storageService, speechService, answerService, registerInputService, renderer);
     this.window = windowRefService.nativeWindow;
   }
 
@@ -45,60 +46,16 @@ export class QuestionComponent extends PracticeQuestionComponent implements OnIn
       sequenceNumber: this.sequenceNumber,
       question: `${this.factor1}x${this.factor2}`
     }));
+
+    // Set up listening events depending on the browser's capability
+    if ('onpointerup' in this.window) {
+      this.setupKeypadEventListeners('pointerup');
+    } else {
+      this.setupKeypadEventListeners('click');
+    }
+
     // Start the countdown and page timeout timers
     this.startTimer();
-  }
-
-  // /**
-  //  * Track all mouse click activity
-  //  */
-  // @HostListener('document:mousedown', [ '$event' ])
-  // handleMouseEvent(event: MouseEvent) {
-  //   if (this.submitted) {
-  //     return;
-  //   }
-  //   const questionData = {
-  //     questionNumber: this.sequenceNumber,
-  //     factor1: this.factor1,
-  //     factor2: this.factor2
-  //   };
-  //   this.registerInputService.addEntry(event, questionData);
-  // }
-
-  // /**
-  //  * Track all taps (touch events)
-  //  * @param {TouchEvent} event
-  //  */
-  // @HostListener('document:touchstart', [ '$event' ])
-  // handleTouchEvent(event) {
-  //   if (this.submitted) {
-  //     return;
-  //   }
-  //   const questionData = {
-  //     questionNumber: this.sequenceNumber,
-  //     factor1: this.factor1,
-  //     factor2: this.factor2
-  //   };
-  //   this.registerInputService.addEntry(event, questionData);
-  // }
-
-  /**
-   * Called from clicking a number button on the virtual keypad
-   * @param {number} number
-   * @param {Object} event
-   */
-  onClickAnswer(number: number, event) {
-    if (this.submitted) {
-      return;
-    }
-    this.registerInputService.storeEntry
-    (number.toString(),
-      'click',
-      this.sequenceNumber,
-      `${this.factor1}x${this.factor2}`,
-      event.timeStamp
-    );
-    this.addChar(number.toString());
   }
 
   /**
@@ -110,7 +67,7 @@ export class QuestionComponent extends PracticeQuestionComponent implements OnIn
       return;
     }
     this.registerInputService.storeEntry('Backspace',
-      'click',
+      this.getEventType(event),
       this.sequenceNumber,
       `${this.factor1}x${this.factor2}`,
       event.timeStamp
@@ -170,7 +127,7 @@ export class QuestionComponent extends PracticeQuestionComponent implements OnIn
       return;
     }
     this.registerInputService.storeEntry('Enter',
-      'click',
+      this.getEventType(event),
       this.sequenceNumber,
       `${this.factor1}x${this.factor2}`,
       event.timeStamp

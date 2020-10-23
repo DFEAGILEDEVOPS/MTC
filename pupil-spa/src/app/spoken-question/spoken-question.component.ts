@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, NgZone, OnDestroy, Input } from '@angular/core';
+import { Component, OnInit, AfterViewInit, NgZone, OnDestroy, Input, Renderer2 } from '@angular/core';
 import { AnswerService } from '../services/answer/answer.service';
 import { AuditService } from '../services/audit/audit.service';
 import { QuestionComponent } from '../question/question.component';
@@ -31,8 +31,9 @@ export class SpokenQuestionComponent extends QuestionComponent implements OnInit
               protected storageService: StorageService,
               protected speechService: SpeechService,
               protected questionService: QuestionService,
-              protected answerService: AnswerService) {
-    super(auditService, windowRefService, questionService, storageService, speechService, answerService, registerInputService);
+              protected answerService: AnswerService,
+              protected renderer: Renderer2) {
+    super(auditService, windowRefService, questionService, storageService, speechService, answerService, registerInputService, renderer);
   }
 
   ngOnInit() {

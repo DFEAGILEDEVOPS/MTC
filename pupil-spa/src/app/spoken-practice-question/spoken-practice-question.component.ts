@@ -1,4 +1,4 @@
-import { Component, NgZone, OnInit, AfterViewInit, OnDestroy, Input } from '@angular/core';
+import { Component, NgZone, OnInit, AfterViewInit, OnDestroy, Input, Renderer2 } from '@angular/core';
 import { Subscription } from 'rxjs';
 
 import { AnswerService } from '../services/answer/answer.service';
@@ -32,8 +32,9 @@ export class SpokenPracticeQuestionComponent extends PracticeQuestionComponent i
               protected storageService: StorageService,
               protected questionService: QuestionService,
               protected answerService: AnswerService,
-              protected registerInputService: RegisterInputService) {
-    super(auditService, windowRefService, questionService, storageService, speechService, answerService, registerInputService);
+              protected registerInputService: RegisterInputService,
+              protected renderer: Renderer2) {
+    super(auditService, windowRefService, questionService, storageService, speechService, answerService, registerInputService, renderer);
   }
 
   ngOnInit() {

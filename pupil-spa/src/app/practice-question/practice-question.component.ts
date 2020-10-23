@@ -1,4 +1,16 @@
-import { Component, OnInit, AfterViewInit, Input, Output, EventEmitter, HostListener } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  EventEmitter,
+  HostListener,
+  Input,
+  OnInit,
+  OnDestroy,
+  Output,
+  Renderer2,
+  ViewChild,
+} from '@angular/core';
 
 import { AccessArrangements } from '../access-arrangements';
 import { Answer } from '../services/answer/answer.model';
@@ -18,12 +30,20 @@ import { SpeechService } from '../services/speech/speech.service';
 import { StorageService } from '../services/storage/storage.service';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
 
+export enum EventType {
+  'mouse'= 'mouse',
+  'pen' = 'pen',
+  'touch' = 'touch',
+  'keyboard' = 'keyboard',
+  'unknown' = 'unknown'
+}
+
 @Component({
   selector: 'app-practice-question',
   templateUrl: '../question/question.component.html',
   styleUrls: ['../question/question.component.css']
 })
-export class PracticeQuestionComponent implements OnInit, AfterViewInit {
+export class PracticeQuestionComponent implements OnInit, AfterViewInit, OnDestroy {
 
   /**
    * The time in ms since the epoch when the answer will be automatically submitted.
@@ -56,6 +76,11 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
    * Reference to global window object
    */
   protected window: any;
+
+  /**
+   * Array of functions to run as cleanup for the onDestroy
+   */
+  protected cleanUpFunctions: Array<() => void> = [];
 
   /**
    * Set a reference to the config.
@@ -122,23 +147,36 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
 
   @Input() public familiarisationCheck = false;
 
-  constructor(protected auditService: AuditService,
-              protected windowRefService: WindowRefService,
-              protected questionService: QuestionService,
-              protected storageService: StorageService,
-              protected speechService: SpeechService,
-              protected answerService: AnswerService,
-              protected registerInputService: RegisterInputService) {
+  @ViewChild('kb0', { static: false }) button0: ElementRef;
+  @ViewChild('kb1', { static: false }) button1: ElementRef;
+  @ViewChild('kb2', { static: false }) button2: ElementRef;
+  @ViewChild('kb3', { static: false }) button3: ElementRef;
+  @ViewChild('kb4', { static: false }) button4: ElementRef;
+  @ViewChild('kb5', { static: false }) button5: ElementRef;
+  @ViewChild('kb6', { static: false }) button6: ElementRef;
+  @ViewChild('kb7', { static: false }) button7: ElementRef;
+  @ViewChild('kb8', { static: false }) button8: ElementRef;
+  @ViewChild('kb9', { static: false }) button9: ElementRef;
+  @ViewChild('kbEnter', { static: false }) buttonEnter: ElementRef;
+  @ViewChild('kbBackspace', { static: false }) buttonBackspace: ElementRef;
+
+  constructor (protected auditService: AuditService,
+               protected windowRefService: WindowRefService,
+               protected questionService: QuestionService,
+               protected storageService: StorageService,
+               protected speechService: SpeechService,
+               protected answerService: AnswerService,
+               protected registerInputService: RegisterInputService,
+               protected renderer: Renderer2) {
     this.window = windowRefService.nativeWindow;
     this.config = this.questionService.getConfig();
-
     const accessArrangementsData = storageService.getAccessArrangements();
     this.accessArrangements = new AccessArrangements;
     this.accessArrangements.fontSize = (accessArrangementsData && accessArrangementsData.fontSize) || 'regular';
     this.shouldShowQuestion = true;
   }
 
-  ngOnInit() {
+  ngOnInit () {
     this.remainingTime = this.questionTimeoutSecs;
     this.isWarmUpQuestion = true;
   }
@@ -146,20 +184,62 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
   /**
    * Start the timer when the view is ready.
    */
-  ngAfterViewInit() {
+  ngAfterViewInit () {
     this.auditService.addEntry(new QuestionRendered({
       practiseSequenceNumber: this.sequenceNumber,
       question: `${this.factor1}x${this.factor2}`
     }));
+
+    // Set up listening events depending on the browser's capability
+    if ('onpointerup' in this.window) {
+      this.setupKeypadEventListeners('pointerup');
+    } else {
+      this.setupKeypadEventListeners('click');
+    }
+
     // Start the countdown and page timeout timers
     this.startTimer();
+  }
+
+  protected setupKeypadEventListeners(eventToListenTo: string) {
+    // Buttons 0-9
+    [this.button0, this.button1, this.button2, this.button3, this.button4, this.button5, this.button6, this.button7, this.button8,
+      this.button9].forEach(button => {
+        const f = this.renderer.listen(button.nativeElement, eventToListenTo, (event) => {
+          const that = this;
+          that.clickHandler(event);
+        });
+        this.cleanUpFunctions.push(f);
+      }
+    );
+
+    // Enter button should submit the answer
+    const removeEnterListenerFunc = this.renderer.listen(this.buttonEnter.nativeElement, eventToListenTo, (event) => {
+      const that = this;
+      that.onClickSubmit(event);
+    });
+    this.cleanUpFunctions.push(removeEnterListenerFunc);
+
+    // Backspace button should delete a char
+    const removeBackspaceListenerFunc = this.renderer.listen(this.buttonBackspace.nativeElement, eventToListenTo, (event) => {
+      const that = this;
+      that.onClickBackspace(event);
+    });
+    this.cleanUpFunctions.push(removeBackspaceListenerFunc);
+  }
+
+  ngOnDestroy () {
+    // remove all the event listeners
+    if (this.cleanUpFunctions.length > 0) {
+      this.cleanUpFunctions.forEach(f => f());
+    }
   }
 
   /**
    * Hook that is called each time the countdown timer is called.  Roughly every 100 ms.
    * @param remainingTime
    */
-  countdownIntervalHook(remainingTime) {
+  countdownIntervalHook (remainingTime) {
     if (remainingTime === 2 && !this.hasAudibleAlertPlayed) {
       this.soundComponent.playTimeRunningOutAlertSound();
       this.hasAudibleAlertPlayed = true;
@@ -169,7 +249,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
   /**
    * Start the countdown timer on the page and set the time-out counter
    */
-  startTimer() {
+  startTimer () {
     this.auditService.addEntry(new QuestionTimerStarted({
       sequenceNumber: this.sequenceNumber,
       question: `${this.factor1}x${this.factor2}`
@@ -198,7 +278,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
    * Check a manual submission to see if it is allowed.
    * @return {boolean}
    */
-  hasAnswer() {
+  hasAnswer () {
     return this.answer.length > 0;
   }
 
@@ -206,24 +286,67 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
    * Check if there was an input to the question.
    * @return {boolean}
    */
-  hasStartedAnswering() {
+  hasStartedAnswering () {
     return this.startedAnswering;
   }
 
+  // /**
+  //  * Called from clicking a number button on the virtual keypad
+  //  * @param {number} number
+  //  * @param {Object} event
+  //  */
+  // onClickAnswer (number: number, event) {
+  //   this.addChar(number.toString());
+  // }
+
   /**
-   * Called from clicking a number button on the virtual keypad
-   * @param {number} number
-   * @param {Object} event
+   * Called by clicks or touches on the on-screen number pad
+   * @param event
+   * @param {Event} event
    */
-  onClickAnswer(number: number, event) {
-    this.addChar(number.toString());
+  clickHandler (event: PointerEvent | MouseEvent | TouchEvent | Event): void {
+    if (this.submitted) {
+      return;
+    }
+
+    let i: number;
+    if (event.target['id'] === '') {
+      // this is the span element, so to access the data-value attribute we need to access the parent
+      i = event.target['parentNode'].dataset.value;
+    } else {
+      i = event.target['dataset'].value;
+    }
+
+    if (i === undefined) {
+      return;
+    }
+
+    const input = i.toString();
+    this.addChar(input);
+
+    // if it isn't a warmup question it must be a live question, so log the input.
+    if (!this.isWarmUpQuestion) {
+      const questionData = {
+        questionNumber: this.sequenceNumber,
+        factor1: this.factor1,
+        factor2: this.factor2
+      };
+
+      this.registerInputService.storeEntry(
+        input,
+        this.getEventType(event),
+        this.sequenceNumber,
+        `${this.factor1}x${this.factor2}`,
+        event.timeStamp
+      );
+    }
   }
 
   /**
    * Called from clicking the backspace button on the virtual keyboard
    * @param {Object} event
    */
-  onClickBackspace(event) {
+  onClickBackspace (event) {
     this.deleteChar();
   }
 
@@ -231,7 +354,8 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
    * Called when the user clicks the enter button on the virtual keypad
    * @param {Object} event
    */
-  onClickSubmit(event) {
+  onClickSubmit (event: Event) {
+    console.log('submit clicked');
     this.onSubmit();
   }
 
@@ -239,7 +363,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
    * Called from pressing Enter on the virtual Keypad or pressing the enter key on the keyboard
    * @return {boolean}
    */
-  onSubmit() {
+  onSubmit () {
     if (this.submitted) {
       // console.log('answer already submitted');
       return false;
@@ -279,7 +403,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
     return true;
   }
 
-  addQuestionAnsweredEvent() {
+  addQuestionAnsweredEvent () {
     this.auditService.addEntry(new QuestionAnswered({
       practiseSequenceNumber: this.sequenceNumber,
       question: `${this.factor1}x${this.factor2}`
@@ -289,7 +413,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
   /**
    * Hook that runs before the timeout event (sent when the timer reaches 0 seconds)
    */
-  async preSendTimeoutEvent() {
+  async preSendTimeoutEvent () {
     if (!this.isWarmUpQuestion) {
       const answer = new Answer(this.factor1, this.factor2, this.answer, this.sequenceNumber);
       this.answerService.setAnswer(answer);
@@ -308,7 +432,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
    * timed out.  Send whatever answer has been collected so far.
    * @return {boolean}
    */
-  async sendTimeoutEvent() {
+  async sendTimeoutEvent () {
     if (this.submitted) {
       return false;
     }
@@ -333,9 +457,9 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
    * Add a character to the answer - up to a max of 5 which is all we can show
    * @param {string} char
    */
-  addChar(char: string) {
+  addChar (char: string) {
     if (this.submitted) {
-        return;
+      return;
     }
     this.startedAnswering = true;
     if (this.answer.length < 5) {
@@ -356,7 +480,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
    * Delete a character from the end of the answer if there is one
    * Return early and do nothing if the timer is up
    */
-  deleteChar() {
+  deleteChar () {
     if (this.submitted) {
       return;
     }
@@ -374,7 +498,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
    * Return early and do nothing if the user already started answering
    * or the user doesn't have the speech flag on.
    */
-  repeatQuestion() {
+  repeatQuestion () {
     if (this.hasStartedAnswering()) {
       return;
     }
@@ -383,13 +507,14 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
     }
     this.speechService.speakQuestion(this.factor1 + ' times ' + this.factor2, this.sequenceNumber);
   }
+
   /**
    * Handle key presses
    * @param {KeyboardEvent} event
    * @return {boolean}
    */
   @HostListener('document:keydown', ['$event'])
-  handleKeyboardEvent(event: KeyboardEvent) {
+  handleKeyboardEvent (event: KeyboardEvent) {
     event.preventDefault();
     event.stopPropagation();
     // console.log('practice-question.component: handleKeyboardEvent(): event: ', event);
@@ -402,7 +527,13 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
         factor1: this.factor1,
         factor2: this.factor2
       };
-      this.registerInputService.addEntry(event, questionData);
+      // this.registerInputService.addEntry(event, questionData);
+      this.registerInputService.storeEntry(event.key,
+        this.getEventType(event),
+        this.sequenceNumber,
+        `${this.factor1}x${this.factor2}`,
+        event.timeStamp
+      );
     }
     const key = event.key;
     // register inputs
@@ -433,5 +564,43 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit {
     }
     // IMPORTANT: prevent firefox, IE etc. from navigating back a page.
     return false;
+  }
+
+  getClass (obj: object): string {
+    return obj.toString().match(/ (\w+)/)[1];
+  }
+
+  getEventType (event: Event | MouseEvent | TouchEvent | KeyboardEvent | PointerEvent): EventType {
+    if ('pointerType' in event) {
+      // event.pointerType will be: mouse, pen, touch, '' (if can't determine), or vendor prefixed
+      // https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent
+      switch (event.pointerType) {
+        case 'mouse':
+          return EventType.mouse;
+        case 'touch':
+          return EventType.touch;
+        case 'pen':
+          return EventType.pen;
+        default:
+          return EventType.unknown;
+      }
+    }
+
+    // Not a Pointer Event - should be MouseEvent or TouchEvent
+    if (event instanceof MouseEvent) {
+      return EventType.mouse;
+    } else if (event instanceof TouchEvent) {
+      return EventType.touch;
+    } else if (event instanceof KeyboardEvent) {
+      return EventType.keyboard;
+    }
+
+    // If we get here we just have an Event class - which almost certainly means an older browser
+    // using a touch event, as mouse clicks in Angular (using the click event listener) generate MouseEvents,
+    // but touch events generate plain Events rather than the usual TouchEvents.  This only happens in Angular, and not normal DOMs.
+    if ('ontouchstart' in this.window) {
+      return EventType.touch;
+    }
+    return EventType.mouse;
   }
 }
