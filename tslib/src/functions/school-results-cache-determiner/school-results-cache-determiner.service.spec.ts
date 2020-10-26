@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/dot-notation */
 
 import { SchoolResultsCacheDeterminerService } from './school-results-cache-determiner.service'
-import { ConsoleLogger } from '../../common/logger'
+import { ConsoleLogger, ILogger } from '../../common/logger'
 import config from '../../config'
 import moment from 'moment'
 
@@ -12,7 +13,12 @@ const schoolData = [
 
 let mockDataService: any
 
-function getMockContext () {
+interface IMockContext {
+  bindings: Record<string, unknown>
+  log: ILogger
+}
+
+function getMockContext (): IMockContext {
   const functionBindings: any = {}
   const context = {
     bindings: functionBindings,
@@ -26,10 +32,10 @@ describe('school-results-cache-determiner.service', () => {
 
   beforeAll(() => {
     // This function is a little wordy for unit tests
-    console.error = jest.fn()
-    console.warn = jest.fn()
-    console.info = jest.fn()
-    console.log = jest.fn()
+    jest.spyOn(console, 'error').mockImplementation()
+    jest.spyOn(console, 'warn').mockImplementation()
+    jest.spyOn(console, 'info').mockImplementation()
+    jest.spyOn(console, 'log').mockImplementation()
   })
 
   beforeEach(() => {
@@ -54,20 +60,19 @@ describe('school-results-cache-determiner.service', () => {
 
     await sut.execute()
 
-    expect(mockContext.bindings).toEqual({})
+    expect(mockContext.bindings).toStrictEqual({})
     expect(mockDataService.sqlGetSchoolGuids).not.toHaveBeenCalled()
   })
 
-  test('it sends messages to cache all schools when the config is set to 2 ', async () => {
+  test('it sends messages to cache all schools when the config is set to 2', async () => {
     const mockContext = getMockContext()
     const sut = new SchoolResultsCacheDeterminerService(mockContext.bindings, mockContext.log, mockDataService)
     config.SchoolResultsCacheDeterminer.cache = 2
 
     await sut.execute()
-
-    expect(mockContext.bindings.hasOwnProperty('schoolResultsCache')).toBeTruthy()
-    expect(mockContext.bindings.schoolResultsCache.length).toBe(3)
-    expect(mockContext.bindings.schoolResultsCache).toEqual(schoolData)
+    expect('schoolResultsCache' in mockContext.bindings).toBeDefined()
+    expect(mockContext.bindings.schoolResultsCache).toHaveLength(3)
+    expect(mockContext.bindings.schoolResultsCache).toStrictEqual(schoolData)
   })
 
   test('it does not send any messages to cache schools when the config is set to 1 (default) but the datetime is too early', async () => {
@@ -88,14 +93,13 @@ describe('school-results-cache-determiner.service', () => {
         adminEndDate: moment('2020-09-31')
       }
     })
-
     // mock the system date to be within the admin period, but outside the check start date
-    Date.now = jest.fn().mockReturnValue(new Date('2020-05-15T09:00:00.000Z'))
+    jest.spyOn(Date, 'now').mockImplementation(() => new Date('2020-05-15T09:00:00.000Z').getTime())
 
     await sut.execute()
 
     // Expect no output messages at this time
-    expect(mockContext.bindings).toEqual({})
+    expect(mockContext.bindings).toStrictEqual({})
   })
 
   test('it does not send any messages to cache schools when the config is set to 1 (default) but the datetime is too late', async () => {
@@ -118,12 +122,12 @@ describe('school-results-cache-determiner.service', () => {
     })
 
     // second, mock the system date to be within the admin period, but outside the check start date
-    Date.now = jest.fn().mockReturnValue(new Date('2020-08-03T07:00:00.001')) // 1ms after it opens on the monday after
+    jest.spyOn(Date, 'now').mockReturnValue(new Date('2020-08-03T07:00:00.001').getTime()) // 1ms after it opens on the monday after
 
     await sut.execute()
 
     // Expect no output messages at this time
-    expect(mockContext.bindings).toEqual({})
+    expect(mockContext.bindings).toStrictEqual({})
   })
 
   test('it sends messages to cache schools when the config is set to 1 (default) and the date is between the live check close and the first monday after at 6am', async () => {
@@ -149,13 +153,13 @@ describe('school-results-cache-determiner.service', () => {
     })
 
     // second, mock the system date to be within the admin period, but outside the check start date
-    Date.now = jest.fn().mockReturnValue(new Date('2020-07-31T22:00:00.000Z'))
+    jest.spyOn(Date, 'now').mockReturnValue(new Date('2020-07-31T22:00:00.000Z').getTime())
 
     await sut.execute()
 
     // Expect 3 output bindings
-    expect(mockContext.bindings.schoolResultsCache.length).toBe(3)
-    expect(mockContext.bindings.schoolResultsCache).toEqual(schoolData)
+    expect(mockContext.bindings.schoolResultsCache).toHaveLength(3)
+    expect(mockContext.bindings.schoolResultsCache).toStrictEqual(schoolData)
   })
 
   test('it throws an error if the schools object is not an array', async () => {
@@ -186,10 +190,11 @@ describe('school-results-cache-determiner.service', () => {
 
     // Mock and the spy on the internal call - no need to execute it, because then we need to start mocking the date, which is irrelevent
     // as all we are really testing here is the default case of the switch statement.
+    // eslint-disable-next-line jest/prefer-spy-on
     sut['dateRangeCheckAndCache'] = jest.fn()
 
     await sut.execute()
 
-    expect(sut['dateRangeCheckAndCache']).toHaveBeenCalled() // testing a private method, so object/property syntax
+    expect(sut['dateRangeCheckAndCache']).toHaveBeenCalledWith() // testing a private method, so object/property syntax
   })
 })

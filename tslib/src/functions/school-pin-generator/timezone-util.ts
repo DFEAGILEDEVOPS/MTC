@@ -12,12 +12,12 @@ export class TimezoneUtil {
     return minutesOffset / 60
   }
 
-  getTimezoneList (): Array<Timezone> {
-    const countryZonesCache: Array<Timezone> = []
+  getTimezoneList (): Timezone[] {
+    const countryZonesCache: Timezone[] = []
 
     if (countryZonesCache.length > 0) return countryZonesCache
 
-    const getOffset = (zone: string) => {
+    const getOffset = (zone: string): string => {
       return momentTz.tz(zone).format('Z')
     }
 
@@ -26,7 +26,7 @@ export class TimezoneUtil {
         val.zones.forEach(z => {
           const lastElement = z.split('/').pop()
           let zoneName
-          if (lastElement) {
+          if (lastElement !== undefined) {
             zoneName = lastElement.replace('_', ' ')
             countryZonesCache.push({ name: `${val.name}, ${zoneName} (GMT ${getOffset(z)})`, zone: z, countryCode: val.abbr })
           }

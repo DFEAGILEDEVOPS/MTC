@@ -18,7 +18,7 @@ export interface IPupilFeedbackTableEntity {
 }
 
 export interface IPupilFeedbackFunctionBinding {
-  feedbackTable: Array<any>
+  feedbackTable: any[]
 }
 
 export class PupilFeedbackService {

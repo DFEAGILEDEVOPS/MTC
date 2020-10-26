@@ -4,9 +4,8 @@ import { IConfigProvider, ConfigFileProvider } from './config-file-provider'
 import { IDateTimeService, DateTimeService } from '../../common/datetime.service'
 
 export class SchoolPinExpiryGenerator {
-
-  private dateTimeService: IDateTimeService
-  private configProvider: IConfigProvider
+  private readonly dateTimeService: IDateTimeService
+  private readonly configProvider: IConfigProvider
 
   constructor (dateTimeService?: IDateTimeService, configProvider?: IConfigProvider) {
     if (dateTimeService === undefined) {
@@ -22,7 +21,7 @@ export class SchoolPinExpiryGenerator {
   generate (timezone?: string): momentTz.Moment {
     const currentUtc = this.dateTimeService.utcNow()
     let localTime: momentTz.Moment
-    if (timezone) {
+    if (timezone !== undefined) {
       localTime = momentTz.tz(currentUtc, timezone)
     } else {
       localTime = currentUtc

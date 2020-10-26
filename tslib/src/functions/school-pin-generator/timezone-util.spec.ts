@@ -14,6 +14,6 @@ describe('utc-offset-resolver', () => {
     const tz = 'Asia/Tokyo'
     const expected = 9
     const actual = sut.resolveToHours(tz)
-    expect(actual).toEqual(expected)
+    expect(actual).toStrictEqual(expected)
   })
 })

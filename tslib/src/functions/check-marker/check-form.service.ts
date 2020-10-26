@@ -8,15 +8,13 @@ export interface ICheckFormService {
 }
 
 export class CheckFormService implements ICheckFormService {
-
-  private sqlService: SqlService
+  private readonly sqlService: SqlService
 
   constructor () {
     this.sqlService = new SqlService()
   }
 
-  async getCheckFormDataByCheckCode (checkCode: string) {
-
+  async getCheckFormDataByCheckCode (checkCode: string): Promise<any> {
     const sql = `SELECT TOP 1 f.formData
               FROM mtc_admin.[check] chk
               INNER JOIN mtc_admin.[checkForm] f ON chk.checkForm_id = f.id
@@ -30,7 +28,7 @@ export class CheckFormService implements ICheckFormService {
     ]
     const result = await this.sqlService.query(sql, params)
     if (RA.isNilOrEmpty(result)) return
-    if (result[0].formData) {
+    if (result[0].formData !== undefined) {
       return result[0].formData
     }
   }

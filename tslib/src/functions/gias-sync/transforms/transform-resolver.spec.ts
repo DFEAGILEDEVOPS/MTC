@@ -13,7 +13,7 @@ describe('school transform resolver', () => {
 
   test('returns null transformer when matching no link found', () => {
     const transformer = sut.resolve(undefined)
-    expect(transformer.constructor.name).toEqual('NullTransformer')
+    expect(transformer.constructor.name).toStrictEqual('NullTransformer')
   })
 
   test('returns predecessor transformer when matching link type identified', () => {
@@ -25,7 +25,7 @@ describe('school transform resolver', () => {
       },
       LinkUrn: 123
     })
-    expect(transformer.constructor.name).toEqual('PredecessorTransformer')
+    expect(transformer.constructor.name).toStrictEqual('PredecessorTransformer')
   })
 
   test('returns successor transformer when matching link type identified', () => {
@@ -37,6 +37,6 @@ describe('school transform resolver', () => {
       },
       LinkUrn: 123
     })
-    expect(transformer.constructor.name).toEqual('SuccessorTransformer')
+    expect(transformer.constructor.name).toStrictEqual('SuccessorTransformer')
   })
 })

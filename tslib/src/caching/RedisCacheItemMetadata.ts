@@ -3,6 +3,7 @@ export class RedisCacheItemMetadata {
   constructor (type: RedisItemDataType) {
     this.type = type
   }
+
   type: RedisItemDataType
 }
 export class RedisCacheItem {
@@ -10,6 +11,7 @@ export class RedisCacheItem {
     this.meta = meta
     this.value = value
   }
+
   meta: RedisCacheItemMetadata
   value: string
 }

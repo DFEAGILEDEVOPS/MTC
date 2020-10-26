@@ -39,7 +39,6 @@ const pupilAccessArrangements = [
 ]
 
 describe('prepared-check-merge.service', () => {
-
   beforeEach(() => {
     dataServiceMock = new PreparedCheckMergeDataServiceMock()
     sut = new PreparedCheckMergeService(dataServiceMock)
@@ -58,14 +57,14 @@ describe('prepared-check-merge.service', () => {
   })
 
   test('creates a new config based on the new aa settings and the config supplied', async () => {
-    dataServiceMock.getAccessArrangementsCodesByIds = jest.fn(async (ids: number[]) => {
+    jest.spyOn(dataServiceMock, 'getAccessArrangementsCodesByIds').mockImplementation(async () => {
       return ['FTS', 'CCT']
     })
     const config = await sut.merge(checkConfig, pupilAccessArrangements)
-    expect(dataServiceMock.getAccessArrangementsCodesByIds).toHaveBeenCalled()
-    expect(config.fontSize).toBeTruthy()
+    expect(dataServiceMock.getAccessArrangementsCodesByIds).toHaveBeenCalledWith(expect.any(Array))
+    expect(config.fontSize).toBe(true)
     expect(config.fontSizeCode).toBe('RGL')
-    expect(config.colourContrast).toBeTruthy()
+    expect(config.colourContrast).toBe(true)
     expect(config.colourContrastCode).toBe('BOW')
   })
 })

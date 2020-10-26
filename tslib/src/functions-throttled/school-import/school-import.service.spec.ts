@@ -15,7 +15,6 @@ const SchoolDataServiceMock = jest.fn<ISchoolDataService, any>(() => ({
 }))
 
 describe('#SchoolImportService', () => {
-
   beforeEach(() => {
     schoolDataServiceMock = new SchoolDataServiceMock()
     jest.spyOn(schoolDataServiceMock, 'bulkUpload').mockReturnValueOnce(Promise.resolve(new SchoolImportJobResult()))
@@ -42,9 +41,10 @@ describe('#SchoolImportService', () => {
     const csv = `URN,LA (code),EstablishmentNumber,EstablishmentName,StatutoryLowAge,StatutoryHighAge,EstablishmentStatus (code),TypeOfEstablishment (code),EstablishmentTypeGroup (code)
     12345,123,4567,My School,9,9,4,3,4`
     const retainedMessage = 'foo'
+    // eslint-disable-next-line @typescript-eslint/dot-notation
     sut['jobResult'].stdout.push(retainedMessage)
     const jobResult = await sut.process(csv)
-    expect(jobResult.stdout.shift()).toEqual(retainedMessage)
+    expect(jobResult.stdout.shift()).toStrictEqual(retainedMessage)
   })
 
   test('data is filtered and persisted when valid', async () => {
@@ -52,11 +52,11 @@ describe('#SchoolImportService', () => {
     12345,123,4567,My School,9,9,4,3,4`
     const jobResult = await sut.process(csv)
     expect(jobResult).toBeInstanceOf(SchoolImportJobResult)
-    expect(jobResult.getErrorOutput().length).toBe(0)
+    expect(jobResult.getErrorOutput()).toHaveLength(0)
   })
 
   test('when missing header error occurs, only 1 entry is logged to error output', async () => {
-    const csv = `12345,123,4567,My School,9,9,4,3,4`
+    const csv = '12345,123,4567,My School,9,9,4,3,4'
     try {
       await sut.process(csv)
       fail('should have thrown due to no column header row')
