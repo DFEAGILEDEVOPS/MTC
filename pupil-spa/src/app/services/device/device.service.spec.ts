@@ -94,9 +94,10 @@ describe('DeviceService', () => {
   });
 
   describe('setupDeviceCookie', () => {
+    let setCookieSpy: jasmine.Spy;
     beforeEach(() => {
       spyOn(service['cookieService'], 'check');
-      spyOn(service['cookieService'], 'set');
+      setCookieSpy = spyOn(service['cookieService'], 'set');
     });
 
     it('calls cookieService.check to see if there is an existing cookie', () => {
@@ -107,6 +108,25 @@ describe('DeviceService', () => {
     it('calls cookieService.set to set or refresh the cookie', () => {
       service.setupDeviceCookie();
       expect(service['cookieService'].set).toHaveBeenCalledTimes(1);
+    });
+
+    it('sets the cookie args correctly', () => {
+      // setup
+      const now = new Date();
+
+      // run
+      service.setupDeviceCookie();
+
+      // test setup
+      const args = setCookieSpy.calls.mostRecent().args;
+
+      // Check the cookie name is set correctly
+      expect(args[0]).toBe('deviceId');
+
+      // Cookie expiration time check - should be 4 weeks
+      const cookieExpiration = new Date(args[2]['expires']);
+      const diff = Math.abs(cookieExpiration.getTime() - now.getTime() - 2419200000); // should be zero
+      expect(Math.abs(diff)).toBeLessThan(10 * 1000); // Allow 10 seconds out
     });
   });
 

@@ -173,6 +173,15 @@ describe('LoginComponent', () => {
       });
     });
 
+    it('should set-up the device cookie', () => {
+      spyOn(mockQuestionService, 'getConfig').and.returnValue({});
+      spyOn(component['deviceService'], 'setupDeviceCookie');
+      component.onSubmit('goodPin', 'goodPin');
+      fixture.whenStable().then(() => {
+        expect(component['deviceService'].setupDeviceCookie).toHaveBeenCalledTimes(1);
+      });
+    });
+
     it('should redirect to the font selection page when fontSize is enabled', async () => {
       spyOn(mockQuestionService, 'getConfig').and.returnValue({ fontSize: true });
       component.onSubmit('goodPin', 'goodPin');
@@ -247,12 +256,6 @@ describe('LoginComponent', () => {
     it('should not navigate to check path if a completed check is detected', () => {
       component.ngOnInit();
       expect(mockRouter.navigate).toHaveBeenCalledTimes(0);
-    });
-
-    it('should set-up the device cookie', () => {
-      spyOn(component['deviceService'], 'setupDeviceCookie');
-      component.ngOnInit();
-      expect(component['deviceService'].setupDeviceCookie).toHaveBeenCalledTimes(1);
     });
   });
 });

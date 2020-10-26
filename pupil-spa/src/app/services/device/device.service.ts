@@ -138,8 +138,8 @@ export class DeviceService {
    * Set a new device id, or refresh the far-future expiry of the existing cookie.
    */
   public setupDeviceCookie (): void {
-    const threeYearsFromNow = new Date();
-    threeYearsFromNow.setTime(threeYearsFromNow.getTime() + (3 * 365 * 24 * 60 * 60 * 1000));
+    const fourWeeksFromNow = new Date();
+    fourWeeksFromNow.setTime(fourWeeksFromNow.getTime() + (28 * 24 * 60 * 60 * 1000));
     let deviceId: string;
 
     if (!this.cookieService.check(this.deviceCookieName)) {
@@ -151,7 +151,7 @@ export class DeviceService {
 
     this.cookieService.set(this.deviceCookieName, deviceId, {
       path: this.deviceCookiePath,
-      expires: threeYearsFromNow,
+      expires: fourWeeksFromNow,
       sameSite: 'Strict'
     });
   }

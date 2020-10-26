@@ -52,7 +52,6 @@ export class LoginComponent implements OnInit, AfterViewInit {
       this.router.navigate(['check'], { queryParams: { unfinishedCheck: true } });
     }
     this.loginErrorService.currentErrorMessage.subscribe(message => this.errorMessage = message);
-    this.deviceService.setupDeviceCookie();
   }
 
   ngAfterViewInit() {
@@ -84,6 +83,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
         async () => {
           this.loginSucceeded = true;
           this.connectionFailed = false;
+          this.deviceService.setupDeviceCookie();
           this.questionService.initialise();
           this.warmupQuestionService.initialise();
 
