@@ -1,10 +1,10 @@
 
 import { AzureFunction, Context, HttpRequest } from '@azure/functions'
 import { SchoolPinReplenishmnentService } from '../school-pin-generator/school-pin-replenishment.service'
-const functionName = 'school-pin-http-service'
 import { performance } from 'perf_hooks'
+const functionName = 'school-pin-http-service'
 
-function finish (start: number, context: Context) {
+function finish (start: number, context: Context): void {
   const end = performance.now()
   const durationInMilliseconds = end - start
   const timeStamp = new Date().toISOString()
@@ -12,15 +12,15 @@ function finish (start: number, context: Context) {
 }
 
 const schoolPinHttpService: AzureFunction = async function (context: Context, req: HttpRequest): Promise<void> {
+  const schoolIdParam = req?.body?.school_id
 
-  if (!req.body || !req.body.school_id) {
+  if (schoolIdParam === undefined) {
     context.res = {
       status: 400,
       body: 'school_id is required'
     }
     return
   }
-
   const schoolId = req.body.school_id
 
   const start = performance.now()

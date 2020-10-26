@@ -9,8 +9,7 @@ export interface IBatchCheckNotifierDataService {
 }
 
 export class BatchCheckNotifierDataService implements IBatchCheckNotifierDataService {
-
-  private sqlService: SqlService
+  private readonly sqlService: SqlService
 
   constructor () {
     this.sqlService = new SqlService()
@@ -71,6 +70,7 @@ export class BatchCheckNotifierDataService implements IBatchCheckNotifierDataSer
       ]
     }
   }
+
   createCheckReceivedRequest (checkCode: string): ITransactionRequest {
     return {
       params: [{
@@ -87,7 +87,8 @@ export class BatchCheckNotifierDataService implements IBatchCheckNotifierDataSer
       `
     }
   }
-  executeRequestsInTransaction (requests: ITransactionRequest[]): Promise<void> {
+
+  async executeRequestsInTransaction (requests: ITransactionRequest[]): Promise<void> {
     return this.sqlService.modifyWithTransaction(requests)
   }
 }

@@ -1,11 +1,10 @@
 import axios, { AxiosRequestConfig } from 'axios'
 
 export class SoapRequestService implements ISoapRequestService {
-
   async execute (request: ISoapRequest): Promise<ISoapResponse> {
     const headers = {
       'Content-Type': 'text/xml;charset=UTF-8',
-      'SOAPAction': `${request.namespace}/${request.action}`
+      SOAPAction: `${request.namespace}/${request.action}`
     }
     const config: AxiosRequestConfig = {
       method: 'POST',
@@ -33,9 +32,9 @@ export interface ISoapResponse {
 }
 
 export interface ISoapRequest {
-  namespace: string,
-  action: string,
-  timeout: number,
-  serviceUrl: string,
+  namespace: string
+  action: string
+  timeout: number
+  serviceUrl: string
   soapXml: string
 }

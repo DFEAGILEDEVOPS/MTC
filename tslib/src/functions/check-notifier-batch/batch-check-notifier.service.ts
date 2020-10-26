@@ -3,8 +3,7 @@ import { IBatchCheckNotifierDataService, BatchCheckNotifierDataService } from '.
 import { ITransactionRequest } from '../../sql/sql.service'
 
 export class BatchCheckNotifier {
-
-  private dataService: IBatchCheckNotifierDataService
+  private readonly dataService: IBatchCheckNotifierDataService
 
   constructor (batchCheckNotifierDataService?: IBatchCheckNotifierDataService) {
     if (batchCheckNotifierDataService === undefined) {
@@ -13,7 +12,7 @@ export class BatchCheckNotifier {
     this.dataService = batchCheckNotifierDataService
   }
 
-  notify (messages: ICheckNotificationMessage[]): Promise<void> {
+  async notify (messages: ICheckNotificationMessage[]): Promise<void> {
     const requests: ITransactionRequest[] = []
     messages.forEach(message => {
       switch (message.notificationType) {

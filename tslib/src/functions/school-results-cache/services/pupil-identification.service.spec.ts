@@ -32,8 +32,8 @@ describe('pupil-identification.service', () => {
       }
     ]
     const result = sut.addIdentificationFlags(mockData)
-    expect(result[0].showDoB).toBeTruthy()
-    expect(result[1].showDoB).toBeTruthy()
+    expect(result[0].showDoB).toBe(true)
+    expect(result[1].showDoB).toBe(true)
   })
 
   test('If two pupils have the same surname, forename and date of birth, it differentiates on the middle names', () => {
@@ -73,14 +73,14 @@ describe('pupil-identification.service', () => {
 
     const result = sut.addIdentificationFlags(mockData)
 
-    expect(result[0].showMiddleNames).toBeTruthy()
-    expect(result[0].showDoB).toBeFalsy()
+    expect(result[0].showMiddleNames).toBe(true)
+    expect(result[0].showDoB).toBe(false)
     expect(result[0].fullName).toBe('Burton, Greg Zoro')
-    expect(result[1].showMiddleNames).toBeFalsy()
+    expect(result[1].showMiddleNames).toBe(false)
     expect(result[1].fullName).toBe('Chapman, Bruce')
-    expect(result[1].showDoB).toBeFalsy()
-    expect(result[2].showMiddleNames).toBeTruthy()
-    expect(result[2].showDoB).toBeFalsy()
+    expect(result[1].showDoB).toBe(false)
+    expect(result[2].showMiddleNames).toBe(true)
+    expect(result[2].showDoB).toBe(false)
     expect(result[2].fullName).toBe('Burton, Greg Alfredo')
 
     // implicit in this test is that it preserves ordering
@@ -121,8 +121,8 @@ describe('pupil-identification.service', () => {
     ]
     const result = sut.addIdentificationFlags(mockData)
     result.forEach(o => {
-      expect(o.showDoB).toBeFalsy()
-      expect(o.showMiddleNames).toBeFalsy()
+      expect(o.showDoB).toBe(false)
+      expect(o.showMiddleNames).toBe(false)
       expect(o.fullName).toBe(`${o.lastName}, ${o.foreName}`)
     })
   })

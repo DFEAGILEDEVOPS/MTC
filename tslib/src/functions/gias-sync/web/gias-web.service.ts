@@ -11,12 +11,12 @@ export interface IGiasWebService {
 }
 
 export class GiasWebService implements IGiasWebService {
-  private soapMessageBuilder: ISoapMessageBuilder
-  private soapRequestService: ISoapRequestService
-  private xmlParser: IXmlParser
-  private multipartMessageParser: IMultipartMessageParser
-  private zipService: IZipService
-  private attachmentParser: AttachmentIdParser
+  private readonly soapMessageBuilder: ISoapMessageBuilder
+  private readonly soapRequestService: ISoapRequestService
+  private readonly xmlParser: IXmlParser
+  private readonly multipartMessageParser: IMultipartMessageParser
+  private readonly zipService: IZipService
+  private readonly attachmentParser: AttachmentIdParser
 
   constructor (soapMessageBuilder?: ISoapMessageBuilder,
     soapRequestService?: ISoapRequestService,
@@ -46,7 +46,7 @@ export class GiasWebService implements IGiasWebService {
     this.attachmentParser = new AttachmentIdParser()
   }
 
-  private async makeRequest (actionId: string, params: any) {
+  private async makeRequest (actionId: string, params: any): Promise<any> {
     if (config.Gias.Namespace === undefined) {
       throw new Error('gias web service namespace is required')
     }
@@ -107,6 +107,6 @@ export class GiasWebService implements IGiasWebService {
 }
 
 export interface IExtractResult {
-  extractId: string,
+  extractId: string
   data: any
 }

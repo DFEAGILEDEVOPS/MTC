@@ -18,15 +18,6 @@ describe('school-requires-new-pin-predicate', () => {
       id: 1,
       name: 'school'
     }
-    const isRequired = sut.isRequired(school)
-    expect(isRequired).toBe(true)
-  })
-
-  test('indicates pin required when pin is undefined', () => {
-    const school: School = {
-      id: 1,
-      name: 'school'
-    }
     expect(sut.isRequired(school)).toBe(true)
   })
 
@@ -35,7 +26,7 @@ describe('school-requires-new-pin-predicate', () => {
       id: 1,
       name: 'school',
       pin: 'abc12def',
-      pinExpiresAt: moment().add(1,'hours')
+      pinExpiresAt: moment().add(1, 'hours')
     }
     expect(sut.isRequired(school)).toBe(false)
   })
@@ -45,7 +36,7 @@ describe('school-requires-new-pin-predicate', () => {
       id: 1,
       name: 'school',
       pin: undefined,
-      pinExpiresAt: moment().add(1,'hours')
+      pinExpiresAt: moment().add(1, 'hours')
     }
     expect(sut.isRequired(school)).toBe(true)
   })
@@ -65,7 +56,7 @@ describe('school-requires-new-pin-predicate', () => {
       id: 1,
       name: 'school',
       pin: 'acb12def',
-      pinExpiresAt: moment().add(-1,'hours')
+      pinExpiresAt: moment().add(-1, 'hours')
     }
     expect(sut.isRequired(school)).toBe(true)
   })

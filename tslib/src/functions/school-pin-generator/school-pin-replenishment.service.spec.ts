@@ -20,20 +20,19 @@ const configProviderMock: IConfigProvider = {
 
 let sut: SchoolPinReplenishmnentService
 let dataService: ISchoolPinReplenishmentDataService
-let logger: ILogger = new ConsoleLogger()
+const logger: ILogger = new ConsoleLogger()
 
 describe('school-pin-replenishment.service', () => {
-
   beforeEach(() => {
     dataService = new SchoolPinGeneratorDataServiceMock()
     sut = new SchoolPinReplenishmnentService(dataService, undefined, configProviderMock)
   })
 
-  it('should be defined', () => {
+  test('should be defined', () => {
     expect(sut).toBeInstanceOf(SchoolPinReplenishmnentService)
   })
 
-  it('should create a new pin for each school that requires one when no school uuid provided', async () => {
+  test('should create a new pin for each school that requires one when no school uuid provided', async () => {
     const oneHourAgo = moment().add(-1, 'hours')
     const oneHourFromNow = moment().add(1, 'hours')
 
@@ -57,18 +56,18 @@ describe('school-pin-replenishment.service', () => {
         pin: 'baz44bug'
       }
     ]
-    dataService.getAllSchools = jest.fn(async () => {
+    jest.spyOn(dataService, 'getAllSchools').mockImplementation(async () => {
       return schools
     })
     let update: SchoolPinUpdate | undefined
-    dataService.updatePin = jest.fn(async (schoolUpdate) => {
+    jest.spyOn(dataService, 'updatePin').mockImplementation(async (schoolUpdate) => {
       update = schoolUpdate
     })
     await sut.process(logger)
     expect(dataService.updatePin).toHaveBeenCalledTimes(1)
     expect(update).toBeDefined()
     // optional chaining not currently supported in our ts-jest setup
-    expect(update ? update.id : undefined).toEqual(2)
+    expect(update?.id).toStrictEqual(2)
   })
 
   test('it should fail after making configured number of attempts', async () => {
@@ -82,10 +81,10 @@ describe('school-pin-replenishment.service', () => {
         pin: 'foo23bar'
       }
     ]
-    dataService.getAllSchools = jest.fn(async () => {
+    jest.spyOn(dataService, 'getAllSchools').mockImplementation(async () => {
       return schools
     })
-    dataService.updatePin = jest.fn(async (schoolUpdate) => {
+    jest.spyOn(dataService, 'updatePin').mockImplementation(async () => {
       throw new Error('mock error')
     })
     await sut.process(logger)
@@ -93,7 +92,7 @@ describe('school-pin-replenishment.service', () => {
   })
 
   test('if no schools to process, service returns early', async () => {
-    dataService.getAllSchools = jest.fn(async () => {
+    jest.spyOn(dataService, 'getAllSchools').mockImplementation(async () => {
       return []
     })
     await sut.process(logger)
@@ -101,7 +100,7 @@ describe('school-pin-replenishment.service', () => {
   })
 
   test('only updates single school specified when schoolUUID passed as param', async () => {
-    dataService.getSchoolById = jest.fn(async (id: number) => {
+    jest.spyOn(dataService, 'getSchoolById').mockImplementation(async () => {
       const school: School = {
         id: 1,
         name: 'x'
@@ -115,7 +114,7 @@ describe('school-pin-replenishment.service', () => {
   })
 
   test('returns generated pin when single schoolUUID passed as param', async () => {
-    dataService.getSchoolById = jest.fn(async (id: number) => {
+    jest.spyOn(dataService, 'getSchoolById').mockImplementation(async () => {
       const school: School = {
         id: 1,
         name: 'x'

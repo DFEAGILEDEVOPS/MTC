@@ -5,7 +5,8 @@ import * as sb from '@azure/service-bus'
 
 import config from '../../config'
 import { ISchoolResultsCacheMessage } from '../school-results-cache-determiner/school-results-cache-determiner.service'
-const { ResultService } = require('./services/result.service')
+import { ResultService } from './services/result.service'
+import { IFunctionTimer } from '../../azure/functions'
 
 const functionName = 'school-results-cache'
 
@@ -15,14 +16,13 @@ const functionName = 'school-results-cache'
   if the message is abandoned 10 times (the current 'max delivery count') it will be
   put on the dead letter queue automatically.
 */
-const sbMessageReceiver: AzureFunction = async function sbMessageReceiver (context: Context, timer: any): Promise<void> {
-
+const sbMessageReceiver: AzureFunction = async function sbMessageReceiver (context: Context, timer: IFunctionTimer): Promise<void> {
   if (timer.IsPastDue) {
     context.log(`${functionName} timer is past due, exiting...`)
     return
   }
   const start = performance.now()
-  if (!config.ServiceBus.ConnectionString) {
+  if (config.ServiceBus.ConnectionString === undefined) {
     throw new Error(`${functionName} ServiceBusConnection env var is missing`)
   }
 
@@ -31,7 +31,7 @@ const sbMessageReceiver: AzureFunction = async function sbMessageReceiver (conte
   let receiver: sb.Receiver
   const receiveQueueName = 'school-results-cache'
 
-  const disconnect = async () => {
+  const disconnect = async (): Promise<void> => {
     await receiver.close()
     await queueClient.close()
     await busClient.close()
@@ -82,7 +82,7 @@ async function process (notifications: ISchoolResultsCacheMessage[], context: Co
       await completeMessages([msg], context)
     } catch (error) {
       // sql transaction failed, abandon...
-      context.log.warn(`${functionName}: error processing message ${msg}\n Error was: ${error}`)
+      context.log.warn(`${functionName}: error processing message ${JSON.stringify(msg)}\n Error was: ${error}`)
       console.error(error)
       await abandonMessages([msg], context)
     }
@@ -121,7 +121,7 @@ async function abandonMessages (messageBatch: sb.ServiceBusMessage[], context: C
   }
 }
 
-function finish (start: number, context: Context) {
+function finish (start: number, context: Context): void {
   const end = performance.now()
   const durationInMilliseconds = end - start
   const timeStamp = new Date().toISOString()

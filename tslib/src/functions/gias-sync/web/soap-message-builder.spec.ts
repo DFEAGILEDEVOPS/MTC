@@ -16,21 +16,21 @@ let sut: SoapMessageBuilder
 let dateTimeServiceMock: IDateTimeService
 
 const xmlParserOptions = {
-  attributeNamePrefix : '',
+  attributeNamePrefix: '',
   attrNodeName: 'attr', // default is 'false'
-  textNodeName : 'value',
-  ignoreAttributes : false,
-  ignoreNameSpace : false,
-  allowBooleanAttributes : false,
-  parseNodeValue : true,
-  parseAttributeValue : false,
+  textNodeName: 'value',
+  ignoreAttributes: false,
+  ignoreNameSpace: false,
+  allowBooleanAttributes: false,
+  parseNodeValue: true,
+  parseAttributeValue: false,
   trimValues: true,
   cdataTagName: '__cdata', // default is 'false'
   cdataPositionChar: '\\c',
   parseTrueNumberOnly: false,
   arrayMode: false, // "strict"
-  attrValueProcessor: (val: any, attrName: string) => he.decode(val, { isAttributeValue: true }),// default is a=>a
-  tagValueProcessor : (val: any, tagName: string) => he.decode(val), // default is a=>a
+  attrValueProcessor: (val: any) => he.decode(val, { isAttributeValue: true }), // default is a=>a
+  tagValueProcessor: (val: any) => he.decode(val), // default is a=>a
   stopNodes: ['parse-me-as-string']
 }
 
@@ -56,7 +56,7 @@ describe('soap-message-builder', () => {
     const receivedOutput = sut.buildMessage(messageSpec)
     expect(receivedOutput).toBeDefined()
     const xml = xmlParser.parse(receivedOutput, xmlParserOptions)
-    expect(xml['soapenv:Envelope'].attr['xmlns:ws']).toEqual(namespace)
+    expect(xml['soapenv:Envelope'].attr['xmlns:ws']).toStrictEqual(namespace)
   })
 
   test('when credentials specified a security header is included containing credentials', () => {
@@ -79,16 +79,14 @@ describe('soap-message-builder', () => {
     const securityElement = soapHeader['wsse:Security']
     expect(securityElement).toBeDefined()
     const usernameToken = securityElement['wsse:UsernameToken']
-    expect(usernameToken['wsse:Username']).toEqual(username)
-    expect(usernameToken['wsse:Password'].value).toEqual(password)
+    expect(usernameToken['wsse:Username']).toStrictEqual(username)
+    expect(usernameToken['wsse:Password'].value).toStrictEqual(password)
   })
 
   test('when message expiry specified security header details creation and expiry values', () => {
     const expiryValue = 1234
     const mockNow = moment()
-    dateTimeServiceMock.utcNow = jest.fn(() => {
-      return mockNow
-    })
+    jest.spyOn(dateTimeServiceMock, 'utcNow').mockImplementation(() => mockNow)
     const messageSpec: ISoapMessageSpecification = {
       action: 'action',
       namespace: namespace,
@@ -107,8 +105,8 @@ describe('soap-message-builder', () => {
     expect(expiryDateTime).toBeDefined()
     expect(createdDateTime).toBeDefined()
     const expectedExpiryDateTime = mockNow.clone().add(expiryValue, 'milliseconds').toDate()
-    expect(expiryDateTime).toEqual(expectedExpiryDateTime.toISOString())
-    expect(createdDateTime).toEqual(mockNow.toISOString())
+    expect(expiryDateTime).toStrictEqual(expectedExpiryDateTime.toISOString())
+    expect(createdDateTime).toStrictEqual(mockNow.toISOString())
   })
 
   test('message should have a body defined', () => {
@@ -138,6 +136,6 @@ describe('soap-message-builder', () => {
     const soapBody = xml['soapenv:Envelope']['soapenv:Body']
     const params = soapBody['ws:action']
     expect(params).toBeDefined()
-    expect(params['ws:Id']).toEqual(paramValue)
+    expect(params['ws:Id']).toStrictEqual(paramValue)
   })
 })

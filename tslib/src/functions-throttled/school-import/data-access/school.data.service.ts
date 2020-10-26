@@ -4,13 +4,12 @@ import { SchoolImportJobResult } from '../SchoolImportJobResult'
 import { ISchoolRecord } from './ISchoolRecord'
 
 export interface ISchoolDataService {
-  bulkUpload (logger: ILogger, data: any, jobResult: SchoolImportJobResult): Promise<SchoolImportJobResult>
+  bulkUpload (logger: ILogger, data: any): Promise<SchoolImportJobResult>
 }
 
 export class SchoolDataService implements ISchoolDataService {
-
-  private pool: mssql.ConnectionPool
-  private jobResult: SchoolImportJobResult
+  private readonly pool: mssql.ConnectionPool
+  private readonly jobResult: SchoolImportJobResult
 
   constructor (pool: mssql.ConnectionPool, jobResult: SchoolImportJobResult) {
     this.pool = pool
@@ -28,7 +27,7 @@ export class SchoolDataService implements ISchoolDataService {
    * @param mapping - the mapping between our domain and the input file
    * @return {SchoolImportJobResult}
    */
-  async bulkUpload (logger: ILogger, schoolData: Array<ISchoolRecord>): Promise<SchoolImportJobResult> {
+  async bulkUpload (logger: ILogger, schoolData: ISchoolRecord[]): Promise<SchoolImportJobResult> {
     logger.verbose('SchoolDataService.bulkUpload() called')
 
     const table = new mssql.Table('[mtc_admin].[school]')
@@ -55,7 +54,7 @@ export class SchoolDataService implements ISchoolDataService {
     if (this.jobResult.schoolsLoaded > 0) {
       try {
         const res = await request.bulk(table)
-        logger.info(`bulk request complete: `, res)
+        logger.info('bulk request complete: ', res)
       } catch (error) {
         this.logError(`Bulk request failed. Error was:\n ${error.message}`)
         error.jobResult = this.jobResult

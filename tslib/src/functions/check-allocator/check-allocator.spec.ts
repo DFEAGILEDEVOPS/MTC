@@ -9,7 +9,7 @@ import { IPupilAllocationService } from './pupil-allocation.service'
 import { IRedisService } from '../../caching/redis-service'
 import { RedisServiceMock } from '../../caching/redis-service.mock'
 
-const pupilData: Array<IPupil> = [
+const pupilData: IPupil[] = [
   {
     id: 123
   },
@@ -78,11 +78,8 @@ describe('check-allocator/v1', () => {
   })
 
   test('it should fetch all pupils within specified school from data service', async () => {
-
-    checkAllocationDataServiceMock.getPupilsBySchoolUuid = jest.fn(async (schoolUUID) => {
-      return Promise.resolve(pupilData)
-    })
-    redisServiceMock.get = jest.fn(async (key) => {
+    jest.spyOn(checkAllocationDataServiceMock, 'getPupilsBySchoolUuid').mockImplementation(async () => Promise.resolve(pupilData))
+    jest.spyOn(redisServiceMock, 'get').mockImplementation(async () => {
       return Promise.resolve({
         pupils: []
       })
@@ -92,11 +89,10 @@ describe('check-allocator/v1', () => {
   })
 
   test('an allocation is created for all pupils when none have one', async () => {
-
-    checkAllocationDataServiceMock.getPupilsBySchoolUuid = jest.fn(async (schoolUUID: string) => {
+    jest.spyOn(checkAllocationDataServiceMock, 'getPupilsBySchoolUuid').mockImplementation(async () => {
       return Promise.resolve(pupilData)
     })
-    redisServiceMock.get = jest.fn(async (key: string) => {
+    jest.spyOn(redisServiceMock, 'get').mockImplementation(async () => {
       return {
         pupils: []
       }
@@ -106,11 +102,10 @@ describe('check-allocator/v1', () => {
   })
 
   test('an allocation is only created for pupils that do not currently have one', async () => {
-
-    checkAllocationDataServiceMock.getPupilsBySchoolUuid = jest.fn((schoolUUID: string) => {
+    jest.spyOn(checkAllocationDataServiceMock, 'getPupilsBySchoolUuid').mockImplementation(async () => {
       return Promise.resolve(pupilData)
     })
-    redisServiceMock.get = jest.fn(async (key: string) => {
+    jest.spyOn(redisServiceMock, 'get').mockImplementation(async () => {
       return {
         pupils: [
           pupilData[2]
@@ -122,11 +117,10 @@ describe('check-allocator/v1', () => {
   })
 
   test('the top level object is stamped with last utc datetime of last replenishment', async () => {
-
-    checkAllocationDataServiceMock.getPupilsBySchoolUuid = jest.fn(async (schoolUUID: string) => {
+    jest.spyOn(checkAllocationDataServiceMock, 'getPupilsBySchoolUuid').mockImplementation(async () => {
       return Promise.resolve(pupilData)
     })
-    redisServiceMock.get = jest.fn(async (key: string) => {
+    jest.spyOn(redisServiceMock, 'get').mockImplementation(async () => {
       return {
         pupils: []
       }
@@ -136,21 +130,20 @@ describe('check-allocator/v1', () => {
       pupils: [],
       schoolUUID: uuid.v4()
     }
-    redisServiceMock.setex = jest.fn(async (key: string, value: any, ttl: number) => {
+    jest.spyOn(redisServiceMock, 'setex').mockImplementation(async (key: string, value: any) => {
       persistedRedisObject = value
     })
     const millenium = '2000-01-01 00:00'
-    dateTimeServiceMock.utcNow = jest.fn(() => {
+    jest.spyOn(dateTimeServiceMock, 'utcNow').mockImplementation(() => {
       return moment(millenium)
     })
     await sut.allocate(schoolUUID)
     expect(persistedRedisObject).toHaveProperty('lastReplenishmentUtc')
-    expect(persistedRedisObject.lastReplenishmentUtc).toEqual(moment(millenium))
+    expect(persistedRedisObject.lastReplenishmentUtc).toStrictEqual(moment(millenium))
   })
 
   test('the cache is updated with all school pupils', async () => {
-
-    checkAllocationDataServiceMock.getPupilsBySchoolUuid = jest.fn(async (schoolUUID: string) => {
+    jest.spyOn(checkAllocationDataServiceMock, 'getPupilsBySchoolUuid').mockImplementation(async () => {
       return Promise.resolve(pupilData)
     })
     const existingRedisObject = {
@@ -170,13 +163,13 @@ describe('check-allocator/v1', () => {
         }
       ]
     }
-    redisServiceMock.get = jest.fn((key) => {
+    jest.spyOn(redisServiceMock, 'get').mockImplementation(async () => {
       return Promise.resolve(existingRedisObject)
     })
     let redisSetKey
     let redisSetTtl
 
-    redisServiceMock.setex = jest.fn((key, value, ttl) => {
+    jest.spyOn(redisServiceMock, 'setex').mockImplementation(async (key, value, ttl) => {
       redisSetKey = key
       redisSetTtl = ttl
       return Promise.resolve()

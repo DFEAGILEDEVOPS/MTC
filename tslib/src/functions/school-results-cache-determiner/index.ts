@@ -1,10 +1,10 @@
 import { AzureFunction, Context } from '@azure/functions'
 import { SchoolResultsCacheDeterminerService } from './school-results-cache-determiner.service'
-
-const functionName = 'school-results-cache-determiner'
 import { performance } from 'perf_hooks'
 
-function finish (start: number, context: Context) {
+const functionName = 'school-results-cache-determiner'
+
+function finish (start: number, context: Context): void {
   const end = performance.now()
   const durationInMilliseconds = end - start
   const timeStamp = new Date().toISOString()

@@ -1,8 +1,4 @@
-'use strict'
-
 import { ConnectionPool } from 'mssql'
-/* global describe expect it spyOn */
-
 import { CensusImportV1 } from './v1'
 import config from '../../config'
 import { ICensusImportDataService } from './census-import.data.service'
@@ -41,18 +37,10 @@ const loadAndInsertCount = 5
 describe('census-import: v1', () => {
   beforeEach(() => {
     censusImportDataServiceMock = new CensusImportDataServiceMock()
-    censusImportDataServiceMock.loadPupilsFromStaging = jest.fn((tableName: string, jobId: number) => {
-      return Promise.resolve({
-        insertCount: loadAndInsertCount
-      })
-    })
-    censusImportDataServiceMock.loadStagingTable = jest.fn((tableName: string, blob: any) => {
-      return Promise.resolve(loadAndInsertCount)
-    })
+    jest.spyOn(censusImportDataServiceMock, 'loadPupilsFromStaging').mockImplementation(async () => Promise.resolve({ insertCount: loadAndInsertCount }))
+    jest.spyOn(censusImportDataServiceMock, 'loadStagingTable').mockImplementation(async () => Promise.resolve(loadAndInsertCount))
     jobDataServiceMock = new JobDataServiceMock()
-    jobDataServiceMock.updateStatus = jest.fn((urlSlug: string, jobStatusCode: string, jobOutput?: string, errorOutput?: string) => {
-      return Promise.resolve(123)
-    })
+    jest.spyOn(jobDataServiceMock, 'updateStatus').mockImplementation(async () => Promise.resolve(123))
     blobStorageServiceMock = new BlobStorageServiceMock()
     loggerMock = new LoggerMock()
     sut = new CensusImportV1(new ConnectionPool(config.Sql),
@@ -69,27 +57,25 @@ describe('census-import: v1', () => {
   })
 
   test('job status is updated at start and end of a successful run', async () => {
-    const output = await sut.process('foo,bar',blobUri)
+    const output = await sut.process('foo,bar', blobUri)
     expect(jobDataServiceMock.updateStatus).toHaveBeenCalledTimes(2)
     expect(jobDataServiceMock.updateStatus).toHaveBeenLastCalledWith(expect.any(String), 'COM', expect.any(String))
-    expect(output.processCount).toEqual(loadAndInsertCount)
+    expect(output.processCount).toStrictEqual(loadAndInsertCount)
   })
 
   test('staging table is deleted at end of a successful run', async () => {
-    await sut.process('foo,bar',blobUri)
+    await sut.process('foo,bar', blobUri)
     expect(censusImportDataServiceMock.deleteStagingTable).toHaveBeenCalledTimes(1)
   })
 
   test('census blob container is deleted at end of a successful run', async () => {
-    await sut.process('foo,bar',blobUri)
+    await sut.process('foo,bar', blobUri)
     expect(blobStorageServiceMock.deleteContainerAsync).toHaveBeenCalledTimes(1)
   })
 
   test('when insert counts do not match, job is reported as failed', async () => {
-    censusImportDataServiceMock.loadStagingTable = jest.fn((tableName: string, blob: any) => {
-      return Promise.resolve(loadAndInsertCount - 1)
-    })
-    await sut.process('foo,bar',blobUri)
+    jest.spyOn(censusImportDataServiceMock, 'loadStagingTable').mockImplementation(async () => Promise.resolve(loadAndInsertCount - 1))
+    await sut.process('foo,bar', blobUri)
     expect(jobDataServiceMock.updateStatus).toHaveBeenLastCalledWith(expect.any(String), 'CWR', expect.any(String), expect.any(String))
   })
 })
