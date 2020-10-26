@@ -33,7 +33,7 @@ const blobTrigger: AzureFunction = async function (context: Context, blob: any):
     meta = await v1.process(blob, context.bindingData.uri)
     await pool.close()
   } catch (error) {
-    if (pool !== undefined && pool.connected) {
+    if (pool?.connected === true) {
       await pool.close()
     }
     context.log.error(`census-import: ERROR: ${error.message}`)
