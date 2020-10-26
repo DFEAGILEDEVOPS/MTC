@@ -71,7 +71,8 @@ if you have created one.  See [documentation](https://www.npmjs.com/package/dote
 The solution will fail to operate correctly without the following environment variables configured...
 
 * `SQL_TECH_SUPPORT_USER_PASSWORD` - **Required** password for the tech support sql azure user.  automatically created via sql migration
-* `SQL_PUPIL_CENSUS_USER_PASSWORD` - **Required** password for the pupil census sql azure user.  automatically created via sql migration
+* `SQL_FUNCTIONS_APP_USER` - **Required** username for the functions app sql user.  automatically created via sql migration
+* `SQL_FUNCTIONS_APP_USER_PASSWORD` - **Required** password for the functions app sql user.  automatically created via sql migration
 * `AZURE_STORAGE_CONNECTION_STRING` - **Required**  Azure Storage account connection string.  Upload is only enabled for
     production environments, but the queues are used by all environments
 
