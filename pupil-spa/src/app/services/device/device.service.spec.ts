@@ -121,7 +121,7 @@ describe('DeviceService', () => {
       const args = setCookieSpy.calls.mostRecent().args;
 
       // Check the cookie name is set correctly
-      expect(args[0]).toBe('deviceId');
+      expect(args[0]).toBe('mtc_device');
 
       // Cookie expiration time check - should be 4 weeks
       const cookieExpiration = new Date(args[2]['expires']);
@@ -134,12 +134,13 @@ describe('DeviceService', () => {
     it('calls the cookieService to get the deviceId of the cookie', () => {
       spyOn(service['cookieService'], 'get');
       service.getDeviceId();
-      expect(service['cookieService'].get).toHaveBeenCalledWith('deviceId');
+      expect(service['cookieService'].get).toHaveBeenCalledWith('mtc_device');
     });
-  });
-  it('returns null if the cookie is not found', () => {
-    spyOn(service['cookieService'], 'get').and.returnValue(undefined);
-    const res = service.getDeviceId();
-    expect(res).toBeNull();
+
+    it('returns null if the cookie is not found', () => {
+      spyOn(service['cookieService'], 'get').and.returnValue(undefined);
+      const res = service.getDeviceId();
+      expect(res).toBeNull();
+    });
   });
 });

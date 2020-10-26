@@ -7,7 +7,7 @@ import { CookieService } from 'ngx-cookie-service';
 @Injectable()
 export class DeviceService {
   private window;
-  private readonly deviceCookieName = 'deviceId';
+  private readonly deviceCookieName = 'mtc_device';
   private readonly deviceCookiePath = '/';
 
   constructor(private storageService: StorageService,
