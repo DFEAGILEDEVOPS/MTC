@@ -67,4 +67,15 @@ describe('#SchoolImportService', () => {
       expect(jobResult.stdout).toHaveLength(0)
     }
   })
+
+  test('when predicate matches fail all records, it reports and exits', async () => {
+    const csv = `URN,LA (code),EstablishmentNumber,EstablishmentName,StatutoryLowAge,StatutoryHighAge,EstablishmentStatus (code),TypeOfEstablishment (code),EstablishmentTypeGroup (code)
+    12345,0,4567,My School,9,9,4,3,4`
+    const jobResult = await sut.process(csv)
+    expect(jobResult).toBeInstanceOf(SchoolImportJobResult)
+    expect(jobResult.getErrorOutput()).toHaveLength(0)
+    expect(jobResult.stdout).toHaveLength(2)
+    expect(jobResult.stdout[1]).toStrictEqual('school records excluded in filtering:1. No records to persist, exiting.')
+    expect(schoolDataServiceMock.bulkUpload).toHaveBeenCalledTimes(0)
+  })
 })

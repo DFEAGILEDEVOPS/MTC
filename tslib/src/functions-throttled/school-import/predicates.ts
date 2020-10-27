@@ -7,7 +7,7 @@ export interface ISchoolImportPredicates {
   isSchoolOpen (school: ISchoolRecord): SchoolPredicateResult
   isAgeInRange (targetAge: number, school: ISchoolRecord): SchoolPredicateResult
   isRequiredEstablishmentTypeGroup (school: ISchoolRecord): SchoolPredicateResult
-  hasRequiredFields(school: ISchoolRecord): SchoolPredicateResult
+  hasRequiredFields (school: ISchoolRecord): SchoolPredicateResult
 }
 
 export class SchoolPredicateResult {
@@ -21,7 +21,7 @@ export class SchoolPredicateResult {
 }
 
 export class Predicates implements ISchoolImportPredicates {
-  hasRequiredFields(school: ISchoolRecord): SchoolPredicateResult {
+  hasRequiredFields (school: ISchoolRecord): SchoolPredicateResult {
     const issues: string[] = []
     if (!RA.isPositive(school.estabCode)) {
       issues.push('estabCode is required')
