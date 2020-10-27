@@ -173,12 +173,21 @@ describe('LoginComponent', () => {
       });
     });
 
-    it('should set-up the device cookie', () => {
-      spyOn(mockQuestionService, 'getConfig').and.returnValue({});
+    it('should set-up the device cookie if it is a live check', () => {
+      spyOn(mockQuestionService, 'getConfig').and.returnValue({ practice: false });
       spyOn(component['deviceService'], 'setupDeviceCookie');
       component.onSubmit('goodPin', 'goodPin');
       fixture.whenStable().then(() => {
         expect(component['deviceService'].setupDeviceCookie).toHaveBeenCalledTimes(1);
+      });
+    });
+
+    it('does not set-up the device cookie if it is a practice check', () => {
+      spyOn(mockQuestionService, 'getConfig').and.returnValue({ practice: true });
+      spyOn(component['deviceService'], 'setupDeviceCookie');
+      component.onSubmit('goodPin', 'goodPin');
+      fixture.whenStable().then(() => {
+        expect(component['deviceService'].setupDeviceCookie).not.toHaveBeenCalled();
       });
     });
 

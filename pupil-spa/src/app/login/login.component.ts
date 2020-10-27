@@ -83,12 +83,14 @@ export class LoginComponent implements OnInit, AfterViewInit {
         async () => {
           this.loginSucceeded = true;
           this.connectionFailed = false;
-          this.deviceService.setupDeviceCookie();
           this.questionService.initialise();
           this.warmupQuestionService.initialise();
-
-          const config = this.questionService.getConfig();
           this.pupilPrefsService.loadPupilPrefs();
+          const config = this.questionService.getConfig();
+          if (config.practice === false) {
+            // only set the cookie for live checks
+            this.deviceService.setupDeviceCookie();
+          }
           await this.displayMinTime(startTime);
           this.loginPending = false;
           if (config.fontSize) {

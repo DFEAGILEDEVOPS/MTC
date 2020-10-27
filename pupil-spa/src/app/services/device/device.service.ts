@@ -155,4 +155,9 @@ export class DeviceService {
       sameSite: 'Strict'
     });
   }
+
+  // Useful for tests
+  public deleteDeviceCookie (): void {
+    this.cookieService.delete(this.deviceCookieName);
+  }
 }

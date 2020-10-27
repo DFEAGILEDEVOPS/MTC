@@ -41,10 +41,20 @@ describe('DeviceService', () => {
   });
 
   it('captures device info to localStorage',  async () => {
+    // test setup
+    service.deleteDeviceCookie();
+    service.setupDeviceCookie();
+
+    // exec
     await service.capture();
+
+    // tests
     const deviceInfo = storageService.getDeviceData();
     expect(deviceInfo).toBeTruthy();
     expect(deviceInfo.deviceId.length).toBe(36); // uuid as string
+
+    // reset
+    service.deleteDeviceCookie();
   });
 
   describe('isUnsupportedBrowser', () => {
