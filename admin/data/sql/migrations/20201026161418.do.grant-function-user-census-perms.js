@@ -6,8 +6,6 @@ module.exports.generateSql = function () {
   return `
     GRANT CREATE TABLE TO [${config.Sql.FunctionsApp.Username}];
     GO
-    CREATE SCHEMA [mtc_census_import];
-    GO
     GRANT CONTROL ON schema::[mtc_census_import] TO [${config.Sql.FunctionsApp.Username}];
     GO
     GRANT UPDATE,INSERT ON [mtc_admin].[pupil] TO [${config.Sql.FunctionsApp.Username}];
