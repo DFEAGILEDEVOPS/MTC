@@ -14,7 +14,7 @@ const hash = crypto.createHash('sha256')
  * ASCII sha2-256 sum, but if the string is nvarchar() you get the UNICODE sha2-256 sum.  These are different values.
  *
  * The ascii version can be easily compared using standard tools: macOS has shasum -a 256 and Linux has GNU's sha256sum
- * and both these tools produce output similar to the varchar method.  To produce output simliar to the nvarchar method
+ * and both these tools produce output similar to the varchar method.  To produce output similar to the nvarchar method
  * we need to read the input string in UTF-16.
  *
  * ASCII OUTPUT (HEX)
