@@ -4,7 +4,7 @@ import { SchoolImportJobResult } from '../SchoolImportJobResult'
 import { ISchoolRecord } from './ISchoolRecord'
 
 export interface ISchoolDataService {
-  bulkUpload (logger: ILogger, data: any): Promise<SchoolImportJobResult>
+  bulkUpload (logger: ILogger, schoolData: ISchoolRecord[]): Promise<SchoolImportJobResult>
 }
 
 export class SchoolDataService implements ISchoolDataService {

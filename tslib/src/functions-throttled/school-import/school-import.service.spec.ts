@@ -78,4 +78,12 @@ describe('#SchoolImportService', () => {
     expect(jobResult.stdout[1]).toStrictEqual('school records excluded in filtering:1. No records to persist, exiting.')
     expect(schoolDataServiceMock.bulkUpload).toHaveBeenCalledTimes(0)
   })
+
+  test('does not import schools without a name', async () => {
+    const csv = `URN,LA (code),EstablishmentNumber,EstablishmentName,StatutoryLowAge,StatutoryHighAge,EstablishmentStatus (code),TypeOfEstablishment (code),EstablishmentTypeGroup (code)
+\n99900,999,9000,Guys School 1,8,10,1,7,4\n99901,999,9001,,8,10,1,7,4\n99902,999,9002,Guys Closed School,8,10,2,7,4`
+    spyOn(schoolDataServiceMock, 'bulkUpload')
+    await sut.process(csv)
+    expect(schoolDataServiceMock.bulkUpload).toHaveBeenCalledTimes(1)
+  })
 })
