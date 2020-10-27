@@ -125,7 +125,7 @@ export class SyncResultsDataService implements ISyncResultsDataService {
     const colourDepth = R.pathOr(null, ['screen', 'colorDepth'], device)
     const deviceOrientation = R.pathOr(null, ['screen', 'orientation'], device)
     const appUsageCount = R.propOr(null, 'appUsageCounter', device)
-    const userAgent = R.pathOr(null, ['navigator', 'userAgent'], device)
+    const userAgent: string | null = R.pathOr(null, ['navigator', 'userAgent'], device)
     if (userAgent) {
       agent = new UserAgentParser(userAgent)
     }
@@ -159,7 +159,8 @@ export class SyncResultsDataService implements ISyncResultsDataService {
     params.push({ name: 'colourDepth', type: TYPES.Int, value: colourDepth })
     params.push({ name: 'deviceOrientation', type: TYPES.NVarChar, value: deviceOrientation })
     params.push({ name: 'appUsageCount', type: TYPES.TinyInt, value: appUsageCount })
-    params.push({ name: 'userAgent', type: TYPES.NVarChar, value: userAgent })
+    // @ts-ignore
+    params.push({ name: 'userAgent', type: TYPES.NVarChar(4000), value: (typeof userAgent) === 'string' ? userAgent.substr(0, 4000) : null })
     params.push({ name: 'ident', type: TYPES.NVarChar, value: deviceId })
 
     // tslint:disable:no-trailing-whitespace
@@ -172,7 +173,7 @@ export class SyncResultsDataService implements ISyncResultsDataService {
         DECLARE @navigatorLanguageLookup_id INT;
         DECLARE @networkConnectionEffectiveTypeLookup_id INT;
         DECLARE @deviceOrientationLookup_id INT;
-        DECLARE @userAgentHash VARBINARY;
+        DECLARE @userAgentHash VARBINARY(32);
         DECLARE @userAgentLookup_id INT;
                 
         -- 
