@@ -32,8 +32,11 @@ export class Predicates implements ISchoolImportPredicates {
     if (RA.isNilOrEmpty(school.name)) {
       issues.push('name is required')
     }
+    if (!RA.isPositive(school.urn)) {
+      issues.push('urn is required')
+    }
     if (issues.length > 0) {
-      return new SchoolPredicateResult(false, issues.join('\n'))
+      return new SchoolPredicateResult(false, `Excluding school ${school.urn}: ${issues.join('. ')}`)
     }
     return new SchoolPredicateResult(true)
   }
