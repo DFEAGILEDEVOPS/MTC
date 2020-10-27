@@ -105,7 +105,7 @@ export class SyncResultsDataService implements ISyncResultsDataService {
   public async prepareDeviceData (validatedCheck: ValidatedCheck): Promise<ITransactionRequest> {
     const device: Device = R.propOr({}, 'device', validatedCheck)
     const params = []
-    let agent: UserAgentParser | undefined = undefined
+    let agent: UserAgentParser | undefined
 
     const batteryIsCharging = R.pathOr(null, ['battery', 'isCharging'], device)
     const batteryLevelPercent = R.pathOr(null, ['battery', 'levelPercent'], device)
@@ -128,7 +128,7 @@ export class SyncResultsDataService implements ISyncResultsDataService {
     const deviceOrientation = R.pathOr(null, ['screen', 'orientation'], device)
     const appUsageCount = R.propOr(null, 'appUsageCounter', device)
     const userAgent: string | null = R.pathOr(null, ['navigator', 'userAgent'], device)
-    if (userAgent) {
+    if (userAgent !== null) {
       agent = new UserAgentParser(userAgent)
     }
     const deviceId = R.propOr(null, 'deviceId', device)
@@ -138,14 +138,14 @@ export class SyncResultsDataService implements ISyncResultsDataService {
     params.push({ name: 'batteryChargingTimeSecs', type: TYPES.Int, value: batteryChargingTimeSecs })
     params.push({ name: 'batteryDischargingTimeSecs', type: TYPES.Int, value: batteryDischargingTimeSecs })
     params.push({ name: 'cpuHardwareConcurrency', type: TYPES.TinyInt, value: cpuHardwareConcurrency })
-    params.push({ name: 'browserFamily', type: TYPES.NVarChar, value: agent ? agent.getBrowserFamily() : null })
-    params.push({ name: 'browserMajorVersion', type: TYPES.Int, value: agent ? agent.getBrowserMajorVersion() : null })
-    params.push({ name: 'browserMinorVersion', type: TYPES.Int, value: agent ? agent.getBrowserMinorVersion() : null })
-    params.push({ name: 'browserPatchVersion', type: TYPES.Int, value: agent ? agent.getBrowserPatchVersion() : null })
-    params.push({ name: 'uaOperatingSystem', type: TYPES.NVarChar, value: agent ? agent.getOperatingSystem() : null })
-    params.push({ name: 'uaOperatingSystemMajorVersion', type: TYPES.Int, value: agent ? agent.getOperatingSystemMajorVersion() : null })
-    params.push({ name: 'uaOperatingSystemMinorVersion', type: TYPES.Int, value: agent ? agent.getOperatingSystemMinorVersion() : null })
-    params.push({ name: 'uaOperatingSystemPatchVersion', type: TYPES.Int, value: agent ? agent.getOperatingSystemPatchVersion() : null })
+    params.push({ name: 'browserFamily', type: TYPES.NVarChar, value: agent !== undefined ? agent.getBrowserFamily() : null })
+    params.push({ name: 'browserMajorVersion', type: TYPES.Int, value: agent !== undefined ? agent.getBrowserMajorVersion() : null })
+    params.push({ name: 'browserMinorVersion', type: TYPES.Int, value: agent !== undefined ? agent.getBrowserMinorVersion() : null })
+    params.push({ name: 'browserPatchVersion', type: TYPES.Int, value: agent !== undefined ? agent.getBrowserPatchVersion() : null })
+    params.push({ name: 'uaOperatingSystem', type: TYPES.NVarChar, value: agent !== undefined ? agent.getOperatingSystem() : null })
+    params.push({ name: 'uaOperatingSystemMajorVersion', type: TYPES.Int, value: agent !== undefined ? agent.getOperatingSystemMajorVersion() : null })
+    params.push({ name: 'uaOperatingSystemMinorVersion', type: TYPES.Int, value: agent !== undefined ? agent.getOperatingSystemMinorVersion() : null })
+    params.push({ name: 'uaOperatingSystemPatchVersion', type: TYPES.Int, value: agent !== undefined ? agent.getOperatingSystemPatchVersion() : null })
     params.push({ name: 'navigatorPlatform', type: TYPES.NVarChar(255), value: navigatorPlatform })
     params.push({ name: 'navigatorLanguage', type: TYPES.NVarChar(36), value: navigatorLanguage })
     params.push({ name: 'cookieEnabled', type: TYPES.Bit, value: cookieEnabled })
@@ -161,7 +161,7 @@ export class SyncResultsDataService implements ISyncResultsDataService {
     params.push({ name: 'colourDepth', type: TYPES.Int, value: colourDepth })
     params.push({ name: 'deviceOrientation', type: TYPES.NVarChar, value: deviceOrientation })
     params.push({ name: 'appUsageCount', type: TYPES.TinyInt, value: appUsageCount })
-    // @ts-ignore
+    // @ts-ignore eslint fails to recognise that the userAgent in the ternary condition will be a string
     params.push({ name: 'userAgent', type: TYPES.NVarChar(4000), value: (typeof userAgent) === 'string' ? userAgent.substr(0, 4000) : null })
     params.push({ name: 'ident', type: TYPES.NVarChar, value: deviceId })
 

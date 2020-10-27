@@ -22,7 +22,7 @@ export class UserAgentParser {
     if (matches.length === 0) {
       return null
     }
-    if (matches && matches[semver]) {  // this works because matches[semver] will be a string, so sometimes e.g. '0' will be truthy
+    if (matches?.[semver] !== undefined) {
       return Number(matches[semver])
     }
     return null
@@ -52,7 +52,7 @@ export class UserAgentParser {
 
   public getOperatingSystem (): string | null {
     const os = this.uaParsed.getOS()
-    return os.name || null
+    return os.name ?? null
   }
 
   public getOperatingSystemMajorVersion (): Number | null {
