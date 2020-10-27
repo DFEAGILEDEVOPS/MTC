@@ -227,19 +227,19 @@ describe('School Import Predicates', () => {
       expect(result.isMatch).toBe(false)
       expect(result.message).toBe('Excluding school 12345: name is required')
     })
-    test('returns false when estabCode is empty string', () => {
+    test('returns false when name is empty string', () => {
       school.name = ''
       const result = sut.hasRequiredFields(school)
       expect(result.isMatch).toBe(false)
       expect(result.message).toBe('Excluding school 12345: name is required')
     })
-    test('returns false when name is undefined', () => {
+    test('returns false when urn is undefined', () => {
       school.urn = undefined
       const result = sut.hasRequiredFields(school)
       expect(result.isMatch).toBe(false)
       expect(result.message).toBe('Excluding school undefined: urn is required')
     })
-    test('returns false when estabCode is zero', () => {
+    test('returns false when urn is zero', () => {
       school.urn = 0
       const result = sut.hasRequiredFields(school)
       expect(result.isMatch).toBe(false)
