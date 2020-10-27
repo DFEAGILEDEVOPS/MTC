@@ -2,11 +2,11 @@ import { IEstablishment } from './IEstablishment'
 import predicates from './school-predicates'
 
 export interface IEstablishmentFilter {
-  byTypeAndAgeRange (establishments: Array<IEstablishment>): Array<IEstablishment>
+  byTypeAndAgeRange (establishments: IEstablishment[]): IEstablishment[]
 }
 
 export class MtcEstablishmentFilter implements IEstablishmentFilter {
-  byTypeAndAgeRange (establishments: Array<IEstablishment>): Array<IEstablishment> {
+  byTypeAndAgeRange (establishments: IEstablishment[]): IEstablishment[] {
     return establishments.filter(this.isRelevantTypeAndAgeRange, this)
   }
 

@@ -12,7 +12,6 @@ let sut: CheckNotifier
 let dataServiceMock: ICheckNotifierDataService
 
 describe('check-notifier/v1', () => {
-
   beforeEach(() => {
     dataServiceMock = new CheckNotifierDataServiceMock()
     sut = new CheckNotifier(dataServiceMock)

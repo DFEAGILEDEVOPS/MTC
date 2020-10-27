@@ -3,10 +3,9 @@ import { AllowedWordsService } from './allowed-words.service'
 import { IRandomGenerator, RandomGenerator } from './random-generator'
 
 export class SchoolPinGenerator implements ISchoolPinGenerator {
-
-  private configProvider: IConfigProvider
-  private randomGenerator: IRandomGenerator
-  private allowedWordsService: AllowedWordsService
+  private readonly configProvider: IConfigProvider
+  private readonly randomGenerator: IRandomGenerator
+  private readonly allowedWordsService: AllowedWordsService
 
   constructor (configProvider?: IConfigProvider, randomGenerator?: IRandomGenerator) {
     if (configProvider === undefined) {

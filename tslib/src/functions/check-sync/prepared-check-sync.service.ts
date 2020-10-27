@@ -2,12 +2,13 @@ import { IPreparedCheckSyncDataService, PreparedCheckSyncDataService, IActiveChe
 import { IPreparedCheckMergeService, PreparedCheckMergeService, IPreparedCheck } from './prepared-check-merge.service'
 import { IRedisService, RedisService } from '../../caching/redis-service'
 import { ILogger, ConsoleLogger } from '../../common/logger'
+import { isNil } from 'ramda'
 
 export class PreparedCheckSyncService {
-  private dataService: IPreparedCheckSyncDataService
-  private mergeService: IPreparedCheckMergeService
-  private redisService: IRedisService
-  private logger: ILogger
+  private readonly dataService: IPreparedCheckSyncDataService
+  private readonly mergeService: IPreparedCheckMergeService
+  private readonly redisService: IRedisService
+  private readonly logger: ILogger
 
   constructor (dataService?: IPreparedCheckSyncDataService, mergeService?: IPreparedCheckMergeService,
     redisService?: IRedisService, logger?: ILogger) {
@@ -38,8 +39,8 @@ export class PreparedCheckSyncService {
       const ref = checkReferences[index]
       this.logger.info(`syncing check. checkCode:${ref.checkCode}`)
       const cacheKey = this.buildPreparedCheckCacheKey(ref)
-      const preparedCheck: IPreparedCheck | null = await this.redisService.get(cacheKey)
-      if (preparedCheck === null) {
+      const preparedCheck: IPreparedCheck = await this.redisService.get(cacheKey) as IPreparedCheck
+      if (isNil(preparedCheck)) {
         throw new Error(`unable to find preparedCheck in redis. checkCode:${ref.checkCode}`)
       }
       const newAaConfig = await this.dataService.getAccessArrangementsByCheckCode(preparedCheck.checkCode)

@@ -90,7 +90,7 @@ describe('check-validator/v1', () => {
   test('validation error is recorded on receivedCheck entity when archive property is missing', async () => {
     let actualTableName: string | undefined
     let actualEntity: any
-    tableServiceMock.replaceEntityAsync = jest.fn(async (table: string, entity: any) => {
+    jest.spyOn(tableServiceMock, 'replaceEntityAsync').mockImplementation(async (table: string, entity: any) => {
       actualTableName = table
       actualEntity = entity
       return {
@@ -137,7 +137,7 @@ describe('check-validator/v1', () => {
     }
     let actualTableName: string | undefined
     let actualEntity: any
-    tableServiceMock.replaceEntityAsync = jest.fn(async (table: string, entity: any) => {
+    jest.spyOn(tableServiceMock, 'replaceEntityAsync').mockImplementation(async (table: string, entity: any) => {
       actualTableName = table
       actualEntity = entity
       return {
@@ -145,7 +145,7 @@ describe('check-validator/v1', () => {
         RowKey: uuid.v4()
       }
     })
-    compressionServiceMock.decompress = jest.fn((input: string) => {
+    jest.spyOn(compressionServiceMock, 'decompress').mockImplementation(() => {
       return JSON.stringify({
         foo: 'bar'
       })
@@ -163,7 +163,6 @@ describe('check-validator/v1', () => {
   })
 
   test('validation errors are reported to check notification queue', async () => {
-
     const receivedCheckEntity: ReceivedCheckTableEntity = {
       PartitionKey: validateReceivedCheckQueueMessage.schoolUUID,
       RowKey: validateReceivedCheckQueueMessage.checkCode,
@@ -172,8 +171,8 @@ describe('check-validator/v1', () => {
       checkVersion: 1
     }
 
-    tableServiceMock.replaceEntityAsync = jest.fn()
-    compressionServiceMock.decompress = jest.fn((input: string) => {
+    jest.spyOn(tableServiceMock, 'replaceEntityAsync').mockImplementation()
+    jest.spyOn(compressionServiceMock, 'decompress').mockImplementation(() => {
       return JSON.stringify({
         foo: 'bar'
       })
@@ -185,9 +184,9 @@ describe('check-validator/v1', () => {
     }
     await sut.validate(functionBindings, validateReceivedCheckQueueMessage, loggerMock)
     expect(functionBindings.checkNotificationQueue).toBeDefined()
-    expect(functionBindings.checkNotificationQueue.length).toBe(1)
+    expect(functionBindings.checkNotificationQueue).toHaveLength(1)
     const validationFailureMessage = functionBindings.checkNotificationQueue[0]
-    expect(validationFailureMessage.checkCode).toEqual(validateReceivedCheckQueueMessage.checkCode)
+    expect(validationFailureMessage.checkCode).toStrictEqual(validateReceivedCheckQueueMessage.checkCode)
     expect(validationFailureMessage.notificationType).toBe(CheckNotificationType.checkInvalid)
     expect(validationFailureMessage.version).toBe(1)
   })
@@ -202,7 +201,7 @@ describe('check-validator/v1', () => {
     }
     let actualTableName: string | undefined
     let actualEntity: any
-    tableServiceMock.replaceEntityAsync = jest.fn(async (table: string, entity: any) => {
+    jest.spyOn(tableServiceMock, 'replaceEntityAsync').mockImplementation(async (table: string, entity: any) => {
       actualTableName = table
       actualEntity = entity
       return {
@@ -210,7 +209,7 @@ describe('check-validator/v1', () => {
         RowKey: uuid.v4()
       }
     })
-    compressionServiceMock.decompress = jest.fn((input: string) => {
+    jest.spyOn(compressionServiceMock, 'decompress').mockImplementation(() => {
       return JSON.stringify(checkSchema)
     })
     const functionBindings: CheckValidator.ICheckValidatorFunctionBindings = {
@@ -234,7 +233,7 @@ describe('check-validator/v1', () => {
     }
     let actualTableName: string | undefined
     let actualEntity: any
-    tableServiceMock.replaceEntityAsync = jest.fn(async (table: string, entity: any) => {
+    jest.spyOn(tableServiceMock, 'replaceEntityAsync').mockImplementation(async (table: string, entity: any) => {
       actualTableName = table
       actualEntity = entity
       return {
@@ -242,7 +241,7 @@ describe('check-validator/v1', () => {
         RowKey: uuid.v4()
       }
     })
-    compressionServiceMock.decompress = jest.fn((input: string) => {
+    jest.spyOn(compressionServiceMock, 'decompress').mockImplementation(() => {
       return JSON.stringify(checkSchema)
     })
     const functionBindings: CheckValidator.ICheckValidatorFunctionBindings = {
@@ -253,7 +252,7 @@ describe('check-validator/v1', () => {
     await sut.validate(functionBindings, validateReceivedCheckQueueMessage, loggerMock)
     expect(actualTableName).toBe('receivedCheck')
     expect(actualEntity.processingError).toBeUndefined()
-    expect(actualEntity.answers).toEqual(JSON.stringify(checkSchema.answers))
+    expect(actualEntity.answers).toStrictEqual(JSON.stringify(checkSchema.answers))
   })
 
   test('check marking message is created and added to output binding array', async () => {
@@ -264,7 +263,7 @@ describe('check-validator/v1', () => {
       checkReceivedAt: moment().toDate(),
       checkVersion: 1
     }
-    compressionServiceMock.decompress = jest.fn((input: string) => {
+    jest.spyOn(compressionServiceMock, 'decompress').mockImplementation(() => {
       return JSON.stringify(checkSchema)
     })
     const functionBindings: CheckValidator.ICheckValidatorFunctionBindings = {
@@ -273,11 +272,10 @@ describe('check-validator/v1', () => {
       checkNotificationQueue: []
     }
     await sut.validate(functionBindings, validateReceivedCheckQueueMessage, loggerMock)
-    expect(functionBindings.checkMarkingQueue.length).toBe(1)
+    expect(functionBindings.checkMarkingQueue).toHaveLength(1)
     const checkMarkingMessage: MarkCheckMessageV1 = functionBindings.checkMarkingQueue[0]
-    expect(checkMarkingMessage.checkCode).toEqual(validateReceivedCheckQueueMessage.checkCode)
-    expect(checkMarkingMessage.schoolUUID).toEqual(validateReceivedCheckQueueMessage.schoolUUID)
+    expect(checkMarkingMessage.checkCode).toStrictEqual(validateReceivedCheckQueueMessage.checkCode)
+    expect(checkMarkingMessage.schoolUUID).toStrictEqual(validateReceivedCheckQueueMessage.schoolUUID)
     expect(checkMarkingMessage.version).toBe(1)
-
   })
 })

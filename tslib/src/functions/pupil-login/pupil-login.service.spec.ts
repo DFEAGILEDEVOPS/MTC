@@ -3,7 +3,7 @@ import { PupilLoginService, IPupilLoginMessage, IPupilLoginFunctionBindings, IPu
 
 let sut: PupilLoginService
 let dataServiceMock: IPupilLoginDataService
-let bindings: IPupilLoginFunctionBindings = {
+const bindings: IPupilLoginFunctionBindings = {
   pupilEventTable: []
 }
 
@@ -66,12 +66,12 @@ describe('pupil-login.service', () => {
       practice: true
     }
     await sut.process(message, bindings)
-    expect(bindings.pupilEventTable.length).toBe(1)
+    expect(bindings.pupilEventTable).toHaveLength(1)
     const entry = bindings.pupilEventTable[0] as IPupilEvent
-    expect(entry.PartitionKey).toEqual(message.checkCode)
+    expect(entry.PartitionKey).toStrictEqual(message.checkCode)
     expect(entry.RowKey).toBeDefined()
-    expect(entry.eventType).toEqual('pupil-login')
-    expect(entry.payload).toEqual(message)
+    expect(entry.eventType).toStrictEqual('pupil-login')
+    expect(entry.payload).toStrictEqual(message)
     expect(entry.processedAt).toBeDefined()
   })
 })

@@ -1,7 +1,4 @@
-'use strict'
 import { IEstablishment } from './IEstablishment'
-/* global describe, expect, beforeEach */
-
 import sut from './school-predicates'
 
 let school: IEstablishment
@@ -27,7 +24,6 @@ describe('school predicates', () => {
   })
 
   describe('#isSchoolOpen', () => {
-
     test('subject is defined', () => {
       expect(sut.isSchoolOpen).toBeDefined()
     })
@@ -114,7 +110,6 @@ describe('school predicates', () => {
   })
 
   describe('#isRequiredEstablishmentTypeGroup', () => {
-
     test('is defined', () => {
       expect(sut.isRequiredEstablishmentTypeGroup).toBeDefined()
     })

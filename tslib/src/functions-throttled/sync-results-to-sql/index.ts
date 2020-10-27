@@ -6,6 +6,7 @@ import { performance } from 'perf_hooks'
 import { SyncResultsService } from './sync-results.service'
 import config from '../../config'
 import { ICheckCompletionMessage } from './models'
+import { IFunctionTimer } from '../../azure/functions'
 
 const meta = { checksProcessed: 0, checksErrored: 0, errorCheckCodes: [] as string[] }
 const functionName = 'sync-results-to-sql'
@@ -16,14 +17,14 @@ const functionName = 'sync-results-to-sql'
   if the message is abandoned 10 times (the current 'max delivery count') it will be
   put on the dead letter queue automatically.
 */
-const timerTrigger: AzureFunction = async function (context: Context, timer: any): Promise<void> {
+const timerTrigger: AzureFunction = async function (context: Context, timer: IFunctionTimer): Promise<void> {
   const start = performance.now()
   if (timer.IsPastDue) {
     context.log(`${functionName}: Timer function is past due, exiting.`)
     return
   }
 
-  if (!config.ServiceBus.ConnectionString) {
+  if (config.ServiceBus.ConnectionString === undefined) {
     throw new Error(`${functionName}: ServiceBusConnection env var is missing`)
   }
 
@@ -31,7 +32,7 @@ const timerTrigger: AzureFunction = async function (context: Context, timer: any
   let queueClient: sb.QueueClient
   let receiver: sb.Receiver
 
-  const disconnect = async () => {
+  const disconnect = async (): Promise<void> => {
     await receiver.close()
     await queueClient.close()
     await busClient.close()
@@ -85,10 +86,9 @@ const timerTrigger: AzureFunction = async function (context: Context, timer: any
 
 async function process (checkCompletionMessages: ICheckCompletionMessage[], context: Context, queueMessages: sb.ServiceBusMessage[]): Promise<void> {
   const syncResultsService = new SyncResultsService(context.log)
-  for (let i in checkCompletionMessages) {
+  for (let i = 0; i < checkCompletionMessages.length; i++) {
     const msg = checkCompletionMessages[i]
     const queueMessage = queueMessages[i]
-
     try {
       await syncResultsService.process(msg)
       meta.checksProcessed += 1
@@ -137,7 +137,7 @@ async function abandonMessages (messageBatch: sb.ServiceBusMessage[], context: C
   }
 }
 
-function finish (start: number, context: Context) {
+function finish (start: number, context: Context): void {
   const end = performance.now()
   const durationInMilliseconds = end - start
   const timeStamp = new Date().toISOString()
@@ -146,7 +146,7 @@ function finish (start: number, context: Context) {
   context.log(`${functionName}: ${timeStamp} run complete: ${durationInMilliseconds} ms`)
 }
 
-function sleep (ms: number) {
+async function sleep (ms: number): Promise<any> {
   return new Promise(resolve => setTimeout(resolve, ms))
 }
 

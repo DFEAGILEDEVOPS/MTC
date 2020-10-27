@@ -11,19 +11,17 @@ const name = 'school-import'
 const targetAge = 9
 
 export class SchoolImportService {
-
-  private schoolDataService: ISchoolDataService
-  private logger: ILogger
+  private readonly schoolDataService: ISchoolDataService
+  private readonly logger: ILogger
   private jobResult: SchoolImportJobResult
-  private predicates: ISchoolImportPredicates
-  private schoolRecordMapper: SchoolRecordMapper
+  private readonly predicates: ISchoolImportPredicates
+  private readonly schoolRecordMapper: SchoolRecordMapper
 
   constructor (pool: ConnectionPool,
-                jobResult: SchoolImportJobResult,
-                logger?: ILogger,
-                schoolDataService?: ISchoolDataService,
-                predicates?: ISchoolImportPredicates) {
-
+    jobResult: SchoolImportJobResult,
+    logger?: ILogger,
+    schoolDataService?: ISchoolDataService,
+    predicates?: ISchoolImportPredicates) {
     if (schoolDataService === undefined) {
       schoolDataService = new SchoolDataService(pool, jobResult)
     }
@@ -83,7 +81,7 @@ export class SchoolImportService {
           this.jobResult.stdout.push(this.createLogEntry(isCorrectAgeRange.message))
         }
       }
-      await this.schoolDataService.bulkUpload(this.logger, filteredSchools, mapping)
+      await this.schoolDataService.bulkUpload(this.logger, filteredSchools)
       this.logger.verbose(`${name}  bulkUpload complete`)
       return this.jobResult
     } catch (error) {

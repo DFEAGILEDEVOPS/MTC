@@ -9,8 +9,7 @@ export interface ISchoolPinReplenishmentDataService {
 }
 
 export class SchoolPinReplenishmentDataService implements ISchoolPinReplenishmentDataService {
-
-  private sqlService: SqlService
+  private readonly sqlService: SqlService
   constructor () {
     this.sqlService = new SqlService()
   }
@@ -28,7 +27,7 @@ export class SchoolPinReplenishmentDataService implements ISchoolPinReplenishmen
       value: id
     }
     const result = await this.sqlService.query(sql, [param])
-    if (!result || result.length === 0) return undefined
+    if (result === undefined || result.length === 0) return undefined
     return {
       id: result[0].id,
       name: result[0].name,
@@ -47,7 +46,7 @@ export class SchoolPinReplenishmentDataService implements ISchoolPinReplenishmen
     return this.sqlService.query(sql)
   }
 
-  updatePin (school: SchoolPinUpdate): Promise<void> {
+  async updatePin (school: SchoolPinUpdate): Promise<void> {
     const sql = `UPDATE [mtc_admin].[school]
     SET pinExpiresAt=@pinExpiresAt,
     pin=@pin

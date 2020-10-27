@@ -8,8 +8,7 @@ export interface ICensusImportDataService {
 }
 
 export class CensusImportDataService implements ICensusImportDataService {
-
-  private pool: mssql.ConnectionPool
+  private readonly pool: mssql.ConnectionPool
 
   constructor (pool: mssql.ConnectionPool) {
     this.pool = pool

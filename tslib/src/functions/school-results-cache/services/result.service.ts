@@ -13,9 +13,9 @@ const defaultTimeZone = 'Europe/London'
 const logPrefix = 'school-results-cache: result.service'
 
 export class ResultService {
-  private resultDataService: IResultDataService
-  private redisService: IRedisService
-  private logger: ILogger
+  private readonly resultDataService: IResultDataService
+  private readonly redisService: IRedisService
+  private readonly logger: ILogger
 
   public readonly status: IResultsServicePupilStatus = Object.freeze({
     restartNotTaken: 'Did not attempt the restart',
@@ -41,7 +41,7 @@ export class ResultService {
     this.redisService = redisCacheService
   }
 
-  sort (data: Array<IPupilResult>): Array<IPupilResult> {
+  sort (data: IPupilResult[]): IPupilResult[] {
     return sortService.sortByProps(['lastName', 'foreName', 'dateOfBirth', 'middleNames'], data)
   }
 
@@ -53,14 +53,14 @@ export class ResultService {
       return this.status.restartNotTaken
     }
 
-    if (pupil.currentCheckId) {
-      if (pupil.checkComplete === true) {
+    if (pupil.currentCheckId !== undefined && pupil.currentCheckId !== null) {
+      if (pupil.checkComplete) {
         return this.status.complete
       } else {
         return this.status.incomplete
       }
     } else {
-      if (pupil.attendanceReason) {
+      if (pupil.attendanceReason !== undefined && pupil.attendanceReason !== null) {
         return pupil.attendanceReason
       } else {
         return this.status.didNotParticipate
@@ -73,31 +73,32 @@ export class ResultService {
    * @param pupils
    * @return {*}
    */
-  createPupilData (pupils: Array<IRawPupilResult>): Array<IPupilResult> {
+  createPupilData (pupils: IRawPupilResult[]): IPupilResult[] {
     return pupils.map(o => {
-      return {
+      const p: IPupilResult = {
         foreName: o.foreName,
         middleNames: o.middleNames,
         lastName: o.lastName,
-        group_id: o.group_id,
+        group_id: o.group_id ?? null,
         dateOfBirth: o.dateOfBirth,
-        score: o.mark,
+        score: o.mark ?? null,
         status: this.assignStatus(o),
         urlSlug: o.urlSlug
       }
+      return p
     })
   }
 
-  async getPupilResultDataFromDb (schoolGuid: string): Promise<{ generatedAt: moment.Moment, schoolId: number, pupils: Array<IdentifiedPupilResult> }> {
+  async getPupilResultDataFromDb (schoolGuid: string): Promise<{ generatedAt: moment.Moment, schoolId: number, pupils: IdentifiedPupilResult[] }> {
     const school = await this.resultDataService.sqlFindSchool(schoolGuid)
-    if (!school) {
+    if (school === undefined) {
       throw new Error(`Unable to find school with Guid ${schoolGuid}`)
     }
     const data = await this.resultDataService.sqlFindPupilResultsForSchool(school.id)
     return {
       // Date generated should be in user's locale
-      generatedAt: moment.tz(school.timezone || defaultTimeZone),
-      // @ts-ignore
+      generatedAt: moment.tz(school.timezone ?? defaultTimeZone),
+      // @ts-ignore Ramda does not have good typescript support
       schoolId: R.prop('school_id', R.head(data)),
       pupils: pupilIdentificationService.addIdentificationFlags(this.sort(this.createPupilData(data)))
     }
@@ -109,18 +110,19 @@ export class ResultService {
    * @param {function} logger
    * @return {Promise<void>}
    */
-  async cacheResultData (schoolGuid: string) {
-    if (!schoolGuid) {
+  async cacheResultData (schoolGuid: string | undefined): Promise<void> {
+    if (schoolGuid === undefined) {
       throw new Error('schoolGuid not found')
     }
 
     // The message is an instruction to cache the latest data for the school.  Therefore, we don't check
     // whether existing data exists, we will overwrite it, should it exist.
     const result = await this.getPupilResultDataFromDb(schoolGuid)
-    if (!(result.pupils && result.pupils.length > 0)) {
+    if (result.pupils === undefined || result.pupils.length === 0) {
       this.logger.warn(`${logPrefix}: No pupils found for school ${schoolGuid}`)
       return
     }
+
     const redisKey = redisKeyService.getSchoolResultsKey(result.schoolId)
     try {
       await this.redisService.setex(redisKey, result, config.SchoolResultsCache.RedisResultsExpiryInSeconds)
@@ -134,19 +136,19 @@ export class ResultService {
 }
 
 export interface IResultsServicePupilStatus {
-  restartNotTaken: string,
-  incomplete: string,
-  didNotParticipate: string,
-  complete: string,
+  restartNotTaken: string
+  incomplete: string
+  didNotParticipate: string
+  complete: string
 }
 
 export interface IPupilResult {
-  foreName: string,
-  middleNames: string,
-  lastName: string,
-  group_id: null | number,
-  dateOfBirth: moment.Moment,
-  score: null | number,
-  status: string,
+  foreName: string
+  middleNames: string
+  lastName: string
+  group_id: null | number
+  dateOfBirth: moment.Moment
+  score: null | number
+  status: string
   urlSlug: string
 }

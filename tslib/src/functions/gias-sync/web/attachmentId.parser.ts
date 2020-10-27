@@ -1,5 +1,5 @@
 export class AttachmentIdParser {
-  parse (extractData: any): string {
+  parse (extractData: Record<string, any> | undefined): string {
     if (extractData === undefined) {
       throw new Error('extract data is required')
     }

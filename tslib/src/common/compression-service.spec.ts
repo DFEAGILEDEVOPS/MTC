@@ -2,7 +2,6 @@ import { CompressionService } from './compression-service'
 let sut: CompressionService
 
 describe('compression-service', () => {
-
   beforeEach(() => {
     sut = new CompressionService()
   })

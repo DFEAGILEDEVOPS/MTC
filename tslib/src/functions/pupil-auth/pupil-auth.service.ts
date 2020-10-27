@@ -1,23 +1,24 @@
 import { IRedisService, RedisService } from '../../caching/redis-service'
 import config from '../../config'
 import { HttpRequest, HttpMethod } from '@azure/functions'
+import { PreparedCheckPartial } from '../../schemas/prepared-check-partial'
+import { isNil } from 'ramda'
 
 export interface IPupilAuthFunctionBindings {
-  pupilLoginQueue: Array<any>
+  pupilLoginQueue: any[]
 }
 
 export interface IHttpResponse {
   body?: any
   status: number
   headers: {
-    [key: string]: string;
+    [key: string]: string
   }
   method: HttpMethod
 }
 
 export class PupilAuthService {
-
-  private redisService: IRedisService
+  private readonly redisService: IRedisService
 
   constructor (redisService?: IRedisService) {
     if (redisService === undefined) {
@@ -49,10 +50,10 @@ export class PupilAuthService {
     if (req.body.pupilPin === undefined) return noAuth
 
     const cacheKey = this.buildCacheKey(req.body.schoolPin, req.body.pupilPin)
-    const preparedCheck = await this.redisService.get(cacheKey)
-    if (!preparedCheck) return noAuth
+    const preparedCheck = await this.redisService.get(cacheKey) as PreparedCheckPartial
+    if (isNil(preparedCheck)) return noAuth
 
-    if (preparedCheck.config.practice === false) {
+    if (!preparedCheck.config.practice) {
       await this.redisService.expire(cacheKey, config.PupilAuth.PreparedCheckExpiryAfterLoginSeconds)
     }
 

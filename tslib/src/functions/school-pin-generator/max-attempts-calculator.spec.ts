@@ -26,6 +26,6 @@ describe('max-attemps-calculator', () => {
     const charCount = 5
     const expectedMaxAttempts = (wordSetCount * wordSetCount) * (charCount * charCount)
     const actual = sut.calculate(wordSetCount, charCount)
-    expect(actual).toEqual(expectedMaxAttempts)
+    expect(actual).toStrictEqual(expectedMaxAttempts)
   })
 })
