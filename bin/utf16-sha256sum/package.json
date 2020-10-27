@@ -1,0 +1,8 @@
+{
+  "scripts": {
+    "start": "echo -n '$*' | ./index.js"
+  },
+  "dependencies": {
+    "readline": "^1.3.0"
+  }
+}
