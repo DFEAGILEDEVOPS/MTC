@@ -44,6 +44,10 @@ module.exports = {
     pupilCensusMaxSizeFileUploadMb: process.env.PUPIL_CENSUS_MAX_FILE_UPLOAD_MB || 100 * 1024 * 1024,
     psychometricianReportMaxSizeFileUploadMb: process.env.PS_REPORT_MAX_FILE_UPLOAD_MB || 100 * 1024 * 1024
   },
+  Logging: {
+    LogLevel: process.env.LOG_LEVEL || 'info',
+    DebugVerbosity: {}.hasOwnProperty.call(process.env, 'DEBUG_VERBOSITY') ? parseInt(process.env.DEBUG_VERBOSITY, 10) : 1
+  },
   Sql: {
     Database: sql.database,
     Server: sql.server,

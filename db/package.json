@@ -19,6 +19,7 @@
   "dependencies": {
     "command-line-args": "^5.1.1",
     "moment": "^2.29.1",
-    "postgrator": "^4.1.0"
+    "postgrator": "^4.1.0",
+    "winston": "^3.3.3"
   }
 }
