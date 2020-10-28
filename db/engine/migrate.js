@@ -2,7 +2,7 @@
 
 const path = require('path')
 const fs = require('fs')
-const globalDotEnvFile = path.join(__dirname, '..', '..', '..', '.env')
+const globalDotEnvFile = path.join(__dirname, '..', '..', '.env')
 
 try {
   if (fs.existsSync(globalDotEnvFile)) {
@@ -14,8 +14,9 @@ try {
 } catch (error) {
   console.error(error)
 }
+
 const config = require('../config')
-const sqlConfig = require('../config/sql.config')
+const sqlConfig = require('../sql.config')
 // TODO const logger = require('../../services/log.service').getLogger()
 const Postgrator = require('postgrator')
 const {

@@ -310,6 +310,11 @@ text-hex@1.0.x:
   resolved "https://registry.yarnpkg.com/text-hex/-/text-hex-1.0.0.tgz#69dc9c1b17446ee79a92bf5b884bb4b9127506f5"
   integrity sha512-uuVGNWzgJ4yhRaNSiubPY7OjISw4sw4E5Uv0wbjp+OzcbmVU/rsT8ujgcXJhn9ypzsgr5vlzpPqP+MBBKcGvbg==
 
+to-bool@^0.0.1:
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/to-bool/-/to-bool-0.0.1.tgz#367c686599bb1539cfe4af9faf02669a16f174e8"
+  integrity sha1-NnxoZZm7FTnP5K+frwJmmhbxdOg=
+
 triple-beam@^1.2.0, triple-beam@^1.3.0:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/triple-beam/-/triple-beam-1.3.0.tgz#a595214c7298db8339eeeee083e4d10bd8cb8dd9"

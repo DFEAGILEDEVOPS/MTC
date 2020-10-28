@@ -2,6 +2,7 @@
 const path = require('path')
 const fs = require('fs')
 const globalDotEnvFile = path.join(__dirname, '..', '.env')
+const toBool = require('to-bool')
 
 try {
   if (fs.existsSync(globalDotEnvFile)) {
@@ -13,12 +14,11 @@ try {
 } catch (error) {
   console.error(error)
 }
-const os = require('os')
-const toBool = require('to-bool')
+
 const sql = require('./config/sql.config')
+
 const twoMinutesInMilliseconds = 120000
 const thirtySecondsInMilliseconds = 30000
-const authModes = require('./lib/consts/auth-modes')
 
 const getEnvironment = () => {
   return process.env.ENVIRONMENT_NAME || 'Local-Dev'
