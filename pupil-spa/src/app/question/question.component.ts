@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, HostListener, Renderer2 } from '@angular/core';
+import { Component, OnInit, AfterViewInit, Renderer2 } from '@angular/core';
 import { AnswerService } from '../services/answer/answer.service';
 import { Answer } from '../services/answer/answer.model';
 import { AuditService } from '../services/audit/audit.service';
@@ -74,7 +74,6 @@ export class QuestionComponent extends PracticeQuestionComponent implements OnIn
     );
     this.deleteChar();
   }
-
 
   /**
    * Called from pressing Enter on the virtual Keypad or pressing the enter key on the keyboard

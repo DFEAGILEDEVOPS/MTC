@@ -46,13 +46,11 @@ describe('QuestionComponent', () => {
     fixture = TestBed.createComponent(QuestionComponent);
     component = fixture.componentInstance;
     component.soundComponent = new SoundComponentMock();
-    spyOn(component, 'handleTouchEvent').and.callThrough();
-    spyOn(component, 'handleMouseEvent').and.callThrough();
 
     // This is the best way to get the injected service, the way that _always_ _works_
     // https://angular.io/guide/testing#get-injected-services
     registerInputService = fixture.debugElement.injector.get(RegisterInputService);
-    registerInputServiceSpy = spyOn(registerInputService, 'addEntry');
+    registerInputServiceSpy = spyOn(registerInputService, 'storeEntry');
 
     answerService = fixture.debugElement.injector.get(AnswerService);
     answerServiceSpy = spyOn(answerService, 'setAnswer');
@@ -66,163 +64,6 @@ describe('QuestionComponent', () => {
 
   it('should be created', () => {
     expect(component).toBeTruthy();
-  });
-
-  describe('handleMouseEvent', () => {
-    function dispatchMouseEvent() {
-      const event = new MouseEvent('mousedown', {
-        bubbles: true,
-        cancelable: true,
-        view: window
-      });
-      document.dispatchEvent(event);
-    }
-
-    it('tracks mousedown events', () => {
-      dispatchMouseEvent();
-      expect(component.handleMouseEvent).toHaveBeenCalledTimes(1);
-      expect(registerInputService.addEntry).toHaveBeenCalledTimes(1);
-    });
-
-    it('does not register additional mouse events if enter has been clicked', () => {
-      component.startTimer();
-      dispatchMouseEvent();
-      component.onClickAnswer(1, {});
-      dispatchMouseEvent();
-      component.onClickAnswer(2, {});
-      dispatchMouseEvent();
-      component.onClickAnswer(3, {});
-      dispatchMouseEvent();
-      component.onClickSubmit({}); // click enter button on the onscreen keyboard
-      dispatchMouseEvent();
-      component.onClickAnswer(4, {});
-      expect(registerInputServiceSpy.calls.count()).toBe(4); // 5th one is ignored after enter is clicked
-    });
-  });
-
-  describe('handleTouchEvent', () => {
-    function dispatchTouchEvent() {
-      const event = new TouchEvent('touchstart', {
-        bubbles: true,
-        cancelable: true,
-        view: window
-      });
-      document.dispatchEvent(event);
-    }
-
-    it('tracks touch events', () => {
-      dispatchTouchEvent();
-      expect(component.handleTouchEvent).toHaveBeenCalledTimes(1);
-      expect(registerInputService.addEntry).toHaveBeenCalledTimes(1);
-    });
-
-    it('does not register additional touch events once enter has been pressed', () => {
-      component.startTimer();
-      dispatchTouchEvent();
-      component.onClickAnswer(1, {});
-      dispatchTouchEvent();
-      component.onClickAnswer(2, {});
-      dispatchTouchEvent();
-      component.onClickAnswer(3, {});
-      dispatchTouchEvent();
-      component.onClickSubmit({}); // touch-click enter button on the onscreen keyboard
-      dispatchTouchEvent();
-      component.onClickAnswer(4, {});
-      expect(registerInputServiceSpy.calls.count()).toBe(4); // 5th one is ignored after enter is pressed
-    });
-  });
-
-  describe('handleKeyboardEvent', () => {
-    function dispatchKeyEvent(keyboardDict) {
-      const event = new KeyboardEvent('keydown', keyboardDict);
-      event.initEvent('keydown', true, true);
-      document.dispatchEvent(event);
-      return event;
-    }
-
-    it('adds to the answer when a number is given', () => {
-      spyOn(component, 'handleKeyboardEvent').and.callThrough();
-      const event1 = dispatchKeyEvent({ key: '1' });
-      expect(component.handleKeyboardEvent).toHaveBeenCalledTimes(1);
-      expect(component.handleKeyboardEvent).toHaveBeenCalledWith(event1);
-      expect(component.answer).toBe('1');
-    });
-
-    it('keyboard calls deleteChar when pressing Backspace or Delete', () => {
-      spyOn(component, 'handleKeyboardEvent').and.callThrough();
-      spyOn(component, 'deleteChar').and.callThrough();
-      dispatchKeyEvent({ key: '1' });
-      dispatchKeyEvent({ key: '4' });
-      dispatchKeyEvent({ key: '7' });
-      expect(component.answer).toBe('147');
-      dispatchKeyEvent({ key: 'Backspace' });
-      expect(component.deleteChar).toHaveBeenCalledTimes(1);
-      expect(component.answer).toBe('14');
-      dispatchKeyEvent({ key: 'Delete' });
-      expect(component.answer).toBe('1');
-      expect(component.handleKeyboardEvent).toHaveBeenCalledTimes(5);
-    });
-
-    it('keyboard calls deleteChar when pressing "Del"', () => {
-      spyOn(component, 'handleKeyboardEvent').and.callThrough();
-      spyOn(component, 'deleteChar').and.callThrough();
-      dispatchKeyEvent({ key: '1' });
-      dispatchKeyEvent({ key: '0' });
-      expect(component.answer).toBe('10');
-      dispatchKeyEvent({ key: 'Del' });
-      expect(component.answer).toBe('1');
-    });
-
-    it('keyboard calls OnSubmit() when Enter is pressed (if there is an answer)', () => {
-      spyOn(component, 'handleKeyboardEvent').and.callThrough();
-      spyOn(component, 'onSubmit').and.returnValue(null);
-      dispatchKeyEvent({ key: '1' });
-      dispatchKeyEvent({ key: 'Enter' });
-      expect(component.handleKeyboardEvent).toHaveBeenCalledTimes(2);
-      expect(component.onSubmit).toHaveBeenCalledTimes(1);
-      expect(component.answer).toBe('1');
-    });
-
-    it('keyboard accepts numbers', () => {
-      spyOn(component, 'handleKeyboardEvent').and.callThrough();
-      spyOn(component, 'addChar').and.callThrough();
-      dispatchKeyEvent({ key: '0' });
-      dispatchKeyEvent({ key: '1' });
-      dispatchKeyEvent({ key: '2' });
-      dispatchKeyEvent({ key: '3' });
-      dispatchKeyEvent({ key: '4' });
-      expect(component.answer).toBe('01234');
-      dispatchKeyEvent({ key: 'Backspace' });
-      dispatchKeyEvent({ key: 'Backspace' });
-      dispatchKeyEvent({ key: 'Backspace' });
-      dispatchKeyEvent({ key: 'Backspace' });
-      dispatchKeyEvent({ key: 'Backspace' });
-      expect(component.answer).toBe('');
-      dispatchKeyEvent({ key: '5' });
-      dispatchKeyEvent({ key: '6' });
-      dispatchKeyEvent({ key: '7' });
-      dispatchKeyEvent({ key: '8' });
-      dispatchKeyEvent({ key: '9' });
-      expect(component.answer).toBe('56789');
-    });
-
-    it('calls register input service for each keypress', () => {
-      spyOn(component, 'handleKeyboardEvent').and.callThrough();
-      dispatchKeyEvent({ key: '5' });
-      dispatchKeyEvent({ key: 'f' });
-      dispatchKeyEvent({ key: 'Enter' }); // Enter will trigger submission
-      expect(registerInputService.addEntry).toHaveBeenCalledTimes(3);
-    });
-
-    it('does not register key strokes after submission', () => {
-      dispatchKeyEvent({ key: '1' });
-      dispatchKeyEvent({ key: '2' });
-      dispatchKeyEvent({ key: '3' });
-      expect(component.answer).toBe('123');
-      component.onSubmit(); // press enter
-      dispatchKeyEvent({ key: 'r' });
-      expect(registerInputServiceSpy.calls.count()).toBe(3); // 4th one is ignored after enter is pressed
-    });
   });
 
   describe('audit entry', () => {
@@ -257,53 +98,15 @@ describe('QuestionComponent', () => {
     });
   });
 
-  describe('#onClickAnswer', () => {
-    it('calls registerInputService', () => {
-      spyOn(registerInputService, 'storeEntry');
-      const event = { timeStamp: 1519211809934 };
-      component.onClickAnswer(42, event);
-      expect(registerInputService.storeEntry).toHaveBeenCalledTimes(1);
-      expect(registerInputService.storeEntry).toHaveBeenCalledWith('42', 'click', 0, '0x0', 1519211809934);
-    });
-
-    it('adds the number to the answer', () => {
-      const event = {};
-      component.onClickAnswer(9, event);
-      expect(component['answer']).toBe('9');
-    });
-
-    it('does not add any new chars to the answer once it has been submitted', () => {
-      component.onClickAnswer(1, {});
-      component.onClickAnswer(1, {});
-      expect(component.answer).toBe('11');
-      component.onClickSubmit({});
-      component.onClickAnswer(2, {});
-      expect(component.answer).toBe('11');
-    });
-
-    it('does not add to the input register once it has been submitted', () => {
-      spyOn(registerInputService, 'storeEntry');
-      component.onClickAnswer(1, {});
-      component.onClickAnswer(1, {});
-      expect(registerInputService.storeEntry).toHaveBeenCalledTimes(2);
-      component.onClickSubmit({});
-      component.onClickAnswer(2, {});
-
-      // We expect the input service to have been called 1 more time for the submit event, but not for the additional click
-      expect(registerInputService.storeEntry).toHaveBeenCalledTimes(3);
-    });
-  });
-
   describe('#onClickBackspace', () => {
     it('calls registerInputService', () => {
-      spyOn(registerInputService, 'storeEntry');
       component.sequenceNumber = 1;
       component.factor1 = 1;
       component.factor2 = 2;
       const event = { timeStamp: 1519211809934 };
       component.onClickBackspace(event);
-      expect(registerInputService.storeEntry).toHaveBeenCalledTimes(1);
-      expect(registerInputService.storeEntry).toHaveBeenCalledWith('Backspace', 'click', 1, '1x2', 1519211809934);
+      expect(registerInputServiceSpy).toHaveBeenCalledTimes(1);
+      expect(registerInputServiceSpy).toHaveBeenCalledWith('Backspace', 'mouse', 1, '1x2', 1519211809934);
     });
 
     it('deletes a char from the answer', () => {
@@ -323,11 +126,17 @@ describe('QuestionComponent', () => {
     });
 
     it('does not add to the input register once it has been submitted', () => {
-      spyOn(registerInputService, 'storeEntry');
       // answer = ''
-      component.onClickAnswer(1, {});
-      component.onClickAnswer(1, {});
-      component.onClickAnswer(1, {});
+      const e1 = new PointerEvent('pointerup',  { pointerId: 1,
+        bubbles: true,
+        cancelable: true,
+        pointerType: 'mouse',
+        width: 100,
+        height: 100,
+        isPrimary: true });
+      component.button1.nativeElement.dispatchEvent(e1);
+      component.button1.nativeElement.dispatchEvent(e1);
+      component.button1.nativeElement.dispatchEvent(e1);
       // answer = '111'
       component.onClickBackspace({});
       component.onClickBackspace({});
@@ -343,14 +152,13 @@ describe('QuestionComponent', () => {
 
   describe('#onClickSubmit', () => {
     it('calls registerInputService', () => {
-      spyOn(registerInputService, 'storeEntry');
       component.sequenceNumber = 1;
       component.factor1 = 1;
       component.factor2 = 2;
       const event = { timeStamp: 1519211809934 };
       component.onClickSubmit(event);
-      expect(registerInputService.storeEntry).toHaveBeenCalledTimes(1);
-      expect(registerInputService.storeEntry).toHaveBeenCalledWith('Enter', 'click', 1, '1x2', 1519211809934);
+      expect(registerInputServiceSpy).toHaveBeenCalledTimes(1);
+      expect(registerInputServiceSpy).toHaveBeenCalledWith('Enter', 'mouse', 1, '1x2', 1519211809934);
     });
 
     it('calls onSubmit()', () => {
@@ -361,14 +169,20 @@ describe('QuestionComponent', () => {
     });
 
     it('does not add to the input register once submitted', () => {
-      spyOn(registerInputService, 'storeEntry');
-      component.onClickAnswer(1, {});
-      component.onClickAnswer(1, {});
+      const e1 = new PointerEvent('pointerup',  { pointerId: 1,
+        bubbles: true,
+        cancelable: true,
+        pointerType: 'mouse',
+        width: 100,
+        height: 100,
+        isPrimary: true });
+      component.button9.nativeElement.dispatchEvent(e1);
+      component.button9.nativeElement.dispatchEvent(e1);
       component.onClickSubmit({});
-      expect(registerInputService.storeEntry).toHaveBeenCalledTimes(3);
+      expect(registerInputServiceSpy).toHaveBeenCalledTimes(3);
       component.onClickSubmit({});
       // It should not call the registerInputService again not that submit has been clicked already
-      expect(registerInputService.storeEntry).toHaveBeenCalledTimes(3);
+      expect(registerInputServiceSpy).toHaveBeenCalledTimes(3);
     });
   });
 

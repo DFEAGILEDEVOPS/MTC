@@ -44,7 +44,7 @@ describe('PractiseQuestionComponent', () => {
     component = fixture.componentInstance;
     component.soundComponent = new SoundComponentMock();
     registerInputService = fixture.debugElement.injector.get(RegisterInputService);
-    registerInputServiceSpy = spyOn(registerInputService, 'addEntry');
+    registerInputServiceSpy = spyOn(registerInputService, 'storeEntry');
     fixture.detectChanges();
   });
 
@@ -89,25 +89,42 @@ describe('PractiseQuestionComponent', () => {
     });
   });
 
-  describe('onClickAnswer', () => {
-    it('adds the input to the answer if there is room', () => {
-      component.answer = '12';
-      const event = {};
-      component.onClickAnswer(4, event);
-      expect(component.answer).toBe('124');
+  describe('clickHandler', () => {
+    function createPointerEvent(pointerType) {
+      return new PointerEvent('pointerup', { pointerId: 1,
+        bubbles: true,
+        cancelable: true,
+        pointerType: pointerType,
+        width: 100,
+        height: 100,
+        isPrimary: true });
+    }
+
+    it('a pointerup event adds the input to the answer when there is room', () => {
+      component.answer = '14';
+      const event = createPointerEvent('mouse');
+      component.button4.nativeElement.dispatchEvent(event);
+      expect(component.answer).toBe('144');
     });
+
+    // TODO: add pointer / click handlers for all other buttons [jms]
+    // TODO: consider how to test the click binding for each button too [jms]
+
     it('does not add the input to the answer if the answer is 5 chars long', () => {
       component.answer = '12345';
-      component.onClickAnswer(6, event);
+      const event = createPointerEvent('mouse');
+      component.button6.nativeElement.dispatchEvent(event);
       expect(component.answer).toBe('12345');
     });
+
     it('does not add input to the answer if enter has been clicked', () => {
       component.startTimer();
-      component.onClickAnswer(1, {});
-      component.onClickAnswer(2, {});
-      component.onClickAnswer(3, {});
-      component.onClickSubmit({}); // click enter button on the onscreen keyboard
-      component.onClickAnswer(4, {});
+      const e1 = createPointerEvent('mouse');
+      component.button1.nativeElement.dispatchEvent(e1);
+      component.button2.nativeElement.dispatchEvent(e1);
+      component.button3.nativeElement.dispatchEvent(e1);
+      component.buttonEnter.nativeElement.dispatchEvent(e1);
+      component.button4.nativeElement.dispatchEvent(e1);
       expect(component.answer).toBe('123');
     });
   });
