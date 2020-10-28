@@ -1,96 +1,6 @@
-USE [master]
-GO
-/****** Object:  Database [mtc]    Script Date: 27/10/2020 17:45:50 ******/
-CREATE DATABASE [mtc]
-GO
+-- Baseline script created 27th October 2020
+-- Contains all schema objects
 
-ALTER DATABASE [mtc] SET ANSI_NULL_DEFAULT OFF
-GO
-ALTER DATABASE [mtc] SET ANSI_NULLS OFF
-GO
-ALTER DATABASE [mtc] SET ANSI_PADDING OFF
-GO
-ALTER DATABASE [mtc] SET ANSI_WARNINGS OFF
-GO
-ALTER DATABASE [mtc] SET ARITHABORT OFF
-GO
-ALTER DATABASE [mtc] SET AUTO_CLOSE OFF
-GO
-ALTER DATABASE [mtc] SET AUTO_SHRINK OFF
-GO
-ALTER DATABASE [mtc] SET AUTO_UPDATE_STATISTICS ON
-GO
-ALTER DATABASE [mtc] SET CURSOR_CLOSE_ON_COMMIT OFF
-GO
-ALTER DATABASE [mtc] SET CURSOR_DEFAULT  GLOBAL
-GO
-ALTER DATABASE [mtc] SET CONCAT_NULL_YIELDS_NULL OFF
-GO
-ALTER DATABASE [mtc] SET NUMERIC_ROUNDABORT OFF
-GO
-ALTER DATABASE [mtc] SET QUOTED_IDENTIFIER OFF
-GO
-ALTER DATABASE [mtc] SET RECURSIVE_TRIGGERS OFF
-GO
-ALTER DATABASE [mtc] SET  ENABLE_BROKER
-GO
-ALTER DATABASE [mtc] SET AUTO_UPDATE_STATISTICS_ASYNC OFF
-GO
-ALTER DATABASE [mtc] SET DATE_CORRELATION_OPTIMIZATION OFF
-GO
-ALTER DATABASE [mtc] SET TRUSTWORTHY OFF
-GO
-ALTER DATABASE [mtc] SET ALLOW_SNAPSHOT_ISOLATION OFF
-GO
-ALTER DATABASE [mtc] SET PARAMETERIZATION SIMPLE
-GO
-ALTER DATABASE [mtc] SET READ_COMMITTED_SNAPSHOT OFF
-GO
-ALTER DATABASE [mtc] SET HONOR_BROKER_PRIORITY OFF
-GO
-ALTER DATABASE [mtc] SET RECOVERY FULL
-GO
-ALTER DATABASE [mtc] SET  MULTI_USER
-GO
-ALTER DATABASE [mtc] SET PAGE_VERIFY CHECKSUM
-GO
-ALTER DATABASE [mtc] SET DB_CHAINING OFF
-GO
-ALTER DATABASE [mtc] SET FILESTREAM( NON_TRANSACTED_ACCESS = OFF )
-GO
-ALTER DATABASE [mtc] SET TARGET_RECOVERY_TIME = 60 SECONDS
-GO
-ALTER DATABASE [mtc] SET DELAYED_DURABILITY = DISABLED
-GO
-ALTER DATABASE [mtc] SET ACCELERATED_DATABASE_RECOVERY = OFF
-GO
-EXEC sys.sp_db_vardecimal_storage_format N'mtc', N'ON'
-GO
-ALTER DATABASE [mtc] SET QUERY_STORE = OFF
-GO
-USE [mtc]
-GO
-/****** Object:  User [TechSupportUser]    Script Date: 27/10/2020 17:45:50 ******/
-CREATE USER [TechSupportUser] FOR LOGIN [TechSupportUser] WITH DEFAULT_SCHEMA=[mtc_admin]
-GO
-/****** Object:  User [mtcAdminUser]    Script Date: 27/10/2020 17:45:50 ******/
-CREATE USER [mtcAdminUser] FOR LOGIN [mtcAdminUser] WITH DEFAULT_SCHEMA=[mtc_admin]
-GO
-/****** Object:  User [functionsUser]    Script Date: 27/10/2020 17:45:50 ******/
-CREATE USER [functionsUser] FOR LOGIN [functionsUser] WITH DEFAULT_SCHEMA=[mtc_admin]
-GO
-/****** Object:  User [CensusImportUser]    Script Date: 27/10/2020 17:45:50 ******/
-CREATE USER [CensusImportUser] FOR LOGIN [CensusImportUser] WITH DEFAULT_SCHEMA=[mtc_admin]
-GO
-/****** Object:  Schema [mtc_admin]    Script Date: 27/10/2020 17:45:50 ******/
-CREATE SCHEMA [mtc_admin]
-GO
-/****** Object:  Schema [mtc_census_import]    Script Date: 27/10/2020 17:45:50 ******/
-CREATE SCHEMA [mtc_census_import]
-GO
-/****** Object:  Schema [mtc_results]    Script Date: 27/10/2020 17:45:50 ******/
-CREATE SCHEMA [mtc_results]
-GO
 /****** Object:  UserDefinedTableType [mtc_admin].[checkTableType]    Script Date: 27/10/2020 17:45:50 ******/
 CREATE TYPE [mtc_admin].[checkTableType] AS TABLE(
 	[pupil_id] [int] NULL,
@@ -3765,8 +3675,4 @@ GO
 EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Unique single character code for the type of user input.' , @level0type=N'SCHEMA',@level0name=N'mtc_results', @level1type=N'TABLE',@level1name=N'userInputTypeLookup', @level2type=N'COLUMN',@level2name=N'code'
 GO
 EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Lookup table to store events generated in the pupil app' , @level0type=N'SCHEMA',@level0name=N'mtc_results', @level1type=N'TABLE',@level1name=N'userInputTypeLookup'
-GO
-USE [master]
-GO
-ALTER DATABASE [mtc] SET  READ_WRITE
 GO
