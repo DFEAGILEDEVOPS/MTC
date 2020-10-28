@@ -5,24 +5,25 @@
 - Migrations can be written in Javascript or SQL
 - Javascript migrations must export a generateSql function
 
-Use the create-migration.js tool to create a new migration:
+Use your package manager (yarn or npm) to create a new migration:
 
 ```
-node data/sql/create-migration.js <name> (default type is sql)
-node data/sql/create-migration.js <name> --type sql
-node data/sql/create-migration.js <name> --type js
+yarn new <name> (default type is sql)
+yarn new <name> --type sql
+yarn new <name> --type js
 ```
+
 Generated migrations have the filename yyyymmddhhmmss.<do|undo>.name.<sql|js>
 
 
 ## Running migrations
 
-- The migration script will execute *all* migrations up or down to a given version
+The migration script will execute *all* migrations up or down to a given version
 
 ```
-node data/sql/migrate-sql.js
-node data/sql/migrate-sql.js max
-node data/sql/migrate-sql.js yyyymmddhhmmss
+yarn migrate
+yarn migrate max
+yarn migrate yyyymmddhhmmss
 ```
 
 ## Creating seeds
@@ -31,21 +32,21 @@ node data/sql/migrate-sql.js yyyymmddhhmmss
 - Javascript seeds must export a generateSql function
 - TSV seeds specify the column names in the first row
 
-Use the create-seed.js tool to create a new seed.
+Use your package manager to create a new seed.
 
 ```
-node data/sql/create-seed.js <name> --table <table> (default type is tsv)
-node data/sql/create-seed.js <name> --format sql (default table is custom for sql & js)
-node data/sql/create-seed.js <name> --table <table> --format <tsv|sql|js>
+yarn new-seed <name> --table <table> (default type is tsv)
+yarn new-seed <name> --format sql (default table is custom for sql & js)
+yarn new-seed <name> --table <table> --format <tsv|sql|js>
 ```
 Generated seeds have the filename yyyymmddhhmmss.table.name.<sql|tsv|js>
 
 ## Running seeds
 
-- The seed script will execute all seeds or a given seed
+The seed script will execute all seeds or a given seed
 
 ```
-node data/sql/seed-sql.js
-node data/sql/seed-sql.js all
-node data/sql/seed-sql.js yyyymmddhhmmss
+yarn seed
+yarn seed all
+yarn seed yyyymmddhhmmss
 ```

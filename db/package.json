@@ -10,7 +10,12 @@
   "engines": {
     "node": ">= 12"
   },
-  "devDependencies": {},
+  "scripts": {
+    "new": "node ./engine/create-migration.js",
+    "new-seed": "./engine/create-seed.js",
+    "migrate": "node ./engine/migrate.js",
+    "seed": "node ./engine/seed.js"
+  },
   "dependencies": {
     "command-line-args": "^5.1.1",
     "moment": "^2.29.1",
