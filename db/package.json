@@ -1,0 +1,19 @@
+{
+  "name": "db",
+  "version": "1.0.0",
+  "description": "sql server database migration tool",
+  "main": "index.js",
+  "repository": "https://github.com/DFEAGILEDEVOPS/MTC",
+  "author": "Guy Harwood, Jon Shipley",
+  "license": "GPL-3.0",
+  "private": false,
+  "engines": {
+    "node": ">= 12"
+  },
+  "devDependencies": {},
+  "dependencies": {
+    "command-line-args": "^5.1.1",
+    "moment": "^2.29.1",
+    "postgrator": "^4.1.0"
+  }
+}
