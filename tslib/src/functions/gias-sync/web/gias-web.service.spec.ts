@@ -1,10 +1,10 @@
 import { GiasWebService } from './gias-web.service'
 import { ISoapMessageBuilder, ISoapMessageSpecification } from './soap-message-builder'
 import { v4 as uuid } from 'uuid'
-import { ISoapRequestService, ISoapRequest } from './soap-request.service'
+import { ISoapRequestService } from './soap-request.service'
 import config from '../../../config'
 import { IXmlParser } from '../xml-parser'
-import { IMultipartMessageParser, IResponse, IMessagePart } from './multipart-message-parser'
+import { IMultipartMessageParser, IMessagePart } from './multipart-message-parser'
 import { IZipService } from '../zip.service'
 
 const SoapMessageBuilderMock = jest.fn<ISoapMessageBuilder, any>(() => ({
@@ -45,7 +45,7 @@ describe('GiasWebService', () => {
     soapRequestServiceMock = new SoapRequestServiceMock()
     zipServiceMock = new ZipServiceMock()
 
-    soapRequestServiceMock.execute = jest.fn((request: ISoapRequest) => {
+    jest.spyOn(soapRequestServiceMock, 'execute').mockImplementation(async () => {
       const soapXml = {
         body: ''
       }
@@ -54,7 +54,7 @@ describe('GiasWebService', () => {
     const extractHrefValue = 'cid:9cd380a3-db54-46f7-98db-8f65a269bbd4%40myfile.com'
     const attachmentPartId = extractHrefValue.substr(4).replace('%40', '@')
     xmlParserMock = new XmlParserMock()
-    xmlParserMock.parse = jest.fn((xml: string) => {
+    jest.spyOn(xmlParserMock, 'parse').mockImplementation(() => {
       return {
         Envelope: {
           Body: {
@@ -72,10 +72,8 @@ describe('GiasWebService', () => {
       }
     })
     multipartMessageParserMock = new MultipartMessageParserMock()
-    multipartMessageParserMock.extractBoundaryIdFrom = jest.fn((response: IResponse) => {
-      return 'boundaryId'
-    })
-    multipartMessageParserMock.parse = jest.fn((response: IResponse) => {
+    jest.spyOn(multipartMessageParserMock, 'extractBoundaryIdFrom').mockImplementation(() => 'boundaryId')
+    jest.spyOn(multipartMessageParserMock, 'parse').mockImplementation(() => {
       const parts = new Array<IMessagePart>()
       parts.push({
         content: 'content',
@@ -89,18 +87,18 @@ describe('GiasWebService', () => {
       return parts
     })
 
-    zipServiceMock.extractEntriesFromZipBuffer = jest.fn((data: Buffer) => {
+    jest.spyOn(zipServiceMock, 'extractEntriesFromZipBuffer').mockImplementation(() => {
       const entries = new Array<Buffer>()
       entries.push(Buffer.from('foo'))
       return entries
     })
 
     sut = new GiasWebService(
-                soapMessageBuilderMock,
-                soapRequestServiceMock,
-                xmlParserMock,
-                multipartMessageParserMock,
-                zipServiceMock)
+      soapMessageBuilderMock,
+      soapRequestServiceMock,
+      xmlParserMock,
+      multipartMessageParserMock,
+      zipServiceMock)
   })
 
   test('subject should be defined', () => {
@@ -110,12 +108,12 @@ describe('GiasWebService', () => {
   test('GetExtract:should propogate original error details when a fault occurs', async () => {
     const errorInfo = `errorId:${uuid()}`
     try {
-      soapMessageBuilderMock.buildMessage = jest.fn(() => { throw new Error(errorInfo) })
+      jest.spyOn(soapMessageBuilderMock, 'buildMessage').mockImplementation(() => { throw new Error(errorInfo) })
       await sut.getExtract(extractId)
       fail('error should have been thrown')
     } catch (error) {
       expect(error).toBeDefined()
-      expect(error.message).toEqual(errorInfo)
+      expect(error.message).toStrictEqual(errorInfo)
     }
   })
 
@@ -125,15 +123,15 @@ describe('GiasWebService', () => {
       messageExpiryMs: 0,
       namespace: ''
     }
-    soapMessageBuilderMock.buildMessage = jest.fn((messageSpec) => {
+    jest.spyOn(soapMessageBuilderMock, 'buildMessage').mockImplementation((messageSpec) => {
       capturedSpecification = messageSpec
       return ''
     })
     await sut.getExtract(extractId)
     expect(capturedSpecification).toBeDefined()
-    expect(capturedSpecification.action).toEqual('GetExtract')
+    expect(capturedSpecification.action).toStrictEqual('GetExtract')
     expect(capturedSpecification.parameters).toBeDefined()
-    expect(capturedSpecification.parameters['Id']).toEqual(extractId)
+    expect(capturedSpecification.parameters.Id).toStrictEqual(extractId)
   })
 
   test('when namespace is not defined an error is thrown', async () => {
@@ -143,7 +141,7 @@ describe('GiasWebService', () => {
       fail('error was expected to be thrown')
     } catch (error) {
       expect(error).toBeDefined()
-      expect(error.message).toEqual('gias web service namespace is required')
+      expect(error.message).toStrictEqual('gias web service namespace is required')
     }
   })
 
@@ -154,7 +152,7 @@ describe('GiasWebService', () => {
       fail('error was expected to be thrown')
     } catch (error) {
       expect(error).toBeDefined()
-      expect(error.message).toEqual('gias service url is required')
+      expect(error.message).toStrictEqual('gias service url is required')
     }
   })
 
@@ -165,7 +163,7 @@ describe('GiasWebService', () => {
       fail('error was expected to be thrown')
     } catch (error) {
       expect(error).toBeDefined()
-      expect(error.message).toEqual('gias username is required')
+      expect(error.message).toStrictEqual('gias username is required')
     }
   })
 
@@ -176,40 +174,7 @@ describe('GiasWebService', () => {
       fail('error was expected to be thrown')
     } catch (error) {
       expect(error).toBeDefined()
-      expect(error.message).toEqual('gias password is required')
+      expect(error.message).toStrictEqual('gias password is required')
     }
   })
-
-  // work in progress for final implementation
-  test.todo('GetExtract: verify returned data structure')
-
-  // work in progress for final implementation
-  test.skip('GetExtract:should return an empty object if no results', async () => {
-    const extractResult = await sut.getExtract(extractId)
-    expect(extractResult).toBeDefined()
-    expect(extractResult.length).toBe(0)
-  })
-
-  // integration test, work in progress for final implementation
-  test.skip('e2e:GetEstablishment', async () => {
-    config.Gias.Namespace = process.env.GIAS_WS_NAMESPACE || ''
-    config.Gias.ServiceUrl = process.env.GIAS_WS_SERVICE_URL || ''
-    config.Gias.Username = process.env.GIAS_WS_USERNAME || ''
-    config.Gias.Password = process.env.GIAS_WS_PASSWORD || ''
-    const gias = new GiasWebService()
-    const response = await gias.GetEstablishment(100044)
-    console.dir(response)
-  })
-
-  // integration test, work in progress for final implementation
-  test.skip('e2e:GetExtract', async () => {
-    config.Gias.Namespace = process.env.GIAS_WS_NAMESPACE || ''
-    config.Gias.ServiceUrl = process.env.GIAS_WS_SERVICE_URL || ''
-    config.Gias.Username = process.env.GIAS_WS_USERNAME || ''
-    config.Gias.Password = process.env.GIAS_WS_PASSWORD || ''
-    const gias = new GiasWebService()
-    const response = await gias.getExtract(parseInt(process.env.GIAS_WS_EXTRACT_ID || '',10))
-    console.log(`the xml is ${response.length} chars long`)
-  })
-
 })

@@ -6,8 +6,7 @@ export interface IJobDataService {
 }
 
 export class JobDataService implements IJobDataService {
-
-  private pool: mssql.ConnectionPool
+  private readonly pool: mssql.ConnectionPool
 
   constructor (pool: mssql.ConnectionPool) {
     this.pool = pool

@@ -1,11 +1,12 @@
 import { AzureFunction, Context } from '@azure/functions'
 import { performance } from 'perf_hooks'
-const functionName = 'check-notifier-batch'
 import * as sb from '@azure/service-bus'
 import config from '../../config'
 import { ICheckNotificationMessage } from '../check-notifier/check-notification-message'
 import { BatchCheckNotifier } from './batch-check-notifier.service'
 import * as RA from 'ramda-adjunct'
+import { IFunctionTimer } from '../../azure/functions'
+const functionName = 'check-notifier-batch'
 
 /*
  * The function is running as a singleton, and the receiver is therefore exclusive
@@ -13,15 +14,14 @@ import * as RA from 'ramda-adjunct'
   if the message is abandoned 10 times (the current 'max delivery count') it will be
   put on the dead letter queue automatically.
 */
-const batchCheckNotifier: AzureFunction = async function (context: Context, timer: any): Promise<void> {
-
+const batchCheckNotifier: AzureFunction = async function (context: Context, timer: IFunctionTimer): Promise<void> {
   if (timer.IsPastDue) {
     context.log(`${functionName}: timer is past due, exiting.`)
     return
   }
   const start = performance.now()
 
-  if (!config.ServiceBus.ConnectionString) {
+  if (config.ServiceBus.ConnectionString === undefined) {
     throw new Error(`${functionName}: ServiceBusConnection env var is missing`)
   }
 
@@ -29,7 +29,7 @@ const batchCheckNotifier: AzureFunction = async function (context: Context, time
   let queueClient: sb.QueueClient
   let receiver: sb.Receiver
 
-  const disconnect = async () => {
+  const disconnect = async (): Promise<void> => {
     await receiver.close()
     await queueClient.close()
     await busClient.close()
@@ -109,7 +109,7 @@ async function abandonMessages (messageBatch: sb.ServiceBusMessage[], context: C
   }
 }
 
-function finish (start: number, context: Context) {
+function finish (start: number, context: Context): void {
   const end = performance.now()
   const durationInMilliseconds = end - start
   const timeStamp = new Date().toISOString()

@@ -6,14 +6,13 @@ export interface IPupilLoginDataService {
 }
 
 export class PupilLoginDataService implements IPupilLoginDataService {
-
-  private sqlService: SqlService
+  private readonly sqlService: SqlService
 
   constructor () {
     this.sqlService = new SqlService()
   }
 
-  updateCheckWithLoginTimestamp (checkCode: string, loginDateTime: Date): Promise<void> {
+  async updateCheckWithLoginTimestamp (checkCode: string, loginDateTime: Date): Promise<void> {
     const sql = `UPDATE [mtc_admin].[check]
                SET pupilLoginDate = @loginDate,
                    checkStatus_id = (SELECT TOP 1 id FROM [mtc_admin].[checkStatus]
@@ -28,5 +27,4 @@ export class PupilLoginDataService implements IPupilLoginDataService {
     ]
     return this.sqlService.modify(sql, params)
   }
-
 }

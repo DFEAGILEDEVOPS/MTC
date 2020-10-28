@@ -1,7 +1,7 @@
 'use strict'
 
 import { IEstablishment } from './IEstablishment'
-const RA = require('ramda-adjunct')
+import * as RA from 'ramda-adjunct'
 
 export default {
   isSchoolOpen (school: IEstablishment) {

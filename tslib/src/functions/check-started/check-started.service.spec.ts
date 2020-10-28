@@ -7,7 +7,6 @@ let redisServiceMock: IRedisService
 let functionBindings: ICheckStartedFunctionBindings
 
 describe('check-started.service', () => {
-
   beforeEach(() => {
     redisServiceMock = new RedisServiceMock()
     sut = new CheckStartedService(redisServiceMock)
@@ -28,7 +27,7 @@ describe('check-started.service', () => {
     }
     const preparedCheckKey = 'prepared-check-key'
 
-    redisServiceMock.get = jest.fn(async (key: string) => {
+    jest.spyOn(redisServiceMock, 'get').mockImplementation(async (key: string) => {
       if (key.startsWith('prepared-check-lookup')) {
         return preparedCheckKey
       } else {
@@ -40,7 +39,7 @@ describe('check-started.service', () => {
       }
     })
     await sut.process(message, functionBindings)
-    expect(functionBindings.checkStartedTable.length).toBe(1)
+    expect(functionBindings.checkStartedTable).toHaveLength(1)
   })
 
   test('it drops preparedCheck from redis if a live check', async () => {
@@ -51,7 +50,7 @@ describe('check-started.service', () => {
     }
     const preparedCheckKey = 'prepared-check-key'
 
-    redisServiceMock.get = jest.fn(async (key: string) => {
+    jest.spyOn(redisServiceMock, 'get').mockImplementation(async (key: string) => {
       if (key.startsWith('prepared-check-lookup')) {
         return preparedCheckKey
       } else {
@@ -75,8 +74,7 @@ describe('check-started.service', () => {
     }
     const preparedCheckKey = 'prepared-check-key'
 
-    redisServiceMock.get = jest.fn(async (key: string) => {
-
+    jest.spyOn(redisServiceMock, 'get').mockImplementation(async (key: string) => {
       if (key.startsWith('prepared-check-lookup')) {
         return preparedCheckKey
       } else {
@@ -98,7 +96,7 @@ describe('check-started.service', () => {
       version: 1
     }
 
-    redisServiceMock.get = jest.fn(async (key: string) => {
+    jest.spyOn(redisServiceMock, 'get').mockImplementation(async () => {
       return null
     })
     await sut.process(message, functionBindings)

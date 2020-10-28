@@ -8,18 +8,17 @@ export interface ICheckAllocationDataService {
    * @param schoolUUID the urlSlug of the school
    * @returns an array of pupils within the school
    */
-  getPupilsBySchoolUuid (schoolUUID: string): Promise<Array<IPupil>>
+  getPupilsBySchoolUuid (schoolUUID: string): Promise<IPupil[]>
   /**
    * @description gets all forms used by pupil
    * @param pupilUUID the urlSlug of the pupil
    * @returns an array of form ids
    */
-  getFormsUsedByPupil (pupilUUID: string): Promise<Array<any>>
+  getFormsUsedByPupil (pupilUUID: string): Promise<any[]>
 }
 
 export class CheckAllocationDataService implements ICheckAllocationDataService {
-
-  private sqlService: SqlService
+  private readonly sqlService: SqlService
 
   constructor () {
     this.sqlService = new SqlService()
@@ -29,7 +28,7 @@ export class CheckAllocationDataService implements ICheckAllocationDataService {
     throw new Error('Method not implemented.')
   }
 
-  async getPupilsBySchoolUuid (schoolUUID: string): Promise<Array<IPupil>> {
+  async getPupilsBySchoolUuid (schoolUUID: string): Promise<IPupil[]> {
     const sql = `SELECT p.urlSlug FROM mtc_admin.pupil p
       INNER JOIN mtc_admin.school s ON p.school_id = s.id
       WHERE s.urlSlug=@schoolUUID`

@@ -1,4 +1,3 @@
-
 import * as csvString from 'csv-string'
 import moment from 'moment'
 import * as R from 'ramda'
@@ -9,20 +8,22 @@ import { IJobDataService, JobDataService } from './job.data.service'
 import * as mssql from 'mssql'
 import { ConsoleLogger, ILogger } from '../../common/logger'
 
-export class CensusImportV1 {
+export interface IJobResult {
+  processCount: number
+}
 
-  private pool: mssql.ConnectionPool
-  private censusImportDataService: ICensusImportDataService
-  private jobDataService: IJobDataService
-  private blobStorageService: IBlobStorageService
-  private logger: ILogger
+export class CensusImportV1 {
+  private readonly pool: mssql.ConnectionPool
+  private readonly censusImportDataService: ICensusImportDataService
+  private readonly jobDataService: IJobDataService
+  private readonly blobStorageService: IBlobStorageService
+  private readonly logger: ILogger
 
   constructor (pool: mssql.ConnectionPool,
     logger?: ILogger,
     censusImportDataService?: ICensusImportDataService,
     jobDataService?: IJobDataService,
     blobStorageService?: IBlobStorageService) {
-
     this.pool = pool
 
     if (censusImportDataService === undefined) {
@@ -46,7 +47,7 @@ export class CensusImportV1 {
     this.logger = logger
   }
 
-  async process (blob: any, blobUri: string) {
+  async process (blob: unknown, blobUri: string): Promise<IJobResult> {
     const rowsAffected = await this.handleCensusImport(blob, blobUri)
     return {
       processCount: rowsAffected

@@ -23,7 +23,6 @@ describe('CheckPinExpiryService', () => {
 
   test('modifies the database', async () => {
     await sut.process()
-    expect(sqlServiceMock.modify).toHaveBeenCalled()
     expect(sqlServiceMock.modify.mock.calls[0][0]).toMatch(/^DELETE FROM \[mtc_admin\]\.\[checkPin\]/)
   })
 })

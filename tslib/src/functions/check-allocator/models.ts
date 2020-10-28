@@ -11,6 +11,6 @@ export interface IPupilAllocation {
 }
 export interface ISchoolAllocation {
   schoolUUID: string
-  pupils: Array<IPupil>
+  pupils: IPupil[]
   lastReplenishmentUtc: Moment
 }

@@ -159,15 +159,15 @@ export interface ICheckCompletionMessage {
 // DB models
 //
 export interface DBQuestion {
-  id: number,
-  factor1: number,
-  factor2: number,
-  code: string,
+  id: number
+  factor1: number
+  factor2: number
+  code: string
   isWarmup: boolean
 }
 
 export interface DBEventType {
-  id: number,
-  eventType: string,
+  id: number
+  eventType: string
   eventDescription: string
 }
