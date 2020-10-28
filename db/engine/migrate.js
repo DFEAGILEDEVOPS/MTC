@@ -17,7 +17,7 @@ try {
 
 const config = require('../config')
 const sqlConfig = require('../sql.config')
-// TODO const logger = require('../../services/log.service').getLogger()
+const logger = require('./log.service').getLogger()
 const Postgrator = require('postgrator')
 const {
   sortMigrationsAsc,
@@ -59,7 +59,7 @@ class Migrator extends Postgrator {
 }
 
 const migratorConfig = {
-  migrationDirectory: path.join(__dirname, '/migrations'),
+  migrationDirectory: path.join(__dirname, '..', 'schema'),
   driver: 'mssql',
   host: config.Sql.Server,
   // Required for when SQL_PORT is passed in via docker-compose

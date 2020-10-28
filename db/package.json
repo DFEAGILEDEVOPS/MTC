@@ -19,8 +19,12 @@
   "dependencies": {
     "command-line-args": "^5.1.1",
     "moment": "^2.29.1",
+    "mssql": "^6.2.3",
     "postgrator": "^4.1.0",
     "to-bool": "^0.0.1",
     "winston": "^3.3.3"
+  },
+  "devDependencies": {
+    "dotenv": "^8.2.0"
   }
 }

@@ -15,7 +15,7 @@ try {
   console.error(error)
 }
 
-const sql = require('./config/sql.config')
+const sql = require('./sql.config')
 
 const twoMinutesInMilliseconds = 120000
 const thirtySecondsInMilliseconds = 30000
