@@ -1,14 +1,14 @@
 import { AzureFunction, Context } from '@azure/functions'
 import { performance } from 'perf_hooks'
-const functionName = 'gias-sync'
 import { GiasWebService } from './web/gias-web.service'
 import config from '../../config'
 import { GiasExtractParser } from './gias-extract-parser'
 import { GiasBulkImport } from './gias-bulk-import.service'
 import { IEstablishment } from './IEstablishment'
 import predicates from './school-predicates'
+const functionName = 'gias-sync'
 
-const timerTrigger: AzureFunction = async function (context: Context, timer: any): Promise<void> {
+const timerTrigger: AzureFunction = async function (context: Context): Promise<void> {
   const start = performance.now()
 
   const giasService = new GiasWebService()

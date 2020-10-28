@@ -13,18 +13,15 @@ export class SasToken {
     this.token = token
     this.url = url
   }
+
   token: string
   url: string
 }
 
 export class SasTokenService {
-  private qService: IQueueService
+  private readonly qService: IQueueService
   constructor (queueService?: IQueueService) {
-    if (!queueService) {
-      this.qService = azure.createQueueService()
-    } else {
-      this.qService = queueService
-    }
+    this.qService = queueService ?? azure.createQueueService()
   }
 
   generateSasToken (queueName: string, expiryDate: moment.Moment): SasToken {

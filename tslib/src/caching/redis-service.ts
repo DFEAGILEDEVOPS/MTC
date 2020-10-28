@@ -2,15 +2,16 @@ import Redis, { RedisOptions } from 'ioredis'
 import config from '../config'
 import * as Logger from '../common/logger'
 import { RedisCacheItem, RedisItemDataType } from './RedisCacheItemMetadata'
+import { isNil } from 'ramda'
 
 export interface IRedisService {
   /**
    * @description retrieve an item from the cache, under the given key
    * @param {string} key the unique string key of the redis entry to fetch
    * @throws when the data type of the retrieved value is unsupported
-   * @returns {Promise<string | null>} an awaitable promise containing the item if it exists, or undefined if it does not
+   * @returns {Promise<unknown | undefined>} an awaitable promise containing the item if it exists, or undefined if it does not
    */
-  get (key: string): Promise<any | null>
+  get (key: string): Promise<unknown | undefined>
   /**
    * @description insert or ovewrite an item in the cache, which lives indefinitely
    * @param {string} key the unique string key of the redis entry to persist
@@ -18,7 +19,7 @@ export interface IRedisService {
    * @throws when the incoming item datatype is not supported and when the setex redis operation fails
    * @returns {Promise<void} an awaitable promise
    */
-  set (key: string, value: string | object): Promise<void>
+  set (key: string, value: string | Record<string, any>): Promise<void>
   /**
    * @description drop a series of items from the cache
    * @param {Array<string>} keys an array of keys to invalidate
@@ -32,13 +33,13 @@ export interface IRedisService {
    * @throws when the incoming item datatype is not supported and when the setex redis operation fails
    * @returns {Promise<void} an awaitable promise
    */
-  setex (key: string, value: string | object, ttl: number): Promise<void>
+  setex (key: string, value: string | any, ttl: number): Promise<void>
   /**
    * @description drop a series of items from the cache
    * @param {Array<string>} keys an array of keys to invalidate
    * @returns {Promise<void>}
    */
-  drop (keys: Array<string>): Promise<Array<[Error | null, any]> | undefined>
+  drop (keys: string[]): Promise<Array<[Error | null, any]> | undefined>
   /**
    * @description cleans up the underlying redis client implementation
    * @returns void
@@ -59,9 +60,8 @@ export interface IRedisService {
 }
 
 export class RedisService implements IRedisService {
-
-  private redis: Redis.Redis
-  private logger: Logger.ILogger
+  private readonly redis: Redis.Redis
+  private readonly logger: Logger.ILogger
 
   constructor () {
     const options: RedisOptions = {
@@ -78,10 +78,10 @@ export class RedisService implements IRedisService {
     this.logger = new Logger.ConsoleLogger()
   }
 
-  async get (key: string): Promise<any | null> {
+  async get (key: string): Promise<unknown | undefined> {
     try {
       const cacheEntry = await this.redis.get(key)
-      if (cacheEntry === null) return undefined
+      if (isNil(cacheEntry)) return
       const cacheItem: RedisCacheItem = JSON.parse(cacheEntry)
       switch (cacheItem.meta.type) {
         case RedisItemDataType.string:
@@ -105,8 +105,8 @@ export class RedisService implements IRedisService {
     }
   }
 
-  prepareForStorage (value: string | object | number): any {
-    let dataType = typeof(value)
+  prepareForStorage (value: string | Record<string, unknown> | number): any {
+    const dataType = typeof (value)
     let cacheItemDataType: RedisItemDataType
     switch (dataType) {
       case 'string':
@@ -126,13 +126,14 @@ export class RedisService implements IRedisService {
       meta: {
         type: cacheItemDataType
       },
+      // eslint-disable-next-line @typescript-eslint/no-base-to-string
       value: value.toString()
     }
     const storageItemString = JSON.stringify(storageItem)
     return storageItemString
   }
 
-  async setex (key: string, value: string | number | object, ttl: number): Promise<void> {
+  async setex (key: string, value: string | number | Record<string, unknown>, ttl: number): Promise<void> {
     try {
       const storageItem = this.prepareForStorage(value)
       await this.redis.setex(key, ttl, storageItem)
@@ -142,7 +143,7 @@ export class RedisService implements IRedisService {
     }
   }
 
-  async set (key: string, value: string | number | object): Promise<void> {
+  async set (key: string, value: string | number | Record<string, unknown>): Promise<void> {
     try {
       const storageItem = this.prepareForStorage(value)
       await this.redis.set(key, storageItem)
@@ -163,15 +164,15 @@ export class RedisService implements IRedisService {
     return pipeline.exec()
   }
 
-  quit (): Promise<string> {
+  async quit (): Promise<string> {
     return this.redis.quit()
   }
 
-  ttl (key: string): Promise<number | null> {
+  async ttl (key: string): Promise<number | null> {
     return this.redis.ttl(key)
   }
 
-  expire (key: string, ttl: number): Promise<any> {
+  async expire (key: string, ttl: number): Promise<any> {
     return this.redis.expire(key, ttl)
   }
 }

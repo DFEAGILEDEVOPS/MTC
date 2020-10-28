@@ -28,9 +28,11 @@ export class ConsoleLogger implements ILogger {
   warn (...args: any[]): void {
     console.warn(...args)
   }
+
   info (...args: any[]): void {
     console.info(...args)
   }
+
   verbose (...args: any[]): void {
     console.log(...args)
   }

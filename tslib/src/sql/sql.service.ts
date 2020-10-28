@@ -1,9 +1,10 @@
-import { Request, TYPES, ConnectionPool, Transaction, config as sqlConfig } from 'mssql'
+import { Request, TYPES, Transaction, IResult } from 'mssql'
 import { ILogger, ConsoleLogger } from '../common/logger'
 import retry from './async-retry'
 import config from '../config'
 import * as R from 'ramda'
 import { DateTimeService, IDateTimeService } from '../common/datetime.service'
+import * as connectionPool from './pool.service'
 
 const retryConfig = {
   attempts: config.DatabaseRetry.MaxRetryAttempts,
@@ -15,97 +16,18 @@ declare class SqlServerError extends Error {
   number?: number
 }
 
-/**
- * static class for serving single instance of a connection pool
- */
-export class ConnectionPoolService {
-  private static pool: ConnectionPool
-
-  static async getInstance (logger?: ILogger): Promise<ConnectionPool> {
-    return ConnectionPoolService.getInstanceWithConfig(config.Sql, logger)
-  }
-
-  // pool can still be connecting when first used...
-  // https://github.com/tediousjs/node-mssql/issues/934
-  static async getInstanceWithConfig (sqlConfig: sqlConfig, logger?: ILogger): Promise<ConnectionPool> {
-
-    if (logger === undefined) {
-      logger = new ConsoleLogger()
-    }
-
-    // tslint:disable-next-line: strict-type-predicates
-    if (this.pool === undefined) {
-      this.pool = new ConnectionPool(sqlConfig)
-      await this.pool.connect()
-      this.pool.on('error', (error) => {
-        logger?.error(`Sql Connection Pool Error Raised:${error.message}`)
-      })
-    }
-
-    if (this.pool.connected === true) {
-      return this.pool
-    }
-
-    if (this.pool.connecting === false && this.pool.connected === false) {
-      // may have been closed, reconnect....
-      await this.pool.connect()
-    }
-
-    if (this.pool.connecting === true) {
-      await this.waitForConnection()
-    }
-
-    if (this.pool.connected === false) {
-      throw new Error('pool failed to connect after setup')
-    }
-    return this.pool
-  }
-
-  /**
-   * @description idea taken from https://github.com/tediousjs/node-mssql/issues/934
-   */
-  private static async waitForConnection (): Promise<void> {
-    let millisecondsPassed = 0
-    const waitForConnectionPoolToBeReadyExecutor = (
-      resolve: (value?: PromiseLike<undefined> | undefined) => void,
-      reject: (reason?: any) => void
-    ) => {
-      setTimeout(() => {
-        if (millisecondsPassed < 30000) {
-          millisecondsPassed += 2000
-          if (this.pool.connected) {
-            resolve()
-          } else {
-            waitForConnectionPoolToBeReadyExecutor(resolve, reject)
-          }
-        } else {
-          reject('Aborting start because the connection pool failed to initialize in the last ~30s.')
-        }
-      }, 2000)
-    }
-
-    // This simply waits for  30 seconds, for the pool to become connected.
-    // Since this is also an async function, if this fails after 30 seconds, execution stops
-    // and an error is thrown.
-    await new Promise(waitForConnectionPoolToBeReadyExecutor)
-  }
-
-}
-
 const connectionLimitReachedErrorCode = 10928
 
-const dbLimitReached = (error: SqlServerError) => {
+const dbLimitReached = (error: SqlServerError): boolean => {
   // https://docs.microsoft.com/en-us/azure/sql-database/sql-database-develop-error-messages
   return error.number === connectionLimitReachedErrorCode
 }
 
 export class SqlService implements ISqlService {
-
-  private dateTimeService: IDateTimeService
-  private logger: ILogger
+  private readonly dateTimeService: IDateTimeService
+  private readonly logger: ILogger
 
   constructor (logger?: ILogger, dateTimeService?: IDateTimeService) {
-
     if (dateTimeService === undefined) {
       dateTimeService = new DateTimeService()
     }
@@ -122,8 +44,7 @@ export class SqlService implements ISqlService {
    * Do not use this in regular services.
    */
   async closePool (): Promise<void> {
-
-    const pool = await ConnectionPoolService.getInstance()
+    const pool = await connectionPool.getInstance()
     this.logger.info('closing connection pool..')
     await pool.close()
     this.logger.info('connection pool closed.')
@@ -133,10 +54,9 @@ export class SqlService implements ISqlService {
    * Utility service to transform the results before sending to the caller
    * @type {Function}
    */
-  private transformQueryResult (data: any) {
-
+  private transformQueryResult (data: any): unknown {
     const recordSet = R.prop('recordset', data) // returns [o1, o2,  ...]
-    if (!recordSet) {
+    if (recordSet === undefined) {
       return []
     }
     // TODO remove version property using R.omit()
@@ -149,9 +69,8 @@ export class SqlService implements ISqlService {
     return R.map(R.pipe(R.map(this.dateTimeService.convertDateToMoment)), recordSet)
   }
 
-  private addParamsToRequestSimple (params: Array<ISqlParameter>, request: Request) {
-
-    if (params) {
+  private addParamsToRequestSimple (params: ISqlParameter[], request: Request): void {
+    if (params !== undefined) {
       for (let index = 0; index < params.length; index++) {
         const param = params[index]
         request.input(param.name, param.type, param.value)
@@ -159,16 +78,14 @@ export class SqlService implements ISqlService {
     }
   }
 
-  async query (sql: string, params?: Array<ISqlParameter>): Promise<any> {
-
-    const query = async () => {
-      const request = new Request(await ConnectionPoolService.getInstance())
+  async query (sql: string, params?: ISqlParameter[]): Promise<any> {
+    const query = async (): Promise<any> => {
+      const request = new Request(await connectionPool.getInstance())
       if (params !== undefined) {
         this.addParamsToRequestSimple(params, request)
       }
       const result = await request.query(sql)
       return this.transformQueryResult(result)
-
     }
     return retry<any>(query, retryConfig, dbLimitReached)
   }
@@ -179,10 +96,9 @@ export class SqlService implements ISqlService {
    * @param {array} params - Array of parameters for SQL statement
    * @return {Promise}
    */
-  async modify (sql: string, params: Array<ISqlParameter>): Promise<any> {
-
-    const modify = async () => {
-      const request = new Request(await ConnectionPoolService.getInstance())
+  async modify (sql: string, params: ISqlParameter[]): Promise<any> {
+    const modify = async (): Promise<IResult<any>> => {
+      const request = new Request(await connectionPool.getInstance())
       this.addParamsToRequest(params, request)
       return request.query(sql)
     }
@@ -192,13 +108,11 @@ export class SqlService implements ISqlService {
 
     const rawResponse = await retry<any>(modify, retryConfig, dbLimitReached)
 
-    if (rawResponse && rawResponse.recordset) {
+    if (rawResponse?.recordset !== undefined) {
       for (const obj of rawResponse.recordset) {
         /* TODO remove this strict column name limitation and
           extract column value regardless of name */
-        if (obj && obj.SCOPE_IDENTITY) {
-          insertIds.push(obj.SCOPE_IDENTITY)
-        }
+        insertIds.push(obj.SCOPE_IDENTITY)
       }
     }
 
@@ -218,13 +132,12 @@ export class SqlService implements ISqlService {
    * @param {array} params - Array of parameters for SQL statement
    * @return {Promise}
    */
-  async modifyWithTransaction (requests: Array<ITransactionRequest>): Promise<any> {
-
-    const transaction = new Transaction(await ConnectionPoolService.getInstance())
+  async modifyWithTransaction (requests: ITransactionRequest[]): Promise<any> {
+    const transaction = new Transaction(await connectionPool.getInstance())
     await transaction.begin()
     for (let index = 0; index < requests.length; index++) {
       const request = requests[index]
-      const modify = async () => {
+      const modify = async (): Promise<IResult<any>> => {
         const req = new Request(transaction)
         this.addParamsToRequest(request.params, req)
         return req.query(request.sql)
@@ -246,32 +159,29 @@ export class SqlService implements ISqlService {
    * @param {{name, value, type, precision, scale, options}[]} params - array of parameter objects
    * @param {{input}} request -  mssql request
    */
-  private addParamsToRequest (params: Array<ISqlParameter>, request: Request): void {
+  private addParamsToRequest (params: ISqlParameter[], request: Request): void {
+    for (let index = 0; index < params.length; index++) {
+      const param = params[index]
+      if (param.type === undefined) {
+        throw new Error('parameter type invalid')
+      }
+      const options: any = {}
+      if (R.pathEq(['type', 'name'], 'Decimal', param) ||
+        R.pathEq(['type', 'name'], 'Numeric', param)) {
+        options.precision = param.precision ?? 28
+        options.scale = param.scale ?? 5
+      }
+      const opts = param.options !== undefined ? param.options : options
+      if (opts !== undefined && Object.keys(opts).length > 0) {
+        // logger.debug('sql.service: addParamsToRequest(): opts to addParameter are: ', opts)
+      }
 
-    if (params) {
-      for (let index = 0; index < params.length; index++) {
-        const param = params[index]
-        if (!param.type) {
-          throw new Error('parameter type invalid')
-        }
-        const options: any = {}
-        if (R.pathEq(['type', 'name'], 'Decimal', param) ||
-          R.pathEq(['type', 'name'], 'Numeric', param)) {
-          options.precision = param.precision || 28
-          options.scale = param.scale || 5
-        }
-        const opts = param.options ? param.options : options
-        if (opts && Object.keys(opts).length) {
-          // logger.debug('sql.service: addParamsToRequest(): opts to addParameter are: ', opts)
-        }
-
-        if (opts.precision) {
-          request.input(param.name, param.type(opts.precision, opts.scale), param.value)
-        } else if (opts.length) {
-          request.input(param.name, param.type(opts.length), param.value)
-        } else {
-          request.input(param.name, param.type, param.value)
-        }
+      if (opts.precision !== undefined) {
+        request.input(param.name, param.type(opts.precision, opts.scale), param.value)
+      } else if (opts.length !== undefined) {
+        request.input(param.name, param.type(opts.length), param.value)
+      } else {
+        request.input(param.name, param.type, param.value)
       }
     }
   }
@@ -284,7 +194,6 @@ export class SqlService implements ISqlService {
    * @return {Promise<object>}
    */
   async findOneById (table: string, id: number): Promise<any> {
-
     const paramId = {
       name: 'id',
       type: TYPES.Int,
@@ -311,11 +220,11 @@ export interface ISqlParameter {
 
 export interface ITransactionRequest {
   sql: string
-  params: Array<ISqlParameter>
+  params: ISqlParameter[]
 }
 
 export interface ISqlService {
-  query (sql: string, params?: Array<ISqlParameter>): Promise<any>,
-  modify (sql: string, params: Array<ISqlParameter>): Promise<any>,
-  modifyWithTransaction (requests: Array<ITransactionRequest>): Promise<any>
+  query (sql: string, params?: ISqlParameter[]): Promise<any>
+  modify (sql: string, params: ISqlParameter[]): Promise<any>
+  modifyWithTransaction (requests: ITransactionRequest[]): Promise<any>
 }

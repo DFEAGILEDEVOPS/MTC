@@ -2,7 +2,7 @@ import { CheckNotificationType, ICheckNotificationMessage } from './check-notifi
 import { CheckNotifierDataService, ICheckNotifierDataService } from './check-notifier.data.service'
 
 export class CheckNotifier {
-  private checkNotifierDataService: ICheckNotifierDataService
+  private readonly checkNotifierDataService: ICheckNotifierDataService
 
   constructor (checkNotifierDataService?: ICheckNotifierDataService) {
     if (checkNotifierDataService === undefined) {
@@ -11,7 +11,7 @@ export class CheckNotifier {
     this.checkNotifierDataService = checkNotifierDataService
   }
 
-  async notify (notification: ICheckNotificationMessage) {
+  async notify (notification: ICheckNotificationMessage): Promise<void> {
     switch (notification.notificationType) {
       case CheckNotificationType.checkReceived:
         return this.checkNotifierDataService.markCheckAsReceived(notification.checkCode)

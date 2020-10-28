@@ -2,11 +2,11 @@ import { PupilAuthService, IPupilAuthFunctionBindings } from './pupil-auth.servi
 import { IRedisService } from '../../caching/redis-service'
 import { RedisServiceMock } from '../../caching/redis-service.mock'
 import { HttpRequest } from '@azure/functions'
+import config from '../../config'
 let sut: PupilAuthService
 let redisMock: IRedisService
 let req: HttpRequest
 let bindings: IPupilAuthFunctionBindings
-import config from '../../config'
 
 describe('pupil-auth.service', () => {
   beforeEach(() => {
@@ -67,9 +67,9 @@ describe('pupil-auth.service', () => {
     const res = await sut.authenticate(bindings, req)
     expect(res.body).toBe('')
     expect(res.headers).toStrictEqual({
-      'Access-Control-Allow-Methods' : 'POST,OPTIONS',
-      'Access-Control-Allow-Headers' : 'content-type',
-      'Access-Control-Allow-Origin' : ''
+      'Access-Control-Allow-Methods': 'POST,OPTIONS',
+      'Access-Control-Allow-Headers': 'content-type',
+      'Access-Control-Allow-Origin': ''
     })
     expect(res.status).toBe(204)
     config.PupilAuth.CorsWhitelist = savedCorsWhitelist
@@ -93,12 +93,10 @@ describe('pupil-auth.service', () => {
         practice: false
       }
     }
-    redisMock.get = jest.fn(async (key) => {
-      return preparedCheck
-    })
+    jest.spyOn(redisMock, 'get').mockImplementation(async () => preparedCheck)
     const res = await sut.authenticate(bindings, req)
     expect(res.status).toBe(200)
-    expect(res.body).toEqual(preparedCheck)
+    expect(res.body).toStrictEqual(preparedCheck)
   })
 
   test('expire if live check', async () => {
@@ -108,9 +106,7 @@ describe('pupil-auth.service', () => {
         practice: false
       }
     }
-    redisMock.get = jest.fn(async (key) => {
-      return preparedCheck
-    })
+    jest.spyOn(redisMock, 'get').mockImplementation(async () => preparedCheck)
     const expectedKey = `preparedCheck:${req.body.schoolPin}:${req.body.pupilPin}`
     await sut.authenticate(bindings, req)
     expect(redisMock.expire).toHaveBeenCalledWith(expectedKey, 1800)
@@ -123,12 +119,10 @@ describe('pupil-auth.service', () => {
         practice: false
       }
     }
-    redisMock.get = jest.fn(async (key) => {
-      return preparedCheck
-    })
+    jest.spyOn(redisMock, 'get').mockImplementation(async () => preparedCheck)
     const res = await sut.authenticate(bindings, req)
     expect(res.status).toBe(200)
-    expect(bindings.pupilLoginQueue.length).toBe(1)
+    expect(bindings.pupilLoginQueue).toHaveLength(1)
     const pupilLoginMessage = bindings.pupilLoginQueue[0]
     expect(pupilLoginMessage.checkCode).toBe(preparedCheck.checkCode)
     expect(pupilLoginMessage.loginAt).toBeDefined()
@@ -142,9 +136,7 @@ describe('pupil-auth.service', () => {
         practice: false
       }
     }
-    redisMock.get = jest.fn(async (key) => {
-      return preparedCheck
-    })
+    jest.spyOn(redisMock, 'get').mockImplementation(async () => preparedCheck)
     const res = await sut.authenticate(bindings, req)
     expect(res.status).toBe(200)
     expect(res.headers).toStrictEqual({

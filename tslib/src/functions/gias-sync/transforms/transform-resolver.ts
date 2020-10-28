@@ -3,9 +3,9 @@ import { EstablishmentLinkType } from './EstablishmentLinkType'
 import { ISchoolTransformer, NullTransformer, PredecessorTransformer, SuccessorTransformer } from './school-transformer'
 
 export class SchoolTransformResolver {
-  private nullTransformer: NullTransformer
-  private predecessorTransformer: PredecessorTransformer
-  private successorTransformer: SuccessorTransformer
+  private readonly nullTransformer: NullTransformer
+  private readonly predecessorTransformer: PredecessorTransformer
+  private readonly successorTransformer: SuccessorTransformer
 
   constructor () {
     this.nullTransformer = new NullTransformer()

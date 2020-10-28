@@ -3,11 +3,11 @@ import { TYPES } from 'mssql'
 
 export interface IPreparedCheckSyncDataService {
   getActiveCheckReferencesByPupilUuid (pupilUUID: string): Promise<IActiveCheckReference[]>
-  getAccessArrangementsByCheckCode (checkCode: string): Promise<Array<any>>
+  getAccessArrangementsByCheckCode (checkCode: string): Promise<any[]>
 }
 
 export class PreparedCheckSyncDataService implements IPreparedCheckSyncDataService {
-  private sqlService: SqlService
+  private readonly sqlService: SqlService
 
   constructor () {
     this.sqlService = new SqlService()
@@ -61,7 +61,7 @@ export class PreparedCheckSyncDataService implements IPreparedCheckSyncDataServi
     return refs
   }
 
-  async getAccessArrangementsByCheckCode (checkCode: string): Promise<Array<any>> {
+  async getAccessArrangementsByCheckCode (checkCode: string): Promise<any[]> {
     const sql = `
     SELECT pAA.accessArrangements_id,
     pfs.code AS pupilFontSizeCode, pcc.code AS pupilColourContrastCode

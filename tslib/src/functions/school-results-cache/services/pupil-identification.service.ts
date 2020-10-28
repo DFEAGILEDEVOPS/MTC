@@ -6,7 +6,7 @@ import { IPupilResult } from './result.service'
  * Utility function to format a date to the short GDS date format
  * https://www.gov.uk/guidance/style-guide/a-to-z-of-gov-uk-style
  */
-function formatShortGdsDate (date: Date | moment.Moment) {
+function formatShortGdsDate (date: Date | moment.Moment): string {
   const gdsShortFormat = 'D MMM YYYY'
   if (!(date instanceof Date || moment.isMoment(date))) {
     return ''
@@ -19,18 +19,18 @@ function formatShortGdsDate (date: Date | moment.Moment) {
 }
 
 export interface IPupilIdentificationService {
-  addIdentificationFlags (pupils: Array<IPupilResult>): Array<IdentifiedPupilResult>
+  addIdentificationFlags (pupils: IPupilResult[]): IdentifiedPupilResult[]
 }
 
 interface InternalIdentifiedPupilType extends IPupilResult {
   // determine if the GUI should show the middle names for pupil disambiguation
-  showMiddleNames: boolean,
+  showMiddleNames: boolean
   // determine if the GUI should show the formatted date of birth for pupil disambiguation
-  showDoB: boolean,
+  showDoB: boolean
   // the original implementation override the dateOfBirth with a string, here we create a new property
-  formattedDateOfBirth: string,
+  formattedDateOfBirth: string
   // surname, forename [middle names]
-  fullName: string,
+  fullName: string
   // used to preserve the sort order
   sortOrder: number
 }
@@ -39,16 +39,16 @@ interface InternalIdentifiedPupilType extends IPupilResult {
  * This would be better if it extended IPupilResult, but the dateOfBirth is incompatible (string instead of Moment)
  */
 export interface IdentifiedPupilResult {
-  dateOfBirth: string,
-  foreName: string,
-  fullName: string,
-  group_id: null | number,
-  lastName: string,
-  middleNames: string,
-  score: null | number,
-  showDoB: boolean,
-  showMiddleNames: boolean,
-  status: string,
+  dateOfBirth: string
+  foreName: string
+  fullName: string
+  group_id: null | number
+  lastName: string
+  middleNames: string
+  score: null | number
+  showDoB: boolean
+  showMiddleNames: boolean
+  status: string
   urlSlug: string
 }
 
@@ -58,8 +58,8 @@ export class PupilIdentificationService implements IPupilIdentificationService {
    * @param {foreName: string, lastName: string, fullName: string, dateOfBirth: moment.Moment} pupils
    * @returns {Array}
    */
-  addIdentificationFlags (pupils: Array<IPupilResult>): Array<IdentifiedPupilResult> {
-    const unidentifiedPupils: Array<InternalIdentifiedPupilType> = pupils.map((pupil, i) => {
+  addIdentificationFlags (pupils: IPupilResult[]): IdentifiedPupilResult[] {
+    const unidentifiedPupils: InternalIdentifiedPupilType[] = pupils.map((pupil, i) => {
       return R.mergeLeft(pupil, {
         showDoB: false,
         showMiddleNames: false,
@@ -70,17 +70,17 @@ export class PupilIdentificationService implements IPupilIdentificationService {
     })
 
     // Find out which names have multiple pupils, by grouping them under a 'surname, forename' key.
-    const getFullName = (o: InternalIdentifiedPupilType) => `${o.lastName}, ${o.foreName}`
+    const getFullName = (o: InternalIdentifiedPupilType): string => `${o.lastName}, ${o.foreName}`
     const groupByFullName = R.groupBy(getFullName)
     const grouped = groupByFullName(unidentifiedPupils)
 
-    const momentComparator = (a: moment.Moment, b: moment.Moment) => a.valueOf() === b.valueOf()
+    const momentComparator = (a: moment.Moment, b: moment.Moment): boolean => a.valueOf() === b.valueOf()
 
     // Apply identification rules to pupils that have the same name
     R.keys(grouped).forEach(k => {
       if (grouped[k].length > 1) {
         // Use date of birth to differentiate, if all birth dates are unique
-        const dobs: Array<moment.Moment> = grouped[k].map(o => o.dateOfBirth)
+        const dobs: moment.Moment[] = grouped[k].map(o => o.dateOfBirth)
         const uniqueDobs = R.uniqWith(momentComparator, dobs)
         if (uniqueDobs.length === dobs.length) {
           // all the birth dates are unique, we can differentiate on them

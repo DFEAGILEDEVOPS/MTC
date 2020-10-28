@@ -1,12 +1,13 @@
-import * as admZip from 'adm-zip'
+// import * as admZip from 'adm-zip'
+import AdmZip from 'adm-zip'
 
 export interface IZipService {
-  extractEntriesFromZipBuffer (data: Buffer): Array<Buffer>
+  extractEntriesFromZipBuffer (data: Buffer): Buffer[]
 }
 
 export class ZipService implements IZipService {
-  extractEntriesFromZipBuffer (data: Buffer): Array<Buffer> {
-    const zipFile = new admZip.default(data)
+  extractEntriesFromZipBuffer (data: Buffer): Buffer[] {
+    const zipFile = new AdmZip(data)
     const zipEntries = zipFile.getEntries()
     const bufferedEntries = new Array<Buffer>()
     for (let index = 0; index < zipEntries.length; index++) {

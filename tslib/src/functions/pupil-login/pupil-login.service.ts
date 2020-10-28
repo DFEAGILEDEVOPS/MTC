@@ -9,7 +9,7 @@ export interface IPupilLoginMessage {
 }
 
 export interface IPupilLoginFunctionBindings {
-  pupilEventTable: Array<any>
+  pupilEventTable: any[]
 }
 
 export interface IPupilEvent {
@@ -21,7 +21,7 @@ export interface IPupilEvent {
 }
 
 export class PupilLoginService {
-  private dataService: IPupilLoginDataService
+  private readonly dataService: IPupilLoginDataService
 
   constructor (dataService?: IPupilLoginDataService) {
     if (dataService === undefined) {
