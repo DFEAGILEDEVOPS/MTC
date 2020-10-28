@@ -32,16 +32,17 @@ describe('RegisterInputService', () => {
   });
 
   it('should be created', inject([TestRegisterInputService], (service: TestRegisterInputService) => {
-    expect(service).toBeTruthy();
+    expect(service).toBeDefined();
   }));
 
-  it('StoreEntry will call localstorage and store with a unique key name',
+  it('storeEntry will call localstorage and store with a unique key name',
     inject([TestRegisterInputService], (service: TestRegisterInputService) => {
       const eventValue = '0';
       const eventType = 'keydown';
       service.storeEntry(eventValue, eventType, 7, '2x3');
       expect(storageServiceSetInputSpy).toHaveBeenCalledTimes(1);
     }));
+
   it('StoreEntry to should store entry',
     inject([TestRegisterInputService], (service: TestRegisterInputService) => {
       const entry = {
@@ -70,49 +71,4 @@ describe('RegisterInputService', () => {
       const now = new Date();
       expect(Math.abs(cts.getTime() - now.getTime())).toBeLessThan(10); // Should be set to this year not 1970
     }));
-
-  // it('AddEntry to call StoreEntry', inject([TestRegisterInputService], (service: TestRegisterInputService) => {
-  //   spyOn(service, 'storeEntry');
-  //   const event = {type: 'keydown', key: 'f', currentTarget: null, timeStamp: 1519211809934};
-  //   const questionData = {
-  //     questionNumber: '1',
-  //     factor1: '1',
-  //     factor2: '12',
-  //   };
-  //   service.addEntry(event, questionData);
-  //   expect(service.storeEntry).toHaveBeenCalledTimes(1);
-  // }));
-
-  // it('expects a left click event to be registered',
-  //   inject([TestRegisterInputService], (service: TestRegisterInputService) => {
-  //     const spy = spyOn(service, 'storeEntry');
-  //     const event = {
-  //       type: 'mousedown', which: 1, currentTarget: null, timeStamp: 1519211809934
-  //     };
-  //     const questionData = {
-  //       questionNumber: '1',
-  //       factor1: '1',
-  //       factor2: '12',
-  //     };
-  //     service.addEntry(event, questionData);
-  //     expect(service.storeEntry).toHaveBeenCalledTimes(1);
-  //     const args = spy.calls.first().args;
-  //     const eventType = args[0];
-  //     expect(eventType).toBe('left click');
-  //   }));
-  //
-  // it('calls the storeEntry method',
-  //   inject([TestRegisterInputService], (service: TestRegisterInputService) => {
-  //     const spy = spyOn(service, 'storeEntry');
-  //     const event = {
-  //       type: 'mousedown', which: 1, currentTarget: null, timeStamp: 1519211809934
-  //     };
-  //     const questionData = {
-  //       questionNumber: '1',
-  //       factor1: '1',
-  //       factor2: '12',
-  //     };
-  //     service.addEntry(event, questionData);
-  //     expect(service.storeEntry).toHaveBeenCalledTimes(1);
-  //   }));
 });
