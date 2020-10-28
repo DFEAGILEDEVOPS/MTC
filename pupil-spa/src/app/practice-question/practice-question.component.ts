@@ -290,15 +290,6 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit, OnDestr
     return this.startedAnswering;
   }
 
-  // /**
-  //  * Called from clicking a number button on the virtual keypad
-  //  * @param {number} number
-  //  * @param {Object} event
-  //  */
-  // onClickAnswer (number: number, event) {
-  //   this.addChar(number.toString());
-  // }
-
   /**
    * Called by clicks or touches on the on-screen number pad
    * @param event
