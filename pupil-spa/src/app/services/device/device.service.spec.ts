@@ -50,7 +50,7 @@ describe('DeviceService', () => {
 
     // tests
     const deviceInfo = storageService.getDeviceData();
-    expect(deviceInfo).toBeTruthy();
+    expect(deviceInfo).toBeDefined();
     expect(deviceInfo.deviceId.length).toBe(36); // uuid as string
 
     // reset
