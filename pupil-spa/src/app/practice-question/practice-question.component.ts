@@ -80,7 +80,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit, OnDestr
   /**
    * Array of functions to run as cleanup for the onDestroy
    */
-  protected cleanUpFunctions: Array<() => void> = [];
+  public cleanUpFunctions: Array<() => void> = [];
 
   /**
    * Set a reference to the config.
@@ -184,6 +184,13 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit, OnDestr
   /**
    * Start the timer when the view is ready.
    */
+  shouldSetupPointerEvents(): boolean {
+    if ('onpointerup' in this.window) {
+      return true;
+    }
+    return false;
+  }
+
   ngAfterViewInit () {
     this.auditService.addEntry(new QuestionRendered({
       practiseSequenceNumber: this.sequenceNumber,
@@ -191,7 +198,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit, OnDestr
     }));
 
     // Set up listening events depending on the browser's capability
-    if ('onpointerup' in this.window) {
+    if (this.shouldSetupPointerEvents()) {
       this.setupKeypadEventListeners('pointerup');
     } else {
       this.setupKeypadEventListeners('click');
@@ -201,7 +208,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit, OnDestr
     this.startTimer();
   }
 
-  protected setupKeypadEventListeners(eventToListenTo: string) {
+   setupKeypadEventListeners(eventToListenTo: string) {
     // Buttons 0-9
     [this.button0, this.button1, this.button2, this.button3, this.button4, this.button5, this.button6, this.button7, this.button8,
       this.button9].forEach(button => {
@@ -555,10 +562,6 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit, OnDestr
     }
     // IMPORTANT: prevent firefox, IE etc. from navigating back a page.
     return false;
-  }
-
-  getClass (obj: object): string {
-    return obj.toString().match(/ (\w+)/)[1];
   }
 
   getEventType (event: Event | MouseEvent | TouchEvent | KeyboardEvent | PointerEvent): EventType {
