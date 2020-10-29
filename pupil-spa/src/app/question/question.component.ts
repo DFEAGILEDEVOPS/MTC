@@ -48,7 +48,7 @@ export class QuestionComponent extends PracticeQuestionComponent implements OnIn
     }));
 
     // Set up listening events depending on the browser's capability
-    if ('onpointerup' in this.window) {
+    if (this.shouldSetupPointerEvents()) {
       this.setupKeypadEventListeners('pointerup');
     } else {
       this.setupKeypadEventListeners('click');

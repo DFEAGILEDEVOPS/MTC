@@ -66,7 +66,7 @@ describe('QuestionComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  describe('audit entry', () => {
+  describe('an audit entry', () => {
     it('is added on question rendered', () => {
       component.sequenceNumber = 1;
       component.factor1 = 2;
