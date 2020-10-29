@@ -45,10 +45,17 @@ async function createDatabase (pool) {
       azureOnlyScaleSetting = `(SERVICE_OBJECTIVE = '${config.Sql.Azure.Scale}')`
     }
     logger.info(`attempting to create database ${config.Sql.Database} ${azureOnlyScaleSetting} if it does not already exist...`)
-    const createDbSql = `IF NOT EXISTS(SELECT * FROM sys.databases WHERE name='${config.Sql.Database}')
-    BEGIN CREATE DATABASE [${config.Sql.Database}] ${azureOnlyScaleSetting}; SELECT 'Database Created'; END ELSE SELECT 'Database Already Exists'`
-    const output = await executeRequest(pool, createDbSql)
-    logger.info(`database ${config.Sql.Database} created`)
+    const createDbSql = `
+      IF NOT EXISTS(SELECT * FROM sys.databases WHERE name='${config.Sql.Database}')
+        BEGIN
+          CREATE DATABASE [${config.Sql.Database}] ${azureOnlyScaleSetting};
+          SELECT 'Database Created' as [response];
+        END
+      ELSE
+        SELECT 'Database Already Exists' as [response]`
+    const result = await executeRequest(pool, createDbSql)
+    const output = result.recordset[0].response
+    logger.info(output)
   } catch (error) {
     logger.error(error)
   }
