@@ -59,7 +59,7 @@ class Migrator extends Postgrator {
 }
 
 const migratorConfig = {
-  migrationDirectory: path.join(__dirname, '..', 'schema'),
+  migrationPattern: path.join(__dirname, '..', 'migrations', '**'),
   driver: 'mssql',
   host: config.Sql.Server,
   // Required for when SQL_PORT is passed in via docker-compose
@@ -95,7 +95,6 @@ const runMigrations = async (version) => {
     await postgrator.migrate(version)
     logger.info('SQL Migrations complete')
   } catch (error) {
-    logger.error('Error executing migration...')
     logger.error(error)
     logger.error(`${error.appliedMigrations.length} migrations were applied.`)
     error.appliedMigrations.forEach(migration => {

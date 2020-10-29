@@ -995,22 +995,6 @@ GROUP BY cw.id, cw.name, cw.adminStartDate,
 cw.checkStartDate, cw.checkEndDate, cw.isDeleted
 
 GO
-/****** Object:  Table [dbo].[migrationLog]    Script Date: 27/10/2020 17:45:50 ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-CREATE TABLE [dbo].[migrationLog](
-	[version] [bigint] NOT NULL,
-	[name] [varchar](max) NULL,
-	[md5] [varchar](max) NULL,
-	[run_at] [datetime] NULL,
-PRIMARY KEY CLUSTERED
-(
-	[version] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
-GO
 /****** Object:  Table [mtc_admin].[accessArrangements]    Script Date: 27/10/2020 17:45:50 ******/
 SET ANSI_NULLS ON
 GO
