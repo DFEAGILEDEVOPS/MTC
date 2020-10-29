@@ -6,7 +6,7 @@ const fs = require('fs')
 const path = require('path')
 const commandLineArgs = require('command-line-args')
 
-const migrationsDir = path.join(__dirname, '..', 'schema')
+const migrationsDir = path.join(__dirname, '..')
 
 const optionDefinitions = [
   { name: 'name', alias: 'n', type: String, defaultOption: true },

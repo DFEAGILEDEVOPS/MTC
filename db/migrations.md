@@ -13,8 +13,8 @@ yarn new <name> --type sql
 yarn new <name> --type js
 ```
 
-Generated migrations have the filename yyyymmddhhmmss.<do|undo>.name.<sql|js>
-
+Generated migrations will be created in the root folder (`/db`) with the filename format `yyyymmddhhmmss.<do|undo>.name.<sql|js>`
+These should be moved to the respective folder under `migrations`, otherwise they will not be executed by the migration engine.
 
 ## Running migrations
 

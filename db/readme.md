@@ -7,13 +7,15 @@ MTC uses SQL Server as its primary storage service.  All defined objects must be
 Postgrator is used to execute migration scripts in chronological order.  The migration scripts should be baselined periodically to keep file count low, which helps purge any older dependencies from the codebase (such as configuration items which javascript migrations may be dependent on).
 
 ## Script organisation
-There are 4 key folders where migration scripts should be stored...
-- data-core
-- data-dummy
+All migrations are stored under the `migrations` folder in one of the following directories...
+- core-data
 - schema
 - schema-objects
 - user
 - user-permissions
+
+### Execution order
+Execution order of migration scripts is determined by the number prefix of each file, and is shared across all directories under `migrations`.
 
 ## Creating Migrations
 See the [migrations guide](migrations.md)
