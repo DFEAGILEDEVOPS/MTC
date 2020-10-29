@@ -1,0 +1,8 @@
+things to do each time the schema script is baselined...
+
+remove database config settings
+remove migrationLog table creation
+extract permission grants
+remove z_pupilGroup_archive table creation
+remove z_group_archive table creation
+remove final statement - alter read_write flag on database

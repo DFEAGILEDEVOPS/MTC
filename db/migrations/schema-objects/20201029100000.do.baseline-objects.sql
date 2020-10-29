@@ -1,7 +1,5 @@
--- Baseline script created 27th October 2020
--- Contains all schema objects
 
-/****** Object:  UserDefinedTableType [mtc_admin].[checkTableType]    Script Date: 27/10/2020 17:45:50 ******/
+/****** Object:  UserDefinedTableType [mtc_admin].[checkTableType]    Script Date: 29/10/2020 17:26:24 ******/
 CREATE TYPE [mtc_admin].[checkTableType] AS TABLE(
 	[pupil_id] [int] NULL,
 	[checkForm_id] [int] NULL,
@@ -12,7 +10,7 @@ CREATE TYPE [mtc_admin].[checkTableType] AS TABLE(
 	[createdBy_userId] [int] NULL
 )
 GO
-/****** Object:  UserDefinedTableType [mtc_admin].[SceTableType]    Script Date: 27/10/2020 17:45:50 ******/
+/****** Object:  UserDefinedTableType [mtc_admin].[SceTableType]    Script Date: 29/10/2020 17:26:24 ******/
 CREATE TYPE [mtc_admin].[SceTableType] AS TABLE(
 	[school_id] [int] NULL,
 	[timezone] [nvarchar](200) NULL,
@@ -20,7 +18,7 @@ CREATE TYPE [mtc_admin].[SceTableType] AS TABLE(
 	[isOpen] [bit] NULL
 )
 GO
-/****** Object:  UserDefinedTableType [mtc_census_import].[censusImportTableType]    Script Date: 27/10/2020 17:45:50 ******/
+/****** Object:  UserDefinedTableType [mtc_census_import].[censusImportTableType]    Script Date: 29/10/2020 17:26:24 ******/
 CREATE TYPE [mtc_census_import].[censusImportTableType] AS TABLE(
 	[id] [int] NULL,
 	[lea] [nvarchar](max) NULL,
@@ -33,7 +31,7 @@ CREATE TYPE [mtc_census_import].[censusImportTableType] AS TABLE(
 	[dob] [nvarchar](max) NULL
 )
 GO
-/****** Object:  UserDefinedFunction [dbo].[ufnCalcCheckStatusID]    Script Date: 27/10/2020 17:45:50 ******/
+/****** Object:  UserDefinedFunction [dbo].[ufnCalcCheckStatusID]    Script Date: 29/10/2020 17:26:24 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -138,7 +136,7 @@ BEGIN
     RETURN @ret;
 END;
 GO
-/****** Object:  UserDefinedFunction [mtc_admin].[ufnCalcCheckStatusID]    Script Date: 27/10/2020 17:45:50 ******/
+/****** Object:  UserDefinedFunction [mtc_admin].[ufnCalcCheckStatusID]    Script Date: 29/10/2020 17:26:24 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -258,7 +256,7 @@ BEGIN
 END;
 
 GO
-/****** Object:  Table [mtc_admin].[checkStatus]    Script Date: 27/10/2020 17:45:50 ******/
+/****** Object:  Table [mtc_admin].[checkStatus]    Script Date: 29/10/2020 17:26:24 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -280,7 +278,7 @@ CREATE TABLE [mtc_admin].[checkStatus](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [mtc_admin].[check]    Script Date: 27/10/2020 17:45:50 ******/
+/****** Object:  Table [mtc_admin].[check]    Script Date: 29/10/2020 17:26:24 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -310,7 +308,7 @@ CREATE TABLE [mtc_admin].[check](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [mtc_admin].[pupil]    Script Date: 27/10/2020 17:45:50 ******/
+/****** Object:  Table [mtc_admin].[pupil]    Script Date: 29/10/2020 17:26:24 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -346,7 +344,8 @@ CREATE TABLE [mtc_admin].[pupil](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [mtc_admin].[pin]    Script Date: 27/10/2020 17:45:50 ******/
+
+/****** Object:  Table [mtc_admin].[pin]    Script Date: 29/10/2020 17:26:24 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -367,7 +366,7 @@ CREATE TABLE [mtc_admin].[pin](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [mtc_admin].[checkPin]    Script Date: 27/10/2020 17:45:50 ******/
+/****** Object:  Table [mtc_admin].[checkPin]    Script Date: 29/10/2020 17:26:24 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -388,7 +387,8 @@ CREATE TABLE [mtc_admin].[checkPin](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  View [mtc_admin].[vewPupilsWithActiveLivePins]    Script Date: 27/10/2020 17:45:50 ******/
+
+/****** Object:  View [mtc_admin].[vewPupilsWithActiveLivePins]    Script Date: 29/10/2020 17:26:24 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -419,7 +419,7 @@ SELECT
 ;
 
 GO
-/****** Object:  Table [mtc_admin].[school]    Script Date: 27/10/2020 17:45:50 ******/
+/****** Object:  Table [mtc_admin].[school]    Script Date: 29/10/2020 17:26:24 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -443,7 +443,8 @@ CREATE TABLE [mtc_admin].[school](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  View [mtc_admin].[vewPupilsWithActiveFamiliarisationPins]    Script Date: 27/10/2020 17:45:50 ******/
+
+/****** Object:  View [mtc_admin].[vewPupilsWithActiveFamiliarisationPins]    Script Date: 29/10/2020 17:26:24 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -476,7 +477,7 @@ WHERE  cp.pinExpiresAt > GETUTCDATE()
 ;
 
 GO
-/****** Object:  View [mtc_admin].[vewCompletedCheckCount]    Script Date: 27/10/2020 17:45:50 ******/
+/****** Object:  View [mtc_admin].[vewCompletedCheckCount]    Script Date: 29/10/2020 17:26:24 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -488,7 +489,7 @@ CREATE VIEW [mtc_admin].[vewCompletedCheckCount] AS
     GROUP BY c.pupil_id
 ;
 GO
-/****** Object:  View [mtc_admin].[vewIncompleteCheckCount]    Script Date: 27/10/2020 17:45:50 ******/
+/****** Object:  View [mtc_admin].[vewIncompleteCheckCount]    Script Date: 29/10/2020 17:26:24 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -501,7 +502,7 @@ CREATE VIEW [mtc_admin].[vewIncompleteCheckCount] AS
     GROUP BY c.pupil_id
 ;
 GO
-/****** Object:  View [mtc_admin].[vewPupilsEligibleForTryItOutPin]    Script Date: 27/10/2020 17:45:50 ******/
+/****** Object:  View [mtc_admin].[vewPupilsEligibleForTryItOutPin]    Script Date: 29/10/2020 17:26:24 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -547,7 +548,7 @@ AS
     )
 
 GO
-/****** Object:  View [mtc_admin].[vewPupilsEligibleForRestart]    Script Date: 27/10/2020 17:45:50 ******/
+/****** Object:  View [mtc_admin].[vewPupilsEligibleForRestart]    Script Date: 29/10/2020 17:26:24 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -592,7 +593,7 @@ GROUP BY
 
 
 GO
-/****** Object:  Table [mtc_admin].[checkWindow]    Script Date: 27/10/2020 17:45:50 ******/
+/****** Object:  Table [mtc_admin].[checkWindow]    Script Date: 29/10/2020 17:26:24 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -617,7 +618,7 @@ CREATE TABLE [mtc_admin].[checkWindow](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  View [mtc_admin].[vewCheckWindowWithStatus]    Script Date: 27/10/2020 17:45:50 ******/
+/****** Object:  View [mtc_admin].[vewCheckWindowWithStatus]    Script Date: 29/10/2020 17:26:24 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -633,7 +634,7 @@ AS SELECT cw.urlSlug, cw.name, cw.isDeleted, CAST(
 FROM [mtc_admin].checkWindow cw
 
 GO
-/****** Object:  Table [mtc_admin].[attendanceCode]    Script Date: 27/10/2020 17:45:50 ******/
+/****** Object:  Table [mtc_admin].[attendanceCode]    Script Date: 29/10/2020 17:26:24 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -652,7 +653,7 @@ CREATE TABLE [mtc_admin].[attendanceCode](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  View [mtc_admin].[vewPupilStatus]    Script Date: 27/10/2020 17:45:50 ******/
+/****** Object:  View [mtc_admin].[vewPupilStatus]    Script Date: 29/10/2020 17:26:24 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -691,7 +692,7 @@ CREATE   VIEW [mtc_admin].[vewPupilStatus] AS (
 );
 
 GO
-/****** Object:  View [mtc_admin].[vewPupilsWithActivePins]    Script Date: 27/10/2020 17:45:50 ******/
+/****** Object:  View [mtc_admin].[vewPupilsWithActivePins]    Script Date: 29/10/2020 17:26:24 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -722,7 +723,7 @@ AND  chk.pupilLoginDate IS NULL
 
 
 GO
-/****** Object:  View [mtc_admin].[vewPupilsEligibleForLivePinGeneration]    Script Date: 27/10/2020 17:45:50 ******/
+/****** Object:  View [mtc_admin].[vewPupilsEligibleForLivePinGeneration]    Script Date: 29/10/2020 17:26:24 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -763,7 +764,7 @@ CREATE VIEW [mtc_admin].[vewPupilsEligibleForLivePinGeneration] AS
 ;
 
 GO
-/****** Object:  View [mtc_admin].[vewPupilLiveChecksTakenCount]    Script Date: 27/10/2020 17:45:50 ******/
+/****** Object:  View [mtc_admin].[vewPupilLiveChecksTakenCount]    Script Date: 29/10/2020 17:26:24 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -799,7 +800,7 @@ CREATE   VIEW [mtc_admin].[vewPupilLiveChecksTakenCount] AS
 ;
 
 GO
-/****** Object:  Table [mtc_admin].[group]    Script Date: 27/10/2020 17:45:50 ******/
+/****** Object:  Table [mtc_admin].[group]    Script Date: 29/10/2020 17:26:24 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -816,7 +817,8 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  View [mtc_admin].[vewPupilRegister]    Script Date: 27/10/2020 17:45:50 ******/
+
+/****** Object:  View [mtc_admin].[vewPupilRegister]    Script Date: 29/10/2020 17:26:24 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -852,7 +854,7 @@ FROM
 ;
 
 GO
-/****** Object:  View [mtc_admin].[vewCheckDiagnostic]    Script Date: 27/10/2020 17:45:50 ******/
+/****** Object:  View [mtc_admin].[vewCheckDiagnostic]    Script Date: 29/10/2020 17:26:24 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -895,7 +897,7 @@ SELECT
        LEFT JOIN [mtc_admin].[pin] pin ON (cp.pin_id = pin.id)
 ;
 GO
-/****** Object:  Table [mtc_admin].[checkForm]    Script Date: 27/10/2020 17:45:50 ******/
+/****** Object:  Table [mtc_admin].[checkForm]    Script Date: 29/10/2020 17:26:24 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -916,7 +918,7 @@ CREATE TABLE [mtc_admin].[checkForm](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [mtc_admin].[checkFormWindow]    Script Date: 27/10/2020 17:45:50 ******/
+/****** Object:  Table [mtc_admin].[checkFormWindow]    Script Date: 29/10/2020 17:26:24 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -932,7 +934,8 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  View [mtc_admin].[vewCheckWindowsWithStatusAndFormCountByType]    Script Date: 27/10/2020 17:45:50 ******/
+
+/****** Object:  View [mtc_admin].[vewCheckWindowsWithStatusAndFormCountByType]    Script Date: 29/10/2020 17:26:24 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -980,7 +983,7 @@ CREATE VIEW [mtc_admin].[vewCheckWindowsWithStatusAndFormCountByType] AS
     cw.familiarisationCheckEndDate
 
 GO
-/****** Object:  View [mtc_admin].[vewCheckWindowsWithFormCount]    Script Date: 27/10/2020 17:45:50 ******/
+/****** Object:  View [mtc_admin].[vewCheckWindowsWithFormCount]    Script Date: 29/10/2020 17:26:24 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -995,7 +998,7 @@ GROUP BY cw.id, cw.name, cw.adminStartDate,
 cw.checkStartDate, cw.checkEndDate, cw.isDeleted
 
 GO
-/****** Object:  Table [mtc_admin].[accessArrangements]    Script Date: 27/10/2020 17:45:50 ******/
+/****** Object:  Table [mtc_admin].[accessArrangements]    Script Date: 29/10/2020 17:26:24 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -1018,7 +1021,7 @@ CREATE TABLE [mtc_admin].[accessArrangements](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [mtc_admin].[adminLogonEvent]    Script Date: 27/10/2020 17:45:50 ******/
+/****** Object:  Table [mtc_admin].[adminLogonEvent]    Script Date: 29/10/2020 17:26:24 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -1043,7 +1046,7 @@ CREATE TABLE [mtc_admin].[adminLogonEvent](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [mtc_admin].[anomalyReportCache]    Script Date: 27/10/2020 17:45:50 ******/
+/****** Object:  Table [mtc_admin].[anomalyReportCache]    Script Date: 29/10/2020 17:26:24 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -1061,7 +1064,8 @@ CREATE TABLE [mtc_admin].[anomalyReportCache](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [mtc_admin].[answer]    Script Date: 27/10/2020 17:45:50 ******/
+
+/****** Object:  Table [mtc_admin].[answer]    Script Date: 29/10/2020 17:26:24 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -1082,7 +1086,7 @@ CREATE TABLE [mtc_admin].[answer](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [mtc_admin].[auditLog]    Script Date: 27/10/2020 17:45:50 ******/
+/****** Object:  Table [mtc_admin].[auditLog]    Script Date: 29/10/2020 17:26:24 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -1099,7 +1103,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [mtc_admin].[azureBlobFile]    Script Date: 27/10/2020 17:45:50 ******/
+/****** Object:  Table [mtc_admin].[azureBlobFile]    Script Date: 29/10/2020 17:26:24 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -1125,7 +1129,7 @@ CREATE TABLE [mtc_admin].[azureBlobFile](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [mtc_admin].[azureBlobFileType]    Script Date: 27/10/2020 17:45:50 ******/
+/****** Object:  Table [mtc_admin].[azureBlobFileType]    Script Date: 29/10/2020 17:26:24 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -1147,7 +1151,7 @@ CREATE TABLE [mtc_admin].[azureBlobFileType](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [mtc_admin].[checkConfig]    Script Date: 27/10/2020 17:45:50 ******/
+/****** Object:  Table [mtc_admin].[checkConfig]    Script Date: 29/10/2020 17:26:24 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -1165,7 +1169,7 @@ CREATE TABLE [mtc_admin].[checkConfig](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [mtc_admin].[checkScore]    Script Date: 27/10/2020 17:45:50 ******/
+/****** Object:  Table [mtc_admin].[checkScore]    Script Date: 29/10/2020 17:26:24 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -1184,7 +1188,7 @@ CREATE TABLE [mtc_admin].[checkScore](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [mtc_admin].[giasStaging]    Script Date: 27/10/2020 17:45:50 ******/
+/****** Object:  Table [mtc_admin].[giasStaging]    Script Date: 29/10/2020 17:26:24 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -1205,7 +1209,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [mtc_admin].[hdf]    Script Date: 27/10/2020 17:45:50 ******/
+/****** Object:  Table [mtc_admin].[hdf]    Script Date: 29/10/2020 17:26:24 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -1229,7 +1233,7 @@ CREATE TABLE [mtc_admin].[hdf](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [mtc_admin].[integrationTest]    Script Date: 27/10/2020 17:45:50 ******/
+/****** Object:  Table [mtc_admin].[integrationTest]    Script Date: 29/10/2020 17:26:24 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -1249,7 +1253,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [mtc_admin].[job]    Script Date: 27/10/2020 17:45:50 ******/
+/****** Object:  Table [mtc_admin].[job]    Script Date: 29/10/2020 17:26:24 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -1271,7 +1275,8 @@ CREATE TABLE [mtc_admin].[job](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [mtc_admin].[jobStatus]    Script Date: 27/10/2020 17:45:50 ******/
+
+/****** Object:  Table [mtc_admin].[jobStatus]    Script Date: 29/10/2020 17:26:24 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -1293,7 +1298,8 @@ CREATE TABLE [mtc_admin].[jobStatus](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [mtc_admin].[jobType]    Script Date: 27/10/2020 17:45:50 ******/
+
+/****** Object:  Table [mtc_admin].[jobType]    Script Date: 29/10/2020 17:26:24 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -1315,7 +1321,7 @@ CREATE TABLE [mtc_admin].[jobType](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [mtc_admin].[psychometricianReportCache]    Script Date: 27/10/2020 17:45:50 ******/
+/****** Object:  Table [mtc_admin].[psychometricianReportCache]    Script Date: 29/10/2020 17:26:24 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -1333,7 +1339,8 @@ CREATE TABLE [mtc_admin].[psychometricianReportCache](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [mtc_admin].[pupilAccessArrangements]    Script Date: 27/10/2020 17:45:50 ******/
+
+/****** Object:  Table [mtc_admin].[pupilAccessArrangements]    Script Date: 29/10/2020 17:26:24 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -1361,7 +1368,8 @@ CREATE TABLE [mtc_admin].[pupilAccessArrangements](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [mtc_admin].[pupilAgeReason]    Script Date: 27/10/2020 17:45:50 ******/
+
+/****** Object:  Table [mtc_admin].[pupilAgeReason]    Script Date: 29/10/2020 17:26:24 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -1380,7 +1388,8 @@ CREATE TABLE [mtc_admin].[pupilAgeReason](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [mtc_admin].[pupilAttendance]    Script Date: 27/10/2020 17:45:50 ******/
+
+/****** Object:  Table [mtc_admin].[pupilAttendance]    Script Date: 29/10/2020 17:26:24 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -1400,7 +1409,8 @@ CREATE TABLE [mtc_admin].[pupilAttendance](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [mtc_admin].[pupilColourContrasts]    Script Date: 27/10/2020 17:45:50 ******/
+
+/****** Object:  Table [mtc_admin].[pupilColourContrasts]    Script Date: 29/10/2020 17:26:24 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -1423,7 +1433,7 @@ CREATE TABLE [mtc_admin].[pupilColourContrasts](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [mtc_admin].[pupilFontSizes]    Script Date: 27/10/2020 17:45:50 ******/
+/****** Object:  Table [mtc_admin].[pupilFontSizes]    Script Date: 29/10/2020 17:26:24 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -1446,7 +1456,7 @@ CREATE TABLE [mtc_admin].[pupilFontSizes](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [mtc_admin].[pupilRestart]    Script Date: 27/10/2020 17:45:50 ******/
+/****** Object:  Table [mtc_admin].[pupilRestart]    Script Date: 29/10/2020 17:26:24 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -1472,7 +1482,7 @@ CREATE TABLE [mtc_admin].[pupilRestart](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [mtc_admin].[pupilRestartCode]    Script Date: 27/10/2020 17:45:50 ******/
+/****** Object:  Table [mtc_admin].[pupilRestartCode]    Script Date: 29/10/2020 17:26:24 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -1494,7 +1504,7 @@ CREATE TABLE [mtc_admin].[pupilRestartCode](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [mtc_admin].[pupilRestartReason]    Script Date: 27/10/2020 17:45:50 ******/
+/****** Object:  Table [mtc_admin].[pupilRestartReason]    Script Date: 29/10/2020 17:26:24 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -1517,7 +1527,7 @@ CREATE TABLE [mtc_admin].[pupilRestartReason](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [mtc_admin].[pupilResultsDiagnosticCache]    Script Date: 27/10/2020 17:45:50 ******/
+/****** Object:  Table [mtc_admin].[pupilResultsDiagnosticCache]    Script Date: 29/10/2020 17:26:24 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -1532,7 +1542,8 @@ CREATE TABLE [mtc_admin].[pupilResultsDiagnosticCache](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [mtc_admin].[question]    Script Date: 27/10/2020 17:45:50 ******/
+
+/****** Object:  Table [mtc_admin].[question]    Script Date: 29/10/2020 17:26:24 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -1552,7 +1563,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [mtc_admin].[questionReaderReasons]    Script Date: 27/10/2020 17:45:50 ******/
+/****** Object:  Table [mtc_admin].[questionReaderReasons]    Script Date: 29/10/2020 17:26:24 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -1575,7 +1586,7 @@ CREATE TABLE [mtc_admin].[questionReaderReasons](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [mtc_admin].[role]    Script Date: 27/10/2020 17:45:50 ******/
+/****** Object:  Table [mtc_admin].[role]    Script Date: 29/10/2020 17:26:24 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -1592,7 +1603,7 @@ CREATE TABLE [mtc_admin].[role](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [mtc_admin].[sce]    Script Date: 27/10/2020 17:45:50 ******/
+/****** Object:  Table [mtc_admin].[sce]    Script Date: 29/10/2020 17:26:24 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -1612,7 +1623,7 @@ CREATE TABLE [mtc_admin].[sce](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [mtc_admin].[serviceMessage]    Script Date: 27/10/2020 17:45:50 ******/
+/****** Object:  Table [mtc_admin].[serviceMessage]    Script Date: 29/10/2020 17:26:24 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -1631,7 +1642,8 @@ CREATE TABLE [mtc_admin].[serviceMessage](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [mtc_admin].[settings]    Script Date: 27/10/2020 17:45:50 ******/
+
+/****** Object:  Table [mtc_admin].[settings]    Script Date: 29/10/2020 17:26:24 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -1650,7 +1662,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [mtc_admin].[settingsLog]    Script Date: 27/10/2020 17:45:50 ******/
+/****** Object:  Table [mtc_admin].[settingsLog]    Script Date: 29/10/2020 17:26:24 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -1670,7 +1682,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [mtc_admin].[user]    Script Date: 27/10/2020 17:45:50 ******/
+/****** Object:  Table [mtc_admin].[user]    Script Date: 29/10/2020 17:26:24 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -1695,34 +1707,8 @@ CREATE TABLE [mtc_admin].[user](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [mtc_admin].[z_group_archive]    Script Date: 27/10/2020 17:45:50 ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-CREATE TABLE [mtc_admin].[z_group_archive](
-	[id] [int] IDENTITY(1,1) NOT NULL,
-	[name] [nvarchar](50) NOT NULL,
-	[isDeleted] [bit] NOT NULL,
-	[createdAt] [datetimeoffset](3) NOT NULL,
-	[updatedAt] [datetimeoffset](3) NOT NULL,
-	[school_id] [int] NOT NULL
-) ON [PRIMARY]
-GO
-/****** Object:  Table [mtc_admin].[z_pupilGroup_archive]    Script Date: 27/10/2020 17:45:50 ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-CREATE TABLE [mtc_admin].[z_pupilGroup_archive](
-	[id] [int] IDENTITY(1,1) NOT NULL,
-	[group_id] [int] NOT NULL,
-	[pupil_id] [int] NOT NULL,
-	[createdAt] [datetimeoffset](3) NOT NULL,
-	[updatedAt] [datetimeoffset](3) NOT NULL
-) ON [PRIMARY]
-GO
-/****** Object:  Table [mtc_results].[answer]    Script Date: 27/10/2020 17:45:50 ******/
+
+/****** Object:  Table [mtc_results].[answer]    Script Date: 29/10/2020 17:26:24 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -1749,7 +1735,7 @@ CREATE TABLE [mtc_results].[answer](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [mtc_results].[browserFamilyLookup]    Script Date: 27/10/2020 17:45:50 ******/
+/****** Object:  Table [mtc_results].[browserFamilyLookup]    Script Date: 29/10/2020 17:26:24 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -1770,7 +1756,7 @@ CREATE TABLE [mtc_results].[browserFamilyLookup](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [mtc_results].[checkResult]    Script Date: 27/10/2020 17:45:51 ******/
+/****** Object:  Table [mtc_results].[checkResult]    Script Date: 29/10/2020 17:26:24 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -1794,7 +1780,7 @@ CREATE TABLE [mtc_results].[checkResult](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [mtc_results].[deviceOrientationLookup]    Script Date: 27/10/2020 17:45:51 ******/
+/****** Object:  Table [mtc_results].[deviceOrientationLookup]    Script Date: 29/10/2020 17:26:24 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -1815,7 +1801,7 @@ CREATE TABLE [mtc_results].[deviceOrientationLookup](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [mtc_results].[event]    Script Date: 27/10/2020 17:45:51 ******/
+/****** Object:  Table [mtc_results].[event]    Script Date: 29/10/2020 17:26:24 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -1837,7 +1823,7 @@ CREATE TABLE [mtc_results].[event](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [mtc_results].[eventTypeLookup]    Script Date: 27/10/2020 17:45:51 ******/
+/****** Object:  Table [mtc_results].[eventTypeLookup]    Script Date: 29/10/2020 17:26:24 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -1859,7 +1845,7 @@ CREATE TABLE [mtc_results].[eventTypeLookup](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [mtc_results].[navigatorLanguageLookup]    Script Date: 27/10/2020 17:45:51 ******/
+/****** Object:  Table [mtc_results].[navigatorLanguageLookup]    Script Date: 29/10/2020 17:26:24 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -1880,7 +1866,7 @@ CREATE TABLE [mtc_results].[navigatorLanguageLookup](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [mtc_results].[navigatorPlatformLookup]    Script Date: 27/10/2020 17:45:51 ******/
+/****** Object:  Table [mtc_results].[navigatorPlatformLookup]    Script Date: 29/10/2020 17:26:24 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -1901,7 +1887,7 @@ CREATE TABLE [mtc_results].[navigatorPlatformLookup](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [mtc_results].[networkConnectionEffectiveTypeLookup]    Script Date: 27/10/2020 17:45:51 ******/
+/****** Object:  Table [mtc_results].[networkConnectionEffectiveTypeLookup]    Script Date: 29/10/2020 17:26:24 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -1922,7 +1908,7 @@ CREATE TABLE [mtc_results].[networkConnectionEffectiveTypeLookup](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [mtc_results].[uaOperatingSystemLookup]    Script Date: 27/10/2020 17:45:51 ******/
+/****** Object:  Table [mtc_results].[uaOperatingSystemLookup]    Script Date: 29/10/2020 17:26:24 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -1943,7 +1929,7 @@ CREATE TABLE [mtc_results].[uaOperatingSystemLookup](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [mtc_results].[userAgentLookup]    Script Date: 27/10/2020 17:45:51 ******/
+/****** Object:  Table [mtc_results].[userAgentLookup]    Script Date: 29/10/2020 17:26:24 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -1965,7 +1951,7 @@ CREATE TABLE [mtc_results].[userAgentLookup](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [mtc_results].[userDevice]    Script Date: 27/10/2020 17:45:51 ******/
+/****** Object:  Table [mtc_results].[userDevice]    Script Date: 29/10/2020 17:26:24 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -2010,7 +1996,7 @@ CREATE TABLE [mtc_results].[userDevice](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [mtc_results].[userInput]    Script Date: 27/10/2020 17:45:51 ******/
+/****** Object:  Table [mtc_results].[userInput]    Script Date: 29/10/2020 17:26:24 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -2030,7 +2016,7 @@ CREATE TABLE [mtc_results].[userInput](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [mtc_results].[userInputTypeLookup]    Script Date: 27/10/2020 17:45:51 ******/
+/****** Object:  Table [mtc_results].[userInputTypeLookup]    Script Date: 29/10/2020 17:26:24 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -2052,20 +2038,20 @@ CREATE TABLE [mtc_results].[userInputTypeLookup](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Index [adminLogonEvent_user_id_index]    Script Date: 27/10/2020 17:45:51 ******/
+/****** Object:  Index [adminLogonEvent_user_id_index]    Script Date: 29/10/2020 17:26:24 ******/
 CREATE NONCLUSTERED INDEX [adminLogonEvent_user_id_index] ON [mtc_admin].[adminLogonEvent]
 (
 	[user_id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [answer_check_id_questionNumber_uindex]    Script Date: 27/10/2020 17:45:51 ******/
+/****** Object:  Index [answer_check_id_questionNumber_uindex]    Script Date: 29/10/2020 17:26:24 ******/
 CREATE UNIQUE NONCLUSTERED INDEX [answer_check_id_questionNumber_uindex] ON [mtc_admin].[answer]
 (
 	[check_id] ASC,
 	[questionNumber] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [ix_answer_question_id]    Script Date: 27/10/2020 17:45:51 ******/
+/****** Object:  Index [ix_answer_question_id]    Script Date: 29/10/2020 17:26:24 ******/
 CREATE NONCLUSTERED INDEX [ix_answer_question_id] ON [mtc_admin].[answer]
 (
 	[question_id] ASC
@@ -2073,7 +2059,7 @@ CREATE NONCLUSTERED INDEX [ix_answer_question_id] ON [mtc_admin].[answer]
 GO
 SET ANSI_PADDING ON
 GO
-/****** Object:  Index [attendanceCode_code_uindex]    Script Date: 27/10/2020 17:45:51 ******/
+/****** Object:  Index [attendanceCode_code_uindex]    Script Date: 29/10/2020 17:26:24 ******/
 CREATE UNIQUE NONCLUSTERED INDEX [attendanceCode_code_uindex] ON [mtc_admin].[attendanceCode]
 (
 	[code] ASC
@@ -2081,37 +2067,37 @@ CREATE UNIQUE NONCLUSTERED INDEX [attendanceCode_code_uindex] ON [mtc_admin].[at
 GO
 SET ANSI_PADDING ON
 GO
-/****** Object:  Index [auditLog_tableName_index]    Script Date: 27/10/2020 17:45:51 ******/
+/****** Object:  Index [auditLog_tableName_index]    Script Date: 29/10/2020 17:26:24 ******/
 CREATE NONCLUSTERED INDEX [auditLog_tableName_index] ON [mtc_admin].[auditLog]
 (
 	[tableName] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [check_checkCode_index]    Script Date: 27/10/2020 17:45:51 ******/
+/****** Object:  Index [check_checkCode_index]    Script Date: 29/10/2020 17:26:24 ******/
 CREATE UNIQUE NONCLUSTERED INDEX [check_checkCode_index] ON [mtc_admin].[check]
 (
 	[checkCode] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [check_checkForm_id_index]    Script Date: 27/10/2020 17:45:51 ******/
+/****** Object:  Index [check_checkForm_id_index]    Script Date: 29/10/2020 17:26:24 ******/
 CREATE NONCLUSTERED INDEX [check_checkForm_id_index] ON [mtc_admin].[check]
 (
 	[checkForm_id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [check_checkStatus_id_index]    Script Date: 27/10/2020 17:45:51 ******/
+/****** Object:  Index [check_checkStatus_id_index]    Script Date: 29/10/2020 17:26:24 ******/
 CREATE NONCLUSTERED INDEX [check_checkStatus_id_index] ON [mtc_admin].[check]
 (
 	[checkStatus_id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [check_pupil_id_index]    Script Date: 27/10/2020 17:45:51 ******/
+/****** Object:  Index [check_pupil_id_index]    Script Date: 29/10/2020 17:26:24 ******/
 CREATE NONCLUSTERED INDEX [check_pupil_id_index] ON [mtc_admin].[check]
 (
 	[pupil_id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [checkConfig_check_id_index]    Script Date: 27/10/2020 17:45:51 ******/
+/****** Object:  Index [checkConfig_check_id_index]    Script Date: 29/10/2020 17:26:24 ******/
 CREATE NONCLUSTERED INDEX [checkConfig_check_id_index] ON [mtc_admin].[checkConfig]
 (
 	[check_id] ASC
@@ -2119,81 +2105,81 @@ CREATE NONCLUSTERED INDEX [checkConfig_check_id_index] ON [mtc_admin].[checkConf
 GO
 SET ANSI_PADDING ON
 GO
-/****** Object:  Index [checkForm_name_uindex]    Script Date: 27/10/2020 17:45:51 ******/
+/****** Object:  Index [checkForm_name_uindex]    Script Date: 29/10/2020 17:26:24 ******/
 CREATE UNIQUE NONCLUSTERED INDEX [checkForm_name_uindex] ON [mtc_admin].[checkForm]
 (
 	[name] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [checkFormWindow_checkForm_id_checkWindow_id_uindex]    Script Date: 27/10/2020 17:45:51 ******/
+/****** Object:  Index [checkFormWindow_checkForm_id_checkWindow_id_uindex]    Script Date: 29/10/2020 17:26:24 ******/
 CREATE UNIQUE NONCLUSTERED INDEX [checkFormWindow_checkForm_id_checkWindow_id_uindex] ON [mtc_admin].[checkFormWindow]
 (
 	[checkForm_id] ASC,
 	[checkWindow_id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [checkPin_pin_id_index]    Script Date: 27/10/2020 17:45:51 ******/
+/****** Object:  Index [checkPin_pin_id_index]    Script Date: 29/10/2020 17:26:24 ******/
 CREATE NONCLUSTERED INDEX [checkPin_pin_id_index] ON [mtc_admin].[checkPin]
 (
 	[pin_id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [ix_checkScore_check_id]    Script Date: 27/10/2020 17:45:51 ******/
+/****** Object:  Index [ix_checkScore_check_id]    Script Date: 29/10/2020 17:26:24 ******/
 CREATE NONCLUSTERED INDEX [ix_checkScore_check_id] ON [mtc_admin].[checkScore]
 (
 	[checkId] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [checkWindow_urlSlug_uindex]    Script Date: 27/10/2020 17:45:51 ******/
+/****** Object:  Index [checkWindow_urlSlug_uindex]    Script Date: 29/10/2020 17:26:24 ******/
 CREATE UNIQUE NONCLUSTERED INDEX [checkWindow_urlSlug_uindex] ON [mtc_admin].[checkWindow]
 (
 	[urlSlug] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [group_school_id_index]    Script Date: 27/10/2020 17:45:51 ******/
+/****** Object:  Index [group_school_id_index]    Script Date: 29/10/2020 17:26:24 ******/
 CREATE NONCLUSTERED INDEX [group_school_id_index] ON [mtc_admin].[group]
 (
 	[school_id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [ix_hdf_school_checkWindow_id]    Script Date: 27/10/2020 17:45:51 ******/
+/****** Object:  Index [ix_hdf_school_checkWindow_id]    Script Date: 29/10/2020 17:26:24 ******/
 CREATE UNIQUE NONCLUSTERED INDEX [ix_hdf_school_checkWindow_id] ON [mtc_admin].[hdf]
 (
 	[school_id] ASC,
 	[checkWindow_id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [ix_hdf_user_id]    Script Date: 27/10/2020 17:45:51 ******/
+/****** Object:  Index [ix_hdf_user_id]    Script Date: 29/10/2020 17:26:24 ******/
 CREATE NONCLUSTERED INDEX [ix_hdf_user_id] ON [mtc_admin].[hdf]
 (
 	[user_id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [psychometricianReportCache_check_id_uindex]    Script Date: 27/10/2020 17:45:51 ******/
+/****** Object:  Index [psychometricianReportCache_check_id_uindex]    Script Date: 29/10/2020 17:26:24 ******/
 CREATE UNIQUE NONCLUSTERED INDEX [psychometricianReportCache_check_id_uindex] ON [mtc_admin].[psychometricianReportCache]
 (
 	[check_id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [pupil_attendanceId_index]    Script Date: 27/10/2020 17:45:51 ******/
+/****** Object:  Index [pupil_attendanceId_index]    Script Date: 29/10/2020 17:26:24 ******/
 CREATE NONCLUSTERED INDEX [pupil_attendanceId_index] ON [mtc_admin].[pupil]
 (
 	[attendanceId] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [pupil_currentCheckId_index]    Script Date: 27/10/2020 17:45:51 ******/
+/****** Object:  Index [pupil_currentCheckId_index]    Script Date: 29/10/2020 17:26:24 ******/
 CREATE NONCLUSTERED INDEX [pupil_currentCheckId_index] ON [mtc_admin].[pupil]
 (
 	[currentCheckId] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [pupil_group_id_index]    Script Date: 27/10/2020 17:45:51 ******/
+/****** Object:  Index [pupil_group_id_index]    Script Date: 29/10/2020 17:26:24 ******/
 CREATE NONCLUSTERED INDEX [pupil_group_id_index] ON [mtc_admin].[pupil]
 (
 	[group_id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [pupil_school_id_index]    Script Date: 27/10/2020 17:45:51 ******/
+/****** Object:  Index [pupil_school_id_index]    Script Date: 29/10/2020 17:26:24 ******/
 CREATE NONCLUSTERED INDEX [pupil_school_id_index] ON [mtc_admin].[pupil]
 (
 	[school_id] ASC
@@ -2202,98 +2188,98 @@ INCLUDE([currentCheckId],[attendanceId],[checkComplete],[group_id],[restartAvail
 GO
 SET ANSI_PADDING ON
 GO
-/****** Object:  Index [pupil_upn_school_id_uindex]    Script Date: 27/10/2020 17:45:51 ******/
+/****** Object:  Index [pupil_upn_school_id_uindex]    Script Date: 29/10/2020 17:26:24 ******/
 CREATE UNIQUE NONCLUSTERED INDEX [pupil_upn_school_id_uindex] ON [mtc_admin].[pupil]
 (
 	[upn] ASC,
 	[school_id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [pupil_urlSlug_index]    Script Date: 27/10/2020 17:45:51 ******/
+/****** Object:  Index [pupil_urlSlug_index]    Script Date: 29/10/2020 17:26:24 ******/
 CREATE UNIQUE NONCLUSTERED INDEX [pupil_urlSlug_index] ON [mtc_admin].[pupil]
 (
 	[urlSlug] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [pupilAccessArrangements_accessArrangements_id_index]    Script Date: 27/10/2020 17:45:51 ******/
+/****** Object:  Index [pupilAccessArrangements_accessArrangements_id_index]    Script Date: 29/10/2020 17:26:24 ******/
 CREATE NONCLUSTERED INDEX [pupilAccessArrangements_accessArrangements_id_index] ON [mtc_admin].[pupilAccessArrangements]
 (
 	[accessArrangements_id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [pupilAccessArrangements_pupil_id_index]    Script Date: 27/10/2020 17:45:51 ******/
+/****** Object:  Index [pupilAccessArrangements_pupil_id_index]    Script Date: 29/10/2020 17:26:24 ******/
 CREATE NONCLUSTERED INDEX [pupilAccessArrangements_pupil_id_index] ON [mtc_admin].[pupilAccessArrangements]
 (
 	[pupil_id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [pupilAccessArrangements_pupilColourContrasts_id_index]    Script Date: 27/10/2020 17:45:51 ******/
+/****** Object:  Index [pupilAccessArrangements_pupilColourContrasts_id_index]    Script Date: 29/10/2020 17:26:24 ******/
 CREATE NONCLUSTERED INDEX [pupilAccessArrangements_pupilColourContrasts_id_index] ON [mtc_admin].[pupilAccessArrangements]
 (
 	[pupilColourContrasts_Id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [pupilAccessArrangements_pupilFontSizes_id_index]    Script Date: 27/10/2020 17:45:51 ******/
+/****** Object:  Index [pupilAccessArrangements_pupilFontSizes_id_index]    Script Date: 29/10/2020 17:26:24 ******/
 CREATE NONCLUSTERED INDEX [pupilAccessArrangements_pupilFontSizes_id_index] ON [mtc_admin].[pupilAccessArrangements]
 (
 	[pupilFontSizes_id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [pupilAccessArrangements_questionReaderReasons_id_index]    Script Date: 27/10/2020 17:45:51 ******/
+/****** Object:  Index [pupilAccessArrangements_questionReaderReasons_id_index]    Script Date: 29/10/2020 17:26:24 ******/
 CREATE NONCLUSTERED INDEX [pupilAccessArrangements_questionReaderReasons_id_index] ON [mtc_admin].[pupilAccessArrangements]
 (
 	[questionReaderReasons_id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [pupilAttendance_attendanceCode_id_index]    Script Date: 27/10/2020 17:45:51 ******/
+/****** Object:  Index [pupilAttendance_attendanceCode_id_index]    Script Date: 29/10/2020 17:26:24 ******/
 CREATE NONCLUSTERED INDEX [pupilAttendance_attendanceCode_id_index] ON [mtc_admin].[pupilAttendance]
 (
 	[attendanceCode_id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [pupilAttendance_pupil_id_index]    Script Date: 27/10/2020 17:45:51 ******/
+/****** Object:  Index [pupilAttendance_pupil_id_index]    Script Date: 29/10/2020 17:26:24 ******/
 CREATE NONCLUSTERED INDEX [pupilAttendance_pupil_id_index] ON [mtc_admin].[pupilAttendance]
 (
 	[pupil_id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [pupilAttendance_user_id_index]    Script Date: 27/10/2020 17:45:51 ******/
+/****** Object:  Index [pupilAttendance_user_id_index]    Script Date: 29/10/2020 17:26:24 ******/
 CREATE NONCLUSTERED INDEX [pupilAttendance_user_id_index] ON [mtc_admin].[pupilAttendance]
 (
 	[recordedBy_user_id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [pupilRestart_check_id_index]    Script Date: 27/10/2020 17:45:51 ******/
+/****** Object:  Index [pupilRestart_check_id_index]    Script Date: 29/10/2020 17:26:24 ******/
 CREATE NONCLUSTERED INDEX [pupilRestart_check_id_index] ON [mtc_admin].[pupilRestart]
 (
 	[check_id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [pupilRestart_originCheck_id_index]    Script Date: 27/10/2020 17:45:51 ******/
+/****** Object:  Index [pupilRestart_originCheck_id_index]    Script Date: 29/10/2020 17:26:24 ******/
 CREATE NONCLUSTERED INDEX [pupilRestart_originCheck_id_index] ON [mtc_admin].[pupilRestart]
 (
 	[originCheck_id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [pupilRestart_pupil_id_index]    Script Date: 27/10/2020 17:45:51 ******/
+/****** Object:  Index [pupilRestart_pupil_id_index]    Script Date: 29/10/2020 17:26:24 ******/
 CREATE NONCLUSTERED INDEX [pupilRestart_pupil_id_index] ON [mtc_admin].[pupilRestart]
 (
 	[pupil_id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [pupilRestart_pupilRestartReason_id_index]    Script Date: 27/10/2020 17:45:51 ******/
+/****** Object:  Index [pupilRestart_pupilRestartReason_id_index]    Script Date: 29/10/2020 17:26:24 ******/
 CREATE NONCLUSTERED INDEX [pupilRestart_pupilRestartReason_id_index] ON [mtc_admin].[pupilRestart]
 (
 	[pupilRestartReason_id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [sce_school_id_index]    Script Date: 27/10/2020 17:45:51 ******/
+/****** Object:  Index [sce_school_id_index]    Script Date: 29/10/2020 17:26:24 ******/
 CREATE NONCLUSTERED INDEX [sce_school_id_index] ON [mtc_admin].[sce]
 (
 	[school_id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [school_dfeNumber_uindex]    Script Date: 27/10/2020 17:45:51 ******/
+/****** Object:  Index [school_dfeNumber_uindex]    Script Date: 29/10/2020 17:26:24 ******/
 CREATE UNIQUE NONCLUSTERED INDEX [school_dfeNumber_uindex] ON [mtc_admin].[school]
 (
 	[dfeNumber] ASC
@@ -2301,7 +2287,7 @@ CREATE UNIQUE NONCLUSTERED INDEX [school_dfeNumber_uindex] ON [mtc_admin].[schoo
 GO
 SET ANSI_PADDING ON
 GO
-/****** Object:  Index [school_pin_uindex]    Script Date: 27/10/2020 17:45:51 ******/
+/****** Object:  Index [school_pin_uindex]    Script Date: 29/10/2020 17:26:24 ******/
 CREATE UNIQUE NONCLUSTERED INDEX [school_pin_uindex] ON [mtc_admin].[school]
 (
 	[pin] ASC
@@ -2309,43 +2295,43 @@ CREATE UNIQUE NONCLUSTERED INDEX [school_pin_uindex] ON [mtc_admin].[school]
 WHERE ([pin] IS NOT NULL)
 WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [school_urlSlug_uindex]    Script Date: 27/10/2020 17:45:51 ******/
+/****** Object:  Index [school_urlSlug_uindex]    Script Date: 29/10/2020 17:26:24 ******/
 CREATE UNIQUE NONCLUSTERED INDEX [school_urlSlug_uindex] ON [mtc_admin].[school]
 (
 	[urlSlug] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [school_urn_uindex]    Script Date: 27/10/2020 17:45:51 ******/
+/****** Object:  Index [school_urn_uindex]    Script Date: 29/10/2020 17:26:24 ******/
 CREATE UNIQUE NONCLUSTERED INDEX [school_urn_uindex] ON [mtc_admin].[school]
 (
 	[urn] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [user_role_id_index]    Script Date: 27/10/2020 17:45:51 ******/
+/****** Object:  Index [user_role_id_index]    Script Date: 29/10/2020 17:26:24 ******/
 CREATE NONCLUSTERED INDEX [user_role_id_index] ON [mtc_admin].[user]
 (
 	[role_id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [user_school_id_index]    Script Date: 27/10/2020 17:45:51 ******/
+/****** Object:  Index [user_school_id_index]    Script Date: 29/10/2020 17:26:24 ******/
 CREATE NONCLUSTERED INDEX [user_school_id_index] ON [mtc_admin].[user]
 (
 	[school_id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [ix_answer_checkResult_id]    Script Date: 27/10/2020 17:45:51 ******/
+/****** Object:  Index [ix_answer_checkResult_id]    Script Date: 29/10/2020 17:26:24 ******/
 CREATE NONCLUSTERED INDEX [ix_answer_checkResult_id] ON [mtc_results].[answer]
 (
 	[checkResult_id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [ix_answer_question_id]    Script Date: 27/10/2020 17:45:51 ******/
+/****** Object:  Index [ix_answer_question_id]    Script Date: 29/10/2020 17:26:24 ******/
 CREATE NONCLUSTERED INDEX [ix_answer_question_id] ON [mtc_results].[answer]
 (
 	[question_id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [checkResult_userDevice_uindex]    Script Date: 27/10/2020 17:45:51 ******/
+/****** Object:  Index [checkResult_userDevice_uindex]    Script Date: 29/10/2020 17:26:24 ******/
 CREATE UNIQUE NONCLUSTERED INDEX [checkResult_userDevice_uindex] ON [mtc_results].[checkResult]
 (
 	[userDevice_id] ASC
@@ -2353,85 +2339,85 @@ CREATE UNIQUE NONCLUSTERED INDEX [checkResult_userDevice_uindex] ON [mtc_results
 WHERE ([userDevice_id] IS NOT NULL)
 WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [ix_checkResult_check_id]    Script Date: 27/10/2020 17:45:51 ******/
+/****** Object:  Index [ix_checkResult_check_id]    Script Date: 29/10/2020 17:26:24 ******/
 CREATE NONCLUSTERED INDEX [ix_checkResult_check_id] ON [mtc_results].[checkResult]
 (
 	[check_id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [ix_checkResult_userDevice_id]    Script Date: 27/10/2020 17:45:51 ******/
+/****** Object:  Index [ix_checkResult_userDevice_id]    Script Date: 29/10/2020 17:26:24 ******/
 CREATE NONCLUSTERED INDEX [ix_checkResult_userDevice_id] ON [mtc_results].[checkResult]
 (
 	[userDevice_id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [ix_event_checkResult_id]    Script Date: 27/10/2020 17:45:51 ******/
+/****** Object:  Index [ix_event_checkResult_id]    Script Date: 29/10/2020 17:26:24 ******/
 CREATE NONCLUSTERED INDEX [ix_event_checkResult_id] ON [mtc_results].[event]
 (
 	[checkResult_id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [ix_event_eventTypeLookup_id]    Script Date: 27/10/2020 17:45:51 ******/
+/****** Object:  Index [ix_event_eventTypeLookup_id]    Script Date: 29/10/2020 17:26:24 ******/
 CREATE NONCLUSTERED INDEX [ix_event_eventTypeLookup_id] ON [mtc_results].[event]
 (
 	[eventTypeLookup_id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [ix_event_question_id]    Script Date: 27/10/2020 17:45:51 ******/
+/****** Object:  Index [ix_event_question_id]    Script Date: 29/10/2020 17:26:24 ******/
 CREATE NONCLUSTERED INDEX [ix_event_question_id] ON [mtc_results].[event]
 (
 	[question_id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [userDevice_browserFamilyLookup_id]    Script Date: 27/10/2020 17:45:51 ******/
+/****** Object:  Index [userDevice_browserFamilyLookup_id]    Script Date: 29/10/2020 17:26:24 ******/
 CREATE NONCLUSTERED INDEX [userDevice_browserFamilyLookup_id] ON [mtc_results].[userDevice]
 (
 	[browserFamilyLookup_id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [userDevice_deviceOrientationLookup_id]    Script Date: 27/10/2020 17:45:51 ******/
+/****** Object:  Index [userDevice_deviceOrientationLookup_id]    Script Date: 29/10/2020 17:26:24 ******/
 CREATE NONCLUSTERED INDEX [userDevice_deviceOrientationLookup_id] ON [mtc_results].[userDevice]
 (
 	[deviceOrientationLookup_id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [userDevice_navigatorLanguageLookup_id]    Script Date: 27/10/2020 17:45:51 ******/
+/****** Object:  Index [userDevice_navigatorLanguageLookup_id]    Script Date: 29/10/2020 17:26:24 ******/
 CREATE NONCLUSTERED INDEX [userDevice_navigatorLanguageLookup_id] ON [mtc_results].[userDevice]
 (
 	[navigatorLanguageLookup_id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [userDevice_navigatorPlatformLookup_id]    Script Date: 27/10/2020 17:45:51 ******/
+/****** Object:  Index [userDevice_navigatorPlatformLookup_id]    Script Date: 29/10/2020 17:26:24 ******/
 CREATE NONCLUSTERED INDEX [userDevice_navigatorPlatformLookup_id] ON [mtc_results].[userDevice]
 (
 	[navigatorPlatformLookup_id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [userDevice_networkConnectionEffectiveType_id]    Script Date: 27/10/2020 17:45:51 ******/
+/****** Object:  Index [userDevice_networkConnectionEffectiveType_id]    Script Date: 29/10/2020 17:26:24 ******/
 CREATE NONCLUSTERED INDEX [userDevice_networkConnectionEffectiveType_id] ON [mtc_results].[userDevice]
 (
 	[networkConnectionEffectiveTypeLookup_id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [userDevice_uaOperatingSystemLookup_id]    Script Date: 27/10/2020 17:45:51 ******/
+/****** Object:  Index [userDevice_uaOperatingSystemLookup_id]    Script Date: 29/10/2020 17:26:24 ******/
 CREATE NONCLUSTERED INDEX [userDevice_uaOperatingSystemLookup_id] ON [mtc_results].[userDevice]
 (
 	[uaOperatingSystemLookup_id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [userDevice_useragentLookup_id]    Script Date: 27/10/2020 17:45:51 ******/
+/****** Object:  Index [userDevice_useragentLookup_id]    Script Date: 29/10/2020 17:26:24 ******/
 CREATE NONCLUSTERED INDEX [userDevice_useragentLookup_id] ON [mtc_results].[userDevice]
 (
 	[userAgentLookup_id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [ix_event_userInput_id]    Script Date: 27/10/2020 17:45:51 ******/
+/****** Object:  Index [ix_event_userInput_id]    Script Date: 29/10/2020 17:26:24 ******/
 CREATE NONCLUSTERED INDEX [ix_event_userInput_id] ON [mtc_results].[userInput]
 (
 	[answer_id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 GO
-/****** Object:  Index [ix_event_userInputTypeLookup_id]    Script Date: 27/10/2020 17:45:51 ******/
+/****** Object:  Index [ix_event_userInputTypeLookup_id]    Script Date: 29/10/2020 17:26:24 ******/
 CREATE NONCLUSTERED INDEX [ix_event_userInputTypeLookup_id] ON [mtc_results].[userInput]
 (
 	[userInputTypeLookup_id] ASC
@@ -3053,7 +3039,7 @@ ALTER TABLE [mtc_results].[uaOperatingSystemLookup]  WITH CHECK ADD  CONSTRAINT 
 GO
 ALTER TABLE [mtc_results].[uaOperatingSystemLookup] CHECK CONSTRAINT [uaOperatingSystemLookup_uppercase]
 GO
-/****** Object:  StoredProcedure [mtc_admin].[spCreateChecks]    Script Date: 27/10/2020 17:45:51 ******/
+/****** Object:  StoredProcedure [mtc_admin].[spCreateChecks]    Script Date: 29/10/2020 17:26:24 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -3236,7 +3222,7 @@ BEGIN CATCH
 END CATCH
 
 GO
-/****** Object:  StoredProcedure [mtc_admin].[spGenAuditTriggers]    Script Date: 27/10/2020 17:45:51 ******/
+/****** Object:  StoredProcedure [mtc_admin].[spGenAuditTriggers]    Script Date: 29/10/2020 17:26:24 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -3301,7 +3287,7 @@ AS
   DEALLOCATE db_cursor
 ;
 GO
-/****** Object:  StoredProcedure [mtc_admin].[spUpsertSceSchools]    Script Date: 27/10/2020 17:45:51 ******/
+/****** Object:  StoredProcedure [mtc_admin].[spUpsertSceSchools]    Script Date: 29/10/2020 17:26:24 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -3355,7 +3341,7 @@ AS
     END CATCH
 
 GO
-/****** Object:  StoredProcedure [mtc_census_import].[spPupilCensusImportFromStaging]    Script Date: 27/10/2020 17:45:51 ******/
+/****** Object:  StoredProcedure [mtc_census_import].[spPupilCensusImportFromStaging]    Script Date: 29/10/2020 17:26:24 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -3427,6 +3413,1023 @@ CREATE PROCEDURE [mtc_census_import].[spPupilCensusImportFromStaging]
   DEALLOCATE Source
   ;
 
+GO
+/****** Object:  Trigger [mtc_admin].[accessArrangementsUpdatedAtTrigger]    Script Date: 29/10/2020 17:26:24 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+    CREATE TRIGGER [mtc_admin].[accessArrangementsUpdatedAtTrigger]
+    ON [mtc_admin].[accessArrangements]
+    FOR UPDATE
+    AS
+    BEGIN
+        UPDATE [mtc_admin].[accessArrangements]
+        SET updatedAt = GETUTCDATE()
+        FROM inserted
+        WHERE [accessArrangements].id = inserted.id
+    END
+
+GO
+ALTER TABLE [mtc_admin].[accessArrangements] ENABLE TRIGGER [accessArrangementsUpdatedAtTrigger]
+GO
+/****** Object:  Trigger [mtc_admin].[adminLogonEventUpdatedAtTrigger]    Script Date: 29/10/2020 17:26:25 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+    CREATE TRIGGER [mtc_admin].[adminLogonEventUpdatedAtTrigger]
+    ON [mtc_admin].[adminLogonEvent]
+    FOR UPDATE
+    AS
+    BEGIN
+        UPDATE [mtc_admin].[adminLogonEvent]
+        SET updatedAt = GETUTCDATE()
+        FROM inserted
+        WHERE [adminLogonEvent].id = inserted.id
+    END
+
+GO
+ALTER TABLE [mtc_admin].[adminLogonEvent] ENABLE TRIGGER [adminLogonEventUpdatedAtTrigger]
+GO
+/****** Object:  Trigger [mtc_admin].[anomalyReportCacheUpdatedAtTrigger]    Script Date: 29/10/2020 17:26:25 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+    CREATE TRIGGER [mtc_admin].[anomalyReportCacheUpdatedAtTrigger]
+    ON [mtc_admin].[anomalyReportCache]
+    FOR UPDATE
+    AS
+    BEGIN
+        UPDATE [mtc_admin].[anomalyReportCache]
+        SET updatedAt = GETUTCDATE()
+        FROM inserted
+        WHERE [anomalyReportCache].id = inserted.id
+    END
+
+GO
+ALTER TABLE [mtc_admin].[anomalyReportCache] ENABLE TRIGGER [anomalyReportCacheUpdatedAtTrigger]
+GO
+/****** Object:  Trigger [mtc_admin].[answerUpdatedAtTrigger]    Script Date: 29/10/2020 17:26:25 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+    CREATE TRIGGER [mtc_admin].[answerUpdatedAtTrigger]
+    ON [mtc_admin].[answer]
+    FOR UPDATE
+    AS
+    BEGIN
+        UPDATE [mtc_admin].[answer]
+        SET updatedAt = GETUTCDATE()
+        FROM inserted
+        WHERE [answer].id = inserted.id
+    END
+
+GO
+ALTER TABLE [mtc_admin].[answer] ENABLE TRIGGER [answerUpdatedAtTrigger]
+GO
+/****** Object:  Trigger [mtc_admin].[attendanceCodeUpdatedAtTrigger]    Script Date: 29/10/2020 17:26:25 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+    CREATE TRIGGER [mtc_admin].[attendanceCodeUpdatedAtTrigger]
+    ON [mtc_admin].[attendanceCode]
+    FOR UPDATE
+    AS
+    BEGIN
+        UPDATE [mtc_admin].[attendanceCode]
+        SET updatedAt = GETUTCDATE()
+        FROM inserted
+        WHERE [attendanceCode].id = inserted.id
+    END
+
+GO
+ALTER TABLE [mtc_admin].[attendanceCode] ENABLE TRIGGER [attendanceCodeUpdatedAtTrigger]
+GO
+/****** Object:  Trigger [mtc_admin].[azureBlobFileUpdatedAtTrigger]    Script Date: 29/10/2020 17:26:25 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+    CREATE TRIGGER [mtc_admin].[azureBlobFileUpdatedAtTrigger]
+    ON [mtc_admin].[azureBlobFile]
+    FOR UPDATE
+    AS
+    BEGIN
+        UPDATE [mtc_admin].[azureBlobFile]
+        SET updatedAt = GETUTCDATE()
+        FROM inserted
+        WHERE [azureBlobFile].id = inserted.id
+    END
+
+GO
+ALTER TABLE [mtc_admin].[azureBlobFile] ENABLE TRIGGER [azureBlobFileUpdatedAtTrigger]
+GO
+/****** Object:  Trigger [mtc_admin].[azureBlobFileTypeUpdatedAtTrigger]    Script Date: 29/10/2020 17:26:25 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+    CREATE TRIGGER [mtc_admin].[azureBlobFileTypeUpdatedAtTrigger]
+    ON [mtc_admin].[azureBlobFileType]
+    FOR UPDATE
+    AS
+    BEGIN
+        UPDATE [mtc_admin].[azureBlobFileType]
+        SET updatedAt = GETUTCDATE()
+        FROM inserted
+        WHERE [azureBlobFileType].id = inserted.id
+    END
+
+GO
+ALTER TABLE [mtc_admin].[azureBlobFileType] ENABLE TRIGGER [azureBlobFileTypeUpdatedAtTrigger]
+GO
+/****** Object:  Trigger [mtc_admin].[checkUpdatedAtTrigger]    Script Date: 29/10/2020 17:26:25 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+    CREATE TRIGGER [mtc_admin].[checkUpdatedAtTrigger]
+    ON [mtc_admin].[check]
+    FOR UPDATE
+    AS
+    BEGIN
+        UPDATE [mtc_admin].[check]
+        SET updatedAt = GETUTCDATE()
+        FROM inserted
+        WHERE [check].id = inserted.id
+    END
+
+GO
+ALTER TABLE [mtc_admin].[check] ENABLE TRIGGER [checkUpdatedAtTrigger]
+GO
+/****** Object:  Trigger [mtc_admin].[checkFormUpdatedAtTrigger]    Script Date: 29/10/2020 17:26:25 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+    CREATE TRIGGER [mtc_admin].[checkFormUpdatedAtTrigger]
+    ON [mtc_admin].[checkForm]
+    FOR UPDATE
+    AS
+    BEGIN
+        UPDATE [mtc_admin].[checkForm]
+        SET updatedAt = GETUTCDATE()
+        FROM inserted
+        WHERE [checkForm].id = inserted.id
+    END
+
+GO
+ALTER TABLE [mtc_admin].[checkForm] ENABLE TRIGGER [checkFormUpdatedAtTrigger]
+GO
+/****** Object:  Trigger [mtc_admin].[checkScoreUpdatedAtTrigger]    Script Date: 29/10/2020 17:26:25 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE   TRIGGER [mtc_admin].[checkScoreUpdatedAtTrigger]
+    ON [mtc_admin].[checkScore]
+    FOR UPDATE
+    AS
+BEGIN
+    UPDATE [mtc_admin].[checkScore]
+       SET updatedAt = GETUTCDATE()
+      FROM inserted
+     WHERE [checkScore].id = inserted.id
+END
+
+GO
+ALTER TABLE [mtc_admin].[checkScore] ENABLE TRIGGER [checkScoreUpdatedAtTrigger]
+GO
+/****** Object:  Trigger [mtc_admin].[checkStatusUpdatedAtTrigger]    Script Date: 29/10/2020 17:26:25 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+    CREATE TRIGGER [mtc_admin].[checkStatusUpdatedAtTrigger]
+    ON [mtc_admin].[checkStatus]
+    FOR UPDATE
+    AS
+    BEGIN
+        UPDATE [mtc_admin].[checkStatus]
+        SET updatedAt = GETUTCDATE()
+        FROM inserted
+        WHERE [checkStatus].id = inserted.id
+    END
+
+GO
+ALTER TABLE [mtc_admin].[checkStatus] ENABLE TRIGGER [checkStatusUpdatedAtTrigger]
+GO
+/****** Object:  Trigger [mtc_admin].[checkWindowUpdatedAtTrigger]    Script Date: 29/10/2020 17:26:25 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+    CREATE TRIGGER [mtc_admin].[checkWindowUpdatedAtTrigger]
+    ON [mtc_admin].[checkWindow]
+    FOR UPDATE
+    AS
+    BEGIN
+        UPDATE [mtc_admin].[checkWindow]
+        SET updatedAt = GETUTCDATE()
+        FROM inserted
+        WHERE [checkWindow].id = inserted.id
+    END
+
+GO
+ALTER TABLE [mtc_admin].[checkWindow] ENABLE TRIGGER [checkWindowUpdatedAtTrigger]
+GO
+/****** Object:  Trigger [mtc_admin].[groupUpdatedAtTrigger]    Script Date: 29/10/2020 17:26:25 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+    CREATE TRIGGER [mtc_admin].[groupUpdatedAtTrigger]
+    ON [mtc_admin].[group]
+    FOR UPDATE
+    AS
+    BEGIN
+        UPDATE [mtc_admin].[group]
+        SET updatedAt = GETUTCDATE()
+        FROM inserted
+        WHERE [group].id = inserted.id
+    END
+
+GO
+ALTER TABLE [mtc_admin].[group] ENABLE TRIGGER [groupUpdatedAtTrigger]
+GO
+/****** Object:  Trigger [mtc_admin].[hdfUpdatedAtTrigger]    Script Date: 29/10/2020 17:26:25 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+    CREATE TRIGGER [mtc_admin].[hdfUpdatedAtTrigger]
+    ON [mtc_admin].[hdf]
+    FOR UPDATE
+    AS
+    BEGIN
+        UPDATE [mtc_admin].[hdf]
+        SET updatedAt = GETUTCDATE()
+        FROM inserted
+        WHERE [hdf].id = inserted.id
+    END
+
+GO
+ALTER TABLE [mtc_admin].[hdf] ENABLE TRIGGER [hdfUpdatedAtTrigger]
+GO
+/****** Object:  Trigger [mtc_admin].[jobUpdatedAtTrigger]    Script Date: 29/10/2020 17:26:25 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+    CREATE TRIGGER [mtc_admin].[jobUpdatedAtTrigger]
+    ON [mtc_admin].[job]
+    FOR UPDATE
+    AS
+    BEGIN
+        UPDATE [mtc_admin].[job]
+        SET updatedAt = GETUTCDATE()
+        FROM inserted
+        WHERE [job].id = inserted.id
+    END
+
+GO
+ALTER TABLE [mtc_admin].[job] ENABLE TRIGGER [jobUpdatedAtTrigger]
+GO
+/****** Object:  Trigger [mtc_admin].[jobStatusUpdatedAtTrigger]    Script Date: 29/10/2020 17:26:25 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+    CREATE TRIGGER [mtc_admin].[jobStatusUpdatedAtTrigger]
+    ON [mtc_admin].[jobStatus]
+    FOR UPDATE
+    AS
+    BEGIN
+        UPDATE [mtc_admin].[jobStatus]
+        SET updatedAt = GETUTCDATE()
+        FROM inserted
+        WHERE [jobStatus].id = inserted.id
+    END
+
+GO
+ALTER TABLE [mtc_admin].[jobStatus] ENABLE TRIGGER [jobStatusUpdatedAtTrigger]
+GO
+/****** Object:  Trigger [mtc_admin].[jobTypeUpdatedAtTrigger]    Script Date: 29/10/2020 17:26:25 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+    CREATE TRIGGER [mtc_admin].[jobTypeUpdatedAtTrigger]
+    ON [mtc_admin].[jobType]
+    FOR UPDATE
+    AS
+    BEGIN
+        UPDATE [mtc_admin].[jobType]
+        SET updatedAt = GETUTCDATE()
+        FROM inserted
+        WHERE [jobType].id = inserted.id
+    END
+
+GO
+ALTER TABLE [mtc_admin].[jobType] ENABLE TRIGGER [jobTypeUpdatedAtTrigger]
+GO
+/****** Object:  Trigger [mtc_admin].[pinUpdatedAtTrigger]    Script Date: 29/10/2020 17:26:25 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+    CREATE TRIGGER [mtc_admin].[pinUpdatedAtTrigger]
+    ON [mtc_admin].[pin]
+    FOR UPDATE
+    AS
+    BEGIN
+        UPDATE [mtc_admin].[pin]
+        SET updatedAt = GETUTCDATE()
+        FROM inserted
+        WHERE [pin].id = inserted.id
+    END
+
+GO
+ALTER TABLE [mtc_admin].[pin] ENABLE TRIGGER [pinUpdatedAtTrigger]
+GO
+/****** Object:  Trigger [mtc_admin].[psychometricianReportCacheUpdatedAtTrigger]    Script Date: 29/10/2020 17:26:25 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+    CREATE TRIGGER [mtc_admin].[psychometricianReportCacheUpdatedAtTrigger]
+    ON [mtc_admin].[psychometricianReportCache]
+    FOR UPDATE
+    AS
+    BEGIN
+        UPDATE [mtc_admin].[psychometricianReportCache]
+        SET updatedAt = GETUTCDATE()
+        FROM inserted
+        WHERE [psychometricianReportCache].id = inserted.id
+    END
+
+GO
+ALTER TABLE [mtc_admin].[psychometricianReportCache] ENABLE TRIGGER [psychometricianReportCacheUpdatedAtTrigger]
+GO
+/****** Object:  Trigger [mtc_admin].[pupilUpdatedAtTrigger]    Script Date: 29/10/2020 17:26:25 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+    CREATE TRIGGER [mtc_admin].[pupilUpdatedAtTrigger]
+    ON [mtc_admin].[pupil]
+    FOR UPDATE
+    AS
+    BEGIN
+        UPDATE [mtc_admin].[pupil]
+        SET updatedAt = GETUTCDATE()
+        FROM inserted
+        WHERE [pupil].id = inserted.id
+    END
+
+GO
+ALTER TABLE [mtc_admin].[pupil] ENABLE TRIGGER [pupilUpdatedAtTrigger]
+GO
+/****** Object:  Trigger [mtc_admin].[pupilAccessArrangementsUpdatedAtTrigger]    Script Date: 29/10/2020 17:26:25 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+    CREATE TRIGGER [mtc_admin].[pupilAccessArrangementsUpdatedAtTrigger]
+    ON [mtc_admin].[pupilAccessArrangements]
+    FOR UPDATE
+    AS
+    BEGIN
+        UPDATE [mtc_admin].[pupilAccessArrangements]
+        SET updatedAt = GETUTCDATE()
+        FROM inserted
+        WHERE [pupilAccessArrangements].id = inserted.id
+    END
+
+GO
+ALTER TABLE [mtc_admin].[pupilAccessArrangements] ENABLE TRIGGER [pupilAccessArrangementsUpdatedAtTrigger]
+GO
+/****** Object:  Trigger [mtc_admin].[pupilAttendanceUpdatedAtTrigger]    Script Date: 29/10/2020 17:26:25 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+    CREATE TRIGGER [mtc_admin].[pupilAttendanceUpdatedAtTrigger]
+    ON [mtc_admin].[pupilAttendance]
+    FOR UPDATE
+    AS
+    BEGIN
+        UPDATE [mtc_admin].[pupilAttendance]
+        SET updatedAt = GETUTCDATE()
+        FROM inserted
+        WHERE [pupilAttendance].id = inserted.id
+    END
+
+GO
+ALTER TABLE [mtc_admin].[pupilAttendance] ENABLE TRIGGER [pupilAttendanceUpdatedAtTrigger]
+GO
+/****** Object:  Trigger [mtc_admin].[pupilColourContrastsUpdatedAtTrigger]    Script Date: 29/10/2020 17:26:25 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+    CREATE TRIGGER [mtc_admin].[pupilColourContrastsUpdatedAtTrigger]
+    ON [mtc_admin].[pupilColourContrasts]
+    FOR UPDATE
+    AS
+    BEGIN
+        UPDATE [mtc_admin].[pupilColourContrasts]
+        SET updatedAt = GETUTCDATE()
+        FROM inserted
+        WHERE [pupilColourContrasts].id = inserted.id
+    END
+
+GO
+ALTER TABLE [mtc_admin].[pupilColourContrasts] ENABLE TRIGGER [pupilColourContrastsUpdatedAtTrigger]
+GO
+/****** Object:  Trigger [mtc_admin].[pupilFontSizesUpdatedAtTrigger]    Script Date: 29/10/2020 17:26:25 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+    CREATE TRIGGER [mtc_admin].[pupilFontSizesUpdatedAtTrigger]
+    ON [mtc_admin].[pupilFontSizes]
+    FOR UPDATE
+    AS
+    BEGIN
+        UPDATE [mtc_admin].[pupilFontSizes]
+        SET updatedAt = GETUTCDATE()
+        FROM inserted
+        WHERE [pupilFontSizes].id = inserted.id
+    END
+
+GO
+ALTER TABLE [mtc_admin].[pupilFontSizes] ENABLE TRIGGER [pupilFontSizesUpdatedAtTrigger]
+GO
+/****** Object:  Trigger [mtc_admin].[pupilRestartUpdatedAtTrigger]    Script Date: 29/10/2020 17:26:26 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+    CREATE TRIGGER [mtc_admin].[pupilRestartUpdatedAtTrigger]
+    ON [mtc_admin].[pupilRestart]
+    FOR UPDATE
+    AS
+    BEGIN
+        UPDATE [mtc_admin].[pupilRestart]
+        SET updatedAt = GETUTCDATE()
+        FROM inserted
+        WHERE [pupilRestart].id = inserted.id
+    END
+
+GO
+ALTER TABLE [mtc_admin].[pupilRestart] ENABLE TRIGGER [pupilRestartUpdatedAtTrigger]
+GO
+/****** Object:  Trigger [mtc_admin].[pupilRestartCodeUpdatedAtTrigger]    Script Date: 29/10/2020 17:26:26 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+    CREATE TRIGGER [mtc_admin].[pupilRestartCodeUpdatedAtTrigger]
+    ON [mtc_admin].[pupilRestartCode]
+    FOR UPDATE
+    AS
+    BEGIN
+        UPDATE [mtc_admin].[pupilRestartCode]
+        SET updatedAt = GETUTCDATE()
+        FROM inserted
+        WHERE [pupilRestartCode].id = inserted.id
+    END
+
+GO
+ALTER TABLE [mtc_admin].[pupilRestartCode] ENABLE TRIGGER [pupilRestartCodeUpdatedAtTrigger]
+GO
+/****** Object:  Trigger [mtc_admin].[pupilRestartReasonUpdatedAtTrigger]    Script Date: 29/10/2020 17:26:26 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+    CREATE TRIGGER [mtc_admin].[pupilRestartReasonUpdatedAtTrigger]
+    ON [mtc_admin].[pupilRestartReason]
+    FOR UPDATE
+    AS
+    BEGIN
+        UPDATE [mtc_admin].[pupilRestartReason]
+        SET updatedAt = GETUTCDATE()
+        FROM inserted
+        WHERE [pupilRestartReason].id = inserted.id
+    END
+
+GO
+ALTER TABLE [mtc_admin].[pupilRestartReason] ENABLE TRIGGER [pupilRestartReasonUpdatedAtTrigger]
+GO
+/****** Object:  Trigger [mtc_admin].[questionUpdatedAtTrigger]    Script Date: 29/10/2020 17:26:26 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE   TRIGGER [mtc_admin].[questionUpdatedAtTrigger]
+    ON [mtc_admin].[question]
+    FOR UPDATE
+    AS
+BEGIN
+    UPDATE [mtc_admin].[question]
+       SET updatedAt = GETUTCDATE()
+      FROM inserted
+     WHERE [question].id = inserted.id
+END
+
+GO
+ALTER TABLE [mtc_admin].[question] ENABLE TRIGGER [questionUpdatedAtTrigger]
+GO
+/****** Object:  Trigger [mtc_admin].[questionReaderReasonsUpdatedAtTrigger]    Script Date: 29/10/2020 17:26:26 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+    CREATE TRIGGER [mtc_admin].[questionReaderReasonsUpdatedAtTrigger]
+    ON [mtc_admin].[questionReaderReasons]
+    FOR UPDATE
+    AS
+    BEGIN
+        UPDATE [mtc_admin].[questionReaderReasons]
+        SET updatedAt = GETUTCDATE()
+        FROM inserted
+        WHERE [questionReaderReasons].id = inserted.id
+    END
+
+GO
+ALTER TABLE [mtc_admin].[questionReaderReasons] ENABLE TRIGGER [questionReaderReasonsUpdatedAtTrigger]
+GO
+/****** Object:  Trigger [mtc_admin].[roleUpdatedAtTrigger]    Script Date: 29/10/2020 17:26:26 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+    CREATE TRIGGER [mtc_admin].[roleUpdatedAtTrigger]
+    ON [mtc_admin].[role]
+    FOR UPDATE
+    AS
+    BEGIN
+        UPDATE [mtc_admin].[role]
+        SET updatedAt = GETUTCDATE()
+        FROM inserted
+        WHERE [role].id = inserted.id
+    END
+
+GO
+ALTER TABLE [mtc_admin].[role] ENABLE TRIGGER [roleUpdatedAtTrigger]
+GO
+/****** Object:  Trigger [mtc_admin].[sceUpdatedAtTrigger]    Script Date: 29/10/2020 17:26:26 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+    CREATE TRIGGER [mtc_admin].[sceUpdatedAtTrigger]
+    ON [mtc_admin].[sce]
+    FOR UPDATE
+    AS
+    BEGIN
+        UPDATE [mtc_admin].[sce]
+        SET updatedAt = GETUTCDATE()
+        FROM inserted
+        WHERE [sce].id = inserted.id
+    END
+
+GO
+ALTER TABLE [mtc_admin].[sce] ENABLE TRIGGER [sceUpdatedAtTrigger]
+GO
+/****** Object:  Trigger [mtc_admin].[schoolUpdatedAtTrigger]    Script Date: 29/10/2020 17:26:26 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+    CREATE TRIGGER [mtc_admin].[schoolUpdatedAtTrigger]
+    ON [mtc_admin].[school]
+    FOR UPDATE
+    AS
+    BEGIN
+        UPDATE [mtc_admin].[school]
+        SET updatedAt = GETUTCDATE()
+        FROM inserted
+        WHERE [school].id = inserted.id
+    END
+
+GO
+ALTER TABLE [mtc_admin].[school] ENABLE TRIGGER [schoolUpdatedAtTrigger]
+GO
+/****** Object:  Trigger [mtc_admin].[serviceMessageUpdatedAtTrigger]    Script Date: 29/10/2020 17:26:26 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE   TRIGGER [mtc_admin].[serviceMessageUpdatedAtTrigger]
+    ON [mtc_admin].[serviceMessage]
+    FOR UPDATE
+    AS
+BEGIN
+    UPDATE [mtc_admin].[serviceMessage]
+       SET updatedAt = GETUTCDATE()
+      FROM inserted
+     WHERE [serviceMessage].id = inserted.id
+END
+
+GO
+ALTER TABLE [mtc_admin].[serviceMessage] ENABLE TRIGGER [serviceMessageUpdatedAtTrigger]
+GO
+/****** Object:  Trigger [mtc_admin].[settingsUpdatedAtTrigger]    Script Date: 29/10/2020 17:26:26 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+    CREATE TRIGGER [mtc_admin].[settingsUpdatedAtTrigger]
+    ON [mtc_admin].[settings]
+    FOR UPDATE
+    AS
+    BEGIN
+        UPDATE [mtc_admin].[settings]
+        SET updatedAt = GETUTCDATE()
+        FROM inserted
+        WHERE [settings].id = inserted.id
+    END
+
+GO
+ALTER TABLE [mtc_admin].[settings] ENABLE TRIGGER [settingsUpdatedAtTrigger]
+GO
+/****** Object:  Trigger [mtc_admin].[settingsLogUpdatedAtTrigger]    Script Date: 29/10/2020 17:26:26 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+    CREATE TRIGGER [mtc_admin].[settingsLogUpdatedAtTrigger]
+    ON [mtc_admin].[settingsLog]
+    FOR UPDATE
+    AS
+    BEGIN
+        UPDATE [mtc_admin].[settingsLog]
+        SET updatedAt = GETUTCDATE()
+        FROM inserted
+        WHERE [settingsLog].id = inserted.id
+    END
+
+GO
+ALTER TABLE [mtc_admin].[settingsLog] ENABLE TRIGGER [settingsLogUpdatedAtTrigger]
+GO
+/****** Object:  Trigger [mtc_admin].[user_school_id_null_check]    Script Date: 29/10/2020 17:26:26 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TRIGGER [mtc_admin].[user_school_id_null_check]
+ON [mtc_admin].[user]
+FOR INSERT, UPDATE
+AS
+IF UPDATE(school_id)
+BEGIN
+      IF EXISTS (SELECT * FROM inserted i WHERE i.school_id IS NULL AND i.role_id = 3)
+      BEGIN
+            THROW 50000, 'Users in Teacher role must be assigned to a school', 1;
+      END
+END
+
+GO
+ALTER TABLE [mtc_admin].[user] ENABLE TRIGGER [user_school_id_null_check]
+GO
+/****** Object:  Trigger [mtc_admin].[userUpdatedAtTrigger]    Script Date: 29/10/2020 17:26:26 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+    CREATE TRIGGER [mtc_admin].[userUpdatedAtTrigger]
+    ON [mtc_admin].[user]
+    FOR UPDATE
+    AS
+    BEGIN
+        UPDATE [mtc_admin].[user]
+        SET updatedAt = GETUTCDATE()
+        FROM inserted
+        WHERE [user].id = inserted.id
+    END
+
+GO
+ALTER TABLE [mtc_admin].[user] ENABLE TRIGGER [userUpdatedAtTrigger]
+GO
+/****** Object:  Trigger [mtc_results].[answerUpdatedAtTrigger]    Script Date: 29/10/2020 17:26:26 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+    CREATE   TRIGGER [mtc_results].[answerUpdatedAtTrigger]
+    ON [mtc_results].[answer]
+    FOR UPDATE
+    AS
+    BEGIN
+        UPDATE [mtc_results].[answer]
+        SET updatedAt = GETUTCDATE()
+        FROM inserted
+        WHERE [answer].id = inserted.id
+    END
+
+GO
+ALTER TABLE [mtc_results].[answer] ENABLE TRIGGER [answerUpdatedAtTrigger]
+GO
+/****** Object:  Trigger [mtc_results].[browserFamilyLookupUpdatedAtTrigger]    Script Date: 29/10/2020 17:26:26 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+    CREATE   TRIGGER [mtc_results].[browserFamilyLookupUpdatedAtTrigger]
+    ON [mtc_results].[browserFamilyLookup]
+    FOR UPDATE
+    AS
+    BEGIN
+        UPDATE [mtc_results].[browserFamilyLookup]
+        SET updatedAt = GETUTCDATE()
+        FROM inserted
+        WHERE [browserFamilyLookup].id = inserted.id
+    END
+
+GO
+ALTER TABLE [mtc_results].[browserFamilyLookup] ENABLE TRIGGER [browserFamilyLookupUpdatedAtTrigger]
+GO
+/****** Object:  Trigger [mtc_results].[checkResultUpdatedAtTrigger]    Script Date: 29/10/2020 17:26:26 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+    CREATE   TRIGGER [mtc_results].[checkResultUpdatedAtTrigger]
+    ON [mtc_results].[checkResult]
+    FOR UPDATE
+    AS
+    BEGIN
+        UPDATE [mtc_results].[checkResult]
+        SET updatedAt = GETUTCDATE()
+        FROM inserted
+        WHERE [checkResult].id = inserted.id
+    END
+
+GO
+ALTER TABLE [mtc_results].[checkResult] ENABLE TRIGGER [checkResultUpdatedAtTrigger]
+GO
+/****** Object:  Trigger [mtc_results].[deviceOrientationLookupUpdatedAtTrigger]    Script Date: 29/10/2020 17:26:26 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+    CREATE   TRIGGER [mtc_results].[deviceOrientationLookupUpdatedAtTrigger]
+    ON [mtc_results].[deviceOrientationLookup]
+    FOR UPDATE
+    AS
+    BEGIN
+        UPDATE [mtc_results].[deviceOrientationLookup]
+        SET updatedAt = GETUTCDATE()
+        FROM inserted
+        WHERE [deviceOrientationLookup].id = inserted.id
+    END
+
+GO
+ALTER TABLE [mtc_results].[deviceOrientationLookup] ENABLE TRIGGER [deviceOrientationLookupUpdatedAtTrigger]
+GO
+/****** Object:  Trigger [mtc_results].[eventUpdatedAtTrigger]    Script Date: 29/10/2020 17:26:26 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+    CREATE   TRIGGER [mtc_results].[eventUpdatedAtTrigger]
+    ON [mtc_results].[event]
+    FOR UPDATE
+    AS
+    BEGIN
+        UPDATE [mtc_results].[event]
+        SET updatedAt = GETUTCDATE()
+        FROM inserted
+        WHERE [event].id = inserted.id
+    END
+
+GO
+ALTER TABLE [mtc_results].[event] ENABLE TRIGGER [eventUpdatedAtTrigger]
+GO
+/****** Object:  Trigger [mtc_results].[eventTypeLookupUpdatedAtTrigger]    Script Date: 29/10/2020 17:26:26 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+    CREATE   TRIGGER [mtc_results].[eventTypeLookupUpdatedAtTrigger]
+    ON [mtc_results].[eventTypeLookup]
+    FOR UPDATE
+    AS
+    BEGIN
+        UPDATE [mtc_results].[eventTypeLookup]
+        SET updatedAt = GETUTCDATE()
+        FROM inserted
+        WHERE [eventTypeLookup].id = inserted.id
+    END
+
+GO
+ALTER TABLE [mtc_results].[eventTypeLookup] ENABLE TRIGGER [eventTypeLookupUpdatedAtTrigger]
+GO
+/****** Object:  Trigger [mtc_results].[navigatorLanguageLookupUpdatedAtTrigger]    Script Date: 29/10/2020 17:26:26 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+    CREATE   TRIGGER [mtc_results].[navigatorLanguageLookupUpdatedAtTrigger]
+    ON [mtc_results].[navigatorLanguageLookup]
+    FOR UPDATE
+    AS
+    BEGIN
+        UPDATE [mtc_results].[navigatorLanguageLookup]
+        SET updatedAt = GETUTCDATE()
+        FROM inserted
+        WHERE [navigatorLanguageLookup].id = inserted.id
+    END
+
+GO
+ALTER TABLE [mtc_results].[navigatorLanguageLookup] ENABLE TRIGGER [navigatorLanguageLookupUpdatedAtTrigger]
+GO
+/****** Object:  Trigger [mtc_results].[navigatorPlatformLookupUpdatedAtTrigger]    Script Date: 29/10/2020 17:26:26 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+    CREATE   TRIGGER [mtc_results].[navigatorPlatformLookupUpdatedAtTrigger]
+    ON [mtc_results].[navigatorPlatformLookup]
+    FOR UPDATE
+    AS
+    BEGIN
+        UPDATE [mtc_results].[navigatorPlatformLookup]
+        SET updatedAt = GETUTCDATE()
+        FROM inserted
+        WHERE [navigatorPlatformLookup].id = inserted.id
+    END
+
+GO
+ALTER TABLE [mtc_results].[navigatorPlatformLookup] ENABLE TRIGGER [navigatorPlatformLookupUpdatedAtTrigger]
+GO
+/****** Object:  Trigger [mtc_results].[networkConnectionEffectiveTypeLookupUpdatedAtTrigger]    Script Date: 29/10/2020 17:26:26 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+    CREATE   TRIGGER [mtc_results].[networkConnectionEffectiveTypeLookupUpdatedAtTrigger]
+    ON [mtc_results].[networkConnectionEffectiveTypeLookup]
+    FOR UPDATE
+    AS
+    BEGIN
+        UPDATE [mtc_results].[networkConnectionEffectiveTypeLookup]
+        SET updatedAt = GETUTCDATE()
+        FROM inserted
+        WHERE [networkConnectionEffectiveTypeLookup].id = inserted.id
+    END
+
+GO
+ALTER TABLE [mtc_results].[networkConnectionEffectiveTypeLookup] ENABLE TRIGGER [networkConnectionEffectiveTypeLookupUpdatedAtTrigger]
+GO
+/****** Object:  Trigger [mtc_results].[uaOperatingSystemLookupUpdatedAtTrigger]    Script Date: 29/10/2020 17:26:26 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+    CREATE   TRIGGER [mtc_results].[uaOperatingSystemLookupUpdatedAtTrigger]
+    ON [mtc_results].[uaOperatingSystemLookup]
+    FOR UPDATE
+    AS
+    BEGIN
+        UPDATE [mtc_results].[uaOperatingSystemLookup]
+        SET updatedAt = GETUTCDATE()
+        FROM inserted
+        WHERE [uaOperatingSystemLookup].id = inserted.id
+    END
+
+GO
+ALTER TABLE [mtc_results].[uaOperatingSystemLookup] ENABLE TRIGGER [uaOperatingSystemLookupUpdatedAtTrigger]
+GO
+/****** Object:  Trigger [mtc_results].[userAgentLookupUpdatedAtTrigger]    Script Date: 29/10/2020 17:26:26 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+    CREATE   TRIGGER [mtc_results].[userAgentLookupUpdatedAtTrigger]
+    ON [mtc_results].[userAgentLookup]
+    FOR UPDATE
+    AS
+    BEGIN
+        UPDATE [mtc_results].[userAgentLookup]
+        SET updatedAt = GETUTCDATE()
+        FROM inserted
+        WHERE [userAgentLookup].id = inserted.id
+    END
+
+GO
+ALTER TABLE [mtc_results].[userAgentLookup] ENABLE TRIGGER [userAgentLookupUpdatedAtTrigger]
+GO
+/****** Object:  Trigger [mtc_results].[userDeviceUpdatedAtTrigger]    Script Date: 29/10/2020 17:26:26 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+    CREATE   TRIGGER [mtc_results].[userDeviceUpdatedAtTrigger]
+    ON [mtc_results].[userDevice]
+    FOR UPDATE
+    AS
+    BEGIN
+        UPDATE [mtc_results].[userDevice]
+        SET updatedAt = GETUTCDATE()
+        FROM inserted
+        WHERE [userDevice].id = inserted.id
+    END
+
+GO
+ALTER TABLE [mtc_results].[userDevice] ENABLE TRIGGER [userDeviceUpdatedAtTrigger]
+GO
+/****** Object:  Trigger [mtc_results].[userInputUpdatedAtTrigger]    Script Date: 29/10/2020 17:26:26 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+    CREATE   TRIGGER [mtc_results].[userInputUpdatedAtTrigger]
+    ON [mtc_results].[userInput]
+    FOR UPDATE
+    AS
+    BEGIN
+        UPDATE [mtc_results].[userInput]
+        SET updatedAt = GETUTCDATE()
+        FROM inserted
+        WHERE [userInput].id = inserted.id
+    END
+
+GO
+ALTER TABLE [mtc_results].[userInput] ENABLE TRIGGER [userInputUpdatedAtTrigger]
+GO
+/****** Object:  Trigger [mtc_results].[userInputTypeLookupUpdatedAtTrigger]    Script Date: 29/10/2020 17:26:26 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+    CREATE   TRIGGER [mtc_results].[userInputTypeLookupUpdatedAtTrigger]
+    ON [mtc_results].[userInputTypeLookup]
+    FOR UPDATE
+    AS
+    BEGIN
+        UPDATE [mtc_results].[userInputTypeLookup]
+        SET updatedAt = GETUTCDATE()
+        FROM inserted
+        WHERE [userInputTypeLookup].id = inserted.id
+    END
+
+GO
+ALTER TABLE [mtc_results].[userInputTypeLookup] ENABLE TRIGGER [userInputTypeLookupUpdatedAtTrigger]
 GO
 EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Synthetic ID' , @level0type=N'SCHEMA',@level0name=N'mtc_results', @level1type=N'TABLE',@level1name=N'answer', @level2type=N'COLUMN',@level2name=N'id'
 GO
