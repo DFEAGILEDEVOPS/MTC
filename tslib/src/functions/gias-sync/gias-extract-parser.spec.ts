@@ -20,12 +20,12 @@ describe('gias extract parser', () => {
   test('raw xml should be returned as object', () => {
     const actual = sut.parse(mockExtractXml)
     expect(actual).toBeDefined()
-    expect(typeof actual).toEqual('object')
+    expect(typeof actual).toStrictEqual('object')
   })
 
   test('all establishments should be returned as array', () => {
     const actual = sut.parse(mockExtractXml)
     expect(actual).toBeDefined()
-    expect(actual.length).toEqual(2)
+    expect(actual).toHaveLength(2)
   })
 })

@@ -1,14 +1,13 @@
 import { ISchoolRecord } from './data-access/ISchoolRecord'
 
 export class SchoolRecordMapper {
-
   /**
    * Return a domain-mapped object from a
    * @param {Array<string | number>} row - csv row as array ['1001', 'Sometown Primary school', 'csv', 'array', ... ]
    * @param {Object} mapping - mapping object { urn: 0, name: 1, ... }
    * @return {ISchoolRecord} - mapped object of string values E.g. { urn: '1001', 'name': 'Sometown Primary School' ... }
    */
-  mapRow (row: Array<any>, csvMapping: any): ISchoolRecord {
+  mapRow (row: any[], csvMapping: any): ISchoolRecord {
     const o: any = {}
     Object.keys(csvMapping).forEach(k => {
       const mappingValue = row[csvMapping[k]]
@@ -29,9 +28,9 @@ export class SchoolRecordMapper {
    *                               key to return.
    * @return {key: number, ...}    Return obj with the index of the desired columns to use mapped to the keys provided
    */
-  mapColumns (cols: Array<string>, headers: any) {
-    const quote = (s: string) => `"${s}"`
-    const quoteAndJoin = (ary: Array<any>) => { return ary.map(quote).join(', ') }
+  mapColumns (cols: string[], headers: any): Record<string, unknown> {
+    const quote = (s: string): string => `"${s}"`
+    const quoteAndJoin = (ary: any[]): string => { return ary.map(quote).join(', ') }
     const mapping: any = {}
     const missingHeaders = new Array<any>()
 

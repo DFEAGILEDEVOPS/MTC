@@ -12,9 +12,9 @@ import { ICompressionService, CompressionService } from '../../common/compressio
 const functionName = 'check-marker'
 
 export class CheckMarkerV1 {
-  private tableService: IAsyncTableService
-  private sqlService: ICheckFormService
-  private compressionService: ICompressionService
+  private readonly tableService: IAsyncTableService
+  private readonly sqlService: ICheckFormService
+  private readonly compressionService: ICompressionService
 
   constructor (tableService?: IAsyncTableService, sqlService?: ICheckFormService, compressionService?: ICompressionService) {
     if (tableService === undefined) {
@@ -70,11 +70,12 @@ export class CheckMarkerV1 {
     functionBindings.checkNotificationQueue.push(notification)
 
     // Output the markedCheck and the payload to be sent to the results schema
-    if (validatedCheck.hasOwnProperty('archive')) {
+    const hasArchiveProperty = Object.prototype.hasOwnProperty.call(validatedCheck, 'archive')
+    if (hasArchiveProperty) {
       try {
         const payloadString = this.compressionService.decompress(validatedCheck.archive)
         const payload = JSON.parse(payloadString)
-        logger.verbose(`mark() setting data for results processing on check-completion queue`)
+        logger.verbose('mark() setting data for results processing on check-completion queue')
         functionBindings.checkCompletionQueue.push({
           validatedCheck: payload,
           markedCheck: checkResult
@@ -89,7 +90,7 @@ export class CheckMarkerV1 {
     }
   }
 
-  private notifyProcessingFailure (validatedCheck: ReceivedCheckTableEntity, functionBindings: ICheckMarkerFunctionBindings) {
+  private notifyProcessingFailure (validatedCheck: ReceivedCheckTableEntity, functionBindings: ICheckMarkerFunctionBindings): void {
     const notification: ICheckNotificationMessage = {
       checkCode: validatedCheck.RowKey,
       notificationType: CheckNotificationType.checkInvalid,
@@ -107,7 +108,8 @@ export class CheckMarkerV1 {
     try {
       // tsc does not recognise the RA.IsNilOrEmpty check above
       // therefore we use the exclamation to assert non null guarantee
-      parsedAnswersJson = JSON.parse(validatedCheck.answers!)
+      // @ts-ignore Ramda does not work well with type checking
+      parsedAnswersJson = JSON.parse(validatedCheck.answers)
     } catch (error) {
       logger.error(error)
       await this.updateReceivedCheckWithMarkingError(validatedCheck, 'answers data is not valid JSON')
@@ -172,7 +174,7 @@ export class CheckMarkerV1 {
     }
 
     let questionNumber = 1
-    for (let question of markingData.formQuestions) {
+    for (const question of markingData.formQuestions) {
       const answerRecord = markingData.answers.find(o => o.sequenceNumber === questionNumber &&
         o.factor1 === question.f1 &&
         o.factor2 === question.f2)
@@ -187,14 +189,13 @@ export class CheckMarkerV1 {
         isCorrect: false
       }
 
-      if (answerRecord) {
+      if (answerRecord !== undefined) {
         markedAnswer.answer = answerRecord.answer
         markedAnswer.clientTimestamp = answerRecord.clientTimestamp
       }
+      const answer = answerRecord?.answer ?? ''
 
-      const answer = (answerRecord && answerRecord.answer) || ''
-
-      if (answer && question.f1 * question.f2 === parseInt(answer, 10)) {
+      if (answer !== '' && question.f1 * question.f2 === parseInt(answer, 10)) {
         markedAnswer.isCorrect = true
       } else {
         markedAnswer.isCorrect = false
@@ -203,12 +204,12 @@ export class CheckMarkerV1 {
       questionNumber += 1
     }
 
-    results.mark = results.markedAnswers.filter(o => o.isCorrect === true).length
+    results.mark = results.markedAnswers.filter(o => o.isCorrect).length
     return results
   }
 
-  private persistMark (checkResult: CheckResult, functionBindings: ICheckMarkerFunctionBindings, schoolUUID: string) {
-    if (!functionBindings.checkResultTable) {
+  private persistMark (checkResult: CheckResult, functionBindings: ICheckMarkerFunctionBindings, schoolUUID: string): void {
+    if (functionBindings.checkResultTable === undefined) {
       functionBindings.checkResultTable = []
     }
     const markingEntity: any = R.omit(['checkCode'], checkResult)
@@ -217,7 +218,7 @@ export class CheckMarkerV1 {
     functionBindings.checkResultTable.push(markingEntity)
   }
 
-  private findValidatedCheck (receivedCheckRef: Array<any>): ReceivedCheckTableEntity {
+  private findValidatedCheck (receivedCheckRef: any[]): ReceivedCheckTableEntity {
     if (RA.isEmptyArray(receivedCheckRef)) {
       throw new Error('received check reference is empty')
     }
@@ -230,11 +231,11 @@ export class CheckMarkerV1 {
     return this.tableService.replaceEntityAsync('receivedCheck', receivedCheck)
   }
 
-  private answerSort (answers: Array<MarkedAnswer>): Array<MarkedAnswer> {
+  private answerSort (answers: MarkedAnswer[]): MarkedAnswer[] {
     if (!RA.isArray(answers)) {
       throw new Error('answers is not an array')
     }
-    const cmp = (a: MarkedAnswer, b: MarkedAnswer) => {
+    const cmp = (a: MarkedAnswer, b: MarkedAnswer): number => {
       const aDate = new Date(a.clientTimestamp)
       const bDate = new Date(b.clientTimestamp)
       if (aDate < bDate) {

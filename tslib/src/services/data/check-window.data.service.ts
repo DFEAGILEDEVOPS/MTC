@@ -6,14 +6,13 @@ export interface ICheckWindowDataService {
 }
 
 export class CheckWindowDataService implements ICheckWindowDataService {
-
-  private sqlService: SqlService
+  private readonly sqlService: SqlService
 
   constructor () {
     this.sqlService = new SqlService()
   }
 
-  getActiveCheckWindow (): Promise<ICheckWindow> {
+  async getActiveCheckWindow (): Promise<ICheckWindow> {
     const sql = `SELECT TOP 1 *
     FROM [mtc_admin].checkWindow
     WHERE isDeleted = 0

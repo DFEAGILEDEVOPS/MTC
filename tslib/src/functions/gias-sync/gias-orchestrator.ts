@@ -3,10 +3,9 @@ import { GiasExtractParser, IGiasExtractParser } from './gias-extract-parser'
 import { GiasWebService, IGiasWebService } from './web/gias-web.service'
 
 export class GiasOrchestrator {
-
-  private giasWebService: IGiasWebService
-  private extractParser: IGiasExtractParser
-  private estabFilter: IEstablishmentFilter
+  private readonly giasWebService: IGiasWebService
+  private readonly extractParser: IGiasExtractParser
+  private readonly estabFilter: IEstablishmentFilter
 
   constructor (giasWebService?: IGiasWebService, extractParser?: IGiasExtractParser, estabFilter?: IEstablishmentFilter) {
     if (giasWebService === undefined) {

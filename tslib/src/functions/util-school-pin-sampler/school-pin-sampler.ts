@@ -2,11 +2,11 @@ import * as tzutil from '../school-pin-generator/timezone-util'
 import { SchoolPinGenerator } from '../school-pin-generator/school-pin-generator'
 import { SchoolPinExpiryGenerator } from '../school-pin-generator/school-pin-expiry-generator'
 import { IDateTimeService } from '../../common/datetime.service'
-import moment = require('moment')
 import { RandomGenerator } from '../school-pin-generator/random-generator'
+import moment = require('moment')
 
 export class SchoolPinSampler {
-  generateSample (size: number, utcNow: moment.Moment, randomiseSample?: boolean): Array<SchoolPinSample> {
+  generateSample (size: number, utcNow: moment.Moment, randomiseSample?: boolean): SchoolPinSample[] {
     const tzUtil = new tzutil.TimezoneUtil()
     const pinGenerator = new SchoolPinGenerator()
     const dateTimeService: IDateTimeService = {
@@ -23,7 +23,7 @@ export class SchoolPinSampler {
       throw new Error(`maximum sample size is ${allZones.length}`)
     }
 
-    let reducedZoneset: Array<tzutil.Timezone> = []
+    let reducedZoneset: tzutil.Timezone[] = []
 
     if (randomiseSample) {
       const rangen = new RandomGenerator()
@@ -36,7 +36,7 @@ export class SchoolPinSampler {
       reducedZoneset = allZones.splice(0, size)
     }
 
-    function checkNullOrUndefined (o: any) {
+    function checkNullOrUndefined (o: any): boolean {
       return o === null || o === undefined
     }
 

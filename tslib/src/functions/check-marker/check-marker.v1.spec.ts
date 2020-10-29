@@ -1,6 +1,4 @@
 import * as Subject from './check-marker.v1'
-import uuid = require('uuid')
-import moment = require('moment')
 import { IAsyncTableService, TableStorageEntity } from '../../azure/storage-helper'
 import { ICheckFormService } from './check-form.service'
 import * as R from 'ramda'
@@ -10,6 +8,8 @@ import checkSchema from '../../schemas/complete-check.v1.json'
 import { CheckNotificationType, ICheckNotificationMessage } from '../check-notifier/check-notification-message'
 import { ReceivedCheckTableEntity } from '../../schemas/models'
 import { CompressionService } from '../../common/compression-service'
+import uuid = require('uuid')
+import moment = require('moment')
 
 const compressionService = new CompressionService()
 
@@ -38,7 +38,6 @@ let sqlServiceMock: ICheckFormService
 let loggerMock: ILogger
 
 describe('check-marker/v1', () => {
-
   beforeEach(() => {
     tableServiceMock = new TableServiceMock()
     sqlServiceMock = new SqlServiceMock()
@@ -66,7 +65,6 @@ describe('check-marker/v1', () => {
   })
 
   test('error is recorded against entity when answers is empty', async () => {
-
     const validatedCheckEntity: ReceivedCheckTableEntity = {
       PartitionKey: uuid.v4(),
       RowKey: uuid.v4(),
@@ -87,7 +85,7 @@ describe('check-marker/v1', () => {
 
     let actualTableName: string | undefined
     let actualEntity: any
-    tableServiceMock.replaceEntityAsync = jest.fn(async (table: string, entity: any): Promise<TableStorageEntity> => {
+    jest.spyOn(tableServiceMock, 'replaceEntityAsync').mockImplementation(async (table: string, entity: any): Promise<TableStorageEntity> => {
       actualTableName = table
       actualEntity = entity
       return {
@@ -100,7 +98,7 @@ describe('check-marker/v1', () => {
     expect(tableServiceMock.replaceEntityAsync).toHaveBeenCalledTimes(1)
     expect(actualTableName).toBe('receivedCheck')
     expect(actualEntity.processingError).toBe('answers property not populated')
-    expect(actualEntity.markedAt).toBeTruthy()
+    expect(actualEntity.markedAt).toBeDefined()
   })
 
   test('error is recorded against entity when answers is not an array', async () => {
@@ -124,7 +122,7 @@ describe('check-marker/v1', () => {
 
     let actualTableName: string | undefined
     let actualEntity: any
-    tableServiceMock.replaceEntityAsync = jest.fn(async (table: string, entity: any): Promise<TableStorageEntity> => {
+    jest.spyOn(tableServiceMock, 'replaceEntityAsync').mockImplementation(async (table: string, entity: any): Promise<TableStorageEntity> => {
       actualTableName = table
       actualEntity = entity
       return {
@@ -137,7 +135,7 @@ describe('check-marker/v1', () => {
     expect(tableServiceMock.replaceEntityAsync).toHaveBeenCalledTimes(1)
     expect(actualTableName).toBe('receivedCheck')
     expect(actualEntity.processingError).toBe('answers data is not an array')
-    expect(actualEntity.markedAt).toBeTruthy()
+    expect(actualEntity.markedAt).toBeDefined()
   })
 
   test('error is recorded against entity when checkForm cannot be found by checkCode', async () => {
@@ -161,7 +159,7 @@ describe('check-marker/v1', () => {
 
     let actualTableName: string | undefined
     let actualEntity: any
-    tableServiceMock.replaceEntityAsync = jest.fn(async (table: string, entity: any): Promise<TableStorageEntity> => {
+    jest.spyOn(tableServiceMock, 'replaceEntityAsync').mockImplementation(async (table: string, entity: any): Promise<TableStorageEntity> => {
       actualTableName = table
       actualEntity = entity
       return {
@@ -170,15 +168,13 @@ describe('check-marker/v1', () => {
       }
     })
 
-    sqlServiceMock.getCheckFormDataByCheckCode = jest.fn(async (checkCode: string) => {
-      return
-    })
+    jest.spyOn(sqlServiceMock, 'getCheckFormDataByCheckCode')
 
     await sut.mark(functionBindings, loggerMock)
     expect(tableServiceMock.replaceEntityAsync).toHaveBeenCalledTimes(1)
     expect(actualTableName).toBe('receivedCheck')
     expect(actualEntity.processingError).toBe('associated checkForm could not be found by checkCode')
-    expect(actualEntity.markedAt).toBeTruthy()
+    expect(actualEntity.markedAt).toBeDefined()
   })
 
   test('error is recorded against entity when checkForm data is not valid JSON', async () => {
@@ -202,7 +198,7 @@ describe('check-marker/v1', () => {
 
     let actualTableName: string | undefined
     let actualEntity: any
-    tableServiceMock.replaceEntityAsync = jest.fn(async (table: string, entity: any): Promise<TableStorageEntity> => {
+    jest.spyOn(tableServiceMock, 'replaceEntityAsync').mockImplementation(async (table: string, entity: any): Promise<TableStorageEntity> => {
       actualTableName = table
       actualEntity = entity
       return {
@@ -211,7 +207,7 @@ describe('check-marker/v1', () => {
       }
     })
 
-    sqlServiceMock.getCheckFormDataByCheckCode = jest.fn(async (checkCode: string) => {
+    jest.spyOn(sqlServiceMock, 'getCheckFormDataByCheckCode').mockImplementation(async () => {
       return 'not JSON'
     })
 
@@ -219,7 +215,7 @@ describe('check-marker/v1', () => {
     expect(tableServiceMock.replaceEntityAsync).toHaveBeenCalledTimes(1)
     expect(actualTableName).toBe('receivedCheck')
     expect(actualEntity.processingError).toBe('associated checkForm data is not valid JSON')
-    expect(actualEntity.markedAt).toBeTruthy()
+    expect(actualEntity.markedAt).toBeDefined()
   })
 
   test('error is recorded against entity when checkForm lookup throws error', async () => {
@@ -243,7 +239,7 @@ describe('check-marker/v1', () => {
 
     let actualTableName: string | undefined
     let actualEntity: any
-    tableServiceMock.replaceEntityAsync = jest.fn(async (table: string, entity: any): Promise<TableStorageEntity> => {
+    jest.spyOn(tableServiceMock, 'replaceEntityAsync').mockImplementation(async (table: string, entity: any): Promise<TableStorageEntity> => {
       actualTableName = table
       actualEntity = entity
       return {
@@ -253,7 +249,7 @@ describe('check-marker/v1', () => {
     })
 
     const expectedErrorMessage = 'sql error'
-    sqlServiceMock.getCheckFormDataByCheckCode = jest.fn(async (checkCode: string) => {
+    jest.spyOn(sqlServiceMock, 'getCheckFormDataByCheckCode').mockImplementation(async () => {
       throw new Error(expectedErrorMessage)
     })
 
@@ -261,7 +257,7 @@ describe('check-marker/v1', () => {
     expect(tableServiceMock.replaceEntityAsync).toHaveBeenCalledTimes(1)
     expect(actualTableName).toBe('receivedCheck')
     expect(actualEntity.processingError).toBe(`checkForm lookup failed:${expectedErrorMessage}`)
-    expect(actualEntity.markedAt).toBeTruthy()
+    expect(actualEntity.markedAt).toBeDefined()
   })
 
   test('error is recorded against entity when checkForm data is not a populated array', async () => {
@@ -285,7 +281,7 @@ describe('check-marker/v1', () => {
 
     let actualTableName: string | undefined
     let actualEntity: any
-    tableServiceMock.replaceEntityAsync = jest.fn(async (table: string, entity: any): Promise<TableStorageEntity> => {
+    jest.spyOn(tableServiceMock, 'replaceEntityAsync').mockImplementation(async (table: string, entity: any): Promise<TableStorageEntity> => {
       actualTableName = table
       actualEntity = entity
       return {
@@ -294,7 +290,7 @@ describe('check-marker/v1', () => {
       }
     })
 
-    sqlServiceMock.getCheckFormDataByCheckCode = jest.fn(async (checkCode: string) => {
+    jest.spyOn(sqlServiceMock, 'getCheckFormDataByCheckCode').mockImplementation(async () => {
       return JSON.stringify([])
     })
 
@@ -302,9 +298,9 @@ describe('check-marker/v1', () => {
     expect(tableServiceMock.replaceEntityAsync).toHaveBeenCalledTimes(1)
     expect(actualTableName).toBe('receivedCheck')
     expect(actualEntity.processingError).toBe('check form data is either empty or not an array')
-    expect(actualEntity.markedAt).toBeTruthy()
+    expect(actualEntity.markedAt).toBeDefined()
 
-    sqlServiceMock.getCheckFormDataByCheckCode = jest.fn(async (checkCode: string) => {
+    jest.spyOn(sqlServiceMock, 'getCheckFormDataByCheckCode').mockImplementation(async () => {
       return JSON.stringify({ not: 'array' })
     })
 
@@ -312,7 +308,7 @@ describe('check-marker/v1', () => {
     expect(tableServiceMock.replaceEntityAsync).toHaveBeenCalledTimes(2)
     expect(actualTableName).toBe('receivedCheck')
     expect(actualEntity.processingError).toBe('check form data is either empty or not an array')
-    expect(actualEntity.markedAt).toBeTruthy()
+    expect(actualEntity.markedAt).toBeDefined()
   })
 
   test('marking updates entity with mark, maxMarks and timestamp: both answers correct', async () => {
@@ -352,7 +348,7 @@ describe('check-marker/v1', () => {
       checkCompletionQueue: []
     }
 
-    sqlServiceMock.getCheckFormDataByCheckCode = jest.fn(async (checkCode: string) => {
+    jest.spyOn(sqlServiceMock, 'getCheckFormDataByCheckCode').mockImplementation(async () => {
       return JSON.stringify([
         {
           f1: 2,
@@ -371,7 +367,7 @@ describe('check-marker/v1', () => {
     expect(checkResult.mark).toBe(2)
     expect(checkResult.maxMarks).toBe(2)
     expect(checkResult.processingError).toBeUndefined()
-    expect(checkResult.markedAt).toBeTruthy()
+    expect(checkResult.markedAt).toBeDefined()
     expect(checkResult.markedAnswers[0].isCorrect).toBe(true)
     expect(checkResult.markedAnswers[1].isCorrect).toBe(true)
 
@@ -415,7 +411,7 @@ describe('check-marker/v1', () => {
       checkCompletionQueue: []
     }
 
-    sqlServiceMock.getCheckFormDataByCheckCode = jest.fn(async (checkCode: string) => {
+    jest.spyOn(sqlServiceMock, 'getCheckFormDataByCheckCode').mockImplementation(async () => {
       return JSON.stringify([
         {
           f1: 2,
@@ -478,7 +474,7 @@ describe('check-marker/v1', () => {
       checkCompletionQueue: []
     }
 
-    sqlServiceMock.getCheckFormDataByCheckCode = jest.fn(async (checkCode: string) => {
+    jest.spyOn(sqlServiceMock, 'getCheckFormDataByCheckCode').mockImplementation(async () => {
       return JSON.stringify([
         {
           f1: 2,
@@ -535,7 +531,7 @@ describe('check-marker/v1', () => {
       checkCompletionQueue: []
     }
 
-    sqlServiceMock.getCheckFormDataByCheckCode = jest.fn(async (checkCode: string) => {
+    jest.spyOn(sqlServiceMock, 'getCheckFormDataByCheckCode').mockImplementation(async () => {
       return JSON.stringify([
         {
           f1: 2,
@@ -544,7 +540,7 @@ describe('check-marker/v1', () => {
     })
 
     await sut.mark(functionBindings, loggerMock)
-    expect(functionBindings.checkNotificationQueue.length).toBe(1)
+    expect(functionBindings.checkNotificationQueue).toHaveLength(1)
     const notificationQueueMessage: ICheckNotificationMessage = R.head(functionBindings.checkNotificationQueue)
     expect(notificationQueueMessage.checkCode).toBeDefined()
     expect(notificationQueueMessage.notificationType).toBe(CheckNotificationType.checkComplete)
@@ -571,7 +567,7 @@ describe('check-marker/v1', () => {
     }
 
     await sut.mark(functionBindings, loggerMock)
-    expect(functionBindings.checkNotificationQueue.length).toBe(1)
+    expect(functionBindings.checkNotificationQueue).toHaveLength(1)
     const notificationQueueMessage: ICheckNotificationMessage = R.head(functionBindings.checkNotificationQueue)
     expect(notificationQueueMessage.checkCode).toBe(checkCode)
     expect(notificationQueueMessage.notificationType).toBe(CheckNotificationType.checkInvalid)
@@ -622,7 +618,7 @@ describe('check-marker/v1', () => {
       checkCompletionQueue: []
     }
 
-    sqlServiceMock.getCheckFormDataByCheckCode = jest.fn(async (checkCode: string) => {
+    jest.spyOn(sqlServiceMock, 'getCheckFormDataByCheckCode').mockImplementation(async () => {
       return JSON.stringify([
         {
           f1: 2,
@@ -639,7 +635,7 @@ describe('check-marker/v1', () => {
     expect(persistMarkSpy).toHaveBeenCalledTimes(1)
     const checkResult: any = persistMarkSpy.mock.calls[0][0]
 
-    expect(checkResult.markedAnswers[0]).toEqual({
+    expect(checkResult.markedAnswers[0]).toStrictEqual({
       factor1: 2,
       factor2: 5,
       answer: '10',
@@ -682,7 +678,7 @@ describe('check-marker/v1', () => {
       checkCompletionQueue: []
     }
 
-    sqlServiceMock.getCheckFormDataByCheckCode = jest.fn(async (checkCode: string) => {
+    jest.spyOn(sqlServiceMock, 'getCheckFormDataByCheckCode').mockImplementation(async () => {
       return JSON.stringify([
         {
           f1: 2,
@@ -699,7 +695,7 @@ describe('check-marker/v1', () => {
     expect(persistMarkSpy).toHaveBeenCalledTimes(1)
     const checkResult: any = persistMarkSpy.mock.calls[0][0]
 
-    expect(checkResult.markedAnswers[0]).toEqual({
+    expect(checkResult.markedAnswers[0]).toStrictEqual({
       factor1: 2,
       factor2: 5,
       answer: '',
@@ -709,7 +705,7 @@ describe('check-marker/v1', () => {
       isCorrect: false
     })
 
-    expect(checkResult.markedAnswers[1]).toEqual({
+    expect(checkResult.markedAnswers[1]).toStrictEqual({
       factor1: 5,
       factor2: 5,
       answer: '25',
@@ -753,7 +749,7 @@ describe('check-marker/v1', () => {
       checkCompletionQueue: []
     }
 
-    sqlServiceMock.getCheckFormDataByCheckCode = jest.fn(async (checkCode: string) => {
+    jest.spyOn(sqlServiceMock, 'getCheckFormDataByCheckCode').mockImplementation(async () => {
       return JSON.stringify([
         {
           f1: 2,
@@ -767,7 +763,7 @@ describe('check-marker/v1', () => {
     const persistMarkSpy = jest.spyOn<any, any>(sut, 'persistMark')
     await sut.mark(functionBindings, loggerMock)
 
-    expect(functionBindings.checkCompletionQueue.length).toBe(1)
+    expect(functionBindings.checkCompletionQueue).toHaveLength(1)
     expect(functionBindings.checkCompletionQueue[0]).toHaveProperty('validatedCheck')
     expect(functionBindings.checkCompletionQueue[0]).toHaveProperty('markedCheck')
 

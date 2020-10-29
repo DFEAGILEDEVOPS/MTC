@@ -19,7 +19,7 @@ describe('SchoolDataService', () => {
       urn: 1,
       dfeNumber: 4
     }
-    expect(sut.mapRow(row, mapping)).toEqual({
+    expect(sut.mapRow(row, mapping)).toStrictEqual({
       name: 'Town Primary School',
       urn: 123456,
       dfeNumber: 9991111
@@ -34,7 +34,7 @@ describe('SchoolDataService', () => {
       ['Row ("C")', 'rowC']
     ]
     const mapping = sut.mapColumns(headerRow, desiredRows)
-    expect(mapping).toEqual({
+    expect(mapping).toStrictEqual({
       rowA: 0,
       rowB: 1,
       rowC: 5
@@ -48,7 +48,7 @@ describe('SchoolDataService', () => {
       ['e', 'e'],
       ['f', 'f']
     ]
-    expect(() => { sut.mapColumns(headerRow, desiredRows) }).toThrowError('Headers "d", "e", "f" not found')
+    expect(() => { sut.mapColumns(headerRow, desiredRows) }).toThrow('Headers "d", "e", "f" not found')
   })
 
   test('mapRow is returning object with correct types', () => {
@@ -73,6 +73,6 @@ describe('SchoolDataService', () => {
     }
     const mapping = sut.mapColumns(dataWithoutHeader, map)
     const mappedRow = sut.mapRow(csvParsed[0], mapping)
-    expect(mappedRow.estabTypeGroupCode).toEqual(4)
+    expect(mappedRow.estabTypeGroupCode).toStrictEqual(4)
   })
 })

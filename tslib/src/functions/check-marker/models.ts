@@ -1,9 +1,9 @@
 
 export interface ICheckMarkerFunctionBindings {
-  receivedCheckTable: Array<any>
-  checkNotificationQueue: Array<any>
-  checkResultTable: Array<any>
-  checkCompletionQueue: Array<{}>
+  receivedCheckTable: any[]
+  checkNotificationQueue: any[]
+  checkResultTable: any[]
+  checkCompletionQueue: unknown[]
 }
 
 export interface Answer {
@@ -25,8 +25,8 @@ export interface CheckFormQuestion {
 }
 
 export interface MarkingData {
-  answers: Array<MarkedAnswer>
-  formQuestions: Array<CheckFormQuestion>
+  answers: MarkedAnswer[]
+  formQuestions: CheckFormQuestion[]
   results: any
 }
 
@@ -37,9 +37,9 @@ export interface Mark {
 }
 
 export interface CheckResult {
-  checkCode: string,
-  mark: number,
-  maxMarks: number,
+  checkCode: string
+  mark: number
+  maxMarks: number
   markedAnswers: MarkedAnswer[]
   markedAt: Date
 }

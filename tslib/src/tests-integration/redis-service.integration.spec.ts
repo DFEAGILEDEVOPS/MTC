@@ -8,7 +8,6 @@ let ioRedis: Redis.Redis
 const redisItemKey = 'INTEGRATION_TEST'
 
 describe('RedisService', () => {
-
   beforeAll(() => {
     const options: RedisOptions = {
       port: Number(config.Redis.Port),
@@ -55,11 +54,11 @@ describe('RedisService', () => {
       value: cachedValue
     }
     const actualStoredItemString = await ioRedis.get(redisItemKey)
-    if (!actualStoredItemString) {
+    if (actualStoredItemString === null) {
       throw new Error('no item found with specified key')
     }
     const storedItemAsObject = JSON.parse(actualStoredItemString)
-    expect(storedItemAsObject).toEqual(expectedObjectToStore)
+    expect(storedItemAsObject).toStrictEqual(expectedObjectToStore)
   })
 
   test('setex: stores a number with expected metadata', async () => {
@@ -73,11 +72,11 @@ describe('RedisService', () => {
       value: cachedValue.toString()
     }
     const actualStoredItemString = await ioRedis.get(redisItemKey)
-    if (!actualStoredItemString) {
+    if (actualStoredItemString === null) {
       throw new Error('no item found with specified key')
     }
     const storedItemAsObject = JSON.parse(actualStoredItemString)
-    expect(storedItemAsObject).toEqual(expectedObjectToStore)
+    expect(storedItemAsObject).toStrictEqual(expectedObjectToStore)
   })
 
   test('setex: stores an object with expected metadata', async () => {
@@ -96,11 +95,11 @@ describe('RedisService', () => {
       value: JSON.stringify(cachedValue)
     }
     const actualStoredItemString = await ioRedis.get(redisItemKey)
-    if (!actualStoredItemString) {
+    if (actualStoredItemString === null) {
       throw new Error('no item found with specified key')
     }
     const storedItemAsObject = JSON.parse(actualStoredItemString)
-    expect(storedItemAsObject).toEqual(expectedObjectToStore)
+    expect(storedItemAsObject).toStrictEqual(expectedObjectToStore)
   })
 
   test('get: string preservation intact on retrieval', async () => {
@@ -145,10 +144,10 @@ describe('RedisService', () => {
     }
     await sut.drop(cacheKeys)
     const foundKeys = await ioRedis.keys(`${redisItemKey}:*`)
-    expect(foundKeys.length).toBe(0)
+    expect(foundKeys).toHaveLength(0)
   })
 
-  test('returns null when redis item is not found', async () => {
+  test('returns undefined when redis item is not found', async () => {
     const randomCacheKey = uuid.default()
     const response = await sut.get(randomCacheKey)
     expect(response).toBeUndefined()
