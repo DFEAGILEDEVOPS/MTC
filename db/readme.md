@@ -23,5 +23,9 @@ See the [migrations guide](migrations.md)
 ## Policy
 Use of the `GO` statement within a migration is forbidden (but may be found in baseline scripts due to their integrity), due to the fact that this can [break atomicity and cause transactional rollback to fail within a migration](https://github.com/rickbergfalk/postgrator#preventing-partial-migrations)
 
+## TODO add templates for each type of migration from https://github.com/jon-shipley/patterns/blob/master/mssql-idempotent-sql.md
+
+## TODO object naming policy
+
 ## Baseline History
 October 2020: Scripts baselined for first time
