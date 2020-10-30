@@ -1,11 +1,13 @@
 
 -- functionsUser
+-- TODO look into this...
 GRANT CONNECT TO [functionsUser] AS [dbo]
 GO
 GRANT CREATE TABLE TO [functionsUser] AS [dbo]
 GO
 GRANT CONTROL ON SCHEMA::[mtc_census_import] TO [functionsUser] AS [dbo]
 GO
+-- TODO review approach, and potentially be more granular about insert, execute and update
 GRANT EXECUTE, INSERT, SELECT, UPDATE ON SCHEMA::[mtc_admin] TO [functionsUser] AS [dbo]
 GO
 GRANT INSERT, SELECT ON SCHEMA::[mtc_results] TO [functionsUser] AS [dbo]
