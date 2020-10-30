@@ -28,18 +28,17 @@ yarn migrate yyyymmddhhmmss
 
 ## Creating seeds
 
-- Seeds can be written in Javascript, SQL or TSV
+- Seeds can be written in Javascript or SQL
 - Javascript seeds must export a generateSql function
-- TSV seeds specify the column names in the first row
 
 Use your package manager to create a new seed.
 
 ```
-yarn new-seed <name> --table <table> (default type is tsv)
+yarn new-seed <name> --table <table> (default type is sql)
 yarn new-seed <name> --format sql (default table is custom for sql & js)
-yarn new-seed <name> --table <table> --format <tsv|sql|js>
+yarn new-seed <name> --table <table> --format <sql|js>
 ```
-Generated seeds have the filename yyyymmddhhmmss.table.name.<sql|tsv|js>
+Generated seeds have the filename yyyymmddhhmmss.table.name.<sql|js>
 
 ## Running seeds
 

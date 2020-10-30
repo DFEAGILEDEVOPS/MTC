@@ -2,7 +2,8 @@
 
 const path = require('path')
 const fs = require('fs')
-const globalDotEnvFile = path.join(__dirname, '..', '..', '..', '.env')
+const globalDotEnvFile = path.join(__dirname, '..', '..', '.env')
+const mssql = require('mssql')
 
 try {
   if (fs.existsSync(globalDotEnvFile)) {
@@ -15,14 +16,11 @@ try {
   console.error(error)
 }
 const R = require('ramda')
-const csv = require('fast-csv')
-const logger = require('../../services/log.service').getLogger()
+const sqlConfig = require('../sql.config')
+const logger = require('./log.service').getLogger()
 
-const sqlService = require('../../services/data-access/sql.service')
-
-const seedsDirectory = path.join(__dirname, '/seeds')
+const seedsDirectory = path.join(__dirname, '..', 'seeds')
 const seedFilenameFormat = ['version', 'table', 'name', 'format']
-const supportedFileFormats = ['tsv', 'sql', 'js']
 
 const loadSeeds = () => (new Promise((resolve, reject) => {
   fs.readdir(seedsDirectory, (err, files) => {
@@ -33,47 +31,33 @@ const loadSeeds = () => (new Promise((resolve, reject) => {
   })
 }))
 
-const processSeed = async (seed) => {
+/**
+ *
+ * @param {string} seed
+ * @param {import('mssql').ConnectionPool} pool
+ */
+const processSeed = async (seed, pool) => {
   const { format, filename } = seed
   const filepath = path.join(seedsDirectory, filename)
 
-  if (!supportedFileFormats.includes(format)) {
-    throw new Error(`Unsupported format: ${format} for seed ${filename}`)
-  }
+  let content; let sql
 
-  let content; let sql; let params = []
-  if (format === 'tsv') {
-    // handle TSV
-    content = []
-    await new Promise((resolve, reject) => {
-      csv.parseFile(filepath, { delimiter: '\t', headers: true, trim: true })
-        .on('data', (data) => {
-          content.push(data)
-        })
-        .on('error', reject)
-        .on('end', resolve)
-    })
-    if (content.length === 0) {
-      logger.info(`Empty seed: ${filename}`)
-      return
-    }
-    const { table } = seed
-    const generatedSql = await sqlService.generateMultipleInsertStatements(table, content)
-    sql = generatedSql.sql
-    params = generatedSql.params
-  } else if (format === 'sql') {
-    // handle SQL
-    content = fs.readFileSync(filepath, 'utf8')
-    sql = content
-  } else if (format === 'js') {
-    // handle JS
-    content = require(filepath)
-    sql = await content.generateSql()
+  switch(format) {
+    case 'sql':
+      content = fs.readFileSync(filepath, 'utf8')
+      sql = content
+      break
+    case 'js':
+      content = require(filepath)
+      sql = await content.generateSql()
+      break
+    default:
+      throw new Error(`unsupported format:${format} for seed ${filename}`)
   }
-
   logger.info(filename)
   try {
-    await sqlService.modify(sql, params)
+    const request = new mssql.Request(pool)
+    await request.query(sql)
   } catch (error) {
     /*
       We can ignore certain error codes and
@@ -84,16 +68,24 @@ const processSeed = async (seed) => {
       2627, // Violation of UNIQUE KEY constraint
       547 // The INSERT statement conflicted with the FOREIGN KEY constraint
     ]
-    if (!~ignoreErrorCodes.indexOf(error.number)) {
-      throw error
-    } else {
+    if (ignoreErrorCodes.indexOf(error.number) >= 0) {
       logger.warn(`ignoring error: ${error.message}`)
       logger.warn('This seed is likely to have been previously applied to this database.')
+    } else {
+      throw error
     }
   }
 }
 
-const runSeeds = async (version) => {
+/**
+ *
+ * @param {number} version
+ * @param {import('mssql').ConnectionPool} pool
+ */
+const runSeeds = async (version, pool) => {
+  if (pool === undefined || pool.connected === false) {
+    throw new Error('an open mssql.ConnectionPool is required')
+  }
   logger.info(`Migrating seeds: ${version}`)
 
   try {
@@ -117,13 +109,12 @@ const runSeeds = async (version) => {
 
     if (version === 'all') {
       for (let i = 0; i < seeds.length; i++) {
-        await processSeed(seeds[i])
+        await processSeed(seeds[i], pool)
       }
     } else {
       const foundSeed = seeds.find((seed) => seed.version === version)
       if (!foundSeed) throw new Error(`Seed not found: ${version}`)
-
-      await processSeed(foundSeed)
+      await processSeed(foundSeed, pool)
     }
     logger.info('SQL Seeds complete')
   } catch (error) {
@@ -133,14 +124,16 @@ const runSeeds = async (version) => {
 }
 
 (async function main () {
+  let pool
   try {
-    await sqlService.initPool()
-    await runSeeds(process.argv[2] || 'all')
+    pool = new mssql.ConnectionPool(sqlConfig)
+    await pool.connect()
+    await runSeeds(process.argv[2] || 'all', pool)
   } catch (error) {
     process.exitCode = 1
     logger.error(`Error caught: ${error.message}`)
   } finally {
-    await sqlService.drainPool()
-    logger.info('sql pool closed')
+    await pool.close()
+    logger.info('sql connection pool closed')
   }
 })()
