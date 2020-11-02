@@ -1,9 +1,10 @@
 'use strict'
 
 const moment = require('moment')
-const upnService = require('../../../services/upn.service')
-const pupilsData = require('../../fixtures/dummy-users.json')
-const sqlService = require('../../../services/data-access/sql.service')
+const upnService = require('../engine/upn.service')
+const pupilsData = require('../fixtures/dummy-users.json')
+const mssql = require('mssql')
+const sqlConfig = require('../sql.config')
 
 async function generatePupils () {
   const pupils = []
@@ -51,7 +52,21 @@ function randomDob () {
 
 async function getTestSchoolIds () {
   const sql = 'select id from mtc_admin.school where dfeNumber in (9991001, 9991002, 9991003, 9991004, 9991005)'
-  const data = await sqlService.query(sql)
+  let pool, request, data
+  try {
+    pool = new mssql.ConnectionPool(sqlConfig)
+    await pool.connect()
+    request = new mssql.Request(pool)
+    const result = await request.query(sql)
+    data = result.recordset
+    await pool.close()
+  } catch (error) {
+    throw error
+  } finally {
+    if (pool && (pool.connecting || pool.connected)) {
+      await pool.close()
+    }
+  }
   return data.map(s => s.id)
 }
 

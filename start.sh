@@ -33,9 +33,9 @@ echo "Resetting terminal..."
 command -v reset >/dev/null 2>&1 && reset
 
 echo "Running migrations..."
-(cd ${scriptDir}/admin && yarn migrate-sql)
+(cd ${scriptDir}/db && yarn migrate)
 
 echo "Running seeds..."
-(cd ${scriptDir}/admin && yarn seed-sql)
+(cd ${scriptDir}/db && yarn seed)
 
 echo "MTC Infrastructure ready!"

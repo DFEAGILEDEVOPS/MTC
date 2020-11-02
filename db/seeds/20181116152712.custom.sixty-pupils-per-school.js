@@ -1,7 +1,7 @@
 'use strict'
 
 const R = require('ramda')
-const config = require('../../../config')
+const config = require('../config')
 const moment = require('moment')
 
 module.exports.generateSql = function () {
@@ -22,7 +22,7 @@ module.exports.generateSql = function () {
         lastName = `School ${schoolId}`
         gender = ~~(Math.random() * 2) ? 'M' : 'F'
         dateOfBirth = moment('2000-01-01').add(pupilIndex, 'days').format('YYYY-MM-DD').toString()
-        insertStatements.push(`INSERT [mtc_admin].[pupil] (school_id, foreName, lastName, gender, dateOfBirth, upn) 
+        insertStatements.push(`INSERT [mtc_admin].[pupil] (school_id, foreName, lastName, gender, dateOfBirth, upn)
         VALUES (${schoolId}, '${foreName}', '${lastName}', '${gender}', '${dateOfBirth}', '${upn}')`)
       }
     }
