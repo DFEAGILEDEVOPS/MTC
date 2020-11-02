@@ -68,7 +68,7 @@ const processSeed = async (seed, pool) => {
       2627, // Violation of UNIQUE KEY constraint
       547 // The INSERT statement conflicted with the FOREIGN KEY constraint
     ]
-    if (ignoreErrorCodes.indexOf(error.number) >= 0) {
+    if (ignoreErrorCodes.includes(error.number)) {
       logger.warn(`ignoring error: ${error.message}`)
       logger.warn('This seed is likely to have been previously applied to this database.')
     } else {
