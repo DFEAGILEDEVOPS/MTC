@@ -1,4 +1,4 @@
-@delete_school_import
+@delete_school_import @school_import
 Feature:
   School import
 
