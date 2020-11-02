@@ -5,33 +5,6 @@ const config = require('../config')
 const sqlConfig = require('../sql.config')
 const logger = require('./log.service').getLogger()
 
-const adminConfig = {
-  server: config.Sql.Server,
-  options: {
-    database: 'master',
-    encrypt: sqlConfig.options.encrypt,
-    requestTimeout: config.Sql.Migrator.Timeout,
-    port: sqlConfig.port,
-    connectTimeout: config.Sql.Migrator.Timeout,
-    trustServerCertificate: sqlConfig.options.trustServerCertificate,
-    enableArithAbort: sqlConfig.options.enableArithAbort
-  },
-  authentication: {
-    type: 'default',
-    options: {
-      userName: config.Sql.Migrator.Username,
-      password: config.Sql.Migrator.Password
-    }
-  },
-  appName: config.Sql.Application.Name,
-  debug: {
-    packet: false,
-    data: true,
-    payload: false,
-    token: false
-  }
-}
-
 async function executeRequest (pool, sql) {
   const req = new mssql.Request(pool)
   const result = await req.query(sql)
@@ -44,7 +17,7 @@ async function createDatabase (pool) {
     if (config.Sql.Azure.Scale) {
       azureOnlyScaleSetting = `(SERVICE_OBJECTIVE = '${config.Sql.Azure.Scale}')`
     }
-    logger.info(`attempting to create database ${config.Sql.Database} ${azureOnlyScaleSetting} if it does not already exist...`)
+    logger.info(`attempting to create ${config.Sql.Database} ${azureOnlyScaleSetting} if it does not already exist (timeout:${sqlConfig.requestTimeout})...`)
     const createDbSql = `
       IF NOT EXISTS(SELECT * FROM sys.databases WHERE name='${config.Sql.Database}')
         BEGIN
@@ -62,9 +35,9 @@ async function createDatabase (pool) {
 }
 
 async function main () {
-  const pool = new mssql.ConnectionPool(adminConfig)
+  const pool = new mssql.ConnectionPool(sqlConfig)
   try {
-    logger.info(`attempting to connect to ${adminConfig.server} on ${adminConfig.options.port} within ${adminConfig.options.connectTimeout}ms`)
+    logger.info(`attempting to connect to ${sqlConfig.server} on ${sqlConfig.port} within ${sqlConfig.connectionTimeout}ms`)
     await pool.connect()
     logger.info('connected.')
     await createDatabase(pool)
