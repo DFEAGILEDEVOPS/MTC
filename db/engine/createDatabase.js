@@ -4,6 +4,7 @@ const mssql = require('mssql')
 const config = require('../config')
 const sqlConfig = require('../sql.config')
 const logger = require('./log.service').getLogger()
+const R = require('ramda')
 
 async function executeRequest (pool, sql) {
   const req = new mssql.Request(pool)
@@ -35,6 +36,10 @@ async function createDatabase (pool) {
 }
 
 async function main () {
+  const migratorConfig = R.clone(sqlConfig)
+  migratorConfig.user = config.Sql.Migrator.Username
+  migratorConfig.password = config.Sql.Migrator.Password
+  migratorConfig.requestTimeout = config.Sql.Migrator.Timeout
   const pool = new mssql.ConnectionPool(sqlConfig)
   try {
     logger.info(`attempting to connect to ${sqlConfig.server} on ${sqlConfig.port} within ${sqlConfig.connectionTimeout}ms`)
