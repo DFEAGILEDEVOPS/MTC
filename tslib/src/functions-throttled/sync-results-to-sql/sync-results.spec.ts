@@ -26,6 +26,7 @@ describe('SyncResultsService', () => {
     mockSyncResultsDataService = new SyncResultsDataService()
     ;(mockSyncResultsDataService.prepareCheckResult as jest.Mock).mockReturnValueOnce(mockTransaction)
     ;(mockSyncResultsDataService.prepareEvents as jest.Mock).mockReturnValueOnce(mockTransaction)
+    ;(mockSyncResultsDataService.prepareDeviceData as jest.Mock).mockReturnValueOnce(mockTransaction)
     ;(mockSyncResultsDataService.prepareAnswersAndInputs as jest.Mock).mockReturnValueOnce(mockTransaction)
     sut = new SyncResultsService(logger, mockSyncResultsDataService)
   })
@@ -50,6 +51,12 @@ describe('SyncResultsService', () => {
     (mockSyncResultsDataService.sqlGetQuestionData as jest.Mock).mockReturnValueOnce(Promise.resolve(mockQuestionData))
     await sut.process(mockCompletionCheckMessage)
     expect(mockSyncResultsDataService.prepareAnswersAndInputs).toHaveBeenCalledTimes(1)
+  })
+
+  test('it makes a call to prepare the data for the userDevice table', async () => {
+    (mockSyncResultsDataService.sqlGetQuestionData as jest.Mock).mockReturnValueOnce(Promise.resolve(mockQuestionData))
+    await sut.process(mockCompletionCheckMessage)
+    expect(mockSyncResultsDataService.prepareDeviceData).toHaveBeenCalledTimes(1)
   })
 
   test('it makes a call persist all the prepared data in the database', async () => {

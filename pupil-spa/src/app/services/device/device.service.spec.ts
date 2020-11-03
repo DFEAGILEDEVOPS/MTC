@@ -1,11 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 import { StorageService } from '../storage/storage.service';
 import { WindowRefService } from '../window-ref/window-ref.service';
+import { CookieService } from 'ngx-cookie-service';
 
 import { DeviceService } from './device.service';
 
 describe('DeviceService', () => {
-  let service, storageService, windowRefService;
+  let service, storageService, windowRefService, cookieService: CookieService;
 
   beforeEach(() => {
     const windowRefServiceMock = {
@@ -21,14 +22,17 @@ describe('DeviceService', () => {
       providers: [
         DeviceService,
         StorageService,
-        { provide: WindowRefService, useValue: windowRefServiceMock }
+        { provide: WindowRefService, useValue: windowRefServiceMock },
+        CookieService
       ]
     });
     storageService = injector.get(StorageService);
     windowRefService = injector.get(WindowRefService);
+    cookieService = injector.get(CookieService);
     service = new DeviceService(
       storageService,
-      injector.get(WindowRefService)
+      injector.get(WindowRefService),
+      cookieService
     );
   });
 
@@ -37,9 +41,20 @@ describe('DeviceService', () => {
   });
 
   it('captures device info to localStorage',  async () => {
+    // test setup
+    service.deleteDeviceCookie();
+    service.setupDeviceCookie();
+
+    // exec
     await service.capture();
+
+    // tests
     const deviceInfo = storageService.getDeviceData();
-    expect(deviceInfo).toBeTruthy();
+    expect(deviceInfo).toBeDefined();
+    expect(deviceInfo.deviceId.length).toBe(36); // uuid as string
+
+    // reset
+    service.deleteDeviceCookie();
   });
 
   describe('isUnsupportedBrowser', () => {
@@ -85,6 +100,57 @@ describe('DeviceService', () => {
         'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36';
       const isUnsupportedBrowser = service.isUnsupportedBrowser();
       expect(isUnsupportedBrowser).toBeFalsy();
+    });
+  });
+
+  describe('setupDeviceCookie', () => {
+    let setCookieSpy: jasmine.Spy;
+    beforeEach(() => {
+      spyOn(service['cookieService'], 'check');
+      setCookieSpy = spyOn(service['cookieService'], 'set');
+    });
+
+    it('calls cookieService.check to see if there is an existing cookie', () => {
+      service.setupDeviceCookie();
+      expect(service['cookieService'].check).toHaveBeenCalledTimes(1);
+    });
+
+    it('calls cookieService.set to set or refresh the cookie', () => {
+      service.setupDeviceCookie();
+      expect(service['cookieService'].set).toHaveBeenCalledTimes(1);
+    });
+
+    it('sets the cookie args correctly', () => {
+      // setup
+      const now = new Date();
+
+      // run
+      service.setupDeviceCookie();
+
+      // test setup
+      const args = setCookieSpy.calls.mostRecent().args;
+
+      // Check the cookie name is set correctly
+      expect(args[0]).toBe('mtc_device');
+
+      // Cookie expiration time check - should be 4 weeks
+      const cookieExpiration = new Date(args[2]['expires']);
+      const diff = Math.abs(cookieExpiration.getTime() - now.getTime() - 2419200000); // should be zero
+      expect(Math.abs(diff)).toBeLessThan(10 * 1000); // Allow 10 seconds out
+    });
+  });
+
+  describe('getDeviceId', () => {
+    it('calls the cookieService to get the deviceId of the cookie', () => {
+      spyOn(service['cookieService'], 'get');
+      service.getDeviceId();
+      expect(service['cookieService'].get).toHaveBeenCalledWith('mtc_device');
+    });
+
+    it('returns null if the cookie is not found', () => {
+      spyOn(service['cookieService'], 'get').and.returnValue(undefined);
+      const res = service.getDeviceId();
+      expect(res).toBeNull();
     });
   });
 });

@@ -38,7 +38,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
     private warmupQuestionService: WarmupQuestionService,
     private elRef: ElementRef,
     private checkStatusService: CheckStatusService,
-    private pupilPrefsService: PupilPrefsService
+    private pupilPrefsService: PupilPrefsService,
   ) {
     const { loginPendingViewMinDisplay } = APP_CONFIG;
     this.loginPendingViewMinDisplay = loginPendingViewMinDisplay;
@@ -85,9 +85,12 @@ export class LoginComponent implements OnInit, AfterViewInit {
           this.connectionFailed = false;
           this.questionService.initialise();
           this.warmupQuestionService.initialise();
-
-          const config = this.questionService.getConfig();
           this.pupilPrefsService.loadPupilPrefs();
+          const config = this.questionService.getConfig();
+          if (config.practice === false) {
+            // only set the cookie for live checks
+            this.deviceService.setupDeviceCookie();
+          }
           await this.displayMinTime(startTime);
           this.loginPending = false;
           if (config.fontSize) {

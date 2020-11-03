@@ -38,7 +38,7 @@ async function main () {
       estabCode,
       leaCode,
       [name]
-    from [mtc_admin].[school] WHERE id=${schoolId} AND leaCode IS NOT NULL AND estabCode IS NOT NULL`)
+    from [mtc_admin].[school] WHERE id=${schoolId}`)
     await insertPupils(school[0], pupilCountPerSchool)
   } catch (error) {
     console.error(error.message)

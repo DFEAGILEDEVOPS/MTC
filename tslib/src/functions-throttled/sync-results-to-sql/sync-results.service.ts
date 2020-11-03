@@ -32,10 +32,14 @@ export class SyncResultsService {
     // Prepare Events
     const eventTran = await this.syncResultsDataService.prepareEvents(checkCompletionMessage.validatedCheck)
 
+    // Prepare Device Info
+    const deviceTran = await this.syncResultsDataService.prepareDeviceData(checkCompletionMessage.validatedCheck)
+
     const flattenedTransaction = flattenTransactions([
       checkResTran,
       answersAndInputsTran,
-      eventTran
+      eventTran,
+      deviceTran
     ])
 
     await this.syncResultsDataService.insertToDatabase([flattenedTransaction])
