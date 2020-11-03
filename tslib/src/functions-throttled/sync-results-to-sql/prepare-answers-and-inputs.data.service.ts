@@ -103,7 +103,7 @@ export class PrepareAnswersAndInputsDataService {
       if (question === undefined) {
         throw new Error(`Unable to find valid question for [${markedAnswer.question}] from checkCode [${markedCheck.checkCode}]`)
       }
-      const suffix = `${question.id}${j}`
+      const suffix = `${j}`
       sqls.push(`DECLARE @answerId${suffix} INT;
                  INSERT INTO mtc_results.[answer] (checkResult_id, questionNumber, answer,  question_id, isCorrect, browserTimestamp) VALUES
                    (@checkResultId, @answerQuestionNumber${suffix}, @answer${suffix},  @answerQuestionId${suffix}, @answerIsCorrect${suffix}, @answerBrowserTimestamp${suffix});
