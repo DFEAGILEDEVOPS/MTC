@@ -173,6 +173,24 @@ describe('LoginComponent', () => {
       });
     });
 
+    it('should set-up the device cookie if it is a live check', () => {
+      spyOn(mockQuestionService, 'getConfig').and.returnValue({ practice: false });
+      spyOn(component['deviceService'], 'setupDeviceCookie');
+      component.onSubmit('goodPin', 'goodPin');
+      fixture.whenStable().then(() => {
+        expect(component['deviceService'].setupDeviceCookie).toHaveBeenCalledTimes(1);
+      });
+    });
+
+    it('does not set-up the device cookie if it is a practice check', () => {
+      spyOn(mockQuestionService, 'getConfig').and.returnValue({ practice: true });
+      spyOn(component['deviceService'], 'setupDeviceCookie');
+      component.onSubmit('goodPin', 'goodPin');
+      fixture.whenStable().then(() => {
+        expect(component['deviceService'].setupDeviceCookie).not.toHaveBeenCalled();
+      });
+    });
+
     it('should redirect to the font selection page when fontSize is enabled', async () => {
       spyOn(mockQuestionService, 'getConfig').and.returnValue({ fontSize: true });
       component.onSubmit('goodPin', 'goodPin');
@@ -231,16 +249,19 @@ describe('LoginComponent', () => {
       });
     });
   });
+
   describe('ngOnInit', () => {
     it('should set the loginPending to false', async () => {
       component.ngOnInit();
       expect(component.loginPending).toBeFalsy();
     });
+
     it('should navigate to check path with query params if an unfinished check is detected', () => {
       hasUnfinishedCheckSpy.and.returnValue(true);
       component.ngOnInit();
       expect(mockRouter.navigate).toHaveBeenCalledWith(['check'], { queryParams: { unfinishedCheck: true } });
     });
+
     it('should not navigate to check path if a completed check is detected', () => {
       component.ngOnInit();
       expect(mockRouter.navigate).toHaveBeenCalledTimes(0);
