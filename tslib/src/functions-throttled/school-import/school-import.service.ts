@@ -6,6 +6,8 @@ import { SchoolImportJobResult } from './SchoolImportJobResult'
 import { ISchoolImportPredicates, Predicates } from './predicates'
 import { SchoolRecordMapper } from './school-mapper'
 import { SchoolImportError } from './SchoolImportError'
+import { ISchoolRecord } from './data-access/ISchoolRecord'
+import * as RA from 'ramda-adjunct'
 
 const name = 'school-import'
 const targetAge = 9
@@ -65,21 +67,41 @@ export class SchoolImportService {
     }
 
     try {
-      const filteredSchools = new Array<any>()
+      const filteredSchools: ISchoolRecord[] = []
+      let exclusionCount = 0
       for (let index = 0; index < csvParsed.length; index++) {
         const row = csvParsed[index]
         const schoolRecord = this.schoolRecordMapper.mapRow(row, mapping)
+        const hasRequiredFields = this.predicates.hasRequiredFields(schoolRecord)
         const isOpen = this.predicates.isSchoolOpen(schoolRecord)
         const isCorrectTypeGroup = this.predicates.isRequiredEstablishmentTypeGroup(schoolRecord)
         const isCorrectAgeRange = this.predicates.isAgeInRange(targetAge, schoolRecord)
-        const matchesAll = isOpen.isMatch && isCorrectTypeGroup.isMatch && isCorrectAgeRange.isMatch
+        const matchesAll = hasRequiredFields.isMatch &&
+                          isOpen.isMatch &&
+                            isCorrectTypeGroup.isMatch &&
+                            isCorrectAgeRange.isMatch
         if (matchesAll) {
           filteredSchools.push(schoolRecord)
         } else {
-          this.jobResult.stdout.push(this.createLogEntry(isOpen.message))
-          this.jobResult.stdout.push(this.createLogEntry(isCorrectTypeGroup.message))
-          this.jobResult.stdout.push(this.createLogEntry(isCorrectAgeRange.message))
+          exclusionCount++
+          if (RA.isNotNilOrEmpty(isOpen.message)) {
+            this.jobResult.stdout.push(this.createLogEntry(isOpen.message))
+          }
+          if (RA.isNotNilOrEmpty(isCorrectTypeGroup.message)) {
+            this.jobResult.stdout.push(this.createLogEntry(isCorrectTypeGroup.message))
+          }
+          if (RA.isNotNilOrEmpty(isCorrectAgeRange.message)) {
+            this.jobResult.stdout.push(this.createLogEntry(isCorrectAgeRange.message))
+          }
+          if (RA.isNotNilOrEmpty(hasRequiredFields.message)) {
+            this.jobResult.stdout.push(this.createLogEntry(hasRequiredFields.message))
+          }
         }
+      }
+      if (filteredSchools.length === 0) {
+        const exitMessage = `school records excluded in filtering:${exclusionCount}. No records to persist, exiting.`
+        this.jobResult.stdout.push(exitMessage)
+        return this.jobResult
       }
       await this.schoolDataService.bulkUpload(this.logger, filteredSchools)
       this.logger.verbose(`${name}  bulkUpload complete`)

@@ -2,7 +2,6 @@ import { AzureFunction, Context } from '@azure/functions'
 import { performance } from 'perf_hooks'
 import { SchoolImportService } from './school-import.service'
 import * as mssql from 'mssql'
-import config from '../../config'
 import * as ConnectionPoolService from '../../sql/pool.service'
 import { SchoolImportJobResult } from './SchoolImportJobResult'
 
@@ -17,24 +16,7 @@ const blobTrigger: AzureFunction = async function schoolImportIndex (context: Co
   let errorOutput = ''
 
   try {
-    const sqlConfig: mssql.config = {
-      database: config.Sql.database,
-      server: config.Sql.server,
-      port: config.Sql.port,
-      requestTimeout: config.Sql.requestTimeout,
-      connectionTimeout: config.Sql.connectionTimeout,
-      user: config.Sql.user,
-      password: config.Sql.password,
-      pool: {
-        min: config.Sql.Pooling.MinCount,
-        max: config.Sql.Pooling.MaxCount
-      },
-      options: {
-        appName: config.Sql.options.appName,
-        encrypt: config.Sql.options.encrypt
-      }
-    }
-    pool = await ConnectionPoolService.getInstanceWithConfig(sqlConfig, context.log)
+    pool = await ConnectionPoolService.getInstance(context.log)
     const svc = new SchoolImportService(pool, jobResult, context.log)
     jobResult = await svc.process(blob)
     await pool.close()

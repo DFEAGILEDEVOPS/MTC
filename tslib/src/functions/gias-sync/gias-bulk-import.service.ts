@@ -8,9 +8,8 @@ export class GiasBulkImport {
     const pool = await ConnectionPoolService.getInstance()
     const table = new sql.Table('mtc_admin.giasStaging')
     table.create = false
-    table.columns.add('leaCode', sql.Int)
-    // @ts-ignore length does not have option for string, yet
-    table.columns.add('estabCode', sql.NVarChar, { length: 'max' })
+    table.columns.add('leaCode', sql.Int, { nullable: false })
+    table.columns.add('estabCode', sql.Int, { nullable: false })
     table.columns.add('urn', sql.Int, { nullable: false })
     table.columns.add('dfeNumber', sql.Int, { nullable: false })
     // @ts-ignore length does not have option for string, yet

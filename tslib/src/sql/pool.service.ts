@@ -1,23 +1,19 @@
-import { config as sqlConfig, ConnectionPool } from 'mssql'
+import { ConnectionPool } from 'mssql'
 import { ConsoleLogger, ILogger } from '../common/logger'
 import config from '../config'
 
 let pool: ConnectionPool
 
-export async function getInstance (logger?: ILogger): Promise<ConnectionPool> {
-  return getInstanceWithConfig(config.Sql, logger)
-}
-
 // pool can still be connecting when first used...
 // https://github.com/tediousjs/node-mssql/issues/934
-export async function getInstanceWithConfig (sqlConfig: sqlConfig, logger?: ILogger): Promise<ConnectionPool> {
+export async function getInstance (logger?: ILogger): Promise<ConnectionPool> {
   if (logger === undefined) {
     logger = new ConsoleLogger()
   }
 
   // tslint:disable-next-line: strict-type-predicates
   if (pool === undefined) {
-    pool = new ConnectionPool(sqlConfig)
+    pool = new ConnectionPool(config.Sql)
     await pool.connect()
     pool.on('error', (error) => {
       logger?.error(`Sql Connection Pool Error Raised:${error.message}`)

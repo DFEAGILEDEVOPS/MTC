@@ -1,11 +1,11 @@
 export interface ISchoolRecord {
-  urn: number
-  name: string
-  leaCode: number
-  estabCode: number
+  urn: number | undefined
+  name: string | undefined
+  leaCode: number | undefined
+  estabCode: number | undefined
   estabTypeGroupCode: EstabTypeGroupCode
   estabTypeCode: EstabTypeCode
-  estabStatusCode: number
+  estabStatusCode: EstabStatusCode
   statLowAge?: number
   statHighAge?: number
 }
