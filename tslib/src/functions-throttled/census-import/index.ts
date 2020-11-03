@@ -17,8 +17,8 @@ const blobTrigger: AzureFunction = async function (context: Context, blob: any):
       port: config.Sql.port,
       requestTimeout: config.Sql.censusRequestTimeout,
       connectionTimeout: config.Sql.connectionTimeout,
-      user: config.Sql.PupilCensus.Username,
-      password: config.Sql.PupilCensus.Password,
+      user: config.Sql.user,
+      password: config.Sql.password,
       pool: {
         min: config.Sql.Pooling.MinCount,
         max: config.Sql.Pooling.MaxCount
