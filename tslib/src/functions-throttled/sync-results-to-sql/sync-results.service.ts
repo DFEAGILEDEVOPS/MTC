@@ -27,14 +27,14 @@ export class SyncResultsService {
     const checkResTran = this.syncResultsDataService.prepareCheckResult(checkCompletionMessage.markedCheck)
 
     // Prepare SQL statements and variables for the Answers
-    const answerTran = this.syncResultsDataService.prepareAnswers(checkCompletionMessage.markedCheck, this.questionHash)
+    const answersAndInputsTran = await this.syncResultsDataService.prepareAnswersAndInputs(checkCompletionMessage.markedCheck, checkCompletionMessage.validatedCheck, this.questionHash)
 
     // Prepare Events
     const eventTran = await this.syncResultsDataService.prepareEvents(checkCompletionMessage.validatedCheck)
 
     const flattenedTransaction = flattenTransactions([
       checkResTran,
-      answerTran,
+      answersAndInputsTran,
       eventTran
     ])
 

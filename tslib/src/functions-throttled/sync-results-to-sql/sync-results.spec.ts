@@ -25,8 +25,8 @@ describe('SyncResultsService', () => {
     const logger = new ConsoleLogger()
     mockSyncResultsDataService = new SyncResultsDataService()
     ;(mockSyncResultsDataService.prepareCheckResult as jest.Mock).mockReturnValueOnce(mockTransaction)
-    ;(mockSyncResultsDataService.prepareAnswers as jest.Mock).mockReturnValueOnce(mockTransaction)
     ;(mockSyncResultsDataService.prepareEvents as jest.Mock).mockReturnValueOnce(mockTransaction)
+    ;(mockSyncResultsDataService.prepareAnswersAndInputs as jest.Mock).mockReturnValueOnce(mockTransaction)
     sut = new SyncResultsService(logger, mockSyncResultsDataService)
   })
 
@@ -46,10 +46,10 @@ describe('SyncResultsService', () => {
     expect(mockSyncResultsDataService.prepareCheckResult).toHaveBeenCalledTimes(1)
   })
 
-  test('it makes a call to prepare the data for the answers table', async () => {
+  test('it makes a call to prepare the data for the answers and inputs table', async () => {
     (mockSyncResultsDataService.sqlGetQuestionData as jest.Mock).mockReturnValueOnce(Promise.resolve(mockQuestionData))
     await sut.process(mockCompletionCheckMessage)
-    expect(mockSyncResultsDataService.prepareAnswers).toHaveBeenCalledTimes(1)
+    expect(mockSyncResultsDataService.prepareAnswersAndInputs).toHaveBeenCalledTimes(1)
   })
 
   test('it makes a call persist all the prepared data in the database', async () => {

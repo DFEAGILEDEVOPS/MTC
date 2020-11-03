@@ -1,12 +1,13 @@
 import { ISqlService, ITransactionRequest, SqlService } from '../../sql/sql.service'
 import { Audit, DBEventType, DBQuestion, MarkedCheck, ValidatedCheck } from './models'
+import { IPrepareAnswersAndInputsDataService, PrepareAnswersAndInputsDataService } from './prepare-answers-and-inputs.data.service'
 import { NVarChar, TYPES } from 'mssql'
 import * as R from 'ramda'
 
 export interface ISyncResultsDataService {
   insertToDatabase (requests: ITransactionRequest[]): Promise<void>
 
-  prepareAnswers (markedheck: MarkedCheck, questionHash: Map<string, DBQuestion>): ITransactionRequest
+  prepareAnswersAndInputs (markedCheck: MarkedCheck, validatedCheck: ValidatedCheck, questionHash: Map<string, DBQuestion>): Promise<ITransactionRequest>
 
   prepareCheckResult (markedCheck: MarkedCheck): ITransactionRequest
 
@@ -17,17 +18,15 @@ export interface ISyncResultsDataService {
 
 export class SyncResultsDataService implements ISyncResultsDataService {
   private readonly sqlService: ISqlService
+  private readonly prepareAnswersAndInputsDataService: IPrepareAnswersAndInputsDataService
   // override rule, as this is accessed via reflection for mocking
   // eslint-disable-next-line @typescript-eslint/prefer-readonly
   private eventType: Map<string, DBEventType> = new Map()
   private questionData: Map<string, DBQuestion> = new Map()
 
-  constructor (sqlService?: ISqlService) {
-    if (sqlService === undefined) {
-      this.sqlService = new SqlService()
-    } else {
-      this.sqlService = sqlService
-    }
+  constructor (sqlService?: ISqlService, prepareAnswersAndInputsDataService?: IPrepareAnswersAndInputsDataService) {
+    this.sqlService = sqlService ?? new SqlService()
+    this.prepareAnswersAndInputsDataService = prepareAnswersAndInputsDataService ?? new PrepareAnswersAndInputsDataService()
   }
 
   /**
@@ -127,32 +126,8 @@ export class SyncResultsDataService implements ISyncResultsDataService {
     return req
   }
 
-  /**
-   * Generate SQL statements and parameters for later insertion to the DB.
-   * @param {MarkedCheck} markedCheck
-   * @param {Map<string, DBQuestion>} questionHash
-   */
-  public prepareAnswers (markedCheck: MarkedCheck, questionHash: Map<string, DBQuestion>): ITransactionRequest {
-    const answerSql = markedCheck.markedAnswers.map((o, j) => {
-      return `INSERT INTO mtc_results.[answer] (checkResult_id, questionNumber, answer,  question_id, isCorrect, browserTimestamp) VALUES
-                  (@checkResultId, @answerQuestionNumber${j}, @answer${j},  @answerQuestionId${j}, @answerIsCorrect${j}, @answerBrowserTimestamp${j});`
-    })
-
-    const params = markedCheck.markedAnswers.map((o, j) => {
-      const question = questionHash.get(o.question)
-      if (question === undefined) {
-        throw new Error(`Unable to find valid question for [${o.question}] from checkCode [${markedCheck.checkCode}]`)
-      }
-      return [
-        { name: `answerQuestionNumber${j}`, value: o.sequenceNumber, type: TYPES.SmallInt },
-        { name: `answer${j}`, value: o.answer, type: TYPES.NVarChar },
-        { name: `answerQuestionId${j}`, value: question.id, type: TYPES.Int },
-        { name: `answerIsCorrect${j}`, value: o.isCorrect, type: TYPES.Bit },
-        { name: `answerBrowserTimestamp${j}`, value: o.clientTimestamp, type: TYPES.DateTimeOffset }
-      ]
-    })
-
-    return { sql: answerSql.join('\n'), params: R.flatten(params) }
+  public async prepareAnswersAndInputs (markedCheck: MarkedCheck, validatedCheck: ValidatedCheck, questionHash: Map<string, DBQuestion>): Promise<ITransactionRequest> {
+    return this.prepareAnswersAndInputsDataService.prepareAnswersAndInputs(markedCheck, validatedCheck, questionHash)
   }
 
   /**
@@ -213,7 +188,7 @@ export class SyncResultsDataService implements ISyncResultsDataService {
     const descr = `Dynamically created on ${dateStr}`
     const params = [
       { name: 'eventType', type: NVarChar(255), value: eventType.trim() },
-      { name: 'eventDescription', type: NVarChar(), value: descr }
+      { name: 'eventDescription', type: NVarChar(4000), value: descr }
     ]
     await this.sqlService.modify(sql, params)
   }
