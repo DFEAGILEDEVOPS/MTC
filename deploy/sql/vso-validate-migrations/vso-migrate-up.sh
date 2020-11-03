@@ -12,5 +12,4 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 nvm use
 yarn install --frozen-lockfile
-echo "sql admin user:$1"
 SQL_ADMIN_USER=$1 SQL_ADMIN_USER_PASSWORD=$2 SQL_APP_USER_PASSWORD=$3 SQL_DATABASE=$4 SQL_AZURE_SCALE=S0 yarn migrate
