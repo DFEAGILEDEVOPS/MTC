@@ -13,6 +13,15 @@ Before('@service_manager_message') do
   visit ENV['ADMIN_BASE_URL']
 end
 
+Before('@school_import') do
+  begin
+    AZURE_BLOB_CLIENT.create_container('school-import')
+  rescue Azure::Core::Http::HTTPError => e
+   p 'school-import container already exists' if e.status_code == 409
+   p e.description unless e.status_code == 409
+  end
+end
+
 Before("@delete_school_import") do
   files = AZURE_BLOB_CLIENT.list_blobs('school-import').map {|a| a.name}
   files.each do |filename|
