@@ -13,7 +13,6 @@ async function executeRequest (pool, sql) {
 }
 
 async function createDatabase (pool) {
-  try {
     let azureOnlyScaleSetting = ''
     if (config.Sql.Azure.Scale) {
       azureOnlyScaleSetting = `(SERVICE_OBJECTIVE = '${config.Sql.Azure.Scale}')`
@@ -30,9 +29,6 @@ async function createDatabase (pool) {
     const result = await executeRequest(pool, createDbSql)
     const output = result.recordset[0].response
     logger.info(output)
-  } catch (error) {
-    logger.error(error)
-  }
 }
 
 async function main () {
@@ -40,17 +36,19 @@ async function main () {
   migratorConfig.user = config.Sql.Migrator.Username
   migratorConfig.password = config.Sql.Migrator.Password
   migratorConfig.requestTimeout = config.Sql.Migrator.Timeout
+  migratorConfig.database = 'master'
   const pool = new mssql.ConnectionPool(migratorConfig)
   try {
-    logger.info(`attempting to connect to ${migratorConfig.server} as ${migratorConfig.user} on ${migratorConfig.port} within ${migratorConfig.connectionTimeout}ms`)
+    logger.info(`createDatabase: attempting to connect to ${migratorConfig.server}:${migratorConfig.port} within ${migratorConfig.connectionTimeout}ms`)
     await pool.connect()
-    logger.info('connected.')
+    logger.info('createDatabase: connected.')
     await createDatabase(pool)
-    logger.info('closing database connection...')
+    logger.info('createDatabase: closing database connection...')
     await pool.close()
-  } catch (error) {
-    logger.error('error creating database...')
-    logger.error(error)
+  } finally {
+    if (pool && (pool.connecting || pool.connected)) {
+      pool.close()
+    }
   }
 }
 

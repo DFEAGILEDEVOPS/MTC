@@ -80,18 +80,14 @@ const migratorConfig = {
 }
 
 const runMigrations = async (version) => {
-  await createDatabaseIfNotExists()
-
-  // TODO add multi directory support
-  const postgrator = new Migrator(migratorConfig)
-
-  // subscribe to useful events
-  postgrator.on('migration-started', migration => logger.info(`executing ${migration.version} ${migration.action}:${migration.name}...`))
-
-  // Migrate to 'max' version or user-specified e.g. '008'
-  logger.info('Migrating to version: ' + version)
-
   try {
+    await createDatabaseIfNotExists()
+    // TODO add multi directory support
+    const postgrator = new Migrator(migratorConfig)
+    // subscribe to useful events
+    postgrator.on('migration-started', migration => logger.info(`executing ${migration.version} ${migration.action}:${migration.name}...`))
+    // Migrate to 'max' version or user-specified e.g. '008'
+    logger.info('Migrating to version: ' + version)
     await postgrator.migrate(version)
     logger.info('SQL Migrations complete')
   } catch (error) {
