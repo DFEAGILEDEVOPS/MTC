@@ -42,7 +42,7 @@ async function main () {
   migratorConfig.requestTimeout = config.Sql.Migrator.Timeout
   const pool = new mssql.ConnectionPool(migratorConfig)
   try {
-    logger.info(`attempting to connect to ${migratorConfig.server} on ${migratorConfig.port} within ${migratorConfig.connectionTimeout}ms`)
+    logger.info(`attempting to connect to ${migratorConfig.server} as ${migratorConfig.user} on ${migratorConfig.port} within ${migratorConfig.connectionTimeout}ms`)
     await pool.connect()
     logger.info('connected.')
     await createDatabase(pool)
