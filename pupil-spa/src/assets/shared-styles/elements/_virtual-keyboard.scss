@@ -40,7 +40,7 @@
   .numpad-enter-button-#{$size}, .copy-size-#{$size} .numpad-enter-button {
     position: relative;
     font-family: Arial, Segoe UI Symbol, sans-serif !important;
-
+    touch-action: manipulation; /* see https://webkit.org/blog/5610/more-responsive-tapping-on-ios/ */
     span {
       position: absolute;
       left: 50%;
@@ -52,6 +52,7 @@
   .numpad-button-#{$size}, .copy-size-#{$size} .numpad-button {
     @include button($grey-1);
 
+    touch-action: manipulation; /* see https://webkit.org/blog/5610/more-responsive-tapping-on-ios/ */
     font-size: $button-number-size !important;
     line-height: $button-height !important;
     width: $button-width !important;
@@ -63,6 +64,7 @@
   .numpad-button-preview-#{$size}, .copy-size-#{$size} .numpad-button {
     @include button($grey-1);
 
+    touch-action: manipulation; /* see https://webkit.org/blog/5610/more-responsive-tapping-on-ios/ */
     font-size: $button-number-size !important;
     line-height: $button-height !important;
     width: $button-preview-width !important;
@@ -74,6 +76,7 @@
   .numpad-enter-button-#{$size}, .copy-size-#{$size} .numpad-enter-button {
     @include button($grey-1);
 
+    touch-action: manipulation; /* see https://webkit.org/blog/5610/more-responsive-tapping-on-ios/ */
     font-size: $button-text-size !important;
     line-height: $button-height !important;
     width: $button-width !important;
