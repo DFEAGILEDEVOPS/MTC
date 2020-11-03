@@ -40,9 +40,9 @@ async function main () {
   migratorConfig.user = config.Sql.Migrator.Username
   migratorConfig.password = config.Sql.Migrator.Password
   migratorConfig.requestTimeout = config.Sql.Migrator.Timeout
-  const pool = new mssql.ConnectionPool(sqlConfig)
+  const pool = new mssql.ConnectionPool(migratorConfig)
   try {
-    logger.info(`attempting to connect to ${sqlConfig.server} on ${sqlConfig.port} within ${sqlConfig.connectionTimeout}ms`)
+    logger.info(`attempting to connect to ${migratorConfig.server} on ${migratorConfig.port} within ${migratorConfig.connectionTimeout}ms`)
     await pool.connect()
     logger.info('connected.')
     await createDatabase(pool)
