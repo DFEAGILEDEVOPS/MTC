@@ -1,9 +1,9 @@
-import { ISqlService, ITransactionRequest, SqlService } from '../../sql/sql.service'
-import { Audit, DBEventType, DBQuestion, Device, MarkedCheck, ValidatedCheck } from './models'
 import { NVarChar, TYPES } from 'mssql'
 import * as R from 'ramda'
-import { UserAgentParser } from './user-agent-parser'
+import { Audit, DBEventType, DBQuestion, Device, MarkedCheck, ValidatedCheck } from './models'
 import { IPrepareAnswersAndInputsDataService, PrepareAnswersAndInputsDataService } from './prepare-answers-and-inputs.data.service'
+import { ISqlService, ITransactionRequest, SqlService } from '../../sql/sql.service'
+import { UserAgentParser } from './user-agent-parser'
 
 export interface ISyncResultsDataService {
   insertToDatabase (requests: ITransactionRequest[]): Promise<void>
