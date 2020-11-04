@@ -1,6 +1,6 @@
 # MSSQL Patterns
 
-Taken from https://github.com/jon-shipley/patterns/blob/master/mssql-idempotent-sql.md
+Sourced from https://github.com/jon-shipley/patterns/blob/master/mssql-idempotent-sql.md
 
 ## Table of contents
 1. [Columns](#Columns)
