@@ -16,6 +16,9 @@ yarn new <name> --type js
 Generated migrations will be created in the root folder (`/db`) with the filename format `yyyymmddhhmmss.<do|undo>.name.<sql|js>`
 These should be moved to the respective folder under `migrations`, otherwise they will not be executed by the migration engine.
 
+## Migration Policy
+see [the examples](examples.md) for guidance on how to create idempotent scripts.
+
 ## Running migrations
 
 The migration script will execute *all* migrations up or down to a given version
