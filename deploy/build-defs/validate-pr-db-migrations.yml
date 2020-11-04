@@ -47,6 +47,9 @@ jobs:
       arguments: '$(SqlAdminUser) $(SqlAdminUserPassword) $(SqlAppUserPassword) $(Build.BuildNumber)'
     env:
       SQL_SERVER: $(SqlServer)
+      SQL_TECH_SUPPORT_USER_PASSWORD: $(SqlTechSupportUserPassword)
+      SQL_PUPIL_CENSUS_USER_PASSWORD: $(SqlCensusUserPassword)
+      SQL_APP_USER_PASSWORD: $(SqlAppUserPassword)
 
   - task: Bash@3
     displayName: 'Migrate Database Down'
@@ -56,6 +59,9 @@ jobs:
       arguments: '$(SqlAdminUser) $(SqlAdminUserPassword) $(SqlAppUserPassword) $(Build.BuildNumber)'
     env:
       SQL_SERVER: $(SqlServer)
+      SQL_TECH_SUPPORT_USER_PASSWORD: $(SqlTechSupportUserPassword)
+      SQL_PUPIL_CENSUS_USER_PASSWORD: $(SqlCensusUserPassword)
+      SQL_APP_USER_PASSWORD: $(SqlAppUserPassword)
 
   - task: AzureCLI@2
     displayName: 'Delete Database'
