@@ -183,4 +183,67 @@ describe('School Import Predicates', () => {
       expect(result.message).toStrictEqual('')
     })
   })
+
+  describe('hasRequiredFields', () => {
+    let school: ISchoolRecord
+    beforeEach(() => {
+      school = {
+        estabCode: 1234,
+        estabStatusCode: EstabStatusCode.Open,
+        estabTypeCode: EstabTypeCode.communitySpecialSchool,
+        estabTypeGroupCode: EstabTypeGroupCode.localAuthorityMaintainedSchool,
+        leaCode: 743,
+        name: 'school',
+        urn: 12345
+      }
+    })
+    test('returns false when estabCode is empty', () => {
+      school.estabCode = undefined
+      const result = sut.hasRequiredFields(school)
+      expect(result.isMatch).toBe(false)
+      expect(result.message).toBe('Excluding school 12345: estabCode is required')
+    })
+    test('returns false when estabCode is zero', () => {
+      school.estabCode = 0
+      const result = sut.hasRequiredFields(school)
+      expect(result.isMatch).toBe(false)
+      expect(result.message).toBe('Excluding school 12345: estabCode is required')
+    })
+    test('returns false when leaCode is empty', () => {
+      school.leaCode = undefined
+      const result = sut.hasRequiredFields(school)
+      expect(result.isMatch).toBe(false)
+      expect(result.message).toBe('Excluding school 12345: leaCode is required')
+    })
+    test('returns false when leaCode is zero', () => {
+      school.leaCode = 0
+      const result = sut.hasRequiredFields(school)
+      expect(result.isMatch).toBe(false)
+      expect(result.message).toBe('Excluding school 12345: leaCode is required')
+    })
+    test('returns false when name is undefined', () => {
+      school.name = undefined
+      const result = sut.hasRequiredFields(school)
+      expect(result.isMatch).toBe(false)
+      expect(result.message).toBe('Excluding school 12345: name is required')
+    })
+    test('returns false when name is empty string', () => {
+      school.name = ''
+      const result = sut.hasRequiredFields(school)
+      expect(result.isMatch).toBe(false)
+      expect(result.message).toBe('Excluding school 12345: name is required')
+    })
+    test('returns false when urn is undefined', () => {
+      school.urn = undefined
+      const result = sut.hasRequiredFields(school)
+      expect(result.isMatch).toBe(false)
+      expect(result.message).toBe('Excluding school undefined: urn is required')
+    })
+    test('returns false when urn is zero', () => {
+      school.urn = 0
+      const result = sut.hasRequiredFields(school)
+      expect(result.isMatch).toBe(false)
+      expect(result.message).toBe('Excluding school 0: urn is required')
+    })
+  })
 })

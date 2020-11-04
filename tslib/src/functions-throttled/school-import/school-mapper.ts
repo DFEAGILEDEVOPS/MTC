@@ -7,17 +7,18 @@ export class SchoolRecordMapper {
    * @param {Object} mapping - mapping object { urn: 0, name: 1, ... }
    * @return {ISchoolRecord} - mapped object of string values E.g. { urn: '1001', 'name': 'Sometown Primary School' ... }
    */
-  mapRow (row: any[], csvMapping: any): ISchoolRecord {
-    const o: any = {}
-    Object.keys(csvMapping).forEach(k => {
-      const mappingValue = row[csvMapping[k]]
-      if (!isNaN(mappingValue)) {
-        o[k] = Number(mappingValue)
+  mapRow (row: string[], csvMapping: Record<string, number>): ISchoolRecord {
+    const o: Record<string, any> = {}
+    Object.keys(csvMapping).forEach(key => {
+      const value = row[csvMapping[key]]
+      const valueAsNumber = parseInt(value)
+      if (!isNaN(valueAsNumber)) {
+        o[key] = Number(value)
       } else {
-        o[k] = mappingValue
+        o[key] = value
       }
     })
-    return o
+    return o as ISchoolRecord
   }
 
   /**
@@ -28,7 +29,7 @@ export class SchoolRecordMapper {
    *                               key to return.
    * @return {key: number, ...}    Return obj with the index of the desired columns to use mapped to the keys provided
    */
-  mapColumns (cols: string[], headers: any): Record<string, unknown> {
+  mapColumns (cols: string[], headers: any): Record<string, number> {
     const quote = (s: string): string => `"${s}"`
     const quoteAndJoin = (ary: any[]): string => { return ary.map(quote).join(', ') }
     const mapping: any = {}
