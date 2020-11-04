@@ -4,10 +4,6 @@ resources:
 
 name: PR-$(date:yyyyMMdd)$(rev:.r)
 
-# to be defined
-# variables:
-#  var1: value1
-
 # do not trigger on master commits
 trigger: none
 
@@ -22,7 +18,8 @@ pool:
 jobs:
 - job: FastFail
   steps:
-  - bash: 'deploy/pr-label-check.sh'
+  # - bash: 'deploy/pr-label-check.sh'
+  - bash: echo 'ignore for now'
     env:
       PULL_REQUEST_ID: $(System.PullRequest.PullRequestNumber)
     failOnStderr: true
