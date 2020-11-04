@@ -7,6 +7,7 @@ export interface ISchoolImportPredicates {
   isSchoolOpen (school: ISchoolRecord): SchoolPredicateResult
   isAgeInRange (targetAge: number, school: ISchoolRecord): SchoolPredicateResult
   isRequiredEstablishmentTypeGroup (school: ISchoolRecord): SchoolPredicateResult
+  hasRequiredFields (school: ISchoolRecord): SchoolPredicateResult
 }
 
 export class SchoolPredicateResult {
@@ -20,6 +21,26 @@ export class SchoolPredicateResult {
 }
 
 export class Predicates implements ISchoolImportPredicates {
+  hasRequiredFields (school: ISchoolRecord): SchoolPredicateResult {
+    const issues: string[] = []
+    if (!RA.isPositive(school.estabCode)) {
+      issues.push('estabCode is required')
+    }
+    if (!RA.isPositive(school.leaCode)) {
+      issues.push('leaCode is required')
+    }
+    if (RA.isNilOrEmpty(school.name)) {
+      issues.push('name is required')
+    }
+    if (!RA.isPositive(school.urn)) {
+      issues.push('urn is required')
+    }
+    if (issues.length > 0) {
+      return new SchoolPredicateResult(false, `Excluding school ${school.urn}: ${issues.join('. ')}`)
+    }
+    return new SchoolPredicateResult(true)
+  }
+
   isSchoolOpen (school: ISchoolRecord): SchoolPredicateResult {
     // we want to load all schools that are open, proposed to open, proposed to close
     // this is the same as every school that isn't closed

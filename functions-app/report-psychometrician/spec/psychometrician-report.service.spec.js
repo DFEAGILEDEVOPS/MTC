@@ -210,7 +210,7 @@ describe('psychometricians-report.service', () => {
         restartCount: 1,
         attendanceCode: 'JSTAR',
         schoolName: 'Wacky Races Driving School',
-        schoolEstabCode: '1999',
+        schoolEstabCode: 1999,
         schoolUrn: 89000,
         schoolLeaCode: 999,
         checkCode: '763AD270-278D-4221-886C-23FF7E5E5736',
@@ -324,7 +324,7 @@ describe('psychometricians-report.service', () => {
 
     it('outputs the school estab code', () => {
       const out = service.produceReportDataV2(row)
-      expect(out.Estab).toBe('1999')
+      expect(out.Estab).toBe(1999)
     })
 
     it('outputs the school URN', () => {

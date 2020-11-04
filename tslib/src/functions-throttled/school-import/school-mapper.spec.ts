@@ -13,7 +13,7 @@ describe('SchoolDataService', () => {
   })
 
   test('returns a mapped object with keys as per the mapping object', () => {
-    const row = ['Town Primary School', 123456, 'extra', 'data', 9991111]
+    const row = ['Town Primary School', '123456', 'extra', 'data', '9991111']
     const mapping = {
       name: 0,
       urn: 1,

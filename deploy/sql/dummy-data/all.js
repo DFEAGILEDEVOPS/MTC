@@ -46,7 +46,7 @@ pool.connect()
     const table = new sql.Table('mtc_admin.school')
     table.create = false
     table.columns.add('leaCode', sql.Int)
-    table.columns.add('estabCode', sql.NVarChar, { length: 'max' })
+    table.columns.add('estabCode', sql.Int)
     table.columns.add('name', sql.NVarChar, { length: 'max', nullable: false })
     table.columns.add('urn', sql.Int, { nullable: false })
     table.columns.add('dfeNumber', sql.Int, { nullable: false })
