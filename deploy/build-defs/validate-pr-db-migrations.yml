@@ -2,15 +2,15 @@
 resources:
   - repo: self
 
-name: PR-$(date:yyyyMMdd)$(rev:.r)
+name: Validate-PR-Migrations-$(date:yyyyMMdd)$(rev:.r)
 
 # do not trigger on master commits
 trigger: none
 
 # trigger this build for PRs targeting master
-pr:
-  branches:
-    include: [ master ]
+ pr:
+   branches:
+     include: [ master ]
 
 pool:
   name: MTC LIVE
