@@ -82,7 +82,6 @@ const migratorConfig = {
 const runMigrations = async (version) => {
   try {
     await createDatabaseIfNotExists()
-    // TODO add multi directory support
     const postgrator = new Migrator(migratorConfig)
     // subscribe to useful events
     postgrator.on('migration-started', migration => logger.info(`executing ${migration.version} ${migration.action}:${migration.name}...`))
