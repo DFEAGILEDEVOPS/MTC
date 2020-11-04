@@ -1,5 +1,4 @@
 # AzureDevops build defintion for PR database migration validation checks
-# Currently unused, but retained for future use
 resources:
   - repo: self
 
@@ -27,8 +26,8 @@ jobs:
     env:
       PULL_REQUEST_ID: $(System.PullRequest.PullRequestNumber)
     failOnStderr: true
-- job: Validate Migrations
-  dependsOn: Job_1
+- job: ValidateMigrations
+  dependsOn: FastFail
 # TODO: define secret variables and inputs for TARGET_DB_RESOURCE_GROUP, TARGET_DB_SERVER, TARGET_AZURE_SUBSCRIPTION
 # Your build pipeline references a secret variable named ‘SQL_ADMIN_USER_PASSWORD’. Create or edit the build pipeline for this YAML file, define the variable on the Variables tab, and then select the option to make it secret. See https://go.microsoft.com/fwlink/?linkid=865972
 # Your build pipeline references a secret variable named ‘SQL_APP_USER_PASSWORD’. Create or edit the build pipeline for this YAML file, define the variable on the Variables tab, and then select the option to make it secret. See https://go.microsoft.com/fwlink/?linkid=865972
@@ -41,7 +40,7 @@ jobs:
       yarn install --frozen-lockfile
 
     workingDirectory: admin
-    displayName: 'yarn install'
+    displayName: 'admin: yarn install'
 
   - task: Bash@3
     displayName: 'Migrate Database Up'
