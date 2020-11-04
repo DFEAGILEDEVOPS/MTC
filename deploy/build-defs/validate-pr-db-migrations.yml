@@ -19,8 +19,7 @@ jobs:
 - job: FastFail
   steps:
   - bash: 'deploy/pr-label-check.sh'
-    env:
-      PULL_REQUEST_ID: $(System.PullRequest.PullRequestNumber)
+    arguments: $(System.PullRequest.PullRequestNumber)
     failOnStderr: true
 - job: ValidateMigrations
   dependsOn: FastFail
@@ -39,6 +38,8 @@ jobs:
     inputs:
       targetType: filePath
       filePath: 'deploy/sql/vso-validate-migrations/vso-migrate-up.sh'
+      env:
+        SQL_SERVER: $(SqlServer)
       arguments: '$(SqlAdminUser) $(SqlAdminUserPassword) $(SqlAppUserPassword) $(Build.BuildNumber)'
 
   - task: Bash@3
