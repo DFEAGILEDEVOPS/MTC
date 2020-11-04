@@ -18,8 +18,7 @@ pool:
 jobs:
 - job: FastFail
   steps:
-  # - bash: 'deploy/pr-label-check.sh'
-  - bash: echo "the pull request id is $PULL_REQUEST_ID"
+  - bash: 'deploy/pr-label-check.sh'
     env:
       PULL_REQUEST_ID: $(System.PullRequest.PullRequestNumber)
     failOnStderr: true
