@@ -45,7 +45,7 @@ at_exit do
   puts "\n#################################".send(colour)
   puts "## Exiting with status code: #{exit_code} ##".send(colour)
   puts "#################################\n\n".send(colour)
-  `pkill -f BrowserStack`
+
   p 'killed'
   exit exit_code
 end

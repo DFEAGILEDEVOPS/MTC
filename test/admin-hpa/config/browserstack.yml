@@ -2,11 +2,10 @@ server: "hub-cloud.browserstack.com"
 
 common_caps:
   "browserstack.debug": true
+  "browserstack.forcelocal": true
   "browserstack.local": true
-  "browserstack.ie.driver": "2.21"
   "browserstack.idleTimeout": 300
   "project": "MTC"
-  "browserstack.console": "errors"
   "build": "AdminTests"
 
 browser_caps:
@@ -22,3 +21,12 @@ browser_caps:
     "browser": "Edge"
     "resolution": "1024x768"
     "browserstack.selenium_version": "4.0.0-alpha-1"
+  win10_ie11:
+    "os": "Windows"
+    "os_version": "10"
+    "browser": "IE"
+    "browser_version": "11"
+    "browserstack.selenium_version": "3.141.59"
+    "browserstack.ie.driver": "3.141.59"
+    "browserstack.ie.arch": "x32"
+    "browserstack.sendKeys": "true"
