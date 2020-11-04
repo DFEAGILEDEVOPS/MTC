@@ -42,9 +42,9 @@ jobs:
     inputs:
       targetType: filePath
       filePath: 'deploy/sql/vso-validate-migrations/vso-migrate-up.sh'
-      env:
-        SQL_SERVER: $(SqlServer)
       arguments: '$(SqlAdminUser) $(SqlAdminUserPassword) $(SqlAppUserPassword) $(Build.BuildNumber)'
+    env:
+      SQL_SERVER: $(SqlServer)
 
   - task: Bash@3
     displayName: 'Migrate Database Down'
@@ -52,6 +52,8 @@ jobs:
       targetType: filePath
       filePath: 'deploy/sql/vso-validate-migrations/vso-migrate-down.sh'
       arguments: '$(SqlAdminUser) $(SqlAdminUserPassword) $(SqlAppUserPassword) $(Build.BuildNumber)'
+    env:
+      SQL_SERVER: $(SqlServer)
 
   - task: AzureCLI@2
     displayName: 'Delete Database'
