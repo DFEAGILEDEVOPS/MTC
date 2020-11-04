@@ -8,9 +8,9 @@ name: Validate-PR-Migrations-$(date:yyyyMMdd)$(rev:.r)
 trigger: none
 
 # trigger this build for PRs targeting master
- pr:
-   branches:
-     include: [ master ]
+pr:
+  branches:
+    include: [ master ]
 
 pool:
   name: MTC LIVE
