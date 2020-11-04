@@ -50,6 +50,7 @@ jobs:
       SQL_TECH_SUPPORT_USER_PASSWORD: $(SqlTechSupportUserPassword)
       SQL_PUPIL_CENSUS_USER_PASSWORD: $(SqlCensusUserPassword)
       SQL_APP_USER_PASSWORD: $(SqlAppUserPassword)
+      SQL_AZURE_SCALE: S0
 
   - task: Bash@3
     displayName: 'Migrate Database Down'
@@ -62,6 +63,7 @@ jobs:
       SQL_TECH_SUPPORT_USER_PASSWORD: $(SqlTechSupportUserPassword)
       SQL_PUPIL_CENSUS_USER_PASSWORD: $(SqlCensusUserPassword)
       SQL_APP_USER_PASSWORD: $(SqlAppUserPassword)
+      SQL_AZURE_SCALE: S0
 
   - task: AzureCLI@2
     displayName: 'Delete Database'
