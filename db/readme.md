@@ -18,20 +18,12 @@ All migrations are stored under the `migrations` folder in one of the following 
 Execution order of migration scripts is determined by the number prefix of each file, and is shared across all directories under `migrations`.
 
 ## Creating Migrations
-See the [migrations guide](migrations.md)
+See the [migrations guide](docs/migrations.md)
 
 ## Policy
 Use of the `GO` statement within a migration is forbidden (but may be found in baseline scripts due to their integrity), due to the fact that this can [break atomicity and cause transactional rollback to fail within a migration](https://github.com/rickbergfalk/postgrator#preventing-partial-migrations)
 
 ## TODO add templates for each type of migration from https://github.com/jon-shipley/patterns/blob/master/mssql-idempotent-sql.md
-
-## TODO all to be done before PR complete
-- object naming policy
-- remove migrationLog table creation
-- extract permission grants
-- remove z_pupilGroup_archive table creation
-- remove z_group_archive table creation
-- remove final statement - alter read_write flag on database
 
 ## Baseline History
 October 2020: Scripts baselined for first time
