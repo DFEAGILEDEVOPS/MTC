@@ -1,32 +1,45 @@
-INSERT INTO mtc_admin.attendanceCode (reason, [order], code) VALUES ('Absent during check window', 2, 'ABSNT');
-INSERT INTO mtc_admin.attendanceCode (reason, [order], code) VALUES ('Left school', 3, 'LEFTT');
-INSERT INTO mtc_admin.attendanceCode (reason, [order], code) VALUES ('Incorrect registration', 1, 'INCRG');
-INSERT INTO mtc_admin.attendanceCode (reason, [order], code) VALUES ('Unable to access', 4, 'NOACC');
-INSERT INTO mtc_admin.attendanceCode (reason, [order], code) VALUES ('Working below expectation', 5, 'BLSTD');
-INSERT INTO mtc_admin.attendanceCode (reason, [order], code) VALUES ('Just arrived and unable to establish abilities', 6, 'JSTAR');
+INSERT INTO [mtc_admin].[accessArrangements] (displayOrder, description, code) VALUES
+  (1, 'Audible time alert', 'ATA'),
+  (2, 'Colour contrast', 'CCT'),
+  (3, 'Font size', 'FTS'),
+  (4, 'Input assistance (reason required)', 'ITA'),
+  (5, '''Next'' button between questions (reason required)', 'NBQ'),
+  (6, 'Question reader (reason required)', 'QNR'),
+  (7, 'Remove on-screen number pad', 'RON');
+
+INSERT INTO mtc_admin.attendanceCode (reason, [order], code) VALUES
+('Absent during check window', 2, 'ABSNT'),
+('Left school', 3, 'LEFTT'),
+('Incorrect registration', 1, 'INCRG'),
+('Unable to access', 4, 'NOACC'),
+('Working below expectation', 5, 'BLSTD'),
+('Just arrived and unable to establish abilities', 6, 'JSTAR');
 
 
 INSERT INTO mtc_admin.azureBlobFileType (code, [description]) VALUES ('PSR', 'Psychometrician Report');
 
 
-INSERT INTO mtc_admin.checkStatus ([description], code) VALUES ('New', 'NEW');
-INSERT INTO mtc_admin.checkStatus ([description], code) VALUES ('Complete', 'CMP');
-INSERT INTO mtc_admin.checkStatus ([description], code) VALUES ('Collected', 'COL');
-INSERT INTO mtc_admin.checkStatus ([description], code) VALUES ('Not Received', 'NTR');
-INSERT INTO mtc_admin.checkStatus ([description], code) VALUES ('Check voided or annulled', 'VOD');
-INSERT INTO mtc_admin.checkStatus ([description], code) VALUES ('Error in processing submitted check', 'ERR');
+INSERT INTO mtc_admin.checkStatus ([description], code) VALUES
+('New', 'NEW'),
+('Complete', 'CMP'),
+('Collected', 'COL'),
+('Not Received', 'NTR'),
+('Check voided or annulled', 'VOD'),
+('Error in processing submitted check', 'ERR');
 
 
-INSERT INTO mtc_admin.jobStatus ([description], jobStatusCode) VALUES ('Submitted', 'SUB');
-INSERT INTO mtc_admin.jobStatus ([description], jobStatusCode) VALUES ('Processing', 'PRC');
-INSERT INTO mtc_admin.jobStatus ([description], jobStatusCode) VALUES ('Completed', 'COM');
-INSERT INTO mtc_admin.jobStatus ([description], jobStatusCode) VALUES ('Completed with errors', 'CWR');
-INSERT INTO mtc_admin.jobStatus ([description], jobStatusCode) VALUES ('Failed', 'FLD');
-INSERT INTO mtc_admin.jobStatus ([description], jobStatusCode) VALUES ('Removed', 'DEL');
+INSERT INTO mtc_admin.jobStatus ([description], jobStatusCode) VALUES
+('Submitted', 'SUB'),
+('Processing', 'PRC'),
+('Completed', 'COM'),
+('Completed with errors', 'CWR'),
+('Failed', 'FLD'),
+('Removed', 'DEL');
 
 
-INSERT INTO mtc_admin.jobType ([description], jobTypeCode) VALUES ('Pupil Census', 'CEN');
-INSERT INTO mtc_admin.jobType ([description], jobTypeCode) VALUES ('Psychometrician Report', 'PSY');
+INSERT INTO mtc_admin.jobType ([description], jobTypeCode) VALUES
+('Pupil Census', 'CEN'),
+('Psychometrician Report', 'PSY');
 
 
 -- populate the pin table with all 4 digit pins that don't use 0 or 1
@@ -54,30 +67,34 @@ ORDER BY NEWID();
 DROP TABLE #pinStaging;
 
 
-INSERT INTO mtc_admin.pupilColourContrasts (displayOrder, [description], code) VALUES (1, 'Black on White', 'BOW');
-INSERT INTO mtc_admin.pupilColourContrasts (displayOrder, [description], code) VALUES (2, 'Yellow on Black', 'YOB');
-INSERT INTO mtc_admin.pupilColourContrasts (displayOrder, [description], code) VALUES (3, 'Black on Blue', 'BOB');
-INSERT INTO mtc_admin.pupilColourContrasts (displayOrder, [description], code) VALUES (4, 'Black on Peach', 'BOP');
-INSERT INTO mtc_admin.pupilColourContrasts (displayOrder, [description], code) VALUES (5, 'Blue on Cream', 'BOC');
+INSERT INTO mtc_admin.pupilColourContrasts (displayOrder, [description], code) VALUES
+(1, 'Black on White', 'BOW'),
+(2, 'Yellow on Black', 'YOB'),
+(3, 'Black on Blue', 'BOB'),
+(4, 'Black on Peach', 'BOP'),
+(5, 'Blue on Cream', 'BOC');
 
 
-INSERT INTO mtc_admin.pupilFontSizes (displayOrder, [description], code) VALUES (1, 'Very small', 'VSM');
-INSERT INTO mtc_admin.pupilFontSizes (displayOrder, [description], code) VALUES (2, 'Small', 'SML');
-INSERT INTO mtc_admin.pupilFontSizes (displayOrder, [description], code) VALUES (3, 'Regular', 'RGL');
-INSERT INTO mtc_admin.pupilFontSizes (displayOrder, [description], code) VALUES (4, 'Large', 'LRG');
-INSERT INTO mtc_admin.pupilFontSizes (displayOrder, [description], code) VALUES (5, 'Very large', 'XLG');
-INSERT INTO mtc_admin.pupilFontSizes (displayOrder, [description], code) VALUES (6, 'Largest', 'XXL');
+INSERT INTO mtc_admin.pupilFontSizes (displayOrder, [description], code) VALUES
+(1, 'Very small', 'VSM'),
+(2, 'Small', 'SML'),
+(3, 'Regular', 'RGL'),
+(4, 'Large', 'LRG'),
+(5, 'Very large', 'XLG'),
+(6, 'Largest', 'XXL');
 
 
-INSERT INTO mtc_admin.pupilRestartCode ([description], code) VALUES ('Remove restart', 'REM');
-INSERT INTO mtc_admin.pupilRestartCode ([description], code) VALUES ('Restart taken', 'TKN');
-INSERT INTO mtc_admin.pupilRestartCode ([description], code) VALUES ('Maximum number of restarts taken', 'MAX');
+INSERT INTO mtc_admin.pupilRestartCode ([description], code) VALUES
+('Remove restart', 'REM'),
+('Restart taken', 'TKN'),
+('Maximum number of restarts taken', 'MAX');
 
 
-INSERT INTO mtc_admin.pupilRestartReason (displayOrder, [description], code) VALUES (1, 'Loss of internet', 'LOI');
-INSERT INTO mtc_admin.pupilRestartReason (displayOrder, [description], code) VALUES (2, 'IT issues', 'ITI');
-INSERT INTO mtc_admin.pupilRestartReason (displayOrder, [description], code) VALUES (3, 'Classroom disruption', 'CLD');
-INSERT INTO mtc_admin.pupilRestartReason (displayOrder, [description], code) VALUES (4, 'Did not complete', 'DNC');
+INSERT INTO mtc_admin.pupilRestartReason (displayOrder, [description], code) VALUES
+(1, 'Loss of internet', 'LOI'),
+(2, 'IT issues', 'ITI'),
+(3, 'Classroom disruption', 'CLD'),
+(4, 'Did not complete', 'DNC');
 
 
 INSERT INTO [mtc_admin].[question] (factor1, factor2, code, isWarmup)
@@ -371,57 +388,61 @@ VALUES (1, 1, 'W001', 1),
        (12, 12, 'Q144', 0);
 
 
-INSERT INTO mtc_admin.questionReaderReasons (displayOrder, [description], code) VALUES (1, 'English as an additional language (EAL)', 'EAL');
-INSERT INTO mtc_admin.questionReaderReasons (displayOrder, [description], code) VALUES (2, 'Slow processing', 'SLP');
-INSERT INTO mtc_admin.questionReaderReasons (displayOrder, [description], code) VALUES (3, 'Visual impairments', 'VIM');
-INSERT INTO mtc_admin.questionReaderReasons (displayOrder, [description], code) VALUES (4, 'Other', 'OTH');
+INSERT INTO mtc_admin.questionReaderReasons (displayOrder, [description], code) VALUES
+(1, 'English as an additional language (EAL)', 'EAL'),
+(2, 'Slow processing', 'SLP'),
+(3, 'Visual impairments', 'VIM'),
+(4, 'Other', 'OTH');
 
 
-INSERT INTO mtc_admin.role (title) VALUES ('SERVICE-MANAGER');
-INSERT INTO mtc_admin.role (title) VALUES ('TEST-DEVELOPER');
-INSERT INTO mtc_admin.role (title) VALUES ('TEACHER');
-INSERT INTO mtc_admin.role (title) VALUES ('HELPDESK');
-INSERT INTO mtc_admin.role (title) VALUES ('TECH-SUPPORT');
+INSERT INTO mtc_admin.role (title) VALUES
+('SERVICE-MANAGER'),
+('TEST-DEVELOPER'),
+('TEACHER'),
+('HELPDESK'),
+('TECH-SUPPORT');
 
 
 INSERT INTO mtc_admin.settings (id, loadingTimeLimit, questionTimeLimit, checkTimeLimit) VALUES (1, 3.00, 6.00, 30);
 
 
-INSERT INTO mtc_results.eventTypeLookup (eventType, eventDescription) VALUES ('AppError', 'Application error in the pupil''s browser');
-INSERT INTO mtc_results.eventTypeLookup (eventType, eventDescription) VALUES ('AppHidden', 'This event is triggered when the pupil-app changes from being in the foreground to the background, e.g. when switching to another tab/window in the browser, or to another application.');
-INSERT INTO mtc_results.eventTypeLookup (eventType, eventDescription) VALUES ('AppVisible', 'This event is triggered when the pupil-app changes from being in the background to the foreground. Opposite of the AppHidden event.');
-INSERT INTO mtc_results.eventTypeLookup (eventType, eventDescription) VALUES ('CheckStarted', 'This event is triggered when the pupil clicks the "Start" button after completing the initial practice questions.');
-INSERT INTO mtc_results.eventTypeLookup (eventType, eventDescription) VALUES ('CheckStartedAPICallFailed', 'An API call to MTC failed.');
-INSERT INTO mtc_results.eventTypeLookup (eventType, eventDescription) VALUES ('CheckStartedAPICallSucceeded', 'An API call to MTC succeeded.');
-INSERT INTO mtc_results.eventTypeLookup (eventType, eventDescription) VALUES ('CheckStartedApiCalled', 'An API call to MTC has been sent.');
-INSERT INTO mtc_results.eventTypeLookup (eventType, eventDescription) VALUES ('CheckSubmissionAPICallSucceeded', 'An API call to MTC succeeded.  This API returns the pupil results to MTC.');
-INSERT INTO mtc_results.eventTypeLookup (eventType, eventDescription) VALUES ('CheckSubmissionAPIFailed', 'An API to return the pupil results to MTC failed.');
-INSERT INTO mtc_results.eventTypeLookup (eventType, eventDescription) VALUES ('CheckSubmissionApiCalled', 'An API to return the pupil results to MTC has been called.');
-INSERT INTO mtc_results.eventTypeLookup (eventType, eventDescription) VALUES ('CheckSubmissionFailed', 'The browser was unable to return the payload to MTC, even after several attempts. No more attempts will be made.');
-INSERT INTO mtc_results.eventTypeLookup (eventType, eventDescription) VALUES ('CheckSubmissionPending', 'The browser has sent the data to MTC and is waiting for a response.');
-INSERT INTO mtc_results.eventTypeLookup (eventType, eventDescription) VALUES ('PauseRendered', 'The Pause screen was displayed in the browser. This allows the pupils to rest for a few seconds before the next question.');
-INSERT INTO mtc_results.eventTypeLookup (eventType, eventDescription) VALUES ('PupilPrefsAPICallFailed', 'An API call failed to update the pupil preferences - e.g. font size and/or colour scheme.');
-INSERT INTO mtc_results.eventTypeLookup (eventType, eventDescription) VALUES ('PupilPrefsAPICallSucceeded', 'AN API call succeeded, this updates the pupil preferences - e.g. font size and/or colour scheme.');
-INSERT INTO mtc_results.eventTypeLookup (eventType, eventDescription) VALUES ('PupilPrefsAPICalled', 'An API call from the pupil-app to MTC to update pupil preferences has been sent and is awaiting a response.');
-INSERT INTO mtc_results.eventTypeLookup (eventType, eventDescription) VALUES ('QuestionAnswered', 'The user has pressed "Enter" to complete the question with time on the clock remaining.');
-INSERT INTO mtc_results.eventTypeLookup (eventType, eventDescription) VALUES ('QuestionIntroRendered', 'This event is triggered when the Questions Intro page is displayed in the browser.  This page is the one that says "There will be 25 questions".');
-INSERT INTO mtc_results.eventTypeLookup (eventType, eventDescription) VALUES ('QuestionReadingEnded', 'The browser speech API stopped speaking the question.');
-INSERT INTO mtc_results.eventTypeLookup (eventType, eventDescription) VALUES ('QuestionReadingStarted', 'The browser speech API started speaking the question.');
-INSERT INTO mtc_results.eventTypeLookup (eventType, eventDescription) VALUES ('QuestionTimerCancelled', 'The user cancelled the current question timer, by pressing "Enter" with an answer.');
-INSERT INTO mtc_results.eventTypeLookup (eventType, eventDescription) VALUES ('QuestionTimerEnded', 'The question timer ran out of time.');
-INSERT INTO mtc_results.eventTypeLookup (eventType, eventDescription) VALUES ('QuestionTimerStarted', 'The question timer started.');
-INSERT INTO mtc_results.eventTypeLookup (eventType, eventDescription) VALUES ('RefreshDetected', 'The application was reloaded, e.g. by the user clicking refresh in the browser.');
-INSERT INTO mtc_results.eventTypeLookup (eventType, eventDescription) VALUES ('RefreshOrTabCloseDetected', 'The browser window may have been refreshed, or closed.  This event is attached to window:beforeunload in the browser.');
-INSERT INTO mtc_results.eventTypeLookup (eventType, eventDescription) VALUES ('SessionExpired', 'The session expired.');
-INSERT INTO mtc_results.eventTypeLookup (eventType, eventDescription) VALUES ('UtteranceEnded', 'The browser finished speaking a short phrase.');
-INSERT INTO mtc_results.eventTypeLookup (eventType, eventDescription) VALUES ('UtteranceStarted', 'The browser started speaking a short phrase.');
-INSERT INTO mtc_results.eventTypeLookup (eventType, eventDescription) VALUES ('WarmupCompleteRendered', 'The warmup complete page was displayed in the browser.');
-INSERT INTO mtc_results.eventTypeLookup (eventType, eventDescription) VALUES ('WarmupIntroRendered', 'The warmup introduction page was displayed in the browser.');
-INSERT INTO mtc_results.eventTypeLookup (eventType, eventDescription) VALUES ('WarmupStarted', 'The event is triggered by the user clicking the "Start Now" button on the instructions page.');
-INSERT INTO mtc_results.eventTypeLookup (eventType, eventDescription) VALUES ('QuestionRendered', 'The question screen was shown. For spoken questions this event is registered when the screen is showm, but the question itself is not shown until after the speech has finished.');
+INSERT INTO mtc_results.eventTypeLookup (eventType, eventDescription) VALUES
+('AppError', 'Application error in the pupil''s browser'),
+('AppHidden', 'This event is triggered when the pupil-app changes from being in the foreground to the background, e.g. when switching to another tab/window in the browser, or to another application.'),
+('AppVisible', 'This event is triggered when the pupil-app changes from being in the background to the foreground. Opposite of the AppHidden event.'),
+('CheckStarted', 'This event is triggered when the pupil clicks the "Start" button after completing the initial practice questions.'),
+('CheckStartedAPICallFailed', 'An API call to MTC failed.'),
+('CheckStartedAPICallSucceeded', 'An API call to MTC succeeded.'),
+('CheckStartedApiCalled', 'An API call to MTC has been sent.'),
+('CheckSubmissionAPICallSucceeded', 'An API call to MTC succeeded.  This API returns the pupil results to MTC.'),
+('CheckSubmissionAPIFailed', 'An API to return the pupil results to MTC failed.'),
+('CheckSubmissionApiCalled', 'An API to return the pupil results to MTC has been called.'),
+('CheckSubmissionFailed', 'The browser was unable to return the payload to MTC, even after several attempts. No more attempts will be made.'),
+('CheckSubmissionPending', 'The browser has sent the data to MTC and is waiting for a response.'),
+('PauseRendered', 'The Pause screen was displayed in the browser. This allows the pupils to rest for a few seconds before the next question.'),
+('PupilPrefsAPICallFailed', 'An API call failed to update the pupil preferences - e.g. font size and/or colour scheme.'),
+('PupilPrefsAPICallSucceeded', 'AN API call succeeded, this updates the pupil preferences - e.g. font size and/or colour scheme.'),
+('PupilPrefsAPICalled', 'An API call from the pupil-app to MTC to update pupil preferences has been sent and is awaiting a response.'),
+('QuestionAnswered', 'The user has pressed "Enter" to complete the question with time on the clock remaining.'),
+('QuestionIntroRendered', 'This event is triggered when the Questions Intro page is displayed in the browser.  This page is the one that says "There will be 25 questions".'),
+('QuestionReadingEnded', 'The browser speech API stopped speaking the question.'),
+('QuestionReadingStarted', 'The browser speech API started speaking the question.'),
+('QuestionTimerCancelled', 'The user cancelled the current question timer, by pressing "Enter" with an answer.'),
+('QuestionTimerEnded', 'The question timer ran out of time.'),
+('QuestionTimerStarted', 'The question timer started.'),
+('RefreshDetected', 'The application was reloaded, e.g. by the user clicking refresh in the browser.'),
+('RefreshOrTabCloseDetected', 'The browser window may have been refreshed, or closed.  This event is attached to window:beforeunload in the browser.'),
+('SessionExpired', 'The session expired.'),
+('UtteranceEnded', 'The browser finished speaking a short phrase.'),
+('UtteranceStarted', 'The browser started speaking a short phrase.'),
+('WarmupCompleteRendered', 'The warmup complete page was displayed in the browser.'),
+('WarmupIntroRendered', 'The warmup introduction page was displayed in the browser.'),
+('WarmupStarted', 'The event is triggered by the user clicking the "Start Now" button on the instructions page.'),
+('QuestionRendered', 'The question screen was shown. For spoken questions this event is registered when the screen is showm, but the question itself is not shown until after the speech has finished.');
 
 
-INSERT INTO mtc_results.userInputTypeLookup ([name], code) VALUES ('Mouse', 'M');
-INSERT INTO mtc_results.userInputTypeLookup ([name], code) VALUES ('Keyboard', 'K');
-INSERT INTO mtc_results.userInputTypeLookup ([name], code) VALUES ('Touch', 'T');
-INSERT INTO mtc_results.userInputTypeLookup ([name], code) VALUES ('Unknown', 'X');
+INSERT INTO mtc_results.userInputTypeLookup ([name], code) VALUES
+('Mouse', 'M'),
+('Keyboard', 'K'),
+('Touch', 'T'),
+('Unknown', 'X');
