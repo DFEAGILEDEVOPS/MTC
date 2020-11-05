@@ -33,7 +33,7 @@ echo "Resetting terminal..."
 command -v reset >/dev/null 2>&1 && reset
 
 echo "Running migrations..."
-(cd ${scriptDir}/db && yarn migrate)
+(cd ${scriptDir}/db && yarn install --frozen-lockfile && yarn migrate)
 
 echo "Running seeds..."
 (cd ${scriptDir}/db && yarn seed)

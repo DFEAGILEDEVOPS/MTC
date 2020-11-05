@@ -17,7 +17,7 @@ async function createDatabase (pool) {
     if (config.Sql.Azure.Scale) {
       azureOnlyScaleSetting = `(SERVICE_OBJECTIVE = '${config.Sql.Azure.Scale}')`
     }
-    logger.info(`attempting to create ${config.Sql.Database} ${azureOnlyScaleSetting} if it does not already exist (timeout:${sqlConfig.requestTimeout}ms)...`)
+    logger.info(`attempting to create database ${config.Sql.Database}${azureOnlyScaleSetting} if it does not already exist (timeout:${sqlConfig.requestTimeout}ms)...`)
     const createDbSql = `
       IF NOT EXISTS(SELECT * FROM sys.databases WHERE name='${config.Sql.Database}')
         BEGIN
