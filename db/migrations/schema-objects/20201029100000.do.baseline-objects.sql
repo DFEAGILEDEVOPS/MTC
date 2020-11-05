@@ -429,8 +429,8 @@ CREATE TABLE [mtc_admin].[school](
 	[createdAt] [datetimeoffset](3) NOT NULL,
 	[updatedAt] [datetimeoffset](3) NOT NULL,
 	[version] [timestamp] NOT NULL,
-	[leaCode] [int] NULL,
-	[estabCode] [nvarchar](max) NULL,
+	[leaCode] [int] NOT NULL,
+	[estabCode] [int] NOT NULL,
 	[name] [nvarchar](max) NOT NULL,
 	[pin] [char](8) NULL,
 	[pinExpiresAt] [datetimeoffset](3) NULL,
@@ -1187,27 +1187,6 @@ CREATE TABLE [mtc_admin].[checkScore](
 	[id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
-GO
-/****** Object:  Table [mtc_admin].[giasStaging]    Script Date: 29/10/2020 17:26:24 ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-CREATE TABLE [mtc_admin].[giasStaging](
-	[id] [int] IDENTITY(1,1) NOT NULL,
-	[createdAt] [datetimeoffset](3) NOT NULL,
-	[updatedAt] [datetimeoffset](3) NOT NULL,
-	[version] [timestamp] NOT NULL,
-	[leaCode] [int] NULL,
-	[estabCode] [nvarchar](max) NULL,
-	[urn] [int] NOT NULL,
-	[dfeNumber] [int] NOT NULL,
-	[name] [nvarchar](max) NOT NULL,
-PRIMARY KEY CLUSTERED
-(
-	[id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 /****** Object:  Table [mtc_admin].[hdf]    Script Date: 29/10/2020 17:26:24 ******/
 SET ANSI_NULLS ON
@@ -1990,6 +1969,7 @@ CREATE TABLE [mtc_results].[userDevice](
 	[deviceOrientationLookup_id] [int] NULL,
 	[appUsageCount] [tinyint] NULL,
 	[userAgentLookup_id] [int] NULL,
+  [ident] NVARCHAR (100) NULL
  CONSTRAINT [PK_userDevice] PRIMARY KEY CLUSTERED
 (
 	[id] ASC
@@ -2504,10 +2484,6 @@ GO
 ALTER TABLE [mtc_admin].[checkWindow] ADD  DEFAULT ((0)) FOR [isDeleted]
 GO
 ALTER TABLE [mtc_admin].[checkWindow] ADD  DEFAULT (newid()) FOR [urlSlug]
-GO
-ALTER TABLE [mtc_admin].[giasStaging] ADD  DEFAULT (getutcdate()) FOR [createdAt]
-GO
-ALTER TABLE [mtc_admin].[giasStaging] ADD  DEFAULT (getutcdate()) FOR [updatedAt]
 GO
 ALTER TABLE [mtc_admin].[group] ADD  DEFAULT (getutcdate()) FOR [createdAt]
 GO
@@ -4662,4 +4638,6 @@ GO
 EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Unique single character code for the type of user input.' , @level0type=N'SCHEMA',@level0name=N'mtc_results', @level1type=N'TABLE',@level1name=N'userInputTypeLookup', @level2type=N'COLUMN',@level2name=N'code'
 GO
 EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Lookup table to store events generated in the pupil app' , @level0type=N'SCHEMA',@level0name=N'mtc_results', @level1type=N'TABLE',@level1name=N'userInputTypeLookup'
+GO
+EXEC sys.sp_addextendedproperty @name = N'MS_Description', @value = 'The ident identifies a particular browser on a single machine by use of a cookie.', @level0type = N'Schema', @level0name = 'mtc_results', @level1type = N'Table', @level1name = 'userDevice', @level2type = N'Column', @level2name = 'ident'
 GO
