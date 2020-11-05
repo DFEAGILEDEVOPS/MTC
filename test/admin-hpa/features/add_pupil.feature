@@ -90,11 +90,13 @@ Feature:
     When I submit the form with the name fields set as M4ry
     Then the pupil details should be stored
 
+  @ie11
   Scenario: Names can include apostrophes
     Given I am on the add pupil page
     When I submit the form with the name fields set as Mary'Jane
     Then the pupil details should be stored
 
+  @ie11
   Scenario: Names can include apostrophes
     Given I am on the add pupil page
     When I submit the form with the name fields set as Maryçáéíóúñü

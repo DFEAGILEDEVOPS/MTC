@@ -427,6 +427,7 @@ end
 
 Then(/^I should see validation error for the UPN field fo the following$/) do |table|
   table.hashes.each do |hash|
+    visit current_url if Capybara.current_driver.to_s.include? 'ie11'
     p hash['condition']
     case hash['condition']
       when 'wrong check letter'
