@@ -1,4 +1,4 @@
-INSERT INTO mtc.mtc_admin.accessArrangements (displayOrder, [description], code) VALUES
+INSERT INTO mtc_admin.accessArrangements (displayOrder, [description], code) VALUES
 (1, 'Audible time alert', 'ATA'),
 (2, 'Colour contrast', 'CCT'),
 (3, 'Font size', 'FTS'),
