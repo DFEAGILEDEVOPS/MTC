@@ -10,10 +10,12 @@ Feature: Restarts
     Given I have single pupils for restart
     Then I should be able to select them via a checkbox for restarts
 
+  @ie11
   Scenario: Teachers can select all pupils on Restarts page
     Given I have multiple pupils for restart
     Then I should have a option to select all pupils for restarts
 
+  @ie11
   Scenario: Sticky banner displays total pupil count for restarts when all pupil is selected
     Given I have multiple pupils for restart
     When I select all pupils for Restarts
@@ -78,7 +80,7 @@ Feature: Restarts
     Then I should not see this pupil removed from restart in Generate Pin Pupil list
     And the pin should also be removed
 
-  @no_pin @remove_all_groups
+  @no_pin @remove_all_groups @ie11
   Scenario: Group filtering enabled for selecting pupils for restart
     Given I have generated pins for multiple pupils
     When I add these pupils to a group
