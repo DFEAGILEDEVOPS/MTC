@@ -353,7 +353,6 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit, OnDestr
    * @param {Object} event
    */
   onClickSubmit (event: Event) {
-    console.log('submit clicked');
     this.onSubmit();
   }
 
