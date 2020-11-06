@@ -564,6 +564,10 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit, OnDestr
     return false;
   }
 
+  whatClass (obj) {
+    return obj.toString().match(/ (\w+)/)[1];
+  }
+
   getEventType (event: Event | MouseEvent | TouchEvent | KeyboardEvent | PointerEvent): EventType {
     if ('pointerType' in event) {
       // event.pointerType will be: mouse, pen, touch, '' (if can't determine), or vendor prefixed
@@ -580,13 +584,17 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit, OnDestr
       }
     }
 
-    // Not a Pointer Event - should be MouseEvent or TouchEvent
+    // Not a Pointer Event - should be MouseEvent [or TouchEvent] but Safari (macOS) does not support TouchEvent
     if (event instanceof MouseEvent) {
       return EventType.mouse;
-    } else if (event instanceof TouchEvent) {
-      return EventType.touch;
     } else if (event instanceof KeyboardEvent) {
       return EventType.keyboard;
+    }
+
+    // Detect TouchEvents without relying on the TouchEvent class being present (because of Safari)
+    const eventClass = this.whatClass(event);
+    if (eventClass === 'TouchEvent') {
+      return EventType.touch;
     }
 
     // If we get here we just have an Event class - which almost certainly means an older browser
