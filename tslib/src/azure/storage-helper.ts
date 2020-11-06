@@ -89,6 +89,7 @@ export class AsyncTableService extends az.TableService implements IAsyncTableSer
 
 export interface IBlobStorageService {
   deleteContainerAsync (containerName: string): Promise<void>
+  deleteBlobAsync (blobName: string, containerName: string): Promise<void>
 }
 
 export interface IBlobStorageHelper {
@@ -103,6 +104,18 @@ export class AsyncBlobService extends az.BlobService implements IBlobStorageServ
   async deleteContainerAsync (container: string): Promise<void> {
     return new Promise((resolve, reject) => {
       this.deleteContainer(container, (error) => {
+        if (isNotNil(error)) {
+          reject(error)
+        } else {
+          resolve()
+        }
+      })
+    })
+  }
+
+  async deleteBlobAsync (blobName: string, containerName: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.deleteBlob(containerName, blobName, (error) => {
         if (isNotNil(error)) {
           reject(error)
         } else {

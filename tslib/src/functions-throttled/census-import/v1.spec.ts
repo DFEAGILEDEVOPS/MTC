@@ -17,7 +17,8 @@ const JobDataServiceMock = jest.fn<IJobDataService, any>(() => ({
 }))
 
 const BlobStorageServiceMock = jest.fn<IBlobStorageService, any>(() => ({
-  deleteContainerAsync: jest.fn()
+  deleteContainerAsync: jest.fn(),
+  deleteBlobAsync: jest.fn()
 }))
 
 const LoggerMock = jest.fn<ILogger, any>(() => ({
