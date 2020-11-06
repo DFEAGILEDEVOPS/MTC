@@ -7,13 +7,19 @@ describe('sessionExpiry', function () {
     beforeEach(() => {
       fixture = $('<span class="session-expiration-countdown"></span>')
     })
-    it('should use the singular form for 1 minute', function () {
-      window.GOVUK.sessionExpiry.setCountdownText(fixture, 1)
-      expect(fixture.text()).toBe('1 minute')
+    it('should use the singular form for 1 minute', function (done) {
+      $(() => {
+        window.GOVUK.sessionExpiry.setCountdownText(fixture, 1)
+        expect(fixture.text()).toBe('1 minute')
+        done()
+      })
     })
-    it('should use the plural form for > 1 minute', function () {
-      window.GOVUK.sessionExpiry.setCountdownText(fixture, 2)
-      expect(fixture.text()).toBe('2 minutes')
+    it('should use the plural form for > 1 minute', function (done) {
+      $(() => {
+        window.GOVUK.sessionExpiry.setCountdownText(fixture, 2)
+        expect(fixture.text()).toBe('2 minutes')
+        done()
+      })
     })
   })
 
