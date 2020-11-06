@@ -55,13 +55,25 @@ export class SpokenPracticeQuestionComponent extends PracticeQuestionComponent i
    */
   ngAfterViewInit() {
     this.auditService.addEntry(new QuestionRendered({
-      practiseSequenceNumber: this.sequenceNumber,
-      question: `${this.factor1}x${this.factor2}`
+      sequenceNumber: this.sequenceNumber,
+      question: `${this.factor1}x${this.factor2}`,
+      isWarmup: this.isWarmUpQuestion
     }));
+
+    // Set up listening events depending on the browser's capability
+    if (this.shouldSetupPointerEvents()) {
+      this.setupKeypadEventListeners('pointerup');
+    } else {
+      this.setupKeypadEventListeners('click');
+    }
+
     this.speechService.speakQuestion(`${this.factor1} times ${this.factor2}?`, this.sequenceNumber);
   }
 
   ngOnDestroy() {
     this.subscription.unsubscribe();
+    if (this.cleanUpFunctions.length > 0) {
+      this.cleanUpFunctions.forEach(f => f());
+    }
   }
 }

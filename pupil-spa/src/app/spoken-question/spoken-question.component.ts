@@ -57,12 +57,26 @@ export class SpokenQuestionComponent extends QuestionComponent implements OnInit
   ngAfterViewInit() {
     this.auditService.addEntry(new QuestionRendered({
       sequenceNumber: this.sequenceNumber,
-      question: `${this.factor1}x${this.factor2}`
+      question: `${this.factor1}x${this.factor2}`,
+      isWarmup: this.isWarmUpQuestion
     }));
+
+    // Set up listening events depending on the browser's capability
+    if (this.shouldSetupPointerEvents()) {
+      this.setupKeypadEventListeners('pointerup');
+    } else {
+      this.setupKeypadEventListeners('click');
+    }
+
     this.speechService.speakQuestion(`${this.factor1} times ${this.factor2}?`, this.sequenceNumber);
   }
 
   ngOnDestroy() {
     this.subscription.unsubscribe();
+
+    // remove all the event listeners
+    if (this.cleanUpFunctions.length > 0) {
+      this.cleanUpFunctions.forEach(f => f());
+    }
   }
 }
