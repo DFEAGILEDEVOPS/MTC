@@ -193,8 +193,9 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit, OnDestr
 
   ngAfterViewInit () {
     this.auditService.addEntry(new QuestionRendered({
-      practiseSequenceNumber: this.sequenceNumber,
-      question: `${this.factor1}x${this.factor2}`
+      sequenceNumber: this.sequenceNumber,
+      question: `${this.factor1}x${this.factor2}`,
+      isWarmup: this.isWarmUpQuestion
     }));
 
     // Set up listening events depending on the browser's capability
@@ -259,7 +260,8 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit, OnDestr
   startTimer () {
     this.auditService.addEntry(new QuestionTimerStarted({
       sequenceNumber: this.sequenceNumber,
-      question: `${this.factor1}x${this.factor2}`
+      question: `${this.factor1}x${this.factor2}`,
+      isWarmup: this.isWarmUpQuestion
     }));
     this.stopTime = (new Date().getTime() + (this.questionTimeoutSecs * 1000));
 
@@ -383,7 +385,8 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit, OnDestr
     if (this.countdownInterval) {
       this.auditService.addEntry(new QuestionTimerCancelled({
         sequenceNumber: this.sequenceNumber,
-        question: `${this.factor1}x${this.factor2}`
+        question: `${this.factor1}x${this.factor2}`,
+        isWarmup: this.isWarmUpQuestion
       }));
       clearInterval(this.countdownInterval);
     }
@@ -402,8 +405,9 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit, OnDestr
 
   addQuestionAnsweredEvent () {
     this.auditService.addEntry(new QuestionAnswered({
-      practiseSequenceNumber: this.sequenceNumber,
-      question: `${this.factor1}x${this.factor2}`
+      sequenceNumber: this.sequenceNumber,
+      question: `${this.factor1}x${this.factor2}`,
+      isWarmup: this.isWarmUpQuestion
     }));
   }
 
@@ -435,7 +439,8 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit, OnDestr
     }
     this.auditService.addEntry(new QuestionTimerEnded({
       sequenceNumber: this.sequenceNumber,
-      question: `${this.factor1}x${this.factor2}`
+      question: `${this.factor1}x${this.factor2}`,
+      isWarmup: this.isWarmUpQuestion
     }));
     this.submitted = true;
     if (this.config.questionReader) {

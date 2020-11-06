@@ -55,7 +55,8 @@ describe('PrepareEventService', () => {
       clientTimestamp: (new Date()).toISOString(),
       data: {
         question: '1x1',
-        sequenceNumber: 10
+        sequenceNumber: 10,
+        isWarmup: false
       }
     }
     jest.spyOn(mockQuestionService, 'findQuestion').mockResolvedValue(mockDBQuestion)
@@ -74,7 +75,8 @@ describe('PrepareEventService', () => {
       clientTimestamp: (new Date()).toISOString(),
       data: {
         question: '13x13',
-        sequenceNumber: 26
+        sequenceNumber: 26,
+        isWarmup: false
       }
     }
     jest.spyOn(mockQuestionService, 'findQuestion').mockRejectedValue(new Error('unit test'))
@@ -82,6 +84,34 @@ describe('PrepareEventService', () => {
     const res = await sut.prepareEvent(audit, 'code', 45)
     const qIdParam = res.params.find(p => p.name === 'eventQuestionId45')
     const qNumParam = res.params.find(p => p.name === 'eventQuestionNumber45')
+    // @ts-ignore If this is undefined the test will fail
+    expect(qIdParam.value).toBeNull()
+    // @ts-ignore If this is undefined the test will fail
+    expect(qNumParam.value).toBeNull()
+  })
+
+  test('it does not setup a FK to the question table for warmup questions', async () => {
+    const mockDBQuestion = {
+      id: 99,
+      factor1: 1,
+      factor2: 1,
+      code: 'W001',
+      isWarmup: true
+    }
+    const audit: Audit = {
+      type: 'unit-test',
+      clientTimestamp: (new Date()).toISOString(),
+      data: {
+        question: '1x1',
+        sequenceNumber: 2,
+        isWarmup: true
+      }
+    }
+    jest.spyOn(mockQuestionService, 'findQuestion').mockResolvedValue(mockDBQuestion)
+    jest.spyOn(console, 'error').mockReturnValue() // shush the console.error call
+    const res = await sut.prepareEvent(audit, 'code', 3)
+    const qIdParam = res.params.find(p => p.name === 'eventQuestionId3')
+    const qNumParam = res.params.find(p => p.name === 'eventQuestionNumber3')
     // @ts-ignore If this is undefined the test will fail
     expect(qIdParam.value).toBeNull()
     // @ts-ignore If this is undefined the test will fail

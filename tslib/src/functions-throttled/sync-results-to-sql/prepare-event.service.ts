@@ -27,7 +27,7 @@ export class PrepareEventService {
 
     if (audit.data !== undefined) {
       eventData = JSON.stringify(audit.data)
-      if (audit.data.question !== undefined && audit.data.sequenceNumber !== undefined) {
+      if (audit.data.question !== undefined && audit.data.sequenceNumber !== undefined && audit.data.isWarmup !== undefined && !audit.data.isWarmup) {
         try {
           question = await this.questionService.findQuestion(audit.data.question)
           questionId = question.id

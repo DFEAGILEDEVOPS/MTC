@@ -39,26 +39,6 @@ export class QuestionComponent extends PracticeQuestionComponent implements OnIn
   }
 
   /**
-   * Start the timer when the view is ready.
-   */
-  ngAfterViewInit() {
-    this.auditService.addEntry(new QuestionRendered({
-      sequenceNumber: this.sequenceNumber,
-      question: `${this.factor1}x${this.factor2}`
-    }));
-
-    // Set up listening events depending on the browser's capability
-    if (this.shouldSetupPointerEvents()) {
-      this.setupKeypadEventListeners('pointerup');
-    } else {
-      this.setupKeypadEventListeners('click');
-    }
-
-    // Start the countdown and page timeout timers
-    this.startTimer();
-  }
-
-  /**
    * Called from clicking the backspace button on the virtual keyboard
    * @param {Object} event
    */
@@ -104,7 +84,8 @@ export class QuestionComponent extends PracticeQuestionComponent implements OnIn
     if (this.countdownInterval) {
       this.auditService.addEntry(new QuestionTimerCancelled({
         sequenceNumber: this.sequenceNumber,
-        question: `${this.factor1}x${this.factor2}`
+        question: `${this.factor1}x${this.factor2}`,
+        isWarmup: this.isWarmUpQuestion
       }));
       clearInterval(this.countdownInterval);
       this.countdownInterval = undefined;
@@ -137,7 +118,8 @@ export class QuestionComponent extends PracticeQuestionComponent implements OnIn
   addQuestionAnsweredEvent() {
     this.auditService.addEntry(new QuestionAnswered({
       sequenceNumber: this.sequenceNumber,
-      question: `${this.factor1}x${this.factor2}`
+      question: `${this.factor1}x${this.factor2}`,
+      isWarmup: this.isWarmUpQuestion
     }));
   }
 }
