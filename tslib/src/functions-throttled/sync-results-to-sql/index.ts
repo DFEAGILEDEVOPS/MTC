@@ -18,6 +18,9 @@ const functionName = 'sync-results-to-sql'
   put on the dead letter queue automatically.
 */
 const timerTrigger: AzureFunction = async function (context: Context, timer: IFunctionTimer): Promise<void> {
+  meta.checksProcessed = 0
+  meta.checksErrored = 0
+  meta.errorCheckCodes = []
   const start = performance.now()
   if (timer.IsPastDue) {
     context.log(`${functionName}: Timer function is past due, exiting.`)
