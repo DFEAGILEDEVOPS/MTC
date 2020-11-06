@@ -1,11 +1,10 @@
 import { TYPES } from 'mssql'
 import * as R from 'ramda'
-import { Audit, DBQuestion, Device, MarkedCheck, ValidatedCheck } from './models'
+import { Audit, Device, MarkedCheck, ValidatedCheck } from './models'
 import { IPrepareAnswersAndInputsDataService, PrepareAnswersAndInputsDataService } from './prepare-answers-and-inputs.data.service'
 import { ISqlService, ITransactionRequest, SqlService } from '../../sql/sql.service'
 import { UserAgentParser } from './user-agent-parser'
-import { IQuestionService, QuestionService } from './question.service'
-import { EventService, IEventService } from './event.service'
+import { IPrepareEventService, PrepareEventService } from './prepare-event.service'
 
 export interface ISyncResultsDataService {
   insertToDatabase (requests: ITransactionRequest[]): Promise<void>
@@ -21,17 +20,15 @@ export interface ISyncResultsDataService {
 
 export class SyncResultsDataService implements ISyncResultsDataService {
   private readonly sqlService: ISqlService
-  private readonly questionService: IQuestionService
   private readonly prepareAnswersAndInputsDataService: IPrepareAnswersAndInputsDataService
-  private readonly eventService: IEventService
+  private readonly prepareEventService: IPrepareEventService
   // override rule, as this is accessed via reflection for mocking
   // eslint-disable-next-line @typescript-eslint/prefer-readonly
 
-  constructor (sqlService?: ISqlService, prepareAnswersAndInputsDataService?: IPrepareAnswersAndInputsDataService, questionService?: IQuestionService, eventService?: IEventService) {
+  constructor (sqlService?: ISqlService, prepareAnswersAndInputsDataService?: IPrepareAnswersAndInputsDataService, prepareEventService?: IPrepareEventService) {
     this.sqlService = sqlService ?? new SqlService()
     this.prepareAnswersAndInputsDataService = prepareAnswersAndInputsDataService ?? new PrepareAnswersAndInputsDataService()
-    this.questionService = questionService ?? new QuestionService()
-    this.eventService = eventService ?? new EventService()
+    this.prepareEventService = prepareEventService ?? new PrepareEventService()
   }
 
   /**
@@ -42,45 +39,12 @@ export class SyncResultsDataService implements ISyncResultsDataService {
     const audits: Audit[] = R.propOr([], 'audit', validatedCheck)
     const auditParams = []
     const auditSqls = []
-    let question: DBQuestion
 
     let j = 0
     for (const audit of audits) {
-      const eventTypeId = await this.eventService.findOrCreateEventTypeId(audit.type)
-      let questionId = null
-      let questionNumber = null
-      let eventData: string | null = null
-
-      if (audit.data !== undefined) {
-        eventData = JSON.stringify(audit.data)
-        if (audit.data.question !== undefined && audit.data.sequenceNumber !== undefined) {
-          try {
-            question = await this.questionService.findQuestion(audit.data.question)
-          } catch (error) {
-            throw new Error(`Unable to find question [${audit.data.question}] for checkCode [${validatedCheck.checkCode}]`)
-          }
-          questionId = question.id
-          questionNumber = audit.data.sequenceNumber
-        }
-      }
-      auditParams.push({ name: `eventTypeLookupId${j}`, type: TYPES.Int, value: eventTypeId })
-      auditParams.push({ name: `browserTimestamp${j}`, type: TYPES.DateTimeOffset, value: audit.clientTimestamp })
-      auditParams.push({ name: `eventData${j}`, type: TYPES.NVarChar, value: eventData })
-      auditParams.push({ name: `questionId${j}`, type: TYPES.Int, value: questionId })
-      auditParams.push({ name: `questionNumber${j}`, type: TYPES.SmallInt, value: questionNumber })
-
-      auditSqls.push(`INSERT INTO mtc_results.[event] (checkResult_id,
-                                 eventTypeLookup_id,
-                                 browserTimestamp,
-                                 eventData,
-                                 question_id,
-                                 questionNumber)
-                      VALUES (@checkResultId,
-                              @eventTypeLookupId${j},
-                              @browserTimestamp${j},
-                              @eventData${j},
-                              @questionId${j},
-                              @questionNumber${j});`)
+      const transactionRequest = await this.prepareEventService.prepareEvent(audit, validatedCheck.checkCode, j)
+      auditSqls.push(transactionRequest.sql)
+      auditParams.push(...transactionRequest.params)
       j += 1
     }
     return { sql: auditSqls.join('\n'), params: auditParams }
