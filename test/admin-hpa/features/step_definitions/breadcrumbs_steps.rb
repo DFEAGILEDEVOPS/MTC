@@ -1,7 +1,8 @@
 
 Then(/^I should see the breadcrumb as "([^"]*)"$/) do |breadcrumb|
   @breadcrumb = breadcrumb
-  expect(profile_page.breadcrumb_v2.text).to eq(@breadcrumb.gsub(' > ', "\n"))
+  expect(profile_page.breadcrumb_v2.text).to eq(@breadcrumb.gsub(' > ', "\n")) unless Capybara.current_driver.to_s.include? 'bs_'
+  expect(profile_page.breadcrumb_v2.text).to eq(@breadcrumb.gsub(' > ', " ")) if Capybara.current_driver.to_s.include? 'ie11'
 end
 
 And(/^I click the Home link on breadcrumb$/) do

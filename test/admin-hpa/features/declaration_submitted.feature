@@ -23,7 +23,7 @@ Feature: Declaration form submitted
     Then I am redirected to the declaration submitted form page
     And I can see the declaration submitted form page not confirmed as per the design
 
-  @pupil_not_taking_check @live_tio_expired
+  @pupil_not_taking_check @live_tio_expired @ie11
   Scenario: Submit HDF after check window is closed
     Given I have some pupils that have completed the check
     When the live check window closes

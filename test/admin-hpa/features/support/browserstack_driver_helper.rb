@@ -19,6 +19,3 @@ BrowserstackSettings.browser_caps.keys.each do |browser|
                                    desired_capabilities: @caps)
   end
 end
-
-
-
