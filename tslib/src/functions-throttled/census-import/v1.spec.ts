@@ -71,7 +71,7 @@ describe('census-import: v1', () => {
 
   test('census blob container is deleted at end of a successful run', async () => {
     await sut.process('foo,bar', blobUri)
-    expect(blobStorageServiceMock.deleteContainerAsync).toHaveBeenCalledTimes(1)
+    expect(blobStorageServiceMock.deleteBlobAsync).toHaveBeenCalledTimes(1)
   })
 
   test('when insert counts do not match, job is reported as failed', async () => {
