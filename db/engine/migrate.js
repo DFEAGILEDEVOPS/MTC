@@ -2,7 +2,7 @@
 
 const path = require('path')
 const fs = require('fs')
-const globalDotEnvFile = path.join(__dirname, '..', '..', '..', '.env')
+const globalDotEnvFile = path.join(__dirname, '..', '..', '.env')
 
 try {
   if (fs.existsSync(globalDotEnvFile)) {
@@ -14,16 +14,16 @@ try {
 } catch (error) {
   console.error(error)
 }
+
 const config = require('../config')
-const logger = require('../log.service').getLogger()
+const sqlConfig = require('../sql.config')
+const logger = require('./log.service').getLogger()
 const Postgrator = require('postgrator')
-const path = require('path')
 const {
   sortMigrationsAsc,
   sortMigrationsDesc
 } = require('postgrator/lib/utils.js')
-const createDatabaseIfNotExists = require('./create-database')
-const yargs = require('yargs').argv
+const createDatabaseIfNotExists = require('./createDatabase')
 
 class Migrator extends Postgrator {
   /*
@@ -59,41 +59,37 @@ class Migrator extends Postgrator {
 }
 
 const migratorConfig = {
-  migrationDirectory: path.join(__dirname, '/migrations'),
+  migrationPattern: path.join(__dirname, '..', 'migrations', '**'),
   driver: 'mssql',
-  host: config.Sql.server,
+  host: config.Sql.Server,
   // Required for when SQL_PORT is passed in via docker-compose
-  port: parseInt(config.Sql.port),
-  database: config.Sql.database,
-  username: config.Sql.user,
-  password: config.Sql.password,
-  requestTimeout: config.Sql.migrationTimeout,
-  connectionTimeout: config.Sql.connectionTimeout,
+  port: parseInt(config.Sql.Port),
+  database: config.Sql.Database,
+  username: config.Sql.Migrator.Username,
+  password: config.Sql.Migrator.Password,
+  requestTimeout: config.Sql.Migrator.Timeout,
+  connectionTimeout: config.Sql.Migrator.Timeout,
   // Schema table name. Optional. Default is schemaversion
   schemaTable: 'migrationLog',
   options: {
-    encrypt: true
+    encrypt: sqlConfig.options.encrypt,
+    enableArithAbort: sqlConfig.options.enableArithAbort,
+    trustServerCertificate: sqlConfig.options.trustServerCertificate
   },
   validateChecksums: false
 }
 
 const runMigrations = async (version) => {
-  await createDatabaseIfNotExists()
-
-  // @ts-ignore
-  const postgrator = new Migrator(migratorConfig)
-
-  // subscribe to useful events
-  postgrator.on('migration-started', migration => logger.info(`executing ${migration.version} ${migration.action}:${migration.name}...`))
-
-  // Migrate to 'max' version or user-specified e.g. '008'
-  logger.info('Migrating to version: ' + version)
-
   try {
+    await createDatabaseIfNotExists()
+    const postgrator = new Migrator(migratorConfig)
+    // subscribe to useful events
+    postgrator.on('migration-started', migration => logger.info(`executing ${migration.version} ${migration.action}:${migration.name}...`))
+    // Migrate to 'max' version or user-specified e.g. '008'
+    logger.info('Migrating to version: ' + version)
     await postgrator.migrate(version)
     logger.info('SQL Migrations complete')
   } catch (error) {
-    logger.error('Error executing migration...')
     logger.error(error)
     logger.error(`${error.appliedMigrations.length} migrations were applied.`)
     error.appliedMigrations.forEach(migration => {
@@ -103,7 +99,7 @@ const runMigrations = async (version) => {
   }
 }
 
-runMigrations(yargs.version || 'max')
+runMigrations(process.argv[2] || 'max')
   .then(() => {
     logger.info('Done')
     process.exit(0)
