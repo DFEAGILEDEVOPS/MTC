@@ -604,6 +604,9 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit, OnDestr
     // If we get here we just have an Event class - which almost certainly means an older browser
     // using a touch event, as mouse clicks in Angular (using the click event listener) generate MouseEvents,
     // but touch events generate plain Events rather than the usual TouchEvents.  This only happens in Angular, and not normal DOMs.
+    // Android and Windows both support PointerEvents, and have for a long time. So this remaining section mainly applies to older iOS and
+    // macOS devices and Kindle Fires.  macOS doesn't support TouchEvents at least up to 10.15, and iOS devices are much more likely to be
+    // touch than not.
     if ('ontouchstart' in this.window) {
       return EventType.touch;
     }
