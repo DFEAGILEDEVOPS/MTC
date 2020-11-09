@@ -58,12 +58,12 @@ fi
 
 ### Run Migrations
 echo "running database migrations..."
-cd ../../admin
+cd ../../db
 yarn install --frozen-lockfile
-SQL_SERVER="$SQL_SERVER.$SQL_AZURE_FQDN" SQL_DATABASE=$SQL_DATABASE SQL_AZURE_SCALE=$DB_SCALE yarn migrate-sql
+SQL_SERVER="$SQL_SERVER.$SQL_AZURE_FQDN" SQL_DATABASE=$SQL_DATABASE SQL_AZURE_SCALE=$DB_SCALE yarn migrate
 
 echo "running database seeds..."
-SQL_SERVER="$SQL_SERVER.$SQL_AZURE_FQDN" SQL_DATABASE=$SQL_DATABASE SQL_AZURE_SCALE=$DB_SCALE yarn seed-sql
+SQL_SERVER="$SQL_SERVER.$SQL_AZURE_FQDN" SQL_DATABASE=$SQL_DATABASE SQL_AZURE_SCALE=$DB_SCALE yarn seed
 
 # Seed Data
 echo "inserting bulk data for schools, pupils & teachers..."

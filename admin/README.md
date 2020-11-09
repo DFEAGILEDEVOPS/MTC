@@ -124,9 +124,7 @@ We use [tedious](http://tediousjs.github.io/tedious/) package for SQL Server dat
 
 ### Running SQL Server migrations
 
-We use postgrator to run database migrations.
-
-`yarn migrate-sql` to migrate to the latest or `yarn migrate-sql 123` to migrate to a particular version
+We use postgrator to run database migrations under a dedicated app in the `db` folder.  See [the readme](../db) for full details.
 
 ### Parse school changes from CSV
 
