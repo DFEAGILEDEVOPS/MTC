@@ -11,7 +11,7 @@ Azure Service Bus queue for signalling that a check has been validated and marke
 ## check-marking
 Azure Service Bus queue for signalling that a check has been validated and is ready to be marked.
 
-**Consumers**:
+**Consumers**: TODO
 
 **Publishers**:
 
@@ -24,7 +24,7 @@ checkCode: string
 version: number
 ```
 
-**Consumers**:
+**Consumers**: TODO
 
 **Publishers**:
 
@@ -43,6 +43,7 @@ clientCheckStartedAt: Date
 
 ## check-submitted
 Azure Storage queue for submitting checks from the pupil check application.
+
 ```typescript
 version: number
 checkCode: string
@@ -56,6 +57,7 @@ archive: string //zipped copy of submitted check JSON structure
 
 ## check-sync
 Azure Service Bus queue that is used to indicate that a check needs its prepared payload to be synchronised with access arrangements that have been updated.
+
 ```typescript
 pupilUUID: string
 version: number
@@ -67,6 +69,7 @@ version: number
 
 ## check-validation
 Azure Service Bus queue that is used to indicate that a submitted check is ready to be validated.
+
 ```typescript
 version: number
 checkCode: string
@@ -80,20 +83,56 @@ schoolUUID: string
 ## pupil-feedback
 Azure Storage queue for submitting feedback from the pupil check application.
 
-**Consumers**:
+```typescript
+version: number
+checkCode: string
+inputType: string
+satisfactionRating: string
+comments: string
+```
 
-**Publishers**:
+**Consumers**: pupil-feedback function
+
+**Publishers**: pupil check application
 
 ## pupil-login
+Azure Service Bus queue for indicating that a pupil has authenticated and received their prepared check payload.
 
+```typescript
+checkCode: string
+loginAt: Date
+version: number
+practice: boolean
+```
+
+**Consumers**: pupil-login function
+
+**Publishers**: pupil check application
 
 ## pupil-prefs
 Azure Storage queue for submitting access arrangement preferences from the pupil check application for syncing with the core database.
 
+TODO
+
 ## school-results-cache
+Azure Service Bus queue for signalling that results for a school should be created and cached, as all pupils have a marked check.
+
+```typescript
+schoolGuid: string
+schoolName: string
+```
+
+**Consumers**: school-results-cache function
+
+**Publishers**: school-results-cache-determiner
 
 ## sync-results-to-db-complete
+Azure Service Bus queue for signalling that all checks are processed after the check window has closed.
 
+```typescript
+// TODO
+```
 
 ## test-pupil-connection
 Azure Storage queue for testing connectivity with azure resources from the pupil check application.
+TODO
