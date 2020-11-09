@@ -2,3 +2,4 @@
 parallel_chrome: -t 'not @wip' -t 'not @manual' DRIVER='selenium_chrome' --format pretty --format html --out reports/report<%= ENV['TEST_ENV_NUMBER'] %>.html
 parallel: -t 'not @wip' -t 'not @manual' DRIVER='poltergeist' --format pretty --format html --out reports/report<%= ENV['TEST_ENV_NUMBER'] %>.html
 default: -t 'not @wip' -t 'not @manual' DRIVER='headless_chrome'
+ie11: -t 'not @ie11' -t 'not @wip'

@@ -29,3 +29,4 @@ gem 'colorize'
 gem 'lz_string'
 gem 'redis'
 gem "rack", ">= 2.2.3"
+gem 'browserstack-fast-selenium'

@@ -42,6 +42,7 @@ Feature:
     Then I should see that we are in the beta development phase on the upload_and_view_forms page
     And I should see a feedback link from the upload_and_view_forms page
 
+  @ie11
   Scenario: Development phase and the feedback link are displayed at the top of the view form page
     Given I have signed in with test-developer
     When I am on the Upload and View forms page v2
