@@ -1,0 +1,11 @@
+{
+  "bindings": [
+    {
+      "name": "messageReplayTestingQueue",
+      "type": "serviceBusTrigger",
+      "direction": "in",
+      "queueName": "message-replay-testing",
+      "connection": "AZURE_SERVICE_BUS_CONNECTION_STRING"
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "bindings": [
+    {
+      "authLevel": "function",
+      "type": "httpTrigger",
+      "direction": "in",
+      "name": "req",
+      "methods": [
+        "get",
+        "post"
+      ]
+    },
+    {
+      "type": "http",
+      "direction": "out",
+      "name": "res"
+    },
+    {
+      "direction": "out",
+      "type": "serviceBus",
+      "name": "messageReplayTestingQueue",
+      "queueName": "message-replay-testing",
+      "connection": "AZURE_SERVICE_BUS_CONNECTION_STRING"
+    }
+  ]
+}
