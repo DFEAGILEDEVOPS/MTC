@@ -31,4 +31,3 @@ gem 'azure-storage-blob'
 gem 'redis'
 gem 'lz_string'
 gem "rack", ">= 2.2.3"
-gem 'browserstack-fast-selenium'
