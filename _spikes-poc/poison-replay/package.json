@@ -2,8 +2,12 @@
   "name": "",
   "version": "",
   "description": "",
-  "scripts" : {
+  "scripts": {
     "test": "echo \"No tests yet...\""
   },
-  "author": ""
+  "author": "",
+  "dependencies": {
+    "@azure/service-bus": "^1.1.10",
+    "uuid": "^8.3.1"
+  }
 }

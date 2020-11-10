@@ -1,3 +1,4 @@
-module.exports = async function(context, mySbMsg) {
-    context.log('JavaScript ServiceBus queue trigger function processed message', mySbMsg);
+
+module.exports = async function(context, message) {
+    throw new Error(`throwing error to force message mtcId:${message.mtcId} onto the poison queue`)
 };

@@ -1,7 +1,7 @@
 {
   "bindings": [
     {
-      "name": "messageReplayTestingQueue",
+      "name": "message",
       "type": "serviceBusTrigger",
       "direction": "in",
       "queueName": "message-replay-testing",
