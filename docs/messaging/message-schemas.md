@@ -4,19 +4,30 @@
 ## check-completion
 Azure Service Bus queue for signalling that a check has been validated and marked successfully.
 
-**Consumers**:
+```typescript
+validatedCheck: JSON,
+markedCheck: JSON
+```
 
-**Publishers**:
+**Consumers**: sync-results-to-sql
+
+**Publishers**: check-marker
 
 ## check-marking
 Azure Service Bus queue for signalling that a check has been validated and is ready to be marked.
 
-**Consumers**: TODO
+```typescript
+schoolUUID: string
+checkCode: string
+version: number
+```
 
-**Publishers**:
+**Consumers**: check-marker
+
+**Publishers**: check-validator
 
 ## check-notification
-Azure Service Bus queue for signalling the outcome of a check processing stage after submission from the pupil check application.
+Azure Service Bus queue for signalling the outcome of a check processing stage so the state can be marshalled to the core database, keeping teachers informed of processing progress.
 
 ```typescript
 notificationType: checkReceived | checkComplete | checkInvalid
@@ -24,9 +35,9 @@ checkCode: string
 version: number
 ```
 
-**Consumers**: TODO
+**Consumers**: check-notifier-batch
 
-**Publishers**:
+**Publishers**: check-receiver, check-validator, check-marker
 
 ## check-started
 Azure Storage queue for signaling that the pupil has started official check.
@@ -107,12 +118,23 @@ practice: boolean
 
 **Consumers**: pupil-login function
 
-**Publishers**: pupil check application
+**Publishers**: pupil-auth API
 
 ## pupil-prefs
 Azure Storage queue for submitting access arrangement preferences from the pupil check application for syncing with the core database.
 
-TODO
+```typescript
+checkCode: string
+preferences: {
+  colourContrastCode: string | undefined
+  fontSizeCode: string | undefined
+}
+version: number
+```
+
+**Consumers**: pupil-prefs function
+
+**Publishers**: pupil check application
 
 ## school-results-cache
 Azure Service Bus queue for signalling that results for a school should be created and cached, as all pupils have a marked check.
@@ -135,4 +157,11 @@ Azure Service Bus queue for signalling that all checks are processed after the c
 
 ## test-pupil-connection
 Azure Storage queue for testing connectivity with azure resources from the pupil check application.
-TODO
+
+```typescript
+{} // No message content
+```
+
+**Consumers**: none
+
+**Publishers**: pupil check application
