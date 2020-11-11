@@ -5,8 +5,10 @@
 Azure Service Bus queue for signalling that a check has been validated and marked successfully.
 
 ```typescript
-validatedCheck: JSON,
-markedCheck: JSON
+{
+  validatedCheck: JSON,
+  markedCheck: JSON
+}
 ```
 
 **Consumers**: sync-results-to-sql
@@ -150,9 +152,10 @@ schoolName: string
 
 ## sync-results-to-db-complete
 Azure Service Bus queue for signalling that all checks are processed after the check window has closed.
+This is work in progress and not yet well defined.
 
 ```typescript
-// TODO
+// work in progress, yet to be defined
 ```
 
 ## test-pupil-connection
