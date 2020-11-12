@@ -13,7 +13,7 @@ module.exports = async function (context, req) {
 
   context.log(`autoFail:${autoFail} receiveMode:${receiveMode.toString()}`)
 
-  const queueName = 'message-replay-testing/$deadletterqueue'
+  const queueName = autoFail ? 'message-replay-testing' : 'message-replay-testing/$deadletterqueue'
   const sbClient = ServiceBusClient.createFromConnectionString(connectionString)
   const queueClient = sbClient.createQueueClient(queueName)
   const receiver = queueClient.createReceiver(receiveMode)

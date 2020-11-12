@@ -38,10 +38,13 @@ module.exports = async function (context, req) {
         })
       }
       await sender.sendBatch(newMessages)
+      context.log(`batch of ${newMessages.length} messages replayed from dead letter queue`)
+      context.log('completing messages...')
       for (let index = 0; index < deadLetterMessages.length; index++) {
         const msg = deadLetterMessages[index]
         await msg.complete()
       }
+      context.log('done')
     }
   } catch (error) {
     context.log.error(error)
