@@ -6,7 +6,6 @@ require 'capybara'
 require 'colorize'
 require 'securerandom'
 require_relative 'features/support/browserstack_settings'
-require 'browserstack-fast-selenium'
 
 ENV['GROUP_SIZE'] ||= '5'
 
