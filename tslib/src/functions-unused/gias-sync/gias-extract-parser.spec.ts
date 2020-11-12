@@ -6,7 +6,8 @@ let mockExtractXml: string
 
 describe('gias extract parser', () => {
   beforeAll(() => {
-    mockExtractXml = readFileSync('./src/functions/gias-sync/mocks/mock-extract-small.xml').toString('utf8')
+    // path must be relative to tslib root, which is working dir for test runner
+    mockExtractXml = readFileSync('./src/functions-unused/gias-sync/mocks/mock-extract-small.xml').toString('utf8')
   })
 
   beforeEach(() => {

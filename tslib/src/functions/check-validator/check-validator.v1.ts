@@ -5,7 +5,7 @@ import { ILogger } from '../../common/logger'
 import * as RA from 'ramda-adjunct'
 import Moment from 'moment'
 import { ICompressionService, CompressionService } from '../../common/compression-service'
-import { ICheckNotificationMessage, CheckNotificationType } from '../check-notifier/check-notification-message'
+import { ICheckNotificationMessage, CheckNotificationType } from '../../schemas/check-notification-message'
 
 const requiredSubmittedCheckProperties = [
   'answers',

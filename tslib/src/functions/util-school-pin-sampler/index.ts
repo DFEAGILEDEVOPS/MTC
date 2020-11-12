@@ -3,6 +3,7 @@ import { AzureFunction, Context, HttpRequest } from '@azure/functions'
 import moment from 'moment'
 import { SchoolPinSampler } from './school-pin-sampler'
 import { performance } from 'perf_hooks'
+import config from '../../config'
 const functionName = 'util-school-pin-sampler'
 
 function finish (start: number, context: Context): void {
@@ -15,6 +16,11 @@ function finish (start: number, context: Context): void {
 }
 
 const schoolPinSampler: AzureFunction = function (context: Context, req: HttpRequest): void {
+  if (!config.DevTestUtils.SchoolPinSamplerFunctionEnabled) {
+    context.log('exiting as not enabled (default behaviour)')
+    context.done()
+    return
+  }
   const start = performance.now()
   if (req.body === undefined) req.body = {}
   const utcNow = req.body?.utcnow !== undefined ? moment(req.body.utcnow) : moment.utc()
