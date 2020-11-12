@@ -28,7 +28,7 @@ const blobTrigger: AzureFunction = async function (context: Context, blob: any):
         encrypt: config.Sql.options.encrypt
       }
     }
-    pool = new mssql.ConnectionPool(sqlConfig, context.log)
+    pool = new mssql.ConnectionPool(sqlConfig)
     await pool.connect()
     const v1 = new CensusImportV1(pool, context.log)
     meta = await v1.process(blob, context.bindingData.uri)
