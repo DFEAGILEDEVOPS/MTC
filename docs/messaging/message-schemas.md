@@ -3,6 +3,7 @@
 
 ## check-completion
 Azure Service Bus queue for signalling that a check has been validated and marked successfully.
+This message is work in progress and subject to change.
 
 ```typescript
 {
@@ -19,9 +20,11 @@ Azure Service Bus queue for signalling that a check has been validated and marke
 Azure Service Bus queue for signalling that a check has been validated and is ready to be marked.
 
 ```typescript
-schoolUUID: string
-checkCode: string
-version: number
+{
+  schoolUUID: string
+  checkCode: string
+  version: number
+}
 ```
 
 **Consumers**: check-marker
@@ -32,9 +35,11 @@ version: number
 Azure Service Bus queue for signalling the outcome of a check processing stage so the state can be marshalled to the core database, keeping teachers informed of processing progress.
 
 ```typescript
-notificationType: checkReceived | checkComplete | checkInvalid
-checkCode: string
-version: number
+{
+  notificationType: checkReceived | checkComplete | checkInvalid
+  checkCode: string
+  version: number
+}
 ```
 
 **Consumers**: check-notifier-batch
@@ -45,9 +50,11 @@ version: number
 Azure Storage queue for signaling that the pupil has started official check.
 
 ```typescript
-version: number
-checkCode: string
-clientCheckStartedAt: Date
+{
+  version: number
+  checkCode: string
+  clientCheckStartedAt: Date
+}
 ```
 
 **Consumers**: check-started function
@@ -58,10 +65,12 @@ clientCheckStartedAt: Date
 Azure Storage queue for submitting checks from the pupil check application.
 
 ```typescript
-version: number
-checkCode: string
-schoolUUID: string
-archive: string //zipped copy of submitted check JSON structure
+{
+  version: number
+  checkCode: string
+  schoolUUID: string
+  archive: string //zipped copy of submitted check JSON structure
+}
 ```
 
 **Consumers**: check-receiver function
@@ -72,8 +81,10 @@ archive: string //zipped copy of submitted check JSON structure
 Azure Service Bus queue that is used to indicate that a check needs its prepared payload to be synchronised with access arrangements that have been updated.
 
 ```typescript
-pupilUUID: string
-version: number
+{
+  pupilUUID: string
+  version: number
+}
 ```
 
 **Consumers**: check-sync function
@@ -84,9 +95,11 @@ version: number
 Azure Service Bus queue that is used to indicate that a submitted check is ready to be validated.
 
 ```typescript
-version: number
-checkCode: string
-schoolUUID: string
+{
+  version: number
+  checkCode: string
+  schoolUUID: string
+}
 ```
 
 **Consumers**: check-validator function
@@ -97,11 +110,13 @@ schoolUUID: string
 Azure Storage queue for submitting feedback from the pupil check application.
 
 ```typescript
-version: number
-checkCode: string
-inputType: string
-satisfactionRating: string
-comments: string
+{
+  version: number
+  checkCode: string
+  inputType: string
+  satisfactionRating: string
+  comments: string
+}
 ```
 
 **Consumers**: pupil-feedback function
@@ -112,10 +127,12 @@ comments: string
 Azure Service Bus queue for indicating that a pupil has authenticated and received their prepared check payload.
 
 ```typescript
-checkCode: string
-loginAt: Date
-version: number
-practice: boolean
+{
+  checkCode: string
+  loginAt: Date
+  version: number
+  practice: boolean
+}
 ```
 
 **Consumers**: pupil-login function
@@ -126,12 +143,14 @@ practice: boolean
 Azure Storage queue for submitting access arrangement preferences from the pupil check application for syncing with the core database.
 
 ```typescript
-checkCode: string
-preferences: {
-  colourContrastCode: string | undefined
-  fontSizeCode: string | undefined
+{
+  checkCode: string
+  preferences: {
+    colourContrastCode: string | undefined
+    fontSizeCode: string | undefined
+  }
+  version: number
 }
-version: number
 ```
 
 **Consumers**: pupil-prefs function
@@ -142,8 +161,10 @@ version: number
 Azure Service Bus queue for signalling that results for a school should be created and cached, as all pupils have a marked check.
 
 ```typescript
-schoolGuid: string
-schoolName: string
+{
+  schoolGuid: string
+  schoolName: string
+}
 ```
 
 **Consumers**: school-results-cache function
