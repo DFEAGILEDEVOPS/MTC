@@ -72,6 +72,7 @@ jobs:
       scriptType: bash
       scriptLocation: inlineScript
       inlineScript: |
+        echo "attempting to delete database $(Build.BuildNumber)"
         az sql db delete --name $(Build.BuildNumber) --resource-group $(TargetDbResourceGroup) --server $(TargetDbServer) --yes --no-wait
 
     condition: always()
