@@ -3,6 +3,7 @@ import { ISqlService } from '../../sql/sql.service'
 import { IPrepareEventService } from './prepare-event.service'
 import { IPrepareAnswersAndInputsDataService } from './prepare-answers-and-inputs.data.service'
 import { TYPES } from 'mssql'
+import { ConsoleLogger, ILogger } from '../../common/logger'
 
 const mockQuestionData = new Map()
 mockQuestionData.set('1x1', { id: 1, factor1: 1, factor2: 2, isWarmup: false, code: 'Q001' })
@@ -12,6 +13,7 @@ describe('SyncResultsDataService', () => {
   let sut: ISyncResultsDataService
   let mockPrepareEventService: IPrepareEventService
   let mockPrepareAnswersAndInputsDataService: IPrepareAnswersAndInputsDataService
+  let mockLogger: ILogger
 
   beforeEach(() => {
     mockSqlService = {
@@ -25,7 +27,10 @@ describe('SyncResultsDataService', () => {
     mockPrepareAnswersAndInputsDataService = {
       prepareAnswersAndInputs: jest.fn()
     }
-    sut = new SyncResultsDataService(mockSqlService, mockPrepareAnswersAndInputsDataService, mockPrepareEventService)
+    mockLogger = new ConsoleLogger()
+    jest.spyOn(mockLogger, 'error').mockImplementation(() => {}) // so we don't clutter up the console with test messages
+
+    sut = new SyncResultsDataService(mockLogger, mockSqlService, mockPrepareAnswersAndInputsDataService, mockPrepareEventService)
   })
 
   test('it is defined', () => {
@@ -318,8 +323,17 @@ describe('SyncResultsDataService', () => {
 
   describe('#insertToDatabase', () => {
     test('it calls the appropriate data service', async () => {
-      await sut.insertToDatabase([{ sql: '', params: [] }])
+      await sut.insertToDatabase([{ sql: '', params: [] }], 'checkCode')
       expect(mockSqlService.modifyWithTransaction).toHaveBeenCalledWith([{ sql: '', params: [] }])
+    })
+
+    test('it emits an error with the checkCode if the database insert fails', async () => {
+      // @ts-ignore treat this as the spy it is
+      ;(mockSqlService.modifyWithTransaction as jest.SpyInstance).mockRejectedValue('mock sql error')
+      try {
+        await sut.insertToDatabase([{ sql: '', params: [] }], 'checkCode-2')
+      } catch (ignore) {}
+      expect(mockLogger.error).toHaveBeenCalledWith('ERROR: Failed to insert transaction to the database for checkCode [checkCode-2]')
     })
   })
 })

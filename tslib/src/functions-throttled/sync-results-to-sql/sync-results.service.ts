@@ -11,7 +11,7 @@ export class SyncResultsService {
 
   constructor (logger?: ILogger, syncResultsDataService?: SyncResultsDataService) {
     this.logger = logger ?? new ConsoleLogger()
-    this.syncResultsDataService = syncResultsDataService ?? new SyncResultsDataService()
+    this.syncResultsDataService = syncResultsDataService ?? new SyncResultsDataService(this.logger)
   }
 
   public async process (checkCompletionMessage: ICheckCompletionMessage): Promise<void> {
@@ -41,7 +41,7 @@ export class SyncResultsService {
       deviceTran
     ])
 
-    await this.syncResultsDataService.insertToDatabase([flattenedTransaction])
+    await this.syncResultsDataService.insertToDatabase([flattenedTransaction], checkCompletionMessage?.markedCheck?.checkCode)
   }
 }
 

@@ -5,9 +5,10 @@ import { IPrepareAnswersAndInputsDataService, PrepareAnswersAndInputsDataService
 import { ISqlService, ITransactionRequest, SqlService } from '../../sql/sql.service'
 import { UserAgentParser } from './user-agent-parser'
 import { IPrepareEventService, PrepareEventService } from './prepare-event.service'
+import { ConsoleLogger, ILogger } from '../../common/logger'
 
 export interface ISyncResultsDataService {
-  insertToDatabase (requests: ITransactionRequest[]): Promise<void>
+  insertToDatabase (requests: ITransactionRequest[], checkCode: string): Promise<void>
 
   prepareAnswersAndInputs (markedCheck: MarkedCheck, validatedCheck: ValidatedCheck): Promise<ITransactionRequest>
 
@@ -22,11 +23,11 @@ export class SyncResultsDataService implements ISyncResultsDataService {
   private readonly sqlService: ISqlService
   private readonly prepareAnswersAndInputsDataService: IPrepareAnswersAndInputsDataService
   private readonly prepareEventService: IPrepareEventService
-  // override rule, as this is accessed via reflection for mocking
-  // eslint-disable-next-line @typescript-eslint/prefer-readonly
+  private readonly logger: ILogger
 
-  constructor (sqlService?: ISqlService, prepareAnswersAndInputsDataService?: IPrepareAnswersAndInputsDataService, prepareEventService?: IPrepareEventService) {
-    this.sqlService = sqlService ?? new SqlService()
+  constructor (logger?: ILogger, sqlService?: ISqlService, prepareAnswersAndInputsDataService?: IPrepareAnswersAndInputsDataService, prepareEventService?: IPrepareEventService) {
+    this.logger = logger ?? new ConsoleLogger()
+    this.sqlService = sqlService ?? new SqlService(this.logger)
     this.prepareAnswersAndInputsDataService = prepareAnswersAndInputsDataService ?? new PrepareAnswersAndInputsDataService()
     this.prepareEventService = prepareEventService ?? new PrepareEventService()
   }
@@ -310,7 +311,14 @@ export class SyncResultsDataService implements ISyncResultsDataService {
    * All SQL statements already prepared are sent in a single transaction.
    * @param requests
    */
-  public async insertToDatabase (requests: ITransactionRequest[]): Promise<void> {
-    return this.sqlService.modifyWithTransaction(requests)
+  public async insertToDatabase (requests: ITransactionRequest[], checkCode: string): Promise<void> {
+    try {
+      await this.sqlService.modifyWithTransaction(requests)
+    } catch (error) {
+      const message = `ERROR: Failed to insert transaction to the database for checkCode [${checkCode}]`
+      this.logger.error(message)
+      // re-throw the original error
+      throw error
+    }
   }
 }
