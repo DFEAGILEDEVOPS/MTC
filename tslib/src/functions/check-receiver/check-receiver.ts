@@ -2,7 +2,7 @@ import { Context } from '@azure/functions'
 import Moment from 'moment'
 import * as az from '../../azure/storage-helper'
 import { SubmittedCheckMessageV2, ReceivedCheckTableEntity, ValidateCheckMessageV1 } from '../../schemas/models'
-import { CheckNotificationType, ICheckNotificationMessage } from '../check-notifier/check-notification-message'
+import { CheckNotificationType, ICheckNotificationMessage } from '../../schemas/check-notification-message'
 const tableService = new az.AsyncTableService()
 
 export class CheckReceiver {
