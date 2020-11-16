@@ -2,7 +2,6 @@
 /* global spyOn, describe, it, expect, fail */
 
 const pupilCensusService = require('../../../services/pupil-census.service')
-const pupilCensusProcessingService = require('../../../services/pupil-census-processing.service')
 const jobDataService = require('../../../services/data-access/job.data.service')
 const jobStatusDataService = require('../../../services/data-access/job-status.data.service')
 const jobTypeDataService = require('../../../services/data-access/job-type.data.service')
@@ -56,72 +55,20 @@ describe('pupilCensusService', () => {
       expect(fileValidator.validate).toHaveBeenCalled()
     })
   })
-  describe('upload', () => {
-    it('calls create then processes the data and finally calls update', async () => {
-      spyOn(pupilCensusProcessingService, 'process').and.returnValue({ output: 'output' })
-      spyOn(pupilCensusService, 'create').and.returnValue({ insertId: 1 })
-      spyOn(pupilCensusService, 'updateJobOutput')
-      await pupilCensusService.upload(pupilCensusUploadMock)
-      expect(pupilCensusProcessingService.process).toHaveBeenCalled()
-      expect(pupilCensusService.create).toHaveBeenCalled()
-      expect(pupilCensusService.updateJobOutput).toHaveBeenCalled()
-    })
-    it('throws an error if create does not return insertId', async () => {
-      spyOn(pupilCensusProcessingService, 'process')
-      spyOn(pupilCensusService, 'create').and.returnValue({})
-      try {
-        await pupilCensusService.upload(pupilCensusUploadMock)
-        fail()
-      } catch (error) {
-        expect(error.message).toBe('Job has not been created')
-      }
-      expect(pupilCensusProcessingService.process).not.toHaveBeenCalled()
-      expect(pupilCensusService.create).toHaveBeenCalled()
-    })
-    it('throws an error if bulk process does not return submission result', async () => {
-      spyOn(pupilCensusProcessingService, 'process')
-      spyOn(pupilCensusService, 'create').and.returnValue({ insertId: 1 })
-      spyOn(pupilCensusService, 'updateJobOutput')
-      try {
-        await pupilCensusService.upload(pupilCensusUploadMock)
-        fail()
-      } catch (error) {
-        expect(error.message).toBe('No result has been returned from pupil bulk insertion')
-      }
-      expect(pupilCensusProcessingService.process).toHaveBeenCalled()
-      expect(pupilCensusService.create).toHaveBeenCalled()
-      expect(pupilCensusService.updateJobOutput).not.toHaveBeenCalled()
-    })
-    it('rejects if process fails', async () => {
-      const unsafeReject = p => {
-        p.catch(ignore => ignore)
-        return p
-      }
-      const rejection = unsafeReject(Promise.reject(new Error('Mock error')))
-      spyOn(pupilCensusService, 'create').and.returnValue({ insertId: 1 })
-      spyOn(pupilCensusProcessingService, 'process').and.returnValue(rejection)
-      try {
-        await pupilCensusService.upload(pupilCensusUploadMock)
-        fail()
-      } catch (error) {
-        expect(error.message).toBe('Mock error')
-      }
-    })
-  })
   describe('upload2', () => {
     it('reads the file into stream, creates a job record and uploads to blob storage', async () => {
-      spyOn(pupilCensusService, 'create').and.returnValue({ id: 1, urlSlug: 'urlSlug' })
+      spyOn(pupilCensusService, 'createJobRecord').and.returnValue({ id: 1, urlSlug: 'urlSlug' })
       spyOn(azureBlobDataService, 'createContainerIfNotExistsAsync')
       spyOn(azureBlobDataService, 'createBlockBlobFromLocalFileAsync')
       spyOn(jobDataService, 'sqlUpdateStatus')
       await pupilCensusService.upload2(pupilCensusUploadMock)
-      expect(pupilCensusService.create).toHaveBeenCalled()
+      expect(pupilCensusService.createJobRecord).toHaveBeenCalled()
       expect(azureBlobDataService.createContainerIfNotExistsAsync).toHaveBeenCalled()
       expect(azureBlobDataService.createBlockBlobFromLocalFileAsync).toHaveBeenCalled()
       expect(jobDataService.sqlUpdateStatus).not.toHaveBeenCalled()
     })
     it('throws error if the job creation fails', async () => {
-      spyOn(pupilCensusService, 'create').and.returnValue({})
+      spyOn(pupilCensusService, 'createJobRecord').and.returnValue({})
       spyOn(azureBlobDataService, 'createContainerIfNotExistsAsync')
       spyOn(azureBlobDataService, 'createBlockBlobFromLocalFileAsync')
       spyOn(jobDataService, 'sqlUpdateStatus')
@@ -131,7 +78,7 @@ describe('pupilCensusService', () => {
       } catch (error) {
         expect(error.message).toBe('Job has not been created')
       }
-      expect(pupilCensusService.create).toHaveBeenCalled()
+      expect(pupilCensusService.createJobRecord).toHaveBeenCalled()
       expect(azureBlobDataService.createContainerIfNotExistsAsync).not.toHaveBeenCalled()
       expect(azureBlobDataService.createBlockBlobFromLocalFileAsync).not.toHaveBeenCalled()
       expect(jobDataService.sqlUpdateStatus).not.toHaveBeenCalled()
@@ -139,7 +86,7 @@ describe('pupilCensusService', () => {
     it('calls sqlUpdateStatus with failed status code if if blob uploading fails', async () => {
       const error = new Error()
       error.message = 'error'
-      spyOn(pupilCensusService, 'create').and.returnValue({ id: 1, urlSlug: 'urlSlug' })
+      spyOn(pupilCensusService, 'createJobRecord').and.returnValue({ id: 1, urlSlug: 'urlSlug' })
       spyOn(azureBlobDataService, 'createContainerIfNotExistsAsync')
       spyOn(azureBlobDataService, 'createBlockBlobFromLocalFileAsync').and.returnValue(Promise.reject(error))
       spyOn(jobDataService, 'sqlUpdateStatus')
@@ -149,7 +96,7 @@ describe('pupilCensusService', () => {
       } catch (error) {
         expect(error.message).toBe('error')
       }
-      expect(pupilCensusService.create).toHaveBeenCalled()
+      expect(pupilCensusService.createJobRecord).toHaveBeenCalled()
       expect(azureBlobDataService.createContainerIfNotExistsAsync).toHaveBeenCalled()
       expect(azureBlobDataService.createBlockBlobFromLocalFileAsync).toHaveBeenCalled()
       expect(jobDataService.sqlUpdateStatus).toHaveBeenCalledWith('urlSlug', 'FLD')
@@ -190,7 +137,7 @@ describe('pupilCensusService', () => {
       spyOn(jobDataService, 'sqlCreate')
       spyOn(jobTypeDataService, 'sqlFindOneByTypeCode').and.returnValue(jobTypeMock)
       spyOn(jobStatusDataService, 'sqlFindOneByTypeCode').and.returnValue(jobStatusSubmittedMock)
-      await pupilCensusService.create(pupilCensusMock, { output: 'Inserted 5000 rows' })
+      await pupilCensusService.createJobRecord(pupilCensusMock, { output: 'Inserted 5000 rows' })
       expect(jobDataService.sqlCreate).toHaveBeenCalled()
     })
   })

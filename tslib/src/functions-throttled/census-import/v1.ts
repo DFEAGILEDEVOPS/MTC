@@ -55,10 +55,10 @@ export class CensusImportV1 {
   }
 
   private async handleCensusImport (blob: any, blobUri: string): Promise<number> {
-    const jobUrlSlug = R.compose((arr: any[]) => arr[arr.length - 1], (r: string) => r.split('/'))(blobUri)
+    const blobName = R.compose((arr: any[]) => arr[arr.length - 1], (r: string) => r.split('/'))(blobUri)
     // Update job status to Processing
-    this.logger.info(`jobUrlSlug:${jobUrlSlug}`)
-    const jobId = await this.jobDataService.updateStatus(jobUrlSlug, 'PRC')
+    this.logger.info(`jobUrlSlug:${blobName}`)
+    const jobId = await this.jobDataService.updateStatus(blobName, 'PRC')
     this.logger.info(`jobId:${jobId}`)
     const blobContent = csvString.parse(blob.toString())
     const censusTable = `[mtc_census_import].[census_import_${moment.utc().format('YYYYMMDDHHMMSS')}_${uuidv4()}]`
@@ -69,7 +69,7 @@ export class CensusImportV1 {
 
     const pupilMeta = await this.censusImportDataService.loadPupilsFromStaging(censusTable, jobId)
     await this.censusImportDataService.deleteStagingTable(censusTable)
-    await this.blobStorageService.deleteContainerAsync('census')
+    await this.blobStorageService.deleteBlobAsync(blobName, 'census')
 
     const jobOutput = `${stagingInsertCount} rows in uploaded file, ${pupilMeta.insertCount} inserted to pupil table, ${pupilMeta.errorCount} rows containing errors`
     if (stagingInsertCount !== pupilMeta.insertCount) {
@@ -78,12 +78,12 @@ export class CensusImportV1 {
       }
       const errorOutput = `${pupilMeta.errorText}\nTip: Ensure all schools in the uploaded file have a matching entry in the MTC database.`
       // update job to failed
-      await this.jobDataService.updateStatus(jobUrlSlug, 'CWR', jobOutput, errorOutput)
+      await this.jobDataService.updateStatus(blobName, 'CWR', jobOutput, errorOutput)
       this.logger.warn(`census-import: ${stagingInsertCount} rows staged, but only ${pupilMeta.insertCount} rows inserted to pupil table`)
     } else {
       const jobOutput = `${stagingInsertCount} rows staged and ${pupilMeta.insertCount} rows inserted to pupil table`
       // update job to complete
-      await this.jobDataService.updateStatus(jobUrlSlug, 'COM', jobOutput)
+      await this.jobDataService.updateStatus(blobName, 'COM', jobOutput)
     }
     return pupilMeta.insertCount
   }
