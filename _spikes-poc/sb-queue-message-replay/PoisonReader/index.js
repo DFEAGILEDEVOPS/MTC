@@ -4,7 +4,8 @@ const { ServiceBusClient } = require('@azure/service-bus')
 const connectionString = process.env.AZURE_SERVICE_BUS_CONNECTION_STRING
 
 module.exports = async function (context, req) {
-  context.log(`attempting to read poison queue at ${new Date().toISOString()}`)
+  context.log(`attempting to read [${deadletterqueue}] at ${new Date().toISOString()}`)
+
   const queueName = 'message-replay-testing/$deadletterqueue'
   const sbClient = ServiceBusClient.createFromConnectionString(connectionString)
   const queueClient = sbClient.createQueueClient(queueName)
