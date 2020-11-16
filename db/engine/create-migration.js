@@ -6,7 +6,7 @@ const fs = require('fs')
 const path = require('path')
 const commandLineArgs = require('command-line-args')
 
-const migrationsDir = path.join(__dirname, 'migrations')
+const migrationsDir = path.join(__dirname, '..')
 
 const optionDefinitions = [
   { name: 'name', alias: 'n', type: String, defaultOption: true },
@@ -17,6 +17,7 @@ const optionDefinitions = [
 const jsMigrationTemplate = `
 'use strict'
 module.exports.generateSql = function () {
+  // TODO create and return sql string
 }
 `
 

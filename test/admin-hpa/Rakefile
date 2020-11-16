@@ -22,10 +22,11 @@ features = Dir["features/*.feature"]
 array_of_features = features.sort.each_slice(ENV['GROUP_SIZE'].to_i).to_a
 array_of_features.each do |features|
   BrowserstackSettings.browser_caps.keys.each_with_index do |browser, index|
-    Cucumber::Rake::Task.new(browser.to_sym, "Runs test for " + browser) do |task|
+    Cucumber::Rake::Task.new(('bs_' + browser).to_sym, "Runs test for " + browser) do |task|
       @start_time = Time.now
-      task.cucumber_opts = "--format=pretty DRIVER=bs_#{browser} -f rerun -o rerun.txt BS_ID=#{SecureRandom.uuid} #{features.join(' ')}"
+      task.cucumber_opts = "--format=pretty DRIVER=bs_#{browser} -f rerun -o rerun.txt #{features.join(' ')}"
       task.cucumber_opts << " #{ENV['OPTS']}" unless ENV['OPTS'].nil?
+      task.cucumber_opts << " -p ie11" if browser.include? 'ie11'
     end
   end
 end
@@ -43,6 +44,8 @@ at_exit do
   puts "\n#################################".send(colour)
   puts "## Exiting with status code: #{exit_code} ##".send(colour)
   puts "#################################\n\n".send(colour)
+
+  p 'killed'
   exit exit_code
 end
 
