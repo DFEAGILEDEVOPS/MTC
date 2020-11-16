@@ -517,4 +517,51 @@ class SqlDbHelper
     count.values.first
   end
 
+  def self.get_answers(check_result_id)
+    sql = "SELECT * FROM [mtc_results].[answer] WHERE checkResult_id='#{check_result_id}'"
+    result = SQL_CLIENT.execute(sql)
+    result.each {|row| row.map}
+  end
+
+  def self.get_check_result(check_id)
+    sql = "SELECT * FROM [mtc_results].[checkResult] WHERE check_id='#{check_id}'"
+    result = SQL_CLIENT.execute(sql)
+    check_result = result.first
+    result.cancel
+    check_result
+  end
+
+  def self.get_check_id(check_code)
+    sql = "SELECT * FROM [mtc_admin].[check] WHERE checkCode='#{check_code}'"
+    result = SQL_CLIENT.execute(sql)
+    check = result.first
+    result.cancel
+    check['id']
+  end
+
+  def self.get_check_result_id(check_id)
+    sql = "SELECT * FROM [mtc_results].[checkResult] WHERE check_id='#{check_id}'"
+    result = SQL_CLIENT.execute(sql)
+    check_result = result.first
+    result.cancel
+    check_result['id']
+  end
+
+  def self.wait_for_check_result(check_id)
+    begin
+      retries ||= 0
+      sleep 2
+      p 'waiting for check result record'
+      a = get_check_result_id(check_id)
+    rescue NoMethodError => e
+      retry if (retries += 1) < 60
+    end
+  end
+
+  def self.get_event_types_for_check(check_result_id)
+    sql = "select mtc_results.event.id, mtc_results.eventTypeLookup.eventType from mtc_results.event join mtc_results.eventTypeLookup on event.eventTypeLookup_id = eventTypeLookup.id where mtc.mtc_results.event.checkResult_id=#{check_result_id}"
+    result = SQL_CLIENT.execute(sql)
+    result.each {|row| row.map}
+  end
+
 end
