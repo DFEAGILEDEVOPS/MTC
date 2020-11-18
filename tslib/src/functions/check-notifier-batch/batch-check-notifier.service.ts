@@ -1,4 +1,4 @@
-import { ICheckNotificationMessage, CheckNotificationType } from '../check-notifier/check-notification-message'
+import { ICheckNotificationMessage, CheckNotificationType } from '../../schemas/check-notification-message'
 import { IBatchCheckNotifierDataService, BatchCheckNotifierDataService } from './batch-check-notifier.data.service'
 import { ITransactionRequest } from '../../sql/sql.service'
 

@@ -1,0 +1,17 @@
+{
+  "name": "poison-replay-poc",
+  "version": "1.0",
+  "description": "proof of concept for dead letter queue control",
+  "scripts": {
+    "start": "func host start --port 7079",
+    "prestart": "func extensions install"
+  },
+  "author": "",
+  "dependencies": {
+    "@azure/service-bus": "^1.1.10",
+    "uuid": "^8.3.1"
+  },
+  "devDependencies": {
+    "standard": "^16.0.2"
+  }
+}

@@ -1,6 +1,6 @@
 import { AzureFunction, Context } from '@azure/functions'
 import { performance } from 'perf_hooks'
-import { ICheckNotificationMessage } from './check-notification-message'
+import { ICheckNotificationMessage } from '../../schemas/check-notification-message'
 import { CheckNotifier } from './check-notifier.v1'
 const functionName = 'check-notifier'
 

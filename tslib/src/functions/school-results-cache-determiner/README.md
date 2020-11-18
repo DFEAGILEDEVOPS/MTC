@@ -1,7 +1,7 @@
 # Function: `school-results-cache-determiner`
 
 ## Triggered by
-A message inserted onto the `sync-results-to-db-complete` queue which in turn is generated when the `sync-results-to-db` function has completed it's nightly run.  For local development you should set the `sync-results-to-db` function to run more frequently.
+A message inserted onto the `sync-results-to-db-complete` queue which in turn is generated when the `sync-results-to-sql` function has completed it's nightly run.  For local development you should set the `sync-results-to-db` function to run more frequently.
 
 ## Output bindings
 None OR approx 17K messages placed on the service bus queue `school-results-cache`
