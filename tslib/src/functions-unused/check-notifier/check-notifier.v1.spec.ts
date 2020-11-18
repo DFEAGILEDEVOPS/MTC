@@ -1,4 +1,4 @@
-import { CheckNotificationType } from './check-notification-message'
+import { CheckNotificationType } from '../../schemas/check-notification-message'
 import { CheckNotifier } from './check-notifier.v1'
 import { ICheckNotifierDataService } from './check-notifier.data.service'
 

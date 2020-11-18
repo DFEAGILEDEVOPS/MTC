@@ -5,7 +5,7 @@ import * as R from 'ramda'
 import { ILogger } from '../../common/logger'
 import { ICheckMarkerFunctionBindings } from './models'
 import checkSchema from '../../schemas/complete-check.v1.json'
-import { CheckNotificationType, ICheckNotificationMessage } from '../check-notifier/check-notification-message'
+import { CheckNotificationType, ICheckNotificationMessage } from '../../schemas/check-notification-message'
 import { ReceivedCheckTableEntity } from '../../schemas/models'
 import { CompressionService } from '../../common/compression-service'
 import uuid = require('uuid')
