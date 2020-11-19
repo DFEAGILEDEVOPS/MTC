@@ -4,10 +4,10 @@ import * as RA from 'ramda-adjunct'
 import { AzureFunction, Context } from '@azure/functions'
 import { performance } from 'perf_hooks'
 
-import { SyncResultsService } from './sync-results.service'
 import config from '../../config'
 import { ICheckCompletionMessage } from './models'
 import { IFunctionTimer } from '../../azure/functions'
+import { SyncResultsServiceFactory } from './sync-results.service.factory'
 
 const meta = { checksProcessed: 0, checksErrored: 0, errorCheckCodes: [] as string[] }
 const functionName = 'sync-results-to-sql'
@@ -51,6 +51,7 @@ const timerTrigger: AzureFunction = async function (context: Context, timer: IFu
   let busClient: sb.ServiceBusClient
   let queueClient: sb.QueueClient
   let receiver: sb.Receiver
+  let syncResultsServiceFactory: SyncResultsServiceFactory
 
   const disconnect = async (): Promise<void> => {
     await receiver.close()
@@ -64,6 +65,7 @@ const timerTrigger: AzureFunction = async function (context: Context, timer: IFu
     busClient = sb.ServiceBusClient.createFromConnectionString(config.ServiceBus.ConnectionString)
     queueClient = busClient.createQueueClient('check-completion')
     receiver = queueClient.createReceiver(sb.ReceiveMode.peekLock)
+    syncResultsServiceFactory = new SyncResultsServiceFactory(context.log)
     context.log(`${functionName}: connected to service bus instance ${busClient.name}`)
   } catch (error) {
     context.log.error(`${functionName}: unable to connect to service bus at this time:${error.message}`)
@@ -100,12 +102,12 @@ const timerTrigger: AzureFunction = async function (context: Context, timer: IFu
     }
     context.log(`${functionName}: received batch of ${messageBatch.length} messages`)
     const completionMessages = messageBatch.map(m => m.body as ICheckCompletionMessage)
-    await process(completionMessages, context, messageBatch)
+    await process(completionMessages, context, messageBatch, syncResultsServiceFactory)
   }
 }
 
-async function process (checkCompletionMessages: ICheckCompletionMessage[], context: Context, queueMessages: sb.ServiceBusMessage[]): Promise<void> {
-  const syncResultsService = new SyncResultsService(context.log)
+async function process (checkCompletionMessages: ICheckCompletionMessage[], context: Context, queueMessages: sb.ServiceBusMessage[], syncResultsServiceFactory: SyncResultsServiceFactory): Promise<void> {
+  const syncResultsService = syncResultsServiceFactory.create()
   for (let i = 0; i < checkCompletionMessages.length; i++) {
     const msg = checkCompletionMessages[i]
     const queueMessage = queueMessages[i]
