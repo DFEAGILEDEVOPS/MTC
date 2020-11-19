@@ -1,4 +1,5 @@
 import * as sb from '@azure/service-bus'
+import * as R from 'ramda'
 import * as RA from 'ramda-adjunct'
 import { AzureFunction, Context } from '@azure/functions'
 import { performance } from 'perf_hooks'
@@ -10,6 +11,22 @@ import { IFunctionTimer } from '../../azure/functions'
 
 const meta = { checksProcessed: 0, checksErrored: 0, errorCheckCodes: [] as string[] }
 const functionName = 'sync-results-to-sql'
+
+/**
+ * We are unable to determine the maximum number of delivery attempts for the azure service-bus queue
+ * dynamically.  This will be a possibility in @azure/service-bus version 7 which has a new API
+ * compared to v1.1.10.
+ * https://docs.microsoft.com/en-us/javascript/api/overview/azure/service-bus-readme-pre?view=azure-node-latest
+ *
+ * This needs to be kept in sync with the `check-completion` 'Max Delivery Count' setting.
+ *
+ * TODO: upgrade to v7 client and dynamically fetch the Max Delivery Count setting from the service-bus queue
+ * https://github.com/Azure/azure-sdk-for-js/blob/%40azure/service-bus_7.0.0-preview.8/sdk/servicebus/service-bus/samples/typescript/src/advanced/administrationClient.ts
+ *
+ * This is used so we can detect when the message is on the very last delivery, and take action to update the pupil and check to
+ * show that processing the check result failed.
+ */
+const maxDeliveryAttempts = 10
 
 /*
  * The function is running as a singleton, and the receiver is therefore exclusive
@@ -100,7 +117,9 @@ async function process (checkCompletionMessages: ICheckCompletionMessage[], cont
     } catch (error) {
       console.log('error in message', error)
       meta.checksErrored += 1
-      meta.errorCheckCodes.push(msg.markedCheck.checkCode)
+      if (!meta.errorCheckCodes.includes(msg.markedCheck.checkCode)) {
+        meta.errorCheckCodes.push(msg.markedCheck.checkCode)
+      }
       // sql transaction failed, abandon...
       await abandonMessages([queueMessage], context)
     }
@@ -133,11 +152,24 @@ async function abandonMessages (messageBatch: sb.ServiceBusMessage[], context: C
   for (let index = 0; index < messageBatch.length; index++) {
     const msg = messageBatch[index]
     try {
+      if (isLastDeliveryAttempt(msg, maxDeliveryAttempts)) {
+        const checkCode = R.pathOr('n/a', ['body', 'markedCheck', 'checkCode'], msg)
+        context.log.error(`Last delivery attempt for ${checkCode} we have had %d deliveries already`, msg.deliveryCount)
+      }
       await msg.abandon()
     } catch (error) {
       context.log.error(`${functionName}: unable to abandon message:${error.message}`)
     }
   }
+}
+
+function isLastDeliveryAttempt (msg: sb.ServiceBusMessage, maxAttempts: number): boolean {
+  // We need to know if this is the last delivery attempt. Note that deliveryCount property will not
+  // be updated to the maximum until we call abandon() or complete() to release the lock.
+  if (msg.deliveryCount === (maxAttempts - 1)) {
+    return true
+  }
+  return false
 }
 
 function finish (start: number, context: Context): void {
