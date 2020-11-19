@@ -79,6 +79,9 @@ export class SqlService implements ISqlService {
   }
 
   async query (sql: string, params?: ISqlParameter[]): Promise<any> {
+    if (config.Logging.DebugVerbosity > 1) {
+      this.logger.verbose(`sql.service.query(): ${sql}`)
+    }
     const query = async (): Promise<any> => {
       const request = new Request(await connectionPool.getInstance())
       if (params !== undefined) {
@@ -97,6 +100,9 @@ export class SqlService implements ISqlService {
    * @return {Promise}
    */
   async modify (sql: string, params: ISqlParameter[]): Promise<any> {
+    if (config.Logging.DebugVerbosity > 1) {
+      this.logger.verbose(`sql.service.modify(): ${sql}`)
+    }
     const modify = async (): Promise<IResult<any>> => {
       const request = new Request(await connectionPool.getInstance())
       this.addParamsToRequest(params, request)
