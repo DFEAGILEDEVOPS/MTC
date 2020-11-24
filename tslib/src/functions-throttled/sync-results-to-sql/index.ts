@@ -8,6 +8,7 @@ import config from '../../config'
 import { ICheckCompletionMessage } from './models'
 import { IFunctionTimer } from '../../azure/functions'
 import { SyncResultsServiceFactory } from './sync-results.service.factory'
+import { ProcessingFailureService } from './processing-failure.service'
 
 const meta = { checksProcessed: 0, checksErrored: 0, errorCheckCodes: [] as string[] }
 const functionName = 'sync-results-to-sql'
@@ -117,7 +118,6 @@ async function process (checkCompletionMessages: ICheckCompletionMessage[], cont
       // Work done, consume the messages from the queue
       await completeMessages([queueMessage], context)
     } catch (error) {
-      console.log('error in message', error)
       meta.checksErrored += 1
       if (!meta.errorCheckCodes.includes(msg.markedCheck.checkCode)) {
         meta.errorCheckCodes.push(msg.markedCheck.checkCode)
@@ -155,8 +155,7 @@ async function abandonMessages (messageBatch: sb.ServiceBusMessage[], context: C
     const msg = messageBatch[index]
     try {
       if (isLastDeliveryAttempt(msg, maxDeliveryAttempts)) {
-        const checkCode = R.pathOr('n/a', ['body', 'markedCheck', 'checkCode'], msg)
-        context.log.error(`Last delivery attempt for ${checkCode} we have had %d deliveries already`, msg.deliveryCount)
+        await handleLastDeliveryAttempt(context, msg)
       }
       await msg.abandon()
     } catch (error) {
@@ -172,6 +171,19 @@ function isLastDeliveryAttempt (msg: sb.ServiceBusMessage, maxAttempts: number):
     return true
   }
   return false
+}
+
+async function handleLastDeliveryAttempt (context: Context, msg: sb.ServiceBusMessage): Promise<void> {
+  const checkCode = R.pathOr('n/a', ['body', 'markedCheck', 'checkCode'], msg)
+  context.log.error(`${functionName}: Last delivery attempt for ${checkCode} it has had ${msg.deliveryCount} deliveries already`)
+  try {
+    const processingFailureService = new ProcessingFailureService(context.log)
+    await processingFailureService.processingFailed(checkCode)
+    context.log.error(`${functionName}: Processing failed for checkCode ${checkCode}`)
+  } catch (error) {
+    context.log.error(`${functionName}: ALERT: Failed to set processing failed for check ${checkCode}`)
+    throw error
+  }
 }
 
 function finish (start: number, context: Context): void {

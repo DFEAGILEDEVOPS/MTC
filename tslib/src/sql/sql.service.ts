@@ -151,7 +151,8 @@ export class SqlService implements ISqlService {
       try {
         await retry<any>(modify, retryConfig, dbLimitReached)
       } catch (error) {
-        this.logger.error(`error thrown from statement within transaction:${request.sql}`)
+        const sqlSnippet = request.sql.slice(0, 999) + '...'
+        this.logger.error(`error thrown from statement within transaction:${sqlSnippet}`)
         this.logger.error('rolling back transaction...')
         await transaction.rollback()
         throw error
