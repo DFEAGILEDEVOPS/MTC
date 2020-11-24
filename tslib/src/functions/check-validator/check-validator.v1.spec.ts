@@ -6,7 +6,7 @@ import checkSchema from '../../schemas/complete-check.v1.json'
 import { ICompressionService } from '../../common/compression-service'
 import * as uuid from 'uuid'
 import moment from 'moment'
-import { CheckNotificationType } from '../check-notifier/check-notification-message'
+import { CheckNotificationType } from '../../schemas/check-notification-message'
 
 const TableServiceMock = jest.fn<IAsyncTableService, any>(() => ({
   replaceEntityAsync: jest.fn(async (): Promise<TableStorageEntity> => {

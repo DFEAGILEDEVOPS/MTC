@@ -6,7 +6,7 @@ import moment from 'moment'
 import { ICheckFormService, CheckFormService } from './check-form.service'
 import { ILogger } from '../../common/logger'
 import { ICheckMarkerFunctionBindings, MarkingData, CheckResult, MarkedAnswer } from './models'
-import { ICheckNotificationMessage, CheckNotificationType } from '../check-notifier/check-notification-message'
+import { ICheckNotificationMessage, CheckNotificationType } from '../../schemas/check-notification-message'
 import { ICompressionService, CompressionService } from '../../common/compression-service'
 
 const functionName = 'check-marker'

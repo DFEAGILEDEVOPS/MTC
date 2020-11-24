@@ -2,6 +2,7 @@
 import { AzureFunction, Context, HttpRequest } from '@azure/functions'
 import { SchoolPinReplenishmnentService } from '../school-pin-generator/school-pin-replenishment.service'
 import { performance } from 'perf_hooks'
+import config from '../../config'
 const functionName = 'school-pin-http-service'
 
 function finish (start: number, context: Context): void {
@@ -12,6 +13,12 @@ function finish (start: number, context: Context): void {
 }
 
 const schoolPinHttpService: AzureFunction = async function (context: Context, req: HttpRequest): Promise<void> {
+  if (!config.DevTestUtils.SchoolPinHttpServiceFunctionEnabled) {
+    context.log('exiting as not enabled (default behaviour)')
+    context.done()
+    return
+  }
+
   const schoolIdParam = req?.body?.school_id
 
   if (schoolIdParam === undefined) {

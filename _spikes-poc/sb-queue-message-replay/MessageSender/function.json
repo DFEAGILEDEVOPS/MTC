@@ -6,8 +6,8 @@
       "direction": "in",
       "name": "req",
       "methods": [
-        "post",
-        "options"
+        "get",
+        "post"
       ]
     },
     {
@@ -18,10 +18,9 @@
     {
       "direction": "out",
       "type": "serviceBus",
-      "name": "pupilLoginQueue",
-      "queueName": "pupil-login",
+      "name": "messageReplayTestingQueue",
+      "queueName": "message-replay-testing",
       "connection": "AZURE_SERVICE_BUS_CONNECTION_STRING"
     }
-  ],
-  "scriptFile": "../dist/functions/pupil-auth/index.js"
+  ]
 }

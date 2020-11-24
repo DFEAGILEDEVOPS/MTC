@@ -4,8 +4,14 @@ import * as lz from 'lz-string'
 import uuid from 'uuid/v4'
 import submittedCheck from '../../schemas/submitted-check.v3'
 import completeCheckPayload from '../../schemas/complete-check-payload'
+import config from '../../config'
 
 const httpTrigger: AzureFunction = function (context: Context, req: HttpRequest): void {
+  if (!config.DevTestUtils.SubmitCheckForLoadTestFunctionEnabled) {
+    context.log('exiting as not enabled (default behaviour)')
+    context.done()
+    return
+  }
   // TODO add support for live check toggle via query string?
   const message = JSON.parse(JSON.stringify(submittedCheck))
   const samplePayload = JSON.parse(JSON.stringify(completeCheckPayload))
