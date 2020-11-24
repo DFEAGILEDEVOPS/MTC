@@ -37,10 +37,6 @@ export class WarmupIntroComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.window.ga('send', {
-      hitType: 'pageview',
-      page: '/practice-questions'
-    });
     AppInsights.trackPageView('Practice Questions', '/practice-questions');
   }
 
