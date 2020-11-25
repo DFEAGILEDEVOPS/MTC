@@ -1,5 +1,5 @@
 import { IRedisService, RedisService } from '../../caching/redis-service'
-import v4 from 'uuid/v4'
+import { v4 as uuidv4 } from 'uuid'
 import * as R from 'ramda'
 
 export interface ICheckStartedFunctionBindings {
@@ -22,7 +22,7 @@ export class CheckStartedService {
     functionBindings.checkStartedTable = []
     functionBindings.checkStartedTable.push({
       PartitionKey: checkStartedMessage.checkCode.toLowerCase(),
-      RowKey: v4(),
+      RowKey: uuidv4(),
       clientCheckStartedAt: checkStartedMessage.clientCheckStartedAt
     })
     const preparedCheck = await this.redisService.get(preparedCheckKey)

@@ -2,7 +2,7 @@ import * as sql from '../sql/sql.service'
 import * as RA from 'ramda-adjunct'
 import { isMoment } from 'moment'
 import * as mssql from 'mssql'
-import v4 from 'uuid'
+import { v4 as uuidv4 } from 'uuid'
 import moment = require('moment')
 
 let sut: sql.SqlService
@@ -99,7 +99,7 @@ describe('SqlService', () => {
   })
 
   test('modifyWithTransaction: rolls back all statements in the batch upon failure', async () => {
-    const uuid = v4()
+    const uuid = uuidv4()
     const requests = new Array<sql.ITransactionRequest>()
     requests.push({
       sql: `INSERT INTO mtc_admin.integrationTest (tNvarCharMax)
@@ -128,7 +128,7 @@ describe('SqlService', () => {
   })
 
   test('modifyWithTransaction: commits all statements in the batch when no errors are raised', async () => {
-    const uuid = v4()
+    const uuid = uuidv4()
     const requests = new Array<sql.ITransactionRequest>()
     requests.push({
       sql: `INSERT INTO mtc_admin.integrationTest (tNvarCharMax)
