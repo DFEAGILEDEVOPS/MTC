@@ -27,7 +27,7 @@ const functionName = 'sync-results-to-sql'
  * This is used so we can detect when the message is on the very last delivery, and take action to update the pupil and check to
  * show that processing the check result failed.
  */
-const maxDeliveryAttempts = 10
+const maxDeliveryAttempts = config.ServiceBus.CheckCompletionQueueMaxDeliveryCount
 
 /*
  * The function is running as a singleton, and the receiver is therefore exclusive
