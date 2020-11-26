@@ -29,8 +29,8 @@ class RequestHelper
     builder.to_xml
   end
 
-  def self.build_payload_json(parsed_response_pupil_auth, correct_answers = nil)
-    ct = Time.now.strftime("%Y-%m-%dT%H:%M:%S.%LZ")
+  def self.build_payload_json(parsed_response_pupil_auth, input_type = 'mouse')
+    seconds = 1
     {
       "answers": [
         {
@@ -39,7 +39,7 @@ class RequestHelper
           "answer": "2",
           "sequenceNumber": 1,
           "question": "1x1",
-          "clientTimestamp": "#{ct}"
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}"
         },
         {
           "factor1": 1,
@@ -47,7 +47,7 @@ class RequestHelper
           "answer": "0",
           "sequenceNumber": 2,
           "question": "1x2",
-          "clientTimestamp": "#{ct}"
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}"
         },
         {
           "factor1": 1,
@@ -55,7 +55,7 @@ class RequestHelper
           "answer": "0",
           "sequenceNumber": 3,
           "question": "1x3",
-          "clientTimestamp": "#{ct}"
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}"
         },
         {
           "factor1": 1,
@@ -63,7 +63,7 @@ class RequestHelper
           "answer": "0",
           "sequenceNumber": 4,
           "question": "1x4",
-          "clientTimestamp": "#{ct}"
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}"
         },
         {
           "factor1": 1,
@@ -71,7 +71,7 @@ class RequestHelper
           "answer": "0",
           "sequenceNumber": 5,
           "question": "1x5",
-          "clientTimestamp": "#{ct}"
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}"
         },
         {
           "factor1": 1,
@@ -79,7 +79,7 @@ class RequestHelper
           "answer": "0",
           "sequenceNumber": 6,
           "question": "1x6",
-          "clientTimestamp": "#{ct}"
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}"
         },
         {
           "factor1": 1,
@@ -87,7 +87,7 @@ class RequestHelper
           "answer": "0",
           "sequenceNumber": 7,
           "question": "1x7",
-          "clientTimestamp": "#{ct}"
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}"
         },
         {
           "factor1": 1,
@@ -95,7 +95,7 @@ class RequestHelper
           "answer": "0",
           "sequenceNumber": 8,
           "question": "1x8",
-          "clientTimestamp": "#{ct}"
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}"
         },
         {
           "factor1": 1,
@@ -103,1442 +103,1433 @@ class RequestHelper
           "answer": "0",
           "sequenceNumber": 9,
           "question": "1x9",
-          "clientTimestamp": "#{ct}"
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}"
         },
         {
-          "factor1": 12,
-          "factor2": 12,
+          "factor1": 1,
+          "factor2": 10,
           "answer": "0",
           "sequenceNumber": 10,
-          "question": "12x12",
-          "clientTimestamp": "#{ct}"
+          "question": "1x10",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}"
         },
         {
           "factor1": 1,
-          "factor2": 1,
+          "factor2": 11,
           "answer": "",
           "sequenceNumber": 11,
-          "question": "1x1",
-          "clientTimestamp": "#{ct}"
+          "question": "1x11",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}"
         },
         {
           "factor1": 1,
-          "factor2": 2,
-          "answer": "0",
-          "sequenceNumber": 12,
-          "question": "1x2",
-          "clientTimestamp": "#{ct}"
-        },
-        {
-          "factor1": 1,
-          "factor2": 3,
-          "answer": "0",
-          "sequenceNumber": 13,
-          "question": "1x3",
-          "clientTimestamp": "#{ct}"
-        },
-        {
-          "factor1": 1,
-          "factor2": 4,
-          "answer": "0",
-          "sequenceNumber": 14,
-          "question": "1x4",
-          "clientTimestamp": "#{ct}"
-        },
-        {
-          "factor1": 1,
-          "factor2": 5,
-          "answer": "",
-          "sequenceNumber": 15,
-          "question": "1x5",
-          "clientTimestamp": "#{ct}"
-        },
-        {
-          "factor1": 1,
-          "factor2": 6,
-          "answer": "0",
-          "sequenceNumber": 16,
-          "question": "1x6",
-          "clientTimestamp": "#{ct}"
-        },
-        {
-          "factor1": 1,
-          "factor2": 7,
-          "answer": "0",
-          "sequenceNumber": 17,
-          "question": "1x7",
-          "clientTimestamp": "#{ct}"
-        },
-        {
-          "factor1": 1,
-          "factor2": 8,
-          "answer": "0",
-          "sequenceNumber": 18,
-          "question": "1x8",
-          "clientTimestamp": "#{ct}"
-        },
-        {
-          "factor1": 1,
-          "factor2": 9,
-          "answer": "0",
-          "sequenceNumber": 19,
-          "question": "1x9",
-          "clientTimestamp": "#{ct}"
-        },
-        {
-          "factor1": 12,
           "factor2": 12,
           "answer": "0",
-          "sequenceNumber": 20,
-          "question": "12x12",
-          "clientTimestamp": "#{ct}"
+          "sequenceNumber": 12,
+          "question": "1x12",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}"
         },
         {
-          "factor1": 1,
+          "factor1": 2,
+          "factor2": 1,
+          "answer": "0",
+          "sequenceNumber": 13,
+          "question": "2x1",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}"
+        },
+        {
+          "factor1": 2,
           "factor2": 2,
           "answer": "0",
-          "sequenceNumber": 21,
-          "question": "1x2",
-          "clientTimestamp": "#{ct}"
+          "sequenceNumber": 14,
+          "question": "2x2",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}"
         },
         {
-          "factor1": 1,
+          "factor1": 2,
           "factor2": 3,
-          "answer": "0",
-          "sequenceNumber": 22,
-          "question": "1x3",
-          "clientTimestamp": "#{ct}"
+          "answer": "",
+          "sequenceNumber": 15,
+          "question": "2x3",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}"
         },
         {
-          "factor1": 1,
+          "factor1": 2,
           "factor2": 4,
           "answer": "0",
-          "sequenceNumber": 23,
-          "question": "1x4",
-          "clientTimestamp": "#{ct}"
-        },
-        {
-          "factor1": 1,
-          "factor2": 5,
-          "answer": "0",
-          "sequenceNumber": 24,
-          "question": "1x5",
-          "clientTimestamp": "#{ct}"
+          "sequenceNumber": 16,
+          "question": "2x4",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}"
         },
         {
           "factor1": 2,
           "factor2": 5,
           "answer": "0",
-          "sequenceNumber": 25,
+          "sequenceNumber": 17,
           "question": "2x5",
-          "clientTimestamp": "#{ct}"
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}"
+        },
+        {
+          "factor1": 2,
+          "factor2": 6,
+          "answer": "0",
+          "sequenceNumber": 18,
+          "question": "2x6",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}"
+        },
+        {
+          "factor1": 2,
+          "factor2": 7,
+          "answer": "0",
+          "sequenceNumber": 19,
+          "question": "2x7",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}"
+        },
+        {
+          "factor1": 2,
+          "factor2": 8,
+          "answer": "0",
+          "sequenceNumber": 20,
+          "question": "2x8",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}"
+        },
+        {
+          "factor1": 2,
+          "factor2": 9,
+          "answer": "0",
+          "sequenceNumber": 21,
+          "question": "2x9",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}"
+        },
+        {
+          "factor1": 2,
+          "factor2": 10,
+          "answer": "0",
+          "sequenceNumber": 22,
+          "question": "2x10",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}"
+        },
+        {
+          "factor1": 2,
+          "factor2": 11,
+          "answer": "0",
+          "sequenceNumber": 23,
+          "question": "2x11",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}"
+        },
+        {
+          "factor1": 2,
+          "factor2": 12,
+          "answer": "0",
+          "sequenceNumber": 24,
+          "question": "2x12",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}"
+        },
+        {
+          "factor1": 3,
+          "factor2": 1,
+          "answer": "0",
+          "sequenceNumber": 25,
+          "question": "3x1",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}"
         }
       ],
       "audit": [
         {
           "type": "WarmupStarted",
-          "clientTimestamp": "#{ct}",
-          "relativeTiming": "+0.00"
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}"
         },
         {
           "type": "WarmupIntroRendered",
-          "clientTimestamp": "#{ct}",
-          "relativeTiming": "+0.006"
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}"
         },
         {
           "type": "PauseRendered",
-          "clientTimestamp": "#{ct}",
-          "data": {
-            "practiseSequenceNumber": 1,
-            "question": "1x12"
-          },
-          "relativeTiming": "+0.028"
-        },
-        {
-          "type": "QuestionRendered",
-          "clientTimestamp": "#{ct}",
-          "data": {
-            "practiseSequenceNumber": 1,
-            "question": "1x12"
-          },
-          "relativeTiming": "+3.003"
-        },
-        {
-          "type": "QuestionTimerStarted",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 1,
-            "question": "1x12"
-          },
-          "relativeTiming": "+0"
+            "question": "1x12",
+            "isWarmup": true
+          }
         },
         {
-          "type": "QuestionTimerCancelled",
-          "clientTimestamp": "#{ct}",
+          "type": "QuestionRendered",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 1,
-            "question": "1x12"
-          },
-          "relativeTiming": "+0.152"
-        },
-        {
-          "type": "QuestionAnswered",
-          "clientTimestamp": "#{ct}",
-          "data": {
-            "practiseSequenceNumber": 1,
-            "question": "1x12"
-          },
-          "relativeTiming": "+0"
-        },
-        {
-          "type": "PauseRendered",
-          "clientTimestamp": "#{ct}",
-          "data": {
-            "practiseSequenceNumber": 2,
-            "question": "2x2"
-          },
-          "relativeTiming": "+0.001"
-        },
-        {
-          "type": "QuestionRendered",
-          "clientTimestamp": "#{ct}",
-          "data": {
-            "practiseSequenceNumber": 2,
-            "question": "2x2"
-          },
-          "relativeTiming": "+3.004"
+            "question": "1x12",
+            "isWarmup": true
+          }
         },
         {
           "type": "QuestionTimerStarted",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
-            "sequenceNumber": 2,
-            "question": "2x2"
-          },
-          "relativeTiming": "+0"
-        },
-        {
-          "type": "QuestionAnswered",
-          "clientTimestamp": "#{ct}",
-          "data": {
-            "practiseSequenceNumber": 2,
-            "question": "2x2"
-          },
-          "relativeTiming": "+0.075"
+            "sequenceNumber": 1,
+            "question": "1x12",
+            "isWarmup": true
+          }
         },
         {
           "type": "QuestionTimerCancelled",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
-            "sequenceNumber": 2,
-            "question": "2x2"
-          },
-          "relativeTiming": "+0"
+            "sequenceNumber": 1,
+            "question": "1x12",
+            "isWarmup": true
+          }
+        },
+        {
+          "type": "QuestionAnswered",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+          "data": {
+            "sequenceNumber": 1,
+            "question": "1x12",
+            "isWarmup": true
+          }
         },
         {
           "type": "PauseRendered",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
-            "practiseSequenceNumber": 3,
-            "question": "10x10"
-          },
-          "relativeTiming": "+0.001"
+            "sequenceNumber": 2,
+            "question": "2x2",
+            "isWarmup": true
+          }
         },
         {
           "type": "QuestionRendered",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
-            "practiseSequenceNumber": 3,
-            "question": "10x10"
-          },
-          "relativeTiming": "+3.004"
+            "sequenceNumber": 2,
+            "question": "2x2",
+            "isWarmup": true
+          }
         },
         {
           "type": "QuestionTimerStarted",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
-            "sequenceNumber": 3,
-            "question": "10x10"
-          },
-          "relativeTiming": "+0"
+            "sequenceNumber": 2,
+            "question": "2x2",
+            "isWarmup": true
+          }
         },
         {
           "type": "QuestionAnswered",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
-            "practiseSequenceNumber": 3,
-            "question": "10x10"
-          },
-          "relativeTiming": "+0.134"
+            "sequenceNumber": 2,
+            "question": "2x2",
+            "isWarmup": true
+          }
         },
         {
           "type": "QuestionTimerCancelled",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 3,
-            "question": "10x10"
-          },
-          "relativeTiming": "+0"
+            "question": "10x10",
+            "isWarmup": true
+          }
+        },
+        {
+          "type": "PauseRendered",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+          "data": {
+            "sequenceNumber": 3,
+            "question": "10x10",
+            "isWarmup": true
+          }
+        },
+        {
+          "type": "QuestionRendered",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+          "data": {
+            "sequenceNumber": 3,
+            "question": "10x10",
+            "isWarmup": true
+          }
+        },
+        {
+          "type": "QuestionTimerStarted",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+          "data": {
+            "sequenceNumber": 3,
+            "question": "10x10",
+            "isWarmup": true
+          }
+        },
+        {
+          "type": "QuestionAnswered",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+          "data": {
+            "sequenceNumber": 3,
+            "question": "10x10",
+            "isWarmup": true
+          }
+        },
+        {
+          "type": "QuestionTimerCancelled",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+          "data": {
+            "sequenceNumber": 3,
+            "question": "10x10",
+            "isWarmup": true
+          }
         },
         {
           "type": "WarmupCompleteRendered",
-          "clientTimestamp": "#{ct}",
-          "relativeTiming": "+0.002"
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}"
         },
         {
           "type": "QuestionIntroRendered",
-          "clientTimestamp": "#{ct}",
-          "relativeTiming": "+0.022"
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}"
         },
         {
           "type": "CheckStarted",
-          "clientTimestamp": "#{ct}",
-          "relativeTiming": "+0.022"
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}"
         },
         {
           "type": "CheckStartedApiCalled",
-          "clientTimestamp": "#{ct}",
-          "relativeTiming": "+0"
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}"
         },
         {
           "type": "PauseRendered",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 1,
-            "question": "1x1"
-          },
-          "relativeTiming": "+0.009"
+            "question": "1x1",
+            "isWarmup": false
+          }
         },
         {
           "type": "CheckStartedAPICallSucceeded",
-          "clientTimestamp": "#{ct}",
-          "relativeTiming": "+0.357"
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}"
         },
         {
           "type": "QuestionTimerStarted",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 1,
-            "question": "1x1"
-          },
-          "relativeTiming": "+2.647"
+            "question": "1x1",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionRendered",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 1,
-            "question": "1x1"
-          },
-          "relativeTiming": "+0"
+            "question": "1x1",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionTimerCancelled",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 1,
-            "question": "1x1"
-          },
-          "relativeTiming": "+0.071"
+            "question": "1x1",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionAnswered",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 1,
-            "question": "1x1"
-          },
-          "relativeTiming": "+0"
+            "question": "1x1",
+            "isWarmup": false
+          }
         },
         {
           "type": "PauseRendered",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 2,
-            "question": "1x2"
-          },
-          "relativeTiming": "+0.001"
+            "question": "1x2",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionRendered",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 2,
-            "question": "1x2"
-          },
-          "relativeTiming": "+3.003"
+            "question": "1x2",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionTimerStarted",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 2,
-            "question": "1x2"
-          },
-          "relativeTiming": "+0"
+            "question": "1x2",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionTimerCancelled",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 2,
-            "question": "1x2"
-          },
-          "relativeTiming": "+0.073"
+            "question": "1x2",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionAnswered",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 2,
-            "question": "1x2"
-          },
-          "relativeTiming": "+0"
+            "question": "1x2",
+            "isWarmup": false
+          }
         },
         {
           "type": "PauseRendered",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 3,
-            "question": "1x3"
-          },
-          "relativeTiming": "+0.001"
+            "question": "1x3",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionRendered",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 3,
-            "question": "1x3"
-          },
-          "relativeTiming": "+3.004"
+            "question": "1x3",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionTimerStarted",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 3,
-            "question": "1x3"
-          },
-          "relativeTiming": "+0"
+            "question": "1x3",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionAnswered",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 3,
-            "question": "1x3"
-          },
-          "relativeTiming": "+0.074"
+            "question": "1x3",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionTimerCancelled",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 3,
-            "question": "1x3"
-          },
-          "relativeTiming": "+0"
+            "question": "1x3",
+            "isWarmup": false
+          }
         },
         {
           "type": "PauseRendered",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 4,
-            "question": "1x4"
-          },
-          "relativeTiming": "+0.001"
+            "question": "1x4",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionTimerStarted",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 4,
-            "question": "1x4"
-          },
-          "relativeTiming": "+3.002"
+            "question": "1x4",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionRendered",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 4,
-            "question": "1x4"
-          },
-          "relativeTiming": "+0"
+            "question": "1x4",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionTimerCancelled",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 4,
-            "question": "1x4"
-          },
-          "relativeTiming": "+0.069"
+            "question": "1x4",
+            "isWarmup": false
+          }
         },
         {
           "type": "PauseRendered",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 5,
-            "question": "1x5"
-          },
-          "relativeTiming": "+0.001"
+            "question": "1x5",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionAnswered",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 4,
-            "question": "1x4"
-          },
-          "relativeTiming": "+0"
+            "question": "1x4",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionRendered",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 5,
-            "question": "1x5"
-          },
-          "relativeTiming": "+3.004"
+            "question": "1x5",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionTimerStarted",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 5,
-            "question": "1x5"
-          },
-          "relativeTiming": "+0"
+            "question": "1x5",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionAnswered",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 5,
-            "question": "1x5"
-          },
-          "relativeTiming": "+0.095"
+            "question": "1x5",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionTimerCancelled",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 5,
-            "question": "1x5"
-          },
-          "relativeTiming": "+0"
+            "question": "1x5",
+            "isWarmup": false
+          }
         },
         {
           "type": "PauseRendered",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 6,
-            "question": "1x6"
-          },
-          "relativeTiming": "+0.001"
+            "question": "1x6",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionTimerStarted",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 6,
-            "question": "1x6"
-          },
-          "relativeTiming": "+3.004"
+            "question": "1x6",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionRendered",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 6,
-            "question": "1x6"
-          },
-          "relativeTiming": "+0"
+            "question": "1x6",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionAnswered",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 6,
-            "question": "1x6"
-          },
-          "relativeTiming": "+0.088"
+            "question": "1x6",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionTimerCancelled",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 6,
-            "question": "1x6"
-          },
-          "relativeTiming": "+0"
+            "question": "1x6",
+            "isWarmup": false
+          }
         },
         {
           "type": "PauseRendered",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 7,
-            "question": "1x7"
-          },
-          "relativeTiming": "+0.001"
+            "question": "1x7",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionTimerStarted",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 7,
-            "question": "1x7"
-          },
-          "relativeTiming": "+3.002"
+            "question": "1x7",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionRendered",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 7,
-            "question": "1x7"
-          },
-          "relativeTiming": "+0"
+            "question": "1x7",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionAnswered",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 7,
-            "question": "1x7"
-          },
-          "relativeTiming": "+0.103"
+            "question": "1x7",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionTimerCancelled",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 7,
-            "question": "1x7"
-          },
-          "relativeTiming": "+0"
+            "question": "1x7",
+            "isWarmup": false
+          }
         },
         {
           "type": "PauseRendered",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 8,
-            "question": "1x8"
-          },
-          "relativeTiming": "+0.001"
+            "question": "1x8",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionTimerStarted",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 8,
-            "question": "1x8"
-          },
-          "relativeTiming": "+3.002"
+            "question": "1x8",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionRendered",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 8,
-            "question": "1x8"
-          },
-          "relativeTiming": "+0"
+            "question": "1x8",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionTimerCancelled",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 8,
-            "question": "1x8"
-          },
-          "relativeTiming": "+0.087"
+            "question": "1x8",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionAnswered",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 8,
-            "question": "1x8"
-          },
-          "relativeTiming": "+0"
+            "question": "1x8",
+            "isWarmup": false
+          }
         },
         {
           "type": "PauseRendered",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 9,
-            "question": "1x9"
-          },
-          "relativeTiming": "+0.001"
+            "question": "1x9",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionTimerStarted",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 9,
-            "question": "1x9"
-          },
-          "relativeTiming": "+3.003"
+            "question": "1x9",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionRendered",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 9,
-            "question": "1x9"
-          },
-          "relativeTiming": "+0"
+            "question": "1x9",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionTimerCancelled",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 9,
-            "question": "1x9"
-          },
-          "relativeTiming": "+0.093"
+            "question": "1x9",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionAnswered",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 9,
-            "question": "1x9"
-          },
-          "relativeTiming": "+0"
+            "question": "1x9",
+            "isWarmup": false
+          }
         },
         {
           "type": "PauseRendered",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 10,
-            "question": "12x12"
-          },
-          "relativeTiming": "+0.001"
+            "question": "12x12",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionRendered",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 10,
-            "question": "12x12"
-          },
-          "relativeTiming": "+3.002"
+            "question": "12x12",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionTimerStarted",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 10,
-            "question": "12x12"
-          },
-          "relativeTiming": "+0"
+            "question": "12x12",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionAnswered",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 10,
-            "question": "12x12"
-          },
-          "relativeTiming": "+0.124"
+            "question": "12x12",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionTimerCancelled",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 10,
-            "question": "12x12"
-          },
-          "relativeTiming": "+0"
+            "question": "12x12",
+            "isWarmup": false
+          }
         },
         {
           "type": "PauseRendered",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 11,
-            "question": "1x1"
-          },
-          "relativeTiming": "+0.001"
+            "question": "1x1",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionRendered",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 11,
-            "question": "1x1"
-          },
-          "relativeTiming": "+3.004"
+            "question": "1x1",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionTimerStarted",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 11,
-            "question": "1x1"
-          },
-          "relativeTiming": "+0"
+            "question": "1x1",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionTimerCancelled",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 11,
-            "question": "1x1"
-          },
-          "relativeTiming": "+0.072"
+            "question": "1x1",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionAnswered",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 11,
-            "question": "1x1"
-          },
-          "relativeTiming": "+0"
+            "question": "1x1",
+            "isWarmup": false
+          }
         },
         {
           "type": "PauseRendered",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 12,
-            "question": "1x2"
-          },
-          "relativeTiming": "+0.001"
+            "question": "1x2",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionTimerStarted",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 12,
-            "question": "1x2"
-          },
-          "relativeTiming": "+3.002"
+            "question": "1x2",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionRendered",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 12,
-            "question": "1x2"
-          },
-          "relativeTiming": "+0"
+            "question": "1x2",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionTimerCancelled",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 12,
-            "question": "1x2"
-          },
-          "relativeTiming": "+0.086"
+            "question": "1x2",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionAnswered",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 12,
-            "question": "1x2"
-          },
-          "relativeTiming": "+0"
+            "question": "1x2",
+            "isWarmup": false
+          }
         },
         {
           "type": "PauseRendered",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 13,
-            "question": "1x3"
-          },
-          "relativeTiming": "+0.001"
+            "question": "1x3",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionRendered",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 13,
-            "question": "1x3"
-          },
-          "relativeTiming": "+3.001"
+            "question": "1x3",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionTimerStarted",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 13,
-            "question": "1x3"
-          },
-          "relativeTiming": "+0"
+            "question": "1x3",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionTimerCancelled",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 13,
-            "question": "1x3"
-          },
-          "relativeTiming": "+0.08"
+            "question": "1x3",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionAnswered",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 13,
-            "question": "1x3"
-          },
-          "relativeTiming": "+0"
+            "question": "1x3",
+            "isWarmup": false
+          }
         },
         {
           "type": "PauseRendered",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 14,
-            "question": "1x4"
-          },
-          "relativeTiming": "+0"
+            "question": "1x4",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionTimerStarted",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 14,
-            "question": "1x4"
-          },
-          "relativeTiming": "+3.002"
+            "question": "1x4",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionRendered",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 14,
-            "question": "1x4"
-          },
-          "relativeTiming": "+0"
+            "question": "1x4",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionTimerCancelled",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 14,
-            "question": "1x4"
-          },
-          "relativeTiming": "+0.084"
+            "question": "1x4",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionAnswered",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 14,
-            "question": "1x4"
-          },
-          "relativeTiming": "+0"
+            "question": "1x4",
+            "isWarmup": false
+          }
         },
         {
           "type": "PauseRendered",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 15,
-            "question": "1x5"
-          },
-          "relativeTiming": "+0.001"
+            "question": "1x5",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionTimerStarted",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 15,
-            "question": "1x5"
-          },
-          "relativeTiming": "+3.002"
+            "question": "1x5",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionRendered",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 15,
-            "question": "1x5"
-          },
-          "relativeTiming": "+0"
+            "question": "1x5",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionAnswered",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 15,
-            "question": "1x5"
-          },
-          "relativeTiming": "+0.099"
+            "question": "1x5",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionTimerCancelled",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 15,
-            "question": "1x5"
-          },
-          "relativeTiming": "+0"
+            "question": "1x5",
+            "isWarmup": false
+          }
         },
         {
           "type": "PauseRendered",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 16,
-            "question": "1x6"
-          },
-          "relativeTiming": "+0.001"
+            "question": "1x6",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionRendered",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 16,
-            "question": "1x6"
-          },
-          "relativeTiming": "+3.002"
+            "question": "1x6",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionTimerStarted",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 16,
-            "question": "1x6"
-          },
-          "relativeTiming": "+0"
+            "question": "1x6",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionAnswered",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 16,
-            "question": "1x6"
-          },
-          "relativeTiming": "+0.091"
+            "question": "1x6",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionTimerCancelled",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 16,
-            "question": "1x6"
-          },
-          "relativeTiming": "+0"
+            "question": "1x6",
+            "isWarmup": false
+          }
         },
         {
           "type": "PauseRendered",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 17,
-            "question": "1x7"
-          },
-          "relativeTiming": "+0.001"
+            "question": "1x7",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionTimerStarted",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 17,
-            "question": "1x7"
-          },
-          "relativeTiming": "+3.003"
+            "question": "1x7",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionRendered",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 17,
-            "question": "1x7"
-          },
-          "relativeTiming": "+0"
+            "question": "1x7",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionTimerCancelled",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 17,
-            "question": "1x7"
-          },
-          "relativeTiming": "+0.091"
+            "question": "1x7",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionAnswered",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 17,
-            "question": "1x7"
-          },
-          "relativeTiming": "+0"
+            "question": "1x7",
+            "isWarmup": false
+          }
         },
         {
           "type": "PauseRendered",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 18,
-            "question": "1x8"
-          },
-          "relativeTiming": "+0.001"
+            "question": "1x8",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionTimerStarted",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 18,
-            "question": "1x8"
-          },
-          "relativeTiming": "+3.001"
+            "question": "1x8",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionRendered",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 18,
-            "question": "1x8"
-          },
-          "relativeTiming": "+0"
+            "question": "1x8",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionAnswered",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 18,
-            "question": "1x8"
-          },
-          "relativeTiming": "+0.099"
+            "question": "1x8",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionTimerCancelled",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 18,
-            "question": "1x8"
-          },
-          "relativeTiming": "+0"
+            "question": "1x8",
+            "isWarmup": false
+          }
         },
         {
           "type": "PauseRendered",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 19,
-            "question": "1x9"
-          },
-          "relativeTiming": "+0.001"
+            "question": "1x9",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionRendered",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 19,
-            "question": "1x9"
-          },
-          "relativeTiming": "+3.002"
+            "question": "1x9",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionTimerStarted",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 19,
-            "question": "1x9"
-          },
-          "relativeTiming": "+0"
+            "question": "1x9",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionTimerCancelled",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 19,
-            "question": "1x9"
-          },
-          "relativeTiming": "+0.09"
+            "question": "1x9",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionAnswered",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 19,
-            "question": "1x9"
-          },
-          "relativeTiming": "+0"
+            "question": "1x9",
+            "isWarmup": false
+          }
         },
         {
           "type": "PauseRendered",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 20,
-            "question": "12x12"
-          },
-          "relativeTiming": "+0.001"
+            "question": "12x12",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionRendered",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 20,
-            "question": "12x12"
-          },
-          "relativeTiming": "+3.004"
+            "question": "12x12",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionTimerStarted",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 20,
-            "question": "12x12"
-          },
-          "relativeTiming": "+0"
+            "question": "12x12",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionTimerCancelled",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 20,
-            "question": "12x12"
-          },
-          "relativeTiming": "+0.109"
+            "question": "12x12",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionAnswered",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 20,
-            "question": "12x12"
-          },
-          "relativeTiming": "+0"
+            "question": "12x12",
+            "isWarmup": false
+          }
         },
         {
           "type": "PauseRendered",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 21,
-            "question": "1x2"
-          },
-          "relativeTiming": "+0.001"
+            "question": "1x2",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionRendered",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 21,
-            "question": "1x2"
-          },
-          "relativeTiming": "+3.004"
+            "question": "1x2",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionTimerStarted",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 21,
-            "question": "1x2"
-          },
-          "relativeTiming": "+0"
+            "question": "1x2",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionAnswered",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 21,
-            "question": "1x2"
-          },
-          "relativeTiming": "+0.072"
+            "question": "1x2",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionTimerCancelled",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 21,
-            "question": "1x2"
-          },
-          "relativeTiming": "+0"
+            "question": "1x2",
+            "isWarmup": false
+          }
         },
         {
           "type": "PauseRendered",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 22,
-            "question": "1x3"
-          },
-          "relativeTiming": "+0.001"
+            "question": "1x3",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionRendered",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 22,
-            "question": "1x3"
-          },
-          "relativeTiming": "+3.003"
+            "question": "1x3",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionTimerStarted",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 22,
-            "question": "1x3"
-          },
-          "relativeTiming": "+0"
+            "question": "1x3",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionAnswered",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 22,
-            "question": "1x3"
-          },
-          "relativeTiming": "+0.081"
+            "question": "1x3",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionTimerCancelled",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 22,
-            "question": "1x3"
-          },
-          "relativeTiming": "+0"
+            "question": "1x3",
+            "isWarmup": false
+          }
         },
         {
           "type": "PauseRendered",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 23,
-            "question": "1x4"
-          },
-          "relativeTiming": "+0"
+            "question": "1x4",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionRendered",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 23,
-            "question": "1x4"
-          },
-          "relativeTiming": "+3.004"
+            "question": "1x4",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionTimerStarted",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 23,
-            "question": "1x4"
-          },
-          "relativeTiming": "+0"
+            "question": "1x4",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionAnswered",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 23,
-            "question": "1x4"
-          },
-          "relativeTiming": "+0.07"
+            "question": "1x4",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionTimerCancelled",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 23,
-            "question": "1x4"
-          },
-          "relativeTiming": "+0"
+            "question": "1x4",
+            "isWarmup": false
+          }
         },
         {
           "type": "PauseRendered",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 24,
-            "question": "1x5"
-          },
-          "relativeTiming": "+0.001"
+            "question": "1x5",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionRendered",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 24,
-            "question": "1x5"
-          },
-          "relativeTiming": "+3.001"
+            "question": "1x5",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionTimerStarted",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 24,
-            "question": "1x5"
-          },
-          "relativeTiming": "+0"
+            "question": "1x5",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionTimerCancelled",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 24,
-            "question": "1x5"
-          },
-          "relativeTiming": "+0.098"
+            "question": "1x5",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionAnswered",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 24,
-            "question": "1x5"
-          },
-          "relativeTiming": "+0"
+            "question": "1x5",
+            "isWarmup": false
+          }
         },
         {
           "type": "PauseRendered",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 25,
-            "question": "2x5"
-          },
-          "relativeTiming": "+0.001"
+            "question": "2x5",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionTimerStarted",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 25,
-            "question": "2x5"
-          },
-          "relativeTiming": "+3.003"
+            "question": "2x5",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionRendered",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 25,
-            "question": "2x5"
-          },
-          "relativeTiming": "+0"
+            "question": "2x5",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionTimerCancelled",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 25,
-            "question": "2x5"
-          },
-          "relativeTiming": "+0.088"
+            "question": "2x5",
+            "isWarmup": false
+          }
         },
         {
           "type": "QuestionAnswered",
-          "clientTimestamp": "#{ct}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
           "data": {
             "sequenceNumber": 25,
-            "question": "2x5"
-          },
-          "relativeTiming": "+0"
+            "question": "2x5",
+            "isWarmup": false
+          }
         },
         {
           "type": "CheckSubmissionPending",
-          "clientTimestamp": "#{ct}",
-          "relativeTiming": "+0"
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}"
         },
         {
           "type": "CheckSubmissionApiCalled",
-          "clientTimestamp": "#{ct}",
-          "relativeTiming": "+0.004"
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}"
         }
       ],
       "device": {
@@ -1578,25 +1569,389 @@ class RequestHelper
       },
       "inputs": [
         {
-          "input": "5",
-          "eventType": "keydown",
-          "clientTimestamp": "#{ct}",
-          "question": "2x5",
+          "input": "2",
+          "eventType": "#{input_type}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+          "question": "1x1",
+          "sequenceNumber": 1
+        },
+        {
+          "input": "9",
+          "eventType": "#{input_type}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+          "question": "1x1",
           "sequenceNumber": 1
         },
         {
           "input": "Enter",
-          "eventType": "keydown",
-          "clientTimestamp": "#{ct}",
-          "question": "2x5",
+          "eventType": "#{input_type}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+          "question": "1x1",
           "sequenceNumber": 1
         },
         {
-          "input": "Enter",
-          "eventType": "keydown",
-          "clientTimestamp": "#{ct}",
-          "question": "11x2",
+          "input": "8",
+          "eventType": "#{input_type}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+          "question": "1x2",
           "sequenceNumber": 2
+        },
+        {
+          "input": "Enter",
+          "eventType": "#{input_type}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+          "question": "1x2",
+          "sequenceNumber": 2
+        },
+        {
+          "input": "8",
+          "eventType": "#{input_type}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+          "question": "1x3",
+          "sequenceNumber": 3
+        },
+        {
+          "input": "Enter",
+          "eventType": "#{input_type}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+          "question": "1x3",
+          "sequenceNumber": 3
+        },
+        {
+          "input": "8",
+          "eventType": "#{input_type}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+          "question": "1x4",
+          "sequenceNumber": 4
+        },
+        {
+          "input": "Enter",
+          "eventType": "#{input_type}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+          "question": "1x4",
+          "sequenceNumber": 4
+        },
+        {
+          "input": "8",
+          "eventType": "#{input_type}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+          "question": "1x5",
+          "sequenceNumber": 5
+        },
+        {
+          "input": "Enter",
+          "eventType": "#{input_type}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+          "question": "1x5",
+          "sequenceNumber": 5
+        },
+        {
+          "input": "8",
+          "eventType": "#{input_type}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+          "question": "1x6",
+          "sequenceNumber": 6
+        },
+        {
+          "input": "Enter",
+          "eventType": "#{input_type}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+          "question": "1x6",
+          "sequenceNumber": 6
+        },
+        {
+          "input": "8",
+          "eventType": "#{input_type}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+          "question": "1x7",
+          "sequenceNumber": 7
+        },
+        {
+          "input": "Enter",
+          "eventType": "#{input_type}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+          "question": "1x7",
+          "sequenceNumber": 7
+        },
+        {
+          "input": "8",
+          "eventType": "#{input_type}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+          "question": "1x8",
+          "sequenceNumber": 8
+        },
+        {
+          "input": "Enter",
+          "eventType": "#{input_type}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+          "question": "1x8",
+          "sequenceNumber": 8
+        },
+        {
+          "input": "8",
+          "eventType": "#{input_type}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+          "question": "1x9",
+          "sequenceNumber": 9
+        },
+        {
+          "input": "Enter",
+          "eventType": "#{input_type}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+          "question": "1x9",
+          "sequenceNumber": 9
+        },
+        {
+          "input": "8",
+          "eventType": "#{input_type}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+          "question": "1x10",
+          "sequenceNumber": 10
+        },
+        {
+          "input": "Enter",
+          "eventType": "#{input_type}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+          "question": "1x10",
+          "sequenceNumber": 10
+        },
+        {
+          "input": "7",
+          "eventType": "#{input_type}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+          "question": "1x11",
+          "sequenceNumber": 11
+        },
+        {
+          "input": "Backspace",
+          "eventType": "#{input_type}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+          "question": "1x11",
+          "sequenceNumber": 11
+        },
+        {
+          "input": "Enter",
+          "eventType": "#{input_type}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+          "question": "1x11",
+          "sequenceNumber": 11
+        },
+        {
+          "input": "Enter",
+          "eventType": "#{input_type}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+          "question": "1x12",
+          "sequenceNumber": 12
+        },
+        {
+          "input": "9",
+          "eventType": "#{input_type}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+          "question": "1x12",
+          "sequenceNumber": 12
+        },
+        {
+          "input": "Enter",
+          "eventType": "#{input_type}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+          "question": "1x12",
+          "sequenceNumber": 12
+        },
+        {
+          "input": "9",
+          "eventType": "#{input_type}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+          "question": "2x1",
+          "sequenceNumber": 13
+        },
+        {
+          "input": "Enter",
+          "eventType": "#{input_type}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+          "question": "2x1",
+          "sequenceNumber": 13
+        },
+        {
+          "input": "3",
+          "eventType": "#{input_type}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+          "question": "2x2",
+          "sequenceNumber": 14
+        },
+        {
+          "input": "Enter",
+          "eventType": "#{input_type}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+          "question": "2x2",
+          "sequenceNumber": 14
+        },
+        {
+          "input": "9",
+          "eventType": "#{input_type}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+          "question": "2x3",
+          "sequenceNumber": 15
+        },
+        {
+          "input": "Backspace",
+          "eventType": "#{input_type}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+          "question": "2x3",
+          "sequenceNumber": 15
+        },
+        {
+          "input": "Enter",
+          "eventType": "#{input_type}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+          "question": "2x3",
+          "sequenceNumber": 15
+        },
+        {
+          "input": "9",
+          "eventType": "#{input_type}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+          "question": "2x4",
+          "sequenceNumber": 16
+        },
+        {
+          "input": "Enter",
+          "eventType": "#{input_type}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+          "question": "2x4",
+          "sequenceNumber": 16
+        },
+        {
+          "input": "9",
+          "eventType": "#{input_type}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+          "question": "2x5",
+          "sequenceNumber": 17
+        },
+        {
+          "input": "Enter",
+          "eventType": "#{input_type}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+          "question": "2x5",
+          "sequenceNumber": 17
+        },
+        {
+          "input": "9",
+          "eventType": "#{input_type}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+          "question": "2x6",
+          "sequenceNumber": 18
+        },
+        {
+          "input": "Enter",
+          "eventType": "#{input_type}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+          "question": "2x6",
+          "sequenceNumber": 18
+        },
+        {
+          "input": "9",
+          "eventType": "#{input_type}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+          "question": "2x7",
+          "sequenceNumber": 19
+        },
+        {
+          "input": "Enter",
+          "eventType": "#{input_type}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+          "question": "2x7",
+          "sequenceNumber": 19
+        },
+        {
+          "input": "9",
+          "eventType": "#{input_type}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+          "question": "2x8",
+          "sequenceNumber": 20
+        },
+        {
+          "input": "9",
+          "eventType": "#{input_type}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+          "question": "2x8",
+          "sequenceNumber": 20
+        },
+        {
+          "input": "Enter",
+          "eventType": "#{input_type}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+          "question": "2x8",
+          "sequenceNumber": 20
+        },
+        {
+          "input": "5",
+          "eventType": "#{input_type}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+          "question": "2x9",
+          "sequenceNumber": 21
+        },
+        {
+          "input": "Enter",
+          "eventType": "#{input_type}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+          "question": "2x9",
+          "sequenceNumber": 21
+        },
+        {
+          "input": "8",
+          "eventType": "#{input_type}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+          "question": "2x10",
+          "sequenceNumber": 22
+        },
+        {
+          "input": "Enter",
+          "eventType": "#{input_type}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+          "question": "2x10",
+          "sequenceNumber": 22
+        },
+        {
+          "input": "8",
+          "eventType": "#{input_type}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+          "question": "2x11",
+          "sequenceNumber": 23
+        },
+        {
+          "input": "Enter",
+          "eventType": "#{input_type}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+          "question": "2x11",
+          "sequenceNumber": 23
+        },
+        {
+          "input": "8",
+          "eventType": "#{input_type}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+          "question": "2x12",
+          "sequenceNumber": 24
+        },
+        {
+          "input": "Enter",
+          "eventType": "#{input_type}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+          "question": "2x12",
+          "sequenceNumber": 24
+        },
+        {
+          "input": "8",
+          "eventType": "#{input_type}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+          "question": "3x1",
+          "sequenceNumber": 25
+        },
+        {
+          "input": "Enter",
+          "eventType": "#{input_type}",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+          "question": "3x1",
+          "sequenceNumber": 25
         }
       ],
       "config": {
@@ -1613,7 +1968,7 @@ class RequestHelper
         "questionTime": 6,
         "compressCompletedCheck": true
       },
-      "createdAt": "#{ct}",
+      "createdAt": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
       "pinExpiresAt": "2022-01-10T23:59:59.999Z",
       "pupil": {
         "checkCode": parsed_response_pupil_auth['checkCode']
@@ -1626,11 +1981,11 @@ class RequestHelper
     }
   end
 
-  def self.build_check_submission_message(parsed_response_pupil_auth, correct_answers = nil, remove_answers = nil)
+  def self.build_check_submission_message(parsed_response_pupil_auth, correct_answers = nil, remove_answers = nil, input_type = 'mouse')
     correct_answers = nil if correct_answers == '0'
     correct_answers = (correct_answers.to_i) - 1 unless correct_answers.nil?
-    @payload = build_payload_json(parsed_response_pupil_auth)
-    @payload[:answers][0..correct_answers].each {|q| q[:answer] = q[:factor1] * q[:factor2]} unless correct_answers.nil?
+    @payload = build_payload_json(parsed_response_pupil_auth, input_type)
+    @payload[:answers][0..correct_answers].each {|q| q[:answer] = (q[:factor1] * q[:factor2])} unless correct_answers.nil?
     @payload.delete(:answers) unless remove_answers.nil?
     {"version": 2, "checkCode": parsed_response_pupil_auth['checkCode'],
      "schoolUUID": parsed_response_pupil_auth['school']['uuid'],
