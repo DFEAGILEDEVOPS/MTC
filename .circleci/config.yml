@@ -73,8 +73,8 @@ jobs:
       - checkout
       - restore_cache:
           key: v1-ruby-admin-hpa-deps-{{ checksum "test/admin-hpa/Gemfile.lock" }}
-      - run: ls -al test/admin-hpa/vendor/bundle
       - run: cd test/admin-hpa && bundle install --jobs=4 --retry=3 --path vendor/bundle
+      - run: ls -al test/admin-hpa/vendor/bundle
       - run: cd test/admin-hpa && rake -T
       - save_cache:
           key: v1-ruby-admin-hpa-deps-{{ checksum "test/admin-hpa/Gemfile.lock" }}
