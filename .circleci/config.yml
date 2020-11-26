@@ -65,20 +65,20 @@ jobs:
             - ~/repo/tslib/node_modules
   validate_admin_gems:
     working_directory: ~/repo/test/admin-hpa
-      docker:
-          - image: circleci/ruby:2.6.0
-      environment:
-          TZ: Europe/London
-      steps:
-        - checkout
-        - restore_cache:
-            key: v1-ruby-admin-hpa-deps-{{ checksum "Gemfile.lock " }}
-        - run: bundle install --jobs=4 --retry=3 --path vendor/bundle
-        - run: rake -T
-        - save_cache:
-            key: v1-ruby-admin-hpa-deps-{{ checksum "Gemfile.lock " }}
-            paths:
-              - vendor/bundle
+    docker:
+      - image: circleci/ruby:2.6.0
+    environment:
+        TZ: Europe/London
+    steps:
+      - checkout
+      - restore_cache:
+          key: v1-ruby-admin-hpa-deps-{{ checksum "Gemfile.lock " }}
+      - run: bundle install --jobs=4 --retry=3 --path vendor/bundle
+      - run: rake -T
+      - save_cache:
+          key: v1-ruby-admin-hpa-deps-{{ checksum "Gemfile.lock " }}
+          paths:
+            - vendor/bundle
 
 workflows:
   version: 2
