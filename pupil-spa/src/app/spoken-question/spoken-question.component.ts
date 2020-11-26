@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, NgZone, OnDestroy, Input } from '@angular/core';
+import { Component, OnInit, AfterViewInit, NgZone, OnDestroy, Input, Renderer2 } from '@angular/core';
 import { AnswerService } from '../services/answer/answer.service';
 import { AuditService } from '../services/audit/audit.service';
 import { QuestionComponent } from '../question/question.component';
@@ -31,8 +31,9 @@ export class SpokenQuestionComponent extends QuestionComponent implements OnInit
               protected storageService: StorageService,
               protected speechService: SpeechService,
               protected questionService: QuestionService,
-              protected answerService: AnswerService) {
-    super(auditService, windowRefService, questionService, storageService, speechService, answerService, registerInputService);
+              protected answerService: AnswerService,
+              protected renderer: Renderer2) {
+    super(auditService, windowRefService, questionService, storageService, speechService, answerService, registerInputService, renderer);
   }
 
   ngOnInit() {
@@ -56,12 +57,26 @@ export class SpokenQuestionComponent extends QuestionComponent implements OnInit
   ngAfterViewInit() {
     this.auditService.addEntry(new QuestionRendered({
       sequenceNumber: this.sequenceNumber,
-      question: `${this.factor1}x${this.factor2}`
+      question: `${this.factor1}x${this.factor2}`,
+      isWarmup: this.isWarmUpQuestion
     }));
+
+    // Set up listening events depending on the browser's capability
+    if (this.shouldSetupPointerEvents()) {
+      this.setupKeypadEventListeners('pointerup');
+    } else {
+      this.setupKeypadEventListeners('click');
+    }
+
     this.speechService.speakQuestion(`${this.factor1} times ${this.factor2}?`, this.sequenceNumber);
   }
 
   ngOnDestroy() {
     this.subscription.unsubscribe();
+
+    // remove all the event listeners
+    if (this.cleanUpFunctions.length > 0) {
+      this.cleanUpFunctions.forEach(f => f());
+    }
   }
 }

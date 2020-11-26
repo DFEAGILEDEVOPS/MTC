@@ -53,7 +53,7 @@ describe('SpokenPracticeQuestionComponent', () => {
     spyOn(auditService, 'addEntry');
 
     registerInputService = fixture.debugElement.injector.get(RegisterInputService);
-    registerInputServiceSpy = spyOn(registerInputService, 'addEntry');
+    registerInputServiceSpy = spyOn(registerInputService, 'storeEntry');
 
     component.soundComponent = new SoundComponentMock();
     fixture.detectChanges();

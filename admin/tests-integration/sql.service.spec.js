@@ -320,8 +320,8 @@ describe('sql.service:integration', () => {
     const row = await sql.findOneById('[user]', 4)
     expect(row).toBeDefined()
     expect(row.id).toBe(4)
-    expect(row.identifier).toBe('teacher3')
-    expect(row.school_id).toBe(4)
+    expect(row.identifier).toBe('teacher4')
+    expect(row.school_id).toBe(5)
     expect(row.role_id).toBe(3)
   })
 

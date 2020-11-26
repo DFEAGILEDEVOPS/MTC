@@ -450,10 +450,9 @@ class SqlDbHelper
     result.insert
   end
 
-
   def self.update_to_25_questions
     p 'UPDATING TO 25 QUESTIONS'
-    sql = "UPDATE [mtc_admin].[checkForm] set formData='[{\"f1\":1,\"f2\":1},{\"f1\":1,\"f2\":2},{\"f1\":1,\"f2\":3},{\"f1\":1,\"f2\":4},{\"f1\":1,\"f2\":5},{\"f1\":1,\"f2\":6},{\"f1\":1,\"f2\":7},{\"f1\":1,\"f2\":8},{\"f1\":1,\"f2\":9},{\"f1\":12,\"f2\":12},{\"f1\":1,\"f2\":1},{\"f1\":1,\"f2\":2},{\"f1\":1,\"f2\":3},{\"f1\":1,\"f2\":4},{\"f1\":1,\"f2\":5},{\"f1\":1,\"f2\":6},{\"f1\":1,\"f2\":7},{\"f1\":1,\"f2\":8},{\"f1\":1,\"f2\":9},{\"f1\":12,\"f2\":12},{\"f1\":1,\"f2\":2},{\"f1\":1,\"f2\":3},{\"f1\":1,\"f2\":4},{\"f1\":1,\"f2\":5},{\"f1\":2,\"f2\":5}]' WHERE name IN ('MTC0103', 'MTC0100')"
+    sql = "UPDATE [mtc_admin].[checkForm] set formData='[{\"f1\":1,\"f2\":1},{\"f1\":1,\"f2\":2},{\"f1\":1,\"f2\":3},{\"f1\":1,\"f2\":4},{\"f1\":1,\"f2\":5},{\"f1\":1,\"f2\":6},{\"f1\":1,\"f2\":7},{\"f1\":1,\"f2\":8},{\"f1\":1,\"f2\":9},{\"f1\":1,\"f2\":10},{\"f1\":1,\"f2\":11},{\"f1\":1,\"f2\":12},{\"f1\":2,\"f2\":1},{\"f1\":2,\"f2\":2},{\"f1\":2,\"f2\":3},{\"f1\":2,\"f2\":4},{\"f1\":2,\"f2\":5},{\"f1\":2,\"f2\":6},{\"f1\":2,\"f2\":7},{\"f1\":2,\"f2\":8},{\"f1\":2,\"f2\":9},{\"f1\":2,\"f2\":10},{\"f1\":2,\"f2\":11},{\"f1\":2,\"f2\":12},{\"f1\":3,\"f2\":1}]' WHERE name IN ('MTC0103', 'MTC0100')"
     result = SQL_CLIENT.execute(sql)
     result.do
   end
@@ -515,6 +514,97 @@ class SqlDbHelper
     count = result.first
     result.cancel
     count.values.first
+  end
+
+  def self.get_answers(check_result_id)
+    sql = "SELECT * FROM [mtc_results].[answer] WHERE checkResult_id='#{check_result_id}'"
+    result = SQL_CLIENT.execute(sql)
+    result.each {|row| row.map}
+  end
+
+  def self.get_check_result(check_id)
+    sql = "SELECT * FROM [mtc_results].[checkResult] WHERE check_id='#{check_id}'"
+    result = SQL_CLIENT.execute(sql)
+    check_result = result.first
+    result.cancel
+    check_result
+  end
+
+  def self.get_check_id(check_code)
+    sql = "SELECT * FROM [mtc_admin].[check] WHERE checkCode='#{check_code}'"
+    result = SQL_CLIENT.execute(sql)
+    check = result.first
+    result.cancel
+    check['id']
+  end
+
+  def self.get_check_result_id(check_id)
+    sql = "SELECT * FROM [mtc_results].[checkResult] WHERE check_id='#{check_id}'"
+    result = SQL_CLIENT.execute(sql)
+    check_result = result.first
+    result.cancel
+    check_result['id']
+  end
+
+  def self.wait_for_check_result(check_id)
+    begin
+      retries ||= 0
+      sleep 2
+      p 'waiting for check result record'
+      a = get_check_result_id(check_id)
+    rescue NoMethodError => e
+      retry if (retries += 1) < 60
+    end
+  end
+
+  def self.get_event_types_for_check(check_result_id)
+    sql = "select mtc_results.event.* ,mtc_results.eventTypeLookup.eventType from mtc_results.event join mtc_results.eventTypeLookup on event.eventTypeLookup_id = eventTypeLookup.id where mtc.mtc_results.event.checkResult_id=#{check_result_id} order by mtc_results.event.browserTimestamp"
+    result = SQL_CLIENT.execute(sql)
+    result.each {|row| row.map}
+  end
+
+  def self.get_question_id(factor1, factor2, is_warm_up)
+    is_warm_up = is_warm_up ? 1 : 0
+    sql = "SELECT * FROM [mtc_admin].[question] WHERE factor1=#{factor1} AND factor2=#{factor2} AND isWarmup=#{is_warm_up}"
+    result = SQL_CLIENT.execute(sql)
+    question = result.first
+    result.cancel
+    question
+  end
+
+  def self.get_input_data(check_result_id)
+    sql = %{
+          SELECT
+            check_id,
+            mark,
+            markedAt,
+            CONCAT(q.factor1, 'x', q.factor2) as question,
+            a.answer,
+            a.isCorrect,
+            a.questionNumber,
+            a.browserTimestamp as answerBrowserTimestamp,
+            ui.userInput,
+            ui.browserTimestamp as inputBrowserTimestamp,
+            uitl.name
+      FROM
+            mtc_results.checkResult cr
+            LEFT JOIN mtc_results.answer a ON (cr.id = a.checkResult_id)
+            LEFT JOIN mtc_results.userInput ui ON (a.id = ui.answer_id)
+            LEFT JOIN mtc_results.userInputTypeLookup uitl ON (
+               ui.userInputTypeLookup_id = uitl.id
+            )
+      LEFT JOIN mtc_admin.question q ON (a.question_id = q.id)
+      WHERE
+            cr.id = #{check_result_id}
+      ORDER BY
+            IIF(
+              ui.browserTimestamp IS NULL, a.browserTimestamp,
+              ui.browserTimestamp
+            ),
+            ui.browserTimestamp;
+    }
+    result = SQL_CLIENT.execute(sql)
+    result.each {|row| row.map}
   end
 
 end
