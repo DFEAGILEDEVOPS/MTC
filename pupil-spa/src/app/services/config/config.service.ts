@@ -8,21 +8,21 @@ import { default as connectivityErrorMessages} from '../connectivity-service/con
  */
 export interface IAppConfig {
   applicationInsightsInstrumentationKey: string;
-  authURL: string;
   authPingURL: string;
+  authURL: string;
   checkStartAPIErrorDelay: number;
   checkStartAPIErrorMaxAttempts: number;
-  checkSubmissionApiErrorDelay: number;
   checkSubmissionAPIErrorMaxAttempts: number;
-  production: boolean;
-  submissionPendingViewMinDisplay: number;
-  supportNumber: string;
+  checkSubmissionApiErrorDelay: number;
+  connectivityCheckEnabled: boolean;
   feedbackAPIErrorDelay: number;
   feedbackAPIErrorMaxAttempts: number;
+  production: boolean;
   pupilPrefsAPIErrorDelay: number;
   pupilPrefsAPIErrorMaxAttempts: number;
-  connectivityCheckEnabled: boolean;
+  submissionPendingViewMinDisplay: number;
   submitsToCheckReceiver: boolean;
+  supportNumber: string;
 }
 
 export class AppConfig implements IAppConfig {
@@ -31,8 +31,8 @@ export class AppConfig implements IAppConfig {
   readonly authURL: string;
   readonly checkStartAPIErrorDelay: number;
   readonly checkStartAPIErrorMaxAttempts: number;
-  readonly checkSubmissionApiErrorDelay: number;
   readonly checkSubmissionAPIErrorMaxAttempts: number;
+  readonly checkSubmissionApiErrorDelay: number;
   readonly connectivityCheckEnabled: boolean;
   readonly connectivityCheckViewMinDisplay: number;
   readonly feedbackAPIErrorDelay: number;

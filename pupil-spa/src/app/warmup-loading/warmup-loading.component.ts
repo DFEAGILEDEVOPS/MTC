@@ -13,8 +13,9 @@ export class WarmupLoadingComponent extends LoadingComponent implements AfterVie
 
   addAuditServiceEntry() {
     this.auditService.addEntry(new PauseRendered({
-      practiseSequenceNumber: this.question.sequenceNumber,
-      question: `${this.question.factor1}x${this.question.factor2}`
+      sequenceNumber: this.question.sequenceNumber,
+      question: `${this.question.factor1}x${this.question.factor2}`,
+      isWarmup: true
     }));
   }
 }

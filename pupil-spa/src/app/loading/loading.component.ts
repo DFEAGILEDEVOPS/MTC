@@ -93,7 +93,8 @@ export class LoadingComponent implements AfterViewInit, OnDestroy, AfterViewChec
   addAuditServiceEntry() {
     this.auditService.addEntry(new PauseRendered({
       sequenceNumber: this.question.sequenceNumber,
-      question: `${this.question.factor1}x${this.question.factor2}`
+      question: `${this.question.factor1}x${this.question.factor2}`,
+      isWarmup: false
     }));
   }
 

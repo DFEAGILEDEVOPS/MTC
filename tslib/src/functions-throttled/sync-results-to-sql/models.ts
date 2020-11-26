@@ -40,9 +40,9 @@ export interface Audit {
 }
 
 export interface Data {
-  practiseSequenceNumber?: number
   question: string
   sequenceNumber?: number
+  isWarmup?: boolean
 }
 
 export interface Config {
