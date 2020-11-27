@@ -17,6 +17,7 @@ const startInsightsIfConfigured = async () => {
       .setAutoCollectDependencies(config.Monitoring.ApplicationInsights.CollectDependencies)
       .setAutoCollectConsole(false)
       .setUseDiskRetryCaching(true)
+      .setSendLiveMetrics(config.Monitoring.ApplicationInsights.LiveMetrics)
       .start()
 
     let buildNumber

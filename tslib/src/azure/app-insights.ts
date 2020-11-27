@@ -2,8 +2,9 @@ import * as appInsights from 'applicationinsights'
 import config from '../config'
 
 const appInsightsHelper = {
-  startInsightsIfConfigured: async (cloudRole: string) => {
-    if (process.env.APPINSIGHTS_INSTRUMENTATIONKEY) {
+  startInsightsIfConfigured: (cloudRole: string) => {
+    if (config.ApplicationInsights.Key) {
+      console.log('AppInsights Key found, initialising...')
       appInsights.setup()
         .setAutoDependencyCorrelation(true)
         .setAutoCollectRequests(true)
@@ -12,8 +13,18 @@ const appInsightsHelper = {
         .setAutoCollectDependencies(true)
         .setAutoCollectConsole(false)
         .setUseDiskRetryCaching(true)
+        .setSendLiveMetrics(config.ApplicationInsights.LiveMetrics)
         .start()
-
+      console.log('AppInsights initialised.')
+      let buildNumber
+      try {
+        buildNumber = 'NOT IMPLEMENTED'
+      } catch (error) {
+        buildNumber = 'NOT FOUND'
+      }
+      appInsights.defaultClient.commonProperties = {
+        buildNumber
+      }
       appInsights.defaultClient.context.tags[appInsights.defaultClient.context.keys.cloudRole] = cloudRole
       appInsights.defaultClient.context.tags[appInsights.defaultClient.context.keys.cloudRoleInstance] = config.ApplicationInsights.InstanceId
     }

@@ -1,5 +1,5 @@
 import * as path from 'path'
-import os from 'os'
+import * as os from 'os'
 import * as fs from 'fs'
 import * as dotenv from 'dotenv'
 import * as parser from './common/parsing'
@@ -111,6 +111,7 @@ export default {
   ApplicationInsights: {
     Key: process.env.APPINSIGHTS_INSTRUMENTATIONKEY,
     InstanceId: `${os.hostname()}:${process.pid}`,
-    CollectExceptions: parser.propertyExists(process.env, 'APPINSIGHTS_COLLECT_EXCEPTIONS') ? parser.primitiveToBoolean(process.env.APPINSIGHTS_COLLECT_EXCEPTIONS) : true
+    CollectExceptions: parser.propertyExists(process.env, 'APPINSIGHTS_COLLECT_EXCEPTIONS') ? parser.primitiveToBoolean(process.env.APPINSIGHTS_COLLECT_EXCEPTIONS) : true,
+    LiveMetrics: parser.propertyExists(process.env, 'APPINSIGHTS_LIVE_METRICS') ? parser.primitiveToBoolean(process.env.APPINSIGHTS_LIVE_METRICS) : true
   }
 }

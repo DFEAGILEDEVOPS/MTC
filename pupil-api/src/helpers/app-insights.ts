@@ -13,6 +13,7 @@ const appInsightsHelper = {
         .setAutoCollectDependencies(true)
         .setAutoCollectConsole(false)
         .setUseDiskRetryCaching(true)
+        .setSendLiveMetrics(config.Logging.ApplicationInsights.LiveMetrics)
         .start()
 
       let buildNumber
