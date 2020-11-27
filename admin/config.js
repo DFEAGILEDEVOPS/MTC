@@ -147,7 +147,8 @@ module.exports = {
     ApplicationInsights: {
       Key: process.env.APPINSIGHTS_INSTRUMENTATIONKEY,
       CollectDependencies: {}.hasOwnProperty.call(process.env, 'APPINSIGHTS_COLLECT_DEPS') ? toBool(process.env.APPINSIGHTS_COLLECT_DEPS) : true,
-      CollectExceptions: {}.hasOwnProperty.call(process.env, 'APPINSIGHTS_COLLECT_EXCEPTIONS') ? toBool(process.env.APPINSIGHTS_COLLECT_EXCEPTIONS) : true
+      CollectExceptions: {}.hasOwnProperty.call(process.env, 'APPINSIGHTS_COLLECT_EXCEPTIONS') ? toBool(process.env.APPINSIGHTS_COLLECT_EXCEPTIONS) : true,
+      InstanceId: `${os.hostname()}:${process.pid}`
     }
   },
   Redis: {

@@ -28,6 +28,8 @@ const startInsightsIfConfigured = async () => {
     appInsights.defaultClient.commonProperties = {
       buildNumber
     }
+    appInsights.defaultClient.context.tags['ai.cloud.role'] = 'Admin-App'
+    appInsights.defaultClient.context.tags['ai.cloud.roleInstance'] = config.Monitoring.ApplicationInsights.InstanceId
   }
 }
 

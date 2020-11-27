@@ -1,5 +1,6 @@
 import * as appInsights from 'applicationinsights'
 import PingController from '../controllers/ping.controller'
+import config from '../config'
 
 const appInsightsHelper = {
   startInsightsIfConfigured: async () => {
@@ -23,6 +24,8 @@ const appInsightsHelper = {
       appInsights.defaultClient.commonProperties = {
         buildNumber
       }
+      appInsights.defaultClient.context.tags['ai.cloud.role'] = 'Pupil-Auth-Api'
+      appInsights.defaultClient.context.tags['ai.cloud.roleInstance'] = config.Logging.ApplicationInsights.InstanceId
     }
   }
 }
