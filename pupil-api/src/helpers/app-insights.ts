@@ -9,7 +9,7 @@ const appInsightsHelper = {
         .setAutoDependencyCorrelation(true)
         .setAutoCollectRequests(true)
         .setAutoCollectPerformance(true)
-        .setAutoCollectExceptions(false)
+        .setAutoCollectExceptions(config.Logging.ApplicationInsights.CollectExceptions)
         .setAutoCollectDependencies(true)
         .setAutoCollectConsole(false)
         .setUseDiskRetryCaching(true)

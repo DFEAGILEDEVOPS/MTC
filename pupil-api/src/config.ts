@@ -43,7 +43,8 @@ export default {
     ApplicationInsights: {
       LogToWinston: process.env.APPINSIGHTS_WINSTON_LOGGER || false,
       Key: process.env.APPINSIGHTS_INSTRUMENTATIONKEY,
-      InstanceId: `${os.hostname()}:${process.pid}`
+      InstanceId: `${os.hostname()}:${process.pid}`,
+      CollectExceptions: {}.hasOwnProperty.call(process.env, 'APPINSIGHTS_COLLECT_EXCEPTIONS') ? toBool(process.env.APPINSIGHTS_COLLECT_EXCEPTIONS) : true
     }
   },
   Redis: {
