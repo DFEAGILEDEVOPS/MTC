@@ -3,11 +3,11 @@
 ## Reason
 
 We want to run multiple versions of node in the same test matrix.  CircleCI official docker images do not provide support
-for multiple node versions.
+for `freetds` - a library required for `tiny_tds`
 
 ## Availability
 
-This docker image needs to be made publicly available so we can pull it in when launching our circleci jobs.Availability
+This docker image needs to be made publicly available so we can pull it in when launching our circleci jobs.
 
 ### Publishing
 
