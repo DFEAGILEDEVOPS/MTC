@@ -30,32 +30,3 @@ array_of_features.each do |features|
     end
   end
 end
-
-def createCucumberCommandString
-  if Rake.application.top_level_tasks.first.include? 'bs'
-    cmd = "cucumber @rerun0.txt -f rerun -o rerun.txt -f pretty DRIVER=#{Rake.application.top_level_tasks.first}"
-  else
-    cmd = "cucumber @rerun.txt -f rerun -o rerun0.txt -f pretty"
-  end
-  return cmd
-end
-
-at_exit do
-  exit_code = 0
-  if File.read('rerun.txt').length > 0 or Rake.application.top_level_tasks.first.include? 'bs'
-    puts "\n**** RE RUNNING FAILING TESTS ****\n\n"
-    system(createCucumberCommandString)
-    if File.read('rerun0.txt').length > 0
-      puts "\n**** RE RUNNING FAILING TESTS ONE MORE TIME ****\n\n"
-      system(createCucumberCommandString)
-    end
-    exit_code = $?.exitstatus
-  end
-  colour = exit_code == 0 ? 'green' : 'red'
-  puts "## Suite took #{(Time.now - @start_time) / 60}"
-  puts "\n#################################".send(colour)
-  puts "## Exiting with status code: #{exit_code} ##".send(colour)
-  puts "#################################\n\n".send(colour)
-  p 'killed'
-  exit exit_code
-end
