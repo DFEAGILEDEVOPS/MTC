@@ -24,8 +24,8 @@ const appInsightsHelper = {
       appInsights.defaultClient.commonProperties = {
         buildNumber
       }
-      appInsights.defaultClient.context.tags['ai.cloud.role'] = 'Pupil-Auth-Api'
-      appInsights.defaultClient.context.tags['ai.cloud.roleInstance'] = config.Logging.ApplicationInsights.InstanceId
+      appInsights.defaultClient.context.tags[appInsights.defaultClient.context.keys.cloudRole] = 'Pupil-Auth-Api'
+      appInsights.defaultClient.context.tags[appInsights.defaultClient.context.keys.cloudRoleInstance] = config.Logging.ApplicationInsights.InstanceId
     }
   }
 }
