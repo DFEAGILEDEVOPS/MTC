@@ -45,7 +45,8 @@ Given(/^there is a processing error with a check$/) do
   Timeout.timeout(ENV['WAIT_TIME'].to_i) {sleep 1 until RequestHelper.auth(school_password, pupil_pin).code == 200}
   response_pupil_auth = RequestHelper.auth(school_password, pupil_pin)
   @parsed_response_pupil_auth = JSON.parse(response_pupil_auth.body)
-  AzureQueueHelper.create_check_submission_message(RequestHelper.build_check_submission_message(@parsed_response_pupil_auth,nil, true).to_json)
+  @submission_hash = RequestHelper.build_check_submission_message(@parsed_response_pupil_auth, nil, true)
+  AzureQueueHelper.create_check_submission_message(@submission_hash[:submission_message].to_json)
   school_uuid = @parsed_response_pupil_auth['school']['uuid']
   check_code = @parsed_response_pupil_auth['checkCode']
   AzureTableHelper.wait_for_received_check(school_uuid, check_code)

@@ -12,6 +12,7 @@
     "build": "yarn clean && yarn genconfig && yarn sass && ng build",
     "clean": "rm -rf ./dist",
     "test": "yarn genconfig && ng test",
+    "coverage": "yarn genconfig && ng test --no-watch --browsers ChromeHeadless --code-coverage",
     "test-single": "yarn sass && yarn genconfig && ng test --watch false --browsers ChromeHeadless",
     "lint": "ng lint",
     "e2e": "ng e2e",

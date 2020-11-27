@@ -144,10 +144,10 @@ class CheckPage < SitePrism::Page
     array_of_answers.each_with_index do |answer, index|
       @ans = []
       answer.to_s.chars.map(&:to_i).each do |char|
-        @ans << {"input" => "left click", "eventType" => "mousedown", "question" => questions[index], "sequenceNumber" => index+1}
+        @ans << {"input" => "left click", "eventType" => "mouse", "question" => questions[index], "sequenceNumber" => index+1}
         @ans << {"input" => char.to_s, "eventType" => "click", "question" => questions[index], "sequenceNumber" => index+1}
       end
-      @ans << {"input" => "left click", "eventType" => "mousedown", "question" => questions[index], "sequenceNumber" => index+1}
+      @ans << {"input" => "left click", "eventType" => "mouse", "question" => questions[index], "sequenceNumber" => index+1}
       @ans << {"input" => "Enter", "eventType" => "click", "question" => questions[index], "sequenceNumber" => index+1}
       @inputs_array << @ans
     end
@@ -159,9 +159,9 @@ class CheckPage < SitePrism::Page
     array_of_answers.each_with_index do |answer, index|
       @ans = []
       answer.to_s.chars.map(&:to_i).each do |char|
-        @ans << {"input" => char.to_s, "eventType" => "keydown", "question" => questions[index], "sequenceNumber" => index+1}
+        @ans << {"input" => char.to_s, "eventType" => "keyboard", "question" => questions[index], "sequenceNumber" => index+1}
       end
-      @ans << {"input" => "Enter", "eventType" => "keydown", "question" => questions[index], "sequenceNumber" => index+1}
+      @ans << {"input" => "Enter", "eventType" => "keyboard", "question" => questions[index], "sequenceNumber" => index+1}
       @inputs_array << @ans
     end
     @inputs_array

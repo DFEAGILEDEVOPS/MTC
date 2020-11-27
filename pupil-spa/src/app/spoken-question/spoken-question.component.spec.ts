@@ -50,7 +50,7 @@ describe('SpokenQuestionComponent', () => {
     spyOn(speechService, 'speakQuestion');
     answerServiceSpy = spyOn(answerService, 'setAnswer');
     registerInputService = fixture.debugElement.injector.get(RegisterInputService);
-    registerInputServiceSpy = spyOn(registerInputService, 'addEntry');
+    registerInputServiceSpy = spyOn(registerInputService, 'storeEntry');
     fixture.detectChanges();
   });
 

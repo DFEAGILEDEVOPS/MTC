@@ -21,6 +21,16 @@ describe('PractiseQuestionComponent', () => {
   let registerInputService: RegisterInputService;
   let registerInputServiceSpy: any;
 
+  function createPointerEvent(pointerType) {
+    return new PointerEvent('pointerup', { pointerId: 1,
+      bubbles: true,
+      cancelable: true,
+      pointerType: pointerType,
+      width: 100,
+      height: 100,
+      isPrimary: true });
+  }
+
   beforeEach(async(() => {
     mockSpeechService = new SpeechServiceMock();
 
@@ -44,7 +54,7 @@ describe('PractiseQuestionComponent', () => {
     component = fixture.componentInstance;
     component.soundComponent = new SoundComponentMock();
     registerInputService = fixture.debugElement.injector.get(RegisterInputService);
-    registerInputServiceSpy = spyOn(registerInputService, 'addEntry');
+    registerInputServiceSpy = spyOn(registerInputService, 'storeEntry');
     fixture.detectChanges();
   });
 
@@ -89,26 +99,180 @@ describe('PractiseQuestionComponent', () => {
     });
   });
 
-  describe('onClickAnswer', () => {
-    it('adds the input to the answer if there is room', () => {
-      component.answer = '12';
-      const event = {};
-      component.onClickAnswer(4, event);
-      expect(component.answer).toBe('124');
+  describe('clickHandler', () => {
+    describe('each button works when using PointerEvents', () => {
+      it ('button 0 works', () => {
+        component.answer = '';
+        const event = createPointerEvent('mouse');
+        component.button0.nativeElement.dispatchEvent(event);
+        expect(component.answer).toBe('0');
+      });
+      it ('button 1 works', () => {
+        component.answer = '';
+        const event = createPointerEvent('mouse');
+        component.button1.nativeElement.dispatchEvent(event);
+        expect(component.answer).toBe('1');
+      });
+      it ('button 2 works', () => {
+        component.answer = '';
+        const event = createPointerEvent('mouse');
+        component.button2.nativeElement.dispatchEvent(event);
+        expect(component.answer).toBe('2');
+      });
+      it ('button 3 works', () => {
+        component.answer = '';
+        const event = createPointerEvent('mouse');
+        component.button3.nativeElement.dispatchEvent(event);
+        expect(component.answer).toBe('3');
+      });
+      it ('button 4 works', () => {
+        component.answer = '';
+        const event = createPointerEvent('mouse');
+        component.button4.nativeElement.dispatchEvent(event);
+        expect(component.answer).toBe('4');
+      });
+      it ('button 5 works', () => {
+        component.answer = '';
+        const event = createPointerEvent('mouse');
+        component.button5.nativeElement.dispatchEvent(event);
+        expect(component.answer).toBe('5');
+      });
+      it ('button 6 works', () => {
+        component.answer = '';
+        const event = createPointerEvent('mouse');
+        component.button6.nativeElement.dispatchEvent(event);
+        expect(component.answer).toBe('6');
+      });
+      it ('button 7 works', () => {
+        component.answer = '';
+        const event = createPointerEvent('mouse');
+        component.button7.nativeElement.dispatchEvent(event);
+        expect(component.answer).toBe('7');
+      });
+      it ('button 8 works', () => {
+        component.answer = '';
+        const event = createPointerEvent('mouse');
+        component.button8.nativeElement.dispatchEvent(event);
+        expect(component.answer).toBe('8');
+      });
+      it ('button 9 works', () => {
+        component.answer = '';
+        const event = createPointerEvent('mouse');
+        component.button9.nativeElement.dispatchEvent(event);
+        expect(component.answer).toBe('9');
+      });
+      it ('backspace works', () => {
+        component.answer = '111';
+        const event = createPointerEvent('mouse');
+        component.buttonBackspace.nativeElement.dispatchEvent(event);
+        expect(component.answer).toBe('11');
+      });
+      it ('submits the answer when Enter is clicked', () => {
+        const onSubmitSpy = spyOn(component, 'onSubmit');
+        component.answer = '1';
+        const event = createPointerEvent('mouse');
+        component.buttonEnter.nativeElement.dispatchEvent(event);
+        expect(onSubmitSpy).toHaveBeenCalledTimes(1);
+      });
+      it('a pointerup event adds the input to the answer when there is room', () => {
+        component.answer = '14';
+        const event = createPointerEvent('mouse');
+        component.button4.nativeElement.dispatchEvent(event);
+        expect(component.answer).toBe('144');
+      });
+
+      it('does not add the input to the answer if the answer is 5 chars long', () => {
+        component.answer = '12345';
+        const event = createPointerEvent('mouse');
+        component.button6.nativeElement.dispatchEvent(event);
+        expect(component.answer).toBe('12345');
+      });
+
+      it('does not add input to the answer if enter has been clicked', () => {
+        component.startTimer();
+        const e1 = createPointerEvent('mouse');
+        component.button1.nativeElement.dispatchEvent(e1);
+        component.button2.nativeElement.dispatchEvent(e1);
+        component.button3.nativeElement.dispatchEvent(e1);
+        component.buttonEnter.nativeElement.dispatchEvent(e1);
+        component.button4.nativeElement.dispatchEvent(e1);
+        expect(component.answer).toBe('123');
+      });
     });
-    it('does not add the input to the answer if the answer is 5 chars long', () => {
-      component.answer = '12345';
-      component.onClickAnswer(6, event);
-      expect(component.answer).toBe('12345');
-    });
-    it('does not add input to the answer if enter has been clicked', () => {
-      component.startTimer();
-      component.onClickAnswer(1, {});
-      component.onClickAnswer(2, {});
-      component.onClickAnswer(3, {});
-      component.onClickSubmit({}); // click enter button on the onscreen keyboard
-      component.onClickAnswer(4, {});
-      expect(component.answer).toBe('123');
+
+    describe('each button works when using click Events', () => {
+      function createClickEvent() {
+        return new Event('click', {
+          bubbles: true,
+          cancelable: true });
+      }
+      beforeEach(() => {
+       component.cleanUpFunctions.forEach(f => f()); // remove event handlers
+       component.setupKeypadEventListeners('click');
+      });
+      it ('button 0 works', () => {
+        component.answer = '';
+        component.button0.nativeElement.click();
+        expect(component.answer).toBe('0');
+      });
+      it ('button 1 works', () => {
+        component.answer = '';
+        component.button1.nativeElement.click();
+        expect(component.answer).toBe('1');
+      });
+      it ('button 2 works', () => {
+        component.answer = '';
+        component.button2.nativeElement.click();
+        expect(component.answer).toBe('2');
+      });
+      it ('button 3 works', () => {
+        component.answer = '';
+        component.button3.nativeElement.click();
+        expect(component.answer).toBe('3');
+      });
+      it ('button 4 works', () => {
+        component.answer = '';
+        component.button4.nativeElement.click();
+        expect(component.answer).toBe('4');
+      });
+      it ('button 5 works', () => {
+        component.answer = '';
+        component.button5.nativeElement.click();
+        expect(component.answer).toBe('5');
+      });
+      it ('button 6 works', () => {
+        component.answer = '';
+        component.button6.nativeElement.click();
+        expect(component.answer).toBe('6');
+      });
+      it ('button 7 works', () => {
+        component.answer = '';
+        component.button7.nativeElement.click();
+        expect(component.answer).toBe('7');
+      });
+      it ('button 8 works', () => {
+        component.answer = '';
+        component.button8.nativeElement.click();
+        expect(component.answer).toBe('8');
+      });
+      it ('button 9 works', () => {
+        component.answer = '';
+        component.button9.nativeElement.click();
+        expect(component.answer).toBe('9');
+      });
+      it ('backspace works', () => {
+        component.answer = '111';
+        const event = createClickEvent();
+        component.buttonBackspace.nativeElement.dispatchEvent(event);
+        expect(component.answer).toBe('11');
+      });
+      it ('submits the answer when Enter is clicked', () => {
+        const onSubmitSpy = spyOn(component, 'onSubmit');
+        component.answer = '1';
+        const event = createClickEvent();
+        component.buttonEnter.nativeElement.dispatchEvent(event);
+        expect(onSubmitSpy).toHaveBeenCalledTimes(1);
+      });
     });
   });
 
@@ -284,5 +448,29 @@ describe('PractiseQuestionComponent', () => {
       tick(50);
       expect(component.soundComponent.playEndOfQuestionSound).toHaveBeenCalled();
     }));
+  });
+
+  describe('getEventType', () => {
+    it('returns "mouse" for a mouse pointer type', () => {
+      expect(component.getEventType(createPointerEvent('mouse'))).toBe('mouse');
+    });
+    it('returns "touch" for a touch pointer type', () => {
+      expect(component.getEventType(createPointerEvent('touch'))).toBe('touch');
+    });
+    it('returns "pen" for a touch pointer type', () => {
+      expect(component.getEventType(createPointerEvent('pen'))).toBe('pen');
+    });
+    it('returns "unknown" for an unknown pointer type', () => {
+      expect(component.getEventType(createPointerEvent(''))).toBe('unknown');
+    });
+    it('returns "mouse" for a MouseEvent type', () => {
+      expect(component.getEventType(new MouseEvent('mouseup'))).toBe('mouse');
+    });
+    it('returns "keyboard" for a Keyboard type', () => {
+      expect(component.getEventType(new KeyboardEvent('mouseup'))).toBe('keyboard');
+    });
+    it('returns "touch" for a Touch type', () => {
+      expect(component.getEventType(new TouchEvent('touchend'))).toBe('touch');
+    });
   });
 });

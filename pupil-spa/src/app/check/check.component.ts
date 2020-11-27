@@ -173,10 +173,6 @@ export class CheckComponent implements OnInit, CanExit {
         this.question = this.warmupQuestionService.getQuestion(parseInt(matches[ 1 ], 10));
         this.isWarmUp = true;
         this.viewState = 'warmup-preload';
-        this.window.ga('send', {
-          hitType: 'pageview',
-          page: `/practice-preload/${parseInt(matches[ 1 ], 10)}`
-        });
         AppInsights.trackPageView(
           `Practice loading ${parseInt(matches[ 1 ], 10)}`,
           `/practice-preload/${parseInt(matches[ 1 ], 10)}`
@@ -190,10 +186,6 @@ export class CheckComponent implements OnInit, CanExit {
         // console.log(`state: ${stateDesc}: question is ${matches[ 1 ]}`);
         this.question = this.warmupQuestionService.getQuestion(parseInt(matches[ 1 ], 10));
         this.viewState = 'practice-question';
-        this.window.ga('send', {
-          hitType: 'pageview',
-          page: `/practice-question/${parseInt(matches[ 1 ], 10)}`
-        });
         AppInsights.trackPageView(
           `Practice question ${parseInt(matches[ 1 ], 10)}`,
           `/practice-question/${parseInt(matches[ 1 ], 10)}`
@@ -213,10 +205,6 @@ export class CheckComponent implements OnInit, CanExit {
         // Show the warmup complete screen
         this.isWarmUp = true;
         this.viewState = 'warmup-complete';
-        this.window.ga('send', {
-          hitType: 'pageview',
-          page: '/practice-complete'
-        });
         AppInsights.trackPageView(
           'Practice complete',
           '/practice-complete'
@@ -228,10 +216,6 @@ export class CheckComponent implements OnInit, CanExit {
         this.isWarmUp = false;
         this.viewState = 'questions-intro';
         this.totalNumberOfQuestions = this.questionService.getNumberOfQuestions();
-        this.window.ga('send', {
-          hitType: 'pageview',
-          page: '/questions-intro'
-        });
         AppInsights.trackPageView(
           'Questions intro',
           '/questions-intro'
@@ -245,10 +229,6 @@ export class CheckComponent implements OnInit, CanExit {
         const matches = CheckComponent.loadingRe.exec(stateDesc);
         this.question = this.questionService.getQuestion(parseInt(matches[ 1 ], 10));
         this.viewState = 'preload';
-        this.window.ga('send', {
-          hitType: 'pageview',
-          page: `/preload/${parseInt(matches[ 1 ], 10)}`
-        });
         AppInsights.trackPageView(
           `Question loading ${parseInt(matches[ 1 ], 10)}`,
           `/preload/${parseInt(matches[ 1 ], 10)}`
@@ -261,10 +241,6 @@ export class CheckComponent implements OnInit, CanExit {
         const matches = CheckComponent.questionRe.exec(stateDesc);
         this.question = this.questionService.getQuestion(parseInt(matches[ 1 ], 10));
         this.viewState = 'question';
-        this.window.ga('send', {
-          hitType: 'pageview',
-          page: `/question/${parseInt(matches[ 1 ], 10)}`
-        });
         AppInsights.trackPageView(
           `Question ${parseInt(matches[ 1 ], 10)}`,
           `/question/${parseInt(matches[ 1 ], 10)}`
@@ -287,10 +263,6 @@ export class CheckComponent implements OnInit, CanExit {
         this.storageService.setPendingSubmission(true);
         this.isWarmUp = false;
         this.viewState = 'submission-pending';
-        this.window.ga('send', {
-          hitType: 'pageview',
-          page: '/submission-pending'
-        });
         AppInsights.trackPageView(
           'Submission pending',
           '/submission-pending'

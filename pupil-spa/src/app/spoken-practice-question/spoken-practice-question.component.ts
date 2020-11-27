@@ -1,4 +1,4 @@
-import { Component, NgZone, OnInit, AfterViewInit, OnDestroy, Input } from '@angular/core';
+import { Component, NgZone, OnInit, AfterViewInit, OnDestroy, Input, Renderer2 } from '@angular/core';
 import { Subscription } from 'rxjs';
 
 import { AnswerService } from '../services/answer/answer.service';
@@ -32,8 +32,9 @@ export class SpokenPracticeQuestionComponent extends PracticeQuestionComponent i
               protected storageService: StorageService,
               protected questionService: QuestionService,
               protected answerService: AnswerService,
-              protected registerInputService: RegisterInputService) {
-    super(auditService, windowRefService, questionService, storageService, speechService, answerService, registerInputService);
+              protected registerInputService: RegisterInputService,
+              protected renderer: Renderer2) {
+    super(auditService, windowRefService, questionService, storageService, speechService, answerService, registerInputService, renderer);
   }
 
   ngOnInit() {
@@ -54,13 +55,25 @@ export class SpokenPracticeQuestionComponent extends PracticeQuestionComponent i
    */
   ngAfterViewInit() {
     this.auditService.addEntry(new QuestionRendered({
-      practiseSequenceNumber: this.sequenceNumber,
-      question: `${this.factor1}x${this.factor2}`
+      sequenceNumber: this.sequenceNumber,
+      question: `${this.factor1}x${this.factor2}`,
+      isWarmup: this.isWarmUpQuestion
     }));
+
+    // Set up listening events depending on the browser's capability
+    if (this.shouldSetupPointerEvents()) {
+      this.setupKeypadEventListeners('pointerup');
+    } else {
+      this.setupKeypadEventListeners('click');
+    }
+
     this.speechService.speakQuestion(`${this.factor1} times ${this.factor2}?`, this.sequenceNumber);
   }
 
   ngOnDestroy() {
     this.subscription.unsubscribe();
+    if (this.cleanUpFunctions.length > 0) {
+      this.cleanUpFunctions.forEach(f => f());
+    }
   }
 }
