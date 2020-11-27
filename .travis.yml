@@ -1,54 +1,25 @@
-dist: bionic
+dist: xenial
 os: linux
 language: node_js
+services:
+- docker
+node_js:
+- 12.18.2
 env:
+  jobs:
+  - IMAGE=admin
+  - IMAGE=admin-assets
+  - IMAGE=pupil-spa
+  - IMAGE=pupil-api
   global:
     secure: OEiTwHj93kuIZDRBGTp69y91mQFdL6CymVH9s8EhhDK4HWa+kfnOvpRAH4bBBllrbadAVsHizrOb1GQ0zBqYybe8oYk5Q/aOLR7pTzROTVuDx2bc8Rbem88C8VCpmVXOnuyJtWKRI9wMSmzES3QMthzx11HYjSd2hQvFgCnIbgzQGWm/SZ3vS5+ivTr4r3W4Vf8Pd0c60Rwoco/BGdB3BZQSa6PAtg65sI2yf6mydK2QRkcPszyC/k9vykG1cpfZ6bddhIuY57ZF4rLlcAC6X9Cq6hYMrAvyuH1TezgHsDZ+w7YhE8gmZjfHBuB7DrZm0pgdG/RYtSjodhRMyy+ZfyGW0ePzsAiw05Y/BlXUmhcedrnTKRCmUC4ZRHu3RZJD07gPontx8wiSRIrc5pICiuIYX6njQU3N4EWGb6U5JR+kKh8g8Jq52appQDp/RB4KnU1WJDfc+NCK7Exu8oDEsGjFU/e39kZy83S7Ih84Wu4V5buudCyseJlpaEfL989+lO21sB41hZHX8vFbFendGyPObrYwuF3I91Vt0PArTSkowc9eSZNV5w4BVDfPD7UCxpc0/CIqGTJmCgh2BPPJMjs4YzWw3eLgaLIEagr0765XzcQiBwQ9ol1bteRNDfsC89bq/0jpkeydB5XS1ktsDZs5GumUirWTExmxII5Np8k=
-services:
-  - docker
-node_js:
-  - 12.18.2
 before_install:
-  - node ./deploy/should-it-build.js $TRAVIS_PULL_REQUEST
-  - cd admin-assets
-  - "./copy-assets.sh"
-  - cd ..
-jobs:
-  - stage: build docker admin app
-    script:
-      - cd admin
-      - docker build .
-      - docker images
-  - stage: build docker admin assets
-    script:
-      - cd admin-assets
-      - docker build .
-      - docker images
-  - stage: build pupil SPA
-    script:
-      - cd pupil-spa
-      - docker build .
-      - docker images
-  - stage: build pupil API
-    script:
-      - cd pupil-api
-      - docker build .
-      - docker images
-  - stage: validate ruby gems in admin
-    language: ruby
-    rvm: 2.6.0
-    before_install:
-      - node ./deploy/should-it-build.js $TRAVIS_PULL_REQUEST
-    script:
-      - cd test/admin-hpa
-      - bundle install
-      - rake -T
-  - stage: validate ruby gems in pupil app
-    language: ruby
-    rvm: 2.6.0
-    before_install:
-      - node ./deploy/should-it-build.js $TRAVIS_PULL_REQUEST
-    script:
-      - cd test/pupil-hpa
-      - bundle install
-      - rake -T
+- node ./deploy/should-it-build.js $TRAVIS_PULL_REQUEST
+- cd admin-assets
+- "./copy-assets.sh"
+- cd ..
+script:
+- cd $IMAGE
+- docker build .
+after_script:
+- docker images
