@@ -114,6 +114,4 @@ Then(/^the inputs should be synced to the DB correctly$/) do
                                            question: input['question'],
                                            sequenceNumber: input['questionNumber']}}
   expect(@submission_hash[:payload][:inputs]).to eql db_inputs_hash
-  p @submission_hash[:payload][:inputs]
-  p db_inputs_hash
 end
