@@ -13,7 +13,7 @@ const httpTrigger: AzureFunction = function (context: Context): void {
   context.done()
 }
 
-export default async function contextPropagatingHttpTrigger(context: Context, req: HttpRequest) {
+export default async function contextPropagatingHttpTrigger (context: Context, req: HttpRequest): Promise<void> {
   // Start an AI Correlation Context using the provided Function context
   const correlationContext = appInsights.startOperation(context, req)
 
@@ -23,20 +23,20 @@ export default async function contextPropagatingHttpTrigger(context: Context, re
 
   // Wrap the Function runtime with correlationContext
   return appInsights.wrapWithCorrelationContext(async () => {
-      const startTime = Date.now() // Start trackRequest timer
+    const startTime = Date.now() // Start trackRequest timer
 
-      // Run the Function
-      await httpTrigger(context, req)
+    // Run the Function
+    await httpTrigger(context, req)
 
-      // Track Request on completion
-      appInsights.defaultClient.trackRequest({
-          name: context?.req?.method + " " + context?.req?.url,
-          resultCode: context?.res?.status,
-          success: true,
-          url: req.url,
-          duration: Date.now() - startTime,
-          id: correlationContext?.operation.parentId,
-      });
-      appInsights.defaultClient.flush();
-  }, correlationContext)();
+    // Track Request on completion
+    appInsights.defaultClient.trackRequest({
+      name: `${context?.req?.method}  ${context?.req?.url}`,
+      resultCode: context?.res?.status,
+      success: true,
+      url: req.url,
+      duration: Date.now() - startTime,
+      id: correlationContext?.operation.parentId
+    })
+    appInsights.defaultClient.flush()
+  }, correlationContext)()
 };

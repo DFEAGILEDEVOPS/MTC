@@ -3,7 +3,7 @@ import config from '../config'
 
 const appInsightsHelper = {
   startInsightsIfConfigured: (cloudRole: string) => {
-    if (config.ApplicationInsights.Key) {
+    if (config.ApplicationInsights.Key !== undefined) {
       console.log('AppInsights Key found, initialising...')
       appInsights.setup()
         .setAutoDependencyCorrelation(true)
