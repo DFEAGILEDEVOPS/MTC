@@ -41,5 +41,5 @@ RETRY_PAUSE_MULTIPLIER | Float | Optional | 1.5 | AA, FC, FT | The multipland to
 REDIS_HOST | String | NULL | Required | AA, FC, FC, PAPI | The redis hostname or IP address.
 REDIS_PORT | Int | 6379 | Optional | AA, FC, FT, PAPI | The redis port to connect to.
 REDIS_KEY | String | NULL | Optional | AA, FC, FT, PAPI | The redis secret key to use to connect to a password enabled Redis server.
-CHECK_ALLOCATION_EXPIRY_SECONDS | Int | 15778476 | Optional | The number of seconds to cache 
+CHECK_ALLOCATION_EXPIRY_SECONDS | Int | 15778476 | Optional | none | The number of seconds to cache the pupil check in Redis for before expiring it. Possibly no longer used.
 
