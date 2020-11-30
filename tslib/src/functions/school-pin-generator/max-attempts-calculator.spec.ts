@@ -2,7 +2,7 @@ import { MaxAttemptsCalculator } from './max-attempts-calculator'
 
 let sut: MaxAttemptsCalculator
 
-describe('max-attemps-calculator', () => {
+describe('max-attempts-calculator', () => {
   beforeEach(() => {
     sut = new MaxAttemptsCalculator()
   })
