@@ -44,7 +44,7 @@ REDIS_PORT | Int | 6379 | Optional | AA, FC, FT, PAPI | The redis port to connec
 REDIS_RESULTS_EXPIRY_IN_SECONDS | Int | 15778800 | Optional | FC | The TTL of the school results object in Redis.  Default is six months.
 RETRY_MAX_ATTEMPTS | Int | 3 | Optional | FC, FT | The number of retry attempts to make is the SQL Server is unavailable due to resource constraints.
 RETRY_PAUSE_MS | Int | 5000 | Optional | AA, FC, FT | The number of milliseconds to pause because making the first retry attempt to the Database.  FC and FT default to 5 seconds.
-RETRY_PAUSE_MULTIPLIER | Float | Optional | 1.5 | AA, FC, FT | The multipland to multiply the RETRY_PAUSE_MS number by for successive retry attempts after the first one.  So using the defaults provided: the initial query will have 0 ms delay, then 5000 ms delay, then 7,500 ms delay then 11,250 for FC and FT.   
+RETRY_PAUSE_MULTIPLIER | Float | 1.5 | Optional| AA, FC, FT | The multipland to multiply the RETRY_PAUSE_MS number by for successive retry attempts after the first one.  So using the defaults provided: the initial query will have 0 ms delay, then 5000 ms delay, then 7,500 ms delay then 11,250 for FC and FT.   
 SCHOOL_PIN_FUNCTION_ENABLED | Boolean | false | Optional | FC | Used by the Developer Test tools
 SCHOOL_PIN_SAMPLER_FUNCTION_ENABLED | Boolean | false | Optional | FC | Used by the Developer Test tools
 SCHOOL_RESULTS_CACHE | Int | 1 | Optional | FC | Used by the school results cache determiner.  Set to 0 to never cache, 1 to cache if the date is between the end of the check and the first Monday after the check has ended, or 2 to never cache.
