@@ -42,4 +42,22 @@ REDIS_HOST | String | NULL | Required | AA, FC, FC, PAPI | The redis hostname or
 REDIS_PORT | Int | 6379 | Optional | AA, FC, FT, PAPI | The redis port to connect to.
 REDIS_KEY | String | NULL | Optional | AA, FC, FT, PAPI | The redis secret key to use to connect to a password enabled Redis server.
 CHECK_ALLOCATION_EXPIRY_SECONDS | Int | 15778476 | Optional | none | The number of seconds to cache the pupil check in Redis for before expiring it. Possibly no longer used.
+PREPARED_CHECK_EXPIRY_SECONDS | Int | 1800 | Optional | PAPI | Once a pupil logs in a live check the expiry in Redis is set to this value. Default is 1800 seconds (30 minutes).
+CORS_WHITELIST | String | (empty string) | Required | AA, PAPI | Comma separated string of URLs allowed to access the service being protected.
+AZURE_SERVICE_BUS_CONNECTION_STRING | String | NULL | Required | AA, FC, FT, PAPI | Connection string as given in the Azure portal for Azure Service Bus.
+CHECK_NOTIFIER_MESSAGES_PER_BATCH | Int | 32 | Optional |  FC | Tune the number of messages the check-notifier service fetches per query.
+CHECK_NOTIFIER_BATCH_COUNT | Int | 5 | Optional | FC |Tune the number of batches of messages the check-notifier service fetches per invocation.  The check-notifier service is run regularly from a timer trigger.
+ALLOWED_WORDS | String | 'aaa,bbb,ccc,ddd,eee,dim' | Required | FC | Required to generated random school pins in the form WORD + NUMBER + NUMBER + WORD
+BANNED_WORDS | String | 'dim' | Optional | FC | Provides a way to negate words that may be in the allowed list ensuring that they never appear in a pin.
+OVERRIDE_PIN_EXPIRY | Boolean | false | Optional | FC | Developer setting to allow pin generation after 4PM
+PIN_UPDATE_MAX_ATTEMPTS | Int | 0 | Optional | FC |  The number of school pin updates to attempt in case of a pin collision (as pins are generated randomly). If set to zero, then the number of attempts is calculated as the total number of permutations available.
+GIAS_WS_NAMESPACE | String | NULL | Required | none | Gias synchronisation. **Not Used**. This value is used in the XML namespace when making requests.
+GIAS_WS_SERVICE_URL | String | NULL | Required | none | Gias synchronisation.  **Not Used**.  The URL of the GIAS service.
+GIAS_WS_MESSAGE_EXPIRY_MS | Int | 10000 | Required | none | Gias synchronisation.  **Not Used**. XML Message expiry in milliseconds.
+GIAS_WS_REQUEST_TIMEOUT | Int | 30000 | Required| none | Gias synchronisation. **Not Used**.  Timeout in milliseconds when making the request.
+GIAS_WS_USERNAME | String | NULL | none | Required | Gias synchronisation. **Not Used**. 
+GIAS_WS_PASSWORD | String | NULL | none | Required | Gias synchronisation.  **Not Used**.
+GIAS_WS_EXTRACT_ID | Int | 0 | none | Optional | Gias synchronisation.  **Not Used**.
+
+
 
