@@ -31,21 +31,3 @@ array_of_features.each do |features|
   end
 end
 
-at_exit do
-  puts "\n**** RE RUNNING FAILING TESTS ****\n\n" unless File.read('rerun.txt').empty?
-  system("cucumber @rerun.txt -f rerun -o rerun0.txt -f pretty") unless File.read('rerun.txt').empty? or Rake.application.top_level_tasks.first.include? 'bs'
-  system("cucumber @rerun.txt -f rerun -o rerun0.txt -f pretty DRIVER=#{Rake.application.top_level_tasks.first}") if !File.read('rerun.txt').empty? and Rake.application.top_level_tasks.first.include? 'bs'
-  puts "\n**** RE RUNNING FAILING TESTS ONE MORE TIME ****\n\n" unless File.read('rerun0.txt').empty?
-  system("cucumber @rerun0.txt -f rerun -o rerun.txt -f pretty") unless File.read('rerun0.txt').empty? or Rake.application.top_level_tasks.first.include? 'bs'
-  system("cucumber @rerun0.txt -f rerun -o rerun.txt -f pretty DRIVER=#{Rake.application.top_level_tasks.first}") if !File.read('rerun0.txt').empty? and Rake.application.top_level_tasks.first.include? 'bs'
-  exit_code = @exit_code.nil? ? $?.exitstatus : @exit_code
-  colour = exit_code == 0 ? 'green' : 'red'
-  puts "## Suite took #{(Time.now - @start_time) / 60}"
-  puts "\n#################################".send(colour)
-  puts "## Exiting with status code: #{exit_code} ##".send(colour)
-  puts "#################################\n\n".send(colour)
-  `pkill -f BrowserStack`
-  p 'killed'
-  exit exit_code
-end
-
