@@ -1,7 +1,11 @@
+const functionName = 'pupil-feedback'
+import aiHelper from '../../azure/app-insights'
+// load early to enable tracking
+aiHelper.startInsightsIfConfigured(functionName)
+
 import { AzureFunction, Context } from '@azure/functions'
 import { performance } from 'perf_hooks'
 import { IPupilFeedbackMessage, PupilFeedbackService, IPupilFeedbackFunctionBinding } from './feedback.service'
-const functionName = 'pupil-feedback'
 const service = new PupilFeedbackService()
 
 const queueTrigger: AzureFunction = async function (context: Context, feedbackMessage: IPupilFeedbackMessage): Promise<void> {

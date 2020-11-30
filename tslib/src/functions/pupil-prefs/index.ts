@@ -1,8 +1,12 @@
+const functionName = 'pupil-prefs'
+import aiHelper from '../../azure/app-insights'
+// load early to enable tracking
+aiHelper.startInsightsIfConfigured(functionName)
+
 import { AzureFunction, Context } from '@azure/functions'
 import { performance } from 'perf_hooks'
 import { PupilPrefsService } from './pupil-prefs.service'
 import { IPupilPrefsFunctionBindings } from './IPupilPrefsFunctionBindings'
-const functionName = 'pupil-prefs'
 
 const queueTrigger: AzureFunction = async function (context: Context, pupilPrefsMessage: any): Promise<void> {
   const start = performance.now()

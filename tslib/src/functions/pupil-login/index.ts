@@ -1,7 +1,11 @@
+const functionName = 'pupil-login'
+import aiHelper from '../../azure/app-insights'
+// load early to enable tracking
+aiHelper.startInsightsIfConfigured(functionName)
+
 import { AzureFunction, Context } from '@azure/functions'
 import { performance } from 'perf_hooks'
 import { PupilLoginService, IPupilLoginMessage, IPupilLoginFunctionBindings } from './pupil-login.service'
-const functionName = 'pupil-login'
 
 const pupilLoginService = new PupilLoginService()
 

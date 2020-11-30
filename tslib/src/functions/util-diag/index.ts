@@ -1,9 +1,11 @@
+const functionName = 'util-diag'
 import * as appInsights from 'applicationinsights'
+import aiHelper from '../../azure/app-insights'
+// load early to enable tracking
+aiHelper.startInsightsIfConfigured(functionName)
+
 import { AzureFunction, Context } from '@azure/functions'
 import { HttpRequest } from 'applicationinsights/out/Library/Functions'
-import aiHelper from '../../azure/app-insights'
-
-aiHelper.startInsightsIfConfigured('util-diag')
 
 const httpTrigger: AzureFunction = function (context: Context): void {
   context.res = {
@@ -39,4 +41,4 @@ export default async function contextPropagatingHttpTrigger (context: Context, r
     })
     appInsights.defaultClient.flush()
   }, correlationContext)()
-};
+}
