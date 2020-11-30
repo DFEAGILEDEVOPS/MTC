@@ -1,3 +1,4 @@
+/* eslint-disable import/first */
 const functionName = 'pupil-prefs'
 import aiHelper from '../../azure/app-insights'
 // load early to enable tracking

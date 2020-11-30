@@ -1,3 +1,4 @@
+/* eslint-disable import/first */
 const functionName = 'util-diag'
 import * as appInsights from 'applicationinsights'
 import aiHelper from '../../azure/app-insights'
