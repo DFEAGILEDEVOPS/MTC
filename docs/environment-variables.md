@@ -46,7 +46,7 @@ PREPARED_CHECK_EXPIRY_SECONDS | Int | 1800 | Optional | PAPI | Once a pupil logs
 CORS_WHITELIST | String | (empty string) | Required | AA, PAPI | Comma separated string of URLs allowed to access the service being protected.
 AZURE_SERVICE_BUS_CONNECTION_STRING | String | NULL | Required | AA, FC, FT, PAPI | Connection string as given in the Azure portal for Azure Service Bus.
 CHECK_NOTIFIER_MESSAGES_PER_BATCH | Int | 32 | Optional |  FC | Tune the number of messages the check-notifier service fetches per query.
-CHECK_NOTIFIER_BATCH_COUNT | Int | 5 | Optional | FC |Tune the number of batches of messages the check-notifier service fetches per invocation.  The check-notifier service is run regularly from a timer trigger.
+CHECK_NOTIFIER_BATCH_COUNT | Int | 5 | Optional | FC | Tune the number of batches of messages the check-notifier service fetches per invocation.  The check-notifier service is run regularly from a timer trigger.
 ALLOWED_WORDS | String | 'aaa,bbb,ccc,ddd,eee,dim' | Required | FC | Required to generated random school pins in the form WORD + NUMBER + NUMBER + WORD
 BANNED_WORDS | String | 'dim' | Optional | FC | Provides a way to negate words that may be in the allowed list ensuring that they never appear in a pin.
 OVERRIDE_PIN_EXPIRY | Boolean | false | Optional | FC | Developer setting to allow pin generation after 4PM
@@ -55,9 +55,15 @@ GIAS_WS_NAMESPACE | String | NULL | Required | none | Gias synchronisation. **No
 GIAS_WS_SERVICE_URL | String | NULL | Required | none | Gias synchronisation.  **Not Used**.  The URL of the GIAS service.
 GIAS_WS_MESSAGE_EXPIRY_MS | Int | 10000 | Required | none | Gias synchronisation.  **Not Used**. XML Message expiry in milliseconds.
 GIAS_WS_REQUEST_TIMEOUT | Int | 30000 | Required| none | Gias synchronisation. **Not Used**.  Timeout in milliseconds when making the request.
-GIAS_WS_USERNAME | String | NULL | none | Required | Gias synchronisation. **Not Used**. 
-GIAS_WS_PASSWORD | String | NULL | none | Required | Gias synchronisation.  **Not Used**.
-GIAS_WS_EXTRACT_ID | Int | 0 | none | Optional | Gias synchronisation.  **Not Used**.
-
-
-
+GIAS_WS_USERNAME | String | NULL | Required | none | Gias synchronisation. **Not Used**. 
+GIAS_WS_PASSWORD | String | NULL | Required | none | Gias synchronisation.  **Not Used**.
+GIAS_WS_EXTRACT_ID | Int | 0 | Optional | none | Gias synchronisation.  **Not Used**.
+SCHOOL_RESULTS_CACHE | Int | 1 | Optional | FC | Used by the school results cache determiner.  Set to 0 to never cache, 1 to cache if the date is between the end of the check and the first Monday after the check has ended, or 2 to never cache.
+SCHOOL_RESULTS_CACHE_BATCHS_PER_EXEC | Int | 10 |  Optional | FC | Tune the number of batches of messages the school-results-cache service fetches per invocation.  The  service is run regularly from a timer trigger.
+SCHOOL_RESULTS_CACHE_MSGS_PER_BATCH | Int | 32 | Optional | FC | Tune the number of messages the school-results-cache service fetches per query.
+REDIS_RESULTS_EXPIRY_IN_SECONDS | Int | 15778800 | Optional | FC | The TTL of the school results object in Redis.  Default is six months.
+AZURE_STORAGE_CONNECTION_STRING | String | (empty string) | Required | AA, FC, FT | The Azure storage connection string.
+SCHOOL_PIN_FUNCTION_ENABLED | Boolean | false | Optional | FC | Used by the Developer Test tools
+SCHOOL_PIN_SAMPLER_FUNCTION_ENABLED | Boolean | false | Optional | FC | Used by the Developer Test tools
+SUBMIT_CHECK_FUNCTION_ENABLED | Boolean | false | Optional | FC | Used by the Developer Test tools
+DEBUG_VERBOSITY | Int | 1 | Optional | FC, FT | When LOG_LEVEL is set to 'debug' use DEBUG_VERBOSITY to increase or decrease the logging verbosity.  Set to 2 to have the SQL queries sent to the log.
