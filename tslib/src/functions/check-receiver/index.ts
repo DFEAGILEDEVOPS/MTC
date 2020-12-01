@@ -1,5 +1,6 @@
 /* eslint-disable import/first */
-const functionName = 'check-receiver'
+// intentionally named incorrectly to test app insights in azure.  will be corrected
+const functionName = 'the-check-receiver'
 import aiHelper from '../../azure/app-insights'
 // load early to enable tracking
 aiHelper.startInsightsIfConfigured(functionName)
