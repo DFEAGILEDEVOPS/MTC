@@ -2,9 +2,9 @@
 #
 # Check https://circleci.com/docs/2.0/language-javascript/ for more details
 #
-version: 2
+version: 2.1
 jobs:
-  build:
+  unit_tests:
     working_directory: ~/repo/
     docker:
       - image: stamtc/mtc_circleci:latest
@@ -63,9 +63,44 @@ jobs:
           key: v1-node-tslib-deps-{{ checksum "tslib/yarn.lock" }}
           paths:
             - ~/repo/tslib/node_modules
+  validate_admin_gems:
+    working_directory: ~/repo/
+    docker:
+      - image: stamtc/mtc_circleci_ruby
+    environment:
+        TZ: Europe/London
+    steps:
+      - checkout
+      - restore_cache:
+          key: v1-ruby-admin-hpa-deps-{{ checksum "test/admin-hpa/Gemfile.lock" }}
+      - run: cd test/admin-hpa && bundle install --jobs=4 --retry=3 --path vendor/bundle
+      - run: cd test/admin-hpa && bundle exec rake -T
+      - save_cache:
+          key: v1-ruby-admin-hpa-deps-{{ checksum "test/admin-hpa/Gemfile.lock" }}
+          paths:
+            - vendor/bundle
+
+  validate_pupil_gems:
+    working_directory: ~/repo/
+    docker:
+      - image: stamtc/mtc_circleci_ruby
+    environment:
+      TZ: Europe/London
+    steps:
+      - checkout
+      - restore_cache:
+          key: v1-ruby-pupil-hpa-deps-{{ checksum "test/pupil-hpa/Gemfile.lock" }}
+      - run: cd test/pupil-hpa && bundle install --jobs=4 --retry=3 --path vendor/bundle
+      - run: cd test/pupil-hpa && bundle exec rake -T
+      - save_cache:
+          key: v1-ruby-pupil-hpa-deps-{{ checksum "test/pupil-hpa/Gemfile.lock" }}
+          paths:
+            - vendor/bundle
 
 workflows:
   version: 2
   build_and_test:
     jobs:
-      - build
+      - unit_tests
+      - validate_admin_gems
+      - validate_pupil_gems
