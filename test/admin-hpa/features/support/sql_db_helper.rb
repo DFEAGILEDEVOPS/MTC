@@ -566,7 +566,18 @@ class SqlDbHelper
   end
 
   def self.get_event_types_for_check(check_result_id)
-    sql = "select mtc_results.event.* ,mtc_results.eventTypeLookup.eventType from mtc_results.event join mtc_results.eventTypeLookup on event.eventTypeLookup_id = eventTypeLookup.id where mtc.mtc_results.event.checkResult_id=#{check_result_id} order by mtc_results.event.browserTimestamp"
+    sql = %{
+          SELECT
+              e.*,
+            etl.eventType
+          FROM
+            mtc_results.event e
+            JOIN mtc_results.eventTypeLookup etl ON (e.eventTypeLookup_id = etl.id)
+          WHERE
+            e.checkResult_id = #{check_result_id}
+          ORDER BY
+            e.browserTimestamp
+    }
     result = SQL_CLIENT.execute(sql)
     result.each {|row| row.map}
   end
