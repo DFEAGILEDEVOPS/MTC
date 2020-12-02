@@ -4,7 +4,6 @@ import config from '../config'
 const appInsightsHelper = {
   startInsightsIfConfigured: (cloudRole: string) => {
     if (config.ApplicationInsights.Key !== undefined) {
-      console.log('AppInsights Key found, initialising...')
       appInsights.setup()
         .setAutoDependencyCorrelation(true)
         .setAutoCollectRequests(true)
@@ -15,7 +14,6 @@ const appInsightsHelper = {
         .setUseDiskRetryCaching(true)
         .setSendLiveMetrics(config.ApplicationInsights.LiveMetrics)
         .start()
-      console.log('AppInsights initialised.')
       let buildNumber
       try {
         buildNumber = 'NOT IMPLEMENTED'
