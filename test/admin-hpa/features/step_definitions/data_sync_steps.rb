@@ -10,6 +10,7 @@ end
 
 Then(/^the answers should be synced to the DB correctly$/) do
   check_id = SqlDbHelper.get_check_id(@check_code)
+  p check_id
   SqlDbHelper.wait_for_check_result(check_id)
   check_result_id = SqlDbHelper.get_check_result_id(check_id)
   db_answers = SqlDbHelper.get_answers(check_result_id).each {|x| x.delete ('id')}.each {|x|
@@ -114,4 +115,42 @@ Then(/^the inputs should be synced to the DB correctly$/) do
                                            question: input['question'],
                                            sequenceNumber: input['questionNumber']}}
   expect(@submission_hash[:payload][:inputs]).to eql db_inputs_hash
+end
+
+
+Given(/^I have check which has resulted in a hard failure$/) do
+  step 'I have generated a live pin for a pupil'
+  pupil_detail = SqlDbHelper.pupil_details(@details_hash[:upn])
+  @pupil_id = pupil_detail['id']
+  check_entry = SqlDbHelper.check_details(@pupil_id)
+  pupil_pin_detail = SqlDbHelper.get_pupil_pin(check_entry['id'])
+  pupil_pin = pupil_pin_detail['val']
+  school_password = SqlDbHelper.find_school(pupil_detail['school_id'])['pin']
+  Timeout.timeout(ENV['WAIT_TIME'].to_i) {sleep 1 until RequestHelper.auth(school_password, pupil_pin).code == 200}
+  response_pupil_auth = RequestHelper.auth(school_password, pupil_pin)
+  @parsed_response_pupil_auth = JSON.parse(response_pupil_auth.body)
+  @submission_hash = RequestHelper.build_check_submission_message(@parsed_response_pupil_auth, nil, true)
+  AzureQueueHelper.create_check_submission_message(@submission_hash[:submission_message].to_json)
+  school_uuid = @parsed_response_pupil_auth['school']['uuid']
+  @check_code = @parsed_response_pupil_auth['checkCode']
+  AzureTableHelper.wait_for_received_check(school_uuid, @check_code)
+end
+
+
+Then(/^check should fail processing$/) do
+  Timeout.timeout(ENV['WAIT_TIME'].to_i){sleep 3 until SqlDbHelper.get_check(@check_code)['checkStatus_id'] == 6 }
+  check_info = SqlDbHelper.get_check(@check_code)
+  expect(check_info['checkStatus_id']).to eql 6
+  expect(check_info['complete']).to eql false
+  expect(check_info['completedAt']).to eql nil
+  expect(check_info['processingFailed']).to eql true
+  step 'I am on the Pupil Status page'
+  step "I can see the status for the pupil is 'Error in processing'"
+end
+
+
+And(/^the pupil should be available for a restart$/) do
+  step 'I am on the Restarts Page'
+  pupil = restarts_page.find_pupil_row(@details_hash[:first_name])
+  expect(pupil.name.text).to eql ("#{@details_hash[:last_name]}, #{@details_hash[:first_name]}")
 end

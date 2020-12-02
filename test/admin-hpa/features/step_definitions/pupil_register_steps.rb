@@ -55,7 +55,6 @@ Then(/^I can see the status for the pupil is '(.*)'$/) do |status|
   Timeout.timeout(ENV['WAIT_TIME'].to_i) {pupil_status_page.load until pupil_status_page.find_status_for_pupil(status, @details_hash[:first_name])}
   pupil_row = pupil_status_page.find_status_for_pupil(status, @details_hash[:first_name])
   expect(pupil_row.status.text).to include status
-  # expect(pupil_row.status.text).to eql 'Not started' if status == 'Restart'
 end
 
 Then(/^I can see the status for the pupil is (.*) for pupil not taking the check$/) do |status|

@@ -538,6 +538,14 @@ class SqlDbHelper
     check['id']
   end
 
+  def self.get_check(check_code)
+    sql = "SELECT * FROM [mtc_admin].[check] WHERE checkCode='#{check_code}'"
+    result = SQL_CLIENT.execute(sql)
+    data = result.first
+    result.cancel
+    data
+  end
+
   def self.get_check_result_id(check_id)
     sql = "SELECT * FROM [mtc_results].[checkResult] WHERE check_id='#{check_id}'"
     result = SQL_CLIENT.execute(sql)
