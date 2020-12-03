@@ -1,5 +1,6 @@
 import * as appInsights from 'applicationinsights'
 import PingController from '../controllers/ping.controller'
+import config from '../config'
 
 const appInsightsHelper = {
   startInsightsIfConfigured: async () => {
@@ -8,10 +9,11 @@ const appInsightsHelper = {
         .setAutoDependencyCorrelation(true)
         .setAutoCollectRequests(true)
         .setAutoCollectPerformance(true)
-        .setAutoCollectExceptions(false)
+        .setAutoCollectExceptions(config.Logging.ApplicationInsights.CollectExceptions)
         .setAutoCollectDependencies(true)
         .setAutoCollectConsole(false)
         .setUseDiskRetryCaching(true)
+        .setSendLiveMetrics(config.Logging.ApplicationInsights.LiveMetrics)
         .start()
 
       let buildNumber
@@ -23,6 +25,8 @@ const appInsightsHelper = {
       appInsights.defaultClient.commonProperties = {
         buildNumber
       }
+      appInsights.defaultClient.context.tags[appInsights.defaultClient.context.keys.cloudRole] = 'Pupil-Auth-Api'
+      appInsights.defaultClient.context.tags[appInsights.defaultClient.context.keys.cloudRoleInstance] = config.Logging.ApplicationInsights.InstanceId
     }
   }
 }

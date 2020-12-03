@@ -1,4 +1,5 @@
 import * as path from 'path'
+import * as os from 'os'
 import * as fs from 'fs'
 import * as dotenv from 'dotenv'
 import * as parser from './common/parsing'
@@ -108,6 +109,12 @@ export default {
     SchoolPinHttpServiceFunctionEnabled: parser.propertyExists(process.env, 'SCHOOL_PIN_FUNCTION_ENABLED') ? parser.primitiveToBoolean(process.env.SCHOOL_PIN_FUNCTION_ENABLED) : false,
     SchoolPinSamplerFunctionEnabled: parser.propertyExists(process.env, 'SCHOOL_PIN_SAMPLER_FUNCTION_ENABLED') ? parser.primitiveToBoolean(process.env.SCHOOL_PIN_SAMPLER_FUNCTION_ENABLED) : false,
     SubmitCheckForLoadTestFunctionEnabled: parser.propertyExists(process.env, 'SUBMIT_CHECK_FUNCTION_ENABLED') ? parser.primitiveToBoolean(process.env.SUBMIT_CHECK_FUNCTION_ENABLED) : false
+  },
+  ApplicationInsights: {
+    Key: process.env.APPINSIGHTS_INSTRUMENTATIONKEY,
+    InstanceId: `${os.hostname()}:${process.pid}`,
+    CollectExceptions: parser.propertyExists(process.env, 'APPINSIGHTS_COLLECT_EXCEPTIONS') ? parser.primitiveToBoolean(process.env.APPINSIGHTS_COLLECT_EXCEPTIONS) : true,
+    LiveMetrics: parser.propertyExists(process.env, 'APPINSIGHTS_LIVE_METRICS') ? parser.primitiveToBoolean(process.env.APPINSIGHTS_LIVE_METRICS) : true
   },
   Logging: {
     DebugVerbosity: parseInt(parser.valueOrSubstitute(process.env.DEBUG_VERBOSITY, 1), 10)

@@ -1,7 +1,12 @@
+/* eslint-disable import/first */
+const functionName = 'school-pin-generator'
+import aiHelper from '../../azure/app-insights'
+// load early to enable tracking
+aiHelper.startInsightsIfConfigured(functionName)
+
 import { AzureFunction, Context } from '@azure/functions'
 import { performance } from 'perf_hooks'
 import { SchoolPinReplenishmnentService } from './school-pin-replenishment.service'
-const functionName = 'school-pin-generator'
 
 function finish (start: number, context: Context): void {
   const end = performance.now()
