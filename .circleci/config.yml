@@ -105,6 +105,8 @@ jobs:
       TZ: Europe/London
     steps:
       - checkout
+      - setup_remote_docker:
+        version: 19.03.13
       - run: cd admin && docker build .
       - run: docker images
 
