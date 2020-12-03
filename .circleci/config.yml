@@ -118,6 +118,8 @@ jobs:
       TZ: Europe/London
     steps:
       - checkout
+      - setup_remote_docker:
+            version: 19.03.13
       - run: cd pupil-spa && docker build .
       - run: docker images
 
@@ -129,6 +131,8 @@ jobs:
       TZ: Europe/London
     steps:
       - checkout
+      - setup_remote_docker:
+          version: 19.03.13
       - run: cd pupil-api && docker build .
       - run: docker images
 
@@ -140,6 +144,8 @@ jobs:
       TZ: Europe/London
     steps:
       - checkout
+      - setup_remote_docker:
+          version: 19.03.13
       - run: cd admin_assets && docker build .
       - run: docker images
 
