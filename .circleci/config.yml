@@ -139,14 +139,14 @@ jobs:
   docker_build_admin_assets:
     working_directory: ~/repo/
     docker:
-      - image: cimg/base:stable
+      - image: stamtc/mtc_circleci:latest
     environment:
       TZ: Europe/London
     steps:
       - checkout
       - setup_remote_docker:
           version: 19.03.13
-      - run: ./admin-assets/copy-assets.sh
+      - run: cd ./admin-assets && ./copy-assets.sh
       - run: cd admin-assets && docker build .
       - run: docker images
 
