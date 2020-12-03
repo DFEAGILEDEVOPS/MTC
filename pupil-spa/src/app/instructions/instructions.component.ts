@@ -37,10 +37,6 @@ export class InstructionsComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.window.ga('send', {
-      hitType: 'pageview',
-      page: '/instructions'
-    });
     AppInsights.trackPageView('Instructions', '/instructions');
   }
 

@@ -7,6 +7,8 @@ import { UserAgentParser } from './user-agent-parser'
 import { IPrepareEventService, PrepareEventService } from './prepare-event.service'
 import { ConsoleLogger, ILogger } from '../../common/logger'
 
+const name = 'sync-results-to-sql: data service'
+
 export interface ISyncResultsDataService {
   insertToDatabase (requests: ITransactionRequest[], checkCode: string): Promise<void>
 
@@ -313,10 +315,13 @@ export class SyncResultsDataService implements ISyncResultsDataService {
    */
   public async insertToDatabase (requests: ITransactionRequest[], checkCode: string): Promise<void> {
     try {
+      const sqlLen = requests[0].sql.length
+      const paramNum = requests[0].params.length
+      this.logger.info(`${name}: ${checkCode} sql length is ${sqlLen} and there are ${paramNum} parameters`)
       await this.sqlService.modifyWithTransaction(requests)
     } catch (error) {
-      const message = `ERROR: Failed to insert transaction to the database for checkCode [${checkCode}]`
-      this.logger.error(message)
+      const message = `${name}: ERROR: Failed to insert transaction to the database for checkCode [${checkCode}]`
+      this.logger.error(`${message}\nOriginal Error: ${error.message}`)
       // re-throw the original error
       throw error
     }

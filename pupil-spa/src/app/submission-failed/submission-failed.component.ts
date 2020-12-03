@@ -29,10 +29,6 @@ export class SubmissionFailedComponent implements OnInit, AfterViewInit, OnDestr
 
   ngOnInit() {
     this.auditService.addEntry(new CheckSubmissionFailed());
-    this.window.ga('send', {
-      hitType: 'pageview',
-      page: '/submission-failed'
-    });
     AppInsights.trackPageView('Submission failed', '/submission-failed');
   }
 

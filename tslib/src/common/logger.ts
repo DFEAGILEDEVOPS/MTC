@@ -37,3 +37,10 @@ export class ConsoleLogger implements ILogger {
     console.log(...args)
   }
 }
+
+export class MockLogger implements ILogger {
+  error (): void {}
+  warn (): void {}
+  info (): void {}
+  verbose (): void {}
+}

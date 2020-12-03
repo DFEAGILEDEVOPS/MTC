@@ -70,7 +70,9 @@ export default {
     CorsWhitelist: process.env.CORS_WHITELIST ?? ''
   },
   ServiceBus: {
-    ConnectionString: process.env.AZURE_SERVICE_BUS_CONNECTION_STRING
+    ConnectionString: process.env.AZURE_SERVICE_BUS_CONNECTION_STRING,
+    // CheckCompletionQueueMaxDeliveryCount can be removed when we can query this value dynamically
+    CheckCompletionQueueMaxDeliveryCount: parseInt(parser.valueOrSubstitute(process.env.CHECK_COMPLETION_QUEUE_MAX_DELIVERY_COUNT, 10), 10)
   },
   CheckNotifier: {
     MessagesPerBatch: parseInt(parser.valueOrSubstitute(process.env.CHECK_NOTIFIER_MESSAGES_PER_BATCH, 32), 10),
@@ -113,5 +115,8 @@ export default {
     InstanceId: `${os.hostname()}:${process.pid}`,
     CollectExceptions: parser.propertyExists(process.env, 'APPINSIGHTS_COLLECT_EXCEPTIONS') ? parser.primitiveToBoolean(process.env.APPINSIGHTS_COLLECT_EXCEPTIONS) : true,
     LiveMetrics: parser.propertyExists(process.env, 'APPINSIGHTS_LIVE_METRICS') ? parser.primitiveToBoolean(process.env.APPINSIGHTS_LIVE_METRICS) : true
+  },
+  Logging: {
+    DebugVerbosity: parseInt(parser.valueOrSubstitute(process.env.DEBUG_VERBOSITY, 1), 10)
   }
 }

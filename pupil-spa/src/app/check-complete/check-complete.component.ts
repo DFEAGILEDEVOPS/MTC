@@ -35,11 +35,6 @@ export class CheckCompleteComponent implements OnInit, AfterViewInit, OnDestroy 
   ngOnInit() {
     const config: Config = this.warmupQuestionService.getConfig();
     this.familiarisationCheck = config && config.practice;
-
-    this.window.ga('send', {
-      hitType: 'pageview',
-      page: '/check-complete'
-    });
     AppInsights.trackPageView('Check complete', '/check-complete');
   }
 

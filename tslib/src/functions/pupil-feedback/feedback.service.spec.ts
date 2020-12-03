@@ -1,5 +1,5 @@
 import { PupilFeedbackService, IPupilFeedbackFunctionBinding, IPupilFeedbackMessage, IPupilFeedbackTableEntity } from './feedback.service'
-import v4 from 'uuid'
+import { v4 as uuidv4 } from 'uuid'
 
 let sut: PupilFeedbackService
 let message: IPupilFeedbackMessage
@@ -10,7 +10,7 @@ describe('pupil feedback service', () => {
     sut = new PupilFeedbackService()
     message = {
       version: 2,
-      checkCode: v4(),
+      checkCode: uuidv4(),
       comments: 'comments',
       inputType: 'inputType',
       satisfactionRating: 'rating'
@@ -44,7 +44,7 @@ describe('pupil feedback service', () => {
     const entity = bindings.feedbackTable[0] as IPupilFeedbackTableEntity
     expect(entity.PartitionKey).toStrictEqual(message.checkCode)
     expect(entity.RowKey).toBeDefined()
-    expect(entity.RowKey).toHaveLength(v4().length)
+    expect(entity.RowKey).toHaveLength(uuidv4().length)
     expect(entity.checkCode).toStrictEqual(message.checkCode)
     expect(entity.inputType).toStrictEqual(message.inputType)
     expect(entity.satisfactionRating).toStrictEqual(message.satisfactionRating)

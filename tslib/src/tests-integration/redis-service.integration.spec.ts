@@ -1,7 +1,7 @@
 import { RedisService } from '../caching/redis-service'
 import Redis, { RedisOptions } from 'ioredis'
 import config from '../config'
-import * as uuid from 'uuid/v4'
+import { v4 as uuidv4 } from 'uuid'
 
 let sut: RedisService
 let ioRedis: Redis.Redis
@@ -148,7 +148,7 @@ describe('RedisService', () => {
   })
 
   test('returns undefined when redis item is not found', async () => {
-    const randomCacheKey = uuid.default()
+    const randomCacheKey = uuidv4()
     const response = await sut.get(randomCacheKey)
     expect(response).toBeUndefined()
   })
