@@ -90,13 +90,13 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: v1-ruby-pupil-hpa-deps-{{ checksum "test/pupil-hpa/Gemfile.lock" }}
+          key: v2-ruby-pupil-hpa-deps-{{ checksum "test/pupil-hpa/Gemfile.lock" }}
       - run: cd test/pupil-hpa && bundle install --jobs=4 --retry=3 --path vendor/bundle
       - run: cd test/pupil-hpa && bundle exec rake -T
       - save_cache:
-          key: v1-ruby-pupil-hpa-deps-{{ checksum "test/pupil-hpa/Gemfile.lock" }}
+          key: v2-ruby-pupil-hpa-deps-{{ checksum "test/pupil-hpa/Gemfile.lock" }}
           paths:
-            - vendor/bundle
+            - test/pupil-hpa/vendor/bundle
 
   docker_build_admin:
     working_directory: ~/repo/
@@ -147,7 +147,7 @@ jobs:
       - checkout
       - setup_remote_docker:
           version: 19.03.13
-      - run: export NVM_DIR=${HOME}/.nvm && source ${NVM_DIR}/nvm.sh; cd ./admin; nvm use; cd admin-assets; ./copy-assets.sh
+      - run: export NVM_DIR=${HOME}/.nvm && source ${NVM_DIR}/nvm.sh; cd ./admin; nvm use; cd ../admin-assets; ./copy-assets.sh
       - run: cd admin-assets && docker build .
       - run: docker images
 
