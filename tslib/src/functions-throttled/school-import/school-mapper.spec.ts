@@ -16,14 +16,11 @@ describe('SchoolDataService', () => {
     const row = ['Town Primary School', '123456', 'extra', 'data', '9991111']
     const mapping = {
       name: 0,
-      urn: 1,
-      dfeNumber: 4
+      urn: 1
     }
-    expect(sut.mapRow(row, mapping)).toStrictEqual({
-      name: 'Town Primary School',
-      urn: 123456,
-      dfeNumber: 9991111
-    })
+    const mappedRecord = sut.mapRow(row, mapping)
+    expect(mappedRecord.urn).toStrictEqual(123456)
+    expect(mappedRecord.name).toStrictEqual('Town Primary School')
   })
 
   test('returns the column index for the desired columns', () => {
