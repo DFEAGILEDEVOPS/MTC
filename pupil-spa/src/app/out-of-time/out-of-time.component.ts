@@ -31,10 +31,6 @@ export class OutOfTimeComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.window.ga('send', {
-      hitType: 'pageview',
-      page: '/out-of-time'
-    });
     AppInsights.trackPageView('Check complete', '/out-of-time');
   }
 

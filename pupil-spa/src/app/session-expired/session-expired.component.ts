@@ -30,10 +30,6 @@ export class SessionExpiredComponent implements OnInit, AfterViewInit, OnDestroy
 
   ngOnInit() {
     this.auditService.addEntry(new SessionExpired());
-    this.window.ga('send', {
-      hitType: 'pageview',
-      page: '/session-expired'
-    });
     AppInsights.trackPageView('Session Expired', '/session-expired');
   }
 

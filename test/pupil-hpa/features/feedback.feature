@@ -33,3 +33,10 @@ Feature: Feedback page
     Then I should be logged out
     And I should be taken to the sign in page
 
+  Scenario: Feedback page is not shown until check has completed
+    Given I attempt to directly navigate to the /feedback
+    Then I should be redirected to the sign in page
+
+  Scenario: Feedback thanks page is not shown until check has completed
+    Given I attempt to directly navigate to the /feedback-thanks
+    Then I should be redirected to the sign in page

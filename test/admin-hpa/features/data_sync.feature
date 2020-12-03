@@ -45,3 +45,10 @@ Feature: Data Sync
       | touch    |
       | pen      |
       | unknown  |
+
+
+  Scenario: Update check status on hard failures
+    Given I have check which has resulted in a hard failure
+    When the data sync function has run
+    Then check should fail processing
+    And the pupil should be available for a restart

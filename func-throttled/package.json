@@ -37,22 +37,22 @@
   },
   "dependencies": {
     "@azure/service-bus": "^1.1.2",
-    "adm-zip": "^0.4.16",
-    "axios": "^0.20.0",
+    "adm-zip": "^0.5.0",
+    "axios": "^0.21.0",
     "azure-storage": "^2.10.3",
     "bluebird": "^3.7.0",
     "csv-string": "^4.0.1",
     "dotenv": "^8.1.0",
     "fast-xml-parser": "^3.17.4",
-    "ioredis": "^4.14.1",
+    "ioredis": "^4.19.2",
     "lz-string": "^1.4.4",
     "moment": "^2.24.0",
-    "moment-timezone": "^0.5.27",
+    "moment-timezone": "^0.5.32",
     "mssql": "^6.2.1",
     "ramda": "^0.27.0",
     "ramda-adjunct": "^2.21.0",
     "random-number-csprng": "^1.0.2",
     "ua-parser-js": "^0.7.22",
-    "uuid": "^3.3.3"
+    "uuid": "^8.3.1"
   }
 }
