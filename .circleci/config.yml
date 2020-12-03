@@ -147,7 +147,7 @@ jobs:
       - checkout
       - setup_remote_docker:
           version: 19.03.13
-      - run: export NVM_DIR=${HOME}/.nvm && source ${NVM_DIR}/nvm.sh; cd ../admin; nvm use
+      - run: export NVM_DIR=${HOME}/.nvm && source ${NVM_DIR}/nvm.sh; cd ./admin; nvm use
       - run: cd admin-assets && ./copy-assets.sh
       - run: cd admin-assets && docker build .
       - run: docker images
