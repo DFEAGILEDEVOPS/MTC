@@ -108,7 +108,7 @@ jobs:
       - checkout
       - setup_remote_docker:
           version: 19.03.13
-      - run: cd admin && docker build .
+      - run: cd admin && BUILDKIT=1 docker build .
       - run: docker images
 
   docker_build_pupil_spa:
@@ -121,7 +121,7 @@ jobs:
       - checkout
       - setup_remote_docker:
             version: 19.03.13
-      - run: cd pupil-spa && docker build .
+      - run: cd pupil-spa && BUILDKIT=1 docker build .
       - run: docker images
 
   docker_build_pupil_api:
@@ -134,7 +134,7 @@ jobs:
       - checkout
       - setup_remote_docker:
           version: 19.03.13
-      - run: cd pupil-api && docker build .
+      - run: cd pupil-api && BUILDKIT=1 docker build .
       - run: docker images
 
   docker_build_admin_assets:
@@ -148,7 +148,7 @@ jobs:
       - setup_remote_docker:
           version: 19.03.13
       - run: export NVM_DIR=${HOME}/.nvm && source ${NVM_DIR}/nvm.sh; cd ./admin; nvm use; cd ../admin-assets; ./copy-assets.sh
-      - run: cd admin-assets && docker build .
+      - run: cd admin-assets && BUILDKIT=1 docker build .
       - run: docker images
 
 workflows:
