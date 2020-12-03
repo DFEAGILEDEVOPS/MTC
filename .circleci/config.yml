@@ -97,6 +97,50 @@ jobs:
           paths:
             - vendor/bundle
 
+  docker_build_admin:
+    working_directory: ~/repo/
+    docker:
+      - image: cimg/base
+    environment:
+      TZ: Europe/London
+    steps:
+      - checkout
+      - run: cd admin && docker build .
+      - run: docker images
+
+  docker_build_pupil_spa:
+    working_directory: ~/repo/
+    docker:
+      - image: cimg/base
+    environment:
+      TZ: Europe/London
+    steps:
+      - checkout
+      - run: cd pupil-spa && docker build .
+      - run: docker images
+
+  docker_build_pupil_api:
+    working_directory: ~/repo/
+    docker:
+      - image: cimg/base
+    environment:
+      TZ: Europe/London
+    steps:
+      - checkout
+      - run: cd pupil-api && docker build .
+      - run: docker images
+
+  docker_build_admin_assets:
+    working_directory: ~/repo/
+    docker:
+      - image: cimg/base
+    environment:
+      TZ: Europe/London
+    steps:
+      - checkout
+      - run: cd admin_assets && docker build .
+      - run: docker images
+
 workflows:
   version: 2
   build_and_test:
@@ -104,3 +148,7 @@ workflows:
       - unit_tests
       - validate_admin_gems
       - validate_pupil_gems
+      - docker_build_admin
+      - docker_build_admin_assets
+      - docker_build_pupil_spa
+      - docker_build_pupil_api
