@@ -73,6 +73,7 @@ jobs:
       - checkout
       - restore_cache:
           key: v1-ruby-admin-hpa-deps-{{ checksum "test/admin-hpa/Gemfile.lock" }}
+      - run: cd test/admin-hpa && ls -alR ./vendor
       - run: cd test/admin-hpa && bundle install --jobs=4 --retry=3 --path vendor/bundle
       - run: cd test/admin-hpa && bundle exec rake -T
       - save_cache:
@@ -146,7 +147,8 @@ jobs:
       - checkout
       - setup_remote_docker:
           version: 19.03.13
-      - run: cd ./admin-assets && ./copy-assets.sh
+      - run: export NVM_DIR=${HOME}/.nvm && source ${NVM_DIR}/nvm.sh; cd ../admin; nvm use
+      - run: cd admin-assets && ./copy-assets.sh
       - run: cd admin-assets && docker build .
       - run: docker images
 
