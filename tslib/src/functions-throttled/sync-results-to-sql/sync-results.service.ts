@@ -9,7 +9,7 @@ export class SyncResultsService {
   private readonly logger: ILogger
   private readonly syncResultsDataService: ISyncResultsDataService
 
-  constructor (logger?: ILogger, syncResultsDataService?: SyncResultsDataService) {
+  constructor (logger?: ILogger, syncResultsDataService?: ISyncResultsDataService) {
     this.logger = logger ?? new ConsoleLogger()
     this.syncResultsDataService = syncResultsDataService ?? new SyncResultsDataService(this.logger)
   }

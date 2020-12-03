@@ -69,7 +69,9 @@ export default {
     CorsWhitelist: process.env.CORS_WHITELIST ?? ''
   },
   ServiceBus: {
-    ConnectionString: process.env.AZURE_SERVICE_BUS_CONNECTION_STRING
+    ConnectionString: process.env.AZURE_SERVICE_BUS_CONNECTION_STRING,
+    // CheckCompletionQueueMaxDeliveryCount can be removed when we can query this value dynamically
+    CheckCompletionQueueMaxDeliveryCount: parseInt(parser.valueOrSubstitute(process.env.CHECK_COMPLETION_QUEUE_MAX_DELIVERY_COUNT, 10), 10)
   },
   CheckNotifier: {
     MessagesPerBatch: parseInt(parser.valueOrSubstitute(process.env.CHECK_NOTIFIER_MESSAGES_PER_BATCH, 32), 10),
@@ -106,5 +108,8 @@ export default {
     SchoolPinHttpServiceFunctionEnabled: parser.propertyExists(process.env, 'SCHOOL_PIN_FUNCTION_ENABLED') ? parser.primitiveToBoolean(process.env.SCHOOL_PIN_FUNCTION_ENABLED) : false,
     SchoolPinSamplerFunctionEnabled: parser.propertyExists(process.env, 'SCHOOL_PIN_SAMPLER_FUNCTION_ENABLED') ? parser.primitiveToBoolean(process.env.SCHOOL_PIN_SAMPLER_FUNCTION_ENABLED) : false,
     SubmitCheckForLoadTestFunctionEnabled: parser.propertyExists(process.env, 'SUBMIT_CHECK_FUNCTION_ENABLED') ? parser.primitiveToBoolean(process.env.SUBMIT_CHECK_FUNCTION_ENABLED) : false
+  },
+  Logging: {
+    DebugVerbosity: parseInt(parser.valueOrSubstitute(process.env.DEBUG_VERBOSITY, 1), 10)
   }
 }

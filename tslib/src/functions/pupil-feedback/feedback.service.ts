@@ -1,4 +1,4 @@
-import v4 from 'uuid'
+import { v4 as uuidv4 } from 'uuid'
 
 export interface IPupilFeedbackMessage {
   version: number
@@ -29,7 +29,7 @@ export class PupilFeedbackService {
     binding.feedbackTable = []
     const entity: IPupilFeedbackTableEntity = {
       PartitionKey: message.checkCode,
-      RowKey: v4(),
+      RowKey: uuidv4(),
       checkCode: message.checkCode,
       comments: message.comments,
       inputType: message.inputType,
