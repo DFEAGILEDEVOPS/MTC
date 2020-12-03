@@ -146,8 +146,8 @@ jobs:
       - checkout
       - setup_remote_docker:
           version: 19.03.13
-      - run: ./copy-assets.sh
-      - run: cd admin-assets && BUILDKIT=1 docker build .
+      - run: ./admin-assets/copy-assets.sh
+      - run: cd admin-assets && docker build .
       - run: docker images
 
 workflows:
