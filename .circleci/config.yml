@@ -100,7 +100,7 @@ jobs:
   docker_build_admin:
     working_directory: ~/repo/
     docker:
-      - image: cimg/base
+      - image: cimg/base:stable
     environment:
       TZ: Europe/London
     steps:
@@ -111,7 +111,7 @@ jobs:
   docker_build_pupil_spa:
     working_directory: ~/repo/
     docker:
-      - image: cimg/base
+      - image: cimg/base:stable
     environment:
       TZ: Europe/London
     steps:
@@ -122,7 +122,7 @@ jobs:
   docker_build_pupil_api:
     working_directory: ~/repo/
     docker:
-      - image: cimg/base
+      - image: cimg/base:stable
     environment:
       TZ: Europe/London
     steps:
@@ -133,7 +133,7 @@ jobs:
   docker_build_admin_assets:
     working_directory: ~/repo/
     docker:
-      - image: cimg/base
+      - image: cimg/base:stable
     environment:
       TZ: Europe/London
     steps:
