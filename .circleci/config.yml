@@ -79,7 +79,7 @@ jobs:
       - save_cache:
           key: v1-ruby-admin-hpa-deps-{{ checksum "test/admin-hpa/Gemfile.lock" }}
           paths:
-            - vendor/bundle
+            - test/admin-hpa/vendor/bundle
 
   validate_pupil_gems:
     working_directory: ~/repo/
