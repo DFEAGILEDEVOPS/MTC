@@ -92,9 +92,10 @@ const ctfService = {
    * @param {{id: number, leaCode: number, estabCode: string, urn: number, name: string}} schoolData
    * @param {{upn:string, lastName:string, foreName:string, dateOfBirth:moment.Moment, gender:string, ctfResult:string|number}[]} pupilData
    * @param {number} academicYear: e.g. 2019
+   * @param {number} stageAssessmentYear: e.g. 2020
    * @return {*}
    */
-  buildXmlString: function buildXmlString (school, pupilData, academicYear) {
+  buildXmlString: function buildXmlString (school, pupilData, academicYear, stageAssessmentYear) {
     const root = xmlbuilder2.create({ version: '1.0', encoding: 'utf-8' })
       .ele('CTfile')
       .ele('Header')
@@ -130,7 +131,7 @@ const ctfService = {
         .ele('Stage').txt('KS2').up()
         .ele('StageAssessment')
         .ele('Locale').txt('ENG').up()
-        .ele('Year').txt((academicYear + 1).toString()).up()
+        .ele('Year').txt(stageAssessmentYear.toString()).up()
         .ele('Subject').txt('MAT').up()
         .ele('Method').txt('TT').up()
         .ele('Component').txt('MTC').up()
@@ -156,12 +157,15 @@ const ctfService = {
     const checkWindow = await checkWindowV2Service.getActiveCheckWindow()
     await ctfService.throwErrorIfDownloadNotAllowed(schoolId, checkWindow, timezone)
 
+    // determine the academic year in which the check was administered:
+    const academicYear = this.getAcademicYear(checkWindow.checkStartDate)
+    const stageAssessmentYear = checkWindow.checkStartDate.year()
+
     // Fetch the results. This dataset is the same as that for showing the results on screen, so should
     // already have been cached in Redis.  If not, the data will be fetched from the SQL DB.
-    const [pupilData, schoolData, academicYear] = await Promise.all([
+    const [pupilData, schoolData] = await Promise.all([
       resultsService.getPupilResultData(schoolId),
-      ctfDataService.getSchoolData(schoolId),
-      ctfDataService.getAcademicYear()
+      ctfDataService.getSchoolData(schoolId)
     ])
 
     // The only data transformation is the <Result> element, so determine that here.
@@ -170,8 +174,23 @@ const ctfService = {
     })
 
     // Build the XML
-    const xmlString = this.buildXmlString(schoolData, pupilsWithCtfResult, academicYear)
+    const xmlString = this.buildXmlString(schoolData, pupilsWithCtfResult, academicYear, stageAssessmentYear)
     return xmlString
+  },
+
+  /**
+   * The UK academic year starts in September and continues through to August of the following year.
+   * @param {moment.Moment} date
+   * @return {number}
+   */
+  getAcademicYear: function getAcademicYear (date) {
+    const i = date.month()
+    const y = date.year()
+    const september = 8
+    if (i >= september) {
+      return y
+    }
+    return y - 1
   }
 }
 

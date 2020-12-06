@@ -175,10 +175,11 @@ describe('ctfService', () => {
       { foreName: 'Albert', middleNames: 'Bertie', lastName: 'Rooster', group_id: null, dateOfBirth: moment('2010-11-20T00:00:00'), mark: 25, status: '', ctfResult: 25, upn: 'R674123101121', gender: 'M' }
     ]
     const academicYear = 2019
+    const stageAssessmentYear = 2020
     let xml, obj
 
     beforeAll(() => {
-      xml = sut.buildXmlString(mockSchool, mockPupilData, academicYear)
+      xml = sut.buildXmlString(mockSchool, mockPupilData, academicYear, stageAssessmentYear)
       obj = xmlbuilder2.convert(xml, { format: 'object' })
     })
 
@@ -333,7 +334,7 @@ describe('ctfService', () => {
 
     it('the StageAssessment element has a Year', () => {
       expect(obj.CTfile.CTFpupilData.Pupil.StageAssessments.KeyStage.StageAssessment).toHaveProperty('Year')
-      expect(obj.CTfile.CTFpupilData.Pupil.StageAssessments.KeyStage.StageAssessment.Year).toEqual((academicYear + 1).toString())
+      expect(obj.CTfile.CTFpupilData.Pupil.StageAssessments.KeyStage.StageAssessment.Year).toEqual(stageAssessmentYear.toString())
     })
 
     it('the StageAssessment element has a Subject', () => {
@@ -364,6 +365,32 @@ describe('ctfService', () => {
     it('the StageAssessment element has a Result', () => {
       expect(obj.CTfile.CTFpupilData.Pupil.StageAssessments.KeyStage.StageAssessment).toHaveProperty('Result')
       expect(obj.CTfile.CTFpupilData.Pupil.StageAssessments.KeyStage.StageAssessment.Result).toEqual(mockPupilData[0].ctfResult.toString())
+    })
+  })
+
+  describe('getAcademicYear', () => {
+    it('returns the current year if the month is September', () => {
+      const d = moment('2010-09-01T09:00:00Z')
+      const academicYear = sut.getAcademicYear(d)
+      expect(academicYear).toStrictEqual(2010)
+    })
+
+    it('returns the current year if the month is later than September', () => {
+      const d = moment('2010-10-01T09:00:00Z')
+      const academicYear = sut.getAcademicYear(d)
+      expect(academicYear).toStrictEqual(2010)
+    })
+
+    it('returns the previous year if the month is earlier than September', () => {
+      const d = moment('2010-08-01T09:00:00Z')
+      const academicYear = sut.getAcademicYear(d)
+      expect(academicYear).toStrictEqual(2009)
+    })
+
+    it('returns the previous year if the month is January', () => {
+      const d = moment('2010-01-01T09:00:00Z')
+      const academicYear = sut.getAcademicYear(d)
+      expect(academicYear).toStrictEqual(2009)
     })
   })
 })
