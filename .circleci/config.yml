@@ -72,13 +72,14 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: v1-ruby-admin-hpa-deps-{{ checksum "test/admin-hpa/Gemfile.lock" }}
+          key: v2-ruby-admin-hpa-deps-{{ checksum "test/admin-hpa/Gemfile.lock" }}
+      - run: cd test/admin-hpa && ls -alR .
       - run: cd test/admin-hpa && bundle install --jobs=4 --retry=3 --path vendor/bundle
       - run: cd test/admin-hpa && bundle exec rake -T
       - save_cache:
-          key: v1-ruby-admin-hpa-deps-{{ checksum "test/admin-hpa/Gemfile.lock" }}
+          key: v2-ruby-admin-hpa-deps-{{ checksum "test/admin-hpa/Gemfile.lock" }}
           paths:
-            - vendor/bundle
+            - test/admin-hpa/vendor/bundle
 
   validate_pupil_gems:
     working_directory: ~/repo/
@@ -89,13 +90,66 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: v1-ruby-pupil-hpa-deps-{{ checksum "test/pupil-hpa/Gemfile.lock" }}
+          key: v2-ruby-pupil-hpa-deps-{{ checksum "test/pupil-hpa/Gemfile.lock" }}
       - run: cd test/pupil-hpa && bundle install --jobs=4 --retry=3 --path vendor/bundle
       - run: cd test/pupil-hpa && bundle exec rake -T
       - save_cache:
-          key: v1-ruby-pupil-hpa-deps-{{ checksum "test/pupil-hpa/Gemfile.lock" }}
+          key: v2-ruby-pupil-hpa-deps-{{ checksum "test/pupil-hpa/Gemfile.lock" }}
           paths:
-            - vendor/bundle
+            - test/pupil-hpa/vendor/bundle
+
+  docker_build_admin:
+    working_directory: ~/repo/
+    docker:
+      - image: cimg/base:stable
+    environment:
+      TZ: Europe/London
+    steps:
+      - checkout
+      - setup_remote_docker:
+          version: 19.03.13
+      - run: cd admin && BUILDKIT=1 docker build .
+      - run: docker images
+
+  docker_build_pupil_spa:
+    working_directory: ~/repo/
+    docker:
+      - image: cimg/base:stable
+    environment:
+      TZ: Europe/London
+    steps:
+      - checkout
+      - setup_remote_docker:
+            version: 19.03.13
+      - run: cd pupil-spa && BUILDKIT=1 docker build .
+      - run: docker images
+
+  docker_build_pupil_api:
+    working_directory: ~/repo/
+    docker:
+      - image: cimg/base:stable
+    environment:
+      TZ: Europe/London
+    steps:
+      - checkout
+      - setup_remote_docker:
+          version: 19.03.13
+      - run: cd pupil-api && BUILDKIT=1 docker build .
+      - run: docker images
+
+  docker_build_admin_assets:
+    working_directory: ~/repo/
+    docker:
+      - image: stamtc/mtc_circleci:latest
+    environment:
+      TZ: Europe/London
+    steps:
+      - checkout
+      - setup_remote_docker:
+          version: 19.03.13
+      - run: export NVM_DIR=${HOME}/.nvm && source ${NVM_DIR}/nvm.sh; cd ./admin; nvm use; cd ../admin-assets; ./copy-assets.sh
+      - run: cd admin-assets && BUILDKIT=1 docker build .
+      - run: docker images
 
 workflows:
   version: 2
@@ -104,3 +158,7 @@ workflows:
       - unit_tests
       - validate_admin_gems
       - validate_pupil_gems
+      - docker_build_admin
+      - docker_build_admin_assets
+      - docker_build_pupil_spa
+      - docker_build_pupil_api
