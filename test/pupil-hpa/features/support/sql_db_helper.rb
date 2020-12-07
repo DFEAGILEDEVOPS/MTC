@@ -266,4 +266,12 @@ class SqlDbHelper
     result.cancel
     access_arrangement_array
   end
+
+  def self.get_device_information(device_identity)
+    sql = "SELECT * FROM [mtc_results].[userDevice] WHERE ident = '#{device_identity}'"
+    result = SQL_CLIENT.execute(sql)
+    device_details = result.first
+    result.cancel
+    device_details
+  end
 end
