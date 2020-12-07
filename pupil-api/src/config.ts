@@ -1,5 +1,6 @@
 'use strict'
 
+import * as os from 'os'
 import * as path from 'path'
 import * as fs from 'fs'
 import * as dotenv from 'dotenv'
@@ -41,7 +42,10 @@ export default {
     },
     ApplicationInsights: {
       LogToWinston: process.env.APPINSIGHTS_WINSTON_LOGGER || false,
-      Key: process.env.APPINSIGHTS_INSTRUMENTATIONKEY
+      Key: process.env.APPINSIGHTS_INSTRUMENTATIONKEY,
+      InstanceId: `${os.hostname()}:${process.pid}`,
+      CollectExceptions: {}.hasOwnProperty.call(process.env, 'APPINSIGHTS_COLLECT_EXCEPTIONS') ? toBool(process.env.APPINSIGHTS_COLLECT_EXCEPTIONS) : true,
+      LiveMetrics: {}.hasOwnProperty.call(process.env, 'APPINSIGHTS_LIVE_METRICS') ? toBool(process.env.APPINSIGHTS_LIVE_METRICS) : true
     }
   },
   Redis: {

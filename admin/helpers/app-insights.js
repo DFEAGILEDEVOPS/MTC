@@ -17,6 +17,7 @@ const startInsightsIfConfigured = async () => {
       .setAutoCollectDependencies(config.Monitoring.ApplicationInsights.CollectDependencies)
       .setAutoCollectConsole(false)
       .setUseDiskRetryCaching(true)
+      .setSendLiveMetrics(config.Monitoring.ApplicationInsights.LiveMetrics)
       .start()
 
     let buildNumber
@@ -28,6 +29,8 @@ const startInsightsIfConfigured = async () => {
     appInsights.defaultClient.commonProperties = {
       buildNumber
     }
+    appInsights.defaultClient.context.tags[appInsights.defaultClient.context.keys.cloudRole] = 'Admin-App'
+    appInsights.defaultClient.context.tags[appInsights.defaultClient.context.keys.cloudRoleInstance] = config.Monitoring.ApplicationInsights.InstanceId
   }
 }
 
