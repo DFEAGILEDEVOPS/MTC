@@ -151,8 +151,6 @@ GEM
       childprocess (>= 0.5, < 2.0)
       rubyzip (~> 1.2, >= 1.2.2)
     settingslogic (2.0.9)
-    show_me_the_cookies (5.0.0)
-      capybara (>= 2, < 4)
     site_prism (3.3)
       addressable (~> 2.5)
       capybara (~> 3.3)
@@ -205,7 +203,6 @@ DEPENDENCIES
   rspec
   selenium-webdriver
   settingslogic
-  show_me_the_cookies (>= 5.0.0)
   site_prism (>= 3.3)
   tiny_tds
   waitutil
