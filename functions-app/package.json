@@ -24,7 +24,7 @@
     "csv-string": "^3.1.8",
     "device": "^0.3.9",
     "dotenv": "^8.2.0",
-    "fast-csv": "^4.1.1",
+    "fast-csv": "^4.3.6",
     "fs-extra": "^9.0.1",
     "ioredis": "^4.16.0",
     "lz-string": "^1.4.4",
