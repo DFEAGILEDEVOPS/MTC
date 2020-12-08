@@ -17,7 +17,7 @@
     "axios": "^0.19.2",
     "command-line-args": "^5.1.1",
     "dotenv": "^8.2.0",
-    "fast-csv": "^3.6.0",
+    "fast-csv": "^4.3.6",
     "moment": "^2.24.0",
     "mssql": "^6.0.1",
     "postgrator": "^3.11.0",
