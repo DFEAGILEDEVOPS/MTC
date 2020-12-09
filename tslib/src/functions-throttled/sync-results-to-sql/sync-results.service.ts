@@ -2,16 +2,20 @@ import { ICheckCompletionMessage } from './models'
 import { ISyncResultsDataService, SyncResultsDataService } from './sync-results.data.service'
 import { ConsoleLogger, ILogger } from '../../common/logger'
 import { ITransactionRequest } from '../../sql/sql.service'
+import { IRedisService, RedisService } from '../../caching/redis-service'
+import redisKeyService from '../../caching/redis-key.service'
 
 const name = 'SyncResultsService (throttled)'
 
 export class SyncResultsService {
   private readonly logger: ILogger
   private readonly syncResultsDataService: ISyncResultsDataService
+  private readonly redisService: IRedisService
 
-  constructor (logger?: ILogger, syncResultsDataService?: ISyncResultsDataService) {
+  constructor (logger?: ILogger, syncResultsDataService?: ISyncResultsDataService, redisService?: IRedisService) {
     this.logger = logger ?? new ConsoleLogger()
     this.syncResultsDataService = syncResultsDataService ?? new SyncResultsDataService(this.logger)
+    this.redisService = redisService ?? new RedisService(this.logger)
   }
 
   public async process (checkCompletionMessage: ICheckCompletionMessage): Promise<void> {
@@ -42,6 +46,24 @@ export class SyncResultsService {
     ])
 
     await this.syncResultsDataService.insertToDatabase([flattenedTransaction], checkCompletionMessage?.markedCheck?.checkCode)
+    this.logger.info(`${name}: going to drop the redis cache for schooll ${checkCompletionMessage?.validatedCheck?.schoolUUID}`)
+    await this.dropRedisSchoolResult(checkCompletionMessage?.validatedCheck?.schoolUUID)
+  }
+
+  private async dropRedisSchoolResult (schoolUuid: string): Promise<void> {
+    if (schoolUuid === undefined) {
+      this.logger.error(`${name}: dropRedisSchoolResult(): no school uuid parameter`)
+      return
+    }
+    const schoolId = await this.syncResultsDataService.getSchoolId(schoolUuid)
+    this.logger.verbose(`${name}: school id retrieved: [${schoolId}]`)
+    if (schoolId === undefined) {
+      this.logger.error(`${name}: dropRedisSchoolResult(): schoolId not found for uuid ${schoolUuid}`)
+      return
+    }
+    const key = redisKeyService.getSchoolResultsKey(schoolId)
+    this.logger.verbose(`${name}: redis key to drop: [${key}]`)
+    await this.redisService.drop([key])
   }
 }
 
