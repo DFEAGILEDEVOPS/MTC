@@ -31,7 +31,7 @@ export class SchoolApi {
       value: dfeNumber,
       type: TYPES.Int
     }])
-    // @ts-ignore
+    // @ts-ignore - ramda and ts!
     return R.head(data)
   }
 }

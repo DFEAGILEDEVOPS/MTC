@@ -1,8 +1,8 @@
 import { AzureFunction, Context, HttpRequest } from '@azure/functions'
-// import moment from 'moment'
 import { performance } from 'perf_hooks'
 import config from '../../config'
 import { SchoolApi } from './school-api'
+import { UserApi } from './user-api'
 
 const functionName = 'util-test-support-api-create-school'
 
@@ -30,6 +30,12 @@ const httpTriggerFunc: AzureFunction = async function (context: Context, req: Ht
       }
       break
 
+    case 'user':
+      if (req.method === 'PUT') {
+        await createUser(context, req)
+      }
+      break
+
     default:
       generateResponse(context, 'Failed', 400, 'Bad request')
   }
@@ -45,6 +51,20 @@ async function createSchool (context: Context, req: HttpRequest): Promise<void> 
   try {
     const schoolApi = new SchoolApi(context.log)
     const entity = await schoolApi.create(req.body)
+    generateResponse(context, 'Success', 201, 'Created', entity)
+  } catch (error) {
+    generateResponse(context, 'Failed', 500, error.message)
+  }
+}
+
+async function createUser (context: Context, req: HttpRequest): Promise<void> {
+  if (req.body === undefined || req.rawBody?.length === 0) {
+    return generateResponse(context, 'Failed', 400, 'Missing body')
+  }
+
+  try {
+    const userApi = new UserApi(context.log)
+    const entity = await userApi.create(req.body)
     generateResponse(context, 'Success', 201, 'Created', entity)
   } catch (error) {
     generateResponse(context, 'Failed', 500, error.message)
