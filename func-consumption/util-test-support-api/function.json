@@ -5,7 +5,9 @@
       "authLevel": "function",
       "type": "httpTrigger",
       "direction": "in",
-      "name": "req"
+      "name": "req",
+      "methods": [ "put" ],
+      "route": "test-support/{entity:alpha}"
     },
     {
       "type": "http",
@@ -13,5 +15,5 @@
       "name": "res"
     }
   ],
-  "scriptFile": "../dist/functions/util-test-support-api-create-school/index.js"
+  "scriptFile": "../dist/functions/util-test-support-api/index.js"
 }

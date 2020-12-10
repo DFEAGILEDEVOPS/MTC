@@ -16,17 +16,28 @@ function finish (start: number, context: Context): void {
 const httpTriggerFunc: AzureFunction = async function (context: Context, req: HttpRequest): Promise<void> {
   if (!config.DevTestUtils.TestSupportApi) {
     context.log('exiting as not enabled (default behaviour)')
-    context.done()
     return
   }
   // Respond in 230 seconds or the load balancer will time-out
   // https://docs.microsoft.com/en-us/azure/azure-functions/functions-bindings-http-webhook-trigger?tabs=javascript#limits
   const start = performance.now()
+  const entity = context.bindingData.entity
 
-  if (req.method !== 'PUT') {
-    return generateResponse(context, 'Failed', 405, 'Method not allowed')
+  switch (entity) {
+    case 'school':
+      if (req.method === 'PUT') {
+        await createSchool(context, req)
+      }
+      break
+
+    default:
+      generateResponse(context, 'Failed', 400, 'Bad request')
   }
 
+  finish(start, context)
+}
+
+async function createSchool (context: Context, req: HttpRequest): Promise<void> {
   if (req.body === undefined || req.rawBody?.length === 0) {
     return generateResponse(context, 'Failed', 400, 'Missing body')
   }
@@ -36,10 +47,8 @@ const httpTriggerFunc: AzureFunction = async function (context: Context, req: Ht
     const entity = await schoolApi.create(req.body)
     generateResponse(context, 'Success', 201, 'Created', entity)
   } catch (error) {
-    return generateResponse(context, 'Failed', 500, error.message)
+    generateResponse(context, 'Failed', 500, error.message)
   }
-
-  finish(start, context)
 }
 
 const generateResponse = function (context: Context, result: 'Success' | 'Failed', statusCode: number, message: string, entity?: object): void {
