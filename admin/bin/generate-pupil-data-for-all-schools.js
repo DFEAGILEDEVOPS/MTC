@@ -39,7 +39,7 @@ async function insertPupils (school, count) {
       `( '${randomDob()}'`,
       '\'Pupil\'',
       '\'M\'',
-      `'${count.toString()}'`,
+      `'${i.toString()}'`,
       school.id,
       `'${genUPN(school.leaCode, school.estabCode, i)}')`
     ].join(' , '))
@@ -80,6 +80,7 @@ async function main () {
     let c = 1
     for (const school of schools) {
       await insertPupils(school, 40)
+      console.log(`school id:${school.id} done.`)
       c += 1
       if (c % 1000 === 0) {
         console.log(`${c} schools`)
