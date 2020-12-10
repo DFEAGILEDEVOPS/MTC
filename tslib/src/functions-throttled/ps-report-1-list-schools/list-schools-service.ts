@@ -1,5 +1,6 @@
 import { ConsoleLogger, ILogger } from '../../common/logger'
 import { ISqlService, SqlService } from '../../sql/sql.service'
+
 const functionName = 'ps-report-1-list-schools'
 
 export interface School {
@@ -34,14 +35,12 @@ export class ListSchoolsService implements IListSchoolsService {
   public async getSchoolMessages (): Promise<SchoolMessage[]> {
     this.logger.verbose(`${functionName}: ListSchoolsService called - retrieving all schools`)
     const schools = await this.getSchools()
-    const schoolMessages: SchoolMessage[] = []
-    for (const school of schools) {
-      const schoolMessage: SchoolMessage = {
+    const schoolMessages: SchoolMessage[] = schools.map(school => {
+      return {
         uuid: school.uuid,
         name: school.name
       }
-      schoolMessages.push(schoolMessage)
-    }
+    })
     this.logger.info(`${functionName}: getSchoolMessages() retrieved ${schoolMessages.length} schools`)
     return schoolMessages
   }
