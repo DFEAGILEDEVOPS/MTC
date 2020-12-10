@@ -37,3 +37,5 @@ Data Team.
 Short-lived
 
 ## Notes
+
+See the [architecture diagram:](../docs/diagrams/psychometric-report-generation.png) 
