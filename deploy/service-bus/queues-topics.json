@@ -5,6 +5,7 @@
     "check-notification",
     "check-sync",
     "check-validation",
+    "ps-report-schools",
     "pupil-login",
     "school-results-cache",
     "sync-results-to-db-complete"
