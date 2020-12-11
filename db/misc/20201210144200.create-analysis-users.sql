@@ -1,7 +1,7 @@
 /* example script for creating analysis users and assigning to roles */
 
 CREATE USER [analysisUser1] WITH PASSWORD='', DEFAULT_SCHEMA=[mtc_analysis]
-CREATE USER [analysisanalysisUser2] WITH PASSWORD='', DEFAULT_SCHEMA=[mtc_analysis]
+CREATE USER [analysisUser2] WITH PASSWORD='', DEFAULT_SCHEMA=[mtc_analysis]
 CREATE USER [analysisUser3] WITH PASSWORD='', DEFAULT_SCHEMA=[mtc_analysis]
 CREATE USER [analysisUser4] WITH PASSWORD='', DEFAULT_SCHEMA=[mtc_analysis]
 CREATE USER [analysisUser5] WITH PASSWORD='', DEFAULT_SCHEMA=[mtc_analysis]
