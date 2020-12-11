@@ -108,7 +108,8 @@ export default {
   DevTestUtils: {
     SchoolPinHttpServiceFunctionEnabled: parser.propertyExists(process.env, 'SCHOOL_PIN_FUNCTION_ENABLED') ? parser.primitiveToBoolean(process.env.SCHOOL_PIN_FUNCTION_ENABLED) : false,
     SchoolPinSamplerFunctionEnabled: parser.propertyExists(process.env, 'SCHOOL_PIN_SAMPLER_FUNCTION_ENABLED') ? parser.primitiveToBoolean(process.env.SCHOOL_PIN_SAMPLER_FUNCTION_ENABLED) : false,
-    SubmitCheckForLoadTestFunctionEnabled: parser.propertyExists(process.env, 'SUBMIT_CHECK_FUNCTION_ENABLED') ? parser.primitiveToBoolean(process.env.SUBMIT_CHECK_FUNCTION_ENABLED) : false
+    SubmitCheckForLoadTestFunctionEnabled: parser.propertyExists(process.env, 'SUBMIT_CHECK_FUNCTION_ENABLED') ? parser.primitiveToBoolean(process.env.SUBMIT_CHECK_FUNCTION_ENABLED) : false,
+    TestSupportApi: parser.propertyExists(process.env, 'TEST_SUPPORT_API_ENABLED') ? parser.primitiveToBoolean(process.env.TEST_SUPPORT_API_ENABLED) : false
   },
   ApplicationInsights: {
     Key: process.env.APPINSIGHTS_INSTRUMENTATIONKEY,
