@@ -7,6 +7,9 @@
     "createqs": "node ./create.js",
     "deleteqs": "node ./delete.js"
   },
+  "engines": {
+    "node": ">= 12"
+  },
   "repository": "git@github.com:DFEAGILEDEVOPS/MTC.git",
   "author": "Guy Harwood",
   "license": "GPL-3.0",
