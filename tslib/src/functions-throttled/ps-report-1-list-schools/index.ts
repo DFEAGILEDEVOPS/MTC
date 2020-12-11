@@ -1,6 +1,6 @@
 import { AzureFunction, Context } from '@azure/functions'
 import { performance } from 'perf_hooks'
-import { SchoolListService } from './list-schools-service'
+import { ListSchoolsService } from './list-schools-service'
 
 const functionName = 'ps-report-1-list-schools'
 
@@ -8,7 +8,7 @@ const timerTrigger: AzureFunction = async function (context: Context): Promise<v
   const start = performance.now()
   const meta = { processCount: 0, errorCount: 0 }
   try {
-    const schoolListService = new SchoolListService(context.log)
+    const schoolListService = new ListSchoolsService(context.log)
     const messages = await schoolListService.getSchoolMessages()
     context.bindings.schoolMessages = messages
     meta.processCount = messages.length
