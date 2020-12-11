@@ -16,7 +16,7 @@ function finish (start: number, context: Context): void {
 }
 
 const schoolPinSampler: AzureFunction = function (context: Context, req: HttpRequest): void {
-  if (!config.DevTestUtils.SchoolPinSamplerFunctionEnabled) {
+  if (!config.DevTestUtils.TestSupportApi) {
     context.log('exiting as not enabled (default behaviour)')
     context.done()
     return
