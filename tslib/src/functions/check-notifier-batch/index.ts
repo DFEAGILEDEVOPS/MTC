@@ -1,9 +1,3 @@
-/* eslint-disable import/first */
-const functionName = 'check-notifier-batch'
-import aiHelper from '../../azure/app-insights'
-// load early to enable tracking
-aiHelper.startInsightsIfConfigured(functionName)
-
 import { AzureFunction, Context } from '@azure/functions'
 import { performance } from 'perf_hooks'
 import * as sb from '@azure/service-bus'
@@ -13,6 +7,7 @@ import { BatchCheckNotifier } from './batch-check-notifier.service'
 import * as RA from 'ramda-adjunct'
 import { IFunctionTimer } from '../../azure/functions'
 
+const functionName = 'check-notifier-batch'
 /*
  * The function is running as a singleton, and the receiver is therefore exclusive
   we do not expect another receive operation to be in progress.

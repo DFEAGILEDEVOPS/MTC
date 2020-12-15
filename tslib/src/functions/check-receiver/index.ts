@@ -1,13 +1,9 @@
-/* eslint-disable import/first */
-const functionName = 'check-receiver'
-import aiHelper from '../../azure/app-insights'
-// load early to enable tracking
-aiHelper.startInsightsIfConfigured(functionName)
-
 import { AzureFunction, Context } from '@azure/functions'
 import { performance } from 'perf_hooks'
 import { CheckReceiver } from './check-receiver'
 import { SubmittedCheckMessageV2 } from '../../schemas/models'
+
+const functionName = 'check-receiver'
 
 const queueTrigger: AzureFunction = async function (context: Context, submittedCheck: SubmittedCheckMessageV2): Promise<void> {
   const start = performance.now()
