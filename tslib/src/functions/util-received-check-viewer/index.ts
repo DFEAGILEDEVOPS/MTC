@@ -1,6 +1,4 @@
-
 import { AzureFunction, Context, HttpRequest } from '@azure/functions'
-import moment from 'moment'
 import { performance } from 'perf_hooks'
 import config from '../../config'
 const functionName = 'util-received-check-reader'
@@ -19,13 +17,14 @@ const schoolPinSampler: AzureFunction = async function (context: Context, req: H
     return
   }
   const start = performance.now()
-  if (req.body?.checkCode === undefined || req.body?.schoolUUID === undefined) {
+/*   if (req.body?.checkCode === undefined || req.body?.schoolUUID === undefined) {
     context.res = {
       statusCode: 400,
       body: 'checkCode and schoolUUID properties are required'
     }
-  }
-  const utcNow = req.body?.utcnow !== undefined ? moment(req.body.utcnow) : moment.utc()
+  } */
+  context.log(JSON.stringify(req.query, null, 2))
+  context.log(JSON.stringify(context.bindingData.receivedCheckTable, null, 2))
   context.res = {
     body: '',
     headers: {
