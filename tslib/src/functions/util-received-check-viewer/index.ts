@@ -1,6 +1,9 @@
 import { AzureFunction, Context, HttpRequest } from '@azure/functions'
 import { performance } from 'perf_hooks'
 import config from '../../config'
+import * as azh from '../../azure/storage-helper'
+import * as lz from 'lz-string'
+
 const functionName = 'util-received-check-reader'
 
 function finish (start: number, context: Context): void {
@@ -17,16 +20,18 @@ const schoolPinSampler: AzureFunction = async function (context: Context, req: H
     return
   }
   const start = performance.now()
-/*   if (req.body?.checkCode === undefined || req.body?.schoolUUID === undefined) {
+  if (req.query.checkCode === undefined || req.query.schoolUUID === undefined) {
     context.res = {
       statusCode: 400,
       body: 'checkCode and schoolUUID properties are required'
     }
-  } */
-  context.log(JSON.stringify(req.query, null, 2))
-  context.log(JSON.stringify(context.bindingData.receivedCheckTable, null, 2))
+  }
+  const tableService = new azh.AsyncTableService()
+  const receivedCheck = await tableService.retrieveEntityAsync('receivedCheck', req.query.schoolUUID, req.query.checkCode)
+  const archive = receivedCheck.archive
+  const decompressed = lz.decompressFromUTF16(archive)
   context.res = {
-    body: '',
+    body: JSON.stringify(decompressed, null, 2),
     headers: {
       'Content-Type': 'application/json'
     }

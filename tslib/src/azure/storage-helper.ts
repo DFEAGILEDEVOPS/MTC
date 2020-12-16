@@ -36,8 +36,22 @@ export interface IAsyncTableService {
   queryEntitiesAsync (table: string, tableQuery: az.TableQuery, currentToken: az.TableService.TableContinuationToken): Promise<Error | any>
   deleteEntityAsync (table: string, entityDescriptor: any): Promise<Error | DeleteResponse>
   insertEntityAsync (table: string, entityDescriptor: unknown, options?: az.TableService.InsertEntityRequestOptions): Promise<Error | InsertResponse>
+  retrieveEntityAsync (table: string, partitionKey: string, rowKey: string): Promise<Error | any>
 }
 export class AsyncTableService extends az.TableService implements IAsyncTableService {
+
+  async retrieveEntityAsync (table: string, partitionKey: string, rowKey: string): Promise<Error | any> {
+    return new Promise((resolve, reject) => {
+      this.retrieveEntity(table, partitionKey, rowKey, (error, result) => {
+        if (isNotNil(error)) {
+          reject(error)
+        } else {
+          resolve(result)
+        }
+      })
+    })
+  }
+
   async replaceEntityAsync (table: string, entity: unknown): Promise<any> {
     return new Promise((resolve, reject) => {
       this.replaceEntity(table, entity, (error, result) => {

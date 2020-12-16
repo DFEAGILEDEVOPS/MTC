@@ -10,15 +10,6 @@
       ]
     },
     {
-      "name": "receivedCheckTable",
-      "type": "table",
-      "direction": "in",
-      "tableName": "receivedCheck",
-      "connection": "AZURE_STORAGE_CONNECTION_STRING",
-      "filter": "(PartitionKey eq '{schoolUUID}') and (RowKey eq '{checkCode}')",
-      "take": "1"
-    },
-    {
       "type": "http",
       "direction": "out",
       "name": "res"
