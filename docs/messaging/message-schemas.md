@@ -64,6 +64,8 @@ Azure Storage queue for signaling that the pupil has started official check.
 ## check-submitted
 Azure Storage queue for submitting checks from the pupil check application.
 
+See the [check-submission](./check-submission/readme.md) documentation for full payload schema.
+
 ```typescript
 {
   version: number
