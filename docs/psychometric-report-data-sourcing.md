@@ -8,7 +8,7 @@
 | -------------------- | --------------------------- | ------- |
 | DOB                  | mtc_admin.pupil.dateOfBirth |         |
 | Gender               | mtc_admin.pupil.gender      |         |
-| PupilID              | mtc_admin.upn               |         |
+| PupilID              | mtc_admin.pupil.upn         |         |
 | Forename             | mtc_admin.pupil.foreName    |         |
 | Surname              | mtc_admin.pupil.lastName    |         |
 | ReasonNotTakingCheck | mtc_admin.pupilAttendance   |         |
@@ -23,8 +23,6 @@
 | Estab              | mtc_admin.school.estabCode |         |
 | SchoolURN          | mtc_admin.school.urn       |         |
 | LAnum              | mtc_admin.school.laCode    |         |
-| AttemptID          | mtc_admin.check.checkCode  | GUID    |
-| FormID             | mtc_admin.checkForm.name   |         |
 
 
 
@@ -34,6 +32,7 @@
 | ------------------ | ----------------------------- | ------- |
 | QDisplayTime       | mtc_admin.checkConfig.payload | JSON    |
 | PauseLength        | mtc_admin.checkConfig.payload | JSON    |
+| AccessArr          | mtc_admin.checkConfig.payload | JSON    |
 
 
 
@@ -41,12 +40,13 @@
 
 | Psychometric field | Source                                     | Comment                                                      |
 | ------------------ | ------------------------------------------ | ------------------------------------------------------------ |
+| AttemptID          | mtc_admin.check.checkCode                  | GUID                                                         |
+| FormID             | mtc_admin.checkForm.name                   |                                                              |
 | TestDate           | mtc_admin.check.pupilLoginDate             |                                                              |
 | TimeStart          | mtc_results.event                          | Where eventType = "CheckStarted"                             |
 | TimeComplete       | mtc_results.userInput OR mtc_results.event | Time the check was completed - From last key (enter) is pressed or timeout.  userInput is user is the user pressed 'Enter' but the event is used if we need to use the timeout |
 | TimeTaken          | Calculated                                 | TimeComplete - TimeStart expressed as a duration in hh::mm::ss |
 | RestartNumber      | mtc_admin.pupilRestart                     | Values 0-2                                                   |
-| AccessArr          | mtc_admin.checkConfig.payload              |                                                              |
 | FormMark           | mtc_results.checkResult.mark               | As pupils could have taken many checks the check used by the report is determined by the the check ID stored in mtc_admin.pupil.currentCheckId which is a FK to mtc_admin.check |
 
 
