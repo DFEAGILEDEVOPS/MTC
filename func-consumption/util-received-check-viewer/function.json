@@ -1,0 +1,26 @@
+{
+  "bindings": [
+    {
+      "authLevel": "function",
+      "type": "httpTrigger",
+      "direction": "in",
+      "name": "req",
+      "methods": [
+        "get"
+      ]
+    },
+    {
+      "name": "receivedCheckTable",
+      "type": "table",
+      "direction": "in",
+      "tableName": "receivedCheck",
+      "connection": "AZURE_STORAGE_CONNECTION_STRING"
+    },
+    {
+      "type": "http",
+      "direction": "out",
+      "name": "res"
+    }
+  ],
+  "scriptFile": "../dist/functions/util-received-check-viewer/index.js"
+}

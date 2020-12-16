@@ -2,6 +2,8 @@
 
 The submitted check payload is compressed before sending.  Once received it is hydrated for validation and marking.
 
+An example payload schema can be found [here](./check-payload.json)
+
 ## Pupil Events
 
 | Event Name | Description |
