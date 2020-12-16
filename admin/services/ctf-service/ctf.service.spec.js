@@ -172,7 +172,7 @@ describe('ctfService', () => {
     }
     /* @var {foreName:string, middleNames:string, lastName:string, group_id:null|number, dateOfBirth: Moment.moment, mark:null|number, status:string, ctfResult:number|string} */
     const mockPupilData = [
-      { foreName: 'Albert', middleNames: 'Bertie', lastName: 'Rooster', group_id: null, dateOfBirth: moment('2010-11-20T00:00:00'), mark: 25, status: '', ctfResult: 25, upn: 'R674123101121', gender: 'M' }
+      { foreName: 'Albert', middleNames: 'Bertie', lastName: 'Rooster', group_id: null, dateOfBirth: moment('2010-11-20T00:00:00'), originalDateOfBirth: moment('2010-11-20T00:00:00'), mark: 25, status: '', ctfResult: 25, upn: 'R674123101121', gender: 'M' }
     ]
     const academicYear = 2019
     const stageAssessmentYear = 2020

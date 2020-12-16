@@ -90,7 +90,7 @@ const ctfService = {
   /**
    * Create the CTF Format XML data as a String
    * @param {{id: number, leaCode: number, estabCode: string, urn: number, name: string}} schoolData
-   * @param {{upn:string, lastName:string, foreName:string, dateOfBirth:moment.Moment, gender:string, ctfResult:string|number}[]} pupilData
+   * @param {{upn:string, lastName:string, foreName:string, originalDateOfBirth: moment.Moment, dateOfBirth:moment.Moment, gender:string, ctfResult:string|number}[]} pupilData
    * @param {number} academicYear: e.g. 2019
    * @param {number} stageAssessmentYear: e.g. 2020
    * @return {*}
@@ -120,11 +120,12 @@ const ctfService = {
       .ele('CTFpupilData')
 
     for (const p of pupilData) {
+      const dob = p.originalDateOfBirth.format('YYYY-MM-DD')
       root.ele('Pupil')
         .ele('UPN').txt(p.upn).up()
         .ele('Surname').txt(p.lastName.toUpperCase()).up()
         .ele('Forename').txt(p.foreName.toUpperCase()).up()
-        .ele('DOB').txt(p.dateOfBirth.format('YYYY-MM-DD')).up()
+        .ele('DOB').txt(dob).up()
         .ele('Gender').txt(p.gender.toUpperCase()).up()
         .ele('StageAssessments')
         .ele('KeyStage')
