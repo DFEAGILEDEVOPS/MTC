@@ -13,7 +13,7 @@ function finish (start: number, context: Context): void {
   context.log(`${functionName}: ${timeStamp} run complete: ${durationInMilliseconds} ms`)
 }
 
-const schoolPinSampler: AzureFunction = async function (context: Context, req: HttpRequest): Promise<void> {
+const checkRetriever: AzureFunction = async function (context: Context, req: HttpRequest): Promise<void> {
   if (!config.DevTestUtils.TestSupportApi) {
     context.log('exiting as not enabled (default behaviour)')
     context.done()
@@ -40,4 +40,4 @@ const schoolPinSampler: AzureFunction = async function (context: Context, req: H
   finish(start, context)
 }
 
-export default schoolPinSampler
+export default checkRetriever
