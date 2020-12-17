@@ -67,6 +67,7 @@ export interface CheckForm {
 }
 
 export interface Check {
+  id: number
   checkCode: string
   checkFormId: number
   checkWindowId: number
@@ -89,22 +90,22 @@ export interface Check {
 //   deviceId: string
 // }
 //
-// interface Input {
-//   input: string
-//   inputType: 'M' | 'K' | 'T' | 'P' | 'X'
-//   browserTimestamp: moment.Moment
-// }
-//
-// interface Answer {
-//   response: string
-//   inputType: 'k' | 't' | 'm' | 'x'
-//   isCorrect: boolean
-//   questionCode: string
-//   question: string
-//   browserTimestamp: moment.Moment
-//   inputs: Input[]
-// }
-//
+export interface Input {
+  input: string
+  inputType: 'M' | 'K' | 'T' | 'P' | 'X'
+  browserTimestamp: moment.Moment
+}
+
+export interface Answer {
+  response: string
+  inputType: 'k' | 't' | 'm' | 'x'
+  isCorrect: boolean
+  questionCode: string
+  question: string
+  browserTimestamp: moment.Moment
+  inputs: Input[]
+}
+
 // interface Event {
 //   id: number
 //   type: string
@@ -117,9 +118,10 @@ export interface Check {
 export type CheckConfigOrNull = CheckConfig | null
 export type CheckOrNull = Check | null
 export type CheckFormOrNull = CheckForm | null
+export type AnswersOrNull = Answer[] | null
 
 export interface PupilResult {
-  // answers: Answer[]
+  answers: AnswersOrNull
   check: CheckOrNull
   checkConfig: CheckConfigOrNull
   checkForm: CheckFormOrNull

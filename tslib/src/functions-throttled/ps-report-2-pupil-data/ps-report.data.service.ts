@@ -1,7 +1,18 @@
 import { ISqlService, SqlService } from '../../sql/sql.service'
 import { ConsoleLogger, ILogger } from '../../common/logger'
 import { TYPES } from 'mssql'
-import { PupilResult, Pupil, School, CheckConfig, CheckConfigOrNull, CheckOrNull, Check, CheckForm, CheckFormOrNull } from './models'
+import {
+  PupilResult,
+  Pupil,
+  School,
+  CheckConfig,
+  CheckConfigOrNull,
+  CheckOrNull,
+  Check,
+  CheckForm,
+  CheckFormOrNull,
+  AnswersOrNull, Answer
+} from './models'
 import * as R from 'ramda'
 const functionName = 'ps-report-2-pupil-data'
 
@@ -133,6 +144,7 @@ export class PsReportDataService {
     }
     const sql = `
         SELECT
+            c.id,
             c.checkCode,
             c.checkForm_id,
             c.checkWindow_id,
@@ -150,6 +162,7 @@ export class PsReportDataService {
          WHERE check_id = @checkId
     `
     interface dbCheck {
+      id: number
       checkCode: string
       checkForm_id: number
       checkWindow_id: number
@@ -169,6 +182,7 @@ export class PsReportDataService {
       throw new Error('getCheck(): No result data found')
     }
     const check: Check = {
+      id: data.id,
       checkCode: data.checkCode,
       checkFormId: data.checkForm_id,
       checkWindowId: data.checkWindow_id,
@@ -219,26 +233,68 @@ export class PsReportDataService {
     return form
   }
 
+  private async getAnswers (checkId: number | null): Promise<AnswersOrNull> {
+    if (checkId === null) {
+      return null
+    }
+
+    const sql = `
+      SELECT
+        a.answer,
+        q.code as questionCode,
+        CONCAT(q.factor1, 'x', q.factor2) as question,
+        a.isCorrect,
+        a.browserTimestamp
+      FROM mtc_results.checkResult cr JOIN mtc_results.answer a ON (cr.id = a.checkResult_id) 
+      JOIN mtc_admin.question q ON (a.question_id = q.id)
+      WHERE cr.check_id = @checkId
+    `
+    interface DBAnswer {
+      answer: string
+      questionCode: string
+      question: string
+      isCorrect: boolean
+      browserTimestamp: moment.Moment
+    }
+
+    const res: DBAnswer[] = await this.sqlService.query(sql, [{ name: 'checkId', value: checkId, type: TYPES.Int }])
+    const answers: Answer[] = res.map(o => {
+      return {
+        response: o.answer,
+        inputType: 'x', // TODO
+        isCorrect: o.isCorrect,
+        questionCode: o.questionCode,
+        question: o.question,
+        browserTimestamp: o.browserTimestamp,
+        inputs: [] // TODO
+      }
+    })
+    return answers
+  }
+
   public async getPupilData (pupil: Pupil): Promise<PupilResult> {
     this.logger.verbose(`${functionName}: getPupilData() called for pupil ${pupil.slug}`)
     const promises: [
       Promise<School>,
       Promise<CheckConfigOrNull>,
       Promise<CheckOrNull>,
-      Promise<CheckFormOrNull>
+      Promise<CheckFormOrNull>,
+      Promise<AnswersOrNull>
     ] = [
       this.getSchool(pupil.schoolId),
       this.getCheckConfig(pupil.currentCheckId),
       this.getCheck(pupil.currentCheckId),
-      this.getCheckForm(pupil.currentCheckId)
+      this.getCheckForm(pupil.currentCheckId),
+      this.getAnswers(pupil.currentCheckId)
     ]
-    const [school, checkConfig, check, checkForm] = await Promise.all(promises)
+    const [school, checkConfig, check, checkForm, answers] = await Promise.all(promises)
     return {
       pupil,
       school,
       checkConfig: checkConfig,
       check: check,
-      checkForm: checkForm
+      checkForm: checkForm,
+      answers: answers
     }
   }
 }
