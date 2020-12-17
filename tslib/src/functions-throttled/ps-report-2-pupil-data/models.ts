@@ -90,20 +90,32 @@ export interface Check {
 //   deviceId: string
 // }
 //
+
 export interface Input {
+  answerId: number
   input: string
   inputType: 'M' | 'K' | 'T' | 'P' | 'X'
   browserTimestamp: moment.Moment
 }
 
+export type InputMap = Map<number, Input[] | null>
+
+/**
+ * k = all the inputs were keyboard
+ * m = all the inputs were touch
+ * t = all the inputs were mouse
+ * x = mixed inputs (e.g. a combination of keyboard and mouse)
+ * null = there were no inputs to type
+ */
+export type AnswerInputType = 'k' | 't' | 'm' | 'x' | null
+
 export interface Answer {
   response: string
-  inputType: 'k' | 't' | 'm' | 'x'
   isCorrect: boolean
   questionCode: string
   question: string
   browserTimestamp: moment.Moment
-  inputs: Input[]
+  inputs: Input[] | null
 }
 
 // interface Event {

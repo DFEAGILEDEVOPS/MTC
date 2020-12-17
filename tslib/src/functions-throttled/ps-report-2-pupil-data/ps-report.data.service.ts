@@ -11,7 +11,7 @@ import {
   Check,
   CheckForm,
   CheckFormOrNull,
-  AnswersOrNull, Answer
+  AnswersOrNull, Answer, InputMap, Input
 } from './models'
 import * as R from 'ramda'
 const functionName = 'ps-report-2-pupil-data'
@@ -233,6 +233,53 @@ export class PsReportDataService {
     return form
   }
 
+  private async getInputMap (checkId: number): Promise<InputMap> {
+    const sql = `
+      SELECT 
+        a.id as answer_id,
+        ui.userInput,
+        uitl.code as userInputType,
+        ui.browserTimestamp
+      FROM       
+        mtc_results.checkResult cr JOIN
+        mtc_results.answer a ON (cr.id = a.checkResult_id) LEFT JOIN
+        mtc_results.userInput ui ON (a.id = ui.answer_id) LEFT JOIN 
+        mtc_results.userInputTypeLookup uitl ON (ui.userInputTypeLookup_id = uitl.id)
+      WHERE
+        cr.check_id = @checkId
+    `
+    interface DBInput {
+      answer_id: number
+      userInput: string | null
+      inputType: 'M' | 'K' | 'T' | 'P' | 'X' | null
+      browserTimestamp: moment.Moment | null
+    }
+    const res: DBInput[] = await this.sqlService.query(sql, [{ name: 'checkId', value: checkId, type: TYPES.Int }])
+    // Now we have the inputs we need to turn them into a map
+    const inputMap: InputMap = new Map()
+    res.forEach(o => {
+      const answerId = o.answer_id
+      if (o.userInput === null || o.inputType === null || o.browserTimestamp === null) {
+        // The nulls are caused by the left join in the SQL - no input
+        inputMap.set(o.answer_id, null)
+        return
+      }
+      const input: Input = {
+        answerId: answerId,
+        input: o.userInput,
+        inputType: o.inputType,
+        browserTimestamp: o.browserTimestamp
+      }
+      const existingInputs = inputMap.get(answerId)
+      if (Array.isArray(existingInputs)) {
+        inputMap.set(answerId, R.append(input, existingInputs))
+      } else {
+        inputMap.set(answerId, [input])
+      }
+    })
+    return inputMap
+  }
+
   private async getAnswers (checkId: number | null): Promise<AnswersOrNull> {
     if (checkId === null) {
       return null
@@ -240,6 +287,7 @@ export class PsReportDataService {
 
     const sql = `
       SELECT
+        a.id, 
         a.answer,
         q.code as questionCode,
         CONCAT(q.factor1, 'x', q.factor2) as question,
@@ -249,7 +297,9 @@ export class PsReportDataService {
       JOIN mtc_admin.question q ON (a.question_id = q.id)
       WHERE cr.check_id = @checkId
     `
+
     interface DBAnswer {
+      id: number
       answer: string
       questionCode: string
       question: string
@@ -257,16 +307,19 @@ export class PsReportDataService {
       browserTimestamp: moment.Moment
     }
 
-    const res: DBAnswer[] = await this.sqlService.query(sql, [{ name: 'checkId', value: checkId, type: TYPES.Int }])
-    const answers: Answer[] = res.map(o => {
+    const resAnswers: DBAnswer[] = await this.sqlService.query(sql, [{ name: 'checkId', value: checkId, type: TYPES.Int }])
+    const inputsMap: InputMap = await this.getInputMap(checkId)
+
+    const answers: Answer[] = resAnswers.map(o => {
+      const inputs = inputsMap.get(o.id)
       return {
+        id: o.id,
         response: o.answer,
-        inputType: 'x', // TODO
         isCorrect: o.isCorrect,
         questionCode: o.questionCode,
         question: o.question,
         browserTimestamp: o.browserTimestamp,
-        inputs: [] // TODO
+        inputs: inputs ?? null
       }
     })
     return answers
