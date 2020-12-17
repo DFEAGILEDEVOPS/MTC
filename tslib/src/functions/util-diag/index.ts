@@ -1,10 +1,4 @@
-/* eslint-disable import/first */
-const functionName = 'util-diag'
 import * as appInsights from 'applicationinsights'
-import aiHelper from '../../azure/app-insights'
-// load early to enable tracking
-aiHelper.startInsightsIfConfigured(functionName)
-
 import { AzureFunction, Context } from '@azure/functions'
 import { HttpRequest } from 'applicationinsights/out/Library/Functions'
 

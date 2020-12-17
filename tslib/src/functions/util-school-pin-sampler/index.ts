@@ -1,9 +1,9 @@
-
 import { AzureFunction, Context, HttpRequest } from '@azure/functions'
 import moment from 'moment'
 import { SchoolPinSampler } from './school-pin-sampler'
 import { performance } from 'perf_hooks'
 import config from '../../config'
+
 const functionName = 'util-school-pin-sampler'
 
 function finish (start: number, context: Context): void {
