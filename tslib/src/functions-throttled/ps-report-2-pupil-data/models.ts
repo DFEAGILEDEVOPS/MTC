@@ -3,15 +3,15 @@ import moment from 'moment'
 export type nullOrUndef = undefined | null
 
 export interface Pupil {
-  attendanceId: number | undefined
+  attendanceId: number | null
   checkComplete: boolean
-  currentCheckId: number | undefined
+  currentCheckId: number | null
   dateOfBirth: moment.Moment
   forename: string
   gender: 'M' | 'F'
   id: number
   lastname: string
-  notTakingCheckReason: string | undefined
+  notTakingCheckReason: string | null
   slug: string
   schoolId: number
   upn: string
@@ -66,20 +66,20 @@ export interface CheckConfig {
 //   name: string
 // }
 //
-// interface Check {
-//   checkCode: string
-//   checkFormId: number
-//   checkWindowId: number
-//   complete: boolean
-//   completedAt: moment.Moment
-//   inputAssistantAddedRetrospectively: boolean
-//   isLiveCheck: boolean
-//   mark: number
-//   processingFailed: boolean
-//   pupilLoginDate: moment.Moment
-//   received: boolean
-//   restartNumber: number
-// }
+export interface Check {
+  checkCode: string
+  checkFormId: number
+  checkWindowId: number
+  complete: boolean
+  completedAt: moment.Moment
+  inputAssistantAddedRetrospectively: boolean
+  isLiveCheck: boolean
+  mark: number
+  processingFailed: boolean
+  pupilLoginDate: moment.Moment
+  received: boolean
+  restartNumber: number
+}
 //
 // interface Device {
 //   type: 'Tablet' | 'Desktop' | 'Mobile' | 'Other'
@@ -115,10 +115,11 @@ export interface CheckConfig {
 // }
 
 export type CheckConfigOrNull = CheckConfig | null
+export type CheckOrNull = Check | null
 
 export interface PupilResult {
   // answers: Answer[]
-  // check: Check
+  check: CheckOrNull
   checkConfig: CheckConfigOrNull
   // checkForm: CheckForm
   // checkWindow: CheckWindow

@@ -23,9 +23,10 @@ export class PsReportService {
       throw error
     }
     for (let i = 0; i < pupils.length; i++) {
-      const pupil: Pupil = pupils[i]
+      const pupil = pupils[i]
       try {
         const result: PupilResult = await this.dataService.getPupilData(pupil)
+        this.logger.verbose(`${functionName}: pupil result retrieved: ${JSON.stringify(result, null, 4)}`)
         this.outputBinding.push(result)
       } catch (error) {
         // Ignore the error on the particular pupil and carry on so it reports on the rest of the school
