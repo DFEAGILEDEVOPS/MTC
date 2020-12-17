@@ -1,14 +1,10 @@
-/* eslint-disable import/first */
-const functionName = 'check-validator'
-import aiHelper from '../../azure/app-insights'
-// load early to enable tracking
-aiHelper.startInsightsIfConfigured(functionName)
-
 import { AzureFunction, Context } from '@azure/functions'
 import { performance } from 'perf_hooks'
 import * as V1 from './check-validator.v1'
 import { ValidateCheckMessageV1 } from '../../schemas/models'
+
 const validator = new V1.CheckValidatorV1()
+const functionName = 'check-validator'
 
 const serviceBusQueueTrigger: AzureFunction = async function (context: Context, validateCheckMessage: ValidateCheckMessageV1): Promise<void> {
   const start = performance.now()
