@@ -1,7 +1,7 @@
 import { ISqlService, SqlService } from '../../sql/sql.service'
 import { ConsoleLogger, ILogger } from '../../common/logger'
 import { TYPES } from 'mssql'
-import { PupilResult, Pupil, School, CheckConfig, CheckConfigOrNull, CheckOrNull, Check } from './models'
+import { PupilResult, Pupil, School, CheckConfig, CheckConfigOrNull, CheckOrNull, Check, CheckForm, CheckFormOrNull } from './models'
 import * as R from 'ramda'
 const functionName = 'ps-report-2-pupil-data'
 
@@ -34,6 +34,7 @@ export class PsReportDataService {
             p.checkComplete,
             p.currentCheckId,
             p.school_id,
+            p.urlSlug,
             ac.reason as notTakingCheckReason
           FROM mtc_admin.pupil p
                JOIN      mtc_admin.school s ON (p.school_id = s.id)
@@ -184,23 +185,60 @@ export class PsReportDataService {
     return check
   }
 
+  private async getCheckForm (checkId: number | null): Promise<CheckFormOrNull> {
+    if (checkId === null) {
+      return null
+    }
+    interface DBCheckForm {
+      id: number
+      name: string
+      formData: string
+    }
+    interface Form {
+      f1: number
+      f2: number
+    }
+
+    const sql = `
+        SELECT cf.id, cf.name, cf.formData
+          FROM mtc_admin.[check] c
+               JOIN mtc_admin.checkForm cf ON (c.checkForm_id = cf.id)
+         WHERE c.id = @checkId
+    `
+    const res: DBCheckForm[] = await this.sqlService.query(sql, [{ name: 'checkId', value: checkId, type: TYPES.Int }])
+    const data = R.head(res)
+    if (data === undefined) {
+      throw new Error(`CheckForm for check ${checkId} not found`)
+    }
+    const formData: Form[] = JSON.parse(data.formData)
+    const form: CheckForm = {
+      id: data.id,
+      name: data.name,
+      items: formData.map((o, i) => { return { f1: o.f1, f2: o.f2, questionNumber: (i + 1) } })
+    }
+    return form
+  }
+
   public async getPupilData (pupil: Pupil): Promise<PupilResult> {
     this.logger.verbose(`${functionName}: getPupilData() called for pupil ${pupil.slug}`)
     const promises: [
       Promise<School>,
       Promise<CheckConfigOrNull>,
-      Promise<CheckOrNull>
+      Promise<CheckOrNull>,
+      Promise<CheckFormOrNull>
     ] = [
       this.getSchool(pupil.schoolId),
       this.getCheckConfig(pupil.currentCheckId),
-      this.getCheck(pupil.currentCheckId)
+      this.getCheck(pupil.currentCheckId),
+      this.getCheckForm(pupil.currentCheckId)
     ]
-    const [school, checkConfig, check] = await Promise.all(promises)
+    const [school, checkConfig, check, checkForm] = await Promise.all(promises)
     return {
       pupil,
       school,
       checkConfig: checkConfig,
-      check: check
+      check: check,
+      checkForm: checkForm
     }
   }
 }

@@ -54,18 +54,18 @@ export interface CheckConfig {
 //   slug: string
 // }
 //
-// interface Item {
-//   f1: number
-//   f2: number
-//   questionNumber: number
-// }
-//
-// interface CheckForm {
-//   id: number
-//   items: Item[]
-//   name: string
-// }
-//
+interface Item {
+  f1: number
+  f2: number
+  questionNumber: number
+}
+
+export interface CheckForm {
+  id: number
+  items: Item[]
+  name: string
+}
+
 export interface Check {
   checkCode: string
   checkFormId: number
@@ -116,12 +116,13 @@ export interface Check {
 
 export type CheckConfigOrNull = CheckConfig | null
 export type CheckOrNull = Check | null
+export type CheckFormOrNull = CheckForm | null
 
 export interface PupilResult {
   // answers: Answer[]
   check: CheckOrNull
   checkConfig: CheckConfigOrNull
-  // checkForm: CheckForm
+  checkForm: CheckFormOrNull
   // checkWindow: CheckWindow
   // device: Device
   // events: Event[]
