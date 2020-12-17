@@ -39,7 +39,6 @@ export interface IAsyncTableService {
   retrieveEntityAsync (table: string, partitionKey: string, rowKey: string): Promise<Error | any>
 }
 export class AsyncTableService extends az.TableService implements IAsyncTableService {
-
   async retrieveEntityAsync (table: string, partitionKey: string, rowKey: string): Promise<Error | any> {
     return new Promise((resolve, reject) => {
       this.retrieveEntity(table, partitionKey, rowKey, (error, result) => {
