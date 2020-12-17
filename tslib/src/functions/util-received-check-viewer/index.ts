@@ -2,7 +2,7 @@ import { AzureFunction, Context, HttpRequest } from '@azure/functions'
 import { performance } from 'perf_hooks'
 import config from '../../config'
 import * as azh from '../../azure/storage-helper'
-import * as lz from 'lz-string'
+import { CompressionService } from '../../common/compression-service'
 
 const functionName = 'util-received-check-reader'
 
@@ -28,10 +28,11 @@ const schoolPinSampler: AzureFunction = async function (context: Context, req: H
   }
   const tableService = new azh.AsyncTableService()
   const receivedCheck = await tableService.retrieveEntityAsync('receivedCheck', req.query.schoolUUID, req.query.checkCode)
-  const archive = receivedCheck.archive
-  const decompressed = lz.decompressFromUTF16(archive)
+  const archive = receivedCheck.archive._
+  const compressionService = new CompressionService()
+  const decompressed = compressionService.decompress(archive)
   context.res = {
-    body: JSON.stringify(decompressed, null, 2),
+    body: decompressed,
     headers: {
       'Content-Type': 'application/json'
     }
