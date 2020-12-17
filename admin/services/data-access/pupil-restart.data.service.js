@@ -9,6 +9,7 @@ const pupilRestartDataService = {}
 
 /**
  * Returns number of restarts specified by pupil id
+ * TODO: Remove? This seems unused.  The DateDiff function part seems more restrictive than the naming suggests.
  * @param pupilId
  * @return {Promise.<*>}
  */
@@ -105,6 +106,7 @@ pupilRestartDataService.sqlFindRestartReasons = async function () {
 
 /**
  * Mark an existing pupil restart as deleted
+ * TODO: When? Why?
  * @param restartId
  * @param userId
  * @return {Promise<*>}
