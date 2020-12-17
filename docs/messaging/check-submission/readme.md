@@ -1,6 +1,6 @@
 # Check Submission Payload
 
-The submitted check payload is compressed before sending.  Once received it is hydrated for validation and marking.
+The submitted check payload is [compressed to UTF-16](https://github.com/pieroxy/lz-string) before sending.  Once received it is hydrated for validation and marking.
 
 An example payload schema can be found [here](./check-payload.json)
 
