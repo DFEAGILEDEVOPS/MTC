@@ -123,6 +123,9 @@ export type nullOrUndef = undefined | null
  */
 export type AnswerInputType = 'k' | 't' | 'm' | 'x' | null
 
+/**
+ * This is the type sent as the output message to `ps-report-schools`
+ */
 export interface PupilResult {
   answers: AnswersOrNull
   check: CheckOrNull

@@ -2,16 +2,22 @@ import { ISqlService, SqlService } from '../../sql/sql.service'
 import { ConsoleLogger, ILogger } from '../../common/logger'
 import { TYPES } from 'mssql'
 import {
-  PupilResult,
-  Pupil,
-  School,
-  CheckConfig,
-  CheckConfigOrNull,
-  CheckOrNull,
+  Answer,
+  AnswersOrNull,
   Check,
+  CheckConfigOrNull,
   CheckForm,
   CheckFormOrNull,
-  AnswersOrNull, Answer, InputMap, Input, Device, DeviceOrNull, EventsOrNull, Event
+  CheckOrNull,
+  Device,
+  DeviceOrNull,
+  Event,
+  EventsOrNull,
+  Input,
+  InputMap,
+  Pupil,
+  PupilResult,
+  School
 } from './models'
 import * as R from 'ramda'
 
@@ -29,13 +35,12 @@ export class PsReportDataService {
 
   constructor (logger?: ILogger, sqlService?: ISqlService) {
     this.logger = logger ?? new ConsoleLogger()
-    this.sqlService = sqlService ?? new SqlService()
+    this.sqlService = sqlService ?? new SqlService(this.logger)
   }
 
   public async getPupils (schoolUuid: string): Promise<Pupil[]> {
-    this.logger.verbose(`${functionName}: getPupils() called for school ${schoolUuid}`)
     const sql = `
-        SELECT TOP (10) -- TODO: remove constraint
+        SELECT
                         p.id,
                         p.foreName,
                         p.lastName,
@@ -52,13 +57,12 @@ export class PsReportDataService {
                JOIN      mtc_admin.school s ON (p.school_id = s.id)
                LEFT JOIN mtc_admin.attendanceCode ac ON (p.attendanceId = ac.id)
          WHERE s.urlSlug = @slug
-         ORDER BY p.checkComplete DESC -- TODO: remove order by
     `
     const params = [
       { name: 'slug', value: schoolUuid, type: TYPES.UniqueIdentifier }
     ]
 
-    interface dbPupil {
+    interface DBPupil {
       attendanceId: number | null
       checkComplete: boolean
       currentCheckId: number | null
@@ -73,7 +77,7 @@ export class PsReportDataService {
       upn: string
     }
 
-    const data: dbPupil[] = await this.sqlService.query(sql, params)
+    const data: DBPupil[] = await this.sqlService.query(sql, params)
 
     const pupils: Pupil[] = data.map(o => {
       const pupil: Pupil = {
@@ -96,18 +100,28 @@ export class PsReportDataService {
   }
 
   private async getSchool (schoolId: number): Promise<School> {
-    this.logger.verbose(`${functionName}: getSchool() called for school ${schoolId}`)
     const sql = `
         SELECT estabCode, id, leaCode, name, urlSlug, urn
           FROM mtc_admin.school
          WHERE school.id = @schoolId
     `
-    const res = await this.sqlService.query(sql, [{ name: 'schoolId', value: schoolId, type: TYPES.Int }])
-    const data = res[0]
+    interface DBSchool {
+      estabCode: number
+      id: number
+      leaCode: number
+      name: string
+      urlSlug: string
+      urn: number
+    }
+    const res: DBSchool[] = await this.sqlService.query(sql, [{ name: 'schoolId', value: schoolId, type: TYPES.Int }])
+    const data = R.head(res)
+    if (data === undefined) {
+      throw new Error(`${functionName}: ERROR: School not found: ${schoolId}`)
+    }
     const school: School = {
       estabCode: data.estabCode,
       id: data.id,
-      laCode: data.laCode,
+      laCode: data.leaCode,
       name: data.name,
       slug: data.urlSlug,
       urn: data.urn
@@ -115,9 +129,8 @@ export class PsReportDataService {
     return school
   }
 
-  private async getCheckConfig (currentCheckId: number | null): Promise<CheckConfigOrNull> {
-    this.logger.verbose(`${functionName}: getCheckConfig() called for check ${currentCheckId}`)
-    if (currentCheckId === null) {
+  private async getCheckConfig (checkId: number | null): Promise<CheckConfigOrNull> {
+    if (checkId === null) {
       return null
     }
     const sql = `
@@ -126,22 +139,20 @@ export class PsReportDataService {
          WHERE check_id = @checkId
     `
 
-    interface dbSettings {
+    interface DBSettings {
       payload: string
     }
 
-    const res: dbSettings[] = await this.sqlService.query(sql, [{ name: 'checkId', value: currentCheckId, type: TYPES.Int }])
+    const res: DBSettings[] = await this.sqlService.query(sql, [{ name: 'checkId', value: checkId, type: TYPES.Int }])
     const data = R.head(res)
     if (data === undefined) {
       throw new Error('getCheckConfig(): failed to retrieve any settings')
     }
-    const config: CheckConfig = JSON.parse(data.payload)
-    return config
+    return JSON.parse(data.payload)
   }
 
-  private async getCheck (currentCheckId: number | null): Promise<CheckOrNull> {
-    this.logger.verbose(`${functionName}: getCheck() called for check ${currentCheckId}`)
-    if (currentCheckId === null) {
+  private async getCheck (checkId: number | null): Promise<CheckOrNull> {
+    if (checkId === null) {
       // For pupils that have not taken a check, or are not attending
       return null
     }
@@ -165,13 +176,13 @@ export class PsReportDataService {
          WHERE check_id = @checkId
     `
 
-    interface dbCheck {
-      id: number
+    interface DBCheck {
       checkCode: string
       checkForm_id: number
       checkWindow_id: number
       complete: boolean
       completedAt: moment.Moment
+      id: number
       inputAssistantAddedRetrospectively: boolean
       isLiveCheck: boolean
       mark: number
@@ -181,18 +192,20 @@ export class PsReportDataService {
       restartNumber: number
     }
 
-    const res: dbCheck[] = await this.sqlService.query(sql, [{ name: 'checkId', value: currentCheckId, type: TYPES.Int }])
+    const res: DBCheck[] = await this.sqlService.query(sql, [{ name: 'checkId', value: checkId, type: TYPES.Int }])
     const data = R.head(res)
     if (data === undefined) {
-      throw new Error('getCheck(): No result data found')
+      // If we pupil has had a pin generated but never set the check, or never returned the check then we expect the check
+      // to be there but not the check result.  As the results are missing there is no data to provide.
+      return null
     }
     const check: Check = {
-      id: data.id,
       checkCode: data.checkCode,
       checkFormId: data.checkForm_id,
       checkWindowId: data.checkWindow_id,
       complete: data.complete,
       completedAt: data.completedAt,
+      id: data.id,
       inputAssistantAddedRetrospectively: data.inputAssistantAddedRetrospectively,
       isLiveCheck: data.isLiveCheck,
       mark: data.mark,
@@ -271,9 +284,9 @@ export class PsReportDataService {
       }
       const input: Input = {
         answerId: answerId,
+        browserTimestamp: o.browserTimestamp,
         input: o.userInput,
-        inputType: o.inputType,
-        browserTimestamp: o.browserTimestamp
+        inputType: o.inputType
       }
       const existingInputs = inputMap.get(answerId)
       if (Array.isArray(existingInputs)) {
@@ -319,13 +332,13 @@ export class PsReportDataService {
     const answers: Answer[] = resAnswers.map(o => {
       const inputs = inputsMap.get(o.id)
       return {
-        id: o.id,
-        response: o.answer,
-        isCorrect: o.isCorrect,
-        questionCode: o.questionCode,
-        question: o.question,
         browserTimestamp: o.browserTimestamp,
-        inputs: inputs ?? null
+        id: o.id,
+        inputs: inputs ?? null, // ensure undefined does not get set
+        isCorrect: o.isCorrect,
+        question: o.question,
+        questionCode: o.questionCode,
+        response: o.answer
       }
     })
     return answers
@@ -409,7 +422,7 @@ export class PsReportDataService {
     const events: Event[] = res.map(o => {
       const e: Event = {
         browserTimestamp: o.browserTimestamp,
-        data: o.eventData,
+        data: JSON.parse(o.eventData),
         id: o.id,
         isWarmup: o.isWarmup,
         question: o.question,
@@ -423,8 +436,11 @@ export class PsReportDataService {
     return events
   }
 
+  /**
+   * Entry point to create the data structure to pass to the transform step in the psychometric report generation
+   * @param pupil
+   */
   public async getPupilData (pupil: Pupil): Promise<PupilResult> {
-    this.logger.verbose(`${functionName}: getPupilData() called for pupil ${pupil.slug}`)
     const promises: [
       Promise<School>,
       Promise<CheckConfigOrNull>,
