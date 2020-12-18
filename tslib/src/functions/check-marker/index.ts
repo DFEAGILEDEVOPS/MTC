@@ -1,14 +1,10 @@
-/* eslint-disable import/first */
-const functionName = 'check-marker'
-import aiHelper from '../../azure/app-insights'
-// load early to enable tracking
-aiHelper.startInsightsIfConfigured(functionName)
-
 import { AzureFunction, Context } from '@azure/functions'
 import { performance } from 'perf_hooks'
 import * as V1 from './check-marker.v1'
 import { ICheckMarkerFunctionBindings } from './models'
 import { MarkCheckMessageV1 } from '../../schemas/models'
+
+const functionName = 'check-marker'
 const marker = new V1.CheckMarkerV1()
 
 const serviceBusQueueTrigger: AzureFunction = async function (context: Context, markCheckMessage: MarkCheckMessageV1): Promise<void> {
