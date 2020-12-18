@@ -5,7 +5,17 @@ import { PupilResult } from './models'
 
 const functionName = 'ps-report-2-pupil-data'
 
-const serviceBusQueueTrigger: AzureFunction = async function (context: Context, incomingMessage: any): Promise<void> {
+/**
+ * Incoming message is just the name and UUID of the school to process
+ * The name is used for logging
+ * The UUID is used to fetch all pupils for the school
+ */
+interface IncomingMessage {
+  name: string
+  uuid: string
+}
+
+const serviceBusQueueTrigger: AzureFunction = async function (context: Context, incomingMessage: IncomingMessage): Promise<void> {
   const start = performance.now()
   context.log.verbose(`${functionName}: called for school ${incomingMessage.name}`)
   const outputBinding: PupilResult[] = []
