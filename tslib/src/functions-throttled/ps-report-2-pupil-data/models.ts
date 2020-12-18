@@ -1,7 +1,5 @@
 import moment from 'moment'
 
-export type nullOrUndef = undefined | null
-
 export interface Pupil {
   attendanceId: number | null
   checkComplete: boolean
@@ -88,15 +86,6 @@ export interface Input {
 
 export type InputMap = Map<number, Input[] | null>
 
-/**
- * k = all the inputs were keyboard
- * m = all the inputs were touch
- * t = all the inputs were mouse
- * x = mixed inputs (e.g. a combination of keyboard and mouse)
- * null = there were no inputs to type
- */
-export type AnswerInputType = 'k' | 't' | 'm' | 'x' | null
-
 export interface Answer {
   response: string
   isCorrect: boolean
@@ -106,20 +95,33 @@ export interface Answer {
   inputs: Input[] | null
 }
 
-// interface Event {
-//   id: number
-//   type: string
-//   browserTimestamp: moment.Moment
-//   data?: object
-//   questionCode?: string
-//   questionNumber: number
-// }
+export interface Event {
+  browserTimestamp: moment.Moment
+  data?: object
+  id: number
+  isWarmup: boolean | null
+  question?: string | null
+  questionCode?: string | null
+  questionNumber?: number | null
+  type: string
+}
 
 export type CheckConfigOrNull = CheckConfig | null
 export type CheckOrNull = Check | null
 export type CheckFormOrNull = CheckForm | null
 export type AnswersOrNull = Answer[] | null
 export type DeviceOrNull = Device | null
+export type EventsOrNull = Event[] | null
+export type nullOrUndef = undefined | null
+
+/**
+ * k = all the inputs were keyboard
+ * m = all the inputs were touch
+ * t = all the inputs were mouse
+ * x = mixed inputs (e.g. a combination of keyboard and mouse)
+ * null = there were no inputs to type
+ */
+export type AnswerInputType = 'k' | 't' | 'm' | 'x' | null
 
 export interface PupilResult {
   answers: AnswersOrNull
@@ -127,7 +129,7 @@ export interface PupilResult {
   checkConfig: CheckConfigOrNull
   checkForm: CheckFormOrNull
   device: DeviceOrNull
-  // events: Event[]
+  events: EventsOrNull
   pupil: Pupil
   school: School
 }

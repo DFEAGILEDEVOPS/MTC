@@ -11,7 +11,7 @@ import {
   Check,
   CheckForm,
   CheckFormOrNull,
-  AnswersOrNull, Answer, InputMap, Input, Device, DeviceOrNull
+  AnswersOrNull, Answer, InputMap, Input, Device, DeviceOrNull, EventsOrNull, Event
 } from './models'
 import * as R from 'ramda'
 
@@ -368,6 +368,61 @@ export class PsReportDataService {
     return device
   }
 
+  private async getEvents (checkId: number | null): Promise<EventsOrNull> {
+    if (checkId === null) {
+      return null
+    }
+    const sql = `
+        SELECT
+            e.id,
+            e.browserTimestamp,
+            etl.eventType,
+            e.eventData,
+            q.code as questionCode,
+            e.questionNumber,
+            IIF(q.id IS NOT NULL, CONCAT(q.factor1, 'x', q.factor2), NULL) AS question,
+            q.isWarmup
+          FROM mtc_results.event e
+               LEFT JOIN mtc_results.checkResult cr ON (e.checkResult_id = cr.id)
+               LEFT JOIN mtc_results.eventTypeLookup etl ON (e.eventTypeLookup_id = etl.id)
+               LEFT JOIN mtc_admin.question q ON (e.question_id = q.id)
+         WHERE cr.check_id = @checkId
+         ORDER BY e.browserTimestamp
+    `
+    interface DBEvent {
+      id: number
+      browserTimestamp: moment.Moment
+      eventType: string
+      eventData: any | null
+      questionCode: string | null
+      questionNumber: number | null
+      question: string | null
+      isWarmup: boolean | null
+    }
+
+    const res: DBEvent[] = await this.sqlService.query(sql, [{ name: 'checkId', value: checkId, type: TYPES.Int }])
+
+    if (res.length === 0) {
+      return null
+    }
+
+    const events: Event[] = res.map(o => {
+      const e: Event = {
+        browserTimestamp: o.browserTimestamp,
+        data: o.eventData,
+        id: o.id,
+        isWarmup: o.isWarmup,
+        question: o.question,
+        questionCode: o.questionCode,
+        questionNumber: o.questionNumber,
+        type: o.eventType
+      }
+      return e
+    })
+
+    return events
+  }
+
   public async getPupilData (pupil: Pupil): Promise<PupilResult> {
     this.logger.verbose(`${functionName}: getPupilData() called for pupil ${pupil.slug}`)
     const promises: [
@@ -376,16 +431,18 @@ export class PsReportDataService {
       Promise<CheckOrNull>,
       Promise<CheckFormOrNull>,
       Promise<AnswersOrNull>,
-      Promise<DeviceOrNull>
+      Promise<DeviceOrNull>,
+      Promise<EventsOrNull>
     ] = [
       this.getSchool(pupil.schoolId),
       this.getCheckConfig(pupil.currentCheckId),
       this.getCheck(pupil.currentCheckId),
       this.getCheckForm(pupil.currentCheckId),
       this.getAnswers(pupil.currentCheckId),
-      this.getDevice(pupil.currentCheckId)
+      this.getDevice(pupil.currentCheckId),
+      this.getEvents(pupil.currentCheckId)
     ]
-    const [school, checkConfig, check, checkForm, answers, device] = await Promise.all(promises)
+    const [school, checkConfig, check, checkForm, answers, device, events] = await Promise.all(promises)
     return {
       pupil,
       school,
@@ -393,7 +450,8 @@ export class PsReportDataService {
       check: check,
       checkForm: checkForm,
       answers: answers,
-      device: device
+      device: device,
+      events: events
     }
   }
 }
