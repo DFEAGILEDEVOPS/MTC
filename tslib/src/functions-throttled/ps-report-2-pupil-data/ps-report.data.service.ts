@@ -11,9 +11,10 @@ import {
   Check,
   CheckForm,
   CheckFormOrNull,
-  AnswersOrNull, Answer, InputMap, Input
+  AnswersOrNull, Answer, InputMap, Input, Device, DeviceOrNull
 } from './models'
 import * as R from 'ramda'
+
 const functionName = 'ps-report-2-pupil-data'
 
 export interface IPsReportDataService {
@@ -34,19 +35,19 @@ export class PsReportDataService {
   public async getPupils (schoolUuid: string): Promise<Pupil[]> {
     this.logger.verbose(`${functionName}: getPupils() called for school ${schoolUuid}`)
     const sql = `
-        SELECT TOP(10)  -- TODO: remove constraint
-            p.id,
-            p.foreName,
-            p.lastName,
-            p.upn,
-            p.gender,
-            p.dateOfBirth,
-            p.attendanceId,
-            p.checkComplete,
-            p.currentCheckId,
-            p.school_id,
-            p.urlSlug,
-            ac.reason as notTakingCheckReason
+        SELECT TOP (10) -- TODO: remove constraint
+                        p.id,
+                        p.foreName,
+                        p.lastName,
+                        p.upn,
+                        p.gender,
+                        p.dateOfBirth,
+                        p.attendanceId,
+                        p.checkComplete,
+                        p.currentCheckId,
+                        p.school_id,
+                        p.urlSlug,
+                        ac.reason as notTakingCheckReason
           FROM mtc_admin.pupil p
                JOIN      mtc_admin.school s ON (p.school_id = s.id)
                LEFT JOIN mtc_admin.attendanceCode ac ON (p.attendanceId = ac.id)
@@ -124,9 +125,11 @@ export class PsReportDataService {
           FROM mtc_admin.checkConfig
          WHERE check_id = @checkId
     `
+
     interface dbSettings {
       payload: string
     }
+
     const res: dbSettings[] = await this.sqlService.query(sql, [{ name: 'checkId', value: currentCheckId, type: TYPES.Int }])
     const data = R.head(res)
     if (data === undefined) {
@@ -161,6 +164,7 @@ export class PsReportDataService {
                JOIN mtc_results.checkResult cr ON (c.id = cr.check_id)
          WHERE check_id = @checkId
     `
+
     interface dbCheck {
       id: number
       checkCode: string
@@ -176,6 +180,7 @@ export class PsReportDataService {
       received: boolean
       restartNumber: number
     }
+
     const res: dbCheck[] = await this.sqlService.query(sql, [{ name: 'checkId', value: currentCheckId, type: TYPES.Int }])
     const data = R.head(res)
     if (data === undefined) {
@@ -203,11 +208,13 @@ export class PsReportDataService {
     if (checkId === null) {
       return null
     }
+
     interface DBCheckForm {
       id: number
       name: string
       formData: string
     }
+
     interface Form {
       f1: number
       f2: number
@@ -228,32 +235,30 @@ export class PsReportDataService {
     const form: CheckForm = {
       id: data.id,
       name: data.name,
-      items: formData.map((o, i) => { return { f1: o.f1, f2: o.f2, questionNumber: (i + 1) } })
+      items: formData.map((o, i) => {
+        return { f1: o.f1, f2: o.f2, questionNumber: (i + 1) }
+      })
     }
     return form
   }
 
   private async getInputMap (checkId: number): Promise<InputMap> {
     const sql = `
-      SELECT 
-        a.id as answer_id,
-        ui.userInput,
-        uitl.code as userInputType,
-        ui.browserTimestamp
-      FROM       
-        mtc_results.checkResult cr JOIN
-        mtc_results.answer a ON (cr.id = a.checkResult_id) LEFT JOIN
-        mtc_results.userInput ui ON (a.id = ui.answer_id) LEFT JOIN 
-        mtc_results.userInputTypeLookup uitl ON (ui.userInputTypeLookup_id = uitl.id)
-      WHERE
-        cr.check_id = @checkId
+        SELECT a.id as answer_id, ui.userInput, uitl.code as userInputType, ui.browserTimestamp
+          FROM mtc_results.checkResult cr
+               JOIN      mtc_results.answer a ON (cr.id = a.checkResult_id)
+               LEFT JOIN mtc_results.userInput ui ON (a.id = ui.answer_id)
+               LEFT JOIN mtc_results.userInputTypeLookup uitl ON (ui.userInputTypeLookup_id = uitl.id)
+         WHERE cr.check_id = @checkId
     `
+
     interface DBInput {
       answer_id: number
       userInput: string | null
       inputType: 'M' | 'K' | 'T' | 'P' | 'X' | null
       browserTimestamp: moment.Moment | null
     }
+
     const res: DBInput[] = await this.sqlService.query(sql, [{ name: 'checkId', value: checkId, type: TYPES.Int }])
     // Now we have the inputs we need to turn them into a map
     const inputMap: InputMap = new Map()
@@ -286,16 +291,17 @@ export class PsReportDataService {
     }
 
     const sql = `
-      SELECT
-        a.id, 
-        a.answer,
-        q.code as questionCode,
-        CONCAT(q.factor1, 'x', q.factor2) as question,
-        a.isCorrect,
-        a.browserTimestamp
-      FROM mtc_results.checkResult cr JOIN mtc_results.answer a ON (cr.id = a.checkResult_id) 
-      JOIN mtc_admin.question q ON (a.question_id = q.id)
-      WHERE cr.check_id = @checkId
+        SELECT
+            a.id,
+            a.answer,
+            q.code as questionCode,
+            CONCAT(q.factor1, 'x', q.factor2) as question,
+            a.isCorrect,
+            a.browserTimestamp
+          FROM mtc_results.checkResult cr
+               JOIN mtc_results.answer a ON (cr.id = a.checkResult_id)
+               JOIN mtc_admin.question q ON (a.question_id = q.id)
+         WHERE cr.check_id = @checkId
     `
 
     interface DBAnswer {
@@ -325,6 +331,43 @@ export class PsReportDataService {
     return answers
   }
 
+  private async getDevice (checkId: number | null): Promise<DeviceOrNull> {
+    if (checkId === null) {
+      return null
+    }
+    const sql = `
+        SELECT bfl.family as browserFamily, ud.browserMajorVersion, ud.browserMinorVersion, ud.browserPatchVersion, ud.ident
+          FROM mtc_results.checkResult cr
+               LEFT JOIN mtc_results.userDevice ud ON (cr.userDevice_id = ud.id)
+               LEFT JOIN mtc_results.browserFamilyLookup bfl ON (ud.browserFamilyLookup_id = bfl.id)
+         WHERE cr.check_id = @checkId
+    `
+
+    interface DBDevice {
+      browserFamily: string | null
+      browserMajorVersion: number | null
+      browserMinorVersion: number | null
+      browserPatchVersion: number | null
+      ident: string | null
+    }
+
+    const res: DBDevice[] = await this.sqlService.query(sql, [{ name: 'checkId', value: checkId, type: TYPES.Int }])
+    const data = R.head(res)
+    if (data === undefined) {
+      return null
+    }
+    const device: Device = {
+      browserFamily: data.browserFamily,
+      browserMajorVersion: data.browserMajorVersion,
+      browserMinorVersion: data.browserMinorVersion,
+      browserPatchVersion: data.browserPatchVersion,
+      deviceId: data.ident,
+      type: null, // TODO: store this at sync time
+      typeModel: null // TODO: store this at sync time
+    }
+    return device
+  }
+
   public async getPupilData (pupil: Pupil): Promise<PupilResult> {
     this.logger.verbose(`${functionName}: getPupilData() called for pupil ${pupil.slug}`)
     const promises: [
@@ -332,22 +375,25 @@ export class PsReportDataService {
       Promise<CheckConfigOrNull>,
       Promise<CheckOrNull>,
       Promise<CheckFormOrNull>,
-      Promise<AnswersOrNull>
+      Promise<AnswersOrNull>,
+      Promise<DeviceOrNull>
     ] = [
       this.getSchool(pupil.schoolId),
       this.getCheckConfig(pupil.currentCheckId),
       this.getCheck(pupil.currentCheckId),
       this.getCheckForm(pupil.currentCheckId),
-      this.getAnswers(pupil.currentCheckId)
+      this.getAnswers(pupil.currentCheckId),
+      this.getDevice(pupil.currentCheckId)
     ]
-    const [school, checkConfig, check, checkForm, answers] = await Promise.all(promises)
+    const [school, checkConfig, check, checkForm, answers, device] = await Promise.all(promises)
     return {
       pupil,
       school,
       checkConfig: checkConfig,
       check: check,
       checkForm: checkForm,
-      answers: answers
+      answers: answers,
+      device: device
     }
   }
 }

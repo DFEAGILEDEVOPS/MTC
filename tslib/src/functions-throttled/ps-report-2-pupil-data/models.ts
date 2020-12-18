@@ -41,19 +41,6 @@ export interface CheckConfig {
   compressCompletedCheck: boolean
 }
 
-// interface CheckWindow {
-//   adminEndDate: moment.Moment
-//   adminStartDate: moment.Moment
-//   checkEndDate: moment.Moment
-//   checkStartDate: moment.Moment
-//   familiarisationEndDate: moment.Moment
-//   familiarisationStartDate: moment.Moment
-//   id: number
-//   isDeleted: boolean
-//   name: string
-//   slug: string
-// }
-//
 interface Item {
   f1: number
   f2: number
@@ -81,15 +68,16 @@ export interface Check {
   received: boolean
   restartNumber: number
 }
-//
-// interface Device {
-//   type: 'Tablet' | 'Desktop' | 'Mobile' | 'Other'
-//   browserFamily: string
-//   browserVersion: string
-//   deviceTypeModel: string
-//   deviceId: string
-// }
-//
+
+export interface Device {
+  type: 'Tablet' | 'Desktop' | 'Mobile' | 'Other' | null
+  typeModel: string | null
+  browserFamily: string | null
+  browserMajorVersion: number | null
+  browserMinorVersion: number | null
+  browserPatchVersion: number | null
+  deviceId: string | null
+}
 
 export interface Input {
   answerId: number
@@ -131,14 +119,14 @@ export type CheckConfigOrNull = CheckConfig | null
 export type CheckOrNull = Check | null
 export type CheckFormOrNull = CheckForm | null
 export type AnswersOrNull = Answer[] | null
+export type DeviceOrNull = Device | null
 
 export interface PupilResult {
   answers: AnswersOrNull
   check: CheckOrNull
   checkConfig: CheckConfigOrNull
   checkForm: CheckFormOrNull
-  // checkWindow: CheckWindow
-  // device: Device
+  device: DeviceOrNull
   // events: Event[]
   pupil: Pupil
   school: School
