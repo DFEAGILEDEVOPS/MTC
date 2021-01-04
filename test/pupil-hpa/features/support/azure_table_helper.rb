@@ -8,7 +8,7 @@ class AzureTableHelper
     def self.wait_for_received_check(partition_key, row_key)
     begin
       retries ||= 0
-      sleep 2
+      sleep 5
       p 'trying'
       a = get_row('receivedCheck', partition_key.downcase, row_key.downcase)
     rescue Azure::Core::Http::HTTPError => e
@@ -23,7 +23,7 @@ class AzureTableHelper
     found = false
     begin
       retries ||= 0
-      sleep 2
+      sleep 5
       result = REDIS_CLIENT.get("preparedCheck:#{school_password}:#{pin}")
       if (result.nil?)
         fail "Pin not found in redis"

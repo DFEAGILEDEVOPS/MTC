@@ -39,7 +39,8 @@ class SchoolLandingPage < SitePrism::Page
   element :hdf, 'a', text: "Complete the headteacher's declaration form"
   element :hdf_disabled, '.heading-small', text: "Complete the headteacher's declaration form"
   element :hdf_disabled_text, 'p', text: "Complete the headteacher's declaration form once you have submitted your pupil register"
-  element :results, '.govuk-disabled-link', text: 'View pupil results'
+  element :results, 'a[href="/results/view-results"]', text: 'View pupil results'
+  element :results_disabled, '.govuk-disabled-link', text: 'View pupil results'
 
   element :teacher_name, '.signed-in-as'
   section :phase_banner, PhaseBanner, '.govuk-phase-banner'

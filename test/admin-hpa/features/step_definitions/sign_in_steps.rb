@@ -30,7 +30,11 @@ end
 
 Given(/^I am logged in$/) do
   sign_in_page.load
-  @user = 'teacher1'
+  if @username
+    @user = @username
+  else
+    @user = 'teacher1'
+  end
   sign_in_page.login(@user, 'password')
 end
 

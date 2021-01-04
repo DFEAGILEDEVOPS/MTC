@@ -1977,7 +1977,8 @@ class RequestHelper
       "school": parsed_response_pupil_auth['school'],
       "tokens": parsed_response_pupil_auth['tokens'],
       "updatedAt": "2021-01-10T10:27:49.196Z",
-      "checkCode": parsed_response_pupil_auth['checkCode']
+      "checkCode": parsed_response_pupil_auth['checkCode'],
+      "schoolUUID": parsed_response_pupil_auth['school']['uuid']
     }
   end
 

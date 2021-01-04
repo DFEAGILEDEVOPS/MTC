@@ -21,7 +21,7 @@ class SqlDbHelper
     result.cancel
     pupil_details_res
   end
-
+#
   def self.find_pupil_from_school(first_name, school_id)
     sql = "SELECT * FROM [mtc_admin].[pupil] WHERE foreName='#{first_name}' AND school_id='#{school_id}'"
     result = SQL_CLIENT.execute(sql)
@@ -356,7 +356,7 @@ class SqlDbHelper
   end
 
   def self.delete_schools_imported
-    sql = "DELETE from [mtc_admin].[school] where id NOT in (1,2,3,4,5,6)"
+    sql = "DELETE from [mtc_admin].[school] where name like '%Mo School%'"
     result = SQL_CLIENT.execute(sql)
     result.do
   end
@@ -624,6 +624,26 @@ class SqlDbHelper
     }
     result = SQL_CLIENT.execute(sql)
     result.each {|row| row.map}
+  end
+
+  def self.get_new_checks
+    sql = "select id, checkCode, pupil_id from [mtc_admin].[check] where pupilLoginDate is null and receivedByServerAt is null and checkStatus_id=1 and isLiveCheck=1 and received=0 and complete=0 and completedAt is null and processingFailed=0"
+    result = SQL_CLIENT.execute(sql)
+    result.each {|row| row.map}
+  end
+
+  def self.get_schools_list
+    sql = "select * from [mtc_admin].[school]"
+    result = SQL_CLIENT.execute(sql)
+    result.each {|row| row.map}
+  end
+
+  def self.get_check_id_using_names(forename,lastname)
+    sql = "select id from mtc_admin.[check] where pupil_id = (SELECT id FROM [mtc_admin].[pupil] WHERE foreName='#{forename}' AND lastName='#{lastname}')"
+    result = SQL_CLIENT.execute(sql)
+    id = result.first
+    result.cancel
+    id
   end
 
 end

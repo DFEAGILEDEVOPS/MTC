@@ -25,6 +25,7 @@ Given(/^I have used the physical screen keyboard to complete the check$/) do
   second = check_page.complete_question('67890', 'keyboard')
   remaining = check_page.complete_check_with_correct_answers(8, 'keyboard')
   @answers = [first, second, remaining].flatten
+  complete_page.wait_for_complete_page
 end
 
 Then(/^I should see all my keyboard inputs recorded$/) do
@@ -73,6 +74,7 @@ Given(/^I have used backspace to correct my answer using the physical keyboard$/
   check_page.number_pad.one.send_keys(:backspace)
   check_page.complete_question('12345', 'keyboard')
   check_page.complete_check_with_correct_answers(9, 'numpad')
+  complete_page.wait_for_complete_page
 end
 
 Then(/^I should see backspace keyboard event recorded$/) do

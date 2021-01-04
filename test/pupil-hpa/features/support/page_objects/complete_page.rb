@@ -10,13 +10,13 @@ class CompletePage < SitePrism::Page
 
   def wait_for_complete_page
     i = 0
-    while i < 20
+    while i < 60
       if(has_heading?)
         puts "Complete Page is visible."
         break
       else
         puts "waiting for Complete Page to be visible. Visibility status is: #{has_heading?}"
-        sleep 0.5
+        sleep 5
         i = i + 1
       end
     end

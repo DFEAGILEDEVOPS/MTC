@@ -1,6 +1,6 @@
 Feature: Pupil Api
 
-  @admin_logout
+  @admin_logout @wip
   Scenario: 200 response code is given when valid credentials are provided
     Given I make a request with valid credentials
     Then I should get a 200
