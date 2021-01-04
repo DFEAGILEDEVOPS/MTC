@@ -87,12 +87,13 @@ export interface Input {
 export type InputMap = Map<number, Input[] | null>
 
 export interface Answer {
-  response: string
-  isCorrect: boolean
-  questionCode: string
-  question: string
   browserTimestamp: moment.Moment
+  id: number
   inputs: Input[] | null
+  isCorrect: boolean
+  question: string
+  questionCode: string
+  response: string
 }
 
 export interface Event {

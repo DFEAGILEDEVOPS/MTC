@@ -99,7 +99,7 @@ export class PsReportDataService {
     return pupils
   }
 
-  private async getSchool (schoolId: number): Promise<School> {
+  public async getSchool (schoolId: number): Promise<School> {
     const sql = `
         SELECT estabCode, id, leaCode, name, urlSlug, urn
           FROM mtc_admin.school
@@ -129,7 +129,7 @@ export class PsReportDataService {
     return school
   }
 
-  private async getCheckConfig (checkId: number | null): Promise<CheckConfigOrNull> {
+  public async getCheckConfig (checkId: number | null): Promise<CheckConfigOrNull> {
     if (checkId === null) {
       return null
     }
@@ -151,7 +151,7 @@ export class PsReportDataService {
     return JSON.parse(data.payload)
   }
 
-  private async getCheck (checkId: number | null): Promise<CheckOrNull> {
+  public async getCheck (checkId: number | null): Promise<CheckOrNull> {
     if (checkId === null) {
       // For pupils that have not taken a check, or are not attending
       return null
@@ -217,7 +217,7 @@ export class PsReportDataService {
     return check
   }
 
-  private async getCheckForm (checkId: number | null): Promise<CheckFormOrNull> {
+  public async getCheckForm (checkId: number | null): Promise<CheckFormOrNull> {
     if (checkId === null) {
       return null
     }
@@ -255,7 +255,7 @@ export class PsReportDataService {
     return form
   }
 
-  private async getInputMap (checkId: number): Promise<InputMap> {
+  public async getInputs (checkId: number): Promise<InputMap> {
     const sql = `
         SELECT a.id as answer_id, ui.userInput, uitl.code as userInputType, ui.browserTimestamp
           FROM mtc_results.checkResult cr
@@ -298,7 +298,7 @@ export class PsReportDataService {
     return inputMap
   }
 
-  private async getAnswers (checkId: number | null): Promise<AnswersOrNull> {
+  public async getAnswers (checkId: number | null): Promise<AnswersOrNull> {
     if (checkId === null) {
       return null
     }
@@ -327,7 +327,7 @@ export class PsReportDataService {
     }
 
     const resAnswers: DBAnswer[] = await this.sqlService.query(sql, [{ name: 'checkId', value: checkId, type: TYPES.Int }])
-    const inputsMap: InputMap = await this.getInputMap(checkId)
+    const inputsMap: InputMap = await this.getInputs(checkId)
 
     const answers: Answer[] = resAnswers.map(o => {
       const inputs = inputsMap.get(o.id)
