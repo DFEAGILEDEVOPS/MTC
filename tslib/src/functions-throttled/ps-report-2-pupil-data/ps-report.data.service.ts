@@ -20,6 +20,7 @@ import {
   School
 } from './models'
 import * as R from 'ramda'
+import moment from 'moment'
 
 const functionName = 'ps-report-2-pupil-data'
 
@@ -344,7 +345,7 @@ export class PsReportDataService {
     return answers
   }
 
-  private async getDevice (checkId: number | null): Promise<DeviceOrNull> {
+  public async getDevice (checkId: number | null): Promise<DeviceOrNull> {
     if (checkId === null) {
       return null
     }
@@ -381,7 +382,7 @@ export class PsReportDataService {
     return device
   }
 
-  private async getEvents (checkId: number | null): Promise<EventsOrNull> {
+  public async getEvents (checkId: number | null): Promise<EventsOrNull> {
     if (checkId === null) {
       return null
     }

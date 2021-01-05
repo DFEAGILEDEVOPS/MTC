@@ -77,6 +77,11 @@ describe('ps-report.data.service', () => {
       expect(school.slug).toBe('def')
       expect(school.urn).toBe(4)
     })
+
+    test('it throws if the school can\'t be found', async () => {
+      (mockSqlService.query as jest.Mock).mockResolvedValueOnce([])
+      await expect(async () => { await sut.getSchool(1) }).rejects.toThrow(/ERROR: School not found/)
+    })
   })
 
   describe('#getCheckConfig', () => {
@@ -92,6 +97,11 @@ describe('ps-report.data.service', () => {
       const checkConfig = await sut.getCheckConfig(1)
       // @ts-ignore - obj type is immaterial in unit test
       expect(checkConfig).toStrictEqual({ foo: 'bar' })
+    })
+
+    test('it throws if the checkConfig can\'t be found', async () => {
+      (mockSqlService.query as jest.Mock).mockResolvedValueOnce([])
+      await expect(async () => { await sut.getCheckConfig(1) }).rejects.toThrow('getCheckConfig(): failed to retrieve any settings')
     })
   })
 
@@ -137,6 +147,12 @@ describe('ps-report.data.service', () => {
       expect(check.received).toBe(false)
       expect(check.restartNumber).toBe(5)
     })
+
+    test('returns null if the check result is not found', async () => {
+      (mockSqlService.query as jest.Mock).mockResolvedValueOnce([])
+      const check = await sut.getCheck(1)
+      expect(check).toBeNull()
+    })
   })
 
   describe('#getCheckForm', () => {
@@ -160,6 +176,11 @@ describe('ps-report.data.service', () => {
       expect(checkForm.items).toHaveLength(2)
       expect(checkForm.items[0]).toStrictEqual({ f1: 1, f2: 1, questionNumber: 1 })
       expect(checkForm.items[1]).toStrictEqual({ f1: 1, f2: 2, questionNumber: 2 })
+    })
+
+    test('it throws if the checkForm can\'t be found', async () => {
+      (mockSqlService.query as jest.Mock).mockResolvedValueOnce([])
+      await expect(async () => { await sut.getCheckForm(1) }).rejects.toThrow('CheckForm for check 1 not found')
     })
   })
 
@@ -249,6 +270,129 @@ describe('ps-report.data.service', () => {
       expect(answer.question).toBe('1x2')
       expect(answer.questionCode).toBe('Q002')
       expect(answer.response).toBe('2')
+    })
+  })
+
+  describe('#getDevice', () => {
+    test('it returns null if there isn\'t a check', async () => {
+      const device = await sut.getDevice(null)
+      expect(device).toBeNull()
+    })
+
+    test('it returns null if the device is not found', async () => {
+      (mockSqlService.query as jest.Mock).mockResolvedValueOnce([])
+      const device = await sut.getDevice(1)
+      expect(device).toBeNull()
+    })
+
+    test('it maps the DBDevice to Device object', async () => {
+      (mockSqlService.query as jest.Mock).mockResolvedValueOnce([
+        {
+          browserFamily: 'abc',
+          browserMajorVersion: 1,
+          browserMinorVersion: 2,
+          browserPatchVersion: 3,
+          ident: 'def'
+        }]
+      )
+      const device = await sut.getDevice(1)
+      if (device === null) {
+        fail('device is undefined')
+      }
+      expect(device.browserFamily).toBe('abc')
+      expect(device.browserMajorVersion).toBe(1)
+      expect(device.browserMinorVersion).toBe(2)
+      expect(device.browserPatchVersion).toBe(3)
+      expect(device.deviceId).toBe('def')
+      expect(device.type).toBeNull() // TODO: add device.type
+      expect(device.typeModel).toBeNull() // TODO: add device type model
+    })
+  })
+
+  describe('#getEvents', () => {
+    test('it returns null if the pupil hasn\'t taken a check', async () => {
+      const events = await sut.getEvents(null)
+      expect(events).toBeNull()
+    })
+
+    test('it returns null if the events are not found', async () => {
+      (mockSqlService.query as jest.Mock).mockResolvedValueOnce([])
+      const events = await sut.getEvents(1)
+      expect(events).toBeNull()
+    })
+
+    test('it maps the DBEvent to the Event object', async () => {
+      (mockSqlService.query as jest.Mock).mockResolvedValueOnce([
+        {
+          id: 1,
+          browserTimestamp: moment('2021-01-05T05:56:01.122Z'),
+          eventType: 'PauseRendered',
+          eventData: '{ "question": "1x1"}',
+          questionCode: 'Q001',
+          questionNumber: 1,
+          question: '1x1',
+          isWarmup: false
+        }]
+      )
+      const events = await sut.getEvents(1)
+      if (events === null) {
+        fail('events is undefined')
+      }
+      expect(events).toHaveLength(1)
+      const event = events[0]
+      expect(event.browserTimestamp.toISOString()).toStrictEqual('2021-01-05T05:56:01.122Z')
+      expect(event.data).toStrictEqual({ question: '1x1' })
+      expect(event.id).toBe(1)
+      expect(event.isWarmup).toBe(false)
+      expect(event.question).toBe('1x1')
+      expect(event.questionCode).toBe('Q001')
+      expect(event.questionNumber).toBe(1)
+      expect(event.type).toBe('PauseRendered')
+    })
+  })
+
+  describe('#getPupilData', () => {
+    test('it marshals the required calls', async () => {
+      const pupil = {
+        schoolId: 1,
+        currentCheckId: null
+      }
+      ;(mockSqlService.query as jest.Mock).mockResolvedValueOnce([
+        {
+          estabCode: 1,
+          id: 2,
+          leaCode: 3,
+          name: 'abc',
+          urlSlug: 'def',
+          urn: 4
+        }
+      ])
+      const schoolSpy = jest.spyOn(sut, 'getSchool')
+      const checkConfigSpy = jest.spyOn(sut, 'getCheckConfig')
+      const checkSpy = jest.spyOn(sut, 'getCheck')
+      const checkFormSpy = jest.spyOn(sut, 'getCheckForm')
+      const answersSpy = jest.spyOn(sut, 'getAnswers')
+      const deviceSpy = jest.spyOn(sut, 'getDevice')
+      const eventSpy = jest.spyOn(sut, 'getEvents')
+
+      // @ts-ignore: `pupil` is missing many properties that are not used in the sut and are omitted for clarity
+      const pupilData = await sut.getPupilData(pupil)
+      expect(pupilData).not.toBeNull()
+      expect(schoolSpy).toHaveBeenCalledTimes(1)
+      expect(checkConfigSpy).toHaveBeenCalledTimes(1)
+      expect(checkSpy).toHaveBeenCalledTimes(1)
+      expect(checkFormSpy).toHaveBeenCalledTimes(1)
+      expect(answersSpy).toHaveBeenCalledTimes(1)
+      expect(deviceSpy).toHaveBeenCalledTimes(1)
+      expect(eventSpy).toHaveBeenCalledTimes(1)
+      expect(pupilData.pupil).toBeInstanceOf(Object) // `pupil` is returned in the output object
+      expect(pupilData.school).toBeInstanceOf(Object)
+      expect(pupilData.checkConfig).toBeNull()
+      expect(pupilData.check).toBeNull()
+      expect(pupilData.checkForm).toBeNull()
+      expect(pupilData.answers).toBeNull()
+      expect(pupilData.device).toBeNull()
+      expect(pupilData.events).toBeNull()
     })
   })
 })
