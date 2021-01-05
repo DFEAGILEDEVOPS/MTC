@@ -166,7 +166,7 @@ describe('ps-report.data.service', () => {
   })
 
   describe('#getCheckForm', () => {
-    test('it returns null for pupils without a check', async () => {
+    test('it returns null for when given null', async () => {
       const checkForm = await sut.getCheckForm(null)
       expect(checkForm).toBeNull()
     })
@@ -190,7 +190,20 @@ describe('ps-report.data.service', () => {
 
     test('it throws if the checkForm can\'t be found', async () => {
       (mockSqlService.query as jest.Mock).mockResolvedValueOnce([])
-      await expect(async () => { await sut.getCheckForm(1) }).rejects.toThrow('CheckForm for check 1 not found')
+      await expect(async () => { await sut.getCheckForm(1) }).rejects.toThrow('CheckForm 1 not found')
+    })
+
+    test('it caches the form and retrieves from cache on subsequent requests', async () => {
+      (mockSqlService.query as jest.Mock).mockResolvedValueOnce([
+        {
+          id: 2,
+          name: 'UT Form 2',
+          formData: '[{"f1":1,"f2":1},{"f1":1,"f2":2}]'
+        }])
+      const form1 = await sut.getCheckForm(1)
+      const form1Again = await sut.getCheckForm(1)
+      expect(mockSqlService.query).toHaveBeenCalledTimes(1)
+      expect(form1).toStrictEqual(form1Again)
     })
   })
 
@@ -379,8 +392,22 @@ describe('ps-report.data.service', () => {
       ])
       const schoolSpy = jest.spyOn(sut, 'getSchool')
       const checkConfigSpy = jest.spyOn(sut, 'getCheckConfig')
-      const checkSpy = jest.spyOn(sut, 'getCheck')
-      const checkFormSpy = jest.spyOn(sut, 'getCheckForm')
+      const checkSpy = jest.spyOn(sut, 'getCheck').mockResolvedValueOnce({
+        id: 6,
+        checkCode: 'abc',
+        checkFormId: 2,
+        checkWindowId: 3,
+        complete: true,
+        completedAt: moment('2021-01-05T11:38:01.123Z'),
+        inputAssistantAddedRetrospectively: false,
+        isLiveCheck: true,
+        mark: 5,
+        processingFailed: false,
+        pupilLoginDate: moment('2021-01-05T11:35:34.123Z'),
+        received: true,
+        restartNumber: 1
+      })
+      const checkFormSpy = jest.spyOn(sut, 'getCheckForm').mockResolvedValueOnce(null)
       const answersSpy = jest.spyOn(sut, 'getAnswers')
       const deviceSpy = jest.spyOn(sut, 'getDevice')
       const eventSpy = jest.spyOn(sut, 'getEvents')
@@ -396,9 +423,9 @@ describe('ps-report.data.service', () => {
       expect(deviceSpy).toHaveBeenCalledTimes(1)
       expect(eventSpy).toHaveBeenCalledTimes(1)
       expect(pupilData.pupil).toBeInstanceOf(Object) // `pupil` is returned in the output object
-      expect(pupilData.school).toBeInstanceOf(Object)
+      expect(pupilData.school).toBeInstanceOf(Object) // `school` is returned in the output object
       expect(pupilData.checkConfig).toBeNull()
-      expect(pupilData.check).toBeNull()
+      expect(pupilData.check).toBeInstanceOf(Object) // the  mock - needed to activate the call for the checkForm
       expect(pupilData.checkForm).toBeNull()
       expect(pupilData.answers).toBeNull()
       expect(pupilData.device).toBeNull()

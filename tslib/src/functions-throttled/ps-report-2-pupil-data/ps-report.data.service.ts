@@ -35,6 +35,7 @@ export interface IPsReportDataService {
 export class PsReportDataService {
   private readonly logger: ILogger
   private readonly sqlService: ISqlService
+  private readonly checkFormCache: Map<number, CheckForm> = new Map()
 
   constructor (logger?: ILogger, sqlService?: ISqlService) {
     this.logger = logger ?? new ConsoleLogger()
@@ -237,13 +238,17 @@ export class PsReportDataService {
   }
 
   /**
-   * Retrieve the checkForm from the database
-   * TODO: add caching
-   * @param checkId
+   * Retrieve the checkForm from the database or cache
+   * @param checkFormId
    */
-  public async getCheckForm (checkId: number | null): Promise<CheckFormOrNull> {
-    if (checkId === null) {
+  public async getCheckForm (checkFormId: number | null): Promise<CheckFormOrNull> {
+    if (checkFormId === null) {
       return null
+    }
+
+    if (this.checkFormCache.has(checkFormId)) {
+      const form = this.checkFormCache.get(checkFormId)
+      return form ?? null
     }
 
     interface DBCheckForm {
@@ -259,14 +264,13 @@ export class PsReportDataService {
 
     const sql = `
         SELECT cf.id, cf.name, cf.formData
-          FROM mtc_admin.[check] c
-               JOIN mtc_admin.checkForm cf ON (c.checkForm_id = cf.id)
-         WHERE c.id = @checkId
+          FROM mtc_admin.checkForm cf 
+         WHERE cf.id = @checkFormId
     `
-    const res: DBCheckForm[] = await this.sqlService.query(sql, [{ name: 'checkId', value: checkId, type: TYPES.Int }])
+    const res: DBCheckForm[] = await this.sqlService.query(sql, [{ name: 'checkFormId', value: checkFormId, type: TYPES.Int }])
     const data = R.head(res)
     if (data === undefined) {
-      throw new Error(`CheckForm for check ${checkId} not found`)
+      throw new Error(`CheckForm ${checkFormId} not found`)
     }
     const formData: Form[] = JSON.parse(data.formData)
     const form: CheckForm = {
@@ -276,6 +280,7 @@ export class PsReportDataService {
         return { f1: o.f1, f2: o.f2, questionNumber: (i + 1) }
       })
     }
+    this.checkFormCache.set(checkFormId, form)
     return form
   }
 
@@ -484,19 +489,21 @@ export class PsReportDataService {
     const promises: [
       Promise<CheckConfigOrNull>,
       Promise<CheckOrNull>,
-      Promise<CheckFormOrNull>,
       Promise<AnswersOrNull>,
       Promise<DeviceOrNull>,
       Promise<EventsOrNull>
     ] = [
       this.getCheckConfig(pupil.currentCheckId),
       this.getCheck(pupil.currentCheckId),
-      this.getCheckForm(pupil.currentCheckId),
       this.getAnswers(pupil.currentCheckId),
       this.getDevice(pupil.currentCheckId),
       this.getEvents(pupil.currentCheckId)
     ]
-    const [checkConfig, check, checkForm, answers, device, events] = await Promise.all(promises)
+    const [checkConfig, check, answers, device, events] = await Promise.all(promises)
+    let checkForm: CheckFormOrNull = null
+    if (check !== null) {
+      checkForm = await this.getCheckForm(check.checkFormId)
+    }
     return {
       pupil,
       school,
