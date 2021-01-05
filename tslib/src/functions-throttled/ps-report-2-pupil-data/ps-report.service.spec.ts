@@ -8,12 +8,15 @@ describe('PsReportService', () => {
   let psReportDataService: IPsReportDataService
   const schoolUuid = 'AAAA-BBBB-CCCC-DDDD'
   let outputBindings: any[]
+  const mockPupils = [{ id: 1, schoolId: 99 }, { id: 2, schoolId: 99 }, { id: 3, schoolId: 99 }]
+  const mockSchool = { id: 99, name: 'test school' }
 
   beforeEach(() => {
     logger = new MockLogger()
     psReportDataService = {
+      getPupilData: jest.fn(),
       getPupils: jest.fn(),
-      getPupilData: jest.fn()
+      getSchool: jest.fn()
     }
     outputBindings = []
     sut = new PsReportService(outputBindings, logger, psReportDataService)
@@ -24,9 +27,17 @@ describe('PsReportService', () => {
   })
 
   test('it makes a call to get pupils for a school', async () => {
-    (psReportDataService.getPupils as jest.Mock).mockResolvedValueOnce([{ id: 1 }, { id: 2 }, { id: 3 }])
+    ;(psReportDataService.getPupils as jest.Mock).mockResolvedValueOnce(mockPupils)
+    ;(psReportDataService.getSchool as jest.Mock).mockResolvedValueOnce(mockSchool)
     await sut.process(schoolUuid)
     expect(psReportDataService.getPupils).toHaveBeenCalledWith(schoolUuid)
+  })
+
+  test('it makes a call to get the school', async () => {
+    ;(psReportDataService.getPupils as jest.Mock).mockResolvedValueOnce(mockPupils)
+    ;(psReportDataService.getSchool as jest.Mock).mockResolvedValueOnce(mockSchool)
+    await sut.process(schoolUuid)
+    expect(psReportDataService.getSchool).toHaveBeenCalledWith(99)
   })
 
   test('it throws if the call to getPupils throws', async () => {
@@ -35,13 +46,15 @@ describe('PsReportService', () => {
   })
 
   test('it calls getPupilData() once per pupil received', async () => {
-    (psReportDataService.getPupils as jest.Mock).mockResolvedValueOnce([{ id: 1 }, { id: 2 }, { id: 3 }])
+    ;(psReportDataService.getPupils as jest.Mock).mockResolvedValueOnce([{ id: 1 }, { id: 2 }, { id: 3 }])
+    ;(psReportDataService.getSchool as jest.Mock).mockResolvedValueOnce(mockSchool)
     await sut.process(schoolUuid)
     expect(psReportDataService.getPupilData).toHaveBeenCalledTimes(3)
   })
 
   test('it outputs the results from getPupilData() once per pupil onto the outputBinding', async () => {
     (psReportDataService.getPupils as jest.Mock).mockResolvedValueOnce([{ id: 1 }, { id: 2 }, { id: 3 }])
+    ;(psReportDataService.getSchool as jest.Mock).mockResolvedValueOnce(mockSchool)
     ;(psReportDataService.getPupilData as jest.Mock)
       .mockResolvedValueOnce({ data: 1 })
       .mockResolvedValueOnce({ data: 2 })

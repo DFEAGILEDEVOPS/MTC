@@ -2,11 +2,13 @@ import { PsReportDataService } from './ps-report.data.service'
 import { MockLogger } from '../../common/logger'
 import { ISqlService } from '../../sql/sql.service'
 import moment from 'moment'
+import { School } from './models'
 
 describe('ps-report.data.service', () => {
   let sut: PsReportDataService
   let logger: MockLogger
   let mockSqlService: ISqlService
+  let mockSchool: School
 
   beforeEach(() => {
     logger = new MockLogger()
@@ -14,6 +16,14 @@ describe('ps-report.data.service', () => {
       query: jest.fn(),
       modify: jest.fn(),
       modifyWithTransaction: jest.fn()
+    }
+    mockSchool = {
+      estabCode: 1004,
+      id: 99,
+      laCode: 999,
+      name: 'test school',
+      slug: 'abc',
+      urn: 0
     }
     sut = new PsReportDataService(logger, mockSqlService)
   })
@@ -376,9 +386,9 @@ describe('ps-report.data.service', () => {
       const eventSpy = jest.spyOn(sut, 'getEvents')
 
       // @ts-ignore: `pupil` is missing many properties that are not used in the sut and are omitted for clarity
-      const pupilData = await sut.getPupilData(pupil)
+      const pupilData = await sut.getPupilData(pupil, mockSchool)
       expect(pupilData).not.toBeNull()
-      expect(schoolSpy).toHaveBeenCalledTimes(1)
+      expect(schoolSpy).not.toHaveBeenCalled()
       expect(checkConfigSpy).toHaveBeenCalledTimes(1)
       expect(checkSpy).toHaveBeenCalledTimes(1)
       expect(checkFormSpy).toHaveBeenCalledTimes(1)

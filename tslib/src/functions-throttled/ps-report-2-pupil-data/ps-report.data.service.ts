@@ -27,7 +27,9 @@ const functionName = 'ps-report-2-pupil-data'
 export interface IPsReportDataService {
   getPupils (schoolUuid: string): Promise<Pupil[]>
 
-  getPupilData (pupil: Pupil): Promise<PupilResult>
+  getPupilData (pupil: Pupil, school: School): Promise<PupilResult>
+
+  getSchool (schoolId: number): Promise<School>
 }
 
 export class PsReportDataService {
@@ -40,7 +42,7 @@ export class PsReportDataService {
   }
 
   /**
-   * Retrieve a list ofall pupils from the Database for a particular school
+   * Retrieve a list of all pupils from the Database for a particular school
    * @param schoolUuid
    */
   public async getPupils (schoolUuid: string): Promise<Pupil[]> {
@@ -479,9 +481,8 @@ export class PsReportDataService {
    * Entry point to create the data structure to pass to the transform step in the psychometric report generation
    * @param pupil
    */
-  public async getPupilData (pupil: Pupil): Promise<PupilResult> {
+  public async getPupilData (pupil: Pupil, school: School): Promise<PupilResult> {
     const promises: [
-      Promise<School>,
       Promise<CheckConfigOrNull>,
       Promise<CheckOrNull>,
       Promise<CheckFormOrNull>,
@@ -489,7 +490,6 @@ export class PsReportDataService {
       Promise<DeviceOrNull>,
       Promise<EventsOrNull>
     ] = [
-      this.getSchool(pupil.schoolId),
       this.getCheckConfig(pupil.currentCheckId),
       this.getCheck(pupil.currentCheckId),
       this.getCheckForm(pupil.currentCheckId),
@@ -497,7 +497,7 @@ export class PsReportDataService {
       this.getDevice(pupil.currentCheckId),
       this.getEvents(pupil.currentCheckId)
     ]
-    const [school, checkConfig, check, checkForm, answers, device, events] = await Promise.all(promises)
+    const [checkConfig, check, checkForm, answers, device, events] = await Promise.all(promises)
     return {
       pupil,
       school,

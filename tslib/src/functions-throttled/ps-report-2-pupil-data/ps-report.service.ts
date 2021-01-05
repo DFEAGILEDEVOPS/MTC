@@ -1,6 +1,6 @@
 import { ConsoleLogger, ILogger } from '../../common/logger'
 import { IPsReportDataService, PsReportDataService } from './ps-report.data.service'
-import { Pupil, PupilResult } from './models'
+import { Pupil, PupilResult, School } from './models'
 const functionName = 'ps-report-2-pupil-data'
 
 export class PsReportService {
@@ -16,6 +16,7 @@ export class PsReportService {
 
   async process (schoolUuid: string): Promise<void> {
     let pupils: Pupil[]
+    let school: School | undefined
     try {
       pupils = await this.dataService.getPupils(schoolUuid)
     } catch (error) {
@@ -24,8 +25,11 @@ export class PsReportService {
     }
     for (let i = 0; i < pupils.length; i++) {
       const pupil = pupils[i]
+      if (school === undefined) {
+        school = await this.dataService.getSchool(pupil.schoolId)
+      }
       try {
-        const result: PupilResult = await this.dataService.getPupilData(pupil)
+        const result: PupilResult = await this.dataService.getPupilData(pupil, school)
         // this.logger.verbose(`${functionName}: pupil result retrieved: ${JSON.stringify(result, null, 4)}`)
         this.outputBinding.push(result)
       } catch (error) {
