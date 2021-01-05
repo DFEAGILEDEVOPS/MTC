@@ -39,6 +39,10 @@ export class PsReportDataService {
     this.sqlService = sqlService ?? new SqlService(this.logger)
   }
 
+  /**
+   * Retrieve a list ofall pupils from the Database for a particular school
+   * @param schoolUuid
+   */
   public async getPupils (schoolUuid: string): Promise<Pupil[]> {
     const sql = `
         SELECT
@@ -100,6 +104,11 @@ export class PsReportDataService {
     return pupils
   }
 
+  /**
+   * Retrieve a school's details from the database
+   * TODO: add caching
+   * @param schoolId
+   */
   public async getSchool (schoolId: number): Promise<School> {
     const sql = `
         SELECT estabCode, id, leaCode, name, urlSlug, urn
@@ -130,6 +139,10 @@ export class PsReportDataService {
     return school
   }
 
+  /**
+   * Retrieve the settings assigned to the pupil check from the database
+   * @param checkId
+   */
   public async getCheckConfig (checkId: number | null): Promise<CheckConfigOrNull> {
     if (checkId === null) {
       return null
@@ -152,6 +165,10 @@ export class PsReportDataService {
     return JSON.parse(data.payload)
   }
 
+  /**
+   * Retrieve the check and result from the database
+   * @param checkId
+   */
   public async getCheck (checkId: number | null): Promise<CheckOrNull> {
     if (checkId === null) {
       // For pupils that have not taken a check, or are not attending
@@ -218,6 +235,11 @@ export class PsReportDataService {
     return check
   }
 
+  /**
+   * Retrieve the checkForm from the database
+   * TODO: add caching
+   * @param checkId
+   */
   public async getCheckForm (checkId: number | null): Promise<CheckFormOrNull> {
     if (checkId === null) {
       return null
@@ -256,6 +278,10 @@ export class PsReportDataService {
     return form
   }
 
+  /**
+   * Retrieve the inputs that constitute the answer from the database
+   * @param checkId
+   */
   public async getInputs (checkId: number): Promise<InputMap> {
     const sql = `
         SELECT a.id as answer_id, ui.userInput, uitl.code as userInputType, ui.browserTimestamp
@@ -299,6 +325,10 @@ export class PsReportDataService {
     return inputMap
   }
 
+  /**
+   * Retrieve answers and their inputs from the database
+   * @param checkId
+   */
   public async getAnswers (checkId: number | null): Promise<AnswersOrNull> {
     if (checkId === null) {
       return null
@@ -345,6 +375,10 @@ export class PsReportDataService {
     return answers
   }
 
+  /**
+   * Retrieve device information from the database
+   * @param checkId
+   */
   public async getDevice (checkId: number | null): Promise<DeviceOrNull> {
     if (checkId === null) {
       return null
@@ -382,6 +416,10 @@ export class PsReportDataService {
     return device
   }
 
+  /**
+   * Retrieve event information ordered by datetime from the database
+   * @param checkId
+   */
   public async getEvents (checkId: number | null): Promise<EventsOrNull> {
     if (checkId === null) {
       return null
