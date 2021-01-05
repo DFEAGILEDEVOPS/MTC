@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "artillery": "^1.6.0",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "azure-storage": "^2.10.2",
     "bcryptjs": "^2.4.3",
     "bluebird": "^3.5.3",
