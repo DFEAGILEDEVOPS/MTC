@@ -4,14 +4,13 @@ import { WarmupIntroRendered } from '../services/audit/auditEntry';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
 import { SpeechService } from '../services/speech/speech.service';
 import { QuestionService } from '../services/question/question.service';
-import { AppInsights } from 'applicationinsights-js';
 
 @Component({
   selector: 'app-warmup-intro',
   templateUrl: './warmup-intro.component.html',
   styles: []
 })
-export class WarmupIntroComponent implements OnInit, AfterViewInit, OnDestroy {
+export class WarmupIntroComponent implements AfterViewInit, OnDestroy {
 
   /**
    * Emit when the user clicks the button
@@ -34,10 +33,6 @@ export class WarmupIntroComponent implements OnInit, AfterViewInit, OnDestroy {
     this.window = windowRefService.nativeWindow;
     const config = questionService.getConfig();
     this.shouldShowMore = config && config.practice && (config.fontSize || config.colourContrast);
-  }
-
-  ngOnInit() {
-    AppInsights.trackPageView('Practice Questions', '/practice-questions');
   }
 
   ngAfterViewInit() {

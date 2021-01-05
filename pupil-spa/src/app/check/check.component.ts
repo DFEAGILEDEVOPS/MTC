@@ -10,10 +10,10 @@ import { QuestionService } from '../services/question/question.service';
 import { StorageService } from '../services/storage/storage.service';
 import { WarmupQuestionService } from '../services/question/warmup-question.service';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
-import { AppInsights } from 'applicationinsights-js';
 import { TimerService } from '../services/timer/timer.service';
 import { Router } from '@angular/router';
 import { CanExit } from '../routes/can-exit/can-exit.guard';
+import { ApplicationInsightsService } from '../services/app-insights/app-insights.service'
 
 @Component({
   selector: 'app-check',
@@ -50,6 +50,7 @@ export class CheckComponent implements OnInit, CanExit {
               private auditService: AuditService,
               private storageService: StorageService,
               protected windowRefService: WindowRefService,
+              private appInsightsService: ApplicationInsightsService,
               private router: Router) {
     this.window = windowRefService.nativeWindow;
   }
@@ -173,7 +174,7 @@ export class CheckComponent implements OnInit, CanExit {
         this.question = this.warmupQuestionService.getQuestion(parseInt(matches[ 1 ], 10));
         this.isWarmUp = true;
         this.viewState = 'warmup-preload';
-        AppInsights.trackPageView(
+        this.appInsightsService.trackPageView(
           `Practice loading ${parseInt(matches[ 1 ], 10)}`,
           `/practice-preload/${parseInt(matches[ 1 ], 10)}`
         );
@@ -186,7 +187,7 @@ export class CheckComponent implements OnInit, CanExit {
         // console.log(`state: ${stateDesc}: question is ${matches[ 1 ]}`);
         this.question = this.warmupQuestionService.getQuestion(parseInt(matches[ 1 ], 10));
         this.viewState = 'practice-question';
-        AppInsights.trackPageView(
+        this.appInsightsService.trackPageView(
           `Practice question ${parseInt(matches[ 1 ], 10)}`,
           `/practice-question/${parseInt(matches[ 1 ], 10)}`
         );
@@ -205,7 +206,7 @@ export class CheckComponent implements OnInit, CanExit {
         // Show the warmup complete screen
         this.isWarmUp = true;
         this.viewState = 'warmup-complete';
-        AppInsights.trackPageView(
+        this.appInsightsService.trackPageView(
           'Practice complete',
           '/practice-complete'
         );
@@ -216,7 +217,7 @@ export class CheckComponent implements OnInit, CanExit {
         this.isWarmUp = false;
         this.viewState = 'questions-intro';
         this.totalNumberOfQuestions = this.questionService.getNumberOfQuestions();
-        AppInsights.trackPageView(
+        this.appInsightsService.trackPageView(
           'Questions intro',
           '/questions-intro'
         );
@@ -229,7 +230,7 @@ export class CheckComponent implements OnInit, CanExit {
         const matches = CheckComponent.loadingRe.exec(stateDesc);
         this.question = this.questionService.getQuestion(parseInt(matches[ 1 ], 10));
         this.viewState = 'preload';
-        AppInsights.trackPageView(
+        this.appInsightsService.trackPageView(
           `Question loading ${parseInt(matches[ 1 ], 10)}`,
           `/preload/${parseInt(matches[ 1 ], 10)}`
         );
@@ -241,7 +242,7 @@ export class CheckComponent implements OnInit, CanExit {
         const matches = CheckComponent.questionRe.exec(stateDesc);
         this.question = this.questionService.getQuestion(parseInt(matches[ 1 ], 10));
         this.viewState = 'question';
-        AppInsights.trackPageView(
+        this.appInsightsService.trackPageView(
           `Question ${parseInt(matches[ 1 ], 10)}`,
           `/question/${parseInt(matches[ 1 ], 10)}`
         );
@@ -263,7 +264,7 @@ export class CheckComponent implements OnInit, CanExit {
         this.storageService.setPendingSubmission(true);
         this.isWarmUp = false;
         this.viewState = 'submission-pending';
-        AppInsights.trackPageView(
+        this.appInsightsService.trackPageView(
           'Submission pending',
           '/submission-pending'
         );

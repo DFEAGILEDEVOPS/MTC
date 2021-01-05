@@ -3,7 +3,8 @@ import { WindowRefService } from './services/window-ref/window-ref.service';
 import { AuditService } from './services/audit/audit.service';
 import { AppError } from './services/audit/auditEntry';
 import {LocationStrategy, PathLocationStrategy} from '@angular/common';
-import { AppInsights } from 'applicationinsights-js';
+import { APP_CONFIG } from './services/config/config.service'
+import { ApplicationInsightsService } from './services/app-insights/app-insights.service';
 
 @Injectable()
 export class GlobalErrorHandler implements ErrorHandler {
@@ -47,11 +48,17 @@ export class GlobalErrorHandler implements ErrorHandler {
       eventLabel: errorMessage
     });
 
-    AppInsights.trackPageView('Error', '/error');
-
-    AppInsights.trackEvent('Error', {
-      url: url,
-      errorMessage: errorMessage
-    });
+    if (APP_CONFIG.applicationInsightsInstrumentationKey) {
+      // usage of injector is apparently 'flaky' but explained here...
+      // https://tutorialsforangular.com/2020/02/03/adding-azure-application-insights-to-your-angular-app/
+      const appInsightsService = this.injector.get(ApplicationInsightsService);
+      appInsightsService.trackException(error);
+      appInsightsService.trackPageView('error', '/error');
+// necessary? we are now logging exception explicitly above
+/*       appInsights.trackEvent('Error', {
+        url: url,
+        errorMessage: errorMessage
+      }); */
+    }
   }
 }
