@@ -108,7 +108,6 @@ export class PsReportDataService {
 
   /**
    * Retrieve a school's details from the database
-   * TODO: add caching
    * @param schoolId
    */
   public async getSchool (schoolId: number): Promise<School> {
