@@ -436,9 +436,9 @@ describe('pupil validator', function () {
 
       it('invalid date should be rejected', async () => {
         req.body = getBody()
-        req.body['dob-day'] = '29'
-        req.body['dob-month'] = '02'
-        req.body['dob-year'] = validYear.toString()
+        req.body['dob-day'] = '32'
+        req.body['dob-month'] = '13'
+        req.body['dob-year'] = '200'
         const schoolId = 2
         const validationError = await pupilValidator.validate(req.body, schoolId)
         expect(validationError.hasError()).toBe(true)
