@@ -5,6 +5,8 @@ const ts = require('gulp-typescript')
 const yarn = require('gulp-yarn')
 const clean = require('gulp-clean')
 const proj = ts.createProject('../tslib/tsconfig.json')
+const path = require('path')
+const watchDirectory = path.join(__dirname, '..', 'tslib', 'src', 'functions-throttled')
 
 gulp.task('clean', () => {
   return gulp.src(['./dist'], { read: false, allowEmpty: true })
@@ -28,4 +30,8 @@ gulp.task('deleteSpecFiles', () => {
     .pipe(clean())
 })
 
-gulp.task('default', gulp.series('clean', gulp.parallel('yarnInstall', 'compileTslib'), 'deleteSpecFiles'))
+gulp.task('watch', () => {
+  gulp.watch(`${watchDirectory}/**/**/*.ts`, gulp.series('compileTslib'))
+})
+
+gulp.task('default', gulp.series('clean', 'yarnInstall', 'deleteSpecFiles', 'compileTslib'))
