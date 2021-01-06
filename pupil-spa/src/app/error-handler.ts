@@ -49,16 +49,10 @@ export class GlobalErrorHandler implements ErrorHandler {
     });
 
     if (APP_CONFIG.applicationInsightsInstrumentationKey) {
-      // usage of injector is apparently 'flaky' but explained here...
-      // https://tutorialsforangular.com/2020/02/03/adding-azure-application-insights-to-your-angular-app/
+      // using injector directly to avoid recursive errors...
       const appInsightsService = this.injector.get(ApplicationInsightsService);
       appInsightsService.trackException(error);
       appInsightsService.trackPageView('error', '/error');
-// necessary? we are now logging exception explicitly above
-/*       appInsights.trackEvent('Error', {
-        url: url,
-        errorMessage: errorMessage
-      }); */
     }
   }
 }
