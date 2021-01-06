@@ -1,41 +1,31 @@
 'use strict'
 
-const { series, src, dest } = require('gulp')
+const gulp = require('gulp')
 const ts = require('gulp-typescript')
 const yarn = require('gulp-yarn')
-const rimraf = require('rimraf')
+const clean = require('gulp-clean')
+const proj = ts.createProject('../tslib/tsconfig.json')
 
-function clean (cb) {
-  rimraf('./dist', (error) => {
-    if (error) {
-      console.error(error)
-    }
-    cb(error)
-  })
-}
+gulp.task('clean', () => {
+  return gulp.src(['./dist'], { read: false, allowEmpty: true })
+    .pipe(clean())
+})
 
-function compileTslib (cb) {
-  const proj = ts.createProject('../tslib/tsconfig.json')
-  proj.src()
+gulp.task('compileTslib', () => {
+  return proj.src()
     .pipe(proj())
-    .js.pipe(dest('./dist'))
-  cb()
-}
+    .js.pipe(gulp.dest('./dist'))
+})
 
-function yarnInstall (cb) {
-  src(['../tslib/package.json', '../tslib/yarn.lock'])
-    .pipe(dest('../tslib'))
+gulp.task('yarnInstall', () => {
+  return gulp.src(['../tslib/package.json', '../tslib/yarn.lock'])
+    .pipe(gulp.dest('../tslib'))
     .pipe(yarn())
-  cb()
-}
+})
 
-function deleteSpecFiles (cb) {
-  rimraf('./dist/**/**/*.spec.js', (error) => {
-    if (error) {
-      console.error(error)
-    }
-    cb(error)
-  })
-}
+gulp.task('deleteSpecFiles', () => {
+  return gulp.src(['./dist/**/**/*.spec.js'])
+    .pipe(clean())
+})
 
-exports.default = series(clean, yarnInstall, compileTslib, deleteSpecFiles)
+gulp.task('default', gulp.series('clean', gulp.parallel('yarnInstall', 'compileTslib'), 'deleteSpecFiles'))
