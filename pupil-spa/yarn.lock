@@ -1081,15 +1081,6 @@
     "@microsoft/applicationinsights-shims" "1.0.3"
     "@microsoft/dynamicproto-js" "^1.1.0"
 
-"@microsoft/applicationinsights-angularplugin-js@^2.5.10":
-  version "2.5.10"
-  resolved "https://registry.yarnpkg.com/@microsoft/applicationinsights-angularplugin-js/-/applicationinsights-angularplugin-js-2.5.10.tgz#78fac6ccf7f7beaa1540de177abe90ef606bef40"
-  integrity sha512-2UAyHfUhq+O1j1ouJv+d+fhluSlNrI5vUhrtS4kic78TwjLMvOKmZyA1vQ2MetcbW6QkhbLOSrJpDxj4Gdxqyw==
-  dependencies:
-    "@microsoft/applicationinsights-common" "2.5.10"
-    "@microsoft/applicationinsights-core-js" "2.5.10"
-    "@microsoft/applicationinsights-shims" "^1.0.3"
-
 "@microsoft/applicationinsights-channel-js@2.5.10":
   version "2.5.10"
   resolved "https://registry.yarnpkg.com/@microsoft/applicationinsights-channel-js/-/applicationinsights-channel-js-2.5.10.tgz#60be5fe6d2f90ff295cb3be007d484046031d868"
@@ -1135,7 +1126,7 @@
     "@microsoft/applicationinsights-core-js" "2.5.10"
     "@microsoft/applicationinsights-shims" "1.0.3"
 
-"@microsoft/applicationinsights-shims@1.0.3", "@microsoft/applicationinsights-shims@^1.0.3":
+"@microsoft/applicationinsights-shims@1.0.3":
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/@microsoft/applicationinsights-shims/-/applicationinsights-shims-1.0.3.tgz#9f1d16bab0430f25cc17611c537756cf4dfd3833"
   integrity sha512-+S17aqEkOYpyBpmclhgwcEplwnxSo5AxYBdRg38GBobI1GKPSpZfnLssLzcjJ6XZCS5tqB5xjyTZs6gHj7ZJWQ==
