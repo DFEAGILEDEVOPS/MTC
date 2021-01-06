@@ -80,7 +80,7 @@ import { SvgLoadingComponent } from './svg/svg.loading.component';
 import { SvgWarningComponent } from './svg/svg.warning.component';
 import { TimerService } from './services/timer/timer.service';
 import { WebsiteOfflineComponent } from './website-offline/website-offline.component';
-import { ApplicationInsightsService } from './services/app-insights/app-insights.service'
+import { ApplicationInsightsService } from './services/app-insights/app-insights.service';
 
 declare var AzureStorage: IAzureStorage;
 

@@ -3,7 +3,7 @@ import { WindowRefService } from './services/window-ref/window-ref.service';
 import { AuditService } from './services/audit/audit.service';
 import { AppError } from './services/audit/auditEntry';
 import {LocationStrategy, PathLocationStrategy} from '@angular/common';
-import { APP_CONFIG } from './services/config/config.service'
+import { APP_CONFIG } from './services/config/config.service';
 import { ApplicationInsightsService } from './services/app-insights/app-insights.service';
 
 @Injectable()

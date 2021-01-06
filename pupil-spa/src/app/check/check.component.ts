@@ -13,7 +13,7 @@ import { WindowRefService } from '../services/window-ref/window-ref.service';
 import { TimerService } from '../services/timer/timer.service';
 import { Router } from '@angular/router';
 import { CanExit } from '../routes/can-exit/can-exit.guard';
-import { ApplicationInsightsService } from '../services/app-insights/app-insights.service'
+import { ApplicationInsightsService } from '../services/app-insights/app-insights.service';
 
 @Component({
   selector: 'app-check',
