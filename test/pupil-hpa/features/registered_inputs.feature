@@ -10,7 +10,6 @@ Feature: Registered Inputs
     Given I have used the physical screen keyboard to complete the check
     Then I should see all my keyboard inputs recorded
 
-  @wip
   Scenario: Backspace is recorded when using the on screen keyboard
     Given I have used backspace to correct my answer using the on screen keyboard
     Then I should see backspace numpad event recorded
