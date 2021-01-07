@@ -1,5 +1,5 @@
 'use stict'
-var moment = require('moment-timezone')
+const moment = require('moment-timezone')
 const tzMetaData = require('moment-timezone/data/meta/latest.json')
 
 const getOffset = zone => {
