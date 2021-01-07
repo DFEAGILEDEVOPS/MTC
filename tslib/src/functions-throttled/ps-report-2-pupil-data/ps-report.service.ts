@@ -15,7 +15,7 @@ export class PsReportService {
   }
 
   async process (schoolUuid: string): Promise<void> {
-    let pupils: Pupil[]
+    let pupils: readonly Pupil[]
     let school: School | undefined
     try {
       pupils = await this.dataService.getPupils(schoolUuid)

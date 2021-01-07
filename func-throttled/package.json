@@ -15,8 +15,8 @@
     "clean": "rm -rf ./dist",
     "prestart": "yarn build",
     "start:host": "func host start --port 7073",
-    "start": "concurrently -r 'yarn start:host' 'gulp watch'",
-    "start:dev": "env $(cat disable-functions.env | grep Azure | xargs ) yarn start --verbose"
+    "start": "yarn start:host",
+    "start:dev": "concurrently -r 'env $(cat disable-functions.env | grep Azure | xargs ) yarn start' 'gulp watch'"
   },
   "resolutions": {
     "**/**/lodash": "^4.17.20"

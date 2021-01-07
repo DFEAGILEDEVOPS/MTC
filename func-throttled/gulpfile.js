@@ -34,4 +34,4 @@ gulp.task('watch', () => {
   gulp.watch(`${watchDirectory}/**/**/*.ts`, gulp.series('compileTslib'))
 })
 
-gulp.task('default', gulp.series('clean', 'yarnInstall', 'deleteSpecFiles', 'compileTslib'))
+gulp.task('default', gulp.series('clean', 'yarnInstall', 'compileTslib', 'deleteSpecFiles'))
