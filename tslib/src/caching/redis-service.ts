@@ -3,6 +3,7 @@ import config from '../config'
 import * as Logger from '../common/logger'
 import { RedisCacheItem, RedisItemDataType } from './RedisCacheItemMetadata'
 import { isNil } from 'ramda'
+import { ILogger } from '../common/logger'
 
 export interface IRedisService {
   /**
@@ -63,7 +64,7 @@ export class RedisService implements IRedisService {
   private readonly redis: Redis.Redis
   private readonly logger: Logger.ILogger
 
-  constructor () {
+  constructor (logger?: ILogger) {
     const options: RedisOptions = {
       port: Number(config.Redis.Port),
       host: config.Redis.Host,
@@ -75,7 +76,7 @@ export class RedisService implements IRedisService {
       }
     }
     this.redis = new Redis(options)
-    this.logger = new Logger.ConsoleLogger()
+    this.logger = logger ?? new Logger.ConsoleLogger()
   }
 
   async get (key: string): Promise<unknown | undefined> {

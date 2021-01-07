@@ -3,7 +3,7 @@ import * as R from 'ramda'
 
 import config from '../../../config'
 import pupilIdentificationService, { IdentifiedPupilResult } from './pupil-identification.service'
-import redisKeyService from './redis-key.service'
+import redisKeyService from '../../../caching/redis-key.service'
 import sortService from '../../../common/table-sorting'
 import { ConsoleLogger, ILogger } from '../../../common/logger'
 import { IRedisService, RedisService } from '../../../caching/redis-service'
