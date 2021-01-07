@@ -7,7 +7,7 @@ import completeCheckPayload from '../../schemas/complete-check-payload'
 import config from '../../config'
 
 const httpTrigger: AzureFunction = function (context: Context, req: HttpRequest): void {
-  if (!config.DevTestUtils.SubmitCheckForLoadTestFunctionEnabled) {
+  if (!config.DevTestUtils.TestSupportApi) {
     context.log('exiting as not enabled (default behaviour)')
     context.done()
     return

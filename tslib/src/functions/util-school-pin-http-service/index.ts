@@ -13,7 +13,7 @@ function finish (start: number, context: Context): void {
 }
 
 const schoolPinHttpService: AzureFunction = async function (context: Context, req: HttpRequest): Promise<void> {
-  if (!config.DevTestUtils.SchoolPinHttpServiceFunctionEnabled) {
+  if (!config.DevTestUtils.TestSupportApi) {
     context.log('exiting as not enabled (default behaviour)')
     context.done()
     return
