@@ -65,6 +65,28 @@ describe('ps-report.data.service', () => {
       expect(p.slug).toBe('jkl')
       expect(p.upn).toBe('mno')
     })
+
+    test('the pupil array is readonly', async () => {
+      (mockSqlService.query as jest.Mock).mockResolvedValueOnce([
+        {
+          attendanceId: 1,
+          checkComplete: false,
+          currentCheckId: 2,
+          dateOfBirth: moment.utc('2011-01-21'),
+          foreName: 'abc',
+          gender: 'F',
+          id: 3,
+          lastName: 'def',
+          notTakingCheckReason: 'ghi',
+          school_id: 4,
+          urlSlug: 'jkl',
+          upn: 'mno'
+        }
+      ])
+      const pupils = await sut.getPupils('abc-def')
+      expect(Object.isFrozen(pupils)).toBe(true)
+      expect(Object.isFrozen(pupils[0])).toBe(true)
+    })
   })
 
   describe('#getSchool', () => {
@@ -92,6 +114,21 @@ describe('ps-report.data.service', () => {
       (mockSqlService.query as jest.Mock).mockResolvedValueOnce([])
       await expect(async () => { await sut.getSchool(1) }).rejects.toThrow(/ERROR: School not found/)
     })
+
+    test('the return object is readonly', async () => {
+      (mockSqlService.query as jest.Mock).mockResolvedValueOnce([
+        {
+          estabCode: 1,
+          id: 2,
+          leaCode: 3,
+          name: 'abc',
+          urlSlug: 'def',
+          urn: 4
+        }
+      ])
+      const school = await sut.getSchool(2)
+      expect(Object.isFrozen(school)).toBe(true)
+    })
   })
 
   describe('#getCheckConfig', () => {
@@ -112,6 +149,13 @@ describe('ps-report.data.service', () => {
     test('it throws if the checkConfig can\'t be found', async () => {
       (mockSqlService.query as jest.Mock).mockResolvedValueOnce([])
       await expect(async () => { await sut.getCheckConfig(1) }).rejects.toThrow('getCheckConfig(): failed to retrieve any settings')
+    })
+
+    test('the return obj is readonly', async () => {
+      (mockSqlService.query as jest.Mock).mockResolvedValueOnce([
+        { payload: '{ "foo": "bar" }' }])
+      const checkConfig = await sut.getCheckConfig(1)
+      expect(Object.isFrozen(checkConfig)).toBe(true)
     })
   })
 
@@ -163,6 +207,28 @@ describe('ps-report.data.service', () => {
       const check = await sut.getCheck(1)
       expect(check).toBeNull()
     })
+
+    test('the return obj is readonly', async () => {
+      (mockSqlService.query as jest.Mock).mockResolvedValueOnce([
+        {
+          checkCode: 'abc',
+          checkForm_id: 1,
+          checkWindow_id: 2,
+          complete: true,
+          completedAt: moment('2021-01-04T10:07:12.345Z'),
+          id: 3,
+          inputAssistantAddedRetrospectively: true,
+          isLiveCheck: false,
+          mark: 4,
+          processingFailed: true,
+          pupilLoginDate: moment('2021-01-04T10:00:00.123Z'),
+          received: false,
+          restartNumber: 5
+        }
+      ])
+      const check = await sut.getCheck(3)
+      expect(Object.isFrozen(check)).toBe(true)
+    })
   })
 
   describe('#getCheckForm', () => {
@@ -204,6 +270,17 @@ describe('ps-report.data.service', () => {
       const form1Again = await sut.getCheckForm(1)
       expect(mockSqlService.query).toHaveBeenCalledTimes(1)
       expect(form1).toStrictEqual(form1Again)
+    })
+
+    test('the return obj is readonly', async () => {
+      (mockSqlService.query as jest.Mock).mockResolvedValueOnce([
+        {
+          id: 1,
+          name: 'UT Form 1',
+          formData: '[{"f1":1,"f2":1},{"f1":1,"f2":2}]'
+        }])
+      const checkForm = await sut.getCheckForm(1)
+      expect(Object.isFrozen(checkForm)).toBe(true)
     })
   })
 
@@ -294,6 +371,34 @@ describe('ps-report.data.service', () => {
       expect(answer.questionCode).toBe('Q002')
       expect(answer.response).toBe('2')
     })
+
+    test('the return object is readonly', async () => {
+      (mockSqlService.query as jest.Mock).mockResolvedValueOnce([
+        {
+          id: 1,
+          answer: '2',
+          questionCode: 'Q002',
+          question: '1x2',
+          isCorrect: true,
+          browserTimestamp: moment('2021-02-04T15:06:01.333Z')
+        }])
+        .mockResolvedValueOnce([
+          {
+            answer_id: 1,
+            userInput: '2',
+            inputType: 'M',
+            browserTimestamp: moment('2021-02-04T15:06:01.111Z')
+          }])
+      const answers = await sut.getAnswers(1)
+      if (answers === null) {
+        fail('answers are not defined')
+      }
+      expect(Object.isFrozen(answers)).toBe(true)
+      expect(Object.isFrozen(answers[0])).toBe(true)
+      expect(Object.isFrozen(answers[0].inputs)).toBe(true)
+      // @ts-ignore - we know it shouldn't be null
+      expect(Object.isFrozen(answers[0].inputs[0])).toBe(true)
+    })
   })
 
   describe('#getDevice', () => {
@@ -329,6 +434,20 @@ describe('ps-report.data.service', () => {
       expect(device.deviceId).toBe('def')
       expect(device.type).toBeNull() // TODO: add device.type
       expect(device.typeModel).toBeNull() // TODO: add device type model
+    })
+
+    test('the return obj is readonly', async () => {
+      (mockSqlService.query as jest.Mock).mockResolvedValueOnce([
+        {
+          browserFamily: 'abc',
+          browserMajorVersion: 1,
+          browserMinorVersion: 2,
+          browserPatchVersion: 3,
+          ident: 'def'
+        }]
+      )
+      const device = await sut.getDevice(1)
+      expect(Object.isFrozen(device)).toBe(true)
     })
   })
 
@@ -371,6 +490,25 @@ describe('ps-report.data.service', () => {
       expect(event.questionCode).toBe('Q001')
       expect(event.questionNumber).toBe(1)
       expect(event.type).toBe('PauseRendered')
+    })
+
+    test('the return obj is readonly', async () => {
+      (mockSqlService.query as jest.Mock).mockResolvedValueOnce([
+        {
+          id: 1,
+          browserTimestamp: moment('2021-01-05T05:56:01.122Z'),
+          eventType: 'PauseRendered',
+          eventData: '{ "question": "1x1"}',
+          questionCode: 'Q001',
+          questionNumber: 1,
+          question: '1x1',
+          isWarmup: false
+        }]
+      )
+      const events = await sut.getEvents(1)
+      expect(Object.isFrozen(events)).toBe(true)
+      // @ts-ignore - events won't be null
+      expect(Object.isFrozen(events[0])).toBe(true)
     })
   })
 
@@ -430,6 +568,26 @@ describe('ps-report.data.service', () => {
       expect(pupilData.answers).toBeNull()
       expect(pupilData.device).toBeNull()
       expect(pupilData.events).toBeNull()
+    })
+
+    test('the return obj is readonly', async () => {
+      const pupil = {
+        schoolId: 1,
+        currentCheckId: null
+      }
+      ;(mockSqlService.query as jest.Mock).mockResolvedValueOnce([
+        {
+          estabCode: 1,
+          id: 2,
+          leaCode: 3,
+          name: 'abc',
+          urlSlug: 'def',
+          urn: 4
+        }
+      ])
+      // @ts-ignore: `pupil` is missing many properties that are not used in the sut and are omitted for clarity
+      const pupilData = await sut.getPupilData(pupil, mockSchool)
+      expect(Object.isFrozen(pupilData)).toBe(true)
     })
   })
 })

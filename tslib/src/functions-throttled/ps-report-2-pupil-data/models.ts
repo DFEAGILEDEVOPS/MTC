@@ -84,12 +84,12 @@ export interface Input {
   browserTimestamp: moment.Moment
 }
 
-export type InputMap = Map<number, Input[] | null>
+export type InputMap = Map<number, readonly Input[] | null>
 
 export interface Answer {
   browserTimestamp: moment.Moment
   id: number
-  inputs: Input[] | null
+  inputs: readonly Input[] | null
   isCorrect: boolean
   question: string
   questionCode: string
@@ -110,9 +110,9 @@ export interface Event {
 export type CheckConfigOrNull = CheckConfig | null
 export type CheckOrNull = Check | null
 export type CheckFormOrNull = CheckForm | null
-export type AnswersOrNull = Answer[] | null
+export type AnswersOrNull = readonly Answer[] | null
 export type DeviceOrNull = Device | null
-export type EventsOrNull = Event[] | null
+export type EventsOrNull = readonly Event[] | null
 export type nullOrUndef = undefined | null
 
 /**

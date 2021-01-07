@@ -25,7 +25,7 @@ import moment from 'moment'
 const functionName = 'ps-report-2-pupil-data'
 
 export interface IPsReportDataService {
-  getPupils (schoolUuid: string): Promise<Pupil[]>
+  getPupils (schoolUuid: string): Promise<readonly Pupil[]>
 
   getPupilData (pupil: Pupil, school: School): Promise<PupilResult>
 
@@ -46,7 +46,7 @@ export class PsReportDataService {
    * Retrieve a list of all pupils from the Database for a particular school
    * @param schoolUuid
    */
-  public async getPupils (schoolUuid: string): Promise<Pupil[]> {
+  public async getPupils (schoolUuid: string): Promise<readonly Pupil[]> {
     const sql = `
         SELECT
                         p.id,
@@ -64,7 +64,7 @@ export class PsReportDataService {
           FROM mtc_admin.pupil p
                JOIN      mtc_admin.school s ON (p.school_id = s.id)
                LEFT JOIN mtc_admin.attendanceCode ac ON (p.attendanceId = ac.id)
-         WHERE s.urlSlug = @slug
+         WHERE s.urlSlug = @slug AND p.id = 12  
     `
     const params = [
       { name: 'slug', value: schoolUuid, type: TYPES.UniqueIdentifier }
@@ -88,7 +88,7 @@ export class PsReportDataService {
     const data: DBPupil[] = await this.sqlService.query(sql, params)
 
     const pupils: Pupil[] = data.map(o => {
-      const pupil: Pupil = {
+      const pupil: Pupil = Object.freeze({
         attendanceId: o.attendanceId,
         checkComplete: o.checkComplete,
         currentCheckId: o.currentCheckId,
@@ -101,10 +101,10 @@ export class PsReportDataService {
         schoolId: o.school_id,
         slug: o.urlSlug,
         upn: o.upn
-      }
+      })
       return pupil
     })
-    return pupils
+    return Object.freeze(pupils)
   }
 
   /**
@@ -138,7 +138,7 @@ export class PsReportDataService {
       slug: data.urlSlug,
       urn: data.urn
     }
-    return school
+    return Object.freeze(school)
   }
 
   /**
@@ -164,7 +164,7 @@ export class PsReportDataService {
     if (data === undefined) {
       throw new Error('getCheckConfig(): failed to retrieve any settings')
     }
-    return JSON.parse(data.payload)
+    return Object.freeze(JSON.parse(data.payload))
   }
 
   /**
@@ -234,7 +234,7 @@ export class PsReportDataService {
       received: data.received,
       restartNumber: data.restartNumber
     }
-    return check
+    return Object.freeze(check)
   }
 
   /**
@@ -281,7 +281,7 @@ export class PsReportDataService {
       })
     }
     this.checkFormCache.set(checkFormId, form)
-    return form
+    return Object.freeze(form)
   }
 
   /**
@@ -315,17 +315,17 @@ export class PsReportDataService {
         inputMap.set(o.answer_id, null)
         return
       }
-      const input: Input = {
+      const input: Input = Object.freeze({
         answerId: answerId,
         browserTimestamp: o.browserTimestamp,
         input: o.userInput,
         inputType: o.inputType
-      }
+      })
       const existingInputs = inputMap.get(answerId)
       if (Array.isArray(existingInputs)) {
-        inputMap.set(answerId, R.append(input, existingInputs))
+        inputMap.set(answerId, Object.freeze(R.append(input, existingInputs)))
       } else {
-        inputMap.set(answerId, [input])
+        inputMap.set(answerId, Object.freeze([input]))
       }
     })
     return inputMap
@@ -368,7 +368,7 @@ export class PsReportDataService {
 
     const answers: Answer[] = resAnswers.map(o => {
       const inputs = inputsMap.get(o.id)
-      return {
+      return Object.freeze({
         browserTimestamp: o.browserTimestamp,
         id: o.id,
         inputs: inputs ?? null, // ensure undefined does not get set
@@ -376,9 +376,9 @@ export class PsReportDataService {
         question: o.question,
         questionCode: o.questionCode,
         response: o.answer
-      }
+      })
     })
-    return answers
+    return Object.freeze(answers)
   }
 
   /**
@@ -410,7 +410,7 @@ export class PsReportDataService {
     if (data === undefined) {
       return null
     }
-    const device: Device = {
+    const device: Device = Object.freeze({
       browserFamily: data.browserFamily,
       browserMajorVersion: data.browserMajorVersion,
       browserMinorVersion: data.browserMinorVersion,
@@ -418,7 +418,7 @@ export class PsReportDataService {
       deviceId: data.ident,
       type: null, // TODO: store this at sync time
       typeModel: null // TODO: store this at sync time
-    }
+    })
     return device
   }
 
@@ -465,7 +465,7 @@ export class PsReportDataService {
     }
 
     const events: Event[] = res.map(o => {
-      const e: Event = {
+      const e: Event = Object.freeze({
         browserTimestamp: o.browserTimestamp,
         data: JSON.parse(o.eventData),
         id: o.id,
@@ -474,11 +474,11 @@ export class PsReportDataService {
         questionCode: o.questionCode,
         questionNumber: o.questionNumber,
         type: o.eventType
-      }
+      })
       return e
     })
 
-    return events
+    return Object.freeze(events)
   }
 
   /**
@@ -504,7 +504,7 @@ export class PsReportDataService {
     if (check !== null) {
       checkForm = await this.getCheckForm(check.checkFormId)
     }
-    return {
+    return Object.freeze({
       pupil,
       school,
       checkConfig: checkConfig,
@@ -513,6 +513,6 @@ export class PsReportDataService {
       answers: answers,
       device: device,
       events: events
-    }
+    })
   }
 }
