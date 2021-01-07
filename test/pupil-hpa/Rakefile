@@ -9,13 +9,15 @@ require_relative 'features/support/browserstack_settings'
 
 ENV['GROUP_SIZE'] ||= '5'
 
-File.truncate('rerun.txt', 0) if File.exist?('rerun.txt')
-File.truncate('rerun0.txt', 0) if File.exist?('rerun0.txt')
-
-Cucumber::Rake::Task.new(:features) do |t|
+Cucumber::Rake::Task.new(:features, 'Run all features') do |t|
+  File.truncate('rerun.txt', 0) if File.exist?('rerun.txt')
   @start_time = Time.now
   t.cucumber_opts = "--format pretty --retry 2 -f rerun -o rerun.txt DRIVER=#{(ENV['DRIVER']) ? ENV['DRIVER'] : 'headless_chrome'}"
   t.cucumber_opts << " #{ENV['OPTS']}" unless ENV['OPTS'].nil?
+end
+
+Cucumber::Rake::Task.new(:rerun, 'Rerun using rerun.txt') do |t|
+  t.cucumber_opts = "@rerun.txt --format pretty DRIVER=#{(ENV['DRIVER']) ? ENV['DRIVER'] : 'headless_chrome'}"
 end
 
 features = Dir["features/*.feature"]
@@ -31,3 +33,6 @@ array_of_features.each do |features|
   end
 end
 
+at_exit do
+  Rake::Task['rerun'].invoke if Rake.application.top_level_tasks.first == 'features' and !File.read('rerun.txt').empty?
+end

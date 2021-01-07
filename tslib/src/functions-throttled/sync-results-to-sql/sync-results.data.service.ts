@@ -19,6 +19,8 @@ export interface ISyncResultsDataService {
   prepareDeviceData (validatedCheck: ValidatedCheck): Promise<ITransactionRequest>
 
   prepareEvents (validatedCheck: ValidatedCheck): Promise<ITransactionRequest>
+
+  getSchoolId (schoolUuid: string): Promise<number | undefined>
 }
 
 export class SyncResultsDataService implements ISyncResultsDataService {
@@ -325,5 +327,21 @@ export class SyncResultsDataService implements ISyncResultsDataService {
       // re-throw the original error
       throw error
     }
+  }
+
+  /**
+   * Fetch the DB ID for a school from the UUID
+   * @param {string} schoolUuid
+   * @return {number}
+   */
+  public async getSchoolId (schoolUuid: string): Promise<number | undefined> {
+    const sql = 'SELECT id FROM mtc_admin.school WHERE urlslug = @urlSlug'
+    const param = { name: 'urlSlug', value: schoolUuid, type: TYPES.UniqueIdentifier }
+    const data: Array<{id: number}> = await this.sqlService.query(sql, [param])
+    const school = R.head(data)
+    if (school === undefined) {
+      return undefined
+    }
+    return school.id
   }
 }

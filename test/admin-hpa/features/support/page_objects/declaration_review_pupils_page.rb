@@ -7,7 +7,7 @@ class DeclarationReviewPupilsPage < SitePrism::Page
 
     section :pupil_list, '#attendanceList tbody' do
       sections :rows, 'tr' do
-        element :name, '.govuk-highlight-wrapper'
+        element :name, '.govuk-highlight-wrapper span'
         element :reason, 'td:nth-of-type(2)'
         element :link, 'a'
       end
