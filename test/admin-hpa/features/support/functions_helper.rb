@@ -14,7 +14,7 @@ class FunctionsHelper
   end
 
   def self.generate_school_pin(school_id)
-    HTTParty.post(ENV['FUNC_CONSUMP_BASE_URL'] + "/api/school-pin-http-service", :body => {'school_id' => school_id}.to_json, headers: {'Content-Type' => 'application/json'})
+    HTTParty.post(ENV['FUNC_CONSUMP_BASE_URL'] + "/api/util-school-pin-http-service", :body => {'school_id' => school_id}.to_json, headers: {'Content-Type' => 'application/json'})
   end
 
 end
