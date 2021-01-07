@@ -15,5 +15,5 @@
       "name": "res"
     }
   ],
-  "scriptFile": "../dist/functions/school-pin-http-service/index.js"
+  "scriptFile": "../dist/functions/util-school-pin-http-service/index.js"
 }
