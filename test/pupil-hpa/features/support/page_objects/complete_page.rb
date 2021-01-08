@@ -9,17 +9,10 @@ class CompletePage < SitePrism::Page
   element :start_again, 'a', text: 'start again'
 
   def wait_for_complete_page
-    i = 0
-    while i < 20
-      if(has_heading?)
-        puts "Complete Page is visible."
-        break
-      else
-        puts "waiting for Complete Page to be visible. Visibility status is: #{has_heading?}"
-        sleep 0.5
-        i = i + 1
-      end
-    end
+    p 'waiting for Complete page to be displayed'
+    p Time.now
+    Timeout.timeout(60){sleep 0.5 until has_heading?}
+    p 'Complete page displayed'
   end
 
 end

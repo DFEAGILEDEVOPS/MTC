@@ -6,6 +6,18 @@ Before do
   visit ENV['ADMIN_BASE_URL'] + '/sign-out'
 end
 
+Before('@new_school') do
+  @urn = SqlDbHelper.get_schools_list.map{|school| school['urn']}.sort.last + 1
+  @estab_code = SqlDbHelper.get_schools_list.map{|school| school['estabCode']}.sort.last + 1
+  @name = "Test School - #{@urn}"
+  @school = FunctionsHelper.create_school(@estab_code,@name, @urn)
+  school_uuid = @school['entity']['urlSlug']
+  @username = "teacher#{@urn}"
+  @school_user = FunctionsHelper.create_user(school_uuid,@username)
+  school_id = @school_user['entity']['school_id']
+  FunctionsHelper.generate_school_pin(school_id)
+end
+
 Before('@service_manager_message') do
   step 'I am on the manage service message page'
   manage_service_message_page.remove_service_message if manage_service_message_page.has_remove_message?
@@ -23,14 +35,11 @@ Before('@school_import') do
 end
 
 Before("@delete_school_import") do
+  SqlDbHelper.delete_schools_imported
   files = AZURE_BLOB_CLIENT.list_blobs('school-import').map {|a| a.name}
   files.each do |filename|
     AZURE_BLOB_CLIENT.delete_blob('school-import', filename)
   end
-end
-
-Before("@delete_school_import") do
-  SqlDbHelper.delete_schools_imported
 end
 
 Before('@incomplete_pupil') do
@@ -244,10 +253,17 @@ After("@redis") do
   end
 end
 
-After("@result") do
+After("@results") do
   today_date = Date.today
   check_end_date = today_date + 35
   SqlDbHelper.update_check_end_date(check_end_date)
+  REDIS_CLIENT.keys.each do |key|
+    if key.include?('checkWindow.sqlFindActiveCheckWindow')
+      REDIS_CLIENT.del key
+    end
+  end
+  step "I am logged in"
+  visit ENV['ADMIN_BASE_URL'] + '/sign-out'
 end
 
 
