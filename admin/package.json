@@ -27,7 +27,7 @@
     "watch:integration": "yarn jest --watch --coverage=no --config ./tests-integration/jest.integration.config.js"
   },
   "mtc": {
-    "assets-version": "da66b28c388fc13af9a7aa7922df1012"
+    "assets-version": "0e359980d011d1e57ea2270795f6be96"
   },
   "engines": {
     "node": ">= 12"
@@ -77,7 +77,6 @@
     "passport": "^0.4.0",
     "passport-custom": "^1.0.5",
     "passport-local": "^1.0.0",
-    "piping": "^1.0.0-rc.4",
     "postgrator": "^4.0.1",
     "qrcode": "^1.0.0",
     "ramda": "^0.27.0",

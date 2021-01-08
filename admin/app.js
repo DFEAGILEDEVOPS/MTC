@@ -31,7 +31,6 @@ const express = require('express')
 const featureToggles = require('feature-toggles')
 const flash = require('connect-flash')
 const LocalStrategy = require('passport-local').Strategy
-const piping = require('piping')
 const partials = require('express-partials')
 const passport = require('passport')
 const session = require('express-session')
@@ -123,12 +122,6 @@ const results = require('./routes/results')
 const pupilStatus = require('./routes/pupil-status')
 const websiteOffline = require('./routes/website-offline')
 const techSupport = require('./routes/tech-support')
-
-if (process.env.NODE_ENV === 'development') {
-  piping({
-    ignore: [/test/, /coverage/, /.*\.spec.js/]
-  })
-}
 
 setupBrowserSecurity(app)
 
