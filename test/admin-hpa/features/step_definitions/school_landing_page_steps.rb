@@ -25,7 +25,7 @@ Then(/^I should see an option to go to the submit the attendance register area$/
 end
 
 Then(/^I should see an option to view the results$/) do
-  expect(school_landing_page).to have_results
+  expect(school_landing_page).to have_results_disabled
 end
 
 When(/^I decide to logout$/) do

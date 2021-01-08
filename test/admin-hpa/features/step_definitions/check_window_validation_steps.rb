@@ -84,7 +84,7 @@ end
 
 When(/^I enter dates that are in the past$/) do
   today_date = Date.today
-  @admin_start_date = today_date - 3
+  @admin_start_date = today_date - 2
   @admin_end_date = today_date - 1
   @familiarisation_start_date = today_date - 2
   @familiarisation_end_date = today_date - 1
