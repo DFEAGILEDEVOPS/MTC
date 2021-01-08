@@ -84,7 +84,7 @@
     "random-number-csprng": "^1.0.2",
     "serve-favicon": "^2.4.5",
     "to-bool": "^0.0.1",
-    "uuid": "^3.1.0",
+    "uuid": "^8.3.2",
     "uuid-validate": "^0.0.3",
     "validator": "^13.5.2",
     "winston": "^3.1.0",

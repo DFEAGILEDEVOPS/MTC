@@ -37,7 +37,7 @@ const session = require('express-session')
 const setupBrowserSecurity = require('./helpers/browserSecurity')
 const setupLogging = require('./helpers/logger')
 const preventDuplicateFormSubmission = require('./helpers/prevent-duplicate-submit')
-const uuidV4 = require('uuid/v4')
+const { v4: uuidv4 } = require('uuid')
 const authModes = require('./lib/consts/auth-modes')
 const dfeSignInStrategy = require('./authentication/dfe-signin-strategy')
 const redisCacheService = require('./services/data-access/redis-cache.service')
@@ -319,7 +319,7 @@ app.use(function (req, res, next) {
 
 // error handler
 app.use(function (err, req, res, next) {
-  const errorId = uuidV4()
+  const errorId = uuidv4()
   // set locals, only providing error in development
   logger.error(`ERROR: ${err.message} ID: ${errorId}`, err)
 
