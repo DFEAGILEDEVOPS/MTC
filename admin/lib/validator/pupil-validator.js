@@ -90,7 +90,8 @@ module.exports.validate = async (pupilData, schoolId, isMultiplePupilsSubmission
   const currentUTCDate = moment.utc()
   const currentYear = currentUTCDate.year()
   const academicYear = currentUTCDate.isBetween(moment.utc(`${currentYear}-01-01`), moment.utc(`${currentYear}-08-31`), null, '[]')
-    ? currentYear - 1 : currentYear
+    ? currentYear - 1
+    : currentYear
   // Invalid case
   // We need to specify a different error messages if fields have the wrong number of digits
   if (!dob.isValid() && /^\d{3,}$/.test(pupilData['dob-day'])) {

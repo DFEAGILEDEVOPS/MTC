@@ -79,7 +79,7 @@ const init = async () => {
     FROM ${sqlService.adminSchema}.[accessArrangements]`
 
   const accessArrangements = await sqlService.readonlyQuery(sql)
-  accessArrangements.map(aa => {
+  accessArrangements.forEach(aa => {
     accessArrangementCodes[aa.code] = { id: aa.id, code: aa.code }
   })
 }
