@@ -1,5 +1,6 @@
 Feature: Data Sync
 
+  @new_school
   Scenario Outline: Answers of a check are synced correctly
     Given my check has been marked with <number_of_correct_answers> correct answers
     When the data sync function has run
