@@ -189,3 +189,17 @@ Azure Storage queue for testing connectivity with azure resources from the pupil
 **Consumers**: none
 
 **Publishers**: pupil check application
+
+
+
+## ps-report-2-pupil-data
+
+Azure Service Bus queue in the psychometric report generation pipeline.  This function takes a school as input and extracts all the information required for the report to ps-report-staging,
+
+```
+{
+	name: string
+	uuid: string
+}
+```
+

@@ -75,6 +75,7 @@ const resultService = {
    * @typedef {object} CreatePupilDataRetval
    * @property {?string} attendanceCode
    * @property {moment.Moment} dateOfBirth
+   * @property {moment.Moment} originalDateOfBirth
    * @property {string} foreName
    * @property {string} gender
    * @property {?number} group_id
@@ -98,6 +99,9 @@ const resultService = {
         lastName: o.lastName,
         group_id: o.group_id,
         dateOfBirth: o.dateOfBirth,
+        // Workaround for bug in the addIdentificationFlags() call which makes dateOfBirth either a date type or a
+        // string type.  Ignore dateOfBirth and use this property to get a known data type.
+        originalDateOfBirth: o.dateOfBirth,
         score: o.mark,
         status: this.assignStatus(o),
         urlSlug: o.urlSlug,
