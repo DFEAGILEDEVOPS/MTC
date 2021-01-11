@@ -40,6 +40,7 @@ ENV["PUPIL_API_BASE_URL"] ||= 'http://localhost:3003'
 ENV["FUNC_THROTTLED_BASE_URL"] ||= 'http://localhost:7073/admin/functions'
 ENV["FUNC_THROTTLED_MASTER_KEY"] ||= nil
 ENV['WAIT_TIME'] ||= '300'
+ENV['FUNC_CONSUMP_BASE_URL'] ||= 'http://localhost:7071'
 
 # Webdrivers::Chromedriver.required_version='83.0.4103.39'
 Webdrivers.logger.level = :FATAL
@@ -52,7 +53,25 @@ Capybara.configure do |config|
 end
 
 Capybara.register_driver(:chrome) do |app|
-  Capybara::Selenium::Driver.new(app, browser: :chrome)
+  browser_options = ::Selenium::WebDriver::Chrome::Options.new
+  browser_options.add_preference(:download, directory_upgrade: true,
+                                 prompt_for_download: false,
+                                 default_directory:
+                                   File.expand_path("#{File.dirname(__FILE__)}/../../data/ctf_download"))
+  browser_options.add_preference(:browser, set_download_behavior: { behavior: 'allow' })
+
+  driver = Capybara::Selenium::Driver.new(app, browser: :chrome, options: browser_options)
+  bridge = driver.browser.send(:bridge)
+
+  path = '/session/:session_id/chromium/send_command'
+  path[':session_id'] = bridge.session_id
+
+  bridge.http.call(:post, path, cmd: 'Page.setDownloadBehavior',
+                   params: {
+                     behavior: 'allow',
+                     downloadPath: File.expand_path("#{File.dirname(__FILE__)}/../../data/ctf_download")
+                   })
+  driver
 end
 
 Capybara.register_driver :poltergeist do |app|
@@ -66,7 +85,24 @@ Capybara.register_driver :headless_chrome do |app|
   browser_options.args << '--allow-insecure-localhost'
   browser_options.args << '--no-sandbox'
   browser_options.args << '--window-size=1280,1696'
-  Capybara::Selenium::Driver.new(app, browser: :chrome, options: browser_options)
+  browser_options.add_preference(:download, directory_upgrade: true,
+                 prompt_for_download: false,
+                 default_directory:
+                                   File.expand_path("#{File.dirname(__FILE__)}/../../data/ctf_download"))
+  browser_options.add_preference(:browser, set_download_behavior: { behavior: 'allow' })
+
+  driver = Capybara::Selenium::Driver.new(app, browser: :chrome, options: browser_options)
+  bridge = driver.browser.send(:bridge)
+
+  path = '/session/:session_id/chromium/send_command'
+  path[':session_id'] = bridge.session_id
+
+  bridge.http.call(:post, path, cmd: 'Page.setDownloadBehavior',
+                   params: {
+                     behavior: 'allow',
+                     downloadPath: File.expand_path("#{File.dirname(__FILE__)}/../../data/ctf_download")
+                   })
+  driver
 end
 
 Dir.mkdir("reports") unless File.directory?("reports")
@@ -136,9 +172,6 @@ if azure_test == 'true'
 else
   REDIS_CLIENT = Redis.new(host: "#{redis_host}", port: redis_port)
 end
-
-# clear redis cache before run
-REDIS_CLIENT.flushall
 
 # BrowserStack env vars
 if (File.exist?('../../.env')) && (File.read('../../.env').include? 'BROWSERSTACK')
