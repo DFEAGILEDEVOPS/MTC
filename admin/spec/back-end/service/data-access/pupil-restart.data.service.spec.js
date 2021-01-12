@@ -9,19 +9,6 @@ const sqlService = require('../../../../services/data-access/sql.service')
 describe('pupil-restart.data.service', () => {
   let service
 
-  describe('#sqlGetNumberOfRestartsByPupil', () => {
-    beforeEach(() => {
-      spyOn(sqlService, 'query').and.returnValue(Promise.resolve([{ cnt: 1 }]))
-      service = require('../../../../services/data-access/pupil-restart.data.service')
-    })
-
-    it('it makes the expected calls', async () => {
-      const res = await service.sqlGetNumberOfRestartsByPupil(pupilMock.id)
-      expect(sqlService.query).toHaveBeenCalled()
-      expect(res).toBe(1)
-    })
-  })
-
   describe('#sqlFindLatestRestart', () => {
     beforeEach(() => {
       spyOn(sqlService, 'query').and.returnValue(Promise.resolve([pupilRestartMock]))
