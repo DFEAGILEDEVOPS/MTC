@@ -17,7 +17,8 @@ const TableServiceMock = jest.fn<IAsyncTableService, any>(() => ({
   replaceEntityAsync: jest.fn(),
   queryEntitiesAsync: jest.fn(),
   deleteEntityAsync: jest.fn(),
-  insertEntityAsync: jest.fn()
+  insertEntityAsync: jest.fn(),
+  retrieveEntityAsync: jest.fn()
 }))
 
 const SqlServiceMock = jest.fn<ICheckFormService, any>(() => ({

@@ -29,8 +29,8 @@ const TableServiceMock = jest.fn<IAsyncTableService, any>(() => ({
   }),
 
   deleteEntityAsync: jest.fn(async (): Promise<any> => { return Promise.resolve('mock') }),
-
-  insertEntityAsync: jest.fn(async (): Promise<any> => { return Promise.resolve({}) })
+  insertEntityAsync: jest.fn(async (): Promise<any> => { return Promise.resolve({}) }),
+  retrieveEntityAsync: jest.fn(async (): Promise<any> => { return Promise.resolve({}) })
 }))
 
 const LoggerMock = jest.fn<ILogger, any>(() => ({

@@ -148,7 +148,7 @@ describe('New check window add validator', function () {
       checkWindowData.familiarisationCheckEndYear = moment.utc().format('YYYY')
       checkWindowData.liveCheckStartDay = moment.utc().format('DD')
       checkWindowData.liveCheckStartMonth = moment.utc().format('MM')
-      checkWindowData.liveCheckStartYea = moment.utc().format('YYYY')
+      checkWindowData.liveCheckStartYear = moment.utc().format('YYYY')
       checkWindowData.liveCheckEndDay = moment.utc().format('DD')
       checkWindowData.liveCheckEndMonth = moment.utc().format('MM')
       checkWindowData.liveCheckEndYear = moment.utc().format('YYYY')
