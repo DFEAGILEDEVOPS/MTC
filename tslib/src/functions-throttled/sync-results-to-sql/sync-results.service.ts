@@ -46,7 +46,7 @@ export class SyncResultsService {
     ])
 
     await this.syncResultsDataService.insertToDatabase([flattenedTransaction], checkCompletionMessage?.markedCheck?.checkCode)
-    this.logger.info(`${name}: going to drop the redis cache for schooll ${checkCompletionMessage?.validatedCheck?.schoolUUID}`)
+    this.logger.info(`${name}: going to drop the redis cache for school ${checkCompletionMessage?.validatedCheck?.schoolUUID}`)
     await this.dropRedisSchoolResult(checkCompletionMessage?.validatedCheck?.schoolUUID)
   }
 
