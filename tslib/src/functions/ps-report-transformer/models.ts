@@ -1,0 +1,4 @@
+
+interface PsychometricReport {
+  pupilId: number
+}
