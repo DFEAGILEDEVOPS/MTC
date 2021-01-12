@@ -21,6 +21,7 @@ const getEnvironment = (): string => {
 }
 
 const oneMinuteInMilliseconds = 60000
+const tenMinutesInMilliseconds = oneMinuteInMilliseconds * 10
 const twoHoursInMilliseconds = oneMinuteInMilliseconds * 120
 const sixMonthsInSeconds = 15778800
 
@@ -34,7 +35,7 @@ export default {
     database: process.env.SQL_DATABASE ?? 'mtc',
     connectionTimeout: parseInt(parser.valueOrSubstitute(process.env.SQL_CONNECTION_TIMEOUT, oneMinuteInMilliseconds), 10),
     censusRequestTimeout: parseInt(parser.valueOrSubstitute(process.env.SQL_CENSUS_REQUEST_TIMEOUT, twoHoursInMilliseconds), 10),
-    requestTimeout: parseInt(parser.valueOrSubstitute(process.env.SQL_REQUEST_TIMEOUT, oneMinuteInMilliseconds), 10),
+    requestTimeout: parseInt(parser.valueOrSubstitute(process.env.SQL_REQUEST_TIMEOUT, tenMinutesInMilliseconds), 10),
     options: {
       encrypt: parser.propertyExists(process.env, 'SQL_ENCRYPT') ? parser.primitiveToBoolean(process.env.SQL_ENCRYPT) : true,
       useUTC: true,
