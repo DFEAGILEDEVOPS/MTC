@@ -6,7 +6,7 @@ if (!window.MTCAdmin) {
   window.MTCAdmin = {}
 }
 
-/* global $ stickyBanner */
+/* global $ stickyBanner inputStatus */
 (function () {
   window.MTCAdmin.pupilFilter = function () {
     if ($('.filter-name').length > 0) {
@@ -32,11 +32,14 @@ if (!window.MTCAdmin) {
 
           if (isPupilExcluded) {
             $(this).addClass('filter-hidden-name')
+            // If the pupil that is being hidden is checked, then we should uncheck the pupil
+            $(this).find('[type="checkbox"]').prop('checked', false)
           } else {
             $(this).removeClass('filter-hidden-name')
           }
         })
 
+        stickyBanner.outputCheckedCheckboxes(inputStatus.countCheckedCheckboxes())
         stickyBanner.calculatePosition()
       })
       // Edge / IE hack to detect input clearing
