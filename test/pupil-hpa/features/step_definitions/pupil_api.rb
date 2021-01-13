@@ -55,7 +55,7 @@ And(/^I should see the correct response headers$/) do
   expect(@response.headers['strict-transport-security']).to eql 'max-age=31536000; includeSubDomains; preload'
   expect(@response.headers['x-download-options']).to eql 'noopen'
   expect(@response.headers['x-content-type-options']).to eql 'nosniff'
-  expect(@response.headers['x-xss-protection']).to eql '1; mode=block'
+  expect(@response.headers['x-xss-protection']).to eql '0'
   expect(@response.headers['content-type']).to eql 'application/json; charset=utf-8'
 end
 

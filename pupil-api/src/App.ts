@@ -19,7 +19,7 @@ import * as express from 'express'
 import * as bodyParser from 'body-parser'
 import * as cors from 'cors'
 import * as helmet from 'helmet'
-import * as uuidV4 from 'uuid/v4'
+import { v4 as uuidv4 } from 'uuid'
 import * as appInsights from './helpers/app-insights'
 const corsOptions = require('./helpers/cors-options')
 const setupLogging = require('./helpers/logger')
@@ -112,7 +112,7 @@ class App {
 
     // error handler
     this.express.use(function (err, req, res, next) {
-      const errorId = uuidV4()
+      const errorId = uuidv4()
       // only providing error information in development
       // @TODO: change this to a real logger with an error string that contains
       // all pertinent information. Assume 2nd/3rd line support would pick this
