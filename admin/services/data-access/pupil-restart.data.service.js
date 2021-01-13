@@ -8,29 +8,6 @@ const pupilRestartDataService = {}
 /** SQL METHODS **/
 
 /**
- * Returns number of restarts specified by pupil id
- * @param pupilId
- * @return {Promise.<*>}
- */
-pupilRestartDataService.sqlGetNumberOfRestartsByPupil = async function (pupilId) {
-  const sql = `SELECT COUNT(*) AS [cnt]
-  FROM [mtc_admin].[pupilRestart]
-  WHERE pupil_id=@pupilId AND isDeleted=0
-  AND DATEDIFF(day, createdAt, GETUTCDATE()) = 0`
-  const params = [
-    {
-      name: 'pupilId',
-      value: pupilId,
-      type: TYPES.Int
-    }
-  ]
-  const result = await sqlService.query(sql, params)
-  const obj = R.head(result)
-  // @ts-ignore R.head returns a string, but its actually a row object
-  return R.prop('cnt', obj)
-}
-
-/**
  * Find latest restart for pupil
  * @param pupilId
  * @return {Promise.<object>}
@@ -105,6 +82,7 @@ pupilRestartDataService.sqlFindRestartReasons = async function () {
 
 /**
  * Mark an existing pupil restart as deleted
+ * This is called when a restart is deleted by a teacher.
  * @param restartId
  * @param userId
  * @return {Promise<*>}

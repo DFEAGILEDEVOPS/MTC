@@ -1,0 +1,961 @@
+{
+  "checkCode": "FB80E28B-3552-4DBC-878A-FC375D115F78",
+  "schoolUUID": "BC4A9E88-E8E4-486B-8708-A080C8F78A9D",
+  "config": {
+    "audibleSounds": false,
+    "checkTime": 30,
+    "colourContrast": false,
+    "fontSize": false,
+    "inputAssistance": false,
+    "loadingTime": 3,
+    "nextBetweenQuestions": false,
+    "numpadRemoval": false,
+    "practice": false,
+    "questionReader": false,
+    "questionTime": 6,
+    "compressCompletedCheck": true
+  },
+  "device": {
+    "battery": {
+      "isCharging": true,
+      "levelPercent": 100,
+      "chargingTime": 0,
+      "dischargingTime": null
+    },
+    "cpu": {
+      "hardwareConcurrency": 10
+    },
+    "navigator": {
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.101 Safari/537.36",
+      "platform": "MacIntel",
+      "language": "en-GB",
+      "cookieEnabled": true,
+      "doNotTrack": null
+    },
+    "networkConnection": {
+      "downlink": 10,
+      "effectiveType": "4g",
+      "rtt": 200
+    },
+    "screen": {
+      "screenWidth": 3840,
+      "screenHeight": 1200,
+      "outerWidth": 1897,
+      "outerHeight": 1070,
+      "innerWidth": 1897,
+      "innerHeight": 1070,
+      "colorDepth": 24,
+      "orientation": "landscape-primary"
+    },
+    "deviceId": "7bae9b93-8f6b-4eaf-9563-8555f280aec6",
+    "appUsageCounter": 1
+  },
+  "pupil": {
+    "checkCode": "FB80E28B-3552-4DBC-878A-FC375D115F78"
+  },
+  "questions": [
+    {
+      "order": 1,
+      "factor1": 2,
+      "factor2": 5
+    },
+    {
+      "order": 2,
+      "factor1": 11,
+      "factor2": 2
+    },
+    {
+      "order": 3,
+      "factor1": 5,
+      "factor2": 10
+    },
+    {
+      "order": 4,
+      "factor1": 4,
+      "factor2": 4
+    },
+    {
+      "order": 5,
+      "factor1": 3,
+      "factor2": 9
+    },
+    {
+      "order": 6,
+      "factor1": 2,
+      "factor2": 4
+    },
+    {
+      "order": 7,
+      "factor1": 3,
+      "factor2": 3
+    },
+    {
+      "order": 8,
+      "factor1": 4,
+      "factor2": 9
+    },
+    {
+      "order": 9,
+      "factor1": 6,
+      "factor2": 5
+    },
+    {
+      "order": 10,
+      "factor1": 12,
+      "factor2": 12
+    }
+  ],
+  "school": {
+    "name": "Example School One",
+    "uuid": "BC4A9E88-E8E4-486B-8708-A080C8F78A9D"
+  },
+  "tokens": {
+    "checkStarted": {
+      "token": "st=2020-12-16T16%3A17%3A00Z&se=2020-12-17T17%3A22%3A00Z&sp=a&sv=2018-03-28&sig=<redacted>",
+      "url": "https://my-storage-account.queue.core.windows.net/check-started",
+      "queueName": "check-started"
+    },
+    "pupilPreferences": {
+      "token": "st=2020-12-16T16%3A17%3A00Z&se=2020-12-17T17%3A22%3A00Z&sp=a&sv=2018-03-28&sig=<redacted>",
+      "url": "https://my-storage-account.queue.core.windows.net/pupil-prefs",
+      "queueName": "pupil-prefs"
+    },
+    "pupilFeedback": {
+      "token": "st=2020-12-16T16%3A17%3A00Z&se=2020-12-17T17%3A22%3A00Z&sp=a&sv=2018-03-28&sig=<redacted>",
+      "url": "https://my-storage-account.queue.core.windows.net/pupil-feedback",
+      "queueName": "pupil-feedback"
+    },
+    "jwt": {
+      "token": "token-disabled"
+    },
+    "checkComplete": {
+      "token": "st=2020-12-16T16%3A17%3A00Z&se=2020-12-17T17%3A22%3A00Z&sp=a&sv=2018-03-28&sig=<redacted>",
+      "url": "https://my-storage-account.queue.core.windows.net/check-submitted",
+      "queueName": "check-submitted"
+    }
+  },
+  "audit": [
+    {
+      "type": "WarmupStarted",
+      "clientTimestamp": "2020-12-16T16:22:15.442Z"
+    },
+    {
+      "type": "WarmupIntroRendered",
+      "clientTimestamp": "2020-12-16T16:22:15.453Z"
+    },
+    {
+      "type": "PauseRendered",
+      "clientTimestamp": "2020-12-16T16:22:16.367Z",
+      "data": {
+        "sequenceNumber": 1,
+        "question": "1x12",
+        "isWarmup": true
+      }
+    },
+    {
+      "type": "QuestionRendered",
+      "clientTimestamp": "2020-12-16T16:22:19.373Z",
+      "data": {
+        "sequenceNumber": 1,
+        "question": "1x12",
+        "isWarmup": true
+      }
+    },
+    {
+      "type": "QuestionTimerStarted",
+      "clientTimestamp": "2020-12-16T16:22:19.373Z",
+      "data": {
+        "sequenceNumber": 1,
+        "question": "1x12",
+        "isWarmup": true
+      }
+    },
+    {
+      "type": "QuestionTimerCancelled",
+      "clientTimestamp": "2020-12-16T16:22:21.392Z",
+      "data": {
+        "sequenceNumber": 1,
+        "question": "1x12",
+        "isWarmup": true
+      }
+    },
+    {
+      "type": "QuestionAnswered",
+      "clientTimestamp": "2020-12-16T16:22:21.392Z",
+      "data": {
+        "sequenceNumber": 1,
+        "question": "1x12",
+        "isWarmup": true
+      }
+    },
+    {
+      "type": "PauseRendered",
+      "clientTimestamp": "2020-12-16T16:22:21.393Z",
+      "data": {
+        "sequenceNumber": 2,
+        "question": "2x2",
+        "isWarmup": true
+      }
+    },
+    {
+      "type": "QuestionRendered",
+      "clientTimestamp": "2020-12-16T16:22:24.397Z",
+      "data": {
+        "sequenceNumber": 2,
+        "question": "2x2",
+        "isWarmup": true
+      }
+    },
+    {
+      "type": "QuestionTimerStarted",
+      "clientTimestamp": "2020-12-16T16:22:24.398Z",
+      "data": {
+        "sequenceNumber": 2,
+        "question": "2x2",
+        "isWarmup": true
+      }
+    },
+    {
+      "type": "QuestionAnswered",
+      "clientTimestamp": "2020-12-16T16:22:24.991Z",
+      "data": {
+        "sequenceNumber": 2,
+        "question": "2x2",
+        "isWarmup": true
+      }
+    },
+    {
+      "type": "QuestionTimerCancelled",
+      "clientTimestamp": "2020-12-16T16:22:24.991Z",
+      "data": {
+        "sequenceNumber": 2,
+        "question": "2x2",
+        "isWarmup": true
+      }
+    },
+    {
+      "type": "PauseRendered",
+      "clientTimestamp": "2020-12-16T16:22:24.992Z",
+      "data": {
+        "sequenceNumber": 3,
+        "question": "10x10",
+        "isWarmup": true
+      }
+    },
+    {
+      "type": "QuestionTimerStarted",
+      "clientTimestamp": "2020-12-16T16:22:27.997Z",
+      "data": {
+        "sequenceNumber": 3,
+        "question": "10x10",
+        "isWarmup": true
+      }
+    },
+    {
+      "type": "QuestionRendered",
+      "clientTimestamp": "2020-12-16T16:22:27.997Z",
+      "data": {
+        "sequenceNumber": 3,
+        "question": "10x10",
+        "isWarmup": true
+      }
+    },
+    {
+      "type": "QuestionTimerCancelled",
+      "clientTimestamp": "2020-12-16T16:22:28.603Z",
+      "data": {
+        "sequenceNumber": 3,
+        "question": "10x10",
+        "isWarmup": true
+      }
+    },
+    {
+      "type": "QuestionAnswered",
+      "clientTimestamp": "2020-12-16T16:22:28.603Z",
+      "data": {
+        "sequenceNumber": 3,
+        "question": "10x10",
+        "isWarmup": true
+      }
+    },
+    {
+      "type": "WarmupCompleteRendered",
+      "clientTimestamp": "2020-12-16T16:22:28.604Z"
+    },
+    {
+      "type": "QuestionIntroRendered",
+      "clientTimestamp": "2020-12-16T16:22:30.383Z"
+    },
+    {
+      "type": "CheckStarted",
+      "clientTimestamp": "2020-12-16T16:22:31.168Z"
+    },
+    {
+      "type": "CheckStartedApiCalled",
+      "clientTimestamp": "2020-12-16T16:22:31.169Z"
+    },
+    {
+      "type": "PauseRendered",
+      "clientTimestamp": "2020-12-16T16:22:31.179Z",
+      "data": {
+        "sequenceNumber": 1,
+        "question": "2x5",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "CheckStartedAPICallSucceeded",
+      "clientTimestamp": "2020-12-16T16:22:31.567Z"
+    },
+    {
+      "type": "QuestionRendered",
+      "clientTimestamp": "2020-12-16T16:22:34.184Z",
+      "data": {
+        "sequenceNumber": 1,
+        "question": "2x5",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionTimerStarted",
+      "clientTimestamp": "2020-12-16T16:22:34.184Z",
+      "data": {
+        "sequenceNumber": 1,
+        "question": "2x5",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionTimerCancelled",
+      "clientTimestamp": "2020-12-16T16:22:37.884Z",
+      "data": {
+        "sequenceNumber": 1,
+        "question": "2x5",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionAnswered",
+      "clientTimestamp": "2020-12-16T16:22:37.884Z",
+      "data": {
+        "sequenceNumber": 1,
+        "question": "2x5",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "PauseRendered",
+      "clientTimestamp": "2020-12-16T16:22:37.885Z",
+      "data": {
+        "sequenceNumber": 2,
+        "question": "11x2",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionRendered",
+      "clientTimestamp": "2020-12-16T16:22:40.888Z",
+      "data": {
+        "sequenceNumber": 2,
+        "question": "11x2",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionTimerStarted",
+      "clientTimestamp": "2020-12-16T16:22:40.889Z",
+      "data": {
+        "sequenceNumber": 2,
+        "question": "11x2",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionAnswered",
+      "clientTimestamp": "2020-12-16T16:22:41.382Z",
+      "data": {
+        "sequenceNumber": 2,
+        "question": "11x2",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "PauseRendered",
+      "clientTimestamp": "2020-12-16T16:22:41.382Z",
+      "data": {
+        "sequenceNumber": 3,
+        "question": "5x10",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionTimerCancelled",
+      "clientTimestamp": "2020-12-16T16:22:41.382Z",
+      "data": {
+        "sequenceNumber": 2,
+        "question": "11x2",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionTimerStarted",
+      "clientTimestamp": "2020-12-16T16:22:44.388Z",
+      "data": {
+        "sequenceNumber": 3,
+        "question": "5x10",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionRendered",
+      "clientTimestamp": "2020-12-16T16:22:44.388Z",
+      "data": {
+        "sequenceNumber": 3,
+        "question": "5x10",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionTimerCancelled",
+      "clientTimestamp": "2020-12-16T16:22:44.812Z",
+      "data": {
+        "sequenceNumber": 3,
+        "question": "5x10",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionAnswered",
+      "clientTimestamp": "2020-12-16T16:22:44.812Z",
+      "data": {
+        "sequenceNumber": 3,
+        "question": "5x10",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "PauseRendered",
+      "clientTimestamp": "2020-12-16T16:22:44.813Z",
+      "data": {
+        "sequenceNumber": 4,
+        "question": "4x4",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionRendered",
+      "clientTimestamp": "2020-12-16T16:22:47.819Z",
+      "data": {
+        "sequenceNumber": 4,
+        "question": "4x4",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionTimerStarted",
+      "clientTimestamp": "2020-12-16T16:22:47.819Z",
+      "data": {
+        "sequenceNumber": 4,
+        "question": "4x4",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionTimerEnded",
+      "clientTimestamp": "2020-12-16T16:22:53.823Z",
+      "data": {
+        "sequenceNumber": 4,
+        "question": "4x4",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "PauseRendered",
+      "clientTimestamp": "2020-12-16T16:22:53.824Z",
+      "data": {
+        "sequenceNumber": 5,
+        "question": "3x9",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionRendered",
+      "clientTimestamp": "2020-12-16T16:22:56.830Z",
+      "data": {
+        "sequenceNumber": 5,
+        "question": "3x9",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionTimerStarted",
+      "clientTimestamp": "2020-12-16T16:22:56.830Z",
+      "data": {
+        "sequenceNumber": 5,
+        "question": "3x9",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionAnswered",
+      "clientTimestamp": "2020-12-16T16:23:01.271Z",
+      "data": {
+        "sequenceNumber": 5,
+        "question": "3x9",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionTimerCancelled",
+      "clientTimestamp": "2020-12-16T16:23:01.271Z",
+      "data": {
+        "sequenceNumber": 5,
+        "question": "3x9",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "PauseRendered",
+      "clientTimestamp": "2020-12-16T16:23:01.272Z",
+      "data": {
+        "sequenceNumber": 6,
+        "question": "2x4",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionRendered",
+      "clientTimestamp": "2020-12-16T16:23:04.275Z",
+      "data": {
+        "sequenceNumber": 6,
+        "question": "2x4",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionTimerStarted",
+      "clientTimestamp": "2020-12-16T16:23:04.275Z",
+      "data": {
+        "sequenceNumber": 6,
+        "question": "2x4",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionTimerCancelled",
+      "clientTimestamp": "2020-12-16T16:23:04.859Z",
+      "data": {
+        "sequenceNumber": 6,
+        "question": "2x4",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionAnswered",
+      "clientTimestamp": "2020-12-16T16:23:04.859Z",
+      "data": {
+        "sequenceNumber": 6,
+        "question": "2x4",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "PauseRendered",
+      "clientTimestamp": "2020-12-16T16:23:04.859Z",
+      "data": {
+        "sequenceNumber": 7,
+        "question": "3x3",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionTimerStarted",
+      "clientTimestamp": "2020-12-16T16:23:07.863Z",
+      "data": {
+        "sequenceNumber": 7,
+        "question": "3x3",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionRendered",
+      "clientTimestamp": "2020-12-16T16:23:07.863Z",
+      "data": {
+        "sequenceNumber": 7,
+        "question": "3x3",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionAnswered",
+      "clientTimestamp": "2020-12-16T16:23:08.279Z",
+      "data": {
+        "sequenceNumber": 7,
+        "question": "3x3",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionTimerCancelled",
+      "clientTimestamp": "2020-12-16T16:23:08.279Z",
+      "data": {
+        "sequenceNumber": 7,
+        "question": "3x3",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "PauseRendered",
+      "clientTimestamp": "2020-12-16T16:23:08.280Z",
+      "data": {
+        "sequenceNumber": 8,
+        "question": "4x9",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionRendered",
+      "clientTimestamp": "2020-12-16T16:23:11.285Z",
+      "data": {
+        "sequenceNumber": 8,
+        "question": "4x9",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionTimerStarted",
+      "clientTimestamp": "2020-12-16T16:23:11.285Z",
+      "data": {
+        "sequenceNumber": 8,
+        "question": "4x9",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionTimerCancelled",
+      "clientTimestamp": "2020-12-16T16:23:12.048Z",
+      "data": {
+        "sequenceNumber": 8,
+        "question": "4x9",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionAnswered",
+      "clientTimestamp": "2020-12-16T16:23:12.048Z",
+      "data": {
+        "sequenceNumber": 8,
+        "question": "4x9",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "PauseRendered",
+      "clientTimestamp": "2020-12-16T16:23:12.048Z",
+      "data": {
+        "sequenceNumber": 9,
+        "question": "6x5",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionTimerStarted",
+      "clientTimestamp": "2020-12-16T16:23:15.052Z",
+      "data": {
+        "sequenceNumber": 9,
+        "question": "6x5",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionRendered",
+      "clientTimestamp": "2020-12-16T16:23:15.052Z",
+      "data": {
+        "sequenceNumber": 9,
+        "question": "6x5",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionAnswered",
+      "clientTimestamp": "2020-12-16T16:23:15.614Z",
+      "data": {
+        "sequenceNumber": 9,
+        "question": "6x5",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionTimerCancelled",
+      "clientTimestamp": "2020-12-16T16:23:15.614Z",
+      "data": {
+        "sequenceNumber": 9,
+        "question": "6x5",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "PauseRendered",
+      "clientTimestamp": "2020-12-16T16:23:15.616Z",
+      "data": {
+        "sequenceNumber": 10,
+        "question": "12x12",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionTimerStarted",
+      "clientTimestamp": "2020-12-16T16:23:18.621Z",
+      "data": {
+        "sequenceNumber": 10,
+        "question": "12x12",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionRendered",
+      "clientTimestamp": "2020-12-16T16:23:18.621Z",
+      "data": {
+        "sequenceNumber": 10,
+        "question": "12x12",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "CheckSubmissionPending",
+      "clientTimestamp": "2020-12-16T16:23:18.944Z"
+    },
+    {
+      "type": "QuestionTimerCancelled",
+      "clientTimestamp": "2020-12-16T16:23:18.944Z",
+      "data": {
+        "sequenceNumber": 10,
+        "question": "12x12",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionAnswered",
+      "clientTimestamp": "2020-12-16T16:23:18.944Z",
+      "data": {
+        "sequenceNumber": 10,
+        "question": "12x12",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "CheckSubmissionApiCalled",
+      "clientTimestamp": "2020-12-16T16:23:18.947Z"
+    }
+  ],
+  "inputs": [
+    {
+      "input": "1",
+      "eventType": "keyboard",
+      "clientTimestamp": "2020-12-16T16:22:37.737Z",
+      "question": "2x5",
+      "sequenceNumber": 1
+    },
+    {
+      "input": "Enter",
+      "eventType": "keyboard",
+      "clientTimestamp": "2020-12-16T16:22:37.883Z",
+      "question": "2x5",
+      "sequenceNumber": 1
+    },
+    {
+      "input": "1",
+      "eventType": "keyboard",
+      "clientTimestamp": "2020-12-16T16:22:41.269Z",
+      "question": "11x2",
+      "sequenceNumber": 2
+    },
+    {
+      "input": "Enter",
+      "eventType": "keyboard",
+      "clientTimestamp": "2020-12-16T16:22:41.382Z",
+      "question": "11x2",
+      "sequenceNumber": 2
+    },
+    {
+      "input": "1",
+      "eventType": "keyboard",
+      "clientTimestamp": "2020-12-16T16:22:44.711Z",
+      "question": "5x10",
+      "sequenceNumber": 3
+    },
+    {
+      "input": "Enter",
+      "eventType": "keyboard",
+      "clientTimestamp": "2020-12-16T16:22:44.812Z",
+      "question": "5x10",
+      "sequenceNumber": 3
+    },
+    {
+      "input": "1",
+      "eventType": "keyboard",
+      "clientTimestamp": "2020-12-16T16:23:01.002Z",
+      "question": "3x9",
+      "sequenceNumber": 5
+    },
+    {
+      "input": "Enter",
+      "eventType": "keyboard",
+      "clientTimestamp": "2020-12-16T16:23:01.271Z",
+      "question": "3x9",
+      "sequenceNumber": 5
+    },
+    {
+      "input": "1",
+      "eventType": "keyboard",
+      "clientTimestamp": "2020-12-16T16:23:04.701Z",
+      "question": "2x4",
+      "sequenceNumber": 6
+    },
+    {
+      "input": "Enter",
+      "eventType": "keyboard",
+      "clientTimestamp": "2020-12-16T16:23:04.859Z",
+      "question": "2x4",
+      "sequenceNumber": 6
+    },
+    {
+      "input": "1",
+      "eventType": "keyboard",
+      "clientTimestamp": "2020-12-16T16:23:08.166Z",
+      "question": "3x3",
+      "sequenceNumber": 7
+    },
+    {
+      "input": "Enter",
+      "eventType": "keyboard",
+      "clientTimestamp": "2020-12-16T16:23:08.279Z",
+      "question": "3x3",
+      "sequenceNumber": 7
+    },
+    {
+      "input": "1",
+      "eventType": "keyboard",
+      "clientTimestamp": "2020-12-16T16:23:11.823Z",
+      "question": "4x9",
+      "sequenceNumber": 8
+    },
+    {
+      "input": "Enter",
+      "eventType": "keyboard",
+      "clientTimestamp": "2020-12-16T16:23:12.047Z",
+      "question": "4x9",
+      "sequenceNumber": 8
+    },
+    {
+      "input": "1",
+      "eventType": "keyboard",
+      "clientTimestamp": "2020-12-16T16:23:15.456Z",
+      "question": "6x5",
+      "sequenceNumber": 9
+    },
+    {
+      "input": "Enter",
+      "eventType": "keyboard",
+      "clientTimestamp": "2020-12-16T16:23:15.614Z",
+      "question": "6x5",
+      "sequenceNumber": 9
+    },
+    {
+      "input": "1",
+      "eventType": "keyboard",
+      "clientTimestamp": "2020-12-16T16:23:18.899Z",
+      "question": "12x12",
+      "sequenceNumber": 10
+    },
+    {
+      "input": "Enter",
+      "eventType": "keyboard",
+      "clientTimestamp": "2020-12-16T16:23:18.944Z",
+      "question": "12x12",
+      "sequenceNumber": 10
+    }
+  ],
+  "answers": [
+    {
+      "factor1": 2,
+      "factor2": 5,
+      "answer": "1",
+      "sequenceNumber": 1,
+      "question": "2x5",
+      "clientTimestamp": "2020-12-16T16:22:37.884Z"
+    },
+    {
+      "factor1": 11,
+      "factor2": 2,
+      "answer": "1",
+      "sequenceNumber": 2,
+      "question": "11x2",
+      "clientTimestamp": "2020-12-16T16:22:41.382Z"
+    },
+    {
+      "factor1": 5,
+      "factor2": 10,
+      "answer": "1",
+      "sequenceNumber": 3,
+      "question": "5x10",
+      "clientTimestamp": "2020-12-16T16:22:44.812Z"
+    },
+    {
+      "factor1": 4,
+      "factor2": 4,
+      "answer": "",
+      "sequenceNumber": 4,
+      "question": "4x4",
+      "clientTimestamp": "2020-12-16T16:22:53.823Z"
+    },
+    {
+      "factor1": 3,
+      "factor2": 9,
+      "answer": "1",
+      "sequenceNumber": 5,
+      "question": "3x9",
+      "clientTimestamp": "2020-12-16T16:23:01.271Z"
+    },
+    {
+      "factor1": 2,
+      "factor2": 4,
+      "answer": "1",
+      "sequenceNumber": 6,
+      "question": "2x4",
+      "clientTimestamp": "2020-12-16T16:23:04.859Z"
+    },
+    {
+      "factor1": 3,
+      "factor2": 3,
+      "answer": "1",
+      "sequenceNumber": 7,
+      "question": "3x3",
+      "clientTimestamp": "2020-12-16T16:23:08.279Z"
+    },
+    {
+      "factor1": 4,
+      "factor2": 9,
+      "answer": "1",
+      "sequenceNumber": 8,
+      "question": "4x9",
+      "clientTimestamp": "2020-12-16T16:23:12.047Z"
+    },
+    {
+      "factor1": 6,
+      "factor2": 5,
+      "answer": "1",
+      "sequenceNumber": 9,
+      "question": "6x5",
+      "clientTimestamp": "2020-12-16T16:23:15.614Z"
+    },
+    {
+      "factor1": 12,
+      "factor2": 12,
+      "answer": "1",
+      "sequenceNumber": 10,
+      "question": "12x12",
+      "clientTimestamp": "2020-12-16T16:23:18.944Z"
+    }
+  ]
+}
