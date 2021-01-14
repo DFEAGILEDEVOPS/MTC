@@ -1,6 +1,7 @@
 import { AzureFunction, Context } from '@azure/functions'
 import { performance } from 'perf_hooks'
 import { PupilResult } from '../../functions-throttled/ps-report-2-pupil-data/models'
+import { ReportLine } from './report-line.class'
 
 const functionName = 'ps-report-transformer'
 
@@ -12,14 +13,16 @@ const functionName = 'ps-report-transformer'
  * Output: service bus queue message containing a single line of the psychometric report in JSON format
  *
  * @param context
- * @param inputData
+ * @param pupilResult
  */
 
-const serviceBusQueueTrigger: AzureFunction = async function (context: Context, inputData: PupilResult): Promise<void> {
+const serviceBusQueueTrigger: AzureFunction = async function (context: Context, pupilResult: PupilResult): Promise<void> {
   const start = performance.now()
-  context.log.info(`${functionName}: message received for pupil ${inputData.pupil.slug}`)
+  context.log.info(`${functionName}: message received for pupil ${pupilResult.pupil.slug}`)
   try {
-    const outputData: PsychometricReport = { pupilId: 0 }
+    const { answers, check, checkConfig, checkForm, device, events, pupil, school } = pupilResult
+    const reportLine = new ReportLine(answers, check, checkConfig, checkForm, device, events, pupil, school)
+    const outputData = reportLine.transform()
     context.bindings.outputData = outputData
   } catch (error) {
     context.log.error(`${functionName}: ERROR: ${error.message}`)
