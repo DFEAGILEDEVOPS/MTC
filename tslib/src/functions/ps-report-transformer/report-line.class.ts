@@ -7,6 +7,7 @@ import {
   School
 } from '../../functions-throttled/ps-report-2-pupil-data/models'
 import { PsychometricReportLine } from './models'
+import { deepFreeze } from '../../common/deep-freeze'
 
 export class ReportLine {
   private readonly _answers: AnswersOrNull
@@ -37,14 +38,14 @@ export class ReportLine {
     pupil: Pupil,
     school: School
   ) {
-    this._answers = answers
-    this._check = check
-    this._checkConfig = checkConfig
-    this._checkForm = checkForm
-    this._device = device
-    this._events = events
-    this._pupil = pupil
-    this._school = school
+    this._answers = deepFreeze(answers)
+    this._check = deepFreeze(check)
+    this._checkConfig = deepFreeze(checkConfig)
+    this._checkForm = deepFreeze(checkForm)
+    this._device = deepFreeze(device)
+    this._events = deepFreeze(events)
+    this._pupil = deepFreeze(pupil)
+    this._school = deepFreeze(school)
   }
 
   get answers (): AnswersOrNull {
