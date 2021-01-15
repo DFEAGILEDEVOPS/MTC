@@ -10,6 +10,9 @@ $(function () {
   window.GOVUK.sessionExpiry = {
     /**
      * Set the formatted text on minutesCountdown to the count of `minutes`
+     * @param {jQuery} minutesCountdown
+     * @param {number} minutes
+     *
      */
     setCountdownText: function (minutesCountdown, minutes) {
       var formattedText = minutes === 1 ? '1 minute' : minutes + ' minutes'
@@ -17,6 +20,8 @@ $(function () {
     },
     /**
      * Start a setInterval to update the countdown every `tickMs`
+     * @param {jQuery} minutesCountdown
+     * @param {number} tickMs
      */
     startTimer: function (minutesCountdown, tickMs) {
       var remainingMinutes = Math.ceil((SESSION_EXPIRATION_TIME - SESSION_DISPLAY_NOTICE_TIME) / 60)
@@ -32,6 +37,9 @@ $(function () {
     },
     /**
      * Unhide the expiration banner, register the button click handler and start the countdown
+     * @param {jQuery} sessionExpirationError
+     * @param {jQuery} minutesCountdown
+     * @param {jQuery} continueSessionButton
      */
     displayExpiryBanner: function (sessionExpirationError, minutesCountdown, continueSessionButton) {
       sessionExpirationError.removeClass('error-session-expiration')
@@ -47,6 +55,7 @@ $(function () {
 
     /**
      * Hide the expiration banner
+     * @param {jQuery} sessionExpirationError
      */
     hideExpiryBanner: function (sessionExpirationError) {
       sessionExpirationError.removeClass('error-about-to-expire-session')
@@ -55,6 +64,8 @@ $(function () {
 
     /**
      * Display the banner with the expired content
+     * @param {jQuery} sessionExpirationError
+     * @param {jQuery} sessionExpirationErrorBody
      */
     displayExpiredBanner: function (sessionExpirationError, sessionExpirationErrorBody) {
       // Replace the content of the session expiration body
