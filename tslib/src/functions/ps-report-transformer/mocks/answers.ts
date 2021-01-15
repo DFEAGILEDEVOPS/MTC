@@ -26,7 +26,7 @@ export const answers: readonly Answer[] = [
         answerId: 22,
         input: '2',
         inputType: 'M',
-        browserTimestamp: moment('2020-01-21T09:00:14000Z')
+        browserTimestamp: moment('2020-01-21T09:00:14.000Z')
       },
       {
         answerId: 22,
