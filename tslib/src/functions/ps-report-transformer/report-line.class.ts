@@ -25,7 +25,18 @@ export class ReportLine {
     PupilID: '',
     Forename: '',
     Surname: '',
-    ReasonNotTakingCheck: null
+    ReasonNotTakingCheck: null,
+
+    // School fields
+    SchoolName: '',
+    Estab: null,
+    SchoolURN: null,
+    LAnum: null,
+
+    // Check Settings
+    QDisplayTime: null,
+    PauseLength: null,
+    AccessArr: ''
   }
 
   constructor (
@@ -80,6 +91,33 @@ export class ReportLine {
     return this._school
   }
 
+  private getAccessArrangements (): string {
+    if (this.checkConfig === null) {
+      return ''
+    }
+
+    const map = {
+      audibleSounds: 1,
+      questionReader: 2,
+      colourContrast: 3,
+      inputAssistance: 4,
+      fontSize: 5,
+      nextBetweenQuestions: 6,
+      numpadRemoval: 7
+    }
+
+    const arrangements: String[] = []
+    Object.keys(map).forEach(k => {
+      // @ts-ignore - ignore, `map` is badly typed
+      if (this.checkConfig[k] === true) {
+        // @ts-ignore - ignore, we know that the key is `true`, see `map`
+        const s = `[${map[k]}]`
+        arrangements.push(s)
+      }
+    })
+    return arrangements.join('')
+  }
+
   private _transform (): void {
     this._report.DOB = this.pupil.dateOfBirth.format('DD/MM/YYYY')
     this._report.Gender = this.pupil.gender.toUpperCase()
@@ -87,6 +125,13 @@ export class ReportLine {
     this._report.Forename = this.pupil.forename
     this._report.Surname = this.pupil.lastname
     this._report.ReasonNotTakingCheck = this.pupil.attendanceId
+    this._report.SchoolName = this.school.name
+    this._report.Estab = this.school.estabCode
+    this._report.SchoolURN = this.school.urn
+    this._report.LAnum = this.school.laCode
+    this._report.QDisplayTime = this.checkConfig?.questionTime ?? null // set to null rather than undefined
+    this._report.PauseLength = this.checkConfig?.loadingTime ?? null // set to null rather than undefined
+    this._report.AccessArr = this.getAccessArrangements()
   }
 
   public transform (): PsychometricReportLine {

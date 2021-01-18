@@ -3,8 +3,8 @@ import { CheckConfig } from '../../../functions-throttled/ps-report-2-pupil-data
 export const checkConfig: CheckConfig = {
   audibleSounds: false,
   checkTime: 30,
-  colourContrast: false,
-  fontSize: false,
+  colourContrast: true,
+  fontSize: true,
   inputAssistance: false,
   loadingTime: 3,
   nextBetweenQuestions: false,

@@ -195,4 +195,73 @@ describe('report line class', () => {
       }
     })
   })
+
+  describe('school information', () => {
+    let sut: ReportLine
+
+    beforeEach(() => {
+      sut = new ReportLine(
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        pupilNotAttending,
+        school
+      )
+    })
+
+    test('the school name is mapped', () => {
+      const out = sut.transform()
+      expect(out.SchoolName).toBe('test town primary school')
+    })
+
+    test('the estabCode is mapped', () => {
+      const out = sut.transform()
+      expect(out.Estab).toBe(999)
+    })
+
+    test('the school URN is mapped', () => {
+      const out = sut.transform()
+      expect(out.SchoolURN).toBe(80001)
+    })
+
+    test('the school local authority number is mapped', () => {
+      const out = sut.transform()
+      expect(out.LAnum).toBe(1001)
+    })
+  })
+
+  describe('check settings for pupils taking the check', () => {
+    let sut: ReportLine
+
+    beforeEach(() => {
+      sut = new ReportLine(
+        null,
+        null,
+        checkConfig,
+        null,
+        null,
+        null,
+        pupilCompletedCheck,
+        school
+      )
+    })
+
+    test('the amount of time the question is displayed for is mapped', () => {
+      const out = sut.transform()
+      expect(out.QDisplayTime).toBe(6)
+    })
+
+    test('the pause length between questions is mapped', () => {
+      const out = sut.transform()
+      expect(out.PauseLength).toBe(3)
+    })
+
+    test('the pupils access arrangements are mapped', () => {
+      const out = sut.transform()
+      expect(out.AccessArr).toBe('[3][5]')
+    })
+  })
 })
