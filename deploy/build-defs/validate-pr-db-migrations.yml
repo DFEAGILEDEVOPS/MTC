@@ -30,6 +30,15 @@ jobs:
 - job: ValidateMigrations
   dependsOn: FastFail
   steps:
+  - task: AzureCLI@2
+  displayName: 'Create Database'
+  inputs:
+    azureSubscription: $(TargetAzureSubscription)
+    scriptType: bash
+    scriptLocation: inlineScript
+    inlineScript: |
+      echo "attempting to create database $(Build.BuildNumber) on server $(TargetDbServer)..."
+      az sql db create --name $(Build.BuildNumber) --resource-group $(TargetDbResourceGroup) --server $(TargetDbServer) --service-objective S0
   - bash: |
       export NVM_DIR="$HOME/.nvm"
       [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
