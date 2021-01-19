@@ -2,7 +2,6 @@ import { Component, OnInit, AfterViewInit, ElementRef, OnDestroy } from '@angula
 import { WindowRefService } from '../services/window-ref/window-ref.service';
 import { SpeechService } from '../services/speech/speech.service';
 import { QuestionService } from '../services/question/question.service';
-import { AppInsights } from 'applicationinsights-js';
 import { StorageService } from '../services/storage/storage.service';
 import { UserService } from '../services/user/user.service';
 import { WarmupQuestionService } from '../services/question/warmup-question.service';
@@ -12,7 +11,7 @@ import { WarmupQuestionService } from '../services/question/warmup-question.serv
   templateUrl: './out-of-time.component.html',
   styleUrls: ['./out-of-time.component.scss']
 })
-export class OutOfTimeComponent implements OnInit, AfterViewInit, OnDestroy {
+export class OutOfTimeComponent implements AfterViewInit, OnDestroy {
 
   protected window: any;
   private speechListenerEvent: any;
@@ -28,10 +27,6 @@ export class OutOfTimeComponent implements OnInit, AfterViewInit, OnDestroy {
     this.window = windowRefService.nativeWindow;
     const config = this.questionService.getConfig();
     this.familiarisationCheck = config && config.practice;
-  }
-
-  ngOnInit() {
-    AppInsights.trackPageView('Check complete', '/out-of-time');
   }
 
   // wait for the component to be rendered first, before parsing the text

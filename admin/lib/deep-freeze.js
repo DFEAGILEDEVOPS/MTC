@@ -6,7 +6,7 @@
  * @returns {object}
  */
 function deepFreeze (object) {
-  var propNames = Object.getOwnPropertyNames(object)
+  const propNames = Object.getOwnPropertyNames(object)
   for (const name of propNames) {
     const value = object[name]
     if (value && typeof value === 'object') {

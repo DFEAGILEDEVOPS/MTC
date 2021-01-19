@@ -43,8 +43,9 @@ let cache = {}
 const findDataType = (type) => Object.keys(sqlService.TYPES).find(k => {
   // logger.debug(`findDataType('${type}'): called`)
   if (type.toUpperCase() === k.toUpperCase()) {
-    return k
+    return true
   }
+  return false
 })
 
 /**

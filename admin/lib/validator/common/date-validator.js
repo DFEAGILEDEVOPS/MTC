@@ -29,7 +29,7 @@ dateValidator.validate = (validationError, dateData) => {
   if (isDayEmpty || hasWrongDayInMonth || (utcDate && !isInt(dateData.day, { min: 1, max: maxDaysInMonth }))) {
     validationError.addError(dateData.dayHTMLAttributeId, dateData.wrongDayMessage)
   }
-  if (!isDayEmpty && !XRegExp('^[1-9]\\d{0,1}$').test(parseInt(dateData.day))) {
+  if (!isDayEmpty && !XRegExp('^[1-9]\\d{0,1}$').test(dateData.day)) {
     validationError.addError(dateData.dayHTMLAttributeId, dateData.dayInvalidChars)
   }
   // Month
@@ -37,7 +37,7 @@ dateValidator.validate = (validationError, dateData) => {
   if (isMonthEmpty || (!isMonthEmpty && !monthWithinRange)) {
     validationError.addError(dateData.monthHTMLAttributeId, dateData.wrongMonthMessage)
   }
-  if (!isMonthEmpty && !XRegExp('^[1-9]\\d{0,1}$').test(parseInt(dateData.month))) {
+  if (!isMonthEmpty && !XRegExp('^[1-9]\\d{0,1}$').test(parseInt(dateData.month, 10).toString())) {
     validationError.addError(dateData.monthHTMLAttributeId, dateData.monthInvalidChars)
   }
   // Year

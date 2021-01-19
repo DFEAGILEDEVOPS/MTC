@@ -66,7 +66,7 @@ const serviceToExport = {
       return `(@pupilId${index}, @checkFormId${index}, @checkWindowId${index}, @isLiveCheck${index}, @pinExpiresAt${index}, @schoolId${index}, @createdBy_userId${index})`
     })
     const params = []
-    checks.map((check, index) => {
+    checks.forEach((check, index) => {
       params.push({ name: `pupilId${index}`, value: check.pupil_id, type: TYPES.Int })
       params.push({ name: `checkFormId${index}`, value: check.checkForm_id, type: TYPES.Int })
       params.push({ name: `checkWindowId${index}`, value: check.checkWindow_id, type: TYPES.Int })

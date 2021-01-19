@@ -1,4 +1,4 @@
-const uuidv4 = require('uuid/v4')
+const { v4: uuidv4 } = require('uuid')
 const moment = require('moment')
 const csv = require('fast-csv')
 const azureFileDataService = require('./data-access/azure-file.data.service')

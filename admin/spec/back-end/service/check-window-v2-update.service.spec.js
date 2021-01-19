@@ -2,7 +2,7 @@
 /* global describe beforeEach expect it fail spyOn */
 
 const moment = require('moment')
-const uuid = require('uuid/v4')
+const { v4: uuidv4 } = require('uuid')
 
 const activeCheckWindowValidator = require('../../../lib/validator/check-window-v2/active-check-window-validator')
 const checkWindowDataService = require('../../../services/data-access/check-window.data.service')
@@ -23,7 +23,7 @@ describe('check-window-v2-update.service', () => {
       spyOn(activeCheckWindowValidator, 'validate').and.returnValue(validationError)
       spyOn(checkWindowDataService, 'sqlUpdate')
       spyOn(checkWindowV2UpdateService, 'getValidationConfig')
-      spyOn(checkWindowV2Service, 'getCheckWindow').and.returnValue({ id: 1, checkWindowUrlSlug: uuid() })
+      spyOn(checkWindowV2Service, 'getCheckWindow').and.returnValue({ id: 1, checkWindowUrlSlug: uuidv4() })
       const requestData = {}
       try {
         await checkWindowV2UpdateService.submit(requestData)

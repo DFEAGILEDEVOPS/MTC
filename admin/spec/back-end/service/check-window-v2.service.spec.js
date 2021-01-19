@@ -2,7 +2,7 @@
 /* global beforeEach describe expect it fail spyOn jest */
 
 const moment = require('moment')
-const uuid = require('uuid/v4')
+const { v4: uuidv4 } = require('uuid')
 const checkWindowDataService = require('../../../services/data-access/check-window.data.service')
 const checkWindowV2Service = require('../../../services/check-window-v2.service')
 const dateService = require('../../../services/date.service')
@@ -12,7 +12,7 @@ describe('check-window-v2.service', () => {
   describe('getCheckWindow', () => {
     let urlSlug
     beforeEach(() => {
-      urlSlug = uuid().toUpperCase()
+      urlSlug = uuidv4().toUpperCase()
     })
     it('should get check window based on urlSlug', async () => {
       spyOn(checkWindowDataService, 'sqlFindOneByUrlSlug').and.returnValue({ name: 'Check window' })
@@ -101,7 +101,7 @@ describe('check-window-v2.service', () => {
   describe('markDeleted', () => {
     let urlSlug
     beforeEach(() => {
-      urlSlug = uuid().toUpperCase()
+      urlSlug = uuidv4().toUpperCase()
     })
     it('should mark the check window as deleted when it is in the future', async () => {
       spyOn(checkWindowDataService, 'sqlFindOneByUrlSlug').and.returnValue({
