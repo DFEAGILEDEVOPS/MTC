@@ -2,7 +2,6 @@ import { Component, OnInit, AfterViewInit, ElementRef, OnDestroy } from '@angula
 import { WindowRefService } from '../services/window-ref/window-ref.service';
 import { SpeechService } from '../services/speech/speech.service';
 import { QuestionService } from '../services/question/question.service';
-import { AppInsights } from 'applicationinsights-js';
 import { StorageService } from '../services/storage/storage.service';
 import { Router } from '@angular/router';
 import { WarmupQuestionService } from '../services/question/warmup-question.service';
@@ -35,7 +34,6 @@ export class CheckCompleteComponent implements OnInit, AfterViewInit, OnDestroy 
   ngOnInit() {
     const config: Config = this.warmupQuestionService.getConfig();
     this.familiarisationCheck = config && config.practice;
-    AppInsights.trackPageView('Check complete', '/check-complete');
   }
 
   // wait for the component to be rendered first, before parsing the text
