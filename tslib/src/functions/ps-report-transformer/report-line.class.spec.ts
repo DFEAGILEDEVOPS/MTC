@@ -180,10 +180,10 @@ describe('report line class', () => {
         expect(sut).toBeDefined()
       })
 
-      test('it outputs the pupil DOB in uk format', () => {
+      test('it maps the pupil DOB', () => {
         const out = sut.transform()
         expect(out).toHaveProperty('DOB')
-        expect(out.DOB).toBe('07/03/2012')
+        expect(out.DOB?.toISOString()).toBe('2012-03-07T00:00:00.000Z')
       })
 
       test('it outputs the pupil gender in uppercase', () => {
@@ -360,10 +360,10 @@ describe('report line class', () => {
         expect(sut).toBeDefined()
       })
 
-      test('it outputs the pupil DOB in uk format', () => {
+      test('it maps the pupil DOB', () => {
         const out = sut.transform()
         expect(out).toHaveProperty('DOB')
-        expect(out.DOB).toBe('03/02/2012')
+        expect(out.DOB?.toISOString()).toBe('2012-02-03T00:00:00.000Z')
       })
 
       test('it outputs the pupil gender in uppercase', () => {
@@ -511,7 +511,7 @@ describe('report line class', () => {
       test('it outputs the pupil DOB in uk format', () => {
         const out = sut.transform()
         expect(out).toHaveProperty('DOB')
-        expect(out.DOB).toBe('01/04/2012')
+        expect(out.DOB?.toISOString()).toBe('2012-04-01T00:00:00.000Z')
       })
 
       test('it outputs the pupil gender in uppercase', () => {

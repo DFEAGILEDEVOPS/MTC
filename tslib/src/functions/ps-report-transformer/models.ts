@@ -1,6 +1,6 @@
 export interface PsychometricReportLine {
   // Pupil
-  DOB: string
+  DOB: moment.Moment | null
   Gender: string
   PupilID: string
   Forename: string

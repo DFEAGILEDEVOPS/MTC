@@ -22,7 +22,7 @@ export class ReportLine {
   private readonly _school: School
   private _report: PsychometricReportLine = {
     // Pupil fields
-    DOB: '',
+    DOB: null,
     Gender: '',
     PupilID: '',
     Forename: '',
@@ -206,7 +206,7 @@ export class ReportLine {
   }
 
   private _transform (): void {
-    this._report.DOB = this.pupil.dateOfBirth.format('DD/MM/YYYY')
+    this._report.DOB = this.pupil.dateOfBirth
     this._report.Gender = this.pupil.gender.toUpperCase()
     this._report.PupilID = this.pupil.upn
     this._report.Forename = this.pupil.forename
