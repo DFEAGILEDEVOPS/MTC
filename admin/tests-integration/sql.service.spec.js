@@ -20,7 +20,7 @@ const R = require('ramda')
 const logger = require('../services/log.service').getLogger()
 const sql = require('../services/data-access/sql.service')
 const TYPES = sql.TYPES
-const uuid = require('uuid/v4')
+const { v4: uuidv4 } = require('uuid')
 
 describe('sql.service:integration', () => {
   beforeAll(async () => {
@@ -338,7 +338,7 @@ describe('sql.service:integration', () => {
   describe('#create', () => {
     it('should insert a new row and provide the new insert id', async () => {
       const user = {
-        identifier: 'integration-test-' + uuid(),
+        identifier: 'integration-test-' + uuidv4(),
         school_id: 5,
         role_id: 3
       }

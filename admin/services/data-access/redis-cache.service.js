@@ -131,7 +131,7 @@ redisCacheService.getRedisClient = () => {
 /**
  * Fetch many redis keys by their keys in one network trip
  * @param keys
- * @return {Promise<*>}
+ * @return {Promise<Array<*>>}
  */
 redisCacheService.getMany = async (keys) => {
   if (!Array.isArray(keys)) {

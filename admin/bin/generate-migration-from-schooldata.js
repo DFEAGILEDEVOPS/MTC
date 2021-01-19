@@ -5,7 +5,7 @@ const chalk = require('chalk')
 const commandLineArgs = require('command-line-args')
 const csv = require('fast-csv')
 const fs = require('fs-extra')
-const uuid = require('uuid/v4')
+const { v4: uuidv4 } = require('uuid')
 const winston = require('winston')
 
 const insertStatements = []
@@ -38,7 +38,7 @@ fs.createReadStream('../NCATools_EduBase_20180604.txt')
   .pipe(csv({ delimiter: '|', headers: true, trim: true }))
   .on('data', (data) => {
     const estabCode = data.DfENumber.substr(data.LEANUMBER.length)
-    const randUrlSlug = uuid().toUpperCase()
+    const randUrlSlug = uuidv4().toUpperCase()
 
     const schoolName = data.NAME.replace(/'/g, "''")
     const schoolNameEscaped = schoolName.replace(/`/, '\\`') // escape ` too for generating the up file

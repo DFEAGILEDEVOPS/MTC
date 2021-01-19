@@ -1,7 +1,6 @@
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit } from '@angular/core';
 import { SessionExpired } from '../services/audit/auditEntry';
 import { AuditService } from '../services/audit/audit.service';
-import { AppInsights } from 'applicationinsights-js';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
 import { QuestionService } from '../services/question/question.service';
 import { SpeechService } from '../services/speech/speech.service';
@@ -30,7 +29,6 @@ export class SessionExpiredComponent implements OnInit, AfterViewInit, OnDestroy
 
   ngOnInit() {
     this.auditService.addEntry(new SessionExpired());
-    AppInsights.trackPageView('Session Expired', '/session-expired');
   }
 
   // wait for the component to be rendered first, before parsing the text
