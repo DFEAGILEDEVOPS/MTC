@@ -45,7 +45,10 @@ export class ReportLine {
     FormID: '',
     TestDate: null,
     TimeStart: null,
-    TimeComplete: null
+    TimeComplete: null,
+    TimeTaken: null,
+    RestartNumber: null,
+    FormMark: null
   }
 
   constructor (
@@ -172,6 +175,15 @@ export class ReportLine {
     return lastAnswer.browserTimestamp
   }
 
+  private getTimeTaken (): number | null {
+    const timeComplete = this._report.TimeComplete
+    const timeStart = this._report.TimeStart
+    if (timeComplete === null || timeStart === null) {
+      return null
+    }
+    return (timeComplete.valueOf() - timeStart.valueOf()) / 1000
+  }
+
   private _transform (): void {
     this._report.DOB = this.pupil.dateOfBirth.format('DD/MM/YYYY')
     this._report.Gender = this.pupil.gender.toUpperCase()
@@ -191,6 +203,9 @@ export class ReportLine {
     this._report.TestDate = this.check?.pupilLoginDate ?? null // set to null if there is no check
     this._report.TimeStart = this.getTimeStart()
     this._report.TimeComplete = this.getTimeComplete()
+    this._report.TimeTaken = this.getTimeTaken()
+    this._report.RestartNumber = this.check?.restartNumber ?? null // set to null if there is no check
+    this._report.FormMark = this.check?.mark ?? null
   }
 
   public transform (): PsychometricReportLine {

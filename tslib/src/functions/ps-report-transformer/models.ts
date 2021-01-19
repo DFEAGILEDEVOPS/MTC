@@ -21,4 +21,7 @@ export interface PsychometricReportLine {
   TestDate: moment.Moment | null
   TimeStart: moment.Moment | null
   TimeComplete: moment.Moment | null
+  TimeTaken: number | null // seconds with ms to 3 decimal places
+  RestartNumber: number | null
+  FormMark: number | null
 }

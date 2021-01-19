@@ -13,5 +13,5 @@ export const pupil: Pupil = {
   notTakingCheckReason: 'Absent during check window',
   slug: 'abc-def-hij-klm',
   schoolId: 3,
-  upn: 'TEST987'
+  upn: 'TEST986'
 }

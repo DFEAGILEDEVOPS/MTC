@@ -14,5 +14,5 @@ export const check: Check = {
   processingFailed: false,
   pupilLoginDate: moment('2020-01-21T09:00:00.000Z'),
   received: true,
-  restartNumber: 0
+  restartNumber: 2
 }
