@@ -5,14 +5,13 @@ import { AuditService } from '../services/audit/audit.service';
 import { WarmupStarted} from '../services/audit/auditEntry';
 import { SpeechService } from '../services/speech/speech.service';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
-import { AppInsights } from 'applicationinsights-js';
 
 @Component({
   selector: 'app-instructions',
   templateUrl: './instructions.component.html',
   styleUrls: ['./instructions.component.css']
 })
-export class InstructionsComponent implements OnInit, AfterViewInit, OnDestroy {
+export class InstructionsComponent implements AfterViewInit, OnDestroy {
 
   public count: number;
   public loadingTime: number;
@@ -34,10 +33,6 @@ export class InstructionsComponent implements OnInit, AfterViewInit, OnDestroy {
     this.questionTime = config.questionTime;
     this.window = windowRefService.nativeWindow;
     this.shouldShowMore = config && config.practice && (config.fontSize || config.colourContrast);
-  }
-
-  ngOnInit() {
-    AppInsights.trackPageView('Instructions', '/instructions');
   }
 
   onClick() {

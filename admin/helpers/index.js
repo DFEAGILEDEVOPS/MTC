@@ -4,7 +4,7 @@ const moment = require('moment')
 const { getBuildNumber } = require('./healthcheck')
 const config = require('../config')
 const roles = require('../lib/consts/roles.js')
-var pjson = require('../package.json')
+const pjson = require('../package.json')
 
 const formatPageTitle = function (pageTitle) {
   let title = 'GOV.UK'
