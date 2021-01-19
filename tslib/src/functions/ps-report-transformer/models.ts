@@ -24,4 +24,10 @@ export interface PsychometricReportLine {
   TimeTaken: number | null // seconds with ms to 3 decimal places
   RestartNumber: number | null
   FormMark: number | null
+
+  // Device
+  DeviceType: string | null
+  BrowserType: string | null
+  DeviceTypeModel: string | null
+  DeviceID: string | null
 }

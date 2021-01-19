@@ -48,7 +48,13 @@ export class ReportLine {
     TimeComplete: null,
     TimeTaken: null,
     RestartNumber: null,
-    FormMark: null
+    FormMark: null,
+
+    // Device
+    DeviceType: null,
+    BrowserType: null,
+    DeviceTypeModel: null,
+    DeviceID: null
   }
 
   constructor (
@@ -184,6 +190,21 @@ export class ReportLine {
     return (timeComplete.valueOf() - timeStart.valueOf()) / 1000
   }
 
+  private getBrowserVersion (): string | null {
+    return [
+      this.device?.browserMajorVersion,
+      this.device?.browserMinorVersion,
+      this.device?.browserPatchVersion
+    ].filter(e => typeof e === 'number').join('.')
+  }
+
+  private getBrowser (): string | null {
+    if (this.device === null) {
+      return null
+    }
+    return `${this.device.browserFamily} ${this.getBrowserVersion()}`
+  }
+
   private _transform (): void {
     this._report.DOB = this.pupil.dateOfBirth.format('DD/MM/YYYY')
     this._report.Gender = this.pupil.gender.toUpperCase()
@@ -206,6 +227,10 @@ export class ReportLine {
     this._report.TimeTaken = this.getTimeTaken()
     this._report.RestartNumber = this.check?.restartNumber ?? null // set to null if there is no check
     this._report.FormMark = this.check?.mark ?? null
+    this._report.DeviceType = this.device?.type ?? null
+    this._report.BrowserType = this.getBrowser()
+    this._report.DeviceTypeModel = this.device?.typeModel ?? null
+    this._report.DeviceID = this.device?.deviceId ?? null
   }
 
   public transform (): PsychometricReportLine {

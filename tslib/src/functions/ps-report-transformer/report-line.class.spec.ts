@@ -300,6 +300,43 @@ describe('report line class', () => {
         expect(out.FormMark).toBe(1)
       })
     })
+
+    describe('device fields', () => {
+      let sut: ReportLine
+
+      beforeEach(() => {
+        sut = new ReportLine(
+          null,
+          null,
+          null,
+          null,
+          device,
+          null,
+          pupilCompletedCheck,
+          school
+        )
+      })
+
+      test('DeviceType is mapped correctly', () => {
+        const out = sut.transform()
+        expect(out.DeviceType).toBe('Tablet')
+      })
+
+      test('BrowserType is mapped correctly', () => {
+        const out = sut.transform()
+        expect(out.BrowserType).toBe('CHROME 9.10.11')
+      })
+
+      test('DeviceTypeModel is mapped correctly', () => {
+        const out = sut.transform()
+        expect(out.DeviceTypeModel).toBe('iPad')
+      })
+
+      test('DeviceID is mapped correctly', () => {
+        const out = sut.transform()
+        expect(out.DeviceID).toBe('1234567890abcde')
+      })
+    })
   })
 
   describe('the pupil has been allocated a check, but didnt take it', () => {
@@ -409,6 +446,43 @@ describe('report line class', () => {
       test('the mark is mapped', () => {
         const out = sut.transform()
         expect(out.FormMark).toBeNull()
+      })
+    })
+
+    describe('device fields', () => {
+      let sut: ReportLine
+
+      beforeEach(() => {
+        sut = new ReportLine(
+          null,
+          checkIncomplete,
+          null,
+          null,
+          null,
+          null,
+          pupilIncomplete,
+          school
+        )
+      })
+
+      test('DeviceType is mapped correctly', () => {
+        const out = sut.transform()
+        expect(out.DeviceType).toBeNull()
+      })
+
+      test('BrowserType is mapped correctly', () => {
+        const out = sut.transform()
+        expect(out.BrowserType).toBeNull()
+      })
+
+      test('DeviceTypeModel is mapped correctly', () => {
+        const out = sut.transform()
+        expect(out.DeviceTypeModel).toBeNull()
+      })
+
+      test('DeviceID is mapped correctly', () => {
+        const out = sut.transform()
+        expect(out.DeviceID).toBeNull()
       })
     })
   })
@@ -551,6 +625,43 @@ describe('report line class', () => {
       test('the mark is mapped', () => {
         const out = sut.transform()
         expect(out.FormMark).toBeNull()
+      })
+    })
+
+    describe('device fields', () => {
+      let sut: ReportLine
+
+      beforeEach(() => {
+        sut = new ReportLine(
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          pupilNotAttending,
+          school
+        )
+      })
+
+      test('DeviceType is mapped correctly', () => {
+        const out = sut.transform()
+        expect(out.DeviceType).toBeNull()
+      })
+
+      test('BrowserType is mapped correctly', () => {
+        const out = sut.transform()
+        expect(out.BrowserType).toBeNull()
+      })
+
+      test('DeviceTypeModel is mapped correctly', () => {
+        const out = sut.transform()
+        expect(out.DeviceTypeModel).toBeNull()
+      })
+
+      test('DeviceID is mapped correctly', () => {
+        const out = sut.transform()
+        expect(out.DeviceID).toBeNull()
       })
     })
   })

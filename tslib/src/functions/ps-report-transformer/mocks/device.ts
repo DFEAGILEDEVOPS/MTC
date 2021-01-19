@@ -2,7 +2,7 @@ import { Device } from '../../../functions-throttled/ps-report-2-pupil-data/mode
 
 export const device: Device = {
   type: 'Tablet',
-  typeModel: null,
+  typeModel: 'iPad',
   browserFamily: 'CHROME',
   browserMajorVersion: 9,
   browserMinorVersion: 10,
