@@ -85,7 +85,7 @@ const manageGroupPage = async function manageGroupPage (req, res, next) {
 
   try {
     pupilsList = await groupService.getPupils(req.user.schoolId, req.params.groupId)
-    pupilsList.map((p) => { selectedPupils[p.id] = !!p.group_id })
+    pupilsList.forEach((p) => { selectedPupils[p.id] = !!p.group_id })
   } catch (error) {
     return next(error)
   }
@@ -145,7 +145,7 @@ const addGroup = async function addGroup (req, res, next) {
       next(error)
     }
 
-    selectedPupilsIds.map((s) => { selectedPupils[s] = true })
+    selectedPupilsIds.forEach((s) => { selectedPupils[s] = true })
 
     req.body.pupils = req.body.pupil
     req.breadcrumbs('Organise pupils into groups', '/group/pupils-list')
@@ -226,7 +226,7 @@ const editGroup = async function editGroup (req, res, next) {
     }
 
     const selectedPupilIds = Object.values(req.body.pupil)
-    selectedPupilIds.map((p) => { selectedPupils[p] = true })
+    selectedPupilIds.forEach((p) => { selectedPupils[p] = true })
 
     req.breadcrumbs('Organise pupils into groups', '/group/pupils-list')
     res.locals.pageTitle = 'Edit group'

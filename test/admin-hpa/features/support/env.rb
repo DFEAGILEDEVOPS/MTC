@@ -41,6 +41,7 @@ ENV["FUNC_THROTTLED_BASE_URL"] ||= 'http://localhost:7073/admin/functions'
 ENV["FUNC_THROTTLED_MASTER_KEY"] ||= nil
 ENV['WAIT_TIME'] ||= '300'
 ENV['FUNC_CONSUMP_BASE_URL'] ||= 'http://localhost:7071'
+ENV["FUNC_CONSUMP_MASTER_KEY"] ||= nil
 
 # Webdrivers::Chromedriver.required_version='83.0.4103.39'
 Webdrivers.logger.level = :FATAL

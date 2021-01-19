@@ -1,4 +1,4 @@
-var moment = require('moment-timezone')
+const moment = require('moment-timezone')
 const { isEmpty } = require('validator')
 const ValidationError = require('../validation-error')
 const sceErrorMessages = require('../errors/sce')

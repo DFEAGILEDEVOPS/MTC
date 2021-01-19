@@ -110,11 +110,13 @@ const sasTokenService = {
     const redisKeys = queueNames.map(redisKeyService.getSasTokenKey)
     const cached = await redisCacheService.getMany(redisKeys)
     const result = {}
-    cached.map(o => {
-      if (o && o.queueName) {
-        result[o.queueName] = o
-      }
-    })
+    if (Array.isArray(cached)) {
+      cached.forEach(o => {
+        if (o && o.queueName) {
+          result[o.queueName] = o
+        }
+      })
+    }
 
     // validate we have all the required sasTokens, and create new ones if missing
     for (const name of queueNames) {

@@ -55,7 +55,7 @@ const init = async () => {
     FROM ${sqlService.adminSchema}.[questionReaderReasons]`
 
   const questionReaderReasons = await sqlService.query(sql)
-  questionReaderReasons.map(qrr => {
+  questionReaderReasons.forEach(qrr => {
     questionReaderCodes[qrr.code] = qrr.id
   })
 }

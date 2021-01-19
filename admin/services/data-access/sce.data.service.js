@@ -106,7 +106,7 @@ sceDataService.sqlUpsertSchoolsBatch = async (schools) => {
     return `(@schoolId${index}, @timezone${index}, @countryCode${index}, 1)`
   })
   const params = []
-  schools.map((school, index) => {
+  schools.forEach((school, index) => {
     params.push({ name: `schoolId${index}`, value: school.id, type: TYPES.Int })
     params.push({ name: `timezone${index}`, value: school.timezone || '', type: TYPES.NVarChar })
     params.push({ name: `countryCode${index}`, value: school.countryCode || '', type: TYPES.Char })

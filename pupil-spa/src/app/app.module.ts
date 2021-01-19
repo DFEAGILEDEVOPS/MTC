@@ -80,6 +80,7 @@ import { SvgLoadingComponent } from './svg/svg.loading.component';
 import { SvgWarningComponent } from './svg/svg.warning.component';
 import { TimerService } from './services/timer/timer.service';
 import { WebsiteOfflineComponent } from './website-offline/website-offline.component';
+import { ApplicationInsightsService } from './services/app-insights/app-insights.service';
 
 declare var AzureStorage: IAzureStorage;
 
@@ -172,6 +173,7 @@ const appRoutes: Routes = [
     { provide: APP_INITIALIZER, useFactory: loadConfigService , deps: [AppConfigService], multi: true },
     { provide: ErrorHandler, useClass: GlobalErrorHandler },
     AnswerService,
+    ApplicationInsightsService,
     AppUsageService,
     AuditService,
     AzureQueueService,
