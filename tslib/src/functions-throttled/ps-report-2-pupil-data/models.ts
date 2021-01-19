@@ -57,12 +57,12 @@ export interface Check {
   checkFormId: number
   checkWindowId: number
   complete: boolean
-  completedAt: moment.Moment
+  completedAt: moment.Moment | null
   inputAssistantAddedRetrospectively: boolean
   isLiveCheck: boolean
-  mark: number
+  mark: number | null
   processingFailed: boolean
-  pupilLoginDate: moment.Moment
+  pupilLoginDate: moment.Moment | null
   received: boolean
   restartNumber: number
 }

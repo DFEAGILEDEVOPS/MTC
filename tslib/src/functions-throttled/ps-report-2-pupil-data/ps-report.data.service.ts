@@ -192,8 +192,8 @@ export class PsReportDataService {
             c.received,
             (select count(*) from mtc_admin.pupilRestart where pupil_id = c.pupil_id and isDeleted = 0) as restartNumber
           FROM mtc_admin.[check] c
-               JOIN mtc_results.checkResult cr ON (c.id = cr.check_id)
-         WHERE check_id = @checkId
+               LEFT JOIN mtc_results.checkResult cr ON (c.id = cr.check_id)
+         WHERE c.id = @checkId
     `
 
     interface DBCheck {

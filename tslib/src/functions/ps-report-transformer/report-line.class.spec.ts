@@ -1,9 +1,11 @@
 import { ReportLine } from './report-line.class'
 import { pupil as pupilCompletedCheck } from './mocks/pupil-who-completed-a-check'
 import { pupil as pupilNotAttending } from './mocks/pupil-not-attending'
+import { pupil as pupilIncomplete } from './mocks/pupil-with-incomplete-check'
 import { school } from './mocks/school'
 import { answers } from './mocks/answers'
 import { check } from './mocks/check'
+import { check as checkIncomplete } from './mocks/check-incomplete'
 import { checkConfig } from './mocks/check-config'
 import { checkForm } from './mocks/check-form'
 import { device } from './mocks/device'
@@ -301,7 +303,114 @@ describe('report line class', () => {
   })
 
   describe('the pupil has been allocated a check, but didnt take it', () => {
+    describe('pupil information (incomplete)', () => {
+      let sut: ReportLine
 
+      beforeEach(() => {
+        sut = new ReportLine(
+          null,
+          null,
+          checkConfig,
+          checkForm,
+          null,
+          null,
+          pupilIncomplete,
+          school
+        )
+      })
+
+      test('it is defined', () => {
+        expect(sut).toBeDefined()
+      })
+
+      test('it outputs the pupil DOB in uk format', () => {
+        const out = sut.transform()
+        expect(out).toHaveProperty('DOB')
+        expect(out.DOB).toBe('03/02/2012')
+      })
+
+      test('it outputs the pupil gender in uppercase', () => {
+        const out = sut.transform()
+        expect(out.Gender).toBe('M')
+      })
+
+      test('it outputs the pupil ID', () => {
+        const out = sut.transform()
+        expect(out.PupilID).toBe('TEST985')
+      })
+
+      test('it outputs the pupil forename', () => {
+        const out = sut.transform()
+        expect(out.Forename).toBe('abc')
+      })
+
+      test('it outputs the pupil Surname', () => {
+        const out = sut.transform()
+        expect(out.Surname).toBe('def')
+      })
+
+      test('if the pupil has taken a check it should have a Reason For not Taking Check', () => {
+        const out = sut.transform()
+        expect(out.ReasonNotTakingCheck).toBeNull()
+      })
+    })
+
+    describe('check fields', () => {
+      let sut: ReportLine
+
+      beforeEach(() => {
+        sut = new ReportLine(
+          null,
+          checkIncomplete,
+          checkConfig,
+          checkForm,
+          null,
+          null,
+          pupilIncomplete,
+          school
+        )
+      })
+
+      test('the attempt ID is mapped', () => {
+        const out = sut.transform()
+        expect(out.AttemptID).toBe('xyz-def-988')
+      })
+
+      test('the form name is mapped', () => {
+        const out = sut.transform()
+        expect(out.FormID).toBe('Test check form 9')
+      })
+
+      test('the date the test was taken is mapped', () => {
+        const out = sut.transform()
+        expect(out.TestDate).toBeNull()
+      })
+
+      test('the time that the test was taken is mapped', () => {
+        const out = sut.transform()
+        expect(out.TimeStart).toBeNull()
+      })
+
+      test('the time that the test was completed is mapped', () => {
+        const out = sut.transform()
+        expect(out.TimeComplete).toBeNull()
+      })
+
+      test('the time taken is calculated', () => {
+        const out = sut.transform()
+        expect(out.TimeTaken).toBeNull()
+      })
+
+      test('the number of restarts is mapped', () => {
+        const out = sut.transform()
+        expect(out.RestartNumber).toBe(0)
+      })
+
+      test('the mark is mapped', () => {
+        const out = sut.transform()
+        expect(out.FormMark).toBeNull()
+      })
+    })
   })
 
   describe('the pupil has been marked as not taking the check', () => {
