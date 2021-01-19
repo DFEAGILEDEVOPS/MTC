@@ -340,6 +340,7 @@ export class PsReportDataService {
       return null
     }
 
+    // Ensure the output is ordered by question number, so Q1 is at the beginning and Q25 at the end.
     const sql = `
         SELECT
             a.id,
@@ -347,11 +348,13 @@ export class PsReportDataService {
             q.code as questionCode,
             CONCAT(q.factor1, 'x', q.factor2) as question,
             a.isCorrect,
-            a.browserTimestamp
+            a.browserTimestamp,
+            a.questionNumber
           FROM mtc_results.checkResult cr
                JOIN mtc_results.answer a ON (cr.id = a.checkResult_id)
                JOIN mtc_admin.question q ON (a.question_id = q.id)
          WHERE cr.check_id = @checkId
+         ORDER BY a.questionNumber
     `
 
     interface DBAnswer {
@@ -361,6 +364,7 @@ export class PsReportDataService {
       question: string
       isCorrect: boolean
       browserTimestamp: moment.Moment
+      questionNumber: number
     }
 
     const resAnswers: DBAnswer[] = await this.sqlService.query(sql, [{ name: 'checkId', value: checkId, type: TYPES.Int }])
@@ -375,6 +379,7 @@ export class PsReportDataService {
         isCorrect: o.isCorrect,
         question: o.question,
         questionCode: o.questionCode,
+        questionNumber: o.questionNumber,
         response: o.answer
       })
     })

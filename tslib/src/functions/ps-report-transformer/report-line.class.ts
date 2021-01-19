@@ -3,11 +3,13 @@ import {
   CheckConfigOrNull,
   CheckFormOrNull,
   CheckOrNull, DeviceOrNull, EventsOrNull,
+  Event,
   Pupil,
-  School
+  School, Answer
 } from '../../functions-throttled/ps-report-2-pupil-data/models'
 import { PsychometricReportLine } from './models'
 import { deepFreeze } from '../../common/deep-freeze'
+import moment from 'moment'
 
 export class ReportLine {
   private readonly _answers: AnswersOrNull
@@ -36,7 +38,14 @@ export class ReportLine {
     // Check Settings
     QDisplayTime: null,
     PauseLength: null,
-    AccessArr: ''
+    AccessArr: '',
+
+    // Check details
+    AttemptID: '',
+    FormID: '',
+    TestDate: null,
+    TimeStart: null,
+    TimeComplete: null
   }
 
   constructor (
@@ -118,6 +127,51 @@ export class ReportLine {
     return arrangements.join('')
   }
 
+  private findEvent (eventType: string): Event | null {
+    if (this.events === null) {
+      return null
+    }
+    if (!Array.isArray(this.events)) {
+      return null
+    }
+    const event = this.events.find(e => e.type === eventType)
+    if (event === undefined) {
+      return null
+    }
+    return event
+  }
+
+  private getAnswer (questionNumber: number): Answer | null {
+    if (!Array.isArray(this.answers)) {
+      return null
+    }
+    const answer = this.answers.find(a => a.questionNumber === questionNumber)
+    return answer ?? null // return null instead of undefined if not found
+  }
+
+  private getTimeStart (): moment.Moment | null {
+    const event = this.findEvent('CheckStarted')
+    if (event === null) {
+      return null
+    }
+    return event.browserTimestamp
+  }
+
+  private getTimeComplete (): moment.Moment | null {
+    if (!Array.isArray(this.answers)) {
+      return null
+    }
+    const lastQuestionNumber = this.checkForm?.items.length
+    if (lastQuestionNumber === undefined) {
+      return null
+    }
+    const lastAnswer = this.getAnswer(lastQuestionNumber)
+    if (lastAnswer === null) {
+      return null
+    }
+    return lastAnswer.browserTimestamp
+  }
+
   private _transform (): void {
     this._report.DOB = this.pupil.dateOfBirth.format('DD/MM/YYYY')
     this._report.Gender = this.pupil.gender.toUpperCase()
@@ -132,6 +186,11 @@ export class ReportLine {
     this._report.QDisplayTime = this.checkConfig?.questionTime ?? null // set to null rather than undefined
     this._report.PauseLength = this.checkConfig?.loadingTime ?? null // set to null rather than undefined
     this._report.AccessArr = this.getAccessArrangements()
+    this._report.AttemptID = this.check?.checkCode ?? '' // set to empty string if null or undefined
+    this._report.FormID = this.checkForm?.name ?? '' // set to empty string if null or undefined
+    this._report.TestDate = this.check?.pupilLoginDate ?? null // set to null if there is no check
+    this._report.TimeStart = this.getTimeStart()
+    this._report.TimeComplete = this.getTimeComplete()
   }
 
   public transform (): PsychometricReportLine {

@@ -191,7 +191,7 @@ describe('report line class', () => {
         try {
           sut.events[0].type = 'QuestionIntroRendered' // attempt modification - compiler/interpreter should throw
         } catch (error) {}
-        expect(sut.events[0].type).toBe('QuestionRendered')
+        expect(sut.events[0].type).toBe('CheckStarted')
       }
     })
   })
@@ -262,6 +262,79 @@ describe('report line class', () => {
     test('the pupils access arrangements are mapped', () => {
       const out = sut.transform()
       expect(out.AccessArr).toBe('[3][5]')
+    })
+  })
+
+  describe('check settings for pupils not taking the check', () => {
+    let sut: ReportLine
+
+    beforeEach(() => {
+      sut = new ReportLine(
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        pupilNotAttending,
+        school
+      )
+    })
+    test('the amount of time the question is displayed for is mapped', () => {
+      const out = sut.transform()
+      expect(out.QDisplayTime).toBeNull()
+    })
+
+    test('the pause length between questions is mapped', () => {
+      const out = sut.transform()
+      expect(out.PauseLength).toBeNull()
+    })
+
+    test('the pupils access arrangements are mapped', () => {
+      const out = sut.transform()
+      expect(out.AccessArr).toBe('')
+    })
+  })
+
+  describe('check settings for pupils who have taken a check', () => {
+    let sut: ReportLine
+
+    beforeEach(() => {
+      sut = new ReportLine(
+        answers,
+        check,
+        null,
+        checkForm,
+        null,
+        events,
+        pupilNotAttending,
+        school
+      )
+    })
+
+    test('the attempt ID is mapped', () => {
+      const out = sut.transform()
+      expect(out.AttemptID).toBe('xyz-def-987')
+    })
+
+    test('the form name is mapped', () => {
+      const out = sut.transform()
+      expect(out.FormID).toBe('Test check form 9')
+    })
+
+    test('the date the test was taken is mapped', () => {
+      const out = sut.transform()
+      expect(out.TestDate?.toISOString()).toBe('2020-01-21T09:00:00.000Z')
+    })
+
+    test('the time that the test was taken is mapped', () => {
+      const out = sut.transform()
+      expect(out.TimeStart?.toISOString()).toBe('2020-01-21T09:00:01.123Z')
+    })
+
+    test('the time that the test was completed is mapped', () => {
+      const out = sut.transform()
+      expect(out.TimeComplete?.toISOString()).toBe('2020-01-21T09:00:15.000Z')
     })
   })
 })

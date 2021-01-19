@@ -10,12 +10,13 @@ export const answers: readonly Answer[] = [
         answerId: 21,
         input: '1',
         inputType: 'M',
-        browserTimestamp: moment('2020-01-21T09:00:02.123Z')
+        browserTimestamp: moment('2020-01-21T09:00:05.123Z')
       }
     ],
     isCorrect: true,
     question: '1x1',
     questionCode: 'Q145',
+    questionNumber: 1,
     response: '1'
   },
   {
@@ -32,12 +33,13 @@ export const answers: readonly Answer[] = [
         answerId: 22,
         input: 'Enter',
         inputType: 'M',
-        browserTimestamp: moment('2020-01-21T09:00:15.000Z')
+        browserTimestamp: moment('2020-01-21T09:00:15.699Z')
       }
     ],
     isCorrect: false,
     question: '1x2',
     questionCode: 'Q146',
+    questionNumber: 2,
     response: '4'
   }
 ]

@@ -93,6 +93,7 @@ export interface Answer {
   isCorrect: boolean
   question: string
   questionCode: string
+  questionNumber: number
   response: string
 }
 

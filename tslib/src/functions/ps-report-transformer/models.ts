@@ -15,4 +15,10 @@ export interface PsychometricReportLine {
   QDisplayTime: number | null
   PauseLength: number | null
   AccessArr: string
+  // Check
+  AttemptID: string
+  FormID: string
+  TestDate: moment.Moment | null
+  TimeStart: moment.Moment | null
+  TimeComplete: moment.Moment | null
 }
