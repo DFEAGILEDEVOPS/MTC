@@ -119,7 +119,8 @@ describe('report line class', () => {
     })
   })
 
-  describe('school information (no dependency on pupil)', () => {
+  // The school tests do not have any dependency on the pupil or other data sources.
+  describe('school information', () => {
     let sut: ReportLine
 
     beforeEach(() => {
@@ -209,7 +210,7 @@ describe('report line class', () => {
       })
     })
 
-    describe('check settings', () => {
+    describe('settings', () => {
       let sut: ReportLine
 
       beforeEach(() => {
@@ -252,7 +253,7 @@ describe('report line class', () => {
           checkForm,
           null,
           events,
-          pupilNotAttending,
+          pupilCompletedCheck,
           school
         )
       })
@@ -356,7 +357,7 @@ describe('report line class', () => {
       })
     })
 
-    describe('check settings', () => {
+    describe('settings', () => {
       let sut: ReportLine
 
       beforeEach(() => {
