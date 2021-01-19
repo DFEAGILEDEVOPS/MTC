@@ -5,6 +5,7 @@
  * by scripts in other files that use them.
  */
 /* global $ */
+/* eslint-disable no-var */
 var inputStatus = {
   /**
     * Check/uncheck all checkboxes (text links)
@@ -283,7 +284,7 @@ var checkboxUtil = {
       $(sel).removeClass('js-filter-hidden-group')
     } else {
       $(sel).addClass('js-filter-hidden-group')
-      paramIds.map(function (pId) {
+      paramIds.forEach(function (pId) {
         $(sel + '.' + param + '-id-' + pId).removeClass('js-filter-hidden-group')
         checkboxUtil.unselectUngroupedCheckboxes(pId)
       })

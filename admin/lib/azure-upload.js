@@ -17,7 +17,7 @@ module.exports = async function (req, res, next) {
   await blobService.createContainerIfNotExistsAsync(container)
 
   // Container exists and is private
-  Object.getOwnPropertyNames(req.files).map(field => {
+  Object.getOwnPropertyNames(req.files).forEach(field => {
     // TODO: add _userid to the filename
     const files = req.files[field]
     // If only 1 file is being upload created an array with a single file object

@@ -21,7 +21,7 @@ const main = (app) => {
   }
   // block app if required vars not set and in development mode...
   const unsetVars = []
-  Object.keys(config).map((key) => {
+  Object.keys(config).forEach((key) => {
     if (config[key] === undefined && !whitelist.includes(key)) {
       unsetVars.push(`${key}`)
     }

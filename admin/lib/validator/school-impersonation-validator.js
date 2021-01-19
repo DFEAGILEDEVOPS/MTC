@@ -4,7 +4,7 @@ const SchoolImpersonationMessages = require('../errors/school-impersonation')
 const isDfeNumberValidV2 = (dfeNumber) => {
   const validationError = new ValidationError()
 
-  const sevenDigitRegex = new RegExp(/^\d{7}$/)
+  const sevenDigitRegex = /^\d{7}$/
   if (!sevenDigitRegex.test(dfeNumber)) {
     validationError.addError('dfeNumber', SchoolImpersonationMessages.incorrectType)
     return validationError

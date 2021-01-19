@@ -131,7 +131,8 @@ checkFormPresenter.getAssignFormsFlashMessage = (checkForms, checkWindowName, ch
     return `Check form has been unassigned from ${checkWindowName}, Try it out`
   }
   const partial = totalFormAssigned > 1 ? 'forms have' : 'form has'
-  return checkFormType === 'live' ? `${totalFormAssigned} ${partial} been assigned to ${checkWindowName}, MTC`
+  return checkFormType === 'live'
+    ? `${totalFormAssigned} ${partial} been assigned to ${checkWindowName}, MTC`
     : `${totalFormAssigned} ${partial} been assigned to ${checkWindowName}, Try it out`
 }
 

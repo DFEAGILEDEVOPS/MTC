@@ -1,5 +1,5 @@
 // https://github.com/alphagov/frontend/blob/master/app/assets/javascripts/modules/cookie-settings.js
-
+/* eslint-disable no-var */
 window.GOVUK = window.GOVUK || {}
 window.GOVUK.Modules = window.GOVUK.Modules || {};
 
