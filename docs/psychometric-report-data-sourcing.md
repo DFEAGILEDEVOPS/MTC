@@ -69,10 +69,10 @@ where *n* is the question number (from 1 to 25)
 | Psychometric field | Source                      | Comment                                                      |
 | ------------------ | --------------------------- | ------------------------------------------------------------ |
 | QnID               | mtc_admin.question          | e.g. '6x7'                                                   |
-| QnResponse         | mtc_results.answer          |                                                              |
-| QnInputMethods     | mtc_results.userInputLookup |                                                              |
-| QnK                | mtc_results.userInput       |                                                              |
-| QnScore            | mtc_results.answer          |                                                              |
+| QnResponse         | mtc_results.answer          | the answer provided by the pupil                             |
+| QnInputMethods     | mtc_results.userInputLookup | Single character string: `k` - when using keyboard `t` - when using a touchscreen `m` - when using a mouse `x` - when combination blank - when there is no input |
+| QnK                | mtc_results.userInput       | Lists each individual key stroke during the time limit separated by square brackets and preceded by: `k` - when using keyboard `t` - when using a touchscreen `m` - when using a mouse `x` - when combination blank - when there is no input |
+| QnSco              | mtc_results.answer          | Question answer (1 = correct, 0 = incorrect)                 |
 | QnResponseTime     | mtc_results.userInput       | QntLastkey - QntFirstKey                                     |
 | QnTimeOut          | mtc_results.userInput       | If the user pressed the Enter key as the last input it did not timeout |
 | QnTimeOutResponse  | QnTimeout, QnResponse       | Timeout with no response (1 = with response, 0 = no response, empty = didn't time out) |

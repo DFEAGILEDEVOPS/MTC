@@ -7,7 +7,7 @@ import {
   Pupil,
   School, Answer
 } from '../../functions-throttled/ps-report-2-pupil-data/models'
-import { PsychometricReportLine } from './models'
+import { IPsychometricReportLine, ReportLineAnswer } from './models'
 import { deepFreeze } from '../../common/deep-freeze'
 import moment from 'moment'
 
@@ -20,7 +20,7 @@ export class ReportLine {
   private readonly _events: EventsOrNull
   private readonly _pupil: Pupil
   private readonly _school: School
-  private _report: PsychometricReportLine = {
+  private _report: IPsychometricReportLine = {
     // Pupil fields
     DOB: null,
     Gender: '',
@@ -54,7 +54,10 @@ export class ReportLine {
     DeviceType: null,
     BrowserType: null,
     DeviceTypeModel: null,
-    DeviceID: null
+    DeviceID: null,
+
+    // Question data
+    _answers: []
   }
 
   constructor (
@@ -231,9 +234,24 @@ export class ReportLine {
     this._report.BrowserType = this.getBrowser()
     this._report.DeviceTypeModel = this.device?.typeModel ?? null
     this._report.DeviceID = this.device?.deviceId ?? null
+
+    // Question data
+    this.answers?.forEach(answer => {
+      const rla = new ReportLineAnswer()
+      rla.questionNumber = answer.questionNumber
+      rla.id = answer.question
+      rla.response = answer.response
+
+      if (answer.inputs !== null) {
+        rla.addInputs(answer.inputs)
+      }
+
+      // add to the report
+      this._report._answers.push(rla)
+    })
   }
 
-  public transform (): PsychometricReportLine {
+  public transform (): IPsychometricReportLine {
     this._transform()
     return this._report
   }
