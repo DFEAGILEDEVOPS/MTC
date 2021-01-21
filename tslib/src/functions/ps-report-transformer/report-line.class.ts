@@ -1,3 +1,4 @@
+import moment from 'moment'
 import {
   AnswersOrNull,
   CheckConfigOrNull,
@@ -7,9 +8,9 @@ import {
   Pupil,
   School, Answer
 } from '../../functions-throttled/ps-report-2-pupil-data/models'
-import { IPsychometricReportLine, ReportLineAnswer } from './models'
+import { IPsychometricReportLine } from './models'
 import { deepFreeze } from '../../common/deep-freeze'
-import moment from 'moment'
+import { ReportLineAnswer } from './report-line-answer.class'
 
 export class ReportLine {
   private readonly _answers: AnswersOrNull
