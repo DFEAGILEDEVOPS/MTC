@@ -1,6 +1,6 @@
-import { ReportLineAnswer } from './models'
 import { Input } from '../../functions-throttled/ps-report-2-pupil-data/models'
 import moment from 'moment/moment'
+import { ReportLineAnswer } from './report-line-answer.class'
 
 describe('PsychometricReportLineAnswer', () => {
   let sut: ReportLineAnswer
