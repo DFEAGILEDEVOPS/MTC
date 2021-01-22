@@ -57,8 +57,8 @@ export class ReportLine {
     DeviceTypeModel: null,
     DeviceID: null,
 
-    // Question data
-    _answers: []
+    // Question and answer data
+    answers: []
   }
 
   constructor (
@@ -247,8 +247,10 @@ export class ReportLine {
         rla.addInputs(answer.inputs)
       }
 
+      rla.score = answer.isCorrect ? 1 : 0
+
       // add to the report
-      this._report._answers.push(rla)
+      this._report.answers.push(rla)
     })
   }
 

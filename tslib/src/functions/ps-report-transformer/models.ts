@@ -34,5 +34,5 @@ export interface IPsychometricReportLine {
   DeviceID: string | null
 
   // Answers
-  _answers: ReportLineAnswer[]
+  answers: ReportLineAnswer[]
 }

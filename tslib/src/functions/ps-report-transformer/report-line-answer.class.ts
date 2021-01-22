@@ -7,6 +7,7 @@ export class ReportLineAnswer {
   private _response: string | null = null
   private _inputMethods: string | null = null
   private _keystrokes: string | null = null
+  private _score: number | null = null
 
   set questionNumber (num) {
     if (typeof num === 'number' && (num <= 0 || num > 25)) {
@@ -19,12 +20,12 @@ export class ReportLineAnswer {
     return this._questionNumber
   }
 
-  get id (): string | null {
-    return this._id
-  }
-
   set id (s) {
     this._id = s
+  }
+
+  get id (): string | null {
+    return this._id
   }
 
   get response (): string | null {
@@ -46,6 +47,14 @@ export class ReportLineAnswer {
   }
 
   // keystrokes does not have a setter, it is set from addInputs()
+
+  set score (score) {
+    this._score = score
+  }
+
+  get score (): number | null {
+    return this._score
+  }
 
   private getUserInput (inputs: readonly Input[]): string {
     const output: string[] = []

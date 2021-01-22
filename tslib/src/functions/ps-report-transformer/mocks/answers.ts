@@ -9,7 +9,7 @@ export const answers: readonly Answer[] = [
       {
         answerId: 21,
         input: '1',
-        inputType: 'M',
+        inputType: 'K',
         browserTimestamp: moment('2020-01-21T09:00:05.123Z')
       }
     ],
@@ -25,7 +25,7 @@ export const answers: readonly Answer[] = [
     inputs: [
       {
         answerId: 22,
-        input: '2',
+        input: '4',
         inputType: 'M',
         browserTimestamp: moment('2020-01-21T09:00:14.000Z')
       },

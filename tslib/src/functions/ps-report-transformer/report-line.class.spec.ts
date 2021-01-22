@@ -41,7 +41,7 @@ describe('report line class', () => {
         try {
           sut.answers[1].inputs[0].input = '66' // attempt modification - compiler/interpreter should throw
         } catch (error) {}
-        expect(sut.answers[1].inputs[0].input).toBe('2')
+        expect(sut.answers[1].inputs[0].input).toBe('4')
       }
     })
 
@@ -335,6 +335,59 @@ describe('report line class', () => {
       test('DeviceID is mapped correctly', () => {
         const out = sut.transform()
         expect(out.DeviceID).toBe('1234567890abcde')
+      })
+    })
+
+    describe('question fields', () => {
+      let sut: ReportLine
+
+      beforeEach(() => {
+        sut = new ReportLine(
+          answers,
+          check,
+          null,
+          null,
+          null,
+          null,
+          pupilCompletedCheck,
+          school
+        )
+      })
+
+      test('it maps the questionNumber for each question', () => {
+        const out = sut.transform()
+        expect(out.answers[0].questionNumber).toBe(1)
+        expect(out.answers[1].questionNumber).toBe(2)
+      })
+
+      test('it maps the id for each question', () => {
+        const out = sut.transform()
+        expect(out.answers[0].id).toBe('1x1')
+        expect(out.answers[1].id).toBe('1x2')
+      })
+
+      test('it maps the response for each question', () => {
+        const out = sut.transform()
+        expect(out.answers[0].response).toBe('1')
+        expect(out.answers[1].response).toBe('4')
+      })
+
+      test('it maps the inputMethods for each answer', () => {
+        const out = sut.transform()
+        expect(out.answers[0].inputMethods).toBe('k')
+        expect(out.answers[1].inputMethods).toBe('m')
+      })
+
+      test('it maps the keystrokes for each answer', () => {
+        const out = sut.transform()
+        expect(out.answers[0].keystrokes).toBe('k[1]')
+        expect(out.answers[1].keystrokes).toBe('m[4], m[Enter]')
+      })
+
+      test('it maps the score for each answer', () => {
+        const out = sut.transform()
+        expect(out.answers[0].score).toBe(1)
+        expect(out.answers[1].score).toBe(0)
       })
     })
   })
