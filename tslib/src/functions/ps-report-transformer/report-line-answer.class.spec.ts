@@ -131,4 +131,274 @@ describe('PsychometricReportLineAnswer', () => {
     expect(sut.inputMethods).toBe('')
     expect(sut.keystrokes).toBe('')
   })
+
+  describe('the time of the last input is determined correctly', () => {
+    test('single digit answer', () => {
+      const inputs: Input[] = [
+        {
+          answerId: 1,
+          input: '1',
+          inputType: 'K',
+          browserTimestamp: moment('2020-01-21T09:00:05.123Z')
+        }
+      ]
+      sut.addInputs(inputs)
+      expect(sut.lastKey?.toISOString()).toBe('2020-01-21T09:00:05.123Z')
+    })
+
+    test('single digit answer with enter', () => {
+      const inputs: Input[] = [
+        {
+          answerId: 1,
+          input: '1',
+          inputType: 'K',
+          browserTimestamp: moment('2020-01-21T09:00:05.123Z')
+        },
+        {
+          answerId: 1,
+          input: 'Enter',
+          inputType: 'K',
+          browserTimestamp: moment('2020-01-21T09:00:05.650Z')
+        }
+      ]
+      sut.addInputs(inputs)
+      expect(sut.lastKey?.toISOString()).toBe('2020-01-21T09:00:05.123Z')
+    })
+
+    test('single digit answer with correction', () => {
+      const inputs: Input[] = [
+        {
+          answerId: 1,
+          input: '1',
+          inputType: 'K',
+          browserTimestamp: moment('2020-01-21T09:00:05.123Z')
+        },
+        {
+          answerId: 1,
+          input: 'Backspace',
+          inputType: 'K',
+          browserTimestamp: moment('2020-01-21T09:00:05.125Z')
+        },
+        {
+          answerId: 1,
+          input: '2',
+          inputType: 'K',
+          browserTimestamp: moment('2020-01-21T09:00:05.650Z')
+        }
+      ]
+      sut.addInputs(inputs)
+      expect(sut.lastKey?.toISOString()).toBe('2020-01-21T09:00:05.650Z')
+    })
+
+    test('single digit answer with enter and correction', () => {
+      const inputs: Input[] = [
+        {
+          answerId: 1,
+          input: '1',
+          inputType: 'K',
+          browserTimestamp: moment('2020-01-21T09:00:05.123Z')
+        },
+        {
+          answerId: 1,
+          input: 'Backspace',
+          inputType: 'K',
+          browserTimestamp: moment('2020-01-21T09:00:05.125Z')
+        },
+        {
+          answerId: 1,
+          input: '2',
+          inputType: 'K',
+          browserTimestamp: moment('2020-01-21T09:00:05.650Z')
+        },
+        {
+          answerId: 1,
+          input: 'Enter',
+          inputType: 'K',
+          browserTimestamp: moment('2020-01-21T09:00:05.750Z')
+        }
+      ]
+      sut.addInputs(inputs)
+      expect(sut.lastKey?.toISOString()).toBe('2020-01-21T09:00:05.650Z')
+    })
+
+    test('single digit answer with trailing extra character', () => {
+      const inputs: Input[] = [
+        {
+          answerId: 1,
+          input: '1',
+          inputType: 'K',
+          browserTimestamp: moment('2020-01-21T09:00:05.123Z')
+        },
+        {
+          answerId: 1,
+          input: '$',
+          inputType: 'K',
+          browserTimestamp: moment('2020-01-21T09:00:05.723Z')
+        }
+      ]
+      sut.addInputs(inputs)
+      expect(sut.lastKey?.toISOString()).toBe('2020-01-21T09:00:05.123Z')
+    })
+
+    test('single digit answer with leading extra character', () => {
+      const inputs: Input[] = [
+        {
+          answerId: 1,
+          input: '$',
+          inputType: 'K',
+          browserTimestamp: moment('2020-01-21T09:00:05.123Z')
+        },
+        {
+          answerId: 1,
+          input: '1',
+          inputType: 'K',
+          browserTimestamp: moment('2020-01-21T09:00:05.663Z')
+        }
+      ]
+      sut.addInputs(inputs)
+      expect(sut.lastKey?.toISOString()).toBe('2020-01-21T09:00:05.663Z')
+    })
+
+    test('two digit answer', () => {
+      const inputs: Input[] = [
+        {
+          answerId: 1,
+          input: '1',
+          inputType: 'K',
+          browserTimestamp: moment('2020-01-21T09:00:05.123Z')
+        },
+        {
+          answerId: 2,
+          input: '2',
+          inputType: 'K',
+          browserTimestamp: moment('2020-01-21T09:00:05.663Z')
+        }
+      ]
+      sut.addInputs(inputs)
+      expect(sut.lastKey?.toISOString()).toBe('2020-01-21T09:00:05.663Z')
+    })
+
+    test('five digit answer', () => {
+      const inputs: Input[] = [
+        {
+          answerId: 1,
+          input: '1',
+          inputType: 'K',
+          browserTimestamp: moment('2020-01-21T09:00:05.121Z')
+        },
+        {
+          answerId: 2,
+          input: '2',
+          inputType: 'K',
+          browserTimestamp: moment('2020-01-21T09:00:05.122Z')
+        },
+        {
+          answerId: 3,
+          input: '3',
+          inputType: 'K',
+          browserTimestamp: moment('2020-01-21T09:00:05.123Z')
+        },
+        {
+          answerId: 4,
+          input: '4',
+          inputType: 'K',
+          browserTimestamp: moment('2020-01-21T09:00:05.124Z')
+        },
+        {
+          answerId: 5,
+          input: '5',
+          inputType: 'K',
+          browserTimestamp: moment('2020-01-21T09:00:05.125Z')
+        }
+      ]
+      sut.addInputs(inputs)
+      expect(sut.lastKey?.toISOString()).toBe('2020-01-21T09:00:05.125Z')
+    })
+
+    test('six digit answer', () => {
+      const inputs: Input[] = [
+        {
+          answerId: 1,
+          input: '1',
+          inputType: 'K',
+          browserTimestamp: moment('2020-01-21T09:00:05.121Z')
+        },
+        {
+          answerId: 2,
+          input: '2',
+          inputType: 'K',
+          browserTimestamp: moment('2020-01-21T09:00:05.122Z')
+        },
+        {
+          answerId: 3,
+          input: '3',
+          inputType: 'K',
+          browserTimestamp: moment('2020-01-21T09:00:05.123Z')
+        },
+        {
+          answerId: 4,
+          input: '4',
+          inputType: 'K',
+          browserTimestamp: moment('2020-01-21T09:00:05.124Z')
+        },
+        {
+          answerId: 5,
+          input: '5',
+          inputType: 'K',
+          browserTimestamp: moment('2020-01-21T09:00:05.125Z')
+        },
+        {
+          answerId: 6,
+          input: '6',
+          inputType: 'K',
+          browserTimestamp: moment('2020-01-21T09:00:05.126Z')
+        }
+      ]
+      sut.addInputs(inputs)
+      expect(sut.lastKey?.toISOString()).toBe('2020-01-21T09:00:05.125Z')
+    })
+
+    test('mixed answer', () => {
+      const inputs: Input[] = [
+        {
+          answerId: 1,
+          input: '1',
+          inputType: 'K',
+          browserTimestamp: moment('2020-01-21T09:00:05.121Z')
+        },
+        {
+          answerId: 2,
+          input: '#',
+          inputType: 'K',
+          browserTimestamp: moment('2020-01-21T09:00:05.122Z')
+        },
+        {
+          answerId: 3,
+          input: 'Backspace',
+          inputType: 'K',
+          browserTimestamp: moment('2020-01-21T09:00:05.123Z')
+        },
+        {
+          answerId: 4,
+          input: '4',
+          inputType: 'K',
+          browserTimestamp: moment('2020-01-21T09:00:05.124Z')
+        },
+        {
+          answerId: 5,
+          input: 'Backspace',
+          inputType: 'K',
+          browserTimestamp: moment('2020-01-21T09:00:05.125Z')
+        },
+        {
+          answerId: 6,
+          input: '6',
+          inputType: 'K',
+          browserTimestamp: moment('2020-01-21T09:00:05.126Z')
+        }
+      ]
+      sut.addInputs(inputs)
+      expect(sut.lastKey?.toISOString()).toBe('2020-01-21T09:00:05.126Z')
+    })
+  })
 })
