@@ -222,6 +222,18 @@ export class ReportLine {
     return true
   }
 
+  private getTimeoutResponse (answer: Answer): boolean | string {
+    const timeout = this.getTimeout(answer.questionNumber)
+    if (timeout) {
+      if (answer.response.length > 0) {
+        return true // timeout with an answer
+      } else {
+        return false // timeout without an answer
+      }
+    }
+    return '' // no timeout
+  }
+
   private _transform (): void {
     this._report.DOB = this.pupil.dateOfBirth
     this._report.Gender = this.pupil.gender.toUpperCase()
@@ -262,6 +274,7 @@ export class ReportLine {
 
       rla.score = answer.isCorrect ? 1 : 0
       rla.timeout = this.getTimeout(answer.questionNumber)
+      rla.timeoutResponse = this.getTimeoutResponse(answer)
 
       // add to the report
       this._report.answers.push(rla)

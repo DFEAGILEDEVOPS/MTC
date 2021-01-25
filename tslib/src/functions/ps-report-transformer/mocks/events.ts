@@ -55,5 +55,14 @@ export const events: Event[] = [
     questionCode: null,
     questionNumber: null,
     type: 'CheckComplete'
+  },
+  {
+    browserTimestamp: moment('2020-01-21T09:00:21.000Z'),
+    id: 46,
+    isWarmup: false,
+    question: '1x3',
+    questionCode: 'Q147',
+    questionNumber: 3,
+    type: 'QuestionTimerEnded'
   }
 ]

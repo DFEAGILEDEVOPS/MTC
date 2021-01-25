@@ -47,5 +47,15 @@ export const answers: readonly Answer[] = [
     questionCode: 'Q146',
     questionNumber: 2,
     response: '4'
+  },
+  {
+    browserTimestamp: moment('2020-01-21T09:00:21.000Z'),
+    id: 23,
+    inputs: [], // no attempt to answer
+    isCorrect: false,
+    question: '1x3',
+    questionCode: 'Q147',
+    questionNumber: 3,
+    response: ''
   }
 ]

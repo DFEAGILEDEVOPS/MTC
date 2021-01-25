@@ -282,12 +282,12 @@ describe('report line class', () => {
 
       test('the time that the test was completed is mapped', () => {
         const out = sut.transform()
-        expect(out.TimeComplete?.toISOString()).toBe('2020-01-21T09:00:15.000Z')
+        expect(out.TimeComplete?.toISOString()).toBe('2020-01-21T09:00:21.000Z')
       })
 
       test('the time taken is calculated', () => {
         const out = sut.transform()
-        expect(out.TimeTaken).toBe(13.877)
+        expect(out.TimeTaken).toBe(19.877)
       })
 
       test('the number of restarts is mapped', () => {
@@ -412,6 +412,15 @@ describe('report line class', () => {
         const out = sut.transform()
         expect(out.answers[0].timeout).toBe(true) // question timed out, user did NOT press enter
         expect(out.answers[1].timeout).toBe(false) // did not time out
+      })
+
+      describe('#timeoutResponse', () => {
+        test('whether the question timed out with a response', () => {
+          const out = sut.transform()
+          expect(out.answers[0].timeoutResponse).toBe(true)
+          expect(out.answers[1].timeoutResponse).toBe('')
+          expect(out.answers[2].timeoutResponse).toBe(false)
+        })
       })
     })
   })
