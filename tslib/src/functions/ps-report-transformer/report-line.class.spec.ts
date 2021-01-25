@@ -381,7 +381,7 @@ describe('report line class', () => {
       test('it maps the keystrokes for each answer', () => {
         const out = sut.transform()
         expect(out.answers[0].keystrokes).toBe('k[1]')
-        expect(out.answers[1].keystrokes).toBe('m[4], m[Enter]')
+        expect(out.answers[1].keystrokes).toBe('m[4], m[2], m[Enter]')
       })
 
       test('it maps the score for each answer', () => {
