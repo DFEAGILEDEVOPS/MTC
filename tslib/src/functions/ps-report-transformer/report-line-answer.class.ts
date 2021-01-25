@@ -11,6 +11,7 @@ export class ReportLineAnswer {
   private _firstKey: moment.Moment | null = null
   private _lastKey: moment.Moment | null = null
   private _responseTime: number | null = null
+  private _timeout: boolean | null = null
 
   set questionNumber (num) {
     if (typeof num === 'number' && (num <= 0 || num > 25)) {
@@ -75,6 +76,14 @@ export class ReportLineAnswer {
 
   get responseTime (): number | null {
     return this._responseTime // seconds and ms to 3 digits: e.g. 4.253 seconds
+  }
+
+  set timeout (flag) {
+    this._timeout = flag
+  }
+
+  get timeout (): boolean | null {
+    return this._timeout
   }
 
   /**

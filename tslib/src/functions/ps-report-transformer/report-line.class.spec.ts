@@ -348,7 +348,7 @@ describe('report line class', () => {
           null,
           null,
           null,
-          null,
+          events,
           pupilCompletedCheck,
           school
         )
@@ -406,6 +406,12 @@ describe('report line class', () => {
         const out = sut.transform()
         expect(out.answers[0].responseTime).toBe(0)
         expect(out.answers[1].responseTime).toBe(0.333)
+      })
+
+      test('whether the question timed out is determined', () => {
+        const out = sut.transform()
+        expect(out.answers[0].timeout).toBe(true) // question timed out, user did NOT press enter
+        expect(out.answers[1].timeout).toBe(false) // did not time out
       })
     })
   })

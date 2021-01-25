@@ -140,14 +140,19 @@ export class ReportLine {
     return arrangements.join('')
   }
 
-  private findEvent (eventType: string): Event | null {
+  private findEvent (eventType: string, questionNumber: number | null = null): Event | null {
     if (this.events === null) {
       return null
     }
     if (!Array.isArray(this.events)) {
       return null
     }
-    const event = this.events.find(e => e.type === eventType)
+    let event: Event | undefined
+    if (questionNumber === null) {
+      event = this.events.find(e => e.type === eventType)
+    } else {
+      event = this.events.find(e => e.type === eventType && e.questionNumber === questionNumber)
+    }
     if (event === undefined) {
       return null
     }
@@ -209,6 +214,14 @@ export class ReportLine {
     return `${this.device.browserFamily} ${this.getBrowserVersion()}`
   }
 
+  private getTimeout (questionNumber: number): boolean {
+    const event = this.findEvent('QuestionTimerEnded', questionNumber)
+    if (event === null) {
+      return false
+    }
+    return true
+  }
+
   private _transform (): void {
     this._report.DOB = this.pupil.dateOfBirth
     this._report.Gender = this.pupil.gender.toUpperCase()
@@ -248,6 +261,7 @@ export class ReportLine {
       }
 
       rla.score = answer.isCorrect ? 1 : 0
+      rla.timeout = this.getTimeout(answer.questionNumber)
 
       // add to the report
       this._report.answers.push(rla)

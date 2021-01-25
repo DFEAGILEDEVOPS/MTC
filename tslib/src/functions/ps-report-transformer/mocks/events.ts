@@ -44,7 +44,7 @@ export const events: Event[] = [
     isWarmup: false,
     question: '1x2',
     questionCode: 'Q146',
-    questionNumber: 1,
+    questionNumber: 2,
     type: 'QuestionAnswered'
   },
   {
