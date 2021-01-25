@@ -37,11 +37,11 @@ Then(/^all answers events and inputs match$/) do
     {'browserTimestamp' => event['clientTimestamp'],
      'eventType' => event['type'],
      'eventData' => (event['data'].nil? ? nil : {'sequenceNumber' => event['data']['sequenceNumber'],
-                                                'question' => event['data']['question'],
-                                                'isWarmup' => event['data']['isWarmup']}),
+                                                 'question' => event['data']['question'],
+                                                 'isWarmup' => event['data']['isWarmup']}),
      'question_id' => (event['data'].nil? ? nil : (event['data']['isWarmup'] == true) ? nil : SqlDbHelper.get_question_id(event['data']['question'].split('x')[0],
-                                                                                                                       event['data']['question'].split('x')[1],
-                                                                                                                       event['data']['isWarmup'])['id']),
+                                                                                                                          event['data']['question'].split('x')[1],
+                                                                                                                          event['data']['isWarmup'])['id']),
      'questionNumber' => (event['data'].nil? ? nil : (event['data']['isWarmup'] == true) ? nil : event['data']['sequenceNumber'])}}
 
   db_event_types = SqlDbHelper.get_event_types_for_check(check_result_id).map {|event|
@@ -53,14 +53,47 @@ Then(/^all answers events and inputs match$/) do
                                                                                                                           (JSON.parse(event['eventData'])['question']).split('x')[1],
                                                                                                                           (JSON.parse(event['eventData'])['isWarmup']))['id']),
      'questionNumber' => (event['eventData'].nil? || event['eventData'].include?('true') ? nil : (JSON.parse(event['eventData'])['sequenceNumber']))}}
-  expect(event_type_payload.sort_by{|h| [h['browserTimestamp'], h['eventType']]}).to eql db_event_types.sort_by{|h| [h['browserTimestamp'], h['eventType']]}
+  expect(event_type_payload.sort_by {|h| [h['browserTimestamp'], h['eventType']]}).to eql db_event_types.sort_by {|h| [h['browserTimestamp'], h['eventType']]}
   db_inputs = SqlDbHelper.get_input_data(check_result_id)
   db_inputs_hash = db_inputs.map {|input| {input: input['userInput'],
                                            eventType: input['name'].downcase,
                                            clientTimestamp: input['inputBrowserTimestamp'].strftime("%Y-%m-%dT%H:%M:%S.%LZ"),
                                            question: input['question'],
                                            sequenceNumber: input['questionNumber']}}
-  expect(@archive['inputs'].map {|hash| hash.transform_keys{ |key| key.to_sym }}).to eql db_inputs_hash
+  expect(@archive['inputs'].map {|hash| hash.transform_keys {|key| key.to_sym}}).to eql db_inputs_hash
   check_result = SqlDbHelper.get_check_result(check_id)
   expect(check_result['mark']).to eql @mark.to_i
+end
+
+Given(/^I have completed a check by selecting all keys on the keyboard$/) do
+  step 'I have started the check'
+  @numbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+  @alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
+  @keys = [:cancel, :help, :backspace, :tab, :clear, :shift, :control, :alt, :pause, :escape, :space, :page_up, :page_down, :end, :home]
+  @keys_2 = [:left, :up, :right, :down, :insert, :delete, :semicolon, :multiply, :add, :separator, :subtract, :decimal, :divide, :equals]
+  @special = ['!', '@', '$', '%', '^', '&', '*', '(', ')', '_', '+', '}', '{', '|', '"', ':', '?', '>', '<', '~', ',']
+  @f_keys = [:f1, :f2, :f3, :f4, :f5, :f6, :f7, :f8, :f9, :f10, :f11, :f12]
+  @enter = [:enter]
+  find('.numpad-container #kb1').send_keys(@numbers)
+  find('.numpad-container #kb1').send_keys(@alphabet)
+  find('.numpad-container #kb1').send_keys(@keys)
+  find('.numpad-container #kb1').send_keys(@special)
+  find('.numpad-container #kb1').send_keys(@keys_2)
+  find('.numpad-container #kb1').send_keys(@keys_3)
+  find('.numpad-container #kb1').send_keys(@f_keys)
+  find('.numpad-container #kb1').send_keys(@enter)
+  check_page.complete_check_with_correct_answers(24, 'keyboard')
+end
+
+Then(/^I should see all inputs recorded$/) do
+  @storage_school = JSON.parse page.evaluate_script('window.localStorage.getItem("school");')
+  @storage_pupil = JSON.parse page.evaluate_script('window.localStorage.getItem("pupil");')
+  AzureTableHelper.wait_for_received_check(@storage_school['uuid'], @storage_pupil['checkCode'])
+  check_id = SqlDbHelper.get_check_id(@storage_pupil['checkCode'])
+  SqlDbHelper.wait_for_check_result(check_id)
+  check_result_id = SqlDbHelper.get_check_result_id(check_id)
+  db_inputs = SqlDbHelper.get_input_data(check_result_id).map {|h| h['userInput'].downcase if h['questionNumber'] == 1}.compact
+  array_of_inputs = @numbers + @alphabet + @keys.map {|k| k.to_s} + @keys_2.map {|k| k.to_s} + @special + @f_keys.map {|k| k.to_s} + @enter.map {|k| k.to_s}
+  mapped_array = array_of_inputs.map {|k| k.gsub('page_', 'page').gsub(/\Aspace/, ' ').gsub('equals', '=').gsub(/\Aleft/, 'arrowleft').gsub(/\Adown/, 'arrowdown').gsub(/\Aup/, 'arrowup').gsub(/\Aright/, 'arrowright').gsub('semicolon', ';').gsub('multiply', '*').gsub('add', '+').gsub('separator', '|').gsub('subtract', '-').gsub('decimal', '.').gsub('divide', '/')}
+  db_inputs.each {|k| expect(mapped_array).to include k}
 end
