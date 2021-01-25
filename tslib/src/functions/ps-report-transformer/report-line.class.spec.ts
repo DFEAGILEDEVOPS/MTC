@@ -389,6 +389,24 @@ describe('report line class', () => {
         expect(out.answers[0].score).toBe(1)
         expect(out.answers[1].score).toBe(0)
       })
+
+      test('first key input time is calculated correctly', () => {
+        const out = sut.transform()
+        expect(out.answers[0].firstKey?.toISOString()).toBe('2020-01-21T09:00:05.123Z')
+        expect(out.answers[1].firstKey?.toISOString()).toBe('2020-01-21T09:00:14.000Z')
+      })
+
+      test('last key input time is calculated correctly', () => {
+        const out = sut.transform()
+        expect(out.answers[0].lastKey?.toISOString()).toBe('2020-01-21T09:00:05.123Z')
+        expect(out.answers[1].lastKey?.toISOString()).toBe('2020-01-21T09:00:14.333Z')
+      })
+
+      test('response time is calculated correctly', () => {
+        const out = sut.transform()
+        expect(out.answers[0].responseTime).toBe(0)
+        expect(out.answers[1].responseTime).toBe(0.333)
+      })
     })
   })
 
