@@ -222,7 +222,7 @@ export class ReportLine {
     return true
   }
 
-  private getTimeoutResponse (answer: Answer): boolean | string {
+  private getTimeoutResponse (answer: Answer): boolean | '' {
     const timeout = this.getTimeout(answer.questionNumber)
     if (timeout) {
       if (answer.response.length > 0) {
@@ -230,6 +230,14 @@ export class ReportLine {
       } else {
         return false // timeout without an answer
       }
+    }
+    return '' // no timeout
+  }
+
+  private getTimeoutScore (answer: Answer): boolean | '' {
+    const timeout = this.getTimeout(answer.questionNumber)
+    if (timeout) {
+      return answer.isCorrect // timeout with a response
     }
     return '' // no timeout
   }
@@ -275,6 +283,7 @@ export class ReportLine {
       rla.score = answer.isCorrect ? 1 : 0
       rla.timeout = this.getTimeout(answer.questionNumber)
       rla.timeoutResponse = this.getTimeoutResponse(answer)
+      rla.timeoutScore = this.getTimeoutScore(answer)
 
       // add to the report
       this._report.answers.push(rla)

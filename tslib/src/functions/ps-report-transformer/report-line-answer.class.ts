@@ -12,7 +12,8 @@ export class ReportLineAnswer {
   private _lastKey: moment.Moment | null = null
   private _responseTime: number | null = null
   private _timeout: boolean | null = null
-  private _timeoutResponse: boolean | string | null = null
+  private _timeoutResponse: boolean | '' | null = null
+  private _timeoutScore: boolean | '' | null = null
 
   set questionNumber (num) {
     if (typeof num === 'number' && (num <= 0 || num > 25)) {
@@ -87,12 +88,20 @@ export class ReportLineAnswer {
     return this._timeout
   }
 
-  set timeoutResponse (arg: boolean | null | string) {
+  set timeoutResponse (arg: boolean | null | '') {
     this._timeoutResponse = arg
   }
 
-  get timeoutResponse (): boolean | null | string {
+  get timeoutResponse (): boolean | null | '' {
     return this._timeoutResponse
+  }
+
+  set timeoutScore (arg: boolean | null | '') {
+    this._timeoutScore = arg
+  }
+
+  get timeoutScore (): boolean | null | '' {
+    return this._timeoutScore
   }
 
   /**

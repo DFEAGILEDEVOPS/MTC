@@ -422,6 +422,13 @@ describe('report line class', () => {
           expect(out.answers[2].timeoutResponse).toBe(false)
         })
       })
+
+      test('it determines QnTimeOutSco to 1 be true if there was a timeout and the response was correct', () => {
+        const out = sut.transform()
+        expect(out.answers[0].timeoutScore).toBe(true)
+        expect(out.answers[1].timeoutScore).toBe('')
+        expect(out.answers[2].timeoutScore).toBe(false)
+      })
     })
   })
 
