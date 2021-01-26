@@ -1,6 +1,6 @@
 /*
 Create a release annotation via the App insights API
-This is necessary due to the limitation of the Azure DevOps build task being windows only :-/
+This is necessary due to the limitation of the Azure DevOps build task being windows only 🤨
 
 Script Parameters
 =================
