@@ -296,6 +296,7 @@ export class ReportLine {
       rla.timeoutScore = this.getTimeoutScore(answer)
       rla.loadTime = this.getLoadTime(answer)
       rla.calculateOverallTime()
+      rla.calculateRecallTime()
 
       // add to the report
       this._report.answers.push(rla)

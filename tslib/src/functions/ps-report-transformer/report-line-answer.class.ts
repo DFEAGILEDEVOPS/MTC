@@ -16,6 +16,7 @@ export class ReportLineAnswer {
   private _timeoutScore: boolean | '' | null = null
   private _loadTime: moment.Moment | null = null
   private _overallTime: number | null = null
+  private _recallTime: number | null = null
 
   set questionNumber (num) {
     if (typeof num === 'number' && (num <= 0 || num > 25)) {
@@ -122,6 +123,14 @@ export class ReportLineAnswer {
     return this._overallTime
   }
 
+  set recallTime (f: number | null) {
+    this._recallTime = f
+  }
+
+  get recallTime (): number | null {
+    return this._recallTime
+  }
+
   /**
    * Return a string comprising the input-type and the answer (in square brackets) for all of the inputs for a single question.
    * E.g. `k[1], m[2], m[Enter]`.  No quoting takes place, so the left-bracket would be `k[[]` and the single quote would be `k[']`
@@ -198,6 +207,14 @@ export class ReportLineAnswer {
       this.overallTime = null
     } else {
       this.overallTime = (this.lastKey.valueOf() - this.loadTime.valueOf()) / 1000 // e.g. 197.234
+    }
+  }
+
+  public calculateRecallTime (): void {
+    if (this.firstKey === null || this.loadTime === null) {
+      this.recallTime = null
+    } else {
+      this.recallTime = (this.firstKey.valueOf() - this.loadTime.valueOf()) / 1000 // e.g. 0.456
     }
   }
 }

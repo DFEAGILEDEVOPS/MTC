@@ -443,6 +443,13 @@ describe('report line class', () => {
         expect(out.answers[1].overallTime).toBe(1.209)
         expect(out.answers[2].overallTime).toBeNull()
       })
+
+      test('it determines the recall time', () => {
+        const out = sut.transform()
+        expect(out.answers[0].recallTime).toBe(0.983)
+        expect(out.answers[1].recallTime).toBe(0.876)
+        expect(out.answers[2].recallTime).toBeNull()
+      })
     })
   })
 
