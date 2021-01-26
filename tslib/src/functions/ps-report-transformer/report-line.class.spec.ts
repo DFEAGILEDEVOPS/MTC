@@ -272,17 +272,17 @@ describe('report line class', () => {
 
       test('the date the test was taken is mapped', () => {
         const out = sut.transform()
-        expect(out.TestDate?.toISOString()).toBe('2020-01-21T09:00:00.000Z')
+        expect(out.TestDate?.toISOString()).toBe('2021-01-21T09:00:00.000Z')
       })
 
       test('the time that the test was taken is mapped', () => {
         const out = sut.transform()
-        expect(out.TimeStart?.toISOString()).toBe('2020-01-21T09:00:01.123Z')
+        expect(out.TimeStart?.toISOString()).toBe('2021-01-21T09:00:01.123Z')
       })
 
       test('the time that the test was completed is mapped', () => {
         const out = sut.transform()
-        expect(out.TimeComplete?.toISOString()).toBe('2020-01-21T09:00:21.000Z')
+        expect(out.TimeComplete?.toISOString()).toBe('2021-01-21T09:00:21.000Z')
       })
 
       test('the time taken is calculated', () => {
@@ -369,7 +369,7 @@ describe('report line class', () => {
       test('it maps the response for each question', () => {
         const out = sut.transform()
         expect(out.answers[0].response).toBe('1')
-        expect(out.answers[1].response).toBe('4')
+        expect(out.answers[1].response).toBe('42')
       })
 
       test('it maps the inputMethods for each answer', () => {
@@ -392,14 +392,14 @@ describe('report line class', () => {
 
       test('first key input time is calculated correctly', () => {
         const out = sut.transform()
-        expect(out.answers[0].firstKey?.toISOString()).toBe('2020-01-21T09:00:05.123Z')
-        expect(out.answers[1].firstKey?.toISOString()).toBe('2020-01-21T09:00:14.000Z')
+        expect(out.answers[0].firstKey?.toISOString()).toBe('2021-01-21T09:00:05.123Z')
+        expect(out.answers[1].firstKey?.toISOString()).toBe('2021-01-21T09:00:14.000Z')
       })
 
       test('last key input time is calculated correctly', () => {
         const out = sut.transform()
-        expect(out.answers[0].lastKey?.toISOString()).toBe('2020-01-21T09:00:05.123Z')
-        expect(out.answers[1].lastKey?.toISOString()).toBe('2020-01-21T09:00:14.333Z')
+        expect(out.answers[0].lastKey?.toISOString()).toBe('2021-01-21T09:00:05.123Z')
+        expect(out.answers[1].lastKey?.toISOString()).toBe('2021-01-21T09:00:14.333Z')
       })
 
       test('response time is calculated correctly', () => {
@@ -434,7 +434,14 @@ describe('report line class', () => {
         const out = sut.transform()
         expect(out.answers[0].loadTime?.toISOString()).toBe('2021-01-21T09:00:04.140Z')
         expect(out.answers[1].loadTime?.toISOString()).toBe('2021-01-21T09:00:13.124Z')
-        expect(out.answers[2].loadTime?.toISOString()).toBe('2021-01-21T09:00:13.124Z')
+        expect(out.answers[2].loadTime?.toISOString()).toBe('2021-01-21T09:00:18.790Z')
+      })
+
+      test('it determines the overall time taken', () => {
+        const out = sut.transform()
+        expect(out.answers[0].overallTime).toBe(0.983)
+        expect(out.answers[1].overallTime).toBe(1.209)
+        expect(out.answers[2].overallTime).toBeNull()
       })
     })
   })

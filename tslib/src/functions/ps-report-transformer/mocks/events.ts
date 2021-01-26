@@ -3,7 +3,7 @@ import moment from 'moment'
 
 export const events: Event[] = [
   {
-    browserTimestamp: moment('2020-01-21T09:00:01.123Z'),
+    browserTimestamp: moment('2021-01-21T09:00:01.123Z'),
     id: 40,
     isWarmup: false,
     question: null,
@@ -30,7 +30,7 @@ export const events: Event[] = [
     type: 'QuestionTimerStarted'
   },
   {
-    browserTimestamp: moment('2020-01-21T09:00:10.500Z'),
+    browserTimestamp: moment('2021-01-21T09:00:10.500Z'),
     id: 43,
     isWarmup: false,
     question: '1x1',
@@ -66,7 +66,7 @@ export const events: Event[] = [
     type: 'QuestionAnswered'
   },
   {
-    browserTimestamp: moment('2021-01-21T09:00:13.124Z'),
+    browserTimestamp: moment('2021-01-21T09:00:18.790Z'),
     id: 47,
     isWarmup: false,
     question: '1x3',
@@ -75,7 +75,7 @@ export const events: Event[] = [
     type: 'QuestionTimerStarted'
   },
   {
-    browserTimestamp: moment('2020-01-21T09:00:21.000Z'),
+    browserTimestamp: moment('2021-01-21T09:00:21.000Z'),
     id: 48,
     isWarmup: false,
     question: '1x3',
@@ -84,7 +84,7 @@ export const events: Event[] = [
     type: 'QuestionTimerEnded'
   },
   {
-    browserTimestamp: moment('2020-01-21T09:00:21.001Z'),
+    browserTimestamp: moment('2021-01-21T09:00:21.001Z'),
     id: 49,
     isWarmup: false,
     question: null,

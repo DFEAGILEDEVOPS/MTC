@@ -15,6 +15,7 @@ export class ReportLineAnswer {
   private _timeoutResponse: boolean | '' | null = null
   private _timeoutScore: boolean | '' | null = null
   private _loadTime: moment.Moment | null = null
+  private _overallTime: number | null = null
 
   set questionNumber (num) {
     if (typeof num === 'number' && (num <= 0 || num > 25)) {
@@ -105,12 +106,20 @@ export class ReportLineAnswer {
     return this._timeoutScore
   }
 
+  set loadTime (dt) {
+    this._loadTime = dt
+  }
+
   get loadTime (): moment.Moment | null {
     return this._loadTime
   }
 
-  set loadTime (dt) {
-    this._loadTime = dt
+  set overallTime (f: number| null) {
+    this._overallTime = f
+  }
+
+  get overallTime (): number | null {
+    return this._overallTime
   }
 
   /**
@@ -181,6 +190,14 @@ export class ReportLineAnswer {
     }
     if (this.firstKey !== null && this.lastKey !== null) {
       this._responseTime = (this.lastKey.valueOf() - this.firstKey.valueOf()) / 1000
+    }
+  }
+
+  public calculateOverallTime (): void {
+    if (this.loadTime === null || this.lastKey === null) {
+      this.overallTime = null
+    } else {
+      this.overallTime = (this.lastKey.valueOf() - this.loadTime.valueOf()) / 1000 // e.g. 197.234
     }
   }
 }
