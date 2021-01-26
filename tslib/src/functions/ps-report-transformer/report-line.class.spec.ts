@@ -423,11 +423,18 @@ describe('report line class', () => {
         })
       })
 
-      test('it determines QnTimeOutSco to 1 be true if there was a timeout and the response was correct', () => {
+      test('it determines QnTimeOutSco', () => {
         const out = sut.transform()
-        expect(out.answers[0].timeoutScore).toBe(true)
-        expect(out.answers[1].timeoutScore).toBe('')
-        expect(out.answers[2].timeoutScore).toBe(false)
+        expect(out.answers[0].timeoutScore).toBe(true) // return true if there was a timeout and the answer was correct
+        expect(out.answers[1].timeoutScore).toBe('') // return '' if there was not a timeout
+        expect(out.answers[2].timeoutScore).toBe(false) // return false if there was a timeout and the answer was incorrect
+      })
+
+      test('it determines the question load time', () => {
+        const out = sut.transform()
+        expect(out.answers[0].loadTime?.toISOString()).toBe('2021-01-21T09:00:04.140Z')
+        expect(out.answers[1].loadTime?.toISOString()).toBe('2021-01-21T09:00:13.124Z')
+        expect(out.answers[2].loadTime?.toISOString()).toBe('2021-01-21T09:00:13.124Z')
       })
     })
   })

@@ -14,6 +14,7 @@ export class ReportLineAnswer {
   private _timeout: boolean | null = null
   private _timeoutResponse: boolean | '' | null = null
   private _timeoutScore: boolean | '' | null = null
+  private _loadTime: moment.Moment | null = null
 
   set questionNumber (num) {
     if (typeof num === 'number' && (num <= 0 || num > 25)) {
@@ -102,6 +103,14 @@ export class ReportLineAnswer {
 
   get timeoutScore (): boolean | null | '' {
     return this._timeoutScore
+  }
+
+  get loadTime (): moment.Moment | null {
+    return this._loadTime
+  }
+
+  set loadTime (dt) {
+    this._loadTime = dt
   }
 
   /**

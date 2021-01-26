@@ -61,6 +61,8 @@ export class ReportLine {
     answers: []
   }
 
+  private readonly eventTypeTimerStarted = 'QuestionTimerStarted'
+
   constructor (
     answers: AnswersOrNull,
     check: CheckOrNull,
@@ -242,6 +244,14 @@ export class ReportLine {
     return '' // no timeout
   }
 
+  private getLoadTime (answer: Answer): moment.Moment | null {
+    const loadEvent = this.findEvent(this.eventTypeTimerStarted, answer.questionNumber)
+    if (loadEvent === null) {
+      return null
+    }
+    return loadEvent.browserTimestamp
+  }
+
   private _transform (): void {
     this._report.DOB = this.pupil.dateOfBirth
     this._report.Gender = this.pupil.gender.toUpperCase()
@@ -284,6 +294,7 @@ export class ReportLine {
       rla.timeout = this.getTimeout(answer.questionNumber)
       rla.timeoutResponse = this.getTimeoutResponse(answer)
       rla.timeoutScore = this.getTimeoutScore(answer)
+      rla.loadTime = this.getLoadTime(answer)
 
       // add to the report
       this._report.answers.push(rla)

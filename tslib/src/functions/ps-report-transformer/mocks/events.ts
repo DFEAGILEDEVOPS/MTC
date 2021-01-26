@@ -21,8 +21,17 @@ export const events: Event[] = [
     type: 'QuestionRendered'
   },
   {
-    browserTimestamp: moment('2020-01-21T09:00:10.500Z'),
+    browserTimestamp: moment('2021-01-21T09:00:04.140Z'),
     id: 42,
+    isWarmup: false,
+    question: '1x1',
+    questionCode: 'Q146',
+    questionNumber: 1,
+    type: 'QuestionTimerStarted'
+  },
+  {
+    browserTimestamp: moment('2020-01-21T09:00:10.500Z'),
+    id: 43,
     isWarmup: false,
     question: '1x1',
     questionCode: 'Q146',
@@ -31,7 +40,7 @@ export const events: Event[] = [
   },
   {
     browserTimestamp: moment('2021-01-21T09:00:13.123Z'),
-    id: 43,
+    id: 44,
     isWarmup: false,
     question: '1x2',
     questionCode: 'Q146',
@@ -39,30 +48,48 @@ export const events: Event[] = [
     type: 'QuestionRendered'
   },
   {
-    browserTimestamp: moment('2021-01-21T09:00:15.700Z'),
-    id: 44,
+    browserTimestamp: moment('2021-01-21T09:00:13.124Z'),
+    id: 45,
     isWarmup: false,
     question: '1x2',
-    questionCode: 'Q146',
+    questionCode: 'Q147',
+    questionNumber: 2,
+    type: 'QuestionTimerStarted'
+  },
+  {
+    browserTimestamp: moment('2021-01-21T09:00:15.700Z'),
+    id: 46,
+    isWarmup: false,
+    question: '1x2',
+    questionCode: 'Q147',
     questionNumber: 2,
     type: 'QuestionAnswered'
   },
   {
-    browserTimestamp: moment('2020-01-21T09:00:16.222Z'),
-    id: 45,
+    browserTimestamp: moment('2021-01-21T09:00:13.124Z'),
+    id: 47,
+    isWarmup: false,
+    question: '1x3',
+    questionCode: 'Q148',
+    questionNumber: 3,
+    type: 'QuestionTimerStarted'
+  },
+  {
+    browserTimestamp: moment('2020-01-21T09:00:21.000Z'),
+    id: 48,
+    isWarmup: false,
+    question: '1x3',
+    questionCode: 'Q148',
+    questionNumber: 3,
+    type: 'QuestionTimerEnded'
+  },
+  {
+    browserTimestamp: moment('2020-01-21T09:00:21.001Z'),
+    id: 49,
     isWarmup: false,
     question: null,
     questionCode: null,
     questionNumber: null,
     type: 'CheckComplete'
-  },
-  {
-    browserTimestamp: moment('2020-01-21T09:00:21.000Z'),
-    id: 46,
-    isWarmup: false,
-    question: '1x3',
-    questionCode: 'Q147',
-    questionNumber: 3,
-    type: 'QuestionTimerEnded'
   }
 ]
