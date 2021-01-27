@@ -1,6 +1,7 @@
 import { ReportLineAnswer } from './report-line-answer.class'
+import moment from 'moment'
 
-export interface IPsychometricReportLine {
+export interface IReportLineBase {
   // Pupil
   DOB: moment.Moment | null
   Gender: string
@@ -32,7 +33,34 @@ export interface IPsychometricReportLine {
   BrowserType: string | null
   DeviceTypeModel: string | null
   DeviceID: string | null
+}
 
+export interface IReportLineAnswer {
+  questionNumber: number | null
+  id: string | null
+  response: string | null
+  inputMethods: string | null
+  keystrokes: string | null
+  score: number | null
+  firstKey: moment.Moment | null
+  lastKey: moment.Moment | null
+  responseTime: number | null
+  timeout: boolean | null
+  timeoutResponse: boolean | '' | null
+  timeoutScore: boolean | '' | null
+  loadTime: moment.Moment | null
+  overallTime: number | null
+  recallTime: number | null
+  questionReaderStart: moment.Moment | null
+  questionReaderEnd: moment.Moment | null
+}
+
+export interface IPsychometricReportLine extends IReportLineBase {
+  // Answers
+  answers: IReportLineAnswer[]
+}
+
+export interface WorkingReportLine extends IReportLineBase {
   // Answers
   answers: ReportLineAnswer[]
 }

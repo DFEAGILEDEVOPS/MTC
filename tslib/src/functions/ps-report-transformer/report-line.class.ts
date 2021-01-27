@@ -8,9 +8,9 @@ import {
   Pupil,
   School, Answer
 } from '../../functions-throttled/ps-report-2-pupil-data/models'
-import { IPsychometricReportLine } from './models'
 import { deepFreeze } from '../../common/deep-freeze'
 import { ReportLineAnswer } from './report-line-answer.class'
+import { IPsychometricReportLine, WorkingReportLine } from './models'
 
 export class ReportLine {
   private readonly _answers: AnswersOrNull
@@ -21,7 +21,7 @@ export class ReportLine {
   private readonly _events: EventsOrNull
   private readonly _pupil: Pupil
   private readonly _school: School
-  private _report: IPsychometricReportLine = {
+  private _report: WorkingReportLine = {
     // Pupil fields
     DOB: null,
     Gender: '',
@@ -62,6 +62,8 @@ export class ReportLine {
   }
 
   private readonly eventTypeTimerStarted = 'QuestionTimerStarted'
+  private readonly eventTypeQuestionReaderStart = 'QuestionReaderStart'
+  private readonly eventTypeQuestionReaderEnd = 'QuestionReaderEnd'
 
   constructor (
     answers: AnswersOrNull,
@@ -218,20 +220,13 @@ export class ReportLine {
 
   private getTimeout (questionNumber: number): boolean {
     const event = this.findEvent('QuestionTimerEnded', questionNumber)
-    if (event === null) {
-      return false
-    }
-    return true
+    return event !== null
   }
 
   private getTimeoutResponse (answer: Answer): boolean | '' {
     const timeout = this.getTimeout(answer.questionNumber)
     if (timeout) {
-      if (answer.response.length > 0) {
-        return true // timeout with an answer
-      } else {
-        return false // timeout without an answer
-      }
+      return answer.response.length > 0
     }
     return '' // no timeout
   }
@@ -250,6 +245,22 @@ export class ReportLine {
       return null
     }
     return loadEvent.browserTimestamp
+  }
+
+  private getQuestionReaderStart (answer: Answer): moment.Moment | null {
+    const event = this.findEvent(this.eventTypeQuestionReaderStart, answer.questionNumber)
+    if (event === null) {
+      return null
+    }
+    return event.browserTimestamp
+  }
+
+  private getQuestionReaderEnd (answer: Answer): moment.Moment | null {
+    const event = this.findEvent(this.eventTypeQuestionReaderEnd, answer.questionNumber)
+    if (event === null) {
+      return null
+    }
+    return event.browserTimestamp
   }
 
   private _transform (): void {
@@ -295,6 +306,8 @@ export class ReportLine {
       rla.timeoutResponse = this.getTimeoutResponse(answer)
       rla.timeoutScore = this.getTimeoutScore(answer)
       rla.loadTime = this.getLoadTime(answer)
+      rla.questionReaderStart = this.getQuestionReaderStart(answer)
+      rla.questionReaderEnd = this.getQuestionReaderEnd(answer)
       rla.calculateOverallTime()
       rla.calculateRecallTime()
 
@@ -303,8 +316,39 @@ export class ReportLine {
     })
   }
 
+  public toObject (): IPsychometricReportLine {
+    return {
+      DOB: this._report.DOB,
+      Gender: this._report.Gender,
+      PupilID: this._report.PupilID,
+      Forename: this._report.Forename,
+      Surname: this._report.Surname,
+      ReasonNotTakingCheck: this._report.ReasonNotTakingCheck,
+      SchoolName: this._report.SchoolName,
+      Estab: this._report.Estab,
+      SchoolURN: this._report.SchoolURN,
+      LAnum: this._report.LAnum,
+      QDisplayTime: this._report.QDisplayTime,
+      PauseLength: this._report.PauseLength,
+      AccessArr: this._report.AccessArr,
+      AttemptID: this._report.AttemptID,
+      FormID: this._report.FormID,
+      TestDate: this._report.TestDate,
+      TimeStart: this._report.TimeStart,
+      TimeComplete: this._report.TimeComplete,
+      TimeTaken: this._report.TimeTaken,
+      RestartNumber: this._report.RestartNumber,
+      FormMark: this._report.FormMark,
+      DeviceType: this._report.DeviceType,
+      BrowserType: this._report.BrowserType,
+      DeviceTypeModel: this._report.DeviceTypeModel,
+      DeviceID: this._report.DeviceID,
+      answers: this._report.answers.map(o => o.toObject())
+    }
+  }
+
   public transform (): IPsychometricReportLine {
     this._transform()
-    return this._report
+    return this.toObject()
   }
 }

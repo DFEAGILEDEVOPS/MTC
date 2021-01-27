@@ -450,6 +450,16 @@ describe('report line class', () => {
         expect(out.answers[1].recallTime).toBe(0.876)
         expect(out.answers[2].recallTime).toBeNull()
       })
+
+      test('it determines the question reader start time', () => {
+        const out = sut.transform()
+        expect(out.answers[0].questionReaderStart?.toISOString()).toBe('2021-01-21T09:00:01.500Z')
+      })
+
+      test('it determines the question reader end time', () => {
+        const out = sut.transform()
+        expect(out.answers[0].questionReaderEnd?.toISOString()).toBe('2021-01-21T09:00:03.678Z')
+      })
     })
   })
 
@@ -597,6 +607,28 @@ describe('report line class', () => {
       test('DeviceID is mapped correctly', () => {
         const out = sut.transform()
         expect(out.DeviceID).toBeNull()
+      })
+    })
+
+    describe('question fields', () => {
+      let sut: ReportLine
+
+      beforeEach(() => {
+        sut = new ReportLine(
+          null,
+          checkIncomplete,
+          null,
+          null,
+          null,
+          null,
+          pupilIncomplete,
+          school
+        )
+      })
+
+      test('all the question fields should be null', () => {
+        const out = sut.transform()
+        expect(out.answers).toStrictEqual([])
       })
     })
   })
@@ -776,6 +808,28 @@ describe('report line class', () => {
       test('DeviceID is mapped correctly', () => {
         const out = sut.transform()
         expect(out.DeviceID).toBeNull()
+      })
+    })
+
+    describe('question fields', () => {
+      let sut: ReportLine
+
+      beforeEach(() => {
+        sut = new ReportLine(
+          null,
+          checkIncomplete,
+          null,
+          null,
+          null,
+          null,
+          pupilIncomplete,
+          school
+        )
+      })
+
+      test('all the question fields should be null', () => {
+        const out = sut.transform()
+        expect(out.answers).toStrictEqual([])
       })
     })
   })

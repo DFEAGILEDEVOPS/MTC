@@ -1,5 +1,6 @@
 import { Input } from '../../functions-throttled/ps-report-2-pupil-data/models'
 import * as R from 'ramda'
+import { IReportLineAnswer } from './models'
 
 export class ReportLineAnswer {
   private _questionNumber: number | null = null
@@ -17,6 +18,8 @@ export class ReportLineAnswer {
   private _loadTime: moment.Moment | null = null
   private _overallTime: number | null = null
   private _recallTime: number | null = null
+  private _questionReaderStart: moment.Moment | null = null
+  private _questionReaderEnd: moment.Moment | null = null
 
   set questionNumber (num) {
     if (typeof num === 'number' && (num <= 0 || num > 25)) {
@@ -131,6 +134,22 @@ export class ReportLineAnswer {
     return this._recallTime
   }
 
+  set questionReaderStart (dt: moment.Moment | null) {
+    this._questionReaderStart = dt
+  }
+
+  get questionReaderStart (): moment.Moment | null {
+    return this._questionReaderStart
+  }
+
+  set questionReaderEnd (dt: moment.Moment | null) {
+    this._questionReaderEnd = dt
+  }
+
+  get questionReaderEnd (): moment.Moment | null {
+    return this._questionReaderEnd
+  }
+
   /**
    * Return a string comprising the input-type and the answer (in square brackets) for all of the inputs for a single question.
    * E.g. `k[1], m[2], m[Enter]`.  No quoting takes place, so the left-bracket would be `k[[]` and the single quote would be `k[']`
@@ -156,7 +175,7 @@ export class ReportLineAnswer {
    * @param inputs
    * @protected
    */
-  protected filterInputsToThoseFormingTheAnswer (inputs: readonly Input[]): Input[] {
+  private filterInputsToThoseFormingTheAnswer (inputs: readonly Input[]): Input[] {
     const answerFormingInputs: Input[] = []
     let response = ''
     inputs.forEach(input => {
@@ -215,6 +234,28 @@ export class ReportLineAnswer {
       this.recallTime = null
     } else {
       this.recallTime = (this.firstKey.valueOf() - this.loadTime.valueOf()) / 1000 // e.g. 0.456
+    }
+  }
+
+  public toObject (): IReportLineAnswer {
+    return {
+      questionNumber: this._questionNumber,
+      id: this._id,
+      response: this._response,
+      inputMethods: this._inputMethods,
+      keystrokes: this._keystrokes,
+      score: this._score,
+      firstKey: this._firstKey,
+      lastKey: this._lastKey,
+      responseTime: this._responseTime,
+      timeout: this._timeout,
+      timeoutResponse: this._timeoutResponse,
+      timeoutScore: this._timeoutScore,
+      loadTime: this._loadTime,
+      overallTime: this._overallTime,
+      recallTime: this._recallTime,
+      questionReaderStart: this._questionReaderStart,
+      questionReaderEnd: this._questionReaderEnd
     }
   }
 }

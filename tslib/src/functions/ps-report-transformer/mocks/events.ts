@@ -12,8 +12,26 @@ export const events: Event[] = [
     type: 'CheckStarted'
   },
   {
-    browserTimestamp: moment('2021-01-21T09:00:04.140Z'),
+    browserTimestamp: moment('2021-01-21T09:00:01.500Z'),
     id: 41,
+    isWarmup: false,
+    question: '1x1',
+    questionCode: 'Q146',
+    questionNumber: 1,
+    type: 'QuestionReaderStart'
+  },
+  {
+    browserTimestamp: moment('2021-01-21T09:00:03.678Z'),
+    id: 42,
+    isWarmup: false,
+    question: '1x1',
+    questionCode: 'Q146',
+    questionNumber: 1,
+    type: 'QuestionReaderEnd'
+  },
+  {
+    browserTimestamp: moment('2021-01-21T09:00:04.140Z'),
+    id: 43,
     isWarmup: false,
     question: '1x1',
     questionCode: 'Q146',
@@ -22,7 +40,7 @@ export const events: Event[] = [
   },
   {
     browserTimestamp: moment('2021-01-21T09:00:04.140Z'),
-    id: 42,
+    id: 44,
     isWarmup: false,
     question: '1x1',
     questionCode: 'Q146',
@@ -31,7 +49,7 @@ export const events: Event[] = [
   },
   {
     browserTimestamp: moment('2021-01-21T09:00:10.500Z'),
-    id: 43,
+    id: 45,
     isWarmup: false,
     question: '1x1',
     questionCode: 'Q146',
@@ -40,7 +58,7 @@ export const events: Event[] = [
   },
   {
     browserTimestamp: moment('2021-01-21T09:00:13.123Z'),
-    id: 44,
+    id: 46,
     isWarmup: false,
     question: '1x2',
     questionCode: 'Q146',
@@ -49,7 +67,7 @@ export const events: Event[] = [
   },
   {
     browserTimestamp: moment('2021-01-21T09:00:13.124Z'),
-    id: 45,
+    id: 47,
     isWarmup: false,
     question: '1x2',
     questionCode: 'Q147',
@@ -58,7 +76,7 @@ export const events: Event[] = [
   },
   {
     browserTimestamp: moment('2021-01-21T09:00:15.700Z'),
-    id: 46,
+    id: 48,
     isWarmup: false,
     question: '1x2',
     questionCode: 'Q147',
@@ -67,7 +85,7 @@ export const events: Event[] = [
   },
   {
     browserTimestamp: moment('2021-01-21T09:00:18.790Z'),
-    id: 47,
+    id: 49,
     isWarmup: false,
     question: '1x3',
     questionCode: 'Q148',
@@ -76,7 +94,7 @@ export const events: Event[] = [
   },
   {
     browserTimestamp: moment('2021-01-21T09:00:21.000Z'),
-    id: 48,
+    id: 50,
     isWarmup: false,
     question: '1x3',
     questionCode: 'Q148',
@@ -85,7 +103,7 @@ export const events: Event[] = [
   },
   {
     browserTimestamp: moment('2021-01-21T09:00:21.001Z'),
-    id: 49,
+    id: 51,
     isWarmup: false,
     question: null,
     questionCode: null,

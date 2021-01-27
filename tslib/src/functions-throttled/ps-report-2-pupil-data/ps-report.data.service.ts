@@ -290,7 +290,7 @@ export class PsReportDataService {
    */
   public async getInputs (checkId: number): Promise<InputMap> {
     const sql = `
-        SELECT a.id as answer_id, ui.userInput, uitl.code as userInputType, ui.browserTimestamp
+        SELECT a.id as answer_id, ui.userInput, uitl.code as inputType, ui.browserTimestamp
           FROM mtc_results.checkResult cr
                JOIN      mtc_results.answer a ON (cr.id = a.checkResult_id)
                LEFT JOIN mtc_results.userInput ui ON (a.id = ui.answer_id)
