@@ -11,7 +11,6 @@ export function jsonReviver (key: any, value: any): any {
     if (simpleIso8601Regex.test(value)) {
       try {
         const d = moment(value)
-        // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
         if (d?.isValid()) {
           return d
         }
