@@ -95,23 +95,13 @@ if ($releaseProperties -eq $null) {
     $properties = $releaseProperties
 }
 $properties.Add("ReleaseName", $releaseName)
-
 $requestBody.Properties = ConvertTo-Json($properties) -Compress
-
 $bodyJson = [System.Text.Encoding]::UTF8.GetBytes(($requestBody | ConvertTo-Json))
 $headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
 $headers.Add("X-AIAPIKEY", $apiKey)
 
 set-variable -Name createAnnotationResult1 -Force -Scope Local -Value $null
 set-variable -Name createAnnotationResultDescription -Force -Scope Local -Value ""
-$environment = "azurecloud"
-if ([String]::IsNullOrEmpty($environment) -Or $environment.ToLower() -eq "azurecloud") {
-    $url = "http://go.microsoft.com/fwlink/?prd=11901&pver=1.0&sbp=Application%20Insights&plcid=0x409&clcid=0x409&ar=Annotations&sar=Create%20Annotation"
-} elseif ($environment.ToLower() -eq "azurechinacloud") {
-    $url = "http://go.microsoft.com/fwlink/?prd=11901&pver=1.0&sbp=Application%20Insights&plcid=0x409&clcid=0x409&ar=Annotations&sar=Create%20Annotation%20China"
-} elseif ($environment.ToLower() -eq "azureusgovernment") {
-    $url = "http://go.microsoft.com/fwlink/?prd=11901&pver=1.0&sbp=Application%20Insights&plcid=0x409&clcid=0x409&ar=Annotations&sar=Create%20Annotation%20USGov"
-}
 
 $createAnnotationResult1, $createAnnotationResultDescription = CreateAnnotation
 if ($createAnnotationResult1)
