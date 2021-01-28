@@ -1,38 +1,20 @@
-# Sample usage .\CreateReleaseAnnotation.ps1 -applicationId "<appId>" -apiKey "<apiKey>" -releaseName "<releaseName>" -releaseProperties @{"ReleaseDescription"="Release with annotation";"TriggerBy"="John Doe"} -eventDateTime "2016-07-07T06:23:44"
+# Sample usage
+# .\CreateReleaseAnnotation.ps1 -applicationId "<appId>" -apiKey "<apiKey>" -releaseName "<releaseName>" -releaseProperties @{"ReleaseDescription"="Release with annotation";"TriggerBy"="John Doe"} -eventDateTime "2016-07-07T06:23:44"
 param(
+    [parameter(Mandatory = $true)][string]$apiUrl,
     [parameter(Mandatory = $true)][string]$applicationId,
     [parameter(Mandatory = $true)][string]$apiKey,
     [parameter(Mandatory = $true)][string]$releaseName,
     [parameter(Mandatory = $false)]$releaseProperties,
-    [parameter(Mandatory = $false)][DateTime]$eventDateTime,
-    [parameter(Mandatory = $false)][ValidateSet('AzureCloud','AzureChinaCloud','AzureUSGovernment')][string]$environment
+    [parameter(Mandatory = $false)][DateTime]$eventDateTime
 )
 
-# background info on how fwlink works: After you submit a web request, many sites redirect through a series of intermediate pages before you finally land on the destination page.
-# So when calling Invoke-WebRequest, the result it returns comes from the final page in any redirect sequence. Hence, I set MaximumRedirection to 0, as this prevents the call to
-# be redirected. By doing this, we get a resposne with status code 302, which indicates that there is a redirection link from the response body. We grab this redirection link and
-# construct the url to make a release annotation.
-# Here's how this logic is going to works
-# 1. Client send http request, such as:  http://go.microsoft.com/fwlink/?LinkId=625115
-# 2. FWLink get the request and find out the destination URL for it, such as:  http://www.bing.com
-# 3. FWLink generate a new http response with status code “302” and with destination URL “http://www.bing.com”. Send it back to Client.
-# 4. Client, such as a powershell script, knows that status code “302” means redirection to new a location, and the target location is “http://www.bing.com”
-function GetRequestUrlFromFwLink($fwLink)
-{
-    $request = Invoke-WebRequest -Uri $fwLink -MaximumRedirection 0 -UseBasicParsing -ErrorAction Ignore
-    if ($request.StatusCode -eq "302") {
-        return $request.Headers.Location
-    }
-
-    return $null
-}
-
-function CreateAnnotation($grpEnv)
+function CreateAnnotation()
 {
 	$retries = 1
 	$success = $false
 	while (!$success -and $retries -lt 6) {
-	    $location = "$grpEnv/applications/$applicationId/Annotations?api-version=2015-11"
+	    $location = "$apiUrl/applications/$applicationId/Annotations?api-version=2015-11"
 
 		Write-Host "Invoke a web request for $location to create a new release annotation. Attempting $retries"
 		set-variable -Name createResultStatus -Force -Scope Local -Value $null
@@ -122,7 +104,7 @@ $headers.Add("X-AIAPIKEY", $apiKey)
 
 set-variable -Name createAnnotationResult1 -Force -Scope Local -Value $null
 set-variable -Name createAnnotationResultDescription -Force -Scope Local -Value ""
-
+$environment = "azurecloud"
 if ([String]::IsNullOrEmpty($environment) -Or $environment.ToLower() -eq "azurecloud") {
     $url = "http://go.microsoft.com/fwlink/?prd=11901&pver=1.0&sbp=Application%20Insights&plcid=0x409&clcid=0x409&ar=Annotations&sar=Create%20Annotation"
 } elseif ($environment.ToLower() -eq "azurechinacloud") {
@@ -131,17 +113,7 @@ if ([String]::IsNullOrEmpty($environment) -Or $environment.ToLower() -eq "azurec
     $url = "http://go.microsoft.com/fwlink/?prd=11901&pver=1.0&sbp=Application%20Insights&plcid=0x409&clcid=0x409&ar=Annotations&sar=Create%20Annotation%20USGov"
 }
 
-Write-Host "fwlink location is $url"
-# get redirect link from fwlink
-$requestUrl = GetRequestUrlFromFwLink($url)
-Write-Host $requestUrl
-
-if ($requestUrl -eq $null) {
-    $output = "Failed to find the redirect link to create a release annotation"
-    throw $output
-}
-
-$createAnnotationResult1, $createAnnotationResultDescription = CreateAnnotation($requestUrl)
+$createAnnotationResult1, $createAnnotationResultDescription = CreateAnnotation
 if ($createAnnotationResult1)
 {
      $output = "Failed to create an annotation with Id: {0}. Error {1}, Description: {2}." -f $requestBody.Id, $createAnnotationResult1, $createAnnotationResultDescription
