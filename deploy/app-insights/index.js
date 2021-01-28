@@ -20,7 +20,7 @@ const apiKey = yargs.apiKey
 const releaseName = yargs.releaseName
 const releaseDescription = yargs.releaseDescription
 const author = yargs.releaseAuthor
-const eventTime = moment().format('YYYY-MM-DD[T]HH:MM:SS')
+const eventTime = moment().format('YYYY-MM-DD[T]HH:mm:ss')
 
 const aiServiceUrl = 'https://aigs1.aisvc.visualstudio.com'
 const apiUrl = `${aiServiceUrl}/applications/${applicationId}/Annotations?api-version=2015-11`
