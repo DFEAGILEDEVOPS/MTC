@@ -1,7 +1,7 @@
 Given(/^I have generated a pin via the admin app$/) do
   visit ENV['ADMIN_BASE_URL']
   # page.click_link('Sign out') if page.has_link?('Sign out')
-  find('#username').set 'teacher1'
+  find('#username').set @username
   find('#password').set 'password'
   find('button[type="submit"]').click
   visit ENV['ADMIN_BASE_URL']+'/pupil-pin/generate-live-pins-list'

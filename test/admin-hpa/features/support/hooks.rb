@@ -1,21 +1,23 @@
 Before do
+  FileUtils.rm_f Dir.glob(File.expand_path("#{File.dirname(__FILE__)}/data/ctf_download/*"))
+  @urn = SqlDbHelper.get_schools_list.map {|school| school['urn']}.sort.last + 1
+  @estab_code = SqlDbHelper.get_schools_list.map {|school| school['estabCode']}.sort.last + 1
+  @school_name = "Test School - #{@urn}"
+  @school = FunctionsHelper.create_school(@estab_code, @school_name, @urn)
+  school_uuid = @school['entity']['urlSlug']
+  @username = "teacher#{@urn}"
+  @school_user = FunctionsHelper.create_user(school_uuid, @username)
+  school_id = @school_user['entity']['school_id']
+  FunctionsHelper.generate_school_pin(school_id)
+  p "Login for #{@school_name} created as - #{@username}"
+  step 'I am logged in'
+  step 'I am on the add multiple pupil page'
+  @upns_for_school = add_multiple_pupil_page.upload_pupils(250, @school_name)
   page.current_window.resize_to(1270, 768)
   Capybara.visit Capybara.app_host
   p Time.now
   sign_in_page.cookies_banner.accept_all.click if sign_in_page.cookies_banner.accept_all.visible?
   visit ENV['ADMIN_BASE_URL'] + '/sign-out'
-end
-
-Before('@new_school') do
-  @urn = SqlDbHelper.get_schools_list.map{|school| school['urn']}.sort.last + 1
-  @estab_code = SqlDbHelper.get_schools_list.map{|school| school['estabCode']}.sort.last + 1
-  @name = "Test School - #{@urn}"
-  @school = FunctionsHelper.create_school(@estab_code,@name, @urn)
-  school_uuid = @school['entity']['urlSlug']
-  @username = "teacher#{@urn}"
-  @school_user = FunctionsHelper.create_user(school_uuid,@username)
-  school_id = @school_user['entity']['school_id']
-  FunctionsHelper.generate_school_pin(school_id)
 end
 
 Before('@service_manager_message') do
@@ -29,8 +31,8 @@ Before('@school_import') do
   begin
     AZURE_BLOB_CLIENT.create_container('school-import')
   rescue Azure::Core::Http::HTTPError => e
-   p 'school-import container already exists' if e.status_code == 409
-   p e.description unless e.status_code == 409
+    p 'school-import container already exists' if e.status_code == 409
+    p e.description unless e.status_code == 409
   end
 end
 
@@ -77,16 +79,6 @@ Before("@timer_reset") do
   check_settings_page.update_check_time_limit(30)
 end
 
-Before("@add_5_pupils") do
-  step "I am logged in"
-  5.times do
-    @name = (0...8).map {(65 + rand(26)).chr}.join
-    step "I am on the add pupil page"
-    step "I submit the form with the name fields set as #{@name}"
-    step "the pupil details should be stored"
-  end
-end
-
 Before("@poltergeist") do
   Capybara.current_driver = :poltergeist
 end
@@ -96,19 +88,19 @@ After("@pupil_not_taking_check") do
 end
 
 Before('@reset_hdf_submission') do
-  school_id = SqlDbHelper.find_teacher('teacher4')['school_id']
+  school_id = SqlDbHelper.find_teacher(@username)['school_id']
   SqlDbHelper.delete_from_hdf(school_id)
 end
 
 After('@reset_hdf_submission') do
-  school_id = SqlDbHelper.find_teacher('teacher4')['school_id']
+  school_id = SqlDbHelper.find_teacher(@username)['school_id']
   SqlDbHelper.delete_from_hdf(school_id)
 end
 
 Before("@hdf") do
   SqlDbHelper.delete_pupils_not_taking_check
-  SqlDbHelper.set_pupil_attendance_via_school(5,'null')
-  step 'I have signed in with teacher4'
+  SqlDbHelper.set_pupil_attendance_via_school(@school_user['entity']['school_id'], 'null')
+  step "I have signed in with #{@username}"
   pupils_not_taking_check_page.load
   step 'I want to add a reason'
   @page = pupil_reason_page
@@ -116,7 +108,7 @@ Before("@hdf") do
   step "I select all pupil for pupil not taking check"
   pupil_reason_page.sticky_banner.confirm.click
   pupil_status_page.load
-  @number_of_pupils = SqlDbHelper.list_of_pupils_from_school(SqlDbHelper.find_teacher(@teacher)['school_id']).count
+  @number_of_pupils = SqlDbHelper.list_of_pupils_from_school(SqlDbHelper.find_teacher(@username)['school_id']).count
   expect(pupil_status_page.not_taking_checks.count.text.to_i + pupil_status_page.completed_checks.count.text.to_i).to eql @number_of_pupils
   visit ENV['ADMIN_BASE_URL'] + '/sign-out'
 end
@@ -221,7 +213,7 @@ After("@multiple_pupil_upload") do
 end
 
 After("@remove_access_arrangements") do
-  step 'I have signed in with teacher1'
+  step 'I am logged in'
   school_landing_page.access_arrangements.click
   access_arrangements_page.remove_all_pupils
 end

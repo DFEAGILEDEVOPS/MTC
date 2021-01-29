@@ -19,7 +19,7 @@ Feature:
     Then I should be taken to the school landing page
 
   Scenario: Verify breadcrumb on Generate Pin page
-    Given I have signed in with teacher1
+    Given I am logged in
     And I navigate to generate pupil pins page
     Then I should see the breadcrumb as "Home > Generate school passwords and PINs for the official check"
     And I click the Home link on breadcrumb

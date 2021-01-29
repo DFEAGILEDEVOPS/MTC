@@ -317,7 +317,7 @@ end
 
 Given(/^I have more than (\d+) pupils eligible for a restart$/) do |number_of_restarts|
   @number_of_restarts = number_of_restarts + 1
-  step "I have signed in with teacher2"
+  step "I am logged in"
   step "I am on the add multiple pupil page"
   @upn_list = add_multiple_pupil_page.create_and_upload_multiple_pupils(@number_of_restarts, 'restarts.csv')
   step "I am on the generate pupil pins page"

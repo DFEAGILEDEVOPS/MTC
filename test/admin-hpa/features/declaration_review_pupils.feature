@@ -2,7 +2,7 @@
 Feature: Declaration review pupils
 
   Background:
-    Given I have signed in with teacher4
+    Given I am logged in
 
   Scenario: Review pupils page displays as per the design
     And I am on the review pupil detail page

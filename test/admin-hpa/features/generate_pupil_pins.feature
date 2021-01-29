@@ -2,7 +2,7 @@
 Feature: Generate Pupil PINs
 
   Scenario: Generate Pins Landing page displays heading and info section
-    Given I have signed in with teacher2
+    Given I am logged in
     When I navigate to generate pupil pins page
     Then generate pin overview page for live check is displayed as per design
 
@@ -77,7 +77,7 @@ Feature: Generate Pupil PINs
     Then the sticky banner should display the total pupil count on Generate Pin Page
 
   Scenario: Cancel returns user to Generate Pupil Pin Landing page if there are no pupil with pins
-    Given I have signed in with teacher3
+    Given I am logged in
     And I am on Generate pins Pupil List page
     And I select a Pupil from Generate Pin page
     When I choose to cancel
@@ -147,11 +147,11 @@ Feature: Generate Pupil PINs
 
   @redis @no_active_check_window @manual
   Scenario: Generate Pin Overview page display error if there is no active check window
-    Given I am on the generate pupil pins page after logging in with teacher2
+    Given I am on the generate pupil pins page after logging in with a teacher
     Then I should see an error message stating the service is unavailable
 
   Scenario: Generate pins page has related content
-    Given I have signed in with teacher2
+    Given I am logged in
     When I navigate to generate pupil pins page
     Then I should see related content on the generate pins page
 
@@ -162,8 +162,8 @@ Feature: Generate Pupil PINs
 
   @remove_all_groups
   Scenario: Generate pins for 250 pupils
-    Given I want to generate pins for a group of 250 pupils with teacher3
-    When I select all 250 pupils
+    Given I want to generate pins for a group of 250 pupils with a teacher
+    When I select all 252 pupils
     Then I should be able to generate pins
 
   Scenario: Users are recorded against the checks they create

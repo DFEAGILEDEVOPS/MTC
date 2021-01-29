@@ -2,7 +2,7 @@
 Feature: Declaration edit attendance reason
 
   Background:
-    Given I have signed in with teacher4
+    Given I am logged in
 
   Scenario: Edit Reason for HDF pupil is displayed as per design
     Given I am on the review pupil detail page
