@@ -1,11 +1,11 @@
 # Sample usage
-# .\CreateReleaseAnnotation.ps1 -applicationId "<appId>" -apiKey "<apiKey>" -releaseName "<releaseName>" -releaseProperties @{"ReleaseDescription"="Release with annotation";"TriggerBy"="John Doe"} -eventDateTime "2016-07-07T06:23:44"
+# .\CreateReleaseAnnotation.ps1 -apiUrl "https://aigs1.aisvc.visualstudio.com" -applicationId "<appId>" -apiKey "<apiKey>" -releaseName "<releaseName>" -buildNumber "<buildNumber>" -eventDateTime "optional | YYYY-MM-DDTHH:mm:ss"
 param(
     [parameter(Mandatory = $true)][string]$apiUrl,
     [parameter(Mandatory = $true)][string]$applicationId,
     [parameter(Mandatory = $true)][string]$apiKey,
     [parameter(Mandatory = $true)][string]$releaseName,
-    [parameter(Mandatory = $false)]$releaseProperties,
+    [parameter(Mandatory = $true)]$buildNumber,
     [parameter(Mandatory = $false)][DateTime]$eventDateTime
 )
 
@@ -89,12 +89,9 @@ if ($eventDateTime -eq $null) {
 }
 $requestBody.Category = "Deployment"
 
-if ($releaseProperties -eq $null) {
-    $properties = @{}
-} else {
-    $properties = $releaseProperties
-}
+$properties = @{}
 $properties.Add("ReleaseName", $releaseName)
+$properties.Add("BuildNumber", $buildNumber)
 $requestBody.Properties = ConvertTo-Json($properties) -Compress
 $bodyJson = [System.Text.Encoding]::UTF8.GetBytes(($requestBody | ConvertTo-Json))
 $headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
