@@ -44,7 +44,7 @@
 | FormID             | mtc_admin.checkForm.name                   |                                                              |
 | TestDate           | mtc_admin.check.pupilLoginDate             |                                                              |
 | TimeStart          | mtc_results.event                          | Where eventType = "CheckStarted"                             |
-| TimeComplete       | mtc_results.userInput OR mtc_results.event | Time the check was completed - From last key (enter) is pressed or timeout.  userInput is user is the user pressed 'Enter' but the event is used if we need to use the timeout |
+| TimeComplete       | mtc_results.userInput OR mtc_results.event | Time the check was completed - From last key (enter) is pressed or timeout.  userInput is user is the user pressed 'Enter' but the event is used if we need to use the timeout.  This is the same as the timestamp on the answer. |
 | TimeTaken          | Calculated                                 | TimeComplete - TimeStart expressed as a duration in hh::mm::ss |
 | RestartNumber      | mtc_admin.pupilRestart                     | Values 0-2                                                   |
 | FormMark           | mtc_results.checkResult.mark               | As pupils could have taken many checks the check used by the report is determined by the the check ID stored in mtc_admin.pupil.currentCheckId which is a FK to mtc_admin.check |
@@ -69,17 +69,17 @@ where *n* is the question number (from 1 to 25)
 | Psychometric field | Source                      | Comment                                                      |
 | ------------------ | --------------------------- | ------------------------------------------------------------ |
 | QnID               | mtc_admin.question          | e.g. '6x7'                                                   |
-| QnResponse         | mtc_results.answer          |                                                              |
-| QnInputMethods     | mtc_results.userInputLookup |                                                              |
-| QnK                | mtc_results.userInput       |                                                              |
-| QnScore            | mtc_results.answer          |                                                              |
+| QnResponse         | mtc_results.answer          | the answer provided by the pupil                             |
+| QnInputMethods     | mtc_results.userInputLookup | Single character string: `k` - when using keyboard `t` - when using a touchscreen `m` - when using a mouse `x` - when combination blank - when there is no input |
+| QnK                | mtc_results.userInput       | Lists each individual key stroke during the time limit separated by square brackets and preceded by: `k` - when using keyboard `t` - when using a touchscreen `m` - when using a mouse `x` - when combination blank - when there is no input |
+| QnSco              | mtc_results.answer          | Question answer (1 = correct, 0 = incorrect)                 |
+| QntFirstKey        | mtc_results.userInput       | Timestamp of the first key pressed (whether using key, mouse or touchscreen) |
+| QntLastKey         | mtc_results.userInput       | Timestamp of the last key that is not "enter" (whether using key, mouse or touchscreen) QntLastKey excludes everything that is not 0-9 |
 | QnResponseTime     | mtc_results.userInput       | QntLastkey - QntFirstKey                                     |
 | QnTimeOut          | mtc_results.userInput       | If the user pressed the Enter key as the last input it did not timeout |
 | QnTimeOutResponse  | QnTimeout, QnResponse       | Timeout with no response (1 = with response, 0 = no response, empty = didn't time out) |
 | QnTimeOutSco       | QnTimeout and QnScore       | Timeout with correct answer (1 = correct, 0 = incorrect, empty = didn't time out) |
 | QntLoad            | mtc_results.event           | Timestamp when the question loads.  Where eventType = QuestionTimerStarted |
-| QntFirstKey        | mtc_results.userInput       | Timestamp of the first key pressed (whether using key, mouse or touchscreen) |
-| QntLastKey         | mtc_results.userInput       | Timestamp of the last key that is not "enter" (whether using key, mouse or touchscreen) QntLastKey excludes everything that is not 0-9 |
 | QnOverallTime      | QntLastKey, QntLoad         | QntLastKey - QntLoad                                         |
 | QnRecallTime       | QntFirstKey, QntLoad        | Time between question appearing and the first key being pressed [QntFirstKey - QntLoad] (whether using key, mouse or touchscreen) |
 | QnReaderStart      | mtc_results.event           | Where eventType = QuestionReadingStarted                     |
