@@ -29,7 +29,7 @@ dateValidator.validate = (validationError, dateData) => {
   if (isDayEmpty || hasWrongDayInMonth || (utcDate && !isInt(dateData.day, { min: 1, max: maxDaysInMonth }))) {
     validationError.addError(dateData.dayHTMLAttributeId, dateData.wrongDayMessage)
   }
-  if (!isDayEmpty && !XRegExp('^[1-9]\\d{0,1}$').test(dateData.day)) {
+  if (!isDayEmpty && !XRegExp('^[1-9]\\d{0,1}$').test(parseInt(dateData.day, 10).toString())) {
     validationError.addError(dateData.dayHTMLAttributeId, dateData.dayInvalidChars)
   }
   // Month

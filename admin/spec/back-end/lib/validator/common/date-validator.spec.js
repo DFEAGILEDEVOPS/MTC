@@ -98,5 +98,26 @@ describe('New check window date validator', function () {
       expect(validationError.errors.adminEndDay).toBeTruthy()
       expect(Object.keys(validationError.errors).length).toBe(1)
     })
+    it('test day with leading zero', () => {
+      const data = {
+        day: '21',
+        month: '02',
+        year: '2021',
+        dayHTMLAttributeId: 'adminEndDay',
+        monthHTMLAttributeId: 'adminEndMonth',
+        yearHTMLAttributeId: 'adminEndYear',
+        wrongDayMessage: checkWindowErrorMessages.adminEndDayWrong,
+        wrongMonthMessage: checkWindowErrorMessages.adminEndMonthWrong,
+        wrongYearMessage: checkWindowErrorMessages.adminEndYearWrong,
+        dayInvalidChars: checkWindowErrorMessages.adminEndDayInvalidChars,
+        monthInvalidChars: checkWindowErrorMessages.adminEndMonthInvalidChars,
+        yearInvalidChars: checkWindowErrorMessages.adminEndYearInvalidChars,
+        dateInThePast: 'adminEndDateInThePast'
+      }
+      // This is setting the `currentDay` var in the sut
+      spyOn(moment, 'utc').and.returnValue(moment('2021-02-01T09:01:02.333Z'))
+      dateValidator.validate(validationError, data)
+      expect(validationError.addError).not.toHaveBeenCalled()
+    })
   })
 })
