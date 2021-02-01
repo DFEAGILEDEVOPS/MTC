@@ -3,6 +3,8 @@ const laCodeDataService = require('./data-access/la-code.data.service')
 const redisService = require('./data-access/redis-cache.service')
 const redisKeyService = require('./redis-key.service')
 const twentyMinutesAsMilliseconds = 1200000
+const logService = require('./log.service')
+const logger = logService.getLogger()
 
 const laCodeService = {
   /**
@@ -13,12 +15,16 @@ const laCodeService = {
     let laCodes
     const redisKey = redisKeyService.getLaCodesKey()
     laCodes = await redisService.get(redisKey)
+    logger.info('getLaCodes(): cache hit')
     if (laCodes) {
+      console.log('LA COdes', laCodes)
       return laCodes
     }
     // Cache miss
     laCodes = await laCodeDataService.sqlGetLaCodes()
     await redisService.set(redisKey, laCodes, twentyMinutesAsMilliseconds)
+    logger.info('getLACodes(): cache miss for LA Codes')
+    console.log('DB laCodes', laCodes)
     return laCodes
   },
 
