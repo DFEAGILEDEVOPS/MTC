@@ -182,3 +182,4 @@ INSERT INTO mtc_admin.laCodeLookup (laCode, laName) VALUES (935, N'Suffolk');
 INSERT INTO mtc_admin.laCodeLookup (laCode, laName) VALUES (936, N'Surrey');
 INSERT INTO mtc_admin.laCodeLookup (laCode, laName) VALUES (937, N'Warwickshire');
 INSERT INTO mtc_admin.laCodeLookup (laCode, laName) VALUES (938, N'West Sussex');
+INSERT INTO mtc_admin.laCodeLookup (laCode, laName) VALUES (999, N'Test');
