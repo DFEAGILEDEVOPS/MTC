@@ -2,7 +2,7 @@ import moment from 'moment'
 
 export interface Pupil {
   attendanceId: number | null
-  checkComplete: boolean
+  checkComplete: boolean | null
   currentCheckId: number | null
   dateOfBirth: moment.Moment
   forename: string
@@ -57,12 +57,12 @@ export interface Check {
   checkFormId: number
   checkWindowId: number
   complete: boolean
-  completedAt: moment.Moment
+  completedAt: moment.Moment | null
   inputAssistantAddedRetrospectively: boolean
   isLiveCheck: boolean
-  mark: number
+  mark: number | null
   processingFailed: boolean
-  pupilLoginDate: moment.Moment
+  pupilLoginDate: moment.Moment | null
   received: boolean
   restartNumber: number
 }
@@ -93,6 +93,7 @@ export interface Answer {
   isCorrect: boolean
   question: string
   questionCode: string
+  questionNumber: number
   response: string
 }
 

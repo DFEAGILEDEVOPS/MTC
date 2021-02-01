@@ -61,21 +61,30 @@ describe('sessionExpiry', function () {
       fixtureMinutesCountdown = $('<span class="session-expiration-countdown"></span>')
       fixtureButton = $('<button id="continue-session-expiration"></button>')
     })
-    it('should make the container visible by changing classes', function () {
-      window.GOVUK.sessionExpiry.displayExpiryBanner(fixtureContainer, fixtureMinutesCountdown, fixtureButton)
-      expect(fixtureContainer.hasClass('error-session-expiration')).toBe(false)
-      expect(fixtureContainer.hasClass('error-about-to-expire-session')).toBe(true)
+    it('should make the container visible by changing classes', function (done) {
+      $(function () {
+        window.GOVUK.sessionExpiry.displayExpiryBanner(fixtureContainer, fixtureMinutesCountdown, fixtureButton)
+        expect(fixtureContainer.hasClass('error-session-expiration')).toBe(false)
+        expect(fixtureContainer.hasClass('error-about-to-expire-session')).toBe(true)
+        done()
+      })
     })
-    it('should add a reload click handler on the continue button', function () {
-      spyOn(window.GOVUK.sessionExpiry, 'hideExpiryBanner')
-      window.GOVUK.sessionExpiry.displayExpiryBanner(fixtureContainer, fixtureMinutesCountdown, fixtureButton)
-      fixtureButton.click()
-      expect(window.GOVUK.sessionExpiry.hideExpiryBanner).toHaveBeenCalled()
+    it('should add a reload click handler on the continue button', function (done) {
+      $(function () {
+        spyOn(window.GOVUK.sessionExpiry, 'hideExpiryBanner')
+        window.GOVUK.sessionExpiry.displayExpiryBanner(fixtureContainer, fixtureMinutesCountdown, fixtureButton)
+        fixtureButton.click()
+        expect(window.GOVUK.sessionExpiry.hideExpiryBanner).toHaveBeenCalled()
+        done()
+      })
     })
-    it('should start the timer with a minute interval', function () {
-      spyOn(window.GOVUK.sessionExpiry, 'startTimer')
-      window.GOVUK.sessionExpiry.displayExpiryBanner(fixtureContainer, fixtureMinutesCountdown, fixtureButton)
-      expect(window.GOVUK.sessionExpiry.startTimer).toHaveBeenCalledWith(fixtureMinutesCountdown, 60 * 1000)
+    it('should start the timer with a minute interval', function (done) {
+      $(function () {
+        spyOn(window.GOVUK.sessionExpiry, 'startTimer')
+        window.GOVUK.sessionExpiry.displayExpiryBanner(fixtureContainer, fixtureMinutesCountdown, fixtureButton)
+        expect(window.GOVUK.sessionExpiry.startTimer).toHaveBeenCalledWith(fixtureMinutesCountdown, 60 * 1000)
+        done()
+      })
     })
   })
 
