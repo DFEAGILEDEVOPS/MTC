@@ -17,14 +17,12 @@ const laCodeService = {
     laCodes = await redisService.get(redisKey)
     logger.info('getLaCodes(): cache hit')
     if (laCodes) {
-      console.log('LA COdes', laCodes)
       return laCodes
     }
     // Cache miss
     laCodes = await laCodeDataService.sqlGetLaCodes()
     await redisService.set(redisKey, laCodes, twentyMinutesAsMilliseconds)
-    logger.info('getLACodes(): cache miss for LA Codes')
-    console.log('DB laCodes', laCodes)
+    logger.info('getLaCodes(): cache miss for LA Codes')
     return laCodes
   },
 
