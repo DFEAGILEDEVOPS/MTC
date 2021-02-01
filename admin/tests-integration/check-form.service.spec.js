@@ -4,7 +4,7 @@
  * @file Integration Tests for Check Form Service
  */
 
-/* global describe test expect it beforeAll jasmine */
+/* global describe test expect beforeAll jasmine */
 
 // This test may take some time to complete
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 120000
@@ -14,29 +14,28 @@ const moment = require('moment')
 
 const checkFormService = require('../services/check-form.service')
 
-describe('check-form.service', () => {
+describe.skip('check-form.service', () => {
   const availableForms = []
   const seenForms = []
 
-  test.skip('in-memory tests of check-form.service.allocateCheckForm', () => {
+  describe('in-memory tests of check-form.service.allocateCheckForm', () => {
     beforeAll(async () => {
-      const form1 = await checkFormService.getCheckForm(1)
-      for (let i = 1; i < 21; i++) {
+      for (let i = 1; i < 10; i++) {
         const form = {
           id: i,
           name: `Integration Test Form ${i}`,
           isDeleted: false,
-          formData: form1.formData
+          formData: []
         }
         availableForms.push(form)
       }
     })
 
-    it('has enough forms to complete a random sample', () => {
-      expect(availableForms.length).toBe(20)
+    test('has enough forms to complete a random sample', () => {
+      expect(availableForms.length).toBe(9)
     })
 
-    it('allocates 20 check forms equally when there are no seen forms', async () => {
+    test('allocates 20 check forms equally when there are no seen forms', async () => {
       const formsAllocated = []
       const runs = 628718
       for (let i = 0; i < runs; i++) {
