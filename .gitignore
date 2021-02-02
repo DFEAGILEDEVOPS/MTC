@@ -87,6 +87,7 @@ test/pupil-hpa/features/support/dev_env.rb
 #admin
 test/admin-hpa/reports/
 test/admin-hpa/data/fixtures/pupil-census-data-*
+test/admin-hpa/data/school_testschool*
 test/admin-hpa/screenshots/*.png
 test/admin-hpa/screenshots/*.html
 test/admin-hpa/reports/*
