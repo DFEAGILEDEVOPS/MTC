@@ -244,6 +244,15 @@ class SqlDbHelper
     pupil_details_res
   end
 
+
+  def self.pupil_details_using_school(upn,school_id)
+    sql = "SELECT * FROM [mtc_admin].[pupil] WHERE upn='#{upn}' AND school_id=#{school_id}"
+    result = SQL_CLIENT.execute(sql)
+    pupil_details_res = result.first
+    result.cancel
+    pupil_details_res
+  end
+
   def self.update_to_25_questions
     p 'UPDATING TO 25 QUESTIONS'
     sql = "UPDATE [mtc_admin].[checkForm] set formData='[{\"f1\":1,\"f2\":1},{\"f1\":1,\"f2\":2},{\"f1\":1,\"f2\":3},{\"f1\":1,\"f2\":4},{\"f1\":1,\"f2\":5},{\"f1\":1,\"f2\":6},{\"f1\":1,\"f2\":7},{\"f1\":1,\"f2\":8},{\"f1\":1,\"f2\":9},{\"f1\":1,\"f2\":10},{\"f1\":1,\"f2\":11},{\"f1\":1,\"f2\":12},{\"f1\":2,\"f2\":1},{\"f1\":2,\"f2\":2},{\"f1\":2,\"f2\":3},{\"f1\":2,\"f2\":4},{\"f1\":2,\"f2\":5},{\"f1\":2,\"f2\":6},{\"f1\":2,\"f2\":7},{\"f1\":2,\"f2\":8},{\"f1\":2,\"f2\":9},{\"f1\":2,\"f2\":10},{\"f1\":2,\"f2\":11},{\"f1\":2,\"f2\":12},{\"f1\":3,\"f2\":1}]' WHERE name IN ('MTC0103', 'MTC0100')"
@@ -376,6 +385,13 @@ class SqlDbHelper
     check_result = result.first
     result.cancel
     check_result
+  end
+
+  def self.get_list_of_la_codes
+    sql = "select lacode from mtc_admin.laCodeLookup where lacode != 0"
+    result = SQL_CLIENT.execute(sql)
+    la_codes = result.each {|row| row.map}
+    la_codes.map {|code| code['lacode'].to_s}
   end
 
 end
