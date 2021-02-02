@@ -14,7 +14,7 @@ When(/^I try to view the school landing page$/) do
 end
 
 Given(/^I am on the unauthorized access page as a teacher$/) do
-  step "I have logged in with teacher1"
+  step "I am logged in"
   admin_page.load
 end
 

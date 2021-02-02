@@ -12,7 +12,7 @@ Then(/^the access arrangements page is displayed as per the design$/) do
 end
 
 Given(/^I am on the select access arrangements page$/) do
-  step 'I have signed in with teacher1'
+  step 'I am logged in'
   school_landing_page.access_arrangements.click
   access_arrangements_page.select_pupil_and_arrangement_btn.click
 end

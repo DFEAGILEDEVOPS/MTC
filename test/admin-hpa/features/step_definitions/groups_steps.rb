@@ -24,7 +24,7 @@ Then(/^I should see related content$/) do
 end
 
 Given(/^I am on the create group page$/) do
-  step 'I have signed in with teacher5'
+  step 'I am logged in'
   school_landing_page.group_pupils.click
   group_pupils_page.create_group.click
 end
@@ -77,7 +77,7 @@ Then(/^I can enter the following special characters as the group name$/) do |tab
 end
 
 Given(/^I have added already added a pupil to another group$/) do
-  step 'I have signed in with teacher5'
+  step 'I am logged in'
   step 'I have added a pupil'
   group_pupils_page.load
   group_pupils_page.create_group.click
@@ -122,7 +122,8 @@ end
 
 
 When(/^I select all pupils$/) do
-  add_edit_groups_page.group_name.set 'Group1'+ (rand(23243)).to_s
+  @group_name = 'Group1'+ (rand(23243)).to_s
+  add_edit_groups_page.group_name.set @group_name
   add_edit_groups_page.select_all_pupils.click
 end
 
@@ -282,7 +283,7 @@ Then(/^I should the group stored in the DB$/) do
 end
 
 Given(/^I have a group of pupils$/) do
-  step 'I have signed in with teacher5'
+  step 'I am logged in'
   @pupil_group_array = []
   for i in 0..3
     name = (0...8).map {(65 + rand(26)).chr}.join

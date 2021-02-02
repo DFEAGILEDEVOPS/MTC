@@ -1,5 +1,5 @@
 Given(/^I am on the pupil not taking check page$/) do
-  step 'I have signed in with teacher3'
+  step 'I am logged in'
   pupils_not_taking_check_page.load
 end
 
@@ -37,7 +37,7 @@ When(/^I want to add a reason for pupils not taking a check$/) do
 end
 
 Then(/^I should see a list of pupils sorted by surname$/) do
-  school_id = SqlDbHelper.find_teacher(@teacher)['school_id']
+  school_id = SqlDbHelper.find_teacher(@username)['school_id']
   pupils_from_db = SqlDbHelper.list_of_pupils_from_school(school_id)
   expect(pupil_reason_page.pupil_list.rows.map {|t| t.name.text}.last).to include pupils_from_db.map {|pupil| pupil['foreName']}.sort(&:casecmp).reverse.first
 end
@@ -49,7 +49,7 @@ Given(/^I am on the pupil reason page$/) do
 end
 
 Given(/^I am on the pupil reason page for new pupil$/) do
-  step 'I have signed in with teacher3'
+  step 'I am logged in'
   @name = (0...8).map {(65 + rand(26)).chr}.join
   step "I am on the add pupil page"
   step "I submit the form with the name fields set as #{@name}"
@@ -61,7 +61,7 @@ Given(/^I am on the pupil reason page for new pupil$/) do
 end
 
 Given(/^I am on the pupil reason page for multiple new pupil$/) do
-  step 'I have signed in with teacher3'
+  step 'I am logged in'
   @pupil_names = []
   for i in 0..3
     name = (0...8).map {(65 + rand(26)).chr}.join
@@ -95,7 +95,7 @@ And(/^I want to sort the surnames in to desecending order$/) do
 end
 
 Then(/^I should see a list of pupils sorted by surname in descending order$/) do
-  school_id = SqlDbHelper.find_teacher(@teacher)['school_id']
+  school_id = SqlDbHelper.find_teacher(@username)['school_id']
   pupils_from_db = SqlDbHelper.list_of_pupils_from_school(school_id)
   expect(pupil_reason_page.pupil_list.rows.map {|t| t.name.text}.first).to include pupils_from_db.map {|pupil| pupil['foreName']}.sort(&:casecmp).reverse.first
 end
