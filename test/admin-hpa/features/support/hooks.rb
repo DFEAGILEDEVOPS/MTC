@@ -20,6 +20,19 @@ Before do
   visit ENV['ADMIN_BASE_URL'] + '/sign-out'
 end
 
+Before('@empty_new_school') do
+  @urn = SqlDbHelper.get_schools_list.map {|school| school['urn']}.sort.last + 1
+  @estab_code = SqlDbHelper.get_schools_list.map {|school| school['estabCode']}.sort.last + 1
+  @school_name = "Test School - #{@urn}"
+  @school = FunctionsHelper.create_school(@estab_code, @school_name, @urn)
+  school_uuid = @school['entity']['urlSlug']
+  @username = "teacher#{@urn}"
+  @school_user = FunctionsHelper.create_user(school_uuid, @username)
+  school_id = @school_user['entity']['school_id']
+  FunctionsHelper.generate_school_pin(school_id)
+  p "Login for #{@school_name} created as - #{@username}"
+end
+
 Before('@service_manager_message') do
   step 'I am on the manage service message page'
   manage_service_message_page.remove_service_message if manage_service_message_page.has_remove_message?

@@ -1,5 +1,5 @@
 <%- partial('partials/_gds_breadcrumbs_and_sign_out', { breadcrumbs }) %>
-<main class="govuk-main-wrapper" id="main-content" role="main">
+<main class="govuk-main-wrapper govuk-body-m" id="main-content" role="main">
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
       <% if (error.hasError()) { %>
@@ -32,7 +32,8 @@
               <span class="govuk-error-message"><%= error.get('pupil-autocomplete-container') %></span>
               <select class="govuk-select" name="pupilUrlSlug" id="pupil-autocomplete-container">
                 <option value="">Select a pupil</option>
-                <% pupils.map(p => { %><option value="<%= p.urlSlug %>" <%= p.urlSlug === formData['pupilUrlSlug'] && 'selected' %>><%= p.fullName %></option><% }) %>
+                <% pupils.forEach(p => { %><option value="<%= p.urlSlug %>" <%= p.urlSlug === formData['pupilUrlSlug']
+                && 'selected' %>><%= p.fullName %></option><% }) %>
               </select>
             </div>
           </div>
