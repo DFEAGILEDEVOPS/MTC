@@ -190,9 +190,12 @@ export class PsReportDataService {
             c.processingFailed,
             c.pupilLoginDate,
             c.received,
+            rr.code as reasartReason,
             (select count(*) from mtc_admin.pupilRestart where pupil_id = c.pupil_id and isDeleted = 0) as restartNumber
           FROM mtc_admin.[check] c
                LEFT JOIN mtc_results.checkResult cr ON (c.id = cr.check_id)
+               LEFT JOIN mtc_results.pupilRestart pr ON (c.id = pr.check_id)
+               LEFT JOIN mtc_results.restartReason rr ON (pr.pupilRestartReason_id = rr.id)
          WHERE c.id = @checkId
     `
 
@@ -210,6 +213,7 @@ export class PsReportDataService {
       pupilLoginDate: moment.Moment
       received: boolean
       restartNumber: number
+      restartReason: string | null
     }
 
     const res: DBCheck[] = await this.sqlService.query(sql, [{ name: 'checkId', value: checkId, type: TYPES.Int }])
@@ -232,7 +236,8 @@ export class PsReportDataService {
       processingFailed: data.processingFailed,
       pupilLoginDate: data.pupilLoginDate,
       received: data.received,
-      restartNumber: data.restartNumber
+      restartNumber: data.restartNumber,
+      restartReason: data.restartReason
     }
     return Object.freeze(check)
   }

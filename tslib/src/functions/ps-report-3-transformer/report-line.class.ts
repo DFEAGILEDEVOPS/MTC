@@ -49,6 +49,7 @@ export class ReportLine {
     TimeComplete: null,
     TimeTaken: null,
     RestartNumber: null,
+    RestartReason: null,
     FormMark: null,
 
     // Device
@@ -284,6 +285,7 @@ export class ReportLine {
     this._report.TimeComplete = this.getTimeComplete()
     this._report.TimeTaken = this.getTimeTaken()
     this._report.RestartNumber = this.check?.restartNumber ?? null // set to null if there is no check
+    this._report.RestartReason = null // TODO : map the restartReason code to the number
     this._report.FormMark = this.check?.mark ?? null
     this._report.DeviceType = this.device?.type ?? null
     this._report.BrowserType = this.getBrowser()
@@ -338,6 +340,7 @@ export class ReportLine {
       TimeComplete: this._report.TimeComplete,
       TimeTaken: this._report.TimeTaken,
       RestartNumber: this._report.RestartNumber,
+      RestartReason: this._report.RestartReason,
       FormMark: this._report.FormMark,
       DeviceType: this._report.DeviceType,
       BrowserType: this._report.BrowserType,

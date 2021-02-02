@@ -180,7 +180,8 @@ describe('ps-report.data.service', () => {
           processingFailed: true,
           pupilLoginDate: moment('2021-01-04T10:00:00.123Z'),
           received: false,
-          restartNumber: 5
+          restartNumber: 5,
+          restartReason: 'LOI'
         }
       ])
       const check = await sut.getCheck(3)
@@ -200,6 +201,7 @@ describe('ps-report.data.service', () => {
       expect(check.pupilLoginDate?.toISOString()).toBe('2021-01-04T10:00:00.123Z')
       expect(check.received).toBe(false)
       expect(check.restartNumber).toBe(5)
+      expect(check.restartReason).toBe(2)
     })
 
     test('returns null if the check result is not found', async () => {
@@ -223,7 +225,8 @@ describe('ps-report.data.service', () => {
           processingFailed: true,
           pupilLoginDate: moment('2021-01-04T10:00:00.123Z'),
           received: false,
-          restartNumber: 5
+          restartNumber: 5,
+          restartReason: 'LOI'
         }
       ])
       const check = await sut.getCheck(3)
@@ -543,7 +546,8 @@ describe('ps-report.data.service', () => {
         processingFailed: false,
         pupilLoginDate: moment('2021-01-05T11:35:34.123Z'),
         received: true,
-        restartNumber: 1
+        restartNumber: 1,
+        restartReason: 'ITI'
       })
       const checkFormSpy = jest.spyOn(sut, 'getCheckForm').mockResolvedValueOnce(null)
       const answersSpy = jest.spyOn(sut, 'getAnswers')

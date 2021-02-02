@@ -26,6 +26,7 @@ export interface IReportLineBase {
   TimeComplete: moment.Moment | null
   TimeTaken: number | null // seconds with ms to 3 decimal places, e.g. 198.123
   RestartNumber: number | null
+  RestartReason: number | null
   FormMark: number | null
 
   // Device

@@ -295,6 +295,11 @@ describe('report line class', () => {
         expect(out.RestartNumber).toBe(2)
       })
 
+      test('the restart reason is mapped', () => {
+        const out = sut.transform()
+        expect(out.RestartReason).toBe('LOI')
+      })
+
       test('the mark is mapped', () => {
         const out = sut.transform()
         expect(out.FormMark).toBe(1)

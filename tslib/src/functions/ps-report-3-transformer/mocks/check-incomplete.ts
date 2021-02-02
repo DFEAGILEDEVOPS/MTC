@@ -13,5 +13,6 @@ export const check: Check = {
   processingFailed: false,
   pupilLoginDate: null,
   received: true,
-  restartNumber: 0
+  restartNumber: 0,
+  restartReason: null
 }
