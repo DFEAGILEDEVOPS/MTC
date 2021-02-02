@@ -36,13 +36,13 @@ Then(/^I can see the declaration submitted form page not confirmed as per the de
   expect(declaration_submitted_form_page).to have_warning_notconfirmed_panel
 end
 
-Given(/^I have no pupils not taking the check for school 4$/) do
+Given(/^I have no pupils not taking the check for the school$/) do
   SqlDbHelper.delete_pupils_not_taking_check
-  SqlDbHelper.set_pupil_attendance_via_school(5, 'null')
+  SqlDbHelper.set_pupil_attendance_via_school(@school_user['entity']['school_id'], 'null')
 end
 
 Given(/^I have some pupils that have completed the check$/) do
-  step "I have no pupils not taking the check for school 4"
+  step "I have no pupils not taking the check for the school"
   step "I am on the add multiple pupil page"
   @upn_list = add_multiple_pupil_page.create_and_upload_multiple_pupils(3, 'pin_gen.csv')
   generate_pins_overview_page.load
@@ -85,7 +85,7 @@ end
 
 And(/^I set the remaining pupils as not taking the check$/) do
   visit ENV['ADMIN_BASE_URL'] + '/sign-out'
-  step 'I have signed in with teacher4'
+  step "I have signed in with #{@username}"
   pupils_not_taking_check_page.load
   step 'I want to add a reason'
   @page = pupil_reason_page
@@ -97,6 +97,7 @@ end
 
 Then(/^I should be able to submit the HDF$/) do
   step 'I am on the HDF form page'
+  Timeout.timeout(120) {visit current_url until hdf_form_page.has_continue?}
   expect(@page).to have_first_name
   expect(@page).to have_last_name
   expect(@page).to have_is_headteacher_yes

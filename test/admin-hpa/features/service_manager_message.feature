@@ -21,5 +21,5 @@ Feature: Service manager message
 
   Scenario: Service manager should only be able to create one message
     Given I have created a service message
-    When I navigate to school home page as teacher1
+    When I navigate to school home page as a teacher
     Then service message is displayed as per design

@@ -12,7 +12,7 @@ end
 
 Given(/^I have entered valid credentials$/) do
   sign_in_page.load
-  sign_in_page.enter_credentials('teacher1', 'password')
+  sign_in_page.enter_credentials(@username, 'password')
 end
 
 When(/^I sign in$/) do
@@ -21,7 +21,7 @@ end
 
 Given(/^I have entered invalid credentials$/) do
   sign_in_page.load
-  sign_in_page.enter_credentials('teacher1', 'wrong')
+  sign_in_page.enter_credentials(@username, 'wrong')
 end
 
 Then(/^I should be taken to the failed login page$/) do
@@ -30,11 +30,7 @@ end
 
 Given(/^I am logged in$/) do
   sign_in_page.load
-  if @username
-    @user = @username
-  else
-    @user = 'teacher1'
-  end
+  @user = @username
   sign_in_page.login(@user, 'password')
 end
 

@@ -2,7 +2,7 @@
 Feature: Declaration confirm and submit
 
   Background:
-    Given I have signed in with teacher4
+    Given I am logged in
 
   Scenario: Confirm and submit page displays as per the design
     Given I am on the confirm and submit page

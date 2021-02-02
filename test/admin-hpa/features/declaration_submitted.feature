@@ -2,7 +2,7 @@
 Feature: Declaration form submitted
 
   Background:
-    Given I have signed in with teacher4
+    Given I am logged in
 
   @hdf
   Scenario: Declaration submitted page displays as per the design

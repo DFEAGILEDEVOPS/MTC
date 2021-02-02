@@ -80,7 +80,8 @@ Then(/^I should see the school results$/) do
   expect(results_page).to_not have_no_hdf_message
   expect(results_page).to_not have_hdf_button
   expect(results_page).to have_ctf_download
-  pupil_results = results_page.results.pupil_list.map {|pupil| {id: SqlDbHelper.get_check_id_using_names(pupil.name.text.split(',')[0], pupil.name.text.split(',')[1].strip)['id'].to_s, mark: pupil.score.text}}.sort_by {|hsh| hsh[:id]}
+  pupils = results_page.results.pupil_list.map {|pupil| pupil unless pupil.score.text == '-'}.compact
+  pupil_results = pupils.map {|pupil| {id: SqlDbHelper.get_check_id_using_names(pupil.name.text.split(',')[0], pupil.name.text.split(',')[1].strip)['id'].to_s, mark: pupil.score.text}}.sort_by {|hsh| hsh[:id]}
   db_pupil_results = checks_ids_from_school.map {|check| {id: check.to_s, mark: SqlDbHelper.get_check_result(check)['mark'].to_s}}.sort_by {|hsh| hsh[:id]}
   expect(db_pupil_results).to eql pupil_results
   results_page.ctf_download.click
@@ -89,7 +90,7 @@ Then(/^I should see the school results$/) do
   ctf_file = File.read(ctf_path)
   doc = Nokogiri::XML ctf_file
   ctf_results_hash = doc.css('Pupil').map {|p| {name: p.children.css('Forename').text + ", " + p.children.css('Surname').text, mark: p.children.css('Result').text}}.sort_by {|hsh| hsh[:name]}
-  pupil_results_hash = results_page.results.pupil_list.map {|pupil| {name: pupil.name.text.split(',')[0] + ", " + pupil.name.text.split(',')[1].strip, mark: pupil.score.text}}.sort_by {|hsh| hsh[:name]}
+  pupil_results_hash = results_page.results.pupil_list.map {|pupil| {name: pupil.name.text.split(',')[0] + ", " + pupil.name.text.split(',')[1].strip, mark: (pupil.score.text == '-' ? 'A' : pupil.score.text) }}.sort_by {|hsh| hsh[:name]}
   expect(ctf_results_hash).to eql pupil_results_hash
 end
 
@@ -120,7 +121,8 @@ Then(/^I should be able to view school results but not download the ctf$/) do
   expect(results_page).to_not have_no_hdf_message
   expect(results_page).to_not have_hdf_button
   expect(results_page).to have_ctf_download_disabled
-  pupil_results = results_page.results.pupil_list.map {|pupil| {id: SqlDbHelper.get_check_id_using_names(pupil.name.text.split(',')[0], pupil.name.text.split(',')[1].strip)['id'].to_s, mark: pupil.score.text}}.sort_by {|hsh| hsh[:id]}
+  pupils = results_page.results.pupil_list.map {|pupil| pupil unless pupil.score.text == '-'}.compact
+  pupil_results = pupils.map {|pupil| {id: SqlDbHelper.get_check_id_using_names(pupil.name.text.split(',')[0], pupil.name.text.split(',')[1].strip)['id'].to_s, mark: pupil.score.text}}.sort_by {|hsh| hsh[:id]}
   db_pupil_results = checks_ids_from_school.map {|check| {id: check.to_s, mark: SqlDbHelper.get_check_result(check)['mark'].to_s}}.sort_by {|hsh| hsh[:id]}
   expect(db_pupil_results).to eql pupil_results
 end

@@ -2,7 +2,7 @@
 Feature: Restarts
 
   Scenario: Restarts Landing page displays heading and info section
-    Given I have signed in with teacher2
+    Given I am logged in
     When I navigate to Restarts page
     Then I should see the restarts page matches design
 
