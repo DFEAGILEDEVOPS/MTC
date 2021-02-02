@@ -2,7 +2,7 @@
 Feature: Restarts
 
   Scenario: Restarts Landing page displays heading and info section
-    Given I have signed in with teacher2
+    Given I am logged in
     When I navigate to Restarts page
     Then I should see the restarts page matches design
 
@@ -88,6 +88,7 @@ Feature: Restarts
     Then I should be able to filter the pupil list by the group
     And I should be able to see the number of pupils in the group
 
+  @empty_new_school
   Scenario: Restarting more than 25 pupils is possible
     Given I have more than 25 pupils eligible for a restart
     Then I can select all

@@ -140,7 +140,7 @@ end
 Given(/^I have generated pin for all pupil$/) do
   SqlDbHelper.delete_pupils_not_taking_check
   SqlDbHelper.set_pupil_attendance_via_school(5,'null')
-  step "I have signed in with teacher4"
+  step "I have signed in with #{@username}"
   step "I am on Generate pins Pupil List page"
   generate_pins_overview_page.select_all_pupils.click
   generate_pins_overview_page.sticky_banner.confirm.click
@@ -170,7 +170,7 @@ Then(/^school password should be generated from the specified pool of characters
 end
 
 Given(/^I have generated pins for multiple pupils$/) do
-  step "I have logged in with teacher1"
+  step "I am logged in"
   step "I am on the add multiple pupil page"
   @upn_list = add_multiple_pupil_page.create_and_upload_multiple_pupils(3,'pin_gen.csv')
   generate_pins_overview_page.load
@@ -388,7 +388,7 @@ Then(/^I should see related content on the generate pins page$/) do
 end
 
 Then(/^I should see generated pin page as per design$/) do
-  step 'I should see the school password for teacher1'
+  step "I should see the school password for #{@username}"
 end
 
 And(/^the displayed school password is generated as per the requirement$/) do
@@ -401,19 +401,10 @@ Then(/^I should see that I should not be able to generate a pin$/) do
   expect(school_landing_page).to have_generate_pupil_pin_disabled
 end
 
-Given(/^I want to generate pins for a group of (\d+) pupils with (.+)$/) do |total_pins, teacher|
-  teacher_details = SqlDbHelper.find_teacher(teacher)
-  @group_name = "multiple_pupil_group" + rand(2335234).to_s
-  SqlDbHelper.create_group(@group_name,teacher_details['school_id'])
-  @total_pins = total_pins.to_i
-  step "I have logged in with #{teacher}"
-  view_and_custom_print_live_check_page.load
-  @before_pin_gen = view_and_custom_print_live_check_page.pupil_list.rows.size
-  step "I am on the add multiple pupil page"
-  @upn_list = add_multiple_pupil_page.create_and_upload_multiple_pupils(@total_pins,'pin_gen.csv')
-  pupil_ids = @upn_list.map {|upn| SqlDbHelper.pupil_details(upn)['id']}
-  group_id = SqlDbHelper.find_group(@group_name)['id']
-  pupil_ids.each {|id| SqlDbHelper.add_pupil_to_group(group_id, id)}
+Given(/^I want to generate pins for a group of 250 pupils with a teacher$/) do
+  step "I am on the create group page"
+  step "I select all pupils"
+  add_edit_groups_page.sticky_banner.confirm.click
   step "I am on the generate pupil pins page"
   step "I click Generate PINs button"
 end
@@ -422,19 +413,19 @@ When(/^I select all (\d+) pupils$/) do |arg|
   group = generate_pins_overview_page.group_filter.groups.find {|group| group.name.text.include? @group_name}
   group.checkbox.click
   generate_pins_overview_page.select_all_pupils.click
-  expect(generate_pins_overview_page.sticky_banner.selected_count.text.to_i).to eql @total_pins
+  expect(generate_pins_overview_page.sticky_banner.selected_count.text.to_i).to eql 250
   generate_pins_overview_page.sticky_banner.confirm.click
 end
 
 Then(/^I should be able to generate pins$/) do
   expect(current_url).to include '/view-and-custom-print-live-pins'
-  expect(view_and_custom_print_live_check_page.pupil_list.rows.size).to eql @total_pins + @before_pin_gen
+  expect(view_and_custom_print_live_check_page.pupil_list.rows.size).to eql 250
 end
 
 
-Given(/^I am on the generate pupil pins page after logging in with teacher2$/) do
+Given(/^I am on the generate pupil pins page after logging in with a teacher$/) do
   expect(REDIS_CLIENT.get("checkWindow.sqlFindActiveCheckWindow")).to be_nil
-  step "I have signed in with teacher2"
+  step "I am logged in"
   expect(school_landing_page).to be_displayed
   Timeout.timeout(20) {visit current_url until REDIS_CLIENT.get("checkWindow.sqlFindActiveCheckWindow") != nil}
   expect(JSON.parse(JSON.parse(REDIS_CLIENT.get("checkWindow.sqlFindActiveCheckWindow"))['value'])['recordset']).to be_empty

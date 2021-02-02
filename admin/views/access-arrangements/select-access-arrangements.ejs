@@ -201,7 +201,7 @@
                         <span class="govuk-error-message"><%= error.get('pupil-autocomplete-container') %></span>
                         <select class="govuk-select" name="pupilUrlSlug" id="pupil-autocomplete-container">
                             <option value="">Select a pupil</option>
-                            <% pupils.map(p => { %>
+                            <% pupils.forEach(p => { %>
                                 <option
                                         value="<%= p.urlSlug %>" <%= p.urlSlug === formData['pupilUrlSlug'] && 'selected' %>><%= p.fullName %></option>
                             <% }) %>

@@ -43,7 +43,7 @@ pupilAccessArrangementsService.getEligiblePupilsWithFullNames = async (schoolId)
   }
   const pupils = await pupilAccessArrangementsDataService.sqlFindEligiblePupilsBySchoolId(schoolId)
   return pupils.map(p => ({
-    fullName: `${p.lastName} ${p.foreName}${p.middleNames ? ' ' + p.middleNames : ''}`,
+    fullName: `${p.lastName}, ${p.foreName}${p.middleNames ? ' ' + p.middleNames : ''}`,
     urlSlug: p.urlSlug
   }))
 }
