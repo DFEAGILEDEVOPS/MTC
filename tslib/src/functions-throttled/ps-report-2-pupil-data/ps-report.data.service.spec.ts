@@ -201,7 +201,7 @@ describe('ps-report.data.service', () => {
       expect(check.pupilLoginDate?.toISOString()).toBe('2021-01-04T10:00:00.123Z')
       expect(check.received).toBe(false)
       expect(check.restartNumber).toBe(5)
-      expect(check.restartReason).toBe(2)
+      expect(check.restartReason).toBe('LOI')
     })
 
     test('returns null if the check result is not found', async () => {

@@ -264,6 +264,21 @@ export class ReportLine {
     return event.browserTimestamp
   }
 
+  private getRestartReason (code: string | null): number | null {
+    switch (code) {
+      case 'LOI':
+        return 1
+      case 'ITI':
+        return 2
+      case 'CLD':
+        return 3
+      case 'DNC':
+        return 4
+    }
+
+    return null
+  }
+
   private _transform (): void {
     this._report.DOB = this.pupil.dateOfBirth
     this._report.Gender = this.pupil.gender.toUpperCase()
@@ -285,7 +300,7 @@ export class ReportLine {
     this._report.TimeComplete = this.getTimeComplete()
     this._report.TimeTaken = this.getTimeTaken()
     this._report.RestartNumber = this.check?.restartNumber ?? null // set to null if there is no check
-    this._report.RestartReason = null // TODO : map the restartReason code to the number
+    this._report.RestartReason = this.getRestartReason(this.check?.restartReason ?? null) // map the code to the number
     this._report.FormMark = this.check?.mark ?? null
     this._report.DeviceType = this.device?.type ?? null
     this._report.BrowserType = this.getBrowser()

@@ -194,8 +194,8 @@ export class PsReportDataService {
             (select count(*) from mtc_admin.pupilRestart where pupil_id = c.pupil_id and isDeleted = 0) as restartNumber
           FROM mtc_admin.[check] c
                LEFT JOIN mtc_results.checkResult cr ON (c.id = cr.check_id)
-               LEFT JOIN mtc_results.pupilRestart pr ON (c.id = pr.check_id)
-               LEFT JOIN mtc_results.restartReason rr ON (pr.pupilRestartReason_id = rr.id)
+               LEFT JOIN mtc_admin.pupilRestart pr ON (c.id = pr.check_id)
+               LEFT JOIN mtc_admin.pupilRestartReason rr ON (pr.pupilRestartReason_id = rr.id)
          WHERE c.id = @checkId
     `
 

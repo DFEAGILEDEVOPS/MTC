@@ -297,7 +297,7 @@ describe('report line class', () => {
 
       test('the restart reason is mapped', () => {
         const out = sut.transform()
-        expect(out.RestartReason).toBe('LOI')
+        expect(out.RestartReason).toBe(1)
       })
 
       test('the mark is mapped', () => {
