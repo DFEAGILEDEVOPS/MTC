@@ -1,11 +1,6 @@
 class UpnHelper
   def self.collection_of_la_codes
     %w(
-      001
-      002
-      003
-      004
-      005
       201
       202
       203
