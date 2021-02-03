@@ -2,7 +2,7 @@
 Feature: Add Multiple Pupil validation Error
 
   Background:
-    Given I have signed in with teacher5
+    Given I am logged in
     And I am on the add multiple pupil page
 
   @multiple_pupil_upload

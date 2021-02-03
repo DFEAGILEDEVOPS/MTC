@@ -5,7 +5,7 @@ Feature: Declaration form
   so I can confirm the check has been administered accordingly
 
   Background:
-    Given I have signed in with teacher4
+    Given I am logged in
 
   Scenario: HDF Form displays as per the design
     Given I am on the HDF form page

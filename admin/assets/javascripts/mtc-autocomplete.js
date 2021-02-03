@@ -40,11 +40,6 @@ if (!window.MTCAdmin) {
      */
     createNameComponent: function (autoCompleteContainer, minLength, defaultValue) {
       function inputValueTemplate (result) {
-        var splitResult = result && result.split(' ')
-        if (splitResult) {
-          return splitResult &&
-            (splitResult[0] + ', ' + splitResult[1] + (splitResult[2] ? ' ' + splitResult[2] : ''))
-        }
         return result
       }
 

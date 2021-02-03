@@ -1,4 +1,4 @@
-@results @redis @new_school
+@results @redis
 Feature: Results tests
   As a headteacher
   I need to see individual scores of pupils
@@ -18,6 +18,7 @@ Feature: Results tests
     Then we navigate to the Result page
     And Result page is displayed as per the design
 
+  @hdf
   Scenario: Results are viewable from the Monday after the check window has closed and the HDF signed
     Given multiple pupils have completed the check
     And the data sync function has run
@@ -25,6 +26,7 @@ Feature: Results tests
     When I have submitted the HDF
     Then I should see the school results
 
+  @hdf
   Scenario: Results are viewable from the second Monday after the check window has closed and the HDF has not been signed
     Given multiple pupils have completed the check
     And the data sync function has run
@@ -32,6 +34,7 @@ Feature: Results tests
     But I have not signed the hdf
     Then I should be able to view school results but not download the ctf
 
+  @hdf
   Scenario: Not taking check reason, and the corresponding letter on CTF file, must show in the results page on place of the score
     Given multiple pupils have completed the check
     And some pupils who have been marked as not taking the check

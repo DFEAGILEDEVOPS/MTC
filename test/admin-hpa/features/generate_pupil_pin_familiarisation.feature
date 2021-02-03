@@ -2,7 +2,7 @@
 Feature: Generate Pupil PINs Familiarisation
 
   Scenario: Generate pupil pin familiarisation is rendered as per design
-    Given I have signed in with teacher2
+    Given I am logged in
     When I navigate to generate pupil pins familiarisation page
     Then I should see generate pin familiarisation overview page as per design
 
@@ -82,7 +82,7 @@ Feature: Generate Pupil PINs Familiarisation
     Then familiarisation generated pin overview page is displayed as per design
 
   Scenario: Cancel returns user to Familiarisation Generate Pupil Pin Landing page if there are no pupil with pins
-    Given I have signed in with teacher3
+    Given I am logged in
     And I select a Pupil from familiarisation Generate Pin page
     When I choose to cancel
     Then I should be taken to familiarisation pin overview page
