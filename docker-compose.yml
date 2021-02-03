@@ -14,3 +14,21 @@ services:
     container_name: mtc_redis
     ports:
       - "6379:6379"
+  admin_dev:
+    build:
+      context: ./admin
+      dockerfile: dev.Dockerfile
+    container_name: "mtc_admin_dev"
+    ports:
+      - 3001:3001
+    volumes:
+      - "./:/mtc"
+    environment:
+      SQL_SERVER: 'sqldb'
+      REDIS_HOST: 'redis'
+    depends_on:
+      - sqldb
+      - migration
+      - redis
+    restart: always
+    command: ["./wait-for-db.sh", "sqldb", "./docker-start-dev.sh"]

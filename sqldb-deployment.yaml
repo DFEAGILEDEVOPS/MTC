@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: ./kompose convert
+    kompose.version: 1.21.0 (992df58d8)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: sqldb
+  name: sqldb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: sqldb
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: ./kompose convert
+        kompose.version: 1.21.0 (992df58d8)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: sqldb
+    spec:
+      containers:
+      - env:
+        - name: "ACCEPT_EULA"
+          value: "Y"
+        - name: "HOMEBREW_NO_ENV_FILTERING"
+          value: "1"
+        - name: "SA_PASSWORD"
+          value: "Mtc-D3v.5ql_S3rv3r"
+        image: mcr.microsoft.com/mssql/server:2019-CU6-ubuntu-16.04
+        imagePullPolicy: ""
+        name: mtc-mssql
+        ports:
+        - containerPort: 1433
+        resources: {}
+      restartPolicy: Always
+      serviceAccountName: ""
+      volumes: null
+status: {}
