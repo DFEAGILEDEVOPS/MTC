@@ -646,4 +646,20 @@ class SqlDbHelper
     id
   end
 
+  def self.get_list_of_la_codes
+    sql = "select lacode from mtc_admin.laCodeLookup where lacode != 0"
+    result = SQL_CLIENT.execute(sql)
+    la_codes = result.each {|row| row.map}
+    la_codes.map {|code| code['lacode'].to_s}
+  end
+
+
+  def self.pupil_details_using_school(upn,school_id)
+    sql = "SELECT * FROM [mtc_admin].[pupil] WHERE upn='#{upn}' AND school_id=#{school_id}"
+    result = SQL_CLIENT.execute(sql)
+    pupil_details_res = result.first
+    result.cancel
+    pupil_details_res
+  end
+
 end

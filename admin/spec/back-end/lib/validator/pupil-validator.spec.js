@@ -6,6 +6,7 @@ const pupilValidator = require('../../../../lib/validator/pupil-validator')
 const pupilDataService = require('../../../../services/data-access/pupil.data.service')
 const pupilMock = require('../../mocks/pupil')
 const pupilErrors = require('../../../../lib/errors/pupil')
+const laCodeService = require('../../../../services/la-code.service')
 
 describe('pupil validator', function () {
   let req = null
@@ -40,6 +41,7 @@ describe('pupil validator', function () {
         this.params[name] = name
       }
     }
+    spyOn(laCodeService, 'getLaCodes').and.returnValue([801, 813])
   })
 
   describe('and the pupil uniqueness check passes', () => {
