@@ -4,14 +4,15 @@
 
 ## Pupil information
 
-| Psychometric field   | Source                      | Comment |
-| -------------------- | --------------------------- | ------- |
-| DOB                  | mtc_admin.pupil.dateOfBirth |         |
-| Gender               | mtc_admin.pupil.gender      |         |
-| PupilID              | mtc_admin.pupil.upn         |         |
-| Forename             | mtc_admin.pupil.foreName    |         |
-| Surname              | mtc_admin.pupil.lastName    |         |
-| ReasonNotTakingCheck | mtc_admin.pupilAttendance   |         |
+| Psychometric field   | Source                                              | Comment    |
+| -------------------- | --------------------------------------------------- | ---------- |
+| DOB                  | mtc_admin.pupil.dateOfBirth                         |            |
+| Gender               | mtc_admin.pupil.gender                              |            |
+| PupilID              | mtc_admin.pupil.upn                                 |            |
+| Forename             | mtc_admin.pupil.foreName                            |            |
+| Surname              | mtc_admin.pupil.lastName                            |            |
+| ReasonNotTakingCheck | mtc_admin.pupilAttendance                           |            |
+| PupilStatus          | mtc_admin.pupil.complete, mtc_admin.pupilAttendance | calculated |
 
 
 

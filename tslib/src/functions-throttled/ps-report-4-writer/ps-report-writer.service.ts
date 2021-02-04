@@ -7,7 +7,7 @@ export class PsReportWriterService {
   private readonly sqlService: ISqlService
   private readonly logger: ILogger
 
-  constructor (sqlService?: ISqlService, logger?: ILogger) {
+  constructor (logger?: ILogger, sqlService?: ISqlService) {
     if (logger === undefined) {
       logger = new ConsoleLogger()
     }
@@ -21,16 +21,33 @@ export class PsReportWriterService {
 
   private generateParams (data: IPsychometricReportLine): ISqlParameter[] {
     return [
-      { name: 'dob', value: data.DOB, type: TYPES.DateTimeOffset(3) },
+      { name: 'dob', value: data.DOB?.toDate(), type: TYPES.Date },
       { name: 'gender', value: data.Gender, type: TYPES.Char(1) },
-      { name: 'pupilId', value: data.PupilID, type: TYPES.Char(1) },
+      { name: 'pupilId', value: data.PupilID, type: TYPES.NVarChar(32) },
       { name: 'forename', value: data.Forename, type: TYPES.NVarChar(128) },
       { name: 'surname', value: data.Surname, type: TYPES.NVarChar(128) },
       { name: 'formMark', value: data.FormMark, type: TYPES.Int },
-      { name: 'qDisplayTime', value: data.QDisplayTime, type: TYPES.Int },
-      { name: 'pauseLength', value: data.PauseLength, type: TYPES.Int },
+      { name: 'qDisplayTime', value: data.QDisplayTime, type: TYPES.Decimal(5, 2) },
+      { name: 'pauseLength', value: data.PauseLength, type: TYPES.Decimal(5, 2) },
       { name: 'accessArr', value: data.AccessArr, type: TYPES.NVarChar(128) },
-      { name: 'restartReason', value: data.RestartReason, type: TYPES.NVarChar(128) }
+      { name: 'restartReason', value: data.RestartReason, type: TYPES.NVarChar(128) },
+      { name: 'restartNumber', value: data.RestartNumber, type: TYPES.Int },
+      { name: 'reasonNotTakingCheck', value: data.ReasonNotTakingCheck, type: TYPES.Int },
+      { name: 'pupilStatus', value: 'TODO', type: TYPES.NVarChar(32) }, // TODO: add pupil status in transform step
+      { name: 'deviceType', value: data.DeviceType, type: TYPES.NVarChar(32) },
+      { name: 'deviceTypeModel', value: data.DeviceTypeModel, type: TYPES.NVarChar(32) },
+      { name: 'deviceId', value: data.DeviceID, type: TYPES.NVarChar(128) },
+      { name: 'browserType', value: data.BrowserType, type: TYPES.NVarChar(128) },
+      { name: 'schoolName', value: data.SchoolName, type: TYPES.NVarChar(50) },
+      { name: 'estab', value: data.Estab, type: TYPES.SmallInt },
+      { name: 'schoolUrn', value: data.SchoolURN, type: TYPES.Int },
+      { name: 'laNum', value: data.LAnum, type: TYPES.Int },
+      { name: 'attemptId', value: data.AttemptID, type: TYPES.UniqueIdentifier },
+      { name: 'formId', value: data.FormID, type: TYPES.NVarChar(64) },
+      { name: 'testDate', value: data.TestDate?.toDate(), type: TYPES.Date },
+      { name: 'timeStart', value: data.TimeStart?.toDate(), type: TYPES.DateTimeOffset(3) },
+      { name: 'timeComplete', value: data.TimeComplete?.toDate(), type: TYPES.DateTimeOffset(3) },
+      { name: 'timeTaken', value: data.TimeTaken, type: TYPES.Decimal(9, 3) }
     ]
   }
 
@@ -122,7 +139,7 @@ export class PsReportWriterService {
                 @reasonNotTakingCheck,
                 @pupilStatus,
                 @deviceType,
-                @deviceModelType,
+                @deviceTypeModel,
                 @deviceId,
                 @browserType,
                 @schoolName,
@@ -140,7 +157,8 @@ export class PsReportWriterService {
     return sql
   }
 
-  public async write (data: any): Promise<void> {
+  public async write (data: IPsychometricReportLine): Promise<void> {
+    console.log(data)
     const params = this.generateParams(data)
     const sql = this.generateSql(data)
     return this.sqlService.modify(sql, params)
