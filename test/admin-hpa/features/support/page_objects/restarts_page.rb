@@ -16,7 +16,7 @@ class RestartsPage < SitePrism::Page
   element :deselct_all_pupil, '#tickAllCheckboxes', text: 'Deselect all'
   element :back_to_top, 'a', text: 'Back to top'
   element :flash_message, '.govuk-info-message'
-  element :no_pupils, 'p', text: 'No pupils found.'
+  element :no_pupils, '.govuk-inset-text', text: 'No pupils found.'
 
   element :csrf, 'input[name="_csrf"]', visible: false
 

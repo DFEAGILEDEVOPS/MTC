@@ -54,7 +54,7 @@ Then(/^I should not be able to add retro input assistance to any pupils$/) do
 end
 
 Given(/^I have signed the hdf$/) do
-  step 'I have signed in with teacher1'
+  step 'I am logged in'
   step 'I have some pupils that have completed the check'
   step 'the live check window closes'
   step 'I set the remaining pupils as not taking the check'
@@ -62,7 +62,7 @@ Given(/^I have signed the hdf$/) do
 end
 
 Given(/^the check window is now closed$/) do
-  step 'I have signed in with teacher1'
+  step 'I am logged in'
   step 'I have some pupils that have completed the check'
   step 'the live check window closes'
 end
@@ -70,7 +70,7 @@ end
 Then(/^I should be able to add an input assistant retrospectively$/) do
   SqlDbHelper.update_check_end_date((Date.today) - 7)
   visit ENV['ADMIN_BASE_URL'] + '/sign-out'
-  step "I have signed in with teacher1"
+  step "I am logged in"
   access_arrangements_page.load
   access_arrangements_page.retro_input.link.click
   Timeout.timeout(ENV['WAIT_TIME'].to_i) {(visit current_url; retro_input_page.search_pupil.set(@pupil_names_arr.first.split(',')[0])) until
@@ -131,7 +131,7 @@ end
 
 
 Given(/^I am on the retro input assitance page$/) do
-  step 'I have signed in with teacher1'
+  step 'I am logged in'
   retro_input_page.load
 end
 

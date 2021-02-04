@@ -60,7 +60,7 @@ Then(/^I should not be able to create another$/) do
   expect(manage_service_message_page.create_message).to be_disabled
 end
 
-When(/^I navigate to school home page as teacher1$/) do
+When(/^I navigate to school home page as a teacher$/) do
   visit ENV['ADMIN_BASE_URL'] + '/sign-out'
   step 'I am logged in'
 end

@@ -7,8 +7,8 @@ Then(/^I should be take to the view pin usage page$/) do
   expect(school_summary_page).to be_displayed
   expect(school_summary_page.heading.text).to eql 'Usage Summary for Example School One [9991001]'
   expect(school_summary_page.pupil_register_summary).to be_all_there
-  expect(school_summary_page.live_checks).to be_all_there
-  expect(school_summary_page.tio_checks).to be_all_there
+  expect(school_summary_page).to have_live_checks
+  expect(school_summary_page).to have_tio_checks
 end
 
 

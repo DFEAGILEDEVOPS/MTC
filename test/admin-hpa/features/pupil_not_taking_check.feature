@@ -12,13 +12,13 @@ Feature:
     Then pupil reason page is displayed as per the design
 
   Scenario: Pupils are sorted by using surname into ascending order by default
-    Given I have signed in with teacher4
+    Given I am logged in
     And I add a pupil with names beginning with Z
     When I want to add a reason for pupils not taking a check
     Then I should see a list of pupils sorted by surname
 
   Scenario: Pupils can be sorted by surname into descending order
-    Given I have signed in with teacher4
+    Given I am logged in
     And I add a pupil with names beginning with Z
     When I want to add a reason for pupils not taking a check
     And I want to sort the surnames in to desecending order
