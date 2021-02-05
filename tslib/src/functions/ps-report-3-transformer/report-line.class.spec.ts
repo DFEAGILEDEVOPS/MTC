@@ -210,6 +210,11 @@ describe('report line class', () => {
         const out = sut.transform()
         expect(out.ReasonNotTakingCheck).toBeNull()
       })
+
+      test('it determines the pupil status', () => {
+        const out = sut.transform()
+        expect(out.PupilStatus).toBe('Complete')
+      })
     })
 
     describe('settings', () => {
@@ -519,6 +524,11 @@ describe('report line class', () => {
         const out = sut.transform()
         expect(out.ReasonNotTakingCheck).toBeNull()
       })
+
+      test('it determines the pupil status', () => {
+        const out = sut.transform()
+        expect(out.PupilStatus).toBe('Incomplete')
+      })
     })
 
     describe('check fields', () => {
@@ -693,6 +703,11 @@ describe('report line class', () => {
       test('if the pupil has taken a check it should have a Reason For not Taking Check', () => {
         const out = sut.transform()
         expect(out.ReasonNotTakingCheck).toBe(1)
+      })
+
+      test('the pupil status is set to Not taking the Check', () => {
+        const out = sut.transform()
+        expect(out.PupilStatus).toBe('Not taking the Check')
       })
     })
 

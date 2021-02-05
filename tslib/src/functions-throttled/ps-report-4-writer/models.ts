@@ -1,0 +1,31 @@
+export interface PsychometricReport {
+  PupilId: string
+  createdAt: moment.Moment | null
+  updatedAt: moment.Moment | null
+  DOB: moment.Moment | null
+  Gender: string | null
+  Forename: string | null
+  Surname: string | null
+  FormMark: number | null
+  QDisplayTime: number | null
+  PauseLength: number | null
+  AccessArr: string | null
+  RestartReason: string | null
+  RestartNumber: number | null
+  ReasonNotTakingCheck: number | null
+  PupilStatus: string | null
+  DeviceType: string | null
+  DeviceTypeModel: string | null
+  DeviceId: string | null
+  BrowserType: string | null
+  SchoolName: string | null
+  Estab: number | null
+  SchoolURN: number | null
+  LANum: number | null
+  AttemptId: string | null
+  FormID: string | null
+  TestDate: moment.Moment | null
+  TimeStart: moment.Moment | null
+  TimeComplete: moment.Moment | null
+  TimeTaken: number | null
+}

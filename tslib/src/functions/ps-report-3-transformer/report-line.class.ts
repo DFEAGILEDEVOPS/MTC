@@ -29,6 +29,7 @@ export class ReportLine {
     Forename: '',
     Surname: '',
     ReasonNotTakingCheck: null,
+    PupilStatus: null,
 
     // School fields
     SchoolName: '',
@@ -279,6 +280,16 @@ export class ReportLine {
     return null
   }
 
+  private getPupilStatus (): string {
+    if (this._pupil.checkComplete === true) {
+      return 'Complete'
+    }
+    if (this._pupil.attendanceId !== null) {
+      return 'Not taking the Check'
+    }
+    return 'Incomplete'
+  }
+
   private _transform (): void {
     this._report.DOB = this.pupil.dateOfBirth
     this._report.Gender = this.pupil.gender.toUpperCase()
@@ -306,6 +317,7 @@ export class ReportLine {
     this._report.BrowserType = this.getBrowser()
     this._report.DeviceTypeModel = this.device?.typeModel ?? null
     this._report.DeviceID = this.device?.deviceId ?? null
+    this._report.PupilStatus = this.getPupilStatus()
 
     // Question data
     this.answers?.forEach(answer => {
@@ -341,6 +353,7 @@ export class ReportLine {
       Forename: this._report.Forename,
       Surname: this._report.Surname,
       ReasonNotTakingCheck: this._report.ReasonNotTakingCheck,
+      PupilStatus: this._report.PupilStatus,
       SchoolName: this._report.SchoolName,
       Estab: this._report.Estab,
       SchoolURN: this._report.SchoolURN,

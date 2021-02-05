@@ -1,15 +1,16 @@
 CREATE TABLE [mtc_results].[psychometricReport]
-(id                   INT               NOT NULL IDENTITY (1,1) PRIMARY KEY,
+(PupilId              NVARCHAR(32)      NOT NULL CONSTRAINT PK_psychometricReport PRIMARY KEY,
+ createdAt            DATETIMEOFFSET(3) NOT NULL CONSTRAINT DF_psychometricReport_createdAt DEFAULT getutcdate(),
+ updatedAt            DATETIMEOFFSET(3) NOT NULL CONSTRAINT DF_psychometricReport_updatedAt DEFAULT getutcdate(),
  DOB                  DATE              NULL,
  Gender               CHAR(1)           NULL,
- PupilId              NVARCHAR(32)      NULL,
  Forename             NVARCHAR(128)     NULL,
  Surname              NVARCHAR(128)     NULL,
  FormMark             INT               NULL,
  QDisplayTime         DECIMAL(5,2)      NULL,
  PauseLength          DECIMAL(5,2)      NULL,
  AccessArr            NVARCHAR(128)     NULL,
- RestartReason        nvarchar(128)     NULL,
+ RestartReason        SMALLINT         NULL,
  RestartNumber        INT               NULL,
  ReasonNotTakingCheck INT               NULL,
  PupilStatus          NVARCHAR(32)      NULL,
@@ -428,6 +429,18 @@ CREATE TABLE [mtc_results].[psychometricReport]
  Q25ReaderStart       DATETIMEOFFSET(3) NULL,
  Q25ReaderEnd         DATETIMEOFFSET(3) NULL,
 
- CONSTRAINT psychometricianReport_AttemptId_uindex UNIQUE (AttemptId),
- CONSTRAINT psychometricianReport_PupilId_uindex UNIQUE (PupilId)
+ CONSTRAINT IX_psychometricianReport_AttemptId_unique UNIQUE (AttemptId)
 );
+
+GO
+
+CREATE TRIGGER [mtc_results].[psychometricReportUpdatedAtTrigger]
+    ON [mtc_results].[psychometricReport]
+    FOR UPDATE AS
+BEGIN
+    UPDATE [mtc_results].[psychometricReport]
+       SET updatedAt = GETUTCDATE()
+      FROM inserted
+     WHERE [psychometricReport].PupilId = inserted.PupilId
+END
+

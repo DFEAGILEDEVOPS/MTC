@@ -9,6 +9,7 @@ export interface IReportLineBase {
   Forename: string
   Surname: string
   ReasonNotTakingCheck: number | null
+  PupilStatus: string | null
   // School
   SchoolName: string
   Estab: number | null

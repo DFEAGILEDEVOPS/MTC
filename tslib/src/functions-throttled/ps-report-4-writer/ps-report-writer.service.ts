@@ -30,10 +30,10 @@ export class PsReportWriterService {
       { name: 'qDisplayTime', value: data.QDisplayTime, type: TYPES.Decimal(5, 2) },
       { name: 'pauseLength', value: data.PauseLength, type: TYPES.Decimal(5, 2) },
       { name: 'accessArr', value: data.AccessArr, type: TYPES.NVarChar(128) },
-      { name: 'restartReason', value: data.RestartReason, type: TYPES.NVarChar(128) },
+      { name: 'restartReason', value: data.RestartReason, type: TYPES.SmallInt },
       { name: 'restartNumber', value: data.RestartNumber, type: TYPES.Int },
       { name: 'reasonNotTakingCheck', value: data.ReasonNotTakingCheck, type: TYPES.Int },
-      { name: 'pupilStatus', value: 'TODO', type: TYPES.NVarChar(32) }, // TODO: add pupil status in transform step
+      { name: 'pupilStatus', value: data.PupilStatus, type: TYPES.NVarChar(32) },
       { name: 'deviceType', value: data.DeviceType, type: TYPES.NVarChar(32) },
       { name: 'deviceTypeModel', value: data.DeviceTypeModel, type: TYPES.NVarChar(32) },
       { name: 'deviceId', value: data.DeviceID, type: TYPES.NVarChar(128) },
