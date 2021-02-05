@@ -9,45 +9,45 @@ import * as R from 'ramda'
 
 describe('ps report writer service integration test', () => {
   let sqlService: SqlService
+  let samplePayload: IPsychometricReportLine
 
   function veryFakeUpn (): string {
     const r = Math.random()
     return 'F'.concat(Math.ceil(r * 1000000000).toString())
   }
 
-  const samplePayload: IPsychometricReportLine = {
-    DOB: moment('2010-11-21T00:00:00Z', true),
-    Gender: 'M',
-    PupilID: '',
-    Forename: 'Forename',
-    Surname: 'Surname',
-    ReasonNotTakingCheck: null,
-    PupilStatus: 'Completed',
-    SchoolName: 'Smallville Primary School',
-    Estab: 1001,
-    SchoolURN: 8654321,
-    LAnum: 999,
-    QDisplayTime: 6.12,
-    PauseLength: 3.45,
-    AccessArr: '',
-    AttemptID: uuidv4(),
-    FormID: 'MTC001',
-    TestDate: moment('2021-02-03T00:00:00Z'),
-    TimeStart: moment().subtract(200, 'seconds'),
-    TimeComplete: moment(),
-    TimeTaken: 200.12,
-    RestartNumber: 1,
-    RestartReason: 1,
-    FormMark: 2,
-    DeviceID: null,
-    DeviceTypeModel: null,
-    DeviceType: null,
-    BrowserType: null,
-    answers: []
-  }
-
   beforeAll(() => {
     sqlService = new SqlService()
+    samplePayload = {
+      DOB: moment('2010-11-21T00:00:00Z', true),
+      Gender: 'M',
+      PupilID: '',
+      Forename: 'Forename',
+      Surname: 'Surname',
+      ReasonNotTakingCheck: null,
+      PupilStatus: 'Completed',
+      SchoolName: 'Smallville Primary School',
+      Estab: 1001,
+      SchoolURN: 8654321,
+      LAnum: 999,
+      QDisplayTime: 6.12,
+      PauseLength: 3.45,
+      AccessArr: '',
+      AttemptID: uuidv4(),
+      FormID: 'MTC001',
+      TestDate: moment('2021-02-03T00:00:00.1234Z'),
+      TimeStart: moment().subtract(200, 'seconds'),
+      TimeComplete: moment(),
+      TimeTaken: 200.123,
+      RestartNumber: 1,
+      RestartReason: 1,
+      FormMark: 2,
+      DeviceID: 'dev-1234-abcd',
+      DeviceTypeModel: 'iPad 8.0',
+      DeviceType: 'iPad',
+      BrowserType: 'Chrome 82.1.100',
+      answers: []
+    }
   })
 
   async function getRow (pupilId: string): Promise<PsychometricReport | undefined> {
@@ -75,6 +75,20 @@ describe('ps report writer service integration test', () => {
     expect(data?.RestartNumber).toBe(1)
     expect(data?.ReasonNotTakingCheck).toBeNull()
     expect(data?.PupilStatus).toBe('Completed')
+    expect(data?.DeviceType).toBe('iPad')
+    expect(data?.DeviceTypeModel).toBe('iPad 8.0')
+    expect(data?.DeviceId).toBe('dev-1234-abcd')
+    expect(data?.BrowserType).toBe('Chrome 82.1.100')
+    expect(data?.SchoolName).toBe('Smallville Primary School')
+    expect(data?.Estab).toBe(1001)
+    expect(data?.SchoolURN).toBe(8654321)
+    expect(data?.LANum).toBe(999)
+    expect(data?.AttemptId).toBe(samplePayload.AttemptID.toUpperCase())
+    expect(data?.FormID).toBe('MTC001')
+    expect(data?.TestDate?.toISOString()).toBe('2021-02-03T00:00:00.000Z')
+    expect(data?.TimeStart?.toISOString()).toBe(samplePayload.TimeStart?.toISOString())
+    expect(data?.TimeComplete?.toISOString()).toBe(samplePayload.TimeComplete?.toISOString())
+    expect(data?.TimeTaken).toBe(200.123)
   })
 
   afterAll(async () => {
