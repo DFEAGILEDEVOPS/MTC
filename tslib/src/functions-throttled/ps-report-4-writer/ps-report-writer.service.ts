@@ -47,7 +47,11 @@ export class PsReportWriterService {
       { name: 'testDate', value: data.TestDate?.toDate(), type: TYPES.Date },
       { name: 'timeStart', value: data.TimeStart?.toDate(), type: TYPES.DateTimeOffset(3) },
       { name: 'timeComplete', value: data.TimeComplete?.toDate(), type: TYPES.DateTimeOffset(3) },
-      { name: 'timeTaken', value: data.TimeTaken, type: TYPES.Decimal(9, 3) }
+      { name: 'timeTaken', value: data.TimeTaken, type: TYPES.Decimal(9, 3) },
+      // Question 1
+      { name: 'q1Id', value: data.answers[0]?.id, type: TYPES.NVarChar(16) },
+      { name: 'q1Response', value: data.answers[0]?.response, type: TYPES.Int },
+      { name: 'q1InputMethods', value: data.answers[0]?.inputMethods, type: TYPES.NVarChar(16) }
     ]
   }
 
@@ -57,8 +61,8 @@ export class PsReportWriterService {
                                                         AccessArr, RestartReason, RestartNumber, ReasonNotTakingCheck, PupilStatus,
                                                         DeviceType, DeviceTypeModel, DeviceId, BrowserType, SchoolName, Estab, SchoolURN,
                                                         LANum, AttemptId, FormID, TestDate, TimeStart, TimeComplete, TimeTaken
---                                                         , Q1ID,
---                                                         Q1Response, Q1InputMethods, Q1K, Q1Sco, Q1ResponseTime, Q1TimeOut,
+                                                        ,Q1ID, Q1Response, Q1InputMethods
+--                                                      , Q1K, Q1Sco, Q1ResponseTime, Q1TimeOut,
 --                                                         Q1TimeOutResponse, Q1TimeOutSco, Q1tLoad, Q1tFirstKey, Q1tLastKey, Q1OverallTime,
 --                                                         Q1RecallTime, Q1ReaderStart, Q1ReaderEnd, Q2ID, Q2Response, Q2InputMethods, Q2K,
 --                                                         Q2Sco, Q2ResponseTime, Q2TimeOut, Q2TimeOutResponse, Q2TimeOutSco, Q2tLoad,
@@ -151,8 +155,10 @@ export class PsReportWriterService {
                 @testDate,
                 @timeStart,
                 @timeComplete,
-                @timeTaken)
-
+                @timeTaken,
+                @q1Id,
+                @q1Response,
+                @q1InputMethods)
     `
     return sql
   }

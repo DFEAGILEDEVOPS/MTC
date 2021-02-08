@@ -46,7 +46,27 @@ describe('ps report writer service integration test', () => {
       DeviceTypeModel: 'iPad 8.0',
       DeviceType: 'iPad',
       BrowserType: 'Chrome 82.1.100',
-      answers: []
+      answers: [
+        {
+          questionNumber: 1,
+          id: '1x1',
+          response: '1',
+          inputMethods: 'M',
+          keystrokes: 'm[1], m[Enter]',
+          score: 1,
+          firstKey: moment('2021-02-05T09:00:01.000Z'),
+          lastKey: moment('2021-02-05T09:00:02.333Z'),
+          responseTime: 1.345,
+          timeout: false,
+          timeoutResponse: null,
+          timeoutScore: null,
+          loadTime: moment('2021-02-05T09:00:01.000Z'),
+          overallTime: 2.512,
+          recallTime: 1.012,
+          questionReaderStart: null,
+          questionReaderEnd: null
+        }
+      ]
     }
   })
 
@@ -83,12 +103,15 @@ describe('ps report writer service integration test', () => {
     expect(data?.Estab).toBe(1001)
     expect(data?.SchoolURN).toBe(8654321)
     expect(data?.LANum).toBe(999)
-    expect(data?.AttemptId).toBe(samplePayload.AttemptID.toUpperCase())
+    expect(data?.AttemptId).toBe(payload.AttemptID.toUpperCase())
     expect(data?.FormID).toBe('MTC001')
     expect(data?.TestDate?.toISOString()).toBe('2021-02-03T00:00:00.000Z')
-    expect(data?.TimeStart?.toISOString()).toBe(samplePayload.TimeStart?.toISOString())
-    expect(data?.TimeComplete?.toISOString()).toBe(samplePayload.TimeComplete?.toISOString())
+    expect(data?.TimeStart?.toISOString()).toBe(payload.TimeStart?.toISOString())
+    expect(data?.TimeComplete?.toISOString()).toBe(payload.TimeComplete?.toISOString())
     expect(data?.TimeTaken).toBe(200.123)
+    expect(data?.Q1ID).toBe('1x1')
+    expect(data?.Q1Response).toBe('1')
+    expect(data?.Q1InputMethods).toBe('M')
   })
 
   afterAll(async () => {
