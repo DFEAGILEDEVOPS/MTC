@@ -58,8 +58,8 @@ describe('ps report writer service integration test', () => {
           lastKey: moment('2021-02-05T09:00:02.333Z'),
           responseTime: 1.345,
           timeout: false,
-          timeoutResponse: null,
-          timeoutScore: null,
+          timeoutResponse: true,
+          timeoutScore: true,
           loadTime: moment('2021-02-05T09:00:01.000Z'),
           overallTime: 2.512,
           recallTime: 1.012,
@@ -82,6 +82,7 @@ describe('ps report writer service integration test', () => {
     const payload = R.assoc('PupilID', upn, samplePayload)
     await reportWriter.write(payload)
     const data = await getRow(upn)
+    console.log('DATA retrieved', data)
     expect(data?.DOB?.toISOString()).toStrictEqual('2010-11-21T00:00:00.000Z')
     expect(data?.Gender).toBe('M')
     expect(data?.PupilId).toBe(upn)
@@ -112,6 +113,11 @@ describe('ps report writer service integration test', () => {
     expect(data?.Q1ID).toBe('1x1')
     expect(data?.Q1Response).toBe('1')
     expect(data?.Q1InputMethods).toBe('M')
+    expect(data?.Q1K).toBe(payload.answers[0].keystrokes)
+    expect(data?.Q1Sco).toBe(payload.answers[0].score)
+    expect(data?.Q1ResponseTime).toBe(payload.answers[0].responseTime)
+    expect(data?.Q1TimeOut).toBe(Number(payload.answers[0].timeout))
+    expect(data?.Q1TimeOutResponse).toBe(Number(payload.answers[0].timeoutResponse))
   })
 
   afterAll(async () => {

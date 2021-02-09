@@ -37,8 +37,8 @@ export interface PsychometricReport {
   Q1K: string | null
   Q1Sco: number | null
   Q1ResponseTime: number | null
-  Q1Timeout: number | null
-  Q1TimeoutResponse: number | null
+  Q1TimeOut: number | null
+  Q1TimeOutResponse: number | null
   Q1TimeOutSco: number | null
   Q1tLoad: moment.Moment | null
   Q1tFirstKey: moment.Moment | null

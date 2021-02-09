@@ -51,7 +51,12 @@ export class PsReportWriterService {
       // Question 1
       { name: 'q1Id', value: data.answers[0]?.id, type: TYPES.NVarChar(16) },
       { name: 'q1Response', value: data.answers[0]?.response, type: TYPES.Int },
-      { name: 'q1InputMethods', value: data.answers[0]?.inputMethods, type: TYPES.NVarChar(16) }
+      { name: 'q1InputMethods', value: data.answers[0]?.inputMethods, type: TYPES.NVarChar(16) },
+      { name: 'q1keystrokes', value: data.answers[0]?.keystrokes, type: TYPES.NVarChar },
+      { name: 'q1score', value: data.answers[0].score, type: TYPES.TinyInt },
+      { name: 'q1responseTime', value: data.answers[0].responseTime, type: TYPES.Decimal(7, 3) },
+      { name: 'q1timeout', value: data.answers[0].timeout, type: TYPES.TinyInt },
+      { name: 'q1timeoutResponse', value: data.answers[0].timeoutResponse, type: TYPES.TinyInt }
     ]
   }
 
@@ -61,9 +66,9 @@ export class PsReportWriterService {
                                                         AccessArr, RestartReason, RestartNumber, ReasonNotTakingCheck, PupilStatus,
                                                         DeviceType, DeviceTypeModel, DeviceId, BrowserType, SchoolName, Estab, SchoolURN,
                                                         LANum, AttemptId, FormID, TestDate, TimeStart, TimeComplete, TimeTaken
-                                                        ,Q1ID, Q1Response, Q1InputMethods
---                                                      , Q1K, Q1Sco, Q1ResponseTime, Q1TimeOut,
---                                                         Q1TimeOutResponse, Q1TimeOutSco, Q1tLoad, Q1tFirstKey, Q1tLastKey, Q1OverallTime,
+                                                        ,Q1ID, Q1Response, Q1InputMethods, Q1K, Q1Sco, Q1ResponseTime, Q1TimeOut
+                                                        ,Q1TimeOutResponse
+--                                                          Q1TimeOutSco, Q1tLoad, Q1tFirstKey, Q1tLastKey, Q1OverallTime,
 --                                                         Q1RecallTime, Q1ReaderStart, Q1ReaderEnd, Q2ID, Q2Response, Q2InputMethods, Q2K,
 --                                                         Q2Sco, Q2ResponseTime, Q2TimeOut, Q2TimeOutResponse, Q2TimeOutSco, Q2tLoad,
 --                                                         Q2tFirstKey, Q2tLastKey, Q2OverallTime, Q2RecallTime, Q2ReaderStart, Q2ReaderEnd,
@@ -158,7 +163,12 @@ export class PsReportWriterService {
                 @timeTaken,
                 @q1Id,
                 @q1Response,
-                @q1InputMethods)
+                @q1InputMethods,
+                @q1keystrokes,
+                @q1score,
+                @q1responseTime,
+                @q1timeout,
+                @q1timeoutResponse)
     `
     return sql
   }
