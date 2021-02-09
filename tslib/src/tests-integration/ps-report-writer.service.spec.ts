@@ -1,6 +1,6 @@
 import { PsReportWriterService } from '../functions-throttled/ps-report-4-writer/ps-report-writer.service'
 import { PsychometricReport } from '../functions-throttled/ps-report-4-writer/models'
-import { IPsychometricReportLine } from '../functions/ps-report-3-transformer/models'
+import { IPsychometricReportLine, IReportLineAnswer } from '../functions/ps-report-3-transformer/models'
 import moment from 'moment/moment'
 import { SqlService } from '../sql/sql.service'
 import { TYPES } from 'mssql'
@@ -46,27 +46,34 @@ describe('ps report writer service integration test', () => {
       DeviceTypeModel: 'iPad 8.0',
       DeviceType: 'iPad',
       BrowserType: 'Chrome 82.1.100',
-      answers: [
-        {
-          questionNumber: 1,
-          id: '1x1',
-          response: '1',
-          inputMethods: 'M',
-          keystrokes: 'm[1], m[Enter]',
-          score: 1,
-          firstKey: moment('2021-02-05T09:00:01.000Z'),
-          lastKey: moment('2021-02-05T09:00:02.333Z'),
-          responseTime: 1.345,
-          timeout: false,
-          timeoutResponse: true,
-          timeoutScore: true,
-          loadTime: moment('2021-02-05T09:00:01.000Z'),
-          overallTime: 2.512,
-          recallTime: 1.012,
-          questionReaderStart: null,
-          questionReaderEnd: null
-        }
-      ]
+      answers: []
+    }
+
+    const answerLine: IReportLineAnswer = {
+      questionNumber: 1,
+      id: '1x1',
+      response: '1',
+      inputMethods: 'M',
+      keystrokes: 'm[1], m[Enter]',
+      score: 1,
+      firstKey: moment('2021-02-05T09:00:01.150Z'),
+      lastKey: moment('2021-02-05T09:00:02.333Z'),
+      responseTime: 1.345,
+      timeout: false,
+      timeoutResponse: true,
+      timeoutScore: true,
+      loadTime: moment('2021-02-05T09:00:01.109Z'),
+      overallTime: 2.512,
+      recallTime: 1.012,
+      questionReaderStart: moment('2021-02-05T09:00:01.110Z'),
+      questionReaderEnd: moment('2021-02-05T09:00:05.999Z')
+    }
+
+    for (let i = 0; i < 25; i++) {
+      const answer = R.clone(answerLine)
+      answer.questionNumber = i + 1
+      answer.id = `${i + 1}x${i + 1}`
+      samplePayload.answers.push(answer)
     }
   })
 
@@ -80,6 +87,7 @@ describe('ps report writer service integration test', () => {
     const reportWriter = new PsReportWriterService()
     const upn = veryFakeUpn()
     const payload = R.assoc('PupilID', upn, samplePayload)
+    console.log('PAYLOAD, ', payload)
     await reportWriter.write(payload)
     const data = await getRow(upn)
     console.log('DATA retrieved', data)
@@ -110,6 +118,7 @@ describe('ps report writer service integration test', () => {
     expect(data?.TimeStart?.toISOString()).toBe(payload.TimeStart?.toISOString())
     expect(data?.TimeComplete?.toISOString()).toBe(payload.TimeComplete?.toISOString())
     expect(data?.TimeTaken).toBe(200.123)
+    // answer
     expect(data?.Q1ID).toBe('1x1')
     expect(data?.Q1Response).toBe('1')
     expect(data?.Q1InputMethods).toBe('M')
@@ -118,6 +127,14 @@ describe('ps report writer service integration test', () => {
     expect(data?.Q1ResponseTime).toBe(payload.answers[0].responseTime)
     expect(data?.Q1TimeOut).toBe(Number(payload.answers[0].timeout))
     expect(data?.Q1TimeOutResponse).toBe(Number(payload.answers[0].timeoutResponse))
+    expect(data?.Q1TimeOutSco).toBe(Number(payload.answers[0].timeoutScore))
+    expect(data?.Q1tLoad?.toISOString()).toBe(payload.answers[0].loadTime?.toISOString())
+    expect(data?.Q1tFirstKey?.toISOString()).toBe(payload.answers[0].firstKey?.toISOString())
+    expect(data?.Q1tLastKey?.toISOString()).toBe(payload.answers[0].lastKey?.toISOString())
+    expect(data?.Q1OverallTime).toBe(payload.answers[0].overallTime)
+    expect(data?.Q1RecallTime).toBe(payload.answers[0].recallTime)
+    expect(data?.Q1ReaderStart?.toISOString()).toBe(payload.answers[0].questionReaderStart?.toISOString())
+    expect(data?.Q1ReaderEnd?.toISOString()).toBe(payload.answers[0].questionReaderEnd?.toISOString())
   })
 
   afterAll(async () => {

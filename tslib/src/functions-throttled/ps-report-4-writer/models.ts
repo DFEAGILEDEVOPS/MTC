@@ -45,6 +45,6 @@ export interface PsychometricReport {
   Q1tLastKey: moment.Moment | null
   Q1OverallTime: number | null
   Q1RecallTime: number | null
-  Q1ReaderStart: number | null
-  Q1ReaderEnd: number | null
+  Q1ReaderStart: moment.Moment | null
+  Q1ReaderEnd: moment.Moment | null
 }

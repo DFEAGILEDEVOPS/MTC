@@ -56,7 +56,15 @@ export class PsReportWriterService {
       { name: 'q1score', value: data.answers[0].score, type: TYPES.TinyInt },
       { name: 'q1responseTime', value: data.answers[0].responseTime, type: TYPES.Decimal(7, 3) },
       { name: 'q1timeout', value: data.answers[0].timeout, type: TYPES.TinyInt },
-      { name: 'q1timeoutResponse', value: data.answers[0].timeoutResponse, type: TYPES.TinyInt }
+      { name: 'q1timeoutResponse', value: data.answers[0].timeoutResponse, type: TYPES.TinyInt },
+      { name: 'q1timeoutScore', value: data.answers[0].timeoutScore, type: TYPES.TinyInt },
+      { name: 'q1loadTime', value: data.answers[0].loadTime?.toDate(), type: TYPES.DateTimeOffset(3) },
+      { name: 'q1firstKey', value: data.answers[0].firstKey?.toDate(), type: TYPES.DateTimeOffset(3) },
+      { name: 'q1lastKey', value: data.answers[0].lastKey?.toDate(), type: TYPES.DateTimeOffset(3) },
+      { name: 'q1overallTime', value: data.answers[0].overallTime, type: TYPES.Decimal(7, 3) },
+      { name: 'q1recallTime', value: data.answers[0].recallTime, type: TYPES.Decimal(7, 3) },
+      { name: 'q1readerStart', value: data.answers[0].questionReaderStart?.toDate(), type: TYPES.DateTimeOffset(3) },
+      { name: 'q1readerEnd', value: data.answers[0].questionReaderEnd?.toDate(), type: TYPES.DateTimeOffset(3) }
     ]
   }
 
@@ -67,9 +75,10 @@ export class PsReportWriterService {
                                                         DeviceType, DeviceTypeModel, DeviceId, BrowserType, SchoolName, Estab, SchoolURN,
                                                         LANum, AttemptId, FormID, TestDate, TimeStart, TimeComplete, TimeTaken
                                                         ,Q1ID, Q1Response, Q1InputMethods, Q1K, Q1Sco, Q1ResponseTime, Q1TimeOut
-                                                        ,Q1TimeOutResponse
---                                                          Q1TimeOutSco, Q1tLoad, Q1tFirstKey, Q1tLastKey, Q1OverallTime,
---                                                         Q1RecallTime, Q1ReaderStart, Q1ReaderEnd, Q2ID, Q2Response, Q2InputMethods, Q2K,
+                                                        ,Q1TimeOutResponse, Q1TimeOutSco, Q1tLoad, Q1tFirstKey, Q1tLastKey, Q1OverallTime
+                                                        ,Q1RecallTime, Q1ReaderStart, Q1ReaderEnd
+--                                                          ,
+--                                                         , Q2ID, Q2Response, Q2InputMethods, Q2K,
 --                                                         Q2Sco, Q2ResponseTime, Q2TimeOut, Q2TimeOutResponse, Q2TimeOutSco, Q2tLoad,
 --                                                         Q2tFirstKey, Q2tLastKey, Q2OverallTime, Q2RecallTime, Q2ReaderStart, Q2ReaderEnd,
 --                                                         Q3ID, Q3Response, Q3InputMethods, Q3K, Q3Sco, Q3ResponseTime, Q3TimeOut,
@@ -168,7 +177,15 @@ export class PsReportWriterService {
                 @q1score,
                 @q1responseTime,
                 @q1timeout,
-                @q1timeoutResponse)
+                @q1timeoutResponse,
+                @q1timeoutScore,
+                @q1loadTime,
+                @q1firstKey,
+                @q1lastKey,
+                @q1overallTime,
+                @q1recallTime,
+                @q1readerStart,
+                @q1readerEnd)
     `
     return sql
   }
