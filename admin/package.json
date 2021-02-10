@@ -48,7 +48,7 @@
     "csurf": "^1.9.0",
     "dotenv": "^8.1.0",
     "edit-json-file": "^1.4.0",
-    "ejs": "^3.0.1",
+    "ejs": "^3.1.6",
     "express": "^4.16.2",
     "express-breadcrumbs": "https://github.com/DFEAGILEDEVOPS/express-breadcrumbs.git",
     "express-busboy": "^8.0.0",
