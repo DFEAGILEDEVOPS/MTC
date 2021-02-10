@@ -1,4 +1,5 @@
 const R = require('ramda')
+const { validate: uuidValidator } = require('uuid')
 const preparedCheckSyncService = require('../services/prepared-check-sync.service')
 const pupilAccessArrangementsDataService = require('../services/data-access/pupil-access-arrangements.data.service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
@@ -82,6 +83,9 @@ pupilAccessArrangementsService.getPupilEditFormData = async (urlSlug) => {
 pupilAccessArrangementsService.deletePupilAccessArrangements = async (pupilUrlSlug, schoolId) => {
   if (!pupilUrlSlug) {
     throw new Error('Pupil url slug is not provided')
+  }
+  if (!uuidValidator(pupilUrlSlug)) {
+    throw new Error(`pupilUrlSlug: '${pupilUrlSlug}' is not a valid UUID`)
   }
   const pupil = await pupilDataService.sqlFindOneBySlugAndSchool(pupilUrlSlug, schoolId)
   if (!pupil) {
