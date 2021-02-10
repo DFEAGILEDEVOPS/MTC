@@ -206,7 +206,7 @@ const controller = {
   getDeleteAccessArrangements: async function getDeleteAccessArrangements (req, res, next) {
     const aaViewMode = await accessArrangementsService.getCurrentViewMode(req.user.timezone)
     if (aaViewMode !== aaViewModes.edit) {
-      throw new AccessArrangementsNotEditableError()
+      next(new AccessArrangementsNotEditableError())
     }
     let pupil
     try {
