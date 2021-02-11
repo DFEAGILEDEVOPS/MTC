@@ -17,6 +17,7 @@ const businessAvailabilityService = require('../../../services/business-availabi
 const ValidationError = require('../../../lib/validation-error')
 const accessArrangementsDescriptionsPresenter = require('../../../helpers/access-arrangements-descriptions-presenter')
 const aaViewModes = require('../../../lib/consts/access-arrangements-view-mode')
+const { AccessArrangementsNotEditableError } = require('../../../error-types/access-arrangements-not-editable-error')
 
 describe('access arrangements controller:', () => {
   let next
@@ -335,16 +336,13 @@ describe('access arrangements controller:', () => {
         }
       }
     }
-    it('throws an error if edit mode not available', async () => {
+    it('redirects to error page if edit mode not available', async () => {
       spyOn(accessArrangementsService, 'getCurrentViewMode').and.returnValue(aaViewModes.readonly)
       const req = getReq(reqParams)
       const res = getRes()
-      try {
-        await controller.getDeleteAccessArrangements(req, res, next)
-        fail('error should have been thrown to prevent edit')
-      } catch (error) {
-        expect(error.name).toBe('AccessArrangementsNotEditableError')
-      }
+      await controller.getDeleteAccessArrangements(req, res, next)
+      expect(next).toHaveBeenCalledWith(new AccessArrangementsNotEditableError())
+      // TODO assert error page shown
     })
     it('redirects to overview page when successfully deleting', async () => {
       const res = getRes()
