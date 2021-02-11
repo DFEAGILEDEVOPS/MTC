@@ -40,11 +40,11 @@ export class ReportLine {
     // Check Settings
     QDisplayTime: null,
     PauseLength: null,
-    AccessArr: '',
+    AccessArr: null,
 
     // Check details
-    AttemptID: '',
-    FormID: '',
+    AttemptID: null,
+    FormID: null,
     TestDate: null,
     TimeStart: null,
     TimeComplete: null,
@@ -225,20 +225,20 @@ export class ReportLine {
     return event !== null
   }
 
-  private getTimeoutResponse (answer: Answer): boolean | '' {
+  private getTimeoutResponse (answer: Answer): boolean | null {
     const timeout = this.getTimeout(answer.questionNumber)
     if (timeout) {
       return answer.response.length > 0
     }
-    return '' // no timeout
+    return null // no timeout
   }
 
-  private getTimeoutScore (answer: Answer): boolean | '' {
+  private getTimeoutScore (answer: Answer): boolean | null {
     const timeout = this.getTimeout(answer.questionNumber)
     if (timeout) {
       return answer.isCorrect // timeout with a response
     }
-    return '' // no timeout
+    return null // no timeout
   }
 
   private getLoadTime (answer: Answer): moment.Moment | null {
@@ -304,8 +304,8 @@ export class ReportLine {
     this._report.QDisplayTime = this.checkConfig?.questionTime ?? null // set to null rather than undefined
     this._report.PauseLength = this.checkConfig?.loadingTime ?? null // set to null rather than undefined
     this._report.AccessArr = this.getAccessArrangements()
-    this._report.AttemptID = this.check?.checkCode ?? '' // set to empty string if null or undefined
-    this._report.FormID = this.checkForm?.name ?? '' // set to empty string if null or undefined
+    this._report.AttemptID = this.check?.checkCode ?? null // set to null rather than undefined
+    this._report.FormID = this.checkForm?.name ?? null // set to null rather than undefined
     this._report.TestDate = this.check?.pupilLoginDate ?? null // set to null if there is no check
     this._report.TimeStart = this.getTimeStart()
     this._report.TimeComplete = this.getTimeComplete()

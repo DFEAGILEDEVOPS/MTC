@@ -51,22 +51,22 @@ export class PsReportWriterService {
     ]
     for (let i = 1; i <= 25; i++) {
       /* eslint-disable no-multi-spaces */
-      params.push({ name: `q${i}Id`,              value: data.answers[i - 1]?.id,                           type: TYPES.NVarChar(16) })
-      params.push({ name: `q${i}response`,        value: data.answers[i - 1]?.response,                     type: TYPES.NVarChar(60) })
-      params.push({ name: `q${i}inputMethods`,    value: data.answers[i - 1]?.inputMethods,                 type: TYPES.NVarChar(16) })
-      params.push({ name: `q${i}keystrokes`,      value: data.answers[i - 1]?.keystrokes,                   type: TYPES.NVarChar(256) })
-      params.push({ name: `q${i}score`,           value: data.answers[i - 1].score,                         type: TYPES.TinyInt })
-      params.push({ name: `q${i}responseTime`,    value: data.answers[i - 1].responseTime,                  type: TYPES.Decimal(7, 3) })
-      params.push({ name: `q${i}timeout`,         value: Number(data.answers[i - 1].timeout),               type: TYPES.TinyInt })
-      params.push({ name: `q${i}timeoutResponse`, value: Number(data.answers[i - 1].timeoutResponse),       type: TYPES.TinyInt })
-      params.push({ name: `q${i}timeoutScore`,    value: Number(data.answers[i - 1].timeoutScore),          type: TYPES.TinyInt })
-      params.push({ name: `q${i}loadTime`,        value: data.answers[i - 1].loadTime?.toDate(),            type: TYPES.DateTimeOffset(3) })
-      params.push({ name: `q${i}firstKey`,        value: data.answers[i - 1].firstKey?.toDate(),            type: TYPES.DateTimeOffset(3) })
-      params.push({ name: `q${i}lastKey`,         value: data.answers[i - 1].lastKey?.toDate(),             type: TYPES.DateTimeOffset(3) })
-      params.push({ name: `q${i}overallTime`,     value: data.answers[i - 1].overallTime,                   type: TYPES.Decimal(7, 3) })
-      params.push({ name: `q${i}recallTime`,      value: data.answers[i - 1].recallTime,                    type: TYPES.Decimal(7, 3) })
-      params.push({ name: `q${i}readerStart`,     value: data.answers[i - 1].questionReaderStart?.toDate(), type: TYPES.DateTimeOffset(3) })
-      params.push({ name: `q${i}readerEnd`,       value: data.answers[i - 1].questionReaderEnd?.toDate(),   type: TYPES.DateTimeOffset(3) })
+      params.push({ name: `q${i}Id`,              value: data.answers[i - 1]?.id,                            type: TYPES.NVarChar(16) })
+      params.push({ name: `q${i}response`,        value: data.answers[i - 1]?.response,                      type: TYPES.NVarChar(60) })
+      params.push({ name: `q${i}inputMethods`,    value: data.answers[i - 1]?.inputMethods,                  type: TYPES.NVarChar(16) })
+      params.push({ name: `q${i}keystrokes`,      value: data.answers[i - 1]?.keystrokes,                    type: TYPES.NVarChar(256) })
+      params.push({ name: `q${i}score`,           value: data.answers[i - 1]?.score,                         type: TYPES.TinyInt })
+      params.push({ name: `q${i}responseTime`,    value: data.answers[i - 1]?.responseTime,                  type: TYPES.Decimal(7, 3) })
+      params.push({ name: `q${i}timeout`,         value: Number(data.answers[i - 1]?.timeout),               type: TYPES.TinyInt })
+      params.push({ name: `q${i}timeoutResponse`, value: Number(data.answers[i - 1]?.timeoutResponse),       type: TYPES.TinyInt })
+      params.push({ name: `q${i}timeoutScore`,    value: Number(data.answers[i - 1]?.timeoutScore),          type: TYPES.TinyInt })
+      params.push({ name: `q${i}loadTime`,        value: data.answers[i - 1]?.loadTime?.toDate(),            type: TYPES.DateTimeOffset(3) })
+      params.push({ name: `q${i}firstKey`,        value: data.answers[i - 1]?.firstKey?.toDate(),            type: TYPES.DateTimeOffset(3) })
+      params.push({ name: `q${i}lastKey`,         value: data.answers[i - 1]?.lastKey?.toDate(),             type: TYPES.DateTimeOffset(3) })
+      params.push({ name: `q${i}overallTime`,     value: data.answers[i - 1]?.overallTime,                   type: TYPES.Decimal(7, 3) })
+      params.push({ name: `q${i}recallTime`,      value: data.answers[i - 1]?.recallTime,                    type: TYPES.Decimal(7, 3) })
+      params.push({ name: `q${i}readerStart`,     value: data.answers[i - 1]?.questionReaderStart?.toDate(), type: TYPES.DateTimeOffset(3) })
+      params.push({ name: `q${i}readerEnd`,       value: data.answers[i - 1]?.questionReaderEnd?.toDate(),   type: TYPES.DateTimeOffset(3) })
       /* eslint-enable no-multi-spaces */
     }
     return params
@@ -602,6 +602,7 @@ export class PsReportWriterService {
   }
 
   public async write (data: IPsychometricReportLine): Promise<void> {
+    console.log('Incoming data: ', data)
     const params = this.generateParams(data)
     const sql = this.generateSql(data)
     return this.sqlService.modify(sql, params)

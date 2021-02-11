@@ -18,10 +18,10 @@ export interface IReportLineBase {
   // Settings
   QDisplayTime: number | null
   PauseLength: number | null
-  AccessArr: string
+  AccessArr: string | null
   // Check
-  AttemptID: string
-  FormID: string
+  AttemptID: string | null
+  FormID: string | null
   TestDate: moment.Moment | null
   TimeStart: moment.Moment | null
   TimeComplete: moment.Moment | null
@@ -48,8 +48,8 @@ export interface IReportLineAnswer {
   lastKey: moment.Moment | null
   responseTime: number | null
   timeout: boolean | null
-  timeoutResponse: boolean | '' | null
-  timeoutScore: boolean | '' | null
+  timeoutResponse: boolean | null
+  timeoutScore: boolean | null
   loadTime: moment.Moment | null
   overallTime: number | null
   recallTime: number | null

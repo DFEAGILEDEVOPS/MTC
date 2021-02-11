@@ -64,7 +64,7 @@ export class PsReportDataService {
           FROM mtc_admin.pupil p
                JOIN      mtc_admin.school s ON (p.school_id = s.id)
                LEFT JOIN mtc_admin.attendanceCode ac ON (p.attendanceId = ac.id)
-         WHERE s.urlSlug = @slug AND p.id = 12  
+         WHERE s.urlSlug = @slug
     `
     const params = [
       { name: 'slug', value: schoolUuid, type: TYPES.UniqueIdentifier }

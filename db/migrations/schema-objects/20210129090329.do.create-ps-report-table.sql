@@ -427,10 +427,14 @@ CREATE TABLE [mtc_results].[psychometricReport]
  Q25OverallTime       DECIMAL(7, 3)     NULL,
  Q25RecallTime        DECIMAL(7, 3)     NULL,
  Q25ReaderStart       DATETIMEOFFSET(3) NULL,
- Q25ReaderEnd         DATETIMEOFFSET(3) NULL,
-
- CONSTRAINT IX_psychometricianReport_AttemptId_unique UNIQUE (AttemptId)
+ Q25ReaderEnd         DATETIMEOFFSET(3) NULL
 );
+
+GO
+
+CREATE UNIQUE INDEX IX_psychometricianReport_AttemptId_unique
+ON [mtc_results].[psychometricReport](AttemptId)
+WHERE AttemptId IS NOT NULL;
 
 GO
 

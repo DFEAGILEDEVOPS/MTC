@@ -428,7 +428,7 @@ describe('report line class', () => {
         test('whether the question timed out with a response', () => {
           const out = sut.transform()
           expect(out.answers[0].timeoutResponse).toBe(true)
-          expect(out.answers[1].timeoutResponse).toBe('')
+          expect(out.answers[1].timeoutResponse).toBeNull()
           expect(out.answers[2].timeoutResponse).toBe(false)
         })
       })
@@ -436,7 +436,7 @@ describe('report line class', () => {
       test('it determines QnTimeOutSco', () => {
         const out = sut.transform()
         expect(out.answers[0].timeoutScore).toBe(true) // return true if there was a timeout and the answer was correct
-        expect(out.answers[1].timeoutScore).toBe('') // return '' if there was not a timeout
+        expect(out.answers[1].timeoutScore).toBeNull() // return null if there was not a timeout
         expect(out.answers[2].timeoutScore).toBe(false) // return false if there was a timeout and the answer was incorrect
       })
 
@@ -760,12 +760,12 @@ describe('report line class', () => {
 
       test('the attempt ID is mapped', () => {
         const out = sut.transform()
-        expect(out.AttemptID).toBe('')
+        expect(out.AttemptID).toBeNull()
       })
 
       test('the form name is mapped', () => {
         const out = sut.transform()
-        expect(out.FormID).toBe('')
+        expect(out.FormID).toBeNull()
       })
 
       test('the date the test was taken is mapped', () => {
