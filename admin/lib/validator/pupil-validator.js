@@ -133,7 +133,8 @@ module.exports.validate = async (pupilData, schoolId, isMultiplePupilsSubmission
   if (!isEmpty(upn) && expected !== upn[0]) {
     upnErrorArr.push(addPupilErrorMessages.upnInvalidCheckDigit)
   }
-  if (!isEmpty(upn) && !upnService.hasValidLaCode(upn)) {
+  const isValidLaCode = await upnService.hasValidLaCode(upn)
+  if (!isEmpty(upn) && !isValidLaCode) {
     upnErrorArr.push(addPupilErrorMessages.upnInvalidLaCode)
   }
   const characters5to12 = upn && upn.length > 0 && upn.substring(4, 12)

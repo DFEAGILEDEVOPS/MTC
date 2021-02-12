@@ -327,8 +327,7 @@ Given(/^I have more than (\d+) pupils eligible for a restart$/) do |number_of_re
   generate_pins_overview_page.sticky_banner.confirm.click
   expect(current_url).to include '/view-and-custom-print-live-pins'
   @upns_for_school.each do |upn|
-    p upn
-    pupil_detail = SqlDbHelper.pupil_details(upn)
+    pupil_detail = SqlDbHelper.pupil_details_using_school(upn,@school_id)
     pupil_id = pupil_detail['id']
     check_entry = SqlDbHelper.check_details(pupil_id)
     pupil_pin_detail = SqlDbHelper.get_pupil_pin(check_entry['id'])

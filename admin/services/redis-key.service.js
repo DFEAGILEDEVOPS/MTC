@@ -64,6 +64,14 @@ const redisKeyService = {
    */
   getSchoolResultsKey (schoolId) {
     return `result:${schoolId}`
+  },
+
+  /**
+   * Return the key for the cached LA Codes
+   * @return {string}
+   */
+  getLaCodesKey () {
+    return 'lacodes'
   }
 }
 
