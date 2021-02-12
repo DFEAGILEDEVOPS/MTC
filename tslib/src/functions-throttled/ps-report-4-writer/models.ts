@@ -455,21 +455,4 @@ export interface PsychometricReport {
   Q25RecallTime: number | null
   Q25ReaderStart: moment.Moment | null
   Q25ReaderEnd: moment.Moment | null
-
-  Q26ID: string | null
-  Q26Response: string | null
-  Q26InputMethods: string | null
-  Q26K: string | null
-  Q26Sco: number | null
-  Q26ResponseTime: number | null
-  Q26TimeOut: number | null
-  Q26TimeOutResponse: number | null
-  Q26TimeOutSco: number | null
-  Q26tLoad: moment.Moment | null
-  Q26tFirstKey: moment.Moment | null
-  Q26tLastKey: moment.Moment | null
-  Q26OverallTime: number | null
-  Q26RecallTime: number | null
-  Q26ReaderStart: moment.Moment | null
-  Q26ReaderEnd: moment.Moment | null
 }

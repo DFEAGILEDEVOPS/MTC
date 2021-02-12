@@ -2,6 +2,7 @@ import { ISqlParameter, ISqlService, SqlService } from '../../sql/sql.service'
 import { ConsoleLogger, ILogger } from '../../common/logger'
 import { IPsychometricReportLine } from '../../functions/ps-report-3-transformer/models'
 import { TYPES } from 'mssql'
+import * as R from 'ramda'
 
 export class PsReportWriterService {
   private readonly sqlService: ISqlService
@@ -73,8 +74,33 @@ export class PsReportWriterService {
   }
 
   private generateSql (data: IPsychometricReportLine): string {
+    const updateAnswers = R.repeat(1, 25).map((element, index) => index + 1).map(n => {
+      return `
+            Q${n}ID = @q${n}id, Q${n}Response = @q${n}response, Q${n}InputMethods = @q${n}inputMethods, Q${n}K = @q${n}keystrokes, Q${n}Sco = @q${n}score, 
+            Q${n}ResponseTime = @q${n}responseTime, Q${n}TimeOut = @q${n}timeout, Q${n}TimeOutResponse = @q${n}timeoutResponse, 
+            Q${n}TimeOutSco = @q${n}timeoutScore, Q${n}tLoad = @q${n}loadTime, Q${n}tFirstKey = @q${n}firstKey, Q${n}tLastKey = @q${n}lastKey, 
+            Q${n}OverallTime = @q${n}overallTime, Q${n}RecallTime = @q${n}recallTime, Q${n}ReaderStart = @q${n}readerStart, Q${n}ReaderEnd = @q${n}readerEnd
+      `
+    })
     const sql = `
-        INSERT into [mtc_results].[psychometricReport] (DOB, Gender, PupilId, Forename, Surname, FormMark, QDisplayTime, PauseLength,
+        IF EXISTS ( SELECT * FROM [mtc_results].[psychometricReport] WHERE PupilId = @pupilId )
+        BEGIN        
+           UPDATE [mtc_results].[psychometricReport] 
+           SET 
+              DOB = @dob, Gender = @gender, Forename = @forename, Surname = @surname, FormMark = @formMark, QDisplayTime = @qDisplayTime,
+              PauseLength = @pauseLength, AccessArr = @accessArr, RestartReason = @restartReason, RestartNumber = @restartNumber, 
+              ReasonNotTakingCheck = @ReasonNotTakingCheck, PupilStatus = @pupilStatus, DeviceType = @deviceType, 
+              DeviceTypeModel = @deviceTypeModel, DeviceId = @deviceId, BrowserType = @browserType, SchoolName = @schoolName, Estab = @estab,
+              SchoolURN = @schoolURN, LANum = @laNum, AttemptId = @attemptId, FormID = @formId, TestDate = @testDate, TimeStart = @timeStart,
+              TimeComplete = @timeComplete, TimeTaken = @timeTaken,
+             
+              ${updateAnswers.join(',\n')}
+                      
+           WHERE PupilId = @pupilId;
+        END
+        ELSE 
+        BEGIN
+          INSERT into [mtc_results].[psychometricReport] (DOB, Gender, PupilId, Forename, Surname, FormMark, QDisplayTime, PauseLength,
                                                         AccessArr, RestartReason, RestartNumber, ReasonNotTakingCheck, PupilStatus,
                                                         DeviceType, DeviceTypeModel, DeviceId, BrowserType, SchoolName, Estab, SchoolURN,
                                                         LANum, AttemptId, FormID, TestDate, TimeStart, TimeComplete, TimeTaken,
@@ -596,13 +622,13 @@ export class PsReportWriterService {
                 @q25overallTime,
                 @q25recallTime,
                 @q25readerStart,
-                @q25readerEnd)                                
+                @q25readerEnd); 
+        END                                             
     `
     return sql
   }
 
   public async write (data: IPsychometricReportLine): Promise<void> {
-    console.log('Incoming data: ', data)
     const params = this.generateParams(data)
     const sql = this.generateSql(data)
     return this.sqlService.modify(sql, params)

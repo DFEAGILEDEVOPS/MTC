@@ -4,15 +4,15 @@
 
 ## Pupil information
 
-| Psychometric field   | Source                                              | Comment    |
-| -------------------- | --------------------------------------------------- | ---------- |
-| DOB                  | mtc_admin.pupil.dateOfBirth                         |            |
-| Gender               | mtc_admin.pupil.gender                              |            |
-| PupilID              | mtc_admin.pupil.upn                                 |            |
-| Forename             | mtc_admin.pupil.foreName                            |            |
-| Surname              | mtc_admin.pupil.lastName                            |            |
-| ReasonNotTakingCheck | mtc_admin.pupilAttendance                           |            |
-| PupilStatus          | mtc_admin.pupil.complete, mtc_admin.pupilAttendance | calculated |
+| Psychometric field   | Source                                              | Comment                                                      |
+| -------------------- | --------------------------------------------------- | ------------------------------------------------------------ |
+| DOB                  | mtc_admin.pupil.dateOfBirth                         |                                                              |
+| Gender               | mtc_admin.pupil.gender                              |                                                              |
+| PupilID              | mtc_admin.pupil.upn                                 |                                                              |
+| Forename             | mtc_admin.pupil.foreName                            |                                                              |
+| Surname              | mtc_admin.pupil.lastName                            |                                                              |
+| ReasonNotTakingCheck | mtc_admin.pupilAttendance                           | **Blank** - no reason not taking the check**, 1** - Incorrect registration,  **2** - Absent,  **3** - Left school,   **4** - Unable to access,  **5** - Working below the overall standard of the check,  **6** - Just arrived |
+| PupilStatus          | mtc_admin.pupil.complete, mtc_admin.pupilAttendance | calculated                                                   |
 
 
 
@@ -29,11 +29,11 @@
 
 ##  Check settings
 
-| Psychometric field | Source                        | Comment |
-| ------------------ | ----------------------------- | ------- |
-| QDisplayTime       | mtc_admin.checkConfig.payload | JSON    |
-| PauseLength        | mtc_admin.checkConfig.payload | JSON    |
-| AccessArr          | mtc_admin.checkConfig.payload | JSON    |
+| Psychometric field | Source                        | Comment                                                      |
+| ------------------ | ----------------------------- | ------------------------------------------------------------ |
+| QDisplayTime       | mtc_admin.checkConfig.payload | JSON                                                         |
+| PauseLength        | mtc_admin.checkConfig.payload | JSON                                                         |
+| AccessArr          | mtc_admin.checkConfig.payload | Source is JSON<br />**1** - Audible time alert,  **2** - In-built screen reader,  **3** - Colour contrast, **4** - Input assistance,  **5** - Font size, **6** - Next button, **7** - Remove number pad |
 
 
 
