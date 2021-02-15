@@ -953,7 +953,6 @@ describe('ps report writer service integration test', () => {
   })
 
   afterAll(async () => {
-    console.log('Cleaning up')
     await cleanUp()
     await sqlService.closePool()
   })
