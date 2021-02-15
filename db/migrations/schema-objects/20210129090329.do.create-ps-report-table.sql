@@ -450,6 +450,5 @@ BEGIN
     UPDATE [mtc_results].[psychometricReport]
        SET updatedAt = GETUTCDATE()
       FROM inserted
-     WHERE [psychometricReport].PupilId = inserted.PupilId
+     WHERE [psychometricReport].id = inserted.id
 END
-
