@@ -22,6 +22,7 @@ export class PsReportWriterService {
 
   private generateParams (data: IPsychometricReportLine): ISqlParameter[] {
     const params = [
+      { name: 'id', value: data.PupilDatabaseId, type: TYPES.Int },
       { name: 'dob', value: data.DOB?.toDate(), type: TYPES.Date },
       { name: 'gender', value: data.Gender, type: TYPES.Char(1) },
       { name: 'pupilId', value: data.PupilID, type: TYPES.NVarChar(32) },
@@ -83,11 +84,11 @@ export class PsReportWriterService {
       `
     })
     const sql = `
-        IF EXISTS ( SELECT * FROM [mtc_results].[psychometricReport] WHERE PupilId = @pupilId )
+        IF EXISTS ( SELECT * FROM [mtc_results].[psychometricReport] WHERE id = @id )
         BEGIN        
            UPDATE [mtc_results].[psychometricReport] 
            SET 
-              DOB = @dob, Gender = @gender, Forename = @forename, Surname = @surname, FormMark = @formMark, QDisplayTime = @qDisplayTime,
+              PupilId = @pupilId, DOB = @dob, Gender = @gender, Forename = @forename, Surname = @surname, FormMark = @formMark, QDisplayTime = @qDisplayTime,
               PauseLength = @pauseLength, AccessArr = @accessArr, RestartReason = @restartReason, RestartNumber = @restartNumber, 
               ReasonNotTakingCheck = @ReasonNotTakingCheck, PupilStatus = @pupilStatus, DeviceType = @deviceType, 
               DeviceTypeModel = @deviceTypeModel, DeviceId = @deviceId, BrowserType = @browserType, SchoolName = @schoolName, Estab = @estab,
@@ -96,11 +97,11 @@ export class PsReportWriterService {
              
               ${updateAnswers.join(',\n')}
                       
-           WHERE PupilId = @pupilId;
+           WHERE id = @id;
         END
         ELSE 
         BEGIN
-          INSERT into [mtc_results].[psychometricReport] (DOB, Gender, PupilId, Forename, Surname, FormMark, QDisplayTime, PauseLength,
+          INSERT into [mtc_results].[psychometricReport] (id, DOB, Gender, PupilId, Forename, Surname, FormMark, QDisplayTime, PauseLength,
                                                         AccessArr, RestartReason, RestartNumber, ReasonNotTakingCheck, PupilStatus,
                                                         DeviceType, DeviceTypeModel, DeviceId, BrowserType, SchoolName, Estab, SchoolURN,
                                                         LANum, AttemptId, FormID, TestDate, TimeStart, TimeComplete, TimeTaken,
@@ -171,7 +172,8 @@ export class PsReportWriterService {
                                                         Q25ResponseTime, Q25TimeOut, Q25TimeOutResponse, Q25TimeOutSco, Q25tLoad,
                                                         Q25tFirstKey, Q25tLastKey, Q25OverallTime, Q25RecallTime, Q25ReaderStart,
                                                         Q25ReaderEnd)
-        VALUES (@dob,
+        VALUES (@id,
+                @dob,
                 @gender,
                 @pupilId,
                 @forename,

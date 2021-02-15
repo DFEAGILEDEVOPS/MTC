@@ -4,36 +4,34 @@ import { IPsychometricReportLine } from '../functions/ps-report-3-transformer/mo
 import { SqlService } from '../sql/sql.service'
 import { TYPES } from 'mssql'
 import * as R from 'ramda'
-import { MockPayload, veryFakeUpn } from './mock-payload.class'
+import { MockPayload } from './mock-payload.class'
+const ids = []
 
 describe('ps report writer service integration test', () => {
   let sqlService: SqlService
-  let payload: IPsychometricReportLine
-  let upn: string
 
   beforeAll(() => {
     sqlService = new SqlService()
-    // Use a known UPN that is unlikely to collide with any existing data in the table so the insert succeeds
-    // we will re-use this upn for the update.
-    upn = veryFakeUpn()
   })
 
-  beforeEach(() => {
-    payload = new MockPayload()
-    payload.PupilID = upn
-  })
-
-  async function getRow (pupilId: string): Promise<PsychometricReport | undefined> {
-    const res: PsychometricReport[] = await sqlService.query('SELECT * FROM mtc_results.psychometricReport WHERE PupilId = @pupilId',
-      [{ name: 'pupilId', value: pupilId, type: TYPES.NVarChar(32) }])
+  async function getRow (id: number): Promise<PsychometricReport | undefined> {
+    const res: PsychometricReport[] = await sqlService.query('SELECT * FROM mtc_results.psychometricReport WHERE id = @id',
+      [{ name: 'id', value: id, type: TYPES.Int }])
     return R.head(res)
   }
 
+  async function cleanUp (): Promise<void> {
+    const sql = 'DELETE FROM mtc_results.psychometricReport'
+    await sqlService.modify(sql, [])
+  }
+
   test('we can insert the payload', async () => {
+    const payload: IPsychometricReportLine = new MockPayload()
     const reportWriter = new PsReportWriterService()
     await reportWriter.write(payload)
-    const data = await getRow(payload.PupilID)
-
+    ids.push(payload.PupilDatabaseId)
+    const data = await getRow(payload.PupilDatabaseId)
+    expect(data?.id).toBe(payload.PupilDatabaseId)
     expect(data?.DOB?.format('YYYY-MM-DD')).toBe(payload.DOB?.format('YYYY-MM-DD'))
     expect(data?.Gender).toBe(payload.Gender)
     expect(data?.PupilId).toBe(payload.PupilID)
@@ -489,10 +487,17 @@ describe('ps report writer service integration test', () => {
   })
 
   test('we can update the payload', async () => {
+    const insertPayload: IPsychometricReportLine = new MockPayload()
     const reportWriter = new PsReportWriterService()
-    await reportWriter.write(payload)
-    const data = await getRow(payload.PupilID)
+    await reportWriter.write(insertPayload) // insert
+    ids.push(insertPayload.PupilDatabaseId)
+    const payload = new MockPayload() // random values
+    // New payload - this has new random values, so just copy the Primary Key over to the new payload
+    payload.PupilDatabaseId = insertPayload.PupilDatabaseId
+    await reportWriter.write(payload) // update
+    const data = await getRow(payload.PupilDatabaseId)
 
+    expect(data?.id).toBe(payload.PupilDatabaseId)
     expect(data?.DOB?.format('YYYY-MM-DD')).toStrictEqual(payload.DOB?.format('YYYY-MM-DD'))
     expect(data?.Gender).toBe(payload.Gender)
     expect(data?.PupilId).toBe(payload.PupilID)
@@ -948,6 +953,8 @@ describe('ps report writer service integration test', () => {
   })
 
   afterAll(async () => {
+    console.log('Cleaning up')
+    await cleanUp()
     await sqlService.closePool()
   })
 })

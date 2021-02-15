@@ -151,8 +151,8 @@ export class MockReportLineAnswer implements IReportLineAnswer {
 }
 
 export class MockPayload implements IPsychometricReportLine {
-// export class MockPayload {
   // Pupil
+  PupilDatabaseId: number
   DOB: moment.Moment | null
   Gender: string
   PupilID: string
@@ -189,6 +189,7 @@ export class MockPayload implements IPsychometricReportLine {
   answers: IReportLineAnswer[] = []
 
   public constructor () {
+    this.PupilDatabaseId = faker.random.number({ min: 1, max: 750000 })
     this.PupilID = veryFakeUpn()
     const tenYearsAgo = moment().subtract(10, 'years')
     const nineYearsAgo = moment().subtract(9, 'years')

@@ -215,6 +215,11 @@ describe('report line class', () => {
         const out = sut.transform()
         expect(out.PupilStatus).toBe('Complete')
       })
+
+      test('the pupil database id is output so it can be the ps report PK', () => {
+        const out = sut.transform()
+        expect(out.PupilDatabaseId).toBe(2)
+      })
     })
 
     describe('settings', () => {

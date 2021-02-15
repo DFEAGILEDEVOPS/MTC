@@ -1,5 +1,6 @@
 CREATE TABLE [mtc_results].[psychometricReport]
-(PupilId              NVARCHAR(32)      NOT NULL CONSTRAINT PK_psychometricReport PRIMARY KEY,
+(id                   INT               NOT NULL CONSTRAINT PK_psychometricReport PRIMARY KEY,
+ PupilId              NVARCHAR(32)      NOT NULL,
  createdAt            DATETIMEOFFSET(3) NOT NULL CONSTRAINT DF_psychometricReport_createdAt DEFAULT getutcdate(),
  updatedAt            DATETIMEOFFSET(3) NOT NULL CONSTRAINT DF_psychometricReport_updatedAt DEFAULT getutcdate(),
  DOB                  DATE              NULL,
@@ -10,7 +11,7 @@ CREATE TABLE [mtc_results].[psychometricReport]
  QDisplayTime         DECIMAL(5,2)      NULL,
  PauseLength          DECIMAL(5,2)      NULL,
  AccessArr            NVARCHAR(128)     NULL,
- RestartReason        SMALLINT         NULL,
+ RestartReason        SMALLINT          NULL,
  RestartNumber        INT               NULL,
  ReasonNotTakingCheck INT               NULL,
  PupilStatus          NVARCHAR(32)      NULL,
@@ -436,6 +437,10 @@ CREATE UNIQUE INDEX IX_psychometricianReport_AttemptId_unique
 ON [mtc_results].[psychometricReport](AttemptId)
 WHERE AttemptId IS NOT NULL;
 
+GO
+
+CREATE UNIQUE INDEX IX_psychometricianReport_SchoolURN_PupilId_unique
+    ON [mtc_results].[psychometricReport](SchoolURN, PupilId);
 GO
 
 CREATE TRIGGER [mtc_results].[psychometricReportUpdatedAtTrigger]

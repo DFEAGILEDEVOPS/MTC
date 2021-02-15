@@ -3,6 +3,7 @@ import moment from 'moment'
 
 export interface IReportLineBase {
   // Pupil
+  PupilDatabaseId: number
   DOB: moment.Moment | null
   Gender: string
   PupilID: string
