@@ -433,13 +433,13 @@ CREATE TABLE [mtc_results].[psychometricReport]
 
 GO
 
-CREATE UNIQUE INDEX IX_psychometricianReport_AttemptId_unique
+CREATE UNIQUE INDEX IX_psychometricReport_AttemptId_unique
 ON [mtc_results].[psychometricReport](AttemptId)
 WHERE AttemptId IS NOT NULL;
 
 GO
 
-CREATE UNIQUE INDEX IX_psychometricianReport_SchoolURN_PupilId_unique
+CREATE UNIQUE INDEX IX_psychometricReport_SchoolURN_PupilId_unique
     ON [mtc_results].[psychometricReport](SchoolURN, PupilId);
 GO
 
@@ -452,3 +452,23 @@ BEGIN
       FROM inserted
      WHERE [psychometricReport].id = inserted.id
 END
+
+GO
+
+EXEC sys.sp_addextendedproperty @name = N'MS_Description', @value = N'Psychometric report as a database table',
+     @level0type = N'SCHEMA', @level0name = 'mtc_results', @level1type = N'TABLE', @level1name = 'psychometricReport';
+
+GO
+
+EXEC sys.sp_addextendedproperty @name = N'MS_Description', @value = 'Duration that the check took in seconds and milliseconds.', @level0type = N'Schema',
+     @level0name = 'mtc_results', @level1type = N'Table', @level1name = 'psychometricReport', @level2type = N'Column',
+     @level2name = 'TimeTaken';
+
+EXEC sys.sp_addextendedproperty @name = N'MS_Description', @value = 'Duration in seconds and milliseconds.', @level0type = N'Schema',
+     @level0name = 'mtc_results', @level1type = N'Table', @level1name = 'psychometricReport', @level2type = N'Column',
+     @level2name = 'QDisplayTime';
+
+EXEC sys.sp_addextendedproperty @name = N'MS_Description', @value = 'Duration in seconds and milliseconds.',
+    @level0type = N'Schema',
+    @level0name = 'mtc_results', @level1type = N'Table', @level1name = 'psychometricReport', @level2type = N'Column',
+    @level2name = 'PauseLength';
