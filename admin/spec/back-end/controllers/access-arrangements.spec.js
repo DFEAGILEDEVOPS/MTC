@@ -342,7 +342,6 @@ describe('access arrangements controller:', () => {
       const res = getRes()
       await controller.getDeleteAccessArrangements(req, res, next)
       expect(next).toHaveBeenCalledWith(new AccessArrangementsNotEditableError())
-      // TODO assert error page shown
     })
     it('redirects to overview page when successfully deleting', async () => {
       const res = getRes()
