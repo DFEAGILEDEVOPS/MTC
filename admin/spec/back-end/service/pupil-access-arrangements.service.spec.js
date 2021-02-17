@@ -5,6 +5,7 @@ const preparedCheckSyncService = require('../../../services/prepared-check-sync.
 const pupilAccessArrangementsService = require('../../../services/pupil-access-arrangements.service')
 const pupilDataService = require('../../../services/data-access/pupil.data.service')
 const pupilAccessArrangementsDataService = require('../../../services/data-access/pupil-access-arrangements.data.service')
+const uuid = require('uuid')
 
 const pupilAccessArrangementsMock = [
   {
@@ -172,7 +173,8 @@ describe('pupilAccessArrangementsService', () => {
       spyOn(pupilDataService, 'sqlFindOneBySlugAndSchool').and.returnValue({ id: 1, foreName: 'foreName', lastName: 'lastName' })
       spyOn(pupilAccessArrangementsDataService, 'sqlDeletePupilsAccessArrangements')
       spyOn(preparedCheckSyncService, 'addMessages')
-      const pupilData = await pupilAccessArrangementsService.deletePupilAccessArrangements('urlSlug', 9991001)
+      const urlSlug = uuid.v4()
+      const pupilData = await pupilAccessArrangementsService.deletePupilAccessArrangements(urlSlug, 9991001)
       expect(pupilData).toEqual({ id: 1, foreName: 'foreName', lastName: 'lastName' })
       expect(pupilDataService.sqlFindOneBySlugAndSchool).toHaveBeenCalled()
       expect(pupilAccessArrangementsDataService.sqlDeletePupilsAccessArrangements).toHaveBeenCalled()
