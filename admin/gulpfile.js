@@ -15,6 +15,7 @@ const globalDotEnvFile = path.join(__dirname, '..', '.env')
 const dir = require('node-dir')
 const md5 = require('md5')
 const jedit = require('edit-json-file')
+const ts = require('gulp-typescript')
 
 try {
   if (fs.existsSync(globalDotEnvFile)) {
@@ -62,19 +63,58 @@ const jsBundleFiles = [
   be incorrect and `uglify` will bomb-out with this message `{"message":"Unexpected token: punc «,»"}`
  */
 
-gulp.task('sass', function () {
+const proj = ts.createProject('./tsconfig.json')
+
+function cleanDist () {
+  return gulp.src(['./dist'], { read: false, allowEmpty: true })
+    .pipe(clean())
+}
+
+function compileTs () {
+  return proj.src()
+    .pipe(proj())
+    .js.pipe(gulp.dest('./dist'))
+}
+
+function copyPublicFilesToDist () {
+  return gulp
+    .src(['./public/**/*'])
+    .pipe(gulp.dest('./dist/public'))
+}
+
+function copyViewFilesToDist () {
+  return gulp
+    .src(['./views/**/*'])
+    .pipe(gulp.dest('./dist/views'))
+}
+
+function copyEnvForDist () {
+  return gulp
+    .src(['../.env'])
+    .pipe(gulp.dest('./'))
+}
+
+function copyPackageJsonToDist () {
+  return gulp
+    .src(['./package.json'])
+    .pipe(gulp.dest('./dist'))
+}
+
+function compileCss () {
   return gulp.src('./assets/**/*.scss')
     .pipe(replace('/vendor/govuk-frontend/', `${config.AssetPath}vendor/govuk-frontend/`))
     .pipe(sass({ outputStyle: 'compressed' }).on('error', sass.logError))
     .pipe(gulp.dest('./public'))
-})
+}
 
-gulp.task('watch', function () {
-  gulp.watch('./assets/**/*.scss', gulp.series('sass'))
-  gulp.watch('./assets/**/*.js', gulp.series('bundle-js'))
-})
+function watch () {
+  gulp.watch('./assets/**/*.scss', gulp.series(compileCss, copyPublicFilesToDist))
+  gulp.watch('./assets/**/*.js', gulp.series(bundleJs, copyPublicFilesToDist))
+  gulp.watch(['./**/*.[t|j]s', '!./dist/**/*'], gulp.series(compileTs))
+  gulp.watch('./views/**/*.ejs', gulp.series(copyViewFilesToDist))
+}
 
-gulp.task('bundle-js', function () {
+function bundleJs () {
   return gulp.src(jsBundleFiles)
     .pipe(concat('app.js'))
     .pipe(replace('SESSION_DISPLAY_NOTICE_TIME', config.ADMIN_SESSION_DISPLAY_NOTICE_AFTER))
@@ -89,9 +129,9 @@ gulp.task('bundle-js', function () {
       winston.error(e)
     }))
     .pipe(gulp.dest('./public/javascripts/'))
-})
+}
 
-gulp.task('bundle-func-calls-js', function () {
+function bundleFuncCallsJs () {
   const viewJS = [
     'cookie-form.js',
     'google-analytics.js',
@@ -115,53 +155,48 @@ gulp.task('bundle-func-calls-js', function () {
       .pipe(gulp.dest('./public/javascripts/'))
   })
   return merge(tasks)
-})
+}
 
-gulp.task('clean', function () {
+function cleanPublic () {
   return gulp.src([
     'public/javascripts/app.js',
     'public/stylesheets/application.css',
     'public/stylesheets/application-ie8.css'
-  ], { read: false })
+  ], { read: false, allowEmpty: true })
     .pipe(clean())
-})
+}
 
-gulp.task('copy-images', function () {
+function copyImages () {
   return gulp
     .src(['./assets/images/*'])
     .pipe(gulp.dest('public/images'))
-})
+}
 
-gulp.task('copy-gds-images', function () {
+function copyGdsImages () {
   return gulp
     .src(['./node_modules/govuk-frontend/govuk/assets/images/*'])
     .pipe(gulp.dest('public/vendor/govuk-frontend/images'))
-})
+}
 
-gulp.task('copy-gds-fonts', function () {
+function copyGdsFonts () {
   return gulp
     .src(['./node_modules/govuk-frontend/govuk/assets/fonts/*'])
     .pipe(gulp.dest('public/vendor/govuk-frontend/fonts'))
-})
+}
 
-gulp.task('copy-pdfs', function () {
+function copyPdfs () {
   return gulp
     .src(['./assets/pdfs/*'])
     .pipe(gulp.dest('public/pdfs'))
-})
+}
 
-gulp.task('copy-csv-files', function () {
+function copyCsvFiles () {
   return gulp
     .src(['./assets/csv/*'])
     .pipe(gulp.dest('public/csv'))
-})
+}
 
-gulp.task('realclean', gulp.series('clean'), function () {
-  return gulp.src('./node_modules', { read: false })
-    .pipe(clean())
-})
-
-gulp.task('generate-assets-version', function (done) {
+function generateAssetsVersion (done) {
   let assetsContent = ''
   dir.readFiles('./public/', {
     // match only filenames with a .js and .css extensions and that don't start with a `.´
@@ -179,18 +214,32 @@ gulp.task('generate-assets-version', function (done) {
     dest.save()
   })
   done()
-})
+}
 
 gulp.task('build',
   gulp.series(
-    gulp.parallel('sass',
-      'bundle-js',
-      'bundle-func-calls-js',
-      'copy-images',
-      'copy-gds-images',
-      'copy-gds-fonts',
-      'copy-pdfs',
-      'copy-csv-files'),
-    'generate-assets-version'
+    gulp.parallel(cleanDist, cleanPublic),
+    gulp.parallel(
+      compileTs,
+      compileCss,
+      bundleJs,
+      bundleFuncCallsJs,
+      copyImages,
+      copyGdsImages,
+      copyGdsFonts,
+      copyPdfs,
+      copyCsvFiles
+    ),
+    generateAssetsVersion,
+    gulp.parallel(
+      copyPublicFilesToDist,
+      copyViewFilesToDist,
+      copyEnvForDist,
+      copyPackageJsonToDist
+    )
   )
 )
+
+exports.cleanDist = cleanDist
+exports.compileTs = compileTs
+exports.watch = watch
