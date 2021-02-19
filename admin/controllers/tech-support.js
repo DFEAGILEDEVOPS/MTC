@@ -4,6 +4,7 @@ const ValidationError = require('../lib/validation-error')
 const uuidValidator = require('../lib/validator/common/uuid-validator')
 const checkDiagnosticsService = require('../services/check-diagnostic.service')
 const payloadService = require('../services/payload.service')
+const redisService = require('../services/tech-support/redis.service')
 
 const controller = {
 /**
@@ -94,6 +95,20 @@ const controller = {
     } catch (error) {
       res.type('txt')
       res.send(`${error}`)
+    }
+  },
+
+  showRedisOverview: async function showRedisOverview (req, res, next) {
+    req.breadcrumbs('Redis Overview')
+    res.locals.pageTitle = 'Redis Overview'
+    try {
+      const dataBulkString = await redisService.getServerInfo()
+      res.render('tech-support/redis-overview', {
+        breadcrumbs: req.breadcrumbs(),
+        info: dataBulkString
+      })
+    } catch (error) {
+      return next(error)
     }
   }
 }

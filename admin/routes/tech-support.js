@@ -30,4 +30,10 @@ router.get(
   techSupportController.getReceivedCheckPayload
 )
 
+router.get(
+  '/redis-overview',
+  isAuthenticated([roles.techSupport]),
+  techSupportController.showRedisOverview
+)
+
 module.exports = router
