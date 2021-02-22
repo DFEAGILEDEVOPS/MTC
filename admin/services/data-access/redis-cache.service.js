@@ -145,6 +145,23 @@ redisCacheService.getMany = async (keys) => {
 }
 
 /**
+ * Get the TTL of an object in seconds
+ * The command returns -2 if the key does not exist.
+ * The command returns -1 if the key exists but has no associated expire.
+ * https://redis.io/commands/ttl
+ */
+redisCacheService.getTtl = async (key) => {
+  if (typeof key !== 'string') {
+    throw new Error('Invalid key')
+  }
+  if (key.length === 0) {
+    throw new Error('Invalid key length')
+  }
+  redisConnect()
+  return await redis.ttl(key)
+}
+
+/**
  * Wrap a value for storing in redis with type information
  * @param value
  * @return {string}

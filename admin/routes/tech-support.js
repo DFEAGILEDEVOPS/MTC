@@ -36,4 +36,28 @@ router.get(
   techSupportController.showRedisOverview
 )
 
+router.get(
+  '/redis/drop/:redisKey?',
+  isAuthenticated([roles.techSupport]),
+  techSupportController.getRedisDropKeyPage
+)
+
+router.post(
+  '/redis/drop/confirm',
+  isAuthenticated([roles.techSupport]),
+  techSupportController.postRedisDropKeyConfirm
+)
+
+router.get(
+  '/redis/drop/confirm/:redisKey',
+  isAuthenticated([roles.techSupport]),
+  techSupportController.getRedisDropKeyConfirm
+)
+
+router.post(
+  '/redis/drop',
+  isAuthenticated([roles.techSupport]),
+  techSupportController.postRedisDropKey
+)
+
 module.exports = router

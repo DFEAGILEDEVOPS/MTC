@@ -5,6 +5,7 @@ const uuidValidator = require('../lib/validator/common/uuid-validator')
 const checkDiagnosticsService = require('../services/check-diagnostic.service')
 const payloadService = require('../services/payload.service')
 const redisService = require('../services/tech-support/redis.service')
+const administrationMessageService = require('../services/administration-message.service')
 
 const controller = {
 /**
@@ -17,8 +18,10 @@ const controller = {
   getHomePage: async function getHomePage (req, res, next) {
     res.locals.pageTitle = 'Tech Support Homepage'
     try {
+      const serviceMessage = await administrationMessageService.getMessage()
       return res.render('tech-support/home', {
-        breadcrumbs: req.breadcrumbs()
+        breadcrumbs: req.breadcrumbs(),
+        serviceMessage
       })
     } catch (error) {
       return next(error)
@@ -109,6 +112,73 @@ const controller = {
       })
     } catch (error) {
       return next(error)
+    }
+  },
+
+  getRedisDropKeyPage: async function getDropKeyPage (req, res, next, error = new ValidationError()) {
+    req.breadcrumbs('Drop Key')
+    res.locals.pageTitle = 'Redis - Drop Key'
+    try {
+      // optional redis key param
+      const redisKey = req.params.redisKey
+      res.render('tech-support/redis-drop-key', {
+        breadcrumbs: req.breadcrumbs(),
+        key: redisKey ?? '',
+        error
+      })
+    } catch (error) {
+      return next(error)
+    }
+  },
+
+  postRedisDropKeyConfirm: async function postRedisDropKeyConfirm (req, res, next) {
+    try {
+      const key = req.body.key.trim()
+      if (redisService.validateKey(key)) {
+        return res.redirect(`/tech-support/redis/drop/confirm/${encodeURIComponent(key)}`)
+      } else {
+        const error = new ValidationError()
+        error.addError('key', 'Key cannot be dropped')
+        return controller.getRedisDropKeyPage(req, res, next, error)
+      }
+    } catch (error) {
+      return next(error)
+    }
+  },
+
+  getRedisDropKeyConfirm: async function getDropConfirmPage (req, res, next) {
+    try {
+      req.breadcrumbs('Confirm Drop Key')
+      res.locals.pageTitle = 'Redis - Confirm Drop Key'
+      const key = req.params.redisKey
+      if (key && key.length > 0) {
+        const metaInfo = await redisService.getObjectMeta(key)
+        return res.render('tech-support/redis-confirm-drop', {
+          breadcrumbs: req.breadcrumbs(),
+          key,
+          metaInfo
+        })
+      } else {
+        req.flash('info', 'Key not provided')
+        return res.redirect('/tech-support/home')
+      }
+    } catch (error) {
+      return next(error)
+    }
+  },
+
+  postRedisDropKey: async function postRedisDropKey (req, res, next) {
+    try {
+      const key = req.body.key
+      const isDropped = await redisService.dropKeyIfAllowed(key)
+      if (isDropped) {
+        req.flash('info', `Key '${key}' was deleted from redis`)
+      } else {
+        req.flash('info', 'Key is not allowed to be dropped')
+      }
+      return res.redirect('/tech-support/home')
+    } catch (error) {
+      next(error)
     }
   }
 }

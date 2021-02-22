@@ -2,6 +2,25 @@
 <main class="govuk-main-wrapper" id="main-content" role="main">
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
+      <%- partial('partials/_gds_session_expiry') %>
+
+      <% if (serviceMessage) { %>
+        <div class="govuk-body govuk-warning-message govuk-!-margin-bottom-7 govuk-!-margin-top-0">
+          <h2 class="govuk-heading-l">
+            <%= serviceMessage.title %>
+          </h2>
+          <p class="govuk-body"><%= serviceMessage.message %></p>
+        </div>
+      <% } %>
+
+      <% if (messages && messages.info && messages.info.length) { %>
+            <div class="govuk-body govuk-info-message govuk-!-margin-bottom-7">
+          <% messages.info.forEach( msg => { %>
+            <p><%= msg %></p>
+          <% }) %>
+        </div>
+      <% } %>
+
       <h1 class="govuk-heading-xl">Tech Support</h1>
       <ol class="govuk-list">
         <li class="govuk-!-margin-bottom-4">

@@ -2,6 +2,16 @@
 <main class="govuk-main-wrapper govuk-body" id="main-content" role="main">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
+
+            <% if (messages && messages.info && messages.info.length) { %>
+                <div class="govuk-body govuk-info-message govuk-!-margin-bottom-7">
+                    <% messages.info.forEach( msg => { %>
+                        <p><%= msg %></p>
+                    <% }) %>
+                </div>
+            <% } %>
+
+
             <h1 class="govuk-heading-xl">Redis Overview</h1>
             <%- partial('partials/_gds_session_expiry') %>
             <% if (messages && messages.info && messages.info.length) { %>
@@ -22,7 +32,7 @@
                 <nav role="navigation" aria-labelledby="subsection-title">
                     <ul class="govuk-list govuk-!-font-size-16">
                         <li>
-                            <a class="govuk-link" href="/tech-support/redis/drop-key" >Drop a key from Redis</a>
+                            <a class="govuk-link" href="/tech-support/redis/drop" >Drop a key from Redis</a>
                         </li>
                     </ul>
                 </nav>
