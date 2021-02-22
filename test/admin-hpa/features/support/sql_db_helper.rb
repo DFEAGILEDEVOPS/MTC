@@ -7,15 +7,16 @@ class SqlDbHelper
                           host: server,
                           port: port,
                           database: database,
-                          azure: azure_var
+                          azure: azure_var,
+                          timeout: 120
       )
     rescue TinyTds::Error => e
       abort "Test run failed due to - #{e.to_s}; SQL details: username=#{admin_user}, password=#{admin_password}, host=#{server}, port=#{port}, database=#{database}, azure=#{azure_var}"
     end
   end
 
-  def self.pupil_details_using_names(firstname, lastname)
-    sql = "SELECT * FROM [mtc_admin].[pupil] WHERE foreName='#{firstname}' AND lastName='#{lastname}'"
+  def self.pupil_details_using_names(firstname, lastname, school_id)
+    sql = "SELECT * FROM [mtc_admin].[pupil] WHERE foreName='#{firstname}' AND lastName='#{lastname}' AND school_id=#{school_id}"
     result = SQL_CLIENT.execute(sql)
     pupil_details_res = result.first
     result.cancel
@@ -408,20 +409,6 @@ class SqlDbHelper
     result.do
   end
 
-  #
-  # def self.set_pupil_status_via_upn_list(upn_array)
-  #   sql = "UPDATE [mtc_admin].[pupil] set pupilStatus_id=4 WHERE upn in ('#{upn_array.join("','")}')"
-  #   result = SQL_CLIENT.execute(sql)
-  #   result.do
-  # end
-
-  def self.set_check_status_via_upn_list(upn_array)
-    pupil_ids = upn_array.map {|upn| pupil_details(upn)['id']}
-    sql = "UPDATE [mtc_admin].[check] set checkStatus_id=6 WHERE pupil_id in ('#{pupil_ids.join("','")}')"
-    result = SQL_CLIENT.execute(sql)
-    result.do
-  end
-
   def self.count_all_restarts
     sql = "SELECT COUNT(*) FROM [mtc_admin].[pupilRestart]"
     result = SQL_CLIENT.execute(sql)
@@ -429,14 +416,6 @@ class SqlDbHelper
     result.cancel
     count.values.first
   end
-
-  # def self.count_unallocated_pupils(school_id)
-  #   sql = "SELECT COUNT(*) FROM [mtc_admin].[pupil] WHERE pupilStatus_id=1 and school_id=#{school_id}"
-  #   result = SQL_CLIENT.execute(sql)
-  #   count = result.first
-  #   result.cancel
-  #   count.values.first
-  # end
 
   def self.create_group(group_name, school_id)
     sql = "INSERT INTO [mtc_admin].[group] (name, createdAt, updatedAt, school_id) VALUES ('#{group_name}','2019-06-25 17:46:39.557', '2019-06-25 17:46:39.557', #{school_id})"
@@ -480,8 +459,8 @@ class SqlDbHelper
     chk_res
   end
 
-  def self.pupil_details(upn)
-    sql = "SELECT * FROM [mtc_admin].[pupil] WHERE upn='#{upn}'"
+  def self.pupil_details(upn, school_id)
+    sql = "SELECT * FROM [mtc_admin].[pupil] WHERE upn='#{upn}' AND school_id=#{school_id}"
     result = SQL_CLIENT.execute(sql)
     pupil_details_res = result.first
     result.cancel
@@ -557,10 +536,11 @@ class SqlDbHelper
   def self.wait_for_check_result(check_id)
     begin
       retries ||= 0
-      sleep 2
+      sleep 1
       p 'waiting for check result record'
-      a = get_check_result_id(check_id)
+      get_check_result_id(check_id)
     rescue NoMethodError => e
+      p "retry number" + retries.to_s
       retry if (retries += 1) < 60
     end
   end
@@ -626,20 +606,14 @@ class SqlDbHelper
     result.each {|row| row.map}
   end
 
-  def self.get_new_checks
-    sql = "select id, checkCode, pupil_id from [mtc_admin].[check] where pupilLoginDate is null and receivedByServerAt is null and checkStatus_id=1 and isLiveCheck=1 and received=0 and complete=0 and completedAt is null and processingFailed=0"
-    result = SQL_CLIENT.execute(sql)
-    result.each {|row| row.map}
-  end
-
   def self.get_schools_list
     sql = "select * from [mtc_admin].[school]"
     result = SQL_CLIENT.execute(sql)
     result.each {|row| row.map}
   end
 
-  def self.get_check_id_using_names(forename,lastname)
-    sql = "select id from mtc_admin.[check] where pupil_id = (SELECT id FROM [mtc_admin].[pupil] WHERE foreName='#{forename}' AND lastName='#{lastname}')"
+  def self.get_check_id_using_names(forename,lastname, school_id)
+    sql = "select id from mtc_admin.[check] where pupil_id = (SELECT id FROM [mtc_admin].[pupil] WHERE foreName='#{forename}' AND lastName='#{lastname}' AND school_id=#{school_id})"
     result = SQL_CLIENT.execute(sql)
     id = result.first
     result.cancel
@@ -652,7 +626,6 @@ class SqlDbHelper
     la_codes = result.each {|row| row.map}
     la_codes.map {|code| code['lacode'].to_s}
   end
-
 
   def self.pupil_details_using_school(upn,school_id)
     sql = "SELECT * FROM [mtc_admin].[pupil] WHERE upn='#{upn}' AND school_id=#{school_id}"

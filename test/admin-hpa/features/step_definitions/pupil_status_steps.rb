@@ -35,7 +35,7 @@ end
 
 Given(/^there is a processing error with a check$/) do
   step 'I have generated a live pin for a pupil'
-  pupil_detail = SqlDbHelper.pupil_details(@details_hash[:upn])
+  pupil_detail = SqlDbHelper.pupil_details(@details_hash[:upn], @school_id)
   pupil_id = pupil_detail['id']
   check_entry = SqlDbHelper.check_details(pupil_id)
   pupil_pin_detail = SqlDbHelper.get_pupil_pin(check_entry['id'])
