@@ -50,7 +50,7 @@ end
 
 
 Then(/^I should see the check summary$/) do
-  pupil_details = SqlDbHelper.pupil_details_using_names(@parsed_response_pupil_auth['pupil']['firstName'], @parsed_response_pupil_auth['pupil']['lastName'])
+  pupil_details = SqlDbHelper.pupil_details_using_names(@parsed_response_pupil_auth['pupil']['firstName'], @parsed_response_pupil_auth['pupil']['lastName'], @school_id)
   pupil_id = pupil_details['id']
   check_details = SqlDbHelper.check_details(pupil_id)
   expect(check_details['checkCode']).to eql check_view_page.check_summary.check_code.text

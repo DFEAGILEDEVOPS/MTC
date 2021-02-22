@@ -96,7 +96,7 @@ Given(/^I have multiple pupils for restart$/) do
   @pupil_names_arr.each do |pupil|
     pupil_lastname = pupil.split(',')[0]
     pupil_firstname = pupil.split(',')[1].split(' Date')[0].split(' ')[0]
-    pupil_detail = SqlDbHelper.pupil_details_using_names(pupil_firstname, pupil_lastname)
+    pupil_detail = SqlDbHelper.pupil_details_using_names(pupil_firstname, pupil_lastname, @school_id)
     pupil_id = pupil_detail['id']
     check_entry = SqlDbHelper.check_details(pupil_id)
     pupil_pin_detail = SqlDbHelper.get_pupil_pin(check_entry['id'])
@@ -205,7 +205,7 @@ When(/^they become eligable for a restart$/) do
     pupil_firstname = pupil.split(',')[1].strip
     pupil_firstname = pupil_firstname.split(' Date')[0].split(' ')[0] if pupil_firstname.include? 'Date'
     p pupil_firstname, pupil_lastname
-    pupil_detail = SqlDbHelper.pupil_details_using_names(pupil_firstname, pupil_lastname)
+    pupil_detail = SqlDbHelper.pupil_details_using_names(pupil_firstname, pupil_lastname, @school_id)
     p pupil_detail
     pupil_id = pupil_detail['id']
     check_entry = SqlDbHelper.check_details(pupil_id)
@@ -269,7 +269,7 @@ Then(/^I should see the restarts page matches design$/) do
 end
 
 Given(/^pupil logs in and completed the check$/) do
-  pupil_detail = SqlDbHelper.pupil_details(@details_hash[:upn])
+  pupil_detail = SqlDbHelper.pupil_details(@details_hash[:upn], @school_id)
   @pupil_id = pupil_detail['id']
   check_entry = SqlDbHelper.check_details(@pupil_id)
   pupil_pin_detail = SqlDbHelper.get_pupil_pin(check_entry['id'])
@@ -347,7 +347,7 @@ end
 Then(/^I can select all$/) do
   restarts_page.load
   restarts_page.select_pupil_to_restart_btn.click
-  pupil_names = @upns_for_school.map {|upn| SqlDbHelper.pupil_details(upn)['foreName']}
+  pupil_names = @upns_for_school.map {|upn| SqlDbHelper.pupil_details(upn, @school_id)['foreName']}
   Timeout.timeout(30) {visit current_url until restarts_page.pupil_list.rows.find {|pupil| pupil.text.include? pupil_names.first}}
   @before_submission = SqlDbHelper.count_all_restarts
   restarts_page.restarts_for_multiple_pupils_using_names(pupil_names)

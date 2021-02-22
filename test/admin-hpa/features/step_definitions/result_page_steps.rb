@@ -81,7 +81,7 @@ Then(/^I should see the school results$/) do
   expect(results_page).to_not have_hdf_button
   expect(results_page).to have_ctf_download
   pupils = results_page.results.pupil_list.map {|pupil| pupil unless pupil.score.text == '-'}.compact
-  pupil_results = pupils.map {|pupil| {id: SqlDbHelper.get_check_id_using_names(pupil.name.text.split(',')[0], pupil.name.text.split(',')[1].strip)['id'].to_s, mark: pupil.score.text}}.sort_by {|hsh| hsh[:id]}
+  pupil_results = pupils.map {|pupil| {id: SqlDbHelper.get_check_id_using_names(pupil.name.text.split(',')[0], pupil.name.text.split(',')[1].strip, @school_id)['id'].to_s, mark: pupil.score.text}}.sort_by {|hsh| hsh[:id]}
   db_pupil_results = checks_ids_from_school.map {|check| {id: check.to_s, mark: SqlDbHelper.get_check_result(check)['mark'].to_s}}.sort_by {|hsh| hsh[:id]}
   expect(db_pupil_results).to eql pupil_results
   results_page.ctf_download.click
@@ -122,7 +122,7 @@ Then(/^I should be able to view school results but not download the ctf$/) do
   expect(results_page).to_not have_hdf_button
   expect(results_page).to have_ctf_download_disabled
   pupils = results_page.results.pupil_list.map {|pupil| pupil unless pupil.score.text == '-'}.compact
-  pupil_results = pupils.map {|pupil| {id: SqlDbHelper.get_check_id_using_names(pupil.name.text.split(',')[0], pupil.name.text.split(',')[1].strip)['id'].to_s, mark: pupil.score.text}}.sort_by {|hsh| hsh[:id]}
+  pupil_results = pupils.map {|pupil| {id: SqlDbHelper.get_check_id_using_names(pupil.name.text.split(',')[0], pupil.name.text.split(',')[1].strip, @school_id)['id'].to_s, mark: pupil.score.text}}.sort_by {|hsh| hsh[:id]}
   db_pupil_results = checks_ids_from_school.map {|check| {id: check.to_s, mark: SqlDbHelper.get_check_result(check)['mark'].to_s}}.sort_by {|hsh| hsh[:id]}
   expect(db_pupil_results).to eql pupil_results
 end
@@ -166,7 +166,7 @@ Then(/^I should see the results and reasons for not taking the check$/) do
     if pupil.score.text == '-'
       pupils_not_taking << {name: pupil.name.text, reason: pupil.status.text}
     else
-      pupil_results << {id: SqlDbHelper.get_check_id_using_names(pupil.name.text.split(',')[0], pupil.name.text.split(',')[1].strip)['id'].to_s, mark: pupil.score.text}
+      pupil_results << {id: SqlDbHelper.get_check_id_using_names(pupil.name.text.split(',')[0], pupil.name.text.split(',')[1].strip, @school_id)['id'].to_s, mark: pupil.score.text}
     end
   end
   db_pupil_results = checks_ids_from_school.map {|check| {id: check.to_s, mark: SqlDbHelper.get_check_result(check)['mark'].to_s}}.sort_by {|hsh| hsh[:id]}

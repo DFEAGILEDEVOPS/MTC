@@ -175,7 +175,7 @@ Given(/^I have generated pins for multiple pupils$/) do
   @upn_list = add_multiple_pupil_page.create_and_upload_multiple_pupils(3,'pin_gen.csv')
   generate_pins_overview_page.load
   step 'I click Generate PINs button'
-  @pupil_names_arr = @upn_list.map {|upn| SqlDbHelper.pupil_details(upn)['lastName']+', ' + SqlDbHelper.pupil_details(upn)['foreName']}
+  @pupil_names_arr = @upn_list.map {|upn| SqlDbHelper.pupil_details(upn, @school_id)['lastName']+', ' + SqlDbHelper.pupil_details(upn, @school_id)['foreName']}
   generate_pins_overview_page.generate_pin_using_list_of_names(@pupil_names_arr)
   step "I am on the generate pupil pins page"
 
@@ -193,7 +193,7 @@ end
 
 Then(/^the pin should be stored against the pupil$/) do
   pupil_upn = @stored_pupil_details['upn'].to_s
-  pupil_id = SqlDbHelper.pupil_details(pupil_upn)['id']
+  pupil_id = SqlDbHelper.pupil_details(pupil_upn, @school_id)['id']
   check_entry = SqlDbHelper.check_details(pupil_id)
   pupil_pin = SqlDbHelper.get_pupil_pin(check_entry['id'])['val']
   expect(view_and_custom_print_live_check_page.find_pupil_row(@pupil_name).pin.text).to eql pupil_pin.to_s
@@ -201,7 +201,7 @@ end
 
 Then(/^check form should be assigned to the pupil$/) do
   pupil_upn = @stored_pupil_details['upn'].to_s
-  pupil_id = SqlDbHelper.pupil_details(pupil_upn)['id']
+  pupil_id = SqlDbHelper.pupil_details(pupil_upn, @school_id)['id']
   check_entry = SqlDbHelper.check_details(pupil_id)
   expect(check_entry['checkForm_id'].nil?).to be_falsey, "Check Form is not assigned to the Pupil when pin is generated"
   expect(SqlDbHelper.check_form_details_using_id(check_entry['checkForm_id'])['isDeleted']).to be_falsey
@@ -249,7 +249,7 @@ Then(/^the pin should be expired$/) do
 end
 
 And(/^the status of the pupil should be (.+)$/) do |status|
-  Timeout.timeout(ENV['WAIT_TIME'].to_i){sleep 2 until SqlDbHelper.pupil_details(@stored_pupil_details['upn'])['pupilStatus_id'] == 6}
+  Timeout.timeout(ENV['WAIT_TIME'].to_i){sleep 2 until SqlDbHelper.pupil_details(@stored_pupil_details['upn'], @school_id)['pupilStatus_id'] == 6}
   pupil_register_page.load
   pupil_row = pupil_register_page.find_pupil_row(@pupil_name)
   expect(pupil_row.result.text).to eql(status)
@@ -401,7 +401,11 @@ Then(/^I should see that I should not be able to generate a pin$/) do
   expect(school_landing_page).to have_generate_pupil_pin_disabled
 end
 
-Given(/^I want to generate pins for a group of 250 pupils with a teacher$/) do
+Given(/^I want to generate pins for a group of 255 pupils with a teacher$/) do
+  step "I am logged in"
+  step 'I am on the add multiple pupil page'
+  @upns_for_school = add_multiple_pupil_page.upload_pupils(255, @school_name)
+  visit ENV['ADMIN_BASE_URL'] + '/sign-out'
   step "I am on the create group page"
   step "I select all pupils"
   add_edit_groups_page.sticky_banner.confirm.click
@@ -413,13 +417,13 @@ When(/^I select all (\d+) pupils$/) do |arg|
   group = generate_pins_overview_page.group_filter.groups.find {|group| group.name.text.include? @group_name}
   group.checkbox.click
   generate_pins_overview_page.select_all_pupils.click
-  expect(generate_pins_overview_page.sticky_banner.selected_count.text.to_i).to eql 250
+  expect(generate_pins_overview_page.sticky_banner.selected_count.text.to_i).to eql 255
   generate_pins_overview_page.sticky_banner.confirm.click
 end
 
 Then(/^I should be able to generate pins$/) do
   expect(current_url).to include '/view-and-custom-print-live-pins'
-  expect(view_and_custom_print_live_check_page.pupil_list.rows.size).to eql 250
+  expect(view_and_custom_print_live_check_page.pupil_list.rows.size).to eql 255
 end
 
 
@@ -434,7 +438,7 @@ end
 
 Then(/^the user should be stored to identify who created the check$/) do
   pupil_upn = @stored_pupil_details['upn'].to_s
-  pupil_id = SqlDbHelper.pupil_details(pupil_upn)['id']
+  pupil_id = SqlDbHelper.pupil_details(pupil_upn, @school_id)['id']
   check_entry = SqlDbHelper.check_details(pupil_id)
   user_id = SqlDbHelper.find_teacher(@user)['id']
   expect(check_entry['createdBy_userId']).to eql user_id
