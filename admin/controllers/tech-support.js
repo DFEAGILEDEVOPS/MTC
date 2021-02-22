@@ -6,6 +6,7 @@ const checkDiagnosticsService = require('../services/check-diagnostic.service')
 const payloadService = require('../services/payload.service')
 const redisService = require('../services/tech-support/redis.service')
 const administrationMessageService = require('../services/administration-message.service')
+const redisErrorMessages = require('../lib/errors/redis').redis
 
 const controller = {
 /**
@@ -138,7 +139,7 @@ const controller = {
         return res.redirect(`/tech-support/redis/drop/confirm/${encodeURIComponent(key)}`)
       } else {
         const error = new ValidationError()
-        error.addError('key', 'Key cannot be dropped')
+        error.addError('key', redisErrorMessages.dropNotAllowed)
         return controller.getRedisDropKeyPage(req, res, next, error)
       }
     } catch (error) {
@@ -179,6 +180,59 @@ const controller = {
       return res.redirect('/tech-support/home')
     } catch (error) {
       next(error)
+    }
+  },
+
+  getRedisSearchKey: async function getRedisSearchKey (req, res, next, error = new ValidationError()) {
+    try {
+      res.locals.pageTitle = 'Redis - Search for a key'
+      req.breadcrumbs('Redis - search')
+      res.render('tech-support/redis-search', {
+        breadcrumbs: req.breadcrumbs(),
+        error
+      })
+    } catch (error) {
+      return next(error)
+    }
+  },
+
+  postRedisSearchKey: async function postRedisSearchKey (req, res, next) {
+    try {
+      const key = req.body.key?.trim()
+      const isAllowed = redisService.validateKey(key)
+      if (!isAllowed) {
+        const error = new ValidationError()
+        error.addError('key', redisErrorMessages.dropNotAllowed)
+        return controller.getRedisSearchKey(req, res, next, error)
+      }
+      res.redirect(`/tech-support/redis/examine/${encodeURIComponent(key)}`)
+    } catch (error) {
+      return next(error)
+    }
+  },
+
+  getExamineRedisKey: async function getExamineRedisKey (req, res, next) {
+    try {
+      res.locals.pageTitle = 'Redis - examine key'
+      req.breadcrumbs('Redis - examine')
+      const key = req.params?.key
+      const isAllowed = redisService.validateKey(key)
+      if (!isAllowed) {
+        const error = new ValidationError()
+        error.addError('key', redisErrorMessages.dropNotAllowed)
+        return controller.getRedisSearchKey(req, res, next, error)
+      }
+      if (!key || key.length === 0) {
+        return next(new Error('Invalid key'))
+      }
+      const metaInfo = await redisService.getObjectMeta(key)
+      return res.render('tech-support/redis-examine-key', {
+        breadcrumbs: req.breadcrumbs(),
+        key,
+        metaInfo
+      })
+    } catch (error) {
+      return next(error)
     }
   }
 }

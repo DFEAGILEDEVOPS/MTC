@@ -2,52 +2,18 @@
 <main class="govuk-main-wrapper govuk-body" id="main-content" role="main">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-
             <%- partial('partials/_gds_session_expiry') %>
-
-            <% if (messages && messages.info && messages.info.length) { %>
-                <div class="govuk-body govuk-info-message govuk-!-margin-bottom-7">
-                    <%= messages.info %>
-                </div>
-            <% } %>
-
-            <% if (error.hasError()) { %>
-            <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1"
-                 data-module="govuk-error-summary">
-                <h2 class="govuk-error-summary__title" id="error-summary-title">
-                    You need to fix the errors on this page before continuing.
-                </h2>
-                <div class="govuk-error-summary__body">
-                    <p>See highlighted errors below.</p>
-                    <ul class="govuk-list govuk-error-summary__list">
-                        <% error.getUniqueFields(['key']).map(f => { %>
-                            <% const errors = error.get(f) %>
-                            <% if (Array.isArray(errors)) { %>
-                                <%  errors.forEach(e => { %>
-                                    <li><a href="#<%= f %>"><%= e %></a></li>
-                            <% }) } else { %>
-                                <li><a href="#<%= f %>"><%= errors %></a></li>
-                            <% } %>
-                        <% }) %>
-                    </ul>
-                </div>
-            </div>
-            <% } %>
-
-            <form action="/tech-support/redis/drop/confirm" method="post" autocomplete="off">
-                <input type="hidden" name="_csrf" value="<%= csrftoken %>"/>
-                <div class="govuk-form-group">
-                    <h1 class="govuk-label-wrapper"><label class="govuk-label govuk-label--l" for="key">
-                            Enter the exact key name to drop
-                        </label>
-                    </h1>
-                    <input class="govuk-input" id="key" name="key" type="text" value="<%= key %>">
-                </div>
-
-                <button type="submit" id="drop-confirm-btn" class="govuk-button">Go to confirmation page</button>
-                <a class="govuk-button govuk-button--secondary" href="/tech-support/home">Cancel</a>
-            </form>
-
+            <%- partial('partials/_flash-messages') %>
+            <%- partial('partials/_form-error', {
+                pageFields: ['key'],
+                error
+            }) %>
+            <%- partial('tech-support/_redis-key-search', {
+                formPostUrl: '/tech-support/redis/drop/confirm',
+                key: key,
+                submitButtonDisplayTxt: 'Go to confirmation page',
+                cancelButtonUrl: '/tech-support/home'
+            }) %>
         </div>
 
         <div class="govuk-grid-column-one-third" aria-label="sidebar">

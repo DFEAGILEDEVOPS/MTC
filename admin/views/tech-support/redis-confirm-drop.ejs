@@ -3,12 +3,7 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <%- partial('partials/_gds_session_expiry') %>
-
-            <% if (messages && messages.info && messages.info.length) { %>
-                <div class="govuk-body govuk-info-message govuk-!-margin-bottom-7">
-                    <%= messages.info %>
-                </div>
-            <% } %>
+            <%- partial('partials/_flash-messages') %>
 
             <h1 class="govuk-heading-xl">Are you sure that you want to drop this key?</h1>
             <pre class="govuk-!-font-size-48"><%= key %></pre>

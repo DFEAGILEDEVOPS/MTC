@@ -2,10 +2,25 @@
 <main class="govuk-main-wrapper govuk-body" id="main-content" role="main">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            <h1 class="govuk-heading-xl">Redis Overview</h1>
             <%- partial('partials/_gds_session_expiry') %>
             <%- partial('partials/_flash-messages') %>
-            <pre><%= info %></pre>
+
+            <h1 class="govuk-heading-xl">Redis key</h1>
+            <pre class="govuk-!-font-size-48"><%= key %></pre>
+
+            <h2 class="govuk-heading-m">Object meta</h2>
+            <div class="govuk-panel govuk-green-panel">
+                <dl class="inline-definition-list">
+                    <dt>Key exists</dt>
+                    <dd><%= metaInfo.exists %></dd>
+
+                    <dt>Key length</dt>
+                    <dd><%= metaInfo.length %></dd>
+
+                    <dt>TTL</dt>
+                    <dd><%= metaInfo.ttl === undefined ? 'N/A' : metaInfo.ttl %></dd>
+                </dl>
+            </div>
         </div>
 
         <div class="govuk-grid-column-one-third" aria-label="sidebar">
@@ -16,14 +31,13 @@
                 <nav role="navigation" aria-labelledby="subsection-title">
                     <ul class="govuk-list govuk-!-font-size-16">
                         <li>
-                            <a class="govuk-link" href="/tech-support/redis/drop" >Drop a key from Redis</a>
-                        </li>
-                        <li>
-                            <a class="govuk-link" href="/tech-support/redis/search" >Search for a key in Redis</a>
+                            <a class="govuk-link" href="/tech-support/redis-overview" >Redis overview</a>
                         </li>
                     </ul>
                 </nav>
             </aside>
         </div>
     </div>
+
+
 </main>

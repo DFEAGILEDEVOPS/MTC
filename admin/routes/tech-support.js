@@ -60,4 +60,22 @@ router.post(
   techSupportController.postRedisDropKey
 )
 
+router.get(
+  '/redis/search',
+  isAuthenticated([roles.techSupport]),
+  techSupportController.getRedisSearchKey
+)
+
+router.post(
+  '/redis/search',
+  isAuthenticated([roles.techSupport]),
+  techSupportController.postRedisSearchKey
+)
+
+router.get(
+  '/redis/examine/:key',
+  isAuthenticated([roles.techSupport]),
+  techSupportController.getExamineRedisKey
+)
+
 module.exports = router
