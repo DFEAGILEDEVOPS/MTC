@@ -16,7 +16,7 @@ Then(/^all answers events and inputs match$/) do
   check_result = AzureTableHelper.wait_for_received_check(@storage_school['uuid'], @storage_pupil['checkCode'])
   @archive = JSON.parse(LZString::UTF16.decompress(check_result['archive']))
   check_id = SqlDbHelper.get_check_id(@storage_pupil['checkCode'])
-  SqlDbHelper.wait_for_check_result(check_id)
+  SqlDbHelper.wait_for_check_result_row(check_id)
   check_result_id = SqlDbHelper.get_check_result_id(check_id)
   db_answers = SqlDbHelper.get_answers(check_result_id).each {|x| x.delete ('id')}.each {|x|
     x.delete('createdAt')}.each {|x| x.delete ('updatedAt')}.each {|x|
@@ -90,7 +90,7 @@ Then(/^I should see all inputs recorded$/) do
   @storage_pupil = JSON.parse page.evaluate_script('window.localStorage.getItem("pupil");')
   AzureTableHelper.wait_for_received_check(@storage_school['uuid'], @storage_pupil['checkCode'])
   check_id = SqlDbHelper.get_check_id(@storage_pupil['checkCode'])
-  SqlDbHelper.wait_for_check_result(check_id)
+  SqlDbHelper.wait_for_check_result_row(check_id)
   check_result_id = SqlDbHelper.get_check_result_id(check_id)
   db_inputs = SqlDbHelper.get_input_data(check_result_id).map {|h| h['userInput'].downcase if h['questionNumber'] == 1}.compact
   array_of_inputs = @numbers + @alphabet + @keys.map {|k| k.to_s} + @keys_2.map {|k| k.to_s} + @special + @f_keys.map {|k| k.to_s} + @enter.map {|k| k.to_s}

@@ -145,7 +145,7 @@ Then(/^the page should match design$/) do
 end
 
 Then(/^I should be able to change the pupils access arrangements$/) do
-  pupil_id = SqlDbHelper.pupil_details_using_names(@pupil_name.split(',').last.strip,@pupil_name.split(',').first.strip)['id']
+  pupil_id = SqlDbHelper.pupil_details_using_names(@pupil_name.split(',').last.strip,@pupil_name.split(',').first.strip, @school_id)['id']
   current_aa = SqlDbHelper.get_access_arrangements_for_a_pupil(pupil_id).map {|aa| aa['accessArrangements_id']}
   select_access_arrangements_page.select_access_arrangement(@access_arrangement_name)
   @new_access_arrangement_name = "Remove on-screen number pad"
@@ -238,7 +238,7 @@ When(/^I decide against removing access arrangements against a pupil$/) do
 end
 
 Then(/^there should be no change made to the pupils access arrangements$/) do
-  pupil_id = SqlDbHelper.pupil_details_using_names(@pupil_name.split(',').last.strip,@pupil_name.split(',').first.strip)['id']
+  pupil_id = SqlDbHelper.pupil_details_using_names(@pupil_name.split(',').last.strip,@pupil_name.split(',').first.strip, @school_id)['id']
   aa_id = SqlDbHelper.get_access_arrangements_for_a_pupil(pupil_id).first['accessArrangements_id']
   aa_description = SqlDbHelper.find_access_arrangements_by_id(aa_id).first['description']
   expect(@access_arrangement_name).to eql aa_description
@@ -273,7 +273,7 @@ And(/^I decide to update the pupils access arrangements by adding (.+)$/) do |ac
 end
 
 And(/^these updates should be saved in the DB$/) do
-  pupil_id = SqlDbHelper.pupil_details(@details_hash[:upn])['id']
+  pupil_id = SqlDbHelper.pupil_details(@details_hash[:upn], @school_id)['id']
   pupil_access_arrangements = SqlDbHelper.get_access_arrangements_for_a_pupil(pupil_id)
   access_id_array = pupil_access_arrangements.map {|a| a['accessArrangements_id']}
   expect(access_id_array.size).to eql 2
