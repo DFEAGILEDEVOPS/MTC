@@ -45,10 +45,7 @@ const redisService = {
       /^schoolData.sqlFindOneById/,
       /^settings$/
     ]
-    if (allowedPrefixes.some(regex => { return regex.test(key) })) {
-      return true
-    }
-    return false
+    return allowedPrefixes.some(regex => { return regex.test(key) })
   },
 
   dropKeyIfAllowed: async function dropKeyIfAllowed (key) {
