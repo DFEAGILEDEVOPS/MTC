@@ -15,6 +15,10 @@
                     </p>
                 </div>
             <% } %>
+
+            <% if (isAuthenticated) { %>
+                <p><a class="govuk-link" href="/sign-out">Sign out</a></p>
+            <% } %>
         </div>
         <div class="govuk-grid-column-one-third" aria-label="sidebar">
             <aside class="app-related-items" role="complementary">

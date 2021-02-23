@@ -47,8 +47,8 @@ end
 
 Then(/^I can see the status for the pupil is '(.*)'$/) do |status|
   unless status == 'Not started'
-    Timeout.timeout(ENV['WAIT_TIME'].to_i) {sleep 1 until SqlDbHelper.check_details(SqlDbHelper.pupil_details(@details_hash[:upn])['id'])['complete']} unless status == 'Error in processing' || status == 'Pupil check not received'
-    Timeout.timeout(ENV['WAIT_TIME'].to_i) {sleep 1 until SqlDbHelper.check_details(SqlDbHelper.pupil_details(@details_hash[:upn])['id'])['processingFailed']} if status == 'Error in processing'
+    Timeout.timeout(ENV['WAIT_TIME'].to_i) {sleep 1 until SqlDbHelper.check_details(SqlDbHelper.pupil_details(@details_hash[:upn], @school_id)['id'])['complete']} unless status == 'Error in processing' || status == 'Pupil check not received'
+    Timeout.timeout(ENV['WAIT_TIME'].to_i) {sleep 1 until SqlDbHelper.check_details(SqlDbHelper.pupil_details(@details_hash[:upn], @school_id)['id'])['processingFailed']} if status == 'Error in processing'
   end
   status == 'Restart' ? status = 'Not started' : status = status
   pupil_status_page.load

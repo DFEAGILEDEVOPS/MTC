@@ -23,8 +23,8 @@ end
 
 Then(/^this should be saved$/) do
   gender = @updated_details_hash[:male] ? 'M' : 'F'
-  wait_until{!(SqlDbHelper.pupil_details(@updated_upn.to_s)).nil?}
-  @stored_pupil_details = SqlDbHelper.pupil_details @updated_upn.to_s
+  wait_until{!(SqlDbHelper.pupil_details(@updated_upn.to_s, @school_id)).nil?}
+  @stored_pupil_details = SqlDbHelper.pupil_details(@updated_upn.to_s, @school_id)
   expect(@updated_details_hash[:first_name]).to eql @stored_pupil_details['foreName']
   expect(@updated_details_hash[:middle_name]).to eql @stored_pupil_details['middleNames']
   expect(@updated_details_hash[:last_name]).to eql @stored_pupil_details['lastName']
@@ -69,8 +69,8 @@ end
 
 
 Then(/^the pupil details should not be updated$/) do
-  wait_until {(SqlDbHelper.pupil_details @upn.to_s)}
-  stored_details = SqlDbHelper.pupil_details @upn.to_s
+  wait_until {(SqlDbHelper.pupil_details @upn.to_s, @school_id)}
+  stored_details = SqlDbHelper.pupil_details(@upn.to_s, @school_id)
   expect(stored_details['foreName']).to_not eql @details_hash[:first_name]
   expect(stored_details['middleName']).to_not eql @details_hash[:middle_name]
   expect(stored_details['lastName']).to_not eql @details_hash[:last_name]
