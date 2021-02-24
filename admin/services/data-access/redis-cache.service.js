@@ -162,6 +162,17 @@ redisCacheService.getTtl = async (key) => {
 }
 
 /**
+ * DropByPrefix: drops keys by prefix
+ * Warning: not recommended for production as it uses KEYS
+ * @param prefix
+ * @return {Promise<void>}
+ */
+redisCacheService.dropByPrefix = async (prefix) => {
+  redisConnect()
+  await redis.eval(`for i, name in ipairs(redis.call('KEYS', '${prefix}*')) do redis.call('DEL', name); end`, 0)
+}
+
+/**
  * Wrap a value for storing in redis with type information
  * @param value
  * @return {string}

@@ -7,6 +7,7 @@ const payloadService = require('../services/payload.service')
 const redisService = require('../services/tech-support/redis.service')
 const administrationMessageService = require('../services/administration-message.service')
 const redisErrorMessages = require('../lib/errors/redis').redis
+const moment = require('moment')
 
 const controller = {
 /**
@@ -189,7 +190,8 @@ const controller = {
       req.breadcrumbs('Redis - search')
       res.render('tech-support/redis-search', {
         breadcrumbs: req.breadcrumbs(),
-        error
+        error,
+        key: req.body?.k ?? ''
       })
     } catch (error) {
       return next(error)
@@ -199,10 +201,10 @@ const controller = {
   postRedisSearchKey: async function postRedisSearchKey (req, res, next) {
     try {
       const key = req.body.key?.trim()
-      const isAllowed = redisService.validateKey(key)
-      if (!isAllowed) {
+      const item = await redisService.get(key)
+      if (item === undefined) {
         const error = new ValidationError()
-        error.addError('key', redisErrorMessages.dropNotAllowed)
+        error.addError('key', `Key '${key}' does not exist`)
         return controller.getRedisSearchKey(req, res, next, error)
       }
       res.redirect(`/tech-support/redis/examine/${encodeURIComponent(key)}`)
@@ -216,12 +218,6 @@ const controller = {
       res.locals.pageTitle = 'Redis - examine key'
       req.breadcrumbs('Redis - examine')
       const key = req.params?.key
-      const isAllowed = redisService.validateKey(key)
-      if (!isAllowed) {
-        const error = new ValidationError()
-        error.addError('key', redisErrorMessages.dropNotAllowed)
-        return controller.getRedisSearchKey(req, res, next, error)
-      }
       if (!key || key.length === 0) {
         return next(new Error('Invalid key'))
       }
@@ -231,6 +227,75 @@ const controller = {
         key,
         metaInfo
       })
+    } catch (error) {
+      return next(error)
+    }
+  },
+
+  getRedisBatchDropPage: async function getRedisBatchDropPage (req, res, next) {
+    try {
+      res.locals.pageTitle = 'Redis - batch delete keys'
+      req.breadcrumbs('Redis - Batch delete')
+      res.render('tech-support/redis-multiple-drop', {
+        breadcrumbs: req.breadcrumbs(),
+        keyTypes: redisService.batchTokenKeyTypes
+      })
+    } catch (error) {
+      return next(error)
+    }
+  },
+
+  postRedisBatchDropRedirectToConfirmPage: async function postRedisBatchDropRedirectToConfirmPage (req, res, next) {
+    try {
+      let keys = req.body.key
+      if (keys === undefined) {
+        throw new Error('missing key')
+      }
+      if (typeof keys === 'string') {
+        keys = [keys]
+      }
+      const isValid = redisService.validateBatchTokens(keys)
+      if (!isValid) {
+        return next(new Error('Unknown token detected'))
+      }
+      const qs = keys.map(k => `k=${encodeURIComponent(k)}`).join('&')
+      res.redirect(`/tech-support/redis/multiple/drop/confirm?${qs}`)
+    } catch (error) {
+      return next(error)
+    }
+  },
+
+  postRedisBatchDropConfirmPage: async function postRedisBatchDropConfirmPage (req, res, next) {
+    try {
+      const keys = req.query.k
+      const isValid = redisService.validateBatchTokens(keys)
+      if (!isValid) {
+        return next(new Error('One of the batch tokens was invalid'))
+      }
+      const keyElements = redisService.filterTokens(keys)
+      res.locals.pageTitle = 'Redis - batch delete keys'
+      req.breadcrumbs('Redis - Confirm batch delete')
+      res.render('tech-support/redis-multiple-drop-confirm', {
+        breadcrumbs: req.breadcrumbs(),
+        keys: keyElements
+      })
+    } catch (error) {
+      return next(error)
+    }
+  },
+
+  postRedisBatchDrop: async function postRedisBatchDrop (req, res, next) {
+    try {
+      let keys = req.body.key
+      if (typeof keys === 'string') {
+        keys = [keys]
+      }
+      const t1 = moment().valueOf()
+      await redisService.multiDrop(keys)
+      const t2 = moment().valueOf()
+      const timeTaken = (t2 - t1) / 1000
+      req.flash('info', `Redis keys [${keys.join(', ')}] dropped in ${timeTaken} seconds`)
+      res.redirect('/tech-support/redis-overview')
     } catch (error) {
       return next(error)
     }

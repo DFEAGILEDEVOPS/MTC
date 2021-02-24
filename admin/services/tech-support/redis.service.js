@@ -2,13 +2,27 @@
 
 const redisCacheService = require('../data-access/redis-cache.service')
 
-
-
 const redisService = {
+  batchTokenKeyTypes: [
+    { type: 'checkForm', label: 'Check forms', keyPrefix: 'checkForms:' },
+    { type: 'checkWindow', label: 'Check window', keyPrefix: 'checkWindow' },
+    { type: 'lacodes', label: 'LA Codes', keyPrefix: 'lacode' },
+    { type: 'group', label: 'Groups', keyPrefix: 'group' },
+    { type: 'pupilRegister', label: 'Pupil Registers', keyPrefix: 'pupilRegister' },
+    { type: 'result', label: 'School results', keyPrefix: 'result' },
+    { type: 'sasToken', label: 'SAS Tokens', keyPrefix: 'sasToken' },
+    { type: 'schoolData', label: 'School data', keyPrefix: 'school' },
+    { type: 'settings', label: 'Settings', keyPrefix: 'setting' }
+  ],
+
   getServerInfo: async function getServerInfo () {
     const client = redisCacheService.getRedisClient()
     const data = await client.info()
     return data
+  },
+
+  get: async function get (key) {
+    return redisCacheService.get(key)
   },
 
   getObjectMeta: async function getObjectMeta (key) {
@@ -38,7 +52,6 @@ const redisService = {
       /^checkWindow.sqlFindActiveCheckWindow$/,
       /^lacodes$/,
       /^group.sqlFindGroups/,
-      /^pupil-uuid-lookup:/,
       /^pupilRegisterViewData:/,
       /^result:/,
       /^sasToken:/,
@@ -48,11 +61,68 @@ const redisService = {
     return allowedPrefixes.some(regex => { return regex.test(key) })
   },
 
+  validateBatchTokens: function validateBatchTokens (tokens) {
+    // ensure that each token is a valid one
+    console.log('validating tokens', tokens)
+    if (!Array.isArray(tokens)) {
+      if (typeof tokens === 'string') {
+        tokens = [tokens]
+      } else {
+        throw new Error('Invalid tokens')
+      }
+    }
+    if (tokens.length === 0) {
+      throw new Error('Missing tokens')
+    }
+    const isBatchToken = (testToken) => {
+      const element = redisService.batchTokenKeyTypes.find(obj => {
+        return obj.type === testToken
+      })
+      return element !== undefined
+    }
+    const isAllowed = tokens.every(isBatchToken)
+    return isAllowed
+  },
+
+  filterTokens: function filterTokens (tokens) {
+    if (typeof tokens === 'string') {
+      tokens = [tokens]
+    }
+    if (!Array.isArray(tokens)) {
+      throw new Error('Invalid tokens')
+    }
+    if (tokens.length === 0) {
+      throw new Error('Missing tokens')
+    }
+    const filtered = tokens.map(t => {
+      const found = redisService.batchTokenKeyTypes.find(obj => obj.type === t)
+      if (found === undefined) {
+        throw new Error(`Token ${t} not found`)
+      }
+      return found
+    })
+    return filtered
+  },
+
   dropKeyIfAllowed: async function dropKeyIfAllowed (key) {
     const isAllowed = this.validateKey(key)
     if (!isAllowed) return false
     await redisCacheService.drop(key)
     return true
+  },
+
+  multiDrop: async function multiDrop (keys) {
+    if (!Array.isArray(keys)) {
+      throw new Error('keys is not an array')
+    }
+    const isValid = redisService.validateBatchTokens(keys)
+    if (!isValid) {
+      throw new Error('One of the batch tokens was invalid')
+    }
+    const keysElements = redisService.filterTokens(keys)
+    for (const key of keysElements) {
+      await redisCacheService.dropByPrefix(key.keyPrefix)
+    }
   }
 }
 

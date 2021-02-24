@@ -73,9 +73,33 @@ router.post(
 )
 
 router.get(
-  '/redis/examine/:key',
+  '/redis/examine/:key?',
   isAuthenticated([roles.techSupport]),
   techSupportController.getExamineRedisKey
+)
+
+router.get(
+  '/redis/multiple/drop',
+  isAuthenticated([roles.techSupport]),
+  techSupportController.getRedisBatchDropPage
+)
+
+router.post(
+  '/redis/multiple/drop',
+  isAuthenticated([roles.techSupport]),
+  techSupportController.postRedisBatchDrop
+)
+
+router.post(
+  '/redis/multiple/drop/confirm',
+  isAuthenticated([roles.techSupport]),
+  techSupportController.postRedisBatchDropRedirectToConfirmPage
+)
+
+router.get(
+  '/redis/multiple/drop/confirm',
+  isAuthenticated([roles.techSupport]),
+  techSupportController.postRedisBatchDropConfirmPage
 )
 
 module.exports = router

@@ -10,7 +10,7 @@
             }) %>
             <%- partial('tech-support/_redis-key-search', {
                formPostUrl: '/tech-support/redis/search',
-               key: '',
+               key: key,
                submitButtonDisplayTxt: 'Examine key',
                cancelButtonUrl: '/tech-support/redis-overview'
             }) %>
