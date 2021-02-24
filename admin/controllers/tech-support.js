@@ -172,11 +172,15 @@ const controller = {
   postRedisDropKey: async function postRedisDropKey (req, res, next) {
     try {
       const key = req.body.key
-      const isDropped = await redisService.dropKeyIfAllowed(key)
-      if (isDropped) {
+      const isAllowed = await redisService.dropKeyIfAllowed(key)
+      if (isAllowed) {
         req.flash('info', `Key '${key}' was deleted from redis`)
       } else {
-        req.flash('info', 'Key is not allowed to be dropped')
+        // Key is not allowed / not found
+        const error = new Error('Invalid key')
+        // @ts-ignore
+        error.status = 404
+        return next(error)
       }
       return res.redirect('/tech-support/home')
     } catch (error) {
