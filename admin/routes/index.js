@@ -23,6 +23,7 @@ const {
   getSignedOut
 } = require('../controllers/authentication')
 const getPing = require('../controllers/ping')
+const getTestError = require('../controllers/test-error')
 
 /* GET home page. */
 router.get('/', (req, res) => home(req, res))
@@ -50,6 +51,7 @@ router.get('/cookies-mtc', (req, res) => getCookiesMtc(req, res))
 router.get('/accessibility-statement', (req, res) => getAccessibilityStatementPage(req, res))
 
 router.get('/ping', (req, res) => getPing(req, res))
+router.get('/test-error', (req, res) => getTestError(req, res))
 
 const signInFailureRedirect = '/sign-in-failure'
 

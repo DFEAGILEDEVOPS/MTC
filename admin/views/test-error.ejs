@@ -1,0 +1,14 @@
+<main class="govuk-main-wrapper" id="main-content" role="main">
+    <div class="govuk-grid-row">
+        <h1 class="govuk-heading-xl">Test error page</h1>
+
+        <%- partial('partials/_gds_session_expiry') %>
+
+        <p>
+            This page is designed to raise a error via the front-end javascript.
+        </p>
+    </div>
+    <script>
+        throw new Error('Front end error')
+    </script>
+</main>
