@@ -1,5 +1,5 @@
 'use strict'
-/* global describe, it, expect fail */
+/* global describe, it, expect fail, afterAll */
 
 const azureStorage = require('azure-storage')
 const bluebird = require('bluebird')
@@ -7,6 +7,7 @@ const moment = require('moment')
 
 const queueNameService = require('../services/queue-name-service')
 const sasTokenService = require('../services/sas-token.service')
+const redisCacheService = require('../services/data-access/redis-cache.service')
 
 const delay = (ms) => {
   return new Promise(function (resolve) {
@@ -40,6 +41,8 @@ const createQueueService = async (sasToken) => {
 }
 
 describe('sas-token-expiry', () => {
+  afterAll(async () => { await redisCacheService.disconnect() })
+
   it('should return specific properties and content when attempting to submit with expired sas tokens', async () => {
     const sasExpiryDate = moment().add(2, 'seconds')
     const checkCompleteSasToken = await sasTokenService.generateSasToken(

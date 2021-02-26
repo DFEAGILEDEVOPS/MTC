@@ -17,6 +17,7 @@ try {
 }
 const sql = require('../services/data-access/sql.service')
 const createCheck = require('./test-support/create-check')
+const redisCacheService = require('../services/data-access/redis-cache.service')
 
 describe('DB function: udfCalcCheckStatusID', () => {
   beforeAll(async () => {
@@ -25,6 +26,7 @@ describe('DB function: udfCalcCheckStatusID', () => {
 
   afterAll(async () => {
     await sql.drainPool()
+    redisCacheService.disconnect()
   })
 
   function createQuery (checkId) {

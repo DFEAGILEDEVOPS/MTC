@@ -1,10 +1,12 @@
 'use strict'
-/* global describe expect it */
+/* global describe expect it afterAll */
 
 const moment = require('moment')
 const redisCache = require('../services/data-access/redis-cache.service')
 
 describe('redisCache integration tests', () => {
+  afterAll(async () => { await redisCache.disconnect() })
+
   it('can serialise and deserialse an object with different types', async () => {
     const o = {
       name: 'A String',

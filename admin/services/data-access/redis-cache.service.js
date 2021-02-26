@@ -172,6 +172,12 @@ redisCacheService.dropByPrefix = async (prefix) => {
   await redis.eval(`for i, name in ipairs(redis.call('KEYS', '${prefix}*')) do redis.call('DEL', name); end`, 0)
 }
 
+redisCacheService.disconnect = async () => {
+  if (redis) {
+    return redis.quit()
+  }
+}
+
 /**
  * Wrap a value for storing in redis with type information
  * @param value

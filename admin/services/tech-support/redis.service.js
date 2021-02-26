@@ -4,7 +4,7 @@ const redisCacheService = require('../data-access/redis-cache.service')
 
 const redisService = {
   batchTokenKeyTypes: [
-    { type: 'checkForm', label: 'Check forms', keyPrefix: 'checkForms:' },
+    { type: 'checkForm', label: 'Check forms', keyPrefix: 'checkForm' },
     { type: 'checkWindow', label: 'Check window', keyPrefix: 'checkWindow' },
     { type: 'lacodes', label: 'LA Codes', keyPrefix: 'lacode' },
     { type: 'group', label: 'Groups', keyPrefix: 'group' },
@@ -111,6 +111,9 @@ const redisService = {
     return true
   },
 
+  /**
+   * @param {string[]} keys - array of tokens (batchTokenKeyTypes.element.type) to drop
+   */
   multiDrop: async function multiDrop (keys) {
     if (!Array.isArray(keys)) {
       throw new Error('keys is not an array')
