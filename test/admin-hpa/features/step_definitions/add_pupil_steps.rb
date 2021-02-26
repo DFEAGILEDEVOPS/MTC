@@ -166,9 +166,9 @@ end
 Then(/^the pupil details should be stored$/) do
   expect(pupil_register_page).to be_displayed
   gender = @details_hash[:male] ? 'M' : 'F'
-  wait_until {!(SqlDbHelper.pupil_details(@upn.to_s)).nil?}
+  wait_until {!(SqlDbHelper.pupil_details(@upn.to_s,@school_id)).nil?}
   sleep 2
-  @stored_pupil_details = SqlDbHelper.pupil_details @upn.to_s
+  @stored_pupil_details = SqlDbHelper.pupil_details(@upn.to_s, @school_id)
   expect(@details_hash[:first_name]).to eql @stored_pupil_details['foreName']
   expect(@details_hash[:middle_name]).to eql @stored_pupil_details['middleNames']
   expect(@details_hash[:last_name]).to eql @stored_pupil_details['lastName']
@@ -189,7 +189,7 @@ When(/^I have submitted invalid pupil details$/) do
 end
 
 Then(/^the pupil details should not be stored$/) do
-  wait_until {(SqlDbHelper.pupil_details @upn.to_s).nil?}
+  wait_until {(SqlDbHelper.pupil_details @upn.to_s, @school_id).nil?}
 end
 
 When(/^I submit the form with the name fields set as (.*)$/) do |value|
@@ -295,8 +295,8 @@ When(/^I attempt to enter names that are more than (\d+) characters long$/) do |
 end
 
 Then(/^I should see only (\d+) characters are saved$/) do |number|
-  wait_until {!(SqlDbHelper.pupil_details(@upn.to_s)).nil?}
-  @stored_pupil_details = SqlDbHelper.pupil_details @upn.to_s
+  wait_until {!(SqlDbHelper.pupil_details(@upn.to_s, @school_id)).nil?}
+  @stored_pupil_details = SqlDbHelper.pupil_details(@upn.to_s, @school_id)
   expect(@details_hash[:first_name]).to eql @long_name
   expect(@details_hash[:middle_name]).to eql @long_name
   expect(@details_hash[:last_name]).to eql @long_name

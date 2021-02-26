@@ -33,7 +33,7 @@ end
 Given(/^my check has been marked with (.+) correct answers$/) do |mark|
   @mark = mark
   step 'I have generated a live pin for a pupil'
-  pupil_detail = SqlDbHelper.pupil_details(@details_hash[:upn])
+  pupil_detail = SqlDbHelper.pupil_details(@details_hash[:upn], @school_id)
   @pupil_id = pupil_detail['id']
   check_entry = SqlDbHelper.check_details(@pupil_id)
   pupil_pin_detail = SqlDbHelper.get_pupil_pin(check_entry['id'])
@@ -87,7 +87,7 @@ end
 
 Given(/^my check has been completed using a (.+)$/) do |input_type|
   step 'I have generated a live pin for a pupil'
-  pupil_detail = SqlDbHelper.pupil_details(@details_hash[:upn])
+  pupil_detail = SqlDbHelper.pupil_details(@details_hash[:upn], @school_id)
   @pupil_id = pupil_detail['id']
   check_entry = SqlDbHelper.check_details(@pupil_id)
   pupil_pin_detail = SqlDbHelper.get_pupil_pin(check_entry['id'])
@@ -120,7 +120,7 @@ end
 
 Given(/^I have check which has resulted in a hard failure$/) do
   step 'I have generated a live pin for a pupil'
-  pupil_detail = SqlDbHelper.pupil_details(@details_hash[:upn])
+  pupil_detail = SqlDbHelper.pupil_details(@details_hash[:upn], @school_id)
   @pupil_id = pupil_detail['id']
   check_entry = SqlDbHelper.check_details(@pupil_id)
   pupil_pin_detail = SqlDbHelper.get_pupil_pin(check_entry['id'])

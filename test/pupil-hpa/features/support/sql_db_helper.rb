@@ -1,13 +1,14 @@
 class SqlDbHelper
 
-  def self.connect(admin_user,admin_password,server,port,database,azure_var)
+  def self.connect(admin_user, admin_password, server, port, database, azure_var)
     begin
       TinyTds::Client.new(username: admin_user,
                           password: admin_password,
                           host: server,
                           port: port,
                           database: database,
-                          azure: azure_var
+                          azure: azure_var,
+                          timeout: 120
       )
     rescue TinyTds::Error => e
       abort 'Test run failed due to - ' + e.to_s
@@ -25,7 +26,7 @@ class SqlDbHelper
   def self.get_list_of_schools
     sql = "SELECT * FROM [mtc_admin].[school]"
     result = SQL_CLIENT.execute(sql)
-    @array_of_schools = result.each{|row| row.map}
+    @array_of_schools = result.each {|row| row.map}
     result.cancel
     @array_of_schools
   end
@@ -154,7 +155,7 @@ class SqlDbHelper
     check_window_result = []
     sql = "SELECT * FROM [mtc_admin].[checkWindow]"
     result = SQL_CLIENT.execute(sql)
-    check_window_result = result.each{|row| row.map}
+    check_window_result = result.each {|row| row.map}
     result.cancel
     check_window_result
   end
@@ -165,7 +166,7 @@ class SqlDbHelper
     result.do
   end
 
-  def self.create_check(updatedime, createdTime, pupil_id, is_live_check=true)
+  def self.create_check(updatedime, createdTime, pupil_id, is_live_check = true)
     sql = "INSERT INTO [mtc_admin].[check] (updatedAt, createdAt, pupil_id, checkWindow_id, checkForm_id, isLiveCheck) VALUES ('#{updatedime}', '#{createdTime}', #{pupil_id}, 1, 1, '#{is_live_check}' )"
     result = SQL_CLIENT.execute(sql)
     result.insert
@@ -245,7 +246,7 @@ class SqlDbHelper
   end
 
 
-  def self.pupil_details_using_school(upn,school_id)
+  def self.pupil_details_using_school(upn, school_id)
     sql = "SELECT * FROM [mtc_admin].[pupil] WHERE upn='#{upn}' AND school_id=#{school_id}"
     result = SQL_CLIENT.execute(sql)
     pupil_details_res = result.first
@@ -292,7 +293,7 @@ class SqlDbHelper
     check['id']
   end
 
-  def self.wait_for_check_result(check_id)
+  def self.wait_for_check_result_row(check_id)
     begin
       retries ||= 0
       sleep 2

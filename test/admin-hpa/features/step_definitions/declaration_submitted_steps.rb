@@ -47,13 +47,13 @@ Given(/^I have some pupils that have completed the check$/) do
   @upn_list = add_multiple_pupil_page.create_and_upload_multiple_pupils(3, 'pin_gen.csv')
   generate_pins_overview_page.load
   step 'I click Generate PINs button'
-  @pupil_names_arr = @upn_list.map {|upn| SqlDbHelper.pupil_details(upn)['lastName'] + ', ' + SqlDbHelper.pupil_details(upn)['foreName']}
+  @pupil_names_arr = @upn_list.map {|upn| SqlDbHelper.pupil_details(upn,@school_id)['lastName'] + ', ' + SqlDbHelper.pupil_details(upn,@school_id)['foreName']}
   generate_pins_overview_page.generate_pin_using_list_of_names(@pupil_names_arr)
   step "I am on the generate pupil pins page"
   @pupil_names_arr.each do |pupil|
     pupil_lastname = pupil.split(',')[0]
     pupil_firstname = pupil.split(',')[1].split(' Date')[0].split(' ')[0]
-    pupil_detail = SqlDbHelper.pupil_details_using_names(pupil_firstname, pupil_lastname)
+    pupil_detail = SqlDbHelper.pupil_details_using_names(pupil_firstname, pupil_lastname, @school_id)
     pupil_id = pupil_detail['id']
     check_entry = SqlDbHelper.check_details(pupil_id)
     pupil_pin_detail = SqlDbHelper.get_pupil_pin(check_entry['id'])

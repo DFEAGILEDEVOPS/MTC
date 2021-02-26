@@ -160,10 +160,10 @@ Feature: Generate Pupil PINs
     And I am on the generate pupil pins page
     Then generated pin overview page for live check with some pin generated is displayed as per design
 
-  @remove_all_groups
-  Scenario: Generate pins for 250 pupils
-    Given I want to generate pins for a group of 250 pupils with a teacher
-    When I select all 252 pupils
+  @remove_all_groups @empty_new_school
+  Scenario: Generate pins for 255 pupils
+    Given I want to generate pins for a group of 255 pupils with a teacher
+    When I select all 255 pupils
     Then I should be able to generate pins
 
   Scenario: Users are recorded against the checks they create
