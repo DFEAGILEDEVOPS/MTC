@@ -1,6 +1,6 @@
 import { ISqlParameter, ISqlService, SqlService } from '../../sql/sql.service'
 import { ConsoleLogger, ILogger } from '../../common/logger'
-import { IPsychometricReportLine } from '../../functions/ps-report-3-transformer/models'
+import { IPsychometricReportLine, IReportLineAnswer } from '../../functions/ps-report-3-transformer/models'
 import { TYPES } from 'mssql'
 import * as R from 'ramda'
 
@@ -18,6 +18,18 @@ export class PsReportWriterService {
       sqlService = new SqlService(this.logger)
     }
     this.sqlService = sqlService
+  }
+
+  private parseTimeout (answers: IReportLineAnswer[], index: number, prop: 'timeout' | 'timeoutResponse' | 'timeoutScore'): number | null {
+    const answer = answers[index]
+    if (answer === undefined) {
+      return null
+    }
+    const value = answer[prop]
+    if (typeof value === 'boolean') {
+      return value ? 1 : 0
+    }
+    return value
   }
 
   private generateParams (data: IPsychometricReportLine): ISqlParameter[] {
@@ -59,9 +71,9 @@ export class PsReportWriterService {
       params.push({ name: `q${i}keystrokes`,      value: data.answers[i - 1]?.keystrokes,                    type: TYPES.NVarChar(256) })
       params.push({ name: `q${i}score`,           value: data.answers[i - 1]?.score,                         type: TYPES.TinyInt })
       params.push({ name: `q${i}responseTime`,    value: data.answers[i - 1]?.responseTime,                  type: TYPES.Decimal(7, 3) })
-      params.push({ name: `q${i}timeout`,         value: Number(data.answers[i - 1]?.timeout),               type: TYPES.TinyInt })
-      params.push({ name: `q${i}timeoutResponse`, value: Number(data.answers[i - 1]?.timeoutResponse),       type: TYPES.TinyInt })
-      params.push({ name: `q${i}timeoutScore`,    value: Number(data.answers[i - 1]?.timeoutScore),          type: TYPES.TinyInt })
+      params.push({ name: `q${i}timeout`,         value: this.parseTimeout(data.answers, i - 1, 'timeout'),               type: TYPES.TinyInt })
+      params.push({ name: `q${i}timeoutResponse`, value: this.parseTimeout(data.answers, i - 1, 'timeoutResponse'),       type: TYPES.TinyInt })
+      params.push({ name: `q${i}timeoutScore`,    value: this.parseTimeout(data.answers, i - 1, 'timeoutScore'),          type: TYPES.TinyInt })
       params.push({ name: `q${i}loadTime`,        value: data.answers[i - 1]?.loadTime?.toDate(),            type: TYPES.DateTimeOffset(3) })
       params.push({ name: `q${i}firstKey`,        value: data.answers[i - 1]?.firstKey?.toDate(),            type: TYPES.DateTimeOffset(3) })
       params.push({ name: `q${i}lastKey`,         value: data.answers[i - 1]?.lastKey?.toDate(),             type: TYPES.DateTimeOffset(3) })
