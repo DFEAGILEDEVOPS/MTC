@@ -15,7 +15,7 @@ describe('TestErrorComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ TestErrorComponent ]
+      declarations: [ TestErrorComponent, MockAppHeaderComponent ]
     })
     .compileComponents();
   }));
