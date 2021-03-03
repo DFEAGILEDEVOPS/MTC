@@ -190,7 +190,7 @@ export class PsReportDataService {
             c.processingFailed,
             c.pupilLoginDate,
             c.received,
-            rr.code as reasartReason,
+            rr.code as restartReason,
             (select count(*) from mtc_admin.pupilRestart where pupil_id = c.pupil_id and isDeleted = 0) as restartNumber
           FROM mtc_admin.[check] c
                LEFT JOIN mtc_results.checkResult cr ON (c.id = cr.check_id)
