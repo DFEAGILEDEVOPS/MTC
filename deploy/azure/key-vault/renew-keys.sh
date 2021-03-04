@@ -35,10 +35,12 @@ then
 
 else
   # throw error
-  exit 1 #TODO correct?
+  echo "ERROR: KEY_TYPE not specified.  valid values are 'primary' or 'secondary'"
+  exit 1
 
 fi
 
+echo "debug:renewing storage account $STORAGE_ACCOUNT_KEY_TYPE key..."
 # rotate key for storage account
 az storage account keys renew --resource-group $RES_GROUP --account-name $STORAGE_ACCOUNT_NAME --key $STORAGE_ACCOUNT_KEY_TYPE
 
