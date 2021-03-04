@@ -16,7 +16,10 @@ Booleans can be set to the string `'true'` or `'false'` or numeric `1` or `0` wh
 
 Env Var | Type | Default value | Required | Components | Description 
 --- | --- | --- | --- | --- | ---
-ALLOWED_WORDS | String | 'aaa,bbb,ccc,ddd,eee,dim' | Required | FC | Required to generated random school pins in the form WORD + NUMBER + NUMBER + WORD
+ALLOWED_WORDS | String | FC:'aaa,bbb,ccc,ddd,eee,dim'<br />AA:'' | Required | FC | Required to generated random school pins in the form WORD + NUMBER + NUMBER + WORD
+ADMIN_SESSION_DISPLAY_NOTICE_AFTER | Int | 300 | Optional | AA | Show a notice to the user that their session is about to end this many seconds before the session expires. 
+ADMIN_SESSION_EXPIRATION_TIME_IN_SECONDS | Int | 600 | Optional | AA | The session will expire after this many sconds of inactivity. 
+ASSET_PATH | String | / | Required | AA | The URL + path to prefix to serve the static assets. E.g. 'https://example.com/' 
 AZURE_SERVICE_BUS_CONNECTION_STRING | String | NULL | Required | AA, FC, FT, PAPI | Connection string as given in the Azure portal for Azure Service Bus.
 AZURE_STORAGE_CONNECTION_STRING | String | (empty string) | Required | AA, FC, FT | The Azure storage connection string.
 BANNED_WORDS | String | 'dim' | Optional | FC | Provides a way to negate words that may be in the allowed list ensuring that they never appear in a pin.
@@ -27,7 +30,8 @@ CHECK_NOTIFIER_MESSAGES_PER_BATCH | Int | 32 | Optional |  FC | Tune the number 
 CORS_WHITELIST | String | (empty string) | Required | AA, PAPI | Comma separated string of URLs allowed to access the service being protected.
 DEBUG_VERBOSITY | Int | 1 | Optional | AA, FC, FT | Set to 0 for now additional logging, 1 for more verbosity, and 2 to see SQL queries (requires the LOGLEVEL set to debug)
 DEBUG_VERBOSITY | Int | 1 | Optional | FC, FT | When LOG_LEVEL is set to 'debug' use DEBUG_VERBOSITY to increase or decrease the logging verbosity.  Set to 2 to have the SQL queries sent to the log.
-ENVIRONMENT_NAME | String | 'Local-Dev' | Optional | FC, FT | 
+ENVIRONMENT_NAME | String | 'Local-Dev' | Optional | AA,FC, FT | The environment name. 
+GOOGLE_TRACKING_ID | String | NULL | Optional | AA | The Google tracking identifier 
 GIAS_WS_EXTRACT_ID | Int | 0 | Optional | none | Gias synchronisation.  **Not Used**.
 GIAS_WS_MESSAGE_EXPIRY_MS | Int | 10000 | Required | none | Gias synchronisation.  **Not Used**. XML Message expiry in milliseconds.
 GIAS_WS_NAMESPACE | String | NULL | Required | none | Gias synchronisation. **Not Used**. This value is used in the XML namespace when making requests.
@@ -67,3 +71,15 @@ SQL_PUPIL_CENSUS_USER_PASSWORD | String | NULL | Required | FC | SQL user passwo
 SQL_REQUEST_TIMEOUT | Int | 60000 | Optional | AA, FC, FT | Request timeout in milliseconds for requests made to the database.
 SQL_SERVER | String | localhost | Required | AA, FC, FT | SQL Server hostname or IP address 
 SUBMIT_CHECK_FUNCTION_ENABLED | Boolean | false | Optional | FC | Used by the Developer Test tools
+LINES_PER_CHECK_FORM | Int | 25 | Optional | AA | The number of lines required in an uploaded check-form.  Equivalent to the number of questions on the form. 
+OVERRIDE_PIN_EXPIRY | Boolean | false | Optional | AA | **Developer Setting**<br />Allow pins to be generated after 4pm, allow checks to be taken after 4pm 
+OVERRIDE_PIN_VALIDITY_TIME | Boolean | false | Optional | AA | **Developer Setting**<br />Allow checks to be taken earlier than 8am 
+PORT | Int | 3001 | Optional | AA | The port the app will listen on. 
+PREPARE_CHECK_MESSAGE_BATCH_SIZE | Int | 5 | Optional | AA | Appears to be **unused**. 
+PUPIL_APP_URL | String | NULL | Required | AA | The URL of the pupil app - used to generate the QR code on the pin slips 
+PUPIL_APP_USE_COMPRESSION | Boolean | true | Optional | AA | Determines whether the pupil app should compress the payload before sending it back.  Leave this as true. 
+SESSION_SECRET | String |  | Required | AA | A secret comprised of random characters used to sign session cookies. 
+WEBSITE_OFFLINE | Boolean | false | Optional | AA | Set to true to diable all routes in the app, replacing them with 'Service Unavailable' page 
+WAIT_TIME_BEFORE_EXIT | Int | 30 | Optional | AA | The amount of time to wait, in seconds, before exiting in the event that the app is unable to initialise a connection to the database. 
+WAIT_TIME_BEFORE_REDIRECT | Int | 2 | Optional | AA | The amount of time to wait, in seconds, when using the redirect-delay pattern, before redirecting the user to the final resource. 
+
