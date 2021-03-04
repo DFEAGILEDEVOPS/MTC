@@ -1,0 +1,2 @@
+-SQL_CONNECT_TIMEOUT $(Sql.Connect.Timeout)
+-SQL_REQUEST_TIMEOUT $(Sql.Request.Timeout)
