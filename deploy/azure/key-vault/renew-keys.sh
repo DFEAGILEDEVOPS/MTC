@@ -22,16 +22,16 @@ REDIS_KEY_TYPE="" # valid valuees are 'Primary', 'Secondary'
 if [ "$KEY_TYPE" = "primary" ]
 then
   # set keys to primary
-  $STORAGE_ACCOUNT_KEY_TYPE = "primary"
-  $SERVICE_BUS_KEY_TYPE = "PrimaryKey"
-  $REDIS_KEY_TYPE = "Primary"
+  STORAGE_ACCOUNT_KEY_TYPE="primary"
+  SERVICE_BUS_KEY_TYPE="PrimaryKey"
+  REDIS_KEY_TYPE="Primary"
 
 elif [ "$KEY_TYPE" = "secondary" ]
 then
   # set keys to secondary
-  $STORAGE_ACCOUNT_KEY_TYPE = "secondary"
-  $SERVICE_BUS_KEY_TYPE = "SecondaryKey"
-  $REDIS_KEY_TYPE = "Secondary"
+  STORAGE_ACCOUNT_KEY_TYPE="secondary"
+  SERVICE_BUS_KEY_TYPE="SecondaryKey"
+  REDIS_KEY_TYPE="Secondary"
 
 else
   # throw error
@@ -40,14 +40,16 @@ else
 
 fi
 
-echo "debug:renewing storage account $STORAGE_ACCOUNT_KEY_TYPE key..."
 # rotate key for storage account
+echo "renewing $STORAGE_ACCOUNT_KEY_TYPE key for storage account $STORAGE_ACCOUNT_NAME..."
 az storage account keys renew --resource-group $RES_GROUP --account-name $STORAGE_ACCOUNT_NAME --key $STORAGE_ACCOUNT_KEY_TYPE
 
 # rotate key for service bus
+echo "renewing $SERVICE_BUS_KEY_TYPE key for service bus namespace $SERVICE_BUS_NAME..."
 az servicebus namespace authorization-rule keys renew --key $SERVICE_BUS_KEY_TYPE --name $SB_CONSUMER_KEY_NAME --namespace-name $SERVICE_BUS_NAME --resource-group $RES_GROUP
 
 # rotate key for redis
+echo "renewing $REDIS_KEY_TYPE key for redis instance $REDIS_NAME..."
 az redis regenerate-keys --key-type $REDIS_KEY_TYPE --name $REDIS_NAME --resource-group $RES_GROUP
 
 
