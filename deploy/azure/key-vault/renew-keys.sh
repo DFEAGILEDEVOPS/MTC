@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# rotates keys for service bus, storage account and redis
+# renews key for service bus, storage account and redis
 
 # input parameters
 RES_GROUP=$1 # target resource group
@@ -44,15 +44,20 @@ fi
 echo "renewing $STORAGE_ACCOUNT_KEY_TYPE key for storage account $STORAGE_ACCOUNT_NAME..."
 az storage account keys renew --resource-group $RES_GROUP --account-name $STORAGE_ACCOUNT_NAME --key $STORAGE_ACCOUNT_KEY_TYPE
 
-# rotate key for service bus
-echo "renewing $SERVICE_BUS_KEY_TYPE key for service bus namespace $SERVICE_BUS_NAME..."
+# rotate key for service bus (consumer)
+echo "renewing $SERVICE_BUS_KEY_TYPE key for user $SB_CONSUMER_KEY_NAME service bus namespace $SERVICE_BUS_NAME..."
 az servicebus namespace authorization-rule keys renew --key $SERVICE_BUS_KEY_TYPE --name $SB_CONSUMER_KEY_NAME --namespace-name $SERVICE_BUS_NAME --resource-group $RES_GROUP
+
+# rotate key for service bus (owner)
+echo "renewing $SERVICE_BUS_KEY_TYPE key for user $SB_OWNER_KEY_NAME service bus namespace $SERVICE_BUS_NAME..."
+az servicebus namespace authorization-rule keys renew --key $SERVICE_BUS_KEY_TYPE --name $SB_OWNER_KEY_NAME --namespace-name $SERVICE_BUS_NAME --resource-group $RES_GROUP
 
 # rotate key for redis
 echo "renewing $REDIS_KEY_TYPE key for redis instance $REDIS_NAME..."
 az redis regenerate-keys --key-type $REDIS_KEY_TYPE --name $REDIS_NAME --resource-group $RES_GROUP
 
 
+exit 0
 ## update key vault values
 
 ### Service Bus
