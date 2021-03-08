@@ -13,6 +13,7 @@ KEY_TYPE=$6 # accepted values are 'primary' or 'secondary'
 # known values
 SB_CONSUMER_KEY_NAME="mtc-consumer"
 SB_OWNER_KEY_NAME="RootManageSharedAccessKey"
+
 STORAGE_ACCOUNT_KEY_TYPE="" # valid values are 'primary', 'secondary'
 SERVICE_BUS_KEY_TYPE="" # valid values are 'PrimaryKey', 'SecondaryKey'
 REDIS_KEY_TYPE="" # valid valuees are 'Primary', 'Secondary'
@@ -57,7 +58,7 @@ fi
 # ]
 echo "renewing $STORAGE_ACCOUNT_KEY_TYPE key for storage account $STORAGE_ACCOUNT_NAME..."
 # TODO capture output and parse with jg into var
-az storage account keys renew --resource-group $RES_GROUP --account-name $STORAGE_ACCOUNT_NAME --key $STORAGE_ACCOUNT_KEY_TYPE
+STORAGE_KEY_INFO=$(az storage account keys renew --resource-group $RES_GROUP --account-name $STORAGE_ACCOUNT_NAME --key $STORAGE_ACCOUNT_KEY_TYPE)
 
 # rotate key for service bus (consumer)
 # https://docs.microsoft.com/en-us/cli/azure/servicebus/namespace/authorization-rule/keys?view=azure-cli-latest#az_servicebus_namespace_authorization_rule_keys_renew
@@ -72,13 +73,11 @@ az storage account keys renew --resource-group $RES_GROUP --account-name $STORAG
 #   "secondaryKey": "..."
 # }
 echo "renewing $SERVICE_BUS_KEY_TYPE key for user $SB_CONSUMER_KEY_NAME service bus namespace $SERVICE_BUS_NAME..."
-# TODO capture output and parse with jq into var
-az servicebus namespace authorization-rule keys renew --key $SERVICE_BUS_KEY_TYPE --name $SB_CONSUMER_KEY_NAME --namespace-name $SERVICE_BUS_NAME --resource-group $RES_GROUP
+SERVICE_BUS_CONSUMER_KEY_INFO=$(az servicebus namespace authorization-rule keys renew --key $SERVICE_BUS_KEY_TYPE --name $SB_CONSUMER_KEY_NAME --namespace-name $SERVICE_BUS_NAME --resource-group $RES_GROUP | jq -r .primaryConnectionString)
 
-# rotate key for service bus (owner)
-# https://docs.microsoft.com/en-us/cli/azure/servicebus/namespace/authorization-rule/keys?view=azure-cli-latest#az_servicebus_namespace_authorization_rule_keys_renew
+# TODO capture output and parse with jq into var
 echo "renewing $SERVICE_BUS_KEY_TYPE key for user $SB_OWNER_KEY_NAME service bus namespace $SERVICE_BUS_NAME..."
-az servicebus namespace authorization-rule keys renew --key $SERVICE_BUS_KEY_TYPE --name $SB_OWNER_KEY_NAME --namespace-name $SERVICE_BUS_NAME --resource-group $RES_GROUP
+SERVICE_BUS_OWNER_KEY_INFO=$(az servicebus namespace authorization-rule keys renew --key $SERVICE_BUS_KEY_TYPE --name $SB_OWNER_KEY_NAME --namespace-name $SERVICE_BUS_NAME --resource-group $RES_GROUP)
 
 # rotate key for redis
 # https://docs.microsoft.com/en-us/cli/azure/redis?view=azure-cli-latest#az_redis_regenerate_keys
@@ -88,7 +87,7 @@ az servicebus namespace authorization-rule keys renew --key $SERVICE_BUS_KEY_TYP
 #   "secondaryKey": "..."
 # }
 echo "renewing $REDIS_KEY_TYPE key for redis instance $REDIS_NAME..."
-az redis regenerate-keys --key-type $REDIS_KEY_TYPE --name $REDIS_NAME --resource-group $RES_GROUP
+REDIS_KEY_INFO=$(az redis regenerate-keys --key-type $REDIS_KEY_TYPE --name $REDIS_NAME --resource-group $RES_GROUP)
 
 
 exit 0
