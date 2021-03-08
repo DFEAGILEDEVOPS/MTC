@@ -8,8 +8,8 @@ KEY_VAULT_NAME=$2 # key vault instance
 REDIS_NAME=$3 # redis instance
 KEY_TYPE=$4 # accepted values are 'primary' or 'secondary'
 
-REDIS_KEY_TYPE="" # valid valuees are 'Primary', 'Secondary'
-KEY_IDENTIFIER="" # valid valuees are 'primaryKey', 'secondaryKey'
+REDIS_KEY_TYPE="" # valid values are 'Primary', 'Secondary'
+KEY_IDENTIFIER="" # valid values are 'primaryKey', 'secondaryKey'
 
 # Azure CLI uses slightly different identifiers for key type across different services :-/
 # align them for each service...
