@@ -17,14 +17,11 @@ if [ "$KEY_TYPE" = "primary" ]
 then
   # set keys to primary
   STORAGE_ACCOUNT_KEY_TYPE="primary"
-  KEY_IDENTIFIER="'.[0] | .value'"
 
 elif [ "$KEY_TYPE" = "secondary" ]
 then
   # set keys to secondary
   STORAGE_ACCOUNT_KEY_TYPE="secondary"
-  KEY_IDENTIFIER="'.[1] | .value'"
-  KEY_INDEX="1"
 
 else
   # throw error
@@ -49,11 +46,12 @@ fi
 #   }
 # ]
 echo "renewing $STORAGE_ACCOUNT_KEY_TYPE key for storage account $STORAGE_ACCOUNT_NAME..."
-KEY_VALUE=$(az storage account keys renew --resource-group $RES_GROUP --account-name $STORAGE_ACCOUNT_NAME --key $STORAGE_ACCOUNT_KEY_TYPE | jq $KEY_IDENTIFIER)
 
-# temp debug output...
-echo "key value is $KEY_VALUE"
-exit 0
+JSON_OUTPUT=$(az storage account keys renew --resource-group $RES_GROUP --account-name $STORAGE_ACCOUNT_NAME --key $STORAGE_ACCOUNT_KEY_TYPE)
+ACCOUNT_KEY=$(echo $JSON_OUTPUT | jq '.[0] | .value')
+CONNECTION_STRING=$(az storage account show-connection-string -g $RES_GROUP -n $STORAGE_ACCOUNT_NAME | jq -r .connectionString)
 
-## update key vault value
-az keyvault secret set --vault-name $KEY_VAULT_NAME --name "StorageAccountConnectionString" --value "$KEY_VALUE"
+# update key vault connection string
+az keyvault secret set --vault-name $KEY_VAULT_NAME --name "StorageAccountConnectionString" --value "$CONNECTION_STRING"
+## update key vault account key
+az keyvault secret set --vault-name $KEY_VAULT_NAME --name "StorageAccountKey" --value $ACCOUNT_KEY

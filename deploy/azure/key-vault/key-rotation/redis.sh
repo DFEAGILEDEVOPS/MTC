@@ -42,9 +42,5 @@ fi
 echo "renewing $REDIS_KEY_TYPE key for redis instance $REDIS_NAME..."
 KEY_VALUE=$(az redis regenerate-keys --key-type $REDIS_KEY_TYPE --name $REDIS_NAME --resource-group $RES_GROUP | jq -r .$KEY_IDENTIFIER)
 
-# temp debug output...
-echo "key value is $KEY_VALUE"
-exit 0
-
 ## update key vault value...
-az keyvault secret set --vault-name $KEY_VAULT_NAME --name "RedisKey" --value "$KEY_VALUE"
+az keyvault secret set --vault-name $KEY_VAULT_NAME --name "RedisKey" --value $KEY_VALUE
