@@ -1,12 +1,12 @@
 #!/bin/bash
 
-# renews key for service bus, storage account and redis
+# renews key for azure redis
 
 # input parameters
 RES_GROUP=$1 # target resource group
 KEY_VAULT_NAME=$2 # key vault instance
-REDIS_NAME=$5 # redis instance
-KEY_TYPE=$6 # accepted values are 'primary' or 'secondary'
+REDIS_NAME=$3 # redis instance
+KEY_TYPE=$4 # accepted values are 'primary' or 'secondary'
 
 REDIS_KEY_TYPE="" # valid valuees are 'Primary', 'Secondary'
 KEY_IDENTIFIER="" # valid valuees are 'primaryKey', 'secondaryKey'
@@ -41,9 +41,6 @@ fi
 # }
 echo "renewing $REDIS_KEY_TYPE key for redis instance $REDIS_NAME..."
 REDIS_KEY_VALUE=$(az redis regenerate-keys --key-type $REDIS_KEY_TYPE --name $REDIS_NAME --resource-group $RES_GROUP | jq -r .$KEY_IDENTIFIER)
-
-# temp short circuit
-exit 0
 
 ## update key vault value...
 az keyvault secret set --vault-name $KEY_VAULT_NAME --name "RedisKey" --value "$REDIS_KEY_VALUE"
