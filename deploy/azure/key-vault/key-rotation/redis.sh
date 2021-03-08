@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# renews key for azure redis
+# renews key for azure redis and updates key vault
 
 # input parameters
 RES_GROUP=$1 # target resource group

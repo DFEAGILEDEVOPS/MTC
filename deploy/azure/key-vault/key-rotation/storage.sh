@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# renews key for service bus, storage account and redis
+# renews key for storage account and updates key vault
 
 # input parameters
 RES_GROUP=$1 # target resource group
@@ -48,7 +48,7 @@ fi
 echo "renewing $STORAGE_ACCOUNT_KEY_TYPE key for storage account $STORAGE_ACCOUNT_NAME..."
 
 JSON_OUTPUT=$(az storage account keys renew --resource-group $RES_GROUP --account-name $STORAGE_ACCOUNT_NAME --key $STORAGE_ACCOUNT_KEY_TYPE)
-ACCOUNT_KEY=$(echo $JSON_OUTPUT | jq '.[0] | .value')
+ACCOUNT_KEY=$(echo $JSON_OUTPUT | jq -r '.[0] | .value')
 CONNECTION_STRING=$(az storage account show-connection-string -g $RES_GROUP -n $STORAGE_ACCOUNT_NAME | jq -r .connectionString)
 
 # update key vault connection string

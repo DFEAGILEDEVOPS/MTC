@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# renews key for service bus, storage account and redis
+# renews key for service bus and updates key vault
 
 # input parameters
 RES_GROUP=$1 # target resource group
