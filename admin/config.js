@@ -90,7 +90,7 @@ module.exports = {
       MinCount: sql.pool.min,
       MaxCount: sql.pool.max,
       // DEPRECATED - not supported in MSSQL,  Not used in admin app?
-      LoggingEnabled: {}.hasOwnProperty.call(process.env, 'SQL_FUNCTIONS_APP_USER') ? toBool(process.env.SQL_POOL_LOG_ENABLED) : false
+      LoggingEnabled: {}.hasOwnProperty.call(process.env, 'SQL_POOL_LOG_ENABLED') ? toBool(process.env.SQL_POOL_LOG_ENABLED) : false
     },
     Migrator: {
       // TODO: check whether we can delete this section from the admin app
