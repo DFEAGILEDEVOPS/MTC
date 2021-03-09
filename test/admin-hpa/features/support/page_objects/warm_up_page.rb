@@ -68,8 +68,7 @@ class WarmUpPage < SitePrism::Page
   def complete_check_with_correct_answers(number_of_questions, input_type)
     @array_of_answers = []
     number_of_questions.to_i.times do
-      wait_for_question(2)
-      wait_until {check_page.question.visible?}
+      wait_until(10,1) {p check_page.question.visible?}
       @question = check_page.question.text
       values = @question.gsub('=', '').split('×').map {|n| n.strip}
       answer = values.first.to_i * values.last.to_i
