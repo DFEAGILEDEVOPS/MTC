@@ -90,7 +90,7 @@ function copyViewFilesToDist () {
 
 function copyEnvForDist () {
   return gulp
-    .src(['../.env'])
+    .src(['../.env'], { read: false, allowEmpty: true })
     .pipe(gulp.dest('./'))
 }
 
