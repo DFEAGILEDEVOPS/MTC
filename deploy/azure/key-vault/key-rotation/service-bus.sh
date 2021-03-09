@@ -48,5 +48,7 @@ fi
 echo "renewing $SERVICE_BUS_KEY_TYPE key for user $SERVICE_BUS_USER in service bus namespace $SERVICE_BUS_NAME..."
 KEY_VALUE=$(az servicebus namespace authorization-rule keys renew --key $SERVICE_BUS_KEY_TYPE --name $SERVICE_BUS_USER --namespace-name $SERVICE_BUS_NAME --resource-group $RES_GROUP | jq -r .$KEY_IDENTIFIER)
 
+SERVICE_BUS_USER_KEY="ServiceBusConnectionString-$SERVICE_BUS_USER"
 ## update key vault values
-az keyvault secret set --vault-name $KEY_VAULT_NAME --name "ServiceBusConnectionString-$SERVICE_BUS_USER" --value "$KEY_VALUE"
+az keyvault secret set --vault-name $KEY_VAULT_NAME --name $SERVICE_BUS_USER_KEY --value "$KEY_VALUE" > /dev/null
+echo "$SERVICE_BUS_USER_KEY updated in key vault"

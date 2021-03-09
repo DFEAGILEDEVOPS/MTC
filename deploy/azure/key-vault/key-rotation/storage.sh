@@ -52,6 +52,8 @@ ACCOUNT_KEY=$(echo $JSON_OUTPUT | jq -r '.[0] | .value')
 CONNECTION_STRING=$(az storage account show-connection-string -g $RES_GROUP -n $STORAGE_ACCOUNT_NAME | jq -r .connectionString)
 
 # update key vault connection string
-az keyvault secret set --vault-name $KEY_VAULT_NAME --name "StorageAccountConnectionString" --value "$CONNECTION_STRING"
+az keyvault secret set --vault-name $KEY_VAULT_NAME --name "StorageAccountConnectionString" --value "$CONNECTION_STRING" > /dev/null
+echo "StorageAccountConnectionString updated in Key Vault"
 ## update key vault account key
-az keyvault secret set --vault-name $KEY_VAULT_NAME --name "StorageAccountKey" --value $ACCOUNT_KEY
+az keyvault secret set --vault-name $KEY_VAULT_NAME --name "StorageAccountKey" --value $ACCOUNT_KEY > /dev/null
+echo "StorageAccountKey updated in Key Vault"
