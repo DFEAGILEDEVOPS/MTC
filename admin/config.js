@@ -81,15 +81,15 @@ module.exports = {
       Password: sql.password
     },
     FunctionsApp: {
-      // used by the etl function to sync the table storage results to sql server
-      // Why is this section in the admin app?  Is it legacy from the database migrations?
+      // TODO: Legacy from the database migrations: delete on another PR
       Username: process.env.SQL_FUNCTIONS_APP_USER || 'functionsAppSystemUser',
       Password: process.env.SQL_FUNCTIONS_APP_USER_PASSWORD || 'functionsAppSystemP4ssw0rd!' // default only for local docker
     },
     Pooling: {
       MinCount: sql.pool.min,
       MaxCount: sql.pool.max,
-      // DEPRECATED - not supported in MSSQL,  Not used in admin app?
+      // DEPRECATED - not supported in MSSQL,  Not used in admin app.
+      // TODO: Legacy from the database migrations: delete on another PR
       LoggingEnabled: {}.hasOwnProperty.call(process.env, 'SQL_POOL_LOG_ENABLED') ? toBool(process.env.SQL_POOL_LOG_ENABLED) : false
     },
     Migrator: {
@@ -126,15 +126,6 @@ module.exports = {
   Logging: {
     LogLevel: process.env.LOG_LEVEL || 'info',
     DebugVerbosity: {}.hasOwnProperty.call(process.env, 'DEBUG_VERBOSITY') ? parseInt(process.env.DEBUG_VERBOSITY, 10) : 1,
-    LogDna: {
-      // TODO: check whether we can delete this section from the admin app
-      key: process.env.LOGDNA_API_KEY,
-      hostname: `${os.hostname()}:${process.pid}`,
-      ip: undefined,
-      mac: undefined,
-      app: `MTCAdmin:${getEnvironment()}`,
-      env: `${getEnvironment()}`
-    },
     Express: {
       UseWinston: process.env.EXPRESS_LOGGING_WINSTON || false
     },
