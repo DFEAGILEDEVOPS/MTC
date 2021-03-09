@@ -109,7 +109,7 @@ module.exports = {
     },
     AllowReadsFromReplica: {}.hasOwnProperty.call(process.env, 'SQL_ALLOW_REPLICA_FOR_READS') ? toBool(process.env.SQL_ALLOW_REPLICA_FOR_READS) : false,
     TechSupport: {
-      // TODO: check whether we can delete this section from the admin app
+      // Used by the experimental role connection builder
       Username: process.env.SQL_TECH_SUPPORT_USER || 'TechSupportUser',
       Password: process.env.SQL_TECH_SUPPORT_USER_PASSWORD,
       Pool: {
