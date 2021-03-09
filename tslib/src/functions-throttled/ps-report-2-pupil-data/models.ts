@@ -65,6 +65,7 @@ export interface Check {
   pupilLoginDate: moment.Moment | null
   received: boolean
   restartNumber: number
+  restartReason: string | null
 }
 
 export interface Device {

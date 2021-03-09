@@ -186,6 +186,14 @@ class SqlDbHelper
     data
   end
 
+  def self.get_check_config_data(check_id)
+    sql = "SELECT * FROM [mtc_admin].[checkConfig] WHERE check_id='#{check_id}'"
+    result = SQL_CLIENT.execute(sql)
+    data = result.first
+    result.cancel
+    data
+  end
+
   def self.check_details(pupil_id)
     sql = "SELECT * FROM [mtc_admin].[check] WHERE pupil_id = '#{pupil_id}' ORDER BY id DESC"
     result = SQL_CLIENT.execute(sql)
@@ -218,6 +226,14 @@ class SqlDbHelper
     end
     result = SQL_CLIENT.execute(sql)
     result.insert
+  end
+
+  def self.get_attendance_code_for_a_pupil(pupil_id)
+    sql = "SELECT * FROM [mtc_admin].[pupilAttendance] WHERE pupil_id = '#{pupil_id}' and isDeleted = 'false'"
+    result = SQL_CLIENT.execute(sql)
+    pupil_att_code_res = result.first
+    result.cancel
+    pupil_att_code_res
   end
 
   def self.get_check(check_code)
@@ -393,6 +409,40 @@ class SqlDbHelper
     result = SQL_CLIENT.execute(sql)
     la_codes = result.each {|row| row.map}
     la_codes.map {|code| code['lacode'].to_s}
+  end
+
+  def self.get_schools_list
+    sql = "select * from [mtc_admin].[school]"
+    result = SQL_CLIENT.execute(sql)
+    result.each {|row| row.map}
+  end
+
+  def self.get_ps_record_for_pupil(pupil_id)
+    sql = "SELECT * FROM [mtc_results].[psychometricReport] WHERE id='#{pupil_id}'"
+    result = SQL_CLIENT.execute(sql)
+    ps_report = result.first
+    result.cancel
+    ps_report
+  end
+
+  def self.browser_lookup(browser_id)
+    sql = "SELECT * FROM [mtc_results].[browserFamilyLookup] WHERE id='#{browser_id}'"
+    result = SQL_CLIENT.execute(sql)
+    ps_report = result.first
+    result.cancel
+    ps_report
+  end
+
+  def self.pupil_restarts(pupil_id)
+    sql = "SELECT * FROM [mtc_admin].[pupilRestart] WHERE pupil_id='#{pupil_id}'"
+    result = SQL_CLIENT.execute(sql)
+    result.each {|row| row.map}
+  end
+
+  def self.get_all_pupil_checks(pupil_id)
+    sql = "SELECT * FROM [mtc_admin].[check] WHERE pupil_id='#{pupil_id}'"
+    result = SQL_CLIENT.execute(sql)
+    result.each {|row| row.map}
   end
 
 end

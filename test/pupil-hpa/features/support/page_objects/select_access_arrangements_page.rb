@@ -37,7 +37,7 @@ class SelectAccessArrangementsPage < SitePrism::Page
   def select_access_arrangement(access_arrangment_name)
     access_arrangment_type = find_access_arrangement_row(access_arrangment_name)
     access_arrangment_type.checkbox.click
-    case access_arrangment_name
+    case access_arrangment_name.strip
       when 'Input assistance'
         input_assistance_reason.set 'A reason for requiring this access arrangement'
       when 'Audio version (reason required)'
@@ -47,8 +47,8 @@ class SelectAccessArrangementsPage < SitePrism::Page
   end
 
   def find_access_arrangement_row(name)
-    wait_until {!(access_arrangements.row.find {|access_arrang_type| access_arrang_type.text.include? name}).nil?}
-    access_arrangements.row.find {|access_arrang_type| access_arrang_type.text.include? name}
+    wait_until {access_arrangements.row.find {|access_arrang_type| access_arrang_type.text.include? name.strip}}
+    access_arrangements.row.find {|access_arrang_type| access_arrang_type.text.include? name.strip}
   end
 
 end
