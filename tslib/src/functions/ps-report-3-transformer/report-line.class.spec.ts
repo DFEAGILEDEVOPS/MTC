@@ -210,6 +210,16 @@ describe('report line class', () => {
         const out = sut.transform()
         expect(out.ReasonNotTakingCheck).toBeNull()
       })
+
+      test('it determines the pupil status', () => {
+        const out = sut.transform()
+        expect(out.PupilStatus).toBe('Complete')
+      })
+
+      test('the pupil database id is output so it can be the ps report PK', () => {
+        const out = sut.transform()
+        expect(out.PupilDatabaseId).toBe(2)
+      })
     })
 
     describe('settings', () => {
@@ -293,6 +303,11 @@ describe('report line class', () => {
       test('the number of restarts is mapped', () => {
         const out = sut.transform()
         expect(out.RestartNumber).toBe(2)
+      })
+
+      test('the restart reason is mapped', () => {
+        const out = sut.transform()
+        expect(out.RestartReason).toBe(1)
       })
 
       test('the mark is mapped', () => {
@@ -418,7 +433,7 @@ describe('report line class', () => {
         test('whether the question timed out with a response', () => {
           const out = sut.transform()
           expect(out.answers[0].timeoutResponse).toBe(true)
-          expect(out.answers[1].timeoutResponse).toBe('')
+          expect(out.answers[1].timeoutResponse).toBeNull()
           expect(out.answers[2].timeoutResponse).toBe(false)
         })
       })
@@ -426,7 +441,7 @@ describe('report line class', () => {
       test('it determines QnTimeOutSco', () => {
         const out = sut.transform()
         expect(out.answers[0].timeoutScore).toBe(true) // return true if there was a timeout and the answer was correct
-        expect(out.answers[1].timeoutScore).toBe('') // return '' if there was not a timeout
+        expect(out.answers[1].timeoutScore).toBeNull() // return null if there was not a timeout
         expect(out.answers[2].timeoutScore).toBe(false) // return false if there was a timeout and the answer was incorrect
       })
 
@@ -514,6 +529,11 @@ describe('report line class', () => {
         const out = sut.transform()
         expect(out.ReasonNotTakingCheck).toBeNull()
       })
+
+      test('it determines the pupil status', () => {
+        const out = sut.transform()
+        expect(out.PupilStatus).toBe('Incomplete')
+      })
     })
 
     describe('check fields', () => {
@@ -565,6 +585,11 @@ describe('report line class', () => {
       test('the number of restarts is mapped', () => {
         const out = sut.transform()
         expect(out.RestartNumber).toBe(0)
+      })
+
+      test('the restart reason is mapped', () => {
+        const out = sut.transform()
+        expect(out.RestartReason).toBeNull()
       })
 
       test('the mark is mapped', () => {
@@ -684,6 +709,11 @@ describe('report line class', () => {
         const out = sut.transform()
         expect(out.ReasonNotTakingCheck).toBe(1)
       })
+
+      test('the pupil status is set to Not taking the Check', () => {
+        const out = sut.transform()
+        expect(out.PupilStatus).toBe('Not taking the Check')
+      })
     })
 
     describe('settings', () => {
@@ -735,12 +765,12 @@ describe('report line class', () => {
 
       test('the attempt ID is mapped', () => {
         const out = sut.transform()
-        expect(out.AttemptID).toBe('')
+        expect(out.AttemptID).toBeNull()
       })
 
       test('the form name is mapped', () => {
         const out = sut.transform()
-        expect(out.FormID).toBe('')
+        expect(out.FormID).toBeNull()
       })
 
       test('the date the test was taken is mapped', () => {

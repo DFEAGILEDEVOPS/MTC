@@ -7,7 +7,6 @@ Given(/^I am on the warm up complete page using a real pupil$/) do
   step 'I should be able to use the numpad to complete the warm up questions'
 end
 
-
 Then(/^I should still have a valid pin$/) do
   visit Capybara.app_host + '/sign-out'
   sign_in_page.load
