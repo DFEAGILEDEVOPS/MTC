@@ -3,12 +3,14 @@ import moment from 'moment'
 
 export interface IReportLineBase {
   // Pupil
+  PupilDatabaseId: number
   DOB: moment.Moment | null
   Gender: string
   PupilID: string
   Forename: string
   Surname: string
   ReasonNotTakingCheck: number | null
+  PupilStatus: string | null
   // School
   SchoolName: string
   Estab: number | null
@@ -17,15 +19,16 @@ export interface IReportLineBase {
   // Settings
   QDisplayTime: number | null
   PauseLength: number | null
-  AccessArr: string
+  AccessArr: string | null
   // Check
-  AttemptID: string
-  FormID: string
+  AttemptID: string | null
+  FormID: string | null
   TestDate: moment.Moment | null
   TimeStart: moment.Moment | null
   TimeComplete: moment.Moment | null
   TimeTaken: number | null // seconds with ms to 3 decimal places, e.g. 198.123
   RestartNumber: number | null
+  RestartReason: number | null
   FormMark: number | null
 
   // Device
@@ -46,8 +49,8 @@ export interface IReportLineAnswer {
   lastKey: moment.Moment | null
   responseTime: number | null
   timeout: boolean | null
-  timeoutResponse: boolean | '' | null
-  timeoutScore: boolean | '' | null
+  timeoutResponse: boolean | null
+  timeoutScore: boolean | null
   loadTime: moment.Moment | null
   overallTime: number | null
   recallTime: number | null

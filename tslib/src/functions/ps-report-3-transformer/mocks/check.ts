@@ -1,17 +1,19 @@
 import { Check } from '../../../functions-throttled/ps-report-2-pupil-data/models'
+import moment from 'moment'
 
 export const check: Check = {
-  id: 31,
-  checkCode: 'xyz-def-988',
+  id: 30,
+  checkCode: 'xyz-def-987',
   checkFormId: 9,
   checkWindowId: 1,
-  complete: false,
-  completedAt: null,
+  complete: true,
+  completedAt: moment('2021-01-21T09:00:16.000Z'),
   inputAssistantAddedRetrospectively: false,
   isLiveCheck: true,
-  mark: null,
+  mark: 1,
   processingFailed: false,
-  pupilLoginDate: null,
+  pupilLoginDate: moment('2021-01-21T09:00:00.000Z'),
   received: true,
-  restartNumber: 0
+  restartNumber: 2,
+  restartReason: 'LOI'
 }
