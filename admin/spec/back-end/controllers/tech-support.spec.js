@@ -4,6 +4,7 @@
 const httpMocks = require('node-mocks-http')
 const checkDiagnosticService = require('../../../services/check-diagnostic.service')
 const payloadService = require('../../../services/payload.service')
+const administrationMessageService = require('../../../services/administration-message.service')
 
 let sut
 let next
@@ -45,6 +46,7 @@ describe('tech-support controller', () => {
     it('GET: should render the home page', async () => {
       const req = getRequest(getReqParams)
       const res = getResponse()
+      spyOn(administrationMessageService, 'getMessage').and.returnValue(Promise.resolve(''))
       spyOn(res, 'render').and.returnValue(null)
       await sut.getHomePage(req, res, next)
       expect(res.statusCode).toBe(200)

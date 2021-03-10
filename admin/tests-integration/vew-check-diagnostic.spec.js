@@ -6,6 +6,7 @@ const fs = require('fs')
 const globalDotEnvFile = path.join(__dirname, '..', '..', '.env')
 
 const sql = require('../services/data-access/sql.service')
+const redisCacheService = require('../services/data-access/redis-cache.service')
 
 try {
   if (fs.existsSync(globalDotEnvFile)) {
@@ -25,6 +26,7 @@ describe('sql.service:integration', () => {
 
   afterAll(async () => {
     await sql.drainPool()
+    redisCacheService.disconnect()
   })
 
   describe('vewCheckDiagnostic', () => {
