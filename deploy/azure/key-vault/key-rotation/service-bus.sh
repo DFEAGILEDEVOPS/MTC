@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# set errors on
+set -e
+
 # renews key for service bus and updates key vault
 
 # input parameters
@@ -19,18 +22,15 @@ then
   # set keys to primary
   SERVICE_BUS_KEY_TYPE="PrimaryKey"
   KEY_IDENTIFIER="primaryConnectionString"
-
 elif [ "$KEY_TYPE" = "secondary" ]
 then
   # set keys to secondary
   SERVICE_BUS_KEY_TYPE="SecondaryKey"
   KEY_IDENTIFIER="secondaryConnectionString"
-
 else
   # throw error
   echo "ERROR: KEY_TYPE not specified.  valid values are 'primary' or 'secondary'"
   exit 1
-
 fi
 
 # rotate key for service bus (consumer)

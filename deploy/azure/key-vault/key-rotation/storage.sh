@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# set errors on
+set -e
+
 # renews key for storage account and updates key vault
 
 # input parameters
@@ -26,7 +29,6 @@ else
   # throw error
   echo "ERROR: KEY_TYPE not specified.  valid values are 'primary' or 'secondary'"
   exit 1
-
 fi
 
 # rotate key for storage account

@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# set errors on
+set -e
+
 # renews key for azure redis and updates key vault
 
 # input parameters
@@ -18,18 +21,15 @@ then
   # set keys to primary
   REDIS_KEY_TYPE="Primary"
   KEY_IDENTIFIER="primaryKey"
-
 elif [ "$KEY_TYPE" = "secondary" ]
 then
   # set keys to secondary
   REDIS_KEY_TYPE="Secondary"
   KEY_IDENTIFIER="secondaryKey"
-
 else
   # throw error
   echo "ERROR: KEY_TYPE not specified.  valid values are 'primary' or 'secondary'"
   exit 1
-
 fi
 
 # rotate key for redis
