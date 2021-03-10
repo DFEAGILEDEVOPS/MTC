@@ -13,8 +13,8 @@ export class ReportLineAnswer {
   private _lastKey: moment.Moment | null = null
   private _responseTime: number | null = null
   private _timeout: boolean | null = null
-  private _timeoutResponse: boolean | '' | null = null
-  private _timeoutScore: boolean | '' | null = null
+  private _timeoutResponse: boolean | null = null
+  private _timeoutScore: boolean | null = null
   private _loadTime: moment.Moment | null = null
   private _overallTime: number | null = null
   private _recallTime: number | null = null
@@ -94,19 +94,19 @@ export class ReportLineAnswer {
     return this._timeout
   }
 
-  set timeoutResponse (arg: boolean | null | '') {
+  set timeoutResponse (arg: boolean | null) {
     this._timeoutResponse = arg
   }
 
-  get timeoutResponse (): boolean | null | '' {
+  get timeoutResponse (): boolean | null {
     return this._timeoutResponse
   }
 
-  set timeoutScore (arg: boolean | null | '') {
+  set timeoutScore (arg: boolean | null) {
     this._timeoutScore = arg
   }
 
-  get timeoutScore (): boolean | null | '' {
+  get timeoutScore (): boolean | null {
     return this._timeoutScore
   }
 

@@ -65,10 +65,9 @@ end
 
 Given(/^I have attempted to enter a school I do not attend upon login$/) do
   step 'I have generated a live pin'
-  step 'I login to the admin app with teacher2'
+  step 'I login to the admin app'
   visit ENV['ADMIN_BASE_URL'] + generate_pins_overview_page.url
-  pupil_name = generate_pins_overview_page.generate_pin_for_multiple_pupils(1).first
-  school_2_password = view_and_custom_print_live_check_page.pupil_list.rows.find {|row| row.name.text == pupil_name}.school_password.text
+  school_2_password = SqlDbHelper.find_school(2)['pin']
   @checks_count = SqlDbHelper.number_of_checks
   sign_in_page.load
   sign_in_page.login(school_2_password, @pupil_credentials[:pin])
@@ -171,22 +170,21 @@ end
 
 When(/^I add a pupil$/) do
   @name = (0...8).map {(65 + rand(26)).chr}.join
-  step 'I login to the admin app with teacher1'
+  step 'I login to the admin app'
   visit ENV['ADMIN_BASE_URL'] + add_pupil_page.url
   step "I submit the form with the name fields set as #{@name}"
   step "the pupil details should be stored"
 end
 
-When(/^I login to the admin app with (.+)$/) do |user|
+When(/^I login to the admin app$/) do
   visit ENV['ADMIN_BASE_URL'] + '/sign-out'
   visit ENV['ADMIN_BASE_URL']
-  @teacher = user
-  admin_sign_in_page.login(@teacher, 'password')
+  admin_sign_in_page.login(@username, 'password')
 end
 
 When(/^I have generated a familiarisation pin$/) do
   step 'I add a pupil'
-  step 'I login to the admin app with teacher1'
+  step 'I login to the admin app'
   visit ENV['ADMIN_BASE_URL'] + generate_pins_familiarisation_overview_page.url
   generate_pins_familiarisation_overview_page.generate_pin_using_name(@details_hash[:last_name] + ', ' + @details_hash[:first_name])
   pupil_pin_row = view_and_print_pins_page.pupil_list.rows.find {|row| row.name.text == @details_hash[:last_name] + ', ' + @details_hash[:first_name]}
@@ -196,14 +194,13 @@ end
 
 When(/^I have generated a live pin$/) do
   step 'I add a pupil'
-  step 'I login to the admin app with teacher1'
+  step 'I login to the admin app'
   visit ENV['ADMIN_BASE_URL'] + generate_pins_overview_page.url
   generate_pins_overview_page.generate_pin_using_name(@details_hash[:last_name] + ', ' + @details_hash[:first_name])
   pupil_pin_row = view_and_custom_print_live_check_page.pupil_list.rows.find {|row| row.name.text == @details_hash[:last_name] + ', ' + @details_hash[:first_name]}
   @pupil_credentials = {:school_password => pupil_pin_row.school_password.text, :pin => pupil_pin_row.pin.text}
   AzureTableHelper.wait_for_prepared_check(@pupil_credentials[:school_password],@pupil_credentials[:pin])
 end
-
 
 Given(/^I navigate to the pupil spa$/) do
   visit ENV['PUPIL_BASE_URL']

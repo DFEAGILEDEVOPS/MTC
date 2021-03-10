@@ -23,12 +23,14 @@ export class ReportLine {
   private readonly _school: School
   private _report: WorkingReportLine = {
     // Pupil fields
+    PupilDatabaseId: -1,
     DOB: null,
     Gender: '',
     PupilID: '',
     Forename: '',
     Surname: '',
     ReasonNotTakingCheck: null,
+    PupilStatus: null,
 
     // School fields
     SchoolName: '',
@@ -39,16 +41,17 @@ export class ReportLine {
     // Check Settings
     QDisplayTime: null,
     PauseLength: null,
-    AccessArr: '',
+    AccessArr: null,
 
     // Check details
-    AttemptID: '',
-    FormID: '',
+    AttemptID: null,
+    FormID: null,
     TestDate: null,
     TimeStart: null,
     TimeComplete: null,
     TimeTaken: null,
     RestartNumber: null,
+    RestartReason: null,
     FormMark: null,
 
     // Device
@@ -223,20 +226,20 @@ export class ReportLine {
     return event !== null
   }
 
-  private getTimeoutResponse (answer: Answer): boolean | '' {
+  private getTimeoutResponse (answer: Answer): boolean | null {
     const timeout = this.getTimeout(answer.questionNumber)
     if (timeout) {
       return answer.response.length > 0
     }
-    return '' // no timeout
+    return null // no timeout
   }
 
-  private getTimeoutScore (answer: Answer): boolean | '' {
+  private getTimeoutScore (answer: Answer): boolean | null {
     const timeout = this.getTimeout(answer.questionNumber)
     if (timeout) {
       return answer.isCorrect // timeout with a response
     }
-    return '' // no timeout
+    return null // no timeout
   }
 
   private getLoadTime (answer: Answer): moment.Moment | null {
@@ -263,7 +266,33 @@ export class ReportLine {
     return event.browserTimestamp
   }
 
+  private getRestartReason (code: string | null): number | null {
+    switch (code) {
+      case 'LOI':
+        return 1
+      case 'ITI':
+        return 2
+      case 'CLD':
+        return 3
+      case 'DNC':
+        return 4
+    }
+
+    return null
+  }
+
+  private getPupilStatus (): string {
+    if (this._pupil.checkComplete === true) {
+      return 'Complete'
+    }
+    if (this._pupil.attendanceId !== null) {
+      return 'Not taking the Check'
+    }
+    return 'Incomplete'
+  }
+
   private _transform (): void {
+    this._report.PupilDatabaseId = this.pupil.id
     this._report.DOB = this.pupil.dateOfBirth
     this._report.Gender = this.pupil.gender.toUpperCase()
     this._report.PupilID = this.pupil.upn
@@ -277,18 +306,20 @@ export class ReportLine {
     this._report.QDisplayTime = this.checkConfig?.questionTime ?? null // set to null rather than undefined
     this._report.PauseLength = this.checkConfig?.loadingTime ?? null // set to null rather than undefined
     this._report.AccessArr = this.getAccessArrangements()
-    this._report.AttemptID = this.check?.checkCode ?? '' // set to empty string if null or undefined
-    this._report.FormID = this.checkForm?.name ?? '' // set to empty string if null or undefined
+    this._report.AttemptID = this.check?.checkCode ?? null // set to null rather than undefined
+    this._report.FormID = this.checkForm?.name ?? null // set to null rather than undefined
     this._report.TestDate = this.check?.pupilLoginDate ?? null // set to null if there is no check
     this._report.TimeStart = this.getTimeStart()
     this._report.TimeComplete = this.getTimeComplete()
     this._report.TimeTaken = this.getTimeTaken()
     this._report.RestartNumber = this.check?.restartNumber ?? null // set to null if there is no check
+    this._report.RestartReason = this.getRestartReason(this.check?.restartReason ?? null) // map the code to the number
     this._report.FormMark = this.check?.mark ?? null
     this._report.DeviceType = this.device?.type ?? null
     this._report.BrowserType = this.getBrowser()
     this._report.DeviceTypeModel = this.device?.typeModel ?? null
     this._report.DeviceID = this.device?.deviceId ?? null
+    this._report.PupilStatus = this.getPupilStatus()
 
     // Question data
     this.answers?.forEach(answer => {
@@ -318,12 +349,14 @@ export class ReportLine {
 
   public toObject (): IPsychometricReportLine {
     return {
+      PupilDatabaseId: this._report.PupilDatabaseId,
       DOB: this._report.DOB,
       Gender: this._report.Gender,
       PupilID: this._report.PupilID,
       Forename: this._report.Forename,
       Surname: this._report.Surname,
       ReasonNotTakingCheck: this._report.ReasonNotTakingCheck,
+      PupilStatus: this._report.PupilStatus,
       SchoolName: this._report.SchoolName,
       Estab: this._report.Estab,
       SchoolURN: this._report.SchoolURN,
@@ -338,6 +371,7 @@ export class ReportLine {
       TimeComplete: this._report.TimeComplete,
       TimeTaken: this._report.TimeTaken,
       RestartNumber: this._report.RestartNumber,
+      RestartReason: this._report.RestartReason,
       FormMark: this._report.FormMark,
       DeviceType: this._report.DeviceType,
       BrowserType: this._report.BrowserType,
