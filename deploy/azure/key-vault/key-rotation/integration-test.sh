@@ -46,26 +46,22 @@ SB_CON_STRING_ACTUAL=$(az servicebus namespace authorization-rule keys list --re
 # 4. compare values for equality
 if [[ $REDIS_KEY_KV != $REDIS_KEY_ACTUAL ]];
 then
-  echo "Redis Primary Key in key vault does not match actual value"
-  exit 1
+  fail "Redis Primary Key in key vault does not match actual value"
 fi
 
 if [[ $STORAGE_KEY_KV != $STORAGE_KEY_ACTUAL ]];
 then
-  echo "Storage Account Primary Key in key vault does not match actual value"
-  exit 1
+  fail "Storage Account Primary Key in key vault does not match actual value"
 fi
 
 if [[ $STORAGE_CON_STRING_KV != $STORAGE_CON_STRING_ACTUAL ]];
 then
-  echo "Storage Account Primary Connection String in key vault does not match actual value"
-  exit 1
+  fail "Storage Account Primary Connection String in key vault does not match actual value"
 fi
 
 if [[ $SB_CON_STRING_KV != $SB_CON_STRING_ACTUAL ]];
 then
-  echo "Service Bus Connection String for $SERVICE_BUS_USER in key vault does not match actual value"
-  exit 1
+  fail "Service Bus Connection String for $SERVICE_BUS_USER in key vault does not match actual value"
 fi
 
 echo "primary keys test successful."
@@ -88,33 +84,32 @@ echo "extracting current $KEY_TYPE service values for comparison..."
 REDIS_KEY_ACTUAL=$(az redis list-keys --name $REDIS_NAME --resource-group $RES_GROUP | jq -r .secondaryKey)
 STORAGE_KEY_ACTUAL=$(az storage account keys list --resource-group $RES_GROUP -n $STORAGE_ACCOUNT_NAME | jq -r .[1].value)
 STORAGE_CON_STRING_ACTUAL=$(az storage account show-connection-string -g $RES_GROUP -n $STORAGE_ACCOUNT_NAME --key secondary | jq -r .connectionString)
-SB_CON_STRING_ACTUAL=$(az servicebus namespace authorization-rule keys list --resource-group $RES_GROUP --namespace-name $SERVICE_BUS_NAME --name $SERVICE_BUS_USER | jq -r .primaryConnectionString)
+SB_CON_STRING_ACTUAL=$(az servicebus namespace authorization-rule keys list --resource-group $RES_GROUP --namespace-name $SERVICE_BUS_NAME --name $SERVICE_BUS_USER | jq -r .secondaryConnectionString)
 
 echo "comparing secondary keys..."
 # 4. compare values for equality
 if [[ $REDIS_KEY_KV != $REDIS_KEY_ACTUAL ]];
 then
-  echo "Redis Secondary Key in key vault does not match actual value"
-  exit 1
+  fail "Redis Secondary Key in key vault does not match actual value"
 fi
 
 if [[ $STORAGE_KEY_KV != $STORAGE_KEY_ACTUAL ]];
 then
-  echo "key vault:$STORAGE_KEY_KV"
-  echo "storage (via cli):$STORAGE_KEY_ACTUAL"
   fail "Storage Account Secondary Key in key vault does not match actual value"
 fi
 
 if [[ $STORAGE_CON_STRING_KV != $STORAGE_CON_STRING_ACTUAL ]];
 then
-  echo "Storage Account Secondary Connection String in key vault does not match actual value"
-  exit 1
+  fail "Storage Account Secondary Connection String in key vault does not match actual value"
 fi
 
 if [[ $SB_CON_STRING_KV != $SB_CON_STRING_ACTUAL ]];
 then
-  echo "Service Bus Connection String for $SERVICE_BUS_USER in key vault does not match actual value"
-  exit 1
+  fail "Service Bus Connection String for $SERVICE_BUS_USER in key vault does not match actual value"
 fi
 
 echo "Secondary keys test successful"
+
+echo "***************************************"
+echo "Integration test completed successfully"
+echo "***************************************"
