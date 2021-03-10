@@ -30,4 +30,76 @@ router.get(
   techSupportController.getReceivedCheckPayload
 )
 
+router.get(
+  '/redis-overview',
+  isAuthenticated([roles.techSupport]),
+  techSupportController.showRedisOverview
+)
+
+router.get(
+  '/redis/drop/:redisKey?',
+  isAuthenticated([roles.techSupport]),
+  techSupportController.getRedisDropKeyPage
+)
+
+router.post(
+  '/redis/drop/confirm',
+  isAuthenticated([roles.techSupport]),
+  techSupportController.postRedisDropKeyConfirm
+)
+
+router.get(
+  '/redis/drop/confirm/:redisKey',
+  isAuthenticated([roles.techSupport]),
+  techSupportController.getRedisDropKeyConfirm
+)
+
+router.post(
+  '/redis/drop',
+  isAuthenticated([roles.techSupport]),
+  techSupportController.postRedisDropKey
+)
+
+router.get(
+  '/redis/search',
+  isAuthenticated([roles.techSupport]),
+  techSupportController.getRedisSearchKey
+)
+
+router.post(
+  '/redis/search',
+  isAuthenticated([roles.techSupport]),
+  techSupportController.postRedisSearchKey
+)
+
+router.get(
+  '/redis/examine/:key?',
+  isAuthenticated([roles.techSupport]),
+  techSupportController.getExamineRedisKey
+)
+
+router.get(
+  '/redis/multiple/drop',
+  isAuthenticated([roles.techSupport]),
+  techSupportController.getRedisBatchDropPage
+)
+
+router.post(
+  '/redis/multiple/drop',
+  isAuthenticated([roles.techSupport]),
+  techSupportController.postRedisBatchDrop
+)
+
+router.post(
+  '/redis/multiple/drop/confirm',
+  isAuthenticated([roles.techSupport]),
+  techSupportController.postRedisBatchDropRedirectToConfirmPage
+)
+
+router.get(
+  '/redis/multiple/drop/confirm',
+  isAuthenticated([roles.techSupport]),
+  techSupportController.postRedisBatchDropConfirmPage
+)
+
 module.exports = router

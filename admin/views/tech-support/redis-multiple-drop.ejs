@@ -1,0 +1,61 @@
+<%- partial('partials/_gds_breadcrumbs_and_sign_out', { breadcrumbs }) %>
+<main class="govuk-main-wrapper govuk-body" id="main-content" role="main">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <%- partial('partials/_gds_session_expiry') %>
+            <%- partial('partials/_flash-messages') %>
+            <h1 class="govuk-heading-xl">Batch drop Redis keys</h1>
+
+            <form action="/tech-support/redis/multiple/drop/confirm" method="post" autocomplete="off">
+                <input type="hidden" name="_csrf" value="<%= csrftoken %>"/>
+
+                <div class="govuk-form-group">
+                    <fieldset class="govuk-fieldset" aria-describedby="keys-hint">
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                            <h1 class="govuk-fieldset__heading">
+                               Which keys do you want to drop?
+                            </h1>
+                        </legend>
+                        <div id="keys-hint" class="govuk-hint">
+                            Select all that apply.
+                        </div>
+                        <div class="govuk-checkboxes">
+                            <% keyTypes.forEach(key => { %>
+                                <div class="govuk-checkboxes__item">
+                                    <input class="govuk-checkboxes__input" id="key-<%=key.label%>" name="key"
+                                           type="checkbox"
+                                           value="<%= key.type %>">
+                                    <label class="govuk-label govuk-checkboxes__label" for="key-<%= key.label %>">
+                                        <%= key.label %>
+                                    </label>
+                                </div>
+                              <% })  %>
+                        </div>
+                    </fieldset>
+                </div>
+
+
+                <button type="submit" id="drop-confirm-btn" class="govuk-button">Drop</button>
+                <a class="govuk-button govuk-button--secondary"
+                   href="/tech-support/redis-overview">Cancel</a>
+            </form>
+        </div>
+
+        <div class="govuk-grid-column-one-third" aria-label="sidebar">
+            <aside class="app-related-items" role="complementary">
+                <h2 class="govuk-heading-m" id="subsection-title">
+                    Related
+                </h2>
+                <nav role="navigation" aria-labelledby="subsection-title">
+                    <ul class="govuk-list govuk-!-font-size-16">
+                        <li>
+                            <a class="govuk-link" href="/tech-support/redis-overview" >Redis overview</a>
+                        </li>
+                    </ul>
+                </nav>
+            </aside>
+        </div>
+    </div>
+
+
+</main>
