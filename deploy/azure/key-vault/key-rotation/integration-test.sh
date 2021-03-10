@@ -40,7 +40,7 @@ SB_CON_STRING_KV=$(az keyvault secret show --name "ServiceBusConnectionString-$S
 echo "extracting current $KEY_TYPE key values from azure services for comparison..."
 REDIS_KEY_ACTUAL=$(az redis list-keys --name $REDIS_NAME --resource-group $RES_GROUP | jq -r .primaryKey)
 STORAGE_KEY_ACTUAL=$(az storage account keys list -g $RES_GROUP -n $STORAGE_ACCOUNT_NAME | jq -r .[0].value)
-STORAGE_CON_STRING_ACTUAL=$(az storage account show-connection-string -g $RES_GROUP -n $STORAGE_ACCOUNT_NAME | jq -r .connectionString)
+STORAGE_CON_STRING_ACTUAL=$(az storage account show-connection-string -g $RES_GROUP -n $STORAGE_ACCOUNT_NAME --key primary | jq -r .connectionString)
 SB_CON_STRING_ACTUAL=$(az servicebus namespace authorization-rule keys list --resource-group $RES_GROUP --namespace-name $SERVICE_BUS_NAME --name $SERVICE_BUS_USER | jq -r .primaryConnectionString)
 
 # 4. compare values for equality
@@ -100,6 +100,8 @@ fi
 
 if [[ $STORAGE_KEY_KV != $STORAGE_KEY_ACTUAL ]];
 then
+  echo "key vault:$STORAGE_KEY_KV"
+  echo "storage (via cli):$STORAGE_KEY_ACTUAL"
   fail "Storage Account Secondary Key in key vault does not match actual value"
 fi
 

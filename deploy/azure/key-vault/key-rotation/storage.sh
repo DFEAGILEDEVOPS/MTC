@@ -9,7 +9,6 @@ STORAGE_ACCOUNT_NAME=$3 # storage account
 KEY_TYPE=$4 # accepted values are 'primary' or 'secondary'
 
 STORAGE_ACCOUNT_KEY_TYPE="" # valid values are 'primary', 'secondary'
-KEY_IDENTIFIER="" # as its an array, key1 is '0' and key2 is '1'
 
 # Azure CLI uses slightly different identifiers for key type across different services :-/
 # align them for each service...
@@ -48,7 +47,13 @@ fi
 echo "renewing $STORAGE_ACCOUNT_KEY_TYPE key for storage account $STORAGE_ACCOUNT_NAME..."
 
 JSON_OUTPUT=$(az storage account keys renew --resource-group $RES_GROUP --account-name $STORAGE_ACCOUNT_NAME --key $STORAGE_ACCOUNT_KEY_TYPE)
-ACCOUNT_KEY=$(echo $JSON_OUTPUT | jq -r '.[0] | .value')
+if [ "$KEY_TYPE" = "primary" ]
+then
+  ACCOUNT_KEY=$(echo $JSON_OUTPUT | jq -r '.[0] | .value')
+else
+  ACCOUNT_KEY=$(echo $JSON_OUTPUT | jq -r '.[1] | .value')
+fi
+
 CONNECTION_STRING=$(az storage account show-connection-string -g $RES_GROUP -n $STORAGE_ACCOUNT_NAME --key $STORAGE_ACCOUNT_KEY_TYPE | jq -r .connectionString)
 
 # update key vault connection string
