@@ -1,9 +1,12 @@
 'use strict'
-/* global describe, it, expect */
+/* global describe, it, expect, afterAll */
 
 const pinGenerationService = require('../services/pin-generation.service')
+const redisCacheService = require('../services/data-access/redis-cache.service')
 
 describe('generateCryptoRandomNumber', () => {
+  afterAll(async () => { await redisCacheService.disconnect() })
+
   it('should approximately generate numbers with similar probability chance', () => {
     const numbersArr = []
     const length = 1000
