@@ -4,14 +4,15 @@
 
 ## Pupil information
 
-| Psychometric field   | Source                      | Comment |
-| -------------------- | --------------------------- | ------- |
-| DOB                  | mtc_admin.pupil.dateOfBirth |         |
-| Gender               | mtc_admin.pupil.gender      |         |
-| PupilID              | mtc_admin.pupil.upn         |         |
-| Forename             | mtc_admin.pupil.foreName    |         |
-| Surname              | mtc_admin.pupil.lastName    |         |
-| ReasonNotTakingCheck | mtc_admin.pupilAttendance   |         |
+| Psychometric field   | Source                                              | Comment                                                      |
+| -------------------- | --------------------------------------------------- | ------------------------------------------------------------ |
+| DOB                  | mtc_admin.pupil.dateOfBirth                         |                                                              |
+| Gender               | mtc_admin.pupil.gender                              |                                                              |
+| PupilID              | mtc_admin.pupil.upn                                 |                                                              |
+| Forename             | mtc_admin.pupil.foreName                            |                                                              |
+| Surname              | mtc_admin.pupil.lastName                            |                                                              |
+| ReasonNotTakingCheck | mtc_admin.pupilAttendance                           | **Blank** - no reason not taking the check**, 1** - Incorrect registration,  **2** - Absent,  **3** - Left school,   **4** - Unable to access,  **5** - Working below the overall standard of the check,  **6** - Just arrived |
+| PupilStatus          | mtc_admin.pupil.complete, mtc_admin.pupilAttendance | calculated                                                   |
 
 
 
@@ -28,26 +29,27 @@
 
 ##  Check settings
 
-| Psychometric field | Source                        | Comment |
-| ------------------ | ----------------------------- | ------- |
-| QDisplayTime       | mtc_admin.checkConfig.payload | JSON    |
-| PauseLength        | mtc_admin.checkConfig.payload | JSON    |
-| AccessArr          | mtc_admin.checkConfig.payload | JSON    |
+| Psychometric field | Source                        | Comment                                                      |
+| ------------------ | ----------------------------- | ------------------------------------------------------------ |
+| QDisplayTime       | mtc_admin.checkConfig.payload | JSON                                                         |
+| PauseLength        | mtc_admin.checkConfig.payload | JSON                                                         |
+| AccessArr          | mtc_admin.checkConfig.payload | Source is JSON<br />**1** - Audible time alert,  **2** - In-built screen reader,  **3** - Colour contrast, **4** - Input assistance,  **5** - Font size, **6** - Next button, **7** - Remove number pad |
 
 
 
 ## Check information
 
-| Psychometric field | Source                                     | Comment                                                      |
-| ------------------ | ------------------------------------------ | ------------------------------------------------------------ |
-| AttemptID          | mtc_admin.check.checkCode                  | GUID                                                         |
-| FormID             | mtc_admin.checkForm.name                   |                                                              |
-| TestDate           | mtc_admin.check.pupilLoginDate             |                                                              |
-| TimeStart          | mtc_results.event                          | Where eventType = "CheckStarted"                             |
-| TimeComplete       | mtc_results.userInput OR mtc_results.event | Time the check was completed - From last key (enter) is pressed or timeout.  userInput is user is the user pressed 'Enter' but the event is used if we need to use the timeout.  This is the same as the timestamp on the answer. |
-| TimeTaken          | Calculated                                 | TimeComplete - TimeStart expressed as a duration in hh::mm::ss |
-| RestartNumber      | mtc_admin.pupilRestart                     | Values 0-2                                                   |
-| FormMark           | mtc_results.checkResult.mark               | As pupils could have taken many checks the check used by the report is determined by the the check ID stored in mtc_admin.pupil.currentCheckId which is a FK to mtc_admin.check |
+| Psychometric field | Source                                               | Comment                                                      |
+| ------------------ | ---------------------------------------------------- | ------------------------------------------------------------ |
+| AttemptID          | mtc_admin.check.checkCode                            | GUID                                                         |
+| FormID             | mtc_admin.checkForm.name                             |                                                              |
+| TestDate           | mtc_admin.check.pupilLoginDate                       |                                                              |
+| TimeStart          | mtc_results.event                                    | Where eventType = "CheckStarted"                             |
+| TimeComplete       | mtc_results.userInput OR mtc_results.event           | Time the check was completed - From last key (enter) is pressed or timeout.  userInput is user is the user pressed 'Enter' but the event is used if we need to use the timeout.  This is the same as the timestamp on the answer. |
+| TimeTaken          | Calculated                                           | TimeComplete - TimeStart                                     |
+| RestartNumber      | mtc_admin.pupilRestart                               | Values 0-2                                                   |
+| RestartReason      | mtc_admin.pupilRestart, mtc_admin.pupilRestartReason | **Blank** - no restart, **1** - Loss of internet,  **2** - Local IT issues,  **3** - Classroom disruption,  **4** - Pupil did not complete. |
+| FormMark           | mtc_results.checkResult.mark                         | As pupils could have taken many checks the check used by the report is determined by the the check ID stored in mtc_admin.pupil.currentCheckId which is a FK to mtc_admin.check |
 
 
 
