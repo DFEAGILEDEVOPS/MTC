@@ -1,5 +1,5 @@
 'use strict'
-/* global describe it expect */
+/* global describe it expect afterAll */
 
 /**
  * Supertest will run a copy of the app on an ephemeral port and then tear it down.
@@ -7,8 +7,15 @@
  */
 const request = require('supertest')
 const app = require('../app')
+const sql = require('../services/data-access/sql.service')
+const redisCacheService = require('../services/data-access/redis-cache.service')
 
 describe('nocache', () => {
+  afterAll(async () => {
+    await sql.drainPool()
+    redisCacheService.disconnect()
+  })
+
   it('sets all nocache headers to ensure all pages are fresh', async () => {
     const res = await request(app)
       .get('/ping')
