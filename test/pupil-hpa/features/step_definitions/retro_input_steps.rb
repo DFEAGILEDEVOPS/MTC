@@ -1,6 +1,6 @@
 Given(/^I have retrospectively added an input assistant$/) do
   step 'I am on the complete page'
-  step 'I login to the admin app with teacher1'
+  step 'I login to the admin app'
   visit ENV["ADMIN_BASE_URL"] + access_arrangements_page.url
   access_arrangements_page.retro_input.link.click
   Timeout.timeout(ENV['WAIT_TIME'].to_i) {(visit current_url; retro_input_page.search_pupil.set(@details_hash[:first_name])) until
@@ -19,7 +19,7 @@ Given(/^I have retrospectively added an input assistant$/) do
 end
 
 When(/^I complete a check after a restart$/) do
-  step 'I login to the admin app with teacher1'
+  step 'I login to the admin app'
   visit ENV["ADMIN_BASE_URL"] + restarts_page.url
   restarts_page.select_pupil_to_restart_btn.click
   restarts_page.reason_1.click

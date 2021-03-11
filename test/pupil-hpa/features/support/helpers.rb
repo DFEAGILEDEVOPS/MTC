@@ -57,4 +57,30 @@ module Helpers
     academic_year
   end
 
+  def calculate_aa_id(access_arrangement_array)
+    code_array = []
+    access_arrangement_array.each do |access_arrangement|
+      case access_arrangement
+      when 'audibleSounds'
+       code_array << '[1]'
+      when 'colourContrast'
+        code_array << '[2]'
+      when 'fontSize'
+        code_array << '[3]'
+      when 'inputAssistance'
+        code_array << '[4]'
+      when 'nextBetweenQuestions'
+        code_array << '[5]'
+      when 'numpadRemoval'
+        code_array << '[6]'
+      when 'questionReader'
+        code_array << '[7]'
+      else
+        p access_arrangement
+        fail 'arrangment not recognised '
+      end
+    end
+    code_array
+  end
+
 end

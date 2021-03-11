@@ -1,0 +1,45 @@
+<%- partial('partials/_gds_breadcrumbs_and_sign_out', { breadcrumbs }) %>
+<main class="govuk-main-wrapper govuk-body" id="main-content" role="main">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <%- partial('partials/_gds_session_expiry') %>
+            <%- partial('partials/_flash-messages') %>
+            <h1 class="govuk-heading-xl">Batch drop Redis keys</h1>
+
+            <form action="/tech-support/redis/multiple/drop" method="post" autocomplete="off">
+                <input type="hidden" name="_csrf" value="<%= csrftoken %>"/>
+                <% keys.forEach(key => { %>
+                <input type="hidden" name="key" value="<%= key.type %>"/>
+                <% }) %>
+
+                <h1 class="govuk-fieldset__heading">
+                    These keys will be dropped
+                </h1>
+                <% keys.forEach(key => { %>
+                    <ul>
+                        <li><%= key.label %></li>
+                    </ul>
+                <% }) %>
+
+                <button type="submit" id="drop-confirm-btn" class="govuk-button">Drop</button>
+                <a class="govuk-button govuk-button--secondary"
+                   href="/tech-support/redis-overview">Cancel</a>
+            </form>
+        </div>
+
+        <div class="govuk-grid-column-one-third" aria-label="sidebar">
+            <aside class="app-related-items" role="complementary">
+                <h2 class="govuk-heading-m" id="subsection-title">
+                    Related
+                </h2>
+                <nav role="navigation" aria-labelledby="subsection-title">
+                    <ul class="govuk-list govuk-!-font-size-16">
+                        <li>
+                            <a class="govuk-link" href="/tech-support/redis-overview">Redis overview</a>
+                        </li>
+                    </ul>
+                </nav>
+            </aside>
+        </div>
+    </div>
+</main>

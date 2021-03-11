@@ -1,4 +1,18 @@
 Before do
+  @urn = SqlDbHelper.get_schools_list.map {|school| school['urn']}.sort.last + 1
+  @estab_code = SqlDbHelper.get_schools_list.map {|school| school['estabCode']}.sort.last + 1
+  @school_name = "Test School - #{@urn}"
+  @school = FunctionsHelper.create_school(@estab_code, @school_name, @urn)
+  school_uuid = @school['entity']['urlSlug']
+  @username = "teacher#{@urn}"
+  @school_user = FunctionsHelper.create_user(school_uuid, @username)
+  @school_id = @school_user['entity']['school_id']
+  FunctionsHelper.generate_school_pin(@school_id)
+  p "Login for #{@school_name} created as - #{@username}"
+  step 'I login to the admin app'
+  visit ENV['ADMIN_BASE_URL'] + add_multiple_pupil_page.url
+  @upns_for_school = add_multiple_pupil_page.upload_pupils(5, @school_name)
+  visit ENV['ADMIN_BASE_URL'] + '/sign-out'
   page.current_window.resize_to(1270, 768)
 end
 
@@ -14,6 +28,18 @@ Before("not @event_auditing", "not @feedback", "not @local_storage") do
   end
 end
 
+Before('@empty_new_school') do
+  @urn = SqlDbHelper.get_schools_list.map {|school| school['urn']}.sort.last + 1
+  @estab_code = SqlDbHelper.get_schools_list.map {|school| school['estabCode']}.sort.last + 1
+  @school_name = "Test School - #{@urn}"
+  @school = FunctionsHelper.create_school(@estab_code, @school_name, @urn)
+  school_uuid = @school['entity']['urlSlug']
+  @username = "teacher#{@urn}"
+  @school_user = FunctionsHelper.create_user(school_uuid, @username)
+  @school_id = @school_user['entity']['school_id']
+  FunctionsHelper.generate_school_pin(@school_id)
+  p "Login for #{@school_name} created as - #{@username}"
+end
 
 Before('@4_digit') do
   skip_this_scenario if AUTH == '5'
@@ -38,7 +64,7 @@ After('@window_date_time_reset') do
 end
 
 After("@remove_access_arrangements") do
-  step 'I login to the admin app with teacher1'
+  step 'I login to the admin app'
   visit ENV["ADMIN_BASE_URL"] + access_arrangements_page.url
   access_arrangements_page.remove_all_pupils
 end

@@ -1,0 +1,28 @@
+<%
+/**
+ * pageFields: an array of element id strings that can have an error.
+ *
+ */
+%>
+<% if (error.hasError()) { %>
+    <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1"
+         data-module="govuk-error-summary">
+        <h2 class="govuk-error-summary__title" id="error-summary-title">
+            You need to fix the errors on this page before continuing.
+        </h2>
+        <div class="govuk-error-summary__body">
+            <p>See highlighted errors below.</p>
+            <ul class="govuk-list govuk-error-summary__list">
+                <% error.getUniqueFields(pageFields).map(f => { %>
+                    <% const errors = error.get(f) %>
+                    <% if (Array.isArray(errors)) { %>
+                        <%  errors.forEach(e => { %>
+                            <li><a href="#<%= f %>"><%= e %></a></li>
+                    <% }) } else { %>
+                        <li><a href="#<%= f %>"><%= errors %></a></li>
+                    <% } %>
+                <% }) %>
+            </ul>
+        </div>
+    </div>
+<% } %>
