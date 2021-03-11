@@ -1,0 +1,13 @@
+<form action="<%= formPostUrl %>" method="post" autocomplete="off">
+    <input type="hidden" name="_csrf" value="<%= csrftoken %>"/>
+    <div class="govuk-form-group">
+        <h1 class="govuk-label-wrapper"><label class="govuk-label govuk-label--l" for="key">
+                Enter a key name
+            </label>
+        </h1>
+        <input class="govuk-input" id="key" name="key" type="text" value="<%= key %>">
+    </div>
+
+    <button type="submit" id="drop-confirm-btn" class="govuk-button"><%= submitButtonDisplayTxt %></button>
+    <a class="govuk-button govuk-button--secondary" href="<%= cancelButtonUrl %>">Cancel</a>
+</form>

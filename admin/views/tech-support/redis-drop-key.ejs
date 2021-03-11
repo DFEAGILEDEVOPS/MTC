@@ -1,0 +1,36 @@
+<%- partial('partials/_gds_breadcrumbs_and_sign_out', { breadcrumbs }) %>
+<main class="govuk-main-wrapper govuk-body" id="main-content" role="main">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <%- partial('partials/_gds_session_expiry') %>
+            <%- partial('partials/_flash-messages') %>
+            <%- partial('partials/_form-error', {
+                pageFields: ['key'],
+                error
+            }) %>
+            <%- partial('tech-support/_redis-key-search', {
+                formPostUrl: '/tech-support/redis/drop/confirm',
+                key: key,
+                submitButtonDisplayTxt: 'Go to confirmation page',
+                cancelButtonUrl: '/tech-support/home'
+            }) %>
+        </div>
+
+        <div class="govuk-grid-column-one-third" aria-label="sidebar">
+            <aside class="app-related-items" role="complementary">
+                <h2 class="govuk-heading-m" id="subsection-title">
+                    Related
+                </h2>
+                <nav role="navigation" aria-labelledby="subsection-title">
+                    <ul class="govuk-list govuk-!-font-size-16">
+                        <li>
+                            <a class="govuk-link" href="/tech-support/redis-overview" >Redis overview</a>
+                        </li>
+                    </ul>
+                </nav>
+            </aside>
+        </div>
+    </div>
+
+
+</main>
