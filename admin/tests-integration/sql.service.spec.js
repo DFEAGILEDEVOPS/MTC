@@ -21,6 +21,7 @@ const logger = require('../services/log.service').getLogger()
 const sql = require('../services/data-access/sql.service')
 const TYPES = sql.TYPES
 const { v4: uuidv4 } = require('uuid')
+const redisCacheService = require('../services/data-access/redis-cache.service')
 
 describe('sql.service:integration', () => {
   beforeAll(async () => {
@@ -29,6 +30,7 @@ describe('sql.service:integration', () => {
 
   afterAll(async () => {
     await sql.drainPool()
+    redisCacheService.disconnect()
   })
 
   describe('should permit', () => {

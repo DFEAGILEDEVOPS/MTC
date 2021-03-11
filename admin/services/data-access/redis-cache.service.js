@@ -145,6 +145,40 @@ redisCacheService.getMany = async (keys) => {
 }
 
 /**
+ * Get the TTL of an object in seconds
+ * The command returns -2 if the key does not exist.
+ * The command returns -1 if the key exists but has no associated expire.
+ * https://redis.io/commands/ttl
+ */
+redisCacheService.getTtl = async (key) => {
+  if (typeof key !== 'string') {
+    throw new Error('Invalid key')
+  }
+  if (key.length === 0) {
+    throw new Error('Invalid key length')
+  }
+  redisConnect()
+  return await redis.ttl(key)
+}
+
+/**
+ * DropByPrefix: drops keys by prefix
+ * Warning: not recommended for production as it uses KEYS
+ * @param prefix
+ * @return {Promise<void>}
+ */
+redisCacheService.dropByPrefix = async (prefix) => {
+  redisConnect()
+  await redis.eval(`for i, name in ipairs(redis.call('KEYS', '${prefix}*')) do redis.call('DEL', name); end`, 0)
+}
+
+redisCacheService.disconnect = async () => {
+  if (redis) {
+    return redis.quit()
+  }
+}
+
+/**
  * Wrap a value for storing in redis with type information
  * @param value
  * @return {string}
