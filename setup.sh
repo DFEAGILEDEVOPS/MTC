@@ -22,6 +22,7 @@ install_admin () {
   cd ${scriptDir}/admin
   nvm use
   yarn
+  yarn build
 }
 
 install_pupil_api () {
