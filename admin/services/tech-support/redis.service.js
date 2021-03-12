@@ -56,7 +56,8 @@ const redisService = {
       /^result:/,
       /^sasToken:/,
       /^schoolData.sqlFindOneById/,
-      /^settings$/
+      /^settings$/,
+      /^ratelimit::/
     ]
     return allowedPrefixes.some(regex => { return regex.test(key) })
   },
