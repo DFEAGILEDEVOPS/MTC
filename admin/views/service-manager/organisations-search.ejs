@@ -1,0 +1,33 @@
+<%- partial('partials/_gds_breadcrumbs_and_sign_out', { breadcrumbs }) %>
+<main class="govuk-main-wrapper" id="main-content" role="main">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-heading-xl">Search organisations</h1>
+            <%- partial('partials/_gds_session_expiry') %>
+            <div class="govuk-form-group">
+                <label class="govuk-label" for="q">
+                    Search
+                </label>
+                <div id="q-hint" class="govuk-hint">
+                    Search for DfeNumber, URN, or partial school name
+                </div>
+                <input class="govuk-input" id="q" name="q" type="input" spellcheck="false"
+                       aria-describedby="q-hint">
+            </div>
+        </div>
+        <div class="govuk-grid-column-one-third" aria-label="sidebar">
+            <aside class="app-related-items" role="complementary">
+                <h2 class="govuk-heading-m" id="subsection-title">
+                    Related
+                </h2>
+                <nav role="navigation" aria-labelledby="subsection-title">
+                    <ul class="govuk-list govuk-!-font-size-16">
+                        <li>
+                            <a class="govuk-link" href="<%- guidancePdf %>" target="_blank" rel="noopener noreferrer">Read the guidance and watch videos</a>
+                        </li>
+                    </ul>
+                </nav>
+            </aside>
+        </div>
+    </div>
+</main>

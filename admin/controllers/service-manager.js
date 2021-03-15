@@ -307,6 +307,34 @@ const controller = {
 
     req.flash('info', `'${school.name}' added as an MOD school`)
     return res.redirect(`/service-manager/mod-settings?hl=${school.urlSlug}`)
+  },
+
+  getManageSchools: async function getManageSchools (req, res, next) {
+    req.breadcrumbs('Manage organisations', '/service-manager/organisations')
+    res.locals.pageTitle = 'Manage organisations'
+    req.breadcrumbs(res.locals.pageTitle)
+
+    try {
+      res.render('service-manager/manage-schools-hub', {
+        breadcrumbs: req.breadcrumbs()
+      })
+    } catch (error) {
+      return next(error)
+    }
+  },
+
+  getSearch: async function getSearch (req, res, next) {
+    req.breadcrumbs('Search organisations', '/service-manager/organisations/search')
+    res.locals.pageTitle = 'Search organisations'
+    req.breadcrumbs(res.locals.pageTitle)
+
+    try {
+      res.render('service-manager/organisations-search', {
+        breadcrumbs: req.breadcrumbs()
+      })
+    } catch (error) {
+      return next(error)
+    }
   }
 }
 

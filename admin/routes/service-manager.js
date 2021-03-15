@@ -72,4 +72,13 @@ router.get('/mod-settings/remove-school/:urn',
   serviceManagerController.getSceRemoveSchool
 )
 
+router.get('/organisations',
+  isAuthenticated(roles.serviceManager),
+  serviceManagerController.getManageSchools
+)
+
+router.get('/organisations/search',
+  isAuthenticated(roles.serviceManager),
+  serviceManagerController.getSearch
+)
 module.exports = router
