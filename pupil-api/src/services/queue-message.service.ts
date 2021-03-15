@@ -15,6 +15,9 @@ export class SbQueueMessageService implements IQueueMessageService {
   private sender: sb.Sender
 
   constructor () {
+    if (config.ServiceBus.connectionString === undefined) {
+      throw new Error('Azure Service Bus Connection String missing')
+    }
     const sbClient = sb.ServiceBusClient.createFromConnectionString(config.ServiceBus.connectionString)
     const sbQueueClient = sbClient.createQueueClient('pupil-login')
     this.sender = sbQueueClient.createSender()
