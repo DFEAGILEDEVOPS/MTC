@@ -102,7 +102,7 @@ describe('redis auth controller', () => {
 
   test('returns a 401 if no redis preparedCheck found', async () => {
     redisPupilAuthService.authenticate = jest.fn((schoolPin: string, pupilPin: string) => {
-      return undefined
+      return Promise.resolve(undefined)
     })
     await authController.postAuth(req, res)
     expect(res.statusCode).toBe(401)
