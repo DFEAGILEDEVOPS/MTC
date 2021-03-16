@@ -10,6 +10,7 @@ const sceSchoolValidator = require('../lib/validator/sce-school-validator')
 const uploadedFileService = require('../services/uploaded-file.service')
 const ValidationError = require('../lib/validation-error')
 const scePresenter = require('../helpers/sce')
+const schoolService = require('../services/school.service')
 
 const featureToggles = require('feature-toggles')
 
@@ -192,7 +193,6 @@ const controller = {
    * Cancel sce settings. Redirects to index.
    * @param req
    * @param res
-   * @param next
    * @returns {Promise.<void>}
    */
   cancelSceSettings: async function cancelSceSettings (req, res) {
@@ -209,7 +209,7 @@ const controller = {
   postSceSettings: async function postSceSettings (req, res, next) {
     const sceSchools = await sceService.getSceSchools()
     try {
-      req.body.urn.forEach((urn, i) => {
+      req.body.urn.forEach(urn => {
         const [countryCode, timezone] = scePresenter.parseCountryTimezoneFromInput(req.body.timezone[urn])
         const schoolIndex = sceSchools.findIndex(s => s.urn.toString() === urn)
         sceSchools[schoolIndex].timezone = timezone
@@ -315,7 +315,7 @@ const controller = {
     req.breadcrumbs(res.locals.pageTitle)
 
     try {
-      res.render('service-manager/manage-schools-hub', {
+      res.render('service-manager/manage-organisations-hub', {
         breadcrumbs: req.breadcrumbs()
       })
     } catch (error) {
@@ -323,14 +323,57 @@ const controller = {
     }
   },
 
-  getSearch: async function getSearch (req, res, next) {
+  getSearch: async function getSearch (req, res, next, error = new ValidationError()) {
     req.breadcrumbs('Search organisations', '/service-manager/organisations/search')
     res.locals.pageTitle = 'Search organisations'
-    req.breadcrumbs(res.locals.pageTitle)
 
     try {
+      const query = req.body.q ?? ''
       res.render('service-manager/organisations-search', {
-        breadcrumbs: req.breadcrumbs()
+        breadcrumbs: req.breadcrumbs(),
+        error,
+        query
+      })
+    } catch (error) {
+      return next(error)
+    }
+  },
+
+  postSearch: async function postSearch (req, res, next) {
+    const noSchoolFound = (req, res, next, errorMsg = 'No school found') => {
+      const error = new ValidationError()
+      error.addError('q', errorMsg)
+      return controller.getSearch(req, res, next, error)
+    }
+    try {
+      const query = req.body.q
+      if (query === undefined || query === '') {
+        return noSchoolFound(req, res, next, 'No query provided')
+      }
+      let school
+      try {
+        school = await schoolService.searchForSchool(parseInt(req.body.q?.trim(), 10))
+      } catch (error) {
+        return noSchoolFound(req, res, next)
+      }
+      if (!school) {
+        return noSchoolFound(req, res, next)
+      }
+      return res.redirect(`/service-manager/organisations/${encodeURIComponent(school.urlSlug)}`)
+    } catch (error) {
+      return next(error)
+    }
+  },
+
+  getViewOrganisation: async function getViewOrganisation (req, res, next) {
+    try {
+      req.breadcrumbs('Manage organisations', '/service-manager/organisations')
+      req.breadcrumbs('Search organisations', '/service-manager/organisations/search')
+      res.locals.pageTitle = 'View organisation'
+      const school = await schoolService.findOneBySlug(req.params.slug)
+      res.render('service-manager/organisation-detail', {
+        breadcrumbs: req.breadcrumbs(),
+        school
       })
     } catch (error) {
       return next(error)

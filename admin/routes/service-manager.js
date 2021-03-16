@@ -81,4 +81,16 @@ router.get('/organisations/search',
   isAuthenticated(roles.serviceManager),
   serviceManagerController.getSearch
 )
+
+router.post('/organisations/search',
+  isAuthenticated(roles.serviceManager),
+  serviceManagerController.postSearch
+)
+
+router.get(
+  '/organisations/:slug',
+  isAuthenticated([roles.serviceManager]),
+  serviceManagerController.getViewOrganisation
+)
+
 module.exports = router

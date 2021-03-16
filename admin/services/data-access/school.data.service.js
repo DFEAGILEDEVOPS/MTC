@@ -126,6 +126,39 @@ const schoolDataService = {
       `
     const rows = await sqlService.readonlyQuery(sql, [paramUrn])
     return R.head(rows)
+  },
+
+  sqlSearch: async (query) => {
+    const params = [
+      { name: 'query', value: query, type: TYPES.Int }
+    ]
+    const sql = `
+      SELECT
+          id, name, leaCode, estabCode, name, dfeNumber, urn, urlSlug
+      FROM mtc_admin.school
+      WHERE dfeNumber = @query OR urn = @query 
+    `
+    const res = await sqlService.query(sql, params)
+    if (res.length > 0) {
+      return res[0]
+    }
+  },
+
+  /**
+   * Find a school
+   * @param {string} slug - uuid/v4
+   * @return {Promise<Object>}
+   */
+  sqlFindOneBySlug: async function (slug) {
+    const params = [
+      { name: 'slug', value: slug, type: TYPES.UniqueIdentifier }
+    ]
+    const sql = `SELECT s.id, s.name, s.leaCode, s.estabCode, s.dfeNumber, s.urn, s.urlSlug,
+                        (SELECT count(*) from mtc_admin.pupil WHERE school_id = s.id) as numberOfPupils
+                   FROM mtc_admin.school s
+                  WHERE s.urlSlug = @slug`
+    const res = await sqlService.query(sql, params)
+    return R.head(res)
   }
 }
 
