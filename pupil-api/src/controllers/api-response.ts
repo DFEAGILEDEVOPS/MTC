@@ -18,7 +18,7 @@ const apiResponse = {
 
   sendJson: (res: Response, obj: object | string, code: number = 200) => {
     apiResponse.setJsonHeader(res)
-    res.status(code).json(obj)
+    return res.status(code).json(obj)
   },
 
   setJsonHeader: (res: Response) => {

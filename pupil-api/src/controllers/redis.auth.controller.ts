@@ -29,7 +29,7 @@ export class RedisAuthController implements IAuthController {
       if (data === undefined) {
         return apiResponse.unauthorised(res)
       }
-      apiResponse.sendJson(res, data)
+      return apiResponse.sendJson(res, data)
     } catch (error) {
       logger.error('Failed to authenticate pupil: ', error)
       return apiResponse.unauthorised(res)
