@@ -169,7 +169,9 @@ redisCacheService.getTtl = async (key) => {
  */
 redisCacheService.dropByPrefix = async (prefix) => {
   redisConnect()
-  await redis.eval(`for i, name in ipairs(redis.call('KEYS', '${prefix}*')) do redis.call('DEL', name); end`, 0)
+  const cmd = `for i, name in ipairs(redis.call('KEYS', '${prefix}*')) do redis.call('DEL', name); end`
+  console.log(`GUY: ${cmd}`)
+  await redis.eval(cmd, 0)
 }
 
 redisCacheService.disconnect = async () => {
