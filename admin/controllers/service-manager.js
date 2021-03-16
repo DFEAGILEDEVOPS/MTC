@@ -359,7 +359,7 @@ const controller = {
       if (!school) {
         return noSchoolFound(req, res, next)
       }
-      return res.redirect(`/service-manager/organisations/${encodeURIComponent(school.urlSlug)}`)
+      return res.redirect(`/service-manager/organisations/${encodeURIComponent(school.urlSlug).toLowerCase()}`)
     } catch (error) {
       return next(error)
     }
