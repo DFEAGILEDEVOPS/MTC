@@ -5,7 +5,7 @@ import * as featureToggles from 'feature-toggles'
 export interface IFeatureService {
 }
 
-let initialised: boolean
+let initialised: boolean = false
 
 export class FeatureService implements IFeatureService {
 
@@ -18,7 +18,7 @@ export class FeatureService implements IFeatureService {
      * Load feature toggles
      */
     logger.info('ENVIRONMENT_NAME : ' + config.Environment)
-    logger.info('Loading feature toggles from: ', config.FeatureToggles)
+    logger.info('Loading feature toggles from: ' + JSON.stringify(config.FeatureToggles))
     initialised = true
   }
 }
