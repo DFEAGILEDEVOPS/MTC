@@ -310,10 +310,8 @@ const controller = {
   },
 
   getManageSchools: async function getManageSchools (req, res, next) {
-    req.breadcrumbs('Manage organisations', '/service-manager/organisations')
     res.locals.pageTitle = 'Manage organisations'
     req.breadcrumbs(res.locals.pageTitle)
-
     try {
       res.render('service-manager/manage-organisations-hub', {
         breadcrumbs: req.breadcrumbs()
@@ -323,16 +321,17 @@ const controller = {
     }
   },
 
-  getSearch: async function getSearch (req, res, next, error = new ValidationError()) {
-    req.breadcrumbs('Search organisations', '/service-manager/organisations/search')
+  getSearch: async function getSearch (req, res, next, validationError = new ValidationError()) {
+    req.breadcrumbs('Manage organisations', '/service-manager/organisations')
     res.locals.pageTitle = 'Search organisations'
+    req.breadcrumbs(res.locals.pageTitle)
 
     try {
       const query = req.body.q ?? ''
       res.render('service-manager/organisations-search', {
         breadcrumbs: req.breadcrumbs(),
-        error,
-        query
+        query,
+        error: validationError
       })
     } catch (error) {
       return next(error)
@@ -370,6 +369,7 @@ const controller = {
       req.breadcrumbs('Manage organisations', '/service-manager/organisations')
       req.breadcrumbs('Search organisations', '/service-manager/organisations/search')
       res.locals.pageTitle = 'View organisation'
+      req.breadcrumbs(res.locals.pageTitle)
       const school = await schoolService.findOneBySlug(req.params.slug)
       res.render('service-manager/organisation-detail', {
         breadcrumbs: req.breadcrumbs(),
