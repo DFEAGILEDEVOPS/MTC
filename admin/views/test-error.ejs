@@ -1,0 +1,9 @@
+<main class="govuk-main-wrapper" id="main-content" role="main">
+    <div class="govuk-grid-row">
+        <h1 class="govuk-heading-xl">Test error page</h1>
+        <%- partial('partials/_gds_session_expiry') %>
+    </div>
+    <script>
+        throw new Error('Admin app front end test error')
+    </script>
+</main>

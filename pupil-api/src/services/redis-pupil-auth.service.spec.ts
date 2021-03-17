@@ -2,7 +2,7 @@ import * as moment from 'moment'
 
 import { RedisPupilAuthenticationService, IPupilLoginMessage } from './redis-pupil-auth.service'
 import { IRedisService } from './redis.service'
-import { IQueueMessageService, IServiceBusQueueMessage } from './queue-message.service'
+import { IQueueMessageService } from './queue-message.service'
 
 let sut: RedisPupilAuthenticationService
 let redisServiceMock: IRedisService
@@ -34,7 +34,7 @@ describe('redis-pupil-auth.service', () => {
   })
 
   test('it should call redis:get with correct key format', async () => {
-    let actualKey: string
+    let actualKey: string = ''
     redisServiceMock.get = jest.fn(async (key: string) => {
       actualKey = key
     })
@@ -153,7 +153,7 @@ describe('redis-pupil-auth.service', () => {
       return expectedPayload
     })
 
-    let actualPreparedCheckExpiryValue: number
+    let actualPreparedCheckExpiryValue: number = -1
     redisServiceMock.expire = jest.fn(async (key: string, ttl: number) => {
       actualPreparedCheckExpiryValue = ttl
     })
@@ -255,7 +255,14 @@ describe('redis-pupil-auth.service', () => {
       return expectedPayload
     })
 
-    let actualMessage: IPupilLoginMessage
+    // Define `actualMessage` here as TS absolutely does not believe this message get assigned before test.
+    let actualMessage: IPupilLoginMessage = {
+      checkCode: '',
+      loginAt: new Date(1970),
+      practice: true,
+      version: -1
+    }
+
     messageDispatchMock.dispatch = jest.fn(async (message) => {
       actualMessage = message.body
     })

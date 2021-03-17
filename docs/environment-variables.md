@@ -17,6 +17,9 @@ Booleans can be set to the string `'true'` or `'false'` or numeric `1` or `0` wh
 Env Var | Type | Default value | Required | Components | Description
 --- | --- | --- | --- | --- | ---
 ALLOWED_WORDS | String | 'aaa,bbb,ccc,ddd,eee,dim' | Required | FC | Required to generated random school pins in the form WORD + NUMBER + NUMBER + WORD
+APPINSIGHTS_INSTRUMENTATIONKEY | String | NULL | Optional | AA,PA | The Azure Application Insights account key, required for logging / monitoring. 
+APPINSIGHTS_WINSTON_LOGGER | Boolean | false | Optional | AA | Boolean flag.  Set to 1 to allow the winston logger to send to Application Insights, or 0 to disable. 
+ASSET_PATH | String | / | Required | AA | The URL to the admin container that serves static assets: css, js, images. 
 AZURE_SERVICE_BUS_CONNECTION_STRING | String | NULL | Required | AA, FC, FT, PAPI | Connection string as given in the Azure portal for Azure Service Bus.
 AZURE_STORAGE_CONNECTION_STRING | String | (empty string) | Required | AA, FC, FT | The Azure storage connection string.
 BANNED_WORDS | String | 'dim' | Optional | FC | Provides a way to negate words that may be in the allowed list ensuring that they never appear in a pin.
