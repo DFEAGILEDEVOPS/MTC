@@ -21,13 +21,13 @@ Env Var | Type | Default value | Required | Components | Description
  ALLOWED_WORDS | String | FC:'aaa,bbb,ccc,ddd,eee,dim'<br />AA:'aaa,bcd,dcd,tfg,bxx' | Required | FC | Required to generated random school pins in the form WORD + NUMBER + NUMBER + WORD
  APPINSIGHTS_COLLECT_DEPS | Boolean | true | Optional | AA | Set to false if you do not want App Insights to collect dependency information. 
  APPINSIGHTS_COLLECT_EXCEPTIONS | Boolean | true | Optional | AA | Set to false if you do not want App Insights to collect exception information. 
- APPINSIGHTS_INSTRUMENTATIONKEY | String | N/A | Optional | AA | The Azure Application Insights instrumentation key.  Required if you want to use Application Insights. 
+ APPINSIGHTS_INSTRUMENTATIONKEY | String | NULL | Optional | AA,PA | The Azure Application Insights account key, required for logging / monitoring.
  APPINSIGHTS_LIVE_METRICS | Boolean | true | Optional | AA | Set to false if you do not want App Insights to collection live metrics. 
- APPINSIGHTS_WINSTON_LOGGER | Boolean | false | Optional | AA | Set to true to send winston logs to Application Insights.  If enabled, you should also set `EXPRESS_LOGGING_WINSTON`to `1` and `APPINSIGHTS_INSTRUMENTATIONKEY`to  the Azure-specified value. 
- ASSET_PATH | String | / | Required | AA | The URL + path to prefix to serve the static assets. E.g. 'https://example.com/' 
+ APPINSIGHTS_WINSTON_LOGGER | Boolean | false | Optional | AA | Boolean flag.  Set to 1 to allow the winston logger to send to Application Insights, or 0 to disable. If enabled, you should also set `EXPRESS_LOGGING_WINSTON`to `1` and `APPINSIGHTS_INSTRUMENTATIONKEY`to  the Azure-specified value. 
+ ASSET_PATH | String | / | Required | AA | The URL to the admin container that serves static assets: css, js, images.
  AUTH_MODE | String | local | Optional | AA | Valid modes are `local` and `dfe`. 
  AZURE_QUEUE_PREFIX | String | '' | Optional | AA | A prefix that can be automatically applied to the required queues. 
- AZURE_SERVICE_BUS_CONNECTION_STRING | String | N/A | Required | AA, FC, FT, PAPI | Connection string as given in the Azure portal for Azure Service Bus.
+ AZURE_SERVICE_BUS_CONNECTION_STRING | String | NULL | Required | AA, FC, FT, PAPI | Connection string as given in the Azure portal for Azure Service Bus.
  AZURE_STORAGE_CONNECTION_STRING | String | (empty string) | Required | AA, FC, FT | The Azure storage connection string.
  AZURE_TABLE_PREFIX | String | '' | Optional | AA | A prefix that can be automatically applied to the required tables. 
  BANNED_WORDS | String | 'dim' | Optional | FC | Provides a way to negate words that may be in the allowed list ensuring that they never appear in a pin.
@@ -104,7 +104,7 @@ Env Var | Type | Default value | Required | Components | Description
  SQL_APP_USER | String |  | Required | AA | Username to use when connecting to the database from the admin app. 
  SQL_APP_USER_PASSWORD | String |  | Required | AA | The 
  SQL_CENSUS_REQUEST_TIMEOUT | Int | 60000 * 120 | Optional | FC | The timeout in milliseconds for a single request to the database.  This is used purely by the pupil census upload.  Value in milliseconds.
- SQL_CONNECTION_TIMEOUT | Int | 60000 | Optional| FC, FT | The timeout value in milliseconds to allow when opening a connection to the database.  Default is 1 minute in ms for FT and FC.
+ SQL_CONNECTION_TIMEOUT | Int | 60000 | Optional| AA,FC, FT | The timeout value in milliseconds to allow when opening a connection to the database. Default is 1 minute in ms for FT and FC. 
  SQL_CONNECT_TIMEOUT | Int | 30000 | Optional | AA | The timeout value in milliseconds for the SQL connection. 
  SQL_DATABASE | String | mtc | Required | AA, FC, FT | Database name to connect to
  SQL_ENABLE_ARITH_ABORT | Boolean | true | Optional | AA, FC, FT | [Used by the TDS library](https://tediousjs. github.io/tedious/api-connection.html)
