@@ -46,7 +46,7 @@ RUN sh gen_config.sh && mv config.json dist/public
 
 ### STAGE 2: Setup ###
 
-FROM nginx:1.14.1-alpine
+FROM nginx:1.19-alpine
 
 # defer until SSL integrated, need to get package
 # RUN openssl dhparam -out /etc/nginx/ssl/dhparam.pem 2048

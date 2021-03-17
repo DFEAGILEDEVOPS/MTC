@@ -81,6 +81,7 @@ import { SvgWarningComponent } from './svg/svg.warning.component';
 import { TimerService } from './services/timer/timer.service';
 import { WebsiteOfflineComponent } from './website-offline/website-offline.component';
 import { ApplicationInsightsService } from './services/app-insights/app-insights.service';
+import { TestErrorComponent } from './test-error/test-error.component';
 
 declare var AzureStorage: IAzureStorage;
 
@@ -106,7 +107,8 @@ const appRoutes: Routes = [
   {path: 'sign-in-fail', component: LoginFailureComponent},
   {path: 'sign-in-success', component: LoginSuccessComponent, canActivate: [LoggedInGuard]},
   {path: 'sign-out', component: LogoutComponent, canActivate: [LoggedInGuard]},
-  {path: 'submission-failed', component: SubmissionFailedComponent }
+  {path: 'submission-failed', component: SubmissionFailedComponent },
+  {path: 'test-error', component: TestErrorComponent} // no need for login here
   // { path: '**', component: NotFoundComponent }
 ];
 
@@ -156,7 +158,8 @@ const appRoutes: Routes = [
     WarmupCompleteComponent,
     WarmupIntroComponent,
     WarmupLoadingComponent,
-    WebsiteOfflineComponent
+    WebsiteOfflineComponent,
+    TestErrorComponent
   ],
   imports: [
     BrowserModule,

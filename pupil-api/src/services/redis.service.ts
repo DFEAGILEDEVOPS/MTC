@@ -129,7 +129,7 @@ export class RedisService implements IRedisService {
 
   async drop (keys: string[]): Promise<Array<[Error | null, any]>> {
     if (keys.length === 0) {
-      return
+      throw new Error('Invalid key list')
     }
     const pipeline = this.redis.pipeline()
     keys.forEach(c => {
