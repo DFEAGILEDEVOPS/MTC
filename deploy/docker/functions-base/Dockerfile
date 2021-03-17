@@ -1,4 +1,4 @@
-FROM node:10.17.0
+FROM node:12.18.2
 
 # SHELL ["/bin/bash", "-c"]
 
@@ -20,7 +20,7 @@ RUN wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor 
     chown root:root /etc/apt/trusted.gpg.d/microsoft.asc.gpg && \
     chown root:root /etc/apt/sources.list.d/microsoft-prod.list
 
-RUN apt-get update && apt-get install dotnet-sdk-2.2 azure-functions-core-tools-2 -y
+RUN apt-get update && apt-get install azure-functions-core-tools-3 -y
 
 RUN func --version
 

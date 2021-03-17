@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# obtains current connection strings for service bus and storage accounts, and updates the relevant key vault secret value
+
 RES_GROUP=$1 # the target resource group
 KEY_VAULT_NAME=$2 # the key vault name
 SERVICE_BUS_NAME=$3 # the service bus to extract keys from

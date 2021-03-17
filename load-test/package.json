@@ -10,7 +10,7 @@
     "purgestorage": "bin/init-dev-storage.js"
   },
   "resolutions": {
-    "**/**/lodash": "^4.17.20"
+    "**/**/lodash": "^4.17.21"
   },
   "dependencies": {
     "artillery": "^1.6.0",
@@ -19,8 +19,8 @@
     "bcryptjs": "^2.4.3",
     "bluebird": "^3.5.3",
     "dotenv": "^8.2.0",
-    "fast-csv": "^3.4.0",
-    "fs-extra": "^8.1.0",
+    "fast-csv": "^4.3.6",
+    "fs-extra": "^9.1.0",
     "ioredis": "^4.14.1",
     "number-to-words": "^1.2.3",
     "ramda": "^0.27.0",

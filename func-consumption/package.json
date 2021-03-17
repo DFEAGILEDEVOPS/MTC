@@ -19,7 +19,7 @@
     "start:dev": "concurrently -r 'env $(cat disable-functions.env | grep Azure | xargs ) yarn start' 'gulp watch'"
   },
   "resolutions": {
-    "**/**/lodash": "^4.17.20"
+    "**/**/lodash": "^4.17.21"
   },
   "devDependencies": {
     "@azure/functions": "^1.0.3",
