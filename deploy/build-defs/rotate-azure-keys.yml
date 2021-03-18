@@ -1,0 +1,46 @@
+# AzureDevops build defintion for Azure services key rotation and key vault update
+resources:
+  - repo: self
+
+name: Azure-Key-Rotation-$(date:yyyyMMdd)$(rev:.r)
+
+# do not trigger on master commits
+trigger: none
+
+pool:
+  name: MTC LIVE
+
+jobs:
+- job: RedisKey
+  steps:
+  - task: Bash@3
+    displayName: Rotate Redis Key
+    env:
+      PULL_REQUEST_ID: $(System.PullRequest.PullRequestNumber)
+    inputs:
+      targetType: filePath
+      filePath: 'deploy/azure/key-vault/key-rotation/redis.sh'
+      arguments: $(ResourceGroupName) $(KeyVaultName) $(RedisName) $(KeyType)
+      failOnStderr: true
+- job: ServiceBusKey
+  steps:
+  - task: Bash@3
+    displayName: Rotate Service Bus Key
+    env:
+      PULL_REQUEST_ID: $(System.PullRequest.PullRequestNumber)
+    inputs:
+      targetType: filePath
+      filePath: 'deploy/azure/key-vault/key-rotation/service-bus.sh'
+      arguments: $(ResourceGroupName) $(KeyVaultName) $(ServiceBusName) $(KeyType) $(ServiceBusUser)
+      failOnStderr: true
+- job: StorageAccountKey
+  steps:
+  - task: Bash@3
+    displayName: Rotate Storage Account Key
+    env:
+      PULL_REQUEST_ID: $(System.PullRequest.PullRequestNumber)
+    inputs:
+      targetType: filePath
+      filePath: 'deploy/azure/key-vault/key-rotation/storage.sh'
+      arguments: $(ResourceGroupName) $(KeyVaultName) $(StorageAccountName) $(KeyType)
+      failOnStderr: true
