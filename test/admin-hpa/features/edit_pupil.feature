@@ -102,7 +102,7 @@ Feature:
       | ÞÐÇÑẞ              |
       | þçðñß              |
 
-  Scenario: validation for Add Pupil DOB fields
+  Scenario: validation for edit Pupil DOB fields
     Then I should see validation error for the DOB field fo the following
       | condition                   |
       | letters in DOB              |
