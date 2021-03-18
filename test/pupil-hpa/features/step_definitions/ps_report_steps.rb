@@ -1,10 +1,10 @@
 When(/^the data sync and ps report function has run$/) do
   step 'the data sync function has run'
-  sleep 180
+  sleep 300
   uuid = SqlDbHelper.find_school(@school_id)['urlSlug']
   response = FunctionsHelper.trigger_func('ps-report-2-pupil-data', {name: @school_name, uuid: uuid})
   expect(response.code).to eql 202
-  sleep 180
+  sleep 300
 end
 
 Then(/^I should see a record for the pupil in the ps report table$/) do
