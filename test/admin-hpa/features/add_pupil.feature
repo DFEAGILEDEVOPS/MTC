@@ -97,7 +97,7 @@ Feature:
     Then the pupil details should be stored
 
   @ie11
-  Scenario: Names can include apostrophes
+  Scenario: Names can include accents
     Given I am on the add pupil page
     When I submit the form with the name fields set as Maryçáéíóúñü
     Then the pupil details should be stored

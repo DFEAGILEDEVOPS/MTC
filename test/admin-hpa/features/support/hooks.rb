@@ -1,5 +1,4 @@
 Before do
-  FileUtils.rm_f Dir.glob(File.expand_path("#{File.dirname(__FILE__)}/data/ctf_download/*"))
   @urn = SqlDbHelper.get_schools_list.map {|school| school['urn']}.sort.last + 1
   @estab_code = SqlDbHelper.get_schools_list.map {|school| school['estabCode']}.sort.last + 1
   @school_name = "Test School - #{@urn}"
@@ -18,6 +17,7 @@ Before do
   p Time.now
   sign_in_page.cookies_banner.accept_all.click if sign_in_page.cookies_banner.accept_all.visible?
   visit ENV['ADMIN_BASE_URL'] + '/sign-out'
+  Dir.glob(File.expand_path("#{File.dirname(__FILE__)}/../../data/ctf_download/*")).each {|file| File.delete file}
 end
 
 Before('@empty_new_school') do
