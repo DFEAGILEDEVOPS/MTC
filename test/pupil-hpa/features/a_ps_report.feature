@@ -1,7 +1,7 @@
 Feature:
   PS Report
 
-  Scenario: Pupils that have completed the check are included in the report
+  Scenario: Pupils that have completed the check with 25 correct answers are included in the report
     Given I have completed the check
     When the data sync and ps report function has run
     Then I should see a record for the pupil in the ps report table
@@ -68,7 +68,6 @@ Feature:
       | 8               |
       | 13              |
       | 21              |
-      | 25              |
 
 
 
