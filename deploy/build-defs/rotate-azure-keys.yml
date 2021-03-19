@@ -16,25 +16,28 @@ jobs:
   - task: AzureCLI@2
     displayName: Rotate Redis Key
     inputs:
-      targetType: filePath
-      filePath: 'deploy/azure/key-vault/key-rotation/redis.sh'
+      azureSubscription: $(AzureSubscription)
+      scriptType: bash
+      scriptPath: 'deploy/azure/key-vault/key-rotation/redis.sh'
       arguments: $(ResourceGroupName) $(KeyVaultName) $(RedisName) $(KeyType)
-      failOnStderr: true
+      failOnStandardError: true
 - job: ServiceBusKey
   steps:
   - task: AzureCLI@2
     displayName: Rotate Service Bus Key
     inputs:
-      targetType: filePath
-      filePath: 'deploy/azure/key-vault/key-rotation/service-bus.sh'
+      azureSubscription: $(AzureSubscription)
+      scriptType: bash
+      scriptPath: 'deploy/azure/key-vault/key-rotation/service-bus.sh'
       arguments: $(ResourceGroupName) $(KeyVaultName) $(ServiceBusName) $(KeyType) $(ServiceBusUser)
-      failOnStderr: true
+      failOnStandardError: true
 - job: StorageAccountKey
   steps:
   - task: AzureCLI@2
     displayName: Rotate Storage Account Key
     inputs:
-      targetType: filePath
-      filePath: 'deploy/azure/key-vault/key-rotation/storage.sh'
+      azureSubscription: $(AzureSubscription)
+      scriptType: bash
+      scriptPath: 'deploy/azure/key-vault/key-rotation/storage.sh'
       arguments: $(ResourceGroupName) $(KeyVaultName) $(StorageAccountName) $(KeyType)
-      failOnStderr: true
+      failOnStandardError: true
