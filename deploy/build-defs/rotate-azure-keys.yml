@@ -13,7 +13,7 @@ pool:
 jobs:
 - job: RedisKey
   steps:
-  - task: Bash@3
+  - task: AzureCLI@2
     displayName: Rotate Redis Key
     inputs:
       targetType: filePath
@@ -22,7 +22,7 @@ jobs:
       failOnStderr: true
 - job: ServiceBusKey
   steps:
-  - task: Bash@3
+  - task: AzureCLI@2
     displayName: Rotate Service Bus Key
     inputs:
       targetType: filePath
@@ -31,7 +31,7 @@ jobs:
       failOnStderr: true
 - job: StorageAccountKey
   steps:
-  - task: Bash@3
+  - task: AzureCLI@2
     displayName: Rotate Storage Account Key
     inputs:
       targetType: filePath
