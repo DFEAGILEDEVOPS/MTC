@@ -11,7 +11,7 @@ class CompletePage < SitePrism::Page
   def wait_for_complete_page
     p 'waiting for Complete page to be displayed'
     p Time.now
-    Timeout.timeout(60){sleep 0.5 until has_heading?}
+    Timeout.timeout(ENV['WAIT_TIME'].to_i){sleep 0.5 until has_heading?}
     p 'Complete page displayed'
   end
 
