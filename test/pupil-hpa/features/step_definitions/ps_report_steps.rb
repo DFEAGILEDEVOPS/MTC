@@ -1,10 +1,11 @@
 When(/^the data sync and ps report function has run$/) do
   step 'the data sync function has run'
-  sleep 300
+  sleep 60
   uuid = SqlDbHelper.find_school(@school_id)['urlSlug']
   response = FunctionsHelper.trigger_func('ps-report-2-pupil-data', {name: @school_name, uuid: uuid})
   expect(response.code).to eql 202
-  sleep 300
+  sleep 60
+  wait_until(600, 20) {SqlDbHelper.count_all_ps_records_for_school(@school_id) == @upns_for_school.size + [@details_hash[:upn]].size}
 end
 
 Then(/^I should see a record for the pupil in the ps report table$/) do
@@ -14,15 +15,15 @@ Then(/^I should see a record for the pupil in the ps report table$/) do
   @check_details = SqlDbHelper.get_all_pupil_checks(pupil_details['id']).sort_by {|hsh| hsh['createdAt']}.last
   check_config = JSON.parse SqlDbHelper.get_check_config_data(@check_details['id'])['payload'] unless @check_details.nil?
   access_arrangements = check_config.nil? ? {} : check_config.except('loadingTime', 'checkTime', 'questionTime', 'compressCompletedCheck')
-  wait_until(ENV['WAIT_TIME'].to_i) {!SqlDbHelper.get_check_result(@check_details['id']).nil?} unless @check_details.nil?
+  wait_until(ENV['WAIT_TIME'].to_i, 20) {!SqlDbHelper.get_check_result(@check_details['id']).nil?} unless @check_details.nil?
   check_result = SqlDbHelper.get_check_result(@check_details['id']) unless @check_details.nil?
-  wait_until(ENV['WAIT_TIME'].to_i) {!SqlDbHelper.get_answers(check_result['id']).nil?} unless @check_details.nil?
+  wait_until(ENV['WAIT_TIME'].to_i, 20) {!SqlDbHelper.get_answers(check_result['id']).nil?} unless @check_details.nil?
   check_answers = SqlDbHelper.get_answers(check_result['id']) unless @check_details.nil?
   check_events = SqlDbHelper.get_event_types_for_check(check_result['id']) unless @check_details.nil?
   check_inputs = SqlDbHelper.get_input_data(check_result['id']) unless @check_details.nil?
   device_cookie = Capybara.current_session.driver.browser.manage.cookie_named('mtc_device') unless @check_details.nil?
   device_info = SqlDbHelper.get_device_information(device_cookie[:value]) unless @check_details.nil?
-  wait_until(ENV['WAIT_TIME'].to_i) {!SqlDbHelper.get_ps_record_for_pupil(pupil_details['id']).nil?}
+  wait_until(ENV['WAIT_TIME'].to_i, 20) {!SqlDbHelper.get_ps_record_for_pupil(pupil_details['id']).nil?}
   ps_report_record = SqlDbHelper.get_ps_record_for_pupil(pupil_details['id'])
   p "PS_REPORT RECORD - " + ps_report_record["id"].to_s
   ps_report_record = ps_report_record.map {|k, v| [k, (v.is_a?(BigDecimal) ? v.to_f : v)]}.to_h
