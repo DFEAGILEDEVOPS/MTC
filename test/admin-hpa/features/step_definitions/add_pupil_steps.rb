@@ -239,7 +239,7 @@ Then(/^I should see a error telling me gender is required$/) do
   expect(@page.error_messages.map {|message| message.text}).to include 'Select a gender'
 end
 
-When(/^I submit the form with a DOB that has (\d+) (day|days) in a month$/) do |days, _x|
+When(/^I submit the form with a DOB that has (\d+) (as the day of the month|day in a month|days in a month)$/) do |days, _x|
   today_date = Date.today
   @upn = UpnGenerator.generate unless @page == edit_pupil_page
   @details_hash = {first_name: 'valid', middle_name: 'valid', last_name: 'valid', female: true, upn: @upn, day: days, month: "#{today_date.month}", year: "#{today_date.year - 10}"}

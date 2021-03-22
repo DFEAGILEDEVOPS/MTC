@@ -41,7 +41,7 @@ Feature: Declaration form
     When I submit the form with the hdf name fields set as Mary'Jane
     Then I should be taken to the attendance page
 
-  Scenario: Names can include apostrophes
+  Scenario: Names can include accents
     Given I am on the HDF form page
     When I submit the form with the hdf name fields set as Maryçáéíóúñü
     Then I should be taken to the attendance page

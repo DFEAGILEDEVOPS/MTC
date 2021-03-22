@@ -1,5 +1,4 @@
 Before do
-  FileUtils.rm_f Dir.glob(File.expand_path("#{File.dirname(__FILE__)}/data/ctf_download/*"))
   @urn = SqlDbHelper.get_schools_list.map {|school| school['urn']}.sort.last + 1
   @estab_code = SqlDbHelper.get_schools_list.map {|school| school['estabCode']}.sort.last + 1
   @school_name = "Test School - #{@urn}"
@@ -12,12 +11,13 @@ Before do
   p "Login for #{@school_name} created as - #{@username}"
   step 'I am logged in'
   step 'I am on the add multiple pupil page'
-  @upns_for_school = add_multiple_pupil_page.upload_pupils(20, @school_name)
+  @upns_for_school = add_multiple_pupil_page.upload_pupils(5, @school_name)
   page.current_window.resize_to(1270, 768)
   Capybara.visit Capybara.app_host
   p Time.now
   sign_in_page.cookies_banner.accept_all.click if sign_in_page.cookies_banner.accept_all.visible?
   visit ENV['ADMIN_BASE_URL'] + '/sign-out'
+  Dir.glob(File.expand_path("#{File.dirname(__FILE__)}/../../data/ctf_download/*")).each {|file| File.delete file}
 end
 
 Before('@empty_new_school') do

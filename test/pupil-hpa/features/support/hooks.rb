@@ -14,6 +14,7 @@ Before do
   @upns_for_school = add_multiple_pupil_page.upload_pupils(5, @school_name)
   visit ENV['ADMIN_BASE_URL'] + '/sign-out'
   page.current_window.resize_to(1270, 768)
+  p "MTC0100 = #{JSON.parse(SqlDbHelper.get_form(1)['formData']).size} questions"
 end
 
 Before('@generate_live_pin') do
