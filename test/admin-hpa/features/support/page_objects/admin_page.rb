@@ -18,6 +18,9 @@ class AdminPage < SitePrism::Page
   element :school_page_settings_text, 'p', text: 'Change the settings within the school pages'
   element :manage_service_message, 'a', text: 'Manage service message'
   element :manage_service_message_text, 'p', text: 'Add or delete a global service message for the school homepage'
+  element :school_search, 'a', text: 'Manage organisations'
+  element :school_search_text, 'p', text: 'Upload, add or edit schools'
+
 
 
   element :manage_access_arrangements, "a", text: 'Manage access arrangements'
