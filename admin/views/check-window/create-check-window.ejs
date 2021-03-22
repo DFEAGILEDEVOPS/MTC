@@ -39,6 +39,22 @@
                 </div>
             </div>
         <% } %>
+        <% if (error.hasWarning()) { %>
+            <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1"
+                 data-module="govuk-error-summary">
+                <h2 class="govuk-error-summary__title" id="error-summary-title">
+                    You need to confirm the warnings on this page before continuing.
+                </h2>
+                <div class="govuk-error-summary__body">
+                    <p>See highlighted warnings below.</p>
+                    <ul class="govuk-list govuk-error-summary__list">
+                        <% warningMessages.forEach(msg => { %>
+                            <li><a href="#"><%= msg %></a></li>
+                        <% }) %>
+                    </ul>
+                </div>
+            </div>
+        <% } %>
             <h1 class="govuk-heading-xl"><%= pageTitle %></h1>
             <%- partial('partials/_gds_session_expiry') %>
             <form action="/check-window/submit-check-window" method="post">
@@ -66,7 +82,8 @@
                     <% } %>
                 </div>
                 <div class="inline-group <%= error.isError('withinActiveCheckWindowAdminDateRage') || error.isError('adminStartDateInThePast') || error.isError('adminStartDay') ||
-                error.isError('adminStartMonth') || error.isError('adminStartYear') || error.isError('adminEndDateInThePast') ||
+                error.isError('adminStartMonth') || error.isError('adminStartYear') || error.isError
+                ('adminEndDateInThePast') || error.isWarning('adminEndDateInThePast') ||
                 error.isError('adminEndDay') ||error.isError('adminEndMonth') || error.isError('adminEndYear') ||
                 error.isError('adminStartDateAfterAdminEndDate') || error.isError('adminStartDateAfterFamiliarisationCheckStartDate') || error.isError('adminStartDateAfterLiveCheckStartDate') ||
                 error.isError('adminEndDateBeforeAdminStartDate') || error.isError('adminEndDateBeforeLiveCheckEndDate') || error.isError('adminEndDateBeforeFamiliarisationCheckEndDate')
@@ -79,7 +96,8 @@
                         <% if (error.isError('withinActiveCheckWindowAdminDateRage')) { %>
                             <span id="withinActiveCheckWindowAdminDateRage" class="govuk-error-message"><%= errorMessage.withinActiveCheckWindowAdminDateRage %></span>
                         <% } %>
-                        <% if (error.isError('adminStartDateInThePast')) { %>
+                        <% if (error.isError('adminStartDateInThePast'))
+                        { %>
                             <span class="govuk-error-message"><%= errorMessage.adminStartDateInThePast %></span>
                         <% } %>
                         <% if (error.isError('adminStartDay')) { %>
@@ -91,7 +109,7 @@
                         <% if (error.isError('adminStartYear')) { %>
                             <span class="govuk-error-message"><%= error.get('adminStartYear') %></span>
                         <% } %>
-                        <% if (error.isError('adminEndDateInThePast')) { %>
+                        <% if (error.isError('adminEndDateInThePast') || error.isWarning('adminEndDateInThePast')) { %>
                             <span class="govuk-error-message"><%= errorMessage.adminEndDateInThePast %></span>
                         <% } %>
                         <% if (error.isError('adminEndDay')) { %>
@@ -233,7 +251,8 @@
                     <% } %>
                     </div>
                     <div class="inline-group <%= error.isError('withinActiveCheckWindowFamiliarisationDateRage') || error.isError('familiarisationCheckStartDateInThePast') || error.isError('familiarisationCheckStartDay') ||
-                    error.isError('familiarisationCheckStartMonth') || error.isError('familiarisationCheckStartYear') || error.isError('familiarisationCheckEndDateInThePast') ||
+                    error.isError('familiarisationCheckStartMonth') || error.isError('familiarisationCheckStartYear')
+                    || error.isErrorOrWarning('familiarisationCheckEndDateInThePast') ||
                     error.isError('familiarisationCheckEndDay') ||error.isError('familiarisationCheckEndMonth') || error.isError('familiarisationCheckEndYear') ||
                     error.isError('familiarisationCheckStartDateAfterLiveCheckStartDate') ||error.isError('familiarisationCheckStartDateAfterFamiliarisationCheckEndDate') || error.isError('familiarisationCheckStartDateBeforeAdminStartDate') ||
                     error.isError('familiarisationCheckEndDateBeforeAdminStartDate') ||error.isError('familiarisationCheckEndDateAfterAdminEndDate') || error.isError('familiarisationCheckEndDateBeforeFamiliarisationCheckStartDate') ||
@@ -258,7 +277,7 @@
                             <% if (error.isError('familiarisationCheckStartYear')) { %>
                                 <span class="govuk-error-message"><%= error.get('familiarisationCheckStartYear') %></span>
                             <% } %>
-                            <% if (error.isError('familiarisationCheckEndDateInThePast')) { %>
+                            <% if (error.isErrorOrWarning('familiarisationCheckEndDateInThePast')) { %>
                                 <span class="govuk-error-message"><%= errorMessage.familiarisationCheckEndDateInThePast %></span>
                             <% } %>
                             <% if (error.isError('familiarisationCheckEndDay')) { %>
@@ -403,7 +422,8 @@
                     <% } %>
                     </div>
                     <div class="inline-group <%= error.isError('withinActiveCheckWindowLiveDateRage') || error.isError('liveCheckStartDateInThePast') || error.isError('liveCheckStartDay') ||
-                    error.isError('liveCheckStartMonth') || error.isError('liveCheckStartYear') || error.isError('liveCheckEndDateInThePast') ||
+                    error.isError('liveCheckStartMonth') || error.isError('liveCheckStartYear') ||
+                    error.isErrorOrWarning('liveCheckEndDateInThePast') ||
                     error.isError('liveCheckEndDay') ||error.isError('liveCheckEndMonth') || error.isError('liveCheckEndYear') ||
                     error.isError('liveCheckStartDateAfterLiveCheckEndDate') ||error.isError('liveCheckStartDateBeforeAdminStartDate') || error.isError('liveCheckEndDateAfterAdminEndDate') ||
                     error.isError('liveCheckEndDateAfterAdminEndDate') ||error.isError('liveCheckStartDateBeforeFamiliarisationCheckStartDate') || error.isError('liveCheckEndDateBeforeLiveCheckStartDate') ||
@@ -429,7 +449,7 @@
                             <% if (error.isError('liveCheckStartYear')) { %>
                                 <span class="govuk-error-message"><%= error.get('liveCheckStartYear') %></span>
                             <% } %>
-                            <% if (error.isError('liveCheckEndDateInThePast')) { %>
+                            <% if (error.isErrorOrWarning('liveCheckEndDateInThePast')) { %>
                                 <span class="govuk-error-message"><%= errorMessage.liveCheckEndDateInThePast %></span>
                             <% } %>
                             <% if (error.isError('liveCheckEndDay')) { %>
@@ -573,6 +593,31 @@
                     <span class="govuk-body disabled-check-window-field <%= checkWindowData.liveCheckPeriodDisabled ? 'left-float' : '' %>"><%= checkWindowData.liveCheckEndDateFormatted %></span>
                 <% } %>
                 </div>
+
+
+                <% if (error.hasError() === false && error.hasWarning() && canOverrideWarnings) { %>
+                    <div class="govuk-form-group ">
+                        <fieldset class="govuk-fieldset" aria-describedby="overrideWarnings-hint">
+                            <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                                <p>You can choose to override these warnings if you are really sure.</p>
+                            </legend>
+                            <div id="overrideWarnings-hint" class="govuk-hint">
+                                Only for non-production use.
+                            </div>
+                            <div class="govuk-checkboxes">
+                                <div class="govuk-checkboxes__item">
+                                    <input class="govuk-checkboxes__input" type="checkbox" id="overrideWarnings"
+                                       name="overrideWarnings" value="overrideWarnings">
+                                    <label class="govuk-label govuk-checkboxes__label" for="overrideWarnings">
+                                        Override the warnings on this screen.
+                                    </label>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                <% } %>
+
+
                 <% if (!checkWindowData.pastCheckWindow) { %>
                 <input type="hidden" name="checkWindowUrlSlug" value="<%= checkWindowData.checkWindowUrlSlug %>">
                 <input class="govuk-button govuk-!-margin-right-2" type="submit" value="Save">

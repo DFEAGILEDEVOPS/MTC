@@ -63,6 +63,15 @@ module.exports = class ValidationError {
 
   /**
    *
+   * @param {string} field
+   * @return {boolean}
+   */
+  isErrorOrWarning (field) {
+    return this.isError(field) || this.isWarning(field)
+  }
+
+  /**
+   *
    * @param {String} field
    * @return {String}  - possibly empty string
    */
