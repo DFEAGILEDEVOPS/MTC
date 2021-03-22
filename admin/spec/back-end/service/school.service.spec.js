@@ -30,6 +30,7 @@ describe('school.service', () => {
       expect(actual).toEqual(school.name)
     })
   })
+
   describe('findOneById', () => {
     it('should  throw an error if id not provided', async () => {
       try {
@@ -49,6 +50,92 @@ describe('school.service', () => {
       spyOn(schoolDataService, 'sqlFindOneById').and.returnValue(Promise.resolve(school))
       const actual = await sut.findOneById(123)
       expect(actual).toBe(school)
+    })
+  })
+
+  describe('searchForSchool', () => {
+    it('it throws if the query is empty string', async () => {
+      try {
+        await sut.searchForSchool('')
+        fail()
+      } catch (error) {
+        expect(error.message).toBe('query is required')
+      }
+    })
+
+    it('it throws if the query is undefined', async () => {
+      try {
+        await sut.searchForSchool(undefined)
+        fail()
+      } catch (error) {
+        expect(error.message).toBe('query is required')
+      }
+    })
+
+    it('it throws if the query is null', async () => {
+      try {
+        await sut.searchForSchool(null)
+        fail()
+      } catch (error) {
+        expect(error.message).toBe('query is required')
+      }
+    })
+
+    it('it throws if the query is not a number', async () => {
+      try {
+        await sut.searchForSchool('abc')
+        fail()
+      } catch (error) {
+        expect(error.message).toBe('Invalid type: number required')
+      }
+    })
+
+    it('returns undefined if the school is not found', async () => {
+      spyOn(schoolDataService, 'sqlSearch').and.returnValue(Promise.resolve(undefined))
+      const res = await sut.searchForSchool(1234)
+      expect(res).toBeUndefined()
+    })
+
+    it('returns the school object if the school is found', async () => {
+      spyOn(schoolDataService, 'sqlSearch').and.returnValue(Promise.resolve({ id: 1, name: 'test school' }))
+      const res = await sut.searchForSchool(1234)
+      expect(res).toStrictEqual({ id: 1, name: 'test school' })
+    })
+  })
+
+  describe('findOneBySlug', () => {
+    it('throws an error if the slug is an empty string', async () => {
+      try {
+        await sut.findOneBySlug('')
+        fail('expected to throw')
+      } catch (error) {
+        expect(error.message).toBe('Missing slug')
+      }
+    })
+
+    it('throws an error if the slug is an empty string', async () => {
+      try {
+        await sut.findOneBySlug(undefined)
+        fail('expected to throw')
+      } catch (error) {
+        expect(error.message).toBe('Missing slug')
+      }
+    })
+
+    it('it returns undefined if the school is not found', async () => {
+      spyOn(schoolDataService, 'sqlFindOneBySlug').and.returnValue(Promise.resolve(undefined))
+      const res = await sut.findOneBySlug('abc')
+      expect(res).toBeUndefined()
+    })
+
+    it('it returns the school when found', async () => {
+      const school = {
+        id: 123,
+        name: 'test school 42'
+      }
+      spyOn(schoolDataService, 'sqlFindOneBySlug').and.returnValue(Promise.resolve(school))
+      const res = await sut.findOneBySlug('abc')
+      expect(res).toStrictEqual(school)
     })
   })
 })

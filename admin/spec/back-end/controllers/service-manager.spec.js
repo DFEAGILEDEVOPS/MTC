@@ -9,9 +9,11 @@ const scePresenter = require('../../../helpers/sce')
 const uploadedFileService = require('../../../services/uploaded-file.service')
 const settingsValidator = require('../../../lib/validator/settings-validator')
 const ValidationError = require('../../../lib/validation-error')
+const schoolService = require('../../../services/school.service')
 
 describe('service manager controller:', () => {
   let next
+
   function getRes () {
     const res = httpMocks.createResponse()
     res.locals = {}
@@ -429,6 +431,144 @@ describe('service manager controller:', () => {
       expect(res.redirect).not.toHaveBeenCalled()
       expect(req.flash).not.toHaveBeenCalled()
       expect(next).toHaveBeenCalled()
+    })
+  })
+
+  describe('getManageSchools', () => {
+    let goodReq
+    beforeEach(() => {
+      goodReq = {
+        method: 'GET',
+        url: '/service-manager/organisations'
+      }
+    })
+
+    it('it renders the organisation hub page', async () => {
+      const res = getRes()
+      const req = getReq(goodReq)
+      spyOn(res, 'render')
+      await controller.getManageSchools(req, res, next)
+      const args = res.render.calls.mostRecent().args
+      expect(res.render).toHaveBeenCalled()
+      expect(args[0]).toBe('service-manager/manage-organisations-hub')
+    })
+  })
+
+  describe('getSearch', () => {
+    let goodReq
+    beforeEach(() => {
+      goodReq = {
+        method: 'GET',
+        url: '/service-manager/organisations/search'
+      }
+    })
+
+    it('renders the search page', async () => {
+      const res = getRes()
+      const req = getReq(goodReq)
+      spyOn(res, 'render')
+      await controller.getSearch(req, res, next)
+      const args = res.render.calls.mostRecent().args
+      expect(res.render).toHaveBeenCalled()
+      expect(args[0]).toBe('service-manager/organisations-search')
+    })
+  })
+
+  describe('postSearch', () => {
+    let goodReq
+    const mockSchool = {
+      id: 1,
+      name: 'test school',
+      dfeNumber: 9991001,
+      urn: 123456,
+      urlSlug: 'abc-slug',
+      leaCode: 999,
+      estabCode: 1001
+    }
+    beforeEach(() => {
+      goodReq = {
+        method: 'POST',
+        url: '/service-manager/organisations/search',
+        body: {
+          q: '123456'
+        }
+      }
+    })
+
+    it('redirects to the view page if a school is found', async () => {
+      const res = getRes()
+      const req = getReq(goodReq)
+      spyOn(res, 'redirect')
+      spyOn(res, 'render')
+      spyOn(schoolService, 'searchForSchool').and.returnValue(Promise.resolve(mockSchool))
+      await controller.postSearch(req, res, next)
+      const args = res.redirect.calls.mostRecent()?.args
+      console.log(args)
+      expect(res.render).not.toHaveBeenCalled()
+      expect(res.redirect).toHaveBeenCalled()
+      expect(args[0]).toBe(`/service-manager/organisations/${encodeURIComponent(mockSchool.urlSlug).toLowerCase()}`)
+    })
+
+    it('renders the search page if the school is not found', async () => {
+      const res = getRes()
+      const req = getReq(goodReq)
+      spyOn(res, 'redirect')
+      spyOn(res, 'render')
+      spyOn(schoolService, 'searchForSchool').and.returnValue(Promise.resolve(undefined))
+      await controller.postSearch(req, res, next)
+      const args = res.render.calls.mostRecent()?.args
+      expect(res.render).toHaveBeenCalled()
+      expect(args[0]).toBe('service-manager/organisations-search')
+    })
+
+    it('renders the search page if the user does not type in a query', async () => {
+      const res = getRes()
+      const req = getReq({
+        method: 'POST',
+        url: '/service-manager/organisations/search',
+        body: {
+          q: ''
+        }
+      })
+      spyOn(res, 'redirect')
+      spyOn(res, 'render')
+      spyOn(schoolService, 'searchForSchool')
+      await controller.postSearch(req, res, next)
+      const args = res.render.calls.mostRecent()?.args
+      expect(res.render).toHaveBeenCalled()
+      expect(args[0]).toBe('service-manager/organisations-search')
+      const validationError = args[1].error
+      expect(validationError.get('q')).toBe('No query provided')
+    })
+  })
+
+  describe('getViewOrganisation', () => {
+    const mockSchool = {
+      id: 1,
+      name: 'test school',
+      dfeNumber: 9991001,
+      urn: 123456,
+      urlSlug: 'abc-slug',
+      leaCode: 999,
+      estabCode: 1001
+    }
+    it('retrieves the organisation details', async () => {
+      const res = getRes()
+      const req = getReq()
+      spyOn(schoolService, 'findOneBySlug').and.returnValue(Promise.resolve(mockSchool))
+      await controller.getViewOrganisation(req, res, next)
+      expect(schoolService.findOneBySlug).toHaveBeenCalled()
+    })
+
+    it('renders the organisation detail page', async () => {
+      const res = getRes()
+      const req = getReq()
+      spyOn(res, 'render')
+      spyOn(schoolService, 'findOneBySlug').and.returnValue(Promise.resolve(mockSchool))
+      await controller.getViewOrganisation(req, res, next)
+      const args = res.render.calls.mostRecent()?.args
+      expect(res.render).toHaveBeenCalled()
+      expect(args[0]).toBe('service-manager/organisation-detail')
     })
   })
 })
