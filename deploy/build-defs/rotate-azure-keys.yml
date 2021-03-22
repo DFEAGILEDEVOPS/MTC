@@ -9,6 +9,10 @@ trigger: none
 
 pool:
   name: MTC LIVE
+schedules:
+- cron: "0 3 * * *"
+  displayName: "3am daily"
+  always: true
 
 jobs:
 - job: RedisKey
