@@ -12,6 +12,9 @@ pool:
 schedules:
 - cron: "0 3 * * *"
   displayName: "3am daily"
+  branches:
+    include:
+    - master
   always: true
 
 jobs:
