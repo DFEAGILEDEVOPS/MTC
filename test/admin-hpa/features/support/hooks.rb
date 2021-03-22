@@ -11,7 +11,7 @@ Before do
   p "Login for #{@school_name} created as - #{@username}"
   step 'I am logged in'
   step 'I am on the add multiple pupil page'
-  @upns_for_school = add_multiple_pupil_page.upload_pupils(20, @school_name)
+  @upns_for_school = add_multiple_pupil_page.upload_pupils(5, @school_name)
   page.current_window.resize_to(1270, 768)
   Capybara.visit Capybara.app_host
   p Time.now

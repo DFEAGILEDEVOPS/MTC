@@ -445,4 +445,11 @@ class SqlDbHelper
     result.each {|row| row.map}
   end
 
+  def self.count_all_ps_records_for_school(school_id)
+    sql =  "select count(*) from mtc_results.psychometricReport where PupilId in (Select mtc_admin.pupil.upn from mtc_admin.pupil where school_id=#{school_id})"
+    result = SQL_CLIENT.execute(sql)
+    school_res = result.first
+    result.cancel
+    school_res.values.first
+  end
 end
