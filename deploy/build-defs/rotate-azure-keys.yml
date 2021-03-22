@@ -15,6 +15,7 @@ schedules:
   branches:
     include:
     - master
+    - /feature/46006-key-rotation-build-task
   always: true
 
 jobs:
