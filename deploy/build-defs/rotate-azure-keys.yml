@@ -9,14 +9,14 @@ trigger: none
 
 pool:
   name: MTC LIVE
-schedules:
-- cron: "0 3 * * *"
-  displayName: "3am daily"
-  branches:
-    include:
-    - master
-    - /feature/46006-key-rotation-build-task
-  always: true
+# schedules:
+# - cron: "0 3 * * *"
+#   displayName: "3am daily"
+#   branches:
+#     include:
+#     - master
+#     - /feature/46006-key-rotation-build-task
+#   always: true
 
 jobs:
 - job: RedisKey
