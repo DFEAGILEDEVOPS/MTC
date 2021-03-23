@@ -62,7 +62,7 @@ Feature:
     When I submit the form with the name fields set as Mary'Jane
     Then the pupil details should be stored
 
-  Scenario: Names can include apostrophes
+  Scenario: Names can include accents
     When I submit the form with the name fields set as Maryçáéíóúñü
     Then the pupil details should be stored
 
@@ -102,7 +102,7 @@ Feature:
       | ÞÐÇÑẞ              |
       | þçðñß              |
 
-  Scenario: validation for Add Pupil DOB fields
+  Scenario: validation for edit Pupil DOB fields
     Then I should see validation error for the DOB field fo the following
       | condition                   |
       | letters in DOB              |
@@ -114,7 +114,7 @@ Feature:
       | 5 digit year                |
 
   Scenario: DOB's can have a single digit day
-    When I submit the form with a DOB that has 3 days in a month
+    When I submit the form with a DOB that has 3 as the day of the month
     Then I should be taken to the Pupil register page
 
   Scenario: DOB's can have a single digit month

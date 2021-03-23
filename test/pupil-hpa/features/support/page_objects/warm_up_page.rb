@@ -72,7 +72,7 @@ class WarmUpPage < SitePrism::Page
       if(next_button.visible?)
         next_button.click
       end unless (next_arrangement == nil)
-      wait_until(10,1) {p check_page.question.visible?}
+      wait_until(10,1) {check_page.question.visible?}
       @question = check_page.question.text
       values = @question.gsub('=', '').split('×').map {|n| n.strip}
       answer = values.first.to_i * values.last.to_i
