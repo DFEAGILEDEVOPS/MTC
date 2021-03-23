@@ -5,7 +5,7 @@ In order to increase concurrency and lower the amount of time required to proces
 # Func-Throttled Function App
 
 ## Runtime Settings
-Add an application setting called `AzureFunctionsJobHost__Extensions__ServiceBus__MessageHandlerOptions__MaxConcurrentCalls` and set the value to `20`.  This overrides the `Extensions.ServiceBus.MessageHandlerOptions.MaxConcurrentCalls` property value in `host.json` for the entire app, allowing the function to process more messages concurrently.
+Add an application setting called `AzureFunctionsJobHost__extensions__serviceBus__messageHandlerOptions__maxConcurrentCalls` and set the value to `20`.  This overrides the `extensions.serviceBus.messageHandlerOptions.maxConcurrentCalls` property value in `host.json` for the entire app, allowing the function to process more messages concurrently.
 
 ## App Service Plan
 Scale up to `P2V2` plan, and scale out to 2-8 instances.
