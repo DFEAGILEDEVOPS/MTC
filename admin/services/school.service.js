@@ -26,6 +26,28 @@ const schoolService = {
       throw new Error('id is required')
     }
     return schoolDataService.sqlFindOneById(id)
+  },
+
+  searchForSchool: async function searchForSchool (query) {
+    if (query === undefined || query === null || query === '') {
+      throw new Error('query is required')
+    }
+    if (typeof query !== 'number') {
+      throw new Error('Invalid type: number required')
+    }
+    return await schoolDataService.sqlSearch(query)
+  },
+
+  /**
+   *
+   * @param {string} slug
+   * @return {Promise<void>}
+   */
+  findOneBySlug: async function findOneBySlug (slug) {
+    if (slug === '' || slug === undefined) {
+      throw new Error('Missing slug')
+    }
+    return schoolDataService.sqlFindOneBySlug(slug)
   }
 }
 
