@@ -1,7 +1,7 @@
 import { ISqlParameter, ISqlService, SqlService } from '../../sql/sql.service'
 import { ConsoleLogger, ILogger } from '../../common/logger'
 import { IPsychometricReportLine, IReportLineAnswer } from '../../functions/ps-report-3-transformer/models'
-import { TYPES } from 'mssql'
+import { TYPES, MAX } from 'mssql'
 import * as R from 'ramda'
 
 export class PsReportWriterService {
@@ -52,7 +52,7 @@ export class PsReportWriterService {
       { name: 'deviceTypeModel', value: data.DeviceTypeModel, type: TYPES.NVarChar(32) },
       { name: 'deviceId', value: data.DeviceID, type: TYPES.NVarChar(128) },
       { name: 'browserType', value: data.BrowserType, type: TYPES.NVarChar(128) },
-      { name: 'schoolName', value: data.SchoolName, type: TYPES.NVarChar(50) },
+      { name: 'schoolName', value: data.SchoolName, type: TYPES.NVarChar(MAX) },
       { name: 'estab', value: data.Estab, type: TYPES.SmallInt },
       { name: 'schoolUrn', value: data.SchoolURN, type: TYPES.Int },
       { name: 'laNum', value: data.LAnum, type: TYPES.Int },
