@@ -24,7 +24,7 @@ checkWindowPresenter.getViewModelData = (checkWindowData, requestData = {}) => {
     adminEndDay: requestData.adminEndDay || checkWindowData.adminEndDate.format('D'),
     adminEndMonth: requestData.adminEndMonth || checkWindowData.adminEndDate.format('MM'),
     adminEndYear: requestData.adminEndYear || checkWindowData.adminEndDate.format('YYYY'),
-    adminEndDateDisabled: false, // currentDate.isAfter(checkWindowData.adminEndDate, 'days'),
+    adminEndDateDisabled: false,
     checkWindowUrlSlug: checkWindowData.urlSlug,
     checkWindowName: checkWindowData.name,
     familiarisationCheckStartDate: checkWindowData.familiarisationCheckStartDate,
@@ -38,8 +38,7 @@ checkWindowPresenter.getViewModelData = (checkWindowData, requestData = {}) => {
     familiarisationCheckEndDay: requestData.familiarisationCheckEndDay || checkWindowData.familiarisationCheckEndDate.format('D'),
     familiarisationCheckEndMonth: requestData.familiarisationCheckEndMonth || checkWindowData.familiarisationCheckEndDate.format('MM'),
     familiarisationCheckEndYear: requestData.familiarisationCheckEndYear || checkWindowData.familiarisationCheckEndDate.format('YYYY'),
-    familiarisationCheckEndDateDisabled: false, // currentDate.isAfter(checkWindowData.familiarisationCheckEndDate,
-    // 'days'),
+    familiarisationCheckEndDateDisabled: false,
     liveCheckStartDate: checkWindowData.checkStartDate,
     liveCheckStartDateFormatted: dateService.formatFullGdsDate(checkWindowData.checkStartDate),
     liveCheckStartDay: requestData.liveCheckStartDay || checkWindowData.checkStartDate.format('D'),
@@ -51,7 +50,7 @@ checkWindowPresenter.getViewModelData = (checkWindowData, requestData = {}) => {
     liveCheckEndDay: requestData.liveCheckEndDay || checkWindowData.checkEndDate.format('D'),
     liveCheckEndMonth: requestData.liveCheckEndMonth || checkWindowData.checkEndDate.format('MM'),
     liveCheckEndYear: requestData.liveCheckEndYear || checkWindowData.checkEndDate.format('YYYY'),
-    liveCheckEndDateDisabled: false // currentDate.isAfter(checkWindowData.checkEndDate, 'days')
+    liveCheckEndDateDisabled: false
   }
   checkWindowViewData.adminPeriodDisabled = checkWindowViewData.adminStartDateDisabled && checkWindowViewData.adminEndDateDisabled
   checkWindowViewData.familiarisationCheckPeriodDisabled = checkWindowViewData.familiarisationCheckStartDateDisabled && checkWindowViewData.familiarisationCheckEndDateDisabled
