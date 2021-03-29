@@ -89,14 +89,14 @@ describe('checkWindowHelper', () => {
       expect(checkWindowViewData.adminStartDateDisabled).toBeTruthy()
       expect(checkWindowViewData.adminEndDateDisabled).toBeFalsy()
       expect(checkWindowViewData.familiarisationCheckStartDateDisabled).toBeTruthy()
-      expect(checkWindowViewData.familiarisationCheckEndDateDisabled).toBeTruthy()
+      expect(checkWindowViewData.familiarisationCheckEndDateDisabled).toBeFalsy()
       expect(checkWindowViewData.liveCheckStartDateDisabled).toBeTruthy()
-      expect(checkWindowViewData.liveCheckEndDateDisabled).toBeTruthy()
-      expect(checkWindowViewData.familiarisationCheckPeriodDisabled).toBeTruthy()
-      expect(checkWindowViewData.liveCheckPeriodDisabled).toBeTruthy()
-      expect(checkWindowViewData.pastCheckWindow).toBeFalsy()
+      expect(checkWindowViewData.liveCheckEndDateDisabled).toBeFalsy()
+      expect(checkWindowViewData.familiarisationCheckPeriodDisabled).toBeFalsy()
+      expect(checkWindowViewData.liveCheckPeriodDisabled).toBeFalsy()
     })
-    it('should have adminEndDateDisabled as true if admin end date is yesterday', () => {
+    it('should have adminEndDateDisabled as false, as the SM should always be able to edit it, even if the admin end' +
+      ' date is yesterday', () => {
       const checkWindowData = {
         id: 1,
         urlSlug: uuidv4(),
@@ -109,13 +109,13 @@ describe('checkWindowHelper', () => {
       }
       const checkWindowViewData = checkWindowPresenter.getViewModelData(checkWindowData)
       expect(checkWindowViewData.adminStartDateDisabled).toBeTruthy()
-      expect(checkWindowViewData.adminEndDateDisabled).toBeTruthy()
+      expect(checkWindowViewData.adminEndDateDisabled).toBeFalsy()
       expect(checkWindowViewData.familiarisationCheckStartDateDisabled).toBeTruthy()
-      expect(checkWindowViewData.familiarisationCheckEndDateDisabled).toBeTruthy()
+      expect(checkWindowViewData.familiarisationCheckEndDateDisabled).toBeFalsy()
       expect(checkWindowViewData.liveCheckStartDateDisabled).toBeTruthy()
-      expect(checkWindowViewData.liveCheckEndDateDisabled).toBeTruthy()
-      expect(checkWindowViewData.familiarisationCheckPeriodDisabled).toBeTruthy()
-      expect(checkWindowViewData.liveCheckPeriodDisabled).toBeTruthy()
+      expect(checkWindowViewData.liveCheckEndDateDisabled).toBeFalsy()
+      expect(checkWindowViewData.familiarisationCheckPeriodDisabled).toBeFalsy()
+      expect(checkWindowViewData.liveCheckPeriodDisabled).toBeFalsy()
       expect(checkWindowViewData.pastCheckWindow).toBeTruthy()
     })
   })

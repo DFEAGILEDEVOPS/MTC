@@ -55,6 +55,19 @@
                 </div>
             </div>
         <% } %>
+
+        <% if (checkWindowData.pastCheckWindow) { %>
+        <div class="govuk-error-summary">
+            <div class="govuk-warning-text">
+                    <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+                    <strong class="govuk-warning-text__text">
+                        <span class="govuk-warning-text__assistive">Warning</span>
+                        You are editing a closed check window
+                    </strong>
+            </div>
+        </div>
+    <% } %>
+
             <h1 class="govuk-heading-xl"><%= pageTitle %></h1>
             <%- partial('partials/_gds_session_expiry') %>
             <form action="/check-window/submit-check-window" method="post">
@@ -66,20 +79,16 @@
                             <span class="govuk-error-message"><%= error.get('checkWindowName') %></span>
                         <% } %>
                     </label>
-                    <% if (!checkWindowData.pastCheckWindow) { %>
-                        <input class="govuk-input govuk-!-width-one-half <%= error.isError('checkWindowName') ? 'govuk-input--error' : '' %>"
-                               id="checkWindowName"
-                               name="checkWindowName"
-                               type="text"
-                               value="<%= checkWindowData.checkWindowName ? checkWindowData.checkWindowName : ''%>"
-                               aria-required="true"
-                               maxlength="35"
-                               aria-label="Check window name."
-                        >
-                    <% } else { %>
-                        <input type="hidden" name="checkWindowName" value="<%= checkWindowData.checkWindowName %>">
-                        <div class="govuk-body disabled-check-window-field"><%= checkWindowData.checkWindowName %></div>
-                    <% } %>
+
+                    <input class="govuk-input govuk-!-width-one-half <%= error.isError('checkWindowName') ? 'govuk-input--error' : '' %>"
+                           id="checkWindowName"
+                           name="checkWindowName"
+                           type="text"
+                           value="<%= checkWindowData.checkWindowName ? checkWindowData.checkWindowName : ''%>"
+                           aria-required="true"
+                           maxlength="35"
+                           aria-label="Check window name."
+                    >
                 </div>
                 <div class="inline-group <%= error.isError('withinActiveCheckWindowAdminDateRage') || error.isError('adminStartDateInThePast') || error.isError('adminStartDay') ||
                 error.isError('adminStartMonth') || error.isError('adminStartYear') || error.isError
@@ -617,12 +626,9 @@
                     </div>
                 <% } %>
 
-
-                <% if (!checkWindowData.pastCheckWindow) { %>
                 <input type="hidden" name="checkWindowUrlSlug" value="<%= checkWindowData.checkWindowUrlSlug %>">
                 <input class="govuk-button govuk-!-margin-right-2" type="submit" value="Save">
                 <a href="/check-window/manage-check-windows" class="govuk-button govuk-button--secondary">Cancel</a>
-                <% } %>
             </form>
         </div>
         <div class="govuk-grid-column-one-third" aria-label="sidebar">
