@@ -81,30 +81,35 @@ module.exports = {
       Password: sql.password
     },
     FunctionsApp: {
-      // used by the etl function to sync the table storage results to sql server
+      // TODO: Legacy from the database migrations: delete on another PR
       Username: process.env.SQL_FUNCTIONS_APP_USER || 'functionsAppSystemUser',
       Password: process.env.SQL_FUNCTIONS_APP_USER_PASSWORD || 'functionsAppSystemP4ssw0rd!' // default only for local docker
     },
     Pooling: {
       MinCount: sql.pool.min,
       MaxCount: sql.pool.max,
-      // DEPRECATED - not supported in MSSQL
+      // DEPRECATED - not supported in MSSQL,  Not used in admin app.
+      // TODO: Legacy from the database migrations: delete on another PR
       LoggingEnabled: {}.hasOwnProperty.call(process.env, 'SQL_POOL_LOG_ENABLED') ? toBool(process.env.SQL_POOL_LOG_ENABLED) : false
     },
     Migrator: {
+      // TODO: check whether we can delete this section from the admin app
       Username: process.env.SQL_ADMIN_USER || 'sa', // docker default
       Password: process.env.SQL_ADMIN_USER_PASSWORD || 'Mtc-D3v.5ql_S3rv3r', // docker default
       Timeout: parseInt(process.env.SQL_MIGRATION_TIMEOUT, 10) || twoMinutesInMilliseconds
     },
     PupilCensus: {
+      // TODO: check whether we can delete this section from the admin app
       Username: process.env.SQL_PUPIL_CENSUS_USER || 'CensusImportUser',
       Password: process.env.SQL_PUPIL_CENSUS_USER_PASSWORD
     },
     Azure: {
+      // TODO: check whether we can delete this section from the admin app
       Scale: process.env.SQL_AZURE_SCALE
     },
     AllowReadsFromReplica: {}.hasOwnProperty.call(process.env, 'SQL_ALLOW_REPLICA_FOR_READS') ? toBool(process.env.SQL_ALLOW_REPLICA_FOR_READS) : false,
     TechSupport: {
+      // Used by the experimental role connection builder
       Username: process.env.SQL_TECH_SUPPORT_USER || 'TechSupportUser',
       Password: process.env.SQL_TECH_SUPPORT_USER_PASSWORD,
       Pool: {
@@ -121,14 +126,6 @@ module.exports = {
   Logging: {
     LogLevel: process.env.LOG_LEVEL || 'info',
     DebugVerbosity: {}.hasOwnProperty.call(process.env, 'DEBUG_VERBOSITY') ? parseInt(process.env.DEBUG_VERBOSITY, 10) : 1,
-    LogDna: {
-      key: process.env.LOGDNA_API_KEY,
-      hostname: `${os.hostname()}:${process.pid}`,
-      ip: undefined,
-      mac: undefined,
-      app: `MTCAdmin:${getEnvironment()}`,
-      env: `${getEnvironment()}`
-    },
     Express: {
       UseWinston: process.env.EXPRESS_LOGGING_WINSTON || false
     },
