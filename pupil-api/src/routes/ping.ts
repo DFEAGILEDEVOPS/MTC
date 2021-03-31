@@ -1,5 +1,3 @@
-'use strict'
-
 import { Router as Router, Request, Response } from 'express'
 import * as pingController from '../controllers/ping.controller'
 
