@@ -28,6 +28,7 @@ import { rateLimit } from './helpers/rate-limit'
 import config from './config'
 import authRoutes from './routes/auth'
 import pingRoute from './routes/ping'
+import headRoute from './routes/head'
 
 // Creates and configures an ExpressJS web server.
 class App {
@@ -94,6 +95,7 @@ class App {
     /* API endpoints */
     this.express.use('/ping', pingRoute)
     this.express.use('/auth', authRoutes)
+    this.express.use(headRoute)
 
     if (process.env.VERIFY_OWNER) {
       const token = process.env.VERIFY_OWNER

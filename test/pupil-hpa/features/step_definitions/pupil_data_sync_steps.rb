@@ -22,7 +22,7 @@ Then(/^all answers events and inputs match$/) do
     x.delete('createdAt')}.each {|x| x.delete ('updatedAt')}.each {|x|
     x.delete ('version')}.each {|x| x.delete ('checkResult_id')
   }
-  db_answers.each {|a| a['browserTimestamp'] = a['browserTimestamp'].strftime("%Y-%m-%dT%H:%M:%S.%LZ")}
+  db_answers.each {|a| a['browserTimestamp'] = a['browserTimestamp'].utc.strftime("%Y-%m-%dT%H:%M:%S.%LZ")}
   answer_payload = @archive['answers'].map {|a|
     {
       'questionNumber' => a['sequenceNumber'],
@@ -45,7 +45,7 @@ Then(/^all answers events and inputs match$/) do
      'questionNumber' => (event['data'].nil? ? nil : (event['data']['isWarmup'] == true) ? nil : event['data']['sequenceNumber'])}}
 
   db_event_types = SqlDbHelper.get_event_types_for_check(check_result_id).map {|event|
-    {'browserTimestamp' => event['browserTimestamp'].strftime("%Y-%m-%dT%H:%M:%S.%LZ"),
+    {'browserTimestamp' => event['browserTimestamp'].utc.strftime("%Y-%m-%dT%H:%M:%S.%LZ"),
      'eventType' => event['eventType'],
      'eventData' => (event['eventData'].nil? ? nil : (JSON.parse(event['eventData']))),
      'question_id' => (event['eventData'].nil? || event['eventData'].include?('true') ? nil : SqlDbHelper.get_question_id((
@@ -57,7 +57,7 @@ Then(/^all answers events and inputs match$/) do
   db_inputs = SqlDbHelper.get_input_data(check_result_id)
   db_inputs_hash = db_inputs.map {|input| {input: input['userInput'],
                                            eventType: input['name'].downcase,
-                                           clientTimestamp: input['inputBrowserTimestamp'].strftime("%Y-%m-%dT%H:%M:%S.%LZ"),
+                                           clientTimestamp: input['inputBrowserTimestamp'].utc.strftime("%Y-%m-%dT%H:%M:%S.%LZ"),
                                            question: input['question'],
                                            sequenceNumber: input['questionNumber']}}
   expect(@archive['inputs'].map {|hash| hash.transform_keys {|key| key.to_sym}}).to eql db_inputs_hash
