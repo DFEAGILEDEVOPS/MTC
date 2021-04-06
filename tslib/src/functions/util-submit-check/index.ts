@@ -1,7 +1,6 @@
 
 import { AzureFunction, Context, HttpRequest } from '@azure/functions'
 import * as lz from 'lz-string'
-import { v4 as uuidv4 } from 'uuid'
 import submittedCheck from '../../schemas/submitted-check.v3'
 import completeCheckPayload from '../../schemas/complete-check-payload'
 import config from '../../config'
@@ -15,8 +14,8 @@ const httpTrigger: AzureFunction = function (context: Context, req: HttpRequest)
   // TODO add support for live check toggle via query string?
   const message = JSON.parse(JSON.stringify(submittedCheck))
   const samplePayload = JSON.parse(JSON.stringify(completeCheckPayload))
-  message.checkCode = req.query.checkCode ?? uuidv4()
-  message.schoolUUID = uuidv4()
+  message.checkCode = req.body.checkCode
+  message.schoolUUID = req.body.school.uuid
   // create an invalid check
   if (req.query.bad !== undefined) {
     context.log('creating invalid check...')

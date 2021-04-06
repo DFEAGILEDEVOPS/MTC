@@ -55,7 +55,7 @@ export default {
     useTLS: getEnvironment() === 'Local-Dev' ? false : true
   },
   RateLimit: {
-    Threshold: parseToInt(process.env.RATE_LIMIT_THRESHOLD,10) || 100,
+    Threshold: parseToInt(process.env.RATE_LIMIT_THRESHOLD,10) || 1000,
     Duration: parseToInt(process.env.RATE_LIMIT_DURATION, 10) || 1000 * 60, // 1 minute in ms
     Enabled: process.env.hasOwnProperty('RATE_LIMIT_ENABLED') ? toBool(process.env.RATE_LIMIT_ENABLED) : false
   },
