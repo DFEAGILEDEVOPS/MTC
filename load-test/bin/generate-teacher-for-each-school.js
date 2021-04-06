@@ -10,7 +10,7 @@ async function main () {
     await sqlService.initPool()
     const password = process.argv[2] || 'password'
     const passwordHash = bcrypt.hashSync(password)
-    const schools = await sqlService.query('SELECT id FROM school')
+    const schools = await sqlService.query('SELECT id FROM [mtc_admin].[school]')
     const numSchools = schools.length
     let school, teacherIdentifier
 
@@ -40,7 +40,7 @@ async function main () {
       ]
 
       const sql = `
-        INSERT INTO ${sqlService.adminSchema}.[user] (identifier, passwordHash, school_id, role_id)
+        INSERT INTO [mtc_admin].[user] (identifier, passwordHash, school_id, role_id)
         VALUES (@teacherIdentifier, @passwordHash, @schoolId, 3)
       `
 
