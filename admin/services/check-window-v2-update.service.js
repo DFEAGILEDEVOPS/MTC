@@ -46,11 +46,11 @@ checkWindowV2UpdateService.getValidationConfig = (checkWindow) => {
   const config = {}
   const currentDate = moment.utc()
   config.adminStartDateDisabled = currentDate.isAfter(checkWindow.adminStartDate, 'days')
-  config.adminEndDateDisabled = currentDate.isAfter(checkWindow.adminEndDate, 'days')
+  config.adminEndDateDisabled = false
   config.familiarisationCheckStartDateDisabled = currentDate.isAfter(checkWindow.familiarisationCheckStartDate, 'days')
-  config.familiarisationCheckEndDateDisabled = currentDate.isAfter(checkWindow.familiarisationCheckEndDate, 'days')
+  config.familiarisationCheckEndDateDisabled = false
   config.liveCheckStartDateDisabled = currentDate.isAfter(checkWindow.checkStartDate, 'days')
-  config.liveCheckEndDateDisabled = currentDate.isAfter(checkWindow.checkEndDate, 'days')
+  config.liveCheckEndDateDisabled = false
   return config
 }
 
