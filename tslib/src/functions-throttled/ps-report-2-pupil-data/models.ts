@@ -10,6 +10,7 @@ export interface Pupil {
   id: number
   lastname: string
   notTakingCheckReason: string | null
+  notTakingCheckCode: NotTakingCheckCode | null
   slug: string
   schoolId: number
   upn: string
@@ -139,3 +140,5 @@ export interface PupilResult {
   pupil: Pupil
   school: School
 }
+
+export type NotTakingCheckCode = 'ABSNT' | 'LEFTT' | 'INCRG' | 'NOACC' | 'BLSTD' | 'JSTAR'

@@ -45,6 +45,7 @@ describe('ps-report.data.service', () => {
           id: 3,
           lastName: 'def',
           notTakingCheckReason: 'ghi',
+          notTakingCheckCode: 'JSTAR',
           school_id: 4,
           urlSlug: 'jkl',
           upn: 'mno'
@@ -64,6 +65,7 @@ describe('ps-report.data.service', () => {
       expect(p.schoolId).toBe(4)
       expect(p.slug).toBe('jkl')
       expect(p.upn).toBe('mno')
+      expect(p.notTakingCheckCode).toBe('JSTAR')
     })
 
     test('the pupil array is readonly', async () => {
@@ -78,6 +80,7 @@ describe('ps-report.data.service', () => {
           id: 3,
           lastName: 'def',
           notTakingCheckReason: 'ghi',
+          notTakingCheckCode: 'JSTAR',
           school_id: 4,
           urlSlug: 'jkl',
           upn: 'mno'

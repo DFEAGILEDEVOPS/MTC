@@ -6,7 +6,7 @@ import {
   CheckOrNull, DeviceOrNull, EventsOrNull,
   Event,
   Pupil,
-  School, Answer
+  School, Answer, NotTakingCheckCode
 } from '../../functions-throttled/ps-report-2-pupil-data/models'
 import { deepFreeze } from '../../common/deep-freeze'
 import { ReportLineAnswer } from './report-line-answer.class'
@@ -281,6 +281,24 @@ export class ReportLine {
     return null
   }
 
+  protected static getReasonNotTakingCheck (code: NotTakingCheckCode | null): number | null {
+    switch (code) {
+      case 'INCRG':
+        return 1
+      case 'ABSNT':
+        return 2
+      case 'LEFTT':
+        return 3
+      case 'NOACC':
+        return 4
+      case 'BLSTD':
+        return 5
+      case 'JSTAR':
+        return 6
+    }
+    return null
+  }
+
   private getPupilStatus (): string {
     if (this._pupil.checkComplete === true) {
       return 'Complete'
@@ -298,7 +316,7 @@ export class ReportLine {
     this._report.PupilID = this.pupil.upn
     this._report.Forename = this.pupil.forename
     this._report.Surname = this.pupil.lastname
-    this._report.ReasonNotTakingCheck = this.pupil.attendanceId
+    this._report.ReasonNotTakingCheck = ReportLine.getReasonNotTakingCheck(this._pupil.notTakingCheckCode)
     this._report.SchoolName = this.school.name
     this._report.Estab = this.school.estabCode
     this._report.SchoolURN = this.school.urn

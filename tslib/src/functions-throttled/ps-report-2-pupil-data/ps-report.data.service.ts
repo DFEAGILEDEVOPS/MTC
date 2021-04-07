@@ -15,6 +15,7 @@ import {
   EventsOrNull,
   Input,
   InputMap,
+  NotTakingCheckCode,
   Pupil,
   PupilResult,
   School
@@ -60,7 +61,8 @@ export class PsReportDataService {
                         p.currentCheckId,
                         p.school_id,
                         p.urlSlug,
-                        ac.reason as notTakingCheckReason
+                        ac.reason as notTakingCheckReason,
+                        ac.code as notTakingCheckCode
           FROM mtc_admin.pupil p
                JOIN      mtc_admin.school s ON (p.school_id = s.id)
                LEFT JOIN mtc_admin.attendanceCode ac ON (p.attendanceId = ac.id)
@@ -80,6 +82,7 @@ export class PsReportDataService {
       id: number
       lastName: string
       notTakingCheckReason: string | null
+      notTakingCheckCode: NotTakingCheckCode
       school_id: number
       urlSlug: string
       upn: string
@@ -98,6 +101,7 @@ export class PsReportDataService {
         id: o.id,
         lastname: o.lastName,
         notTakingCheckReason: o.notTakingCheckReason,
+        notTakingCheckCode: o.notTakingCheckCode,
         schoolId: o.school_id,
         slug: o.urlSlug,
         upn: o.upn
