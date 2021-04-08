@@ -17,7 +17,7 @@ import {
   InputMap,
   NotTakingCheckCode,
   Pupil,
-  PupilResult,
+  PupilResult, RestartReasonCode,
   School
 } from './models'
 import * as R from 'ramda'
@@ -217,7 +217,7 @@ export class PsReportDataService {
       pupilLoginDate: moment.Moment
       received: boolean
       restartNumber: number
-      restartReason: string | null
+      restartReason: RestartReasonCode | null
     }
 
     const res: DBCheck[] = await this.sqlService.query(sql, [{ name: 'checkId', value: checkId, type: TYPES.Int }])

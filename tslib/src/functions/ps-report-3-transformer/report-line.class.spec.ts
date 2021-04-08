@@ -10,7 +10,7 @@ import { checkConfig } from './mocks/check-config'
 import { checkForm } from './mocks/check-form'
 import { device } from './mocks/device'
 import { events } from './mocks/events'
-import { NotTakingCheckCode } from '../../functions-throttled/ps-report-2-pupil-data/models'
+import { NotTakingCheckCode, RestartReasonCode } from '../../functions-throttled/ps-report-2-pupil-data/models'
 
 class ReportLineTest extends ReportLine {
   public getReasonNotTakingCheck (code: NotTakingCheckCode): string
@@ -18,6 +18,11 @@ class ReportLineTest extends ReportLine {
   // @ts-ignore - let's allow function overloading of static functions for ease of testing
   public static getReasonNotTakingCheck (code: NotTakingCheckCode | null): number | null {
     return ReportLine.getReasonNotTakingCheck(code)
+  }
+
+  // @ts-ignore - let's allow function overloading of static functions for ease of testing
+  public static getRestartReason (code: RestartReasonCode | null): number | null {
+    return ReportLine.getRestartReason(code)
   }
 }
 // See Psychometric Report Data Sourcing for a clearer view of the data sources and groupings.
@@ -906,6 +911,33 @@ describe('report line class', () => {
 
     test('returns null if the code is null', () => {
       const res = ReportLineTest.getReasonNotTakingCheck(null)
+      expect(res).toBeNull()
+    })
+  })
+
+  describe('get restart reason mapping', () => {
+    test('returns 1 for Loss of internet', () => {
+      const res = ReportLineTest.getRestartReason('LOI')
+      expect(res).toBe(1)
+    })
+
+    test('returns 2 for Local IT issues', () => {
+      const res = ReportLineTest.getRestartReason('ITI')
+      expect(res).toBe(2)
+    })
+
+    test('returns 3 for Classroom disruption', () => {
+      const res = ReportLineTest.getRestartReason('CLD')
+      expect(res).toBe(3)
+    })
+
+    test('returns 4 for Pupil did not complete', () => {
+      const res = ReportLineTest.getRestartReason('DNC')
+      expect(res).toBe(4)
+    })
+
+    test('returns null if given null', () => {
+      const res = ReportLineTest.getRestartReason(null)
       expect(res).toBeNull()
     })
   })

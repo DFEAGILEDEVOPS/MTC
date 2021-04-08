@@ -6,7 +6,7 @@ import {
   CheckOrNull, DeviceOrNull, EventsOrNull,
   Event,
   Pupil,
-  School, Answer, NotTakingCheckCode
+  School, Answer, NotTakingCheckCode, RestartReasonCode
 } from '../../functions-throttled/ps-report-2-pupil-data/models'
 import { deepFreeze } from '../../common/deep-freeze'
 import { ReportLineAnswer } from './report-line-answer.class'
@@ -118,6 +118,39 @@ export class ReportLine {
 
   get school (): School {
     return this._school
+  }
+
+  protected static getReasonNotTakingCheck (code: NotTakingCheckCode | null): number | null {
+    switch (code) {
+      case 'INCRG':
+        return 1
+      case 'ABSNT':
+        return 2
+      case 'LEFTT':
+        return 3
+      case 'NOACC':
+        return 4
+      case 'BLSTD':
+        return 5
+      case 'JSTAR':
+        return 6
+    }
+    return null
+  }
+
+  protected static getRestartReason (code: RestartReasonCode | null): number | null {
+    switch (code) {
+      case 'LOI':
+        return 1
+      case 'ITI':
+        return 2
+      case 'CLD':
+        return 3
+      case 'DNC':
+        return 4
+    }
+
+    return null
   }
 
   private getAccessArrangements (): string {
@@ -266,39 +299,6 @@ export class ReportLine {
     return event.browserTimestamp
   }
 
-  private getRestartReason (code: string | null): number | null {
-    switch (code) {
-      case 'LOI':
-        return 1
-      case 'ITI':
-        return 2
-      case 'CLD':
-        return 3
-      case 'DNC':
-        return 4
-    }
-
-    return null
-  }
-
-  protected static getReasonNotTakingCheck (code: NotTakingCheckCode | null): number | null {
-    switch (code) {
-      case 'INCRG':
-        return 1
-      case 'ABSNT':
-        return 2
-      case 'LEFTT':
-        return 3
-      case 'NOACC':
-        return 4
-      case 'BLSTD':
-        return 5
-      case 'JSTAR':
-        return 6
-    }
-    return null
-  }
-
   private getPupilStatus (): string {
     if (this._pupil.checkComplete === true) {
       return 'Complete'
@@ -331,7 +331,7 @@ export class ReportLine {
     this._report.TimeComplete = this.getTimeComplete()
     this._report.TimeTaken = this.getTimeTaken()
     this._report.RestartNumber = this.check?.restartNumber ?? null // set to null if there is no check
-    this._report.RestartReason = this.getRestartReason(this.check?.restartReason ?? null) // map the code to the number
+    this._report.RestartReason = ReportLine.getRestartReason(this.check?.restartReason ?? null) // map the code to the number
     this._report.FormMark = this.check?.mark ?? null
     this._report.DeviceType = this.device?.type ?? null
     this._report.BrowserType = this.getBrowser()
