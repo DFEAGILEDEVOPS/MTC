@@ -209,10 +209,16 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit, OnDestr
     this.startTimer();
   }
 
-   setupKeypadEventListeners(eventToListenTo: string) {
-    // Buttons 0-9
+  setupKeypadEventListeners (eventToListenTo: string) {
+
+
+    // On-screen Keypad buttons 0-9
     [this.button0, this.button1, this.button2, this.button3, this.button4, this.button5, this.button6, this.button7, this.button8,
       this.button9].forEach(button => {
+        // The keypad is not always rendered, e.g. due to the access arrangement
+        if (button === undefined) {
+          return;
+        }
         const f = this.renderer.listen(button.nativeElement, eventToListenTo, (event) => {
           const that = this;
           that.clickHandler(event);
@@ -221,19 +227,23 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit, OnDestr
       }
     );
 
-    // Enter button should submit the answer
-    const removeEnterListenerFunc = this.renderer.listen(this.buttonEnter.nativeElement, eventToListenTo, (event) => {
-      const that = this;
-      that.onClickSubmit(event);
-    });
-    this.cleanUpFunctions.push(removeEnterListenerFunc);
+    // On-screen Keypad Enter button should submit the answer
+    if (this.buttonEnter) {
+      const removeEnterListenerFunc = this.renderer.listen(this.buttonEnter.nativeElement, eventToListenTo, (event) => {
+        const that = this;
+        that.onClickSubmit(event);
+      });
+      this.cleanUpFunctions.push(removeEnterListenerFunc);
+    }
 
-    // Backspace button should delete a char
-    const removeBackspaceListenerFunc = this.renderer.listen(this.buttonBackspace.nativeElement, eventToListenTo, (event) => {
-      const that = this;
-      that.onClickBackspace(event);
-    });
-    this.cleanUpFunctions.push(removeBackspaceListenerFunc);
+    // On-screen Keypad Backspace button should delete a char
+    if (this.buttonBackspace) {
+      const removeBackspaceListenerFunc = this.renderer.listen(this.buttonBackspace.nativeElement, eventToListenTo, (event) => {
+        const that = this;
+        that.onClickBackspace(event);
+      });
+      this.cleanUpFunctions.push(removeBackspaceListenerFunc);
+    }
   }
 
   ngOnDestroy () {
