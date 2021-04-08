@@ -56,7 +56,6 @@ export class PsReportDataService {
                         p.upn,
                         p.gender,
                         p.dateOfBirth,
-                        p.attendanceId,
                         p.checkComplete,
                         p.currentCheckId,
                         p.school_id,
@@ -73,7 +72,6 @@ export class PsReportDataService {
     ]
 
     interface DBPupil {
-      attendanceId: number | null
       checkComplete: boolean
       currentCheckId: number | null
       dateOfBirth: moment.Moment
@@ -92,7 +90,6 @@ export class PsReportDataService {
 
     const pupils: Pupil[] = data.map(o => {
       const pupil: Pupil = Object.freeze({
-        attendanceId: o.attendanceId,
         checkComplete: o.checkComplete,
         currentCheckId: o.currentCheckId,
         dateOfBirth: o.dateOfBirth,

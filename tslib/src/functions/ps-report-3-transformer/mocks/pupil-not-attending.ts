@@ -2,7 +2,6 @@ import { Pupil } from '../../../functions-throttled/ps-report-2-pupil-data/model
 import moment from 'moment'
 
 export const pupil: Pupil = {
-  attendanceId: 2,
   checkComplete: null,
   currentCheckId: null,
   dateOfBirth: moment.utc('2012-04-01'),

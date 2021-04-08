@@ -1,7 +1,6 @@
 import moment from 'moment'
 
 export interface Pupil {
-  attendanceId: number | null
   checkComplete: boolean | null
   currentCheckId: number | null
   dateOfBirth: moment.Moment

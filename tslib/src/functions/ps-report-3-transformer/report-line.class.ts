@@ -303,7 +303,7 @@ export class ReportLine {
     if (this._pupil.checkComplete === true) {
       return 'Complete'
     }
-    if (this._pupil.attendanceId !== null) {
+    if (this._pupil.notTakingCheckCode !== null) {
       return 'Not taking the Check'
     }
     return 'Incomplete'

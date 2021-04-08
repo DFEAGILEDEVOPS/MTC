@@ -55,7 +55,6 @@ describe('ps-report.data.service', () => {
       expect(pupils).toHaveLength(1)
       expect(mockSqlService.query).toHaveBeenCalledTimes(1)
       const p = pupils[0]
-      expect(p.attendanceId).toBe(1)
       expect(p.checkComplete).toBe(false)
       expect(p.currentCheckId).toBe(2)
       expect(p.dateOfBirth.format('YYYY-MM-DD')).toBe('2011-01-21')
