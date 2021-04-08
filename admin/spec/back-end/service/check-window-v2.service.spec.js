@@ -207,15 +207,32 @@ describe('check-window-v2.service', () => {
     })
   })
   describe('getActiveCheckWindow', () => {
-    it('should cache successive calls', async () => {
+    it('should cache successive calls on prod', async () => {
+      const nodeEnvSaved = process.env.NODE_ENV
+      process.env.NODE_ENV = 'production'
       spyOn(checkWindowDataService, 'sqlFindActiveCheckWindow').and.returnValue(Promise.resolve({ mock: 'yes' }))
       await checkWindowV2Service.getActiveCheckWindow(true)
       await checkWindowV2Service.getActiveCheckWindow()
       await checkWindowV2Service.getActiveCheckWindow()
       expect(checkWindowDataService.sqlFindActiveCheckWindow).toHaveBeenCalledTimes(1)
+      process.env.NODE_ENV = nodeEnvSaved
     })
-    it('only caches for 60 seconds', async () => {
+
+    it('should NOT cache successive calls on non-prod', async () => {
+      const nodeEnvSaved = process.env.NODE_ENV
+      process.env.NODE_ENV = 'development'
+      spyOn(checkWindowDataService, 'sqlFindActiveCheckWindow').and.returnValue(Promise.resolve({ mock: 'yes' }))
+      await checkWindowV2Service.getActiveCheckWindow(true)
+      await checkWindowV2Service.getActiveCheckWindow()
+      await checkWindowV2Service.getActiveCheckWindow()
+      expect(checkWindowDataService.sqlFindActiveCheckWindow).toHaveBeenCalledTimes(3)
+      process.env.NODE_ENV = nodeEnvSaved
+    })
+
+    it('only caches for 60 seconds on prod envs', async () => {
       const now = new Date()
+      const nodeEnvSaved = process.env.NODE_ENV
+      process.env.NODE_ENV = 'production'
       spyOn(checkWindowDataService, 'sqlFindActiveCheckWindow').and.returnValue(Promise.resolve({ mock: 'yes' }))
       await checkWindowV2Service.getActiveCheckWindow(true) // 1st call
 
@@ -228,6 +245,7 @@ describe('check-window-v2.service', () => {
       await checkWindowV2Service.getActiveCheckWindow() // cached response
 
       expect(checkWindowDataService.sqlFindActiveCheckWindow).toHaveBeenCalledTimes(2)
+      process.env.NODE_ENV = nodeEnvSaved
     })
   })
 })

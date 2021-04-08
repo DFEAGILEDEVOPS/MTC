@@ -74,6 +74,7 @@ end
 When(/^the live check window closes$/) do
   @dev_phase_details_before = SqlDbHelper.check_window_details('Development Phase')
   SqlDbHelper.update_check_end_date((Date.today) - 7)
+  REDIS_CLIENT. del 'checkWindow.sqlFindActiveCheckWindow'
   visit ENV['ADMIN_BASE_URL'] + '/sign-out'
   step "I am logged in with a service manager"
   admin_page.manage_check_windows.click
