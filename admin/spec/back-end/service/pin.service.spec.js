@@ -1,4 +1,3 @@
-import momentTz from 'moment-timezone'
 const moment = require('moment-timezone')
 
 const dateService = require('../../../services/date.service')
