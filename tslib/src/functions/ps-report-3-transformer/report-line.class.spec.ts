@@ -881,32 +881,32 @@ describe('report line class', () => {
   describe('getReasonNotTakingCheck', () => {
     test('returns 1 for pupils incorrectly registered', () => {
       const res = ReportLineTest.getReasonNotTakingCheck('INCRG')
-      expect(res).toBe(1)
+      expect(res).toBe('Z')
     })
 
     test('returns 2 for Absent pupils', () => {
       const res = ReportLineTest.getReasonNotTakingCheck('ABSNT')
-      expect(res).toBe(2)
+      expect(res).toBe('A')
     })
 
     test('returns 3 for pupils who left', () => {
       const res = ReportLineTest.getReasonNotTakingCheck('LEFTT')
-      expect(res).toBe(3)
+      expect(res).toBe('L')
     })
 
     test('returns 4 for pupils who are unable to access', () => {
       const res = ReportLineTest.getReasonNotTakingCheck('NOACC')
-      expect(res).toBe(4)
+      expect(res).toBe('U')
     })
 
     test('returns 5 for pupils who are working below standard', () => {
       const res = ReportLineTest.getReasonNotTakingCheck('BLSTD')
-      expect(res).toBe(5)
+      expect(res).toBe('B')
     })
 
     test('returns 6 for pupils who just arrived', () => {
       const res = ReportLineTest.getReasonNotTakingCheck('JSTAR')
-      expect(res).toBe(6)
+      expect(res).toBe('J')
     })
 
     test('returns null if the code is null', () => {
