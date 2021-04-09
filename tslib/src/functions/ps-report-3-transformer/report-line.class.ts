@@ -10,7 +10,7 @@ import {
 } from '../../functions-throttled/ps-report-2-pupil-data/models'
 import { deepFreeze } from '../../common/deep-freeze'
 import { ReportLineAnswer } from './report-line-answer.class'
-import { IPsychometricReportLine, WorkingReportLine } from './models'
+import { DfEAbsenceCode, IPsychometricReportLine, WorkingReportLine } from './models'
 
 export class ReportLine {
   private readonly _answers: AnswersOrNull
@@ -120,20 +120,20 @@ export class ReportLine {
     return this._school
   }
 
-  protected static getReasonNotTakingCheck (code: NotTakingCheckCode | null): number | null {
+  protected static getReasonNotTakingCheck (code: NotTakingCheckCode | null): DfEAbsenceCode | null {
     switch (code) {
       case 'INCRG':
-        return 1
+        return 'Z'
       case 'ABSNT':
-        return 2
+        return 'A'
       case 'LEFTT':
-        return 3
+        return 'L'
       case 'NOACC':
-        return 4
+        return 'U'
       case 'BLSTD':
-        return 5
+        return 'B'
       case 'JSTAR':
-        return 6
+        return 'J'
     }
     return null
   }

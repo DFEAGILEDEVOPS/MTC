@@ -11,12 +11,13 @@ import { checkForm } from './mocks/check-form'
 import { device } from './mocks/device'
 import { events } from './mocks/events'
 import { NotTakingCheckCode, RestartReasonCode } from '../../functions-throttled/ps-report-2-pupil-data/models'
+import { DfEAbsenceCode } from './models'
 
 class ReportLineTest extends ReportLine {
   public getReasonNotTakingCheck (code: NotTakingCheckCode): string
 
   // @ts-ignore - let's allow function overloading of static functions for ease of testing
-  public static getReasonNotTakingCheck (code: NotTakingCheckCode | null): number | null {
+  public static getReasonNotTakingCheck (code: NotTakingCheckCode | null): DfEAbsenceCode | null {
     return ReportLine.getReasonNotTakingCheck(code)
   }
 
@@ -721,7 +722,7 @@ describe('report line class', () => {
 
       test('if the pupil has been marked as not taking the check it should have a Reason code', () => {
         const out = sut.transform()
-        expect(out.ReasonNotTakingCheck).toBe(2)
+        expect(out.ReasonNotTakingCheck).toBe('A')
       })
 
       test('the pupil status is set to Not taking the Check', () => {
