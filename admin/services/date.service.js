@@ -1,5 +1,6 @@
 'use strict'
 const moment = require('moment')
+const momentTz = require('moment-timezone')
 const logger = require('./log.service').getLogger()
 
 const gdsFullFormat = 'D MMMM YYYY'
@@ -14,6 +15,7 @@ const dateAndTimeFormat = 'D MMMM YYYY h:mma'
 const iso8601WithMsPrecisionAndTimeZone = 'YYYY-MM-DDTHH:mm:ss.SSSZ'
 const iso8601WithMsPrecisionWithoutTimeZone = 'YYYY-MM-DDTHH:mm:ss.SSS'
 const filenameFriendly = 'YYYY-MM-DD-HHmm'
+const config = require('../config')
 
 const dateService = {
   formatYear: function (date) {
@@ -165,6 +167,18 @@ const dateService = {
    */
   isBetweenInclusive: function (date, startDate, endDate, granularity = null) {
     return date.isBetween(startDate, endDate, granularity, '[]')
+  },
+
+  tzStartOfDay: function (tz = config.DEFAULT_TIMEZONE) {
+    return momentTz.tz(tz).startOf('day')
+  },
+
+  tzEightAmToday: function (tz = config.DEFAULT_TIMEZONE) {
+    return momentTz.tz(tz).startOf('day').add(8, 'hours')
+  },
+
+  tzEndOfDay: function (tz = config.DEFAULT_TIMEZONE) {
+    return momentTz.tz(tz).endOf('day')
   }
 }
 

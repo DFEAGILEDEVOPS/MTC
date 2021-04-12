@@ -92,8 +92,7 @@ describe('pin.service', () => {
           const pinTimestamp = pinService.generatePinTimestamp(false, overrideValue, defaultValue, schoolTimezone)
           console.log('pin timestamp', pinTimestamp.toISOString())
           expect(pinTimestamp.toISOString()).toStrictEqual('2020-04-07T15:00:00.000Z') // 3PM GMT, which is expected
-          // when
-          // I run this in BST, or 4PM during GMT
+          // when I run this in BST, or 4PM during GMT
           jest.setSystemTime(realTime)
           jest.useRealTimers()
         })
@@ -105,7 +104,7 @@ describe('pin.service', () => {
           jest.useFakeTimers('modern')
           jest.setSystemTime(baseTime)
 
-          const defaultValue = moment().startOf('day').add(16, 'hours') // 4pm GMT
+          const defaultValue = moment.tz().startOf('day').add(16, 'hours') // 4pm GMT
           const overrideValue = moment().endOf('day')
           const schoolTimezone = 'Europe/London'
           const pinTimestamp = pinService.generatePinTimestamp(false, overrideValue, defaultValue, schoolTimezone)
