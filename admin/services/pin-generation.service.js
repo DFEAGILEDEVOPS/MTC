@@ -1,4 +1,3 @@
-const momentTz = require('moment-timezone')
 const bluebird = require('bluebird')
 const crypto = bluebird.promisifyAll(require('crypto'))
 
@@ -16,9 +15,6 @@ const allowedWords = new Set(
 const bannedWords = [
   'dim'
 ]
-
-const fourPmToday = () => momentTz().startOf('day').add(16, 'hours')
-const endOfDay = () => momentTz().endOf('day')
 
 const pinGenerationService = {}
 const chars = '23456789'
@@ -67,7 +63,7 @@ pinGenerationService.generateSchoolPassword = school => {
     wordsArray[pinGenerationService.generateCryptoRandomNumber(0, wordsArray.length - 1)]
   const numberCombination = randomGenerator.getRandom(2, chars)
   const newPin = `${firstRandomWord}${numberCombination}${secondRandomWord}`
-  const newExpiry = pinService.generatePinTimestamp(config.OverridePinExpiry, endOfDay(), fourPmToday(), school.timezone)
+  const newExpiry = pinService.generatePinTimestamp(config.OverridePinExpiry, school.timezone)
   return { pin: newPin, pinExpiresAt: newExpiry }
 }
 

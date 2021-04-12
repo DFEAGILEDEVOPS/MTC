@@ -334,6 +334,30 @@ describe('date service', () => {
     })
   })
 
+  describe('tzFourPmToday', () => {
+    it('works correctly when no tz is given during GMT', () => {
+      setupFakeTime(moment('2020-12-20T23:10:00'))
+      const dt = dateService.tzFourPmToday()
+      expect(dt.toISOString()).toBe('2020-12-20T16:00:00.000Z')
+      tearDownFakeTime()
+    })
+
+    it('works correctly when when no tz is given during BST', () => {
+      setupFakeTime(moment('2020-06-24T00:30:00.000+01:00')) // 12:30am in BST
+      const dt = dateService.tzFourPmToday()
+      expect(dt.toISOString()).toBe('2020-06-24T15:00:00.000Z') // Should keep the new day, and not lose it.  Note
+      // that 1500 GMT is 1600 BST.
+      tearDownFakeTime()
+    })
+
+    it('works correctly when a TZ is given', () => {
+      setupFakeTime(moment('2021-04-12T16:00:00'))
+      const dt = dateService.tzFourPmToday('Europe/London')
+      expect(dt.toISOString()).toBe('2021-04-12T15:00:00.000Z') //  1500 GMT is 1600 BST.
+      tearDownFakeTime()
+    })
+  })
+
   describe('tzEndOfDay', () => {
     it('works correctly when no tz is given during GMT', () => {
       setupFakeTime(moment('2020-12-20T23:10:00'))

@@ -169,15 +169,51 @@ const dateService = {
     return date.isBetween(startDate, endDate, granularity, '[]')
   },
 
-  tzStartOfDay: function (tz = config.DEFAULT_TIMEZONE) {
+  /**
+   * Return start of the day, e.g. 00:00, with default app tz
+   * @param {string} tz - valid timezone, e.g. 'Europe/London'
+   * @return {moment.Moment}
+   */
+  tzStartOfDay: function (tz) {
+    if (tz === undefined || tz === null) {
+      tz = config.DEFAULT_TIMEZONE
+    }
     return momentTz.tz(tz).startOf('day')
   },
 
-  tzEightAmToday: function (tz = config.DEFAULT_TIMEZONE) {
+  /**
+   * Return 8am in the TZ supplied, or the app default tz
+   * @param {string} tz - valid timezone, e.g. 'Europe/London'
+   * @return {moment.Moment}
+   */
+  tzEightAmToday: function (tz) {
+    if (tz === undefined || tz === null) {
+      tz = config.DEFAULT_TIMEZONE
+    }
     return momentTz.tz(tz).startOf('day').add(8, 'hours')
   },
 
-  tzEndOfDay: function (tz = config.DEFAULT_TIMEZONE) {
+  /**
+   * Return 4pm in the TZ supplied, or the app default tz
+   * @param {string} tz - valid timezone, e.g. 'Europe/London'
+   * @return {moment.Moment}
+   */
+  tzFourPmToday: function (tz) {
+    if (tz === undefined || tz === null) {
+      tz = config.DEFAULT_TIMEZONE
+    }
+    return momentTz.tz(tz).startOf('day').add(16, 'hours')
+  },
+
+  /**
+   * Return end of day in the tz supplied or the app default tz
+   * @param {string} tz - valid timezone, e.g. 'Europe/London'
+   * @return {moment.Moment}
+   */
+  tzEndOfDay: function (tz) {
+    if (tz === undefined || tz === null) {
+      tz = config.DEFAULT_TIMEZONE
+    }
     return momentTz.tz(tz).endOf('day')
   }
 }

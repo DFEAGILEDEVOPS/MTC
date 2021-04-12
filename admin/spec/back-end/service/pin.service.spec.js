@@ -1,6 +1,5 @@
 const moment = require('moment-timezone')
 
-const dateService = require('../../../services/date.service')
 const pinValidator = require('../../../lib/validator/pin-validator')
 const schoolDataService = require('../../../services/data-access/school.data.service')
 const pinService = require('../../../services/pin.service')
@@ -40,81 +39,129 @@ describe('pin.service', () => {
 
     describe('generatePinTimestamp', () => {
       describe('when timezone is not supplied', () => {
-        test('should return the override value if override is enabled', () => {
-          const overrideEnabled = true
-          const defaultValue = moment().startOf('day').add(16, 'hours')
-          const overrideValue = moment().endOf('day')
-          const pinTimestamp = pinService.generatePinTimestamp(overrideEnabled, overrideValue, defaultValue)
-          expect(pinTimestamp).toStrictEqual(overrideValue)
+        test('should return the overridden value if override is enabled', () => {
+          setupFakeTime(moment('2021-04-12T12:00:00'))
+          const pinTimestamp = pinService.generatePinTimestamp(true)
+          expect(pinTimestamp.toISOString()).toStrictEqual('2021-04-12T22:59:59.999Z') // midnight in BST
+          tearDownFakeTime()
         })
 
         test('should return the default value if override is disabled', () => {
-          const overrideEnabled = false
-          const defaultValue = moment().startOf('day').add(16, 'hours')
-          const overrideValue = moment().endOf('day')
-          const pinTimestamp = pinService.generatePinTimestamp(overrideEnabled, overrideValue, defaultValue)
-          expect(pinTimestamp).toStrictEqual(defaultValue)
+          setupFakeTime(moment('2021-04-12T12:00:00'))
+          const pinTimestamp = pinService.generatePinTimestamp(false)
+          expect(pinTimestamp.toISOString()).toStrictEqual('2021-04-12T15:00:00.000Z') // 4pm BST
+          tearDownFakeTime()
         })
       })
 
       describe('when timezone is supplied', () => {
         test('should return the override value based on the timezone if override is enabled', () => {
-          const overrideEnabled = true
-          const defaultValue = moment().startOf('day').add(16, 'hours')
-          const overrideValue = moment().endOf('day')
-          const schoolTimezone = 'Europe/Lisbon'
-          const timeZoneOverrideValue = moment.tz(dateService.formatIso8601WithoutTimezone(overrideValue), schoolTimezone).utc()
-          const pinTimestamp = pinService.generatePinTimestamp(overrideEnabled, overrideValue, defaultValue, 'Europe/Lisbon')
-          expect(pinTimestamp).toStrictEqual(timeZoneOverrideValue)
+          setupFakeTime(moment('2021-04-12T12:00:00Z'))
+          const pinTimestamp = pinService.generatePinTimestamp(true, 'Europe/Lisbon')
+          expect(pinTimestamp.toISOString()).toStrictEqual('2021-04-12T22:59:59.999Z') // Same as bst
+          tearDownFakeTime()
         })
 
         test('should return the default value based on the timezone if override is disabled', () => {
-          const overrideEnabled = false
-          const defaultValue = moment().startOf('day').add(16, 'hours')
-          const overrideValue = moment().endOf('day')
-          const schoolTimezone = 'Europe/Lisbon'
-          const timeZoneDefaultValue = moment.tz(dateService.formatIso8601WithoutTimezone(defaultValue), schoolTimezone).utc()
-          const pinTimestamp = pinService.generatePinTimestamp(overrideEnabled, overrideValue, defaultValue, schoolTimezone)
-          expect(pinTimestamp).toStrictEqual(timeZoneDefaultValue)
+          setupFakeTime(moment('2021-04-12T12:00:00Z'))
+          const pinTimestamp = pinService.generatePinTimestamp(false, 'Europe/Lisbon')
+          expect(pinTimestamp.toISOString()).toStrictEqual('2021-04-12T15:00:00.000Z') // Same as bst
+          tearDownFakeTime()
         })
 
         test('pin expiry during BST', () => {
-          // Set the base time up to be just after midnight on Tues 7 April 2020.  BST is in effect, so this should be
-          // 11:30pm on 6th April.
-          const baseTime = new Date(2020, 3, 6, 23, 30)
-          const realTime = Date.now()
-          jest.useFakeTimers('modern')
-          jest.setSystemTime(baseTime)
-
-          const defaultValue = moment().startOf('day').add(16, 'hours') // 4pm GMT
-          const overrideValue = moment().endOf('day')
-          const schoolTimezone = 'Europe/London'
-          const pinTimestamp = pinService.generatePinTimestamp(false, overrideValue, defaultValue, schoolTimezone)
-          console.log('pin timestamp', pinTimestamp.toISOString())
+          // Set the base time up to be just after 00:30 (after midnight) on Tues 7 April 2020.  BST is in effect, so
+          // this should be 11:30pm on 6th April.
+          setupFakeTime(moment('2020-04-06T23:30:00.000Z'))
+          const pinTimestamp = pinService.generatePinTimestamp(false, 'Europe/London')
           expect(pinTimestamp.toISOString()).toStrictEqual('2020-04-07T15:00:00.000Z') // 3PM GMT, which is expected
           // when I run this in BST, or 4PM during GMT
-          jest.setSystemTime(realTime)
-          jest.useRealTimers()
+          tearDownFakeTime()
         })
 
         test('pin expiry during GMT', () => {
           // Set the base time up to be just after midnight on Tues 23 Feb 2020. No DST in effect.
-          const baseTime = new Date(2020, 11, 21, 23, 30)
-          const realTime = Date.now()
-          jest.useFakeTimers('modern')
-          jest.setSystemTime(baseTime)
-
-          const defaultValue = moment.tz().startOf('day').add(16, 'hours') // 4pm GMT
-          const overrideValue = moment().endOf('day')
-          const schoolTimezone = 'Europe/London'
-          const pinTimestamp = pinService.generatePinTimestamp(false, overrideValue, defaultValue, schoolTimezone)
-          console.log('pin timestamp', pinTimestamp.toISOString())
+          setupFakeTime(moment('2020-12-21T00:30:00.000Z'))
+          const pinTimestamp = pinService.generatePinTimestamp(false, 'Europe/London')
           expect(pinTimestamp.toISOString()).toStrictEqual('2020-12-21T16:00:00.000Z')
-
-          jest.setSystemTime(realTime)
-          jest.useRealTimers()
+          tearDownFakeTime()
         })
       })
     })
   })
+
+  describe('#generatePinValidFromTimestamp', () => {
+    test('returns 8am in GMT', () => {
+      setupFakeTime(moment('2020-12-01T09:30:00.000'))
+      const dt = pinService.generatePinValidFromTimestamp(false, null)
+      expect(dt.toISOString()).toBe('2020-12-01T08:00:00.000Z')
+      tearDownFakeTime()
+    })
+
+    test('returns 8am in BST', () => {
+      setupFakeTime(moment('2020-06-01T09:30:00.000'))
+      const dt = pinService.generatePinValidFromTimestamp(false, null)
+      expect(dt.toISOString()).toBe('2020-06-01T07:00:00.000Z')
+      tearDownFakeTime()
+    })
+
+    test('returns 8am in Australia', () => {
+      setupFakeTime(moment('2021-04-12T21:00:00.000')) // AEST is utc+10, so this is 7am on the 13th in Oz
+      const dt = pinService.generatePinValidFromTimestamp(false, 'Australia/Sydney')
+      expect(dt.toISOString()).toBe('2021-04-12T22:00:00.000Z')
+      tearDownFakeTime()
+    })
+
+    test('returns 8am in BST when given a tz', () => {
+      setupFakeTime(moment('2020-06-01T09:30:00.000'))
+      const dt = pinService.generatePinValidFromTimestamp(false, 'Europe/London')
+      expect(dt.toISOString()).toBe('2020-06-01T07:00:00.000Z')
+      tearDownFakeTime()
+    })
+
+    test('returns 00:00 in GMT with config override ', () => {
+      setupFakeTime(moment('2020-12-01T09:30:00.000'))
+      const dt = pinService.generatePinValidFromTimestamp(true, null)
+      expect(dt.toISOString()).toBe('2020-12-01T00:00:00.000Z')
+      tearDownFakeTime()
+    })
+
+    test('returns 00:00 in GMT with config override and tz', () => {
+      setupFakeTime(moment('2020-12-01T09:30:00.000'))
+      const dt = pinService.generatePinValidFromTimestamp(true, 'Europe/London')
+      expect(dt.toISOString()).toBe('2020-12-01T00:00:00.000Z')
+      tearDownFakeTime()
+    })
+
+    test('returns 00:00 in BST with config override ', () => {
+      setupFakeTime(moment('2020-06-01T09:30:00.000'))
+      const dt = pinService.generatePinValidFromTimestamp(true, null)
+      expect(dt.toISOString()).toBe('2020-05-31T23:00:00.000Z')
+      tearDownFakeTime()
+    })
+
+    test('returns 00:00 in BST with config override and tz', () => {
+      setupFakeTime(moment('2020-06-01T09:30:00.000'))
+      const dt = pinService.generatePinValidFromTimestamp(true, 'Europe/London')
+      expect(dt.toISOString()).toBe('2020-05-31T23:00:00.000Z')
+      tearDownFakeTime()
+    })
+  })
 })
+
+/**
+ * @param {moment.Moment} baseTime - set the fake time to this moment object
+ *
+ */
+function setupFakeTime (baseTime) {
+  if (!moment.isMoment(baseTime)) {
+    throw new Error('moment.Moment time expected')
+  }
+  jest.useFakeTimers('modern')
+  jest.setSystemTime(baseTime.toDate())
+}
+
+function tearDownFakeTime () {
+  const realTime = jest.getRealSystemTime()
+  jest.setSystemTime(realTime)
+}
