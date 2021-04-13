@@ -244,6 +244,13 @@ class SqlDbHelper
     data
   end
 
+  def self.check_attendance_code(id)
+    sql = "SELECT * FROM [mtc_admin].[attendanceCode] WHERE id = '#{id}'"
+    result = SQL_CLIENT.execute(sql)
+    chk_att_code_res = result.first
+    result.cancel
+    chk_att_code_res
+  end
 
   def self.get_check_using_pupil(pupil_id)
     sql = "SELECT * FROM [mtc_admin].[check] WHERE pupil_id='#{pupil_id}'"

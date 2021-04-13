@@ -1,6 +1,6 @@
 import moment from 'moment'
 import faker from 'faker'
-import { IPsychometricReportLine, IReportLineAnswer } from '../functions/ps-report-3-transformer/models'
+import { DfEAbsenceCode, IPsychometricReportLine, IReportLineAnswer } from '../functions/ps-report-3-transformer/models'
 const schools = [
   'The New Learning Centre',
   'Shawcroft School',
@@ -158,7 +158,7 @@ export class MockPayload implements IPsychometricReportLine {
   PupilID: string
   Forename: string
   Surname: string
-  ReasonNotTakingCheck: number | null
+  ReasonNotTakingCheck: DfEAbsenceCode | null
   PupilStatus: string | null
   // School',
   SchoolName: string
@@ -197,7 +197,7 @@ export class MockPayload implements IPsychometricReportLine {
     this.Gender = faker.random.arrayElement(['M', 'F'])
     this.Forename = faker.name.firstName()
     this.Surname = faker.name.lastName()
-    this.ReasonNotTakingCheck = faker.random.number({ min: 1, max: 6 })
+    this.ReasonNotTakingCheck = faker.random.arrayElement(['A', 'Z', 'L', 'U', 'B', 'J'])
     this.PupilStatus = faker.helpers.shuffle(['Incomplete', 'Complete', 'Not taking the Check'])[0]
     this.SchoolName = faker.random.arrayElement(schools)
     this.Estab = faker.random.number({ min: 1000, max: 9999 })
