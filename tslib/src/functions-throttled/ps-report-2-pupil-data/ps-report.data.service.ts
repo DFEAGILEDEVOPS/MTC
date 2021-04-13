@@ -15,8 +15,9 @@ import {
   EventsOrNull,
   Input,
   InputMap,
+  NotTakingCheckCode,
   Pupil,
-  PupilResult,
+  PupilResult, RestartReasonCode,
   School
 } from './models'
 import * as R from 'ramda'
@@ -55,12 +56,12 @@ export class PsReportDataService {
                         p.upn,
                         p.gender,
                         p.dateOfBirth,
-                        p.attendanceId,
                         p.checkComplete,
                         p.currentCheckId,
                         p.school_id,
                         p.urlSlug,
-                        ac.reason as notTakingCheckReason
+                        ac.reason as notTakingCheckReason,
+                        ac.code as notTakingCheckCode
           FROM mtc_admin.pupil p
                JOIN      mtc_admin.school s ON (p.school_id = s.id)
                LEFT JOIN mtc_admin.attendanceCode ac ON (p.attendanceId = ac.id)
@@ -71,7 +72,6 @@ export class PsReportDataService {
     ]
 
     interface DBPupil {
-      attendanceId: number | null
       checkComplete: boolean
       currentCheckId: number | null
       dateOfBirth: moment.Moment
@@ -80,6 +80,7 @@ export class PsReportDataService {
       id: number
       lastName: string
       notTakingCheckReason: string | null
+      notTakingCheckCode: NotTakingCheckCode
       school_id: number
       urlSlug: string
       upn: string
@@ -89,7 +90,6 @@ export class PsReportDataService {
 
     const pupils: Pupil[] = data.map(o => {
       const pupil: Pupil = Object.freeze({
-        attendanceId: o.attendanceId,
         checkComplete: o.checkComplete,
         currentCheckId: o.currentCheckId,
         dateOfBirth: o.dateOfBirth,
@@ -98,6 +98,7 @@ export class PsReportDataService {
         id: o.id,
         lastname: o.lastName,
         notTakingCheckReason: o.notTakingCheckReason,
+        notTakingCheckCode: o.notTakingCheckCode,
         schoolId: o.school_id,
         slug: o.urlSlug,
         upn: o.upn
@@ -213,7 +214,7 @@ export class PsReportDataService {
       pupilLoginDate: moment.Moment
       received: boolean
       restartNumber: number
-      restartReason: string | null
+      restartReason: RestartReasonCode | null
     }
 
     const res: DBCheck[] = await this.sqlService.query(sql, [{ name: 'checkId', value: checkId, type: TYPES.Int }])

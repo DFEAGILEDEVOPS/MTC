@@ -10,7 +10,9 @@ end
 
 Then(/^I should see a record for the pupil in the ps report table$/) do
   pupil_details = SqlDbHelper.pupil_details_using_school(@details_hash[:upn], @school_id)
-  pupil_attendance = SqlDbHelper.get_attendance_code_for_a_pupil(pupil_details['id'])
+  reason = SqlDbHelper.get_attendance_code_for_a_pupil(pupil_details['id'])
+  attendance_code_name = SqlDbHelper.check_attendance_code(reason['attendanceCode_id']) unless reason.nil?
+  pupil_attendance = calculate_not_taking_reason_code(attendance_code_name['reason']) unless reason.nil?
   pupil_restarts = SqlDbHelper.pupil_restarts(pupil_details['id']).sort_by {|hsh| hsh['id']}
   @check_details = SqlDbHelper.get_all_pupil_checks(pupil_details['id']).sort_by {|hsh| hsh['createdAt']}.last
   check_config = JSON.parse SqlDbHelper.get_check_config_data(@check_details['id'])['payload'] unless @check_details.nil?
@@ -34,7 +36,7 @@ Then(/^I should see a record for the pupil in the ps report table$/) do
   expect(ps_report_record["id"]).to eql pupil_details['id']
   expect(ps_report_record["Forename"]).to eql pupil_details['foreName']
   expect(ps_report_record["Surname"]).to eql pupil_details['lastName']
-  expect(ps_report_record["ReasonNotTakingCheck"]).to eql pupil_attendance.nil? ? nil : pupil_attendance['attendanceCode_id']
+  expect(ps_report_record["ReasonNotTakingCheck"]).to eql reason.nil? ? nil : pupil_attendance
   expect(ps_report_record["PupilStatus"]).to eql "Complete" if pupil_details['checkComplete']
   expect(ps_report_record["SchoolName"]).to eql @school_name
   expect(ps_report_record["Estab"]).to eql @estab_code
@@ -105,10 +107,11 @@ end
 
 
 Given(/^I have marked a pupil as not taking check with the (.+) reason$/) do |reason|
+  @reason = reason
   step 'I add a pupil'
   step 'I login to the admin app'
   visit ENV["ADMIN_BASE_URL"] + pupil_reason_page.url
-  pupil_reason_page.select_reason(reason)
+  pupil_reason_page.select_reason(@reason)
   pupil_row = pupil_reason_page.pupil_list.rows.select {|row| row.name.text.include?(@name)}
   pupil_row.first.checkbox.click
   pupil_reason_page.sticky_banner.confirm.click
