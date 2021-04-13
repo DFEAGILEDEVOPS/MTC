@@ -46,6 +46,11 @@ let cachedActiveCheckWindow
 let cachedActiveCheckWindowExpiresAt
 checkWindowV2Service.getActiveCheckWindow = async (cacheBust = false) => {
   const now = Date.now()
+  const nodeEnv = process.env.NODE_ENV
+  if (nodeEnv !== 'production') {
+    // don't cache unless its production
+    cacheBust = true
+  }
 
   if (cacheBust || !cachedActiveCheckWindow || !cachedActiveCheckWindowExpiresAt || now > cachedActiveCheckWindowExpiresAt) {
     cachedActiveCheckWindow = await checkWindowDataService.sqlFindActiveCheckWindow()

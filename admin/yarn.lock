@@ -3277,7 +3277,7 @@ date-utils@*:
   resolved "https://registry.yarnpkg.com/date-utils/-/date-utils-1.2.21.tgz#61fb16cdc1274b3c9acaaffe9fc69df8720a2b64"
   integrity sha1-YfsWzcEnSzyayq/+n8ad+HIKK2Q=
 
-"debug@0.8.0 - 3.5.0", debug@^3.1.0:
+"debug@0.8.0 - 3.5.0", debug@^3.1.0, debug@^3.2.6:
   version "3.2.7"
   resolved "https://registry.yarnpkg.com/debug/-/debug-3.2.7.tgz#72580b7e9145fb39b6676f9c5e5fb100b934179a"
   integrity sha512-CFjzYYAi4ThfiQvizrFQevTTXHtnCqWfe7x1AhgEscTz6ZbLbfoLRLPugTQyBth6f8ZERVUSyWHFD/7Wu4t1XQ==
@@ -3297,13 +3297,6 @@ debug@=3.1.0, debug@~3.1.0:
   integrity sha512-OX8XqP7/1a9cqkxYw2yXss15f26NKWBpDXQd0/uK/KPqdQhxbPa994hnzjcE2VqQpDslf55723cKPUOGSmMY3g==
   dependencies:
     ms "2.0.0"
-
-debug@^3.2.6:
-  version "3.2.6"
-  resolved "https://registry.yarnpkg.com/debug/-/debug-3.2.6.tgz#e83d17de16d8a7efb7717edbe5fb10135eee629b"
-  integrity sha512-mel+jf7nrtEl5Pn1Qx46zARXKDpBbvzezse7p7LqINmdoIk8PYP5SySaxEmYv6TZ0JyEKA1hsCId6DIhgITtWQ==
-  dependencies:
-    ms "^2.1.1"
 
 debug@^4.0.0, debug@^4.0.1, debug@^4.1.0, debug@^4.1.1, debug@^4.3.1:
   version "4.3.1"
@@ -7114,10 +7107,10 @@ lz-string@^1.4.4:
   resolved "https://registry.yarnpkg.com/lz-string/-/lz-string-1.4.4.tgz#c0d8eaf36059f705796e1e344811cf4c498d3a26"
   integrity sha1-wNjq82BZ9wV5bh40SBHPTEmNOiY=
 
-madge@^4.0.0:
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/madge/-/madge-4.0.0.tgz#8930e0e0310451b049a43b3a86253aea6cf7d03e"
-  integrity sha512-BQbYl2HTFnTqOTJQQwVGJPBuD7ScafYvWa2GGGIt+qBFQ2ZpYhSWQJp2rk3EdazthyAOhFvpeuIEOXTBVB50hw==
+madge@^4.0.1:
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/madge/-/madge-4.0.1.tgz#d6d7899a83b7aa86e07074bd8a718a232029bcb2"
+  integrity sha512-bcZDGa+cweRJ0XFCWaVlPTJKw2lB+EBBhUsBOqGv84jvlC6G1syKxCiS15+KBarwsVXNEtEEAs30r7EYn4ccNw==
   dependencies:
     chalk "^4.1.0"
     commander "^6.2.1"
