@@ -4,7 +4,7 @@
             <h1 class="govuk-heading-xl">The service is unavailable</h1>
             <%- partial('partials/_gds_session_expiry') %>
             <% if(isBeforeStartDate) { %>
-                <p class="govuk-body">You will be able to use the service from 9am on <%= startDateFormatted %></p>
+                <p class="govuk-body">You will be able to use the service from <%= startDateFormatted %></p>
             <% } else { %>
                 <p class="govuk-body">The service is currently unavailable. Please try again later.</p>
                 <p class="govuk-body">If you have an urgent enquiry please contact the helpline.</p>
