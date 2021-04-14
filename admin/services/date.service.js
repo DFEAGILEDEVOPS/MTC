@@ -1,5 +1,6 @@
 'use strict'
 const moment = require('moment')
+const momentTz = require('moment-timezone')
 const logger = require('./log.service').getLogger()
 
 const gdsFullFormat = 'D MMMM YYYY'
@@ -14,6 +15,7 @@ const dateAndTimeFormat = 'D MMMM YYYY h:mma'
 const iso8601WithMsPrecisionAndTimeZone = 'YYYY-MM-DDTHH:mm:ss.SSSZ'
 const iso8601WithMsPrecisionWithoutTimeZone = 'YYYY-MM-DDTHH:mm:ss.SSS'
 const filenameFriendly = 'YYYY-MM-DD-HHmm'
+const config = require('../config')
 
 const dateService = {
   formatYear: function (date) {
@@ -165,6 +167,54 @@ const dateService = {
    */
   isBetweenInclusive: function (date, startDate, endDate, granularity = null) {
     return date.isBetween(startDate, endDate, granularity, '[]')
+  },
+
+  /**
+   * Return start of the day, e.g. 00:00, with default app tz
+   * @param {string} tz - valid timezone, e.g. 'Europe/London'
+   * @return {moment.Moment}
+   */
+  tzStartOfDay: function (tz) {
+    if (tz === undefined || tz === null) {
+      tz = config.DEFAULT_TIMEZONE
+    }
+    return momentTz.tz(tz).startOf('day')
+  },
+
+  /**
+   * Return 8am in the TZ supplied, or the app default tz
+   * @param {string} tz - valid timezone, e.g. 'Europe/London'
+   * @return {moment.Moment}
+   */
+  tzEightAmToday: function (tz) {
+    if (tz === undefined || tz === null) {
+      tz = config.DEFAULT_TIMEZONE
+    }
+    return momentTz.tz(tz).startOf('day').add(8, 'hours')
+  },
+
+  /**
+   * Return 4pm in the TZ supplied, or the app default tz
+   * @param {string} tz - valid timezone, e.g. 'Europe/London'
+   * @return {moment.Moment}
+   */
+  tzFourPmToday: function (tz) {
+    if (tz === undefined || tz === null) {
+      tz = config.DEFAULT_TIMEZONE
+    }
+    return momentTz.tz(tz).startOf('day').add(16, 'hours')
+  },
+
+  /**
+   * Return end of day in the tz supplied or the app default tz
+   * @param {string} tz - valid timezone, e.g. 'Europe/London'
+   * @return {moment.Moment}
+   */
+  tzEndOfDay: function (tz) {
+    if (tz === undefined || tz === null) {
+      tz = config.DEFAULT_TIMEZONE
+    }
+    return momentTz.tz(tz).endOf('day')
   }
 }
 

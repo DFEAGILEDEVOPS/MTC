@@ -1,5 +1,5 @@
 'use strict'
-/* global describe it expect spyOn */
+/* global describe it expect spyOn jest */
 
 const dateService = require('../../../services/date.service')
 const requestMock = require('../mocks/dates-req-mock')
@@ -287,4 +287,115 @@ describe('date service', () => {
       expect(result).toBeFalsy()
     })
   })
+
+  describe('tzStartOfDDay', () => {
+    it('gives the start of the day when no tz is given during GMT', () => {
+      setupFakeTime(moment('2020-12-20T10:30:00'))
+      const dt = dateService.tzStartOfDay()
+      expect(dt.toISOString()).toBe('2020-12-20T00:00:00.000Z')
+      tearDownFakeTime()
+    })
+
+    it('gives the start of the day when no tz is given during BST', () => {
+      setupFakeTime(moment('2020-06-23T10:30:00'))
+      const dt = dateService.tzStartOfDay()
+      expect(dt.toISOString()).toBe('2020-06-22T23:00:00.000Z') // 11pm GMT is midnight BST
+      tearDownFakeTime()
+    })
+
+    it('gives the start of the day when a TZ is given', () => {
+      setupFakeTime(moment('2021-04-12T10:30:00'))
+      const dt = dateService.tzStartOfDay('Europe/Prague')
+      expect(dt.toISOString()).toBe('2021-04-11T22:00:00.000Z') // Prague is GMT-2 in April
+      tearDownFakeTime()
+    })
+  })
+
+  describe('tzEightAmToday', () => {
+    it('works correctly when no tz is given during GMT', () => {
+      setupFakeTime(moment('2020-12-20T10:30:00'))
+      const dt = dateService.tzEightAmToday()
+      expect(dt.toISOString()).toBe('2020-12-20T08:00:00.000Z')
+      tearDownFakeTime()
+    })
+
+    it('works correctly when when no tz is given during BST', () => {
+      setupFakeTime(moment('2020-06-23T10:30:00'))
+      const dt = dateService.tzEightAmToday()
+      expect(dt.toISOString()).toBe('2020-06-23T07:00:00.000Z') // 7am GMT is 8am BST
+      tearDownFakeTime()
+    })
+
+    it('works correctly when a TZ is given', () => {
+      setupFakeTime(moment('2021-04-12T15:30:00'))
+      const dt = dateService.tzEightAmToday('Europe/Prague')
+      expect(dt.toISOString()).toBe('2021-04-12T06:00:00.000Z') // Prague is GMT-2 in April
+      tearDownFakeTime()
+    })
+  })
+
+  describe('tzFourPmToday', () => {
+    it('works correctly when no tz is given during GMT', () => {
+      setupFakeTime(moment('2020-12-20T23:10:00'))
+      const dt = dateService.tzFourPmToday()
+      expect(dt.toISOString()).toBe('2020-12-20T16:00:00.000Z')
+      tearDownFakeTime()
+    })
+
+    it('works correctly when when no tz is given during BST', () => {
+      setupFakeTime(moment('2020-06-24T00:30:00.000+01:00')) // 12:30am in BST
+      const dt = dateService.tzFourPmToday()
+      expect(dt.toISOString()).toBe('2020-06-24T15:00:00.000Z') // Should keep the new day, and not lose it.  Note
+      // that 1500 GMT is 1600 BST.
+      tearDownFakeTime()
+    })
+
+    it('works correctly when a TZ is given', () => {
+      setupFakeTime(moment('2021-04-12T16:00:00'))
+      const dt = dateService.tzFourPmToday('Europe/London')
+      expect(dt.toISOString()).toBe('2021-04-12T15:00:00.000Z') //  1500 GMT is 1600 BST.
+      tearDownFakeTime()
+    })
+  })
+
+  describe('tzEndOfDay', () => {
+    it('works correctly when no tz is given during GMT', () => {
+      setupFakeTime(moment('2020-12-20T23:10:00'))
+      const dt = dateService.tzEndOfDay()
+      expect(dt.toISOString()).toBe('2020-12-20T23:59:59.999Z')
+      tearDownFakeTime()
+    })
+
+    it('works correctly when when no tz is given during BST', () => {
+      setupFakeTime(moment('2020-06-24T00:30:00.000+01:00')) // 12:30am in BST
+      const dt = dateService.tzEndOfDay()
+      expect(dt.toISOString()).toBe('2020-06-24T22:59:59.999Z') // Should keep the new day, and not lose it.  Note
+      // that 11pm GMT is 12PM BST.
+      tearDownFakeTime()
+    })
+
+    it('works correctly when a TZ is given', () => {
+      setupFakeTime(moment('2021-04-12T16:00:00'))
+      const dt = dateService.tzEndOfDay('Europe/London')
+      expect(dt.toISOString()).toBe('2021-04-12T22:59:59.999Z') //  11pm GMT is 12PM BST.
+      tearDownFakeTime()
+    })
+  })
 })
+
+/**
+ * @param {moment.Moment} baseTime - set the fake time to this moment object
+ *
+ */
+function setupFakeTime (baseTime) {
+  if (!moment.isMoment(baseTime)) {
+    throw new Error('moment.Moment time expected')
+  }
+  jest.useFakeTimers('modern')
+  jest.setSystemTime(baseTime.toDate())
+}
+
+function tearDownFakeTime () {
+  const realTime = jest.getRealSystemTime()
+  jest.setSystemTime(realTime)
+}

@@ -45,6 +45,7 @@ describe('ps-report.data.service', () => {
           id: 3,
           lastName: 'def',
           notTakingCheckReason: 'ghi',
+          notTakingCheckCode: 'JSTAR',
           school_id: 4,
           urlSlug: 'jkl',
           upn: 'mno'
@@ -54,7 +55,6 @@ describe('ps-report.data.service', () => {
       expect(pupils).toHaveLength(1)
       expect(mockSqlService.query).toHaveBeenCalledTimes(1)
       const p = pupils[0]
-      expect(p.attendanceId).toBe(1)
       expect(p.checkComplete).toBe(false)
       expect(p.currentCheckId).toBe(2)
       expect(p.dateOfBirth.format('YYYY-MM-DD')).toBe('2011-01-21')
@@ -64,6 +64,7 @@ describe('ps-report.data.service', () => {
       expect(p.schoolId).toBe(4)
       expect(p.slug).toBe('jkl')
       expect(p.upn).toBe('mno')
+      expect(p.notTakingCheckCode).toBe('JSTAR')
     })
 
     test('the pupil array is readonly', async () => {
@@ -78,6 +79,7 @@ describe('ps-report.data.service', () => {
           id: 3,
           lastName: 'def',
           notTakingCheckReason: 'ghi',
+          notTakingCheckCode: 'JSTAR',
           school_id: 4,
           urlSlug: 'jkl',
           upn: 'mno'
