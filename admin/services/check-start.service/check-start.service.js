@@ -26,9 +26,6 @@ const oneMonthInSeconds = 2592000
 const schoolPinService = require('./school-pin.service')
 const sqlErrorMessages = require('../data-access/sql-mtc-error-codes')
 
-const fourPmToday = () => moment().startOf('day').add(16, 'hours')
-const endOfDay = () => moment().endOf('day')
-
 const checkStartService = {
   validatePupilsAreStillEligible: async function (pupils, pupilIds, dfeNumber) {
     // Validate the incoming pupil list to ensure that the pupils are real ids:
@@ -230,7 +227,7 @@ const checkStartService = {
       checkWindow_id: checkWindow.id,
       isLiveCheck: isLiveCheck
     }
-    checkData.pinExpiresAt = pinService.generatePinTimestamp(config.OverridePinExpiry, endOfDay(), fourPmToday(), schoolTimezone)
+    checkData.pinExpiresAt = pinService.generatePinTimestamp(config.OverridePinExpiry, schoolTimezone)
     checkData.school_id = schoolId
     checkData.createdBy_userId = userId
 
