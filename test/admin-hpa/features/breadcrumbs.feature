@@ -65,7 +65,7 @@ Feature:
   Scenario: Verify breadcrumb for pupil not taking check page
     Given I am logged in
     When I am on the pupils not taking check page
-    Then I should see the breadcrumb as "Home > Give a reason why a pupil is not taking the check"
+    Then I should see the breadcrumb as "Home > Confirm pupils not taking the check"
     And I click the Home link on breadcrumb
     Then I should be taken to the school landing page
 

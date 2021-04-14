@@ -28,8 +28,8 @@ end
 
 Given(/^I have a pupil not taking the check$/) do
   step 'I am on the pupil reason page for new pupil'
-  step 'I add Absent during check window as a reason for a particular pupil'
-  step 'the Absent during check window reason should be stored against the pupils'
+  step 'I add Pupil not taking the check as a reason for a particular pupil'
+  step 'the Pupil not taking the check reason should be stored against the pupils'
   sleep 3
 end
 

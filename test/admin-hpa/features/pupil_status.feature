@@ -32,13 +32,13 @@ Feature: Pupil Status Outcome
     Then I can see the status for the pupil is <reason> for pupil not taking the check
 
     Examples:
-      | reason                                         |
-      | Absent during check window                     |
-      | Incorrect registration                         |
-      | Left school                                    |
-      | Working below expectation                      |
-      | Unable to access                               |
-      | Just arrived and unable to establish abilities |
+      | reason                     |
+      | Pupil not taking the check |
+#      | Incorrect registration                         |
+#      | Left school                                    |
+#      | Working below expectation                      |
+#      | Unable to access                               |
+#      | Just arrived and unable to establish abilities |
 
   Scenario: Counts displayed in the 4 status boxes should equal total pupils
     Given I am logged in
