@@ -287,4 +287,27 @@ describe('date service', () => {
       expect(result).toBeFalsy()
     })
   })
+
+  describe('getGdsDateRangeLabel', () => {
+    it('it lists the whole dates when the dates are not in the same month', () => {
+      const d1 = moment('2021-05-01T09:00:00')
+      const d2 = moment('2021-06-20T23:59:59')
+      const label = dateService.getGdsDateRangeLabel(d1, d2)
+      expect(label).toBe('1 May 2021 to 20 June 2021')
+    })
+
+    it('produces a condensed version when the two dates are in the same month and year', () => {
+      const d1 = moment('2021-06-01T09:00:00')
+      const d2 = moment('2021-06-07T23:59:59')
+      const label = dateService.getGdsDateRangeLabel(d1, d2)
+      expect(label).toBe('1 to 7 June 2021')
+    })
+
+    it('handles the edge case when the month is the same but the year is different', () => {
+      const d1 = moment('2020-05-01T09:00:00')
+      const d2 = moment('2021-06-20T23:59:59')
+      const label = dateService.getGdsDateRangeLabel(d1, d2)
+      expect(label).toBe('1 May 2020 to 20 June 2021')
+    })
+  })
 })

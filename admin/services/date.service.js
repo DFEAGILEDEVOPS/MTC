@@ -165,6 +165,20 @@ const dateService = {
    */
   isBetweenInclusive: function (date, startDate, endDate, granularity = null) {
     return date.isBetween(startDate, endDate, granularity, '[]')
+  },
+
+  /**
+   * Format utility to generate a GDS compliant date range from two input dates.  E.g. "1 to 25 June 2021", or "21 May
+   * 2021 to 25 June 2021"
+   * @param {moment.Moment} d1
+   * @param {moment.Moment} d2
+   * @return {string}
+   */
+  getGdsDateRangeLabel: function getGdsDateRangeLabel (d1, d2) {
+    if (d1.month() === d2.month() && d1.year() === d2.year()) {
+      return d1.date() + ' to ' + this.formatFullGdsDate(d2)
+    }
+    return this.formatFullGdsDate(d1) + ' to ' + this.formatFullGdsDate(d2)
   }
 }
 
