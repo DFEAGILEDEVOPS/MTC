@@ -8,19 +8,20 @@
                 </div>
             <% } %>
             <%- partial('partials/_readonly', { availabilityData: { hdfSubmitted } }) %>
-            <h1 class="govuk-heading-xl" aria-describedby="heading-xlarge">Give a reason why a pupil is not taking the check</h1>
+            <h1 class="govuk-heading-xl" aria-describedby="heading-xlarge">Confirm pupils not taking the check</h1>
             <%- partial('partials/_gds_session_expiry') %>
             <p class="govuk-body">
-                All pupils must be considered to take the multiplication tables check at the end of year 4.
-                If a pupil is working below expectation or has left your school, a reason must be provided.
+                Headteachers may decide a pupil should not take the check, this should be recorded within this section.
+                Further information on ‘Pupils not taking the check’ can be found in the
+                <a class="govuk-link" href="<%- guidancePdf %>" target="_blank" rel="noopener noreferrer">check administration guidance.</a>
             </p>
         <% if (hdfSubmitted) { %>
             <button type="submit" disabled="disabled" aria-disabled="true" class="govuk-button govuk-button--disabled" data-module="govuk-button">
-                Select pupils and reason
+                Select pupils
             </button>
         <% } else { %>
             <a href="/pupils-not-taking-the-check/select-pupils" role="button" draggable="false" class="govuk-button" data-module="govuk-button">
-                Select pupils and reason
+                Select pupils
             </a>
         <% } %>
         <% if (pupilsList && pupilsList.length > 0) { %>
@@ -50,7 +51,7 @@
                     <td><%= pupil.reason || '-' %></td>
                     <td class="">
                     <% if (!hdfSubmitted) { %>
-                        <a href="/pupils-not-taking-the-check/remove/<%= pupil.urlSlug %>" class="govuk-link modal-link font-small">Remove reason</a>
+                        <a href="/pupils-not-taking-the-check/remove/<%= pupil.urlSlug %>" class="govuk-link modal-link font-small">Remove</a>
                     <% } %>
                     </td>
                 </tr>
