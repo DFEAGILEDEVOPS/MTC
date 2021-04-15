@@ -1,11 +1,10 @@
 .disabled-banner {
   margin: 0 govuk-em(5px, $govuk-root-font-size) 0 0;
-  padding: govuk-em(2px, $govuk-root-font-size) pem(10px);
+  padding: govuk-em(2px, $govuk-root-font-size) govuk-em(10px, $govuk-root-font-size);
   font-size: large;
   letter-spacing: 1px;
   color: #fff;
   background-color: govuk-colour("dark-grey");
-
 }
 
 .warning-banner {
@@ -16,4 +15,3 @@
   color: #fff;
   background-color: govuk-colour("red");
 }
-
