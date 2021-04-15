@@ -68,10 +68,9 @@ Given(/^the check window is now closed$/) do
 end
 
 Then(/^I should be able to add an input assistant retrospectively$/) do
-  SqlDbHelper.update_check_end_date((Date.today) - 7)
   visit ENV['ADMIN_BASE_URL'] + '/sign-out'
   step "I am logged in"
-  access_arrangements_page.load
+  school_landing_page.access_arrangements.click
   access_arrangements_page.retro_input.link.click
   Timeout.timeout(ENV['WAIT_TIME'].to_i) {(visit current_url; retro_input_page.search_pupil.set(@pupil_names_arr.first.split(',')[0])) until
     retro_input_page.auto_search_list[0].text.include? @pupil_names_arr.first.split(',')[0]}
@@ -88,6 +87,7 @@ end
 And(/^the access arrangement pupil list should be read only$/) do
   access_arrangements_page.pupil_list.rows.each {|row| expect(row).to have_no_pupil_name}
   access_arrangements_page.pupil_list.rows.each {|row| expect(row).to have_no_remove}
+  wait_until(60,1) { visit current_url;access_arrangements_page.has_diasbled_select_pupil_and_arrangement_btn?}
   expect(access_arrangements_page).to have_diasbled_select_pupil_and_arrangement_btn
 end
 

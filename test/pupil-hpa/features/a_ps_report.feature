@@ -1,3 +1,4 @@
+@ps_report
 Feature:
   PS Report
 

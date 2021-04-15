@@ -1,6 +1,4 @@
-const momentTz = require('moment-timezone')
 const dateService = require('../services/date.service')
-
 const schoolDataService = require('../services/data-access/school.data.service')
 const pinValidator = require('../lib/validator/pin-validator')
 const pinService = {}
@@ -19,26 +17,37 @@ pinService.getActiveSchool = async (dfeNumber) => {
 }
 
 /**
- * Generate timestamp value based on parameters
+ * Generate EXPIRY timestamp value based on parameters
  * @param {boolean} overrideEnabled
- * @param {import('moment').Moment} overrideValue
- * @param {import('moment').Moment} defaultValue
  * @param {string} schoolTimezone
  * @returns {import('moment').Moment}
  */
 
-pinService.generatePinTimestamp = (overrideEnabled, overrideValue, defaultValue, schoolTimezone = null) => {
+pinService.generatePinTimestamp = (overrideEnabled, schoolTimezone = null) => {
   let pinTimestamp
   if (overrideEnabled) {
-    pinTimestamp = overrideValue
+    pinTimestamp = dateService.tzEndOfDay(schoolTimezone)
   } else {
-    pinTimestamp = defaultValue
+    pinTimestamp = dateService.tzFourPmToday(schoolTimezone)
   }
-  if (schoolTimezone) {
-    // needed to parse the date in the specified timezone and convert to utc for storing
-    pinTimestamp = momentTz.tz(dateService.formatIso8601WithoutTimezone(pinTimestamp), schoolTimezone).utc()
+  return pinTimestamp.utc() // work with utc internally
+}
+
+/**
+ * Generate ENTRY timestamp value based on parameters
+ * @param {boolean} overrideEnabled
+ * @param {string} schoolTimezone
+ * @returns {import('moment').Moment}
+ */
+
+pinService.generatePinValidFromTimestamp = (overrideEnabled, schoolTimezone = null) => {
+  let pinTimestamp
+  if (overrideEnabled) {
+    pinTimestamp = dateService.tzStartOfDay(schoolTimezone)
+  } else {
+    pinTimestamp = dateService.tzEightAmToday(schoolTimezone)
   }
-  return pinTimestamp
+  return pinTimestamp.utc()
 }
 
 module.exports = pinService
