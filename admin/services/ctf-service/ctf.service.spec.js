@@ -60,14 +60,17 @@ describe('ctfService', () => {
       expect(res).toBe(25)
     })
 
-    it('returns "A" if our system has marked them as not attending because of absence', () => {
+    /**
+     * For 2021 only map the Absent code 'ABSNT' to 'Z' instead of 'A'
+     */
+    it('returns "Z" if our system has marked them as not attending because of absence', () => {
       const mockCtfResult = {
         score: null,
         attendanceCode: 'ABSNT',
         status: ''
       }
       const res = sut.getCtfResult(mockCtfResult)
-      expect(res).toBe('A')
+      expect(res).toBe('Z')
     })
 
     it('returns "B" if our system has marked them as not attending because they are working below expectation', () => {

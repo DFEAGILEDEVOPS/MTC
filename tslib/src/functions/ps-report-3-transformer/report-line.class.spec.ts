@@ -722,7 +722,8 @@ describe('report line class', () => {
 
       test('if the pupil has been marked as not taking the check it should have a Reason code', () => {
         const out = sut.transform()
-        expect(out.ReasonNotTakingCheck).toBe('A')
+        // TODO: 2022: reverse this back to 'A' after 2021
+        expect(out.ReasonNotTakingCheck).toBe('Z')
       })
 
       test('the pupil status is set to Not taking the Check', () => {
