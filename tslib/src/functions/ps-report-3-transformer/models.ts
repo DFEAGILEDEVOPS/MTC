@@ -9,7 +9,7 @@ export interface IReportLineBase {
   PupilID: string
   Forename: string
   Surname: string
-  ReasonNotTakingCheck: number | null
+  ReasonNotTakingCheck: DfEAbsenceCode | null
   PupilStatus: string | null
   // School
   SchoolName: string
@@ -67,3 +67,5 @@ export interface WorkingReportLine extends IReportLineBase {
   // Answers
   answers: ReportLineAnswer[]
 }
+
+export type DfEAbsenceCode = 'Z' | 'A' | 'L' | 'U' | 'B' | 'J'

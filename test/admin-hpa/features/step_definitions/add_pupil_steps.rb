@@ -313,8 +313,8 @@ When(/^I submit valid details with a already used UPN$/) do
 end
 
 Then(/^I should see an error stating more than (\d+) pupil with the same UPN$/) do |arg|
-  expect(@page.error_summary.upn.map{|error| error.text}).to include "Enter a valid UPN. This one is already in use. Contact the Helpdesk on 0300 303 3013 for guidance."
-  expect(@page.error_messages.map {|message| message.text}.reject { |c| c.empty? }).to include "Enter a valid UPN. This one is already in use. Contact the Helpdesk on 0300 303 3013 for guidance."
+  expect(@page.error_summary.upn.map{|error| error.text}).to include "The UPN entered is already assigned to another pupil within your school’s register. Please check all UPN’s are correct. For further support, contact the national curriculum assessments helpline on 0300 303 3013."
+  expect(@page.error_messages.map {|message| message.text}.reject { |c| c.empty? }).to include "The UPN entered is already assigned to another pupil within your school’s register. Please check all UPN’s are correct. For further support, contact the national curriculum assessments helpline on 0300 303 3013."
 end
 
 When(/^I submit valid details with a UPN that has a incorrect check letter$/) do

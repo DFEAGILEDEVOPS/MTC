@@ -46,7 +46,7 @@ export class PsReportWriterService {
       { name: 'accessArr', value: data.AccessArr, type: TYPES.NVarChar(128) },
       { name: 'restartReason', value: data.RestartReason, type: TYPES.SmallInt },
       { name: 'restartNumber', value: data.RestartNumber, type: TYPES.Int },
-      { name: 'reasonNotTakingCheck', value: data.ReasonNotTakingCheck, type: TYPES.Int },
+      { name: 'reasonNotTakingCheck', value: data.ReasonNotTakingCheck, type: TYPES.Char(1) },
       { name: 'pupilStatus', value: data.PupilStatus, type: TYPES.NVarChar(32) },
       { name: 'deviceType', value: data.DeviceType, type: TYPES.NVarChar(32) },
       { name: 'deviceTypeModel', value: data.DeviceTypeModel, type: TYPES.NVarChar(32) },
