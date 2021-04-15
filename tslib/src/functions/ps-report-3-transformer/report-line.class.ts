@@ -125,7 +125,7 @@ export class ReportLine {
       case 'INCRG':
         return 'Z'
       case 'ABSNT':
-        return 'A'
+        return 'Z'
       case 'LEFTT':
         return 'L'
       case 'NOACC':
