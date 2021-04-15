@@ -1,7 +1,6 @@
 import moment from 'moment'
 
 export interface Pupil {
-  attendanceId: number | null
   checkComplete: boolean | null
   currentCheckId: number | null
   dateOfBirth: moment.Moment
@@ -10,6 +9,7 @@ export interface Pupil {
   id: number
   lastname: string
   notTakingCheckReason: string | null
+  notTakingCheckCode: NotTakingCheckCode | null
   slug: string
   schoolId: number
   upn: string
@@ -65,7 +65,7 @@ export interface Check {
   pupilLoginDate: moment.Moment | null
   received: boolean
   restartNumber: number
-  restartReason: string | null
+  restartReason: RestartReasonCode | null
 }
 
 export interface Device {
@@ -139,3 +139,21 @@ export interface PupilResult {
   pupil: Pupil
   school: School
 }
+
+/**
+ * ABSNT: Absent during check window
+ * LEFTT: Left school
+ * INCRG: Incorrect registration
+ * NOACC: Unable to access
+ * BLSTD: Working below expectation
+ * JSTAR: Just arrived and unable to establish abilities
+ */
+export type NotTakingCheckCode = 'ABSNT' | 'LEFTT' | 'INCRG' | 'NOACC' | 'BLSTD' | 'JSTAR'
+
+/**
+ * LOI: Loss of internet
+ * ITI: IT issues
+ * CLD: Classroom disruption
+ * DNC: Did not complete
+ */
+export type RestartReasonCode = 'LOI' | 'ITI' | 'CLD' | 'DNC'

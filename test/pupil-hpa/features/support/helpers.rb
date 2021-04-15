@@ -83,4 +83,23 @@ module Helpers
     code_array
   end
 
+  def calculate_not_taking_reason_code(reason)
+    case reason
+    when 'Incorrect registration'
+      'Z'
+    when 'Absent during check window'
+      'A'
+    when 'Left school'
+      'L'
+    when 'Unable to access'
+      'U'
+    when 'Working below expectation'
+      'B'
+    when 'Just arrived and unable to establish abilities'
+      'J'
+    else
+      fail "Reason ID #{reason} - not found"
+    end
+  end
+
 end

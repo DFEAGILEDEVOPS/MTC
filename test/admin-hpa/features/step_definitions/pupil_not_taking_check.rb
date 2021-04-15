@@ -24,10 +24,12 @@ Then(/^pupil reason page is displayed as per the design$/) do
 end
 
 Then(/^I should see set of reasons I can choose$/) do
-  expected_reason_hash = SqlDbHelper.get_attendance_codes.map {|code| code['reason']}
-  expect(pupil_reason_page.attendance_code_mapping.keys.sort).to eql pupil_reason_page.attendance_codes.map {|code| code['id']}.sort
-  actual_reason_hash = pupil_reason_page.attendance_code_mapping.values
-  expect(actual_reason_hash.sort).to eql expected_reason_hash.sort
+  expect(pupil_reason_page.attendance_codes.size).to eql 1
+  find('#attendance-code-ABSNT')
+  # expected_reason_hash = SqlDbHelper.get_attendance_codes.map {|code| code['reason']}
+  # expect(pupil_reason_page.attendance_code_mapping.keys.sort).to eql pupil_reason_page.attendance_codes.map {|code| code['id']}.sort
+  # actual_reason_hash = pupil_reason_page.attendance_code_mapping.values
+  # expect(actual_reason_hash.sort).to eql expected_reason_hash.sort
 end
 
 When(/^I want to add a reason for pupils not taking a check$/) do
@@ -216,8 +218,8 @@ end
 
 Given(/^I have previously added a reason for a pupil$/) do
   step 'I am on the pupil reason page for new pupil'
-  step 'I add Absent during check window as a reason for a particular pupil'
-  step 'the Absent during check window reason should be stored against the pupils'
+  step 'I add Pupil not taking the check as a reason for a particular pupil'
+  step 'the Pupil not taking the check reason should be stored against the pupils'
   step 'I should see the updated pupil on the hub page'
 end
 
