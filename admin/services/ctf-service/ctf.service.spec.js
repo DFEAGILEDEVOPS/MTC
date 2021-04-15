@@ -61,7 +61,7 @@ describe('ctfService', () => {
     })
 
     /**
-     * For 2021 only map the Absent code 'ABSNT' to 'Z' instead of 'A'
+     * TODO: 2022: for 2021 only map the Absent code 'ABSNT' to 'Z' instead of 'A'
      */
     it('returns "Z" if our system has marked them as not attending because of absence', () => {
       const mockCtfResult = {

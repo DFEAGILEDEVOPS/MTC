@@ -887,7 +887,7 @@ describe('report line class', () => {
     })
 
     /**
-     * For 2021 only, we map Absent to Incorrect Registration, as the check is optional
+     * TODO 2022: For 2021 only, we map Absent to Incorrect Registration, as the check is optional
      */
     test('returns A for Absent pupils', () => {
       const res = ReportLineTest.getReasonNotTakingCheck('ABSNT')
