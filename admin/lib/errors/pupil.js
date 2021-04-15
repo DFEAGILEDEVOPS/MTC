@@ -28,7 +28,9 @@ module.exports.addPupil = {
 
   upnRequired: 'Enter a UPN',
   upnInvalidCheckDigit: 'Enter a valid UPN. First character is not recognised. See guidance for instructions.',
-  upnDuplicate: 'Enter a valid UPN. This one is already in use. Contact the Helpdesk on 0300 303 3013 for guidance.',
+  upnDuplicate: 'The UPN entered is already assigned to another pupil within your school’s register. Please check' +
+    ' all UPN’s are correct. For further support, contact the national curriculum assessments helpline on 0300 303' +
+    ' 3013.',
   upnDuplicateInFile: 'Enter a valid UPN. This one is a duplicate of another UPN in the spreadsheet. Contact the Helpdesk on 0300 303 3013 for guidance.',
   upnInvalidLaCode: 'Enter a valid UPN. Characters 2-4 are not a recognised LA code. See guidance for instructions.',
   upnInvalidCharacters5To12: 'Enter a valid UPN. Characters 5-12 must be numeric. See guidance for instructions.',
