@@ -116,8 +116,9 @@ const accessArrangementsService = {
     const currentCheckWindow = await checkWindowService.getActiveCheckWindow()
     const checkActive = currentDate.isBetween(currentCheckWindow.checkStartDate, currentCheckWindow.checkEndDate)
     const adminActive = currentDate.isBetween(currentCheckWindow.adminStartDate, currentCheckWindow.adminEndDate)
-    if (checkActive && adminActive) return aaViewModes.edit
-    if (adminActive && !checkActive) return aaViewModes.readonly
+    const tryItOutActive = currentDate.isBetween(currentCheckWindow.familiarisationCheckStartDate, currentCheckWindow.familiarisationCheckEndDate)
+    if (adminActive && (checkActive || tryItOutActive)) return aaViewModes.edit
+    if (adminActive && !checkActive && !tryItOutActive) return aaViewModes.readonly
     return aaViewModes.unavailable
   }
 }
