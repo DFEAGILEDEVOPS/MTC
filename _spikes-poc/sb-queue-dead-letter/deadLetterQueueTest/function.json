@@ -4,7 +4,7 @@
       "name": "mySbMsg",
       "type": "serviceBusTrigger",
       "direction": "in",
-      "queueName": "guytest",
+      "queueName": "check-validation",
       "connection": "AZURE_SERVICE_BUS_CONNECTION_STRING"
     }
   ],
