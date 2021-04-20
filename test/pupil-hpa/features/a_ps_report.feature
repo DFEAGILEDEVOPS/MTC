@@ -19,13 +19,14 @@ Feature:
     Then I should see a record for the pupil in the ps report table
 
     Examples:
-      | reason                                         |
-      | Incorrect registration                         |
-      | Absent during check window                     |
-      | Left school                                    |
-      | Unable to access                               |
-      | Working below expectation                      |
-      | Just arrived and unable to establish abilities |
+      | reason                     |
+      | Pupil not taking the check |
+#      | Incorrect registration                         |
+#      | Absent during check window                     |
+#      | Left school                                    |
+#      | Unable to access                               |
+#      | Working below expectation                      |
+#      | Just arrived and unable to establish abilities |
 
   Scenario Outline: Pupils who have taken a restart are included in the ps report
     Given I have completed the check
