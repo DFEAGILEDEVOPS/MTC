@@ -1,5 +1,5 @@
 'use strict'
-/* global describe, it, expect spyOn beforeAll */
+/* global describe, it, expect spyOn beforeEach */
 
 const sut = require('../../../services/access-arrangements.service')
 const accessArrangementsDataService = require('../../../services/data-access/access-arrangements.data.service')
@@ -36,6 +36,7 @@ describe('accessArrangementsService', () => {
       expect(result).toStrictEqual(accessArrangements)
     })
   })
+
   describe('submit', () => {
     it('calls preparedCheckSync service and returns access arrangements list', async () => {
       spyOn(accessArrangementsValidator, 'validate').and.returnValue((new ValidationError()))
@@ -71,6 +72,7 @@ describe('accessArrangementsService', () => {
       expect(preparedCheckSyncService.addMessages).not.toHaveBeenCalled()
     })
   })
+
   describe('prepareData', () => {
     it('returns a processed access arrangements submission object', async () => {
       const requestData = {
@@ -270,6 +272,7 @@ describe('accessArrangementsService', () => {
       )
     })
   })
+
   describe('save', () => {
     it('calls sqlInsertAccessArrangements without isUpdated boolean if pupilAccessArrangement record does not exist', async () => {
       spyOn(pupilAccessArrangementsDataService, 'sqlFindPupilAccessArrangementsByPupilId')
@@ -285,47 +288,55 @@ describe('accessArrangementsService', () => {
       expect(pupilAccessArrangementsDataService.sqlInsertAccessArrangements).toHaveBeenCalledWith({}, true)
     })
   })
+
   describe('getCurrentViewMode', () => {
-    beforeAll(() => {
-      spyOn(moment, 'tz').and.returnValue(moment('2020-07-01'))
-    })
-    it('should return \'edit\' if current date within admin start and check end dates', async () => {
-      const checkWindowData = {
-        adminStartDate: moment('2020-01-01'),
-        adminEndDate: moment('2020-09-01'),
-        checkStartDate: moment('2020-05-01'),
-        checkEndDate: moment('2020-08-01')
+    let checkWindowData
+
+    beforeEach(() => {
+      checkWindowData = {
+        adminStartDate: moment('2020-07-01T00:00:00'),
+        adminEndDate: moment('2020-08-30T23:59:59'),
+        checkStartDate: moment('2020-07-14T00:00:00'),
+        checkEndDate: moment('2020-07-25T23:59:59'),
+        familiarisationCheckStartDate: moment('2020-07-03T00:00:00'),
+        familiarisationCheckEndDate: moment('2020-07-25T23:59:59')
       }
-      spyOn(checkWindowService, 'getActiveCheckWindow').and.returnValue(checkWindowData)
-      expect(await sut.getCurrentViewMode()).toBe('edit')
     })
-    it('should return \'readonly\' if current date past check end date but before admin end date', async () => {
-      const checkWindowData = {
-        adminStartDate: moment('2020-01-01'),
-        adminEndDate: moment('2020-09-01'),
-        checkStartDate: moment('2020-05-01'),
-        checkEndDate: moment('2020-06-01')
-      }
-      spyOn(checkWindowService, 'getActiveCheckWindow').and.returnValue(checkWindowData)
-      expect(await sut.getCurrentViewMode()).toBe('readonly')
-    })
+
     it('should return \'unavailable\' if current date before admin start date', async () => {
-      const checkWindowData = {
-        adminStartDate: moment('2020-08-01'),
-        adminEndDate: moment('2020-10-01'),
-        checkStartDate: moment('2020-08-10'),
-        checkEndDate: moment('2020-09-01')
-      }
+      spyOn(moment, 'tz').and.returnValue(moment('2020-06-30T23:59:59'))
       spyOn(checkWindowService, 'getActiveCheckWindow').and.returnValue(checkWindowData)
       expect(await sut.getCurrentViewMode()).toBe('unavailable')
     })
+
+    // Edge case - the TIO period is expected to start when the admin period starts.  This test is to ensure the AA
+    // are not active when they shouldn't be.
+    it('should return \'readonly\' if current date after admin start date but before the try it out starts', async () => {
+      spyOn(moment, 'tz').and.returnValue(moment('2020-07-01T05:59:59'))
+      spyOn(checkWindowService, 'getActiveCheckWindow').and.returnValue(checkWindowData)
+      expect(await sut.getCurrentViewMode()).toBe('readonly')
+    })
+
+    it('should return \'edit\' if Try it out is active and main check is inactive', async () => {
+      spyOn(moment, 'tz').and.returnValue(moment('2020-07-02T09:00:00'))
+      spyOn(checkWindowService, 'getActiveCheckWindow').and.returnValue(checkWindowData)
+      expect(await sut.getCurrentViewMode()).toBe('readonly')
+    })
+
+    it('should return \'edit\' if current date within check period', async () => {
+      spyOn(moment, 'tz').and.returnValue(moment('2020-07-14T06:00:00'))
+      spyOn(checkWindowService, 'getActiveCheckWindow').and.returnValue(checkWindowData)
+      expect(await sut.getCurrentViewMode()).toBe('edit')
+    })
+
+    it('should return \'readonly\' if current date past check end date but before admin end date', async () => {
+      spyOn(moment, 'tz').and.returnValue(moment('2020-07-26T09:00:00'))
+      spyOn(checkWindowService, 'getActiveCheckWindow').and.returnValue(checkWindowData)
+      expect(await sut.getCurrentViewMode()).toBe('readonly')
+    })
+
     it('should return \'unavailable\' if current date after admin end date', async () => {
-      const checkWindowData = {
-        adminStartDate: moment('2020-01-01'),
-        adminEndDate: moment('2020-04-01'),
-        checkStartDate: moment('2020-02-10'),
-        checkEndDate: moment('2020-03-01')
-      }
+      spyOn(moment, 'tz').and.returnValue(moment('2020-08-31T09:00:00'))
       spyOn(checkWindowService, 'getActiveCheckWindow').and.returnValue(checkWindowData)
       expect(await sut.getCurrentViewMode()).toBe('unavailable')
     })
