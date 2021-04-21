@@ -1,5 +1,7 @@
-/* global jasmine describe expect it beforeEach spyOn */
+/* global jasmine describe expect it beforeEach spyOn test jest */
+const uuid = require('uuid')
 const httpMocks = require('node-mocks-http')
+
 const controller = require('../../../controllers/service-manager')
 const settingService = require('../../../services/setting.service')
 const sceService = require('../../../services/sce.service')
@@ -45,6 +47,7 @@ describe('service manager controller:', () => {
       expect(res.render).toHaveBeenCalled()
     })
   })
+
   describe('getUpdateTiming', () => {
     const goodReqParams = {
       method: 'GET',
@@ -60,6 +63,7 @@ describe('service manager controller:', () => {
       await controller.getUpdateTiming(req, res, next)
       expect(res.render).toHaveBeenCalled()
     })
+
     it('throws an error if settings call is rejected', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
@@ -69,6 +73,7 @@ describe('service manager controller:', () => {
       expect(res.render).not.toHaveBeenCalled()
     })
   })
+
   describe('setUpdateTiming', () => {
     const goodReqParams = {
       method: 'POST',
@@ -140,6 +145,7 @@ describe('service manager controller:', () => {
       expect(res.render).not.toHaveBeenCalled()
     })
   })
+
   describe('postUploadPupilCensus', () => {
     const goodReqParams = {
       method: 'POST',
@@ -193,6 +199,7 @@ describe('service manager controller:', () => {
       expect(controller.getUploadPupilCensus).toHaveBeenCalled()
     })
   })
+
   describe('getRemovePupilCensus', () => {
     const goodReqParams = {
       method: 'POST',
@@ -503,7 +510,6 @@ describe('service manager controller:', () => {
       spyOn(schoolService, 'searchForSchool').and.returnValue(Promise.resolve(mockSchool))
       await controller.postSearch(req, res, next)
       const args = res.redirect.calls.mostRecent()?.args
-      console.log(args)
       expect(res.render).not.toHaveBeenCalled()
       expect(res.redirect).toHaveBeenCalled()
       expect(args[0]).toBe(`/service-manager/organisations/${encodeURIComponent(mockSchool.urlSlug).toLowerCase()}`)
@@ -569,6 +575,97 @@ describe('service manager controller:', () => {
       const args = res.render.calls.mostRecent()?.args
       expect(res.render).toHaveBeenCalled()
       expect(args[0]).toBe('service-manager/organisation-detail')
+    })
+  })
+
+  describe('getEditOrganisation', () => {
+    test('throws if the school is not found', async () => {
+      const params = {
+        slug: uuid.NIL
+      }
+      const req = getReq(params)
+      const res = getRes()
+      jest.spyOn(schoolService, 'findOneBySlug').mockResolvedValue(undefined)
+      await controller.getEditOrganisation(req, res, next)
+      expect(next).toHaveBeenCalled()
+    })
+
+    test('calls res.render', async () => {
+      const params = {
+        slug: uuid.NIL
+      }
+      const req = getReq(params)
+      const res = getRes()
+      jest.spyOn(res, 'render')
+      const school = {
+        name: 'Test school',
+        dfeNumber: 9991999,
+        leaCode: 999,
+        estabCode: 1999,
+        urn: 888900
+      }
+      jest.spyOn(schoolService, 'findOneBySlug').mockResolvedValue(school)
+      await controller.getEditOrganisation(req, res, next)
+      expect(res.render).toHaveBeenCalled()
+    })
+
+    test('by default it shows the same defaults as the school', async () => {
+      const params = {
+        slug: uuid.NIL
+      }
+      const req = getReq(params)
+      const res = getRes()
+      jest.spyOn(res, 'render')
+      const school = {
+        name: 'Test school',
+        dfeNumber: 1111,
+        leaCode: 2222,
+        estabCode: 3333,
+        urn: 4444
+      }
+      jest.spyOn(schoolService, 'findOneBySlug').mockResolvedValue(school)
+      await controller.getEditOrganisation(req, res, next)
+      expect(res.render).toHaveBeenCalled()
+      const args = res.render.mock.calls
+      const defaults = args[0][1]?.defaults
+      expect(defaults.name).toBe('Test school')
+      expect(defaults.dfeNumber).toBe(1111)
+      expect(defaults.leaCode).toBe(2222)
+      expect(defaults.estabCode).toBe(3333)
+      expect(defaults.urn).toBe(4444)
+    })
+
+    test('when called from the post with user-supplied defaults it uses the shows the user-supplied ones', async () => {
+      const params = {
+        slug: uuid.NIL
+      }
+      const req = getReq(params)
+      req.body = {
+        name: 'updated name',
+        dfeNumber: 5555,
+        leaCode: 6666,
+        estabCode: 7777,
+        urn: 8888
+      }
+      const res = getRes()
+      jest.spyOn(res, 'render')
+      const school = {
+        name: 'Test school',
+        dfeNumber: 1111,
+        leaCode: 2222,
+        estabCode: 3333,
+        urn: 4444
+      }
+      jest.spyOn(schoolService, 'findOneBySlug').mockResolvedValue(school)
+      await controller.getEditOrganisation(req, res, next)
+      expect(res.render).toHaveBeenCalled()
+      const args = res.render.mock.calls
+      const defaults = args[0][1]?.defaults
+      expect(defaults.name).toBe('updated name')
+      expect(defaults.dfeNumber).toBe(5555)
+      expect(defaults.leaCode).toBe(6666)
+      expect(defaults.estabCode).toBe(7777)
+      expect(defaults.urn).toBe(8888)
     })
   })
 })

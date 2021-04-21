@@ -1,9 +1,9 @@
 'use strict'
-
+const uuid = require('uuid')
 const schoolDataService = require('../services/data-access/school.data.service')
+const schoolValidator = require('../lib/validator/school-validator')
 
 const schoolService = {
-
   /**
    * Find school name by DFE number.
    * @param dfeNumber
@@ -41,13 +41,46 @@ const schoolService = {
   /**
    *
    * @param {string} slug
-   * @return {Promise<void>}
+   * @return {Promise<object>}
    */
   findOneBySlug: async function findOneBySlug (slug) {
     if (slug === '' || slug === undefined) {
       throw new Error('Missing slug')
     }
     return schoolDataService.sqlFindOneBySlug(slug)
+  },
+
+  /**
+   * @typedef editableSchoolDetails
+   * {
+   *   dfeNumber: number,
+   *   estabCode: number,
+   *   leaCode: number,
+   *   name: string,
+   *   urn: number
+   * }
+   */
+
+  /**
+   * Update details for a school
+   * @param {string} slug - unique UUID to update
+   * @param {editableSchoolDetails} school
+   */
+  updateSchool: async function updateSchool (slug, school) {
+    if (!slug) {
+      throw new Error('Missing UUID')
+    }
+    if (!uuid.validate(slug)) {
+      throw new Error(`Invalid UUID: ${slug}`)
+    }
+    if (!school) {
+      throw new Error('Missing school details')
+    }
+    const validationError = await schoolValidator.validate(school)
+    if (validationError.hasError()) {
+      throw validationError
+    }
+    return schoolDataService.sqlUpdateBySlug(slug, school)
   }
 }
 
