@@ -668,4 +668,70 @@ describe('service manager controller:', () => {
       expect(defaults.urn).toBe(8888)
     })
   })
+
+  describe('postEditOrganisation', () => {
+    test('it redirects if the school is not found', async () => {
+      const res = getRes()
+      const req = getReq({ slug: uuid.NIL })
+      jest.spyOn(res, 'redirect')
+      jest.spyOn(schoolService, 'findOneBySlug').mockResolvedValue(undefined)
+      await controller.postEditOrganisation(req, res, next)
+      expect(res.redirect).toHaveBeenCalled()
+    })
+
+    test('happy path: it converts the incoming strings to JS types suitable for the service, and calls the service' +
+      ' to persist the data', async () => {
+      const res = getRes()
+      const req = getReq()
+      req.body = {
+        name: ' updated name ',
+        dfeNumber: 5555,
+        leaCode: 6666,
+        estabCode: 7777,
+        urn: 8888
+      }
+      const school = {
+        name: 'Test school',
+        dfeNumber: 9991999,
+        leaCode: 999,
+        estabCode: 1999,
+        urn: 888900
+      }
+      jest.spyOn(schoolService, 'findOneBySlug').mockResolvedValue(school)
+      jest.spyOn(schoolService, 'updateSchool').mockImplementation(_ => { return Promise.resolve() })
+      await controller.postEditOrganisation(req, res, next)
+      const args = schoolService.updateSchool.mock.calls[0][1]
+      expect(args.name).toBe('updated name')
+      expect(args.dfeNumber).toBe(5555)
+      expect(args.leaCode).toBe(6666)
+      expect(args.estabCode).toBe(7777)
+      expect(args.urn).toBe(8888)
+    })
+
+    test('if there is a validation error then the user is redirected to the edit page to correct the errors', async () => {
+      const res = getRes()
+      const req = getReq()
+      req.body = {
+        name: ' updated name ',
+        dfeNumber: 5555,
+        leaCode: 6666,
+        estabCode: 7777,
+        urn: 8888
+      }
+      const school = {
+        name: 'Test school',
+        dfeNumber: 9991999,
+        leaCode: 999,
+        estabCode: 1999,
+        urn: 888900
+      }
+      jest.spyOn(res, 'redirect')
+      jest.spyOn(schoolService, 'findOneBySlug').mockResolvedValue(school)
+      jest.spyOn(schoolService, 'updateSchool').mockRejectedValue(new ValidationError('leacCode', 'Unit test error' +
+        ' message'))
+      jest.spyOn(controller, 'getEditOrganisation').mockImplementation(_ => { return Promise.resolve() })
+      await controller.postEditOrganisation(req, res, next)
+      expect(controller.getEditOrganisation).toHaveBeenCalled()
+    })
+  })
 })

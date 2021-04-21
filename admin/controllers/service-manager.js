@@ -416,7 +416,7 @@ const controller = {
       const school = await schoolService.findOneBySlug(req.params.slug)
       if (!school) {
         req.flash('info', 'School not found')
-        res.redirect('/service-manager/mod-settings')
+        return res.redirect('/service-manager/organisations/search')
       }
       const update = {
         name: req.body?.name?.trim() ?? '',
