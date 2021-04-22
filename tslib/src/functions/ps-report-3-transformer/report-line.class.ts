@@ -125,7 +125,8 @@ export class ReportLine {
       case 'INCRG':
         return 'Z'
       case 'ABSNT':
-        return 'A'
+        // TODO: 2022: reverse this after 2021 back to 'A"
+        return 'Z'
       case 'LEFTT':
         return 'L'
       case 'NOACC':

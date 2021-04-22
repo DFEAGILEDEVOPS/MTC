@@ -85,7 +85,7 @@ module Helpers
 
   def calculate_not_taking_reason_code(reason)
     case reason
-    when 'Incorrect registration'
+    when 'Pupil not taking the check'
       'Z'
     when 'Absent during check window'
       'A'
