@@ -1,6 +1,6 @@
 'use strict'
 
-/* global describe beforeEach it expect jasmine spyOn fail test jest */
+/* global describe beforeEach it expect jasmine spyOn fail test jest afterEach */
 
 const httpMocks = require('node-mocks-http')
 const R = require('ramda')
@@ -41,6 +41,10 @@ describe('access arrangements controller:', () => {
 
   beforeEach(() => {
     next = jasmine.createSpy('next')
+  })
+
+  afterEach(() => {
+    jest.restoreAllMocks()
   })
 
   describe('getOverview route', () => {
@@ -107,7 +111,8 @@ describe('access arrangements controller:', () => {
         pupilsFormatted: undefined,
         breadcrumbs: undefined,
         highlight: undefined,
-        title: 'Enable access arrangements for pupils who need them'
+        title: 'Enable access arrangements for pupils who need them',
+        retroInputAssistantText: ''
       })
     })
 
@@ -154,20 +159,18 @@ describe('access arrangements controller:', () => {
       jest.spyOn(accessArrangementsService, 'getCurrentViewMode').mockResolvedValue(aaViewModes.edit)
       jest.spyOn(pupilAccessArrangementsService, 'getPupils').mockResolvedValue([])
       jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockResolvedValue(checkWindow)
-      jest.spyOn(schoolHomeFeatureEligibilityPresenter, 'getPresentationData') // ??
       jest.spyOn(businessAvailabilityService, 'getAvailabilityData').mockResolvedValue({ accessArrangementsAvailable: true })
-      jest.spyOn(accessArrangementsOverviewPresenter, 'getPresentationData') // ??
+      jest.spyOn(headteacherDeclarationService, 'isHdfSubmittedForCheck').mockResolvedValue(false)
 
       await controller.getOverview(req, res, next)
       const data = res._getRenderData()
-      console.log('data', data)
       expect(data.retroInputAssistantText).toBe('')
       tearDownFakeTime()
     })
 
     test('displays the retro input assistant link when the live check window is active', async () => {
       // Mock the date
-      setupFakeTime(moment('2021-06-07T06:00:00'))
+      setupFakeTime(moment('2021-06-07T06:00:00Z'))
 
       const res = getRes()
       const req = getReq()
