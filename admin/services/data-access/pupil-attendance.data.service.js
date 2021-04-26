@@ -146,11 +146,13 @@ pupilAttendanceDataService.markAsNotAttending = async (slugs, code, userId, scho
   IF (SELECT COUNT(*) FROM #pupilsToSet WHERE id IS NULL) > 0
       THROW 51000, 'pupil urlSlug not found', 1;
 
+  -- Commented out 14-APR-21: this can be restored once the performance ticket 46465 is played.
+  -- Otherwise, delete or update this check to allow expired pins
   -- Validation: pupils cannot have a current check assigned
-  IF (SELECT COUNT(*) FROM [mtc_admin].[pupil] p
-      JOIN #pupilsToSet t1 ON (p.id = t1.id)
-      WHERE currentCheckId IS NOT NULL) > 0
-      THROW 51000, 'One or more pupils is not eligible to have their attendanceId set', 1;
+  -- IF (SELECT COUNT(*) FROM [mtc_admin].[pupil] p
+  --    JOIN #pupilsToSet t1 ON (p.id = t1.id)
+  --    WHERE currentCheckId IS NOT NULL) > 0
+  --    THROW 51000, 'One or more pupils is not eligible to have their attendanceId set', 1;
 
   -- Add the pupil attendance records: can be inserts or updates
   MERGE [mtc_admin].[pupilAttendance] target USING #pupilsToSet as source
