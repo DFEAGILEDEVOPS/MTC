@@ -4,6 +4,7 @@ class AddEditCheckWindowV2Page < SitePrism::Page
   element :check_name, '#checkWindowName'
 
   elements :disabled_fields, '.disabled-check-window-field'
+  element :overide, '.govuk-checkboxes__label'
 
   element :admin_start_day, '#adminStartDay'
   element :admin_start_month, '#adminStartMonth'
@@ -31,29 +32,33 @@ class AddEditCheckWindowV2Page < SitePrism::Page
   elements :error_messages, '.govuk-error-message'
   element :csrf, 'input[name="_csrf"]', visible: false
 
-  section :error_summary, "div.govuk-error-summary[data-module='govuk-error-summary']" do
-    element :error_heading, 'h2', text: 'You need to fix the errors on this page before continuing.'
+  section :error_summary, "div.govuk-error-summary[data-module='govuk-error-summary']", text: 'You need to fix the errors on this page before continuing.' do
     element :error_text, 'p', text: 'See highlighted errors below.'
     elements :error_messages, '.govuk-list li'
   end
 
+  section :warning_summary, "div.govuk-error-summary[data-module='govuk-error-summary']", text: 'You need to confirm the warnings on this page before continuing.' do
+    element :warning_text, 'p', text: 'See highlighted errors below.'
+    elements :warning_messages, '.govuk-list li'
+  end
+
   def enter_details(hash)
     check_name.set hash.fetch(:check_name, '')
-    admin_start_day.set hash.fetch(:admin_start_day, '')
-    admin_start_month.set hash.fetch(:admin_start_month, '')
-    admin_start_year.set hash.fetch(:admin_start_year, '')
+    admin_start_day.set hash.fetch(:admin_start_day, '') unless has_disabled_fields?
+    admin_start_month.set hash.fetch(:admin_start_month, '') unless has_disabled_fields?
+    admin_start_year.set hash.fetch(:admin_start_year, '') unless has_disabled_fields?
     admin_end_day.set hash.fetch(:admin_end_day, '')
     admin_end_month.set hash.fetch(:admin_end_month, '')
     admin_end_year.set hash.fetch(:admin_end_year, '')
-    familiarisation_check_start_day.set hash.fetch(:familiarisation_start_day, '')
-    familiarisation_check_start_month.set hash.fetch(:familiarisation_start_month, '')
-    familiarisation_check_start_year.set hash.fetch(:familiarisation_start_year, '')
+    familiarisation_check_start_day.set hash.fetch(:familiarisation_start_day, '') unless has_disabled_fields?
+    familiarisation_check_start_month.set hash.fetch(:familiarisation_start_month, '') unless has_disabled_fields?
+    familiarisation_check_start_year.set hash.fetch(:familiarisation_start_year, '') unless has_disabled_fields?
     familiarisation_check_end_day.set hash.fetch(:familiarisation_end_day, '')
     familiarisation_check_end_month.set hash.fetch(:familiarisation_end_month, '')
     familiarisation_check_end_year.set hash.fetch(:familiarisation_end_year, '')
-    live_check_start_day.set hash.fetch(:live_start_day, '')
-    live_check_start_month.set hash.fetch(:live_start_month, '')
-    live_check_start_year.set hash.fetch(:live_start_year, '')
+    live_check_start_day.set hash.fetch(:live_start_day, '') unless has_disabled_fields?
+    live_check_start_month.set hash.fetch(:live_start_month, '') unless has_disabled_fields?
+    live_check_start_year.set hash.fetch(:live_start_year, '') unless has_disabled_fields?
     live_check_end_day.set hash.fetch(:live_end_day, '')
     live_check_end_month.set hash.fetch(:live_end_month, '')
     live_check_end_year.set hash.fetch(:live_end_year, '')

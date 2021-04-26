@@ -12,8 +12,10 @@ const dateValidator = {}
  * Validates 3-part date data (day, month, year)
  * @param {Object} validationError
  * @param {Object} dateData
+ * @param {boolean} dateInPastSetToWarning - set this to true to convert the dateInPast to a warning, rather than an
+ * error
  */
-dateValidator.validate = (validationError, dateData) => {
+dateValidator.validate = (validationError, dateData, dateInPastSetToWarning = false) => {
   const currentDate = moment.utc()
   const currentYear = (new Date()).getFullYear()
   const utcDate = dateService.createUTCFromDayMonthYear(dateData.day,
@@ -51,7 +53,11 @@ dateValidator.validate = (validationError, dateData) => {
 
   // UTC Date
   if (utcDate && currentDate.isAfter(utcDate, 'days')) {
-    validationError.addError(dateData.dateInThePast, true)
+    if (dateInPastSetToWarning === false) {
+      validationError.addError(dateData.dateInThePast, true)
+    } else {
+      validationError.addWarning(dateData.dateInThePast, true)
+    }
   }
   return validationError
 }

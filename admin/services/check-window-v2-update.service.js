@@ -21,10 +21,16 @@ checkWindowV2UpdateService.submit = async (requestData) => {
   if (checkWindowAddValidationError.hasError()) {
     throw checkWindowAddValidationError
   }
+  if (checkWindowAddValidationError.hasError() === false && checkWindowAddValidationError.hasWarning()) {
+    // The validation has only thrown up warnings and the user has not confirmed they want to override the warnings.
+    if (requestData.overrideWarnings !== 'overrideWarnings') {
+      throw checkWindowAddValidationError
+    }
+  }
   const checkWindowData = checkWindowV2Service.prepareSubmissionData(requestData, checkWindow.id)
   const activeCheckWindowData = await checkWindowDataService.sqlFindActiveCheckWindow()
   const activeCheckWindowValidationError = activeCheckWindowValidator.validate(checkWindowData, activeCheckWindowData, requestData.checkWindowUrlSlug)
-  if (activeCheckWindowValidationError.hasError()) {
+  if (activeCheckWindowValidationError.hasErrorOrWarning()) {
     throw activeCheckWindowValidationError
   }
   return checkWindowDataService.sqlUpdate(checkWindowData)
@@ -40,11 +46,11 @@ checkWindowV2UpdateService.getValidationConfig = (checkWindow) => {
   const config = {}
   const currentDate = moment.utc()
   config.adminStartDateDisabled = currentDate.isAfter(checkWindow.adminStartDate, 'days')
-  config.adminEndDateDisabled = currentDate.isAfter(checkWindow.adminEndDate, 'days')
+  config.adminEndDateDisabled = false
   config.familiarisationCheckStartDateDisabled = currentDate.isAfter(checkWindow.familiarisationCheckStartDate, 'days')
-  config.familiarisationCheckEndDateDisabled = currentDate.isAfter(checkWindow.familiarisationCheckEndDate, 'days')
+  config.familiarisationCheckEndDateDisabled = false
   config.liveCheckStartDateDisabled = currentDate.isAfter(checkWindow.checkStartDate, 'days')
-  config.liveCheckEndDateDisabled = currentDate.isAfter(checkWindow.checkEndDate, 'days')
+  config.liveCheckEndDateDisabled = false
   return config
 }
 

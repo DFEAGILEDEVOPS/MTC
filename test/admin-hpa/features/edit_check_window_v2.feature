@@ -3,7 +3,7 @@ Feature:
 
   Scenario: Dates in the past cannot be amended but can be viewed
     Given I want to edit a check window that is in the past
-    Then I should not be able to make any changes
+    Then I should not be able to make any changes to any start dates
 
   Scenario: Dates in the future can be amended
     Given I want to view a check window that is currently active
@@ -125,3 +125,10 @@ Feature:
     When I decide to cancel any changes
     Then I should see no changes made in the list of windows
     And stored as it was in the db
+
+  @wip
+  Scenario: Service managers can edit the end dates to be in the past
+    Given I want to edit a check window that has already started
+    And I decide to change all end dates to the past
+    Then I should be asked to confirm these changes before submission
+    And they should be stored and updated

@@ -23,11 +23,26 @@ describe('validation error class', function () {
     expect(validationError.errors.lastName).toBe(msg)
   })
 
+  it('accepts new warnings using addWarning', () => {
+    const validationError = new ValidationError()
+    const msg = 'Please check your details'
+    validationError.addWarning('lastName', msg)
+    expect(validationError.warnings.lastName).toBe(msg)
+  })
+
   it('can tell if a field is valid or not using `isError()`', function () {
     const msg = 'Please check your details'
     const validationError = new ValidationError('foreName', msg)
     expect(validationError.isError('foreName')).toBe(true)
     expect(validationError.isError('lastName')).toBe(false)
+  })
+
+  it('can tell if a field has a warning or not using `isWarning()`', function () {
+    const msg = 'Please check your details'
+    const validationError = new ValidationError()
+    validationError.addWarning('foreName', msg)
+    expect(validationError.isWarning('foreName')).toBe(true)
+    expect(validationError.isWarning('lastName')).toBe(false)
   })
 
   it('can retrieve an error message using `get()`', function () {
@@ -36,12 +51,42 @@ describe('validation error class', function () {
     expect(validationError.get('foreName')).toBe(msg)
   })
 
+  it('can retrieve a warning message using `getWarnings()`', function () {
+    const msg = 'Please check your details'
+    const validationError = new ValidationError()
+    validationError.addWarning('foreName', msg)
+    expect(validationError.getWarnings('foreName')).toBe(msg)
+  })
+
   it('can be queried to see if there are errors or not', function () {
     const msg = 'Please check your details'
     const validationError = new ValidationError('foreName', msg)
     expect(validationError.hasError()).toBe(true)
     const validationError2 = new ValidationError()
     expect(validationError2.hasError()).toBe(false)
+  })
+
+  it('can be queried to see if there are warnings or not', function () {
+    const msg = 'Please check your details'
+    const validationError = new ValidationError()
+    validationError.addWarning('foreName', msg)
+    expect(validationError.hasWarning()).toBe(true)
+    const validationError2 = new ValidationError()
+    expect(validationError2.hasWarning()).toBe(false)
+  })
+
+  it('can be queried to see if there are any errors or warnings', function () {
+    const validationError = new ValidationError()
+    validationError.addWarning('foreName', 'warning only')
+    expect(validationError.hasErrorOrWarning()).toBe(true)
+    const validationError2 = new ValidationError('q', 'error only')
+    expect(validationError2.hasErrorOrWarning()).toBe(true)
+    const validationError3 = new ValidationError() // no errors or warnings
+    expect(validationError3.hasErrorOrWarning()).toBe(false)
+    const validationError4 = new ValidationError() // no errors or warnings
+    validationError4.addError('a', 'foo')
+    validationError4.addWarning('b', 'bar')
+    expect(validationError4.hasErrorOrWarning()).toBe(true)
   })
 
   it('can return an array of fields that have errored', function () {
@@ -54,11 +99,28 @@ describe('validation error class', function () {
     expect(JSON.stringify(validationError.getFields())).toBe(JSON.stringify(expectedResult))
   })
 
+  it('can return an array of fields that have warnings', function () {
+    const validationError = new ValidationError()
+    validationError.addWarning('foo', 'check your foo')
+    validationError.addWarning('bar', 'check your bar')
+    validationError.addWarning('baz', 'check your baz')
+    const expectedResult = ['foo', 'bar', 'baz']
+    expect(JSON.stringify(validationError.getWarningFields())).toBe(JSON.stringify(expectedResult))
+  })
+
   it('asking for a non-existent error behaves as expected', function () {
     const msg = 'Please check your details'
     const validationError = new ValidationError('foreName', msg)
     expect(validationError.isError('foo')).toBe(false)
     expect(validationError.get('foo')).toBe('')
+  })
+
+  it('asking for a non-existent warning behaves as expected', function () {
+    const msg = 'Please check your details'
+    const validationError = new ValidationError()
+    validationError.addWarning('foreName', msg)
+    expect(validationError.isWarning('notExists')).toBe(false)
+    expect(validationError.get('notExists')).toBe('')
   })
 
   it('allows an error to be deleted', function () {
