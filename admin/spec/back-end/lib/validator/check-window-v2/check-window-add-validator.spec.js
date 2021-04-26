@@ -250,4 +250,41 @@ describe('New check window add validator', function () {
       expect(dateValidator.validate).toHaveBeenCalledTimes(5)
     })
   })
+
+  describe('the service manager can close the checkWindow to a date in the past', () => {
+    it('should raise a warning when setting the dates in the past when editing an existing checkWindow', () => {
+      checkWindowData = {
+        adminStartDay: '01',
+        adminStartMonth: '12',
+        adminStartYear: '2017',
+        adminEndDay: '01',
+        adminEndMonth: '03',
+        adminEndYear: '2021',
+        familiarisationCheckStartDay: '22',
+        familiarisationCheckStartMonth: '11',
+        familiarisationCheckStartYear: '2017',
+        familiarisationCheckEndDay: '01',
+        familiarisationCheckEndMonth: '03',
+        familiarisationCheckEndYear: '2021',
+        liveCheckStartDay: '22',
+        liveCheckStartMonth: '12',
+        liveCheckStartYear: '2017',
+        liveCheckEndDay: '01',
+        liveCheckEndMonth: '03',
+        liveCheckEndYear: '2021',
+        checkWindowName: 'test'
+      }
+      const validationConfig = {
+        adminStartDateDisabled: true,
+        adminEndDateDisabled: false,
+        familiarisationCheckStartDateDisabled: true,
+        familiarisationCheckEndDateDisabled: false,
+        liveCheckStartDateDisabled: true,
+        liveCheckEndDateDisabled: false
+      }
+      const validationError = checkWindowAddValidator.validate(checkWindowData, validationConfig)
+      expect(validationError.hasError()).toBe(false)
+      expect(validationError.hasWarning()).toBe(true)
+    })
+  })
 })

@@ -104,8 +104,8 @@ Given(/^I want to edit a check window that is in the past$/) do
   past_window.check_name.click
 end
 
-Then(/^I should not be able to make any changes$/) do
-  expect(add_edit_check_window_v2_page.disabled_fields.count).to eql 7
+Then(/^I should not be able to make any changes to any start dates$/) do
+  expect(add_edit_check_window_v2_page.disabled_fields.count).to eql 3
 end
 
 Given(/^I want to view a check window that is currently active$/) do
@@ -189,3 +189,4 @@ And(/^stored as it was in the db$/) do
   window_in_db = SqlDbHelper.check_window_details(@old_check_window_name)
   expect(window_in_db).to_not be_empty
 end
+
