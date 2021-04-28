@@ -7,7 +7,7 @@
     "build": "gulp build",
     "shell-build": "./build.sh",
     "clean": "rm -rf dist; rm -f .env",
-    "debug": "node --inspect=0.0.0.0:9229 ./server.js",
+    "debug": "node --inspect=0.0.0.0:9229 ./dist/server.js",
     "lint": "standard",
     "lintAndBuild": "yarn lint && yarn build",
     "migrate-sql": "node ../db/engine/migrate.js",

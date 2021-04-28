@@ -41,7 +41,7 @@ const controller = {
    * @param next
    * @returns {Promise.<void>}
    */
-  createCheckWindow: async function createCheckWindow (req, res, next) {
+  createCheckWindow: async function createCheckWindow (req, res) {
     res.locals.pageTitle = 'Create check window'
     req.breadcrumbs('Manage check windows', '/check-window/manage-check-windows')
     req.breadcrumbs(res.locals.pageTitle)
@@ -49,7 +49,9 @@ const controller = {
       checkWindowData: {},
       breadcrumbs: req.breadcrumbs(),
       error: new ValidationError(),
-      currentYear: moment().format('YYYY')
+      currentYear: moment().format('YYYY'),
+      allowWarningsOverride: false,
+      warningMessages: []
     })
   },
 
@@ -81,12 +83,16 @@ const controller = {
           const checkWindowData = await checkWindowV2Service.getCheckWindow(checkWindowUrlSlug)
           checkWindowViewData = checkWindowPresenter.getViewModelData(checkWindowData, requestData)
         }
+        const warningProps = error.getWarningFields()
+        const warningMessages = warningProps.map(prop => checkWindowErrorMessages[prop])
         return res.render('check-window/create-check-window', {
           error: error || new ValidationError(),
           errorMessage: checkWindowErrorMessages,
+          warningMessages: warningMessages ?? [],
           breadcrumbs: req.breadcrumbs(),
           checkWindowData: checkWindowViewData,
-          currentYear: moment().format('YYYY')
+          currentYear: moment().format('YYYY'),
+          canOverrideWarnings: true
         })
       }
       return next(error)
@@ -122,7 +128,6 @@ const controller = {
    * @param next
    * @returns {Promise.<void>}
    */
-
   getCheckWindowEditForm: async function getCheckWindowEditForm (req, res, next) {
     req.breadcrumbs('Manage check windows', '/check-window/manage-check-windows')
     res.locals.pageTitle = 'Edit check window'
@@ -140,7 +145,8 @@ const controller = {
       errorMessage: checkWindowErrorMessages,
       breadcrumbs: req.breadcrumbs(),
       checkWindowData: checkWindowViewData,
-      currentYear: moment().format('YYYY')
+      currentYear: moment().format('YYYY'),
+      canOverrideWarnings: false
     })
   }
 }

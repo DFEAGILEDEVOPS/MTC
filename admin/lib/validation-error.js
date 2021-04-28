@@ -8,6 +8,7 @@ module.exports = class ValidationError {
    */
   constructor (field, message) {
     this.errors = {}
+    this.warnings = {}
     this.name = 'ValidationError'
     if (field && message) {
       this.errors[field] = message
@@ -27,6 +28,17 @@ module.exports = class ValidationError {
 
   /**
    *
+   * @param {String} field - the html field
+   * @param {String | Array<String>} message - the message to display
+   * @return {ValidationError}
+   */
+  addWarning (field, message) {
+    this.warnings[field] = message
+    return this
+  }
+
+  /**
+   *
    * @param {String} field
    * @return {boolean}
    */
@@ -35,6 +47,27 @@ module.exports = class ValidationError {
       return true
     }
     return false
+  }
+
+  /**
+   *
+   * @param {String} field
+   * @return {boolean}
+   */
+  isWarning (field) {
+    if ({}.hasOwnProperty.call(this.warnings, field)) {
+      return true
+    }
+    return false
+  }
+
+  /**
+   *
+   * @param {string} field
+   * @return {boolean}
+   */
+  isErrorOrWarning (field) {
+    return this.isError(field) || this.isWarning(field)
   }
 
   /**
@@ -51,10 +84,38 @@ module.exports = class ValidationError {
 
   /**
    *
+   * @param {String} field
+   * @return {String}  - possibly empty string
+   */
+  getWarnings (field) {
+    if ({}.hasOwnProperty.call(this.warnings, field)) {
+      return this.warnings[field]
+    }
+    return ''
+  }
+
+  /**
+   *
    * @return {boolean}
    */
   hasError () {
     return Object.keys(this.errors).length > 0
+  }
+
+  /**
+   *
+   * @return {boolean}
+   */
+  hasWarning () {
+    return Object.keys(this.warnings).length > 0
+  }
+
+  /**
+   *
+   * @return {boolean}
+   */
+  hasErrorOrWarning () {
+    return this.hasError() || this.hasWarning()
   }
 
   /**
@@ -65,8 +126,20 @@ module.exports = class ValidationError {
     return Object.keys(this.errors)
   }
 
+  /**
+   *
+   * @return {Array}
+   */
+  getWarningFields () {
+    return Object.keys(this.warnings)
+  }
+
   removeError (field) {
     return delete this.errors[field]
+  }
+
+  removeWarning (field) {
+    return delete this.warnings[field]
   }
 
   /**
