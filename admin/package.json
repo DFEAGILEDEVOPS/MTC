@@ -36,7 +36,7 @@
   },
   "resolutions": {
     "**/**/lodash": "^4.17.21",
-    "**/**/ajv": "^6.12.4"
+    "**/**/ajv": "^6.12.6"
   },
   "dependencies": {
     "@azure/service-bus": "^1.1.0",
