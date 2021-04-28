@@ -12,7 +12,8 @@ const checkWindowV2Service = {}
 /**
  * Get check window based on urlSlug
  * @param {String} urlSlug
- * @returns {Promise<Object|Error>} Check window object or error object
+ * @returns {Promise<object|Error>} Check window object or error
+ * object
  */
 checkWindowV2Service.getCheckWindow = async (urlSlug) => {
   if (!urlSlug || !validate(urlSlug)) {
