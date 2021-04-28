@@ -249,7 +249,8 @@ const sqlService = {
     NVarChar: mssql.NVarChar,
     Real: mssql.Real,
     SmallInt: mssql.SmallInt,
-    UniqueIdentifier: mssql.UniqueIdentifier
+    UniqueIdentifier: mssql.UniqueIdentifier,
+    MAX: mssql.MAX
   },
   adminSchema: '[mtc_admin]',
   initPool: async function initPool () {

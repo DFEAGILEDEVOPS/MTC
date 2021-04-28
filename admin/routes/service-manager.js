@@ -93,4 +93,13 @@ router.get(
   serviceManagerController.getViewOrganisation
 )
 
+router.get('/organisations/:slug/edit',
+  isAuthenticated(roles.serviceManager),
+  serviceManagerController.getEditOrganisation
+)
+
+router.post('/organisations/:slug/edit',
+  isAuthenticated(roles.serviceManager),
+  serviceManagerController.postEditOrganisation
+)
 module.exports = router

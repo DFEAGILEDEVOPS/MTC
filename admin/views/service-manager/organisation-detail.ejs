@@ -4,6 +4,7 @@
         <div class="govuk-grid-column-two-thirds">
             <h1 class="govuk-heading-xl"><%= school.name %> </h1>
             <%- partial('partials/_gds_session_expiry') %>
+            <%- partial('partials/_flash-messages') %>
             <dl class="govuk-summary-list">
 
                 <div class="govuk-summary-list__row">
@@ -51,6 +52,13 @@
                     </dd>
                 </div>
             </dl>
+            <div class="govuk-button-group">
+                <a href="/service-manager/organisations/<%= school.urlSlug %>/edit"
+                class="govuk-button">Edit organisation</a>
+
+                <a href="/service-manager/organisations/search"
+                class="govuk-button govuk-button--secondary">Back to search </a>
+            </div>
         </div>
         <div class="govuk-grid-column-one-third" aria-label="sidebar">
             <aside class="app-related-items" role="complementary">
