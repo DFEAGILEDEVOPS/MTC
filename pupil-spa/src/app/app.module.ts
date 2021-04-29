@@ -82,6 +82,7 @@ import { TimerService } from './services/timer/timer.service';
 import { WebsiteOfflineComponent } from './website-offline/website-offline.component';
 import { ApplicationInsightsService } from './services/app-insights/app-insights.service';
 import { TestErrorComponent } from './test-error/test-error.component';
+import { HttpService } from './services/http/http.service';
 
 declare var AzureStorage: IAzureStorage;
 
@@ -192,6 +193,7 @@ const appRoutes: Routes = [
     LoggedInGuard,
     LoginErrorDiagnosticsService,
     LoginErrorService,
+    HttpService,
     PupilPrefsService,
     QuestionService,
     RegisterInputService,
