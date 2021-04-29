@@ -72,6 +72,28 @@ const schoolDataService = {
     return redisCacheService.drop(`schoolData.sqlFindOneById.${update.id}`)
   },
 
+  sqlUpdateBySlug: async function sqlUpdateBySlug (slug, update) {
+    const sql = `
+      UPDATE mtc_admin.[school] 
+      SET 
+          dfeNumber = @dfeNumber,
+          estabCode = @estabCode,
+          leaCode = @leaCode,
+          name = @name,
+          urn = @urn
+      WHERE urlSlug = @slug    
+    `
+    const params = [
+      { name: 'dfeNumber', value: update.dfeNumber, type: TYPES.Int },
+      { name: 'estabCode', value: update.estabCode, type: TYPES.Int },
+      { name: 'leaCode', value: update.leaCode, type: TYPES.Int },
+      { name: 'name', value: update.name, type: TYPES.NVarChar(TYPES.MAX) },
+      { name: 'slug', value: slug, type: TYPES.UniqueIdentifier },
+      { name: 'urn', value: update.urn, type: TYPES.Int }
+    ]
+    return sqlService.modify(sql, params)
+  },
+
   /**
    * Find school by array of ids.
    * @param ids

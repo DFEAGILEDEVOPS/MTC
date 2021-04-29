@@ -94,7 +94,7 @@ checkWindowAddValidator.validate = (checkWindowData, validationConfig = null) =>
     .yearInvalidChars(checkWindowErrorMessages.adminEndYearInvalidChars)
     .dateInThePast('adminEndDateInThePast')
   if (!adminEndDateDisabled) {
-    dateValidator.validate(validationError, adminEndDateData)
+    dateValidator.validate(validationError, adminEndDateData, true)
   }
 
   const familiarisationCheckStartDateData = new DateValidationData()
@@ -131,7 +131,7 @@ checkWindowAddValidator.validate = (checkWindowData, validationConfig = null) =>
     .yearInvalidChars(checkWindowErrorMessages.familiarisationCheckEndYearInvalidChars)
     .dateInThePast('familiarisationCheckEndDateInThePast')
   if (!familiarisationCheckEndDateDisabled) {
-    dateValidator.validate(validationError, familiarisationCheckEndDateData)
+    dateValidator.validate(validationError, familiarisationCheckEndDateData, true)
   }
   const liveCheckStartDateData = new DateValidationData()
   liveCheckStartDateData
@@ -167,7 +167,7 @@ checkWindowAddValidator.validate = (checkWindowData, validationConfig = null) =>
     .yearInvalidChars(checkWindowErrorMessages.liveCheckEndYearInvalidChars)
     .dateInThePast('liveCheckEndDateInThePast')
   if (!liveCheckEndDateDisabled) {
-    dateValidator.validate(validationError, liveCheckEndDateData)
+    dateValidator.validate(validationError, liveCheckEndDateData, true)
   }
   let adminStartDate
   let adminEndDate
@@ -216,7 +216,7 @@ checkWindowAddValidator.validate = (checkWindowData, validationConfig = null) =>
     validationError.addError('adminStartDateAfterLiveCheckStartDate', true)
   }
   // Admin end date
-  if (adminEndDate && adminEndDate.isBefore(adminStartDate, 'days')) {
+  if (adminEndDate && !adminStartDateDisabled && adminEndDate.isBefore(adminStartDate, 'days')) {
     // @ts-ignore
     validationError.addError('adminEndDateBeforeAdminStartDate', true)
   }
@@ -242,7 +242,7 @@ checkWindowAddValidator.validate = (checkWindowData, validationConfig = null) =>
     validationError.addError('familiarisationCheckStartDateBeforeAdminStartDate', true)
   }
   // Familiarisation check end date
-  if (familiarisationCheckEndDate && familiarisationCheckEndDate.isBefore(adminStartDate, 'days')) {
+  if (familiarisationCheckEndDate && !adminStartDateDisabled && familiarisationCheckEndDate.isBefore(adminStartDate, 'days')) {
     // @ts-ignore
     validationError.addError('familiarisationCheckEndDateBeforeAdminStartDate', true)
   }
@@ -250,7 +250,7 @@ checkWindowAddValidator.validate = (checkWindowData, validationConfig = null) =>
     // @ts-ignore
     validationError.addError('familiarisationCheckEndDateAfterAdminEndDate', true)
   }
-  if (familiarisationCheckEndDate && familiarisationCheckEndDate.isBefore(familiarisationCheckStartDate, 'days')) {
+  if (familiarisationCheckEndDate && !familiarisationCheckStartDateDisabled && familiarisationCheckEndDate.isBefore(familiarisationCheckStartDate, 'days')) {
     // @ts-ignore
     validationError.addError('familiarisationCheckEndDateBeforeFamiliarisationCheckStartDate', true)
   }
@@ -272,7 +272,7 @@ checkWindowAddValidator.validate = (checkWindowData, validationConfig = null) =>
     validationError.addError('liveCheckStartDateBeforeFamiliarisationCheckStartDate', true)
   }
   // Live check end date
-  if (liveCheckEndDate && liveCheckEndDate.isBefore(adminStartDate, 'days')) {
+  if (liveCheckEndDate && !adminStartDateDisabled && liveCheckEndDate.isBefore(adminStartDate, 'days')) {
     // @ts-ignore
     validationError.addError('liveCheckEndDateBeforeAdminStartDate', true)
   }
@@ -280,7 +280,7 @@ checkWindowAddValidator.validate = (checkWindowData, validationConfig = null) =>
     // @ts-ignore
     validationError.addError('liveCheckEndDateAfterAdminEndDate', true)
   }
-  if (liveCheckEndDate && liveCheckEndDate.isBefore(liveCheckStartDate, 'days')) {
+  if (liveCheckEndDate && !liveCheckStartDateDisabled && liveCheckEndDate.isBefore(liveCheckStartDate, 'days')) {
     // @ts-ignore
     validationError.addError('liveCheckEndDateBeforeLiveCheckStartDate', true)
   }

@@ -12,6 +12,12 @@ Feature: Generate Pupil PINs Familiarisation
     When I click Generate PINs button
     Then I can see this pupil in the list of Pupil on Generate Pin familiarisation list page
 
+  Scenario: Only 1 TIO pin allowed per pupil
+    Given I have generated a familiarisation pin for a pupil
+    And I am on the generate pupil pins familiarisation page
+    When I click Generate PINs button
+    Then I cannot see this pupil in the list of Pupil on Generate Pin list page
+
   @pupil_not_taking_check
   Scenario: Generate Pins familiarisation Pupil List Page display pupil not taking check
     Given I have a pupil not taking the check

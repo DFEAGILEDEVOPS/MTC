@@ -46,6 +46,8 @@ const controller = {
     const pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData, req.user.timezone)
     const availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.schoolId, checkWindowData, req.user.timezone)
     const pupilsFormatted = accessArrangementsOverviewPresenter.getPresentationData(pupils, availabilityData, hl)
+    const retroInputAssistantText = await accessArrangementsOverviewPresenter.getRetroInputAssistantText(availabilityData)
+
     return res.render('access-arrangements/overview', {
       highlight: hl,
       messages: res.locals.messages,
@@ -54,7 +56,8 @@ const controller = {
       pupilsFormatted,
       aaViewMode,
       title: res.locals.pageTitle,
-      availabilityData
+      availabilityData,
+      retroInputAssistantText
     })
   },
   /**

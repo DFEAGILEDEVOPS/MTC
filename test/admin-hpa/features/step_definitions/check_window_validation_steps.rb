@@ -116,8 +116,8 @@ When(/^I enter dates that are in the past$/) do
 end
 
 Then(/^I should see error messages stating the dates must be in the future$/) do
-  expect(add_edit_check_window_v2_page.error_summary).to have_error_heading
-  expect(add_edit_check_window_v2_page.error_summary).to have_error_text
+  expect(add_edit_check_window_v2_page).to have_error_summary
+  expect(add_edit_check_window_v2_page).to have_warning_summary
   expect(add_edit_check_window_v2_page.error_messages.map {|error| error.text}).to eql ["Enter a school administration start date in the future",
                                                                                         "Enter a school administration end date in the future",
                                                                                         "Enter a try it out start date in the future",
@@ -197,14 +197,14 @@ Then(/^I should errors for dates inside active check window date$/) do
   array_of_errors = ["Enter dates outside of the active check window administration period",
                      "Enter dates outside of the active check window try out period",
                      "Enter dates outside of the active check window live period"]
-  expect(add_edit_check_window_v2_page.error_summary).to have_error_heading
+  expect(add_edit_check_window_v2_page).to have_error_summary
   expect(add_edit_check_window_v2_page.error_summary).to have_error_text
   expect(add_edit_check_window_v2_page.error_summary.error_messages.map {|error| error.text}).to eql array_of_errors
   expect(add_edit_check_window_v2_page.error_messages.map {|error| error.text}).to eql array_of_errors
 end
 
 Then(/^I should see error messages stating the end dates must be at least one day after the start dates$/) do
-  expect(add_edit_check_window_v2_page.error_summary).to have_error_heading
+  expect(add_edit_check_window_v2_page).to have_error_summary
   expect(add_edit_check_window_v2_page.error_summary).to have_error_text
   expect(add_edit_check_window_v2_page.error_messages.map {|error| error.text}).to eql ["Enter a school administration start date which is before the administration end date",
                                                                                         "Enter a school administration end date which is after the administration start date",
@@ -254,7 +254,7 @@ When(/^I enter a admin end date that is before the end dates for familiarisation
 end
 
 Then(/^I should see an error stating the admin end date must be after the end dates for familiarisation and live check$/) do
-  expect(add_edit_check_window_v2_page.error_summary).to have_error_heading
+  expect(add_edit_check_window_v2_page).to have_error_summary
   expect(add_edit_check_window_v2_page.error_summary).to have_error_text
   expect(add_edit_check_window_v2_page.error_messages.map {|error| error.text}).to eql [
 
@@ -298,7 +298,7 @@ When(/^I enter a familiarisation start date that is in the past compared to the 
 end
 
 Then(/^I should see an error stating Start date for familiarisation must be on the same day or in the future as the admin start date$/) do
-  expect(add_edit_check_window_v2_page.error_summary).to have_error_heading
+  expect(add_edit_check_window_v2_page).to have_error_summary
   expect(add_edit_check_window_v2_page.error_summary).to have_error_text
   expect(add_edit_check_window_v2_page.error_messages.map {|error| error.text}).to eql ["Enter a school administration start date which is before or on the same day as the try it out start date",
                                                                                         "Enter a try it out start date which is the same date or after the administration start date"]
@@ -338,7 +338,7 @@ When(/^I enter a familiarisation start date that is a day after the live check s
 end
 
 Then(/^I should see an error stating familiarisation start date must be at least a day before the live check start date$/) do
-  expect(add_edit_check_window_v2_page.error_summary).to have_error_heading
+  expect(add_edit_check_window_v2_page).to have_error_summary
   expect(add_edit_check_window_v2_page.error_summary).to have_error_text
   expect(add_edit_check_window_v2_page.error_messages.map {|error| error.text}).to eql ["Enter a try it out start date which is the same date or before the multiplication tables check start date",
                                                                                         "Enter a multiplication tables check start date which is the same date or after the try it out start date"]
@@ -378,7 +378,7 @@ When(/^I enter a familiarisation end date that is a day before the familiarisati
 end
 
 Then(/^I should see an error stating familiarisation end date must be at least a day after the start date$/) do
-  expect(add_edit_check_window_v2_page.error_summary).to have_error_heading
+  expect(add_edit_check_window_v2_page).to have_error_summary
   expect(add_edit_check_window_v2_page.error_summary).to have_error_text
   expect(add_edit_check_window_v2_page.error_messages.map {|error| error.text}).to eql ["Enter a try it out start date which is before the try it out end date",
                                                                                         "Enter a try it out end date which is after the try it out start date",
@@ -420,7 +420,7 @@ When(/^I enter a live start date that is a day before the familiarisation start 
 end
 
 Then(/^I should see an error stating live start date must be at least a day after the familiarisation check start date$/) do
-  expect(add_edit_check_window_v2_page.error_summary).to have_error_heading
+  expect(add_edit_check_window_v2_page).to have_error_summary
   expect(add_edit_check_window_v2_page.error_summary).to have_error_text
   expect(add_edit_check_window_v2_page.error_messages.map {|error| error.text}).to eql ["Enter a try it out start date which is the same date or before the multiplication tables check start date",
                                                                                         "Enter a multiplication tables check start date which is the same date or after the try it out start date"]
@@ -450,7 +450,7 @@ Then(/^I should errors stating that entries are required$/) do
                      "Enter a valid day for multiplication tables check end date",
                      "Enter a valid month for multiplication tables check end date",
                      "Enter a valid year for multiplication tables check end date"]
-  expect(add_edit_check_window_v2_page.error_summary).to have_error_heading
+  expect(add_edit_check_window_v2_page).to have_error_summary
   expect(add_edit_check_window_v2_page.error_summary).to have_error_text
   expect(add_edit_check_window_v2_page.error_summary.error_messages.map {|error| error.text}).to eql array_of_errors
   expect(add_edit_check_window_v2_page.error_messages.map {|error| error.text}).to eql array_of_errors
@@ -496,7 +496,7 @@ Then(/^I should see an error stating I should enter only (\d+) digits$/) do |arg
                      "Enter a day in 2 digits for try it out end date",
                      "Enter a day in 2 digits for multiplication tables check start date",
                      "Enter a day in 2 digits for multiplication tables check end date"]
-  expect(add_edit_check_window_v2_page.error_summary).to have_error_heading
+  expect(add_edit_check_window_v2_page).to have_error_summary
   expect(add_edit_check_window_v2_page.error_summary).to have_error_text
   expect(add_edit_check_window_v2_page.error_summary.error_messages.map {|error| error.text}).to eql array_of_errors
   expect(add_edit_check_window_v2_page.error_messages.map {|error| error.text}).to eql array_of_errors
@@ -542,7 +542,7 @@ Then(/^I should see an error stating I should enter a valid day$/) do
                      "Enter a valid day for try it out end date",
                      "Enter a valid day for multiplication tables check start date",
                      "Enter a valid day for multiplication tables check end date"]
-  expect(add_edit_check_window_v2_page.error_summary).to have_error_heading
+  expect(add_edit_check_window_v2_page).to have_error_summary
   expect(add_edit_check_window_v2_page.error_summary).to have_error_text
   expect(add_edit_check_window_v2_page.error_summary.error_messages.map {|error| error.text}).to eql array_of_errors
   expect(add_edit_check_window_v2_page.error_messages.map {|error| error.text}).to eql array_of_errors
@@ -588,7 +588,7 @@ Then(/^I should see an error stating I should enter only (\d+) digits for the mo
                      "Enter a month in 2 digits for try it out end date",
                      "Enter a month in 2 digits for multiplication tables check start date",
                      "Enter a month in 2 digits for multiplication tables check end date"]
-  expect(add_edit_check_window_v2_page.error_summary).to have_error_heading
+  expect(add_edit_check_window_v2_page).to have_error_summary
   expect(add_edit_check_window_v2_page.error_summary).to have_error_text
   expect(add_edit_check_window_v2_page.error_summary.error_messages.map {|error| error.text}).to eql array_of_errors
   expect(add_edit_check_window_v2_page.error_messages.map {|error| error.text}).to eql array_of_errors
@@ -634,7 +634,7 @@ Then(/^I should see an error stating I should enter a valid month$/) do
                      "Enter a valid month for try it out end date",
                      "Enter a valid month for multiplication tables check start date",
                      "Enter a valid month for multiplication tables check end date"]
-  expect(add_edit_check_window_v2_page.error_summary).to have_error_heading
+  expect(add_edit_check_window_v2_page).to have_error_summary
   expect(add_edit_check_window_v2_page.error_summary).to have_error_text
   expect(add_edit_check_window_v2_page.error_summary.error_messages.map {|error| error.text}).to eql array_of_errors
   expect(add_edit_check_window_v2_page.error_messages.map {|error| error.text}).to eql array_of_errors
@@ -680,7 +680,7 @@ Then(/^I should see an error stating I should enter only (\d+) digits for the ye
                      "Enter a year in 4 digits for try it out end date",
                      "Enter a year in 4 digits for multiplication tables check start date",
                      "Enter a year in 4 digits for multiplication tables check end date"]
-  expect(add_edit_check_window_v2_page.error_summary).to have_error_heading
+  expect(add_edit_check_window_v2_page).to have_error_summary
   expect(add_edit_check_window_v2_page.error_summary).to have_error_text
   expect(add_edit_check_window_v2_page.error_summary.error_messages.map {|error| error.text}).to eql array_of_errors
   expect(add_edit_check_window_v2_page.error_messages.map {|error| error.text}).to eql array_of_errors
@@ -738,7 +738,8 @@ Then(/^I should see an error stating I should enter a valid year$/) do
                             "Enter a valid year for multiplication tables check start date",
                             "Enter a multiplication tables check end date in the future",
                             "Enter a valid year for multiplication tables check end date"]
-  expect(add_edit_check_window_v2_page.error_summary).to have_error_heading
+  expect(add_edit_check_window_v2_page).to have_error_summary
+  expect(add_edit_check_window_v2_page).to have_warning_summary
   expect(add_edit_check_window_v2_page.error_summary).to have_error_text
   expect(add_edit_check_window_v2_page.error_summary.error_messages.map {|error| error.text}).to eql array_of_summary_errors
   expect(add_edit_check_window_v2_page.error_messages.map {|error| error.text}).to eql array_of_inline_errors
@@ -778,7 +779,7 @@ When(/^I enter a admin start date that is after the start dates for familiarisat
 end
 
 Then(/^I should see an error stating the admin start date must be before the start dates for familiarisation and live check$/) do
-  expect(add_edit_check_window_v2_page.error_summary).to have_error_heading
+  expect(add_edit_check_window_v2_page).to have_error_summary
   expect(add_edit_check_window_v2_page.error_summary).to have_error_text
   expect(add_edit_check_window_v2_page.error_messages.map {|error| error.text}).to eql ["Enter a school administration start date which is before or on the same day as the try it out start date",
                                                                                         "Enter a school administration start date which is before the multiplication tables check start date",
@@ -821,7 +822,7 @@ When(/^I enter a live end date that is before the admin start date$/) do
 end
 
 Then(/^I should see an error stating live end date must occur after admin start date$/) do
-  expect(add_edit_check_window_v2_page.error_summary).to have_error_heading
+  expect(add_edit_check_window_v2_page).to have_error_summary
   expect(add_edit_check_window_v2_page.error_summary).to have_error_text
   expect(add_edit_check_window_v2_page.error_messages.map {|error| error.text}).to eql ["Enter a try it out end date which is the same as multiplication tables check end date",
                                                                                         "Enter a multiplication tables check start date which is before the multiplication tables check end date",
@@ -864,7 +865,7 @@ When(/^I enter a familirisation end date that is before the admin start date$/) 
 end
 
 Then(/^I should see an error stating familirisation end date must occur after admin start date$/) do
-  expect(add_edit_check_window_v2_page.error_summary).to have_error_heading
+  expect(add_edit_check_window_v2_page).to have_error_summary
   expect(add_edit_check_window_v2_page.error_summary).to have_error_text
   expect(add_edit_check_window_v2_page.error_messages.map {|error| error.text}).to eql ["Enter a try it out start date which is the same date or before the try it out end date",
                                                                                         "Enter a try it out end date which is the same date or after the administration start date",
