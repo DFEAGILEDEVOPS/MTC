@@ -40,7 +40,7 @@ export class HttpService {
                *
                * We may as well attempt re-try for all client side errors, as the request has not reached the server yet.
                */
-              console.log('Transient errorEvent: ', error);
+              // console.log('Transient errorEvent: ', error);
               return true;
             } else {
               /**
@@ -54,7 +54,7 @@ export class HttpService {
                 case 502: /* Bad gateway */
                 case 503: /* Service unavailable */
                 case 504: /* Gateway timeout */
-                  console.log('Transient error: ', error);
+                  // console.log('Transient error: ', error);
                   return true;
                 default:
                   /**
@@ -74,7 +74,7 @@ export class HttpService {
     } catch (error) {
       // This catch block exists for the purpose of allowing logging to take place here if needed.
       // Any final requests that don't give a 200 code will pass through here, but not the re-tries.
-      console.log(`http post error: status was ${error.status} - ${error.message}`, error);
+      // console.log(`http post error: status was ${error.status} - ${error.message}`, error);
       throw error;
     }
   }
