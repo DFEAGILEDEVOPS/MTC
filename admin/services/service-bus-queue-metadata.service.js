@@ -3,7 +3,7 @@ const config = require('../config')
 
 let adminClient
 
-// const serviceBusQueueMetadataService = {}
+const serviceBusQueueMetadataService = {}
 
 const getQueueMessageCount = async (queueName) => {
   if (!adminClient) {
@@ -34,6 +34,7 @@ const getAllQueueMessageCounts = async () => {
   return queueInfo
 }
 
+/*
 async function main () {
   const data = await getAllQueueMessageCounts()
   console.dir(data)
@@ -42,7 +43,8 @@ async function main () {
 main()
   .then(() => {})
   .catch(err => console.error(err))
+*/
 
-/* serviceBusQueueMetadataService.getQueueMessageCount = getQueueMessageCount
+serviceBusQueueMetadataService.getAllQueueMessageCounts = getAllQueueMessageCounts
 
-module.exports = serviceBusQueueMetadataService */
+module.exports = serviceBusQueueMetadataService
