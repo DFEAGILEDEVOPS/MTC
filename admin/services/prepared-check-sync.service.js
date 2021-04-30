@@ -2,16 +2,14 @@ const sb = require('@azure/service-bus')
 const config = require('../config')
 
 let sbClient
-let sbQueueClient
 let sbQueueSender
 
 const preparedCheckSyncService = {}
 
 const addMessageToServiceBus = async (pupilUrlSlug) => {
-  if (!sbClient || !sbQueueClient || !sbQueueSender) {
-    sbClient = sb.ServiceBusClient.createFromConnectionString(config.ServiceBus.connectionString)
-    sbQueueClient = sbClient.createQueueClient('check-sync')
-    sbQueueSender = sbQueueClient.createSender()
+  if (!sbClient || !sbQueueSender) {
+    sbClient = new sb.ServiceBusClient(config.ServiceBus.connectionString)
+    sbQueueSender = sbClient.createSender('check-sync')
   }
 
   await sbQueueSender.send({
