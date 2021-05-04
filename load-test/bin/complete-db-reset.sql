@@ -5,26 +5,22 @@
  */
 
 TRUNCATE TABLE mtc_admin.adminLogonEvent
-TRUNCATE TABLE mtc_admin.psychometricianReportCache
-TRUNCATE TABLE mtc_admin.anomalyReportCache
+TRUNCATE TABLE mtc_results.psychometricReport
 TRUNCATE TABLE mtc_admin.pupilRestart
 TRUNCATE TABLE mtc_admin.azureBlobFile
 TRUNCATE TABLE mtc_admin.auditLog
 -- user data
-TRUNCATE TABLE mtc_admin.answer
+TRUNCATE TABLE mtc_results.answer
 TRUNCATE TABLE mtc_admin.checkPin
 TRUNCATE TABLE mtc_admin.checkConfig
 TRUNCATE TABLE mtc_admin.pupilAccessArrangements
 TRUNCATE TABLE mtc_admin.pupilAttendance
-DELETE FROM mtc_admin.pupilResultsDiagnosticCache
 DELETE FROM mtc_admin.pupilRestart
 DELETE FROM mtc_admin.[hdf]
-DELETE FROM mtc_admin.[checkScore]
 DELETE FROM mtc_admin.[serviceMessage]
-UPDATE mtc_admin.pupil SET pupilAgeReason_id=NULL, group_id=NULL, attendanceId=NULL, currentCheckId=NULL
+UPDATE mtc_admin.pupil SET pupilAgeReason_id=NULL, group_id=NULL, attendanceId=NULL, currentCheckId=NULL, checkComplete=0
 DELETE FROM mtc_admin.pupilAgeReason
 DELETE FROM mtc_admin.[check]
-DELETE FROM mtc_admin.pupil
 DELETE FROM mtc_admin.[job]
 DELETE FROM mtc_admin.[group]
 -- config

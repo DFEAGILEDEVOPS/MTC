@@ -4,7 +4,7 @@
   some statements should be excluded if you want to build up volume data
  */
 TRUNCATE TABLE mtc_admin.adminLogonEvent
-TRUNCATE TABLE mtc_admin.psychometricianReportCache
+TRUNCATE TABLE mtc_results.psychometricReport
 TRUNCATE TABLE mtc_admin.pupilRestart
 UPDATE mtc_admin.pupil SET checkComplete=0, currentCheckId=NULL
 TRUNCATE TABLE mtc_admin.checkPin

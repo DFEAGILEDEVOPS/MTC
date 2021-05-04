@@ -6,4 +6,7 @@ class SchoolSearchResultsPage < SitePrism::Page
   element :lea_code, '.govuk-summary-list__row:nth-of-type(3) dd'
   element :estab, '.govuk-summary-list__row:nth-of-type(4) dd'
   element :number_of_pupils, '.govuk-summary-list__row:nth-of-type(5) dd'
+  element :edit, '.govuk-button', text: 'Edit organisation'
+  element :back_to_search, '.govuk-button', text: 'Back to search'
+
 end

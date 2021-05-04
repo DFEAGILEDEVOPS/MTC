@@ -722,7 +722,8 @@ describe('report line class', () => {
 
       test('if the pupil has been marked as not taking the check it should have a Reason code', () => {
         const out = sut.transform()
-        expect(out.ReasonNotTakingCheck).toBe('A')
+        // TODO: 2022: reverse this back to 'A' after 2021
+        expect(out.ReasonNotTakingCheck).toBe('Z')
       })
 
       test('the pupil status is set to Not taking the Check', () => {
@@ -880,32 +881,35 @@ describe('report line class', () => {
   })
 
   describe('getReasonNotTakingCheck', () => {
-    test('returns 1 for pupils incorrectly registered', () => {
+    test('returns Z for pupils incorrectly registered', () => {
       const res = ReportLineTest.getReasonNotTakingCheck('INCRG')
       expect(res).toBe('Z')
     })
 
-    test('returns 2 for Absent pupils', () => {
+    /**
+     * TODO 2022: For 2021 only, we map Absent to Incorrect Registration, as the check is optional
+     */
+    test('returns A for Absent pupils', () => {
       const res = ReportLineTest.getReasonNotTakingCheck('ABSNT')
-      expect(res).toBe('A')
+      expect(res).toBe('Z')
     })
 
-    test('returns 3 for pupils who left', () => {
+    test('returns L for pupils who left', () => {
       const res = ReportLineTest.getReasonNotTakingCheck('LEFTT')
       expect(res).toBe('L')
     })
 
-    test('returns 4 for pupils who are unable to access', () => {
+    test('returns U for pupils who are unable to access', () => {
       const res = ReportLineTest.getReasonNotTakingCheck('NOACC')
       expect(res).toBe('U')
     })
 
-    test('returns 5 for pupils who are working below standard', () => {
+    test('returns B for pupils who are working below standard', () => {
       const res = ReportLineTest.getReasonNotTakingCheck('BLSTD')
       expect(res).toBe('B')
     })
 
-    test('returns 6 for pupils who just arrived', () => {
+    test('returns J for pupils who just arrived', () => {
       const res = ReportLineTest.getReasonNotTakingCheck('JSTAR')
       expect(res).toBe('J')
     })

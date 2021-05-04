@@ -60,7 +60,9 @@ const ctfService = {
     // Handle pupil not attending codes
     switch (pupilResult.attendanceCode) {
       case pupilAttendanceCodes.absent.code:
-        return ctfResults.absent.code
+        // TODO: 2022 reverse this back to absent code after 2021
+        // return ctfResults.absent.code
+        return ctfResults.incorrectRegistration.code
 
       case pupilAttendanceCodes.workingBelowExpectation.code:
         return ctfResults.workingBelowExpectation.code

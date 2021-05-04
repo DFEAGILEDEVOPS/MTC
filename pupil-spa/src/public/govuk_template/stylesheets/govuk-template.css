@@ -114,7 +114,7 @@ html {
   /* 1 */
   overflow-y: scroll;
   /* 2 */
-  -webkit-tap-highlight-color: transparent;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   /* 3 */ }
 
 /*

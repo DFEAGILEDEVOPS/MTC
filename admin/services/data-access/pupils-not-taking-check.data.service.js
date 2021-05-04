@@ -35,18 +35,20 @@ const pupilsNotTakingCheckDataService = {
    */
   sqlFindPupilsWithoutReasons: async (schoolId) => {
     const sql = `
-    SELECT
-    p.foreName,
-    p.middleNames,
-    p.lastName,
-    p.dateOfBirth,
-    p.urlSlug,
-    p.group_id
-  FROM [mtc_admin].[pupil] p
-  WHERE p.school_id = @schoolId
-    AND p.currentCheckId IS NULL
-    AND p.attendanceId IS NULL
-  ORDER BY p.lastName ASC, p.foreName ASC, p.middleNames ASC, p.dateOfBirth ASC
+        SELECT p.foreName, p.middleNames, p.lastName, p.dateOfBirth, p.urlSlug, p.group_id
+          FROM [mtc_admin].[pupil] p
+               LEFT JOIN [mtc_admin].[check] c ON (p.currentCheckId = c.id)
+               LEFT JOIN [mtc_admin].[checkPin] cp ON (cp.check_id = c.id)
+         WHERE p.school_id = @schoolId
+           AND (
+             -- No check has been generated for the pupil
+                 p.currentCheckId IS NULL OR
+                 -- a check has been generated, but was never logged in and has now expired
+                 (c.pupilLoginDate IS NULL
+                      -- and has expired or been deleted (happens on a schedule after expiry)                   
+                      AND cp.check_id IS NULL OR SYSDATETIMEOFFSET() > cp.pinExpiresAt))
+           AND p.attendanceId IS NULL
+         ORDER BY p.lastName ASC, p.foreName ASC, p.middleNames ASC, p.dateOfBirth ASC
     `
     const params = [{
       name: 'schoolId',

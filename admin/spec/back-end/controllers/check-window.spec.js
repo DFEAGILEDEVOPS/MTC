@@ -8,6 +8,7 @@ const checkWindowPresenter = require('../../../helpers/check-window-presenter')
 const checkWindowV2AddService = require('../../../services/check-window-v2-add.service')
 const checkWindowV2UpdateService = require('../../../services/check-window-v2-update.service')
 const checkWindowV2Service = require('../../../services/check-window-v2.service')
+const ValidationError = require('../../../lib/validation-error')
 
 describe('check window controller:', () => {
   let next
@@ -136,7 +137,7 @@ describe('check window controller:', () => {
       const req = getReq(reqParams)
       spyOn(res, 'redirect')
       const renderSpy = spyOn(res, 'render')
-      const validationError = new Error('error')
+      const validationError = new ValidationError()
       validationError.name = 'ValidationError'
       const unsafeReject = p => {
         p.catch(ignore => ignore)
