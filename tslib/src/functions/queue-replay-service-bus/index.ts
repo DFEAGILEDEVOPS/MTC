@@ -4,8 +4,6 @@ import { IQueueMessageReplayRequest } from './message-replay.service'
 
 const functionName = 'queue-replay-service-bus'
 
-
-
 function finish (start: number, context: Context): void {
   const end = performance.now()
   const durationInMilliseconds = end - start
@@ -14,7 +12,9 @@ function finish (start: number, context: Context): void {
 }
 
 const queueReplayServiceBus: AzureFunction = async function (context: Context, busMessage: IQueueMessageReplayRequest): Promise<void> {
-
+  const start = performance.now()
+  context.log('nothing to do, yet...')
+  finish(start, context)
 }
 
 export default queueReplayServiceBus
