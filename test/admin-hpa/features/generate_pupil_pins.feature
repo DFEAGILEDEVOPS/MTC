@@ -19,7 +19,7 @@ Feature: Generate Pupil PINs
   | teacher3 |
 
 
-  Scenario: Generate Pins Pupil List page do not display pupil with active pin
+  Scenario: Only 1 Live pin allowed per pupil
     Given I have generated a live pin for a pupil
     And I am on the generate pupil pins page
     When I click Generate PINs button

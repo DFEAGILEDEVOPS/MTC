@@ -11,8 +11,8 @@ const uploadedFileService = require('../services/uploaded-file.service')
 const ValidationError = require('../lib/validation-error')
 const scePresenter = require('../helpers/sce')
 const schoolService = require('../services/school.service')
-
 const featureToggles = require('feature-toggles')
+const { formUtil, formUtilTypes } = require('../lib/form-util')
 
 const controller = {
 
@@ -371,11 +371,67 @@ const controller = {
       res.locals.pageTitle = 'View organisation'
       req.breadcrumbs(res.locals.pageTitle)
       const school = await schoolService.findOneBySlug(req.params.slug)
+      if (!school) {
+        return next(new Error(`School not found ${req.params.slug}`))
+      }
       res.render('service-manager/organisation-detail', {
         breadcrumbs: req.breadcrumbs(),
         school
       })
     } catch (error) {
+      return next(error)
+    }
+  },
+
+  getEditOrganisation: async function getEditOrganisation (req, res, next, validationError = new ValidationError()) {
+    try {
+      req.breadcrumbs('Manage organisations', '/service-manager/organisations')
+      req.breadcrumbs('Search organisations', '/service-manager/organisations/search')
+      res.locals.pageTitle = 'Edit organisation'
+      req.breadcrumbs(res.locals.pageTitle)
+      const school = await schoolService.findOneBySlug(req.params.slug)
+      if (!school) {
+        return next(new Error(`School not found ${req.params.slug}`))
+      }
+      const defaults = {
+        name: 'name' in req.body ? req.body.name : school.name,
+        dfeNumber: 'dfeNumber' in req.body ? req.body.dfeNumber : school.dfeNumber,
+        urn: 'urn' in req.body ? req.body.urn : school.urn,
+        leaCode: 'leaCode' in req.body ? req.body.leaCode : school.leaCode,
+        estabCode: 'estabCode' in req.body ? req.body.estabCode : school.estabCode
+      }
+      res.render('service-manager/organisation-detail-edit', {
+        breadcrumbs: req.breadcrumbs(),
+        school,
+        error: validationError,
+        defaults
+      })
+    } catch (error) {
+      return next(error)
+    }
+  },
+
+  postEditOrganisation: async function postEditOrganisation (req, res, next) {
+    try {
+      const school = await schoolService.findOneBySlug(req.params.slug)
+      if (!school) {
+        req.flash('info', 'School not found')
+        return res.redirect('/service-manager/organisations/search')
+      }
+      const update = {
+        name: req.body?.name?.trim() ?? '',
+        dfeNumber: formUtil.convertFromString(req.body?.dfeNumber, formUtilTypes.int),
+        urn: formUtil.convertFromString(req.body?.urn, formUtilTypes.int),
+        leaCode: formUtil.convertFromString(req.body?.leaCode, formUtilTypes.int),
+        estabCode: formUtil.convertFromString(req.body?.estabCode, formUtilTypes.int)
+      }
+      await schoolService.updateSchool(req.params.slug, update)
+      req.flash('info', 'School updated')
+      return res.redirect(`/service-manager/organisations/${school.urlSlug}`)
+    } catch (error) {
+      if (error.name === 'ValidationError') {
+        return controller.getEditOrganisation(req, res, next, error)
+      }
       return next(error)
     }
   }
