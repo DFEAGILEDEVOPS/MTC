@@ -1,40 +1,53 @@
+'use strict'
+
 const sb = require('@azure/service-bus')
 const config = require('../config')
 
 let adminClient
+let queueNames
 
-const serviceBusQueueMetadataService = {}
+const serviceBusQueueMetadataService = {
+  getQueueNames: async function getQueueNames () {
+    if (queueNames) return
+    queueNames = []
+    const queues = await getQueueClient().listQueues()
+    let q = await queues.next()
+    while (!q.done) {
+      queueNames.push(q.value.name)
+      q = await queues.next()
+    }
+    return queueNames
+  },
 
-const getQueueMessageCount = async (queueName) => {
+  getAllQueueMessageCounts: async function getAllQueueMessageCounts () {
+    const queues = await serviceBusQueueMetadataService.getQueueNames()
+    const messageCountPromises = []
+    for (let index = 0; index < queues.length; index++) {
+      const qName = queues[index]
+      messageCountPromises.push(getQueueMessageCount(qName))
+    }
+    return await Promise.all(messageCountPromises)
+  }
+}
+
+function getQueueClient () {
   if (!adminClient) {
     adminClient = new sb.ServiceBusAdministrationClient(config.ServiceBus.connectionString)
   }
-  const props = await adminClient.getQueueRuntimeProperties(queueName)
+  return adminClient
+}
+
+async function getQueueMessageCount (queueName) {
+  const props = await getQueueClient().getQueueRuntimeProperties(queueName)
   return {
+    queueName: queueName,
     messageCount: props.totalMessageCount,
     deadLetterCount: props.deadLetterMessageCount
   }
 }
 
-const getAllQueueMessageCounts = async () => {
-  const queueInfo = []
-  if (!adminClient) {
-    adminClient = new sb.ServiceBusAdministrationClient(config.ServiceBus.connectionString)
-  }
-  const queues = await adminClient.listQueues()
-  let q = await queues.next()
-  while (!q.done) {
-    const qName = q.value.name
-    queueInfo.push({
-      name: qName,
-      metadata: await getQueueMessageCount(qName)
-    })
-    q = await queues.next()
-  }
-  return queueInfo
-}
-
 /*
+// for local debugging
 async function main () {
   const data = await getAllQueueMessageCounts()
   console.dir(data)
@@ -44,7 +57,5 @@ main()
   .then(() => {})
   .catch(err => console.error(err))
 */
-
-serviceBusQueueMetadataService.getAllQueueMessageCounts = getAllQueueMessageCounts
 
 module.exports = serviceBusQueueMetadataService
