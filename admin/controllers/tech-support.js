@@ -310,10 +310,11 @@ const controller = {
     req.breadcrumbs('Queue Overview')
     res.locals.pageTitle = 'Queue Overview'
     try {
-      const queueInfo = await sbQueueMetadataService.getAllQueueMessageCounts()
+      const sbQueueInfo = await sbQueueMetadataService.getAllQueueMessageCounts()
       res.render('tech-support/queue-overview', {
         breadcrumbs: req.breadcrumbs(),
-        queueInfo: queueInfo
+        sbQueueInfo: sbQueueInfo,
+        saQueueInfo: []
       })
     } catch (error) {
       return next(error)

@@ -40,8 +40,8 @@ function getQueueClient () {
 async function getQueueMessageCount (queueName) {
   const props = await getQueueClient().getQueueRuntimeProperties(queueName)
   return {
-    queueName: queueName,
-    messageCount: props.totalMessageCount,
+    name: queueName,
+    activeMessageCount: props.totalMessageCount,
     deadLetterCount: props.deadLetterMessageCount
   }
 }
