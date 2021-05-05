@@ -40,30 +40,29 @@ const chaosProxy = {
           'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept',
           'Content-Length': 0
         })
-        console.log(`${(new Date().toISOString())} ${req.method} ${req.url} 200}`)
+        console.log(`${(new Date().toISOString())} ${req.method} ${req.url} 200 CORS success`)
         return res.end()
       }
 
       let proxyRes
       try {
         proxyRes = await axios(options)
-      } catch (error) {
-        console.log(`Proxy error: ${error.message}`)
-        proxyRes = {}
-      }
-
-      if (proxyRes.status === 200) {
         res.writeHead(proxyRes.status, {
           'Content-Type': proxyRes.headers['content-type'],
           'Access-Control-Allow-Origin': '*',
         })
         res.write(JSON.stringify(proxyRes.data)) // assumes json
         console.log(`${(new Date().toISOString())} ${req.method} ${req.url} ${proxyRes.status}`)
-      } else {
-        console.log('proxy response 500 server error')
-        res.writeHead(500, { 'Content-Type': 'text/plain' })
-        res.write('Error proxying request')
-        console.log(`${(new Date().toISOString())} ${req.method} ${req.url} 500 Proxy server error`)
+      } catch (error) {
+        // The proxy received a non-200 error code from the server
+        console.log(`chaos-proxy: received server response ${error.response.status} ${error.response.statusText}`)
+        const status = error.response.status ? error.response.status : 500
+        res.writeHead(status, {
+          'Content-Type': 'text/plain',
+          'Access-Control-Allow-Origin': '*',
+        })
+        res.write('Error')
+        console.log(`${(new Date().toISOString())} ${req.method} ${req.url} ${status} ${error.response.statusText}`)
       }
       return res.end()
     })
