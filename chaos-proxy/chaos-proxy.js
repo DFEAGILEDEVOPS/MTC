@@ -40,6 +40,7 @@ const chaosProxy = {
           'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept',
           'Content-Length': 0
         })
+        console.log(`${(new Date().toISOString())} ${req.method} ${req.url} 200}`)
         return res.end()
       }
 
