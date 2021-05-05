@@ -5,7 +5,27 @@
             <h1 class="govuk-heading-xl">Queues Overview</h1>
             <%- partial('partials/_gds_session_expiry') %>
             <%- partial('partials/_flash-messages') %>
-            <pre><%= info %></pre>
+            <!-- start table -->
+            <table class="govuk-table govuk-spacious govuk-!-font-size-16">
+              <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                    <th scope="col">Name</th>
+                    <th scope="col">Type</th>
+                    <th scope="col">Active Message Count</th>
+                    <th scope="col">Dead Letter Count</th>
+                </tr>
+              </thead>
+              <tbody>
+              <% queueInfo.forEach((queue) => { %>
+                <tr class="govuk-table__row">
+                  <td><%= queue.name %></td>
+                  <td><%= queue.type %></td>
+                  <td><%= queue.activeMessageCount %></td>
+                  <td><%= queue.deadLetterCount %></td>
+                </tr>
+              <% }) %>
+              </tbody>
+            </table>
         </div>
 
         <div class="govuk-grid-column-one-third" aria-label="sidebar">
