@@ -5,7 +5,7 @@ const httpMocks = require('node-mocks-http')
 const checkDiagnosticService = require('../../../services/check-diagnostic.service')
 const payloadService = require('../../../services/payload.service')
 const administrationMessageService = require('../../../services/administration-message.service')
-const sbQueueMetadataService = require('../../../services/service-bus-queue-metadata.service')
+const queueMgmtService = require('../../../services/tech-support-queue-management.service')
 
 let sut
 let next
@@ -116,12 +116,14 @@ describe('tech-support controller', () => {
     it('GET: should send queueInfo as array', async () => {
       const req = getRequest(getReqParams('/tech-support/queue-overview', 'GET'))
       const res = getResponse()
-      spyOn(sbQueueMetadataService, 'getAllQueueMessageCounts')
+      spyOn(queueMgmtService, 'getServiceBusQueueSummary')
+      spyOn(queueMgmtService, 'getStorageAccountQueueSummary')
       spyOn(res, 'render')
       await sut.showQueueOverview(req, res, next)
       expect(res.render).toHaveBeenCalled()
       expect(next).not.toHaveBeenCalled()
-      expect(sbQueueMetadataService.getAllQueueMessageCounts).toHaveBeenCalledTimes(1)
+      expect(queueMgmtService.getServiceBusQueueSummary).toHaveBeenCalledTimes(1)
+      expect(queueMgmtService.getStorageAccountQueueSummary).toHaveBeenCalledTimes(1)
     })
   })
 })

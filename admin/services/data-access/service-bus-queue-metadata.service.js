@@ -1,7 +1,7 @@
 'use strict'
 
 const sb = require('@azure/service-bus')
-const config = require('../config')
+const config = require('../../config')
 
 // TODO move this to data access folder once storage queue service is done, and aggregate both from there
 

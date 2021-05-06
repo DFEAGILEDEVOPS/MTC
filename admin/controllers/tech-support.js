@@ -8,7 +8,7 @@ const redisService = require('../services/tech-support/redis.service')
 const administrationMessageService = require('../services/administration-message.service')
 const redisErrorMessages = require('../lib/errors/redis').redis
 const moment = require('moment')
-const sbQueueMetadataService = require('../services/service-bus-queue-metadata.service')
+const queueMgmtService = require('../services/tech-support-queue-management.service')
 
 const controller = {
 /**
@@ -310,11 +310,12 @@ const controller = {
     req.breadcrumbs('Queue Overview')
     res.locals.pageTitle = 'Queue Overview'
     try {
-      const sbQueueInfo = await sbQueueMetadataService.getAllQueueMessageCounts()
+      const sbQueueInfo = await queueMgmtService.getServiceBusQueueSummary()
+      const storageQueueInfo = await queueMgmtService.getStorageAccountQueueSummary()
       res.render('tech-support/queue-overview', {
         breadcrumbs: req.breadcrumbs(),
         sbQueueInfo: sbQueueInfo,
-        saQueueInfo: []
+        saQueueInfo: storageQueueInfo
       })
     } catch (error) {
       return next(error)

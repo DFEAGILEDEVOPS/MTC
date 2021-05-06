@@ -5,19 +5,25 @@ const bluebird = require('bluebird')
 
 let queueService
 
+const listQueuesAsync = () => {
+  return new Promise((resolve, reject) => {
+
+  })
+}
+
 const service = {
   getAllQueueMessageCounts: async function getAllQueueMessageCounts () {
     if (!queueService) {
       queueService = getPromisifiedService(storage.createQueueService())
     }
-    const queues = await queueService.listQueuesSegmented(null)
-    const queueInfo = []
+    const response = await queueService.listQueuesSegmentedAsync(null)
+    const queues = response.result.entries
+    const promises = []
     for (let index = 0; index < queues.length; index++) {
       const queue = queues[index]
-      const info = await queueService.getQueueMetadata(queue.name)
-      queueInfo.push(info)
+      promises.push(queueService.getQueueMetadataAsync(queue.name))
     }
-    return queueInfo
+    return Promise.all(promises)
   }
 }
 
@@ -32,7 +38,7 @@ function getPromisifiedService (storageService) {
             if (error) {
               return reject(error)
             }
-            resolve({ result, response})
+            resolve({ result, response })
           })
         } catch (error) {
           reject(error)
