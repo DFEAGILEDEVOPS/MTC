@@ -71,7 +71,7 @@
     "lz-string": "^1.4.4",
     "moment": "^2.24.0",
     "moment-timezone": "^0.5.32",
-    "mssql": "^6.2.1",
+    "mssql": "^7.0.0",
     "ramda": "^0.27.0",
     "ramda-adjunct": "^2.21.0",
     "random-number-csprng": "^1.0.2",
