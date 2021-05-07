@@ -93,7 +93,7 @@ export class PreparedCheckSyncDataService implements IPreparedCheckSyncDataServi
     `
     const params = [
       { name: 'checkCode', value: checkCode, type: TYPES.UniqueIdentifier },
-      { name: 'checkConfig', value: JSON.stringify(checkCode), type: TYPES.NVarChar() }
+      { name: 'checkConfig', value: JSON.stringify(config), type: TYPES.NVarChar() }
     ]
     await this.sqlService.modify(sql, params)
   }
