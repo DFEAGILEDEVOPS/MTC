@@ -2,6 +2,7 @@
 
 const serviceBusQueueMetadataService = require('./data-access/service-bus-queue-metadata.service')
 const storageQueueMetadataService = require('./data-access/storage-queue-metadata.service')
+const R = require('ramda')
 
 const service = {
   getServiceBusQueueSummary: async function getServiceBusQueueSummary () {
@@ -9,16 +10,26 @@ const service = {
   },
 
   getStorageAccountQueueSummary: async function getStorageAccountQueueSummary () {
-    // TODO merge poison queue counts with main queue entries
     const queueInfo = await storageQueueMetadataService.getAllQueueMessageCounts()
-    return queueInfo.map(q => {
-      return {
+    if (!queueInfo) return []
+    const poisonQueues = queueInfo.filter(q => q.result.name.endsWith('-poison'))
+    const mainQueues = queueInfo.filter(q => !q.result.name.endsWith('-poison'))
+    const toReturn = []
+    for (let index = 0; index < mainQueues.length; index++) {
+      const q = queueInfo[index]
+      const poisonQCount = findPoisonQueueCount(q.result.name, poisonQueues)
+      toReturn.push({
         name: q.result.name,
         activeMessageCount: q.result.approximateMessageCount,
-        deadLetterCount: 999
-      }
-    })
+        deadLetterCount: poisonQCount
+      })
+    }
+    return toReturn
   }
+}
+
+function findPoisonQueueCount (queueName, queueInfo) {
+  return 123
 }
 
 module.exports = service
