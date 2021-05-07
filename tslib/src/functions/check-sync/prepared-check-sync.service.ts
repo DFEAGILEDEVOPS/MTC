@@ -51,6 +51,7 @@ export class PreparedCheckSyncService {
         throw new Error(`no TTL found on preparedCheck. checkCode:${ref.checkCode}`)
       }
       await this.redisService.setex(cacheKey, preparedCheck, ttl)
+      await this.dataService.sqlUpdateCheckConfig(ref.checkCode, updatedConfig)
     }
   }
 
