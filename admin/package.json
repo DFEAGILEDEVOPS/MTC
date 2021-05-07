@@ -18,7 +18,7 @@
     "sasswatch": "gulp watch",
     "start:js": "node --max-http-header-size 15000 ./server.js",
     "start": "yarn build && node --max-http-header-size 15000 ./dist/server.js",
-    "start:dev": "concurrently -r 'nodemon --delay 3 --watch ./dist --max-http-header-size 15000 ./dist/server.js' 'gulp watch'",
+    "start:dev": "concurrently -r 'nodemon --delay 1500ms --watch ./dist --max-http-header-size 15000 ./dist/server.js' 'gulp watch'",
     "test": "yarn lint && yarn jest",
     "test:watch": "yarn jest --watch --coverage=no",
     "test:nocoverage": "yarn lint && yarn jest --coverage=no",
