@@ -22,11 +22,12 @@ if (!window.MTCAdmin) {
           return
         }
 
-        $(selAllTr).each(function () {
-          const pupilName = $('#pupilName', this).length > 0 && $.trim($('#pupilName', this).text()).toLowerCase()
-          const pupilUpn = $('#pupilUpn', this).length > 0 && $('#pupilUpn', this).val().toLowerCase()
-          const searchTerm = input.toLowerCase()
-          const isPupilExcluded =
+        $(selAllTr).each(function ($tr) {
+          var pupilName = $('#pupilName', this).length > 0 && $.trim($('#pupilName', this).text()).toLowerCase()
+          var pupilUpnEl = $('input[name=pupilUpn]', this)
+          var pupilUpn = pupilUpnEl && pupilUpnEl.length > 0 && pupilUpnEl.val().toLowerCase()
+          var searchTerm = input.toLowerCase()
+          var isPupilExcluded =
             (!pupilName || pupilName.indexOf(searchTerm) < 0) &&
             (!pupilUpn || pupilUpn.indexOf(searchTerm) < 0)
 

@@ -112,7 +112,7 @@ describe('pupil filter name module', function () {
                     <a id="pupilName" class="govuk-link govuk-!-font-weight-bold name-text-wrap" href="#">Jimenez, Bessie</a>
     
     
-                    <input type="hidden" id="pupilUpn" name="pupilUpn" value="W801200001009">
+                    <input type="hidden" id="pupilUpn-72" name="pupilUpn" value="W801200001009">
                 </div>
             </td>
             <td class="govuk-table__cell">-</td>
@@ -175,12 +175,14 @@ describe('pupil filter name module', function () {
   `
 
   let unFilteredRows
+
   beforeEach(function () {
     document.body.innerHTML = html
     window.MTCAdmin.pupilFilter()
     unFilteredRows = document.getElementsByTagName('tbody')[0].querySelectorAll('tr:not(.filter-hidden-name)')
   })
-  it('returns same amount of rows if no search term has been specificed', function () {
+
+  it('returns same amount of rows if no search term has been specified', function () {
     const searchInput = document.getElementById('search-name')
     const ev = new Event('change')
     searchInput.value = ''
@@ -189,7 +191,7 @@ describe('pupil filter name module', function () {
     expect(filteredRows.length).toEqual(unFilteredRows.length)
   })
 
-  it('returns same amount of rows if search term has been specificed', function () {
+  it('returns same amount of rows if search term has been specified', function () {
     const searchInput = document.getElementById('search-name')
     const ev = new Event('change')
     searchInput.value = 'B'
@@ -197,6 +199,7 @@ describe('pupil filter name module', function () {
     const filteredRows = document.getElementsByTagName('tbody')[0].querySelectorAll('tr:not(.filter-hidden-name)').length
     expect(filteredRows.length).not.toEqual(unFilteredRows.length)
   })
+
   it('returns single row that matches the pupil upn', function () {
     const searchInput = document.getElementById('search-name')
     const ev = new Event('change')
@@ -206,6 +209,7 @@ describe('pupil filter name module', function () {
     expect(result.length).toEqual(1)
     expect(result[0].querySelector('#pupilName').text).toEqual(unFilteredRows[0].querySelector('#pupilName').text)
   })
+
   it('returns single row that matches the pupil name', function () {
     const searchInput = document.getElementById('search-name')
     const ev = new Event('change')
@@ -215,6 +219,7 @@ describe('pupil filter name module', function () {
     expect(result.length).toEqual(1)
     expect(result[0].querySelector('#pupilName').text).toEqual(unFilteredRows[9].querySelector('#pupilName').text)
   })
+
   it('returns no rows if the search term is not a match both for pupil name or upn', function () {
     const searchInput = document.getElementById('search-name')
     const ev = new Event('change')
@@ -223,6 +228,7 @@ describe('pupil filter name module', function () {
     const result = document.getElementsByTagName('tbody')[0].querySelectorAll('tr:not(.filter-hidden-name)')
     expect(result.length).toEqual(0)
   })
+
   it('returns results even if pupil upns are not detected as hidden inputs within rows', function () {
     const searchInput = document.getElementById('search-name')
     document.querySelectorAll('#pupilUpn').forEach(function (a) {
@@ -234,6 +240,7 @@ describe('pupil filter name module', function () {
     const result = document.getElementsByTagName('tbody')[0].querySelectorAll('tr:not(.filter-hidden-name)')
     expect(result.length).toEqual(1)
   })
+
   it('returns results even if pupil names are not detected and only upns are available', function () {
     const searchInput = document.getElementById('search-name')
     document.querySelectorAll('#pupilName').forEach(function (a) {
