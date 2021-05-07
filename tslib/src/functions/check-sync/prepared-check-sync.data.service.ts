@@ -1,9 +1,13 @@
 import { SqlService } from '../../sql/sql.service'
 import { TYPES } from 'mssql'
+import { ICheckConfig } from './prepared-check-merge.service'
 
 export interface IPreparedCheckSyncDataService {
   getActiveCheckReferencesByPupilUuid (pupilUUID: string): Promise<IActiveCheckReference[]>
+
   getAccessArrangementsByCheckCode (checkCode: string): Promise<any[]>
+
+  sqlUpdateCheckConfig (checkCode: string, config: ICheckConfig): Promise<void>
 }
 
 export class PreparedCheckSyncDataService implements IPreparedCheckSyncDataService {
@@ -22,9 +26,9 @@ export class PreparedCheckSyncDataService implements IPreparedCheckSyncDataServi
                INNER JOIN [mtc_admin].checkPin cp ON (chk.id = cp.check_id)
                INNER JOIN [mtc_admin].pin pn ON (cp.pin_id = pn.id)
          WHERE chk.isLiveCheck = 1
-         -- Is there any point in updating checks that have been collected?
+           -- Is there any point in updating checks that have been collected?
            AND chk.received = 0
-         -- Exclude expired checks.  If the is deallocated the check will not be included due to the inner join.
+           -- Exclude expired checks.  If the is deallocated the check will not be included due to the inner join.
            AND cp.pinExpiresAt > GETUTCDATE() -- pin expiry in the future
            AND p.urlSlug = @pupilUUID`
 
@@ -63,18 +67,13 @@ export class PreparedCheckSyncDataService implements IPreparedCheckSyncDataServi
 
   async getAccessArrangementsByCheckCode (checkCode: string): Promise<any[]> {
     const sql = `
-    SELECT pAA.accessArrangements_id,
-    pfs.code AS pupilFontSizeCode, pcc.code AS pupilColourContrastCode
-    FROM [mtc_admin].[pupilAccessArrangements] pAA
-    LEFT OUTER JOIN [mtc_admin].[pupilFontSizes] pfs
-      ON pAA.pupilFontSizes_id = pfs.id
-    LEFT OUTER JOIN [mtc_admin].[pupilColourContrasts] pcc
-      ON pAA.pupilColourContrasts_id = pcc.id
-    INNER JOIN [mtc_admin].[pupil] p
-      ON pAA.pupil_id = p.id
-    INNER JOIN [mtc_admin].[check] chk
-      ON p.id = chk.pupil_id
-    WHERE chk.checkCode = @checkCode`
+        SELECT pAA.accessArrangements_id, pfs.code AS pupilFontSizeCode, pcc.code AS pupilColourContrastCode
+          FROM [mtc_admin].[pupilAccessArrangements] pAA
+               LEFT OUTER JOIN [mtc_admin].[pupilFontSizes] pfs ON pAA.pupilFontSizes_id = pfs.id
+               LEFT OUTER JOIN [mtc_admin].[pupilColourContrasts] pcc ON pAA.pupilColourContrasts_id = pcc.id
+               INNER JOIN      [mtc_admin].[pupil] p ON pAA.pupil_id = p.id
+               INNER JOIN      [mtc_admin].[check] chk ON p.id = chk.pupil_id
+         WHERE chk.checkCode = @checkCode`
 
     const params = [
       {
@@ -84,6 +83,19 @@ export class PreparedCheckSyncDataService implements IPreparedCheckSyncDataServi
       }
     ]
     return this.sqlService.query(sql, params)
+  }
+
+  async sqlUpdateCheckConfig (checkCode: string, config: ICheckConfig): Promise<void> {
+    const sql = `
+        UPDATE [mtc_admin].[checkConfig]
+           SET payload = @checkConfig
+         WHERE check_id = (SELECT id FROM [mtc_admin].[check] WHERE checkCode = @checkCode)
+    `
+    const params = [
+      { name: 'checkCode', value: checkCode, type: TYPES.UniqueIdentifier },
+      { name: 'checkConfig', value: JSON.stringify(checkCode), type: TYPES.NVarChar() }
+    ]
+    await this.sqlService.modify(sql, params)
   }
 }
 
