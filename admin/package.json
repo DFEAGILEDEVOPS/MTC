@@ -72,7 +72,7 @@
     "merge-stream": "^2.0.0",
     "moment-timezone": "^0.5.23",
     "morgan": "~1.10.0",
-    "mssql": "6.3.1",
+    "mssql": "7.0.0",
     "nocache": "^2.1.0",
     "node-dir": "^0.1.17",
     "openid-client": "^4.2.2",
