@@ -5,12 +5,6 @@ const bluebird = require('bluebird')
 
 let queueService
 
-const listQueuesAsync = () => {
-  return new Promise((resolve, reject) => {
-
-  })
-}
-
 const service = {
   getAllQueueMessageCounts: async function getAllQueueMessageCounts () {
     if (!queueService) {
