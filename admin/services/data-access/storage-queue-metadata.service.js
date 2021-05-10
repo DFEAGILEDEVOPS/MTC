@@ -4,24 +4,37 @@ const storage = require('azure-storage')
 const bluebird = require('bluebird')
 
 let queueService
+let queueNames
 
 const service = {
   getAllQueueMessageCounts: async function getAllQueueMessageCounts () {
     if (!queueService) {
       queueService = getPromisifiedService(storage.createQueueService())
     }
-    const response = await queueService.listQueuesSegmentedAsync(null)
-    const queues = response.result.entries
+    const queues = await getQueueNames()
     const promises = []
     for (let index = 0; index < queues.length; index++) {
       const queue = queues[index]
-      promises.push(queueService.getQueueMetadataAsync(queue.name))
+      promises.push(queueService.getQueueMetadataAsync(queue))
     }
     return Promise.all(promises)
   }
 }
 
-module.exports = service
+async function getQueueNames () {
+  if (!queueService) {
+    queueService = getPromisifiedService(storage.createQueueService())
+  }
+  if (queueNames) return queueNames
+  const response = await queueService.listQueuesSegmentedAsync(null)
+  queueNames = []
+  const queues = response.result.entries
+  for (let index = 0; index < queues.length; index++) {
+    const queue = queues[index]
+    queueNames.push(queue.name)
+  }
+  return queueNames
+}
 
 function getPromisifiedService (storageService) {
   bluebird.promisifyAll(storageService, {
@@ -42,3 +55,5 @@ function getPromisifiedService (storageService) {
   })
   return storageService
 }
+
+module.exports = service
