@@ -3,9 +3,6 @@
 /* global describe, it, expect, spyOn */
 const sut = require('../../../services/tech-support-queue-management.service')
 const storageDataService = require('../../../services/data-access/storage-queue-metadata.service')
-const serviceBusDataService = require('../../../services/data-access/service-bus-queue-metadata.service')
-const R = require('ramda')
-const { stringifyConfiguration } = require('tslint/lib/configuration')
 
 describe('tech support queue management service', () => {
   it('subject should be defined', () => {
@@ -49,7 +46,7 @@ describe('tech support queue management service', () => {
         }
       ]
       spyOn(storageDataService, 'getAllQueueMessageCounts').and.returnValue(rawData)
-      const output = await sut.getStorageAccountQueueSummary() 
+      const output = await sut.getStorageAccountQueueSummary()
       expect(storageDataService.getAllQueueMessageCounts).toHaveBeenCalledTimes(1)
       expect(output).toBeDefined()
       expect(output.length).toBe(2)
