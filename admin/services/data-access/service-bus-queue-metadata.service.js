@@ -3,14 +3,12 @@
 const sb = require('@azure/service-bus')
 const config = require('../../config')
 
-// TODO move this to data access folder once storage queue service is done, and aggregate both from there
-
 let adminClient
 let queueNames
 
 const serviceBusQueueMetadataService = {
   getQueueNames: async function getQueueNames () {
-    if (queueNames) return
+    if (queueNames) return queueNames
     queueNames = []
     const queues = await getQueueClient().listQueues()
     let q = await queues.next()
