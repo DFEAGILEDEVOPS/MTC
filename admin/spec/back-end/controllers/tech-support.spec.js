@@ -113,7 +113,7 @@ describe('tech-support controller', () => {
   })
 
   describe('/queue-overview', () => {
-    it('GET: should send queueInfo as array', async () => {
+    it('GET: should request storage account and service bus queue summaries', async () => {
       const req = getRequest(getReqParams('/tech-support/queue-overview', 'GET'))
       const res = getResponse()
       spyOn(queueMgmtService, 'getServiceBusQueueSummary')

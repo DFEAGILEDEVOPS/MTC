@@ -15,6 +15,7 @@ describe('tech support queue management service', () => {
       const output = await sut.getStorageAccountQueueSummary()
       expect(storageDataService.getAllQueueMessageCounts).toHaveBeenCalledTimes(1)
       expect(output).toBeDefined()
+      expect(output).toEqual([])
       expect(output.length).toBe(0)
     })
 
