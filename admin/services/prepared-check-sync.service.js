@@ -12,7 +12,7 @@ const addMessageToServiceBus = async (pupilUrlSlug) => {
     sbQueueSender = sbClient.createSender('check-sync')
   }
 
-  await sbQueueSender.send({
+  await sbQueueSender.sendMessages({
     body: {
       pupilUUID: pupilUrlSlug,
       version: 1
