@@ -1,0 +1,80 @@
+<%- partial('partials/_gds_breadcrumbs_and_sign_out', { breadcrumbs }) %>
+  <main class="govuk-main-wrapper govuk-body" id="main-content" role="main">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl">Queues Overview</h1>
+        <%- partial('partials/_gds_session_expiry') %>
+          <%- partial('partials/_flash-messages') %>
+          <!-- service bus table -->
+            <h3 class="govuk-heading-m">Service Bus</h3>
+            <table class="govuk-table govuk-spacious govuk-!-font-size-16">
+              <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                  <th scope="col">Name</th>
+                  <th scope="col">Active Messages</th>
+                  <th scope="col">Dead Lettered</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% sbQueueInfo.forEach((queue)=> { %>
+                  <tr class="govuk-table__row">
+                    <td>
+                      <%= queue.name %>
+                    </td>
+                    <td>
+                      <%= queue.activeMessageCount %>
+                    </td>
+                    <td>
+                      <%= queue.deadLetterCount %>
+                    </td>
+                  </tr>
+                  <% }) %>
+              </tbody>
+            </table>
+            <!-- storage queues table -->
+            <h3 class="govuk-heading-m">Storage Account</h3>
+            <table class="govuk-table govuk-spacious govuk-!-font-size-16">
+              <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                  <th scope="col">Name</th>
+                  <th scope="col">Active Messages</th>
+                  <th scope="col">Dead Lettered</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% saQueueInfo.forEach((queue)=> { %>
+                  <tr class="govuk-table__row">
+                    <td>
+                      <%= queue.name %>
+                    </td>
+                    <td>
+                      <%= queue.activeMessageCount %>
+                    </td>
+                    <td>
+                      <%= queue.deadLetterCount %>
+                    </td>
+                  </tr>
+                  <% }) %>
+              </tbody>
+            </table>
+      </div>
+
+      <div class="govuk-grid-column-one-third" aria-label="sidebar">
+        <aside class="app-related-items" role="complementary">
+          <h2 class="govuk-heading-m" id="subsection-title">
+            Related
+          </h2>
+          <nav role="navigation" aria-labelledby="subsection-title">
+            <ul class="govuk-list govuk-!-font-size-16">
+              <li>
+                <a class="govuk-link" href="/tech-support/queues/summary">Summary</a>
+              </li>
+              <li>
+                <a class="govuk-link" href="/tech-support/queues/replay">Replay Messages</a>
+              </li>
+            </ul>
+          </nav>
+        </aside>
+      </div>
+    </div>
+  </main>
