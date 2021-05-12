@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "dotenv": "^9.0.2",
+    "ioredis": "^4.27.2"
+  }
+}
