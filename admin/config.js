@@ -136,10 +136,6 @@ module.exports = {
     jwtTimeOutHours: process.env.JWT_TIMEOUT_HOURS || 12,
     sasTimeOutHours: process.env.SAS_TIMEOUT_HOURS || 25
   },
-  Azure: {
-    queuePrefix: process.env.AZURE_QUEUE_PREFIX || '',
-    tablePrefix: process.env.AZURE_TABLE_PREFIX || ''
-  },
   Monitoring: {
     ApplicationInsights: {
       Key: process.env.APPINSIGHTS_INSTRUMENTATIONKEY,
