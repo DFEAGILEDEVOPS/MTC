@@ -102,4 +102,10 @@ router.get(
   techSupportController.postRedisBatchDropConfirmPage
 )
 
+router.get(
+  '/queue-overview',
+  isAuthenticated([roles.techSupport]),
+  techSupportController.showQueueOverview
+)
+
 module.exports = router

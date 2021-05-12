@@ -5,6 +5,7 @@ const httpMocks = require('node-mocks-http')
 const checkDiagnosticService = require('../../../services/check-diagnostic.service')
 const payloadService = require('../../../services/payload.service')
 const administrationMessageService = require('../../../services/administration-message.service')
+const queueMgmtService = require('../../../services/tech-support-queue-management.service')
 
 let sut
 let next
@@ -108,6 +109,21 @@ describe('tech-support controller', () => {
       expect(res.type).toHaveBeenCalledWith('json')
       expect(next).not.toHaveBeenCalled()
       expect(payloadService.getPayload).toHaveBeenCalledWith(checkCode)
+    })
+  })
+
+  describe('/queue-overview', () => {
+    it('GET: should request storage account and service bus queue summaries', async () => {
+      const req = getRequest(getReqParams('/tech-support/queue-overview', 'GET'))
+      const res = getResponse()
+      spyOn(queueMgmtService, 'getServiceBusQueueSummary')
+      spyOn(queueMgmtService, 'getStorageAccountQueueSummary')
+      spyOn(res, 'render')
+      await sut.showQueueOverview(req, res, next)
+      expect(res.render).toHaveBeenCalled()
+      expect(next).not.toHaveBeenCalled()
+      expect(queueMgmtService.getServiceBusQueueSummary).toHaveBeenCalledTimes(1)
+      expect(queueMgmtService.getStorageAccountQueueSummary).toHaveBeenCalledTimes(1)
     })
   })
 })

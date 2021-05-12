@@ -8,6 +8,7 @@ const redisService = require('../services/tech-support/redis.service')
 const administrationMessageService = require('../services/administration-message.service')
 const redisErrorMessages = require('../lib/errors/redis').redis
 const moment = require('moment')
+const queueMgmtService = require('../services/tech-support-queue-management.service')
 
 const controller = {
 /**
@@ -300,6 +301,22 @@ const controller = {
       const timeTaken = (t2 - t1) / 1000
       req.flash('info', `Redis keys [${keys.join(', ')}] dropped in ${timeTaken} seconds`)
       res.redirect('/tech-support/redis-overview')
+    } catch (error) {
+      return next(error)
+    }
+  },
+
+  showQueueOverview: async function showQueueOverview (req, res, next) {
+    req.breadcrumbs('Queue Overview')
+    res.locals.pageTitle = 'Queue Overview'
+    try {
+      const sbQueueInfo = await queueMgmtService.getServiceBusQueueSummary()
+      const storageQueueInfo = await queueMgmtService.getStorageAccountQueueSummary()
+      res.render('tech-support/queue-overview', {
+        breadcrumbs: req.breadcrumbs(),
+        sbQueueInfo: sbQueueInfo,
+        saQueueInfo: storageQueueInfo
+      })
     } catch (error) {
       return next(error)
     }
