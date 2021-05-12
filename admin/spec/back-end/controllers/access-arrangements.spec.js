@@ -200,7 +200,6 @@ describe('access arrangements controller:', () => {
 
       await controller.getOverview(req, res, next)
       const data = res._getRenderData()
-      console.log('data', data)
       expect(data.retroInputAssistantText).toContain('/access-arrangements/retro-add-input-assistant')
       tearDownFakeTime()
     })

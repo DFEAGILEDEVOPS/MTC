@@ -39,7 +39,7 @@
     "**/**/ajv": "^6.12.6"
   },
   "dependencies": {
-    "@azure/service-bus": "^1.1.0",
+    "@azure/service-bus": "^7.0.5",
     "applicationinsights": "^1.8.0",
     "axios": "^0.21.1",
     "azure-storage": "^2.10.2",
