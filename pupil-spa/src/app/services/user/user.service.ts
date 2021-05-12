@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { APP_CONFIG } from '../config/config.service';
 
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpService } from '../http/http.service';
 import { StorageService } from '../storage/storage.service';
 import {
   ConfigStorageKey,
@@ -21,18 +21,13 @@ export class UserService {
   private loggedIn = false;
   data: any = {};
 
-  constructor(private http: HttpClient, private storageService: StorageService) {
+  constructor(private http: HttpService, private storageService: StorageService) {
     this.loggedIn = !!this.storageService.getAccessArrangements();
   }
 
   login(schoolPin, pupilPin): Promise<any> {
     return new Promise(async (resolve, reject) => {
-      const headers = {
-        headers: new HttpHeaders( { 'Content-Type': 'application/json' })
-      };
-
-      await this.http.post(`${APP_CONFIG.authURL}`, { schoolPin, pupilPin }, headers)
-        .toPromise()
+      await this.http.post(`${APP_CONFIG.authURL}`, { schoolPin, pupilPin })
         .then(data => {
           this.loggedIn = true;
           this.storageService.clear();
@@ -41,7 +36,7 @@ export class UserService {
           this.storageService.setPupil(data[pupilStorageKey.toString()]);
           this.storageService.setSchool(data[schoolStorageKey.toString()]);
           this.storageService.setToken(data[tokensStorageKey.toString()]);
-          resolve();
+          resolve(true);
         },
         (err) => {
           reject(err);
