@@ -38,7 +38,7 @@ const deleteQueue = (queueName) => (new Promise((resolve, reject) => {
 }))
 
 async function main () {
-  const promises = queues.map(q => deleteQueue(q))
+  const promises = queues.map(q => deleteQueue(q.name))
   await Promise.all(promises)
 }
 

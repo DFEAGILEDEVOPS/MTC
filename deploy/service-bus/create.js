@@ -18,20 +18,25 @@ try {
 const azure = require('azure')
 const sbService = azure.createServiceBusService(process.env.AZURE_SERVICE_BUS_CONNECTION_STRING)
 const queues = require('./queues-topics.json').queues
-const fiveGigabytes = 5120
-const fourteenDays = 'P14D'
-const fiveMinutes = 'PT5M'
-const oneDay = 'P1D'
+const queueDefaults = require('./queues-topics.json').queueDefaults
 
-const defaultQueueOptions = {
-  MaxSizeInMegabytes: fiveGigabytes,
-  DefaultMessageTimeToLive: fourteenDays,
-  LockDuration: fiveMinutes,
-  RequiresDuplicateDetection: true,
-  DeadLetteringOnMessageExpiration: true,
-  DuplicateDetectionHistoryTimeWindow: oneDay,
-  EnablePartitioning: false,
-  RequiresSession: false
+async function main () {
+  const promises = queues.map(q => {
+    const queueOptions = getQueueProperties(queueDefaults, q)
+    return createQueue(q.name, queueOptions)
+  })
+  await Promise.all(promises)
+}
+
+function debug () {
+  const data = queues.map(q => {
+    console.dir(getQueueProperties(queueDefaults, q))
+  })
+}
+
+function getQueueProperties (queueDefaults, queueInfo) {
+  const props = R.mergeRight(queueDefaults, queueInfo)
+  return R.omit([ "name" ], props)
 }
 
 const createQueue = (queueName, queueOptions) => (new Promise((resolve, reject) => {
@@ -45,16 +50,7 @@ const createQueue = (queueName, queueOptions) => (new Promise((resolve, reject) 
   })
 }))
 
-async function main () {
-  const promises = queues.map(q => {
-    const queueOptions = R.clone(defaultQueueOptions)
-    if (q === 'sync-results-to-db-complete') {
-      queueOptions.DefaultMessageTimeToLive = oneDay
-    }
-    return createQueue(q, queueOptions)
-  })
-  await Promise.all(promises)
-}
+// debug()
 
 main().then(() => {
   console.log(`queues created successfully`)
