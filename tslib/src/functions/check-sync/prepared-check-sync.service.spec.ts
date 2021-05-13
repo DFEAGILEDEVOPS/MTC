@@ -12,7 +12,8 @@ let redisServiceMock: IRedisService
 const PreparedCheckSyncDataServiceMock = jest.fn<IPreparedCheckSyncDataService, any>(() => ({
   getActiveCheckReferencesByPupilUuid: jest.fn(),
   getAccessArrangementsCodesByIds: jest.fn(),
-  getAccessArrangementsByCheckCode: jest.fn()
+  getAccessArrangementsByCheckCode: jest.fn(),
+  sqlUpdateCheckConfig: jest.fn()
 }))
 
 const PreparedCheckMergeServiceMock = jest.fn<IPreparedCheckMergeService, any>(() => ({
@@ -167,5 +168,73 @@ describe('prepared-check-sync.service', () => {
     } catch (error) {
       expect(error.message).toBe(`no TTL found on preparedCheck. checkCode:${checkRef.checkCode}`)
     }
+  })
+
+  test('the updated check config is stored in the SQL database', async () => {
+    const originalTTL = 300
+
+    const pupilUUID = 'pupilUUID'
+
+    const checkRef = {
+      checkCode: 'checkCode',
+      pupilPin: '1234',
+      schoolPin: 'abc12def'
+    }
+
+    jest.spyOn(dataServiceMock, 'getActiveCheckReferencesByPupilUuid').mockImplementation(async () => [checkRef])
+
+    // Use this as the existing config
+    const checkConfig: ICheckConfig = {
+      questionTime: 6,
+      loadingTime: 3,
+      practice: false,
+      audibleSounds: false,
+      inputAssistance: false,
+      numpadRemoval: false,
+      fontSize: false,
+      colourContrast: false,
+      questionReader: false,
+      nextBetweenQuestions: false
+    }
+
+    jest.spyOn(redisServiceMock, 'get').mockImplementation(async () => {
+      return {
+        config: checkConfig
+      }
+    })
+
+    // Mock the new config which is picked up from the db
+    jest.spyOn(dataServiceMock, 'getAccessArrangementsByCheckCode').mockResolvedValue([
+      { accessArrangements_id: 1, pupilFontSizeCode: null, pupilColourContrastCode: null },
+      { accessArrangements_id: 2, pupilFontSizeCode: null, pupilColourContrastCode: null },
+      { accessArrangements_id: 3, pupilFontSizeCode: null, pupilColourContrastCode: null },
+      { accessArrangements_id: 4, pupilFontSizeCode: null, pupilColourContrastCode: null },
+      { accessArrangements_id: 5, pupilFontSizeCode: null, pupilColourContrastCode: null },
+      { accessArrangements_id: 6, pupilFontSizeCode: null, pupilColourContrastCode: null },
+      { accessArrangements_id: 7, pupilFontSizeCode: null, pupilColourContrastCode: null }
+    ])
+
+    jest.spyOn(redisServiceMock, 'ttl').mockImplementation(async () => originalTTL)
+
+    const mockUpdatedConfig: ICheckConfig = {
+      audibleSounds: true,
+      checkTime: 30,
+      colourContrast: true,
+      compressCompletedCheck: true,
+      fontSize: true,
+      inputAssistance: true,
+      loadingTime: 3,
+      nextBetweenQuestions: true,
+      numpadRemoval: true,
+      practice: true,
+      questionReader: true,
+      questionTime: 6
+    }
+
+    jest.spyOn(mergeServiceMock, 'merge').mockResolvedValue(mockUpdatedConfig)
+
+    await sut.process(pupilUUID)
+
+    expect(dataServiceMock.sqlUpdateCheckConfig).toHaveBeenCalledWith(checkRef.checkCode, mockUpdatedConfig)
   })
 })
