@@ -68,10 +68,12 @@ const service = {
       [mtc_admin].[pupil] p
       INNER JOIN [mtc_admin].[check] chk ON (p.currentCheckId = chk.id)
       LEFT JOIN [mtc_admin].pupilAccessArrangements paa ON (chk.id = paa.retroInputAssistant_check_id)
+      LEFT JOIN [mtc_admin].checkConfig cc ON (chk.id = cc.check_id)
     WHERE p.school_id = @schoolId
       AND p.attendanceId IS NULL
       AND paa.id IS NULL
       AND chk.complete = 1
+      AND JSON_VALUE(cc.payload, '$.inputAssistance') = 'false'
     ORDER BY lastName;
     `
     return sqlService.readonlyQuery(sql, params)
