@@ -9,6 +9,7 @@ class PupilRegisterPage < SitePrism::Page
   element :add_multiple_pupil_info_message, '.govuk-info-message'
   element :edited_pupil, '.highlight-item'
   element :pupil_status_explanation, '.govuk-details__summary-text'
+  element :pupil_filter, '#search-name'
   section :phase_banner, PhaseBanner, '.govuk-phase-banner'
   section :cookies_banner, CookiesBannerSection, '#global-cookie-message'
 
