@@ -71,5 +71,10 @@ Feature:
       | 13              |
       | 21              |
 
+  Scenario: AA can be added after pin is generated
+    Given I have generated a live pin
+    When I add an AA arrangement
+    And complete the check
+    Then the PS report should include the AA for the pupil
 
 

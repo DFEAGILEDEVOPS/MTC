@@ -243,3 +243,47 @@ end
 And(/^the latest check is recorded$/) do
   expect(@check_details['checkCode']).eql? @second_check_code
 end
+
+
+When(/^I add an AA arrangement$/) do
+  access_arrangments_type = "Audible time alert"
+  visit ENV["ADMIN_BASE_URL"] + access_arrangements_page.url
+  access_arrangements_page.select_pupil_and_arrangement_btn.click
+  select_access_arrangements_page.search_pupil.set(@details_hash[:first_name])
+  select_access_arrangements_page.auto_search_list[0].click
+  access_arrangments_type.split(',').each {|aa| select_access_arrangements_page.select_access_arrangement(aa)}
+  select_access_arrangements_page.save.click
+  sleep(15)
+end
+
+And(/^complete the check$/) do
+  step 'I have logged in'
+  access_arrangements_setting_page.next_btn.click
+  confirmation_page.read_instructions.click
+  start_page.start_warm_up.click
+  warm_up_page.start_now.click
+  step "I complete the warm up questions using the numpad"
+  warm_up_complete_page.start_check.click
+  mtc_check_start_page.start_now.click
+  questions = JSON.parse page.evaluate_script('window.localStorage.getItem("questions");')
+  check_page.complete_check_with_correct_answers(questions.size, 'numpad')
+  complete_page.wait_for_complete_page
+  expect(complete_page).to have_completion_text
+  storage1 = page.evaluate_script('window.localStorage;')
+  @check_code = JSON.parse(storage1['pupil'])['checkCode']
+  @school_uuid = JSON.parse(storage1['school'])['uuid']
+  storage_audit_keys = storage1.keys.select {|x| x.include?('audit')}
+  @audit = []
+  storage_audit_keys.each do |key|
+    @audit << (JSON.parse page.evaluate_script("window.localStorage.getItem('#{key}');"))
+  end
+end
+
+
+Then(/^the PS report should include the AA for the pupil$/) do
+  step 'the data sync and ps report function has run'
+  step 'I should see a record for the pupil in the ps report table'
+  pupil_details = SqlDbHelper.pupil_details_using_school(@details_hash[:upn], @school_id)
+  pupil_aa = SqlDbHelper.get_ps_record_for_pupil(pupil_details['id'])['AccessArr']
+  expect(pupil_aa).to eql '[1]'
+end
