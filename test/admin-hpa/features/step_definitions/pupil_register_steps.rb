@@ -107,3 +107,20 @@ Given(/^I have a pupil not taking the check with the reason (.*)$/) do |reason|
   step "the #{reason} reason should be stored against the pupils"
   sleep 3
 end
+
+
+Then(/^I can search for a pupil via name$/) do
+  pupil = SqlDbHelper.pupil_details_using_school(@upns_for_school.sample, @school_id)
+  pupil_register_page.pupil_filter.set "#{pupil['foreName'][0] + pupil['foreName'][1] + pupil['foreName'][2]}"
+  pupil_row = pupil_register_page.pupil_list.pupil_row.select {|pupil| pupil.text != ''}
+  expect(pupil_row.size).to eql 1
+  expect(pupil_row.first.names.text).to eql "#{pupil['lastName']}, #{pupil['foreName']}"
+end
+
+Then(/^I can search for a pupil via upn$/) do
+  pupil = SqlDbHelper.pupil_details_using_school(@upns_for_school.sample, @school_id)
+  pupil_register_page.pupil_filter.set pupil['upn']
+  pupil_row = pupil_register_page.pupil_list.pupil_row.select {|pupil| pupil.text != ''}
+  expect(pupil_row.size).to eql 1
+  expect(pupil_row.first.names.text).to eql "#{pupil['lastName']}, #{pupil['foreName']}"
+end
