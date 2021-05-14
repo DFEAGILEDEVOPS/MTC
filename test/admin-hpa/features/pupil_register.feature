@@ -50,3 +50,13 @@ Feature:
     Given I am logged in
     And I am on the Pupil Register page
     Then I should see the pupil register data stored in redis
+
+  Scenario: Pupils can be searched for by name
+    Given I am logged in
+    When I am on the Pupil Register page
+    Then I can search for a pupil via name
+
+  Scenario: Pupils can be searched for by upn
+    Given I am logged in
+    When I am on the Pupil Register page
+    Then I can search for a pupil via upn
