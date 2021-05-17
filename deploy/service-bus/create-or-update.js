@@ -15,14 +15,15 @@ try {
   console.error(error)
 }
 
-const azure = require('azure')
-const sbService = azure.createServiceBusService(process.env.AZURE_SERVICE_BUS_CONNECTION_STRING)
-const queues = require('./queues-topics.json').queues
-const queueDefaults = require('./queues-topics.json').queueDefaults
+const sbDeployConfig = require('../deploy.config').ServiceBus
+const azSb = require('@azure/service-bus')
+const sbAdminClient = new azSb.ServiceBusAdministrationClient(process.env.AZURE_SERVICE_BUS_CONNECTION_STRING)
+const queues = sbDeployConfig.Queues
+const queueDefaults = sbDeployConfig.QueueDefaults
 
 async function main () {
   const promises = queues.map(q => {
-    const queueOptions = getQueueProperties(queueDefaults, q)
+    const queueOptions = getQueueProperties(queueDefaults, q.name)
     return createQueue(q.name, queueOptions)
   })
   await Promise.all(promises)
@@ -37,6 +38,26 @@ function debug () {
 function getQueueProperties (queueDefaults, queueInfo) {
   const props = R.mergeRight(queueDefaults, queueInfo)
   return R.omit([ "name" ], props)
+}
+
+async function createOrUpdateQueue (queueName, queueOptions) {
+  return new Promise((resolve, reject) => {
+    const queueExists = await sbAdminClient.queueExists(queueName)
+    if (queueExists) {
+      // update
+    } else {
+      await sbAdminClient.createQueue(queueName, queueOptions)
+    }
+
+    sbService.createQueueIfNotExists(queueName, queueOptions, function (error) {
+      if (!error) {
+        console.log(`${queueName} queue created`)
+        resolve()
+      } else {
+        reject(error)
+      }
+    })
+  })
 }
 
 const createQueue = (queueName, queueOptions) => (new Promise((resolve, reject) => {

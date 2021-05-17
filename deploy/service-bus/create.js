@@ -18,20 +18,21 @@ try {
 const azure = require('azure')
 const sbService = azure.createServiceBusService(process.env.AZURE_SERVICE_BUS_CONNECTION_STRING)
 const queues = require('../deploy.config').ServiceBus.Queues
+const defaultQueueOptions = require('../deploy.config').ServiceBus.QueueDefaults
 const fiveGigabytes = 5120
 const fourteenDays = 'P14D'
 const fiveMinutes = 'PT5M'
 const oneDay = 'P1D'
 
-const defaultQueueOptions = {
-  MaxSizeInMegabytes: fiveGigabytes,
-  DefaultMessageTimeToLive: fourteenDays,
-  LockDuration: fiveMinutes,
-  RequiresDuplicateDetection: true,
-  DeadLetteringOnMessageExpiration: true,
-  DuplicateDetectionHistoryTimeWindow: oneDay,
-  EnablePartitioning: false,
-  RequiresSession: false
+function makeObjectPropertiesFirstCharUpperCase (obj) {
+  var key, keys = Object.keys(obj)
+  var n = keys.length
+  var newobj={}
+  while (n--) {
+    key = `${keys[n].substr(0,1).toUpperCase()}${keys[n].substr(1)}`
+    newobj[key] = obj[key]
+  }
+  return newobj
 }
 
 const createQueue = (queueName, queueOptions) => (new Promise((resolve, reject) => {
@@ -47,10 +48,7 @@ const createQueue = (queueName, queueOptions) => (new Promise((resolve, reject) 
 
 async function main () {
   const promises = queues.map(q => {
-    const queueOptions = R.clone(defaultQueueOptions)
-    if (q === 'sync-results-to-db-complete') {
-      queueOptions.DefaultMessageTimeToLive = oneDay
-    }
+    const queueOptions = R.clone(makeObjectPropertiesFirstCharUpperCase(defaultQueueOptions))
     return createQueue(q.name, queueOptions)
   })
   await Promise.all(promises)

@@ -25,14 +25,14 @@ const sixDays = 'P6D'
 module.exports = {
   ServiceBus: {
     QueueDefaults: {
-      MaxSizeInMegabytes: fiveGigabytes,
-      DefaultMessageTimeToLive: fourteenDays,
-      LockDuration: fiveMinutes,
-      RequiresDuplicateDetection: true,
-      DeadLetteringOnMessageExpiration: true,
-      DuplicateDetectionHistoryTimeWindow: oneDay,
-      EnablePartitioning: false,
-      RequiresSession: false
+      maxSizeInMegabytes: fiveGigabytes,
+      defaultMessageTimeToLive: fourteenDays,
+      lockDuration: fiveMinutes,
+      requiresDuplicateDetection: true,
+      deadLetteringOnMessageExpiration: true,
+      duplicateDetectionHistoryTimeWindow: oneDay,
+      enablePartitioning: false,
+      requiresSession: false
     },
     Queues: [
       {
