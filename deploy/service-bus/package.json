@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "createqs": "node ./create.js",
+    "createV2": "node ./create-or-update.js",
     "deleteqs": "node ./delete.js"
   },
   "engines": {

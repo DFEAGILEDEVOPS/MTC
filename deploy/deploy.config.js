@@ -1,5 +1,6 @@
 'use strict'
 
+const oneGigabyte = 1024
 const fiveGigabytes = 5120
 // for reference...
 // const fourtyGigabytes = 40960
@@ -39,18 +40,18 @@ module.exports = {
       },
       {
         name: 'ps-report-schools',
-        DefaultMessageTimeToLive: sixDays,
-        MaxSizeInMegabytes: {}.hasOwnProperty.call(process.env, 'SERVICE_BUS_QUEUE_MAX_SIZE_PS_REPORT') ? parseInt(process.env.SERVICE_BUS_QUEUE_MAX_SIZE_PS_REPORT, 10) : fiveGigabytes
+        defaultMessageTimeToLive: sixDays,
+        maxSizeInMegabytes: {}.hasOwnProperty.call(process.env, 'SERVICE_BUS_QUEUE_MAX_SIZE_PS_REPORT') ? parseInt(process.env.SERVICE_BUS_QUEUE_MAX_SIZE_PS_REPORT, 10) : fiveGigabytes
       },
       {
         name: 'ps-report-staging',
-        DefaultMessageTimeToLive: sixDays,
-        MaxSizeInMegabytes: {}.hasOwnProperty.call(process.env, 'SERVICE_BUS_QUEUE_MAX_SIZE_PS_REPORT') ? parseInt(process.env.SERVICE_BUS_QUEUE_MAX_SIZE_PS_REPORT, 10) : fiveGigabytes
+        defaultMessageTimeToLive: sixDays,
+        maxSizeInMegabytes: {}.hasOwnProperty.call(process.env, 'SERVICE_BUS_QUEUE_MAX_SIZE_PS_REPORT') ? parseInt(process.env.SERVICE_BUS_QUEUE_MAX_SIZE_PS_REPORT, 10) : fiveGigabytes
       },
       {
         name: 'ps-report-export',
-        DefaultMessageTimeToLive: sixDays,
-        MaxSizeInMegabytes: {}.hasOwnProperty.call(process.env, 'SERVICE_BUS_QUEUE_MAX_SIZE_PS_REPORT') ? parseInt(process.env.SERVICE_BUS_QUEUE_MAX_SIZE_PS_REPORT, 10) : fiveGigabytes
+        defaultMessageTimeToLive: sixDays,
+        maxSizeInMegabytes: {}.hasOwnProperty.call(process.env, 'SERVICE_BUS_QUEUE_MAX_SIZE_PS_REPORT') ? parseInt(process.env.SERVICE_BUS_QUEUE_MAX_SIZE_PS_REPORT, 10) : fiveGigabytes
       },
       {
         name: 'pupil-login'
