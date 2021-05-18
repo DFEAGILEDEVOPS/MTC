@@ -4,12 +4,12 @@ class DeclarationReviewPupilsPage < SitePrism::Page
     element :message, '#lead-paragraph  '
     element :pupils_table, "#attendanceList"
     element :continue_button, 'a[href="/attendance/confirm-and-submit"]'
+    element :view_pupils_link, 'a[href="/pupil-register/pupils-list"]'
 
     section :pupil_list, '#attendanceList tbody' do
       sections :rows, 'tr' do
         element :name, '.govuk-highlight-wrapper span'
         element :reason, 'td:nth-of-type(2)'
-        element :link, 'a'
       end
     end
 
