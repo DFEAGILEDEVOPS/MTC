@@ -10,6 +10,7 @@ class PupilRegisterPage < SitePrism::Page
   element :not_taking_check_link, 'a[href="/pupils-not-taking-the-check"]'
   element :edited_pupil, '.highlight-item'
   element :pupil_status_explanation, '.govuk-details__summary-text'
+  element :pupil_filter, '#search-name'
   section :phase_banner, PhaseBanner, '.govuk-phase-banner'
   section :cookies_banner, CookiesBannerSection, '#global-cookie-message'
 
