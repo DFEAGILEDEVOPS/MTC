@@ -1,4 +1,5 @@
 'use strict'
+
 const path = require('path')
 const fs = require('fs')
 const globalDotEnvFile = path.join(__dirname, '..', '..', '.env')
@@ -17,41 +18,32 @@ try {
 const R = require('ramda')
 const azSb = require('@azure/service-bus')
 const sbAdminClient = new azSb.ServiceBusAdministrationClient(process.env.AZURE_SERVICE_BUS_CONNECTION_STRING)
-const sbDeployConfig = require('../deploy.config').ServiceBus
-const queues = sbDeployConfig.Queues
-const queueDefaults = sbDeployConfig.QueueDefaults
+const sbQueueConfig = require('./deploy.config')
 
 async function main () {
-  const promises = queues.map(q => {
-    return createOrUpdateQueue(q.name)
+  const promises = sbQueueConfig.map(q => {
+    return createOrUpdateQueue(q)
   })
   await Promise.all(promises)
 }
 
-function getQueueOptions (queueName) {
-  const queueSpecificOptions = R.find(R.propEq('name', queueName))(queues)
-  const props = R.mergeRight(queueDefaults, queueSpecificOptions)
-  return props
-}
-
-async function createOrUpdateQueue (queueName) {
-  const queueOptions = getQueueOptions(queueName)
-  const queueExists = await sbAdminClient.queueExists(queueName)
+async function createOrUpdateQueue (queueInfo) {
+  const queueExists = await sbAdminClient.queueExists(queueInfo.name)
   if (queueExists) {
-    const queue = await sbAdminClient.getQueue(queueName)
-    // merge in the extra config and compare
-    const queueUpdate = R.mergeRight(queue, queueOptions)
+    console.log(`queue ${queueInfo.name} exists, comparing properties... `)
+    const queue = await sbAdminClient.getQueue(queueInfo.name)
+    const queueUpdate = R.mergeRight(queue, queueInfo)
     if (R.equals(queue, queueUpdate)) {
-      console.log(`no updated settings for existing queue ${queueName}.`)
+      console.log(`no properties to update for ${queueInfo.name}.`)
       return
     } else {
-      console.log(`updated settings for ${queueName} queue. Updating to...`)
+      console.log(`updated properties for ${queueInfo.name} found. performing update...`)
       console.dir(queueUpdate)
       return sbAdminClient.updateQueue(queueUpdate)
     }
   } else {
-    console.log(`${queueName} does not exist. creating...`)
-    return sbAdminClient.createQueue(queueName, queueOptions)
+    console.log(`${queueInfo.name} does not exist. creating...`)
+    return sbAdminClient.createQueue(queueInfo.name, queueInfo)
   }
 }
 

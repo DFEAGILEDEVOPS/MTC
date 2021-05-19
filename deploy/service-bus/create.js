@@ -17,7 +17,7 @@ try {
 const R = require('ramda')
 const azure = require('azure')
 const sbService = azure.createServiceBusService(process.env.AZURE_SERVICE_BUS_CONNECTION_STRING)
-const queues = require('../deploy.config').ServiceBus.Queues
+const queues = require('./deploy.config')
 
 const fiveGigabytes = 5120
 const fourteenDays = 'P14D'
