@@ -1,0 +1,19 @@
+{
+  "bindings": [
+    {
+      "name": "queueReplayRequest",
+      "type": "serviceBusTrigger",
+      "direction": "in",
+      "queueName": "queue-replay",
+      "connection": "AZURE_SERVICE_BUS_CONNECTION_STRING"
+    },
+    {
+      "direction": "out",
+      "type": "table",
+      "name": "queueReplayAuditTable",
+      "tableName": "queueReplayAudit",
+      "connection": "AZURE_STORAGE_CONNECTION_STRING"
+    }
+  ],
+  "scriptFile": "../dist/functions/queue-replay/index.js"
+}

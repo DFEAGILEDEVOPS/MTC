@@ -119,7 +119,7 @@ describe('tech-support controller', () => {
       spyOn(queueMgmtService, 'getServiceBusQueueSummary')
       spyOn(queueMgmtService, 'getStorageAccountQueueSummary')
       spyOn(res, 'render')
-      await sut.showQueueOverview(req, res, next)
+      await sut.getQueueOverview(req, res, next)
       expect(res.render).toHaveBeenCalled()
       expect(next).not.toHaveBeenCalled()
       expect(queueMgmtService.getServiceBusQueueSummary).toHaveBeenCalledTimes(1)

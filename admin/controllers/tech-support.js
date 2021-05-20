@@ -306,7 +306,7 @@ const controller = {
     }
   },
 
-  showQueueOverview: async function showQueueOverview (req, res, next) {
+  getQueueOverview: async function getQueueOverview (req, res, next) {
     req.breadcrumbs('Queue Overview')
     res.locals.pageTitle = 'Queue Overview'
     try {
@@ -316,6 +316,32 @@ const controller = {
         breadcrumbs: req.breadcrumbs(),
         sbQueueInfo: sbQueueInfo,
         saQueueInfo: storageQueueInfo
+      })
+    } catch (error) {
+      return next(error)
+    }
+  },
+
+  getConfirmQueueReplay: async function getConfirmQueueReplay (req, res, next) {
+    req.breadcrumbs('Replay Queue Messages')
+    res.locals.pageTitle = 'Replay Queue Messages'
+    try {
+      res.render('tech-support/confirm-queue-replay', {
+        breadcrumbs: req.breadcrumbs(),
+        replayRequest: {}
+      })
+    } catch (error) {
+      return next(error)
+    }
+  },
+
+  postReplayQueue: async function replayQueue (req, res, next) {
+    req.breadcrumbs('Replay Queue Messages')
+    res.locals.pageTitle = 'Replay Queue Messages'
+    try {
+      res.render('tech-support/replay-queue-confirm', {
+        breadcrumbs: req.breadcrumbs(),
+        replayRequest: {}
       })
     } catch (error) {
       return next(error)

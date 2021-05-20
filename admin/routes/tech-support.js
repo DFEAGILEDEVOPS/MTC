@@ -105,7 +105,7 @@ router.get(
 router.get(
   '/queue-overview',
   isAuthenticated([roles.techSupport]),
-  techSupportController.showQueueOverview
+  techSupportController.getQueueOverview
 )
 
 module.exports = router
