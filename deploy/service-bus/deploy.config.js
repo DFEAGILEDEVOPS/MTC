@@ -74,6 +74,9 @@ const config = {
       name: 'pupil-login'
     },
     {
+      name: 'queue-replay'
+    },
+    {
       name: 'school-results-cache'
     },
     {
