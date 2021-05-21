@@ -11,6 +11,7 @@
     "checkStartedEvents",
     "pupilEvent",
     "pupilFeedback",
+    "queueReplayAudit",
     "receivedCheck"
   ],
   "blobcontainers": [
