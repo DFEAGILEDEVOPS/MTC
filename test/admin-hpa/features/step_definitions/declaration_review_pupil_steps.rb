@@ -35,8 +35,17 @@ Given(/^I have a new pupil with a reason for not taking a check$/) do
   expect(pupil_row.status.text).to_not be_nil
 end
 
-And(/^headteacher select the pupil for updating its reason$/)do
-  declaration_review_pupils_page.select_pupil(@pupil_forename)
+And(/^headteacher updates the pupils reason for not taking a check$/)do
+  declaration_review_pupils_page.view_pupils_link.click
+  pupil_register_page.not_taking_check_link.click
+  step 'I remove a pupil from the list of pupils not taking a check'
+  step 'the pupil should be removed and any attendance code cleared from the db against the pupil'
+  @name = @pupil_forename
+  pupil_reason_page.load
+  @reason = 'Pupil not taking the check'
+  step "I add #{@reason} as a reason for a particular pupil"
+  step 'the Pupil not taking the check reason should be stored against the pupils'
+  step 'I should see the updated pupil on the hub page'
 end
 
 Then(/^reason is updated for the pupil on HDF review pupil detail page$/) do
