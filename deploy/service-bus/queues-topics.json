@@ -9,6 +9,7 @@
     "ps-report-staging",
     "ps-report-export",
     "pupil-login",
+    "queue-replay",
     "school-results-cache",
     "sync-results-to-db-complete"
   ]
