@@ -87,6 +87,7 @@ async function process (notifications: ISchoolResultsCacheMessage[], context: Co
       await abandonMessages([msg], context)
     }
   }
+  await resultService.close()
 }
 
 async function completeMessages (messageBatch: sb.ServiceBusMessage[], context: Context): Promise<void> {
