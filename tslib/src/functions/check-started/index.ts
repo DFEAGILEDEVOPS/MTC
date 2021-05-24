@@ -1,8 +1,8 @@
 import { AzureFunction, Context } from '@azure/functions'
 import { performance } from 'perf_hooks'
 import { ICheckStartedMessage, CheckStartedService, ICheckStartedFunctionBindings } from './check-started.service'
-const functionName = 'check-started'
 import * as os from 'os'
+const functionName = 'check-started'
 
 const queueTrigger: AzureFunction = async function (context: Context, checkStartedMessage: ICheckStartedMessage): Promise<void> {
   const start = performance.now()
