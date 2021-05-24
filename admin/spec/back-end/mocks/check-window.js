@@ -21,5 +21,31 @@ module.exports = {
     familiarisationCheckEndDate: moment.utc().add(1, 'week'),
     isDeleted: false,
     urlSlug: '0000-0000-00000-00000'
+  },
+
+  postLiveCheckWindow: {
+    id: 3,
+    name: 'Check Window Name',
+    adminStartDate: moment.utc().subtract(1, 'month'),
+    adminEndDate: moment.utc().add(1, 'week'),
+    checkStartDate: moment.utc().subtract(2, 'week'),
+    checkEndDate: moment.utc().subtract(1, 'week'),
+    familiarisationCheckStartDate: moment.utc().subtract(3, 'weeks'),
+    familiarisationCheckEndDate: moment.utc().subtract(2, 'week'),
+    isDeleted: false,
+    urlSlug: '0000-0000-00000-00000'
+  },
+
+  familiarisationCheckWindow: {
+    id: 3,
+    name: 'Check Window Name',
+    adminStartDate: moment.utc().subtract(1, 'week'),
+    adminEndDate: moment.utc().add(1, 'week'),
+    checkStartDate: moment.utc().add(1, 'week'),
+    checkEndDate: moment.utc().add(2, 'week'),
+    familiarisationCheckStartDate: moment.utc().subtract(1, 'week'),
+    familiarisationCheckEndDate: moment.utc().add(2, 'week'),
+    isDeleted: false,
+    urlSlug: '0000-0000-00000-00000'
   }
 }

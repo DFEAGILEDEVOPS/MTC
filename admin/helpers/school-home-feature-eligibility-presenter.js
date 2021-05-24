@@ -39,6 +39,7 @@ schoolHomeFeatureEligibilityPresenter.getPresentationData = (checkWindowData, ti
   featureEligibilityData.isLivePinGenerationAllowed = schoolHomeFeatureEligibilityPresenter.isLivePinGenerationAllowed(currentDate, checkWindowData)
   featureEligibilityData.isLiveInTheFuture = schoolHomeFeatureEligibilityPresenter.isLiveInTheFuture(currentDate, checkWindowData)
   featureEligibilityData.isWithinLiveUnavailableHours = schoolHomeFeatureEligibilityPresenter.isWithinLiveUnavailableHours(currentDate, checkWindowData)
+  featureEligibilityData.isCheckWindowClosed = schoolHomeFeatureEligibilityPresenter.isCheckWindowClosed(currentDate, checkWindowData)
 
   // Restarts
   featureEligibilityData.isRestartsPageAccessible = schoolHomeFeatureEligibilityPresenter.isRestartsPageAccessible(currentDate, checkWindowData)
@@ -173,6 +174,16 @@ schoolHomeFeatureEligibilityPresenter.isAccessArrangementsPageAccessible = (curr
  */
 schoolHomeFeatureEligibilityPresenter.isHdfPageAccessible = (currentDate, checkWindowData) => {
   return currentDate.isBetween(checkWindowData.checkStartDate, checkWindowData.adminEndDate)
+}
+
+/**
+ * Determine if the current date is AFTER the period where live checks can be taken
+ * @param {moment.Moment} currentDate
+ * @param checkWindowData
+ * @return {Boolean}
+ */
+schoolHomeFeatureEligibilityPresenter.isCheckWindowClosed = function isCheckWindowClosed (currentDate, checkWindowData) {
+  return currentDate.isAfter(checkWindowData.checkEndDate)
 }
 
 module.exports = schoolHomeFeatureEligibilityPresenter

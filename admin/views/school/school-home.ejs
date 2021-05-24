@@ -25,12 +25,7 @@
                     <h2 class="govuk-heading-s arrow-up"><a class="govuk-link" href="/pupil-register/pupils-list">View, add or edit pupils on your school's register</a></h2>
                 </li>
                 <li class="govuk-!-margin-bottom-4">
-                    <% if (featureEligibilityData.isGroupsPageAccessible) { %>
-                    <h2 class="govuk-heading-s arrow-up"><a class="govuk-link" href="/group/pupils-list">Organise pupils into groups</a></h2>
-                    <% } else { %>
-                    <h2 class="govuk-heading-s arrow-up govuk-!-margin-bottom-0"><a class="govuk-font-greyed-out govuk-disabled-link">Organise pupils into groups</a></h2>
-                    <strong class="disabled-banner">UNAVAILABLE</strong>
-                    <% } %>
+                    <%- groupsLinkSlot %>
                 </li>
                 <li class="govuk-!-margin-bottom-4">
                     <h2 class="govuk-heading-s arrow-up"><a class="govuk-link"
@@ -40,27 +35,16 @@
                 </li>
                 <li class="govuk-!-margin-bottom-4">
                     <% if (isFeatureEnabled('accessArrangements')) { %>
-                    <h2 class="govuk-heading-s arrow-up"><a class="govuk-link" href="/access-arrangements/overview">Enable access arrangements for pupils who need them</a></h2>
-                    <% } else { %>
-                    <h2 class="govuk-heading-s arrow-up"><a class="govuk-font-greyed-out govuk-disabled-link">Enable access arrangements for pupils who need them</a></h2>
+                        <h2 class="govuk-heading-s arrow-up">
+                            <a class="govuk-link" href="/access-arrangements/overview">Enable access arrangements for pupils who need them</a>
+                        </h2>
                     <% } %>
                 </li>
             </ol>
             <h3 class="govuk-heading-m govuk-!-margin-top-9">Preview the check</h3>
             <ol class="govuk-list">
                 <li class="govuk-!-margin-bottom-4">
-                    <% if (featureEligibilityData.isFamiliarisationPinGenerationAllowed) { %>
-                    <h2 class="govuk-heading-s arrow-up"><a class="govuk-link" href="/pupil-pin/generate-familiarisation-pins-overview">Generate passwords and PINs for the try it out check</a></h2>
-                    <% } else { %>
-                    <h2 class="govuk-heading-s arrow-up govuk-!-margin-bottom-0"><a class="govuk-font-greyed-out govuk-disabled-link">Generate passwords and PINs for the try it out check</a></h2>
-                        <strong class="disabled-banner">UNAVAILABLE</strong>
-                        <% if (featureEligibilityData.isWithinFamiliarisationUnavailableHours) { %>
-                            <span class="govuk-!-font-size-14 govuk-font-greyed-out">Open 6am - 4pm</span>
-                        <% } %>
-                        <% if (featureEligibilityData.isFamiliarisationInTheFuture) { %>
-                            <span class="govuk-!-font-size-14 govuk-font-greyed-out">Open 6am - 4pm on <%= featureEligibilityData.familiarisationCheckStartDate %> - <%= featureEligibilityData.familiarisationCheckEndDate %></span>
-                        <% } %>
-                    <% } %>
+                   <%- tryItOutPinGenSlot %>
                 </li>
             </ol>
             <h3 class="govuk-heading-m govuk-!-margin-top-9">Start the official check</h3>

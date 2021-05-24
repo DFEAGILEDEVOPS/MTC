@@ -257,6 +257,36 @@ describe('schoolHomeFeatureEligibilityPresenter', () => {
         const pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
         expect(pinGenerationEligibilityData.isHdfPageAccessible).toBeTruthy()
       })
+      it('calculates when the check window is closed', async () => {
+        const checkWindowData = {
+          id: 1,
+          adminStartDate: moment.utc().subtract(10, 'day'),
+          adminEndDate: moment.utc().add(1, 'days'),
+          familiarisationCheckStartDate: moment.utc().subtract(9, 'days'),
+          familiarisationCheckEndDate: moment.utc().add(5, 'days'),
+          checkStartDate: moment.utc().subtract(5, 'day'),
+          checkEndDate: moment.utc().subtract(1, 'days')
+        }
+        const allowedDateTime = moment.utc().set({ hour: 11 })
+        spyOn(moment, 'utc').and.returnValue(allowedDateTime)
+        const pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
+        expect(pinGenerationEligibilityData.isCheckWindowClosed).toBe(true)
+      })
+      it('calculates when the check window is open', async () => {
+        const checkWindowData = {
+          id: 1,
+          adminStartDate: moment.utc().subtract(10, 'day'),
+          adminEndDate: moment.utc().add(2, 'days'),
+          familiarisationCheckStartDate: moment.utc().subtract(9, 'days'),
+          familiarisationCheckEndDate: moment.utc().add(1, 'days'),
+          checkStartDate: moment.utc().subtract(5, 'day'),
+          checkEndDate: moment.utc().add(1, 'days')
+        }
+        const allowedDateTime = moment.utc().set({ hour: 11 })
+        spyOn(moment, 'utc').and.returnValue(allowedDateTime)
+        const pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
+        expect(pinGenerationEligibilityData.isCheckWindowClosed).toBe(false)
+      })
     })
     describe('when override is enabled', () => {
       beforeEach(() => {
