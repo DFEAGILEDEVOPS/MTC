@@ -2,16 +2,26 @@ const dateService = require('../services/date.service')
 const schoolDataService = require('../services/data-access/school.data.service')
 const pinValidator = require('../lib/validator/pin-validator')
 const pinService = {}
+const roles = require('../lib/consts/roles')
 
 /**
  * Get active school Password
  * @param {number} dfeNumber
  * @returns {Promise<String>}
  */
-pinService.getActiveSchool = async (dfeNumber) => {
+pinService.getActiveSchool = async (dfeNumber, userRole) => {
+  if (!userRole) {
+    throw new Error('userRole is required')
+  }
   const school = await schoolDataService.sqlFindOneByDfeNumber(dfeNumber)
   if (!pinValidator.isActivePin(school.pin, school.pinExpiresAt)) {
     return null
+  }
+  if (userRole === roles.helpdesk) {
+    // Mask the password from the helpdesk
+    if (school.pin && school.pin.length) {
+      school.pin = '****'
+    }
   }
   return school
 }

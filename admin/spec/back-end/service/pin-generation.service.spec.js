@@ -20,6 +20,7 @@ describe('pin-generation.service', () => {
     describe('if schoolPin is not valid', () => {
       it('should generate school password', () => {
         const school = Object.assign({}, schoolMock)
+        school.pinExpiresAt = moment().subtract(1, 'minute')
         const result = pinGenerationService.generateSchoolPassword(school)
         expect(result.pinExpiresAt).toBeDefined()
         expect(result.pin.length).toBe(8)
