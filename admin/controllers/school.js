@@ -15,9 +15,10 @@ controller.getSchoolLandingPage = async function getSchoolLandingPage (req, res,
   res.locals.pageTitle = 'School Homepage'
   try {
     const isHelpdeskRole = helpdeskService.isHelpdeskRole(req.user)
+    const isStaAdmin = helpdeskService.isStaAdmin(req.user)
     const isImpersonating = helpdeskService.isImpersonating(req.user)
-    // Prevent helpdesk users from accessing school home when impersonation data are not populated
-    if (isHelpdeskRole && !isImpersonating) {
+    // Prevent helpdesk/staAdmin users from accessing school home when impersonation data is not populated
+    if ((isHelpdeskRole || isStaAdmin) && !isImpersonating) {
       return res.redirect('/helpdesk/school-impersonation')
     }
 

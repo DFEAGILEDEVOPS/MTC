@@ -8,12 +8,12 @@ const resultsController = require('../controllers/results')
 
 /* Check Form v2 routing */
 router.get('/view-results',
-  isAuthenticated([roles.teacher, roles.helpdesk]),
+  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),
   resultsController.getViewResultsPage
 )
 
 router.get('/ctf-download',
-  isAuthenticated([roles.teacher, roles.helpdesk]),
+  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),
   resultsController.getCtfDownload
 )
 

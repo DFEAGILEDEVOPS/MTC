@@ -199,7 +199,7 @@ const getViewAndCustomPrintPins = async function getViewAndCustomPrintPins (req,
       })
     }
     pupils = await pinGenerationV2Service.getPupilsWithActivePins(req.user.schoolId, isLiveCheck)
-    school = await pinService.getActiveSchool(req.user.School)
+    school = await pinService.getActiveSchool(req.user.School, req.user.role)
     error = await checkWindowSanityCheckService.check(isLiveCheck)
     if (Array.isArray(pupils) && pupils.length > 0) {
       groups = await groupService.findGroupsByPupil(req.user.schoolId, pupils)
