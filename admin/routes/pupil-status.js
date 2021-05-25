@@ -8,7 +8,7 @@ const pupilStatusController = require('../controllers/pupil-status')
 
 /* Pupil Status routing */
 router.get('/',
-  isAuthenticated([roles.teacher, roles.helpdesk]),
+  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),
   pupilStatusController.getViewPupilStatus
 )
 

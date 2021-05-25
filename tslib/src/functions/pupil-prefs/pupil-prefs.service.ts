@@ -49,6 +49,7 @@ export class PupilPrefsService {
       pupilUUID: pupilUUID,
       version: 1
     })
+    await this.dataService.closeDataService()
   }
 }
 
@@ -71,6 +72,7 @@ export interface IPupilPreferenceDataUpdate {
 export interface IPupilPrefsDataService {
   updatePupilPreferences (dataUpdates: IPupilPreferenceDataUpdate[]): Promise<void>
   getPupilUUIDByCheckCode (checkCode: string): Promise<any>
+  closeDataService (): Promise<void>
 }
 
 export class PupilPrefsDataService implements IPupilPrefsDataService {
@@ -110,6 +112,10 @@ export class PupilPrefsDataService implements IPupilPrefsDataService {
       throw new Error(`pupil-prefs: pupil UUID lookup has ${result.length} rows, when expecting 1 only`)
     }
     return result[0].pupilUUID
+  }
+
+  async closeDataService (): Promise<void> {
+    await this.redisService.quit()
   }
 
   private buildUpdateRequest (dataUpdate: IPupilPreferenceDataUpdate): ITransactionRequest {

@@ -14,6 +14,7 @@ const home = (req, res) => {
     switch (req.user.role) {
       case roles.teacher:
       case roles.helpdesk:
+      case roles.staAdmin:
         return res.redirect(homeRoutes.schoolHomeRoute)
       case roles.testDeveloper:
         return res.redirect(homeRoutes.testDeveloperHomeRoute)
