@@ -48,6 +48,7 @@ export class SyncResultsService {
     await this.syncResultsDataService.insertToDatabase([flattenedTransaction], checkCompletionMessage?.markedCheck?.checkCode)
     this.logger.info(`${name}: going to drop the redis cache for schooll ${checkCompletionMessage?.validatedCheck?.schoolUUID}`)
     await this.dropRedisSchoolResult(checkCompletionMessage?.validatedCheck?.schoolUUID)
+    await this.redisService.quit()
   }
 
   private async dropRedisSchoolResult (schoolUuid: string): Promise<void> {
