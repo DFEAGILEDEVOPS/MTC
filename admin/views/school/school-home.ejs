@@ -50,18 +50,7 @@
             <h3 class="govuk-heading-m govuk-!-margin-top-9">Start the official check</h3>
             <ol class="govuk-list">
                 <li class="govuk-!-margin-bottom-4">
-                    <% if (featureEligibilityData.isLivePinGenerationAllowed) { %>
-                    <h2 class="govuk-heading-s arrow-up"><a class="govuk-link" href="/pupil-pin/generate-live-pins-overview">Generate passwords and PINs for the official check</a></h2>
-                    <% } else { %>
-                    <h2 class="govuk-heading-s arrow-up govuk-!-margin-bottom-0"><a class="govuk-font-greyed-out govuk-disabled-link">Generate passwords and PINs for the official check</a></h2>
-                        <strong class="disabled-banner">UNAVAILABLE</strong>
-                        <% if (featureEligibilityData.isWithinLiveUnavailableHours) { %>
-                            <span class="govuk-!-font-size-14 govuk-font-greyed-out">Open 6am - 4pm</span>
-                        <% } %>
-                        <% if (featureEligibilityData.isLiveInTheFuture) { %>
-                            <span class="govuk-!-font-size-14 govuk-font-greyed-out">Open 6am - 4pm on <%= featureEligibilityData.liveCheckDateRangeLabel %></span>
-                        <% } %>
-                    <% } %>
+                    <%- officialPinGenSlot %>
                 </li>
             </ol>
             <h3 class="govuk-heading-m govuk-!-margin-top-9">Review the check</h3>
