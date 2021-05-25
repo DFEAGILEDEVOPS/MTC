@@ -6,6 +6,7 @@ const administrationMessageService = require('../administration-message.service'
 const checkWindowV2Service = require('../check-window-v2.service')
 // const resultsPageAvailabilityService = require('../results-page-availability.service')
 const schoolService = require('../school.service')
+const config = require('../../config')
 
 describe('school home page service', () => {
   const user = { timezone: 'Europe/London', role: 'TEACHER' }
@@ -16,6 +17,9 @@ describe('school home page service', () => {
     // For the tests in the general section the check window dates are not important, as these values are
     // the same for all life-cycle phases of the check window.  We still need to mock it to prevent real calls.
     jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockResolvedValue(checkWindowMocks.familiarisationCheckWindow)
+
+    // Make sure the config is not override for all tests
+    config.OverridePinExpiry = false
   })
 
   afterEach(() => {
@@ -49,6 +53,13 @@ describe('school home page service', () => {
       expect(data.groupsLinkSlot).toMatch(/Organise pupils into groups/)
     })
 
+    test('try it out pin gen is enabled when in hours', async () => {
+      jest.spyOn(moment, 'utc').mockReturnValue(moment().hour(9))
+      const data = await sut.getContent(user)
+      expect(data.tryItOutPinGenSlot).toMatch(/href=/)
+      expect(data.tryItOutPinGenSlot).toMatch(/Generate passwords and PINs for the try it out check/)
+    })
+
     test('try it out pin gen is disabled out of hours with unavailable label and explanation', async () => {
       jest.spyOn(moment, 'utc').mockReturnValue(moment().hour(16))
       const data = await sut.getContent(user)
@@ -67,6 +78,21 @@ describe('school home page service', () => {
       const data = await sut.getContent(user)
       expect(data.groupsLinkSlot).toMatch(/href=/)
       expect(data.groupsLinkSlot).toMatch(/Organise pupils into groups/)
+    })
+
+    test('try it out pin gen is enabled when in hours', async () => {
+      jest.spyOn(moment, 'utc').mockReturnValue(moment().hour(9))
+      const data = await sut.getContent(user)
+      expect(data.tryItOutPinGenSlot).toMatch(/href=/)
+      expect(data.tryItOutPinGenSlot).toMatch(/Generate passwords and PINs for the try it out check/)
+    })
+
+    test('try it out pin gen is disabled out of hours with unavailable label and explanation', async () => {
+      jest.spyOn(moment, 'utc').mockReturnValue(moment().hour(16))
+      const data = await sut.getContent(user)
+      expect(data.tryItOutPinGenSlot).not.toMatch(/href=/)
+      expect(data.tryItOutPinGenSlot).toMatch(/UNAVAILABLE/)
+      expect(data.tryItOutPinGenSlot).toMatch(/Open 6am - 4pm/)
     })
   })
 

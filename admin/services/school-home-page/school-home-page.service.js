@@ -58,7 +58,7 @@ const schoolHomePageService = {
   getTryItOutPinGenSlot: async function getTryItOutPinGenSlot (featureEligibilityData) {
     let slot = ''
     const linkDescription = 'Generate passwords and PINs for the try it out check'
-    if (!featureEligibilityData.isFamiliarisationPinGenerationAllowed) {
+    if (featureEligibilityData.isFamiliarisationPinGenerationAllowed) {
       slot = await ejsUtil.render('partials/school/home-page/active-link', {
         linkUrl: '/pupil-pin/generate-familiarisation-pins-overview',
         linkDescription
