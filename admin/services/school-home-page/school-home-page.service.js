@@ -25,6 +25,7 @@ const schoolHomePageService = {
     // already escaped in the underlying template, so must not be escaped again.
     const groupsLinkSlot = await schoolHomePageService.getGroupsLinkSlot(featureEligibilityData)
     const tryItOutPinGenSlot = await schoolHomePageService.getTryItOutPinGenSlot(featureEligibilityData)
+    const officialPinGenSlot = await schoolHomePageService.getOfficialPinGenSlot(featureEligibilityData)
 
     return {
       featureEligibilityData,
@@ -32,7 +33,8 @@ const schoolHomePageService = {
       isResultsFeatureAccessible,
       schoolName,
       serviceMessage,
-      tryItOutPinGenSlot
+      tryItOutPinGenSlot,
+      officialPinGenSlot
     }
   },
 
@@ -44,7 +46,6 @@ const schoolHomePageService = {
         linkUrl: '/group/pupils-list',
         linkDescription
       })
-      console.log('rendering active link', slot)
     } else {
       slot = await ejsUtil.render('partials/school/home-page/inactive-link', {
         linkDescription,
@@ -63,11 +64,36 @@ const schoolHomePageService = {
         linkUrl: '/pupil-pin/generate-familiarisation-pins-overview',
         linkDescription
       })
-      console.log('rendering active link', slot)
     } else {
       let explanation = ''
       if (featureEligibilityData.isCheckWindowClosed) { explanation = 'Check window has closed' }
       if (featureEligibilityData.isWithinFamiliarisationUnavailableHours) { explanation = 'Open 6am - 4pm' }
+      slot = await ejsUtil.render('partials/school/home-page/inactive-link', {
+        linkDescription,
+        showUnavailableLabel: true,
+        showUnavailableLabelText: explanation
+      })
+    }
+    return slot
+  },
+
+  getOfficialPinGenSlot: async function officialPinGenSlot (featureEligibilityData) {
+    let slot = ''
+    const linkDescription = 'Generate passwords and PINs for the official check'
+    if (featureEligibilityData.isLivePinGenerationAllowed) {
+      slot = await ejsUtil.render('partials/school/home-page/active-link', {
+        linkUrl: '/pupil-pin/generate-live-pins-overview',
+        linkDescription
+      })
+    } else {
+      let explanation = ''
+      if (featureEligibilityData.isCheckWindowClosed) {
+        explanation = 'Check window has closed'
+      } else if (featureEligibilityData.isWithinLiveUnavailableHours) {
+        explanation = 'Open 6am - 4pm'
+      } else if (featureEligibilityData.isLiveInTheFuture) {
+        explanation = `Open 6am - 4pm on ${featureEligibilityData.liveCheckDateRangeLabel}`
+      }
       slot = await ejsUtil.render('partials/school/home-page/inactive-link', {
         linkDescription,
         showUnavailableLabel: true,

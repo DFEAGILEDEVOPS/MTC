@@ -1,7 +1,7 @@
 /* globals describe jest beforeEach expect test afterEach */
 const sut = require('./school-home-page.service')
 const moment = require('moment')
-const checkWindowMocks = require('../../spec/back-end/mocks/check-window')
+// const checkWindowMocks = require('../../spec/back-end/mocks/check-window')
 const administrationMessageService = require('../administration-message.service')
 const checkWindowV2Service = require('../check-window-v2.service')
 // const resultsPageAvailabilityService = require('../results-page-availability.service')
@@ -11,12 +11,31 @@ const config = require('../../config')
 describe('school home page service', () => {
   const user = { timezone: 'Europe/London', role: 'TEACHER' }
 
+  // CheckWindow and time of day testing.  For this test-suite to run we need to alter the date and time so we can
+  // test the various check-window phases (familiarisation, official, post check) and at various times of the day to
+  // simulate in-hours and out-of-hours.  To make this easier to understand we will keep the checkWindow constant,
+  // based off the 2021 check window and mock the date time as required for each test.  At least this way one thing
+  // is constant.
+  const mockCheckWindow = {
+    id: 1,
+    name: 'Mock Check Window',
+    adminStartDate: moment('2021-04-19T00:00:00'),
+    adminEndDate: moment('2021-07-30T23:59:59'),
+    checkStartDate: moment('2021-06-07T00:00:00'),
+    checkEndDate: moment('2021-06-25T23:59:59'),
+    familiarisationCheckStartDate: moment('2021-04-19T00:00:00'),
+    familiarisationCheckEndDate: moment('2021-06-25T23:59:59'),
+    isDeleted: false,
+    urlSlug: '0000-0000-00000-00000'
+  }
+
   beforeEach(() => {
     jest.spyOn(schoolService, 'findSchoolNameByDfeNumber').mockResolvedValue('Unit Test School')
     jest.spyOn(administrationMessageService, 'getMessage').mockResolvedValue(undefined)
     // For the tests in the general section the check window dates are not important, as these values are
     // the same for all life-cycle phases of the check window.  We still need to mock it to prevent real calls.
-    jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockResolvedValue(checkWindowMocks.familiarisationCheckWindow)
+    jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockResolvedValue(mockCheckWindow)
+    setupFakeTime(moment('2021-04-19T09:00:00'))
 
     // Make sure the config is not override for all tests
     config.OverridePinExpiry = false
@@ -24,6 +43,7 @@ describe('school home page service', () => {
 
   afterEach(() => {
     jest.restoreAllMocks()
+    tearDownFakeTime()
   })
 
   test('school name is returned', async () => {
@@ -44,7 +64,8 @@ describe('school home page service', () => {
 
   describe('FAMILIARISATION CHECK PHASE', () => {
     beforeEach(() => {
-      jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockResolvedValue(checkWindowMocks.familiarisationCheckWindow)
+      jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockResolvedValue(mockCheckWindow)
+      setupFakeTime(moment('2021-04-19T09:00:00'))
     })
 
     test('group link is enabled ', async () => {
@@ -54,14 +75,31 @@ describe('school home page service', () => {
     })
 
     test('try it out pin gen is enabled when in hours', async () => {
-      jest.spyOn(moment, 'utc').mockReturnValue(moment().hour(9))
       const data = await sut.getContent(user)
       expect(data.tryItOutPinGenSlot).toMatch(/href=/)
       expect(data.tryItOutPinGenSlot).toMatch(/Generate passwords and PINs for the try it out check/)
     })
 
+    test('official check pin gen is disabled in hours', async () => {
+      setupFakeTime(moment('2021-04-19T09:00:00'))
+      const data = await sut.getContent(user)
+      expect(data.officialPinGenSlot).not.toMatch(/href=/)
+      expect(data.officialPinGenSlot).toMatch(/UNAVAILABLE/)
+      expect(data.officialPinGenSlot).toMatch(/Open 6am - 4pm on 7 to 25 June 2021/)
+      expect(data.officialPinGenSlot).toMatch(/Generate passwords and PINs for the official check/)
+    })
+
+    test('official check pin gen is disabled out of hours', async () => {
+      setupFakeTime(moment('2021-04-19T16:00:00'))
+      const data = await sut.getContent(user)
+      expect(data.officialPinGenSlot).not.toMatch(/href=/)
+      expect(data.officialPinGenSlot).toMatch(/UNAVAILABLE/)
+      expect(data.officialPinGenSlot).toMatch(/Open 6am - 4pm on 7 to 25 June 2021/)
+      expect(data.officialPinGenSlot).toMatch(/Generate passwords and PINs for the official check/)
+    })
+
     test('try it out pin gen is disabled out of hours with unavailable label and explanation', async () => {
-      jest.spyOn(moment, 'utc').mockReturnValue(moment().hour(16))
+      setupFakeTime(moment('2021-04-19T16:00:00'))
       const data = await sut.getContent(user)
       expect(data.tryItOutPinGenSlot).not.toMatch(/href=/)
       expect(data.tryItOutPinGenSlot).toMatch(/UNAVAILABLE/)
@@ -71,7 +109,8 @@ describe('school home page service', () => {
 
   describe('LIVE CHECK PHASE', () => {
     beforeEach(() => {
-      jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockResolvedValue(checkWindowMocks.liveCheckWindow)
+      jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockResolvedValue(mockCheckWindow)
+      setupFakeTime(moment('2021-06-05T09:00:00'))
     })
 
     test('group link is enabled ', async () => {
@@ -81,14 +120,13 @@ describe('school home page service', () => {
     })
 
     test('try it out pin gen is enabled when in hours', async () => {
-      jest.spyOn(moment, 'utc').mockReturnValue(moment().hour(9))
       const data = await sut.getContent(user)
       expect(data.tryItOutPinGenSlot).toMatch(/href=/)
       expect(data.tryItOutPinGenSlot).toMatch(/Generate passwords and PINs for the try it out check/)
     })
 
     test('try it out pin gen is disabled out of hours with unavailable label and explanation', async () => {
-      jest.spyOn(moment, 'utc').mockReturnValue(moment().hour(16))
+      setupFakeTime(moment('2021-04-19T16:00:00'))
       const data = await sut.getContent(user)
       expect(data.tryItOutPinGenSlot).not.toMatch(/href=/)
       expect(data.tryItOutPinGenSlot).toMatch(/UNAVAILABLE/)
@@ -98,7 +136,8 @@ describe('school home page service', () => {
 
   describe('AFTER LIVE CHECK WINDOW IS CLOSED', () => {
     beforeEach(() => {
-      jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockResolvedValue(checkWindowMocks.postLiveCheckWindow)
+      jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockResolvedValue(mockCheckWindow)
+      setupFakeTime(moment('2021-06-26T00:00:01'))
     })
 
     test('group link is disabled with the unavailable label and explanation', async () => {
@@ -118,3 +157,20 @@ describe('school home page service', () => {
     })
   })
 })
+
+/**
+ * @param {moment.Moment} baseTime - set the fake time to this moment object
+ *
+ */
+function setupFakeTime (baseTime) {
+  if (!moment.isMoment(baseTime)) {
+    throw new Error('moment.Moment time expected')
+  }
+  jest.useFakeTimers('modern')
+  jest.setSystemTime(baseTime.toDate())
+}
+
+function tearDownFakeTime () {
+  const realTime = jest.getRealSystemTime()
+  jest.setSystemTime(realTime)
+}
