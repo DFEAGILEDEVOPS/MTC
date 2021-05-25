@@ -80,4 +80,27 @@ module Helpers
     end
   end
 
+  def get_service_bus_queue(name,config_array)
+    config_array.select{|config| config['name'] == name}
+  end
+
+  def get_expected_config(name)
+    default_max_size = ENV['SERVICE_BUS_QUEUE_MAX_SIZE_DEFAULT_MEGABYTES'].nil? ? 5120 : ENV['SERVICE_BUS_QUEUE_MAX_SIZE_DEFAULT_MEGABYTES']
+    ps_schools_max_size = ENV['SERVICE_BUS_QUEUE_MAX_SIZE_MEGABYTES_PS_REPORT_SCHOOLS'].nil? ? 5120 : ENV['SERVICE_BUS_QUEUE_MAX_SIZE_MEGABYTES_PS_REPORT_SCHOOLS']
+    ps_staging_max_size = ENV['SERVICE_BUS_QUEUE_MAX_SIZE_MEGABYTES_PS_REPORT_STAGING'].nil? ? 81920 : ENV['SERVICE_BUS_QUEUE_MAX_SIZE_MEGABYTES_PS_REPORT_STAGING']
+    ps_export_max_size = ENV['SERVICE_BUS_QUEUE_MAX_SIZE_MEGABYTES_PS_REPORT_EXPORT'].nil? ? 81920 : ENV['SERVICE_BUS_QUEUE_MAX_SIZE_MEGABYTES_PS_REPORT_EXPORT']
+    case name
+    when 'check-completion','check-notification','check-marking','check-notification','check-sync','check-validation','pupil-login','queue-replay','school-results-cache','sync-results-to-db-complete'
+      [{"maxSizeInMegabytes"=>default_max_size.to_i, "defaultMessageTimeToLive"=>"P120D", "lockDuration"=>"PT5M", "requiresDuplicateDetection"=>true, "deadLetteringOnMessageExpiration"=>true, "duplicateDetectionHistoryTimeWindow"=>"P1D", "enablePartitioning"=>false, "requiresSession"=>false, "name"=>name}]
+    when 'ps-report-schools'
+      [{"maxSizeInMegabytes"=>ps_schools_max_size.to_i, "defaultMessageTimeToLive"=>"P6D", "lockDuration"=>"PT5M", "requiresDuplicateDetection"=>true, "deadLetteringOnMessageExpiration"=>true, "duplicateDetectionHistoryTimeWindow"=>"P1D", "enablePartitioning"=>false, "requiresSession"=>false, "name"=>"ps-report-schools"}]
+    when 'ps-report-staging'
+      [{"maxSizeInMegabytes"=>ps_staging_max_size.to_i, "defaultMessageTimeToLive"=>"P6D", "lockDuration"=>"PT5M", "requiresDuplicateDetection"=>true, "deadLetteringOnMessageExpiration"=>true, "duplicateDetectionHistoryTimeWindow"=>"P1D", "enablePartitioning"=>false, "requiresSession"=>false, "name"=>"ps-report-staging"}]
+    when 'ps-report-export'
+      [{"maxSizeInMegabytes"=>ps_export_max_size.to_i, "defaultMessageTimeToLive"=>"P6D", "lockDuration"=>"PT5M", "requiresDuplicateDetection"=>true, "deadLetteringOnMessageExpiration"=>true, "duplicateDetectionHistoryTimeWindow"=>"P1D", "enablePartitioning"=>false, "requiresSession"=>false, "name"=>"ps-report-export"}]
+    else
+      fail 'Name of queue not found'
+    end
+  end
+
 end

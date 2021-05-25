@@ -49,3 +49,56 @@ Then(/^the data displayed in the tio check summary table for (\d+) should be cor
     expect(row.users_logged_in.text.to_i).to eql SqlDbHelper.count_tio_logins_per_date((Date.parse(row.date.text).strftime("%Y-%m-%d")), school_id)
   end
 end
+
+
+Then(/^the school password should be masked$/) do
+  expect(view_and_custom_print_live_check_page.pupil_list.rows.first.school_password.text).to eql '****'
+end
+
+
+When(/^I generate a live pin for a pupil$/) do
+  name = (0...8).map {(65 + rand(26)).chr}.join
+  step "I am on the add pupil page"
+  step "I submit the form with the name fields set as #{name}"
+  step "the pupil details should be stored"
+  step "I am on the generate pupil pins page"
+  step "I click Generate PINs button"
+  @pupil_forename = name
+  @page = generate_pins_overview_page
+  @pupil_name = generate_pins_overview_page.generate_pin_using_name(name)
+  pupil_pin_row = view_and_custom_print_live_check_page.pupil_list.rows.find {|row| row.name.text == @pupil_name}
+  @pupil_credentials = {:school_password => pupil_pin_row.school_password.text, :pin => pupil_pin_row.pin.text}
+end
+
+
+Given(/^I am on the school landing page for a school$/) do
+  step 'I have signed in with helpdesk'
+  step "I enter and submit a valid #{@school['entity']['dfeNumber']} for impersonation"
+end
+
+
+When(/^I generate a tio pin for a pupil$/) do
+  name = (0...8).map {(65 + rand(26)).chr}.join
+  step "I am on the add pupil page"
+  step "I submit the form with the name fields set as #{name}"
+  step "the pupil details should be stored"
+  step "I am on the generate pupil pins familiarisation page"
+  step "I click Generate PINs button"
+  @page = generate_pins_familiarisation_overview_page
+  @pupil_name = generate_pins_familiarisation_overview_page.generate_pin_using_name(name)
+end
+
+
+But(/^the pupil pin should be visible$/) do
+  expect(view_and_custom_print_live_check_page.pupil_list.rows.first.pin.text.to_i).to be > 0
+end
+
+
+Given(/^I am on the school landing page for a school using an account with the STA admin role$/) do
+  step 'I have signed in with sta-admin'
+  step "I enter and submit a valid #{@school['entity']['dfeNumber']} for impersonation"
+end
+
+Then(/^the school password should be unmasked$/) do
+  expect(view_and_custom_print_live_check_page.pupil_list.rows.first.school_password.text).to eql SqlDbHelper.find_school(@school_id)['pin']
+end
