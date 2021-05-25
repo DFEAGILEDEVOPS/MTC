@@ -5,6 +5,7 @@ const viewsDir = path.join(__dirname, '../views')
 const featureToggles = require('feature-toggles')
 const config = require('../config')
 featureToggles.load(config.FeatureToggles)
+const shouldCache = process.env.NODE_ENV === 'production'
 
 const ejsUtil = {
   render: function ejsUtilRender (viewName, data = {}) {
@@ -12,7 +13,7 @@ const ejsUtil = {
       const filename = path.join(viewsDir, viewName + '.ejs')
       data.isFeatureEnabled = (featureName) => featureToggles.isFeatureEnabled(featureName)
       // TODO: JMS: set escape to true
-      ejs.renderFile(filename, data, { cache: true, escape: false },
+      ejs.renderFile(filename, data, { cache: shouldCache, escape: false },
         function (err, str) {
           if (err) return reject(err)
           return resolve(str)
