@@ -15,11 +15,7 @@ interface IQueueReplayRequest {
   requestedAt: Date
 }
 
-interface IQueueReplayAuditRecord {
-  queueName: string
-  maxMessages: number
-  requestedBy: string
-  requestedAt: Date
+interface IQueueReplayAuditRecord extends IQueueReplayRequest {
   messagesProcessed: number
 }
 
@@ -27,15 +23,15 @@ const serviceBusQueueTrigger: AzureFunction = async function (context: Context, 
   const start = performance.now()
   context.log.verbose(`${functionName}: called for queue ${replayRequest.queueName}`)
   let messagesProcessed = 0
-  // TODO replay
+  // TODO perform replay and update messagesProcessed
   const auditRecord: IQueueReplayAuditRecord = {
-    maxMessages: replayRequest.maxMessages,
     messagesProcessed: messagesProcessed,
+    maxMessages: replayRequest.maxMessages,
     queueName: replayRequest.queueName,
-    requestedAt: replayRequest.requestedAt,
-    requestedBy: replayRequest.requestedBy
+    requestedBy: replayRequest.requestedBy,
+    requestedAt: replayRequest.requestedAt
   }
-  context.bindings.queueReplayAuditTable = auditRecord
+  context.bindings.queueReplayAuditTable = [ auditRecord ]
   const end = performance.now()
   const durationInMilliseconds = end - start
   const timeStamp = new Date().toISOString()
