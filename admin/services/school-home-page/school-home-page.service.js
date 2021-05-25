@@ -66,7 +66,7 @@ const schoolHomePageService = {
       console.log('rendering active link', slot)
     } else {
       let explanation = ''
-      if (featureEligibilityData.isCheckWindowClosed) { explanation = 'Check window is closed' }
+      if (featureEligibilityData.isCheckWindowClosed) { explanation = 'Check window has closed' }
       if (featureEligibilityData.isWithinFamiliarisationUnavailableHours) { explanation = 'Open 6am - 4pm' }
       slot = await ejsUtil.render('partials/school/home-page/inactive-link', {
         linkDescription,
