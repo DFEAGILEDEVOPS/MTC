@@ -32,7 +32,8 @@ const service = {
       mtc_teacher: roles.teacher,
       mtc_helpdesk: roles.helpdesk,
       mtc_test_developer: roles.testDeveloper,
-      mtc_tech_support: roles.techSupport
+      mtc_tech_support: roles.techSupport,
+      mtc_staadmin: roles.staAdmin
     }
 
     const role = mapping[dfeRoleCode]

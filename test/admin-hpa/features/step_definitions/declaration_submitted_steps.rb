@@ -27,13 +27,13 @@ end
 Then(/^I can see the declaration submitted form page confirmed as per the design$/) do
   expect(declaration_submitted_form_page).to have_heading
   expect(declaration_submitted_form_page).to have_details_confirmed_list
-  expect(declaration_submitted_form_page).to_not have_warning_notconfirmed_panel
+  expect(declaration_submitted_form_page).to_not have_details_not_confirmed
 end
 
 Then(/^I can see the declaration submitted form page not confirmed as per the design$/) do
   expect(declaration_submitted_form_page).to have_heading
   expect(declaration_submitted_form_page).to_not have_details_confirmed_list
-  expect(declaration_submitted_form_page).to have_warning_notconfirmed_panel
+  expect(declaration_submitted_form_page).to have_details_not_confirmed
 end
 
 Given(/^I have no pupils not taking the check for the school$/) do

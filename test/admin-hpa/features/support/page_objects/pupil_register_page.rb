@@ -7,6 +7,7 @@ class PupilRegisterPage < SitePrism::Page
   element :info_message, '.govuk-info-message', text: 'Changes to pupil details have been saved'
   element :new_pupil_info_message, '.govuk-info-message', text: '1 new pupil has been added'
   element :add_multiple_pupil_info_message, '.govuk-info-message'
+  element :not_taking_check_link, 'a[href="/pupils-not-taking-the-check"]'
   element :edited_pupil, '.highlight-item'
   element :pupil_status_explanation, '.govuk-details__summary-text'
   element :pupil_filter, '#search-name'
