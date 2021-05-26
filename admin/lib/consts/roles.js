@@ -1,7 +1,8 @@
 module.exports = Object.freeze({
   helpdesk: 'HELPDESK',
   serviceManager: 'SERVICE-MANAGER',
+  staAdmin: 'STA-ADMIN',
   teacher: 'TEACHER',
-  testDeveloper: 'TEST-DEVELOPER',
-  techSupport: 'TECH-SUPPORT'
+  techSupport: 'TECH-SUPPORT',
+  testDeveloper: 'TEST-DEVELOPER'
 })

@@ -19,7 +19,7 @@ let queueService
 
 const createQueueService = async (sasToken) => {
   queueService = await azureStorage.createQueueServiceWithSas(
-    sasToken.url.replace(queueNameService.NAMES.CHECK_COMPLETE, ''), sasToken.token
+    sasToken.url.replace(queueNameService.NAMES.CHECK_SUBMIT, ''), sasToken.token
   )
 
   bluebird.promisifyAll(queueService, {
@@ -46,13 +46,13 @@ describe('sas-token-expiry', () => {
   it('should return specific properties and content when attempting to submit with expired sas tokens', async () => {
     const sasExpiryDate = moment().add(2, 'seconds')
     const checkCompleteSasToken = await sasTokenService.generateSasToken(
-      queueNameService.NAMES.CHECK_COMPLETE,
+      queueNameService.NAMES.CHECK_SUBMIT,
       sasExpiryDate
     )
     try {
       await createQueueService(checkCompleteSasToken)
       await delay(3000)
-      await queueService.createMessageAsync(queueNameService.NAMES.CHECK_COMPLETE, 'message')
+      await queueService.createMessageAsync(queueNameService.NAMES.CHECK_SUBMIT, 'message')
       fail()
     } catch (error) {
       expect(error.statusCode).toBe(403)

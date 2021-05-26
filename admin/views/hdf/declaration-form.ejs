@@ -29,13 +29,12 @@
             </p>
         <% } else { %>
             <p class="govuk-body govuk-!-font-size-24">
-                Confirm all pupils taking the check completed it according to <a class="govuk-link" href="<%= locals.guidancePdf %>" target="_blank">administration guidance</a>.
-                In the absence of the headteacher, a delegated senior member of staff should submit this declaration.
+                In the absence of the headteacher, a delegated senior member of staff should enter their name below and submit this declaration.
             </p>
             <form method="post" action="/attendance/submit-declaration-form" autocomplete="off">
                 <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
                 <div class="govuk-form-group <%= error.isError('firstName') ? 'govuk-form-group--error' : '' %>">
-                    <label class="govuk-label govuk-!-font-weight-bold" for="firstName">First name
+                    <label class="govuk-label govuk-!-font-weight-bold" for="firstName">Submitter's first name
                         <% if (error.isError('firstName')) { %>
                             <span class="govuk-error-message"><%= error.get('firstName') %></span>
                         <% } %>
@@ -48,7 +47,7 @@
                     />
                 </div>
                 <div class="govuk-form-group <%= error.isError('lastName') ? 'form-group-error' : '' %>">
-                    <label class="govuk-label govuk-!-font-weight-bold" for="lastName">Last name
+                    <label class="govuk-label govuk-!-font-weight-bold" for="lastName">Submitter's last name
                         <% if (error.isError('lastName')) { %>
                             <span class="govuk-error-message"><%= error.get('lastName') %></span>
                         <% } %>
