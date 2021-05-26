@@ -8,7 +8,8 @@ import { IPupilPrefsFunctionBindings } from './IPupilPrefsFunctionBindings'
 
 const PupilPrefsDataServiceMock = jest.fn<IPupilPrefsDataService, any>(() => ({
   updatePupilPreferences: jest.fn(),
-  getPupilUUIDByCheckCode: jest.fn()
+  getPupilUUIDByCheckCode: jest.fn(),
+  closeDataService: jest.fn()
 }))
 
 let sut: PupilPrefsService

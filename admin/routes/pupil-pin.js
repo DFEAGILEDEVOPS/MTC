@@ -13,25 +13,25 @@ const {
 
 router.get(
   '/generate-:pinEnv-pins-overview',
-  isAuthenticated([roles.teacher, roles.helpdesk]),
+  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),
   isAdminWindowAvailable,
   getGeneratePinsOverview
 )
 router.get(
   '/generate-:pinEnv-pins-list/:groupIds?',
-  isAuthenticated([roles.teacher, roles.helpdesk]),
+  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),
   isAdminWindowAvailable,
   getGeneratePinsList
 )
 router.post(
   '/generate-:pinEnv-pins',
-  isAuthenticated([roles.teacher, roles.helpdesk]),
+  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),
   isAdminWindowAvailable,
   postGeneratePins
 )
 router.get(
   '/view-and-custom-print-:pinEnv-pins',
-  isAuthenticated([roles.teacher, roles.helpdesk]),
+  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),
   isAdminWindowAvailable,
   getViewAndCustomPrintPins
 )
