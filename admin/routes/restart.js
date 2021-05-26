@@ -7,25 +7,25 @@ const restartController = require('../controllers/restart')
 
 router.get(
   '/overview',
-  isAuthenticated([roles.teacher, roles.helpdesk]),
+  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),
   isAdminWindowAvailable,
   restartController.getRestartOverview
 )
 router.get(
   '/select-restart-list',
-  isAuthenticated([roles.teacher, roles.helpdesk]),
+  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),
   isAdminWindowAvailable,
   restartController.getSelectRestartList
 )
 router.post(
   '/submit-restart-list',
-  isAuthenticated([roles.teacher, roles.helpdesk]),
+  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),
   isAdminWindowAvailable,
   restartController.postSubmitRestartList
 )
 router.post(
   '/delete',
-  isAuthenticated([roles.teacher, roles.helpdesk]),
+  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),
   isAdminWindowAvailable,
   restartController.postDeleteRestart
 )

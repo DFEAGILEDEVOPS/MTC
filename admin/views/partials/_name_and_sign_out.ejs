@@ -1,4 +1,4 @@
-<% if (user && user.role === roles.helpdesk && !isSubmitImpersonationUrl) { %>
+<% if (user && (user.role === roles.helpdesk || user.role === roles.staAdmin) && !isSubmitImpersonationUrl) { %>
     <form method="post" action="/helpdesk/remove-school-impersonation">
         <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
         <div id="sign-out">
