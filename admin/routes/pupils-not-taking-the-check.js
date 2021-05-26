@@ -8,43 +8,43 @@ const pupilsNotTakingTheCheck = require('../controllers/pupils-not-taking-the-ch
 
 router.get(
   '/select-pupils/:groupIds?',
-  isAuthenticated([roles.teacher, roles.helpdesk]),
+  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),
   isAdminWindowAvailable,
   pupilsNotTakingTheCheck.getSelectPupilNotTakingCheck
 )
 router.get(
   '/save-pupils',
-  isAuthenticated([roles.teacher, roles.helpdesk]),
+  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),
   isAdminWindowAvailable,
   pupilsNotTakingTheCheck.getSelectPupilNotTakingCheck
 )
 router.post(
   '/save-pupils',
-  isAuthenticated([roles.teacher, roles.helpdesk]),
+  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),
   isAdminWindowAvailable,
   pupilsNotTakingTheCheck.savePupilNotTakingCheck
 )
 router.get(
   '/remove/:pupilId',
-  isAuthenticated([roles.teacher, roles.helpdesk]),
+  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),
   isAdminWindowAvailable,
   (req, res, next) => pupilsNotTakingTheCheck.removePupilNotTakingCheck(req, res, next)
 )
 router.get(
   '/view',
-  isAuthenticated([roles.teacher, roles.helpdesk]),
+  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),
   isAdminWindowAvailable,
   pupilsNotTakingTheCheck.viewPupilsNotTakingTheCheck
 )
 router.get(
   ['/', '/pupils-list'],
-  isAuthenticated([roles.teacher, roles.helpdesk]),
+  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),
   isAdminWindowAvailable,
   pupilsNotTakingTheCheck.getPupilNotTakingCheck
 )
 router.get(
   '/:removed',
-  isAuthenticated([roles.teacher, roles.helpdesk]),
+  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),
   isAdminWindowAvailable,
   pupilsNotTakingTheCheck.getPupilNotTakingCheck
 )
