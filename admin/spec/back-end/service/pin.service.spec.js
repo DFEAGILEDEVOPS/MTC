@@ -4,6 +4,7 @@ const pinValidator = require('../../../lib/validator/pin-validator')
 const schoolDataService = require('../../../services/data-access/school.data.service')
 const pinService = require('../../../services/pin.service')
 const schoolMock = require('../mocks/school')
+const roles = require('../../../lib/consts/roles')
 
 /* global jest, describe, beforeEach, test, expect */
 
@@ -19,9 +20,9 @@ describe('pin.service', () => {
       })
 
       test('it should return school object', async () => {
-        const result = await pinService.getActiveSchool(school.id)
+        const result = await pinService.getActiveSchool(school.id, roles.teacher)
         expect(result.pinExpiresAt).toBeDefined()
-        expect(result.schoolPin).toBeDefined()
+        expect(result.pin).toBeDefined()
       })
     })
 
@@ -32,7 +33,7 @@ describe('pin.service', () => {
       })
 
       test('it should return null', async () => {
-        const result = await pinService.getActiveSchool(school.id)
+        const result = await pinService.getActiveSchool(school.id, roles.teacher)
         expect(result).toBeNull()
       })
     })
@@ -87,6 +88,22 @@ describe('pin.service', () => {
           tearDownFakeTime()
         })
       })
+    })
+
+    test('masks the pins for helpdesk users', async () => {
+      const mockSchool = Object.assign({}, schoolMock)
+      jest.spyOn(schoolDataService, 'sqlFindOneByDfeNumber').mockResolvedValue(mockSchool)
+      jest.spyOn(pinValidator, 'isActivePin').mockReturnValue(true)
+      const school = await pinService.getActiveSchool(mockSchool.id, roles.helpdesk)
+      expect(school.pin).toBe('****')
+    })
+
+    test('does not mask the pins for teachers', async () => {
+      const mockSchool = Object.assign({}, schoolMock)
+      jest.spyOn(schoolDataService, 'sqlFindOneByDfeNumber').mockResolvedValue(mockSchool)
+      jest.spyOn(pinValidator, 'isActivePin').mockReturnValue(true)
+      const school = await pinService.getActiveSchool(mockSchool.id, roles.teacher)
+      expect(school.pin).toBe('newpin88')
     })
   })
 

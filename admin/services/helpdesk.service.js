@@ -13,6 +13,15 @@ helpdeskService.isHelpdeskRole = (user) => {
 }
 
 /**
+ * Identify if role is staAdmin
+ * @param {object} user
+ * @returns {boolean}
+ */
+helpdeskService.isStaAdmin = (user) => {
+  return user.role === roles.staAdmin
+}
+
+/**
  * Identify if current user has impersonation properties set
  * @param {object} user
  * @returns {boolean}

@@ -41,6 +41,10 @@ export class ResultService {
     this.redisService = redisCacheService
   }
 
+  async closeDataService (): Promise<void> {
+    await this.redisService.quit()
+  }
+
   sort (data: IPupilResult[]): IPupilResult[] {
     return sortService.sortByProps(['lastName', 'foreName', 'dateOfBirth', 'middleNames'], data)
   }
