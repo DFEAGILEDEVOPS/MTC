@@ -28,6 +28,7 @@ const schoolHomePageService = {
     const officialPinGenSlot = await schoolHomePageService.getOfficialPinGenSlot(featureEligibilityData)
     const restartPupilSlot = await schoolHomePageService.getRestartPupilSlot(featureEligibilityData)
     const hdfSlot = await schoolHomePageService.getHdfSlot(featureEligibilityData)
+    const resultsSlot = await schoolHomePageService.getResultsSlot(featureEligibilityData, isResultsFeatureAccessible)
 
     return {
       featureEligibilityData,
@@ -38,7 +39,8 @@ const schoolHomePageService = {
       tryItOutPinGenSlot,
       officialPinGenSlot,
       restartPupilSlot,
-      hdfSlot
+      hdfSlot,
+      resultsSlot
     }
   },
 
@@ -145,6 +147,35 @@ const schoolHomePageService = {
       let explanation = ''
       if (featureEligibilityData.isLiveInTheFuture) {
         explanation = `Open ${featureEligibilityData.liveCheckStartDate}`
+      }
+      slot = await ejsUtil.render('partials/school/home-page/inactive-link', {
+        linkDescription,
+        showUnavailableLabel: true,
+        showUnavailableLabelText: explanation
+      })
+    }
+    return slot
+  },
+
+  /**
+   *
+   * @param featureEligibilityData
+   * @param {boolean} isResultsFeatureAccessible
+   * @return {Promise<string>}
+   */
+  getResultsSlot: async function getResultsSlot (featureEligibilityData, isResultsFeatureAccessible) {
+    let slot = ''
+    const linkDescription = 'View pupil results'
+    if (isResultsFeatureAccessible) {
+      const link = '/results/view-results'
+      slot = await ejsUtil.render('partials/school/home-page/active-link', {
+        linkUrl: link,
+        linkDescription
+      })
+    } else {
+      let explanation = ''
+      if (featureEligibilityData.resultsPublishedDate) {
+        explanation = `Results available ${featureEligibilityData.resultsPublishedDate}`
       }
       slot = await ejsUtil.render('partials/school/home-page/inactive-link', {
         linkDescription,

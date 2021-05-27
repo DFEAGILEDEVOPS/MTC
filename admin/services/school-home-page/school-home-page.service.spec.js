@@ -119,6 +119,14 @@ describe('school home page service', () => {
       expect(data.hdfSlot).toMatch(/Complete the headteacher’s declaration form/)
       expect(data.hdfSlot).toMatch(/Open 7 June 2021/)
     })
+
+    test('the pupil results link is disabled with unavailable label and explanation', async () => {
+      const data = await sut.getContent(user)
+      expect(data.resultsSlot).not.toMatch(/href=/)
+      expect(data.resultsSlot).toMatch(/UNAVAILABLE/)
+      expect(data.resultsSlot).toMatch(/View pupil results/)
+      expect(data.resultsSlot).toMatch(/Results available 28 June 2021/)
+    })
   })
 
   describe('LIVE CHECK PHASE', () => {
@@ -174,6 +182,14 @@ describe('school home page service', () => {
       expect(data.hdfSlot).toMatch(/href=/)
       expect(data.hdfSlot).toMatch(/Complete the headteacher’s declaration form/)
     })
+
+    test('the pupil results link is disabled with unavailable label and explanation', async () => {
+      const data = await sut.getContent(user)
+      expect(data.resultsSlot).not.toMatch(/href=/)
+      expect(data.resultsSlot).toMatch(/UNAVAILABLE/)
+      expect(data.resultsSlot).toMatch(/View pupil results/)
+      expect(data.resultsSlot).toMatch(/Results available 28 June 2021/)
+    })
   })
 
   describe('AFTER LIVE CHECK WINDOW IS CLOSED', () => {
@@ -220,6 +236,23 @@ describe('school home page service', () => {
       expect(data.hdfSlot).not.toMatch(/href=/)
       expect(data.hdfSlot).toMatch(/UNAVAILABLE/)
       expect(data.hdfSlot).toMatch(/Complete the headteacher’s declaration form/)
+    })
+
+    test('the pupil results link is disabled with unavailable label and explanation before the following monday at' +
+      ' 6am', async () => {
+      setupFakeTime(moment('2021-06-28T05:59:59+01:00')) // Just before 6am BST
+      const data = await sut.getContent(user)
+      expect(data.resultsSlot).not.toMatch(/href=/)
+      expect(data.resultsSlot).toMatch(/UNAVAILABLE/)
+      expect(data.resultsSlot).toMatch(/View pupil results/)
+      expect(data.resultsSlot).toMatch(/Results available 28 June 2021/)
+    })
+
+    test('the pupil results link is enabled the following monday at 6am', async () => {
+      setupFakeTime(moment('2021-06-28T06:00:00+01:00')) // 6am BST
+      const data = await sut.getContent(user)
+      expect(data.resultsSlot).toMatch(/href=/)
+      expect(data.resultsSlot).toMatch(/View pupil results/)
     })
   })
 })
