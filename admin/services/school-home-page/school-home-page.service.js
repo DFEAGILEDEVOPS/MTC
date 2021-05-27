@@ -26,6 +26,7 @@ const schoolHomePageService = {
     const groupsLinkSlot = await schoolHomePageService.getGroupsLinkSlot(featureEligibilityData)
     const tryItOutPinGenSlot = await schoolHomePageService.getTryItOutPinGenSlot(featureEligibilityData)
     const officialPinGenSlot = await schoolHomePageService.getOfficialPinGenSlot(featureEligibilityData)
+    const restartPupilSlot = await schoolHomePageService.getRestartPupilSlot(featureEligibilityData)
 
     return {
       featureEligibilityData,
@@ -34,7 +35,8 @@ const schoolHomePageService = {
       schoolName,
       serviceMessage,
       tryItOutPinGenSlot,
-      officialPinGenSlot
+      officialPinGenSlot,
+      restartPupilSlot
     }
   },
 
@@ -93,6 +95,31 @@ const schoolHomePageService = {
         explanation = 'Open 6am - 4pm'
       } else if (featureEligibilityData.isLiveInTheFuture) {
         explanation = `Open 6am - 4pm on ${featureEligibilityData.liveCheckDateRangeLabel}`
+      }
+      slot = await ejsUtil.render('partials/school/home-page/inactive-link', {
+        linkDescription,
+        showUnavailableLabel: true,
+        showUnavailableLabelText: explanation
+      })
+    }
+    return slot
+  },
+
+  getRestartPupilSlot: async function getRestartPupilSlot (featureEligibilityData) {
+    let slot = ''
+    const linkDescription = 'Select pupils to restart the check'
+    if (featureEligibilityData.isRestartsPageAccessible) {
+      const link = '/restart/overview'
+      slot = await ejsUtil.render('partials/school/home-page/active-link', {
+        linkUrl: link,
+        linkDescription
+      })
+    } else {
+      let explanation = ''
+      if (featureEligibilityData.isCheckWindowClosed) {
+        explanation = 'Check window has closed'
+      } else if (featureEligibilityData.isLiveInTheFuture) {
+        explanation = `Open ${featureEligibilityData.liveCheckDateRangeLabel}`
       }
       slot = await ejsUtil.render('partials/school/home-page/inactive-link', {
         linkDescription,

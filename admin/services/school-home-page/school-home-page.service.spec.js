@@ -1,10 +1,8 @@
 /* globals describe jest beforeEach expect test afterEach */
 const sut = require('./school-home-page.service')
 const moment = require('moment')
-// const checkWindowMocks = require('../../spec/back-end/mocks/check-window')
 const administrationMessageService = require('../administration-message.service')
 const checkWindowV2Service = require('../check-window-v2.service')
-// const resultsPageAvailabilityService = require('../results-page-availability.service')
 const schoolService = require('../school.service')
 const config = require('../../config')
 
@@ -105,12 +103,20 @@ describe('school home page service', () => {
       expect(data.tryItOutPinGenSlot).toMatch(/UNAVAILABLE/)
       expect(data.tryItOutPinGenSlot).toMatch(/Open 6am - 4pm/)
     })
+
+    test('the pupil restart link is disabled with unavailable label and explanation', async () => {
+      const data = await sut.getContent(user)
+      expect(data.restartPupilSlot).not.toMatch(/href=/)
+      expect(data.restartPupilSlot).toMatch(/UNAVAILABLE/)
+      expect(data.restartPupilSlot).toMatch(/Select pupils to restart the check/)
+      expect(data.restartPupilSlot).toMatch(/Open 7 to 25 June 2021/)
+    })
   })
 
   describe('LIVE CHECK PHASE', () => {
     beforeEach(() => {
       jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockResolvedValue(mockCheckWindow)
-      setupFakeTime(moment('2021-06-05T09:00:00'))
+      setupFakeTime(moment('2021-06-07T09:00:00'))
     })
 
     test('group link is enabled ', async () => {
@@ -131,6 +137,12 @@ describe('school home page service', () => {
       expect(data.tryItOutPinGenSlot).not.toMatch(/href=/)
       expect(data.tryItOutPinGenSlot).toMatch(/UNAVAILABLE/)
       expect(data.tryItOutPinGenSlot).toMatch(/Open 6am - 4pm/)
+    })
+
+    test('the pupil restart link is enabled', async () => {
+      const data = await sut.getContent(user)
+      expect(data.restartPupilSlot).toMatch(/href=/)
+      expect(data.restartPupilSlot).toMatch(/Select pupils to restart the check/)
     })
   })
 
@@ -154,6 +166,14 @@ describe('school home page service', () => {
       expect(data.tryItOutPinGenSlot).toMatch(/UNAVAILABLE/)
       expect(data.tryItOutPinGenSlot).toMatch(/Generate passwords and PINs for the try it out check/)
       expect(data.tryItOutPinGenSlot).toMatch(/Check window has closed/)
+    })
+
+    test('the pupil restart link is disabled with unavailable label and explanation', async () => {
+      const data = await sut.getContent(user)
+      expect(data.restartPupilSlot).not.toMatch(/href=/)
+      expect(data.restartPupilSlot).toMatch(/UNAVAILABLE/)
+      expect(data.restartPupilSlot).toMatch(/Select pupils to restart the check/)
+      expect(data.restartPupilSlot).toMatch(/Check window has closed/)
     })
   })
 })
