@@ -4,6 +4,7 @@ import * as Logger from '../common/logger'
 import { RedisCacheItem, RedisItemDataType } from './RedisCacheItemMetadata'
 import { isNil } from 'ramda'
 import { ILogger } from '../common/logger'
+import axios, { AxiosRequestConfig } from 'axios'
 
 export interface IRedisService {
   /**
@@ -170,6 +171,21 @@ export class RedisService implements IRedisService {
 class RedisSingleton {
   private static redisService: Redis.Redis
 
+  private static async getRemoteIp (): Promise<any> {
+    const requestUrl = config.RemoteIpCheckUrl
+    if (requestUrl === undefined) return 'remote url not configured'
+    try {
+      const requestConfig: AxiosRequestConfig = {
+        method: 'GET',
+        url: requestUrl
+      }
+      const response = await axios(requestConfig)
+      return response.data
+    } catch (error) {
+      console.error(`RedisSingleton.getRemoteIp: failed to make request to ${requestUrl} on function startup`)
+    }
+  }
+
   private constructor () {}
 
   private static readonly options: RedisOptions = {
@@ -177,18 +193,19 @@ class RedisSingleton {
     host: config.Redis.Host,
     password: config.Redis.Key,
     lazyConnect: true,
-    tls: {
-      host: config.Redis.useTLS ? config.Redis.Host : undefined
-    }
+    tls: config.Redis.useTLS ? { host: config.Redis.Host } : undefined
   }
 
   public static async getRedisService (): Promise<Redis.Redis> {
     if (this.redisService === undefined) {
       this.redisService = new Redis(this.options)
       try {
+        console.log('RedisSingleton: attempting to connect to redis for first time...')
+        console.dir(this.options)
         await this.redisService.connect()
       } catch (error) {
-        console.error(`RedisSingleton: connect error: ${error.message}`)
+        const remoteIp = await this.getRemoteIp()
+        console.error(`RedisSingleton: redis connect error from function IP ${remoteIp}. error: ${error.message}`)
         throw error
       }
     } else {
