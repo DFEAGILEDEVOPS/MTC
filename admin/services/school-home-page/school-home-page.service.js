@@ -27,6 +27,7 @@ const schoolHomePageService = {
     const tryItOutPinGenSlot = await schoolHomePageService.getTryItOutPinGenSlot(featureEligibilityData)
     const officialPinGenSlot = await schoolHomePageService.getOfficialPinGenSlot(featureEligibilityData)
     const restartPupilSlot = await schoolHomePageService.getRestartPupilSlot(featureEligibilityData)
+    const hdfSlot = await schoolHomePageService.getHdfSlot(featureEligibilityData)
 
     return {
       featureEligibilityData,
@@ -36,7 +37,8 @@ const schoolHomePageService = {
       serviceMessage,
       tryItOutPinGenSlot,
       officialPinGenSlot,
-      restartPupilSlot
+      restartPupilSlot,
+      hdfSlot
     }
   },
 
@@ -120,6 +122,29 @@ const schoolHomePageService = {
         explanation = 'Check window has closed'
       } else if (featureEligibilityData.isLiveInTheFuture) {
         explanation = `Open ${featureEligibilityData.liveCheckDateRangeLabel}`
+      }
+      slot = await ejsUtil.render('partials/school/home-page/inactive-link', {
+        linkDescription,
+        showUnavailableLabel: true,
+        showUnavailableLabelText: explanation
+      })
+    }
+    return slot
+  },
+
+  getHdfSlot: async function getHdfSlot (featureEligibilityData) {
+    let slot = ''
+    const linkDescription = 'Complete the headteacher’s declaration form'
+    if (featureEligibilityData.isHdfPageAccessible) {
+      const link = '/attendance/declaration-form'
+      slot = await ejsUtil.render('partials/school/home-page/active-link', {
+        linkUrl: link,
+        linkDescription
+      })
+    } else {
+      let explanation = ''
+      if (featureEligibilityData.isLiveInTheFuture) {
+        explanation = `Open ${featureEligibilityData.liveCheckStartDate}`
       }
       slot = await ejsUtil.render('partials/school/home-page/inactive-link', {
         linkDescription,

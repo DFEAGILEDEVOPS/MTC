@@ -111,6 +111,14 @@ describe('school home page service', () => {
       expect(data.restartPupilSlot).toMatch(/Select pupils to restart the check/)
       expect(data.restartPupilSlot).toMatch(/Open 7 to 25 June 2021/)
     })
+
+    test('the hdf link is disabled with unavailable label and explanation', async () => {
+      const data = await sut.getContent(user)
+      expect(data.hdfSlot).not.toMatch(/href=/)
+      expect(data.hdfSlot).toMatch(/UNAVAILABLE/)
+      expect(data.hdfSlot).toMatch(/Complete the headteacher’s declaration form/)
+      expect(data.hdfSlot).toMatch(/Open 7 June 2021/)
+    })
   })
 
   describe('LIVE CHECK PHASE', () => {
@@ -160,6 +168,12 @@ describe('school home page service', () => {
       expect(data.restartPupilSlot).toMatch(/href=/)
       expect(data.restartPupilSlot).toMatch(/Select pupils to restart the check/)
     })
+
+    test('the hdf link is enabled', async () => {
+      const data = await sut.getContent(user)
+      expect(data.hdfSlot).toMatch(/href=/)
+      expect(data.hdfSlot).toMatch(/Complete the headteacher’s declaration form/)
+    })
   })
 
   describe('AFTER LIVE CHECK WINDOW IS CLOSED', () => {
@@ -198,6 +212,14 @@ describe('school home page service', () => {
       expect(data.restartPupilSlot).toMatch(/UNAVAILABLE/)
       expect(data.restartPupilSlot).toMatch(/Select pupils to restart the check/)
       expect(data.restartPupilSlot).toMatch(/Check window has closed/)
+    })
+
+    test('the hdf link is disabled with unavailable label after the admin window ends', async () => {
+      setupFakeTime(moment('2021-08-01T06:00:00'))
+      const data = await sut.getContent(user)
+      expect(data.hdfSlot).not.toMatch(/href=/)
+      expect(data.hdfSlot).toMatch(/UNAVAILABLE/)
+      expect(data.hdfSlot).toMatch(/Complete the headteacher’s declaration form/)
     })
   })
 })

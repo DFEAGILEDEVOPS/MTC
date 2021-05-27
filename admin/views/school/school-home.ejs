@@ -71,13 +71,7 @@
             <h3 class="govuk-heading-m govuk-!-margin-top-9">After the check</h3>
             <ol class="govuk-list">
                 <li class="govuk-!-margin-bottom-4">
-                    <% if (featureEligibilityData.isHdfPageAccessible) { %>
-                    <h2 class="govuk-heading-s arrow-up"><a class="govuk-link" href="/attendance/declaration-form">Complete the headteacher's declaration form</a></h2>
-                    <% } else { %>
-                    <h2 class="govuk-heading-s arrow-up govuk-!-margin-bottom-0"><a class="govuk-font-greyed-out govuk-disabled-link">Complete the headteacher's declaration form</a></h2>
-                    <strong class="disabled-banner">UNAVAILABLE</strong>
-                    <span class="govuk-!-font-size-14 govuk-font-greyed-out">Opens <%= featureEligibilityData.liveCheckStartDate %></span>
-                    <% } %>
+                    <%- hdfSlot %>
                 </li>
                 <li class="govuk-!-margin-bottom-4">
                     <% if (isResultsFeatureAccessible) { %>
