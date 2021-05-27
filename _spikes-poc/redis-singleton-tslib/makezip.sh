@@ -1,6 +1,6 @@
 #!/bin/sh
 
-zip -ru ../redis-singleton-tslib.zip . \
+zip -ru ../deploy.zip . \
 -x '.env' \
 -x '.gitignore' \
 -x '.nvmrc' \
