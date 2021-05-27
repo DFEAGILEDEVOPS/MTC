@@ -132,11 +132,27 @@ describe('school home page service', () => {
     })
 
     test('try it out pin gen is disabled out of hours with unavailable label and explanation', async () => {
-      setupFakeTime(moment('2021-04-19T16:00:00'))
+      setupFakeTime(moment('2021-06-07T16:00:00'))
       const data = await sut.getContent(user)
       expect(data.tryItOutPinGenSlot).not.toMatch(/href=/)
       expect(data.tryItOutPinGenSlot).toMatch(/UNAVAILABLE/)
       expect(data.tryItOutPinGenSlot).toMatch(/Open 6am - 4pm/)
+    })
+
+    test('official check pin gen is enabled in hours', async () => {
+      setupFakeTime(moment('2021-06-07T06:00:00'))
+      const data = await sut.getContent(user)
+      expect(data.officialPinGenSlot).toMatch(/href=/)
+      expect(data.officialPinGenSlot).toMatch(/Generate passwords and PINs for the official check/)
+    })
+
+    test('official check pin gen is disabled out of hours', async () => {
+      setupFakeTime(moment('2021-04-19T16:00:00'))
+      const data = await sut.getContent(user)
+      expect(data.officialPinGenSlot).not.toMatch(/href=/)
+      expect(data.officialPinGenSlot).toMatch(/UNAVAILABLE/)
+      expect(data.officialPinGenSlot).toMatch(/Open 6am - 4pm on 7 to 25 June 2021/)
+      expect(data.officialPinGenSlot).toMatch(/Generate passwords and PINs for the official check/)
     })
 
     test('the pupil restart link is enabled', async () => {
@@ -166,6 +182,14 @@ describe('school home page service', () => {
       expect(data.tryItOutPinGenSlot).toMatch(/UNAVAILABLE/)
       expect(data.tryItOutPinGenSlot).toMatch(/Generate passwords and PINs for the try it out check/)
       expect(data.tryItOutPinGenSlot).toMatch(/Check window has closed/)
+    })
+
+    test('official check pin gen is disabled with label and explanation', async () => {
+      const data = await sut.getContent(user)
+      expect(data.officialPinGenSlot).not.toMatch(/href=/)
+      expect(data.officialPinGenSlot).toMatch(/UNAVAILABLE/)
+      expect(data.officialPinGenSlot).toMatch(/Generate passwords and PINs for the official check/)
+      expect(data.officialPinGenSlot).toMatch(/Check window has closed/)
     })
 
     test('the pupil restart link is disabled with unavailable label and explanation', async () => {
