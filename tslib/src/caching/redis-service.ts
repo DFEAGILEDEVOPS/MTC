@@ -188,7 +188,7 @@ class RedisSingleton {
       try {
         await this.redisService.connect()
       } catch (error) {
-        console.error(error)
+        console.error(`RedisSingleton: connect error: ${error.message}`)
         throw error
       }
     } else {
