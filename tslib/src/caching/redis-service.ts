@@ -42,11 +42,6 @@ export interface IRedisService {
    */
   drop (keys: string[]): Promise<Array<[Error | null, any]> | undefined>
   /**
-   * @description cleans up the underlying redis client implementation
-   * @returns void
-   */
-  quit (): Promise<string>
-  /**
    * @description get the TTL of an existing item in the cache
    * @param key the key of the item in the cache
    * @returns the TTL in seconds or null if the item is not found
@@ -61,27 +56,20 @@ export interface IRedisService {
 }
 
 export class RedisService implements IRedisService {
-  private readonly redis: Redis.Redis
   private readonly logger: Logger.ILogger
 
   constructor (logger?: ILogger) {
-    const options: RedisOptions = {
-      port: Number(config.Redis.Port),
-      host: config.Redis.Host,
-      password: config.Redis.Key
-    }
-    if (config.Redis.useTLS) {
-      options.tls = {
-        host: config.Redis.Host
-      }
-    }
-    this.redis = new Redis(options)
     this.logger = logger ?? new Logger.ConsoleLogger()
+  }
+
+  private async getRedis (): Promise<Redis.Redis> {
+    return RedisSingleton.getRedisService()
   }
 
   async get (key: string): Promise<unknown | undefined> {
     try {
-      const cacheEntry = await this.redis.get(key)
+      const redis = await this.getRedis()
+      const cacheEntry = await redis.get(key)
       if (isNil(cacheEntry)) return
       const cacheItem: RedisCacheItem = JSON.parse(cacheEntry)
       switch (cacheItem.meta.type) {
@@ -137,7 +125,8 @@ export class RedisService implements IRedisService {
   async setex (key: string, value: string | number | Record<string, unknown>, ttl: number): Promise<void> {
     try {
       const storageItem = this.prepareForStorage(value)
-      await this.redis.setex(key, ttl, storageItem)
+      const redis = await this.getRedis()
+      await redis.setex(key, ttl, storageItem)
     } catch (err) {
       this.logger.error(`REDIS (setex): Error setting ${key}: ${err.message}`)
       throw err
@@ -147,7 +136,8 @@ export class RedisService implements IRedisService {
   async set (key: string, value: string | number | Record<string, unknown>): Promise<void> {
     try {
       const storageItem = this.prepareForStorage(value)
-      await this.redis.set(key, storageItem)
+      const redis = await this.getRedis()
+      await redis.set(key, storageItem)
     } catch (err) {
       this.logger.error(`REDIS (set): Error setting ${key}: ${err.message}`)
       throw err
@@ -158,22 +148,51 @@ export class RedisService implements IRedisService {
     if (keys.length === 0) {
       return
     }
-    const pipeline = this.redis.pipeline()
+    const redis = await this.getRedis()
+    const pipeline = redis.pipeline()
     keys.forEach(c => {
       pipeline.del(c)
     })
     return pipeline.exec()
   }
 
-  async quit (): Promise<string> {
-    return this.redis.quit()
-  }
-
   async ttl (key: string): Promise<number | null> {
-    return this.redis.ttl(key)
+    const redis = await this.getRedis()
+    return redis.ttl(key)
   }
 
   async expire (key: string, ttl: number): Promise<any> {
-    return this.redis.expire(key, ttl)
+    const redis = await this.getRedis()
+    return redis.expire(key, ttl)
+  }
+}
+
+class RedisSingleton {
+  private static redisService: Redis.Redis
+
+  private constructor () {}
+
+  private static readonly options: RedisOptions = {
+    port: Number(config.Redis.Port),
+    host: config.Redis.Host,
+    password: config.Redis.Key,
+    lazyConnect: true,
+    tls: {
+      host: config.Redis.useTLS ? config.Redis.Host : undefined
+    }
+  }
+
+  public static async getRedisService (): Promise<Redis.Redis> {
+    if (this.redisService === undefined) {
+      this.redisService = new Redis(this.options)
+      try {
+        await this.redisService.connect()
+      } catch (error) {
+        console.error(error)
+        throw error
+      }
+    } else {
+    }
+    return this.redisService
   }
 }
