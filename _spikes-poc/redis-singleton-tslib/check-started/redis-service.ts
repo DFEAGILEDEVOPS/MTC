@@ -190,7 +190,6 @@ class RedisSingleton {
         await this.redisService.connect()
         console.log(`redis now connected to ${this.options.host}`)
       } catch (error) {
-        // TODO deal with it, big problem!
         console.error(error)
         throw error
       }

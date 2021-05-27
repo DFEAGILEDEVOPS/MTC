@@ -6,6 +6,6 @@ const queueTrigger: AzureFunction = async function (context: Context, myQueueIte
     const redis = new RedisService()
     const key = uuid()
     redis.set(key, myQueueItem)
-};
+}
 
-export default queueTrigger;
+export default queueTrigger

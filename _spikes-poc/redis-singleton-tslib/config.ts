@@ -2,7 +2,7 @@ import * as path from 'path'
 import * as os from 'os'
 import * as fs from 'fs'
 import * as dotenv from 'dotenv'
-import * as parser from './checkStarted/parsing'
+import * as parser from './check-started/parsing'
 const globalDotEnvFile = path.join(__dirname, '..', '.env')
 try {
   if (fs.existsSync(globalDotEnvFile)) {

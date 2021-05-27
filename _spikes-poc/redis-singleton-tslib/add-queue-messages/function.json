@@ -6,8 +6,7 @@
       "direction": "in",
       "name": "req",
       "methods": [
-        "get",
-        "post"
+        "get"
       ]
     },
     {
@@ -23,5 +22,5 @@
       "connection": "AZURE_STORAGE_CONNECTION_STRING"
     }
   ],
-  "scriptFile": "../dist/addQMessages/index.js"
+  "scriptFile": "../dist/add-queue-messages/index.js"
 }

@@ -8,5 +8,5 @@
       "connection": "AZURE_STORAGE_CONNECTION_STRING"
     }
   ],
-  "scriptFile": "../dist/checkStarted/index.js"
+  "scriptFile": "../dist/check-started/index.js"
 }
