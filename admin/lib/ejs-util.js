@@ -12,8 +12,7 @@ const ejsUtil = {
     return new Promise((resolve, reject) => {
       const filename = path.join(viewsDir, viewName + '.ejs')
       data.isFeatureEnabled = (featureName) => featureToggles.isFeatureEnabled(featureName)
-      // TODO: JMS: set escape to true
-      ejs.renderFile(filename, data, { cache: shouldCache, escape: false },
+      ejs.renderFile(filename, data, { cache: shouldCache },
         function (err, str) {
           if (err) return reject(err)
           return resolve(str)
