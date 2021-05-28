@@ -127,6 +127,14 @@ describe('school home page service', () => {
       expect(data.resultsSlot).toMatch(/View pupil results/)
       expect(data.resultsSlot).toMatch(/Results available 28 June 2021/)
     })
+
+    test('the pupil status link is disabled with unavailable label and explanation', async () => {
+      const data = await sut.getContent(user)
+      expect(data.pupilStatusSlot).not.toMatch(/href=/)
+      expect(data.pupilStatusSlot).toMatch(/UNAVAILABLE/)
+      expect(data.pupilStatusSlot).toMatch(/See how many of your pupils have completed the official check/)
+      expect(data.pupilStatusSlot).toMatch(/Open 7 to 25 June 2021/)
+    })
   })
 
   describe('LIVE CHECK PHASE', () => {
@@ -189,6 +197,12 @@ describe('school home page service', () => {
       expect(data.resultsSlot).toMatch(/UNAVAILABLE/)
       expect(data.resultsSlot).toMatch(/View pupil results/)
       expect(data.resultsSlot).toMatch(/Results available 28 June 2021/)
+    })
+
+    test('the pupil status link is enabled', async () => {
+      const data = await sut.getContent(user)
+      expect(data.pupilStatusSlot).toMatch(/href=/)
+      expect(data.pupilStatusSlot).toMatch(/See how many of your pupils have completed the official check/)
     })
   })
 
@@ -253,6 +267,12 @@ describe('school home page service', () => {
       const data = await sut.getContent(user)
       expect(data.resultsSlot).toMatch(/href=/)
       expect(data.resultsSlot).toMatch(/View pupil results/)
+    })
+
+    test('the pupil status link is enabled', async () => {
+      const data = await sut.getContent(user)
+      expect(data.pupilStatusSlot).toMatch(/href=/)
+      expect(data.pupilStatusSlot).toMatch(/See how many of your pupils have completed the official check/)
     })
   })
 })

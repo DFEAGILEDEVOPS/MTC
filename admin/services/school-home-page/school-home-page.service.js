@@ -29,6 +29,7 @@ const schoolHomePageService = {
     const restartPupilSlot = await schoolHomePageService.getRestartPupilSlot(featureEligibilityData)
     const hdfSlot = await schoolHomePageService.getHdfSlot(featureEligibilityData)
     const resultsSlot = await schoolHomePageService.getResultsSlot(featureEligibilityData, isResultsFeatureAccessible)
+    const pupilStatusSlot = await schoolHomePageService.getPupilStatusSlot(featureEligibilityData)
 
     return {
       featureEligibilityData,
@@ -40,7 +41,8 @@ const schoolHomePageService = {
       officialPinGenSlot,
       restartPupilSlot,
       hdfSlot,
-      resultsSlot
+      resultsSlot,
+      pupilStatusSlot
     }
   },
 
@@ -176,6 +178,29 @@ const schoolHomePageService = {
       let explanation = ''
       if (featureEligibilityData.resultsPublishedDate) {
         explanation = `Results available ${featureEligibilityData.resultsPublishedDate}`
+      }
+      slot = await ejsUtil.render('partials/school/home-page/inactive-link', {
+        linkDescription,
+        showUnavailableLabel: true,
+        showUnavailableLabelText: explanation
+      })
+    }
+    return slot
+  },
+
+  getPupilStatusSlot: async function getPupilStatusSlot (featureEligibilityData) {
+    let slot = ''
+    const linkDescription = 'See how many of your pupils have completed the official check'
+    if (featureEligibilityData.isHdfPageAccessible) {
+      const link = '/pupil-status'
+      slot = await ejsUtil.render('partials/school/home-page/active-link', {
+        linkUrl: link,
+        linkDescription
+      })
+    } else {
+      let explanation = ''
+      if (featureEligibilityData.resultsPublishedDate) {
+        explanation = `Open ${featureEligibilityData.liveCheckDateRangeLabel}`
       }
       slot = await ejsUtil.render('partials/school/home-page/inactive-link', {
         linkDescription,
