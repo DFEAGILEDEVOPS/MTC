@@ -202,6 +202,7 @@ class RedisSingleton {
     }
     this.redisService = new Redis(this.options)
     try {
+      console.log(`RedisSingleton: attempting to connect to redis at ${this.options.host}:${this.options.port}`)
       await this.redisService.connect()
       return this.redisService
     } catch (error) {
