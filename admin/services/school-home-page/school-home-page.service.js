@@ -48,7 +48,7 @@ const schoolHomePageService = {
   },
 
   getGroupsLinkSlot: async function getGroupsLinksSlot (featureEligibilityData) {
-    let slot = ''
+    let slot
     const linkDescription = 'Organise pupils into groups'
     if (!featureEligibilityData.isCheckWindowClosed) {
       slot = await ejsUtil.render('partials/school/home-page/active-link', {
@@ -66,7 +66,7 @@ const schoolHomePageService = {
   },
 
   getTryItOutPinGenSlot: async function getTryItOutPinGenSlot (featureEligibilityData) {
-    let slot = ''
+    let slot
     const linkDescription = 'Generate passwords and PINs for the try it out check'
     if (featureEligibilityData.isFamiliarisationPinGenerationAllowed) {
       slot = await ejsUtil.render('partials/school/home-page/active-link', {
@@ -87,7 +87,7 @@ const schoolHomePageService = {
   },
 
   getOfficialPinGenSlot: async function officialPinGenSlot (featureEligibilityData) {
-    let slot = ''
+    let slot
     const linkDescription = 'Generate passwords and PINs for the official check'
     if (featureEligibilityData.isLivePinGenerationAllowed) {
       slot = await ejsUtil.render('partials/school/home-page/active-link', {
@@ -113,7 +113,7 @@ const schoolHomePageService = {
   },
 
   getRestartPupilSlot: async function getRestartPupilSlot (featureEligibilityData) {
-    let slot = ''
+    let slot
     const linkDescription = 'Select pupils to restart the check'
     if (featureEligibilityData.isRestartsPageAccessible) {
       const link = '/restart/overview'
@@ -138,7 +138,7 @@ const schoolHomePageService = {
   },
 
   getHdfSlot: async function getHdfSlot (featureEligibilityData) {
-    let slot = ''
+    let slot
     const linkDescription = 'Complete the headteacher’s declaration form'
     if (featureEligibilityData.isHdfPageAccessible) {
       const link = '/attendance/declaration-form'
@@ -167,7 +167,7 @@ const schoolHomePageService = {
    * @return {Promise<string>}
    */
   getResultsSlot: async function getResultsSlot (featureEligibilityData, isResultsFeatureAccessible) {
-    let slot = ''
+    let slot
     const linkDescription = 'View pupil results'
     if (isResultsFeatureAccessible) {
       const link = '/results/view-results'
@@ -190,7 +190,7 @@ const schoolHomePageService = {
   },
 
   getPupilStatusSlot: async function getPupilStatusSlot (featureEligibilityData) {
-    let slot = ''
+    let slot
     const linkDescription = 'See how many of your pupils have completed the official check'
     if (featureEligibilityData.isHdfPageAccessible) {
       const link = '/pupil-status'
