@@ -59,7 +59,7 @@ export interface IRedisService {
 export class RedisService implements IRedisService {
   private readonly logger: Logger.ILogger
 
-  constructor(logger?: ILogger) {
+  constructor (logger?: ILogger) {
     this.logger = logger ?? new Logger.ConsoleLogger()
   }
 
@@ -186,7 +186,7 @@ class RedisSingleton {
     }
   }
 
-  private constructor() { }
+  private constructor () { }
 
   private static readonly options: RedisOptions = {
     port: Number(config.Redis.Port),
