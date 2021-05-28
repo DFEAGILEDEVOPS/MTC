@@ -16,7 +16,7 @@ try {
 }
 const azure = require('azure')
 const sbService = azure.createServiceBusService(process.env.AZURE_SERVICE_BUS_CONNECTION_STRING)
-const queues = require('./queues-topics.json').queues
+const queues = require('./deploy.config')
 
 const deleteQueue = (queueName) => (new Promise((resolve, reject) => {
   // There is no counterpart to createQueueIfNotExists, although deleteQueueIfNotExists is available
@@ -38,7 +38,7 @@ const deleteQueue = (queueName) => (new Promise((resolve, reject) => {
 }))
 
 async function main () {
-  const promises = queues.map(q => deleteQueue(q))
+  const promises = queues.map(q => deleteQueue(q.name))
   await Promise.all(promises)
 }
 

@@ -2,7 +2,6 @@
 const path = require('path')
 const fs = require('fs')
 const globalDotEnvFile = path.join(__dirname, '..', '..', '.env')
-const R = require('ramda')
 
 try {
   if (fs.existsSync(globalDotEnvFile)) {
@@ -15,9 +14,11 @@ try {
   console.error(error)
 }
 
+const R = require('ramda')
 const azure = require('azure')
 const sbService = azure.createServiceBusService(process.env.AZURE_SERVICE_BUS_CONNECTION_STRING)
-const queues = require('./queues-topics.json').queues
+const queues = require('./deploy.config')
+
 const fiveGigabytes = 5120
 const fourteenDays = 'P14D'
 const fiveMinutes = 'PT5M'
@@ -46,12 +47,9 @@ const createQueue = (queueName, queueOptions) => (new Promise((resolve, reject) 
 }))
 
 async function main () {
+  const queueOptions = R.clone(defaultQueueOptions)
   const promises = queues.map(q => {
-    const queueOptions = R.clone(defaultQueueOptions)
-    if (q === 'sync-results-to-db-complete') {
-      queueOptions.DefaultMessageTimeToLive = oneDay
-    }
-    return createQueue(q, queueOptions)
+    return createQueue(q.name, queueOptions)
   })
   await Promise.all(promises)
 }

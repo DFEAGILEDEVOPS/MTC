@@ -22,6 +22,7 @@ require 'base64'
 require 'nokogiri'
 require 'numbers_in_words'
 require 'redis'
+require 'dotenv'
 require_relative '../../features/support/browserstack_driver_helper'
 require_relative '../../features/support/request_helper'
 require_relative '../../features/support/sql_db_helper'
@@ -105,6 +106,8 @@ Capybara.register_driver :headless_chrome do |app|
                    })
   driver
 end
+
+Dotenv.load('../../.env')
 
 Dir.mkdir("reports") unless File.directory?("reports")
 Capybara.javascript_driver = ENV["DRIVER"].to_sym
