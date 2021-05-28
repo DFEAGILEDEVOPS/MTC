@@ -24,14 +24,12 @@ controller.getSchoolLandingPage = async function getSchoolLandingPage (req, res,
 
     /**
      *
-     * @type {{tryItOutPinGenSlot: *, resultsSlot: string, groupsLinkSlot: *, featureEligibilityData: {}, isResultsFeatureAccessible: *, hdfSlot: *, serviceMessage: *, schoolName: string, restartPupilSlot: *, officialPinGenSlot: *, pupilStatusSlot: *}}
+     * @type {{tryItOutPinGenSlot: *, resultsSlot: string, groupsLinkSlot: *, hdfSlot: *, serviceMessage: unknown, restartPupilSlot: *, schoolName: unknown, officialPinGenSlot: *, pupilStatusSlot: *}}
      */
     const content = await schoolHomePageService.getContent(req.user)
 
     return res.render('school/school-home', {
       breadcrumbs: [{ name: 'School Home' }],
-      featureEligibilityData: content.featureEligibilityData,
-      isResultsFeatureAccessible: content.isResultsFeatureAccessible,
       schoolName: content.schoolName,
       serviceMessage: content.serviceMessage,
       groupsLinkSlot: content.groupsLinkSlot,

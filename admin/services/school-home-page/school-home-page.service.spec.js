@@ -49,11 +49,6 @@ describe('school home page service', () => {
     expect(data.schoolName).toBe('Unit Test School')
   })
 
-  test('feature eligibility data is returned', async () => {
-    const data = await sut.getContent(user)
-    expect(data.featureEligibilityData).toBeTruthy()
-  })
-
   test('the service message is returned', async () => {
     jest.spyOn(administrationMessageService, 'getMessage').mockResolvedValue('test message')
     const data = await sut.getContent(user)

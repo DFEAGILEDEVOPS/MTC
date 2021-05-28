@@ -11,10 +11,13 @@ const schoolService = require('../school.service')
 const schoolHomePageService = {
   getContent: async function getSchoolHomePageContent (user) {
     // Get async base data
-    const checkWindowData = await checkWindowV2Service.getActiveCheckWindow(true)
-    const schoolName = await schoolService.findSchoolNameByDfeNumber(user.School)
-    const serviceMessage = await administrationMessageService.getMessage()
+    const checkWindowDataPromise = checkWindowV2Service.getActiveCheckWindow(true)
+    const schoolNamePromise = schoolService.findSchoolNameByDfeNumber(user.School)
+    const serviceMessagePromise = await administrationMessageService.getMessage()
+    const allPromises = await Promise.all([checkWindowDataPromise, schoolNamePromise, serviceMessagePromise])
+    const [checkWindowData, schoolName, serviceMessage] = allPromises
 
+    // Business logic - no data IO
     const featureEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData, user.timezone)
     const currentDate = moment.tz(user.timezone || config.DEFAULT_TIMEZONE)
     const resultsOpeningDay = resultsPageAvailabilityService.getResultsOpeningDate(currentDate, checkWindowData.checkEndDate)
@@ -32,17 +35,15 @@ const schoolHomePageService = {
     const pupilStatusSlot = await schoolHomePageService.getPupilStatusSlot(featureEligibilityData)
 
     return {
-      featureEligibilityData,
       groupsLinkSlot,
-      isResultsFeatureAccessible,
+      hdfSlot,
+      officialPinGenSlot,
+      pupilStatusSlot,
+      restartPupilSlot,
+      resultsSlot,
       schoolName,
       serviceMessage,
-      tryItOutPinGenSlot,
-      officialPinGenSlot,
-      restartPupilSlot,
-      hdfSlot,
-      resultsSlot,
-      pupilStatusSlot
+      tryItOutPinGenSlot
     }
   },
 
