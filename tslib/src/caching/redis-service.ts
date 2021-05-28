@@ -59,7 +59,7 @@ export interface IRedisService {
 export class RedisService implements IRedisService {
   private readonly logger: Logger.ILogger
 
-  constructor (logger?: ILogger) {
+  constructor(logger?: ILogger) {
     this.logger = logger ?? new Logger.ConsoleLogger()
   }
 
@@ -186,7 +186,7 @@ class RedisSingleton {
     }
   }
 
-  private constructor () {}
+  private constructor() { }
 
   private static readonly options: RedisOptions = {
     port: Number(config.Redis.Port),
@@ -197,19 +197,17 @@ class RedisSingleton {
   }
 
   public static async getRedisService (): Promise<Redis.Redis> {
-    if (this.redisService === undefined) {
-      this.redisService = new Redis(this.options)
-      try {
-        console.log('RedisSingleton: attempting to connect to redis for first time...')
-        console.dir(this.options)
-        await this.redisService.connect()
-      } catch (error) {
-        const remoteIp = await this.getRemoteIp()
-        console.error(`RedisSingleton: redis connect error from function IP ${remoteIp}. error: ${error.message}`)
-        throw error
-      }
-    } else {
+    if (this.redisService !== undefined) {
+      return this.redisService
     }
-    return this.redisService
+    this.redisService = new Redis(this.options)
+    try {
+      await this.redisService.connect()
+      return this.redisService
+    } catch (error) {
+      const remoteIp = await this.getRemoteIp()
+      console.error(`RedisSingleton: redis connect error from function IP ${remoteIp}. error: ${error.message}`)
+      throw error
+    }
   }
 }
