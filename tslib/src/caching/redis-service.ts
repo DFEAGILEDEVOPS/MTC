@@ -182,7 +182,7 @@ class RedisSingleton {
       const response = await axios(requestConfig)
       return response.data
     } catch (error) {
-      console.error(`RedisSingleton.getRemoteIp: failed to make request to ${requestUrl} on function startup`)
+      console.error(`RedisSingleton.getRemoteIp: failed to make request to ${requestUrl}: error was: ${error.message}`)
     }
   }
 
