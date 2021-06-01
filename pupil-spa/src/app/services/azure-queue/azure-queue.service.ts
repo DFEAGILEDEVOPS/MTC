@@ -55,18 +55,21 @@ export class AzureQueueService {
    * @returns {Promise.<Object>}
    */
   public async addMessage(queueName: string, url: string, token: string, payload: object, retryConfig: object): Promise<Object> {
+    const options = {
+      messageTimeToLive: 2419200
+    }
     const queueService = this.initQueueService(queueName, url, token, retryConfig);
     const encoder = this.getTextBase64QueueMessageEncoder();
     const message = JSON.stringify(payload);
     const encodedMessage = encoder.encode(message);
-    return queueService.createMessage(queueName, encodedMessage).catch(err => {
+    return queueService.createMessage(queueName, encodedMessage, options).catch(err => {
       if (!APP_CONFIG.production) {
         throw err;
       }
 
       const fallbackUrl = `${window.location.origin}/queue`;
       const fallbackQueueService = this.initQueueService(queueName, fallbackUrl, token, retryConfig);
-      return fallbackQueueService.createMessage(queueName, encodedMessage);
+      return fallbackQueueService.createMessage(queueName, encodedMessage, options);
     });
   }
 }
