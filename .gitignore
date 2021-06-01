@@ -120,3 +120,6 @@ test/admin-hpa/data/multiple_pupils_template.csv
 
 # azure function settings files
 local.settings.json
+
+# zip deployments (typically for apps in _spikes-poc folder)
+deploy.zip
