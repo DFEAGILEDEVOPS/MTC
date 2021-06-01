@@ -57,7 +57,6 @@ export class PreparedCheckSyncService {
         this.logger.error(`Error failed to update check ${ref.checkCode} with new access arrangements: ${error.message}`)
       }
     }
-    await this.redisService.quit()
   }
 
   buildPreparedCheckCacheKey (checkReference: IActiveCheckReference): string {
