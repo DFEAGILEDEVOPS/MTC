@@ -1,12 +1,12 @@
-import { Inject, Injectable } from '@angular/core'
-import * as bluebird from 'bluebird'
+import { Inject, Injectable } from '@angular/core';
+import * as bluebird from 'bluebird';
 import {
   IQueueStorage,
   IQueueService,
   QUEUE_STORAGE_TOKEN,
-} from './azureStorage'
-import { TextBase64QueueMessageEncoder } from './textBase64QueueMessageEncoder'
-import { APP_CONFIG } from '../config/config.service'
+} from './azureStorage';
+import { TextBase64QueueMessageEncoder } from './textBase64QueueMessageEncoder';
+import { APP_CONFIG } from '../config/config.service';
 
 /**
  * Declaration of azure queue service
@@ -31,10 +31,10 @@ export class AzureQueueService {
       .createQueueServiceWithSas(url.replace(queueName, ''), token)
       .withFilter(
         new this.queueStorage.LinearRetryPolicyFilter(retryConfig.errorMaxAttempts, retryConfig.errorDelay)
-      )
-    service.performRequest = bluebird.promisify(service.performRequest, service)
-    service.createMessage = bluebird.promisify(service.createMessage, service)
-    return service
+      );
+    service.performRequest = bluebird.promisify(service.performRequest, service);
+    service.createMessage = bluebird.promisify(service.createMessage, service);
+    return service;
   }
 
   /**
@@ -42,7 +42,7 @@ export class AzureQueueService {
    * @returns {Object}
    */
   public getTextBase64QueueMessageEncoder (): TextBase64QueueMessageEncoder {
-    return new TextBase64QueueMessageEncoder(this.queueStorage.QueueMessageEncoder)
+    return new TextBase64QueueMessageEncoder(this.queueStorage.QueueMessageEncoder);
   }
 
   /**
@@ -60,18 +60,18 @@ export class AzureQueueService {
     // const options = {
     //   messageTimeToLive: twentyEightDaysInSeconds
     // }
-    const queueService = this.initQueueService(queueName, url, token, retryConfig)
-    const encoder = this.getTextBase64QueueMessageEncoder()
-    const message = JSON.stringify(payload)
-    const encodedMessage = encoder.encode(message)
+    const queueService = this.initQueueService(queueName, url, token, retryConfig);
+    const encoder = this.getTextBase64QueueMessageEncoder();
+    const message = JSON.stringify(payload);
+    const encodedMessage = encoder.encode(message);
     return queueService.createMessage(queueName, encodedMessage).catch(err => {
       if (!APP_CONFIG.production) {
-        throw err
+        throw err;
       }
 
-      const fallbackUrl = `${window.location.origin}/queue`
-      const fallbackQueueService = this.initQueueService(queueName, fallbackUrl, token, retryConfig)
-      return fallbackQueueService.createMessage(queueName, encodedMessage)
-    })
+      const fallbackUrl = `${window.location.origin}/queue`;
+      const fallbackQueueService = this.initQueueService(queueName, fallbackUrl, token, retryConfig);
+      return fallbackQueueService.createMessage(queueName, encodedMessage);
+    });
   }
 }
