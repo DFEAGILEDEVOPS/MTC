@@ -27,6 +27,7 @@ schoolHomeFeatureEligibilityPresenter.getPresentationData = (checkWindowData, ti
   featureEligibilityData.liveCheckStartDate = dateService.formatFullGdsDate(checkWindowData.checkStartDate)
   featureEligibilityData.liveCheckEndDate = dateService.formatFullGdsDate(checkWindowData.checkEndDate)
   featureEligibilityData.liveCheckDateRangeLabel = dateService.getGdsDateRangeLabel(checkWindowData.checkStartDate, checkWindowData.checkEndDate)
+  featureEligibilityData.familiarisatonCheckDateRangeLabel = dateService.getGdsDateRangeLabel(checkWindowData.familiarisationCheckStartDate, checkWindowData.familiarisationCheckEndDate)
 
   // Results
   featureEligibilityData.resultsPublishedDate = dateService.formatFullGdsDate(resultsPublishedDate)

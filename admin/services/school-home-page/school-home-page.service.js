@@ -75,8 +75,13 @@ const schoolHomePageService = {
       })
     } else {
       let explanation = ''
-      if (featureEligibilityData.isCheckWindowClosed) { explanation = 'Check window has closed' }
-      if (featureEligibilityData.isWithinFamiliarisationUnavailableHours) { explanation = 'Open 6am - 4pm' }
+      if (featureEligibilityData.isCheckWindowClosed) {
+        explanation = 'Check window has closed'
+      } else if (featureEligibilityData.isWithinFamiliarisationUnavailableHours) {
+        explanation = 'Open 6am - 4pm'
+      } else if (featureEligibilityData.isFamiliarisationInTheFuture) {
+        explanation = `Open 6am - 4pm on ${featureEligibilityData.familiarisatonCheckDateRangeLabel}`
+      }
       slot = await ejsUtil.render('partials/school/home-page/inactive-link', {
         linkDescription,
         showUnavailableLabel: true,

@@ -21,7 +21,7 @@ describe('school home page service', () => {
     adminEndDate: moment('2021-07-30T23:59:59'),
     checkStartDate: moment('2021-06-07T00:00:00'),
     checkEndDate: moment('2021-06-25T23:59:59'),
-    familiarisationCheckStartDate: moment('2021-04-19T00:00:00'),
+    familiarisationCheckStartDate: moment('2021-04-21T00:00:00'),
     familiarisationCheckEndDate: moment('2021-06-25T23:59:59'),
     isDeleted: false,
     urlSlug: '0000-0000-00000-00000'
@@ -55,22 +55,25 @@ describe('school home page service', () => {
     expect(data.serviceMessage).toBe('test message')
   })
 
-  describe('FAMILIARISATION CHECK PHASE', () => {
+  describe('PRE-FAMILIARISATION CHECK PHASE', () => {
     beforeEach(() => {
       jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockResolvedValue(mockCheckWindow)
       setupFakeTime(moment('2021-04-19T09:00:00'))
     })
 
-    test('group link is enabled ', async () => {
+    test('try it out pin gen is disabled when in hours', async () => {
       const data = await sut.getContent(user)
-      expect(data.groupsLinkSlot).toMatch(/href=/)
-      expect(data.groupsLinkSlot).toMatch(/Organise pupils into groups/)
+      expect(data.tryItOutPinGenSlot).not.toMatch(/href=/)
+      expect(data.tryItOutPinGenSlot).toMatch(/UNAVAILABLE/)
+      expect(data.tryItOutPinGenSlot).toMatch(/Open 6am - 4pm on 21 April 2021 to 25 June 2021/)
     })
 
-    test('try it out pin gen is enabled when in hours', async () => {
+    test('try it out pin gen is disabled out of hours with unavailable label and explanation', async () => {
+      setupFakeTime(moment('2021-04-19T16:00:00'))
       const data = await sut.getContent(user)
-      expect(data.tryItOutPinGenSlot).toMatch(/href=/)
-      expect(data.tryItOutPinGenSlot).toMatch(/Generate passwords and PINs for the try it out check/)
+      expect(data.tryItOutPinGenSlot).not.toMatch(/href=/)
+      expect(data.tryItOutPinGenSlot).toMatch(/UNAVAILABLE/)
+      expect(data.tryItOutPinGenSlot).toMatch(/Open 6am - 4pm/)
     })
 
     test('official check pin gen is disabled in hours', async () => {
@@ -91,8 +94,77 @@ describe('school home page service', () => {
       expect(data.officialPinGenSlot).toMatch(/Generate passwords and PINs for the official check/)
     })
 
+    test('the pupil restart link is disabled with unavailable label and explanation', async () => {
+      const data = await sut.getContent(user)
+      expect(data.restartPupilSlot).not.toMatch(/href=/)
+      expect(data.restartPupilSlot).toMatch(/UNAVAILABLE/)
+      expect(data.restartPupilSlot).toMatch(/Select pupils to restart the check/)
+      expect(data.restartPupilSlot).toMatch(/Open 7 to 25 June 2021/)
+    })
+
+    test('the hdf link is disabled with unavailable label and explanation', async () => {
+      const data = await sut.getContent(user)
+      expect(data.hdfSlot).not.toMatch(/href=/)
+      expect(data.hdfSlot).toMatch(/UNAVAILABLE/)
+      expect(data.hdfSlot).toMatch(/Complete the headteacher’s declaration form/)
+      expect(data.hdfSlot).toMatch(/Open 7 June 2021/)
+    })
+
+    test('the pupil results link is disabled with unavailable label and explanation', async () => {
+      const data = await sut.getContent(user)
+      expect(data.resultsSlot).not.toMatch(/href=/)
+      expect(data.resultsSlot).toMatch(/UNAVAILABLE/)
+      expect(data.resultsSlot).toMatch(/View pupil results/)
+      expect(data.resultsSlot).toMatch(/Results available 28 June 2021/)
+    })
+
+    test('the pupil status link is disabled with unavailable label and explanation', async () => {
+      const data = await sut.getContent(user)
+      expect(data.pupilStatusSlot).not.toMatch(/href=/)
+      expect(data.pupilStatusSlot).toMatch(/UNAVAILABLE/)
+      expect(data.pupilStatusSlot).toMatch(/See how many of your pupils have completed the official check/)
+      expect(data.pupilStatusSlot).toMatch(/Open 7 to 25 June 2021/)
+    })
+  })
+
+  describe('FAMILIARISATION CHECK PHASE', () => {
+    beforeEach(() => {
+      jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockResolvedValue(mockCheckWindow)
+      setupFakeTime(moment('2021-04-21T09:00:00'))
+    })
+
+    test('group link is enabled ', async () => {
+      const data = await sut.getContent(user)
+      expect(data.groupsLinkSlot).toMatch(/href=/)
+      expect(data.groupsLinkSlot).toMatch(/Organise pupils into groups/)
+    })
+
+    test('official check pin gen is disabled in hours', async () => {
+      const data = await sut.getContent(user)
+      expect(data.officialPinGenSlot).not.toMatch(/href=/)
+      expect(data.officialPinGenSlot).toMatch(/UNAVAILABLE/)
+      expect(data.officialPinGenSlot).toMatch(/Open 6am - 4pm on 7 to 25 June 2021/)
+      expect(data.officialPinGenSlot).toMatch(/Generate passwords and PINs for the official check/)
+    })
+
+    test('official check pin gen is disabled out of hours', async () => {
+      setupFakeTime(moment('2021-04-21T16:00:00'))
+      const data = await sut.getContent(user)
+      expect(data.officialPinGenSlot).not.toMatch(/href=/)
+      expect(data.officialPinGenSlot).toMatch(/UNAVAILABLE/)
+      expect(data.officialPinGenSlot).toMatch(/Open 6am - 4pm on 7 to 25 June 2021/)
+      expect(data.officialPinGenSlot).toMatch(/Generate passwords and PINs for the official check/)
+    })
+
+    test('try it out pin gen is enabled when in hours', async () => {
+      setupFakeTime(moment('2021-04-21T09:00:00'))
+      const data = await sut.getContent(user)
+      expect(data.tryItOutPinGenSlot).toMatch(/href=/)
+      expect(data.tryItOutPinGenSlot).toMatch(/Generate passwords and PINs for the try it out check/)
+    })
+
     test('try it out pin gen is disabled out of hours with unavailable label and explanation', async () => {
-      setupFakeTime(moment('2021-04-19T16:00:00'))
+      setupFakeTime(moment('2021-04-21T16:00:00'))
       const data = await sut.getContent(user)
       expect(data.tryItOutPinGenSlot).not.toMatch(/href=/)
       expect(data.tryItOutPinGenSlot).toMatch(/UNAVAILABLE/)
