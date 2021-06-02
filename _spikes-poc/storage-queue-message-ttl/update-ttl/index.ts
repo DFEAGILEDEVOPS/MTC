@@ -18,11 +18,11 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
     const promises = []
     for (let i = 0; i < messageCount; i++) {
       const message = response.receivedMessageItems[i]
+      // updateMessage fails as API supports max 7 days (604800 seconds)
       promises.push(queueClient.updateMessage(message.messageId, message.popReceipt, undefined,
         daysUntilExpiryInSeconds))
     }
     await Promise.all(promises)
-    // updateMessage fails as API supports max 7 days (604800 seconds)
     response = await queueClient.receiveMessages({
       numberOfMessages: messageBatchSize
     })
