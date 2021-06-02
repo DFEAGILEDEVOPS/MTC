@@ -27,10 +27,6 @@ describe('RedisService', () => {
     await sut.drop([redisItemKey])
   })
 
-  afterEach(async () => {
-    await sut.quit()
-  })
-
   afterAll(async () => {
     await ioRedis.quit()
     // give redis time to cleanly shutdown before jest complains about
