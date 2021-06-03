@@ -1,10 +1,9 @@
 import Redis, { RedisOptions } from 'ioredis'
 import config from '../config'
-import * as Logger from '../common/logger'
+import * as Logger from './logger'
 import { RedisCacheItem, RedisItemDataType } from './RedisCacheItemMetadata'
 import { isNil } from 'ramda'
-import { ILogger } from '../common/logger'
-import axios, { AxiosRequestConfig } from 'axios'
+import { ILogger } from './logger'
 
 export interface IRedisService {
   /**
@@ -171,44 +170,33 @@ export class RedisService implements IRedisService {
 class RedisSingleton {
   private static redisService: Redis.Redis
 
-  private static async getRemoteIp (): Promise<any> {
-    const requestUrl = config.RemoteIpCheckUrl
-    if (requestUrl === undefined) return 'remote url not configured'
-    try {
-      const requestConfig: AxiosRequestConfig = {
-        method: 'GET',
-        url: requestUrl
-      }
-      const response = await axios(requestConfig)
-      return response.data
-    } catch (error) {
-      console.error(`RedisSingleton.getRemoteIp: failed to make request to ${requestUrl}: error was: ${error.message}`)
-    }
-  }
+  private constructor (){}
 
-  private constructor () { }
-
-  private static readonly options: RedisOptions = {
+  private static options: RedisOptions = {
     port: Number(config.Redis.Port),
     host: config.Redis.Host,
     password: config.Redis.Key,
     lazyConnect: true,
-    tls: config.Redis.useTLS ? { host: config.Redis.Host } : undefined
+    tls: {
+      host: config.Redis.useTLS ? config.Redis.Host : null
+    }
   }
 
   public static async getRedisService (): Promise<Redis.Redis> {
-    if (this.redisService !== undefined) {
-      return this.redisService
+    if (this.redisService == undefined) {
+      console.log(`redis not yet connected. connecting...`)
+      this.redisService = new Redis(this.options)
+      try {
+        await this.redisService.connect()
+        console.log(`redis now connected to ${this.options.host}`)
+      } catch (error) {
+        console.error(error)
+        throw error
+      }
+    } else {
+      console.log('redis already connected. returning...')
     }
-    this.redisService = new Redis(this.options)
-    try {
-      console.log(`RedisSingleton: attempting to connect to redis at ${this.options.host}:${this.options.port}`)
-      await this.redisService.connect()
-      return this.redisService
-    } catch (error) {
-      const remoteIp = await this.getRemoteIp()
-      console.error(`RedisSingleton: redis connect error from function IP ${remoteIp}. error: ${error.message}`)
-      throw error
-    }
+    return this.redisService
   }
+
 }

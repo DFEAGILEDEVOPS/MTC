@@ -116,5 +116,6 @@ export default {
   },
   Logging: {
     DebugVerbosity: parseInt(parser.valueOrSubstitute(process.env.DEBUG_VERBOSITY, 1), 10)
-  }
+  },
+  RemoteIpCheckUrl: process.env.REMOTE_IP_CHECK_URL
 }

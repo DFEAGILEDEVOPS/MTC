@@ -30,7 +30,6 @@ export class CheckStartedService {
     if (R.path(['config', 'practice'], preparedCheck) === false) {
       await this.redisService.drop([preparedCheckKey])
     }
-    await this.redisService.quit()
   }
 
   private buildCacheKey (checkCode: string): string {
