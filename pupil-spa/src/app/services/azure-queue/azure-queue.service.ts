@@ -26,7 +26,7 @@ export class AzureQueueService {
    * @param {Object} retryConfig
    * @returns {Object}
    */
-  public initQueueService(queueName: string, url: string, token: string, retryConfig): IQueueService {
+  public initQueueService (queueName: string, url: string, token: string, retryConfig): IQueueService {
     const service = this.queueStorage
       .createQueueServiceWithSas(url.replace(queueName, ''), token)
       .withFilter(
@@ -41,7 +41,7 @@ export class AzureQueueService {
    * Create a text base64 queue message encoder
    * @returns {Object}
    */
-  public getTextBase64QueueMessageEncoder(): TextBase64QueueMessageEncoder {
+  public getTextBase64QueueMessageEncoder (): TextBase64QueueMessageEncoder {
     return new TextBase64QueueMessageEncoder(this.queueStorage.QueueMessageEncoder);
   }
 
@@ -54,7 +54,12 @@ export class AzureQueueService {
    * @param {Object} retryConfig
    * @returns {Promise.<Object>}
    */
-  public async addMessage(queueName: string, url: string, token: string, payload: object, retryConfig: object): Promise<Object> {
+  public async addMessage (queueName: string, url: string, token: string, payload: object, retryConfig: object): Promise<Object> {
+    // to increase message expiry add this object as 3rd param to createMessage call
+    // const twentyEightDaysInSeconds = 2419200
+    // const options = {
+    //   messageTimeToLive: twentyEightDaysInSeconds
+    // }
     const queueService = this.initQueueService(queueName, url, token, retryConfig);
     const encoder = this.getTextBase64QueueMessageEncoder();
     const message = JSON.stringify(payload);
