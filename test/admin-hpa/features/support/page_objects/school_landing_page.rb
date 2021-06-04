@@ -36,7 +36,7 @@ class SchoolLandingPage < SitePrism::Page
   element :restarts, 'a[href="/restart/overview"]'
 
   # After check
-  element :hdf, 'a', text: "Complete the headteacher's declaration form"
+  element :hdf, 'a[href="/attendance/declaration-form"]'
   element :hdf_disabled, '.heading-small', text: "Complete the headteacher's declaration form"
   element :hdf_disabled_text, 'p', text: "Complete the headteacher's declaration form once you have submitted your pupil register"
   element :results, 'a[href="/results/view-results"]', text: 'View pupil results'
