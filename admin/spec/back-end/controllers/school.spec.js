@@ -1,110 +1,69 @@
 'use strict'
 
-/* global describe beforeEach afterEach it expect jasmine spyOn */
+/* global describe beforeEach afterEach jest test expect */
 
-const sinon = require('sinon')
+const helpdeskService = require('../../../services/helpdesk.service')
+const schoolHomePageService = require('../../../services/school-home-page/school-home-page.service')
+const schoolController = require('../../../controllers/school')
 const httpMocks = require('node-mocks-http')
 
-const checkWindowV2Service = require('../../../services/check-window-v2.service')
-const helpdeskService = require('../../../services/helpdesk.service')
-const schoolController = require('../../../controllers/school')
-const schoolService = require('../../../services/school.service')
-const resultPageAvailabilityService = require('../../../services/results-page-availability.service')
-const schoolHomeFeatureEligibilityPresenter = require('../../../helpers/school-home-feature-eligibility-presenter')
-const administrationMessageService = require('../../../services/administration-message.service')
-const schoolMock = require('../mocks/school')
+// alias for the SUT
+const sut = schoolController
 
-describe('school controller:', () => {
-  function getRes () {
-    const res = httpMocks.createResponse()
-    res.locals = {}
-    return res
-  }
+function getRes () {
+  const res = httpMocks.createResponse()
+  res.locals = {}
+  return res
+}
 
-  function getReq (params) {
-    const req = httpMocks.createRequest(params)
-    req.user = { School: 9991001 }
-    req.breadcrumbs = jasmine.createSpy('breadcrumbs')
-    req.flash = jasmine.createSpy('flash')
-    return req
-  }
+function getReq (params) {
+  const req = httpMocks.createRequest(params)
+  req.user = { School: 9991001 }
+  req.breadcrumbs = jest.fn()
+  req.flash = jest.fn()
+  return req
+}
 
-  describe('Check routes', () => {
-    let sandbox
-    let next
-    const goodReqParams = {
-      method: 'GET',
-      url: '/school/school-home'
-    }
+let next, res, req
 
-    beforeEach(() => {
-      sandbox = sinon.createSandbox()
-      next = jasmine.createSpy('next')
-    })
+const goodReqParams = {
+  method: 'GET',
+  url: '/school/school-home'
+}
 
-    afterEach(() => {
-      sandbox.restore()
-    })
+beforeEach(() => {
+  res = getRes()
+  req = getReq(goodReqParams)
+  next = jest.fn()
+})
 
-    describe('#getSchoolLandingPage', () => {
-      it('should display the \'school landing page\'', async () => {
-        spyOn(helpdeskService, 'isHelpdeskRole').and.returnValue(false)
-        spyOn(helpdeskService, 'isImpersonating').and.returnValue(false)
-        spyOn(checkWindowV2Service, 'getActiveCheckWindow').and.returnValue({})
-        spyOn(schoolHomeFeatureEligibilityPresenter, 'getPresentationData')
-        spyOn(schoolService, 'findSchoolNameByDfeNumber').and.returnValue(schoolMock)
-        spyOn(resultPageAvailabilityService, 'getResultsOpeningDate')
-        spyOn(resultPageAvailabilityService, 'isResultsFeatureAccessible')
-        spyOn(administrationMessageService, 'getMessage')
-        const res = getRes()
-        const req = getReq(goodReqParams)
-        await schoolController.getSchoolLandingPage(req, res, next)
-        expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
-        expect(schoolHomeFeatureEligibilityPresenter.getPresentationData).toHaveBeenCalled()
-        expect(schoolService.findSchoolNameByDfeNumber).toHaveBeenCalled()
-        expect(res.statusCode).toBe(200)
-        expect(res.locals.pageTitle).toBe('School Homepage')
-        expect(next).not.toHaveBeenCalled()
-      })
-      it('should throw an error if getActiveCheckWindow method throws an error', async () => {
-        spyOn(helpdeskService, 'isHelpdeskRole').and.returnValue(false)
-        spyOn(helpdeskService, 'isImpersonating').and.returnValue(false)
-        spyOn(checkWindowV2Service, 'getActiveCheckWindow').and.returnValue((Promise.reject(new Error('error'))))
-        spyOn(schoolService, 'findSchoolNameByDfeNumber').and.returnValue(schoolMock)
-        spyOn(schoolHomeFeatureEligibilityPresenter, 'getPresentationData')
-        spyOn(resultPageAvailabilityService, 'getResultsOpeningDate')
-        spyOn(resultPageAvailabilityService, 'isResultsFeatureAccessible')
-        const res = getRes()
-        const req = getReq(goodReqParams)
-        await schoolController.getSchoolLandingPage(req, res, next)
-        expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
-        expect(schoolService.findSchoolNameByDfeNumber).not.toHaveBeenCalled()
-        expect(schoolHomeFeatureEligibilityPresenter.getPresentationData).not.toHaveBeenCalled()
-        expect(next).toHaveBeenCalled()
-      })
-      it('should redirect to school impersonation form if a helpdesk user with no impersonation lands attempts to access school home page', async () => {
-        spyOn(helpdeskService, 'isHelpdeskRole').and.returnValue(true)
-        spyOn(helpdeskService, 'isImpersonating').and.returnValue(false)
-        const res = getRes()
-        const req = getReq(goodReqParams)
-        spyOn(res, 'redirect')
-        await schoolController.getSchoolLandingPage(req, res, next)
-        expect(res.redirect).toHaveBeenCalled()
-      })
-      it('should call administrationMessageService.getMessage to fetch a potential service message', async () => {
-        spyOn(helpdeskService, 'isHelpdeskRole').and.returnValue(false)
-        spyOn(helpdeskService, 'isImpersonating').and.returnValue(false)
-        spyOn(checkWindowV2Service, 'getActiveCheckWindow').and.returnValue({})
-        spyOn(schoolHomeFeatureEligibilityPresenter, 'getPresentationData')
-        spyOn(schoolService, 'findSchoolNameByDfeNumber').and.returnValue(schoolMock)
-        spyOn(resultPageAvailabilityService, 'getResultsOpeningDate')
-        spyOn(resultPageAvailabilityService, 'isResultsFeatureAccessible')
-        spyOn(administrationMessageService, 'getMessage')
-        const res = getRes()
-        const req = getReq(goodReqParams)
-        await schoolController.getSchoolLandingPage(req, res, next)
-        expect(administrationMessageService.getMessage).toHaveBeenCalled()
-      })
-    })
+afterEach(() => {
+  jest.restoreAllMocks()
+})
+
+describe('school controller', () => {
+  test('it redirects to the helpdesk impersonation page if a helpdesk user has not set a school to impersonate', async () => {
+    jest.spyOn(helpdeskService, 'isHelpdeskRole').mockReturnValue(true)
+    jest.spyOn(helpdeskService, 'isImpersonating').mockReturnValue(false)
+    jest.spyOn(res, 'redirect')
+    await sut.getSchoolLandingPage(req, res, next)
+    expect(res.redirect).toHaveBeenCalledWith('/helpdesk/school-impersonation')
+  })
+
+  test('it makes a call to retrieve the content', async () => {
+    jest.spyOn(helpdeskService, 'isHelpdeskRole').mockReturnValue(false)
+    jest.spyOn(helpdeskService, 'isImpersonating').mockReturnValue(false)
+    jest.spyOn(schoolHomePageService, 'getContent').mockResolvedValue({ mock: 'mock' })
+    jest.spyOn(res, 'render')
+    await sut.getSchoolLandingPage(req, res, next)
+    expect(res.render).toHaveBeenCalled()
+  })
+
+  test('it calls next() if there an error is caught', async () => {
+    jest.spyOn(helpdeskService, 'isHelpdeskRole').mockReturnValue(false)
+    jest.spyOn(helpdeskService, 'isImpersonating').mockReturnValue(false)
+    jest.spyOn(schoolHomePageService, 'getContent').mockRejectedValue(new Error('mock error'))
+    await sut.getSchoolLandingPage(req, res, next)
+    expect(next).toHaveBeenCalledWith(new Error('mock error'))
   })
 })
