@@ -6,7 +6,7 @@ const checkWindowSanityCheckService = require('../../../services/check-window-sa
 const serviceManagerErrorMessages = require('../../../lib/errors/service-manager')
 const testDeveloperErrorMessages = require('../../../lib/errors/test-developer')
 
-const checkWindowMock = require('../mocks/check-window')
+const checkWindowMock = require('../mocks/check-window').legacy
 const checkFormMock = require('../mocks/check-form')
 
 describe('check-window-sanity-check.service', () => {

@@ -11,7 +11,7 @@ resultPageAvailabilityService.getResultsOpeningDate = (currentDate, checkEndDate
   return checkEndDate.clone()
     .add(1, 'weeks').isoWeekday('Monday')
     .utcOffset(currentDate.utcOffset(), true)
-    .set({ hour: 6, minutes: 0, seconds: 0 })
+    .set({ hour: 6, minutes: 0, seconds: 0 }) // 6am BST
 }
 
 /**
