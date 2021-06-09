@@ -360,6 +360,7 @@ const controller = {
       }
       let found = false
       const verificationResult = await checkDiagnosticsService.compareResultsToPayload([checkCode])
+      console.dir(verificationResult)
       if (verificationResult) {
         found = true
       }

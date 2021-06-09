@@ -40,10 +40,6 @@ async function verifyResultsAgainstPayload (checkCode) {
   const resultsAnswers = data[2]
   const payloadQuestions = payload.questions
   const payloadAnswers = payload.answers
-  console.dir(resultsQuestions)
-  console.dir(resultsAnswers)
-  console.dir(payloadAnswers)
-  console.dir(payloadQuestions)
   const resultsQuestionsHash = crypto.createHash('md5').update(JSON.stringify(resultsQuestions)).digest('hex')
   const payloadQuestionsHash = crypto.createHash('md5').update(JSON.stringify(payloadQuestions)).digest('hex')
   const questionsMatch = (payloadQuestionsHash === resultsQuestionsHash)
@@ -52,8 +48,8 @@ async function verifyResultsAgainstPayload (checkCode) {
   const answersMatch = (payloadAnswersHash === resultsAnswersHash)
   return {
     checkCode,
-    questionsMatch,
-    answersMatch
+    questionsMatch: questionsMatch.toString(),
+    answersMatch: answersMatch.toString()
   }
 }
 
