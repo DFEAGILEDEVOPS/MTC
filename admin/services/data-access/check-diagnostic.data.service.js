@@ -28,8 +28,7 @@ const service = {
       INNER JOIN [mtc_admin].[question] q ON q.id = ans.question_id
       INNER JOIN [mtc_results].[checkResult] cr ON ans.checkResult_id = cr.id
       INNER JOIN [mtc_admin].[check] chk ON chk.id = cr.check_id
-      WHERE chk.checkCode = @checkCode
-      FOR JSON PATH, ROOT('answers')`
+      WHERE chk.checkCode = @checkCode`
     const params = [
       {
         name: 'checkCode',
@@ -37,8 +36,7 @@ const service = {
         type: TYPES.UniqueIdentifier
       }
     ]
-    const result = await sqlService.query(sql, params, undefined, roles.techSupport)
-    return R.head(result)
+    return sqlService.query(sql, params, undefined, roles.techSupport)
   },
 
   getResultsQuestionsJsonByCheckCode: async function getResultsQuestionsJsonByCheckCode (checkCode) {
@@ -48,8 +46,7 @@ const service = {
       INNER JOIN [mtc_admin].[question] q ON q.id = ans.question_id
       INNER JOIN [mtc_results].[checkResult] cr ON ans.checkResult_id = cr.id
       INNER JOIN [mtc_admin].[check] chk ON chk.id = cr.check_id
-      WHERE chk.checkCode = @checkCode
-      FOR JSON PATH, ROOT('questions')`
+      WHERE chk.checkCode = @checkCode`
     const params = [
       {
         name: 'checkCode',
@@ -57,8 +54,7 @@ const service = {
         type: TYPES.UniqueIdentifier
       }
     ]
-    const result = await sqlService.query(sql, params, undefined, roles.techSupport)
-    return R.head(result)
+    return sqlService.query(sql, params, undefined, roles.techSupport)
   }
 }
 

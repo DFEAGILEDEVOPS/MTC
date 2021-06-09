@@ -2,6 +2,7 @@
 
 const dataService = require('./data-access/check-diagnostic.data.service')
 const payloadService = require('./payload.service')
+const crypto = require('crypto')
 
 const service = {
   /**
@@ -37,14 +38,23 @@ async function verifyResultsAgainstPayload (checkCode) {
   const payload = data[0]
   const resultsQuestions = data[1]
   const resultsAnswers = data[2]
-  const payloadQuestionsString = JSON.stringify(payload.questions)
-  const payloadAnswersString = JSON.stringify(payload.answers)
-  return [
-    resultsQuestions,
-    resultsAnswers,
-    payloadQuestionsString,
-    payloadAnswersString
-  ]
+  const payloadQuestions = payload.questions
+  const payloadAnswers = payload.answers
+  console.dir(resultsQuestions)
+  console.dir(resultsAnswers)
+  console.dir(payloadAnswers)
+  console.dir(payloadQuestions)
+  const resultsQuestionsHash = crypto.createHash('md5').update(JSON.stringify(resultsQuestions)).digest('hex')
+  const payloadQuestionsHash = crypto.createHash('md5').update(JSON.stringify(payloadQuestions)).digest('hex')
+  const questionsMatch = (payloadQuestionsHash === resultsQuestionsHash)
+  const resultsAnswersHash = crypto.createHash('md5').update(JSON.stringify(resultsAnswers)).digest('hex')
+  const payloadAnswersHash = crypto.createHash('md5').update(JSON.stringify(payloadAnswers)).digest('hex')
+  const answersMatch = (payloadAnswersHash === resultsAnswersHash)
+  return {
+    checkCode,
+    questionsMatch,
+    answersMatch
+  }
 }
 
 module.exports = service

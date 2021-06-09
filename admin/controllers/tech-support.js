@@ -320,6 +320,62 @@ const controller = {
     } catch (error) {
       return next(error)
     }
+  },
+
+  /**
+ * Renders the check view input form
+ * @param {object} req
+ * @param {object} res
+ * @param {function} next
+ * @returns {Promise<void>}
+ */
+  getResultsVerifyPage: async function getResultsVerifyPage (req, res, next, error = null) {
+    res.locals.pageTitle = 'Tech Support Results Verify'
+    req.breadcrumbs('Results Verify')
+    try {
+      return res.render('tech-support/results-verify', {
+        breadcrumbs: req.breadcrumbs(),
+        formData: {},
+        err: error || new ValidationError(),
+        summary: undefined,
+        found: undefined
+      })
+    } catch (error) {
+      return next(error)
+    }
+  },
+  /**
+   * Renders check view summary
+   * @param {object} req
+   * @param {object} res
+   * @param {object} next
+   */
+  postResultsVerifyPage: async function postResultsVerifyPage (req, res, next) {
+    res.locals.pageTitle = 'Tech Support Results Verify'
+    const { checkCode } = req.body
+    try {
+      const validationError = uuidValidator.validate(checkCode, 'checkCode')
+      if (validationError && validationError.hasError && validationError.hasError()) {
+        return controller.getResultsVerifyPage(req, res, next, validationError)
+      }
+      let found = false
+      const verificationResult = await checkDiagnosticsService.compareResultsToPayload([checkCode])
+      if (verificationResult) {
+        found = true
+      }
+      req.breadcrumbs('Check View')
+      res.render('tech-support/results-verify', {
+        breadcrumbs: req.breadcrumbs(),
+        err: new ValidationError(),
+        formData: {
+          checkCode: checkCode
+        },
+        summary: verificationResult,
+        found: found
+      })
+    } catch (error) {
+      return next(error)
+    }
   }
 }
 

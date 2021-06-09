@@ -108,4 +108,16 @@ router.get(
   techSupportController.showQueueOverview
 )
 
+router.get(
+  '/results-verify',
+  isAuthenticated([roles.techSupport]),
+  techSupportController.getResultsVerifyPage
+)
+
+router.post(
+  '/results-verify',
+  isAuthenticated([roles.techSupport]),
+  techSupportController.postResultsVerifyPage
+)
+
 module.exports = router

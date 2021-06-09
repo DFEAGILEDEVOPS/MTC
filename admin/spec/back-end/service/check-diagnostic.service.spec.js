@@ -1,6 +1,22 @@
 'use strict'
 
-/* globals describe expect it spyOn fail beforeAll */
+/* globals describe expect it spyOn fail beforeAll xdescribe */
+
+// these modules must be loaded first
+const path = require('path')
+const fs = require('fs')
+const globalDotEnvFile = path.join(__dirname, '..', '..', '..', '.env')
+
+try {
+  if (fs.existsSync(globalDotEnvFile)) {
+    console.log('globalDotEnvFile found', globalDotEnvFile)
+    require('dotenv').config({ path: globalDotEnvFile })
+  } else {
+    console.log('No .env file found at project root')
+  }
+} catch (error) {
+  console.error(error)
+}
 
 const sut = require('../../../services/check-diagnostic.service')
 const dataService = require('../../../services/data-access/check-diagnostic.data.service')
@@ -62,16 +78,6 @@ describe('check diagnostics service', () => {
         expect(error).toBeDefined()
         expect(error.message).toBe('checkCodes array is required')
       }
-    })
-  })
-
-  xdescribe('debug', () => {
-    beforeAll(() => {
-
-    })
-
-    it('debug', async () => {
-      console.dir(await sut.compareResultsToPayload(['c6557b5b-8112-448d-9a36-183029fe0cc3']))
     })
   })
 })
