@@ -76,7 +76,7 @@ const payloadService = {
   /**
    * Gets the payload
    * @param checkCode
-   * @return {Promise<{}>}
+   * @return {Promise<any>}
    */
   getPayload: async function getPayload (checkCode) {
     if (!checkCode) {
