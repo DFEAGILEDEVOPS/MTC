@@ -15,8 +15,14 @@ const function2 = async () => {
   console.log('function2')
 }
 
+function sleep(ms) {
+  return new Promise(resolve => {
+    setTimeout(resolve, ms)
+  })
+}
+
 async function main () {
-  let connected = true
+  let connected = false
   let backOff = 2 // milliseconds
   let startTime
   do {
@@ -37,6 +43,7 @@ async function main () {
       connected = false
     }
   } while (!connected)
+  await sleep(10000)
   await function1()
 }
 
