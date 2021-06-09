@@ -1,0 +1,13 @@
+{
+  "name": "scope_identity_scope",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^10.0.0",
+    "moment": "^2.29.1",
+    "mssql": "^7.1.1",
+    "ramda": "^0.27.1",
+    "to-bool": "^0.0.1"
+  }
+}
