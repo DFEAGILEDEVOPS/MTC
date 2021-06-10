@@ -1,2 +1,3 @@
-alter table mtc_admin.[check]
-	add resultsSynchronised bit default 0 not null
+ALTER TABLE mtc_admin.[check]
+	ADD resultsSynchronised bit
+  CONSTRAINT DF_resultsSynchronised_default DEFAULT 0 NOT NULL
