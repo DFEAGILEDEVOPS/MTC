@@ -2,7 +2,7 @@ import { TYPES } from 'mssql'
 import * as R from 'ramda'
 import { Audit, Device, MarkedCheck, ValidatedCheck } from './models'
 import { IPrepareAnswersAndInputsDataService, PrepareAnswersAndInputsDataService } from './prepare-answers-and-inputs.data.service'
-import { ISqlService, ITransactionRequest, SqlService } from '../../sql/sql.service'
+import { ISqlParameter, ISqlService, ITransactionRequest, SqlService } from '../../sql/sql.service'
 import { UserAgentParser } from './user-agent-parser'
 import { IPrepareEventService, PrepareEventService } from './prepare-event.service'
 import { ConsoleLogger, ILogger } from '../../common/logger'
@@ -21,6 +21,8 @@ export interface ISyncResultsDataService {
   prepareEvents (validatedCheck: ValidatedCheck): Promise<ITransactionRequest>
 
   getSchoolId (schoolUuid: string): Promise<number | undefined>
+
+  deleteExistingResult (markedCheck: MarkedCheck): Promise<void>
 }
 
 export class SyncResultsDataService implements ISyncResultsDataService {
@@ -34,6 +36,24 @@ export class SyncResultsDataService implements ISyncResultsDataService {
     this.sqlService = sqlService ?? new SqlService(this.logger)
     this.prepareAnswersAndInputsDataService = prepareAnswersAndInputsDataService ?? new PrepareAnswersAndInputsDataService()
     this.prepareEventService = prepareEventService ?? new PrepareEventService()
+  }
+
+  /**
+   * Delete the existing check result row and associated records from the mtc_results schema
+   * @param {MarkedCheck} markedCheck
+   */
+  public async deleteExistingResult (markedCheck: MarkedCheck): Promise<void> {
+    const sql = `
+      BEGIN TRANSACTION
+        DELETE FROM mtc_results.checkResult WHERE checkCode -> check_id
+        DELETE FROM mtc_results.userDevice WHERE id -> checkResult.userDevice_id
+        DELETE FROM mtc_results.[event] WHERE checkResult_id
+        DELETE FROM mtc_results.[answer] WHERE checkResult_id
+        DELETE FROM mtc_results.[userInput] WHERE answer_id -> answer.id
+      COMMIT TRANSACTION
+    `
+    const params = new Array<ISqlParameter>()
+    await this.sqlService.modify(sql, params)
   }
 
   /**
@@ -130,8 +150,8 @@ export class SyncResultsDataService implements ISyncResultsDataService {
         DECLARE @deviceOrientationLookup_id INT;
         DECLARE @userAgentHash VARBINARY(32);
         DECLARE @userAgentLookup_id INT;
-                
-        -- 
+
+        --
         -- See if we can find an existing id for the browser family; create a new one if not
         --
         SET @browserFamily_lookup_id = (SELECT id FROM mtc_results.browserFamilyLookup WHERE family = UPPER(TRIM(@browserFamily)));
@@ -140,70 +160,70 @@ export class SyncResultsDataService implements ISyncResultsDataService {
                -- Create a new browser family
                 INSERT INTO mtc_results.browserFamilyLookup (family) VALUES (UPPER(TRIM(@browserFamily)));
                 SET @browserFamily_lookup_id = (SELECT SCOPE_IDENTITY());
-            END                
-                
-        -- 
+            END
+
+        --
         -- See if we can find an Operating System Lookup id, or if not, create a new one
-        -- 
+        --
         SET @uaOperatingSystemLookup_id = (SELECT id FROM mtc_results.uaOperatingSystemLookup WHERE os = UPPER(TRIM(@uaOperatingSystem)));
         IF (@uaOperatingSystemLookup_id IS NULL AND @uaOperatingSystem IS NOT NULL)
             BEGIN
                 INSERT INTO mtc_results.uaOperatingSystemLookup (os) VALUES (UPPER(TRIM(@uaOperatingSystem)));
-                SET @uaOperatingSystemLookup_id = (SELECT SCOPE_IDENTITY());                
+                SET @uaOperatingSystemLookup_id = (SELECT SCOPE_IDENTITY());
             END
-                
-        -- 
+
+        --
         -- See if we can find the navigatorPlatform id, or create it if needed
-        -- 
+        --
         SET @navigatorPlatformLookup_id = (SELECT id FROM mtc_results.navigatorPlatformLookup WHERE platform = UPPER(TRIM(@navigatorPlatform)));
         IF (@navigatorPlatformLookup_id IS NULL AND @navigatorPlatform IS NOT NULL)
             BEGIN
                 INSERT INTO mtc_results.navigatorPlatformLookup (platform) VALUES (UPPER(TRIM(@navigatorPlatform)));
                 SET @navigatorPlatformLookup_id = (SELECT SCOPE_IDENTITY());
             END
-        
-        -- 
+
+        --
         -- See if we can find the navigatorLanguage id, or create it if needed
-        -- 
+        --
         SET @navigatorLanguageLookup_id = (SELECT id FROM mtc_results.navigatorLanguageLookup WHERE platformLang = UPPER(TRIM(@navigatorLanguage)));
         IF (@navigatorLanguageLookup_id IS NULL AND @navigatorLanguage IS NOT NULL)
             BEGIN
                 INSERT INTO mtc_results.navigatorLanguageLookup (platformLang) VALUES (UPPER(TRIM(@navigatorLanguage)));
                 SET @navigatorLanguageLookup_id = (SELECT SCOPE_IDENTITY());
             END
-        
-        -- 
+
+        --
         -- See if we can find the network connection effective type lookup, otherwise create a new entry
-        -- 
+        --
         SET @networkConnectionEffectiveTypeLookup_id = (SELECT id FROM mtc_results.networkConnectionEffectiveTypeLookup WHERE effectiveType = TRIM(@networkConnectionEffectiveType));
         IF (@networkConnectionEffectiveTypeLookup_id IS NULL AND @networkConnectionEffectiveType IS NOT NULL)
             BEGIN
                 INSERT INTO mtc_results.networkConnectionEffectiveTypeLookup (effectiveType) VALUES (@networkConnectionEffectiveType);
                 SET @networkConnectionEffectiveTypeLookup_id = (SELECT SCOPE_IDENTITY());
             END
-        
-        -- 
+
+        --
         -- See if we can lookup the device orientation id, or create a new orientation if needed
-        -- 
+        --
         SET @deviceOrientationLookup_id = (SELECT id FROM mtc_results.deviceOrientationLookup WHERE orientation = UPPER(TRIM(@deviceOrientation)));
-        IF (@deviceOrientationLookup_id IS NULL AND @deviceOrientation IS NOT NULL) 
+        IF (@deviceOrientationLookup_id IS NULL AND @deviceOrientation IS NOT NULL)
             BEGIN
                 INSERT INTO mtc_results.deviceOrientationLookup (orientation) VALUES (UPPER(TRIM(@deviceOrientation)));
                 SET @deviceOrientationLookup_id = (SELECT SCOPE_IDENTITY());
             END
-        
-        
-        -- 
+
+
+        --
         -- See if we have seen the user agent before, or if not create a new user agent lookup
-        -- 
+        --
         SET @userAgentHash = HASHBYTES('SHA2_256', @userAgent);
         SET @userAgentLookup_id = (SELECT id from mtc_results.userAgentLookup WHERE userAgentHash = @userAgentHash);
-        IF (@userAgentLookup_id IS NULL AND @userAgent IS NOT NULL) 
+        IF (@userAgentLookup_id IS NULL AND @userAgent IS NOT NULL)
             BEGIN
                 INSERT INTO mtc_results.userAgentLookup (userAgent, userAgentHash) VALUES (@userAgent, @userAgentHash);
                 SELECT @userAgentLookup_id = (SELECT SCOPE_IDENTITY());
             END
-        
+
         --
         -- Insert the data into the userDevice table
         --
