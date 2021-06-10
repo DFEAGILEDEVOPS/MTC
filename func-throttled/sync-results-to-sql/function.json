@@ -2,7 +2,7 @@
   "bindings": [
     {
       "direction": "in",
-      "type": "serviceBus",
+      "type": "serviceBusTrigger",
       "name": "checkCompletionQueue",
       "queueName": "check-completion",
       "connection": "AZURE_SERVICE_BUS_CONNECTION_STRING"

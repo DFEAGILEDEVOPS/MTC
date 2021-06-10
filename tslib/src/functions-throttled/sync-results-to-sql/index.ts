@@ -1,6 +1,3 @@
-import * as sb from '@azure/service-bus'
-import * as R from 'ramda'
-import * as RA from 'ramda-adjunct'
 import { AzureFunction, Context } from '@azure/functions'
 import { performance } from 'perf_hooks'
 
@@ -24,6 +21,15 @@ const functionName = 'sync-results-to-sql'
  *
  * This is used so we can detect when the message is on the very last delivery, and take action to update the pupil and check to
  * show that processing the check result failed.
+ *
+ * Update 10th June 2021
+ * ---------------------
+ * The binding is now changing from a timer to the check-completion queue, so the above usage of a library is now a moot point.
+ *
+ * There are various properties available on the context.bindingData object, such as context.bindingData.deliveryCount
+ * which are documented here - https://docs.microsoft.com/en-us/azure/azure-functions/functions-bindings-service-bus-trigger?tabs=javascript#message-metadata
+ *
+ * unfortunately no max delivery attempts value appears to be available
  */
 const maxDeliveryAttempts = config.ServiceBus.CheckCompletionQueueMaxDeliveryCount
 
@@ -33,143 +39,40 @@ const maxDeliveryAttempts = config.ServiceBus.CheckCompletionQueueMaxDeliveryCou
   if the message is abandoned 10 times (the current 'max delivery count') it will be
   put on the dead letter queue automatically.
 */
-const timerTrigger: AzureFunction = async function (context: Context, checkCompletionMessage: any): Promise<void> {
+const serviceBusTrigger: AzureFunction = async function (context: Context, checkCompletionMessage: ICheckCompletionMessage): Promise<void> {
   meta.checksProcessed = 0
   meta.checksErrored = 0
   meta.errorCheckCodes = []
   const start = performance.now()
 
-  if (config.ServiceBus.ConnectionString === undefined) {
-    throw new Error(`${functionName}: ServiceBusConnection env var is missing`)
-  }
-
-  let busClient: sb.ServiceBusClient
-  let queueClient: sb.QueueClient
-  let receiver: sb.Receiver
-  let syncResultsServiceFactory: SyncResultsServiceFactory
-
-  const disconnect = async (): Promise<void> => {
-    await receiver.close()
-    await queueClient.close()
-    await busClient.close()
-  }
-
-  // connect to service bus...
-  try {
-    context.log(`${functionName}: connecting to service bus...`)
-    busClient = sb.ServiceBusClient.createFromConnectionString(config.ServiceBus.ConnectionString)
-    queueClient = busClient.createQueueClient('check-completion')
-    receiver = queueClient.createReceiver(sb.ReceiveMode.peekLock)
-    syncResultsServiceFactory = new SyncResultsServiceFactory(context.log)
-    context.log(`${functionName}: connected to service bus instance ${busClient.name}`)
-  } catch (error) {
-    context.log.error(`${functionName}: unable to connect to service bus at this time:${error.message}`)
-    throw error
-  }
-
-  // Queue drain pattern - one message at a time
-  let drained = false
-  const numberOfMessagesPerBatch = 1
-  let receivingErrorCount = 0
-  const maxErrors = 100
-
-  while (!drained) {
-    let messageBatch
-    try {
-      messageBatch = await receiver.receiveMessages(numberOfMessagesPerBatch)
-    } catch (error) {
-      context.log.error(`${functionName}: error when receiving messages: ${error.message}`)
-      receivingErrorCount += 1
-      if (receivingErrorCount < maxErrors) {
-        await sleep(5000)
-        continue // re-enter while loop
-      } else {
-        context.log(`${functionName}: too many errors`)
-        await disconnect()
-        throw error
-      }
-    }
-    if (RA.isNilOrEmpty(messageBatch)) {
-      drained = true
-      context.log(`${functionName}: no more messages to process`)
-      await disconnect()
-      finish(start, context)
-    }
-    context.log(`${functionName}: received batch of ${messageBatch.length} messages`)
-    const completionMessages = messageBatch.map(m => m.body as ICheckCompletionMessage)
-    await process(completionMessages, context, messageBatch, syncResultsServiceFactory)
-  }
+  const syncResultsServiceFactory = new SyncResultsServiceFactory(context.log)
+  await processV2(checkCompletionMessage, context, syncResultsServiceFactory)
+  finish(start, context)
 }
 
-async function process (checkCompletionMessages: ICheckCompletionMessage[], context: Context, queueMessages: sb.ServiceBusMessage[], syncResultsServiceFactory: SyncResultsServiceFactory): Promise<void> {
+async function processV2 (message: ICheckCompletionMessage, context: Context, syncResultsServiceFactory: SyncResultsServiceFactory): Promise<void> {
   const syncResultsService = syncResultsServiceFactory.create()
-  for (let i = 0; i < checkCompletionMessages.length; i++) {
-    const msg = checkCompletionMessages[i]
-    const queueMessage = queueMessages[i]
-    try {
-      await syncResultsService.process(msg)
-      meta.checksProcessed += 1
-      // Work done, consume the messages from the queue
-      await completeMessages([queueMessage], context)
-    } catch (error) {
-      meta.checksErrored += 1
-      if (!meta.errorCheckCodes.includes(msg.markedCheck.checkCode)) {
-        meta.errorCheckCodes.push(msg.markedCheck.checkCode)
-      }
-      // sql transaction failed, abandon...
-      await abandonMessages([queueMessage], context)
+  try {
+    await syncResultsService.process(message)
+  } catch (error) {
+    meta.errorCheckCodes.push(message.markedCheck.checkCode)
+    if (isLastDeliveryAttempt(context)) {
+      handleLastDeliveryAttempt(context, message)
     }
   }
 }
 
-async function completeMessages (messageBatch: sb.ServiceBusMessage[], context: Context): Promise<void> {
-  // the sql updates are committed, complete the messages.
-  // if any completes fail, just abandon.
-  // the sql updates are idempotent and as such replaying a message
-  // will not have an adverse effect.
-  context.log(`${functionName}: processed successfully, completing message`)
-  for (let index = 0; index < messageBatch.length; index++) {
-    const msg = messageBatch[index]
-    try {
-      await msg.complete()
-    } catch (error) {
-      try {
-        await msg.abandon()
-      } catch {
-        context.log.error(`${functionName}: unable to abandon message:${error.message}`)
-        // do nothing.
-        // the lock will expire and message reprocessed at a later time
-      }
-    }
-  }
-}
-
-async function abandonMessages (messageBatch: sb.ServiceBusMessage[], context: Context): Promise<void> {
-  for (let index = 0; index < messageBatch.length; index++) {
-    const msg = messageBatch[index]
-    try {
-      if (isLastDeliveryAttempt(msg, maxDeliveryAttempts)) {
-        await handleLastDeliveryAttempt(context, msg)
-      }
-      await msg.abandon()
-    } catch (error) {
-      context.log.error(`${functionName}: unable to abandon message:${error.message}`)
-    }
-  }
-}
-
-function isLastDeliveryAttempt (msg: sb.ServiceBusMessage, maxAttempts: number): boolean {
+function isLastDeliveryAttempt (context: Context): boolean {
   // We need to know if this is the last delivery attempt. Note that deliveryCount property will not
   // be updated to the maximum until we call abandon() or complete() to release the lock.
-  if (msg.deliveryCount === (maxAttempts - 1)) {
+  if (context.bindingData.deliveryCount === (maxDeliveryAttempts - 1)) {
     return true
   }
   return false
 }
 
-async function handleLastDeliveryAttempt (context: Context, msg: sb.ServiceBusMessage): Promise<void> {
-  const checkCode = R.pathOr('n/a', ['body', 'markedCheck', 'checkCode'], msg)
-  context.log.error(`${functionName}: Last delivery attempt for ${checkCode} it has had ${msg.deliveryCount} deliveries already`)
+function handleLastDeliveryAttempt (context: Context, message: ICheckCompletionMessage): void {
+  context.log.error(`${functionName}: Last delivery attempt for ${message.markedCheck.checkCode} it has had ${context.bindingData.deliveryCount} deliveries already`)
 }
 
 function finish (start: number, context: Context): void {
@@ -181,8 +84,4 @@ function finish (start: number, context: Context): void {
   context.log(`${functionName}: ${timeStamp} run complete: ${durationInMilliseconds} ms`)
 }
 
-async function sleep (ms: number): Promise<any> {
-  return new Promise(resolve => setTimeout(resolve, ms))
-}
-
-export default timerTrigger
+export default serviceBusTrigger
