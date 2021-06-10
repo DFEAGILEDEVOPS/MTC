@@ -7,16 +7,12 @@ import { ICheckFormService, CheckFormService } from './check-form.service'
 import { ILogger } from '../../common/logger'
 import { ICheckMarkerFunctionBindings, MarkingData, CheckResult, MarkedAnswer } from './models'
 import { ICheckNotificationMessage, CheckNotificationType } from '../../schemas/check-notification-message'
-import { ICompressionService, CompressionService } from '../../common/compression-service'
-
-const functionName = 'check-marker'
 
 export class CheckMarkerV1 {
   private readonly tableService: IAsyncTableService
   private readonly sqlService: ICheckFormService
-  private readonly compressionService: ICompressionService
 
-  constructor (tableService?: IAsyncTableService, sqlService?: ICheckFormService, compressionService?: ICompressionService) {
+  constructor (tableService?: IAsyncTableService, sqlService?: ICheckFormService) {
     if (tableService === undefined) {
       this.tableService = new AsyncTableService()
     } else {
@@ -27,12 +23,6 @@ export class CheckMarkerV1 {
       this.sqlService = new CheckFormService()
     } else {
       this.sqlService = sqlService
-    }
-
-    if (compressionService === undefined) {
-      this.compressionService = new CompressionService()
-    } else {
-      this.compressionService = compressionService
     }
   }
 
@@ -47,7 +37,7 @@ export class CheckMarkerV1 {
     const markingData = await this.validateData(functionBindings, validatedCheck, logger)
     functionBindings.checkResultTable = []
     functionBindings.checkNotificationQueue = []
-    functionBindings.checkCompletionQueue = []
+
     if (markingData === undefined) {
       this.notifyProcessingFailure(validatedCheck, functionBindings)
       return
@@ -68,26 +58,6 @@ export class CheckMarkerV1 {
     }
     logger.verbose(`mark() setting notification msg to ${JSON.stringify(notification)}`)
     functionBindings.checkNotificationQueue.push(notification)
-
-    // Output the markedCheck and the payload to be sent to the results schema
-    const hasArchiveProperty = Object.prototype.hasOwnProperty.call(validatedCheck, 'archive')
-    if (hasArchiveProperty) {
-      try {
-        const payloadString = this.compressionService.decompress(validatedCheck.archive)
-        const payload = JSON.parse(payloadString)
-        logger.verbose('mark() setting data for results processing on check-completion queue')
-        functionBindings.checkCompletionQueue.push({
-          validatedCheck: payload,
-          markedCheck: checkResult
-        })
-      } catch (error) {
-        console.error(error)
-        logger.error(`${functionName}: checkCode [${validatedCheck.RowKey}] failed to send data to results queue: ${error.message}`)
-      }
-    } else {
-      console.error('No archive')
-      logger.error(`${functionName}: checkCode [${validatedCheck.RowKey}] failed to detect an archive property.  Results are not available.`)
-    }
   }
 
   private notifyProcessingFailure (validatedCheck: ReceivedCheckTableEntity, functionBindings: ICheckMarkerFunctionBindings): void {
