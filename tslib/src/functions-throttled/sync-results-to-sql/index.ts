@@ -6,7 +6,6 @@ import { performance } from 'perf_hooks'
 
 import config from '../../config'
 import { ICheckCompletionMessage } from './models'
-import { IFunctionTimer } from '../../azure/functions'
 import { SyncResultsServiceFactory } from './sync-results.service.factory'
 
 const meta = { checksProcessed: 0, checksErrored: 0, errorCheckCodes: [] as string[] }
@@ -34,15 +33,11 @@ const maxDeliveryAttempts = config.ServiceBus.CheckCompletionQueueMaxDeliveryCou
   if the message is abandoned 10 times (the current 'max delivery count') it will be
   put on the dead letter queue automatically.
 */
-const timerTrigger: AzureFunction = async function (context: Context, timer: IFunctionTimer): Promise<void> {
+const timerTrigger: AzureFunction = async function (context: Context, checkCompletionMessage: any): Promise<void> {
   meta.checksProcessed = 0
   meta.checksErrored = 0
   meta.errorCheckCodes = []
   const start = performance.now()
-  if (timer.IsPastDue) {
-    context.log(`${functionName}: Timer function is past due, exiting.`)
-    return
-  }
 
   if (config.ServiceBus.ConnectionString === undefined) {
     throw new Error(`${functionName}: ServiceBusConnection env var is missing`)
