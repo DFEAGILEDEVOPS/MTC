@@ -8,7 +8,6 @@ import config from '../../config'
 import { ICheckCompletionMessage } from './models'
 import { IFunctionTimer } from '../../azure/functions'
 import { SyncResultsServiceFactory } from './sync-results.service.factory'
-import { ProcessingFailureService } from './processing-failure.service'
 
 const meta = { checksProcessed: 0, checksErrored: 0, errorCheckCodes: [] as string[] }
 const functionName = 'sync-results-to-sql'
@@ -176,14 +175,6 @@ function isLastDeliveryAttempt (msg: sb.ServiceBusMessage, maxAttempts: number):
 async function handleLastDeliveryAttempt (context: Context, msg: sb.ServiceBusMessage): Promise<void> {
   const checkCode = R.pathOr('n/a', ['body', 'markedCheck', 'checkCode'], msg)
   context.log.error(`${functionName}: Last delivery attempt for ${checkCode} it has had ${msg.deliveryCount} deliveries already`)
-  try {
-    const processingFailureService = new ProcessingFailureService(context.log)
-    await processingFailureService.processingFailed(checkCode)
-    context.log.error(`${functionName}: Processing failed for checkCode ${checkCode}`)
-  } catch (error) {
-    context.log.error(`${functionName}: ALERT: Failed to set processing failed for check ${checkCode}`)
-    throw error
-  }
 }
 
 function finish (start: number, context: Context): void {
