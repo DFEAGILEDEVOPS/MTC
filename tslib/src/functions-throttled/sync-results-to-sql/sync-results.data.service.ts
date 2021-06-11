@@ -23,6 +23,10 @@ export interface ISyncResultsDataService {
   getSchoolId (schoolUuid: string): Promise<number | undefined>
 
   deleteExistingResultIfExists (markedCheck: MarkedCheck): Promise<void>
+
+  setCheckToResultsSyncComplete (markedCheck: MarkedCheck): Promise<void>
+
+  setCheckToResultsSyncFailed (markedCheck: MarkedCheck, errorMessage: string): Promise<void>
 }
 
 export class SyncResultsDataService implements ISyncResultsDataService {
@@ -36,6 +40,60 @@ export class SyncResultsDataService implements ISyncResultsDataService {
     this.sqlService = sqlService ?? new SqlService(this.logger)
     this.prepareAnswersAndInputsDataService = prepareAnswersAndInputsDataService ?? new PrepareAnswersAndInputsDataService()
     this.prepareEventService = prepareEventService ?? new PrepareEventService()
+  }
+
+  /**
+   * set the check to successfully synchronised results
+   * @param {MarkedCheck} markedCheck
+   */
+  public async setCheckToResultsSyncComplete (markedCheck: MarkedCheck): Promise<void> {
+    const sql = 'UPDATE mtc_admin.[check] SET resultsSynchronised=1 WHERE checkCode=@checkCode'
+    const params = new Array<ISqlParameter>()
+    params.push({
+      name: 'checkCode',
+      value: markedCheck.checkCode,
+      type: TYPES.UniqueIdentifier
+    })
+    await this.sqlService.modify(sql, params)
+  }
+
+  /**
+   * set the check to failed results sync and log the error detail
+   * @param {MarkedCheck} markedCheck
+   */
+  public async setCheckToResultsSyncFailed (markedCheck: MarkedCheck, errorMessage: string): Promise<void> {
+    const checkSql = 'UPDATE mtc_admin.[check] SET resultsSynchronised=0 WHERE checkCode=@checkCode'
+    const checkParams = new Array<ISqlParameter>()
+    checkParams.push({
+      name: 'checkCode',
+      value: markedCheck.checkCode,
+      type: TYPES.UniqueIdentifier
+    })
+    const updateCheckRecord: ITransactionRequest = {
+      params: checkParams,
+      sql: checkSql
+    }
+
+    const checkId = await this.sqlService.query('SELECT id FROM [mtc_admin.[check] WHERE checkCode=@checkCode',
+    [ { name: 'checkCode', value: markedCheck.checkCode, type: TYPES.UniqueIdentifier }])
+
+    const errorLogSql = 'INSERT INTO mtc_results.[checkResultSyncError] (check_id, errorMessage) VALUES (@checkId, @errorMessage)'
+    const errorLogParams = new Array<ISqlParameter>()
+    errorLogParams.push({
+      name: 'checkId',
+      type: TYPES.Int,
+      value: checkId
+    })
+    errorLogParams.push({
+      name: 'errorMessage',
+      type: TYPES.NVarChar(),
+      value: errorMessage
+    })
+    const insertErrorLog: ITransactionRequest = {
+      params: errorLogParams,
+      sql: errorLogSql
+    }
+    return this.sqlService.modifyWithTransaction([updateCheckRecord, insertErrorLog])
   }
 
   /**
