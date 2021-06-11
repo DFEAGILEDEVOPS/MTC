@@ -193,7 +193,7 @@ export class MockPayload implements IPsychometricReportLine {
     this.PupilID = veryFakeUpn()
     const tenYearsAgo = moment().subtract(10, 'years')
     const nineYearsAgo = moment().subtract(9, 'years')
-    this.DOB = moment(faker.date.between(tenYearsAgo.toDate(), nineYearsAgo.toDate()))
+    this.DOB = moment.utc(faker.date.between(tenYearsAgo.toDate(), nineYearsAgo.toDate())).startOf('day')
     this.Gender = faker.random.arrayElement(['M', 'F'])
     this.Forename = faker.name.firstName()
     this.Surname = faker.name.lastName()
