@@ -43,17 +43,41 @@ export class SyncResultsDataService implements ISyncResultsDataService {
    * @param {MarkedCheck} markedCheck
    */
   public async deleteExistingResult (markedCheck: MarkedCheck): Promise<void> {
+    const checkInfoParams = new Array<ISqlParameter>()
+    checkInfoParams.push({
+      name: 'checkCode',
+      value: markedCheck.checkCode,
+      type: TYPES.UniqueIdentifier
+    })
+    const checkResultInfoQueryResult = await this.sqlService.query(`
+      SELECT cr.id as [checkResultId], cr.userDevice_id as [userDeviceId]
+      FROM mtc_results.checkResult cr
+      INNER JOIN mtc_admin.[check] chk ON cr.check_id = chk.id
+      WHERE chk.checkCode = @checkCode`, checkInfoParams)
+    const checkResultInfo = checkResultInfoQueryResult[0]
     const sql = `
       BEGIN TRANSACTION
-        DELETE FROM mtc_results.checkResult WHERE checkCode -> check_id
-        DELETE FROM mtc_results.userDevice WHERE id -> checkResult.userDevice_id
-        DELETE FROM mtc_results.[event] WHERE checkResult_id
-        DELETE FROM mtc_results.[answer] WHERE checkResult_id
-        DELETE FROM mtc_results.[userInput] WHERE answer_id -> answer.id
+        DELETE FROM mtc_results.[userInput] WHERE answer_id IN (
+          SELECT id FROM mtc_results.[answer] WHERE checkResult_id = @checkResultId
+        )
+        DELETE FROM mtc_results.[answer] WHERE checkResult_id = @checkResultId
+        DELETE FROM mtc_results.[event] WHERE checkResult_id = @checkResultId
+        DELETE FROM mtc_results.[checkResult] WHERE id = @checkResultId
+        DELETE FROM mtc_results.userDevice WHERE id = @userDeviceId
       COMMIT TRANSACTION
     `
     const params = new Array<ISqlParameter>()
-    await this.sqlService.modify(sql, params)
+    params.push({
+      name: 'checkResultId',
+      type: TYPES.Int,
+      value: checkResultInfo.checkResultId
+    })
+    params.push({
+      name: 'userDeviceId',
+      type: TYPES.Int,
+      value: checkResultInfo.userDeviceId
+    })
+    return this.sqlService.modify(sql, params)
   }
 
   /**
