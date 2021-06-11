@@ -35,11 +35,21 @@ describe('SyncResultsService', () => {
     const logger = new ConsoleLogger()
     mockSyncResultsDataService = new SyncResultsDataService(logger, sqlServiceMock)
     ;(mockSyncResultsDataService.prepareCheckResult as jest.Mock).mockReturnValueOnce(mockTransaction)
+    ;(mockSyncResultsDataService.deleteExistingResultIfExists as jest.Mock).mockReturnValueOnce(Promise.resolve)
     ;(mockSyncResultsDataService.prepareAnswersAndInputs as jest.Mock).mockReturnValueOnce(mockTransaction)
     ;(mockSyncResultsDataService.prepareEvents as jest.Mock).mockReturnValueOnce(mockTransaction)
     ;(mockSyncResultsDataService.prepareDeviceData as jest.Mock).mockReturnValueOnce(mockTransaction)
     redisServiceMock = new RedisServiceMock()
     sut = new SyncResultsService(logger, mockSyncResultsDataService, redisServiceMock)
+  })
+
+  test('it makes a call to delete any existing entry from the checkResult table', async () => {
+    jest.spyOn(console, 'log').mockImplementation(() => {})
+    jest.spyOn(console, 'info').mockImplementation(() => {})
+    // eslint-disable-next-line
+    jest.spyOn(sut['syncResultsDataService'], 'getSchoolId').mockResolvedValueOnce(2)
+    await sut.process(mockCompletionCheckMessage)
+    expect(mockSyncResultsDataService.deleteExistingResultIfExists).toHaveBeenCalledTimes(1)
   })
 
   test('it makes a call to prepare the data for the checkResult table', async () => {

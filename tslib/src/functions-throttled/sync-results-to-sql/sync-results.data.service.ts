@@ -22,7 +22,7 @@ export interface ISyncResultsDataService {
 
   getSchoolId (schoolUuid: string): Promise<number | undefined>
 
-  deleteExistingResult (markedCheck: MarkedCheck): Promise<void>
+  deleteExistingResultIfExists (markedCheck: MarkedCheck): Promise<void>
 }
 
 export class SyncResultsDataService implements ISyncResultsDataService {
@@ -42,7 +42,7 @@ export class SyncResultsDataService implements ISyncResultsDataService {
    * Delete the existing check result row and associated records from the mtc_results schema
    * @param {MarkedCheck} markedCheck
    */
-  public async deleteExistingResult (markedCheck: MarkedCheck): Promise<void> {
+  public async deleteExistingResultIfExists (markedCheck: MarkedCheck): Promise<void> {
     const checkInfoParams = new Array<ISqlParameter>()
     checkInfoParams.push({
       name: 'checkCode',
