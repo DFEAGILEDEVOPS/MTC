@@ -155,7 +155,8 @@ describe('SyncResultsService', () => {
     jest.spyOn(console, 'log').mockImplementation(() => {})
     // eslint-disable-next-line
     jest.spyOn(sut['syncResultsDataService'], 'getSchoolId').mockResolvedValueOnce(2)
-    jest.spyOn(sut['syncResultsDataService'], 'insertToDatabase').mockImplementation(() => {throw new Error('failed')})
+    // eslint-disable-next-line
+    jest.spyOn(sut['syncResultsDataService'], 'insertToDatabase').mockImplementation(() => { throw new Error('failed') })
     await sut.process(mockCompletionCheckMessage)
     expect(mockSyncResultsDataService.setCheckToResultsSyncFailed).toHaveBeenCalledTimes(1)
     expect(mockSyncResultsDataService.setCheckToResultsSyncComplete).toHaveBeenCalledTimes(0)
