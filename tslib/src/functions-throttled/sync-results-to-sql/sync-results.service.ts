@@ -21,6 +21,9 @@ export class SyncResultsService {
   public async process (checkCompletionMessage: ICheckCompletionMessage): Promise<void> {
     this.logger.info(`${name}: message received for check [${checkCompletionMessage.markedCheck.checkCode}]`)
 
+    // delete any existing check result
+    await this.syncResultsDataService.deleteExistingResultIfExists(checkCompletionMessage.markedCheck)
+
     // Prepare checkResult insert statement
     const checkResTran = this.syncResultsDataService.prepareCheckResult(checkCompletionMessage.markedCheck)
 
