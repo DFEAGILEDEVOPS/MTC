@@ -75,7 +75,7 @@ export class SyncResultsDataService implements ISyncResultsDataService {
     }
 
     const checkId = await this.sqlService.query('SELECT id FROM [mtc_admin.[check] WHERE checkCode=@checkCode',
-    [ { name: 'checkCode', value: markedCheck.checkCode, type: TYPES.UniqueIdentifier }])
+      [{ name: 'checkCode', value: markedCheck.checkCode, type: TYPES.UniqueIdentifier }])
 
     const errorLogSql = 'INSERT INTO mtc_results.[checkResultSyncError] (check_id, errorMessage) VALUES (@checkId, @errorMessage)'
     const errorLogParams = new Array<ISqlParameter>()
