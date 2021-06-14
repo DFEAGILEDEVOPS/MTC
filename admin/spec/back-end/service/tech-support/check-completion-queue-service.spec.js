@@ -1,6 +1,6 @@
 'use strict'
 
-/* global describe, it, expect, spyOn fail */
+/* global describe, it, expect, fail spyOn */
 const sut = require('../../../../services/tech-support/check-completion-queue.service')
 const dataService = require('../../../../services/data-access/tech-support/check-completion-queue.data.service')
 
@@ -18,6 +18,13 @@ describe('check-completion-queue-service', () => {
         expect(error).toBeDefined()
         expect(error.message).toEqual('checkCode parameter is required')
       }
+    })
+
+    it('should insert message onto check-completion queue', async () => {
+      spyOn(dataService, 'getCheckResult').and.returnValue({
+        receviedCheck: 'mock'
+      })
+      fail('not implemented')
     })
   })
 })
