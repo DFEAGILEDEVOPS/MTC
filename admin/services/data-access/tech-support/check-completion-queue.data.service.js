@@ -2,6 +2,8 @@
 
 const azure = require('azure-storage')
 const bluebird = require('bluebird')
+const sqlService = require('../sql.service')
+const R = require('ramda')
 
 let tableService
 
@@ -75,6 +77,15 @@ const service = {
     }
     const result = await getAsyncTableService().retrieveEntityAsync('checkResult', schoolUuid, checkCode)
     console.dir(result)
+  },
+
+  getSchoolUuidByCheckCode: async function getSchoolUuidByCheckCode (checkCode) {
+    const result = await sqlService.query(`
+      SELECT s.urlSlug FROM mtc_admin.[check] chk
+        INNER JOIN mtc_admin.[pupil] p ON chk.pupil_id = p.id
+        INNER JOIN mtc_admin.[school] s ON p.school_id = s.id
+      WHERE chk.checkCode = @checkCode`)
+    return R.head(result)
   }
 }
 
