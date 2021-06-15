@@ -320,6 +320,31 @@ const controller = {
     } catch (error) {
       return next(error)
     }
+  },
+
+  getCheckResultsResyncCheck: async function getCheckResultsResyncCheck (req, res, next, error = new ValidationError()) {
+    try {
+      res.locals.pageTitle = 'Check Results - Resync Check'
+      req.breadcrumbs('Check Results - Resync Check')
+      res.render('tech-support/results-resync-check', {
+        breadcrumbs: req.breadcrumbs(),
+        error,
+        checkCode: req.body?.checkCode ?? ''
+      })
+    } catch (error) {
+      return next(error)
+    }
+  },
+
+  postCheckResultsResyncCheck: async function postCheckResultsResyncCheck (req, res, next) {
+    try {
+      const checkCode = req.body.checkCode?.trim()
+      // TODO submit to service
+      // TODO notify of successful submit
+      res.redirect('/tech-support/results-resync-check')
+    } catch (error) {
+      return next(error)
+    }
   }
 }
 

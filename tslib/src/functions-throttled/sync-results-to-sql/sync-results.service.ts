@@ -23,18 +23,23 @@ export class SyncResultsService {
 
     try {
       // delete any existing check result
+      this.logger.info('deleting any existing check result and associated records...')
       await this.syncResultsDataService.deleteExistingResultIfExists(checkCompletionMessage.markedCheck)
 
       // Prepare checkResult insert statement
+      this.logger.info('preparing check results insert...')
       const checkResTran = this.syncResultsDataService.prepareCheckResult(checkCompletionMessage.markedCheck)
 
       // Prepare SQL statements and variables for the Answers
+      this.logger.info('preparing answers and inputs...')
       const answersAndInputsTran = await this.syncResultsDataService.prepareAnswersAndInputs(checkCompletionMessage.markedCheck, checkCompletionMessage.validatedCheck)
 
       // Prepare Events
+      this.logger.info('preparing events...')
       const eventTran = await this.syncResultsDataService.prepareEvents(checkCompletionMessage.validatedCheck)
 
       // Prepare Device Info
+      this.logger.info('preparing device data...')
       const deviceTran = await this.syncResultsDataService.prepareDeviceData(checkCompletionMessage.validatedCheck)
 
       // This looks a little unusual as we could pass an array of ITransactions into insertToDatabase()
@@ -49,11 +54,14 @@ export class SyncResultsService {
         deviceTran
       ])
 
+      this.logger.info('running all transactions...')
       await this.syncResultsDataService.insertToDatabase([flattenedTransaction], checkCompletionMessage?.markedCheck?.checkCode)
-      this.logger.info(`${name}: going to drop the redis cache for schooll ${checkCompletionMessage?.validatedCheck?.schoolUUID}`)
+      this.logger.info(`${name}: going to drop the redis cache for school ${checkCompletionMessage?.validatedCheck?.schoolUUID}`)
       await this.dropRedisSchoolResult(checkCompletionMessage?.validatedCheck?.schoolUUID)
+      this.logger.info('marking run as complete...')
       await this.syncResultsDataService.setCheckToResultsSyncComplete(checkCompletionMessage.markedCheck)
     } catch (error) {
+      this.logger.info(`marking run as failed, because: ${error.message}`)
       await this.syncResultsDataService.setCheckToResultsSyncFailed(checkCompletionMessage.markedCheck, error.message)
     }
   }

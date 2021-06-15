@@ -47,14 +47,14 @@ export class SyncResultsDataService implements ISyncResultsDataService {
    * @param {MarkedCheck} markedCheck
    */
   public async setCheckToResultsSyncComplete (markedCheck: MarkedCheck): Promise<void> {
-    const sql = 'UPDATE mtc_admin.[check] SET resultsSynchronised=1 WHERE checkCode=@checkCode'
+    const sql = 'UPDATE [mtc_admin].[check] SET resultsSynchronised=1 WHERE checkCode=@checkCode'
     const params = new Array<ISqlParameter>()
     params.push({
       name: 'checkCode',
       value: markedCheck.checkCode,
       type: TYPES.UniqueIdentifier
     })
-    await this.sqlService.modify(sql, params)
+    return this.sqlService.modify(sql, params)
   }
 
   /**
@@ -62,7 +62,7 @@ export class SyncResultsDataService implements ISyncResultsDataService {
    * @param {MarkedCheck} markedCheck
    */
   public async setCheckToResultsSyncFailed (markedCheck: MarkedCheck, errorMessage: string): Promise<void> {
-    const checkSql = 'UPDATE mtc_admin.[check] SET resultsSynchronised=0 WHERE checkCode=@checkCode'
+    const checkSql = 'UPDATE [mtc_admin].[check] SET resultsSynchronised=0 WHERE checkCode=@checkCode'
     const checkParams = new Array<ISqlParameter>()
     checkParams.push({
       name: 'checkCode',
@@ -74,10 +74,11 @@ export class SyncResultsDataService implements ISyncResultsDataService {
       sql: checkSql
     }
 
-    const checkId = await this.sqlService.query('SELECT id FROM [mtc_admin.[check] WHERE checkCode=@checkCode',
+    const checkIdQueryResult = await this.sqlService.query('SELECT id FROM [mtc_admin].[check] WHERE checkCode=@checkCode',
       [{ name: 'checkCode', value: markedCheck.checkCode, type: TYPES.UniqueIdentifier }])
+    const checkId = checkIdQueryResult[0].id
 
-    const errorLogSql = 'INSERT INTO mtc_results.[checkResultSyncError] (check_id, errorMessage) VALUES (@checkId, @errorMessage)'
+    const errorLogSql = 'INSERT INTO [mtc_results].[checkResultSyncError] (check_id, errorMessage) VALUES (@checkId, @errorMessage)'
     const errorLogParams = new Array<ISqlParameter>()
     errorLogParams.push({
       name: 'checkId',
@@ -109,19 +110,20 @@ export class SyncResultsDataService implements ISyncResultsDataService {
     })
     const checkResultInfoQueryResult = await this.sqlService.query(`
       SELECT cr.id as [checkResultId], cr.userDevice_id as [userDeviceId]
-      FROM mtc_results.checkResult cr
-      INNER JOIN mtc_admin.[check] chk ON cr.check_id = chk.id
+      FROM [mtc_results].[checkResult] cr
+      INNER JOIN [mtc_admin].[check] chk ON cr.check_id = chk.id
       WHERE chk.checkCode = @checkCode`, checkInfoParams)
     const checkResultInfo = checkResultInfoQueryResult[0]
+    if (checkResultInfo === undefined) return
     const sql = `
       BEGIN TRANSACTION
-        DELETE FROM mtc_results.[userInput] WHERE answer_id IN (
-          SELECT id FROM mtc_results.[answer] WHERE checkResult_id = @checkResultId
+        DELETE FROM [mtc_results].[userInput] WHERE answer_id IN (
+          SELECT id FROM [mtc_results].[answer] WHERE checkResult_id = @checkResultId
         )
-        DELETE FROM mtc_results.[answer] WHERE checkResult_id = @checkResultId
-        DELETE FROM mtc_results.[event] WHERE checkResult_id = @checkResultId
-        DELETE FROM mtc_results.[checkResult] WHERE id = @checkResultId
-        DELETE FROM mtc_results.userDevice WHERE id = @userDeviceId
+        DELETE FROM [mtc_results].[answer] WHERE checkResult_id = @checkResultId
+        DELETE FROM [mtc_results].[event] WHERE checkResult_id = @checkResultId
+        DELETE FROM [mtc_results].[checkResult] WHERE id = @checkResultId
+        DELETE FROM [mtc_results].[userDevice] WHERE id = @userDeviceId
       COMMIT TRANSACTION
     `
     const params = new Array<ISqlParameter>()
@@ -439,7 +441,7 @@ export class SyncResultsDataService implements ISyncResultsDataService {
   public async getSchoolId (schoolUuid: string): Promise<number | undefined> {
     const sql = 'SELECT id FROM mtc_admin.school WHERE urlslug = @urlSlug'
     const param = { name: 'urlSlug', value: schoolUuid, type: TYPES.UniqueIdentifier }
-    const data: Array<{id: number}> = await this.sqlService.query(sql, [param])
+    const data: Array<{ id: number }> = await this.sqlService.query(sql, [param])
     const school = R.head(data)
     if (school === undefined) {
       return undefined
