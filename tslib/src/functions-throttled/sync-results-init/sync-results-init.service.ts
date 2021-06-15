@@ -1,15 +1,17 @@
+import * as R from 'ramda'
+
 import { ConsoleLogger, ILogger } from '../../common/logger'
 import { ISqlService, SqlService } from '../../sql/sql.service'
 import {
-  ICheckCompletionMessage,
   MarkedCheck,
   ValidatedCheck
 } from '../sync-results-to-sql/models'
 import { IAsyncTableService, AsyncTableService } from '../../azure/storage-helper'
 import { UnsynchronisedCheck } from './models'
 import { MarkedCheckTableEntity, ReceivedCheckTableEntity } from '../../schemas/models'
-import * as R from 'ramda'
 import { CompressionService, ICompressionService } from '../../common/compression-service'
+import config from '../../config'
+import { Sender, ServiceBusClient } from '@azure/service-bus'
 
 const functionName = 'sync-results-init: SyncResultsInitService'
 
@@ -20,6 +22,7 @@ export class SyncResultsInitService {
   private readonly compressionService: ICompressionService
   private readonly receivedCheckTableName = 'receivedCheck'
   private readonly markedCheckTableName = 'checkResult'
+  private readonly outputQueueName = 'check-completion'
 
   constructor (logger?: ILogger, sqlService?: ISqlService, tableService?: IAsyncTableService, compressionService?: ICompressionService) {
     this.logger = logger ?? new ConsoleLogger()
@@ -34,20 +37,14 @@ export class SyncResultsInitService {
    */
   private async getUnsynchronisedChecks (): Promise<UnsynchronisedCheck[]> {
     const sql = `
-      SELECT 
-        c.checkCode,
-        s.urlSlug as schoolUUID
-      FROM
-        mtc_admin.[check] c JOIN
-        mtc_admin.[pupil] p ON (c.pupil_id = p.id) JOIN
-        mtc_admin.[school] s ON (p.school_id = s.id) JOIN 
-        mtc_admin.[checkStatus] cs ON (c.checkStatus_id = cs.id)
-      WHERE
-        cs.code = 'CMP'
-      AND
-        c.resultsSynchronised = 0
-      AND 
-        c.isLiveCheck = 1
+        SELECT c.checkCode, s.urlSlug as schoolUUID
+          FROM mtc_admin.[check] c
+               JOIN mtc_admin.[pupil] p ON (c.pupil_id = p.id)
+               JOIN mtc_admin.[school] s ON (p.school_id = s.id)
+               JOIN mtc_admin.[checkStatus] cs ON (c.checkStatus_id = cs.id)
+         WHERE cs.code = 'CMP'
+           AND c.resultsSynchronised = 0
+           AND c.isLiveCheck = 1
     `
     return this.sqlService.query(sql)
   }
@@ -110,31 +107,43 @@ export class SyncResultsInitService {
     return markedCheck
   }
 
-  private async processCheck (check: UnsynchronisedCheck): Promise<ICheckCompletionMessage> {
+  private async processCheck (check: UnsynchronisedCheck, sbSender: Sender): Promise<void> {
     const receivedCheckPromise = this.getReceivedCheck(check)
     const markedCheckPromise = this.getMarkedCheck(check)
     const [receivedCheckEntity, markedCheckEntity] = await Promise.all([receivedCheckPromise, markedCheckPromise])
     const validatedCheck = this.tranformReceivedCheckToValidatedCheck(check, receivedCheckEntity)
     const markedCheck = this.transformMarkedCheckEntityToMarkedCheck(check, markedCheckEntity)
 
-    return {
+    const msg = {
       validatedCheck: validatedCheck,
       markedCheck: markedCheck
     }
+
+    await sbSender.send({ body: msg, messageId: check.checkCode, contentType: 'application/json' })
   }
 
-  async getCheckDataMessages (): Promise<ICheckCompletionMessage[]> {
-    const messages = []
+  async processBatch (): Promise<{ messagesSent: number, messagesErrored: number }> {
+    if (config.ServiceBus.ConnectionString === undefined) {
+      throw new Error('Missing config.ServiceBus.ConnectionString')
+    }
+    const meta = { messagesSent: 0, messagesErrored: 0 }
     const checks = await this.getUnsynchronisedChecks()
+    const sbClient = ServiceBusClient.createFromConnectionString(config.ServiceBus.ConnectionString)
+    const sbQueueClient = sbClient.createQueueClient(this.outputQueueName)
+    const sbSender = sbQueueClient.createSender()
     for (const check of checks) {
       this.logger.verbose(`${functionName} processing checkCode ${check.checkCode}`)
       try {
-        const msg: ICheckCompletionMessage = await this.processCheck(check)
-        messages.push(msg)
+        await this.processCheck(check, sbSender)
+        meta.messagesSent += 1
       } catch (error) {
         this.logger.error(`${functionName} failed to send sync message for checkCode ${check.checkCode} ERROR: ${error.message}`)
+        meta.messagesErrored += 1
       }
     }
-    return messages
+    await sbSender.close()
+    await sbQueueClient.close()
+    await sbClient.close()
+    return meta
   }
 }
