@@ -338,7 +338,7 @@ const controller = {
 
   postCheckResultsResyncCheck: async function postCheckResultsResyncCheck (req, res, next) {
     try {
-      const checkCode = req.body.checkCode?.trim()
+      // const checkCode = req.body.checkCode?.trim()
       // TODO submit to service
       // TODO notify of successful submit
       res.redirect('/tech-support/results-resync-check')
