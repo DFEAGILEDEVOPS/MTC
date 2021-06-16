@@ -9,6 +9,7 @@ const administrationMessageService = require('../services/administration-message
 const redisErrorMessages = require('../lib/errors/redis').redis
 const moment = require('moment')
 const queueMgmtService = require('../services/tech-support-queue-management.service')
+const resultsResyncService = require('../services/tech-support/sync-results-resync.service')
 
 const controller = {
 /**
@@ -342,16 +343,17 @@ const controller = {
     try {
       const validationError = uuidValidator.validate(checkCode, 'checkCode')
       if (validationError && validationError.hasError && validationError.hasError()) {
-        return controller.getCheckViewPage(req, res, next, validationError)
+        return controller.getCheckResultsResyncCheck(req, res, next, validationError)
       }
-      // const checkSummary = await checkDiagnosticsService.getByCheckCode(checkCode)
-      req.breadcrumbs('Check View')
-      res.render('tech-support/check-view', {
+      await resultsResyncService.resyncSingleCheck(checkCode)
+      req.breadcrumbs('Check Results - Resync Check')
+      res.render('tech-support/results-resync-check', {
         breadcrumbs: req.breadcrumbs(),
         err: new ValidationError(),
         formData: {
           checkCode: checkCode
-        }
+        },
+        response: 'request sent to function API successfully'
       })
     } catch (error) {
       return next(error)

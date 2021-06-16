@@ -6,6 +6,7 @@ const checkDiagnosticService = require('../../../services/check-diagnostic.servi
 const payloadService = require('../../../services/payload.service')
 const administrationMessageService = require('../../../services/administration-message.service')
 const queueMgmtService = require('../../../services/tech-support-queue-management.service')
+const resultsResyncService = require('../../../services/tech-support/sync-results-resync.service')
 
 let sut
 let next
@@ -139,19 +140,19 @@ describe('tech-support controller', () => {
       expect(next).not.toHaveBeenCalled()
     })
 
-    it('POST: should render the check summary', async () => {
+    it('POST: should call the service', async () => {
       const req = getRequest(getReqParams('/tech-support/results-resync-check', 'POST'))
       req.body = {
         checkCode: checkCode
       }
       const res = getResponse()
       spyOn(res, 'render').and.returnValue(null)
-      // spyOn(checkDiagnosticService, 'getByCheckCode').and.returnValue({})
+      spyOn(resultsResyncService, 'resyncSingleCheck').and.returnValue(Promise.resolve())
       await sut.postCheckResultsResyncCheck(req, res, next)
       expect(res.statusCode).toBe(200)
       expect(res.render).toHaveBeenCalled()
       expect(next).not.toHaveBeenCalled()
-      // expect(checkDiagnosticService.getByCheckCode).toHaveBeenCalledWith(checkCode)
+      expect(resultsResyncService.resyncSingleCheck).toHaveBeenCalledWith(checkCode)
     })
   })
 })
