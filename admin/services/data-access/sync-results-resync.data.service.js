@@ -33,8 +33,8 @@ const service = {
 
   callSyncResultsInitFunction: async function callSyncResultsInitFunction (message) {
     const response = await axios.post(functionUrl, message, requestConfig)
-    if (response.status !== 200) {
-      throw new Error('functions api call failed')
+    if (response.status !== 202) {
+      throw new Error(`functions api call failed: ${response.status} - ${response.statusText}`)
     }
   }
 }

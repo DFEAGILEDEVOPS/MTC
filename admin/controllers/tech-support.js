@@ -330,7 +330,9 @@ const controller = {
       res.render('tech-support/results-resync-check', {
         breadcrumbs: req.breadcrumbs(),
         error,
-        checkCode: req.body?.checkCode ?? ''
+        checkCode: req.body?.checkCode ?? '',
+        err: error || new ValidationError(),
+        response: ''
       })
     } catch (error) {
       return next(error)

@@ -108,4 +108,16 @@ router.get(
   techSupportController.showQueueOverview
 )
 
+router.get(
+  '/results-resync-check',
+  isAuthenticated([roles.techSupport]),
+  techSupportController.getCheckResultsResyncCheck
+)
+
+router.post(
+  '/results-resync-check',
+  isAuthenticated([roles.techSupport]),
+  techSupportController.postCheckResultsResyncCheck
+)
+
 module.exports = router
