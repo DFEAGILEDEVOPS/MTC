@@ -1,4 +1,5 @@
 import * as R from 'ramda'
+import { parallelLimit } from 'async'
 
 import { ConsoleLogger, ILogger } from '../../common/logger'
 import { ISqlService, SqlService } from '../../sql/sql.service'
@@ -119,7 +120,11 @@ export class SyncResultsInitService {
       markedCheck: markedCheck
     }
 
-    await sbSender.send({ body: msg, messageId: check.checkCode, contentType: 'application/json' })
+    try {
+      await sbSender.send({ body: msg, /* messageId: check.checkCode, */ contentType: 'application/json' })
+    } catch (error) {
+      console.log(`Failed to send message: ERROR: ${error.message}`)
+    }
   }
 
   async processBatch (): Promise<{ messagesSent: number, messagesErrored: number }> {
@@ -127,20 +132,33 @@ export class SyncResultsInitService {
       throw new Error('Missing config.ServiceBus.ConnectionString')
     }
     const meta = { messagesSent: 0, messagesErrored: 0 }
-    const checks = await this.getUnsynchronisedChecks()
     const sbClient = ServiceBusClient.createFromConnectionString(config.ServiceBus.ConnectionString)
     const sbQueueClient = sbClient.createQueueClient(this.outputQueueName)
     const sbSender = sbQueueClient.createSender()
-    for (const check of checks) {
-      this.logger.verbose(`${functionName} processing checkCode ${check.checkCode}`)
-      try {
-        await this.processCheck(check, sbSender)
-        meta.messagesSent += 1
-      } catch (error) {
-        this.logger.error(`${functionName} failed to send sync message for checkCode ${check.checkCode} ERROR: ${error.message}`)
-        meta.messagesErrored += 1
+    await sbSender.open()
+    const checks = await this.getUnsynchronisedChecks()
+    this.logger.info(`${functionName} ${checks.length} checks found to synchronise`)
+
+    const listOfAsyncFunctions = checks.map(chk => {
+      const _chk = chk
+      return async () => {
+        console.log(`Processing check ${_chk.checkCode}`)
+        await this.processCheck(_chk, sbSender)
       }
-    }
+    })
+    await parallelLimit(listOfAsyncFunctions, 5)
+
+    // for (const check of checks) {
+    //   this.logger.verbose(`${functionName} processing checkCode ${check.checkCode}`)
+    //   try {
+    //     await this.processCheck(check, sbSender)
+    //     meta.messagesSent += 1
+    //   } catch (error) {
+    //     this.logger.error(`${functionName} failed to send sync message for checkCode ${check.checkCode} ERROR: ${error.message}`)
+    //     meta.messagesErrored += 1
+    //   }
+    // }
+
     await sbSender.close()
     await sbQueueClient.close()
     await sbClient.close()
