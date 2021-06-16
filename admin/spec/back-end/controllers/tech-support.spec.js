@@ -126,4 +126,32 @@ describe('tech-support controller', () => {
       expect(queueMgmtService.getStorageAccountQueueSummary).toHaveBeenCalledTimes(1)
     })
   })
+
+  describe('/results-resync-check', () => {
+    it('GET: should render the page', async () => {
+      const req = getRequest(getReqParams('/tech-support/results-resync-check', 'GET'))
+      const res = getResponse()
+      spyOn(res, 'render').and.returnValue(null)
+      await sut.getCheckResultsResyncCheck(req, res, next)
+      expect(res.statusCode).toBe(200)
+      expect(res.locals.pageTitle).toBe('Check Results - Resync Check')
+      expect(res.render).toHaveBeenCalled()
+      expect(next).not.toHaveBeenCalled()
+    })
+
+    it('POST: should render the check summary', async () => {
+      const req = getRequest(getReqParams('/tech-support/results-resync-check', 'POST'))
+      req.body = {
+        checkCode: checkCode
+      }
+      const res = getResponse()
+      spyOn(res, 'render').and.returnValue(null)
+      // spyOn(checkDiagnosticService, 'getByCheckCode').and.returnValue({})
+      await sut.postCheckResultsResyncCheck(req, res, next)
+      expect(res.statusCode).toBe(200)
+      expect(res.render).toHaveBeenCalled()
+      expect(next).not.toHaveBeenCalled()
+      // expect(checkDiagnosticService.getByCheckCode).toHaveBeenCalledWith(checkCode)
+    })
+  })
 })

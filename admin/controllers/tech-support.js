@@ -337,11 +337,22 @@ const controller = {
   },
 
   postCheckResultsResyncCheck: async function postCheckResultsResyncCheck (req, res, next) {
+    res.locals.pageTitle = 'Check Results - Resync Check'
+    const checkCode = req.body.checkCode?.trim()
     try {
-      // const checkCode = req.body.checkCode?.trim()
-      // TODO submit to service
-      // TODO notify of successful submit
-      res.redirect('/tech-support/results-resync-check')
+      const validationError = uuidValidator.validate(checkCode, 'checkCode')
+      if (validationError && validationError.hasError && validationError.hasError()) {
+        return controller.getCheckViewPage(req, res, next, validationError)
+      }
+      // const checkSummary = await checkDiagnosticsService.getByCheckCode(checkCode)
+      req.breadcrumbs('Check View')
+      res.render('tech-support/check-view', {
+        breadcrumbs: req.breadcrumbs(),
+        err: new ValidationError(),
+        formData: {
+          checkCode: checkCode
+        }
+      })
     } catch (error) {
       return next(error)
     }
