@@ -158,7 +158,6 @@ export class SyncResultsInitService {
     const listOfAsyncFunctions = checks.map(chk => {
       const _chk = chk
       return async () => {
-        console.log(`Processing check ${_chk.checkCode}`)
         await this.processCheck(_chk, sbSender, meta)
       }
     })
