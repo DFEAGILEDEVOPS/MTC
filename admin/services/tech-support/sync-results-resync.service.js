@@ -19,6 +19,12 @@ const service = {
     return dataService.callSyncResultsInitFunction({
       schoolUuid: schoolUuid
     })
+  },
+
+  resyncAllChecks: async function resyncChecks (resyncAll = false) {
+    return dataService.callSyncResultsInitFunction({
+      resyncAll: resyncAll
+    })
   }
 }
 

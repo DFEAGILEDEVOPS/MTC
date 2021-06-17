@@ -132,4 +132,16 @@ router.post(
   techSupportController.postCheckResultsResyncSchool
 )
 
+router.get(
+  '/results-resync-all',
+  isAuthenticated([roles.techSupport]),
+  techSupportController.getCheckResultsResyncAll
+)
+
+router.post(
+  '/results-resync-all',
+  isAuthenticated([roles.techSupport]),
+  techSupportController.postCheckResultsResyncAll
+)
+
 module.exports = router
