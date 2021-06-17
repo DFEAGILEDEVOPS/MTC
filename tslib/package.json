@@ -29,6 +29,7 @@
   "devDependencies": {
     "@azure/functions": "^1.0.3",
     "@types/adm-zip": "^0.4.33",
+    "@types/async": "^3.2.6",
     "@types/bluebird": "^3.5.33",
     "@types/faker": "^5.1.6",
     "@types/he": "^1.1.1",
@@ -61,6 +62,7 @@
     "@azure/service-bus": "^1.1.2",
     "adm-zip": "^0.5.2",
     "applicationinsights": "^1.8.8",
+    "async": "^3.2.0",
     "axios": "^0.21.1",
     "azure-storage": "^2.10.4",
     "bluebird": "^3.7.0",

@@ -1,4 +1,5 @@
 import * as R from 'ramda'
+import { parallelLimit } from 'async'
 
 import { ConsoleLogger, ILogger } from '../../common/logger'
 import { ISqlService, SqlService } from '../../sql/sql.service'
@@ -14,6 +15,11 @@ import config from '../../config'
 import { Sender, ServiceBusClient } from '@azure/service-bus'
 
 const functionName = 'sync-results-init: SyncResultsInitService'
+
+export interface MetaResult {
+  messagesSent: number
+  messagesErrored: number
+}
 
 export class SyncResultsInitService {
   private readonly logger: ILogger
@@ -107,7 +113,7 @@ export class SyncResultsInitService {
     return markedCheck
   }
 
-  private async processCheck (check: UnsynchronisedCheck, sbSender: Sender): Promise<void> {
+  private async processCheck (check: UnsynchronisedCheck, sbSender: Sender, meta: MetaResult): Promise<void> {
     const receivedCheckPromise = this.getReceivedCheck(check)
     const markedCheckPromise = this.getMarkedCheck(check)
     const [receivedCheckEntity, markedCheckEntity] = await Promise.all([receivedCheckPromise, markedCheckPromise])
@@ -119,28 +125,47 @@ export class SyncResultsInitService {
       markedCheck: markedCheck
     }
 
-    await sbSender.send({ body: msg, messageId: check.checkCode, contentType: 'application/json' })
+    try {
+      await sbSender.send({ body: msg, /* messageId: check.checkCode, */ contentType: 'application/json' })
+      meta.messagesSent += 1
+    } catch (error) {
+      console.log(`Failed to send message: ERROR: ${error.message}`)
+      meta.messagesErrored += 1
+    }
   }
 
   async processBatch (): Promise<{ messagesSent: number, messagesErrored: number }> {
     if (config.ServiceBus.ConnectionString === undefined) {
       throw new Error('Missing config.ServiceBus.ConnectionString')
     }
-    const meta = { messagesSent: 0, messagesErrored: 0 }
-    const checks = await this.getUnsynchronisedChecks()
+    const meta: MetaResult = { messagesSent: 0, messagesErrored: 0 }
     const sbClient = ServiceBusClient.createFromConnectionString(config.ServiceBus.ConnectionString)
     const sbQueueClient = sbClient.createQueueClient(this.outputQueueName)
     const sbSender = sbQueueClient.createSender()
-    for (const check of checks) {
-      this.logger.verbose(`${functionName} processing checkCode ${check.checkCode}`)
-      try {
-        await this.processCheck(check, sbSender)
-        meta.messagesSent += 1
-      } catch (error) {
-        this.logger.error(`${functionName} failed to send sync message for checkCode ${check.checkCode} ERROR: ${error.message}`)
-        meta.messagesErrored += 1
+    await sbSender.open()
+    const checks = await this.getUnsynchronisedChecks()
+    this.logger.info(`${functionName} ${checks.length} checks found to synchronise`)
+
+    const listOfAsyncFunctions = checks.map(chk => {
+      const _chk = chk
+      return async () => {
+        console.log(`Processing check ${_chk.checkCode}`)
+        await this.processCheck(_chk, sbSender, meta)
       }
-    }
+    })
+    await parallelLimit(listOfAsyncFunctions, 5)
+
+    // for (const check of checks) {
+    //   this.logger.verbose(`${functionName} processing checkCode ${check.checkCode}`)
+    //   try {
+    //     await this.processCheck(check, sbSender)
+    //     meta.messagesSent += 1
+    //   } catch (error) {
+    //     this.logger.error(`${functionName} failed to send sync message for checkCode ${check.checkCode} ERROR: ${error.message}`)
+    //     meta.messagesErrored += 1
+    //   }
+    // }
+
     await sbSender.close()
     await sbQueueClient.close()
     await sbClient.close()
