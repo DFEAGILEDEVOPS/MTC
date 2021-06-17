@@ -1,6 +1,6 @@
 import { AzureFunction, Context } from '@azure/functions'
 import { performance } from 'perf_hooks'
-import { SyncResultsInitService } from './sync-results-init.service'
+import { ISyncResultsInitServiceOptions, SyncResultsInitService } from './sync-results-init.service'
 
 const functionName = 'sync-results-init'
 
@@ -8,7 +8,9 @@ const timerTrigger: AzureFunction = async function (context: Context): Promise<v
   const start = performance.now()
   try {
     const syncResultsInitService = new SyncResultsInitService(context.log)
-    const meta = await syncResultsInitService.processBatch()
+    // If called via http there could be a message passed in
+    const options: ISyncResultsInitServiceOptions = context.bindingData.syncResultsInit !== undefined ? context.bindingData.syncResultsInit : {}
+    const meta = await syncResultsInitService.processBatch(options)
     const memoryUsage = process.memoryUsage()
     const heapUsed = memoryUsage.heapUsed / 1024 / 1024
     const end = performance.now()

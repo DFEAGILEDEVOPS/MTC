@@ -419,7 +419,7 @@ const controller = {
 
   postCheckResultsResyncAll: async function postCheckResultsResyncAll (req, res, next) {
     res.locals.pageTitle = 'Resync All Results'
-    const resyncAll = req.body.resyncAll || false
+    const resyncAll = req.body.resyncAll === 'true' // convert string to bool- the user must tick the checkbox
     try {
       await resultsResyncService.resyncAllChecks(resyncAll)
       req.breadcrumbs('Check Results - Resync All')

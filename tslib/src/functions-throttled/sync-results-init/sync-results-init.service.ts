@@ -5,7 +5,6 @@ import moment from 'moment'
 import { Sender, ServiceBusClient } from '@azure/service-bus'
 
 import { ConsoleLogger, ILogger } from '../../common/logger'
-import { ISqlService, SqlService } from '../../sql/sql.service'
 import {
   MarkedCheck,
   ValidatedCheck
@@ -15,6 +14,7 @@ import { UnsynchronisedCheck } from './models'
 import { MarkedCheckTableEntity, ReceivedCheckTableEntity } from '../../schemas/models'
 import { CompressionService, ICompressionService } from '../../common/compression-service'
 import config from '../../config'
+import { SyncResultsInitDataService, ISyncResultsInitDataService } from './sync-results-init-data.service'
 
 const functionName = 'sync-results-init: SyncResultsInitService'
 
@@ -25,38 +25,26 @@ export interface MetaResult {
   startTime: moment.Moment
 }
 
+export interface ISyncResultsInitServiceOptions {
+  schoolUuid?: string
+  checkCode?: string
+  resyncAll?: boolean
+}
+
 export class SyncResultsInitService {
   private readonly logger: ILogger
-  private readonly sqlService: ISqlService
+  private readonly dataService: ISyncResultsInitDataService
   private readonly tableService: IAsyncTableService
   private readonly compressionService: ICompressionService
   private readonly receivedCheckTableName = 'receivedCheck'
   private readonly markedCheckTableName = 'checkResult'
   private readonly outputQueueName = 'check-completion'
 
-  constructor (logger?: ILogger, sqlService?: ISqlService, tableService?: IAsyncTableService, compressionService?: ICompressionService) {
+  constructor (logger?: ILogger, dataService?: ISyncResultsInitDataService, tableService?: IAsyncTableService, compressionService?: ICompressionService) {
     this.logger = logger ?? new ConsoleLogger()
-    this.sqlService = sqlService ?? new SqlService()
+    this.dataService = dataService ?? new SyncResultsInitDataService()
     this.tableService = tableService ?? new AsyncTableService()
     this.compressionService = compressionService ?? new CompressionService()
-  }
-
-  /**
-   * Return a list of checks and the school UUID that need to be synchronised from the table storage marking tables to the SQL Database.
-   * @private
-   */
-  private async getUnsynchronisedChecks (): Promise<UnsynchronisedCheck[]> {
-    const sql = `
-        SELECT c.checkCode, s.urlSlug as schoolUUID
-          FROM mtc_admin.[check] c
-               JOIN mtc_admin.[pupil] p ON (c.pupil_id = p.id)
-               JOIN mtc_admin.[school] s ON (p.school_id = s.id)
-               JOIN mtc_admin.[checkStatus] cs ON (c.checkStatus_id = cs.id)
-         WHERE cs.code = 'CMP'
-           AND c.resultsSynchronised = 0
-           AND c.isLiveCheck = 1
-    `
-    return this.sqlService.query(sql)
   }
 
   private async getReceivedCheck (check: UnsynchronisedCheck): Promise<ReceivedCheckTableEntity> {
@@ -158,7 +146,7 @@ export class SyncResultsInitService {
     }
   }
 
-  async processBatch (): Promise<{ messagesSent: number, messagesErrored: number }> {
+  async processBatch (options: ISyncResultsInitServiceOptions): Promise<MetaResult> {
     if (config.ServiceBus.ConnectionString === undefined) {
       throw new Error('Missing config.ServiceBus.ConnectionString')
     }
@@ -166,9 +154,25 @@ export class SyncResultsInitService {
     const sbQueueClient = sbClient.createQueueClient(this.outputQueueName)
     const sbSender = sbQueueClient.createSender()
     await sbSender.open()
-    const checks = await this.getUnsynchronisedChecks()
+
+    let checks: UnsynchronisedCheck[]
+    if ('checkCode' in options && options.checkCode !== undefined) {
+      this.logger.info(`${functionName} resynchronising a single check`)
+      checks = await this.dataService.getCheckToResynchronise(options.checkCode)
+    } else if ('schoolUuid' in options && options.schoolUuid !== undefined) {
+      this.logger.info(`${functionName} resynchronising all checks for a school`)
+      checks = await this.dataService.getSchoolToResynchonise(options.schoolUuid)
+    } else if ('resyncAll' in options && options.resyncAll === true) {
+      this.logger.info(`${functionName} resynchronising all valid checks`)
+      checks = await this.dataService.getAllChecksToResynchronise()
+    } else {
+      // standard run: find all unsynchronised checks where the `resultsSynchronised` flag is false
+      this.logger.info(`${functionName} resynchronising outstanding checks (default)`)
+      checks = await this.dataService.getUnsynchronisedChecks()
+    }
+
     const meta: MetaResult = { totalChecks: checks.length, messagesSent: 0, messagesErrored: 0, startTime: moment.utc() }
-    this.logger.info(`${functionName} ${meta.totalChecks} checks found to synchronise`)
+    this.logger.info(`${functionName} ${meta.totalChecks} checks found to synchronise via $options ${JSON.stringify(options)}`)
 
     const listOfAsyncFunctions = checks.map(chk => {
       const _chk = chk
