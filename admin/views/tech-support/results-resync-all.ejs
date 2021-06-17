@@ -1,0 +1,23 @@
+<%- partial('partials/_gds_breadcrumbs_and_sign_out', { breadcrumbs }) %>
+<main class="govuk-main-wrapper" id="main-content" role="main">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-xl"><%= pageTitle %></h1>
+      <%- partial('partials/_gds_session_expiry') %>
+      <form action="/tech-support/results-resync-all" id="resyncAllForm" method="post" autocomplete="off">
+        <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
+        <div class="govuk-form-group">
+          <label class="govuk-label govuk-!-font-weight-bold" for="resyncAll">Force re-calc of ALL completed live checks</label>
+          <input type="checkbox" id="resyncAll" name="resyncAll" role="checkbox" />
+        </div>
+        <button type="submit" id="submit-resyncAll" class="govuk-button">Resync</button>
+      </form>
+      <% if (response && response.length > 0) { %>
+        <div class="govuk-form-group">
+          <label class="govuk-label govuk-!-font-weight-bold" for="resyncAll">Response</label>
+          <span><%= response %></span>
+        </div>
+      <% } %>
+    </div>
+  </div>
+</main>

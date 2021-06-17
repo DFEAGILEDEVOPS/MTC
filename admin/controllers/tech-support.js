@@ -399,6 +399,41 @@ const controller = {
     } catch (error) {
       return next(error)
     }
+  },
+
+  getCheckResultsResyncAll: async function getCheckResultsResyncAll (req, res, next, error = new ValidationError()) {
+    try {
+      res.locals.pageTitle = 'Resync All Results'
+      req.breadcrumbs('Check Results - Resync All')
+      res.render('tech-support/results-resync-all', {
+        breadcrumbs: req.breadcrumbs(),
+        error,
+        resyncAll: req.body?.resyncAll ?? false,
+        err: error || new ValidationError(),
+        response: ''
+      })
+    } catch (error) {
+      return next(error)
+    }
+  },
+
+  postCheckResultsResyncAll: async function postCheckResultsResyncAll (req, res, next) {
+    res.locals.pageTitle = 'Resync All Results'
+    const resyncAll = req.body.resyncAll || false
+    try {
+      await resultsResyncService.resyncAllChecks(resyncAll)
+      req.breadcrumbs('Check Results - Resync All')
+      res.render('tech-support/results-resync-all', {
+        breadcrumbs: req.breadcrumbs(),
+        err: new ValidationError(),
+        formData: {
+          resyncAll: resyncAll
+        },
+        response: 'request sent to function API successfully'
+      })
+    } catch (error) {
+      return next(error)
+    }
   }
 }
 
