@@ -138,7 +138,7 @@ export class SyncResultsInitService {
       await sbSender.send({ body: msg, messageId: msgId, contentType: 'application/json' })
       meta.messagesSent += 1
     } catch (error) {
-      console.log(`Failed to send message: ERROR: ${error.message}`)
+      this.logger.error(`${functionName} failed to send sync message for checkCode ${check.checkCode} ERROR: ${error.message}`)
       meta.messagesErrored += 1
     }
   }
@@ -163,18 +163,6 @@ export class SyncResultsInitService {
       }
     })
     await parallelLimit(listOfAsyncFunctions, 5)
-
-    // for (const check of checks) {
-    //   this.logger.verbose(`${functionName} processing checkCode ${check.checkCode}`)
-    //   try {
-    //     await this.processCheck(check, sbSender)
-    //     meta.messagesSent += 1
-    //   } catch (error) {
-    //     this.logger.error(`${functionName} failed to send sync message for checkCode ${check.checkCode} ERROR: ${error.message}`)
-    //     meta.messagesErrored += 1
-    //   }
-    // }
-
     await sbSender.close()
     await sbQueueClient.close()
     await sbClient.close()
