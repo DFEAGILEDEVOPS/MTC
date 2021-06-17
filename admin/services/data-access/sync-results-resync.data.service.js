@@ -5,10 +5,10 @@ const R = require('ramda')
 const axios = require('axios').default
 const config = require('../../config')
 
-const functionUrl = `${config.Functions.Throttled.BaseAdminUrl}${config.Functions.Throttled.SyncResultsInitPath}`
+const functionUrl = `${config.Functions.Throttled.BaseAdminUrl}'/sync-results-init'`
 const requestConfig = {
   headers: {
-    'x-functions-key': config.Functions.Throttled.AuthKey,
+    'x-functions-key': config.Functions.Throttled.MasterKey,
     'Content-Type': 'application/json'
   }
 }
