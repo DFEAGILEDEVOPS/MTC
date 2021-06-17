@@ -115,29 +115,44 @@ export class SyncResultsDataService implements ISyncResultsDataService {
       WHERE chk.checkCode = @checkCode`, checkInfoParams)
     const checkResultInfo = checkResultInfoQueryResult[0]
     if (checkResultInfo === undefined) return
-    const sql = `
-      BEGIN TRANSACTION
-        DELETE FROM [mtc_results].[userInput] WHERE answer_id IN (
-          SELECT id FROM [mtc_results].[answer] WHERE checkResult_id = @checkResultId
-        )
-        DELETE FROM [mtc_results].[answer] WHERE checkResult_id = @checkResultId
-        DELETE FROM [mtc_results].[event] WHERE checkResult_id = @checkResultId
-        DELETE FROM [mtc_results].[checkResult] WHERE id = @checkResultId
-        DELETE FROM [mtc_results].[userDevice] WHERE id = @userDeviceId
-      COMMIT TRANSACTION
-    `
-    const params = new Array<ISqlParameter>()
-    params.push({
+
+    const checkResultIdParam: ISqlParameter = {
       name: 'checkResultId',
       type: TYPES.Int,
       value: checkResultInfo.checkResultId
-    })
-    params.push({
+    }
+    const userDeviceIdParam: ISqlParameter = {
       name: 'userDeviceId',
       type: TYPES.Int,
       value: checkResultInfo.userDeviceId
-    })
-    return this.sqlService.modify(sql, params)
+    }
+    const deleteUserInputs: ITransactionRequest = {
+      sql: 'DELETE FROM [mtc_results].[userInput] WHERE answer_id IN (SELECT id FROM [mtc_results].[answer] WHERE checkResult_id = @checkResultId)',
+      params: [ checkResultIdParam ]
+    }
+    const deleteAnswers: ITransactionRequest = {
+      sql: 'DELETE FROM [mtc_results].[answer] WHERE checkResult_id = @checkResultId',
+      params: [ checkResultIdParam ]
+    }
+    const deleteEvents: ITransactionRequest = {
+      sql: 'DELETE FROM [mtc_results].[event] WHERE checkResult_id = @checkResultId',
+      params: [ checkResultIdParam ]
+    }
+    const deleteCheckResult: ITransactionRequest = {
+      sql: 'DELETE FROM [mtc_results].[checkResult] WHERE id = @checkResultId',
+      params: [ checkResultIdParam ]
+    }
+    const deleteUserDevice: ITransactionRequest = {
+      sql: 'DELETE FROM [mtc_results].[userDevice] WHERE id = @userDeviceId',
+      params: [ userDeviceIdParam ]
+    }
+    return this.sqlService.modifyWithTransaction([
+      deleteUserInputs,
+      deleteAnswers,
+      deleteEvents,
+      deleteCheckResult,
+      deleteUserDevice
+    ])
   }
 
   /**
