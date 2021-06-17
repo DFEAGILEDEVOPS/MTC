@@ -111,3 +111,45 @@ Then(/^I should not be able to remove the live check form$/) do
   assigned_form = upload_and_view_forms_v2_page.form_list.rows.find {|row| row.name.text == @file_name.split('.').first}
   expect(assigned_form).to_not have_remove
 end
+
+
+And(/^I should be able to assign the live form to another inactive window$/) do
+  step 'I am logged in with a test developer'
+  step 'I am on the assign check window v2 page'
+  window = assign_form_to_window_v2_page.check_windows.rows.find {|row| row.name_of_window.text == @check_window_hash[:check_name]}
+  window.mtc_check_link.click
+  form = select_form_to_assign_page.check_forms.rows.find {|row| row.name_of_form.text == @file_name.split('.').first}
+  form.select.click
+  select_form_to_assign_page.sticky_banner.confirm.click
+  window = assign_form_to_window_v2_page.check_windows.rows.find {|row| row.name_of_window.text == @check_window_hash[:check_name]}
+  expect(window.mtc_check_link_text.text).to include '(1 form assigned)'
+  expect(window.try_it_out_check_link_text.text).to include '(0 forms assigned)'
+  expect(assign_form_to_window_v2_page.flash_message.text).to eql "1 form has been assigned to #{@check_window_hash[:check_name]}, MTC"
+end
+
+
+And(/^I create another inactive check window$/) do
+  visit ENV['ADMIN_BASE_URL'] + '/sign-out'
+  visit ENV['ADMIN_BASE_URL']
+  step "I navigate to the create check window page"
+  step "I submit details of a valid check window"
+  step "I should see it added to the list of check windows"
+  step "stored correctly in the db"
+  visit ENV['ADMIN_BASE_URL'] + '/sign-out'
+  visit ENV['ADMIN_BASE_URL']
+end
+
+
+And(/^I should be able to assign the familiarisation form to another inactive window also$/) do
+  step 'I am logged in with a test developer'
+  step 'I am on the assign check window v2 page'
+  window = assign_form_to_window_v2_page.check_windows.rows.find {|row| row.name_of_window.text == @check_window_hash[:check_name]}
+  window.try_it_out_check_link.click
+  form = select_form_to_assign_page.check_forms.rows.find {|row| row.name_of_form.text == @file_name.split('.').first}
+  form.select.click
+  assign_form_to_window_v2_page.save_button.click
+  window = assign_form_to_window_v2_page.check_windows.rows.find {|row| row.name_of_window.text == @check_window_hash[:check_name]}
+  expect(window.mtc_check_link_text.text).to include '(0 forms assigned)'
+  expect(window.try_it_out_check_link_text.text).to include '(1 form assigned)'
+  expect(assign_form_to_window_v2_page.flash_message.text).to eql "1 form has been assigned to #{@check_window_hash[:check_name]}, Try it out"
+end
