@@ -54,7 +54,7 @@ async function processV2 (message: ICheckCompletionMessage, context: Context, sy
   const syncResultsService = syncResultsServiceFactory.create()
   try {
     await syncResultsService.process(message)
-    context.log(`[function] finished processing check ${message.markedCheck.checkCode}`)
+    context.log(`[${functionName}] finished processing check ${message.markedCheck.checkCode}`)
   } catch (error) {
     meta.errorCheckCodes.push(message.markedCheck.checkCode)
     if (isLastDeliveryAttempt(context)) {
