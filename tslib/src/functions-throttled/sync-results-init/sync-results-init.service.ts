@@ -127,7 +127,7 @@ export class SyncResultsInitService {
 
     try {
       await sbSender.send({ body: msg, /* messageId: check.checkCode, */ contentType: 'application/json' })
-      meta.messagesErrored += 1
+      meta.messagesSent += 1
     } catch (error) {
       console.log(`Failed to send message: ERROR: ${error.message}`)
       meta.messagesErrored += 1
