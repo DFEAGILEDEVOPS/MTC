@@ -1,6 +1,7 @@
 import * as R from 'ramda'
 import { parallelLimit } from 'async'
 import { v4 as uuidv4 } from 'uuid'
+import moment from 'moment'
 
 import { ConsoleLogger, ILogger } from '../../common/logger'
 import { ISqlService, SqlService } from '../../sql/sql.service'
@@ -20,6 +21,8 @@ const functionName = 'sync-results-init: SyncResultsInitService'
 export interface MetaResult {
   messagesSent: number
   messagesErrored: number
+  totalChecks: number
+  startTime: moment.Moment
 }
 
 export class SyncResultsInitService {
@@ -121,6 +124,15 @@ export class SyncResultsInitService {
     return uuidv4()
   }
 
+  private logProgress (meta: MetaResult): void {
+    const progressPercent = Math.round((meta.messagesSent / meta.totalChecks) * 100)
+    const elapsedTimeMinutes = (moment.utc().valueOf() - meta.startTime.valueOf()) / 1000 / 60
+    const ratePerMinute = Math.round(meta.messagesSent / elapsedTimeMinutes)
+    const minutesRemaining = (meta.totalChecks - meta.messagesSent) / ratePerMinute
+    const estFinishTime = moment.utc().add(minutesRemaining, 'minutes')
+    this.logger.info(`${functionName} ${meta.messagesSent} checks done ${progressPercent}% complete in ${elapsedTimeMinutes} mins, rate is ${ratePerMinute} / minute, estimated completion at ${estFinishTime.toISOString()}`)
+  }
+
   private async processCheck (check: UnsynchronisedCheck, sbSender: Sender, meta: MetaResult): Promise<void> {
     const receivedCheckPromise = this.getReceivedCheck(check)
     const markedCheckPromise = this.getMarkedCheck(check)
@@ -137,6 +149,9 @@ export class SyncResultsInitService {
       const msgId = this.generateMessageId(check)
       await sbSender.send({ body: msg, messageId: msgId, contentType: 'application/json' })
       meta.messagesSent += 1
+      if (meta.messagesSent % 1000 === 0) { // Log every 1000 messages sent
+        this.logProgress(meta)
+      }
     } catch (error) {
       this.logger.error(`${functionName} failed to send sync message for checkCode ${check.checkCode} ERROR: ${error.message}`)
       meta.messagesErrored += 1
@@ -147,13 +162,13 @@ export class SyncResultsInitService {
     if (config.ServiceBus.ConnectionString === undefined) {
       throw new Error('Missing config.ServiceBus.ConnectionString')
     }
-    const meta: MetaResult = { messagesSent: 0, messagesErrored: 0 }
     const sbClient = ServiceBusClient.createFromConnectionString(config.ServiceBus.ConnectionString)
     const sbQueueClient = sbClient.createQueueClient(this.outputQueueName)
     const sbSender = sbQueueClient.createSender()
     await sbSender.open()
     const checks = await this.getUnsynchronisedChecks()
-    this.logger.info(`${functionName} ${checks.length} checks found to synchronise`)
+    const meta: MetaResult = { totalChecks: checks.length, messagesSent: 0, messagesErrored: 0, startTime: moment.utc() }
+    this.logger.info(`${functionName} ${meta.totalChecks} checks found to synchronise`)
 
     const listOfAsyncFunctions = checks.map(chk => {
       const _chk = chk
