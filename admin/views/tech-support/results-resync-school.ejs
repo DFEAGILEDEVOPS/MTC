@@ -1,0 +1,50 @@
+<%- partial('partials/_gds_breadcrumbs_and_sign_out', { breadcrumbs }) %>
+<main class="govuk-main-wrapper" id="main-content" role="main">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <% if (err && err.hasError()) { %>
+      <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1"
+        data-module="govuk-error-summary">
+        <h2 class="govuk-error-summary__title" id="error-summary-title">
+          You need to fix the errors on this page before continuing.
+        </h2>
+        <div class="govuk-error-summary__body">
+          <p>See highlighted errors below.</p>
+          <ul class="govuk-list govuk-error-summary__list">
+            <% err.getUniqueFields(['schoolUuid']).map(f => { %>
+            <% const errors = err.get(f) %>
+            <% if (Array.isArray(errors)) { %>
+            <%  errors.map(e => { %>
+            <li><a href="#<%= f %>"><%= e %></a></li>
+            <% }) } else { %>
+            <li><a href="#<%= f %>"><%= errors %></a></li>
+            <% } %>
+            <% }) %>
+          </ul>
+        </div>
+      </div>
+      <% } %>
+      <h1 class="govuk-heading-xl"><%= pageTitle %></h1>
+      <%- partial('partials/_gds_session_expiry') %>
+      <form action="/tech-support/results-resync-school" id="checkViewForm" method="post" autocomplete="off">
+        <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
+        <div class="govuk-form-group <%= err.isError('schoolUuid') ? 'govuk-form-group--error' : '' %>">
+          <label class="govuk-label govuk-!-font-weight-bold" for="schoolUuid">School UUID</label>
+          <% if (err && err.isError('schoolUuid')) { %>
+          <span class="govuk-error-message"><%= err.get('schoolUuid') %></span>
+          <% } %>
+          <input type="text" id="schoolUuid"
+            class="govuk-input govuk-!-width-three-quarters <%= err.isError('schoolUuid') ? 'govuk-input--error' : '' %>"
+            name="schoolUuid" />
+        </div>
+        <button type="submit" id="submit-schoolUuid" class="govuk-button">Submit</button>
+      </form>
+      <% if (response && response.length > 0) { %>
+        <div class="govuk-form-group">
+          <label class="govuk-label govuk-!-font-weight-bold" for="schoolUuid">Response</label>
+          <span><%= response %></span>
+        </div>
+      <% } %>
+    </div>
+  </div>
+</main>

@@ -10,6 +10,15 @@ const service = {
     return dataService.callSyncResultsInitFunction({
       checkCode: checkCode
     })
+  },
+
+  resyncChecksForSchool: async function resyncChecksForSchool (schoolUuid) {
+    if (!schoolUuid) {
+      throw new Error('schoolUuid parameter is required')
+    }
+    return dataService.callSyncResultsInitFunction({
+      schoolUuid: schoolUuid
+    })
   }
 }
 
