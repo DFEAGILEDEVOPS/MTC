@@ -9,6 +9,7 @@ const administrationMessageService = require('../services/administration-message
 const redisErrorMessages = require('../lib/errors/redis').redis
 const moment = require('moment')
 const queueMgmtService = require('../services/tech-support-queue-management.service')
+const resultsResyncService = require('../services/tech-support/sync-results-resync.service')
 
 const controller = {
 /**
@@ -329,7 +330,9 @@ const controller = {
       res.render('tech-support/results-resync-check', {
         breadcrumbs: req.breadcrumbs(),
         error,
-        checkCode: req.body?.checkCode ?? ''
+        checkCode: req.body?.checkCode ?? '',
+        err: error || new ValidationError(),
+        response: ''
       })
     } catch (error) {
       return next(error)
@@ -337,11 +340,23 @@ const controller = {
   },
 
   postCheckResultsResyncCheck: async function postCheckResultsResyncCheck (req, res, next) {
+    res.locals.pageTitle = 'Check Results - Resync Check'
+    const checkCode = req.body.checkCode?.trim()
     try {
-      // const checkCode = req.body.checkCode?.trim()
-      // TODO submit to service
-      // TODO notify of successful submit
-      res.redirect('/tech-support/results-resync-check')
+      const validationError = uuidValidator.validate(checkCode, 'checkCode')
+      if (validationError && validationError.hasError && validationError.hasError()) {
+        return controller.getCheckResultsResyncCheck(req, res, next, validationError)
+      }
+      await resultsResyncService.resyncSingleCheck(checkCode)
+      req.breadcrumbs('Check Results - Resync Check')
+      res.render('tech-support/results-resync-check', {
+        breadcrumbs: req.breadcrumbs(),
+        err: new ValidationError(),
+        formData: {
+          checkCode: checkCode
+        },
+        response: 'request sent to function API successfully'
+      })
     } catch (error) {
       return next(error)
     }
