@@ -5,7 +5,6 @@ import config from '../../config'
 import { ICheckCompletionMessage } from './models'
 import { SyncResultsServiceFactory } from './sync-results.service.factory'
 
-const meta = { checksProcessed: 0, checksErrored: 0, errorCheckCodes: [] as string[] }
 const functionName = 'sync-results-to-sql'
 
 /**
@@ -40,11 +39,7 @@ const maxDeliveryAttempts = config.ServiceBus.CheckCompletionQueueMaxDeliveryCou
   put on the dead letter queue automatically.
 */
 const serviceBusTrigger: AzureFunction = async function (context: Context, checkCompletionMessage: ICheckCompletionMessage): Promise<void> {
-  meta.checksProcessed = 0
-  meta.checksErrored = 0
-  meta.errorCheckCodes = []
   const start = performance.now()
-
   const syncResultsServiceFactory = new SyncResultsServiceFactory(context.log)
   await processV2(checkCompletionMessage, context, syncResultsServiceFactory)
   finish(start, context)
@@ -56,7 +51,7 @@ async function processV2 (message: ICheckCompletionMessage, context: Context, sy
     await syncResultsService.process(message)
     context.log(`[${functionName}] finished processing check ${message.markedCheck.checkCode}`)
   } catch (error) {
-    meta.errorCheckCodes.push(message.markedCheck.checkCode)
+    context.log.error(`${functionName}: Error syncing results for check ${message.markedCheck.checkCode}. Error:${error.message}`)
     if (isLastDeliveryAttempt(context)) {
       handleLastDeliveryAttempt(context, message)
     }
@@ -80,8 +75,6 @@ function finish (start: number, context: Context): void {
   const end = performance.now()
   const durationInMilliseconds = end - start
   const timeStamp = new Date().toISOString()
-  const metaStr = JSON.stringify(meta)
-  context.log(`${functionName}: ${metaStr}`)
   context.log(`${functionName}: ${timeStamp} run complete: ${durationInMilliseconds} ms`)
 }
 

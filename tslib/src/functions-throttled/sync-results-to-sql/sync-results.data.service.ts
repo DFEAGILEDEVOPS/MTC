@@ -128,23 +128,23 @@ export class SyncResultsDataService implements ISyncResultsDataService {
     }
     const deleteUserInputs: ITransactionRequest = {
       sql: 'DELETE FROM [mtc_results].[userInput] WHERE answer_id IN (SELECT id FROM [mtc_results].[answer] WHERE checkResult_id = @checkResultId)',
-      params: [ checkResultIdParam ]
+      params: [checkResultIdParam]
     }
     const deleteAnswers: ITransactionRequest = {
       sql: 'DELETE FROM [mtc_results].[answer] WHERE checkResult_id = @checkResultId',
-      params: [ checkResultIdParam ]
+      params: [checkResultIdParam]
     }
     const deleteEvents: ITransactionRequest = {
       sql: 'DELETE FROM [mtc_results].[event] WHERE checkResult_id = @checkResultId',
-      params: [ checkResultIdParam ]
+      params: [checkResultIdParam]
     }
     const deleteCheckResult: ITransactionRequest = {
       sql: 'DELETE FROM [mtc_results].[checkResult] WHERE id = @checkResultId',
-      params: [ checkResultIdParam ]
+      params: [checkResultIdParam]
     }
     const deleteUserDevice: ITransactionRequest = {
       sql: 'DELETE FROM [mtc_results].[userDevice] WHERE id = @userDeviceId',
-      params: [ userDeviceIdParam ]
+      params: [userDeviceIdParam]
     }
     return this.sqlService.modifyWithTransaction([
       deleteUserInputs,
