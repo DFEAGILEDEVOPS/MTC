@@ -1,5 +1,6 @@
 import * as R from 'ramda'
 import { parallelLimit } from 'async'
+import { v4 as uuidv4 } from 'uuid'
 
 import { ConsoleLogger, ILogger } from '../../common/logger'
 import { ISqlService, SqlService } from '../../sql/sql.service'
@@ -113,6 +114,13 @@ export class SyncResultsInitService {
     return markedCheck
   }
 
+  private generateMessageId (check: UnsynchronisedCheck): string {
+    if (process.env.NODE_ENV === 'production') {
+      return check.checkCode
+    }
+    return uuidv4()
+  }
+
   private async processCheck (check: UnsynchronisedCheck, sbSender: Sender, meta: MetaResult): Promise<void> {
     const receivedCheckPromise = this.getReceivedCheck(check)
     const markedCheckPromise = this.getMarkedCheck(check)
@@ -126,7 +134,8 @@ export class SyncResultsInitService {
     }
 
     try {
-      await sbSender.send({ body: msg, /* messageId: check.checkCode, */ contentType: 'application/json' })
+      const msgId = this.generateMessageId(check)
+      await sbSender.send({ body: msg, messageId: msgId, contentType: 'application/json' })
       meta.messagesSent += 1
     } catch (error) {
       console.log(`Failed to send message: ERROR: ${error.message}`)
