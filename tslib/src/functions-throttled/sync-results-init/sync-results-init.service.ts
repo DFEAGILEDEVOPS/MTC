@@ -2,6 +2,7 @@ import * as R from 'ramda'
 import { parallelLimit } from 'async'
 import { v4 as uuidv4 } from 'uuid'
 import moment from 'moment'
+import { Sender, ServiceBusClient } from '@azure/service-bus'
 
 import { ConsoleLogger, ILogger } from '../../common/logger'
 import { ISqlService, SqlService } from '../../sql/sql.service'
@@ -14,7 +15,6 @@ import { UnsynchronisedCheck } from './models'
 import { MarkedCheckTableEntity, ReceivedCheckTableEntity } from '../../schemas/models'
 import { CompressionService, ICompressionService } from '../../common/compression-service'
 import config from '../../config'
-import { Sender, ServiceBusClient } from '@azure/service-bus'
 
 const functionName = 'sync-results-init: SyncResultsInitService'
 
@@ -176,7 +176,7 @@ export class SyncResultsInitService {
         await this.processCheck(_chk, sbSender, meta)
       }
     })
-    await parallelLimit(listOfAsyncFunctions, 5)
+    await parallelLimit(listOfAsyncFunctions, config.SyncResultsInit.MaxParallelTasks)
     await sbSender.close()
     await sbQueueClient.close()
     await sbClient.close()
