@@ -16,6 +16,11 @@ import { Sender, ServiceBusClient } from '@azure/service-bus'
 
 const functionName = 'sync-results-init: SyncResultsInitService'
 
+export interface MetaResult {
+  messagesSent: number
+  messagesErrored: number
+}
+
 export class SyncResultsInitService {
   private readonly logger: ILogger
   private readonly sqlService: ISqlService
@@ -108,7 +113,7 @@ export class SyncResultsInitService {
     return markedCheck
   }
 
-  private async processCheck (check: UnsynchronisedCheck, sbSender: Sender): Promise<void> {
+  private async processCheck (check: UnsynchronisedCheck, sbSender: Sender, meta: MetaResult): Promise<void> {
     const receivedCheckPromise = this.getReceivedCheck(check)
     const markedCheckPromise = this.getMarkedCheck(check)
     const [receivedCheckEntity, markedCheckEntity] = await Promise.all([receivedCheckPromise, markedCheckPromise])
@@ -122,8 +127,10 @@ export class SyncResultsInitService {
 
     try {
       await sbSender.send({ body: msg, /* messageId: check.checkCode, */ contentType: 'application/json' })
+      meta.messagesErrored += 1
     } catch (error) {
       console.log(`Failed to send message: ERROR: ${error.message}`)
+      meta.messagesErrored += 1
     }
   }
 
@@ -131,7 +138,7 @@ export class SyncResultsInitService {
     if (config.ServiceBus.ConnectionString === undefined) {
       throw new Error('Missing config.ServiceBus.ConnectionString')
     }
-    const meta = { messagesSent: 0, messagesErrored: 0 }
+    const meta: MetaResult = { messagesSent: 0, messagesErrored: 0 }
     const sbClient = ServiceBusClient.createFromConnectionString(config.ServiceBus.ConnectionString)
     const sbQueueClient = sbClient.createQueueClient(this.outputQueueName)
     const sbSender = sbQueueClient.createSender()
@@ -143,7 +150,7 @@ export class SyncResultsInitService {
       const _chk = chk
       return async () => {
         console.log(`Processing check ${_chk.checkCode}`)
-        await this.processCheck(_chk, sbSender)
+        await this.processCheck(_chk, sbSender, meta)
       }
     })
     await parallelLimit(listOfAsyncFunctions, 5)

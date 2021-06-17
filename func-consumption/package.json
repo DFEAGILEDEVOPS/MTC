@@ -46,7 +46,6 @@
   },
   "dependencies": {
     "@azure/service-bus": "^1.1.2",
-    "@types/async": "^3.2.6",
     "adm-zip": "^0.5.2",
     "applicationinsights": "^1.8.8",
     "async": "^3.2.0",
