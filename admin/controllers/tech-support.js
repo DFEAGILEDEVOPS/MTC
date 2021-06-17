@@ -326,7 +326,7 @@ const controller = {
   getCheckResultsResyncCheck: async function getCheckResultsResyncCheck (req, res, next, error = new ValidationError()) {
     try {
       res.locals.pageTitle = 'Check Results - Resync Check'
-      req.breadcrumbs('Check Results - Resync Check')
+      req.breadcrumbs('Resync Single Check')
       res.render('tech-support/results-resync-check', {
         breadcrumbs: req.breadcrumbs(),
         error,
@@ -348,12 +348,51 @@ const controller = {
         return controller.getCheckResultsResyncCheck(req, res, next, validationError)
       }
       await resultsResyncService.resyncSingleCheck(checkCode)
-      req.breadcrumbs('Check Results - Resync Check')
+      req.breadcrumbs('Resync Single Check')
       res.render('tech-support/results-resync-check', {
         breadcrumbs: req.breadcrumbs(),
         err: new ValidationError(),
         formData: {
           checkCode: checkCode
+        },
+        response: 'request sent to function API successfully'
+      })
+    } catch (error) {
+      return next(error)
+    }
+  },
+
+  getCheckResultsResyncSchool: async function getCheckResultsResyncSchool (req, res, next, error = new ValidationError()) {
+    try {
+      res.locals.pageTitle = 'Resync School Results'
+      req.breadcrumbs('Check Results - Resync School')
+      res.render('tech-support/results-resync-school', {
+        breadcrumbs: req.breadcrumbs(),
+        error,
+        schoolUuid: req.body?.schoolUuid ?? '',
+        err: error || new ValidationError(),
+        response: ''
+      })
+    } catch (error) {
+      return next(error)
+    }
+  },
+
+  postCheckResultsResyncSchool: async function postCheckResultsResyncSchool (req, res, next) {
+    res.locals.pageTitle = 'Resync School Results'
+    const schoolUuid = req.body.schoolUuid?.trim()
+    try {
+      const validationError = uuidValidator.validate(schoolUuid, 'schoolUuid')
+      if (validationError && validationError.hasError && validationError.hasError()) {
+        return controller.getCheckResultsResyncSchool(req, res, next, validationError)
+      }
+      await resultsResyncService.resyncChecksForSchool(schoolUuid)
+      req.breadcrumbs('Check Results - Resync School')
+      res.render('tech-support/results-resync-school', {
+        breadcrumbs: req.breadcrumbs(),
+        err: new ValidationError(),
+        formData: {
+          schoolUuid: schoolUuid
         },
         response: 'request sent to function API successfully'
       })

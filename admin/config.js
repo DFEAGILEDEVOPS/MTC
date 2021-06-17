@@ -192,8 +192,7 @@ module.exports = {
   Functions: {
     Throttled: {
       BaseAdminUrl: process.env.FUNCTIONS_THROTTLED_BASE_ADMIN_URL || 'http://localhost:7073/admin/functions',
-      AuthKey: process.env.FUNCTIONS_AUTH_KEY || '',
-      SyncResultsInitPath: '/sync-results-init'
+      MasterKey: process.env.FUNCTIONS_THROTTLED_MASTER_KEY || ''
     }
   }
 }
