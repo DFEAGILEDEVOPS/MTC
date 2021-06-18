@@ -17,7 +17,7 @@ Feature:
       | 21              |
       | 25              |
 
-
+  @wip
   Scenario: All keyboard keys are recorded as inputs
     Given I have completed a check by selecting all keys on the keyboard
     When the data sync function has run
