@@ -42,16 +42,14 @@ Feature:
     But decide to cancel assigning
     Then I should be taken back to the assign check window v2 page
 
-  @upload_new_live_form
+  @wip
   Scenario: Users can assign a live form to multiple check windows
     Then I can assign live check forms to inactive window
-    And I create another inactive check window
-    And I should be able to assign the live form to another inactive window
+    And I should be able to assign the live form to another inactive window also
 
-  @upload_new_fam_form
+  @wip
   Scenario: Users can assign a familiarisation form to multiple check windows
     Then I can assign familiarisation check forms to inactive window
-    And I create another inactive check window
     And I should be able to assign the familiarisation form to another inactive window also
 
   @upload_new_live_form

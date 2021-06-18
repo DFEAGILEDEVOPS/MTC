@@ -6,8 +6,9 @@ Feature: Loading Page
     When I choose to start the warm up questions
     Then I should have 3 seconds before I see the first question
 
+  @wip
   Scenario: Next button appears after 2 second delay
-    Given I logged in with user with access arrangement 'Pause - 'next' button between questions (reason required)'
+    Given I logged in with user with access arrangement 'Next between questions'
     Given I have read the instructions and seen the settings page
     When I choose to start the warm up questions
     When I have been idle for 2 seconds
@@ -15,7 +16,7 @@ Feature: Loading Page
 
   @wip
   Scenario: Idle modal appears after delay
-    Given I logged in with user with access arrangement 'Pause - 'next' button between questions (reason required)'
+    Given I logged in with user with access arrangement 'Next between questions'
     Given I have read the instructions and seen the settings page
     Given I choose to start the warm up questions
     Given I complete the warm up questions using the numpad
@@ -26,7 +27,7 @@ Feature: Loading Page
 
   @wip
   Scenario: Redirect occurs when check timer expires
-    Given I logged in with user with access arrangement 'Pause - 'next' button between questions (reason required)'
+    Given I logged in with user with access arrangement 'Next between questions'
     Given I have read the instructions and seen the settings page
     Given I choose to start the warm up questions
     Given I complete the warm up questions using the numpad
