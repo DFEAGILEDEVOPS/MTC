@@ -1,0 +1,14 @@
+{
+  "bindings": [
+    {
+      "name": "syncResultsInit",
+      "type": "timerTrigger",
+      "direction": "in",
+      "timerDescription": "{second} {minute} {hour} {day} {month} {day-of-week}",
+      "x-prod-schedule":  "0 0 18 * * *",
+      "x-prod-description": "Every Day at 6pm GMT",
+      "schedule": "0 0 18 * * *"
+    }
+  ],
+  "scriptFile": "../dist/functions-throttled/sync-results-init/index.js"
+}

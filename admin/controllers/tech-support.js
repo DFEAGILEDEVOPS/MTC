@@ -9,6 +9,7 @@ const administrationMessageService = require('../services/administration-message
 const redisErrorMessages = require('../lib/errors/redis').redis
 const moment = require('moment')
 const queueMgmtService = require('../services/tech-support-queue-management.service')
+const resultsResyncService = require('../services/tech-support/sync-results-resync.service')
 
 const controller = {
 /**
@@ -316,6 +317,119 @@ const controller = {
         breadcrumbs: req.breadcrumbs(),
         sbQueueInfo: sbQueueInfo,
         saQueueInfo: storageQueueInfo
+      })
+    } catch (error) {
+      return next(error)
+    }
+  },
+
+  getCheckResultsResyncCheck: async function getCheckResultsResyncCheck (req, res, next, error = new ValidationError()) {
+    try {
+      res.locals.pageTitle = 'Check Results - Resync Check'
+      req.breadcrumbs('Resync Single Check')
+      res.render('tech-support/results-resync-check', {
+        breadcrumbs: req.breadcrumbs(),
+        error,
+        checkCode: req.body?.checkCode ?? '',
+        err: error || new ValidationError(),
+        response: ''
+      })
+    } catch (error) {
+      return next(error)
+    }
+  },
+
+  postCheckResultsResyncCheck: async function postCheckResultsResyncCheck (req, res, next) {
+    res.locals.pageTitle = 'Check Results - Resync Check'
+    const checkCode = req.body.checkCode?.trim()
+    try {
+      const validationError = uuidValidator.validate(checkCode, 'checkCode')
+      if (validationError && validationError.hasError && validationError.hasError()) {
+        return controller.getCheckResultsResyncCheck(req, res, next, validationError)
+      }
+      await resultsResyncService.resyncSingleCheck(checkCode)
+      req.breadcrumbs('Resync Single Check')
+      res.render('tech-support/results-resync-check', {
+        breadcrumbs: req.breadcrumbs(),
+        err: new ValidationError(),
+        formData: {
+          checkCode: checkCode
+        },
+        response: 'request sent to function API successfully'
+      })
+    } catch (error) {
+      return next(error)
+    }
+  },
+
+  getCheckResultsResyncSchool: async function getCheckResultsResyncSchool (req, res, next, error = new ValidationError()) {
+    try {
+      res.locals.pageTitle = 'Resync School Results'
+      req.breadcrumbs('Check Results - Resync School')
+      res.render('tech-support/results-resync-school', {
+        breadcrumbs: req.breadcrumbs(),
+        error,
+        schoolUuid: req.body?.schoolUuid ?? '',
+        err: error || new ValidationError(),
+        response: ''
+      })
+    } catch (error) {
+      return next(error)
+    }
+  },
+
+  postCheckResultsResyncSchool: async function postCheckResultsResyncSchool (req, res, next) {
+    res.locals.pageTitle = 'Resync School Results'
+    const schoolUuid = req.body.schoolUuid?.trim()
+    try {
+      const validationError = uuidValidator.validate(schoolUuid, 'schoolUuid')
+      if (validationError && validationError.hasError && validationError.hasError()) {
+        return controller.getCheckResultsResyncSchool(req, res, next, validationError)
+      }
+      await resultsResyncService.resyncChecksForSchool(schoolUuid)
+      req.breadcrumbs('Check Results - Resync School')
+      res.render('tech-support/results-resync-school', {
+        breadcrumbs: req.breadcrumbs(),
+        err: new ValidationError(),
+        formData: {
+          schoolUuid: schoolUuid
+        },
+        response: 'request sent to function API successfully'
+      })
+    } catch (error) {
+      return next(error)
+    }
+  },
+
+  getCheckResultsResyncAll: async function getCheckResultsResyncAll (req, res, next, error = new ValidationError()) {
+    try {
+      res.locals.pageTitle = 'Resync All Results'
+      req.breadcrumbs('Check Results - Resync All')
+      res.render('tech-support/results-resync-all', {
+        breadcrumbs: req.breadcrumbs(),
+        error,
+        resyncAll: req.body?.resyncAll ?? false,
+        err: error || new ValidationError(),
+        response: ''
+      })
+    } catch (error) {
+      return next(error)
+    }
+  },
+
+  postCheckResultsResyncAll: async function postCheckResultsResyncAll (req, res, next) {
+    res.locals.pageTitle = 'Resync All Results'
+    const resyncAll = req.body.resyncAll === 'true' // convert string to bool- the user must tick the checkbox
+    try {
+      await resultsResyncService.resyncAllChecks(resyncAll)
+      req.breadcrumbs('Check Results - Resync All')
+      res.render('tech-support/results-resync-all', {
+        breadcrumbs: req.breadcrumbs(),
+        err: new ValidationError(),
+        formData: {
+          resyncAll: resyncAll
+        },
+        response: 'request sent to function API successfully'
       })
     } catch (error) {
       return next(error)

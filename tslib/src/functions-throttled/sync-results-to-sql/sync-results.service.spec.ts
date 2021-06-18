@@ -35,11 +35,23 @@ describe('SyncResultsService', () => {
     const logger = new ConsoleLogger()
     mockSyncResultsDataService = new SyncResultsDataService(logger, sqlServiceMock)
     ;(mockSyncResultsDataService.prepareCheckResult as jest.Mock).mockReturnValueOnce(mockTransaction)
+    ;(mockSyncResultsDataService.deleteExistingResultIfExists as jest.Mock).mockReturnValueOnce(Promise.resolve())
     ;(mockSyncResultsDataService.prepareAnswersAndInputs as jest.Mock).mockReturnValueOnce(mockTransaction)
     ;(mockSyncResultsDataService.prepareEvents as jest.Mock).mockReturnValueOnce(mockTransaction)
     ;(mockSyncResultsDataService.prepareDeviceData as jest.Mock).mockReturnValueOnce(mockTransaction)
+    ;(mockSyncResultsDataService.setCheckToResultsSyncComplete as jest.Mock).mockReturnValueOnce(Promise.resolve())
+    ;(mockSyncResultsDataService.setCheckToResultsSyncFailed as jest.Mock).mockReturnValueOnce(Promise.resolve())
     redisServiceMock = new RedisServiceMock()
     sut = new SyncResultsService(logger, mockSyncResultsDataService, redisServiceMock)
+  })
+
+  test('it makes a call to delete any existing entry from the checkResult table', async () => {
+    jest.spyOn(console, 'log').mockImplementation(() => {})
+    jest.spyOn(console, 'info').mockImplementation(() => {})
+    // eslint-disable-next-line
+    jest.spyOn(sut['syncResultsDataService'], 'getSchoolId').mockResolvedValueOnce(2)
+    await sut.process(mockCompletionCheckMessage)
+    expect(mockSyncResultsDataService.deleteExistingResultIfExists).toHaveBeenCalledTimes(1)
   })
 
   test('it makes a call to prepare the data for the checkResult table', async () => {
@@ -127,5 +139,26 @@ describe('SyncResultsService', () => {
     const res = await (sut as any).dropRedisSchoolResult(undefined)
     expect(redisServiceMock.drop).not.toHaveBeenCalled()
     expect(res).toBeUndefined()
+  })
+
+  test('it makes a call to set the check to sync complete when no errors are thrown', async () => {
+    jest.spyOn(console, 'info').mockImplementation(() => {})
+    jest.spyOn(console, 'log').mockImplementation(() => {})
+    // eslint-disable-next-line
+    jest.spyOn(sut['syncResultsDataService'], 'getSchoolId').mockResolvedValueOnce(2)
+    await sut.process(mockCompletionCheckMessage)
+    expect(mockSyncResultsDataService.setCheckToResultsSyncComplete).toHaveBeenCalledTimes(1)
+  })
+
+  test('it makes a call to set the check to sync failed when an error is thrown', async () => {
+    jest.spyOn(console, 'info').mockImplementation(() => {})
+    jest.spyOn(console, 'log').mockImplementation(() => {})
+    // eslint-disable-next-line
+    jest.spyOn(sut['syncResultsDataService'], 'getSchoolId').mockResolvedValueOnce(2)
+    // eslint-disable-next-line
+    jest.spyOn(sut['syncResultsDataService'], 'insertToDatabase').mockImplementation(() => { throw new Error('failed') })
+    await sut.process(mockCompletionCheckMessage)
+    expect(mockSyncResultsDataService.setCheckToResultsSyncFailed).toHaveBeenCalledTimes(1)
+    expect(mockSyncResultsDataService.setCheckToResultsSyncComplete).toHaveBeenCalledTimes(0)
   })
 })

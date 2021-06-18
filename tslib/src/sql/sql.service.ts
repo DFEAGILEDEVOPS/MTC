@@ -1,4 +1,4 @@
-import { Request, TYPES, Transaction, IResult } from 'mssql'
+import { Request, TYPES, Transaction, IResult, ISOLATION_LEVEL } from 'mssql'
 import { ILogger, ConsoleLogger } from '../common/logger'
 import retry from './async-retry'
 import config from '../config'
@@ -140,7 +140,7 @@ export class SqlService implements ISqlService {
    */
   async modifyWithTransaction (requests: ITransactionRequest[]): Promise<any> {
     const transaction = new Transaction(await connectionPool.getInstance())
-    await transaction.begin()
+    await transaction.begin(ISOLATION_LEVEL.SERIALIZABLE)
     for (let index = 0; index < requests.length; index++) {
       const request = requests[index]
       const modify = async (): Promise<IResult<any>> => {

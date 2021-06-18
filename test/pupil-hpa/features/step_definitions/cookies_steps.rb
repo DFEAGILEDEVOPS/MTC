@@ -11,7 +11,7 @@ Then(/^I should see a device cookie has been created$/) do
 end
 
 When(/^the data sync function has run$/) do
-  response = FunctionsHelper.trigger_func('sync-results-to-sql')
+  response = FunctionsHelper.resync_all(true)
   expect(response.code).to eql 202
 end
 

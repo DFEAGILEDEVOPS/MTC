@@ -117,5 +117,8 @@ export default {
   Logging: {
     DebugVerbosity: parseInt(parser.valueOrSubstitute(process.env.DEBUG_VERBOSITY, 1), 10)
   },
-  RemoteIpCheckUrl: process.env.REMOTE_IP_CHECK_URL
+  RemoteIpCheckUrl: process.env.REMOTE_IP_CHECK_URL,
+  SyncResultsInit: {
+    MaxParallelTasks: parseInt(parser.valueOrSubstitute(process.env.SYNC_RESULTS_INIT_MAX_PARALLEL_TASKS, 5), 10)
+  }
 }
