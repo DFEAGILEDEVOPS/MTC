@@ -49,9 +49,8 @@ export class SyncResultsInitDataService implements ISyncResultsInitDataService {
                JOIN mtc_admin.[pupil] p ON (c.pupil_id = p.id)
                JOIN mtc_admin.[school] s ON (p.school_id = s.id)
                JOIN mtc_admin.[checkStatus] cs ON (c.checkStatus_id = cs.id)
-         WHERE cs.code = 'CMP'
+         WHERE (cs.code = 'CMP' OR cs.code = 'ERR')
            AND c.isLiveCheck = 1
-           AND c.processingFailed = 0
            AND c.checkCode = @checkCode
     `
     const params = [
@@ -76,7 +75,6 @@ export class SyncResultsInitDataService implements ISyncResultsInitDataService {
                JOIN mtc_admin.[checkStatus] cs ON (c.checkStatus_id = cs.id)
          WHERE cs.code = 'CMP'
            AND c.isLiveCheck = 1
-           AND c.processingFailed = 0
            AND s.urlSlug = @schoolUUID
     `
     const params = [
