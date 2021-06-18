@@ -113,22 +113,3 @@ Feature:
       | /test-developer/upload-new-forms              |
       | /test-developer/download-pupil-check-data |
       | /test-developer/view-pupil-payload        |
-
-  @wip
-  Scenario Outline: Service-manager school persona school is displayed
-    Given I have signed in with <helpdesk>
-    Then I should see the school name corresponding to that <dfenumber>
-    Then I should see service-manager's name
-
-    Examples:
-      | helpdesk        | dfenumber |
-      | service-manager | 9991001   |
-      | service-manager | 9991002   |
-      | service-manager | 9991003   |
-      | service-manager | 9991004   |
-
-  @incomplete_pupil @wip
-  Scenario: Incomplete is displayed on the school homepage if there is one or more pupils with Incomplete status
-    Given there is a pupil with an incomplete status
-    When I navigate to the school landing page
-    Then I should see a incomplete banner
