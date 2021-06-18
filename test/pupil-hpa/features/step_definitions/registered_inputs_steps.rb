@@ -14,7 +14,7 @@ Then(/^I should see all my number pad inputs recorded$/) do
   local_storage = check['inputs']
 
   questions = JSON.parse(page.evaluate_script('window.localStorage.getItem("questions");')).map{|x| x['factor1'].to_s + 'x'+ x['factor2'].to_s }
-  inputs1 = inputs.compact
+  inputs1 = local_storage.compact
   inputs = inputs1.each {|a| a.delete('clientTimestamp')}
   expect(inputs.flatten).to eql check_page.array_of_inputs_from_numpad(@answers, questions).flatten
 end

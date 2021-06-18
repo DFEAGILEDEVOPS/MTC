@@ -56,7 +56,7 @@ module Helpers
       'L'
     when 'Unable to access'
       'U'
-    when 'Incorrect registration'
+    when 'Pupil not taking the check'
       'Z'
     when 'Not taken'
       'X'
