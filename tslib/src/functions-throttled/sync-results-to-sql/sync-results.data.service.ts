@@ -109,10 +109,10 @@ export class SyncResultsDataService implements ISyncResultsDataService {
       type: TYPES.UniqueIdentifier
     })
     const checkResultInfoQueryResult = await this.sqlService.query(`
-      SELECT cr.id as [checkResultId], cr.userDevice_id as [userDeviceId]
-      FROM [mtc_results].[checkResult] cr
-      INNER JOIN [mtc_admin].[check] chk ON cr.check_id = chk.id
-      WHERE chk.checkCode = @checkCode`, checkInfoParams)
+        SELECT cr.id as [checkResultId], cr.userDevice_id as [userDeviceId]
+          FROM [mtc_results].[checkResult] cr
+               INNER JOIN [mtc_admin].[check] chk ON cr.check_id = chk.id
+         WHERE chk.checkCode = @checkCode`, checkInfoParams)
     const checkResultInfo = checkResultInfoQueryResult[0]
     if (checkResultInfo === undefined) return
 
@@ -206,24 +206,36 @@ export class SyncResultsDataService implements ISyncResultsDataService {
     const deviceId = R.propOr(null, 'deviceId', device)
 
     params.push({ name: 'batteryIsCharging', type: TYPES.Bit, value: batteryIsCharging })
-    params.push({ name: 'batteryLevelPercent', type: TYPES.TinyInt, value: batteryLevelPercent })
+    params.push({ name: 'batteryLevelPercent', type: TYPES.Int, value: batteryLevelPercent })
     params.push({ name: 'batteryChargingTimeSecs', type: TYPES.Int, value: batteryChargingTimeSecs })
     params.push({ name: 'batteryDischargingTimeSecs', type: TYPES.Int, value: batteryDischargingTimeSecs })
-    params.push({ name: 'cpuHardwareConcurrency', type: TYPES.TinyInt, value: cpuHardwareConcurrency })
+    params.push({ name: 'cpuHardwareConcurrency', type: TYPES.Int, value: cpuHardwareConcurrency })
     params.push({ name: 'browserFamily', type: TYPES.NVarChar, value: agent !== undefined ? agent.getBrowserFamily() : null })
     params.push({ name: 'browserMajorVersion', type: TYPES.Int, value: agent !== undefined ? agent.getBrowserMajorVersion() : null })
     params.push({ name: 'browserMinorVersion', type: TYPES.Int, value: agent !== undefined ? agent.getBrowserMinorVersion() : null })
     params.push({ name: 'browserPatchVersion', type: TYPES.Int, value: agent !== undefined ? agent.getBrowserPatchVersion() : null })
     params.push({ name: 'uaOperatingSystem', type: TYPES.NVarChar, value: agent !== undefined ? agent.getOperatingSystem() : null })
-    params.push({ name: 'uaOperatingSystemMajorVersion', type: TYPES.Int, value: agent !== undefined ? agent.getOperatingSystemMajorVersion() : null })
-    params.push({ name: 'uaOperatingSystemMinorVersion', type: TYPES.Int, value: agent !== undefined ? agent.getOperatingSystemMinorVersion() : null })
-    params.push({ name: 'uaOperatingSystemPatchVersion', type: TYPES.Int, value: agent !== undefined ? agent.getOperatingSystemPatchVersion() : null })
+    params.push({
+      name: 'uaOperatingSystemMajorVersion',
+      type: TYPES.Int,
+      value: agent !== undefined ? agent.getOperatingSystemMajorVersion() : null
+    })
+    params.push({
+      name: 'uaOperatingSystemMinorVersion',
+      type: TYPES.Int,
+      value: agent !== undefined ? agent.getOperatingSystemMinorVersion() : null
+    })
+    params.push({
+      name: 'uaOperatingSystemPatchVersion',
+      type: TYPES.Int,
+      value: agent !== undefined ? agent.getOperatingSystemPatchVersion() : null
+    })
     params.push({ name: 'navigatorPlatform', type: TYPES.NVarChar(255), value: navigatorPlatform })
     params.push({ name: 'navigatorLanguage', type: TYPES.NVarChar(36), value: navigatorLanguage })
     params.push({ name: 'cookieEnabled', type: TYPES.Bit, value: cookieEnabled })
     params.push({ name: 'networkConnectionDownlink', type: TYPES.Float, value: networkConnectionDownlink })
     params.push({ name: 'networkConnectionEffectiveType', type: TYPES.NVarChar(10), value: networkConnectionEffectiveType })
-    params.push({ name: 'networkConnectionRoundTripTimeMs', type: TYPES.Float, value: networkConnectionRoundTripTimeMs })
+    params.push({ name: 'networkConnectionRoundTripTimeMs', type: TYPES.Int, value: networkConnectionRoundTripTimeMs })
     params.push({ name: 'screenWidth', type: TYPES.Int, value: screenWidth })
     params.push({ name: 'screenHeight', type: TYPES.Int, value: screenHeight })
     params.push({ name: 'outerWidth', type: TYPES.Int, value: outerWidth })
@@ -232,9 +244,13 @@ export class SyncResultsDataService implements ISyncResultsDataService {
     params.push({ name: 'innerHeight', type: TYPES.Int, value: innerHeight })
     params.push({ name: 'colourDepth', type: TYPES.Int, value: colourDepth })
     params.push({ name: 'deviceOrientation', type: TYPES.NVarChar, value: deviceOrientation })
-    params.push({ name: 'appUsageCount', type: TYPES.TinyInt, value: appUsageCount })
-    // @ts-ignore eslint fails to recognise that the userAgent in the ternary condition will be a string
-    params.push({ name: 'userAgent', type: TYPES.NVarChar(4000), value: (typeof userAgent) === 'string' ? userAgent.substr(0, 4000) : null })
+    params.push({ name: 'appUsageCount', type: TYPES.Int, value: appUsageCount })
+    params.push({
+      name: 'userAgent',
+      type: TYPES.NVarChar(4000),
+      // @ts-ignore eslint fails to recognise that the userAgent in the ternary condition will be a string
+      value: (typeof userAgent) === 'string' ? userAgent.substr(0, 4000) : null
+    })
     params.push({ name: 'ident', type: TYPES.NVarChar, value: deviceId })
 
     // tslint:disable:no-trailing-whitespace
@@ -253,10 +269,12 @@ export class SyncResultsDataService implements ISyncResultsDataService {
         --
         -- See if we can find an existing id for the browser family; create a new one if not
         --
-        SET @browserFamily_lookup_id = (SELECT id FROM mtc_results.browserFamilyLookup WHERE family = UPPER(TRIM(@browserFamily)));
+        SET @browserFamily_lookup_id = (SELECT id
+                                          FROM mtc_results.browserFamilyLookup
+                                         WHERE family = UPPER(TRIM(@browserFamily)));
         IF (@browserFamily_lookup_id IS NULL AND @browserFamily IS NOT NULL)
             BEGIN
-               -- Create a new browser family
+                -- Create a new browser family
                 INSERT INTO mtc_results.browserFamilyLookup (family) VALUES (UPPER(TRIM(@browserFamily)));
                 SET @browserFamily_lookup_id = (SELECT SCOPE_IDENTITY());
             END
@@ -264,7 +282,9 @@ export class SyncResultsDataService implements ISyncResultsDataService {
         --
         -- See if we can find an Operating System Lookup id, or if not, create a new one
         --
-        SET @uaOperatingSystemLookup_id = (SELECT id FROM mtc_results.uaOperatingSystemLookup WHERE os = UPPER(TRIM(@uaOperatingSystem)));
+        SET @uaOperatingSystemLookup_id = (SELECT id
+                                             FROM mtc_results.uaOperatingSystemLookup
+                                            WHERE os = UPPER(TRIM(@uaOperatingSystem)));
         IF (@uaOperatingSystemLookup_id IS NULL AND @uaOperatingSystem IS NOT NULL)
             BEGIN
                 INSERT INTO mtc_results.uaOperatingSystemLookup (os) VALUES (UPPER(TRIM(@uaOperatingSystem)));
@@ -274,7 +294,9 @@ export class SyncResultsDataService implements ISyncResultsDataService {
         --
         -- See if we can find the navigatorPlatform id, or create it if needed
         --
-        SET @navigatorPlatformLookup_id = (SELECT id FROM mtc_results.navigatorPlatformLookup WHERE platform = UPPER(TRIM(@navigatorPlatform)));
+        SET @navigatorPlatformLookup_id = (SELECT id
+                                             FROM mtc_results.navigatorPlatformLookup
+                                            WHERE platform = UPPER(TRIM(@navigatorPlatform)));
         IF (@navigatorPlatformLookup_id IS NULL AND @navigatorPlatform IS NOT NULL)
             BEGIN
                 INSERT INTO mtc_results.navigatorPlatformLookup (platform) VALUES (UPPER(TRIM(@navigatorPlatform)));
@@ -284,7 +306,9 @@ export class SyncResultsDataService implements ISyncResultsDataService {
         --
         -- See if we can find the navigatorLanguage id, or create it if needed
         --
-        SET @navigatorLanguageLookup_id = (SELECT id FROM mtc_results.navigatorLanguageLookup WHERE platformLang = UPPER(TRIM(@navigatorLanguage)));
+        SET @navigatorLanguageLookup_id = (SELECT id
+                                             FROM mtc_results.navigatorLanguageLookup
+                                            WHERE platformLang = UPPER(TRIM(@navigatorLanguage)));
         IF (@navigatorLanguageLookup_id IS NULL AND @navigatorLanguage IS NOT NULL)
             BEGIN
                 INSERT INTO mtc_results.navigatorLanguageLookup (platformLang) VALUES (UPPER(TRIM(@navigatorLanguage)));
@@ -294,7 +318,9 @@ export class SyncResultsDataService implements ISyncResultsDataService {
         --
         -- See if we can find the network connection effective type lookup, otherwise create a new entry
         --
-        SET @networkConnectionEffectiveTypeLookup_id = (SELECT id FROM mtc_results.networkConnectionEffectiveTypeLookup WHERE effectiveType = TRIM(@networkConnectionEffectiveType));
+        SET @networkConnectionEffectiveTypeLookup_id = (SELECT id
+                                                          FROM mtc_results.networkConnectionEffectiveTypeLookup
+                                                         WHERE effectiveType = TRIM(@networkConnectionEffectiveType));
         IF (@networkConnectionEffectiveTypeLookup_id IS NULL AND @networkConnectionEffectiveType IS NOT NULL)
             BEGIN
                 INSERT INTO mtc_results.networkConnectionEffectiveTypeLookup (effectiveType) VALUES (@networkConnectionEffectiveType);
@@ -304,7 +330,9 @@ export class SyncResultsDataService implements ISyncResultsDataService {
         --
         -- See if we can lookup the device orientation id, or create a new orientation if needed
         --
-        SET @deviceOrientationLookup_id = (SELECT id FROM mtc_results.deviceOrientationLookup WHERE orientation = UPPER(TRIM(@deviceOrientation)));
+        SET @deviceOrientationLookup_id = (SELECT id
+                                             FROM mtc_results.deviceOrientationLookup
+                                            WHERE orientation = UPPER(TRIM(@deviceOrientation)));
         IF (@deviceOrientationLookup_id IS NULL AND @deviceOrientation IS NOT NULL)
             BEGIN
                 INSERT INTO mtc_results.deviceOrientationLookup (orientation) VALUES (UPPER(TRIM(@deviceOrientation)));
@@ -316,7 +344,9 @@ export class SyncResultsDataService implements ISyncResultsDataService {
         -- See if we have seen the user agent before, or if not create a new user agent lookup
         --
         SET @userAgentHash = HASHBYTES('SHA2_256', @userAgent);
-        SET @userAgentLookup_id = (SELECT id from mtc_results.userAgentLookup WHERE userAgentHash = @userAgentHash);
+        SET @userAgentLookup_id = (SELECT id
+                                     from mtc_results.userAgentLookup
+                                    WHERE userAgentHash = @userAgentHash);
         IF (@userAgentLookup_id IS NULL AND @userAgent IS NOT NULL)
             BEGIN
                 INSERT INTO mtc_results.userAgentLookup (userAgent, userAgentHash) VALUES (@userAgent, @userAgentHash);
@@ -326,72 +356,90 @@ export class SyncResultsDataService implements ISyncResultsDataService {
         --
         -- Insert the data into the userDevice table
         --
-        INSERT INTO mtc_results.userDevice (batteryIsCharging,
-                                            batteryLevelPercent,
-                                            batteryChargingTimeSecs,
-                                            batteryDischargingTimeSecs,
-                                            cpuHardwareConcurrency,
-                                            browserFamilyLookup_id,
-                                            browserMajorVersion,
-                                            browserMinorVersion,
-                                            browserPatchVersion,
-                                            uaOperatingSystemLookup_id,
-                                            uaOperatingSystemMajorVersion,
-                                            uaOperatingSystemMinorVersion,
-                                            uaOperatingSystemPatchVersion,
-                                            navigatorPlatformLookup_id,
-                                            navigatorLanguageLookup_id,
-                                            navigatorCookieEnabled,
-                                            networkConnectionDownlink,
-                                            networkConnectionEffectiveTypeLookup_id,
-                                            networkConnectionRtt,
-                                            screenWidth,
-                                            screenHeight,
-                                            outerWidth,
-                                            outerHeight,
-                                            innerWidth,
-                                            innerHeight,
-                                            colourDepth,
-                                            deviceOrientationLookup_id,
-                                            appUsageCount,
-                                            userAgentLookup_id,
-                                            ident)
-        VALUES (@batteryIsCharging,
-                @batteryLevelPercent,
-                @batteryChargingTimeSecs,
-                @batteryDischargingTimeSecs,
-                @cpuHardwareConcurrency,
-                @browserFamily_lookup_id,
-                @browserMajorVersion,
-                @browserMinorVersion,
-                @browserPatchVersion,
-                @uaOperatingSystemLookup_id,
-                @uaOperatingSystemMajorVersion,
-                @uaOperatingSystemMinorVersion,
-                @uaOperatingSystemPatchVersion,
-                @navigatorPlatformLookup_id,
-                @navigatorLanguageLookup_id,
-                @cookieEnabled,
-                @networkConnectionDownlink,
-                @networkConnectionEffectiveTypeLookup_id,
-                @networkConnectionRoundTripTimeMs,
-                @screenWidth,
-                @screenHeight,
-                @outerWidth,
-                @outerHeight,
-                @innerWidth,
-                @innerHeight,
-                @colourDepth,
-                @deviceOrientationLookup_id,
-                @appUsageCount,
-                @userAgentLookup_id,
-                @ident);
+        BEGIN TRY
+            INSERT INTO mtc_results.userDevice (batteryIsCharging,
+                                                batteryLevelPercent,
+                                                batteryChargingTimeSecs,
+                                                batteryDischargingTimeSecs,
+                                                cpuHardwareConcurrency,
+                                                browserFamilyLookup_id,
+                                                browserMajorVersion,
+                                                browserMinorVersion,
+                                                browserPatchVersion,
+                                                uaOperatingSystemLookup_id,
+                                                uaOperatingSystemMajorVersion,
+                                                uaOperatingSystemMinorVersion,
+                                                uaOperatingSystemPatchVersion,
+                                                navigatorPlatformLookup_id,
+                                                navigatorLanguageLookup_id,
+                                                navigatorCookieEnabled,
+                                                networkConnectionDownlink,
+                                                networkConnectionEffectiveTypeLookup_id,
+                                                networkConnectionRtt,
+                                                screenWidth,
+                                                screenHeight,
+                                                outerWidth,
+                                                outerHeight,
+                                                innerWidth,
+                                                innerHeight,
+                                                colourDepth,
+                                                deviceOrientationLookup_id,
+                                                appUsageCount,
+                                                userAgentLookup_id,
+                                                ident)
+            VALUES (@batteryIsCharging,
+                    @batteryLevelPercent,
+                    @batteryChargingTimeSecs,
+                    @batteryDischargingTimeSecs,
+                    @cpuHardwareConcurrency,
+                    @browserFamily_lookup_id,
+                    @browserMajorVersion,
+                    @browserMinorVersion,
+                    @browserPatchVersion,
+                    @uaOperatingSystemLookup_id,
+                    @uaOperatingSystemMajorVersion,
+                    @uaOperatingSystemMinorVersion,
+                    @uaOperatingSystemPatchVersion,
+                    @navigatorPlatformLookup_id,
+                    @navigatorLanguageLookup_id,
+                    @cookieEnabled,
+                    @networkConnectionDownlink,
+                    @networkConnectionEffectiveTypeLookup_id,
+                    @networkConnectionRoundTripTimeMs,
+                    @screenWidth,
+                    @screenHeight,
+                    @outerWidth,
+                    @outerHeight,
+                    @innerWidth,
+                    @innerHeight,
+                    @colourDepth,
+                    @deviceOrientationLookup_id,
+                    @appUsageCount,
+                    @userAgentLookup_id,
+                    @ident);
 
-        SET @userDeviceId = (SELECT SCOPE_IDENTITY());
+            SET @userDeviceId = (SELECT SCOPE_IDENTITY());
 
-        UPDATE mtc_results.checkResult
-           SET userDevice_id = @userDeviceId
-         WHERE id = @checkResultId;
+
+            IF (@userDeviceId IS NOT NULL)
+                BEGIN
+                    UPDATE mtc_results.checkResult SET userDevice_id = @userDeviceId WHERE id = @checkResultId;
+                END
+        END TRY BEGIN CATCH
+            DECLARE @ErrorMessage NVARCHAR(4000);
+            DECLARE @ErrorSeverity INT;
+            DECLARE @ErrorState INT;
+
+            SELECT @ErrorMessage = ERROR_MESSAGE(), @ErrorSeverity = ERROR_SEVERITY(), @ErrorState = ERROR_STATE();
+
+            -- Use RAISERROR inside the CATCH block to return
+            -- error information about the original error that
+            -- caused execution to jump to the CATCH block.
+            RAISERROR (@ErrorMessage, -- Message text.
+                @ErrorSeverity, -- Severity.
+                @ErrorState -- State.
+                );
+        END CATCH
     `
     // tslint:enable:no-trailing-whitespace
     return { sql, params: params }
