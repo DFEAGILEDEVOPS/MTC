@@ -635,4 +635,12 @@ class SqlDbHelper
     pupil_details_res
   end
 
+  def self.get_pupil_check_metadata(check_code)
+    sql = "SELECT * FROM [mtc_admin].[check] WHERE checkCode = '#{check_code}'"
+    result = SQL_CLIENT.execute(sql)
+    chk_window_res = result.first
+    result.cancel
+    chk_window_res
+  end
+
 end

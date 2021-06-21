@@ -113,7 +113,6 @@ class SqlDbHelper
     chk_window_res = result.first
     result.cancel
     chk_window_res
-
   end
 
   def self.get_check_window(check_window_id)
