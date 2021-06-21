@@ -388,10 +388,14 @@ export class SyncResultsDataService implements ISyncResultsDataService {
                 @ident);
 
         SET @userDeviceId = (SELECT SCOPE_IDENTITY());
-
-        UPDATE mtc_results.checkResult
-           SET userDevice_id = @userDeviceId
-         WHERE id = @checkResultId;
+        
+        
+        IF (@userDeviceId IS NOT NULL)
+            BEGIN
+                UPDATE mtc_results.checkResult
+                   SET userDevice_id = @userDeviceId
+                 WHERE id = @checkResultId;
+            END
     `
     // tslint:enable:no-trailing-whitespace
     return { sql, params: params }
