@@ -206,10 +206,10 @@ export class SyncResultsDataService implements ISyncResultsDataService {
     const deviceId = R.propOr(null, 'deviceId', device)
 
     params.push({ name: 'batteryIsCharging', type: TYPES.Bit, value: batteryIsCharging })
-    params.push({ name: 'batteryLevelPercent', type: TYPES.TinyInt, value: batteryLevelPercent })
+    params.push({ name: 'batteryLevelPercent', type: TYPES.Int, value: batteryLevelPercent })
     params.push({ name: 'batteryChargingTimeSecs', type: TYPES.Int, value: batteryChargingTimeSecs })
     params.push({ name: 'batteryDischargingTimeSecs', type: TYPES.Int, value: batteryDischargingTimeSecs })
-    params.push({ name: 'cpuHardwareConcurrency', type: TYPES.TinyInt, value: cpuHardwareConcurrency })
+    params.push({ name: 'cpuHardwareConcurrency', type: TYPES.Int, value: cpuHardwareConcurrency })
     params.push({ name: 'browserFamily', type: TYPES.NVarChar, value: agent !== undefined ? agent.getBrowserFamily() : null })
     params.push({ name: 'browserMajorVersion', type: TYPES.Int, value: agent !== undefined ? agent.getBrowserMajorVersion() : null })
     params.push({ name: 'browserMinorVersion', type: TYPES.Int, value: agent !== undefined ? agent.getBrowserMinorVersion() : null })
@@ -235,7 +235,7 @@ export class SyncResultsDataService implements ISyncResultsDataService {
     params.push({ name: 'cookieEnabled', type: TYPES.Bit, value: cookieEnabled })
     params.push({ name: 'networkConnectionDownlink', type: TYPES.Float, value: networkConnectionDownlink })
     params.push({ name: 'networkConnectionEffectiveType', type: TYPES.NVarChar(10), value: networkConnectionEffectiveType })
-    params.push({ name: 'networkConnectionRoundTripTimeMs', type: TYPES.Float, value: networkConnectionRoundTripTimeMs })
+    params.push({ name: 'networkConnectionRoundTripTimeMs', type: TYPES.Int, value: networkConnectionRoundTripTimeMs })
     params.push({ name: 'screenWidth', type: TYPES.Int, value: screenWidth })
     params.push({ name: 'screenHeight', type: TYPES.Int, value: screenHeight })
     params.push({ name: 'outerWidth', type: TYPES.Int, value: outerWidth })
@@ -244,11 +244,11 @@ export class SyncResultsDataService implements ISyncResultsDataService {
     params.push({ name: 'innerHeight', type: TYPES.Int, value: innerHeight })
     params.push({ name: 'colourDepth', type: TYPES.Int, value: colourDepth })
     params.push({ name: 'deviceOrientation', type: TYPES.NVarChar, value: deviceOrientation })
-    params.push({ name: 'appUsageCount', type: TYPES.TinyInt, value: appUsageCount })
-    // @ts-ignore eslint fails to recognise that the userAgent in the ternary condition will be a string
+    params.push({ name: 'appUsageCount', type: TYPES.Int, value: appUsageCount })
     params.push({
       name: 'userAgent',
       type: TYPES.NVarChar(4000),
+      // @ts-ignore eslint fails to recognise that the userAgent in the ternary condition will be a string
       value: (typeof userAgent) === 'string' ? userAgent.substr(0, 4000) : null
     })
     params.push({ name: 'ident', type: TYPES.NVarChar, value: deviceId })
