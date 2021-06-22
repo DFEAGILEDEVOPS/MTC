@@ -11,7 +11,7 @@ Then(/^I should see a device cookie has been created$/) do
 end
 
 When(/^the data sync function has run$/) do
-  (wait_until(120,2){SqlDbHelper.get_pupil_check_metadata(@check_code)['checkStatus_id'] == 2}) unless @check_code.nil?
+  (wait_until(ENV['WAIT_TIME'].to_i,2){SqlDbHelper.get_pupil_check_metadata(@check_code)['checkStatus_id'] == 2}) unless @check_code.nil?
   response = FunctionsHelper.sync_check_code(@check_code)
   expect(response.code).to eql 202
 end

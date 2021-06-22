@@ -5,7 +5,7 @@ end
 
 When(/^the data sync function has run$/) do
   if @check_code
-    (wait_until(120, 2) {SqlDbHelper.get_pupil_check_metadata(@check_code)['checkStatus_id'] == 2}) if @no_answers.nil?
+    (wait_until(ENV['WAIT_TIME'].to_i, 2) {SqlDbHelper.get_pupil_check_metadata(@check_code)['checkStatus_id'] == 2}) if @no_answers.nil?
     response = FunctionsHelper.sync_check_code(@check_code)
     expect(response.code).to eql 202
   end
