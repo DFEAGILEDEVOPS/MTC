@@ -36,7 +36,7 @@ describe('SyncResultsService', () => {
     mockSyncResultsDataService = new SyncResultsDataService(logger, sqlServiceMock)
     ;(mockSyncResultsDataService.prepareCheckResult as jest.Mock).mockReturnValueOnce(mockTransaction)
     ;(mockSyncResultsDataService.deleteExistingResultIfExists as jest.Mock).mockReturnValueOnce(Promise.resolve())
-    ;(mockSyncResultsDataService.prepareAnswersAndInputs as jest.Mock).mockReturnValueOnce(mockTransaction)
+    ;(mockSyncResultsDataService.prepareAnswersAndInputs as jest.Mock).mockReturnValueOnce([mockTransaction, mockTransaction])
     ;(mockSyncResultsDataService.prepareEvents as jest.Mock).mockReturnValueOnce(mockTransaction)
     ;(mockSyncResultsDataService.prepareDeviceData as jest.Mock).mockReturnValueOnce(mockTransaction)
     ;(mockSyncResultsDataService.setCheckToResultsSyncComplete as jest.Mock).mockReturnValueOnce(Promise.resolve())

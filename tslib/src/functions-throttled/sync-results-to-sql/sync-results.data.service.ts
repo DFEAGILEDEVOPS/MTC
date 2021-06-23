@@ -12,7 +12,7 @@ const name = 'sync-results-to-sql: data service'
 export interface ISyncResultsDataService {
   insertToDatabase (requests: ITransactionRequest[], checkCode: string): Promise<void>
 
-  prepareAnswersAndInputs (markedCheck: MarkedCheck, validatedCheck: ValidatedCheck): Promise<ITransactionRequest>
+  prepareAnswersAndInputs (markedCheck: MarkedCheck, validatedCheck: ValidatedCheck): Promise<ITransactionRequest[]>
 
   prepareCheckResult (markedCheck: MarkedCheck): ITransactionRequest
 
@@ -489,7 +489,7 @@ export class SyncResultsDataService implements ISyncResultsDataService {
     return req
   }
 
-  public async prepareAnswersAndInputs (markedCheck: MarkedCheck, validatedCheck: ValidatedCheck): Promise<ITransactionRequest> {
+  public async prepareAnswersAndInputs (markedCheck: MarkedCheck, validatedCheck: ValidatedCheck): Promise<ITransactionRequest[]> {
     return this.prepareAnswersAndInputsDataService.prepareAnswersAndInputs(markedCheck, validatedCheck)
   }
 

@@ -28,7 +28,7 @@ export class SyncResultsService {
       const checkResTran = this.syncResultsDataService.prepareCheckResult(checkCompletionMessage.markedCheck)
 
       // Prepare SQL statements and variables for the Answers
-      const answersAndInputsTran = await this.syncResultsDataService.prepareAnswersAndInputs(checkCompletionMessage.markedCheck, checkCompletionMessage.validatedCheck)
+      const answersAndInputsTransactions = await this.syncResultsDataService.prepareAnswersAndInputs(checkCompletionMessage.markedCheck, checkCompletionMessage.validatedCheck)
 
       // Prepare Events
       const eventTran = await this.syncResultsDataService.prepareEvents(checkCompletionMessage.validatedCheck)
@@ -36,7 +36,7 @@ export class SyncResultsService {
       // Prepare Device Info
       const deviceTran = await this.syncResultsDataService.prepareDeviceData(checkCompletionMessage.validatedCheck)
 
-      await this.syncResultsDataService.insertToDatabase([checkResTran, answersAndInputsTran, eventTran, deviceTran], checkCompletionMessage?.markedCheck?.checkCode)
+      await this.syncResultsDataService.insertToDatabase([checkResTran, ...answersAndInputsTransactions, eventTran, deviceTran], checkCompletionMessage?.markedCheck?.checkCode)
       this.logger.info(`${name}: going to drop the redis cache for school ${checkCompletionMessage?.validatedCheck?.schoolUUID}`)
       await this.dropRedisSchoolResult(checkCompletionMessage?.validatedCheck?.schoolUUID)
       await this.syncResultsDataService.setCheckToResultsSyncComplete(checkCompletionMessage.markedCheck)
