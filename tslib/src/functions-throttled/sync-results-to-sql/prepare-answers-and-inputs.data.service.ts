@@ -38,7 +38,11 @@ export class PrepareAnswersAndInputsDataService {
       params.push(
         { name: `userInputQuestionId${suffix}`, value: question.id, type: TYPES.SmallInt },
         { name: `userInput${suffix}`, value: o.input, type: TYPES.NVarChar(40) },
-        { name: `userInputTypeLookupId${suffix}`, value: await this.userInputService.getUserInputLookupTypeId(o.eventType), type: TYPES.NVarChar(40) },
+        {
+          name: `userInputTypeLookupId${suffix}`,
+          value: await this.userInputService.getUserInputLookupTypeId(o.eventType),
+          type: TYPES.NVarChar(40)
+        },
         { name: `userInputBrowserTimestamp${suffix}`, value: o.clientTimestamp, type: TYPES.DateTimeOffset }
       )
       sqls.push(`INSERT INTO mtc_results.[userInput] (answer_id, userInput, userInputTypeLookup_id, browserTimestamp)
@@ -61,6 +65,17 @@ export class PrepareAnswersAndInputsDataService {
     const params: ISqlParameter[] = []
     let j = 0
 
+    sqls.push(`
+        DECLARE
+            @checkResultId INT = (SELECT cr.id
+                                    FROM mtc_results.[checkResult] cr
+                                         JOIN mtc_admin.[check] c ON (cr.check_id = c.id)
+                                   WHERE c.checkCode = @checkCode);
+
+        IF (@checkResultId IS NULL) THROW 510001, 'CheckResult ID not found when preparing answers and inputs', 1;
+    `)
+    params.push({ name: 'checkCode', value: markedCheck.checkCode, type: TYPES.UniqueIdentifier })
+
     for (const markedAnswer of markedAnswers) {
       let question: DBQuestion
       try {
@@ -70,10 +85,11 @@ export class PrepareAnswersAndInputsDataService {
       }
       const suffix = `${j}`
       sqls.push(`DECLARE @answerId${suffix} INT;
-                 INSERT INTO mtc_results.[answer] (checkResult_id, questionNumber, answer,  question_id, isCorrect, browserTimestamp) VALUES
-                   (@checkResultId, @answerQuestionNumber${suffix}, @answer${suffix},  @answerQuestionId${suffix}, @answerIsCorrect${suffix}, @answerBrowserTimestamp${suffix});
-                 SET @answerId${suffix} = (SELECT SCOPE_IDENTITY()); 
-                `)
+      INSERT INTO mtc_results.[answer] (checkResult_id, questionNumber, answer, question_id, isCorrect, browserTimestamp)
+      VALUES (@checkResultId, @answerQuestionNumber${suffix}, @answer${suffix}, @answerQuestionId${suffix}, @answerIsCorrect${suffix},
+              @answerBrowserTimestamp${suffix});
+      SET @answerId${suffix} = (SELECT SCOPE_IDENTITY());
+      `)
       params.push(
         { name: `answerQuestionNumber${suffix}`, value: markedAnswer.sequenceNumber, type: TYPES.SmallInt },
         { name: `answer${suffix}`, value: markedAnswer.answer, type: TYPES.NVarChar },

@@ -164,6 +164,16 @@ export class SyncResultsDataService implements ISyncResultsDataService {
     const auditParams = []
     const auditSqls = []
 
+    auditSqls.push(`
+        DECLARE @checkResultId INT = (SELECT cr.id
+                                        FROM mtc_results.[checkResult] cr
+                                             JOIN mtc_admin.[check] c ON (cr.check_id = c.id)
+                                       WHERE c.checkCode = @checkCode);
+
+        IF (@checkResultId IS NULL) THROW 510001, 'CheckResult ID not found when preparing answers and inputs', 1
+    `)
+    auditParams.push({ name: 'checkCode', value: validatedCheck.checkCode, type: TYPES.UniqueIdentifier })
+
     let j = 0
     for (const audit of audits) {
       const transactionRequest = await this.prepareEventService.prepareEvent(audit, validatedCheck.checkCode, j)
@@ -252,6 +262,7 @@ export class SyncResultsDataService implements ISyncResultsDataService {
       value: (typeof userAgent) === 'string' ? userAgent.substr(0, 4000) : null
     })
     params.push({ name: 'ident', type: TYPES.NVarChar, value: deviceId })
+    params.push({ name: 'checkCode', type: TYPES.UniqueIdentifier, value: validatedCheck.checkCode })
 
     // tslint:disable:no-trailing-whitespace
     const sql = `
@@ -265,6 +276,7 @@ export class SyncResultsDataService implements ISyncResultsDataService {
         DECLARE @deviceOrientationLookup_id INT;
         DECLARE @userAgentHash VARBINARY(32);
         DECLARE @userAgentLookup_id INT;
+        DECLARE @checkResultId INT;
 
         --
         -- See if we can find an existing id for the browser family; create a new one if not
@@ -423,6 +435,12 @@ export class SyncResultsDataService implements ISyncResultsDataService {
 
             IF (@userDeviceId IS NOT NULL)
                 BEGIN
+                    SET @checkResultId = (SELECT cr.id
+                                            FROM mtc_results.[checkResult] cr
+                                                 JOIN mtc_admin.[check] c ON (cr.check_id = c.id)
+                                           WHERE c.checkCode = @checkCode);
+
+                    IF (@checkResultId IS NULL) THROW 510002, 'CheckResult ID not found when preparing [userDevice]', 1;
                     UPDATE mtc_results.checkResult SET userDevice_id = @userDeviceId WHERE id = @checkResultId;
                 END
         END TRY BEGIN CATCH
@@ -461,8 +479,6 @@ export class SyncResultsDataService implements ISyncResultsDataService {
 
         INSERT INTO mtc_results.checkResult (check_id, mark, markedAt)
         VALUES (@checkId, @mark, @markedAt);
-
-        SET @checkResultId = (SELECT SCOPE_IDENTITY());
     `
     const params = [
       { name: 'checkCode', value: markedCheck.checkCode, type: TYPES.UniqueIdentifier },
@@ -484,9 +500,9 @@ export class SyncResultsDataService implements ISyncResultsDataService {
    */
   public async insertToDatabase (requests: ITransactionRequest[], checkCode: string): Promise<void> {
     try {
-      const sqlLen = requests[0].sql.length
-      const paramNum = requests[0].params.length
-      this.logger.info(`${name}: ${checkCode} sql length is ${sqlLen} and there are ${paramNum} parameters`)
+      requests.forEach((req, i) => {
+        this.logger.info(`${name}: Request ${i} ${checkCode} sql length is ${req.sql.length} and there are ${req.params.length} parameters`)
+      })
       await this.sqlService.modifyWithTransaction(requests)
     } catch (error) {
       const message = `${name}: ERROR: Failed to insert transaction to the database for checkCode [${checkCode}]`
