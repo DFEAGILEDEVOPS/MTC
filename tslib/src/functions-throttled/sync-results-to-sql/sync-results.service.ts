@@ -31,17 +31,17 @@ export class SyncResultsService {
       const answersAndInputsTransactions = await this.syncResultsDataService.prepareAnswersAndInputs(checkCompletionMessage.markedCheck, checkCompletionMessage.validatedCheck)
 
       // Prepare Events
-      const eventTran = await this.syncResultsDataService.prepareEvents(checkCompletionMessage.validatedCheck)
+      const eventTransactions = await this.syncResultsDataService.prepareEvents(checkCompletionMessage.validatedCheck)
 
       // Prepare Device Info
       const deviceTran = await this.syncResultsDataService.prepareDeviceData(checkCompletionMessage.validatedCheck)
 
-      await this.syncResultsDataService.insertToDatabase([checkResTran, ...answersAndInputsTransactions, eventTran, deviceTran], checkCompletionMessage?.markedCheck?.checkCode)
+      await this.syncResultsDataService.insertToDatabase([checkResTran, ...answersAndInputsTransactions, ...eventTransactions, deviceTran], checkCompletionMessage?.markedCheck?.checkCode)
       this.logger.info(`${name}: going to drop the redis cache for school ${checkCompletionMessage?.validatedCheck?.schoolUUID}`)
       await this.dropRedisSchoolResult(checkCompletionMessage?.validatedCheck?.schoolUUID)
       await this.syncResultsDataService.setCheckToResultsSyncComplete(checkCompletionMessage.markedCheck)
     } catch (error) {
-      this.logger.info(`marking run as failed, because: ${error.message}`)
+      this.logger.info(`${name}: marking run as failed, because: ${error.message}`)
       await this.syncResultsDataService.setCheckToResultsSyncFailed(checkCompletionMessage.markedCheck, error.message)
     }
   }

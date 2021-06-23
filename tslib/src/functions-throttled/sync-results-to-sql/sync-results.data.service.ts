@@ -18,7 +18,7 @@ export interface ISyncResultsDataService {
 
   prepareDeviceData (validatedCheck: ValidatedCheck): Promise<ITransactionRequest>
 
-  prepareEvents (validatedCheck: ValidatedCheck): Promise<ITransactionRequest>
+  prepareEvents (validatedCheck: ValidatedCheck): Promise<ITransactionRequest[]>
 
   getSchoolId (schoolUuid: string): Promise<number | undefined>
 
@@ -159,20 +159,22 @@ export class SyncResultsDataService implements ISyncResultsDataService {
    * Prepare the event SQL and Parameters from the raw payload
    * @param {ValidatedCheck} validatedCheck
    */
-  public async prepareEvents (validatedCheck: ValidatedCheck): Promise<ITransactionRequest> {
+  public async prepareEvents (validatedCheck: ValidatedCheck): Promise<ITransactionRequest[]> {
     const audits: Audit[] = R.propOr([], 'audit', validatedCheck)
-    const auditParams = []
-    const auditSqls = []
-
-    auditSqls.push(`
+    const transactions: ITransactionRequest[] = []
+    let auditParams = []
+    let auditSqls = []
+    const headSql = `
         DECLARE @checkResultId INT = (SELECT cr.id
                                         FROM mtc_results.[checkResult] cr
                                              JOIN mtc_admin.[check] c ON (cr.check_id = c.id)
                                        WHERE c.checkCode = @checkCode);
 
         IF (@checkResultId IS NULL) THROW 510001, 'CheckResult ID not found when preparing answers and inputs', 1
-    `)
-    auditParams.push({ name: 'checkCode', value: validatedCheck.checkCode, type: TYPES.UniqueIdentifier })
+    `
+    const headParam = { name: 'checkCode', value: validatedCheck.checkCode, type: TYPES.UniqueIdentifier }
+    auditSqls.push(headSql)
+    auditParams.push(headParam)
 
     let j = 0
     for (const audit of audits) {
@@ -180,8 +182,17 @@ export class SyncResultsDataService implements ISyncResultsDataService {
       auditSqls.push(transactionRequest.sql)
       auditParams.push(...transactionRequest.params)
       j += 1
+      if (auditParams.length > 1000) {
+        transactions.push({ sql: auditSqls.join('\n'), params: R.clone(auditParams) })
+        auditSqls = [headSql]
+        auditParams = [headParam]
+      }
     }
-    return { sql: auditSqls.join('\n'), params: auditParams }
+    // include the remainder events that did not go in the earlier transaction
+    transactions.push({ sql: auditSqls.join('\n'), params: R.clone(auditParams) })
+    auditSqls = []
+    auditParams = []
+    return transactions
   }
 
   public async prepareDeviceData (validatedCheck: ValidatedCheck): Promise<ITransactionRequest> {
