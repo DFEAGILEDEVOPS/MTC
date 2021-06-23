@@ -5,7 +5,7 @@ end
 
 When(/^the data sync function has run$/) do
   if @check_code
-    (wait_until(ENV['WAIT_TIME'].to_i, 2) {SqlDbHelper.get_pupil_check_metadata(@check_code)['checkStatus_id'] == 2}) if @no_answers.nil?
+    (wait_until(ENV['WAIT_TIME'].to_i, 2) {SqlDbHelper.get_pupil_check_metadata(@check_code)['code'] == 'CMP'}) if @no_answers.nil?
     response = FunctionsHelper.sync_check_code(@check_code)
     expect(response.code).to eql 202
   end
@@ -143,7 +143,7 @@ end
 
 
 Then(/^check should fail processing$/) do
-  Timeout.timeout(ENV['WAIT_TIME'].to_i) {sleep 3 until SqlDbHelper.get_check(@check_code)['checkStatus_id'] == 6}
+  wait_until(ENV['WAIT_TIME'].to_i, 2) {SqlDbHelper.get_pupil_check_metadata(@check_code)['code'] == 'ERR'}
   check_info = SqlDbHelper.get_check(@check_code)
   expect(check_info['checkStatus_id']).to eql 6
   expect(check_info['complete']).to eql false
