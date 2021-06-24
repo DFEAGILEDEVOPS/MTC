@@ -57,7 +57,7 @@ describe('PrepareAnswersAndInputsDataService', () => {
   test('it produces an insert statement for each marked answer', async () => {
     jest.spyOn(questionService, 'findQuestion').mockResolvedValue(mockQuestion)
     const res = await sut.prepareAnswersAndInputs(mockCompletionCheckMessage.markedCheck, mockCompletionCheckMessage.validatedCheck)
-    const matches = res.sql.match(/INSERT INTO mtc_results\.\[answer\]/g)
+    const matches = res[0].sql.match(/INSERT INTO mtc_results\.\[answer\]/g)
     expect(matches).toHaveLength(10)
   })
 

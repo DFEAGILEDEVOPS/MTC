@@ -62,8 +62,9 @@ describe('SyncResultsDataService', () => {
     }
     // @ts-ignore: for testing purposes we are providing an minimal completed-check message object
     const res = await sut.prepareEvents(mockMsg)
-    expect(res.sql).toMatch('INSERT INTO mockTable (col) values (val);\nINSERT INTO mockTable (col) values (val);\nINSERT INTO mockTable (col) values (val);')
-    expect(res.params).toHaveLength(4)
+    expect(res[0].sql).toMatch('INSERT INTO mockTable (col) values (val);\nINSERT INTO mockTable (col) values (val);\nINSERT INTO' +
+      ' mockTable (col) values (val);')
+    expect(res[0].params).toHaveLength(4)
   })
 
   describe('#prepareDeviceData', () => {

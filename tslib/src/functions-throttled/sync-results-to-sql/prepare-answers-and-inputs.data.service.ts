@@ -12,7 +12,7 @@ export interface UserInputTypeLookup {
 }
 
 export interface IPrepareAnswersAndInputsDataService {
-  prepareAnswersAndInputs (markedCheck: MarkedCheck, validatedCheck: ValidatedCheck): Promise<ITransactionRequest>
+  prepareAnswersAndInputs (markedCheck: MarkedCheck, validatedCheck: ValidatedCheck): Promise<ITransactionRequest[]>
 }
 
 export class PrepareAnswersAndInputsDataService {
@@ -57,15 +57,15 @@ export class PrepareAnswersAndInputsDataService {
    * @param {MarkedCheck} markedCheck
    * @param {ValidatedCheck} validatedCheck
    */
-  public async prepareAnswersAndInputs (markedCheck: MarkedCheck, validatedCheck: ValidatedCheck): Promise<ITransactionRequest> {
+  public async prepareAnswersAndInputs (markedCheck: MarkedCheck, validatedCheck: ValidatedCheck): Promise<ITransactionRequest[]> {
     const rawInputs: Input[] = R.propOr([], 'inputs', validatedCheck)
     const markedAnswers: MarkedAnswer[] = R.propOr([], 'markedAnswers', markedCheck)
+    const transactions: ITransactionRequest[] = []
 
-    const sqls: string[] = []
-    const params: ISqlParameter[] = []
+    let sqls: string[] = []
+    let params: ISqlParameter[] = []
     let j = 0
-
-    sqls.push(`
+    const sqlHead = `
         DECLARE
             @checkResultId INT = (SELECT cr.id
                                     FROM mtc_results.[checkResult] cr
@@ -73,8 +73,11 @@ export class PrepareAnswersAndInputsDataService {
                                    WHERE c.checkCode = @checkCode);
 
         IF (@checkResultId IS NULL) THROW 510001, 'CheckResult ID not found when preparing answers and inputs', 1;
-    `)
-    params.push({ name: 'checkCode', value: markedCheck.checkCode, type: TYPES.UniqueIdentifier })
+    `
+    const headParam = { name: 'checkCode', value: markedCheck.checkCode, type: TYPES.UniqueIdentifier }
+
+    sqls.push(sqlHead)
+    params.push(headParam)
 
     for (const markedAnswer of markedAnswers) {
       let question: DBQuestion
@@ -102,7 +105,16 @@ export class PrepareAnswersAndInputsDataService {
       sqls.push(inputSql)
       params.push(...inputParams)
       j = j + 1
+      if (params.length > 1000) {
+        transactions.push({ sql: sqls.join('\n'), params: R.clone(params) })
+        sqls = [sqlHead]
+        params = [headParam]
+      }
     }
-    return { sql: sqls.join('\n'), params }
+    // push the final statements in the last transaction
+    transactions.push({ sql: sqls.join('\n'), params: R.clone(params) })
+    sqls = []
+    params = []
+    return transactions
   }
 }
