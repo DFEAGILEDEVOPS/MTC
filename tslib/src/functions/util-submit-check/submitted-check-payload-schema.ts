@@ -57,7 +57,7 @@ export interface CompleteCheckPayload {
       lastName: string
     }
   }
-  questions: Array<CompleteCheckQuestion>
+  questions: CompleteCheckQuestion[]
   school: {
     name: string
     uuid: string
@@ -71,9 +71,9 @@ export interface CompleteCheckPayload {
       token: string
     }
   }
-  audit: Array<CompleteCheckAuditEntry>
-  inputs: Array<CompleteCheckInputEntry>
-  answers: Array<CompleteCheckAnswer>
+  audit: CompleteCheckAuditEntry[]
+  inputs: CompleteCheckInputEntry[]
+  answers: CompleteCheckAnswer[]
 }
 
 export interface QueueAuthToken {
@@ -108,8 +108,8 @@ export interface CompleteCheckInputEntry {
 
 export interface CompleteCheckAuditEntry {
   type: 'WarmupStarted' | 'WarmupIntroRendered' | 'PauseRendered' |
-    'QuestionRendered' | 'QuestionTimerStarted' | 'QuestionTimerCancelled' | 'UtteranceStarted' | 'UtteranceEnded' |
-    'QuestionReadingStarted' | 'QuestionReadingEnded' | 'CheckStarted' | 'CheckStartedApiCalled' //TODO more
+  'QuestionRendered' | 'QuestionTimerStarted' | 'QuestionTimerCancelled' | 'UtteranceStarted' | 'UtteranceEnded' |
+  'QuestionReadingStarted' | 'QuestionReadingEnded' | 'CheckStarted' | 'CheckStartedApiCalled' // TODO more?
   clientTimestamp: string
   relativeTiming: string
   data?: {

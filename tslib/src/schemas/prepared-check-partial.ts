@@ -29,7 +29,7 @@ export interface PreparedCheckPartial {
       token: string
     }
   }
-  questions: Array<any>
+  questions: any[]
   config: {
     practice: boolean
   }

@@ -28,7 +28,7 @@ export class CheckStartedService {
     })
     const preparedCheck = await this.redisService.get(preparedCheckKey)
     const isLiveCheck = R.path(['config', 'practice'], preparedCheck) === false
-    if (isLiveCheck && config.DevTestUtils.DisablePreparedCheckCacheDrop == false) {
+    if (isLiveCheck && !config.DevTestUtils.DisablePreparedCheckCacheDrop) {
       await this.redisService.drop([preparedCheckKey])
     }
   }
