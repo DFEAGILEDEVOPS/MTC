@@ -106,7 +106,9 @@ export default {
     ConnectionString: process.env.AZURE_STORAGE_CONNECTION_STRING ?? ''
   },
   DevTestUtils: {
-    TestSupportApi: parser.propertyExists(process.env, 'TEST_SUPPORT_API_ENABLED') ? parser.primitiveToBoolean(process.env.TEST_SUPPORT_API_ENABLED) : false
+    TestSupportApi: parser.propertyExists(process.env, 'TEST_SUPPORT_API_ENABLED') ? parser.primitiveToBoolean(process.env.TEST_SUPPORT_API_ENABLED) : false,
+    DisablePreparedCheckCacheDrop: parser.propertyExists(process.env, 'TEST_SUPPORT_DISABLE_PREPARED_CHECK_CACHE_DROP') ?
+      parser.primitiveToBoolean(process.env.TEST_SUPPORT_DISABLE_PREPARED_CHECK_CACHE_DROP) : false
   },
   ApplicationInsights: {
     Key: process.env.APPINSIGHTS_INSTRUMENTATIONKEY,
