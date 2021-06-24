@@ -2,7 +2,7 @@
 import { AzureFunction, Context, HttpRequest } from '@azure/functions'
 import * as lz from 'lz-string'
 import submittedCheck from '../../schemas/submitted-check.v3'
-import completeCheckPayload from '../../schemas/complete-check-payload'
+import completeCheckPayload from './example-complete-check-payload'
 import config from '../../config'
 
 const httpTrigger: AzureFunction = function (context: Context, req: HttpRequest): void {
