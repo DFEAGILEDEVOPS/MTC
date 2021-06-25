@@ -39,4 +39,7 @@ describe('check-submit-proxy-service', () => {
     expect(actual.schoolUUID).toEqual(mockPreparedCheck.school.uuid)
     expect(actual.version).toBe(2)
   })
+
+  test.todo('completed check builder service')
+  test.todo('verify compression into archive property')
 })
