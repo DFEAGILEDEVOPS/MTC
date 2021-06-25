@@ -13,6 +13,7 @@ const NotAvailableError = require('../../error-types/not-available')
 const pupilAttendanceCodes = require('../../lib/consts/pupil-attendance-codes')
 const resultsPageAvailabilityService = require('../results-page-availability.service')
 const resultsService = require('../result.service')
+const ctfVersion = '20.0'
 
 const ctfService = {
   /**
@@ -102,7 +103,7 @@ const ctfService = {
       .ele('CTfile')
       .ele('Header')
       .ele('DocumentName').txt('Common Transfer File').up()
-      .ele('CTFversion').txt('19.0').up()
+      .ele('CTFversion').txt(ctfVersion).up()
       .ele('DateTime').txt(moment().format('YYYY-MM-DDTHH:mm:ss')).up()
       .ele('DocumentQualifier').txt('partial').up()
       .ele('SupplierID').txt('Multiplication Tables Check').up()
