@@ -36,8 +36,8 @@ describe('SyncResultsService', () => {
     mockSyncResultsDataService = new SyncResultsDataService(logger, sqlServiceMock)
     ;(mockSyncResultsDataService.prepareCheckResult as jest.Mock).mockReturnValueOnce(mockTransaction)
     ;(mockSyncResultsDataService.deleteExistingResultIfExists as jest.Mock).mockReturnValueOnce(Promise.resolve())
-    ;(mockSyncResultsDataService.prepareAnswersAndInputs as jest.Mock).mockReturnValueOnce(mockTransaction)
-    ;(mockSyncResultsDataService.prepareEvents as jest.Mock).mockReturnValueOnce(mockTransaction)
+    ;(mockSyncResultsDataService.prepareAnswersAndInputs as jest.Mock).mockReturnValueOnce([mockTransaction, mockTransaction])
+    ;(mockSyncResultsDataService.prepareEvents as jest.Mock).mockReturnValueOnce([mockTransaction, mockTransaction])
     ;(mockSyncResultsDataService.prepareDeviceData as jest.Mock).mockReturnValueOnce(mockTransaction)
     ;(mockSyncResultsDataService.setCheckToResultsSyncComplete as jest.Mock).mockReturnValueOnce(Promise.resolve())
     ;(mockSyncResultsDataService.setCheckToResultsSyncFailed as jest.Mock).mockReturnValueOnce(Promise.resolve())
@@ -88,23 +88,6 @@ describe('SyncResultsService', () => {
     jest.spyOn(sut['syncResultsDataService'], 'getSchoolId').mockResolvedValueOnce(2)
     await sut.process(mockCompletionCheckMessage)
     expect(mockSyncResultsDataService.insertToDatabase).toHaveBeenCalledTimes(1)
-  })
-
-  test('the args to persist the data in the database are reduced', async () => {
-    jest.spyOn(console, 'info').mockImplementation(() => {})
-    jest.spyOn(console, 'log').mockImplementation(() => {})
-    // eslint-disable-next-line
-    jest.spyOn(sut['syncResultsDataService'], 'getSchoolId').mockResolvedValueOnce(2)
-    await sut.process(mockCompletionCheckMessage)
-    const args = (mockSyncResultsDataService.insertToDatabase as jest.Mock).mock.calls
-    const flattenedTransactions = args[0][0]
-    expect(args).toHaveLength(1) // there should be only 1 argument to insertToDatabase
-    expect(Array.isArray(args)).toBe(true)
-    const param = flattenedTransactions[0]
-    expect(typeof param).toBe('object')
-    expect(param).toHaveProperty('sql')
-    expect(param).toHaveProperty('params')
-    expect(param.params).toHaveLength(4)
   })
 
   test('the school results cache is dropped when the database is updated', async () => {

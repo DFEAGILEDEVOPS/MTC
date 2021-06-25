@@ -9,6 +9,8 @@ Given(/^I have completed the check with only (\d+) correct answers$/) do |correc
   @answers = check_page.complete_check_with_correct_answers(@mark, 'keyboard')
   complete_page.wait_for_complete_page
   expect(complete_page).to have_heading
+  @check_code = @storage_pupil['checkCode']
+  p @check_code
 end
 
 

@@ -12,13 +12,13 @@ const name = 'sync-results-to-sql: data service'
 export interface ISyncResultsDataService {
   insertToDatabase (requests: ITransactionRequest[], checkCode: string): Promise<void>
 
-  prepareAnswersAndInputs (markedCheck: MarkedCheck, validatedCheck: ValidatedCheck): Promise<ITransactionRequest>
+  prepareAnswersAndInputs (markedCheck: MarkedCheck, validatedCheck: ValidatedCheck): Promise<ITransactionRequest[]>
 
   prepareCheckResult (markedCheck: MarkedCheck): ITransactionRequest
 
   prepareDeviceData (validatedCheck: ValidatedCheck): Promise<ITransactionRequest>
 
-  prepareEvents (validatedCheck: ValidatedCheck): Promise<ITransactionRequest>
+  prepareEvents (validatedCheck: ValidatedCheck): Promise<ITransactionRequest[]>
 
   getSchoolId (schoolUuid: string): Promise<number | undefined>
 
@@ -159,10 +159,22 @@ export class SyncResultsDataService implements ISyncResultsDataService {
    * Prepare the event SQL and Parameters from the raw payload
    * @param {ValidatedCheck} validatedCheck
    */
-  public async prepareEvents (validatedCheck: ValidatedCheck): Promise<ITransactionRequest> {
+  public async prepareEvents (validatedCheck: ValidatedCheck): Promise<ITransactionRequest[]> {
     const audits: Audit[] = R.propOr([], 'audit', validatedCheck)
-    const auditParams = []
-    const auditSqls = []
+    const transactions: ITransactionRequest[] = []
+    let auditParams = []
+    let auditSqls = []
+    const headSql = `
+        DECLARE @checkResultId INT = (SELECT cr.id
+                                        FROM mtc_results.[checkResult] cr
+                                             JOIN mtc_admin.[check] c ON (cr.check_id = c.id)
+                                       WHERE c.checkCode = @checkCode);
+
+        IF (@checkResultId IS NULL) THROW 510001, 'CheckResult ID not found when preparing answers and inputs', 1
+    `
+    const headParam = { name: 'checkCode', value: validatedCheck.checkCode, type: TYPES.UniqueIdentifier }
+    auditSqls.push(headSql)
+    auditParams.push(headParam)
 
     let j = 0
     for (const audit of audits) {
@@ -170,8 +182,17 @@ export class SyncResultsDataService implements ISyncResultsDataService {
       auditSqls.push(transactionRequest.sql)
       auditParams.push(...transactionRequest.params)
       j += 1
+      if (auditParams.length > 1000) {
+        transactions.push({ sql: auditSqls.join('\n'), params: R.clone(auditParams) })
+        auditSqls = [headSql]
+        auditParams = [headParam]
+      }
     }
-    return { sql: auditSqls.join('\n'), params: auditParams }
+    // include the remainder events that did not go in the earlier transaction
+    transactions.push({ sql: auditSqls.join('\n'), params: R.clone(auditParams) })
+    auditSqls = []
+    auditParams = []
+    return transactions
   }
 
   public async prepareDeviceData (validatedCheck: ValidatedCheck): Promise<ITransactionRequest> {
@@ -252,6 +273,7 @@ export class SyncResultsDataService implements ISyncResultsDataService {
       value: (typeof userAgent) === 'string' ? userAgent.substr(0, 4000) : null
     })
     params.push({ name: 'ident', type: TYPES.NVarChar, value: deviceId })
+    params.push({ name: 'checkCode', type: TYPES.UniqueIdentifier, value: validatedCheck.checkCode })
 
     // tslint:disable:no-trailing-whitespace
     const sql = `
@@ -265,6 +287,7 @@ export class SyncResultsDataService implements ISyncResultsDataService {
         DECLARE @deviceOrientationLookup_id INT;
         DECLARE @userAgentHash VARBINARY(32);
         DECLARE @userAgentLookup_id INT;
+        DECLARE @checkResultId INT;
 
         --
         -- See if we can find an existing id for the browser family; create a new one if not
@@ -423,6 +446,12 @@ export class SyncResultsDataService implements ISyncResultsDataService {
 
             IF (@userDeviceId IS NOT NULL)
                 BEGIN
+                    SET @checkResultId = (SELECT cr.id
+                                            FROM mtc_results.[checkResult] cr
+                                                 JOIN mtc_admin.[check] c ON (cr.check_id = c.id)
+                                           WHERE c.checkCode = @checkCode);
+
+                    IF (@checkResultId IS NULL) THROW 510002, 'CheckResult ID not found when preparing [userDevice]', 1;
                     UPDATE mtc_results.checkResult SET userDevice_id = @userDeviceId WHERE id = @checkResultId;
                 END
         END TRY BEGIN CATCH
@@ -461,8 +490,6 @@ export class SyncResultsDataService implements ISyncResultsDataService {
 
         INSERT INTO mtc_results.checkResult (check_id, mark, markedAt)
         VALUES (@checkId, @mark, @markedAt);
-
-        SET @checkResultId = (SELECT SCOPE_IDENTITY());
     `
     const params = [
       { name: 'checkCode', value: markedCheck.checkCode, type: TYPES.UniqueIdentifier },
@@ -473,7 +500,7 @@ export class SyncResultsDataService implements ISyncResultsDataService {
     return req
   }
 
-  public async prepareAnswersAndInputs (markedCheck: MarkedCheck, validatedCheck: ValidatedCheck): Promise<ITransactionRequest> {
+  public async prepareAnswersAndInputs (markedCheck: MarkedCheck, validatedCheck: ValidatedCheck): Promise<ITransactionRequest[]> {
     return this.prepareAnswersAndInputsDataService.prepareAnswersAndInputs(markedCheck, validatedCheck)
   }
 
@@ -484,9 +511,9 @@ export class SyncResultsDataService implements ISyncResultsDataService {
    */
   public async insertToDatabase (requests: ITransactionRequest[], checkCode: string): Promise<void> {
     try {
-      const sqlLen = requests[0].sql.length
-      const paramNum = requests[0].params.length
-      this.logger.info(`${name}: ${checkCode} sql length is ${sqlLen} and there are ${paramNum} parameters`)
+      requests.forEach((req, i) => {
+        this.logger.info(`${name}: Request ${i} ${checkCode} sql length is ${req.sql.length} and there are ${req.params.length} parameters`)
+      })
       await this.sqlService.modifyWithTransaction(requests)
     } catch (error) {
       const message = `${name}: ERROR: Failed to insert transaction to the database for checkCode [${checkCode}]`

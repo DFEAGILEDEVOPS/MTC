@@ -62,8 +62,9 @@ describe('SyncResultsDataService', () => {
     }
     // @ts-ignore: for testing purposes we are providing an minimal completed-check message object
     const res = await sut.prepareEvents(mockMsg)
-    expect(res.sql).toBe('INSERT INTO mockTable (col) values (val);\nINSERT INTO mockTable (col) values (val);\nINSERT INTO mockTable (col) values (val);')
-    expect(res.params).toHaveLength(3)
+    expect(res[0].sql).toMatch('INSERT INTO mockTable (col) values (val);\nINSERT INTO mockTable (col) values (val);\nINSERT INTO' +
+      ' mockTable (col) values (val);')
+    expect(res[0].params).toHaveLength(4)
   })
 
   describe('#prepareDeviceData', () => {
@@ -285,6 +286,8 @@ describe('SyncResultsDataService', () => {
       // @ts-ignore : minimal test object is not a real ValidatedCheck type
       const res = await sut.prepareDeviceData({})
       res.params.forEach(p => {
+        // don't check the checkCode it must be provided, so can't be null
+        if (p.name === 'checkCode') return
         expect(p.value).toBeNull()
       })
     })

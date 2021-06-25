@@ -6,8 +6,8 @@ class FunctionsHelper
   end
 
 
-  def self.resync_all(boolean)
-    HTTParty.post(ENV['FUNC_THROTTLED_BASE_URL'] + "/sync-results-init", :body => {'resyncAll' => boolean}.to_json, headers: {'Content-Type' => 'application/json', 'x-functions-key' => ENV['FUNC_THROTTLED_MASTER_KEY']})
+  def self.sync_check_code(check_code)
+    HTTParty.post(ENV['FUNC_THROTTLED_BASE_URL'] + "/sync-results-init", :body => {'checkCode' => check_code}.to_json, headers: {'Content-Type' => 'application/json', 'x-functions-key' => ENV['FUNC_THROTTLED_MASTER_KEY']})
   end
 
   def self.create_school(estab_code, name, urn)
