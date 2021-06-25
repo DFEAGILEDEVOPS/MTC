@@ -35,8 +35,8 @@ describe('check-submit-proxy-service', () => {
     jest.spyOn(redisServiceMock, 'get').mockReturnValue(Promise.resolve(mockPreparedCheck))
     const actual = await sut.submitCheck(checkCode, options)
     expect(actual).toBeDefined()
-    expect(actual.checkCode).toEqual(checkCode)
-    expect(actual.schoolUUID).toEqual(mockPreparedCheck.school.uuid)
+    expect(actual.checkCode).toStrictEqual(checkCode)
+    expect(actual.schoolUUID).toStrictEqual(mockPreparedCheck.school.uuid)
     expect(actual.version).toBe(2)
   })
 

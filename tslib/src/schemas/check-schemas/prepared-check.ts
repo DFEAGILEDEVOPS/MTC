@@ -1,6 +1,5 @@
 import moment from 'moment'
-import { CheckConfig } from './submitted-check'
-import { CheckQuestion } from './submitted-check'
+import { CheckConfig, CheckQuestion } from './submitted-check'
 
 /**
  * @description As of 25th June 2021 this is a full definition of the prepared check object that we store in Redis.
