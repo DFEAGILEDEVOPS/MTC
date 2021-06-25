@@ -72,7 +72,15 @@ const getSelectPupilNotTakingCheck = async function getSelectPupilNotTakingCheck
     }
     attendanceCodes = await attendanceCodeService.getAttendanceCodes()
     attendanceCodesPresentationData = attendanceCodesPresenter.getPresentationData(attendanceCodes)
-    pupilsList = await pupilsNotTakingCheckService.getPupilsWithoutReasons(req.user.schoolId)
+    if (availabilityData.inAdminEndPeriod) {
+      // When we are in the post-check final admin period, pupils who have not been marked as complete are allowed
+      // to be marked as not attending, as there is no other option for them, and this allows the HDF to be signed.
+      pupilsList = await pupilsNotTakingCheckService.getPupilsWithoutReasonsInAdminPeriod(req.user.schoolId)
+    } else {
+      // For familiarisation and live check phases, we have tight rules on which pupils can be selected for not
+      // attending
+      pupilsList = await pupilsNotTakingCheckService.getPupilsWithoutReasons(req.user.schoolId)
+    }
   } catch (error) {
     return next(error)
   }
