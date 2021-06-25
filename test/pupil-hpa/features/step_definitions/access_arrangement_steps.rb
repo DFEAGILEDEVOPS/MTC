@@ -20,6 +20,9 @@ Given(/^I logged in with user with access arrangement '(.*)'$/) do |access_arran
   sign_in_page.login(@pupil_credentials[:school_password], @pupil_credentials[:pin])
   sign_in_page.sign_in_button.click
   confirmation_page.read_instructions.click
+  storage_pupil = JSON.parse page.evaluate_script('window.localStorage.getItem("pupil");')
+  @check_code = storage_pupil['checkCode']
+  p @check_code
 end
 
 Then(/^I can see setting page as per design$/) do
