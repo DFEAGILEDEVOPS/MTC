@@ -1,20 +1,7 @@
-export interface CompleteCheckPayload {
+export interface SubmittedCheck {
   checkCode: string
   schoolUUID: string
-  config: {
-    audibleSounds: boolean
-    checkTime: number
-    colourContrast: boolean
-    fontSize: false
-    inputAssistance: boolean
-    loadingTime: number
-    nextBetweenQuestions: boolean
-    numpadRemoval: boolean
-    practice: boolean
-    questionReader: boolean
-    questionTime: boolean
-    compressCompletedCheck: boolean
-  }
+  config: CheckConfig
   device: {
     battery: {
       isCharging: boolean
@@ -57,7 +44,7 @@ export interface CompleteCheckPayload {
       lastName: string
     }
   }
-  questions: CompleteCheckQuestion[]
+  questions: CheckQuestion[]
   school: {
     name: string
     uuid: string
@@ -76,13 +63,28 @@ export interface CompleteCheckPayload {
   answers: CompleteCheckAnswer[]
 }
 
+export interface CheckConfig {
+  audibleSounds: boolean
+  checkTime: number
+  colourContrast: boolean
+  fontSize: false
+  inputAssistance: boolean
+  loadingTime: number
+  nextBetweenQuestions: boolean
+  numpadRemoval: boolean
+  practice: boolean
+  questionReader: boolean
+  questionTime: boolean
+  compressCompletedCheck: boolean
+}
+
 export interface QueueAuthToken {
   token: string
   url: string
   queueName: string
 }
 
-export interface CompleteCheckQuestion {
+export interface CheckQuestion {
   order: number
   factor1: number
   factor2: number

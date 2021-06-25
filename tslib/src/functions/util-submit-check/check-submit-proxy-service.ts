@@ -1,6 +1,6 @@
 import { SubmittedCheckMessageV2 } from '../../schemas/models'
 import { IRedisService, RedisService } from '../../caching/redis-service'
-import { PreparedCheckPartial } from '../../schemas/prepared-check-partial'
+import { PreparedCheck } from '../../schemas/check-schemas/prepared-check'
 
 export interface CheckSubmitProxyOptions {
   isLiveCheck: boolean
@@ -20,7 +20,7 @@ export class CheckSubmitProxyService {
 
   async submitCheck (checkCode: string, options: CheckSubmitProxyOptions): Promise<SubmittedCheckMessageV2> {
     const preparedCheckKey = this.buildCacheKey(checkCode)
-    const preparedCheck: PreparedCheckPartial = await this.redisService.get(preparedCheckKey) as PreparedCheckPartial
+    const preparedCheck: PreparedCheck = await this.redisService.get(preparedCheckKey) as PreparedCheck
     // TODO construct answers
     // TODO construct events
     const compressedArchive = 'TODO'
