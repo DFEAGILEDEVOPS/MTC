@@ -228,8 +228,8 @@ export class SyncResultsDataService implements ISyncResultsDataService {
 
     params.push({ name: 'batteryIsCharging', type: TYPES.Bit, value: batteryIsCharging })
     params.push({ name: 'batteryLevelPercent', type: TYPES.Int, value: batteryLevelPercent })
-    params.push({ name: 'batteryChargingTimeSecs', type: TYPES.Int, value: batteryChargingTimeSecs })
-    params.push({ name: 'batteryDischargingTimeSecs', type: TYPES.Int, value: batteryDischargingTimeSecs })
+    params.push({ name: 'batteryChargingTimeSecs', type: TYPES.BigInt, value: batteryChargingTimeSecs })
+    params.push({ name: 'batteryDischargingTimeSecs', type: TYPES.BigInt, value: batteryDischargingTimeSecs })
     params.push({ name: 'cpuHardwareConcurrency', type: TYPES.Int, value: cpuHardwareConcurrency })
     params.push({ name: 'browserFamily', type: TYPES.NVarChar, value: agent !== undefined ? agent.getBrowserFamily() : null })
     params.push({ name: 'browserMajorVersion', type: TYPES.Int, value: agent !== undefined ? agent.getBrowserMajorVersion() : null })
