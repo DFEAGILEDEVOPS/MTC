@@ -4,10 +4,12 @@
 const config = require('../../../config')
 const schoolHomeFeatureEligibilityPresenter = require('../../../helpers/school-home-feature-eligibility-presenter')
 const businessAvailabilityService = require('../../../services/business-availability.service')
+const headTeacherDeclarationService = require('../../../services/headteacher-declaration.service')
 
 describe('businessAvailabilityService', () => {
   describe('#determinePinGenerationEligibility', () => {
   })
+
   describe('#isPinGenerationAllowed', () => {
     beforeEach(() => {
       spyOn(schoolHomeFeatureEligibilityPresenter, 'getPresentationData').and.returnValue({
@@ -28,6 +30,7 @@ describe('businessAvailabilityService', () => {
       expect(result).toBeFalsy()
     })
   })
+
   describe('#areRestartsAllowed', () => {
     it('should return true if restarts are allowed', async () => {
       spyOn(schoolHomeFeatureEligibilityPresenter, 'getPresentationData').and.returnValue({
@@ -46,6 +49,7 @@ describe('businessAvailabilityService', () => {
       expect(result).toBeFalsy()
     })
   })
+
   describe('#areGroupsAllowed', () => {
     it('should return true if groups are allowed', async () => {
       spyOn(schoolHomeFeatureEligibilityPresenter, 'getPresentationData').and.returnValue({
@@ -64,6 +68,7 @@ describe('businessAvailabilityService', () => {
       expect(result).toBeFalsy()
     })
   })
+
   describe('#areAccessArrangementsAllowed', () => {
     it('should return true if access arrangements are allowed', async () => {
       spyOn(schoolHomeFeatureEligibilityPresenter, 'getPresentationData').and.returnValue({
@@ -82,6 +87,7 @@ describe('businessAvailabilityService', () => {
       expect(result).toBeFalsy()
     })
   })
+
   describe('#determinePinGenerationEligibility', () => {
     let isLiveCheck
     beforeEach(() => {
@@ -107,6 +113,7 @@ describe('businessAvailabilityService', () => {
       }
     })
   })
+
   describe('#determineRestartsEligibility', () => {
     it('should not throw an error if eligibility is true', async () => {
       spyOn(businessAvailabilityService, 'areRestartsAllowed').and.returnValue(true)
@@ -126,6 +133,7 @@ describe('businessAvailabilityService', () => {
       }
     })
   })
+
   describe('#determineGroupsEligibility', () => {
     it('should not throw an error if eligibility is true', async () => {
       spyOn(businessAvailabilityService, 'areGroupsAllowed').and.returnValue(true)
@@ -145,6 +153,7 @@ describe('businessAvailabilityService', () => {
       }
     })
   })
+
   describe('#determineAccessArrangementsEligibility', () => {
     it('should not throw an error if eligibility is true', async () => {
       spyOn(businessAvailabilityService, 'areAccessArrangementsAllowed').and.returnValue(true)
@@ -162,6 +171,34 @@ describe('businessAvailabilityService', () => {
       } catch (error) {
         expect(error.message).toBe('Access Arrangements are not allowed')
       }
+    })
+  })
+
+  describe('#getAvailabilityData', () => {
+    const schoolId = 1
+
+    it('inAdminEndPeriod is true when we are in the end admin period', async () => {
+      const mockCheckWindow = require('../mocks/check-window').postLiveCheckWindow
+      spyOn(headTeacherDeclarationService, 'isHdfSubmittedForCheck').and.returnValue(false)
+      spyOn(businessAvailabilityService, 'areAccessArrangementsAllowed').and.returnValue(true)
+      const data = await businessAvailabilityService.getAvailabilityData(schoolId, mockCheckWindow)
+      expect(data.inAdminEndPeriod).toBe(true)
+    })
+
+    it('inAdminEndPeriod is false when we are in the check period', async () => {
+      const mockCheckWindow = require('../mocks/check-window').liveCheckWindow
+      spyOn(headTeacherDeclarationService, 'isHdfSubmittedForCheck').and.returnValue(false)
+      spyOn(businessAvailabilityService, 'areAccessArrangementsAllowed').and.returnValue(true)
+      const data = await businessAvailabilityService.getAvailabilityData(schoolId, mockCheckWindow)
+      expect(data.inAdminEndPeriod).toBe(false)
+    })
+
+    it('inAdminEndPeriod is false when we are in the familiarisation period', async () => {
+      const mockCheckWindow = require('../mocks/check-window').familiarisationCheckWindow
+      spyOn(headTeacherDeclarationService, 'isHdfSubmittedForCheck').and.returnValue(false)
+      spyOn(businessAvailabilityService, 'areAccessArrangementsAllowed').and.returnValue(true)
+      const data = await businessAvailabilityService.getAvailabilityData(schoolId, mockCheckWindow)
+      expect(data.inAdminEndPeriod).toBe(false)
     })
   })
 })
