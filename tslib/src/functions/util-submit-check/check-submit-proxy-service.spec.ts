@@ -2,9 +2,11 @@ import { CheckSubmitProxyOptions, CheckSubmitProxyService } from './check-submit
 import { RedisServiceMock } from '../../caching/redis-service.mock'
 import { IRedisService } from '../../caching/redis-service'
 import mockPreparedCheck from '../../schemas/check-schemas/mock-prepared-check-2021.json'
+import { ISubmittedCheckBuilderService } from './submitted-check-builder-service'
 
 let sut: CheckSubmitProxyService
 let redisServiceMock: IRedisService
+let submittedCheckBuilderMock: ISubmittedCheckBuilderService
 
 const options: CheckSubmitProxyOptions = {
   isLiveCheck: true,
@@ -12,10 +14,15 @@ const options: CheckSubmitProxyOptions = {
   removeAnswers: false
 }
 
+const SubmittedCheckBuilderServiceMock = jest.fn<ISubmittedCheckBuilderService, any>(() => ({
+  create: jest.fn()
+}))
+
 describe('check-submit-proxy-service', () => {
   beforeEach(() => {
     redisServiceMock = new RedisServiceMock()
-    sut = new CheckSubmitProxyService(redisServiceMock)
+    submittedCheckBuilderMock = new SubmittedCheckBuilderServiceMock()
+    sut = new CheckSubmitProxyService(redisServiceMock, submittedCheckBuilderMock)
   })
 
   test('subject should be defined', () => {
@@ -40,6 +47,15 @@ describe('check-submit-proxy-service', () => {
     expect(actual.version).toBe(2)
   })
 
-  test.todo('completed check builder service')
+  test('compresses payload of submitted check for archive property', async () => {
+    const checkCode = 'b8ad45ac-b2c9-48ff-8c9f-afebb2956bab'
+    jest.spyOn(redisServiceMock, 'get').mockReturnValue(Promise.resolve(mockPreparedCheck))
+    const actual = await sut.submitCheck(checkCode, options)
+    expect(actual).toBeDefined()
+    expect(actual.archive).toBeDefined()
+    expect(actual.version).toBe(2)
+  })
+
+  test.todo('calls completed check builder service')
   test.todo('verify compression into archive property')
 })

@@ -53,7 +53,7 @@ export interface SubmittedCheck {
     checkStarted: QueueAuthToken
     pupilPreferences: QueueAuthToken
     pupilFeedback: QueueAuthToken
-    checkComplete: QueueAuthToken
+    checkComplete?: QueueAuthToken
     jwt: {
       token: string
     }

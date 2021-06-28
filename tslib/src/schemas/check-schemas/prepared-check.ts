@@ -1,5 +1,5 @@
 import moment from 'moment'
-import { CheckConfig, CheckQuestion } from './submitted-check'
+import { CheckConfig, CheckQuestion, QueueAuthToken } from './submitted-check'
 
 /**
  * @description As of 25th June 2021 this is a full definition of the prepared check object that we store in Redis.
@@ -27,10 +27,10 @@ export interface PreparedCheck {
   schoolPin: string
   pupilPin: string
   tokens: {
-    checkStarted: string
-    pupilPreferences: string
-    pupilFeedback: string
-    checkComplete?: string
+    checkStarted: QueueAuthToken
+    pupilPreferences: QueueAuthToken
+    pupilFeedback: QueueAuthToken
+    checkComplete?: QueueAuthToken
     jwt: {
       token: string
     }
