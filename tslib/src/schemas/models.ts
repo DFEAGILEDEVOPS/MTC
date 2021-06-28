@@ -45,3 +45,14 @@ export interface ReceivedCheckTableEntity {
   processingError?: string
   validatedAt?: Date
 }
+
+// markedAt is actually a string inside the Azure Storage table
+export interface MarkedCheckTableEntity {
+  PartitionKey: string // schoolUUID
+  RowKey: string // checkCode
+  Timestamp: Date // row creation date
+  mark: number
+  maxMarks: number
+  markedAnswers: string // contains JSON
+  markedAt: string
+}

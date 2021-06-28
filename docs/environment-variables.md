@@ -127,6 +127,7 @@ Env Var | Type | Default value | Required | Components | Description
  SQL_TECH_SUPPORT_USER_PASSWORD | String | N/A | Required | AA | Experimental setting.  The password to use when connecting to the SQL DB as this user.
  SQL_TRUST_SERVER_CERTIFICATE | Bool | true | Optional | AA | Used when establising a TLS connection to MSSQL Server.[See the docs.](https://docs.microsoft.com/en-us/sql/connect/jdbc/connecting-with-ssl-encryption?view=sql-server-ver15)
  SUBMIT_CHECK_FUNCTION_ENABLED | Boolean | false | Optional | FC | Used by the Developer Test tools
+ SYNC_RESULTS_INIT_MAX_PARALLEL_TASKS | Int | 5 | Optional | FT | Configure the number of parallel tasks when running the sync-results-init function. 
  TECH_SUPPORT_SQL_POOL_MIN_COUNT | Int | 0 | Optional | AA | Experimental setting.  The minimum number of sql connections to hold in the tech-support sql connection pool.
  TECH_SUPPORT_SQL_POOL_MIN_COUNT | Int | 2 | Optional | AA | Experimental setting.  The maximum number of sql connections to hold in the tech-support sql connection pool.
  WAIT_TIME_BEFORE_EXIT | Int | 30 | Optional | AA | The amount of time to wait, in seconds, before exiting in the event that the app is unable to initialise a connection to the database.

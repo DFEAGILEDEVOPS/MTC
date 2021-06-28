@@ -38,9 +38,9 @@ Feature:
     Examples:
       | reason               |
       | Loss of internet     |
-      | IT issues            |
-      | Classroom disruption |
-      | Did not complete     |
+#      | IT issues            |
+#      | Classroom disruption |
+#      | Did not complete     |
 
   Scenario: Pupils who have taken the max number of restarts are included in the report with only their latest check
     Given I have completed the check
@@ -64,12 +64,12 @@ Feature:
     Examples:
       | correct_answers |
       | 0               |
-      | 1               |
-      | 3               |
-      | 5               |
-      | 8               |
-      | 13              |
-      | 21              |
+#      | 1               |
+#      | 3               |
+#      | 5               |
+#      | 8               |
+#      | 13              |
+#      | 21              |
 
   Scenario: AA can be added after pin is generated
     Given I have generated a live pin

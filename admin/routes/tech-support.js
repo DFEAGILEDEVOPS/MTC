@@ -108,4 +108,40 @@ router.get(
   techSupportController.showQueueOverview
 )
 
+router.get(
+  '/results-resync-check',
+  isAuthenticated([roles.techSupport]),
+  techSupportController.getCheckResultsResyncCheck
+)
+
+router.post(
+  '/results-resync-check',
+  isAuthenticated([roles.techSupport]),
+  techSupportController.postCheckResultsResyncCheck
+)
+
+router.get(
+  '/results-resync-school',
+  isAuthenticated([roles.techSupport]),
+  techSupportController.getCheckResultsResyncSchool
+)
+
+router.post(
+  '/results-resync-school',
+  isAuthenticated([roles.techSupport]),
+  techSupportController.postCheckResultsResyncSchool
+)
+
+router.get(
+  '/results-resync-all',
+  isAuthenticated([roles.techSupport]),
+  techSupportController.getCheckResultsResyncAll
+)
+
+router.post(
+  '/results-resync-all',
+  isAuthenticated([roles.techSupport]),
+  techSupportController.postCheckResultsResyncAll
+)
+
 module.exports = router

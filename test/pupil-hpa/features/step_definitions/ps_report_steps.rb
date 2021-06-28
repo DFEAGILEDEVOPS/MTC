@@ -232,6 +232,7 @@ When(/^the pupil completes the check$/) do
   storage_audit_keys.each do |key|
     @audit << (JSON.parse page.evaluate_script("window.localStorage.getItem('#{key}');"))
   end
+  p @check_code
 end
 
 
@@ -277,6 +278,7 @@ And(/^complete the check$/) do
   storage_audit_keys.each do |key|
     @audit << (JSON.parse page.evaluate_script("window.localStorage.getItem('#{key}');"))
   end
+  p @check_code
 end
 
 

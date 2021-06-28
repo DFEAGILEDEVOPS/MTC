@@ -38,6 +38,7 @@
     "@azure/service-bus": "^1.1.2",
     "adm-zip": "^0.5.2",
     "applicationinsights": "^1.8.8",
+    "async": "^3.2.0",
     "axios": "^0.21.1",
     "azure-storage": "^2.10.4",
     "bluebird": "^3.7.0",

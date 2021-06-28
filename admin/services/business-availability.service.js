@@ -123,6 +123,7 @@ businessAvailabilityService.determineAccessArrangementsEligibility = (checkWindo
  * @property {boolean} hdfSubmitted
  * @property {boolean} livePinsAvailable
  * @property {boolean} restartsAvailable
+ * @property {boolean} inAdminEndPeriod - true when the check period has ended and it is still in the admin window
  */
 
 /**
@@ -150,6 +151,7 @@ businessAvailabilityService.getAvailabilityData = async (schoolId, checkWindowDa
   const groupsAvailable = !checkWindowClosed || config.OVERRIDE_AVAILABILITY_CHECKS
   const accessArrangementsAvailable = businessAvailabilityService.areAccessArrangementsAllowed(checkWindowData)
   const hdfAvailable = currentDate.isBetween(checkWindowData.checkStartDate, checkWindowData.adminEndDate)
+  const inAdminEndPeriod = currentDate.isBetween(checkWindowData.checkEndDate, checkWindowData.adminEndDate)
   return {
     familiarisationWindowStarted,
     familiarisationWindowClosed,
@@ -165,7 +167,8 @@ businessAvailabilityService.getAvailabilityData = async (schoolId, checkWindowDa
     livePinsAvailable,
     familiarisationPinsAvailable,
     groupsAvailable,
-    accessArrangementsAvailable
+    accessArrangementsAvailable,
+    inAdminEndPeriod
   }
 }
 
