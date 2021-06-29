@@ -1,4 +1,4 @@
-@feedback @wip
+@feedback
 Feature: Feedback page
 
   @travis
