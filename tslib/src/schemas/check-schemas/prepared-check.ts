@@ -1,4 +1,3 @@
-import moment from 'moment'
 import { CheckConfig, CheckQuestion, QueueAuthToken } from './submitted-check'
 
 /**
@@ -8,13 +7,14 @@ import { CheckConfig, CheckQuestion, QueueAuthToken } from './submitted-check'
 export interface PreparedCheck {
   checkCode: string
   config: CheckConfig
-  createdAt: moment.Moment
-  pinExpiresAtUtc: moment.Moment
-  pinValidFromUtc: moment.Moment
+  createdAt: string
+  updatedAt: string
+  pinExpiresAtUtc: string
+  pinValidFromUtc: string
   pupil: {
     firstName: string
     lastName: string
-    dob: moment.Moment
+    dob: string
     checkCode: string
     uuid: string
   }
@@ -23,9 +23,6 @@ export interface PreparedCheck {
     name: string
     uuid: string
   }
-  updatedAt: moment.Moment
-  schoolPin: string
-  pupilPin: string
   tokens: {
     checkStarted: QueueAuthToken
     pupilPreferences: QueueAuthToken

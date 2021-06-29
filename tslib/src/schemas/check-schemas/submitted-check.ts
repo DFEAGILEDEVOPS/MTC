@@ -67,14 +67,14 @@ export interface CheckConfig {
   audibleSounds: boolean
   checkTime: number
   colourContrast: boolean
-  fontSize: false
+  fontSize: boolean
   inputAssistance: boolean
   loadingTime: number
   nextBetweenQuestions: boolean
   numpadRemoval: boolean
   practice: boolean
   questionReader: boolean
-  questionTime: boolean
+  questionTime: number
   compressCompletedCheck: boolean
 }
 

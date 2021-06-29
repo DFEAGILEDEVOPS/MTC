@@ -1,11 +1,24 @@
 import { PreparedCheck } from '../../schemas/check-schemas/prepared-check'
 import { SubmittedCheck } from '../../schemas/check-schemas/submitted-check'
+import * as faker from 'faker'
 
 export interface ISubmittedCheckBuilderService {
   create (preparedCheck: PreparedCheck): SubmittedCheck
 }
 
 export class SubmittedCheckBuilderService {
+  private readonly randomScreenValue = (): number => {
+    return faker.datatype.number({
+      min: 800,
+      max: 1600
+    })
+  }
+
+  private readonly languages = ['en-GB', 'en-US']
+  private readonly platforms = ['win32', 'macOS']
+  private readonly userAgents = ['x', 'y']
+  private readonly orientations = ['landscape', 'portrait']
+
   create (preparedCheck: PreparedCheck): SubmittedCheck {
     return {
       answers: [{
@@ -24,19 +37,19 @@ export class SubmittedCheckBuilderService {
         battery: {
           chargingTime: 0,
           dischargingTime: 0,
-          isCharging: false,
-          levelPercent: 100
+          isCharging: faker.datatype.boolean(),
+          levelPercent: faker.datatype.number({ min: 1, max: 100 })
         },
         cpu: {
-          hardwareConcurrency: 2
+          hardwareConcurrency: faker.datatype.number({ min: 1, max: 10 })
         },
-        deviceId: 'abc',
+        deviceId: faker.datatype.uuid(),
         navigator: {
-          cookieEnabled: false,
-          doNotTrack: true,
-          language: 'en-GB',
-          platform: 'x',
-          userAgent: 'y'
+          cookieEnabled: faker.datatype.boolean(),
+          doNotTrack: faker.datatype.boolean(),
+          language: faker.random.arrayElement(this.languages),
+          platform: faker.random.arrayElement(this.platforms),
+          userAgent: faker.random.arrayElement(this.userAgents)
         },
         networkConnection: {
           downlink: 1,
@@ -45,13 +58,13 @@ export class SubmittedCheckBuilderService {
         },
         screen: {
           colorDepth: 24,
-          innerHeight: 1,
-          innerWidth: 2,
-          orientation: 'landscape',
-          outerHeight: 3,
-          outerWidth: 4,
-          screenHeight: 5,
-          screenWidth: 6
+          innerHeight: this.randomScreenValue(),
+          innerWidth: this.randomScreenValue(),
+          orientation: faker.random.arrayElement(this.orientations),
+          outerHeight: this.randomScreenValue(),
+          outerWidth: this.randomScreenValue(),
+          screenHeight: this.randomScreenValue(),
+          screenWidth: this.randomScreenValue()
         }
       },
       inputs: [],
@@ -64,8 +77,8 @@ export class SubmittedCheckBuilderService {
       },
       questions: preparedCheck.questions,
       school: {
-        name: 'a',
-        uuid: 'x'
+        name: faker.company.companyName(),
+        uuid: preparedCheck.school.uuid
       },
       schoolUUID: preparedCheck.school.uuid,
       tokens: preparedCheck.tokens
