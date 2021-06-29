@@ -10,7 +10,4 @@ describe('submitted-check-builder-service', () => {
   test('subject should be defined', () => {
     expect(sut).toBeInstanceOf(SubmittedCheckBuilderService)
   })
-
-  test('', () => {
-  })
 })
