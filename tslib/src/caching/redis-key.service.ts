@@ -1,5 +1,6 @@
 export interface IRedisKeyService {
   getSchoolResultsKey (schoolId: number): string
+  getPreparedCheckLookupKey (checkCode: string): string
 }
 
 class RedisKeyService implements IRedisKeyService {
@@ -10,6 +11,9 @@ class RedisKeyService implements IRedisKeyService {
    */
   getSchoolResultsKey (schoolId: number): string {
     return `result:${schoolId}`
+  }
+  getPreparedCheckLookupKey (checkCode: string): string {
+    return `prepared-check-lookup:${checkCode}`
   }
 }
 
