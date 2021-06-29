@@ -7,15 +7,11 @@ export interface IPreparedCheckService {
 
 /**
  * encapsulates the 2-step process for looking up a prepared check via a check code.
- * This is necessary now due to the fact that the logic is now required
- * in 2 components - check-started function & util-submit-check function
  */
-
 export class PreparedCheckService implements IPreparedCheckService {
-
   private readonly redisService: IRedisService
 
-  constructor(redisService?: IRedisService) {
+  constructor (redisService?: IRedisService) {
     if (redisService === undefined) {
       redisService = new RedisService()
     }

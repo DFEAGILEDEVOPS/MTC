@@ -26,7 +26,7 @@ const CompressionServiceMock = jest.fn<ICompressionService, any>(() => ({
   decompress: jest.fn()
 }))
 
-const PreparedCheckServiceMock = jest.fn<IPreparedCheckService, any> (() => ({
+const PreparedCheckServiceMock = jest.fn<IPreparedCheckService, any>(() => ({
   fetch: jest.fn()
 }))
 

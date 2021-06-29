@@ -23,8 +23,8 @@ describe('prepared-check.service', () => {
     const preparedCheckKey = 'TODO-mock-a-value-for-it'
     jest.spyOn(redisServiceMock, 'get').mockReturnValueOnce(Promise.resolve(preparedCheckKey))
     await sut.fetch(checkCode)
-    expect(redisServiceMock.get).nthCalledWith(1, lookupKey)
-    expect(redisServiceMock.get).lastCalledWith(preparedCheckKey)
+    expect(redisServiceMock.get).toHaveBeenNthCalledWith(1, lookupKey)
+    expect(redisServiceMock.get).toHaveBeenLastCalledWith(preparedCheckKey)
   })
 
   test('when prepared check key is empty string, returns undefined', async () => {
