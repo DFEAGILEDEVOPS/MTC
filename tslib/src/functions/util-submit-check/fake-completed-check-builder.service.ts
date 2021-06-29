@@ -6,7 +6,7 @@ export interface ISubmittedCheckBuilderService {
   create (preparedCheck: PreparedCheck): SubmittedCheck
 }
 
-export class SubmittedCheckBuilderService {
+export class FakeCompletedCheckBuilderService implements ISubmittedCheckBuilderService {
   private readonly randomScreenValue = (): number => {
     return faker.datatype.number({
       min: 800,
