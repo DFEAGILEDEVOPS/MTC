@@ -15,7 +15,7 @@ const functionName = 'check-notifier-batch'
   put on the dead letter queue automatically.
 */
 const batchCheckNotifier: AzureFunction = async function (context: Context, timer: IFunctionTimer): Promise<void> {
-  if (timer.IsPastDue) {
+  if (timer.isPastDue) {
     context.log(`${functionName}: timer is past due, exiting.`)
     return
   }

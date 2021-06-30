@@ -17,7 +17,7 @@ const functionName = 'school-results-cache'
   put on the dead letter queue automatically.
 */
 const sbMessageReceiver: AzureFunction = async function sbMessageReceiver (context: Context, timer: IFunctionTimer): Promise<void> {
-  if (timer.IsPastDue) {
+  if (timer.isPastDue) {
     context.log(`${functionName} timer is past due, exiting...`)
     return
   }
