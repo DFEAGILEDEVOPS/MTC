@@ -27,10 +27,12 @@ const resultDataService = {
     p.urlSlug,
     cr.mark,
     ac.code as attendanceCode,
-    ac.reason as attendanceReason
+    ac.reason as attendanceReason,
+    c.complete
   FROM mtc_admin.[pupil] p
   LEFT JOIN mtc_results.checkResult cr ON (cr.check_id = p.currentCheckId)
   LEFT JOIN mtc_admin.attendanceCode ac ON (ac.id = p.attendanceId)
+  LEFT JOIN mtc_admin.[check] c ON (p.currentCheckId = c.id)
  WHERE p.school_id = @schoolId;`
     const params = [
       {
