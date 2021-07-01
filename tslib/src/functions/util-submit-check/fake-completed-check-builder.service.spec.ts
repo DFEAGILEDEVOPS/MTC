@@ -33,7 +33,7 @@ describe('submitted-check-builder-service', () => {
 
   test('inspect audits', () => {
     const completeCheck = sut.create(mockPreparedCheck)
-    console.dir(completeCheck)
+    console.dir(JSON.stringify(completeCheck, null, 2))
     expect(completeCheck).toBeDefined()
   })
 })

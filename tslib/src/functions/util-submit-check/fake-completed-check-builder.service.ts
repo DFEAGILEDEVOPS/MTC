@@ -15,6 +15,7 @@ export class FakeCompletedCheckBuilderService implements ISubmittedCheckBuilderS
     this.completedCheckAuditBuilderService = new CompletedCheckAuditBuilderService()
   }
 
+  // TODO flesh out options
   private readonly languages = ['en-GB', 'en-US']
   private readonly platforms = ['win32', 'macOS']
   private readonly userAgents = ['x', 'y']

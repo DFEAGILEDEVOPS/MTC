@@ -1,4 +1,4 @@
-import { CheckQuestion, CompleteCheckAuditEntry } from '../../schemas/check-schemas/submitted-check'
+import { CheckQuestion, CompleteCheckAuditEntry, AuditEntryType } from '../../schemas/check-schemas/submitted-check'
 import moment from 'moment'
 
 export class CompletedCheckAuditBuilderService {
@@ -7,13 +7,42 @@ export class CompletedCheckAuditBuilderService {
   }
 
   private buildSubmissionEntries (): CompleteCheckAuditEntry[] {
-    // TODO
-    return []
+    return [
+      {
+        type: AuditEntryType.CheckSubmissionPending,
+        clientTimestamp: moment().toISOString(),
+        relativeTiming: '+0'
+      },
+      {
+        type: AuditEntryType.CheckSubmissionApiCalled,
+        clientTimestamp: moment().toISOString(),
+        relativeTiming: '+0'
+      }
+    ]
   }
 
   private buildQuestionEntries (questions: CheckQuestion[]): CompleteCheckAuditEntry[] {
-    // TODO
-    return []
+    const questionAudit = new Array<CompleteCheckAuditEntry>()
+    const typeEntries = [AuditEntryType.PauseRendered, AuditEntryType.QuestionRendered,
+      AuditEntryType.QuestionTimerStarted, AuditEntryType.QuestionAnswered, AuditEntryType.QuestionTimerCancelled]
+    for (let index = 0; index < questions.length; index++) {
+      const question = questions[index]
+      const data = {
+        sequenceNumber: question.order,
+        question: `${question.factor1}x${question.factor2}`,
+        isWarmup: false
+      }
+      const questionEntries = typeEntries.map(t => {
+        return {
+          clientTimestamp: moment().toISOString(),
+          relativeTiming: '+0',
+          type: t,
+          data: data
+        }
+      })
+      questionAudit.push(...questionEntries)
+    }
+    return questionAudit
   }
 
   private readonly warmupQuestions: CheckQuestion[] = [
@@ -36,12 +65,12 @@ export class CompletedCheckAuditBuilderService {
 
   private buildWarmupEntries (): CompleteCheckAuditEntry[] {
     const header: CompleteCheckAuditEntry[] = [{
-      type: 'WarmupStarted',
+      type: AuditEntryType.WarmupStarted,
       clientTimestamp: moment().add(1, 'seconds').toISOString(),
       relativeTiming: '+0'
     },
     {
-      type: 'WarmupIntroRendered',
+      type: AuditEntryType.WarmupIntroRendered,
       clientTimestamp: moment().add(2, 'seconds').toISOString(),
       relativeTiming: '+0'
     }]
@@ -51,7 +80,7 @@ export class CompletedCheckAuditBuilderService {
       warmupAnswers.push(...this.buildWarmupQuestionEntries(q))
     }
     const footer: CompleteCheckAuditEntry = {
-      type: 'WarmupCompleteRendered',
+      type: AuditEntryType.WarmupCompleteRendered,
       clientTimestamp: moment().toISOString(),
       relativeTiming: '+0'
     }
@@ -68,31 +97,31 @@ export class CompletedCheckAuditBuilderService {
       {
         clientTimestamp: moment().toISOString(),
         relativeTiming: '+0',
-        type: 'PauseRendered',
+        type: AuditEntryType.PauseRendered,
         data: data
       },
       {
         clientTimestamp: moment().toISOString(),
         relativeTiming: '+0',
-        type: 'QuestionTimerStarted',
+        type: AuditEntryType.QuestionTimerStarted,
         data: data
       },
       {
         clientTimestamp: moment().toISOString(),
         relativeTiming: '+0',
-        type: 'QuestionRendered',
+        type: AuditEntryType.QuestionRendered,
         data: data
       },
       {
         clientTimestamp: moment().toISOString(),
         relativeTiming: '+0',
-        type: 'QuestionTimerCancelled',
+        type: AuditEntryType.QuestionTimerCancelled,
         data: data
       },
       {
         clientTimestamp: moment().toISOString(),
         relativeTiming: '+0',
-        type: 'QuestionAnswered',
+        type: AuditEntryType.QuestionAnswered,
         data: data
       }
     ]

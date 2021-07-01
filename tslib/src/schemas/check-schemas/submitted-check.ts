@@ -108,10 +108,30 @@ export interface CompleteCheckInputEntry {
   relativeTiming: string
 }
 
-export type AuditEntryType = 'WarmupStarted' | 'WarmupIntroRendered' | 'PauseRendered' |
+export enum AuditEntryType {
+  WarmupStarted = 'WarmupStarted',
+  WarmupIntroRendered = 'WarmupIntroRendered',
+  PauseRendered = 'PauseRendered',
+  QuestionRendered = 'QuestionRendered',
+  QuestionTimerStarted = 'QuestionTimerStarted',
+  QuestionTimerCancelled = 'QuestionTimerCancelled',
+  UtteranceStarted = 'UtteranceStarted',
+  UtteranceEnded = 'UtteranceEnded',
+  QuestionReadingStarted = 'QuestionReadingStarted',
+  QuestionReadingEnded = 'QuestionReadingEnded',
+  CheckStarted = 'CheckStarted',
+  CheckStartedApiCalled = 'CheckStartedApiCalled',
+  QuestionAnswered = 'QuestionAnswered',
+  WarmupCompleteRendered = 'WarmupCompleteRendered',
+  CheckSubmissionPending = 'CheckSubmissionPending',
+  CheckSubmissionApiCalled = 'CheckSubmissionApiCalled',
+  QuestionTimerEnded = 'QuestionTimerEnded'
+}
+
+export type AuditEntryType1 = 'WarmupStarted' | 'WarmupIntroRendered' | 'PauseRendered' |
 'QuestionRendered' | 'QuestionTimerStarted' | 'QuestionTimerCancelled' | 'UtteranceStarted' | 'UtteranceEnded' |
 'QuestionReadingStarted' | 'QuestionReadingEnded' | 'CheckStarted' | 'CheckStartedApiCalled' | 'QuestionAnswered' |
-'WarmupCompleteRendered'
+'WarmupCompleteRendered' | 'CheckSubmissionPending' | 'CheckSubmissionApiCalled'
 
 export interface CompleteCheckAuditEntry {
   type: AuditEntryType
