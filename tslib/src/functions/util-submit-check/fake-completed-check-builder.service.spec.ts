@@ -30,4 +30,10 @@ describe('submitted-check-builder-service', () => {
     const completeCheck = sut.create(mockPreparedCheck)
     expect(completeCheck.answers).toHaveLength(mockPreparedCheck.questions.length)
   })
+
+  test('inspect audits', () => {
+    const completeCheck = sut.create(mockPreparedCheck)
+    console.dir(completeCheck)
+    expect(completeCheck).toBeDefined()
+  })
 })

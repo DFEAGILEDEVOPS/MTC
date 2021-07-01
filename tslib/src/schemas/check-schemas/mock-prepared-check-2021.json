@@ -82,17 +82,17 @@
   },
   "tokens": {
     "checkStarted": {
-      "token": "sas-token-value",
+      "token": "st=2021-06-02T07%3A07%3A26Z&se=2021-06-03T08%3A12%3A26Z&sp=a&sv=2018-03-28&sig=the-signature-of-the-token-object-value",
       "url": "https://myqueue.queue.core.windows.net/check-started",
       "queueName": "check-started"
     },
     "pupilPreferences": {
-      "token": "sas-token-value",
+      "token": "st=2021-06-02T07%3A07%3A26Z&se=2021-06-03T08%3A12%3A26Z&sp=a&sv=2018-03-28&sig=the-signature-of-the-token-object-value",
       "url": "https://myqueue.queue.core.windows.net/pupil-prefs",
       "queueName": "pupil-prefs"
     },
     "pupilFeedback": {
-      "token": "sas-token-value",
+      "token": "st=2021-06-02T07%3A07%3A26Z&se=2021-06-03T08%3A12%3A26Z&sp=a&sv=2018-03-28&sig=the-signature-of-the-token-object-value",
       "url": "https://myqueue.queue.core.windows.net/pupil-feedback",
       "queueName": "pupil-feedback"
     },
@@ -100,10 +100,10 @@
       "token": "token-disabled"
     },
     "checkComplete": {
-      "token": "sas-token-value",
+      "token": "st=2021-06-02T07%3A07%3A26Z&se=2021-06-03T08%3A12%3A26Z&sp=a&sv=2018-03-28&sig=the-signature-of-the-token-object-value",
       "url": "https://myqueue.queue.core.windows.net/check-submitted",
       "queueName": "check-submitted"
     }
   },
-  "updatedAt": "2021-06-25T09:11:40.601Z"
+  "updatedAt": "2021-06-02T09:11:40.601Z"
 }
