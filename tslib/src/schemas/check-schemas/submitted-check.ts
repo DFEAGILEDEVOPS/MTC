@@ -108,10 +108,13 @@ export interface CompleteCheckInputEntry {
   relativeTiming: string
 }
 
+export type AuditEntryType = 'WarmupStarted' | 'WarmupIntroRendered' | 'PauseRendered' |
+'QuestionRendered' | 'QuestionTimerStarted' | 'QuestionTimerCancelled' | 'UtteranceStarted' | 'UtteranceEnded' |
+'QuestionReadingStarted' | 'QuestionReadingEnded' | 'CheckStarted' | 'CheckStartedApiCalled' | 'QuestionAnswered' |
+'WarmupCompleteRendered'
+
 export interface CompleteCheckAuditEntry {
-  type: 'WarmupStarted' | 'WarmupIntroRendered' | 'PauseRendered' |
-  'QuestionRendered' | 'QuestionTimerStarted' | 'QuestionTimerCancelled' | 'UtteranceStarted' | 'UtteranceEnded' |
-  'QuestionReadingStarted' | 'QuestionReadingEnded' | 'CheckStarted' | 'CheckStartedApiCalled' // TODO more?
+  type: AuditEntryType
   clientTimestamp: string
   relativeTiming: string
   data?: {

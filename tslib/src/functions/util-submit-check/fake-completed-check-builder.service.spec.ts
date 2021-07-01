@@ -25,4 +25,9 @@ describe('submitted-check-builder-service', () => {
     expect(completeCheck.schoolUUID).toStrictEqual(mockPreparedCheck.school.uuid)
     expect(completeCheck.school.uuid).toStrictEqual(mockPreparedCheck.school.uuid)
   })
+
+  test('answer count should match question count', () => {
+    const completeCheck = sut.create(mockPreparedCheck)
+    expect(completeCheck.answers).toHaveLength(mockPreparedCheck.questions.length)
+  })
 })
