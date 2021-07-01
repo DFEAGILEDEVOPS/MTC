@@ -3,7 +3,17 @@ import moment from 'moment'
 
 export class CompletedCheckAuditBuilderService {
   createAudits (questions: CheckQuestion[]): CompleteCheckAuditEntry[] {
-    return [...this.buildWarmupEntries()]
+    return [...this.buildWarmupEntries(), ...this.buildQuestionEntries(questions), ...this.buildSubmissionEntries()]
+  }
+
+  private buildSubmissionEntries (): CompleteCheckAuditEntry[] {
+    // TODO
+    return []
+  }
+
+  private buildQuestionEntries (questions: CheckQuestion[]): CompleteCheckAuditEntry[] {
+    // TODO
+    return []
   }
 
   private readonly warmupQuestions: CheckQuestion[] = [

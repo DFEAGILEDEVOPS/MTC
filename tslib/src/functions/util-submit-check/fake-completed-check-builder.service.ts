@@ -4,14 +4,13 @@ import * as faker from 'faker'
 import moment from 'moment'
 import { CompletedCheckAuditBuilderService } from './completed-check-audit-builder.service'
 
-
 export interface ISubmittedCheckBuilderService {
   create (preparedCheck: PreparedCheck): SubmittedCheck
 }
 
 export class FakeCompletedCheckBuilderService implements ISubmittedCheckBuilderService {
-
   private readonly completedCheckAuditBuilderService: CompletedCheckAuditBuilderService
+
   constructor () {
     this.completedCheckAuditBuilderService = new CompletedCheckAuditBuilderService()
   }
