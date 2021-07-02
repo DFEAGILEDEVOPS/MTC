@@ -259,7 +259,13 @@ describe('result.service', () => {
     const sut = resultService.assignStatus
 
     it('describes complete pupils with no status', () => {
-      const pupil = { restartAvailable: false, currentCheckId: 1, checkComplete: true }
+      const pupil = {
+        restartAvailable: false,
+        currentCheckId: 1,
+        checkComplete: true,
+        mark: 25,
+        attendanceReason: null
+      }
       const status = sut(pupil)
       expect(status).toBe('')
     })
@@ -285,6 +291,51 @@ describe('result.service', () => {
       }
       const status = sut(pupil)
       expect(status).toBe('any of the reasons for not attending')
+    })
+
+    // MTC 2021 only - Bug 47473 && 47477
+    // TODO: remove for 2022?
+    it('sets the status to complete for pupils who are marked as not attending but have a completed check with' +
+      ' pupil.checkComplete being set', () => {
+      const pupil = {
+        restartAvailable: false,
+        currentCheckId: 999,
+        checkComplete: false,
+        attendanceReason: 'any of the reasons for not attending',
+        complete: true
+      }
+      const status = sut(pupil)
+      expect(status).toBe('') // complete does not get a value - empty string
+    })
+
+    // MTC 2021 only - Bug 47473 && 47477
+    // TODO: remove for 2022?
+    it('sets the status to not attending for a pupil who is marked as not attending but has a check that is not' +
+      ' complete', () => {
+      const pupil = {
+        restartAvailable: false,
+        currentCheckId: 999,
+        checkComplete: false,
+        attendanceReason: 'any of the reasons for not attending',
+        complete: false
+      }
+      const status = sut(pupil)
+      expect(status).toBe('any of the reasons for not attending')
+    })
+
+    // MTC 2021 only - Bug 47473 && 47477
+    // TODO: remove for 2022?
+    it('its shows a pupil as Incomplete if they don\'t have a mark (check has not been synchronised)', () => {
+      const pupil = {
+        restartAvailable: false,
+        currentCheckId: 999,
+        checkComplete: true,
+        attendanceReason: null,
+        complete: true,
+        mark: null
+      }
+      const status = sut(pupil)
+      expect(status).toBe('Incomplete')
     })
   })
 }) // end result service
