@@ -1,16 +1,15 @@
-import { CheckSubmitProxyOptions, SubmittedCheckMessageBuilderService } from './fake-submitted-check-builder.service'
+import { CheckSubmitProxyOptions, FakeSubmittedCheckMessageBuilderService } from './fake-submitted-check-builder.service'
 import mockPreparedCheck from '../../schemas/check-schemas/mock-prepared-check-2021.json'
 import { FakeCompletedCheckBuilderService, ISubmittedCheckBuilderService } from './fake-completed-check-builder.service'
 import { ICompressionService } from '../../common/compression-service'
 import { IPreparedCheckService } from '../../caching/prepared-check.service'
 
-let sut: SubmittedCheckMessageBuilderService
+let sut: FakeSubmittedCheckMessageBuilderService
 let preparedCheckServiceMock: IPreparedCheckService
 let submittedCheckBuilderMock: ISubmittedCheckBuilderService
 let compressionServiceMock: ICompressionService
 
 const options: CheckSubmitProxyOptions = {
-  isLiveCheck: true,
   correctAnswerCount: 22,
   answerCount: mockPreparedCheck.questions.length
 }
@@ -30,12 +29,12 @@ const PreparedCheckServiceMock = jest.fn<IPreparedCheckService, any>(() => ({
   fetch: jest.fn()
 }))
 
-describe('submitted-check-message-builder-service', () => {
+describe('fake-submitted-check-message-builder-service', () => {
   beforeEach(() => {
     preparedCheckServiceMock = new PreparedCheckServiceMock()
     submittedCheckBuilderMock = new SubmittedCheckBuilderServiceMock()
     compressionServiceMock = new CompressionServiceMock()
-    sut = new SubmittedCheckMessageBuilderService(submittedCheckBuilderMock, compressionServiceMock, preparedCheckServiceMock)
+    sut = new FakeSubmittedCheckMessageBuilderService(submittedCheckBuilderMock, compressionServiceMock, preparedCheckServiceMock)
     const fakeSubmittedCheckBuilder = new FakeCompletedCheckBuilderService()
     const fakeSubmittedCheck = fakeSubmittedCheckBuilder.create(mockPreparedCheck)
     jest.spyOn(submittedCheckBuilderMock, 'create').mockReturnValue(fakeSubmittedCheck)
@@ -43,7 +42,7 @@ describe('submitted-check-message-builder-service', () => {
   })
 
   test('subject should be defined', () => {
-    expect(sut).toBeInstanceOf(SubmittedCheckMessageBuilderService)
+    expect(sut).toBeInstanceOf(FakeSubmittedCheckMessageBuilderService)
   })
 
   test('calls prepared check service with expected check code', async () => {

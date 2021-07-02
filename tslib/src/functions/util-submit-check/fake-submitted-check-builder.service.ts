@@ -4,12 +4,11 @@ import { ISubmittedCheckBuilderService as ICompletedCheckBuilderService, FakeCom
 import { CompressionService, ICompressionService } from '../../common/compression-service'
 import { IPreparedCheckService, PreparedCheckService } from '../../caching/prepared-check.service'
 export interface CheckSubmitProxyOptions {
-  isLiveCheck: boolean
   correctAnswerCount: number
   answerCount: number
 }
 
-export class SubmittedCheckMessageBuilderService {
+export class FakeSubmittedCheckMessageBuilderService {
   private readonly completedCheckPayloadBuilder: ICompletedCheckBuilderService
   private readonly compressionService: ICompressionService
   private readonly prepCheckService: IPreparedCheckService

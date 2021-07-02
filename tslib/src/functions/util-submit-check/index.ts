@@ -1,30 +1,31 @@
 
 import { AzureFunction, Context, HttpRequest } from '@azure/functions'
-import * as lz from 'lz-string'
-import submittedCheck from '../../schemas/submitted-check.v3'
-import completeCheckPayload from '../../schemas/large-complete-check.json'
 import config from '../../config'
+import { FakeSubmittedCheckMessageBuilderService } from './fake-submitted-check-builder.service'
 
-const httpTrigger: AzureFunction = function (context: Context, req: HttpRequest): void {
+const fakeSubmittedCheckBuilder = new FakeSubmittedCheckMessageBuilderService()
+
+const httpTrigger: AzureFunction = async function (context: Context, req: HttpRequest): Promise<void> {
   if (!config.DevTestUtils.TestSupportApi) {
-    context.log('exiting as not enabled (default behaviour)')
+    context.log('exiting as config.DevTestUtils.TestSupportApi is not enabled (default behaviour)')
     context.done()
     return
   }
-  // TODO add support for live check toggle via query string?
-  const message = JSON.parse(JSON.stringify(submittedCheck))
-  const samplePayload = JSON.parse(JSON.stringify(completeCheckPayload))
-  message.checkCode = req.body.checkCode
-  message.schoolUUID = req.body.school.uuid
-  // create an invalid check
-  if (req.query.bad !== undefined) {
-    context.log('creating invalid check...')
-    delete samplePayload.answers
+  if (!req.body?.checkCode) {
+    context.res = {
+      status: 400,
+      body: 'checkCode is required'
+    }
+    return
   }
-  const archive = lz.compressToUTF16(JSON.stringify(samplePayload))
-  message.archive = archive
+  if (req.query.bad !== undefined) {
+    throw new Error('invalid check functionality not yet implemented')
+  }
+  const message = fakeSubmittedCheckBuilder.createSubmittedCheckMessage(req.body?.checkCode, {
+    answerCount: 25,
+    correctAnswerCount: 25
+  })
   context.bindings.submittedCheckQueue = [message]
-  context.done()
 }
 
 export default httpTrigger
