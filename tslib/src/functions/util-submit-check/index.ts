@@ -11,7 +11,8 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
     context.done()
     return
   }
-  if (!req.body?.checkCode !== undefined) {
+  const checkCode = req.body?.checkCode
+  if (checkCode === undefined) {
     context.res = {
       status: 400,
       body: 'checkCode is required'
