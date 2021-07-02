@@ -14,7 +14,7 @@ class RedisKeyService implements IRedisKeyService {
   }
 
   getPreparedCheckLookupKey (checkCode: string): string {
-    return `prepared-check-lookup:${checkCode}`
+    return `prepared-check-lookup:${checkCode.toUpperCase()}`
   }
 }
 

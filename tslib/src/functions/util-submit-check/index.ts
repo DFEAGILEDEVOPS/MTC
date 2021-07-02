@@ -11,7 +11,7 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
     context.done()
     return
   }
-  if (!req.body?.checkCode) {
+  if (!req.body?.checkCode !== undefined) {
     context.res = {
       status: 400,
       body: 'checkCode is required'
@@ -21,10 +21,11 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
   if (req.query.bad !== undefined) {
     throw new Error('invalid check functionality not yet implemented')
   }
-  const message = fakeSubmittedCheckBuilder.createSubmittedCheckMessage(req.body?.checkCode, {
+  const message = await fakeSubmittedCheckBuilder.createSubmittedCheckMessage(req.body?.checkCode, {
     answerCount: 25,
     correctAnswerCount: 25
   })
+  console.dir(message)
   context.bindings.submittedCheckQueue = [message]
 }
 
