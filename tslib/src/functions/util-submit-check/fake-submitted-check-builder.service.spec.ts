@@ -10,8 +10,7 @@ let submittedCheckBuilderMock: ISubmittedCheckBuilderService
 let compressionServiceMock: ICompressionService
 
 const options: CheckSubmitProxyOptions = {
-  correctAnswerCount: 22,
-  answerCount: mockPreparedCheck.questions.length
+  correctAnswerCount: 22
 }
 
 const checkCode = 'b8ad45ac-b2c9-48ff-8c9f-afebb2956bab'

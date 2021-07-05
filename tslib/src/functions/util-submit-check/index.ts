@@ -23,10 +23,8 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
     throw new Error('invalid check functionality not yet implemented')
   }
   const message = await fakeSubmittedCheckBuilder.createSubmittedCheckMessage(req.body?.checkCode, {
-    answerCount: 25,
     correctAnswerCount: 25
   })
-  console.dir(message)
   context.bindings.submittedCheckQueue = [message]
 }
 

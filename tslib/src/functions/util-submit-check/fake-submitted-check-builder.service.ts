@@ -5,7 +5,6 @@ import { CompressionService, ICompressionService } from '../../common/compressio
 import { IPreparedCheckService, PreparedCheckService } from '../../caching/prepared-check.service'
 export interface CheckSubmitProxyOptions {
   correctAnswerCount: number
-  answerCount: number
 }
 
 export class FakeSubmittedCheckMessageBuilderService {
