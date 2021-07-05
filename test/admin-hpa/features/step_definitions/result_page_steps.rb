@@ -85,12 +85,12 @@ Then(/^I should see the school results$/) do
   db_pupil_results = checks_ids_from_school.map {|check| {id: check.to_s, mark: SqlDbHelper.get_check_result(check)['mark'].to_s}}.sort_by {|hsh| hsh[:id]}
   expect(db_pupil_results).to eql pupil_results
   results_page.ctf_download.click
-  ctf_path = File.expand_path("#{File.dirname(__FILE__)}/../../data/ctf_download/DfE_KS2_999#{@estab_code}_001.xml")
+  ctf_path = File.expand_path("#{File.dirname(__FILE__)}/../../data/ctf_download/999#{@estab_code}_KS2_999#{@estab_code}_001.xml")
   Timeout.timeout(120) {sleep 2 until File.exist?(ctf_path)}
   ctf_file = File.read(ctf_path)
   doc = Nokogiri::XML ctf_file
   ctf_results_hash = doc.css('Pupil').map {|p| {name: p.children.css('Forename').text + ", " + p.children.css('Surname').text, mark: p.children.css('Result').text}}.sort_by {|hsh| hsh[:name]}
-  pupil_results_hash = results_page.results.pupil_list.map {|pupil| {name: pupil.name.text.split(',')[0] + ", " + pupil.name.text.split(',')[1].strip, mark: (pupil.score.text == '-' ? 'A' : pupil.score.text) }}.sort_by {|hsh| hsh[:name]}
+  pupil_results_hash = results_page.results.pupil_list.map {|pupil| {name: pupil.name.text.split(',')[0] + ", " + pupil.name.text.split(',')[1].strip, mark: (pupil.score.text == '-' ? 'Z' : pupil.score.text) }}.sort_by {|hsh| hsh[:name]}
   expect(ctf_results_hash).to eql pupil_results_hash
 end
 
@@ -130,11 +130,11 @@ end
 
 And(/^some pupils who have been marked as not taking the check$/) do
   step 'I am logged in'
-  ["Incorrect registration", "Absent during check window",
-   "Left school",
-   "Unable to access",
-   "Working below expectation",
-   "Just arrived and unable to establish abilities"].each do |reason|
+  ["Pupil not taking the check", "Pupil not taking the check",
+   "Pupil not taking the check",
+   "Pupil not taking the check",
+   "Pupil not taking the check",
+   "Pupil not taking the check"].each do |reason|
     @name = (0...8).map {(65 + rand(26)).chr}.join
     step "I am on the add pupil page"
     step "I submit the form with the name fields set as #{@name}"
@@ -172,7 +172,7 @@ Then(/^I should see the results and reasons for not taking the check$/) do
   db_pupil_results = checks_ids_from_school.map {|check| {id: check.to_s, mark: SqlDbHelper.get_check_result(check)['mark'].to_s}}.sort_by {|hsh| hsh[:id]}
   expect(db_pupil_results).to eql pupil_results.sort_by {|hsh| hsh[:id]}
   results_page.ctf_download.click
-  ctf_path = File.expand_path("#{File.dirname(__FILE__)}/../../data/ctf_download/DfE_KS2_999#{@estab_code}_001.xml")
+  ctf_path = File.expand_path("#{File.dirname(__FILE__)}/../../data/ctf_download/999#{@estab_code}_KS2_999#{@estab_code}_001.xml")
   Timeout.timeout(120) {sleep 2 until File.exist?(ctf_path)}
   ctf_file = File.read(ctf_path)
   doc = Nokogiri::XML ctf_file
@@ -206,7 +206,7 @@ Then('the HDF reflects these changes') do
   hdf_form_page.enter_details(@hdf_details_hash)
   hdf_form_page.continue.click
   hdf_pupil_details = declaration_review_pupils_page.pupil_list.rows.map {|pupil| {:name => pupil.name.text, :status => pupil.reason.text}}
-  hdf_pupil_details.each {|pupil| expect(pupil[:status]).to eql "Absent during check window"}
+  hdf_pupil_details.each {|pupil| expect(pupil[:status]).to eql "Pupil not taking the check"}
   declaration_review_pupils_page.continue_button.click
   declaration_confirm_page.submit_valid_confirmed
   expect(declaration_submitted_page).to be_displayed
@@ -217,7 +217,7 @@ end
 
 Then('the results reflect these changes') do
   results_page.ctf_download.click
-  ctf_path = File.expand_path("#{File.dirname(__FILE__)}/../../data/ctf_download/DfE_KS2_999#{@estab_code}_001.xml")
+  ctf_path = File.expand_path("#{File.dirname(__FILE__)}/../../data/ctf_download/999#{@estab_code}_KS2_999#{@estab_code}_001.xml")
   Timeout.timeout(120) {sleep 2 until File.exist?(ctf_path)}
   ctf_file = File.read(ctf_path)
   doc = Nokogiri::XML ctf_file

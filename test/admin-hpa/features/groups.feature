@@ -121,9 +121,3 @@ Feature:
   Scenario: Middle name is displayed when pupils have the same name and DOB
     Given I add 2 pupil with same firstname lastname and same dob
     Then middle name is displayed for the 2 pupil on group pupil list page
-
-  @wip
-  Scenario: List of pupils is sorted via surname
-
-  @wip
-  Scenario: Pupil records are updated

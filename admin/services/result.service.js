@@ -13,9 +13,11 @@ const schoolResultsTtl = 60 * 60 * 24 * 180 // cache school results for 180 days
 const resultsStrings = require('../lib/consts/mtc-results')
 
 /**
+ * Warning: Partial properties
  * @typedef {object} PupilRestart
  * @property {boolean} restartAvailable
  * @property {number} currentCheckId
+ * @property {boolean} complete
  * @property {boolean} checkComplete
  * @property {string} attendanceReason
  */
@@ -27,26 +29,30 @@ const resultService = {
 
   /**
    * Construct the result status for the pupil
-   * @param {PupilRestart} pupil
+   * @param {CreatePupilDataParam} pupil
    * @return {string}
    */
   assignStatus: function assignStatus (pupil) {
+    if (pupil.attendanceReason) {
+      if (pupil.currentCheckId && pupil.checkComplete === false && pupil.complete === true) {
+        // MTC 2021 only - Bug 47473 && 47477
+        return resultsStrings.complete
+      }
+      return pupil.attendanceReason
+    }
+
     if (pupil.restartAvailable) {
       return resultsStrings.restartNotTaken
     }
 
     if (pupil.currentCheckId) {
-      if (pupil.checkComplete === true) {
+      if (pupil.checkComplete === true && pupil.mark !== null && pupil.mark !== undefined) {
         return resultsStrings.complete
       } else {
         return resultsStrings.incomplete
       }
     } else {
-      if (pupil.attendanceReason) {
-        return pupil.attendanceReason
-      } else {
-        return resultsStrings.didNotParticipate
-      }
+      return resultsStrings.didNotParticipate
     }
   },
 
@@ -69,6 +75,7 @@ const resultService = {
    * @property {number} school_id
    * @property {string} upn
    * @property {string} urlSlug
+   * @property {boolean} complete - check.complete flag
    */
 
   /**
@@ -85,6 +92,7 @@ const resultService = {
    * @property {string} status
    * @property {string} urlSlug
    * @property {string} upn
+   * @property {boolean} complete - check.complete flag
    */
   /**
    * Return pupil data showing mark, and status
@@ -108,7 +116,8 @@ const resultService = {
         // attendanceCode is used to determine the pupil result in the CTF XML file
         attendanceCode: o.attendanceCode,
         upn: o.upn,
-        gender: o.gender
+        gender: o.gender,
+        complete: o.complete
       }
     })
   },
@@ -116,7 +125,7 @@ const resultService = {
   /**
    *
    * @param schoolId
-   * @return {Promise<{pupils: {foreName:string, middleNames:string, lastName:string, group_id:null|number, dateOfBirth: Moment.moment, mark:null|number, status:string}[], schoolId: number, generatedAt: (*|moment.Moment)}>}
+   * @return {Promise<{pupils: {foreName:string, middleNames:string, lastName:string, group_id:null|number, dateOfBirth: Moment.moment, mark:null|number, status:string, complete: Boolean}[], schoolId: number, generatedAt: (*|moment.Moment)}>}
    */
   getPupilResultDataFromDb: async function getPupilResultDataFromDb (schoolId) {
     const data = await resultDataService.sqlFindPupilResultsForSchool(schoolId)

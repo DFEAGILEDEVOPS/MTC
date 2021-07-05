@@ -37,7 +37,7 @@ Given(/^I have completed the check(?: using the (.+))?$/) do |input|
   storage_audit_keys.each do |key|
     @audit << (JSON.parse page.evaluate_script("window.localStorage.getItem('#{key}');"))
   end
-
+  p @check_code
 end
 
 Then(/^I should have an expired pin$/) do

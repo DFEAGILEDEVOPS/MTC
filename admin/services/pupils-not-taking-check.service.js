@@ -49,6 +49,16 @@ const pupilsNotTakingCheckService = {
   },
 
   /**
+   * Get pupils only without reasons.
+   * @param schoolId
+   * @returns {Promise<*>}
+   */
+  getPupilsWithoutReasonsInAdminPeriod: async function getPupilsWithoutReasonsInAdminEndPeriod (schoolId) {
+    const pupils = await pupilsNotTakingCheckDataService.sqlFindPupilsWithoutReasonsInAdminPeriod(schoolId)
+    return pupilIdentificationFlag.addIdentificationFlags(pupils)
+  },
+
+  /**
    * Build the pupil slug based on the body object.
    * The req.body.pupil data is posted in 3 forms:
    * 1: string: 'abc-def' (single selection)

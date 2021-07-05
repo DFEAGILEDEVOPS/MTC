@@ -210,7 +210,7 @@ describe('ctfService', () => {
 
     it('the Header element has a CTFversion', () => {
       expect(obj.CTfile.Header).toHaveProperty('CTFversion')
-      expect(obj.CTfile.Header.CTFversion).toEqual('19.0')
+      expect(obj.CTfile.Header.CTFversion).toEqual('20.0')
     })
 
     it('the Header element has a DateTime', () => {
