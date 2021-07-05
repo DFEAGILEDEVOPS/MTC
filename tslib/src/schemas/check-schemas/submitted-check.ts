@@ -99,9 +99,15 @@ export interface CompleteCheckAnswer {
   clientTimestamp: string
 }
 
+export enum InputEventType {
+  Touch = 'touch',
+  KeyDown = 'keydown',
+  Enter = 'enter'
+}
+
 export interface CompleteCheckInputEntry {
   input: string
-  eventType: 'touch' | 'keydown' // TODO 'mouse' ??
+  eventType: InputEventType
   clientTimestamp: string
   question: string
   sequenceNumber: number

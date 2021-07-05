@@ -1,7 +1,7 @@
 import { CheckQuestion, CompleteCheckAuditEntry, AuditEntryType } from '../../schemas/check-schemas/submitted-check'
 import moment from 'moment'
 
-export class CompletedCheckAuditBuilderService {
+export class FakeCheckAuditGeneratorService {
   createAudits (questions: CheckQuestion[]): CompleteCheckAuditEntry[] {
     return [...this.buildWarmupEntries(), ...this.buildQuestionEntries(questions), ...this.buildSubmissionEntries()]
   }

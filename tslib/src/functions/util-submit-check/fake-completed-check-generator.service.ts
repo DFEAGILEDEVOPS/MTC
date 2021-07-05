@@ -1,18 +1,21 @@
 import { PreparedCheck } from '../../schemas/check-schemas/prepared-check'
-import { CheckQuestion, CompleteCheckAnswer, CompleteCheckAuditEntry, CompleteCheckInputEntry, SubmittedCheck } from '../../schemas/check-schemas/submitted-check'
+import { CheckQuestion, CompleteCheckAnswer, SubmittedCheck } from '../../schemas/check-schemas/submitted-check'
 import * as faker from 'faker'
 import moment from 'moment'
-import { CompletedCheckAuditBuilderService } from './completed-check-audit-builder.service'
+import { FakeCheckAuditGeneratorService } from './fake-check-audit-generator.service'
+import { FakeCheckInputsGeneratorService } from './fake-check-inputs-generator.service'
 
-export interface ISubmittedCheckBuilderService {
+export interface ICompletedCheckGeneratorService {
   create (preparedCheck: PreparedCheck): SubmittedCheck
 }
 
-export class FakeCompletedCheckBuilderService implements ISubmittedCheckBuilderService {
-  private readonly completedCheckAuditBuilderService: CompletedCheckAuditBuilderService
+export class FakeCompletedCheckGeneratorService implements ICompletedCheckGeneratorService {
+  private readonly fakeCheckAuditBuilderService: FakeCheckAuditGeneratorService
+  private readonly fakeCheckInputsGeneratorService: FakeCheckInputsGeneratorService
 
   constructor () {
-    this.completedCheckAuditBuilderService = new CompletedCheckAuditBuilderService()
+    this.fakeCheckAuditBuilderService = new FakeCheckAuditGeneratorService()
+    this.fakeCheckInputsGeneratorService = new FakeCheckInputsGeneratorService()
   }
 
   private readonly languages = ['en-GB', 'en-US', 'en', 'en-ie']
@@ -58,34 +61,10 @@ export class FakeCompletedCheckBuilderService implements ISubmittedCheckBuilderS
     return answers
   }
 
-  private createAudits (questions: CheckQuestion[]): CompleteCheckAuditEntry[] {
-    const warmupEntries = this.completedCheckAuditBuilderService.createAudits(questions)
-    // TODO actual questions
-    const questionEntries = new Array<CompleteCheckAuditEntry>()
-    // TODO add check submission entries
-    const checkSubmissionEntries = new Array<CompleteCheckAuditEntry>()
-    return [...warmupEntries, ...questionEntries, ...checkSubmissionEntries]
-  }
-
-  private createInputs (questions: CheckQuestion[]): CompleteCheckInputEntry[] {
-    // TODO create inputs service
-    return [
-      {
-        clientTimestamp: '2019-08-28T15:40:00.608Z',
-        eventType: 'keydown',
-        input: '3',
-        question: '1x1',
-        sequenceNumber: 1,
-        relativeTiming: 'x'
-      }
-    ]
-    // return new Array<CompleteCheckInputEntry>()
-  }
-
   create (preparedCheck: PreparedCheck): SubmittedCheck {
     const answers = this.createAnswers(preparedCheck.questions)
-    const audits = this.createAudits(preparedCheck.questions)
-    const inputs = this.createInputs(preparedCheck.questions)
+    const audits = this.fakeCheckAuditBuilderService.createAudits(preparedCheck.questions)
+    const inputs = this.fakeCheckInputsGeneratorService.create(answers)
 
     return {
       answers: answers,

@@ -1,15 +1,15 @@
-import { FakeCompletedCheckBuilderService } from './fake-completed-check-builder.service'
+import { FakeCompletedCheckGeneratorService } from './fake-completed-check-generator.service'
 import mockPreparedCheck from '../../schemas/check-schemas/mock-prepared-check-2021.json'
 
-let sut: FakeCompletedCheckBuilderService
+let sut: FakeCompletedCheckGeneratorService
 
-describe('submitted-check-builder-service', () => {
+describe('submitted-check-generator-service', () => {
   beforeEach(() => {
-    sut = new FakeCompletedCheckBuilderService()
+    sut = new FakeCompletedCheckGeneratorService()
   })
 
   test('subject should be defined', () => {
-    expect(sut).toBeInstanceOf(FakeCompletedCheckBuilderService)
+    expect(sut).toBeInstanceOf(FakeCompletedCheckGeneratorService)
   })
 
   test('checkCode matches preparedCheck', () => {

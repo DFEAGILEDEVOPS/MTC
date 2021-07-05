@@ -1,9 +1,9 @@
 
 import { AzureFunction, Context, HttpRequest } from '@azure/functions'
 import config from '../../config'
-import { FakeSubmittedCheckMessageBuilderService } from './fake-submitted-check-builder.service'
+import { FakeSubmittedCheckMessageGeneratorService } from './fake-submitted-check-generator.service'
 
-const fakeSubmittedCheckBuilder = new FakeSubmittedCheckMessageBuilderService()
+const fakeSubmittedCheckBuilder = new FakeSubmittedCheckMessageGeneratorService()
 
 const httpTrigger: AzureFunction = async function (context: Context, req: HttpRequest): Promise<void> {
   if (!config.DevTestUtils.TestSupportApi) {
@@ -22,9 +22,7 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
   if (req.query.bad !== undefined) {
     throw new Error('invalid check functionality not yet implemented')
   }
-  const message = await fakeSubmittedCheckBuilder.createSubmittedCheckMessage(req.body?.checkCode, {
-    correctAnswerCount: 25
-  })
+  const message = await fakeSubmittedCheckBuilder.createSubmittedCheckMessage(req.body?.checkCode)
   context.bindings.submittedCheckQueue = [message]
 }
 
