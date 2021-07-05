@@ -30,8 +30,9 @@ export class FakeCompletedCheckGeneratorService implements ICompletedCheckGenera
     'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.111 Safari/537.36',
     'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:15.0) Gecko/20100101 Firefox/15.0.1'
   ]
+
   private readonly orientations = ['landscape-primary', 'landscape-secondary', 'portrait-primary', 'portrait-secondary']
-  private readonly connectionTypes = [ 'slow-2g', '2g', '3g', '4g' ]
+  private readonly connectionTypes = ['slow-2g', '2g', '3g', '4g']
 
   private readonly randomScreenValue = (): number => {
     return faker.datatype.number({
