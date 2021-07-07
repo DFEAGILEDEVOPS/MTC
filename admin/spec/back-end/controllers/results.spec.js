@@ -231,10 +231,10 @@ describe('results controller:', () => {
       const res = getRes()
       res.attachment = jasmine.createSpy('attachment')
       const req = getReq(reqParams)
-      req.user = { schoolId: 42 }
+      req.user = { schoolId: 42, School: 9991001 }
       spyOn(ctfService, 'getSchoolResultDataAsXmlString').and.returnValue('<CTfile>mock</CTfile>')
       await controller.getCtfDownload(req, res, next)
-      expect(res.attachment).toHaveBeenCalled()
+      expect(res.attachment).toHaveBeenCalledWith('9991001_KS2_9991001_001.xml')
     })
 
     it('sets the Content-type to text/xml', async () => {
