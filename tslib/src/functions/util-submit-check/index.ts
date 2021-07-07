@@ -18,7 +18,7 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
   if (schoolUuid !== undefined) {
     const liveCheckCodes = await liveSchoolChecksDataService.fetchBySchoolUuid(schoolUuid)
     console.dir(liveCheckCodes)
-    const promises = liveCheckCodes.map(record => {
+    const promises = liveCheckCodes.map(async record => {
       return fakeSubmittedCheckBuilder.createSubmittedCheckMessage(record.checkCode)
     })
     const messages = await Promise.all(promises)
