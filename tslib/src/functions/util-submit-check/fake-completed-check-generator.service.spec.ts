@@ -30,10 +30,4 @@ describe('submitted-check-generator-service', () => {
     const completeCheck = sut.create(mockPreparedCheck)
     expect(completeCheck.answers).toHaveLength(mockPreparedCheck.questions.length)
   })
-
-  test.skip('DEBUG: inspect audits', () => {
-    const completeCheck = sut.create(mockPreparedCheck)
-    console.dir(JSON.stringify(completeCheck, null, 2))
-    expect(completeCheck).toBeDefined()
-  })
 })

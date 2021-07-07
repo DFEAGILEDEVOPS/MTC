@@ -11,19 +11,23 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
     context.done()
     return
   }
-  const checkCode = req.body?.checkCode
-  if (checkCode === undefined) {
+  const checkCodes = req.body?.checkCodes
+  if (checkCodes === undefined || !Array.isArray(checkCodes)) {
     context.res = {
       status: 400,
-      body: 'checkCode is required'
+      body: 'checkCodes array is required'
     }
     return
   }
   if (req.query.bad !== undefined) {
     throw new Error('invalid check functionality not yet implemented')
   }
-  const message = await fakeSubmittedCheckBuilder.createSubmittedCheckMessage(req.body?.checkCode)
-  context.bindings.submittedCheckQueue = [message]
+  const messages = []
+  for (let index = 0; index < checkCodes.length; index++) {
+    const checkCode = checkCodes[index]
+    messages.push(await fakeSubmittedCheckBuilder.createSubmittedCheckMessage(checkCode))
+  }
+  context.bindings.submittedCheckQueue = messages
 }
 
 export default httpTrigger

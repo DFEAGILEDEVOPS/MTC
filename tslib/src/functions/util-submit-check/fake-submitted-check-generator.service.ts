@@ -3,9 +3,6 @@ import { PreparedCheck } from '../../schemas/check-schemas/prepared-check'
 import { ICompletedCheckGeneratorService, FakeCompletedCheckGeneratorService } from './fake-completed-check-generator.service'
 import { CompressionService, ICompressionService } from '../../common/compression-service'
 import { IPreparedCheckService, PreparedCheckService } from '../../caching/prepared-check.service'
-export interface CheckSubmitProxyOptions {
-  correctAnswerCount: number
-}
 
 export class FakeSubmittedCheckMessageGeneratorService {
   private readonly completedCheckGenerator: ICompletedCheckGeneratorService
@@ -27,7 +24,7 @@ export class FakeSubmittedCheckMessageGeneratorService {
     this.prepCheckService = prepCheckService
   }
 
-  async createSubmittedCheckMessage (checkCode: string, options?: CheckSubmitProxyOptions): Promise<SubmittedCheckMessageV2> {
+  async createSubmittedCheckMessage (checkCode: string): Promise<SubmittedCheckMessageV2> {
     const preparedCheckCacheValue = await this.prepCheckService.fetch(checkCode)
     if (preparedCheckCacheValue === undefined) {
       throw new Error(`prepared check not found in redis with checkCode:${checkCode}`)
