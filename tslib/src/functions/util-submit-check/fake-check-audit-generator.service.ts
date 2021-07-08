@@ -10,13 +10,11 @@ export class FakeCheckAuditGeneratorService {
     return [
       {
         type: AuditEntryType.CheckSubmissionPending,
-        clientTimestamp: moment().toISOString(),
-        relativeTiming: '+0'
+        clientTimestamp: moment().toISOString()
       },
       {
         type: AuditEntryType.CheckSubmissionApiCalled,
-        clientTimestamp: moment().toISOString(),
-        relativeTiming: '+0'
+        clientTimestamp: moment().toISOString()
       }
     ]
   }
@@ -66,13 +64,11 @@ export class FakeCheckAuditGeneratorService {
   private buildWarmupEntries (): CompleteCheckAuditEntry[] {
     const header: CompleteCheckAuditEntry[] = [{
       type: AuditEntryType.WarmupStarted,
-      clientTimestamp: moment().add(1, 'seconds').toISOString(),
-      relativeTiming: '+0'
+      clientTimestamp: moment().add(1, 'seconds').toISOString()
     },
     {
       type: AuditEntryType.WarmupIntroRendered,
-      clientTimestamp: moment().add(2, 'seconds').toISOString(),
-      relativeTiming: '+0'
+      clientTimestamp: moment().add(2, 'seconds').toISOString()
     }]
     const warmupAnswers = new Array<CompleteCheckAuditEntry>()
     for (let index = 0; index < this.warmupQuestions.length; index++) {
@@ -81,8 +77,7 @@ export class FakeCheckAuditGeneratorService {
     }
     const footer: CompleteCheckAuditEntry = {
       type: AuditEntryType.WarmupCompleteRendered,
-      clientTimestamp: moment().toISOString(),
-      relativeTiming: '+0'
+      clientTimestamp: moment().toISOString()
     }
     return [...header, ...warmupAnswers, footer]
   }
@@ -96,31 +91,26 @@ export class FakeCheckAuditGeneratorService {
     return [
       {
         clientTimestamp: moment().toISOString(),
-        relativeTiming: '+0',
         type: AuditEntryType.PauseRendered,
         data: data
       },
       {
         clientTimestamp: moment().toISOString(),
-        relativeTiming: '+0',
         type: AuditEntryType.QuestionTimerStarted,
         data: data
       },
       {
         clientTimestamp: moment().toISOString(),
-        relativeTiming: '+0',
         type: AuditEntryType.QuestionRendered,
         data: data
       },
       {
         clientTimestamp: moment().toISOString(),
-        relativeTiming: '+0',
         type: AuditEntryType.QuestionTimerCancelled,
         data: data
       },
       {
         clientTimestamp: moment().toISOString(),
-        relativeTiming: '+0',
         type: AuditEntryType.QuestionAnswered,
         data: data
       }

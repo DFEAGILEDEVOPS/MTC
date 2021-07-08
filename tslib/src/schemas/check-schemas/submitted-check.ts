@@ -3,45 +3,45 @@ export interface SubmittedCheck {
   schoolUUID: string
   config: CheckConfig
   device: {
-    battery: {
-      isCharging: boolean
-      levelPercent: number
-      chargingTime: number
-      dischargingTime: number | null
+    battery?: {
+      isCharging?: boolean
+      levelPercent?: number
+      chargingTime?: number
+      dischargingTime?: number | null
     }
-    cpu: {
-      hardwareConcurrency: number
+    cpu?: {
+      hardwareConcurrency?: number
     }
-    navigator: {
-      userAgent: string
-      platform: string
-      language: string
-      cookieEnabled: boolean
-      doNotTrack: boolean | null
+    navigator?: {
+      userAgent?: string
+      platform?: string
+      language?: string
+      cookieEnabled?: boolean
+      doNotTrack?: boolean | null
     }
-    networkConnection: {
-      downlink: number
-      effectiveType: string
-      rtt: number
+    networkConnection?: {
+      downlink?: number
+      effectiveType?: string
+      rtt?: number
     }
-    screen: {
-      screenWidth: number
-      screenHeight: number
-      outerWidth: number
-      outerHeight: number
-      innerWidth: number
-      innerHeight: number
-      colorDepth: number
-      orientation: string // TODO range of values?
+    screen?: {
+      screenWidth?: number
+      screenHeight?: number
+      outerWidth?: number
+      outerHeight?: number
+      innerWidth?: number
+      innerHeight?: number
+      colorDepth?: number
+      orientation?: string
     }
-    deviceId: string
-    appUsageCounter: number
+    deviceId?: string
+    appUsageCounter?: number
   }
   pupil: {
     checkCode: string
-    inputAssistant: {
-      firstName: string
-      lastName: string
+    inputAssistant?: {
+      firstName?: string
+      lastName?: string
     }
   }
   questions: CheckQuestion[]
@@ -142,7 +142,6 @@ export type AuditEntryType1 = 'WarmupStarted' | 'WarmupIntroRendered' | 'PauseRe
 export interface CompleteCheckAuditEntry {
   type: AuditEntryType
   clientTimestamp: string
-  relativeTiming: string
   data?: {
     practiseSequenceNumber?: number
     sequenceNumber?: number

@@ -2,2376 +2,2160 @@
   "checkCode": "c3245731-911b-49c4-89c9-908e2c2fc178",
   "schoolUUID": "74436bf0-1fa4-4649-8192-d78ae812e6d0",
   "config": {
-      "audibleSounds": false,
-      "checkTime": 30,
-      "colourContrast": false,
-      "fontSize": false,
-      "inputAssistance": false,
-      "loadingTime": 3,
-      "nextBetweenQuestions": false,
-      "numpadRemoval": false,
-      "practice": false,
-      "questionReader": false,
-      "questionTime": 6,
-      "compressCompletedCheck": true
+    "audibleSounds": false,
+    "checkTime": 30,
+    "colourContrast": false,
+    "fontSize": false,
+    "inputAssistance": false,
+    "loadingTime": 3,
+    "nextBetweenQuestions": false,
+    "numpadRemoval": false,
+    "practice": false,
+    "questionReader": false,
+    "questionTime": 6,
+    "compressCompletedCheck": true
   },
   "device": {
-      "navigator": {
-          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.3 Safari/605.1.15",
-          "platform": "MacIntel",
-          "language": "en-gb",
-          "cookieEnabled": true
-      },
-      "screen": {
-          "screenWidth": 810,
-          "screenHeight": 1080,
-          "outerWidth": 1080,
-          "outerHeight": 707,
-          "innerWidth": 1080,
-          "innerHeight": 707,
-          "colorDepth": 32
-      },
-      "deviceId": "25e97064-d6b5-4681-88c3-151617cb72f6",
-      "appUsageCounter": 1
+    "navigator": {
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.3 Safari/605.1.15",
+      "platform": "MacIntel",
+      "language": "en-gb",
+      "cookieEnabled": true
+    },
+    "screen": {
+      "screenWidth": 810,
+      "screenHeight": 1080,
+      "outerWidth": 1080,
+      "outerHeight": 707,
+      "innerWidth": 1080,
+      "innerHeight": 707,
+      "colorDepth": 32
+    },
+    "deviceId": "25e97064-d6b5-4681-88c3-151617cb72f6",
+    "appUsageCounter": 1
   },
   "pupil": {
-      "checkCode": "c3245731-911b-49c4-89c9-908e2c2fc178"
+    "checkCode": "c3245731-911b-49c4-89c9-908e2c2fc178"
   },
   "questions": [
-      {
-          "order": 1,
-          "factor1": 2,
-          "factor2": 4
-      },
-      {
-          "order": 2,
-          "factor1": 3,
-          "factor2": 3
-      },
-      {
-          "order": 3,
-          "factor1": 5,
-          "factor2": 9
-      },
-      {
-          "order": 4,
-          "factor1": 12,
-          "factor2": 6
-      },
-      {
-          "order": 5,
-          "factor1": 11,
-          "factor2": 4
-      },
-      {
-          "order": 6,
-          "factor1": 8,
-          "factor2": 5
-      },
-      {
-          "order": 7,
-          "factor1": 6,
-          "factor2": 9
-      },
-      {
-          "order": 8,
-          "factor1": 10,
-          "factor2": 3
-      },
-      {
-          "order": 9,
-          "factor1": 7,
-          "factor2": 11
-      },
-      {
-          "order": 10,
-          "factor1": 5,
-          "factor2": 12
-      },
-      {
-          "order": 11,
-          "factor1": 8,
-          "factor2": 8
-      },
-      {
-          "order": 12,
-          "factor1": 4,
-          "factor2": 9
-      },
-      {
-          "order": 13,
-          "factor1": 12,
-          "factor2": 10
-      },
-      {
-          "order": 14,
-          "factor1": 3,
-          "factor2": 2
-      },
-      {
-          "order": 15,
-          "factor1": 4,
-          "factor2": 7
-      },
-      {
-          "order": 16,
-          "factor1": 10,
-          "factor2": 2
-      },
-      {
-          "order": 17,
-          "factor1": 11,
-          "factor2": 5
-      },
-      {
-          "order": 18,
-          "factor1": 12,
-          "factor2": 8
-      },
-      {
-          "order": 19,
-          "factor1": 7,
-          "factor2": 6
-      },
-      {
-          "order": 20,
-          "factor1": 4,
-          "factor2": 10
-      },
-      {
-          "order": 21,
-          "factor1": 9,
-          "factor2": 8
-      },
-      {
-          "order": 22,
-          "factor1": 11,
-          "factor2": 12
-      },
-      {
-          "order": 23,
-          "factor1": 2,
-          "factor2": 7
-      },
-      {
-          "order": 24,
-          "factor1": 6,
-          "factor2": 11
-      },
-      {
-          "order": 25,
-          "factor1": 9,
-          "factor2": 3
-      }
+    {
+      "order": 1,
+      "factor1": 2,
+      "factor2": 4
+    },
+    {
+      "order": 2,
+      "factor1": 3,
+      "factor2": 3
+    },
+    {
+      "order": 3,
+      "factor1": 5,
+      "factor2": 9
+    },
+    {
+      "order": 4,
+      "factor1": 12,
+      "factor2": 6
+    },
+    {
+      "order": 5,
+      "factor1": 11,
+      "factor2": 4
+    },
+    {
+      "order": 6,
+      "factor1": 8,
+      "factor2": 5
+    },
+    {
+      "order": 7,
+      "factor1": 6,
+      "factor2": 9
+    },
+    {
+      "order": 8,
+      "factor1": 10,
+      "factor2": 3
+    },
+    {
+      "order": 9,
+      "factor1": 7,
+      "factor2": 11
+    },
+    {
+      "order": 10,
+      "factor1": 5,
+      "factor2": 12
+    },
+    {
+      "order": 11,
+      "factor1": 8,
+      "factor2": 8
+    },
+    {
+      "order": 12,
+      "factor1": 4,
+      "factor2": 9
+    },
+    {
+      "order": 13,
+      "factor1": 12,
+      "factor2": 10
+    },
+    {
+      "order": 14,
+      "factor1": 3,
+      "factor2": 2
+    },
+    {
+      "order": 15,
+      "factor1": 4,
+      "factor2": 7
+    },
+    {
+      "order": 16,
+      "factor1": 10,
+      "factor2": 2
+    },
+    {
+      "order": 17,
+      "factor1": 11,
+      "factor2": 5
+    },
+    {
+      "order": 18,
+      "factor1": 12,
+      "factor2": 8
+    },
+    {
+      "order": 19,
+      "factor1": 7,
+      "factor2": 6
+    },
+    {
+      "order": 20,
+      "factor1": 4,
+      "factor2": 10
+    },
+    {
+      "order": 21,
+      "factor1": 9,
+      "factor2": 8
+    },
+    {
+      "order": 22,
+      "factor1": 11,
+      "factor2": 12
+    },
+    {
+      "order": 23,
+      "factor1": 2,
+      "factor2": 7
+    },
+    {
+      "order": 24,
+      "factor1": 6,
+      "factor2": 11
+    },
+    {
+      "order": 25,
+      "factor1": 9,
+      "factor2": 3
+    }
   ],
   "school": {
-      "name": "Some School",
-      "uuid": "74436bf0-1fa4-4649-8192-d78ae812e6d0"
+    "name": "Some School",
+    "uuid": "74436bf0-1fa4-4649-8192-d78ae812e6d0"
   },
   "tokens": {
-      "checkStarted": {
-          "token": "st=2021-02-04T07%3A07%3A26Z&se=2021-02-05T08%3A12%3A26Z&sp=a&sv=2018-03-28&sig=lskfjslefjslfjselkfjslkfjsdklfjsdklfjsdlkfjsdlkfjsdklk",
-          "url": "https://mystorageq.queue.core.windows.net/check-started",
-          "queueName": "check-started"
-      },
-      "pupilPreferences": {
-          "token": "st=2021-02-04T07%3A07%3A26Z&se=2021-02-05T08%3A12%3A26Z&sp=a&sv=2018-03-28&sig=lskfjslefjslfjselkfjslkfjsdklfjsdklfjsdlkfjsdlkfjsdklk",
-          "url": "https://mystorageq.queue.core.windows.net/pupil-prefs",
-          "queueName": "pupil-prefs"
-      },
-      "pupilFeedback": {
-          "token": "st=2021-02-04T07%3A07%3A26Z&se=2021-02-05T08%3A12%3A26Z&sp=a&sv=2018-03-28&sig=lskfjslefjslfjselkfjslkfjsdklfjsdklfjsdlkfjsdlkfjsdklk",
-          "url": "https://mystorageq.queue.core.windows.net/pupil-feedback",
-          "queueName": "pupil-feedback"
-      },
-      "jwt": {
-          "token": "token-disabled"
-      },
-      "checkComplete": {
-          "token": "st=2021-02-04T07%3A07%3A26Z&se=2021-02-05T08%3A12%3A26Z&sp=a&sv=2018-03-28&sig=lskfjslefjslfjselkfjslkfjsdklfjsdklfjsdlkfjsdlkfjsdklk",
-          "url": "https://mystorageq.queue.core.windows.net/check-submitted",
-          "queueName": "check-submitted"
-      }
+    "checkStarted": {
+      "token": "st=2021-02-04T07%3A07%3A26Z&se=2021-02-05T08%3A12%3A26Z&sp=a&sv=2018-03-28&sig=lskfjslefjslfjselkfjslkfjsdklfjsdklfjsdlkfjsdlkfjsdklk",
+      "url": "https://mystorageq.queue.core.windows.net/check-started",
+      "queueName": "check-started"
+    },
+    "pupilPreferences": {
+      "token": "st=2021-02-04T07%3A07%3A26Z&se=2021-02-05T08%3A12%3A26Z&sp=a&sv=2018-03-28&sig=lskfjslefjslfjselkfjslkfjsdklfjsdklfjsdlkfjsdlkfjsdklk",
+      "url": "https://mystorageq.queue.core.windows.net/pupil-prefs",
+      "queueName": "pupil-prefs"
+    },
+    "pupilFeedback": {
+      "token": "st=2021-02-04T07%3A07%3A26Z&se=2021-02-05T08%3A12%3A26Z&sp=a&sv=2018-03-28&sig=lskfjslefjslfjselkfjslkfjsdklfjsdklfjsdlkfjsdlkfjsdklk",
+      "url": "https://mystorageq.queue.core.windows.net/pupil-feedback",
+      "queueName": "pupil-feedback"
+    },
+    "jwt": {
+      "token": "token-disabled"
+    },
+    "checkComplete": {
+      "token": "st=2021-02-04T07%3A07%3A26Z&se=2021-02-05T08%3A12%3A26Z&sp=a&sv=2018-03-28&sig=lskfjslefjslfjselkfjslkfjsdklfjsdklfjsdlkfjsdlkfjsdklk",
+      "url": "https://mystorageq.queue.core.windows.net/check-submitted",
+      "queueName": "check-submitted"
+    }
   },
   "audit": [
-      {
-          "type": "WarmupStarted",
-          "clientTimestamp": "2021-02-04T08:33:34.521Z",
-          "relativeTiming": "+0.00"
-      },
-      {
-          "type": "WarmupIntroRendered",
-          "clientTimestamp": "2021-02-04T08:33:34.586Z",
-          "relativeTiming": "+0.065"
-      },
-      {
-          "type": "PauseRendered",
-          "clientTimestamp": "2021-02-04T08:33:36.071Z",
-          "data": {
-              "sequenceNumber": 1,
-              "question": "1x12",
-              "isWarmup": true
-          },
-          "relativeTiming": "+1.485"
-      },
-      {
-          "type": "QuestionTimerStarted",
-          "clientTimestamp": "2021-02-04T08:33:39.114Z",
-          "data": {
-              "sequenceNumber": 1,
-              "question": "1x12",
-              "isWarmup": true
-          },
-          "relativeTiming": "+3.043"
-      },
-      {
-          "type": "QuestionRendered",
-          "clientTimestamp": "2021-02-04T08:33:39.114Z",
-          "data": {
-              "sequenceNumber": 1,
-              "question": "1x12",
-              "isWarmup": true
-          },
-          "relativeTiming": "+0"
-      },
-      {
-          "type": "QuestionTimerCancelled",
-          "clientTimestamp": "2021-02-04T08:33:41.334Z",
-          "data": {
-              "sequenceNumber": 1,
-              "question": "1x12",
-              "isWarmup": true
-          },
-          "relativeTiming": "+2.22"
-      },
-      {
-          "type": "QuestionAnswered",
-          "clientTimestamp": "2021-02-04T08:33:41.335Z",
-          "data": {
-              "sequenceNumber": 1,
-              "question": "1x12",
-              "isWarmup": true
-          },
-          "relativeTiming": "+0.001"
-      },
-      {
-          "type": "PauseRendered",
-          "clientTimestamp": "2021-02-04T08:33:41.340Z",
-          "data": {
-              "sequenceNumber": 2,
-              "question": "2x2",
-              "isWarmup": true
-          },
-          "relativeTiming": "+0.005"
-      },
-      {
-          "type": "QuestionRendered",
-          "clientTimestamp": "2021-02-04T08:33:44.359Z",
-          "data": {
-              "sequenceNumber": 2,
-              "question": "2x2",
-              "isWarmup": true
-          },
-          "relativeTiming": "+3.019"
-      },
-      {
-          "type": "QuestionTimerStarted",
-          "clientTimestamp": "2021-02-04T08:33:44.360Z",
-          "data": {
-              "sequenceNumber": 2,
-              "question": "2x2",
-              "isWarmup": true
-          },
-          "relativeTiming": "+0.001"
-      },
-      {
-          "type": "QuestionAnswered",
-          "clientTimestamp": "2021-02-04T08:33:47.246Z",
-          "data": {
-              "sequenceNumber": 2,
-              "question": "2x2",
-              "isWarmup": true
-          },
-          "relativeTiming": "+2.886"
-      },
-      {
-          "type": "QuestionTimerCancelled",
-          "clientTimestamp": "2021-02-04T08:33:47.246Z",
-          "data": {
-              "sequenceNumber": 2,
-              "question": "2x2",
-              "isWarmup": true
-          },
-          "relativeTiming": "+0"
-      },
-      {
-          "type": "PauseRendered",
-          "clientTimestamp": "2021-02-04T08:33:47.252Z",
-          "data": {
-              "sequenceNumber": 3,
-              "question": "10x10",
-              "isWarmup": true
-          },
-          "relativeTiming": "+0.006"
-      },
-      {
-          "type": "QuestionRendered",
-          "clientTimestamp": "2021-02-04T08:33:50.262Z",
-          "data": {
-              "sequenceNumber": 3,
-              "question": "10x10",
-              "isWarmup": true
-          },
-          "relativeTiming": "+3.01"
-      },
-      {
-          "type": "QuestionTimerStarted",
-          "clientTimestamp": "2021-02-04T08:33:50.263Z",
-          "data": {
-              "sequenceNumber": 3,
-              "question": "10x10",
-              "isWarmup": true
-          },
-          "relativeTiming": "+0.001"
-      },
-      {
-          "type": "QuestionTimerEnded",
-          "clientTimestamp": "2021-02-04T08:33:56.269Z",
-          "data": {
-              "sequenceNumber": 3,
-              "question": "10x10",
-              "isWarmup": true
-          },
-          "relativeTiming": "+6.006"
-      },
-      {
-          "type": "WarmupCompleteRendered",
-          "clientTimestamp": "2021-02-04T08:33:56.290Z",
-          "relativeTiming": "+0.021"
-      },
-      {
-          "type": "QuestionIntroRendered",
-          "clientTimestamp": "2021-02-04T08:36:45.248Z",
-          "relativeTiming": "+168.958"
-      },
-      {
-          "type": "CheckStarted",
-          "clientTimestamp": "2021-02-04T08:36:46.043Z",
-          "relativeTiming": "+0.795"
-      },
-      {
-          "type": "CheckStartedApiCalled",
-          "clientTimestamp": "2021-02-04T08:36:46.048Z",
-          "relativeTiming": "+0.005"
-      },
-      {
-          "type": "PauseRendered",
-          "clientTimestamp": "2021-02-04T08:36:46.070Z",
-          "data": {
-              "sequenceNumber": 1,
-              "question": "2x4",
-              "isWarmup": false
-          },
-          "relativeTiming": "+0.022"
-      },
-      {
-          "type": "CheckStartedAPICallSucceeded",
-          "clientTimestamp": "2021-02-04T08:36:46.979Z",
-          "relativeTiming": "+0.909"
-      },
-      {
-          "type": "QuestionRendered",
-          "clientTimestamp": "2021-02-04T08:36:49.101Z",
-          "data": {
-              "sequenceNumber": 1,
-              "question": "2x4",
-              "isWarmup": false
-          },
-          "relativeTiming": "+2.122"
-      },
-      {
-          "type": "QuestionTimerStarted",
-          "clientTimestamp": "2021-02-04T08:36:49.102Z",
-          "data": {
-              "sequenceNumber": 1,
-              "question": "2x4",
-              "isWarmup": false
-          },
-          "relativeTiming": "+0.001"
-      },
-      {
-          "type": "QuestionTimerCancelled",
-          "clientTimestamp": "2021-02-04T08:36:51.939Z",
-          "data": {
-              "sequenceNumber": 1,
-              "question": "2x4",
-              "isWarmup": false
-          },
-          "relativeTiming": "+2.837"
-      },
-      {
-          "type": "QuestionAnswered",
-          "clientTimestamp": "2021-02-04T08:36:51.940Z",
-          "data": {
-              "sequenceNumber": 1,
-              "question": "2x4",
-              "isWarmup": false
-          },
-          "relativeTiming": "+0.001"
-      },
-      {
-          "type": "PauseRendered",
-          "clientTimestamp": "2021-02-04T08:36:51.946Z",
-          "data": {
-              "sequenceNumber": 2,
-              "question": "3x3",
-              "isWarmup": false
-          },
-          "relativeTiming": "+0.006"
-      },
-      {
-          "type": "QuestionRendered",
-          "clientTimestamp": "2021-02-04T08:36:54.962Z",
-          "data": {
-              "sequenceNumber": 2,
-              "question": "3x3",
-              "isWarmup": false
-          },
-          "relativeTiming": "+3.016"
-      },
-      {
-          "type": "QuestionTimerStarted",
-          "clientTimestamp": "2021-02-04T08:36:54.963Z",
-          "data": {
-              "sequenceNumber": 2,
-              "question": "3x3",
-              "isWarmup": false
-          },
-          "relativeTiming": "+0.001"
-      },
-      {
-          "type": "QuestionAnswered",
-          "clientTimestamp": "2021-02-04T08:36:56.744Z",
-          "data": {
-              "sequenceNumber": 2,
-              "question": "3x3",
-              "isWarmup": false
-          },
-          "relativeTiming": "+1.781"
-      },
-      {
-          "type": "QuestionTimerCancelled",
-          "clientTimestamp": "2021-02-04T08:36:56.744Z",
-          "data": {
-              "sequenceNumber": 2,
-              "question": "3x3",
-              "isWarmup": false
-          },
-          "relativeTiming": "+0"
-      },
-      {
-          "type": "PauseRendered",
-          "clientTimestamp": "2021-02-04T08:36:56.751Z",
-          "data": {
-              "sequenceNumber": 3,
-              "question": "5x9",
-              "isWarmup": false
-          },
-          "relativeTiming": "+0.007"
-      },
-      {
-          "type": "QuestionRendered",
-          "clientTimestamp": "2021-02-04T08:36:59.766Z",
-          "data": {
-              "sequenceNumber": 3,
-              "question": "5x9",
-              "isWarmup": false
-          },
-          "relativeTiming": "+3.015"
-      },
-      {
-          "type": "QuestionTimerStarted",
-          "clientTimestamp": "2021-02-04T08:36:59.768Z",
-          "data": {
-              "sequenceNumber": 3,
-              "question": "5x9",
-              "isWarmup": false
-          },
-          "relativeTiming": "+0.002"
-      },
-      {
-          "type": "QuestionTimerCancelled",
-          "clientTimestamp": "2021-02-04T08:37:02.447Z",
-          "data": {
-              "sequenceNumber": 3,
-              "question": "5x9",
-              "isWarmup": false
-          },
-          "relativeTiming": "+2.679"
-      },
-      {
-          "type": "QuestionAnswered",
-          "clientTimestamp": "2021-02-04T08:37:02.448Z",
-          "data": {
-              "sequenceNumber": 3,
-              "question": "5x9",
-              "isWarmup": false
-          },
-          "relativeTiming": "+0.001"
-      },
-      {
-          "type": "PauseRendered",
-          "clientTimestamp": "2021-02-04T08:37:02.451Z",
-          "data": {
-              "sequenceNumber": 4,
-              "question": "12x6",
-              "isWarmup": false
-          },
-          "relativeTiming": "+0.003"
-      },
-      {
-          "type": "QuestionRendered",
-          "clientTimestamp": "2021-02-04T08:37:05.465Z",
-          "data": {
-              "sequenceNumber": 4,
-              "question": "12x6",
-              "isWarmup": false
-          },
-          "relativeTiming": "+3.014"
-      },
-      {
-          "type": "QuestionTimerStarted",
-          "clientTimestamp": "2021-02-04T08:37:05.467Z",
-          "data": {
-              "sequenceNumber": 4,
-              "question": "12x6",
-              "isWarmup": false
-          },
-          "relativeTiming": "+0.002"
-      },
-      {
-          "type": "QuestionTimerEnded",
-          "clientTimestamp": "2021-02-04T08:37:11.469Z",
-          "data": {
-              "sequenceNumber": 4,
-              "question": "12x6",
-              "isWarmup": false
-          },
-          "relativeTiming": "+6.002"
-      },
-      {
-          "type": "PauseRendered",
-          "clientTimestamp": "2021-02-04T08:37:11.478Z",
-          "data": {
-              "sequenceNumber": 5,
-              "question": "11x4",
-              "isWarmup": false
-          },
-          "relativeTiming": "+0.009"
-      },
-      {
-          "type": "QuestionRendered",
-          "clientTimestamp": "2021-02-04T08:37:14.495Z",
-          "data": {
-              "sequenceNumber": 5,
-              "question": "11x4",
-              "isWarmup": false
-          },
-          "relativeTiming": "+3.017"
-      },
-      {
-          "type": "QuestionTimerStarted",
-          "clientTimestamp": "2021-02-04T08:37:14.495Z",
-          "data": {
-              "sequenceNumber": 5,
-              "question": "11x4",
-              "isWarmup": false
-          },
-          "relativeTiming": "+0"
-      },
-      {
-          "type": "QuestionAnswered",
-          "clientTimestamp": "2021-02-04T08:37:17.396Z",
-          "data": {
-              "sequenceNumber": 5,
-              "question": "11x4",
-              "isWarmup": false
-          },
-          "relativeTiming": "+2.901"
-      },
-      {
-          "type": "QuestionTimerCancelled",
-          "clientTimestamp": "2021-02-04T08:37:17.396Z",
-          "data": {
-              "sequenceNumber": 5,
-              "question": "11x4",
-              "isWarmup": false
-          },
-          "relativeTiming": "+0"
-      },
-      {
-          "type": "PauseRendered",
-          "clientTimestamp": "2021-02-04T08:37:17.402Z",
-          "data": {
-              "sequenceNumber": 6,
-              "question": "8x5",
-              "isWarmup": false
-          },
-          "relativeTiming": "+0.006"
-      },
-      {
-          "type": "QuestionRendered",
-          "clientTimestamp": "2021-02-04T08:37:20.418Z",
-          "data": {
-              "sequenceNumber": 6,
-              "question": "8x5",
-              "isWarmup": false
-          },
-          "relativeTiming": "+3.016"
-      },
-      {
-          "type": "QuestionTimerStarted",
-          "clientTimestamp": "2021-02-04T08:37:20.419Z",
-          "data": {
-              "sequenceNumber": 6,
-              "question": "8x5",
-              "isWarmup": false
-          },
-          "relativeTiming": "+0.001"
-      },
-      {
-          "type": "QuestionAnswered",
-          "clientTimestamp": "2021-02-04T08:37:23.144Z",
-          "data": {
-              "sequenceNumber": 6,
-              "question": "8x5",
-              "isWarmup": false
-          },
-          "relativeTiming": "+2.725"
-      },
-      {
-          "type": "QuestionTimerCancelled",
-          "clientTimestamp": "2021-02-04T08:37:23.144Z",
-          "data": {
-              "sequenceNumber": 6,
-              "question": "8x5",
-              "isWarmup": false
-          },
-          "relativeTiming": "+0"
-      },
-      {
-          "type": "PauseRendered",
-          "clientTimestamp": "2021-02-04T08:37:23.151Z",
-          "data": {
-              "sequenceNumber": 7,
-              "question": "6x9",
-              "isWarmup": false
-          },
-          "relativeTiming": "+0.007"
-      },
-      {
-          "type": "QuestionRendered",
-          "clientTimestamp": "2021-02-04T08:37:26.165Z",
-          "data": {
-              "sequenceNumber": 7,
-              "question": "6x9",
-              "isWarmup": false
-          },
-          "relativeTiming": "+3.014"
-      },
-      {
-          "type": "QuestionTimerStarted",
-          "clientTimestamp": "2021-02-04T08:37:26.166Z",
-          "data": {
-              "sequenceNumber": 7,
-              "question": "6x9",
-              "isWarmup": false
-          },
-          "relativeTiming": "+0.001"
-      },
-      {
-          "type": "QuestionTimerCancelled",
-          "clientTimestamp": "2021-02-04T08:37:32.141Z",
-          "data": {
-              "sequenceNumber": 7,
-              "question": "6x9",
-              "isWarmup": false
-          },
-          "relativeTiming": "+5.975"
-      },
-      {
-          "type": "QuestionAnswered",
-          "clientTimestamp": "2021-02-04T08:37:32.141Z",
-          "data": {
-              "sequenceNumber": 7,
-              "question": "6x9",
-              "isWarmup": false
-          },
-          "relativeTiming": "+0"
-      },
-      {
-          "type": "PauseRendered",
-          "clientTimestamp": "2021-02-04T08:37:32.147Z",
-          "data": {
-              "sequenceNumber": 8,
-              "question": "10x3",
-              "isWarmup": false
-          },
-          "relativeTiming": "+0.006"
-      },
-      {
-          "type": "QuestionRendered",
-          "clientTimestamp": "2021-02-04T08:37:35.162Z",
-          "data": {
-              "sequenceNumber": 8,
-              "question": "10x3",
-              "isWarmup": false
-          },
-          "relativeTiming": "+3.015"
-      },
-      {
-          "type": "QuestionTimerStarted",
-          "clientTimestamp": "2021-02-04T08:37:35.163Z",
-          "data": {
-              "sequenceNumber": 8,
-              "question": "10x3",
-              "isWarmup": false
-          },
-          "relativeTiming": "+0.001"
-      },
-      {
-          "type": "QuestionAnswered",
-          "clientTimestamp": "2021-02-04T08:37:37.290Z",
-          "data": {
-              "sequenceNumber": 8,
-              "question": "10x3",
-              "isWarmup": false
-          },
-          "relativeTiming": "+2.127"
-      },
-      {
-          "type": "QuestionTimerCancelled",
-          "clientTimestamp": "2021-02-04T08:37:37.290Z",
-          "data": {
-              "sequenceNumber": 8,
-              "question": "10x3",
-              "isWarmup": false
-          },
-          "relativeTiming": "+0"
-      },
-      {
-          "type": "PauseRendered",
-          "clientTimestamp": "2021-02-04T08:37:37.295Z",
-          "data": {
-              "sequenceNumber": 9,
-              "question": "7x11",
-              "isWarmup": false
-          },
-          "relativeTiming": "+0.005"
-      },
-      {
-          "type": "QuestionRendered",
-          "clientTimestamp": "2021-02-04T08:37:40.310Z",
-          "data": {
-              "sequenceNumber": 9,
-              "question": "7x11",
-              "isWarmup": false
-          },
-          "relativeTiming": "+3.015"
-      },
-      {
-          "type": "QuestionTimerStarted",
-          "clientTimestamp": "2021-02-04T08:37:40.311Z",
-          "data": {
-              "sequenceNumber": 9,
-              "question": "7x11",
-              "isWarmup": false
-          },
-          "relativeTiming": "+0.001"
-      },
-      {
-          "type": "QuestionTimerCancelled",
-          "clientTimestamp": "2021-02-04T08:37:42.369Z",
-          "data": {
-              "sequenceNumber": 9,
-              "question": "7x11",
-              "isWarmup": false
-          },
-          "relativeTiming": "+2.058"
-      },
-      {
-          "type": "QuestionAnswered",
-          "clientTimestamp": "2021-02-04T08:37:42.369Z",
-          "data": {
-              "sequenceNumber": 9,
-              "question": "7x11",
-              "isWarmup": false
-          },
-          "relativeTiming": "+0"
-      },
-      {
-          "type": "PauseRendered",
-          "clientTimestamp": "2021-02-04T08:37:42.375Z",
-          "data": {
-              "sequenceNumber": 10,
-              "question": "5x12",
-              "isWarmup": false
-          },
-          "relativeTiming": "+0.006"
-      },
-      {
-          "type": "QuestionRendered",
-          "clientTimestamp": "2021-02-04T08:37:45.389Z",
-          "data": {
-              "sequenceNumber": 10,
-              "question": "5x12",
-              "isWarmup": false
-          },
-          "relativeTiming": "+3.014"
-      },
-      {
-          "type": "QuestionTimerStarted",
-          "clientTimestamp": "2021-02-04T08:37:45.390Z",
-          "data": {
-              "sequenceNumber": 10,
-              "question": "5x12",
-              "isWarmup": false
-          },
-          "relativeTiming": "+0.001"
-      },
-      {
-          "type": "QuestionTimerCancelled",
-          "clientTimestamp": "2021-02-04T08:37:47.455Z",
-          "data": {
-              "sequenceNumber": 10,
-              "question": "5x12",
-              "isWarmup": false
-          },
-          "relativeTiming": "+2.065"
-      },
-      {
-          "type": "QuestionAnswered",
-          "clientTimestamp": "2021-02-04T08:37:47.455Z",
-          "data": {
-              "sequenceNumber": 10,
-              "question": "5x12",
-              "isWarmup": false
-          },
-          "relativeTiming": "+0"
-      },
-      {
-          "type": "PauseRendered",
-          "clientTimestamp": "2021-02-04T08:37:47.460Z",
-          "data": {
-              "sequenceNumber": 11,
-              "question": "8x8",
-              "isWarmup": false
-          },
-          "relativeTiming": "+0.005"
-      },
-      {
-          "type": "QuestionRendered",
-          "clientTimestamp": "2021-02-04T08:37:50.473Z",
-          "data": {
-              "sequenceNumber": 11,
-              "question": "8x8",
-              "isWarmup": false
-          },
-          "relativeTiming": "+3.013"
-      },
-      {
-          "type": "QuestionTimerStarted",
-          "clientTimestamp": "2021-02-04T08:37:50.474Z",
-          "data": {
-              "sequenceNumber": 11,
-              "question": "8x8",
-              "isWarmup": false
-          },
-          "relativeTiming": "+0.001"
-      },
-      {
-          "type": "QuestionAnswered",
-          "clientTimestamp": "2021-02-04T08:37:53.000Z",
-          "data": {
-              "sequenceNumber": 11,
-              "question": "8x8",
-              "isWarmup": false
-          },
-          "relativeTiming": "+2.526"
-      },
-      {
-          "type": "QuestionTimerCancelled",
-          "clientTimestamp": "2021-02-04T08:37:53.000Z",
-          "data": {
-              "sequenceNumber": 11,
-              "question": "8x8",
-              "isWarmup": false
-          },
-          "relativeTiming": "+0"
-      },
-      {
-          "type": "PauseRendered",
-          "clientTimestamp": "2021-02-04T08:37:53.004Z",
-          "data": {
-              "sequenceNumber": 12,
-              "question": "4x9",
-              "isWarmup": false
-          },
-          "relativeTiming": "+0.004"
-      },
-      {
-          "type": "QuestionRendered",
-          "clientTimestamp": "2021-02-04T08:37:56.018Z",
-          "data": {
-              "sequenceNumber": 12,
-              "question": "4x9",
-              "isWarmup": false
-          },
-          "relativeTiming": "+3.014"
-      },
-      {
-          "type": "QuestionTimerStarted",
-          "clientTimestamp": "2021-02-04T08:37:56.019Z",
-          "data": {
-              "sequenceNumber": 12,
-              "question": "4x9",
-              "isWarmup": false
-          },
-          "relativeTiming": "+0.001"
-      },
-      {
-          "type": "QuestionTimerCancelled",
-          "clientTimestamp": "2021-02-04T08:38:01.340Z",
-          "data": {
-              "sequenceNumber": 12,
-              "question": "4x9",
-              "isWarmup": false
-          },
-          "relativeTiming": "+5.321"
-      },
-      {
-          "type": "QuestionAnswered",
-          "clientTimestamp": "2021-02-04T08:38:01.340Z",
-          "data": {
-              "sequenceNumber": 12,
-              "question": "4x9",
-              "isWarmup": false
-          },
-          "relativeTiming": "+0"
-      },
-      {
-          "type": "PauseRendered",
-          "clientTimestamp": "2021-02-04T08:38:01.346Z",
-          "data": {
-              "sequenceNumber": 13,
-              "question": "12x10",
-              "isWarmup": false
-          },
-          "relativeTiming": "+0.006"
-      },
-      {
-          "type": "QuestionRendered",
-          "clientTimestamp": "2021-02-04T08:38:04.358Z",
-          "data": {
-              "sequenceNumber": 13,
-              "question": "12x10",
-              "isWarmup": false
-          },
-          "relativeTiming": "+3.012"
-      },
-      {
-          "type": "QuestionTimerStarted",
-          "clientTimestamp": "2021-02-04T08:38:04.359Z",
-          "data": {
-              "sequenceNumber": 13,
-              "question": "12x10",
-              "isWarmup": false
-          },
-          "relativeTiming": "+0.001"
-      },
-      {
-          "type": "QuestionTimerCancelled",
-          "clientTimestamp": "2021-02-04T08:38:06.980Z",
-          "data": {
-              "sequenceNumber": 13,
-              "question": "12x10",
-              "isWarmup": false
-          },
-          "relativeTiming": "+2.621"
-      },
-      {
-          "type": "QuestionAnswered",
-          "clientTimestamp": "2021-02-04T08:38:06.981Z",
-          "data": {
-              "sequenceNumber": 13,
-              "question": "12x10",
-              "isWarmup": false
-          },
-          "relativeTiming": "+0.001"
-      },
-      {
-          "type": "PauseRendered",
-          "clientTimestamp": "2021-02-04T08:38:06.984Z",
-          "data": {
-              "sequenceNumber": 14,
-              "question": "3x2",
-              "isWarmup": false
-          },
-          "relativeTiming": "+0.003"
-      },
-      {
-          "type": "QuestionRendered",
-          "clientTimestamp": "2021-02-04T08:38:09.992Z",
-          "data": {
-              "sequenceNumber": 14,
-              "question": "3x2",
-              "isWarmup": false
-          },
-          "relativeTiming": "+3.008"
-      },
-      {
-          "type": "QuestionTimerStarted",
-          "clientTimestamp": "2021-02-04T08:38:09.992Z",
-          "data": {
-              "sequenceNumber": 14,
-              "question": "3x2",
-              "isWarmup": false
-          },
-          "relativeTiming": "+0"
-      },
-      {
-          "type": "QuestionTimerCancelled",
-          "clientTimestamp": "2021-02-04T08:38:11.702Z",
-          "data": {
-              "sequenceNumber": 14,
-              "question": "3x2",
-              "isWarmup": false
-          },
-          "relativeTiming": "+1.71"
-      },
-      {
-          "type": "QuestionAnswered",
-          "clientTimestamp": "2021-02-04T08:38:11.702Z",
-          "data": {
-              "sequenceNumber": 14,
-              "question": "3x2",
-              "isWarmup": false
-          },
-          "relativeTiming": "+0"
-      },
-      {
-          "type": "PauseRendered",
-          "clientTimestamp": "2021-02-04T08:38:11.706Z",
-          "data": {
-              "sequenceNumber": 15,
-              "question": "4x7",
-              "isWarmup": false
-          },
-          "relativeTiming": "+0.004"
-      },
-      {
-          "type": "QuestionRendered",
-          "clientTimestamp": "2021-02-04T08:38:14.714Z",
-          "data": {
-              "sequenceNumber": 15,
-              "question": "4x7",
-              "isWarmup": false
-          },
-          "relativeTiming": "+3.008"
-      },
-      {
-          "type": "QuestionTimerStarted",
-          "clientTimestamp": "2021-02-04T08:38:14.715Z",
-          "data": {
-              "sequenceNumber": 15,
-              "question": "4x7",
-              "isWarmup": false
-          },
-          "relativeTiming": "+0.001"
-      },
-      {
-          "type": "QuestionAnswered",
-          "clientTimestamp": "2021-02-04T08:38:18.719Z",
-          "data": {
-              "sequenceNumber": 15,
-              "question": "4x7",
-              "isWarmup": false
-          },
-          "relativeTiming": "+4.004"
-      },
-      {
-          "type": "QuestionTimerCancelled",
-          "clientTimestamp": "2021-02-04T08:38:18.719Z",
-          "data": {
-              "sequenceNumber": 15,
-              "question": "4x7",
-              "isWarmup": false
-          },
-          "relativeTiming": "+0"
-      },
-      {
-          "type": "PauseRendered",
-          "clientTimestamp": "2021-02-04T08:38:18.723Z",
-          "data": {
-              "sequenceNumber": 16,
-              "question": "10x2",
-              "isWarmup": false
-          },
-          "relativeTiming": "+0.004"
-      },
-      {
-          "type": "QuestionRendered",
-          "clientTimestamp": "2021-02-04T08:38:21.731Z",
-          "data": {
-              "sequenceNumber": 16,
-              "question": "10x2",
-              "isWarmup": false
-          },
-          "relativeTiming": "+3.008"
-      },
-      {
-          "type": "QuestionTimerStarted",
-          "clientTimestamp": "2021-02-04T08:38:21.731Z",
-          "data": {
-              "sequenceNumber": 16,
-              "question": "10x2",
-              "isWarmup": false
-          },
-          "relativeTiming": "+0"
-      },
-      {
-          "type": "QuestionTimerCancelled",
-          "clientTimestamp": "2021-02-04T08:38:23.360Z",
-          "data": {
-              "sequenceNumber": 16,
-              "question": "10x2",
-              "isWarmup": false
-          },
-          "relativeTiming": "+1.629"
-      },
-      {
-          "type": "QuestionAnswered",
-          "clientTimestamp": "2021-02-04T08:38:23.361Z",
-          "data": {
-              "sequenceNumber": 16,
-              "question": "10x2",
-              "isWarmup": false
-          },
-          "relativeTiming": "+0.001"
-      },
-      {
-          "type": "PauseRendered",
-          "clientTimestamp": "2021-02-04T08:38:23.366Z",
-          "data": {
-              "sequenceNumber": 17,
-              "question": "11x5",
-              "isWarmup": false
-          },
-          "relativeTiming": "+0.005"
-      },
-      {
-          "type": "QuestionRendered",
-          "clientTimestamp": "2021-02-04T08:38:26.377Z",
-          "data": {
-              "sequenceNumber": 17,
-              "question": "11x5",
-              "isWarmup": false
-          },
-          "relativeTiming": "+3.011"
-      },
-      {
-          "type": "QuestionTimerStarted",
-          "clientTimestamp": "2021-02-04T08:38:26.378Z",
-          "data": {
-              "sequenceNumber": 17,
-              "question": "11x5",
-              "isWarmup": false
-          },
-          "relativeTiming": "+0.001"
-      },
-      {
-          "type": "QuestionAnswered",
-          "clientTimestamp": "2021-02-04T08:38:28.317Z",
-          "data": {
-              "sequenceNumber": 17,
-              "question": "11x5",
-              "isWarmup": false
-          },
-          "relativeTiming": "+1.939"
-      },
-      {
-          "type": "QuestionTimerCancelled",
-          "clientTimestamp": "2021-02-04T08:38:28.317Z",
-          "data": {
-              "sequenceNumber": 17,
-              "question": "11x5",
-              "isWarmup": false
-          },
-          "relativeTiming": "+0"
-      },
-      {
-          "type": "PauseRendered",
-          "clientTimestamp": "2021-02-04T08:38:28.322Z",
-          "data": {
-              "sequenceNumber": 18,
-              "question": "12x8",
-              "isWarmup": false
-          },
-          "relativeTiming": "+0.005"
-      },
-      {
-          "type": "QuestionRendered",
-          "clientTimestamp": "2021-02-04T08:38:31.331Z",
-          "data": {
-              "sequenceNumber": 18,
-              "question": "12x8",
-              "isWarmup": false
-          },
-          "relativeTiming": "+3.009"
-      },
-      {
-          "type": "QuestionTimerStarted",
-          "clientTimestamp": "2021-02-04T08:38:31.332Z",
-          "data": {
-              "sequenceNumber": 18,
-              "question": "12x8",
-              "isWarmup": false
-          },
-          "relativeTiming": "+0.001"
-      },
-      {
-          "type": "QuestionTimerCancelled",
-          "clientTimestamp": "2021-02-04T08:38:33.670Z",
-          "data": {
-              "sequenceNumber": 18,
-              "question": "12x8",
-              "isWarmup": false
-          },
-          "relativeTiming": "+2.338"
-      },
-      {
-          "type": "QuestionAnswered",
-          "clientTimestamp": "2021-02-04T08:38:33.671Z",
-          "data": {
-              "sequenceNumber": 18,
-              "question": "12x8",
-              "isWarmup": false
-          },
-          "relativeTiming": "+0.001"
-      },
-      {
-          "type": "PauseRendered",
-          "clientTimestamp": "2021-02-04T08:38:33.676Z",
-          "data": {
-              "sequenceNumber": 19,
-              "question": "7x6",
-              "isWarmup": false
-          },
-          "relativeTiming": "+0.005"
-      },
-      {
-          "type": "QuestionRendered",
-          "clientTimestamp": "2021-02-04T08:38:36.686Z",
-          "data": {
-              "sequenceNumber": 19,
-              "question": "7x6",
-              "isWarmup": false
-          },
-          "relativeTiming": "+3.01"
-      },
-      {
-          "type": "QuestionTimerStarted",
-          "clientTimestamp": "2021-02-04T08:38:36.687Z",
-          "data": {
-              "sequenceNumber": 19,
-              "question": "7x6",
-              "isWarmup": false
-          },
-          "relativeTiming": "+0.001"
-      },
-      {
-          "type": "QuestionAnswered",
-          "clientTimestamp": "2021-02-04T08:38:38.980Z",
-          "data": {
-              "sequenceNumber": 19,
-              "question": "7x6",
-              "isWarmup": false
-          },
-          "relativeTiming": "+2.293"
-      },
-      {
-          "type": "QuestionTimerCancelled",
-          "clientTimestamp": "2021-02-04T08:38:38.980Z",
-          "data": {
-              "sequenceNumber": 19,
-              "question": "7x6",
-              "isWarmup": false
-          },
-          "relativeTiming": "+0"
-      },
-      {
-          "type": "PauseRendered",
-          "clientTimestamp": "2021-02-04T08:38:38.986Z",
-          "data": {
-              "sequenceNumber": 20,
-              "question": "4x10",
-              "isWarmup": false
-          },
-          "relativeTiming": "+0.006"
-      },
-      {
-          "type": "QuestionRendered",
-          "clientTimestamp": "2021-02-04T08:38:41.990Z",
-          "data": {
-              "sequenceNumber": 20,
-              "question": "4x10",
-              "isWarmup": false
-          },
-          "relativeTiming": "+3.004"
-      },
-      {
-          "type": "QuestionTimerStarted",
-          "clientTimestamp": "2021-02-04T08:38:41.991Z",
-          "data": {
-              "sequenceNumber": 20,
-              "question": "4x10",
-              "isWarmup": false
-          },
-          "relativeTiming": "+0.001"
-      },
-      {
-          "type": "QuestionAnswered",
-          "clientTimestamp": "2021-02-04T08:38:44.303Z",
-          "data": {
-              "sequenceNumber": 20,
-              "question": "4x10",
-              "isWarmup": false
-          },
-          "relativeTiming": "+2.312"
-      },
-      {
-          "type": "QuestionTimerCancelled",
-          "clientTimestamp": "2021-02-04T08:38:44.303Z",
-          "data": {
-              "sequenceNumber": 20,
-              "question": "4x10",
-              "isWarmup": false
-          },
-          "relativeTiming": "+0"
-      },
-      {
-          "type": "PauseRendered",
-          "clientTimestamp": "2021-02-04T08:38:44.308Z",
-          "data": {
-              "sequenceNumber": 21,
-              "question": "9x8",
-              "isWarmup": false
-          },
-          "relativeTiming": "+0.005"
-      },
-      {
-          "type": "QuestionRendered",
-          "clientTimestamp": "2021-02-04T08:38:47.319Z",
-          "data": {
-              "sequenceNumber": 21,
-              "question": "9x8",
-              "isWarmup": false
-          },
-          "relativeTiming": "+3.011"
-      },
-      {
-          "type": "QuestionTimerStarted",
-          "clientTimestamp": "2021-02-04T08:38:47.320Z",
-          "data": {
-              "sequenceNumber": 21,
-              "question": "9x8",
-              "isWarmup": false
-          },
-          "relativeTiming": "+0.001"
-      },
-      {
-          "type": "QuestionTimerCancelled",
-          "clientTimestamp": "2021-02-04T08:38:49.710Z",
-          "data": {
-              "sequenceNumber": 21,
-              "question": "9x8",
-              "isWarmup": false
-          },
-          "relativeTiming": "+2.39"
-      },
-      {
-          "type": "QuestionAnswered",
-          "clientTimestamp": "2021-02-04T08:38:49.711Z",
-          "data": {
-              "sequenceNumber": 21,
-              "question": "9x8",
-              "isWarmup": false
-          },
-          "relativeTiming": "+0.001"
-      },
-      {
-          "type": "PauseRendered",
-          "clientTimestamp": "2021-02-04T08:38:49.719Z",
-          "data": {
-              "sequenceNumber": 22,
-              "question": "11x12",
-              "isWarmup": false
-          },
-          "relativeTiming": "+0.008"
-      },
-      {
-          "type": "QuestionRendered",
-          "clientTimestamp": "2021-02-04T08:38:52.731Z",
-          "data": {
-              "sequenceNumber": 22,
-              "question": "11x12",
-              "isWarmup": false
-          },
-          "relativeTiming": "+3.012"
-      },
-      {
-          "type": "QuestionTimerStarted",
-          "clientTimestamp": "2021-02-04T08:38:52.732Z",
-          "data": {
-              "sequenceNumber": 22,
-              "question": "11x12",
-              "isWarmup": false
-          },
-          "relativeTiming": "+0.001"
-      },
-      {
-          "type": "QuestionAnswered",
-          "clientTimestamp": "2021-02-04T08:38:55.824Z",
-          "data": {
-              "sequenceNumber": 22,
-              "question": "11x12",
-              "isWarmup": false
-          },
-          "relativeTiming": "+3.092"
-      },
-      {
-          "type": "QuestionTimerCancelled",
-          "clientTimestamp": "2021-02-04T08:38:55.824Z",
-          "data": {
-              "sequenceNumber": 22,
-              "question": "11x12",
-              "isWarmup": false
-          },
-          "relativeTiming": "+0"
-      },
-      {
-          "type": "PauseRendered",
-          "clientTimestamp": "2021-02-04T08:38:55.830Z",
-          "data": {
-              "sequenceNumber": 23,
-              "question": "2x7",
-              "isWarmup": false
-          },
-          "relativeTiming": "+0.006"
-      },
-      {
-          "type": "QuestionRendered",
-          "clientTimestamp": "2021-02-04T08:38:58.835Z",
-          "data": {
-              "sequenceNumber": 23,
-              "question": "2x7",
-              "isWarmup": false
-          },
-          "relativeTiming": "+3.005"
-      },
-      {
-          "type": "QuestionTimerStarted",
-          "clientTimestamp": "2021-02-04T08:38:58.836Z",
-          "data": {
-              "sequenceNumber": 23,
-              "question": "2x7",
-              "isWarmup": false
-          },
-          "relativeTiming": "+0.001"
-      },
-      {
-          "type": "QuestionTimerCancelled",
-          "clientTimestamp": "2021-02-04T08:39:01.893Z",
-          "data": {
-              "sequenceNumber": 23,
-              "question": "2x7",
-              "isWarmup": false
-          },
-          "relativeTiming": "+3.057"
-      },
-      {
-          "type": "QuestionAnswered",
-          "clientTimestamp": "2021-02-04T08:39:01.894Z",
-          "data": {
-              "sequenceNumber": 23,
-              "question": "2x7",
-              "isWarmup": false
-          },
-          "relativeTiming": "+0.001"
-      },
-      {
-          "type": "PauseRendered",
-          "clientTimestamp": "2021-02-04T08:39:01.899Z",
-          "data": {
-              "sequenceNumber": 24,
-              "question": "6x11",
-              "isWarmup": false
-          },
-          "relativeTiming": "+0.005"
-      },
-      {
-          "type": "QuestionRendered",
-          "clientTimestamp": "2021-02-04T08:39:04.904Z",
-          "data": {
-              "sequenceNumber": 24,
-              "question": "6x11",
-              "isWarmup": false
-          },
-          "relativeTiming": "+3.005"
-      },
-      {
-          "type": "QuestionTimerStarted",
-          "clientTimestamp": "2021-02-04T08:39:04.904Z",
-          "data": {
-              "sequenceNumber": 24,
-              "question": "6x11",
-              "isWarmup": false
-          },
-          "relativeTiming": "+0"
-      },
-      {
-          "type": "QuestionAnswered",
-          "clientTimestamp": "2021-02-04T08:39:07.097Z",
-          "data": {
-              "sequenceNumber": 24,
-              "question": "6x11",
-              "isWarmup": false
-          },
-          "relativeTiming": "+2.193"
-      },
-      {
-          "type": "QuestionTimerCancelled",
-          "clientTimestamp": "2021-02-04T08:39:07.097Z",
-          "data": {
-              "sequenceNumber": 24,
-              "question": "6x11",
-              "isWarmup": false
-          },
-          "relativeTiming": "+0"
-      },
-      {
-          "type": "PauseRendered",
-          "clientTimestamp": "2021-02-04T08:39:07.102Z",
-          "data": {
-              "sequenceNumber": 25,
-              "question": "9x3",
-              "isWarmup": false
-          },
-          "relativeTiming": "+0.005"
-      },
-      {
-          "type": "QuestionRendered",
-          "clientTimestamp": "2021-02-04T08:39:10.109Z",
-          "data": {
-              "sequenceNumber": 25,
-              "question": "9x3",
-              "isWarmup": false
-          },
-          "relativeTiming": "+3.007"
-      },
-      {
-          "type": "QuestionTimerStarted",
-          "clientTimestamp": "2021-02-04T08:39:10.110Z",
-          "data": {
-              "sequenceNumber": 25,
-              "question": "9x3",
-              "isWarmup": false
-          },
-          "relativeTiming": "+0.001"
-      },
-      {
-          "type": "QuestionTimerEnded",
-          "clientTimestamp": "2021-02-04T08:39:16.108Z",
-          "data": {
-              "sequenceNumber": 25,
-              "question": "9x3",
-              "isWarmup": false
-          },
-          "relativeTiming": "+5.998"
-      },
-      {
-          "type": "CheckSubmissionPending",
-          "clientTimestamp": "2021-02-04T08:39:16.109Z",
-          "relativeTiming": "+0.001"
-      },
-      {
-          "type": "CheckSubmissionApiCalled",
-          "clientTimestamp": "2021-02-04T08:39:16.124Z",
-          "relativeTiming": "+0.015"
+    {
+      "type": "WarmupStarted",
+      "clientTimestamp": "2021-02-04T08:33:34.521Z",
+    },
+    {
+      "type": "WarmupIntroRendered",
+      "clientTimestamp": "2021-02-04T08:33:34.586Z",
+    },
+    {
+      "type": "PauseRendered",
+      "clientTimestamp": "2021-02-04T08:33:36.071Z",
+      "data": {
+        "sequenceNumber": 1,
+        "question": "1x12",
+        "isWarmup": true
       }
+    },
+    {
+      "type": "QuestionTimerStarted",
+      "clientTimestamp": "2021-02-04T08:33:39.114Z",
+      "data": {
+        "sequenceNumber": 1,
+        "question": "1x12",
+        "isWarmup": true
+      }
+    },
+    {
+      "type": "QuestionRendered",
+      "clientTimestamp": "2021-02-04T08:33:39.114Z",
+      "data": {
+        "sequenceNumber": 1,
+        "question": "1x12",
+        "isWarmup": true
+      }
+    },
+    {
+      "type": "QuestionTimerCancelled",
+      "clientTimestamp": "2021-02-04T08:33:41.334Z",
+      "data": {
+        "sequenceNumber": 1,
+        "question": "1x12",
+        "isWarmup": true
+      }
+    },
+    {
+      "type": "QuestionAnswered",
+      "clientTimestamp": "2021-02-04T08:33:41.335Z",
+      "data": {
+        "sequenceNumber": 1,
+        "question": "1x12",
+        "isWarmup": true
+      }
+    },
+    {
+      "type": "PauseRendered",
+      "clientTimestamp": "2021-02-04T08:33:41.340Z",
+      "data": {
+        "sequenceNumber": 2,
+        "question": "2x2",
+        "isWarmup": true
+      }
+    },
+    {
+      "type": "QuestionRendered",
+      "clientTimestamp": "2021-02-04T08:33:44.359Z",
+      "data": {
+        "sequenceNumber": 2,
+        "question": "2x2",
+        "isWarmup": true
+      }
+    },
+    {
+      "type": "QuestionTimerStarted",
+      "clientTimestamp": "2021-02-04T08:33:44.360Z",
+      "data": {
+        "sequenceNumber": 2,
+        "question": "2x2",
+        "isWarmup": true
+      }
+    },
+    {
+      "type": "QuestionAnswered",
+      "clientTimestamp": "2021-02-04T08:33:47.246Z",
+      "data": {
+        "sequenceNumber": 2,
+        "question": "2x2",
+        "isWarmup": true
+      }
+    },
+    {
+      "type": "QuestionTimerCancelled",
+      "clientTimestamp": "2021-02-04T08:33:47.246Z",
+      "data": {
+        "sequenceNumber": 2,
+        "question": "2x2",
+        "isWarmup": true
+      }
+    },
+    {
+      "type": "PauseRendered",
+      "clientTimestamp": "2021-02-04T08:33:47.252Z",
+      "data": {
+        "sequenceNumber": 3,
+        "question": "10x10",
+        "isWarmup": true
+      }
+    },
+    {
+      "type": "QuestionRendered",
+      "clientTimestamp": "2021-02-04T08:33:50.262Z",
+      "data": {
+        "sequenceNumber": 3,
+        "question": "10x10",
+        "isWarmup": true
+      }
+    },
+    {
+      "type": "QuestionTimerStarted",
+      "clientTimestamp": "2021-02-04T08:33:50.263Z",
+      "data": {
+        "sequenceNumber": 3,
+        "question": "10x10",
+        "isWarmup": true
+      }
+    },
+    {
+      "type": "QuestionTimerEnded",
+      "clientTimestamp": "2021-02-04T08:33:56.269Z",
+      "data": {
+        "sequenceNumber": 3,
+        "question": "10x10",
+        "isWarmup": true
+      }
+    },
+    {
+      "type": "WarmupCompleteRendered",
+      "clientTimestamp": "2021-02-04T08:33:56.290Z",
+    },
+    {
+      "type": "QuestionIntroRendered",
+      "clientTimestamp": "2021-02-04T08:36:45.248Z",
+    },
+    {
+      "type": "CheckStarted",
+      "clientTimestamp": "2021-02-04T08:36:46.043Z",
+    },
+    {
+      "type": "CheckStartedApiCalled",
+      "clientTimestamp": "2021-02-04T08:36:46.048Z",
+    },
+    {
+      "type": "PauseRendered",
+      "clientTimestamp": "2021-02-04T08:36:46.070Z",
+      "data": {
+        "sequenceNumber": 1,
+        "question": "2x4",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "CheckStartedAPICallSucceeded",
+      "clientTimestamp": "2021-02-04T08:36:46.979Z",
+    },
+    {
+      "type": "QuestionRendered",
+      "clientTimestamp": "2021-02-04T08:36:49.101Z",
+      "data": {
+        "sequenceNumber": 1,
+        "question": "2x4",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionTimerStarted",
+      "clientTimestamp": "2021-02-04T08:36:49.102Z",
+      "data": {
+        "sequenceNumber": 1,
+        "question": "2x4",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionTimerCancelled",
+      "clientTimestamp": "2021-02-04T08:36:51.939Z",
+      "data": {
+        "sequenceNumber": 1,
+        "question": "2x4",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionAnswered",
+      "clientTimestamp": "2021-02-04T08:36:51.940Z",
+      "data": {
+        "sequenceNumber": 1,
+        "question": "2x4",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "PauseRendered",
+      "clientTimestamp": "2021-02-04T08:36:51.946Z",
+      "data": {
+        "sequenceNumber": 2,
+        "question": "3x3",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionRendered",
+      "clientTimestamp": "2021-02-04T08:36:54.962Z",
+      "data": {
+        "sequenceNumber": 2,
+        "question": "3x3",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionTimerStarted",
+      "clientTimestamp": "2021-02-04T08:36:54.963Z",
+      "data": {
+        "sequenceNumber": 2,
+        "question": "3x3",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionAnswered",
+      "clientTimestamp": "2021-02-04T08:36:56.744Z",
+      "data": {
+        "sequenceNumber": 2,
+        "question": "3x3",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionTimerCancelled",
+      "clientTimestamp": "2021-02-04T08:36:56.744Z",
+      "data": {
+        "sequenceNumber": 2,
+        "question": "3x3",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "PauseRendered",
+      "clientTimestamp": "2021-02-04T08:36:56.751Z",
+      "data": {
+        "sequenceNumber": 3,
+        "question": "5x9",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionRendered",
+      "clientTimestamp": "2021-02-04T08:36:59.766Z",
+      "data": {
+        "sequenceNumber": 3,
+        "question": "5x9",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionTimerStarted",
+      "clientTimestamp": "2021-02-04T08:36:59.768Z",
+      "data": {
+        "sequenceNumber": 3,
+        "question": "5x9",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionTimerCancelled",
+      "clientTimestamp": "2021-02-04T08:37:02.447Z",
+      "data": {
+        "sequenceNumber": 3,
+        "question": "5x9",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionAnswered",
+      "clientTimestamp": "2021-02-04T08:37:02.448Z",
+      "data": {
+        "sequenceNumber": 3,
+        "question": "5x9",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "PauseRendered",
+      "clientTimestamp": "2021-02-04T08:37:02.451Z",
+      "data": {
+        "sequenceNumber": 4,
+        "question": "12x6",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionRendered",
+      "clientTimestamp": "2021-02-04T08:37:05.465Z",
+      "data": {
+        "sequenceNumber": 4,
+        "question": "12x6",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionTimerStarted",
+      "clientTimestamp": "2021-02-04T08:37:05.467Z",
+      "data": {
+        "sequenceNumber": 4,
+        "question": "12x6",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionTimerEnded",
+      "clientTimestamp": "2021-02-04T08:37:11.469Z",
+      "data": {
+        "sequenceNumber": 4,
+        "question": "12x6",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "PauseRendered",
+      "clientTimestamp": "2021-02-04T08:37:11.478Z",
+      "data": {
+        "sequenceNumber": 5,
+        "question": "11x4",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionRendered",
+      "clientTimestamp": "2021-02-04T08:37:14.495Z",
+      "data": {
+        "sequenceNumber": 5,
+        "question": "11x4",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionTimerStarted",
+      "clientTimestamp": "2021-02-04T08:37:14.495Z",
+      "data": {
+        "sequenceNumber": 5,
+        "question": "11x4",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionAnswered",
+      "clientTimestamp": "2021-02-04T08:37:17.396Z",
+      "data": {
+        "sequenceNumber": 5,
+        "question": "11x4",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionTimerCancelled",
+      "clientTimestamp": "2021-02-04T08:37:17.396Z",
+      "data": {
+        "sequenceNumber": 5,
+        "question": "11x4",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "PauseRendered",
+      "clientTimestamp": "2021-02-04T08:37:17.402Z",
+      "data": {
+        "sequenceNumber": 6,
+        "question": "8x5",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionRendered",
+      "clientTimestamp": "2021-02-04T08:37:20.418Z",
+      "data": {
+        "sequenceNumber": 6,
+        "question": "8x5",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionTimerStarted",
+      "clientTimestamp": "2021-02-04T08:37:20.419Z",
+      "data": {
+        "sequenceNumber": 6,
+        "question": "8x5",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionAnswered",
+      "clientTimestamp": "2021-02-04T08:37:23.144Z",
+      "data": {
+        "sequenceNumber": 6,
+        "question": "8x5",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionTimerCancelled",
+      "clientTimestamp": "2021-02-04T08:37:23.144Z",
+      "data": {
+        "sequenceNumber": 6,
+        "question": "8x5",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "PauseRendered",
+      "clientTimestamp": "2021-02-04T08:37:23.151Z",
+      "data": {
+        "sequenceNumber": 7,
+        "question": "6x9",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionRendered",
+      "clientTimestamp": "2021-02-04T08:37:26.165Z",
+      "data": {
+        "sequenceNumber": 7,
+        "question": "6x9",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionTimerStarted",
+      "clientTimestamp": "2021-02-04T08:37:26.166Z",
+      "data": {
+        "sequenceNumber": 7,
+        "question": "6x9",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionTimerCancelled",
+      "clientTimestamp": "2021-02-04T08:37:32.141Z",
+      "data": {
+        "sequenceNumber": 7,
+        "question": "6x9",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionAnswered",
+      "clientTimestamp": "2021-02-04T08:37:32.141Z",
+      "data": {
+        "sequenceNumber": 7,
+        "question": "6x9",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "PauseRendered",
+      "clientTimestamp": "2021-02-04T08:37:32.147Z",
+      "data": {
+        "sequenceNumber": 8,
+        "question": "10x3",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionRendered",
+      "clientTimestamp": "2021-02-04T08:37:35.162Z",
+      "data": {
+        "sequenceNumber": 8,
+        "question": "10x3",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionTimerStarted",
+      "clientTimestamp": "2021-02-04T08:37:35.163Z",
+      "data": {
+        "sequenceNumber": 8,
+        "question": "10x3",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionAnswered",
+      "clientTimestamp": "2021-02-04T08:37:37.290Z",
+      "data": {
+        "sequenceNumber": 8,
+        "question": "10x3",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionTimerCancelled",
+      "clientTimestamp": "2021-02-04T08:37:37.290Z",
+      "data": {
+        "sequenceNumber": 8,
+        "question": "10x3",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "PauseRendered",
+      "clientTimestamp": "2021-02-04T08:37:37.295Z",
+      "data": {
+        "sequenceNumber": 9,
+        "question": "7x11",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionRendered",
+      "clientTimestamp": "2021-02-04T08:37:40.310Z",
+      "data": {
+        "sequenceNumber": 9,
+        "question": "7x11",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionTimerStarted",
+      "clientTimestamp": "2021-02-04T08:37:40.311Z",
+      "data": {
+        "sequenceNumber": 9,
+        "question": "7x11",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionTimerCancelled",
+      "clientTimestamp": "2021-02-04T08:37:42.369Z",
+      "data": {
+        "sequenceNumber": 9,
+        "question": "7x11",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionAnswered",
+      "clientTimestamp": "2021-02-04T08:37:42.369Z",
+      "data": {
+        "sequenceNumber": 9,
+        "question": "7x11",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "PauseRendered",
+      "clientTimestamp": "2021-02-04T08:37:42.375Z",
+      "data": {
+        "sequenceNumber": 10,
+        "question": "5x12",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionRendered",
+      "clientTimestamp": "2021-02-04T08:37:45.389Z",
+      "data": {
+        "sequenceNumber": 10,
+        "question": "5x12",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionTimerStarted",
+      "clientTimestamp": "2021-02-04T08:37:45.390Z",
+      "data": {
+        "sequenceNumber": 10,
+        "question": "5x12",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionTimerCancelled",
+      "clientTimestamp": "2021-02-04T08:37:47.455Z",
+      "data": {
+        "sequenceNumber": 10,
+        "question": "5x12",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionAnswered",
+      "clientTimestamp": "2021-02-04T08:37:47.455Z",
+      "data": {
+        "sequenceNumber": 10,
+        "question": "5x12",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "PauseRendered",
+      "clientTimestamp": "2021-02-04T08:37:47.460Z",
+      "data": {
+        "sequenceNumber": 11,
+        "question": "8x8",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionRendered",
+      "clientTimestamp": "2021-02-04T08:37:50.473Z",
+      "data": {
+        "sequenceNumber": 11,
+        "question": "8x8",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionTimerStarted",
+      "clientTimestamp": "2021-02-04T08:37:50.474Z",
+      "data": {
+        "sequenceNumber": 11,
+        "question": "8x8",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionAnswered",
+      "clientTimestamp": "2021-02-04T08:37:53.000Z",
+      "data": {
+        "sequenceNumber": 11,
+        "question": "8x8",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionTimerCancelled",
+      "clientTimestamp": "2021-02-04T08:37:53.000Z",
+      "data": {
+        "sequenceNumber": 11,
+        "question": "8x8",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "PauseRendered",
+      "clientTimestamp": "2021-02-04T08:37:53.004Z",
+      "data": {
+        "sequenceNumber": 12,
+        "question": "4x9",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionRendered",
+      "clientTimestamp": "2021-02-04T08:37:56.018Z",
+      "data": {
+        "sequenceNumber": 12,
+        "question": "4x9",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionTimerStarted",
+      "clientTimestamp": "2021-02-04T08:37:56.019Z",
+      "data": {
+        "sequenceNumber": 12,
+        "question": "4x9",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionTimerCancelled",
+      "clientTimestamp": "2021-02-04T08:38:01.340Z",
+      "data": {
+        "sequenceNumber": 12,
+        "question": "4x9",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionAnswered",
+      "clientTimestamp": "2021-02-04T08:38:01.340Z",
+      "data": {
+        "sequenceNumber": 12,
+        "question": "4x9",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "PauseRendered",
+      "clientTimestamp": "2021-02-04T08:38:01.346Z",
+      "data": {
+        "sequenceNumber": 13,
+        "question": "12x10",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionRendered",
+      "clientTimestamp": "2021-02-04T08:38:04.358Z",
+      "data": {
+        "sequenceNumber": 13,
+        "question": "12x10",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionTimerStarted",
+      "clientTimestamp": "2021-02-04T08:38:04.359Z",
+      "data": {
+        "sequenceNumber": 13,
+        "question": "12x10",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionTimerCancelled",
+      "clientTimestamp": "2021-02-04T08:38:06.980Z",
+      "data": {
+        "sequenceNumber": 13,
+        "question": "12x10",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionAnswered",
+      "clientTimestamp": "2021-02-04T08:38:06.981Z",
+      "data": {
+        "sequenceNumber": 13,
+        "question": "12x10",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "PauseRendered",
+      "clientTimestamp": "2021-02-04T08:38:06.984Z",
+      "data": {
+        "sequenceNumber": 14,
+        "question": "3x2",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionRendered",
+      "clientTimestamp": "2021-02-04T08:38:09.992Z",
+      "data": {
+        "sequenceNumber": 14,
+        "question": "3x2",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionTimerStarted",
+      "clientTimestamp": "2021-02-04T08:38:09.992Z",
+      "data": {
+        "sequenceNumber": 14,
+        "question": "3x2",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionTimerCancelled",
+      "clientTimestamp": "2021-02-04T08:38:11.702Z",
+      "data": {
+        "sequenceNumber": 14,
+        "question": "3x2",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionAnswered",
+      "clientTimestamp": "2021-02-04T08:38:11.702Z",
+      "data": {
+        "sequenceNumber": 14,
+        "question": "3x2",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "PauseRendered",
+      "clientTimestamp": "2021-02-04T08:38:11.706Z",
+      "data": {
+        "sequenceNumber": 15,
+        "question": "4x7",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionRendered",
+      "clientTimestamp": "2021-02-04T08:38:14.714Z",
+      "data": {
+        "sequenceNumber": 15,
+        "question": "4x7",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionTimerStarted",
+      "clientTimestamp": "2021-02-04T08:38:14.715Z",
+      "data": {
+        "sequenceNumber": 15,
+        "question": "4x7",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionAnswered",
+      "clientTimestamp": "2021-02-04T08:38:18.719Z",
+      "data": {
+        "sequenceNumber": 15,
+        "question": "4x7",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionTimerCancelled",
+      "clientTimestamp": "2021-02-04T08:38:18.719Z",
+      "data": {
+        "sequenceNumber": 15,
+        "question": "4x7",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "PauseRendered",
+      "clientTimestamp": "2021-02-04T08:38:18.723Z",
+      "data": {
+        "sequenceNumber": 16,
+        "question": "10x2",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionRendered",
+      "clientTimestamp": "2021-02-04T08:38:21.731Z",
+      "data": {
+        "sequenceNumber": 16,
+        "question": "10x2",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionTimerStarted",
+      "clientTimestamp": "2021-02-04T08:38:21.731Z",
+      "data": {
+        "sequenceNumber": 16,
+        "question": "10x2",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionTimerCancelled",
+      "clientTimestamp": "2021-02-04T08:38:23.360Z",
+      "data": {
+        "sequenceNumber": 16,
+        "question": "10x2",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionAnswered",
+      "clientTimestamp": "2021-02-04T08:38:23.361Z",
+      "data": {
+        "sequenceNumber": 16,
+        "question": "10x2",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "PauseRendered",
+      "clientTimestamp": "2021-02-04T08:38:23.366Z",
+      "data": {
+        "sequenceNumber": 17,
+        "question": "11x5",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionRendered",
+      "clientTimestamp": "2021-02-04T08:38:26.377Z",
+      "data": {
+        "sequenceNumber": 17,
+        "question": "11x5",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionTimerStarted",
+      "clientTimestamp": "2021-02-04T08:38:26.378Z",
+      "data": {
+        "sequenceNumber": 17,
+        "question": "11x5",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionAnswered",
+      "clientTimestamp": "2021-02-04T08:38:28.317Z",
+      "data": {
+        "sequenceNumber": 17,
+        "question": "11x5",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionTimerCancelled",
+      "clientTimestamp": "2021-02-04T08:38:28.317Z",
+      "data": {
+        "sequenceNumber": 17,
+        "question": "11x5",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "PauseRendered",
+      "clientTimestamp": "2021-02-04T08:38:28.322Z",
+      "data": {
+        "sequenceNumber": 18,
+        "question": "12x8",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionRendered",
+      "clientTimestamp": "2021-02-04T08:38:31.331Z",
+      "data": {
+        "sequenceNumber": 18,
+        "question": "12x8",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionTimerStarted",
+      "clientTimestamp": "2021-02-04T08:38:31.332Z",
+      "data": {
+        "sequenceNumber": 18,
+        "question": "12x8",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionTimerCancelled",
+      "clientTimestamp": "2021-02-04T08:38:33.670Z",
+      "data": {
+        "sequenceNumber": 18,
+        "question": "12x8",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionAnswered",
+      "clientTimestamp": "2021-02-04T08:38:33.671Z",
+      "data": {
+        "sequenceNumber": 18,
+        "question": "12x8",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "PauseRendered",
+      "clientTimestamp": "2021-02-04T08:38:33.676Z",
+      "data": {
+        "sequenceNumber": 19,
+        "question": "7x6",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionRendered",
+      "clientTimestamp": "2021-02-04T08:38:36.686Z",
+      "data": {
+        "sequenceNumber": 19,
+        "question": "7x6",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionTimerStarted",
+      "clientTimestamp": "2021-02-04T08:38:36.687Z",
+      "data": {
+        "sequenceNumber": 19,
+        "question": "7x6",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionAnswered",
+      "clientTimestamp": "2021-02-04T08:38:38.980Z",
+      "data": {
+        "sequenceNumber": 19,
+        "question": "7x6",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionTimerCancelled",
+      "clientTimestamp": "2021-02-04T08:38:38.980Z",
+      "data": {
+        "sequenceNumber": 19,
+        "question": "7x6",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "PauseRendered",
+      "clientTimestamp": "2021-02-04T08:38:38.986Z",
+      "data": {
+        "sequenceNumber": 20,
+        "question": "4x10",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionRendered",
+      "clientTimestamp": "2021-02-04T08:38:41.990Z",
+      "data": {
+        "sequenceNumber": 20,
+        "question": "4x10",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionTimerStarted",
+      "clientTimestamp": "2021-02-04T08:38:41.991Z",
+      "data": {
+        "sequenceNumber": 20,
+        "question": "4x10",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionAnswered",
+      "clientTimestamp": "2021-02-04T08:38:44.303Z",
+      "data": {
+        "sequenceNumber": 20,
+        "question": "4x10",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionTimerCancelled",
+      "clientTimestamp": "2021-02-04T08:38:44.303Z",
+      "data": {
+        "sequenceNumber": 20,
+        "question": "4x10",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "PauseRendered",
+      "clientTimestamp": "2021-02-04T08:38:44.308Z",
+      "data": {
+        "sequenceNumber": 21,
+        "question": "9x8",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionRendered",
+      "clientTimestamp": "2021-02-04T08:38:47.319Z",
+      "data": {
+        "sequenceNumber": 21,
+        "question": "9x8",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionTimerStarted",
+      "clientTimestamp": "2021-02-04T08:38:47.320Z",
+      "data": {
+        "sequenceNumber": 21,
+        "question": "9x8",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionTimerCancelled",
+      "clientTimestamp": "2021-02-04T08:38:49.710Z",
+      "data": {
+        "sequenceNumber": 21,
+        "question": "9x8",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionAnswered",
+      "clientTimestamp": "2021-02-04T08:38:49.711Z",
+      "data": {
+        "sequenceNumber": 21,
+        "question": "9x8",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "PauseRendered",
+      "clientTimestamp": "2021-02-04T08:38:49.719Z",
+      "data": {
+        "sequenceNumber": 22,
+        "question": "11x12",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionRendered",
+      "clientTimestamp": "2021-02-04T08:38:52.731Z",
+      "data": {
+        "sequenceNumber": 22,
+        "question": "11x12",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionTimerStarted",
+      "clientTimestamp": "2021-02-04T08:38:52.732Z",
+      "data": {
+        "sequenceNumber": 22,
+        "question": "11x12",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionAnswered",
+      "clientTimestamp": "2021-02-04T08:38:55.824Z",
+      "data": {
+        "sequenceNumber": 22,
+        "question": "11x12",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionTimerCancelled",
+      "clientTimestamp": "2021-02-04T08:38:55.824Z",
+      "data": {
+        "sequenceNumber": 22,
+        "question": "11x12",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "PauseRendered",
+      "clientTimestamp": "2021-02-04T08:38:55.830Z",
+      "data": {
+        "sequenceNumber": 23,
+        "question": "2x7",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionRendered",
+      "clientTimestamp": "2021-02-04T08:38:58.835Z",
+      "data": {
+        "sequenceNumber": 23,
+        "question": "2x7",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionTimerStarted",
+      "clientTimestamp": "2021-02-04T08:38:58.836Z",
+      "data": {
+        "sequenceNumber": 23,
+        "question": "2x7",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionTimerCancelled",
+      "clientTimestamp": "2021-02-04T08:39:01.893Z",
+      "data": {
+        "sequenceNumber": 23,
+        "question": "2x7",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionAnswered",
+      "clientTimestamp": "2021-02-04T08:39:01.894Z",
+      "data": {
+        "sequenceNumber": 23,
+        "question": "2x7",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "PauseRendered",
+      "clientTimestamp": "2021-02-04T08:39:01.899Z",
+      "data": {
+        "sequenceNumber": 24,
+        "question": "6x11",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionRendered",
+      "clientTimestamp": "2021-02-04T08:39:04.904Z",
+      "data": {
+        "sequenceNumber": 24,
+        "question": "6x11",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionTimerStarted",
+      "clientTimestamp": "2021-02-04T08:39:04.904Z",
+      "data": {
+        "sequenceNumber": 24,
+        "question": "6x11",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionAnswered",
+      "clientTimestamp": "2021-02-04T08:39:07.097Z",
+      "data": {
+        "sequenceNumber": 24,
+        "question": "6x11",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionTimerCancelled",
+      "clientTimestamp": "2021-02-04T08:39:07.097Z",
+      "data": {
+        "sequenceNumber": 24,
+        "question": "6x11",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "PauseRendered",
+      "clientTimestamp": "2021-02-04T08:39:07.102Z",
+      "data": {
+        "sequenceNumber": 25,
+        "question": "9x3",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionRendered",
+      "clientTimestamp": "2021-02-04T08:39:10.109Z",
+      "data": {
+        "sequenceNumber": 25,
+        "question": "9x3",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionTimerStarted",
+      "clientTimestamp": "2021-02-04T08:39:10.110Z",
+      "data": {
+        "sequenceNumber": 25,
+        "question": "9x3",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "QuestionTimerEnded",
+      "clientTimestamp": "2021-02-04T08:39:16.108Z",
+      "data": {
+        "sequenceNumber": 25,
+        "question": "9x3",
+        "isWarmup": false
+      }
+    },
+    {
+      "type": "CheckSubmissionPending",
+      "clientTimestamp": "2021-02-04T08:39:16.109Z",
+    },
+    {
+      "type": "CheckSubmissionApiCalled",
+      "clientTimestamp": "2021-02-04T08:39:16.124Z",
+    }
   ],
   "inputs": [
-      {
-          "input": "8",
-          "eventType": "touch",
-          "clientTimestamp": "2021-02-04T08:36:51.597Z",
-          "question": "2x4",
-          "sequenceNumber": 1,
-          "relativeTiming": "+0.00"
-      },
-      {
-          "input": "Enter",
-          "eventType": "touch",
-          "clientTimestamp": "2021-02-04T08:36:51.938Z",
-          "question": "2x4",
-          "sequenceNumber": 1,
-          "relativeTiming": "+0.341"
-      },
-      {
-          "input": "9",
-          "eventType": "touch",
-          "clientTimestamp": "2021-02-04T08:36:56.544Z",
-          "question": "3x3",
-          "sequenceNumber": 2,
-          "relativeTiming": "+4.606"
-      },
-      {
-          "input": "Enter",
-          "eventType": "touch",
-          "clientTimestamp": "2021-02-04T08:36:56.743Z",
-          "question": "3x3",
-          "sequenceNumber": 2,
-          "relativeTiming": "+0.199"
-      },
-      {
-          "input": "4",
-          "eventType": "touch",
-          "clientTimestamp": "2021-02-04T08:37:01.534Z",
-          "question": "5x9",
-          "sequenceNumber": 3,
-          "relativeTiming": "+4.791"
-      },
-      {
-          "input": "2",
-          "eventType": "touch",
-          "clientTimestamp": "2021-02-04T08:37:01.764Z",
-          "question": "5x9",
-          "sequenceNumber": 3,
-          "relativeTiming": "+0.23"
-      },
-      {
-          "input": "Enter",
-          "eventType": "touch",
-          "clientTimestamp": "2021-02-04T08:37:02.447Z",
-          "question": "5x9",
-          "sequenceNumber": 3,
-          "relativeTiming": "+0.683"
-      },
-      {
-          "input": "4",
-          "eventType": "touch",
-          "clientTimestamp": "2021-02-04T08:37:16.272Z",
-          "question": "11x4",
-          "sequenceNumber": 5,
-          "relativeTiming": "+13.825"
-      },
-      {
-          "input": "4",
-          "eventType": "touch",
-          "clientTimestamp": "2021-02-04T08:37:16.449Z",
-          "question": "11x4",
-          "sequenceNumber": 5,
-          "relativeTiming": "+0.177"
-      },
-      {
-          "input": "Enter",
-          "eventType": "touch",
-          "clientTimestamp": "2021-02-04T08:37:17.396Z",
-          "question": "11x4",
-          "sequenceNumber": 5,
-          "relativeTiming": "+0.947"
-      },
-      {
-          "input": "4",
-          "eventType": "touch",
-          "clientTimestamp": "2021-02-04T08:37:22.336Z",
-          "question": "8x5",
-          "sequenceNumber": 6,
-          "relativeTiming": "+4.94"
-      },
-      {
-          "input": "0",
-          "eventType": "touch",
-          "clientTimestamp": "2021-02-04T08:37:22.943Z",
-          "question": "8x5",
-          "sequenceNumber": 6,
-          "relativeTiming": "+0.607"
-      },
-      {
-          "input": "Enter",
-          "eventType": "touch",
-          "clientTimestamp": "2021-02-04T08:37:23.144Z",
-          "question": "8x5",
-          "sequenceNumber": 6,
-          "relativeTiming": "+0.201"
-      },
-      {
-          "input": "4",
-          "eventType": "touch",
-          "clientTimestamp": "2021-02-04T08:37:30.318Z",
-          "question": "6x9",
-          "sequenceNumber": 7,
-          "relativeTiming": "+7.174"
-      },
-      {
-          "input": "Backspace",
-          "eventType": "touch",
-          "clientTimestamp": "2021-02-04T08:37:31.110Z",
-          "question": "6x9",
-          "sequenceNumber": 7,
-          "relativeTiming": "+0.792"
-      },
-      {
-          "input": "5",
-          "eventType": "touch",
-          "clientTimestamp": "2021-02-04T08:37:31.666Z",
-          "question": "6x9",
-          "sequenceNumber": 7,
-          "relativeTiming": "+0.556"
-      },
-      {
-          "input": "4",
-          "eventType": "touch",
-          "clientTimestamp": "2021-02-04T08:37:31.864Z",
-          "question": "6x9",
-          "sequenceNumber": 7,
-          "relativeTiming": "+0.198"
-      },
-      {
-          "input": "Enter",
-          "eventType": "touch",
-          "clientTimestamp": "2021-02-04T08:37:32.140Z",
-          "question": "6x9",
-          "sequenceNumber": 7,
-          "relativeTiming": "+0.276"
-      },
-      {
-          "input": "3",
-          "eventType": "touch",
-          "clientTimestamp": "2021-02-04T08:37:36.699Z",
-          "question": "10x3",
-          "sequenceNumber": 8,
-          "relativeTiming": "+4.559"
-      },
-      {
-          "input": "0",
-          "eventType": "touch",
-          "clientTimestamp": "2021-02-04T08:37:36.963Z",
-          "question": "10x3",
-          "sequenceNumber": 8,
-          "relativeTiming": "+0.264"
-      },
-      {
-          "input": "Enter",
-          "eventType": "touch",
-          "clientTimestamp": "2021-02-04T08:37:37.289Z",
-          "question": "10x3",
-          "sequenceNumber": 8,
-          "relativeTiming": "+0.326"
-      },
-      {
-          "input": "7",
-          "eventType": "touch",
-          "clientTimestamp": "2021-02-04T08:37:41.830Z",
-          "question": "7x11",
-          "sequenceNumber": 9,
-          "relativeTiming": "+4.541"
-      },
-      {
-          "input": "7",
-          "eventType": "touch",
-          "clientTimestamp": "2021-02-04T08:37:41.985Z",
-          "question": "7x11",
-          "sequenceNumber": 9,
-          "relativeTiming": "+0.155"
-      },
-      {
-          "input": "Enter",
-          "eventType": "touch",
-          "clientTimestamp": "2021-02-04T08:37:42.369Z",
-          "question": "7x11",
-          "sequenceNumber": 9,
-          "relativeTiming": "+0.384"
-      },
-      {
-          "input": "6",
-          "eventType": "touch",
-          "clientTimestamp": "2021-02-04T08:37:47.070Z",
-          "question": "5x12",
-          "sequenceNumber": 10,
-          "relativeTiming": "+4.701"
-      },
-      {
-          "input": "0",
-          "eventType": "touch",
-          "clientTimestamp": "2021-02-04T08:37:47.303Z",
-          "question": "5x12",
-          "sequenceNumber": 10,
-          "relativeTiming": "+0.233"
-      },
-      {
-          "input": "Enter",
-          "eventType": "touch",
-          "clientTimestamp": "2021-02-04T08:37:47.454Z",
-          "question": "5x12",
-          "sequenceNumber": 10,
-          "relativeTiming": "+0.151"
-      },
-      {
-          "input": "6",
-          "eventType": "touch",
-          "clientTimestamp": "2021-02-04T08:37:52.086Z",
-          "question": "8x8",
-          "sequenceNumber": 11,
-          "relativeTiming": "+4.632"
-      },
-      {
-          "input": "4",
-          "eventType": "touch",
-          "clientTimestamp": "2021-02-04T08:37:52.543Z",
-          "question": "8x8",
-          "sequenceNumber": 11,
-          "relativeTiming": "+0.457"
-      },
-      {
-          "input": "Enter",
-          "eventType": "touch",
-          "clientTimestamp": "2021-02-04T08:37:52.999Z",
-          "question": "8x8",
-          "sequenceNumber": 11,
-          "relativeTiming": "+0.456"
-      },
-      {
-          "input": "3",
-          "eventType": "touch",
-          "clientTimestamp": "2021-02-04T08:38:00.667Z",
-          "question": "4x9",
-          "sequenceNumber": 12,
-          "relativeTiming": "+7.668"
-      },
-      {
-          "input": "6",
-          "eventType": "touch",
-          "clientTimestamp": "2021-02-04T08:38:00.951Z",
-          "question": "4x9",
-          "sequenceNumber": 12,
-          "relativeTiming": "+0.284"
-      },
-      {
-          "input": "Enter",
-          "eventType": "touch",
-          "clientTimestamp": "2021-02-04T08:38:01.339Z",
-          "question": "4x9",
-          "sequenceNumber": 12,
-          "relativeTiming": "+0.388"
-      },
-      {
-          "input": "1",
-          "eventType": "touch",
-          "clientTimestamp": "2021-02-04T08:38:06.290Z",
-          "question": "12x10",
-          "sequenceNumber": 13,
-          "relativeTiming": "+4.951"
-      },
-      {
-          "input": "2",
-          "eventType": "touch",
-          "clientTimestamp": "2021-02-04T08:38:06.454Z",
-          "question": "12x10",
-          "sequenceNumber": 13,
-          "relativeTiming": "+0.164"
-      },
-      {
-          "input": "0",
-          "eventType": "touch",
-          "clientTimestamp": "2021-02-04T08:38:06.767Z",
-          "question": "12x10",
-          "sequenceNumber": 13,
-          "relativeTiming": "+0.313"
-      },
-      {
-          "input": "Enter",
-          "eventType": "touch",
-          "clientTimestamp": "2021-02-04T08:38:06.980Z",
-          "question": "12x10",
-          "sequenceNumber": 13,
-          "relativeTiming": "+0.213"
-      },
-      {
-          "input": "6",
-          "eventType": "touch",
-          "clientTimestamp": "2021-02-04T08:38:11.495Z",
-          "question": "3x2",
-          "sequenceNumber": 14,
-          "relativeTiming": "+4.515"
-      },
-      {
-          "input": "Enter",
-          "eventType": "touch",
-          "clientTimestamp": "2021-02-04T08:38:11.701Z",
-          "question": "3x2",
-          "sequenceNumber": 14,
-          "relativeTiming": "+0.206"
-      },
-      {
-          "input": "2",
-          "eventType": "touch",
-          "clientTimestamp": "2021-02-04T08:38:17.277Z",
-          "question": "4x7",
-          "sequenceNumber": 15,
-          "relativeTiming": "+5.576"
-      },
-      {
-          "input": "8",
-          "eventType": "touch",
-          "clientTimestamp": "2021-02-04T08:38:18.518Z",
-          "question": "4x7",
-          "sequenceNumber": 15,
-          "relativeTiming": "+1.241"
-      },
-      {
-          "input": "Enter",
-          "eventType": "touch",
-          "clientTimestamp": "2021-02-04T08:38:18.718Z",
-          "question": "4x7",
-          "sequenceNumber": 15,
-          "relativeTiming": "+0.2"
-      },
-      {
-          "input": "2",
-          "eventType": "touch",
-          "clientTimestamp": "2021-02-04T08:38:22.885Z",
-          "question": "10x2",
-          "sequenceNumber": 16,
-          "relativeTiming": "+4.167"
-      },
-      {
-          "input": "Enter",
-          "eventType": "touch",
-          "clientTimestamp": "2021-02-04T08:38:23.360Z",
-          "question": "10x2",
-          "sequenceNumber": 16,
-          "relativeTiming": "+0.475"
-      },
-      {
-          "input": "5",
-          "eventType": "touch",
-          "clientTimestamp": "2021-02-04T08:38:27.542Z",
-          "question": "11x5",
-          "sequenceNumber": 17,
-          "relativeTiming": "+4.182"
-      },
-      {
-          "input": "5",
-          "eventType": "touch",
-          "clientTimestamp": "2021-02-04T08:38:27.687Z",
-          "question": "11x5",
-          "sequenceNumber": 17,
-          "relativeTiming": "+0.145"
-      },
-      {
-          "input": "Enter",
-          "eventType": "touch",
-          "clientTimestamp": "2021-02-04T08:38:28.316Z",
-          "question": "11x5",
-          "sequenceNumber": 17,
-          "relativeTiming": "+0.629"
-      },
-      {
-          "input": "9",
-          "eventType": "touch",
-          "clientTimestamp": "2021-02-04T08:38:33.179Z",
-          "question": "12x8",
-          "sequenceNumber": 18,
-          "relativeTiming": "+4.863"
-      },
-      {
-          "input": "6",
-          "eventType": "touch",
-          "clientTimestamp": "2021-02-04T08:38:33.360Z",
-          "question": "12x8",
-          "sequenceNumber": 18,
-          "relativeTiming": "+0.181"
-      },
-      {
-          "input": "Enter",
-          "eventType": "touch",
-          "clientTimestamp": "2021-02-04T08:38:33.670Z",
-          "question": "12x8",
-          "sequenceNumber": 18,
-          "relativeTiming": "+0.31"
-      },
-      {
-          "input": "4",
-          "eventType": "touch",
-          "clientTimestamp": "2021-02-04T08:38:38.308Z",
-          "question": "7x6",
-          "sequenceNumber": 19,
-          "relativeTiming": "+4.638"
-      },
-      {
-          "input": "2",
-          "eventType": "touch",
-          "clientTimestamp": "2021-02-04T08:38:38.535Z",
-          "question": "7x6",
-          "sequenceNumber": 19,
-          "relativeTiming": "+0.227"
-      },
-      {
-          "input": "Enter",
-          "eventType": "touch",
-          "clientTimestamp": "2021-02-04T08:38:38.980Z",
-          "question": "7x6",
-          "sequenceNumber": 19,
-          "relativeTiming": "+0.445"
-      },
-      {
-          "input": "4",
-          "eventType": "touch",
-          "clientTimestamp": "2021-02-04T08:38:43.426Z",
-          "question": "4x10",
-          "sequenceNumber": 20,
-          "relativeTiming": "+4.446"
-      },
-      {
-          "input": "0",
-          "eventType": "touch",
-          "clientTimestamp": "2021-02-04T08:38:43.837Z",
-          "question": "4x10",
-          "sequenceNumber": 20,
-          "relativeTiming": "+0.411"
-      },
-      {
-          "input": "Enter",
-          "eventType": "touch",
-          "clientTimestamp": "2021-02-04T08:38:44.302Z",
-          "question": "4x10",
-          "sequenceNumber": 20,
-          "relativeTiming": "+0.465"
-      },
-      {
-          "input": "7",
-          "eventType": "touch",
-          "clientTimestamp": "2021-02-04T08:38:49.108Z",
-          "question": "9x8",
-          "sequenceNumber": 21,
-          "relativeTiming": "+4.806"
-      },
-      {
-          "input": "2",
-          "eventType": "touch",
-          "clientTimestamp": "2021-02-04T08:38:49.318Z",
-          "question": "9x8",
-          "sequenceNumber": 21,
-          "relativeTiming": "+0.21"
-      },
-      {
-          "input": "Enter",
-          "eventType": "touch",
-          "clientTimestamp": "2021-02-04T08:38:49.710Z",
-          "question": "9x8",
-          "sequenceNumber": 21,
-          "relativeTiming": "+0.392"
-      },
-      {
-          "input": "1",
-          "eventType": "touch",
-          "clientTimestamp": "2021-02-04T08:38:54.271Z",
-          "question": "11x12",
-          "sequenceNumber": 22,
-          "relativeTiming": "+4.561"
-      },
-      {
-          "input": "3",
-          "eventType": "touch",
-          "clientTimestamp": "2021-02-04T08:38:54.521Z",
-          "question": "11x12",
-          "sequenceNumber": 22,
-          "relativeTiming": "+0.25"
-      },
-      {
-          "input": "2",
-          "eventType": "touch",
-          "clientTimestamp": "2021-02-04T08:38:55.316Z",
-          "question": "11x12",
-          "sequenceNumber": 22,
-          "relativeTiming": "+0.795"
-      },
-      {
-          "input": "Enter",
-          "eventType": "touch",
-          "clientTimestamp": "2021-02-04T08:38:55.823Z",
-          "question": "11x12",
-          "sequenceNumber": 22,
-          "relativeTiming": "+0.507"
-      },
-      {
-          "input": "1",
-          "eventType": "touch",
-          "clientTimestamp": "2021-02-04T08:39:01.006Z",
-          "question": "2x7",
-          "sequenceNumber": 23,
-          "relativeTiming": "+5.183"
-      },
-      {
-          "input": "4",
-          "eventType": "touch",
-          "clientTimestamp": "2021-02-04T08:39:01.308Z",
-          "question": "2x7",
-          "sequenceNumber": 23,
-          "relativeTiming": "+0.302"
-      },
-      {
-          "input": "Enter",
-          "eventType": "touch",
-          "clientTimestamp": "2021-02-04T08:39:01.893Z",
-          "question": "2x7",
-          "sequenceNumber": 23,
-          "relativeTiming": "+0.585"
-      },
-      {
-          "input": "6",
-          "eventType": "touch",
-          "clientTimestamp": "2021-02-04T08:39:06.457Z",
-          "question": "6x11",
-          "sequenceNumber": 24,
-          "relativeTiming": "+4.564"
-      },
-      {
-          "input": "6",
-          "eventType": "touch",
-          "clientTimestamp": "2021-02-04T08:39:06.629Z",
-          "question": "6x11",
-          "sequenceNumber": 24,
-          "relativeTiming": "+0.172"
-      },
-      {
-          "input": "Enter",
-          "eventType": "touch",
-          "clientTimestamp": "2021-02-04T08:39:07.096Z",
-          "question": "6x11",
-          "sequenceNumber": 24,
-          "relativeTiming": "+0.467"
-      },
-      {
-          "input": "1",
-          "eventType": "touch",
-          "clientTimestamp": "2021-02-04T08:39:15.385Z",
-          "question": "9x3",
-          "sequenceNumber": 25,
-          "relativeTiming": "+8.289"
-      }
+    {
+      "input": "8",
+      "eventType": "touch",
+      "clientTimestamp": "2021-02-04T08:36:51.597Z",
+      "question": "2x4",
+      "sequenceNumber": 1,
+    },
+    {
+      "input": "Enter",
+      "eventType": "touch",
+      "clientTimestamp": "2021-02-04T08:36:51.938Z",
+      "question": "2x4",
+      "sequenceNumber": 1,
+    },
+    {
+      "input": "9",
+      "eventType": "touch",
+      "clientTimestamp": "2021-02-04T08:36:56.544Z",
+      "question": "3x3",
+      "sequenceNumber": 2,
+    },
+    {
+      "input": "Enter",
+      "eventType": "touch",
+      "clientTimestamp": "2021-02-04T08:36:56.743Z",
+      "question": "3x3",
+      "sequenceNumber": 2,
+    },
+    {
+      "input": "4",
+      "eventType": "touch",
+      "clientTimestamp": "2021-02-04T08:37:01.534Z",
+      "question": "5x9",
+      "sequenceNumber": 3,
+    },
+    {
+      "input": "2",
+      "eventType": "touch",
+      "clientTimestamp": "2021-02-04T08:37:01.764Z",
+      "question": "5x9",
+      "sequenceNumber": 3,
+    },
+    {
+      "input": "Enter",
+      "eventType": "touch",
+      "clientTimestamp": "2021-02-04T08:37:02.447Z",
+      "question": "5x9",
+      "sequenceNumber": 3,
+    },
+    {
+      "input": "4",
+      "eventType": "touch",
+      "clientTimestamp": "2021-02-04T08:37:16.272Z",
+      "question": "11x4",
+      "sequenceNumber": 5,
+    },
+    {
+      "input": "4",
+      "eventType": "touch",
+      "clientTimestamp": "2021-02-04T08:37:16.449Z",
+      "question": "11x4",
+      "sequenceNumber": 5,
+    },
+    {
+      "input": "Enter",
+      "eventType": "touch",
+      "clientTimestamp": "2021-02-04T08:37:17.396Z",
+      "question": "11x4",
+      "sequenceNumber": 5,
+    },
+    {
+      "input": "4",
+      "eventType": "touch",
+      "clientTimestamp": "2021-02-04T08:37:22.336Z",
+      "question": "8x5",
+      "sequenceNumber": 6,
+    },
+    {
+      "input": "0",
+      "eventType": "touch",
+      "clientTimestamp": "2021-02-04T08:37:22.943Z",
+      "question": "8x5",
+      "sequenceNumber": 6,
+    },
+    {
+      "input": "Enter",
+      "eventType": "touch",
+      "clientTimestamp": "2021-02-04T08:37:23.144Z",
+      "question": "8x5",
+      "sequenceNumber": 6,
+    },
+    {
+      "input": "4",
+      "eventType": "touch",
+      "clientTimestamp": "2021-02-04T08:37:30.318Z",
+      "question": "6x9",
+      "sequenceNumber": 7,
+    },
+    {
+      "input": "Backspace",
+      "eventType": "touch",
+      "clientTimestamp": "2021-02-04T08:37:31.110Z",
+      "question": "6x9",
+      "sequenceNumber": 7,
+    },
+    {
+      "input": "5",
+      "eventType": "touch",
+      "clientTimestamp": "2021-02-04T08:37:31.666Z",
+      "question": "6x9",
+      "sequenceNumber": 7,
+    },
+    {
+      "input": "4",
+      "eventType": "touch",
+      "clientTimestamp": "2021-02-04T08:37:31.864Z",
+      "question": "6x9",
+      "sequenceNumber": 7,
+    },
+    {
+      "input": "Enter",
+      "eventType": "touch",
+      "clientTimestamp": "2021-02-04T08:37:32.140Z",
+      "question": "6x9",
+      "sequenceNumber": 7,
+    },
+    {
+      "input": "3",
+      "eventType": "touch",
+      "clientTimestamp": "2021-02-04T08:37:36.699Z",
+      "question": "10x3",
+      "sequenceNumber": 8,
+    },
+    {
+      "input": "0",
+      "eventType": "touch",
+      "clientTimestamp": "2021-02-04T08:37:36.963Z",
+      "question": "10x3",
+      "sequenceNumber": 8,
+    },
+    {
+      "input": "Enter",
+      "eventType": "touch",
+      "clientTimestamp": "2021-02-04T08:37:37.289Z",
+      "question": "10x3",
+      "sequenceNumber": 8,
+    },
+    {
+      "input": "7",
+      "eventType": "touch",
+      "clientTimestamp": "2021-02-04T08:37:41.830Z",
+      "question": "7x11",
+      "sequenceNumber": 9,
+    },
+    {
+      "input": "7",
+      "eventType": "touch",
+      "clientTimestamp": "2021-02-04T08:37:41.985Z",
+      "question": "7x11",
+      "sequenceNumber": 9,
+    },
+    {
+      "input": "Enter",
+      "eventType": "touch",
+      "clientTimestamp": "2021-02-04T08:37:42.369Z",
+      "question": "7x11",
+      "sequenceNumber": 9,
+    },
+    {
+      "input": "6",
+      "eventType": "touch",
+      "clientTimestamp": "2021-02-04T08:37:47.070Z",
+      "question": "5x12",
+      "sequenceNumber": 10,
+    },
+    {
+      "input": "0",
+      "eventType": "touch",
+      "clientTimestamp": "2021-02-04T08:37:47.303Z",
+      "question": "5x12",
+      "sequenceNumber": 10,
+    },
+    {
+      "input": "Enter",
+      "eventType": "touch",
+      "clientTimestamp": "2021-02-04T08:37:47.454Z",
+      "question": "5x12",
+      "sequenceNumber": 10,
+    },
+    {
+      "input": "6",
+      "eventType": "touch",
+      "clientTimestamp": "2021-02-04T08:37:52.086Z",
+      "question": "8x8",
+      "sequenceNumber": 11,
+    },
+    {
+      "input": "4",
+      "eventType": "touch",
+      "clientTimestamp": "2021-02-04T08:37:52.543Z",
+      "question": "8x8",
+      "sequenceNumber": 11,
+    },
+    {
+      "input": "Enter",
+      "eventType": "touch",
+      "clientTimestamp": "2021-02-04T08:37:52.999Z",
+      "question": "8x8",
+      "sequenceNumber": 11,
+    },
+    {
+      "input": "3",
+      "eventType": "touch",
+      "clientTimestamp": "2021-02-04T08:38:00.667Z",
+      "question": "4x9",
+      "sequenceNumber": 12,
+    },
+    {
+      "input": "6",
+      "eventType": "touch",
+      "clientTimestamp": "2021-02-04T08:38:00.951Z",
+      "question": "4x9",
+      "sequenceNumber": 12,
+    },
+    {
+      "input": "Enter",
+      "eventType": "touch",
+      "clientTimestamp": "2021-02-04T08:38:01.339Z",
+      "question": "4x9",
+      "sequenceNumber": 12,
+    },
+    {
+      "input": "1",
+      "eventType": "touch",
+      "clientTimestamp": "2021-02-04T08:38:06.290Z",
+      "question": "12x10",
+      "sequenceNumber": 13,
+    },
+    {
+      "input": "2",
+      "eventType": "touch",
+      "clientTimestamp": "2021-02-04T08:38:06.454Z",
+      "question": "12x10",
+      "sequenceNumber": 13,
+    },
+    {
+      "input": "0",
+      "eventType": "touch",
+      "clientTimestamp": "2021-02-04T08:38:06.767Z",
+      "question": "12x10",
+      "sequenceNumber": 13,
+    },
+    {
+      "input": "Enter",
+      "eventType": "touch",
+      "clientTimestamp": "2021-02-04T08:38:06.980Z",
+      "question": "12x10",
+      "sequenceNumber": 13,
+    },
+    {
+      "input": "6",
+      "eventType": "touch",
+      "clientTimestamp": "2021-02-04T08:38:11.495Z",
+      "question": "3x2",
+      "sequenceNumber": 14,
+    },
+    {
+      "input": "Enter",
+      "eventType": "touch",
+      "clientTimestamp": "2021-02-04T08:38:11.701Z",
+      "question": "3x2",
+      "sequenceNumber": 14,
+    },
+    {
+      "input": "2",
+      "eventType": "touch",
+      "clientTimestamp": "2021-02-04T08:38:17.277Z",
+      "question": "4x7",
+      "sequenceNumber": 15,
+    },
+    {
+      "input": "8",
+      "eventType": "touch",
+      "clientTimestamp": "2021-02-04T08:38:18.518Z",
+      "question": "4x7",
+      "sequenceNumber": 15,
+    },
+    {
+      "input": "Enter",
+      "eventType": "touch",
+      "clientTimestamp": "2021-02-04T08:38:18.718Z",
+      "question": "4x7",
+      "sequenceNumber": 15,
+    },
+    {
+      "input": "2",
+      "eventType": "touch",
+      "clientTimestamp": "2021-02-04T08:38:22.885Z",
+      "question": "10x2",
+      "sequenceNumber": 16,
+    },
+    {
+      "input": "Enter",
+      "eventType": "touch",
+      "clientTimestamp": "2021-02-04T08:38:23.360Z",
+      "question": "10x2",
+      "sequenceNumber": 16,
+    },
+    {
+      "input": "5",
+      "eventType": "touch",
+      "clientTimestamp": "2021-02-04T08:38:27.542Z",
+      "question": "11x5",
+      "sequenceNumber": 17,
+    },
+    {
+      "input": "5",
+      "eventType": "touch",
+      "clientTimestamp": "2021-02-04T08:38:27.687Z",
+      "question": "11x5",
+      "sequenceNumber": 17,
+    },
+    {
+      "input": "Enter",
+      "eventType": "touch",
+      "clientTimestamp": "2021-02-04T08:38:28.316Z",
+      "question": "11x5",
+      "sequenceNumber": 17,
+    },
+    {
+      "input": "9",
+      "eventType": "touch",
+      "clientTimestamp": "2021-02-04T08:38:33.179Z",
+      "question": "12x8",
+      "sequenceNumber": 18,
+    },
+    {
+      "input": "6",
+      "eventType": "touch",
+      "clientTimestamp": "2021-02-04T08:38:33.360Z",
+      "question": "12x8",
+      "sequenceNumber": 18,
+    },
+    {
+      "input": "Enter",
+      "eventType": "touch",
+      "clientTimestamp": "2021-02-04T08:38:33.670Z",
+      "question": "12x8",
+      "sequenceNumber": 18,
+    },
+    {
+      "input": "4",
+      "eventType": "touch",
+      "clientTimestamp": "2021-02-04T08:38:38.308Z",
+      "question": "7x6",
+      "sequenceNumber": 19,
+    },
+    {
+      "input": "2",
+      "eventType": "touch",
+      "clientTimestamp": "2021-02-04T08:38:38.535Z",
+      "question": "7x6",
+      "sequenceNumber": 19,
+    },
+    {
+      "input": "Enter",
+      "eventType": "touch",
+      "clientTimestamp": "2021-02-04T08:38:38.980Z",
+      "question": "7x6",
+      "sequenceNumber": 19,
+    },
+    {
+      "input": "4",
+      "eventType": "touch",
+      "clientTimestamp": "2021-02-04T08:38:43.426Z",
+      "question": "4x10",
+      "sequenceNumber": 20,
+    },
+    {
+      "input": "0",
+      "eventType": "touch",
+      "clientTimestamp": "2021-02-04T08:38:43.837Z",
+      "question": "4x10",
+      "sequenceNumber": 20,
+    },
+    {
+      "input": "Enter",
+      "eventType": "touch",
+      "clientTimestamp": "2021-02-04T08:38:44.302Z",
+      "question": "4x10",
+      "sequenceNumber": 20,
+    },
+    {
+      "input": "7",
+      "eventType": "touch",
+      "clientTimestamp": "2021-02-04T08:38:49.108Z",
+      "question": "9x8",
+      "sequenceNumber": 21,
+    },
+    {
+      "input": "2",
+      "eventType": "touch",
+      "clientTimestamp": "2021-02-04T08:38:49.318Z",
+      "question": "9x8",
+      "sequenceNumber": 21,
+    },
+    {
+      "input": "Enter",
+      "eventType": "touch",
+      "clientTimestamp": "2021-02-04T08:38:49.710Z",
+      "question": "9x8",
+      "sequenceNumber": 21,
+    },
+    {
+      "input": "1",
+      "eventType": "touch",
+      "clientTimestamp": "2021-02-04T08:38:54.271Z",
+      "question": "11x12",
+      "sequenceNumber": 22,
+    },
+    {
+      "input": "3",
+      "eventType": "touch",
+      "clientTimestamp": "2021-02-04T08:38:54.521Z",
+      "question": "11x12",
+      "sequenceNumber": 22,
+    },
+    {
+      "input": "2",
+      "eventType": "touch",
+      "clientTimestamp": "2021-02-04T08:38:55.316Z",
+      "question": "11x12",
+      "sequenceNumber": 22,
+    },
+    {
+      "input": "Enter",
+      "eventType": "touch",
+      "clientTimestamp": "2021-02-04T08:38:55.823Z",
+      "question": "11x12",
+      "sequenceNumber": 22,
+    },
+    {
+      "input": "1",
+      "eventType": "touch",
+      "clientTimestamp": "2021-02-04T08:39:01.006Z",
+      "question": "2x7",
+      "sequenceNumber": 23,
+    },
+    {
+      "input": "4",
+      "eventType": "touch",
+      "clientTimestamp": "2021-02-04T08:39:01.308Z",
+      "question": "2x7",
+      "sequenceNumber": 23,
+    },
+    {
+      "input": "Enter",
+      "eventType": "touch",
+      "clientTimestamp": "2021-02-04T08:39:01.893Z",
+      "question": "2x7",
+      "sequenceNumber": 23,
+    },
+    {
+      "input": "6",
+      "eventType": "touch",
+      "clientTimestamp": "2021-02-04T08:39:06.457Z",
+      "question": "6x11",
+      "sequenceNumber": 24,
+    },
+    {
+      "input": "6",
+      "eventType": "touch",
+      "clientTimestamp": "2021-02-04T08:39:06.629Z",
+      "question": "6x11",
+      "sequenceNumber": 24,
+    },
+    {
+      "input": "Enter",
+      "eventType": "touch",
+      "clientTimestamp": "2021-02-04T08:39:07.096Z",
+      "question": "6x11",
+      "sequenceNumber": 24,
+    },
+    {
+      "input": "1",
+      "eventType": "touch",
+      "clientTimestamp": "2021-02-04T08:39:15.385Z",
+      "question": "9x3",
+      "sequenceNumber": 25,
+    }
   ],
   "answers": [
-      {
-          "factor1": 2,
-          "factor2": 4,
-          "answer": "8",
-          "sequenceNumber": 1,
-          "question": "2x4",
-          "clientTimestamp": "2021-02-04T08:36:51.939Z"
-      },
-      {
-          "factor1": 3,
-          "factor2": 3,
-          "answer": "9",
-          "sequenceNumber": 2,
-          "question": "3x3",
-          "clientTimestamp": "2021-02-04T08:36:56.743Z"
-      },
-      {
-          "factor1": 5,
-          "factor2": 9,
-          "answer": "42",
-          "sequenceNumber": 3,
-          "question": "5x9",
-          "clientTimestamp": "2021-02-04T08:37:02.447Z"
-      },
-      {
-          "factor1": 12,
-          "factor2": 6,
-          "answer": "",
-          "sequenceNumber": 4,
-          "question": "12x6",
-          "clientTimestamp": "2021-02-04T08:37:11.468Z"
-      },
-      {
-          "factor1": 11,
-          "factor2": 4,
-          "answer": "44",
-          "sequenceNumber": 5,
-          "question": "11x4",
-          "clientTimestamp": "2021-02-04T08:37:17.396Z"
-      },
-      {
-          "factor1": 8,
-          "factor2": 5,
-          "answer": "40",
-          "sequenceNumber": 6,
-          "question": "8x5",
-          "clientTimestamp": "2021-02-04T08:37:23.144Z"
-      },
-      {
-          "factor1": 6,
-          "factor2": 9,
-          "answer": "54",
-          "sequenceNumber": 7,
-          "question": "6x9",
-          "clientTimestamp": "2021-02-04T08:37:32.140Z"
-      },
-      {
-          "factor1": 10,
-          "factor2": 3,
-          "answer": "30",
-          "sequenceNumber": 8,
-          "question": "10x3",
-          "clientTimestamp": "2021-02-04T08:37:37.289Z"
-      },
-      {
-          "factor1": 7,
-          "factor2": 11,
-          "answer": "77",
-          "sequenceNumber": 9,
-          "question": "7x11",
-          "clientTimestamp": "2021-02-04T08:37:42.369Z"
-      },
-      {
-          "factor1": 5,
-          "factor2": 12,
-          "answer": "60",
-          "sequenceNumber": 10,
-          "question": "5x12",
-          "clientTimestamp": "2021-02-04T08:37:47.455Z"
-      },
-      {
-          "factor1": 8,
-          "factor2": 8,
-          "answer": "64",
-          "sequenceNumber": 11,
-          "question": "8x8",
-          "clientTimestamp": "2021-02-04T08:37:53.000Z"
-      },
-      {
-          "factor1": 4,
-          "factor2": 9,
-          "answer": "36",
-          "sequenceNumber": 12,
-          "question": "4x9",
-          "clientTimestamp": "2021-02-04T08:38:01.339Z"
-      },
-      {
-          "factor1": 12,
-          "factor2": 10,
-          "answer": "120",
-          "sequenceNumber": 13,
-          "question": "12x10",
-          "clientTimestamp": "2021-02-04T08:38:06.980Z"
-      },
-      {
-          "factor1": 3,
-          "factor2": 2,
-          "answer": "6",
-          "sequenceNumber": 14,
-          "question": "3x2",
-          "clientTimestamp": "2021-02-04T08:38:11.701Z"
-      },
-      {
-          "factor1": 4,
-          "factor2": 7,
-          "answer": "28",
-          "sequenceNumber": 15,
-          "question": "4x7",
-          "clientTimestamp": "2021-02-04T08:38:18.719Z"
-      },
-      {
-          "factor1": 10,
-          "factor2": 2,
-          "answer": "2",
-          "sequenceNumber": 16,
-          "question": "10x2",
-          "clientTimestamp": "2021-02-04T08:38:23.360Z"
-      },
-      {
-          "factor1": 11,
-          "factor2": 5,
-          "answer": "55",
-          "sequenceNumber": 17,
-          "question": "11x5",
-          "clientTimestamp": "2021-02-04T08:38:28.317Z"
-      },
-      {
-          "factor1": 12,
-          "factor2": 8,
-          "answer": "96",
-          "sequenceNumber": 18,
-          "question": "12x8",
-          "clientTimestamp": "2021-02-04T08:38:33.670Z"
-      },
-      {
-          "factor1": 7,
-          "factor2": 6,
-          "answer": "42",
-          "sequenceNumber": 19,
-          "question": "7x6",
-          "clientTimestamp": "2021-02-04T08:38:38.980Z"
-      },
-      {
-          "factor1": 4,
-          "factor2": 10,
-          "answer": "40",
-          "sequenceNumber": 20,
-          "question": "4x10",
-          "clientTimestamp": "2021-02-04T08:38:44.303Z"
-      },
-      {
-          "factor1": 9,
-          "factor2": 8,
-          "answer": "72",
-          "sequenceNumber": 21,
-          "question": "9x8",
-          "clientTimestamp": "2021-02-04T08:38:49.710Z"
-      },
-      {
-          "factor1": 11,
-          "factor2": 12,
-          "answer": "132",
-          "sequenceNumber": 22,
-          "question": "11x12",
-          "clientTimestamp": "2021-02-04T08:38:55.824Z"
-      },
-      {
-          "factor1": 2,
-          "factor2": 7,
-          "answer": "14",
-          "sequenceNumber": 23,
-          "question": "2x7",
-          "clientTimestamp": "2021-02-04T08:39:01.893Z"
-      },
-      {
-          "factor1": 6,
-          "factor2": 11,
-          "answer": "66",
-          "sequenceNumber": 24,
-          "question": "6x11",
-          "clientTimestamp": "2021-02-04T08:39:07.097Z"
-      },
-      {
-          "factor1": 9,
-          "factor2": 3,
-          "answer": "1",
-          "sequenceNumber": 25,
-          "question": "9x3",
-          "clientTimestamp": "2021-02-04T08:39:16.107Z"
-      }
+    {
+      "factor1": 2,
+      "factor2": 4,
+      "answer": "8",
+      "sequenceNumber": 1,
+      "question": "2x4",
+      "clientTimestamp": "2021-02-04T08:36:51.939Z"
+    },
+    {
+      "factor1": 3,
+      "factor2": 3,
+      "answer": "9",
+      "sequenceNumber": 2,
+      "question": "3x3",
+      "clientTimestamp": "2021-02-04T08:36:56.743Z"
+    },
+    {
+      "factor1": 5,
+      "factor2": 9,
+      "answer": "42",
+      "sequenceNumber": 3,
+      "question": "5x9",
+      "clientTimestamp": "2021-02-04T08:37:02.447Z"
+    },
+    {
+      "factor1": 12,
+      "factor2": 6,
+      "answer": "",
+      "sequenceNumber": 4,
+      "question": "12x6",
+      "clientTimestamp": "2021-02-04T08:37:11.468Z"
+    },
+    {
+      "factor1": 11,
+      "factor2": 4,
+      "answer": "44",
+      "sequenceNumber": 5,
+      "question": "11x4",
+      "clientTimestamp": "2021-02-04T08:37:17.396Z"
+    },
+    {
+      "factor1": 8,
+      "factor2": 5,
+      "answer": "40",
+      "sequenceNumber": 6,
+      "question": "8x5",
+      "clientTimestamp": "2021-02-04T08:37:23.144Z"
+    },
+    {
+      "factor1": 6,
+      "factor2": 9,
+      "answer": "54",
+      "sequenceNumber": 7,
+      "question": "6x9",
+      "clientTimestamp": "2021-02-04T08:37:32.140Z"
+    },
+    {
+      "factor1": 10,
+      "factor2": 3,
+      "answer": "30",
+      "sequenceNumber": 8,
+      "question": "10x3",
+      "clientTimestamp": "2021-02-04T08:37:37.289Z"
+    },
+    {
+      "factor1": 7,
+      "factor2": 11,
+      "answer": "77",
+      "sequenceNumber": 9,
+      "question": "7x11",
+      "clientTimestamp": "2021-02-04T08:37:42.369Z"
+    },
+    {
+      "factor1": 5,
+      "factor2": 12,
+      "answer": "60",
+      "sequenceNumber": 10,
+      "question": "5x12",
+      "clientTimestamp": "2021-02-04T08:37:47.455Z"
+    },
+    {
+      "factor1": 8,
+      "factor2": 8,
+      "answer": "64",
+      "sequenceNumber": 11,
+      "question": "8x8",
+      "clientTimestamp": "2021-02-04T08:37:53.000Z"
+    },
+    {
+      "factor1": 4,
+      "factor2": 9,
+      "answer": "36",
+      "sequenceNumber": 12,
+      "question": "4x9",
+      "clientTimestamp": "2021-02-04T08:38:01.339Z"
+    },
+    {
+      "factor1": 12,
+      "factor2": 10,
+      "answer": "120",
+      "sequenceNumber": 13,
+      "question": "12x10",
+      "clientTimestamp": "2021-02-04T08:38:06.980Z"
+    },
+    {
+      "factor1": 3,
+      "factor2": 2,
+      "answer": "6",
+      "sequenceNumber": 14,
+      "question": "3x2",
+      "clientTimestamp": "2021-02-04T08:38:11.701Z"
+    },
+    {
+      "factor1": 4,
+      "factor2": 7,
+      "answer": "28",
+      "sequenceNumber": 15,
+      "question": "4x7",
+      "clientTimestamp": "2021-02-04T08:38:18.719Z"
+    },
+    {
+      "factor1": 10,
+      "factor2": 2,
+      "answer": "2",
+      "sequenceNumber": 16,
+      "question": "10x2",
+      "clientTimestamp": "2021-02-04T08:38:23.360Z"
+    },
+    {
+      "factor1": 11,
+      "factor2": 5,
+      "answer": "55",
+      "sequenceNumber": 17,
+      "question": "11x5",
+      "clientTimestamp": "2021-02-04T08:38:28.317Z"
+    },
+    {
+      "factor1": 12,
+      "factor2": 8,
+      "answer": "96",
+      "sequenceNumber": 18,
+      "question": "12x8",
+      "clientTimestamp": "2021-02-04T08:38:33.670Z"
+    },
+    {
+      "factor1": 7,
+      "factor2": 6,
+      "answer": "42",
+      "sequenceNumber": 19,
+      "question": "7x6",
+      "clientTimestamp": "2021-02-04T08:38:38.980Z"
+    },
+    {
+      "factor1": 4,
+      "factor2": 10,
+      "answer": "40",
+      "sequenceNumber": 20,
+      "question": "4x10",
+      "clientTimestamp": "2021-02-04T08:38:44.303Z"
+    },
+    {
+      "factor1": 9,
+      "factor2": 8,
+      "answer": "72",
+      "sequenceNumber": 21,
+      "question": "9x8",
+      "clientTimestamp": "2021-02-04T08:38:49.710Z"
+    },
+    {
+      "factor1": 11,
+      "factor2": 12,
+      "answer": "132",
+      "sequenceNumber": 22,
+      "question": "11x12",
+      "clientTimestamp": "2021-02-04T08:38:55.824Z"
+    },
+    {
+      "factor1": 2,
+      "factor2": 7,
+      "answer": "14",
+      "sequenceNumber": 23,
+      "question": "2x7",
+      "clientTimestamp": "2021-02-04T08:39:01.893Z"
+    },
+    {
+      "factor1": 6,
+      "factor2": 11,
+      "answer": "66",
+      "sequenceNumber": 24,
+      "question": "6x11",
+      "clientTimestamp": "2021-02-04T08:39:07.097Z"
+    },
+    {
+      "factor1": 9,
+      "factor2": 3,
+      "answer": "1",
+      "sequenceNumber": 25,
+      "question": "9x3",
+      "clientTimestamp": "2021-02-04T08:39:16.107Z"
+    }
   ]
 }

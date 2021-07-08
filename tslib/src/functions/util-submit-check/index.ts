@@ -4,12 +4,13 @@ import config from '../../config'
 import { FakeSubmittedCheckMessageGeneratorService } from './fake-submitted-check-generator.service'
 import { SchoolChecksDataService } from './school-checks.data.service'
 
+const functionName = 'util-submit-check'
 const fakeSubmittedCheckBuilder = new FakeSubmittedCheckMessageGeneratorService()
 const liveSchoolChecksDataService = new SchoolChecksDataService()
 
 const httpTrigger: AzureFunction = async function (context: Context, req: HttpRequest): Promise<void> {
   if (!config.DevTestUtils.TestSupportApi) {
-    context.log('exiting as config.DevTestUtils.TestSupportApi is not enabled (default behaviour)')
+    context.log(`${functionName} exiting as config.DevTestUtils.TestSupportApi is not enabled (default behaviour)`)
     context.done()
     return
   }
@@ -17,7 +18,6 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
   const schoolUuid = req.body?.schoolUuid
   if (schoolUuid !== undefined) {
     const liveCheckCodes = await liveSchoolChecksDataService.fetchBySchoolUuid(schoolUuid)
-    console.dir(liveCheckCodes)
     const promises = liveCheckCodes.map(async record => {
       return fakeSubmittedCheckBuilder.createSubmittedCheckMessage(record.checkCode)
     })
