@@ -68,7 +68,7 @@ export class PsReportWriterService {
       params.push({ name: `q${i}Id`,              value: data.answers[i - 1]?.id,                            type: TYPES.NVarChar(16) })
       params.push({ name: `q${i}response`,        value: data.answers[i - 1]?.response,                      type: TYPES.NVarChar(60) })
       params.push({ name: `q${i}inputMethods`,    value: data.answers[i - 1]?.inputMethods,                  type: TYPES.NVarChar(16) })
-      params.push({ name: `q${i}keystrokes`,      value: data.answers[i - 1]?.keystrokes,                    type: TYPES.NVarChar(256) })
+      params.push({ name: `q${i}keystrokes`,      value: data.answers[i - 1]?.keystrokes,                    type: TYPES.NVarChar(MAX) })
       params.push({ name: `q${i}score`,           value: data.answers[i - 1]?.score,                         type: TYPES.TinyInt })
       params.push({ name: `q${i}responseTime`,    value: data.answers[i - 1]?.responseTime,                  type: TYPES.Decimal(7, 3) })
       params.push({ name: `q${i}timeout`,         value: this.parseTimeout(data.answers, i - 1, 'timeout'),               type: TYPES.TinyInt })
