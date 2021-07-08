@@ -6,7 +6,7 @@ import { IFunctionTimer } from '../../azure/functions'
 const functionName = 'ps-report-1-list-schools'
 
 const timerTrigger: AzureFunction = async function (context: Context, timer: IFunctionTimer): Promise<void> {
-  if (timer.IsPastDue) {
+  if (timer.isPastDue) {
     // This function could potentially deliver a lot of work to do to the functions, and none of it is urgent. No surprises!
     context.log(`${functionName}: timer is past due, exiting.`)
     return
