@@ -56,6 +56,7 @@ RUN wget https://packages.microsoft.com/config/ubuntu/18.04/packages-microsoft-p
 RUN dpkg -i packages-microsoft-prod.deb
 RUN rm packages-microsoft-prod.deb
 RUN apt-get update && apt-get install -y dotnet-runtime-5.0
+# replace with dotnet-sdk-5.0 for full SDK (not currently required)
 
 ARG TARGETARCH=amd64
 ARG AGENT_VERSION=2.185.1
