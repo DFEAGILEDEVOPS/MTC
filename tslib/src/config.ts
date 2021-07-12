@@ -107,6 +107,7 @@ export default {
   },
   DevTestUtils: {
     TestSupportApi: parser.propertyExists(process.env, 'TEST_SUPPORT_API_ENABLED') ? parser.primitiveToBoolean(process.env.TEST_SUPPORT_API_ENABLED) : false,
+    // prevents the check started function from dropping the prepared check.  This is useful in load test scenarios when the util-submit-check function is used
     DisablePreparedCheckCacheDrop: parser.propertyExists(process.env, 'TEST_SUPPORT_DISABLE_PREPARED_CHECK_CACHE_DROP') ? parser.primitiveToBoolean(process.env.TEST_SUPPORT_DISABLE_PREPARED_CHECK_CACHE_DROP) : false
   },
   ApplicationInsights: {
