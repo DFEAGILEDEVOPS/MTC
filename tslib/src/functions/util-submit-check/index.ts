@@ -1,30 +1,49 @@
 
 import { AzureFunction, Context, HttpRequest } from '@azure/functions'
-import * as lz from 'lz-string'
-import submittedCheck from '../../schemas/submitted-check.v3'
-import completeCheckPayload from '../../schemas/complete-check-payload'
 import config from '../../config'
+import { FakeSubmittedCheckMessageGeneratorService } from './fake-submitted-check-generator.service'
+import { SchoolChecksDataService } from './school-checks.data.service'
 
-const httpTrigger: AzureFunction = function (context: Context, req: HttpRequest): void {
+const functionName = 'util-submit-check'
+const fakeSubmittedCheckBuilder = new FakeSubmittedCheckMessageGeneratorService()
+const liveSchoolChecksDataService = new SchoolChecksDataService()
+
+const httpTrigger: AzureFunction = async function (context: Context, req: HttpRequest): Promise<void> {
   if (!config.DevTestUtils.TestSupportApi) {
-    context.log('exiting as not enabled (default behaviour)')
+    context.log(`${functionName} exiting as config.DevTestUtils.TestSupportApi is not enabled (default behaviour)`)
     context.done()
     return
   }
-  // TODO add support for live check toggle via query string?
-  const message = JSON.parse(JSON.stringify(submittedCheck))
-  const samplePayload = JSON.parse(JSON.stringify(completeCheckPayload))
-  message.checkCode = req.body.checkCode
-  message.schoolUUID = req.body.school.uuid
-  // create an invalid check
-  if (req.query.bad !== undefined) {
-    context.log('creating invalid check...')
-    delete samplePayload.answers
+
+  const schoolUuid = req.body?.schoolUuid
+  if (schoolUuid !== undefined) {
+    const liveCheckCodes = await liveSchoolChecksDataService.fetchBySchoolUuid(schoolUuid)
+    const promises = liveCheckCodes.map(async record => {
+      return fakeSubmittedCheckBuilder.createSubmittedCheckMessage(record.checkCode)
+    })
+    const messages = await Promise.all(promises)
+    context.bindings.submittedCheckQueue = messages
+    context.done()
+    return
   }
-  const archive = lz.compressToUTF16(JSON.stringify(samplePayload))
-  message.archive = archive
-  context.bindings.submittedCheckQueue = [message]
-  context.done()
+
+  const checkCodes = req.body?.checkCodes
+  if (checkCodes === undefined || !Array.isArray(checkCodes)) {
+    context.res = {
+      status: 400,
+      body: 'checkCodes array is required'
+    }
+    return
+  }
+  if (req.query.bad !== undefined) {
+    throw new Error('invalid check functionality not yet implemented')
+  }
+  const messages = []
+  for (let index = 0; index < checkCodes.length; index++) {
+    const checkCode = checkCodes[index]
+    messages.push(await fakeSubmittedCheckBuilder.createSubmittedCheckMessage(checkCode))
+  }
+  context.bindings.submittedCheckQueue = messages
 }
 
 export default httpTrigger
