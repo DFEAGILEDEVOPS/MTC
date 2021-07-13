@@ -46,7 +46,7 @@ const pupilsNotTakingCheckDataService = {
                  -- a check has been generated, but was never logged in and has now expired
                  (c.pupilLoginDate IS NULL
                       -- and has expired or been deleted (happens on a schedule after expiry)                   
-                      AND cp.check_id IS NULL OR SYSDATETIMEOFFSET() > cp.pinExpiresAt))
+                      AND (cp.check_id IS NULL OR SYSDATETIMEOFFSET() > cp.pinExpiresAt)))
            AND p.attendanceId IS NULL
          ORDER BY p.lastName ASC, p.foreName ASC, p.middleNames ASC, p.dateOfBirth ASC
     `
