@@ -61,8 +61,15 @@ RUN apt-get install ruby2.6
 RUN curl https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb --output packages-microsoft-prod.deb
 RUN dpkg -i packages-microsoft-prod.deb
 RUN rm packages-microsoft-prod.deb
-RUN apt-get update && apt-get install -y dotnet-runtime-5.0
-# replace with dotnet-sdk-5.0 for full SDK (not currently required)
+RUN apt-get update && apt-get install -y dotnet-sdk-5.0
+
+# Install azure functions core tools
+RUN curl https://packages.microsoft.com/keys/microsoft.asc | gpg2 --dearmor > microsoft.gpg
+RUN mv microsoft.gpg /etc/apt/trusted.gpg.d/microsoft.gpg
+RUN echo "deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-ubuntu-$(lsb_release -cs)-prod $(lsb_release -cs) main" \
+  > /etc/apt/sources.list.d/dotnetdev.list
+RUN apt-get update && apt-get install azure-functions-core-tools-3
+
 
 # Install yarn
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
