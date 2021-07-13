@@ -8,32 +8,34 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN echo "APT::Get::Assume-Yes \"true\";" > /etc/apt/apt.conf.d/90assumeyes
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
+    apt-transport-https \
     ca-certificates \
     curl \
-    jq \
+    freetds-bin \
     git \
+    gnupg2 \
     iputils-ping \
+    jq \
     libcurl4 \
     libicu60 \
-    libunwind8 \
-    netcat \
     libssl1.0 \
-    gnupg2 \
+    libunwind8 \
+    lsb-release \
+    netcat \
     software-properties-common \
     wget \
-    freetds-bin \
-    apt-transport-https \
     && rm -rf /var/lib/apt/lists/*
 
-# RUN echo PATH="$PATH:/root/.rbenv/shims" >> /root/.bashrc
-
+# install azure CLI
 RUN curl -LsS https://aka.ms/InstallAzureCLIDeb | bash \
   && rm -rf /var/lib/apt/lists/*
 
-# switch to user mode
-# RUN adduser builduser
-# USER builduser
-
+# install docker
+RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg2 --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+RUN echo \
+  "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
+  $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
+RUN apt-get update && apt-get install docker-ce docker-ce-cli containerd.io
 
 # Install nvm and current node runtimes
 ENV NVM_DIR /root/.nvm
