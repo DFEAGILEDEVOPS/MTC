@@ -28,6 +28,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     apt-transport-https \
     # brightbox
     software-properties-common \
+    # dev build
+    zip \
     && rm -rf /var/lib/apt/lists/*
 
 # install azure CLI
