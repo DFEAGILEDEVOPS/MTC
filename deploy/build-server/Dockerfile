@@ -1,7 +1,7 @@
 FROM ubuntu:20.04
 
 SHELL ["/bin/bash", "-c"]
-# To make it easier for build and release pipelines to run apt-get,
+# to make it easier for build and release pipelines to run apt-get,
 # configure apt to not require confirmation (assume the -y argument by default)
 ENV DEBIAN_FRONTEND=noninteractive
 RUN echo "APT::Get::Assume-Yes \"true\";" > /etc/apt/apt.conf.d/90assumeyes
@@ -21,22 +21,23 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     netcat \
     # ruby tests
     freetds-bin \
-    # docker install
-    gnupg2 \
-    lsb-release \
     # dotnet
     apt-transport-https \
-    # brightbox
+    # dotnet and azure functions core tools
+    lsb-release \
+    # azure functions core tools
+    gnupg2 \
+    # ruby (via brightbox)
     software-properties-common \
-    # dev build
+    # for zipping up function apps
     zip \
     && rm -rf /var/lib/apt/lists/*
 
-# install azure CLI
+# install azure CLI for Azure Devops Agent & build tasks
 RUN curl -LsS https://aka.ms/InstallAzureCLIDeb | bash \
   && rm -rf /var/lib/apt/lists/*
 
-# Install nvm and current node runtimes
+# install nvm and current node runtimes
 ENV NVM_DIR /root/.nvm
 ENV NODE_VERSION 12.18.2
 
@@ -47,18 +48,18 @@ RUN curl -sL https://raw.githubusercontent.com/creationix/nvm/v0.38.0/install.sh
   && nvm install 10.14.1 \
   && nvm alias default $NODE_VERSION
 
-# Install Ruby via brightbox
+# install Ruby via brightbox
 RUN apt-add-repository ppa:brightbox/ruby-ng
 RUN apt-get update
 RUN apt-get install ruby2.6
 
-# Install dotnet
+# install dotnet
 RUN curl https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb --output packages-microsoft-prod.deb
 RUN dpkg -i packages-microsoft-prod.deb
 RUN rm packages-microsoft-prod.deb
 RUN apt-get update && apt-get install -y dotnet-sdk-5.0
 
-# Install azure functions core tools
+# install azure functions core tools
 RUN curl https://packages.microsoft.com/keys/microsoft.asc | gpg2 --dearmor > microsoft.gpg
 RUN mv microsoft.gpg /etc/apt/trusted.gpg.d/microsoft.gpg
 RUN echo "deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-ubuntu-$(lsb_release -cs)-prod $(lsb_release -cs) main" \
@@ -66,7 +67,7 @@ RUN echo "deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-ubuntu
 RUN apt-get update && apt-get install azure-functions-core-tools-3
 
 
-# Install yarn
+# install yarn
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
 RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
 RUN apt update && apt install --no-install-recommends yarn
