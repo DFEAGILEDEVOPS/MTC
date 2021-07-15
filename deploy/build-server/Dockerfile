@@ -66,7 +66,6 @@ RUN echo "deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-ubuntu
   > /etc/apt/sources.list.d/dotnetdev.list
 RUN apt-get update && apt-get install azure-functions-core-tools-3
 
-
 # install yarn
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
 RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
