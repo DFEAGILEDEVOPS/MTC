@@ -21,13 +21,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     netcat \
     # ruby tests
     freetds-bin \
-    # dotnet
+    # dotnet, powershell
     apt-transport-https \
-    # dotnet and azure functions core tools
+    # dotnet, azure functions core tools
     lsb-release \
     # azure functions core tools
     gnupg2 \
-    # ruby (via brightbox)
+    # ruby (via brightbox), powershell
     software-properties-common \
     # for zipping up function apps
     zip \
@@ -53,11 +53,16 @@ RUN apt-add-repository ppa:brightbox/ruby-ng
 RUN apt-get update
 RUN apt-get install ruby2.6
 
-# install dotnet
+# download and register microsoft repo GPG keys & products (for dotnet & powershell)
 RUN curl https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb --output packages-microsoft-prod.deb
 RUN dpkg -i packages-microsoft-prod.deb
 RUN rm packages-microsoft-prod.deb
+
+# install dotnet
 RUN apt-get update && apt-get install -y dotnet-sdk-5.0
+
+# install powershell
+RUN add-apt-repository universe && apt-get install -y powershell
 
 # install azure functions core tools
 RUN curl https://packages.microsoft.com/keys/microsoft.asc | gpg2 --dearmor > microsoft.gpg
