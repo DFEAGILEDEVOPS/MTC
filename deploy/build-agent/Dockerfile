@@ -121,6 +121,9 @@ COPY ./start.sh .
 
 USER root
 RUN chmod +x start.sh
+COPY ./cleanup.sh .
+RUN cleanup.sh
+
 USER $BUILD_USER
 
 ENTRYPOINT [ "./start.sh" ]
