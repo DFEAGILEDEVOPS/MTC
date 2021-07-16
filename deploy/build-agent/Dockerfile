@@ -40,6 +40,12 @@ RUN apt-get update && \
     zip \
     && rm -rf /var/lib/apt/lists/*
 
+# install google chrome
+RUN curl https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb --output chrome.deb
+RUN apt-get install -f ./chrome.deb
+RUN rm ./chrome.deb
+
+
 # install azure CLI for Azure Devops Agent & build tasks
 RUN curl -LsS https://aka.ms/InstallAzureCLIDeb | bash \
   && rm -rf /var/lib/apt/lists/*
