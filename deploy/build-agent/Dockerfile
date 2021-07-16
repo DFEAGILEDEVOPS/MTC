@@ -26,6 +26,7 @@ RUN apt-get update && \
     libssl-dev \
     libreadline-dev \
     zlib1g-dev \
+    unixodbc \
     # dotnet, powershell
     apt-transport-https \
     # dotnet, azure functions core tools
