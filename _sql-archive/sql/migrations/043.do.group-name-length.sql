@@ -1,1 +1,0 @@
-ALTER TABLE mtc_admin.[group] ALTER COLUMN name NVARCHAR(50) NOT NULL

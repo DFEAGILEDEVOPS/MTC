@@ -1,1 +1,0 @@
-UPDATE [mtc_admin].[settings] SET questionTimeLimit=2, loadingTimeLimit=5

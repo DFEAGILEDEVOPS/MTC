@@ -1,1 +1,0 @@
-EXEC mtc_admin.spGenAuditTriggers
