@@ -122,7 +122,8 @@ COPY ./start.sh .
 USER root
 RUN chmod +x start.sh
 COPY ./cleanup.sh .
-RUN cleanup.sh
+RUN ./cleanup.sh
+RUN rm ./cleanup.sh
 
 USER $BUILD_USER
 
