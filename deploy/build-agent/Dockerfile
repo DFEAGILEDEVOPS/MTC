@@ -22,6 +22,7 @@ RUN apt-get update && \
     netcat \
     # ruby
     freetds-bin \
+    freetds-dev \
     build-essential \
     libssl-dev \
     libreadline-dev \
