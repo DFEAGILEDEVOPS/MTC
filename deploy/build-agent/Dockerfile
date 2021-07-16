@@ -1,7 +1,4 @@
-FROM ubuntu:20.04
-
-# rvm specific to load login shell
-# SHELL ["/bin/bash", "-l", "-c"]
+FROM stamtc/ruby-builder:latest
 
 # to make it easier for build and release pipelines to run apt-get,
 # configure apt to not require confirmation (assume the -y argument by default)
@@ -9,7 +6,9 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN echo "APT::Get::Assume-Yes \"true\";" > /etc/apt/apt.conf.d/90assumeyes
 
 # core dependencies
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN apt-get update && \
+    apt-get upgrade -y --force-yes && \
+    apt-get install -y --no-install-recommends \
     # azure devops agent
     ca-certificates \
     curl \
@@ -63,9 +62,9 @@ RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources
 RUN apt update && apt install --no-install-recommends yarn
 
 # install Ruby via brightbox
-RUN apt-add-repository ppa:brightbox/ruby-ng
-RUN apt-get update
-RUN apt-get install ruby2.6
+# RUN apt-add-repository ppa:brightbox/ruby-ng
+# RUN apt-get update
+# RUN apt-get install ruby2.6
 
 # system installs are complete at this point.
 
