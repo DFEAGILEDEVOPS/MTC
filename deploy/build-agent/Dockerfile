@@ -20,8 +20,12 @@ RUN apt-get update && \
     libssl1.0 \
     libunwind8 \
     netcat \
-    # ruby tests
+    # ruby
     freetds-bin \
+    build-essential \
+    libssl-dev \
+    libreadline-dev \
+    zlib1g-dev \
     # dotnet, powershell
     apt-transport-https \
     # dotnet, azure functions core tools
@@ -61,11 +65,6 @@ RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
 RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
 RUN apt update && apt install --no-install-recommends yarn
 
-# install Ruby via brightbox
-# RUN apt-add-repository ppa:brightbox/ruby-ng
-# RUN apt-get update
-# RUN apt-get install ruby2.6
-
 # system installs are complete at this point.
 
 # create user
@@ -73,19 +72,8 @@ ENV BUILD_USER=builduser
 RUN mkdir /azp
 RUN adduser --disabled-password $BUILD_USER && chown -R $BUILD_USER /azp
 
-# install rvm the rvm github repo way...
-# https://github.com/rvm/ubuntu_rvm
-# RUN apt-add-repository -y ppa:rael-gc/rvm
-# RUN apt-get update
-# RUN apt-get install rvm
-# RUN rvm install 2.6.0
-# fails with group not found...
-# RUN usermod -a -G rvm $BUILD_USER
-
 USER $BUILD_USER
 SHELL ["/bin/bash", "-l", "-c"]
-# fails with rvm command not found
-# RUN rvm user gemsets
 
 # install nvm and current node runtimes
 ENV NVM_DIR /home/$BUILD_USER/.nvm
@@ -97,13 +85,6 @@ RUN curl -sL https://raw.githubusercontent.com/creationix/nvm/v0.38.0/install.sh
   # angular spa still on node 10 until upgraded
   && nvm install 10.14.1 \
   && nvm alias default $NODE_VERSION
-
-# install rvm manually - https://computingforgeeks.com/how-to-install-ruby-on-ubuntu-linux/
-# RUN curl -sSL https://rvm.io/mpapis.asc | gpg2 --import
-# RUN curl -sSL https://rvm.io/pkuczynski.asc | gpg2 --import
-# RUN curl -L get.rvm.io | bash -s stable
-# RUN source /etc/profile.d/rvm.sh
-# RUN rvm install 2.6.0
 
 # install azuredevops agent service
 ARG TARGETARCH=amd64
