@@ -42,6 +42,7 @@ RUN apt-get update && \
 
 # install google chrome
 RUN curl https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb --output chrome.deb
+# this fails because of missing dependencies which 'apparently' are uninstallable via ap-get install fix flag...
 RUN apt-get install ./chrome.deb
 RUN apt -f install
 RUN rm ./chrome.deb
