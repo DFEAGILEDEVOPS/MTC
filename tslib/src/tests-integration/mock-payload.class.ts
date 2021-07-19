@@ -209,7 +209,7 @@ export class MockPayload implements IPsychometricReportLine {
     this.AttemptID = faker.datatype.uuid()
     this.FormID = faker.random.arrayElement(['MTC001', 'MTC002', 'MTC003', 'MTC004', 'MTC005', 'MTC006', 'MTC007'])
     this.TestDate = moment().subtract(13, 'minutes')
-    this.TimeStart = moment().subtract(faker.random.number({ min: 1, max: 30 }), 'minutes')
+    this.TimeStart = moment().subtract(faker.datatype.number({ min: 1, max: 30 }), 'minutes')
     this.TimeComplete = moment()
     this.TimeTaken = (this.TimeComplete.valueOf() - this.TimeStart.valueOf()) / 1000
     this.RestartNumber = faker.datatype.number({ min: 0, max: 2 })
