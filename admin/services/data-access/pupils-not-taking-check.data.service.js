@@ -34,6 +34,9 @@ const pupilsNotTakingCheckDataService = {
    * @returns {Promise.<*>}
    */
   sqlFindPupilsWithoutReasons: async (schoolId) => {
+    if (schoolId === undefined || schoolId === null) {
+      throw new Error('schoolId must be provided')
+    }
     const sql = `
         SELECT p.foreName, p.middleNames, p.lastName, p.dateOfBirth, p.urlSlug, p.group_id
           FROM [mtc_admin].[pupil] p
