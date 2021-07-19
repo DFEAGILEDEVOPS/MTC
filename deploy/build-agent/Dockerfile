@@ -42,11 +42,7 @@ RUN apt-get update && \
     zip \
     && rm -rf /var/lib/apt/lists/*
 
-# install google chrome
-# RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb -O chrome.deb
-# this fails because of missing dependencies which 'apparently' are uninstallable via ap-get install fix flag...
-# RUN apt install -f ./chrome.deb
-# RUN rm ./chrome.deb
+# install google chrome 'the right way'
 RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
 RUN echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list
 RUN apt update && apt install -y google-chrome-stable
