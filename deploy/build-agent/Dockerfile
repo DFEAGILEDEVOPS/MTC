@@ -84,9 +84,14 @@ RUN adduser --disabled-password $BUILD_USER && chown -R $BUILD_USER /azp
 USER $BUILD_USER
 SHELL ["/bin/bash", "-l", "-c"]
 
+# set up ruby environment for user
+RUN mkdir -p ~/gems
+ENV GEM_HOME=~/gems
+ENV GEM_PATH=$GEM_HOME:/usr/local/lib/ruby/gems/2.6.0
+
 # install nvm and current node runtimes
-ENV NVM_DIR /home/$BUILD_USER/.nvm
-ENV NODE_VERSION 12.18.2
+ENV NVM_DIR=/home/$BUILD_USER/.nvm
+ENV NODE_VERSION=12.18.2
 
 RUN curl -sL https://raw.githubusercontent.com/creationix/nvm/v0.38.0/install.sh | bash \
   && . $NVM_DIR/nvm.sh \
