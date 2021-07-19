@@ -86,8 +86,8 @@ SHELL ["/bin/bash", "-l", "-c"]
 
 # set up ruby environment for user
 RUN mkdir -p ~/gems
-RUN echo "GEM_HOME=~/gems" >> ~/.profile
-RUN echo "GEM_PATH=$GEM_HOME:/usr/local/lib/ruby/gems/2.6.0" >> ~/.profile
+RUN echo "GEM_HOME=~/gems" >> ~/.bashrc
+RUN echo "GEM_PATH=$GEM_HOME:/usr/local/lib/ruby/gems/2.6.0" >> ~/.bashrc
 # ENV GEM_HOME=~/gems
 # ENV GEM_PATH=$GEM_HOME:/usr/local/lib/ruby/gems/2.6.0
 
