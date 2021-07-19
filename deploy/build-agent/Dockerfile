@@ -86,8 +86,10 @@ SHELL ["/bin/bash", "-l", "-c"]
 
 # set up ruby environment for user
 RUN mkdir -p ~/gems
-ENV GEM_HOME=~/gems
-ENV GEM_PATH=$GEM_HOME:/usr/local/lib/ruby/gems/2.6.0
+RUN echo "GEM_HOME=~/gems" >> ~/.profile
+RUN echo "GEM_PATH=$GEM_HOME:/usr/local/lib/ruby/gems/2.6.0" >> ~/.profile
+# ENV GEM_HOME=~/gems
+# ENV GEM_PATH=$GEM_HOME:/usr/local/lib/ruby/gems/2.6.0
 
 # install nvm and current node runtimes
 ENV NVM_DIR=/home/$BUILD_USER/.nvm
