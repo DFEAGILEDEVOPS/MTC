@@ -25,9 +25,12 @@ require_relative '../../features/support/azure_blob_helper'
 require 'redis'
 require 'lz_string'
 require_relative '../../features/support/app'
+require 'dotenv'
 
 require_relative 'helpers'
 include Helpers
+
+Dotenv.load('../../.env')
 
 ENV["ADMIN_BASE_URL"] ||= 'http://localhost:3001'
 ENV["PUPIL_BASE_URL"] ||= 'http://localhost:4200'
@@ -37,6 +40,7 @@ ENV["FUNC_THROTTLED_MASTER_KEY"] ||= nil
 ENV['WAIT_TIME'] ||= '300'
 ENV['FUNC_CONSUMP_BASE_URL'] ||= 'http://localhost:7071'
 ENV["FUNC_CONSUMP_MASTER_KEY"] ||= nil
+ENV['PS_REPORT_WAIT_TIME'] ||= '300'
 
 # Webdrivers::Chromedriver.required_version='83.0.4103.39'
 Webdrivers.logger.level = :FATAL

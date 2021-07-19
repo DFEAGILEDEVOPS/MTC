@@ -35,6 +35,8 @@ require_relative 'helpers'
 require_relative '../../features/support/app'
 include Helpers
 
+Dotenv.load('../../.env')
+
 ENV["ADMIN_BASE_URL"] ||= 'http://localhost:3001'
 ENV["PUPIL_BASE_URL"] ||= 'http://localhost:4200'
 ENV["PUPIL_API_BASE_URL"] ||= 'http://localhost:3003'
@@ -106,8 +108,6 @@ Capybara.register_driver :headless_chrome do |app|
                    })
   driver
 end
-
-Dotenv.load('../../.env')
 
 Dir.mkdir("reports") unless File.directory?("reports")
 Capybara.javascript_driver = ENV["DRIVER"].to_sym
