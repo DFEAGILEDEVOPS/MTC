@@ -20,7 +20,7 @@ RUN apt-get update && \
     libssl1.0 \
     libunwind8 \
     netcat \
-    # ruby
+    # ruby -> free-tds
     freetds-bin \
     freetds-dev \
     build-essential \
@@ -28,6 +28,8 @@ RUN apt-get update && \
     libreadline-dev \
     zlib1g-dev \
     unixodbc \
+    # ruby -> chrome
+    wget \
     # dotnet, powershell
     apt-transport-https \
     # dotnet, azure functions core tools
@@ -41,12 +43,13 @@ RUN apt-get update && \
     && rm -rf /var/lib/apt/lists/*
 
 # install google chrome
-RUN curl https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb --output chrome.deb
+# RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb -O chrome.deb
 # this fails because of missing dependencies which 'apparently' are uninstallable via ap-get install fix flag...
-RUN apt-get install ./chrome.deb
-RUN apt -f install
-RUN rm ./chrome.deb
-
+# RUN apt install -f ./chrome.deb
+# RUN rm ./chrome.deb
+RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
+RUN echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list
+RUN apt update && apt install -y google-chrome-stable
 
 # install azure CLI for Azure Devops Agent & build tasks
 RUN curl -LsS https://aka.ms/InstallAzureCLIDeb | bash \
