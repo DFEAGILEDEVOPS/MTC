@@ -44,13 +44,13 @@ When(/^I enter the checkCode from the completed check$/) do
   step 'I have logged in with tech-support'
   sleep 5
   tech_support_page.check_view.click
-  check_view_page.check_code.set @parsed_response_pupil_auth['checkCode']
+  check_view_page.check_code.set @check_code
   check_view_page.submit.click
 end
 
 
 Then(/^I should see the check summary$/) do
-  pupil_details = SqlDbHelper.pupil_details_using_names(@parsed_response_pupil_auth['pupil']['firstName'], @parsed_response_pupil_auth['pupil']['lastName'], @school_id)
+  pupil_details = SqlDbHelper.pupil_details(@details_hash[:upn], @school_id)
   pupil_id = pupil_details['id']
   check_details = SqlDbHelper.check_details(pupil_id)
   expect(check_details['checkCode']).to eql check_view_page.check_summary.check_code.text

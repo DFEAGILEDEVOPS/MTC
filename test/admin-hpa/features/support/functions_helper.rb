@@ -22,4 +22,8 @@ class FunctionsHelper
     HTTParty.post(ENV['FUNC_CONSUMP_BASE_URL'] + "/api/util-school-pin-http-service", :body => {'school_id' => school_id}.to_json, headers: {'Content-Type' => 'application/json', 'x-functions-key' => ENV['FUNC_CONSUMP_MASTER_KEY']})
   end
 
+  def self.complete_check_via_check_code(check_code_array)
+    HTTParty.post(ENV['FUNC_CONSUMP_BASE_URL'] + "/api/util-submit-check", :body => {'checkCodes': check_code_array}.to_json, headers: {'Content-Type' => 'application/json', 'x-functions-key' => ENV['FUNC_CONSUMP_MASTER_KEY']})
+  end
+  
 end
