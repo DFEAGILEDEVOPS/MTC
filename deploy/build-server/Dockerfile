@@ -1,0 +1,89 @@
+FROM ubuntu:20.04
+
+SHELL ["/bin/bash", "-c"]
+# to make it easier for build and release pipelines to run apt-get,
+# configure apt to not require confirmation (assume the -y argument by default)
+ENV DEBIAN_FRONTEND=noninteractive
+RUN echo "APT::Get::Assume-Yes \"true\";" > /etc/apt/apt.conf.d/90assumeyes
+
+# core dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    # azure devops agent
+    ca-certificates \
+    curl \
+    git \
+    jq \
+    iputils-ping \
+    libcurl4 \
+    libicu66 \
+    libssl1.0 \
+    libunwind8 \
+    netcat \
+    # ruby tests
+    freetds-bin \
+    # dotnet
+    apt-transport-https \
+    # dotnet and azure functions core tools
+    lsb-release \
+    # azure functions core tools
+    gnupg2 \
+    # ruby (via brightbox)
+    software-properties-common \
+    # for zipping up function apps
+    zip \
+    && rm -rf /var/lib/apt/lists/*
+
+# install azure CLI for Azure Devops Agent & build tasks
+RUN curl -LsS https://aka.ms/InstallAzureCLIDeb | bash \
+  && rm -rf /var/lib/apt/lists/*
+
+# install nvm and current node runtimes
+ENV NVM_DIR /root/.nvm
+ENV NODE_VERSION 12.18.2
+
+RUN curl -sL https://raw.githubusercontent.com/creationix/nvm/v0.38.0/install.sh | bash \
+  && . $NVM_DIR/nvm.sh \
+  && nvm install $NODE_VERSION \
+  # angular spa still on node 10 until upgraded
+  && nvm install 10.14.1 \
+  && nvm alias default $NODE_VERSION
+
+# install Ruby via brightbox
+RUN apt-add-repository ppa:brightbox/ruby-ng
+RUN apt-get update
+RUN apt-get install ruby2.6
+
+# install dotnet
+RUN curl https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb --output packages-microsoft-prod.deb
+RUN dpkg -i packages-microsoft-prod.deb
+RUN rm packages-microsoft-prod.deb
+RUN apt-get update && apt-get install -y dotnet-sdk-5.0
+
+# install azure functions core tools
+RUN curl https://packages.microsoft.com/keys/microsoft.asc | gpg2 --dearmor > microsoft.gpg
+RUN mv microsoft.gpg /etc/apt/trusted.gpg.d/microsoft.gpg
+RUN echo "deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-ubuntu-$(lsb_release -cs)-prod $(lsb_release -cs) main" \
+  > /etc/apt/sources.list.d/dotnetdev.list
+RUN apt-get update && apt-get install azure-functions-core-tools-3
+
+# install yarn
+RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
+RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
+RUN apt update && apt install --no-install-recommends yarn
+
+# install azuredevops agent service
+ARG TARGETARCH=amd64
+ARG AGENT_VERSION=2.185.1
+
+WORKDIR /azp
+RUN if [ "$TARGETARCH" = "amd64" ]; then \
+      AZP_AGENTPACKAGE_URL=https://vstsagentpackage.azureedge.net/agent/${AGENT_VERSION}/vsts-agent-linux-x64-${AGENT_VERSION}.tar.gz; \
+    else \
+      AZP_AGENTPACKAGE_URL=https://vstsagentpackage.azureedge.net/agent/${AGENT_VERSION}/vsts-agent-linux-${TARGETARCH}-${AGENT_VERSION}.tar.gz; \
+    fi; \
+    curl -LsS "$AZP_AGENTPACKAGE_URL" | tar -xz
+
+COPY ./start.sh .
+RUN chmod +x start.sh
+
+ENTRYPOINT [ "./start.sh" ]

@@ -1,1 +1,0 @@
-ALTER TABLE [mtc_admin].[check] ADD startedAt DATETIMEOFFSET(3) NULL;
