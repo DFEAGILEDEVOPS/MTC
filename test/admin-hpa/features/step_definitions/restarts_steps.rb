@@ -103,13 +103,10 @@ Given(/^I have multiple pupils for restart$/) do
     pupil_pin = pupil_pin_detail['val']
     school_password = SqlDbHelper.find_school(pupil_detail['school_id'])['pin']
     Timeout.timeout(ENV['WAIT_TIME'].to_i) {sleep 1 until RequestHelper.auth(school_password, pupil_pin).code == 200}
-    response_pupil_auth = RequestHelper.auth(school_password, pupil_pin)
-    @parsed_response_pupil_auth = JSON.parse(response_pupil_auth.body)
-    @submission_hash = RequestHelper.build_check_submission_message(@parsed_response_pupil_auth)
-    AzureQueueHelper.create_check_submission_message(@submission_hash[:submission_message].to_json)
-    school_uuid = @parsed_response_pupil_auth['school']['uuid']
-    check_code = @parsed_response_pupil_auth['checkCode']
-    AzureTableHelper.wait_for_received_check(school_uuid, check_code)
+    RequestHelper.auth(school_password, pupil_pin)
+    @check_code = check_entry['checkCode']
+    FunctionsHelper.complete_check_via_check_code([@check_code])
+    AzureTableHelper.wait_for_received_check(@school['entity']['urlSlug'], @check_code)
   end
   step 'I am on the Restarts Page'
 end
@@ -202,24 +199,18 @@ When(/^they become eligable for a restart$/) do
   p @pupil_names_arr
   @pupil_names_arr.each do |pupil|
     pupil_lastname = pupil.split(',')[0]
-    pupil_firstname = pupil.split(',')[1].strip
-    pupil_firstname = pupil_firstname.split(' Date')[0].split(' ')[0] if pupil_firstname.include? 'Date'
-    p pupil_firstname, pupil_lastname
+    pupil_firstname = pupil.split(',')[1].split(' Date')[0].split(' ')[0]
     pupil_detail = SqlDbHelper.pupil_details_using_names(pupil_firstname, pupil_lastname, @school_id)
-    p pupil_detail
     pupil_id = pupil_detail['id']
     check_entry = SqlDbHelper.check_details(pupil_id)
     pupil_pin_detail = SqlDbHelper.get_pupil_pin(check_entry['id'])
     pupil_pin = pupil_pin_detail['val']
     school_password = SqlDbHelper.find_school(pupil_detail['school_id'])['pin']
     Timeout.timeout(ENV['WAIT_TIME'].to_i) {sleep 1 until RequestHelper.auth(school_password, pupil_pin).code == 200}
-    response_pupil_auth = RequestHelper.auth(school_password, pupil_pin)
-    @parsed_response_pupil_auth = JSON.parse(response_pupil_auth.body)
-    @submission_hash = RequestHelper.build_check_submission_message(@parsed_response_pupil_auth)
-    AzureQueueHelper.create_check_submission_message(@submission_hash[:submission_message].to_json)
-    school_uuid = @parsed_response_pupil_auth['school']['uuid']
-    check_code = @parsed_response_pupil_auth['checkCode']
-    AzureTableHelper.wait_for_received_check(school_uuid, check_code)
+    RequestHelper.auth(school_password, pupil_pin)
+    @check_code = check_entry['checkCode']
+    FunctionsHelper.complete_check_via_check_code([@check_code])
+    AzureTableHelper.wait_for_received_check(@school['entity']['urlSlug'], @check_code)
   end
   step 'I am on the Restarts Page'
 end
@@ -275,16 +266,11 @@ Given(/^pupil logs in and completed the check$/) do
   pupil_pin_detail = SqlDbHelper.get_pupil_pin(check_entry['id'])
   pupil_pin = pupil_pin_detail['val']
   school_password = SqlDbHelper.find_school(pupil_detail['school_id'])['pin']
-
   Timeout.timeout(ENV['WAIT_TIME'].to_i) {sleep 1 until RequestHelper.auth(school_password, pupil_pin).code == 200}
-  response_pupil_auth = RequestHelper.auth(school_password, pupil_pin)
-  @parsed_response_pupil_auth = JSON.parse(response_pupil_auth.body)
-
-  @submission_hash = RequestHelper.build_check_submission_message(@parsed_response_pupil_auth)
-  AzureQueueHelper.create_check_submission_message(@submission_hash[:submission_message].to_json)
-  school_uuid = @parsed_response_pupil_auth['school']['uuid']
-  @check_code = @parsed_response_pupil_auth['checkCode']
-  AzureTableHelper.wait_for_received_check(school_uuid, @check_code)
+  RequestHelper.auth(school_password, pupil_pin)
+  @check_code = check_entry['checkCode']
+  FunctionsHelper.complete_check_via_check_code([@check_code])
+  AzureTableHelper.wait_for_received_check(@school['entity']['urlSlug'], @check_code)
 end
 
 And(/^I generate a pin for that pupil$/) do
@@ -336,11 +322,9 @@ Given(/^I have more than (\d+) pupils eligible for a restart$/) do |number_of_re
     Timeout.timeout(ENV['WAIT_TIME'].to_i) {sleep 1 until RequestHelper.auth(school_password, pupil_pin).code == 200}
     response_pupil_auth = RequestHelper.auth(school_password, pupil_pin)
     @parsed_response_pupil_auth = JSON.parse(response_pupil_auth.body)
-    @submission_hash = RequestHelper.build_check_submission_message(@parsed_response_pupil_auth)
-    AzureQueueHelper.create_check_submission_message(@submission_hash[:submission_message].to_json)
-    school_uuid = @parsed_response_pupil_auth['school']['uuid']
-    check_code = @parsed_response_pupil_auth['checkCode']
-    AzureTableHelper.wait_for_received_check(school_uuid, check_code)
+    @check_code = check_entry['checkCode']
+    FunctionsHelper.complete_check_via_check_code([@check_code])
+    AzureTableHelper.wait_for_received_check(@school['entity']['urlSlug'], @check_code)
   end
 end
 
