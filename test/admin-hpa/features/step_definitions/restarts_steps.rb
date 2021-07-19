@@ -208,7 +208,7 @@ When(/^they become eligable for a restart$/) do
     school_password = SqlDbHelper.find_school(pupil_detail['school_id'])['pin']
     Timeout.timeout(ENV['WAIT_TIME'].to_i) {sleep 1 until RequestHelper.auth(school_password, pupil_pin).code == 200}
     RequestHelper.auth(school_password, pupil_pin)
-    @check_code = SqlDbHelper.check_entry['checkCode']
+    @check_code = check_entry['checkCode']
     FunctionsHelper.complete_check_via_check_code([@check_code])
     AzureTableHelper.wait_for_received_check(@school['entity']['urlSlug'], @check_code)
   end
