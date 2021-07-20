@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { AzureQueueService } from '../services/azure-queue/azure-queue.service';
 import { CheckStatusService } from '../services/check-status/check-status.service';
 import { StorageService } from '../services/storage/storage.service';
-import { FeedbackService } from '../services/feedback/feedback.service';
+import { FeedbackService, IFeedbackService } from '../services/feedback/feedback.service'
 import { TokenService } from '../services/token/token.service';
 import * as responseMock from '../feedback.response.mock.json';
 import { FeedbackComponent } from './feedback.component';
@@ -14,16 +14,21 @@ import { SpeechServiceMock } from '../services/speech/speech.service.mock';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { QUEUE_STORAGE_TOKEN } from '../services/azure-queue/azureStorage';
+import { FeedbackServiceMock } from '../services/feedback/feedback.service.mock'
 
 describe('FeedbackComponent', () => {
   let component: FeedbackComponent;
   let fixture: ComponentFixture<FeedbackComponent>;
   const store = {};
   let mockRouter;
+  let feedbackServiceMock: FeedbackServiceMock;
+
   beforeEach(async(() => {
     mockRouter = {
       navigate: jasmine.createSpy('navigate')
     };
+    feedbackServiceMock = new FeedbackServiceMock();
+    jasmine.createSpyObj(['postFeedback'], feedbackServiceMock);
 
     const injector = TestBed.configureTestingModule({
       declarations: [ FeedbackComponent ],
@@ -36,7 +41,7 @@ describe('FeedbackComponent', () => {
         { provide: QuestionService, useClass: QuestionServiceMock },
         WindowRefService,
         AzureQueueService,
-        FeedbackService,
+        { provide: FeedbackService, useValue: feedbackServiceMock },
         StorageService,
         TokenService,
         CheckStatusService
@@ -130,7 +135,7 @@ describe('FeedbackComponent', () => {
     });
   });
 
-  xit('should onSubmit be called when clicking button and there are no errors', () => {
+  it('should onSubmit be called when clicking button and there are no errors', () => {
     component['errorInputType'] = false;
     component['errorSatisfactionRating'] = false;
 
@@ -139,7 +144,7 @@ describe('FeedbackComponent', () => {
     compiled.querySelector('input[type=submit]').click();
     fixture.whenStable().then(() => {
       expect(component.onSubmit).toHaveBeenCalledTimes(1);
-      expect(this.feedbackService.postFeedback).toHaveBeenCalledTimes(1);
+      expect(feedbackServiceMock.postFeedback).toHaveBeenCalledTimes(1);
     });
   });
 

@@ -4,8 +4,13 @@ import { StorageService } from '../storage/storage.service';
 import { TokenService } from '../token/token.service';
 import { AzureQueueService } from '../azure-queue/azure-queue.service';
 
+export interface IFeedbackService {
+  postFeedback(): Promise<boolean|void>;
+  queueSubmit(payload: any): Promise<void>;
+}
+
 @Injectable()
-export class FeedbackService {
+export class FeedbackService implements IFeedbackService {
   feedbackAPIErrorDelay;
   feedbackAPIErrorMaxAttempts;
 
