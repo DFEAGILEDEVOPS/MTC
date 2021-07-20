@@ -4,6 +4,7 @@ const passport = require('passport')
 const R = require('ramda')
 
 const config = require('../config')
+const logger = require('../services/log.service').getLogger()
 const isAuthenticated = require('../authentication/middleware')
 const { getContactPage } = require('../controllers/contact')
 const { getPrivacyPage } = require('../controllers/privacy')
@@ -73,6 +74,14 @@ if (config.Auth.mode === authModes.local) {
 if (config.Auth.mode === authModes.dfeSignIn) {
   router.get('/auth-dso',
     (req, res, next) => {
+      const error = req.query.error
+      if (error === 'sessionexpired') {
+        // The DFE-Signin server has detected a stale session and redirected the user back to us.  This can be
+        // caused by bookmarking the sign-in page (on Dfe Sign-in) which includes the session in the URL.  The
+        // solution here is to force the sign-in server to regenerate the session.
+        logger.info('DfeSignIn authentication: stale session detected. Redirecting.')
+        return res.redirect(302, '/')
+      }
       next()
     },
     passport.authenticate(authModes.dfeSignIn, { failureRedirect: signInFailureRedirect }),
