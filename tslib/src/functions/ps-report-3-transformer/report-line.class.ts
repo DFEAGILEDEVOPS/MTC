@@ -55,9 +55,7 @@ export class ReportLine {
     FormMark: null,
 
     // Device
-    DeviceType: null,
     BrowserType: null,
-    DeviceTypeModel: null,
     DeviceID: null,
 
     // Question and answer data
@@ -334,9 +332,7 @@ export class ReportLine {
     this._report.RestartNumber = this.check?.restartNumber ?? null // set to null if there is no check
     this._report.RestartReason = ReportLine.getRestartReason(this.check?.restartReason ?? null) // map the code to the number
     this._report.FormMark = this.check?.mark ?? null
-    this._report.DeviceType = this.device?.type ?? null
     this._report.BrowserType = this.getBrowser()
-    this._report.DeviceTypeModel = this.device?.typeModel ?? null
     this._report.DeviceID = this.device?.deviceId ?? null
     this._report.PupilStatus = this.getPupilStatus()
 
@@ -392,9 +388,7 @@ export class ReportLine {
       RestartNumber: this._report.RestartNumber,
       RestartReason: this._report.RestartReason,
       FormMark: this._report.FormMark,
-      DeviceType: this._report.DeviceType,
       BrowserType: this._report.BrowserType,
-      DeviceTypeModel: this._report.DeviceTypeModel,
       DeviceID: this._report.DeviceID,
       answers: this._report.answers.map(o => o.toObject())
     }

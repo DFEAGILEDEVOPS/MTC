@@ -181,9 +181,7 @@ export class MockPayload implements IPsychometricReportLine {
   FormMark: number | null
 
   // Device
-  DeviceType: string | null
   BrowserType: string | null
-  DeviceTypeModel: string | null
   DeviceID: string | null
 
   answers: IReportLineAnswer[] = []
@@ -215,9 +213,7 @@ export class MockPayload implements IPsychometricReportLine {
     this.RestartNumber = faker.random.number({ min: 0, max: 2 })
     this.RestartReason = faker.random.number({ min: 1, max: 4 })
     this.FormMark = faker.random.number({ min: 0, max: 25 })
-    this.DeviceType = faker.lorem.words(2)
     this.BrowserType = `${faker.lorem.words(2)} ${faker.system.semver()}`
-    this.DeviceTypeModel = faker.lorem.words(2)
     this.DeviceID = faker.random.uuid()
 
     for (let i = 0; i < 25; i++) {
