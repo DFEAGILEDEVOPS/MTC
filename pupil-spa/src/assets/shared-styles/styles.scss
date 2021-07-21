@@ -29,7 +29,7 @@ $mainstream-brand: $department-for-education;
 @import "../govuk_frontend_toolkit/stylesheets/design-patterns/buttons";
 
 /* From Govuk Elements SASS */
-$path: "/govuk_frontend_toolkit/images/";
+$path: "../../assets/govuk_frontend_toolkit/images/";
 
 @import '../govuk-elements-sass/elements/helpers';
 @import '../govuk-elements-sass/elements/layout';
