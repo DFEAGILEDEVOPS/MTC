@@ -132,21 +132,21 @@ export class MockReportLineAnswer implements IReportLineAnswer {
   public constructor (questionNumber: number) {
     this.questionNumber = questionNumber
     this.id = `${questionNumber}x${questionNumber}`
-    this.response = faker.random.number({ min: 0, max: 144 }).toString()
+    this.response = faker.datatype.number({ min: 0, max: 144 }).toString()
     this.inputMethods = faker.random.arrayElement(['k', 'm', 'p', 't', 'x'])
     this.keystrokes = this.response.split('').map(v => `${faker.random.arrayElement(['k', 'm', 'p', 't'])}[${v}]`).join(', ')
-    this.score = faker.random.number({ min: 0, max: 100 }) > 75 ? 0 : 1
-    this.firstKey = moment().subtract(faker.random.number({ min: 0, max: 100 }), 'minutes')
-    this.lastKey = moment().subtract(faker.random.number({ min: 0, max: 100 }), 'minutes')
-    this.responseTime = faker.random.number({ min: 0, max: 6000 }) / 1000
-    this.timeout = faker.random.boolean()
-    this.timeoutResponse = faker.random.boolean()
-    this.timeoutScore = faker.random.boolean()
-    this.loadTime = moment().subtract(faker.random.number({ min: 0, max: 100 }), 'minutes')
-    this.overallTime = faker.random.number({ min: 1000, max: 9000 }) / 1000
-    this.recallTime = faker.random.number({ min: 0, max: 6000 }) / 1000
-    this.questionReaderStart = moment().subtract(faker.random.number({ min: 0, max: 100 }), 'minutes')
-    this.questionReaderEnd = moment().subtract(faker.random.number({ min: 0, max: 100 }), 'minutes')
+    this.score = faker.datatype.number({ min: 0, max: 100 }) > 75 ? 0 : 1
+    this.firstKey = moment().subtract(faker.datatype.number({ min: 0, max: 100 }), 'minutes')
+    this.lastKey = moment().subtract(faker.datatype.number({ min: 0, max: 100 }), 'minutes')
+    this.responseTime = faker.datatype.number({ min: 0, max: 6000 }) / 1000
+    this.timeout = faker.datatype.boolean()
+    this.timeoutResponse = faker.datatype.boolean()
+    this.timeoutScore = faker.datatype.boolean()
+    this.loadTime = moment().subtract(faker.datatype.number({ min: 0, max: 100 }), 'minutes')
+    this.overallTime = faker.datatype.number({ min: 1000, max: 9000 }) / 1000
+    this.recallTime = faker.datatype.number({ min: 0, max: 6000 }) / 1000
+    this.questionReaderStart = moment().subtract(faker.datatype.number({ min: 0, max: 100 }), 'minutes')
+    this.questionReaderEnd = moment().subtract(faker.datatype.number({ min: 0, max: 100 }), 'minutes')
   }
 }
 
@@ -187,7 +187,7 @@ export class MockPayload implements IPsychometricReportLine {
   answers: IReportLineAnswer[] = []
 
   public constructor () {
-    this.PupilDatabaseId = faker.random.number({ min: 1, max: 750000 })
+    this.PupilDatabaseId = faker.datatype.number({ min: 1, max: 750000 })
     this.PupilID = veryFakeUpn()
     const tenYearsAgo = moment().subtract(10, 'years')
     const nineYearsAgo = moment().subtract(9, 'years')
@@ -198,23 +198,23 @@ export class MockPayload implements IPsychometricReportLine {
     this.ReasonNotTakingCheck = faker.random.arrayElement(['A', 'Z', 'L', 'U', 'B', 'J'])
     this.PupilStatus = faker.helpers.shuffle(['Incomplete', 'Complete', 'Not taking the Check'])[0]
     this.SchoolName = faker.random.arrayElement(schools)
-    this.Estab = faker.random.number({ min: 1000, max: 9999 })
-    this.SchoolURN = faker.random.number({ min: 89000, max: 89999 })
-    this.LAnum = faker.random.number({ min: 201, max: 999 })
-    this.QDisplayTime = faker.random.float({ min: 5.00, max: 9.00 })
-    this.PauseLength = faker.random.float({ min: 3.00, max: 6.00 })
-    this.AccessArr = faker.random.number({ min: 1, max: 6 }).toString()
-    this.AttemptID = faker.random.uuid()
+    this.Estab = faker.datatype.number({ min: 1000, max: 9999 })
+    this.SchoolURN = faker.datatype.number({ min: 89000, max: 89999 })
+    this.LAnum = faker.datatype.number({ min: 201, max: 999 })
+    this.QDisplayTime = faker.datatype.float({ min: 5.00, max: 9.00 })
+    this.PauseLength = faker.datatype.float({ min: 3.00, max: 6.00 })
+    this.AccessArr = faker.datatype.number({ min: 1, max: 6 }).toString()
+    this.AttemptID = faker.datatype.uuid()
     this.FormID = faker.random.arrayElement(['MTC001', 'MTC002', 'MTC003', 'MTC004', 'MTC005', 'MTC006', 'MTC007'])
     this.TestDate = moment().subtract(13, 'minutes')
-    this.TimeStart = moment().subtract(faker.random.number({ min: 1, max: 30 }), 'minutes')
+    this.TimeStart = moment().subtract(faker.datatype.number({ min: 1, max: 30 }), 'minutes')
     this.TimeComplete = moment()
     this.TimeTaken = (this.TimeComplete.valueOf() - this.TimeStart.valueOf()) / 1000
-    this.RestartNumber = faker.random.number({ min: 0, max: 2 })
-    this.RestartReason = faker.random.number({ min: 1, max: 4 })
-    this.FormMark = faker.random.number({ min: 0, max: 25 })
+    this.RestartNumber = faker.datatype.number({ min: 0, max: 2 })
+    this.RestartReason = faker.datatype.number({ min: 1, max: 4 })
+    this.FormMark = faker.datatype.number({ min: 0, max: 25 })
     this.BrowserType = `${faker.lorem.words(2)} ${faker.system.semver()}`
-    this.DeviceID = faker.random.uuid()
+    this.DeviceID = faker.datatype.uuid()
 
     for (let i = 0; i < 25; i++) {
       const answer = new MockReportLineAnswer(i + 1)
