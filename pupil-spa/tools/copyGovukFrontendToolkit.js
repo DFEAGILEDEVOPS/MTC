@@ -18,7 +18,7 @@ const copyToolkit = () => {
       if (fse.existsSync(origin)) {
         fse.copySync(origin, destination, {overwrite: true, errorOnExist: true})
         fileCleanup(destination)
-        console.log(`govuk_frontend-toolkit/${folder} has been copied over to assets/govuk_frontend-toolkit/${folder}`)
+        console.log(`govuk_frontend_toolkit/${folder} has been copied over to assets/govuk_frontend_toolkit/${folder}`)
       } else {
         console.log(`Failed to copy govuk_frontend_toolkit/${folder}`)
       }
