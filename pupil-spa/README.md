@@ -74,7 +74,7 @@ http://10.0.2.2:<$port>/
 
 ## Frontend Notes
 
-The GDS libraries are included in the package.json file: `govuk-elements-sass` which has as its dependency `govuk-elements-sass`
+The GDS libraries are included in the package.json file: `govuk-elements-sass` which has as its dependency `govuk_frontend_toolkit`
 
 On `postinstall` yarn runs two jobs to vendor in the govuk files as angular cannot use sass files from node_modules directly:
 
