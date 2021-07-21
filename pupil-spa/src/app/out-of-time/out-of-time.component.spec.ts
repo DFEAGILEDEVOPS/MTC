@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
 import { QuestionService } from '../services/question/question.service';
 import { QuestionServiceMock } from '../services/question/question.service.mock';
@@ -19,7 +19,7 @@ describe('OutOfTimeComponent', () => {
   let mockUserService;
   let storageService;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     const injector = TestBed.configureTestingModule({
       declarations: [ OutOfTimeComponent ],
       schemas: [ NO_ERRORS_SCHEMA ], // we don't need to test sub-components

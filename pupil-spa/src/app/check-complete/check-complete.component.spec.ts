@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { CheckCompleteComponent } from './check-complete.component';
 
 import { StorageService } from '../services/storage/storage.service';
@@ -21,7 +21,7 @@ describe('CheckCompleteComponent', () => {
   let removeCheckStartTimeSpy;
   let setCompletedSubmission;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     mockRouter = {
       navigate: jasmine.createSpy('navigate')
     };

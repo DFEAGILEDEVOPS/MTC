@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 import { ConnectivityErrorComponent } from './connectivity-error.component';
@@ -15,7 +15,7 @@ describe('ConnectivityErrorComponent', () => {
   let httpTestingController: HttpTestingController;
 
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       schemas: [ NO_ERRORS_SCHEMA ],
       declarations: [ ConnectivityErrorComponent ],

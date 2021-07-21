@@ -1,4 +1,4 @@
-import { async, TestBed } from '@angular/core/testing';
+import { TestBed, waitForAsync } from '@angular/core/testing';
 import { APP_CONFIG, IAppConfig } from '../config/config.service';
 import { IQueueService, QUEUE_STORAGE_TOKEN } from './azureStorage';
 import { AzureQueueService } from './azure-queue.service';
@@ -8,7 +8,7 @@ describe('AzureQueueService', () => {
   let azureQueueService: AzureQueueService;
   let initialProductionFlag;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       providers: [
         AzureQueueService,

@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { HttpClient } from '@angular/common/http';
@@ -24,7 +24,7 @@ describe('ConnectivityCheckComponent', () => {
   let checkStatusService;
   let connectivityService;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     mockRouter = {
       navigate: jasmine.createSpy('navigate')
     };

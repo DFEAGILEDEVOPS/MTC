@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 import { Answer } from '../services/answer/answer.model';
@@ -38,7 +38,7 @@ describe('CheckComponent', () => {
     expect(setCheckStateSpy).toHaveBeenCalledTimes(1);
   }
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
 
     mockRouter = {
       navigate: jasmine.createSpy('navigate')

@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { AnswerService } from '../services/answer/answer.service';
 import { AuditService } from '../services/audit/audit.service';
@@ -26,7 +26,7 @@ describe('QuestionComponent', () => {
   let auditService: AuditService;
   let auditServiceSpy;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [],
       declarations: [ QuestionComponent ],

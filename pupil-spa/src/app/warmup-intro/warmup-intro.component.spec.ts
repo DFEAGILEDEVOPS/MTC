@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { WarmupIntroComponent } from './warmup-intro.component';
 import { AuditService } from '../services/audit/audit.service';
@@ -15,7 +15,7 @@ describe('WarmupIntroComponent', () => {
   let component: WarmupIntroComponent;
   let fixture: ComponentFixture<WarmupIntroComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
 
     TestBed.configureTestingModule({
       declarations: [ WarmupIntroComponent ],
@@ -40,7 +40,7 @@ describe('WarmupIntroComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('emits onClick()', async ((done) => {
+  it('emits onClick()', waitForAsync ((done) => {
     component.clickEvent.subscribe( g => {
       expect(g).toBe(null);
       // Issue: https://github.com/angular/angular/issues/15830

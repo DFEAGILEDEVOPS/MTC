@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 import { AuditService } from '../services/audit/audit.service';
@@ -13,7 +13,7 @@ describe('PageVisibility', () => {
   let mockAuditService;
   let mockStorageService;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     const injector = TestBed.configureTestingModule({
       declarations: [PageVisibilityComponent],
       schemas: [NO_ERRORS_SCHEMA],

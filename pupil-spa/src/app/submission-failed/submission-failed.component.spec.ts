@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { SubmissionFailedComponent } from './submission-failed.component';
 import { AuditService } from '../services/audit/audit.service';
@@ -15,7 +15,7 @@ describe('SubmissionFailedComponent', () => {
   let fixture: ComponentFixture<SubmissionFailedComponent>;
   let auditService;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ SubmissionFailedComponent ],
       schemas: [ NO_ERRORS_SCHEMA ], // we don't need to test sub-components

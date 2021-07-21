@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 import { QuestionsIntroComponent } from './questions-intro.component';
@@ -28,7 +28,7 @@ describe('QuestionsIntroComponent', () => {
   let httpClient: HttpClient;
   let httpTestingController: HttpTestingController;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     const inject = TestBed.configureTestingModule({
       declarations: [ QuestionsIntroComponent ],
       schemas: [ NO_ERRORS_SCHEMA ], // we don't need to test sub-components
@@ -68,7 +68,7 @@ describe('QuestionsIntroComponent', () => {
 
   describe('onClick()', () => {
     describe('calls check start submit', () => {
-      it('successfully calls check start service', async (async() => {
+      it('successfully calls check start service', waitForAsync (async() => {
         checkStartService = fixture.debugElement.injector.get(CheckStartService);
         spyOn(checkStartService, 'submit');
         component.clickEvent.subscribe(g => {

@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { Router } from '@angular/router';
 import { StorageService } from '../services/storage/storage.service';
@@ -10,7 +10,7 @@ describe('PageModificationsComponent', () => {
   let component: PageModificationsComponent;
   let fixture: ComponentFixture<PageModificationsComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     mockRouter = {
       navigate: jasmine.createSpy('navigate')
     };

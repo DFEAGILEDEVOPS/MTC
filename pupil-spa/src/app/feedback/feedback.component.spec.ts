@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { AzureQueueService } from '../services/azure-queue/azure-queue.service';
 import { CheckStatusService } from '../services/check-status/check-status.service';
@@ -23,7 +23,7 @@ describe('FeedbackComponent', () => {
   let mockRouter;
   let feedbackServiceMock: FeedbackServiceMock;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     mockRouter = {
       navigate: jasmine.createSpy('navigate')
     };
