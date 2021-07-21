@@ -1,6 +1,7 @@
 # Util Submit Check function
 
 This function is for local dev and automated test scenarios only.  It is disabled by default, and is unavailable in production.
+To enable it, the `TEST_SUPPORT_API_ENABLED` environment variable must be set to `true`.
 
 ## Description
 
