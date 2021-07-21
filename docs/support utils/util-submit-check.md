@@ -2,6 +2,11 @@
 
 This function is for local dev and automated test scenarios only.  It is disabled by default, and is unavailable in production.
 
+## Description
+
+This function is for emulating the check submission process, normally undertaken by a pupil using a web browser, once the check has been completed.
+It allows you to bypass the often complex process of generating a valid completed check, compressing the payload and submitting it to the queue endpoint.  This provides a consistent single reference for load, volume and integration test tools to utilise in scenarios.
+
 default url: `http://localhost:7071/api/util-submit-check`
 
 accepts: `POST`
@@ -40,7 +45,13 @@ example...
 }
 ```
 
-## Important
+## Notes
 In order for the check to be properly processed, a successful request to the pupil auth API should be made, in order to set the pupil login date value.
 
 If not, a restart will be unavailable.
+
+If submitting a [check-started message](../messaging/message-schemas.md) is part of your automated process, you should set the `TEST_SUPPORT_DISABLE_PREPARED_CHECK_CACHE_DROP` environment variable to `true` so that the `check-started` function does not drop the prepared check before the `util-submit-check` function can use it to generate a complete check.
+
+
+## Roadmap
+Invalid payload generation and structures that mimic real world examples of faulty payloads seen in live check periods.
