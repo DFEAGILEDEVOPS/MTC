@@ -1,59 +1,59 @@
 /* Base GDS Toolkit */
 
 /* Custom functions */
-@import "../../assets/shared-styles/helpers/helpers";
+@import "../shared-styles/helpers/helpers";
 
 /* Settings (variables) */
-@import "../../assets/govuk_frontend_toolkit/stylesheets/colours/palette";
-@import "../../assets/govuk_frontend_toolkit/stylesheets/colours/organisation";
-@import "../../assets/govuk_frontend_toolkit/stylesheets/colours";
-@import "../../assets/govuk_frontend_toolkit/stylesheets/font_stack";
-@import "../../assets/govuk_frontend_toolkit/stylesheets/measurements";
+@import "../govuk_frontend_toolkit/stylesheets/colours/palette";
+@import "../govuk_frontend_toolkit/stylesheets/colours/organisation";
+@import "../govuk_frontend_toolkit/stylesheets/colours";
+@import "../govuk_frontend_toolkit/stylesheets/font_stack";
+@import "../govuk_frontend_toolkit/stylesheets/measurements";
 
 $mainstream-brand: $department-for-education;
 
 /* Mixins */
-@import "../../assets/govuk_frontend_toolkit/stylesheets/conditionals";
-@import "../../assets/govuk_frontend_toolkit/stylesheets/device-pixels";
-@import "../../assets/govuk_frontend_toolkit/stylesheets/grid_layout";
-@import "../../assets/govuk_frontend_toolkit/stylesheets/typography";
-@import "../../assets/govuk_frontend_toolkit/stylesheets/shims";
+@import "../govuk_frontend_toolkit/stylesheets/conditionals";
+@import "../govuk_frontend_toolkit/stylesheets/device-pixels";
+@import "../govuk_frontend_toolkit/stylesheets/grid_layout";
+@import "../govuk_frontend_toolkit/stylesheets/typography";
+@import "../govuk_frontend_toolkit/stylesheets/shims";
 
 /* Functions */
-@import "../../assets/govuk_frontend_toolkit/stylesheets/url-helpers";
+@import "../govuk_frontend_toolkit/stylesheets/url-helpers";
 
 /* Extras */
-@import "../../assets/govuk_frontend_toolkit/stylesheets/helpers";
-@import "../../assets/govuk_frontend_toolkit/stylesheets/design-patterns/alpha-beta";
-@import "../../assets/govuk_frontend_toolkit/stylesheets/design-patterns/breadcrumbs";
-@import "../../assets/govuk_frontend_toolkit/stylesheets/design-patterns/buttons";
+@import "../govuk_frontend_toolkit/stylesheets/helpers";
+@import "../govuk_frontend_toolkit/stylesheets/design-patterns/alpha-beta";
+@import "../govuk_frontend_toolkit/stylesheets/design-patterns/breadcrumbs";
+@import "../govuk_frontend_toolkit/stylesheets/design-patterns/buttons";
 
 /* From Govuk Elements SASS */
-$path: "../../assets/govuk_frontend_toolkit/images/";
+$path: "/govuk_frontend_toolkit/images/";
 
-@import '../../assets/govuk-elements-sass/elements/helpers';
-@import '../../assets/govuk-elements-sass/elements/layout';
-@import '../../assets/govuk-elements-sass/elements/elements-typography';
-@import '../../assets/govuk-elements-sass/elements/buttons';
-@import '../../assets/govuk-elements-sass/elements/forms';
-@import '../../assets/govuk-elements-sass/elements/forms/form-multiple-choice';
-@import '../../assets/govuk-elements-sass/elements/forms/form-validation';
-@import '../../assets/govuk-elements-sass/elements/panels';
-@import '../../assets/govuk-elements-sass/elements/details';
-@import '../../assets/govuk-elements-sass/elements/shame';
-@import '../../assets/govuk-elements-sass/elements/lists';
-@import '../../assets/govuk-elements-sass/elements/icons';
+@import '../govuk-elements-sass/elements/helpers';
+@import '../govuk-elements-sass/elements/layout';
+@import '../govuk-elements-sass/elements/elements-typography';
+@import '../govuk-elements-sass/elements/buttons';
+@import '../govuk-elements-sass/elements/forms';
+@import '../govuk-elements-sass/elements/forms/form-multiple-choice';
+@import '../govuk-elements-sass/elements/forms/form-validation';
+@import '../govuk-elements-sass/elements/panels';
+@import '../govuk-elements-sass/elements/details';
+@import '../govuk-elements-sass/elements/shame';
+@import '../govuk-elements-sass/elements/lists';
+@import '../govuk-elements-sass/elements/icons';
 
 /* From public */
-@import "../../assets/govuk_template/stylesheets/fonts.css";
-@import "../../assets/govuk_template/stylesheets/styleguide/colours";
-/*@import "../../assets/govuk_template/stylesheets/styleguide/print";*/
-@import "../../assets/govuk_template/stylesheets/accessibility";
-@import "../../assets/govuk_template/stylesheets/basic";
-/*@import "../../assets/govuk_template/stylesheets/core-print";*/
-@import "../../assets/govuk_template/stylesheets/footer";
-@import "../../assets/govuk_template/stylesheets/header";
-@import "../../assets/govuk_template/stylesheets/govuk-template";
+@import "../govuk_template/stylesheets/fonts.css";
+@import "../govuk_template/stylesheets/styleguide/colours";
+/*@import "../govuk_template/stylesheets/styleguide/print";*/
+@import "../govuk_template/stylesheets/accessibility";
+@import "../govuk_template/stylesheets/basic";
+/*@import "../govuk_template/stylesheets/core-print";*/
+@import "../govuk_template/stylesheets/footer";
+@import "../govuk_template/stylesheets/header";
+@import "../govuk_template/stylesheets/govuk-template";
 
 /* STA-MTC project elements */
 @import './elements/phase-banner';
