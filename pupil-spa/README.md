@@ -1,10 +1,8 @@
 # PupilSpa
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.2.4.
-
 ## Development server
 
-Run `npm start` or `yarn start` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+Run `yarn start` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
 
 ## Code scaffolding
 
@@ -20,7 +18,7 @@ For local development a `.env` file is required at the project's root directory 
 |Variable   |Type/Accepted Values   |Description   |
 |---|---|---|
 |`TEST_PUPIL_CONNECTION_QUEUE_URL`   |`url`   | The test pupil connectivity queue URL required for submitting a test message |
-|`TEST_PUPIL_CONNECTION_QUEUE_TOKEN`   |`url`   | The test pupil connectivity queue token required for submitting a test message | 
+|`TEST_PUPIL_CONNECTION_QUEUE_TOKEN`   |`url`   | The test pupil connectivity queue token required for submitting a test message |
 
 The following environment variables can be injected at start up...
 
@@ -46,16 +44,11 @@ The following environment variables can be injected at start up...
 |`TEST_PUPIL_CONNECTION_QUEUE_URL`   |`url`   | The test pupil connectivity queue URL required for submitting a test message |
 |`TEST_PUPIL_CONNECTION_QUEUE_TOKEN`   |`string`   | The test pupil connectivity queue token required for submitting a test message |
 |`TEST_PUPIL_CONNECTION_ERROR_DELAY`   |`integer`   | The delay in milliseconds between attempts in submitting a message to the test queue   |
-|`TEST_PUPIL_CONNECTION_MAX_ATTEMPTS`   |`integer`   | The max number of attempts in submitting a message to the test queue   | 
+|`TEST_PUPIL_CONNECTION_MAX_ATTEMPTS`   |`integer`   | The max number of attempts in submitting a message to the test queue   |
 
 ## Running unit tests
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-Before running the tests make sure you are serving the app via `ng serve`.
+Run `yarn test` to execute the unit tests via [Karma](https://karma-runner.github.io).
 
 ## Connecting from Virtualised Clients
 
@@ -77,18 +70,20 @@ For Virtualbox users you can then access the site running on the Host's localhos
 ```
 http://10.0.2.2:<$port>/
 ```
+
+
+## Frontend Notes
+
+The GDS libraries are included in the package.json file: `govuk-elements-sass` which has as its dependency `govuk-elements-sass`
+
+On `postinstall` yarn runs two jobs to vendor in the govuk files as angular cannot use sass files from node_modules directly:
+
+1. `tools/copyGovukFrontendToolkit`- this copies the `stylesheets`, `javascripts` and `images` folders from `node_modules`  to `~/src/assets/govuk_frontend_toolkit` making them available to the angular solution.
+2. `tools/copyGovukElements` - this copies sass files used by the gov-frontend-toolkit to `~/src/assets/govuk-elements-sass`
+
+
+
 ## Further help
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
-
-### Upgrading old versions
-
-You can upgrade an old version like this:
-
-```shell
-npm uninstall -g angular-cli
-npm uninstall -g @angular/cli
-npm cache --force clean
-npm install -g @angular/cli
-``` 
 
