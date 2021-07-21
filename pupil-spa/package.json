@@ -4,7 +4,7 @@
   "license": "GPL-3.0",
   "scripts": {
     "ng": "ng",
-    "sass": "sass -q src/assets/shared-styles/:src/public/styles/",
+    "sass": "sass -q --no-source-map src/assets/shared-styles/:src/public/styles/",
     "sasswatch": "yarn sass && node-sass src/assets/shared-styles -wro src/public/styles/",
     "start": "yarn genconfig && yarn run gulp setSecretEnvVars && yarn build --prod && yarn run http-server dist/ -p 4200 --proxy http://localhost:4200?",
     "start:dev": "yarn genconfig && yarn run gulp setSecretEnvVars && concurrently \"ng serve --host 0.0.0.0\" \"yarn sasswatch\" ",
