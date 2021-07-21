@@ -47,7 +47,7 @@ example...
 ```
 
 ## Notes
-In order for the check to be properly processed, a successful request to the pupil auth API should be made, in order to set the pupil login date value.
+In order for the check to be properly processed, a successful request to the pupil auth API should be made (typically prior to the check submission), in order to set the pupil login date value.
 
 If not, a restart will be unavailable.
 
