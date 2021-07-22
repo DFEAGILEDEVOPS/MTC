@@ -46,7 +46,7 @@ const initSignOnAsync = async () => {
       const userInfo = await dfeSigninService.initialiseUser(authUserInfo, tokenset)
       done(null, userInfo)
     } catch (error) {
-      logger.error(error)
+      logger.error('DfeSignIn: initSignOnAsync(): Error initializing user: ' + error.message)
       done(error)
     }
   })
