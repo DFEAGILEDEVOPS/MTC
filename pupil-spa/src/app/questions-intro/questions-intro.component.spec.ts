@@ -46,9 +46,9 @@ describe('QuestionsIntroComponent', () => {
         AppUsageService
       ]
     });
-    httpClient = TestBed.get(HttpClient);
-    httpTestingController = TestBed.get(HttpTestingController);
-    checkStartService = inject.get(CheckStartService);
+    httpClient = TestBed.inject(HttpClient);
+    httpTestingController = TestBed.inject(HttpTestingController);
+    checkStartService = inject.inject(CheckStartService);
     inject.compileComponents();
   }));
 

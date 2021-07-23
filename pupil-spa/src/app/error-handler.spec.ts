@@ -22,7 +22,7 @@ describe('error-handler', () => {
       ]
     });
 
-    errorHandler = injector.get(GlobalErrorHandler);
+    errorHandler = injector.inject(GlobalErrorHandler);
   });
 
   it('should be created', () => {

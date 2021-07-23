@@ -41,9 +41,9 @@ describe('AAColoursComponent', () => {
       ]
     });
 
-    mockRouteService = injector.get(RouteService);
-    mockPupilPrefsService = injector.get(PupilPrefsService);
-    mockStorageService = injector.get(StorageService);
+    mockRouteService = injector.inject(RouteService);
+    mockPupilPrefsService = injector.inject(PupilPrefsService);
+    mockStorageService = injector.inject(StorageService);
 
     spyOn(mockStorageService, 'getItem').and.returnValue({ fontSize: 'regular', contrast: 'bow' });
   }));

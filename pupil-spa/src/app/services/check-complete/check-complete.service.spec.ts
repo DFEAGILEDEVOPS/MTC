@@ -40,12 +40,12 @@ describe('CheckCompleteService', () => {
         ]
       }
     );
-    checkCompleteService = inject.get(CheckCompleteService);
-    appUsageService = TestBed.get(AppUsageService);
-    tokenService = inject.get(TokenService);
-    azureQueueService = inject.get(AzureQueueService);
-    auditService = inject.get(AuditService);
-    storageService = TestBed.get(StorageService);
+    checkCompleteService = inject.inject(CheckCompleteService);
+    appUsageService = TestBed.inject(AppUsageService);
+    tokenService = inject.inject(TokenService);
+    azureQueueService = inject.inject(AzureQueueService);
+    auditService = inject.inject(AuditService);
+    storageService = TestBed.inject(StorageService);
     checkCompleteService.checkSubmissionApiErrorDelay = 100;
     checkCompleteService.checkSubmissionAPIErrorMaxAttempts = 1;
   });

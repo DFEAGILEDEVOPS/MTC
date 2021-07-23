@@ -47,8 +47,8 @@ describe('FeedbackComponent', () => {
         CheckStatusService
       ]
     });
-    const storageService = injector.get(StorageService);
-    const feedbackService = injector.get(FeedbackService);
+    const storageService = injector.inject(StorageService);
+    const feedbackService = injector.inject(FeedbackService);
     injector.compileComponents();
 
     spyOn(storageService, 'getFeedback').and.callFake(function (key) {

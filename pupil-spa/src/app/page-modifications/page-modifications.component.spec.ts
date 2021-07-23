@@ -1,45 +1,45 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { Router } from '@angular/router';
-import { StorageService } from '../services/storage/storage.service';
-import { PageModificationsComponent } from './page-modifications.component';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
+import { NO_ERRORS_SCHEMA } from '@angular/core'
+import { Router } from '@angular/router'
+import { StorageService } from '../services/storage/storage.service'
+import { PageModificationsComponent } from './page-modifications.component'
 
 describe('PageModificationsComponent', () => {
-  let mockRouter;
-  let mockStorageService;
-  let component: PageModificationsComponent;
-  let fixture: ComponentFixture<PageModificationsComponent>;
+  let mockRouter
+  let mockStorageService
+  let component: PageModificationsComponent
+  let fixture: ComponentFixture<PageModificationsComponent>
 
   beforeEach(waitForAsync(() => {
     mockRouter = {
       navigate: jasmine.createSpy('navigate')
-    };
+    }
 
     const injector = TestBed.configureTestingModule({
-      declarations: [ PageModificationsComponent ],
-      schemas: [ NO_ERRORS_SCHEMA ],
+      declarations: [PageModificationsComponent],
+      schemas: [NO_ERRORS_SCHEMA],
       providers: [
         { provide: Router, useValue: mockRouter },
         StorageService
       ]
-    });
+    })
 
-    mockStorageService = injector.get(StorageService);
-    spyOn(mockStorageService, 'getItem').and.returnValue({ fontSize: 'xlarge' });
-  }));
+    mockStorageService = injector.inject(StorageService)
+    spyOn(mockStorageService, 'getItem').and.returnValue({ fontSize: 'xlarge' })
+  }))
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(PageModificationsComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    fixture = TestBed.createComponent(PageModificationsComponent)
+    component = fixture.componentInstance
+    fixture.detectChanges()
+  })
 
   it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    expect(component).toBeTruthy()
+  })
 
   it('should set the font-size', () => {
-    const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('div#page-modifications').className).toContain('copy-size-xlarge');
-  });
-});
+    const compiled = fixture.debugElement.nativeElement
+    expect(compiled.querySelector('div#page-modifications').className).toContain('copy-size-xlarge')
+  })
+})

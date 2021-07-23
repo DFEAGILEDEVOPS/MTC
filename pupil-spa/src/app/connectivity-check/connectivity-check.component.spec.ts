@@ -50,10 +50,10 @@ describe('ConnectivityCheckComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(ConnectivityCheckComponent);
     component = fixture.componentInstance;
-    httpClient = TestBed.get(HttpClient);
-    httpTestingController = TestBed.get(HttpTestingController);
-    checkStatusService = TestBed.get(CheckStatusService);
-    connectivityService = TestBed.get(ConnectivityService);
+    httpClient = TestBed.inject(HttpClient);
+    httpTestingController = TestBed.inject(HttpTestingController);
+    checkStatusService = TestBed.inject(CheckStatusService);
+    connectivityService = TestBed.inject(ConnectivityService);
     hasUnfinishedCheckSpy = spyOn(checkStatusService, 'hasUnfinishedCheck');
     hasUnfinishedCheckSpy.and.returnValue(false);
     fixture.detectChanges();

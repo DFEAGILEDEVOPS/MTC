@@ -1,35 +1,35 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 
-import { AnswerService } from '../services/answer/answer.service';
-import { AuditService } from '../services/audit/audit.service';
-import { AuditServiceMock } from '../services/audit/audit.service.mock';
-import { QuestionComponent } from './question.component';
-import { QuestionRendered, QuestionAnswered, QuestionTimerStarted, QuestionTimerCancelled, AuditEntry } from '../services/audit/auditEntry';
-import { QuestionService } from '../services/question/question.service';
-import { QuestionServiceMock } from '../services/question/question.service.mock';
-import { RegisterInputService } from '../services/register-input/registerInput.service';
-import { RegisterInputServiceMock } from '../services/register-input/register-input-service.mock';
-import { SoundComponentMock } from '../sound/sound-component-mock';
-import { SpeechService } from '../services/speech/speech.service';
-import { SpeechServiceMock } from '../services/speech/speech.service.mock';
-import { StorageService } from '../services/storage/storage.service';
-import { WindowRefService } from '../services/window-ref/window-ref.service';
+import { AnswerService } from '../services/answer/answer.service'
+import { AuditService } from '../services/audit/audit.service'
+import { AuditServiceMock } from '../services/audit/audit.service.mock'
+import { QuestionComponent } from './question.component'
+import { QuestionRendered, QuestionAnswered, QuestionTimerStarted, QuestionTimerCancelled, AuditEntry } from '../services/audit/auditEntry'
+import { QuestionService } from '../services/question/question.service'
+import { QuestionServiceMock } from '../services/question/question.service.mock'
+import { RegisterInputService } from '../services/register-input/registerInput.service'
+import { RegisterInputServiceMock } from '../services/register-input/register-input-service.mock'
+import { SoundComponentMock } from '../sound/sound-component-mock'
+import { SpeechService } from '../services/speech/speech.service'
+import { SpeechServiceMock } from '../services/speech/speech.service.mock'
+import { StorageService } from '../services/storage/storage.service'
+import { WindowRefService } from '../services/window-ref/window-ref.service'
 
 describe('QuestionComponent', () => {
-  let component: QuestionComponent;
-  let fixture: ComponentFixture<QuestionComponent>;
-  const auditServiceMock = new AuditServiceMock();
-  let registerInputService: RegisterInputService;
-  let registerInputServiceSpy: any;
-  let answerService: AnswerService;
-  let answerServiceSpy: any;
-  let auditService: AuditService;
-  let auditServiceSpy;
+  let component: QuestionComponent
+  let fixture: ComponentFixture<QuestionComponent>
+  const auditServiceMock = new AuditServiceMock()
+  let registerInputService: RegisterInputService
+  let registerInputServiceSpy: any
+  let answerService: AnswerService
+  let answerServiceSpy: any
+  let auditService: AuditService
+  let auditServiceSpy
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [],
-      declarations: [ QuestionComponent ],
+      declarations: [QuestionComponent],
       providers: [
         { provide: AuditService, useValue: auditServiceMock },
         { provide: QuestionService, useClass: QuestionServiceMock },
@@ -39,182 +39,189 @@ describe('QuestionComponent', () => {
         StorageService,
         WindowRefService,
       ]
-    }).compileComponents().catch(error => { console.error(error); });
-  }));
+    }).compileComponents().catch(error => {
+      console.error(error)
+    })
+  }))
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(QuestionComponent);
-    component = fixture.componentInstance;
-    component.soundComponent = new SoundComponentMock();
+    fixture = TestBed.createComponent(QuestionComponent)
+    component = fixture.componentInstance
+    component.soundComponent = new SoundComponentMock()
 
     // This is the best way to get the injected service, the way that _always_ _works_
     // https://angular.io/guide/testing#get-injected-services
-    registerInputService = fixture.debugElement.injector.get(RegisterInputService);
-    registerInputServiceSpy = spyOn(registerInputService, 'storeEntry');
+    registerInputService = fixture.debugElement.injector.get(RegisterInputService)
+    registerInputServiceSpy = spyOn(registerInputService, 'storeEntry')
 
-    answerService = fixture.debugElement.injector.get(AnswerService);
-    answerServiceSpy = spyOn(answerService, 'setAnswer');
+    answerService = fixture.debugElement.injector.get(AnswerService)
+    answerServiceSpy = spyOn(answerService, 'setAnswer')
 
-    auditService = fixture.debugElement.injector.get(AuditService);
-    auditServiceSpy = spyOn(auditService, 'addEntry');
+    auditService = fixture.debugElement.injector.get(AuditService)
+    auditServiceSpy = spyOn(auditService, 'addEntry')
 
     // Place this last so the spies above are registered.
-    fixture.detectChanges();
-  });
+    fixture.detectChanges()
+  })
 
   it('should be created', () => {
-    expect(component).toBeTruthy();
-  });
+    expect(component).toBeTruthy()
+  })
 
   describe('an audit entry', () => {
     it('is added on question rendered', () => {
-      component.sequenceNumber = 1;
-      component.factor1 = 2;
-      component.factor2 = 3;
-      auditServiceSpy.calls.reset();
-      component.ngAfterViewInit();
-      expect(auditServiceSpy).toHaveBeenCalledTimes(2); // two times, timer event + render event
-      const auditEntryArgs = auditServiceSpy.calls.allArgs();
-      const questionRendered = auditEntryArgs.find(o => o[0].type === 'QuestionRendered');
-      expect((<any> questionRendered[0].data).sequenceNumber).toBe(1);
-      expect((<any> questionRendered[0].data).question).toBe('2x3');
-    });
+      component.sequenceNumber = 1
+      component.factor1 = 2
+      component.factor2 = 3
+      auditServiceSpy.calls.reset()
+      component.ngAfterViewInit()
+      expect(auditServiceSpy).toHaveBeenCalledTimes(2) // two times, timer event + render event
+      const auditEntryArgs = auditServiceSpy.calls.allArgs()
+      const questionRendered = auditEntryArgs.find(o => o[0].type === 'QuestionRendered')
+      expect((<any>questionRendered[0].data).sequenceNumber).toBe(1)
+      expect((<any>questionRendered[0].data).question).toBe('2x3')
+    })
 
     it('is added on answer submitted', () => {
-      component.sequenceNumber = 1;
-      component.factor1 = 2;
-      component.factor2 = 3;
-      component.answer = '42';
-      auditServiceSpy.calls.reset();
-      component.onSubmit();
-      expect(auditServiceSpy).toHaveBeenCalledTimes(2); // two times, timer event + answer event
-      const auditEntryArgs = auditServiceSpy.calls.allArgs();
-      const auditEntryArg = auditEntryArgs.find(o => o[0].type === 'QuestionAnswered');
-      const auditEntryInserted = auditEntryArg &&  auditEntryArg[0];
+      component.sequenceNumber = 1
+      component.factor1 = 2
+      component.factor2 = 3
+      component.answer = '42'
+      auditServiceSpy.calls.reset()
+      component.onSubmit()
+      expect(auditServiceSpy).toHaveBeenCalledTimes(2) // two times, timer event + answer event
+      const auditEntryArgs = auditServiceSpy.calls.allArgs()
+      const auditEntryArg = auditEntryArgs.find(o => o[0].type === 'QuestionAnswered')
+      const auditEntryInserted = auditEntryArg && auditEntryArg[0]
       expect(auditEntryInserted instanceof QuestionAnswered
-            || auditEntryInserted instanceof QuestionTimerCancelled).toBeTruthy();
-      expect((<any> auditEntryInserted.data).sequenceNumber).toBe(1);
-      expect((<any> auditEntryInserted.data).question).toBe('2x3');
-    });
-  });
+        || auditEntryInserted instanceof QuestionTimerCancelled).toBeTruthy()
+      expect((<any>auditEntryInserted.data).sequenceNumber).toBe(1)
+      expect((<any>auditEntryInserted.data).question).toBe('2x3')
+    })
+  })
 
   describe('#onClickBackspace', () => {
     it('calls registerInputService', () => {
-      component.sequenceNumber = 1;
-      component.factor1 = 1;
-      component.factor2 = 2;
-      const event = { timeStamp: 1519211809934 };
-      component.onClickBackspace(event);
-      expect(registerInputServiceSpy).toHaveBeenCalledTimes(1);
-      expect(registerInputServiceSpy).toHaveBeenCalledWith('Backspace', 'mouse', 1, '1x2', 1519211809934);
-    });
+      component.sequenceNumber = 1
+      component.factor1 = 1
+      component.factor2 = 2
+      const event = { timeStamp: 1519211809934 }
+      component.onClickBackspace(event)
+      expect(registerInputServiceSpy).toHaveBeenCalledTimes(1)
+      expect(registerInputServiceSpy).toHaveBeenCalledWith('Backspace', 'mouse', 1, '1x2', 1519211809934)
+    })
 
     it('deletes a char from the answer', () => {
-      component['answer'] = '1444';
-      const event = {};
-      component.onClickBackspace(event);
-      expect(component['answer']).toBe('144');
-    });
+      component['answer'] = '1444'
+      const event = {}
+      component.onClickBackspace(event)
+      expect(component['answer']).toBe('144')
+    })
 
     it('does not delete a char from the answer once it has been submitted', () => {
-      component['answer'] = '1444';
-      component.onClickBackspace({});
-      expect(component['answer']).toBe('144');
-      component.onClickSubmit({});
-      component.onClickBackspace(event);
-      expect(component['answer']).toBe('144');
-    });
+      const event = {}
+      component['answer'] = '1444'
+      component.onClickBackspace({})
+      expect(component['answer']).toBe('144')
+      component.onClickSubmit({})
+      component.onClickBackspace(event)
+      expect(component['answer']).toBe('144')
+    })
 
     it('does not add to the input register once it has been submitted', () => {
       // answer = ''
-      const e1 = new PointerEvent('pointerup',  { pointerId: 1,
+      const e1 = new PointerEvent('pointerup', {
+        pointerId: 1,
         bubbles: true,
         cancelable: true,
         pointerType: 'mouse',
         width: 100,
         height: 100,
-        isPrimary: true });
-      component.button1.nativeElement.dispatchEvent(e1);
-      component.button1.nativeElement.dispatchEvent(e1);
-      component.button1.nativeElement.dispatchEvent(e1);
+        isPrimary: true
+      })
+      component.button1.nativeElement.dispatchEvent(e1)
+      component.button1.nativeElement.dispatchEvent(e1)
+      component.button1.nativeElement.dispatchEvent(e1)
       // answer = '111'
-      component.onClickBackspace({});
-      component.onClickBackspace({});
+      component.onClickBackspace({})
+      component.onClickBackspace({})
       // answer = '1'
-      expect(registerInputService.storeEntry).toHaveBeenCalledTimes(5);
-      component.onClickSubmit({}); // needs something in the answer box
-      component.onClickBackspace({});
+      expect(registerInputService.storeEntry).toHaveBeenCalledTimes(5)
+      component.onClickSubmit({}) // needs something in the answer box
+      component.onClickBackspace({})
 
       // We expect the input service to have been called 1 more time for the submit event, but not for the additional click
-      expect(registerInputService.storeEntry).toHaveBeenCalledTimes(6);
-    });
-  });
+      expect(registerInputService.storeEntry).toHaveBeenCalledTimes(6)
+    })
+  })
 
   describe('#onClickSubmit', () => {
     it('calls registerInputService', () => {
-      component.sequenceNumber = 1;
-      component.factor1 = 1;
-      component.factor2 = 2;
-      const event = { timeStamp: 1519211809934 };
-      component.onClickSubmit(event);
-      expect(registerInputServiceSpy).toHaveBeenCalledTimes(1);
-      expect(registerInputServiceSpy).toHaveBeenCalledWith('Enter', 'mouse', 1, '1x2', 1519211809934);
-    });
+      component.sequenceNumber = 1
+      component.factor1 = 1
+      component.factor2 = 2
+      const event = { timeStamp: 1519211809934 }
+      component.onClickSubmit(event)
+      expect(registerInputServiceSpy).toHaveBeenCalledTimes(1)
+      expect(registerInputServiceSpy).toHaveBeenCalledWith('Enter', 'mouse', 1, '1x2', 1519211809934)
+    })
 
     it('calls onSubmit()', () => {
-      spyOn(component, 'onSubmit');
-      const event = {};
-      component.onClickSubmit(event);
-      expect(component.onSubmit).toHaveBeenCalledTimes(1);
-    });
+      spyOn(component, 'onSubmit')
+      const event = {}
+      component.onClickSubmit(event)
+      expect(component.onSubmit).toHaveBeenCalledTimes(1)
+    })
 
     it('does not add to the input register once submitted', () => {
-      const e1 = new PointerEvent('pointerup',  { pointerId: 1,
+      const e1 = new PointerEvent('pointerup', {
+        pointerId: 1,
         bubbles: true,
         cancelable: true,
         pointerType: 'mouse',
         width: 100,
         height: 100,
-        isPrimary: true });
-      component.button9.nativeElement.dispatchEvent(e1);
-      component.button9.nativeElement.dispatchEvent(e1);
-      component.onClickSubmit({});
-      expect(registerInputServiceSpy).toHaveBeenCalledTimes(3);
-      component.onClickSubmit({});
+        isPrimary: true
+      })
+      component.button9.nativeElement.dispatchEvent(e1)
+      component.button9.nativeElement.dispatchEvent(e1)
+      component.onClickSubmit({})
+      expect(registerInputServiceSpy).toHaveBeenCalledTimes(3)
+      component.onClickSubmit({})
       // It should not call the registerInputService again not that submit has been clicked already
-      expect(registerInputServiceSpy).toHaveBeenCalledTimes(3);
-    });
-  });
+      expect(registerInputServiceSpy).toHaveBeenCalledTimes(3)
+    })
+  })
 
   describe('#onSubmit', () => {
     it('stores the answer when submit is pressed', () => {
-      component.answer = '9';
-      auditServiceSpy.calls.reset();
-      component.onSubmit();
-      expect(answerServiceSpy).toHaveBeenCalled();
-    });
+      component.answer = '9'
+      auditServiceSpy.calls.reset()
+      component.onSubmit()
+      expect(answerServiceSpy).toHaveBeenCalled()
+    })
 
     it('stores the answer before it stores the QuestionAnswered Audit', () => {
-      component.answer = '8';
-      auditServiceSpy.calls.reset();
-      component.onSubmit();
-      const answerTimestamp = answerServiceSpy.calls.mostRecent().args[0].clientTimestamp;
-      const auditArgs = auditServiceSpy.calls.allArgs();
-      const questionAnsweredArg = auditArgs.find(o => o[0].type === 'QuestionAnswered');
-      const questionAnsweredTimestamp = questionAnsweredArg[0].clientTimestamp;
+      component.answer = '8'
+      auditServiceSpy.calls.reset()
+      component.onSubmit()
+      const answerTimestamp = answerServiceSpy.calls.mostRecent().args[0].clientTimestamp
+      const auditArgs = auditServiceSpy.calls.allArgs()
+      const questionAnsweredArg = auditArgs.find(o => o[0].type === 'QuestionAnswered')
+      const questionAnsweredTimestamp = questionAnsweredArg[0].clientTimestamp
       if (!questionAnsweredTimestamp || !answerTimestamp) {
-        fail('Missing timestamp');
+        fail('Missing timestamp')
       }
-      expect(answerTimestamp.getTime()).toBeLessThanOrEqual(questionAnsweredTimestamp.getTime());
-    });
-  });
+      expect(answerTimestamp.getTime()).toBeLessThanOrEqual(questionAnsweredTimestamp.getTime())
+    })
+  })
 
   describe('#preSendTimeoutEvent', () => {
     it('stores the answer', () => {
-      component.answer = '7';
-      auditServiceSpy.calls.reset();
-      component.preSendTimeoutEvent();
-      expect(answerServiceSpy).toHaveBeenCalled();
-    });
-  });
-});
+      component.answer = '7'
+      auditServiceSpy.calls.reset()
+      component.preSendTimeoutEvent()
+      expect(answerServiceSpy).toHaveBeenCalled()
+    })
+  })
+})
