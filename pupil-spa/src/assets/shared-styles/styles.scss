@@ -29,12 +29,12 @@ $mainstream-brand: $department-for-education;
 @import "../govuk_frontend_toolkit/stylesheets/design-patterns/buttons";
 
 /* From Govuk Elements SASS */
-$path: "../../assets/govuk_frontend_toolkit/images/";
+$path: "/assets/govuk_frontend_toolkit/images/";
 
 @import '../govuk-elements-sass/elements/helpers';
 @import '../govuk-elements-sass/elements/layout';
 @import '../govuk-elements-sass/elements/elements-typography';
-@import '../govuk-elements-sass/elements/buttons';
+@import '../govuk-elements-sass/elements/buttons'; // contains images from frontend-toolkit
 @import '../govuk-elements-sass/elements/forms';
 @import '../govuk-elements-sass/elements/forms/form-multiple-choice';
 @import '../govuk-elements-sass/elements/forms/form-validation';
@@ -45,15 +45,13 @@ $path: "../../assets/govuk_frontend_toolkit/images/";
 @import '../govuk-elements-sass/elements/icons';
 
 /* From public */
-@import "../govuk_template/stylesheets/fonts.css";
+@import "../../assets/govuk_template/stylesheets/fonts.css";
 @import "../govuk_template/stylesheets/styleguide/colours";
-/*@import "../govuk_template/stylesheets/styleguide/print";*/
 @import "../govuk_template/stylesheets/accessibility";
 @import "../govuk_template/stylesheets/basic";
-/*@import "../govuk_template/stylesheets/core-print";*/
-@import "../govuk_template/stylesheets/footer";
-@import "../govuk_template/stylesheets/header";
-@import "../govuk_template/stylesheets/govuk-template";
+//@import "../../assets/govuk_template/stylesheets/footer";  //govuk_template/stylesheets/images //error
+//@import "../govuk_template/stylesheets/header"; //error
+//@import "../govuk_template/stylesheets/govuk-template"; //error
 
 /* STA-MTC project elements */
 @import './elements/phase-banner';
