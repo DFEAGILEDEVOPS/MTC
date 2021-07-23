@@ -1,6 +1,6 @@
 import { IFeedbackService } from './feedback.service';
 
 export class FeedbackServiceMock implements IFeedbackService {
-  async postFeedback() {}
-  async queueSubmit(payload: Object) {}
+  async postFeedback(): Promise<boolean> { return true }
+  async queueSubmit(payload: Object): Promise<void> { return }
 }

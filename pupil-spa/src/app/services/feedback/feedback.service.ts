@@ -5,7 +5,7 @@ import { TokenService } from '../token/token.service';
 import { AzureQueueService } from '../azure-queue/azure-queue.service';
 
 export interface IFeedbackService {
-  postFeedback(): Promise<boolean|void>;
+  postFeedback(): Promise<boolean>;
   queueSubmit(payload: any): Promise<void>;
 }
 
@@ -25,7 +25,7 @@ export class FeedbackService implements IFeedbackService {
     this.feedbackAPIErrorMaxAttempts = feedbackAPIErrorMaxAttempts;
   }
 
-  async postFeedback() {
+  async postFeedback(): Promise<boolean> {
     const storedFeedback = this.storageService.getFeedback();
     if (!storedFeedback) {
       return false;
@@ -43,6 +43,7 @@ export class FeedbackService implements IFeedbackService {
       checkCode
     };
     await this.queueSubmit(payload);
+    return true;
   }
 
   /**
