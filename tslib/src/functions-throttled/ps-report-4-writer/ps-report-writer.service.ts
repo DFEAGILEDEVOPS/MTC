@@ -48,8 +48,6 @@ export class PsReportWriterService {
       { name: 'restartNumber', value: data.RestartNumber, type: TYPES.Int },
       { name: 'reasonNotTakingCheck', value: data.ReasonNotTakingCheck, type: TYPES.Char(1) },
       { name: 'pupilStatus', value: data.PupilStatus, type: TYPES.NVarChar(32) },
-      { name: 'deviceType', value: data.DeviceType, type: TYPES.NVarChar(32) },
-      { name: 'deviceTypeModel', value: data.DeviceTypeModel, type: TYPES.NVarChar(32) },
       { name: 'deviceId', value: data.DeviceID, type: TYPES.NVarChar(128) },
       { name: 'browserType', value: data.BrowserType, type: TYPES.NVarChar(128) },
       { name: 'schoolName', value: data.SchoolName, type: TYPES.NVarChar(MAX) },
@@ -102,8 +100,7 @@ export class PsReportWriterService {
            SET 
               PupilId = @pupilId, DOB = @dob, Gender = @gender, Forename = @forename, Surname = @surname, FormMark = @formMark, QDisplayTime = @qDisplayTime,
               PauseLength = @pauseLength, AccessArr = @accessArr, RestartReason = @restartReason, RestartNumber = @restartNumber, 
-              ReasonNotTakingCheck = @ReasonNotTakingCheck, PupilStatus = @pupilStatus, DeviceType = @deviceType, 
-              DeviceTypeModel = @deviceTypeModel, DeviceId = @deviceId, BrowserType = @browserType, SchoolName = @schoolName, Estab = @estab,
+              ReasonNotTakingCheck = @ReasonNotTakingCheck, PupilStatus = @pupilStatus, DeviceId = @deviceId, BrowserType = @browserType, SchoolName = @schoolName, Estab = @estab,
               SchoolURN = @schoolURN, LANum = @laNum, AttemptId = @attemptId, FormID = @formId, TestDate = @testDate, TimeStart = @timeStart,
               TimeComplete = @timeComplete, TimeTaken = @timeTaken,
              
@@ -115,7 +112,7 @@ export class PsReportWriterService {
         BEGIN
           INSERT into [mtc_results].[psychometricReport] (id, DOB, Gender, PupilId, Forename, Surname, FormMark, QDisplayTime, PauseLength,
                                                         AccessArr, RestartReason, RestartNumber, ReasonNotTakingCheck, PupilStatus,
-                                                        DeviceType, DeviceTypeModel, DeviceId, BrowserType, SchoolName, Estab, SchoolURN,
+                                                        DeviceId, BrowserType, SchoolName, Estab, SchoolURN,
                                                         LANum, AttemptId, FormID, TestDate, TimeStart, TimeComplete, TimeTaken,
                                                         Q1ID, Q1Response, Q1InputMethods, Q1K, Q1Sco, Q1ResponseTime, Q1TimeOut,
                                                         Q1TimeOutResponse, Q1TimeOutSco, Q1tLoad, Q1tFirstKey, Q1tLastKey, Q1OverallTime,
@@ -198,8 +195,6 @@ export class PsReportWriterService {
                 @restartNumber,
                 @reasonNotTakingCheck,
                 @pupilStatus,
-                @deviceType,
-                @deviceTypeModel,
                 @deviceId,
                 @browserType,
                 @schoolName,

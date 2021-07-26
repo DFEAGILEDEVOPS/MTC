@@ -347,19 +347,9 @@ describe('report line class', () => {
         )
       })
 
-      test('DeviceType is mapped correctly', () => {
-        const out = sut.transform()
-        expect(out.DeviceType).toBe('Tablet')
-      })
-
       test('BrowserType is mapped correctly', () => {
         const out = sut.transform()
         expect(out.BrowserType).toBe('CHROME 9.10.11')
-      })
-
-      test('DeviceTypeModel is mapped correctly', () => {
-        const out = sut.transform()
-        expect(out.DeviceTypeModel).toBe('iPad')
       })
 
       test('DeviceID is mapped correctly', () => {
@@ -629,19 +619,9 @@ describe('report line class', () => {
         )
       })
 
-      test('DeviceType is mapped correctly', () => {
-        const out = sut.transform()
-        expect(out.DeviceType).toBeNull()
-      })
-
       test('BrowserType is mapped correctly', () => {
         const out = sut.transform()
         expect(out.BrowserType).toBeNull()
-      })
-
-      test('DeviceTypeModel is mapped correctly', () => {
-        const out = sut.transform()
-        expect(out.DeviceTypeModel).toBeNull()
       })
 
       test('DeviceID is mapped correctly', () => {
@@ -836,19 +816,9 @@ describe('report line class', () => {
         )
       })
 
-      test('DeviceType is mapped correctly', () => {
-        const out = sut.transform()
-        expect(out.DeviceType).toBeNull()
-      })
-
       test('BrowserType is mapped correctly', () => {
         const out = sut.transform()
         expect(out.BrowserType).toBeNull()
-      })
-
-      test('DeviceTypeModel is mapped correctly', () => {
-        const out = sut.transform()
-        expect(out.DeviceTypeModel).toBeNull()
       })
 
       test('DeviceID is mapped correctly', () => {
