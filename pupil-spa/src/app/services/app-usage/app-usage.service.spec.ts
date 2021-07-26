@@ -28,17 +28,19 @@ describe('AppUsageService', () => {
   })
 
   it('should increment the app usage counter by 1', () => {
+    const current = appUsageService.getCounterValue()
     appUsageService.increment()
     const counter = appUsageService.getCounterValue()
-    expect(counter).toBe(1)
+    expect(counter).toBe(current + 1)
   })
 
   it('should store the app usage counter', () => {
     spyOn(storageService, 'getDeviceData')
     spyOn(storageService, 'setDeviceData')
+    const current = appUsageService.getCounterValue()
     appUsageService.increment()
     appUsageService.store()
     expect(storageService.setDeviceData).toHaveBeenCalledTimes(1)
-    expect(storageService.setDeviceData).toHaveBeenCalledWith({ appUsageCounter: 2 })
+    expect(storageService.setDeviceData).toHaveBeenCalledWith({ appUsageCounter: current + 1 })
   })
 })
