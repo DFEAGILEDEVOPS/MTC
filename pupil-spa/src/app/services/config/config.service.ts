@@ -1,4 +1,3 @@
-import { first } from 'rxjs/operators'
 import { Injectable } from '@angular/core'
 import { HttpClient } from '@angular/common/http'
 import { default as connectivityErrorMessages } from '../connectivity-service/connectivity-error-messages'
@@ -15,14 +14,22 @@ export interface IAppConfig {
   checkSubmissionAPIErrorMaxAttempts: number;
   checkSubmissionApiErrorDelay: number;
   connectivityCheckEnabled: boolean;
+  connectivityCheckViewMinDisplay: number
   feedbackAPIErrorDelay: number;
   feedbackAPIErrorMaxAttempts: number;
+  loginPendingViewMinDisplay: number
   production: boolean;
   pupilPrefsAPIErrorDelay: number;
   pupilPrefsAPIErrorMaxAttempts: number;
   submissionPendingViewMinDisplay: number;
   submitsToCheckReceiver: boolean;
   supportNumber: string;
+   testPupilConnectionDelay: number
+   testPupilConnectionMaxAttempts: number
+   testPupilConnectionQueueName: string
+   testPupilConnectionQueueToken: string
+   testPupilConnectionQueueUrl: string
+   websiteOffline: boolean
 }
 
 export class AppConfig implements IAppConfig {
@@ -52,10 +59,37 @@ export class AppConfig implements IAppConfig {
   readonly websiteOffline: boolean
 }
 
+class MockAppConfig implements IAppConfig {
+  applicationInsightsInstrumentationKey = 'applicationInsightsInstrumentationKey'
+  authPingURL = 'authPingUrl'
+  authURL = 'authUrl'
+  checkStartAPIErrorDelay: 99
+  checkStartAPIErrorMaxAttempts = 3
+  checkSubmissionAPIErrorMaxAttempts = 3
+  checkSubmissionApiErrorDelay = 10
+  connectivityCheckEnabled = false
+  connectivityCheckViewMinDisplay = 20
+  feedbackAPIErrorDelay = 10
+  feedbackAPIErrorMaxAttempts = 11
+  loginPendingViewMinDisplay = 12
+  production = false
+  pupilPrefsAPIErrorDelay = 13
+  pupilPrefsAPIErrorMaxAttempts = 3
+  submissionPendingViewMinDisplay = 14
+  submitsToCheckReceiver = false
+  supportNumber = '000'
+  testPupilConnectionDelay = 15
+  testPupilConnectionMaxAttempts = 3
+  testPupilConnectionQueueName = 'testPupilConnectionQueueName'
+  testPupilConnectionQueueToken = 'testPupilConnectionQueueToken'
+  testPupilConnectionQueueUrl = 'testPupilConnectionQueueUrl'
+  websiteOffline = false
+}
+
 /**
  * Global variable containing actual config to use.
  */
-export let APP_CONFIG: AppConfig
+export let APP_CONFIG: IAppConfig
 
 /**
  * Exported function -- to work with AOT
@@ -74,7 +108,7 @@ export function loadConfigService (configService: AppConfigService): Function {
  */
 export function loadConfigMockService (): Function {
   return () => {
-    APP_CONFIG = new AppConfig()
+    APP_CONFIG = new MockAppConfig()
     return Promise.resolve(true)
   }
 }

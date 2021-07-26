@@ -9,6 +9,7 @@ export class ConnectivityCheckGuard implements CanActivate {
   constructor(private router: Router) {}
 
   canActivate() {
+    console.log('connectivityCheckGuard', APP_CONFIG)
     if (!APP_CONFIG.connectivityCheckEnabled) {
       this.router.navigate(['/sign-in']);
       return;

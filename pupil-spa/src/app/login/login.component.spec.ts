@@ -2,24 +2,24 @@ import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angul
 import { Router } from '@angular/router'
 import { FormsModule } from '@angular/forms'
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing'
-import { HttpClient, HttpErrorResponse } from '@angular/common/http'
+import { HttpClient } from '@angular/common/http'
 
-import { UserService } from '../services/user/user.service'
-import { LoginComponent } from './login.component'
+import { APP_INITIALIZER, NO_ERRORS_SCHEMA } from '@angular/core'
+import { CheckStatusService } from '../services/check-status/check-status.service'
+import { CheckStatusServiceMock } from '../services/check-status/check-status.service.mock'
+import { DeviceService } from '../services/device/device.service'
 import { Login } from './login.model'
-import { StorageService } from '../services/storage/storage.service'
+import { LoginComponent } from './login.component'
+import { LoginErrorDiagnosticsService } from '../services/login-error-diagnostics/login-error-diagnostics.service'
+import { LoginErrorService } from '../services/login-error/login-error.service'
+import { PupilPrefsService } from '../services/pupil-prefs/pupil-prefs.service'
 import { QuestionService } from '../services/question/question.service'
 import { QuestionServiceMock } from '../services/question/question.service.mock'
+import { StorageService } from '../services/storage/storage.service'
+import { UserService } from '../services/user/user.service'
 import { WarmupQuestionService } from '../services/question/warmup-question.service'
-import { CheckStatusServiceMock } from '../services/check-status/check-status.service.mock'
-import { CheckStatusService } from '../services/check-status/check-status.service'
-import { APP_INITIALIZER, NO_ERRORS_SCHEMA } from '@angular/core'
-import { PupilPrefsService } from '../services/pupil-prefs/pupil-prefs.service'
-import { LoginErrorService } from '../services/login-error/login-error.service'
-import { LoginErrorDiagnosticsService } from '../services/login-error-diagnostics/login-error-diagnostics.service'
 import { WindowRefService } from '../services/window-ref/window-ref.service'
 import { loadConfigMockService } from '../services/config/config.service'
-import { DeviceService } from '../services/device/device.service'
 
 describe('LoginComponent', () => {
   let component: LoginComponent
@@ -59,19 +59,19 @@ describe('LoginComponent', () => {
       imports: [FormsModule, HttpClientTestingModule],
       schemas: [NO_ERRORS_SCHEMA], // we don't need to test sub-components
       providers: [
-        { provide: APP_INITIALIZER, useFactory: loadConfigMockService, multi: true },
-        { provide: Login, useValue: mockLoginModel },
-        { provide: UserService, useValue: mockUserService },
-        { provide: Router, useValue: mockRouter },
-        { provide: QuestionService, useClass: QuestionServiceMock },
-        { provide: WarmupQuestionService, useClass: QuestionServiceMock },
-        { provide: CheckStatusService, useClass: CheckStatusServiceMock },
-        { provide: PupilPrefsService, useValue: mockPupilPrefsService },
         DeviceService,
-        LoginErrorService,
         LoginErrorDiagnosticsService,
+        LoginErrorService,
         StorageService,
-        WindowRefService
+        WindowRefService,
+        { provide: APP_INITIALIZER, useFactory: loadConfigMockService, multi: true },
+        { provide: CheckStatusService, useClass: CheckStatusServiceMock },
+        { provide: Login, useValue: mockLoginModel },
+        { provide: PupilPrefsService, useValue: mockPupilPrefsService },
+        { provide: QuestionService, useClass: QuestionServiceMock },
+        { provide: Router, useValue: mockRouter },
+        { provide: UserService, useValue: mockUserService },
+        { provide: WarmupQuestionService, useClass: QuestionServiceMock }
       ]
     })
     mockQuestionService = injector.inject(QuestionService)
