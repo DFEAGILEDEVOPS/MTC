@@ -60,10 +60,10 @@ export class AppConfig implements IAppConfig {
 }
 
 class MockAppConfig implements IAppConfig {
-  applicationInsightsInstrumentationKey = 'applicationInsightsInstrumentationKey'
+  applicationInsightsInstrumentationKey = undefined
   authPingURL = 'authPingUrl'
   authURL = 'authUrl'
-  checkStartAPIErrorDelay: 99
+  checkStartAPIErrorDelay: 9
   checkStartAPIErrorMaxAttempts = 3
   checkSubmissionAPIErrorMaxAttempts = 3
   checkSubmissionApiErrorDelay = 10
@@ -71,7 +71,7 @@ class MockAppConfig implements IAppConfig {
   connectivityCheckViewMinDisplay = 20
   feedbackAPIErrorDelay = 10
   feedbackAPIErrorMaxAttempts = 11
-  loginPendingViewMinDisplay = 12
+  loginPendingViewMinDisplay = 2
   production = false
   pupilPrefsAPIErrorDelay = 13
   pupilPrefsAPIErrorMaxAttempts = 3

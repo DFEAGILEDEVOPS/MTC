@@ -130,13 +130,13 @@ describe('LoginComponent', () => {
 
     it('should set the loginPending to false', fakeAsync(() => {
       component.onSubmit('goodPin', 'goodPin')
-      tick()
+      tick(2)
       expect(component.loginPending).toBeFalsy()
     }))
 
     it('should initialise the QuestionService and WarmupQuestionService on login', fakeAsync(() => {
       component.onSubmit('goodPin', 'goodPin')
-      tick()
+      tick(2)
       expect(mockRouter.navigate).toHaveBeenCalled()
       expect(mockQuestionService.initialise).toHaveBeenCalledTimes(1)
       expect(mockWarmupQuestionService.initialise).toHaveBeenCalledTimes(1)
@@ -146,7 +146,7 @@ describe('LoginComponent', () => {
     it('should prevent a second submit', fakeAsync(() => {
       component.onSubmit('goodPin', 'goodPin')
       component.onSubmit('goodPin', 'goodPin')
-      tick()
+      tick(2)
       expect(mockRouter.navigate).toHaveBeenCalled()
       expect(mockUserService.login).toHaveBeenCalledTimes(1)
       expect(mockPupilPrefsService.loadPupilPrefs).toHaveBeenCalled()
@@ -155,7 +155,7 @@ describe('LoginComponent', () => {
     it('should redirect to success page given a valid schoolPin and pupilPin', fakeAsync(() => {
       spyOn(mockQuestionService, 'getConfig').and.returnValue({})
       component.onSubmit('goodPin', 'goodPin')
-      tick()
+      tick(2)
       expect(mockRouter.navigate).toHaveBeenCalledWith(['sign-in-success'])
       expect(mockPupilPrefsService.loadPupilPrefs).toHaveBeenCalled()
     }))
@@ -164,7 +164,7 @@ describe('LoginComponent', () => {
       spyOn(mockQuestionService, 'getConfig').and.returnValue({ practice: false })
       spyOn(component['deviceService'], 'setupDeviceCookie')
       component.onSubmit('goodPin', 'goodPin')
-      tick()
+      tick(2)
       expect(component['deviceService'].setupDeviceCookie).toHaveBeenCalledTimes(1)
     }))
 
@@ -172,14 +172,14 @@ describe('LoginComponent', () => {
       spyOn(mockQuestionService, 'getConfig').and.returnValue({ practice: true })
       spyOn(component['deviceService'], 'setupDeviceCookie')
       component.onSubmit('goodPin', 'goodPin')
-      tick()
+      tick(2)
       expect(component['deviceService'].setupDeviceCookie).not.toHaveBeenCalled()
     }))
 
     it('should redirect to the font selection page when fontSize is enabled', fakeAsync(() => {
       spyOn(mockQuestionService, 'getConfig').and.returnValue({ fontSize: true })
       component.onSubmit('goodPin', 'goodPin')
-      tick()
+      tick(2)
       expect(mockQuestionService.getConfig).toHaveBeenCalled()
       expect(mockRouter.navigate).toHaveBeenCalledWith(['font-choice'])
       expect(mockPupilPrefsService.loadPupilPrefs).toHaveBeenCalled()
@@ -188,7 +188,7 @@ describe('LoginComponent', () => {
     it('should redirect to the colour contrast page when colourContrast is enabled', fakeAsync(() => {
       spyOn(mockQuestionService, 'getConfig').and.returnValue({ colourContrast: true })
       component.onSubmit('goodPin', 'goodPin')
-      tick()
+      tick(2)
       expect(mockQuestionService.getConfig).toHaveBeenCalled()
       expect(mockRouter.navigate).toHaveBeenCalledWith(['colour-choice'])
       expect(mockPupilPrefsService.loadPupilPrefs).toHaveBeenCalled()
@@ -202,14 +202,14 @@ describe('LoginComponent', () => {
 
     it('changes the loginPending to be false', fakeAsync(() => {
       component.onSubmit('badPin', 'badPin')
-      tick()
+      tick(2)
       expect(mockUserService.login).toHaveBeenCalled()
       expect(component.loginPending).toBeFalsy()
     }))
 
     it('redirects to login page when the school and pupil pin credentials are rejected', fakeAsync(() => {
       component.onSubmit('badPin', 'badPin')
-      tick()
+      tick(2)
       expect(loginErrorService.changeMessage).toHaveBeenCalledWith('login failed')
       expect(mockRouter.navigate).toHaveBeenCalledWith(['sign-in'])
       expect(mockPupilPrefsService.loadPupilPrefs).not.toHaveBeenCalled()
@@ -224,7 +224,7 @@ describe('LoginComponent', () => {
     it('redirects to an error page when the connection fails', fakeAsync(() => {
       spyOn(loginErrorDiagnosticsService, 'process')
       component.onSubmit('goodPin', 'goodPin')
-      tick()
+      tick(2)
       expect(loginErrorService.changeMessage).toHaveBeenCalledWith('no connection')
       expect(mockRouter.navigate).toHaveBeenCalledWith(['sign-in-fail'])
       expect(mockPupilPrefsService.loadPupilPrefs).not.toHaveBeenCalled()
