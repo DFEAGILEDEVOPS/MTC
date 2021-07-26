@@ -8,7 +8,7 @@ name: Azure-Key-Rotation-$(date:yyyyMMdd)$(rev:.r)
 trigger: none
 
 pool:
-  name: MTC LIVE
+  name: $(BuildAgentPool)
 # schedules:
 # - cron: "0 3 * * *"
 #   displayName: "3am daily"
