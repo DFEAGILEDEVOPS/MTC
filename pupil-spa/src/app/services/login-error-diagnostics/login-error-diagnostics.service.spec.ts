@@ -33,9 +33,11 @@ describe('LoginErrorDiagnosticsService', () => {
     loginErrorService = injector.inject(LoginErrorService)
     windowRefService = injector.inject(WindowRefService)
   })
+
   it('should be created', inject([LoginErrorDiagnosticsService], (service: LoginErrorDiagnosticsService) => {
     expect(service).toBeTruthy()
   }))
+
   describe('process', () => {
     it('should return if error status code is not 0', async () => {
       spyOn(loginErrorDiagnosticsService, 'canAccessURL')
@@ -43,6 +45,7 @@ describe('LoginErrorDiagnosticsService', () => {
       await loginErrorDiagnosticsService.process(err)
       expect(loginErrorDiagnosticsService.canAccessURL).not.toHaveBeenCalled()
     })
+
     it('should call changeMessage when api url refused connection and browser status is online',
       inject([LoginErrorDiagnosticsService], async (service: LoginErrorDiagnosticsService) => {
         spyOn(loginErrorDiagnosticsService, 'canAccessURL').and.returnValue(false)
@@ -50,7 +53,8 @@ describe('LoginErrorDiagnosticsService', () => {
         const err = { status: 0 }
         service.isBrowserStatusOnline = true
         await loginErrorDiagnosticsService.process(err)
-        expect(loginErrorService.changeMessage).toHaveBeenCalledWith('Connection refused to undefined')
-      }))
+        expect(loginErrorService.changeMessage).toHaveBeenCalledWith('Connection refused to authPingUrl')
+      })
+    )
   })
 })
