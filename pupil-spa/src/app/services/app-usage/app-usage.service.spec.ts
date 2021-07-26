@@ -6,19 +6,16 @@ let appUsageService: AppUsageService
 let storageService: StorageService
 
 describe('AppUsageService', () => {
-
-  beforeEach(async () => {
-
-
-    const injector = TestBed.configureTestingModule({
+  beforeEach(() => {
+    TestBed.configureTestingModule({
         providers: [
           AppUsageService,
           StorageService,
         ]
       }
     )
-    appUsageService = injector.inject(AppUsageService)
-    storageService = injector.inject(StorageService)
+    appUsageService = TestBed.inject(AppUsageService)
+    storageService = TestBed.inject(StorageService)
   })
 
   it('should be created', () => {
