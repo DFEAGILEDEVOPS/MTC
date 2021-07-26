@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import { APP_INITIALIZER, Component } from '@angular/core'
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 
 import { WebsiteOfflineComponent } from './website-offline.component';
 import { RouterTestingModule } from '@angular/router/testing';
+import { loadConfigMockService } from '../services/config/config.service'
 
 @Component({
   selector: 'app-header',
@@ -19,7 +20,7 @@ export class MockAppHeaderComponent {
 export class MockAppFooterComponent {
 }
 
-describe('WebsiteOfflineComponent', () => {
+fdescribe('WebsiteOfflineComponent', () => {
   let component: WebsiteOfflineComponent;
   let fixture: ComponentFixture<WebsiteOfflineComponent>;
 
@@ -28,6 +29,7 @@ describe('WebsiteOfflineComponent', () => {
       imports: [ RouterTestingModule.withRoutes([]) ],
       declarations: [ WebsiteOfflineComponent, MockAppHeaderComponent, MockAppFooterComponent ],
       providers: [
+        { provide: APP_INITIALIZER, useFactory: loadConfigMockService, multi: true },
         { provide: ActivatedRoute, useValue: { snapshot: { queryParams: { } }, fragment: { subscribe: () => {} } } }
       ]
     })
@@ -44,4 +46,3 @@ describe('WebsiteOfflineComponent', () => {
     expect(component).toBeTruthy();
   });
 });
-
