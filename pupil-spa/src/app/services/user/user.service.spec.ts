@@ -11,6 +11,8 @@ import {
   TokensStorageKey
 } from '../storage/storageKey'
 import { HttpService } from '../http/http.service'
+import { APP_INITIALIZER } from '@angular/core'
+import { loadConfigMockService } from '../config/config.service'
 
 let userService: UserService
 let storageService: StorageService
@@ -18,47 +20,58 @@ const questionsDataKey = new QuestionsStorageKey()
 const pupilDataKey = new PupilStorageKey()
 const configDataKey = new ConfigStorageKey()
 const schoolDataKey = new SchoolStorageKey()
-const tokensDataKey = new TokensStorageKey()
 
 describe('UserService', () => {
   let httpServiceSpy: { post: jasmine.Spy }
+  let storageServiceSpy: {
+    clear: jasmine.Spy,
+    setConfig: jasmine.Spy,
+    setPupil: jasmine.Spy,
+    setQuestions: jasmine.Spy,
+    setSchool: jasmine.Spy,
+    setToken: jasmine.Spy
+  }
 
   beforeEach(() => {
     httpServiceSpy = jasmine.createSpyObj('HttpService', ['post'])
-    const inject = TestBed.configureTestingModule({
+    storageServiceSpy = jasmine.createSpyObj('StorageService',
+      ['clear', 'setQuestions', 'setConfig', 'setPupil', 'setSchool', 'setToken', 'getAccessArrangements']
+    )
+    TestBed.configureTestingModule({
       imports: [],
       providers: [
+        { provide: APP_INITIALIZER, useFactory: loadConfigMockService, multi: true },
         UserService,
-        StorageService,
+        { provide: StorageService, useValue: storageServiceSpy },
         { provide: HttpService, useValue: httpServiceSpy }
       ]
     })
 
-    userService = inject.inject(UserService)
-    storageService = inject.inject(StorageService)
+    userService = TestBed.inject(UserService)
+    storageService = TestBed.inject(StorageService)
   })
 
   describe('login', () => {
     it('should persist response body to storage', () => {
+      // setup
       httpServiceSpy.post.and.returnValue(Promise.resolve(mockLoginResponseBody))
-      const setQuestionsSpy = spyOn(storageService, 'setQuestions')
-      const setConfigSpy = spyOn(storageService, 'setConfig')
-      const setPupilSpy = spyOn(storageService, 'setPupil')
-      const setSchoolSpy = spyOn(storageService, 'setSchool')
+
+      // execute
       userService.login('abc12345', '9999a').then(() => {
 
+          // tests
           try {
-            const questionSpyArgs = setQuestionsSpy.calls.allArgs()
-            const configSpyCalls = setConfigSpy.calls.allArgs()
-            const pupilSpyArgs = setPupilSpy.calls.allArgs()
-            const schoolSpyArgs = setSchoolSpy.calls.allArgs()
-            expect(questionSpyArgs[0][0].toString())
+            const questionSpyArgs = storageServiceSpy.setQuestions.calls.argsFor(0)
+            const configSpyCalls = storageServiceSpy.setConfig.calls.argsFor(0)
+            const pupilSpyArgs = storageServiceSpy.setPupil.calls.argsFor(0)
+            const schoolSpyArgs = storageServiceSpy.setSchool.calls.argsFor(0)
+            expect(questionSpyArgs[0].toString())
               .toEqual(`${mockLoginResponseBody[questionsDataKey.toString()]}`)
-            expect(configSpyCalls[0][0].toString())
+            expect(configSpyCalls[0].toString())
               .toEqual(`${mockLoginResponseBody[configDataKey.toString()]}`)
-            expect(pupilSpyArgs[0][0].toString())
+            expect(pupilSpyArgs[0].toString())
               .toEqual(`${mockLoginResponseBody[pupilDataKey.toString()]}`)
-            expect(schoolSpyArgs[0][0].toString())
+            expect(schoolSpyArgs[0].toString())
               .toEqual(`${mockLoginResponseBody[schoolDataKey.toString()]}`)
           } catch (error) {
             fail(error)
@@ -72,7 +85,6 @@ describe('UserService', () => {
     })
 
     it('should return a promise that rejects on invalid login', () => {
-      spyOn(storageService, 'setQuestions')
       httpServiceSpy.post.and.returnValue(Promise.reject(new HttpErrorResponse({
         error: { error: 'Unathorised' },
         status: 401,
@@ -97,7 +109,6 @@ describe('UserService', () => {
 
   describe('logout', () => {
     it('should clear storage on logout', () => {
-      spyOn(storageService, 'clear')
       userService.logout()
       expect(storageService.clear).toHaveBeenCalled()
     })
