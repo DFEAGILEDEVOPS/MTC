@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { APP_INITIALIZER, NO_ERRORS_SCHEMA } from '@angular/core'
 
 import { QuestionsIntroComponent } from './questions-intro.component';
 import { AuditServiceMock } from '../services/audit/audit.service.mock';
@@ -17,6 +17,7 @@ import { QUEUE_STORAGE_TOKEN } from '../services/azure-queue/azureStorage';
 import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { AppUsageService } from '../services/app-usage/app-usage.service';
+import { loadConfigMockService } from '../services/config/config.service'
 
 describe('QuestionsIntroComponent', () => {
   let component: QuestionsIntroComponent;
@@ -38,6 +39,7 @@ describe('QuestionsIntroComponent', () => {
         { provide: SpeechService, useClass: SpeechServiceMock },
         { provide: QuestionService, useClass: QuestionServiceMock },
         { provide: QUEUE_STORAGE_TOKEN, useValue: undefined },
+        { provide: APP_INITIALIZER, useFactory: loadConfigMockService, multi: true },
         AzureQueueService,
         TokenService,
         StorageService,

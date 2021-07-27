@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
+import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing'
 import { NO_ERRORS_SCHEMA } from '@angular/core'
 import { Router } from '@angular/router'
 import { StorageService } from '../services/storage/storage.service'
@@ -66,21 +66,21 @@ describe('AAFontsComponent', () => {
     expect(component).toBeTruthy()
   })
 
-  it('should redirect to colour contrast when enabled', () => {
+  it('should redirect to colour contrast when enabled', fakeAsync(() => {
     spyOn(mockQuestionService, 'getConfig').and.returnValue({ colourContrast: true })
     component.onClick()
-    fixture.whenStable().then(() => {
-      expect(mockRouter.navigate).toHaveBeenCalledWith(['colour-choice'])
-    })
-  })
+    fixture.detectChanges()
+    tick()
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['colour-choice'])
+  }))
 
-  it('should redirect to the welcome page when colour contrast not enabled', () => {
+  it('should redirect to the welcome page when colour contrast not enabled', fakeAsync(() => {
     spyOn(mockQuestionService, 'getConfig').and.returnValue({ colourContrast: false })
     component.onClick()
-    fixture.whenStable().then(() => {
-      expect(mockRouter.navigate).toHaveBeenCalledWith(['sign-in-success'])
-    })
-  })
+    fixture.detectChanges()
+    tick()
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['sign-in-success'])
+  }))
 
   it('should store pupil prefs when navigating away', async () => {
     component.onClick()

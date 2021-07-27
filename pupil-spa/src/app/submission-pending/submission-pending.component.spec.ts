@@ -16,8 +16,9 @@ import { CheckStatusServiceMock } from '../services/check-status/check-status.se
 import { AzureQueueService } from '../services/azure-queue/azure-queue.service'
 import { TokenService } from '../services/token/token.service'
 import { QUEUE_STORAGE_TOKEN } from '../services/azure-queue/azureStorage'
-import { NO_ERRORS_SCHEMA } from '@angular/core'
+import { APP_INITIALIZER, NO_ERRORS_SCHEMA } from '@angular/core'
 import { AppUsageService } from '../services/app-usage/app-usage.service'
+import { loadConfigMockService } from '../services/config/config.service'
 
 describe('SubmissionPendingComponent', () => {
   let fixture: ComponentFixture<SubmissionPendingComponent>
@@ -44,6 +45,7 @@ describe('SubmissionPendingComponent', () => {
         { provide: QuestionService, useClass: QuestionServiceMock },
         { provide: ActivatedRoute, useValue: { snapshot: { queryParams: {} } } },
         { provide: QUEUE_STORAGE_TOKEN, useValue: undefined },
+        { provide: APP_INITIALIZER, useFactory: loadConfigMockService, multi: true },
         StorageService
       ]
     })

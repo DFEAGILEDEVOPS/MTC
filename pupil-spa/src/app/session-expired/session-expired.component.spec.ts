@@ -8,7 +8,8 @@ import { QuestionService } from '../services/question/question.service';
 import { QuestionServiceMock } from '../services/question/question.service.mock';
 import { SpeechService } from '../services/speech/speech.service';
 import { SpeechServiceMock } from '../services/speech/speech.service.mock';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { APP_INITIALIZER, NO_ERRORS_SCHEMA } from '@angular/core'
+import { loadConfigMockService } from '../services/config/config.service'
 
 
 
@@ -25,6 +26,7 @@ describe('SessionExpiredComponent', () => {
         { provide: AuditService, useClass: AuditServiceMock },
         { provide: SpeechService, useClass: SpeechServiceMock },
         { provide: QuestionService, useClass: QuestionServiceMock },
+        { provide: APP_INITIALIZER, useFactory: loadConfigMockService, multi: true },
         WindowRefService
       ]
     })

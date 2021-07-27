@@ -1,7 +1,8 @@
 import { TestBed, waitForAsync } from '@angular/core/testing'
-import { APP_CONFIG, IAppConfig } from '../config/config.service'
+import { APP_CONFIG, IAppConfig, loadConfigMockService } from '../config/config.service'
 import { IQueueService, QUEUE_STORAGE_TOKEN } from './azureStorage'
 import { AzureQueueService } from './azure-queue.service'
+import { APP_INITIALIZER } from '@angular/core'
 
 describe('AzureQueueService', () => {
 
@@ -13,6 +14,7 @@ describe('AzureQueueService', () => {
       providers: [
         AzureQueueService,
         { provide: QUEUE_STORAGE_TOKEN, useValue: undefined },
+        { provide: APP_INITIALIZER, useFactory: loadConfigMockService, multi: true },
       ]
     })
       .compileComponents()
