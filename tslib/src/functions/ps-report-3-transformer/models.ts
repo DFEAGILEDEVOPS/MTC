@@ -32,9 +32,7 @@ export interface IReportLineBase {
   FormMark: number | null
 
   // Device
-  DeviceType: string | null
   BrowserType: string | null
-  DeviceTypeModel: string | null
   DeviceID: string | null
 }
 
