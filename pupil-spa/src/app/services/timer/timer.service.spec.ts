@@ -6,7 +6,6 @@ import { QuestionService } from '../question/question.service'
 import { StorageService } from '../storage/storage.service'
 
 describe('TimerService', () => {
-
   let service: TimerService
   let mockStorageService
   const mockQuestionService = {
@@ -14,7 +13,6 @@ describe('TimerService', () => {
   }
 
   beforeEach(() => {
-
     const injector = TestBed.configureTestingModule({
       providers: [
         TimerService,
