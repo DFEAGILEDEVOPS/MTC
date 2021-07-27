@@ -27,6 +27,7 @@ const oneHundredAndTwentyDays = 'P120D'
 const fiveMinutes = 'PT5M'
 const oneDay = 'P1D'
 const sixDays = 'P6D'
+const twentyThreeHours = 'PT23H'
 
 const config = {
   QueueDefaults: {
@@ -41,7 +42,9 @@ const config = {
   },
   Queues: [
     {
-      name: 'check-completion'
+      name: 'check-completion',
+      defaultMessageTimeToLive: twentyThreeHours,
+      maxSizeInMegabytes: {}.hasOwnProperty.call(process.env, 'SERVICE_BUS_QUEUE_MAX_SIZE_MEGABYTES_CHECK_COMPLETION') ? parseInt(process.env.SERVICE_BUS_QUEUE_MAX_SIZE_MEGABYTES_CHECK_COMPLETION, 10) : fiveGigabytes
     },
     {
       name: 'check-marking'
