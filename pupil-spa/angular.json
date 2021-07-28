@@ -19,24 +19,18 @@
             "polyfills": "src/polyfills.ts",
             "stylePreprocessorOptions": {
               "includePaths": [
-                "src/assets/govuk-elements-sass",
-                "src/assets/govuk_frontend_toolkit/stylesheets",
-                "src/assets/govuk_template/stylesheets",
-                "src/assets/shared-styles"
+                "src/lib"
               ]
             },
             "assets": [
               "src/assets",
-              "src/public",
-              "src/public/images",
               "src/favicon.ico"
             ],
             "styles": [
-              "src/public/styles/styles.css"
+              "src/styles.scss"
             ],
             "scripts": [
-              "src/public/google-analytics/analytics.js",
-              "src/public/azure-storage/azure-storage.queue.min.js"
+              "src/lib/azure-storage/azure-storage.queue.min.js"
             ]
           },
           "configurations": {
@@ -86,13 +80,16 @@
           "options": {
             "main": "src/test.ts",
             "karmaConfig": "./karma.conf.js",
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "src/lib"
+              ]
+            },
             "polyfills": "src/polyfills.ts",
             "tsConfig": "src/tsconfig.spec.json",
-            "scripts": [
-              "src/public/google-analytics/analytics.js"
-            ],
+            "scripts": [],
             "styles": [
-              "src/public/styles/styles.css"
+              "src/styles.scss"
             ],
             "assets": [
               "src/assets",

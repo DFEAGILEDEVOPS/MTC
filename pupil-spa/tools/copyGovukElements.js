@@ -7,7 +7,7 @@ const fse = require(`${__dirname}/../node_modules/fs-extra`)
 const copyElements = () => {
   const fileCleanup = require(`${__dirname}/helpers`)
   let origin = `${__dirname}/../node_modules/govuk-elements-sass/public/sass`
-  let destination = `${__dirname}/../src/assets/govuk-elements-sass`
+  let destination = `${__dirname}/../src/lib/govuk-elements-sass`
 
   /**
    * Copy files over.

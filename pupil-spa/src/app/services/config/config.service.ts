@@ -97,9 +97,7 @@ export let APP_CONFIG: IAppConfig
  * @returns {Function}
  */
 export function loadConfigService (configService: AppConfigService): Function {
-  return () => {
-    return configService.load()
-  }
+  return () => configService.load()
 }
 
 /**
@@ -118,7 +116,7 @@ export function loadConfigMockService (): Function {
  */
 @Injectable()
 export class AppConfigService {
-  private configFileURL = '/public/config.json'
+  private configFileURL = '/assets/config.json'
 
   errorMessages = []
 

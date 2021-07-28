@@ -10,7 +10,7 @@ const copyToolkit = () => {
 
   for (let folder of folders) {
     let origin = `${__dirname}/../node_modules/govuk_frontend_toolkit/${folder}`
-    let destination = `${__dirname}/../src/assets/govuk_frontend_toolkit/${folder}`
+    let destination = `${__dirname}/../src/lib/govuk_frontend_toolkit/${folder}`
     /**
      * Copy files over.
      */
@@ -18,7 +18,7 @@ const copyToolkit = () => {
       if (fse.existsSync(origin)) {
         fse.copySync(origin, destination, {overwrite: true, errorOnExist: true})
         fileCleanup(destination)
-        console.log(`govuk_frontend_toolkit/${folder} has been copied over to assets/govuk_frontend_toolkit/${folder}`)
+        console.log(`govuk_frontend_toolkit/${folder} has been copied over to lib/govuk_frontend_toolkit/${folder}`)
       } else {
         console.log(`Failed to copy govuk_frontend_toolkit/${folder}`)
       }
@@ -33,7 +33,7 @@ const copyToolkit = () => {
  */
 const copyToolkitImages = () => {
   const imgOrigin = `${__dirname}/../node_modules/govuk_frontend_toolkit/images`
-  const imgDest = `${__dirname}/../src/assets/govuk_frontend_toolkit/images`
+  const imgDest = `${__dirname}/../src/lib/govuk_frontend_toolkit/images`
 
   try {
     if (fse.existsSync(imgOrigin)) {
