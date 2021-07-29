@@ -1,7 +1,7 @@
 ### STAGE 1: Build ###
 
 # We label our stage as 'builder'
-FROM node:10-alpine as builder
+FROM node:12-alpine as builder
 
 RUN apk update && \
     apk upgrade && \
@@ -18,35 +18,32 @@ WORKDIR /ng-app
 
 COPY . .
 
-RUN yarn run postinstall
-RUN yarn run sass
 ARG AUTH_URL
-ARG runtime_config_url=/public/config.json
+ARG runtime_config_url=/assets/config.json
 
 ## The config will be loaded at runtime from this path / URL, but
 # this path needs to be set at build time. It can be an external
 # URL too, as long as it's accessible through http
 
-ARG ga_code
 ARG APPINSIGHTS_INSTRUMENTATIONKEY
 ARG azure_acccount_name
 ENV AUTH_URL=$AUTH_URL
-ENV GA_CODE=$ga_code
 ENV APPINSIGHTS_INSTRUMENTATIONKEY=$APPINSIGHTS_INSTRUMENTATIONKEY
 ENV AZURE_ACCOUNT_NAME=$azure_account_name
 ENV RUNTIME_CONFIG_URL=$runtime_config_url
 
-RUN $(npm bin)/gulp setRuntimeConfigURL
+# [jms] commenting this out, as it seems extraneous
+# RUN $(npm bin)/gulp setRuntimeConfigURL
 
 ## Build the angular app in production mode and store the artifacts in dist folder
-RUN $(npm bin)/ng build --prod
+RUN yarn run ng build --prod --aot --build-optimizer
 
 ## Generate the config file and add it to the public folder
-RUN sh gen_config.sh && mv config.json dist/public
+RUN sh gen_config.sh && mv config.json dist/assets/
 
 ### STAGE 2: Setup ###
 
-FROM nginx:1.19-alpine
+FROM nginx:stable-alpine
 
 # defer until SSL integrated, need to get package
 # RUN openssl dhparam -out /etc/nginx/ssl/dhparam.pem 2048
@@ -61,12 +58,6 @@ RUN rm -rf /usr/share/nginx/html/*
 COPY --from=builder /ng-app/dist /usr/share/nginx/html
 COPY --from=builder /ng-app/gen_config.sh /
 COPY --from=builder /ng-app/docker-start.sh /
-
-## Revove the 'assets' folder that got copied
-# Can't yet: `assets` is referenced in 2 places:
-#  * header.component.ts:13
-#  * app.component.ts:9
-#RUN rm -rf /usr/share/nginx/html/assets
 
 # install ssh server
 RUN apk add openssh openrc \
