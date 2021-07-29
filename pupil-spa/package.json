@@ -21,7 +21,8 @@
     "genconfig": "bash gen_config.sh && mv config.json src/assets/config.json"
   },
   "resolutions": {
-    "**/**/lodash": "^4.17.21"
+    "**/**/lodash": ">=4.17.21",
+    "**/**/path-parse": ">=1.0.7"
   },
   "dependencies": {
     "@angular/animations": "^11.2.14",
