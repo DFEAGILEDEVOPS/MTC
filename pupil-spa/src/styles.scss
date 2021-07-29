@@ -1,5 +1,10 @@
 /* Base GDS Toolkit */
+
+// used by govuk-frontend-toolkit: image-url()
 $image-path: "../images/";
+
+// used by shared-styles (MTC): file-url()
+$path: "~/assets/images/";
 
 /* Custom functions */
 @import "../lib/shared-styles/helpers/helpers";
@@ -31,8 +36,6 @@ $mainstream-brand: $department-for-education;
 @import "govuk_frontend_toolkit/stylesheets/design-patterns/buttons";
 
 /* From Govuk Elements SASS */
-$path: "/assets/govuk_frontend_toolkit/images/";
-
 @import 'govuk-elements-sass/elements/helpers';
 @import 'govuk-elements-sass/elements/layout';
 @import 'govuk-elements-sass/elements/elements-typography';

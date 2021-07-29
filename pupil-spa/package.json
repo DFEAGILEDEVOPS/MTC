@@ -7,7 +7,7 @@
     "xsass": "sass -q --no-source-map src/assets/shared-styles/:src/public/styles/",
     "xsasswatch": "yarn sass && node-sass src/assets/shared-styles -wro src/public/styles/",
     "start": "yarn genconfig && yarn run gulp setSecretEnvVars && yarn build --prod && yarn run http-server ./dist -p 4200 --proxy http://localhost:4200?",
-    "start:dev": "yarn genconfig && yarn run gulp setSecretEnvVars && ng serve --host 0.0.0.0 --verbose",
+    "start:dev": "yarn genconfig && yarn run gulp setSecretEnvVars && ng serve --host 0.0.0.0",
     "startwithgovuk": "node tools/copyGovukFrontendToolkit && node tools/copyGovukElements && ng serve",
     "build": "yarn clean && yarn genconfig && ng build",
     "clean": "rm -rf ./dist",

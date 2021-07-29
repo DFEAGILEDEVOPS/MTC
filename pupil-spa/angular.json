@@ -93,8 +93,6 @@
             ],
             "assets": [
               "src/assets",
-              "src/public",
-              "src/public/images",
               "src/favicon.ico"
             ]
           }
