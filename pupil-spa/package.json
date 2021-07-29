@@ -13,11 +13,11 @@
     "clean": "rm -rf ./dist",
     "test": "yarn genconfig && ng test",
     "coverage": "yarn genconfig && ng test --no-watch --browsers ChromeHeadless --code-coverage",
-    "test-single": "yarn sass && yarn genconfig && ng test --watch false --browsers ChromeHeadless",
+    "test-single": "yarn genconfig && ng test --watch false --browsers ChromeHeadless",
     "lint": "ng lint",
     "copygovuktoolkit": "node tools/copyGovukFrontendToolkit",
     "copygovukelements": "node tools/copyGovukElements",
-    "postinstall": "node tools/copyGovukFrontendToolkit && node tools/copyGovukElements",
+    "xpostinstall": "node tools/copyGovukFrontendToolkit && node tools/copyGovukElements",
     "genconfig": "bash gen_config.sh && mv config.json src/assets/config.json"
   },
   "resolutions": {
@@ -57,7 +57,6 @@
     "@types/jasminewd2": "^2.0.3",
     "@types/node": "^12.11.1",
     "codelyzer": "^6.0.0",
-    "concurrently": "^6.2.0",
     "fs-extra": "^8.1.0",
     "govuk-elements-sass": "^3.1.1",
     "gulp": "^4.0.2",
