@@ -4,20 +4,14 @@
   "license": "GPL-3.0",
   "scripts": {
     "ng": "ng",
-    "xsass": "sass -q --no-source-map src/assets/shared-styles/:src/public/styles/",
-    "xsasswatch": "yarn sass && node-sass src/assets/shared-styles -wro src/public/styles/",
     "start": "yarn genconfig && yarn run gulp setSecretEnvVars && yarn build --prod --build-optimizer --aot && yarn run http-server ./dist -p 4200 --proxy http://localhost:4200?",
     "start:dev": "yarn genconfig && yarn run gulp setSecretEnvVars && ng serve --host 0.0.0.0",
-    "startwithgovuk": "node tools/copyGovukFrontendToolkit && node tools/copyGovukElements && ng serve",
     "build": "yarn clean && yarn genconfig && ng build",
     "clean": "rm -rf ./dist",
     "test": "yarn genconfig && ng test",
     "coverage": "yarn genconfig && ng test --no-watch --browsers ChromeHeadless --code-coverage",
     "test-single": "yarn genconfig && ng test --watch false --browsers ChromeHeadless",
     "lint": "ng lint",
-    "copygovuktoolkit": "node tools/copyGovukFrontendToolkit",
-    "copygovukelements": "node tools/copyGovukElements",
-    "xpostinstall": "node tools/copyGovukFrontendToolkit && node tools/copyGovukElements",
     "genconfig": "bash gen_config.sh && mv config.json src/assets/config.json"
   },
   "resolutions": {
