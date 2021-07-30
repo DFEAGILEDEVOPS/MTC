@@ -10,7 +10,7 @@ Run `ng generate component component-name` to generate a new component. You can 
 
 ## Build
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `-prod` flag for a production build.
+Run `yarn build` to build the project. The build artifacts will be stored in the `dist/` directory. 
 
 ## Environment variables
 For local development a `.env` file is required at the project's root directory which provides the following environment
@@ -76,14 +76,10 @@ http://10.0.2.2:<$port>/
 
 The GDS libraries are included in the package.json file: `govuk-elements-sass` which has as its dependency `govuk_frontend_toolkit`
 
-On `postinstall` yarn runs two jobs to vendor in the govuk files as angular cannot use sass files from node_modules directly:
-
-1. `tools/copyGovukFrontendToolkit`- this copies the `stylesheets`, `javascripts` and `images` folders from `node_modules`  to `~/src/assets/govuk_frontend_toolkit` making them available to the angular solution.
-2. `tools/copyGovukElements` - this copies sass files used by the gov-frontend-toolkit to `~/src/assets/govuk-elements-sass`
+Sass include paths are setup in angular.json to allow these scss files to be pulled in directly.
 
 
 
 ## Further help
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
-
