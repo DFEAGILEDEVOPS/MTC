@@ -59,7 +59,7 @@ Invalid Host header
 ```
 
 This is a security precaution in the server.  You can temporarily allow them by starting 
-the server like this: 
+the server like this:
 
 ```shell
 ng serve --disable-host-check

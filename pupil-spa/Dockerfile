@@ -9,7 +9,6 @@ RUN apk update && \
 
 COPY package.json .
 COPY yarn.lock .
-COPY /tools /tools/
 
 ## Storing node modules on a separate layer will prevent unnecessary npm installs at each build
 RUN yarn install --frozen-lockfile --ignore-engines && mkdir /ng-app && cp -R ./node_modules ./ng-app
