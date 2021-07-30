@@ -19,7 +19,8 @@
             "polyfills": "src/polyfills.ts",
             "stylePreprocessorOptions": {
               "includePaths": [
-                "src/lib"
+                "src/lib",
+                "node_modules/govuk-elements-sass/public/sass/"
               ]
             },
             "assets": [

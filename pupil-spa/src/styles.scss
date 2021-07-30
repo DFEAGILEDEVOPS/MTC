@@ -36,18 +36,18 @@ $mainstream-brand: $department-for-education;
 @import "govuk_frontend_toolkit/stylesheets/design-patterns/buttons";
 
 /* From Govuk Elements SASS */
-@import 'govuk-elements-sass/elements/helpers';
-@import 'govuk-elements-sass/elements/layout';
-@import 'govuk-elements-sass/elements/elements-typography';
-@import 'govuk-elements-sass/elements/buttons'; // contains images from frontend-toolkit
-@import 'govuk-elements-sass/elements/forms';
-@import 'govuk-elements-sass/elements/forms/form-multiple-choice';
-@import 'govuk-elements-sass/elements/forms/form-validation';
-@import 'govuk-elements-sass/elements/panels';
-@import 'govuk-elements-sass/elements/details';
-@import 'govuk-elements-sass/elements/shame';
-@import 'govuk-elements-sass/elements/lists';
-@import 'govuk-elements-sass/elements/icons';
+@import 'elements/helpers';
+@import 'elements/layout';
+@import 'elements/elements-typography';
+@import 'elements/buttons'; // contains images from frontend-toolkit
+@import 'elements/forms';
+@import 'elements/forms/form-multiple-choice';
+@import 'elements/forms/form-validation';
+@import 'elements/panels';
+@import 'elements/details';
+@import 'elements/shame';
+@import 'elements/lists';
+@import 'elements/icons';
 
 /* From public */
 @import "govuk_template/stylesheets/govuk-template";
