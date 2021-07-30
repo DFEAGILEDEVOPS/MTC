@@ -1,6 +1,7 @@
-@import 'govuk_frontend_toolkit/stylesheets/_shims';
-@import 'govuk_frontend_toolkit/stylesheets/_conditionals';
-@import 'govuk_frontend_toolkit/stylesheets/_measurements';
+/* imported from govuk_frontend_toolkit in node_modules */
+@import 'stylesheets/_shims';
+@import 'stylesheets/_conditionals';
+@import 'stylesheets/_measurements';
 
 #global-header {
   background-color: $black;

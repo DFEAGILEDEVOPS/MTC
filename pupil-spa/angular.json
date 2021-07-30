@@ -20,7 +20,8 @@
             "stylePreprocessorOptions": {
               "includePaths": [
                 "src/lib",
-                "node_modules/govuk-elements-sass/public/sass/"
+                "node_modules/govuk-elements-sass/public/sass/",
+                "node_modules/govuk_frontend_toolkit/"
               ]
             },
             "assets": [

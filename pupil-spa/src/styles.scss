@@ -9,33 +9,33 @@ $path: "~/assets/images/";
 /* Custom functions */
 @import "../lib/shared-styles/helpers/helpers";
 
-/* Settings (variables) */
-@import "govuk_frontend_toolkit/stylesheets/colours/palette";
-@import "govuk_frontend_toolkit/stylesheets/colours/organisation";
-@import "govuk_frontend_toolkit/stylesheets/colours";
-@import "govuk_frontend_toolkit/stylesheets/font_stack";
-@import "govuk_frontend_toolkit/stylesheets/measurements";
+/* Settings (variables): imported from govuk_frontend_toolkit in node_modules */
+@import "stylesheets/colours/palette";
+@import "stylesheets/colours/organisation";
+@import "stylesheets/colours";
+@import "stylesheets/font_stack";
+@import "stylesheets/measurements";
 
 $mainstream-brand: $department-for-education;
 
 
-/* Mixins */
-@import "govuk_frontend_toolkit/stylesheets/conditionals";
-@import "govuk_frontend_toolkit/stylesheets/device-pixels";
-@import "govuk_frontend_toolkit/stylesheets/grid_layout";
-@import "govuk_frontend_toolkit/stylesheets/typography";
-@import "govuk_frontend_toolkit/stylesheets/shims";
+/* Mixins: imported from govuk_frontend_toolkit in node_modules */
+@import "stylesheets/conditionals";
+@import "stylesheets/device-pixels";
+@import "stylesheets/grid_layout";
+@import "stylesheets/typography";
+@import "stylesheets/shims";
 
-/* Functions */
-@import "govuk_frontend_toolkit/stylesheets/url-helpers";
+/* Functions: imported from govuk_frontend_toolkit in node_modules */
+@import "stylesheets/url-helpers";
 
-/* Extras */
-@import "govuk_frontend_toolkit/stylesheets/helpers";
-@import "govuk_frontend_toolkit/stylesheets/design-patterns/alpha-beta";
-@import "govuk_frontend_toolkit/stylesheets/design-patterns/breadcrumbs";
-@import "govuk_frontend_toolkit/stylesheets/design-patterns/buttons";
+/* Extras: imported from govuk_frontend_toolkit in node_modules */
+@import "stylesheets/helpers";
+@import "stylesheets/design-patterns/alpha-beta";
+@import "stylesheets/design-patterns/breadcrumbs";
+@import "stylesheets/design-patterns/buttons";
 
-/* From Govuk Elements SASS */
+/* Imports from govuk-elements-sass in node_modules */
 @import 'elements/helpers';
 @import 'elements/layout';
 @import 'elements/elements-typography';
@@ -49,7 +49,7 @@ $mainstream-brand: $department-for-education;
 @import 'elements/lists';
 @import 'elements/icons';
 
-/* From public */
+/* Imports from govuk_template which have been vendored (copied) to our lib directorye */
 @import "govuk_template/stylesheets/govuk-template";
 
 /* STA-MTC project elements */
