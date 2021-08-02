@@ -1,9 +1,9 @@
-import { TestBed, inject } from '@angular/core/testing'
-
+import { TestBed } from '@angular/core/testing'
 import { TimerService, CHECK_TIMEOUT_EVENT } from './timer.service'
 import { WindowRefService } from '../window-ref/window-ref.service'
 import { QuestionService } from '../question/question.service'
 import { StorageService } from '../storage/storage.service'
+import { StorageServiceMock } from '../storage/mock-storage.service'
 
 describe('TimerService', () => {
   let service: TimerService
@@ -11,13 +11,14 @@ describe('TimerService', () => {
   const mockQuestionService = {
     getConfig: () => ({ checkTime: 10 })
   }
+  const tenMinutesInMilliseconds = 10 * 60 * 1000
 
   beforeEach(() => {
     const injector = TestBed.configureTestingModule({
       providers: [
         TimerService,
         { provide: QuestionService, useValue: mockQuestionService },
-        StorageService,
+        { provide: StorageService, useClass: StorageServiceMock },
         WindowRefService,
       ]
     })
@@ -33,9 +34,14 @@ describe('TimerService', () => {
 
   it('should start the timer and set time remaining', () => {
     spyOn(window, 'setInterval').and.callThrough()
+    // pre-test
+    expect(service.timeRemaining).toBeUndefined()
+    // exec
     service.startCheckTimer()
-    expect(Math.abs(service.timeRemaining - 600000)).toBeLessThan(10)
+    // test
+    expect(service.timeRemaining).toBe(tenMinutesInMilliseconds)
     expect(window.setInterval).toHaveBeenCalledTimes(1)
+    // clean up
     service.stopCheckTimer()
   })
 
@@ -52,7 +58,7 @@ describe('TimerService', () => {
     spyOn(mockStorageService, 'getCheckStartTime').and.returnValue(`${t}`)
     service.startCheckTimer()
     expect(mockStorageService.getCheckStartTime).toHaveBeenCalledTimes(1)
-    expect(Math.abs(service.timeRemaining - 600000)).toBeLessThan(10)
+    expect(Math.abs(service.timeRemaining - tenMinutesInMilliseconds)).toBeLessThan(10)
     service.stopCheckTimer()
   })
 
@@ -71,7 +77,7 @@ describe('TimerService', () => {
 
   it('should start the timer and emit timeout event', async () => {
     const t = new Date().getTime()
-    spyOn(mockStorageService, 'getCheckStartTime').and.returnValue(`${t - 600000}`)
+    spyOn(mockStorageService, 'getCheckStartTime').and.returnValue(`${t - tenMinutesInMilliseconds}`)
     service.emitter.emit = jasmine.createSpy('emit')
     service.startCheckTimer()
     expect(service.emitter.emit).toHaveBeenCalledWith(CHECK_TIMEOUT_EVENT)

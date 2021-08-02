@@ -5,9 +5,17 @@ import { StorageService } from '../storage/storage.service';
 
 export const CHECK_TIMEOUT_EVENT = 'CHECK_TIMEOUT_EVENT';
 
+/**
+ * TimerService: this service imposes an overall time limit on completing the check. The time allowed is provided in the config via the
+ * `checkTime` property which is the number of minutes allowed overall to complete the check.
+ *
+ * This forces checks taken with the `next` button to complete in a certain time.
+ *
+ * Control flow code can subscribe to the `emitter` property and watch for the `CHECK_TIMEOUT_EVENT` which happens on timeout.
+ */
+
 @Injectable()
 export class TimerService {
-
     public readonly emitter: EventEmitter<string> = new EventEmitter();
 
     private _timeRemaining: number;
