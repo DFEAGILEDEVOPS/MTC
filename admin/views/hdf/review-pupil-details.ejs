@@ -21,7 +21,7 @@
                         <tr class="govuk-table__row">
                             <th scope="col"><a class="sortingLink">Pupil<span class="sort-icon asc"></span></a></th>
                             <th scope="col"><a class="sortingLink">Outcome<span class="sort-icon"></span></a></th>
-<%/*<!--                            <th> &nbsp; </th> uncomment for 2022 -->*/%>
+                            <th> &nbsp; </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -44,14 +44,13 @@
                                     <%= pupil.status %>
                                 <% } %>
                             </td>
-<%/* uncomment for 2022
+
                            <td>
                                 &nbsp; &nbsp;
-                                <XXX% if (pupil.reason) { %XXX>
-                                    <a class="govuk-link" href="/attendance/edit-reason/<XXX%= pupil.urlSlug %XXX>">Edit</a>
-                                <XXX% } %XXX>
+                                <% if (pupil.reason) { %>
+                                    <a class="govuk-link" href="/attendance/edit-reason/<%= pupil.urlSlug %>">Edit</a>
+                                <% } %>
                             </td>
-*/%>
                         </tr>
                     <% }) %>
                     </tbody>
