@@ -18,7 +18,7 @@ const attendanceCodesPresenter = require('../helpers/attendance-codes-presenter'
  * @returns {Promise.<void>}
  */
 const getPupilNotTakingCheck = async function getPupilNotTakingCheck (req, res, next) {
-  res.locals.pageTitle = 'Confirm pupils not taking the check'
+  res.locals.pageTitle = 'Give a reason why a pupil is not taking the check'
   req.breadcrumbs(res.locals.pageTitle)
   let checkWindowData
   let pupils
