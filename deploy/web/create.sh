@@ -44,4 +44,24 @@ createApp auth $AUTH_APP_SVC_PLAN_NAME
 createApp admin $ADMIN_APP_SVC_PLAN_NAME
 createApp assets $ASSETS_APP_SVC_PLAN_NAME
 
+# az webapp config set --always-on true --ftps-state Disabled --http20-enabled true --min-tls-version '1.2' --remote-debugging-enabled false --web-sockets-enabled false
 
+# disallow FTP
+az resource update --resource-group $RESOURCE_GROUP --name ftp --namespace Microsoft.Web \
+  --resource-type basicPublishingCredentialsPolicies --parent sites/$PUPIL_APP_SVC_PLAN_NAME --set properties.allow=false
+az resource update --resource-group $RESOURCE_GROUP --name ftp --namespace Microsoft.Web \
+  --resource-type basicPublishingCredentialsPolicies --parent sites/$AUTH_APP_SVC_PLAN_NAME --set properties.allow=false
+az resource update --resource-group $RESOURCE_GROUP --name ftp --namespace Microsoft.Web \
+  --resource-type basicPublishingCredentialsPolicies --parent sites/$ADMIN_APP_SVC_PLAN_NAME --set properties.allow=false
+az resource update --resource-group $RESOURCE_GROUP --name ftp --namespace Microsoft.Web \
+  --resource-type basicPublishingCredentialsPolicies --parent sites/$ASSETS_APP_SVC_PLAN_NAME --set properties.allow=false
+
+# disable basic auth access to webdeploy port and SCM site
+az resource update --resource-group $RESOURCE_GROUP --name scm --namespace Microsoft.Web \
+  --resource-type basicPublishingCredentialsPolicies --parent sites/$PUPIL_APP_SVC_PLAN_NAME --set properties.allow=false
+az resource update --resource-group $RESOURCE_GROUP --name scm --namespace Microsoft.Web \
+  --resource-type basicPublishingCredentialsPolicies --parent sites/$AUTH_APP_SVC_PLAN_NAME --set properties.allow=false
+az resource update --resource-group $RESOURCE_GROUP --name scm --namespace Microsoft.Web \
+  --resource-type basicPublishingCredentialsPolicies --parent sites/$ADMIN_APP_SVC_PLAN_NAME --set properties.allow=false
+az resource update --resource-group $RESOURCE_GROUP --name scm --namespace Microsoft.Web \
+  --resource-type basicPublishingCredentialsPolicies --parent sites/$ASSETS_APP_SVC_PLAN_NAME --set properties.allow=false
