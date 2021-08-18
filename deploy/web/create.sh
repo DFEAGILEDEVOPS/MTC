@@ -16,14 +16,16 @@ function createApp() {
   role=$1
   siteName=$2
   plan=$3
-  # create web app
-  az webapp create -n $siteName -g $RESOURCE_GROUP \
+  echo "creating web app $siteName"
+  az webapp create -o none -n $siteName -g $RESOURCE_GROUP \
     --deployment-container-image-name "mtc-$role:$IMAGE_VERSION" --plan $plan
 }
 
 function createAppServicePlan() {
   role=$1
-  az appservice plan create -n "$ENV$role-asp-$NAME_SUFFIX" -g $RESOURCE_GROUP \
+  aspName="$ENV$role-asp-$NAME_SUFFIX"
+  echo "creating app service plan $aspName"
+  az appservice plan create -o none -n $aspName -g $RESOURCE_GROUP \
     --is-linux --sku S1
 }
 
@@ -50,16 +52,11 @@ createApp assets $ASSETS_APP_SITE_NAME $ASSETS_APP_SVC_PLAN_NAME
 createApp auth $AUTH_APP_SITE_NAME $AUTH_APP_SVC_PLAN_NAME
 createApp pupil $PUPIL_APP_SITE_NAME $PUPIL_APP_SVC_PLAN_NAME
 
-az webapp config set -g $RESOURCE_GROUP -n $ADMIN_APP_SITE_NAME --always-on true \
-  --ftps-state Disabled --http20-enabled true --min-tls-version '1.2' --remote-debugging-enabled false --web-sockets-enabled false
-az webapp config set -g $RESOURCE_GROUP -n $ASSETS_APP_SITE_NAME --always-on true \
-  --ftps-state Disabled --http20-enabled true --min-tls-version '1.2' --remote-debugging-enabled false --web-sockets-enabled false
-az webapp config set -g $RESOURCE_GROUP -n $AUTH_APP_SITE_NAME --always-on true \
-  --ftps-state Disabled --http20-enabled true --min-tls-version '1.2' --remote-debugging-enabled false --web-sockets-enabled false
-az webapp config set -g $RESOURCE_GROUP -n $PUPIL_APP_SITE_NAME --always-on true \
-  --ftps-state Disabled --http20-enabled true --min-tls-version '1.2' --remote-debugging-enabled false --web-sockets-enabled false
-
-az webapp update -g $RESOURCE_GROUP -n $ADMIN_APP_SITE_NAME --https-only true --client-affinity-enabled false
-az webapp update -g $RESOURCE_GROUP -n $ASSETS_APP_SITE_NAME --https-only true --client-affinity-enabled false
-az webapp update -g $RESOURCE_GROUP -n $AUTH_APP_SITE_NAME --https-only true --client-affinity-enabled false
-az webapp update -g $RESOURCE_GROUP -n $PUPIL_APP_SITE_NAME --https-only true --client-affinity-enabled false
+for webAppName in $ADMIN_APP_SITE_NAME $ASSETS_APP_SITE_NAME $AUTH_APP_SITE_NAME $PUPIL_APP_SITE_NAME
+do
+  echo "applying security config for $webAppName"
+  az webapp config set -o none -g $RESOURCE_GROUP -n $webAppName --always-on true \
+    --ftps-state Disabled --http20-enabled true --min-tls-version '1.2' \
+    --remote-debugging-enabled false --web-sockets-enabled false
+  az webapp update -o none -g $RESOURCE_GROUP -n $webAppName --https-only true --client-affinity-enabled false
+done
