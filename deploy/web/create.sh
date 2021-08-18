@@ -17,10 +17,9 @@ function createApp() {
   siteName=$2
   plan=$3
   echo "creating web app $siteName under app service plan $plan"
-  # TODO use basic container
   # TODO use container registry - https://docs.microsoft.com/en-us/azure/app-service/tutorial-custom-container?pivots=container-linux
   az webapp create -o none -n $siteName -g $RES_GRP \
-    --deployment-container-image-name "mtc-$role:$IMAGE_VERSION" --plan $plan
+    --deployment-container-image-name "DOCKER|nginxdemos/hello:latest" --plan $plan
 }
 
 function createAppServicePlan() {
