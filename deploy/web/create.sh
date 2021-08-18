@@ -1,38 +1,40 @@
 #!/bin/bash
 set -e
 
-RESOURCE_GROUP=$1
+RES_GRP=$1
 IMAGE_VERSION=$2
 ENV=$3
-SINGLE_APP_SVC_PLAN=$4
-NAME_SUFFIX="mtc-guytest"
+SUFFIX=$4
+SINGLE_APP_SVC_PLAN=$5
 
-ADMIN_APP_SITE_NAME="$ENV-admin-as-$NAME_SUFFIX"
-ASSETS_APP_SITE_NAME="$ENV-assets-as-$NAME_SUFFIX"
-AUTH_APP_SITE_NAME="$ENV-auth-as-$NAME_SUFFIX"
-PUPIL_APP_SITE_NAME="$ENV-pupil-as-$NAME_SUFFIX"
+ADMIN_SITE_NAME="${ENV}admin-as-$SUFFIX"
+ASSETS_SITE_NAME="${ENV}assets-as-$SUFFIX"
+AUTH_SITE_NAME="${ENV}auth-as-$SUFFIX"
+PUPIL_SITE_NAME="${ENV}pupil-as-$SUFFIX"
 
 function createApp() {
   role=$1
   siteName=$2
   plan=$3
-  echo "creating web app $siteName"
-  az webapp create -o none -n $siteName -g $RESOURCE_GROUP \
+  echo "creating web app $siteName under app service plan $plan"
+  # TODO use basic container
+  # TODO use container registry - https://docs.microsoft.com/en-us/azure/app-service/tutorial-custom-container?pivots=container-linux
+  az webapp create -o none -n $siteName -g $RES_GRP \
     --deployment-container-image-name "mtc-$role:$IMAGE_VERSION" --plan $plan
 }
 
 function createAppServicePlan() {
   role=$1
-  aspName="$ENV$role-asp-$NAME_SUFFIX"
+  aspName="${ENV}${role}-asp-$SUFFIX"
   echo "creating app service plan $aspName"
-  az appservice plan create -o none -n $aspName -g $RESOURCE_GROUP \
+  az appservice plan create -o none -n $aspName -g $RES_GRP \
     --is-linux --sku S1
 }
 
-AUTH_APP_SVC_PLAN_NAME="$ENV$auth-asp-$NAME_SUFFIX"
-ADMIN_APP_SVC_PLAN_NAME="$ENV$admin-asp-$NAME_SUFFIX"
-ASSETS_APP_SVC_PLAN_NAME="$ENV$assets-asp-$NAME_SUFFIX"
-PUPIL_APP_SVC_PLAN_NAME="$ENV$pupil-asp-$NAME_SUFFIX"
+AUTH_SVC_PLAN_NAME="${ENV}auth-asp-$SUFFIX"
+ADMIN_SVC_PLAN_NAME="${ENV}admin-asp-$SUFFIX"
+ASSETS_SVC_PLAN_NAME="${ENV}assets-asp-$SUFFIX"
+PUPIL_SVC_PLAN_NAME="${ENV}pupil-asp-$SUFFIX"
 
 if [ -z "$SINGLE_APP_SVC_PLAN" ]
 then
@@ -41,22 +43,24 @@ then
   createAppServicePlan assets
   createAppServicePlan pupil
 else
-  ADMIN_APP_SVC_PLAN_NAME=$SINGLE_APP_SVC_PLAN
-  ASSETS_APP_SVC_PLAN_NAME=$SINGLE_APP_SVC_PLAN
-  AUTH_APP_SVC_PLAN_NAME=$SINGLE_APP_SVC_PLAN
-  PUPIL_APP_SVC_PLAN_NAME=$SINGLE_APP_SVC_PLAN
+  ADMIN_SVC_PLAN_NAME=$SINGLE_APP_SVC_PLAN
+  ASSETS_SVC_PLAN_NAME=$SINGLE_APP_SVC_PLAN
+  AUTH_SVC_PLAN_NAME=$SINGLE_APP_SVC_PLAN
+  PUPIL_SVC_PLAN_NAME=$SINGLE_APP_SVC_PLAN
 fi
 
-createApp admin $ADMIN_APP_SITE_NAME $ADMIN_APP_SVC_PLAN_NAME
-createApp assets $ASSETS_APP_SITE_NAME $ASSETS_APP_SVC_PLAN_NAME
-createApp auth $AUTH_APP_SITE_NAME $AUTH_APP_SVC_PLAN_NAME
-createApp pupil $PUPIL_APP_SITE_NAME $PUPIL_APP_SVC_PLAN_NAME
+createApp admin $ADMIN_SITE_NAME $ADMIN_SVC_PLAN_NAME
+createApp assets $ASSETS_SITE_NAME $ASSETS_SVC_PLAN_NAME
+createApp auth $AUTH_SITE_NAME $AUTH_SVC_PLAN_NAME
+createApp pupil $PUPIL_SITE_NAME $PUPIL_SVC_PLAN_NAME
 
-for webAppName in $ADMIN_APP_SITE_NAME $ASSETS_APP_SITE_NAME $AUTH_APP_SITE_NAME $PUPIL_APP_SITE_NAME
+for webAppName in $ADMIN_SITE_NAME $ASSETS_SITE_NAME $AUTH_SITE_NAME $PUPIL_SITE_NAME
 do
   echo "applying security config for $webAppName"
-  az webapp config set -o none -g $RESOURCE_GROUP -n $webAppName --always-on true \
+  az webapp config set -o none -g $RES_GRP -n $webAppName --always-on true \
     --ftps-state Disabled --http20-enabled true --min-tls-version '1.2' \
     --remote-debugging-enabled false --web-sockets-enabled false
-  az webapp update -o none -g $RESOURCE_GROUP -n $webAppName --https-only true --client-affinity-enabled false
+  az webapp update -o none -g $RES_GRP -n $webAppName --https-only true --client-affinity-enabled false
+  # assign system identity
+  az webapp identity assign -o none -g $RES_GRP -n $webAppName
 done
