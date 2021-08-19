@@ -9,8 +9,9 @@ SUFFIX=$4
 NAME="$ENV-ai-$SUFFIX"
 
 # requires Azure CLI 2.0.79 or above to work
-# installs the add-on if it does not yet exist
-az monitor app-insights component -a $NAME -g $RES_GRP -l $LOCATION --query-access Disabled
+# https://docs.microsoft.com/en-us/cli/azure/monitor/app-insights?view=azure-cli-latest
+az extension add --name application-insights
+az monitor app-insights component create -a $NAME -g $RES_GRP -l $LOCATION --query-access Disabled
 
 exit 0
 
