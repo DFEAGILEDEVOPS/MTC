@@ -46,7 +46,7 @@
     "dotenv": "^8.1.0",
     "faker": "^5.5.3",
     "fast-xml-parser": "^3.17.4",
-    "ioredis": "^4.19.2",
+    "ioredis": "^4.27.8",
     "lz-string": "^1.4.4",
     "moment": "^2.24.0",
     "moment-timezone": "^0.5.32",

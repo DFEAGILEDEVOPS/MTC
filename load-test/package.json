@@ -21,7 +21,7 @@
     "dotenv": "^8.2.0",
     "fast-csv": "^4.3.6",
     "fs-extra": "^9.1.0",
-    "ioredis": "^4.14.1",
+    "ioredis": "^4.27.8",
     "number-to-words": "^1.2.3",
     "ramda": "^0.27.0",
     "tedious": "^9.2.2",
