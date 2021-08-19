@@ -64,7 +64,7 @@
     "helmet": "^4.3.1",
     "hsts": "^2.1.0",
     "iconv-lite": "^0.6.2",
-    "ioredis": "4.25.0",
+    "ioredis": "4.27.8",
     "jsonwebtoken": "^8.1.1",
     "login.dfe.async-retry": "git+https://github.com/DFE-Digital/login.dfe.async-retry.git#v1.0",
     "lz-string": "^1.4.4",
