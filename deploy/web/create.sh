@@ -4,8 +4,8 @@ set -e
 RES_GRP=$1
 ENV=$2
 SUFFIX=$3
-SKU=${4:-B1}
-SINGLE_APP_SVC_PLAN=$4
+SKU=$4
+SINGLE_APP_SVC_PLAN=$5
 
 # the web app name variables
 ADMIN_SITE_NAME="${ENV}admin-as-$SUFFIX"
@@ -29,7 +29,7 @@ function createAppServicePlan() {
   aspName="${ENV}${role}-asp-$SUFFIX"
   echo "creating app service plan $aspName"
   az appservice plan create -o none -n $aspName -g $RES_GRP \
-    --is-linux --sku S1
+    --is-linux --sku $SKU
 }
 
 AUTH_SVC_PLAN_NAME="${ENV}auth-asp-$SUFFIX"
