@@ -25,9 +25,12 @@ require_relative '../../features/support/azure_blob_helper'
 require 'redis'
 require 'lz_string'
 require_relative '../../features/support/app'
+require 'dotenv'
 
 require_relative 'helpers'
 include Helpers
+
+Dotenv.load('../../.env')
 
 ENV["ADMIN_BASE_URL"] ||= 'http://localhost:3001'
 ENV["PUPIL_BASE_URL"] ||= 'http://localhost:4200'
@@ -35,8 +38,10 @@ ENV["PUPIL_API_BASE_URL"] ||= 'http://localhost:3003'
 ENV["FUNC_THROTTLED_BASE_URL"] ||= 'http://localhost:7073/admin/functions'
 ENV["FUNC_THROTTLED_MASTER_KEY"] ||= nil
 ENV['WAIT_TIME'] ||= '300'
+ENV['PS_REPORT_WAIT_TIME'] ||= '300'
 ENV['FUNC_CONSUMP_BASE_URL'] ||= 'http://localhost:7071'
 ENV["FUNC_CONSUMP_MASTER_KEY"] ||= nil
+ENV['PS_REPORT_WAIT_TIME'] ||= '300'
 
 # Webdrivers::Chromedriver.required_version='83.0.4103.39'
 Webdrivers.logger.level = :FATAL
@@ -149,4 +154,3 @@ if (File.exist?('../../.env')) && (File.read('../../.env').include? 'BROWSERSTAC
   fail 'Browserstack access key should be alphanumeric and between 8 - 20 characters long' if ENV['BROWSERSTACK_ACCESS_KEY'].match(/\A[a-zA-Z0-9]{8,20}\z/).nil?
   fail 'Browserstack username should be alphanumeric and between 8 - 20 characters long' if ENV['BROWSERSTACK_USERNAME'].match(/\A[a-zA-Z0-9]{8,20}\z/).nil?
 end
-

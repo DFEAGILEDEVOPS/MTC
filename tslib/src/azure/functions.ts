@@ -1,3 +1,3 @@
 export interface IFunctionTimer {
-  IsPastDue: boolean
+  isPastDue: boolean
 }

@@ -4,8 +4,11 @@ Given(/^my check has been marked$/) do
 end
 
 When(/^the data sync function has run$/) do
-  response = FunctionsHelper.trigger_func('sync-results-to-sql')
-  expect(response.code).to eql 202
+  if @check_code
+    (wait_until(ENV['WAIT_TIME'].to_i, 2) {SqlDbHelper.get_pupil_check_metadata(@check_code)['code'] == 'CMP'}) if @no_answers.nil?
+    response = FunctionsHelper.sync_check_code(@check_code)
+    expect(response.code).to eql 202
+  end
 end
 
 Then(/^the answers should be synced to the DB correctly$/) do
@@ -47,6 +50,7 @@ Given(/^my check has been marked with (.+) correct answers$/) do |mark|
   school_uuid = @parsed_response_pupil_auth['school']['uuid']
   @check_code = @parsed_response_pupil_auth['checkCode']
   AzureTableHelper.wait_for_received_check(school_uuid, @check_code)
+  p @check_code
 end
 
 Then(/^the correct mark should be synced to the DB correctly$/) do
@@ -134,11 +138,12 @@ Given(/^I have check which has resulted in a hard failure$/) do
   school_uuid = @parsed_response_pupil_auth['school']['uuid']
   @check_code = @parsed_response_pupil_auth['checkCode']
   AzureTableHelper.wait_for_received_check(school_uuid, @check_code)
+  @no_answers = true
 end
 
 
 Then(/^check should fail processing$/) do
-  Timeout.timeout(ENV['WAIT_TIME'].to_i){sleep 3 until SqlDbHelper.get_check(@check_code)['checkStatus_id'] == 6 }
+  wait_until(ENV['WAIT_TIME'].to_i, 2) {SqlDbHelper.get_pupil_check_metadata(@check_code)['code'] == 'ERR'}
   check_info = SqlDbHelper.get_check(@check_code)
   expect(check_info['checkStatus_id']).to eql 6
   expect(check_info['complete']).to eql false

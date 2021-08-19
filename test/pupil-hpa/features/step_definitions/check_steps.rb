@@ -87,9 +87,12 @@ end
 
 Then(/^I should be able to use the on screen (.+) to complete the test$/) do |input|
   questions = JSON.parse page.evaluate_script('window.localStorage.getItem("questions");')
+  storage_pupil = JSON.parse page.evaluate_script('window.localStorage.getItem("pupil");')
   @answers = check_page.complete_check_with_correct_answers(questions.size,input)
   complete_page.wait_for_complete_page
   expect(complete_page).to have_heading
+  @check_code = storage_pupil['checkCode']
+  p @check_code
 end
 
 When(/^I have entered an incorrect answer$/) do

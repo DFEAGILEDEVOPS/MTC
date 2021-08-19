@@ -1,10 +1,8 @@
 import { TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { HttpClient } from '@angular/common/http';
+import { HttpErrorResponse } from '@angular/common/http';
 import { UserService } from './user.service';
 import { StorageService } from '../storage/storage.service';
 import { default as mockLoginResponseBody } from '../../login.userService.response.mock.json';
-import { APP_CONFIG, AppConfigService, loadConfigMockService } from '../config/config.service';
 import {
   ConfigStorageKey,
   PupilStorageKey,
@@ -12,6 +10,7 @@ import {
   SchoolStorageKey,
   TokensStorageKey
 } from '../storage/storageKey';
+import { HttpService } from '../http/http.service';
 
 let userService: UserService;
 let storageService: StorageService;
@@ -22,22 +21,18 @@ const schoolDataKey = new SchoolStorageKey();
 const tokensDataKey =  new TokensStorageKey();
 
 describe('UserService', () => {
-  let httpClient: HttpClient;
-  let httpTestingController: HttpTestingController;
+  let httpServiceSpy: { post: jasmine.Spy };
 
   beforeEach(() => {
-
+    httpServiceSpy = jasmine.createSpyObj('HttpService', ['post']);
     const inject = TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
+      imports: [],
       providers: [
         UserService,
-        StorageService
+        StorageService,
+        { provide: HttpService, useValue: httpServiceSpy }
       ]
     });
-
-    // Inject the http service and test controller for each test
-    httpClient = TestBed.get(HttpClient);
-    httpTestingController = TestBed.get(HttpTestingController);
 
     userService = inject.get(UserService);
     storageService = inject.get(StorageService);
@@ -45,6 +40,7 @@ describe('UserService', () => {
 
   describe('login', () => {
     it('should persist response body to storage', () => {
+      httpServiceSpy.post.and.returnValue(Promise.resolve(mockLoginResponseBody));
       const setQuestionsSpy = spyOn(storageService, 'setQuestions');
       const setConfigSpy = spyOn(storageService, 'setConfig');
       const setPupilSpy = spyOn(storageService, 'setPupil');
@@ -72,15 +68,16 @@ describe('UserService', () => {
           fail(error);
         });
 
-      const req = httpTestingController.expectOne(`${APP_CONFIG.authURL}`);
-      req.flush(mockLoginResponseBody);
-
-      // Finally, assert that there are no outstanding requests.
-      httpTestingController.verify();
+      expect(httpServiceSpy.post).toHaveBeenCalledTimes(1);
     });
 
     it('should return a promise that rejects on invalid login', () => {
       spyOn(storageService, 'setQuestions');
+      httpServiceSpy.post.and.returnValue(Promise.reject(new HttpErrorResponse({
+        error: { error: 'Unathorised' },
+        status: 401,
+        statusText: 'Unathorized'
+      })));
 
       userService.login('xxx', 'xxx').then(
         (res) => {
@@ -94,18 +91,12 @@ describe('UserService', () => {
       });
 
       expect(storageService.setQuestions).not.toHaveBeenCalled();
-
-      const req = httpTestingController.expectOne(`${APP_CONFIG.authURL}`);
-      req.flush('Unauthorised', { status: 401, statusText: 'Not authorised' });
-
-      // Finally, assert that there are no outstanding requests.
-      httpTestingController.verify();
+      expect(httpServiceSpy.post).toHaveBeenCalledTimes(1);
     });
   });
 
   describe('logout', () => {
     it('should clear storage on logout', () => {
-
       spyOn(storageService, 'clear');
       userService.logout();
       expect(storageService.clear).toHaveBeenCalled();

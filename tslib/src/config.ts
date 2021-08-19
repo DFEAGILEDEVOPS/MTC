@@ -106,7 +106,9 @@ export default {
     ConnectionString: process.env.AZURE_STORAGE_CONNECTION_STRING ?? ''
   },
   DevTestUtils: {
-    TestSupportApi: parser.propertyExists(process.env, 'TEST_SUPPORT_API_ENABLED') ? parser.primitiveToBoolean(process.env.TEST_SUPPORT_API_ENABLED) : false
+    TestSupportApi: parser.propertyExists(process.env, 'TEST_SUPPORT_API_ENABLED') ? parser.primitiveToBoolean(process.env.TEST_SUPPORT_API_ENABLED) : false,
+    // prevents the check started function from dropping the prepared check.  This is useful in load test scenarios when the util-submit-check function is used
+    DisablePreparedCheckCacheDrop: parser.propertyExists(process.env, 'TEST_SUPPORT_DISABLE_PREPARED_CHECK_CACHE_DROP') ? parser.primitiveToBoolean(process.env.TEST_SUPPORT_DISABLE_PREPARED_CHECK_CACHE_DROP) : false
   },
   ApplicationInsights: {
     Key: process.env.APPINSIGHTS_INSTRUMENTATIONKEY,
@@ -116,5 +118,9 @@ export default {
   },
   Logging: {
     DebugVerbosity: parseInt(parser.valueOrSubstitute(process.env.DEBUG_VERBOSITY, 1), 10)
+  },
+  RemoteIpCheckUrl: process.env.REMOTE_IP_CHECK_URL,
+  SyncResultsInit: {
+    MaxParallelTasks: parseInt(parser.valueOrSubstitute(process.env.SYNC_RESULTS_INIT_MAX_PARALLEL_TASKS, 5), 10)
   }
 }

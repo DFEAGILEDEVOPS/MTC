@@ -1,0 +1,15 @@
+<%/*  Inactive Link
+   *  Params:
+   *    linkDescription - string - the text to show to the user
+   *    showUnavailableLabel - boolean - whether to show the grey 'UNAVAILABLE' label box
+   *    showUnavailableLabelText - string - the short explanation of why the link is unavailable
+   */%>
+<h2 class="govuk-heading-s arrow-up <% if (showUnavailableLabel) { %>govuk-!-margin-bottom-0<% } %>">
+    <a class="govuk-font-greyed-out govuk-disabled-link"><%= linkDescription %></a>
+</h2>
+<% if (showUnavailableLabel) { %>
+<div>
+    <strong class="disabled-banner">UNAVAILABLE</strong>
+    <span class="govuk-!-font-size-14 govuk-font-greyed-out"><%= showUnavailableLabelText %></span>
+</div>
+<% } %>

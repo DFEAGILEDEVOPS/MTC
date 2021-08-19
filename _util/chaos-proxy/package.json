@@ -1,0 +1,16 @@
+{
+  "name": "chaos-proxy",
+  "version": "1.0.0",
+  "description": "Simulate network latency and over-loaded servers",
+  "main": "index.js",
+  "author": "Jon Shipley <js@ovix.co.uk>",
+  "license": "GPL-3.0-or-later",
+  "private": false,
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "axios": "^0.21.1",
+    "faker": "^5.5.3"
+  }
+}

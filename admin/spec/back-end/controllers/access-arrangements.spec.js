@@ -1,6 +1,6 @@
 'use strict'
 
-/* global describe beforeEach it expect jasmine spyOn fail */
+/* global describe beforeEach it expect jasmine spyOn fail test jest afterEach */
 
 const httpMocks = require('node-mocks-http')
 const R = require('ramda')
@@ -18,6 +18,9 @@ const ValidationError = require('../../../lib/validation-error')
 const accessArrangementsDescriptionsPresenter = require('../../../helpers/access-arrangements-descriptions-presenter')
 const aaViewModes = require('../../../lib/consts/access-arrangements-view-mode')
 const { AccessArrangementsNotEditableError } = require('../../../error-types/access-arrangements-not-editable-error')
+const moment = require('moment')
+const uuid = require('uuid')
+const headteacherDeclarationService = require('../../../services/headteacher-declaration.service')
 
 describe('access arrangements controller:', () => {
   let next
@@ -38,6 +41,10 @@ describe('access arrangements controller:', () => {
 
   beforeEach(() => {
     next = jasmine.createSpy('next')
+  })
+
+  afterEach(() => {
+    jest.restoreAllMocks()
   })
 
   describe('getOverview route', () => {
@@ -65,6 +72,7 @@ describe('access arrangements controller:', () => {
       expect(schoolHomeFeatureEligibilityPresenter.getPresentationData).toHaveBeenCalled()
       expect(accessArrangementsOverviewPresenter.getPresentationData).toHaveBeenCalled()
     })
+
     it('displays the access arrangements unavailable page when the feature is not accessible', async () => {
       const res = getRes()
       const req = getReq(reqParams)
@@ -81,6 +89,7 @@ describe('access arrangements controller:', () => {
         title: 'Enable access arrangements for pupils who need them'
       })
     })
+
     it('displays the overview in readonly mode when editing is no longer permitted', async () => {
       const res = getRes()
       const req = getReq(reqParams)
@@ -102,9 +111,11 @@ describe('access arrangements controller:', () => {
         pupilsFormatted: undefined,
         breadcrumbs: undefined,
         highlight: undefined,
-        title: 'Enable access arrangements for pupils who need them'
+        title: 'Enable access arrangements for pupils who need them',
+        retroInputAssistantText: ''
       })
     })
+
     it('throws an error if pupilAccessArrangementsService getPupils is rejected', async () => {
       const res = getRes()
       const req = getReq(reqParams)
@@ -122,7 +133,78 @@ describe('access arrangements controller:', () => {
       expect(checkWindowV2Service.getActiveCheckWindow).not.toHaveBeenCalled()
       expect(schoolHomeFeatureEligibilityPresenter.getPresentationData).not.toHaveBeenCalled()
     })
+
+    test('does not display the retro input assistant link when the live check window is not active', async () => {
+      // Mock the date
+      setupFakeTime(moment('2021-04-21T09:00:00'))
+
+      const res = getRes()
+      const req = getReq()
+
+      // Mock the checkWindow, so that the Try it out phase it active, but not the live check
+      const checkWindow = {
+        id: 1,
+        createdAt: moment('2021-04-22T10:25:55Z'),
+        updatedAt: moment('2021-04-22T13:33:05Z'),
+        name: 'Test',
+        adminStartDate: moment('2021-04-19T00:00:00Z'),
+        checkStartDate: moment('2021-06-07T00:00:00Z'),
+        checkEndDate: moment('2021-06-25T23:59:59Z'),
+        isDeleted: false,
+        urlSlug: uuid.NIL,
+        adminEndDate: moment('2021-07-30T23:59:59Z'),
+        familiarisationCheckStartDate: moment('2021-04-19T00:00:00Z'),
+        familiarisationCheckEndDate: moment('2021-06-25T23:59:59Z')
+      }
+      jest.spyOn(accessArrangementsService, 'getCurrentViewMode').mockResolvedValue(aaViewModes.edit)
+      jest.spyOn(pupilAccessArrangementsService, 'getPupils').mockResolvedValue([])
+      jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockResolvedValue(checkWindow)
+      jest.spyOn(businessAvailabilityService, 'getAvailabilityData').mockResolvedValue({ accessArrangementsAvailable: true })
+      jest.spyOn(headteacherDeclarationService, 'isHdfSubmittedForCheck').mockResolvedValue(false)
+
+      await controller.getOverview(req, res, next)
+      const data = res._getRenderData()
+      expect(data.retroInputAssistantText).toBe('')
+      tearDownFakeTime()
+    })
+
+    test('displays the retro input assistant link when the live check window is active', async () => {
+      // Mock the date
+      setupFakeTime(moment('2021-06-07T06:00:00Z'))
+
+      const res = getRes()
+      const req = getReq()
+      req.user.schoolId = 1 // assign a school to the user
+      req.user.timezone = 'Europe/London'
+
+      // Mock the checkWindow, so that the Try it out phase it active, but not the live check
+      const checkWindow = {
+        id: 1,
+        createdAt: moment('2021-04-22T10:25:55Z'),
+        updatedAt: moment('2021-04-22T13:33:05Z'),
+        name: 'Test',
+        adminStartDate: moment('2021-04-19T00:00:00Z'),
+        checkStartDate: moment('2021-06-07T00:00:00Z'),
+        checkEndDate: moment('2021-06-25T23:59:59Z'),
+        isDeleted: false,
+        urlSlug: uuid.NIL,
+        adminEndDate: moment('2021-07-30T23:59:59Z'),
+        familiarisationCheckStartDate: moment('2021-04-19T00:00:00Z'),
+        familiarisationCheckEndDate: moment('2021-06-25T23:59:59Z')
+      }
+      jest.spyOn(accessArrangementsService, 'getCurrentViewMode').mockResolvedValue(aaViewModes.edit)
+      jest.spyOn(pupilAccessArrangementsService, 'getPupils').mockResolvedValue([])
+      jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockResolvedValue(checkWindow)
+      // headTeacherDeclarationService used by getAvailabilityData()
+      jest.spyOn(headteacherDeclarationService, 'isHdfSubmittedForCheck').mockResolvedValue(false)
+
+      await controller.getOverview(req, res, next)
+      const data = res._getRenderData()
+      expect(data.retroInputAssistantText).toContain('/access-arrangements/retro-add-input-assistant')
+      tearDownFakeTime()
+    })
   })
+
   describe('getSelectAccessArrangements route', () => {
     const reqParams = {
       method: 'GET',
@@ -173,8 +255,7 @@ describe('access arrangements controller:', () => {
     const reqParams = {
       method: 'POST',
       url: '/access-arrangements/submit',
-      body: {
-      },
+      body: {},
       user: {
         id: 1,
         School: 1
@@ -350,7 +431,11 @@ describe('access arrangements controller:', () => {
       spyOn(checkWindowV2Service, 'getActiveCheckWindow')
       spyOn(businessAvailabilityService, 'determineAccessArrangementsEligibility')
       spyOn(accessArrangementsService, 'getCurrentViewMode').and.returnValue(aaViewModes.edit)
-      spyOn(pupilAccessArrangementsService, 'deletePupilAccessArrangements').and.returnValue({ id: 1, foreName: 'foreName', lastName: 'lastName' })
+      spyOn(pupilAccessArrangementsService, 'deletePupilAccessArrangements').and.returnValue({
+        id: 1,
+        foreName: 'foreName',
+        lastName: 'lastName'
+      })
       await controller.getDeleteAccessArrangements(req, res, next)
       expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
       expect(businessAvailabilityService.determineAccessArrangementsEligibility).toHaveBeenCalled()
@@ -372,3 +457,20 @@ describe('access arrangements controller:', () => {
     })
   })
 })
+
+/**
+ * @param {moment.Moment} baseTime - set the fake time to this moment object
+ *
+ */
+function setupFakeTime (baseTime) {
+  if (!moment.isMoment(baseTime)) {
+    throw new Error('moment.Moment time expected')
+  }
+  jest.useFakeTimers('modern')
+  jest.setSystemTime(baseTime.toDate())
+}
+
+function tearDownFakeTime () {
+  const realTime = jest.getRealSystemTime()
+  jest.setSystemTime(realTime)
+}

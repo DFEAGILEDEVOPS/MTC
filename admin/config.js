@@ -136,10 +136,6 @@ module.exports = {
     jwtTimeOutHours: process.env.JWT_TIMEOUT_HOURS || 12,
     sasTimeOutHours: process.env.SAS_TIMEOUT_HOURS || 25
   },
-  Azure: {
-    queuePrefix: process.env.AZURE_QUEUE_PREFIX || '',
-    tablePrefix: process.env.AZURE_TABLE_PREFIX || ''
-  },
   Monitoring: {
     ApplicationInsights: {
       Key: process.env.APPINSIGHTS_INSTRUMENTATIONKEY,
@@ -192,5 +188,11 @@ module.exports = {
   },
   SchoolPinGeneratorFunction: {
     FunctionUrl: process.env.SCHOOL_PIN_GEN_FUNCTION_URL || 'http://localhost:7071/api/school-pin-http-service'
+  },
+  Functions: {
+    Throttled: {
+      BaseAdminUrl: process.env.FUNCTIONS_THROTTLED_BASE_ADMIN_URL || 'http://localhost:7073/admin/functions',
+      MasterKey: process.env.FUNCTIONS_THROTTLED_MASTER_KEY || ''
+    }
   }
 }

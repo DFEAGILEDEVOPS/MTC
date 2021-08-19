@@ -15,8 +15,6 @@ export interface PsychometricReport {
   RestartNumber: number | null
   ReasonNotTakingCheck: number | null
   PupilStatus: string | null
-  DeviceType: string | null
-  DeviceTypeModel: string | null
   DeviceId: string | null
   BrowserType: string | null
   SchoolName: string | null

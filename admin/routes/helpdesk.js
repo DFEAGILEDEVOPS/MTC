@@ -8,19 +8,19 @@ const helpdeskImpersonationController = require('../controllers/helpdesk-imperso
 const helpdeskSummaryController = require('../controllers/helpdesk-summary')
 
 router.get('/',
-  isAuthenticated(roles.helpdesk),
+  isAuthenticated([roles.helpdesk, roles.staAdmin]),
   helpdeskImpersonationController.getSchoolImpersonation
 )
 router.get('/school-impersonation',
-  isAuthenticated(roles.helpdesk),
+  isAuthenticated([roles.helpdesk, roles.staAdmin]),
   helpdeskImpersonationController.getSchoolImpersonation
 )
 router.post('/add-school-impersonation',
-  isAuthenticated(roles.helpdesk),
+  isAuthenticated([roles.helpdesk, roles.staAdmin]),
   helpdeskImpersonationController.postAddSchoolImpersonation
 )
 router.post('/remove-school-impersonation',
-  isAuthenticated(roles.helpdesk),
+  isAuthenticated([roles.helpdesk, roles.staAdmin]),
   helpdeskImpersonationController.postRemoveSchoolImpersonation
 )
 
@@ -30,7 +30,7 @@ router.post('/remove-school-impersonation',
 // )
 
 router.get('/school-summary',
-  isAuthenticated(roles.helpdesk),
+  isAuthenticated([roles.helpdesk, roles.staAdmin]),
   helpdeskSummaryController.getSummary
 )
 

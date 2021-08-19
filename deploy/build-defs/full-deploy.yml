@@ -31,7 +31,7 @@ phases:
 
   condition: succeeded()
   queue:
-    name: MTC LIVE
+    name: $(BuildAgentPool)
     demands: sh
 
   steps:
@@ -79,7 +79,7 @@ phases:
 
   condition: succeeded()
   queue:
-    name: MTC LIVE
+    name: $(BuildAgentPool)
     demands: sh
 
   steps:
@@ -128,7 +128,7 @@ phases:
 
   condition: succeeded()
   queue:
-    name: MTC LIVE
+    name: $(BuildAgentPool)
     demands: sh
 
   steps:
@@ -179,7 +179,7 @@ phases:
 
   condition: succeeded()
   queue:
-    name: MTC LIVE
+    name: $(BuildAgentPool)
     demands: sh
 
   steps:
@@ -228,7 +228,7 @@ phases:
 
   condition: succeeded()
   queue:
-    name: MTC LIVE
+    name: $(BuildAgentPool)
     demands: npm
 
   steps:
@@ -290,7 +290,7 @@ phases:
    - Phase_5
   condition: succeeded()
   queue:
-    name: MTC LIVE
+    name: $(BuildAgentPool)
     demands: sh
 
   steps:

@@ -12,7 +12,7 @@ export interface UserInputTypeLookup {
 }
 
 export interface IPrepareAnswersAndInputsDataService {
-  prepareAnswersAndInputs (markedCheck: MarkedCheck, validatedCheck: ValidatedCheck): Promise<ITransactionRequest>
+  prepareAnswersAndInputs (markedCheck: MarkedCheck, validatedCheck: ValidatedCheck): Promise<ITransactionRequest[]>
 }
 
 export class PrepareAnswersAndInputsDataService {
@@ -38,7 +38,11 @@ export class PrepareAnswersAndInputsDataService {
       params.push(
         { name: `userInputQuestionId${suffix}`, value: question.id, type: TYPES.SmallInt },
         { name: `userInput${suffix}`, value: o.input, type: TYPES.NVarChar(40) },
-        { name: `userInputTypeLookupId${suffix}`, value: await this.userInputService.getUserInputLookupTypeId(o.eventType), type: TYPES.NVarChar(40) },
+        {
+          name: `userInputTypeLookupId${suffix}`,
+          value: await this.userInputService.getUserInputLookupTypeId(o.eventType),
+          type: TYPES.NVarChar(40)
+        },
         { name: `userInputBrowserTimestamp${suffix}`, value: o.clientTimestamp, type: TYPES.DateTimeOffset }
       )
       sqls.push(`INSERT INTO mtc_results.[userInput] (answer_id, userInput, userInputTypeLookup_id, browserTimestamp)
@@ -53,13 +57,27 @@ export class PrepareAnswersAndInputsDataService {
    * @param {MarkedCheck} markedCheck
    * @param {ValidatedCheck} validatedCheck
    */
-  public async prepareAnswersAndInputs (markedCheck: MarkedCheck, validatedCheck: ValidatedCheck): Promise<ITransactionRequest> {
+  public async prepareAnswersAndInputs (markedCheck: MarkedCheck, validatedCheck: ValidatedCheck): Promise<ITransactionRequest[]> {
     const rawInputs: Input[] = R.propOr([], 'inputs', validatedCheck)
     const markedAnswers: MarkedAnswer[] = R.propOr([], 'markedAnswers', markedCheck)
+    const transactions: ITransactionRequest[] = []
 
-    const sqls: string[] = []
-    const params: ISqlParameter[] = []
+    let sqls: string[] = []
+    let params: ISqlParameter[] = []
     let j = 0
+    const sqlHead = `
+        DECLARE
+            @checkResultId INT = (SELECT cr.id
+                                    FROM mtc_results.[checkResult] cr
+                                         JOIN mtc_admin.[check] c ON (cr.check_id = c.id)
+                                   WHERE c.checkCode = @checkCode);
+
+        IF (@checkResultId IS NULL) THROW 510001, 'CheckResult ID not found when preparing answers and inputs', 1;
+    `
+    const headParam = { name: 'checkCode', value: markedCheck.checkCode, type: TYPES.UniqueIdentifier }
+
+    sqls.push(sqlHead)
+    params.push(headParam)
 
     for (const markedAnswer of markedAnswers) {
       let question: DBQuestion
@@ -70,10 +88,11 @@ export class PrepareAnswersAndInputsDataService {
       }
       const suffix = `${j}`
       sqls.push(`DECLARE @answerId${suffix} INT;
-                 INSERT INTO mtc_results.[answer] (checkResult_id, questionNumber, answer,  question_id, isCorrect, browserTimestamp) VALUES
-                   (@checkResultId, @answerQuestionNumber${suffix}, @answer${suffix},  @answerQuestionId${suffix}, @answerIsCorrect${suffix}, @answerBrowserTimestamp${suffix});
-                 SET @answerId${suffix} = (SELECT SCOPE_IDENTITY()); 
-                `)
+      INSERT INTO mtc_results.[answer] (checkResult_id, questionNumber, answer, question_id, isCorrect, browserTimestamp)
+      VALUES (@checkResultId, @answerQuestionNumber${suffix}, @answer${suffix}, @answerQuestionId${suffix}, @answerIsCorrect${suffix},
+              @answerBrowserTimestamp${suffix});
+      SET @answerId${suffix} = (SELECT SCOPE_IDENTITY());
+      `)
       params.push(
         { name: `answerQuestionNumber${suffix}`, value: markedAnswer.sequenceNumber, type: TYPES.SmallInt },
         { name: `answer${suffix}`, value: markedAnswer.answer, type: TYPES.NVarChar },
@@ -86,7 +105,16 @@ export class PrepareAnswersAndInputsDataService {
       sqls.push(inputSql)
       params.push(...inputParams)
       j = j + 1
+      if (params.length > 1000) {
+        transactions.push({ sql: sqls.join('\n'), params: R.clone(params) })
+        sqls = [sqlHead]
+        params = [headParam]
+      }
     }
-    return { sql: sqls.join('\n'), params }
+    // push the final statements in the last transaction
+    transactions.push({ sql: sqls.join('\n'), params: R.clone(params) })
+    sqls = []
+    params = []
+    return transactions
   }
 }

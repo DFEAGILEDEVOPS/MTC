@@ -27,13 +27,13 @@ end
 Then(/^I can see the declaration submitted form page confirmed as per the design$/) do
   expect(declaration_submitted_form_page).to have_heading
   expect(declaration_submitted_form_page).to have_details_confirmed_list
-  expect(declaration_submitted_form_page).to_not have_warning_notconfirmed_panel
+  expect(declaration_submitted_form_page).to_not have_details_not_confirmed
 end
 
 Then(/^I can see the declaration submitted form page not confirmed as per the design$/) do
   expect(declaration_submitted_form_page).to have_heading
   expect(declaration_submitted_form_page).to_not have_details_confirmed_list
-  expect(declaration_submitted_form_page).to have_warning_notconfirmed_panel
+  expect(declaration_submitted_form_page).to have_details_not_confirmed
 end
 
 Given(/^I have no pupils not taking the check for the school$/) do
@@ -59,15 +59,12 @@ Given(/^I have some pupils that have completed the check$/) do
     pupil_pin_detail = SqlDbHelper.get_pupil_pin(check_entry['id'])
     pupil_pin = pupil_pin_detail['val']
     school_password = SqlDbHelper.find_school(pupil_detail['school_id'])['pin']
-
     Timeout.timeout(ENV['WAIT_TIME'].to_i) {sleep 1 until RequestHelper.auth(school_password, pupil_pin).code == 200}
     response_pupil_auth = RequestHelper.auth(school_password, pupil_pin)
     @parsed_response_pupil_auth = JSON.parse(response_pupil_auth.body)
-    @submission_hash = RequestHelper.build_check_submission_message(@parsed_response_pupil_auth)
-    AzureQueueHelper.create_check_submission_message(@submission_hash[:submission_message].to_json)
-    school_uuid = @parsed_response_pupil_auth['school']['uuid']
-    check_code = @parsed_response_pupil_auth['checkCode']
-    AzureTableHelper.wait_for_received_check(school_uuid, check_code)
+    @check_code = check_entry['checkCode']
+    FunctionsHelper.complete_check_via_check_code([@check_code])
+    AzureTableHelper.wait_for_received_check(@school['entity']['urlSlug'], @check_code)
   end
 end
 

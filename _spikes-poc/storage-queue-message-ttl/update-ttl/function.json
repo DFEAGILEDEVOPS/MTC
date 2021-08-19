@@ -1,0 +1,26 @@
+{
+  "bindings": [
+    {
+      "authLevel": "function",
+      "type": "httpTrigger",
+      "direction": "in",
+      "name": "req",
+      "methods": [
+        "get"
+      ]
+    },
+    {
+      "type": "http",
+      "direction": "out",
+      "name": "res"
+    },
+    {
+      "type": "queue",
+      "direction": "out",
+      "name": "poisonQueue",
+      "queueName": "check-submitted-poison",
+      "connection": "AZURE_STORAGE_CONNECTION_STRING"
+    }
+  ],
+  "scriptFile": "../dist/update-ttl/index.js"
+}

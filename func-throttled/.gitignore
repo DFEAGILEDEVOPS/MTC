@@ -44,4 +44,6 @@ venv.bak/
 __pycache__/
 *.py[cod]
 *$py.class
+
+# azure functions auto generated binding extensions project file
 /extensions.csproj

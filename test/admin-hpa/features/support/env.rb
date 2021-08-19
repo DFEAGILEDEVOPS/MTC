@@ -22,6 +22,7 @@ require 'base64'
 require 'nokogiri'
 require 'numbers_in_words'
 require 'redis'
+require 'dotenv'
 require_relative '../../features/support/browserstack_driver_helper'
 require_relative '../../features/support/request_helper'
 require_relative '../../features/support/sql_db_helper'
@@ -33,6 +34,8 @@ require_relative '../../features/support/azure_blob_helper'
 require_relative 'helpers'
 require_relative '../../features/support/app'
 include Helpers
+
+Dotenv.load('../../.env')
 
 ENV["ADMIN_BASE_URL"] ||= 'http://localhost:3001'
 ENV["PUPIL_BASE_URL"] ||= 'http://localhost:4200'

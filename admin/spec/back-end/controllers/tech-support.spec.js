@@ -5,6 +5,8 @@ const httpMocks = require('node-mocks-http')
 const checkDiagnosticService = require('../../../services/check-diagnostic.service')
 const payloadService = require('../../../services/payload.service')
 const administrationMessageService = require('../../../services/administration-message.service')
+const queueMgmtService = require('../../../services/tech-support-queue-management.service')
+const resultsResyncService = require('../../../services/tech-support/sync-results-resync.service')
 
 let sut
 let next
@@ -108,6 +110,49 @@ describe('tech-support controller', () => {
       expect(res.type).toHaveBeenCalledWith('json')
       expect(next).not.toHaveBeenCalled()
       expect(payloadService.getPayload).toHaveBeenCalledWith(checkCode)
+    })
+  })
+
+  describe('/queue-overview', () => {
+    it('GET: should request storage account and service bus queue summaries', async () => {
+      const req = getRequest(getReqParams('/tech-support/queue-overview', 'GET'))
+      const res = getResponse()
+      spyOn(queueMgmtService, 'getServiceBusQueueSummary')
+      spyOn(queueMgmtService, 'getStorageAccountQueueSummary')
+      spyOn(res, 'render')
+      await sut.showQueueOverview(req, res, next)
+      expect(res.render).toHaveBeenCalled()
+      expect(next).not.toHaveBeenCalled()
+      expect(queueMgmtService.getServiceBusQueueSummary).toHaveBeenCalledTimes(1)
+      expect(queueMgmtService.getStorageAccountQueueSummary).toHaveBeenCalledTimes(1)
+    })
+  })
+
+  describe('/results-resync-check', () => {
+    it('GET: should render the page', async () => {
+      const req = getRequest(getReqParams('/tech-support/results-resync-check', 'GET'))
+      const res = getResponse()
+      spyOn(res, 'render').and.returnValue(null)
+      await sut.getCheckResultsResyncCheck(req, res, next)
+      expect(res.statusCode).toBe(200)
+      expect(res.locals.pageTitle).toBe('Check Results - Resync Check')
+      expect(res.render).toHaveBeenCalled()
+      expect(next).not.toHaveBeenCalled()
+    })
+
+    it('POST: should call the service', async () => {
+      const req = getRequest(getReqParams('/tech-support/results-resync-check', 'POST'))
+      req.body = {
+        checkCode: checkCode
+      }
+      const res = getResponse()
+      spyOn(res, 'render').and.returnValue(null)
+      spyOn(resultsResyncService, 'resyncSingleCheck').and.returnValue(Promise.resolve())
+      await sut.postCheckResultsResyncCheck(req, res, next)
+      expect(res.statusCode).toBe(200)
+      expect(res.render).toHaveBeenCalled()
+      expect(next).not.toHaveBeenCalled()
+      expect(resultsResyncService.resyncSingleCheck).toHaveBeenCalledWith(checkCode)
     })
   })
 })

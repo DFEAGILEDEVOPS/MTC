@@ -13,7 +13,7 @@ pr:
     include: [ master ]
 
 pool:
-  name: MTC LIVE
+  name: $(BuildAgentPool)
 
 jobs:
 - job: FastFail

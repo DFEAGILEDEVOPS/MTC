@@ -13,7 +13,7 @@ export interface IQueueStorage {
 export interface IQueueService {
   withFilter: (filter: any) => IQueueService;
   performRequest: any;
-  createMessage: (queueName: string, encodedMessage: string) => any;
+  createMessage: (queueName: string, encodedMessage: string, options?: any) => any;
 }
 
 export interface IQueueMessageEncoder {

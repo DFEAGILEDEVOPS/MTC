@@ -1,3 +1,0 @@
-ALTER TABLE mtc_admin.checkWindow DROP COLUMN familiarisationCheckEndDate
-ALTER TABLE mtc_admin.checkWindow DROP COLUMN familiarisationCheckStartDate
-ALTER TABLE mtc_admin.checkWindow DROP COLUMN adminEndDate
