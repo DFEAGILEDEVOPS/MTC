@@ -2,11 +2,12 @@
 set -e
 
 RES_GRP=$1
-IMAGE_VERSION=$2
-ENV=$3
-SUFFIX=$4
-SINGLE_APP_SVC_PLAN=$5
+ENV=$2
+SUFFIX=$3
+SKU=${4:-B1}
+SINGLE_APP_SVC_PLAN=$4
 
+# the web app name variables
 ADMIN_SITE_NAME="${ENV}admin-as-$SUFFIX"
 ASSETS_SITE_NAME="${ENV}assets-as-$SUFFIX"
 AUTH_SITE_NAME="${ENV}auth-as-$SUFFIX"
@@ -54,6 +55,7 @@ createApp assets $ASSETS_SITE_NAME $ASSETS_SVC_PLAN_NAME
 createApp auth $AUTH_SITE_NAME $AUTH_SVC_PLAN_NAME
 createApp pupil $PUPIL_SITE_NAME $PUPIL_SVC_PLAN_NAME
 
+# apply default site settings
 for webAppName in $ADMIN_SITE_NAME $ASSETS_SITE_NAME $AUTH_SITE_NAME $PUPIL_SITE_NAME
 do
   echo "applying security config for $webAppName"
