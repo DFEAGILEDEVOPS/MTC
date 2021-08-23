@@ -280,11 +280,17 @@ const csrfExcludedPaths = [
   '/sign-in' // disable CSRF for login
 ]
 app.use(function (req, res, next) {
-  if (csrfExcludedPaths.includes(req.url)) return next()
+  // only initialise csrf if the user is logged-in to prevent useless sessions being generated in the session
+  // data-store.
+  if (!req.isAuthenticated()) { return next }
+  if (csrfExcludedPaths.includes(req.url)) { return next() }
   csrf(req, res, next)
 })
 app.use((req, res, next) => {
-  if (!csrfExcludedPaths.includes(req.url)) res.locals.csrftoken = req.csrfToken()
+  // only initialise csrf if the user is logged-in to prevent useless sessions being generated in the session
+  // data-store.
+  if (!req.isAuthenticated()) { return next }
+  if (!csrfExcludedPaths.includes(req.url)) { res.locals.csrftoken = req.csrfToken() }
   next()
 })
 
