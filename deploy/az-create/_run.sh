@@ -25,3 +25,4 @@ source ./container-registry.sh $RES_GRP $ENV $SUFFIX $ACR_SKU
 source ./functions.sh $RES_GRP $ENV $SUFFIX "$ENV-sa-$SUFFIX" "$ENV-ai-$SUFFIX"
 source ./web.sh $RES_GRP $ENV $SUFFIX $WEB_SKU
 source ./front-door.sh $RES_GRP $LOCATION $ENV $SUFFIX $FRONT_DOOR_FQDN
+# TODO configure web apps behind front door
