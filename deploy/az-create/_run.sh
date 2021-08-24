@@ -15,6 +15,7 @@ WEB_SKU=${11:-B1}
 RES_GRP="$ENV-rg-$SUFFIX"
 
 echo "creating resource group $RES_GRP"
+# https://docs.microsoft.com/en-us/cli/azure/group?view=azure-cli-latest#az_group_create
 az group create -output none --name $RES_GRP --location $LOCATION
 
 source ./storage-account.sh $RES_GRP $ENV $SUFFIX $SKU

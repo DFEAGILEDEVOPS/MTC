@@ -20,6 +20,8 @@ function createApp() {
   echo "creating web app $siteName under app service plan $plan"
   # TODO for future ref, when using container registry...
   # https://docs.microsoft.com/en-us/azure/app-service/tutorial-custom-container?pivots=container-linux
+
+  # https://docs.microsoft.com/en-us/cli/azure/webapp?view=azure-cli-latest#az_webapp_create
   az webapp create -o none -n $siteName -g $RES_GRP \
     --deployment-container-image-name "DOCKER|nginxdemos/hello:latest" --plan $plan
 }
@@ -28,6 +30,7 @@ function createAppServicePlan() {
   role=$1
   aspName="${ENV}${role}-asp-$SUFFIX"
   echo "creating app service plan $aspName"
+  # https://docs.microsoft.com/en-us/cli/azure/appservice/plan?view=azure-cli-latest#az_appservice_plan_create
   az appservice plan create -o none -n $aspName -g $RES_GRP \
     --is-linux --sku $SKU
 }

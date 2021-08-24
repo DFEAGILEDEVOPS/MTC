@@ -13,10 +13,12 @@ SKU=$6
 # the other hosts overnight jobs only.
 
 ASP_NAME="$ENV-func-asp-$SUFFIX"
+# https://docs.microsoft.com/en-us/cli/azure/appservice/plan?view=azure-cli-latest#az_appservice_plan_create
 az appservice plan create -o none -n $ASP_NAME -g $RES_GRP --is-linux --sku $SKU
 
 NAME="$ENV-func-day-$SUFFIX"
 
+# https://docs.microsoft.com/en-us/cli/azure/functionapp?view=azure-cli-latest#az_functionapp_create
 echo "creating function app $NAME"
 az functionapp create -o none -n $NAME -g $RES_GRP --functions-version 3 --runtime node --runtime-version 12 \
   --plan $ASP_NAME --storage-account $STORAGE_ACCOUNT --app-insights $APP_INSIGHTS_NAME
