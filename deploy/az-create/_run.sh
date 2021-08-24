@@ -1,6 +1,7 @@
 #!/bin/bash
 set -e
 
+SUBSCRIPTION=$1
 ENV=$2
 SUFFIX=$3
 LOCATION=$4
@@ -16,7 +17,7 @@ RES_GRP="$ENV-rg-$SUFFIX"
 
 echo "creating resource group $RES_GRP"
 # https://docs.microsoft.com/en-us/cli/azure/group?view=azure-cli-latest#az_group_create
-az group create -output none --name $RES_GRP --location $LOCATION
+az group create -output none --name $RES_GRP --location $LOCATION --subscription $SUBSCRIPTION
 
 source ./storage-account.sh $RES_GRP $ENV $SUFFIX $SKU
 source ./app-insights.sh $RES_GRP $LOCATION $ENV $SUFFIX
