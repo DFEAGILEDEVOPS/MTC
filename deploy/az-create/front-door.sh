@@ -11,7 +11,7 @@ FQDN=$5
 az extension add --name front-door
 
 FD_NAME="$ENV-fd-$SUFFIX"
-WAF_NAME="$ENV-wafpolicy-$SUFFIX"
+WAF_NAME="${ENV}wafpolicy${SUFFIX}"
 
 echo "creating web application firewall policy $WAF_NAME"
 # https://docs.microsoft.com/en-us/cli/azure/network/front-door/waf-policy?view=azure-cli-latest#az_network_front_door_waf_policy_create

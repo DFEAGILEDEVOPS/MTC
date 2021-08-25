@@ -13,6 +13,7 @@ SKU=$6
 # the other hosts overnight jobs only.
 
 ASP_NAME="$ENV-func-asp-$SUFFIX"
+echo "creating function app service plan $ASP_NAME sku:$SKU"
 # https://docs.microsoft.com/en-us/cli/azure/appservice/plan?view=azure-cli-latest#az_appservice_plan_create
 az appservice plan create -o none -n $ASP_NAME -g $RES_GRP --is-linux --sku $SKU
 
