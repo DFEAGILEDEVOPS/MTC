@@ -1,7 +1,10 @@
 # Azure CLI scripts
 
-Location for the various scripts that create a complete environment under one resource group.
+Scripts to create a complete environment under one resource group for MTC via Azure CLI
 
-Most utilise Azure CLI, while more complex setups may use node.js APIs.
+## Current Limitations
+- Does not configure front door
+- Limited support for redundancy & replication
+
 
 
