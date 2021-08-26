@@ -14,13 +14,15 @@ FRONT_DOOR_FQDN=$7
 STORAGE_SKU=${8:-Standard_ZRS}
 FUNCTION_SKU=${9:-B1}
 WEB_SKU=${10:-B1}
+SERVICE_BUS_SKU${11:-Standard}
 
 RES_GRP="$ENV-rg-$SUFFIX"
 
 echo "creating resource group $RES_GRP"
 # https://docs.microsoft.com/en-us/cli/azure/group?view=azure-cli-latest#az_group_create
-az group create --output none --name $RES_GRP --location $LOCATION
+az group create -o none -n $RES_GRP -l $LOCATION
 
+source ./service-bus.sh $RES_GRP $ENV $SUFFIX $SERVICE_BUS_SKU
 source ./storage-account.sh $RES_GRP $ENV $SUFFIX $STORAGE_SKU
 source ./app-insights.sh $RES_GRP $LOCATION $ENV $SUFFIX
 source ./key-vault.sh $RES_GRP $LOCATION $ENV $SUFFIX
@@ -30,3 +32,6 @@ source ./functions.sh $RES_GRP $ENV $SUFFIX "${ENV}sa${SUFFIX}" "$ENV-ai-$SUFFIX
 source ./web.sh $RES_GRP $ENV $SUFFIX $WEB_SKU
 source ./front-door.sh $RES_GRP $LOCATION $ENV $SUFFIX $FRONT_DOOR_FQDN
 # TODO configure web apps behind front door
+# TODO call script to create service bus entities
+# TODO call script to create storage account entities
+# TODO call script to create database and objects

@@ -5,7 +5,6 @@ RES_GRP=$1
 ENV=$2
 SUFFIX=$3
 SKU=$4
-SINGLE_APP_SVC_PLAN=$5
 
 # the web app name variables
 ADMIN_SITE_NAME="${ENV}admin-as-$SUFFIX"
@@ -27,31 +26,23 @@ function createApp() {
 }
 
 function createAppServicePlan() {
-  role=$1
-  aspName="${ENV}${role}-asp-$SUFFIX"
+  aspName=$1
   echo "creating app service plan $aspName"
   # https://docs.microsoft.com/en-us/cli/azure/appservice/plan?view=azure-cli-latest#az_appservice_plan_create
   az appservice plan create -o none -n $aspName -g $RES_GRP \
     --is-linux --sku $SKU
 }
 
+
 AUTH_SVC_PLAN_NAME="${ENV}auth-asp-$SUFFIX"
 ADMIN_SVC_PLAN_NAME="${ENV}admin-asp-$SUFFIX"
 ASSETS_SVC_PLAN_NAME="${ENV}assets-asp-$SUFFIX"
 PUPIL_SVC_PLAN_NAME="${ENV}pupil-asp-$SUFFIX"
 
-if [ -z "$SINGLE_APP_SVC_PLAN" ]
-then
-  createAppServicePlan auth
-  createAppServicePlan admin
-  createAppServicePlan assets
-  createAppServicePlan pupil
-else
-  ADMIN_SVC_PLAN_NAME=$SINGLE_APP_SVC_PLAN
-  ASSETS_SVC_PLAN_NAME=$SINGLE_APP_SVC_PLAN
-  AUTH_SVC_PLAN_NAME=$SINGLE_APP_SVC_PLAN
-  PUPIL_SVC_PLAN_NAME=$SINGLE_APP_SVC_PLAN
-fi
+createAppServicePlan AUTH_SVC_PLAN_NAME
+createAppServicePlan ADMIN_SVC_PLAN_NAME
+createAppServicePlan ASSETS_SVC_PLAN_NAME
+createAppServicePlan PUPIL_SVC_PLAN_NAME
 
 createApp admin $ADMIN_SITE_NAME $ADMIN_SVC_PLAN_NAME
 createApp assets $ASSETS_SITE_NAME $ASSETS_SVC_PLAN_NAME
