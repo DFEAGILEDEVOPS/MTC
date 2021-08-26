@@ -11,6 +11,3 @@ Scripts to create a complete environment under one resource group for MTC via Az
 ## Current Limitations
 - Does not configure front door
 - Limited support for redundancy & replication
-
-
-
