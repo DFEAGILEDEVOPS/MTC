@@ -12,12 +12,12 @@ NAME="$ENV-sb-$SUFFIX"
 echo "creating service bus namespace $NAME"
 az servicebus namespace create -o none -g $RES_GRP -n $NAME --sku $SKU
 
-USER_OWNER="$ENV-sb-user-owner-$SUFFIX"
+USER_OWNER="$ENV-sb-auth-owner-$SUFFIX"
 # create account for entity management
-echo "creating service bus owner account $USER_OWNER"
+echo "creating service bus manager account $USER_OWNER"
 az sevicebus namespace authorization-rule create -n $USER_OWNER --namespace-name $NAME -g $RES_GRP --rights Manage
 
-USER_CONSUMER="$ENV-sb-user-consumer-$SUFFIX"
+USER_CONSUMER="$ENV-sb-auth-consumer-$SUFFIX"
 # create account for consumers
 echo "creating service bus consumer account $USER_CONSUMER"
 az sevicebus namespace authorization-rule create -n $USER_CONSUMER --namespace-name $NAME -g $RES_GRP --rights Listen Send
