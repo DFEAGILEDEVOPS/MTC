@@ -14,7 +14,7 @@ FRONT_DOOR_FQDN=$7
 STORAGE_SKU=${8:-Standard_ZRS}
 FUNCTION_SKU=${9:-B1}
 WEB_SKU=${10:-B1}
-SERVICE_BUS_SKU${11:-Standard}
+SERVICE_BUS_SKU=${11:-Standard}
 
 RES_GRP="$ENV-rg-$SUFFIX"
 
@@ -31,4 +31,4 @@ source ./storage-account.sh $RES_GRP $ENV $SUFFIX $STORAGE_SKU
 source ./key-vault.sh $RES_GRP $LOCATION $ENV $SUFFIX
 source ./container-registry.sh $RES_GRP $ENV $SUFFIX $ACR_SKU
 source ./functions.sh $RES_GRP $ENV $SUFFIX "${ENV}sa${SUFFIX}" "$ENV-ai-$SUFFIX" $FUNCTION_SKU
-source ./web.sh $RES_GRP $ENV $SUFFIX $WEB_SKU
+source ./web.sh $RES_GRP $ENV $SUFFIX $WEB_SKU "$ENV-ai-$SUFFIX"
