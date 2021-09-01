@@ -20,17 +20,17 @@ describe('pin-generation-v2.service', () => {
     })
 
     it('makes a call to the data service to fetch the pupils', async () => {
-      spyOn(pupilIdentificationFlagService, 'addIdentificationFlags')
+      spyOn(pupilIdentificationFlagService, 'sortAndAddIdentificationFlags')
       const schoolId = 42
       await pinGenerationV2Service.getPupilsEligibleForPinGeneration(schoolId)
       expect(pinGenerationDataService.sqlFindEligiblePupilsBySchool).toHaveBeenCalledTimes(1)
     })
 
     it('makes a call to the pupil identification service to get display information for the GUI', async () => {
-      spyOn(pupilIdentificationFlagService, 'addIdentificationFlags')
+      spyOn(pupilIdentificationFlagService, 'sortAndAddIdentificationFlags')
       const schoolId = 42
       await pinGenerationV2Service.getPupilsEligibleForPinGeneration(schoolId)
-      expect(pupilIdentificationFlagService.addIdentificationFlags).toHaveBeenCalledTimes(1)
+      expect(pupilIdentificationFlagService.sortAndAddIdentificationFlags).toHaveBeenCalledTimes(1)
     })
 
     it('sorts the pupils', async () => {

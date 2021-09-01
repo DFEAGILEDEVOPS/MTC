@@ -16,10 +16,7 @@ const serviceToExport = {
    */
   getPupilsEligibleForPinGeneration: async function getPupilsEligibleForPinGeneration (schoolId, isLiveCheck) {
     const pupils = await pinGenerationDataService.sqlFindEligiblePupilsBySchool(schoolId, isLiveCheck)
-    const sortedPupils = sorting.sortByProps(['lastName', 'foreName', 'middleNames'], pupils)
-    // Fix up the pupil names for the GUI
-    const guiPupils = pupilIdentificationFlagService.addIdentificationFlags(sortedPupils)
-    return guiPupils
+    return pupilIdentificationFlagService.sortAndAddIdentificationFlags(pupils)
   },
 
   /**
