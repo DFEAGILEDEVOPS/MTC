@@ -15,8 +15,7 @@ const pupilsNotTakingCheckDataService = {
       FROM [mtc_admin].[pupil] p
         INNER JOIN [mtc_admin].[pupilAttendance] pa ON p.id = pa.pupil_id
         INNER JOIN [mtc_admin].[attendanceCode] ac ON pa.attendanceCode_id = ac.id
-      WHERE p.school_id = @schoolId AND pa.isDeleted = 0
-      ORDER BY p.lastName ASC, p.foreName ASC, p.middleNames ASC, p.dateOfBirth ASC
+      WHERE p.school_id = @schoolId AND pa.isDeleted = 0      
     `
 
     const params = [{
@@ -50,8 +49,7 @@ const pupilsNotTakingCheckDataService = {
                  (c.pupilLoginDate IS NULL
                       -- and has expired or been deleted (happens on a schedule after expiry)                   
                       AND (cp.check_id IS NULL OR SYSDATETIMEOFFSET() > cp.pinExpiresAt)))
-           AND p.attendanceId IS NULL
-         ORDER BY p.lastName ASC, p.foreName ASC, p.middleNames ASC, p.dateOfBirth ASC
+           AND p.attendanceId IS NULL         
     `
     const params = [{
       name: 'schoolId',
