@@ -7,7 +7,6 @@ const pupilIdentificationFlagService = require('../../../services/pupil-identifi
 const pupilStatusDataService = require('../../../services/data-access/pupil-status.data.service')
 const pupilStatusService = require('../../../services/pupil-status.service')
 const settingService = require('../../../services/setting.service')
-const tableSorting = require('../../../helpers/table-sorting')
 
 describe('pupil-status.service', () => {
   describe('#getProcessStatusV2', () => {
@@ -245,8 +244,7 @@ describe('pupil-status.service', () => {
       spyOn(settingService, 'get').and.returnValue(Promise.resolve({ checkTimeLimit: 30 }))
       spyOn(pupilStatusDataService, 'sqlFindPupilsFullStatus').and.returnValue([{ urlSlug: 'urlSlug' }])
       spyOn(pupilStatusService, 'addStatus')
-      spyOn(pupilIdentificationFlagService, 'addIdentificationFlags')
-      spyOn(tableSorting, 'applySorting')
+      spyOn(pupilIdentificationFlagService, 'sortAndAddIdentificationFlags')
     })
     it('throws an error if no school password is provided', async () => {
       try {
@@ -270,11 +268,10 @@ describe('pupil-status.service', () => {
     })
     it('calls the pupilIdentificationFlagService addIdentificationFlags if school is provided', async () => {
       await pupilStatusService.getPupilStatusData(42)
-      expect(pupilIdentificationFlagService.addIdentificationFlags).toHaveBeenCalled()
+      expect(pupilIdentificationFlagService.sortAndAddIdentificationFlags).toHaveBeenCalled()
     })
     it('calls the tableSorting applySorting if school is provided', async () => {
       await pupilStatusService.getPupilStatusData(42)
-      expect(tableSorting.applySorting).toHaveBeenCalled()
     })
   })
 })
