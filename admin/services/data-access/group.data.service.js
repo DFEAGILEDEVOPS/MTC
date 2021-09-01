@@ -228,7 +228,7 @@ groupDataService.sqlFindPupilsInNoGroupOrSpecificGroup = async (schoolId, groupI
     sql += ' OR group_id=@groupId'
   }
 
-  sql += ') ORDER BY group_id DESC, lastName ASC, foreName ASC, middleNames ASC, dateOfBirth ASC'
+  sql += ')'
 
   return sqlService.readonlyQuery(sql, params)
 }
