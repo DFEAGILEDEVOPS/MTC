@@ -55,7 +55,7 @@ const pupilsNotTakingCheckService = {
    */
   getPupilsWithoutReasonsInAdminPeriod: async function getPupilsWithoutReasonsInAdminEndPeriod (schoolId) {
     const pupils = await pupilsNotTakingCheckDataService.sqlFindPupilsWithoutReasonsInAdminPeriod(schoolId)
-    return pupilIdentificationFlag.addIdentificationFlags(pupils)
+    return pupilIdentificationFlag.sortAndAddIdentificationFlags(pupils)
   },
 
   /**
