@@ -161,7 +161,6 @@ pupilAccessArrangementsDataService.sqFindPupilsWithAccessArrangements = async (s
              INNER JOIN [mtc_admin].pupil p ON paa.pupil_id = p.id
              INNER JOIN [mtc_admin].accessarrangements aa ON aa.id = paa.accessarrangements_id
        WHERE p.school_id = @schoolId
-       ORDER BY p.lastname
   `
   return sqlService.readonlyQuery(sql, params)
 }
