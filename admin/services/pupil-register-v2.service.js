@@ -1,6 +1,5 @@
 'use strict'
 
-// const pupilRegisterCachingService = require('../services/pupil-register-caching.service')
 const pupilRegisterV2DataService = require('./data-access/pupil-register-v2.data.service')
 const pupilIdentificationFlagService = require('./pupil-identification-flag.service')
 const redisCacheService = require('./data-access/redis-cache.service')
