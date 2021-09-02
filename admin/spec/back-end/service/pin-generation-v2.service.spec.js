@@ -1,5 +1,5 @@
 'use strict'
-/* global describe it spyOn expect beforeEach */
+/* global describe expect beforeEach test jest afterEach */
 const moment = require('moment')
 const pinGenerationDataService = require('../../../services/data-access/pin-generation.data.service')
 const pupilIdentificationFlagService = require('../../../services/pupil-identification-flag.service')
@@ -8,6 +8,10 @@ const pupilIdentificationFlagService = require('../../../services/pupil-identifi
 const pinGenerationV2Service = require('../../../services/pin-generation-v2.service')
 
 describe('pin-generation-v2.service', () => {
+  afterEach(() => {
+    jest.restoreAllMocks()
+  })
+
   describe('#getPupilsEligibleForPinGeneration', () => {
     beforeEach(() => {
       const pupils = [
@@ -16,24 +20,23 @@ describe('pin-generation-v2.service', () => {
         { id: 3, lastName: 'Aardvark', foreName: 'Alfred', middleNames: 'John', dateOfBirth: moment('2011-01-22T09:00:00') },
         { id: 4, lastName: 'Aardvark', foreName: 'Alfred', middleNames: 'George', dateOfBirth: moment('2011-01-22T09:00:00') }
       ]
-      spyOn(pinGenerationDataService, 'sqlFindEligiblePupilsBySchool').and.returnValue(pupils)
+      jest.spyOn(pinGenerationDataService, 'sqlFindEligiblePupilsBySchool').mockResolvedValue(pupils)
     })
 
-    it('makes a call to the data service to fetch the pupils', async () => {
-      spyOn(pupilIdentificationFlagService, 'sortAndAddIdentificationFlags')
+    test('makes a call to the data service to fetch the pupils', async () => {
       const schoolId = 42
       await pinGenerationV2Service.getPupilsEligibleForPinGeneration(schoolId)
       expect(pinGenerationDataService.sqlFindEligiblePupilsBySchool).toHaveBeenCalledTimes(1)
     })
 
-    it('makes a call to the pupil identification service to get display information for the GUI', async () => {
+    test('makes a call to the pupil identification service to get display information for the GUI', async () => {
       spyOn(pupilIdentificationFlagService, 'sortAndAddIdentificationFlags')
       const schoolId = 42
       await pinGenerationV2Service.getPupilsEligibleForPinGeneration(schoolId)
       expect(pupilIdentificationFlagService.sortAndAddIdentificationFlags).toHaveBeenCalledTimes(1)
     })
 
-    it('sorts the pupils', async () => {
+    test('sorts the pupils', async () => {
       const schoolId = 42
       const result = await pinGenerationV2Service.getPupilsEligibleForPinGeneration(schoolId, true)
       expect(result[0].id).toBe(4)
@@ -44,19 +47,27 @@ describe('pin-generation-v2.service', () => {
   })
 
   describe('#getPupilsWithActivePins', () => {
-    it('makes a call to the data service to get pupils with active pins', async () => {
-      spyOn(pinGenerationDataService, 'sqlFindPupilsWithActivePins')
-      spyOn(pupilIdentificationFlagService, 'addIdentificationFlags')
-      const schoolId = 42
-      await pinGenerationV2Service.getPupilsWithActivePins(schoolId, 'live')
+    beforeEach(() => {
+      const pupils = [
+        { id: 1, lastName: 'Smith', foreName: 'Alfred', middleNames: '', dateOfBirth: moment('2011-01-22T09:00:00') },
+        { id: 2, lastName: 'Smith', foreName: 'Bertie', middleNames: '', dateOfBirth: moment('2011-01-22T09:00:00') },
+        { id: 3, lastName: 'Aardvark', foreName: 'Alfred', middleNames: 'John', dateOfBirth: moment('2011-01-22T09:00:00') },
+        { id: 4, lastName: 'Aardvark', foreName: 'Alfred', middleNames: 'George', dateOfBirth: moment('2011-01-22T09:00:00') }
+      ]
+      spyOn(pinGenerationDataService, 'sqlFindPupilsWithActivePins').and.returnValue(pupils)
     })
 
-    it('makes a call to the pupil identification service to get display information for the GUI', async () => {
-      spyOn(pinGenerationDataService, 'sqlFindPupilsWithActivePins')
-      spyOn(pupilIdentificationFlagService, 'addIdentificationFlags')
+    test('makes a call to the data service to get pupils with active pins', async () => {
       const schoolId = 42
       await pinGenerationV2Service.getPupilsWithActivePins(schoolId, 'live')
-      expect(pupilIdentificationFlagService.addIdentificationFlags).toHaveBeenCalledTimes(1)
+      expect(pinGenerationDataService.sqlFindPupilsWithActivePins).toHaveBeenCalledTimes(1)
+    })
+
+    test('makes a call to the pupil identification service to get display information for the GUI', async () => {
+      jest.spyOn(pupilIdentificationFlagService, 'sortAndAddIdentificationFlags')
+      const schoolId = 42
+      await pinGenerationV2Service.getPupilsWithActivePins(schoolId, 'live')
+      expect(pupilIdentificationFlagService.sortAndAddIdentificationFlags).toHaveBeenCalledTimes(1)
     })
   })
 })
