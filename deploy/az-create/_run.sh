@@ -32,3 +32,4 @@ source ./key-vault.sh $RES_GRP $LOCATION $ENV $SUFFIX
 source ./container-registry.sh $RES_GRP $ENV $SUFFIX $ACR_SKU
 source ./functions.sh $RES_GRP $ENV $SUFFIX "${ENV}sa${SUFFIX}" "$ENV-ai-$SUFFIX" $FUNCTION_SKU
 source ./web.sh $RES_GRP $ENV $SUFFIX $WEB_SKU "$ENV-ai-$SUFFIX"
+echo "resource group $RES_GRP creation complete"
