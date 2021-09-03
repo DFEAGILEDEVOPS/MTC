@@ -56,7 +56,8 @@
                                     <span id="pupilName" class="govuk-!-font-weight-bold name-text-wrap"><%= p.fullName %></span>
                                 <% } %>
                                 <% if (p.showDoB) { %>
-                                    <div class="govuk-font-greyed-out govuk-!-font-size-16">Date of birth: <%= p.dateOfBirth %></div>
+                                    <div class="govuk-font-greyed-out govuk-!-font-size-16">Date of birth: <%= p
+                                                .formattedDateOfBirth %></div>
                                 <% } %>
                                 <input type="hidden" id="pupilUpn-<%= i %>" name="pupilUpn" value="<%= p.upn %>"/>
                             </div>
