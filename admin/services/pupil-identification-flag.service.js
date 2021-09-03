@@ -92,7 +92,7 @@ const pupilIdentificationFlag = {
    * The input argument MUST be sorted for this to work correctly (same the initial version)
    * @param pupils
    */
-  addIdentificationFlags: function addIdentificationFlags2 (pupils) {
+  addIdentificationFlags: function addIdentificationFlags (pupils) {
     const identifiedPupils = this.clonePupilsWithDefaults(pupils)
     for (let i = 0; i < identifiedPupils.length - 1; i++) {
       const compResult = this.compareTwoPupils(pupils[i], pupils[i + 1])

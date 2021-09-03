@@ -30,7 +30,7 @@ describe('pin-generation-v2.service', () => {
     })
 
     test('makes a call to the pupil identification service to get display information for the GUI', async () => {
-      spyOn(pupilIdentificationFlagService, 'sortAndAddIdentificationFlags')
+      jest.spyOn(pupilIdentificationFlagService, 'sortAndAddIdentificationFlags')
       const schoolId = 42
       await pinGenerationV2Service.getPupilsEligibleForPinGeneration(schoolId)
       expect(pupilIdentificationFlagService.sortAndAddIdentificationFlags).toHaveBeenCalledTimes(1)
@@ -54,7 +54,7 @@ describe('pin-generation-v2.service', () => {
         { id: 3, lastName: 'Aardvark', foreName: 'Alfred', middleNames: 'John', dateOfBirth: moment('2011-01-22T09:00:00') },
         { id: 4, lastName: 'Aardvark', foreName: 'Alfred', middleNames: 'George', dateOfBirth: moment('2011-01-22T09:00:00') }
       ]
-      spyOn(pinGenerationDataService, 'sqlFindPupilsWithActivePins').and.returnValue(pupils)
+      jest.spyOn(pinGenerationDataService, 'sqlFindPupilsWithActivePins').mockResolvedValue(pupils)
     })
 
     test('makes a call to the data service to get pupils with active pins', async () => {

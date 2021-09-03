@@ -102,8 +102,8 @@ const resultService = {
         lastName: o.lastName,
         group_id: o.group_id,
         dateOfBirth: o.dateOfBirth,
-        // Workaround for bug in the addIdentificationFlags() call which makes dateOfBirth either a date type or a
-        // string type.  Ignore dateOfBirth and use this property to get a known data type.
+        // Workaround for a bug that was in addIdentificationFlags() call, but is now fixed,  which makes dateOfBirth
+        // either a date or a string type.  Ignore dateOfBirth and use this property to get a known data type.
         originalDateOfBirth: o.dateOfBirth,
         score: o.mark,
         status: this.assignStatus(o),

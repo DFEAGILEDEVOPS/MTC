@@ -1,6 +1,6 @@
 'use strict'
 
-/* global describe expect it fail beforeEach spyOn test */
+/* global describe expect fail beforeEach test jest afterEach */
 const logger = require('../../../services/log.service').getLogger()
 const moment = require('moment')
 const pupilIdentificationFlagService = require('../../../services/pupil-identification-flag.service')
@@ -9,6 +9,10 @@ const pupilStatusService = require('../../../services/pupil-status.service')
 const settingService = require('../../../services/setting.service')
 
 describe('pupil-status.service', () => {
+  afterEach(() => {
+    jest.restoreAllMocks()
+  })
+
   describe('#getProcessStatusV2', () => {
     test('it is a function', () => {
       expect(typeof pupilStatusService.getProcessStatusV2).toBe('function')
@@ -202,7 +206,7 @@ describe('pupil-status.service', () => {
 
     test('a test that does not matches anything gets N/A', () => {
       // prevent an error being displayed in the console
-      spyOn(logger, 'error')
+      jest.spyOn(logger, 'error').mockImplementation()
       const status = pupilStatusService.getProcessStatusV2({
         attendanceId: null,
         currentCheckId: 1,
@@ -241,12 +245,13 @@ describe('pupil-status.service', () => {
 
   describe('#getPupilStatusData', () => {
     beforeEach(() => {
-      spyOn(settingService, 'get').and.returnValue(Promise.resolve({ checkTimeLimit: 30 }))
-      spyOn(pupilStatusDataService, 'sqlFindPupilsFullStatus').and.returnValue([{ urlSlug: 'urlSlug' }])
-      spyOn(pupilStatusService, 'addStatus')
-      spyOn(pupilIdentificationFlagService, 'sortAndAddIdentificationFlags')
+      jest.spyOn(settingService, 'get').mockResolvedValue({ checkTimeLimit: 30 })
+      jest.spyOn(pupilStatusDataService, 'sqlFindPupilsFullStatus').mockResolvedValue([{ urlSlug: 'urlSlug' }])
+      jest.spyOn(pupilStatusService, 'addStatus').mockImplementation()
+      jest.spyOn(pupilIdentificationFlagService, 'sortAndAddIdentificationFlags').mockImplementation()
     })
-    it('throws an error if no school password is provided', async () => {
+
+    test('throws an error if no school password is provided', async () => {
       try {
         await pupilStatusService.getPupilStatusData(undefined)
         fail()
@@ -254,23 +259,28 @@ describe('pupil-status.service', () => {
         expect(error.message).toBe('School id not found in session')
       }
     })
-    it('calls the settingService get if school is provided', async () => {
+
+    test('calls the settingService get if school is provided', async () => {
       await pupilStatusService.getPupilStatusData(42)
       expect(settingService.get).toHaveBeenCalled()
     })
-    it('calls the pupilStatusDataService sqlFindPupilsFullStatus if school is provided', async () => {
+
+    test('calls the pupilStatusDataService sqlFindPupilsFullStatus if school is provided', async () => {
       await pupilStatusService.getPupilStatusData(42)
       expect(pupilStatusDataService.sqlFindPupilsFullStatus).toHaveBeenCalled()
     })
-    it('calls the pupilStatusService addStatus if school is provided', async () => {
+
+    test('calls the pupilStatusService addStatus if school is provided', async () => {
       await pupilStatusService.getPupilStatusData(42)
       expect(pupilStatusService.addStatus).toHaveBeenCalled()
     })
-    it('calls the pupilIdentificationFlagService addIdentificationFlags if school is provided', async () => {
+
+    test('calls the pupilIdentificationFlagService sortAndAddIdentificationFlags if school is provided', async () => {
       await pupilStatusService.getPupilStatusData(42)
       expect(pupilIdentificationFlagService.sortAndAddIdentificationFlags).toHaveBeenCalled()
     })
-    it('calls the tableSorting applySorting if school is provided', async () => {
+
+    test('calls the tableSorting applySorting if school is provided', async () => {
       await pupilStatusService.getPupilStatusData(42)
     })
   })
