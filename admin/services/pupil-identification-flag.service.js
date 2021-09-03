@@ -65,6 +65,8 @@ const pupilIdentificationFlag = {
       r2.fullName = `${p2.lastName}, ${p2.foreName} ${p2.middleNames}`
       r1.showMiddleNames = true
       r2.showMiddleNames = true
+      r1.showDoB = false
+      r2.showDoB = false
     }
     return [r1, r2]
   },
@@ -95,7 +97,7 @@ const pupilIdentificationFlag = {
   addIdentificationFlags: function addIdentificationFlags (pupils) {
     const identifiedPupils = this.clonePupilsWithDefaults(pupils)
     for (let i = 0; i < identifiedPupils.length - 1; i++) {
-      const compResult = this.compareTwoPupils(pupils[i], pupils[i + 1])
+      const compResult = this.compareTwoPupils(identifiedPupils[i], identifiedPupils[i + 1])
       identifiedPupils[i] = compResult[0]
       identifiedPupils[i + 1] = compResult[1]
     }
