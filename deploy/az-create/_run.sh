@@ -11,10 +11,12 @@ REDIS_SKU=$4
 REDIS_PLAN=$5
 ACR_SKU=$6
 FRONT_DOOR_FQDN=$7
-STORAGE_SKU=${8:-Standard_ZRS}
-FUNCTION_SKU=${9:-B1}
-WEB_SKU=${10:-B1}
-SERVICE_BUS_SKU=${11:-Standard}
+SQL_USER=$8
+SQL_PASSWORD=$9
+STORAGE_SKU=${10:-Standard_ZRS}
+FUNCTION_SKU=${11:-B1}
+WEB_SKU=${12:-B1}
+SERVICE_BUS_SKU=${13:-Standard}
 
 RES_GRP="$ENV-rg-$SUFFIX"
 
@@ -24,6 +26,7 @@ az group create -o none -n $RES_GRP -l $LOCATION
 
 source ./app-insights.sh $RES_GRP $LOCATION $ENV $SUFFIX
 source ./front-door.sh $RES_GRP $LOCATION $ENV $SUFFIX $FRONT_DOOR_FQDN
+source ./sql-server.sh $RES_GRP $ENV $SUFFIX $SQL_USER $SQL_PASSWORD
 # TODO configure web apps behind front door
 source ./redis.sh $RES_GRP $LOCATION $ENV $SUFFIX $REDIS_SKU $REDIS_PLAN
 source ./service-bus.sh $RES_GRP $ENV $SUFFIX $SERVICE_BUS_SKU
