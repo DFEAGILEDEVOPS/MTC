@@ -9,14 +9,15 @@ SUFFIX=$2
 LOCATION=$3
 REDIS_SKU=$4
 REDIS_PLAN=$5
-ACR_SKU=$6
-FRONT_DOOR_FQDN=$7
-SQL_USER=$8
-SQL_PASSWORD=$9
-STORAGE_SKU=${10:-Standard_ZRS}
-FUNCTION_SKU=${11:-B1}
-WEB_SKU=${12:-B1}
-SERVICE_BUS_SKU=${13:-Standard}
+FRONT_DOOR_FQDN=$6
+SQL_USER=$7
+SQL_PASSWORD=$8
+ACR_SKU=$9
+ACR_ZONE_REDUNDANCY=${10:-Disabled}
+STORAGE_SKU=${11:-Standard_ZRS}
+FUNCTION_SKU=${12:-B1}
+WEB_SKU=${13:-B1}
+SERVICE_BUS_SKU=${14:-Standard}
 
 RES_GRP="$ENV-rg-$SUFFIX"
 
@@ -24,14 +25,14 @@ echo "creating resource group $RES_GRP"
 # https://docs.microsoft.com/en-us/cli/azure/group?view=azure-cli-latest#az_group_create
 az group create -o none -n $RES_GRP -l $LOCATION
 
+# key vault has a default 7-day soft delete policy, so naming collisions should be identified first for a fast fail
+source ./key-vault.sh $RES_GRP $LOCATION $ENV $SUFFIX
 source ./app-insights.sh $RES_GRP $LOCATION $ENV $SUFFIX
 source ./front-door.sh $RES_GRP $LOCATION $ENV $SUFFIX $FRONT_DOOR_FQDN
 source ./sql-server.sh $RES_GRP $ENV $SUFFIX $SQL_USER $SQL_PASSWORD
-# TODO configure web apps behind front door
 source ./redis.sh $RES_GRP $LOCATION $ENV $SUFFIX $REDIS_SKU $REDIS_PLAN
 source ./service-bus.sh $RES_GRP $ENV $SUFFIX $SERVICE_BUS_SKU
 source ./storage-account.sh $RES_GRP $ENV $SUFFIX $STORAGE_SKU
-source ./key-vault.sh $RES_GRP $LOCATION $ENV $SUFFIX
 source ./container-registry.sh $RES_GRP $ENV $SUFFIX $ACR_SKU
 source ./functions.sh $RES_GRP $ENV $SUFFIX "${ENV}sa${SUFFIX}" "$ENV-ai-$SUFFIX" $FUNCTION_SKU
 source ./web.sh $RES_GRP $ENV $SUFFIX $WEB_SKU "$ENV-ai-$SUFFIX"

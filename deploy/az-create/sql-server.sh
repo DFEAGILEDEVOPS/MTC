@@ -37,7 +37,6 @@ SUFFIX=$3
 ADMIN_USER=$4
 ADMIN_PASSWORD=$5
 
-
 NAME="$ENV-mssql-$SUFFIX"
 
 # https://docs.microsoft.com/en-us/cli/azure/sql/server?view=azure-cli-latest#az_sql_server_create
