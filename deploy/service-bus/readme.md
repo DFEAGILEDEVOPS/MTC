@@ -1,5 +1,7 @@
 # Service bus queue creation utility script
 
+### Note: To be moved under `az-create`
+
 Creates service bus queues defined in queues-topics.json, if they do not already exist.
 
 ## Environment variables
