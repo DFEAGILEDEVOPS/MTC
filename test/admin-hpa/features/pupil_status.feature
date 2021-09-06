@@ -33,12 +33,12 @@ Feature: Pupil Status Outcome
 
     Examples:
       | reason                     |
-      | Pupil not taking the check |
-#      | Incorrect registration                         |
-#      | Left school                                    |
-#      | Working below expectation                      |
-#      | Unable to access                               |
-#      | Just arrived and unable to establish abilities |
+      | Absent during check window |
+      | Incorrect registration                         |
+      | Left school                                    |
+      | Working below expectation                      |
+      | Unable to access                               |
+      | Just arrived and unable to establish abilities |
 
   Scenario: Counts displayed in the 4 status boxes should equal total pupils
     Given I am logged in
