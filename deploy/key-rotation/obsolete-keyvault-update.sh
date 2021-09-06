@@ -1,6 +1,10 @@
 #!/bin/bash
 
-# obtains current connection strings for service bus and storage accounts, and updates the relevant key vault secret value
+# obsolete - no longer used.  kept for reference
+# obtains current connection strings for service bus and storage accounts, and updates the relevant key vault secret value.
+# Limitations
+# -----------
+# Service Bus auth rule names are hardcoded
 
 RES_GROUP=$1 # the target resource group
 KEY_VAULT_NAME=$2 # the key vault name
