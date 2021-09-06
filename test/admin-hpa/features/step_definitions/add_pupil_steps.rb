@@ -54,13 +54,14 @@ Then(/^I should see validation errors$/) do
 end
 
 When(/^I submit the form without completing the optional fields$/) do
+  dob = calculate_age(9)
   @page.enter_details({
                         first_name: 'First',
                         last_name: 'last',
                         female: true,
-                        day: '18',
-                        month: '09',
-                        year: '2010',
+                        day: dob.day.to_s,
+                        month: dob.month.to_s,
+                        year: dob.year.to_s,
                         upn: (@page == edit_pupil_page ? @upn : UpnGenerator.generate)
                       })
   @page.add_pupil.click unless @page == edit_pupil_page
