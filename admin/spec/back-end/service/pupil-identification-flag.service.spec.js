@@ -7,7 +7,8 @@ describe('addIdentificationFlags', () => {
   test('returns showDoB property as true for pupils with same fullname', () => {
     const mockPupilData = [
       { lastName: 'Smith', foreName: 'Jack', dateOfBirth: moment('2013-01-01'), middleNames: 'B' },
-      { lastName: 'Smith', foreName: 'Jack', dateOfBirth: moment('2013-01-02'), middleNames: 'A' }
+      { lastName: 'Smith', foreName: 'Jack', dateOfBirth: moment('2013-01-02'), middleNames: 'A' },
+      { lastName: 'Taylor', foreName: 'Random', dateOfBirth: moment('2013-03-01'), middleNames: 'C' }
     ]
     const pupils = pupilIdentificationFlagService.addIdentificationFlags(mockPupilData)
     expect(pupils[0].showDoB).toBe(true)
@@ -65,15 +66,15 @@ describe('addIdentificationFlags', () => {
     ]
     const pupils = pupilIdentificationFlagService.sortAndAddIdentificationFlags(mockPupilData)
     expect(pupils[0].showMiddleNames).toBe(true)
-    expect(pupils[0].showDoB).toBe(false)
+    expect(pupils[0].showDoB).toBe(true)
     expect(pupils[0].fullName).toBe('Smith, Jack A')
 
     expect(pupils[1].showMiddleNames).toBe(true)
-    expect(pupils[1].showDoB).toBe(false)
+    expect(pupils[1].showDoB).toBe(true)
     expect(pupils[1].fullName).toBe('Smith, Jack B')
 
     expect(pupils[2].showMiddleNames).toBe(true)
-    expect(pupils[2].showDoB).toBe(false)
+    expect(pupils[2].showDoB).toBe(true)
     expect(pupils[2].fullName).toBe('Smith, Jack C')
   })
 
@@ -81,7 +82,8 @@ describe('addIdentificationFlags', () => {
     const mockPupilData = [
       { lastName: 'Smith', foreName: 'Jack', dateOfBirth: moment('2013-01-04'), middleNames: 'C' },
       { lastName: 'Smith', foreName: 'Jack', dateOfBirth: moment('2013-01-03'), middleNames: 'B' },
-      { lastName: 'Smith', foreName: 'Jack', dateOfBirth: moment('2013-01-02'), middleNames: 'A' }
+      { lastName: 'Smith', foreName: 'Jack', dateOfBirth: moment('2013-01-02'), middleNames: 'A' },
+      { lastName: 'Taylor', foreName: 'Random', dateOfBirth: moment('2012-12-24'), middleNames: 'D' }
     ]
     const pupils = pupilIdentificationFlagService.sortAndAddIdentificationFlags(mockPupilData)
     expect(pupils[0].formattedDateOfBirth).toEqual('2 Jan 2013')

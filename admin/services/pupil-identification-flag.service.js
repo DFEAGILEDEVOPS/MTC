@@ -65,8 +65,6 @@ const pupilIdentificationFlag = {
       r2.fullName = `${p2.lastName}, ${p2.foreName} ${p2.middleNames}`
       r1.showMiddleNames = true
       r2.showMiddleNames = true
-      r1.showDoB = false
-      r2.showDoB = false
     }
     return [r1, r2]
   },
