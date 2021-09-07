@@ -98,4 +98,14 @@ describe('addIdentificationFlags', () => {
     expect(pupils[2].showDoB).toBe(true)
     expect(pupils[2].showMiddleNames).toBe(false)
   })
+
+  test('it does not show middlenames when just the DoB is the same', () => {
+    const mockPupilData = [
+      { lastName: 'Smythe', foreName: 'John', dateOfBirth: moment('2013-01-03'), middleNames: 'A' },
+      { lastName: 'Smith', foreName: 'Jack', dateOfBirth: moment('2013-01-03'), middleNames: 'B' }
+    ]
+    const pupils = pupilIdentificationFlagService.sortAndAddIdentificationFlags(mockPupilData)
+    expect(pupils[0].showMiddleNames).toBe(false)
+    expect(pupils[1].showMiddleNames).toBe(false)
+  })
 })

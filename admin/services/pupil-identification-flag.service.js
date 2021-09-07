@@ -56,11 +56,13 @@ const pupilIdentificationFlag = {
   compareTwoPupils: function compareTwoPupils (p1, p2) {
     const r1 = R.mergeLeft(p1, this.getDefaultIdentifiedPupilProps(p1))
     const r2 = R.mergeLeft(p2, this.getDefaultIdentifiedPupilProps(p2))
-    if (pupilIdentificationFlag.haveEqualFullNames(p1, p2)) {
+    const haveEqualFullNames = this.haveEqualFullNames(p1, p2)
+    const haveEqualDatesOfBirth = p1.dateOfBirth.toString() === p2.dateOfBirth.toString()
+    if (haveEqualFullNames) {
       r1.showDoB = true
       r2.showDoB = true
     }
-    if (p1.dateOfBirth.toString() === p2.dateOfBirth.toString()) {
+    if (haveEqualFullNames && haveEqualDatesOfBirth) {
       r1.fullName = `${p1.lastName}, ${p1.foreName} ${p1.middleNames}`
       r2.fullName = `${p2.lastName}, ${p2.foreName} ${p2.middleNames}`
       r1.showMiddleNames = true
