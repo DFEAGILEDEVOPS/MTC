@@ -44,6 +44,5 @@ module.exports.getRestartsForSchool = async function getRestartsForSchool (schoo
       r.status = 'Restart taken'
     }
   })
-  pupilIdentificationFlagService.sortAndAddIdentificationFlags(restarts)
-  return restarts
+  return pupilIdentificationFlagService.sortAndAddIdentificationFlags(restarts)
 }
