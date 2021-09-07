@@ -27,18 +27,19 @@
                     <div class="multiple-choice">
                         <input class="govuk-radios__input" id="confirmYes" type="radio" role="radio" name="confirm" value="Y" checked="checked">
                         <label for="confirmYes">
-                            <p>I can <strong>confirm</strong> the following statements about the administration of the multiplication tables check:</p>
+                            <p>I <strong>confirm</strong> that my school administered the multiplication tables check according to the arrangements set out in the guidance.</p>
+                            <p>In particular:</p>
                             <a id="confirmBoxes"></a>
                         </label>
                     </div>
                 </div>
                 <div class="govuk-form-group inset <%= error.isError('confirmBoxes') ? 'govuk-form-group--error' : '' %>" id="confirm">
-                <% if (error.isError('confirmBoxes')) { %>
-                    <span class="govuk-error-message"><%= error.get('confirmBoxes') %></span>
-                <% } %>
+                    <% if (error.isError('confirmBoxes')) { %>
+                        <span class="govuk-error-message"><%= error.get('confirmBoxes') %></span>
+                    <% } %>
                     <div class="multiple-choice smaller">
                         <input type="checkbox" id="pupilDetails" name="pupilDetails" value="checked" <% if (formData['pupilDetails']) {%> checked<% } %>>
-                        <label class="govuk-label" for="pupilDetails">all pupil details are correct</label>
+                        <label class="govuk-label" for="pupilDetails">pupil details are correct</label>
                     </div>
                     <div class="multiple-choice smaller">
                         <input type="checkbox" id="uniquePins" name="uniquePins" value="checked" <% if (formData['uniquePins']) {%> checked<% } %>>
@@ -46,8 +47,7 @@
                     </div>
                     <div class="multiple-choice smaller">
                         <input type="checkbox" id="staffConfirm" name="staffConfirm" value="checked" <% if (formData['staffConfirm']) {%> checked<% } %>>
-                        <label class="govuk-label" for="staffConfirm">the check was administered according to
-                            the <a href="<%- guidancePdf %>" target="_blank" rel="noopener noreferrer">check administration guidance</a>.</label>
+                        <label class="govuk-label" for="staffConfirm">all staff involved in the administration of the check have confirmed to me that the check was administered in line with the statutory arrangements</label>
                     </div>
                 </div>
 
@@ -55,8 +55,11 @@
                     <div class="multiple-choice">
                         <input class="govuk-radios__input" id="confirmNo" type="radio" role="radio" name="confirm" value="N">
                         <label class="govuk-label" for="confirmNo">
-                            <p>I am <strong>unable to confirm</strong> the statements above.</p>
+                            <p>I am <strong>unable to confirm</strong> the statements above and have reported this to the Standards and Testing Agency (STA)</p>
                         </label>
+                        <div class="govuk-inset-text">
+                            If you have not reported this to the STA, please contact the national curriculum assessments helpline on 0300 303 3013 before submitting this declaration.
+                        </div>
                     </div>
                 </div>
                 <input type="submit" class="govuk-button govuk-!-margin-right-2" value="Submit" />

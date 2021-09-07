@@ -8,59 +8,58 @@
                 </div>
             <% } %>
             <%- partial('partials/_readonly', { availabilityData: { hdfSubmitted } }) %>
-            <h1 class="govuk-heading-xl" aria-describedby="heading-xlarge">Confirm pupils not taking the check</h1>
+            <h1 class="govuk-heading-xl" aria-describedby="heading-xlarge">Give a reason why a pupil is not taking the check</h1>
             <%- partial('partials/_gds_session_expiry') %>
             <p class="govuk-body">
-                Headteachers may decide a pupil should not take the check, this should be recorded within this section.
-                Further information on ‘Pupils not taking the check’ can be found in the
-                <a class="govuk-link" href="<%- guidancePdf %>" target="_blank" rel="noopener noreferrer">check administration guidance.</a>
+                All pupils must be considered to take the multiplication tables check at the end of year 4.
+                If a pupil is working below expectation or has left your school, a reason must be provided.
             </p>
-        <% if (hdfSubmitted) { %>
-            <button type="submit" disabled="disabled" aria-disabled="true" class="govuk-button govuk-button--disabled" data-module="govuk-button">
-                Select pupils
-            </button>
-        <% } else { %>
-            <a href="/pupils-not-taking-the-check/select-pupils" role="button" draggable="false" class="govuk-button" data-module="govuk-button">
-                Select pupils
-            </a>
-        <% } %>
-        <% if (pupilsList && pupilsList.length > 0) { %>
-        <table id="pupilsList" role="listbox" aria-label="Select pupils." class="govuk-table govuk-spacious govuk-!-margin-bottom-9">
-            <caption class="govuk-body govuk-table__caption">Pupil register</caption>
-            <thead class="govuk-table__head">
-            <tr class="govuk-table__row">
-                <th scope="col" class="govuk-table__header">Pupil</th>
-                <th scope="col" class="govuk-table__header">Reason</th>
-                <th scope="col" class="govuk-table__header govuk-visually-hidden">Action</th>
-            </tr>
-            </thead>
-            <tbody class="govuk-table__body">
-            <% pupilsList.forEach(pupil => { %>
-                <tr class="govuk-table__row">
-                    <td scope="row" <% if (highlight.indexOf(pupil.urlSlug) !== -1) { %> class="govuk-highlight-item"<% } %>>
-                        <div class="govuk-highlight-wrapper">
-                            <label class="govuk-label" for="pupil-<%= pupil.urlSlug %>"><%= pupil.fullName %>
-                            <% if (pupil.showDoB) { %>
-                                <div class="govuk-font-greyed-out govuk-!-font-size-16">
-                                    Date of birth: <%= pupil.dateOfBirth %>
+            <% if (hdfSubmitted) { %>
+                <button type="submit" disabled="disabled" aria-disabled="true" class="govuk-button govuk-button--disabled" data-module="govuk-button">
+                    Select pupils and reason
+                </button>
+            <% } else { %>
+                <a href="/pupils-not-taking-the-check/select-pupils" role="button" draggable="false" class="govuk-button" data-module="govuk-button">
+                    Select pupils and reason
+                </a>
+            <% } %>
+            <% if (pupilsList && pupilsList.length > 0) { %>
+                <table id="pupilsList" role="listbox" aria-label="Select pupils." class="govuk-table govuk-spacious govuk-!-margin-bottom-9">
+                    <caption class="govuk-body govuk-table__caption">Pupil register</caption>
+                    <thead class="govuk-table__head">
+                    <tr class="govuk-table__row">
+                        <th scope="col" class="govuk-table__header">Pupil</th>
+                        <th scope="col" class="govuk-table__header">Reason</th>
+                        <th scope="col" class="govuk-table__header govuk-visually-hidden">Action</th>
+                    </tr>
+                    </thead>
+                    <tbody class="govuk-table__body">
+                    <% pupilsList.forEach(pupil => { %>
+                        <tr class="govuk-table__row">
+                            <td scope="row" <% if (highlight.indexOf(pupil.urlSlug) !== -1) { %> class="govuk-highlight-item"<% } %>>
+                                <div class="govuk-highlight-wrapper">
+                                    <label class="govuk-label" for="pupil-<%= pupil.urlSlug %>"><%= pupil.fullName %>
+                                        <% if (pupil.showDoB) { %>
+                                            <div class="govuk-font-greyed-out govuk-!-font-size-16">
+                                                Date of birth: <%= pupil.dateOfBirth %>
+                                            </div>
+                                        <% } %>
+                                    </label>
                                 </div>
-                            <% } %>
-                            </label>
-                        </div>
-                    </td>
-                    <td><%= pupil.reason || '-' %></td>
-                    <td class="">
-                    <% if (!hdfSubmitted) { %>
-                        <a href="/pupils-not-taking-the-check/remove/<%= pupil.urlSlug %>" class="govuk-link modal-link font-small">Remove</a>
-                    <% } %>
-                    </td>
-                </tr>
-            <% }) %>
-            </tbody>
-        </table>
-        <% } else { %>
-            <p class="govuk-body govuk-!-margin-bottom-7">No pupils added</p>
-        <% } %>
+                            </td>
+                            <td><%= pupil.reason || '-' %></td>
+                            <td class="">
+                                <% if (!hdfSubmitted) { %>
+                                    <a href="/pupils-not-taking-the-check/remove/<%= pupil.urlSlug %>" class="govuk-link modal-link font-small">Remove reason</a>
+                                <% } %>
+                            </td>
+                        </tr>
+                    <% }) %>
+                    </tbody>
+                </table>
+            <% } else { %>
+                <p class="govuk-body govuk-!-margin-bottom-7">No pupils added</p>
+            <% } %>
             <div class="govuk-back-to-top">
                 <a class="govuk-link govuk-link--no-visited-state app-back-to-top__link" href="#top">
                     <svg role="presentation" focusable="false" class="app-back-to-top__icon" xmlns="http://www.w3.org/2000/svg" width="13" height="17" viewBox="0 0 13 17">

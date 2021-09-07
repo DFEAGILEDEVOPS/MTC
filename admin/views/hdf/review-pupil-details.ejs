@@ -10,8 +10,8 @@
             <h1 class="govuk-heading-xl">Review pupil details</h1>
             <%- partial('partials/_gds_session_expiry') %>
             <p class="govuk-body-l" id="lead-paragraph" aria-labelledby="lead-paragraph">
-                Confirm your pupil list is correct. To make changes to your pupil details, select
-                <a href="/pupil-register/pupils-list">View, add or edit pupils on your school's register</a> on the homepage.
+                Please review your pupil list. All pupils should have a status of 'Complete' or a reason for not taking
+                the check. Click on 'edit' to update the outcome if a reason below is incorrect.
             </p>
             <form method="post" action="/school/submit-attendance-form" autocomplete="off">
                 <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
@@ -21,7 +21,7 @@
                         <tr class="govuk-table__row">
                             <th scope="col"><a class="sortingLink">Pupil<span class="sort-icon asc"></span></a></th>
                             <th scope="col"><a class="sortingLink">Outcome<span class="sort-icon"></span></a></th>
-<%/*<!--                            <th> &nbsp; </th> uncomment for 2022 -->*/%>
+                            <th> &nbsp; </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -44,14 +44,13 @@
                                     <%= pupil.status %>
                                 <% } %>
                             </td>
-<%/* uncomment for 2022
+
                            <td>
                                 &nbsp; &nbsp;
-                                <XXX% if (pupil.reason) { %XXX>
-                                    <a class="govuk-link" href="/attendance/edit-reason/<XXX%= pupil.urlSlug %XXX>">Edit</a>
-                                <XXX% } %XXX>
+                                <% if (pupil.reason) { %>
+                                    <a class="govuk-link" href="/attendance/edit-reason/<%= pupil.urlSlug %>">Edit</a>
+                                <% } %>
                             </td>
-*/%>
                         </tr>
                     <% }) %>
                     </tbody>
