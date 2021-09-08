@@ -321,13 +321,11 @@
                                 <% if (pupilStatusViewData.remainingLiveCheckDays >= 0) { %>
                                     If this does not work please <a href="/restart/select-restart-list">select pupils to restart the check.</a>
                                 <% } else { %>
-                                    The check window has now closed. <a href="/pupils-not-taking-the-check/pupils-list">Confirm pupils not taking the
-                                        check</a>. You can then sign the HDF.
+                                    The check window has now closed. <a href="/pupils-not-taking-the-check/pupils-list">Give a reason why pupils are not taking the check</a>. You can then sign the HDF.
                                 <% } %>
                             </p>
                             <p class="app-step-nav__paragraph">
-                                <span class="govuk-!-font-weight-bold">Error in processing:</span> the pupils check was
-                                received but was corrupt or unreadable.
+                                <span class="govuk-!-font-weight-bold">Error in processing:</span> the pupils check was received but was corrupt or unreadable.
                                 <% if (pupilStatusViewData.remainingLiveCheckDays >= 0) { %>
                                     The pupil will need to sit the check again.
                                     To enable this <a href="/restart/select-restart-list">select pupils to restart the
@@ -335,8 +333,7 @@
                                     then
                                     <a href="/pupil-pin/generate-live-pins-overview">generate school passwords and PINs.</a>
                                 <% } else { %>
-                                    The check window has now closed. <a href="/pupils-not-taking-the-check/pupils-list">Confirm pupils not taking the
-                                        check</a>. You can then sign the HDF.
+                                    The check window has now closed. <a href="/pupils-not-taking-the-check/pupils-list">Give a reason why pupils are not taking the check</a>. You can then sign the HDF.
                                 <% } %>
                             </p>
                         </div>
@@ -374,9 +371,7 @@
                                     passwords and PINs</a>.
                                 <% } else { %>
                                         <span class="govuk-!-font-weight-bold">Not started</span>: the pupil has yet to take the
-                                        official check. The check window has now closed. <a
-                                        href="/pupils-not-taking-the-check/pupils-list">Confirm pupils not taking the
-                                        check</a>. You can then sign the HDF.
+                                        official check. The check window has now closed.  <a href="/pupils-not-taking-the-check/pupils-list">Give a reason why pupils are not taking the check</a>. You can then sign the HDF.
                                 <% } %>
                             </p>
                             <p class="app-step-nav__paragraph">
@@ -394,9 +389,8 @@
                                 <% } else { %>
                                         <span class="govuk-!-font-weight-bold">Restart</span>: a new official PIN must be
                                         generated when the pupil is ready to take the check again.
-                                        <br/>The check window has now closed. <a
-                                                href="/pupils-not-taking-the-check/pupils-list">Confirm pupils not taking the
-                                            check</a>. You can then sign the HDF.
+                                        <br/> The check window has now closed. <a href="/pupils-not-taking-the-check/pupils-list">Give a reason why pupils are not
+                                            taking the check</a>. You can then sign the HDF.
                                 <% } %>
                             </p>
                         </div>
@@ -431,9 +425,9 @@
                             <p class="app-step-nav__paragraph">
                                 You have advised that the pupil is not taking the check. If this is incorrect please go
                                 to
-                                <a href="/pupils-not-taking-the-check/pupils-list">confirm pupils not taking the
+                                <a href="/pupils-not-taking-the-check/pupils-list">tell us why a pupil is not taking the
                                     check</a>
-                                and remove the reason.
+                                and remove or amend the correct reason.
                             </p>
                         </div>
                     </li>

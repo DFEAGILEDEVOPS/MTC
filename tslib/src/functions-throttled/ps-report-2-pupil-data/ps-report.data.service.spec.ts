@@ -437,8 +437,6 @@ describe('ps-report.data.service', () => {
       expect(device.browserMinorVersion).toBe(2)
       expect(device.browserPatchVersion).toBe(3)
       expect(device.deviceId).toBe('def')
-      expect(device.type).toBeNull() // TODO: add device.type
-      expect(device.typeModel).toBeNull() // TODO: add device type model
     })
 
     test('the return obj is readonly', async () => {
