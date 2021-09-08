@@ -2,10 +2,19 @@ import { Context } from '@azure/functions'
 import Moment from 'moment'
 import * as az from '../../azure/storage-helper'
 import { SubmittedCheckMessageV2, ReceivedCheckTableEntity, ValidateCheckMessageV1 } from '../../schemas/models'
-import { CheckNotificationType, ICheckNotificationMessage } from '../../schemas/check-notification-message'
+import { IBatchCheckNotifierDataService, BatchCheckNotifierDataService } from '../check-notifier-batch/batch-check-notifier.data.service'
 const tableService = new az.AsyncTableService()
 
 export class CheckReceiver {
+  private readonly checkNotifierDataService: IBatchCheckNotifierDataService
+
+  constructor (batchCheckNotifierDataService?: IBatchCheckNotifierDataService) {
+    if (batchCheckNotifierDataService === undefined) {
+      batchCheckNotifierDataService = new BatchCheckNotifierDataService()
+    }
+    this.checkNotifierDataService = batchCheckNotifierDataService
+  }
+
   async process (context: Context, receivedCheck: SubmittedCheckMessageV2): Promise<void> {
     const receivedCheckEntity: ReceivedCheckTableEntity = {
       PartitionKey: receivedCheck.schoolUUID.toLowerCase(),
@@ -18,12 +27,16 @@ export class CheckReceiver {
 
     await tableService.insertEntityAsync('receivedCheck', receivedCheckEntity)
 
-    const receivedMessage: ICheckNotificationMessage = {
+    // as per #48506 - check-receiver will now handle this event instead of check-notifier-batch
+    const request = this.checkNotifierDataService.createCheckReceivedRequest(receivedCheck.checkCode.toLowerCase())
+    await this.checkNotifierDataService.executeRequestsInTransaction([request])
+
+    /* const receivedMessage: ICheckNotificationMessage = {
       version: 1,
       checkCode: receivedCheck.checkCode,
       notificationType: CheckNotificationType.checkReceived
     }
-    context.bindings.checkNotificationQueue = [receivedMessage]
+    context.bindings.checkNotificationQueue = [receivedMessage] */
 
     const message: ValidateCheckMessageV1 = {
       version: 1,
