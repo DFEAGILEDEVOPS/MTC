@@ -10,6 +10,7 @@ class DeclarationReviewPupilsPage < SitePrism::Page
       sections :rows, 'tr' do
         element :name, '.govuk-highlight-wrapper span'
         element :reason, 'td:nth-of-type(2)'
+        element :link, 'a'
       end
     end
 
@@ -17,6 +18,7 @@ class DeclarationReviewPupilsPage < SitePrism::Page
     def select_pupil(name)
       row = pupil_list.rows.find {|row| row.name.text.include? name}
       row.link.click
+      sleep 2
     end
 
     def get_pupil_reason(name)
