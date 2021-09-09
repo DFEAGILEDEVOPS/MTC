@@ -22,10 +22,9 @@ export class BatchCheckNotifier {
         case CheckNotificationType.checkInvalid:
           requests.push(this.dataService.createProcessingFailedRequest(message.checkCode))
           break
-          // as per #48506 - this will now be done in check-receiver to avoid delays
-/*         case CheckNotificationType.checkReceived:
+        case CheckNotificationType.checkReceived:
           requests.push(this.dataService.createCheckReceivedRequest(message.checkCode))
-          break */
+          break
       }
     })
     return this.dataService.executeRequestsInTransaction(requests)

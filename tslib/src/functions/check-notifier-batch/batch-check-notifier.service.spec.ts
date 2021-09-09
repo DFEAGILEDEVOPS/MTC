@@ -67,7 +67,7 @@ describe('batch-request-builder/v2', () => {
     expect(dataService.executeRequestsInTransaction).toHaveBeenCalledTimes(1)
   })
 
-  test.skip('checkReceived notification type should create corresponding requests and be executed', async () => {
+  test('checkReceived notification type should create corresponding requests and be executed', async () => {
     await sut.notify([{
       notificationType: CheckNotificationType.checkReceived,
       checkCode: 'code',
@@ -94,7 +94,7 @@ describe('batch-request-builder/v2', () => {
         version: 1
       },
       { // creates 1 request
-        notificationType: CheckNotificationType.checkInvalid,
+        notificationType: CheckNotificationType.checkReceived,
         checkCode: 'code',
         version: 1
       }

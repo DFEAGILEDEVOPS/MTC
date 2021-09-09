@@ -1,6 +1,7 @@
 import { Context } from '@azure/functions'
 import Moment from 'moment'
 import * as az from '../../azure/storage-helper'
+import { CheckNotificationType, ICheckNotificationMessage } from '../../schemas/check-notification-message'
 import { SubmittedCheckMessageV2, ReceivedCheckTableEntity, ValidateCheckMessageV1 } from '../../schemas/models'
 import { IBatchCheckNotifierDataService, BatchCheckNotifierDataService } from '../check-notifier-batch/batch-check-notifier.data.service'
 const tableService = new az.AsyncTableService()
@@ -29,14 +30,18 @@ export class CheckReceiver {
 
     // as per #48506 - check-receiver will now handle this event instead of check-notifier-batch
     const request = this.checkNotifierDataService.createCheckReceivedRequest(receivedCheck.checkCode.toLowerCase())
-    await this.checkNotifierDataService.executeRequestsInTransaction([request])
 
-    /* const receivedMessage: ICheckNotificationMessage = {
-      version: 1,
-      checkCode: receivedCheck.checkCode,
-      notificationType: CheckNotificationType.checkReceived
+    try {
+      await this.checkNotifierDataService.executeRequestsInTransaction([request])
+    } catch (error) {
+      context.log.error(`failed to write check received notification to database for check ${receivedCheck.checkCode}\n Falling back to check notification queue message.`)
+      const receivedMessage: ICheckNotificationMessage = {
+        version: 1,
+        checkCode: receivedCheck.checkCode,
+        notificationType: CheckNotificationType.checkReceived
+      }
+      context.bindings.checkNotificationQueue = [receivedMessage]
     }
-    context.bindings.checkNotificationQueue = [receivedMessage] */
 
     const message: ValidateCheckMessageV1 = {
       version: 1,
