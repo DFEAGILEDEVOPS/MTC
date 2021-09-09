@@ -702,8 +702,7 @@ describe('report line class', () => {
 
       test('if the pupil has been marked as not taking the check it should have a Reason code', () => {
         const out = sut.transform()
-        // TODO: 2022: reverse this back to 'A' after 2021
-        expect(out.ReasonNotTakingCheck).toBe('Z')
+        expect(out.ReasonNotTakingCheck).toBe('A')
       })
 
       test('the pupil status is set to Not taking the Check', () => {
@@ -856,12 +855,9 @@ describe('report line class', () => {
       expect(res).toBe('Z')
     })
 
-    /**
-     * TODO 2022: For 2021 only, we map Absent to Incorrect Registration, as the check is optional
-     */
     test('returns A for Absent pupils', () => {
       const res = ReportLineTest.getReasonNotTakingCheck('ABSNT')
-      expect(res).toBe('Z')
+      expect(res).toBe('A')
     })
 
     test('returns L for pupils who left', () => {
