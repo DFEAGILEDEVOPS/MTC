@@ -6,6 +6,7 @@ import * as RA from 'ramda-adjunct'
 import Moment from 'moment'
 import { ICompressionService, CompressionService } from '../../common/compression-service'
 import { ICheckNotificationMessage, CheckNotificationType } from '../../schemas/check-notification-message'
+import { SubmittedCheck } from '../../schemas/check-schemas/submitted-check'
 
 const requiredSubmittedCheckProperties = [
   'answers',
@@ -116,6 +117,19 @@ export class CheckValidatorV1 {
     const missingPropertyNames = missingProperties.join()
     if (!RA.isEmptyArray(missingProperties)) {
       throw new Error(`${errorMessagePrefix} ${missingPropertyNames}`)
+    }
+  }
+
+  private validateAnswers (checkData: SubmittedCheck): void {
+    if (checkData.config.practice) return
+    if (checkData.answers.length < 25) {
+      throw new Error(`submitted check only has ${checkData.answers.length} answers.`)
+    }
+    for (let index = 0; index < checkData.answers.length; index++) {
+      const answerEntry = checkData.answers[index]
+      if (typeof answerEntry.answer !== 'string') {
+        throw new Error(`answer ${answerEntry.sequenceNumber} is not of required type (string)`)
+      }
     }
   }
 }
