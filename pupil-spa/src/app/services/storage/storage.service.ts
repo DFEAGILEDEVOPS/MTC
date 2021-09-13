@@ -37,8 +37,45 @@ const schoolStorageKey = new SchoolStorageKey();
 const timeoutStorageKey = new TimeoutStorageKey();
 const tokensStorageKey = new TokensStorageKey();
 
+export interface IStorageService {
+  clear(): void
+  getAccessArrangements(key: AccessArrangementsStorageKey): any
+  getAllItems(): any
+  getCheckStartTime(): any
+  getCheckState(key: CheckStateStorageKey): any
+  getCompletedSubmission(): any
+  getConfig(): any
+  getDeviceData(): any
+  getFeedback(): any
+  getKeys(): string[]
+  getPendingSubmission(): any
+  getPupil(): any
+  getQuestions(): any
+  getSchool(): any
+  getToken(): any
+  removeCheckStartTime(): void
+  removeCheckState(): void
+  removeTimeout(): void
+  setAccessArrangements(accessArrangements: AccessArrangements): void
+  setAnswer(answer: Answer): void
+  setAuditEntry(auditEntry: AuditEntry): void
+  setCheckStartTime(checkStartTime: Number): void
+  setCheckState(state: Number): void
+  setCompletedSubmission(isCompleted: Boolean): any
+  setConfig(config: Object): any
+  setDeviceData(deviceData: any): void
+  setFeedback(feedback: Object): void
+  setInput(questionInput: Object): void
+  setPendingSubmission(isPending: Boolean): void
+  setPupil(pupilData: Object): void
+  setQuestions(questions: Question[]): void
+  setSchool(school: Object): void
+  setTimeout(timeout: Object): void
+  setToken(token: string): void
+}
+
 @Injectable()
-export class StorageService {
+export class StorageService implements IStorageService {
 
   getAccessArrangements() {
     return this.getItem(accessArrangementsStorageKey);

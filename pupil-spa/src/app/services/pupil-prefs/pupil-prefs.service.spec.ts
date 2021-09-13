@@ -36,12 +36,12 @@ describe('PupilPrefsService', () => {
         { provide: QuestionService, useClass: QuestionServiceMock }
       ]
     });
-    azureQueueService = injector.get(AzureQueueService);
-    pupilPrefsService = injector.get(PupilPrefsService);
-    tokenService = injector.get(TokenService);
-    mockQuestionService = injector.get(QuestionService);
-    auditService = injector.get(AuditService);
-    storageService = injector.get(StorageService);
+    azureQueueService = injector.inject(AzureQueueService);
+    pupilPrefsService = injector.inject(PupilPrefsService);
+    tokenService = injector.inject(TokenService);
+    mockQuestionService = injector.inject(QuestionService);
+    auditService = injector.inject(AuditService);
+    storageService = injector.inject(StorageService);
 
     storedPrefs = {
       fontSize: 'large',

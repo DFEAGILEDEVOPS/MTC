@@ -4,8 +4,13 @@ import { StorageService } from '../storage/storage.service';
 import { TokenService } from '../token/token.service';
 import { AzureQueueService } from '../azure-queue/azure-queue.service';
 
+export interface IFeedbackService {
+  postFeedback(): Promise<boolean>;
+  queueSubmit(payload: any): Promise<void>;
+}
+
 @Injectable()
-export class FeedbackService {
+export class FeedbackService implements IFeedbackService {
   feedbackAPIErrorDelay;
   feedbackAPIErrorMaxAttempts;
 
@@ -20,7 +25,7 @@ export class FeedbackService {
     this.feedbackAPIErrorMaxAttempts = feedbackAPIErrorMaxAttempts;
   }
 
-  async postFeedback() {
+  async postFeedback(): Promise<boolean> {
     const storedFeedback = this.storageService.getFeedback();
     if (!storedFeedback) {
       return false;
@@ -38,6 +43,7 @@ export class FeedbackService {
       checkCode
     };
     await this.queueSubmit(payload);
+    return true;
   }
 
   /**
