@@ -1,4 +1,4 @@
-import { async, fakeAsync, tick, ComponentFixture, TestBed } from '@angular/core/testing';
+import { fakeAsync, tick, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { AnswerService } from '../services/answer/answer.service';
 import { AuditService } from '../services/audit/audit.service';
@@ -31,7 +31,7 @@ describe('PractiseQuestionComponent', () => {
       isPrimary: true });
   }
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     mockSpeechService = new SpeechServiceMock();
 
     TestBed.configureTestingModule({
@@ -292,14 +292,14 @@ describe('PractiseQuestionComponent', () => {
   });
 
   describe('onSubmit', () => {
-    it('emits the answer', async(() => {
+    it('emits the answer', waitForAsync(() => {
       component.answer = '123';
       component.manualSubmitEvent.subscribe(g => {
         expect(g).toEqual('123');
       });
       component.onSubmit();
     }));
-    it('only allows submit to happen once', async(() => {
+    it('only allows submit to happen once', waitForAsync(() => {
       component.answer = '124';
       component.onSubmit(); // burn the submit
       expect(component.onSubmit()).toBeFalsy();  // test repeat submission fails

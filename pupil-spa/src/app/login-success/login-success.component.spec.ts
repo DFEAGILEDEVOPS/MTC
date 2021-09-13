@@ -49,9 +49,9 @@ describe('LoginSuccessComponent', () => {
         AppUsageService,
       ]
     });
-    storageService = injector.get(StorageService);
-    appUsageService = injector.get(AppUsageService);
-    questionService = injector.get(QuestionService);
+    storageService = injector.inject(StorageService);
+    appUsageService = injector.inject(AppUsageService);
+    questionService = injector.inject(QuestionService);
     injector.compileComponents();
 
     store = {};

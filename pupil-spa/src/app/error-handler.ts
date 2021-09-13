@@ -36,18 +36,6 @@ export class GlobalErrorHandler implements ErrorHandler {
         }
       ));
 
-    window.ga('send', {
-      hitType: 'pageview',
-      page: '/error'
-    });
-
-    window.ga('send', {
-      hitType: 'event',
-      eventCategory: 'error',
-      eventAction: url,
-      eventLabel: errorMessage
-    });
-
     if (APP_CONFIG.applicationInsightsInstrumentationKey) {
       // using injector directly to avoid recursive errors...
       const appInsightsService = this.injector.get(ApplicationInsightsService);

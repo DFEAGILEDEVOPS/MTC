@@ -5,6 +5,8 @@ import { GlobalErrorHandler } from './error-handler';
 import { AuditService } from './services/audit/audit.service';
 import { AuditServiceMock } from './services/audit/audit.service.mock';
 import { WindowRefService } from './services/window-ref/window-ref.service';
+import { APP_INITIALIZER } from '@angular/core'
+import { loadConfigMockService } from './services/config/config.service'
 
 describe('error-handler', () => {
   let errorHandler: GlobalErrorHandler;
@@ -12,17 +14,17 @@ describe('error-handler', () => {
 
   beforeEach(() => {
     auditServiceMock = new AuditServiceMock();
-    console.log('auditServiceMock created', auditServiceMock);
     const injector = TestBed.configureTestingModule({
       providers: [
         GlobalErrorHandler,
         {useValue: auditServiceMock, provide: AuditService},
         {useClass: WindowRefService, provide: WindowRefService},
-        {useClass: LocationStrategy, provide: LocationStrategy}
+        {useClass: LocationStrategy, provide: LocationStrategy},
+        { provide: APP_INITIALIZER, useFactory: loadConfigMockService, multi: true },
       ]
     });
 
-    errorHandler = injector.get(GlobalErrorHandler);
+    errorHandler = injector.inject(GlobalErrorHandler);
   });
 
   it('should be created', () => {
@@ -36,10 +38,6 @@ describe('error-handler', () => {
   });
 
   it ('handleError does not throw another error', () => {
-    try {
-      errorHandler.handleError(new Error('a mock error from unit testing'));
-    } catch (error) {
-      fail(error);
-    }
+    expect(() => { errorHandler.handleError(new Error('a mock error from unit testing')) }).not.toThrowError()
   });
 });
