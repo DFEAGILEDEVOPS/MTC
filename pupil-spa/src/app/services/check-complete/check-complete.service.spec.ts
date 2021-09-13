@@ -40,12 +40,12 @@ describe('CheckCompleteService', () => {
         ]
       }
     );
-    checkCompleteService = inject.get(CheckCompleteService);
-    appUsageService = TestBed.get(AppUsageService);
-    tokenService = inject.get(TokenService);
-    azureQueueService = inject.get(AzureQueueService);
-    auditService = inject.get(AuditService);
-    storageService = TestBed.get(StorageService);
+    checkCompleteService = inject.inject(CheckCompleteService);
+    appUsageService = TestBed.inject(AppUsageService);
+    tokenService = inject.inject(TokenService);
+    azureQueueService = inject.inject(AzureQueueService);
+    auditService = inject.inject(AuditService);
+    storageService = TestBed.inject(StorageService);
     checkCompleteService.checkSubmissionApiErrorDelay = 100;
     checkCompleteService.checkSubmissionAPIErrorMaxAttempts = 1;
   });
@@ -55,12 +55,13 @@ describe('CheckCompleteService', () => {
   });
 
   it('submit should call azure queue service successfully, audit successful call and redirect to check complete page', async () => {
-    const addEntrySpy = spyOn(auditService, 'addEntry');
+    // test setup
+    spyOn(appUsageService, 'store')
     spyOn(storageService, 'getConfig').and.returnValue({
       practice: false
     });
-    spyOn(appUsageService , 'store');
     spyOn(tokenService, 'getToken').and.returnValue({url: 'url', token: 'token'});
+    const addEntrySpy = spyOn(auditService, 'addEntry');
     spyOn(storageService, 'setPendingSubmission');
     spyOn(storageService, 'setCompletedSubmission');
     const expectedSchoolUUID = 'school_uuid';
@@ -78,7 +79,11 @@ describe('CheckCompleteService', () => {
       return Promise.resolve({});
     });
     spyOn(checkCompleteService, 'getPayload').and.returnValue({ checkCode: 'checkCode', schoolUUID: expectedSchoolUUID });
+
+    // exec
     await checkCompleteService.submit(Date.now());
+
+    // test
     expect(addEntrySpy).toHaveBeenCalledTimes(2);
     expect(appUsageService.store).toHaveBeenCalledTimes(1);
     expect(addEntrySpy.calls.all()[0].args[0].type).toEqual('CheckSubmissionApiCalled');
@@ -206,6 +211,7 @@ describe('CheckCompleteService', () => {
         expect(keyItems[2].value).toBe('value2');
       });
   });
+
   describe('getPayload', () => {
     it('stores all items in the corresponding key based category based on timestamp order', () => {
       const localStorageItems = {

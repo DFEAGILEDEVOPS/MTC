@@ -27,7 +27,7 @@ Feature: Generate Pupil PINs Familiarisation
 
   @pupil_not_taking_check
   Scenario: Generate Pins familiarisation Pupil List Page does not display pupil with reason left school
-    Given I have a pupil not taking the check with reason 'Pupil not taking the check'
+    Given I have a pupil not taking the check with reason 'Left school'
     And I am on the generate pupil pins familiarisation page
     When I click Generate PINs button
     Then I cannot see this pupil in the list of Pupil on Generate Pin familiarisation list page

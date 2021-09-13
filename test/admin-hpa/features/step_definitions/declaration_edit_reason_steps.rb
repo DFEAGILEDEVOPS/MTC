@@ -1,8 +1,6 @@
-Then(/^reason page is displayed as per design$/) do
-  step 'I am on the HDF form page'
-  step 'I submit the form with the hdf name fields set as Test'
-  expect(declaration_review_pupils_page.get_pupil_reason(@pupil_forename)).to eql @reason
-
+Then(/^edit reason page is displayed as per design$/) do
+  expect(declaration_edit_reason_page.pupil_name.text.eql?("#{@pupil_lastname}, #{@pupil_forename}")).to be_truthy, "Expected Pupil name: #{@pupil_lastname}, #{@pupil_forename}....But Actual: #{declaration_edit_reason_page.pupil_name.text}"
+  expect(declaration_edit_reason_page).to have_attendance_codes
 end
 
 When(/^headteacher edit reason for a pupil from HDF pupil list$/) do
@@ -14,6 +12,6 @@ end
 Given(/^headteacher has updated reason '(.*)' for a pupil$/) do |reason|
   @reason = reason
   step 'I am on the review pupil detail page'
-  step 'headteacher updates the pupils reason for not taking a check'
+  step 'headteacher select the pupil for updating its reason'
   step 'headteacher edit reason for a pupil from HDF pupil list'
 end
