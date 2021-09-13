@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { LoadingComponent } from './loading.component';
 import { AuditServiceMock } from '../services/audit/audit.service.mock';
@@ -22,7 +22,7 @@ describe('LoadingComponent', () => {
   let fixture: ComponentFixture<LoadingComponent>;
   let auditServiceMock = new AuditServiceMock();
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
 
     TestBed.overrideModule(BrowserDynamicTestingModule, {
       set: {
