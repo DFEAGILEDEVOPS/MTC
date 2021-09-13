@@ -1,4 +1,4 @@
-import * as CheckValidator from './check-validator.v1'
+import { CheckValidator, ICheckValidatorFunctionBindings } from './check-validator'
 import { IAsyncTableService, TableStorageEntity } from '../../azure/storage-helper'
 import { ReceivedCheckTableEntity, ValidateCheckMessageV1, MarkCheckMessageV1 } from '../../schemas/models'
 import { ILogger } from '../../common/logger'
@@ -51,7 +51,7 @@ let validateReceivedCheckQueueMessage: ValidateCheckMessageV1 = {
   version: 1
 }
 
-let sut: CheckValidator.CheckValidatorV1
+let sut: CheckValidator
 let loggerMock: ILogger
 let tableServiceMock: IAsyncTableService
 let compressionServiceMock: ICompressionService
@@ -60,7 +60,7 @@ describe('check-validator/v1', () => {
   beforeEach(() => {
     tableServiceMock = new TableServiceMock()
     compressionServiceMock = new CompressionServiceMock()
-    sut = new CheckValidator.CheckValidatorV1(tableServiceMock, compressionServiceMock)
+    sut = new CheckValidator(tableServiceMock, compressionServiceMock)
     loggerMock = new LoggerMock()
     validateReceivedCheckQueueMessage = {
       schoolUUID: 'abc',
@@ -75,7 +75,7 @@ describe('check-validator/v1', () => {
 
   test('error should be thrown when receivedCheck reference is an empty array', async () => {
     try {
-      const functionBindings: CheckValidator.ICheckValidatorFunctionBindings = {
+      const functionBindings: ICheckValidatorFunctionBindings = {
         receivedCheckTable: [],
         checkMarkingQueue: [],
         checkNotificationQueue: []
@@ -98,7 +98,7 @@ describe('check-validator/v1', () => {
         RowKey: uuid.v4()
       }
     })
-    const functionBindings: CheckValidator.ICheckValidatorFunctionBindings = {
+    const functionBindings: ICheckValidatorFunctionBindings = {
       receivedCheckTable: [{}],
       checkMarkingQueue: [],
       checkNotificationQueue: []
@@ -118,7 +118,7 @@ describe('check-validator/v1', () => {
       checkReceivedAt: moment().toDate(),
       checkVersion: 1
     }
-    const functionBindings: CheckValidator.ICheckValidatorFunctionBindings = {
+    const functionBindings: ICheckValidatorFunctionBindings = {
       receivedCheckTable: [receivedCheckEntity],
       checkMarkingQueue: [],
       checkNotificationQueue: []
@@ -150,7 +150,7 @@ describe('check-validator/v1', () => {
         foo: 'bar'
       })
     })
-    const functionBindings: CheckValidator.ICheckValidatorFunctionBindings = {
+    const functionBindings: ICheckValidatorFunctionBindings = {
       receivedCheckTable: [receivedCheckEntity],
       checkMarkingQueue: [],
       checkNotificationQueue: []
@@ -177,7 +177,7 @@ describe('check-validator/v1', () => {
         foo: 'bar'
       })
     })
-    const functionBindings: CheckValidator.ICheckValidatorFunctionBindings = {
+    const functionBindings: ICheckValidatorFunctionBindings = {
       receivedCheckTable: [receivedCheckEntity],
       checkMarkingQueue: [],
       checkNotificationQueue: []
@@ -212,7 +212,7 @@ describe('check-validator/v1', () => {
     jest.spyOn(compressionServiceMock, 'decompress').mockImplementation(() => {
       return JSON.stringify(checkSchema)
     })
-    const functionBindings: CheckValidator.ICheckValidatorFunctionBindings = {
+    const functionBindings: ICheckValidatorFunctionBindings = {
       receivedCheckTable: [receivedCheckEntity],
       checkMarkingQueue: [],
       checkNotificationQueue: []
@@ -244,7 +244,7 @@ describe('check-validator/v1', () => {
     jest.spyOn(compressionServiceMock, 'decompress').mockImplementation(() => {
       return JSON.stringify(checkSchema)
     })
-    const functionBindings: CheckValidator.ICheckValidatorFunctionBindings = {
+    const functionBindings: ICheckValidatorFunctionBindings = {
       receivedCheckTable: [receivedCheckEntity],
       checkMarkingQueue: [],
       checkNotificationQueue: []
@@ -266,7 +266,7 @@ describe('check-validator/v1', () => {
     jest.spyOn(compressionServiceMock, 'decompress').mockImplementation(() => {
       return JSON.stringify(checkSchema)
     })
-    const functionBindings: CheckValidator.ICheckValidatorFunctionBindings = {
+    const functionBindings: ICheckValidatorFunctionBindings = {
       receivedCheckTable: [receivedCheckEntity],
       checkMarkingQueue: [],
       checkNotificationQueue: []

@@ -26,7 +26,7 @@ export interface ICheckValidatorFunctionBindings {
   checkNotificationQueue: ICheckNotificationMessage[]
 }
 
-export class CheckValidatorV1 {
+export class CheckValidator {
   private readonly tableService: IAsyncTableService
   private readonly compressionService: ICompressionService
 
