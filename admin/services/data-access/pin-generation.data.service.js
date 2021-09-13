@@ -33,7 +33,9 @@ const serviceToExport = {
       SELECT
         *
       FROM ${sqlService.adminSchema}.[${view}]
-      WHERE school_id = @schoolId`
+      WHERE school_id = @schoolId
+      ORDER BY lastName ASC, foreName ASC, middleNames ASC, dateOfBirth ASC
+      `
     return sqlService.readonlyQuery(sql, [param])
   },
 
