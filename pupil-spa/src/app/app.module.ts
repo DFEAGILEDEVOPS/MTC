@@ -166,7 +166,7 @@ const appRoutes: Routes = [
     BrowserModule,
     RouterModule.forRoot(
       appRoutes,
-      {enableTracing: false} // <-- debugging purposes only
+      { enableTracing: false, relativeLinkResolution: 'legacy' } // <-- debugging purposes only
     ),
     FormsModule,
     ReactiveFormsModule,

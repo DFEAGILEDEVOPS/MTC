@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 import { HeaderComponent } from './header.component';
@@ -11,7 +11,7 @@ describe('HeaderComponent', () => {
   let fixture: ComponentFixture<HeaderComponent>;
   let mockUserService;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     mockUserService = {
       isLoggedIn: jasmine.createSpy('isLoggedIn')
     };

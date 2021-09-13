@@ -10,13 +10,25 @@ const app = require('../app')
 const sql = require('../services/data-access/sql.service')
 const redisCacheService = require('../services/data-access/redis-cache.service')
 
+/**
+ * Sleep in ms
+ * @param ms - milliseconds
+ * @return {Promise}
+ */
+function sleep (ms) {
+  return new Promise(resolve => {
+    setTimeout(resolve, ms)
+  })
+}
+
 describe('nocache', () => {
   afterAll(async () => {
     await sql.drainPool()
-    redisCacheService.disconnect()
+    await redisCacheService.disconnect()
   })
 
   it('sets all nocache headers to ensure all pages are fresh', async () => {
+    await sleep(1000) // wait for stable
     const res = await request(app)
       .get('/ping')
       .set('Accept', 'application/json')
@@ -26,5 +38,6 @@ describe('nocache', () => {
     expect(res.get('Pragma')).toEqual('no-cache')
     expect(res.get('Expires')).toEqual('0')
     expect(res.get('Surrogate-Control')).toEqual('no-store')
+    await sleep(30)
   })
 })
