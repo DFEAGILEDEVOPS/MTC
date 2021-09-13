@@ -41,7 +41,7 @@
   "dependencies": {
     "@azure/service-bus": "^7.0.5",
     "applicationinsights": "^2.1.5",
-    "axios": "^0.21.1",
+    "axios": "^0.21.2",
     "azure-storage": "^2.10.4",
     "bcryptjs": "^2.4.3",
     "bluebird": "^3.5.1",
