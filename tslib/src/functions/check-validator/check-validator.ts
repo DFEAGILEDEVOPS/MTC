@@ -7,18 +7,8 @@ import Moment from 'moment'
 import { ICompressionService, CompressionService } from '../../common/compression-service'
 import { ICheckNotificationMessage, CheckNotificationType } from '../../schemas/check-notification-message'
 import { SubmittedCheck } from '../../schemas/check-schemas/submitted-check'
-
-const requiredSubmittedCheckProperties = [
-  'answers',
-  'audit',
-  'checkCode',
-  'config',
-  'inputs',
-  'pupil',
-  'questions',
-  'school',
-  'tokens'
-]
+import { AnswerCountValidator, AnswerTypeValidator, ICheckValidationError, ISubmittedCheckValidator, TopLevelPropertyStructureValidator } from './validators/breakup'
+import { LiveCheckValidator } from "./validators/live-check.validator"
 
 export interface ICheckValidatorFunctionBindings {
   receivedCheckTable: any[]
@@ -53,7 +43,7 @@ export class CheckValidator {
       this.detectArchive(receivedCheck)
       const decompressedString = this.compressionService.decompress(receivedCheck.archive)
       checkData = JSON.parse(decompressedString)
-      this.validateCheckStructure(checkData)
+      this.validateCheckStructureV2(checkData)
     } catch (error) {
       await this.setReceivedCheckAsInvalid(error.message, receivedCheck)
       // dispatch message to indicate validation failure
@@ -105,31 +95,32 @@ export class CheckValidator {
     }
   }
 
-  private validateCheckStructure (check: Record<string, unknown>): void {
-    const errorMessagePrefix = 'submitted check is missing the following properties:'
-    const missingProperties: string[] = []
-    for (let index = 0; index < requiredSubmittedCheckProperties.length; index++) {
-      const propertyName = requiredSubmittedCheckProperties[index]
-      if (!(propertyName in check)) {
-        missingProperties.push(propertyName)
-      }
-    }
-    const missingPropertyNames = missingProperties.join()
-    if (!RA.isEmptyArray(missingProperties)) {
-      throw new Error(`${errorMessagePrefix} ${missingPropertyNames}`)
-    }
+  private getCheckValidators (): Array<ISubmittedCheckValidator> {
+    return [
+      new TopLevelPropertyStructureValidator(),
+      new LiveCheckValidator(),
+      new AnswerCountValidator(),
+      new AnswerTypeValidator()
+    ]
   }
 
-  private validateAnswers (checkData: SubmittedCheck): void {
-    if (checkData.config.practice) return
-    if (checkData.answers.length < 25) {
-      throw new Error(`submitted check only has ${checkData.answers.length} answers.`)
-    }
-    for (let index = 0; index < checkData.answers.length; index++) {
-      const answerEntry = checkData.answers[index]
-      if (typeof answerEntry.answer !== 'string') {
-        throw new Error(`answer ${answerEntry.sequenceNumber} is not of required type (string)`)
+  private validateCheckStructureV2 (check: SubmittedCheck): void {
+    const validators = this.getCheckValidators()
+    const validationErrors: Array<ICheckValidationError> = []
+    for (let index = 0; index < validators.length; index++) {
+      const validator = validators[index]
+      const validationResult = validator.validate(check)
+      if (validationResult !== undefined) {
+        validationErrors.push(validationResult)
       }
+    }
+    if (validationErrors.length > 0) {
+      let validationErrorsMessage = `check validation failed. checkCode: ${check.checkCode}`
+      for (let index = 0; index < validationErrors.length; index++) {
+        const error = validationErrors[index]
+        validationErrorsMessage += `\n\t-\t${error.message}`
+      }
+      throw new Error(validationErrorsMessage)
     }
   }
 }
