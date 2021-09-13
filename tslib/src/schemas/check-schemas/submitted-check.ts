@@ -149,3 +149,57 @@ export interface CompleteCheckAuditEntry {
     isWarmup?: boolean
   }
 }
+
+export function getSubmittedCheck (): SubmittedCheck {
+  const check: SubmittedCheck = {
+    answers: [],
+    audit: [],
+    checkCode: '',
+    config: {
+      audibleSounds: false,
+      checkTime: 0,
+      colourContrast: false,
+      compressCompletedCheck: false,
+      fontSize: false,
+      inputAssistance: false,
+      loadingTime: 0,
+      nextBetweenQuestions: false,
+      numpadRemoval: false,
+      practice: false,
+      questionReader: false,
+      questionTime: 0
+    },
+    device: {},
+    inputs: [],
+    pupil: {
+      checkCode: ''
+    },
+    questions: [],
+    tokens: {
+      checkStarted: {
+        queueName: '',
+        token: '',
+        url: ''
+      },
+      pupilFeedback: {
+        queueName: '',
+        token: '',
+        url: ''
+      },
+      jwt: {
+        token: ''
+      },
+      pupilPreferences: {
+        queueName: '',
+        token: '',
+        url: ''
+      }
+    },
+    school: {
+      name: '',
+      uuid: ''
+    },
+    schoolUUID: ''
+  }
+  return check
+}
