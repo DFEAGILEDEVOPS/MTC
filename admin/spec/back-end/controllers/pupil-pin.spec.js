@@ -9,17 +9,14 @@ const checkWindowSanityCheckService = require('../../../services/check-window-sa
 const checkWindowV2Service = require('../../../services/check-window-v2.service')
 const dateService = require('../../../services/date.service')
 const groupService = require('../../../services/group.service')
-const groupsMock = require('../mocks/groups')
-const headteacherDeclarationService = require('../../../services/headteacher-declaration.service')
-const pinGenerationService = require('../../../services/pin-generation.service')
 const pinGenerationV2Service = require('../../../services/pin-generation-v2.service')
 const pinService = require('../../../services/pin.service')
-const pupilDataService = require('../../../services/data-access/pupil.data.service')
 const pupilPinPresenter = require('../../../helpers/pupil-pin-presenter')
 const qrService = require('../../../services/qr.service')
-const schoolDataService = require('../../../services/data-access/school.data.service')
-const schoolMock = require('../mocks/school')
 const schoolService = require('../../../services/school.service')
+
+const groupsMock = require('../mocks/groups')
+const schoolMock = require('../mocks/school')
 
 describe('pupilPin controller:', () => {
   let next
@@ -39,7 +36,6 @@ describe('pupilPin controller:', () => {
 
   beforeEach(() => {
     next = jest.fn()
-    jest.spyOn(headteacherDeclarationService, 'isHdfSubmittedForCurrentCheck').mockResolvedValue(false)
   })
 
   afterEach(() => {
@@ -302,8 +298,6 @@ describe('pupilPin controller:', () => {
         jest.spyOn(businessAvailabilityService, 'determinePinGenerationEligibility').mockImplementation()
         jest.spyOn(checkStartService, 'prepareCheck2').mockImplementation()
         jest.spyOn(schoolService, 'findOneById').mockResolvedValue(schoolMock)
-        jest.spyOn(pinGenerationService, 'generateSchoolPassword').mockResolvedValue({ schoolPin: '', pinExpiresAt: '' })
-        jest.spyOn(schoolDataService, 'sqlUpdate').mockImplementation()
         jest.spyOn(res, 'redirect').mockImplementation()
 
         await controller(req, res, next)
@@ -330,8 +324,7 @@ describe('pupilPin controller:', () => {
         jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockImplementation()
         jest.spyOn(businessAvailabilityService, 'determinePinGenerationEligibility').mockImplementation()
         jest.spyOn(checkStartService, 'prepareCheck2').mockImplementation()
-        jest.spyOn(pupilDataService, 'sqlUpdate').mockImplementation()
-        jest.spyOn(pinGenerationService, 'generateSchoolPassword').mockResolvedValue('')
+        // jest.spyOn(pupilDataService, 'sqlUpdate').mockImplementation()
         jest.spyOn(res, 'redirect').mockImplementation()
 
         await controller(req, res, next)
@@ -349,7 +342,7 @@ describe('pupilPin controller:', () => {
         jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockImplementation()
         jest.spyOn(businessAvailabilityService, 'determinePinGenerationEligibility').mockImplementation()
         jest.spyOn(checkStartService, 'prepareCheck2').mockImplementation()
-        jest.spyOn(pupilDataService, 'sqlUpdate').mockImplementation()
+        // jest.spyOn(pupilDataService, 'sqlUpdate').mockImplementation()
         jest.spyOn(schoolService, 'findOneById').mockResolvedValue(undefined) // school not found
 
         await controller(req, res, next)
@@ -368,10 +361,7 @@ describe('pupilPin controller:', () => {
         jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockImplementation()
         jest.spyOn(businessAvailabilityService, 'determinePinGenerationEligibility').mockImplementation()
         jest.spyOn(checkStartService, 'prepareCheck2').mockImplementation()
-        jest.spyOn(pupilDataService, 'sqlUpdate').mockImplementation()
         jest.spyOn(schoolService, 'findOneById').mockResolvedValue(schoolMock)
-        jest.spyOn(pinGenerationService, 'generateSchoolPassword').mockResolvedValue({ schoolPin: '', pinExpiresAt: '' })
-        jest.spyOn(schoolDataService, 'sqlUpdate').mockImplementation()
         jest.spyOn(res, 'redirect').mockImplementation()
 
         await controller(req, res, next)
@@ -388,8 +378,6 @@ describe('pupilPin controller:', () => {
         jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockImplementation()
         jest.spyOn(businessAvailabilityService, 'determinePinGenerationEligibility').mockImplementation()
         jest.spyOn(checkStartService, 'prepareCheck2').mockImplementation()
-        jest.spyOn(pupilDataService, 'sqlUpdate').mockImplementation()
-        jest.spyOn(pinGenerationService, 'generateSchoolPassword').mockResolvedValue('')
         jest.spyOn(res, 'redirect').mockImplementation()
 
         await controller(req, res, next)
@@ -406,7 +394,6 @@ describe('pupilPin controller:', () => {
         jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockImplementation()
         jest.spyOn(businessAvailabilityService, 'determinePinGenerationEligibility').mockImplementation()
         jest.spyOn(checkStartService, 'prepareCheck2').mockImplementation()
-        jest.spyOn(pupilDataService, 'sqlUpdate').mockImplementation()
         jest.spyOn(schoolService, 'findOneById').mockResolvedValue(undefined)
 
         await controller(req, res, next)
