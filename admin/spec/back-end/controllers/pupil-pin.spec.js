@@ -17,6 +17,7 @@ const schoolService = require('../../../services/school.service')
 
 const groupsMock = require('../mocks/groups')
 const schoolMock = require('../mocks/school')
+const moment = require('moment-timezone')
 
 describe('pupilPin controller:', () => {
   let next
@@ -437,6 +438,69 @@ describe('pupilPin controller:', () => {
         id: 'ArRFdOiz1xI8w0ljtvVuD6LU39pcfgqy'
       }
     }
+
+    describe('without env dependency', () => {
+      test('sets up the pupilAliasOrName property on each pupil sent to the renderer', async () => {
+        const res = getRes()
+        const req = getReq(goodReqParamsFam)
+        const controller = require('../../../controllers/pupil-pin.js').getViewAndCustomPrintPins
+        const mockPupils = [
+          {
+            id: 1,
+            foreName: 'Onefore',
+            lastName: 'Onelast',
+            middleNames: '',
+            foreNameAlias: 'Oneforealias',
+            lastNameAlias: null,
+            dateOfBirth: moment()
+          },
+          {
+            id: 2,
+            foreName: 'Twofore',
+            lastName: 'Twolast',
+            middleNames: '',
+            foreNameAlias: null,
+            lastNameAlias: 'Twolastalias',
+            dateOfBirth: moment()
+          },
+          {
+            id: 3,
+            foreName: 'Threefore',
+            lastName: 'Threelast',
+            middleNames: '',
+            foreNameAlias: 'Threeforealias',
+            lastNameAlias: 'Threelastalias',
+            dateOfBirth: moment()
+          },
+          {
+            id: 4,
+            foreName: 'Fourfore',
+            lastName: 'Fourlast',
+            middleNames: '',
+            foreNameAlias: null,
+            lastNameAlias: null,
+            dateOfBirth: moment()
+          }
+        ]
+
+        jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockImplementation()
+        jest.spyOn(businessAvailabilityService, 'getAvailabilityData').mockResolvedValue({ familiarisationPinsAvailable: true })
+        jest.spyOn(pinGenerationV2Service, 'getPupilsWithActivePins').mockResolvedValue(mockPupils)
+        jest.spyOn(pinService, 'getActiveSchool').mockResolvedValue({ name: 'mock school' })
+        jest.spyOn(checkWindowSanityCheckService, 'check').mockResolvedValue(undefined)
+        jest.spyOn(groupService, 'findGroupsByPupil').mockResolvedValue([])
+        jest.spyOn(qrService, 'getDataURL').mockResolvedValue('test')
+        const renderSpy = jest.spyOn(res, 'render').mockImplementation()
+
+        await controller(req, res, next)
+
+        const dataPassedToRender = renderSpy.mock.calls[0][1]
+        expect(dataPassedToRender.pupils[0].pupilViewFullName).toBe('Fourlast, Fourfore') // no alias
+        expect(dataPassedToRender.pupils[1].pupilViewFullName).toBe('Onelast, Oneforealias') // forename alias only
+        expect(dataPassedToRender.pupils[2].pupilViewFullName).toBe('Threelastalias, Threeforealias') // both aliases
+        expect(dataPassedToRender.pupils[3].pupilViewFullName).toBe('Twolastalias, Twofore') // forename alias only
+      })
+    })
 
     describe('for live pins', () => {
       test('displays the generated pupils list and password', async () => {
