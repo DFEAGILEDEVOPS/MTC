@@ -7,7 +7,9 @@ import Moment from 'moment'
 import { ICompressionService, CompressionService } from '../../common/compression-service'
 import { ICheckNotificationMessage, CheckNotificationType } from '../../schemas/check-notification-message'
 import { SubmittedCheck } from '../../schemas/check-schemas/submitted-check'
-import { AnswerTypeValidator, ICheckValidationError, ISubmittedCheckValidator, TopLevelPropertyStructureValidator } from './validators/breakup'
+import { ICheckValidationError, ISubmittedCheckValidator } from './validators/breakup'
+import { AnswerTypeValidator } from "./validators/answer-type.validator"
+import { TopLevelPropertyValidator } from "./validators/top-level-property.validator"
 import { AnswerCountValidator } from "./validators/answer-count.validator"
 import { LiveCheckValidator } from "./validators/live-check.validator"
 
@@ -98,7 +100,7 @@ export class CheckValidator {
 
   private getCheckValidators (): Array<ISubmittedCheckValidator> {
     return [
-      new TopLevelPropertyStructureValidator(),
+      new TopLevelPropertyValidator(),
       new LiveCheckValidator(),
       new AnswerCountValidator(),
       new AnswerTypeValidator()

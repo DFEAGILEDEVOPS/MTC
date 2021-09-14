@@ -58,9 +58,9 @@ export interface SubmittedCheck {
       token: string
     }
   }
-  audit: CompleteCheckAuditEntry[]
-  inputs: CompleteCheckInputEntry[]
-  answers: CompleteCheckAnswer[]
+  audit?: CompleteCheckAuditEntry[]
+  inputs?: CompleteCheckInputEntry[]
+  answers?: CompleteCheckAnswer[]
 }
 
 export interface CheckConfig {
@@ -93,7 +93,7 @@ export interface CheckQuestion {
 export interface CompleteCheckAnswer {
   factor1: number
   factor2: number
-  answer: number
+  answer: any
   sequenceNumber: number
   question: string
   clientTimestamp: string
