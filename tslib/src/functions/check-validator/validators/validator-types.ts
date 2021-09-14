@@ -4,10 +4,8 @@ export interface ISubmittedCheckValidator {
   validate (check: SubmittedCheck): CheckValidationResult
 }
 
-export type CheckValidationResult = (ICheckValidationError | void)
+export type CheckValidationResult = (ICheckValidationError | undefined)
 
 export interface ICheckValidationError {
   message: string
 }
-
-

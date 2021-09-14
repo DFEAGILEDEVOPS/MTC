@@ -1,4 +1,3 @@
-
 import { IAsyncTableService, AsyncTableService } from '../../azure/storage-helper'
 import { ReceivedCheckTableEntity, ValidateCheckMessageV1, MarkCheckMessageV1 } from '../../schemas/models'
 import { ILogger } from '../../common/logger'
@@ -8,10 +7,10 @@ import { ICompressionService, CompressionService } from '../../common/compressio
 import { ICheckNotificationMessage, CheckNotificationType } from '../../schemas/check-notification-message'
 import { SubmittedCheck } from '../../schemas/check-schemas/submitted-check'
 import { ICheckValidationError, ISubmittedCheckValidator } from './validators/validator-types'
-import { AnswerTypeValidator } from "./validators/answer-type.validator"
-import { TopLevelPropertyValidator } from "./validators/top-level-property.validator"
-import { AnswerCountValidator } from "./validators/answer-count.validator"
-import { LiveCheckValidator } from "./validators/live-check.validator"
+import { AnswerTypeValidator } from './validators/answer-type.validator'
+import { TopLevelPropertyValidator } from './validators/top-level-property.validator'
+import { AnswerCountValidator } from './validators/answer-count.validator'
+import { LiveCheckValidator } from './validators/live-check.validator'
 
 export interface ICheckValidatorFunctionBindings {
   receivedCheckTable: any[]
@@ -98,7 +97,7 @@ export class CheckValidator {
     }
   }
 
-  private getCheckValidators (): Array<ISubmittedCheckValidator> {
+  private getCheckValidators (): ISubmittedCheckValidator[] {
     return [
       new TopLevelPropertyValidator(),
       new LiveCheckValidator(),
@@ -109,7 +108,7 @@ export class CheckValidator {
 
   private validateCheckStructureV2 (check: SubmittedCheck): void {
     const validators = this.getCheckValidators()
-    const validationErrors: Array<ICheckValidationError> = []
+    const validationErrors: ICheckValidationError[] = []
     for (let index = 0; index < validators.length; index++) {
       const validator = validators[index]
       const validationResult = validator.validate(check)

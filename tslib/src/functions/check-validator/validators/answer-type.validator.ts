@@ -1,10 +1,9 @@
 import { SubmittedCheck } from '../../../schemas/check-schemas/submitted-check'
 import { ISubmittedCheckValidator, CheckValidationResult } from './validator-types'
 
-
 export class AnswerTypeValidator implements ISubmittedCheckValidator {
   validate (check: SubmittedCheck): CheckValidationResult {
-    if (!check.answers) {
+    if (check.answers === undefined) {
       return {
         message: 'no answers found'
       }

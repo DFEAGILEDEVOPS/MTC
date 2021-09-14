@@ -81,7 +81,5 @@ describe('answer-count.validator', () => {
     const error = sut.validate(check)
     expect(error).not.toBeDefined()
   })
-
   test.todo('do we need to source actual forms and question counts?')
-
 })

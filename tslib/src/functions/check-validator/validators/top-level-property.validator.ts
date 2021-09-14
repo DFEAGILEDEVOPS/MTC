@@ -2,9 +2,8 @@ import { SubmittedCheck } from '../../../schemas/check-schemas/submitted-check'
 import * as RA from 'ramda-adjunct'
 import { ISubmittedCheckValidator, CheckValidationResult } from './validator-types'
 
-
 export class TopLevelPropertyValidator implements ISubmittedCheckValidator {
-  private requiredTopLevelProperties = [
+  private readonly requiredTopLevelProperties = [
     'answers',
     'audit',
     'checkCode',
@@ -14,7 +13,7 @@ export class TopLevelPropertyValidator implements ISubmittedCheckValidator {
     'questions',
     'school',
     'tokens'
-  ];
+  ]
 
   validate (check: SubmittedCheck): CheckValidationResult {
     const missingProperties: string[] = []
@@ -31,5 +30,4 @@ export class TopLevelPropertyValidator implements ISubmittedCheckValidator {
       }
     }
   }
-
 }
