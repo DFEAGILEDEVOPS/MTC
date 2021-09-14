@@ -1,47 +1,48 @@
-import { TestBed } from '@angular/core/testing';
-import { AppConfigService } from './config.service';
-import { HttpClient } from '@angular/common/http';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-
-import { of, throwError } from 'rxjs';
+import { TestBed } from '@angular/core/testing'
+import { AppConfigService } from './config.service'
+import { HttpClient, HttpErrorResponse } from '@angular/common/http'
+import { HttpClientTestingModule } from '@angular/common/http/testing'
+import { throwError } from 'rxjs/internal/observable/throwError'
+import { of } from 'rxjs/internal/observable/of'
 
 describe('AppConfigService', () => {
-  let service: AppConfigService;
-  let http: HttpClient;
+  let service: AppConfigService
+  let http: HttpClient
 
   beforeEach(() => {
     const injector = TestBed.configureTestingModule({
-      imports: [ HttpClientTestingModule ],
+      imports: [HttpClientTestingModule],
       providers: [
         AppConfigService
       ]
-    });
-    service = TestBed.get(AppConfigService);
-    http = TestBed.get(HttpClient);
-  });
+    })
+    service = TestBed.inject(AppConfigService)
+    http = TestBed.inject(HttpClient)
+  })
 
   it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
+    expect(service).toBeTruthy()
+  })
 
-  it('loads data from the config json file',  async (done) => {
-    spyOn(http, 'get').and.returnValue(of({}));
+  it('loads data from the config json file', async () => {
+    spyOn(http, 'get').and.returnValue(of({}))
     try {
-      const loadResult = await service.load();
-      expect(loadResult).toBe(true);
-      done();
+      const loadResult = await service.load()
+      expect(loadResult).toBe(true)
     } catch (e) {
-      fail();
+      fail()
     }
-  });
+  })
 
-  it('throws a server error if the config json file does not exist',  async (done) => {
-    spyOn(http, 'get').and.returnValue(throwError('error'));
-    try {
-      const loadResult = await service.load();
-      fail();
-    } catch (e) {
-      done();
-    }
-  });
-});
+  it('returns false if the config json file does not exist', async () => {
+    spyOn(http, 'get').and.callFake(() => {
+      return throwError(new HttpErrorResponse({
+        error: new Error('Not found'),
+        status: 404,
+        statusText: 'Not found'
+      }))
+    })
+    const loadResult = await service.load()
+    expect(loadResult).toBe(false)
+  })
+})

@@ -1,16 +1,16 @@
-import { Component, ElementRef, OnInit, AfterViewInit } from '@angular/core';
-import { APP_CONFIG } from '../services/config/config.service';
-import { Router } from '@angular/router';
+import { Component, ElementRef, OnInit, AfterViewInit } from '@angular/core'
+import { APP_CONFIG } from '../services/config/config.service'
+import { Router } from '@angular/router'
 
-import { LoginErrorService } from '../services/login-error/login-error.service';
-import { LoginErrorDiagnosticsService } from '../services/login-error-diagnostics/login-error-diagnostics.service';
-import { UserService } from '../services/user/user.service';
-import { QuestionService } from '../services/question/question.service';
-import { WarmupQuestionService } from '../services/question/warmup-question.service';
-import { CheckStatusService } from '../services/check-status/check-status.service';
-import { Login } from './login.model';
-import { PupilPrefsService } from '../services/pupil-prefs/pupil-prefs.service';
-import { DeviceService } from '../services/device/device.service';
+import { LoginErrorService } from '../services/login-error/login-error.service'
+import { LoginErrorDiagnosticsService } from '../services/login-error-diagnostics/login-error-diagnostics.service'
+import { UserService } from '../services/user/user.service'
+import { QuestionService } from '../services/question/question.service'
+import { WarmupQuestionService } from '../services/question/warmup-question.service'
+import { CheckStatusService } from '../services/check-status/check-status.service'
+import { Login } from './login.model'
+import { PupilPrefsService } from '../services/pupil-prefs/pupil-prefs.service'
+import { DeviceService } from '../services/device/device.service'
 
 @Component({
   selector: 'app-login',
@@ -19,16 +19,16 @@ import { DeviceService } from '../services/device/device.service';
 })
 export class LoginComponent implements OnInit, AfterViewInit {
 
-  private submitted: boolean;
-  public loginModel = new Login('', '');
-  public loginPending: boolean;
-  public loginSucceeded: boolean;
-  public connectionFailed: boolean;
-  public loginPendingViewMinDisplay: number;
-  private errorMessage: string;
-  public isUnsupportedBrowser;
+  private submitted: boolean
+  public loginModel = new Login('', '')
+  public loginPending: boolean
+  public loginSucceeded: boolean
+  public connectionFailed: boolean
+  public loginPendingViewMinDisplay: number
+  private errorMessage: string
+  public isUnsupportedBrowser
 
-  constructor(
+  constructor (
     private deviceService: DeviceService,
     private loginErrorService: LoginErrorService,
     private loginErrorDiagnosticsService: LoginErrorDiagnosticsService,
@@ -40,87 +40,91 @@ export class LoginComponent implements OnInit, AfterViewInit {
     private checkStatusService: CheckStatusService,
     private pupilPrefsService: PupilPrefsService,
   ) {
-    const { loginPendingViewMinDisplay } = APP_CONFIG;
-    this.loginPendingViewMinDisplay = loginPendingViewMinDisplay;
+    const { loginPendingViewMinDisplay } = APP_CONFIG
+    this.loginPendingViewMinDisplay = loginPendingViewMinDisplay
   }
 
-  ngOnInit() {
-    this.isUnsupportedBrowser = this.deviceService.isUnsupportedBrowser();
-    this.loginPending = false;
-    const hasUnfinishedCheck = this.checkStatusService.hasUnfinishedCheck();
+  ngOnInit () {
+    this.isUnsupportedBrowser = this.deviceService.isUnsupportedBrowser()
+    this.loginPending = false
+    const hasUnfinishedCheck = this.checkStatusService.hasUnfinishedCheck()
     if (hasUnfinishedCheck) {
-      this.router.navigate(['check'], { queryParams: { unfinishedCheck: true } });
+      this.router.navigate(['check'], { queryParams: { unfinishedCheck: true } })
     }
-    this.loginErrorService.currentErrorMessage.subscribe(message => this.errorMessage = message);
+    this.loginErrorService.currentErrorMessage.subscribe(message => this.errorMessage = message)
   }
 
-  ngAfterViewInit() {
+  ngAfterViewInit () {
     // disable pin change when input is scrolled
-    const input = this.elRef.nativeElement.querySelector('#pupilPin');
-    input.addEventListener('mousewheel', function(e) { e.preventDefault(); });
+    const input = this.elRef.nativeElement.querySelector('#pupilPin')
+    input.addEventListener('mousewheel', function (e) {
+      e.preventDefault()
+    })
     // firefox uses DOMMouseScroll instead of mousewheel
-    input.addEventListener('DOMMouseScroll', function(e) { e.preventDefault(); });
+    input.addEventListener('DOMMouseScroll', function (e) {
+      e.preventDefault()
+    })
     // prevent arrow up or down to change the input value
-    input.addEventListener('keydown', function(e) {
+    input.addEventListener('keydown', function (e) {
       if (e.which === 38 || e.which === 40) {
-        e.preventDefault();
+        e.preventDefault()
       }
-    });
+    })
   }
 
   /**
    * Handler for the login form submit action
    */
-  onSubmit(schoolPin, pupilPin) {
-    const startTime = Date.now();
-    this.loginPending = true;
+  onSubmit (schoolPin, pupilPin) {
+    const startTime = Date.now()
+    this.loginPending = true
     if (this.submitted === true) {
-      return;
+      return
     }
-    this.submitted = true;
+    this.submitted = true
     this.userService.login(schoolPin, pupilPin)
       .then(
         async () => {
-          this.loginSucceeded = true;
-          this.connectionFailed = false;
-          this.questionService.initialise();
-          this.warmupQuestionService.initialise();
-          this.pupilPrefsService.loadPupilPrefs();
-          const config = this.questionService.getConfig();
+          this.loginSucceeded = true
+          this.connectionFailed = false
+          this.questionService.initialise()
+          this.warmupQuestionService.initialise()
+          this.pupilPrefsService.loadPupilPrefs()
+          const config = this.questionService.getConfig()
           if (config.practice === false) {
             // only set the cookie for live checks
-            this.deviceService.setupDeviceCookie();
+            this.deviceService.setupDeviceCookie()
           }
-          await this.displayMinTime(startTime);
-          this.loginPending = false;
+          await this.displayMinTime(startTime)
+          this.loginPending = false
           if (config.fontSize) {
-            this.router.navigate(['font-choice']);
+            this.router.navigate(['font-choice'])
           } else if (config.colourContrast) {
-            this.router.navigate(['colour-choice']);
+            this.router.navigate(['colour-choice'])
           } else {
-            this.router.navigate(['sign-in-success']);
+            this.router.navigate(['sign-in-success'])
           }
         },
         async (err) => {
-          this.submitted = false;
-          this.loginErrorService.changeMessage(err.message);
+          this.submitted = false
+          this.loginErrorService.changeMessage(err.message)
           if (err.status === 401) {
-            await this.displayMinTime(startTime);
-            this.loginPending = false;
-            this.loginSucceeded = false;
-            this.router.navigate(['sign-in']);
+            await this.displayMinTime(startTime)
+            this.loginPending = false
+            this.loginSucceeded = false
+            this.router.navigate(['sign-in'])
           } else {
-            await this.loginErrorDiagnosticsService.process(err);
-            this.router.navigate(['sign-in-fail']);
+            await this.loginErrorDiagnosticsService.process(err)
+            this.router.navigate(['sign-in-fail'])
           }
         })
       .catch(async () => {
-        await this.displayMinTime(startTime);
-        this.loginPending = false;
-        this.loginSucceeded = false;
-        this.submitted = false;
-        this.router.navigate(['sign-in']);
-      });
+        await this.displayMinTime(startTime)
+        this.loginPending = false
+        this.loginSucceeded = false
+        this.submitted = false
+        this.router.navigate(['sign-in'])
+      })
   }
 
   /**
@@ -128,13 +132,13 @@ export class LoginComponent implements OnInit, AfterViewInit {
    * @param {Number} startTime
    * @returns {Promise.<void>}
    */
-  async displayMinTime(startTime) {
-    const endTime = Date.now();
-    const duration = endTime - startTime;
-    const minDisplay = this.loginPendingViewMinDisplay;
+  async displayMinTime (startTime) {
+    const endTime = Date.now()
+    const duration = endTime - startTime
+    const minDisplay = this.loginPendingViewMinDisplay
     if (duration < minDisplay) {
-      const displayTime = minDisplay - duration;
-      return this.sleep(displayTime);
+      const displayTime = minDisplay - duration
+      return this.sleep(displayTime)
     }
   }
 
@@ -143,7 +147,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
    * @param {Number} ms
    * @returns {Promise.<void>}
    */
-  private sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+  private sleep (ms) {
+    return new Promise(resolve => setTimeout(resolve, ms))
   }
 }

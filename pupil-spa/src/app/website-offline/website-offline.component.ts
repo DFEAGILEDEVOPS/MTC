@@ -17,5 +17,4 @@ export class WebsiteOfflineComponent implements OnInit {
       this.router.navigate(['/']);
     }
   }
-
 }
