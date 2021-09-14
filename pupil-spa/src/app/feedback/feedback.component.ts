@@ -84,14 +84,14 @@ export class FeedbackComponent implements OnInit, AfterViewInit, OnDestroy {
     // stop the current speech process if the page is changed
     if (this.questionService.getConfig().questionReader) {
       this.speechService.cancel();
-
       this.elRef.nativeElement.removeEventListener('focus', this.speechListenerEvent, true);
     }
   }
 
   componentValidate() {
-    this.feedbackExists = this.storageService.getFeedback();
-    return (this.feedbackExists === null);
+    const feedback = this.storageService.getFeedback()
+    this.feedbackExists = (feedback === null)
+    return this.feedbackExists
   }
 
   onSelectionChange(fieldType, fieldValue) {
@@ -109,7 +109,7 @@ export class FeedbackComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  async onSubmit(comments) {
+   onSubmit(comments) {
     if (this.submitted === true) {
       return;
     }
@@ -130,7 +130,7 @@ export class FeedbackComponent implements OnInit, AfterViewInit, OnDestroy {
       this.submitted = true;
 
       // Saving in DB via API post
-      await this.feedbackService.postFeedback();
+      this.feedbackService.postFeedback();
 
       this.router.navigate(['feedback-thanks']);
     }

@@ -12,7 +12,6 @@ import { NgForm } from '@angular/forms';
   styleUrls: ['./aa-settings.component.scss']
 })
 export class AASettingsComponent implements AfterViewInit, OnInit, OnDestroy {
-
   public config: Config;
   public speechListenerEvent: any;
   public formSubmitted = false;
