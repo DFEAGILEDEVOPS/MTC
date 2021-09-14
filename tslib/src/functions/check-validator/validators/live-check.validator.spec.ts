@@ -1,5 +1,5 @@
 import { SubmittedCheck, getSubmittedCheck } from '../../../schemas/check-schemas/submitted-check'
-import { ICheckValidationError } from './breakup'
+import { ICheckValidationError } from './validator-types'
 import { LiveCheckValidator } from "./live-check.validator"
 
 let sut: LiveCheckValidator

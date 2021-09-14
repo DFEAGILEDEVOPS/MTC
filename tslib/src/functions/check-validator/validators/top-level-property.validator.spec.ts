@@ -1,6 +1,6 @@
 import { TopLevelPropertyValidator } from './top-level-property.validator'
 import { SubmittedCheck, getSubmittedCheck } from '../../../schemas/check-schemas/submitted-check'
-import { ICheckValidationError } from './breakup'
+import { ICheckValidationError } from './validator-types'
 
 let sut: TopLevelPropertyValidator
 

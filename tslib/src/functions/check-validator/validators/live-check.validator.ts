@@ -1,5 +1,5 @@
 import { SubmittedCheck } from '../../../schemas/check-schemas/submitted-check'
-import { ISubmittedCheckValidator, CheckValidationResult } from './breakup'
+import { ISubmittedCheckValidator, CheckValidationResult } from './validator-types'
 
 
 export class LiveCheckValidator implements ISubmittedCheckValidator {

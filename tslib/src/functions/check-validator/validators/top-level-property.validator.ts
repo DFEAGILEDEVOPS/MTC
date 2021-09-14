@@ -1,6 +1,6 @@
 import { SubmittedCheck } from '../../../schemas/check-schemas/submitted-check'
 import * as RA from 'ramda-adjunct'
-import { ISubmittedCheckValidator, CheckValidationResult } from './breakup'
+import { ISubmittedCheckValidator, CheckValidationResult } from './validator-types'
 
 
 export class TopLevelPropertyValidator implements ISubmittedCheckValidator {

@@ -1,6 +1,6 @@
 import { SubmittedCheck, getSubmittedCheck } from '../../../schemas/check-schemas/submitted-check'
 import { AnswerTypeValidator } from './answer-type.validator'
-import { ICheckValidationError } from './breakup'
+import { ICheckValidationError } from './validator-types'
 
 let sut: AnswerTypeValidator
 

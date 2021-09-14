@@ -7,7 +7,7 @@ import Moment from 'moment'
 import { ICompressionService, CompressionService } from '../../common/compression-service'
 import { ICheckNotificationMessage, CheckNotificationType } from '../../schemas/check-notification-message'
 import { SubmittedCheck } from '../../schemas/check-schemas/submitted-check'
-import { ICheckValidationError, ISubmittedCheckValidator } from './validators/breakup'
+import { ICheckValidationError, ISubmittedCheckValidator } from './validators/validator-types'
 import { AnswerTypeValidator } from "./validators/answer-type.validator"
 import { TopLevelPropertyValidator } from "./validators/top-level-property.validator"
 import { AnswerCountValidator } from "./validators/answer-count.validator"
