@@ -4,7 +4,8 @@ export interface ISubmittedCheckValidator {
   validate (check: SubmittedCheck): CheckValidationResult
 }
 
-export type CheckValidationResult = (ICheckValidationError | undefined)
+/* eslint-disable  @typescript-eslint/no-invalid-void-type */
+export type CheckValidationResult = (ICheckValidationError | void)
 
 export interface ICheckValidationError {
   message: string
