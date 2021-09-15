@@ -1,7 +1,8 @@
-#!/bin/bash
+#!/bin/sh
+# This script must run on developer localhost as well as an alpine docker image which does not have /bin/bash
 set -e
-#set -x
-scriptDir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
+set -x
+scriptDir="$( cd "$( dirname "$0" )" >/dev/null && pwd )"
 envFile=${scriptDir}/../.env
 [[ -f ${envFile} ]] && source ${envFile}
 applicationInsightsCode=${APPINSIGHTS_INSTRUMENTATIONKEY}
