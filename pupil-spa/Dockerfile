@@ -3,6 +3,7 @@
 # We label our stage as 'builder'
 FROM node:12-alpine as builder
 
+# `yarn install` needs to be able to find `git` for lz-string which uses a github.com URL for the version.
 RUN apk update && \
     apk upgrade && \
     apk add git
@@ -17,28 +18,8 @@ WORKDIR /ng-app
 
 COPY . .
 
-ARG AUTH_URL
-ARG runtime_config_url=/assets/config.json
-
-## The config will be loaded at runtime from this path / URL, but
-# this path needs to be set at build time. It can be an external
-# URL too, as long as it's accessible through http
-
-ARG APPINSIGHTS_INSTRUMENTATIONKEY
-ARG azure_acccount_name
-ENV AUTH_URL=$AUTH_URL
-ENV APPINSIGHTS_INSTRUMENTATIONKEY=$APPINSIGHTS_INSTRUMENTATIONKEY
-ENV AZURE_ACCOUNT_NAME=$azure_account_name
-ENV RUNTIME_CONFIG_URL=$runtime_config_url
-
-# [jms] commenting this out, as it seems extraneous
-# RUN $(npm bin)/gulp setRuntimeConfigURL
-
 ## Build the angular app in production mode and store the artifacts in dist folder
 RUN yarn run ng build --prod --aot --build-optimizer
-
-## Generate the config file and add it to the public folder
-RUN sh gen_config.sh && mv config.json dist/assets/
 
 ### STAGE 2: Setup ###
 
@@ -59,6 +40,7 @@ COPY --from=builder /ng-app/gen_config.sh /
 COPY --from=builder /ng-app/docker-start.sh /
 
 # install ssh server
+# Credentials are for Azure / Kudu - don't change them.
 RUN apk add openssh openrc \
      && echo "root:Docker!" | chpasswd
 
@@ -72,4 +54,9 @@ RUN /usr/bin/ssh-keygen -A
 
 EXPOSE 80 2222
 
+# docker-start.sh will
+#  * start sshd
+#  * generate a new config.json for the pupil-app to use using Azure env vars injected into the docker container
+#  * inject the AZURE_ACCOUNT_NAME into the fallback queue system that uses ngins to submit the completed check
+#  * start nginx
 CMD ["./docker-start.sh"]
