@@ -15,5 +15,4 @@ export class CheckCodeValidator implements ISubmittedCheckValidator {
       }
     }
   }
-
 }

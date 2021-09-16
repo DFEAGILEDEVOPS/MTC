@@ -1,7 +1,7 @@
 export interface SubmittedCheck {
   checkCode?: string
   schoolUUID: string
-  config: CheckConfig
+  config?: CheckConfig
   device: {
     battery?: {
       isCharging?: boolean
