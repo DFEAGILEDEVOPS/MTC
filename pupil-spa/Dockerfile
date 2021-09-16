@@ -57,6 +57,6 @@ EXPOSE 80 2222
 # docker-start.sh will
 #  * start sshd
 #  * generate a new config.json for the pupil-app to use using Azure env vars injected into the docker container
-#  * inject the AZURE_ACCOUNT_NAME into the fallback queue system that uses ngins to submit the completed check
+#  * inject the AZURE_ACCOUNT_NAME into the fallback queue system that uses nginx to submit the completed check
 #  * start nginx
 CMD ["./docker-start.sh"]
