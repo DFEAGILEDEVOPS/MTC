@@ -14,7 +14,7 @@ describe('answer-type.validator', () => {
     delete check.answers
     const error = sut.validate(check)
     expect(error).toBeDefined()
-    expect((error as ICheckValidationError).message).toBe('no answers found')
+    expect((error as ICheckValidationError).message).toBe('answers property missing')
   })
 
   test('if first answer is not a string, validation fails', () => {

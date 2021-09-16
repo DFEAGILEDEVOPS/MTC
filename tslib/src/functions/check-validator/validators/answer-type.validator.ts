@@ -5,7 +5,7 @@ export class AnswerTypeValidator implements ISubmittedCheckValidator {
   validate (check: SubmittedCheck): CheckValidationResult {
     if (check.answers === undefined) {
       return {
-        message: 'no answers found'
+        message: 'answers property missing'
       }
     }
     for (let index = 0; index < check.answers.length; index++) {

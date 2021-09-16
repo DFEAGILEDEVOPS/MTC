@@ -58,9 +58,9 @@ export interface SubmittedCheck {
       token: string
     }
   }
-  audit?: CompleteCheckAuditEntry[]
-  inputs?: CompleteCheckInputEntry[]
-  answers?: CompleteCheckAnswer[]
+  audit?: CompleteCheckAuditEntry[] | any
+  inputs?: CompleteCheckInputEntry[] | any
+  answers?: CompleteCheckAnswer[] | any
 }
 
 export interface CheckConfig {
