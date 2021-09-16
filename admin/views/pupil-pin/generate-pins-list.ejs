@@ -15,7 +15,8 @@
             </div>
             <%- partial('partials/_gds_groups_filter', { groups: groups }) %>
             <% if (pupils && pupils.length > 0) { %>
-            <form method="post" action="/pupil-pin/generate-<%= pinEnv %>-pins" method="post" autocomplete="off" id="pupilListForm">
+            <form method="post" action="/pupil-pin/generate-<%= pinEnv %>-pins" method="post" autocomplete="off"
+                  id="pupilListForm" name="stickyBannerForm">
                 <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
                 <table class="govuk-table govuk-spacious govuk-!-margin-bottom-9" id="generatePins" data-name="filterablePupilsList" role="listbox" aria-label="Select pupils.">
                     <caption class="govuk-body govuk-table__caption">List of available pupils</caption>
