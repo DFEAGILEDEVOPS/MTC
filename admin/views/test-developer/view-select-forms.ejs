@@ -16,7 +16,8 @@
         <% } %>
       </div>
       <% if (Array.isArray(checkFormData) && checkFormData.length > 0) { %>
-      <form method="post" action="/test-developer/assign-forms/<%= checkFormType %>/<%= checkWindowData.urlSlug %>">
+      <form method="post" action="/test-developer/assign-forms/<%= checkFormType %>/<%= checkWindowData.urlSlug %>"
+            name="stickyBannerForm">
         <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
         <table class="govuk-table govuk-spacious" id="assignFormToWindowList" role="group">
           <caption class="govuk-body govuk-table__caption">List of check forms</caption>

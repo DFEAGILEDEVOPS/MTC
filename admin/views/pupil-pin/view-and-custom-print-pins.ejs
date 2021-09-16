@@ -51,7 +51,7 @@
             </div>
             <%- partial('partials/_gds_groups_filter', { groups: groups }) %>
             <% if (pupils && pupils.length > 0) { %>
-            <form id="printPinsForm" autocomplete="off">
+            <form id="printPinsForm" autocomplete="off" name="stickyBannerForm">
                 <table class="govuk-table govuk-spacious" id="generatePins" data-name="filterablePupilsList" role="listbox" aria-label="Select pupils.">
                     <thead class="no-print govuk-table__head">
                         <tr class="govuk-table__row">
