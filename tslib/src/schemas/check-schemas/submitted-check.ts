@@ -1,5 +1,5 @@
 export interface SubmittedCheck {
-  checkCode: string
+  checkCode?: string
   schoolUUID: string
   config: CheckConfig
   device: {
@@ -44,7 +44,7 @@ export interface SubmittedCheck {
       lastName?: string
     }
   }
-  questions: CheckQuestion[]
+  questions?: CheckQuestion[] | any
   school: {
     name: string
     uuid: string
