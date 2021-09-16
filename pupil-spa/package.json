@@ -12,7 +12,7 @@
     "coverage": "yarn genconfig && ng test --no-watch --browsers ChromeHeadless --code-coverage",
     "test-single": "yarn genconfig && ng test --watch false --browsers ChromeHeadless",
     "lint": "ng lint",
-    "genconfig": "bash gen_config.sh && mv config.json src/assets/config.json"
+    "genconfig": "./gen_config.sh && mv config.json src/assets/config.json"
   },
   "resolutions": {
     "**/**/lodash": ">=4.17.21",
