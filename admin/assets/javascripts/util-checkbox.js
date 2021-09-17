@@ -193,13 +193,16 @@ var stickyBanner = {
     var footerEl = $('#govuk-footer').length === 0 ? $('#footer') : $('#govuk-footer')
     if (stickyBannerEl.next(footerEl).length === 0) {
       // we're moving the banner outside of the form, so add a click handler
-      // to submit it
-      var form = stickyBannerEl.closest('form').length > 0 ? stickyBannerEl.closest('form') : $(document.forms && document.forms[0])
-      $('#stickyConfirm').on('click touchstart', function () {
-        // prevent form submission for print pins form
-        var printPinsForm = document.getElementById('printPinsForm')
-        !printPinsForm && form.submit()
-      })
+      // to submit it.  The name of the form must be 'stickyBannerForm' so we do not accidentally submit a
+      // different form!
+      var form = $('form[name="stickyBannerForm"]')
+      if (form) {
+        $('#stickyConfirm').on('click touchstart', function () {
+          // prevent form submission for print pins form
+          var printPinsForm = document.getElementById('printPinsForm')
+          !printPinsForm && form.submit()
+        })
+      }
       // move the sticky banner to be a sibling of content and footer
       // so it can be full width
       stickyBannerEl.insertBefore(footerEl)

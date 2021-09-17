@@ -5,7 +5,7 @@
             <h1 class="govuk-heading-xl">Give a reason why a pupil is not taking the check</h1>
             <%- partial('partials/_gds_session_expiry') %>
             <% if (pupilsList && pupilsList.length > 0) { %>
-                <form method="post" action="/pupils-not-taking-the-check/save-pupils">
+                <form method="post" action="/pupils-not-taking-the-check/save-pupils" name="stickyBannerForm">
                     <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
                     <% if (attendanceCodesPresentationData && attendanceCodesPresentationData.length > 1) { %>
                         <h2 class="govuk-heading-m">1. Select reason</h2>
