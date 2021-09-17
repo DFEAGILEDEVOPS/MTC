@@ -3,7 +3,7 @@ import { ISubmittedCheckValidator, CheckValidationResult } from './validator-typ
 
 export class LiveCheckValidator implements ISubmittedCheckValidator {
   validate (check: SubmittedCheck): CheckValidationResult {
-    if (check.config.practice) {
+    if (check.config.practice !== false) {
       return {
         message: 'only live checks can be submitted'
       }
