@@ -82,7 +82,7 @@ export class CheckCompleteService {
     try {
       await this.azureQueueService.addMessage(queueName, url, token, message, retryConfig);
       this.auditService.addEntry(new CheckSubmissionAPICallSucceeded());
-      this.onSuccess(startTime);
+      await this.onSuccess(startTime);
     } catch (error) {
       this.auditService.addEntry(new CheckSubmissionAPIFailed(error));
       if (error.statusCode === 403

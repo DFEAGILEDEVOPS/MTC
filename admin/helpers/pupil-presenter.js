@@ -1,7 +1,5 @@
 'use strict'
 
-const pupilIdentificationFlag = require('../services/pupil-identification-flag.service')
-
 const pupilPresenter = {}
 
 /**
@@ -18,7 +16,7 @@ pupilPresenter.getPupilsSortedWithIdentificationFlags = (pupils) => {
   pupils.sort((a, b) => {
     return (a.lastName === b.lastName ? 0 : a.lastName.localeCompare(b.lastName)) || (a.foreName === b.foreName ? 0 : a.foreName.localeCompare(b.foreName))
   })
-  return pupilIdentificationFlag.addIdentificationFlags(pupils)
+  return pupils
 }
 
 module.exports = pupilPresenter

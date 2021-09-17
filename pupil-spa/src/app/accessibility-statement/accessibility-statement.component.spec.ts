@@ -1,5 +1,5 @@
 import {Component, Input} from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 
 import { AccessibilityStatementComponent } from './accessibility-statement.component';
@@ -31,7 +31,7 @@ describe('AccessibilityStatementComponent', () => {
   let component: AccessibilityStatementComponent;
   let fixture: ComponentFixture<AccessibilityStatementComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [ RouterTestingModule.withRoutes([]) ],
       declarations: [ AccessibilityStatementComponent, MockAppBreadcrumbsComponent, MockAppHeaderComponent, MockAppFooterComponent ],

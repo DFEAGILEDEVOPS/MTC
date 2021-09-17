@@ -1,5 +1,5 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { APP_INITIALIZER, NO_ERRORS_SCHEMA } from '@angular/core'
 
 import { QuestionsIntroComponent } from './questions-intro.component';
 import { AuditServiceMock } from '../services/audit/audit.service.mock';
@@ -17,6 +17,7 @@ import { QUEUE_STORAGE_TOKEN } from '../services/azure-queue/azureStorage';
 import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { AppUsageService } from '../services/app-usage/app-usage.service';
+import { loadConfigMockService } from '../services/config/config.service'
 
 describe('QuestionsIntroComponent', () => {
   let component: QuestionsIntroComponent;
@@ -28,7 +29,7 @@ describe('QuestionsIntroComponent', () => {
   let httpClient: HttpClient;
   let httpTestingController: HttpTestingController;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     const inject = TestBed.configureTestingModule({
       declarations: [ QuestionsIntroComponent ],
       schemas: [ NO_ERRORS_SCHEMA ], // we don't need to test sub-components
@@ -38,6 +39,7 @@ describe('QuestionsIntroComponent', () => {
         { provide: SpeechService, useClass: SpeechServiceMock },
         { provide: QuestionService, useClass: QuestionServiceMock },
         { provide: QUEUE_STORAGE_TOKEN, useValue: undefined },
+        { provide: APP_INITIALIZER, useFactory: loadConfigMockService, multi: true },
         AzureQueueService,
         TokenService,
         StorageService,
@@ -46,9 +48,9 @@ describe('QuestionsIntroComponent', () => {
         AppUsageService
       ]
     });
-    httpClient = TestBed.get(HttpClient);
-    httpTestingController = TestBed.get(HttpTestingController);
-    checkStartService = inject.get(CheckStartService);
+    httpClient = TestBed.inject(HttpClient);
+    httpTestingController = TestBed.inject(HttpTestingController);
+    checkStartService = inject.inject(CheckStartService);
     inject.compileComponents();
   }));
 
@@ -68,7 +70,7 @@ describe('QuestionsIntroComponent', () => {
 
   describe('onClick()', () => {
     describe('calls check start submit', () => {
-      it('successfully calls check start service', async (async() => {
+      it('successfully calls check start service', waitForAsync (async() => {
         checkStartService = fixture.debugElement.injector.get(CheckStartService);
         spyOn(checkStartService, 'submit');
         component.clickEvent.subscribe(g => {
