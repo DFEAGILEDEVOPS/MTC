@@ -1,12 +1,12 @@
 import { SubmittedCheck, getSubmittedCheck } from '../../../schemas/check-schemas/submitted-check'
-import { AnswersPropertyValidator } from './answers.validator'
+import { AnswersValidator } from './answers.validator'
 import { ICheckValidationError } from './validator-types'
 
-let sut: AnswersPropertyValidator
+let sut: AnswersValidator
 
 describe('answers-property.validator', () => {
   beforeEach(() => {
-    sut = new AnswersPropertyValidator()
+    sut = new AnswersValidator()
   })
 
   test('if answers property undefined, validation fails', () => {

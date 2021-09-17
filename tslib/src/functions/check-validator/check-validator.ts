@@ -6,11 +6,8 @@ import Moment from 'moment'
 import { ICompressionService, CompressionService } from '../../common/compression-service'
 import { ICheckNotificationMessage, CheckNotificationType } from '../../schemas/check-notification-message'
 import { SubmittedCheck } from '../../schemas/check-schemas/submitted-check'
-import { ICheckValidationError, ISubmittedCheckValidator } from './validators/validator-types'
-import { AnswerTypeValidator } from './validators/answer-type.validator'
-import { TopLevelPropertyValidator } from './validators/top-level-property.validator'
-import { AnswerCountValidator } from './validators/answer-count.validator'
-import { LiveCheckValidator } from './validators/live-check.validator'
+import { ICheckValidationError } from './validators/validator-types'
+import { ValidatorProvider } from './validators/validator.provider'
 
 export interface ICheckValidatorFunctionBindings {
   receivedCheckTable: any[]
@@ -21,6 +18,7 @@ export interface ICheckValidatorFunctionBindings {
 export class CheckValidator {
   private readonly tableService: IAsyncTableService
   private readonly compressionService: ICompressionService
+  private readonly validatorProvider: ValidatorProvider
 
   constructor (tableService?: IAsyncTableService, compressionService?: ICompressionService) {
     if (tableService !== undefined) {
@@ -34,6 +32,7 @@ export class CheckValidator {
     } else {
       this.compressionService = new CompressionService()
     }
+    this.validatorProvider = new ValidatorProvider()
   }
 
   async validate (functionBindings: ICheckValidatorFunctionBindings, validateCheckMessage: ValidateCheckMessageV1, logger: ILogger): Promise<void> {
@@ -97,17 +96,8 @@ export class CheckValidator {
     }
   }
 
-  private getCheckValidators (): ISubmittedCheckValidator[] {
-    return [
-      new TopLevelPropertyValidator(),
-      new LiveCheckValidator(),
-      new AnswerCountValidator(),
-      new AnswerTypeValidator()
-    ]
-  }
-
   private validateCheckStructureV2 (check: SubmittedCheck): void {
-    const validators = this.getCheckValidators()
+    const validators = this.validatorProvider.getValidators()
     const validationErrors: ICheckValidationError[] = []
     for (let index = 0; index < validators.length; index++) {
       const validator = validators[index]

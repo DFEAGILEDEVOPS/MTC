@@ -1,12 +1,12 @@
 import { SubmittedCheck, getSubmittedCheck } from '../../../schemas/check-schemas/submitted-check'
-import { AuditPropertyValidator } from './audit.validator'
+import { AuditValidator } from './audit.validator'
 import { ICheckValidationError } from './validator-types'
 
-let sut: AuditPropertyValidator
+let sut: AuditValidator
 
 describe('audit-property.validator', () => {
   beforeEach(() => {
-    sut = new AuditPropertyValidator()
+    sut = new AuditValidator()
   })
 
   test('if audit property undefined, validation fails', () => {

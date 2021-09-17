@@ -17,6 +17,14 @@ describe('check-config.validator', () => {
     expect((error as ICheckValidationError).message).toBe('config property missing')
   })
 
+  test('if config property not an object, validation fails', () => {
+    const check: SubmittedCheck = getSubmittedCheck()
+    check.config = ''
+    const error = sut.validate(check)
+    expect(error).toBeDefined()
+    expect((error as ICheckValidationError).message).toBe('config property is not an object')
+  })
+
   test('if config property present, validation passes', () => {
     const check: SubmittedCheck = getSubmittedCheck()
     const error = sut.validate(check)

@@ -1,7 +1,7 @@
 export interface SubmittedCheck {
   checkCode?: string
   schoolUUID: string
-  config?: CheckConfig
+  config?: CheckConfig | any
   device: {
     battery?: {
       isCharging?: boolean
@@ -40,18 +40,20 @@ export interface SubmittedCheck {
   pupil?: PupilInfo | any
   questions?: CheckQuestion[] | any
   school?: SchoolInfo | any
-  tokens: {
-    checkStarted: QueueAuthToken
-    pupilPreferences: QueueAuthToken
-    pupilFeedback: QueueAuthToken
-    checkComplete?: QueueAuthToken
-    jwt: {
-      token: string
-    }
-  }
+  tokens: TokenInfo | any
   audit?: CompleteCheckAuditEntry[] | any
   inputs?: CompleteCheckInputEntry[] | any
   answers?: CompleteCheckAnswer[] | any
+}
+
+export interface TokenInfo {
+  checkStarted: QueueAuthToken
+  pupilPreferences: QueueAuthToken
+  pupilFeedback: QueueAuthToken
+  checkComplete?: QueueAuthToken
+  jwt: {
+    token: string
+  }
 }
 
 export interface PupilInfo {

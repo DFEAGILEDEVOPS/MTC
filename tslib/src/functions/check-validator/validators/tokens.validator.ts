@@ -1,16 +1,17 @@
+import { isObj } from 'ramda-adjunct'
 import { SubmittedCheck } from '../../../schemas/check-schemas/submitted-check'
 import { CheckValidationResult, ISubmittedCheckValidator } from './validator-types'
 
-export class AnswersValidator implements ISubmittedCheckValidator {
+export class TokensValidator implements ISubmittedCheckValidator {
   validate (check: SubmittedCheck): CheckValidationResult {
-    if (check.answers === undefined) {
+    if (check.tokens === undefined) {
       return {
-        message: 'answers property missing'
+        message: 'tokens property missing'
       }
     }
-    if (!Array.isArray(check.answers)) {
+    if (!isObj(check.tokens)) {
       return {
-        message: 'answers property is not an array'
+        message: 'tokens property is not an object'
       }
     }
   }
