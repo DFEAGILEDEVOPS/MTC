@@ -29,7 +29,7 @@
     "watch:integration": "yarn jest --watch --coverage=no --config ./tests-integration/jest.integration.config.js"
   },
   "mtc": {
-    "assets-version": "0fc75a9344f8f2567e1ad3fd7aff0372"
+    "assets-version": "cf97ab52a7b50fb51fd6f2673c4ec147"
   },
   "engines": {
     "node": ">= 12"
@@ -41,7 +41,7 @@
   "dependencies": {
     "@azure/service-bus": "^7.0.5",
     "applicationinsights": "^2.1.5",
-    "axios": "^0.21.1",
+    "axios": "^0.21.3",
     "azure-storage": "^2.10.4",
     "bcryptjs": "^2.4.3",
     "bluebird": "^3.5.1",
