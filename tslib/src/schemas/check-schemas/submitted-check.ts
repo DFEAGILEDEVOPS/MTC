@@ -37,18 +37,9 @@ export interface SubmittedCheck {
     deviceId?: string
     appUsageCounter?: number
   }
-  pupil: {
-    checkCode: string
-    inputAssistant?: {
-      firstName?: string
-      lastName?: string
-    }
-  }
+  pupil?: PupilInfo | any
   questions?: CheckQuestion[] | any
-  school: {
-    name: string
-    uuid: string
-  }
+  school?: SchoolInfo | any
   tokens: {
     checkStarted: QueueAuthToken
     pupilPreferences: QueueAuthToken
@@ -61,6 +52,19 @@ export interface SubmittedCheck {
   audit?: CompleteCheckAuditEntry[] | any
   inputs?: CompleteCheckInputEntry[] | any
   answers?: CompleteCheckAnswer[] | any
+}
+
+export interface PupilInfo {
+  checkCode: string
+  inputAssistant?: {
+    firstName?: string
+    lastName?: string
+  }
+}
+
+export interface SchoolInfo {
+  name: string
+  uuid: string
 }
 
 export interface CheckConfig {

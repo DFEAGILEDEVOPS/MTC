@@ -1,5 +1,5 @@
 import { SubmittedCheck, getSubmittedCheck } from '../../../schemas/check-schemas/submitted-check'
-import { AnswersPropertyValidator } from './answers-property.validator'
+import { AnswersPropertyValidator } from './answers.validator'
 import { ICheckValidationError } from './validator-types'
 
 let sut: AnswersPropertyValidator
