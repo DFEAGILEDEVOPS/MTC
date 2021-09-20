@@ -2,11 +2,11 @@ import { CheckValidator, ICheckValidatorFunctionBindings } from './check-validat
 import { IAsyncTableService, TableStorageEntity } from '../../azure/storage-helper'
 import { ReceivedCheckTableEntity, ValidateCheckMessageV1, MarkCheckMessageV1 } from '../../schemas/models'
 import { ILogger } from '../../common/logger'
-import checkSchema from '../../schemas/complete-check.v1.json'
 import { ICompressionService } from '../../common/compression-service'
 import * as uuid from 'uuid'
 import moment from 'moment'
 import { CheckNotificationType } from '../../schemas/check-notification-message'
+import { getValidatedCheck } from '../../schemas/check-schemas/validated-check'
 
 const TableServiceMock = jest.fn<IAsyncTableService, any>(() => ({
   replaceEntityAsync: jest.fn(async (): Promise<TableStorageEntity> => {
@@ -210,7 +210,7 @@ describe('check-validator', () => {
       }
     })
     jest.spyOn(compressionServiceMock, 'decompress').mockImplementation(() => {
-      return JSON.stringify(checkSchema)
+      return JSON.stringify(getValidatedCheck())
     })
     const functionBindings: ICheckValidatorFunctionBindings = {
       receivedCheckTable: [receivedCheckEntity],
@@ -241,8 +241,9 @@ describe('check-validator', () => {
         RowKey: uuid.v4()
       }
     })
+    const validCheck = getValidatedCheck()
     jest.spyOn(compressionServiceMock, 'decompress').mockImplementation(() => {
-      return JSON.stringify(checkSchema)
+      return JSON.stringify(validCheck)
     })
     const functionBindings: ICheckValidatorFunctionBindings = {
       receivedCheckTable: [receivedCheckEntity],
@@ -252,7 +253,7 @@ describe('check-validator', () => {
     await sut.validate(functionBindings, validateReceivedCheckQueueMessage, loggerMock)
     expect(actualTableName).toBe('receivedCheck')
     expect(actualEntity.processingError).toBeUndefined()
-    expect(actualEntity.answers).toStrictEqual(JSON.stringify(checkSchema.answers))
+    expect(actualEntity.answers).toStrictEqual(JSON.stringify(validCheck.answers))
   })
 
   test('check marking message is created and added to output binding array', async () => {
@@ -264,7 +265,7 @@ describe('check-validator', () => {
       checkVersion: 1
     }
     jest.spyOn(compressionServiceMock, 'decompress').mockImplementation(() => {
-      return JSON.stringify(checkSchema)
+      return JSON.stringify(getValidatedCheck())
     })
     const functionBindings: ICheckValidatorFunctionBindings = {
       receivedCheckTable: [receivedCheckEntity],

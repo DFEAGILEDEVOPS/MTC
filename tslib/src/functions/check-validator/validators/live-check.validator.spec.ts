@@ -16,7 +16,7 @@ describe('live-check.validator', () => {
     }
     const error = sut.validate(check)
     expect(error).toBeDefined()
-    expect((error as ICheckValidationError).message).toBe('only live checks can be submitted')
+    expect((error as ICheckValidationError).message).toBe('only live checks can be submitted. value:true')
   })
 
   test('should return undefined when live check', () => {

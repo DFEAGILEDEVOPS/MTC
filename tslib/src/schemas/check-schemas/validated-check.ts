@@ -157,10 +157,21 @@ export interface CompleteCheckAuditEntry {
 }
 
 export function getValidatedCheck (): ValidCheck {
+  const answers: CompleteCheckAnswer[] = []
+  for (let index = 0; index < 25; index++) {
+    answers.push({
+      answer: `${index}`,
+      clientTimestamp: '',
+      factor1: index,
+      factor2: index,
+      question: `${index}x${index}`,
+      sequenceNumber: index
+    })
+  }
   const check: ValidCheck = {
-    answers: [],
+    answers: answers,
     audit: [],
-    checkCode: '',
+    checkCode: '2f39b888-892e-4d0a-918b-c52288b1e54f',
     config: {
       audibleSounds: false,
       checkTime: 0,
