@@ -30,7 +30,7 @@ pupilAccessArrangementsService.getPupils = async (schoolId) => {
     return acc
   }, {})
   const pupilsWithAccessArrangements = accessArrangementsHashmap && Object.keys(accessArrangementsHashmap).map((key) => accessArrangementsHashmap[key])
-  return pupilIdentificationFlag.addIdentificationFlags(pupilsWithAccessArrangements)
+  return pupilIdentificationFlag.sortAndAddIdentificationFlags(pupilsWithAccessArrangements)
 }
 
 /**

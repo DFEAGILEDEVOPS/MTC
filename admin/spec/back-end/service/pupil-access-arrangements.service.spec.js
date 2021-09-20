@@ -1,11 +1,12 @@
 'use strict'
-/* global describe, it, expect spyOn beforeEach fail */
+/* global describe, expect beforeEach fail jest test afterEach */
 
 const preparedCheckSyncService = require('../../../services/prepared-check-sync.service')
 const pupilAccessArrangementsService = require('../../../services/pupil-access-arrangements.service')
 const pupilDataService = require('../../../services/data-access/pupil.data.service')
 const pupilAccessArrangementsDataService = require('../../../services/data-access/pupil-access-arrangements.data.service')
 const uuid = require('uuid')
+const moment = require('moment')
 
 const pupilAccessArrangementsMock = [
   {
@@ -13,63 +14,75 @@ const pupilAccessArrangementsMock = [
     foreName: 'Ebony',
     middleNames: '',
     lastName: 'Daniels',
-    description: 'Audible time alert'
+    description: 'Audible time alert',
+    dateOfBirth: moment('2012-07-01T00:00:00Z')
   },
   {
     urlSlug: '93935288-CD8F-46D5-99D4-10A9F01F0F70',
     foreName: 'Ebony',
     middleNames: '',
     lastName: 'Daniels',
-    description: 'Colour contrast'
+    description: 'Colour contrast',
+    dateOfBirth: moment('2012-07-02T00:00:00Z')
   },
   {
     urlSlug: '93935288-CD8F-46D5-99D4-10A9F01F0F70',
     foreName: 'Ebony',
     middleNames: '',
     lastName: 'Daniels',
-    description: 'Remove on-screen number pad'
+    description: 'Remove on-screen number pad',
+    dateOfBirth: moment('2012-07-03T00:00:00Z')
   },
   {
     urlSlug: '7E0FB2BC-B23F-448B-870A-A92731ADC7DC',
     foreName: 'Gregory',
     middleNames: 'Green',
     lastName: 'Duke',
-    description: 'Colour contrast'
+    description: 'Colour contrast',
+    dateOfBirth: moment('2012-07-04T00:00:00Z')
   },
   {
     urlSlug: '7E0FB2BC-B23F-448B-870A-A92731ADC7DC',
     foreName: 'Gregory',
     middleNames: 'Green',
     lastName: 'Duke',
-    description: 'Font size'
+    description: 'Font size',
+    dateOfBirth: moment('2012-07-04T00:00:00Z')
   },
   {
     urlSlug: '34356B98-BCD8-485F-9F2E-F4CBF2741FA7',
     foreName: 'Sweeney',
     middleNames: 'White',
     lastName: 'Wolfe',
-    description: 'Question reader (reason required)'
+    description: 'Question reader (reason required)',
+    dateOfBirth: moment('2012-07-06T00:00:00Z')
   },
   {
     urlSlug: '34356B98-BCD8-485F-9F2E-F4CBF2741FA7',
     foreName: 'Sweeney',
     middleNames: 'White',
     lastName: 'Wolfe',
-    description: 'Remove on-screen number pad'
+    description: 'Remove on-screen number pad',
+    dateOfBirth: moment('2012-07-07T00:00:00Z')
   }
 ]
 
 describe('pupilAccessArrangementsService', () => {
+  afterEach(() => {
+    jest.restoreAllMocks()
+  })
+
   describe('getPupils', () => {
     describe('successfully processes and', () => {
       let pupils
       beforeEach(async () => {
-        spyOn(pupilAccessArrangementsDataService, 'sqFindPupilsWithAccessArrangements').and.returnValue(pupilAccessArrangementsMock)
+        jest.spyOn(pupilAccessArrangementsDataService, 'sqFindPupilsWithAccessArrangements').mockResolvedValue(pupilAccessArrangementsMock)
         pupils = await pupilAccessArrangementsService.getPupils(9991001)
       })
-      it('returns a list of pupils with associated access arrangements', () => {
+
+      test('returns a list of pupils with associated access arrangements', () => {
         expect(pupils.length).toBe(3)
-        expect(pupils[1]).toEqual(
+        expect(pupils[1]).toEqual(expect.objectContaining(
           {
             urlSlug: '7E0FB2BC-B23F-448B-870A-A92731ADC7DC',
             foreName: 'Gregory',
@@ -78,18 +91,21 @@ describe('pupilAccessArrangementsService', () => {
             arrangements: ['Colour contrast', 'Font size'],
             fullName: 'Duke, Gregory'
           }
-        )
+        ))
       })
-      it('removes reason required phrase if exists on access arrangements description list', () => {
+
+      test('removes reason required phrase if exists on access arrangements description list', () => {
         expect(pupils[2].arrangements[0]).toBe('Question reader')
       })
-      it('should not include description property', () => {
+
+      test('should not include description property', () => {
         expect(pupils[2].description).toBeUndefined()
       })
     })
   })
+
   describe('getPupilEditFormData', () => {
-    it('returns pupil access arrangement data without question reader reason', async () => {
+    test('returns pupil access arrangement data without question reader reason', async () => {
       const accessArrangementsData = [
         {
           urlSlug: 'urlSlug',
@@ -112,7 +128,7 @@ describe('pupilAccessArrangementsService', () => {
           questionReaderReasonCode: null
         }
       ]
-      spyOn(pupilAccessArrangementsDataService, 'sqlFindAccessArrangementsByUrlSlug').and.returnValue(accessArrangementsData)
+      jest.spyOn(pupilAccessArrangementsDataService, 'sqlFindAccessArrangementsByUrlSlug').mockResolvedValue(accessArrangementsData)
       const formData = await pupilAccessArrangementsService.getPupilEditFormData('urlSlug')
       expect(formData).toEqual(
         {
@@ -128,7 +144,8 @@ describe('pupilAccessArrangementsService', () => {
         }
       )
     })
-    it('returns pupil access arrangement data with question reader reason', async () => {
+
+    test('returns pupil access arrangement data with question reader reason', async () => {
       const accessArrangementsData = [
         {
           urlSlug: 'urlSlug',
@@ -151,7 +168,7 @@ describe('pupilAccessArrangementsService', () => {
           questionReaderReasonCode: 'OTH'
         }
       ]
-      spyOn(pupilAccessArrangementsDataService, 'sqlFindAccessArrangementsByUrlSlug').and.returnValue(accessArrangementsData)
+      jest.spyOn(pupilAccessArrangementsDataService, 'sqlFindAccessArrangementsByUrlSlug').mockResolvedValue(accessArrangementsData)
       const formData = await pupilAccessArrangementsService.getPupilEditFormData('urlSlug')
       expect(formData).toEqual(
         {
@@ -168,11 +185,12 @@ describe('pupilAccessArrangementsService', () => {
       )
     })
   })
+
   describe('deletePupilAccessArrangements', () => {
-    it('returns pupil data when successfully deleting relevant access arrangements', async () => {
-      spyOn(pupilDataService, 'sqlFindOneBySlugAndSchool').and.returnValue({ id: 1, foreName: 'foreName', lastName: 'lastName' })
-      spyOn(pupilAccessArrangementsDataService, 'sqlDeletePupilsAccessArrangements')
-      spyOn(preparedCheckSyncService, 'addMessages')
+    test('returns pupil data when successfully deleting relevant access arrangements', async () => {
+      jest.spyOn(pupilDataService, 'sqlFindOneBySlugAndSchool').mockReturnValue({ id: 1, foreName: 'foreName', lastName: 'lastName' })
+      jest.spyOn(pupilAccessArrangementsDataService, 'sqlDeletePupilsAccessArrangements').mockImplementation()
+      jest.spyOn(preparedCheckSyncService, 'addMessages').mockImplementation()
       const urlSlug = uuid.v4()
       const pupilData = await pupilAccessArrangementsService.deletePupilAccessArrangements(urlSlug, 9991001)
       expect(pupilData).toEqual({ id: 1, foreName: 'foreName', lastName: 'lastName' })
@@ -180,10 +198,11 @@ describe('pupilAccessArrangementsService', () => {
       expect(pupilAccessArrangementsDataService.sqlDeletePupilsAccessArrangements).toHaveBeenCalled()
       expect(preparedCheckSyncService.addMessages).toHaveBeenCalled()
     })
-    it('rejects if url slug is not present', async () => {
-      spyOn(pupilDataService, 'sqlFindOneBySlugAndSchool')
-      spyOn(pupilAccessArrangementsDataService, 'sqlDeletePupilsAccessArrangements')
-      spyOn(preparedCheckSyncService, 'addMessages')
+
+    test('rejects if url slug is not present', async () => {
+      jest.spyOn(pupilDataService, 'sqlFindOneBySlugAndSchool').mockImplementation()
+      jest.spyOn(pupilAccessArrangementsDataService, 'sqlDeletePupilsAccessArrangements').mockImplementation()
+      jest.spyOn(preparedCheckSyncService, 'addMessages').mockImplementation()
       try {
         await pupilAccessArrangementsService.deletePupilAccessArrangements()
         fail('deletePupilAccessArrangements method did not throw an error')
@@ -195,13 +214,14 @@ describe('pupilAccessArrangementsService', () => {
       expect(preparedCheckSyncService.addMessages).not.toHaveBeenCalled()
     })
   })
+
   describe('#getEligiblePupilsWithFullNames', () => {
-    it('it returns an object with combined name values and urlSlug', async () => {
+    test('it returns an object with combined name values and urlSlug', async () => {
       const pupilMocks = [
         { foreName: 'John', middleNames: 'Test', lastName: 'Johnson', urlSlug: 'AA-12345' },
         { foreName: 'John2', middleNames: '', lastName: 'Johnson2', urlSlug: 'BB-12345' }
       ]
-      spyOn(pupilAccessArrangementsDataService, 'sqlFindEligiblePupilsBySchoolId').and.returnValue(pupilMocks)
+      jest.spyOn(pupilAccessArrangementsDataService, 'sqlFindEligiblePupilsBySchoolId').mockReturnValue(pupilMocks)
       let pupils
       try {
         pupils = await pupilAccessArrangementsService.getEligiblePupilsWithFullNames(1234567)
@@ -213,8 +233,9 @@ describe('pupilAccessArrangementsService', () => {
       expect(pupils[0].urlSlug).toBe('AA-12345')
       expect(pupils.length).toBe(2)
     })
-    it('it throws an error when dfeNumber is not provided', async () => {
-      spyOn(pupilAccessArrangementsDataService, 'sqlFindEligiblePupilsBySchoolId')
+
+    test('it throws an error when dfeNumber is not provided', async () => {
+      jest.spyOn(pupilAccessArrangementsDataService, 'sqlFindEligiblePupilsBySchoolId').mockImplementation()
       try {
         await pupilAccessArrangementsService.getEligiblePupilsWithFullNames()
         fail()

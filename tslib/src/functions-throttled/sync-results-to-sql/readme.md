@@ -1,8 +1,10 @@
 # Sync results to SQL (Throttled function)
 
-This function runs from nightly timer trigger and will process the entire `check-completion` Service Bus queue.  A message is placed on the queue for every check marked, and contains the marked check data and the entire uncompressed received check.
+This function runs from a service-bus trigger and will process the entire `check-completion` Service Bus queue.  A 
+message is placed on the queue for every check marked, and contains the marked check data and the entire uncompressed received check.
 
-This function is run as a throttled function, where only a low number of  processes will run concurrently.  This means the function will take several hours to run through the entire queue. 
+This function is run as a throttled function, where only a low number of  processes will run concurrently.  This 
+means the function can take several hours to run through the entire queue. 
 
 ## Inputs
 

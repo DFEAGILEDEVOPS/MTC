@@ -1,43 +1,120 @@
 const dateService = require('../services/date.service')
-
-const pupilIdentificationFlag = {}
+const sortService = require('../helpers/table-sorting')
+const R = require('ramda')
+/**
+ * @typedef {object} IdentifiedPupil
+ * @property {string} foreName
+ * @property {string} lastName
+ * @property {string} middleNames
+ * @property {moment.Moment} dateOfBirth
+ * @property {string} formattedDateOfBirth - added
+ * @property {string} fullName - added
+ * @property {boolean} showDoB - added
+ * @property {boolean} showMiddleNames - added
+ *
+ */
 
 /**
- * Adds show Date of Birth flag for pupils that have been alphabetically sorted by last name and have equal full names
- * @param {Array} pupils
- * @returns {Array}
+ * @typedef Pupil
+ * @property {string} foreName
+ * @property {string} lastName
+ * @property {string} middleNames
+ * @property {moment.Moment} dateOfBirth
  */
-pupilIdentificationFlag.addIdentificationFlags = (pupils) => {
-  // TODO: Fix issue where the last pupil does not get a middle name in the full name when they should
-  pupils.forEach((p, i) => {
-    const currentPupil = pupils[i]
-    const nextPupil = pupils[i + 1]
 
-    if (nextPupil === undefined) {
-      currentPupil.fullName = !currentPupil.fullName ? `${currentPupil.lastName}, ${currentPupil.foreName}` : currentPupil.fullName
-      return pupils
+const pupilIdentificationFlag = {
+  /**
+   *
+   * @param {Pupil | IdentifiedPupil} p1
+   * @param {Pupil | IdentifiedPupil} p2
+   * @returns {boolean}
+   */
+  haveEqualFullNames: function haveEqualFullNames (p1, p2) {
+    return p1.foreName.toLowerCase() === p2.foreName.toLowerCase() && p1.lastName.toLowerCase() === p2.lastName.toLowerCase()
+  },
+
+  /**
+   * Private useful utility function to provide dynamic defaults for a pupil
+   * @param {Pupil} pupil
+   * @return {{fullName: string, showDoB: boolean, showMiddleNames: boolean, formattedDateOfBirth: string}}
+   */
+  getDefaultIdentifiedPupilProps: function getDefaultIdentifiedPupilProps (pupil) {
+    return {
+      showDoB: false,
+      showMiddleNames: false,
+      formattedDateOfBirth: dateService.formatShortGdsDate(pupil.dateOfBirth),
+      fullName: R.propOr(`${pupil.lastName}, ${pupil.foreName}`, 'fullName', pupil)
     }
+  },
 
-    if (pupilIdentificationFlag.haveEqualFullNames(currentPupil, nextPupil)) {
-      currentPupil.dateOfBirth = dateService.formatShortGdsDate(currentPupil.dateOfBirth)
-      nextPupil.dateOfBirth = dateService.formatShortGdsDate(nextPupil.dateOfBirth)
-      currentPupil.showDoB = true
-      nextPupil.showDoB = true
-
-      if (currentPupil.dateOfBirth.toString() === nextPupil.dateOfBirth.toString()) {
-        currentPupil.fullName = `${currentPupil.lastName}, ${currentPupil.foreName} ${currentPupil.middleNames}`
-        nextPupil.fullName = `${nextPupil.lastName}, ${nextPupil.foreName} ${nextPupil.middleNames}`
-        currentPupil.showMiddleNames = true
-        nextPupil.showMiddleNames = true
-      }
+  /**
+   * Add identification flags by comparing two pupils
+   * @param {Pupil | IdentifiedPupil} p1 - first pupil
+   * @param {Pupil | IdentifiedPupil} p2 - second pupil
+   * @returns [IdentifiedPupil, IdentifiedPupil]
+   */
+  compareTwoPupils: function compareTwoPupils (p1, p2) {
+    const r1 = R.mergeLeft(p1, this.getDefaultIdentifiedPupilProps(p1))
+    const r2 = R.mergeLeft(p2, this.getDefaultIdentifiedPupilProps(p2))
+    const haveEqualFullNames = this.haveEqualFullNames(p1, p2)
+    const haveEqualDatesOfBirth = p1.dateOfBirth.toString() === p2.dateOfBirth.toString()
+    if (haveEqualFullNames) {
+      r1.showDoB = true
+      r2.showDoB = true
     }
-    currentPupil.fullName = !currentPupil.fullName ? `${currentPupil.lastName}, ${currentPupil.foreName}` : currentPupil.fullName
-    nextPupil.fullName = !nextPupil.fullName ? `${nextPupil.lastName}, ${nextPupil.foreName}` : nextPupil.fullName
-  })
-  return pupils
+    if (haveEqualFullNames && haveEqualDatesOfBirth) {
+      r1.fullName = `${p1.lastName}, ${p1.foreName} ${p1.middleNames}`
+      r2.fullName = `${p2.lastName}, ${p2.foreName} ${p2.middleNames}`
+      r1.showMiddleNames = true
+      r2.showMiddleNames = true
+    }
+    return [r1, r2]
+  },
+
+  /**
+   * Clone a Pupil and add default property with dynamic defaults for the pupil
+   * @param {Pupil} pupil
+   * @returns {IdentifiedPupil}
+   */
+  clonePupilWithDefaults: function clonePupilWithDefaults (pupil) {
+    return R.mergeLeft(pupil, this.getDefaultIdentifiedPupilProps(pupil))
+  },
+
+  /**
+   * Clone an array of Pupils and return IdentifiedPupils with appropriate defaults
+   * @param {Pupil[]} pupils
+   * @returns {IdentifiedPupil[]}
+   */
+  clonePupilsWithDefaults: function clonePupilsWithDefaults (pupils) {
+    return pupils.map(p => this.clonePupilWithDefaults(p))
+  },
+
+  /**
+   * Add disambiguation meta information to be used by the presentation layer when showing lists of pupils.
+   * The input argument MUST be sorted for this to work correctly (same the initial version)
+   * @param pupils
+   */
+  addIdentificationFlags: function addIdentificationFlags (pupils) {
+    const identifiedPupils = this.clonePupilsWithDefaults(pupils)
+    for (let i = 0; i < identifiedPupils.length - 1; i++) {
+      const compResult = this.compareTwoPupils(identifiedPupils[i], identifiedPupils[i + 1])
+      identifiedPupils[i] = compResult[0]
+      identifiedPupils[i + 1] = compResult[1]
+    }
+    return identifiedPupils
+  },
+
+  /**
+   * Sort and add identification flags
+   * This is preferred to doing your own sorting (in both code and SQL), as it sorts correctly and uses the web-tier
+   * which is designed for scaling; where the database is not.
+   * @param {Pupil[]} pupils
+   * @returns {IdentifiedPupil[]}
+   */
+  sortAndAddIdentificationFlags: function sortAndAddIdentificationFlags (pupils) {
+    const sorted = sortService.sortByProps(['lastName', 'foreName', 'dateOfBirth', 'middleNames'], pupils)
+    return this.addIdentificationFlags(sorted)
+  }
 }
-
-pupilIdentificationFlag.haveEqualFullNames = (p1, p2) => p1.foreName.toLowerCase() === p2.foreName.toLowerCase() &&
-p1.lastName.toLowerCase() === p2.lastName.toLowerCase()
 
 module.exports = pupilIdentificationFlag

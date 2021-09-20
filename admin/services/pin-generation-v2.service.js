@@ -1,7 +1,6 @@
 'use strict'
 const pinGenerationDataService = require('./data-access/pin-generation.data.service')
 const pupilIdentificationFlagService = require('../services/pupil-identification-flag.service')
-const sorting = require('../helpers/table-sorting')
 
 /**
  * Return a list of pupils who can have a pin generated
@@ -16,10 +15,7 @@ const serviceToExport = {
    */
   getPupilsEligibleForPinGeneration: async function getPupilsEligibleForPinGeneration (schoolId, isLiveCheck) {
     const pupils = await pinGenerationDataService.sqlFindEligiblePupilsBySchool(schoolId, isLiveCheck)
-    const sortedPupils = sorting.sortByProps(['lastName', 'foreName', 'middleNames'], pupils)
-    // Fix up the pupil names for the GUI
-    const guiPupils = pupilIdentificationFlagService.addIdentificationFlags(sortedPupils)
-    return guiPupils
+    return pupilIdentificationFlagService.sortAndAddIdentificationFlags(pupils)
   },
 
   /**
@@ -30,11 +26,9 @@ const serviceToExport = {
    */
   getPupilsWithActivePins: async function getPupilsWithActivePins (schoolId, isLiveCheck) {
     const pupils = await pinGenerationDataService.sqlFindPupilsWithActivePins(schoolId, isLiveCheck)
-
-    // Fix up the pupil names for the GUI
-    const guiPupils = pupilIdentificationFlagService.addIdentificationFlags(pupils)
-
-    return guiPupils
+    if (pupils.length === 0) { return pupils }
+    // Pupil disambiguation for the user/gui
+    return pupilIdentificationFlagService.sortAndAddIdentificationFlags(pupils)
   }
 }
 

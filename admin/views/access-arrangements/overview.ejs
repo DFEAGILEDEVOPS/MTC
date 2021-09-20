@@ -49,7 +49,8 @@
                                             href="/access-arrangements/select-access-arrangements/<%= p.urlSlug %>"><%= p.fullName %></a>
                                         <% } %>
                                         <% if (p.showDoB) { %>
-                                            <div class="govuk-font-greyed-out govuk-!-font-size-16 name-text-wrap">Date of birth: <%= p.dateOfBirth %></div>
+                                            <div class="govuk-font-greyed-out govuk-!-font-size-16
+                                            name-text-wrap">Date of birth: <%= p.formattedDateOfBirth %></div>
                                         <% } %>
                                     </div>
                                 </td>
