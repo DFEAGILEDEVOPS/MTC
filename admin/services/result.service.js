@@ -7,7 +7,6 @@ const featureToggles = require('feature-toggles')
 const redisCacheService = require('./data-access/redis-cache.service')
 const redisKeyService = require('./redis-key.service')
 const resultDataService = require('../services/data-access/result.data.service')
-const sortService = require('../helpers/table-sorting')
 const pupilIdentificationFlagService = require('./pupil-identification-flag.service')
 const schoolResultsTtl = 60 * 60 * 24 * 180 // cache school results for 180 days
 const resultsStrings = require('../lib/consts/mtc-results')
@@ -23,10 +22,6 @@ const resultsStrings = require('../lib/consts/mtc-results')
  */
 
 const resultService = {
-  sort: function sort (data) {
-    return sortService.sortByProps(['lastName', 'foreName', 'dateOfBirth', 'middleNames'], data)
-  },
-
   /**
    * Construct the result status for the pupil
    * @param {CreatePupilDataParam} pupil
@@ -107,8 +102,8 @@ const resultService = {
         lastName: o.lastName,
         group_id: o.group_id,
         dateOfBirth: o.dateOfBirth,
-        // Workaround for bug in the addIdentificationFlags() call which makes dateOfBirth either a date type or a
-        // string type.  Ignore dateOfBirth and use this property to get a known data type.
+        // Workaround for a bug that was in addIdentificationFlags() call, but is now fixed,  which makes dateOfBirth
+        // either a date or a string type.  Ignore dateOfBirth and use this property to get a known data type.
         originalDateOfBirth: o.dateOfBirth,
         score: o.mark,
         status: this.assignStatus(o),
@@ -125,14 +120,15 @@ const resultService = {
   /**
    *
    * @param schoolId
-   * @return {Promise<{pupils: {foreName:string, middleNames:string, lastName:string, group_id:null|number, dateOfBirth: Moment.moment, mark:null|number, status:string, complete: Boolean}[], schoolId: number, generatedAt: (*|moment.Moment)}>}
+   * @return {Promise<{pupils: {foreName:string, middleNames:string, lastName:string, group_id:null|number, dateOfBirth: moment.Moment, mark:null|number, status:string, complete: Boolean}[], schoolId: number, generatedAt: (*|moment.Moment)}>}
    */
   getPupilResultDataFromDb: async function getPupilResultDataFromDb (schoolId) {
     const data = await resultDataService.sqlFindPupilResultsForSchool(schoolId)
     return {
       generatedAt: moment(),
       schoolId: schoolId,
-      pupils: pupilIdentificationFlagService.addIdentificationFlags(this.sort(this.createPupilData(data)))
+      // @ts-ignore - ignore
+      pupils: pupilIdentificationFlagService.sortAndAddIdentificationFlags(this.createPupilData(data))
     }
   },
 

@@ -1,20 +1,23 @@
 'use strict'
-/* global describe it expect spyOn */
+/* global describe test expect afterEach jest */
 
-const pupilIdentificationFlag = require('../../../services/pupil-identification-flag.service')
 const pupilNotTakingCheckService = require('../../../services/pupils-not-taking-check.service')
 const pupilsNotTakingCheckDataService = require('../../../services/data-access/pupils-not-taking-check.data.service')
 const pupilsWithReasonsFormattedMock = require('../mocks/pupils-with-reason-formatted')
 
 describe('Pupils are not taking the check. Service', () => {
+  afterEach(() => {
+    jest.restoreAllMocks()
+  })
+
   describe('#sortPupilsByReason', () => {
-    it('should return a list ordered by reason not equal to the original (as per mock order)', () => {
+    test('should return a list ordered by reason not equal to the original (as per mock order)', () => {
       const beforeSorting = Object.assign({}, pupilsWithReasonsFormattedMock)
       const afterSorting = pupilNotTakingCheckService.sortPupilsByReason(pupilsWithReasonsFormattedMock, 'asc')
       expect(beforeSorting).not.toEqual(afterSorting)
     })
 
-    it('returns list ordered by reason asc', () => {
+    test('returns list ordered by reason asc', () => {
       const afterSorting = pupilNotTakingCheckService.sortPupilsByReason(pupilsWithReasonsFormattedMock, 'asc')
       expect(afterSorting[0].reason).toEqual('Absent')
       expect(afterSorting[1].reason).toEqual('Incorrect registration')
@@ -22,7 +25,7 @@ describe('Pupils are not taking the check. Service', () => {
       expect(afterSorting[3].reason).toEqual('-')
     })
 
-    it('returns list ordered by reason desc', () => {
+    test('returns list ordered by reason desc', () => {
       const afterSorting = pupilNotTakingCheckService.sortPupilsByReason(pupilsWithReasonsFormattedMock, 'desc')
       expect(afterSorting[0].reason).toEqual('Left school')
       expect(afterSorting[1].reason).toEqual('Incorrect registration')
@@ -32,40 +35,44 @@ describe('Pupils are not taking the check. Service', () => {
   })
 
   describe('#getPupilsWithReasons', () => {
-    it('should return a list of pupils', async () => {
-      spyOn(pupilsNotTakingCheckDataService, 'sqlFindPupilsWithReasons').and.returnValue(pupilsWithReasonsFormattedMock)
-      spyOn(pupilIdentificationFlag, 'addIdentificationFlags').and.returnValue(pupilsWithReasonsFormattedMock)
-      const pupils = await pupilNotTakingCheckService.getPupilsWithReasons()
-
+    test('should return a list of pupils', async () => {
+      jest.spyOn(pupilsNotTakingCheckDataService, 'sqlFindPupilsWithReasons').mockResolvedValue(pupilsWithReasonsFormattedMock)
+      const pupils = await pupilNotTakingCheckService.getPupilsWithReasons(1)
       expect(pupils[0].foreName).toBe('Sarah')
       expect(pupils[0].lastName).toBe('Connor')
       expect(pupilsNotTakingCheckDataService.sqlFindPupilsWithReasons).toHaveBeenCalled()
-      expect(pupilIdentificationFlag.addIdentificationFlags).toHaveBeenCalled()
     })
   })
 
   describe('#getPupilsWithoutReasons', () => {
-    it('should return a list of pupils', async () => {
-      spyOn(pupilsNotTakingCheckDataService, 'sqlFindPupilsWithoutReasons').and.returnValue(pupilsWithReasonsFormattedMock)
-      spyOn(pupilIdentificationFlag, 'addIdentificationFlags').and.returnValue(pupilsWithReasonsFormattedMock)
-      const pupils = await pupilNotTakingCheckService.getPupilsWithoutReasons()
-
+    test('should return a list of pupils', async () => {
+      jest.spyOn(pupilsNotTakingCheckDataService, 'sqlFindPupilsWithoutReasons').mockResolvedValue(pupilsWithReasonsFormattedMock)
+      const pupils = await pupilNotTakingCheckService.getPupilsWithoutReasons(1)
       expect(pupils[0].foreName).toBe('Sarah')
       expect(pupils[0].lastName).toBe('Connor')
       expect(pupilsNotTakingCheckDataService.sqlFindPupilsWithoutReasons).toHaveBeenCalled()
-      expect(pupilIdentificationFlag.addIdentificationFlags).toHaveBeenCalled()
+    })
+  })
+
+  describe('#getPupilsWithoutReasonsInAdminPeriod', () => {
+    test('should return a list of sorted pupils', async () => {
+      jest.spyOn(pupilsNotTakingCheckDataService, 'sqlFindPupilsWithoutReasonsInAdminPeriod').mockResolvedValue(pupilsWithReasonsFormattedMock)
+      const pupils = await pupilNotTakingCheckService.getPupilsWithoutReasonsInAdminPeriod(1)
+      expect(pupils[0].foreName).toBe('Sarah')
+      expect(pupils[0].lastName).toBe('Connor')
+      expect(pupilsNotTakingCheckDataService.sqlFindPupilsWithoutReasonsInAdminPeriod).toHaveBeenCalled()
     })
   })
 
   describe('#getPupilSlugs', () => {
-    it('should return a slugUrl when reqBody is a string', () => {
+    test('should return a slugUrl when reqBody is a string', () => {
       const reqBody = 'pupilSlug'
       const expectedReqBody = [reqBody]
       const pupilSlug = pupilNotTakingCheckService.getPupilSlugs(reqBody)
       expect(pupilSlug).toEqual(expectedReqBody)
     })
 
-    it('should return a slugUrl when reqBody is an object', () => {
+    test('should return a slugUrl when reqBody is an object', () => {
       const reqBody = {}
       reqBody.pupilSlug = 'pupilSlug'
       const expectedReqBody = ['pupilSlug']
@@ -73,7 +80,7 @@ describe('Pupils are not taking the check. Service', () => {
       expect(pupilSlug).toEqual(expectedReqBody)
     })
 
-    it('should return a slugUrl when reqBody is an array', () => {
+    test('should return a slugUrl when reqBody is an array', () => {
       const reqBody = ['pupilSlug']
       const expectedReqBody = ['pupilSlug']
       const pupilSlug = pupilNotTakingCheckService.getPupilSlugs(reqBody)

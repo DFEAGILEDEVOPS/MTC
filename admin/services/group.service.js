@@ -51,7 +51,7 @@ groupService.getPupils = async function (schoolId, groupIdToInclude = undefined)
     throw new Error('schoolId is required')
   }
   const pupils = await groupDataService.sqlFindPupilsInNoGroupOrSpecificGroup(schoolId, groupIdToInclude)
-  return pupilIdentificationFlagService.addIdentificationFlags(pupils)
+  return pupilIdentificationFlagService.sortAndAddIdentificationFlags(pupils)
 }
 
 /**

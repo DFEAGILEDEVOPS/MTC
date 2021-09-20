@@ -30,6 +30,7 @@ Env Var | Type | Default value | Required | Components | Description
  AZURE_SERVICE_BUS_CONNECTION_STRING | String | NULL | Required | AA, FC, FT, PAPI | Connection string as given in the Azure portal for Azure Service Bus.
  AZURE_STORAGE_CONNECTION_STRING | String | (empty string) | Required | AA, FC, FT | The Azure storage connection string.
  AZURE_TABLE_PREFIX | String | '' | Optional | AA | A prefix that can be automatically applied to the required tables.
+ AZURE_ACCOUNT_NAME | String | '' | Required | PA | The string provided will be inserted into the template string `https://<azure_account_name>.queue.core.windows.net/$1` and used a a fallback proxy for the check-submitted queue.<br />E.g. `testsamtc` for the test instance 
  BANNED_WORDS | String | 'dim' | Optional | FC | Provides a way to negate words that may be in the allowed list ensuring that they never appear in a pin.
  CHECK_ALLOCATION_EXPIRY_SECONDS | Int | 15778476 | Optional | none | The number of seconds to cache the pupil check in Redis for before expiring it. Possibly no longer used.
  CHECK_COMPLETION_QUEUE_MAX_DELIVERY_COUNT | Int | 10 | Optional | FT | Taken from the `check-completion` Azure service bus queue: maxDeliveryCount
