@@ -24,5 +24,11 @@ describe('questions-property.validator', () => {
     expect((error as ICheckValidationError).message).toBe('questions property is not an array')
   })
 
-  test.todo('valid path')
+  test('validation passes when questions is an array', () => {
+    const check = {
+      questions: []
+    }
+    const error = sut.validate(check)
+    expect(error).not.toBeDefined()
+  })
 })
