@@ -34,8 +34,9 @@ module.exports = {
         'ts-nocheck': true,
         'ts-check': false,
         minimumDescriptionLength: 5
-      }
+      },
     ],
+    '@typescript-eslint/no-array-constructor': 'off',
     'jest/consistent-test-it': ['error',
     {
       'fn': 'test',

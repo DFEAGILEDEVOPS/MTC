@@ -5,7 +5,6 @@ import * as RA from 'ramda-adjunct'
 import Moment from 'moment'
 import { ICompressionService, CompressionService } from '../../common/compression-service'
 import { ICheckNotificationMessage, CheckNotificationType } from '../../schemas/check-notification-message'
-import { SubmittedCheck } from '../../schemas/check-schemas/submitted-check'
 import { ICheckValidationError } from './validators/validator-types'
 import { ValidatorProvider } from './validators/validator.provider'
 
@@ -96,18 +95,18 @@ export class CheckValidator {
     }
   }
 
-  private validateCheckStructureV2 (check: SubmittedCheck): void {
+  private validateCheckStructureV2 (submittedCheck: any): void {
     const validators = this.validatorProvider.getValidators()
     const validationErrors: ICheckValidationError[] = []
     for (let index = 0; index < validators.length; index++) {
       const validator = validators[index]
-      const validationResult = validator.validate(check)
+      const validationResult = validator.validate(submittedCheck)
       if (validationResult !== undefined) {
         validationErrors.push(validationResult)
       }
     }
     if (validationErrors.length > 0) {
-      let validationErrorsMessage = `check validation failed. checkCode: ${check.checkCode}`
+      let validationErrorsMessage = `check validation failed. checkCode: ${submittedCheck.checkCode}`
       for (let index = 0; index < validationErrors.length; index++) {
         const error = validationErrors[index]
         validationErrorsMessage += `\n\t-\t${error.message}`

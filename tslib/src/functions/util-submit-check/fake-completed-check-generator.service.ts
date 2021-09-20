@@ -1,12 +1,12 @@
 import { PreparedCheck } from '../../schemas/check-schemas/prepared-check'
-import { CheckQuestion, CompleteCheckAnswer, SubmittedCheck } from '../../schemas/check-schemas/submitted-check'
+import { CheckQuestion, CompleteCheckAnswer, ValidCheck } from '../../schemas/check-schemas/validated-check'
 import * as faker from 'faker'
 import moment from 'moment'
 import { FakeCheckAuditGeneratorService } from './fake-check-audit-generator.service'
 import { FakeCheckInputsGeneratorService } from './fake-check-inputs-generator.service'
 
 export interface ICompletedCheckGeneratorService {
-  create (preparedCheck: PreparedCheck): SubmittedCheck
+  create (preparedCheck: PreparedCheck): ValidCheck
 }
 
 export class FakeCompletedCheckGeneratorService implements ICompletedCheckGeneratorService {
@@ -62,7 +62,7 @@ export class FakeCompletedCheckGeneratorService implements ICompletedCheckGenera
     return answers
   }
 
-  create (preparedCheck: PreparedCheck): SubmittedCheck {
+  create (preparedCheck: PreparedCheck): ValidCheck {
     const answers = this.createAnswers(preparedCheck.questions)
     const audits = this.fakeCheckAuditBuilderService.createAudits(preparedCheck.questions)
     const inputs = this.fakeCheckInputsGeneratorService.create(answers)

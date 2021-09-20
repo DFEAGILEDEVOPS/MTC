@@ -1,4 +1,3 @@
-import { SubmittedCheck, getSubmittedCheck } from '../../../schemas/check-schemas/submitted-check'
 import { AnswerTypeValidator } from './answer-type.validator'
 import { ICheckValidationError } from './validator-types'
 
@@ -10,16 +9,16 @@ describe('answer-type.validator', () => {
   })
 
   test('if no answers property, validation fails', () => {
-    const check: SubmittedCheck = getSubmittedCheck()
-    delete check.answers
+    const check = {}
     const error = sut.validate(check)
     expect(error).toBeDefined()
     expect((error as ICheckValidationError).message).toBe('answers property missing')
   })
 
   test('if first answer is not a string, validation fails', () => {
-    const check: SubmittedCheck = getSubmittedCheck()
-    check.answers = []
+    const check = {
+      answers: Array<any>()
+    }
     check.answers.push({
       answer: 1,
       clientTimestamp: '',
@@ -34,8 +33,9 @@ describe('answer-type.validator', () => {
   })
 
   test('if any answer within set is not a string, validation fails', () => {
-    const check: SubmittedCheck = getSubmittedCheck()
-    check.answers = []
+    const check = {
+      answers: new Array()
+    }
     check.answers.push({
       answer: '1',
       clientTimestamp: '',
@@ -74,8 +74,9 @@ describe('answer-type.validator', () => {
   })
 
   test('if last answer is not a string, validation fails', () => {
-    const check: SubmittedCheck = getSubmittedCheck()
-    check.answers = []
+    const check = {
+      answers: new Array()
+    }
     check.answers.push({
       answer: '1',
       clientTimestamp: '',

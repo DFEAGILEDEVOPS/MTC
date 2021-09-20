@@ -1,8 +1,7 @@
-import { SubmittedCheck } from '../../../schemas/check-schemas/submitted-check'
 import { ISubmittedCheckValidator, CheckValidationResult } from './validator-types'
 
 export class AnswerTypeValidator implements ISubmittedCheckValidator {
-  validate (check: SubmittedCheck): CheckValidationResult {
+  validate (check: any): CheckValidationResult {
     if (check.answers === undefined) {
       return {
         message: 'answers property missing'

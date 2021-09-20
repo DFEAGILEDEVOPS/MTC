@@ -1,7 +1,7 @@
-export interface SubmittedCheck {
-  checkCode?: string
+export interface ValidCheck {
+  checkCode: string
   schoolUUID: string
-  config?: CheckConfig | any
+  config: CheckConfig
   device: {
     battery?: {
       isCharging?: boolean
@@ -9,10 +9,10 @@ export interface SubmittedCheck {
       chargingTime?: number
       dischargingTime?: number | null
     }
-    cpu?: {
+    cpu: {
       hardwareConcurrency?: number
     }
-    navigator?: {
+    navigator: {
       userAgent?: string
       platform?: string
       language?: string
@@ -37,13 +37,13 @@ export interface SubmittedCheck {
     deviceId?: string
     appUsageCounter?: number
   }
-  pupil?: PupilInfo | any
-  questions?: CheckQuestion[] | any
-  school?: SchoolInfo | any
-  tokens: TokenInfo | any
-  audit?: CompleteCheckAuditEntry[] | any
-  inputs?: CompleteCheckInputEntry[] | any
-  answers?: CompleteCheckAnswer[] | any
+  pupil: PupilInfo
+  questions: CheckQuestion[]
+  school: SchoolInfo
+  tokens: TokenInfo
+  audit: CompleteCheckAuditEntry[]
+  inputs: CompleteCheckInputEntry[]
+  answers: CompleteCheckAnswer[]
 }
 
 export interface TokenInfo {
@@ -156,8 +156,8 @@ export interface CompleteCheckAuditEntry {
   }
 }
 
-export function getSubmittedCheck (): SubmittedCheck {
-  const check: SubmittedCheck = {
+export function getValidatedCheck (): ValidCheck {
+  const check: ValidCheck = {
     answers: [],
     audit: [],
     checkCode: '',
@@ -175,7 +175,13 @@ export function getSubmittedCheck (): SubmittedCheck {
       questionReader: false,
       questionTime: 0
     },
-    device: {},
+    device: {
+      cpu: {
+        hardwareConcurrency: 4
+      },
+      navigator: {
+      }
+    },
     inputs: [],
     pupil: {
       checkCode: ''

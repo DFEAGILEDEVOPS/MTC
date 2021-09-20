@@ -1,4 +1,3 @@
-import { SubmittedCheck, getSubmittedCheck } from '../../../schemas/check-schemas/submitted-check'
 import { TokensValidator } from './tokens.validator'
 import { ICheckValidationError } from './validator-types'
 
@@ -10,23 +9,25 @@ describe('tokens-property.validator', () => {
   })
 
   test('if tokens property undefined, validation fails', () => {
-    const check: SubmittedCheck = getSubmittedCheck()
-    delete check.tokens
+    const check = {}
     const error = sut.validate(check)
     expect(error).toBeDefined()
     expect((error as ICheckValidationError).message).toBe('tokens property missing')
   })
 
   test('if tokens property not an object, validation fails', () => {
-    const check: SubmittedCheck = getSubmittedCheck()
-    check.tokens = ''
+    const check = {
+      tokens: ''
+    }
     const error = sut.validate(check)
     expect(error).toBeDefined()
     expect((error as ICheckValidationError).message).toBe('tokens property is not an object')
   })
 
   test('if tokens property is an object, validation passes', () => {
-    const check: SubmittedCheck = getSubmittedCheck()
+    const check = {
+      tokens: {}
+    }
     const error = sut.validate(check)
     expect(error).not.toBeDefined()
   })

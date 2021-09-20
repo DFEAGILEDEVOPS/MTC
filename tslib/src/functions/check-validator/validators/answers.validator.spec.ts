@@ -1,4 +1,3 @@
-import { SubmittedCheck, getSubmittedCheck } from '../../../schemas/check-schemas/submitted-check'
 import { AnswersValidator } from './answers.validator'
 import { ICheckValidationError } from './validator-types'
 
@@ -10,16 +9,16 @@ describe('answers-property.validator', () => {
   })
 
   test('if answers property undefined, validation fails', () => {
-    const check: SubmittedCheck = getSubmittedCheck()
-    delete check.answers
+    const check = {}
     const error = sut.validate(check)
     expect(error).toBeDefined()
     expect((error as ICheckValidationError).message).toBe('answers property missing')
   })
 
   test('if answers property not an array, validation fails', () => {
-    const check: SubmittedCheck = getSubmittedCheck()
-    check.answers = {}
+    const check = {
+      answers: {}
+    }
     const error = sut.validate(check)
     expect(error).toBeDefined()
     expect((error as ICheckValidationError).message).toBe('answers property is not an array')

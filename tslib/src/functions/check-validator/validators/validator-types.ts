@@ -1,7 +1,6 @@
-import { SubmittedCheck } from '../../../schemas/check-schemas/submitted-check'
 
 export interface ISubmittedCheckValidator {
-  validate (check: SubmittedCheck): CheckValidationResult
+  validate (check: any): CheckValidationResult
 }
 
 /* eslint-disable  @typescript-eslint/no-invalid-void-type */
