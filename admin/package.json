@@ -5,9 +5,9 @@
   "license": "GPL-3.0",
   "scripts": {
     "build": "gulp build",
+    "dev-build": "gulp dev-build",
     "shell-build": "./build.sh",
     "clean": "rm -rf dist; rm -f .env",
-    "debug": "node --inspect=0.0.0.0:9229 ./dist/server.js",
     "lint": "standard",
     "lintAndBuild": "yarn lint && yarn build",
     "migrate-sql": "node ../db/engine/migrate.js",
@@ -18,7 +18,7 @@
     "sasswatch": "gulp watch",
     "start:js": "node --max-http-header-size 15000 ./server.js",
     "start": "yarn build && node --max-http-header-size 15000 ./dist/server.js",
-    "start:dev": "concurrently -r 'nodemon --delay 1500ms --watch ./dist --max-http-header-size 15000 ./dist/server.js' 'gulp watch'",
+    "start:dev": "yarn dev-build && concurrently -r 'nodemon --inspect --delay 1500ms --watch ./dist --max-http-header-size 15000 ./dist/server.js' 'gulp watch'",
     "test": "yarn lint && yarn jest",
     "test:watch": "yarn jest --watch --coverage=no",
     "test:nocoverage": "yarn lint && yarn jest --coverage=no",
@@ -29,7 +29,7 @@
     "watch:integration": "yarn jest --watch --coverage=no --config ./tests-integration/jest.integration.config.js"
   },
   "mtc": {
-    "assets-version": "7d49b3c25501ad110b825a0cf14ea5a4"
+    "assets-version": "cf97ab52a7b50fb51fd6f2673c4ec147"
   },
   "engines": {
     "node": ">= 12"
@@ -41,7 +41,7 @@
   "dependencies": {
     "@azure/service-bus": "^7.0.5",
     "applicationinsights": "^2.1.5",
-    "axios": "^0.21.1",
+    "axios": "^0.21.3",
     "azure-storage": "^2.10.4",
     "bcryptjs": "^2.4.3",
     "bluebird": "^3.5.1",
@@ -108,6 +108,7 @@
     "gulp-replace": "^1.0.0",
     "gulp-sass": "^5.0.0",
     "gulp-sass-variables": "^1.1.1",
+    "gulp-sourcemaps": "^3.0.0",
     "gulp-typescript": "^6.0.0-alpha.1",
     "gulp-uglify": "^3.0.0",
     "jest": "^27.0.6",
