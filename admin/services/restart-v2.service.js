@@ -11,11 +11,8 @@ const config = require('../config')
  */
 module.exports.getPupilsEligibleForRestart = async function getPupilsEligibleForRestart (schoolId) {
   const pupils = await restartDataService.sqlFindPupilsEligibleForRestart(schoolId)
-
   // Fix up the pupil names for the GUI
-  const guiPupils = pupilIdentificationFlagService.addIdentificationFlags(pupils)
-
-  return guiPupils
+  return pupilIdentificationFlagService.sortAndAddIdentificationFlags(pupils)
 }
 
 /**
@@ -47,6 +44,5 @@ module.exports.getRestartsForSchool = async function getRestartsForSchool (schoo
       r.status = 'Restart taken'
     }
   })
-  pupilIdentificationFlagService.addIdentificationFlags(restarts)
-  return restarts
+  return pupilIdentificationFlagService.sortAndAddIdentificationFlags(restarts)
 }

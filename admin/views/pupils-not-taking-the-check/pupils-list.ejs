@@ -51,32 +51,32 @@
                                 </div>
                             </th>
                         </tr>
-                        </thead>
-                        <tbody>
-                        <% pupilsList.forEach(pupil => { %>
-                            <tr class="govuk-table__row <% if (pupil.group_id) { %>group-id-<%= pupil.group_id %><% } %>">
-                                <td scope="row">
-                                    <label for="pupil-<%= pupil.urlSlug %>">
-                                        <%= pupil.fullName %>
-                                    </label>
-                                    <% if (pupil.showDoB) { %>
-                                        <div class="govuk-font-greyed-out govuk-!-font-size-16">
-                                            Date of birth: <%= pupil.dateOfBirth %>
-                                        </div>
-                                    <% } %>
-                                </td>
-                                <td>
-                                    <div class="multiple-choice-mtc">
-                                        <input id="pupil-<%= pupil.urlSlug %>"
-                                               name="pupil"
-                                               type="checkbox"
-                                               class="govuk-checkboxes__input"
-                                               value="<%= pupil.urlSlug %>"
-                                               aria-label="Tick pupil <%= pupil.foreName %> <%= pupil.lastName %>."
-                                               aria-checked="false"
-                                               role="checkbox">
-                                        <div></div>
+                    </thead>
+                    <tbody>
+                    <% pupilsList.forEach(pupil => { %>
+                        <tr class="govuk-table__row <% if (pupil.group_id) { %>group-id-<%= pupil.group_id %><% } %>">
+                            <td scope="row">
+                                <label for="pupil-<%= pupil.urlSlug %>">
+                                    <%= pupil.fullName %>
+                                </label>
+                                <% if (pupil.showDoB) { %>
+                                    <div class="govuk-font-greyed-out govuk-!-font-size-16">
+                                        Date of birth: <%= pupil.formattedDateOfBirth %>
                                     </div>
+                                <% } %>
+                            </td>
+                            <td>
+                                <div class="multiple-choice-mtc">
+                                    <input id="pupil-<%= pupil.urlSlug %>"
+                                           name="pupil"
+                                           type="checkbox"
+                                           class="govuk-checkboxes__input"
+                                           value="<%= pupil.urlSlug %>"
+                                           aria-label="Tick pupil <%= pupil.foreName %> <%= pupil.lastName %>."
+                                           aria-checked="false"
+                                           role="checkbox">
+                                    <div></div>
+                                </div>
 
                                 </td>
                             </tr>
