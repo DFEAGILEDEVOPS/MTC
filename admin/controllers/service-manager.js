@@ -434,6 +434,20 @@ const controller = {
       }
       return next(error)
     }
+  },
+
+  getUploadOrganisations: async function getUploadOrganisations (req, res, next) {
+    req.breadcrumbs('Manage organisations', '/service-manager/organisations')
+    res.locals.pageTitle = 'Bulk upload organisations'
+    req.breadcrumbs(res.locals.pageTitle)
+    try {
+      res.render('service-manager/bulk-upload-organisations', {
+        breadcrumbs: req.breadcrumbs()
+      })
+    } catch (error) {
+      console.log('JMS error', error)
+      return next(error)
+    }
   }
 }
 

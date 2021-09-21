@@ -2,23 +2,21 @@
 <main class="govuk-main-wrapper" id="main-content" role="main">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            <h1 class="govuk-heading-xl">Manage organisations</h1>
+            <h1 class="govuk-heading-xl">Bulk upload organisations</h1>
             <%- partial('partials/_gds_session_expiry') %>
-            <ol class="govuk-list">
-                <li>
-                    <h2 class="govuk-heading-s"><a class="govuk-link"
-                                                   href="/service-manager/organisations/search">Search for an
-                            existing organisation</a></h2>
-                    <p>Find a school by DFE number or URN</p>
-                </li>
 
-                <li>
-                    <h2 class="govuk-heading-s"><a class="govuk-link"
-                                                   href="/service-manager/organisations/upload">Upload
-                            organisations</a></h2>
-                    <p>Bulk upload organisations</p>
-                </li>
-            </ol>
+            <form action="" method="post">
+                <input type="hidden" name="_csrf" value="<%= csrftoken %>"/>
+                <div class="govuk-form-group">
+                    <label class="govuk-label" for="file-upload-1">
+                        Upload a file
+                    </label>
+                    <input class="govuk-file-upload" id="file-upload-1" name="file-upload-1" type="file">
+                </div>
+                <button type="submit" id="searchh-btn" class="govuk-button">Upload</button>
+                <a class="govuk-button govuk-button--secondary" href="/service-manager/organisations">Cancel</a>
+            </form>
+
         </div>
         <div class="govuk-grid-column-one-third" aria-label="sidebar">
             <aside class="app-related-items" role="complementary">

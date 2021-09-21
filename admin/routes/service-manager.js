@@ -87,6 +87,11 @@ router.post('/organisations/search',
   serviceManagerController.postSearch
 )
 
+router.get('/organisations/upload',
+  isAuthenticated(roles.serviceManager),
+  serviceManagerController.getUploadOrganisations
+)
+
 router.get(
   '/organisations/:slug',
   isAuthenticated([roles.serviceManager]),
@@ -102,4 +107,5 @@ router.post('/organisations/:slug/edit',
   isAuthenticated(roles.serviceManager),
   serviceManagerController.postEditOrganisation
 )
+
 module.exports = router
