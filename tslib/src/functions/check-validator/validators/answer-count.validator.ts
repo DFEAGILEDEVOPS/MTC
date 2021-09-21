@@ -1,3 +1,4 @@
+import config from '../../../config'
 import { ISubmittedCheckValidator, CheckValidationResult } from './validator-types'
 
 export class AnswerCountValidator implements ISubmittedCheckValidator {
@@ -7,7 +8,7 @@ export class AnswerCountValidator implements ISubmittedCheckValidator {
         message: 'no answers property found'
       }
     }
-    if (check.answers.length < 25) {
+    if (check.answers.length < config.LiveFormQuestionCount) {
       return {
         message: `submitted check has ${check.answers.length} answers`
       }

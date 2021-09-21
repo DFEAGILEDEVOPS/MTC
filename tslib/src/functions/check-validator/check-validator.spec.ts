@@ -83,7 +83,7 @@ describe('check-validator', () => {
       await sut.validate(functionBindings, validateReceivedCheckQueueMessage, loggerMock)
       fail('error should have been thrown due to empty receivedCheckData')
     } catch (error) {
-      expect(error.message).toBe('received check reference is empty')
+      expect(error.message).toBe('check-validator: received check reference is empty')
     }
   })
 
@@ -106,7 +106,7 @@ describe('check-validator', () => {
     await sut.validate(functionBindings, validateReceivedCheckQueueMessage, loggerMock)
     expect(tableServiceMock.replaceEntityAsync).toHaveBeenCalledTimes(1)
     expect(actualTableName).toBe('receivedCheck')
-    expect(actualEntity.processingError).toBe('message is missing [archive] property')
+    expect(actualEntity.processingError).toBe('check-validator: message is missing [archive] property')
     expect(actualEntity.isValid).toBe(false)
   })
 

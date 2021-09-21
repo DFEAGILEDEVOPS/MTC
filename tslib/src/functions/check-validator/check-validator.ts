@@ -8,6 +8,8 @@ import { ICheckNotificationMessage, CheckNotificationType } from '../../schemas/
 import { ICheckValidationError } from './validators/validator-types'
 import { ValidatorProvider } from './validators/validator.provider'
 
+const functionName = 'check-validator'
+
 export interface ICheckValidatorFunctionBindings {
   receivedCheckTable: any[]
   checkMarkingQueue: any[]
@@ -84,14 +86,14 @@ export class CheckValidator {
 
   private findReceivedCheck (receivedCheckRef: any[]): any {
     if (RA.isEmptyArray(receivedCheckRef)) {
-      throw new Error('received check reference is empty')
+      throw new Error(`${functionName}: received check reference is empty`)
     }
     return receivedCheckRef[0]
   }
 
   private detectArchive (message: Record<string, unknown>): void {
     if (!('archive' in message)) {
-      throw new Error('message is missing [archive] property')
+      throw new Error(`${functionName}: message is missing [archive] property`)
     }
   }
 
@@ -106,7 +108,7 @@ export class CheckValidator {
       }
     }
     if (validationErrors.length > 0) {
-      let validationErrorsMessage = `check validation failed. checkCode: ${submittedCheck.checkCode}`
+      let validationErrorsMessage = `${functionName}: check validation failed. checkCode: ${submittedCheck.checkCode}`
       for (let index = 0; index < validationErrors.length; index++) {
         const error = validationErrors[index]
         validationErrorsMessage += `\n\t-\t${error.message}`
