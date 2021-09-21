@@ -28,6 +28,4 @@ describe('live-check.validator', () => {
     const error = sut.validate(check)
     expect(error).toBeUndefined()
   })
-
-  test.todo('move these to config validator')
 })

@@ -43,7 +43,7 @@ export class CheckValidator {
       this.detectArchive(receivedCheck)
       const decompressedString = this.compressionService.decompress(receivedCheck.archive)
       checkData = JSON.parse(decompressedString)
-      this.validateCheckStructureV2(checkData)
+      this.validateCheckStructure(checkData)
     } catch (error) {
       await this.setReceivedCheckAsInvalid(error.message, receivedCheck)
       // dispatch message to indicate validation failure
@@ -95,7 +95,7 @@ export class CheckValidator {
     }
   }
 
-  private validateCheckStructureV2 (submittedCheck: any): void {
+  private validateCheckStructure (submittedCheck: any): void {
     const validators = this.validatorProvider.getValidators()
     const validationErrors: ICheckValidationError[] = []
     for (let index = 0; index < validators.length; index++) {
