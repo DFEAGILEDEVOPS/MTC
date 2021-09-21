@@ -10,7 +10,7 @@ describe('answer-count.validator', () => {
 
   test('less answers fails validation', () => {
     const check = {
-      answers: Array<any>()
+      answers: [] as any
     }
     for (let index = 0; index < 24; index++) {
       check.answers.push({
@@ -36,7 +36,7 @@ describe('answer-count.validator', () => {
 
   test('zero answer count fails validation', () => {
     const check = {
-      answers: new Array()
+      answers: [] as any
     }
     const error = sut.validate(check)
     expect(error).toBeDefined()
@@ -45,7 +45,7 @@ describe('answer-count.validator', () => {
 
   test('correct answer count passes validation', () => {
     const check = {
-      answers: new Array()
+      answers: [] as any
     }
     for (let index = 0; index < 25; index++) {
       check.answers.push({
@@ -63,7 +63,7 @@ describe('answer-count.validator', () => {
 
   test('more answers passes validation', () => {
     const check = {
-      answers: new Array()
+      answers: [] as any
     }
     for (let index = 0; index < 35; index++) {
       check.answers.push({

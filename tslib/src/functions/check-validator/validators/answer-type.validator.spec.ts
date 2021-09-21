@@ -17,7 +17,7 @@ describe('answer-type.validator', () => {
 
   test('if first answer is not a string, validation fails', () => {
     const check = {
-      answers: Array<any>()
+      answers: [] as any
     }
     check.answers.push({
       answer: 1,
@@ -34,7 +34,7 @@ describe('answer-type.validator', () => {
 
   test('if any answer within set is a number, validation fails', () => {
     const check = {
-      answers: new Array()
+      answers: [] as any
     }
     check.answers.push({
       answer: '1',
@@ -75,7 +75,7 @@ describe('answer-type.validator', () => {
 
   test('if last answer is not a string, validation fails', () => {
     const check = {
-      answers: new Array()
+      answers: [] as any
     }
     check.answers.push({
       answer: '1',
@@ -116,7 +116,7 @@ describe('answer-type.validator', () => {
 
   test('if any answer within set is undefined, validation fails', () => {
     const check = {
-      answers: new Array()
+      answers: [] as any
     }
     check.answers.push({
       answer: '1',
@@ -157,7 +157,7 @@ describe('answer-type.validator', () => {
 
   test('if answers are all strings, validation passes', () => {
     const check = {
-      answers: new Array()
+      answers: [] as any
     }
     check.answers.push({
       answer: '1',
