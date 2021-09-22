@@ -1,2 +1,2 @@
-exec sp_rename 'mtc_admin.colourContrastsLookUp', 'pupilColourContrasts'
-exec sp_rename 'mtc_admin.pupilAccessArrangements.colourContrastsLookUp_Id', 'pupilColourContrasts_Id', 'COLUMN'
+exec sp_rename 'mtc_admin.colourContrastLookUp', 'pupilColourContrasts'
+exec sp_rename 'mtc_admin.pupilAccessArrangements.colourContrastLookUp_Id', 'pupilColourContrasts_Id', 'COLUMN'

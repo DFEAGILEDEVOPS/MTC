@@ -14,7 +14,7 @@ const pupilRestartDataService = {}
  */
 pupilRestartDataService.sqlFindLatestRestart = async function (pupilId) {
   const sql = `SELECT TOP 1 *
-  FROM ${sqlService.adminSchema}.[pupilRestart]
+  FROM [mtc_admin].[pupilRestart]
   WHERE pupil_id=@pupilId AND isDeleted=0
   ORDER BY createdAt DESC`
   const params = [
@@ -49,7 +49,7 @@ pupilRestartDataService.sqlFindRestartReasonDescById = async function (id) {
   const sql = `
   SELECT
     description
-  FROM ${sqlService.adminSchema}.[pupilRestartReason]
+  FROM [mtc_admin].[restartReasonLookUp]
   WHERE id=@id
   ORDER BY description ASC`
   const params = [
@@ -75,7 +75,7 @@ pupilRestartDataService.sqlFindRestartReasons = async function () {
     id,
     code,
     description
-  FROM ${sqlService.adminSchema}.[pupilRestartReason]
+  FROM [mtc_admin].[restartReasonLookUp]
   ORDER BY displayOrder ASC`
   return sqlService.query(sql)
 }

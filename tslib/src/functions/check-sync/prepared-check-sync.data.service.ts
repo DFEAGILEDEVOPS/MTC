@@ -67,10 +67,10 @@ export class PreparedCheckSyncDataService implements IPreparedCheckSyncDataServi
 
   async getAccessArrangementsByCheckCode (checkCode: string): Promise<any[]> {
     const sql = `
-        SELECT pAA.accessArrangements_id, pfs.code AS pupilFontSizeCode, pcc.code AS pupilColourContrastCode
+        SELECT pAA.accessArrangements_id, fslu.code AS pupilFontSizeCode, cclu.code AS pupilColourContrastCode
           FROM [mtc_admin].[pupilAccessArrangements] pAA
-               LEFT OUTER JOIN [mtc_admin].[pupilFontSizes] pfs ON pAA.pupilFontSizes_id = pfs.id
-               LEFT OUTER JOIN [mtc_admin].[pupilColourContrasts] pcc ON pAA.pupilColourContrasts_id = pcc.id
+               LEFT OUTER JOIN [mtc_admin].[fontSizeLookUp] fslu ON pAA.fontSizeLookUp_Id = fslu.id
+               LEFT OUTER JOIN [mtc_admin].[colourContrastLookUp] cclu ON pAA.colourContrastLookUp_id = cclu.id
                INNER JOIN      [mtc_admin].[pupil] p ON pAA.pupil_id = p.id
                INNER JOIN      [mtc_admin].[check] chk ON p.id = chk.pupil_id
          WHERE chk.checkCode = @checkCode`

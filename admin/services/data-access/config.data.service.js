@@ -25,16 +25,16 @@ const configDataService = {
 
           -- pupil configs
           STRING_AGG (aa.code, ',') as accessArrangementCodes,
-          STRING_AGG (pfs.code, ',') as fontSizeCode,
-          STRING_AGG (pcc.code, ',') as colourContrastCode
+          STRING_AGG (fslu.code, ',') as fontSizeCode,
+          STRING_AGG (cclu.code, ',') as colourContrastCode
 
         FROM
           mtc_admin.[pupil] p JOIN
           mtc_admin.[school] s ON (p.school_id = s.id) CROSS JOIN
           mtc_admin.[settings] st LEFT JOIN
           mtc_admin.[pupilAccessArrangements] paa ON (p.id = paa.pupil_id) LEFT JOIN
-          mtc_admin.[pupilFontSizes] pfs on (paa.pupilFontSizes_id = pfs.id) LEFT JOIN
-          mtc_admin.[pupilColourContrasts] pcc ON (paa.pupilColourContrasts_id = pcc.id) LEFT JOIN
+          mtc_admin.[fontSizeLookUp] fslu on (paa.fontSizeLookUp_Id = fslu.id) LEFT JOIN
+          mtc_admin.[colourContrastLookUp] cclu ON (paa.colourContrastLookUp_Id = cclu.id) LEFT JOIN
           mtc_admin.[accessArrangements] aa ON (paa.accessArrangements_id = aa.id)
         WHERE
           p.id IN ( ${pupilParamNames.join(', ')} )
