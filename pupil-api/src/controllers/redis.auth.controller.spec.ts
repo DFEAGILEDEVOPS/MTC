@@ -25,7 +25,7 @@ describe('redis auth controller', () => {
 
   test('returns an 400 error if the request is not JSON', async () => {
     req = createMockRequest('text/html')
-    spyOn(logger, 'error')
+    jest.spyOn(logger, 'error').mockImplementation()
     await authController.postAuth(req, res)
     expect(res.statusCode).toBe(400)
     const data = JSON.parse(res._getData())
@@ -59,7 +59,7 @@ describe('redis auth controller', () => {
   })
 
   test('returns unauthorised if the login failed', async () => {
-    spyOn(logger, 'error')
+    jest.spyOn(logger, 'error').mockImplementation()
     await authController.postAuth(req, res)
     const data = JSON.parse(res._getData())
     expect(res.statusCode).toBe(401)
@@ -67,7 +67,7 @@ describe('redis auth controller', () => {
   })
 
   test('shortcuts to return unauthorised if no schoolPin provided', async () => {
-    spyOn(logger, 'error')
+    jest.spyOn(logger, 'error').mockImplementation()
     req.body = {
       pupilPin: '1234'
     }
@@ -79,7 +79,7 @@ describe('redis auth controller', () => {
   })
 
   test('shortcuts to return unauthorised if no pupilPin provided', async () => {
-    spyOn(logger, 'error')
+    jest.spyOn(logger, 'error').mockImplementation()
     req.body = {
       schoolPin: '1234'
     }
