@@ -245,9 +245,10 @@ if (config.Auth.mode === authModes.dfeSignIn) {
 
 // Middleware to upload all files uploaded to Azure Blob storage
 // Should be configured after busboy
-if (config.AZURE_STORAGE_CONNECTION_STRING) {
-  app.use(require('./lib/azure-upload'))
-}
+// Commented out 2021-09-23 as this has never been used.
+// if (config.AZURE_STORAGE_CONNECTION_STRING) {
+//   app.use(require('./lib/azure-upload'))
+// }
 
 app.use(function (req, res, next) {
   // make the user and isAuthenticated vars available in the view templates

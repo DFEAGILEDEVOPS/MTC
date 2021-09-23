@@ -26,8 +26,6 @@ module.exports = async function (req, res, next) {
     // If only 1 file is being upload created an array with a single file object
     const submittedFilesObj = Array.isArray(files) ? files : [files]
     for (const fileObj of submittedFilesObj) {
-      console.log(`Auto-submitting all uploaded files to ${container}`, fileObj)
-      console.log('User is ', req.user)
       // Create a safe derivative of the user name for use in the filename
       const userId = req.user?.UserName?.replace(/[^A-Za-z0-9]/, '')
       const remoteFilename = moment().format('YYYYMMDDHHmmss') + '-' + userId + '-' + fileObj.field + '-' + fileObj.uuid
