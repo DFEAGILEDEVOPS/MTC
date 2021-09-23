@@ -22,7 +22,7 @@ class ViewAndCustomPrintLiveCheckPage < SitePrism::Page
     sections :rows, 'tr' do
       element :checkbox, 'input[type="checkbox"]'
       element :selected, 'input[data-checked="true"]'
-      element :name, 'label strong'
+      element :name, '#pupilName'
       element :school_pwd_label, '.pin-content span:nth-child(1)'
       element :school_password, '.pin-content span:nth-child(2)'
       element :pin_label, '.pin-content span:nth-child(4)'
