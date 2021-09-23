@@ -1,6 +1,5 @@
 'use strict'
 
-const path = require('path')
 const moment = require('moment')
 const blobService = require('../services/data-access/azure-blob.data.service')
 
@@ -14,19 +13,31 @@ module.exports = async function (req, res, next) {
     return next()
   }
 
-  await blobService.createContainerIfNotExistsAsync(container)
+  try {
+    await blobService.createContainerIfNotExistsAsync(container)
+  } catch (error) {
+    console.error(`Failed to create container ${container}: ${error.message}`)
+  }
 
   // Container exists and is private
-  Object.getOwnPropertyNames(req.files).forEach(field => {
-    // TODO: add _userid to the filename
+  const files = Object.getOwnPropertyNames(req.files)
+  for (const field of files) {
     const files = req.files[field]
     // If only 1 file is being upload created an array with a single file object
     const submittedFilesObj = Array.isArray(files) ? files : [files]
-    submittedFilesObj.map(async (fileObj) => {
-      const remoteFilename = moment().format('YYYYMMDDHHmmss') + '-' + fileObj.field + '-' + fileObj.uuid
-      const localFilename = path.join(__dirname, '/../', fileObj.file)
-      await blobService.createBlockBlobFromLocalFileAsync(container, remoteFilename, localFilename)
-    })
-    next()
-  })
+    for (const fileObj of submittedFilesObj) {
+      console.log(`Auto-submitting all uploaded files to ${container}`, fileObj)
+      console.log('User is ', req.user)
+      // Create a safe derivative of the user name for use in the filename
+      const userId = req.user?.UserName?.replace(/[^A-Za-z0-9]/, '')
+      const remoteFilename = moment().format('YYYYMMDDHHmmss') + '-' + userId + '-' + fileObj.field + '-' + fileObj.uuid
+      const localFilename = fileObj.file
+      try {
+        await blobService.createBlockBlobFromLocalFileAsync(container, remoteFilename, localFilename)
+      } catch (error) {
+        console.error(`ERROR: Failed to upload file ${fileObj.filename} to ${container}`)
+      }
+    }
+  }
+  next()
 }
