@@ -92,6 +92,11 @@ router.get('/organisations/upload',
   serviceManagerController.getUploadOrganisations
 )
 
+router.post('/organisations/upload',
+  isAuthenticated(roles.serviceManager),
+  serviceManagerController.postUploadOrganisations
+)
+
 router.get(
   '/organisations/:slug',
   isAuthenticated([roles.serviceManager]),

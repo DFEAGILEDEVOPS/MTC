@@ -13,6 +13,7 @@ const scePresenter = require('../helpers/sce')
 const schoolService = require('../services/school.service')
 const featureToggles = require('feature-toggles')
 const { formUtil, formUtilTypes } = require('../lib/form-util')
+const organisationBulkUploadService = require('../services/organisation-bulk-upload.service')
 
 const controller = {
 
@@ -436,7 +437,7 @@ const controller = {
     }
   },
 
-  getUploadOrganisations: async function getUploadOrganisations (req, res, next) {
+  getUploadOrganisations: async function getUploadOrganisations (req, res, next, error = new ValidationError()) {
     req.breadcrumbs('Manage organisations', '/service-manager/organisations')
     res.locals.pageTitle = 'Bulk upload organisations'
     req.breadcrumbs(res.locals.pageTitle)
@@ -448,6 +449,22 @@ const controller = {
       console.log('JMS error', error)
       return next(error)
     }
+  },
+
+  postUploadOrganisations: async function postUploadOrganisations (req, res, next) {
+    console.log('req.files', req.files)
+    const uploadFile = req.files?.fileOrganisations
+    try {
+      // const validationError = await organisationUploadService.process(uploadFile)
+      // if (validationError.hasError()) {
+      //   return controller.getUploadOrganisations(req, res, next, validationError)
+      // }
+      await organisationBulkUploadService.upload(uploadFile)
+    } catch (error) {
+      return next(error)
+    }
+    req.flash('info', 'File has been uploaded')
+    res.redirect('/service-manager/organisations')
   }
 }
 

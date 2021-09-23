@@ -4,16 +4,27 @@
         <div class="govuk-grid-column-two-thirds">
             <h1 class="govuk-heading-xl">Bulk upload organisations</h1>
             <%- partial('partials/_gds_session_expiry') %>
+            <%- partial('partials/_flash-messages') %>
+            <p>
+                School data is available from Get Information about Schools (GIAS).  Just download the Establishment
+                data file (about 60 MB) and import to MTC by uploading it here.  MTC will automatically exclude
+                unwanted schools.
+                <br>
+                <a href="https://get-information-schools.service.gov.uk/Downloads" target="_blank" rel="noopener noreferrer">GIAS
+                    Downloads</a>
+            </p>
 
-            <form action="" method="post">
+            <form action="" method="post" enctype="multipart/form-data">
                 <input type="hidden" name="_csrf" value="<%= csrftoken %>"/>
                 <div class="govuk-form-group">
-                    <label class="govuk-label" for="file-upload-1">
+                    <label class="govuk-label" for="fileOrganisations">
                         Upload a file
                     </label>
-                    <input class="govuk-file-upload" id="file-upload-1" name="file-upload-1" type="file">
+                    <input class="govuk-file-upload" id="fileOrganisations" name="fileOrganisations" type="file"
+                           accept="text/csv"
+                           aria-label="Choose a file to upload">
                 </div>
-                <button type="submit" id="searchh-btn" class="govuk-button">Upload</button>
+                <button type="submit" class="govuk-button">Upload</button>
                 <a class="govuk-button govuk-button--secondary" href="/service-manager/organisations">Cancel</a>
             </form>
 
