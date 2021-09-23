@@ -1,5 +1,5 @@
 'use strict'
-/* global describe, it, expect spyOn fail jasmine xit */
+/* global describe, expect fail test jest afterEach */
 const RA = require('ramda-adjunct')
 const moment = require('moment')
 
@@ -9,76 +9,80 @@ const resultService = require('../../../services/result.service')
 const featureToggles = require('feature-toggles')
 
 describe('result.service', () => {
+  afterEach(() => {
+    jest.restoreAllMocks()
+  })
+
   describe('getPupilResultDataFromDb', () => {
     const schoolId = 0
 
-    it('returns an object', async () => {
+    test('returns an object', async () => {
       const mockResultData = []
-      spyOn(resultDataService, 'sqlFindPupilResultsForSchool').and.returnValue(mockResultData)
+      jest.spyOn(resultDataService, 'sqlFindPupilResultsForSchool').mockResolvedValue(mockResultData)
       const res = await resultService.getPupilResultDataFromDb(schoolId)
       expect(typeof res).toBe('object')
     })
 
-    it('has a generatedAt prop', async () => {
+    test('has a generatedAt prop', async () => {
       const mockResultData = []
-      spyOn(resultDataService, 'sqlFindPupilResultsForSchool').and.returnValue(mockResultData)
+      jest.spyOn(resultDataService, 'sqlFindPupilResultsForSchool').mockResolvedValue(mockResultData)
       const res = await resultService.getPupilResultDataFromDb(schoolId)
       expect(moment.isMoment(res.generatedAt)).toBe(true)
     })
 
-    it('has a schoolId prop', async () => {
+    test('has a schoolId prop', async () => {
       const mockResultData = []
-      spyOn(resultDataService, 'sqlFindPupilResultsForSchool').and.returnValue(mockResultData)
+      jest.spyOn(resultDataService, 'sqlFindPupilResultsForSchool').mockResolvedValue(mockResultData)
       const res = await resultService.getPupilResultDataFromDb(schoolId)
       expect(res.schoolId).toBe(schoolId)
     })
 
-    it('sorts the pupils alphabetically', async () => {
+    test('sorts the pupils alphabetically', async () => {
       const mockResultData = [
-        { lastName: 'Smith', foreName: '' },
-        { lastName: 'Talon', foreName: '' },
-        { lastName: 'Anchovy', foreName: '' }
+        { lastName: 'Smith', foreName: '', middleNames: '', dateOfBirth: moment('2010-07-01T00:00Z') },
+        { lastName: 'Talon', foreName: '', middleNames: '', dateOfBirth: moment('2010-07-02T00:00Z') },
+        { lastName: 'Anchovy', foreName: '', middleNames: '', dateOfBirth: moment('2010-07-02T00:00Z') }
       ]
-      spyOn(resultDataService, 'sqlFindPupilResultsForSchool').and.returnValue(mockResultData)
+      jest.spyOn(resultDataService, 'sqlFindPupilResultsForSchool').mockResolvedValue(mockResultData)
       const res = await resultService.getPupilResultDataFromDb(schoolId)
       expect(res.pupils[0].lastName).toBe('Anchovy')
       expect(res.pupils[1].lastName).toBe('Smith')
       expect(res.pupils[2].lastName).toBe('Talon')
     })
 
-    it('sorts the pupils alphabetically - if the lastNames are the same it then sorts by foreName', async () => {
+    test('sorts the pupils alphabetically - if the lastNames are the same it then sorts by foreName', async () => {
       const mockResultData = [
-        { lastName: 'Smith', foreName: 'Toad' },
-        { lastName: 'Smith', foreName: 'Mario' },
-        { lastName: 'Anchovy', foreName: 'Zeus' }
+        { lastName: 'Smith', foreName: 'Toad', middleNames: '', dateOfBirth: moment('2010-07-01T00:00Z') },
+        { lastName: 'Smith', foreName: 'Mario', middleNames: '', dateOfBirth: moment('2010-07-01T00:00Z') },
+        { lastName: 'Anchovy', foreName: 'Zeus', middleNames: '', dateOfBirth: moment('2010-07-01T00:00Z') }
       ]
-      spyOn(resultDataService, 'sqlFindPupilResultsForSchool').and.returnValue(mockResultData)
+      jest.spyOn(resultDataService, 'sqlFindPupilResultsForSchool').mockResolvedValue(mockResultData)
       const res = await resultService.getPupilResultDataFromDb(schoolId)
       expect(res.pupils[0].lastName).toBe('Anchovy')
-      expect(res.pupils[1]).toEqual(jasmine.objectContaining({ lastName: 'Smith', foreName: 'Mario' }))
-      expect(res.pupils[2]).toEqual(jasmine.objectContaining({ lastName: 'Smith', foreName: 'Toad' }))
+      expect(res.pupils[1]).toEqual(expect.objectContaining({ lastName: 'Smith', foreName: 'Mario' }))
+      expect(res.pupils[2]).toEqual(expect.objectContaining({ lastName: 'Smith', foreName: 'Toad' }))
     })
 
-    it('sorts the pupils alphabetically - if the lastname and forenames are the same it sorts by dob', async () => {
+    test('sorts the pupils alphabetically - if the lastname and forenames are the same it sorts by dob', async () => {
       const mockResultData = [
-        { lastName: 'Smith', foreName: 'John', dateOfBirth: moment('1970-01-01') },
-        { lastName: 'Smith', foreName: 'Jack', dateOfBirth: moment('2010-01-02') },
-        { lastName: 'Smith', foreName: 'Jack', dateOfBirth: moment('2010-01-01') }
+        { lastName: 'Smith', foreName: 'John', middleNames: 'one', dateOfBirth: moment('1970-01-01') },
+        { lastName: 'Smith', foreName: 'Jack', middleNames: 'two', dateOfBirth: moment('2010-01-02') },
+        { lastName: 'Smith', foreName: 'Jack', middleNames: 'three', dateOfBirth: moment('2010-01-01') }
       ]
-      spyOn(resultDataService, 'sqlFindPupilResultsForSchool').and.returnValue(mockResultData)
+      jest.spyOn(resultDataService, 'sqlFindPupilResultsForSchool').mockResolvedValue(mockResultData)
       const res = await resultService.getPupilResultDataFromDb(schoolId)
-      expect(res.pupils[0]).toEqual(jasmine.objectContaining({ lastName: 'Smith', foreName: 'Jack', dateOfBirth: '1 Jan 2010' }))
-      expect(res.pupils[1]).toEqual(jasmine.objectContaining({ lastName: 'Smith', foreName: 'Jack', dateOfBirth: '2 Jan 2010' }))
-      expect(res.pupils[2]).toEqual(jasmine.objectContaining({ lastName: 'Smith', foreName: 'John' }))
+      expect(res.pupils[0]).toEqual(expect.objectContaining({ lastName: 'Smith', foreName: 'Jack', middleNames: 'three' }))
+      expect(res.pupils[1]).toEqual(expect.objectContaining({ lastName: 'Smith', foreName: 'Jack', middleNames: 'two' }))
+      expect(res.pupils[2]).toEqual(expect.objectContaining({ lastName: 'Smith', foreName: 'John' }))
     })
 
-    it('sorts the pupils alphabetically - if the lastname, forename and dob are the same it sorts by middlenames', async () => {
+    test('sorts the pupils alphabetically - if the lastname, forename and dob are the same it sorts by middlenames', async () => {
       const mockResultData = [
         { lastName: 'Smith', foreName: 'Jack', dateOfBirth: moment('2013-01-01'), middleNames: 'Zebra' },
         { lastName: 'Smith', foreName: 'Jack', dateOfBirth: moment('2013-01-01'), middleNames: 'Xani' },
         { lastName: 'Smith', foreName: 'Jack', dateOfBirth: moment('2013-01-01'), middleNames: 'Bea' }
       ]
-      spyOn(resultDataService, 'sqlFindPupilResultsForSchool').and.returnValue(mockResultData)
+      jest.spyOn(resultDataService, 'sqlFindPupilResultsForSchool').mockResolvedValue(mockResultData)
       const res = await resultService.getPupilResultDataFromDb(schoolId)
       // Note: there is a bug in the pupil identification flag service that is causing the Xani record dateOfBirth to be set to
       // an empty string due to double processing, and the fact that it operates as a presenter and a service.
@@ -88,59 +92,55 @@ describe('result.service', () => {
       expect(res.pupils[2].middleNames).toEqual('Zebra')
     })
 
-    it('returns the pupil group_id', async () => {
+    test('returns the pupil group_id', async () => {
       const mockResultData = [
-        { foreName: 'Jack', middleNames: '', lastName: 'Smith', dateOfBirth: '', group_id: 42 }
+        { foreName: 'Jack', middleNames: '', lastName: 'Smith', dateOfBirth: moment('2010-08-01'), group_id: 42 }
       ]
-      spyOn(resultDataService, 'sqlFindPupilResultsForSchool').and.returnValue(mockResultData)
+      jest.spyOn(resultDataService, 'sqlFindPupilResultsForSchool').mockResolvedValue(mockResultData)
       const res = await resultService.getPupilResultDataFromDb(schoolId)
       expect(res.pupils[0].group_id).toBe(42)
     })
 
-    it('returns the pupil full name', async () => {
+    test('returns the pupil full name', async () => {
       const mockResultData = [
-        { foreName: 'Jack', middleNames: '', lastName: 'Smith', dateOfBirth: '', group_id: 42 }
+        { foreName: 'Jack', middleNames: '', lastName: 'Smith', dateOfBirth: moment('2010-08-01'), group_id: 42 }
       ]
-      spyOn(resultDataService, 'sqlFindPupilResultsForSchool').and.returnValue(mockResultData)
+      jest.spyOn(resultDataService, 'sqlFindPupilResultsForSchool').mockResolvedValue(mockResultData)
       const res = await resultService.getPupilResultDataFromDb(schoolId)
       expect(res.pupils[0].fullName).toBe('Smith, Jack')
     })
 
-    /**
-     * This test is disabled due to a bug in the pupil identification flag service that treats the last record as a special
-     * case and mishandles it.
-     */
-    xit('returns the pupil full name with middle names if pupil differentiation requires a middleName sort', async () => {
+    test('returns the pupil full name with middle names if pupil differentiation requires a middleName sort', async () => {
       const mockResultData = [
         { lastName: 'Smith', foreName: 'Jack', dateOfBirth: moment('2012-01-01'), middleNames: 'C' },
         { lastName: 'Smith', foreName: 'Jack', dateOfBirth: moment('2012-01-01'), middleNames: 'B' },
         { lastName: 'Smith', foreName: 'Jack', dateOfBirth: moment('2012-01-01'), middleNames: 'A' }
       ]
-      spyOn(resultDataService, 'sqlFindPupilResultsForSchool').and.returnValue(mockResultData)
+      jest.spyOn(resultDataService, 'sqlFindPupilResultsForSchool').mockResolvedValue(mockResultData)
       const res = await resultService.getPupilResultDataFromDb(schoolId)
       expect(res.pupils[0].fullName).toBe('Smith, Jack A')
       expect(res.pupils[1].fullName).toBe('Smith, Jack B')
       expect(res.pupils[2].fullName).toBe('Smith, Jack C')
     })
 
-    it('returns a status field for each pupil', async () => {
+    test('returns a status field for each pupil', async () => {
       const mockResultData = [
         { lastName: 'Smith', foreName: 'Jack', dateOfBirth: moment('2012-01-01'), middleNames: 'C', currentCheckId: 1, checkComplete: true, attendanceReason: null, restartAvailable: false },
         { lastName: 'Testsuite', foreName: 'Jasmine', dateOfBirth: moment('2011-06-01'), middleNames: '', currentCheckId: null, checkComplete: false, attendanceReason: 'Not attending', restartAvailable: false },
         { lastName: 'Testsuite', foreName: 'Jasmine', dateOfBirth: moment('2011-06-01'), middleNames: '', currentCheckId: null, checkComplete: false, attendanceReason: '', restartAvailable: true }
       ]
-      spyOn(resultDataService, 'sqlFindPupilResultsForSchool').and.returnValue(mockResultData)
+      jest.spyOn(resultDataService, 'sqlFindPupilResultsForSchool').mockResolvedValue(mockResultData)
       const res = await resultService.getPupilResultDataFromDb(schoolId)
       expect(res.pupils[0].status).toBeDefined()
     })
 
-    it('returns a score field for each pupil that took the check', async () => {
+    test('returns a score field for each pupil that took the check', async () => {
       const mockResultData = [
         { lastName: 'Smith', foreName: 'Jack', dateOfBirth: moment('2012-01-01'), middleNames: 'C', mark: 5 },
         { lastName: 'Wall', foreName: 'Jane', dateOfBirth: moment('2012-07-01'), middleNames: '', mark: 8 },
         { lastName: 'Testsuite', foreName: 'Jasmine', dateOfBirth: moment('2011-06-01'), middleNames: '', currentCheckId: null, checkComplete: false, attendanceReason: '', restartAvailable: true }
       ]
-      spyOn(resultDataService, 'sqlFindPupilResultsForSchool').and.returnValue(mockResultData)
+      jest.spyOn(resultDataService, 'sqlFindPupilResultsForSchool').mockResolvedValue(mockResultData)
       const res = await resultService.getPupilResultDataFromDb(schoolId)
       expect(res.pupils[0].score).toBe(5) // Jack Smith #1
       expect(res.pupils[1].score).toBeUndefined() // Jane Wall #2
@@ -149,8 +149,8 @@ describe('result.service', () => {
   })
 
   describe('getPupilResultData', () => {
-    it('calls redisCacheService get when school id is provided', async () => {
-      spyOn(redisCacheService, 'get').and.returnValue('[{}]')
+    test('calls redisCacheService get when school id is provided', async () => {
+      jest.spyOn(redisCacheService, 'get').mockResolvedValue('[{}]')
       const schoolId = 2
       try {
         await resultService.getPupilResultData(schoolId)
@@ -160,8 +160,8 @@ describe('result.service', () => {
       expect(redisCacheService.get).toHaveBeenCalled()
     })
 
-    it('throws an error if school id is not provided', async () => {
-      spyOn(redisCacheService, 'get')
+    test('throws an error if school id is not provided', async () => {
+      jest.spyOn(redisCacheService, 'get').mockImplementation()
       const schoolId = undefined
       try {
         await resultService.getPupilResultData(schoolId)
@@ -172,8 +172,8 @@ describe('result.service', () => {
       expect(redisCacheService.get).not.toHaveBeenCalled()
     })
 
-    it('returns undefined if parsing the redis response fails', async () => {
-      spyOn(redisCacheService, 'get')
+    test('returns undefined if parsing the redis response fails', async () => {
+      jest.spyOn(redisCacheService, 'get').mockImplementation()
       const schoolId = 1
       let result
       try {
@@ -184,11 +184,11 @@ describe('result.service', () => {
       expect(result).toBeUndefined()
     })
 
-    it('saves the result to redis if it queried the database', async () => {
+    test('saves the result to redis if it queried the database', async () => {
       // setup
       const schoolId = 1
-      spyOn(redisCacheService, 'get').and.returnValue(undefined) // initial cache miss from redis
-      spyOn(redisCacheService, 'set') // spy on the write to redis
+      jest.spyOn(redisCacheService, 'get').mockReturnValue(undefined) // initial cache miss from redis
+      jest.spyOn(redisCacheService, 'set').mockImplementation() // spy on the write to redis
       const resultData = {
         generatedAt: moment('2020-06-03T11:23:45'),
         schoolId: schoolId,
@@ -197,8 +197,8 @@ describe('result.service', () => {
           { fullName: 'Everett, Katy', score: 9, status: '', group_id: 4, urlSlug: 'bbb' }
         ]
       }
-      spyOn(resultService, 'getPupilResultDataFromDb').and.returnValue(resultData)
-      spyOn(featureToggles, 'isFeatureEnabled').and.callFake(arg => {
+      jest.spyOn(resultService, 'getPupilResultDataFromDb').mockResolvedValue(resultData)
+      jest.spyOn(featureToggles, 'isFeatureEnabled').mockImplementation(arg => {
         if (arg === 'schoolResultFetchFromDbEnabled') { return true }
         return undefined
       })
@@ -213,7 +213,7 @@ describe('result.service', () => {
   })
 
   describe('createPupilData', () => {
-    it('assigns a score to a pupil with a completed check', () => {
+    test('assigns a score to a pupil with a completed check', () => {
       const data = [
         { pupilId: 1, mark: 10, foreName: 'Joe', lastName: 'Test' }
       ]
@@ -221,7 +221,7 @@ describe('result.service', () => {
       expect(RA.isArray(result)).toBe(true)
     })
 
-    it('returns the right shaped object', () => {
+    test('returns the right shaped object', () => {
       const data = [
         {
           foreName: 'Jon',
@@ -236,8 +236,7 @@ describe('result.service', () => {
         }
       ]
       const result = resultService.createPupilData(data) // sut
-      expect(result[0]).toEqual(jasmine.objectContaining({
-        // dateOfBirth: '2020-01-01T00:00:00.000Z',
+      expect(result[0]).toEqual(expect.objectContaining({
         foreName: 'Jon',
         group_id: 12,
         lastName: 'Programmer',
@@ -251,14 +250,14 @@ describe('result.service', () => {
       // Handle the dateOfBirth prop as a special case as moment objects are not equal even if they have the same date
       // It should be output as a moment object just the same as the input - passed through
       expect(moment.isMoment(result[0].dateOfBirth)).toBe(true)
-      expect(result[0].dateOfBirth.unix()).toBe(1577836800) // > moment.utc('2020-01-01').unix() = 1577836800
+      expect(result[0].dateOfBirth.unix()).toBe(1577836800)
     })
   })
 
   describe('assignStatus', () => {
     const sut = resultService.assignStatus
 
-    it('describes complete pupils with no status', () => {
+    test('describes complete pupils with no status', () => {
       const pupil = {
         restartAvailable: false,
         currentCheckId: 1,
@@ -270,19 +269,19 @@ describe('result.service', () => {
       expect(status).toBe('')
     })
 
-    it('describes incomplete pupils with an incomplete status', () => {
+    test('describes incomplete pupils with an incomplete status', () => {
       const pupil = { restartAvailable: false, currentCheckId: 2, checkComplete: false }
       const status = sut(pupil)
       expect(status).toBe('Incomplete')
     })
 
-    it('describes pupils who did not take a check', () => {
+    test('describes pupils who did not take a check', () => {
       const pupil = { restartAvailable: false, currentCheckId: null, checkComplete: false, attendanceId: false }
       const status = sut(pupil)
       expect(status).toBe('Did not participate')
     })
 
-    it('describes pupils who are marked as not attending', () => {
+    test('describes pupils who are marked as not attending', () => {
       const pupil = {
         restartAvailable: false,
         currentCheckId: null,
@@ -295,7 +294,7 @@ describe('result.service', () => {
 
     // MTC 2021 only - Bug 47473 && 47477
     // TODO: remove for 2022?
-    it('sets the status to complete for pupils who are marked as not attending but have a completed check with' +
+    test('sets the status to complete for pupils who are marked as not attending but have a completed check with' +
       ' pupil.checkComplete being set', () => {
       const pupil = {
         restartAvailable: false,
@@ -310,7 +309,7 @@ describe('result.service', () => {
 
     // MTC 2021 only - Bug 47473 && 47477
     // TODO: remove for 2022?
-    it('sets the status to not attending for a pupil who is marked as not attending but has a check that is not' +
+    test('sets the status to not attending for a pupil who is marked as not attending but has a check that is not' +
       ' complete', () => {
       const pupil = {
         restartAvailable: false,
@@ -325,7 +324,7 @@ describe('result.service', () => {
 
     // MTC 2021 only - Bug 47473 && 47477
     // TODO: remove for 2022?
-    it('its shows a pupil as Incomplete if they don\'t have a mark (check has not been synchronised)', () => {
+    test('its shows a pupil as Incomplete if they don\'t have a mark (check has not been synchronised)', () => {
       const pupil = {
         restartAvailable: false,
         currentCheckId: 999,

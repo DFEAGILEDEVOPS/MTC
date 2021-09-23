@@ -87,9 +87,7 @@ module.exports.getRestartsForSchool = async function getRestartsForSchool (schoo
            [mtc_admin].[vewPupilLiveChecksTakenCount] vct ON (p.id = vct.pupil_id)
     WHERE
            pr.rank = 1
-    AND    p.school_id = @schoolId
-    ORDER BY
-           p.lastName, p.foreName, p.middleNames, p.dateOfBirth;
+    AND    p.school_id = @schoolId;
   `
 
   const params = [

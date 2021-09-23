@@ -2,7 +2,7 @@
 
 const gulp = require('gulp')
 const babel = require('gulp-babel')
-const sass = require('gulp-sass')
+const sass = require('gulp-sass')(require('sass'))
 const uglify = require('gulp-uglify')
 const concat = require('gulp-concat')
 const clean = require('gulp-clean')
@@ -16,6 +16,7 @@ const dir = require('node-dir')
 const md5 = require('md5')
 const jedit = require('edit-json-file')
 const ts = require('gulp-typescript')
+const sourcemaps = require('gulp-sourcemaps')
 
 try {
   if (fs.existsSync(globalDotEnvFile)) {
@@ -76,6 +77,14 @@ function compileTs () {
     .js.pipe(gulp.dest('./dist'))
 }
 
+function compileTsWithSourceMaps () {
+  return proj.src()
+    .pipe(sourcemaps.init()) // This means sourcemaps will be generated
+    .pipe(proj()).js
+    .pipe(sourcemaps.write()) // Now the sourcemaps are added to the .js file
+    .pipe(gulp.dest('./dist'))
+}
+
 function copyPublicFilesToDist () {
   return gulp
     .src(['./public/**/*'])
@@ -110,8 +119,8 @@ function compileCss () {
 function watch () {
   gulp.watch('./assets/**/*.scss', gulp.series(compileCss, copyPublicFilesToDist))
   gulp.watch('./assets/**/*.js', gulp.series(bundleJs, copyPublicFilesToDist))
-  gulp.watch(['./**/*.[t|j]s', '!./dist/**/*'], gulp.series(compileTs))
   gulp.watch('./views/**/*.ejs', gulp.series(copyViewFilesToDist))
+  gulp.watch(['./**/*.[t|j]s', '!./dist/**/*'], gulp.series(compileTsWithSourceMaps))
 }
 
 function bundleJs () {
@@ -221,6 +230,30 @@ gulp.task('build',
     gulp.parallel(cleanDist, cleanPublic),
     gulp.parallel(
       compileTs,
+      compileCss,
+      bundleJs,
+      bundleFuncCallsJs,
+      copyImages,
+      copyGdsImages,
+      copyGdsFonts,
+      copyPdfs,
+      copyCsvFiles
+    ),
+    generateAssetsVersion,
+    gulp.parallel(
+      copyPublicFilesToDist,
+      copyViewFilesToDist,
+      copyEnvForDist,
+      copyPackageJsonToDist
+    )
+  )
+)
+
+gulp.task('dev-build',
+  gulp.series(
+    gulp.parallel(cleanDist, cleanPublic),
+    gulp.parallel(
+      compileTsWithSourceMaps,
       compileCss,
       bundleJs,
       bundleFuncCallsJs,

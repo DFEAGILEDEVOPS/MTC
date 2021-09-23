@@ -19,13 +19,13 @@
   "dependencies": {
     "command-line-args": "^5.1.1",
     "moment": "^2.29.1",
-    "mssql": "^6.2.3",
+    "mssql": "^7.2.1",
     "postgrator": "^4.1.0",
     "ramda": "^0.27.1",
     "to-bool": "^0.0.1",
     "winston": "^3.3.3"
   },
   "devDependencies": {
-    "dotenv": "^8.2.0"
+    "dotenv": "^10.0.0"
   }
 }

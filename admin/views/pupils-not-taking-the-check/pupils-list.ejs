@@ -5,7 +5,7 @@
             <h1 class="govuk-heading-xl">Give a reason why a pupil is not taking the check</h1>
             <%- partial('partials/_gds_session_expiry') %>
             <% if (pupilsList && pupilsList.length > 0) { %>
-                <form method="post" action="/pupils-not-taking-the-check/save-pupils">
+                <form method="post" action="/pupils-not-taking-the-check/save-pupils" name="stickyBannerForm">
                     <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
                     <% if (attendanceCodesPresentationData && attendanceCodesPresentationData.length > 1) { %>
                         <h2 class="govuk-heading-m">1. Select reason</h2>
@@ -51,32 +51,32 @@
                                 </div>
                             </th>
                         </tr>
-                        </thead>
-                        <tbody>
-                        <% pupilsList.forEach(pupil => { %>
-                            <tr class="govuk-table__row <% if (pupil.group_id) { %>group-id-<%= pupil.group_id %><% } %>">
-                                <td scope="row">
-                                    <label for="pupil-<%= pupil.urlSlug %>">
-                                        <%= pupil.fullName %>
-                                    </label>
-                                    <% if (pupil.showDoB) { %>
-                                        <div class="govuk-font-greyed-out govuk-!-font-size-16">
-                                            Date of birth: <%= pupil.dateOfBirth %>
-                                        </div>
-                                    <% } %>
-                                </td>
-                                <td>
-                                    <div class="multiple-choice-mtc">
-                                        <input id="pupil-<%= pupil.urlSlug %>"
-                                               name="pupil"
-                                               type="checkbox"
-                                               class="govuk-checkboxes__input"
-                                               value="<%= pupil.urlSlug %>"
-                                               aria-label="Tick pupil <%= pupil.foreName %> <%= pupil.lastName %>."
-                                               aria-checked="false"
-                                               role="checkbox">
-                                        <div></div>
+                    </thead>
+                    <tbody>
+                    <% pupilsList.forEach(pupil => { %>
+                        <tr class="govuk-table__row <% if (pupil.group_id) { %>group-id-<%= pupil.group_id %><% } %>">
+                            <td scope="row">
+                                <label for="pupil-<%= pupil.urlSlug %>">
+                                    <%= pupil.fullName %>
+                                </label>
+                                <% if (pupil.showDoB) { %>
+                                    <div class="govuk-font-greyed-out govuk-!-font-size-16">
+                                        Date of birth: <%= pupil.formattedDateOfBirth %>
                                     </div>
+                                <% } %>
+                            </td>
+                            <td>
+                                <div class="multiple-choice-mtc">
+                                    <input id="pupil-<%= pupil.urlSlug %>"
+                                           name="pupil"
+                                           type="checkbox"
+                                           class="govuk-checkboxes__input"
+                                           value="<%= pupil.urlSlug %>"
+                                           aria-label="Tick pupil <%= pupil.foreName %> <%= pupil.lastName %>."
+                                           aria-checked="false"
+                                           role="checkbox">
+                                    <div></div>
+                                </div>
 
                                 </td>
                             </tr>
