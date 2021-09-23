@@ -1,16 +1,37 @@
+--
+-- Load test helper: resets common tables after a load-test
+-- NB some statements should be excluded if you want to build up volume data
+--
 
-/************************
-  resets common tables after a load-test
-  some statements should be excluded if you want to build up volume data
- */
-
-TRUNCATE TABLE mtc_admin.adminLogonEvent
+--
+-- MTC RESULTS
+--
+TRUNCATE TABLE mtc_results.checkResultSyncError
 TRUNCATE TABLE mtc_results.psychometricReport
+TRUNCATE TABLE mtc_results.userInput;
+DELETE FROM mtc_results.userInputTypeLookup;
+DELETE FROM  mtc_results.answer;
+TRUNCATE TABLE mtc_results.event;
+DELETE FROM mtc_results.userDevice;
+DELETE FROM mtc_results.browserFamilyLookup
+DELETE FROM mtc_results.deviceOrientationLookup
+DELETE FROM mtc_results.navigatorLanguageLookup
+DELETE FROM mtc_results.navigatorPlatformLookup
+DELETE FROM mtc_results.networkConnectionEffectiveTypeLookup
+DELETE FROM mtc_results.uaOperatingSystemLookup
+DELETE FROM mtc_results.userAgentLookup
+DELETE FROM mtc_results.eventTypeLookup
+DELETE FROM mtc_results.checkResult
+
+
+--
+-- MTC ADMIN
+--
+TRUNCATE TABLE mtc_admin.adminLogonEvent
 TRUNCATE TABLE mtc_admin.pupilRestart
 TRUNCATE TABLE mtc_admin.azureBlobFile
 TRUNCATE TABLE mtc_admin.auditLog
 -- user data
-TRUNCATE TABLE mtc_results.answer
 TRUNCATE TABLE mtc_admin.checkPin
 TRUNCATE TABLE mtc_admin.checkConfig
 TRUNCATE TABLE mtc_admin.pupilAccessArrangements
@@ -31,4 +52,3 @@ TRUNCATE TABLE mtc_admin.sce
 TRUNCATE TABLE mtc_admin.settingsLog
 DELETE FROM mtc_admin.[user]
 DELETE FROM mtc_admin.school
-
