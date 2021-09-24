@@ -16,7 +16,7 @@ export class SchoolCheckAllocationService {
   private readonly redisService: IRedisService
   private readonly dateTimeService: IDateTimeService
   private readonly pupilAllocationService: IPupilAllocationService
-  private readonly uuidV4RegexPattern = new RegExp(/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i)
+  private readonly uuidV4RegexPattern = /^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i
   private readonly redisAllocationsKeyPrefix = 'pupil-allocations:'
 
   constructor (

@@ -82,8 +82,9 @@
                                 <div class="print-only watermark govuk-!-font-size-80">Try it out</div>
                                 <% } %>
                                 <label class="govuk-label" for="pupil-<%= pupil.id %>">
-                                    <strong id="pupilName"><%= pupil.fullName %></strong>
+                                    <strong id="pupilName" class="no-print"><%= pupil.fullName %></strong>
                                     <span class="print-only">
+                                        <strong><%= pupil.pupilViewFullName %></strong>
                                         <% if (pupil.group) { %>
                                             (<%= pupil.group %>)
                                         <% } %>
