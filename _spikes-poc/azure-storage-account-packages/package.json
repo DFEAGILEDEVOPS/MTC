@@ -1,7 +1,7 @@
 {
-  "name": "azure-data-tables-package",
+  "name": "azure-storage-account-packages",
   "version": "1.0.0",
-  "description": "exploring data-tables package as a replacement for azure-storage",
+  "description": "exploring replacement packages for azure-storage",
   "main": "index.js",
   "author": "Guy Harwood",
   "license": "GPL-3.0",
