@@ -1,0 +1,16 @@
+{
+  "name": "azure-data-tables-package",
+  "version": "1.0.0",
+  "description": "exploring data-tables package as a replacement for azure-storage",
+  "main": "index.js",
+  "author": "Guy Harwood",
+  "license": "GPL-3.0",
+  "dependencies": {
+    "@azure/data-tables": "^12.1.2",
+    "dotenv": "^10.0.0",
+    "uuid": "^8.3.2"
+  },
+  "scripts": {
+    "start": "node ./index.js"
+  }
+}
