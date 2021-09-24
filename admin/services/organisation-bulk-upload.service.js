@@ -10,7 +10,7 @@ const organisationBulkUploadService = {
    * @returns {Promise<*>}
    */
   validate: function validate (uploadFile) {
-    return fileValidator.validate(uploadFile, 'fileOrganisations')
+    return fileValidator.validate(uploadFile, 'file-upload')
   },
   /**
    *

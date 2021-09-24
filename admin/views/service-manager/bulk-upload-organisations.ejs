@@ -15,21 +15,36 @@
             </p>
 
             <form action="" method="post" enctype="multipart/form-data" id="upload-form">
-                <input type="hidden" name="_csrf" value="<%= csrftoken %>"/>
-                <div class="govuk-form-group">
-                    <label class="govuk-label" for="fileOrganisations">
-                        Upload a file
-                    </label>
-                    <input type="reset" class="govuk-link govuk-remove-file" id="removeUploadedFile" value="Remove file" aria-label="Remove uploaded file" />
-                    <input class="govuk-file-upload" id="file-upload" name="fileOrganisations" type="file"
-                           accept="text/csv"
-                           aria-label="Choose a file to upload">
-                </div>
-                <button type="submit" class="govuk-button" data-prevent-double-click="true"
-                        data-disable-form-after-click="true" id="upload-form-submit">Upload</button>
-                <a class="govuk-button govuk-button--secondary" href="/service-manager/organisations">Cancel</a>
-            </form>
+                <div class="govuk-form-group<% if (fileErrors && fileErrors.hasError()) { %> govuk-form-group--error<% } %>">
+                    <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
+                    <% if (fileErrors && fileErrors.hasError()) { %>
+                        <% fileErrors.getUniqueFields(['file-upload']).forEach(f => { %>
+                            <% const errors = fileErrors.get(f) %>
+                            <% if (Array.isArray(errors)) { %>
+                                <%  errors.forEach(e => { %>
+                                    <label class="govuk-error-message"><%= e %></label>
+                            <% }) } else { %>
+                                <label class="govuk-error-message"><%= errors %></label>
+                            <% } %>
+                        <% }) %>
+                    <% } else { %>
+                        <label class="govuk-label" for="file-upload">Upload File</label>
+                    <% } %>
+                    <% if (true) { %>
 
+                            <input type="reset" class="govuk-link govuk-remove-file" id="removeUploadedFile"
+                                   value="Remove file" aria-label="Remove uploaded file" >
+                            <input class="govuk-file-upload" id="file-upload" name="fileOrganisations" type="file"
+                                   accept="text/csv"
+                                   aria-label="Choose a file to upload">
+                    <% } %>
+                </div>
+                <div>
+                    <button type="submit" class="govuk-button" data-prevent-double-click="true"
+                            data-disable-form-after-click="true" id="upload-form-submit">Upload</button>
+                    <a class="govuk-button govuk-button--secondary" href="/service-manager/organisations">Cancel</a>
+                </div>
+            </form>
         </div>
         <div class="govuk-grid-column-one-third" aria-label="sidebar">
             <aside class="app-related-items" role="complementary">

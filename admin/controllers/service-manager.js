@@ -444,7 +444,7 @@ const controller = {
     try {
       res.render('service-manager/bulk-upload-organisations', {
         breadcrumbs: req.breadcrumbs(),
-        validationError: error
+        fileErrors: error
       })
     } catch (error) {
       return next(error)
