@@ -1,8 +1,17 @@
 const azureBlobDataService = require('./data-access/azure-blob.data.service')
+const fileValidator = require('../lib/validator/file-validator.js')
 // Files get uploaded to this container.  dns naming conventions.
 const container = 'school-import'
 
 const organisationBulkUploadService = {
+  /**
+   * Validate an upload file for basic errors
+   * @param uploadFile
+   * @returns {Promise<*>}
+   */
+  validate: function validate (uploadFile) {
+    return fileValidator.validate(uploadFile, 'fileOrganisations')
+  },
   /**
    *
    * @param {{ file: string, filename: string }} uploadFile

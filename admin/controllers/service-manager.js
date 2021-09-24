@@ -443,10 +443,10 @@ const controller = {
     req.breadcrumbs(res.locals.pageTitle)
     try {
       res.render('service-manager/bulk-upload-organisations', {
-        breadcrumbs: req.breadcrumbs()
+        breadcrumbs: req.breadcrumbs(),
+        validationError: error
       })
     } catch (error) {
-      console.log('JMS error', error)
       return next(error)
     }
   },
@@ -455,10 +455,10 @@ const controller = {
     console.log('req.files', req.files)
     const uploadFile = req.files?.fileOrganisations
     try {
-      // const validationError = await organisationUploadService.process(uploadFile)
-      // if (validationError.hasError()) {
-      //   return controller.getUploadOrganisations(req, res, next, validationError)
-      // }
+      const validationError = await organisationBulkUploadService.validate(uploadFile)
+      if (validationError.hasError()) {
+        return controller.getUploadOrganisations(req, res, next, validationError)
+      }
       await organisationBulkUploadService.upload(uploadFile)
     } catch (error) {
       return next(error)
