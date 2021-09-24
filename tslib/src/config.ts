@@ -39,7 +39,9 @@ export default {
       encrypt: parser.propertyExists(process.env, 'SQL_ENCRYPT') ? parser.primitiveToBoolean(process.env.SQL_ENCRYPT) : true,
       useUTC: true,
       appName: parser.valueOrSubstitute(process.env.SQL_APP_NAME, 'mtc-functions'), // docker default
-      enableArithAbort: parser.propertyExists(process.env, 'SQL_ENABLE_ARITH_ABORT') ? parser.primitiveToBoolean(process.env.SQL_ENABLE_ARITH_ABORT) : true
+      enableArithAbort: parser.propertyExists(process.env, 'SQL_ENABLE_ARITH_ABORT') ? parser.primitiveToBoolean(process.env.SQL_ENABLE_ARITH_ABORT) : true,
+      // We should check the server certificate, rather than blindly trust it.
+      trustServerCertificate: {}.hasOwnProperty.call(process.env, 'SQL_TRUST_SERVER_CERTIFICATE') ? parser.primitiveToBoolean(process.env.SQL_TRUST_SERVER_CERTIFICATE) : false
     },
     Pooling: {
       MinCount: Number(parser.valueOrSubstitute(process.env.SQL_POOL_MIN_COUNT, 5)),

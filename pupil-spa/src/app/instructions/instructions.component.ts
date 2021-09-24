@@ -42,6 +42,10 @@ export class InstructionsComponent implements AfterViewInit, OnDestroy {
 
   // wait for the component to be rendered first, before parsing the text
   ngAfterViewInit() {
+    // Fix for iOS when opened via the camera.  The site scrolls down past the header on the login-success page,
+    // so we fix it here.  Scrolling back top the top makes sure the timer will be displayed on the page.
+    this.window.scrollTo(0, 0)
+
     if (this.questionService.getConfig().questionReader) {
       this.speechService.speakElement(this.elRef.nativeElement).then(() => {
         this.speechService.focusEndOfSpeech(this.elRef.nativeElement.querySelector('#start-now-button'));

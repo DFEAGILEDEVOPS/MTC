@@ -14,7 +14,7 @@ class CustomPinsFamiliarisationPage < SitePrism::Page
 
   section :pupil_list, '#generatePins tbody' do
     sections :rows, 'tr' do
-      element :name, 'label strong'
+      element :name, '#pupilName'
       element :school_pwd_label, '.pin-content span:nth-child(1)'
       element :school_password, '.pin-content span:nth-child(2)'
       element :pin_label, '.pin-content span:nth-child(4)'
