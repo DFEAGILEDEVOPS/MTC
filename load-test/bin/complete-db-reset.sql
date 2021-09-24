@@ -39,7 +39,8 @@ TRUNCATE TABLE mtc_admin.pupilAttendance
 DELETE FROM mtc_admin.pupilRestart
 DELETE FROM mtc_admin.[hdf]
 DELETE FROM mtc_admin.[serviceMessage]
-UPDATE mtc_admin.pupil SET pupilAgeReason_id=NULL, group_id=NULL, attendanceId=NULL, currentCheckId=NULL, checkComplete=0
+UPDATE mtc_admin.pupil SET pupilAgeReason_id=NULL, group_id=NULL, attendanceId=NULL, currentCheckId=NULL,
+                           checkComplete=0, job_id=null;
 DELETE FROM mtc_admin.pupilAgeReason
 DELETE FROM mtc_admin.[check]
 DELETE FROM mtc_admin.[job]
@@ -50,5 +51,5 @@ DELETE FROM mtc_admin.[checkForm]
 DELETE FROM mtc_admin.checkWindow
 TRUNCATE TABLE mtc_admin.sce
 TRUNCATE TABLE mtc_admin.settingsLog
-DELETE FROM mtc_admin.[user]
-DELETE FROM mtc_admin.school
+-- Delete new schools uploaded without pupils
+DELETE FROM mtc_admin.school WHERE leaCode <> 999;
