@@ -87,7 +87,7 @@ router.post('/organisations/search',
   serviceManagerController.postSearch
 )
 
-router.get('/organisations/upload',
+router.get('/organisations/upload/:jobSlug?',
   isAuthenticated(roles.serviceManager),
   serviceManagerController.getUploadOrganisations
 )

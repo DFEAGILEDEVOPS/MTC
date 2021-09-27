@@ -1,5 +1,5 @@
 <%- partial('partials/_gds_breadcrumbs_and_sign_out', { breadcrumbs }) %>
-<main class="govuk-main-wrapper" id="main-content" role="main">
+<main class="govuk-main-wrapper govuk-body-m" id="main-content" role="main">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <h1 class="govuk-heading-xl">Bulk upload organisations</h1>
@@ -22,27 +22,47 @@
                             <% const errors = fileErrors.get(f) %>
                             <% if (Array.isArray(errors)) { %>
                                 <%  errors.forEach(e => { %>
-                                    <label class="govuk-error-message"><%= e %></label>
+                                    <label class="govuk-error-message" for="file-upload"><%= e %></label>
                             <% }) } else { %>
-                                <label class="govuk-error-message"><%= errors %></label>
+                                <label class="govuk-error-message" for="file-upload"><%= errors %></label>
                             <% } %>
                         <% }) %>
                     <% } else { %>
-                        <label class="govuk-label" for="file-upload">Upload File</label>
+                        <% if (jobStatus === undefined) { %>
+                                <label class="govuk-label" for="file-upload">Upload File</label>
+                        <% } %>
                     <% } %>
-                    <% if (true) { %>
+                    <% if (jobStatus !== undefined) { %>
 
-                            <input type="reset" class="govuk-link govuk-remove-file" id="removeUploadedFile"
-                                   value="Remove file" aria-label="Remove uploaded file" >
-                            <input class="govuk-file-upload" id="file-upload" name="fileOrganisations" type="file"
-                                   accept="text/csv"
-                                   aria-label="Choose a file to upload">
+                        <p> The upload has been received and the job will run in the background.  Please reload the
+                            page for status updates.</p>
+                        <p>
+                            Job status: <strong><%= jobStatus.description %></strong>
+                        </p>
+
+                        <% if (jobStatus.code === 'FLD') { %>
+                            <div class="govuk-warning-message">
+                                <%= jobStatus.errorOutput %>
+                            </div>
+                        <% } %>
+
+
+
+
+                <% } else { %>
+
+                        <input type="reset" class="govuk-link govuk-remove-file" id="removeUploadedFile"
+                               value="Remove file" aria-label="Remove uploaded file" >
+                        <input class="govuk-file-upload" id="file-upload" name="fileOrganisations" type="file"
+                               accept="text/csv"
+                               aria-label="Choose a file to upload">
+                        <br />
+                        <div>
+                            <button type="submit" class="govuk-button" data-prevent-double-click="true"
+                                    data-disable-form-after-click="true" id="upload-form-submit">Upload</button>
+                            <a class="govuk-button govuk-button--secondary" href="/service-manager/organisations">Cancel</a>
+                        </div>
                     <% } %>
-                </div>
-                <div>
-                    <button type="submit" class="govuk-button" data-prevent-double-click="true"
-                            data-disable-form-after-click="true" id="upload-form-submit">Upload</button>
-                    <a class="govuk-button govuk-button--secondary" href="/service-manager/organisations">Cancel</a>
                 </div>
             </form>
         </div>

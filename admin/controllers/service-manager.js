@@ -441,10 +441,16 @@ const controller = {
     req.breadcrumbs('Manage organisations', '/service-manager/organisations')
     res.locals.pageTitle = 'Bulk upload organisations'
     req.breadcrumbs(res.locals.pageTitle)
+    const jobSlug = req.params.jobSlug
+    let jobStatus
+    if (jobSlug !== undefined) {
+      jobStatus = await organisationBulkUploadService.getUploadStatus(jobSlug)
+    }
     try {
       res.render('service-manager/bulk-upload-organisations', {
         breadcrumbs: req.breadcrumbs(),
-        fileErrors: error
+        fileErrors: error,
+        jobStatus: jobStatus
       })
     } catch (error) {
       return next(error)
@@ -452,19 +458,18 @@ const controller = {
   },
 
   postUploadOrganisations: async function postUploadOrganisations (req, res, next) {
-    console.log('req.files', req.files)
     const uploadFile = req.files?.fileOrganisations
     try {
       const validationError = await organisationBulkUploadService.validate(uploadFile)
       if (validationError.hasError()) {
         return controller.getUploadOrganisations(req, res, next, validationError)
       }
-      await organisationBulkUploadService.upload(uploadFile)
+      const jobSlug = await organisationBulkUploadService.upload(uploadFile)
+      req.flash('info', 'File has been uploaded')
+      res.redirect(`/service-manager/organisations/upload/${jobSlug.toLowerCase()}`)
     } catch (error) {
       return next(error)
     }
-    req.flash('info', 'File has been uploaded')
-    res.redirect('/service-manager/organisations')
   }
 }
 

@@ -12,22 +12,28 @@ import * as RA from 'ramda-adjunct'
 const name = 'school-import'
 const targetAge = 9
 
+// Copy from the DB which is the source of truth
+// TODO: keep these in sync automatically
+const jobStatusCode = {
+  Processing: 'PRC',
+  Completed: 'COM',
+  CompletedWithErrors: 'CWR',
+  Failed: 'FLD'
+}
+
 export class SchoolImportService {
   private readonly schoolDataService: ISchoolDataService
   private readonly logger: ILogger
   private jobResult: SchoolImportJobResult
   private readonly predicates: ISchoolImportPredicates
   private readonly schoolRecordMapper: SchoolRecordMapper
+  private jobId: number | undefined
 
   constructor (pool: ConnectionPool,
     jobResult: SchoolImportJobResult,
     logger?: ILogger,
     schoolDataService?: ISchoolDataService,
     predicates?: ISchoolImportPredicates) {
-    if (schoolDataService === undefined) {
-      schoolDataService = new SchoolDataService(pool, jobResult)
-    }
-    this.schoolDataService = schoolDataService
     if (predicates === undefined) {
       predicates = new Predicates()
     }
@@ -38,9 +44,38 @@ export class SchoolImportService {
     this.logger = logger
     this.jobResult = jobResult
     this.schoolRecordMapper = new SchoolRecordMapper()
+    this.schoolDataService = schoolDataService ?? new SchoolDataService(this.logger, pool, jobResult)
+  }
+
+  async updateJobStatusToProcessing (): Promise<void> {
+    this.logger.verbose(`${name}: updateJobStatusToProcessing() called`)
+    const jobId = await this.schoolDataService.getJobId()
+    if (jobId !== undefined) {
+      this.jobId = jobId
+      return this.schoolDataService.updateJobStatus(jobId, jobStatusCode.Processing)
+    }
+  }
+
+  async updateJobStatusToCompleted (jobResult: SchoolImportJobResult): Promise<void> {
+    this.logger.verbose(`${name}: updateJobStatusToCompleted() called`)
+    if (this.jobId !== undefined) {
+      if (jobResult.stderr.length > 0) {
+        return this.schoolDataService.updateJobStatusWithResult(this.jobId, jobStatusCode.CompletedWithErrors, jobResult)
+      } else {
+        return this.schoolDataService.updateJobStatusWithResult(this.jobId, jobStatusCode.Completed, jobResult)
+      }
+    }
+  }
+
+  async updateJobStatusToFailed (jobResult: SchoolImportJobResult, error: Error): Promise<void> {
+    this.logger.verbose(`${name}: updateJobStatusToFailed() called`)
+    if (this.jobId !== undefined) {
+      return this.schoolDataService.updateJobStatusWithResultAndError(this.jobId, jobStatusCode.Failed, jobResult, error)
+    }
   }
 
   async process (blob: any): Promise<SchoolImportJobResult> {
+    this.logger.verbose(`${name}: process() called`)
     const csvParsed = csv.parse(blob.toString())
     const mapper = [
       ['URN', 'urn'],
@@ -103,7 +138,8 @@ export class SchoolImportService {
         this.jobResult.stdout.push(exitMessage)
         return this.jobResult
       }
-      await this.schoolDataService.bulkUpload(this.logger, filteredSchools)
+      this.logger.verbose(`${name}  bulkUpload starting`)
+      await this.schoolDataService.bulkUpload(filteredSchools)
       this.logger.verbose(`${name}  bulkUpload complete`)
       return this.jobResult
     } catch (error) {
