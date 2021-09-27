@@ -13,6 +13,7 @@
   },
   "scripts": {
     "table": "node ./table.js",
-    "queue": "node ./queue.js"
+    "queue": "node ./queue.js",
+    "sas": "node ./sas.js"
   }
 }
