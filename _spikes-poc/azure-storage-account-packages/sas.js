@@ -15,13 +15,19 @@ try {
   console.error(error)
 }
 
-const { QueueServiceClient, QueueSASPermissions, AccountSASPermissions } = require("@azure/storage-queue")
+const { QueueServiceClient, QueueSASPermissions, AccountSASPermissions, QueueClient } = require("@azure/storage-queue")
 
-const queueServiceClient = QueueServiceClient.fromConnectionString(process.env.AZURE_STORAGE_CONNECTION_STRING)
+const queueServiceClient = QueueServiceClient.fromConnectionString(process.env.AZURE_STORAGE_CONNECTION_STRING, )
+const queueClient = queueServiceClient.getQueueClient('check-submitted')
 const permissions = new QueueSASPermissions()
 permissions.add = true
 const expiryDate = new Date()
 expiryDate.setHours(expiryDate.getHours() + 1)
+const opts = {
+  expiresOn: expiryDate,
+  permissions: permissions
+}
 
-const token = queueServiceClient.generateAccountSasUrl(expiryDate, permissions)
-console.log(token)
+const t = queueClient.generateSasUrl(opts)
+// const token = queueServiceClient.generateAccountSasUrl(expiryDate, permissions)
+console.log(t)
