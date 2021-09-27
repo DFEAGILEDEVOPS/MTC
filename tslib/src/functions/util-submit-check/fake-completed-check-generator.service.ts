@@ -43,8 +43,9 @@ export class FakeCompletedCheckGeneratorService implements ICompletedCheckGenera
 
   private createAnswers (questions: CheckQuestion[]): CompleteCheckAnswer[] {
     const answers = questions.map(q => {
+      const correctAnswer = q.factor1 * q.factor2
       return {
-        answer: q.factor1 * q.factor2,
+        answer: `${correctAnswer}`,
         clientTimestamp: moment().add(q.order, 'seconds').toISOString(),
         factor1: q.factor1,
         factor2: q.factor2,
@@ -57,7 +58,7 @@ export class FakeCompletedCheckGeneratorService implements ICompletedCheckGenera
       const answer = faker.random.arrayElement(answers)
       // just pick any number in the given range, it could be correct or not...
       const newAnswer = faker.datatype.number({ min: 0, max: 144 })
-      answer.answer = newAnswer
+      answer.answer = newAnswer.toString()
     }
     return answers
   }
