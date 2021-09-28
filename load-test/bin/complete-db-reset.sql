@@ -51,5 +51,7 @@ DELETE FROM mtc_admin.[checkForm]
 DELETE FROM mtc_admin.checkWindow
 TRUNCATE TABLE mtc_admin.sce
 TRUNCATE TABLE mtc_admin.settingsLog
+-- DELETE FROM mtc_admin.[user]
+-- DELETE FROM mtc_admin.school
 -- Delete new schools uploaded without pupils
 DELETE FROM mtc_admin.school WHERE leaCode <> 999;
