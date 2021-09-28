@@ -1,8 +1,8 @@
 'use strict'
 
-const azure = require('azure-storage')
 const moment = require('moment')
 const { performance } = require('perf_hooks')
+const { QueueServiceClient, QueueSASPermissions } = require('@azure/storage-queue')
 
 const logger = require('./log.service').getLogger()
 const config = require('../config')
@@ -10,7 +10,6 @@ const redisKeyService = require('./redis-key.service')
 const redisCacheService = require('./data-access/redis-cache.service')
 const queueNameService = require('./queue-name-service')
 
-const addPermissions = azure.QueueUtilities.SharedAccessPermissions.ADD
 const oneHourInSeconds = 1 * 60 * 60
 let azureQueueService
 
@@ -52,9 +51,9 @@ const sasTokenService = {
           throw new Error('An AZURE_STORAGE_CONNECTION_STRING is a required environment variable.')
         }
         // init the queue service the first time this is called
-        azureQueueService = azure.createQueueService(config.AZURE_STORAGE_CONNECTION_STRING)
+        azureQueueService = QueueServiceClient.fromConnectionString(process.env.AZURE_STORAGE_CONNECTION_STRING)
       }
-      serviceImplementation = azureQueueService
+      serviceImplementation = azureQueueService.getQueueClient(queueNameService.NAMES.CHECK_SUBMIT)
     }
 
     if (!moment.isMoment(expiryDate) || !expiryDate.isValid()) {
@@ -66,17 +65,17 @@ const sasTokenService = {
     const startDate = new Date()
     startDate.setMinutes(startDate.getMinutes() - 5)
 
-    const sharedAccessPolicy = {
-      AccessPolicy: {
-        Permissions: addPermissions,
-        Start: startDate,
-        Expiry: expiryDate.toDate()
-      }
+    const permissions = new QueueSASPermissions()
+    permissions.add = true
+    const options = {
+      startsOn: startDate,
+      expiresOn: expiryDate.toDate(),
+      permissions: permissions
     }
 
     logger.debug('Generating SAS token for Queue: ' + queueName)
 
-    const sasToken = serviceImplementation.generateSharedAccessSignature(queueName, sharedAccessPolicy)
+    const sasToken = serviceImplementation.generateSasUrl(options)
 
     const tokenObject = {
       token: sasToken,

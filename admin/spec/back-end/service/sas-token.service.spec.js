@@ -16,7 +16,7 @@ describe('sas-token.service', () => {
     describe('without redis', () => {
       beforeEach(() => {
         queueServiceMock = {
-          generateSharedAccessSignature: jest.fn(() => 'mock token'),
+          generateSasUrl: jest.fn(() => 'mock token'),
           getUrl: jest.fn(() => 'http://localhost/queue')
         }
         spyOn(redisCacheService, 'get').and.returnValue(Promise.resolve(undefined))
@@ -52,15 +52,15 @@ describe('sas-token.service', () => {
 
       it('sets the start Date to more than 4.5 minutes in the past', async () => {
         await sasTokenService.generateSasToken(queueName, expiryDate, queueServiceMock)
-        const args = queueServiceMock.generateSharedAccessSignature.mock.calls[0]
+        const args = queueServiceMock.generateSasUrl.mock.calls[0]
         const fourAndAHalfMinutesAgo = moment().subtract(1, 'minutes').subtract(30, 'seconds')
-        const lessThanFourAndAHalfMinutesAgo = moment(args[1].AccessPolicy.Start).isBefore(fourAndAHalfMinutesAgo)
+        const lessThanFourAndAHalfMinutesAgo = moment(args[0].startsOn).isBefore(fourAndAHalfMinutesAgo)
         expect(lessThanFourAndAHalfMinutesAgo).toBe(true)
       })
 
       it('it generates the SAS token', async () => {
         const res = await sasTokenService.generateSasToken(queueName, expiryDate, queueServiceMock)
-        expect(queueServiceMock.generateSharedAccessSignature).toHaveBeenCalled()
+        expect(queueServiceMock.generateSasUrl).toHaveBeenCalled()
         expect(queueServiceMock.getUrl).toHaveBeenCalled()
         expect({}.hasOwnProperty.call(res, 'token')).toBe(true)
         expect({}.hasOwnProperty.call(res, 'url')).toBe(true)
@@ -69,8 +69,8 @@ describe('sas-token.service', () => {
 
       it('sets the permissions to add only', async () => {
         await sasTokenService.generateSasToken(queueName, expiryDate, queueServiceMock)
-        const args = queueServiceMock.generateSharedAccessSignature.mock.calls[0]
-        expect(args[1].AccessPolicy.Permissions).toBe('a')
+        const args = queueServiceMock.generateSasUrl.mock.calls[0]
+        expect(args[0].permissions.add).toBe(true)
       })
 
       it('makes a call to redis to fetch the cached token', async () => {
