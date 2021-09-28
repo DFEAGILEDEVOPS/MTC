@@ -443,10 +443,11 @@ const controller = {
     req.breadcrumbs(res.locals.pageTitle)
     const jobSlug = req.params.jobSlug
     let jobStatus
-    if (jobSlug !== undefined) {
-      jobStatus = await organisationBulkUploadService.getUploadStatus(jobSlug)
-    }
     try {
+      if (jobSlug !== undefined) {
+        jobStatus = await organisationBulkUploadService.getUploadStatus(jobSlug)
+      }
+
       res.render('service-manager/bulk-upload-organisations', {
         breadcrumbs: req.breadcrumbs(),
         fileErrors: error,
