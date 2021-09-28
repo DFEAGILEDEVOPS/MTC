@@ -25,9 +25,9 @@ const expiryDate = new Date()
 expiryDate.setHours(expiryDate.getHours() + 1)
 const opts = {
   expiresOn: expiryDate,
-  permissions: permissions
+  permissions: permissions,
+
 }
 
 const t = queueClient.generateSasUrl(opts)
-// const token = queueServiceClient.generateAccountSasUrl(expiryDate, permissions)
 console.log(t)
