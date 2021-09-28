@@ -99,7 +99,7 @@ export interface CheckQuestion {
 export interface CompleteCheckAnswer {
   factor1: number
   factor2: number
-  answer: any
+  answer: string
   sequenceNumber: number
   question: string
   clientTimestamp: string

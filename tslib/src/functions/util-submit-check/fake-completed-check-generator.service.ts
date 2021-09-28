@@ -58,7 +58,7 @@ export class FakeCompletedCheckGeneratorService implements ICompletedCheckGenera
       const answer = faker.random.arrayElement(answers)
       // just pick any number in the given range, it could be correct or not...
       const newAnswer = faker.datatype.number({ min: 0, max: 144 })
-      answer.answer = newAnswer.toString()
+      answer.answer = `${newAnswer}`
     }
     return answers
   }
