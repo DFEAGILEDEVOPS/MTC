@@ -736,7 +736,7 @@ describe('service manager controller:', () => {
     })
   })
 
-  describe('getUploadOrganisation', () => {
+  describe('getUploadOrganisations', () => {
     afterEach(() => {
       jest.restoreAllMocks()
     })
@@ -796,6 +796,84 @@ describe('service manager controller:', () => {
       jest.spyOn(organisationBulkUploadService, 'getUploadStatus').mockRejectedValue(new Error('mock error'))
       await controller.getUploadOrganisations(req, res, next)
       expect(next).toHaveBeenCalled()
+    })
+  })
+
+  describe('postUploadOrganisations', () => {
+    afterEach(() => {
+      jest.restoreAllMocks()
+    })
+
+    test('it uploads the file to Azure', async () => {
+      const params = {
+        url: '/service-manager/organisations/upload',
+        method: 'POST',
+        params: {},
+        files: {
+          fileOrganisations: {
+            path: '/tmp/foo.csv',
+            file: 'foo.csv'
+          }
+        }
+      }
+      const req = getReq(params)
+      const res = getRes()
+      jest.spyOn(res, 'redirect')
+      // ensure the validation passes. It actually reads the file from disk, so mock it
+      jest.spyOn(organisationBulkUploadService, 'validate').mockResolvedValue(new ValidationError())
+      jest.spyOn(organisationBulkUploadService, 'upload').mockResolvedValue(uuid.NIL)
+
+      await controller.postUploadOrganisations(req, res, next)
+
+      expect(res.redirect).toHaveBeenCalled()
+    })
+
+    test('it calls next() if something throws', async () => {
+      const params = {
+        url: '/service-manager/organisations/upload',
+        method: 'POST',
+        params: {},
+        files: {
+          fileOrganisations: {
+            path: '/tmp/foo.csv',
+            file: 'foo.csv'
+          }
+        }
+      }
+      const req = getReq(params)
+      const res = getRes()
+      jest.spyOn(res, 'redirect')
+      // ensure the validation passes. It actually reads the file from disk, so mock it
+      jest.spyOn(organisationBulkUploadService, 'validate').mockResolvedValue(new ValidationError())
+      jest.spyOn(organisationBulkUploadService, 'upload').mockRejectedValue(new Error('mock error'))
+
+      await controller.postUploadOrganisations(req, res, next)
+
+      expect(next).toHaveBeenCalled()
+    })
+
+    test('it calls getUploadOrganisation() if the validator detects an error', async () => {
+      const params = {
+        url: '/service-manager/organisations/upload',
+        method: 'POST',
+        params: {},
+        files: {
+          fileOrganisations: {
+            path: '/tmp/foo.csv',
+            file: 'foo.csv'
+          }
+        }
+      }
+      const req = getReq(params)
+      const res = getRes()
+      console.log(organisationBulkUploadService)
+      jest.spyOn(controller, 'getUploadOrganisations').mockImplementation()
+      // ensure the validation fails.
+      jest.spyOn(organisationBulkUploadService, 'validate').mockResolvedValue(new ValidationError('foo', 'mock error'))
+
+      await controller.postUploadOrganisations(req, res, next)
+
+      expect(controller.getUploadOrganisations).toHaveBeenCalled()
     })
   })
 })

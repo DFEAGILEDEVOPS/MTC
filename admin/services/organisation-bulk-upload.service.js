@@ -21,11 +21,7 @@ const organisationBulkUploadService = {
    * @returns {Promise<string>} job slug UUID
    */
   upload: async function upload (uploadFile) {
-    console.log('Upload file is ', uploadFile)
     const remoteFilename = uploadFile.filename
-    console.log('container', container)
-    console.log('remote fname', remoteFilename)
-    console.log('localFile', uploadFile.file)
     await azureBlobDataService.createContainerIfNotExistsAsync(container)
 
     // Create the job record first as it acts as a singleton - we only want one file upload at a time.  If we can't
@@ -35,6 +31,11 @@ const organisationBulkUploadService = {
     return jobSlug
   },
 
+  /**
+   * Get the status of the file upload
+   * @param jobSlug uuid
+   * @returns {Promise<{code: (string|*), description: (string|*), errorOutput: (string|*), jobOutput: any}>}
+   */
   getUploadStatus: async function getUploadStatus (jobSlug) {
     const jobData = await organisationBulkUploadDataService.sqlGetJobData(jobSlug)
     return {
