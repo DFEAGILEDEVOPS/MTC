@@ -1,59 +1,44 @@
 'use strict'
 
-const storage = require('azure-storage')
-const bluebird = require('bluebird')
+const { QueueServiceClient } = require('@azure/storage-queue')
+const config = require('../../config')
 
-let queueService
+let queueServiceClient
 let queueNames
+
+function getQueueServiceClient () {
+  return QueueServiceClient.fromConnectionString(config.AZURE_STORAGE_CONNECTION_STRING)
+}
 
 const service = {
   getAllQueueMessageCounts: async function getAllQueueMessageCounts () {
-    if (!queueService) {
-      queueService = getPromisifiedService(storage.createQueueService())
+    if (!queueServiceClient) {
+      queueServiceClient = getQueueServiceClient()
     }
-    const queues = await getQueueNames()
+    const queueNames = await getQueueNames()
     const promises = []
-    for (let index = 0; index < queues.length; index++) {
-      const queue = queues[index]
-      promises.push(queueService.getQueueMetadataAsync(queue))
+    for (let index = 0; index < queueNames.length; index++) {
+      const queueName = queueNames[index]
+      const queueClient = queueServiceClient.getQueueClient(queueName)
+      promises.push(queueClient.getProperties())
     }
     return Promise.all(promises)
   }
 }
 
 async function getQueueNames () {
-  if (!queueService) {
-    queueService = getPromisifiedService(storage.createQueueService())
+  if (!queueServiceClient) {
+    queueServiceClient = getQueueServiceClient()
   }
   if (queueNames) return queueNames
-  const response = await queueService.listQueuesSegmentedAsync(null)
   queueNames = []
-  const queues = response.result.entries
-  for (let index = 0; index < queues.length; index++) {
-    const queue = queues[index]
-    queueNames.push(queue.name)
+  const iterator = queueServiceClient.listQueues()
+  let item = await iterator.next()
+  while (!item.done) {
+    queueNames.push(item.value.name)
+    item = await iterator.next()
   }
   return queueNames
-}
-
-function getPromisifiedService (storageService) {
-  bluebird.promisifyAll(storageService, {
-    promisifier: (originalFunction) => function (...args) {
-      return new Promise((resolve, reject) => {
-        try {
-          originalFunction.call(this, ...args, (error, result, response) => {
-            if (error) {
-              return reject(error)
-            }
-            resolve({ result, response })
-          })
-        } catch (error) {
-          reject(error)
-        }
-      })
-    }
-  })
-  return storageService
 }
 
 module.exports = service

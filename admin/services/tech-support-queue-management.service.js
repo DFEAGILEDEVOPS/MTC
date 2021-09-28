@@ -17,10 +17,10 @@ const service = {
     const toReturn = []
     for (let index = 0; index < mainQueues.length; index++) {
       const q = mainQueues[index]
-      const poisonQCount = findPoisonQueueCount(q.result.name, poisonQueues)
+      const poisonQCount = findPoisonQueueCount(q.name, poisonQueues)
       toReturn.push({
-        name: q.result.name,
-        activeMessageCount: q.result.approximateMessageCount,
+        name: q.name,
+        activeMessageCount: q.approximateMessageCount,
         deadLetterCount: poisonQCount
       })
     }
@@ -30,9 +30,9 @@ const service = {
 
 function findPoisonQueueCount (queueName, queueInfo) {
   const poisonQueueName = `${queueName}-poison`
-  const queue = R.find((q) => q.result.name === poisonQueueName, queueInfo)
+  const queue = R.find((q) => q.name === poisonQueueName, queueInfo)
   if (!queue) return 0
-  return queue.result.approximateMessageCount
+  return queue.approximateMessageCount
 }
 
 module.exports = service
