@@ -103,7 +103,6 @@ describe('#SchoolImportService', () => {
       await sut.process(csv)
       fail('expected to throw')
     } catch (error) {
-      console.log(error)
       expect(error.message).toBe('no header row found')
     }
   })
