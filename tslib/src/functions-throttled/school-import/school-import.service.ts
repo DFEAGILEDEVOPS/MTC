@@ -7,6 +7,7 @@ import { ISchoolImportPredicates, Predicates } from './predicates'
 import { SchoolRecordMapper } from './school-mapper'
 import { SchoolImportError } from './SchoolImportError'
 import { ISchoolRecord } from './data-access/ISchoolRecord'
+import * as R from 'ramda'
 import * as RA from 'ramda-adjunct'
 
 const name = 'school-import'
@@ -92,7 +93,7 @@ export class SchoolImportService {
     let mapping
     try {
       const columnHeaders = csvParsed.shift()
-      if (columnHeaders === undefined || columnHeaders.length === 0) {
+      if (columnHeaders === undefined || columnHeaders.length === 0 || R.equals(columnHeaders, [''])) {
         throw new Error('no header row found')
       }
       mapping = this.schoolRecordMapper.mapColumns(columnHeaders, mapper)
