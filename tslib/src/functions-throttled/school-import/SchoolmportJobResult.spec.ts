@@ -30,4 +30,11 @@ describe('SchoolImportJobResult', () => {
     expect(jobResult.schoolsLoaded).toBe(0)
     expect(jobResult.linesProcessed).toBe(0)
   })
+
+  test('hasError', () => {
+    const jb = new SchoolImportJobResult()
+    expect(jb.hasError()).toBe(false)
+    jb.stderr.push('mock stderr line')
+    expect(jb.hasError()).toBe(true)
+  })
 })
