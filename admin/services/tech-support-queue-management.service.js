@@ -12,8 +12,8 @@ const service = {
   getStorageAccountQueueSummary: async function getStorageAccountQueueSummary () {
     const queueInfo = await storageQueueMetadataService.getAllQueueMessageCounts()
     if (!queueInfo) return []
-    const poisonQueues = queueInfo.filter(q => q.result.name.endsWith('-poison'))
-    const mainQueues = queueInfo.filter(q => !q.result.name.endsWith('-poison'))
+    const poisonQueues = queueInfo.filter(q => q.name.endsWith('-poison'))
+    const mainQueues = queueInfo.filter(q => !q.name.endsWith('-poison'))
     const toReturn = []
     for (let index = 0; index < mainQueues.length; index++) {
       const q = mainQueues[index]
