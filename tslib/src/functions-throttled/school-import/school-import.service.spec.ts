@@ -4,15 +4,16 @@ import config from '../../config'
 import { SchoolImportJobResult } from './SchoolImportJobResult'
 import { ISchoolDataService } from './data-access/school.data.service'
 import { SchoolImportError } from './SchoolImportError'
-import { ConsoleLogger } from '../../common/logger'
+import { ConsoleLogger, ILogger } from '../../common/logger'
 
 let sut: SchoolImportService
 let jobResult: SchoolImportJobResult
 let schoolDataServiceMock: ISchoolDataService
+let consoleLogger: ILogger
 
 const SchoolDataServiceMock = jest.fn<ISchoolDataService, any>(() => ({
   bulkUpload: jest.fn(),
-  getJobId: jest.fn(),
+  getJobId: jest.fn().mockResolvedValue(1),
   updateJobStatus: jest.fn(),
   updateJobStatusWithResult: jest.fn(),
   updateJobStatusWithResultAndError: jest.fn()
@@ -22,7 +23,8 @@ describe('#SchoolImportService', () => {
   beforeEach(() => {
     schoolDataServiceMock = new SchoolDataServiceMock()
     jobResult = new SchoolImportJobResult()
-    sut = new SchoolImportService(new ConnectionPool(config.Sql), jobResult, new ConsoleLogger(), schoolDataServiceMock)
+    consoleLogger = new ConsoleLogger()
+    sut = new SchoolImportService(new ConnectionPool(config.Sql), jobResult, consoleLogger, schoolDataServiceMock)
     // quieten down the console logs
     // jest.spyOn(console, 'log').mockImplementation()
   })
@@ -105,5 +107,75 @@ describe('#SchoolImportService', () => {
     } catch (error) {
       expect(error.message).toBe('no header row found')
     }
+  })
+
+  test('it updates the job status to processing when the job starts', async () => {
+    const csv = `URN,LA (code),EstablishmentNumber,EstablishmentName,StatutoryLowAge,StatutoryHighAge,EstablishmentStatus (code),TypeOfEstablishment (code),EstablishmentTypeGroup (code)
+    12345,123,4567,My School,9,9,4,3,4`
+    await sut.process(csv)
+    jest.spyOn(sut, 'updateJobStatusToProcessing') // call-through is fine, the data service below is mocked
+    expect(schoolDataServiceMock.updateJobStatus).toHaveBeenCalledWith(1, 'PRC')
+  })
+
+  test('it warns if the job id is not found', async () => {
+    const csv = `URN,LA (code),EstablishmentNumber,EstablishmentName,StatutoryLowAge,StatutoryHighAge,EstablishmentStatus (code),TypeOfEstablishment (code),EstablishmentTypeGroup (code)
+    12345,123,4567,My School,9,9,4,3,4`
+    jest.spyOn(schoolDataServiceMock, 'getJobId').mockResolvedValue(undefined)
+    jest.spyOn(consoleLogger, 'warn')
+    await sut.process(csv)
+    expect(schoolDataServiceMock.updateJobStatus).not.toHaveBeenCalled()
+    expect(consoleLogger.warn).toHaveBeenCalledWith('school-import: WARNING: no job id found')
+  })
+
+  test('it updates the job status if it completes without errors', async () => {
+    const csv = `URN,LA (code),EstablishmentNumber,EstablishmentName,StatutoryLowAge,StatutoryHighAge,EstablishmentStatus (code),TypeOfEstablishment (code),EstablishmentTypeGroup (code)
+    12345,123,4567,My School,9,9,4,3,4`
+
+    await sut.process(csv)
+
+    expect(schoolDataServiceMock.updateJobStatusWithResult).toHaveBeenCalledWith(1, 'COM', {
+      linesProcessed: 0,
+      schoolsLoaded: 0,
+      stderr: [],
+      stdout: []
+    })
+  })
+
+  test('it updates the job status failed if the mapping fails', async () => {
+    const csv = `URN,LA (code),EstablishmentNumber,EstablishmentName,StatutoryHighAge,EstablishmentStatus (code),TypeOfEstablishment (code),EstablishmentTypeGroup (code)
+    12345,123,4567,My School,9,9,4,3,4`
+
+    try {
+      await sut.process(csv)
+    } catch (ignored) {
+    }
+
+    expect(schoolDataServiceMock.updateJobStatusWithResultAndError).toHaveBeenCalledWith(1, 'FLD', {
+      linesProcessed: 0,
+      schoolsLoaded: 0,
+      stderr: [
+        'Failed to map columns, error raised was Headers "StatutoryLowAge" not found'
+      ],
+      stdout: []
+    }, new Error('Headers "StatutoryLowAge" not found'))
+  })
+
+  test('it updates the job status failed if the upload fails', async () => {
+    const csv = `URN,LA (code),EstablishmentNumber,EstablishmentName,StatutoryLowAge,StatutoryHighAge,EstablishmentStatus (code),TypeOfEstablishment (code),EstablishmentTypeGroup (code)
+    12345,123,4567,My School,9,9,4,3,4`
+    jest.spyOn(schoolDataServiceMock, 'bulkUpload').mockRejectedValue(new Error('mock error'))
+
+    try {
+      await sut.process(csv)
+    } catch (ignored) {
+      console.log(ignored)
+    }
+
+    expect(schoolDataServiceMock.updateJobStatusWithResultAndError).toHaveBeenCalledWith(1, 'FLD', {
+      linesProcessed: 0,
+      schoolsLoaded: 0,
+      stderr: [],
+      stdout: []
+    }, new Error('mock error'))
   })
 })
