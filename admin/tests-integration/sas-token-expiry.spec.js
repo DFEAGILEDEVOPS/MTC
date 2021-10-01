@@ -14,14 +14,24 @@ const delay = (ms) => {
   })
 }
 
-let queueService
-
-const createQueueService = async (sasToken) => {
-  return new QueueServiceClient(sasToken.url, sasToken.token)
-}
-
 describe('sas-token-expiry', () => {
   afterAll(async () => { await redisCacheService.disconnect() })
+
+  it('should send a message successfully with valid token', async () => {
+    const sasExpiryDate = moment().add(20, 'seconds')
+    const checkCompleteSasToken = await sasTokenService.generateSasToken(
+      queueNameService.NAMES.CHECK_SUBMIT,
+      sasExpiryDate
+    )
+    try {
+      console.dir(checkCompleteSasToken)
+      const queueServiceClient = new QueueServiceClient(checkCompleteSasToken.token.replace(`/${queueNameService.NAMES.CHECK_SUBMIT}`, ''))
+      const queueClient = queueServiceClient.getQueueClient(queueNameService.NAMES.CHECK_SUBMIT)
+      await queueClient.sendMessage('message')
+    } catch (error) {
+      fail(error.message)
+    }
+  })
 
   it('should return specific properties and content when attempting to submit with expired sas tokens', async () => {
     const sasExpiryDate = moment().add(2, 'seconds')
@@ -30,13 +40,19 @@ describe('sas-token-expiry', () => {
       sasExpiryDate
     )
     try {
-      await createQueueService(checkCompleteSasToken)
+      console.log('getting service client')
+      const queueServiceClient = new QueueServiceClient(checkCompleteSasToken.token)
+      console.log('wait 3 seconds')
       await delay(3000)
-      await queueService.createMessageAsync(queueNameService.NAMES.CHECK_SUBMIT, 'message')
+      console.log('getting queue client')
+      const queueClient = queueServiceClient.getQueueClient(queueNameService.NAMES.CHECK_SUBMIT)
+      console.log('sending message')
+      await queueClient.sendMessage('message')
       fail()
     } catch (error) {
-      expect(error.statusCode).toBe(403)
-      expect(error.authenticationerrordetail.includes('Signature not valid in the specified time frame')).toBeTruthy()
+      expect(error.statusCode).toBe(401)
+      console.dir(error)
+      // expect(error.authenticationerrordetail.includes('Signature not valid in the specified time frame')).toBeTruthy()
     }
   })
 })

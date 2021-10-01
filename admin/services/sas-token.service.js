@@ -79,7 +79,7 @@ const sasTokenService = {
 
     const tokenObject = {
       token: sasToken,
-      url: serviceImplementation.getUrl(queueName),
+      url: serviceImplementation.url,
       queueName: queueName
     }
 
