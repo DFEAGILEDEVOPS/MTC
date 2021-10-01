@@ -1,10 +1,9 @@
 'use strict'
 /* global describe, it, expect fail, afterAll */
 
-const azureStorage = require('azure-storage')
-const bluebird = require('bluebird')
 const moment = require('moment')
 
+const { QueueServiceClient } = require('@azure/storage-queue')
 const queueNameService = require('../services/queue-name-service')
 const sasTokenService = require('../services/sas-token.service')
 const redisCacheService = require('../services/data-access/redis-cache.service')
@@ -18,26 +17,7 @@ const delay = (ms) => {
 let queueService
 
 const createQueueService = async (sasToken) => {
-  queueService = await azureStorage.createQueueServiceWithSas(
-    sasToken.url.replace(queueNameService.NAMES.CHECK_SUBMIT, ''), sasToken.token
-  )
-
-  bluebird.promisifyAll(queueService, {
-    promisifier: (originalFunction) => function (...args) {
-      return new Promise((resolve, reject) => {
-        try {
-          originalFunction.call(this, ...args, (error, result, response) => {
-            if (error) {
-              return reject(error)
-            }
-            return resolve(result)
-          })
-        } catch (error) {
-          return reject(error)
-        }
-      })
-    }
-  })
+  return new QueueServiceClient(sasToken.url, sasToken.token)
 }
 
 describe('sas-token-expiry', () => {

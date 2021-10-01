@@ -39,12 +39,12 @@
     "**/**/ajv": "^6.12.6"
   },
   "dependencies": {
+    "@azure/data-tables": "^12.1.2",
     "@azure/service-bus": "^7.0.5",
     "@azure/storage-blob": "^12.8.0",
     "@azure/storage-queue": "^12.7.0",
     "applicationinsights": "^2.1.5",
     "axios": "^0.21.3",
-    "azure-storage": "^2.10.4",
     "bcryptjs": "^2.4.3",
     "bluebird": "^3.5.1",
     "connect-flash": "^0.1.1",

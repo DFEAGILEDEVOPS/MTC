@@ -1,59 +1,36 @@
-const azure = require('azure-storage')
+const { BlobServiceClient } = require('@azure/storage-blob')
 const config = require('../../config')
 
-const blobService = config.AZURE_STORAGE_CONNECTION_STRING
-  ? azure.createBlobService()
-  : {
-      createBlockBlobFromText: () => { return { name: 'test_error.csv' } },
-      getBlobToText: () => 'text',
-      getBlobToStream: (container, blob, fStream, cb) => {
-        fStream.write('binary')
-        fStream.end()
-        cb()
-      },
-      createContainerIfNotExists: () => {}
-    }
+let blobServiceClient
 
-const azureUploadFile = async (container, remoteFilename, text, streamLength) => {
-  await new Promise((resolve, reject) => {
-    blobService.createContainerIfNotExists(container, null, (error) => {
-      if (error) reject(error)
-      resolve()
-    })
-  })
-  const pr = await new Promise((resolve, reject) => {
-    blobService.createBlockBlobFromText(container, remoteFilename, text, streamLength,
-      (error, result) => {
-        if (error) reject(error)
-        else return resolve(result)
-      }
-    )
-  })
-  return pr
+function getClient () {
+  if (blobServiceClient === undefined) {
+    blobServiceClient = BlobServiceClient.fromConnectionString(config.AZURE_STORAGE_CONNECTION_STRING)
+  }
+  return blobServiceClient
 }
 
-const azureDownloadFile = async (container, blob) => {
-  const file = await new Promise((resolve, reject) => {
-    blobService.getBlobToText(container, blob,
-      (error, result) => {
-        if (error) reject(error)
-        else return resolve(result)
-      }
-    )
-  })
-  return file
+const azureUploadFile = async (containerName, remoteFilename, text, streamLength) => {
+  const blobServiceClient = getClient()
+  const containerClient = blobServiceClient.getContainerClient(containerName)
+  await containerClient.createIfNotExists()
+  const blobClient = containerClient.getBlockBlobClient(remoteFilename)
+  return blobClient.upload(text, streamLength)
 }
 
-const azureDownloadFileStream = async (container, blob, stream) => {
-  const file = await new Promise((resolve, reject) => {
-    blobService.getBlobToStream(container, blob, stream,
-      (error, result) => {
-        if (error) reject(error)
-        else return resolve()
-      }
-    )
-  })
-  return file
+const azureDownloadFile = async (containerName, blob) => {
+  const blobServiceClient = getClient()
+  const containerClient = blobServiceClient.getContainerClient(containerName)
+  const blobClient = containerClient.getBlobClient(blob)
+  return blobClient.download()
+}
+
+// TODO this is now returns in .readableStreamBody not into the method argument
+const azureDownloadFileStream = async (containerName, blobName) => {
+  const blobServiceClient = getClient()
+  const containerClient = blobServiceClient.getContainerClient(containerName)
+  const blobClient = containerClient.getBlockBlobClient(blobName)
+  return blobClient.download()
 }
 
 const service = config.AZURE_STORAGE_CONNECTION_STRING

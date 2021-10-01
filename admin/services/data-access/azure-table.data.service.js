@@ -1,36 +1,16 @@
 'use strict'
 
-const azure = require('azure-storage')
-const bluebird = require('bluebird')
-let azureTableService
+const { TableClient } = require('@azure/data-tables')
+const config = require('../../config')
 
-/**
- * Promisify and cache the azureTableService library as it still lacks Promise support
- */
+function getClient (tableName) {
+  return TableClient.fromConnectionString(config.AZURE_STORAGE_CONNECTION_STRING, tableName)
+}
+
 const service = {
-  getPromisifiedAzureTableService: function getPromisifiedAzureTableService () {
-    if (azureTableService) {
-      return azureTableService
-    }
-    azureTableService = azure.createTableService()
-    bluebird.promisifyAll(azureTableService, {
-      promisifier: (originalFunction) => function (...args) {
-        return new Promise((resolve, reject) => {
-          try {
-            originalFunction.call(this, ...args, (error, result, response) => {
-              if (error) {
-                return reject(error)
-              }
-              resolve({ result, response })
-            })
-          } catch (error) {
-            reject(error)
-          }
-        })
-      }
-    })
-
-    return azureTableService
+  retrieveEntity: async function retrieveEntity (tableName, partitionKey, rowKey) {
+    const client = getClient(tableName)
+    return client.getEntity(partitionKey, rowKey)
   }
 }
 

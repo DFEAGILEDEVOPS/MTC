@@ -35,6 +35,11 @@ async function main () {
   createTable()
   createEntities()
   listEntities()
+  deleteEntities()
+}
+
+async function deleteEntities () {
+  client.deleteEntities()
 }
 
 async function createTable () {

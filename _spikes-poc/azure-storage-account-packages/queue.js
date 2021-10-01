@@ -37,6 +37,11 @@ async function getQueueNamesArray () {
   return names
 }
 
+async function deleteMessages (queueName) {
+  const queueClient = queueServiceClient.getQueueClient(queueName)
+  queueClient.clearMessages
+}
+
 async function listQueueCounts () {
   const names = await getQueueNamesArray()
   const results = []
