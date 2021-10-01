@@ -14,7 +14,7 @@ module.exports = async function (req, res, next) {
     return next()
   }
 
-  await blobService.createContainerIfNotExistsAsync(container)
+  await blobService.createContainerIfNotExists(container)
 
   // Container exists and is private
   Object.getOwnPropertyNames(req.files).forEach(field => {
@@ -25,7 +25,7 @@ module.exports = async function (req, res, next) {
     submittedFilesObj.map(async (fileObj) => {
       const remoteFilename = moment().format('YYYYMMDDHHmmss') + '-' + fileObj.field + '-' + fileObj.uuid
       const localFilename = path.join(__dirname, '/../', fileObj.file)
-      await blobService.createBlockBlobFromLocalFileAsync(container, remoteFilename, localFilename)
+      await blobService.createBlockBlobFromLocalFile(container, remoteFilename, localFilename)
     })
     next()
   })
