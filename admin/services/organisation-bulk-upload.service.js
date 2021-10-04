@@ -1,6 +1,7 @@
 const azureBlobDataService = require('./data-access/azure-blob.data.service')
 const fileValidator = require('../lib/validator/file-validator.js')
 const organisationBulkUploadDataService = require('./data-access/organisation-bulk-upload.data.service')
+const AdmZip = require('adm-zip')
 
 // Files get uploaded to this container.  dns naming conventions.
 const container = 'school-import'
@@ -34,16 +35,38 @@ const organisationBulkUploadService = {
   /**
    * Get the status of the file upload
    * @param jobSlug uuid
-   * @returns {Promise<{code: (string|*), description: (string|*), errorOutput: (string|*), jobOutput: any}>}
+   * @returns {Promise<{urlSlug: (string|*), code: (string|*), description: (string|*), errorOutput: (string|*), jobOutput: any}>}
    */
   getUploadStatus: async function getUploadStatus (jobSlug) {
     const jobData = await organisationBulkUploadDataService.sqlGetJobData(jobSlug)
+    if (jobData === undefined) {
+      throw new Error('Job ID not found')
+    }
     return {
       description: jobData.jobStatusDescription,
       code: jobData.jobStatusCode,
       errorOutput: jobData.errorOutput,
-      jobOutput: JSON.parse(jobData.jobOutput)
+      jobOutput: JSON.parse(jobData.jobOutput),
+      urlSlug: jobData.urlSlug
     }
+  },
+
+  /**
+   * Return a buffer containing the Zipped data (error.txt, output.txt) for the service-manager to download.
+   * @param jobSlug
+   * @returns {Promise<Buffer>}
+   */
+  getZipResults: async function getZipResults (jobSlug) {
+    if (jobSlug === undefined) {
+      throw new Error('Missing job ID')
+    }
+    const jobData = await this.getUploadStatus(jobSlug)
+    const zip = new AdmZip()
+    // noinspection JSCheckFunctionSignatures - 3rd and 4th args are optional
+    zip.addFile('error.txt', jobData.jobOutput.stderr.join('\n'))
+    // noinspection JSCheckFunctionSignatures - 3rd and 4th args are optional
+    zip.addFile('output.txt', jobData.jobOutput.stdout.join('\n'))
+    return zip.toBuffer()
   }
 }
 

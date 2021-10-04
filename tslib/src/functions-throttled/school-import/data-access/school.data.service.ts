@@ -81,7 +81,6 @@ export class SchoolDataService implements ISchoolDataService {
                   WHERE jt.jobTypeCode = 'ORG'
                     AND js.jobStatusCode = 'SUB'`
     const res = await this.sqlService.query(sql)
-    console.log('res', res)
     if (res !== undefined && Array.isArray(res)) {
       const id = res[0].id
       this.logger.verbose(`${name}: getJobId() returning ${id}`)

@@ -113,4 +113,9 @@ router.post('/organisations/:slug/edit',
   serviceManagerController.postEditOrganisation
 )
 
+router.get('/job/:slug',
+  isAuthenticated(roles.serviceManager),
+  serviceManagerController.downloadJobOutput
+)
+
 module.exports = router

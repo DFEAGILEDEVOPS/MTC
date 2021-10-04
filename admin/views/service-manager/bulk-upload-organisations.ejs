@@ -46,8 +46,11 @@
                             </div>
                         <% } %>
 
-
-
+                        <%/** Look for completed status's and allow the logs to be downloaded */%>
+                        <% if (['COM', 'CWR', 'FWD'].includes(jobStatus.code)) { %>
+                             <a href="/service-manager/job/<%= jobStatus.urlSlug.toLowerCase() %>">Download job
+                                 output</a>
+                        <% } %>
 
                 <% } else { %>
 

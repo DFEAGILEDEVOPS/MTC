@@ -471,6 +471,21 @@ const controller = {
     } catch (error) {
       return next(error)
     }
+  },
+
+  downloadJobOutput: async function downloadJobOutput (req, res, next) {
+    const slug = req.params.slug
+    try {
+      const zipResults = await organisationBulkUploadService.getZipResults(slug)
+      res.set({
+        'Content-Disposition': 'attachment; filename="job-output.zip"',
+        'Content-type': 'application/octet-stream',
+        'Content-Length': zipResults.length // Buffer.length (bytes)
+      })
+      res.send(zipResults)
+    } catch (error) {
+      next(error)
+    }
   }
 }
 

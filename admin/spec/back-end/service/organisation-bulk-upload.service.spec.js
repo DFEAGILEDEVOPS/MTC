@@ -5,6 +5,7 @@ const sut = require('../../../services/organisation-bulk-upload.service')
 const fileValidator = require('../../../lib/validator/file-validator')
 const azureBlobDataService = require('../../../services/data-access/azure-blob.data.service')
 const organisationBulkUploadDataService = require('../../../services/data-access/organisation-bulk-upload.data.service')
+const AdmZip = require('adm-zip')
 
 describe('organisationBulkUploadService', () => {
   afterEach(() => {
@@ -73,6 +74,12 @@ describe('organisationBulkUploadService', () => {
       expect(organisationBulkUploadDataService.sqlGetJobData).toHaveBeenCalledWith(ident)
     })
 
+    test('it throws if no job data is found for the slug', async () => {
+      const ident = uuid.NIL
+      jest.spyOn(organisationBulkUploadDataService, 'sqlGetJobData').mockResolvedValue(undefined)
+      await expect(sut.getUploadStatus(ident)).rejects.toThrow(/job id not found/i)
+    })
+
     test('it returns an object', async () => {
       const ident = uuid.NIL
       const status = await sut.getUploadStatus(ident)
@@ -81,6 +88,44 @@ describe('organisationBulkUploadService', () => {
       expect(status.errorOutput).toBe('test error')
       expect(status.jobOutput.stderr).toBe('error line')
       expect(status.jobOutput.stdout).toBe('a message')
+    })
+  })
+
+  describe('getZipResults', () => {
+    beforeEach(() => {
+
+    })
+
+    test('if the job slug is not provided it throws', async () => {
+      await expect(sut.getZipResults(undefined)).rejects.toThrow(/missing job id/i)
+    })
+
+    test('it zips up the files', async () => {
+      const jobSlug = uuid.NIL
+      jest.spyOn(sut, 'getUploadStatus').mockResolvedValue({
+        jobOutput: {
+          stderr: ['an error line\nanother error line'],
+          stdout: ['a standard line\nanother standard line']
+        }
+      })
+      const zipBuf = await sut.getZipResults(jobSlug)
+
+      // Deflate test
+      const zip = new AdmZip(zipBuf)
+      const entries = zip.getEntries()
+      let i = 0
+      entries.forEach((entry) => {
+        if (entry.entryName === 'error.txt') {
+          // Unzip an entry to memory
+          expect(zip.readAsText(entry)).toBe('an error line\nanother error line')
+          i += 1
+        }
+        if (entry.entryName === 'output.txt') {
+          expect(zip.readAsText(entry)).toBe('a standard line\nanother standard line')
+          i += 1
+        }
+      })
+      expect(i).toBe(2)
     })
   })
 })

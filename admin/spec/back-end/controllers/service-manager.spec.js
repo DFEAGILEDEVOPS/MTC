@@ -876,4 +876,37 @@ describe('service manager controller:', () => {
       expect(controller.getUploadOrganisations).toHaveBeenCalled()
     })
   })
+
+  describe('downloadJobOutput', () => {
+    let req, res
+    const params = {
+      url: '/service-manager/job-output/00000000-0000-0000-0000-000000000000',
+      method: 'GET',
+      params: {
+        jobSlug: '00000000-0000-0000-0000-000000000000'
+      }
+    }
+    beforeEach(() => {
+      jest.spyOn(organisationBulkUploadService, 'getZipResults').mockResolvedValue('zipData')
+      req = getReq(params)
+      res = getRes()
+    })
+
+    test('it makes a call to the service to get the results', async () => {
+      await controller.downloadJobOutput(req, res, next)
+      expect(organisationBulkUploadService.getZipResults).toHaveBeenCalledTimes(1)
+    })
+
+    test('it downloads the file as an attachment', async () => {
+      await controller.downloadJobOutput(req, res, next)
+      expect(res.get('Content-Disposition')).toBe('attachment; filename="job-output.zip"')
+      expect(res.get('Content-Type')).toBe('application/octet-stream')
+    })
+
+    test('it calls next() on error', async () => {
+      jest.spyOn(organisationBulkUploadService, 'getZipResults').mockRejectedValueOnce(new Error('mock error'))
+      await controller.downloadJobOutput(req, res, next)
+      expect(next).toHaveBeenCalledWith(new Error('mock error'))
+    })
+  })
 })
