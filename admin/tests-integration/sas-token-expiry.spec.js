@@ -45,11 +45,10 @@ describe('sas-token-expiry', () => {
       const queueServiceClient = new QueueServiceClient(queueServiceUrl)
       await delay(3000)
       const queueClient = queueServiceClient.getQueueClient(queueNameService.NAMES.CHECK_SUBMIT)
-      await queueClient.sendMessage('message')
-      fail()
+      await queueClient.sendMessage('testing message expiry in /admin/tests-integration/sas-token-expiry.spec.js')
+      fail('message should have been rejected due to expired token')
     } catch (error) {
-      expect(error.statusCode).toBe(401)
-      expect(error.authenticationerrordetail.includes('Signature not valid in the specified time frame')).toBeTruthy()
+      expect(error.statusCode).toBe(403)
     }
   })
 })
