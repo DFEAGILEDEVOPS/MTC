@@ -19,7 +19,8 @@ const { QueueServiceClient, QueueSASPermissions } = require("@azure/storage-queu
 const uuid = require('uuid')
 
 async function testQueueOperations() {
-  const queueName = `spike-test-queue-${uuid.v4()}`
+  // const queueName = `spike-test-queue-${uuid.v4()}`
+  const queueName = 'check-submitted'
   const expiryDate = new Date()
   expiryDate.setHours(expiryDate.getHours() + 5)
 

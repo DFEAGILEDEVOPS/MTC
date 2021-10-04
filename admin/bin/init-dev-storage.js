@@ -20,7 +20,7 @@ try {
   console.error(error)
 }
 const { TableClient } = require('@azure/data-tables')
-const { QueueClient } = require('@azure/storage-queue')
+const { QueueServiceClient } = require('@azure/storage-queue')
 const names = require('../../deploy/storage/tables-queues.json')
 
 if (!process.env.AZURE_STORAGE_CONNECTION_STRING) {
@@ -28,13 +28,15 @@ if (!process.env.AZURE_STORAGE_CONNECTION_STRING) {
   console.error('env var $AZURE_STORAGE_CONNECTION_STRING is required')
 }
 
+const connectionString = process.env.AZURE_STORAGE_CONNECTION_STRING
+
 const queueNames = names.queues
 const tableNames = names.tables
 const poisonQueues = queueNames.map(q => q + '-poison')
 const allQueues = queueNames.concat(poisonQueues)
 
 async function deleteTableEntries (tableName) {
-  const tableClient = TableClient.fromConnectionString(process.env.AZURE_STORAGE_CONNECTION_STRING, tableName)
+  const tableClient = TableClient.fromConnectionString(connectionString, tableName)
   const entityIterator = tableClient.listEntities()
   const deletions = []
   for await (const entity of entityIterator) {
@@ -54,31 +56,32 @@ async function deleteTableEntities (tables) {
 
 async function createTables (tables) {
   const tableCreates = tables.map(table => {
-    const tableClient = TableClient.fromConnectionString(process.env.AZURE_STORAGE_CONNECTION_STRING, table)
+    const tableClient = TableClient.fromConnectionString(connectionString, table)
     return tableClient.createTable(table)
   })
   return Promise.all(tableCreates)
 }
 
-async function deleteQueueMessages (queues) {
+async function deleteQueueMessages (queues, queueServiceClient) {
   const queueDeletes = queues.map(q => {
-    const queueClient = QueueClient.fromConnectionString(process.env.AZURE_STORAGE_CONNECTION_STRING, q)
+    const queueClient = queueServiceClient.getQueueClient(q)
     return queueClient.clearMessages()
   })
   return Promise.all(queueDeletes)
 }
 
-async function createQueues (queues) {
+async function createQueues (queues, queueServiceClient) {
   const queueCreates = queues.map(q => {
-    const queueClient = QueueClient.fromConnectionString(process.env.AZURE_STORAGE_CONNECTION_STRING, q)
-    return queueClient.create()
+    const queueClient = queueServiceClient.getQueueClient(q)
+    return queueClient.createIfNotExists()
   })
   return Promise.all(queueCreates)
 }
 
 async function main () {
-  await createQueues(allQueues)
-  await deleteQueueMessages(allQueues)
+  const queueServiceClient = QueueServiceClient.fromConnectionString(connectionString)
+  await createQueues(allQueues, queueServiceClient)
+  await deleteQueueMessages(allQueues, queueServiceClient)
   await createTables(tableNames)
   await deleteTableEntities(tableNames)
 }
