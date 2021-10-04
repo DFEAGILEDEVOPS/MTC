@@ -15,10 +15,7 @@ const organisationBulkUploadDataService = {
                   WHERE js.jobStatusCode IN ('SUB', 'PRC')
                     AND jt.jobTypeCode = 'ORG'`
     const jobs = await sqlService.query(sql)
-    if (jobs && jobs.length > 0) {
-      return true
-    }
-    return false
+    return jobs && jobs.length > 0
   },
 
   /**
