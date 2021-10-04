@@ -16,22 +16,24 @@ try {
 }
 
 const { QueueServiceClient, QueueSASPermissions } = require("@azure/storage-queue")
-const { mainModule } = require('process')
+const uuid = require('uuid')
 
 async function testQueueOperations() {
+  const queueName = `spike-test-queue-${uuid.v4()}`
   const expiryDate = new Date()
   expiryDate.setHours(expiryDate.getHours() + 5)
 
+  // test raw message
   const queueServiceClient = QueueServiceClient.fromConnectionString(process.env.AZURE_STORAGE_CONNECTION_STRING)
-  const queueClient = queueServiceClient.getQueueClient('guy-test-queue')
+  const queueClient = queueServiceClient.getQueueClient(queueName)
   await queueClient.createIfNotExists()
-  await queueClient.sendMessage('message from raw client', { expiresOn: expiryDate })
+  await queueClient.sendMessage('message from raw client')
 
   // generate sas token
   const permissions = new QueueSASPermissions()
   permissions.add = true
   const tokenStartDate = new Date()
-  tokenStartDate.setHours(tokenStartDate.getHours() - 5)
+  tokenStartDate.setMinutes(tokenStartDate.getMinutes() - 5)
   const opts = {
     startsOn: tokenStartDate,
     expiresOn: expiryDate,
@@ -43,11 +45,11 @@ async function testQueueOperations() {
   console.dir(token)
 
   // test token usability
-  const connectionUrl = token.replace('/check-submitted', '')
+  const connectionUrl = token.replace(`/${queueName}`, '')
   const sasQueueServiceClient = new QueueServiceClient(connectionUrl)
-  const sasQueueClient = sasQueueServiceClient.getQueueClient('check-submitted')
+  const sasQueueClient = sasQueueServiceClient.getQueueClient(queueName)
   try {
-    const response = await sasQueueClient.sendMessage('testing sas token send message', { expiresOn: expiryDate })
+    const response = await sasQueueClient.sendMessage('testing sas token send message')
     console.dir(response)
   } catch (error) {
     console.error(error)
