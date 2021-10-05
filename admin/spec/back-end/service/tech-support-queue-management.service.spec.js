@@ -23,19 +23,19 @@ describe('tech support queue management service', () => {
       const rawData = [
         {
           name: 'q1',
-          approximateMessageCount: 5
+          approximateMessagesCount: 5
         },
         {
           name: 'q1-poison',
-          approximateMessageCount: 10
+          approximateMessagesCount: 10
         },
         {
           name: 'q2',
-          approximateMessageCount: 1
+          approximateMessagesCount: 1
         },
         {
           name: 'q2-poison',
-          approximateMessageCount: 2
+          approximateMessagesCount: 2
         }
       ]
       spyOn(storageDataService, 'getAllQueueMessageCounts').and.returnValue(rawData)

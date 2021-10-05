@@ -12,7 +12,6 @@ const service = {
   getStorageAccountQueueSummary: async function getStorageAccountQueueSummary () {
     const queueInfo = await storageQueueMetadataService.getAllQueueMessageCounts()
     if (!queueInfo) return []
-    console.dir(queueInfo)
     const poisonQueues = queueInfo.filter(q => q.name.endsWith('-poison'))
     const mainQueues = queueInfo.filter(q => !q.name.endsWith('-poison'))
     const toReturn = []
@@ -33,7 +32,7 @@ function findPoisonQueueCount (queueName, queueInfo) {
   const poisonQueueName = `${queueName}-poison`
   const queue = R.find((q) => q.name === poisonQueueName, queueInfo)
   if (!queue) return 0
-  return queue.approximateMessageCount
+  return queue.approximateMessagesCount
 }
 
 module.exports = service
