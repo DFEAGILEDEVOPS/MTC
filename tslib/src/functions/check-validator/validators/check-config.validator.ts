@@ -1,4 +1,4 @@
-import { isObj } from 'ramda-adjunct'
+import { isArray, isObj } from 'ramda-adjunct'
 import { CheckValidationResult, ISubmittedCheckValidator } from './validator-types'
 
 export class CheckConfigValidator implements ISubmittedCheckValidator {
@@ -6,6 +6,11 @@ export class CheckConfigValidator implements ISubmittedCheckValidator {
     if (check.config === undefined) {
       return {
         message: 'config property missing'
+      }
+    }
+    if (isArray(check.config)) {
+      return {
+        message: 'config property is not an object'
       }
     }
     if (!isObj(check.config)) {

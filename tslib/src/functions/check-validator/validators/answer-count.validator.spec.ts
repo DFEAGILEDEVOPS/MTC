@@ -1,5 +1,6 @@
 import { AnswerCountValidator } from './answer-count.validator'
 import { ICheckValidationError } from './validator-types'
+import config from '../../../config'
 
 let sut: AnswerCountValidator
 
@@ -9,10 +10,11 @@ describe('answer-count.validator', () => {
   })
 
   test('less answers fails validation', () => {
+    const expectedQuestionCount = config.LiveFormQuestionCount
     const check = {
       answers: [] as any
     }
-    for (let index = 0; index < 24; index++) {
+    for (let index = 1; index < expectedQuestionCount; index++) {
       check.answers.push({
         answer: index,
         clientTimestamp: '',
@@ -24,7 +26,7 @@ describe('answer-count.validator', () => {
     }
     const error = sut.validate(check)
     expect(error).toBeDefined()
-    expect((error as ICheckValidationError).message).toBe('submitted check has 24 answers')
+    expect((error as ICheckValidationError).message).toBe(`submitted check has ${expectedQuestionCount - 1} answers`)
   })
 
   test('no answers property found fails validation', () => {

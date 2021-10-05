@@ -24,6 +24,15 @@ describe('check-config.validator', () => {
     expect((error as ICheckValidationError).message).toBe('config property is not an object')
   })
 
+  test('if config property is an array, validation fails', () => {
+    const check = {
+      config: []
+    }
+    const error = sut.validate(check)
+    expect(error).toBeDefined()
+    expect((error as ICheckValidationError).message).toBe('config property is not an object')
+  })
+
   test('if config property present, validation passes', () => {
     const check = {
       config: {}
