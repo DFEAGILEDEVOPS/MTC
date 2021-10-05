@@ -1,4 +1,4 @@
-/* global describe expect beforeEach fail it spyOn jest */
+/* global describe expect beforeEach fail it spyOn */
 
 const sasTokenService = require('../../../services/sas-token.service')
 const redisCacheService = require('../../../services/data-access/redis-cache.service')
