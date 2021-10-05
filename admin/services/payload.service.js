@@ -90,7 +90,7 @@ const payloadService = {
 
     const entity = await payloadDataService.sqlFindOneByCheckCode(checkCode)
 
-    const archive = R.pathOr('', ['result', 'archive', '_'], entity)
+    const archive = entity.archive
 
     if (archive.length === 0) {
       throw new Error('archive not found')

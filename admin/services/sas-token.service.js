@@ -51,9 +51,10 @@ const sasTokenService = {
 
     const sasToken = dataService.generateSasTokenWithPublishOnly(queueName, startDate.toDate(), expiryDate.toDate())
 
+    const parts = sasToken.split('?')
     const tokenObject = {
-      token: sasToken,
-      url: sasToken.split('?')[0],
+      token: parts[1],
+      url: parts[0],
       queueName: queueName
     }
 
