@@ -1,11 +1,12 @@
 'use strict'
-/* global describe, it, expect fail, afterAll */
+/* global describe, it, expect fail, afterAll beforeEach */
 
 const moment = require('moment')
 
+const redisKeyService = require('../services/redis-key.service')
 const { QueueServiceClient } = require('@azure/storage-queue')
 const queueNameService = require('../services/queue-name-service')
-const sasTokenService = require('../services/sas-token.service')
+const sut = require('../services/sas-token.service')
 const redisCacheService = require('../services/data-access/redis-cache.service')
 
 const delay = (ms) => {
@@ -15,11 +16,15 @@ const delay = (ms) => {
 }
 
 describe('sas-token-expiry', () => {
+  beforeEach(async () => {
+    const queueKey = redisKeyService.getSasTokenKey(queueNameService.NAMES.CHECK_SUBMIT)
+    await redisCacheService.drop(queueKey)
+  })
   afterAll(async () => { await redisCacheService.disconnect() })
 
   it('should send a message successfully with valid token', async () => {
     const sasExpiryDate = moment().add(1, 'minute')
-    const checkCompleteSasToken = await sasTokenService.generateSasToken(
+    const checkCompleteSasToken = await sut.generateSasToken(
       queueNameService.NAMES.CHECK_SUBMIT,
       sasExpiryDate
     )
@@ -36,7 +41,7 @@ describe('sas-token-expiry', () => {
 
   it('should return specific properties and content when attempting to submit with expired sas tokens', async () => {
     const sasExpiryDate = moment().add(2, 'seconds')
-    const checkCompleteSasToken = await sasTokenService.generateSasToken(
+    const checkCompleteSasToken = await sut.generateSasToken(
       queueNameService.NAMES.CHECK_SUBMIT,
       sasExpiryDate
     )

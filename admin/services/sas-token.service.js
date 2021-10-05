@@ -46,10 +46,10 @@ const sasTokenService = {
 
     // Create a SAS token
     // Set start time to five minutes ago to avoid clock skew.
-    const startDate = new Date()
-    startDate.setMinutes(startDate.getMinutes() - 5)
+    const startDate = moment()
+    startDate.subtract(5, 'minutes')
 
-    const sasToken = dataService.generateSasTokenWithPublishOnly(queueName, startDate, expiryDate.toDate())
+    const sasToken = dataService.generateSasTokenWithPublishOnly(queueName, startDate.toDate(), expiryDate.toDate())
 
     const tokenObject = {
       token: sasToken,
