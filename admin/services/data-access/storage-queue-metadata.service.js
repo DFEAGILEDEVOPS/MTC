@@ -3,35 +3,26 @@
 const { QueueServiceClient } = require('@azure/storage-queue')
 const config = require('../../config')
 
-let queueServiceClient
-let queueNames
-
-function getQueueServiceClient () {
-  return QueueServiceClient.fromConnectionString(config.AZURE_STORAGE_CONNECTION_STRING)
-}
-
 const service = {
   getAllQueueMessageCounts: async function getAllQueueMessageCounts () {
-    if (!queueServiceClient) {
-      queueServiceClient = getQueueServiceClient()
-    }
-    const queueNames = await getQueueNames()
-    const promises = []
+    const queueServiceClient = QueueServiceClient.fromConnectionString(config.AZURE_STORAGE_CONNECTION_STRING)
+    const queueNames = await getQueueNames(queueServiceClient)
+    const queueInfo = []
     for (let index = 0; index < queueNames.length; index++) {
       const queueName = queueNames[index]
       const queueClient = queueServiceClient.getQueueClient(queueName)
-      promises.push(queueClient.getProperties())
+      const properties = await queueClient.getProperties()
+      queueInfo.push({
+        approximateMessagesCount: properties.approximateMessagesCount,
+        name: queueName
+      })
     }
-    return Promise.all(promises)
+    return Promise.all(queueInfo)
   }
 }
 
-async function getQueueNames () {
-  if (!queueServiceClient) {
-    queueServiceClient = getQueueServiceClient()
-  }
-  if (queueNames) return queueNames
-  queueNames = []
+async function getQueueNames (queueServiceClient) {
+  const queueNames = []
   const iterator = queueServiceClient.listQueues()
   let item = await iterator.next()
   while (!item.done) {
