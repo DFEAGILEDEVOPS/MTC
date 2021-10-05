@@ -31,7 +31,7 @@ export class PreparedCheckMergeDataService implements IPreparedCheckMergeDataSer
   private async initCodes (): Promise<void> {
     const sql = 'SELECT id, code FROM [mtc_admin].[accessArrangements]'
     const codes = await this.sqlService.query(sql)
-    codes.map((aa: any) => {
+    codes.forEach((aa: any) => {
       PreparedCheckMergeDataService.aaCodes[aa.code] = { id: aa.id, code: aa.code }
     })
   }

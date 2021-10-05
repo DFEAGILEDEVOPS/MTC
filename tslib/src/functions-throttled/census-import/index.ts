@@ -23,10 +23,7 @@ const blobTrigger: AzureFunction = async function (context: Context, blob: any):
         min: config.Sql.Pooling.MinCount,
         max: config.Sql.Pooling.MaxCount
       },
-      options: {
-        appName: config.Sql.options.appName, // docker default
-        encrypt: config.Sql.options.encrypt
-      }
+      options: config.Sql.options
     }
     pool = new mssql.ConnectionPool(sqlConfig)
     await pool.connect()

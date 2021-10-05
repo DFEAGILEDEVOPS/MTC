@@ -27,7 +27,9 @@ const checkRetriever: AzureFunction = async function (context: Context, req: Htt
     }
   }
   const tableService = new azh.AsyncTableService()
-  const receivedCheck = await tableService.retrieveEntityAsync('receivedCheck', req.query.schoolUUID, req.query.checkCode)
+  const schoolUUID = req.query.schoolUUID ?? ''
+  const checkCode = req.query.checkCode ?? ''
+  const receivedCheck = await tableService.retrieveEntityAsync('receivedCheck', schoolUUID, checkCode)
   const archive = receivedCheck.archive._
   const compressionService = new CompressionService()
   const decompressed = compressionService.decompress(archive)
