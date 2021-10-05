@@ -8,14 +8,15 @@ const organisationBulkUploadDataService = {
    * @returns {Promise<boolean>}
    */
   isExistingJob: async function isExistingJob () {
-    const sql = `SELECT *
+    const sql = `SELECT COUNT(*) as count
                    FROM mtc_admin.job j
                         join mtc_admin.jobType jt on (j.jobType_id = jt.id)
                         JOIN mtc_admin.jobStatus js on (j.jobStatus_id = js.id)
                   WHERE js.jobStatusCode IN ('SUB', 'PRC')
                     AND jt.jobTypeCode = 'ORG'`
-    const jobs = await sqlService.query(sql)
-    return jobs && jobs.length > 0
+    const res = await sqlService.query(sql)
+    const count = R.propOr(0, 'count', res[0])
+    return count > 0
   },
 
   /**
