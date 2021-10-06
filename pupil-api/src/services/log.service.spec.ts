@@ -2,7 +2,6 @@
 /* global describe expect it beforeEach */
 
 import { Logger } from './log.service'
-import config from '../config'
 
 describe('logger class', () => {
   it('can initialise', () => {

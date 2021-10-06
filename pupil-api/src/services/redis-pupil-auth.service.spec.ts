@@ -22,7 +22,6 @@ const MessageDispatchMock = jest.fn<IQueueMessageService, any>(() => ({
 }))
 
 describe('redis-pupil-auth.service', () => {
-
   beforeEach(() => {
     redisServiceMock = new RedisServiceMock()
     messageDispatchMock = new MessageDispatchMock()
