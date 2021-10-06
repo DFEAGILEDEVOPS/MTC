@@ -1,7 +1,7 @@
 'use strict'
 
 const psychometricianReportDataService = require('./data-access/psychometrician-report.data.service')
-const azureFileDataService = require('./data-access/azure-file.data.service')
+const azureFileDataService = require('./data-access/azure-blob.data.service')
 
 const testDeveloperReportService = {
   /**

@@ -1,6 +1,6 @@
 'use strict'
 
-const azureFileDataService = require('../services/data-access/azure-file.data.service')
+const azureFileDataService = require('../services/data-access/azure-blob.data.service')
 const fileValidator = require('../lib/validator/file-validator')
 
 const config = require('../config')

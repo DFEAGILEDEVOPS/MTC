@@ -1,7 +1,7 @@
 const { v4: uuidv4 } = require('uuid')
 const moment = require('moment')
 const csv = require('fast-csv')
-const azureFileDataService = require('./data-access/azure-file.data.service')
+const azureFileDataService = require('./data-access/azure-blob.data.service')
 
 const service = {}
 service.generate = async (school, headers, csvData) => {

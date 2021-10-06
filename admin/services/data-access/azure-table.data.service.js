@@ -3,13 +3,11 @@
 const { TableClient } = require('@azure/data-tables')
 const config = require('../../config')
 
-function getClient (tableName) {
-  return TableClient.fromConnectionString(config.AZURE_STORAGE_CONNECTION_STRING, tableName)
-}
+// TODO cache the client once loaded, or is it better to recreate each time?
 
 const service = {
   retrieveEntity: async function retrieveEntity (tableName, partitionKey, rowKey) {
-    const client = getClient(tableName)
+    const client = TableClient.fromConnectionString(config.AZURE_STORAGE_CONNECTION_STRING, tableName)
     return client.getEntity(partitionKey, rowKey)
   }
 }

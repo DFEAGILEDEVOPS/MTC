@@ -1,12 +1,11 @@
 'use strict'
-/* global describe beforeEach afterEach it expect jasmine spyOn */
+/* global describe beforeEach it expect jasmine spyOn */
 
-const sinon = require('sinon')
-const proxyquire = require('proxyquire').noCallThru()
 const httpMocks = require('node-mocks-http')
 const R = require('ramda')
 
-const azureFileDataService = require('../../../services/data-access/azure-file.data.service')
+// TODO refactor out data service usage
+const azureFileDataService = require('../../../services/data-access/azure-blob.data.service')
 const fileValidator = require('../../../lib/validator/file-validator')
 const pupilAddService = require('../../../services/pupil-add-service')
 const pupilDataService = require('../../../services/data-access/pupil.data.service')
@@ -20,6 +19,7 @@ const businessAvailabilityService = require('../../../services/business-availabi
 const checkWindowV2Service = require('../../../services/check-window-v2.service')
 const pupilEditService = require('../../../services/pupil-edit.service')
 const ValidationError = require('../../../lib/validation-error')
+const sut = require('../../../controllers/pupil')
 
 describe('pupil controller:', () => {
   function getRes () {
@@ -37,8 +37,6 @@ describe('pupil controller:', () => {
   }
 
   describe('getAddPupil() route', () => {
-    let controller
-    let sandbox
     let next
     const goodReqParams = {
       method: 'GET',
@@ -49,25 +47,16 @@ describe('pupil controller:', () => {
     }
 
     beforeEach(() => {
-      sandbox = sinon.createSandbox()
       next = jasmine.createSpy('next')
     })
 
-    afterEach(() => {
-      sandbox.restore()
-    })
-
-    describe('when the school is found in the database', () => {
-      beforeEach(() => {
-        controller = require('../../../controllers/pupil.js').getAddPupil
-      })
-
+    describe('getAddPupil - when the school is found in the database', () => {
       it('displays an add pupil page', async () => {
         const res = getRes()
         const req = getReq(goodReqParams)
         spyOn(checkWindowV2Service, 'getActiveCheckWindow')
         spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ hdfSubmitted: false })
-        await controller(req, res, next)
+        await sut.getAddPupil(req, res, next)
         expect(res.statusCode).toBe(200)
         expect(next).not.toHaveBeenCalled()
       })
@@ -78,15 +67,15 @@ describe('pupil controller:', () => {
         spyOn(checkWindowV2Service, 'getActiveCheckWindow')
         spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ hdfSubmitted: false })
         spyOn(res, 'render').and.throwError('test')
-        await controller(req, res, next)
-        expect(res.statusCode).toBe(200)
+        await sut.getAddPupil(req, res, next)
+        expect(res.statusCode).toBe(200) // TODO should this not be 500???
         expect(next).toHaveBeenCalled()
       })
     })
   })
 
   describe('#postAddPupil route', () => {
-    let sandbox, controller, nextSpy, pupilAddServiceSpy, next, req, res
+    let nextSpy, pupilAddServiceSpy, next, req, res
     const goodReqParams = {
       method: 'POST',
       url: '/school/pupil/add',
@@ -96,57 +85,47 @@ describe('pupil controller:', () => {
     }
 
     beforeEach(() => {
-      sandbox = sinon.createSandbox()
       res = getRes()
       req = getReq(goodReqParams)
-      nextSpy = sandbox.spy()
+      nextSpy = jasmine.createSpy()
       spyOn(checkWindowV2Service, 'getActiveCheckWindow')
       spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ hdfSubmitted: false })
     })
 
-    afterEach(() => { sandbox.restore() })
-
-    describe('the pupilData is saved', () => {
+    describe('postAddPupil - the pupilData is saved', () => {
       beforeEach(() => {
-        pupilAddServiceSpy = sandbox.stub(pupilAddService, 'addPupil').resolves(pupilMock)
-        controller = proxyquire('../../../controllers/pupil.js', {
-          '../services/school.service': schoolService,
-          '../services/pupil-add-service': pupilAddService
-        }).postAddPupil
+        pupilAddServiceSpy = spyOn(pupilAddService, 'addPupil').and.returnValue(pupilMock)
       })
 
       it('calls pupilAddService to add a new pupil to the database', async () => {
-        await controller(req, res, nextSpy)
-        expect(pupilAddServiceSpy.callCount).toBe(1)
+        await sut.postAddPupil(req, res, nextSpy)
+        expect(pupilAddServiceSpy.calls.count()).toBe(1)
       })
 
       it('redirects to the pupil register page', async () => {
-        await controller(req, res, nextSpy)
+        await sut.postAddPupil(req, res, nextSpy)
         expect(res.statusCode).toBe(302)
       })
       it('calls pupilRegisterCachingService.dropPupilRegisterCache if pupil has been successfully added', async () => {
-        await controller(req, res, nextSpy)
+        await sut.postAddPupil(req, res, nextSpy)
       })
     })
 
-    describe('the pupilData is not saved', () => {
+    describe('getAddPupil - the pupilData is not saved', () => {
       beforeEach(() => {
         const validationError = new ValidationError()
         validationError.addError('upn', 'Mock error')
         next = jasmine.createSpy('next')
-        pupilAddServiceSpy = sandbox.stub(pupilAddService, 'addPupil').throws(validationError)
-        controller = proxyquire('../../../controllers/pupil.js', {
-          '../services/pupil-add-service': pupilAddService
-        })
+        pupilAddServiceSpy = spyOn(pupilAddService, 'addPupil').and.throwError(validationError)
       })
 
       it('then it shows the page again', async () => {
-        sandbox.stub(controller, 'getAddPupil').callsFake((req, res, next, error) => {
+        spyOn(sut, 'getAddPupil').and.callFake((req, res, next, error) => {
           res.end('mock doc')
           return Promise.resolve()
         })
-        await controller.postAddPupil(req, res, nextSpy)
-        expect(pupilAddServiceSpy.callCount).toBe(1)
+        await sut.postAddPupil(req, res, nextSpy)
+        expect(pupilAddServiceSpy.calls.count()).toBe(1)
         expect(next).not.toHaveBeenCalled()
         expect(res.statusCode).toBe(200)
       })
@@ -154,8 +133,6 @@ describe('pupil controller:', () => {
   })
 
   describe('getAddMultiplePupils() route', () => {
-    let controller
-    let sandbox
     let next
     const goodReqParams = {
       method: 'GET',
@@ -166,13 +143,7 @@ describe('pupil controller:', () => {
     }
 
     beforeEach(() => {
-      sandbox = sinon.createSandbox()
       next = jasmine.createSpy('next')
-      controller = require('../../../controllers/pupil.js').getAddMultiplePupils
-    })
-
-    afterEach(() => {
-      sandbox.restore()
     })
 
     it('displays an add multiple pupil page', async () => {
@@ -182,7 +153,7 @@ describe('pupil controller:', () => {
       spyOn(uploadedFileService, 'getAzureBlobFileSize')
       spyOn(checkWindowV2Service, 'getActiveCheckWindow')
       spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ hdfSubmitted: false })
-      await controller(req, res, next)
+      await sut.getAddMultiplePupils(req, res, next)
       expect(res.statusCode).toBe(200)
       expect(uploadedFileService.getFilesize).toHaveBeenCalled()
       expect(uploadedFileService.getAzureBlobFileSize).toHaveBeenCalled()
@@ -197,7 +168,7 @@ describe('pupil controller:', () => {
       spyOn(checkWindowV2Service, 'getActiveCheckWindow')
       spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ hdfSubmitted: false })
       spyOn(res, 'render').and.throwError('test')
-      await controller(req, res, next)
+      await sut.getAddMultiplePupils(req, res, next)
       expect(res.statusCode).toBe(200)
       expect(uploadedFileService.getFilesize).toHaveBeenCalled()
       expect(uploadedFileService.getAzureBlobFileSize).toHaveBeenCalled()
@@ -206,8 +177,6 @@ describe('pupil controller:', () => {
   })
 
   describe('postAddMultiplePupils() route', () => {
-    let controller
-    let sandbox
     let next
     const goodReqParams = {
       method: 'POST',
@@ -222,22 +191,15 @@ describe('pupil controller:', () => {
       }
     }
     beforeEach(() => {
-      sandbox = sinon.createSandbox()
+      // TODO refactor out jasmine and use jest api
       next = jasmine.createSpy('next')
       spyOn(checkWindowV2Service, 'getActiveCheckWindow')
       spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ hdfSubmitted: false })
     })
 
-    afterEach(() => {
-      sandbox.restore()
-    })
-
     describe('when the school is found in the database', () => {
       beforeEach(() => {
-        sandbox.mock(schoolService).expects('findOneById').resolves(schoolMock)
-        controller = proxyquire('../../../controllers/pupil.js', {
-          '../services/school.service': schoolService
-        }).postAddMultiplePupils
+        spyOn(schoolService, 'findOneById').and.returnValue(schoolMock)
       })
 
       it('saves the new pupil and redirects to the register pupils page', async () => {
@@ -248,7 +210,7 @@ describe('pupil controller:', () => {
         const res = getRes()
         const req = getReq(goodReqParams)
         req.flash = () => {}
-        await controller(req, res, next)
+        await sut.postAddMultiplePupils(req, res, next)
         expect(res.statusCode).toBe(302)
       })
 
@@ -260,7 +222,7 @@ describe('pupil controller:', () => {
         const res = getRes()
         const req = getReq(goodReqParams)
         req.flash = () => {}
-        await controller(req, res, next)
+        await sut.postAddMultiplePupils(req, res, next)
       })
 
       it('displays the add multiple pupils page when file errors have been found', async () => {
@@ -269,7 +231,7 @@ describe('pupil controller:', () => {
         spyOn(fileValidator, 'validate').and.returnValue(Promise.resolve(validationError))
         const res = getRes()
         const req = getReq(goodReqParams)
-        await controller(req, res, next)
+        await sut.postAddMultiplePupils(req, res, next)
         expect(res.statusCode).toBe(200)
         expect(res.fileErrors.get('test-field')).toBe('test error message')
         expect(res.locals).toBeDefined()
@@ -281,7 +243,7 @@ describe('pupil controller:', () => {
         spyOn(pupilUploadService, 'upload').and.returnValue(Promise.reject(new Error('error')))
         const res = getRes()
         const req = getReq(goodReqParams)
-        await controller(req, res, next)
+        await sut.postAddMultiplePupils(req, res, next)
         expect(res.statusCode).toBe(200)
         expect(next).toHaveBeenCalled()
       })
@@ -292,7 +254,7 @@ describe('pupil controller:', () => {
           .resolve({ error: 'error' }))
         const res = getRes()
         const req = getReq(goodReqParams)
-        await controller(req, res, next)
+        await sut.postAddMultiplePupils(req, res, next)
         expect(res.statusCode).toBe(200)
         expect(next).toHaveBeenCalledWith('error')
       })
@@ -305,7 +267,7 @@ describe('pupil controller:', () => {
         }))
         const res = getRes()
         const req = getReq(goodReqParams)
-        await controller(req, res, next)
+        await sut.postAddMultiplePupils(req, res, next)
         expect(res.statusCode).toBe(200)
         expect(req.session.csvErrorFile).toBe('test.csv')
         expect(res.locals).toBeDefined()
@@ -315,15 +277,12 @@ describe('pupil controller:', () => {
 
     describe('when the school is not found in the database', () => {
       beforeEach(() => {
-        sandbox.mock(schoolService).expects('findOneById').resolves(undefined)
-        controller = proxyquire('../../../controllers/pupil.js', {
-          '../services/school.service': schoolService
-        }).postAddMultiplePupils
+        spyOn(schoolService, 'findOneById').and.returnValue(undefined)
       })
       it('it throws an error', async () => {
         const res = getRes()
         const req = getReq(goodReqParams)
-        await controller(req, res, next)
+        await sut.postAddMultiplePupils(req, res, next)
         expect(next).toHaveBeenCalled()
         expect(res.statusCode).toBe(200)
       })
@@ -331,8 +290,6 @@ describe('pupil controller:', () => {
   })
 
   describe('getErrorCSVFile route', () => {
-    let controller
-    let sandbox
     let next
     const goodReqParams = {
       method: 'GET',
@@ -343,13 +300,7 @@ describe('pupil controller:', () => {
     }
 
     beforeEach(() => {
-      sandbox = sinon.createSandbox()
       next = jasmine.createSpy('next')
-      controller = require('../../../controllers/pupil.js').getErrorCSVFile
-    })
-
-    afterEach(() => {
-      sandbox.restore()
     })
 
     it('writes csv file to response and calls end to begin download', async () => {
@@ -360,7 +311,7 @@ describe('pupil controller:', () => {
       spyOn(res, 'write').and.returnValue(null)
       spyOn(res, 'end').and.returnValue(null)
       const req = getReq(goodReqParams)
-      await controller(req, res, next)
+      await sut.getErrorCSVFile(req, res, next)
       expect(res.statusCode).toBe(200)
       expect(res.write).toHaveBeenCalledWith('text')
       expect(res.end).toHaveBeenCalled()
@@ -368,7 +319,7 @@ describe('pupil controller:', () => {
   })
 
   describe('#getEditPupilById', () => {
-    let controller, next
+    let next
     const populatedPupilMock = R.assoc('school', schoolMock, pupilMock)
     const goodReqParams = {
       method: 'GET',
@@ -385,7 +336,6 @@ describe('pupil controller:', () => {
     }
 
     beforeEach(() => {
-      controller = require('../../../controllers/pupil.js').getEditPupilById
       next = jasmine.createSpy('next')
     })
 
@@ -393,7 +343,7 @@ describe('pupil controller:', () => {
       const res = getRes()
       const req = getReq(goodReqParams)
       spyOn(pupilDataService, 'sqlFindOneBySlugWithAgeReason').and.returnValue(Promise.resolve(populatedPupilMock))
-      await controller(req, res, next)
+      await sut.getEditPupilById(req, res, next)
       expect(pupilDataService.sqlFindOneBySlugWithAgeReason).toHaveBeenCalled()
     })
 
@@ -401,7 +351,7 @@ describe('pupil controller:', () => {
       const res = getRes()
       const req = getReq(goodReqParams)
       spyOn(pupilDataService, 'sqlFindOneBySlugWithAgeReason').and.returnValue(Promise.resolve(null))
-      await controller(req, res, next)
+      await sut.getEditPupilById(req, res, next)
       expect(next).toHaveBeenCalledWith(new Error(`Pupil ${req.params.id} not found`))
     })
 
@@ -409,13 +359,13 @@ describe('pupil controller:', () => {
       const res = getRes()
       const req = getReq(goodReqParams)
       spyOn(pupilDataService, 'sqlFindOneBySlugWithAgeReason').and.callFake(() => { throw new Error('dummy error') })
-      controller(req, res, next)
+      sut.getEditPupilById(req, res, next)
       expect(next).toHaveBeenCalledWith(new Error('dummy error'))
     })
   })
 
   describe('postEditPupil', () => {
-    let controller, next
+    let next
     const goodReqParams = {
       method: 'GET',
       url: '/school/pupil/edit/pupil1234',
@@ -428,7 +378,6 @@ describe('pupil controller:', () => {
     }
 
     beforeEach(() => {
-      controller = require('../../../controllers/pupil.js').postEditPupil
       next = jasmine.createSpy('next')
     })
 
@@ -440,7 +389,7 @@ describe('pupil controller:', () => {
       // As we do not want to run any more of the controller code than we need to we can trigger an
       // exception to bail out early, which saves mocking the remaining calls.
       spyOn(pupilValidator, 'validate').and.callFake(() => { throw new Error('unit test early exit') })
-      await controller(req, res, next)
+      await sut.postEditPupil(req, res, next)
       expect(pupilDataService.sqlFindOneBySlugWithAgeReason).toHaveBeenCalled()
     })
 
@@ -448,7 +397,7 @@ describe('pupil controller:', () => {
       const res = getRes()
       const req = getReq(goodReqParams)
       spyOn(pupilDataService, 'sqlFindOneBySlugWithAgeReason').and.returnValue(Promise.resolve(null))
-      await controller(req, res, next)
+      await sut.postEditPupil(req, res, next)
       expect(next).toHaveBeenCalledWith(new Error(`Pupil ${req.body.urlSlug} not found`))
     })
 
@@ -460,7 +409,7 @@ describe('pupil controller:', () => {
       // As we do not want to run any more of the controller code than we need to we can trigger an
       // exception to bail out early, which saves mocking the remaining calls.
       spyOn(pupilValidator, 'validate').and.callFake(() => { throw new Error('unit test early exit') })
-      await controller(req, res, next)
+      await sut.postEditPupil(req, res, next)
       expect(pupilDataService.sqlFindOneBySlugWithAgeReason).toHaveBeenCalled()
       expect(schoolService.findOneById).toHaveBeenCalledWith(pupilMock.school_id)
     })
@@ -475,7 +424,7 @@ describe('pupil controller:', () => {
       spyOn(res, 'render')
       // As we do not want to run any more of the controller code than we need to we can trigger an
       // exception to bail out early, which saves mocking the remaining calls.
-      await controller(req, res, next)
+      await sut.postEditPupil(req, res, next)
       expect(pupilDataService.sqlFindOneBySlugWithAgeReason).toHaveBeenCalled()
       expect(schoolService.findOneById).toHaveBeenCalledWith(pupilMock.school_id)
       expect(pupilEditService.update).toHaveBeenCalled()

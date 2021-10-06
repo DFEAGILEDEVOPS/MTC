@@ -2,7 +2,7 @@
 /* global describe, beforeEach, spyOn, it, expect fail */
 
 const generateErrorCSVService = require('../../../services/generate-error-csv.service')
-const azureFileDataService = require('../../../services/data-access/azure-file.data.service')
+const azureFileDataService = require('../../../services/data-access/azure-blob.data.service')
 
 describe('generate-error-csv.service', () => {
   describe('generate', () => {
