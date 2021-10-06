@@ -304,7 +304,7 @@ describe('pupil controller:', () => {
     })
 
     it('writes csv file to response and calls end to begin download', async () => {
-      spyOn(azureBlobDataService, 'downloadBlob').and.returnValue(Promise.resolve('text'))
+      spyOn(azureBlobDataService, 'getBlobDataAsBuffer').and.returnValue(Promise.resolve('text'))
       const res = getRes()
       res.write = () => {}
       res.end = () => {}
