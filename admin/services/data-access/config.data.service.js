@@ -33,8 +33,8 @@ const configDataService = {
           mtc_admin.[school] s ON (p.school_id = s.id) CROSS JOIN
           mtc_admin.[settings] st LEFT JOIN
           mtc_admin.[pupilAccessArrangements] paa ON (p.id = paa.pupil_id) LEFT JOIN
-          mtc_admin.[fontSizeLookUp] fslu on (paa.fontSizeLookUp_Id = fslu.id) LEFT JOIN
-          mtc_admin.[colourContrastLookUp] cclu ON (paa.colourContrastLookUp_Id = cclu.id) LEFT JOIN
+          mtc_admin.[fontSizeLookup] fslu on (paa.fontSizeLookup_Id = fslu.id) LEFT JOIN
+          mtc_admin.[colourContrastLookup] cclu ON (paa.colourContrastLookup_Id = cclu.id) LEFT JOIN
           mtc_admin.[accessArrangements] aa ON (paa.accessArrangements_id = aa.id)
         WHERE
           p.id IN ( ${pupilParamNames.join(', ')} )

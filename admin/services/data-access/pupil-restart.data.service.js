@@ -49,7 +49,7 @@ pupilRestartDataService.sqlFindRestartReasonDescById = async function (id) {
   const sql = `
   SELECT
     description
-  FROM [mtc_admin].[restartReasonLookUp]
+  FROM [mtc_admin].[restartReasonLookup]
   WHERE id=@id
   ORDER BY description ASC`
   const params = [
@@ -75,7 +75,7 @@ pupilRestartDataService.sqlFindRestartReasons = async function () {
     id,
     code,
     description
-  FROM [mtc_admin].[restartReasonLookUp]
+  FROM [mtc_admin].[restartReasonLookup]
   ORDER BY displayOrder ASC`
   return sqlService.query(sql)
 }

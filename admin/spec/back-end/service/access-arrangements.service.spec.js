@@ -263,8 +263,8 @@ describe('accessArrangementsService', () => {
       expect(result).toEqual(Object({
         pupil_id: 1,
         accessArrangementsIdsWithCodes: [
-          { id: 2, code: accessArrangementsDataService.CODES.COLOUR_CONTRAST, colourContrastLookUp_Id: 2 },
-          { id: 3, code: accessArrangementsDataService.CODES.FONT_SIZE, fontSizeLookUp_Id: 4 }
+          { id: 2, code: accessArrangementsDataService.CODES.COLOUR_CONTRAST, colourContrastLookup_Id: 2 },
+          { id: 3, code: accessArrangementsDataService.CODES.FONT_SIZE, fontSizeLookup_Id: 4 }
         ],
         recordedBy_user_id: 1,
         questionReaderReasonCode: ''

@@ -18,10 +18,10 @@ pupilAccessArrangementsDataService.sqlFindPupilAccessArrangementsByPupilId = asy
     fslu.code AS pupilFontSizeCode,
     cclu.code AS pupilColourContrastCode
   FROM [mtc_admin].[pupilAccessArrangements] paa
-  LEFT OUTER JOIN [mtc_admin].[fontSizeLookUp] fslu
-    ON paa.fontSizeLookUp_Id = fslu.id
-  LEFT OUTER JOIN [mtc_admin].[colourContrastLookUp] cclu
-    ON paa.colourContrastLookUp_Id = cclu.id
+  LEFT OUTER JOIN [mtc_admin].[fontSizeLookup] fslu
+    ON paa.fontSizeLookup_Id = fslu.id
+  LEFT OUTER JOIN [mtc_admin].[colourContrastLookup] cclu
+    ON paa.colourContrastLookup_Id = cclu.id
   WHERE pupil_id = @pupilId`
   const params = [
     { name: 'pupilId', type: TYPES.Int, value: pupilId }
@@ -68,8 +68,8 @@ pupilAccessArrangementsDataService.sqlInsertAccessArrangements = async (data, is
       @inputAssistanceInformation${idx},
       @nextButtonInformation${idx},
       @questionReaderOtherInformation${idx},
-      @fontSizeLookUp_id${idx},
-      @colourContrastLookUp_id${idx}
+      @fontSizeLookup_id${idx},
+      @colourContrastLookup_id${idx}
     )`)
     params.push({
       name: `pupil_id${idx}`,
@@ -107,13 +107,13 @@ pupilAccessArrangementsDataService.sqlInsertAccessArrangements = async (data, is
       type: TYPES.NVarChar
     })
     params.push({
-      name: `fontSizeLookUp_id${idx}`,
-      value: aa.fontSizeLookUp_Id || null,
+      name: `fontSizeLookup_id${idx}`,
+      value: aa.fontSizeLookup_Id || null,
       type: TYPES.Int
     })
     params.push({
-      name: `colourContrastLookUp_id${idx}`,
-      value: aa.colourContrastLookUp_Id || null,
+      name: `colourContrastLookup_id${idx}`,
+      value: aa.colourContrastLookup_Id || null,
       type: TYPES.Int
     })
   })
@@ -126,8 +126,8 @@ pupilAccessArrangementsDataService.sqlInsertAccessArrangements = async (data, is
       inputAssistanceInformation,
       nextButtonInformation,
       questionReaderOtherInformation,
-      fontSizeLookUp_Id,
-      colourContrastLookUp_Id
+      fontSizeLookup_Id,
+      colourContrastLookup_Id
       ) VALUES`
 
   queries.push([insertSql, inserts.join(', \n')].join(' '))
@@ -249,7 +249,7 @@ pupilAccessArrangementsDataService.sqlDeletePupilsAccessArrangements = async (ur
 }
 
 pupilAccessArrangementsDataService.sqlFindPupilColourContrastsId = async (pupilId, accessArrangementsId) => {
-  const sql = `SELECT colourContrastLookUp_Id FROM [mtc_admin].[pupilAccessArrangements]
+  const sql = `SELECT colourContrastLookup_Id FROM [mtc_admin].[pupilAccessArrangements]
     WHERE pupil_id = @pupilId
     AND accessArrangements_id = @accessArrangementsId`
 
@@ -268,11 +268,11 @@ pupilAccessArrangementsDataService.sqlFindPupilColourContrastsId = async (pupilI
   const result = await sqlService.readonlyQuery(sql, params)
   const row = R.head(result)
   // @ts-ignore
-  return row && row.colourContrastLookUp_Id
+  return row && row.colourContrastLookup_Id
 }
 
 pupilAccessArrangementsDataService.sqlFindPupilFontSizesId = async (pupilId, accessArrangementsId) => {
-  const sql = `SELECT fontSizeLookUp_Id FROM [mtc_admin].[pupilAccessArrangements]
+  const sql = `SELECT fontSizeLookup_Id FROM [mtc_admin].[pupilAccessArrangements]
     WHERE pupil_id = @pupilId
     AND accessArrangements_id = @accessArrangementsId`
 
@@ -291,7 +291,7 @@ pupilAccessArrangementsDataService.sqlFindPupilFontSizesId = async (pupilId, acc
   const result = await sqlService.readonlyQuery(sql, params)
   const row = R.head(result)
   // @ts-ignore
-  return row && row.fontSizeLookUp_Id
+  return row && row.fontSizeLookup_Id
 }
 
 module.exports = pupilAccessArrangementsDataService
