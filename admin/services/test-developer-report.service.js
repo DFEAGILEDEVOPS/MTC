@@ -22,8 +22,8 @@ const testDeveloperReportService = {
    * Get existing psychometrician report file
    * @return {Promise<Object>}
    */
-  downloadFile: async function downloadFile (container, fileName, stream) {
-    return azureBlobDataService.azureDownloadFileStream(container, fileName, stream)
+  downloadFile: async function downloadFile (container, fileName) {
+    return azureBlobDataService.downloadBlob(container, fileName)
   }
 }
 

@@ -12,7 +12,7 @@ const blobService = {
     return containerClient.createIfNotExists()
   },
 
-  createBlockBlobFromLocalFile: async function createBlockBlobFromLocalFile (containerName, remoteFilename, localFilename) {
+  uploadLocalFile: async function uploadLocalFile (containerName, remoteFilename, localFilename) {
     const client = BlobServiceClient.fromConnectionString(config.AZURE_STORAGE_CONNECTION_STRING)
     const containerClient = client.getContainerClient(containerName)
     const blobClient = containerClient.getBlockBlobClient(remoteFilename)
@@ -26,27 +26,10 @@ const blobService = {
     return blobClient.getProperties()
   },
 
-  azureUploadFile: async function azureUploadFile (containerName, remoteFilename, text, streamLength) {
-    const blobServiceClient = BlobServiceClient.fromConnectionString(config.AZURE_STORAGE_CONNECTION_STRING)
-    const containerClient = blobServiceClient.getContainerClient(containerName)
-    await containerClient.createIfNotExists()
-    const blobClient = containerClient.getBlockBlobClient(remoteFilename)
-    return blobClient.upload(text, streamLength)
-  },
-
-  azureDownloadFile: async function azureDownloadFile (containerName, blob) {
+  downloadBlob: async function downloadBlob (containerName, blob) {
     const blobServiceClient = BlobServiceClient.fromConnectionString(config.AZURE_STORAGE_CONNECTION_STRING)
     const containerClient = blobServiceClient.getContainerClient(containerName)
     const blobClient = containerClient.getBlobClient(blob)
-    return blobClient.download()
-  },
-
-  // TODO this now returns in .readableStreamBody not into the method argument
-  // TODO probably broken, integration tests required
-  azureDownloadFileStream: async function azureDownloadFileStream (containerName, blobName) {
-    const blobServiceClient = BlobServiceClient.fromConnectionString(config.AZURE_STORAGE_CONNECTION_STRING)
-    const containerClient = blobServiceClient.getContainerClient(containerName)
-    const blobClient = containerClient.getBlockBlobClient(blobName)
     return blobClient.download()
   }
 }

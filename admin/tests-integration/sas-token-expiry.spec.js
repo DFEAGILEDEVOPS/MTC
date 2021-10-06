@@ -15,6 +15,10 @@ const delay = (ms) => {
   })
 }
 
+const getFullUrl = (token) => {
+  return `${token.url.replace(`/${queueNameService.NAMES.CHECK_SUBMIT}`, '')}?${token.token}`
+}
+
 describe('sas-token-expiry', () => {
   beforeEach(async () => {
     const queueKey = redisKeyService.getSasTokenKey(queueNameService.NAMES.CHECK_SUBMIT)
@@ -24,13 +28,14 @@ describe('sas-token-expiry', () => {
 
   it('should send a message successfully with valid token', async () => {
     const sasExpiryDate = moment().add(1, 'minute')
-    const checkCompleteSasToken = await sut.generateSasToken(
+    const checkSubmitToken = await sut.generateSasToken(
       queueNameService.NAMES.CHECK_SUBMIT,
       sasExpiryDate
     )
     let queueServiceUrl
     try {
-      queueServiceUrl = checkCompleteSasToken.token.replace(`/${queueNameService.NAMES.CHECK_SUBMIT}`, '')
+      // queueServiceUrl = checkSubmitToken.token.replace(`/${queueNameService.NAMES.CHECK_SUBMIT}`, '')
+      queueServiceUrl = getFullUrl(checkSubmitToken)
       const queueServiceClient = new QueueServiceClient(queueServiceUrl)
       const queueClient = queueServiceClient.getQueueClient(queueNameService.NAMES.CHECK_SUBMIT)
       await queueClient.sendMessage('message')
@@ -41,12 +46,12 @@ describe('sas-token-expiry', () => {
 
   it('should return specific properties and content when attempting to submit with expired sas tokens', async () => {
     const sasExpiryDate = moment().add(2, 'seconds')
-    const checkCompleteSasToken = await sut.generateSasToken(
+    const checkSubmitToken = await sut.generateSasToken(
       queueNameService.NAMES.CHECK_SUBMIT,
       sasExpiryDate
     )
     try {
-      const queueServiceUrl = checkCompleteSasToken.token.replace(`/${queueNameService.NAMES.CHECK_SUBMIT}`, '')
+      const queueServiceUrl = getFullUrl(checkSubmitToken)
       const queueServiceClient = new QueueServiceClient(queueServiceUrl)
       await delay(3000)
       const queueClient = queueServiceClient.getQueueClient(queueNameService.NAMES.CHECK_SUBMIT)

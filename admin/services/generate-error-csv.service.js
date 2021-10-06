@@ -14,8 +14,7 @@ service.generate = async (school, headers, csvData) => {
   let file
   try {
     const remoteFilename = `${school.id}_${uuidv4()}_${moment().format('YYYYMMDDHHmmss')}_error.csv`
-    const streamLength = 512 * 1000
-    file = await azureBlobDataService.azureUploadFile('csvuploads', remoteFilename, csvStr, streamLength)
+    file = await azureBlobDataService.uploadLocalFile('csvuploads', remoteFilename, csvStr)
   } catch (error) {
     return { hasError: true, error }
   }

@@ -25,7 +25,7 @@ module.exports = async function (req, res, next) {
     submittedFilesObj.map(async (fileObj) => {
       const remoteFilename = moment().format('YYYYMMDDHHmmss') + '-' + fileObj.field + '-' + fileObj.uuid
       const localFilename = path.join(__dirname, '/../', fileObj.file)
-      await blobService.createBlockBlobFromLocalFile(container, remoteFilename, localFilename)
+      await blobService.uploadLocalFile(container, remoteFilename, localFilename)
     })
     next()
   })

@@ -7,7 +7,7 @@ const azureBlobDataService = require('../../../services/data-access/azure-blob.d
 describe('generate-error-csv.service', () => {
   describe('generate', () => {
     beforeEach(() => {
-      spyOn(azureBlobDataService, 'azureUploadFile').and.returnValue({ name: 'test' })
+      spyOn(azureBlobDataService, 'uploadLocalFile').and.returnValue({ name: 'test' })
     })
 
     it('returns a file object with a name attribute if the request was valid', async () => {
