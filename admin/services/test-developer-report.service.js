@@ -23,7 +23,7 @@ const testDeveloperReportService = {
    * @return {Promise<Object>}
    */
   downloadFile: async function downloadFile (container, fileName) {
-    return azureBlobDataService.downloadBlob(container, fileName)
+    return azureBlobDataService.getBlobDataAsBuffer(container, fileName)
   }
 }
 

@@ -26,11 +26,11 @@ const blobService = {
     return blobClient.getProperties()
   },
 
-  downloadBlob: async function downloadBlob (containerName, blob) {
+  getBlobDataAsBuffer: async function downloadBlob (containerName, blob) {
     const blobServiceClient = BlobServiceClient.fromConnectionString(config.AZURE_STORAGE_CONNECTION_STRING)
     const containerClient = blobServiceClient.getContainerClient(containerName)
-    const blobClient = containerClient.getBlobClient(blob)
-    return blobClient.download()
+    const blobClient = containerClient.getBlockBlobClient(blob)
+    return blobClient.downloadToBuffer()
   }
 }
 
