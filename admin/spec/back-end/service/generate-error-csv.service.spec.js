@@ -2,12 +2,12 @@
 /* global describe, beforeEach, spyOn, it, expect fail */
 
 const generateErrorCSVService = require('../../../services/generate-error-csv.service')
-const azureFileDataService = require('../../../services/data-access/azure-blob.data.service')
+const azureBlobDataService = require('../../../services/data-access/azure-blob.data.service')
 
 describe('generate-error-csv.service', () => {
   describe('generate', () => {
     beforeEach(() => {
-      spyOn(azureFileDataService, 'azureUploadFile').and.returnValue({ name: 'test' })
+      spyOn(azureBlobDataService, 'azureUploadFile').and.returnValue({ name: 'test' })
     })
 
     it('returns a file object with a name attribute if the request was valid', async () => {

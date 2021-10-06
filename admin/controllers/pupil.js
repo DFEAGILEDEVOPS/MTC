@@ -1,6 +1,6 @@
 'use strict'
 
-const azureFileDataService = require('../services/data-access/azure-blob.data.service')
+const azureBlobDataService = require('../services/data-access/azure-blob.data.service')
 const fileValidator = require('../lib/validator/file-validator')
 
 const config = require('../config')
@@ -174,7 +174,7 @@ const postAddMultiplePupils = async function postAddMultiplePupils (req, res, ne
  * @returns {Promise<void>}
  */
 const getErrorCSVFile = async function getErrorCSVFile (req, res) {
-  const blobFile = await azureFileDataService.azureDownloadFile('csvuploads', req.session.csvErrorFile)
+  const blobFile = await azureBlobDataService.azureDownloadFile('csvuploads', req.session.csvErrorFile)
   res.setHeader('Content-type', 'text/csv')
   res.setHeader('Content-disposition', 'attachment; filename=multiple_pupils_errors.csv')
   res.write(blobFile)

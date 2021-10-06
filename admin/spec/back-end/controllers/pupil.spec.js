@@ -5,7 +5,7 @@ const httpMocks = require('node-mocks-http')
 const R = require('ramda')
 
 // TODO refactor out data service usage
-const azureFileDataService = require('../../../services/data-access/azure-blob.data.service')
+const azureBlobDataService = require('../../../services/data-access/azure-blob.data.service')
 const fileValidator = require('../../../lib/validator/file-validator')
 const pupilAddService = require('../../../services/pupil-add-service')
 const pupilDataService = require('../../../services/data-access/pupil.data.service')
@@ -304,7 +304,7 @@ describe('pupil controller:', () => {
     })
 
     it('writes csv file to response and calls end to begin download', async () => {
-      spyOn(azureFileDataService, 'azureDownloadFile').and.returnValue(Promise.resolve('text'))
+      spyOn(azureBlobDataService, 'azureDownloadFile').and.returnValue(Promise.resolve('text'))
       const res = getRes()
       res.write = () => {}
       res.end = () => {}

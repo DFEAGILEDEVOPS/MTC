@@ -1,7 +1,7 @@
 const { v4: uuidv4 } = require('uuid')
 const moment = require('moment')
 const csv = require('fast-csv')
-const azureFileDataService = require('./data-access/azure-blob.data.service')
+const azureBlobDataService = require('./data-access/azure-blob.data.service')
 
 const service = {}
 service.generate = async (school, headers, csvData) => {
@@ -15,7 +15,7 @@ service.generate = async (school, headers, csvData) => {
   try {
     const remoteFilename = `${school.id}_${uuidv4()}_${moment().format('YYYYMMDDHHmmss')}_error.csv`
     const streamLength = 512 * 1000
-    file = await azureFileDataService.azureUploadFile('csvuploads', remoteFilename, csvStr, streamLength)
+    file = await azureBlobDataService.azureUploadFile('csvuploads', remoteFilename, csvStr, streamLength)
   } catch (error) {
     return { hasError: true, error }
   }

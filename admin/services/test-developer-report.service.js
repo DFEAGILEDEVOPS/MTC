@@ -1,7 +1,7 @@
 'use strict'
 
 const psychometricianReportDataService = require('./data-access/psychometrician-report.data.service')
-const azureFileDataService = require('./data-access/azure-blob.data.service')
+const azureBlobDataService = require('./data-access/azure-blob.data.service')
 
 const testDeveloperReportService = {
   /**
@@ -23,7 +23,7 @@ const testDeveloperReportService = {
    * @return {Promise<Object>}
    */
   downloadFile: async function downloadFile (container, fileName, stream) {
-    return azureFileDataService.azureDownloadFileStream(container, fileName, stream)
+    return azureBlobDataService.azureDownloadFileStream(container, fileName, stream)
   }
 }
 
