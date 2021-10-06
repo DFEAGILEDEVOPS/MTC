@@ -173,10 +173,11 @@ module.exports.restartTransactionForPupils = async function restartTransactionFo
 
   const sql = `
      DELETE FROM [mtc_admin].[checkPin] WHERE check_id IN (${checkParamIdentifiers.join(', ')});
-
-     UPDATE [mtc_admin].[check]
-        SET checkStatus_id = (SELECT TOP 1 id FROM [mtc_admin].[checkStatus] WHERE CODE = 'VOD')
-        WHERE id IN (${checkParamIdentifiers.join(', ')});
+      
+     -- UPDATE 2021-10-06: do we really need this VOID status?
+     --  UPDATE [mtc_admin].[check]
+     --     SET checkStatus_id = (SELECT TOP 1 id FROM [mtc_admin].[checkStatus] WHERE CODE = 'VOD')
+     --     WHERE id IN (${checkParamIdentifiers.join(', ')});
 
      ${pupilRestartSqls.join('\n')}
 
