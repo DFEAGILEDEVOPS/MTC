@@ -1982,19 +1982,33 @@ class RequestHelper
     }
   end
 
-  def self.build_check_submission_message(parsed_response_pupil_auth, correct_answers = nil, remove_answers = nil, input_type = 'mouse')
+  def self.build_check_submission_message(parsed_response_pupil_auth, correct_answers = nil, remove_answers = nil, input_type = 'mouse', validator_opts = {})
     correct_answers = nil if correct_answers == '0'
     correct_answers = (correct_answers.to_i) - 1 unless correct_answers.nil?
     @payload = build_payload_json(parsed_response_pupil_auth, input_type)
-    @payload[:answers][0..correct_answers].each {|q| q[:answer] = (q[:factor1] * q[:factor2])} unless correct_answers.nil?
+    @payload[:answers] << {:factor1=>3, :factor2=>7, :answer=>0, :sequenceNumber=>26, :question=>"3x7", :clientTimestamp=>"2021-10-04T11:22:45.015Z"} if validator_opts[:answer_not_a_string]
+    @payload[:answers].pop if validator_opts[:decreased_answers_set]
+    @payload[:answers][0..correct_answers].each {|q| q[:answer] = (q[:factor1] * q[:factor2]).to_s} unless correct_answers.nil?
+    @payload[:answers] = Hash[@payload[:answers].map {|key, value| [key, value]}] if validator_opts[:answers_not_array]
+    @payload[:audit] = Hash[@payload[:audit].map {|key, value| [key, value]}] if validator_opts[:audit_not_array]
     @payload.delete(:answers) unless remove_answers.nil?
-    {"version": 2, "checkCode": parsed_response_pupil_auth['checkCode'],
+    @payload.delete(:audit) if validator_opts[:remove_audit]
+    @payload[:config] = [@payload[:config].to_s] if validator_opts[:config_not_object]
+    @payload[:school] = @payload[:school].to_s if validator_opts[:school_not_object]
+    @payload[:tokens] = @payload[:tokens].to_s if validator_opts[:tokens_not_object]
+    @payload[:inputs] = @payload[:inputs].to_s if validator_opts[:inputs_not_array]
+    @payload[:questions] = "" if validator_opts[:questions_not_array]
+    @payload[:pupil] = @payload[:pupil].to_s if validator_opts[:pupil_not_object]
+    @payload[:config] = [@payload[:config].to_s] if validator_opts[:config_not_object]
+    @payload[:config] = @payload[:config].each { |k, v| @payload[:config][:practice] = true } if validator_opts[:practice]
+
+    check_code = validator_opts[:check_code_not_uuid] ? parsed_response_pupil_auth['checkCode'].gsub('-','') : parsed_response_pupil_auth['checkCode']
+    {"version": 2, "checkCode": check_code,
      "schoolUUID": parsed_response_pupil_auth['school']['uuid'],
      "archive": LZString::UTF16.compress(@payload.to_json)
     }
-    {payload: @payload, submission_message: {"version": 2, "checkCode": parsed_response_pupil_auth['checkCode'],
+    {payload: @payload, submission_message: {"version": 2, "checkCode": check_code,
                                              "schoolUUID": parsed_response_pupil_auth['school']['uuid'],
                                              "archive": LZString::UTF16.compress(@payload.to_json)}}
   end
-
 end
