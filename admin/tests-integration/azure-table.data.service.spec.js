@@ -2,7 +2,7 @@
 
 /* global describe expect beforeAll afterAll spyOn fail it */
 
-const { TableClient } = require('@azure/data-tables')
+const { TableClient, TableServiceClient } = require('@azure/data-tables')
 const config = require('../config')
 const connectionString = config.AZURE_STORAGE_CONNECTION_STRING
 const uuid = require('uuid')
@@ -100,7 +100,18 @@ describe('azure-table.data.service', () => {
 
   describe('createTables', () => {
     it('creates specified tables in array', async () => {
-      fail('not implemented')
+      const randomPrefix = getUniqueName()
+      const tableNames = [
+        `${randomPrefix}Table1`,
+        `${randomPrefix}Table2`,
+        `${randomPrefix}Table3`
+      ]
+      await sut.createTables(tableNames)
+      const client = TableServiceClient.fromConnectionString(connectionString)
+      const tableIterator = client.listTables()
+      for await (const table in tableIterator) {
+
+      }
     })
 
     it('throws an error when one of the table names is invalid', async () => {
