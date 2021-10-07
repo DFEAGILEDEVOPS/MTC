@@ -2,7 +2,7 @@
 
 /* global describe, it, expect, spyOn */
 const sut = require('../../../services/tech-support-queue-management.service')
-const storageDataService = require('../../../services/data-access/storage-queue-metadata.service')
+const storageDataService = require('../../../services/data-access/azure-queue.data.service')
 
 describe('tech support queue management service', () => {
   it('subject should be defined', () => {
