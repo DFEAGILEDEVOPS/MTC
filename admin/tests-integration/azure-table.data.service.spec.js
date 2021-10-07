@@ -1,20 +1,23 @@
 'use strict'
 
-/* global describe expect beforeAll afterAll spyOn fail it */
+/* global describe expect beforeAll afterAll fail it */
 
 const { TableClient, TableServiceClient } = require('@azure/data-tables')
 const config = require('../config')
 const connectionString = config.AZURE_STORAGE_CONNECTION_STRING
 const uuid = require('uuid')
 const sut = require('../services/data-access/azure-table.data.service')
+const RA = require('ramda-adjunct')
 
 const commonPrefix = 'mtcIntegrationTest'
-let testRunTableName
+const testRunTableNames = []
 
-function getUniqueName () {
+function getUniqueTableName () {
   let id = uuid.v4()
   id = id.replace(/-/g, '')
-  return `${commonPrefix}${id}`
+  const name = `${commonPrefix}${id}`
+  testRunTableNames.push(name)
+  return name
 }
 
 async function createTable (tableName) {
@@ -29,34 +32,44 @@ async function deleteTable (tableName) {
 
 describe('azure-table.data.service', () => {
   beforeAll(async () => {
-    testRunTableName = getUniqueName()
-    try {
-      await createTable(testRunTableName)
-    } catch (error) {
-      fail(`COULD NOT DELETE TABLE '${testRunTableName}':${error.message}`)
+    const client = TableServiceClient.fromConnectionString(connectionString)
+    const iterator = client.listTables()
+    const integrationTestTables = []
+    for await (const table of iterator) {
+      if (table.name.startsWith(commonPrefix)) {
+        integrationTestTables.push(table.name)
+      }
     }
+    const deletions = integrationTestTables.map(t => {
+      return client.deleteTable(t)
+    })
+    await Promise.all(deletions)
   })
-
   afterAll(async () => {
     try {
-      await deleteTable(testRunTableName)
+      const deletions = testRunTableNames.map(t => {
+        return deleteTable(t)
+      })
+      await Promise.all(deletions)
     } catch (error) {
-      fail(`COULD NOT DELETE TABLE '${testRunTableName}':${error.message}`)
+      fail(`failed to delete one or more tables, azure storage may need manual clean up.\n${error}`)
     }
   })
 
   describe('retrieveEntity', () => {
     it('returns raw entity when exists', async () => {
+      const tableName = getUniqueTableName()
+      await createTable(tableName)
       const partitionKey = uuid.v4()
       const rowKey = 'myRowKey'
       const customData = 'foo'
-      const client = TableClient.fromConnectionString(connectionString, testRunTableName)
+      const client = TableClient.fromConnectionString(connectionString, tableName)
       await client.createEntity({
         partitionKey: partitionKey,
         rowKey: rowKey,
         customData: customData
       })
-      const actual = await sut.retrieveEntity(testRunTableName, partitionKey, rowKey)
+      const actual = await sut.retrieveEntity(tableName, partitionKey, rowKey)
       expect(actual).toBeDefined()
       expect(actual.partitionKey).toEqual(partitionKey)
       expect(actual.rowKey).toEqual(rowKey)
@@ -64,10 +77,12 @@ describe('azure-table.data.service', () => {
     })
 
     it('throws an error when entity does not exist', async () => {
+      const tableName = getUniqueTableName()
+      await createTable(tableName)
       const pk = uuid.v4()
       const rk = uuid.v4()
       try {
-        await sut.retrieveEntity(testRunTableName, pk, rk)
+        await sut.retrieveEntity(tableName, pk, rk)
         fail('error should have been thrown')
       } catch (error) {
         expect(error.message).toEqual(`entity not found with PartitionKey:${pk} rowKey:${rk}`)
@@ -78,9 +93,9 @@ describe('azure-table.data.service', () => {
   describe('clearTable', () => {
     it('deletes all entries from the table', async () => {
       const pk = uuid.v4()
-      const tableName = getUniqueName()
+      const tableName = getUniqueTableName()
       const client = TableClient.fromConnectionString(connectionString, tableName)
-      await client.createTable()
+      await createTable(tableName)
       for (let index = 0; index < 5; index++) {
         await client.createEntity({
           partitionKey: pk,
@@ -100,22 +115,47 @@ describe('azure-table.data.service', () => {
 
   describe('createTables', () => {
     it('creates specified tables in array', async () => {
-      const randomPrefix = getUniqueName()
       const tableNames = [
-        `${randomPrefix}Table1`,
-        `${randomPrefix}Table2`,
-        `${randomPrefix}Table3`
+        getUniqueTableName(),
+        getUniqueTableName(),
+        getUniqueTableName()
       ]
       await sut.createTables(tableNames)
       const client = TableServiceClient.fromConnectionString(connectionString)
       const tableIterator = client.listTables()
-      for await (const table in tableIterator) {
-
+      const actualTables = []
+      for await (const table of tableIterator) {
+        actualTables.push(table.name)
+      }
+      const failures = []
+      for (let index = 0; index < tableNames.length; index++) {
+        const table = tableNames[index]
+        if (!RA.contained(actualTables, table)) {
+          failures.push(table)
+        }
+      }
+      if (failures.length > 0) {
+        let message = 'the following tables were not found...'
+        for (let index = 0; index < failures.length; index++) {
+          const table = failures[index]
+          message += `\n-${table}`
+        }
+        fail(message)
       }
     })
 
     it('throws an error when one of the table names is invalid', async () => {
-      fail('not implemented')
+      const randomPrefix = getUniqueTableName()
+      const tableNames = [
+        getUniqueTableName(),
+        `${randomPrefix}-Bad&chars^1`
+      ]
+      try {
+        await sut.createTables(tableNames)
+        fail('should have thrown an error due to hyphen in table name')
+      } catch (error) {
+        expect(error).toBeDefined()
+      }
     })
   })
 })

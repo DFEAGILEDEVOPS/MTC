@@ -27,7 +27,7 @@ const service = {
     for await (const entity of entityIterator) {
       deletions.push(tableClient.deleteEntity(entity.partitionKey, entity.rowKey))
     }
-    return Promise.allSettled(deletions)
+    return Promise.all(deletions)
   },
 
   createTables: async function createTables (tables) {
@@ -35,7 +35,7 @@ const service = {
       const tableClient = TableClient.fromConnectionString(connectionString, table)
       return tableClient.createTable(table)
     })
-    return Promise.allSettled(tableCreates)
+    return Promise.all(tableCreates)
   }
 }
 
