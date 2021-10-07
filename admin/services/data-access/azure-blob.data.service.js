@@ -3,8 +3,6 @@
 const { BlobServiceClient } = require('@azure/storage-blob')
 const config = require('../../config')
 
-// TODO cache the client once loaded, or is it better to recreate each time?
-
 const blobService = {
   createContainerIfNotExists: async function createContainerIfNotExists (containerName) {
     const client = BlobServiceClient.fromConnectionString(config.AZURE_STORAGE_CONNECTION_STRING)

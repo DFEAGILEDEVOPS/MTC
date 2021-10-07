@@ -78,25 +78,21 @@ describe('azure-blob.data.service', () => {
   })
 
   it('downloadBlob - fetches existing blob from container', async () => {
-    // create local file
     const content = uuid.v4()
     const localFileName = path.join(testRunDirectoryName, `${commonPrefix}-local-${content}.txt`)
     await fs.promises.writeFile(localFileName, content)
-    // upload it to azure via main lib
     const remoteBlobName = `${commonPrefix}-upload-${content}.txt`
     const serviceClient = BlobServiceClient.fromConnectionString(process.env.AZURE_STORAGE_CONNECTION_STRING)
     const containerClient = serviceClient.getContainerClient(testRunContainerName)
     const blobClient = containerClient.getBlockBlobClient(remoteBlobName)
     await blobClient.uploadFile(localFileName)
-    // const downloadedFileName = path.join(testRunDirectoryName, `${commonPrefix}-download-${content}.txt`)
-    // download via sut
     const buffer = await sut.getBlobDataAsBuffer(testRunContainerName, remoteBlobName)
     expect(buffer).toBeDefined()
     try {
       const parsed = Buffer.from(buffer)
       expect(parsed).toBeDefined()
     } catch (error) {
-      fail('unable to parse response to buffer')
+      fail(`unable to parse response to buffer:${error.message}`)
     }
   })
 })

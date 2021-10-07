@@ -27,7 +27,6 @@ const payloadDataService = {
     }
     const schoolUrlSlug = res[0].urlSlug
     const table = 'receivedCheck'
-    // GUY check the return on this is preserved
     return tableService.retrieveEntity(table, schoolUrlSlug.toLowerCase(), checkCode.toLowerCase())
   }
 }

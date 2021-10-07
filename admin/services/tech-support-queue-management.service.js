@@ -1,7 +1,7 @@
 'use strict'
 
 const serviceBusQueueMetadataService = require('./data-access/service-bus-queue-metadata.service')
-const storageQueueMetadataService = require('./data-access/storage-queue-metadata.service')
+const storageQueueMetadataService = require('./data-access/azure-queue.data.service')
 const R = require('ramda')
 
 const service = {

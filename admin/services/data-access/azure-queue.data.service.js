@@ -18,6 +18,21 @@ const service = {
       })
     }
     return Promise.all(queueInfo)
+  },
+
+  createQueues: async function createQueues (queueNames) {
+    const queueCreates = queueNames.map(q => {
+      const queueServiceClient = QueueServiceClient.fromConnectionString(config.AZURE_STORAGE_CONNECTION_STRING)
+      const queueClient = queueServiceClient.getQueueClient(q)
+      return queueClient.createIfNotExists()
+    })
+    return Promise.allSettled(queueCreates)
+  },
+
+  clearQueue: async function clearQueue (queueName) {
+    const queueServiceClient = QueueServiceClient.fromConnectionString(config.AZURE_STORAGE_CONNECTION_STRING)
+    const queueClient = queueServiceClient.getQueueClient(queueName)
+    return queueClient.clearMessages()
   }
 }
 

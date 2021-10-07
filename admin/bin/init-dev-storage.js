@@ -19,8 +19,9 @@ try {
 } catch (error) {
   console.error(error)
 }
-const { TableClient } = require('@azure/data-tables')
-const { QueueServiceClient } = require('@azure/storage-queue')
+
+const tableDataService = require('../services/data-access/azure-table.data.service')
+const queueDataService = require('../services/data-access/azure-queue.data.service')
 const names = require('../../deploy/storage/tables-queues.json')
 
 if (!process.env.AZURE_STORAGE_CONNECTION_STRING) {
@@ -28,62 +29,18 @@ if (!process.env.AZURE_STORAGE_CONNECTION_STRING) {
   console.error('env var $AZURE_STORAGE_CONNECTION_STRING is required')
 }
 
-const connectionString = process.env.AZURE_STORAGE_CONNECTION_STRING
-
-const queueNames = names.queues
+const mainQueueNames = names.queues
 const tableNames = names.tables
-const poisonQueues = queueNames.map(q => q + '-poison')
-const allQueues = queueNames.concat(poisonQueues)
-
-async function deleteTableEntries (tableName) {
-  const tableClient = TableClient.fromConnectionString(connectionString, tableName)
-  const entityIterator = tableClient.listEntities()
-  const deletions = []
-  for await (const entity of entityIterator) {
-    deletions.push(tableClient.deleteEntity(entity.partitionKey, entity.rowKey))
-  }
-  return Promise.all(deletions)
-}
-
-async function deleteTableEntities (tables) {
-  const deletions = []
-  for (let index = 0; index < tables.length; index++) {
-    const table = tables[index]
-    deletions.push(deleteTableEntries(table))
-  }
-  await Promise.all(deletions)
-}
-
-async function createTables (tables) {
-  const tableCreates = tables.map(table => {
-    const tableClient = TableClient.fromConnectionString(connectionString, table)
-    return tableClient.createTable(table)
-  })
-  return Promise.all(tableCreates)
-}
-
-async function deleteQueueMessages (queues, queueServiceClient) {
-  const queueDeletes = queues.map(q => {
-    const queueClient = queueServiceClient.getQueueClient(q)
-    return queueClient.clearMessages()
-  })
-  return Promise.all(queueDeletes)
-}
-
-async function createQueues (queues, queueServiceClient) {
-  const queueCreates = queues.map(q => {
-    const queueClient = queueServiceClient.getQueueClient(q)
-    return queueClient.createIfNotExists()
-  })
-  return Promise.all(queueCreates)
-}
+const poisonQueues = mainQueueNames.map(q => q + '-poison')
+const allQueueNames = mainQueueNames.concat(poisonQueues)
 
 async function main () {
-  const queueServiceClient = QueueServiceClient.fromConnectionString(connectionString)
-  await createQueues(allQueues, queueServiceClient)
-  await deleteQueueMessages(allQueues, queueServiceClient)
-  await createTables(tableNames)
-  await deleteTableEntities(tableNames)
+  await queueDataService.createQueues(allQueueNames)
+  const clearQueueTasks = allQueueNames.map(q => queueDataService.clearQueue(q))
+  await Promise.allSettled(clearQueueTasks)
+  await tableDataService.createTables(tableNames)
+  const clearTableTasks = tableNames.map(t => tableDataService.clearTable(t))
+  await Promise.allSettled(clearTableTasks)
 }
 
 main()
