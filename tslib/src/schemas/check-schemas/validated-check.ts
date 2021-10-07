@@ -1,4 +1,4 @@
-export interface SubmittedCheck {
+export interface ValidCheck {
   checkCode: string
   schoolUUID: string
   config: CheckConfig
@@ -9,10 +9,10 @@ export interface SubmittedCheck {
       chargingTime?: number
       dischargingTime?: number | null
     }
-    cpu?: {
+    cpu: {
       hardwareConcurrency?: number
     }
-    navigator?: {
+    navigator: {
       userAgent?: string
       platform?: string
       language?: string
@@ -37,30 +37,36 @@ export interface SubmittedCheck {
     deviceId?: string
     appUsageCounter?: number
   }
-  pupil: {
-    checkCode: string
-    inputAssistant?: {
-      firstName?: string
-      lastName?: string
-    }
-  }
+  pupil: PupilInfo
   questions: CheckQuestion[]
-  school: {
-    name: string
-    uuid: string
-  }
-  tokens: {
-    checkStarted: QueueAuthToken
-    pupilPreferences: QueueAuthToken
-    pupilFeedback: QueueAuthToken
-    checkComplete?: QueueAuthToken
-    jwt: {
-      token: string
-    }
-  }
+  school: SchoolInfo
+  tokens: TokenInfo
   audit: CompleteCheckAuditEntry[]
   inputs: CompleteCheckInputEntry[]
   answers: CompleteCheckAnswer[]
+}
+
+export interface TokenInfo {
+  checkStarted: QueueAuthToken
+  pupilPreferences: QueueAuthToken
+  pupilFeedback: QueueAuthToken
+  checkComplete?: QueueAuthToken
+  jwt: {
+    token: string
+  }
+}
+
+export interface PupilInfo {
+  checkCode: string
+  inputAssistant?: {
+    firstName?: string
+    lastName?: string
+  }
+}
+
+export interface SchoolInfo {
+  name: string
+  uuid: string
 }
 
 export interface CheckConfig {
@@ -93,7 +99,7 @@ export interface CheckQuestion {
 export interface CompleteCheckAnswer {
   factor1: number
   factor2: number
-  answer: number
+  answer: string
   sequenceNumber: number
   question: string
   clientTimestamp: string
@@ -148,4 +154,75 @@ export interface CompleteCheckAuditEntry {
     question: string
     isWarmup?: boolean
   }
+}
+
+export function getValidatedCheck (): ValidCheck {
+  const answers: CompleteCheckAnswer[] = []
+  for (let index = 0; index < 25; index++) {
+    answers.push({
+      answer: `${index}`,
+      clientTimestamp: '',
+      factor1: index,
+      factor2: index,
+      question: `${index}x${index}`,
+      sequenceNumber: index
+    })
+  }
+  const check: ValidCheck = {
+    answers: answers,
+    audit: [],
+    checkCode: '2f39b888-892e-4d0a-918b-c52288b1e54f',
+    config: {
+      audibleSounds: false,
+      checkTime: 0,
+      colourContrast: false,
+      compressCompletedCheck: false,
+      fontSize: false,
+      inputAssistance: false,
+      loadingTime: 0,
+      nextBetweenQuestions: false,
+      numpadRemoval: false,
+      practice: false,
+      questionReader: false,
+      questionTime: 0
+    },
+    device: {
+      cpu: {
+        hardwareConcurrency: 4
+      },
+      navigator: {
+      }
+    },
+    inputs: [],
+    pupil: {
+      checkCode: ''
+    },
+    questions: [],
+    tokens: {
+      checkStarted: {
+        queueName: '',
+        token: '',
+        url: ''
+      },
+      pupilFeedback: {
+        queueName: '',
+        token: '',
+        url: ''
+      },
+      jwt: {
+        token: ''
+      },
+      pupilPreferences: {
+        queueName: '',
+        token: '',
+        url: ''
+      }
+    },
+    school: {
+      name: '',
+      uuid: ''
+    },
+    schoolUUID: ''
+  }
+  return check
 }

@@ -1,12 +1,12 @@
 import { PreparedCheck } from '../../schemas/check-schemas/prepared-check'
-import { CheckQuestion, CompleteCheckAnswer, SubmittedCheck } from '../../schemas/check-schemas/submitted-check'
+import { CheckQuestion, CompleteCheckAnswer, ValidCheck } from '../../schemas/check-schemas/validated-check'
 import * as faker from 'faker'
 import moment from 'moment'
 import { FakeCheckAuditGeneratorService } from './fake-check-audit-generator.service'
 import { FakeCheckInputsGeneratorService } from './fake-check-inputs-generator.service'
 
 export interface ICompletedCheckGeneratorService {
-  create (preparedCheck: PreparedCheck): SubmittedCheck
+  create (preparedCheck: PreparedCheck): ValidCheck
 }
 
 export class FakeCompletedCheckGeneratorService implements ICompletedCheckGeneratorService {
@@ -43,8 +43,9 @@ export class FakeCompletedCheckGeneratorService implements ICompletedCheckGenera
 
   private createAnswers (questions: CheckQuestion[]): CompleteCheckAnswer[] {
     const answers = questions.map(q => {
+      const correctAnswer = q.factor1 * q.factor2
       return {
-        answer: q.factor1 * q.factor2,
+        answer: `${correctAnswer}`,
         clientTimestamp: moment().add(q.order, 'seconds').toISOString(),
         factor1: q.factor1,
         factor2: q.factor2,
@@ -57,12 +58,12 @@ export class FakeCompletedCheckGeneratorService implements ICompletedCheckGenera
       const answer = faker.random.arrayElement(answers)
       // just pick any number in the given range, it could be correct or not...
       const newAnswer = faker.datatype.number({ min: 0, max: 144 })
-      answer.answer = newAnswer
+      answer.answer = `${newAnswer}`
     }
     return answers
   }
 
-  create (preparedCheck: PreparedCheck): SubmittedCheck {
+  create (preparedCheck: PreparedCheck): ValidCheck {
     const answers = this.createAnswers(preparedCheck.questions)
     const audits = this.fakeCheckAuditBuilderService.createAudits(preparedCheck.questions)
     const inputs = this.fakeCheckInputsGeneratorService.create(answers)

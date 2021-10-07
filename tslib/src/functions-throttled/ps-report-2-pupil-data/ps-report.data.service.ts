@@ -196,7 +196,7 @@ export class PsReportDataService {
           FROM mtc_admin.[check] c
                LEFT JOIN mtc_results.checkResult cr ON (c.id = cr.check_id)
                LEFT JOIN mtc_admin.pupilRestart pr ON (c.id = pr.check_id)
-               LEFT JOIN mtc_admin.pupilRestartReason rr ON (pr.pupilRestartReason_id = rr.id)
+               LEFT JOIN mtc_admin.restartReasonLookUp rr ON (pr.restartReasonLookUp_Id = rr.id)
          WHERE c.id = @checkId
     `
 
@@ -270,7 +270,7 @@ export class PsReportDataService {
 
     const sql = `
         SELECT cf.id, cf.name, cf.formData
-          FROM mtc_admin.checkForm cf 
+          FROM mtc_admin.checkForm cf
          WHERE cf.id = @checkFormId
     `
     const res: DBCheckForm[] = await this.sqlService.query(sql, [{ name: 'checkFormId', value: checkFormId, type: TYPES.Int }])
