@@ -265,6 +265,7 @@ describe('pupil controller:', () => {
           csvErrorFile: 'test.csv',
           hasValidationError: true
         }))
+        spyOn(sut, 'getAddMultiplePupils')
         const res = getRes()
         const req = getReq(goodReqParams)
         await sut.postAddMultiplePupils(req, res, next)

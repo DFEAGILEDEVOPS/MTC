@@ -69,7 +69,8 @@ describe('sas-token.service', () => {
         expect({}.hasOwnProperty.call(res, 'queueName')).toBe(true)
       })
 
-      it('makes a call to redis to fetch the cached token', async () => {
+      it('makes a call to redis to try and fetch the cached token', async () => {
+        spyOn(sasTokenDataService, 'generateSasTokenWithPublishOnly').and.returnValue('url?queryString')
         await sasTokenService.generateSasToken(queueName, expiryDate)
         expect(redisCacheService.get).toHaveBeenCalled()
       })
