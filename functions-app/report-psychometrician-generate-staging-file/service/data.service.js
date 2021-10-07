@@ -39,7 +39,7 @@ const dataService = {
                      chk.pupilLoginDate,
                      cs.code AS checkStatus,
                      cs.description AS checkStatusDescription,
-                     prr.code AS restartCode,
+                     rrlu.code AS restartCode,
                      (SELECT COUNT(id)
                         FROM [mtc_admin].[pupilRestart] pr
                        WHERE pr.pupil_id = chk.pupil_id
@@ -69,7 +69,7 @@ const dataService = {
                         LEFT JOIN [mtc_admin].[checkWindow] cw ON (chk.checkWindow_id = cw.id)
                         LEFT JOIN [mtc_admin].[attendanceCode] ac ON (p.attendanceId = ac.id)
                         LEFT JOIN [mtc_admin].[pupilRestart] pr ON (pr.check_id = chk.id AND pr.isDeleted = 0)
-                        LEFT JOIN [mtc_admin].[pupilRestartReason] prr ON (prr.id = pr.pupilRestartReason_id)
+                        LEFT JOIN [mtc_admin].[restartReasonLookUp] rrlu ON (rrlu.id = pr.restartReasonLookUp_Id)
                   WHERE p.attendanceId IS NOT NULL
                      OR p.checkComplete = 1;`
     psychometricianDataService.setLogger(this.logger)
