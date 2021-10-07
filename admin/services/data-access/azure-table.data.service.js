@@ -8,7 +8,16 @@ const connectionString = config.AZURE_STORAGE_CONNECTION_STRING
 const service = {
   retrieveEntity: async function retrieveEntity (tableName, partitionKey, rowKey) {
     const client = TableClient.fromConnectionString(connectionString, tableName)
-    return client.getEntity(partitionKey, rowKey)
+    try {
+      const entity = await client.getEntity(partitionKey, rowKey)
+      return entity
+    } catch (error) {
+      if (error.details.odataError.code === 'ResourceNotFound') {
+        throw new Error(`entity not found with PartitionKey:${partitionKey} rowKey:${rowKey}`)
+      } else {
+        throw error
+      }
+    }
   },
 
   clearTable: async function clearTable (tableName) {

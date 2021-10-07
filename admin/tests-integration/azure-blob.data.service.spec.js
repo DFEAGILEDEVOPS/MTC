@@ -6,7 +6,9 @@ const uuid = require('uuid')
 const sut = require('../services/data-access/azure-blob.data.service')
 const fs = require('fs')
 const path = require('path')
+const config = require('../config')
 
+const connectionString = config.AZURE_STORAGE_CONNECTION_STRING
 const commonPrefix = 'mtc-integration-test'
 const fixturesFolder = path.join('./', 'tests-integration', 'fixtures')
 
@@ -21,14 +23,14 @@ describe('azure-blob.data.service', () => {
   beforeAll(async () => {
     testRunContainerName = getUniqueName()
     testRunDirectoryName = path.join(fixturesFolder, getUniqueName())
-    const blobServiceClient = BlobServiceClient.fromConnectionString(process.env.AZURE_STORAGE_CONNECTION_STRING)
+    const blobServiceClient = BlobServiceClient.fromConnectionString(connectionString)
     const containerClient = blobServiceClient.getContainerClient(testRunContainerName)
     await containerClient.create()
     await fs.promises.mkdir(testRunDirectoryName)
   })
 
   afterAll(async () => {
-    const blobServiceClient = BlobServiceClient.fromConnectionString(process.env.AZURE_STORAGE_CONNECTION_STRING)
+    const blobServiceClient = BlobServiceClient.fromConnectionString(connectionString)
     const containerClient = blobServiceClient.getContainerClient(testRunContainerName)
     await containerClient.deleteIfExists()
     await fs.promises.rmdir(testRunDirectoryName, {
@@ -39,7 +41,7 @@ describe('azure-blob.data.service', () => {
   it('createContainerIfNotExists - should create container if it does not already exist', async () => {
     const containerName = getUniqueName()
     await sut.createContainerIfNotExists(containerName)
-    const serviceClient = BlobServiceClient.fromConnectionString(process.env.AZURE_STORAGE_CONNECTION_STRING)
+    const serviceClient = BlobServiceClient.fromConnectionString(connectionString)
     const containerClient = serviceClient.getContainerClient(containerName)
     expect(await containerClient.exists()).toBe(true)
     await containerClient.delete()
@@ -51,7 +53,7 @@ describe('azure-blob.data.service', () => {
     await fs.promises.writeFile(localFileName, content)
     const remoteFileName = `${commonPrefix}-upload-${content}.txt`
     await sut.uploadLocalFile(testRunContainerName, remoteFileName, localFileName)
-    const serviceClient = BlobServiceClient.fromConnectionString(process.env.AZURE_STORAGE_CONNECTION_STRING)
+    const serviceClient = BlobServiceClient.fromConnectionString(connectionString)
     const containerClient = serviceClient.getContainerClient(testRunContainerName)
     const blobClient = containerClient.getBlockBlobClient(remoteFileName)
     const downloadedFileName = path.join(testRunDirectoryName, `${commonPrefix}-download-${content}.txt`)
@@ -82,7 +84,7 @@ describe('azure-blob.data.service', () => {
     const localFileName = path.join(testRunDirectoryName, `${commonPrefix}-local-${content}.txt`)
     await fs.promises.writeFile(localFileName, content)
     const remoteBlobName = `${commonPrefix}-upload-${content}.txt`
-    const serviceClient = BlobServiceClient.fromConnectionString(process.env.AZURE_STORAGE_CONNECTION_STRING)
+    const serviceClient = BlobServiceClient.fromConnectionString(connectionString)
     const containerClient = serviceClient.getContainerClient(testRunContainerName)
     const blobClient = containerClient.getBlockBlobClient(remoteBlobName)
     await blobClient.uploadFile(localFileName)
