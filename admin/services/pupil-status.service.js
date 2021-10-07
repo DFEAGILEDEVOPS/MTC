@@ -33,8 +33,7 @@ const pupilStatusService = {
    * @return {Object} partially cloned pupil obj with an additional `status` property
    */
   addStatus: function (settings, pupil) {
-    const newPupil = R.pickAll(['pupilId', 'foreName', 'lastName', 'middleNames', 'dateOfBirth', 'urlSlug', 'checkStatusCode',
-      'group_id', 'reason', 'reasonCode'], pupil)
+    const newPupil = R.pickAll(['pupilId', 'foreName', 'lastName', 'middleNames', 'dateOfBirth', 'urlSlug', 'group_id', 'reason', 'reasonCode'], pupil)
     newPupil.status = pupilStatusService.getProcessStatusV2({
       attendanceId: pupil.attendanceId,
       checkComplete: pupil.checkComplete,
@@ -118,7 +117,7 @@ const pupilStatusService = {
       }
     } else if (isTrue(checkReceived) && isFalse(checkComplete)) {
       status = 'Processing'
-    } else if (isTrue(checkReceived) && isTrue(checkComplete) && isComplete(checkStatusCode) && isTrue(pupilCheckComplete)) {
+    } else if (isTrue(checkReceived) && isTrue(checkComplete) && isTrue(pupilCheckComplete)) {
       status = 'Complete'
     } else {
       logger.error(`getProcessStatusV2(): ERROR: Unable to determine status for pupil [${pupilId}] arg was: \n` +
@@ -130,7 +129,6 @@ const pupilStatusService = {
 
 const isNew = (str) => str === 'NEW'
 const isCollected = (str) => str === 'COL'
-const isComplete = (str) => str === 'CMP'
 
 function isNotReceived (date, minutesToAdd, now) {
   if (!date || !moment.isMoment(date)) {
