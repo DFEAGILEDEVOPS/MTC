@@ -1,36 +1,22 @@
 'use strict'
 
-/* global describe, beforeEach, afterEach, it, expect */
+/* global describe beforeEach it expect spyOn */
 
-const proxyquire = require('proxyquire').noCallThru()
-const sinon = require('sinon')
 const sqlService = require('../../../../services/data-access/sql.service')
+const sut = require('../../../../services/data-access/setting.data.service')
 
 describe('pupil.data.service', () => {
-  let service, sandbox
-
-  beforeEach(() => {
-    sandbox = sinon.createSandbox()
-  })
-
-  afterEach(() => sandbox.restore())
-
   describe('#sqlUpdate', () => {
-    let mock
-
     beforeEach(() => {
-      mock = sandbox.mock(sqlService).expects('modify').resolves({ rowsModified: 1 })
-      service = proxyquire('../../../../services/data-access/setting.data.service', {
-        '../data-access/sql.service': sqlService
-      })
+      spyOn(sqlService, 'modify').and.returnValue({ rowsModified: 1 })
     })
 
-    it('calls the model', () => {
+    it('calls the model', async () => {
       const loadingTimeLimit = 10
       const questionTimeLimit = 20
       const checkTimeLimit = 30
-      service.sqlUpdate(loadingTimeLimit, questionTimeLimit, checkTimeLimit)
-      expect(mock.verify()).toBe(true)
+      await sut.sqlUpdate(loadingTimeLimit, questionTimeLimit, checkTimeLimit)
+      expect(sqlService.modify).toHaveBeenCalled()
     })
   })
 })
