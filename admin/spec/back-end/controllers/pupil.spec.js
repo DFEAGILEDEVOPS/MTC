@@ -1,5 +1,5 @@
 'use strict'
-/* global describe beforeEach it expect jasmine spyOn */
+/* global describe beforeEach it expect jasmine spyOn fit fdescribe */
 
 const httpMocks = require('node-mocks-http')
 const R = require('ramda')
@@ -175,7 +175,7 @@ describe('pupil controller:', () => {
     })
   })
 
-  describe('postAddMultiplePupils() route', () => {
+  fdescribe('postAddMultiplePupils() route', () => {
     let next
     const goodReqParams = {
       method: 'POST',
@@ -196,7 +196,7 @@ describe('pupil controller:', () => {
       spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ hdfSubmitted: false })
     })
 
-    describe('when the school is found in the database', () => {
+    fdescribe('when the school is found in the database', () => {
       beforeEach(() => {
         spyOn(schoolService, 'findOneById').and.returnValue(schoolMock)
       })
