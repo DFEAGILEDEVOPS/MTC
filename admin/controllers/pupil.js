@@ -5,7 +5,7 @@ const fileValidator = require('../lib/validator/file-validator')
 
 const config = require('../config')
 const pupilAddService = require('../services/pupil-add-service')
-const pupilDataService = require('../services/data-access/pupil.data.service')
+const pupilService = require('../services/pupil.service')
 const checkWindowV2Service = require('../services/check-window-v2.service')
 const uploadedFileService = require('../services/uploaded-file.service')
 const pupilUploadService = require('../services/pupil-upload.service')
@@ -159,7 +159,7 @@ const postAddMultiplePupils = async function postAddMultiplePupils (req, res, ne
     return getAddMultiplePupils(req, res, next)
   } else {
     req.flash('info', `${uploadResult.pupilIds && uploadResult.pupilIds.length} new pupils have been added`)
-    const savedPupils = await pupilDataService.sqlFindByIds(uploadResult.pupilIds, req.user.schoolId)
+    const savedPupils = await pupilService.fetchMultipleByIds(uploadResult.pupilIds, req.user.schoolId)
     const slugs = savedPupils.map(p => p.urlSlug)
     const qp = encodeURIComponent(JSON.stringify(slugs))
     res.redirect(`/pupil-register/pupils-list?hl=${qp}`)
@@ -191,7 +191,7 @@ const getEditPupilById = async function getEditPupilById (req, res, next) {
   res.locals.pageTitle = 'Edit pupil data'
   let pupilExampleYear
   try {
-    const pupil = await pupilDataService.sqlFindOneBySlugWithAgeReason(req.params.id, req.user.schoolId)
+    const pupil = await pupilService.fetchOneBySlugWithAgeReason(req.params.id, req.user.schoolId)
     pupilExampleYear = pupilPresenter.getPupilExampleYear()
     if (!pupil) {
       return next(new Error(`Pupil ${req.params.id} not found`))
@@ -227,7 +227,7 @@ const postEditPupil = async function postEditPupil (req, res, next) {
   res.locals.pageTitle = 'Edit pupil data'
 
   try {
-    pupil = await pupilDataService.sqlFindOneBySlugWithAgeReason(req.body.urlSlug, req.user.schoolId)
+    pupil = await pupilService.fetchOneBySlugWithAgeReason(req.body.urlSlug, req.user.schoolId)
     if (!pupil) {
       return next(new Error(`Pupil ${req.body.urlSlug} not found`))
     }
