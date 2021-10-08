@@ -49,27 +49,25 @@ describe('pupil controller:', () => {
       next = jasmine.createSpy('next')
     })
 
-    describe('getAddPupil - when the school is found in the database', () => {
-      it('displays an add pupil page', async () => {
-        const res = getRes()
-        const req = getReq(goodReqParams)
-        spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-        spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ hdfSubmitted: false })
-        await sut.getAddPupil(req, res, next)
-        expect(res.statusCode).toBe(200)
-        expect(next).not.toHaveBeenCalled()
-      })
+    it('displays an add pupil page', async () => {
+      const res = getRes()
+      const req = getReq(goodReqParams)
+      spyOn(checkWindowV2Service, 'getActiveCheckWindow')
+      spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ hdfSubmitted: false })
+      await sut.getAddPupil(req, res, next)
+      expect(res.statusCode).toBe(200)
+      expect(next).not.toHaveBeenCalled()
+    })
 
-      it('catches errors in the render() call', async () => {
-        const res = getRes()
-        const req = getReq(goodReqParams)
-        spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-        spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ hdfSubmitted: false })
-        spyOn(res, 'render').and.throwError('test')
-        await sut.getAddPupil(req, res, next)
-        expect(res.statusCode).toBe(200) // TODO should this not be 500???
-        expect(next).toHaveBeenCalled()
-      })
+    it('catches errors in the render() call', async () => {
+      const res = getRes()
+      const req = getReq(goodReqParams)
+      spyOn(checkWindowV2Service, 'getActiveCheckWindow')
+      spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ hdfSubmitted: false })
+      spyOn(res, 'render').and.throwError('test')
+      await sut.getAddPupil(req, res, next)
+      expect(res.statusCode).toBe(200) // TODO should this not be 500???
+      expect(next).toHaveBeenCalled()
     })
   })
 
