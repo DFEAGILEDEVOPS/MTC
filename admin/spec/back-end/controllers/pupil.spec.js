@@ -4,8 +4,6 @@
 const httpMocks = require('node-mocks-http')
 const R = require('ramda')
 
-// TODO refactor out data service usage
-const azureBlobDataService = require('../../../services/data-access/azure-blob.data.service')
 const fileValidator = require('../../../lib/validator/file-validator')
 const pupilAddService = require('../../../services/pupil-add-service')
 const pupilDataService = require('../../../services/data-access/pupil.data.service')
@@ -20,6 +18,7 @@ const checkWindowV2Service = require('../../../services/check-window-v2.service'
 const pupilEditService = require('../../../services/pupil-edit.service')
 const ValidationError = require('../../../lib/validation-error')
 const sut = require('../../../controllers/pupil')
+const csvService = require('../../../services/csv-file.service')
 
 describe('pupil controller:', () => {
   function getRes () {
@@ -266,6 +265,7 @@ describe('pupil controller:', () => {
           hasValidationError: true
         }))
         spyOn(sut, 'getAddMultiplePupils')
+        spyOn(pupilDataService, 'sqlFindByIds')
         const res = getRes()
         const req = getReq(goodReqParams)
         await sut.postAddMultiplePupils(req, res, next)
@@ -305,7 +305,8 @@ describe('pupil controller:', () => {
     })
 
     it('writes csv file to response and calls end to begin download', async () => {
-      spyOn(azureBlobDataService, 'getBlobDataAsBuffer').and.returnValue(Promise.resolve('text'))
+      const csvBuffer = Buffer.from('text')
+      spyOn(csvService, 'getCsvFileAsBuffer').and.returnValue(Promise.resolve(csvBuffer))
       const res = getRes()
       res.write = () => {}
       res.end = () => {}
@@ -314,7 +315,7 @@ describe('pupil controller:', () => {
       const req = getReq(goodReqParams)
       await sut.getErrorCSVFile(req, res, next)
       expect(res.statusCode).toBe(200)
-      expect(res.write).toHaveBeenCalledWith('text')
+      expect(res.write).toHaveBeenCalledWith(csvBuffer)
       expect(res.end).toHaveBeenCalled()
     })
   })
