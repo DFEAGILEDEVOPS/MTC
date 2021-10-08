@@ -104,13 +104,13 @@ const pupilStatusService = {
     } else if (
       (isNil(currentCheckId) || (isPositive(currentCheckId) && (isNil(pinExpiresAt) || isExpired(pinExpiresAt)))) &&
       isNil(pupilLoginDate) &&
-      isFalse(checkReceived) &&
-      isFalse(checkComplete)
+      (isFalse(checkReceived) || isNil(checkReceived)) &&
+      (isFalse(checkComplete) || isNil(checkComplete))
     ) {
       status = 'Not started'
     } else if (
       isPositive(currentCheckId) &&
-      (moment.isMoment(pinExpiresAt) && pinExpiresAt.isAfter(moment.utc())) &&
+      (moment.isMoment(pinExpiresAt) && !isExpired(pinExpiresAt)) &&
       isNil(pupilLoginDate) &&
       isFalse(checkReceived) &&
       isFalse(checkComplete)

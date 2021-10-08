@@ -58,17 +58,47 @@ describe('pupil-status.service', () => {
       expect(status).toBe('Just arrived with EAL')
     })
 
-    test('it can detect a Not Started pupil', () => {
+    test('it can detect a Not Started pupil with an expired pin', () => {
       const status = pupilStatusService.getProcessStatusV2({
         attendanceId: null,
-        currentCheckId: null,
+        currentCheckId: 1,
         restartAvailable: false,
         checkComplete: false,
         checkReceived: false,
         pupilLoginDate: null,
         notReceivedExpiryInMinutes: 30,
         pupilCheckComplete: false,
-        pinExpiresAt: moment().add(4, 'hours')
+        pinExpiresAt: moment().subtract(1, 'minute')
+      })
+      expect(status).toBe('Not started')
+    })
+
+    test('it can detect a Not Started pupil with an expired and deleted pin', () => {
+      const status = pupilStatusService.getProcessStatusV2({
+        attendanceId: null,
+        currentCheckId: 1,
+        restartAvailable: false,
+        checkComplete: false,
+        checkReceived: false,
+        pupilLoginDate: null,
+        notReceivedExpiryInMinutes: 30,
+        pupilCheckComplete: false,
+        pinExpiresAt: null
+      })
+      expect(status).toBe('Not started')
+    })
+
+    test('it can detect a Not Started pupil with no pin generated ever', () => {
+      const status = pupilStatusService.getProcessStatusV2({
+        attendanceId: null,
+        currentCheckId: null,
+        restartAvailable: false,
+        checkComplete: null,
+        checkReceived: null,
+        pupilLoginDate: null,
+        notReceivedExpiryInMinutes: 30,
+        pupilCheckComplete: false,
+        pinExpiresAt: null
       })
       expect(status).toBe('Not started')
     })
