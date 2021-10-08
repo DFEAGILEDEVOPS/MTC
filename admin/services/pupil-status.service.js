@@ -1,7 +1,7 @@
 'use strict'
 
 const { isNil } = require('ramda')
-const { isFalse, isTrue, isPositive } = require('ramda-adjunct')
+const { isFalse, isTrue, isPositive, isNotNil } = require('ramda-adjunct')
 const moment = require('moment')
 const R = require('ramda')
 
@@ -38,7 +38,6 @@ const pupilStatusService = {
       attendanceId: pupil.attendanceId,
       checkComplete: pupil.checkComplete,
       checkReceived: pupil.checkReceived,
-      checkStatusCode: pupil.checkStatusCode,
       currentCheckId: pupil.currentCheckId,
       notReceivedExpiryInMinutes: settings.checkTimeLimit,
       pinExpiresAt: pupil.pinExpiresAt,
@@ -53,22 +52,21 @@ const pupilStatusService = {
   },
 
   /**
- * Process Status Object
- * @typedef {Object} ProcessStatus
- * @property {Number} attendanceId
- * @property {Boolean} checkComplete
- * @property {Boolean} checkReceived
- * @property {String} checkStatusCode
- * @property {Number} currentCheckid
- * @property {Number} notReceivedExpiryInMinutes
- * @property {Date} pinExpiresAt
- * @property {Boolean} processingFailed
- * @property {Boolean} pupilCheckComplete
- * @property {Number} pupilId
- * @property {Date} pupilLoginDate
- * @property {Boolean} restartAvailable
- * @property {String} reason
- */
+   * Process Status Object
+   * @typedef {Object} ProcessStatus
+   * @property {Number} attendanceId
+   * @property {Boolean} checkComplete
+   * @property {Boolean} checkReceived
+   * @property {Number} currentCheckid
+   * @property {Number} notReceivedExpiryInMinutes
+   * @property {Date} pinExpiresAt
+   * @property {Boolean} processingFailed
+   * @property {Boolean} pupilCheckComplete
+   * @property {Number} pupilId
+   * @property {Date} pupilLoginDate
+   * @property {Boolean} restartAvailable
+   * @property {String} reason
+   */
 
   /**
    * Return the process status using new pupil status fields
@@ -82,7 +80,6 @@ const pupilStatusService = {
       attendanceId,
       checkComplete,
       checkReceived,
-      checkStatusCode,
       currentCheckId,
       notReceivedExpiryInMinutes,
       pinExpiresAt,
@@ -104,20 +101,45 @@ const pupilStatusService = {
       status = 'Error in processing'
     } else if (isTrue(restartAvailable)) {
       status = 'Restart'
-    } else if ((isNil(currentCheckId) && isNil(checkStatusCode)) ||
-      (isPositive(currentCheckId) && isNew(checkStatusCode) &&
-        (isNil(pinExpiresAt) || isExpired(pinExpiresAt)))) {
+    } else if (
+      (isNil(currentCheckId) || (isPositive(currentCheckId) && (isNil(pinExpiresAt) || isExpired(pinExpiresAt)))) &&
+      isNil(pupilLoginDate) &&
+      isFalse(checkReceived) &&
+      isFalse(checkComplete)
+    ) {
       status = 'Not started'
-    } else if (isPositive(currentCheckId) && isNew(checkStatusCode)) {
+    } else if (
+      isPositive(currentCheckId) &&
+      (moment.isMoment(pinExpiresAt) && pinExpiresAt.isAfter(moment.utc())) &&
+      isNil(pupilLoginDate) &&
+      isFalse(checkReceived) &&
+      isFalse(checkComplete)
+    ) {
       status = 'PIN generated'
-    } else if (isPositive(currentCheckId) && isCollected(checkStatusCode) && isFalse(checkReceived)) {
+    } else if (
+      isPositive(currentCheckId) &&
+      isNotNil(pupilLoginDate) &&
+      isFalse(checkReceived) &&
+      isFalse(checkComplete)
+    ) {
       status = 'Logged in'
-      if (isNotReceived(pupilLoginDate, notReceivedExpiryInMinutes, moment.utc())) {
+      if (
+        isNotReceived(pupilLoginDate, notReceivedExpiryInMinutes, moment.utc())
+      ) {
         status = 'Incomplete'
       }
-    } else if (isTrue(checkReceived) && isFalse(checkComplete)) {
+    } else if (
+      isNotNil(pupilLoginDate) &&
+      isTrue(checkReceived) &&
+      isFalse(checkComplete)
+    ) {
       status = 'Processing'
-    } else if (isTrue(checkReceived) && isTrue(checkComplete) && isTrue(pupilCheckComplete)) {
+    } else if (
+      isNotNil(pupilLoginDate) &&
+      isTrue(checkReceived) &&
+      isTrue(checkComplete) &&
+      isTrue(pupilCheckComplete)
+    ) {
       status = 'Complete'
     } else {
       logger.error(`getProcessStatusV2(): ERROR: Unable to determine status for pupil [${pupilId}] arg was: \n` +
@@ -126,9 +148,6 @@ const pupilStatusService = {
     return status
   }
 }
-
-const isNew = (str) => str === 'NEW'
-const isCollected = (str) => str === 'COL'
 
 function isNotReceived (date, minutesToAdd, now) {
   if (!date || !moment.isMoment(date)) {

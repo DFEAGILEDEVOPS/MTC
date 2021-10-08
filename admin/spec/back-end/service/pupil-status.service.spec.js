@@ -46,7 +46,6 @@ describe('pupil-status.service', () => {
       const status = pupilStatusService.getProcessStatusV2({
         attendanceId: 1,
         currentCheckId: null,
-        checkStatusCode: null,
         restartAvailable: false,
         checkComplete: false,
         checkReceived: false,
@@ -63,7 +62,6 @@ describe('pupil-status.service', () => {
       const status = pupilStatusService.getProcessStatusV2({
         attendanceId: null,
         currentCheckId: null,
-        checkStatusCode: null,
         restartAvailable: false,
         checkComplete: false,
         checkReceived: false,
@@ -79,7 +77,6 @@ describe('pupil-status.service', () => {
       const status = pupilStatusService.getProcessStatusV2({
         attendanceId: null,
         currentCheckId: 1,
-        checkStatusCode: 'NEW',
         restartAvailable: false,
         checkComplete: false,
         checkReceived: false,
@@ -95,7 +92,6 @@ describe('pupil-status.service', () => {
       const status = pupilStatusService.getProcessStatusV2({
         attendanceId: null,
         currentCheckId: 1,
-        checkStatusCode: 'COL',
         restartAvailable: false,
         checkComplete: false,
         checkReceived: false,
@@ -111,7 +107,6 @@ describe('pupil-status.service', () => {
       const status = pupilStatusService.getProcessStatusV2({
         attendanceId: null,
         currentCheckId: 1,
-        checkStatusCode: 'COL',
         restartAvailable: false,
         checkComplete: false,
         checkReceived: true,
@@ -127,7 +122,6 @@ describe('pupil-status.service', () => {
       const status = pupilStatusService.getProcessStatusV2({
         attendanceId: null,
         currentCheckId: 1,
-        checkStatusCode: 'COL',
         restartAvailable: false,
         checkComplete: false,
         checkReceived: true,
@@ -144,7 +138,6 @@ describe('pupil-status.service', () => {
       const status = pupilStatusService.getProcessStatusV2({
         attendanceId: null,
         currentCheckId: 1,
-        checkStatusCode: 'CMP',
         restartAvailable: false,
         checkComplete: true,
         checkReceived: true,
@@ -160,7 +153,6 @@ describe('pupil-status.service', () => {
       const status = pupilStatusService.getProcessStatusV2({
         attendanceId: null,
         currentCheckId: null,
-        checkStatusCode: null,
         restartAvailable: true,
         checkComplete: false,
         checkReceived: false,
@@ -176,7 +168,6 @@ describe('pupil-status.service', () => {
       const status = pupilStatusService.getProcessStatusV2({
         attendanceId: null,
         currentCheckId: 1,
-        checkStatusCode: 'COL',
         restartAvailable: false,
         checkComplete: false,
         checkReceived: false,
@@ -192,7 +183,6 @@ describe('pupil-status.service', () => {
       const status = pupilStatusService.getProcessStatusV2({
         attendanceId: null,
         currentCheckId: 1,
-        checkStatusCode: 'NEW',
         restartAvailable: false,
         checkComplete: false,
         checkReceived: false,
@@ -210,13 +200,12 @@ describe('pupil-status.service', () => {
       const status = pupilStatusService.getProcessStatusV2({
         attendanceId: null,
         currentCheckId: 1,
-        checkStatusCode: 'VOD',
         restartAvailable: false,
-        checkComplete: false,
+        checkComplete: true,
         checkReceived: false,
         pupilLoginDate: null,
         notReceivedExpiryInMinutes: 30,
-        pupilCheckComplete: false,
+        pupilCheckComplete: true,
         pinExpiresAt: moment().subtract(1, 'minutes')
       })
       expect(status).toBe('N/A')
@@ -227,7 +216,6 @@ describe('pupil-status.service', () => {
       const status = pupilStatusService.getProcessStatusV2({
         attendanceId: null,
         currentCheckId: 1,
-        checkStatusCode: 'NEW',
         restartAvailable: false,
         checkComplete: false,
         checkReceived: false,
