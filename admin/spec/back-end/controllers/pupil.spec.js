@@ -1,5 +1,5 @@
 'use strict'
-/* global describe beforeEach it expect jasmine spyOn fit fdescribe */
+/* global describe beforeEach it expect jasmine spyOn describe */
 
 const httpMocks = require('node-mocks-http')
 const R = require('ramda')
@@ -175,7 +175,7 @@ describe('pupil controller:', () => {
     })
   })
 
-  fdescribe('postAddMultiplePupils() route', () => {
+  describe('postAddMultiplePupils() route', () => {
     let next
     const goodReqParams = {
       method: 'POST',
@@ -196,7 +196,7 @@ describe('pupil controller:', () => {
       spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ hdfSubmitted: false })
     })
 
-    fdescribe('when the school is found in the database', () => {
+    describe('when the school is found in the database', () => {
       beforeEach(() => {
         spyOn(schoolService, 'findOneById').and.returnValue(schoolMock)
       })
@@ -224,7 +224,7 @@ describe('pupil controller:', () => {
         await sut.postAddMultiplePupils(req, res, next)
       })
 
-      fit('displays the add multiple pupils page when file errors have been found', async () => {
+      it('displays the add multiple pupils page when file errors have been found', async () => {
         const validationError = new ValidationError()
         validationError.addError('test-field', 'test error message')
         spyOn(fileValidator, 'validate').and.returnValue(Promise.resolve(validationError))
