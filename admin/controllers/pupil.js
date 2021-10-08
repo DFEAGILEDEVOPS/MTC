@@ -120,6 +120,7 @@ const getAddMultiplePupils = async function getAddMultiplePupils (req, res, next
  */
 const postAddMultiplePupils = async function postAddMultiplePupils (req, res, next) {
   let school
+  console.log('GUY finding school')
   try {
     school = await schoolService.findOneById(req.user.schoolId)
     if (!school) {
@@ -128,12 +129,15 @@ const postAddMultiplePupils = async function postAddMultiplePupils (req, res, ne
   } catch (error) {
     return next(error)
   }
+  console.log('GUY get template file')
   const uploadFile = req.files && req.files.csvTemplateFile
   try {
+    console.log('GUY validate file')
     const fileErrors = await fileValidator.validate(uploadFile, 'file-upload')
     if (fileErrors.hasError()) {
       res.hasError = true
       res.fileErrors = fileErrors
+      console.log('GUY returning getAddMultiplePupils')
       return getAddMultiplePupils(req, res, next)
     }
   } catch (error) {
@@ -142,6 +146,7 @@ const postAddMultiplePupils = async function postAddMultiplePupils (req, res, ne
 
   let uploadResult
   try {
+    console.log('GUY uploading file')
     uploadResult = await pupilUploadService.upload(school, uploadFile)
   } catch (error) {
     return next(error)
@@ -149,21 +154,24 @@ const postAddMultiplePupils = async function postAddMultiplePupils (req, res, ne
 
   // Upload errors found
   if (uploadResult.error) {
+    console.log('GUY upload result error, returning')
     return next(uploadResult.error)
   }
-
   if (uploadResult.hasValidationError) {
     req.session.csvErrorFile = uploadResult.csvErrorFile
     res.hasError = uploadResult.hasValidationError
     res.fileErrors = uploadResult.fileErrors
+    console.log('GUY validation error found, returning getAddMultiplePupils')
     return getAddMultiplePupils(req, res, next)
   } else {
     req.flash('info', `${uploadResult.pupilIds && uploadResult.pupilIds.length} new pupils have been added`)
+    console.log('GUY fetching multiple pupils by ids')
     const savedPupils = await pupilService.fetchMultipleByIds(uploadResult.pupilIds, req.user.schoolId)
     const slugs = savedPupils.map(p => p.urlSlug)
     const qp = encodeURIComponent(JSON.stringify(slugs))
     res.redirect(`/pupil-register/pupils-list?hl=${qp}`)
   }
+  console.log('GUY exiting method at final point')
 }
 
 /**

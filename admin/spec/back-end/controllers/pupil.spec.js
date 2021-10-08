@@ -224,10 +224,11 @@ describe('pupil controller:', () => {
         await sut.postAddMultiplePupils(req, res, next)
       })
 
-      it('displays the add multiple pupils page when file errors have been found', async () => {
+      fit('displays the add multiple pupils page when file errors have been found', async () => {
         const validationError = new ValidationError()
         validationError.addError('test-field', 'test error message')
         spyOn(fileValidator, 'validate').and.returnValue(Promise.resolve(validationError))
+        spyOn(sut, 'getAddMultiplePupils')
         const res = getRes()
         const req = getReq(goodReqParams)
         await sut.postAddMultiplePupils(req, res, next)
