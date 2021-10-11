@@ -100,13 +100,14 @@ pupilRestartDataService.sqlMarkRestartAsDeleted = async (restartId, userId) => {
       type: TYPES.Int
     }
   ]
-  const sql = `DECLARE @newCheckId int;
-               DECLARE @newCheckCode char(3);
-               DECLARE @originCheckId int;
-               DECLARE @originCheckCode char(3);
-               DECLARE @originCheckComplete bit;
-               DECLARE @pupilId int;
-               DECLARE @isDeleted bit;
+  const sql = `DECLARE @newCheckId INT;
+               DECLARE @newCheckPupilLoginDate DATETIMEOFFSET;
+               DECLARE @newCheckReceived BIT;
+               DECLARE @newCheckComplete BIT;
+               DECLARE @originCheckId INT;
+               DECLARE @originCheckComplete BIT;
+               DECLARE @pupilId INT;
+               DECLARE @isDeleted BIT;
 
                -- Populate the main variables
                SELECT
@@ -132,31 +133,21 @@ pupilRestartDataService.sqlMarkRestartAsDeleted = async (restartId, userId) => {
                BEGIN
                    -- Get the check status code
                    SELECT
-                    @newCheckCode = code
-                   FROM [mtc_admin].[check] c JOIN
-                        [mtc_admin].[checkStatus] cs ON (c.checkStatus_id = cs.id)
+                    @newCheckPupilLoginDate = c.pupilLoginDate,
+                    @newCheckReceived = c.received,
+                    @newCheckComplete = c.complete
+                   FROM [mtc_admin].[check] c LEFT JOIN
+                       [mtc_admin].[checkPin] cp ON (c.id = cp.check_id)                        
                    WHERE
                         c.id = @newCheckId;
 
                    -- IF the new check is not in NEW status we have to bail out
-                   IF @newCheckCode <> 'NEW'
+                   IF (@newCheckPupilLoginDate IS NOT NULL OR @newCheckReceived = 1 OR @newCheckComplete = 1)
                     THROW 51000, 'New check cannot be deleted as it does not have a NEW status', 1;
-
-                   -- IF there is new check raised that has a NEW status, we must VOID the check
-                   -- UPDATE 2021-10-06 remove checkStatus table so why do we change this check to VOID in the first place?
---                   UPDATE [mtc_admin].[check]
---                   SET checkStatus_id = (select id from [mtc_admin].[checkStatus] where code = 'VOD')
---                   WHERE id = @newCheckId;
 
                   -- delete check pin as it will never be used
                   DELETE FROM [mtc_admin].[checkPin] where check_id = @newCheckId;
                END
-
-               -- The previous check will have been VOIDED, and it must be re-activated.
-               -- UPDATE 2021-10-06 remove checkStatus table: so why do we change this check to VOID in the first place?
---                UPDATE [mtc_admin].[check]
---                SET checkStatus_id = [mtc_admin].ufnCalcCheckStatusID(@originCheckId)
---                WHERE id = @originCheckId;
 
                -- Get the parent check complete flag, just so we can update the pupil.complete flag
                -- when we later update the pupil state fields.
