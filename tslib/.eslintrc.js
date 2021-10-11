@@ -34,7 +34,7 @@ module.exports = {
         'ts-nocheck': true,
         'ts-check': false,
         minimumDescriptionLength: 5
-      }
+      },
     ],
     'jest/consistent-test-it': ['error',
     {
