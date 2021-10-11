@@ -150,12 +150,7 @@ describe('azure-table.data.service', () => {
         getUniqueTableName(),
         `${randomPrefix}-Bad&chars^1`
       ]
-      try {
-        await sut.createTables(tableNames)
-        fail('should have thrown an error due to hyphen in table name')
-      } catch (error) {
-        expect(error).toBeDefined()
-      }
+      await expect(sut.createTables(tableNames)).rejects.toThrow()
     })
   })
 })
