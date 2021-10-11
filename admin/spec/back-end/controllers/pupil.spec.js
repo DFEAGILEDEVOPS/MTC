@@ -233,7 +233,7 @@ describe('pupil controller:', () => {
         expect(res.statusCode).toBe(200)
         expect(res.fileErrors.get('test-field')).toBe('test error message')
         expect(res.locals).toBeDefined()
-        expect(res.locals.pageTitle).toBe('Add multiple pupils')
+        expect(sut.getAddMultiplePupils).toHaveBeenCalledTimes(1)
       })
 
       it('calls next for any thrown errors within pupilUpload service', async () => {
@@ -264,14 +264,13 @@ describe('pupil controller:', () => {
           hasValidationError: true
         }))
         spyOn(sut, 'getAddMultiplePupils')
-        spyOn(pupilService, 'fetchMultipleByIds')
         const res = getRes()
         const req = getReq(goodReqParams)
         await sut.postAddMultiplePupils(req, res, next)
         expect(res.statusCode).toBe(200)
         expect(req.session.csvErrorFile).toBe('test.csv')
         expect(res.locals).toBeDefined()
-        expect(res.locals.pageTitle).toBe('Add multiple pupils')
+        expect(sut.getAddMultiplePupils).toHaveBeenCalledTimes(1)
       })
     })
 
