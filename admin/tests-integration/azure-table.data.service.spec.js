@@ -81,12 +81,7 @@ describe('azure-table.data.service', () => {
       await createTable(tableName)
       const pk = uuid.v4()
       const rk = uuid.v4()
-      try {
-        await sut.retrieveEntity(tableName, pk, rk)
-        fail('error should have been thrown')
-      } catch (error) {
-        expect(error.message).toEqual(`entity not found with PartitionKey:${pk} rowKey:${rk}`)
-      }
+      await expect(sut.retrieveEntity(tableName, pk, rk)).rejects.toThrow(`entity not found with PartitionKey:${pk} rowKey:${rk}`)
     })
   })
 
