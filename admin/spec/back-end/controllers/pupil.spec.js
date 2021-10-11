@@ -1,5 +1,5 @@
 'use strict'
-/* global describe beforeEach it expect jasmine spyOn describe */
+/* global describe beforeEach test expect jest afterEach */
 
 const httpMocks = require('node-mocks-http')
 const R = require('ramda')
@@ -21,6 +21,8 @@ const sut = require('../../../controllers/pupil')
 const csvService = require('../../../services/csv-file.service')
 
 describe('pupil controller:', () => {
+  let next
+
   function getRes () {
     const res = httpMocks.createResponse()
     res.locals = {}
@@ -30,13 +32,20 @@ describe('pupil controller:', () => {
   function getReq (params) {
     const req = httpMocks.createRequest(params)
     req.user = { School: 9991999 }
-    req.breadcrumbs = jasmine.createSpy('breadcrumbs')
-    req.flash = jasmine.createSpy('flash')
+    req.breadcrumbs = jest.fn()
+    req.flash = jest.fn()
     return req
   }
 
+  beforeEach(() => {
+    next = jest.fn()
+  })
+
+  afterEach(() => {
+    jest.restoreAllMocks()
+  })
+
   describe('getAddPupil() route', () => {
-    let next
     const goodReqParams = {
       method: 'GET',
       url: '/school/pupil/add',
@@ -45,34 +54,32 @@ describe('pupil controller:', () => {
       }
     }
 
-    beforeEach(() => {
-      next = jasmine.createSpy('next')
-    })
+    describe('when the school is found in the database', () => {
+      test('displays an add pupil page', async () => {
+        const res = getRes()
+        const req = getReq(goodReqParams)
+        jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockImplementation()
+        jest.spyOn(businessAvailabilityService, 'getAvailabilityData').mockResolvedValue({ hdfSubmitted: false })
+        await sut.getAddPupil(req, res, next)
+        expect(res.statusCode).toBe(200)
+        expect(next).not.toHaveBeenCalled()
+      })
 
-    it('displays an add pupil page', async () => {
-      const res = getRes()
-      const req = getReq(goodReqParams)
-      spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-      spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ hdfSubmitted: false })
-      await sut.getAddPupil(req, res, next)
-      expect(res.statusCode).toBe(200)
-      expect(next).not.toHaveBeenCalled()
-    })
-
-    it('catches errors in the render() call', async () => {
-      const res = getRes()
-      const req = getReq(goodReqParams)
-      spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-      spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ hdfSubmitted: false })
-      spyOn(res, 'render').and.throwError('test')
-      await sut.getAddPupil(req, res, next)
-      expect(res.statusCode).toBe(200) // TODO should this not be 500???
-      expect(next).toHaveBeenCalled()
+      test('catches errors in the render() call', async () => {
+        const res = getRes()
+        const req = getReq(goodReqParams)
+        jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow')
+        jest.spyOn(businessAvailabilityService, 'getAvailabilityData').mockResolvedValue({ hdfSubmitted: false })
+        jest.spyOn(res, 'render').mockRejectedValue(() => { throw new Error('test') })
+        await sut.getAddPupil(req, res, next)
+        expect(res.statusCode).toBe(200)
+        expect(next).toHaveBeenCalled()
+      })
     })
   })
 
   describe('#postAddPupil route', () => {
-    let nextSpy, pupilAddServiceSpy, next, req, res
+    let req, res
     const goodReqParams = {
       method: 'POST',
       url: '/school/pupil/add',
@@ -84,45 +91,42 @@ describe('pupil controller:', () => {
     beforeEach(() => {
       res = getRes()
       req = getReq(goodReqParams)
-      nextSpy = jasmine.createSpy()
-      spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-      spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ hdfSubmitted: false })
+      jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockImplementation()
+      jest.spyOn(businessAvailabilityService, 'getAvailabilityData').mockResolvedValue({ hdfSubmitted: false })
     })
 
     describe('postAddPupil - the pupilData is saved', () => {
       beforeEach(() => {
-        pupilAddServiceSpy = spyOn(pupilAddService, 'addPupil').and.returnValue(pupilMock)
+        jest.spyOn(pupilAddService, 'addPupil').mockResolvedValue(pupilMock)
       })
 
-      it('calls pupilAddService to add a new pupil to the database', async () => {
-        await sut.postAddPupil(req, res, nextSpy)
-        expect(pupilAddServiceSpy.calls.count()).toBe(1)
+      test('calls pupilAddService to add a new pupil to the database', async () => {
+        await sut.postAddPupil(req, res, next)
+        expect(pupilAddService.addPupil).toHaveBeenCalledTimes(1)
       })
 
-      it('redirects to the pupil register page', async () => {
-        await sut.postAddPupil(req, res, nextSpy)
+      test('redirects to the pupil register page', async () => {
+        await sut.postAddPupil(req, res, next)
         expect(res.statusCode).toBe(302)
-      })
-      it('calls pupilRegisterCachingService.dropPupilRegisterCache if pupil has been successfully added', async () => {
-        await sut.postAddPupil(req, res, nextSpy)
       })
     })
 
-    describe('getAddPupil - the pupilData is not saved', () => {
+    describe('the pupilData is not saved', () => {
       beforeEach(() => {
-        const validationError = new ValidationError()
-        validationError.addError('upn', 'Mock error')
-        next = jasmine.createSpy('next')
-        pupilAddServiceSpy = spyOn(pupilAddService, 'addPupil').and.throwError(validationError)
+        jest.spyOn(pupilAddService, 'addPupil').mockImplementation(() => {
+          const validationError = new ValidationError()
+          validationError.addError('upn', 'Mock error')
+          throw validationError
+        })
       })
 
-      it('then it shows the page again', async () => {
-        spyOn(sut, 'getAddPupil').and.callFake((req, res, next, error) => {
+      test('then it shows the page again', async () => {
+        jest.spyOn(sut, 'getAddPupil').mockImplementation((req, res) => {
           res.end('mock doc')
           return Promise.resolve()
         })
-        await sut.postAddPupil(req, res, nextSpy)
-        expect(pupilAddServiceSpy.calls.count()).toBe(1)
+        await sut.postAddPupil(req, res, next)
+        expect(pupilAddService.addPupil).toHaveBeenCalledTimes(1)
         expect(next).not.toHaveBeenCalled()
         expect(res.statusCode).toBe(200)
       })
@@ -130,7 +134,6 @@ describe('pupil controller:', () => {
   })
 
   describe('getAddMultiplePupils() route', () => {
-    let next
     const goodReqParams = {
       method: 'GET',
       url: '/school/pupil/add-batch-pupils',
@@ -139,17 +142,13 @@ describe('pupil controller:', () => {
       }
     }
 
-    beforeEach(() => {
-      next = jasmine.createSpy('next')
-    })
-
-    it('displays an add multiple pupil page', async () => {
+    test('displays an add multiple pupil page', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      spyOn(uploadedFileService, 'getFilesize')
-      spyOn(uploadedFileService, 'getAzureBlobFileSize')
-      spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-      spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ hdfSubmitted: false })
+      jest.spyOn(uploadedFileService, 'getFilesize').mockImplementation()
+      jest.spyOn(uploadedFileService, 'getAzureBlobFileSize').mockImplementation()
+      jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockImplementation()
+      jest.spyOn(businessAvailabilityService, 'getAvailabilityData').mockResolvedValue({ hdfSubmitted: false })
       await sut.getAddMultiplePupils(req, res, next)
       expect(res.statusCode).toBe(200)
       expect(uploadedFileService.getFilesize).toHaveBeenCalled()
@@ -157,14 +156,16 @@ describe('pupil controller:', () => {
       expect(next).not.toHaveBeenCalled()
     })
 
-    it('catches errors in the render() call', async () => {
+    test('catches errors in the render() call', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      spyOn(uploadedFileService, 'getFilesize')
-      spyOn(uploadedFileService, 'getAzureBlobFileSize')
-      spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-      spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ hdfSubmitted: false })
-      spyOn(res, 'render').and.throwError('test')
+      jest.spyOn(uploadedFileService, 'getFilesize').mockImplementation()
+      jest.spyOn(uploadedFileService, 'getAzureBlobFileSize').mockImplementation()
+      jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockImplementation()
+      jest.spyOn(businessAvailabilityService, 'getAvailabilityData').mockResolvedValue({ hdfSubmitted: false })
+      jest.spyOn(res, 'render').mockImplementation(() => {
+        throw new Error('test')
+      })
       await sut.getAddMultiplePupils(req, res, next)
       expect(res.statusCode).toBe(200)
       expect(uploadedFileService.getFilesize).toHaveBeenCalled()
@@ -174,7 +175,6 @@ describe('pupil controller:', () => {
   })
 
   describe('postAddMultiplePupils() route', () => {
-    let next
     const goodReqParams = {
       method: 'POST',
       url: '/school/pupil/add-batch-pupils',
@@ -188,22 +188,19 @@ describe('pupil controller:', () => {
       }
     }
     beforeEach(() => {
-      // TODO refactor out jasmine and use jest api
-      next = jasmine.createSpy('next')
-      spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-      spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ hdfSubmitted: false })
+      jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockImplementation()
+      jest.spyOn(businessAvailabilityService, 'getAvailabilityData').mockResolvedValue({ hdfSubmitted: false })
     })
 
     describe('when the school is found in the database', () => {
       beforeEach(() => {
-        spyOn(schoolService, 'findOneById').and.returnValue(schoolMock)
+        jest.spyOn(schoolService, 'findOneById').mockResolvedValue(schoolMock)
       })
 
-      it('saves the new pupil and redirects to the register pupils page', async () => {
-        spyOn(fileValidator, 'validate').and.returnValue(Promise.resolve(new ValidationError()))
-        spyOn(pupilUploadService, 'upload').and.returnValue(Promise
-          .resolve({ pupilIds: ['1', '2'] }))
-        spyOn(pupilService, 'fetchMultipleByIds').and.returnValue(Promise.resolve([pupilMock]))
+      test('saves the new pupil and redirects to the register pupils page', async () => {
+        jest.spyOn(fileValidator, 'validate').mockResolvedValue(Promise.resolve(new ValidationError()))
+        jest.spyOn(pupilUploadService, 'upload').mockResolvedValue({ pupilIds: ['1', '2'] })
+        jest.spyOn(pupilService, 'fetchMultipleByIds').mockResolvedValue([pupilMock])
         const res = getRes()
         const req = getReq(goodReqParams)
         req.flash = () => {}
@@ -211,34 +208,22 @@ describe('pupil controller:', () => {
         expect(res.statusCode).toBe(302)
       })
 
-      it('drops pupil register cache after a save', async () => {
-        spyOn(fileValidator, 'validate').and.returnValue(Promise.resolve(new ValidationError()))
-        spyOn(pupilUploadService, 'upload').and.returnValue(Promise
-          .resolve({ pupilIds: ['1', '2'] }))
-        spyOn(pupilService, 'fetchMultipleByIds').and.returnValue(Promise.resolve([pupilMock]))
-        const res = getRes()
-        const req = getReq(goodReqParams)
-        req.flash = () => {}
-        await sut.postAddMultiplePupils(req, res, next)
-      })
-
-      it('displays the add multiple pupils page when file errors have been found', async () => {
+      test('displays the add multiple pupils page when file errors have been found', async () => {
         const validationError = new ValidationError()
         validationError.addError('test-field', 'test error message')
-        spyOn(fileValidator, 'validate').and.returnValue(Promise.resolve(validationError))
-        spyOn(sut, 'getAddMultiplePupils')
+        jest.spyOn(fileValidator, 'validate').mockResolvedValue(validationError)
         const res = getRes()
         const req = getReq(goodReqParams)
         await sut.postAddMultiplePupils(req, res, next)
         expect(res.statusCode).toBe(200)
         expect(res.fileErrors.get('test-field')).toBe('test error message')
         expect(res.locals).toBeDefined()
-        expect(sut.getAddMultiplePupils).toHaveBeenCalledTimes(1)
+        expect(res.locals.pageTitle).toBe('Add multiple pupils')
       })
 
-      it('calls next for any thrown errors within pupilUpload service', async () => {
-        spyOn(fileValidator, 'validate').and.returnValue(Promise.resolve(new ValidationError()))
-        spyOn(pupilUploadService, 'upload').and.returnValue(Promise.reject(new Error('error')))
+      test('calls next for any thrown errors within pupilUpload service', async () => {
+        jest.spyOn(fileValidator, 'validate').mockResolvedValue(Promise.resolve(new ValidationError()))
+        jest.spyOn(pupilUploadService, 'upload').mockRejectedValue(new Error('error'))
         const res = getRes()
         const req = getReq(goodReqParams)
         await sut.postAddMultiplePupils(req, res, next)
@@ -246,10 +231,19 @@ describe('pupil controller:', () => {
         expect(next).toHaveBeenCalled()
       })
 
-      it('calls next for any error that is returned from pupilUpload service', async () => {
-        spyOn(fileValidator, 'validate').and.returnValue(Promise.resolve(new ValidationError()))
-        spyOn(pupilUploadService, 'upload').and.returnValue(Promise
-          .resolve({ error: 'error' }))
+      test('calls next for any error that is returned from pupilUpload service', async () => {
+        jest.spyOn(fileValidator, 'validate').mockResolvedValue(new ValidationError())
+        jest.spyOn(pupilUploadService, 'upload').mockRejectedValue(new Error('error'))
+        const res = getRes()
+        const req = getReq(goodReqParams)
+        await sut.postAddMultiplePupils(req, res, next)
+        expect(res.statusCode).toBe(200)
+        expect(next).toHaveBeenCalled()
+      })
+
+      test('calls next for any error that is returned from pupilUpload service', async () => {
+        jest.spyOn(fileValidator, 'validate').mockResolvedValue(new ValidationError())
+        jest.spyOn(pupilUploadService, 'upload').mockResolvedValue({ error: 'error' })
         const res = getRes()
         const req = getReq(goodReqParams)
         await sut.postAddMultiplePupils(req, res, next)
@@ -257,28 +251,29 @@ describe('pupil controller:', () => {
         expect(next).toHaveBeenCalledWith('error')
       })
 
-      it('displays the add multiple pupils page when csv validation returns errors', async () => {
-        spyOn(fileValidator, 'validate').and.returnValue(Promise.resolve(new ValidationError()))
-        spyOn(pupilUploadService, 'upload').and.returnValue(Promise.resolve({
+      test('displays the add multiple pupils page when csv validation returns errors', async () => {
+        jest.spyOn(fileValidator, 'validate').mockResolvedValue(new ValidationError())
+        jest.spyOn(pupilUploadService, 'upload').mockResolvedValue({
           csvErrorFile: 'test.csv',
           hasValidationError: true
-        }))
-        spyOn(sut, 'getAddMultiplePupils')
+        })
+        jest.spyOn(sut, 'getAddMultiplePupils')
         const res = getRes()
         const req = getReq(goodReqParams)
         await sut.postAddMultiplePupils(req, res, next)
         expect(res.statusCode).toBe(200)
         expect(req.session.csvErrorFile).toBe('test.csv')
         expect(res.locals).toBeDefined()
-        expect(sut.getAddMultiplePupils).toHaveBeenCalledTimes(1)
+        expect(res.locals.pageTitle).toBe('Add multiple pupils')
       })
     })
 
     describe('when the school is not found in the database', () => {
       beforeEach(() => {
-        spyOn(schoolService, 'findOneById').and.returnValue(undefined)
+        jest.spyOn(schoolService, 'findOneById').mockResolvedValue(undefined)
       })
-      it('it throws an error', async () => {
+
+      test('it throws an error', async () => {
         const res = getRes()
         const req = getReq(goodReqParams)
         await sut.postAddMultiplePupils(req, res, next)
@@ -299,17 +294,17 @@ describe('pupil controller:', () => {
     }
 
     beforeEach(() => {
-      next = jasmine.createSpy('next')
+      next = jest.fn()
     })
 
-    it('writes csv file to response and calls end to begin download', async () => {
+    test('writes csv file to response and calls end to begin download', async () => {
       const csvBuffer = Buffer.from('text')
-      spyOn(csvService, 'getCsvFileAsBuffer').and.returnValue(Promise.resolve(csvBuffer))
+      jest.spyOn(csvService, 'getCsvFileAsBuffer').mockResolvedValue(csvBuffer)
       const res = getRes()
       res.write = () => {}
       res.end = () => {}
-      spyOn(res, 'write').and.returnValue(null)
-      spyOn(res, 'end').and.returnValue(null)
+      jest.spyOn(res, 'write').mockReturnValue(null)
+      jest.spyOn(res, 'end').mockReturnValue(null)
       const req = getReq(goodReqParams)
       await sut.getErrorCSVFile(req, res, next)
       expect(res.statusCode).toBe(200)
@@ -336,36 +331,37 @@ describe('pupil controller:', () => {
     }
 
     beforeEach(() => {
-      next = jasmine.createSpy('next')
+      next = jest.fn()
     })
 
-    it('retrieves the pupil data', async () => {
+    test('retrieves the pupil data', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      spyOn(pupilService, 'fetchOneBySlugWithAgeReason').and.returnValue(Promise.resolve(populatedPupilMock))
+      jest.spyOn(pupilService, 'fetchOneBySlugWithAgeReason').mockResolvedValue(populatedPupilMock)
       await sut.getEditPupilById(req, res, next)
       expect(pupilService.fetchOneBySlugWithAgeReason).toHaveBeenCalled()
     })
 
-    it('bails out if the pupil is not found', async () => {
+    test('bails out if the pupil is not found', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      spyOn(pupilService, 'fetchOneBySlugWithAgeReason').and.returnValue(Promise.resolve(null))
+      jest.spyOn(pupilService, 'fetchOneBySlugWithAgeReason').mockReturnValue(null)
       await sut.getEditPupilById(req, res, next)
       expect(next).toHaveBeenCalledWith(new Error(`Pupil ${req.params.id} not found`))
     })
 
-    it('bails out if any of the method raises an exception', async () => {
+    test('bails out if any of the method raises an exception', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      spyOn(pupilService, 'fetchOneBySlugWithAgeReason').and.callFake(() => { throw new Error('dummy error') })
+      jest.spyOn(pupilService, 'fetchOneBySlugWithAgeReason').mockImplementation(() => {
+        throw new Error('dummy error')
+      })
       sut.getEditPupilById(req, res, next)
       expect(next).toHaveBeenCalledWith(new Error('dummy error'))
     })
   })
 
   describe('postEditPupil', () => {
-    let next
     const goodReqParams = {
       method: 'GET',
       url: '/school/pupil/edit/pupil1234',
@@ -377,51 +373,50 @@ describe('pupil controller:', () => {
       }
     }
 
-    beforeEach(() => {
-      next = jasmine.createSpy('next')
-    })
-
-    it('makes a call to retrieve the pupil', async () => {
+    test('makes a call to retrieve the pupil', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      spyOn(pupilService, 'fetchOneBySlugWithAgeReason').and.returnValue(Promise.resolve(pupilMock))
-      spyOn(schoolService, 'findOneById').and.returnValue(Promise.resolve(schoolMock))
+      jest.spyOn(pupilService, 'fetchOneBySlugWithAgeReason').mockResolvedValue(pupilMock)
+      jest.spyOn(schoolService, 'findOneById').mockResolvedValue(schoolMock)
       // As we do not want to run any more of the controller code than we need to we can trigger an
       // exception to bail out early, which saves mocking the remaining calls.
-      spyOn(pupilValidator, 'validate').and.callFake(() => { throw new Error('unit test early exit') })
+      jest.spyOn(pupilValidator, 'validate').mockImplementation(() => {
+        throw new Error('unit test early exit')
+      })
       await sut.postEditPupil(req, res, next)
       expect(pupilService.fetchOneBySlugWithAgeReason).toHaveBeenCalled()
     })
 
-    it('bails out if the pupil if not found', async () => {
+    test('bails out if the pupil if not found', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      spyOn(pupilService, 'fetchOneBySlugWithAgeReason').and.returnValue(Promise.resolve(null))
+      jest.spyOn(pupilService, 'fetchOneBySlugWithAgeReason').mockResolvedValue(null)
       await sut.postEditPupil(req, res, next)
       expect(next).toHaveBeenCalledWith(new Error(`Pupil ${req.body.urlSlug} not found`))
     })
 
-    it('makes a call to retrieve the school', async () => {
+    test('makes a call to retrieve the school', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      spyOn(pupilService, 'fetchOneBySlugWithAgeReason').and.returnValue(Promise.resolve(pupilMock))
-      spyOn(schoolService, 'findOneById').and.returnValue(Promise.resolve(schoolMock))
+      jest.spyOn(pupilService, 'fetchOneBySlugWithAgeReason').mockResolvedValue(pupilMock)
+      jest.spyOn(schoolService, 'findOneById').mockResolvedValue(schoolMock)
       // As we do not want to run any more of the controller code than we need to we can trigger an
       // exception to bail out early, which saves mocking the remaining calls.
-      spyOn(pupilValidator, 'validate').and.callFake(() => { throw new Error('unit test early exit') })
+      jest.spyOn(pupilValidator, 'validate').mockImplementation(() => {
+        throw new Error('unit test early exit')
+      })
       await sut.postEditPupil(req, res, next)
       expect(pupilService.fetchOneBySlugWithAgeReason).toHaveBeenCalled()
       expect(schoolService.findOneById).toHaveBeenCalledWith(pupilMock.school_id)
     })
-    it('calls pupilRegisterCachingService.dropPupilRegisterCache if pupil has been successfully edited', async () => {
+    test('calls pupilRegisterCachingService.dropPupilRegisterCache if pupil has been successfully edited', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      spyOn(pupilService, 'fetchOneBySlugWithAgeReason').and.returnValue(Promise.resolve(pupilMock))
-      spyOn(schoolService, 'findOneById').and.returnValue(Promise.resolve(schoolMock))
-      spyOn(pupilValidator, 'validate').and.returnValue(new ValidationError())
-      // spyOn(pupilDataService, 'sqlUpdate')
-      spyOn(pupilEditService, 'update')
-      spyOn(res, 'render')
+      jest.spyOn(pupilService, 'fetchOneBySlugWithAgeReason').mockResolvedValue(pupilMock)
+      jest.spyOn(schoolService, 'findOneById').mockResolvedValue(schoolMock)
+      jest.spyOn(pupilValidator, 'validate').mockResolvedValue(new ValidationError())
+      jest.spyOn(pupilEditService, 'update').mockImplementation()
+      jest.spyOn(res, 'render').mockImplementation()
       // As we do not want to run any more of the controller code than we need to we can trigger an
       // exception to bail out early, which saves mocking the remaining calls.
       await sut.postEditPupil(req, res, next)
