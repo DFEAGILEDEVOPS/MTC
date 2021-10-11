@@ -85,29 +85,6 @@ describe('azure-table.data.service', () => {
     })
   })
 
-  describe('clearTable', () => {
-    test('deletes all entries from the table', async () => {
-      const pk = uuid.v4()
-      const tableName = getUniqueTableName()
-      const client = TableClient.fromConnectionString(connectionString, tableName)
-      await createTable(tableName)
-      for (let index = 0; index < 5; index++) {
-        await client.createEntity({
-          partitionKey: pk,
-          rowKey: index.toString()
-        })
-      }
-      await sut.clearTable(tableName)
-      const entityIterator = client.listEntities()
-      let entityCount = 0
-      for await (const entity of entityIterator) {
-        entityCount++
-        fail(`found entity in table. pk:${entity.partitionKey} rk:${entity.rowKey}`)
-      }
-      expect(entityCount).toBe(0)
-    })
-  })
-
   describe('createTables', () => {
     test('creates specified tables in array', async () => {
       const tableNames = [

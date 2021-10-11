@@ -20,16 +20,6 @@ const service = {
     }
   },
 
-  clearTable: async function clearTable (tableName) {
-    const tableClient = TableClient.fromConnectionString(connectionString, tableName)
-    const entityIterator = tableClient.listEntities()
-    const deletions = []
-    for await (const entity of entityIterator) {
-      deletions.push(tableClient.deleteEntity(entity.partitionKey, entity.rowKey))
-    }
-    return Promise.all(deletions)
-  },
-
   createTables: async function createTables (tables) {
     const tableCreates = tables.map(table => {
       const tableClient = TableClient.fromConnectionString(connectionString, table)

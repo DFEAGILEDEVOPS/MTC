@@ -20,6 +20,7 @@ try {
   console.error(error)
 }
 
+const { TableClient } = require('@azure/data-tables')
 const tableDataService = require('../services/data-access/azure-table.data.service')
 const queueDataService = require('../services/data-access/azure-queue.data.service')
 const names = require('../../deploy/storage/tables-queues.json')
@@ -34,12 +35,24 @@ const tableNames = names.tables
 const poisonQueues = mainQueueNames.map(q => q + '-poison')
 const allQueueNames = mainQueueNames.concat(poisonQueues)
 
+const connectionString = process.env.AZURE_STORAGE_CONNECTION_STRING
+
+async function clearTable (tableName) {
+  const tableClient = TableClient.fromConnectionString(connectionString, tableName)
+  const entityIterator = tableClient.listEntities()
+  const deletions = []
+  for await (const entity of entityIterator) {
+    deletions.push(tableClient.deleteEntity(entity.partitionKey, entity.rowKey))
+  }
+  return Promise.all(deletions)
+}
+
 async function main () {
   await queueDataService.createQueues(allQueueNames)
   const clearQueueTasks = allQueueNames.map(q => queueDataService.clearQueue(q))
   await Promise.allSettled(clearQueueTasks)
   await tableDataService.createTables(tableNames)
-  const clearTableTasks = tableNames.map(t => tableDataService.clearTable(t))
+  const clearTableTasks = tableNames.map(t => clearTable(t))
   await Promise.allSettled(clearTableTasks)
 }
 
