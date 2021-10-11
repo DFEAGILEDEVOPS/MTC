@@ -257,14 +257,14 @@ describe('pupil controller:', () => {
           csvErrorFile: 'test.csv',
           hasValidationError: true
         })
-        jest.spyOn(sut, 'getAddMultiplePupils')
+        jest.spyOn(sut, 'getAddMultiplePupils').mockImplementation()
         const res = getRes()
         const req = getReq(goodReqParams)
         await sut.postAddMultiplePupils(req, res, next)
         expect(res.statusCode).toBe(200)
         expect(req.session.csvErrorFile).toBe('test.csv')
         expect(res.locals).toBeDefined()
-        expect(res.locals.pageTitle).toBe('Add multiple pupils')
+        expect(sut.getAddMultiplePupils).toHaveBeenCalledTimes(1)
       })
     })
 
