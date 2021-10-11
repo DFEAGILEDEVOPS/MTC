@@ -1,6 +1,6 @@
 'use strict'
 
-/* global describe it expect beforeAll afterAll */
+/* global describe test expect beforeAll afterAll */
 const path = require('path')
 const fs = require('fs')
 const globalDotEnvFile = path.join(__dirname, '..', '..', '.env')
@@ -34,49 +34,49 @@ describe('DB function: udfCalcCheckStatusID', () => {
   }
 
   describe('live checks', () => {
-    it('can identify a NEW check', async () => {
+    test('can identify a NEW check', async () => {
       const id = await createCheck('NEW', 1)
       const res = await sql.query(createQuery(id))
       const checkStatusCode = res[0].code
       expect(checkStatusCode).toBe('NEW')
     })
 
-    it('can identify a COLLECTED check', async () => {
+    test('can identify a COLLECTED check', async () => {
       const id = await createCheck('COL', 1)
       const res = await sql.query(createQuery(id))
       const checkStatusCode = res[0].code
       expect(checkStatusCode).toBe('COL') // COLLECTED
     })
 
-    it('can identify a COMPLETED check', async () => {
+    test('can identify a COMPLETED check', async () => {
       const id = await createCheck('CMP', 1)
       const res = await sql.query(createQuery(id))
       const checkStatusCode = res[0].code
       expect(checkStatusCode).toBe('CMP') // COMPLETED
     })
 
-    it('can identify an EXPIRED check with a pin', async () => {
+    test('can identify an EXPIRED check with a pin', async () => {
       const id = await createCheck('EXP1', 1)
       const res = await sql.query(createQuery(id))
       const checkStatusCode = res[0].code
       expect(checkStatusCode).toBe('NEW')
     })
 
-    it('can identify a EXPIRED check without a pin', async () => {
+    test('can identify a EXPIRED check without a pin', async () => {
       const id = await createCheck('EXP2', 1)
       const res = await sql.query(createQuery(id))
       const checkStatusCode = res[0].code
       expect(checkStatusCode).toBe('NEW')
     })
 
-    it('can identify a NOT RECEIVED check', async () => {
+    test('can identify a NOT RECEIVED check', async () => {
       const id = await createCheck('NTR1', 1)
       const res = await sql.query(createQuery(id))
       const checkStatusCode = res[0].code
       expect(checkStatusCode).toBe('NTR') // NOT RECEIVED
     })
 
-    it('can identify a NOT RECEIVED check where the startedAt field is not set', async () => {
+    test('can identify a NOT RECEIVED check where the startedAt field is not set', async () => {
       const id = await createCheck('NTR2', 1)
       const res = await sql.query(createQuery(id))
       const checkStatusCode = res[0].code
@@ -85,42 +85,42 @@ describe('DB function: udfCalcCheckStatusID', () => {
   })
 
   describe('try it out checks', () => {
-    it('can identify a NEW check', async () => {
+    test('can identify a NEW check', async () => {
       const id = await createCheck('NEW', 0)
       const res = await sql.query(createQuery(id))
       const checkStatusCode = res[0].code
       expect(checkStatusCode).toBe('NEW')
     })
 
-    it('can identify a COLLECTED check', async () => {
+    test('can identify a COLLECTED check', async () => {
       const id = await createCheck('COL', 0)
       const res = await sql.query(createQuery(id))
       const checkStatusCode = res[0].code
       expect(checkStatusCode).toBe('COL') // COLLECTED
     })
 
-    it('Expired checks are identified as NEW', async () => {
+    test('Expired checks are identified as NEW', async () => {
       const id = await createCheck('EXP1', 0)
       const res = await sql.query(createQuery(id))
       const checkStatusCode = res[0].code
       expect(checkStatusCode).toBe('NEW') // Status is NEW, but PIN has expired
     })
 
-    it('Expired checks are identified as NEW (without a pin)', async () => {
+    test('Expired checks are identified as NEW (without a pin)', async () => {
       const id = await createCheck('EXP2', 0)
       const res = await sql.query(createQuery(id))
       const checkStatusCode = res[0].code
       expect(checkStatusCode).toBe('NEW') // Status is NEW, pin has expired and been deleted
     })
 
-    it('does not class a try it out check as not received', async () => {
+    test('does not class a try it out check as not received', async () => {
       const id = await createCheck('NTR1', 0)
       const res = await sql.query(createQuery(id))
       const checkStatusCode = res[0].code
       expect(checkStatusCode).toBe('COL') // COLLECTED
     })
 
-    it('can identify a check that failed processing', async () => {
+    test('can identify a check that failed processing', async () => {
       const id = await createCheck('ERR', 1)
       const res = await sql.query(createQuery(id))
       const checkStatusCode = res[0].code
@@ -132,7 +132,7 @@ describe('DB function: udfCalcCheckStatusID', () => {
   })
 
   describe('unusual conditions:', () => {
-    it('does not class a try it out check as complete', async () => {
+    test('does not class a try it out check as complete', async () => {
       const id = await createCheck('CMP', 0)
       const res = await sql.query(createQuery(id))
       const checkStatusCode = res[0].code

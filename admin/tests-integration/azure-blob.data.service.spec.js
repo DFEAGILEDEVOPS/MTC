@@ -1,5 +1,5 @@
 'use strict'
-/* global describe it expect beforeAll afterAll fail */
+/* global describe test expect beforeAll afterAll fail */
 
 const { BlobServiceClient } = require('@azure/storage-blob')
 const uuid = require('uuid')
@@ -38,7 +38,7 @@ describe('azure-blob.data.service', () => {
     })
   })
 
-  it('createContainerIfNotExists - should create container if it does not already exist', async () => {
+  test('createContainerIfNotExists - should create container if it does not already exist', async () => {
     const containerName = getUniqueName()
     await sut.createContainerIfNotExists(containerName)
     const serviceClient = BlobServiceClient.fromConnectionString(connectionString)
@@ -47,7 +47,7 @@ describe('azure-blob.data.service', () => {
     await containerClient.delete()
   })
 
-  it('uploadLocalFile - should create local file in specified container', async () => {
+  test('uploadLocalFile - should create local file in specified container', async () => {
     const content = uuid.v4()
     const localFileName = path.join(testRunDirectoryName, `${commonPrefix}-local-${content}.txt`)
     await fs.promises.writeFile(localFileName, content)
@@ -63,7 +63,7 @@ describe('azure-blob.data.service', () => {
     expect(downloadedFileContent.toString()).toEqual(content)
   })
 
-  it('getBlobProperties - fetches blob properties from storage', async () => {
+  test('getBlobProperties - fetches blob properties from storage', async () => {
     const content = uuid.v4()
     const localFileName = path.join(testRunDirectoryName, `${commonPrefix}-local-${content}.txt`)
     await fs.promises.writeFile(localFileName, content)
@@ -79,7 +79,7 @@ describe('azure-blob.data.service', () => {
     }
   })
 
-  it('downloadBlob - fetches existing blob from container', async () => {
+  test('downloadBlob - fetches existing blob from container', async () => {
     const content = uuid.v4()
     const localFileName = path.join(testRunDirectoryName, `${commonPrefix}-local-${content}.txt`)
     await fs.promises.writeFile(localFileName, content)

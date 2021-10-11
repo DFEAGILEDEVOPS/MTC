@@ -1,5 +1,5 @@
 'use strict'
-/* global describe, it, expect fail, afterAll beforeEach */
+/* global describe test expect fail afterAll beforeEach */
 
 const moment = require('moment')
 
@@ -26,7 +26,7 @@ describe('sas-token-expiry', () => {
   })
   afterAll(async () => { await redisCacheService.disconnect() })
 
-  it('should send a message successfully with valid token', async () => {
+  test('should send a message successfully with valid token', async () => {
     const sasExpiryDate = moment().add(1, 'minute')
     const checkSubmitToken = await sut.generateSasToken(
       queueNameService.NAMES.CHECK_SUBMIT,
@@ -44,7 +44,7 @@ describe('sas-token-expiry', () => {
     }
   })
 
-  it('should return specific properties and content when attempting to submit with expired sas tokens', async () => {
+  test('should return specific properties and content when attempting to submit with expired sas tokens', async () => {
     const sasExpiryDate = moment().add(2, 'seconds')
     const checkSubmitToken = await sut.generateSasToken(
       queueNameService.NAMES.CHECK_SUBMIT,

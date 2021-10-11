@@ -1,6 +1,6 @@
 'use strict'
 
-/* global describe expect beforeAll afterAll fail it */
+/* global describe expect beforeAll afterAll fail test */
 
 const { TableClient, TableServiceClient } = require('@azure/data-tables')
 const config = require('../config')
@@ -57,7 +57,7 @@ describe('azure-table.data.service', () => {
   })
 
   describe('retrieveEntity', () => {
-    it('returns raw entity when exists', async () => {
+    test('returns raw entity when exists', async () => {
       const tableName = getUniqueTableName()
       await createTable(tableName)
       const partitionKey = uuid.v4()
@@ -76,7 +76,7 @@ describe('azure-table.data.service', () => {
       expect(actual.customData).toEqual(customData)
     })
 
-    it('throws an error when entity does not exist', async () => {
+    test('throws an error when entity does not exist', async () => {
       const tableName = getUniqueTableName()
       await createTable(tableName)
       const pk = uuid.v4()
@@ -91,7 +91,7 @@ describe('azure-table.data.service', () => {
   })
 
   describe('clearTable', () => {
-    it('deletes all entries from the table', async () => {
+    test('deletes all entries from the table', async () => {
       const pk = uuid.v4()
       const tableName = getUniqueTableName()
       const client = TableClient.fromConnectionString(connectionString, tableName)
@@ -114,7 +114,7 @@ describe('azure-table.data.service', () => {
   })
 
   describe('createTables', () => {
-    it('creates specified tables in array', async () => {
+    test('creates specified tables in array', async () => {
       const tableNames = [
         getUniqueTableName(),
         getUniqueTableName(),
@@ -144,7 +144,7 @@ describe('azure-table.data.service', () => {
       }
     })
 
-    it('throws an error when one of the table names is invalid', async () => {
+    test('throws an error when one of the table names is invalid', async () => {
       const randomPrefix = getUniqueTableName()
       const tableNames = [
         getUniqueTableName(),
