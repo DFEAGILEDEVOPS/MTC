@@ -12,3 +12,9 @@
 3. execute `./build-push-docker-hub.sh` to push new image
 4. delete existing build server container instances in azure
 5. run `./create-instance.sh` to create new build servers
+
+example execution of `create-instance.sh`...
+
+```bash
+> ./create-instance.sh machine-name my-resource-group <pat token> https://my-azure-devops-instance.visualstudio.com
+```
