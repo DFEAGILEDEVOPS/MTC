@@ -133,7 +133,6 @@ module.exports.restartTransactionForPupils = async function restartTransactionFo
    *
    * For each pupil
    * 1. CheckPin table: Expire the pins used for live checks if there is one
-   * 2. Check table: Void the existing live check if there is one: checkStatus => VOID
    * 2. Pupil Restart table: Add the restart record
    * 3. (in another service: remove the preparedCheck from (redis|table storage)
    * 4. Pupil table: Update the pupil with the restartAvailable flag, ensure the checkComplete flag is false,
@@ -190,11 +189,6 @@ module.exports.restartTransactionForPupils = async function restartTransactionFo
       DELETE
         FROM [mtc_admin].[checkPin]
        WHERE check_id IN (${checkParamIdentifiers.join(', ')});
-
-      -- UPDATE 2021-10-06: do we really need this VOID status?
-      --  UPDATE [mtc_admin].[check]
-      --     SET checkStatus_id = (SELECT TOP 1 id FROM [mtc_admin].[checkStatus] WHERE CODE = 'VOD')
-      --     WHERE id IN (${checkParamIdentifiers.join(', ')});
 
       ${pupilRestartSqls.join('\n')}
 
