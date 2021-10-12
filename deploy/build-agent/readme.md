@@ -2,9 +2,9 @@
 
 ## Purpose
 
-- build-push-docker-hub.sh Builds the build agent docker image and pushes it to docker hub.  Any changes must be committed before running this script, as the commit hash is used for the image tag.
-- cleanup.sh Removes any temporary files and 'dead weight' from the image before it is finished building.
-- create-instance.sh creates a container instance using the latest image in docker hub, via the Azure CLI.
+- `build-push-docker-hub.sh` Builds the build agent docker image and pushes it to docker hub.  Any changes must be committed before running this script, as the commit hash is used for the image tag.
+- `cleanup.sh` Removes any temporary files and 'dead weight' from the image before it is finished building.
+- `create-instance.sh` creates a container instance using the latest image in docker hub, via the Azure CLI.
 
 ## Steps
 1. update the `$AGENT_VERSION` variable in `./Dockerfile` to the [latest full release](https://github.com/microsoft/azure-pipelines-agent/releases)
