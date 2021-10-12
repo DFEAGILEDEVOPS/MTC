@@ -50,7 +50,7 @@
         <li>Click 'Upload'</li>
       </ol>
       <form action="/service-manager/upload-pupil-census/upload" enctype="multipart/form-data" method="post" name="upload-pupil-census" id="upload-pupil-census">
-
+        <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
         <div class="govuk-form-group<% if (fileErrors && fileErrors.hasError()) { %> govuk-form-group--error<% } %>">
           <% if (fileErrors && fileErrors.hasError()) { %>
             <% fileErrors.getUniqueFields(['file-upload']).map(f => { %>
