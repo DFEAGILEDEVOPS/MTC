@@ -74,11 +74,11 @@ const accessArrangementsService = {
     }
     if (pupilAccessArrangements.accessArrangements.includes(accessArrangementsDataService.CODES.COLOUR_CONTRAST)) {
       const pupilColourContrastAA = pupilAccessArrangements.accessArrangementsIdsWithCodes.find(paa => paa.code === 'CCT')
-      pupilColourContrastAA.pupilColourContrasts_id = await pupilAccessArrangementsDataService.sqlFindPupilColourContrastsId(pupil.id, pupilColourContrastAA.id)
+      pupilColourContrastAA.colourContrastLookup_Id = await pupilAccessArrangementsDataService.sqlFindPupilColourContrastsId(pupil.id, pupilColourContrastAA.id)
     }
     if (pupilAccessArrangements.accessArrangements.includes(accessArrangementsDataService.CODES.FONT_SIZE)) {
       const pupilFontSizeAA = pupilAccessArrangements.accessArrangementsIdsWithCodes.find(paa => paa.code === 'FTS')
-      pupilFontSizeAA.pupilFontSizes_id = await pupilAccessArrangementsDataService.sqlFindPupilFontSizesId(pupil.id, pupilFontSizeAA.id)
+      pupilFontSizeAA.fontSizeLookup_Id = await pupilAccessArrangementsDataService.sqlFindPupilFontSizesId(pupil.id, pupilFontSizeAA.id)
     }
     if (questionReaderReasonId) {
       pupilAccessArrangements.questionReaderReasons_id = questionReaderReasonId

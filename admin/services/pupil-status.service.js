@@ -9,7 +9,6 @@ const logger = require('./log.service').getLogger()
 const pupilStatusDataService = require('../services/data-access/pupil-status.data.service')
 const pupilIdentificationFlagService = require('./pupil-identification-flag.service')
 const settingService = require('./setting.service')
-const tableSorting = require('../helpers/table-sorting')
 
 const pupilStatusService = {
   /**
@@ -24,7 +23,7 @@ const pupilStatusService = {
     const settings = await settingService.get()
     const pupils = await pupilStatusDataService.sqlFindPupilsFullStatus(schoolId)
     const pupilsWithStatus = pupils.map(R.partial(pupilStatusService.addStatus, [settings]))
-    return pupilIdentificationFlagService.addIdentificationFlags(tableSorting.applySorting(pupilsWithStatus, 'lastName'))
+    return pupilIdentificationFlagService.sortAndAddIdentificationFlags(pupilsWithStatus)
   },
 
   /**

@@ -1,4 +1,3 @@
-
 import { IAsyncTableService, AsyncTableService } from '../../azure/storage-helper'
 import { ReceivedCheckTableEntity, ValidateCheckMessageV1, MarkCheckMessageV1 } from '../../schemas/models'
 import { ILogger } from '../../common/logger'
@@ -6,18 +5,10 @@ import * as RA from 'ramda-adjunct'
 import Moment from 'moment'
 import { ICompressionService, CompressionService } from '../../common/compression-service'
 import { ICheckNotificationMessage, CheckNotificationType } from '../../schemas/check-notification-message'
+import { ICheckValidationError } from './validators/validator-types'
+import { ValidatorProvider } from './validators/validator.provider'
 
-const requiredSubmittedCheckProperties = [
-  'answers',
-  'audit',
-  'checkCode',
-  'config',
-  'inputs',
-  'pupil',
-  'questions',
-  'school',
-  'tokens'
-]
+const functionName = 'check-validator'
 
 export interface ICheckValidatorFunctionBindings {
   receivedCheckTable: any[]
@@ -25,9 +16,10 @@ export interface ICheckValidatorFunctionBindings {
   checkNotificationQueue: ICheckNotificationMessage[]
 }
 
-export class CheckValidatorV1 {
+export class CheckValidator {
   private readonly tableService: IAsyncTableService
   private readonly compressionService: ICompressionService
+  private readonly validatorProvider: ValidatorProvider
 
   constructor (tableService?: IAsyncTableService, compressionService?: ICompressionService) {
     if (tableService !== undefined) {
@@ -41,6 +33,7 @@ export class CheckValidatorV1 {
     } else {
       this.compressionService = new CompressionService()
     }
+    this.validatorProvider = new ValidatorProvider()
   }
 
   async validate (functionBindings: ICheckValidatorFunctionBindings, validateCheckMessage: ValidateCheckMessageV1, logger: ILogger): Promise<void> {
@@ -93,29 +86,34 @@ export class CheckValidatorV1 {
 
   private findReceivedCheck (receivedCheckRef: any[]): any {
     if (RA.isEmptyArray(receivedCheckRef)) {
-      throw new Error('received check reference is empty')
+      throw new Error(`${functionName}: received check reference is empty`)
     }
     return receivedCheckRef[0]
   }
 
   private detectArchive (message: Record<string, unknown>): void {
     if (!('archive' in message)) {
-      throw new Error('message is missing [archive] property')
+      throw new Error(`${functionName}: message is missing [archive] property`)
     }
   }
 
-  private validateCheckStructure (check: Record<string, unknown>): void {
-    const errorMessagePrefix = 'submitted check is missing the following properties:'
-    const missingProperties: string[] = []
-    for (let index = 0; index < requiredSubmittedCheckProperties.length; index++) {
-      const propertyName = requiredSubmittedCheckProperties[index]
-      if (!(propertyName in check)) {
-        missingProperties.push(propertyName)
+  private validateCheckStructure (submittedCheck: any): void {
+    const validators = this.validatorProvider.getValidators()
+    const validationErrors: ICheckValidationError[] = []
+    for (let index = 0; index < validators.length; index++) {
+      const validator = validators[index]
+      const validationResult = validator.validate(submittedCheck)
+      if (validationResult !== undefined) {
+        validationErrors.push(validationResult)
       }
     }
-    const missingPropertyNames = missingProperties.join()
-    if (!RA.isEmptyArray(missingProperties)) {
-      throw new Error(`${errorMessagePrefix} ${missingPropertyNames}`)
+    if (validationErrors.length > 0) {
+      let validationErrorsMessage = `${functionName}: check validation failed. checkCode: ${submittedCheck.checkCode}`
+      for (let index = 0; index < validationErrors.length; index++) {
+        const error = validationErrors[index]
+        validationErrorsMessage += `\n\t-\t${error.message}`
+      }
+      throw new Error(validationErrorsMessage)
     }
   }
 }

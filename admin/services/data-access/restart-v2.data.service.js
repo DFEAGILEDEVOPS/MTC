@@ -81,15 +81,13 @@ module.exports.getRestartsForSchool = async function getRestartsForSchool (schoo
               WHERE isDeleted = 0
            )  pr join
            [mtc_admin].[pupil] p ON (pr.pupil_id = p.id) join
-           [mtc_admin].[pupilRestartReason] rr ON (pr.pupilRestartReason_id = rr.id) left join
+           [mtc_admin].[restartReasonLookup] rr ON (pr.restartReasonLookup_Id = rr.id) left join
            [mtc_admin].[check] c ON (pr.check_id = c.id) left join
            [mtc_admin].[checkStatus] cs ON (c.checkStatus_id = cs.id) left join
            [mtc_admin].[vewPupilLiveChecksTakenCount] vct ON (p.id = vct.pupil_id)
     WHERE
            pr.rank = 1
-    AND    p.school_id = @schoolId
-    ORDER BY
-           p.lastName, p.foreName, p.middleNames, p.dateOfBirth;
+    AND    p.school_id = @schoolId;
   `
 
   const params = [
@@ -152,7 +150,7 @@ module.exports.restartTransactionForPupils = async function restartTransactionFo
                 didNotCompleteInformation,
                 furtherInformation,
                 pupil_id,
-                pupilRestartReason_id,
+                restartReasonLookup_Id,
                 recordedByUser_id,
                 originCheck_id
            ) VALUES (
@@ -160,7 +158,7 @@ module.exports.restartTransactionForPupils = async function restartTransactionFo
                 @dnc${idx},
                 @fi${idx},
                 @pid${idx},
-                (SELECT id from [mtc_admin].[pupilRestartReason] where code = @prrCode${idx}),
+                (SELECT id from [mtc_admin].[restartReasonLookup] where code = @prrCode${idx}),
                 @rbu${idx},
                 @oc${idx}
             );`

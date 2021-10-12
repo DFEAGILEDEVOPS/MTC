@@ -1,5 +1,5 @@
 import moment from 'moment'
-import { CompleteCheckAnswer, CompleteCheckInputEntry, InputEventType } from '../../schemas/check-schemas/submitted-check'
+import { CompleteCheckAnswer, CompleteCheckInputEntry, InputEventType } from '../../schemas/check-schemas/validated-check'
 
 export class FakeCheckInputsGeneratorService {
   create (answers: CompleteCheckAnswer[]): CompleteCheckInputEntry[] {

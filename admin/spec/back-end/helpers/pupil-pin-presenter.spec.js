@@ -1,10 +1,11 @@
-/* global describe, expect, it */
+/* global describe, expect, test */
 
 const pupilPinPresenter = require('../../../helpers/pupil-pin-presenter')
 
 describe('pupilPinPresenter', () => {
   describe('getPupilPinViewData', () => {
-    it('adds pupilViewForeName and pupilViewLastName based on alias fields when they are present', () => {
+    test('adds pupilViewForeName and pupilViewLastName and pupilViewFullName based on alias fields when they are' +
+      ' present', () => {
       const pupils = [
         {
           foreName: 'foreName',
@@ -16,34 +17,43 @@ describe('pupilPinPresenter', () => {
       const results = pupilPinPresenter.getPupilPinViewData(pupils)
       expect(results[0].pupilViewForeName).toBe(pupils[0].foreNameAlias)
       expect(results[0].pupilViewLastName).toBe(pupils[0].lastNameAlias)
+      expect(results[0].pupilViewFullName).toBe('lastNameAlias, foreNameAlias')
     })
-    it('adds pupilViewForeName and pupilViewLastName based on actual foreName and LastName fields when aliases are not present', () => {
+
+    test('adds pupilViewForeName and pupilViewLastName based on actual foreName and LastName fields when aliases are' +
+      ' not present', () => {
       const pupils = [
         {
           foreName: 'foreName',
           lastName: 'lastName',
-          foreNameAlias: undefined,
-          lastNameAlias: undefined
+          foreNameAlias: null,
+          lastNameAlias: null
         }
       ]
       const results = pupilPinPresenter.getPupilPinViewData(pupils)
       expect(results[0].pupilViewForeName).toBe(pupils[0].foreName)
       expect(results[0].pupilViewLastName).toBe(pupils[0].lastName)
     })
-    it('returns additional fields that are part of the original object', () => {
+
+    test('returns additional fields that are part of the original object', () => {
       const pupils = [
         {
           foreName: 'foreName',
           lastName: 'lastName',
           foreNameAlias: 'foreNameAlias',
-          lastNameAlias: 'lastNameAlias'
+          lastNameAlias: 'lastNameAlias',
+          x: 'test1',
+          y: 'test2',
+          z: 'test3'
         }
       ]
       const results = pupilPinPresenter.getPupilPinViewData(pupils)
-      expect(results[0].foreName).toBe(pupils[0].foreName)
-      expect(results[0].lastName).toBe(pupils[0].lastName)
+      expect(results[0].x).toBe('test1')
+      expect(results[0].y).toBe('test2')
+      expect(results[0].z).toBe('test3')
     })
-    it('returns sorted data in an ascending order alphabetically by group then by last name', () => {
+
+    test('returns sorted data in an ascending order alphabetically by group then by last name', () => {
       const pupils = [
         {
           foreName: 'foreName2',
@@ -72,7 +82,8 @@ describe('pupilPinPresenter', () => {
       expect(results[2].group).toBe(pupils[1].group)
       expect(results[3].group).toBe(pupils[0].group)
     })
-    it('returns sorted data alphabetically by last name if none of the pupils have groups assigned', () => {
+
+    test('returns sorted data alphabetically by last name if none of the pupils have groups assigned', () => {
       const pupils = [
         {
           foreName: 'foreName2',

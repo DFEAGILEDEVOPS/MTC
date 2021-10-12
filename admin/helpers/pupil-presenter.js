@@ -1,5 +1,7 @@
 'use strict'
 
+const pupilIdentificationFlag = require('../services/pupil-identification-flag.service')
+
 const pupilPresenter = {}
 
 /**
@@ -12,11 +14,14 @@ pupilPresenter.getPupilExampleYear = () => {
   return currentYear - deductionYears
 }
 
+/**
+ * Sort and add Identification flags.
+ * @deprecated - Use `pupilIdentificationFlagService.sortAndAddIdentificationFlags` directly.
+ * @param pupils
+ * @returns {import('services/pupil-identification-flag.service').IdentifiedPupil[]}
+ */
 pupilPresenter.getPupilsSortedWithIdentificationFlags = (pupils) => {
-  pupils.sort((a, b) => {
-    return (a.lastName === b.lastName ? 0 : a.lastName.localeCompare(b.lastName)) || (a.foreName === b.foreName ? 0 : a.foreName.localeCompare(b.foreName))
-  })
-  return pupils
+  return pupilIdentificationFlag.sortAndAddIdentificationFlags(pupils)
 }
 
 module.exports = pupilPresenter
