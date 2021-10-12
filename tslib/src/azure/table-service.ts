@@ -9,23 +9,23 @@ export interface ITableService {
 }
 
 export class TableService implements ITableService {
-  private getClient(tableName: string): TableClient {
+  private getClient (tableName: string): TableClient {
     return TableClient.fromConnectionString(config.AzureStorage.ConnectionString, tableName)
   }
 
-  createEntity (tableName: string, entity: TableEntity<object>): Promise<TableInsertEntityHeaders> {
+  async createEntity (tableName: string, entity: TableEntity<object>): Promise<TableInsertEntityHeaders> {
     return this.getClient(tableName).createEntity(entity)
   }
 
-  getEntity (table: string, partitionKey: string, rowKey: string): Promise<TableEntity<object>> {
-    return this.getClient(table).getEntity(partitionKey, rowKey)
+  async getEntity (tableName: string, partitionKey: string, rowKey: string): Promise<TableEntity<object>> {
+    return this.getClient(tableName).getEntity(partitionKey, rowKey)
   }
 
-  replaceEntity (table: string, entity: TableEntity<object>): Promise<UpdateEntityResponse> {
-    return this.getClient(table).updateEntity(entity, 'Replace')
+  async replaceEntity (tableName: string, entity: TableEntity<object>): Promise<UpdateEntityResponse> {
+    return this.getClient(tableName).updateEntity(entity, 'Replace')
   }
 
-  mergeUpdateEntity (tableName: string, entity: TableEntity<object>): Promise<UpdateEntityResponse> {
+  async mergeUpdateEntity (tableName: string, entity: TableEntity<object>): Promise<UpdateEntityResponse> {
     return this.getClient(tableName).updateEntity(entity, 'Merge')
   }
 }
