@@ -889,10 +889,10 @@ axios@^0.21.1, axios@^0.21.4:
   dependencies:
     follow-redirects "^1.14.0"
 
-azure-storage@^2.10.4:
-  version "2.10.4"
-  resolved "https://registry.yarnpkg.com/azure-storage/-/azure-storage-2.10.4.tgz#c481d207eabc05f57f019b209f7faa8737435104"
-  integrity sha512-zlfRPl4js92JC6+79C2EUmNGYjSknRl8pOiHQF78zy+pbOFOHtlBF6BU/OxPeHQX3gaa6NdEZnVydFxhhndkEw==
+azure-storage@^2.10.5:
+  version "2.10.5"
+  resolved "https://registry.yarnpkg.com/azure-storage/-/azure-storage-2.10.5.tgz#2193314940954c8e90c14d0601fb146470740f70"
+  integrity sha512-kLCbiW1lvwwJwB/iOX7ic7xw/RIcSReF1sUFetEyFSiE+HDdv/wpSlsQx0F0khkXrPtJmBJRH0y9s/CRuRBWLQ==
   dependencies:
     browserify-mime "~1.2.9"
     extend "^3.0.2"
@@ -902,7 +902,7 @@ azure-storage@^2.10.4:
     request "^2.86.0"
     underscore "^1.12.1"
     uuid "^3.0.0"
-    validator "~9.4.1"
+    validator "~13.6.0"
     xml2js "0.2.8"
     xmlbuilder "^9.0.7"
 
@@ -5417,10 +5417,10 @@ validate-npm-package-license@^3.0.1:
     spdx-correct "^3.0.0"
     spdx-expression-parse "^3.0.0"
 
-validator@~9.4.1:
-  version "9.4.1"
-  resolved "https://registry.yarnpkg.com/validator/-/validator-9.4.1.tgz#abf466d398b561cd243050112c6ff1de6cc12663"
-  integrity sha512-YV5KjzvRmSyJ1ee/Dm5UED0G+1L4GZnLN3w6/T+zZm8scVua4sOhYKWTUrKa0H/tMiJyO9QLHMPN+9mB/aMunA==
+validator@~13.6.0:
+  version "13.6.0"
+  resolved "https://registry.yarnpkg.com/validator/-/validator-13.6.0.tgz#1e71899c14cdc7b2068463cb24c1cc16f6ec7059"
+  integrity sha512-gVgKbdbHgtxpRyR8K0O6oFZPhhB5tT1jeEHZR0Znr9Svg03U0+r9DXWMrnRAB+HtCStDQKlaIZm42tVsVjqtjg==
 
 value-or-function@^3.0.0:
   version "3.0.0"

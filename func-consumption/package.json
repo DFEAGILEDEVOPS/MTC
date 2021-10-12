@@ -50,7 +50,7 @@
     "applicationinsights": "^2.1.7",
     "async": "^3.2.1",
     "axios": "^0.21.4",
-    "azure-storage": "^2.10.4",
+    "azure-storage": "^2.10.5",
     "bluebird": "^3.7.0",
     "csv-string": "^4.0.1",
     "dotenv": "^10.0.0",
