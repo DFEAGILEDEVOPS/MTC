@@ -71,13 +71,13 @@ describe('Blob Service', () => {
       const data = Buffer.from('foo-bar-baz')
       await blobClient.uploadData(data)
       await sut.deleteBlob(blobName, containerName)
-      expect(blobClient.exists()).resolves.toBe(false)
+      expect(await blobClient.exists()).toBe(false)
     })
 
     test('it resolves if blob does not exist', async () => {
       const containerName = await createContainer()
       const blobName = getUniqueName()
-      expect(sut.deleteBlob(blobName, containerName)).resolves.toBeUndefined()
+      expect(await sut.deleteBlob(blobName, containerName)).toBeUndefined()
     })
   })
 })

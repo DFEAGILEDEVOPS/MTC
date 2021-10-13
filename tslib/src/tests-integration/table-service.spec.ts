@@ -88,7 +88,7 @@ describe('TableService', () => {
         receivedAt: new Date()
       }
       await sut.createEntity(tableName, entity)
-      expect(sut.createEntity(tableName, entity)).rejects.toThrowError()
+      await expect(sut.createEntity(tableName, entity)).rejects.toThrow()
     })
   })
 
@@ -105,14 +105,14 @@ describe('TableService', () => {
       }
       const client = TableClient.fromConnectionString(connectionString, tableName)
       await client.createEntity(entity)
-      expect(sut.getEntity(tableName, pk, rk)).resolves.toHaveProperty('data', data)
+      await expect(sut.getEntity(tableName, pk, rk)).resolves.toHaveProperty('data', data)
     })
 
     test('returns raw error when entity does not exist', async () => {
       const tableName = await createTable()
       const pk = uuid()
       const rk = uuid()
-      expect(sut.getEntity(tableName, pk, rk))
+      await expect(sut.getEntity(tableName, pk, rk))
         .rejects.toHaveProperty('details.odataError.code', 'ResourceNotFound')
     })
   })
@@ -152,7 +152,7 @@ describe('TableService', () => {
         rowKey: rk,
         newData: uuid()
       }
-      expect(sut.replaceEntity(tableName, replacementEntity))
+      await expect(sut.replaceEntity(tableName, replacementEntity))
         .rejects.toHaveProperty('details.odataError.code', 'ResourceNotFound')
     })
   })
@@ -193,7 +193,7 @@ describe('TableService', () => {
         rowKey: rk,
         newData: uuid()
       }
-      expect(sut.mergeUpdateEntity(tableName, replacementEntity))
+      await expect(sut.mergeUpdateEntity(tableName, replacementEntity))
         .rejects.toHaveProperty('details.odataError.code', 'ResourceNotFound')
     })
   })
