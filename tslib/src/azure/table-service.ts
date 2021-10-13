@@ -8,7 +8,7 @@ export interface ITableService {
   mergeUpdateEntity (tableName: string, entity: TableEntity<object>): Promise<void>
 }
 
-export declare type AzureTableEntity = {
+export interface AzureTableEntity {
   partitionKey: string
   rowKey: string
 }
@@ -23,7 +23,7 @@ export class TableService implements ITableService {
   }
 
   async getEntity<T extends AzureTableEntity> (tableName: string, partitionKey: string, rowKey: string): Promise<T> {
-      return this.getClient(tableName).getEntity(partitionKey, rowKey)
+    return this.getClient(tableName).getEntity(partitionKey, rowKey)
   }
 
   async replaceEntity (tableName: string, entity: TableEntity<object>): Promise<void> {

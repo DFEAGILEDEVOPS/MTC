@@ -7,7 +7,7 @@ const commonPrefix = 'mtcIntegrationTest'
 const testRunTableNames: string[] = []
 const connectionString = config.AzureStorage.ConnectionString
 
-function getUniqueTableName () {
+function getUniqueTableName (): string {
   let id = uuid()
   id = id.replace(/-/g, '')
   const name = `${commonPrefix}${id}`
@@ -22,7 +22,7 @@ async function createTable (): Promise<string> {
   return tableName
 }
 
-async function deleteTable (tableName: string) {
+async function deleteTable (tableName: string): Promise<any> {
   const client = TableClient.fromConnectionString(connectionString, tableName)
   return client.deleteTable()
 }
@@ -39,12 +39,12 @@ describe('TableService', () => {
     const iterator = client.listTables()
     const integrationTestTables = []
     for await (const table of iterator) {
-      if (!table || !table?.name) return
+      if (table.name === undefined) return
       if (table.name.startsWith(commonPrefix)) {
         integrationTestTables.push(table.name)
       }
     }
-    const deletions = integrationTestTables.map(t => {
+    const deletions = integrationTestTables.map(async t => {
       return client.deleteTable(t)
     })
     await Promise.all(deletions)
@@ -52,7 +52,7 @@ describe('TableService', () => {
 
   afterAll(async () => {
     try {
-      const deletions = testRunTableNames.map(t => {
+      const deletions = testRunTableNames.map(async t => {
         return deleteTable(t)
       })
       await Promise.all(deletions)
@@ -112,7 +112,8 @@ describe('TableService', () => {
       const tableName = await createTable()
       const pk = uuid()
       const rk = uuid()
-      expect(sut.getEntity(tableName, pk, rk)).rejects.toHaveProperty('details.odataError.code', 'ResourceNotFound')
+      expect(sut.getEntity(tableName, pk, rk))
+        .rejects.toHaveProperty('details.odataError.code', 'ResourceNotFound')
     })
   })
 
