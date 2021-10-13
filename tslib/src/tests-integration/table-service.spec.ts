@@ -182,5 +182,18 @@ describe('TableService', () => {
       expect(updatedEntity.data).toStrictEqual(originalData)
       expect(updatedEntity.newData).toStrictEqual(newDataValue)
     })
+
+    test('throws an error when entity does not already exist', async () => {
+      const tableName = await createTable()
+      const pk = uuid()
+      const rk = uuid()
+      const replacementEntity = {
+        partitionKey: pk,
+        rowKey: rk,
+        newData: uuid()
+      }
+      expect(sut.mergeUpdateEntity(tableName, replacementEntity))
+        .rejects.toHaveProperty('details.odataError.code', 'ResourceNotFound')
+    })
   })
 })
