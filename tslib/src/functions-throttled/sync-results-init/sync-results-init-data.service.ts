@@ -27,8 +27,7 @@ export class SyncResultsInitDataService implements ISyncResultsInitDataService {
           FROM mtc_admin.[check] c
                JOIN mtc_admin.[pupil] p ON (c.pupil_id = p.id)
                JOIN mtc_admin.[school] s ON (p.school_id = s.id)
-               JOIN mtc_admin.[checkStatus] cs ON (c.checkStatus_id = cs.id)
-         WHERE cs.code = 'CMP'
+         WHERE c.complete = 1
            AND c.resultsSynchronised = 0
            AND c.isLiveCheck = 1
     `
@@ -48,8 +47,7 @@ export class SyncResultsInitDataService implements ISyncResultsInitDataService {
           FROM mtc_admin.[check] c
                JOIN mtc_admin.[pupil] p ON (c.pupil_id = p.id)
                JOIN mtc_admin.[school] s ON (p.school_id = s.id)
-               JOIN mtc_admin.[checkStatus] cs ON (c.checkStatus_id = cs.id)
-         WHERE (cs.code = 'CMP' OR cs.code = 'ERR')
+         WHERE (c.complete = 1 OR c.processingFailed = 1)
            AND c.isLiveCheck = 1
            AND c.checkCode = @checkCode
     `
@@ -72,8 +70,7 @@ export class SyncResultsInitDataService implements ISyncResultsInitDataService {
           FROM mtc_admin.[check] c
                JOIN mtc_admin.[pupil] p ON (c.pupil_id = p.id)
                JOIN mtc_admin.[school] s ON (p.school_id = s.id)
-               JOIN mtc_admin.[checkStatus] cs ON (c.checkStatus_id = cs.id)
-         WHERE cs.code = 'CMP'
+         WHERE c.complete = 1
            AND c.isLiveCheck = 1
            AND s.urlSlug = @schoolUUID
     `
@@ -92,8 +89,7 @@ export class SyncResultsInitDataService implements ISyncResultsInitDataService {
           FROM mtc_admin.[check] c
                JOIN mtc_admin.[pupil] p ON (c.pupil_id = p.id)
                JOIN mtc_admin.[school] s ON (p.school_id = s.id)
-               JOIN mtc_admin.[checkStatus] cs ON (c.checkStatus_id = cs.id)
-         WHERE cs.code = 'CMP'
+         WHERE c.complete = 1
            AND c.isLiveCheck = 1
            AND c.processingFailed = 0
     `
