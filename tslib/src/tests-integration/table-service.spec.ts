@@ -1,0 +1,120 @@
+import { TableService } from '../azure/table-service'
+import { TableClient, TableServiceClient } from '@azure/data-tables'
+import { v4 as uuid } from 'uuid'
+import config from '../config'
+
+const commonPrefix = 'mtcIntegrationTest'
+const testRunTableNames: string[] = []
+const connectionString = config.AzureStorage.ConnectionString
+
+function getUniqueTableName () {
+  let id = uuid()
+  id = id.replace(/-/g, '')
+  const name = `${commonPrefix}${id}`
+  testRunTableNames.push(name)
+  return name
+}
+
+async function createTable (tableName: string) {
+  const client = TableClient.fromConnectionString(connectionString, tableName)
+  return client.createTable()
+}
+
+async function deleteTable (tableName: string) {
+  const client = TableClient.fromConnectionString(connectionString, tableName)
+  return client.deleteTable()
+}
+
+let sut: TableService
+
+describe('TableService', () => {
+  beforeEach(() => {
+    sut = new TableService()
+  })
+
+  beforeAll(async () => {
+    const client = TableServiceClient.fromConnectionString(connectionString)
+    const iterator = client.listTables()
+    const integrationTestTables = []
+    for await (const table of iterator) {
+      if (!table || !table?.name) return
+      if (table.name.startsWith(commonPrefix)) {
+        integrationTestTables.push(table.name)
+      }
+    }
+    const deletions = integrationTestTables.map(t => {
+      return client.deleteTable(t)
+    })
+    await Promise.all(deletions)
+  })
+
+  afterAll(async () => {
+    try {
+      const deletions = testRunTableNames.map(t => {
+        return deleteTable(t)
+      })
+      await Promise.all(deletions)
+    } catch (error) {
+      fail(`failed to delete one or more tables, azure storage may need manual clean up.\n${error}`)
+    }
+  })
+
+  describe('createEntity()', () => {
+    test('persists a new entity to table storage', async () => {
+      const tableName = getUniqueTableName()
+      await createTable(tableName)
+      const dataValue = uuid()
+      const entity = {
+        partitionKey: uuid(),
+        rowKey: uuid(),
+        data: dataValue,
+        receivedAt: new Date()
+      }
+      expect(sut.createEntity(tableName, entity)).resolves.toHaveProperty('clientRequestId')
+      const client = TableClient.fromConnectionString(connectionString, tableName)
+      const storedEntity = await client.getEntity(entity.partitionKey, entity.rowKey)
+      expect(storedEntity).toBeDefined()
+      expect(storedEntity.data).toStrictEqual(dataValue)
+    })
+
+    test('throws an error when entity already exists', async () => {
+      const tableName = getUniqueTableName()
+      await createTable(tableName)
+      const dataValue = uuid()
+      const entity = {
+        partitionKey: uuid(),
+        rowKey: uuid(),
+        data: dataValue,
+        receivedAt: new Date()
+      }
+      await sut.createEntity(tableName, entity)
+      expect(sut.createEntity(tableName, entity)).rejects.toThrowError()
+    })
+  })
+
+  describe('getEntity()', () => {
+    test('returns entity when exists', async () => {
+      const tableName = getUniqueTableName()
+      await createTable(tableName)
+      const pk = uuid()
+      const rk = uuid()
+      const data = uuid()
+      const entity = {
+        partitionKey: pk,
+        rowKey: rk,
+        data: data
+      }
+      const client = TableClient.fromConnectionString(connectionString, tableName)
+      await client.createEntity(entity)
+      expect(sut.getEntity(tableName, pk, rk)).resolves.toHaveProperty('data', data)
+    })
+
+    test('returns raw error when entity does not exist', async () => {
+      const tableName = getUniqueTableName()
+      await createTable(tableName)
+      const pk = uuid()
+      const rk = uuid()
+      expect(sut.getEntity(tableName, pk, rk)).rejects.toHaveProperty('details.odataError.code', 'ResourceNotFound')
+    })
+  })
+})

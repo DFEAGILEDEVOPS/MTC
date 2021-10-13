@@ -18,7 +18,7 @@ export class TableService implements ITableService {
   }
 
   async getEntity (tableName: string, partitionKey: string, rowKey: string): Promise<TableEntity<object>> {
-    return this.getClient(tableName).getEntity(partitionKey, rowKey)
+      return this.getClient(tableName).getEntity(partitionKey, rowKey)
   }
 
   async replaceEntity (tableName: string, entity: TableEntity<object>): Promise<UpdateEntityResponse> {
