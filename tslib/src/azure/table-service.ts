@@ -1,4 +1,4 @@
-import { TableClient, TableEntity, TableInsertEntityHeaders, UpdateEntityResponse } from '@azure/data-tables'
+import { TableClient, TableEntity, TableInsertEntityHeaders, UpdateEntityResponse, UpdateTableEntityOptions } from '@azure/data-tables'
 import config from '../config'
 
 export interface ITableService {
