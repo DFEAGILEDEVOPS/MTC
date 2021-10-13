@@ -66,8 +66,8 @@ describe('check-marker/v1', () => {
 
   test('error is recorded against entity when answers is empty', async () => {
     const validatedCheckEntity: ReceivedCheckTableEntity = {
-      PartitionKey: uuid.v4(),
-      RowKey: uuid.v4(),
+      partitionKey: uuid.v4(),
+      rowKey: uuid.v4(),
       archive: compressionService.compress(JSON.stringify({})),
       checkReceivedAt: moment().toDate(),
       checkVersion: 1,
@@ -102,8 +102,8 @@ describe('check-marker/v1', () => {
 
   test('error is recorded against entity when answers is not an array', async () => {
     const validatedCheckEntity: ReceivedCheckTableEntity = {
-      PartitionKey: uuid.v4(),
-      RowKey: uuid.v4(),
+      partitionKey: uuid.v4(),
+      rowKey: uuid.v4(),
       archive: compressionService.compress(JSON.stringify({})),
       checkReceivedAt: moment().toDate(),
       checkVersion: 1,
@@ -138,8 +138,8 @@ describe('check-marker/v1', () => {
 
   test('error is recorded against entity when checkForm cannot be found by checkCode', async () => {
     const validatedCheckEntity: ReceivedCheckTableEntity = {
-      PartitionKey: uuid.v4(),
-      RowKey: uuid.v4(),
+      partitionKey: uuid.v4(),
+      rowKey: uuid.v4(),
       archive: compressionService.compress(JSON.stringify({})),
       checkReceivedAt: moment().toDate(),
       checkVersion: 1,
@@ -176,8 +176,8 @@ describe('check-marker/v1', () => {
 
   test('error is recorded against entity when checkForm data is not valid JSON', async () => {
     const validatedCheckEntity: ReceivedCheckTableEntity = {
-      PartitionKey: uuid.v4(),
-      RowKey: uuid.v4(),
+      partitionKey: uuid.v4(),
+      rowKey: uuid.v4(),
       archive: compressionService.compress(JSON.stringify({})),
       checkReceivedAt: moment().toDate(),
       checkVersion: 1,
@@ -216,8 +216,8 @@ describe('check-marker/v1', () => {
 
   test('error is recorded against entity when checkForm lookup throws error', async () => {
     const validatedCheckEntity: ReceivedCheckTableEntity = {
-      PartitionKey: uuid.v4(),
-      RowKey: uuid.v4(),
+      partitionKey: uuid.v4(),
+      rowKey: uuid.v4(),
       archive: compressionService.compress(JSON.stringify({})),
       checkReceivedAt: moment().toDate(),
       checkVersion: 1,
@@ -257,8 +257,8 @@ describe('check-marker/v1', () => {
 
   test('error is recorded against entity when checkForm data is not a populated array', async () => {
     const validatedCheckEntity: ReceivedCheckTableEntity = {
-      PartitionKey: uuid.v4(),
-      RowKey: uuid.v4(),
+      partitionKey: uuid.v4(),
+      rowKey: uuid.v4(),
       archive: compressionService.compress(JSON.stringify({})),
       checkReceivedAt: moment().toDate(),
       checkVersion: 1,
@@ -325,8 +325,8 @@ describe('check-marker/v1', () => {
       }
     ]
     const validatedCheckEntity: ReceivedCheckTableEntity = {
-      PartitionKey: uuid.v4(),
-      RowKey: uuid.v4(),
+      partitionKey: uuid.v4(),
+      rowKey: uuid.v4(),
       archive: compressionService.compress(JSON.stringify({})),
       checkReceivedAt: moment().toDate(),
       checkVersion: 1,
@@ -387,8 +387,8 @@ describe('check-marker/v1', () => {
       }
     ]
     const validatedCheckEntity: ReceivedCheckTableEntity = {
-      PartitionKey: uuid.v4(),
-      RowKey: uuid.v4(),
+      partitionKey: uuid.v4(),
+      rowKey: uuid.v4(),
       archive: compressionService.compress(JSON.stringify({})),
       checkReceivedAt: moment().toDate(),
       checkVersion: 1,
@@ -449,8 +449,8 @@ describe('check-marker/v1', () => {
       }
     ]
     const validatedCheckEntity: ReceivedCheckTableEntity = {
-      PartitionKey: uuid.v4(),
-      RowKey: uuid.v4(),
+      partitionKey: uuid.v4(),
+      rowKey: uuid.v4(),
       archive: compressionService.compress(JSON.stringify({})),
       checkReceivedAt: moment().toDate(),
       checkVersion: 1,
@@ -505,8 +505,8 @@ describe('check-marker/v1', () => {
       }
     ]
     const validatedCheckEntity: ReceivedCheckTableEntity = {
-      PartitionKey: uuid.v4(),
-      RowKey: uuid.v4(),
+      partitionKey: uuid.v4(),
+      rowKey: uuid.v4(),
       archive: compressionService.compress(JSON.stringify({})),
       checkReceivedAt: moment().toDate(),
       checkVersion: 1,
@@ -539,8 +539,8 @@ describe('check-marker/v1', () => {
   test('check notification is dispatched when marking unsuccessful', async () => {
     const checkCode = uuid.v4()
     const validatedCheckEntity: ReceivedCheckTableEntity = {
-      PartitionKey: uuid.v4(),
-      RowKey: checkCode,
+      partitionKey: uuid.v4(),
+      rowKey: checkCode,
       archive: compressionService.compress(JSON.stringify({})),
       checkReceivedAt: moment().toDate(),
       checkVersion: 1,
@@ -590,8 +590,8 @@ describe('check-marker/v1', () => {
       }
     ]
     const validatedCheckEntity: ReceivedCheckTableEntity = {
-      PartitionKey: uuid.v4(),
-      RowKey: uuid.v4(),
+      partitionKey: uuid.v4(),
+      rowKey: uuid.v4(),
       archive: compressionService.compress(JSON.stringify({})),
       checkReceivedAt: moment().toDate(),
       checkVersion: 1,
@@ -649,8 +649,8 @@ describe('check-marker/v1', () => {
       }
     ]
     const validatedCheckEntity: ReceivedCheckTableEntity = {
-      PartitionKey: uuid.v4(),
-      RowKey: uuid.v4(),
+      partitionKey: uuid.v4(),
+      rowKey: uuid.v4(),
       archive: compressionService.compress(JSON.stringify({})),
       checkReceivedAt: moment().toDate(),
       checkVersion: 1,

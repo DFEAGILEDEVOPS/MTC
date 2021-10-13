@@ -44,15 +44,15 @@ export class CheckMarkerV1 {
     }
     let checkResult: CheckResult
     try {
-      checkResult = this.markCheck(markingData, validatedCheck.RowKey)
+      checkResult = this.markCheck(markingData, validatedCheck.rowKey)
       logger.verbose(`mark(): results ${JSON.stringify(checkResult)}`)
-      this.persistMark(checkResult, functionBindings, validatedCheck.PartitionKey)
+      this.persistMark(checkResult, functionBindings, validatedCheck.partitionKey)
     } catch (error) {
       this.notifyProcessingFailure(validatedCheck, functionBindings)
       return
     }
     const notification: ICheckNotificationMessage = {
-      checkCode: validatedCheck.RowKey,
+      checkCode: validatedCheck.rowKey,
       notificationType: CheckNotificationType.checkComplete,
       version: 1
     }
@@ -62,7 +62,7 @@ export class CheckMarkerV1 {
 
   private notifyProcessingFailure (validatedCheck: ReceivedCheckTableEntity, functionBindings: ICheckMarkerFunctionBindings): void {
     const notification: ICheckNotificationMessage = {
-      checkCode: validatedCheck.RowKey,
+      checkCode: validatedCheck.rowKey,
       notificationType: CheckNotificationType.checkInvalid,
       version: 1
     }
@@ -94,7 +94,7 @@ export class CheckMarkerV1 {
     // Sort the answers by clientTimeStamp, so that we get a sequential timeline of events
     const sortedAnswers = this.answerSort(parsedAnswersJson)
 
-    const checkCode = validatedCheck.RowKey
+    const checkCode = validatedCheck.rowKey
     let rawCheckForm
 
     try {
