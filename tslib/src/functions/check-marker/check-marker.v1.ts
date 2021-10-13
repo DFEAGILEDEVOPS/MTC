@@ -1,20 +1,20 @@
 import * as RA from 'ramda-adjunct'
 import * as R from 'ramda'
-import { IAsyncTableService, AsyncTableService, TableStorageEntity } from '../../azure/storage-helper'
 import { ReceivedCheckTableEntity } from '../../schemas/models'
 import moment from 'moment'
 import { ICheckFormService, CheckFormService } from './check-form.service'
 import { ILogger } from '../../common/logger'
 import { ICheckMarkerFunctionBindings, MarkingData, CheckResult, MarkedAnswer } from './models'
 import { ICheckNotificationMessage, CheckNotificationType } from '../../schemas/check-notification-message'
+import { ITableService, TableService } from '../../azure/table-service'
 
 export class CheckMarkerV1 {
-  private readonly tableService: IAsyncTableService
+  private readonly tableService: ITableService
   private readonly sqlService: ICheckFormService
 
-  constructor (tableService?: IAsyncTableService, sqlService?: ICheckFormService) {
+  constructor (tableService?: ITableService, sqlService?: ICheckFormService) {
     if (tableService === undefined) {
-      this.tableService = new AsyncTableService()
+      this.tableService = new TableService()
     } else {
       this.tableService = tableService
     }
@@ -195,10 +195,10 @@ export class CheckMarkerV1 {
     return receivedCheckRef[0]
   }
 
-  private async updateReceivedCheckWithMarkingError (receivedCheck: ReceivedCheckTableEntity, markingError: string): Promise<Error | TableStorageEntity> {
+  private async updateReceivedCheckWithMarkingError (receivedCheck: ReceivedCheckTableEntity, markingError: string): Promise<void> {
     receivedCheck.processingError = markingError
     receivedCheck.markedAt = moment().toDate()
-    return this.tableService.replaceEntityAsync('receivedCheck', receivedCheck)
+    return this.tableService.mergeUpdateEntity('receivedCheck', receivedCheck)
   }
 
   private answerSort (answers: MarkedAnswer[]): MarkedAnswer[] {
