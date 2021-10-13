@@ -8,6 +8,11 @@ export interface ITableService {
   mergeUpdateEntity (tableName: string, entity: TableEntity<object>): Promise<void>
 }
 
+export declare type AzureTableEntity = {
+  partitionKey: string
+  rowKey: string
+}
+
 export class TableService implements ITableService {
   private getClient (tableName: string): TableClient {
     return TableClient.fromConnectionString(config.AzureStorage.ConnectionString, tableName)
@@ -17,7 +22,7 @@ export class TableService implements ITableService {
     await this.getClient(tableName).createEntity(entity)
   }
 
-  async getEntity (tableName: string, partitionKey: string, rowKey: string): Promise<TableEntity<object>> {
+  async getEntity<T extends AzureTableEntity> (tableName: string, partitionKey: string, rowKey: string): Promise<T> {
       return this.getClient(tableName).getEntity(partitionKey, rowKey)
   }
 

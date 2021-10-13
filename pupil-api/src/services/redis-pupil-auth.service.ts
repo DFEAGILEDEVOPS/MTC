@@ -1,7 +1,6 @@
 import * as R from 'ramda'
 import * as moment from 'moment'
 import { IRedisService, RedisService } from './redis.service'
-import * as azureQueueService from './azure-queue.service'
 import config from '../config'
 import { IQueueMessageService, SbQueueMessageService } from './queue-message.service'
 
@@ -67,5 +66,4 @@ export class RedisPupilAuthenticationService implements IPupilAuthenticationServ
   private buildCacheKey (schoolPin: string, pupilPin: string): string {
     return `preparedCheck:${schoolPin}:${pupilPin}`
   }
-
 }

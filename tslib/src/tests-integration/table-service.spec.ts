@@ -71,7 +71,7 @@ describe('TableService', () => {
         data: dataValue,
         receivedAt: new Date()
       }
-      expect(sut.createEntity(tableName, entity)).resolves.toHaveProperty('clientRequestId')
+      await sut.createEntity(tableName, entity)
       const client = TableClient.fromConnectionString(connectionString, tableName)
       const storedEntity = await client.getEntity(entity.partitionKey, entity.rowKey)
       expect(storedEntity).toBeDefined()
