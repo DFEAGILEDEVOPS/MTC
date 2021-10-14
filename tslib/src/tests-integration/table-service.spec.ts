@@ -88,7 +88,7 @@ describe('TableService', () => {
         receivedAt: new Date()
       }
       await sut.createEntity(tableName, entity)
-      await expect(sut.createEntity(tableName, entity)).rejects.toThrow()
+      await expect(sut.createEntity(tableName, entity)).rejects.toHaveProperty('details.odataError.code', 'EntityAlreadyExists')
     })
   })
 
