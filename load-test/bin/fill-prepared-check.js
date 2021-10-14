@@ -19,23 +19,12 @@ const config = require('../config')
 const { TableClient } = require('@azure/data-tables')
 const tableName = 'preparedCheck'
 const tableClient = TableClient.fromConnectionString(config.AzureStorage.connectionString, tableName)
-const tokenPayload = require('../scenarios/data/tokens.json')
-const questionPayload = require('../scenarios/data/questions.json')
+// const tokenPayload = require('../scenarios/data/tokens.json')
+// const questionPayload = require('../scenarios/data/questions.json')
 
 const entriesToCreate = process.env.LOAD_COUNT || 1000
 const schoolCount = entriesToCreate / 30
 let importCount = 0
-
-(async () => {
-  try {
-    await tableClient.deleteTable()
-    await tableClient.createTable()
-    await importData()
-  } catch (error) {
-    console.error(error.message)
-  }
-  console.log(`${importCount} schools imported.`)
-})()
 
 const generateEntity = (schoolPin, pupilPin) => {
   const config = {
@@ -61,25 +50,19 @@ const generateEntity = (schoolPin, pupilPin) => {
     name: 'Pauls Primary School'
   }
   return {
-    PartitionKey: {
-      '_': schoolPin.toString()
-    },
-    RowKey: {
-      '_': pupilPin.toString()
-    },
-    checkCode: {
-      '_': uuid().toString()
-    },
+    partitionKey: schoolPin.toString(),
+    rowKey: pupilPin.toString(),
+    checkCode: uuid().toString(),
     collectedAt: null,
-    config: JSON.stringify(config),
+    config: config,
     isCollected: 'false',
     createdAt: 'a date',
     updatedAt: 'a date',
     pinExpiresAt: 'a date',
-    pupil: JSON.stringify(pupil),
-    school: JSON.stringify(school),
-    tokens: JSON.stringify(tokenPayload),
-    questions: JSON.stringify(questionPayload),
+    pupil: pupil,
+    school: school,
+    tokens: [], // JSON.stringify(tokenPayload),
+    questions: [], // JSON.stringify(questionPayload),
     pupilId: 123,
     schoolId: 456
   }
@@ -101,3 +84,23 @@ const importData = async () => {
     importCount++
   }
 }
+
+async function main () {
+  console.log('deleting tables')
+  await tableClient.deleteTable()
+  console.log('creating tables')
+  await tableClient.createTable()
+  console.log('importing data')
+  await importData()
+}
+
+main()
+  .then(() => {
+    console.log(`${importCount} schools imported.`)
+  },
+  (error) => {
+    console.error(error)
+  })
+  .catch(error => {
+    console.error('Caught error: ' + error.message)
+  })
