@@ -14,61 +14,27 @@ try {
 } catch (error) {
   console.error(error)
 }
-const azure = require('azure-storage')
 const uuid = require('uuid/v4')
-const tableService = azure.createTableService()
+const config = require('../config')
+const { TableClient } = require('@azure/data-tables')
+const tableName = 'preparedCheck'
+const tableClient = TableClient.fromConnectionString(config.AzureStorage.connectionString, tableName)
 const tokenPayload = require('../scenarios/data/tokens.json')
 const questionPayload = require('../scenarios/data/questions.json')
 
 const entriesToCreate = process.env.LOAD_COUNT || 1000
 const schoolCount = entriesToCreate / 30
-let successCount = 0
-
-const deleteTableAsync = async (tableName) => {
-  return new Promise((resolve, reject) => {
-    tableService.deleteTableIfExists(tableName, (error) => {
-      if (error) {
-        reject(error)
-      } else {
-        resolve()
-      }
-    })
-  })
-}
-
-const createTableAsync = async (tableName) => {
-  return new Promise((resolve, reject) => {
-    tableService.createTable(tableName, (error) => {
-      if (error) {
-        reject(error)
-      } else {
-        resolve()
-      }
-    })
-  })
-}
-
-const executeBatchAsync = async (tableName, batch) => {
-  return new Promise((resolve, reject) => {
-    tableService.executeBatch(tableName, batch, (error) => {
-      if (error) {
-        reject(error)
-      } else {
-        resolve()
-      }
-    })
-  })
-}
+let importCount = 0
 
 (async () => {
   try {
-    await deleteTableAsync('preparedCheck')
-    await createTableAsync('preparedCheck')
+    await tableClient.deleteTable()
+    await tableClient.createTable()
     await importData()
   } catch (error) {
     console.error(error.message)
   }
-  console.log(`${successCount} schools imported.`)
+  console.log(`${importCount} schools imported.`)
 })()
 
 const generateEntity = (schoolPin, pupilPin) => {
@@ -124,14 +90,14 @@ const importData = async () => {
   let schoolPin = 11100111
   for (let schoolIndex = 0; schoolIndex < schoolCount; schoolIndex++) {
     let pupilPin = 1000
-    const pupilBatch = new azure.TableBatch()
+    const createEntityPromises = []
     for (let pupilIndex = 0; pupilIndex < 30; pupilIndex++) {
       const entity = generateEntity(schoolPin, pupilPin)
-      pupilBatch.insertEntity(entity)
+      createEntityPromises.push(tableClient.createEntity(entity))
       pupilPin++
     }
     schoolPin++
-    await executeBatchAsync('preparedCheck', pupilBatch)
-    successCount++
+    await Promise.all(createEntityPromises)
+    importCount++
   }
 }
