@@ -141,7 +141,7 @@ app.set('view engine', 'ejs')
 app.use(partials())
 busboy.extend(app, {
   upload: true,
-  path: 'data/files',
+  path: path.join(__dirname, 'data', 'files'),
   allowedPath: (url) => allowedPath(url),
   mimeTypeLimit: [
     'text/csv', // correct
@@ -151,10 +151,12 @@ busboy.extend(app, {
   ]
 })
 
-const allowedPath = (url) => (/^\/pupil-register\/pupil\/add-batch-pupils$/).test(url) ||
+const allowedPath = (url) =>
+  (/^\/pupil-register\/pupil\/add-batch-pupils$/).test(url) ||
   (/^\/test-developer\/upload-new-form$/).test(url) ||
+  (/^\/test-developer\/upload$/).test(url) ||
   (/^\/service-manager\/upload-pupil-census\/upload$/).test(url) ||
-  (/^\/test-developer\/upload$/).test(url)
+  (/^\/service-manager\/organisations\/upload$/).test(url)
 
 // as we run in container over http, we must set up proxy trust for secure cookies
 let secureCookie = false
@@ -243,9 +245,10 @@ if (config.Auth.mode === authModes.dfeSignIn) {
 
 // Middleware to upload all files uploaded to Azure Blob storage
 // Should be configured after busboy
-if (config.AZURE_STORAGE_CONNECTION_STRING) {
-  app.use(require('./lib/azure-upload'))
-}
+// Commented out 2021-09-23 as this has never been used.
+// if (config.AZURE_STORAGE_CONNECTION_STRING) {
+//   app.use(require('./lib/azure-upload'))
+// }
 
 app.use(function (req, res, next) {
   // make the user and isAuthenticated vars available in the view templates

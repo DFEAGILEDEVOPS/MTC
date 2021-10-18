@@ -11,23 +11,26 @@ const blobTrigger: AzureFunction = async function schoolImportIndex (context: Co
   const start = performance.now()
   context.log(`${name} started for blob \n Name: ${context.bindingData.name} \n Blob Size: ${blob.length} Bytes`)
   let pool: mssql.ConnectionPool
-  let jobResult = new SchoolImportJobResult()
-  let standardOutput = ''
-  let errorOutput = ''
+  const jobResult = new SchoolImportJobResult()
+  let svc: SchoolImportService
 
+  // Setup
   try {
     pool = await ConnectionPoolService.getInstance(context.log)
-    const svc = new SchoolImportService(pool, jobResult, context.log)
-    jobResult = await svc.process(blob)
-    await pool.close()
+    svc = new SchoolImportService(pool, jobResult, context.log)
+  } catch (error) {
+    context.log.error(`${name}: FATAL ERROR: ${error.message}`)
+    return
+  }
+
+  try {
+    await svc.process(blob)
   } catch (error) {
     context.log.error(`${name}: ERROR: ${error.message}`, error)
   }
 
-  standardOutput = jobResult.getStandardOutput()
-  errorOutput = jobResult.getErrorOutput()
-  context.bindings.schoolImportStderr = errorOutput
-  context.bindings.schoolImportStdout = standardOutput
+  context.bindings.schoolImportStderr = jobResult.getErrorOutput()
+  context.bindings.schoolImportStdout = jobResult.getStandardOutput()
 
   const end = performance.now()
   const durationInMilliseconds = end - start
