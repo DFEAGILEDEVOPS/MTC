@@ -20,22 +20,31 @@ const schoolValidator = {
    */
   validate: async function validateSchool (school) {
     const validationError = new ValidationError()
+    console.log('validating school', school)
 
     if (school.name === undefined || school.name.length < 1) {
       validationError.addError('name', 'School name is too short')
     }
     if (typeof school.dfeNumber !== 'number') {
       validationError.addError('dfeNumber', `Invalid dfeNumber: ${school.dfeNumber}`)
+    } else if (isNaN(school.dfeNumber)) {
+      validationError.addError('dfeNumber', 'Please enter a DFE number')
     }
+
     if (typeof school.urn !== 'number') {
       validationError.addError('urn', `Invalid URN: ${school.urn}`)
+    } else if (isNaN(school.urn)) {
+      validationError.addError('urn', 'Please enter a URN')
     }
+
     if (typeof school.leaCode !== 'number') {
       validationError.addError('leaCode', `Invalid LEA code: ${school.leaCode}`)
     }
+
     if (typeof school.estabCode !== 'number') {
       validationError.addError('estabCode', `Invalid Estab code: ${school.estabCode}`)
     }
+
     const laCodeValidationError = await laCodeValidator.validate(school.leaCode, 'leaCode')
     if (laCodeValidationError.hasError()) {
       if (!validationError.isError('leaCode')) {

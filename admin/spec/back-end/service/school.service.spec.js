@@ -1,7 +1,7 @@
 'use strict'
 const uuid = require('uuid')
 
-/* global describe, expect test jest afterEach */
+/* global describe, expect test jest afterEach beforeEach */
 const sut = require('../../../services/school.service')
 const schoolDataService = require('../../../services/data-access/school.data.service')
 const schoolValidator = require('../../../lib/validator/school-validator')
@@ -11,6 +11,7 @@ describe('school.service', () => {
   afterEach(() => {
     jest.restoreAllMocks()
   })
+
   describe('findSchoolByDfeNumber', () => {
     test('should throw an error if school not found', async () => {
       const dfeNumber = '1234567'
@@ -133,6 +134,73 @@ describe('school.service', () => {
       await expect(sut.updateSchool(uuid.NIL, {}))
         .rejects
         .toHaveProperty('name', 'ValidationError')
+    })
+  })
+
+  describe('parseDfeNumber', () => {
+    test('it returns the leaCode and the estabNumber', () => {
+      const details = sut.parseDfeNumber(1234567)
+      expect(details.leaCode).toBe(123)
+      expect(details.estabCode).toBe(4567)
+    })
+
+    test('it throws if the dfe number is not a number', () => {
+      expect(() => { sut.parseDfeNumber('1234567') }).toThrow(ValidationError)
+    })
+
+    test('it throws if the dfe number is undefined', () => {
+      expect(() => { sut.parseDfeNumber('1234567') }).toThrow(ValidationError)
+    })
+
+    test('it throws if the dfe number is null', () => {
+      expect(() => { sut.parseDfeNumber('1234567') }).toThrow(ValidationError)
+    })
+
+    test('it throws if the dfe number is only 6 digits', () => {
+      expect(() => { sut.parseDfeNumber(999999) }).toThrow(ValidationError)
+    })
+
+    test('it throws if the dfe number is 8 digits', () => {
+      expect(() => { sut.parseDfeNumber(10000000) }).toThrow(ValidationError)
+    })
+
+    test('it throws if the dfe number is an empty string', () => { // form submission
+      expect(() => { sut.parseDfeNumber('') }).toThrow(ValidationError)
+    })
+  })
+
+  describe('addSchool', () => {
+    beforeEach(() => {
+      jest.spyOn(schoolDataService, 'sqlAddSchool').mockImplementation()
+    })
+
+    test('it parses the dfeNumber to capture the leaCode and estabCode', async () => {
+      jest.spyOn(schoolValidator, 'validate').mockResolvedValue(new ValidationError())
+      await sut.addSchool({
+        dfeNumber: 2011234,
+        name: 'Test School',
+        urn: 2
+      })
+      const insertData = schoolDataService.sqlAddSchool.mock.calls[0][0]
+      expect(insertData.leaCode).toBe(201)
+      expect(insertData.estabCode).toBe(1234)
+    })
+
+    test('it throws a validation error if the data fails the validator', async () => {
+      jest.spyOn(schoolValidator, 'validate').mockRejectedValue(new ValidationError('urn', 'mock validation message'))
+      expect.assertions(2)
+      try {
+        await sut.addSchool({ dfeNumber: 2011234, name: 'Test School', urn: 'fail' })
+      } catch (error) {
+        expect(error.constructor).toBe(ValidationError)
+      }
+      expect(schoolDataService.sqlAddSchool).not.toHaveBeenCalled()
+    })
+
+    test('it calls the data service if the validation passes', async () => {
+      jest.spyOn(schoolValidator, 'validate').mockResolvedValue(new ValidationError())
+      await sut.addSchool({ dfeNumber: 1234567, name: 'Test School', urn: 2 })
+      expect(schoolDataService.sqlAddSchool).toHaveBeenCalledTimes(1)
     })
   })
 })

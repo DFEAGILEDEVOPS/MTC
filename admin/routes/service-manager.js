@@ -77,6 +77,16 @@ router.get('/organisations',
   serviceManagerController.getManageSchools
 )
 
+router.get('/organisations/add',
+  isAuthenticated(roles.serviceManager),
+  serviceManagerController.getAddSchool
+)
+
+router.post('/organisations/add',
+  isAuthenticated(roles.serviceManager),
+  serviceManagerController.postAddSchool
+)
+
 router.get('/organisations/search',
   isAuthenticated(roles.serviceManager),
   serviceManagerController.getSearch
