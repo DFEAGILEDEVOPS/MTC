@@ -88,7 +88,6 @@ pupilCensusService.getUploadedFile = async () => {
 
 /**
  * Remove a pupil census file record
- * @deprecated - why? Because of the SQL Delete? There is a route for the service-manager that leads here.
  * @param {Number} pupilCensusId
  * @return {Promise<Object>}
  */
