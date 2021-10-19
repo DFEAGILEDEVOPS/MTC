@@ -798,7 +798,8 @@ describe('service manager controller:', () => {
       const res = getRes()
       jest.spyOn(schoolService, 'addSchool').mockImplementation()
       await controller.postAddSchool(req, res, next)
-      const args = schoolService.postAddSchool()
+      const args = schoolService.addSchool.mock.calls[0][0]
+      expect(args.name).toBe('Primary Academy')
     })
   })
 })
