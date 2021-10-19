@@ -345,7 +345,6 @@ const controller = {
         urn: parseInt(urn, 10)
       })
       req.flash('info', 'School added')
-      console.log('messages', res.locals.messages)
       res.redirect('/service-manager/organisations')
     } catch (error) {
       if (error.constructor === ValidationError) {

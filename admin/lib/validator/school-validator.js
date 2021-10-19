@@ -20,7 +20,6 @@ const schoolValidator = {
    */
   validate: async function validateSchool (school) {
     const validationError = new ValidationError()
-    console.log('validating school', school)
 
     if (school.name === undefined || school.name.length < 1) {
       validationError.addError('name', 'School name is too short')
