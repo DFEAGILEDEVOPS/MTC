@@ -29,7 +29,7 @@
     "watch:integration": "yarn jest --watch --coverage=no --config ./tests-integration/jest.integration.config.js"
   },
   "mtc": {
-    "assets-version": "cf97ab52a7b50fb51fd6f2673c4ec147"
+    "assets-version": "e93c2fae4e22b00c9e51494b9880f452"
   },
   "engines": {
     "node": ">= 12"
@@ -40,8 +40,9 @@
   },
   "dependencies": {
     "@azure/service-bus": "^7.0.5",
+    "adm-zip": "^0.5.7",
     "applicationinsights": "^2.1.5",
-    "axios": "^0.21.3",
+    "axios": "^0.22.0",
     "azure-storage": "^2.10.4",
     "bcryptjs": "^2.4.3",
     "bluebird": "^3.5.1",
@@ -62,7 +63,7 @@
     "fs-extra": "^10.0.0",
     "govuk-frontend": "^3.2.0",
     "helmet": "^4.3.1",
-    "ioredis": "4.27.8",
+    "ioredis": "4.27.10",
     "jsonwebtoken": "^8.1.1",
     "login.dfe.async-retry": "git+https://github.com/DFE-Digital/login.dfe.async-retry.git#v1.0",
     "lz-string": "^1.4.4",
@@ -70,7 +71,7 @@
     "merge-stream": "^2.0.0",
     "moment-timezone": "^0.5.23",
     "morgan": "~1.10.0",
-    "mssql": "7.2.0",
+    "mssql": "7.2.1",
     "nocache": "^3.0.1",
     "node-dir": "^0.1.17",
     "openid-client": "^4.2.2",

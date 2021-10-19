@@ -13,6 +13,7 @@ const scePresenter = require('../helpers/sce')
 const schoolService = require('../services/school.service')
 const featureToggles = require('feature-toggles')
 const { formUtil, formUtilTypes } = require('../lib/form-util')
+const organisationBulkUploadService = require('../services/organisation-bulk-upload.service')
 
 const controller = {
 
@@ -466,6 +467,57 @@ const controller = {
         return controller.getEditOrganisation(req, res, next, error)
       }
       return next(error)
+    }
+  },
+
+  getUploadOrganisations: async function getUploadOrganisations (req, res, next, error = new ValidationError()) {
+    req.breadcrumbs('Manage organisations', '/service-manager/organisations')
+    res.locals.pageTitle = 'Bulk upload organisations'
+    req.breadcrumbs(res.locals.pageTitle)
+    const jobSlug = req.params.jobSlug
+    let jobStatus
+    try {
+      if (jobSlug !== undefined) {
+        jobStatus = await organisationBulkUploadService.getUploadStatus(jobSlug)
+      }
+
+      res.render('service-manager/bulk-upload-organisations', {
+        breadcrumbs: req.breadcrumbs(),
+        fileErrors: error,
+        jobStatus: jobStatus
+      })
+    } catch (error) {
+      return next(error)
+    }
+  },
+
+  postUploadOrganisations: async function postUploadOrganisations (req, res, next) {
+    const uploadFile = req.files?.fileOrganisations
+    try {
+      const validationError = await organisationBulkUploadService.validate(uploadFile)
+      if (validationError.hasError()) {
+        return controller.getUploadOrganisations(req, res, next, validationError)
+      }
+      const jobSlug = await organisationBulkUploadService.upload(uploadFile)
+      req.flash('info', 'File has been uploaded')
+      res.redirect(`/service-manager/organisations/upload/${jobSlug.toLowerCase()}`)
+    } catch (error) {
+      return next(error)
+    }
+  },
+
+  downloadJobOutput: async function downloadJobOutput (req, res, next) {
+    const slug = req.params.slug
+    try {
+      const zipResults = await organisationBulkUploadService.getZipResults(slug)
+      res.set({
+        'Content-Disposition': 'attachment; filename="job-output.zip"',
+        'Content-type': 'application/octet-stream',
+        'Content-Length': zipResults.length // Buffer.length (bytes)
+      })
+      res.send(zipResults)
+    } catch (error) {
+      next(error)
     }
   }
 }
