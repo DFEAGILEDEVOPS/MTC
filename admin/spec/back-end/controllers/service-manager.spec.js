@@ -786,5 +786,19 @@ describe('service manager controller:', () => {
       await controller.postAddSchool(req, res, next)
       expect(next).toHaveBeenCalledWith(new Error('test error'))
     })
+
+    test('it trims the school name', async () => {
+      const req = getReq({
+        body: {
+          name: '  Primary Academy   ',
+          dfeNumber: '1231234',
+          urn: '123456'
+        }
+      })
+      const res = getRes()
+      jest.spyOn(schoolService, 'addSchool').mockImplementation()
+      await controller.postAddSchool(req, res, next)
+      const args = schoolService.postAddSchool()
+    })
   })
 })
