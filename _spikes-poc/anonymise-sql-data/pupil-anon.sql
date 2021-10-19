@@ -1,0 +1,2 @@
+-- get pupil ids into a cursor
+-- loop each and use exec sp_executesql to update the record with random values targeting the id
