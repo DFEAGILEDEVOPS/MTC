@@ -22,6 +22,7 @@
     "test": "yarn lint && yarn jest",
     "test:watch": "yarn jest --watch --coverage=no",
     "test:nocoverage": "yarn lint && yarn jest --coverage=no",
+    "test:coverage": "yarn lint && yarn jest --coverage=yes",
     "test:integration": "yarn jest --config ./tests-integration/jest.integration.config.js",
     "test:frontend": "karma start karma.conf.js",
     "test:all": "yarn clean && yarn test && yarn test:integration && yarn test:frontend && yarn build",
@@ -29,7 +30,7 @@
     "watch:integration": "yarn jest --watch --coverage=no --config ./tests-integration/jest.integration.config.js"
   },
   "mtc": {
-    "assets-version": "e93c2fae4e22b00c9e51494b9880f452"
+    "assets-version": "bde59124a0eb6a2d67dbbbbc7509400d"
   },
   "engines": {
     "node": ">= 12"
@@ -131,7 +132,7 @@
   },
   "jest": {
     "bail": true,
-    "collectCoverage": true,
+    "collectCoverage": false,
     "collectCoverageFrom": [
       "**/*.{js,jsx}",
       "!**/node_modules/**",
