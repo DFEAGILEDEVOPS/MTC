@@ -1,5 +1,5 @@
 
-DECLARE @schoolCount smallint = 5 --20000
+DECLARE @schoolCount smallint = 500 --20000
 DECLARE @currentSchoolIndex smallint = 1
 DECLARE @estabCode smallint = 1000
 DECLARE @schoolsPerLea tinyint = 25 
@@ -13,7 +13,7 @@ BEGIN
         ELSE
             BEGIN
                 -- Next Lea
-                SELECT @estabCode = 1
+                SELECT @estabCode = 1000
                 SELECT @leaCode = @leaCode + 1
             END
     DECLARE @schoolName nvarchar(128) = NEWID()
