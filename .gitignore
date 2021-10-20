@@ -112,7 +112,7 @@ config.json
 src/public/config.json
 test/admin-hpa/features/support/test_env.rb
 test/pupil-hpa/features/support/test_env.rb
-test/admin-hpa/data/ctf_download/*.xml
+test/admin-hpa/data/download/*.*
 test/admin-hpa/data/fixtures/test-check-form-*.csv
 test/admin-hpa/data/multiple_pupils_errors.csv
 test/admin-hpa/data/fixtures/test-check-form-*.txt

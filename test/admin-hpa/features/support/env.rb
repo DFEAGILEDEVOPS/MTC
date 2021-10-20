@@ -23,6 +23,7 @@ require 'nokogiri'
 require 'numbers_in_words'
 require 'redis'
 require 'dotenv'
+require 'zip'
 require_relative '../../features/support/browserstack_driver_helper'
 require_relative '../../features/support/request_helper'
 require_relative '../../features/support/sql_db_helper'
@@ -61,7 +62,7 @@ Capybara.register_driver(:chrome) do |app|
   browser_options.add_preference(:download, directory_upgrade: true,
                                  prompt_for_download: false,
                                  default_directory:
-                                   File.expand_path("#{File.dirname(__FILE__)}/../../data/ctf_download"))
+                                   File.expand_path("#{File.dirname(__FILE__)}/../../data/download"))
   browser_options.add_preference(:browser, set_download_behavior: { behavior: 'allow' })
 
   driver = Capybara::Selenium::Driver.new(app, browser: :chrome, options: browser_options)
@@ -73,7 +74,7 @@ Capybara.register_driver(:chrome) do |app|
   bridge.http.call(:post, path, cmd: 'Page.setDownloadBehavior',
                    params: {
                      behavior: 'allow',
-                     downloadPath: File.expand_path("#{File.dirname(__FILE__)}/../../data/ctf_download")
+                     downloadPath: File.expand_path("#{File.dirname(__FILE__)}/../../data/download")
                    })
   driver
 end
@@ -92,7 +93,7 @@ Capybara.register_driver :headless_chrome do |app|
   browser_options.add_preference(:download, directory_upgrade: true,
                  prompt_for_download: false,
                  default_directory:
-                                   File.expand_path("#{File.dirname(__FILE__)}/../../data/ctf_download"))
+                                   File.expand_path("#{File.dirname(__FILE__)}/../../data/download"))
   browser_options.add_preference(:browser, set_download_behavior: { behavior: 'allow' })
 
   driver = Capybara::Selenium::Driver.new(app, browser: :chrome, options: browser_options)
@@ -104,7 +105,7 @@ Capybara.register_driver :headless_chrome do |app|
   bridge.http.call(:post, path, cmd: 'Page.setDownloadBehavior',
                    params: {
                      behavior: 'allow',
-                     downloadPath: File.expand_path("#{File.dirname(__FILE__)}/../../data/ctf_download")
+                     downloadPath: File.expand_path("#{File.dirname(__FILE__)}/../../data/download")
                    })
   driver
 end
