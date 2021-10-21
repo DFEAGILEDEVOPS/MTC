@@ -1,3 +1,4 @@
+-- utility script to create a large set of schools for more realistic testing
 
 DECLARE @schoolCount smallint = 20000
 DECLARE @currentSchoolIndex smallint = 1
