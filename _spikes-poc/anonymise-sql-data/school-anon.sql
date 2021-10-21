@@ -1,6 +1,6 @@
 DECLARE @id int
 DECLARE @schoolName nvarchar(128)
-DECLARE @estabCode int = 1000
+DECLARE @estabCode smallint = 1000
 -- 25 schools per lea fits all 18K~ into the 001-999 range
 DECLARE @schoolsPerLea tinyint = 25
 DECLARE @leaSchoolIndex tinyint = 0
@@ -33,6 +33,7 @@ BEGIN
         SELECT @schoolName = CAST(NEWID() AS VARCHAR(255))
         UPDATE mtc_admin.school SET [name]=@schoolName, [leaCode]=@leaCode, [estabCode]=@estabCode, [urn]=@urn, [dfeNumber]=@dfeNumber WHERE id=@id
         SELECT @urn = @urn + 1
+        SELECT @leaSchoolIndex = @leaSchoolIndex + 1
     END TRY 
    BEGIN CATCH 
       PRINT ERROR_MESSAGE()
