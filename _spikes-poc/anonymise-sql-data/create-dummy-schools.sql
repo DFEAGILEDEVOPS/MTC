@@ -1,22 +1,29 @@
 
-DECLARE @schoolCount smallint = 500 --20000
+DECLARE @schoolCount smallint = 20000
 DECLARE @currentSchoolIndex smallint = 1
 DECLARE @estabCode smallint = 1000
-DECLARE @schoolsPerLea tinyint = 25 
+DECLARE @schoolsPerLea tinyint = 25
+DECLARE @leaSchoolIndex tinyint = 0
 DECLARE @leaCode smallint = 100
 DECLARE @urn int = 100000
 
+SET NOCOUNT ON
+
 WHILE @currentSchoolIndex < @schoolCount
 BEGIN
-     IF @estabCode < @schoolsPerLea
+     IF @leaSchoolIndex < @schoolsPerLea
+        BEGIN
+            SELECT @leaSchoolIndex = @leaSchoolIndex + 1
             SELECT @estabCode = @estabCode + 1
-        ELSE
-            BEGIN
-                -- Next Lea
-                SELECT @estabCode = 1000
-                SELECT @leaCode = @leaCode + 1
-            END
-    DECLARE @schoolName nvarchar(128) = NEWID()
+        END
+    ELSE
+        BEGIN
+            -- Next Lea, reset vars...
+            SELECT @estabCode = 1000
+            SELECT @leaCode = @leaCode + 1
+            SELECT @leaSchoolIndex = 0
+        END
+    DECLARE @schoolName nvarchar(50) = 'dummy school'
     BEGIN TRY
         DECLARE @dfeNumber int = CAST(CAST(@leaCode AS NVARCHAR) + CAST(@estabCode AS NVARCHAR) AS int)
         INSERT mtc_admin.school (leaCode, estabCode, [name], urn, dfeNumber) VALUES (@leaCode, @estabCode, @schoolName, @urn, @dfeNumber)
