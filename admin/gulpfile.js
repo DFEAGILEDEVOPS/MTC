@@ -127,7 +127,6 @@ function bundleJs () {
   return gulp.src(jsBundleFiles)
     .pipe(concat('app.js'))
     .pipe(replace('SESSION_DISPLAY_NOTICE_TIME', config.ADMIN_SESSION_DISPLAY_NOTICE_AFTER.toString()))
-    .pipe(replace('SESSION_EXPIRATION_TIME', config.ADMIN_SESSION_EXPIRATION_TIME_IN_SECONDS.toString()))
     .pipe(babel({
       presets: ['@babel/preset-env'],
       sourceType: 'unambiguous'

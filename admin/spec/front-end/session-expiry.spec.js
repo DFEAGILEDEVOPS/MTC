@@ -25,7 +25,6 @@ describe('sessionExpiry', function () {
 
   describe('startTimer', function () {
     beforeEach(() => {
-      window.SESSION_EXPIRATION_TIME = 20 * 60
       window.SESSION_DISPLAY_NOTICE_TIME = 15 * 60
       jasmine.clock().install()
     })
@@ -34,19 +33,22 @@ describe('sessionExpiry', function () {
     })
     it('should set the countdown text initially', function () {
       spyOn(window.GOVUK.sessionExpiry, 'setCountdownText')
-      window.GOVUK.sessionExpiry.startTimer('fixture', 10)
+      const expiryDate = Date.now() + 300000
+      window.GOVUK.sessionExpiry.startTimer('fixture', 10, expiryDate)
       expect(window.GOVUK.sessionExpiry.setCountdownText).toHaveBeenCalledWith('fixture', 5)
     })
     it('should decrease the minute count and set the text after tickMs', function () {
+      const expiryDate = Date.now() + 300000
       spyOn(window.GOVUK.sessionExpiry, 'setCountdownText')
-      window.GOVUK.sessionExpiry.startTimer('fixture', 10)
-      jasmine.clock().tick(11)
+      window.GOVUK.sessionExpiry.startTimer('fixture', 60 * 1000, expiryDate)
+      jasmine.clock().tick(60001)
       expect(window.GOVUK.sessionExpiry.setCountdownText).toHaveBeenCalledWith('fixture', 4)
     })
     it('should display the expired banner on 0 minutes left', function () {
+      const expiryDate = Date.now()
       spyOn(window.GOVUK.sessionExpiry, 'setCountdownText')
       spyOn(window.GOVUK.sessionExpiry, 'displayExpiredBanner')
-      window.GOVUK.sessionExpiry.startTimer('fixture', 10)
+      window.GOVUK.sessionExpiry.startTimer('fixture', 10, expiryDate)
       jasmine.clock().tick(10 * 5 + 1)
       expect(window.GOVUK.sessionExpiry.displayExpiredBanner).toHaveBeenCalled()
     })
@@ -66,23 +68,6 @@ describe('sessionExpiry', function () {
         window.GOVUK.sessionExpiry.displayExpiryBanner(fixtureContainer, fixtureMinutesCountdown, fixtureButton)
         expect(fixtureContainer.hasClass('error-session-expiration')).toBe(false)
         expect(fixtureContainer.hasClass('error-about-to-expire-session')).toBe(true)
-        done()
-      })
-    })
-    it('should add a reload click handler on the continue button', function (done) {
-      $(function () {
-        spyOn(window.GOVUK.sessionExpiry, 'hideExpiryBanner')
-        window.GOVUK.sessionExpiry.displayExpiryBanner(fixtureContainer, fixtureMinutesCountdown, fixtureButton)
-        fixtureButton.click()
-        expect(window.GOVUK.sessionExpiry.hideExpiryBanner).toHaveBeenCalled()
-        done()
-      })
-    })
-    it('should start the timer with a minute interval', function (done) {
-      $(function () {
-        spyOn(window.GOVUK.sessionExpiry, 'startTimer')
-        window.GOVUK.sessionExpiry.displayExpiryBanner(fixtureContainer, fixtureMinutesCountdown, fixtureButton)
-        expect(window.GOVUK.sessionExpiry.startTimer).toHaveBeenCalledWith(fixtureMinutesCountdown, 60 * 1000)
         done()
       })
     })

@@ -1,6 +1,9 @@
 // karma.conf.js
 module.exports = function (config) {
   config.set({
+    // base path that will be used to resolve all patterns (eg. files, exclude)
+    basePath: '',
+    reporters: ['progress'],
     singleRun: true,
     autoWatch: false,
     files: [
