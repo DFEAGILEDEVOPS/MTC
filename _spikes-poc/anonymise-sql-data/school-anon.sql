@@ -1,17 +1,18 @@
 DECLARE @id int
 DECLARE @schoolName nvarchar(128)
-DECLARE @estabCode smallint = 1000
+DECLARE @estabCode int = 1000
 -- 25 schools per lea fits all 18K~ into the 001-999 range
 DECLARE @schoolsPerLea tinyint = 25
 DECLARE @leaSchoolIndex tinyint = 0
-DECLARE @leaCode smallint = 100
+DECLARE @leaCode int = 100
 DECLARE @urn int = 100000
 
 SET NOCOUNT ON
 
 -- to avoid leaCode and estabCode clashes, reset all to values that are typically out of bounds
+PRINT 'resetting schools...'
 update mtc_admin.school set leaCode = 99999, estabCode = id, dfeNumber=id, urn=id
-
+PRINT 'all schools reset'
 DECLARE schoolCursor CURSOR FAST_FORWARD FOR 
 SELECT id FROM [mtc_admin].school  
 OPEN schoolCursor 
@@ -31,6 +32,7 @@ BEGIN
             END
         DECLARE @dfeNumber int = CAST(CAST(@leaCode AS NVARCHAR) + CAST(@estabCode AS NVARCHAR) AS int)
         SELECT @schoolName = CAST(NEWID() AS VARCHAR(255))
+        PRINT 'leaCode:' + CAST(@leaCode AS NVARCHAR) + ' estabCode:' + CAST(@estabCode AS NVARCHAR) + ' urn:' + CAST(@urn AS NVARCHAR) + ' dfeNumber:' + CAST(@dfeNumber AS NVARCHAR)
         UPDATE mtc_admin.school SET [name]=@schoolName, [leaCode]=@leaCode, [estabCode]=@estabCode, [urn]=@urn, [dfeNumber]=@dfeNumber WHERE id=@id
         SELECT @urn = @urn + 1
         SELECT @leaSchoolIndex = @leaSchoolIndex + 1
