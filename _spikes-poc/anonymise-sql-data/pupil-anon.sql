@@ -1,4 +1,3 @@
-
 UPDATE mtc_admin.pupil SET 
     foreName=CAST(NEWID() AS VARCHAR(255)),
     middleNames=CAST(NEWID() AS VARCHAR(255)),
