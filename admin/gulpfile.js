@@ -31,16 +31,19 @@ try {
 
 const config = require('./config')
 
-// These files will get uglified and packaged into `app.js`
-const jsBundleFiles = [
+const jsVendorBundleFiles = [
   './node_modules/govuk-frontend/govuk/all.js',
   './assets/javascripts/jquery-3.5.1.js',
   './assets/javascripts/gds-cookie-functions.js',
   './assets/javascripts/gds-cookie-settings.js',
   './assets/javascripts/gds-cookie-banner.js',
+  './assets/javascripts/accessible-autocomplete.min.js',
+]
+
+// These files will get uglified and packaged into `app.js`
+const jsAppBundleFiles = [
   './assets/javascripts/gds-table-sorting.js',
   './assets/javascripts/gds-print-popup.js',
-  './assets/javascripts/accessible-autocomplete.min.js',
   './assets/javascripts/util-checkbox.js',
   './assets/javascripts/global-scripts.js',
   './assets/javascripts/jquery-modal.js',
@@ -118,13 +121,29 @@ function compileCss () {
 
 function watch () {
   gulp.watch('./assets/**/*.scss', gulp.series(compileCss, copyPublicFilesToDist))
-  gulp.watch('./assets/**/*.js', gulp.series(bundleJs, copyPublicFilesToDist))
+  gulp.watch('./assets/**/*.js', gulp.series(bundleAppJsForCodeCoverage, copyPublicFilesToDist))
   gulp.watch('./views/**/*.ejs', gulp.series(copyViewFilesToDist))
   gulp.watch(['./**/*.[t|j]s', '!./dist/**/*'], gulp.series(compileTsWithSourceMaps))
 }
 
-function bundleJs () {
-  return gulp.src(jsBundleFiles)
+function bundleVendorJs () {
+  return gulp.src(jsVendorBundleFiles)
+    .pipe(concat('vendor.js'))
+    .pipe(replace('SESSION_DISPLAY_NOTICE_TIME', config.ADMIN_SESSION_DISPLAY_NOTICE_AFTER.toString()))
+    .pipe(babel({
+      presets: ['@babel/preset-env'],
+      sourceType: 'unambiguous'
+    }))
+    .pipe(uglify({
+      ie8: true
+    }).on('error', function (e) {
+      winston.error(e)
+    }))
+    .pipe(gulp.dest('./public/javascripts/'))
+}
+
+function bundleAppVendorJs () {
+  return gulp.src(jsAppBundleFiles)
     .pipe(concat('app.js'))
     .pipe(replace('SESSION_DISPLAY_NOTICE_TIME', config.ADMIN_SESSION_DISPLAY_NOTICE_AFTER.toString()))
     .pipe(babel({
@@ -139,8 +158,8 @@ function bundleJs () {
     .pipe(gulp.dest('./public/javascripts/'))
 }
 
-function bundleJsForCodeCoverage () {
-  return gulp.src(jsBundleFiles)
+function bundleAppJsForCodeCoverage () {
+  return gulp.src(jsAppBundleFiles)
     .pipe(sourcemaps.init())
     .pipe(concat('app.js'))
     .pipe(replace('SESSION_DISPLAY_NOTICE_TIME', config.ADMIN_SESSION_DISPLAY_NOTICE_AFTER.toString()))
@@ -239,7 +258,8 @@ gulp.task('build',
     gulp.parallel(
       compileTs,
       compileCss,
-      bundleJs,
+      bundleVendorJs,
+      bundleAppVendorJs,
       bundleFuncCallsJs,
       copyImages,
       copyGdsImages,
@@ -263,7 +283,8 @@ gulp.task('dev-build',
     gulp.parallel(
       compileTsWithSourceMaps,
       compileCss,
-      bundleJsForCodeCoverage,
+      bundleVendorJs,
+      bundleAppJsForCodeCoverage,
       bundleFuncCallsJs,
       copyImages,
       copyGdsImages,
@@ -284,4 +305,4 @@ gulp.task('dev-build',
 exports.cleanDist = cleanDist
 exports.compileTs = compileTs
 exports.watch = watch
-exports.bundleJsForCodeCoverage = bundleJsForCodeCoverage
+exports.bundleAppJsForCodeCoverage = bundleAppJsForCodeCoverage

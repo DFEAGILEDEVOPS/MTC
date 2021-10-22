@@ -5,11 +5,12 @@ module.exports = function (config) {
     basePath: '',
     frameworks: ['jasmine'],
     files: [
+      { pattern: 'public/javascripts/vendor.js', watched: false, included: true },
       { pattern: 'public/javascripts/app.js', watched: false, included: true },
       'spec/front-end/*.spec.js'
     ],
     preprocessors: {
-      'public/javascripts/**/*.js': ['coverage']
+      'public/javascripts/app.js': ['coverage']
     },
     plugins: [
       'karma-jasmine',

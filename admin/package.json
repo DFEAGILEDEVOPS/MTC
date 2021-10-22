@@ -23,13 +23,13 @@
     "test:watch": "yarn jest --watch --coverage=no",
     "test:nocoverage": "yarn lint && yarn jest --coverage=no",
     "test:integration": "yarn jest --config ./tests-integration/jest.integration.config.js",
-    "test:frontend": "yarn run gulp bundleJsForCodeCoverage && karma start karma.conf.js",
+    "test:frontend": "yarn run gulp bundleAppJsForCodeCoverage && karma start karma.conf.js",
     "test:all": "yarn clean && yarn test && yarn test:integration && yarn test:frontend && yarn build",
     "watch": "yarn test:watch",
     "watch:integration": "yarn jest --watch --coverage=no --config ./tests-integration/jest.integration.config.js"
   },
   "mtc": {
-    "assets-version": "f5556ed26de24af481f7b82694ee902d"
+    "assets-version": "12084b3d61c1a779e0adb0b490f01bb1"
   },
   "engines": {
     "node": ">= 12"
