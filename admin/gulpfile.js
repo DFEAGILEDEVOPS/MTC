@@ -37,7 +37,7 @@ const jsVendorBundleFiles = [
   './assets/javascripts/gds-cookie-functions.js',
   './assets/javascripts/gds-cookie-settings.js',
   './assets/javascripts/gds-cookie-banner.js',
-  './assets/javascripts/accessible-autocomplete.min.js',
+  './assets/javascripts/accessible-autocomplete.min.js'
 ]
 
 // These files will get uglified and packaged into `app.js`

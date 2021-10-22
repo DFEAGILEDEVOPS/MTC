@@ -20,7 +20,7 @@ module.exports = function (config) {
     reporters: ['progress', 'coverage'],
     port: 9878,
     colors: true,
-    logLevel: config.LOG_DEBUG,
+    logLevel: config.LOG_ERROR, // set to LOG_DEBUG for more
     autoWatch: false,
     singleRun: true,
     browsers: ['ChromeHeadless'],
