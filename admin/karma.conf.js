@@ -3,18 +3,34 @@ module.exports = function (config) {
   config.set({
     // base path that will be used to resolve all patterns (eg. files, exclude)
     basePath: '',
-    reporters: ['progress'],
-    singleRun: true,
-    autoWatch: false,
+    frameworks: ['jasmine'],
     files: [
       { pattern: 'public/javascripts/app.js', watched: false, included: true },
       'spec/front-end/*.spec.js'
     ],
-    frameworks: ['jasmine'],
-    browsers: ['ChromeHeadless'],
+    preprocessors: {
+      'public/javascripts/**/*.js': ['coverage']
+    },
     plugins: [
       'karma-jasmine',
-      'karma-chrome-launcher'
-    ]
+      'karma-chrome-launcher',
+      'karma-coverage'
+    ],
+    reporters: ['progress', 'coverage'],
+    port: 9878,
+    colors: true,
+    logLevel: config.LOG_DEBUG,
+    autoWatch: false,
+    singleRun: true,
+    browsers: ['ChromeHeadless'],
+    concurrency: Infinity,
+    coverageReporter: {
+      includeAllSources: true,
+      dir: 'coverage/',
+      reporters: [
+        { type: 'html', subdir: 'frontend' },
+        { type: 'text-summary' }
+      ]
+    }
   })
 }
