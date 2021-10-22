@@ -93,7 +93,7 @@ $(function () {
       })
     },
 
-    resetSessionExpiryModal: function initialiseSessionExpiryModal (expiryDate) {
+    resetSessionExpiryModal: function resetSessionExpiryModal (expiryDate) {
       window.setTimeout(function () {
         window.GOVUK.sessionExpiry.displayExpiryBanner(sessionExpirationError, minutesCountdown, continueSessionButton)
       }, SESSION_DISPLAY_NOTICE_TIME * 1000)
