@@ -23,7 +23,7 @@
     "test:watch": "yarn jest --watch --coverage=no",
     "test:nocoverage": "yarn lint && yarn jest --coverage=no",
     "test:integration": "yarn jest --config ./tests-integration/jest.integration.config.js",
-    "test:frontend": "karma start karma.conf.js",
+    "test:frontend": "yarn run gulp bundleJsForCodeCoverage && karma start karma.conf.js",
     "test:all": "yarn clean && yarn test && yarn test:integration && yarn test:frontend && yarn build",
     "watch": "yarn test:watch",
     "watch:integration": "yarn jest --watch --coverage=no --config ./tests-integration/jest.integration.config.js"

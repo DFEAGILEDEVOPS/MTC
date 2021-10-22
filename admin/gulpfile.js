@@ -139,6 +139,15 @@ function bundleJs () {
     .pipe(gulp.dest('./public/javascripts/'))
 }
 
+function bundleJsForCodeCoverage () {
+  return gulp.src(jsBundleFiles)
+    .pipe(sourcemaps.init())
+    .pipe(concat('app.js'))
+    .pipe(replace('SESSION_DISPLAY_NOTICE_TIME', config.ADMIN_SESSION_DISPLAY_NOTICE_AFTER.toString()))
+    .pipe(sourcemaps.write())
+    .pipe(gulp.dest('./public/javascripts/'))
+}
+
 function bundleFuncCallsJs () {
   const viewJS = [
     'cookie-form.js',
@@ -254,7 +263,7 @@ gulp.task('dev-build',
     gulp.parallel(
       compileTsWithSourceMaps,
       compileCss,
-      bundleJs,
+      bundleJsForCodeCoverage,
       bundleFuncCallsJs,
       copyImages,
       copyGdsImages,
@@ -275,3 +284,4 @@ gulp.task('dev-build',
 exports.cleanDist = cleanDist
 exports.compileTs = compileTs
 exports.watch = watch
+exports.bundleJsForCodeCoverage = bundleJsForCodeCoverage
