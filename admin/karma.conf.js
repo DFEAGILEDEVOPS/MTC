@@ -10,14 +10,15 @@ module.exports = function (config) {
       'spec/front-end/*.spec.js'
     ],
     preprocessors: {
-      'public/javascripts/app.js': ['coverage']
+      'public/javascripts/app.js': ['coverage'],
     },
     plugins: [
       'karma-jasmine',
       'karma-chrome-launcher',
-      'karma-coverage'
+      'karma-coverage',
+      'karma-remap-istanbul'
     ],
-    reporters: ['progress', 'coverage'],
+    reporters: ['progress', 'coverage', 'karma-remap-istanbul'],
     port: 9878,
     colors: true,
     logLevel: config.LOG_ERROR, // set to LOG_DEBUG for more
@@ -26,12 +27,19 @@ module.exports = function (config) {
     browsers: ['ChromeHeadless'],
     concurrency: Infinity,
     coverageReporter: {
-      includeAllSources: true,
-      dir: 'coverage/',
-      reporters: [
-        { type: 'html', subdir: 'frontend' },
-        { type: 'text-summary' }
-      ]
+      type: 'json',
+      subdir: '.',
+      dir: 'coverage/frontend',
+      file: 'coverage.json'
+    },
+    remapIstanbulReporter: {
+      src: 'coverage/frontend/coverage.json',
+      reports: {
+        lcovonly: 'coverage/frontend/lcov.info',
+        html: 'coverage/frontend/html'
+      },
+      timeoutNotCreated: 5000, // default value
+      timeoutNoMoreFiles: 1000 // default value
     }
   })
 }

@@ -33,11 +33,11 @@ const config = require('./config')
 
 const jsVendorBundleFiles = [
   './node_modules/govuk-frontend/govuk/all.js',
-  './assets/javascripts/jquery-3.5.1.js',
-  './assets/javascripts/gds-cookie-functions.js',
-  './assets/javascripts/gds-cookie-settings.js',
-  './assets/javascripts/gds-cookie-banner.js',
-  './assets/javascripts/accessible-autocomplete.min.js'
+  './assets/vendor-js/jquery-3.5.1.js',
+  './assets/vendor-js/gds-cookie-functions.js',
+  './assets/vendor-js/gds-cookie-settings.js',
+  './assets/vendor-js/gds-cookie-banner.js',
+  './assets/vendor-js/accessible-autocomplete.min.js'
 ]
 
 // These files will get uglified and packaged into `app.js`
