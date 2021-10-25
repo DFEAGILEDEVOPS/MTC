@@ -104,4 +104,79 @@ describe('sessionExpiry', function () {
       `)
     })
   })
+
+  describe('keepAlive', function () {
+    const sessionExtendedResponse = { success: true, sessionExpiresAt: Date.now() + 2000 }
+    const sessionExtendFailureResponse = { success: false }
+
+    it('it makes a call to the server to keep the session alive', (done) => {
+      spyOn($, 'ajax').and.callFake(function () {
+        return $.Deferred().resolve(sessionExtendedResponse, 201).promise()
+      })
+      spyOn(window.GOVUK.sessionExpiry, 'resetSessionExpiryModal')
+      window.GOVUK.sessionExpiry.keepAlive()
+      expect($.ajax).toHaveBeenCalledWith('/keep-alive')
+      done()
+    })
+
+    it('if the session is extended it calls a function to extend the countdown', (done) => {
+      spyOn($, 'ajax').and.callFake(function () {
+        return $.Deferred().resolve(sessionExtendedResponse, 201).promise()
+      })
+      spyOn(window.GOVUK.sessionExpiry, 'resetSessionExpiryModal')
+      window.GOVUK.sessionExpiry.keepAlive()
+      expect(window.GOVUK.sessionExpiry.resetSessionExpiryModal).toHaveBeenCalled()
+      done()
+    })
+
+    it('redirects to sign-out if the session cannot be extended', (done) => {
+      spyOn($, 'ajax').and.callFake(function () {
+        return $.Deferred().resolve(sessionExtendFailureResponse, 403).promise()
+      })
+      spyOn(window.GOVUK.sessionExpiry, 'redirectPage').and.callFake((newloc) => console.log(newloc))
+      window.GOVUK.sessionExpiry.keepAlive()
+      expect(window.GOVUK.sessionExpiry.redirectPage).toHaveBeenCalledWith('/sign-out')
+      done()
+    })
+  })
+
+  describe('resetSessionTimeout', function () {
+    describe('mocked', function () {
+      beforeEach(function () {
+        spyOn(window, 'setTimeout')
+        spyOn(window, 'clearInterval')
+        spyOn(window.GOVUK.sessionExpiry, 'startTimer')
+      })
+
+      it('sets the timeout for displaying the next modal popup to 5 minutes', function () {
+        const newExpiry = Date.now() + 50000
+        window.GOVUK.sessionExpiry.resetSessionExpiryModal(newExpiry)
+        expect(window.setTimeout).toHaveBeenCalled()
+      })
+
+      it('clears the any existing countDown interval Id', function () {
+        const newExpiry = Date.now() + 20
+        window.GOVUK.sessionExpiry.countDownIntervalId = 9
+        window.GOVUK.sessionExpiry.resetSessionExpiryModal(newExpiry)
+        expect(window.clearInterval).toHaveBeenCalledWith(9)
+      })
+
+      it('calls startTimer to show the logged-out message to the screen at the end of the current session', () => {
+        const newExpiry = Date.now() + 20
+        window.GOVUK.sessionExpiry.resetSessionExpiryModal(newExpiry)
+        expect(window.GOVUK.sessionExpiry.startTimer).toHaveBeenCalled()
+      })
+    })
+
+    it('reminds the user their session is running out of time', function () {
+      jasmine.clock().uninstall()
+      jasmine.clock().install()
+      spyOn(window.GOVUK.sessionExpiry, 'displayExpiryBanner')
+      const newExpiry = Date.now() + (600 * 1000) // 10 mins
+      window.GOVUK.sessionExpiry.resetSessionExpiryModal(newExpiry)
+      jasmine.clock().tick(300001) // 5 minutes, 1 ms
+      expect(window.GOVUK.sessionExpiry.displayExpiryBanner).toHaveBeenCalled()
+      jasmine.clock().uninstall()
+    })
+  })
 })

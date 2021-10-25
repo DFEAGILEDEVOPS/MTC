@@ -78,6 +78,11 @@ $(function () {
       sessionExpirationError.addClass('error-about-to-expire-session')
     },
 
+    redirectPage: function (url) {
+      // Wrapper method as we cannot spy on window.location directly
+      window.location.replace(url)
+    },
+
     /**
      * Keep a session alive by pinging the server
      */
@@ -87,8 +92,7 @@ $(function () {
           const newSessionExpiresAt = new Date(res.sessionExpiresAt)
           window.GOVUK.sessionExpiry.resetSessionExpiryModal(newSessionExpiresAt)
         } else {
-          // We were unable to refresh the session
-          window.location('/sign-out', true)
+          window.GOVUK.sessionExpiry.redirectPage('/sign-out')
         }
       })
     },
