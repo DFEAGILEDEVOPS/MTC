@@ -10,7 +10,7 @@ module.exports = function (config) {
       'spec/front-end/*.spec.js'
     ],
     preprocessors: {
-      'public/javascripts/app.js': ['coverage'],
+      'public/javascripts/app.js': ['coverage']
     },
     plugins: [
       'karma-jasmine',
