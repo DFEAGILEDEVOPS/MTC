@@ -28,15 +28,18 @@ describe('sessionExpiry', function () {
       window.SESSION_DISPLAY_NOTICE_TIME = 15 * 60
       jasmine.clock().install()
     })
+
     afterEach(() => {
       jasmine.clock().uninstall()
     })
+
     it('should set the countdown text initially', function () {
       spyOn(window.GOVUK.sessionExpiry, 'setCountdownText')
       const expiryDate = Date.now() + 300000
       window.GOVUK.sessionExpiry.startTimer('fixture', 10, expiryDate)
       expect(window.GOVUK.sessionExpiry.setCountdownText).toHaveBeenCalledWith('fixture', 5)
     })
+
     it('should decrease the minute count and set the text after tickMs', function () {
       const expiryDate = Date.now() + 300000
       spyOn(window.GOVUK.sessionExpiry, 'setCountdownText')
@@ -44,13 +47,16 @@ describe('sessionExpiry', function () {
       jasmine.clock().tick(60001)
       expect(window.GOVUK.sessionExpiry.setCountdownText).toHaveBeenCalledWith('fixture', 4)
     })
-    it('should display the expired banner on 0 minutes left', function () {
+
+    it('should display the expired banner on 0 minutes left', function (done) {
       const expiryDate = Date.now()
       spyOn(window.GOVUK.sessionExpiry, 'setCountdownText')
-      spyOn(window.GOVUK.sessionExpiry, 'displayExpiredBanner')
+      spyOn(window.GOVUK.sessionExpiry, 'displayExpiredBanner').and.callFake(function () {
+        expect(window.GOVUK.sessionExpiry.displayExpiredBanner).toHaveBeenCalled()
+        done()
+      })
       window.GOVUK.sessionExpiry.startTimer('fixture', 10, expiryDate)
-      jasmine.clock().tick(10 * 5 + 1)
-      expect(window.GOVUK.sessionExpiry.displayExpiredBanner).toHaveBeenCalled()
+      jasmine.clock().tick((10 * 5) + 1)
     })
   })
 
@@ -123,24 +129,26 @@ describe('sessionExpiry', function () {
       spyOn($, 'ajax').and.callFake(function () {
         return $.Deferred().resolve(sessionExtendedResponse, 201).promise()
       })
-      spyOn(window.GOVUK.sessionExpiry, 'resetSessionExpiryModal')
+      spyOn(window.GOVUK.sessionExpiry, 'resetSessionExpiryModal').and.callFake(function () {
+        expect(window.GOVUK.sessionExpiry.resetSessionExpiryModal).toHaveBeenCalled()
+        done()
+      })
       window.GOVUK.sessionExpiry.keepAlive()
-      expect(window.GOVUK.sessionExpiry.resetSessionExpiryModal).toHaveBeenCalled()
-      done()
     })
 
     it('redirects to sign-out if the session cannot be extended', (done) => {
       spyOn($, 'ajax').and.callFake(function () {
-        return $.Deferred().resolve(sessionExtendFailureResponse, 403).promise()
+        return $.Deferred().reject(sessionExtendFailureResponse, 403).promise()
       })
-      spyOn(window.GOVUK.sessionExpiry, 'redirectPage').and.callFake((newloc) => console.log(newloc))
+      spyOn(window.GOVUK.sessionExpiry, 'redirectPage').and.callFake(function () {
+        expect(window.GOVUK.sessionExpiry.redirectPage).toHaveBeenCalledWith('/sign-out')
+        done()
+      })
       window.GOVUK.sessionExpiry.keepAlive()
-      expect(window.GOVUK.sessionExpiry.redirectPage).toHaveBeenCalledWith('/sign-out')
-      done()
     })
   })
 
-  describe('resetSessionTimeout', function () {
+  describe('resetSessionExpiryModal', function () {
     describe('mocked', function () {
       beforeEach(function () {
         spyOn(window, 'setTimeout')
@@ -166,17 +174,6 @@ describe('sessionExpiry', function () {
         window.GOVUK.sessionExpiry.resetSessionExpiryModal(newExpiry)
         expect(window.GOVUK.sessionExpiry.startTimer).toHaveBeenCalled()
       })
-    })
-
-    it('reminds the user their session is running out of time', function () {
-      jasmine.clock().uninstall()
-      jasmine.clock().install()
-      spyOn(window.GOVUK.sessionExpiry, 'displayExpiryBanner')
-      const newExpiry = Date.now() + (600 * 1000) // 10 mins
-      window.GOVUK.sessionExpiry.resetSessionExpiryModal(newExpiry)
-      jasmine.clock().tick(300001) // 5 minutes, 1 ms
-      expect(window.GOVUK.sessionExpiry.displayExpiryBanner).toHaveBeenCalled()
-      jasmine.clock().uninstall()
     })
   })
 })

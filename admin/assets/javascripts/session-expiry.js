@@ -87,14 +87,18 @@ $(function () {
      * Keep a session alive by pinging the server
      */
     keepAlive: function () {
-      $.ajax('/keep-alive').done(function (res) {
-        if (res.success) {
-          const newSessionExpiresAt = new Date(res.sessionExpiresAt)
-          window.GOVUK.sessionExpiry.resetSessionExpiryModal(newSessionExpiresAt)
-        } else {
+      $.ajax('/keep-alive')
+        .then(function (res) {
+          if (res.success) {
+            const newSessionExpiresAt = new Date(res.sessionExpiresAt)
+            window.GOVUK.sessionExpiry.resetSessionExpiryModal(newSessionExpiresAt)
+          } else {
+            window.GOVUK.sessionExpiry.redirectPage('/sign-out')
+          }
+        })
+        .catch(() => {
           window.GOVUK.sessionExpiry.redirectPage('/sign-out')
-        }
-      })
+        })
     },
 
     resetSessionExpiryModal: function resetSessionExpiryModal (expiryDate) {
