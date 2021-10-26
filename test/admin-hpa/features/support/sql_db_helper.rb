@@ -403,12 +403,6 @@ class SqlDbHelper
     result.each {|row| row.map}
   end
 
-  def self.set_check_status(status_id, check_id)
-    sql = "UPDATE [mtc_admin].[check] set checkStatus_id=#{status_id} WHERE id=#{check_id}"
-    result = SQL_CLIENT.execute(sql)
-    result.do
-  end
-
   def self.count_all_restarts
     sql = "SELECT COUNT(*) FROM [mtc_admin].[pupilRestart]"
     result = SQL_CLIENT.execute(sql)
@@ -634,13 +628,4 @@ class SqlDbHelper
     result.cancel
     pupil_details_res
   end
-
-  def self.get_pupil_check_metadata(check_code)
-    sql = "SELECT c.*, cs.code FROM [mtc_admin].[check] c JOIN [mtc_admin].[checkStatus] cs ON (c.checkStatus_id = cs.id) WHERE checkCode = '#{check_code}'"
-    result = SQL_CLIENT.execute(sql)
-    metadata = result.first
-    result.cancel
-    metadata
-  end
-
 end
