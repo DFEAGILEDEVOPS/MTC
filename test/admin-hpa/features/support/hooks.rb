@@ -17,7 +17,7 @@ Before do
   p Time.now
   sign_in_page.cookies_banner.accept_all.click if sign_in_page.cookies_banner.accept_all.visible?
   visit ENV['ADMIN_BASE_URL'] + '/sign-out'
-  Dir.glob(File.expand_path("#{File.dirname(__FILE__)}/../../data/ctf_download/*")).each {|file| File.delete file}
+  Dir.glob(File.expand_path("#{File.dirname(__FILE__)}/../../data/download/*")).each {|file| File.delete file}
 end
 
 Before('@empty_new_school') do
