@@ -5,7 +5,7 @@ end
 
 When(/^the data sync function has run$/) do
   if @check_code
-    (wait_until(ENV['WAIT_TIME'].to_i, 2) {SqlDbHelper.get_pupil_check_metadata(@check_code)['code'] == 'CMP'}) if @no_answers.nil?
+    (wait_until(ENV['WAIT_TIME'].to_i, 2) {SqlDbHelper.get_check(@check_code)['complete'] == true}) if @no_answers.nil?
     response = FunctionsHelper.sync_check_code(@check_code)
     expect(response.code).to eql 202
   end
@@ -143,12 +143,10 @@ end
 
 
 Then(/^check should fail processing$/) do
-  wait_until(ENV['WAIT_TIME'].to_i, 2) {SqlDbHelper.get_pupil_check_metadata(@check_code)['code'] == 'ERR'}
+  wait_until(ENV['WAIT_TIME'].to_i, 2) {SqlDbHelper.get_check(@check_code)['processingFailed'] == true}
   check_info = SqlDbHelper.get_check(@check_code)
-  expect(check_info['checkStatus_id']).to eql 6
   expect(check_info['complete']).to eql false
   expect(check_info['completedAt']).to eql nil
-  expect(check_info['processingFailed']).to eql true
   step 'I am on the Pupil Status page'
   step "I can see the status for the pupil is 'Error in processing'"
 end
