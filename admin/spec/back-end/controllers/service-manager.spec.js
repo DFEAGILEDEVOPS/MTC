@@ -1,4 +1,4 @@
-/* global jasmine describe expect it beforeEach spyOn test jest */
+/* global jasmine describe expect it beforeEach spyOn test jest afterEach */
 const uuid = require('uuid')
 const httpMocks = require('node-mocks-http')
 
@@ -12,6 +12,7 @@ const uploadedFileService = require('../../../services/uploaded-file.service')
 const settingsValidator = require('../../../lib/validator/settings-validator')
 const ValidationError = require('../../../lib/validation-error')
 const schoolService = require('../../../services/school.service')
+const organisationBulkUploadService = require('../../../services/organisation-bulk-upload.service')
 
 describe('service manager controller:', () => {
   let next
@@ -732,6 +733,179 @@ describe('service manager controller:', () => {
       jest.spyOn(controller, 'getEditOrganisation').mockImplementation(_ => { return Promise.resolve() })
       await controller.postEditOrganisation(req, res, next)
       expect(controller.getEditOrganisation).toHaveBeenCalled()
+    })
+  })
+
+  describe('getUploadOrganisations', () => {
+    afterEach(() => {
+      jest.restoreAllMocks()
+    })
+
+    test('if called with a job slug it gets the job status', async () => {
+      const params = {
+        url: '/service-manager/organisations/upload/00000000-0000-0000-0000-000000000000',
+        method: 'GET',
+        params: {
+          jobSlug: '00000000-0000-0000-0000-000000000000'
+        }
+      }
+      const req = getReq(params)
+      const res = getRes()
+      jest.spyOn(res, 'render')
+      const fileStatus = {
+        description: 'Submitted',
+        code: 'SUB',
+        errorOutput: '',
+        jobOutput: { stdout: '', stderr: '' }
+      }
+      jest.spyOn(organisationBulkUploadService, 'getUploadStatus').mockResolvedValue(fileStatus)
+      await controller.getUploadOrganisations(req, res, next)
+      expect(organisationBulkUploadService.getUploadStatus).toHaveBeenCalled()
+      expect(res.render).toHaveBeenCalled()
+      const args = res.render.mock.calls[0][1]
+      expect(args.jobStatus).toEqual(fileStatus)
+    })
+
+    test('if called without a job slug it does not get the jobStatus', async () => {
+      const params = {
+        url: '/service-manager/organisations/upload',
+        method: 'GET',
+        params: {}
+      }
+      const req = getReq(params)
+      const res = getRes()
+      jest.spyOn(organisationBulkUploadService, 'getUploadStatus').mockImplementation()
+      jest.spyOn(res, 'render')
+      await controller.getUploadOrganisations(req, res, next)
+      expect(organisationBulkUploadService.getUploadStatus).not.toHaveBeenCalled()
+      const args = res.render.mock.calls[0][1]
+      expect(args.jobStatus).toBeUndefined()
+    })
+
+    test('it calls next() if something throws', async () => {
+      const params = {
+        url: '/service-manager/organisations/upload/00000000-0000-0000-0000-000000000000',
+        method: 'GET',
+        params: {
+          jobSlug: '00000000-0000-0000-0000-000000000000'
+        }
+      }
+      const req = getReq(params)
+      const res = getRes()
+      // there is only one call we can setup to throw, outside of the render method.
+      jest.spyOn(organisationBulkUploadService, 'getUploadStatus').mockRejectedValue(new Error('mock error'))
+      await controller.getUploadOrganisations(req, res, next)
+      expect(next).toHaveBeenCalled()
+    })
+  })
+
+  describe('postUploadOrganisations', () => {
+    afterEach(() => {
+      jest.restoreAllMocks()
+    })
+
+    test('it uploads the file to Azure', async () => {
+      const params = {
+        url: '/service-manager/organisations/upload',
+        method: 'POST',
+        params: {},
+        files: {
+          fileOrganisations: {
+            path: '/tmp/foo.csv',
+            file: 'foo.csv'
+          }
+        }
+      }
+      const req = getReq(params)
+      const res = getRes()
+      jest.spyOn(res, 'redirect')
+      // ensure the validation passes. It actually reads the file from disk, so mock it
+      jest.spyOn(organisationBulkUploadService, 'validate').mockResolvedValue(new ValidationError())
+      jest.spyOn(organisationBulkUploadService, 'upload').mockResolvedValue(uuid.NIL)
+
+      await controller.postUploadOrganisations(req, res, next)
+
+      expect(res.redirect).toHaveBeenCalled()
+    })
+
+    test('it calls next() if something throws', async () => {
+      const params = {
+        url: '/service-manager/organisations/upload',
+        method: 'POST',
+        params: {},
+        files: {
+          fileOrganisations: {
+            path: '/tmp/foo.csv',
+            file: 'foo.csv'
+          }
+        }
+      }
+      const req = getReq(params)
+      const res = getRes()
+      jest.spyOn(res, 'redirect')
+      // ensure the validation passes. It actually reads the file from disk, so mock it
+      jest.spyOn(organisationBulkUploadService, 'validate').mockResolvedValue(new ValidationError())
+      jest.spyOn(organisationBulkUploadService, 'upload').mockRejectedValue(new Error('mock error'))
+
+      await controller.postUploadOrganisations(req, res, next)
+
+      expect(next).toHaveBeenCalled()
+    })
+
+    test('it calls getUploadOrganisation() if the validator detects an error', async () => {
+      const params = {
+        url: '/service-manager/organisations/upload',
+        method: 'POST',
+        params: {},
+        files: {
+          fileOrganisations: {
+            path: '/tmp/foo.csv',
+            file: 'foo.csv'
+          }
+        }
+      }
+      const req = getReq(params)
+      const res = getRes()
+      jest.spyOn(controller, 'getUploadOrganisations').mockImplementation()
+      // ensure the validation fails.
+      jest.spyOn(organisationBulkUploadService, 'validate').mockResolvedValue(new ValidationError('foo', 'mock error'))
+
+      await controller.postUploadOrganisations(req, res, next)
+
+      expect(controller.getUploadOrganisations).toHaveBeenCalled()
+    })
+  })
+
+  describe('downloadJobOutput', () => {
+    let req, res
+    const params = {
+      url: '/service-manager/job-output/00000000-0000-0000-0000-000000000000',
+      method: 'GET',
+      params: {
+        jobSlug: '00000000-0000-0000-0000-000000000000'
+      }
+    }
+    beforeEach(() => {
+      jest.spyOn(organisationBulkUploadService, 'getZipResults').mockResolvedValue('zipData')
+      req = getReq(params)
+      res = getRes()
+    })
+
+    test('it makes a call to the service to get the results', async () => {
+      await controller.downloadJobOutput(req, res, next)
+      expect(organisationBulkUploadService.getZipResults).toHaveBeenCalledTimes(1)
+    })
+
+    test('it downloads the file as an attachment', async () => {
+      await controller.downloadJobOutput(req, res, next)
+      expect(res.get('Content-Disposition')).toBe('attachment; filename="job-output.zip"')
+      expect(res.get('Content-Type')).toBe('application/octet-stream')
+    })
+
+    test('it calls next() on error', async () => {
+      jest.spyOn(organisationBulkUploadService, 'getZipResults').mockRejectedValueOnce(new Error('mock error'))
+      await controller.downloadJobOutput(req, res, next)
+      expect(next).toHaveBeenCalledWith(new Error('mock error'))
     })
   })
 })

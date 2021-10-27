@@ -3,6 +3,7 @@
 const pupilIdentificationFlagService = require('../services/pupil-identification-flag.service')
 const restartDataService = require('./data-access/restart-v2.data.service')
 const config = require('../config')
+const R = require('ramda')
 
 /**
  * Find pupils who are eligible for a restart
@@ -16,33 +17,25 @@ module.exports.getPupilsEligibleForRestart = async function getPupilsEligibleFor
 }
 
 /**
- * Find restarts for a particular school
- * Returns: array of objects:
- * {
-        id: record.id,
-        pupilId: p.id,
-        pupilUrlSlug: p.urlSlug,
-        reason: reason,
-        status: record.status,
-        foreName: p.foreName,
-        lastName: p.lastName,
-        middleNames: p.middleNames,
-        dateOfBirth: p.dateOfBirth
-    }
+ * Find restart for a particular school
+ * @param schoolId
+ * @returns {Promise<import('../services/pupil-identification-flag.service').IdentifiedPupil[]>}
  */
 module.exports.getRestartsForSchool = async function getRestartsForSchool (schoolId) {
   const restarts = await restartDataService.getRestartsForSchool(schoolId)
-  restarts.forEach(r => {
-    if (r.totalCheckCount === undefined || r.totalCheckCount === null) {
-      r.totalCheckCount = 0
+  const restartsWithStatus = restarts.map(r => {
+    const update = {
+      totalCheckCount: R.isNil(r.totalCheckCount) ? 0 : r.totalCheckCount,
+      status: ''
     }
     if (r.totalCheckCount === config.RESTART_MAX_ATTEMPTS + 1) {
-      r.status = 'Maximum number of restarts taken'
-    } else if (r.code === 'NEW' || r.code === 'COL' || r.code === null) {
-      r.status = 'Remove restart'
+      update.status = 'Maximum number of restarts taken'
+    } else if (r.restartCheckId === null || (r.restartCheckReceived === false && r.restartCheckComplete === false)) {
+      update.status = 'Remove restart'
     } else {
-      r.status = 'Restart taken'
+      update.status = 'Restart taken'
     }
+    return R.mergeLeft(update, r)
   })
-  return pupilIdentificationFlagService.sortAndAddIdentificationFlags(restarts)
+  return pupilIdentificationFlagService.sortAndAddIdentificationFlags(restartsWithStatus)
 }

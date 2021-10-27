@@ -4,12 +4,20 @@
         <div class="govuk-grid-column-two-thirds">
             <h1 class="govuk-heading-xl">Manage organisations</h1>
             <%- partial('partials/_gds_session_expiry') %>
+            <%- partial('partials/_flash-messages') %>
             <ol class="govuk-list">
                 <li>
                     <h2 class="govuk-heading-s"><a class="govuk-link"
                                                    href="/service-manager/organisations/search">Search for an
                             existing organisation</a></h2>
                     <p>Find a school by DFE number or URN</p>
+                </li>
+
+                <li>
+                    <h2 class="govuk-heading-s"><a class="govuk-link"
+                                                   href="/service-manager/organisations/upload">Upload
+                            organisations</a></h2>
+                    <p>Bulk upload organisations</p>
                 </li>
             </ol>
         </div>

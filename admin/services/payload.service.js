@@ -70,6 +70,7 @@ const payloadService = {
    */
   addRelativeTimings: function addRelativeTimings (check) {
     const r1 = R.assoc('inputs', this.addRelativeTimingsToSection(check.inputs), check)
+    // @ts-ignore
     return R.assoc('audit', this.addRelativeTimingsToSection(check.audit), r1)
   },
 

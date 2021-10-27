@@ -70,7 +70,7 @@ describe('pupil controller:', () => {
         const req = getReq(goodReqParams)
         jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow')
         jest.spyOn(businessAvailabilityService, 'getAvailabilityData').mockResolvedValue({ hdfSubmitted: false })
-        jest.spyOn(res, 'render').mockRejectedValue(() => { throw new Error('test') })
+        jest.spyOn(res, 'render').mockImplementation(() => { throw new Error('test') })
         await sut.getAddPupil(req, res, next)
         expect(res.statusCode).toBe(200)
         expect(next).toHaveBeenCalled()
