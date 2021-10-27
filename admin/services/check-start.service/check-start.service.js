@@ -230,9 +230,6 @@ const checkStartService = {
     checkData.pinExpiresAt = pinService.generatePinTimestamp(config.OverridePinExpiry, schoolTimezone)
     checkData.school_id = schoolId
     checkData.createdBy_userId = userId
-
-    // checkCode will be created by the database on insert
-    // checkStatus_id will default to '1' - 'New'
     return checkData
   },
   /**
