@@ -52,4 +52,8 @@ describe('WebsiteOfflineComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy()
   })
+
+  it('should set correct title', () => {
+    expect(component.title).toEqual('Multiplication Tables Check')
+  })
 })
