@@ -39,31 +39,66 @@ describe('redis-pupil-auth.service', () => {
     })
     const schoolPin = 'abc12def'
     const pupilPin = '5678'
+    const buildNumber = '1-2-3'
     const expectedKey = `preparedCheck:${schoolPin}:${pupilPin}`
-    await sut.authenticate(schoolPin, pupilPin)
+    await sut.authenticate(schoolPin, pupilPin, buildNumber)
     expect(actualKey).toEqual(expectedKey)
   })
 
-  test('an error should be thrown if either argument is an empty string', async () => {
-    let schoolPin = 'abc12def'
-    let pupilPin = ''
+  test('an error should be thrown if schoolPin is not provided', async () => {
+    let schoolPin = undefined
+    let pupilPin = '1234'
+    const buildNumber = '1-2-3'
     try {
-      await sut.authenticate(schoolPin, pupilPin)
+      await sut.authenticate(schoolPin, pupilPin, buildNumber)
       fail('expected error to be thrown')
     } catch (error) {
-      expect(error.message).toBe('schoolPin and pupilPin cannot be an empty string')
-    }
-    expect(redisServiceMock.get).not.toHaveBeenCalled()
-    schoolPin = ''
-    pupilPin = '1234'
-    try {
-      await sut.authenticate(schoolPin, pupilPin)
-      fail('expected error to be thrown')
-    } catch (error) {
-      expect(error.message).toBe('schoolPin and pupilPin cannot be an empty string')
+      expect(error.message).toBe('schoolPin is required')
     }
     expect(redisServiceMock.get).not.toHaveBeenCalled()
   })
+
+  test('an error should be thrown if schoolPin is an empty string', async () => {
+    const schoolPin = ''
+    const pupilPin = '1234'
+    const buildNumber = '1-2-3'
+    try {
+      await sut.authenticate(schoolPin, pupilPin, buildNumber)
+      fail('expected error to be thrown')
+    } catch (error) {
+      expect(error.message).toBe('schoolPin is required')
+    }
+    expect(redisServiceMock.get).not.toHaveBeenCalled()
+  })
+
+  test('an error should be thrown if pupilPin is not provided', async () => {
+    const schoolPin = 'abc'
+    const pupilPin = undefined
+    const buildNumber = '1-2-3'
+    try {
+      await sut.authenticate(schoolPin, pupilPin, buildNumber)
+      fail('expected error to be thrown')
+    } catch (error) {
+      expect(error.message).toBe('pupilPin is required')
+    }
+    expect(redisServiceMock.get).not.toHaveBeenCalled()
+  })
+
+  test('an error should be thrown if pupilPin is an empty string', async () => {
+    const schoolPin = 'abc'
+    const pupilPin = ''
+    const buildNumber = '1-2-3'
+    try {
+      await sut.authenticate(schoolPin, pupilPin, buildNumber)
+      fail('expected error to be thrown')
+    } catch (error) {
+      expect(error.message).toBe('pupilPin is required')
+    }
+    expect(redisServiceMock.get).not.toHaveBeenCalled()
+  })
+
+  test.todo('an error should be thrown if buildVersion is not provided')
+  test.todo('an error should be thrown if buildVersion is an empty string')
 
   test('the check payload should be returned if item found in cache and the pin is valid', async () => {
     const pinValidFromUtc = moment().startOf('day')
@@ -81,7 +116,8 @@ describe('redis-pupil-auth.service', () => {
     })
     const schoolPin = 'abc12def'
     const pupilPin = '5678'
-    const payload = await sut.authenticate(schoolPin, pupilPin)
+    const buildNumber = '1-2-3'
+    const payload = await sut.authenticate(schoolPin, pupilPin, buildNumber)
     expect(payload).toEqual(expectedPayload)
   })
 
@@ -102,7 +138,8 @@ describe('redis-pupil-auth.service', () => {
     })
     const schoolPin = 'abc12def'
     const pupilPin = '5678'
-    const payload = await sut.authenticate(schoolPin, pupilPin)
+    const buildNumber = '1-2-3'
+    const payload = await sut.authenticate(schoolPin, pupilPin, buildNumber)
     expect(payload).toBeUndefined()
   })
 
@@ -123,7 +160,8 @@ describe('redis-pupil-auth.service', () => {
     })
     const schoolPin = 'abc12def'
     const pupilPin = '5678'
-    const payload = await sut.authenticate(schoolPin, pupilPin)
+    const buildNumber = '1-2-3'
+    const payload = await sut.authenticate(schoolPin, pupilPin, buildNumber)
     expect(payload).toBeUndefined()
   })
 
@@ -133,7 +171,8 @@ describe('redis-pupil-auth.service', () => {
     })
     const schoolPin = 'abc12def'
     const pupilPin = '5678'
-    const payload = await sut.authenticate(schoolPin, pupilPin)
+    const buildNumber = '1-2-3'
+    const payload = await sut.authenticate(schoolPin, pupilPin, buildNumber)
     expect(payload).toBeUndefined()
   })
 
@@ -158,7 +197,8 @@ describe('redis-pupil-auth.service', () => {
     })
     const schoolPin = 'abc12def'
     const pupilPin = '5678'
-    await sut.authenticate(schoolPin, pupilPin)
+    const buildNumber = '1-2-3'
+    await sut.authenticate(schoolPin, pupilPin, buildNumber)
     expect(actualPreparedCheckExpiryValue).toEqual(thirtyMinutesInSeconds)
   })
 
@@ -185,7 +225,8 @@ describe('redis-pupil-auth.service', () => {
     })
     const schoolPin = 'abc12def'
     const pupilPin = '5678'
-    await sut.authenticate(schoolPin, pupilPin)
+    const buildNumber = '1-2-3'
+    await sut.authenticate(schoolPin, pupilPin, buildNumber)
     expect(redisServiceMock.expire).not.toHaveBeenCalled()
   })
 
@@ -210,7 +251,8 @@ describe('redis-pupil-auth.service', () => {
     })
     const schoolPin = 'abc12def'
     const pupilPin = '5678'
-    await sut.authenticate(schoolPin, pupilPin)
+    const buildNumber = '1-2-3'
+    await sut.authenticate(schoolPin, pupilPin, buildNumber)
     expect(redisServiceMock.expire).not.toHaveBeenCalled()
   })
 
@@ -237,7 +279,8 @@ describe('redis-pupil-auth.service', () => {
     })
     const schoolPin = 'abc12def'
     const pupilPin = '5678'
-    await sut.authenticate(schoolPin, pupilPin)
+    const buildNumber = '1-2-3'
+    await sut.authenticate(schoolPin, pupilPin, buildNumber)
     expect(redisServiceMock.expire).not.toHaveBeenCalled()
   })
 
@@ -268,7 +311,8 @@ describe('redis-pupil-auth.service', () => {
 
     const schoolPin = 'abc12def'
     const pupilPin = '5678'
-    await sut.authenticate(schoolPin, pupilPin)
+    const buildNumber = '1-2-3'
+    await sut.authenticate(schoolPin, pupilPin, buildNumber)
     expect(messageDispatchMock.dispatch).toHaveBeenCalledTimes(1)
     expect(actualMessage.checkCode).toBe(expectedPayload.checkCode)
     expect(actualMessage.practice).toBe(expectedPayload.config.practice)

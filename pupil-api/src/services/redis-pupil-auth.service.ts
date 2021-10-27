@@ -6,7 +6,7 @@ import config from '../config'
 import { IQueueMessageService, SbQueueMessageService } from './queue-message.service'
 
 export interface IPupilAuthenticationService {
-  authenticate (schoolPin: string, pupilPin: string): Promise<object | undefined>
+  authenticate (schoolPin: string, pupilPin: string, buildNumber: string): Promise<object | undefined>
 }
 
 export interface IPupilLoginMessage {
@@ -32,10 +32,20 @@ export class RedisPupilAuthenticationService implements IPupilAuthenticationServ
     this.queueService = queueService
   }
 
-  async authenticate (schoolPin: string, pupilPin: string): Promise<object | undefined> {
-    if (schoolPin.length === 0 || pupilPin.length === 0) {
-      throw new Error('schoolPin and pupilPin cannot be an empty string')
+  async authenticate (schoolPin: string, pupilPin: string, buildNumber: string): Promise<object | undefined> {
+
+    if (schoolPin === undefined || schoolPin.length === 0) {
+      throw new Error('schoolPin is required')
     }
+
+    if (pupilPin === undefined || pupilPin.length === 0) {
+      throw new Error('pupilPin is required')
+    }
+
+    if (buildNumber === undefined || buildNumber.length === 0) {
+      throw new Error('buildNumber is required')
+    }
+
     const cacheKey = this.buildCacheKey(schoolPin, pupilPin)
     const preparedCheckEntry = await this.redisService.get(cacheKey)
     if (!preparedCheckEntry) {

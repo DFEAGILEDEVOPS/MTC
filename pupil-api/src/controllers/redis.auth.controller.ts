@@ -21,11 +21,11 @@ export class RedisAuthController implements IAuthController {
       return apiResponse.badRequest(res)
     }
 
-    const { pupilPin, schoolPin } = req.body
-    if (!schoolPin || !pupilPin) return apiResponse.unauthorised(res)
+    const { pupilPin, schoolPin, version } = req.body
+    if (!schoolPin || !pupilPin || !version) return apiResponse.unauthorised(res)
 
     try {
-      const data = await this.redisAuthService.authenticate(schoolPin, pupilPin)
+      const data = await this.redisAuthService.authenticate(schoolPin, pupilPin, version)
       if (data === undefined) {
         return apiResponse.unauthorised(res)
       }
