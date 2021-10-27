@@ -1,20 +1,20 @@
 import * as RA from 'ramda-adjunct'
 import * as R from 'ramda'
-import { IAsyncTableService, AsyncTableService, TableStorageEntity } from '../../azure/storage-helper'
 import { ReceivedCheckTableEntity } from '../../schemas/models'
 import moment from 'moment'
 import { ICheckFormService, CheckFormService } from './check-form.service'
 import { ILogger } from '../../common/logger'
 import { ICheckMarkerFunctionBindings, MarkingData, CheckResult, MarkedAnswer } from './models'
 import { ICheckNotificationMessage, CheckNotificationType } from '../../schemas/check-notification-message'
+import { ITableService, TableService } from '../../azure/table-service'
 
 export class CheckMarkerV1 {
-  private readonly tableService: IAsyncTableService
+  private readonly tableService: ITableService
   private readonly sqlService: ICheckFormService
 
-  constructor (tableService?: IAsyncTableService, sqlService?: ICheckFormService) {
+  constructor (tableService?: ITableService, sqlService?: ICheckFormService) {
     if (tableService === undefined) {
-      this.tableService = new AsyncTableService()
+      this.tableService = new TableService()
     } else {
       this.tableService = tableService
     }
@@ -44,15 +44,15 @@ export class CheckMarkerV1 {
     }
     let checkResult: CheckResult
     try {
-      checkResult = this.markCheck(markingData, validatedCheck.RowKey)
+      checkResult = this.markCheck(markingData, validatedCheck.rowKey)
       logger.verbose(`mark(): results ${JSON.stringify(checkResult)}`)
-      this.persistMark(checkResult, functionBindings, validatedCheck.PartitionKey)
+      this.persistMark(checkResult, functionBindings, validatedCheck.partitionKey)
     } catch (error) {
       this.notifyProcessingFailure(validatedCheck, functionBindings)
       return
     }
     const notification: ICheckNotificationMessage = {
-      checkCode: validatedCheck.RowKey,
+      checkCode: validatedCheck.rowKey,
       notificationType: CheckNotificationType.checkComplete,
       version: 1
     }
@@ -62,7 +62,7 @@ export class CheckMarkerV1 {
 
   private notifyProcessingFailure (validatedCheck: ReceivedCheckTableEntity, functionBindings: ICheckMarkerFunctionBindings): void {
     const notification: ICheckNotificationMessage = {
-      checkCode: validatedCheck.RowKey,
+      checkCode: validatedCheck.rowKey,
       notificationType: CheckNotificationType.checkInvalid,
       version: 1
     }
@@ -94,7 +94,7 @@ export class CheckMarkerV1 {
     // Sort the answers by clientTimeStamp, so that we get a sequential timeline of events
     const sortedAnswers = this.answerSort(parsedAnswersJson)
 
-    const checkCode = validatedCheck.RowKey
+    const checkCode = validatedCheck.rowKey
     let rawCheckForm
 
     try {
@@ -195,10 +195,10 @@ export class CheckMarkerV1 {
     return receivedCheckRef[0]
   }
 
-  private async updateReceivedCheckWithMarkingError (receivedCheck: ReceivedCheckTableEntity, markingError: string): Promise<Error | TableStorageEntity> {
+  private async updateReceivedCheckWithMarkingError (receivedCheck: ReceivedCheckTableEntity, markingError: string): Promise<void> {
     receivedCheck.processingError = markingError
     receivedCheck.markedAt = moment().toDate()
-    return this.tableService.replaceEntityAsync('receivedCheck', receivedCheck)
+    return this.tableService.mergeUpdateEntity('receivedCheck', receivedCheck)
   }
 
   private answerSort (answers: MarkedAnswer[]): MarkedAnswer[] {

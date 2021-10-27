@@ -9,12 +9,13 @@ import {
   MarkedCheck,
   ValidatedCheck
 } from '../sync-results-to-sql/models'
-import { IAsyncTableService, AsyncTableService } from '../../azure/storage-helper'
 import { UnsynchronisedCheck } from './models'
-import { MarkedCheckTableEntity, ReceivedCheckTableEntity } from '../../schemas/models'
+import { MarkedCheckTableEntity } from '../../schemas/models'
 import { CompressionService, ICompressionService } from '../../common/compression-service'
 import config from '../../config'
 import { SyncResultsInitDataService, ISyncResultsInitDataService } from './sync-results-init-data.service'
+import { AzureTableEntity, ITableService, TableService } from '../../azure/table-service'
+import { TableEntity } from '@azure/data-tables'
 
 const functionName = 'sync-results-init: SyncResultsInitService'
 
@@ -34,21 +35,23 @@ export interface ISyncResultsInitServiceOptions {
 export class SyncResultsInitService {
   private readonly logger: ILogger
   private readonly dataService: ISyncResultsInitDataService
-  private readonly tableService: IAsyncTableService
+  private readonly tableService: ITableService
   private readonly compressionService: ICompressionService
   private readonly receivedCheckTableName = 'receivedCheck'
   private readonly markedCheckTableName = 'checkResult'
   private readonly outputQueueName = 'check-completion'
 
-  constructor (logger?: ILogger, dataService?: ISyncResultsInitDataService, tableService?: IAsyncTableService, compressionService?: ICompressionService) {
+  constructor (logger?: ILogger, dataService?: ISyncResultsInitDataService, tableService?: ITableService, compressionService?: ICompressionService) {
     this.logger = logger ?? new ConsoleLogger()
     this.dataService = dataService ?? new SyncResultsInitDataService()
-    this.tableService = tableService ?? new AsyncTableService()
+    this.tableService = tableService ?? new TableService()
     this.compressionService = compressionService ?? new CompressionService()
   }
 
-  private async getReceivedCheck (check: UnsynchronisedCheck): Promise<ReceivedCheckTableEntity> {
-    return this.tableService.retrieveEntityAsync(this.receivedCheckTableName, check.schoolUUID?.toLowerCase(), check.checkCode?.toLowerCase())
+  private async getReceivedCheck (check: UnsynchronisedCheck): Promise<TableEntity> {
+    const partitionKey = check.schoolUUID?.toLowerCase()
+    const rowKey = check.checkCode?.toLowerCase()
+    return this.tableService.getEntity(this.receivedCheckTableName, partitionKey, rowKey)
   }
 
   private expandArchive (check: UnsynchronisedCheck, archive: string): ValidatedCheck {
@@ -64,7 +67,7 @@ export class SyncResultsInitService {
     }
   }
 
-  private tranformReceivedCheckToValidatedCheck (check: UnsynchronisedCheck, receivedCheck: ReceivedCheckTableEntity): ValidatedCheck {
+  private tranformReceivedCheckToValidatedCheck (check: UnsynchronisedCheck, receivedCheck: AzureTableEntity): ValidatedCheck {
     const archive = R.pathOr('', ['archive', '_'], receivedCheck)
     if (archive.length === 0) {
       throw new Error('Archive not found')
@@ -73,8 +76,8 @@ export class SyncResultsInitService {
     return validatedCheck
   }
 
-  private async getMarkedCheck (check: UnsynchronisedCheck): Promise<MarkedCheckTableEntity> {
-    return this.tableService.retrieveEntityAsync(this.markedCheckTableName, check.schoolUUID?.toLowerCase(), check.checkCode?.toLowerCase())
+  private async getMarkedCheck (check: UnsynchronisedCheck): Promise<any> {
+    return this.tableService.getEntity(this.markedCheckTableName, check.schoolUUID?.toLowerCase(), check.checkCode?.toLowerCase())
   }
 
   private transformMarkedCheckEntityToMarkedCheck (check: UnsynchronisedCheck, markedCheckEntity: MarkedCheckTableEntity): MarkedCheck {

@@ -1,5 +1,4 @@
 import * as Subject from './check-marker.v1'
-import { IAsyncTableService, TableStorageEntity } from '../../azure/storage-helper'
 import { ICheckFormService } from './check-form.service'
 import * as R from 'ramda'
 import { ILogger } from '../../common/logger'
@@ -10,15 +9,15 @@ import { ReceivedCheckTableEntity } from '../../schemas/models'
 import { CompressionService } from '../../common/compression-service'
 import uuid = require('uuid')
 import moment = require('moment')
+import { ITableService } from '../../azure/table-service'
 
 const compressionService = new CompressionService()
 
-const TableServiceMock = jest.fn<IAsyncTableService, any>(() => ({
-  replaceEntityAsync: jest.fn(),
-  queryEntitiesAsync: jest.fn(),
-  deleteEntityAsync: jest.fn(),
-  insertEntityAsync: jest.fn(),
-  retrieveEntityAsync: jest.fn()
+const TableServiceMock = jest.fn<ITableService, any>(() => ({
+  createEntity: jest.fn(),
+  getEntity: jest.fn(),
+  mergeUpdateEntity: jest.fn(),
+  replaceEntity: jest.fn()
 }))
 
 const SqlServiceMock = jest.fn<ICheckFormService, any>(() => ({
@@ -34,7 +33,7 @@ const LoggerMock = jest.fn<ILogger, any>(() => ({
 }))
 
 let sut: Subject.CheckMarkerV1
-let tableServiceMock: IAsyncTableService
+let tableServiceMock: ITableService
 let sqlServiceMock: ICheckFormService
 let loggerMock: ILogger
 
@@ -66,8 +65,8 @@ describe('check-marker/v1', () => {
 
   test('error is recorded against entity when answers is empty', async () => {
     const validatedCheckEntity: ReceivedCheckTableEntity = {
-      PartitionKey: uuid.v4(),
-      RowKey: uuid.v4(),
+      partitionKey: uuid.v4(),
+      rowKey: uuid.v4(),
       archive: compressionService.compress(JSON.stringify({})),
       checkReceivedAt: moment().toDate(),
       checkVersion: 1,
@@ -84,17 +83,13 @@ describe('check-marker/v1', () => {
 
     let actualTableName: string | undefined
     let actualEntity: any
-    jest.spyOn(tableServiceMock, 'replaceEntityAsync').mockImplementation(async (table: string, entity: any): Promise<TableStorageEntity> => {
+    jest.spyOn(tableServiceMock, 'mergeUpdateEntity').mockImplementation(async (table: string, entity: any): Promise<void> => {
       actualTableName = table
       actualEntity = entity
-      return {
-        PartitionKey: uuid.v4(),
-        RowKey: uuid.v4()
-      }
     })
 
     await sut.mark(functionBindings, loggerMock)
-    expect(tableServiceMock.replaceEntityAsync).toHaveBeenCalledTimes(1)
+    expect(tableServiceMock.mergeUpdateEntity).toHaveBeenCalledTimes(1)
     expect(actualTableName).toBe('receivedCheck')
     expect(actualEntity.processingError).toBe('answers property not populated')
     expect(actualEntity.markedAt).toBeDefined()
@@ -102,8 +97,8 @@ describe('check-marker/v1', () => {
 
   test('error is recorded against entity when answers is not an array', async () => {
     const validatedCheckEntity: ReceivedCheckTableEntity = {
-      PartitionKey: uuid.v4(),
-      RowKey: uuid.v4(),
+      partitionKey: uuid.v4(),
+      rowKey: uuid.v4(),
       archive: compressionService.compress(JSON.stringify({})),
       checkReceivedAt: moment().toDate(),
       checkVersion: 1,
@@ -120,17 +115,13 @@ describe('check-marker/v1', () => {
 
     let actualTableName: string | undefined
     let actualEntity: any
-    jest.spyOn(tableServiceMock, 'replaceEntityAsync').mockImplementation(async (table: string, entity: any): Promise<TableStorageEntity> => {
+    jest.spyOn(tableServiceMock, 'mergeUpdateEntity').mockImplementation(async (table: string, entity: any): Promise<void> => {
       actualTableName = table
       actualEntity = entity
-      return {
-        PartitionKey: uuid.v4(),
-        RowKey: uuid.v4()
-      }
     })
 
     await sut.mark(functionBindings, loggerMock)
-    expect(tableServiceMock.replaceEntityAsync).toHaveBeenCalledTimes(1)
+    expect(tableServiceMock.mergeUpdateEntity).toHaveBeenCalledTimes(1)
     expect(actualTableName).toBe('receivedCheck')
     expect(actualEntity.processingError).toBe('answers data is not an array')
     expect(actualEntity.markedAt).toBeDefined()
@@ -138,8 +129,8 @@ describe('check-marker/v1', () => {
 
   test('error is recorded against entity when checkForm cannot be found by checkCode', async () => {
     const validatedCheckEntity: ReceivedCheckTableEntity = {
-      PartitionKey: uuid.v4(),
-      RowKey: uuid.v4(),
+      partitionKey: uuid.v4(),
+      rowKey: uuid.v4(),
       archive: compressionService.compress(JSON.stringify({})),
       checkReceivedAt: moment().toDate(),
       checkVersion: 1,
@@ -156,19 +147,15 @@ describe('check-marker/v1', () => {
 
     let actualTableName: string | undefined
     let actualEntity: any
-    jest.spyOn(tableServiceMock, 'replaceEntityAsync').mockImplementation(async (table: string, entity: any): Promise<TableStorageEntity> => {
+    jest.spyOn(tableServiceMock, 'mergeUpdateEntity').mockImplementation(async (table: string, entity: any): Promise<void> => {
       actualTableName = table
       actualEntity = entity
-      return {
-        PartitionKey: uuid.v4(),
-        RowKey: uuid.v4()
-      }
     })
 
     jest.spyOn(sqlServiceMock, 'getCheckFormDataByCheckCode')
 
     await sut.mark(functionBindings, loggerMock)
-    expect(tableServiceMock.replaceEntityAsync).toHaveBeenCalledTimes(1)
+    expect(tableServiceMock.mergeUpdateEntity).toHaveBeenCalledTimes(1)
     expect(actualTableName).toBe('receivedCheck')
     expect(actualEntity.processingError).toBe('associated checkForm could not be found by checkCode')
     expect(actualEntity.markedAt).toBeDefined()
@@ -176,8 +163,8 @@ describe('check-marker/v1', () => {
 
   test('error is recorded against entity when checkForm data is not valid JSON', async () => {
     const validatedCheckEntity: ReceivedCheckTableEntity = {
-      PartitionKey: uuid.v4(),
-      RowKey: uuid.v4(),
+      partitionKey: uuid.v4(),
+      rowKey: uuid.v4(),
       archive: compressionService.compress(JSON.stringify({})),
       checkReceivedAt: moment().toDate(),
       checkVersion: 1,
@@ -194,13 +181,9 @@ describe('check-marker/v1', () => {
 
     let actualTableName: string | undefined
     let actualEntity: any
-    jest.spyOn(tableServiceMock, 'replaceEntityAsync').mockImplementation(async (table: string, entity: any): Promise<TableStorageEntity> => {
+    jest.spyOn(tableServiceMock, 'mergeUpdateEntity').mockImplementation(async (table: string, entity: any): Promise<void> => {
       actualTableName = table
       actualEntity = entity
-      return {
-        PartitionKey: uuid.v4(),
-        RowKey: uuid.v4()
-      }
     })
 
     jest.spyOn(sqlServiceMock, 'getCheckFormDataByCheckCode').mockImplementation(async () => {
@@ -208,7 +191,7 @@ describe('check-marker/v1', () => {
     })
 
     await sut.mark(functionBindings, loggerMock)
-    expect(tableServiceMock.replaceEntityAsync).toHaveBeenCalledTimes(1)
+    expect(tableServiceMock.mergeUpdateEntity).toHaveBeenCalledTimes(1)
     expect(actualTableName).toBe('receivedCheck')
     expect(actualEntity.processingError).toBe('associated checkForm data is not valid JSON')
     expect(actualEntity.markedAt).toBeDefined()
@@ -216,8 +199,8 @@ describe('check-marker/v1', () => {
 
   test('error is recorded against entity when checkForm lookup throws error', async () => {
     const validatedCheckEntity: ReceivedCheckTableEntity = {
-      PartitionKey: uuid.v4(),
-      RowKey: uuid.v4(),
+      partitionKey: uuid.v4(),
+      rowKey: uuid.v4(),
       archive: compressionService.compress(JSON.stringify({})),
       checkReceivedAt: moment().toDate(),
       checkVersion: 1,
@@ -234,13 +217,9 @@ describe('check-marker/v1', () => {
 
     let actualTableName: string | undefined
     let actualEntity: any
-    jest.spyOn(tableServiceMock, 'replaceEntityAsync').mockImplementation(async (table: string, entity: any): Promise<TableStorageEntity> => {
+    jest.spyOn(tableServiceMock, 'mergeUpdateEntity').mockImplementation(async (table: string, entity: any): Promise<void> => {
       actualTableName = table
       actualEntity = entity
-      return {
-        PartitionKey: uuid.v4(),
-        RowKey: uuid.v4()
-      }
     })
 
     const expectedErrorMessage = 'sql error'
@@ -249,7 +228,7 @@ describe('check-marker/v1', () => {
     })
 
     await sut.mark(functionBindings, loggerMock)
-    expect(tableServiceMock.replaceEntityAsync).toHaveBeenCalledTimes(1)
+    expect(tableServiceMock.mergeUpdateEntity).toHaveBeenCalledTimes(1)
     expect(actualTableName).toBe('receivedCheck')
     expect(actualEntity.processingError).toBe(`checkForm lookup failed:${expectedErrorMessage}`)
     expect(actualEntity.markedAt).toBeDefined()
@@ -257,8 +236,8 @@ describe('check-marker/v1', () => {
 
   test('error is recorded against entity when checkForm data is not a populated array', async () => {
     const validatedCheckEntity: ReceivedCheckTableEntity = {
-      PartitionKey: uuid.v4(),
-      RowKey: uuid.v4(),
+      partitionKey: uuid.v4(),
+      rowKey: uuid.v4(),
       archive: compressionService.compress(JSON.stringify({})),
       checkReceivedAt: moment().toDate(),
       checkVersion: 1,
@@ -275,13 +254,9 @@ describe('check-marker/v1', () => {
 
     let actualTableName: string | undefined
     let actualEntity: any
-    jest.spyOn(tableServiceMock, 'replaceEntityAsync').mockImplementation(async (table: string, entity: any): Promise<TableStorageEntity> => {
+    jest.spyOn(tableServiceMock, 'mergeUpdateEntity').mockImplementation(async (table: string, entity: any): Promise<void> => {
       actualTableName = table
       actualEntity = entity
-      return {
-        PartitionKey: uuid.v4(),
-        RowKey: uuid.v4()
-      }
     })
 
     jest.spyOn(sqlServiceMock, 'getCheckFormDataByCheckCode').mockImplementation(async () => {
@@ -289,7 +264,7 @@ describe('check-marker/v1', () => {
     })
 
     await sut.mark(functionBindings, loggerMock)
-    expect(tableServiceMock.replaceEntityAsync).toHaveBeenCalledTimes(1)
+    expect(tableServiceMock.mergeUpdateEntity).toHaveBeenCalledTimes(1)
     expect(actualTableName).toBe('receivedCheck')
     expect(actualEntity.processingError).toBe('check form data is either empty or not an array')
     expect(actualEntity.markedAt).toBeDefined()
@@ -299,7 +274,7 @@ describe('check-marker/v1', () => {
     })
 
     await sut.mark(functionBindings, loggerMock)
-    expect(tableServiceMock.replaceEntityAsync).toHaveBeenCalledTimes(2)
+    expect(tableServiceMock.mergeUpdateEntity).toHaveBeenCalledTimes(2)
     expect(actualTableName).toBe('receivedCheck')
     expect(actualEntity.processingError).toBe('check form data is either empty or not an array')
     expect(actualEntity.markedAt).toBeDefined()
@@ -325,8 +300,8 @@ describe('check-marker/v1', () => {
       }
     ]
     const validatedCheckEntity: ReceivedCheckTableEntity = {
-      PartitionKey: uuid.v4(),
-      RowKey: uuid.v4(),
+      partitionKey: uuid.v4(),
+      rowKey: uuid.v4(),
       archive: compressionService.compress(JSON.stringify({})),
       checkReceivedAt: moment().toDate(),
       checkVersion: 1,
@@ -387,8 +362,8 @@ describe('check-marker/v1', () => {
       }
     ]
     const validatedCheckEntity: ReceivedCheckTableEntity = {
-      PartitionKey: uuid.v4(),
-      RowKey: uuid.v4(),
+      partitionKey: uuid.v4(),
+      rowKey: uuid.v4(),
       archive: compressionService.compress(JSON.stringify({})),
       checkReceivedAt: moment().toDate(),
       checkVersion: 1,
@@ -449,8 +424,8 @@ describe('check-marker/v1', () => {
       }
     ]
     const validatedCheckEntity: ReceivedCheckTableEntity = {
-      PartitionKey: uuid.v4(),
-      RowKey: uuid.v4(),
+      partitionKey: uuid.v4(),
+      rowKey: uuid.v4(),
       archive: compressionService.compress(JSON.stringify({})),
       checkReceivedAt: moment().toDate(),
       checkVersion: 1,
@@ -505,8 +480,8 @@ describe('check-marker/v1', () => {
       }
     ]
     const validatedCheckEntity: ReceivedCheckTableEntity = {
-      PartitionKey: uuid.v4(),
-      RowKey: uuid.v4(),
+      partitionKey: uuid.v4(),
+      rowKey: uuid.v4(),
       archive: compressionService.compress(JSON.stringify({})),
       checkReceivedAt: moment().toDate(),
       checkVersion: 1,
@@ -539,8 +514,8 @@ describe('check-marker/v1', () => {
   test('check notification is dispatched when marking unsuccessful', async () => {
     const checkCode = uuid.v4()
     const validatedCheckEntity: ReceivedCheckTableEntity = {
-      PartitionKey: uuid.v4(),
-      RowKey: checkCode,
+      partitionKey: uuid.v4(),
+      rowKey: checkCode,
       archive: compressionService.compress(JSON.stringify({})),
       checkReceivedAt: moment().toDate(),
       checkVersion: 1,
@@ -590,8 +565,8 @@ describe('check-marker/v1', () => {
       }
     ]
     const validatedCheckEntity: ReceivedCheckTableEntity = {
-      PartitionKey: uuid.v4(),
-      RowKey: uuid.v4(),
+      partitionKey: uuid.v4(),
+      rowKey: uuid.v4(),
       archive: compressionService.compress(JSON.stringify({})),
       checkReceivedAt: moment().toDate(),
       checkVersion: 1,
@@ -649,8 +624,8 @@ describe('check-marker/v1', () => {
       }
     ]
     const validatedCheckEntity: ReceivedCheckTableEntity = {
-      PartitionKey: uuid.v4(),
-      RowKey: uuid.v4(),
+      partitionKey: uuid.v4(),
+      rowKey: uuid.v4(),
       archive: compressionService.compress(JSON.stringify({})),
       checkReceivedAt: moment().toDate(),
       checkVersion: 1,

@@ -1,4 +1,3 @@
-import { IAsyncTableService, AsyncTableService } from '../../azure/storage-helper'
 import { ReceivedCheckTableEntity, ValidateCheckMessageV1, MarkCheckMessageV1 } from '../../schemas/models'
 import { ILogger } from '../../common/logger'
 import * as RA from 'ramda-adjunct'
@@ -7,8 +6,10 @@ import { ICompressionService, CompressionService } from '../../common/compressio
 import { ICheckNotificationMessage, CheckNotificationType } from '../../schemas/check-notification-message'
 import { ICheckValidationError } from './validators/validator-types'
 import { ValidatorProvider } from './validators/validator.provider'
+import { ITableService, TableService } from '../../azure/table-service'
 
 const functionName = 'check-validator'
+const tableStorageTableName = 'receivedCheck'
 
 export interface ICheckValidatorFunctionBindings {
   receivedCheckTable: any[]
@@ -17,15 +18,15 @@ export interface ICheckValidatorFunctionBindings {
 }
 
 export class CheckValidator {
-  private readonly tableService: IAsyncTableService
+  private readonly tableService: ITableService
   private readonly compressionService: ICompressionService
   private readonly validatorProvider: ValidatorProvider
 
-  constructor (tableService?: IAsyncTableService, compressionService?: ICompressionService) {
+  constructor (tableService?: ITableService, compressionService?: ICompressionService) {
     if (tableService !== undefined) {
       this.tableService = tableService
     } else {
-      this.tableService = new AsyncTableService()
+      this.tableService = new TableService()
     }
 
     if (compressionService !== undefined) {
@@ -46,7 +47,7 @@ export class CheckValidator {
       const decompressedString = this.compressionService.decompress(receivedCheck.archive)
       checkData = JSON.parse(decompressedString)
       this.validateCheckStructure(checkData)
-    } catch (error) {
+    } catch (error: any) {
       await this.setReceivedCheckAsInvalid(error.message, receivedCheck)
       // dispatch message to indicate validation failure
       const validationFailure: ICheckNotificationMessage = {
@@ -74,14 +75,14 @@ export class CheckValidator {
     receivedCheckTableEntity.validatedAt = Moment().toDate()
     receivedCheckTableEntity.isValid = true
     receivedCheckTableEntity.answers = JSON.stringify(checkData.answers)
-    await this.tableService.replaceEntityAsync('receivedCheck', receivedCheckTableEntity)
+    await this.tableService.mergeUpdateEntity(tableStorageTableName, receivedCheckTableEntity)
   }
 
-  private async setReceivedCheckAsInvalid (errorMessage: string, receivedCheck: ReceivedCheckTableEntity): Promise<void> {
-    receivedCheck.processingError = errorMessage
-    receivedCheck.validatedAt = Moment().toDate()
-    receivedCheck.isValid = false
-    await this.tableService.replaceEntityAsync('receivedCheck', receivedCheck)
+  private async setReceivedCheckAsInvalid (errorMessage: string, receivedCheckTableEntity: ReceivedCheckTableEntity): Promise<void> {
+    receivedCheckTableEntity.processingError = errorMessage
+    receivedCheckTableEntity.validatedAt = Moment().toDate()
+    receivedCheckTableEntity.isValid = false
+    await this.tableService.mergeUpdateEntity(tableStorageTableName, receivedCheckTableEntity)
   }
 
   private findReceivedCheck (receivedCheckRef: any[]): any {
