@@ -92,7 +92,8 @@ end
 
 Then(/^my feedback should be saved$/) do
   local_storage = JSON.parse(page.evaluate_script('window.localStorage.getItem("feedback");'))
-  stored_check = SqlDbHelper.get_pupil_check_metadata(local_storage['checkCode'])
+  stored_check = SqlDbHelper.get_check(local_storage['checkCode'])
+  expect(stored_check['complete']).to eql true
   saved_feedback = AzureTableHelper.get_pupil_feedback(stored_check['checkCode'])
   expect(saved_feedback.properties['inputType']).to eql 'Keyboard'
   expect(saved_feedback.properties['satisfactionRating']).to eql 'Very easy'

@@ -3,7 +3,7 @@ Then(/^I should see meta data stored in the DB$/) do
   wait_until {page.evaluate_script('window.localStorage.getItem("pupil");')}
   storage_pupil = JSON.parse page.evaluate_script('window.localStorage.getItem("pupil");')
   sleep(120)
-  stored_check = SqlDbHelper.get_pupil_check_metadata(storage_pupil['checkCode'])
+  stored_check = SqlDbHelper.get_check(storage_pupil['checkCode'])
   expect(stored_check['updatedAt'].strftime('%d-%m-%y %H')).to eql current_time.utc.strftime('%d-%m-%y %H')
   expect(stored_check['createdAt'].strftime('%d-%m-%y %H')).to eql current_time.utc.strftime('%d-%m-%y %H')
   expect(stored_check['pupil_id']).to eql SqlDbHelper.pupil_details(@details_hash[:upn])['id']
