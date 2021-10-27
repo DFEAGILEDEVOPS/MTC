@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { APP_CONFIG } from '../config/config.service';
-
+import { Meta } from '@angular/platform-browser';
 import { HttpService } from '../http/http.service';
 import { StorageService } from '../storage/storage.service';
 import {
@@ -21,13 +21,15 @@ export class UserService {
   private loggedIn = false;
   data: any = {};
 
-  constructor(private http: HttpService, private storageService: StorageService) {
+  constructor(private http: HttpService, private storageService: StorageService, private metaService: Meta) {
     this.loggedIn = !!this.storageService.getAccessArrangements();
   }
 
   login(schoolPin, pupilPin): Promise<any> {
+    const buildTag = this.metaService.getTag('name="build:number"')
+    const version = buildTag.content
     return new Promise(async (resolve, reject) => {
-      await this.http.post(`${APP_CONFIG.authURL}`, { schoolPin, pupilPin })
+      await this.http.post(`${APP_CONFIG.authURL}`, { schoolPin, pupilPin, version })
         .then(data => {
           this.loggedIn = true;
           this.storageService.clear();
