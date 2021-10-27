@@ -54,7 +54,7 @@ Then(/^I should see a record for the pupil in the ps report table$/) do
   expect(ps_report_record["TimeComplete"]).to eql check_inputs.nil? ? nil : check_inputs.last['inputBrowserTimestamp']
   expect(ps_report_record["TimeTaken"]).to eql check_inputs.nil? ? nil : (check_inputs.last['inputBrowserTimestamp'] - check_events.find {|event| event['eventType'] == 'CheckStarted'}['browserTimestamp'])
   expect(ps_report_record["RestartNumber"]).to eql @check_details.nil? ? nil : pupil_restarts.size
-  expect(ps_report_record["RestartReason"]).to eql pupil_restarts.empty? ? nil : pupil_restarts.last['restartReasonLookUp_Id']
+  expect(ps_report_record["RestartReason"]).to eql pupil_restarts.empty? ? nil : pupil_restarts.last['restartReasonLookup_Id']
   expect(ps_report_record["FormMark"]).to eql check_result.nil? ? nil : check_result['mark']
   expect(ps_report_record["DeviceType"]).to eql nil
   expect(ps_report_record["BrowserType"]).to eql device_info.nil? ? nil : SqlDbHelper.browser_lookup(device_info['browserFamilyLookup_id'])['family'] + ' ' + device_info['browserMajorVersion'].to_s + '.' + device_info['browserMinorVersion'].to_s + '.' + device_info['browserPatchVersion'].to_s

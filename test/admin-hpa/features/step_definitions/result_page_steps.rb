@@ -85,7 +85,7 @@ Then(/^I should see the school results$/) do
   db_pupil_results = checks_ids_from_school.map {|check| {id: check.to_s, mark: SqlDbHelper.get_check_result(check)['mark'].to_s}}.sort_by {|hsh| hsh[:id]}
   expect(db_pupil_results).to eql pupil_results
   results_page.ctf_download.click
-  ctf_path = File.expand_path("#{File.dirname(__FILE__)}/../../data/ctf_download/999#{@estab_code}_KS2_999#{@estab_code}_001.xml")
+  ctf_path = File.expand_path("#{File.dirname(__FILE__)}/../../data/download/999#{@estab_code}_KS2_999#{@estab_code}_001.xml")
   Timeout.timeout(120) {sleep 2 until File.exist?(ctf_path)}
   ctf_file = File.read(ctf_path)
   doc = Nokogiri::XML ctf_file
@@ -172,7 +172,7 @@ Then(/^I should see the results and reasons for not taking the check$/) do
   db_pupil_results = checks_ids_from_school.map {|check| {id: check.to_s, mark: SqlDbHelper.get_check_result(check)['mark'].to_s}}.sort_by {|hsh| hsh[:id]}
   expect(db_pupil_results).to eql pupil_results.sort_by {|hsh| hsh[:id]}
   results_page.ctf_download.click
-  ctf_path = File.expand_path("#{File.dirname(__FILE__)}/../../data/ctf_download/999#{@estab_code}_KS2_999#{@estab_code}_001.xml")
+  ctf_path = File.expand_path("#{File.dirname(__FILE__)}/../../data/download/999#{@estab_code}_KS2_999#{@estab_code}_001.xml")
   Timeout.timeout(120) {sleep 2 until File.exist?(ctf_path)}
   ctf_file = File.read(ctf_path)
   doc = Nokogiri::XML ctf_file
@@ -217,7 +217,7 @@ end
 
 Then('the results reflect these changes') do
   results_page.ctf_download.click
-  ctf_path = File.expand_path("#{File.dirname(__FILE__)}/../../data/ctf_download/999#{@estab_code}_KS2_999#{@estab_code}_001.xml")
+  ctf_path = File.expand_path("#{File.dirname(__FILE__)}/../../data/download/999#{@estab_code}_KS2_999#{@estab_code}_001.xml")
   Timeout.timeout(120) {sleep 2 until File.exist?(ctf_path)}
   ctf_file = File.read(ctf_path)
   doc = Nokogiri::XML ctf_file

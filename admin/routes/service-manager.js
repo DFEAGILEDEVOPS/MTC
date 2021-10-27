@@ -87,6 +87,16 @@ router.post('/organisations/search',
   serviceManagerController.postSearch
 )
 
+router.get('/organisations/upload/:jobSlug?',
+  isAuthenticated(roles.serviceManager),
+  serviceManagerController.getUploadOrganisations
+)
+
+router.post('/organisations/upload',
+  isAuthenticated(roles.serviceManager),
+  serviceManagerController.postUploadOrganisations
+)
+
 router.get(
   '/organisations/:slug',
   isAuthenticated([roles.serviceManager]),
@@ -102,4 +112,10 @@ router.post('/organisations/:slug/edit',
   isAuthenticated(roles.serviceManager),
   serviceManagerController.postEditOrganisation
 )
+
+router.get('/job/:slug',
+  isAuthenticated(roles.serviceManager),
+  serviceManagerController.downloadJobOutput
+)
+
 module.exports = router
