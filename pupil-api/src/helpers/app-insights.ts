@@ -1,7 +1,9 @@
 import * as appInsights from 'applicationinsights'
-import PingController from '../controllers/ping.controller'
+import { PingController } from '../controllers/ping.controller'
 import config from '../config'
 import * as parser from './parsing'
+
+const pingController = new PingController()
 
 const appInsightsHelper = {
   startInsightsIfConfigured: async () => {
@@ -19,7 +21,7 @@ const appInsightsHelper = {
 
       let buildNumber
       try {
-        buildNumber = await PingController.getBuildNumber()
+        buildNumber = await pingController.getBuildNumber()
       } catch (error) {
         buildNumber = 'NOT FOUND'
       }
