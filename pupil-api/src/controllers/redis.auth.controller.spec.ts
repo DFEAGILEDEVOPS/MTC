@@ -17,7 +17,7 @@ let redisPupilAuthService: IPupilAuthenticationService
 describe('redis auth controller', () => {
   beforeEach(() => {
     req = createMockRequest('application/json')
-    req.body = { schoolPin: 'pin1', pupilPin: 'pin2' }
+    req.body = { schoolPin: 'pin1', pupilPin: 'pin2', version: '1' }
     res = httpMocks.createResponse()
     redisPupilAuthService = new RedisPupilAuthServiceMock()
     authController = new RedisAuthController(redisPupilAuthService)
@@ -39,7 +39,8 @@ describe('redis auth controller', () => {
     req = createMockRequest('application/json')
     req.body = {
       schoolPin: 'abc12def',
-      pupilPin: '1234'
+      pupilPin: '1234',
+      version: '123'
     }
     await authController.postAuth(req, res)
     expect(res.statusCode).toBe(200)
@@ -52,7 +53,8 @@ describe('redis auth controller', () => {
     req = createMockRequest('application/json; charset=utf-8')
     req.body = {
       schoolPin: 'abc12def',
-      pupilPin: '1234'
+      pupilPin: '1234',
+      version: '123'
     }
     await authController.postAuth(req, res)
     expect(res.statusCode).toBe(200)
@@ -69,7 +71,8 @@ describe('redis auth controller', () => {
   test('shortcuts to return unauthorised if no schoolPin provided', async () => {
     jest.spyOn(logger, 'error').mockImplementation()
     req.body = {
-      pupilPin: '1234'
+      pupilPin: '1234',
+      version: '123'
     }
     await authController.postAuth(req, res)
     expect(redisPupilAuthService.authenticate).not.toHaveBeenCalled()
@@ -81,6 +84,20 @@ describe('redis auth controller', () => {
   test('shortcuts to return unauthorised if no pupilPin provided', async () => {
     jest.spyOn(logger, 'error').mockImplementation()
     req.body = {
+      schoolPin: '1234',
+      version: '123'
+    }
+    await authController.postAuth(req, res)
+    expect(redisPupilAuthService.authenticate).not.toHaveBeenCalled()
+    const data = JSON.parse(res._getData())
+    expect(res.statusCode).toBe(401)
+    expect(data.error).toBe('Unauthorised')
+  })
+
+  test('shortcuts to return unauthorised if no build version provided', async () => {
+    jest.spyOn(logger, 'error').mockImplementation()
+    req.body = {
+      pupilPin: '123',
       schoolPin: '1234'
     }
     await authController.postAuth(req, res)
