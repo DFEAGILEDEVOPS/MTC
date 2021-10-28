@@ -1,15 +1,15 @@
+import config from '../config'
+import logger from '../services/log.service'
 'use strict'
 
 const morgan = require('morgan')
-import config from '../config'
-import logger from '../services/log.service'
 
-let initialised
+let initialised: boolean
 
-const init = (app) => {
+const init = (app: any) => {
   if (initialised) return
 
-  if (config.Logging.Express.UseWinston === 'true') {
+  if (config.Logging.Express.UseWinston === true) {
     /**
      * Express logging to winston
      */

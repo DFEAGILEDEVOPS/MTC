@@ -3,6 +3,19 @@
 import * as path from 'path'
 import * as fs from 'fs'
 import * as dotenv from 'dotenv'
+
+import * as express from 'express'
+import * as bodyParser from 'body-parser'
+import * as cors from 'cors'
+import * as helmet from 'helmet'
+import { v4 as uuidv4 } from 'uuid'
+import * as appInsights from './helpers/app-insights'
+import logger from './services/log.service'
+import { rateLimit } from './helpers/rate-limit'
+import config from './config'
+import authRoutes from './routes/auth'
+import pingRoute from './routes/ping'
+import headRoute from './routes/head'
 const globalDotEnvFile = path.join(__dirname, '..', '..', '.env')
 try {
   if (fs.existsSync(globalDotEnvFile)) {
@@ -14,25 +27,11 @@ try {
 } catch (error) {
   console.error(error)
 }
-
-import * as express from 'express'
-import * as bodyParser from 'body-parser'
-import * as cors from 'cors'
-import * as helmet from 'helmet'
-import { v4 as uuidv4 } from 'uuid'
-import * as appInsights from './helpers/app-insights'
 const corsOptions = require('./helpers/cors-options')
 const setupLogging = require('./helpers/logger')
-import logger from './services/log.service'
-import { rateLimit } from './helpers/rate-limit'
-import config from './config'
-import authRoutes from './routes/auth'
-import pingRoute from './routes/ping'
-import headRoute from './routes/head'
 
 // Creates and configures an ExpressJS web server.
 class App {
-
   // ref to Express instance
   public express: express.Application
 
@@ -46,7 +45,6 @@ class App {
 
   // Configure Express middleware.
   private middleware (): void {
-
     /* Logging */
 
     setupLogging(this.express)
@@ -71,7 +69,7 @@ class App {
       preload: true
     }))
 
-     // rate limit requests
+    // rate limit requests
     this.express.use(async (req, res, next) => {
       try {
         if (!config.RateLimit.Enabled) {
@@ -107,13 +105,13 @@ class App {
 
     // catch 404 and forward to error handler
     this.express.use(function (req, res, next) {
-      let err: any = new Error('Not Found')
+      const err: any = new Error('Not Found')
       err.status = 404
       next(err)
     })
 
     // error handler
-    this.express.use(function (err, req, res, next) {
+    this.express.use(function (err: any, req: any, res: any, next: any) {
       const errorId = uuidv4()
       // only providing error information in development
       // @TODO: change this to a real logger with an error string that contains
@@ -131,9 +129,7 @@ class App {
         res.status(err.status).json({ error: 'An error occurred' })
       }
     })
-
   }
-
 }
 
 export default new App().express

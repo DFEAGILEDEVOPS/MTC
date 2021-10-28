@@ -22,19 +22,19 @@ class PingController {
     }
 
     res.setHeader('Content-Type', 'application/json')
-    let obj = {
-      'Build': buildNumber,
-      'Commit': commitId,
-      'CurrentServerTime': moment().toISOString()
+    const obj = {
+      Build: buildNumber,
+      Commit: commitId,
+      CurrentServerTime: moment().toISOString()
     }
     return res.status(200).send(obj)
   }
 
-  public getCommitId (): Promise<any> {
+  public async getCommitId (): Promise<any> {
     return new Promise(function (resolve, reject) {
       const commitFilePath = path.join(__dirname, '..', 'commit.txt')
       fs.readFile(commitFilePath, 'utf8', function (err, data) {
-        if (!err) {
+        if (err == null) {
           resolve(data)
         } else {
           reject(new Error('NOT FOUND'))
@@ -43,12 +43,12 @@ class PingController {
     })
   }
 
-  public getBuildNumber (): Promise<any> {
+  public async getBuildNumber (): Promise<any> {
     // Promise wrapper function
     return new Promise(function (resolve, reject) {
       const buildFilePath = path.join(__dirname, '..', 'build.txt')
       fs.readFile(buildFilePath, 'utf8', function (err, data) {
-        if (!err) {
+        if (err == null) {
           resolve(data)
         } else {
           reject(new Error('NOT FOUND'))

@@ -1,12 +1,11 @@
 import * as R from 'ramda'
 import * as moment from 'moment'
 import { IRedisService, RedisService } from './redis.service'
-import * as azureQueueService from './azure-queue.service'
 import config from '../config'
 import { IQueueMessageService, SbQueueMessageService } from './queue-message.service'
 
 export interface IPupilAuthenticationService {
-  authenticate (schoolPin?: string, pupilPin?: string, buildNumber?: string): Promise<object | undefined>
+  authenticate (schoolPin?: string, pupilPin?: string, buildVersion?: string): Promise<object | undefined>
 }
 
 export interface IPupilLoginMessage {
@@ -17,9 +16,8 @@ export interface IPupilLoginMessage {
 }
 
 export class RedisPupilAuthenticationService implements IPupilAuthenticationService {
-
-  private redisService: IRedisService
-  private queueService: IQueueMessageService
+  private readonly redisService: IRedisService
+  private readonly queueService: IQueueMessageService
 
   constructor (redisService?: IRedisService, queueService?: IQueueMessageService) {
     if (redisService === undefined) {
@@ -32,8 +30,7 @@ export class RedisPupilAuthenticationService implements IPupilAuthenticationServ
     this.queueService = queueService
   }
 
-  async authenticate (schoolPin?: string, pupilPin?: string, buildNumber?: string): Promise<object | undefined> {
-
+  async authenticate (schoolPin?: string, pupilPin?: string, buildVersion?: string): Promise<object | undefined> {
     if (schoolPin === undefined || schoolPin.length === 0) {
       throw new Error('schoolPin is required')
     }
@@ -42,7 +39,7 @@ export class RedisPupilAuthenticationService implements IPupilAuthenticationServ
       throw new Error('pupilPin is required')
     }
 
-    if (buildNumber === undefined || buildNumber.length === 0) {
+    if (buildVersion === undefined || buildVersion.length === 0) {
       throw new Error('buildNumber is required')
     }
 
@@ -77,5 +74,4 @@ export class RedisPupilAuthenticationService implements IPupilAuthenticationServ
   private buildCacheKey (schoolPin: string, pupilPin: string): string {
     return `preparedCheck:${schoolPin}:${pupilPin}`
   }
-
 }

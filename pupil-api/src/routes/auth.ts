@@ -1,4 +1,4 @@
-import { Router as Router, Request, Response } from 'express'
+import { Router, Request, Response } from 'express'
 import { RedisAuthController } from '../controllers/redis.auth.controller'
 
 export interface IAuthController {

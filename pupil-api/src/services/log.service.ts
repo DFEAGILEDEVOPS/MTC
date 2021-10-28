@@ -15,14 +15,14 @@ const syslogLevels = {
 */
 
 export class Logger {
-  private level: string
-  private logger
+  private readonly level: string
+  private readonly logger
 
   constructor () {
     this.level = config.Logging.LogLevel
 
     let format
-    if (config.Logging.ApplicationInsights.LogToWinston) {
+    if (config.Logging.ApplicationInsights.LogToWinston === true) {
       format = winston.format.simple()
     } else {
       format = winston.format.combine(
@@ -45,7 +45,7 @@ export class Logger {
 
     this.logger = winston.createLogger(baseLogOptions)
 
-    if (config.Logging.ApplicationInsights.LogToWinston) {
+    if (config.Logging.ApplicationInsights.LogToWinston === true) {
       console.log('app insights config enabled')
       const { AzureApplicationInsightsLogger } = require('winston-azure-application-insights')
       const appInsights = require('applicationinsights')
@@ -62,7 +62,7 @@ export class Logger {
     }
   }
 
-  log (level, msg, exception) {
+  log (level: string, msg: string, exception: any) {
     this.logger.log(level, msg, exception)
   }
 
@@ -70,31 +70,31 @@ export class Logger {
    * AI -> critical
    * @param {string} msg
    */
-  alert (msg, exception = null) { this.log('alert', msg, exception) }
+  alert (msg: string, exception = null) { this.log('alert', msg, exception) }
 
   /**
    * AI -> error
    * @param {string} msg
    */
-  error (msg, exception = null) { this.log('error', msg, exception) }
+  error (msg: string, exception = null) { this.log('error', msg, exception) }
 
   /**
    * AI -> warning
    * @param {string} msg
    */
-  warn (msg, exception = null) { this.log('warning', msg, exception) }
+  warn (msg: string, exception = null) { this.log('warning', msg, exception) }
 
   /**
    * AI -> notice
    * @param {string} msg
    */
-  info (msg, exception = null) { this.log('info', msg, exception) }
+  info (msg: string, exception = null) { this.log('info', msg, exception) }
 
   /**
    * AI -> verbose
    * @param {string} msg
    */
-  debug (msg, exception = null) { this.log('debug', msg, exception) }
+  debug (msg: string, exception = null) { this.log('debug', msg, exception) }
 
   /**
    * Return the underlying `winston` logger

@@ -17,7 +17,7 @@ let redisPupilAuthService: IPupilAuthenticationService
 describe('redis auth controller', () => {
   beforeEach(() => {
     req = createMockRequest('application/json')
-    req.body = { schoolPin: 'pin1', pupilPin: 'pin2', version: '1' }
+    req.body = { schoolPin: 'pin1', pupilPin: 'pin2', buildVersion: '1' }
     res = httpMocks.createResponse()
     redisPupilAuthService = new RedisPupilAuthServiceMock()
     authController = new RedisAuthController(redisPupilAuthService)
@@ -40,7 +40,7 @@ describe('redis auth controller', () => {
     req.body = {
       schoolPin: 'abc12def',
       pupilPin: '1234',
-      version: '123'
+      buildVersion: '123'
     }
     await authController.postAuth(req, res)
     expect(res.statusCode).toBe(200)
@@ -54,7 +54,7 @@ describe('redis auth controller', () => {
     req.body = {
       schoolPin: 'abc12def',
       pupilPin: '1234',
-      version: '123'
+      buildVersion: '123'
     }
     await authController.postAuth(req, res)
     expect(res.statusCode).toBe(200)
@@ -72,7 +72,7 @@ describe('redis auth controller', () => {
     jest.spyOn(logger, 'error').mockImplementation()
     req.body = {
       pupilPin: '1234',
-      version: '123'
+      buildVersion: '123'
     }
     await authController.postAuth(req, res)
     expect(redisPupilAuthService.authenticate).not.toHaveBeenCalled()
@@ -85,7 +85,7 @@ describe('redis auth controller', () => {
     jest.spyOn(logger, 'error').mockImplementation()
     req.body = {
       schoolPin: '1234',
-      version: '123'
+      buildVersion: '123'
     }
     await authController.postAuth(req, res)
     expect(redisPupilAuthService.authenticate).not.toHaveBeenCalled()

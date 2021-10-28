@@ -1,5 +1,4 @@
 import * as moment from 'moment'
-
 import { RedisPupilAuthenticationService, IPupilLoginMessage } from './redis-pupil-auth.service'
 import { IRedisService } from './redis.service'
 import { IQueueMessageService } from './queue-message.service'

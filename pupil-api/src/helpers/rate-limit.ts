@@ -17,7 +17,7 @@ if (config.Redis.useTLS) {
 
 const rateLimit = RateLimit({
   client: new Redis(options),
-  key: (req) => {
+  key: (req: any) => {
     return 'ratelimit::' + req.ip
   },
 

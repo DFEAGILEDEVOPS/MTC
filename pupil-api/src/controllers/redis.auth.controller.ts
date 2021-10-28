@@ -5,7 +5,7 @@ import { RedisPupilAuthenticationService, IPupilAuthenticationService } from '..
 import { IAuthController } from '../routes/auth'
 
 export class RedisAuthController implements IAuthController {
-  private redisAuthService: IPupilAuthenticationService
+  private readonly redisAuthService: IPupilAuthenticationService
 
   constructor (redisAuthService?: IPupilAuthenticationService) {
     if (redisAuthService === undefined) {
@@ -21,11 +21,11 @@ export class RedisAuthController implements IAuthController {
       return apiResponse.badRequest(res)
     }
 
-    const { pupilPin, schoolPin, version } = req.body
-    if (!schoolPin || !pupilPin || !version) return apiResponse.unauthorised(res)
+    const { pupilPin, schoolPin, buildVersion } = req.body
+    if (!schoolPin || !pupilPin || !buildVersion) return apiResponse.unauthorised(res)
 
     try {
-      const data = await this.redisAuthService.authenticate(schoolPin, pupilPin, version)
+      const data = await this.redisAuthService.authenticate(schoolPin, pupilPin, buildVersion)
       if (data === undefined) {
         return apiResponse.unauthorised(res)
       }
