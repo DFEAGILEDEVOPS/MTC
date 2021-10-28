@@ -15,8 +15,8 @@ try {
   console.error(error)
 }
 
-const getEnvironment = () => {
-  return process.env.ENVIRONMENT_NAME || 'Local-Dev'
+const getEnvironment = (): string => {
+  return process.env.ENVIRONMENT_NAME ?? 'Local-Dev'
 }
 
 function parseToInt (value: string | undefined, radix: number | undefined): number | undefined {
@@ -29,35 +29,35 @@ function parseToInt (value: string | undefined, radix: number | undefined): numb
 export default {
   AzureStorageConnectionString: process.env.AZURE_STORAGE_CONNECTION_STRING,
   Environment: getEnvironment(),
-  PORT: process.env.PORT || '3003',
+  PORT: process.env.PORT ?? '3003',
   Cors: {
-    Whitelist: process.env.CORS_WHITELIST || ''
+    Whitelist: process.env.CORS_WHITELIST ?? ''
   },
   Logging: {
-    LogLevel: process.env.LOG_LEVEL || 'debug',
+    LogLevel: process.env.LOG_LEVEL ?? 'debug',
     Express: {
-      UseWinston: process.env.hasOwnProperty('EXPRESS_LOGGING_WINSTON') ? parser.primitiveToBoolean(process.env.EXPRESS_LOGGING_WINSTON) : false
+      UseWinston: parser.propertyExists(process.env, 'EXPRESS_LOGGING_WINSTON') ? parser.primitiveToBoolean(process.env.EXPRESS_LOGGING_WINSTON) : false
     },
     ApplicationInsights: {
-      LogToWinston: process.env.APPINSIGHTS_WINSTON_LOGGER || false,
+      LogToWinston: process.env.APPINSIGHTS_WINSTON_LOGGER ?? false,
       Key: process.env.APPINSIGHTS_INSTRUMENTATIONKEY,
       InstanceId: `${os.hostname()}:${process.pid}`,
-      CollectExceptions: {}.hasOwnProperty.call(process.env, 'APPINSIGHTS_COLLECT_EXCEPTIONS') ? parser.primitiveToBoolean(process.env.APPINSIGHTS_COLLECT_EXCEPTIONS) : true,
-      LiveMetrics: {}.hasOwnProperty.call(process.env, 'APPINSIGHTS_LIVE_METRICS') ? parser.primitiveToBoolean(process.env.APPINSIGHTS_LIVE_METRICS) : true
+      CollectExceptions: parser.propertyExists(process.env, 'APPINSIGHTS_COLLECT_EXCEPTIONS') ? parser.primitiveToBoolean(process.env.APPINSIGHTS_COLLECT_EXCEPTIONS) : true,
+      LiveMetrics: parser.propertyExists(process.env, 'APPINSIGHTS_LIVE_METRICS') ? parser.primitiveToBoolean(process.env.APPINSIGHTS_LIVE_METRICS) : true
     }
   },
   Redis: {
-    Host: process.env.REDIS_HOST || 'localhost',
-    Port: parseToInt(process.env.REDIS_PORT, 10) || 6379,
+    Host: process.env.REDIS_HOST ?? 'localhost',
+    Port: parseToInt(process.env.REDIS_PORT, 10) ?? 6379,
     Key: process.env.REDIS_KEY,
     useTLS: getEnvironment() !== 'Local-Dev'
   },
   RateLimit: {
-    Threshold: parseToInt(process.env.RATE_LIMIT_THRESHOLD, 10) || 1000,
-    Duration: parseToInt(process.env.RATE_LIMIT_DURATION, 10) || 1000 * 60, // 1 minute in ms
-    Enabled: process.env.hasOwnProperty('RATE_LIMIT_ENABLED') ? parser.primitiveToBoolean(process.env.RATE_LIMIT_ENABLED) : false
+    Threshold: parseToInt(process.env.RATE_LIMIT_THRESHOLD, 10) ?? 1000,
+    Duration: parseToInt(process.env.RATE_LIMIT_DURATION, 10) ?? 1000 * 60, // 1 minute in ms
+    Enabled: parser.propertyExists(process.env, 'RATE_LIMIT_ENABLED') ? parser.primitiveToBoolean(process.env.RATE_LIMIT_ENABLED) : false
   },
-  RedisPreparedCheckExpiryInSeconds: parseToInt(process.env.PREPARED_CHECK_EXPIRY_SECONDS, 10) || 1800,
+  RedisPreparedCheckExpiryInSeconds: parseToInt(process.env.PREPARED_CHECK_EXPIRY_SECONDS, 10) ?? 1800,
   FeatureToggles: {},
   ServiceBus: {
     connectionString: process.env.AZURE_SERVICE_BUS_CONNECTION_STRING

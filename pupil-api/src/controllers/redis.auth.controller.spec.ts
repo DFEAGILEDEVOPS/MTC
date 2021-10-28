@@ -1,16 +1,15 @@
-'use strict'
-
 import { RedisAuthController } from './redis.auth.controller'
 import * as httpMocks from 'node-mocks-http'
 import logger from '../services/log.service'
 import { IPupilAuthenticationService } from '../services/redis-pupil-auth.service'
+import { Request } from 'express'
 
 const RedisPupilAuthServiceMock = jest.fn<IPupilAuthenticationService, any>(() => ({
   authenticate: jest.fn()
 }))
 
-let req
-let res
+let req: Request
+let res: any
 let authController: RedisAuthController
 let redisPupilAuthService: IPupilAuthenticationService
 
@@ -33,9 +32,7 @@ describe('redis auth controller', () => {
   })
 
   test('allows a content-type of application/json', async () => {
-    redisPupilAuthService.authenticate = jest.fn(async () => {
-      return {}
-    })
+    jest.spyOn(redisPupilAuthService, 'authenticate').mockResolvedValue({})
     req = createMockRequest('application/json')
     req.body = {
       schoolPin: 'abc12def',
@@ -47,9 +44,7 @@ describe('redis auth controller', () => {
   })
 
   test('allows a content-type of application/json with a charset', async () => {
-    redisPupilAuthService.authenticate = jest.fn(async () => {
-      return {}
-    })
+    jest.spyOn(redisPupilAuthService, 'authenticate').mockResolvedValue({})
     req = createMockRequest('application/json; charset=utf-8')
     req.body = {
       schoolPin: 'abc12def',
@@ -108,19 +103,16 @@ describe('redis auth controller', () => {
   })
 
   test('returns a data packet to the client if authorisation is successful', async () => {
-    redisPupilAuthService.authenticate = jest.fn(async () => {
-      return {}
-    })
+    jest.spyOn(redisPupilAuthService, 'authenticate').mockResolvedValue({})
+
     await authController.postAuth(req, res)
     const data = JSON.parse(res._getData())
     expect(res.statusCode).toBe(200)
-    expect(data).toBeTruthy()
+    expect(data).toBeDefined()
   })
 
   test('returns a 401 if no redis preparedCheck found', async () => {
-    redisPupilAuthService.authenticate = jest.fn((schoolPin: string, pupilPin: string) => {
-      return Promise.resolve(undefined)
-    })
+    jest.spyOn(redisPupilAuthService, 'authenticate').mockResolvedValue(undefined)
     await authController.postAuth(req, res)
     expect(res.statusCode).toBe(401)
     const data = JSON.parse(res._getData())

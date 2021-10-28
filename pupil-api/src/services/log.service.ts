@@ -1,5 +1,7 @@
 import * as winston from 'winston'
 import config from '../config'
+import { AzureApplicationInsightsLogger } from 'winston-azure-application-insights'
+import * as appInsights from 'applicationinsights'
 
 /*
 const syslogLevels = {
@@ -47,9 +49,6 @@ export class Logger {
 
     if (config.Logging.ApplicationInsights.LogToWinston === true) {
       console.log('app insights config enabled')
-      const { AzureApplicationInsightsLogger } = require('winston-azure-application-insights')
-      const appInsights = require('applicationinsights')
-
       appInsights.setup(config.Logging.ApplicationInsights.Key).start()
 
       this.logger
@@ -62,7 +61,7 @@ export class Logger {
     }
   }
 
-  log (level: string, msg: string, exception: any) {
+  log (level: string, msg: string, exception?: any): void {
     this.logger.log(level, msg, exception)
   }
 
@@ -70,37 +69,37 @@ export class Logger {
    * AI -> critical
    * @param {string} msg
    */
-  alert (msg: string, exception = null) { this.log('alert', msg, exception) }
+  alert (msg: string, exception = null): void { this.log('alert', msg, exception) }
 
   /**
    * AI -> error
    * @param {string} msg
    */
-  error (msg: string, exception = null) { this.log('error', msg, exception) }
+  error (msg: string, exception = null): void { this.log('error', msg, exception) }
 
   /**
    * AI -> warning
    * @param {string} msg
    */
-  warn (msg: string, exception = null) { this.log('warning', msg, exception) }
+  warn (msg: string, exception = null): void { this.log('warning', msg, exception) }
 
   /**
    * AI -> notice
    * @param {string} msg
    */
-  info (msg: string, exception = null) { this.log('info', msg, exception) }
+  info (msg: string, exception = null): void { this.log('info', msg, exception) }
 
   /**
    * AI -> verbose
    * @param {string} msg
    */
-  debug (msg: string, exception = null) { this.log('debug', msg, exception) }
+  debug (msg: string, exception = null): void { this.log('debug', msg, exception) }
 
   /**
    * Return the underlying `winston` logger
    * @return {winston.Logger | *}
    */
-  getLogger () {
+  getLogger (): winston.Logger {
     return this.logger
   }
 }

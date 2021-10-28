@@ -33,7 +33,7 @@ describe('redis-pupil-auth.service', () => {
 
   test('it should call redis:get with correct key format', async () => {
     let actualKey: string = ''
-    redisServiceMock.get = jest.fn(async (key: string) => {
+    jest.spyOn(redisServiceMock, 'get').mockImplementation(async (key: string) => {
       actualKey = key
     })
     const schoolPin = 'abc12def'
@@ -41,12 +41,12 @@ describe('redis-pupil-auth.service', () => {
     const buildNumber = '1-2-3'
     const expectedKey = `preparedCheck:${schoolPin}:${pupilPin}`
     await sut.authenticate(schoolPin, pupilPin, buildNumber)
-    expect(actualKey).toEqual(expectedKey)
+    expect(actualKey).toStrictEqual(expectedKey)
   })
 
   test('an error should be thrown if schoolPin is not provided', async () => {
-    let schoolPin = undefined
-    let pupilPin = '1234'
+    let schoolPin
+    const pupilPin = '1234'
     const buildNumber = '1-2-3'
     try {
       await sut.authenticate(schoolPin, pupilPin, buildNumber)
@@ -110,18 +110,15 @@ describe('redis-pupil-auth.service', () => {
       pinValidFromUtc: pinValidFromUtc,
       pinExpiresAtUtc: pinExpiresAtUtc
     }
-    redisServiceMock.get = jest.fn(async (key: string) => {
-      return expectedPayload
-    })
+    jest.spyOn(redisServiceMock, 'get').mockResolvedValue(expectedPayload)
     const schoolPin = 'abc12def'
     const pupilPin = '5678'
     const buildNumber = '1-2-3'
     const payload = await sut.authenticate(schoolPin, pupilPin, buildNumber)
-    expect(payload).toEqual(expectedPayload)
+    expect(payload).toStrictEqual(expectedPayload)
   })
 
   test('authorisation is denied if the pin is not yet valid', async () => {
-    const currentDateTime = moment.utc()
     const pinValidFromUtc = moment().add(1, 'hour')
     const pinExpiresAtUtc = moment().add(2, 'hour')
     const expectedPayload = {
@@ -132,9 +129,7 @@ describe('redis-pupil-auth.service', () => {
       pinValidFromUtc: pinValidFromUtc,
       pinExpiresAtUtc: pinExpiresAtUtc
     }
-    redisServiceMock.get = jest.fn(async (key: string) => {
-      return expectedPayload
-    })
+    jest.spyOn(redisServiceMock, 'get').mockResolvedValue(expectedPayload)
     const schoolPin = 'abc12def'
     const pupilPin = '5678'
     const buildNumber = '1-2-3'
@@ -143,7 +138,6 @@ describe('redis-pupil-auth.service', () => {
   })
 
   test('authorisation is denied if the pin was valid in the past', async () => {
-    const currentDateTime = moment.utc()
     const pinValidFromUtc = moment().subtract(2, 'hour')
     const pinExpiresAtUtc = moment().subtract(1, 'hour')
     const expectedPayload = {
@@ -154,9 +148,7 @@ describe('redis-pupil-auth.service', () => {
       pinValidFromUtc: pinValidFromUtc,
       pinExpiresAtUtc: pinExpiresAtUtc
     }
-    redisServiceMock.get = jest.fn(async (key: string) => {
-      return expectedPayload
-    })
+    jest.spyOn(redisServiceMock, 'get').mockResolvedValue(expectedPayload)
     const schoolPin = 'abc12def'
     const pupilPin = '5678'
     const buildNumber = '1-2-3'
@@ -165,9 +157,7 @@ describe('redis-pupil-auth.service', () => {
   })
 
   test('null should be returned if item not found in cache', async () => {
-    redisServiceMock.get = jest.fn((key: string) => {
-      return Promise.resolve(undefined)
-    })
+    jest.spyOn(redisServiceMock, 'get').mockResolvedValue(undefined)
     const schoolPin = 'abc12def'
     const pupilPin = '5678'
     const buildNumber = '1-2-3'
@@ -179,49 +169,36 @@ describe('redis-pupil-auth.service', () => {
     const thirtyMinutesInSeconds = 1800
     const expectedPayload = {
       checkCode: '1111-2222-AAAA-4444',
-      pinExpiresAtUtc: moment.utc().add(1, 'hour'),  // valid
+      pinExpiresAtUtc: moment.utc().add(1, 'hour'), // valid
       pinValidFromUtc: moment.utc().subtract(1, 'hour'), // valid
       config: {
         practice: false
       }
     }
-
-    redisServiceMock.get = jest.fn(async (key: string) => {
-      return expectedPayload
-    })
-
+    jest.spyOn(redisServiceMock, 'get').mockResolvedValue(expectedPayload)
     let actualPreparedCheckExpiryValue: number = -1
-    redisServiceMock.expire = jest.fn(async (key: string, ttl: number) => {
+    jest.spyOn(redisServiceMock, 'expire').mockImplementation(async (key: string, ttl: number) => {
       actualPreparedCheckExpiryValue = ttl
     })
     const schoolPin = 'abc12def'
     const pupilPin = '5678'
     const buildNumber = '1-2-3'
     await sut.authenticate(schoolPin, pupilPin, buildNumber)
-    expect(actualPreparedCheckExpiryValue).toEqual(thirtyMinutesInSeconds)
+    expect(actualPreparedCheckExpiryValue).toStrictEqual(thirtyMinutesInSeconds)
   })
 
   test('no redis expiry is set if config.practice is true', async () => {
     const expectedPayload = {
       checkCode: '1111-2222-AAAA-4444',
-      pinExpiresAtUtc: moment.utc().add(1, 'hour'),  // valid
+      pinExpiresAtUtc: moment.utc().add(1, 'hour'), // valid
       pinValidFromUtc: moment.utc().subtract(1, 'hour'), // valid
       config: {
         practice: true
       }
     }
-
-    redisServiceMock.get = jest.fn(async (key: string) => {
-      return expectedPayload
-    })
-    let actualLookupKeyExpiryValue: number
-    redisServiceMock.setex = jest.fn(async (key: string, value: string | object, ttl: number) => {
-      actualLookupKeyExpiryValue = ttl
-    })
-    let actualPreparedCheckExpiryValue: number
-    redisServiceMock.expire = jest.fn(async (key: string, ttl: number) => {
-      actualPreparedCheckExpiryValue = ttl
-    })
+    jest.spyOn(redisServiceMock, 'get').mockResolvedValue(expectedPayload)
+    jest.spyOn(redisServiceMock, 'setex')
+    jest.spyOn(redisServiceMock, 'expire')
     const schoolPin = 'abc12def'
     const pupilPin = '5678'
     const buildNumber = '1-2-3'
@@ -232,22 +209,14 @@ describe('redis-pupil-auth.service', () => {
   test('no redis expiry is set if config.practice does not exist', async () => {
     const expectedPayload = {
       checkCode: '1111-2222-AAAA-4444',
-      pinExpiresAtUtc: moment.utc().add(1, 'hour'),  // valid
+      pinExpiresAtUtc: moment.utc().add(1, 'hour'), // valid
       pinValidFromUtc: moment.utc().subtract(1, 'hour'), // valid
       config: {}
     }
 
-    redisServiceMock.get = jest.fn(async (key: string) => {
-      return expectedPayload
-    })
-    let actualLookupKeyExpiryValue: number
-    redisServiceMock.setex = jest.fn(async (key: string, value: string | object, ttl: number) => {
-      actualLookupKeyExpiryValue = ttl
-    })
-    let actualPreparedCheckExpiryValue: number
-    redisServiceMock.expire = jest.fn(async (key: string, ttl: number) => {
-      actualPreparedCheckExpiryValue = ttl
-    })
+    jest.spyOn(redisServiceMock, 'get').mockResolvedValue(expectedPayload)
+    jest.spyOn(redisServiceMock, 'setex')
+    jest.spyOn(redisServiceMock, 'expire')
     const schoolPin = 'abc12def'
     const pupilPin = '5678'
     const buildNumber = '1-2-3'
@@ -258,24 +227,15 @@ describe('redis-pupil-auth.service', () => {
   test('no redis expiry is set if config.practice is undefined', async () => {
     const expectedPayload = {
       checkCode: '1111-2222-AAAA-4444',
-      pinExpiresAtUtc: moment.utc().add(1, 'hour'),  // valid
+      pinExpiresAtUtc: moment.utc().add(1, 'hour'), // valid
       pinValidFromUtc: moment.utc().subtract(1, 'hour'), // valid
       config: {
         practice: undefined
       }
     }
-
-    redisServiceMock.get = jest.fn(async (key: string) => {
-      return expectedPayload
-    })
-    let actualLookupKeyExpiryValue: number
-    redisServiceMock.setex = jest.fn(async (key: string, value: string | object, ttl: number) => {
-      actualLookupKeyExpiryValue = ttl
-    })
-    let actualPreparedCheckExpiryValue: number
-    redisServiceMock.expire = jest.fn(async (key: string, ttl: number) => {
-      actualPreparedCheckExpiryValue = ttl
-    })
+    jest.spyOn(redisServiceMock, 'get').mockResolvedValue(expectedPayload)
+    jest.spyOn(redisServiceMock, 'setex')
+    jest.spyOn(redisServiceMock, 'expire')
     const schoolPin = 'abc12def'
     const pupilPin = '5678'
     const buildNumber = '1-2-3'
@@ -286,16 +246,13 @@ describe('redis-pupil-auth.service', () => {
   test('pupil-login message should be dispatched upon successful authentication', async () => {
     const expectedPayload = {
       checkCode: 'check-code',
-      pinExpiresAtUtc: moment.utc().add(1, 'hour'),  // valid
+      pinExpiresAtUtc: moment.utc().add(1, 'hour'), // valid
       pinValidFromUtc: moment.utc().subtract(1, 'hour'), // valid
       config: {
         practice: true
       }
     }
-    redisServiceMock.get = jest.fn(async (key: string) => {
-      return expectedPayload
-    })
-
+    jest.spyOn(redisServiceMock, 'get').mockResolvedValue(expectedPayload)
     // Define `actualMessage` here as TS absolutely does not believe this message get assigned before test.
     let actualMessage: IPupilLoginMessage = {
       checkCode: '',
@@ -303,11 +260,9 @@ describe('redis-pupil-auth.service', () => {
       practice: true,
       version: -1
     }
-
-    messageDispatchMock.dispatch = jest.fn(async (message) => {
+    jest.spyOn(messageDispatchMock, 'dispatch').mockImplementation(async (message) => {
       actualMessage = message.body
     })
-
     const schoolPin = 'abc12def'
     const pupilPin = '5678'
     const buildNumber = '1-2-3'

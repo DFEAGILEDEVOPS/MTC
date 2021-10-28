@@ -1,12 +1,10 @@
-'use strict'
-
 import { Request, Response } from 'express'
 import * as path from 'path'
 import * as fs from 'fs'
 import * as moment from 'moment'
 
-class PingController {
-  async getPing (req: Request, res: Response) {
+export class PingController {
+  async getPing (req: Request, res: Response): Promise<Response<any, Record<string, any>>> {
     let buildNumber: object | string = 'NOT FOUND'
     let commitId: object | string = 'NOT FOUND'
     try {
@@ -57,5 +55,3 @@ class PingController {
     })
   }
 }
-
-export default new PingController()

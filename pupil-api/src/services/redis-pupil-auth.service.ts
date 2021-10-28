@@ -45,7 +45,7 @@ export class RedisPupilAuthenticationService implements IPupilAuthenticationServ
 
     const cacheKey = this.buildCacheKey(schoolPin, pupilPin)
     const preparedCheckEntry = await this.redisService.get(cacheKey)
-    if (!preparedCheckEntry) {
+    if (preparedCheckEntry === undefined) {
       return
     }
     const pinExpiresAtUtc = R.prop('pinExpiresAtUtc', preparedCheckEntry)

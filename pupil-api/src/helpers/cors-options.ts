@@ -1,5 +1,3 @@
-'use strict'
-
 import config from '../config'
 const whitelist = config.Cors.Whitelist.split(',')
 

@@ -15,7 +15,7 @@ export class AuthRouter {
     this.init()
   }
 
-  public init () {
+  public init (): any {
     this.router.route('/').all((req: Request, res: Response) => {
       if (req.method !== 'POST') return res.sendStatus(405)
       return this.authController.postAuth(req, res)

@@ -1,10 +1,11 @@
 import * as appInsights from 'applicationinsights'
 import PingController from '../controllers/ping.controller'
 import config from '../config'
+import * as parser from './parsing'
 
 const appInsightsHelper = {
   startInsightsIfConfigured: async () => {
-    if (process.env.APPINSIGHTS_INSTRUMENTATIONKEY) {
+    if (parser.propertyExists(process.env, 'APPINSIGHTS_INSTRUMENTATIONKEY')) {
       appInsights.setup()
         .setAutoDependencyCorrelation(true)
         .setAutoCollectRequests(true)

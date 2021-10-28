@@ -8,7 +8,7 @@ export class HeadRouter {
     this.init()
   }
 
-  public init () {
+  public init (): void {
     this.router.head('/', (req: Request, res: Response) => res.sendStatus(200))
   }
 }

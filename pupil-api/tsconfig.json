@@ -18,14 +18,16 @@
     "noUnusedLocals": true, /* Report errors on unused locals. */
     "noImplicitReturns": true, /* Report error when not all code paths in function return a value. */
     "noFallthroughCasesInSwitch": true, /* Report errors for fallthrough cases in switch statement. */
+    "resolveJsonModule": true /* allow json files to be imported */
   },
   "include": [
     "src/**/*.ts",
+    "src/**/*.json",
     ".env"
   ],
   "exclude": [
     "node_modules",
-    "src/**/*.spec.ts"
+    "dist"
   ],
   "typeRoots": [
     "./typings",

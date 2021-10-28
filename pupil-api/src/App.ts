@@ -1,5 +1,3 @@
-'use strict'
-
 import * as path from 'path'
 import * as fs from 'fs'
 import * as dotenv from 'dotenv'
@@ -16,6 +14,11 @@ import config from './config'
 import authRoutes from './routes/auth'
 import pingRoute from './routes/ping'
 import headRoute from './routes/head'
+import * as corsOptions from './helpers/cors-options'
+import { initLogger } from './helpers/logger'
+import * as swagger from 'swagger-ui-express'
+import swaggerConfig from './swagger.json'
+
 const globalDotEnvFile = path.join(__dirname, '..', '..', '.env')
 try {
   if (fs.existsSync(globalDotEnvFile)) {
@@ -27,8 +30,6 @@ try {
 } catch (error) {
   console.error(error)
 }
-const corsOptions = require('./helpers/cors-options')
-const setupLogging = require('./helpers/logger')
 
 // Creates and configures an ExpressJS web server.
 class App {
@@ -47,7 +48,7 @@ class App {
   private middleware (): void {
     /* Logging */
 
-    setupLogging(this.express)
+    initLogger(this.express)
 
     /* Security Directives */
 
@@ -57,8 +58,7 @@ class App {
     /* Swagger API documentation */
 
     if (process.env.NODE_ENV !== 'production') {
-      const swaggerUI = require('swagger-ui-express')
-      this.express.use('/api-docs', swaggerUI.serve, swaggerUI.setup(require('./swagger.json')))
+      this.express.use('/api-docs', swagger.serve, swagger.setup(swaggerConfig))
     }
 
     // Sets request header "Strict-Transport-Security: max-age=31536000; includeSubDomains".
@@ -95,7 +95,7 @@ class App {
     this.express.use('/auth', authRoutes)
     this.express.use(headRoute)
 
-    if (process.env.VERIFY_OWNER) {
+    if (process.env.VERIFY_OWNER !== undefined) {
       const token = process.env.VERIFY_OWNER
       this.express.get(`/${token}`, (req, res) => {
         res.contentType('text/plain')
@@ -120,9 +120,9 @@ class App {
       logger.error(`ERROR: ${err.message} ID: ${errorId}`, err)
 
       // return the error as an JSON object
-      err.message = err.message || 'An error occurred'
+      err.message = err.message ?? 'An error occurred'
       err.errorId = errorId
-      err.status = err.status || 500
+      err.status = err.status ?? 500
       if (req.app.get('env') === 'development') {
         res.status(err.status).json({ error: err.message, errorId: errorId })
       } else {

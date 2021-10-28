@@ -14,15 +14,15 @@ export class RedisAuthController implements IAuthController {
     this.redisAuthService = redisAuthService
   }
 
-  async postAuth (req: Request, res: Response) {
+  async postAuth (req: Request, res: Response): Promise<any> {
     const contentType = req.get('Content-Type')
-    if (!req.is('application/json')) {
-      logger.error('Bad Request: Content type is: ' + contentType)
+    if (req.is('application/json') === false) {
+      logger.error(`Bad Request: Content type is: ${contentType}`)
       return apiResponse.badRequest(res)
     }
 
     const { pupilPin, schoolPin, buildVersion } = req.body
-    if (!schoolPin || !pupilPin || !buildVersion) return apiResponse.unauthorised(res)
+    if (schoolPin === undefined || pupilPin === undefined || buildVersion === undefined) return apiResponse.unauthorised(res)
 
     try {
       const data = await this.redisAuthService.authenticate(schoolPin, pupilPin, buildVersion)
@@ -30,7 +30,7 @@ export class RedisAuthController implements IAuthController {
         return apiResponse.unauthorised(res)
       }
       return apiResponse.sendJson(res, data)
-    } catch (error) {
+    } catch (error: any) {
       logger.error('Failed to authenticate pupil: ', error)
       return apiResponse.unauthorised(res)
     }

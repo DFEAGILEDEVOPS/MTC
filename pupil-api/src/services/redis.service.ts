@@ -88,7 +88,7 @@ export class RedisService implements IRedisService {
         default:
           throw new Error(`unsupported cache item type:${cacheItem.meta.type}`)
       }
-    } catch (err) {
+    } catch (err: any) {
       this.logger.error(`REDIS (get): Error getting ${key}: ${err.message}`)
       throw err
     }
@@ -116,6 +116,7 @@ export class RedisService implements IRedisService {
         meta: {
           type: cacheItemDataType
         },
+        // eslint-disable-next-line @typescript-eslint/no-base-to-string
         value: value.toString()
       }
       const storageItemString = JSON.stringify(storageItem)
