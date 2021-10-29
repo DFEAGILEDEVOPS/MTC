@@ -14,7 +14,6 @@ import { HttpService } from '../http/http.service'
 import { APP_INITIALIZER } from '@angular/core'
 import { loadConfigMockService } from '../config/config.service'
 import { Meta } from '@angular/platform-browser'
-import { isExportDeclaration } from 'typescript'
 
 let userService: UserService
 let storageService: StorageService
