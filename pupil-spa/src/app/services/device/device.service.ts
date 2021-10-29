@@ -128,14 +128,14 @@ export class DeviceService {
 
   isLocalStorageEnabled(): boolean {
     try {
-      if (typeof localStorage === 'undefined') {
-        console.error('Local storage is not enabled XX.  Please enable it to proceed with the MTC check.')
+      if (!('localStorage' in this.window)) {
+        console.error('LS01: Local storage is not enabled.  Please enable it to proceed with the MTC check.')
         return false
       }
-      if (localStorage.setItem) { return false }
-      if (localStorage.getItem) { return false }
+      if (!('setItem' in this.window.localStorage)) { return false }
+      if (!('getItem' in this.window.localStorage)) { return false }
     } catch (error) {
-      console.error('Local storage is not enabled XX.  Please enable it to proceed with the MTC check.')
+      console.error('LS02: Local storage is not enabled.  Please enable it to proceed with the MTC check.')
       return false
     }
     const key = 'mtcLocalStorageTest'
@@ -143,20 +143,19 @@ export class DeviceService {
     try {
       this.window.localStorage.setItem(key, testVal)
     } catch (error) {
-      console.error('Local storage is not working.  Please enable it to proceed with the MTC check.')
+      console.error('LS03: Local storage is not working.  Please enable it to proceed with the MTC check.')
       return false
     }
     try {
       const readTestVal = this.window.localStorage.getItem(key)
       if (readTestVal === testVal) {
-        console.log('Local storage is working: ', testVal)
         return true
       }
     } catch (error) {
-      console.error('Local storage is not working.  Please enable it to proceed with the MTC check.')
+      console.error('LS04: Local storage is not working.  Please enable it to proceed with the MTC check.')
       return false
     }
-    console.error('Local storage is not reliable.  Please enable it to proceed with the MTC check.')
+    console.error('LS05: Local storage is not reliable.  Please enable it to proceed with the MTC check.')
     return false
   }
 

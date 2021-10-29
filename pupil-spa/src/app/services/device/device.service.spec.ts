@@ -15,7 +15,11 @@ describe('DeviceService', () => {
         navigator: {
           userAgent: ''
         },
-        screen: {}
+        screen: {},
+        localStorage: {
+          getItem: (item) => undefined,
+          setItem: (key, val) => undefined
+        }
       }
     }
     const injector = TestBed.configureTestingModule({
@@ -35,6 +39,7 @@ describe('DeviceService', () => {
       injector.inject(WindowRefService),
       cookieService
     )
+    spyOn(console, 'error').and.callThrough()
   })
 
   it('should be created', () => {
@@ -155,10 +160,55 @@ describe('DeviceService', () => {
     })
   })
 
-  xdescribe('isLocalStorageEnabled', () => {
+  describe('isLocalStorageEnabled', () => {
     it('returns false if the localStorage property is not on the Window', () => {
-      spyOn(windowRefService, 'getNativeWindow').and.returnValue({}) // window.localStorage is missing
-       expect(service.isLocalStorageEnabled()).toBe(false)
+      delete windowRefService.nativeWindow.localStorage
+      expect(service.isLocalStorageEnabled()).toBe(false)
+      expect(console.error).toHaveBeenCalledWith(jasmine.stringMatching('LS01:'))
+    })
+
+    it('returns false if the localStorage setItem property is not on the Window', () => {
+      delete windowRefService.nativeWindow.localStorage.setItem
+      expect(service.isLocalStorageEnabled()).toBe(false)
+    })
+
+    it('returns false if the localStorage getItem property is not on the Window', () => {
+      delete windowRefService.nativeWindow.localStorage.getItem
+      expect(service.isLocalStorageEnabled()).toBe(false)
+    })
+
+    it('returns false if a key cannot be set', () => {
+      spyOn(windowRefService.nativeWindow.localStorage, 'setItem').and.callFake(() => { throw new Error('mock error: local storage is' +
+        ' disabled' ) })
+      expect(service.isLocalStorageEnabled()).toBe(false)
+      expect(console.error).toHaveBeenCalledWith(jasmine.stringMatching('LS03:'))
+    })
+
+    it('returns false if a key cannot be read', () => {
+      spyOn(windowRefService.nativeWindow.localStorage, 'getItem').and.callFake(() => { throw new Error('mock error: local storage is' +
+        ' disabled' ) })
+      expect(service.isLocalStorageEnabled()).toBe(false)
+      expect(console.error).toHaveBeenCalledWith(jasmine.stringMatching('LS04:'))
+    })
+
+    it('returns false if local storage is unreliable', () => {
+      spyOn(windowRefService.nativeWindow.localStorage, 'getItem').and.returnValue('some wrong value')
+      expect(service.isLocalStorageEnabled()).toBe(false)
+      expect(console.error).toHaveBeenCalledWith(jasmine.stringMatching('LS05:'))
+    })
+
+    it('returns true if it can set and read a value correctly', () => {
+      let itemValue = ''
+      let itemKey = ''
+      spyOn(windowRefService.nativeWindow.localStorage, 'setItem').and.callFake((key, val) => {
+        itemValue = val
+        itemKey = key
+      })
+      spyOn(windowRefService.nativeWindow.localStorage, 'getItem').and.callFake(key => {
+        if (key === itemKey) { return itemValue }
+        return 'error'
+      })
+      expect(service.isLocalStorageEnabled()).toBe(true)
     })
   })
 })
