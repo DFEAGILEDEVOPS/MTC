@@ -38,10 +38,17 @@ describe('LoginComponent', () => {
   let httpClient: HttpClient
   let httpTestingController: HttpTestingController
   let windowRefService: WindowRefService
+  let mockDeviceService
 
   beforeEach(waitForAsync(() => {
     mockRouter = {
       navigate: jasmine.createSpy('navigate')
+    }
+
+    mockDeviceService = {
+      isLocalStorageEnabled: () => true,
+      isUnsupportedBrowser: () => false,
+      setupDeviceCookie: () => {}
     }
 
     mockUserService = {
@@ -59,7 +66,8 @@ describe('LoginComponent', () => {
       imports: [FormsModule, HttpClientTestingModule],
       schemas: [NO_ERRORS_SCHEMA], // we don't need to test sub-components
       providers: [
-        DeviceService,
+        { provide: DeviceService, useValue: mockDeviceService },
+        // DeviceService,
         LoginErrorDiagnosticsService,
         LoginErrorService,
         StorageService,
@@ -85,6 +93,7 @@ describe('LoginComponent', () => {
     httpTestingController = TestBed.inject(HttpTestingController)
     storageService = TestBed.inject(StorageService)
     windowRefService = injector.inject(WindowRefService)
+    mockDeviceService = TestBed.inject(DeviceService)
 
     spyOn(mockQuestionService, 'initialise')
     spyOn(mockWarmupQuestionService, 'initialise')
@@ -108,6 +117,14 @@ describe('LoginComponent', () => {
     expect(compiled.querySelector('#schoolPin')).toBeTruthy()
     expect(compiled.querySelector('#pupilPin')).toBeTruthy()
   })
+
+  it('redirects to the local-storage-error page if the local storage does not work', fakeAsync(() => {
+    spyOn(mockDeviceService, 'isLocalStorageEnabled').and.returnValue(false)
+    component.ngOnInit()
+    tick(2)
+    expect(component.isLocalStorageEnabled).toBe(false)
+    expect(mockRouter.navigate).toHaveBeenCalledOnceWith(['local-storage-error'])
+  }))
 
   describe('before login submission', () => {
     it('should set loginPending to false', async () => {

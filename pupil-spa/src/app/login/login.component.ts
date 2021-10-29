@@ -26,7 +26,8 @@ export class LoginComponent implements OnInit, AfterViewInit {
   public connectionFailed: boolean
   public loginPendingViewMinDisplay: number
   private errorMessage: string
-  public isUnsupportedBrowser
+  public isUnsupportedBrowser: boolean
+  public isLocalStorageEnabled: boolean
 
   constructor (
     private deviceService: DeviceService,
@@ -50,6 +51,10 @@ export class LoginComponent implements OnInit, AfterViewInit {
     const hasUnfinishedCheck = this.checkStatusService.hasUnfinishedCheck()
     if (hasUnfinishedCheck) {
       this.router.navigate(['check'], { queryParams: { unfinishedCheck: true } })
+    }
+    this.isLocalStorageEnabled = this.deviceService.isLocalStorageEnabled()
+    if (this.isLocalStorageEnabled === false) {
+      this.router.navigate(['local-storage-error'])
     }
     this.loginErrorService.currentErrorMessage.subscribe(message => this.errorMessage = message)
   }

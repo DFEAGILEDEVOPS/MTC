@@ -4,6 +4,7 @@ import { WindowRefService } from '../window-ref/window-ref.service'
 import { CookieService } from 'ngx-cookie-service'
 
 import { DeviceService } from './device.service'
+import { NO_ERRORS_SCHEMA } from '@angular/core'
 
 describe('DeviceService', () => {
   let service, storageService, windowRefService, cookieService: CookieService
@@ -18,6 +19,7 @@ describe('DeviceService', () => {
       }
     }
     const injector = TestBed.configureTestingModule({
+      schemas: [NO_ERRORS_SCHEMA], // we don't need to test sub-components
       providers: [
         DeviceService,
         StorageService,
@@ -150,6 +152,13 @@ describe('DeviceService', () => {
       spyOn(service['cookieService'], 'get').and.returnValue(undefined)
       const res = service.getDeviceId()
       expect(res).toBeNull()
+    })
+  })
+
+  xdescribe('isLocalStorageEnabled', () => {
+    it('returns false if the localStorage property is not on the Window', () => {
+      spyOn(windowRefService, 'getNativeWindow').and.returnValue({}) // window.localStorage is missing
+       expect(service.isLocalStorageEnabled()).toBe(false)
     })
   })
 })
