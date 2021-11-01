@@ -3,8 +3,7 @@ import * as moment from 'moment'
 import { PingService } from '../services/ping.service'
 
 export class PingController {
-
-  private pingService: PingService
+  private readonly pingService: PingService
 
   constructor () {
     this.pingService = new PingService()
