@@ -4,8 +4,8 @@ import { Router } from '@angular/router'
 
 @Component({
   selector: 'app-error-localstorage',
-  templateUrl: './error-localstorage.component.html',
-  styleUrls: ['./error-localstorage.component.scss']
+  templateUrl: './error-local-storage.component.html',
+  styleUrls: ['./error-local-storage.component.scss']
 })
 export class ErrorLocalStorageComponent implements OnInit {
 
