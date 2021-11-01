@@ -7,7 +7,7 @@ import { Router } from '@angular/router'
   templateUrl: './error-localstorage.component.html',
   styleUrls: ['./error-localstorage.component.scss']
 })
-export class ErrorLocalstorageComponent implements OnInit {
+export class ErrorLocalStorageComponent implements OnInit {
 
   constructor(private router: Router,
               private deviceService: DeviceService) {

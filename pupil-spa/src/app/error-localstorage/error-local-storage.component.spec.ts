@@ -1,12 +1,12 @@
 import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing'
 
-import { ErrorLocalstorageComponent } from './error-localstorage.component'
+import { ErrorLocalStorageComponent } from './error-local-storage.component'
 import { Router } from '@angular/router'
 import { DeviceService } from '../services/device/device.service'
 
-describe('ErrorLocalstorageComponent', () => {
-  let component: ErrorLocalstorageComponent
-  let fixture: ComponentFixture<ErrorLocalstorageComponent>
+describe('ErrorLocalStorageComponent', () => {
+  let component: ErrorLocalStorageComponent
+  let fixture: ComponentFixture<ErrorLocalStorageComponent>
   let mockRouter
   let mockDeviceService
 
@@ -18,7 +18,7 @@ describe('ErrorLocalstorageComponent', () => {
       isLocalStorageEnabled: () => false
     }
     await TestBed.configureTestingModule({
-      declarations: [ErrorLocalstorageComponent],
+      declarations: [ErrorLocalStorageComponent],
       providers: [
         { provide: Router, useValue: mockRouter },
         { provide: DeviceService, useValue: mockDeviceService }
@@ -28,7 +28,7 @@ describe('ErrorLocalstorageComponent', () => {
   })
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ErrorLocalstorageComponent)
+    fixture = TestBed.createComponent(ErrorLocalStorageComponent)
     component = fixture.componentInstance
     fixture.detectChanges()
 
