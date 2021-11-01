@@ -258,7 +258,8 @@ describe('redis-pupil-auth.service', () => {
       checkCode: '',
       loginAt: new Date(1970),
       practice: true,
-      version: -1
+      version: -1,
+      clientBuildVersion: '1.2'
     }
     jest.spyOn(messageDispatchMock, 'dispatch').mockImplementation(async (message) => {
       actualMessage = message.body

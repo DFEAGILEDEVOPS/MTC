@@ -13,6 +13,7 @@ export interface IPupilLoginMessage {
   loginAt: Date
   practice: boolean
   version: number
+  clientBuildVersion: string
 }
 
 export class RedisPupilAuthenticationService implements IPupilAuthenticationService {
@@ -63,7 +64,8 @@ export class RedisPupilAuthenticationService implements IPupilAuthenticationServ
       checkCode: preparedCheckEntry.checkCode.toLowerCase(),
       loginAt: new Date(),
       version: 1,
-      practice: preparedCheckEntry.config.practice
+      practice: preparedCheckEntry.config.practice,
+      clientBuildVersion: buildVersion
     }
     await this.queueService.dispatch({
       body: pupilLoginMessage
