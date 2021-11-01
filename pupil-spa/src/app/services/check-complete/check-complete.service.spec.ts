@@ -9,6 +9,7 @@ import { StorageService } from '../storage/storage.service';
 import { TestBed } from '@angular/core/testing';
 import { TokenService } from '../token/token.service';
 import { AppUsageService } from '../app-usage/app-usage.service';
+import { Meta } from '@angular/platform-browser'
 
 let auditService: AuditService;
 let azureQueueService: AzureQueueService;
@@ -16,6 +17,11 @@ let checkCompleteService: CheckCompleteService;
 let storageService: StorageService;
 let tokenService: TokenService;
 let appUsageService: AppUsageService;
+let metaServiceSpy: {
+  getTag: jasmine.Spy
+};
+
+const buildVersion = 'buildVersion'
 
 describe('CheckCompleteService', () => {
   let mockRouter;
@@ -24,6 +30,9 @@ describe('CheckCompleteService', () => {
     mockRouter = {
       navigate: jasmine.createSpy('navigate')
     };
+
+    metaServiceSpy = jasmine.createSpyObj('MetaService', ['getTag']);
+    metaServiceSpy.getTag.and.returnValue(buildVersion);
 
     const inject = TestBed.configureTestingModule({
         providers: [
@@ -36,7 +45,8 @@ describe('CheckCompleteService', () => {
           AppUsageService,
           { provide: APP_INITIALIZER, useFactory: loadConfigMockService, multi: true },
           { provide: QUEUE_STORAGE_TOKEN, useValue: undefined },
-          { provide: Router, useValue: mockRouter }
+          { provide: Router, useValue: mockRouter },
+          { provide: Meta, useValue: metaServiceSpy }
         ]
       }
     );
@@ -213,6 +223,9 @@ describe('CheckCompleteService', () => {
   });
 
   describe('getPayload', () => {
+    beforeEach(() => {
+
+    })
     it('stores all items in the corresponding key based category based on timestamp order', () => {
       const localStorageItems = {
         'audit-1': { value: 'value1', clientTimestamp: Date.now() + 500 },
@@ -235,8 +248,9 @@ describe('CheckCompleteService', () => {
       expect(payload['audit']).toEqual(keyEntries);
       expect(payload['checkCode']).toEqual('checkCode');
       expect(payload['schoolUUID']).toEqual('schoolUUID');
+      expect(payload['buildVersion']).toEqual(buildVersion);
       expect(Object.keys(payload))
-        .toEqual(['checkCode', 'schoolUUID', 'config', 'device', 'pupil',
+        .toEqual(['checkCode', 'schoolUUID', 'buildVersion', 'config', 'device', 'pupil',
           'questions', 'school', 'tokens', 'audit', 'inputs', 'answers']);
     });
   });
