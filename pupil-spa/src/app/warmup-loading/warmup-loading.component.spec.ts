@@ -18,8 +18,8 @@ describe('WarmupLoadingComponent', () => {
       declarations: [ WarmupLoadingComponent ],
       providers: [
         { provide: AuditService, useClass: AuditServiceMock },
-        { provide: SpeechService, useClass: SpeechServiceMock },
         { provide: QuestionService, useClass: QuestionServiceMock },
+        { provide: SpeechService, useClass: SpeechServiceMock },
       ]
     })
     .compileComponents();
