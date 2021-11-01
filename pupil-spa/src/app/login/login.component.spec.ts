@@ -67,7 +67,6 @@ describe('LoginComponent', () => {
       schemas: [NO_ERRORS_SCHEMA], // we don't need to test sub-components
       providers: [
         { provide: DeviceService, useValue: mockDeviceService },
-        // DeviceService,
         LoginErrorDiagnosticsService,
         LoginErrorService,
         StorageService,
