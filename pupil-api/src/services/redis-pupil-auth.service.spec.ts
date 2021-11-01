@@ -96,8 +96,31 @@ describe('redis-pupil-auth.service', () => {
     expect(redisServiceMock.get).not.toHaveBeenCalled()
   })
 
-  test.todo('an error should be thrown if buildVersion is not provided')
-  test.todo('an error should be thrown if buildVersion is an empty string')
+  test('an error should be thrown if buildVersion is an empty string', async () => {
+    const schoolPin = 'abc'
+    const pupilPin = '1234'
+    const buildNumber = ''
+    try {
+      await sut.authenticate(schoolPin, pupilPin, buildNumber)
+      fail('expected error to be thrown')
+    } catch (error) {
+      expect(error.message).toBe('buildVersion is required')
+    }
+    expect(redisServiceMock.get).not.toHaveBeenCalled()
+  })
+
+  test('an error should be thrown if buildVersion is not provided', async () => {
+    const schoolPin = 'abc'
+    const pupilPin = '1234'
+    const buildNumber = undefined
+    try {
+      await sut.authenticate(schoolPin, pupilPin, buildNumber)
+      fail('expected error to be thrown')
+    } catch (error) {
+      expect(error.message).toBe('buildVersion is required')
+    }
+    expect(redisServiceMock.get).not.toHaveBeenCalled()
+  })
 
   test('the check payload should be returned if item found in cache and the pin is valid', async () => {
     const pinValidFromUtc = moment().startOf('day')
@@ -259,7 +282,8 @@ describe('redis-pupil-auth.service', () => {
       loginAt: new Date(1970),
       practice: true,
       version: -1,
-      clientBuildVersion: '1.2'
+      clientBuildVersion: '1.2',
+      apiBuildVersion: '1.2'
     }
     jest.spyOn(messageDispatchMock, 'dispatch').mockImplementation(async (message) => {
       actualMessage = message.body

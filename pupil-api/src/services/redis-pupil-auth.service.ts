@@ -3,6 +3,7 @@ import * as moment from 'moment'
 import { IRedisService, RedisService } from './redis.service'
 import config from '../config'
 import { IQueueMessageService, SbQueueMessageService } from './queue-message.service'
+import { PingService } from './ping.service'
 
 export interface IPupilAuthenticationService {
   authenticate (schoolPin?: string, pupilPin?: string, buildVersion?: string): Promise<object | undefined>
@@ -14,11 +15,13 @@ export interface IPupilLoginMessage {
   practice: boolean
   version: number
   clientBuildVersion: string
+  apiBuildVersion: string
 }
 
 export class RedisPupilAuthenticationService implements IPupilAuthenticationService {
   private readonly redisService: IRedisService
   private readonly queueService: IQueueMessageService
+  private readonly pingService: PingService
 
   constructor (redisService?: IRedisService, queueService?: IQueueMessageService) {
     if (redisService === undefined) {
@@ -29,6 +32,7 @@ export class RedisPupilAuthenticationService implements IPupilAuthenticationServ
       queueService = new SbQueueMessageService()
     }
     this.queueService = queueService
+    this.pingService = new PingService()
   }
 
   async authenticate (schoolPin?: string, pupilPin?: string, buildVersion?: string): Promise<object | undefined> {
@@ -41,7 +45,7 @@ export class RedisPupilAuthenticationService implements IPupilAuthenticationServ
     }
 
     if (buildVersion === undefined || buildVersion.length === 0) {
-      throw new Error('buildNumber is required')
+      throw new Error('buildVersion is required')
     }
 
     const cacheKey = this.buildCacheKey(schoolPin, pupilPin)
@@ -65,7 +69,8 @@ export class RedisPupilAuthenticationService implements IPupilAuthenticationServ
       loginAt: new Date(),
       version: 1,
       practice: preparedCheckEntry.config.practice,
-      clientBuildVersion: buildVersion
+      clientBuildVersion: buildVersion,
+      apiBuildVersion: await this.pingService.getBuildNumber()
     }
     await this.queueService.dispatch({
       body: pupilLoginMessage
