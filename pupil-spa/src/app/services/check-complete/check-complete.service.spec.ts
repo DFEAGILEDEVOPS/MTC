@@ -17,11 +17,7 @@ let checkCompleteService: CheckCompleteService;
 let storageService: StorageService;
 let tokenService: TokenService;
 let appUsageService: AppUsageService;
-let metaServiceSpy: {
-  getTag: jasmine.Spy
-};
-
-const buildVersion = 'buildVersion'
+let metaService: Meta
 
 describe('CheckCompleteService', () => {
   let mockRouter;
@@ -31,10 +27,7 @@ describe('CheckCompleteService', () => {
       navigate: jasmine.createSpy('navigate')
     };
 
-    metaServiceSpy = jasmine.createSpyObj('MetaService', ['getTag']);
-    metaServiceSpy.getTag.and.returnValue(buildVersion);
-
-    const inject = TestBed.configureTestingModule({
+    const testBed = TestBed.configureTestingModule({
         providers: [
           AppConfigService,
           AuditService,
@@ -43,18 +36,19 @@ describe('CheckCompleteService', () => {
           StorageService,
           TokenService,
           AppUsageService,
+          Meta,
           { provide: APP_INITIALIZER, useFactory: loadConfigMockService, multi: true },
           { provide: QUEUE_STORAGE_TOKEN, useValue: undefined },
-          { provide: Router, useValue: mockRouter },
-          { provide: Meta, useValue: metaServiceSpy }
+          { provide: Router, useValue: mockRouter }
         ]
       }
     );
-    checkCompleteService = inject.inject(CheckCompleteService);
+    metaService = testBed.inject(Meta);
+    checkCompleteService = testBed.inject(CheckCompleteService);
     appUsageService = TestBed.inject(AppUsageService);
-    tokenService = inject.inject(TokenService);
-    azureQueueService = inject.inject(AzureQueueService);
-    auditService = inject.inject(AuditService);
+    tokenService = testBed.inject(TokenService);
+    azureQueueService = testBed.inject(AzureQueueService);
+    auditService = testBed.inject(AuditService);
     storageService = TestBed.inject(StorageService);
     checkCompleteService.checkSubmissionApiErrorDelay = 100;
     checkCompleteService.checkSubmissionAPIErrorMaxAttempts = 1;
@@ -223,8 +217,12 @@ describe('CheckCompleteService', () => {
   });
 
   describe('getPayload', () => {
+    const buildVersion = 'buildVersion'
     beforeEach(() => {
-
+      metaService.addTag({
+        name: 'build:number',
+        content: buildVersion
+      })
     })
     it('stores all items in the corresponding key based category based on timestamp order', () => {
       const localStorageItems = {
