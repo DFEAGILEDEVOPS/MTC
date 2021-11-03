@@ -34,7 +34,9 @@ const blobTrigger: AzureFunction = async function (context: Context, blob: any):
     if (pool?.connected === true) {
       await pool.close()
     }
-    context.log.error(`census-import: ERROR: ${error.message}`)
+    if (error instanceof Error) {
+      context.log.error(`census-import: ERROR: ${error.message}`)
+    }
     throw error
   }
   const end = performance.now()
