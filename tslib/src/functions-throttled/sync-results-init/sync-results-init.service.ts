@@ -15,7 +15,6 @@ import { CompressionService, ICompressionService } from '../../common/compressio
 import config from '../../config'
 import { SyncResultsInitDataService, ISyncResultsInitDataService } from './sync-results-init-data.service'
 import { AzureTableEntity, ITableService, TableService } from '../../azure/table-service'
-import { TableEntity } from '@azure/data-tables'
 
 const functionName = 'sync-results-init: SyncResultsInitService'
 
@@ -48,7 +47,7 @@ export class SyncResultsInitService {
     this.compressionService = compressionService ?? new CompressionService()
   }
 
-  private async getReceivedCheck (check: UnsynchronisedCheck): Promise<TableEntity> {
+  private async getReceivedCheck (check: UnsynchronisedCheck): Promise<AzureTableEntity> {
     const partitionKey = check.schoolUUID?.toLowerCase()
     const rowKey = check.checkCode?.toLowerCase()
     return this.tableService.getEntity(this.receivedCheckTableName, partitionKey, rowKey)
