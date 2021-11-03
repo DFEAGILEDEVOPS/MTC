@@ -2,7 +2,7 @@ import { TableClient, TableEntity } from '@azure/data-tables'
 import config from '../config'
 
 export interface ITableService {
-  getEntity (tableName: string, partitionKey: string, rowKey: string): Promise<TableEntity<object>>
+  getEntity<T extends AzureTableEntity> (tableName: string, partitionKey: string, rowKey: string): Promise<TableEntity<T>>
   replaceEntity (tableName: string, entity: TableEntity<object>): Promise<void>
   createEntity (tableName: string, entity: TableEntity<object>): Promise<void>
   mergeUpdateEntity (tableName: string, entity: TableEntity<object>): Promise<void>
@@ -23,7 +23,7 @@ export class TableService implements ITableService {
   }
 
   async getEntity<T extends AzureTableEntity> (tableName: string, partitionKey: string, rowKey: string): Promise<T> {
-    return this.getClient(tableName).getEntity(partitionKey, rowKey)
+    return this.getClient(tableName).getEntity<T>(partitionKey, rowKey)
   }
 
   async replaceEntity (tableName: string, entity: TableEntity<object>): Promise<void> {
