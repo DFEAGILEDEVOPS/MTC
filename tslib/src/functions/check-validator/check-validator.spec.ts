@@ -66,8 +66,7 @@ describe('check-validator', () => {
       await sut.validate(functionBindings, validateReceivedCheckQueueMessage, loggerMock)
       fail('error should have been thrown due to empty receivedCheckData')
     } catch (error: any) {
-      expect(error.message)
-        .toBe(`check-validator: unable to find receivedCheck with partitionKey:${validateReceivedCheckQueueMessage.schoolUUID} rowKey:${validateReceivedCheckQueueMessage.checkCode}`)
+      expect(error.message).toBe('check-validator: received check reference is empty')
     }
   })
 
@@ -77,10 +76,6 @@ describe('check-validator', () => {
     jest.spyOn(tableServiceMock, 'mergeUpdateEntity').mockImplementation(async (table: string, entity: TableEntity<object>) => {
       actualTableName = table
       actualEntity = entity
-    })
-    jest.spyOn(tableServiceMock, 'getEntity').mockResolvedValue({
-      partitionKey: 'x',
-      rowKey: 'y'
     })
     const functionBindings: ICheckValidatorFunctionBindings = {
       receivedCheckTable: [{}],
@@ -103,11 +98,10 @@ describe('check-validator', () => {
       checkVersion: 1
     }
     const functionBindings: ICheckValidatorFunctionBindings = {
-      receivedCheckTable: [],
+      receivedCheckTable: [receivedCheckEntity],
       checkMarkingQueue: [],
       checkNotificationQueue: []
     }
-    jest.spyOn(tableServiceMock, 'getEntity').mockResolvedValue(receivedCheckEntity)
     await sut.validate(functionBindings, validateReceivedCheckQueueMessage, loggerMock)
     expect(compressionServiceMock.decompress).toHaveBeenCalledWith('foo')
   })
@@ -131,9 +125,8 @@ describe('check-validator', () => {
         foo: 'bar'
       })
     })
-    jest.spyOn(tableServiceMock, 'getEntity').mockResolvedValue(receivedCheckEntity)
     const functionBindings: ICheckValidatorFunctionBindings = {
-      receivedCheckTable: [],
+      receivedCheckTable: [receivedCheckEntity],
       checkMarkingQueue: [],
       checkNotificationQueue: []
     }
@@ -159,9 +152,8 @@ describe('check-validator', () => {
         foo: 'bar'
       })
     })
-    jest.spyOn(tableServiceMock, 'getEntity').mockResolvedValue(receivedCheckEntity)
     const functionBindings: ICheckValidatorFunctionBindings = {
-      receivedCheckTable: [],
+      receivedCheckTable: [receivedCheckEntity],
       checkMarkingQueue: [],
       checkNotificationQueue: []
     }
@@ -191,9 +183,8 @@ describe('check-validator', () => {
     jest.spyOn(compressionServiceMock, 'decompress').mockImplementation(() => {
       return JSON.stringify(getValidatedCheck())
     })
-    jest.spyOn(tableServiceMock, 'getEntity').mockResolvedValue(receivedCheckEntity)
     const functionBindings: ICheckValidatorFunctionBindings = {
-      receivedCheckTable: [],
+      receivedCheckTable: [receivedCheckEntity],
       checkMarkingQueue: [],
       checkNotificationQueue: []
     }
@@ -217,13 +208,12 @@ describe('check-validator', () => {
       actualTableName = table
       actualEntity = entity
     })
-    jest.spyOn(tableServiceMock, 'getEntity').mockResolvedValue(receivedCheckEntity)
     const validCheck = getValidatedCheck()
     jest.spyOn(compressionServiceMock, 'decompress').mockImplementation(() => {
       return JSON.stringify(validCheck)
     })
     const functionBindings: ICheckValidatorFunctionBindings = {
-      receivedCheckTable: [],
+      receivedCheckTable: [receivedCheckEntity],
       checkMarkingQueue: [],
       checkNotificationQueue: []
     }
@@ -244,9 +234,8 @@ describe('check-validator', () => {
     jest.spyOn(compressionServiceMock, 'decompress').mockImplementation(() => {
       return JSON.stringify(getValidatedCheck())
     })
-    jest.spyOn(tableServiceMock, 'getEntity').mockResolvedValue(receivedCheckEntity)
     const functionBindings: ICheckValidatorFunctionBindings = {
-      receivedCheckTable: [],
+      receivedCheckTable: [receivedCheckEntity],
       checkMarkingQueue: [],
       checkNotificationQueue: []
     }

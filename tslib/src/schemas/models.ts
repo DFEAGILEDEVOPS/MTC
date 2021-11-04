@@ -20,29 +20,37 @@ export interface MarkCheckMessageV1 {
 export interface ReceivedCheckTableEntity {
   partitionKey: string // schoolUUID
   rowKey: string // checkCode
-  answers?: string
   archive?: string
+  answers?: string
   checkReceivedAt: Date
   checkVersion: number
   isValid?: boolean
   mark?: number
-  markError?: string
   markedAt?: Date
+  markError?: string
   maxMarks?: number
   processingError?: string
   validatedAt?: Date
 }
 
 /**
- * When a table entity is retrieved
+ * When a table entity is retrieved using function bindings, the partition key and row key are capitalised.
+ * When we retrieve via @azure/data-tables package, they use camel case.
  */
 export interface ReceivedCheckFunctionBindingEntity {
-  archive: string
-  checkReceivedAt: Date
-  checkVersion: number
-  processingError?: string
   PartitionKey: string
   RowKey: string
+  archive?: string
+  answers?: string
+  checkReceivedAt: Date
+  checkVersion: number
+  isValid?: boolean
+  mark?: number
+  markedAt?: Date
+  markError?: string
+  maxMarks?: number
+  processingError?: string
+  validatedAt?: Date
 }
 
 // markedAt is actually a string inside the Azure Storage table
