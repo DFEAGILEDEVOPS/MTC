@@ -1,4 +1,4 @@
-import { ReceivedCheckTableEntity, ValidateCheckMessageV1, MarkCheckMessageV1 } from '../../schemas/models'
+import { ValidateCheckMessageV1, MarkCheckMessageV1, ReceivedCheckFunctionBindingEntity } from '../../schemas/models'
 import { ILogger } from '../../common/logger'
 import * as RA from 'ramda-adjunct'
 import Moment from 'moment'
@@ -7,6 +7,7 @@ import { ICheckNotificationMessage, CheckNotificationType } from '../../schemas/
 import { ICheckValidationError } from './validators/validator-types'
 import { ValidatorProvider } from './validators/validator.provider'
 import { ITableService, TableService } from '../../azure/table-service'
+import { ReceivedCheckBindingEntityTransformer } from '../../services/receivedCheckBindingEntityTransformer'
 
 const functionName = 'check-validator'
 const tableStorageTableName = 'receivedCheck'
@@ -21,6 +22,7 @@ export class CheckValidator {
   private readonly tableService: ITableService
   private readonly compressionService: ICompressionService
   private readonly validatorProvider: ValidatorProvider
+  private readonly receivedCheckTransformer: ReceivedCheckBindingEntityTransformer
 
   constructor (tableService?: ITableService, compressionService?: ICompressionService) {
     if (tableService !== undefined) {
@@ -35,6 +37,7 @@ export class CheckValidator {
       this.compressionService = new CompressionService()
     }
     this.validatorProvider = new ValidatorProvider()
+    this.receivedCheckTransformer = new ReceivedCheckBindingEntityTransformer()
   }
 
   async validate (functionBindings: ICheckValidatorFunctionBindings, validateCheckMessage: ValidateCheckMessageV1, logger: ILogger): Promise<void> {
@@ -43,7 +46,9 @@ export class CheckValidator {
     const receivedCheck = this.findReceivedCheck(functionBindings.receivedCheckTable)
     let checkData
     try {
-      this.detectArchive(receivedCheck)
+      if (receivedCheck.archive === undefined) {
+        throw new Error(`${functionName}: message is missing [archive] property`)
+      }
       const decompressedString = this.compressionService.decompress(receivedCheck.archive)
       checkData = JSON.parse(decompressedString)
       this.validateCheckStructure(checkData)
@@ -71,31 +76,27 @@ export class CheckValidator {
     functionBindings.checkMarkingQueue = [markingMessage]
   }
 
-  private async setReceivedCheckAsValid (receivedCheckTableEntity: ReceivedCheckTableEntity, checkData: any): Promise<void> {
-    receivedCheckTableEntity.validatedAt = Moment().toDate()
-    receivedCheckTableEntity.isValid = true
-    receivedCheckTableEntity.answers = JSON.stringify(checkData.answers)
-    await this.tableService.mergeUpdateEntity(tableStorageTableName, receivedCheckTableEntity)
+  private async setReceivedCheckAsValid (receivedCheckEntity: ReceivedCheckFunctionBindingEntity, checkData: any): Promise<void> {
+    const transformedEntity = this.receivedCheckTransformer.transform(receivedCheckEntity)
+    transformedEntity.validatedAt = Moment().toDate()
+    transformedEntity.isValid = true
+    transformedEntity.answers = JSON.stringify(checkData.answers)
+    await this.tableService.mergeUpdateEntity(tableStorageTableName, transformedEntity)
   }
 
-  private async setReceivedCheckAsInvalid (errorMessage: string, receivedCheckTableEntity: ReceivedCheckTableEntity): Promise<void> {
-    receivedCheckTableEntity.processingError = errorMessage
-    receivedCheckTableEntity.validatedAt = Moment().toDate()
-    receivedCheckTableEntity.isValid = false
-    await this.tableService.mergeUpdateEntity(tableStorageTableName, receivedCheckTableEntity)
+  private async setReceivedCheckAsInvalid (errorMessage: string, receivedCheckEntity: ReceivedCheckFunctionBindingEntity): Promise<void> {
+    const transformedEntity = this.receivedCheckTransformer.transform(receivedCheckEntity)
+    transformedEntity.processingError = errorMessage
+    transformedEntity.validatedAt = Moment().toDate()
+    transformedEntity.isValid = false
+    await this.tableService.mergeUpdateEntity(tableStorageTableName, transformedEntity)
   }
 
-  private findReceivedCheck (receivedCheckRef: any[]): any {
+  private findReceivedCheck (receivedCheckRef: any[]): ReceivedCheckFunctionBindingEntity {
     if (RA.isEmptyArray(receivedCheckRef)) {
       throw new Error(`${functionName}: received check reference is empty`)
     }
     return receivedCheckRef[0]
-  }
-
-  private detectArchive (message: Record<string, unknown>): void {
-    if (!('archive' in message)) {
-      throw new Error(`${functionName}: message is missing [archive] property`)
-    }
   }
 
   private validateCheckStructure (submittedCheck: any): void {
