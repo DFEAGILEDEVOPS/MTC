@@ -7,7 +7,7 @@
     "node": ">= 10.14.1"
   },
   "scripts": {
-    "build": "yarn sync && yarn run gulp && func extensions install",
+    "build": "yarn sync && yarn run gulp",
     "prod:clean": "rm -rf ./node_modules && yarn install --frozen-lockfile --production",
     "rebuild": "yarn clean && yarn build",
     "sync": "node ./sync-tslib-deps.js && yarn install",
