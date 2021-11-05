@@ -134,7 +134,7 @@ const postAddMultiplePupils = async function postAddMultiplePupils (req, res, ne
     if (fileErrors.hasError()) {
       res.hasError = true
       res.fileErrors = fileErrors
-      return this.getAddMultiplePupils(req, res, next)
+      return getAddMultiplePupils(req, res, next)
     }
   } catch (error) {
     return next(error)
@@ -153,7 +153,7 @@ const postAddMultiplePupils = async function postAddMultiplePupils (req, res, ne
     req.session.csvErrorFile = uploadResult.csvErrorFile
     res.hasError = uploadResult.hasValidationError
     res.fileErrors = uploadResult.fileErrors
-    return this.getAddMultiplePupils(req, res, next)
+    return getAddMultiplePupils(req, res, next)
   } else {
     req.flash('info', `${uploadResult.pupilIds && uploadResult.pupilIds.length} new pupils have been added`)
     const savedPupils = await pupilService.fetchMultipleByIds(uploadResult.pupilIds, req.user.schoolId)

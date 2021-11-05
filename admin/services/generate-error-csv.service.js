@@ -9,16 +9,16 @@ service.generate = async (school, headers, csvData) => {
   headers.push('Errors')
   errorsCsv.push(headers)
   csvData.forEach((p) => errorsCsv.push(p))
-  const csvStr = await csv.writeToString(errorsCsv, { headers: true })
   // Upload csv to Azure
-  let file
+  let remoteFilename
   try {
-    const remoteFilename = `${school.id}_${uuidv4()}_${moment().format('YYYYMMDDHHmmss')}_error.csv`
-    file = await azureBlobDataService.uploadLocalFile('csvuploads', remoteFilename, csvStr)
+    const csvStr = await csv.writeToString(errorsCsv, { headers: true })
+    remoteFilename = `${school.id}_${uuidv4()}_${moment().format('YYYYMMDDHHmmss')}_error.csv`
+    await azureBlobDataService.uploadData('csvuploads', remoteFilename, Buffer.from(csvStr))
   } catch (error) {
     return { hasError: true, error }
   }
-  return { file }
+  return { remoteFilename, hasError: false }
 }
 
 module.exports = service
