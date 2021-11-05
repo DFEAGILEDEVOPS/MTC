@@ -7,7 +7,7 @@ const azureBlobDataService = require('../../../services/data-access/azure-blob.d
 describe('generate-error-csv.service', () => {
   describe('generate', () => {
     beforeEach(() => {
-      jest.spyOn(azureBlobDataService, 'uploadData')
+      jest.spyOn(azureBlobDataService, 'uploadData').mockImplementation()
     })
 
     test('returns a file object with a name attribute if the request was valid', async () => {
