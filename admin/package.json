@@ -23,13 +23,13 @@
     "test:watch": "yarn jest --watch --coverage=no",
     "test:nocoverage": "yarn lint && yarn jest --coverage=no",
     "test:integration": "yarn jest --config ./tests-integration/jest.integration.config.js",
-    "test:frontend": "yarn run gulp bundleAppJsForCodeCoverage && karma start karma.conf.js",
+    "test:frontend": "karma start karma.conf.js",
     "test:all": "yarn clean && yarn test && yarn test:integration && yarn test:frontend && yarn build",
     "watch": "yarn test:watch",
     "watch:integration": "yarn jest --watch --coverage=no --config ./tests-integration/jest.integration.config.js"
   },
   "mtc": {
-    "assets-version": "e8508d392d8b56d52e299fcfd7ead56d"
+    "assets-version": "e93c2fae4e22b00c9e51494b9880f452"
   },
   "engines": {
     "node": ">= 12"
@@ -115,9 +115,7 @@
     "jest": "^27.0.6",
     "karma": "^6.3.4",
     "karma-chrome-launcher": "^3.1.0",
-    "karma-coverage": "^2.0.3",
     "karma-jasmine": "^4.0.1",
-    "karma-remap-istanbul": "^0.6.0",
     "node-mocks-http": "^1.6.6",
     "nodemon": "^2.0.12",
     "proxyquire": "^2.1.0",
@@ -128,7 +126,7 @@
   },
   "standard": {
     "ignore": [
-      "assets/vendor-js/jquery-3.5.1.js"
+      "assets/javascripts/jquery-3.5.1.js"
     ]
   },
   "jest": {
