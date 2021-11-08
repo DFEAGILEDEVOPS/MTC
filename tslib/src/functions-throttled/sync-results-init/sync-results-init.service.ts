@@ -66,10 +66,10 @@ export class SyncResultsInitService {
     }
   }
 
-  private tranformReceivedCheckToValidatedCheck (check: UnsynchronisedCheck, receivedCheck: AzureTableEntity): ValidatedCheck {
-    const archive = R.pathOr('', ['archive', '_'], receivedCheck)
+  private transformReceivedCheckToValidatedCheck (check: UnsynchronisedCheck, receivedCheck: AzureTableEntity): ValidatedCheck {
+    const archive = R.pathOr('', ['archive'], receivedCheck)
     if (archive.length === 0) {
-      throw new Error('Archive not found')
+      throw new Error(`archive property not found.  checkCode:${check.checkCode}`)
     }
     const validatedCheck = this.expandArchive(check, archive)
     return validatedCheck
@@ -82,15 +82,15 @@ export class SyncResultsInitService {
   private transformMarkedCheckEntityToMarkedCheck (check: UnsynchronisedCheck, markedCheckEntity: MarkedCheckTableEntity): MarkedCheck {
     let markedAnswers
     try {
-      const markedAnswersString = R.pathOr('', ['markedAnswers', '_'], markedCheckEntity)
+      const markedAnswersString = R.pathOr('', ['markedAnswers'], markedCheckEntity)
       markedAnswers = JSON.parse(markedAnswersString)
     } catch (error) {
       throw new Error(`Failed to parse JSON in transformMarkedCheckEntityToMarkedCheck(): Error: ${error.message}`)
     }
-    const checkCode: null | string = R.pathOr(null, ['RowKey', '_'], markedCheckEntity)
-    const mark: null | number = R.pathOr(null, ['mark', '_'], markedCheckEntity)
-    const maxMarks: null | number = R.pathOr(null, ['maxMarks', '_'], markedCheckEntity)
-    const markedAt: null | string = R.pathOr(null, ['markedAt', '_'], markedCheckEntity)
+    const checkCode: null | string = R.pathOr(null, ['RowKey'], markedCheckEntity)
+    const mark: null | number = R.pathOr(null, ['mark'], markedCheckEntity)
+    const maxMarks: null | number = R.pathOr(null, ['maxMarks'], markedCheckEntity)
+    const markedAt: null | string = R.pathOr(null, ['markedAt'], markedCheckEntity)
 
     if (checkCode === null) throw new Error('Missing checkCode field in markedCheckEntity')
     if (mark === null) throw new Error('Missing mark field in markedCheckEntity')
@@ -127,7 +127,7 @@ export class SyncResultsInitService {
     const receivedCheckPromise = this.getReceivedCheck(check)
     const markedCheckPromise = this.getMarkedCheck(check)
     const [receivedCheckEntity, markedCheckEntity] = await Promise.all([receivedCheckPromise, markedCheckPromise])
-    const validatedCheck = this.tranformReceivedCheckToValidatedCheck(check, receivedCheckEntity)
+    const validatedCheck = this.transformReceivedCheckToValidatedCheck(check, receivedCheckEntity)
     const markedCheck = this.transformMarkedCheckEntityToMarkedCheck(check, markedCheckEntity)
 
     const msg = {
