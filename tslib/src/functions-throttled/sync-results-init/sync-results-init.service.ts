@@ -87,7 +87,7 @@ export class SyncResultsInitService {
     } catch (error) {
       throw new Error(`Failed to parse JSON in transformMarkedCheckEntityToMarkedCheck(): Error: ${error.message}`)
     }
-    const checkCode: null | string = R.pathOr(null, ['RowKey'], markedCheckEntity)
+    const checkCode: null | string = R.pathOr(null, ['rowKey'], markedCheckEntity)
     const mark: null | number = R.pathOr(null, ['mark'], markedCheckEntity)
     const maxMarks: null | number = R.pathOr(null, ['maxMarks'], markedCheckEntity)
     const markedAt: null | string = R.pathOr(null, ['markedAt'], markedCheckEntity)
