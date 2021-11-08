@@ -91,7 +91,7 @@ RUN echo "export GEM_PATH=$GEM_HOME:/usr/local/lib/ruby/gems/2.6.0" >> ~/.profil
 
 # install nvm and current node runtimes
 ENV NVM_DIR=/home/$BUILD_USER/.nvm
-ENV NODE_VERSION=12.18.2
+ENV NODE_VERSION=14.18.1
 
 RUN curl -sL https://raw.githubusercontent.com/creationix/nvm/v0.38.0/install.sh | bash \
   && . $NVM_DIR/nvm.sh \

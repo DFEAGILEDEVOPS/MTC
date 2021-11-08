@@ -8,7 +8,7 @@
   "license": "GPL-3.0",
   "private": false,
   "engines": {
-    "node": ">= 12"
+    "node": ">= 14"
   },
   "scripts": {
     "new": "node ./engine/create-migration.js",
