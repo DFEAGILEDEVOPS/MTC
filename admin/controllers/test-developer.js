@@ -76,7 +76,9 @@ const getFileDownloadPupilCheckData = async function getFileDownloadPupilCheckDa
     res.setHeader('Content-type', 'application/zip')
     const fileName = `pupil-check-data-${dateService.formatFileName(psychometricianReport.createdAt)}.zip`
     res.setHeader('Content-disposition', `attachment; filename="${fileName}"`)
-    await testDeveloperReportService.downloadFile(psychometricianReport.container, psychometricianReport.fileName, res)
+    const blobFile = await testDeveloperReportService.downloadFile(psychometricianReport.container, psychometricianReport.fileName)
+    res.write(blobFile)
+    res.end()
   } catch (error) {
     logger.error(error)
     return next(error)
