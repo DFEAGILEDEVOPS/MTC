@@ -20,6 +20,16 @@ const getEnvironment = (): string => {
   return parser.valueOrSubstitute(process.env.ENVIRONMENT_NAME, 'Local-Dev')
 }
 
+const getLinesPerCheck = (): number => {
+  const defaultValue = 25
+  const val = process.env.LIVE_FORM_QUESTION_COUNT
+  if (val === undefined) return defaultValue
+  const parsed = parseInt(val, 10)
+  if (isNaN(parsed)) return defaultValue
+  if (parsed < 1) return defaultValue
+  return parsed
+}
+
 const oneMinuteInMilliseconds = 60000
 const twoHoursInMilliseconds = oneMinuteInMilliseconds * 120
 const sixMonthsInSeconds = 15778800
@@ -39,7 +49,9 @@ export default {
       encrypt: parser.propertyExists(process.env, 'SQL_ENCRYPT') ? parser.primitiveToBoolean(process.env.SQL_ENCRYPT) : true,
       useUTC: true,
       appName: parser.valueOrSubstitute(process.env.SQL_APP_NAME, 'mtc-functions'), // docker default
-      enableArithAbort: parser.propertyExists(process.env, 'SQL_ENABLE_ARITH_ABORT') ? parser.primitiveToBoolean(process.env.SQL_ENABLE_ARITH_ABORT) : true
+      enableArithAbort: parser.propertyExists(process.env, 'SQL_ENABLE_ARITH_ABORT') ? parser.primitiveToBoolean(process.env.SQL_ENABLE_ARITH_ABORT) : true,
+      // We should check the server certificate, rather than blindly trust it.
+      trustServerCertificate: {}.hasOwnProperty.call(process.env, 'SQL_TRUST_SERVER_CERTIFICATE') ? parser.primitiveToBoolean(process.env.SQL_TRUST_SERVER_CERTIFICATE) : false
     },
     Pooling: {
       MinCount: Number(parser.valueOrSubstitute(process.env.SQL_POOL_MIN_COUNT, 5)),
@@ -122,5 +134,6 @@ export default {
   RemoteIpCheckUrl: process.env.REMOTE_IP_CHECK_URL,
   SyncResultsInit: {
     MaxParallelTasks: parseInt(parser.valueOrSubstitute(process.env.SYNC_RESULTS_INIT_MAX_PARALLEL_TASKS, 5), 10)
-  }
+  },
+  LiveFormQuestionCount: getLinesPerCheck()
 }

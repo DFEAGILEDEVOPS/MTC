@@ -1,4 +1,4 @@
-import { CheckQuestion, CompleteCheckAuditEntry, AuditEntryType } from '../../schemas/check-schemas/submitted-check'
+import { CheckQuestion, CompleteCheckAuditEntry, AuditEntryType } from '../../schemas/check-schemas/validated-check'
 import moment from 'moment'
 
 export class FakeCheckAuditGeneratorService {

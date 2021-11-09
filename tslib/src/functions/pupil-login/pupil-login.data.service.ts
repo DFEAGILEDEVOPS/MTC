@@ -14,13 +14,9 @@ export class PupilLoginDataService implements IPupilLoginDataService {
 
   async updateCheckWithLoginTimestamp (checkCode: string, loginDateTime: Date): Promise<void> {
     const sql = `UPDATE [mtc_admin].[check]
-               SET pupilLoginDate = @loginDate,
-                   checkStatus_id = (SELECT TOP 1 id FROM [mtc_admin].[checkStatus]
-                                    WHERE code = 'COL')
-               WHERE checkCode = @checkCode
-               AND pupilLoginDate IS NULL
-               AND checkStatus_id = (SELECT TOP 1 id FROM [mtc_admin].[checkStatus]
-                WHERE code = 'NEW')`
+                    SET pupilLoginDate = @loginDate
+                  WHERE checkCode = @checkCode
+                    AND pupilLoginDate IS NULL`
     const params = [
       { name: 'loginDate', value: loginDateTime, type: TYPES.DateTimeOffset },
       { name: 'checkCode', value: checkCode, type: TYPES.UniqueIdentifier }

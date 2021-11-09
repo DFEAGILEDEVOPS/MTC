@@ -101,8 +101,9 @@ RUN curl -sL https://raw.githubusercontent.com/creationix/nvm/v0.38.0/install.sh
   && nvm alias default $NODE_VERSION
 
 # install azuredevops agent service
+# https://github.com/microsoft/azure-pipelines-agent/releases
 ARG TARGETARCH=amd64
-ARG AGENT_VERSION=2.185.1
+ARG AGENT_VERSION=2.193.0
 
 WORKDIR /azp
 RUN if [ "$TARGETARCH" = "amd64" ]; then \
