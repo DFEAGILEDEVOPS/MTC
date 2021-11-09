@@ -29,7 +29,7 @@
     "watch:integration": "yarn jest --watch --coverage=no --config ./tests-integration/jest.integration.config.js"
   },
   "mtc": {
-    "assets-version": "e93c2fae4e22b00c9e51494b9880f452"
+    "assets-version": "41e081a4cc897a5542bd9223d2e114c7"
   },
   "engines": {
     "node": ">= 12"
@@ -85,7 +85,7 @@
     "to-bool": "^0.0.1",
     "uuid": "^8.3.2",
     "uuid-validate": "^0.0.3",
-    "validator": "^13.5.2",
+    "validator": "^13.7.0",
     "winston": "^3.1.0",
     "winston-azure-application-insights": "^3.0.0",
     "xmlbuilder2": "^3.0.2",

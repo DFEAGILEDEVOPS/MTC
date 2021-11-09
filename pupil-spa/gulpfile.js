@@ -26,7 +26,7 @@ gulp.task('setRuntimeConfigURL', () => {
 })
 
 gulp.task('setSecretEnvVars', () => {
-  return gulp.src('src/public/config.json', { base: './' })
+  return gulp.src('src/assets/config.json', { base: './' })
     .pipe(replace('testPupilConnectionQueueUrlValue', process.env.TEST_PUPIL_CONNECTION_QUEUE_URL || ''))
     .pipe(replace('testPupilConnectionQueueTokenValue', process.env.TEST_PUPIL_CONNECTION_QUEUE_TOKEN || ''))
     .pipe(gulp.dest('./'))
