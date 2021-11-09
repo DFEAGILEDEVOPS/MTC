@@ -1,5 +1,4 @@
 import { CheckValidator, ICheckValidatorFunctionBindings } from './check-validator'
-import { IAsyncTableService, TableStorageEntity } from '../../azure/storage-helper'
 import { ReceivedCheckTableEntity, ValidateCheckMessageV1, MarkCheckMessageV1 } from '../../schemas/models'
 import { ILogger } from '../../common/logger'
 import { ICompressionService } from '../../common/compression-service'
@@ -7,30 +6,14 @@ import * as uuid from 'uuid'
 import moment from 'moment'
 import { CheckNotificationType } from '../../schemas/check-notification-message'
 import { getValidatedCheck } from '../../schemas/check-schemas/validated-check'
+import { ITableService } from '../../azure/table-service'
+import { TableEntity } from '@azure/data-tables'
 
-const TableServiceMock = jest.fn<IAsyncTableService, any>(() => ({
-  replaceEntityAsync: jest.fn(async (): Promise<TableStorageEntity> => {
-    return {
-      PartitionKey: uuid.v4(),
-      RowKey: uuid.v4()
-    }
-  }),
-
-  queryEntitiesAsync: jest.fn(async (): Promise<TableStorageEntity[]> => {
-    return [
-      {
-        PartitionKey: uuid.v4(),
-        RowKey: uuid.v4()
-      }, {
-        PartitionKey: uuid.v4(),
-        RowKey: uuid.v4()
-      }
-    ]
-  }),
-
-  deleteEntityAsync: jest.fn(async (): Promise<any> => { return Promise.resolve('mock') }),
-  insertEntityAsync: jest.fn(async (): Promise<any> => { return Promise.resolve({}) }),
-  retrieveEntityAsync: jest.fn(async (): Promise<any> => { return Promise.resolve({}) })
+const TableServiceMock = jest.fn<ITableService, any>(() => ({
+  createEntity: jest.fn(),
+  getEntity: jest.fn(),
+  mergeUpdateEntity: jest.fn(),
+  replaceEntity: jest.fn()
 }))
 
 const LoggerMock = jest.fn<ILogger, any>(() => ({
@@ -53,7 +36,7 @@ let validateReceivedCheckQueueMessage: ValidateCheckMessageV1 = {
 
 let sut: CheckValidator
 let loggerMock: ILogger
-let tableServiceMock: IAsyncTableService
+let tableServiceMock: ITableService
 let compressionServiceMock: ICompressionService
 
 describe('check-validator', () => {
@@ -82,7 +65,7 @@ describe('check-validator', () => {
       }
       await sut.validate(functionBindings, validateReceivedCheckQueueMessage, loggerMock)
       fail('error should have been thrown due to empty receivedCheckData')
-    } catch (error) {
+    } catch (error: any) {
       expect(error.message).toBe('check-validator: received check reference is empty')
     }
   })
@@ -90,13 +73,9 @@ describe('check-validator', () => {
   test('validation error is recorded on receivedCheck entity when archive property is missing', async () => {
     let actualTableName: string | undefined
     let actualEntity: any
-    jest.spyOn(tableServiceMock, 'replaceEntityAsync').mockImplementation(async (table: string, entity: any) => {
+    jest.spyOn(tableServiceMock, 'mergeUpdateEntity').mockImplementation(async (table: string, entity: TableEntity<object>) => {
       actualTableName = table
       actualEntity = entity
-      return {
-        PartitionKey: uuid.v4(),
-        RowKey: uuid.v4()
-      }
     })
     const functionBindings: ICheckValidatorFunctionBindings = {
       receivedCheckTable: [{}],
@@ -104,7 +83,7 @@ describe('check-validator', () => {
       checkNotificationQueue: []
     }
     await sut.validate(functionBindings, validateReceivedCheckQueueMessage, loggerMock)
-    expect(tableServiceMock.replaceEntityAsync).toHaveBeenCalledTimes(1)
+    expect(tableServiceMock.mergeUpdateEntity).toHaveBeenCalledTimes(1)
     expect(actualTableName).toBe('receivedCheck')
     expect(actualEntity.processingError).toBe('check-validator: message is missing [archive] property')
     expect(actualEntity.isValid).toBe(false)
@@ -112,8 +91,8 @@ describe('check-validator', () => {
 
   test('archive is decompressesed when archive property present', async () => {
     const receivedCheckEntity: ReceivedCheckTableEntity = {
-      PartitionKey: uuid.v4(),
-      RowKey: uuid.v4(),
+      partitionKey: uuid.v4(),
+      rowKey: uuid.v4(),
       archive: 'foo',
       checkReceivedAt: moment().toDate(),
       checkVersion: 1
@@ -129,21 +108,17 @@ describe('check-validator', () => {
 
   test('submitted check with missing properties are recorded as validation errors against the entity', async () => {
     const receivedCheckEntity: ReceivedCheckTableEntity = {
-      PartitionKey: uuid.v4(),
-      RowKey: uuid.v4(),
+      partitionKey: uuid.v4(),
+      rowKey: uuid.v4(),
       archive: 'foo',
       checkReceivedAt: moment().toDate(),
       checkVersion: 1
     }
     let actualTableName: string | undefined
     let actualEntity: any
-    jest.spyOn(tableServiceMock, 'replaceEntityAsync').mockImplementation(async (table: string, entity: any) => {
+    jest.spyOn(tableServiceMock, 'mergeUpdateEntity').mockImplementation(async (table: string, entity: any) => {
       actualTableName = table
       actualEntity = entity
-      return {
-        PartitionKey: uuid.v4(),
-        RowKey: uuid.v4()
-      }
     })
     jest.spyOn(compressionServiceMock, 'decompress').mockImplementation(() => {
       return JSON.stringify({
@@ -156,7 +131,7 @@ describe('check-validator', () => {
       checkNotificationQueue: []
     }
     await sut.validate(functionBindings, validateReceivedCheckQueueMessage, loggerMock)
-    expect(tableServiceMock.replaceEntityAsync).toHaveBeenCalledTimes(1)
+    expect(tableServiceMock.mergeUpdateEntity).toHaveBeenCalledTimes(1)
     expect(actualTableName).toBe('receivedCheck')
     expect(actualEntity.processingError).toBeDefined()
     expect(actualEntity.isValid).toBe(false)
@@ -164,14 +139,14 @@ describe('check-validator', () => {
 
   test('validation errors are reported to check notification queue', async () => {
     const receivedCheckEntity: ReceivedCheckTableEntity = {
-      PartitionKey: validateReceivedCheckQueueMessage.schoolUUID,
-      RowKey: validateReceivedCheckQueueMessage.checkCode,
+      partitionKey: validateReceivedCheckQueueMessage.schoolUUID,
+      rowKey: validateReceivedCheckQueueMessage.checkCode,
       archive: 'foo',
       checkReceivedAt: moment().toDate(),
       checkVersion: 1
     }
 
-    jest.spyOn(tableServiceMock, 'replaceEntityAsync').mockImplementation()
+    jest.spyOn(tableServiceMock, 'mergeUpdateEntity').mockImplementation()
     jest.spyOn(compressionServiceMock, 'decompress').mockImplementation(() => {
       return JSON.stringify({
         foo: 'bar'
@@ -193,21 +168,17 @@ describe('check-validator', () => {
 
   test('submitted check with no validation errors is marked as valid', async () => {
     const receivedCheckEntity: ReceivedCheckTableEntity = {
-      PartitionKey: uuid.v4(),
-      RowKey: uuid.v4(),
+      partitionKey: uuid.v4(),
+      rowKey: uuid.v4(),
       archive: 'foo',
       checkReceivedAt: moment().toDate(),
       checkVersion: 1
     }
     let actualTableName: string | undefined
     let actualEntity: any
-    jest.spyOn(tableServiceMock, 'replaceEntityAsync').mockImplementation(async (table: string, entity: any) => {
+    jest.spyOn(tableServiceMock, 'mergeUpdateEntity').mockImplementation(async (table: string, entity: any) => {
       actualTableName = table
       actualEntity = entity
-      return {
-        PartitionKey: uuid.v4(),
-        RowKey: uuid.v4()
-      }
     })
     jest.spyOn(compressionServiceMock, 'decompress').mockImplementation(() => {
       return JSON.stringify(getValidatedCheck())
@@ -225,21 +196,17 @@ describe('check-validator', () => {
 
   test('submitted check with no validation errors has answers added to receivedCheck entity', async () => {
     const receivedCheckEntity: ReceivedCheckTableEntity = {
-      PartitionKey: uuid.v4(),
-      RowKey: uuid.v4(),
+      partitionKey: uuid.v4(),
+      rowKey: uuid.v4(),
       archive: 'foo',
       checkReceivedAt: moment().toDate(),
       checkVersion: 1
     }
     let actualTableName: string | undefined
     let actualEntity: any
-    jest.spyOn(tableServiceMock, 'replaceEntityAsync').mockImplementation(async (table: string, entity: any) => {
+    jest.spyOn(tableServiceMock, 'mergeUpdateEntity').mockImplementation(async (table: string, entity: any) => {
       actualTableName = table
       actualEntity = entity
-      return {
-        PartitionKey: uuid.v4(),
-        RowKey: uuid.v4()
-      }
     })
     const validCheck = getValidatedCheck()
     jest.spyOn(compressionServiceMock, 'decompress').mockImplementation(() => {
@@ -258,8 +225,8 @@ describe('check-validator', () => {
 
   test('check marking message is created and added to output binding array', async () => {
     const receivedCheckEntity: ReceivedCheckTableEntity = {
-      PartitionKey: uuid.v4(),
-      RowKey: uuid.v4(),
+      partitionKey: uuid.v4(),
+      rowKey: uuid.v4(),
       archive: 'foo',
       checkReceivedAt: moment().toDate(),
       checkVersion: 1

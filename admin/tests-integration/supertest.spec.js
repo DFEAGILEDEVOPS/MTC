@@ -1,5 +1,5 @@
 'use strict'
-/* global describe it expect afterAll */
+/* global describe test expect afterAll */
 
 /**
  * Supertest will run a copy of the app on an ephemeral port and then tear it down.
@@ -27,7 +27,7 @@ describe('nocache', () => {
     await redisCacheService.disconnect()
   })
 
-  it('sets all nocache headers to ensure all pages are fresh', async () => {
+  test('sets all nocache headers to ensure all pages are fresh', async () => {
     await sleep(1000) // wait for stable
     const res = await request(app)
       .get('/ping')

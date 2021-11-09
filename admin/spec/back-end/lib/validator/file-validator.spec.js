@@ -1,27 +1,17 @@
 'use strict'
 
-/* global beforeEach, afterEach, describe, it, expect */
+/* global beforeEach, spyOn, describe, it, expect */
 
 const fs = require('fs-extra')
-const sinon = require('sinon')
 const fileValidator = require('../../../../lib/validator/file-validator')
 const fileCsvErrors = require('../../../../lib/errors/file-csv')
 
 describe('File validator', function () {
   let uploadedFile
-  let sandbox
-
-  beforeEach(function () {
-    sandbox = sinon.createSandbox()
-  })
-  afterEach(() => {
-    sandbox.restore()
-  })
 
   describe('received valid data and', function () {
     beforeEach(function () {
-      const fsMock = sandbox.mock(fs)
-      fsMock.expects('readFileSync').resolves('text')
+      spyOn(fs, 'readFileSync').and.returnValue('text')
       uploadedFile = {
         file: 'test.csv'
       }
@@ -34,8 +24,7 @@ describe('File validator', function () {
   })
   describe('received empty data and', function () {
     beforeEach(function () {
-      const fsMock = sandbox.mock(fs)
-      fsMock.expects('readFileSync').resolves('')
+      spyOn(fs, 'readFileSync').and.returnValue('')
       uploadedFile = null
     })
     it('detects no file', async () => {

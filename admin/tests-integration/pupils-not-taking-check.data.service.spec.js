@@ -1,5 +1,5 @@
 'use strict'
-/* global describe, it, expect, beforeAll, afterAll */
+/* global describe test expect beforeAll afterAll */
 const R = require('ramda')
 
 const pupilNotTakingCheckDataService = require('../services/data-access/pupils-not-taking-check.data.service')
@@ -13,7 +13,7 @@ async function getCheck (checkId) {
   const sql = `SELECT c.*, p.school_id, p.urlSlug as pupilUrlSlug, cp.pinExpiresAt
                  FROM mtc_admin.[check] c
                       JOIN mtc_admin.[pupil] p ON (c.pupil_id = p.id)
-                      LEFT JOIN mtc_admin.[checkPin] cp ON (c.id = cp.check_id) 
+                      LEFT JOIN mtc_admin.[checkPin] cp ON (c.id = cp.check_id)
                 WHERE c.id = @id`
   const params = [
     { name: 'id', value: checkId, type: sqlService.TYPES.Int }
@@ -35,7 +35,7 @@ describe('pupils-not-taking-check.data.service: #sqlFindPupilsWithoutReasons', (
   // Find pupils eligible to be marked as not taking the check
   // Bug 47477: was including pupils who had completed a check in the narrow window between checkPin expiry and
   // checkPin deletion.
-  it('does not retrieve pupils whose completed checks expired', async () => {
+  test('does not retrieve pupils whose completed checks expired', async () => {
     // Create a new check and set it to completed by the pupil
     const newCheckId = await createCheck('CMP', 1)
     // Expire the pin

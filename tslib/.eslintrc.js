@@ -48,7 +48,6 @@ module.exports = {
       {
         'toBeFalsy': 'Ambiguous expectation. Use `toBe(false)` for boolean and `toBeDefined()` for instance verification.',
         'toBeTruthy': 'Ambiguous expectation. Use `toBe(true)` for boolean and `toBeDefined()` for instance verification.',
-        'resolves': 'Use `expect(await promise)` instead.',
         'not.toHaveBeenCalledWith': 'narrow expectation by using `toHaveBeenCalledWith`'
       }
     ],

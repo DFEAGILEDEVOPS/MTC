@@ -20,8 +20,9 @@ try {
   console.error(error)
 }
 
-const azure = require('azure-storage')
-const bluebird = require('bluebird')
+const { TableClient } = require('@azure/data-tables')
+const tableDataService = require('../services/azure.table.service')
+const queueDataService = require('../services/azure-queue.service')
 const names = require('../../deploy/storage/tables-queues.json')
 
 if (!process.env.AZURE_STORAGE_CONNECTION_STRING) {
@@ -29,63 +30,28 @@ if (!process.env.AZURE_STORAGE_CONNECTION_STRING) {
   console.error('env var $AZURE_STORAGE_CONNECTION_STRING is required')
 }
 
-const queueNames = names['queues']
-const tableNames = names['tables']
-const poisonQueues = queueNames.map(q => q + '-poison')
-const allQueues = queueNames.concat(poisonQueues)
-const tableService = getPromisifiedService(azure.createTableService())
-const queueService = getPromisifiedService(azure.createQueueService())
+const mainQueueNames = names.queues
+const tableNames = names.tables
+const poisonQueues = mainQueueNames.map(q => q + '-poison')
+const allQueueNames = mainQueueNames.concat(poisonQueues)
 
-async function deleteTableEntities (tables) {
+async function clearTable (tableName) {
+  const tableClient = TableClient.fromConnectionString(connectionString, tableName)
+  const entityIterator = tableClient.listEntities()
   const deletions = []
-  for (let index = 0; index < tables.length; index++) {
-    const table = tables[index]
-    const query = new azure.TableQuery() // Azure Table Storage has a max of 1000 records returned
-    let done = false
-    let batch = 1
-    while (!done) {
-      const data = await tableService.queryEntitiesAsync(table, query, null)
-      const entities = data.result.entries
-      if (entities.length === 0) {
-        done = true
-      }
-      console.log(`Found ${entities.length} entities to delete in batch ${batch++} from ${table}`)
-      entities.forEach(entity => {
-        deletions.push(tableService.deleteEntityAsync(table, entity))
-      })
-      await Promise.all(deletions)
-    }
+  for await (const entity of entityIterator) {
+    deletions.push(tableClient.deleteEntity(entity.partitionKey, entity.rowKey))
   }
-}
-
-async function createTables (tables) {
-  const tableCreates = tables.map(table => {
-    return tableService.createTableIfNotExistsAsync(table)
-  })
-  return Promise.all(tableCreates)
-}
-
-async function deleteQueueMessages (queues) {
-  const queueDeletes = queues.map(q => {
-    console.log(`clearing queue ${q}`)
-    return queueService.clearMessagesAsync(q)
-  })
-  return Promise.all(queueDeletes)
-}
-
-async function createQueues (queues) {
-  const queueCreates = queues.map(q => {
-    return queueService.createQueueIfNotExistsAsync(q)
-  })
-  return Promise.all(queueCreates)
+  return Promise.all(deletions)
 }
 
 async function main () {
-  await createQueues(allQueues)
-  await deleteQueueMessages(allQueues)
-  console.log('all queues cleared')
-  await createTables(tableNames)
-  await deleteTableEntities(tableNames)
+  await queueDataService.createQueues(allQueueNames)
+  const clearQueueTasks = allQueueNames.map(q => queueDataService.clearQueue(q))
+  await Promise.allSettled(clearQueueTasks)
+  await tableDataService.createTables(tableNames)
+  const clearTableTasks = tableNames.map(t => clearTable(t))
+  await Promise.allSettled(clearTableTasks)
 }
 
 main()
@@ -98,27 +64,3 @@ main()
   .catch(error => {
     console.error('Caught error: ' + error.message)
   })
-
-/**
- * Promisify and cache the azureTableService library as it still lacks Promise support
- */
-function getPromisifiedService (storageService) {
-  bluebird.promisifyAll(storageService, {
-    promisifier: (originalFunction) => function (...args) {
-      return new Promise((resolve, reject) => {
-        try {
-          originalFunction.call(this, ...args, (error, result, response) => {
-            if (error) {
-              return reject(error)
-            }
-            resolve({ result, response })
-          })
-        } catch (error) {
-          reject(error)
-        }
-      })
-    }
-  })
-
-  return storageService
-}

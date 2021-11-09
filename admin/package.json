@@ -29,7 +29,7 @@
     "watch:integration": "yarn jest --watch --coverage=no --config ./tests-integration/jest.integration.config.js"
   },
   "mtc": {
-    "assets-version": "b141cfa3c9bfb1775674d43edb99be5e"
+    "assets-version": "6e78b4cde9db9857d0e05ae88fea5a4e"
   },
   "engines": {
     "node": ">= 12"
@@ -39,11 +39,13 @@
     "**/**/ajv": "^6.12.6"
   },
   "dependencies": {
+    "@azure/data-tables": "^12.1.2",
     "@azure/service-bus": "^7.0.5",
+    "@azure/storage-blob": "^12.8.0",
+    "@azure/storage-queue": "^12.7.0",
     "adm-zip": "^0.5.7",
     "applicationinsights": "^2.1.5",
-    "axios": "^0.22.0",
-    "azure-storage": "^2.10.4",
+    "axios": "^0.21.3",
     "bcryptjs": "^2.4.3",
     "bluebird": "^3.5.1",
     "connect-flash": "^0.1.1",
@@ -120,8 +122,6 @@
     "karma-remap-istanbul": "^0.6.0",
     "node-mocks-http": "^1.6.6",
     "nodemon": "^2.0.12",
-    "proxyquire": "^2.1.0",
-    "sinon": "^11.1.2",
     "standard": "^16.0.3",
     "supertest": "^6.0.1",
     "typescript": "4.3.5"

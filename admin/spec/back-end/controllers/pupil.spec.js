@@ -4,10 +4,9 @@
 const httpMocks = require('node-mocks-http')
 const R = require('ramda')
 
-const azureFileDataService = require('../../../services/data-access/azure-file.data.service')
 const fileValidator = require('../../../lib/validator/file-validator')
 const pupilAddService = require('../../../services/pupil-add-service')
-const pupilDataService = require('../../../services/data-access/pupil.data.service')
+const pupilService = require('../../../services/pupil.service')
 const pupilMock = require('../mocks/pupil')
 const pupilUploadService = require('../../../services/pupil-upload.service')
 const pupilValidator = require('../../../lib/validator/pupil-validator')
@@ -18,7 +17,8 @@ const businessAvailabilityService = require('../../../services/business-availabi
 const checkWindowV2Service = require('../../../services/check-window-v2.service')
 const pupilEditService = require('../../../services/pupil-edit.service')
 const ValidationError = require('../../../lib/validation-error')
-const pupilController = require('../../../controllers/pupil')
+const sut = require('../../../controllers/pupil')
+const csvService = require('../../../services/csv-file.service')
 
 describe('pupil controller:', () => {
   let next
@@ -60,7 +60,7 @@ describe('pupil controller:', () => {
         const req = getReq(goodReqParams)
         jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockImplementation()
         jest.spyOn(businessAvailabilityService, 'getAvailabilityData').mockResolvedValue({ hdfSubmitted: false })
-        await pupilController.getAddPupil(req, res, next)
+        await sut.getAddPupil(req, res, next)
         expect(res.statusCode).toBe(200)
         expect(next).not.toHaveBeenCalled()
       })
@@ -68,12 +68,10 @@ describe('pupil controller:', () => {
       test('catches errors in the render() call', async () => {
         const res = getRes()
         const req = getReq(goodReqParams)
-        jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockImplementation()
+        jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow')
         jest.spyOn(businessAvailabilityService, 'getAvailabilityData').mockResolvedValue({ hdfSubmitted: false })
-        jest.spyOn(res, 'render').mockImplementation(() => {
-          throw new Error('test')
-        })
-        await pupilController.getAddPupil(req, res, next)
+        jest.spyOn(res, 'render').mockImplementation(() => { throw new Error('test') })
+        await sut.getAddPupil(req, res, next)
         expect(res.statusCode).toBe(200)
         expect(next).toHaveBeenCalled()
       })
@@ -97,18 +95,18 @@ describe('pupil controller:', () => {
       jest.spyOn(businessAvailabilityService, 'getAvailabilityData').mockResolvedValue({ hdfSubmitted: false })
     })
 
-    describe('the pupilData is saved', () => {
+    describe('postAddPupil - the pupilData is saved', () => {
       beforeEach(() => {
         jest.spyOn(pupilAddService, 'addPupil').mockResolvedValue(pupilMock)
       })
 
       test('calls pupilAddService to add a new pupil to the database', async () => {
-        await pupilController.postAddPupil(req, res, next)
+        await sut.postAddPupil(req, res, next)
         expect(pupilAddService.addPupil).toHaveBeenCalledTimes(1)
       })
 
       test('redirects to the pupil register page', async () => {
-        await pupilController.postAddPupil(req, res, next)
+        await sut.postAddPupil(req, res, next)
         expect(res.statusCode).toBe(302)
       })
     })
@@ -123,11 +121,11 @@ describe('pupil controller:', () => {
       })
 
       test('then it shows the page again', async () => {
-        jest.spyOn(pupilController, 'getAddPupil').mockImplementation((req, res) => {
+        jest.spyOn(sut, 'getAddPupil').mockImplementation((req, res) => {
           res.end('mock doc')
           return Promise.resolve()
         })
-        await pupilController.postAddPupil(req, res, next)
+        await sut.postAddPupil(req, res, next)
         expect(pupilAddService.addPupil).toHaveBeenCalledTimes(1)
         expect(next).not.toHaveBeenCalled()
         expect(res.statusCode).toBe(200)
@@ -151,7 +149,7 @@ describe('pupil controller:', () => {
       jest.spyOn(uploadedFileService, 'getAzureBlobFileSize').mockImplementation()
       jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockImplementation()
       jest.spyOn(businessAvailabilityService, 'getAvailabilityData').mockResolvedValue({ hdfSubmitted: false })
-      await pupilController.getAddMultiplePupils(req, res, next)
+      await sut.getAddMultiplePupils(req, res, next)
       expect(res.statusCode).toBe(200)
       expect(uploadedFileService.getFilesize).toHaveBeenCalled()
       expect(uploadedFileService.getAzureBlobFileSize).toHaveBeenCalled()
@@ -168,7 +166,7 @@ describe('pupil controller:', () => {
       jest.spyOn(res, 'render').mockImplementation(() => {
         throw new Error('test')
       })
-      await pupilController.getAddMultiplePupils(req, res, next)
+      await sut.getAddMultiplePupils(req, res, next)
       expect(res.statusCode).toBe(200)
       expect(uploadedFileService.getFilesize).toHaveBeenCalled()
       expect(uploadedFileService.getAzureBlobFileSize).toHaveBeenCalled()
@@ -200,13 +198,13 @@ describe('pupil controller:', () => {
       })
 
       test('saves the new pupil and redirects to the register pupils page', async () => {
-        jest.spyOn(fileValidator, 'validate').mockResolvedValue(new ValidationError())
+        jest.spyOn(fileValidator, 'validate').mockResolvedValue(Promise.resolve(new ValidationError()))
         jest.spyOn(pupilUploadService, 'upload').mockResolvedValue({ pupilIds: ['1', '2'] })
-        jest.spyOn(pupilDataService, 'sqlFindByIds').mockResolvedValue([pupilMock])
+        jest.spyOn(pupilService, 'fetchMultipleByIds').mockResolvedValue([pupilMock])
         const res = getRes()
         const req = getReq(goodReqParams)
         req.flash = () => {}
-        await pupilController.postAddMultiplePupils(req, res, next)
+        await sut.postAddMultiplePupils(req, res, next)
         expect(res.statusCode).toBe(302)
       })
 
@@ -216,7 +214,7 @@ describe('pupil controller:', () => {
         jest.spyOn(fileValidator, 'validate').mockResolvedValue(validationError)
         const res = getRes()
         const req = getReq(goodReqParams)
-        await pupilController.postAddMultiplePupils(req, res, next)
+        await sut.postAddMultiplePupils(req, res, next)
         expect(res.statusCode).toBe(200)
         expect(res.fileErrors.get('test-field')).toBe('test error message')
         expect(res.locals).toBeDefined()
@@ -224,11 +222,21 @@ describe('pupil controller:', () => {
       })
 
       test('calls next for any thrown errors within pupilUpload service', async () => {
+        jest.spyOn(fileValidator, 'validate').mockResolvedValue(Promise.resolve(new ValidationError()))
+        jest.spyOn(pupilUploadService, 'upload').mockRejectedValue(new Error('error'))
+        const res = getRes()
+        const req = getReq(goodReqParams)
+        await sut.postAddMultiplePupils(req, res, next)
+        expect(res.statusCode).toBe(200)
+        expect(next).toHaveBeenCalled()
+      })
+
+      test('calls next for any error that is returned from pupilUpload service', async () => {
         jest.spyOn(fileValidator, 'validate').mockResolvedValue(new ValidationError())
         jest.spyOn(pupilUploadService, 'upload').mockRejectedValue(new Error('error'))
         const res = getRes()
         const req = getReq(goodReqParams)
-        await pupilController.postAddMultiplePupils(req, res, next)
+        await sut.postAddMultiplePupils(req, res, next)
         expect(res.statusCode).toBe(200)
         expect(next).toHaveBeenCalled()
       })
@@ -238,7 +246,7 @@ describe('pupil controller:', () => {
         jest.spyOn(pupilUploadService, 'upload').mockResolvedValue({ error: 'error' })
         const res = getRes()
         const req = getReq(goodReqParams)
-        await pupilController.postAddMultiplePupils(req, res, next)
+        await sut.postAddMultiplePupils(req, res, next)
         expect(res.statusCode).toBe(200)
         expect(next).toHaveBeenCalledWith('error')
       })
@@ -249,13 +257,14 @@ describe('pupil controller:', () => {
           csvErrorFile: 'test.csv',
           hasValidationError: true
         })
+        jest.spyOn(sut, 'getAddMultiplePupils').mockImplementation()
         const res = getRes()
         const req = getReq(goodReqParams)
-        await pupilController.postAddMultiplePupils(req, res, next)
+        await sut.postAddMultiplePupils(req, res, next)
         expect(res.statusCode).toBe(200)
         expect(req.session.csvErrorFile).toBe('test.csv')
         expect(res.locals).toBeDefined()
-        expect(res.locals.pageTitle).toBe('Add multiple pupils')
+        expect(sut.getAddMultiplePupils).toHaveBeenCalledTimes(1)
       })
     })
 
@@ -267,7 +276,7 @@ describe('pupil controller:', () => {
       test('it throws an error', async () => {
         const res = getRes()
         const req = getReq(goodReqParams)
-        await pupilController.postAddMultiplePupils(req, res, next)
+        await sut.postAddMultiplePupils(req, res, next)
         expect(next).toHaveBeenCalled()
         expect(res.statusCode).toBe(200)
       })
@@ -289,14 +298,17 @@ describe('pupil controller:', () => {
     })
 
     test('writes csv file to response and calls end to begin download', async () => {
-      jest.spyOn(azureFileDataService, 'azureDownloadFile').mockResolvedValue('text')
+      const csvBuffer = Buffer.from('text')
+      jest.spyOn(csvService, 'getCsvFileAsBuffer').mockResolvedValue(csvBuffer)
       const res = getRes()
+      res.write = () => {}
+      res.end = () => {}
       jest.spyOn(res, 'write').mockReturnValue(null)
       jest.spyOn(res, 'end').mockReturnValue(null)
       const req = getReq(goodReqParams)
-      await pupilController.getErrorCSVFile(req, res, next)
+      await sut.getErrorCSVFile(req, res, next)
       expect(res.statusCode).toBe(200)
-      expect(res.write).toHaveBeenCalledWith('text')
+      expect(res.write).toHaveBeenCalledWith(csvBuffer)
       expect(res.end).toHaveBeenCalled()
     })
   })
@@ -325,26 +337,26 @@ describe('pupil controller:', () => {
     test('retrieves the pupil data', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      jest.spyOn(pupilDataService, 'sqlFindOneBySlugWithAgeReason').mockResolvedValue(populatedPupilMock)
-      await pupilController.getEditPupilById(req, res, next)
-      expect(pupilDataService.sqlFindOneBySlugWithAgeReason).toHaveBeenCalled()
+      jest.spyOn(pupilService, 'fetchOneBySlugWithAgeReason').mockResolvedValue(populatedPupilMock)
+      await sut.getEditPupilById(req, res, next)
+      expect(pupilService.fetchOneBySlugWithAgeReason).toHaveBeenCalled()
     })
 
     test('bails out if the pupil is not found', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      jest.spyOn(pupilDataService, 'sqlFindOneBySlugWithAgeReason').mockReturnValue(null)
-      await pupilController.getEditPupilById(req, res, next)
+      jest.spyOn(pupilService, 'fetchOneBySlugWithAgeReason').mockReturnValue(null)
+      await sut.getEditPupilById(req, res, next)
       expect(next).toHaveBeenCalledWith(new Error(`Pupil ${req.params.id} not found`))
     })
 
     test('bails out if any of the method raises an exception', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      jest.spyOn(pupilDataService, 'sqlFindOneBySlugWithAgeReason').mockImplementation(() => {
+      jest.spyOn(pupilService, 'fetchOneBySlugWithAgeReason').mockImplementation(() => {
         throw new Error('dummy error')
       })
-      pupilController.getEditPupilById(req, res, next)
+      sut.getEditPupilById(req, res, next)
       expect(next).toHaveBeenCalledWith(new Error('dummy error'))
     })
   })
@@ -364,48 +376,51 @@ describe('pupil controller:', () => {
     test('makes a call to retrieve the pupil', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      jest.spyOn(pupilDataService, 'sqlFindOneBySlugWithAgeReason').mockResolvedValue(pupilMock)
+      jest.spyOn(pupilService, 'fetchOneBySlugWithAgeReason').mockResolvedValue(pupilMock)
       jest.spyOn(schoolService, 'findOneById').mockResolvedValue(schoolMock)
       // As we do not want to run any more of the controller code than we need to we can trigger an
       // exception to bail out early, which saves mocking the remaining calls.
-      jest.spyOn(pupilValidator, 'validate').mockImplementation(() => { throw new Error('unit test early exit') })
-      await pupilController.postEditPupil(req, res, next)
-      expect(pupilDataService.sqlFindOneBySlugWithAgeReason).toHaveBeenCalled()
+      jest.spyOn(pupilValidator, 'validate').mockImplementation(() => {
+        throw new Error('unit test early exit')
+      })
+      await sut.postEditPupil(req, res, next)
+      expect(pupilService.fetchOneBySlugWithAgeReason).toHaveBeenCalled()
     })
 
     test('bails out if the pupil if not found', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      jest.spyOn(pupilDataService, 'sqlFindOneBySlugWithAgeReason').mockResolvedValue(null)
-      await pupilController.postEditPupil(req, res, next)
+      jest.spyOn(pupilService, 'fetchOneBySlugWithAgeReason').mockResolvedValue(null)
+      await sut.postEditPupil(req, res, next)
       expect(next).toHaveBeenCalledWith(new Error(`Pupil ${req.body.urlSlug} not found`))
     })
 
     test('makes a call to retrieve the school', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      jest.spyOn(pupilDataService, 'sqlFindOneBySlugWithAgeReason').mockResolvedValue(pupilMock)
+      jest.spyOn(pupilService, 'fetchOneBySlugWithAgeReason').mockResolvedValue(pupilMock)
       jest.spyOn(schoolService, 'findOneById').mockResolvedValue(schoolMock)
       // As we do not want to run any more of the controller code than we need to we can trigger an
       // exception to bail out early, which saves mocking the remaining calls.
-      jest.spyOn(pupilValidator, 'validate').mockImplementation(() => { throw new Error('unit test early exit') })
-      await pupilController.postEditPupil(req, res, next)
-      expect(pupilDataService.sqlFindOneBySlugWithAgeReason).toHaveBeenCalled()
+      jest.spyOn(pupilValidator, 'validate').mockImplementation(() => {
+        throw new Error('unit test early exit')
+      })
+      await sut.postEditPupil(req, res, next)
+      expect(pupilService.fetchOneBySlugWithAgeReason).toHaveBeenCalled()
       expect(schoolService.findOneById).toHaveBeenCalledWith(pupilMock.school_id)
     })
-
     test('calls pupilRegisterCachingService.dropPupilRegisterCache if pupil has been successfully edited', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      jest.spyOn(pupilDataService, 'sqlFindOneBySlugWithAgeReason').mockResolvedValue(pupilMock)
+      jest.spyOn(pupilService, 'fetchOneBySlugWithAgeReason').mockResolvedValue(pupilMock)
       jest.spyOn(schoolService, 'findOneById').mockResolvedValue(schoolMock)
       jest.spyOn(pupilValidator, 'validate').mockResolvedValue(new ValidationError())
       jest.spyOn(pupilEditService, 'update').mockImplementation()
       jest.spyOn(res, 'render').mockImplementation()
       // As we do not want to run any more of the controller code than we need to we can trigger an
       // exception to bail out early, which saves mocking the remaining calls.
-      await pupilController.postEditPupil(req, res, next)
-      expect(pupilDataService.sqlFindOneBySlugWithAgeReason).toHaveBeenCalled()
+      await sut.postEditPupil(req, res, next)
+      expect(pupilService.fetchOneBySlugWithAgeReason).toHaveBeenCalled()
       expect(schoolService.findOneById).toHaveBeenCalledWith(pupilMock.school_id)
       expect(pupilEditService.update).toHaveBeenCalled()
       expect(res.render).toHaveBeenCalled()
