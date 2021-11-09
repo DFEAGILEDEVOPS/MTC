@@ -1,5 +1,5 @@
 'use strict'
-/* global describe it expect fail */
+/* global describe test expect fail */
 
 const path = require('path')
 const fs = require('fs')
@@ -20,24 +20,24 @@ const sut = require('../services/data-access/sql.pool.service')
 const roles = require('../lib/consts/roles')
 
 describe('sql.pool.service:integration', () => {
-  it('should be defined', () => {
+  test('should be defined', () => {
     expect(sut).toBeDefined()
   })
 
   describe('createPool', () => {
-    it('returns a pool when valid role specified', async () => {
+    test('returns a pool when valid role specified', async () => {
       const actual = sut.createPool(roles.teacher)
       await actual.connect()
       expect(actual).toBeDefined()
       expect(actual.connected).toBe(true)
     })
-    it('returns the existing pool if 2nd creation is attempted', async () => {
+    test('returns the existing pool if 2nd creation is attempted', async () => {
       const pool1 = sut.createPool(roles.teacher)
       const pool2 = sut.createPool(roles.teacher)
       expect(pool2).toBe(pool1)
       sut.closePool(roles.teacher)
     })
-    it('allows builder error to bubble up if role not supported', () => {
+    test('allows builder error to bubble up if role not supported', () => {
       try {
         sut.createPool('void role')
         fail('error should have been thrown')
@@ -49,11 +49,11 @@ describe('sql.pool.service:integration', () => {
   })
 
   describe('closePool', () => {
-    it('does nothing if pool does not exist', () => {
+    test('does nothing if pool does not exist', () => {
       const actual = sut.closePool('no pool')
       expect(actual).toBeUndefined()
     })
-    it('returns closed pool and removes if exists', async () => {
+    test('returns closed pool and removes if exists', async () => {
       const actual = await sut.createPool(roles.teacher)
       await actual.connect()
       expect(actual).toBeDefined()
@@ -65,11 +65,11 @@ describe('sql.pool.service:integration', () => {
   })
 
   describe('getPool', () => {
-    it('returns nothing if pool does not exist', () => {
+    test('returns nothing if pool does not exist', () => {
       const actual = sut.getPool('void pool')
       expect(actual).toBeUndefined()
     })
-    it('returns pool if exists', async () => {
+    test('returns pool if exists', async () => {
       const pool = sut.createPool(roles.teacher)
       expect(pool).toBeDefined()
       const actual = sut.getPool(roles.teacher)

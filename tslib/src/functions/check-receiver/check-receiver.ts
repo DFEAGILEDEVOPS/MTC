@@ -1,10 +1,10 @@
 import { Context } from '@azure/functions'
+import { TableService } from '../../azure/table-service'
 import Moment from 'moment'
-import * as az from '../../azure/storage-helper'
 import { CheckNotificationType, ICheckNotificationMessage } from '../../schemas/check-notification-message'
 import { SubmittedCheckMessageV2, ReceivedCheckTableEntity, ValidateCheckMessageV1 } from '../../schemas/models'
 import { IBatchCheckNotifierDataService, BatchCheckNotifierDataService } from '../check-notifier-batch/batch-check-notifier.data.service'
-const tableService = new az.AsyncTableService()
+const tableService = new TableService()
 
 export class CheckReceiver {
   private readonly checkNotifierDataService: IBatchCheckNotifierDataService
@@ -18,15 +18,15 @@ export class CheckReceiver {
 
   async process (context: Context, receivedCheck: SubmittedCheckMessageV2): Promise<void> {
     const receivedCheckEntity: ReceivedCheckTableEntity = {
-      PartitionKey: receivedCheck.schoolUUID.toLowerCase(),
-      RowKey: receivedCheck.checkCode.toLowerCase(),
+      partitionKey: receivedCheck.schoolUUID.toLowerCase(),
+      rowKey: receivedCheck.checkCode.toLowerCase(),
       archive: receivedCheck.archive,
       checkReceivedAt: Moment().toDate(),
       checkVersion: +receivedCheck.version,
       processingError: ''
     }
 
-    await tableService.insertEntityAsync('receivedCheck', receivedCheckEntity)
+    await tableService.createEntity('receivedCheck', receivedCheckEntity)
 
     // as per #48506 - check-receiver will now handle this event instead of check-notifier-batch
     const request = this.checkNotifierDataService.createCheckReceivedRequest(receivedCheck.checkCode.toLowerCase())

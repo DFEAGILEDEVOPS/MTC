@@ -1,25 +1,19 @@
 'use strict'
-/* global describe, beforeEach, it, expect, spyOn */
+/* global describe beforeEach it expect spyOn */
 
-const proxyquire = require('proxyquire').noCallThru()
 const sqlService = require('../../../../services/data-access/sql.service')
 const sqlModifyResponse = require('../../mocks/sql-modify-response')
+const sut = require('../../../../services/data-access/admin-logon-event.data.service')
 
 describe('admin-logon-event.data.service', () => {
-  let service
-
   describe('#sqlCreate', () => {
     beforeEach(() => {
       spyOn(sqlService, 'create').and.returnValue(Promise.resolve(sqlModifyResponse))
-      service = proxyquire('../../../../services/data-access/admin-logon-event.data.service', {
-        './sql.service': sqlService
-      })
-      return service
     })
 
     it('makes the expected calls', async () => {
       const data = { test: 'property' }
-      await service.sqlCreate(data)
+      await sut.sqlCreate(data)
       expect(sqlService.create).toHaveBeenCalledWith('[adminLogonEvent]', data)
     })
   })

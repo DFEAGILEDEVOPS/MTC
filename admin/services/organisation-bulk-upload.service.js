@@ -23,12 +23,12 @@ const organisationBulkUploadService = {
    */
   upload: async function upload (uploadFile) {
     const remoteFilename = uploadFile.filename
-    await azureBlobDataService.createContainerIfNotExistsAsync(container)
+    await azureBlobDataService.createContainerIfNotExists(container)
 
     // Create the job record first as it acts as a singleton - we only want one file upload at a time.  If we can't
     // create the job record, then we abort.
     const jobSlug = await organisationBulkUploadDataService.createJobRecord()
-    await azureBlobDataService.createBlockBlobFromLocalFileAsync(container, remoteFilename, uploadFile.file)
+    await azureBlobDataService.uploadLocalFile(container, remoteFilename, uploadFile.file)
     return jobSlug
   },
 
