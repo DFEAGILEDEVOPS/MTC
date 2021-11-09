@@ -1,20 +1,22 @@
 import * as RA from 'ramda-adjunct'
 import * as R from 'ramda'
-import { IAsyncTableService, AsyncTableService, TableStorageEntity } from '../../azure/storage-helper'
-import { ReceivedCheckTableEntity } from '../../schemas/models'
+import { ReceivedCheckFunctionBindingEntity } from '../../schemas/models'
 import moment from 'moment'
 import { ICheckFormService, CheckFormService } from './check-form.service'
 import { ILogger } from '../../common/logger'
 import { ICheckMarkerFunctionBindings, MarkingData, CheckResult, MarkedAnswer } from './models'
 import { ICheckNotificationMessage, CheckNotificationType } from '../../schemas/check-notification-message'
+import { ITableService, TableService } from '../../azure/table-service'
+import { ReceivedCheckBindingEntityTransformer } from '../../services/receivedCheckBindingEntityTransformer'
 
 export class CheckMarkerV1 {
-  private readonly tableService: IAsyncTableService
+  private readonly tableService: ITableService
   private readonly sqlService: ICheckFormService
+  private readonly receivedCheckTransformer: ReceivedCheckBindingEntityTransformer
 
-  constructor (tableService?: IAsyncTableService, sqlService?: ICheckFormService) {
+  constructor (tableService?: ITableService, sqlService?: ICheckFormService) {
     if (tableService === undefined) {
-      this.tableService = new AsyncTableService()
+      this.tableService = new TableService()
     } else {
       this.tableService = tableService
     }
@@ -24,6 +26,7 @@ export class CheckMarkerV1 {
     } else {
       this.sqlService = sqlService
     }
+    this.receivedCheckTransformer = new ReceivedCheckBindingEntityTransformer()
   }
 
   /**
@@ -34,7 +37,7 @@ export class CheckMarkerV1 {
   async mark (functionBindings: ICheckMarkerFunctionBindings, logger: ILogger): Promise<void> {
     logger.verbose('mark() called')
     const validatedCheck = this.findValidatedCheck(functionBindings.receivedCheckTable)
-    const markingData = await this.validateData(functionBindings, validatedCheck, logger)
+    const markingData = await this.validateData(validatedCheck, logger)
     functionBindings.checkResultTable = []
     functionBindings.checkNotificationQueue = []
 
@@ -60,7 +63,7 @@ export class CheckMarkerV1 {
     functionBindings.checkNotificationQueue.push(notification)
   }
 
-  private notifyProcessingFailure (validatedCheck: ReceivedCheckTableEntity, functionBindings: ICheckMarkerFunctionBindings): void {
+  private notifyProcessingFailure (validatedCheck: ReceivedCheckFunctionBindingEntity, functionBindings: ICheckMarkerFunctionBindings): void {
     const notification: ICheckNotificationMessage = {
       checkCode: validatedCheck.RowKey,
       notificationType: CheckNotificationType.checkInvalid,
@@ -69,7 +72,7 @@ export class CheckMarkerV1 {
     functionBindings.checkNotificationQueue.push(notification)
   }
 
-  private async validateData (functionBindings: ICheckMarkerFunctionBindings, validatedCheck: ReceivedCheckTableEntity, logger: ILogger): Promise<MarkingData | undefined> {
+  private async validateData (validatedCheck: ReceivedCheckFunctionBindingEntity, logger: ILogger): Promise<MarkingData | undefined> {
     if (RA.isNilOrEmpty(validatedCheck.answers)) {
       await this.updateReceivedCheckWithMarkingError(validatedCheck, 'answers property not populated')
       return
@@ -188,17 +191,18 @@ export class CheckMarkerV1 {
     functionBindings.checkResultTable.push(markingEntity)
   }
 
-  private findValidatedCheck (receivedCheckRef: any[]): ReceivedCheckTableEntity {
+  private findValidatedCheck (receivedCheckRef: any[]): ReceivedCheckFunctionBindingEntity {
     if (RA.isEmptyArray(receivedCheckRef)) {
       throw new Error('received check reference is empty')
     }
     return receivedCheckRef[0]
   }
 
-  private async updateReceivedCheckWithMarkingError (receivedCheck: ReceivedCheckTableEntity, markingError: string): Promise<Error | TableStorageEntity> {
-    receivedCheck.processingError = markingError
-    receivedCheck.markedAt = moment().toDate()
-    return this.tableService.replaceEntityAsync('receivedCheck', receivedCheck)
+  private async updateReceivedCheckWithMarkingError (receivedCheck: ReceivedCheckFunctionBindingEntity, markingError: string): Promise<void> {
+    const transformedEntity = this.receivedCheckTransformer.transform(receivedCheck)
+    transformedEntity.processingError = markingError
+    transformedEntity.markedAt = moment().toDate()
+    return this.tableService.mergeUpdateEntity('receivedCheck', transformedEntity)
   }
 
   private answerSort (answers: MarkedAnswer[]): MarkedAnswer[] {

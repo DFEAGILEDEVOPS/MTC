@@ -1,8 +1,7 @@
 'use strict'
 
 const R = require('ramda')
-const proxyquire = require('proxyquire').noCallThru()
-const pupilService = require('../../../services/pupil.service')
+const sut = require('../../../services/pupil.service')
 const pupilDataService = require('../../../services/data-access/pupil.data.service')
 const pupilMock = require('../mocks/pupil')
 const schoolMock = require('../mocks/school')
@@ -17,17 +16,10 @@ describe('pupil service', () => {
     return Promise.resolve(getPupil())
   }
 
-  function setupService (pupilDataService) {
-    return proxyquire('../../../services/pupil.service', {
-      './data-access/pupil.data.service': pupilDataService
-    })
-  }
-
   describe('#fetchOnePupil', () => {
     it('it makes a call to the pupilDataService', async () => {
       spyOn(pupilDataService, 'sqlFindOneByIdAndSchool').and.returnValue(pupilMockPromise())
-      const service = setupService(pupilDataService)
-      await service.fetchOnePupil('arg1', 'arg2')
+      await sut.fetchOnePupil('arg1', 'arg2')
       expect(pupilDataService.sqlFindOneByIdAndSchool).toHaveBeenCalledWith('arg1', 'arg2')
     })
   })
@@ -36,8 +28,7 @@ describe('pupil service', () => {
     const schoolId = 1
     it('it makes a call to the pupilDataService', async () => {
       spyOn(pupilDataService, 'sqlFindOneBySlugAndSchool').and.returnValue(pupilMockPromise())
-      const service = setupService(pupilDataService)
-      await service.fetchOnePupilBySlug('slug', schoolId)
+      await sut.fetchOnePupilBySlug('slug', schoolId)
       expect(pupilDataService.sqlFindOneBySlugAndSchool).toHaveBeenCalledWith('slug', schoolId)
     })
   })
@@ -52,7 +43,7 @@ describe('pupil service', () => {
       spyOn(sorting, 'sortByProps').and.returnValue(pupilMocks)
       let pupils
       try {
-        pupils = await pupilService.getPupilsWithFullNames(1234567)
+        pupils = await sut.getPupilsWithFullNames(1234567)
       } catch (error) {
         fail()
       }
@@ -65,7 +56,7 @@ describe('pupil service', () => {
     it('it throws an error when schoolId is not provided', async () => {
       spyOn(pupilDataService, 'sqlFindPupilsBySchoolId')
       try {
-        await pupilService.getPupilsWithFullNames()
+        await sut.getPupilsWithFullNames()
         fail()
       } catch (error) {
         expect(error.message).toBe('schoolId is required')
@@ -83,7 +74,7 @@ describe('pupil service', () => {
       spyOn(pupilDataService, 'sqlFindPupilsBySchoolId').and.returnValue(pupilMocks)
       spyOn(sorting, 'sortByProps')
       try {
-        await pupilService.findPupilsBySchoolId(1)
+        await sut.findPupilsBySchoolId(1)
         expect(sorting.sortByProps).toHaveBeenCalled()
       } catch (error) {
         fail(error.message)
@@ -92,7 +83,7 @@ describe('pupil service', () => {
     it('it throws an error when schoolId is not provided', async () => {
       spyOn(pupilDataService, 'sqlFindPupilsBySchoolId')
       try {
-        await pupilService.findPupilsBySchoolId()
+        await sut.findPupilsBySchoolId()
         fail()
       } catch (error) {
         expect(error.message).toBe('schoolId is required')
@@ -105,7 +96,7 @@ describe('pupil service', () => {
     it('it throws an error when schoolId is not provided', async () => {
       spyOn(pupilDataService, 'sqlFindOneBySlugAndSchool')
       try {
-        await pupilService.findOneBySlugAndSchool()
+        await sut.findOneBySlugAndSchool()
         fail()
       } catch (error) {
         expect(error.message).toBe('schoolId is required')

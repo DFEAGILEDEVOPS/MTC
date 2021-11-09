@@ -58,19 +58,19 @@ describe('pupilCensusService', () => {
   describe('upload2', () => {
     it('reads the file into stream, creates a job record and uploads to blob storage', async () => {
       spyOn(pupilCensusService, 'createJobRecord').and.returnValue({ id: 1, urlSlug: 'urlSlug' })
-      spyOn(azureBlobDataService, 'createContainerIfNotExistsAsync')
-      spyOn(azureBlobDataService, 'createBlockBlobFromLocalFileAsync')
+      spyOn(azureBlobDataService, 'createContainerIfNotExists')
+      spyOn(azureBlobDataService, 'uploadLocalFile')
       spyOn(jobDataService, 'sqlUpdateStatus')
       await pupilCensusService.upload2(pupilCensusUploadMock)
       expect(pupilCensusService.createJobRecord).toHaveBeenCalled()
-      expect(azureBlobDataService.createContainerIfNotExistsAsync).toHaveBeenCalled()
-      expect(azureBlobDataService.createBlockBlobFromLocalFileAsync).toHaveBeenCalled()
+      expect(azureBlobDataService.createContainerIfNotExists).toHaveBeenCalled()
+      expect(azureBlobDataService.uploadLocalFile).toHaveBeenCalled()
       expect(jobDataService.sqlUpdateStatus).not.toHaveBeenCalled()
     })
     it('throws error if the job creation fails', async () => {
       spyOn(pupilCensusService, 'createJobRecord').and.returnValue({})
-      spyOn(azureBlobDataService, 'createContainerIfNotExistsAsync')
-      spyOn(azureBlobDataService, 'createBlockBlobFromLocalFileAsync')
+      spyOn(azureBlobDataService, 'createContainerIfNotExists')
+      spyOn(azureBlobDataService, 'uploadLocalFile')
       spyOn(jobDataService, 'sqlUpdateStatus')
       try {
         await pupilCensusService.upload2(pupilCensusUploadMock)
@@ -79,16 +79,16 @@ describe('pupilCensusService', () => {
         expect(error.message).toBe('Job has not been created')
       }
       expect(pupilCensusService.createJobRecord).toHaveBeenCalled()
-      expect(azureBlobDataService.createContainerIfNotExistsAsync).not.toHaveBeenCalled()
-      expect(azureBlobDataService.createBlockBlobFromLocalFileAsync).not.toHaveBeenCalled()
+      expect(azureBlobDataService.createContainerIfNotExists).not.toHaveBeenCalled()
+      expect(azureBlobDataService.uploadLocalFile).not.toHaveBeenCalled()
       expect(jobDataService.sqlUpdateStatus).not.toHaveBeenCalled()
     })
     it('calls sqlUpdateStatus with failed status code if if blob uploading fails', async () => {
       const error = new Error()
       error.message = 'error'
       spyOn(pupilCensusService, 'createJobRecord').and.returnValue({ id: 1, urlSlug: 'urlSlug' })
-      spyOn(azureBlobDataService, 'createContainerIfNotExistsAsync')
-      spyOn(azureBlobDataService, 'createBlockBlobFromLocalFileAsync').and.returnValue(Promise.reject(error))
+      spyOn(azureBlobDataService, 'createContainerIfNotExists')
+      spyOn(azureBlobDataService, 'uploadLocalFile').and.returnValue(Promise.reject(error))
       spyOn(jobDataService, 'sqlUpdateStatus')
       try {
         await pupilCensusService.upload2(pupilCensusUploadMock)
@@ -97,8 +97,8 @@ describe('pupilCensusService', () => {
         expect(error.message).toBe('error')
       }
       expect(pupilCensusService.createJobRecord).toHaveBeenCalled()
-      expect(azureBlobDataService.createContainerIfNotExistsAsync).toHaveBeenCalled()
-      expect(azureBlobDataService.createBlockBlobFromLocalFileAsync).toHaveBeenCalled()
+      expect(azureBlobDataService.createContainerIfNotExists).toHaveBeenCalled()
+      expect(azureBlobDataService.uploadLocalFile).toHaveBeenCalled()
       expect(jobDataService.sqlUpdateStatus).toHaveBeenCalledWith('urlSlug', 'FLD')
     })
   })

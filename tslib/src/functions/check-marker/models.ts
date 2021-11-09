@@ -1,6 +1,7 @@
+import { ReceivedCheckFunctionBindingEntity } from '../../schemas/models'
 
 export interface ICheckMarkerFunctionBindings {
-  receivedCheckTable: any[]
+  receivedCheckTable: ReceivedCheckFunctionBindingEntity[]
   checkNotificationQueue: any[]
   checkResultTable: any[]
 }

@@ -14,7 +14,7 @@ module.exports = async function (req, res, next) {
   }
 
   try {
-    await blobService.createContainerIfNotExistsAsync(container)
+    await blobService.createContainerIfNotExists(container)
   } catch (error) {
     console.error(`Failed to create container ${container}: ${error.message}`)
   }
@@ -31,7 +31,7 @@ module.exports = async function (req, res, next) {
       const remoteFilename = moment().format('YYYYMMDDHHmmss') + '-' + userId + '-' + fileObj.field + '-' + fileObj.uuid
       const localFilename = fileObj.file
       try {
-        await blobService.createBlockBlobFromLocalFileAsync(container, remoteFilename, localFilename)
+        await blobService.uploadLocalFile(container, remoteFilename, localFilename)
       } catch (error) {
         console.error(`ERROR: Failed to upload file ${fileObj.filename} to ${container}`)
       }
