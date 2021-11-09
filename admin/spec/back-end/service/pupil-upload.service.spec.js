@@ -1,8 +1,6 @@
 'use strict'
 
-const sinon = require('sinon')
 const path = require('path')
-const proxyquire = require('proxyquire').noCallThru()
 const pupilUploadService = require('../../../services/pupil-upload.service')
 const schoolMock = require('../mocks/school')
 const generateErrorCSVService = require('../../../services/generate-error-csv.service')
@@ -15,18 +13,9 @@ const dummyCSV = {
   file: path.join(__dirname, '../../../data/fixtures/dummy.csv')
 }
 
-/* global beforeEach, afterEach, describe, it, expect spyOn jest */
+/* global beforeEach, describe, it, expect spyOn jest */
 
 describe('pupil-upload service', () => {
-  // TODO: Refactor to have a common setup dependencies
-  let sandbox
-
-  beforeEach(() => {
-    sandbox = sinon.createSandbox()
-  })
-
-  afterEach(() => sandbox.restore())
-
   describe('upload', () => {
     beforeEach(() => {
       validateCSVService.process = jest.fn(async () => {
@@ -48,20 +37,14 @@ describe('pupil-upload service', () => {
 
   describe('generates csv validation errors', () => {
     beforeEach(() => {
-      sandbox.mock(validateCSVService).expects('process')
-        .resolves({
-          csvData: [['test', 'test', 'test', 'test', 'test', 'test', 'Error'],
-            ['test', 'test', 'test', 'test', 'test', 'test', 'Error']]
-        })
-      proxyquire('../../../services/pupil-upload.service', {
-        '../../../services/validate-csv.service': validateCSVService
+      spyOn(validateCSVService, 'process').and.returnValue({
+        csvData: [['test', 'test', 'test', 'test', 'test', 'test', 'Error'],
+          ['test', 'test', 'test', 'test', 'test', 'test', 'Error']]
       })
+
       describe('on csv error', () => {
         beforeEach(() => {
-          sandbox.mock(generateErrorCSVService).expects('generate').resolves({ file: { name: 'test.csv' } })
-          proxyquire('../../../services/pupil-upload.service', {
-            '../../../services/generate-error-csv.service': generateErrorCSVService
-          })
+          spyOn(generateErrorCSVService, 'generate').and.returnValue({ file: { name: 'test.csv' } })
         })
 
         it('returns error csv file if csv has errors', async () => {
@@ -70,10 +53,7 @@ describe('pupil-upload service', () => {
         })
       })
       describe('on csv generation error', () => {
-        sandbox.mock(generateErrorCSVService).expects('generate').resolves({ error: 'error' })
-        proxyquire('../../../services/pupil-upload.service', {
-          '../../../services/generate-error-csv.service': generateErrorCSVService
-        })
+        spyOn(generateErrorCSVService, 'generate').and.returnValue({ error: 'error' })
       })
 
       it('returns error csv file if csv has errors', async () => {
@@ -85,23 +65,15 @@ describe('pupil-upload service', () => {
 
   describe('attempts to save csv errors', () => {
     beforeEach(() => {
-      sandbox.mock(validateCSVService).expects('process')
-        .resolves({
-          csvData: [['test', 'test', 'test', 'test', 'test', 'test'],
-            ['test', 'test', 'test', 'test', 'test', 'test']]
-        })
-      sandbox.mock(generateErrorCSVService).expects('generate').resolves({ file: { name: 'test.csv' } })
-      proxyquire('../../../services/pupil-upload.service', {
-        '../../../services/validate-csv.service': validateCSVService,
-        '../../../services/generate-error-csv.service': generateErrorCSVService
+      spyOn(validateCSVService, 'process').and.returnValue({
+        csvData: [['test', 'test', 'test', 'test', 'test', 'test'],
+          ['test', 'test', 'test', 'test', 'test', 'test']]
       })
+      spyOn(generateErrorCSVService, 'generate').and.returnValue({ file: { name: 'test.csv' } })
     })
     describe('and returns an object with pupils', () => {
       beforeEach(() => {
-        sandbox.mock(pupilDataService).expects('sqlInsertMany').resolves({ insertId: [1, 2], rowsModified: 4 })
-        proxyquire('../../../services/pupil-upload.service', {
-          '../../../services/data-access/pupil.data.service': pupilDataService
-        })
+        spyOn(pupilDataService, 'sqlInsertMany').and.returnValue({ insertId: [1, 2], rowsModified: 4 })
         spyOn(redisCacheService, 'drop')
         spyOn(redisKeyService, 'getPupilRegisterViewDataKey')
       })
@@ -113,10 +85,7 @@ describe('pupil-upload service', () => {
     })
     describe('and returns an object with an error if save fails', () => {
       beforeEach(() => {
-        sandbox.mock(pupilDataService).expects('sqlInsertMany').returns(null)
-        proxyquire('../../../services/pupil-upload.service', {
-          '../../../services/data-access/pupil.data.service': pupilDataService
-        })
+        spyOn(pupilDataService, 'sqlInsertMany').and.returnValue(null)
         spyOn(redisCacheService, 'drop')
         spyOn(redisKeyService, 'getPupilRegisterViewDataKey')
       })

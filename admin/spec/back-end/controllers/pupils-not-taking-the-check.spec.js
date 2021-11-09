@@ -1,7 +1,6 @@
 'use strict'
-/* global describe beforeEach afterEach it expect jasmine spyOn */
+/* global describe beforeEach it expect jasmine spyOn */
 
-const sinon = require('sinon')
 const httpMocks = require('node-mocks-http')
 
 const attendanceCodesPresenter = require('../../../helpers/attendance-codes-presenter')
@@ -37,7 +36,6 @@ describe('pupils-not-taking-the-check controller:', () => {
 
   describe('Check routes', () => {
     let controller
-    let sandbox
     let next
     const goodReqParams = {
       method: 'GET',
@@ -45,12 +43,7 @@ describe('pupils-not-taking-the-check controller:', () => {
     }
 
     beforeEach(() => {
-      sandbox = sinon.createSandbox()
       next = jasmine.createSpy('next')
-    })
-
-    afterEach(() => {
-      sandbox.restore()
     })
 
     describe('#getPupilNotTakingCheck: When there are pupils for the active school', () => {

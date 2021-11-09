@@ -9,7 +9,7 @@ const pupilService = {}
  * @param schoolId
  * @returns {Promise.<*>}
  */
-pupilService.fetchOnePupil = async (pupilId, schoolId) => {
+pupilService.fetchOnePupil = function fetchOnePupil (pupilId, schoolId) {
   return pupilDataService.sqlFindOneByIdAndSchool(pupilId, schoolId)
 }
 
@@ -19,7 +19,7 @@ pupilService.fetchOnePupil = async (pupilId, schoolId) => {
  * @param schoolId
  * @returns {Promise.<*>}
  */
-pupilService.fetchOnePupilBySlug = async (urlSlug, schoolId) => {
+pupilService.fetchOnePupilBySlug = function fetchOnePupilBySlug (urlSlug, schoolId) {
   return pupilDataService.sqlFindOneBySlugAndSchool(urlSlug, schoolId)
 }
 
@@ -28,7 +28,7 @@ pupilService.fetchOnePupilBySlug = async (urlSlug, schoolId) => {
  * @param {Number} schoolId
  * @returns {Promise<Array>}
  */
-pupilService.getPupilsWithFullNames = async (schoolId) => {
+pupilService.getPupilsWithFullNames = async function getPupilsWithFullNames (schoolId) {
   if (!schoolId) {
     throw new Error('schoolId is required')
   }
@@ -70,6 +70,26 @@ pupilService.findOneBySlugAndSchool = function findOneBySlugAndSchool (urlSlug, 
     throw new Error('urlSlug is required')
   }
   return pupilDataService.sqlFindOneBySlugAndSchool(urlSlug, schoolId)
+}
+
+/**
+ * Fetch one pupil with age reason filtered by pupil url slug and school id
+ * @param pupilUuid
+ * @param schoolId
+ * @returns {Promise.<*>}
+ */
+pupilService.fetchOneBySlugWithAgeReason = function fetchOneBySlugWithAgeReason (pupilUuid, schoolId) {
+  return pupilDataService.sqlFindOneBySlugWithAgeReason(pupilUuid, schoolId)
+}
+
+/**
+ * Find pupils by ids
+ * @param ids
+ * @param {Number} schoolId - `school.id` database ID
+ * @return {Promise<*>}
+ */
+pupilService.fetchMultipleByIds = function fetchMultipleByIds (ids, schoolId) {
+  return pupilDataService.sqlFindByIds(ids, schoolId)
 }
 
 module.exports = pupilService
