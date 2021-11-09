@@ -91,19 +91,19 @@ RUN echo "export GEM_PATH=$GEM_HOME:/usr/local/lib/ruby/gems/2.6.0" >> ~/.profil
 
 # install nvm and current node runtimes
 ENV NVM_DIR=/home/$BUILD_USER/.nvm
-ENV NODE_VERSION=14.18.1
+ENV CURRENT_NODE_VERSION=14.18.1
+ENV PREVIOUS_NODE_VERSION=12.18.2
 
-RUN curl -sL https://raw.githubusercontent.com/creationix/nvm/v0.38.0/install.sh | bash \
+RUN curl -sL https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash \
   && . $NVM_DIR/nvm.sh \
-  && nvm install $NODE_VERSION \
-  # angular spa still on node 10 until upgraded
-  && nvm install 10.14.1 \
-  && nvm alias default $NODE_VERSION
+  && nvm install $CURRENT_NODE_VERSION \
+  && nvm install $PREVIOUS_NODE_VERSION \
+  && nvm alias default $CURRENT_NODE_VERSION
 
 # install azuredevops agent service
 # https://github.com/microsoft/azure-pipelines-agent/releases
 ARG TARGETARCH=amd64
-ARG AGENT_VERSION=2.193.0
+ARG AGENT_VERSION=2.194.0
 
 WORKDIR /azp
 RUN if [ "$TARGETARCH" = "amd64" ]; then \
