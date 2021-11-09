@@ -23,12 +23,13 @@ uploadedFileService.getAzureBlobFileSize = async (blob) => {
   if (!blob) {
     return
   }
-  const blobFile = await azureBlobDataService.getBlobPropertiesAsync('csvuploads', blob)
-  if (!blobFile || !blobFile.contentLength) {
+  const blobFile = await azureBlobDataService.getBlobProperties('csvuploads', blob)
+  if (!blobFile || !blobFile._response.parsedHeaders.contentLength) {
     throw new Error('Blob file not found or invalid file')
   }
+  const contentLength = blobFile._response.parsedHeaders.contentLength
   // @ts-ignore need to create definition for promisified object
-  return Math.round(R.divide(blobFile.contentLength, 1024) * 100) / 100
+  return Math.round(R.divide(contentLength, 1024) * 100) / 100
 }
 
 module.exports = uploadedFileService

@@ -1,5 +1,5 @@
 'use strict'
-/* global describe beforeAll it afterAll */
+/* global describe beforeAll test afterAll */
 
 const path = require('path')
 const fs = require('fs')
@@ -30,7 +30,7 @@ describe('sql.service:integration', () => {
   })
 
   describe('vewCheckDiagnostic', () => {
-    it('column bindings should be valid', async () => {
+    test('column bindings should be valid', async () => {
       await sql.query('SELECT TOP 1 * FROM [mtc_admin].[vewCheckDiagnostic]')
     })
   })
