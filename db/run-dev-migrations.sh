@@ -11,4 +11,4 @@ do
     sleep 2
 done
 echo "sqldb is available, starting migrations"
-yarn migrate-and-seed-sql
+yarn migrate
