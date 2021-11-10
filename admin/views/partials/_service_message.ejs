@@ -1,0 +1,8 @@
+<% if (serviceMessage) { %>
+    <div class="govuk-body govuk-warning-message govuk-!-margin-bottom-7 govuk-!-margin-top-0">
+        <h2 class="govuk-heading-l">
+            <%= serviceMessage.title %>
+        </h2>
+        <p class="govuk-body"><%= serviceMessage.message %></p>
+    </div>
+<% } %>
