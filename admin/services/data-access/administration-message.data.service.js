@@ -8,7 +8,7 @@ const administrationMessageDataService = {}
 /**
  * Create a new service message
  * @param data
- * @return {Promise.<*>}
+ * @return
  */
 administrationMessageDataService.sqlCreate = async (data) => {
   await sqlService.create('serviceMessage', data)
@@ -27,7 +27,7 @@ administrationMessageDataService.sqlDeleteServiceMessage = async () => {
 
 /**
  * Fetch active service message
- * @return {Promise<Object>}
+ * @return {Promise<{ title: string, message: string }>}
  */
 administrationMessageDataService.sqlFindActiveServiceMessage = async () => {
   const sql = `

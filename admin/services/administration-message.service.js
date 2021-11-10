@@ -4,15 +4,18 @@ const administrationMessageDataService = require('./data-access/administration-m
 const redisCacheService = require('./data-access/redis-cache.service')
 const emptyFieldsValidator = require('../lib/validator/common/empty-fields-validators')
 const serviceMessageErrorMessages = require('../lib/errors/service-message')
+const { marked } = require('marked')
+const logService = require('./log.service')
+const logger = logService.getLogger()
 
 const administrationMessageService = {}
 const serviceMessageRedisKey = 'serviceMessage'
 
 /**
- * Get the current service message
- * @returns {Promise<any>}
+ * Fetch the service message from DB or cache with the message property as raw markdown, or plain text.
+ * @returns {Promise<{ title: string, message: string }>}
  */
-administrationMessageService.getMessage = async () => {
+administrationMessageService.fetchMessage = async function fetchServiceMessage () {
   let cachedServiceMessage
   const result = await redisCacheService.get(serviceMessageRedisKey)
   try {
@@ -22,6 +25,24 @@ administrationMessageService.getMessage = async () => {
     }
   } catch (ignore) {}
   return administrationMessageDataService.sqlFindActiveServiceMessage()
+}
+
+/**
+ * Get the current service message
+ * @returns {Promise<any>}
+ */
+administrationMessageService.getMessage = async () => {
+  let html
+  let rawMessage // object with .message => markdown
+  try {
+    rawMessage = await administrationMessageService.fetchMessage()
+    html = marked.parse(rawMessage.message)
+  } catch (error) {
+    logger.alert(`serviceMessage: failed to render.  Error: ${error.message}`)
+    return undefined // show the page at least, without the service message
+  }
+  // TODO: sanitise output
+  return { title: rawMessage.title, message: html }
 }
 
 /**
