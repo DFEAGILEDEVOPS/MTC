@@ -17,13 +17,13 @@ services:
       - sqldb
 #    should this be called here or in dockerfile? will it exit early if ran here?
 #    command: /bin/bash /mtc/db/run-dev-migrations.sh
-  functions_app:
+  func_throttled:
     build:
-      context: ./functions-app
+      context: ./func-throttled
       dockerfile: dev.Dockerfile
-    container_name: "mtc_functions_app"
+    container_name: "mtc_func_throttled"
     ports:
-      - 7072:7072
+      - 7073:7073
     volumes:
       - "./:/mtc"
     environment:
