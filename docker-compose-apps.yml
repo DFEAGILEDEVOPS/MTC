@@ -15,8 +15,6 @@ services:
       SQL_PORT: '1433'
     depends_on:
       - sqldb
-#    should this be called here or in dockerfile? will it exit early if ran here?
-#    command: /bin/bash /mtc/db/run-dev-migrations.sh
   func_throttled:
     build:
       context: ./func-throttled
