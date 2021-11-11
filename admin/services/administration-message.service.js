@@ -1,10 +1,10 @@
 'use strict'
+const { marked } = require('marked')
 
 const administrationMessageDataService = require('./data-access/administration-message.data.service')
 const redisCacheService = require('./data-access/redis-cache.service')
 const emptyFieldsValidator = require('../lib/validator/common/empty-fields-validators')
 const serviceMessageErrorMessages = require('../lib/errors/service-message')
-const { marked } = require('marked')
 const logService = require('./log.service')
 const logger = logService.getLogger()
 
@@ -12,8 +12,14 @@ const administrationMessageService = {}
 const serviceMessageRedisKey = 'serviceMessage'
 
 /**
+ * @typedef serviceMessage
+ * @property message string
+ * @property title string
+ */
+
+/**
  * Fetch the service message from DB or cache with the message property as raw markdown, or plain text.
- * @returns {Promise<{ title: string, message: string }>}
+ * @returns {Promise<serviceMessage | undefined>}
  */
 administrationMessageService.fetchMessage = async function fetchServiceMessage () {
   let cachedServiceMessage
@@ -29,7 +35,7 @@ administrationMessageService.fetchMessage = async function fetchServiceMessage (
 
 /**
  * Get the current service message
- * @returns {Promise<any>}
+ * @returns {Promise<serviceMessage | undefined>}
  */
 administrationMessageService.getMessage = async () => {
   let html
