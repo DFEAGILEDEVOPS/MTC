@@ -6,7 +6,7 @@ const config = require('./dist/config').default
 async function checkDatabaseIsUp () {
   try {
     // make sure that any items are correctly URL encoded in the connection string
-    await sql.connect(`mssql://${config.Sql.user}:${config.Sql.password}@${config.Sql.server}/${config.Sql.database}`)
+    await sql.connect(`Server=${config.Sql.Server},${config.Sql.Port};Database=${config.Sql.Database};User Id=${config.Sql.Application.Username};Password=${config.Sql.Application.Password};Encrypt=false`)
     const result = await sql.query('SELECT * FROM mtc_admin.[role] WHERE [title] = \'TECH-SUPPORT\'')
     await sql.close()
     if (result && result.recordset && result.recordset[0] && result.recordset[0].id) {
