@@ -3,7 +3,7 @@ import { CensusImportV1 } from './v1'
 import config from '../../config'
 import { ICensusImportDataService } from './census-import.data.service'
 import { IJobDataService } from './job.data.service'
-import { IBlobStorageService } from '../../azure/storage-helper'
+import { IBlobService } from '../../azure/blob-service'
 import { ILogger } from '../../common/logger'
 import { RedisServiceMock } from '../../caching/redis-service.mock'
 import { IRedisService } from '../../caching/redis-service'
@@ -18,9 +18,8 @@ const JobDataServiceMock = jest.fn<IJobDataService, any>(() => ({
   updateStatus: jest.fn()
 }))
 
-const BlobStorageServiceMock = jest.fn<IBlobStorageService, any>(() => ({
-  deleteContainerAsync: jest.fn(),
-  deleteBlobAsync: jest.fn()
+const BlobServiceMock = jest.fn<IBlobService, any>(() => ({
+  deleteBlob: jest.fn()
 }))
 
 const LoggerMock = jest.fn<ILogger, any>(() => ({
@@ -33,7 +32,7 @@ const LoggerMock = jest.fn<ILogger, any>(() => ({
 let sut: CensusImportV1
 let censusImportDataServiceMock: ICensusImportDataService
 let jobDataServiceMock: IJobDataService
-let blobStorageServiceMock: IBlobStorageService
+let blobServiceMock: IBlobService
 let loggerMock: ILogger
 let redisServiceMock: IRedisService
 const loadAndInsertCount = 5
@@ -45,7 +44,7 @@ describe('census-import: v1', () => {
     jest.spyOn(censusImportDataServiceMock, 'loadStagingTable').mockImplementation(async () => Promise.resolve(loadAndInsertCount))
     jobDataServiceMock = new JobDataServiceMock()
     jest.spyOn(jobDataServiceMock, 'updateStatus').mockImplementation(async () => Promise.resolve(123))
-    blobStorageServiceMock = new BlobStorageServiceMock()
+    blobServiceMock = new BlobServiceMock()
     loggerMock = new LoggerMock()
     redisServiceMock = new RedisServiceMock()
 
@@ -53,7 +52,7 @@ describe('census-import: v1', () => {
       loggerMock,
       censusImportDataServiceMock,
       jobDataServiceMock,
-      blobStorageServiceMock,
+      blobServiceMock,
       redisServiceMock)
   })
 
@@ -77,7 +76,7 @@ describe('census-import: v1', () => {
 
   test('census blob container is deleted at end of a successful run', async () => {
     await sut.process('foo,bar', blobUri)
-    expect(blobStorageServiceMock.deleteBlobAsync).toHaveBeenCalledTimes(1)
+    expect(blobServiceMock.deleteBlob).toHaveBeenCalledTimes(1)
   })
 
   test('when insert counts do not match, job is reported as failed', async () => {

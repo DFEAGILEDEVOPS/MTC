@@ -1,78 +1,53 @@
 'use strict'
-/* global describe, beforeEach, afterEach, it, expect, spyOn */
+/* global describe, beforeEach, it, expect, spyOn */
 
-const proxyquire = require('proxyquire').noCallThru()
-const sinon = require('sinon')
 const checkMock = require('../../mocks/check')
 const sqlService = require('../../../../services/data-access/sql.service')
+const sut = require('../../../../services/data-access/check.data.service')
 
 describe('check.data.service', () => {
-  let service, sandbox
-
-  beforeEach(() => {
-    sandbox = sinon.createSandbox()
-  })
-
-  afterEach(() => sandbox.restore())
-
   describe('#sqlFindOneByCheckCode', () => {
-    let mock
-
     beforeEach(() => {
-      mock = sandbox.mock(sqlService).expects('readonlyQuery').resolves(checkMock)
-      service = proxyquire('../../../../services/data-access/check.data.service', {
-        '../../../../services/data-access/sql.service': sqlService
-      })
+      spyOn(sqlService, 'readonlyQuery').and.returnValue(checkMock)
     })
 
-    it('makes the expected calls', () => {
-      service.sqlFindOneByCheckCode('mock-check-code')
-      expect(mock.verify()).toBe(true)
+    it('makes the expected calls', async () => {
+      await sut.sqlFindOneByCheckCode('mock-check-code')
+      expect(sqlService.readonlyQuery).toHaveBeenCalled()
     })
   })
 
   describe('#sqlFindLatestCheck', () => {
-    let mock
-
     beforeEach(() => {
-      mock = sandbox.mock(sqlService).expects('readonlyQuery').resolves(checkMock)
-      service = proxyquire('../../../../services/data-access/check.data.service', {
-        '../../../../services/data-access/sql.service': sqlService
-      })
+      spyOn(sqlService, 'readonlyQuery').and.returnValue(checkMock)
     })
 
-    it('should makes the expected call', () => {
-      service.sqlFindLatestCheck(1234)
-      expect(mock.verify()).toBe(true)
+    it('should makes the expected call', async () => {
+      await sut.sqlFindLatestCheck(1234)
+      expect(sqlService.readonlyQuery).toHaveBeenCalled()
     })
   })
 
   describe('#sqlFindFullyPopulated', () => {
-    let mock
-
     beforeEach(() => {
-      mock = sandbox.mock(sqlService).expects('readonlyQuery').resolves(checkMock)
-      service = proxyquire('../../../../services/data-access/check.data.service', {
-        '../../../../services/data-access/sql.service': sqlService
-      })
+      spyOn(sqlService, 'readonlyQuery').and.returnValue(checkMock)
     })
 
-    it('makes the expected calls', () => {
-      service.sqlFindFullyPopulated({ testCriteria: 'someValue' })
-      expect(mock.verify()).toBe(true)
+    it('makes the expected calls', async () => {
+      await sut.sqlFindFullyPopulated({ testCriteria: 'someValue' })
+      expect(sqlService.readonlyQuery).toHaveBeenCalled()
     })
   })
 
   describe('#sqlFindNumberOfChecksStartedByPupil', () => {
     beforeEach(() => {
-      service = require('../../../../services/data-access/check.data.service')
       spyOn(sqlService, 'readonlyQuery').and.returnValue([{
         cnt: 5
       }])
     })
 
-    it('makes the expected calls', () => {
-      service.sqlFindNumberOfChecksStartedByPupil(1234)
+    it('makes the expected calls', async () => {
+      await sut.sqlFindNumberOfChecksStartedByPupil(1234)
       expect(sqlService.readonlyQuery).toHaveBeenCalled()
     })
   })

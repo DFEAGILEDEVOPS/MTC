@@ -866,7 +866,6 @@ describe('service manager controller:', () => {
       }
       const req = getReq(params)
       const res = getRes()
-      console.log(organisationBulkUploadService)
       jest.spyOn(controller, 'getUploadOrganisations').mockImplementation()
       // ensure the validation fails.
       jest.spyOn(organisationBulkUploadService, 'validate').mockResolvedValue(new ValidationError('foo', 'mock error'))
