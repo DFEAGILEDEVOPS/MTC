@@ -7,6 +7,7 @@ const emptyFieldsValidator = require('../lib/validator/common/empty-fields-valid
 const serviceMessageErrorMessages = require('../lib/errors/service-message')
 const logService = require('./log.service')
 const logger = logService.getLogger()
+const sanitiseService = require('./sanitise.service')
 
 const administrationMessageService = {}
 const serviceMessageRedisKey = 'serviceMessage'
@@ -42,13 +43,16 @@ administrationMessageService.getMessage = async () => {
   let rawMessage // object with .message => markdown
   try {
     rawMessage = await administrationMessageService.fetchMessage()
+    if (rawMessage === undefined) {
+      return undefined
+    }
     html = marked.parse(rawMessage.message)
   } catch (error) {
     logger.alert(`serviceMessage: failed to render.  Error: ${error.message}`)
     return undefined // show the page at least, without the service message
   }
-  // TODO: sanitise output
-  return { title: rawMessage.title, message: html }
+  const cleanMessage = sanitiseService.sanitise(html)
+  return { title: rawMessage.title, message: cleanMessage }
 }
 
 /**
