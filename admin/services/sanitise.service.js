@@ -3,7 +3,7 @@ const { JSDOM } = require('jsdom')
 
 const santitiseService = {
   /**
-   *
+   * Sanitise tainted HTML, remove XSS and create well-formed HTML.
    * @param {string} dirty
    */
   sanitise: function santitiseFn (dirty) {
