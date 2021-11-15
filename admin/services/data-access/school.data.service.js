@@ -181,6 +181,25 @@ const schoolDataService = {
                   WHERE s.urlSlug = @slug`
     const res = await sqlService.query(sql, params)
     return R.head(res)
+  },
+
+  /**
+   * Service-manager: add a new school
+   * @param data
+   * @returns {Promise<unknown>}
+   */
+  sqlAddSchool: async function (data) {
+    const sql = `
+        INSERT INTO [mtc_admin].[school] (leaCode, estabCode, dfeNumber, urn, name)
+        VALUES (@leaCode, @estabCode, @dfeNumber, @urn, @name)`
+    const params = [
+      { name: 'estabCode', value: data.estabCode, type: TYPES.Int },
+      { name: 'leaCode', value: data.leaCode, type: TYPES.Int },
+      { name: 'dfeNumber', value: data.dfeNumber, type: TYPES.Int },
+      { name: 'urn', value: data.urn, type: TYPES.Int },
+      { name: 'name', value: data.name, type: TYPES.NVarChar(TYPES.MAX) }
+    ]
+    return sqlService.modify(sql, params)
   }
 }
 
