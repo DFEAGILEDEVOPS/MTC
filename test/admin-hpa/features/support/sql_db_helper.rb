@@ -628,4 +628,12 @@ class SqlDbHelper
     result.cancel
     pupil_details_res
   end
+
+  def self.find_school_by_name(name)
+    sql = "SELECT * FROM [mtc_admin].[school] WHERE name='#{name}'"
+    result = SQL_CLIENT.execute(sql)
+    school_res = result.first
+    result.cancel
+    school_res
+  end
 end

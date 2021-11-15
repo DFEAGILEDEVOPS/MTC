@@ -66,7 +66,7 @@ const payloadService = {
   /**
    * Return a copy of the data with updated 'inputs' and 'audit' arrays that have relativeTiming added
    * @param check
-   * @return {Question}
+   * @return any  a copy of the payload, modified to show relative timings on the inputs and audit events
    */
   addRelativeTimings: function addRelativeTimings (check) {
     const r1 = R.assoc('inputs', this.addRelativeTimingsToSection(check.inputs), check)
