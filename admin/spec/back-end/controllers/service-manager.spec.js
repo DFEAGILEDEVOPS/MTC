@@ -37,7 +37,7 @@ describe('service manager controller:', () => {
     next = jest.fn()
     jest.spyOn(administrationMessageService, 'getMessage').mockResolvedValue(undefined)
   })
-  
+
   afterEach(() => {
     jest.restoreAllMocks()
   })
@@ -731,7 +731,6 @@ describe('service manager controller:', () => {
   })
 
   describe('getUploadOrganisations', () => {
-
     test('if called with a job slug it gets the job status', async () => {
       const params = {
         url: '/service-manager/organisations/upload/00000000-0000-0000-0000-000000000000',
@@ -789,7 +788,6 @@ describe('service manager controller:', () => {
   })
 
   describe('postUploadOrganisations', () => {
-
     test('it uploads the file to Azure', async () => {
       const params = {
         url: '/service-manager/organisations/upload',
@@ -892,7 +890,6 @@ describe('service manager controller:', () => {
       })
     })
     describe('getAddSchool', () => {
-
       test('it renders the add-school page', async () => {
         const req = getReq()
         const res = getRes()
@@ -925,7 +922,7 @@ describe('service manager controller:', () => {
         expect(schoolService.addSchool).toHaveBeenCalled()
         expect(res.redirect).toHaveBeenCalledWith('/service-manager/organisations')
       })
-      
+
       test('it displays the page again if the validation fails', async () => {
         const req = getReq({
           body: {
@@ -959,7 +956,7 @@ describe('service manager controller:', () => {
         await controller.postAddSchool(req, res, next)
         expect(next).toHaveBeenCalledWith(new Error('test error'))
       })
-      
+
       test('it trims the school name', async () => {
         const req = getReq({
           body: {
