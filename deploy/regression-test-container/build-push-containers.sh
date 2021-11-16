@@ -90,15 +90,20 @@ build_consumption_functions_image () {
   docker build -t $imageName -f test.Dockerfile .
 }
 
+run_compose () {
+  docker compose up --build
+}
+
 start=`date +%s`
-build_db_image
-build_admin_image
-build_api_image
-build_spa_image
+# build_db_image
+# build_admin_image
+# build_api_image
+# build_spa_image
 install_consumption_functions
-build_consumption_functions_image
+# build_consumption_functions_image
 install_throttled_functions
-build_throttled_functions_image
+# build_throttled_functions_image
+run_compose
 end=`date +%s`
 runtime=$((end-start))
 scriptbanner "Packages installed and built in: ${runtime} seconds"
