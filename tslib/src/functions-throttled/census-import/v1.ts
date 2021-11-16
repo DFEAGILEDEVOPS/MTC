@@ -2,11 +2,11 @@ import * as csvString from 'csv-string'
 import moment from 'moment'
 import * as R from 'ramda'
 import { v4 as uuidv4 } from 'uuid'
-import { AsyncBlobService, IBlobStorageService } from '../../azure/storage-helper'
 import { CensusImportDataService, ICensusImportDataService } from './census-import.data.service'
 import { IJobDataService, JobDataService } from './job.data.service'
 import * as mssql from 'mssql'
 import { ConsoleLogger, ILogger } from '../../common/logger'
+import { IBlobService, BlobService } from '../../azure/blob-service'
 
 export interface IJobResult {
   processCount: number
@@ -16,14 +16,14 @@ export class CensusImportV1 {
   private readonly pool: mssql.ConnectionPool
   private readonly censusImportDataService: ICensusImportDataService
   private readonly jobDataService: IJobDataService
-  private readonly blobStorageService: IBlobStorageService
+  private readonly blobService: IBlobService
   private readonly logger: ILogger
 
   constructor (pool: mssql.ConnectionPool,
     logger?: ILogger,
     censusImportDataService?: ICensusImportDataService,
     jobDataService?: IJobDataService,
-    blobStorageService?: IBlobStorageService) {
+    blobService?: IBlobService) {
     this.pool = pool
 
     if (censusImportDataService === undefined) {
@@ -36,10 +36,10 @@ export class CensusImportV1 {
     }
     this.jobDataService = jobDataService
 
-    if (blobStorageService === undefined) {
-      blobStorageService = new AsyncBlobService()
+    if (blobService === undefined) {
+      blobService = new BlobService()
     }
-    this.blobStorageService = blobStorageService
+    this.blobService = blobService
 
     if (logger === undefined) {
       logger = new ConsoleLogger()
@@ -69,7 +69,7 @@ export class CensusImportV1 {
 
     const pupilMeta = await this.censusImportDataService.loadPupilsFromStaging(censusTable, jobId)
     await this.censusImportDataService.deleteStagingTable(censusTable)
-    await this.blobStorageService.deleteBlobAsync(blobName, 'census')
+    await this.blobService.deleteBlob(blobName, 'census')
 
     const jobOutput = `${stagingInsertCount} rows in uploaded file, ${pupilMeta.insertCount} inserted to pupil table, ${pupilMeta.errorCount} rows containing errors`
     if (stagingInsertCount !== pupilMeta.insertCount) {
