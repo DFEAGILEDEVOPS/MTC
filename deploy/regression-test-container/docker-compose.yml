@@ -1,0 +1,89 @@
+version: '3'
+services:
+  dbmigration:
+    build:
+      dockerfile: dev.Dockerfile
+    container_name: mtc_db_migrations
+    environment:
+      SQL_SERVER: 'sqldb'
+      SQL_PORT: '1433'
+    depends_on:
+      - sqldb
+  func_throttled:
+    build:
+      context: ./func-throttled
+      dockerfile: dev.Dockerfile
+    container_name: "mtc_func_throttled"
+    ports:
+      - 7073:7073
+    volumes:
+      - "./:/mtc"
+    environment:
+      SQL_SERVER: 'sqldb'
+      REDIS_HOST: 'redis'
+    depends_on:
+      - sqldb
+      - dbmigration
+      - redis
+    command: ["./wait-for-db.sh", "sqldb", "yarn", "start"]
+  func_consumption:
+    build:
+      context: ./func-consumption
+      dockerfile: dev.Dockerfile
+    container_name: "mtc_func_consumption"
+    ports:
+      - 7071:7071
+    volumes:
+      - "./:/mtc"
+    environment:
+      SQL_SERVER: 'sqldb'
+      REDIS_HOST: 'redis'
+    depends_on:
+      - sqldb
+      - dbmigration
+      - redis
+    command: ["./wait-for-db.sh", "sqldb", "yarn", "start"]
+  admin_dev:
+      build:
+        context: ./admin
+        dockerfile: dev.Dockerfile
+      container_name: "mtc_admin_dev"
+      ports:
+        - 3001:3001
+      volumes:
+        - "./:/mtc"
+      environment:
+        SQL_SERVER: 'sqldb'
+        REDIS_HOST: 'redis'
+      depends_on:
+        - sqldb
+        - dbmigration
+        - redis
+      restart: always
+      command: ["./wait-for-db.sh", "sqldb", "./docker-start-dev.sh"]
+  spa_dev:
+    build:
+      context: ./pupil-spa
+      dockerfile: dev.Dockerfile
+    container_name: "mtc_spa_dev"
+    ports:
+      - 4200:4200
+    volumes:
+      - "./:/mtc"
+    environment:
+      REDIS_HOST: 'redis'
+    command: ["./docker-start-dev.sh"]
+  pupil_api:
+    build:
+      context: ./pupil-api
+      dockerfile: dev.Dockerfile
+    container_name: "mtc_pupil_api_dev"
+    ports:
+      - 3003:3003
+    environment:
+      REDIS_HOST: 'redis'
+    depends_on:
+      - redis
+    volumes:
+      - "./:/mtc"
+    command: ["./docker-start-dev.sh"]
