@@ -324,6 +324,39 @@ const controller = {
     }
   },
 
+  getAddSchool: async function getAddSchool (req, res, next, error = new ValidationError()) {
+    res.locals.pageTitle = 'Add organisation'
+    req.breadcrumbs(res.locals.pageTitle)
+    try {
+      res.render('service-manager/add-school', {
+        breadcrumbs: req.breadcrumbs(),
+        formData: req.body,
+        messages: res.locals.messages,
+        error: error
+      })
+    } catch (error) {
+      return next(error)
+    }
+  },
+
+  postAddSchool: async function postAddSchool (req, res, next) {
+    try {
+      const { name, dfeNumber, urn } = req.body
+      await schoolService.addSchool({
+        name: name.trim(),
+        dfeNumber: parseInt(dfeNumber, 10),
+        urn: parseInt(urn, 10)
+      })
+      req.flash('info', 'School added')
+      res.redirect('/service-manager/organisations')
+    } catch (error) {
+      if (error.constructor === ValidationError) {
+        return controller.getAddSchool(req, res, next, error)
+      }
+      return next(error)
+    }
+  },
+
   getSearch: async function getSearch (req, res, next, validationError = new ValidationError()) {
     req.breadcrumbs('Manage organisations', '/service-manager/organisations')
     res.locals.pageTitle = 'Search organisations'
