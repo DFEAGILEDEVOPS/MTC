@@ -51,7 +51,7 @@
                                 class="govuk-textarea govuk-!-width-three-quarters <%= err.isError('serviceMessageContent') ? 'govuk-textarea--error' : '' %>"
                                 name="serviceMessageContent"
                                 id="serviceMessageContent"
-                                rows="4"><%= formData['message'] %></textarea>
+                                rows="10"><%= formData['message'] %></textarea>
                     </div>
                 </div>
                 <button class="govuk-button govuk-!-margin-right-2" id="submit-service-message-button" type="submit">Save</button>
@@ -60,3 +60,14 @@
         </div>
     </div>
 </main>
+<link rel="stylesheet" href='<%= assetPath %>vendor/font-awesome/css/font-awesome.min.css' type='text/css'></link>
+<link rel="stylesheet" href='<%= assetPath %>vendor/simplemde/simplemde.min.css' type='text/css'></link>
+<script defer src='<%= assetPath %>vendor/simplemde/simplemde.min.js'></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        var simplemde = new SimpleMDE({
+            autoDownloadFontAwesome: false,
+            spellChecker: false
+        });
+    })
+</script>

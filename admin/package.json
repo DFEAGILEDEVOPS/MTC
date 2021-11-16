@@ -29,7 +29,7 @@
     "watch:integration": "yarn jest --watch --coverage=no --config ./tests-integration/jest.integration.config.js"
   },
   "mtc": {
-    "assets-version": "d5a7f76641a4caba7e7bce29877e7c88"
+    "assets-version": "3b7bd0e6957f0b1c6c8b8f8339e4b471"
   },
   "engines": {
     "node": ">= 12"
@@ -65,6 +65,7 @@
     "express-winston": "^4.1.0",
     "fast-csv": "^4.1.1",
     "feature-toggles": "^1.4.0",
+    "font-awesome": "^4.7.0",
     "fs-extra": "^10.0.0",
     "govuk-frontend": "^3.2.0",
     "helmet": "^4.3.1",
@@ -89,6 +90,7 @@
     "ramda-adjunct": "^2.21.0",
     "random-number-csprng": "^1.0.2",
     "sass": "^1.38.0",
+    "simplemde": "^1.11.2",
     "to-bool": "^0.0.1",
     "uuid": "^8.3.2",
     "uuid-validate": "^0.0.3",

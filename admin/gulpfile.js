@@ -58,6 +58,16 @@ const jsBundleFiles = [
   './assets/javascripts/pupil-status-selection.js'
 ]
 
+// These files are used in the service manager markdown editor, and font-awesome is the dependency.
+const simpleMdeFiles = [
+  './node_modules/simplemde/dist/simplemde.min.js',
+  './node_modules/simplemde/dist/simplemde.min.css'
+]
+const fontAwesomeFiles = {
+  css: ['./node_modules/font-awesome/css/font-awesome.min.css'],
+  fontDir: './node_modules/font-awesome/fonts/**/*'
+}
+
 /*
   session-expiry.js contains two strings that are claimed to be global variables.  The `bundlejs` task will replace
   these strings with values from config during the build.  If config has not loaded correctly the input to `uglify` will
@@ -170,8 +180,9 @@ function cleanPublic () {
   return gulp.src([
     'public/javascripts/app.js',
     'public/stylesheets/application.css',
-    'public/stylesheets/application-ie8.css'
-  ], { read: false, allowEmpty: true })
+    'public/stylesheets/application-ie8.css',
+    'public/vendor/'
+  ], { read: false, allowEmpty: true, force: true })
     .pipe(clean())
 }
 
@@ -203,6 +214,24 @@ function copyCsvFiles () {
   return gulp
     .src(['./assets/csv/*'])
     .pipe(gulp.dest('public/csv'))
+}
+
+function copySimpleMdeFiles () {
+  return gulp
+    .src(simpleMdeFiles)
+    .pipe(gulp.dest('public/vendor/simplemde'))
+}
+
+function copyFontAwesomeCss () {
+  return gulp
+    .src(fontAwesomeFiles.css)
+    .pipe(gulp.dest('public/vendor/font-awesome/css'))
+}
+
+function copyFontAwesomeFonts () {
+  return gulp
+    .src(fontAwesomeFiles.fontDir, { base: './node_modules/font-awesome/' })
+    .pipe(gulp.dest('public/vendor/font-awesome'))
 }
 
 function generateAssetsVersion (done) {
@@ -237,7 +266,10 @@ gulp.task('build',
       copyGdsImages,
       copyGdsFonts,
       copyPdfs,
-      copyCsvFiles
+      copyCsvFiles,
+      copySimpleMdeFiles,
+      copyFontAwesomeCss,
+      copyFontAwesomeFonts
     ),
     generateAssetsVersion,
     gulp.parallel(
@@ -261,7 +293,10 @@ gulp.task('dev-build',
       copyGdsImages,
       copyGdsFonts,
       copyPdfs,
-      copyCsvFiles
+      copyCsvFiles,
+      copySimpleMdeFiles,
+      copyFontAwesomeCss,
+      copyFontAwesomeFonts
     ),
     generateAssetsVersion,
     gulp.parallel(
@@ -276,3 +311,4 @@ gulp.task('dev-build',
 exports.cleanDist = cleanDist
 exports.compileTs = compileTs
 exports.watch = watch
+exports.cleanPublic = cleanPublic
