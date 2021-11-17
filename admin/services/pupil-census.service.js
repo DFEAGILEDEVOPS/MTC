@@ -88,7 +88,6 @@ pupilCensusService.getUploadedFile = async () => {
 
 /**
  * Remove a pupil census file record
- * @deprecated
  * @param {Number} pupilCensusId
  * @return {Promise<Object>}
  */
