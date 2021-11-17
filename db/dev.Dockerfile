@@ -8,6 +8,8 @@ COPY package.json .
 COPY yarn.lock .
 RUN yarn install --ignore-engines --frozen-lockfile
 
+COPY . .
+
 # this container will run migrations once port 1433 on the db server is open
 # when the migrations are complete, it will exit
 CMD ./run-dev-migrations.sh

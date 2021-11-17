@@ -26,7 +26,7 @@ services:
       - sqldb
   func_throttled:
     build:
-      context: ../../func-consumption
+      context: ../../func-throttled
       dockerfile: test.Dockerfile
     container_name: mtc_func_throttled_reg_test
     ports:
@@ -41,7 +41,7 @@ services:
     command: ["./wait-for-db.sh", "sqldb", "yarn", "start"]
   func_consumption:
     build:
-      context: ../../func-throttled
+      context: ../../func-consumption
       dockerfile: test.Dockerfile
     container_name: mtc_func_consumption_reg_test
     ports:
