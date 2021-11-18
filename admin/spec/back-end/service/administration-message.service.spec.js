@@ -6,6 +6,7 @@ const redisCacheService = require('../../../services/data-access/redis-cache.ser
 const administrationMessageService = require('../../../services/administration-message.service')
 const emptyFieldsValidator = require('../../../lib/validator/common/empty-fields-validators')
 const ValidationError = require('../../../lib/validation-error')
+const { marked } = require('marked')
 
 const serviceMessageRedisKey = 'serviceMessage'
 
@@ -52,6 +53,12 @@ describe('administrationMessageService', () => {
       expect(msg.message).toContain('<h1>title</h1>')
       expect(msg.message).toContain('<strong>bold</strong>')
       expect(msg.message).toContain('<em>italic</em>')
+    })
+
+    test('it returns undefined if the markdown parser throws an error', async () => {
+      jest.spyOn(administrationMessageService, 'fetchMessage').mockResolvedValue({ title: 'test', message: 'some unparsable content' })
+      jest.spyOn(marked, 'parse').mockImplementation(() => { throw new Error('test error') })
+      await expect(administrationMessageService.getMessage()).resolves.toBeUndefined()
     })
   })
 
