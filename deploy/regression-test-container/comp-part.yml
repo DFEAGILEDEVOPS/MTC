@@ -27,22 +27,23 @@ services:
       SQL_FUNCTIONS_APP_USER_PASSWORD: ${SQL_FUNCTIONS_APP_USER_PASSWORD}
     depends_on:
       - sqldb
-  func_throttled:
+  func_consumption:
     build:
-      context: ../../func-throttled
+      context: ../../func_consumption
       # dockerfile: Dockerfile
-    container_name: mtc_func_throttled
+    container_name: mtc_func_consumption
     ports:
-      - 7073:7073
+      - 7071:7071
     environment:
       SQL_SERVER: 'sqldb'
       REDIS_HOST: 'redis'
       AZURE_SERVICE_BUS_CONNECTION_STRING: ${AZURE_SERVICE_BUS_CONNECTION_STRING}
       AZURE_STORAGE_CONNECTION_STRING: ${AZURE_STORAGE_CONNECTION_STRING}
+      AzureWebJobsStorage: ${AZURE_STORAGE_CONNECTION_STRING}
       SQL_FUNCTIONS_APP_USER: ${SQL_FUNCTIONS_APP_USER}
       SQL_FUNCTIONS_APP_USER_PASSWORD: ${SQL_FUNCTIONS_APP_USER_PASSWORD}
     depends_on:
       - sqldb
       - dbmigration
       - redis
-    command: ["/home/site/wwwroot/wait-for-db.sh", "sqldb", "/home/site/wwwroot/yarn", "start"]
+    command: ["./wait-for-db.sh", "sqldb", "yarn", "start"]
