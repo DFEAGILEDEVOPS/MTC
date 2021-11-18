@@ -5,6 +5,5 @@ FROM stamtc/mtc-azure-functions-base:latest
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 COPY . .
-# TODO because we use dist, the reference to tslib tsconfig.json is broken
-COPY dist .
+
 CMD yarn start

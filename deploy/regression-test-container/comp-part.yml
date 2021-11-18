@@ -30,7 +30,7 @@ services:
   func_throttled:
     build:
       context: ../../func-throttled
-      dockerfile: test.Dockerfile
+      # dockerfile: Dockerfile
     container_name: mtc_func_throttled
     ports:
       - 7073:7073
@@ -45,4 +45,4 @@ services:
       - sqldb
       - dbmigration
       - redis
-    command: ["./wait-for-db.sh", "sqldb", "yarn", "start"]
+    command: ["/home/site/wwwroot/wait-for-db.sh", "sqldb", "/home/site/wwwroot/yarn", "start"]

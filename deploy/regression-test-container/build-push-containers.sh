@@ -91,7 +91,7 @@ build_consumption_functions_image () {
 }
 
 run_compose () {
-  docker compose up --build
+  docker compose -f comp-part.yml up --build
 }
 
 start=`date +%s`
@@ -99,7 +99,7 @@ start=`date +%s`
 # build_admin_image
 # build_api_image
 # build_spa_image
-install_consumption_functions
+# install_consumption_functions
 # build_consumption_functions_image
 install_throttled_functions
 # build_throttled_functions_image
