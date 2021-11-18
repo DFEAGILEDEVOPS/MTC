@@ -45,6 +45,14 @@ describe('administrationMessageService', () => {
       expect(redisCacheService.get).toHaveBeenCalled()
       expect(administrationMessageDataService.sqlFindActiveServiceMessage).toHaveBeenCalled()
     })
+
+    test('should convert the markdown to html', async () => {
+      jest.spyOn(redisCacheService, 'get').mockResolvedValue(JSON.stringify({ title: 'title', message: '# title\n**bold** *italic*' }))
+      const msg = await administrationMessageService.getMessage()
+      expect(msg.message).toContain('<h1>title</h1>')
+      expect(msg.message).toContain('<strong>bold</strong>')
+      expect(msg.message).toContain('<em>italic</em>')
+    })
   })
 
   describe('setMessage', () => {
