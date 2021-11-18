@@ -13,9 +13,6 @@
     "install-bindings": "func extensions install",
     "start:dev": "env $(cat disable-functions.env | grep Azure | xargs ) yarn start"
   },
-  "engines": {
-    "node": ">= 14"
-  },
   "resolutions": {
     "**/**/lodash": "^4.17.20"
   },

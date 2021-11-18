@@ -1,4 +1,4 @@
-FROM node:14.18.1
+FROM node:12.18.2
 
 # SHELL ["/bin/bash", "-c"]
 

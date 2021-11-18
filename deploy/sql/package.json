@@ -13,9 +13,6 @@
     "new:seed": "node ./schema-WIP/create-seed.js",
     "dummy:all": "node ./dummy-data/all.js"
   },
-  "engines": {
-    "node": ">= 14"
-  },
   "dependencies": {
     "axios": "^0.21.1",
     "command-line-args": "^5.1.1",
