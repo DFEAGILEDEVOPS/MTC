@@ -1,0 +1,48 @@
+version: '3'
+services:
+  sqldb:
+    image: "mcr.microsoft.com/mssql/server:2019-CU6-ubuntu-16.04"
+    container_name: mtc_sql
+    ports:
+      - "1433:1433"
+    environment:
+      SA_PASSWORD: "Mtc-D3v.5ql_S3rv3r"
+      ACCEPT_EULA: "Y"
+      HOMEBREW_NO_ENV_FILTERING: 1
+  redis:
+    image: "redis:4.0-alpine"
+    container_name: mtc_redis
+    ports:
+      - "6379:6379"
+  dbmigration:
+    build:
+      context: ../../db
+      dockerfile: dev.Dockerfile
+    container_name: mtc_db_migrations
+    environment:
+      SQL_SERVER: 'sqldb'
+      SQL_PORT: '1433'
+      SQL_TECH_SUPPORT_USER_PASSWORD: ${SQL_TECH_SUPPORT_USER_PASSWORD}
+      SQL_FUNCTIONS_APP_USER: ${SQL_FUNCTIONS_APP_USER}
+      SQL_FUNCTIONS_APP_USER_PASSWORD: ${SQL_FUNCTIONS_APP_USER_PASSWORD}
+    depends_on:
+      - sqldb
+  func_throttled:
+    build:
+      context: ../../func-throttled
+      dockerfile: test.Dockerfile
+    container_name: mtc_func_throttled
+    ports:
+      - 7073:7073
+    environment:
+      SQL_SERVER: 'sqldb'
+      REDIS_HOST: 'redis'
+      AZURE_SERVICE_BUS_CONNECTION_STRING: ${AZURE_SERVICE_BUS_CONNECTION_STRING}
+      AZURE_STORAGE_CONNECTION_STRING: ${AZURE_STORAGE_CONNECTION_STRING}
+      SQL_FUNCTIONS_APP_USER: ${SQL_FUNCTIONS_APP_USER}
+      SQL_FUNCTIONS_APP_USER_PASSWORD: ${SQL_FUNCTIONS_APP_USER_PASSWORD}
+    depends_on:
+      - sqldb
+      - dbmigration
+      - redis
+    command: ["./wait-for-db.sh", "sqldb", "yarn", "start"]
