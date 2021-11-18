@@ -9,9 +9,6 @@
   "scripts": {
     "purgestorage": "bin/init-dev-storage.js"
   },
-  "engines": {
-    "node": ">= 14"
-  },
   "resolutions": {
     "**/**/lodash": "^4.17.21"
   },
