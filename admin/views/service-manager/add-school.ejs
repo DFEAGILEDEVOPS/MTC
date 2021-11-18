@@ -1,0 +1,71 @@
+<%- partial('partials/_gds_breadcrumbs_and_sign_out', { breadcrumbs }) %>
+<% console.log(error) %>
+<main class="govuk-main-wrapper" id="main-content" role="main">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-heading-xl">Add organisation</h1>
+            <%- partial('partials/_gds_session_expiry') %>
+            <%- partial('partials/_flash-messages') %>
+            <%- partial('partials/_form-error', {
+                pageFields: ['dfeNumber', 'name', 'urn'],
+                error
+            }) %>
+
+            <form action="" method="post">
+                <input type="hidden" name="_csrf" value="<%= csrftoken %>"/>
+                <div class="govuk-form-group <%= error.isError('name') ? 'govuk-form-group--error' : '' %>">
+                    <label class="govuk-label" for="name">
+                        <% if (error.isError('name')) { %>
+                            <span class="govuk-error-message"><%= error.get('name') %></span>
+                        <% } %>
+                        Enter the name of the organisation
+                    </label>
+                    <input class="govuk-input" id="name" name="name" type="input" spellcheck="false"
+                           value="<%= formData.name %>">
+                </div>
+
+                <div class="govuk-form-group <%= error.isError('dfeNumber') ? 'govuk-form-group--error' : '' %>">
+                    <label class="govuk-label" for="dfeNumber">
+                        <% if (error.isError('dfeNumber')) { %>
+                            <span class="govuk-error-message"><%= error.get('dfeNumber') %></span>
+                        <% } %>
+                        Enter the 7 digit DfE number
+                    </label>
+                    <input class="govuk-input govuk-input--width-10" id="dfeNumber" name="dfeNumber" type="number"
+                           pattern="\d*{7}"
+                           spellcheck="false" value="<%= formData.dfeNumber %>">
+                </div>
+
+
+                <div class="govuk-form-group <%= error.isError('urn') ? 'govuk-form-group--error' : '' %>">
+                    <label class="govuk-label" for="urn">
+                        <% if (error.isError('urn')) { %>
+                            <span class="govuk-error-message"><%= error.get('urn') %></span>
+                        <% } %>
+                        Enter the URN
+                    </label>
+                    <input class="govuk-input govuk-input--width-5" id="urn" name="urn" type="number" pattern="\d*"
+                           spellcheck="false" value="<%= formData.urn %>">
+                </div>
+
+
+                <button type="submit" id="searchh-btn" class="govuk-button">Add</button>
+                <a class="govuk-button govuk-button--secondary" href="/service-manager/organisations">Cancel</a>
+            </form>
+        </div>
+        <div class="govuk-grid-column-one-third" aria-label="sidebar">
+            <aside class="app-related-items" role="complementary">
+                <h2 class="govuk-heading-m" id="subsection-title">
+                    Related
+                </h2>
+                <nav role="navigation" aria-labelledby="subsection-title">
+                    <ul class="govuk-list govuk-!-font-size-16">
+                        <li>
+                            <a class="govuk-link" href="<%- guidancePdf %>" target="_blank" rel="noopener noreferrer">Read the guidance and watch videos</a>
+                        </li>
+                    </ul>
+                </nav>
+            </aside>
+        </div>
+    </div>
+</main>
