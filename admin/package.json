@@ -22,14 +22,15 @@
     "test": "yarn lint && yarn jest",
     "test:watch": "yarn jest --watch --coverage=no",
     "test:nocoverage": "yarn lint && yarn jest --coverage=no",
+    "test:coverage": "yarn lint && yarn jest --coverage=yes",
     "test:integration": "yarn jest --config ./tests-integration/jest.integration.config.js",
-    "test:frontend": "karma start karma.conf.js",
+    "test:frontend": "yarn run gulp bundleAppJsForCodeCoverage && karma start karma.conf.js",
     "test:all": "yarn clean && yarn test && yarn test:integration && yarn test:frontend && yarn build",
     "watch": "yarn test:watch",
     "watch:integration": "yarn jest --watch --coverage=no --config ./tests-integration/jest.integration.config.js"
   },
   "mtc": {
-    "assets-version": "41e081a4cc897a5542bd9223d2e114c7"
+    "assets-version": "6e78b4cde9db9857d0e05ae88fea5a4e"
   },
   "engines": {
     "node": ">= 12"
@@ -39,11 +40,13 @@
     "**/**/ajv": "^6.12.6"
   },
   "dependencies": {
+    "@azure/data-tables": "^12.1.2",
     "@azure/service-bus": "^7.0.5",
+    "@azure/storage-blob": "^12.8.0",
+    "@azure/storage-queue": "^12.7.0",
     "adm-zip": "^0.5.7",
     "applicationinsights": "^2.1.5",
     "axios": "^0.22.0",
-    "azure-storage": "^2.10.4",
     "bcryptjs": "^2.4.3",
     "bluebird": "^3.5.1",
     "connect-flash": "^0.1.1",
@@ -115,23 +118,24 @@
     "jest": "^27.0.6",
     "karma": "^6.3.4",
     "karma-chrome-launcher": "^3.1.0",
+    "karma-coverage": "^2.0.3",
     "karma-jasmine": "^4.0.1",
+    "karma-remap-istanbul": "^0.6.0",
     "node-mocks-http": "^1.6.6",
     "nodemon": "^2.0.12",
-    "proxyquire": "^2.1.0",
-    "sinon": "^11.1.2",
     "standard": "^16.0.3",
     "supertest": "^6.0.1",
     "typescript": "4.3.5"
   },
   "standard": {
     "ignore": [
-      "assets/javascripts/jquery-3.5.1.js"
+      "assets/javascripts/jquery-3.5.1.js",
+      "assets/vendor-js/*"
     ]
   },
   "jest": {
     "bail": true,
-    "collectCoverage": true,
+    "collectCoverage": false,
     "collectCoverageFrom": [
       "**/*.{js,jsx}",
       "!**/node_modules/**",

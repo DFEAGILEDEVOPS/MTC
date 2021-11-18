@@ -27,14 +27,14 @@ describe('organisationBulkUploadService', () => {
     }
 
     beforeEach(() => {
-      jest.spyOn(azureBlobDataService, 'createContainerIfNotExistsAsync').mockImplementation()
-      jest.spyOn(azureBlobDataService, 'createBlockBlobFromLocalFileAsync').mockImplementation()
+      jest.spyOn(azureBlobDataService, 'createContainerIfNotExists').mockImplementation()
+      jest.spyOn(azureBlobDataService, 'uploadLocalFile').mockImplementation()
       jest.spyOn(organisationBulkUploadDataService, 'createJobRecord').mockImplementation()
     })
 
     test('it creates the azure container if it does not exist', async () => {
       await sut.upload(testFile)
-      expect(azureBlobDataService.createContainerIfNotExistsAsync).toHaveBeenCalled()
+      expect(azureBlobDataService.createContainerIfNotExists).toHaveBeenCalled()
     })
 
     test('it creates a job record to allow the user to track the long-running process', async () => {
@@ -44,7 +44,7 @@ describe('organisationBulkUploadService', () => {
 
     test('it uploads the file to Azure', async () => {
       await sut.upload(testFile)
-      expect(azureBlobDataService.createBlockBlobFromLocalFileAsync).toHaveBeenCalled()
+      expect(azureBlobDataService.uploadLocalFile).toHaveBeenCalled()
     })
 
     test('it returns the newly created job record uuid identifier', async () => {

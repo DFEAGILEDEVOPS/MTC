@@ -1,3 +1,4 @@
+@weekend
 Feature: Data Sync
 
   Scenario: Update check status on hard failures

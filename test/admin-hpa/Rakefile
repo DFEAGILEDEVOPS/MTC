@@ -8,6 +8,7 @@ require 'securerandom'
 require_relative 'features/support/browserstack_settings'
 
 ENV['GROUP_SIZE'] ||= '5'
+ENV['SERVER_COUNT'] ||= '8'
 
 Cucumber::Rake::Task.new(:run_all, 'Run all features') do |t|
   File.truncate('rerun.txt', 0) if File.exist?('rerun.txt')
@@ -32,6 +33,19 @@ array_of_features.each do |features|
     end
   end
 end
+
+features = Dir["features/*.feature"]
+array_of_features = features.sort.each_slice( (features.size/ENV['SERVER_COUNT'].to_f).ceil ).to_a
+array_of_features.each_with_index do |features, index|
+  index = index+1
+  Cucumber::Rake::Task.new(('feature_set_' + index.to_s).to_sym, "Runs following features #{features.join(' ')}") do |t|
+    File.truncate('rerun.txt', 0) if File.exist?('rerun.txt')
+    @start_time = Time.now
+    t.cucumber_opts = "--tags 'not @weekend' --format pretty --retry 1 -f rerun -o rerun.txt #{features.join(' ')} DRIVER=#{(ENV['DRIVER']) ? ENV['DRIVER'] : 'headless_chrome'}"
+    t.cucumber_opts << " #{ENV['OPTS']}" unless ENV['OPTS'].nil?
+  end
+end
+
 
 desc 'run all features with rerun'
 task :features do

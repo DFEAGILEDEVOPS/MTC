@@ -83,6 +83,7 @@ import { WebsiteOfflineComponent } from './website-offline/website-offline.compo
 import { ApplicationInsightsService } from './services/app-insights/app-insights.service';
 import { TestErrorComponent } from './test-error/test-error.component';
 import { HttpService } from './services/http/http.service';
+import { ErrorLocalStorageComponent } from './error-localstorage/error-local-storage.component';
 
 declare var AzureStorage: IAzureStorage;
 
@@ -109,7 +110,8 @@ const appRoutes: Routes = [
   {path: 'sign-in-success', component: LoginSuccessComponent, canActivate: [LoggedInGuard]},
   {path: 'sign-out', component: LogoutComponent, canActivate: [LoggedInGuard]},
   {path: 'submission-failed', component: SubmissionFailedComponent },
-  {path: 'test-error', component: TestErrorComponent} // no need for login here
+  {path: 'test-error', component: TestErrorComponent}, // no need for login here
+  {path: 'local-storage-error', component: ErrorLocalStorageComponent} // no need for login here
   // { path: '**', component: NotFoundComponent }
 ];
 
@@ -160,7 +162,8 @@ const appRoutes: Routes = [
     WarmupIntroComponent,
     WarmupLoadingComponent,
     WebsiteOfflineComponent,
-    TestErrorComponent
+    TestErrorComponent,
+    ErrorLocalStorageComponent
   ],
   imports: [
     BrowserModule,

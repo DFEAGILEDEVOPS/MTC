@@ -12,6 +12,7 @@ const { getCookiesForm, getCookiesMtc } = require('../controllers/cookies')
 const { getAccessibilityStatementPage } = require('../controllers/accessibility-statement')
 const { getServiceManagerHome } = require('../controllers/service-manager')
 const testDeveloperController = require('../controllers/test-developer')
+const keepAliveController = require('../controllers/keep-alive')
 const roles = require('../lib/consts/roles')
 const authModes = require('../lib/consts/auth-modes')
 const {
@@ -48,11 +49,12 @@ router.get('/privacy', (req, res) => getPrivacyPage(req, res))
 /* Cookies page */
 router.get('/cookies-form', (req, res) => getCookiesForm(req, res))
 router.get('/cookies-mtc', (req, res) => getCookiesMtc(req, res))
-/* ccessibility statement */
+/* Accessibility statement */
 router.get('/accessibility-statement', (req, res) => getAccessibilityStatementPage(req, res))
 
 router.get('/ping', (req, res) => getPing(req, res))
 router.get('/test-error', (req, res) => getTestError(req, res))
+router.get('/keep-alive', keepAliveController.keepAlive)
 
 const signInFailureRedirect = '/sign-in-failure'
 

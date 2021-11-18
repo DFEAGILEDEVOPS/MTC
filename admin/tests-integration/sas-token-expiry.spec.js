@@ -1,12 +1,12 @@
 'use strict'
-/* global describe, it, expect fail, afterAll */
+/* global describe test expect fail afterAll beforeEach */
 
-const azureStorage = require('azure-storage')
-const bluebird = require('bluebird')
 const moment = require('moment')
 
+const redisKeyService = require('../services/redis-key.service')
+const { QueueServiceClient } = require('@azure/storage-queue')
 const queueNameService = require('../services/queue-name-service')
-const sasTokenService = require('../services/sas-token.service')
+const sut = require('../services/sas-token.service')
 const redisCacheService = require('../services/data-access/redis-cache.service')
 
 const delay = (ms) => {
@@ -15,48 +15,50 @@ const delay = (ms) => {
   })
 }
 
-let queueService
-
-const createQueueService = async (sasToken) => {
-  queueService = await azureStorage.createQueueServiceWithSas(
-    sasToken.url.replace(queueNameService.NAMES.CHECK_SUBMIT, ''), sasToken.token
-  )
-
-  bluebird.promisifyAll(queueService, {
-    promisifier: (originalFunction) => function (...args) {
-      return new Promise((resolve, reject) => {
-        try {
-          originalFunction.call(this, ...args, (error, result, response) => {
-            if (error) {
-              return reject(error)
-            }
-            return resolve(result)
-          })
-        } catch (error) {
-          return reject(error)
-        }
-      })
-    }
-  })
+const getFullUrl = (token) => {
+  return `${token.url.replace(`/${queueNameService.NAMES.CHECK_SUBMIT}`, '')}?${token.token}`
 }
 
 describe('sas-token-expiry', () => {
+  beforeEach(async () => {
+    const queueKey = redisKeyService.getSasTokenKey(queueNameService.NAMES.CHECK_SUBMIT)
+    await redisCacheService.drop(queueKey)
+  })
   afterAll(async () => { await redisCacheService.disconnect() })
 
-  it('should return specific properties and content when attempting to submit with expired sas tokens', async () => {
+  test('should send a message successfully with valid token', async () => {
+    const sasExpiryDate = moment().add(1, 'minute')
+    const checkSubmitToken = await sut.generateSasToken(
+      queueNameService.NAMES.CHECK_SUBMIT,
+      sasExpiryDate
+    )
+    let queueServiceUrl
+    try {
+      // queueServiceUrl = checkSubmitToken.token.replace(`/${queueNameService.NAMES.CHECK_SUBMIT}`, '')
+      queueServiceUrl = getFullUrl(checkSubmitToken)
+      const queueServiceClient = new QueueServiceClient(queueServiceUrl)
+      const queueClient = queueServiceClient.getQueueClient(queueNameService.NAMES.CHECK_SUBMIT)
+      await queueClient.sendMessage('message')
+    } catch (error) {
+      fail(`${error.message}\n connection Url: ${queueServiceUrl}`)
+    }
+  })
+
+  test('should return specific properties and content when attempting to submit with expired sas tokens', async () => {
     const sasExpiryDate = moment().add(2, 'seconds')
-    const checkCompleteSasToken = await sasTokenService.generateSasToken(
+    const checkSubmitToken = await sut.generateSasToken(
       queueNameService.NAMES.CHECK_SUBMIT,
       sasExpiryDate
     )
     try {
-      await createQueueService(checkCompleteSasToken)
+      const queueServiceUrl = getFullUrl(checkSubmitToken)
+      const queueServiceClient = new QueueServiceClient(queueServiceUrl)
       await delay(3000)
-      await queueService.createMessageAsync(queueNameService.NAMES.CHECK_SUBMIT, 'message')
-      fail()
+      const queueClient = queueServiceClient.getQueueClient(queueNameService.NAMES.CHECK_SUBMIT)
+      await queueClient.sendMessage('testing message expiry in /admin/tests-integration/sas-token-expiry.spec.js')
+      fail('message should have been rejected due to expired token')
     } catch (error) {
       expect(error.statusCode).toBe(403)
-      expect(error.authenticationerrordetail.includes('Signature not valid in the specified time frame')).toBeTruthy()
     }
   })
 })
