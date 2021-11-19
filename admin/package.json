@@ -21,7 +21,6 @@
     "start:dev": "yarn dev-build && concurrently -r 'nodemon --inspect --delay 1500ms --watch ./dist --max-http-header-size 15000 ./dist/server.js' 'gulp watch'",
     "test": "yarn lint && yarn jest",
     "test:watch": "yarn jest --watch",
-    "test:nocoverage": "yarn lint && yarn jest",
     "test:coverage": "yarn lint && yarn jest --coverage",
     "test:integration": "yarn jest --config ./tests-integration/jest.integration.config.js",
     "test:frontend": "yarn run gulp bundleAppJsForCodeCoverage && karma start karma.conf.js",
@@ -30,7 +29,7 @@
     "watch:integration": "yarn jest --watch --coverage=no --config ./tests-integration/jest.integration.config.js"
   },
   "mtc": {
-    "assets-version": "a988eb2ea4e2f908e46907891c8b8ff7"
+    "assets-version": "8235321d9f76e392f7fcfced74498f8b"
   },
   "engines": {
     "node": ">= 12"
