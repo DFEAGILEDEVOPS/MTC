@@ -66,10 +66,11 @@ const payloadService = {
   /**
    * Return a copy of the data with updated 'inputs' and 'audit' arrays that have relativeTiming added
    * @param check
-   * @return {Question}
+   * @return any  a copy of the payload, modified to show relative timings on the inputs and audit events
    */
   addRelativeTimings: function addRelativeTimings (check) {
     const r1 = R.assoc('inputs', this.addRelativeTimingsToSection(check.inputs), check)
+    // @ts-ignore
     return R.assoc('audit', this.addRelativeTimingsToSection(check.audit), r1)
   },
 
@@ -90,7 +91,7 @@ const payloadService = {
 
     const entity = await payloadDataService.sqlFindOneByCheckCode(checkCode)
 
-    const archive = R.pathOr('', ['result', 'archive', '_'], entity)
+    const archive = entity.archive
 
     if (archive.length === 0) {
       throw new Error('archive not found')

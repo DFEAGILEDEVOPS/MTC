@@ -1,9 +1,10 @@
-/* global describe expect beforeEach jest fail it spyOn */
+/* global describe expect beforeEach fail it spyOn */
 
 const sasTokenService = require('../../../services/sas-token.service')
 const redisCacheService = require('../../../services/data-access/redis-cache.service')
 const redisKeyService = require('../../../services/redis-key.service')
 const queueNameService = require('../../../services/queue-name-service')
+const sasTokenDataService = require('../../../services/data-access/queue-sas-token.data.service')
 const moment = require('moment')
 const sut = sasTokenService
 
@@ -11,21 +12,16 @@ describe('sas-token.service', () => {
   describe('generateSasToken', () => {
     const queueName = 'some-queue'
     const expiryDate = moment().add(1, 'hour')
-    let queueServiceMock
 
     describe('without redis', () => {
       beforeEach(() => {
-        queueServiceMock = {
-          generateSharedAccessSignature: jest.fn(() => 'mock token'),
-          getUrl: jest.fn(() => 'http://localhost/queue')
-        }
         spyOn(redisCacheService, 'get').and.returnValue(Promise.resolve(undefined))
         spyOn(redisCacheService, 'set')
       })
 
       it('throws an error if the expiryDate is not provided', async () => {
         try {
-          await sasTokenService.generateSasToken(queueName, null, queueServiceMock)
+          await sasTokenService.generateSasToken(queueName, null)
           fail('expected to throw')
         } catch (error) {
           expect(error.message).toBe('Invalid expiryDate')
@@ -34,7 +30,7 @@ describe('sas-token.service', () => {
 
       it('throws an error if the expiryDate is not a moment object', async () => {
         try {
-          await sasTokenService.generateSasToken(queueName, { object: 'yes' }, queueServiceMock)
+          await sasTokenService.generateSasToken(queueName, { object: 'yes' })
           fail('expected to throw')
         } catch (error) {
           expect(error.message).toBe('Invalid expiryDate')
@@ -43,7 +39,7 @@ describe('sas-token.service', () => {
 
       it('throws an error if the expiryDate is not a moment object', async () => {
         try {
-          await sasTokenService.generateSasToken(queueName, new Date(), queueServiceMock)
+          await sasTokenService.generateSasToken(queueName, new Date())
           fail('expected to throw')
         } catch (error) {
           expect(error.message).toBe('Invalid expiryDate')
@@ -51,35 +47,39 @@ describe('sas-token.service', () => {
       })
 
       it('sets the start Date to more than 4.5 minutes in the past', async () => {
-        await sasTokenService.generateSasToken(queueName, expiryDate, queueServiceMock)
-        const args = queueServiceMock.generateSharedAccessSignature.mock.calls[0]
+        let capturedStartDate
+        spyOn(sasTokenDataService, 'generateSasTokenWithPublishOnly').and.callFake((q, start, expiry) => {
+          capturedStartDate = start
+          return 'some/url?query=foo'
+        })
+        await sasTokenService.generateSasToken(queueName, expiryDate)
         const fourAndAHalfMinutesAgo = moment().subtract(1, 'minutes').subtract(30, 'seconds')
-        const lessThanFourAndAHalfMinutesAgo = moment(args[1].AccessPolicy.Start).isBefore(fourAndAHalfMinutesAgo)
+        const lessThanFourAndAHalfMinutesAgo = moment(capturedStartDate).isBefore(fourAndAHalfMinutesAgo)
         expect(lessThanFourAndAHalfMinutesAgo).toBe(true)
       })
 
       it('it generates the SAS token', async () => {
-        const res = await sasTokenService.generateSasToken(queueName, expiryDate, queueServiceMock)
-        expect(queueServiceMock.generateSharedAccessSignature).toHaveBeenCalled()
-        expect(queueServiceMock.getUrl).toHaveBeenCalled()
+        spyOn(sasTokenDataService, 'generateSasTokenWithPublishOnly').and.callFake(() => {
+          return 'some/url?query=foo'
+        })
+        const res = await sasTokenService.generateSasToken(queueName, expiryDate)
+        expect(sasTokenDataService.generateSasTokenWithPublishOnly).toHaveBeenCalled()
         expect({}.hasOwnProperty.call(res, 'token')).toBe(true)
         expect({}.hasOwnProperty.call(res, 'url')).toBe(true)
         expect({}.hasOwnProperty.call(res, 'queueName')).toBe(true)
       })
 
-      it('sets the permissions to add only', async () => {
-        await sasTokenService.generateSasToken(queueName, expiryDate, queueServiceMock)
-        const args = queueServiceMock.generateSharedAccessSignature.mock.calls[0]
-        expect(args[1].AccessPolicy.Permissions).toBe('a')
-      })
-
-      it('makes a call to redis to fetch the cached token', async () => {
-        await sasTokenService.generateSasToken(queueName, expiryDate, queueServiceMock)
+      it('makes a call to redis to try and fetch the cached token', async () => {
+        spyOn(sasTokenDataService, 'generateSasTokenWithPublishOnly').and.returnValue('url?queryString')
+        await sasTokenService.generateSasToken(queueName, expiryDate)
         expect(redisCacheService.get).toHaveBeenCalled()
       })
 
       it('makes a call to redis to cache the token', async () => {
-        const res = await sasTokenService.generateSasToken(queueName, expiryDate, queueServiceMock)
+        spyOn(sasTokenDataService, 'generateSasTokenWithPublishOnly').and.callFake(() => {
+          return 'some/url?query=foo'
+        })
+        const res = await sasTokenService.generateSasToken(queueName, expiryDate)
         const redisKey = redisKeyService.getSasTokenKey(queueName)
         const oneHourInSeconds = 1 * 60 * 60
         expect(redisCacheService.set).toHaveBeenCalledWith(redisKey, res, oneHourInSeconds)
@@ -88,16 +88,12 @@ describe('sas-token.service', () => {
 
     describe('with redis', () => {
       beforeEach(() => {
-        queueServiceMock = {
-          generateSharedAccessSignature: jest.fn(() => 'mock token'),
-          getUrl: jest.fn(() => 'http://localhost/queue')
-        }
         spyOn(redisCacheService, 'get').and.returnValue('a test token')
         spyOn(redisCacheService, 'set')
       })
 
       it('short-circuits when the token is found in cache', async () => {
-        const res = await sasTokenService.generateSasToken(queueName, expiryDate, queueServiceMock)
+        const res = await sasTokenService.generateSasToken(queueName, expiryDate)
         expect(res).toBe('a test token')
         expect(redisCacheService.get).toHaveBeenCalled()
         expect(redisCacheService.set).not.toHaveBeenCalled()

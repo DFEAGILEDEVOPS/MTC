@@ -1,4 +1,7 @@
+'use strict'
+
 const moment = require('moment')
+const dateService = require('../../services/date.service')
 
 const pinValidator = {}
 
@@ -10,7 +13,7 @@ const pinValidator = {}
  */
 pinValidator.isActivePin = (pin, pinExpiresAt) => {
   if (!pinExpiresAt || !pin) return false
-  return moment(pinExpiresAt).isAfter(moment.utc())
+  return moment(pinExpiresAt).isAfter(dateService.utcNowAsMoment())
 }
 
 module.exports = pinValidator

@@ -22,10 +22,10 @@ const onCSVReadComplete = async (csvDataArray, school) => {
   // Generate csv with errors
   const csvHasErrors = csvData.some(p => p[6])
   if (csvHasErrors) {
-    const csvBlob = await generateErrorCSVService.generate(school, headers, csvData)
-    if (csvBlob.hasError) return csvBlob
+    const response = await generateErrorCSVService.generate(school, headers, csvData)
+    if (response.hasError) return response
     return ({
-      csvErrorFile: csvBlob.file.name,
+      csvErrorFile: response.remoteFilename,
       hasValidationError: true
     })
   } else {

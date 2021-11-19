@@ -300,6 +300,15 @@ app.use((req, res, next) => {
 // Prevent forms being submitted more than once
 app.use(preventDuplicateFormSubmission)
 
+// Makes the session expiry time available in the res object so we can insert it into the html, so javascript can
+// access it: used by the session expiry modal.
+app.use((req, res, next) => {
+  if (req.isAuthenticated()) {
+    res.locals.sessionExpiresAt = +Date.now() + (config.ADMIN_SESSION_EXPIRATION_TIME_IN_SECONDS * 1000)
+  }
+  next()
+})
+
 if (WEBSITE_OFFLINE) {
   app.use('*', websiteOffline)
 } else {
