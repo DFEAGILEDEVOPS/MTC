@@ -79,9 +79,10 @@ services:
       SQL_SERVER: 'sqldb'
       REDIS_HOST: 'redis'
       AZURE_SERVICE_BUS_CONNECTION_STRING: ${AZURE_SERVICE_BUS_CONNECTION_STRING}
-      AZURE_STORAGE_CONNECTION_STRING: ${AZURE_SERVICE_BUS_CONNECTION_STRING}
+      AZURE_STORAGE_CONNECTION_STRING: ${AZURE_STORAGE_CONNECTION_STRING}
       SQL_TRUST_SERVER_CERTIFICATE: 'true'
       SQL_TECH_SUPPORT_USER_PASSWORD: ${SQL_TECH_SUPPORT_USER_PASSWORD}
+      OVERRIDE_PIN_EXPIRY: 'true'
     depends_on:
       - sqldb
       - dbmigration
@@ -109,4 +110,4 @@ services:
       - 4200:4200
     depends_on:
       - pupil_api
-    command: ["./docker-start-dev.sh"]
+#    command: ["./docker-start-dev.sh"]

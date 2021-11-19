@@ -12,3 +12,4 @@ do
 done
 echo "sqldb is available, starting migrations"
 yarn migrate
+yarn seed
