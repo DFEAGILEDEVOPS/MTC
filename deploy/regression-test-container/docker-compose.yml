@@ -107,7 +107,7 @@ services:
       context: ../../pupil-spa
     container_name: mtc_spa
     ports:
-      - 4200:4200
+      - 4200:80
     depends_on:
       - pupil_api
 #    command: ["./docker-start-dev.sh"]
