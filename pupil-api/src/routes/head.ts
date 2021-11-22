@@ -1,4 +1,4 @@
-import { Router as Router, Request, Response } from 'express'
+import { Router, Request, Response } from 'express'
 
 export class HeadRouter {
   router: Router
@@ -8,7 +8,7 @@ export class HeadRouter {
     this.init()
   }
 
-  public init () {
+  public init (): void {
     this.router.head('/', (req: Request, res: Response) => res.sendStatus(200))
   }
 }
