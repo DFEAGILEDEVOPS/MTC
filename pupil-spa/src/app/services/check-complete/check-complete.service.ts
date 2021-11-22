@@ -12,6 +12,7 @@ import { StorageService } from '../storage/storage.service';
 import { TokenService } from '../token/token.service';
 import { AppUsageService } from '../app-usage/app-usage.service';
 import { CompressorService } from '../compressor/compressor.service';
+import { Meta } from '@angular/platform-browser'
 
 /**
  * Declaration of check start service
@@ -28,7 +29,8 @@ export class CheckCompleteService {
               private router: Router,
               private storageService: StorageService,
               private tokenService: TokenService,
-              private appUsageService: AppUsageService) {
+              private appUsageService: AppUsageService,
+              private metaService: Meta) {
     const {
       checkSubmissionApiErrorDelay,
       checkSubmissionAPIErrorMaxAttempts,
@@ -122,6 +124,7 @@ export class CheckCompleteService {
     const payload = {
       checkCode: undefined,
       schoolUUID: undefined,
+      buildVersion: ''
     };
     const includedSingularItems = ['config', 'device', 'pupil', 'questions', 'school', 'tokens'];
     const includedMultipleItems = ['audit', 'inputs', 'answers'];
@@ -133,6 +136,7 @@ export class CheckCompleteService {
     });
     payload.checkCode = items && items['pupil'] && items['pupil'].checkCode;
     payload.schoolUUID = items && items['school'] && items['school'].uuid;
+    payload.buildVersion = this.metaService.getTag('name="build:number"').content
     return payload;
   }
 
