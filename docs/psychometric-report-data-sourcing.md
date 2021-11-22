@@ -48,7 +48,7 @@
 | TimeComplete       | mtc_results.userInput OR mtc_results.event           | Time the check was completed - From last key (enter) is pressed or timeout.  userInput is user is the user pressed 'Enter' but the event is used if we need to use the timeout.  This is the same as the timestamp on the answer. |
 | TimeTaken          | Calculated                                           | TimeComplete - TimeStart                                     |
 | RestartNumber      | mtc_admin.pupilRestart                               | Values 0-2                                                   |
-| RestartReason      | mtc_admin.pupilRestart, mtc_admin.pupilRestartReason | **Blank** - no restart, **1** - Loss of internet,  **2** - Local IT issues,  **3** - Classroom disruption,  **4** - Pupil did not complete. |
+| RestartReason      | mtc_admin.pupilRestart, mtc_admin.restartReasonLookUp | **Blank** - no restart, **1** - Loss of internet,  **2** - Local IT issues,  **3** - Classroom disruption,  **4** - Pupil did not complete. |
 | FormMark           | mtc_results.checkResult.mark                         | As pupils could have taken many checks the check used by the report is determined by the the check ID stored in mtc_admin.pupil.currentCheckId which is a FK to mtc_admin.check |
 
 

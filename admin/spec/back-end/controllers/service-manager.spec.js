@@ -1,4 +1,4 @@
-/* global jasmine describe expect it beforeEach spyOn test jest */
+/* global describe expect beforeEach afterEach test jest */
 const uuid = require('uuid')
 const httpMocks = require('node-mocks-http')
 
@@ -12,6 +12,7 @@ const uploadedFileService = require('../../../services/uploaded-file.service')
 const settingsValidator = require('../../../lib/validator/settings-validator')
 const ValidationError = require('../../../lib/validation-error')
 const schoolService = require('../../../services/school.service')
+const organisationBulkUploadService = require('../../../services/organisation-bulk-upload.service')
 
 describe('service manager controller:', () => {
   let next
@@ -19,18 +20,24 @@ describe('service manager controller:', () => {
   function getRes () {
     const res = httpMocks.createResponse()
     res.locals = {}
+    jest.spyOn(res, 'render').mockImplementation()
+    jest.spyOn(res, 'redirect').mockImplementation()
     return res
   }
 
   function getReq (params) {
     const req = httpMocks.createRequest(params)
-    req.breadcrumbs = jasmine.createSpy('breadcrumbs')
-    req.flash = jasmine.createSpy('flash')
+    req.breadcrumbs = jest.fn()
+    req.flash = jest.fn()
     return req
   }
 
   beforeEach(() => {
-    next = jasmine.createSpy('next')
+    next = jest.fn()
+  })
+
+  afterEach(() => {
+    jest.restoreAllMocks()
   })
 
   describe('getServiceManagerHome', () => {
@@ -39,10 +46,9 @@ describe('service manager controller:', () => {
       url: '/service-manager/home'
     }
 
-    it('renders the service manager home page', async () => {
+    test('renders the service manager home page', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      spyOn(res, 'render').and.returnValue(null)
       await controller.getServiceManagerHome(req, res, next)
       expect(res.render).toHaveBeenCalled()
     })
@@ -55,20 +61,18 @@ describe('service manager controller:', () => {
       params: {}
     }
 
-    it('renders the custom timings page', async () => {
+    test('renders the custom timings page', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      spyOn(settingService, 'get').and.returnValue(null)
-      spyOn(res, 'render').and.returnValue(null)
+      jest.spyOn(settingService, 'get').mockResolvedValue(null)
       await controller.getUpdateTiming(req, res, next)
       expect(res.render).toHaveBeenCalled()
     })
 
-    it('throws an error if settings call is rejected', async () => {
+    test('throws an error if settings call is rejected', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      spyOn(settingService, 'get').and.returnValue(Promise.reject(new Error('error')))
-      spyOn(res, 'render')
+      jest.spyOn(settingService, 'get').mockRejectedValue(new Error('error'))
       await controller.getUpdateTiming(req, res, next)
       expect(res.render).not.toHaveBeenCalled()
     })
@@ -88,24 +92,22 @@ describe('service manager controller:', () => {
       }
     }
 
-    it('calls redirect after successful update', async () => {
+    test('calls redirect after successful update', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      spyOn(settingsValidator, 'validate').and.returnValue(new ValidationError())
-      spyOn(settingService, 'update')
-      spyOn(res, 'redirect')
+      jest.spyOn(settingsValidator, 'validate').mockResolvedValue(new ValidationError())
+      jest.spyOn(settingService, 'update').mockImplementation()
       await controller.setUpdateTiming(req, res, next)
       expect(res.redirect).toHaveBeenCalled()
       expect(settingService.update).toHaveBeenCalled()
     })
-    it('renders check settings if validator error occurs', async () => {
+
+    test('renders check settings if validator error occurs', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
       const validationError = new ValidationError()
       validationError.addError('adminDateInvalid', true)
-      spyOn(settingsValidator, 'validate').and.returnValue(validationError)
-      spyOn(res, 'redirect')
-      spyOn(res, 'render')
+      jest.spyOn(settingsValidator, 'validate').mockResolvedValue(validationError)
       await controller.setUpdateTiming(req, res, next)
       expect(res.redirect).not.toHaveBeenCalled()
       expect(res.render).toHaveBeenCalled()
@@ -118,29 +120,25 @@ describe('service manager controller:', () => {
       url: '/service-manager/upload-pupil-census'
     }
 
-    it('renders the upload pupil census page', async () => {
+    test('renders the upload pupil census page', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      spyOn(res, 'render')
-      spyOn(pupilCensusService, 'getUploadedFile')
-      spyOn(uploadedFileService, 'getFilesize')
+      jest.spyOn(pupilCensusService, 'getUploadedFile').mockImplementation()
+      jest.spyOn(uploadedFileService, 'getFilesize').mockImplementation()
       await controller.getUploadPupilCensus(req, res, next)
       expect(pupilCensusService.getUploadedFile).toHaveBeenCalled()
       expect(res.render).toHaveBeenCalled()
     })
 
-    it('throws an error if fetching existing pupil census fails', async () => {
+    test('throws an error if fetching existing pupil census fails', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      spyOn(res, 'render')
-      spyOn(uploadedFileService, 'getFilesize')
-      spyOn(pupilCensusService, 'getUploadedFile').and.returnValue(Promise.reject(new Error('error')))
-      try {
-        await controller.getUploadPupilCensus(req, res, next)
-      } catch (error) {
-        expect(error).toBe('error')
-      }
-      expect(next).toHaveBeenCalled()
+      jest.spyOn(uploadedFileService, 'getFilesize').mockImplementation()
+      jest.spyOn(pupilCensusService, 'getUploadedFile').mockImplementation(() => {
+        throw new Error('error')
+      })
+      await controller.getUploadPupilCensus(req, res, next)
+      expect(next).toHaveBeenCalledWith(new Error('error'))
       expect(pupilCensusService.getUploadedFile).toHaveBeenCalled()
       expect(res.render).not.toHaveBeenCalled()
     })
@@ -163,37 +161,38 @@ describe('service manager controller:', () => {
       }
     }
 
-    it('redirects to pupil census page when successfully uploaded a csv file', async () => {
+    test('redirects to pupil census page when successfully uploaded a csv file', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      spyOn(res, 'redirect')
-      spyOn(pupilCensusService, 'process').and.returnValue(new ValidationError())
-      spyOn(pupilCensusService, 'upload2')
+      jest.spyOn(pupilCensusService, 'process').mockResolvedValue(new ValidationError())
+      jest.spyOn(pupilCensusService, 'upload2').mockImplementation()
       await controller.postUploadPupilCensus(req, res, next)
       expect(pupilCensusService.process).toHaveBeenCalled()
       expect(pupilCensusService.upload2).toHaveBeenCalled()
       expect(res.redirect).toHaveBeenCalled()
       expect(req.flash).toHaveBeenCalled()
     })
-    it('calls next when upload is rejected', async () => {
+
+    test('calls next when upload is rejected', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      spyOn(res, 'redirect')
-      spyOn(pupilCensusService, 'process').and.returnValue(new ValidationError())
-      spyOn(pupilCensusService, 'upload2').and.returnValue(Promise.reject(new Error('error')))
+      jest.spyOn(pupilCensusService, 'process').mockResolvedValue(new ValidationError())
+      jest.spyOn(pupilCensusService, 'upload2').mockImplementation(() => {
+        throw new Error('error')
+      })
       await controller.postUploadPupilCensus(req, res, next)
       expect(res.redirect).not.toHaveBeenCalled()
       expect(next).toHaveBeenCalled()
     })
-    it('calls getUploadPupilCensus with validation error when there is a file error', async () => {
+
+    test('calls getUploadPupilCensus with validation error when there is a file error', async () => {
       const res = getRes()
       const req = getReq(badReqParams)
-      spyOn(res, 'redirect')
       const validationError = new ValidationError()
       validationError.addError('upload-element', 'error')
-      spyOn(pupilCensusService, 'process').and.returnValue(validationError)
-      spyOn(pupilCensusService, 'upload2')
-      spyOn(controller, 'getUploadPupilCensus')
+      jest.spyOn(pupilCensusService, 'process').mockResolvedValue(validationError)
+      jest.spyOn(pupilCensusService, 'upload2').mockImplementation()
+      jest.spyOn(controller, 'getUploadPupilCensus').mockImplementation()
       await controller.postUploadPupilCensus(req, res, next)
       expect(res.redirect).not.toHaveBeenCalled()
       expect(controller.getUploadPupilCensus).toHaveBeenCalled()
@@ -209,20 +208,21 @@ describe('service manager controller:', () => {
       }
     }
 
-    it('redirects to pupil census page when successfully removed the selected pupil', async () => {
+    test('redirects to pupil census page when successfully removed the selected pupil', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      spyOn(res, 'redirect')
-      spyOn(pupilCensusService, 'remove')
+      jest.spyOn(pupilCensusService, 'remove').mockImplementation()
       await controller.getRemovePupilCensus(req, res, next)
       expect(res.redirect).toHaveBeenCalled()
       expect(req.flash).toHaveBeenCalled()
     })
-    it('calls next when upload is rejected', async () => {
+
+    test('calls next when upload is rejected', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      spyOn(res, 'redirect')
-      spyOn(pupilCensusService, 'remove').and.returnValue(Promise.reject(new Error('error')))
+      jest.spyOn(pupilCensusService, 'remove').mockImplementation(() => {
+        throw new Error('test error')
+      })
       await controller.getRemovePupilCensus(req, res, next)
       expect(res.redirect).not.toHaveBeenCalled()
       expect(next).toHaveBeenCalled()
@@ -239,25 +239,24 @@ describe('service manager controller:', () => {
       }
     })
 
-    it('should render after fetching schools', async () => {
+    test('should render after fetching schools', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      spyOn(sceService, 'getSceSchools')
-        .and.returnValue([{ name: 'school', urn: '42' }])
-      spyOn(scePresenter, 'getCountriesTzData').and.returnValue([])
-      spyOn(res, 'render')
+      jest.spyOn(sceService, 'getSceSchools').mockResolvedValue([{ name: 'school', urn: '42' }])
+      jest.spyOn(scePresenter, 'getCountriesTzData').mockResolvedValue([])
       await controller.getSceSettings(req, res, next)
       expect(res.render).toHaveBeenCalled()
       expect(sceService.getSceSchools).toHaveBeenCalled()
       expect(next).not.toHaveBeenCalled()
     })
 
-    it('should throw an error when fetching schools call is rejected', async () => {
+    test('should throw an error when fetching schools call is rejected', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      spyOn(sceService, 'getSceSchools').and.returnValue(Promise.reject(new Error('error')))
-      spyOn(scePresenter, 'getCountriesTzData').and.returnValue([])
-      spyOn(res, 'render')
+      jest.spyOn(sceService, 'getSceSchools').mockImplementation(() => {
+        throw new Error('error')
+      })
+      jest.spyOn(scePresenter, 'getCountriesTzData').mockReturnValue([])
       await controller.getSceSettings(req, res, next)
       expect(res.render).not.toHaveBeenCalled()
       expect(next).toHaveBeenCalled()
@@ -273,10 +272,9 @@ describe('service manager controller:', () => {
       }
     }
 
-    it('redirect to the index page', async () => {
+    test('redirect to the index page', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      spyOn(res, 'redirect')
       await controller.cancelSceSettings(req, res)
       expect(res.redirect).toHaveBeenCalledWith('/service-manager')
     })
@@ -291,26 +289,26 @@ describe('service manager controller:', () => {
         url: '/service-manager/sce-settings',
         body: { urn: [], timezone: [] }
       }
-      spyOn(sceService, 'getSceSchools')
-        .and.returnValue([{ id: 1, name: 'Test School', urn: 123456 }])
+      jest.spyOn(sceService, 'getSceSchools')
+        .mockResolvedValue([{ id: 1, name: 'Test School', urn: 123456 }])
     })
 
-    it('redirects to the sce settings page when successfully applied changes', async () => {
+    test('redirects to the sce settings page when successfully applied changes', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      spyOn(res, 'redirect')
-      spyOn(sceService, 'applySceSettings')
+      jest.spyOn(sceService, 'applySceSettings').mockImplementation()
       await controller.postSceSettings(req, res, next)
       expect(sceService.applySceSettings).toHaveBeenCalled()
       expect(res.redirect).toHaveBeenCalled()
       expect(req.flash).toHaveBeenCalled()
     })
 
-    it('calls next when applying sce settings failed', async () => {
+    test('calls next when applying sce settings throws', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      spyOn(res, 'redirect')
-      spyOn(sceService, 'applySceSettings').and.returnValue(Promise.reject(new Error('error')))
+      jest.spyOn(sceService, 'applySceSettings').mockImplementation(() => {
+        throw new Error('test error')
+      })
       await controller.postSceSettings(req, res, next)
       expect(res.redirect).not.toHaveBeenCalled()
       expect(next).toHaveBeenCalled()
@@ -326,23 +324,22 @@ describe('service manager controller:', () => {
       }
     }
 
-    it('calls render after fetching schools', async () => {
+    test('calls render after fetching schools', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      spyOn(sceService, 'getSchools')
-        .and.returnValue([{ name: 'school', urn: '42' }])
-      spyOn(res, 'render')
+      jest.spyOn(sceService, 'getSchools').mockResolvedValue([{ name: 'school', urn: '42' }])
       await controller.getSceAddSchool(req, res, next)
       expect(res.render).toHaveBeenCalled()
       expect(sceService.getSchools).toHaveBeenCalled()
       expect(next).not.toHaveBeenCalled()
     })
 
-    it('throws an error when fetching schools call is rejected', async () => {
+    test('throws an error when fetching schools call is rejected', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      spyOn(sceService, 'getSchools').and.returnValue(Promise.reject(new Error('error')))
-      spyOn(res, 'render')
+      jest.spyOn(sceService, 'getSchools').mockImplementation(() => {
+        throw new Error('test error')
+      })
       await controller.getSceAddSchool(req, res, next)
       expect(res.render).not.toHaveBeenCalled()
       expect(next).toHaveBeenCalled()
@@ -363,41 +360,39 @@ describe('service manager controller:', () => {
         }
       }
 
-      spyOn(sceService, 'getSchools')
-        .and.returnValue([{ id: 1, name: 'Test School', urn: 123456 }])
+      jest.spyOn(sceService, 'getSchools')
+        .mockResolvedValue([{ id: 1, name: 'Test School', urn: 123456 }])
     })
 
-    it('redirects to the sce settings page when successfully added a school', async () => {
+    test('redirects to the sce settings page when successfully added a school', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      spyOn(sceSchoolValidator, 'validate').and.returnValue(new ValidationError())
-      spyOn(res, 'redirect')
-      spyOn(sceService, 'insertOrUpdateSceSchool')
+      jest.spyOn(sceSchoolValidator, 'validate').mockResolvedValue(new ValidationError())
+      jest.spyOn(sceService, 'insertOrUpdateSceSchool').mockImplementation()
       await controller.postSceAddSchool(req, res, next)
       expect(sceService.insertOrUpdateSceSchool).toHaveBeenCalled()
       expect(res.redirect).toHaveBeenCalled()
       expect(req.flash).toHaveBeenCalled()
     })
 
-    it('calls next when insert or update failed', async () => {
+    test('calls next when insert or update failed', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      spyOn(sceSchoolValidator, 'validate').and.returnValue(new ValidationError())
-      spyOn(res, 'redirect')
-      spyOn(sceService, 'insertOrUpdateSceSchool').and.returnValue(Promise.reject(new Error('error')))
+      jest.spyOn(sceSchoolValidator, 'validate').mockResolvedValue(new ValidationError())
+      jest.spyOn(sceService, 'insertOrUpdateSceSchool').mockImplementation(() => {
+        throw new Error('test error')
+      })
       await controller.postSceAddSchool(req, res, next)
       expect(res.redirect).not.toHaveBeenCalled()
       expect(next).toHaveBeenCalled()
     })
 
-    it('renders sce add school if validator error occurs', async () => {
+    test('renders sce add school if validator error occurs', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
       const validationError = new ValidationError()
       validationError.addError('schoolName', true)
-      spyOn(sceSchoolValidator, 'validate').and.returnValue(validationError)
-      spyOn(res, 'redirect')
-      spyOn(res, 'render')
+      jest.spyOn(sceSchoolValidator, 'validate').mockResolvedValue(validationError)
       await controller.postSceAddSchool(req, res, next)
       expect(res.redirect).not.toHaveBeenCalled()
       expect(res.render).toHaveBeenCalled()
@@ -417,11 +412,10 @@ describe('service manager controller:', () => {
       }
     })
 
-    it('should flash the deleted message and call redirect after removing school', async () => {
+    test('should flash the deleted message and call redirect after removing school', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      spyOn(sceService, 'removeSceSchool').and.returnValue([[], { name: 'Test School' }])
-      spyOn(res, 'redirect')
+      jest.spyOn(sceService, 'removeSceSchool').mockResolvedValue([[], { name: 'Test School' }])
       await controller.getSceRemoveSchool(req, res, next)
       expect(req.flash).toHaveBeenCalled()
       expect(res.redirect).toHaveBeenCalled()
@@ -429,11 +423,12 @@ describe('service manager controller:', () => {
       expect(next).not.toHaveBeenCalled()
     })
 
-    it('should throw an error when removing a school fails', async () => {
+    test('should throw an error when removing a school fails', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      spyOn(sceService, 'removeSceSchool').and.returnValue(Promise.reject(new Error('error')))
-      spyOn(res, 'redirect')
+      jest.spyOn(sceService, 'removeSceSchool').mockImplementation(() => {
+        throw new Error('error')
+      })
       await controller.getSceRemoveSchool(req, res, next)
       expect(res.redirect).not.toHaveBeenCalled()
       expect(req.flash).not.toHaveBeenCalled()
@@ -450,12 +445,11 @@ describe('service manager controller:', () => {
       }
     })
 
-    it('it renders the organisation hub page', async () => {
+    test('it renders the organisation hub page', async () => {
       const res = getRes()
       const req = getReq(goodReq)
-      spyOn(res, 'render')
       await controller.getManageSchools(req, res, next)
-      const args = res.render.calls.mostRecent().args
+      const args = res.render.mock.calls[0]
       expect(res.render).toHaveBeenCalled()
       expect(args[0]).toBe('service-manager/manage-organisations-hub')
     })
@@ -470,12 +464,11 @@ describe('service manager controller:', () => {
       }
     })
 
-    it('renders the search page', async () => {
+    test('renders the search page', async () => {
       const res = getRes()
       const req = getReq(goodReq)
-      spyOn(res, 'render')
       await controller.getSearch(req, res, next)
-      const args = res.render.calls.mostRecent().args
+      const args = res.render.mock.calls[0]
       expect(res.render).toHaveBeenCalled()
       expect(args[0]).toBe('service-manager/organisations-search')
     })
@@ -502,32 +495,28 @@ describe('service manager controller:', () => {
       }
     })
 
-    it('redirects to the view page if a school is found', async () => {
+    test('redirects to the view page if a school is found', async () => {
       const res = getRes()
       const req = getReq(goodReq)
-      spyOn(res, 'redirect')
-      spyOn(res, 'render')
-      spyOn(schoolService, 'searchForSchool').and.returnValue(Promise.resolve(mockSchool))
+      jest.spyOn(schoolService, 'searchForSchool').mockResolvedValue(mockSchool)
       await controller.postSearch(req, res, next)
-      const args = res.redirect.calls.mostRecent()?.args
+      const args = res.redirect.mock.calls[0]
       expect(res.render).not.toHaveBeenCalled()
       expect(res.redirect).toHaveBeenCalled()
       expect(args[0]).toBe(`/service-manager/organisations/${encodeURIComponent(mockSchool.urlSlug).toLowerCase()}`)
     })
 
-    it('renders the search page if the school is not found', async () => {
+    test('renders the search page if the school is not found', async () => {
       const res = getRes()
       const req = getReq(goodReq)
-      spyOn(res, 'redirect')
-      spyOn(res, 'render')
-      spyOn(schoolService, 'searchForSchool').and.returnValue(Promise.resolve(undefined))
+      jest.spyOn(schoolService, 'searchForSchool').mockResolvedValue(undefined)
       await controller.postSearch(req, res, next)
-      const args = res.render.calls.mostRecent()?.args
+      const args = res.render.mock.calls[0]
       expect(res.render).toHaveBeenCalled()
       expect(args[0]).toBe('service-manager/organisations-search')
     })
 
-    it('renders the search page if the user does not type in a query', async () => {
+    test('renders the search page if the user does not type in a query', async () => {
       const res = getRes()
       const req = getReq({
         method: 'POST',
@@ -536,11 +525,9 @@ describe('service manager controller:', () => {
           q: ''
         }
       })
-      spyOn(res, 'redirect')
-      spyOn(res, 'render')
-      spyOn(schoolService, 'searchForSchool')
+      jest.spyOn(schoolService, 'searchForSchool').mockImplementation()
       await controller.postSearch(req, res, next)
-      const args = res.render.calls.mostRecent()?.args
+      const args = res.render.mock.calls[0]
       expect(res.render).toHaveBeenCalled()
       expect(args[0]).toBe('service-manager/organisations-search')
       const validationError = args[1].error
@@ -558,21 +545,21 @@ describe('service manager controller:', () => {
       leaCode: 999,
       estabCode: 1001
     }
-    it('retrieves the organisation details', async () => {
+
+    test('retrieves the organisation details', async () => {
       const res = getRes()
       const req = getReq()
-      spyOn(schoolService, 'findOneBySlug').and.returnValue(Promise.resolve(mockSchool))
+      jest.spyOn(schoolService, 'findOneBySlug').mockResolvedValue(mockSchool)
       await controller.getViewOrganisation(req, res, next)
       expect(schoolService.findOneBySlug).toHaveBeenCalled()
     })
 
-    it('renders the organisation detail page', async () => {
+    test('renders the organisation detail page', async () => {
       const res = getRes()
       const req = getReq()
-      spyOn(res, 'render')
-      spyOn(schoolService, 'findOneBySlug').and.returnValue(Promise.resolve(mockSchool))
+      jest.spyOn(schoolService, 'findOneBySlug').mockResolvedValue(mockSchool)
       await controller.getViewOrganisation(req, res, next)
-      const args = res.render.calls.mostRecent()?.args
+      const args = res.render.mock.calls[0]
       expect(res.render).toHaveBeenCalled()
       expect(args[0]).toBe('service-manager/organisation-detail')
     })
@@ -596,7 +583,6 @@ describe('service manager controller:', () => {
       }
       const req = getReq(params)
       const res = getRes()
-      jest.spyOn(res, 'render')
       const school = {
         name: 'Test school',
         dfeNumber: 9991999,
@@ -615,7 +601,6 @@ describe('service manager controller:', () => {
       }
       const req = getReq(params)
       const res = getRes()
-      jest.spyOn(res, 'render')
       const school = {
         name: 'Test school',
         dfeNumber: 1111,
@@ -648,7 +633,7 @@ describe('service manager controller:', () => {
         urn: 8888
       }
       const res = getRes()
-      jest.spyOn(res, 'render')
+      jest.spyOn(res, 'render').mockImplementation()
       const school = {
         name: 'Test school',
         dfeNumber: 1111,
@@ -673,7 +658,6 @@ describe('service manager controller:', () => {
     test('it redirects if the school is not found', async () => {
       const res = getRes()
       const req = getReq({ slug: uuid.NIL })
-      jest.spyOn(res, 'redirect')
       jest.spyOn(schoolService, 'findOneBySlug').mockResolvedValue(undefined)
       await controller.postEditOrganisation(req, res, next)
       expect(res.redirect).toHaveBeenCalled()
@@ -725,13 +709,259 @@ describe('service manager controller:', () => {
         estabCode: 1999,
         urn: 888900
       }
-      jest.spyOn(res, 'redirect')
       jest.spyOn(schoolService, 'findOneBySlug').mockResolvedValue(school)
       jest.spyOn(schoolService, 'updateSchool').mockRejectedValue(new ValidationError('leacCode', 'Unit test error' +
         ' message'))
       jest.spyOn(controller, 'getEditOrganisation').mockImplementation(_ => { return Promise.resolve() })
       await controller.postEditOrganisation(req, res, next)
       expect(controller.getEditOrganisation).toHaveBeenCalled()
+    })
+  })
+
+  describe('getUploadOrganisations', () => {
+    test('if called with a job slug it gets the job status', async () => {
+      const params = {
+        url: '/service-manager/organisations/upload/00000000-0000-0000-0000-000000000000',
+        method: 'GET',
+        params: {
+          jobSlug: '00000000-0000-0000-0000-000000000000'
+        }
+      }
+      const req = getReq(params)
+      const res = getRes()
+      const fileStatus = {
+        description: 'Submitted',
+        code: 'SUB',
+        errorOutput: '',
+        jobOutput: { stdout: '', stderr: '' }
+      }
+      jest.spyOn(organisationBulkUploadService, 'getUploadStatus').mockResolvedValue(fileStatus)
+      await controller.getUploadOrganisations(req, res, next)
+      expect(organisationBulkUploadService.getUploadStatus).toHaveBeenCalled()
+      expect(res.render).toHaveBeenCalled()
+      const args = res.render.mock.calls[0][1]
+      expect(args.jobStatus).toEqual(fileStatus)
+    })
+
+    test('if called without a job slug it does not get the jobStatus', async () => {
+      const params = {
+        url: '/service-manager/organisations/upload',
+        method: 'GET',
+        params: {}
+      }
+      const req = getReq(params)
+      const res = getRes()
+      jest.spyOn(organisationBulkUploadService, 'getUploadStatus').mockImplementation()
+      await controller.getUploadOrganisations(req, res, next)
+      expect(organisationBulkUploadService.getUploadStatus).not.toHaveBeenCalled()
+      const args = res.render.mock.calls[0][1]
+      expect(args.jobStatus).toBeUndefined()
+    })
+
+    test('it calls next() if something throws', async () => {
+      const params = {
+        url: '/service-manager/organisations/upload/00000000-0000-0000-0000-000000000000',
+        method: 'GET',
+        params: {
+          jobSlug: '00000000-0000-0000-0000-000000000000'
+        }
+      }
+      const req = getReq(params)
+      const res = getRes()
+      // there is only one call we can setup to throw, outside of the render method.
+      jest.spyOn(organisationBulkUploadService, 'getUploadStatus').mockRejectedValue(new Error('mock error'))
+      await controller.getUploadOrganisations(req, res, next)
+      expect(next).toHaveBeenCalled()
+    })
+  })
+
+  describe('postUploadOrganisations', () => {
+    test('it uploads the file to Azure', async () => {
+      const params = {
+        url: '/service-manager/organisations/upload',
+        method: 'POST',
+        params: {},
+        files: {
+          fileOrganisations: {
+            path: '/tmp/foo.csv',
+            file: 'foo.csv'
+          }
+        }
+      }
+      const req = getReq(params)
+      const res = getRes()
+      // ensure the validation passes. It actually reads the file from disk, so mock it
+      jest.spyOn(organisationBulkUploadService, 'validate').mockResolvedValue(new ValidationError())
+      jest.spyOn(organisationBulkUploadService, 'upload').mockResolvedValue(uuid.NIL)
+
+      await controller.postUploadOrganisations(req, res, next)
+
+      expect(res.redirect).toHaveBeenCalled()
+    })
+
+    test('it calls next() if something throws', async () => {
+      const params = {
+        url: '/service-manager/organisations/upload',
+        method: 'POST',
+        params: {},
+        files: {
+          fileOrganisations: {
+            path: '/tmp/foo.csv',
+            file: 'foo.csv'
+          }
+        }
+      }
+      const req = getReq(params)
+      const res = getRes()
+      // ensure the validation passes. It actually reads the file from disk, so mock it
+      jest.spyOn(organisationBulkUploadService, 'validate').mockResolvedValue(new ValidationError())
+      jest.spyOn(organisationBulkUploadService, 'upload').mockRejectedValue(new Error('mock error'))
+
+      await controller.postUploadOrganisations(req, res, next)
+
+      expect(next).toHaveBeenCalled()
+    })
+
+    test('it calls getUploadOrganisation() if the validator detects an error', async () => {
+      const params = {
+        url: '/service-manager/organisations/upload',
+        method: 'POST',
+        params: {},
+        files: {
+          fileOrganisations: {
+            path: '/tmp/foo.csv',
+            file: 'foo.csv'
+          }
+        }
+      }
+      const req = getReq(params)
+      const res = getRes()
+      jest.spyOn(controller, 'getUploadOrganisations').mockImplementation()
+      // ensure the validation fails.
+      jest.spyOn(organisationBulkUploadService, 'validate').mockResolvedValue(new ValidationError('foo', 'mock error'))
+
+      await controller.postUploadOrganisations(req, res, next)
+
+      expect(controller.getUploadOrganisations).toHaveBeenCalled()
+    })
+
+    describe('downloadJobOutput', () => {
+      let req, res
+      const params = {
+        url: '/service-manager/job-output/00000000-0000-0000-0000-000000000000',
+        method: 'GET',
+        params: {
+          jobSlug: '00000000-0000-0000-0000-000000000000'
+        }
+      }
+      beforeEach(() => {
+        jest.spyOn(organisationBulkUploadService, 'getZipResults').mockResolvedValue('zipData')
+        req = getReq(params)
+        res = getRes()
+      })
+
+      test('it makes a call to the service to get the results', async () => {
+        await controller.downloadJobOutput(req, res, next)
+        expect(organisationBulkUploadService.getZipResults).toHaveBeenCalledTimes(1)
+      })
+
+      test('it downloads the file as an attachment', async () => {
+        await controller.downloadJobOutput(req, res, next)
+        expect(res.get('Content-Disposition')).toBe('attachment; filename="job-output.zip"')
+        expect(res.get('Content-Type')).toBe('application/octet-stream')
+      })
+
+      test('it calls next() on error', async () => {
+        jest.spyOn(organisationBulkUploadService, 'getZipResults').mockRejectedValueOnce(new Error('mock error'))
+        await controller.downloadJobOutput(req, res, next)
+        expect(next).toHaveBeenCalledWith(new Error('mock error'))
+      })
+    })
+
+    describe('getAddSchool', () => {
+      test('it renders the add-school page', async () => {
+        const req = getReq()
+        const res = getRes()
+        await controller.getAddSchool(req, res, next)
+        expect(res.render).toHaveBeenCalled()
+        expect(res.render.mock.calls[0][0]).toBe('service-manager/add-school')
+      })
+
+      test('calls next if there is an error thrown', async () => {
+        const req = getReq()
+        const res = getRes()
+        jest.spyOn(res, 'render').mockImplementation(() => {
+          throw new Error('test error')
+        })
+        await controller.getAddSchool(req, res, next)
+        expect(next).toHaveBeenCalled()
+      })
+    })
+
+    describe('postAddSchool', () => {
+      test('it calls the service to add the school and then issues a redirect', async () => {
+        const req = getReq({
+          body: {
+            name: 'Primary Academy',
+            dfeNumber: '1231234',
+            urn: '123456'
+          }
+        })
+        const res = getRes()
+        jest.spyOn(schoolService, 'addSchool').mockImplementation()
+        await controller.postAddSchool(req, res, next)
+        expect(schoolService.addSchool).toHaveBeenCalled()
+        expect(res.redirect).toHaveBeenCalledWith('/service-manager/organisations')
+      })
+
+      test('it displays the page again if the validation fails', async () => {
+        const req = getReq({
+          body: {
+            name: 'Primary Academy',
+            dfeNumber: '1231234',
+            urn: '123456'
+          }
+        })
+        const res = getRes()
+        jest.spyOn(schoolService, 'addSchool').mockImplementation(() => {
+          throw new ValidationError('mock', 'test error')
+        })
+        jest.spyOn(controller, 'getAddSchool').mockImplementation()
+        await controller.postAddSchool(req, res, next)
+        expect(controller.getAddSchool).toHaveBeenCalled()
+      })
+
+      test('it calls next if an error is thrown that is not a validation error', async () => {
+        const req = getReq({
+          body: {
+            name: 'Primary Academy',
+            dfeNumber: '1231234',
+            urn: '123456'
+          }
+        })
+        const res = getRes()
+        jest.spyOn(schoolService, 'addSchool').mockImplementation(() => {
+          throw new Error('test error')
+        })
+        jest.spyOn(controller, 'getAddSchool').mockImplementation()
+        await controller.postAddSchool(req, res, next)
+        expect(next).toHaveBeenCalledWith(new Error('test error'))
+      })
+
+      test('it trims the school name', async () => {
+        const req = getReq({
+          body: {
+            name: '  Primary Academy   ',
+            dfeNumber: '1231234',
+            urn: '123456'
+          }
+        })
+        const res = getRes()
+        jest.spyOn(schoolService, 'addSchool').mockImplementation()
+        await controller.postAddSchool(req, res, next)
+        const args = schoolService.addSchool.mock.calls[0][0]
+        expect(args.name).toBe('Primary Academy')
+      })
     })
   })
 })

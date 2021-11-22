@@ -31,7 +31,13 @@ $(function () {
       if (isSubmitted) {
         return false
       }
-      $formElement.val('Sending...')
+      // Update the form submit button to say it's uploading
+      var submitButton = $('#upload-form-submit')
+      if (submitButton.text) {
+        $('#upload-form-submit').text('Sending...')
+      } else if (submitButton.val) {
+        $formElement.val('Sending...')
+      }
       isSubmitted = true
       return true
     })

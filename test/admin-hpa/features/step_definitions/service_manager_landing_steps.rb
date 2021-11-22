@@ -52,11 +52,6 @@ Then(/^I should be given the option to assign forms to check windows$/) do
   expect(testdeveloper_landing_page).to have_assign_forms_to_check_windows_text
 end
 
-Then(/^I should be given the option to adjust settings on school pages$/) do
-  expect(admin_page).to have_school_page_settings
-  expect(admin_page).to have_school_page_settings_text
-end
-
 Then(/^I should be given the option to manage access arangements$/) do
   expect(admin_page).to have_manage_access_arrangements
   expect(admin_page).to have_manage_access_arrangements_text
@@ -103,7 +98,6 @@ And(/^the service managers homepage should match design$/) do
   step "I should be given the option to manage check windows"
   step "I should be given the option to upload pupil census data"
   step "I should be given the option to adjust settings on pupil check"
-  step "I should be given the option to adjust settings on school pages"
   step "I should be given the option to update mod schools"
   step "I should be given the option to manage service messages"
   step "I should be given some guidance"

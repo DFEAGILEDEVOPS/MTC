@@ -205,14 +205,23 @@ export class StorageService implements IStorageService {
     if (!key) {
       throw new Error('key is required');
     }
-    localStorage.setItem(key.toString(), JSON.stringify(value));
+    try {
+      localStorage.setItem(key.toString(), JSON.stringify(value));
+    } catch (error) {
+      console.error('Storage-service: error setting key: ', error)
+    }
   }
 
   private getItem(key: StorageKeyTypesAll): any {
     if (!key) {
       throw new Error('key is required');
     }
-    let item = localStorage.getItem(key.toString());
+    let item: string
+    try {
+      item = localStorage.getItem(key.toString());
+    } catch (error) {
+      console.error('Storage-service: error getting key: ', error)
+    }
     // try/catch as not all localstorage items are JSON, e.g. ai_session
     try {
       item = JSON.parse(item);

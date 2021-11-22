@@ -1,5 +1,5 @@
 'use strict'
-/* global describe expect it afterAll */
+/* global describe expect test afterAll */
 
 const moment = require('moment')
 const redisCache = require('../services/data-access/redis-cache.service')
@@ -7,7 +7,7 @@ const redisCache = require('../services/data-access/redis-cache.service')
 describe('redisCache integration tests', () => {
   afterAll(async () => { await redisCache.disconnect() })
 
-  it('can serialise and deserialse an object with different types', async () => {
+  test('can serialise and deserialse an object with different types', async () => {
     const o = {
       name: 'A String',
       score: 25,
@@ -26,7 +26,7 @@ describe('redisCache integration tests', () => {
     await redisCache.drop(key)
   })
 
-  it.each(['2019-10', '1001', '2019-10-01', '2019-01-01T', '2019-10-01T00:00'])(
+  test.each(['2019-10', '1001', '2019-10-01', '2019-01-01T', '2019-10-01T00:00'])(
     'does not turn into a datetime: %s', async (s) => {
       const key = 'integrationTest002'
       await redisCache.set(key, s)

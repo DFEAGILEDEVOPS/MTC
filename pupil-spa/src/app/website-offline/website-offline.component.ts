@@ -9,6 +9,7 @@ import { APP_CONFIG } from '../services/config/config.service';
 })
 
 export class WebsiteOfflineComponent implements OnInit {
+  public title: string;
 
   constructor(private route: ActivatedRoute, private router: Router) { }
 
@@ -16,5 +17,6 @@ export class WebsiteOfflineComponent implements OnInit {
     if (!APP_CONFIG.websiteOffline) {
       this.router.navigate(['/']);
     }
+    this.title = 'Multiplication Tables Check';
   }
 }

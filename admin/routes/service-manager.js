@@ -77,6 +77,16 @@ router.get('/organisations',
   serviceManagerController.getManageSchools
 )
 
+router.get('/organisations/add',
+  isAuthenticated(roles.serviceManager),
+  serviceManagerController.getAddSchool
+)
+
+router.post('/organisations/add',
+  isAuthenticated(roles.serviceManager),
+  serviceManagerController.postAddSchool
+)
+
 router.get('/organisations/search',
   isAuthenticated(roles.serviceManager),
   serviceManagerController.getSearch
@@ -85,6 +95,16 @@ router.get('/organisations/search',
 router.post('/organisations/search',
   isAuthenticated(roles.serviceManager),
   serviceManagerController.postSearch
+)
+
+router.get('/organisations/upload/:jobSlug?',
+  isAuthenticated(roles.serviceManager),
+  serviceManagerController.getUploadOrganisations
+)
+
+router.post('/organisations/upload',
+  isAuthenticated(roles.serviceManager),
+  serviceManagerController.postUploadOrganisations
 )
 
 router.get(
@@ -102,4 +122,10 @@ router.post('/organisations/:slug/edit',
   isAuthenticated(roles.serviceManager),
   serviceManagerController.postEditOrganisation
 )
+
+router.get('/job/:slug',
+  isAuthenticated(roles.serviceManager),
+  serviceManagerController.downloadJobOutput
+)
+
 module.exports = router

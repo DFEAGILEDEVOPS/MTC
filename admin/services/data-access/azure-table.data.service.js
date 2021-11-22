@@ -1,36 +1,31 @@
 'use strict'
 
-const azure = require('azure-storage')
-const bluebird = require('bluebird')
-let azureTableService
+const { TableClient } = require('@azure/data-tables')
+const config = require('../../config')
 
-/**
- * Promisify and cache the azureTableService library as it still lacks Promise support
- */
+const connectionString = config.AZURE_STORAGE_CONNECTION_STRING
+
 const service = {
-  getPromisifiedAzureTableService: function getPromisifiedAzureTableService () {
-    if (azureTableService) {
-      return azureTableService
-    }
-    azureTableService = azure.createTableService()
-    bluebird.promisifyAll(azureTableService, {
-      promisifier: (originalFunction) => function (...args) {
-        return new Promise((resolve, reject) => {
-          try {
-            originalFunction.call(this, ...args, (error, result, response) => {
-              if (error) {
-                return reject(error)
-              }
-              resolve({ result, response })
-            })
-          } catch (error) {
-            reject(error)
-          }
-        })
+  retrieveEntity: async function retrieveEntity (tableName, partitionKey, rowKey) {
+    const client = TableClient.fromConnectionString(connectionString, tableName)
+    try {
+      const entity = await client.getEntity(partitionKey, rowKey)
+      return entity
+    } catch (error) {
+      if (error.details.odataError.code === 'ResourceNotFound') {
+        throw new Error(`entity not found with PartitionKey:${partitionKey} rowKey:${rowKey}`)
+      } else {
+        throw error
       }
-    })
+    }
+  },
 
-    return azureTableService
+  createTables: async function createTables (tables) {
+    const tableCreates = tables.map(table => {
+      const tableClient = TableClient.fromConnectionString(connectionString, table)
+      return tableClient.createTable(table)
+    })
+    return Promise.all(tableCreates)
   }
 }
 

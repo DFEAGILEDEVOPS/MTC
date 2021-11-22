@@ -1,12 +1,12 @@
 import * as R from 'ramda'
 import * as moment from 'moment'
 import { IRedisService, RedisService } from './redis.service'
-import * as azureQueueService from './azure-queue.service'
 import config from '../config'
 import { IQueueMessageService, SbQueueMessageService } from './queue-message.service'
+import { PingService } from './ping.service'
 
 export interface IPupilAuthenticationService {
-  authenticate (schoolPin: string, pupilPin: string): Promise<object | undefined>
+  authenticate (schoolPin?: string, pupilPin?: string, buildVersion?: string): Promise<object | undefined>
 }
 
 export interface IPupilLoginMessage {
@@ -14,12 +14,14 @@ export interface IPupilLoginMessage {
   loginAt: Date
   practice: boolean
   version: number
+  clientBuildVersion: string
+  apiBuildVersion: string
 }
 
 export class RedisPupilAuthenticationService implements IPupilAuthenticationService {
-
-  private redisService: IRedisService
-  private queueService: IQueueMessageService
+  private readonly redisService: IRedisService
+  private readonly queueService: IQueueMessageService
+  private readonly pingService: PingService
 
   constructor (redisService?: IRedisService, queueService?: IQueueMessageService) {
     if (redisService === undefined) {
@@ -30,15 +32,25 @@ export class RedisPupilAuthenticationService implements IPupilAuthenticationServ
       queueService = new SbQueueMessageService()
     }
     this.queueService = queueService
+    this.pingService = new PingService()
   }
 
-  async authenticate (schoolPin: string, pupilPin: string): Promise<object | undefined> {
-    if (schoolPin.length === 0 || pupilPin.length === 0) {
-      throw new Error('schoolPin and pupilPin cannot be an empty string')
+  async authenticate (schoolPin?: string, pupilPin?: string, buildVersion?: string): Promise<object | undefined> {
+    if (schoolPin === undefined || schoolPin.length === 0) {
+      throw new Error('schoolPin is required')
     }
+
+    if (pupilPin === undefined || pupilPin.length === 0) {
+      throw new Error('pupilPin is required')
+    }
+
+    if (buildVersion === undefined || buildVersion.length === 0) {
+      throw new Error('buildVersion is required')
+    }
+
     const cacheKey = this.buildCacheKey(schoolPin, pupilPin)
     const preparedCheckEntry = await this.redisService.get(cacheKey)
-    if (!preparedCheckEntry) {
+    if (preparedCheckEntry === undefined) {
       return
     }
     const pinExpiresAtUtc = R.prop('pinExpiresAtUtc', preparedCheckEntry)
@@ -56,7 +68,9 @@ export class RedisPupilAuthenticationService implements IPupilAuthenticationServ
       checkCode: preparedCheckEntry.checkCode.toLowerCase(),
       loginAt: new Date(),
       version: 1,
-      practice: preparedCheckEntry.config.practice
+      practice: preparedCheckEntry.config.practice,
+      clientBuildVersion: buildVersion,
+      apiBuildVersion: await this.pingService.getBuildNumber()
     }
     await this.queueService.dispatch({
       body: pupilLoginMessage
@@ -67,5 +81,4 @@ export class RedisPupilAuthenticationService implements IPupilAuthenticationServ
   private buildCacheKey (schoolPin: string, pupilPin: string): string {
     return `preparedCheck:${schoolPin}:${pupilPin}`
   }
-
 }

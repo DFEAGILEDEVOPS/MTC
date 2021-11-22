@@ -61,8 +61,8 @@ describe('pupil-prefs.service', () => {
     await sut.update(update, functionBindings)
     expect(dataServiceMock.updatePupilPreferences).toHaveBeenCalledTimes(1)
     expect(dataUpdates).toHaveLength(1)
-    expect(dataUpdates[0].prefTable).toBe('[pupilColourContrasts]')
-    expect(dataUpdates[0].prefField).toBe('pupilColourContrasts_id')
+    expect(dataUpdates[0].prefTable).toBe('[colourContrastLookUp]')
+    expect(dataUpdates[0].prefField).toBe('colourContrastLookUp_Id')
   })
 
   test('font size only update makes relevant data change', async () => {
@@ -80,7 +80,7 @@ describe('pupil-prefs.service', () => {
     await sut.update(update, functionBindings)
     expect(dataServiceMock.updatePupilPreferences).toHaveBeenCalledTimes(1)
     expect(dataUpdates).toHaveLength(1)
-    expect(dataUpdates[0].prefTable).toBe('[pupilFontSizes]')
-    expect(dataUpdates[0].prefField).toBe('pupilfontSizes_id')
+    expect(dataUpdates[0].prefTable).toBe('[fontSizeLookUp]')
+    expect(dataUpdates[0].prefField).toBe('fontSizeLookUp_Id')
   })
 })
