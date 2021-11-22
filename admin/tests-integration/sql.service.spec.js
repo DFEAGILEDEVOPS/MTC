@@ -1,5 +1,5 @@
 'use strict'
-/* global describe beforeAll it expect fail spyOn afterAll */
+/* global describe beforeAll test expect fail afterAll jest */
 
 const path = require('path')
 const fs = require('fs')
@@ -34,13 +34,13 @@ describe('sql.service:integration', () => {
   })
 
   describe('should permit', () => {
-    it('select query with no parameters', async () => {
+    test('select query with no parameters', async () => {
       const settingsRows = await sql.query('SELECT * FROM [mtc_admin].[settings]')
       expect(settingsRows).toBeDefined()
       expect(settingsRows.length).toBe(1)
     })
 
-    it('select query with parameters', async () => {
+    test('select query with parameters', async () => {
       const id = { name: 'id', type: TYPES.Int, value: 1 }
       const settingsRows = await sql.query('SELECT * FROM [mtc_admin].[settings] WHERE id=@id', [id])
       expect(settingsRows).toBeDefined()
@@ -49,9 +49,9 @@ describe('sql.service:integration', () => {
   })
 
   describe('should not permit', () => {
-    it('delete operation to mtc application user', async () => {
+    test('delete operation to mtc application user', async () => {
       try {
-        spyOn(logger, 'error')
+        jest.spyOn(logger, 'error').mockImplementation()
         await sql.query('DELETE FROM [mtc_admin].[settings]')
         fail('DELETE operation should not have succeeded')
       } catch (error) {
@@ -60,9 +60,9 @@ describe('sql.service:integration', () => {
       }
     })
 
-    it('TRUNCATE TABLE operation to mtc application user', async () => {
+    test('TRUNCATE TABLE operation to mtc application user', async () => {
       try {
-        spyOn(logger, 'error')
+        jest.spyOn(logger, 'error').mockImplementation()
         await sql.query('TRUNCATE TABLE Settings')
         fail('TRUNCATE operation should not have succeeded')
       } catch (error) {
@@ -70,9 +70,9 @@ describe('sql.service:integration', () => {
       }
     })
 
-    it('the ALTER TABLE operation to mtc application user', async () => {
+    test('the ALTER TABLE operation to mtc application user', async () => {
       try {
-        spyOn(logger, 'error')
+        jest.spyOn(logger, 'error').mockImplementation()
         await sql.query('ALTER TABLE [mtc_admin].[settings] DROP COLUMN checkTimeLimit')
         fail('the ALTER TABLE operation should not have succeeded')
       } catch (error) {
@@ -80,9 +80,9 @@ describe('sql.service:integration', () => {
       }
     })
 
-    it('CREATE VIEW operation to mtc application user', async () => {
+    test('CREATE VIEW operation to mtc application user', async () => {
       try {
-        spyOn(logger, 'error')
+        jest.spyOn(logger, 'error').mockImplementation()
         await sql.query(`
       CREATE VIEW [mtc_admin].[vewSettings]
       AS SELECT * FROM [mtc_admin].settings
@@ -93,9 +93,9 @@ describe('sql.service:integration', () => {
       }
     })
 
-    it('ALTER VIEW operation to mtc application user', async () => {
+    test('ALTER VIEW operation to mtc application user', async () => {
       try {
-        spyOn(logger, 'error')
+        jest.spyOn(logger, 'error').mockImplementation()
         await sql.query(`
       ALTER VIEW [mtc_admin].[vewPupilsWithActiveFamiliarisationPins]
       AS SELECT * FROM [mtc_admin].settings
@@ -106,9 +106,9 @@ describe('sql.service:integration', () => {
       }
     })
 
-    it('DROP VIEW operation to mtc application user', async () => {
+    test('DROP VIEW operation to mtc application user', async () => {
       try {
-        spyOn(logger, 'error')
+        jest.spyOn(logger, 'error').mockImplementation()
         await sql.query('DROP VIEW [mtc_admin].[vewPupilsWithActiveFamiliarisationPins]')
         fail('DROP VIEW operation should not have succeeded')
       } catch (error) {
@@ -116,9 +116,9 @@ describe('sql.service:integration', () => {
       }
     })
 
-    it('CREATE TRIGGER operation to mtc application user', async () => {
+    test('CREATE TRIGGER operation to mtc application user', async () => {
       try {
-        spyOn(logger, 'error')
+        jest.spyOn(logger, 'error').mockImplementation()
         await sql.query(`
       CREATE TRIGGER [mtc_admin].[settingsCreatedAtTrigger]
         ON [mtc_admin].[settings] FOR UPDATE
@@ -136,9 +136,9 @@ describe('sql.service:integration', () => {
       }
     })
 
-    it('DROP TRIGGER operation to mtc application user', async () => {
+    test('DROP TRIGGER operation to mtc application user', async () => {
       try {
-        spyOn(logger, 'error')
+        jest.spyOn(logger, 'error').mockImplementation()
         await sql.query('DROP TRIGGER IF EXISTS [mtc_admin].[settingsUpdatedAtTrigger]')
         fail('DROP TRIGGER operation should not have succeeded')
       } catch (error) {
@@ -146,9 +146,9 @@ describe('sql.service:integration', () => {
       }
     })
 
-    it('CREATE PROCEDURE operation to mtc application user', async () => {
+    test('CREATE PROCEDURE operation to mtc application user', async () => {
       try {
-        spyOn(logger, 'error')
+        jest.spyOn(logger, 'error').mockImplementation()
         await sql.query(`
       CREATE PROCEDURE [mtc_admin].[spSettings]
         AS SELECT * FROM [mtc_admin].settings
@@ -159,9 +159,9 @@ describe('sql.service:integration', () => {
       }
     })
 
-    it('DROP PROCEDURE operation to mtc application user', async () => {
+    test('DROP PROCEDURE operation to mtc application user', async () => {
       try {
-        spyOn(logger, 'error')
+        jest.spyOn(logger, 'error').mockImplementation()
         await sql.query('DROP PROCEDURE IF EXISTS [mtc_admin].[spUpsertSceSchools]')
         fail('DROP PROCEDURE operation should not have succeeded')
       } catch (error) {
@@ -170,7 +170,7 @@ describe('sql.service:integration', () => {
     })
   })
 
-  it('should transform the results arrays into a JSON array', async () => {
+  test('should transform the results arrays into a JSON array', async () => {
     const actual = await sql.query('SELECT * FROM [mtc_admin].[settings]')
     expect(actual).toBeDefined()
     expect(actual.length).toBe(1)
@@ -182,14 +182,14 @@ describe('sql.service:integration', () => {
     expect(row.questionTimeLimit).toBe(6)
   })
 
-  it('should omit the version column from returned set', async () => {
+  test('should omit the version column from returned set', async () => {
     const actual = await sql.query('SELECT * FROM [mtc_admin].[settings]')
     expect(actual).toBeDefined()
     const row = actual[0]
     expect(row.version).toBeUndefined()
   })
 
-  it('dates should be stored as UTC and preserve a less than 1000 milliseconds difference', async () => {
+  test('dates should be stored as UTC and preserve a less than 1000 milliseconds difference', async () => {
     const fullDateFormat = moment.now()
     const britishSummerTimeValue = moment(fullDateFormat)
     const updatedAtParam = {
@@ -232,7 +232,7 @@ describe('sql.service:integration', () => {
     }
   })
 
-  it('should normalise a non UTC offset to UTC when stored as moment', async () => {
+  test('should normalise a non UTC offset to UTC when stored as moment', async () => {
     const updatedAtDate = moment('2017-12-01T15:00:00.000-08:00', moment.ISO_8601, true)
     const updatedAtParam = {
       name: 'updatedAt',
@@ -275,7 +275,7 @@ describe('sql.service:integration', () => {
     }
   })
 
-  it('should normalise a non UTC offset to UTC when stored as plain date object', async () => {
+  test('should normalise a non UTC offset to UTC when stored as plain date object', async () => {
     const updatedAtDate = new Date('2017-12-01T15:00:00.000-08:00')
     const updatedAtParam = {
       name: 'updatedAt',
@@ -318,7 +318,7 @@ describe('sql.service:integration', () => {
     }
   })
 
-  it('#findOneById should retrieve a row', async () => {
+  test('#findOneById should retrieve a row', async () => {
     const row = await sql.findOneById('[user]', 4)
     expect(row).toBeDefined()
     expect(row.id).toBe(4)
@@ -327,8 +327,8 @@ describe('sql.service:integration', () => {
     expect(row.role_id).toBe(3)
   })
 
-  it('#findOneById should prevent sql injection', async () => {
-    spyOn(logger, 'error')
+  test('#findOneById should prevent sql injection', async () => {
+    jest.spyOn(logger, 'error').mockImplementation()
     try {
       await sql.findOneById('[user]', '3 OR 1=1')
       fail('not expected to return a result')
@@ -338,7 +338,7 @@ describe('sql.service:integration', () => {
   })
 
   describe('#create', () => {
-    it('should insert a new row and provide the new insert id', async () => {
+    test('should insert a new row and provide the new insert id', async () => {
       const user = {
         identifier: 'integration-test-' + uuidv4(),
         school_id: 5,
@@ -356,7 +356,7 @@ describe('sql.service:integration', () => {
       expect(retrievedUser.role_id).toBe(user.role_id)
     })
 
-    it('should allow an nvarchar col to be added', async () => {
+    test('should allow an nvarchar col to be added', async () => {
       const data = { tNvarCharMax: 'the quick brown fox' }
       try {
         const res = await sql.create('[integrationTest]', data)
@@ -366,7 +366,7 @@ describe('sql.service:integration', () => {
       }
     })
 
-    it('returns datetimeoffset columns as Moment objects', async () => {
+    test('returns datetimeoffset columns as Moment objects', async () => {
       const date = moment()
 
       // test-setup save a date
@@ -382,25 +382,25 @@ describe('sql.service:integration', () => {
   })
 
   describe('Inserts', () => {
-    it('a single insert returns nothing', async () => {
+    test('a single insert returns nothing', async () => {
       const stm = 'INSERT INTO [mtc_admin].[integrationTest] (tNVarChar) VALUES (\'test 42\')'
       const res = await sql.modify(stm)
       expect(R.isEmpty(res)).toBe(true)
     })
 
-    it('a single insert with a scope_identity request returns the identity of the inserted row', async () => {
+    test('a single insert with a scope_identity request returns the identity of the inserted row', async () => {
       const stm = 'INSERT INTO [mtc_admin].[integrationTest] (tNVarChar) VALUES (\'test 43\'); SELECT SCOPE_IDENTITY() as SCOPE_IDENTITY'
       const res = await sql.modify(stm)
       expect(res.insertId).toBeDefined()
     })
 
-    it('a multiple insert returns nothing', async () => {
+    test('a multiple insert returns nothing', async () => {
       const stm = 'INSERT INTO [mtc_admin].[integrationTest] (tNVarChar) VALUES (\'test 44\'), (\'test 45\')'
       const res = await sql.modify(stm)
       expect(R.isEmpty(res)).toBe(true)
     })
 
-    it('a multiple insert with an output table returns the identities of the inserted rows', async () => {
+    test('a multiple insert with an output table returns the identities of the inserted rows', async () => {
       const stm = `DECLARE @output TABLE (id int);
       INSERT INTO [mtc_admin].[integrationTest] (tNVarChar)
         OUTPUT inserted.ID INTO @output
@@ -412,7 +412,7 @@ describe('sql.service:integration', () => {
   })
 
   describe('#update', () => {
-    it('should update a record', async () => {
+    test('should update a record', async () => {
       const school = await sql.findOneById('[school]', 1)
       const pin = 'zzz98765'
       const expiry = moment().add(4, 'hours')
@@ -434,7 +434,7 @@ describe('sql.service:integration', () => {
   describe('data type handling', () => {
     const table = '[integrationTest]'
 
-    it('allows a decimal type to be set manually', async () => {
+    test('allows a decimal type to be set manually', async () => {
       const value = 3.14
       const params = [{
         name: 'tDecimal',
@@ -455,14 +455,14 @@ describe('sql.service:integration', () => {
       expect(t.tDecimal).toEqual(value)
     })
 
-    it('allows a decimal type to be set automatically on create', async () => {
+    test('allows a decimal type to be set automatically on create', async () => {
       const data = { tDecimal: 6.02 }
       const res = await sql.create(table, data)
       const t = await sql.findOneById(table, res.insertId)
       expect(t.tDecimal).toEqual(data.tDecimal)
     })
 
-    it('allows a decimal type to be set automatically on update', async () => {
+    test('allows a decimal type to be set automatically on update', async () => {
       const data = { tDecimal: 6.99 }
       const res = await sql.create(table, data)
       const t = await sql.findOneById(table, res.insertId)
@@ -471,7 +471,7 @@ describe('sql.service:integration', () => {
       expect(t2.tDecimal).toEqual(7.01)
     })
 
-    it('allows a numeric type to be set manually', async () => {
+    test('allows a numeric type to be set manually', async () => {
       const value = 96.489
       const params = [{
         name: 'tNumeric',
@@ -492,14 +492,14 @@ describe('sql.service:integration', () => {
       expect(t.tNumeric).toEqual(value)
     })
 
-    it('allows a numeric type to be set automatically on create', async () => {
+    test('allows a numeric type to be set automatically on create', async () => {
       const data = { tNumeric: 1.660 }
       const res = await sql.create(table, data)
       const t = await sql.findOneById(table, res.insertId)
       expect(t.tNumeric).toEqual(data.tNumeric)
     })
 
-    it('allows a numeric type to be set automatically on update', async () => {
+    test('allows a numeric type to be set automatically on update', async () => {
       const data = { tNumeric: 1.380 }
       const res = await sql.create(table, data)
       const t = await sql.findOneById(table, res.insertId)
@@ -508,7 +508,7 @@ describe('sql.service:integration', () => {
       expect(t2.tNumeric).toEqual(2.381)
     })
 
-    it('allows a float type to be set manually', async () => {
+    test('allows a float type to be set manually', async () => {
       const value = 9.80665
       const params = [{
         name: 'tFloat',
@@ -527,14 +527,14 @@ describe('sql.service:integration', () => {
       expect(t.tFloat).toBeCloseTo(value, 5)
     })
 
-    it('allows a float type to be set automatically on create', async () => {
+    test('allows a float type to be set automatically on create', async () => {
       const data = { tFloat: 9.80665 }
       const res = await sql.create(table, data)
       const t = await sql.findOneById(table, res.insertId)
       expect(t.tFloat).toBeCloseTo(data.tFloat, 5)
     })
 
-    it('allows a float type to be set automatically on update', async () => {
+    test('allows a float type to be set automatically on update', async () => {
       const data = { tFloat: 9.80665 }
       const res = await sql.create(table, data)
       const t = await sql.findOneById(table, res.insertId)
@@ -543,7 +543,7 @@ describe('sql.service:integration', () => {
       expect(t2.tFloat).toBeCloseTo(10.12345, 5)
     })
 
-    it('allows a nvarchar to set manually', async () => {
+    test('allows a nvarchar to set manually', async () => {
       const value = 'the quick' // 9 chars, col length is 10
       const params = [{
         name: 'tNvarchar',
@@ -568,18 +568,18 @@ describe('sql.service:integration', () => {
       expect(t.tNvarchar).toBe('the quick')
     })
 
-    it('allows a nvarchar to be set automatically on create', async () => {
+    test('allows a nvarchar to be set automatically on create', async () => {
       const data = { tNvarchar: 'brown fox' } // 9 chars col length is 10
       const res = await sql.create(table, data)
       const t = await sql.findOneById(table, res.insertId)
       expect(t.tNvarchar).toBe(data.tNvarchar)
     })
 
-    it('raises an error on CREATE when the nvarchar provided is too long', async () => {
+    test('raises an error on CREATE when the nvarchar provided is too long', async () => {
       const data = { tNvarchar: 'the quick brown fox' } // 19 chars col length is 10
       // This will generate a warning because of the error, we can shut that up for this test
-      spyOn(logger, 'warn')
-      spyOn(logger, 'error')
+      jest.spyOn(logger, 'warn').mockImplementation()
+      jest.spyOn(logger, 'error').mockImplementation()
       try {
         await sql.create(table, data)
         fail('expected to throw')
@@ -590,7 +590,7 @@ describe('sql.service:integration', () => {
   })
 
   describe('#modifyWithResponse', () => {
-    it('returns the response', async () => {
+    test('returns the response', async () => {
       const stm = `
         INSERT INTO [mtc_admin].[integrationTest]
             (tNVarcharMax) VALUES ('modifyWithResponse test');
@@ -602,7 +602,7 @@ describe('sql.service:integration', () => {
       expect(result.response[0].id).toBeGreaterThan(1)
       expect(result.response[0].tNvarchar).toBeNull()
     })
-    it('returns output clauses', async () => {
+    test('returns output clauses', async () => {
       const stm = `
         INSERT INTO [mtc_admin].[integrationTest] (tNvarCharMax)
         OUTPUT inserted.id, inserted.tNvarCharMax, inserted.tNvarchar
@@ -617,7 +617,7 @@ describe('sql.service:integration', () => {
   })
 
   describe('#modifyTransactionWithResponse', () => {
-    it('returns the response', async () => {
+    test('returns the response', async () => {
       const stm = `
         DECLARE @a Integer,
                 @b Integer;
@@ -649,8 +649,8 @@ describe('sql.service:integration', () => {
       expect(result.response[1].tNvarchar).toBeNull()
     })
 
-    it('rolls back on error', async () => {
-      spyOn(logger, 'error')
+    test('rolls back on error', async () => {
+      jest.spyOn(logger, 'error').mockImplementation()
       const stm = `
         INSERT INTO [mtc_admin].[integrationTest] (tDecimal) VALUES (10.51);
         -- This will fail and cause rollback

@@ -56,7 +56,6 @@ Then(/^I should see the check summary$/) do
   expect(check_details['checkCode']).to eql check_view_page.check_summary.check_code.text
   expect(check_details['id']).to eql check_view_page.check_summary.check_id.text.to_i
   expect(check_details['isLiveCheck']).to eql check_view_page.check_summary.type.text == 'Live'
-  expect(check_details['complete']).to eql check_view_page.check_summary.status.text == 'Complete'
   expect(check_details['createdAt'].strftime("%d-%m-%Y %H:%M:%S")).to eql Time.parse(check_view_page.check_summary.created_at.text).strftime("%d-%m-%Y %H:%M:%S")
   expect(SqlDbHelper.find_school(pupil_details['school_id'])['name']).to eql check_view_page.check_summary.school_name.text
   expect(SqlDbHelper.find_school(pupil_details['school_id'])['dfeNumber']).to eql check_view_page.check_summary.dfe_number.text.to_i

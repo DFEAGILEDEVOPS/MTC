@@ -7,9 +7,9 @@ const config = require('../../config')
 
 module.exports.sqlFindPupilsEligibleForRestart = async function sqlFindPupilsEligibleForRestart (schoolId) {
   const sql = `SELECT *
-               FROM   [mtc_admin].[vewPupilsEligibleForRestart]
-               WHERE  school_id = @schoolId
-               AND    totalCheckCount < (@maxRestartsAllowed + 1)`
+                 FROM [mtc_admin].[vewPupilsEligibleForRestart]
+                WHERE school_id = @schoolId
+                  AND totalCheckCount < (@maxRestartsAllowed + 1)`
 
   const params = [
     {
@@ -37,10 +37,10 @@ module.exports.sqlFindPupilsEligibleForRestartByPupilId = async function sqlFind
   const { params, paramIdentifiers } = sqlService.buildParameterList(pupilIds, TYPES.Int)
 
   const sql = `SELECT *
-               FROM   [mtc_admin].[vewPupilsEligibleForRestart]
-               WHERE  school_id = @schoolId
-               AND    totalCheckCount < (@maxRestartsAllowed + 1)
-               AND    id IN (${paramIdentifiers.join(', ')})`
+                 FROM [mtc_admin].[vewPupilsEligibleForRestart]
+                WHERE school_id = @schoolId
+                  AND totalCheckCount < (@maxRestartsAllowed + 1)
+                  AND id IN (${paramIdentifiers.join(', ')})`
 
   const extraParams = [
     {
@@ -58,36 +58,54 @@ module.exports.sqlFindPupilsEligibleForRestartByPupilId = async function sqlFind
   return sqlService.query(sql, params.concat(extraParams))
 }
 
+/**
+ *
+ * @param schoolId
+ * @returns {Promise<{
+ * id:number,
+ * pupilId:number,
+ * restartReasonCode:string,
+ * reason:string,
+ * foreName:string,
+ * lastName:string,
+ * middleNames:string,
+ * dateOfBirth:moment.Moment,
+ * urlSlug: string,
+ * restartCheckAllocation: number,
+ * totalCheckCount: number,
+ * restartCheckId: number,
+ * restartCheckPupilLoginDate: null | moment.Moment,
+ * restartCheckReceived: boolean,
+ * restartCheckComplete: boolean
+ * }[]>}
+ */
 module.exports.getRestartsForSchool = async function getRestartsForSchool (schoolId) {
   const sql = `
-    SELECT
-           pr.id,
-           p.id as pupilId,
-           rr.code as restartReasonCode,
-           rr.description as reason,
-           p.foreName,
-           p.lastName,
-           p.middleNames,
-           p.dateOfBirth,
-           p.urlSlug,
-           pr.check_id as restartCheckAllocation,
-           vct.totalCheckCount,
-           cs.code
-    FROM
-           (
-              SELECT *,
-              ROW_NUMBER() OVER (PARTITION BY pupil_id ORDER BY id DESC) as rank
-              FROM [mtc_admin].[pupilRestart]
-              WHERE isDeleted = 0
-           )  pr join
-           [mtc_admin].[pupil] p ON (pr.pupil_id = p.id) join
-           [mtc_admin].[pupilRestartReason] rr ON (pr.pupilRestartReason_id = rr.id) left join
-           [mtc_admin].[check] c ON (pr.check_id = c.id) left join
-           [mtc_admin].[checkStatus] cs ON (c.checkStatus_id = cs.id) left join
-           [mtc_admin].[vewPupilLiveChecksTakenCount] vct ON (p.id = vct.pupil_id)
-    WHERE
-           pr.rank = 1
-    AND    p.school_id = @schoolId;
+      SELECT
+          pr.id,
+          p.id as pupilId,
+          rr.code as restartReasonCode,
+          rr.description as reason,
+          p.foreName,
+          p.lastName,
+          p.middleNames,
+          p.dateOfBirth,
+          p.urlSlug,
+          pr.check_id as restartCheckAllocation,
+          vct.totalCheckCount,
+          rc.id as restartCheckId,
+          rc.pupilLoginDate as restartCheckPupilLoginDate,
+          rc.received as restartCheckReceived,
+          rc.complete as restartCheckComplete
+        FROM (SELECT *, ROW_NUMBER() OVER (PARTITION BY pupil_id ORDER BY id DESC) as rank
+                FROM [mtc_admin].[pupilRestart]
+               WHERE isDeleted = 0) pr
+             join      [mtc_admin].[pupil] p ON (pr.pupil_id = p.id)
+             join      [mtc_admin].[restartReasonLookup] rr ON (pr.restartReasonLookup_Id = rr.id)
+             left join [mtc_admin].[check] rc ON (pr.check_id = rc.id)
+             left join [mtc_admin].[vewPupilLiveChecksTakenCount] vct ON (p.id = vct.pupil_id)
+       WHERE pr.rank = 1
+         AND p.school_id = @schoolId;
   `
 
   const params = [
@@ -115,7 +133,6 @@ module.exports.restartTransactionForPupils = async function restartTransactionFo
    *
    * For each pupil
    * 1. CheckPin table: Expire the pins used for live checks if there is one
-   * 2. Check table: Void the existing live check if there is one: checkStatus => VOID
    * 2. Pupil Restart table: Add the restart record
    * 3. (in another service: remove the preparedCheck from (redis|table storage)
    * 4. Pupil table: Update the pupil with the restartAvailable flag, ensure the checkComplete flag is false,
@@ -145,23 +162,20 @@ module.exports.restartTransactionForPupils = async function restartTransactionFo
       { name: `oc${idx}`, value: d.currentCheckId, type: TYPES.Int }
     ]
 
-    const sql = `INSERT INTO [mtc_admin].[pupilRestart] (
-                classDisruptionInformation,
-                didNotCompleteInformation,
-                furtherInformation,
-                pupil_id,
-                pupilRestartReason_id,
-                recordedByUser_id,
-                originCheck_id
-           ) VALUES (
-                @cd${idx},
-                @dnc${idx},
-                @fi${idx},
-                @pid${idx},
-                (SELECT id from [mtc_admin].[pupilRestartReason] where code = @prrCode${idx}),
-                @rbu${idx},
-                @oc${idx}
-            );`
+    const sql = `INSERT INTO [mtc_admin].[pupilRestart] (classDisruptionInformation,
+                                                         didNotCompleteInformation,
+                                                         furtherInformation,
+                                                         pupil_id,
+                                                         restartReasonLookup_Id,
+                                                         recordedByUser_id,
+                                                         originCheck_id)
+                 VALUES (@cd${idx},
+                         @dnc${idx},
+                         @fi${idx},
+                         @pid${idx},
+                         (SELECT id from [mtc_admin].[restartReasonLookup] where code = @prrCode${idx}),
+                         @rbu${idx},
+                         @oc${idx});`
 
     return {
       sql, params
@@ -172,19 +186,21 @@ module.exports.restartTransactionForPupils = async function restartTransactionFo
   const pupilRestartParams = flatten(pupilRestartData.map(p => p.params)) // requires node 11 for Array.flatMap
 
   const sql = `
-     DELETE FROM [mtc_admin].[checkPin] WHERE check_id IN (${checkParamIdentifiers.join(', ')});
+      DELETE
+        FROM [mtc_admin].[checkPin]
+       WHERE check_id IN (${checkParamIdentifiers.join(', ')});
 
-     UPDATE [mtc_admin].[check]
-        SET checkStatus_id = (SELECT TOP 1 id FROM [mtc_admin].[checkStatus] WHERE CODE = 'VOD')
-        WHERE id IN (${checkParamIdentifiers.join(', ')});
+      ${pupilRestartSqls.join('\n')}
 
-     ${pupilRestartSqls.join('\n')}
+      UPDATE [mtc_admin].[pupil]
+         SET restartAvailable = 1,
+             checkComplete = 0,
+             currentCheckId = NULL
+       WHERE id IN (${pupilIdentifiers.join(', ')});
 
-     UPDATE [mtc_admin].[pupil]
-        SET restartAvailable = 1, checkComplete = 0, currentCheckId = NULL
-        WHERE id IN (${pupilIdentifiers.join(', ')});
-
-     SELECT id, urlSlug FROM [mtc_admin].[pupil] where id in (${pupilIdentifiers.join(', ')});
+      SELECT id, urlSlug
+        FROM [mtc_admin].[pupil]
+       where id in (${pupilIdentifiers.join(', ')});
   `
 
   const allParams = checkParams.concat(pupilRestartParams).concat(pupilParams)
@@ -200,20 +216,14 @@ module.exports.restartTransactionForPupils = async function restartTransactionFo
 module.exports.getLiveCheckDataByPupilId = async function getLiveCheckDataByPupilId (pupilsList) {
   const { params, paramIdentifiers } = sqlService.buildParameterList(pupilsList, TYPES.Int)
   const sql = `
-    select
-      c.id as checkId,
-      pp.id as pupilId,
-      p.val as pupilPin,
-      s.pin as schoolPin
-    from
-        [mtc_admin].[pupil] pp JOIN
-        [mtc_admin].[school] s ON (pp.school_id = s.id) JOIN
-        [mtc_admin].[check] c ON (pp.currentCheckId = c.id) LEFT JOIN
-        -- the checkPin may already have been deleted by the time the restart happens
-        [mtc_admin].[checkPin] cp ON (c.id = cp.check_id) LEFT JOIN
-        [mtc_admin].[pin] p on (cp.pin_id = p.id)
-    where
-        pp.id IN (${paramIdentifiers.join(', ')})
+      select c.id as checkId, pp.id as pupilId, p.val as pupilPin, s.pin as schoolPin
+        from [mtc_admin].[pupil] pp
+             JOIN      [mtc_admin].[school] s ON (pp.school_id = s.id)
+             JOIN      [mtc_admin].[check] c ON (pp.currentCheckId = c.id)
+             LEFT JOIN -- the checkPin may already have been deleted by the time the restart happens
+                           [mtc_admin].[checkPin] cp ON (c.id = cp.check_id)
+             LEFT JOIN [mtc_admin].[pin] p on (cp.pin_id = p.id)
+       where pp.id IN (${paramIdentifiers.join(', ')})
   `
   return sqlService.query(sql, params)
 }
