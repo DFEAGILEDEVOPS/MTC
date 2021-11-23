@@ -110,4 +110,3 @@ services:
       - 4200:80
     depends_on:
       - pupil_api
-#    command: ["./docker-start-dev.sh"]
