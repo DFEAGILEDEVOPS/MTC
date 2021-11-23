@@ -138,7 +138,6 @@ function watch () {
 function bundleVendorJs () {
   return gulp.src(jsVendorBundleFiles)
     .pipe(concat('vendor.js'))
-    .pipe(replace('SESSION_DISPLAY_NOTICE_TIME', config.ADMIN_SESSION_DISPLAY_NOTICE_AFTER.toString()))
     .pipe(babel({
       presets: ['@babel/preset-env'],
       sourceType: 'unambiguous'
