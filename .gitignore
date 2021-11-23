@@ -124,3 +124,9 @@ local.settings.json
 
 # zip deployments (typically for apps in _spikes-poc folder)
 deploy.zip
+
+# Jetbrains
+*.iml
+
+# Emacs save files
+*~
