@@ -18,5 +18,6 @@ function decompress (input) {
  * @returns {string} UTF-16 encoded compressed string of check data
  */
 function getArchive (checkCode) {
-
+  const sql = 'SELECT archive FROM mtc_admin.receivedCheck WHERE checkCode=@checkCode'
+  
 }
