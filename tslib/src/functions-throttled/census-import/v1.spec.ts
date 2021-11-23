@@ -5,6 +5,8 @@ import { ICensusImportDataService } from './census-import.data.service'
 import { IJobDataService } from './job.data.service'
 import { IBlobService } from '../../azure/blob-service'
 import { ILogger } from '../../common/logger'
+import { RedisServiceMock } from '../../caching/redis-service.mock'
+import { IRedisService } from '../../caching/redis-service'
 
 const CensusImportDataServiceMock = jest.fn<ICensusImportDataService, any>(() => ({
   deleteStagingTable: jest.fn(),
@@ -32,6 +34,7 @@ let censusImportDataServiceMock: ICensusImportDataService
 let jobDataServiceMock: IJobDataService
 let blobServiceMock: IBlobService
 let loggerMock: ILogger
+let redisServiceMock: IRedisService
 const loadAndInsertCount = 5
 
 describe('census-import: v1', () => {
@@ -43,11 +46,14 @@ describe('census-import: v1', () => {
     jest.spyOn(jobDataServiceMock, 'updateStatus').mockImplementation(async () => Promise.resolve(123))
     blobServiceMock = new BlobServiceMock()
     loggerMock = new LoggerMock()
+    redisServiceMock = new RedisServiceMock()
+
     sut = new CensusImportV1(new ConnectionPool(config.Sql),
       loggerMock,
       censusImportDataServiceMock,
       jobDataServiceMock,
-      blobServiceMock)
+      blobServiceMock,
+      redisServiceMock)
   })
 
   const blobUri = 'path/to/the/blob.csv'
@@ -77,5 +83,10 @@ describe('census-import: v1', () => {
     jest.spyOn(censusImportDataServiceMock, 'loadStagingTable').mockImplementation(async () => Promise.resolve(loadAndInsertCount - 1))
     await sut.process('foo,bar', blobUri)
     expect(jobDataServiceMock.updateStatus).toHaveBeenLastCalledWith(expect.any(String), 'CWR', expect.any(String), expect.any(String))
+  })
+
+  test('it invalidates the pupil register', async () => {
+    await sut.process('foo, bar', blobUri)
+    expect(redisServiceMock.dropByPrefix).toHaveBeenCalledWith('pupilRegisterViewData:')
   })
 })
