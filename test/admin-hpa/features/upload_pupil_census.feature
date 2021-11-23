@@ -12,6 +12,11 @@ Feature:
     Then I should see the file uploaded
     And I should see the completed status
 
+  Scenario: Pupils uploaded via census are visible in the pupil register
+    Given I can see pupils that exist in the pupil register
+    When I upload pupils via the census upload
+    Then the newly uploaded pupils are visible in the pupil register list
+
   @wip
   Scenario: Error is displayed when uploading a pupil census data with duplicate UPN
     Given I am on the upload pupil census page
