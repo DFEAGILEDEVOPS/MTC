@@ -80,7 +80,7 @@
     "openid-client": "^4.2.2",
     "passport": "^0.4.0",
     "passport-local": "^1.0.0",
-    "qrcode": "^1.0.0",
+    "qrcode": "^1.5.0",
     "ramda": "^0.27.0",
     "ramda-adjunct": "^2.21.0",
     "random-number-csprng": "^1.0.2",
