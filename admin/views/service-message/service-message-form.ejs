@@ -64,8 +64,10 @@
 <link rel="stylesheet" href='<%= assetPath %>vendor/simplemde/simplemde.min.css' type='text/css'></link>
 <script defer src='<%= assetPath %>vendor/simplemde/simplemde.min.js'></script>
 <script>
+    // init this variable in global scope, so the QA team can use it.
+    var simplemde = undefined
     document.addEventListener('DOMContentLoaded', () => {
-        var simplemde = new SimpleMDE({
+        simplemde = new SimpleMDE({
             autoDownloadFontAwesome: false,
             spellChecker: false
         });
