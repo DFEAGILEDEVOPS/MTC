@@ -12,3 +12,4 @@ UPDATE mtc_admin.[hdf] SET
 UPDATE mtc_admin.[pupilAccessArrangements] SET
   retroInputAssistantFirstName='assist-' + CAST(id AS NVARCHAR),
   retroInputAssistantLastName='assist-' + CAST(id AS NVARCHAR)
+WHERE retroInputAssistantFirstName IS NOT NULL
