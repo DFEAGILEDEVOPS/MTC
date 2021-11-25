@@ -37,11 +37,16 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
   if (req.query.bad !== undefined) {
     throw new Error('invalid check functionality not yet implemented')
   }
-  const messages = []
-  for (let index = 0; index < checkCodes.length; index++) {
+  const promises = checkCodes.map(async checkCode => {
+    return receivedCheckPayloadService.fetch(checkCode)
+  })
+  const messages = await Promise.all(promises)
+  // non await all version...
+  // const messages = []
+  /*   for (let index = 0; index < checkCodes.length; index++) {
     const checkCode = checkCodes[index]
     messages.push(await receivedCheckPayloadService.fetch(checkCode))
-  }
+  } */
   context.bindings.submittedCheckQueue = messages
 }
 
