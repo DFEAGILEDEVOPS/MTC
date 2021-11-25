@@ -23,7 +23,7 @@ export class ReceivedCheckPayloadService {
     if (archive === undefined) return undefined
     const decompressed = this.compressionService.decompress(archive)
     return {
-      version: 3,
+      version: 2,
       archive: archive,
       checkCode: decompressed.checkCode,
       schoolUUID: decompressed.schoolUUID

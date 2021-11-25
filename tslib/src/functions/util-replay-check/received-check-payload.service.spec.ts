@@ -55,7 +55,7 @@ describe('received-check-payload.service', () => {
     if (message === undefined) fail('message not defined')
     expect(message.checkCode).toStrictEqual(checkCode)
     expect(message.schoolUUID).toStrictEqual(schoolUUID)
-    expect(message.version).toStrictEqual(3)
+    expect(message.version).toStrictEqual(2)
     expect(message.archive).toStrictEqual(mockArchive)
   })
 })
