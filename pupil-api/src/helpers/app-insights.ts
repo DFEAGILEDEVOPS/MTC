@@ -1,10 +1,13 @@
 import * as appInsights from 'applicationinsights'
-import PingController from '../controllers/ping.controller'
+import { PingService } from '../services/ping.service'
 import config from '../config'
+import * as parser from './parsing'
+
+const pingService = new PingService()
 
 const appInsightsHelper = {
   startInsightsIfConfigured: async () => {
-    if (process.env.APPINSIGHTS_INSTRUMENTATIONKEY) {
+    if (parser.propertyExists(process.env, 'APPINSIGHTS_INSTRUMENTATIONKEY')) {
       appInsights.setup()
         .setAutoDependencyCorrelation(true)
         .setAutoCollectRequests(true)
@@ -18,7 +21,7 @@ const appInsightsHelper = {
 
       let buildNumber
       try {
-        buildNumber = await PingController.getBuildNumber()
+        buildNumber = await pingService.getBuildNumber()
       } catch (error) {
         buildNumber = 'NOT FOUND'
       }

@@ -99,3 +99,9 @@ Then(/^I should be able to lookup the pupil uuid using the check code$/) do
   pupil_uuid_value = JSON.parse(REDIS_CLIENT.get("pupil-uuid-lookup:#{check_code}"))
   expect(pupil_uuid_value).to eql ({"meta" =>{"type"=>"string"}, "value"=>SqlDbHelper.find_pupil_via_pin(@pupil_credentials[:pin])["urlSlug"]})
 end
+
+
+Given(/^I make a request with valid credentials and without passing the buildVersion property$/) do
+  step 'I have generated a live pin'
+  @response = RequestHelper.auth(@pupil_credentials[:school_password], @pupil_credentials[:pin], nil)
+end
