@@ -1,5 +1,5 @@
 
--- User Defined Procedure
+-- User Defined Function
 --  Author: Jon Shipley
 --  Creation date: 25 Nov 2021
 --  Description: Calculate DfE UPN check letter, and return the UPN
