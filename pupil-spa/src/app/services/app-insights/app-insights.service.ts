@@ -10,10 +10,6 @@ import { Meta } from '@angular/platform-browser';
 })
 export class ApplicationInsightsService {
   private appInsights: ApplicationInsights;
-  private propsToTrack = {
-    mtcCheckCode: 'TEST-1234',
-    mtcSchoolUUID: 'SCHOOL-TEST-1234'
-  }
 
   constructor(private router: Router, private meta: Meta) {
     if (!APP_CONFIG.applicationInsightsInstrumentationKey) {
@@ -43,7 +39,7 @@ export class ApplicationInsightsService {
 
   trackPageView(name?: string, uri?: string) {
     if (!this.appInsights) { return; }
-    this.appInsights.trackPageView({ name, uri, properties: this.propsToTrack});
+    this.appInsights.trackPageView({ name, uri });
   }
 
   trackException(error: Error) {
