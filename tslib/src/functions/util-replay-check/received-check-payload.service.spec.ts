@@ -56,6 +56,6 @@ describe('received-check-payload.service', () => {
     expect(message.checkCode).toStrictEqual(checkCode)
     expect(message.schoolUUID).toStrictEqual(schoolUUID)
     expect(message.version).toStrictEqual(3)
-    expect(message.archive).toStrictEqual(decompressedArchive)
+    expect(message.archive).toStrictEqual(mockArchive)
   })
 })

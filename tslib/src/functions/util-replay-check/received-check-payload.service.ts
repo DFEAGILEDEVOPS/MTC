@@ -24,7 +24,7 @@ export class ReceivedCheckPayloadService {
     const decompressed = this.compressionService.decompress(archive)
     return {
       version: 3,
-      archive: decompressed,
+      archive: archive,
       checkCode: decompressed.checkCode,
       schoolUUID: decompressed.schoolUUID
     }
