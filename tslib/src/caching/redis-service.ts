@@ -54,6 +54,11 @@ export interface IRedisService {
    * @param ttl the expiry time, in seconds from now
    */
   expire (key: string, ttl: number): Promise<any>
+  /**
+   * Drop multiple keys that share a common prefix
+   * @param prefix the start of the string that matches the keys to be dropped
+   */
+  dropByPrefix (prefix: string): Promise<void>
 }
 
 export class RedisService implements IRedisService {
@@ -90,7 +95,9 @@ export class RedisService implements IRedisService {
           throw new Error(`unsupported cache item type:${cacheItem.meta.type}`)
       }
     } catch (err) {
-      this.logger.error(`REDIS (get): Error getting ${key}: ${err.message}`)
+      if (err instanceof Error) {
+        this.logger.error(`REDIS (get): Error getting ${key}: ${err.message}`)
+      }
       throw err
     }
   }
@@ -129,7 +136,9 @@ export class RedisService implements IRedisService {
       const redis = await this.getRedis()
       await redis.setex(key, ttl, storageItem)
     } catch (err) {
-      this.logger.error(`REDIS (setex): Error setting ${key}: ${err.message}`)
+      if (err instanceof Error) {
+        this.logger.error(`REDIS (setex): Error setting ${key}: ${err.message}`)
+      }
       throw err
     }
   }
@@ -140,7 +149,9 @@ export class RedisService implements IRedisService {
       const redis = await this.getRedis()
       await redis.set(key, storageItem)
     } catch (err) {
-      this.logger.error(`REDIS (set): Error setting ${key}: ${err.message}`)
+      if (err instanceof Error) {
+        this.logger.error(`REDIS (set): Error setting ${key}: ${err.message}`)
+      }
       throw err
     }
   }
@@ -166,6 +177,15 @@ export class RedisService implements IRedisService {
     const redis = await this.getRedis()
     return redis.expire(key, ttl)
   }
+
+  async dropByPrefix (prefix: string): Promise<void> {
+    const now = Date.now() // ms
+    const redis = await this.getRedis()
+    const cmd = `for i, name in ipairs(redis.call('KEYS', '${prefix}*')) do redis.call('DEL', name); end`
+    await redis.eval(cmd, 0)
+    const then = Date.now() // ms
+    this.logger.info(`RedisService:dropByPrefix took ${then - now} ms`)
+  }
 }
 
 class RedisSingleton {
@@ -182,7 +202,9 @@ class RedisSingleton {
       const response = await axios(requestConfig)
       return response.data
     } catch (error) {
-      console.error(`RedisSingleton.getRemoteIp: failed to make request to ${requestUrl}: error was: ${error.message}`)
+      if (error instanceof Error) {
+        console.error(`RedisSingleton.getRemoteIp: failed to make request to ${requestUrl}: error was: ${error.message}`)
+      }
     }
   }
 
@@ -207,7 +229,9 @@ class RedisSingleton {
       return this.redisService
     } catch (error) {
       const remoteIp = await this.getRemoteIp()
-      console.error(`RedisSingleton: redis connect error from function IP ${remoteIp}. error: ${error.message}`)
+      if (error instanceof Error) {
+        console.error(`RedisSingleton: redis connect error from function IP ${remoteIp}. error: ${error.message}`)
+      }
       throw error
     }
   }
