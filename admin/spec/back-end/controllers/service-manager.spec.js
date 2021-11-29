@@ -13,6 +13,7 @@ const settingsValidator = require('../../../lib/validator/settings-validator')
 const ValidationError = require('../../../lib/validation-error')
 const schoolService = require('../../../services/school.service')
 const organisationBulkUploadService = require('../../../services/organisation-bulk-upload.service')
+const administrationMessageService = require('../../../services/administration-message.service')
 
 describe('service manager controller:', () => {
   let next
@@ -34,6 +35,7 @@ describe('service manager controller:', () => {
 
   beforeEach(() => {
     next = jest.fn()
+    jest.spyOn(administrationMessageService, 'getMessage').mockResolvedValue(undefined)
   })
 
   afterEach(() => {
@@ -51,6 +53,17 @@ describe('service manager controller:', () => {
       const req = getReq(goodReqParams)
       await controller.getServiceManagerHome(req, res, next)
       expect(res.render).toHaveBeenCalled()
+    })
+
+    test('it shows the service message if available', async () => {
+      const message = { title: 'title', message: 'test message' }
+      const res = getRes()
+      const req = getReq(goodReqParams)
+      jest.spyOn(administrationMessageService, 'getMessage').mockResolvedValue(message)
+      jest.spyOn(res, 'render').mockImplementation()
+      await controller.getServiceManagerHome(req, res, next)
+      const args = res.render.mock.calls[0]
+      expect(args[1].serviceMessage).toEqual(message)
     })
   })
 
@@ -360,8 +373,7 @@ describe('service manager controller:', () => {
         }
       }
 
-      jest.spyOn(sceService, 'getSchools')
-        .mockResolvedValue([{ id: 1, name: 'Test School', urn: 123456 }])
+      jest.spyOn(sceService, 'getSchools').mockResolvedValue([{ id: 1, name: 'Test School', urn: 123456 }])
     })
 
     test('redirects to the sce settings page when successfully added a school', async () => {
@@ -877,7 +889,6 @@ describe('service manager controller:', () => {
         expect(next).toHaveBeenCalledWith(new Error('mock error'))
       })
     })
-
     describe('getAddSchool', () => {
       test('it renders the add-school page', async () => {
         const req = getReq()
@@ -886,7 +897,6 @@ describe('service manager controller:', () => {
         expect(res.render).toHaveBeenCalled()
         expect(res.render.mock.calls[0][0]).toBe('service-manager/add-school')
       })
-
       test('calls next if there is an error thrown', async () => {
         const req = getReq()
         const res = getRes()
@@ -897,7 +907,6 @@ describe('service manager controller:', () => {
         expect(next).toHaveBeenCalled()
       })
     })
-
     describe('postAddSchool', () => {
       test('it calls the service to add the school and then issues a redirect', async () => {
         const req = getReq({
