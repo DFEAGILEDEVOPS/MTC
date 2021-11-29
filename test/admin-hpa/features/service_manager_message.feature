@@ -19,7 +19,7 @@ Feature: Service manager message
     Given I have created a service message
     Then I should not be able to create another
 
-  Scenario: Service manager should only be able to create one message
+  Scenario: Service message should be visible on school homepage
     Given I have created a service message
     When I navigate to school home page as a teacher
     Then service message is displayed as per design
