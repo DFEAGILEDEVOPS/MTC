@@ -76,3 +76,18 @@
     margin-top: -15px;
   }
 }
+
+.mtc-service-message {
+  @extend .govuk-body;
+  a,
+  a:link,
+  a:visited,
+  a:active,
+  a:hover {
+    color: govuk-colour("blue");
+  }
+  &.clickable {
+    text-decoration: underline;
+    color: govuk-colour("blue");
+  }
+}

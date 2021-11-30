@@ -50,7 +50,7 @@ class SchoolLandingPage < SitePrism::Page
 
   section :service_message, '.govuk-warning-message' do
     element :service_message_heading, '.govuk-heading-l'
-    element :service_message_text, '.govuk-body'
+    element :service_message_text, '.mtc-service-message'
   end
 
   section :helpdesk_tools, '.app-related-items', text: 'Helpdesk Tools' do
