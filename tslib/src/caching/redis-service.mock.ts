@@ -7,5 +7,6 @@ export const RedisServiceMock = jest.fn<IRedisService, any>(() => ({
   quit: jest.fn(),
   set: jest.fn(),
   ttl: jest.fn(),
-  expire: jest.fn()
+  expire: jest.fn(),
+  dropByPrefix: jest.fn()
 }))

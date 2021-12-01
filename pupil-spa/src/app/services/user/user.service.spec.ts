@@ -13,6 +13,7 @@ import {
 import { HttpService } from '../http/http.service'
 import { APP_INITIALIZER } from '@angular/core'
 import { loadConfigMockService } from '../config/config.service'
+import { Meta } from '@angular/platform-browser'
 
 let userService: UserService
 let storageService: StorageService
@@ -31,19 +32,25 @@ describe('UserService', () => {
     setSchool: jasmine.Spy,
     setToken: jasmine.Spy
   }
+  let metaServiceSpy: {
+    getTag: jasmine.Spy
+  }
 
   beforeEach(() => {
     httpServiceSpy = jasmine.createSpyObj('HttpService', ['post'])
     storageServiceSpy = jasmine.createSpyObj('StorageService',
       ['clear', 'setQuestions', 'setConfig', 'setPupil', 'setSchool', 'setToken', 'getAccessArrangements']
     )
+    metaServiceSpy = jasmine.createSpyObj('MetaService', ['getTag'])
+    metaServiceSpy.getTag.and.returnValue('some-build-number')
     TestBed.configureTestingModule({
       imports: [],
       providers: [
         { provide: APP_INITIALIZER, useFactory: loadConfigMockService, multi: true },
         UserService,
         { provide: StorageService, useValue: storageServiceSpy },
-        { provide: HttpService, useValue: httpServiceSpy }
+        { provide: HttpService, useValue: httpServiceSpy },
+        { provide: Meta, useValue: metaServiceSpy }
       ]
     })
 
@@ -55,7 +62,6 @@ describe('UserService', () => {
     it('should persist response body to storage', () => {
       // setup
       httpServiceSpy.post.and.returnValue(Promise.resolve(mockLoginResponseBody))
-
       // execute
       userService.login('abc12345', '9999a').then(() => {
 
@@ -82,6 +88,7 @@ describe('UserService', () => {
         })
 
       expect(httpServiceSpy.post).toHaveBeenCalledTimes(1)
+      expect(metaServiceSpy.getTag).toHaveBeenCalledTimes(1)
     })
 
     it('should return a promise that rejects on invalid login', () => {

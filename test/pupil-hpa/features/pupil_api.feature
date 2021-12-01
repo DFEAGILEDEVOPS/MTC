@@ -12,6 +12,11 @@ Feature: Pupil Api
     Then I should get a 401
     And I should see a unauthorised response
 
+  Scenario: buildVersion property must be passed in to the auth request
+    Given I make a request with valid credentials and without passing the buildVersion property
+    Then I should get a 401
+    And I should see a unauthorised response
+
   @new_check_process
   Scenario: Redis expiry time is set to 30 mins after login
     Given I have generated a pin for a pupil
@@ -27,5 +32,6 @@ Feature: Pupil Api
   Scenario: Pupil UUID can be looked up via check code
     Given I have generated a pin for a pupil
     Then I should be able to lookup the pupil uuid using the check code
+
 
 

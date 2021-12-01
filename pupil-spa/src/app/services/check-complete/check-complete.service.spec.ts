@@ -9,6 +9,7 @@ import { StorageService } from '../storage/storage.service';
 import { TestBed } from '@angular/core/testing';
 import { TokenService } from '../token/token.service';
 import { AppUsageService } from '../app-usage/app-usage.service';
+import { Meta } from '@angular/platform-browser'
 
 let auditService: AuditService;
 let azureQueueService: AzureQueueService;
@@ -16,6 +17,7 @@ let checkCompleteService: CheckCompleteService;
 let storageService: StorageService;
 let tokenService: TokenService;
 let appUsageService: AppUsageService;
+let metaService: Meta
 
 describe('CheckCompleteService', () => {
   let mockRouter;
@@ -25,7 +27,7 @@ describe('CheckCompleteService', () => {
       navigate: jasmine.createSpy('navigate')
     };
 
-    const inject = TestBed.configureTestingModule({
+    const testBed = TestBed.configureTestingModule({
         providers: [
           AppConfigService,
           AuditService,
@@ -34,17 +36,19 @@ describe('CheckCompleteService', () => {
           StorageService,
           TokenService,
           AppUsageService,
+          Meta,
           { provide: APP_INITIALIZER, useFactory: loadConfigMockService, multi: true },
           { provide: QUEUE_STORAGE_TOKEN, useValue: undefined },
           { provide: Router, useValue: mockRouter }
         ]
       }
     );
-    checkCompleteService = inject.inject(CheckCompleteService);
+    metaService = testBed.inject(Meta);
+    checkCompleteService = testBed.inject(CheckCompleteService);
     appUsageService = TestBed.inject(AppUsageService);
-    tokenService = inject.inject(TokenService);
-    azureQueueService = inject.inject(AzureQueueService);
-    auditService = inject.inject(AuditService);
+    tokenService = testBed.inject(TokenService);
+    azureQueueService = testBed.inject(AzureQueueService);
+    auditService = testBed.inject(AuditService);
     storageService = TestBed.inject(StorageService);
     checkCompleteService.checkSubmissionApiErrorDelay = 100;
     checkCompleteService.checkSubmissionAPIErrorMaxAttempts = 1;
@@ -213,6 +217,13 @@ describe('CheckCompleteService', () => {
   });
 
   describe('getPayload', () => {
+    const buildVersion = 'buildVersion'
+    beforeEach(() => {
+      metaService.addTag({
+        name: 'build:number',
+        content: buildVersion
+      })
+    })
     it('stores all items in the corresponding key based category based on timestamp order', () => {
       const localStorageItems = {
         'audit-1': { value: 'value1', clientTimestamp: Date.now() + 500 },
@@ -235,8 +246,9 @@ describe('CheckCompleteService', () => {
       expect(payload['audit']).toEqual(keyEntries);
       expect(payload['checkCode']).toEqual('checkCode');
       expect(payload['schoolUUID']).toEqual('schoolUUID');
+      expect(payload['buildVersion']).toEqual(buildVersion);
       expect(Object.keys(payload))
-        .toEqual(['checkCode', 'schoolUUID', 'config', 'device', 'pupil',
+        .toEqual(['checkCode', 'schoolUUID', 'buildVersion', 'config', 'device', 'pupil',
           'questions', 'school', 'tokens', 'audit', 'inputs', 'answers']);
     });
   });

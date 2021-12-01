@@ -4,3 +4,4 @@ parallel: -t 'not @wip' -t 'not @manual' -t 'not @multiple_pupil_csv_download' D
 default: -t 'not @wip' -t 'not @manual' -t 'not @bug' -t 'not @weekend' DRIVER='headless_chrome' --format pretty --publish-quiet
 download_csv: -t 'not @wip' -t 'not @manual' -t '@multiple_pupil_csv_download' DRIVER='headless_chrome' --format pretty --format html --out reports/report.html
 ie11: -t 'not @remove_uploaded_forms' -t 'not @upload_pupil_census' -t 'not @upload_new_live_form' -t 'not @upload_new_fam_form' -t 'not @multiple_pupil_upload' -t 'not @ie11' -t 'not @wip' -t 'not @view_check' -t 'not @manual'
+weekend: -t '@weekend' -t 'not @wip' -t 'not @manual' DRIVER='headless_chrome' --publish-quiet
