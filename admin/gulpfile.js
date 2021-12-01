@@ -30,7 +30,6 @@ try {
 }
 
 const config = require('./config')
-
 const jsVendorBundleFiles = [
   './node_modules/govuk-frontend/govuk/all.js',
   './assets/vendor-js/jquery-3.5.1.js',
@@ -60,6 +59,16 @@ const jsAppBundleFiles = [
   './assets/javascripts/pupil-form.js',
   './assets/javascripts/pupil-status-selection.js'
 ]
+
+// These files are used in the service manager markdown editor, and font-awesome is the dependency.
+const simpleMdeFiles = [
+  './node_modules/simplemde/dist/simplemde.min.js',
+  './node_modules/simplemde/dist/simplemde.min.css'
+]
+const fontAwesomeFiles = {
+  css: ['./node_modules/font-awesome/css/font-awesome.min.css'],
+  fontDir: './node_modules/font-awesome/fonts/**/*'
+}
 
 /*
   session-expiry.js contains two strings that are claimed to be global variables.  The `bundlejs` task will replace
@@ -129,7 +138,6 @@ function watch () {
 function bundleVendorJs () {
   return gulp.src(jsVendorBundleFiles)
     .pipe(concat('vendor.js'))
-    .pipe(replace('SESSION_DISPLAY_NOTICE_TIME', config.ADMIN_SESSION_DISPLAY_NOTICE_AFTER.toString()))
     .pipe(babel({
       presets: ['@babel/preset-env'],
       sourceType: 'unambiguous'
@@ -197,8 +205,9 @@ function cleanPublic () {
   return gulp.src([
     'public/javascripts/app.js',
     'public/stylesheets/application.css',
-    'public/stylesheets/application-ie8.css'
-  ], { read: false, allowEmpty: true })
+    'public/stylesheets/application-ie8.css',
+    'public/vendor/'
+  ], { read: false, allowEmpty: true, force: true })
     .pipe(clean())
 }
 
@@ -230,6 +239,21 @@ function copyCsvFiles () {
   return gulp
     .src(['./assets/csv/*'])
     .pipe(gulp.dest('public/csv'))
+}
+function copySimpleMdeFiles () {
+  return gulp
+    .src(simpleMdeFiles)
+    .pipe(gulp.dest('public/vendor/simplemde'))
+}
+function copyFontAwesomeCss () {
+  return gulp
+    .src(fontAwesomeFiles.css)
+    .pipe(gulp.dest('public/vendor/font-awesome/css'))
+}
+function copyFontAwesomeFonts () {
+  return gulp
+    .src(fontAwesomeFiles.fontDir, { base: './node_modules/font-awesome/' })
+    .pipe(gulp.dest('public/vendor/font-awesome'))
 }
 
 function generateAssetsVersion (done) {
@@ -265,7 +289,10 @@ gulp.task('build',
       copyGdsImages,
       copyGdsFonts,
       copyPdfs,
-      copyCsvFiles
+      copyCsvFiles,
+      copySimpleMdeFiles,
+      copyFontAwesomeCss,
+      copyFontAwesomeFonts
     ),
     generateAssetsVersion,
     gulp.parallel(
@@ -290,7 +317,10 @@ gulp.task('dev-build',
       copyGdsImages,
       copyGdsFonts,
       copyPdfs,
-      copyCsvFiles
+      copyCsvFiles,
+      copySimpleMdeFiles,
+      copyFontAwesomeCss,
+      copyFontAwesomeFonts
     ),
     generateAssetsVersion,
     gulp.parallel(
@@ -306,3 +336,4 @@ exports.cleanDist = cleanDist
 exports.compileTs = compileTs
 exports.watch = watch
 exports.bundleAppJsForCodeCoverage = bundleAppJsForCodeCoverage
+exports.cleanPublic = cleanPublic

@@ -28,11 +28,12 @@ When(/^I have chosen a file to submit$/) do
   @old_date1 = dobs[0]
   @old_date2 = dobs[1]
   @upn = UpnGenerator.generate
-  @pupil_name = (0...8).map {(65 + rand(26)).chr}.join
-  pupil_detail_array = ["999", "1004", @upn, @pupil_name, @pupil_name, @pupil_name, "F", @old_date1]
+  @pupil_name1 = (0...8).map {(65 + rand(26)).chr}.join
+  pupil_detail_array = [@school['entity']['leaCode'].to_s, @school['entity']['estabCode'].to_s, @upn, @pupil_name1, @pupil_name1, @pupil_name1, "F", @old_date1]
 
   @upn2 = UpnGenerator.generate
-  pupil_detail_array2 = ["999", "1004", @upn2, @pupil_name, @pupil_name, @pupil_name, "M", @old_date2]
+  @pupil_name2 = (0...8).map {(65 + rand(26)).chr}.join
+  pupil_detail_array2 = [@school['entity']['leaCode'].to_s, @school['entity']['estabCode'].to_s, @upn2, @pupil_name2, @pupil_name2, @pupil_name2, "M", @old_date2]
 
   upload_pupil_census_page.upload__pupil_census(@file_name, pupil_detail_array, pupil_detail_array2)
   upload_pupil_census_page.upload.click
@@ -173,4 +174,28 @@ end
 
 When(/^I decide to cancel uploading a file$/) do
   upload_pupil_census_page.cancel.click
+end
+
+
+Given(/^I can see pupils that exist in the pupil register$/) do
+  step "I am logged in"
+  step "I am on the Pupil Register page"
+end
+
+
+When(/^I upload pupils via the census upload$/) do
+  visit ENV['ADMIN_BASE_URL'] + '/sign-out'
+  step 'I am on the upload pupil census page'
+  step "I have chosen a file to submit"
+  step "I should see the file uploaded"
+  step "I should see the completed status"
+end
+
+
+Then(/^the newly uploaded pupils are visible in the pupil register list$/) do
+  visit ENV['ADMIN_BASE_URL'] + '/sign-out'
+  step "I can see pupils that exist in the pupil register"
+  pupil_names_array = pupil_register_page.pupil_list.pupil_row.map {|row| row.names.text}
+  expect(pupil_names_array).to include "#{@pupil_name1}, #{@pupil_name1}"
+  expect(pupil_names_array).to include "#{@pupil_name2}, #{@pupil_name2}"
 end

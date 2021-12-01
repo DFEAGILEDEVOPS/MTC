@@ -20,7 +20,7 @@ import { DeviceService } from '../services/device/device.service'
 export class LoginComponent implements OnInit, AfterViewInit {
 
   private submitted: boolean
-  public loginModel = new Login('', '')
+  public loginModel = new Login('', '', '')
   public loginPending: boolean
   public loginSucceeded: boolean
   public connectionFailed: boolean

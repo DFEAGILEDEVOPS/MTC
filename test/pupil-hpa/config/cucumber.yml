@@ -3,3 +3,4 @@ parallel_chrome: -t 'not @wip' -t 'not @manual' DRIVER='selenium_chrome' --forma
 parallel: -t 'not @wip' -t 'not @manual' DRIVER='poltergeist' --format pretty --format html --out reports/report<%= ENV['TEST_ENV_NUMBER'] %>.html
 default: -t 'not @wip' -t 'not @manual' -t 'not @weekend' DRIVER='headless_chrome' --publish-quiet
 ie11: -t 'not @ie11' -t 'not @wip'
+weekend: -t '@weekend' -t 'not @wip' -t 'not @manual' DRIVER='headless_chrome' --publish-quiet
