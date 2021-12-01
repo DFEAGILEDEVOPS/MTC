@@ -98,11 +98,6 @@ module.exports = {
       Password: process.env.SQL_ADMIN_USER_PASSWORD || 'Mtc-D3v.5ql_S3rv3r', // docker default
       Timeout: parseInt(process.env.SQL_MIGRATION_TIMEOUT, 10) || twoMinutesInMilliseconds
     },
-    PupilCensus: {
-      // TODO: check whether we can delete this section from the admin app
-      Username: process.env.SQL_PUPIL_CENSUS_USER || 'CensusImportUser',
-      Password: process.env.SQL_PUPIL_CENSUS_USER_PASSWORD
-    },
     Azure: {
       // TODO: check whether we can delete this section from the admin app
       Scale: process.env.SQL_AZURE_SCALE
