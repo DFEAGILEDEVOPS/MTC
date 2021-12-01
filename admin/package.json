@@ -29,7 +29,7 @@
     "watch:integration": "yarn jest --watch --coverage=no --config ./tests-integration/jest.integration.config.js"
   },
   "mtc": {
-    "assets-version": "dfd6eaa275d2c3874dd963c3dfb4dcca"
+    "assets-version": "8235321d9f76e392f7fcfced74498f8b"
   },
   "engines": {
     "node": ">= 12"
@@ -47,7 +47,7 @@
     "@types/jsdom": "^16.2.13",
     "adm-zip": "^0.5.7",
     "applicationinsights": "^2.1.5",
-    "axios": "^0.22.0",
+    "axios": "^0.24.0",
     "bcryptjs": "^2.4.3",
     "bluebird": "^3.5.1",
     "connect-flash": "^0.1.1",
@@ -69,7 +69,7 @@
     "fs-extra": "^10.0.0",
     "govuk-frontend": "^3.2.0",
     "helmet": "^4.3.1",
-    "ioredis": "4.27.10",
+    "ioredis": "4.28.0",
     "jsdom": "^18.0.1",
     "jsonwebtoken": "^8.1.1",
     "login.dfe.async-retry": "git+https://github.com/DFE-Digital/login.dfe.async-retry.git#v1.0",
@@ -79,7 +79,7 @@
     "merge-stream": "^2.0.0",
     "moment-timezone": "^0.5.23",
     "morgan": "~1.10.0",
-    "mssql": "7.2.1",
+    "mssql": "7.3.0",
     "nocache": "^3.0.1",
     "node-dir": "^0.1.17",
     "openid-client": "^4.2.2",
