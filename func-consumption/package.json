@@ -13,7 +13,6 @@
     "sync": "node ./sync-tslib-deps.js && yarn install",
     "delete-specs": "find . -name \"*.spec.js\" -type f -delete",
     "clean": "rm -rf ./dist",
-    "prestart": "yarn build",
     "start:host": "func start",
     "start": "yarn start:host",
     "start:dev": "concurrently -r 'env $(cat disable-functions.env | grep Azure | xargs ) yarn start' 'gulp watch'"
