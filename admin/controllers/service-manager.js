@@ -14,7 +14,7 @@ const schoolService = require('../services/school.service')
 const featureToggles = require('feature-toggles')
 const { formUtil, formUtilTypes } = require('../lib/form-util')
 const organisationBulkUploadService = require('../services/organisation-bulk-upload.service')
-
+const administrationMessageService = require('../services/administration-message.service')
 const controller = {
 
   /**
@@ -25,13 +25,15 @@ const controller = {
    * @returns {Promise.<void>}
    */
   getServiceManagerHome: async function getServiceManagerHome (req, res, next) {
-    res.locals.pageTitle = 'MTC Administration Homepage'
-    const isNewCheckWindow = featureToggles.isFeatureEnabled('newCheckWindow')
     try {
+      res.locals.pageTitle = 'MTC Administration Homepage'
+      const isNewCheckWindow = featureToggles.isFeatureEnabled('newCheckWindow')
+      const serviceMessage = await administrationMessageService.getMessage()
       req.breadcrumbs(res.locals.pageTitle)
       res.render('service-manager/service-manager-home', {
         breadcrumbs: req.breadcrumbs(),
-        isNewCheckWindow
+        isNewCheckWindow,
+        serviceMessage
       })
     } catch (error) {
       next(error)
