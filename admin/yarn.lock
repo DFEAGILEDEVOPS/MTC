@@ -2322,10 +2322,10 @@ axios@^0.21.1:
   dependencies:
     follow-redirects "^1.14.0"
 
-axios@^0.22.0:
-  version "0.22.0"
-  resolved "https://registry.yarnpkg.com/axios/-/axios-0.22.0.tgz#bf702c41fb50fbca4539589d839a077117b79b25"
-  integrity sha512-Z0U3uhqQeg1oNcihswf4ZD57O3NrR1+ZXhxaROaWpDmsDTx7T2HNBV2ulBtie2hwJptu8UvgnJoK+BIqdzh/1w==
+axios@^0.24.0:
+  version "0.24.0"
+  resolved "https://registry.yarnpkg.com/axios/-/axios-0.24.0.tgz#804e6fa1e4b9c5288501dd9dff56a7a0940d20d6"
+  integrity sha512-Q6cWsys88HoPgAaFAVUb0WpPk0O8iTeisR9IMqy9G8AbO4NlpVknrnQS03zzF9PGAWgO3cgletO3VjV/P7VztA==
   dependencies:
     follow-redirects "^1.14.4"
 
@@ -5487,10 +5487,10 @@ invert-kv@^1.0.0:
   resolved "https://registry.yarnpkg.com/invert-kv/-/invert-kv-1.0.0.tgz#104a8e4aaca6d3d8cd157a8ef8bfab2d7a3ffdb6"
   integrity sha1-EEqOSqym09jNFXqO+L+rLXo//bY=
 
-ioredis@4.27.10:
-  version "4.27.10"
-  resolved "https://registry.yarnpkg.com/ioredis/-/ioredis-4.27.10.tgz#3da6c1d2eab440f94c52d6fcd9b91127d7e07470"
-  integrity sha512-BtV2mEoZlhnW0EyxuK49V5iutLeZeJAYi/+Fuc4Q6DpDjq0cGMLODdS/+Kb5CHpT7v3YT6SK0vgJF6y0Ls4+Bg==
+ioredis@4.28.0:
+  version "4.28.0"
+  resolved "https://registry.yarnpkg.com/ioredis/-/ioredis-4.28.0.tgz#5a2be3f37ff2075e2332f280eaeb02ab4d9ff0d3"
+  integrity sha512-I+zkeeWp3XFgPT2CtJKxvaF5FjGBGt4yGYljRjQecdQKteThuAsKqffeF1lgHVlYnuNeozRbPOCDNZ7tDWPeig==
   dependencies:
     cluster-key-slot "^1.1.0"
     debug "^4.3.1"
@@ -7477,10 +7477,10 @@ msal@^1.0.2:
   dependencies:
     tslib "^1.9.3"
 
-mssql@7.2.1:
-  version "7.2.1"
-  resolved "https://registry.yarnpkg.com/mssql/-/mssql-7.2.1.tgz#b63d00a5e721d4976908eeafe693e9e6703a4675"
-  integrity sha512-kq0hVeD1tR+ikZqmLwgQqLGSavOhrrwaiYsYxdUQASifc3oIOFRx2IHpuWk+8oLI6Ab/s3o3JfpFX1v1Nf2sxA==
+mssql@7.3.0:
+  version "7.3.0"
+  resolved "https://registry.yarnpkg.com/mssql/-/mssql-7.3.0.tgz#290dc219fcbe6d35734514e5d3e769da3eb89546"
+  integrity sha512-3NGxDomH5Lci2g0EUrsejHIsvtFwlIE6A9SNFWQ2/JD4Dh0+5XVFHeyB4RXKb+nRMDosSUBAQDIVSuLXo5XFZA==
   dependencies:
     "@tediousjs/connection-string" "^0.3.0"
     debug "^4.3.2"
@@ -9674,9 +9674,9 @@ symbol-tree@^3.2.4:
   integrity sha512-9QNk5KwDF+Bvz+PyObkmSYjI5ksVUYtjW7AU22r2NKcfLJcXp96hkDWU3+XndOsUb+AQ9QhfzfCT2O+CNWT5Tw==
 
 table@^6.0.4:
-  version "6.7.4"
-  resolved "https://registry.yarnpkg.com/table/-/table-6.7.4.tgz#95be16324dff8ca6c57c8aa3f61f96821f5d75ef"
-  integrity sha512-3veWX5gu4cpqDJF9e3x8a9dpir70Dvn9BwOZLOjhPetDF4jukhJJjhGZK1WJeeOzkIolgNr+kOwzhijJ5asjww==
+  version "6.7.5"
+  resolved "https://registry.yarnpkg.com/table/-/table-6.7.5.tgz#f04478c351ef3d8c7904f0e8be90a1b62417d238"
+  integrity sha512-LFNeryOqiQHqCVKzhkymKwt6ozeRhlm8IL1mE8rNUurkir4heF6PzMyRgaTa4tlyPTGGgXuvVOF/OLWiH09Lqw==
   dependencies:
     ajv "^8.0.1"
     lodash.truncate "^4.4.2"

@@ -39,7 +39,7 @@ export class ApplicationInsightsService {
 
   trackPageView(name?: string, uri?: string) {
     if (!this.appInsights) { return; }
-    this.appInsights.trackPageView({ name, uri});
+    this.appInsights.trackPageView({ name, uri });
   }
 
   trackException(error: Error) {

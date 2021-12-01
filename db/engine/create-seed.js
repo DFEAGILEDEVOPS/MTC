@@ -17,9 +17,10 @@ const optionDefinitions = [
   { name: 'help', alias: 'h', type: Boolean }
 ]
 
-const jsMigrationTemplate = `
-'use strict'
+const jsMigrationTemplate = `'use strict'
+
 module.exports.generateSql = function () {
+  return '-- todo / sql here'
 }
 `
 
