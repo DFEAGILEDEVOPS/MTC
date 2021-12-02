@@ -43,6 +43,6 @@ module.exports = {
     // of a bug in the tedious library (https://github.com/tediousjs/tedious/issues/1081) which is resolved in release
     // 8.3.1.  Our version of tedious comes bundled with mssql - currently at 6.2.0 with tedious version 6.6.2.  Once
     // the version of tedious is >= 8.3.1 we can reset this back to false by default, which is the more secure setting.
-    trustServerCertificate: {}.hasOwnProperty.call(process.env, 'SQL_TRUST_SERVER_CERTIFICATE') ? toBool(process.env.SQL_TRUST_SERVER_CERTIFICATE) : true
+    trustServerCertificate: {}.hasOwnProperty.call(process.env, 'SQL_TRUST_SERVER_CERTIFICATE') ? toBool(process.env.SQL_TRUST_SERVER_CERTIFICATE) : false
   }
 }

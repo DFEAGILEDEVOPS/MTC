@@ -32,7 +32,7 @@
     "assets-version": "6e78b4cde9db9857d0e05ae88fea5a4e"
   },
   "engines": {
-    "node": ">= 12"
+    "node": ">= 14"
   },
   "resolutions": {
     "**/**/lodash": "^4.17.21",
@@ -47,7 +47,7 @@
     "@types/jsdom": "^16.2.13",
     "adm-zip": "^0.5.7",
     "applicationinsights": "^2.1.5",
-    "axios": "^0.22.0",
+    "axios": "^0.24.0",
     "bcryptjs": "^2.4.3",
     "bluebird": "^3.5.1",
     "connect-flash": "^0.1.1",
@@ -69,7 +69,7 @@
     "fs-extra": "^10.0.0",
     "govuk-frontend": "^3.2.0",
     "helmet": "^4.3.1",
-    "ioredis": "4.27.10",
+    "ioredis": "4.28.0",
     "jsdom": "^18.0.1",
     "jsonwebtoken": "^8.1.1",
     "login.dfe.async-retry": "git+https://github.com/DFE-Digital/login.dfe.async-retry.git#v1.0",
@@ -79,7 +79,7 @@
     "merge-stream": "^2.0.0",
     "moment-timezone": "^0.5.23",
     "morgan": "~1.10.0",
-    "mssql": "7.2.1",
+    "mssql": "7.3.0",
     "nocache": "^3.0.1",
     "node-dir": "^0.1.17",
     "openid-client": "^4.2.2",
@@ -105,8 +105,8 @@
     "@babel/preset-env": "^7.10.4",
     "@types/fs-extra": "^9.0.1",
     "@types/jest": "^27.0.1",
+    "@types/node": "14",
     "@types/marked": "^4.0.0",
-    "@types/node": "^12.7.12",
     "@types/ramda": "^0.27.6",
     "chalk": "^4.1.0",
     "command-line-args": "^5.0.2",
