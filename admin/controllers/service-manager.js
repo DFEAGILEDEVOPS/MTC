@@ -13,7 +13,8 @@ const scePresenter = require('../helpers/sce')
 const schoolService = require('../services/school.service')
 const featureToggles = require('feature-toggles')
 const { formUtil, formUtilTypes } = require('../lib/form-util')
-
+const organisationBulkUploadService = require('../services/organisation-bulk-upload.service')
+const administrationMessageService = require('../services/administration-message.service')
 const controller = {
 
   /**
@@ -24,13 +25,15 @@ const controller = {
    * @returns {Promise.<void>}
    */
   getServiceManagerHome: async function getServiceManagerHome (req, res, next) {
-    res.locals.pageTitle = 'MTC Administration Homepage'
-    const isNewCheckWindow = featureToggles.isFeatureEnabled('newCheckWindow')
     try {
+      res.locals.pageTitle = 'MTC Administration Homepage'
+      const isNewCheckWindow = featureToggles.isFeatureEnabled('newCheckWindow')
+      const serviceMessage = await administrationMessageService.getMessage()
       req.breadcrumbs(res.locals.pageTitle)
       res.render('service-manager/service-manager-home', {
         breadcrumbs: req.breadcrumbs(),
-        isNewCheckWindow
+        isNewCheckWindow,
+        serviceMessage
       })
     } catch (error) {
       next(error)
@@ -321,6 +324,39 @@ const controller = {
     }
   },
 
+  getAddSchool: async function getAddSchool (req, res, next, error = new ValidationError()) {
+    res.locals.pageTitle = 'Add organisation'
+    req.breadcrumbs(res.locals.pageTitle)
+    try {
+      res.render('service-manager/add-school', {
+        breadcrumbs: req.breadcrumbs(),
+        formData: req.body,
+        messages: res.locals.messages,
+        error: error
+      })
+    } catch (error) {
+      return next(error)
+    }
+  },
+
+  postAddSchool: async function postAddSchool (req, res, next) {
+    try {
+      const { name, dfeNumber, urn } = req.body
+      await schoolService.addSchool({
+        name: name.trim(),
+        dfeNumber: parseInt(dfeNumber, 10),
+        urn: parseInt(urn, 10)
+      })
+      req.flash('info', 'School added')
+      res.redirect('/service-manager/organisations')
+    } catch (error) {
+      if (error.constructor === ValidationError) {
+        return controller.getAddSchool(req, res, next, error)
+      }
+      return next(error)
+    }
+  },
+
   getSearch: async function getSearch (req, res, next, validationError = new ValidationError()) {
     req.breadcrumbs('Manage organisations', '/service-manager/organisations')
     res.locals.pageTitle = 'Search organisations'
@@ -433,6 +469,57 @@ const controller = {
         return controller.getEditOrganisation(req, res, next, error)
       }
       return next(error)
+    }
+  },
+
+  getUploadOrganisations: async function getUploadOrganisations (req, res, next, error = new ValidationError()) {
+    req.breadcrumbs('Manage organisations', '/service-manager/organisations')
+    res.locals.pageTitle = 'Bulk upload organisations'
+    req.breadcrumbs(res.locals.pageTitle)
+    const jobSlug = req.params.jobSlug
+    let jobStatus
+    try {
+      if (jobSlug !== undefined) {
+        jobStatus = await organisationBulkUploadService.getUploadStatus(jobSlug)
+      }
+
+      res.render('service-manager/bulk-upload-organisations', {
+        breadcrumbs: req.breadcrumbs(),
+        fileErrors: error,
+        jobStatus: jobStatus
+      })
+    } catch (error) {
+      return next(error)
+    }
+  },
+
+  postUploadOrganisations: async function postUploadOrganisations (req, res, next) {
+    const uploadFile = req.files?.fileOrganisations
+    try {
+      const validationError = await organisationBulkUploadService.validate(uploadFile)
+      if (validationError.hasError()) {
+        return controller.getUploadOrganisations(req, res, next, validationError)
+      }
+      const jobSlug = await organisationBulkUploadService.upload(uploadFile)
+      req.flash('info', 'File has been uploaded')
+      res.redirect(`/service-manager/organisations/upload/${jobSlug.toLowerCase()}`)
+    } catch (error) {
+      return next(error)
+    }
+  },
+
+  downloadJobOutput: async function downloadJobOutput (req, res, next) {
+    const slug = req.params.slug
+    try {
+      const zipResults = await organisationBulkUploadService.getZipResults(slug)
+      res.set({
+        'Content-Disposition': 'attachment; filename="job-output.zip"',
+        'Content-type': 'application/octet-stream',
+        'Content-Length': zipResults.length // Buffer.length (bytes)
+      })
+      res.send(zipResults)
+    } catch (error) {
+      next(error)
     }
   }
 }

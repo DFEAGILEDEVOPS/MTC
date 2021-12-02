@@ -9,22 +9,26 @@
   "scripts": {
     "purgestorage": "bin/init-dev-storage.js"
   },
+  "engines": {
+    "node": ">= 14"
+  },
   "resolutions": {
     "**/**/lodash": "^4.17.21"
   },
   "dependencies": {
+    "@azure/data-tables": "^12.1.2",
+    "@azure/storage-queue": "^12.7.0",
     "artillery": "^1.6.0",
     "axios": "^0.21.3",
-    "azure-storage": "^2.10.4",
     "bcryptjs": "^2.4.3",
     "bluebird": "^3.5.3",
-    "dotenv": "^8.2.0",
+    "dotenv": "^10.0.0",
     "fast-csv": "^4.3.6",
-    "fs-extra": "^9.1.0",
+    "fs-extra": "^10.0.0",
     "ioredis": "^4.27.8",
     "number-to-words": "^1.2.3",
     "ramda": "^0.27.0",
-    "tedious": "^9.2.2",
+    "tedious": "^12.2.0",
     "uuid": "^3.3.2",
     "winston": "^3.2.1"
   }

@@ -22,7 +22,6 @@ const redisKeyService = require('../services/redis-key.service')
  * @property {string|null} middleNames
  * @property {moment.Moment} dateOfBirth
  * @property {string} urlSlug
- * @property {string} checkStatusCode
  * @property {number|null} group_id
  * @property {string|null} reason
  * @property {string|null} reasonCode

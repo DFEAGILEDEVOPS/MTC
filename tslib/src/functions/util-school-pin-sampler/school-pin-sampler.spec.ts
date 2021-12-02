@@ -11,7 +11,7 @@ describe('school-pin-sampler', () => {
     // but this test appears to run well when run on it's own, so the hypothesis here is that the order of tests is important
     // and some _other_ test in the suite is failing to unmock.  If this test keeps failing, even with this unmock code in, then please
     // delete this block.
-    jest.restoreAllMocks()
+    jest.restoreAllMocks() // this doesn't work.
   })
 
   beforeEach(() => {

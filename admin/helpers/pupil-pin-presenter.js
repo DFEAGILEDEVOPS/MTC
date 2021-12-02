@@ -7,6 +7,7 @@ const pupilPinPresenter = {}
 const generatePupilPinViewData = p => ({
   pupilViewForeName: p.foreNameAlias || p.foreName,
   pupilViewLastName: p.lastNameAlias || p.lastName,
+  pupilViewFullName: `${p.lastNameAlias || p.lastName}, ${p.foreNameAlias || p.foreName}`,
   ...p
 })
 

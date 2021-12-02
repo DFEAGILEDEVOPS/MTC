@@ -11,8 +11,7 @@ export interface IServiceBusQueueMessage {
 }
 
 export class SbQueueMessageService implements IQueueMessageService {
-
-  private sender: sb.Sender
+  private readonly sender: sb.Sender
 
   constructor () {
     if (config.ServiceBus.connectionString === undefined) {

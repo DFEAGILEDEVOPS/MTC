@@ -69,7 +69,6 @@ service.getLiveCheckData = async function getLiveCheckData (schoolId) {
     FROM
       [mtc_admin].[check] c
       INNER JOIN [mtc_admin].pupil p ON (p.currentCheckId = c.id)
-      LEFT JOIN [mtc_admin].[checkStatus] cs ON (c.checkStatus_id = cs.id)
     WHERE p.school_id = @schoolId AND c.isLiveCheck = 1
     GROUP BY cast(c.createdAt as date);`
   return sqlService.readonlyQuery(sql, [schoolIdParam])

@@ -46,7 +46,6 @@ describe('pupil-status.service', () => {
       const status = pupilStatusService.getProcessStatusV2({
         attendanceId: 1,
         currentCheckId: null,
-        checkStatusCode: null,
         restartAvailable: false,
         checkComplete: false,
         checkReceived: false,
@@ -59,18 +58,47 @@ describe('pupil-status.service', () => {
       expect(status).toBe('Just arrived with EAL')
     })
 
-    test('it can detect a Not Started pupil', () => {
+    test('it can detect a Not Started pupil with an expired pin', () => {
       const status = pupilStatusService.getProcessStatusV2({
         attendanceId: null,
-        currentCheckId: null,
-        checkStatusCode: null,
+        currentCheckId: 1,
         restartAvailable: false,
         checkComplete: false,
         checkReceived: false,
         pupilLoginDate: null,
         notReceivedExpiryInMinutes: 30,
         pupilCheckComplete: false,
-        pinExpiresAt: moment().add(4, 'hours')
+        pinExpiresAt: moment().subtract(1, 'minute')
+      })
+      expect(status).toBe('Not started')
+    })
+
+    test('it can detect a Not Started pupil with an expired and deleted pin', () => {
+      const status = pupilStatusService.getProcessStatusV2({
+        attendanceId: null,
+        currentCheckId: 1,
+        restartAvailable: false,
+        checkComplete: false,
+        checkReceived: false,
+        pupilLoginDate: null,
+        notReceivedExpiryInMinutes: 30,
+        pupilCheckComplete: false,
+        pinExpiresAt: null
+      })
+      expect(status).toBe('Not started')
+    })
+
+    test('it can detect a Not Started pupil with no pin generated ever', () => {
+      const status = pupilStatusService.getProcessStatusV2({
+        attendanceId: null,
+        currentCheckId: null,
+        restartAvailable: false,
+        checkComplete: null,
+        checkReceived: null,
+        pupilLoginDate: null,
+        notReceivedExpiryInMinutes: 30,
+        pupilCheckComplete: false,
+        pinExpiresAt: null
       })
       expect(status).toBe('Not started')
     })
@@ -79,7 +107,6 @@ describe('pupil-status.service', () => {
       const status = pupilStatusService.getProcessStatusV2({
         attendanceId: null,
         currentCheckId: 1,
-        checkStatusCode: 'NEW',
         restartAvailable: false,
         checkComplete: false,
         checkReceived: false,
@@ -95,7 +122,6 @@ describe('pupil-status.service', () => {
       const status = pupilStatusService.getProcessStatusV2({
         attendanceId: null,
         currentCheckId: 1,
-        checkStatusCode: 'COL',
         restartAvailable: false,
         checkComplete: false,
         checkReceived: false,
@@ -111,7 +137,6 @@ describe('pupil-status.service', () => {
       const status = pupilStatusService.getProcessStatusV2({
         attendanceId: null,
         currentCheckId: 1,
-        checkStatusCode: 'COL',
         restartAvailable: false,
         checkComplete: false,
         checkReceived: true,
@@ -127,7 +152,6 @@ describe('pupil-status.service', () => {
       const status = pupilStatusService.getProcessStatusV2({
         attendanceId: null,
         currentCheckId: 1,
-        checkStatusCode: 'COL',
         restartAvailable: false,
         checkComplete: false,
         checkReceived: true,
@@ -144,7 +168,6 @@ describe('pupil-status.service', () => {
       const status = pupilStatusService.getProcessStatusV2({
         attendanceId: null,
         currentCheckId: 1,
-        checkStatusCode: 'CMP',
         restartAvailable: false,
         checkComplete: true,
         checkReceived: true,
@@ -160,7 +183,6 @@ describe('pupil-status.service', () => {
       const status = pupilStatusService.getProcessStatusV2({
         attendanceId: null,
         currentCheckId: null,
-        checkStatusCode: null,
         restartAvailable: true,
         checkComplete: false,
         checkReceived: false,
@@ -176,7 +198,6 @@ describe('pupil-status.service', () => {
       const status = pupilStatusService.getProcessStatusV2({
         attendanceId: null,
         currentCheckId: 1,
-        checkStatusCode: 'COL',
         restartAvailable: false,
         checkComplete: false,
         checkReceived: false,
@@ -192,7 +213,6 @@ describe('pupil-status.service', () => {
       const status = pupilStatusService.getProcessStatusV2({
         attendanceId: null,
         currentCheckId: 1,
-        checkStatusCode: 'NEW',
         restartAvailable: false,
         checkComplete: false,
         checkReceived: false,
@@ -210,13 +230,12 @@ describe('pupil-status.service', () => {
       const status = pupilStatusService.getProcessStatusV2({
         attendanceId: null,
         currentCheckId: 1,
-        checkStatusCode: 'VOD',
         restartAvailable: false,
-        checkComplete: false,
+        checkComplete: true,
         checkReceived: false,
         pupilLoginDate: null,
         notReceivedExpiryInMinutes: 30,
-        pupilCheckComplete: false,
+        pupilCheckComplete: true,
         pinExpiresAt: moment().subtract(1, 'minutes')
       })
       expect(status).toBe('N/A')
@@ -227,7 +246,6 @@ describe('pupil-status.service', () => {
       const status = pupilStatusService.getProcessStatusV2({
         attendanceId: null,
         currentCheckId: 1,
-        checkStatusCode: 'NEW',
         restartAvailable: false,
         checkComplete: false,
         checkReceived: false,

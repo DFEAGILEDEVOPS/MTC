@@ -101,6 +101,7 @@ test-output/*/*
 *.log
 
 .env*
+*.env
 
 /test-output
 
@@ -112,7 +113,7 @@ config.json
 src/public/config.json
 test/admin-hpa/features/support/test_env.rb
 test/pupil-hpa/features/support/test_env.rb
-test/admin-hpa/data/ctf_download/*.xml
+test/admin-hpa/data/download/*.*
 test/admin-hpa/data/fixtures/test-check-form-*.csv
 test/admin-hpa/data/multiple_pupils_errors.csv
 test/admin-hpa/data/fixtures/test-check-form-*.txt
@@ -123,3 +124,9 @@ local.settings.json
 
 # zip deployments (typically for apps in _spikes-poc folder)
 deploy.zip
+
+# Jetbrains
+*.iml
+
+# Emacs save files
+*~

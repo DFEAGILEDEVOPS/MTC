@@ -1,16 +1,22 @@
-import { Router as Router, Request, Response } from 'express'
-import * as pingController from '../controllers/ping.controller'
+import { Router, Request, Response } from 'express'
+import { PingController } from '../controllers/ping.controller'
 
 export class PingRouter {
   router: Router
+  controller: PingController
 
   constructor () {
     this.router = Router()
     this.init()
+    this.controller = new PingController()
   }
 
-  public init () {
-    this.router.get('/', (req: Request, res: Response) => pingController.default.getPing(req, res))
+  private readonly getPing = (req: Request, res: Response): void => {
+    void this.controller.getPing(req, res)
+  }
+
+  public init (): void {
+    this.router.get('/', this.getPing)
   }
 }
 

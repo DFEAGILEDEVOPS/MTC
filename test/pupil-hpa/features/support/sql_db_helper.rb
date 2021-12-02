@@ -107,14 +107,6 @@ class SqlDbHelper
     pupil_details_res
   end
 
-  def self.get_pupil_check_metadata(check_code)
-    sql = "SELECT c.*, cs.code FROM [mtc_admin].[check] c JOIN [mtc_admin].[checkStatus] cs ON (c.checkStatus_id = cs.id) WHERE checkCode = '#{check_code}'"
-    result = SQL_CLIENT.execute(sql)
-    metadata = result.first
-    result.cancel
-    metadata
-  end
-
   def self.get_check_window(check_window_id)
     sql = "SELECT * FROM [mtc_admin].[checkWindow] WHERE id = '#{check_window_id}'"
     result = SQL_CLIENT.execute(sql)

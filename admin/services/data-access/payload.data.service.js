@@ -1,6 +1,6 @@
 'use strict'
 
-const azureTableService = require('./azure-table.data.service')
+const tableService = require('./azure-table.data.service')
 const sqlService = require('./sql.service')
 
 const payloadDataService = {
@@ -27,8 +27,7 @@ const payloadDataService = {
     }
     const schoolUrlSlug = res[0].urlSlug
     const table = 'receivedCheck'
-    const tableService = azureTableService.getPromisifiedAzureTableService()
-    return tableService.retrieveEntityAsync(table, schoolUrlSlug.toLowerCase(), checkCode.toLowerCase())
+    return tableService.retrieveEntity(table, schoolUrlSlug.toLowerCase(), checkCode.toLowerCase())
   }
 }
 

@@ -1,5 +1,5 @@
 <%- partial('partials/_gds_breadcrumbs_and_sign_out', { breadcrumbs }) %>
-<main class="govuk-main-wrapper" id="main-content" role="main">
+<main class="govuk-main-wrapper govuk-body" id="main-content" role="main">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <% if (messages && messages.info && messages.info.length) { %>
@@ -51,7 +51,7 @@
                                 class="govuk-textarea govuk-!-width-three-quarters <%= err.isError('serviceMessageContent') ? 'govuk-textarea--error' : '' %>"
                                 name="serviceMessageContent"
                                 id="serviceMessageContent"
-                                rows="4"><%= formData['message'] %></textarea>
+                                rows="10"><%= formData['message'] %></textarea>
                     </div>
                 </div>
                 <button class="govuk-button govuk-!-margin-right-2" id="submit-service-message-button" type="submit">Save</button>
@@ -60,3 +60,16 @@
         </div>
     </div>
 </main>
+<link rel="stylesheet" href='<%= assetPath %>vendor/font-awesome/css/font-awesome.min.css' type='text/css'></link>
+<link rel="stylesheet" href='<%= assetPath %>vendor/simplemde/simplemde.min.css' type='text/css'></link>
+<script defer src='<%= assetPath %>vendor/simplemde/simplemde.min.js'></script>
+<script>
+    // init this variable in global scope, so the QA team can use it.
+    var simplemde = undefined
+    document.addEventListener('DOMContentLoaded', () => {
+        simplemde = new SimpleMDE({
+            autoDownloadFontAwesome: false,
+            spellChecker: false
+        });
+    })
+</script>

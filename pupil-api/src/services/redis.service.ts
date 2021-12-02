@@ -24,7 +24,7 @@ export interface IRedisService {
    * @param {Array<string>} keys an array of keys to invalidate
    * @returns {Promise<void>}
    */
-  drop (keys: Array<string>): Promise<Array<[Error | null, any]>>
+  drop (keys: string[]): Promise<Array<[Error | null, any]>>
   /**
    * @description cleans up the underlying redis client implementation
    * @returns void
@@ -49,9 +49,8 @@ export interface IRedisService {
  * Not used within Pupil API yet.
  */
 export class RedisService implements IRedisService {
-
-  private redis: Redis.Redis
-  private logger: Logger
+  private readonly redis: Redis.Redis
+  private readonly logger: Logger
 
   constructor () {
     const options: Redis.RedisOptions = {
@@ -89,7 +88,7 @@ export class RedisService implements IRedisService {
         default:
           throw new Error(`unsupported cache item type:${cacheItem.meta.type}`)
       }
-    } catch (err) {
+    } catch (err: any) {
       this.logger.error(`REDIS (get): Error getting ${key}: ${err.message}`)
       throw err
     }
@@ -97,7 +96,7 @@ export class RedisService implements IRedisService {
 
   async setex (key: string, value: string | number | object, ttl: number): Promise<void> {
     try {
-      let dataType = typeof(value)
+      const dataType = typeof (value)
       let cacheItemDataType: RedisItemDataType
       switch (dataType) {
         case 'string':
@@ -117,11 +116,12 @@ export class RedisService implements IRedisService {
         meta: {
           type: cacheItemDataType
         },
+        // eslint-disable-next-line @typescript-eslint/no-base-to-string
         value: value.toString()
       }
       const storageItemString = JSON.stringify(storageItem)
       await this.redis.setex(key, ttl, storageItemString)
-    } catch (err) {
+    } catch (err: any) {
       this.logger.error(`REDIS (setex): Error setting ${key}: ${err.message}`)
       throw err
     }
@@ -138,15 +138,15 @@ export class RedisService implements IRedisService {
     return pipeline.exec()
   }
 
-  quit (): Promise<string> {
+  async quit (): Promise<string> {
     return this.redis.quit()
   }
 
-  ttl (key: string): Promise<number | null> {
+  async ttl (key: string): Promise<number | null> {
     return this.redis.ttl(key)
   }
 
-  expire (key: string, ttl: number): Promise<any> {
+  async expire (key: string, ttl: number): Promise<any> {
     return this.redis.expire(key, ttl)
   }
 }
@@ -155,6 +155,7 @@ export class RedisCacheItemMetadata {
   constructor (type: RedisItemDataType) {
     this.type = type
   }
+
   type: RedisItemDataType
 }
 
@@ -163,6 +164,7 @@ export class RedisCacheItem {
     this.meta = meta
     this.value = value
   }
+
   meta: RedisCacheItemMetadata
   value: string
 }

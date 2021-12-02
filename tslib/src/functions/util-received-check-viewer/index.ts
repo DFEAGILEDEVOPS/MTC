@@ -1,8 +1,9 @@
 import { AzureFunction, Context, HttpRequest } from '@azure/functions'
 import { performance } from 'perf_hooks'
 import config from '../../config'
-import * as azh from '../../azure/storage-helper'
+import { TableService } from '../../azure/table-service'
 import { CompressionService } from '../../common/compression-service'
+import { ReceivedCheckTableEntity } from '../../schemas/models'
 
 const functionName = 'util-received-check-reader'
 
@@ -26,9 +27,11 @@ const checkRetriever: AzureFunction = async function (context: Context, req: Htt
       body: 'checkCode and schoolUUID properties are required'
     }
   }
-  const tableService = new azh.AsyncTableService()
-  const receivedCheck = await tableService.retrieveEntityAsync('receivedCheck', req.query.schoolUUID, req.query.checkCode)
-  const archive = receivedCheck.archive._
+  const tableService = new TableService()
+  const schoolUUID = req.query.schoolUUID ?? ''
+  const checkCode = req.query.checkCode ?? ''
+  const receivedCheck = await tableService.getEntity<ReceivedCheckTableEntity>('receivedCheck', schoolUUID, checkCode)
+  const archive = receivedCheck.archive ?? ''
   const compressionService = new CompressionService()
   const decompressed = compressionService.decompress(archive)
   context.res = {

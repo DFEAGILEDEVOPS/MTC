@@ -25,8 +25,8 @@ export class PupilPrefsService {
       const colourContrastDataUpdate: IPupilPreferenceDataUpdate = {
         aaCode: 'CCT',
         checkCode: preferenceUpdate.checkCode,
-        prefField: 'pupilColourContrasts_id',
-        prefTable: '[pupilColourContrasts]',
+        prefField: 'colourContrastLookUp_Id',
+        prefTable: '[colourContrastLookUp]',
         prefCode: preferenceUpdate.preferences.colourContrastCode
       }
       dataUpdates.push(colourContrastDataUpdate)
@@ -36,8 +36,8 @@ export class PupilPrefsService {
       const fontSizeDataUpdate: IPupilPreferenceDataUpdate = {
         aaCode: 'FTS',
         checkCode: preferenceUpdate.checkCode,
-        prefField: 'pupilfontSizes_id',
-        prefTable: '[pupilFontSizes]',
+        prefField: 'fontSizeLookUp_Id',
+        prefTable: '[fontSizeLookUp]',
         prefCode: preferenceUpdate.preferences.fontSizeCode
       }
       dataUpdates.push(fontSizeDataUpdate)

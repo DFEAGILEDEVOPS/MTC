@@ -23,10 +23,7 @@ const blobTrigger: AzureFunction = async function (context: Context, blob: any):
         min: config.Sql.Pooling.MinCount,
         max: config.Sql.Pooling.MaxCount
       },
-      options: {
-        appName: config.Sql.options.appName, // docker default
-        encrypt: config.Sql.options.encrypt
-      }
+      options: config.Sql.options
     }
     pool = new mssql.ConnectionPool(sqlConfig)
     await pool.connect()
@@ -37,7 +34,9 @@ const blobTrigger: AzureFunction = async function (context: Context, blob: any):
     if (pool?.connected === true) {
       await pool.close()
     }
-    context.log.error(`census-import: ERROR: ${error.message}`)
+    if (error instanceof Error) {
+      context.log.error(`census-import: ERROR: ${error.message}`)
+    }
     throw error
   }
   const end = performance.now()

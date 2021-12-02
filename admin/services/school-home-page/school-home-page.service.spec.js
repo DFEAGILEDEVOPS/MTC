@@ -50,9 +50,10 @@ describe('school home page service', () => {
   })
 
   test('the service message is returned', async () => {
-    jest.spyOn(administrationMessageService, 'getMessage').mockResolvedValue('test message')
+    const mockMessage = { title: 'test', message: 'a test message' }
+    jest.spyOn(administrationMessageService, 'getMessage').mockResolvedValue(mockMessage)
     const data = await sut.getContent(user)
-    expect(data.serviceMessage).toBe('test message')
+    expect(data.serviceMessage).toEqual(mockMessage)
   })
 
   describe('PRE-FAMILIARISATION CHECK PHASE', () => {

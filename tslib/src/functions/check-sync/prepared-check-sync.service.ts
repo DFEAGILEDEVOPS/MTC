@@ -9,6 +9,7 @@ export class PreparedCheckSyncService {
   private readonly mergeService: IPreparedCheckMergeService
   private readonly redisService: IRedisService
   private readonly logger: ILogger
+  private readonly name = 'check-sync'
 
   constructor (dataService?: IPreparedCheckSyncDataService, mergeService?: IPreparedCheckMergeService,
     redisService?: IRedisService, logger?: ILogger) {
@@ -37,18 +38,20 @@ export class PreparedCheckSyncService {
     }
     for (let index = 0; index < checkReferences.length; index++) {
       const ref = checkReferences[index]
-      this.logger.info(`syncing check. checkCode:${ref.checkCode}`)
+      this.logger.info(`${this.name}: syncing check: checkCode:${ref.checkCode}`)
       const cacheKey = this.buildPreparedCheckCacheKey(ref)
       const preparedCheck: IPreparedCheck = await this.redisService.get(cacheKey) as IPreparedCheck
       if (isNil(preparedCheck)) {
-        throw new Error(`unable to find preparedCheck in redis. checkCode:${ref.checkCode}`)
+        this.logger.info(`${this.name}: unable to find preparedCheck in redis: checkCode:${ref.checkCode}`)
+        continue
       }
       const newAaConfig = await this.dataService.getAccessArrangementsByCheckCode(preparedCheck.checkCode)
       const updatedConfig = await this.mergeService.merge(preparedCheck.config, newAaConfig)
       preparedCheck.config = updatedConfig
       const ttl = await this.redisService.ttl(cacheKey)
       if (ttl === null) {
-        throw new Error(`no TTL found on preparedCheck. checkCode:${ref.checkCode}`)
+        this.logger.error(`${this.name}: no TTL found on preparedCheck: checkCode:${ref.checkCode}`)
+        continue
       }
       await this.redisService.setex(cacheKey, preparedCheck, ttl)
       try {

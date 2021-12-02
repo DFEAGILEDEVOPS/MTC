@@ -31,7 +31,8 @@ export class FakeSubmittedCheckMessageGeneratorService {
     }
     const preparedCheck: PreparedCheck = preparedCheckCacheValue as PreparedCheck
     const checkPayload = this.completedCheckGenerator.create(preparedCheck)
-    const archive = this.compressionService.compress(JSON.stringify(checkPayload))
+    const stringifiedJsonPayload = JSON.stringify(checkPayload)
+    const archive = this.compressionService.compress(stringifiedJsonPayload)
     const submittedCheck: SubmittedCheckMessageV2 = {
       checkCode: checkCode,
       archive: archive,

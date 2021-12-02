@@ -3,11 +3,11 @@ services:
   functions_base:
     build: ./deploy/docker/functions-base
     command: echo "mtc-functions-base built"
-  migration:
+  dbmigration:
     build:
-      context: ./admin
+      context: ./db
       dockerfile: dev.Dockerfile
-    container_name: mtc_admin_dev_migration
+    container_name: mtc_db_migrations
     volumes:
       - "./:/mtc"
     environment:
@@ -15,14 +15,13 @@ services:
       SQL_PORT: '1433'
     depends_on:
       - sqldb
-    command: /bin/bash /mtc/admin/run-dev-migrations.sh
-  functions_app:
+  func_throttled:
     build:
-      context: ./functions-app
+      context: ./func-throttled
       dockerfile: dev.Dockerfile
-    container_name: "mtc_functions_app"
+    container_name: "mtc_func_throttled"
     ports:
-      - 7072:7072
+      - 7073:7073
     volumes:
       - "./:/mtc"
     environment:
@@ -30,7 +29,7 @@ services:
       REDIS_HOST: 'redis'
     depends_on:
       - sqldb
-      - migration
+      - dbmigration
       - redis
     command: ["./wait-for-db.sh", "sqldb", "yarn", "start"]
   func_consumption:
@@ -47,7 +46,7 @@ services:
       REDIS_HOST: 'redis'
     depends_on:
       - sqldb
-      - migration
+      - dbmigration
       - redis
     command: ["./wait-for-db.sh", "sqldb", "yarn", "start"]
   admin_dev:
@@ -64,7 +63,7 @@ services:
         REDIS_HOST: 'redis'
       depends_on:
         - sqldb
-        - migration
+        - dbmigration
         - redis
       restart: always
       command: ["./wait-for-db.sh", "sqldb", "./docker-start-dev.sh"]

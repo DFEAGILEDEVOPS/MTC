@@ -39,7 +39,7 @@ const psychometricianDataService = {
       cr.payload,
       cs.code,
       cs.description,
-      prr.code restartCode,
+      rrlu.code restartCode,
       (
         SELECT COUNT(id)
         FROM [mtc_admin].[pupilRestart] pr
@@ -51,7 +51,7 @@ const psychometricianDataService = {
       FROM [mtc_admin].[check] chk
           LEFT JOIN [mtc_admin].[checkResult] cr ON (chk.id = cr.check_id)
           LEFT JOIN [mtc_admin].[pupilRestart] pr ON (pr.check_id = chk.id AND pr.isDeleted = 0)
-          LEFT JOIN [mtc_admin].[pupilRestartReason] prr ON (prr.id = pr.pupilRestartReason_id)
+          LEFT JOIN [mtc_admin].[restartReasonLookUp] rrlu ON (rrlu.id = pr.restartReasonLookUp_Id)
           LEFT JOIN [mtc_admin].[pupilAttendance] pa ON (pa.pupil_id = chk.pupil_id AND pa.isDeleted = 0)
           LEFT JOIN [mtc_admin].[attendanceCode] ac ON (ac.id = pa.attendanceCode_id AND pa.isDeleted = 0)
           JOIN [mtc_admin].[checkStatus] cs ON (chk.checkStatus_id = cs.id)`

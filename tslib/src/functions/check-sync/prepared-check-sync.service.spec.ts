@@ -3,11 +3,13 @@ import { IPreparedCheckMergeService, ICheckConfig } from './prepared-check-merge
 import { IPreparedCheckSyncDataService, IActiveCheckReference } from './prepared-check-sync.data.service'
 import { IRedisService } from '../../caching/redis-service'
 import { RedisServiceMock } from '../../caching/redis-service.mock'
+import { ConsoleLogger, ILogger } from '../../common/logger'
 
 let sut: PreparedCheckSyncService
 let dataServiceMock: IPreparedCheckSyncDataService
 let mergeServiceMock: IPreparedCheckMergeService
 let redisServiceMock: IRedisService
+let consoleLogger: ILogger
 
 const PreparedCheckSyncDataServiceMock = jest.fn<IPreparedCheckSyncDataService, any>(() => ({
   getActiveCheckReferencesByPupilUuid: jest.fn(),
@@ -25,7 +27,8 @@ describe('prepared-check-sync.service', () => {
     redisServiceMock = new RedisServiceMock()
     dataServiceMock = new PreparedCheckSyncDataServiceMock()
     mergeServiceMock = new PreparedCheckMergeServiceMock()
-    sut = new PreparedCheckSyncService(dataServiceMock, mergeServiceMock, redisServiceMock)
+    consoleLogger = new ConsoleLogger()
+    sut = new PreparedCheckSyncService(dataServiceMock, mergeServiceMock, redisServiceMock, consoleLogger)
   })
 
   test('subject should be defined', () => {
@@ -122,7 +125,7 @@ describe('prepared-check-sync.service', () => {
     expect(redisServiceMock.setex).toHaveBeenCalledWith(cacheKey, expected, originalTTL)
   })
 
-  test('error is thrown if preparedCheck is not found', async () => {
+  test('error is logged if preparedCheck is not found', async () => {
     const originalTTL = 300
     const pupilUUID = 'pupilUUID'
     const checkRef = {
@@ -136,15 +139,13 @@ describe('prepared-check-sync.service', () => {
 
     jest.spyOn(redisServiceMock, 'get').mockImplementation(async () => null)
 
-    try {
-      await sut.process(pupilUUID)
-      fail('error should have been thrown')
-    } catch (error) {
-      expect(error.message).toBe(`unable to find preparedCheck in redis. checkCode:${checkRef.checkCode}`)
-    }
+    jest.spyOn(consoleLogger, 'info')
+
+    await sut.process(pupilUUID)
+    expect(consoleLogger.info).toHaveBeenCalledWith(`check-sync: unable to find preparedCheck in redis: checkCode:${checkRef.checkCode}`)
   })
 
-  test('error is thrown if ttl is not found', async () => {
+  test('error is logged if ttl is not found, and the ttl set to 300 seconds', async () => {
     const pupilUUID = 'pupilUUID'
     const checkRef = {
       checkCode: 'checkCode',
@@ -161,13 +162,10 @@ describe('prepared-check-sync.service', () => {
         schoolPin: 'abc34def'
       }
     })
+    jest.spyOn(consoleLogger, 'error')
 
-    try {
-      await sut.process(pupilUUID)
-      fail('error should have been thrown')
-    } catch (error) {
-      expect(error.message).toBe(`no TTL found on preparedCheck. checkCode:${checkRef.checkCode}`)
-    }
+    await sut.process(pupilUUID)
+    expect(consoleLogger.error).toHaveBeenCalledWith(`check-sync: no TTL found on preparedCheck: checkCode:${checkRef.checkCode}`)
   })
 
   test('the updated check config is stored in the SQL database', async () => {
@@ -236,5 +234,48 @@ describe('prepared-check-sync.service', () => {
     await sut.process(pupilUUID)
 
     expect(dataServiceMock.sqlUpdateCheckConfig).toHaveBeenCalledWith(checkRef.checkCode, mockUpdatedConfig)
+  })
+
+  test('the second check for a pupil is updated even if the first check is not found', async () => {
+    const originalTTL = 300
+    const pupilUUID = 'pupilUUID'
+    const checkRef1 = {
+      checkCode: 'checkCode',
+      pupilPin: '1234',
+      schoolPin: 'abc12def'
+    }
+    const checkRef2 = {
+      checkCode: 'checkCode2',
+      pupilPin: '5678',
+      schoolPin: 'abc12def'
+    }
+    const mockMergedConfig = {
+      audibleSounds: false,
+      checkTime: 30,
+      colourContrast: true,
+      colourContrastCode: 'YOB',
+      compressCompletedCheck: true,
+      fontSize: false,
+      fontSizeCode: '',
+      inputAssistance: false,
+      loadingTime: 3,
+      nextBetweenQuestions: false,
+      numpadRemoval: false,
+      practice: false,
+      questionReader: false,
+      questionTime: 6,
+      speechSynthesis: false
+    }
+    jest.spyOn(dataServiceMock, 'getActiveCheckReferencesByPupilUuid').mockImplementation(async () => [checkRef1, checkRef2])
+
+    jest.spyOn(redisServiceMock, 'ttl').mockImplementation(async () => originalTTL)
+
+    jest.spyOn(redisServiceMock, 'get')
+      .mockResolvedValueOnce(null)
+      .mockResolvedValueOnce({ checkCode: 'checkCode2' })
+
+    jest.spyOn(mergeServiceMock, 'merge').mockResolvedValue(mockMergedConfig)
+    await sut.process(pupilUUID)
+    expect(redisServiceMock.setex).toHaveBeenCalledWith('preparedCheck:abc12def:5678', { checkCode: 'checkCode2', config: mockMergedConfig }, 300)
   })
 })
