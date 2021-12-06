@@ -167,4 +167,26 @@ describe('service message controller:', () => {
       expect(req.flash).toHaveBeenCalled()
     })
   })
+
+  describe('getEditServiceMessage', () => {
+    let goodReqParams
+
+    beforeEach(() => {
+      goodReqParams = {
+        method: 'GET',
+        url: '/service-message/edit-service-message',
+        user: {
+          id: 1
+        }
+      }
+    })
+
+    test('it fetches the raw service message so it can be edited', () => {
+      const res = getRes()
+      const req = getReq(goodReqParams)
+      jest.spyOn(administrationMessageService, 'fetchMesage').mockImplementation()
+      await controller.getEditServiceMessage(req, res, next)
+      expect(administrationMessageService.fetchMessage).toHaveBeenCalledTimes(1)
+    })
+  })
 })
