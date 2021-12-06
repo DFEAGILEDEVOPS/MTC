@@ -1,4 +1,4 @@
-/* global jasmine describe expect beforeEach afterEach jest test */
+/* global describe expect beforeEach afterEach jest test */
 const httpMocks = require('node-mocks-http')
 const controller = require('../../../controllers/service-message')
 const administrationMessageService = require('../../../services/administration-message.service')
@@ -17,8 +17,8 @@ describe('service message controller:', () => {
 
   function getReq (params) {
     const req = httpMocks.createRequest(params)
-    req.breadcrumbs = jasmine.createSpy('breadcrumbs')
-    req.flash = jasmine.createSpy('flash')
+    req.breadcrumbs = jest.fn()
+    req.flash = jest.fn()
     return req
   }
 
