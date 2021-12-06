@@ -181,12 +181,35 @@ describe('service message controller:', () => {
       }
     })
 
-    test('it fetches the raw service message so it can be edited', () => {
+    test('it fetches the raw service message so it can be edited', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      jest.spyOn(administrationMessageService, 'fetchMesage').mockImplementation()
+      jest.spyOn(administrationMessageService, 'fetchMessage').mockResolvedValue({
+        title: 'A message title',
+        message: '# subheading \n and markdown here',
+        id: 1
+      })
       await controller.getEditServiceMessage(req, res, next)
       expect(administrationMessageService.fetchMessage).toHaveBeenCalledTimes(1)
+    })
+
+    test('it redirects back to the overview page if the service-message is not set', async () => {
+      const res = getRes()
+      const req = getReq(goodReqParams)
+      jest.spyOn(res, 'redirect').mockImplementation()
+      jest.spyOn(administrationMessageService, 'fetchMessage').mockResolvedValue(undefined)
+      await controller.getEditServiceMessage(req, res, next)
+      expect(res.redirect).toHaveBeenLastCalledWith('/service-message/')
+    })
+
+    test('it calls next if there is an error', async () => {
+      const res = getRes()
+      const req = getReq()
+      // arbitrarily choose `fetchMessage` to throw
+      jest.spyOn(administrationMessageService, 'fetchMessage').mockRejectedValue(new Error('a mock error from unit' +
+        ' test'))
+      await controller.getEditServiceMessage(req, res, next)
+      expect(next).toHaveBeenCalledTimes(1)
     })
   })
 })
