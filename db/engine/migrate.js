@@ -3,7 +3,6 @@
 const path = require('path')
 const fs = require('fs')
 const globalDotEnvFile = path.join(__dirname, '..', '..', '.env')
-const mssql = require('mssql')
 
 try {
   if (fs.existsSync(globalDotEnvFile)) {
@@ -18,6 +17,7 @@ try {
 
 const config = require('../config')
 const sqlConfig = require('../sql.config')
+const mssql = require('mssql')
 const logger = require('./log.service').getLogger()
 const Postgrator = require('postgrator')
 const {
@@ -32,7 +32,7 @@ class Migrator extends Postgrator {
     migrations up to the specified migration
   */
   async getRunnableMigrations (databaseVersion, targetVersion) {
-    const result = await this.runQuery(`SELECT version FROM ${this.config.schemaTable}`)
+    const result = await this.config.execQuery(`SELECT version FROM ${this.config.schemaTable}`)
     const appliedMigrations = result.rows.map(r => parseInt(r.version))
     const { migrations } = this
     if (targetVersion >= databaseVersion) {
@@ -59,43 +59,49 @@ class Migrator extends Postgrator {
   }
 }
 
-const sqlConfig = {
-  
-}
-
-const migratorConfig = {
-  migrationPattern: path.join(__dirname, '..', 'migrations', '**'),
-  driver: 'mssql',
-  host: config.Sql.Server,
-  // Required for when SQL_PORT is passed in via docker-compose
-  port: parseInt(config.Sql.Port),
-  database: config.Sql.Database,
-  username: config.Sql.Migrator.Username,
-  password: config.Sql.Migrator.Password,
-  requestTimeout: config.Sql.Migrator.Timeout,
-  connectionTimeout: config.Sql.Migrator.Timeout,
-  // Schema table name. Optional. Default is schemaversion
-  schemaTable: 'migrationLog',
-  options: {
-    encrypt: sqlConfig.options.encrypt,
-    enableArithAbort: sqlConfig.options.enableArithAbort,
-    trustServerCertificate: sqlConfig.options.trustServerCertificate
-  },
-  validateChecksums: false
-}
-
 const runMigrations = async (version) => {
   try {
     await createDatabaseIfNotExists()
+
+    sqlConfig.user = config.Sql.Migrator.Username
+    sqlConfig.password = config.Sql.Migrator.Password
+    const client = new mssql.ConnectionPool(sqlConfig)
+    await client.connect()
+
+    const migratorConfig = {
+      migrationPattern: path.join(__dirname, '..', 'migrations', '**'),
+      driver: 'mssql',
+      // Required for when SQL_PORT is passed in via docker-compose
+      database: config.Sql.Database,
+      // Schema table name. Optional. Default is schemaversion
+      schemaTable: 'migrationLog',
+      validateChecksums: false,
+      execQuery: (query) => {
+        return new Promise((resolve, reject) => {
+          const request = new mssql.Request(client)
+          // batch will handle multiple queries
+          request.batch(query, (err, result) => {
+            if (err) {
+              return reject(err)
+            }
+            return resolve({
+              rows: result && result.recordset ? result.recordset : result,
+            })
+          })
+        })
+      }
+    }
     const postgrator = new Migrator(migratorConfig)
     // subscribe to useful events
     postgrator.on('migration-started', migration => logger.info(`executing ${migration.version} ${migration.action}:${migration.name}...`))
     // Migrate to 'max' version or user-specified e.g. '008'
     logger.info('Migrating to version: ' + version)
     await postgrator.migrate(version)
+    await client.close()
     logger.info('SQL Migrations complete')
   } catch (error) {
     logger.error(error)
+    console.dir(error)
     logger.error(`${error.appliedMigrations.length} migrations were applied.`)
     error.appliedMigrations.forEach(migration => {
       logger.error(`- ${migration.name}`)
