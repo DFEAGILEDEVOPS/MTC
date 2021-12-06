@@ -3,6 +3,7 @@
 const path = require('path')
 const fs = require('fs')
 const globalDotEnvFile = path.join(__dirname, '..', '..', '.env')
+const mssql = require('mssql')
 
 try {
   if (fs.existsSync(globalDotEnvFile)) {
