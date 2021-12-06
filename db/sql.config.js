@@ -31,7 +31,6 @@ module.exports = {
   pool: {
     min: parseInt(process.env.SQL_POOL_MIN_COUNT, 10) || 0,
     max: parseInt(process.env.SQL_POOL_MAX_COUNT, 10) || 5,
-    acquireTimeoutMillis: parseInt(process.env.SQL_POOL_ACQUIRE_TIMEOUT, 10) || thirtySecondsInMilliseconds
   },
   options: {
     appName: process.env.SQL_APP_NAME || 'mtc-local-dev', // docker default

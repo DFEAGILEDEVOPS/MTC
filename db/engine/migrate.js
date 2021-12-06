@@ -59,6 +59,10 @@ class Migrator extends Postgrator {
   }
 }
 
+const sqlConfig = {
+  
+}
+
 const migratorConfig = {
   migrationPattern: path.join(__dirname, '..', 'migrations', '**'),
   driver: 'mssql',
