@@ -26,22 +26,21 @@ const batchCheckNotifier: AzureFunction = async function (context: Context, time
   }
 
   let busClient: sb.ServiceBusClient
-  let queueClient: sb.QueueClient
-  let receiver: sb.Receiver
+  let receiver: sb.ServiceBusReceiver
 
   const disconnect = async (): Promise<void> => {
     await receiver.close()
-    await queueClient.close()
     await busClient.close()
   }
 
   // connect to service bus...
   try {
     context.log(`${functionName}: connecting to service bus...`)
-    busClient = sb.ServiceBusClient.createFromConnectionString(config.ServiceBus.ConnectionString)
-    queueClient = busClient.createQueueClient('check-notification')
-    receiver = queueClient.createReceiver(sb.ReceiveMode.peekLock)
-    context.log(`${functionName}: connected to service bus instance ${busClient.name}`)
+    busClient = new sb.ServiceBusClient(config.ServiceBus.ConnectionString)
+    receiver = busClient.createReceiver('check-notification', {
+      receiveMode: 'peekLock'
+    })
+    context.log(`${functionName}: connected to service bus instance ${busClient.fullyQualifiedNamespace}`)
   } catch (error) {
     context.log.error(`${functionName}: unable to connect to service bus at this time:${error.message}`)
     throw error
@@ -58,25 +57,25 @@ const batchCheckNotifier: AzureFunction = async function (context: Context, time
     }
     context.log(`${functionName}: received batch of ${messageBatch.length} messages`)
     const notifications = messageBatch.map(m => m.body as ICheckNotificationMessage)
-    await process(notifications, context, messageBatch)
+    await process(notifications, context, messageBatch, receiver)
   }
 
   await disconnect()
   finish(start, context)
 }
 
-async function process (notifications: ICheckNotificationMessage[], context: Context, messages: sb.ServiceBusMessage[]): Promise<void> {
+async function process (notifications: ICheckNotificationMessage[], context: Context, messages: sb.ServiceBusReceivedMessage[], receiver: sb.ServiceBusReceiver): Promise<void> {
   try {
     const batchNotifier = new BatchCheckNotifier()
     await batchNotifier.notify(notifications)
-    await completeMessages(messages, context)
+    await completeMessages(messages, receiver, context)
   } catch (error) {
     // sql transaction failed, abandon...
-    await abandonMessages(messages, context)
+    await abandonMessages(messages, receiver, context)
   }
 }
 
-async function completeMessages (messageBatch: sb.ServiceBusMessage[], context: Context): Promise<void> {
+async function completeMessages (messageBatch: sb.ServiceBusReceivedMessage[], receiver: sb.ServiceBusReceiver, context: Context): Promise<void> {
   // the sql updates are committed, complete the messages.
   // if any completes fail, just abandon.
   // the sql updates are idempotent and as such replaying a message
@@ -85,10 +84,10 @@ async function completeMessages (messageBatch: sb.ServiceBusMessage[], context: 
   for (let index = 0; index < messageBatch.length; index++) {
     const msg = messageBatch[index]
     try {
-      await msg.complete()
+      await receiver.completeMessage(msg)
     } catch (error) {
       try {
-        await msg.abandon()
+        await receiver.abandonMessage(msg)
       } catch {
         context.log.error(`${functionName}: unable to abandon message:${error.message}`)
         // do nothing.
@@ -98,11 +97,11 @@ async function completeMessages (messageBatch: sb.ServiceBusMessage[], context: 
   }
 }
 
-async function abandonMessages (messageBatch: sb.ServiceBusMessage[], context: Context): Promise<void> {
+async function abandonMessages (messageBatch: sb.ServiceBusReceivedMessage[], receiver: sb.ServiceBusReceiver, context: Context): Promise<void> {
   for (let index = 0; index < messageBatch.length; index++) {
     const msg = messageBatch[index]
     try {
-      await msg.abandon()
+      await receiver.abandonMessage(msg)
     } catch (error) {
       context.log.error(`${functionName}: unable to abandon message:${error.message}`)
     }

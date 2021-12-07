@@ -4,7 +4,6 @@ import * as RA from 'ramda-adjunct'
 import * as sb from '@azure/service-bus'
 
 import config from '../../config'
-import { ISchoolResultsCacheMessage } from '../school-results-cache-determiner/school-results-cache-determiner.service'
 import { ResultService } from './services/result.service'
 import { IFunctionTimer } from '../../azure/functions'
 
@@ -27,23 +26,22 @@ const sbMessageReceiver: AzureFunction = async function sbMessageReceiver (conte
   }
 
   let busClient: sb.ServiceBusClient
-  let queueClient: sb.QueueClient
-  let receiver: sb.Receiver
+  let receiver: sb.ServiceBusReceiver
   const receiveQueueName = 'school-results-cache'
 
   const disconnect = async (): Promise<void> => {
     await receiver.close()
-    await queueClient.close()
     await busClient.close()
   }
 
   // connect to service bus...
   try {
     context.log.verbose(`${functionName}: connecting to service bus...`)
-    busClient = sb.ServiceBusClient.createFromConnectionString(config.ServiceBus.ConnectionString)
-    queueClient = busClient.createQueueClient(receiveQueueName)
-    receiver = queueClient.createReceiver(sb.ReceiveMode.peekLock)
-    context.log(`${functionName}: connected to service bus instance ${busClient.name}`)
+    busClient = new sb.ServiceBusClient(config.ServiceBus.ConnectionString)
+    receiver = busClient.createReceiver(receiveQueueName, {
+      receiveMode: 'peekLock'
+    })
+    context.log(`${functionName}: connected to service bus instance ${busClient.fullyQualifiedNamespace}`)
   } catch (error) {
     context.log.error(`${functionName}: unable to connect to service bus at this time:${error.message}`)
     throw error
@@ -59,15 +57,14 @@ const sbMessageReceiver: AzureFunction = async function sbMessageReceiver (conte
       return
     }
     context.log(`${functionName}: received batch of ${messageBatch.length} messages`)
-    const notifications = messageBatch.map(m => m.body as ISchoolResultsCacheMessage)
-    await process(notifications, context, messageBatch)
+    await process(context, messageBatch, receiver)
   }
 
   await disconnect()
   finish(start, context)
 }
 
-async function process (notifications: ISchoolResultsCacheMessage[], context: Context, messages: sb.ServiceBusMessage[]): Promise<void> {
+async function process (context: Context, messages: sb.ServiceBusReceivedMessage[], receiver: sb.ServiceBusReceiver): Promise<void> {
   if (!RA.isArray(messages)) {
     context.log(`${functionName}: process called with invalid message type`)
     return
@@ -79,17 +76,17 @@ async function process (notifications: ISchoolResultsCacheMessage[], context: Co
     // process an individual message at a time
     try {
       await resultService.cacheResultData(msg.body.schoolGuid)
-      await completeMessages([msg], context)
+      await completeMessages([msg], receiver, context)
     } catch (error) {
       // sql transaction failed, abandon...
       context.log.warn(`${functionName}: error processing message ${JSON.stringify(msg)}\n Error was: ${error}`)
       console.error(error)
-      await abandonMessages([msg], context)
+      await abandonMessages([msg], receiver, context)
     }
   }
 }
 
-async function completeMessages (messageBatch: sb.ServiceBusMessage[], context: Context): Promise<void> {
+async function completeMessages (messageBatch: sb.ServiceBusReceivedMessage[], receiver: sb.ServiceBusReceiver, context: Context): Promise<void> {
   // the sql updates are committed, complete the messages.
   // if any completes fail, just abandon.
   // the sql updates are idempotent and as such replaying a message
@@ -97,10 +94,10 @@ async function completeMessages (messageBatch: sb.ServiceBusMessage[], context: 
   for (let index = 0; index < messageBatch.length; index++) {
     const msg = messageBatch[index]
     try {
-      await msg.complete()
+      await receiver.completeMessage(msg)
     } catch (error) {
       try {
-        await msg.abandon()
+        await receiver.abandonMessage(msg)
       } catch {
         context.log.error(`${functionName}: unable to abandon message:${error.message}`)
         // do nothing.
@@ -110,11 +107,11 @@ async function completeMessages (messageBatch: sb.ServiceBusMessage[], context: 
   }
 }
 
-async function abandonMessages (messageBatch: sb.ServiceBusMessage[], context: Context): Promise<void> {
+async function abandonMessages (messageBatch: sb.ServiceBusReceivedMessage[], receiver: sb.ServiceBusReceiver, context: Context): Promise<void> {
   for (let index = 0; index < messageBatch.length; index++) {
     const msg = messageBatch[index]
     try {
-      await msg.abandon()
+      await receiver.abandonMessage(msg)
     } catch (error) {
       context.log.error(`${functionName}: abandonMessages(): unable to abandon message: ${error.message}`)
     }
