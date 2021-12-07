@@ -103,11 +103,13 @@
   "devDependencies": {
     "@babel/core": "^7.10.5",
     "@babel/preset-env": "^7.10.4",
+    "@babel/preset-typescript": "^7.16.0",
     "@types/fs-extra": "^9.0.1",
     "@types/jest": "^27.0.1",
-    "@types/node": "14",
     "@types/marked": "^4.0.0",
+    "@types/node": "14",
     "@types/ramda": "^0.27.6",
+    "babel-jest": "^27.4.2",
     "chalk": "^4.1.0",
     "command-line-args": "^5.0.2",
     "concurrently": "^6.2.1",
@@ -132,6 +134,7 @@
     "nodemon": "^2.0.12",
     "standard": "^16.0.3",
     "supertest": "^6.0.1",
+    "ts-node": "^10.4.0",
     "typescript": "4.3.5"
   },
   "standard": {
@@ -164,7 +167,8 @@
     "coverageDirectory": "<rootDir>/coverage",
     "testMatch": [
       "**/spec/back-end/**/(*.)+(spec|test).[jt]s?(x)",
-      "**/services/*/*.spec.js"
+      "**/services/*/*.spec.[jt]s",
+      "**/services/**/*.spec.[jt]s"
     ],
     "testPathIgnorePatterns": [
       "<rootDir>/spec/back-end/mocks/",

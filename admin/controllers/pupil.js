@@ -259,6 +259,15 @@ const controller = {
     res.render('redirect-delay.ejs', {
       redirectMessage: 'Saving changes...'
     })
+  },
+
+  getViewPupilHistory: async function getViewPupilHistory (req, res, next) {
+    try {
+      // const pupilHistory = pupilHistoryService.getHistory(req.params.urlSlug)
+
+    } catch (error) {
+      next(error)
+    }
   }
 }
 
