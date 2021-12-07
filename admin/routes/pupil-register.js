@@ -57,5 +57,11 @@ router.post(
   isAdminWindowAvailable,
   pupilController.postEditPupil
 )
+router.get(
+  '/pupil/history/:urlSlug',
+  isAuthenticated([roles.staAdmin]),
+  isAdminWindowAvailable,
+  pupilController.getViewPupilHistory
+)
 
 module.exports = router
