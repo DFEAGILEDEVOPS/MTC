@@ -3,6 +3,7 @@ const uuid = require('uuid')
 const schoolDataService = require('../services/data-access/school.data.service')
 const schoolValidator = require('../lib/validator/school-validator')
 const ValidationError = require('../lib/validation-error')
+
 const schoolService = {
   /**
    * Find school name by DFE number.
@@ -66,7 +67,7 @@ const schoolService = {
    * @param {string} slug - unique UUID to update
    * @param {editableSchoolDetails} school
    */
-  updateSchool: async function updateSchool (slug, school) {
+  updateSchool: async function updateSchool (slug, school, userId) {
     if (!slug) {
       throw new Error('Missing UUID')
     }
@@ -75,6 +76,9 @@ const schoolService = {
     }
     if (!school) {
       throw new Error('Missing school details')
+    }
+    if (!userId) {
+      throw new Error('Missing userId')
     }
     const validationError = await schoolValidator.validate(school)
     if (validationError.hasError()) {
