@@ -2,7 +2,7 @@ import * as R from 'ramda'
 import { parallelLimit } from 'async'
 import { v4 as uuidv4 } from 'uuid'
 import moment from 'moment'
-import { Sender, ServiceBusClient } from '@azure/service-bus'
+import { ServiceBusClient, ServiceBusMessage, ServiceBusSender } from '@azure/service-bus'
 
 import { ConsoleLogger, ILogger } from '../../common/logger'
 import {
@@ -123,21 +123,26 @@ export class SyncResultsInitService {
     this.logger.info(`${functionName} ${meta.messagesSent} checks done ${progressPercent}% complete in ${elapsedTimeMinutes} mins, rate is ${ratePerMinute} / minute, estimated completion at ${estFinishTime.toISOString()}`)
   }
 
-  private async processCheck (check: UnsynchronisedCheck, sbSender: Sender, meta: MetaResult): Promise<void> {
+  private async processCheck (check: UnsynchronisedCheck, sbSender: ServiceBusSender, meta: MetaResult): Promise<void> {
     const receivedCheckPromise = this.getReceivedCheck(check)
     const markedCheckPromise = this.getMarkedCheck(check)
     const [receivedCheckEntity, markedCheckEntity] = await Promise.all([receivedCheckPromise, markedCheckPromise])
     const validatedCheck = this.transformReceivedCheckToValidatedCheck(check, receivedCheckEntity)
     const markedCheck = this.transformMarkedCheckEntityToMarkedCheck(check, markedCheckEntity)
 
-    const msg = {
+    const messageBody = {
       validatedCheck: validatedCheck,
       markedCheck: markedCheck
     }
 
     try {
       const msgId = this.generateMessageId(check)
-      await sbSender.send({ body: msg, messageId: msgId, contentType: 'application/json' })
+      const message: ServiceBusMessage = {
+        body: messageBody,
+        messageId: msgId,
+        contentType: 'application/json'
+      }
+      await sbSender.sendMessages(message)
       meta.messagesSent += 1
       if (meta.messagesSent % 1000 === 0) { // Log every 1000 messages sent
         this.logProgress(meta)
@@ -152,10 +157,8 @@ export class SyncResultsInitService {
     if (config.ServiceBus.ConnectionString === undefined) {
       throw new Error('Missing config.ServiceBus.ConnectionString')
     }
-    const sbClient = ServiceBusClient.createFromConnectionString(config.ServiceBus.ConnectionString)
-    const sbQueueClient = sbClient.createQueueClient(this.outputQueueName)
-    const sbSender = sbQueueClient.createSender()
-    await sbSender.open()
+    const sbClient = new ServiceBusClient(config.ServiceBus.ConnectionString)
+    const sbSender = sbClient.createSender(this.outputQueueName)
 
     let checks: UnsynchronisedCheck[]
     if ('checkCode' in options && options.checkCode !== undefined) {
@@ -184,7 +187,6 @@ export class SyncResultsInitService {
     })
     await parallelLimit(listOfAsyncFunctions, config.SyncResultsInit.MaxParallelTasks)
     await sbSender.close()
-    await sbQueueClient.close()
     await sbClient.close()
     return meta
   }
