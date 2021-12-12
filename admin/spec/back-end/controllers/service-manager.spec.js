@@ -679,6 +679,10 @@ describe('service manager controller:', () => {
       ' to persist the data', async () => {
       const res = getRes()
       const req = getReq()
+      const userId = 9999
+      req.user = {
+        id: userId
+      }
       req.body = {
         name: ' updated name ',
         dfeNumber: 5555,
@@ -696,17 +700,22 @@ describe('service manager controller:', () => {
       jest.spyOn(schoolService, 'findOneBySlug').mockResolvedValue(school)
       jest.spyOn(schoolService, 'updateSchool').mockImplementation(_ => { return Promise.resolve() })
       await controller.postEditOrganisation(req, res, next)
-      const args = schoolService.updateSchool.mock.calls[0][1]
-      expect(args.name).toBe('updated name')
-      expect(args.dfeNumber).toBe(5555)
-      expect(args.leaCode).toBe(6666)
-      expect(args.estabCode).toBe(7777)
-      expect(args.urn).toBe(8888)
+      const schoolUpdateArg = schoolService.updateSchool.mock.calls[0][1]
+      expect(schoolUpdateArg.name).toBe('updated name')
+      expect(schoolUpdateArg.dfeNumber).toBe(5555)
+      expect(schoolUpdateArg.leaCode).toBe(6666)
+      expect(schoolUpdateArg.estabCode).toBe(7777)
+      expect(schoolUpdateArg.urn).toBe(8888)
+      const userIdArg = schoolService.updateSchool.mock.calls[0][2]
+      expect(userIdArg).toEqual(userId)
     })
 
     test('if there is a validation error then the user is redirected to the edit page to correct the errors', async () => {
       const res = getRes()
       const req = getReq()
+      req.user = {
+        id: 1
+      }
       req.body = {
         name: ' updated name ',
         dfeNumber: 5555,
