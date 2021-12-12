@@ -346,7 +346,7 @@ const controller = {
         name: name.trim(),
         dfeNumber: parseInt(dfeNumber, 10),
         urn: parseInt(urn, 10)
-      })
+      }, req.user.id)
       req.flash('info', 'School added')
       res.redirect('/service-manager/organisations')
     } catch (error) {
