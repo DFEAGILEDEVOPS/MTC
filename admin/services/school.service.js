@@ -66,6 +66,7 @@ const schoolService = {
    * Update details for a school
    * @param {string} slug - unique UUID to update
    * @param {editableSchoolDetails} school
+   * @param {number} userId
    */
   updateSchool: async function updateSchool (slug, school, userId) {
     if (!slug) {
@@ -84,7 +85,7 @@ const schoolService = {
     if (validationError.hasError()) {
       throw validationError
     }
-    return schoolDataService.sqlUpdateBySlug(slug, school)
+    return schoolDataService.sqlUpdateBySlug(slug, school, userId)
   },
 
   /**
@@ -117,8 +118,9 @@ const schoolService = {
   /**
    * Service manager - add a new School
    * @param {newSchoolDetails} newSchoolDetails
+   * @param {number} userId
    */
-  addSchool: async function addSchool (newSchoolDetails) {
+  addSchool: async function addSchool (newSchoolDetails, userId) {
     const parsed = this.parseDfeNumber(newSchoolDetails.dfeNumber)
     const insertDetails = {
       estabCode: parsed.estabCode,
@@ -129,7 +131,7 @@ const schoolService = {
     if (validationError.hasError()) {
       throw validationError
     }
-    await schoolDataService.sqlAddSchool(insertDetails)
+    await schoolDataService.sqlAddSchool(insertDetails, userId)
   }
 }
 
