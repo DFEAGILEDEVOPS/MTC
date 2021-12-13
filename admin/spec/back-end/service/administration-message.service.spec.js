@@ -70,7 +70,7 @@ describe('administrationMessageService', () => {
     beforeEach(() => {
       jest.spyOn(administrationMessageService, 'prepareSubmissionData')
         .mockReturnValue({ title: 'serviceMessageTitle', message: 'serviceMessageContent' })
-      jest.spyOn(administrationMessageDataService, 'sqlCreate').mockImplementation()
+      jest.spyOn(administrationMessageDataService, 'sqlCreateOrUpdate').mockImplementation()
       jest.spyOn(redisCacheService, 'set').mockImplementation()
     })
 
@@ -82,7 +82,7 @@ describe('administrationMessageService', () => {
       await expect(administrationMessageService.setMessage(requestData, userId)).rejects.toThrow('User id not found in session')
       expect(emptyFieldsValidator.validate).not.toHaveBeenCalled()
       expect(administrationMessageService.prepareSubmissionData).not.toHaveBeenCalled()
-      expect(administrationMessageDataService.sqlCreate).not.toHaveBeenCalled()
+      expect(administrationMessageDataService.sqlCreateOrUpdate).not.toHaveBeenCalled()
       expect(redisCacheService.set).not.toHaveBeenCalled()
     })
 
@@ -102,18 +102,18 @@ describe('administrationMessageService', () => {
       await administrationMessageService.setMessage(requestData, userId)
       expect(emptyFieldsValidator.validate).toHaveBeenCalled()
       expect(administrationMessageService.prepareSubmissionData).not.toHaveBeenCalled()
-      expect(administrationMessageDataService.sqlCreate).not.toHaveBeenCalled()
+      expect(administrationMessageDataService.sqlCreateOrUpdate).not.toHaveBeenCalled()
       expect(redisCacheService.set).not.toHaveBeenCalled()
     })
 
-    test('should call administrationMessageDataService.sqlCreate', async () => {
+    test('should call administrationMessageDataService.sqlCreateOrUpdate', async () => {
       const validationError = new ValidationError()
       jest.spyOn(emptyFieldsValidator, 'validate').mockReturnValue(validationError)
       const userId = 1
       await administrationMessageService.setMessage(requestData, userId)
       expect(emptyFieldsValidator.validate).toHaveBeenCalled()
       expect(administrationMessageService.prepareSubmissionData).toHaveBeenCalled()
-      expect(administrationMessageDataService.sqlCreate).toHaveBeenCalled()
+      expect(administrationMessageDataService.sqlCreateOrUpdate).toHaveBeenCalled()
     })
 
     test('should call redisCacheService.set after a successful database transmission', async () => {
@@ -123,7 +123,7 @@ describe('administrationMessageService', () => {
       await administrationMessageService.setMessage(requestData, userId)
       expect(emptyFieldsValidator.validate).toHaveBeenCalled()
       expect(administrationMessageService.prepareSubmissionData).toHaveBeenCalled()
-      expect(administrationMessageDataService.sqlCreate).toHaveBeenCalled()
+      expect(administrationMessageDataService.sqlCreateOrUpdate).toHaveBeenCalled()
       expect(redisCacheService.set).toHaveBeenCalledWith(serviceMessageRedisKey, { title: 'serviceMessageTitle', message: 'serviceMessageContent' })
     })
   })
@@ -137,6 +137,17 @@ describe('administrationMessageService', () => {
       const userId = 1
       const result = administrationMessageService.prepareSubmissionData(requestData, userId)
       expect(result).toEqual({ createdByUser_id: 1, title: 'serviceMessageTitle', message: 'serviceMessageContent' })
+    })
+
+    test('should return an object that includes title, message and id and createdByUser_id when editing a record', () => {
+      const requestData = {
+        serviceMessageTitle: 'serviceMessageTitle',
+        serviceMessageContent: 'serviceMessageContent',
+        id: '1'
+      }
+      const userId = 1
+      const result = administrationMessageService.prepareSubmissionData(requestData, userId)
+      expect(result).toEqual({ createdByUser_id: 1, title: 'serviceMessageTitle', message: 'serviceMessageContent', id: '1' })
     })
   })
 

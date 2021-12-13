@@ -4,6 +4,7 @@ const administrationMessageService = require('../services/administration-message
 const ValidationError = require('../lib/validation-error')
 
 const serviceMessagePresenter = require('../helpers/service-message-presenter')
+const logger = require('../services/log.service').getLogger()
 
 const controller = {
 
@@ -60,7 +61,11 @@ const controller = {
     try {
       const result = await administrationMessageService.setMessage(requestData, req.user.id)
       if (result && result.hasError && result.hasError()) {
-        return controller.getServiceMessageForm(req, res, next, result)
+        if (requestData.id !== undefined) {
+          return controller.getEditServiceMessage(req, res, next, result)
+        } else {
+          return controller.getServiceMessageForm(req, res, next, result)
+        }
       }
       const flashMessage = serviceMessagePresenter.getFlashMessage()
       req.flash('info', flashMessage)
@@ -83,6 +88,34 @@ const controller = {
       req.flash('info', 'Service message has successfully been removed')
       return res.redirect('/service-message')
     } catch (error) {
+      return next(error)
+    }
+  },
+
+  /**
+   * Edit the service message
+   * @param {*} req
+   * @param {*} res
+   * @param {*} next
+   */
+  getEditServiceMessage: async function getEditServiceMessage (req, res, next, err = new ValidationError()) {
+    try {
+      const serviceMessageMarkdown = await administrationMessageService.fetchMessage()
+      if (serviceMessageMarkdown === undefined) {
+        req.flash('info', 'No service message to edit')
+        res.redirect('/service-message/')
+        return
+      }
+      req.breadcrumbs('Manage service message', '/service-message')
+      res.locals.pageTitle = 'Edit service message'
+      req.breadcrumbs(res.locals.pageTitle)
+      res.render('service-message/service-message-form', {
+        err: err,
+        formData: { title: serviceMessageMarkdown.title, message: serviceMessageMarkdown.message, id: serviceMessageMarkdown.id },
+        breadcrumbs: req.breadcrumbs()
+      })
+    } catch (error) {
+      logger.error(`Edit Service Message: Error: ${error.message}`)
       return next(error)
     }
   }

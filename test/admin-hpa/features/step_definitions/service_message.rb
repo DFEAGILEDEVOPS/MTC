@@ -71,3 +71,30 @@ Then(/^service message is displayed as per design$/) do
   expect(school_landing_page.service_message.service_message_heading.text).to eql(@message[:title])
   expect(school_landing_page.service_message.service_message_text.text).to eql "Heading\nBold text\nItalic text\nThis is a quote\nThis\nis\na bulleted list\nThis\nis\na numbered list\nThis is a link\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus lobortis vehicula sem, quis pulvinar sem tristique nec. Sed eget nulla velit.\nMaecenas tristique venenatis tempor. Sed faucibus, mi at euismod efficitur, eros enim semper est, vel auctor lacus libero euismod mi. Phasellus tristique nec tortor rhoncus hendrerit. Sed porttitor mattis aliquet. Donec nisl ante, rhoncus nec commodo vitae, malesuada ac neque. Mauris fermentum arcu mollis velit tempor."
 end
+
+
+Given(/^I have previously created a service message$/) do
+  step "I am on the create service message page"
+  step "I submit the form with the service message I require"
+  step "the service message should be saved"
+end
+
+When(/^I edit the existing service message$/) do
+  manage_service_message_page.edit.click
+  @message = {title: @message[:title] + " Updated", message: 'This is an updated message'}
+  create_message_page.create_message(@message[:title], @message[:message])
+end
+
+
+Then(/^the service message should be updated$/) do
+  expect(manage_service_message_page).to have_flash_message
+  expect(manage_service_message_page).to have_message
+  expect(manage_service_message_page.message.text).to eql @message[:title]
+  expect(manage_service_message_page).to have_remove_message
+  db_record = SqlDbHelper.get_service_message(@message[:title])
+  expect(db_record['title']).to eql @message[:title]
+  expect(db_record['message']).to eql @message[:message].gsub("\\r\\n", "\r\n")
+  redis_record = JSON.parse(REDIS_CLIENT.get('serviceMessage'))
+  expect(JSON.parse(redis_record['value'])['title']).to eql @message[:title]
+  expect(JSON.parse(redis_record['value'])['message']).to eql @message[:message].gsub("\\r\\n", "\r\n")
+end
