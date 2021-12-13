@@ -925,6 +925,9 @@ describe('service manager controller:', () => {
             urn: '123456'
           }
         })
+        req.user = {
+          id: 1
+        }
         const res = getRes()
         jest.spyOn(schoolService, 'addSchool').mockImplementation()
         await controller.postAddSchool(req, res, next)
@@ -940,6 +943,9 @@ describe('service manager controller:', () => {
             urn: '123456'
           }
         })
+        req.user = {
+          id: 1
+        }
         const res = getRes()
         jest.spyOn(schoolService, 'addSchool').mockImplementation(() => {
           throw new ValidationError('mock', 'test error')
@@ -957,6 +963,9 @@ describe('service manager controller:', () => {
             urn: '123456'
           }
         })
+        req.user = {
+          id: 1
+        }
         const res = getRes()
         jest.spyOn(schoolService, 'addSchool').mockImplementation(() => {
           throw new Error('test error')
@@ -974,6 +983,9 @@ describe('service manager controller:', () => {
             urn: '123456'
           }
         })
+        req.user = {
+          id: 1
+        }
         const res = getRes()
         jest.spyOn(schoolService, 'addSchool').mockImplementation()
         await controller.postAddSchool(req, res, next)
