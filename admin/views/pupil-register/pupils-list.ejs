@@ -43,7 +43,7 @@
                     </th>
                     <% if (showPupilAdminLink) { %>
                         <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">
-                            Pupil history (STA-Admin)
+                            Pupil history
                         </td>
                     <% } %>
                 </tr>
@@ -68,7 +68,7 @@
                         </td>
                         <td class="govuk-table__cell"><%= p.group %></td>
                         <% if (showPupilAdminLink) { %>
-                            <td class="govuk-table__cell"> <a href="/pupil/history/<%= p.urlSlug %>"> View </a> </td>
+                            <td class="govuk-table__cell"> <a href="/pupil-register/history/<%= p.urlSlug.toLowerCase() %>"> View </a> </td>
                         <% } %>
                     </tr>
                 <% }) %>

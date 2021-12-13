@@ -58,7 +58,7 @@ router.post(
   pupilController.postEditPupil
 )
 router.get(
-  '/pupil/history/:urlSlug',
+  '/history/:urlSlug',
   isAuthenticated([roles.staAdmin]),
   isAdminWindowAvailable,
   pupilController.getViewPupilHistory

@@ -16,6 +16,7 @@ const businessAvailabilityService = require('../services/business-availability.s
 const pupilEditService = require('../services/pupil-edit.service')
 const ValidationError = require('../lib/validation-error')
 const logger = require('../services/log.service').getLogger()
+const { PupilHistoryService } = require('../services/pupil-history-service/pupil-history-service')
 
 const controller = {
   /**
@@ -263,8 +264,13 @@ const controller = {
 
   getViewPupilHistory: async function getViewPupilHistory (req, res, next) {
     try {
-      // const pupilHistory = pupilHistoryService.getHistory(req.params.urlSlug)
-
+      res.locals.pageTitle = 'Pupil history'
+      req.breadcrumbs(res.locals.pageTitle)
+      const pupilHistory = PupilHistoryService.getHistory(req.params.urlSlug)
+      console.log('Got history for pupil', pupilHistory)
+      return res.render('pupil-register/pupil-history', {
+        breadcrumbs: req.breadcrumbs()
+      })
     } catch (error) {
       next(error)
     }
