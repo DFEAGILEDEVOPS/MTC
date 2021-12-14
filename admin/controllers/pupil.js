@@ -266,10 +266,11 @@ const controller = {
     try {
       res.locals.pageTitle = 'Pupil history'
       req.breadcrumbs(res.locals.pageTitle)
-      const pupilHistory = PupilHistoryService.getHistory(req.params.urlSlug)
+      const pupilHistory = await PupilHistoryService.getHistory(req.params.urlSlug)
       console.log('Got history for pupil', pupilHistory)
       return res.render('pupil-register/pupil-history', {
-        breadcrumbs: req.breadcrumbs()
+        breadcrumbs: req.breadcrumbs(),
+        pupilHistory
       })
     } catch (error) {
       next(error)
