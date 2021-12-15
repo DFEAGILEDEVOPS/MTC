@@ -33,10 +33,13 @@ UPDATE mtc_admin.[check] SET
     checkStatus_id=1,
     received=0,
     complete=0,
-    completedAt=NULL,
     processingFailed=0,
-    resultsSynchronised=0
+    resultsSynchronised=0,
+    completedAt=NULL,
+    receivedByServerAt=NULL
+FROM mtc_admin.[check] chk
+INNER JOIN mtc_admin.pupil p
+ON chk.id = p.currentCheckId
 WHERE
     checkStatus_id IN (2, 3, 4) -- complete, collected and not received
     AND isLiveCheck=1
-    AND id IN (SELECT currentCheckId FROM mtc_admin.pupil)
