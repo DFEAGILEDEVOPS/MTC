@@ -10,17 +10,38 @@ SELECT COUNT(*) FROM mtc_admin.receivedCheck
 
 -- update check window to encapsulate today
 UPDATE mtc_admin.checkWindow SET
-        adminStartDate=@yesterday,
-        checkStartDate=@yesterday,
-        checkEndDate=@oneMonthFromToday,
-        familiarisationCheckStartDate=@yesterday,
-        familiarisationCheckEndDate=@oneMonthFromToday
-WHERE name='MTC_live_2021'
+    adminStartDate=@yesterday,
+    checkStartDate=@yesterday,
+    checkEndDate=@oneMonthFromToday,
+    familiarisationCheckStartDate=@yesterday,
+    familiarisationCheckEndDate=@oneMonthFromToday
+WHERE
+    name='MTC_live_2021'
 -- remove any restarts?????
 
 -- set pupil to incomplete etc
+UPDATE mtc_admin.school SET
+    checkComplete=0
+WHERE
+    attendanceId IS NULL
+    AND checkComplete = 1
 
 -- set check to incomplete and dates to today
+UPDATE mtc_admin.[check] SET
+    checkStatus_id=1,
+    received=0,
+    complete=0,
+    completedAt=NULL,
+    processingFailed=0,
+    resultsSynchronised=0
+WHERE
+    checkStatus_id IN (2, 3, 4) -- complete, collected and not received
+    AND isLiveCheck=1
+    AND id IN (SELECT currentCheckId FROM mtc_admin.pupil)
+
+-- check pin
+-- only do pupils latest check
+
 
 -- update school pin to today
 
