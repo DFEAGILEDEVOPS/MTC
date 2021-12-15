@@ -8,6 +8,9 @@ we do not need to consider any actions that take place before submitting check. 
 -- Fast fail if receivedCheck table not present
 SELECT COUNT(*) FROM mtc_admin.receivedCheck
 
+DECLARE @yesterday DATETIME2 = DATEADD(day, -1, GETDATE())
+DECLARE @oneMonthFromToday DATETIME2 = DATEADD(month, 1, GETDATE())
+
 -- update check window to encapsulate today
 UPDATE mtc_admin.checkWindow SET
     adminStartDate=@yesterday,
@@ -17,7 +20,6 @@ UPDATE mtc_admin.checkWindow SET
     familiarisationCheckEndDate=@oneMonthFromToday
 WHERE
     name='MTC_live_2021'
--- remove any restarts?????
 
 -- set pupil to incomplete etc
 UPDATE mtc_admin.school SET
@@ -38,10 +40,3 @@ WHERE
     checkStatus_id IN (2, 3, 4) -- complete, collected and not received
     AND isLiveCheck=1
     AND id IN (SELECT currentCheckId FROM mtc_admin.pupil)
-
--- check pin
--- only do pupils latest check
-
-
--- update school pin to today
-
