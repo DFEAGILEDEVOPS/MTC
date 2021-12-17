@@ -42,9 +42,9 @@ export class ReceivedCheckPayloadService {
     const toReturn: SubmittedCheckMessageV2[] = response.map(item => {
       return {
         version: 2,
-        archive: item.archive,
         checkCode: item.checkCode,
-        schoolUUID: schoolUuid
+        schoolUUID: schoolUuid,
+        archive: item.archive
       }
     })
     return toReturn

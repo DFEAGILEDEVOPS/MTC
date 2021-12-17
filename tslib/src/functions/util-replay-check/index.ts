@@ -1,6 +1,5 @@
 import { AzureFunction, Context, HttpRequest } from '@azure/functions'
 import config from '../../config'
-import { SchoolChecksDataService } from '../util-submit-check/school-checks.data.service'
 import { ReceivedCheckPayloadService } from './received-check-payload.service'
 const functionName = 'util-replay-check'
 
