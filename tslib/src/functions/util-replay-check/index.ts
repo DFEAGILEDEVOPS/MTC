@@ -13,14 +13,17 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
     context.done()
     return
   }
-
+  // TODO make it so that everything is collected in one call
   const schoolUuid = req.body?.schoolUuid
   if (schoolUuid !== undefined) {
     const liveCheckCodes = await liveSchoolChecksDataService.fetchBySchoolUuid(schoolUuid)
+    console.log(`found ${liveCheckCodes.length} checks to replay`)
     const promises = liveCheckCodes.map(async record => {
       return receivedCheckPayloadService.fetch(record.checkCode)
     })
+    console.log(`got ${promises.length} messages to replay`)
     const messages = await Promise.all(promises)
+    console.dir(messages)
     context.bindings.submittedCheckQueue = messages
     context.done()
     return

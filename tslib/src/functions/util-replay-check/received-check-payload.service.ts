@@ -29,4 +29,14 @@ export class ReceivedCheckPayloadService {
       schoolUUID: decompressed.schoolUUID
     }
   }
+
+  async fetchBySchool (schoolUuid: string): Promise<SubmittedCheckMessageV2[]> {
+    if (schoolUuid === '') {
+      throw new Error('schoolUuid is required')
+    }
+    if (!validateUuid(schoolUuid)) {
+      throw new Error('schoolUuid is not a valid UUID')
+    }
+    throw new Error('not implemented')
+  }
 }

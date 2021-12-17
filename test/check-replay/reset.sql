@@ -41,5 +41,5 @@ FROM mtc_admin.[check] chk
 INNER JOIN mtc_admin.pupil p
 ON chk.id = p.currentCheckId
 WHERE
-    checkStatus_id IN (2, 3, 4) -- complete, collected and not received
-    AND isLiveCheck=1
+    checkStatus_id IN (2, 3) -- complete, collected and not received
+    AND isLiveCheck=1 AND received=1
