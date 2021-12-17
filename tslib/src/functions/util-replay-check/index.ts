@@ -4,7 +4,6 @@ import { SchoolChecksDataService } from '../util-submit-check/school-checks.data
 import { ReceivedCheckPayloadService } from './received-check-payload.service'
 const functionName = 'util-replay-check'
 
-const liveSchoolChecksDataService = new SchoolChecksDataService()
 const receivedCheckPayloadService = new ReceivedCheckPayloadService()
 
 const httpTrigger: AzureFunction = async function (context: Context, req: HttpRequest): Promise<void> {
@@ -13,17 +12,11 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
     context.done()
     return
   }
-  // TODO make it so that everything is collected in one call
+
   const schoolUuid = req.body?.schoolUuid
   if (schoolUuid !== undefined) {
-    const liveCheckCodes = await liveSchoolChecksDataService.fetchBySchoolUuid(schoolUuid)
-    console.log(`found ${liveCheckCodes.length} checks to replay`)
-    const promises = liveCheckCodes.map(async record => {
-      return receivedCheckPayloadService.fetch(record.checkCode)
-    })
-    console.log(`got ${promises.length} messages to replay`)
-    const messages = await Promise.all(promises)
-    console.dir(messages)
+    const messages = await receivedCheckPayloadService.fetchBySchool(schoolUuid)
+    console.log(`found ${messages.length} checks to replay`)
     context.bindings.submittedCheckQueue = messages
     context.done()
     return
@@ -37,9 +30,7 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
     }
     return
   }
-  if (req.query.bad !== undefined) {
-    throw new Error('invalid check functionality not yet implemented')
-  }
+
   const promises = checkCodes.map(async checkCode => {
     return receivedCheckPayloadService.fetch(checkCode)
   })

@@ -7,7 +7,7 @@ export class ReceivedCheckPayloadService {
   private readonly compressionService: ICompressionService
   private readonly dataService: IReceivedCheckPayloadDataService
 
-  constructor (compressionService?: ICompressionService, dataService?: IReceivedCheckPayloadDataService) {
+  constructor(compressionService?: ICompressionService, dataService?: IReceivedCheckPayloadDataService) {
     this.compressionService = compressionService ?? new CompressionService()
     this.dataService = dataService ?? new ReceivedCheckPayloadDataService()
   }
@@ -37,6 +37,16 @@ export class ReceivedCheckPayloadService {
     if (!validateUuid(schoolUuid)) {
       throw new Error('schoolUuid is not a valid UUID')
     }
-    throw new Error('not implemented')
+    const response = await this.dataService.fetchArchivesForSchool(schoolUuid)
+    if (response.length === 0) return []
+    const toReturn: SubmittedCheckMessageV2[] = response.map(item => {
+      return {
+        version: 2,
+        archive: item.archive,
+        checkCode: item.checkCode,
+        schoolUUID: schoolUuid
+      }
+    })
+    return toReturn
   }
 }

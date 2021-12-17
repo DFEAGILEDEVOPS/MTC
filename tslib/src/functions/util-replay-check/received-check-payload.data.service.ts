@@ -4,6 +4,7 @@ import { ISqlParameter, ISqlService, SqlService } from '../../sql/sql.service'
 
 export interface IReceivedCheckPayloadDataService {
   fetchCompressedArchive (checkCode: string): Promise<string | undefined>
+  fetchArchivesForSchool (schoolUuid: string): Promise<IArchiveEntry[]>
 }
 
 export interface IArchiveEntry {

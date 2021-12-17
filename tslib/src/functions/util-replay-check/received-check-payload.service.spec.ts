@@ -7,7 +7,8 @@ let compressionService: ICompressionService
 let dataServiceMock: IReceivedCheckPayloadDataService
 
 const DataServiceMock = jest.fn<IReceivedCheckPayloadDataService, any>(() => ({
-  fetchCompressedArchive: jest.fn()
+  fetchCompressedArchive: jest.fn(),
+  fetchArchivesForSchool: jest.fn()
 }))
 
 const CompressionServiceMock = jest.fn<ICompressionService, any>(() => ({
@@ -69,6 +70,12 @@ describe('received-check-payload.service', () => {
     test('error should be thrown when schoolUuid is not a valid UUID', async () => {
       const schoolUuid: string = 'foo'
       await expect(sut.fetchBySchool(schoolUuid)).rejects.toThrow(/schoolUuid is not a valid UUID/)
+    })
+
+    test('if no checks found empty array is returned', async () => {
+      jest.spyOn(dataServiceMock, 'fetchArchivesForSchool').mockResolvedValue([])
+      const schoolUuid: string = '721fdee4-26ef-4111-8bbf-b2c5a7d602e3'
+      await expect(sut.fetchBySchool(schoolUuid)).resolves.toStrictEqual([])
     })
   })
 })
