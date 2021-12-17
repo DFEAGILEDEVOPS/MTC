@@ -77,5 +77,42 @@ describe('received-check-payload.service', () => {
       const schoolUuid: string = '721fdee4-26ef-4111-8bbf-b2c5a7d602e3'
       await expect(sut.fetchBySchool(schoolUuid)).resolves.toStrictEqual([])
     })
+
+    test('returns json array of submitted check messages when found', async () => {
+      const mockDataServiceResponse = [
+        {
+          checkCode: '123',
+          archive: 'abc'
+        },
+        {
+          checkCode: '456',
+          archive: 'def'
+        },
+        {
+          checkCode: '789',
+          archive: 'ghi'
+        }
+      ]
+      jest.spyOn(dataServiceMock, 'fetchArchivesForSchool').mockResolvedValue(mockDataServiceResponse)
+      const schoolUUID: string = '1f5ac7e4-2d79-4ee2-aa22-362cedcb11af'
+      const messages = await sut.fetchBySchool(schoolUUID)
+      if (messages === undefined) fail('message not defined')
+      expect(messages).toHaveLength(3)
+      const message1 = messages[0]
+      expect(message1.archive).toStrictEqual('abc')
+      expect(message1.checkCode).toStrictEqual('123')
+      expect(message1.schoolUUID).toStrictEqual(schoolUUID)
+      expect(message1.version).toStrictEqual(2)
+      const message2 = messages[1]
+      expect(message2.archive).toStrictEqual('def')
+      expect(message2.checkCode).toStrictEqual('456')
+      expect(message2.schoolUUID).toStrictEqual(schoolUUID)
+      expect(message2.version).toStrictEqual(2)
+      const message3 = messages[2]
+      expect(message3.archive).toStrictEqual('ghi')
+      expect(message3.checkCode).toStrictEqual('789')
+      expect(message3.schoolUUID).toStrictEqual(schoolUUID)
+      expect(message3.version).toStrictEqual(2)
+    })
   })
 })
