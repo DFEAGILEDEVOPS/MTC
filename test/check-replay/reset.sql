@@ -22,7 +22,7 @@ WHERE
     name='MTC_live_2021'
 
 -- set pupil to incomplete etc
-UPDATE mtc_admin.school SET
+UPDATE mtc_admin.pupil SET
     checkComplete=0
 WHERE
     attendanceId IS NULL
