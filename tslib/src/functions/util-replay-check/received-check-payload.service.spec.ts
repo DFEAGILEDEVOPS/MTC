@@ -7,7 +7,7 @@ let compressionService: ICompressionService
 let dataServiceMock: IReceivedCheckPayloadDataService
 
 const DataServiceMock = jest.fn<IReceivedCheckPayloadDataService, any>(() => ({
-  fetchCompressedArchive: jest.fn(),
+  fetchCompressedArchives: jest.fn(),
   fetchArchivesForSchool: jest.fn()
 }))
 
@@ -28,37 +28,40 @@ describe('received-check-payload.service', () => {
   })
 
   describe('fetch', () => {
-    test('error should be thrown when checkCode is empty string', async () => {
-      await expect(sut.fetch('')).rejects.toThrow(/checkCode is required/)
+    test('error should be thrown when checkCodes array is empty', async () => {
+      const checkCodes: string[] = []
+      await expect(sut.fetch(checkCodes)).rejects.toThrow(/at least 1 checkCode is required/)
     })
 
-    test('error should be thrown when checkCode is not a valid UUID', async () => {
-      const checkCode: string = 'foo'
-      await expect(sut.fetch(checkCode)).rejects.toThrow(/checkCode is not a valid UUID/)
+    test('error should be thrown when at least one checkCode is not a valid UUID', async () => {
+      const checkCodes = ['82fe6ebd-4933-49b5-accd-4dc78b7303f7', 'foo', 'b1f3f5c0-78ed-417b-b6d9-61280f795eb2']
+      await expect(sut.fetch(checkCodes)).rejects.toThrow(/checkCode 'foo' is not a valid UUID/)
     })
 
-    test('if check not found undefined is returned', async () => {
-      jest.spyOn(dataServiceMock, 'fetchCompressedArchive').mockResolvedValue(undefined)
-      const checkCode: string = '721fdee4-26ef-4111-8bbf-b2c5a7d602e3'
-      await expect(sut.fetch(checkCode)).resolves.toBeUndefined()
+    test('if check not found empty array is returned', async () => {
+      jest.spyOn(dataServiceMock, 'fetchCompressedArchives').mockResolvedValue([])
+      const checkCodes = ['721fdee4-26ef-4111-8bbf-b2c5a7d602e3']
+      const response = await sut.fetch(checkCodes)
+      expect(response).toStrictEqual([])
     })
 
-    test('returns json message with expected properties when found', async () => {
+    test('returns array containing json message with expected properties when found', async () => {
       const mockArchive = 'foo-bar-qux'
-      jest.spyOn(dataServiceMock, 'fetchCompressedArchive').mockResolvedValue(mockArchive)
-      const checkCode: string = '721fdee4-26ef-4111-8bbf-b2c5a7d602e3'
+      jest.spyOn(dataServiceMock, 'fetchCompressedArchives').mockResolvedValue([mockArchive])
+      const checkCodes = ['721fdee4-26ef-4111-8bbf-b2c5a7d602e3']
       const schoolUUID: string = '1f5ac7e4-2d79-4ee2-aa22-362cedcb11af'
       const decompressedArchive = {
-        checkCode: checkCode,
+        checkCode: checkCodes,
         schoolUUID: schoolUUID
       }
       jest.spyOn(compressionService, 'decompress').mockReturnValue(decompressedArchive)
-      const message = await sut.fetch(checkCode)
-      if (message === undefined) fail('message not defined')
-      expect(message.checkCode).toStrictEqual(checkCode)
-      expect(message.schoolUUID).toStrictEqual(schoolUUID)
-      expect(message.version).toStrictEqual(2)
-      expect(message.archive).toStrictEqual(mockArchive)
+      const response = await sut.fetch(checkCodes)
+      if (response === undefined) fail('response not defined')
+      expect(response).toHaveLength(1)
+      expect(response[0].checkCode).toStrictEqual(checkCodes)
+      expect(response[0].schoolUUID).toStrictEqual(schoolUUID)
+      expect(response[0].version).toStrictEqual(2)
+      expect(response[0].archive).toStrictEqual(decompressedArchive)
     })
   })
 

@@ -15,7 +15,7 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
   const schoolUuid = req.body?.schoolUuid
   if (schoolUuid !== undefined) {
     const messages = await receivedCheckPayloadService.fetchBySchool(schoolUuid)
-    console.log(`found ${messages.length} checks to replay`)
+    context.log(`found ${messages.length} checks to replay for school.uuid:${schoolUuid}`)
     context.bindings.submittedCheckQueue = messages
     context.done()
     return
