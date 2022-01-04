@@ -16,7 +16,7 @@ const checkWindowAddValidator = {}
  * Validates check window insertion data
  * @param {Object} checkWindowData
  * @param {Object} validationConfig set of rules for validation
- * @returns {Object}
+ * @returns {ValidationError}
  */
 checkWindowAddValidator.validate = (checkWindowData, validationConfig = null) => {
   const validationError = new ValidationError()
