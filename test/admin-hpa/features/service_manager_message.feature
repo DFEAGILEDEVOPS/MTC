@@ -23,3 +23,9 @@ Feature: Service manager message
     Given I have created a service message
     When I navigate to school home page as a teacher
     Then service message is displayed as per design
+
+
+  Scenario: Service manager can edit a service message
+    Given I have previously created a service message
+    When I edit the existing service message
+    Then the service message should be updated

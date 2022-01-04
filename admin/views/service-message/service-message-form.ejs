@@ -37,6 +37,7 @@
                     <% if (err.isError('serviceMessageTitle')) { %>
                         <span class="govuk-error-message"><%= err.get('serviceMessageTitle') %></span>
                     <% } %>
+                    <% if (formData.id) { %><input type="hidden" name="id" value="<%= formData.id %>"><% } %>
                     <input type="text"
                            id="serviceMessageTitle"
                            class="govuk-input govuk-!-width-three-quarters <%= err.isError('serviceMessageTitle') ? 'govuk-input--error' : '' %>"

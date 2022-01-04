@@ -16,6 +16,7 @@ const serviceMessageRedisKey = 'serviceMessage'
  * @typedef serviceMessage
  * @property message string
  * @property title string
+ * @property [id] number optional
  */
 
 /**
@@ -75,8 +76,7 @@ administrationMessageService.setMessage = async (requestData, userId) => {
   }
 
   const serviceMessageData = administrationMessageService.prepareSubmissionData(requestData, userId)
-
-  await administrationMessageDataService.sqlCreate(serviceMessageData)
+  await administrationMessageDataService.sqlCreateOrUpdate(serviceMessageData)
   return redisCacheService.set(serviceMessageRedisKey, serviceMessageData)
 }
 
@@ -91,6 +91,9 @@ administrationMessageService.prepareSubmissionData = (requestData, userId) => {
   serviceMessageData.createdByUser_id = userId
   serviceMessageData.title = requestData.serviceMessageTitle
   serviceMessageData.message = requestData.serviceMessageContent
+  if (requestData.id !== undefined) {
+    serviceMessageData.id = requestData.id
+  }
   return serviceMessageData
 }
 
