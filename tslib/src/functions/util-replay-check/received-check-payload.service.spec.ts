@@ -1,7 +1,7 @@
 import { CompressionService } from '../../common/compression-service'
 import { IReceivedCheckPayloadDataService } from './received-check-payload.data.service'
 import { ReceivedCheckPayloadService } from './received-check-payload.service'
-import mockCompleteCheck from '../../schemas/large-complete-check.json'
+import mockCompleteCheck from '../../schemas/large-complete-check-V2.json'
 
 let sut: ReceivedCheckPayloadService
 let compressionService: CompressionService
