@@ -21,7 +21,7 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
     return
   }
 
-  const checkCodes = req.body?.checkCodes
+  const checkCodes: string[] = req.body?.checkCodes
   if (checkCodes === undefined || !Array.isArray(checkCodes)) {
     context.res = {
       status: 400,
@@ -29,17 +29,9 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
     }
     return
   }
-
-  const promises = checkCodes.map(async checkCode => {
-    return receivedCheckPayloadService.fetch(checkCode)
-  })
-  const messages = await Promise.all(promises)
-  // non await all version...
-  // const messages = []
-  /*   for (let index = 0; index < checkCodes.length; index++) {
-    const checkCode = checkCodes[index]
-    messages.push(await receivedCheckPayloadService.fetch(checkCode))
-  } */
+  //  console.dir(checkCodes)
+  const messages = await receivedCheckPayloadService.fetch(checkCodes)
+  // console.dir(messages)
   context.bindings.submittedCheckQueue = messages
 }
 

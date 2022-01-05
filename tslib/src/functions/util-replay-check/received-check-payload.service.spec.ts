@@ -1,9 +1,10 @@
-import { ICompressionService } from '../../common/compression-service'
+import { CompressionService } from '../../common/compression-service'
 import { IReceivedCheckPayloadDataService } from './received-check-payload.data.service'
 import { ReceivedCheckPayloadService } from './received-check-payload.service'
+import mockCompleteCheck from '../../schemas/large-complete-check.json'
 
 let sut: ReceivedCheckPayloadService
-let compressionService: ICompressionService
+let compressionService: CompressionService
 let dataServiceMock: IReceivedCheckPayloadDataService
 
 const DataServiceMock = jest.fn<IReceivedCheckPayloadDataService, any>(() => ({
@@ -11,14 +12,9 @@ const DataServiceMock = jest.fn<IReceivedCheckPayloadDataService, any>(() => ({
   fetchArchivesForSchool: jest.fn()
 }))
 
-const CompressionServiceMock = jest.fn<ICompressionService, any>(() => ({
-  compress: jest.fn(),
-  decompress: jest.fn()
-}))
-
 describe('received-check-payload.service', () => {
   beforeEach(() => {
-    compressionService = new CompressionServiceMock()
+    compressionService = new CompressionService()
     dataServiceMock = new DataServiceMock()
     sut = new ReceivedCheckPayloadService(compressionService, dataServiceMock)
   })
@@ -46,22 +42,17 @@ describe('received-check-payload.service', () => {
     })
 
     test('returns array containing json message with expected properties when found', async () => {
-      const mockArchive = 'foo-bar-qux'
+      const mockArchive = compressionService.compress(JSON.stringify(mockCompleteCheck))
       jest.spyOn(dataServiceMock, 'fetchCompressedArchives').mockResolvedValue([mockArchive])
-      const checkCodes = ['721fdee4-26ef-4111-8bbf-b2c5a7d602e3']
-      const schoolUUID: string = '1f5ac7e4-2d79-4ee2-aa22-362cedcb11af'
-      const decompressedArchive = {
-        checkCode: checkCodes,
-        schoolUUID: schoolUUID
-      }
-      jest.spyOn(compressionService, 'decompress').mockReturnValue(decompressedArchive)
+      const checkCodes = [mockCompleteCheck.checkCode]
+      const schoolUUID: string = mockCompleteCheck.schoolUUID
       const response = await sut.fetch(checkCodes)
       if (response === undefined) fail('response not defined')
       expect(response).toHaveLength(1)
-      expect(response[0].checkCode).toStrictEqual(checkCodes)
+      expect(response[0].checkCode).toStrictEqual(checkCodes[0])
       expect(response[0].schoolUUID).toStrictEqual(schoolUUID)
       expect(response[0].version).toStrictEqual(2)
-      expect(response[0].archive).toStrictEqual(decompressedArchive)
+      expect(response[0].archive).toStrictEqual(mockArchive)
     })
   })
 
