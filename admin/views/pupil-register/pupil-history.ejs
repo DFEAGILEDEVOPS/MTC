@@ -1,41 +1,82 @@
 <%- partial('partials/_gds_breadcrumbs_and_sign_out', { breadcrumbs }) %>
 <main class="govuk-main-wrapper govuk-body" id="main-content" role="main">
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-            <h1 class="govuk-heading-xl">Pupil history</h1>
-            <%- partial('partials/_gds_session_expiry') %>
+    <h1 class="govuk-heading-xl">Pupil history</h1>
+    <%- partial('partials/_gds_session_expiry') %>
 
-            <h2 class="govuk-heading-m"><%= pupilHistory.pupil.lastName %>, <%= pupilHistory.pupil.foreName.concat(' ', pupilHistory.pupil.middleNames) %></h2>
-
-            <div class="group">
-                <dl class="key-value-list">
-                    <dt>Date of birth:</dt>
-                    <dd><%= formatFullGdsDate(pupilHistory.pupil.dateOfBirth) %></dd>
-
-                    <dt>UPN</dt>
-                    <dd><%= pupilHistory.pupil.upn %></dd>
-
-                    <dt>Gender</dt>
-                    <dd><%= pupilHistory.pupil.gender %></dd>
-
-                    <dt>Complete</dt>
-                    <dd><%= pupilHistory.pupil.checkComplete ? 'Y' : 'N' %></dd>
-
-                    <dt>Not taking check</dt>
-                    <dd><%= pupilHistory.pupil.attendanceId ? 'Not taking the check' : 'n/a' %></dd>
-
-                    <dt>Restart available</dt>
-                    <dd><%= pupilHistory.pupil.restartAvailable ? 'Y' : 'N' %></dd>
-                </dl>
+    <% if (pupilHistory.pupil.restartAvailable) { %>
+        <div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title"
+            data-module="govuk-notification-banner">
+            <div class="govuk-notification-banner__header">
+                <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+                    Important
+                </h2>
             </div>
-
-            <div class="govuk-back-to-top">
-                <a class="govuk-link govuk-link--no-visited-state app-back-to-top__link" href="#top">
-                    <svg role="presentation" focusable="false" class="app-back-to-top__icon" xmlns="http://www.w3.org/2000/svg" width="13" height="17" viewBox="0 0 13 17">
-                        <path fill="currentColor" d="M6.5 0L0 6.5 1.4 8l4-4v12.7h2V4l4.3 4L13 6.4z"></path>
-                    </svg>Back to top
-                </a>
+            <div class="govuk-notification-banner__content">
+                <p class="govuk-notification-banner__heading">
+                    A restart has been applied to the pupil, but has not yet been used to generate a new pin.
+                </p>
             </div>
         </div>
+        <% } %>
+
+    <h2 class="govuk-heading-m"><%= pupilHistory.pupil.lastName %>, <%= pupilHistory.pupil.foreName.concat(' ', pupilHistory.pupil.middleNames) %></h2>
+
+    <div class="group">
+        <dl class="key-value-list">
+            <dt>Date of birth:</dt>
+            <dd><%= formatFullGdsDate(pupilHistory.pupil.dateOfBirth) %></dd>
+
+            <dt>UPN</dt>
+            <dd><%= pupilHistory.pupil.upn %></dd>
+
+            <dt>Gender</dt>
+            <dd><%= pupilHistory.pupil.gender %></dd>
+
+            <dt>Complete</dt>
+            <dd><%= pupilHistory.pupil.checkComplete ? 'Y' : 'N' %></dd>
+
+            <dt>Not taking check</dt>
+            <dd><%= pupilHistory.pupil.attendanceId ? 'Not taking the check' : 'n/a' %></dd>
+
+            <dt>Restart available</dt>
+            <dd><%= pupilHistory.pupil.restartAvailable ? 'Y' : 'N' %></dd>
+
+            <dt>Number of restarts taken</dt>
+            <dd><%= pupilHistory.meta.restartsTakenCount %></dd>
+        </dl>
+    </div>
+
+    <h3> Checks </h3>
+    <table class="govuk-spacious">
+        <thead>
+            <tr>
+                <th title="Pin Generation Datetime">Pin Gen</th>
+                <th title="Pupil Login Datetime">Login</th>
+                <th title="Check Submission Received Datetime">Received</th>
+                <th title="A mark here indicates this check will be the official one used by the service for this pupil">Active</th>
+                <th title="Official or Try it out">Type</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody class="govuk-body-s">
+            <% for (let i = 0; i < pupilHistory.checks.length; i++) { %>
+                <tr>
+                    <td title="<%= pupilHistory.checks[i].checkCode %>"><%= formatGdsDateAndTime(pupilHistory.checks[i].createdAt) %></td>
+                    <td title="<%= pupilHistory.checks[i].pupilLoginDate?.toISOString() %>"><%= pupilHistory.checks[i].pupilLoginDate ? formatGdsDateAndTime(pupilHistory.checks[i].pupilLoginDate) : '' %></td>
+                    <td><%= pupilHistory.checks[i].receivedByServerAt !== null ? formatGdsDateAndTime(pupilHistory.checks[i].receivedByServerAt) : pupilHistory.checks[i].isLiveCheck === false ? 'n/a' : '' %></td>
+                    <td><%= pupilHistory.pupil.currentCheckId === pupilHistory.checks[i].id ? '*' : '' %></td>
+                    <td><%= pupilHistory.checks[i].isLiveCheck === true ? 'Official' : 'Try it out' %></td>
+                    <td>TODO</td>
+                </tr>
+            <% } %>
+        </tbody>
+    </table>
+
+    <div class="govuk-back-to-top">
+        <a class="govuk-link govuk-link--no-visited-state app-back-to-top__link" href="#top">
+            <svg role="presentation" focusable="false" class="app-back-to-top__icon" xmlns="http://www.w3.org/2000/svg" width="13" height="17" viewBox="0 0 13 17">
+                <path fill="currentColor" d="M6.5 0L0 6.5 1.4 8l4-4v12.7h2V4l4.3 4L13 6.4z"></path>
+            </svg>Back to top
+        </a>
     </div>
 </main>

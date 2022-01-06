@@ -3,7 +3,7 @@ const sqlService = require('../../data-access/sql.service')
 const uuidValidate = require('uuid-validate')
 const R = require('ramda')
 
-export interface ICheck {
+export interface ICheckData {
   id: number,
   createdAt: moment.Moment
   updatedAt: moment.Moment,
@@ -23,7 +23,7 @@ export interface ICheck {
   resultsSynchronised: boolean
 }
 
-export interface IPupil {
+export interface IPupilData {
   id: number,
   createdAt: moment.Moment,
   updatedAt: moment.Moment,
@@ -44,7 +44,7 @@ export interface IPupil {
   lastNameAlias: string | null
 }
 
-export interface ISchool {
+export interface ISchoolData {
   id: number,
   createdAt: moment.Moment,
   updatedAt: moment.Moment,
@@ -58,14 +58,26 @@ export interface ISchool {
   dfeNumber: number
 }
 
-export interface IPupilHistory {
-  pupil: IPupil,
-  checks: ICheck[]
-  school: ISchool
+export interface IRestartData {
+  id: number,
+  createdAt: moment.Moment,
+  updatedAt: moment.Moment,
+  pupilId: number,
+  restartReason: string,
+  restartReasonCode: string,
+  checkId: number,
+  originCheckId: number
+}
+
+export interface IPupilHistoryData {
+  pupil: IPupilData,
+  checks: ICheckData[]
+  school: ISchoolData
+  restarts: IRestartData[]
 }
 
 export class PupilHistoryDataService {
-  public static async getPupil(pupilUuid: string): Promise<IPupil> {
+  public static async getPupil(pupilUuid: string): Promise<IPupilData> {
     if (uuidValidate(pupilUuid) === false) {
       throw new Error(`UUID is not valid: ${pupilUuid}`)
     }
@@ -86,7 +98,7 @@ export class PupilHistoryDataService {
       throw new Error('Pupil not found')
     }
 
-    const pupil: IPupil = {
+    const pupil: IPupilData = {
       id: data[0].id as number,
       createdAt: data[0].createdAt,
       updatedAt: data[0].updatedAt,
@@ -99,7 +111,7 @@ export class PupilHistoryDataService {
       upn: data[0].upn,
       urlSlug: data[0].urlSlug,
       groupId: data[0].group_id,
-      currentCheckId: data[0].currentCheck_id,
+      currentCheckId: data[0].currentCheckId,
       checkComplete: data[0].checkComplete,
       restartAvailable: data[0].restartAvailable,
       attendanceId: data[0].attendanceId,
@@ -154,7 +166,7 @@ export class PupilHistoryDataService {
     })
   }
 
-  public static async getSchool (pupilUuid: string): Promise<ISchool> {
+  public static async getSchool (pupilUuid: string): Promise<ISchoolData> {
     if (uuidValidate(pupilUuid) === false) {
       throw new Error(`UUID is not valid: ${pupilUuid}`)
     }
@@ -174,14 +186,51 @@ export class PupilHistoryDataService {
     return school
   }
 
-  public static async getPupilHistory (pupilUuid: string): Promise<IPupilHistory> {
+  public static async getRestarts (pupilUuid: string): Promise<IRestartData[]> {
+    const sql = `
+      SELECT
+        r.*,
+        rrl.code,
+        rrl.description
+      FROM
+        [mtc_admin].[pupilRestart] r JOIN
+        [mtc_admin].[pupil] p ON (r.pupil_id = p.id) JOIN
+        [mtc_admin].[restartReasonLookup] rrl ON (r.restartReasonLookup_id = rrl.id)
+      WHERE
+        p.urlSlug = @slug
+      AND
+        r.isDeleted = 0
+    `
+
+    const params = [
+      { name: 'slug', value: pupilUuid, type: sqlService.TYPES.UniqueIdentifier }
+    ]
+
+    const data = await sqlService.readonlyQuery(sql, params)
+    return data.map( o => {
+      return {
+        id: o.id,
+        pupilId: o.pupil_id,
+        restartReason: o.description,
+        restartReasonCode: o.code,
+        createdAt: o.createdAt,
+        updatedAt: o.updatedAt,
+        checkId: o.checkId,
+        originCheckId: o.originCheck_id
+      }
+    })
+  }
+
+  public static async getPupilHistory (pupilUuid: string): Promise<IPupilHistoryData> {
     const pupil = await PupilHistoryDataService.getPupil(pupilUuid)
     const checks = await PupilHistoryDataService.getChecks(pupilUuid)
     const school = await PupilHistoryDataService.getSchool(pupilUuid)
+    const restarts = await PupilHistoryDataService.getRestarts(pupilUuid)
     return {
       pupil,
       checks,
-      school
+      school,
+      restarts
     }
   }
 }
