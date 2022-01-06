@@ -12,7 +12,7 @@ This is useful for exercising the back end processing journey of a new build to 
 1. **Anonymisation:** Run the scripts in the `/deploy/sql/anonymise-sql-data/` directory against the copied SQL database.
 2. **Import Submitted Checks:** Using Azure Data Factory, copy the contents of the Azure Storage Table 'receivedCheck' into the copied SQL database as `mtc_admin.receivedCheck`.
 3. **Optimise:** Create a composite primary key for the `mtc_admin.receivedCheck` table from the `PartitionKey` and `RowKey` columns. TO BE TESTED
-4. **Reset State:** Execute the `tslib/src/functions/util-replay-check/reset-state-pupils-checks.sql` against the copied SQL database.
+4. **Reset State:** Execute the `/deploy/sql/check-replay/reset-state-pupils-checks.sql` against the copied SQL database.
 
 ## API Usage
 
