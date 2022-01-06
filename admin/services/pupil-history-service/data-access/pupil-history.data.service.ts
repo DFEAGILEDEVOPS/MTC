@@ -121,7 +121,7 @@ export class PupilHistoryDataService {
     return pupil
   }
 
-  public static async getChecks (uuid: string): Promise<ICheck[]> {
+  public static async getChecks (uuid: string): Promise<ICheckData[]> {
     if (uuidValidate(uuid) === false) {
       throw new Error(`UUID is not valid: ${uuid}`)
     }
