@@ -223,11 +223,11 @@ const getViewAndCustomPrintPins = async function getViewAndCustomPrintPins (req,
 }
 
 const getSelectOfficialOrTryItOutPinGen = async function getSelectOfficialOrTryItOutPinGenFunc (req, res, next) {
-  res.locals.pageTitle = 'Generate passwords and pins for the try it out and official checks'
+  res.locals.pageTitle = 'Generate school passwords and PINs for the try it out and official checks'
   req.breadcrumbs(res.locals.pageTitle)
 
   return res.render('pupil-pin/select-official-or-try-it-out-pins', {
-    breadcrumbs: req.breadcrumbs(),
+    breadcrumbs: req.breadcrumbs()
   })
 }
 

@@ -5,6 +5,29 @@
         <%- partial('partials/_gds_session_expiry') %>
         <%- partial('partials/_flash-messages') %>
         <h1 class="govuk-heading-xl"><%= pageTitle %></h1>
+
+        <p>
+          Puils will need a PIN and a school password to access the MTC.  The link for the pupil to start the check is
+          <a class="govuk-link" target="_blank" rel="noopener noreferrer" href="<%= pupilAppURL %>"><%= pupilAppURL %></a>
+        </p>
+
+        <p>
+          These expire at 4pm daily.
+        </p>
+
+        <div class="govuk-inset-text">
+          Select <a href='/access-arrangements/overview' class="govuk-link">access arrangements</a> for pupils who need it before generating PINs.
+        </div>
+
+        <!-- TODO: make this into a slot as per the home page behaviour -->
+        <a href="/pupil-pin/generate-familiarisation-pins-list" role="button" draggable="false" class="govuk-button" data-module="govuk-button">
+         Generate Try it out PINs
+        </a>
+
+        <a href="/pupil-pin/generate-live-pins-list" role="button" draggable="false" class="govuk-button govuk-button--secondary" data-module="govuk-button">
+          Generate Official PINs
+        </a>
+
       </div>
     </div>
   </main>
