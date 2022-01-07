@@ -34,7 +34,8 @@
                     <% } %>
                 </li>
             </ol>
-            <h3 class="govuk-heading-m govuk-!-margin-top-9">Preview the check</h3>
+            <!-- TODO JMS Delete this block -->
+            <!-- <h3 class="govuk-heading-m govuk-!-margin-top-9">Preview the check</h3>
             <ol class="govuk-list">
                 <li class="govuk-!-margin-bottom-4">
                    <%- tryItOutPinGenSlot %>
@@ -45,7 +46,16 @@
                 <li class="govuk-!-margin-bottom-4">
                     <%- officialPinGenSlot %>
                 </li>
+            </ol> -->
+
+            <h3 class="govuk-heading-m govuk-!-margin-top-9">Generate passwords and pins</h3>
+            <ol class="govuk-list">
+                <li class="govuk-!-margin-bottom-4">
+                    <!-- NB this link will need to be deactivated if outside the check window (e.g. before try it out start or in the 'results' phase: so move to a slot) -->
+                    <a href="/pupil-pin/select-official-or-try-it-out">Generate passwords and pins for the try it out and official checks</a>
+                </li>
             </ol>
+
             <h3 class="govuk-heading-m govuk-!-margin-top-9">Review the check</h3>
             <ol class="govuk-list">
                 <li class="govuk-!-margin-bottom-4">

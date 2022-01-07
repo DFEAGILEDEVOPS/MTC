@@ -1,0 +1,10 @@
+<%- partial('partials/_gds_breadcrumbs_and_sign_out', { breadcrumbs }) %>
+  <main class="govuk-main-wrapper govuk-body" id="main-content" role="main">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+        <%- partial('partials/_gds_session_expiry') %>
+        <%- partial('partials/_flash-messages') %>
+        <h1 class="govuk-heading-xl"><%= pageTitle %></h1>
+      </div>
+    </div>
+  </main>

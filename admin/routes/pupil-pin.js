@@ -8,8 +8,16 @@ const {
   getGeneratePinsOverview,
   getGeneratePinsList,
   postGeneratePins,
-  getViewAndCustomPrintPins
+  getViewAndCustomPrintPins,
+  getSelectOfficialOrTryItOutPinGen
 } = require('../controllers/pupil-pin')
+
+router.get(
+  '/select-official-or-try-it-out',
+  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),
+  isAdminWindowAvailable,
+  getSelectOfficialOrTryItOutPinGen
+)
 
 router.get(
   '/generate-:pinEnv-pins-overview',
