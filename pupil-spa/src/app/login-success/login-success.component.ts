@@ -21,7 +21,6 @@ export class LoginSuccessComponent implements OnInit, AfterViewInit, OnDestroy {
   school: School;
   config: Config;
   speechListenerEvent: any;
-  modeText: string;
 
   constructor(private router: Router,
               private storageService: StorageService,
@@ -55,13 +54,16 @@ export class LoginSuccessComponent implements OnInit, AfterViewInit, OnDestroy {
     this.school = new School;
     this.school.name = schoolData.name;
     this.appUsageService.increment();
-    this.modeText = this.config.practice ? 'Try it Out' : 'Official'
 
     // remove pupil data from local storage after setting them visually
     const checkCode = pupilData.checkCode;
     this.storageService.setPupil({ checkCode });
 
     this.config = this.questionService.getConfig();
+  }
+
+  get modeText(): string {
+    return this.config.practice ? 'Try it Out' : 'Official'
   }
 
   async ngOnInit() {
