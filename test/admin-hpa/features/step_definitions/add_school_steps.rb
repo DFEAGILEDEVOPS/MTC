@@ -38,7 +38,7 @@ When(/^I submit a duplicate value for dfe number$/) do
 end
 
 Then(/^I should see an error stating the value for dfe number is a duplicate$/) do
-  expect(page.text).to include "RequestError: Cannot insert duplicate key row in object 'mtc_admin.school' with unique index 'school_dfeNumber_uindex'"
+  expect(page.text).to include "An error occurred"
   expect(SqlDbHelper.find_school_by_name(@name)).to be_nil
 end
 
@@ -65,7 +65,7 @@ When(/^I submit a duplicate value for urn number$/) do
 end
 
 Then(/^I should see an error stating the value for urn number is a duplicate$/) do
-  expect(page.text).to include "Cannot insert duplicate key row in object 'mtc_admin.school' with unique index 'school_urn_uindex'"
+  expect(page.text).to include "An error occurred"
   expect(SqlDbHelper.find_school_by_name(@name)).to be_nil
 end
 
