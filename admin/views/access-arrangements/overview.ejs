@@ -65,7 +65,7 @@
                                 <% } else if(p.notTakingCheck) { %>
                                     Not taking check
                                 <% } else if (availabilityData.canEditArrangements && aaViewMode === 'edit') { %>
-                                    <a class="govuk-link modal-link" id="js-modal-link" href="/access-arrangements/delete-access-arrangements/<%= p.urlSlug %>">Remove</a>
+                                    <a class="govuk-link" href="/access-arrangements/select-access-arrangements/<%= p.urlSlug %>">Edit</a>
                                 <% } %>
                                 </td>
                             </tr>
@@ -111,11 +111,3 @@
         </div>
     </div>
 </main>
-<%- partial('partials/_gds_modal_box', {
-    modalTitle: 'Remove arrangements',
-    modalText: 'Are you sure you want to remove all access arrangements for this pupil?',
-    modalConfirmationLabel: 'Yes',
-    modalConfirmationUrl: '#',
-    modalCancelLabel: 'No',
-    modalCancelUrl: '#'
-}) %>
