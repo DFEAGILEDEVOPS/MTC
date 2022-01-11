@@ -1,6 +1,6 @@
 'use strict'
 
-/* global describe, it, spyOn expect beforeEach afterEach */
+/* global describe, it, spyOn expect beforeEach afterEach jest */
 
 const moment = require('moment')
 const checkWindowErrorMessages = require('../../../../../lib/errors/check-window-v2')
@@ -99,6 +99,8 @@ describe('New check window date validator', function () {
       expect(Object.keys(validationError.errors).length).toBe(1)
     })
     it('test day with leading zero', () => {
+      jest.useFakeTimers('modern')
+      jest.setSystemTime(moment('2021-12-25T09:00').toDate())
       const data = {
         day: '21',
         month: '02',
@@ -118,6 +120,8 @@ describe('New check window date validator', function () {
       spyOn(moment, 'utc').and.returnValue(moment('2021-02-01T09:01:02.333Z'))
       dateValidator.validate(validationError, data)
       expect(validationError.addError).not.toHaveBeenCalled()
+      jest.restoreAllMocks()
+      jest.useRealTimers()
     })
   })
 })
