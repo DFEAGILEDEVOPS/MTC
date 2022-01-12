@@ -47,7 +47,7 @@
                                     Expires 4pm today
                                 </div>
                                 <div class="generate-additional-pins">
-                                    <a class="govuk-button govuk-!-margin-bottom-0 govuk-!-margin-right-2" href="/pupil-pin/generate-<%= pinEnv %>-pins-list">Generate PINs</a>
+                                    <a class="govuk-button govuk-!-margin-bottom-0 govuk-!-margin-right-2" href="/pupil-pin/generate-<%= pinEnv %>-pins-list"><%= buttonText %></a>
                                     <% if (error) { %>
                                         <a class="govuk-link" type="submit" disabled>View all pins</a>
                                     <% } else { %>
@@ -62,9 +62,9 @@
                 <form action="/pupil-pin/generate-<%= pinEnv %>-pins-list" name="generate-pins-list">
                     <div class="govuk-form-group">
                         <% if (error) { %>
-                            <input class="govuk-button govuk-!-margin-bottom-0" type="submit" disabled value="Generate PINs"/>
+                            <input class="govuk-button govuk-!-margin-bottom-0" type="submit" disabled value="<%= buttonText %>"/>
                         <% } else { %>
-                            <input class="govuk-button govuk-!-margin-bottom-0" type="submit" value="Generate PINs"/>
+                            <input class="govuk-button govuk-!-margin-bottom-0" type="submit" value="<%= buttonText %>"/>
                         <% } %>
                     </div>
                 </form>

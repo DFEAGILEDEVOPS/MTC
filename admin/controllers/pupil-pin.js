@@ -23,6 +23,7 @@ const getGeneratePinsOverview = async function getGeneratePinsOverview (req, res
   res.locals.pinEnv = pinEnv
   res.locals.pageTitle = isLiveCheck ? 'Generate school passwords and PINs for the official check' : 'Generate passwords and PINs for the try it out check'
   req.breadcrumbs(res.locals.pageTitle)
+  const buttonText = isLiveCheck ? 'Generate official PINs' : 'Generate Try it out PINs'
 
   const helplineNumber = config.Data.helplineNumber
   let pupils
@@ -52,7 +53,8 @@ const getGeneratePinsOverview = async function getGeneratePinsOverview (req, res
     breadcrumbs: req.breadcrumbs(),
     error,
     helplineNumber,
-    pupils
+    pupils,
+    buttonText
   })
 }
 
