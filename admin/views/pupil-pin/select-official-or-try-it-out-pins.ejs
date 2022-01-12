@@ -3,40 +3,53 @@
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-two-thirds">
         <%- partial('partials/_gds_session_expiry') %>
-        <%- partial('partials/_flash-messages') %>
-        <h1 class="govuk-heading-xl"><%= pageTitle %></h1>
+          <%- partial('partials/_flash-messages') %>
+            <h1 class="govuk-heading-xl">
+              <%= pageTitle %>
+            </h1>
 
-        <p>
-          Puils will need a PIN and a school password to access the MTC.  The link for the pupil to start the check is
-          <a class="govuk-link" target="_blank" rel="noopener noreferrer" href="<%= pupilAppURL %>"><%= pupilAppURL %></a>
-        </p>
+            <p>
+              Puils will need a PIN and a school password to access the MTC. The link for the pupil to start the check
+              is
+              <a class="govuk-link" target="_blank" rel="noopener noreferrer" href="<%= pupilAppURL %>">
+                <%= pupilAppURL %>
+              </a>
+            </p>
 
-        <p>
-          These expire at 4pm daily.
-        </p>
+            <p>
+              These expire at 4pm daily.
+            </p>
 
-        <div class="govuk-inset-text">
-          Select <a href='/access-arrangements/overview' class="govuk-link">access arrangements</a> for pupils who need it before generating PINs.
-        </div>
+            <div class="govuk-inset-text">
+              Select <a href='/access-arrangements/overview' class="govuk-link">access arrangements</a> for pupils who
+              need it before generating PINs.
+            </div>
 
       </div>
     </div>
 
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-one-third">
-        <!-- TODO: make this into a slot as per the home page behaviour -->
-        <a href="/pupil-pin/generate-familiarisation-pins-overview" role="button" draggable="false" class="govuk-button" data-module="govuk-button">
-          Generate Try it out PINs
-        </a>
+        <div class="govuk-inset-text">
+          <!-- TODO: make this into a slot as per the home page behaviour -->
+          <a href="/pupil-pin/generate-familiarisation-pins-overview" role="button" draggable="false"
+            class="govuk-button" data-module="govuk-button">
+            Generate Try it out PINs
+          </a>
+        </div>
       </div>
       <div class="govuk-grid-column-one-third">
+        <div class="govuk-inset-text">
           <!-- TODO: make this into a slot as per the home page behaviour -->
-          <a href="/pupil-pin/generate-live-pins-overview" aria-disabled="true" role="button" draggable="false" class="govuk-button govuk-button--secondary govuk-button--disabled govuk-font-greyed-out" data-module="govuk-button">
+          <a href="/pupil-pin/generate-live-pins-overview" aria-disabled="true" role="button" draggable="false"
+            class="govuk-button govuk-button--secondary govuk-button--disabled govuk-font-greyed-out"
+            data-module="govuk-button">
             Generate Official PINs
           </a>
           <div>
-            <strong class="disabled-banner">UNAVAILABLE</strong><br/>
+            <strong class="disabled-banner">UNAVAILABLE</strong><br />
             <span class="govuk-!-font-size-14 govuk-font-greyed-out">Closed until the 2022 check window</span>
+          </div>
         </div>
       </div>
     </div>
