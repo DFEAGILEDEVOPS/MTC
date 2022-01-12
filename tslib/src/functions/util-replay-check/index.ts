@@ -1,10 +1,8 @@
 import { AzureFunction, Context, HttpRequest } from '@azure/functions'
 import config from '../../config'
-import { SchoolChecksDataService } from '../util-submit-check/school-checks.data.service'
 import { ReceivedCheckPayloadService } from './received-check-payload.service'
 const functionName = 'util-replay-check'
 
-const liveSchoolChecksDataService = new SchoolChecksDataService()
 const receivedCheckPayloadService = new ReceivedCheckPayloadService()
 
 const httpTrigger: AzureFunction = async function (context: Context, req: HttpRequest): Promise<void> {
@@ -16,17 +14,14 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
 
   const schoolUuid = req.body?.schoolUuid
   if (schoolUuid !== undefined) {
-    const liveCheckCodes = await liveSchoolChecksDataService.fetchBySchoolUuid(schoolUuid)
-    const promises = liveCheckCodes.map(async record => {
-      return receivedCheckPayloadService.fetch(record.checkCode)
-    })
-    const messages = await Promise.all(promises)
+    const messages = await receivedCheckPayloadService.fetchBySchool(schoolUuid)
+    context.log(`found ${messages.length} checks to replay for school.uuid:${schoolUuid}`)
     context.bindings.submittedCheckQueue = messages
     context.done()
     return
   }
 
-  const checkCodes = req.body?.checkCodes
+  const checkCodes: string[] = req.body?.checkCodes
   if (checkCodes === undefined || !Array.isArray(checkCodes)) {
     context.res = {
       status: 400,
@@ -34,19 +29,9 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
     }
     return
   }
-  if (req.query.bad !== undefined) {
-    throw new Error('invalid check functionality not yet implemented')
-  }
-  const promises = checkCodes.map(async checkCode => {
-    return receivedCheckPayloadService.fetch(checkCode)
-  })
-  const messages = await Promise.all(promises)
-  // non await all version...
-  // const messages = []
-  /*   for (let index = 0; index < checkCodes.length; index++) {
-    const checkCode = checkCodes[index]
-    messages.push(await receivedCheckPayloadService.fetch(checkCode))
-  } */
+  //  console.dir(checkCodes)
+  const messages = await receivedCheckPayloadService.fetch(checkCodes)
+  // console.dir(messages)
   context.bindings.submittedCheckQueue = messages
 }
 
