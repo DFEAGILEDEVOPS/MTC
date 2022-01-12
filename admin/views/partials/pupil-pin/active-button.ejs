@@ -1,0 +1,11 @@
+<% /**
+ * active-button.ejs - partial to show a link as a green button with params
+ *  parameters:
+ *    1. linkUrl - the url for the button to link to, set to '#' for an inactive link.
+ *    2. linkDescription - the text written on the button.
+ */
+ %>
+<a href="<%- linkUrl %>" role="button" draggable="false"
+  class="govuk-button" data-module="govuk-button">
+  <%= linkDescription %>
+</a>

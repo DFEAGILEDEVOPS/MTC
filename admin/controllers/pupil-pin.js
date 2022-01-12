@@ -12,6 +12,8 @@ const pinService = require('../services/pin.service')
 const pupilPinPresenter = require('../helpers/pupil-pin-presenter')
 const qrService = require('../services/qr.service')
 const schoolService = require('../services/school.service')
+const schoolHomeFeatureEligibilityPresenter = require('../helpers/school-home-feature-eligibility-presenter')
+const pupilPinPresentationService = require('../services/pupil-pin-presentation-service')
 
 const getGeneratePinsOverview = async function getGeneratePinsOverview (req, res, next) {
   if (!req.params || !req.params.pinEnv) {
@@ -228,8 +230,16 @@ const getSelectOfficialOrTryItOutPinGen = async function getSelectOfficialOrTryI
   res.locals.pageTitle = 'Generate school passwords and PINs for the try it out and official checks'
   req.breadcrumbs(res.locals.pageTitle)
 
+  const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
+  const featureEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData, req.user.timezone)
+  const slots = {
+    officialPinGenSlot: await pupilPinPresentationService.getOfficialPinGenSlot(featureEligibilityData),
+    tryItOutPinGenSlot: await pupilPinPresentationService.getTryItOutPinGenSlot(featureEligibilityData)
+  }
+
   return res.render('pupil-pin/select-official-or-try-it-out-pins', {
-    breadcrumbs: req.breadcrumbs()
+    breadcrumbs: req.breadcrumbs(),
+    slots
   })
 }
 
