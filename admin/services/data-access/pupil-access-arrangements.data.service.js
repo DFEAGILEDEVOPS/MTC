@@ -149,18 +149,20 @@ pupilAccessArrangementsDataService.sqFindPupilsWithAccessArrangements = async (s
     }
   ]
   const sql = `
-      SELECT
-          p.urlSlug,
-          p.foreName,
-          p.middleNames,
-          p.lastName,
-          p.dateOfBirth,
-          aa.description,
-          p.checkcomplete AS hasCompletedCheck
-        FROM [mtc_admin].pupilaccessarrangements paa
-             INNER JOIN [mtc_admin].pupil p ON paa.pupil_id = p.id
-             INNER JOIN [mtc_admin].accessarrangements aa ON aa.id = paa.accessarrangements_id
-       WHERE p.school_id = @schoolId
+    SELECT
+      p.urlSlug,
+      p.foreName,
+      p.middleNames,
+      p.lastName,
+      p.dateOfBirth,
+      aa.description,
+      p.checkcomplete AS hasCompletedCheck,
+      CAST(CASE WHEN (chk.id IS NOT NULL) THEN 1 ELSE 0 END AS bit) AS [retroInputAssistant]
+    FROM [mtc_admin].pupilaccessarrangements paa
+      INNER JOIN [mtc_admin].pupil p ON paa.pupil_id = p.id
+      INNER JOIN [mtc_admin].accessarrangements aa ON aa.id = paa.accessarrangements_id
+      LEFT OUTER JOIN [mtc_admin].[check] chk ON chk.id = paa.retroInputAssistant_check_id
+    WHERE p.school_id = @schoolId
   `
   return sqlService.readonlyQuery(sql, params)
 }

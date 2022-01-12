@@ -61,7 +61,11 @@
                                 </td>
                                 <td>
                                 <% if(p.hasCompletedCheck) { %>
+                                  <% if(p.retroInputAssistant === true && (availabilityData.canEditArrangements && aaViewMode === 'edit')) { %>
+                                    <a class="govuk-link modal-link" id="js-modal-link" href="/access-arrangements/delete-retro-input-assistant/<%= p.urlSlug %>">Remove Retrospective Input Assistant</a>
+                                  <% } else { %>
                                     Completed Check
+                                  <% } %>
                                 <% } else if(p.notTakingCheck) { %>
                                     Not taking check
                                 <% } else if (availabilityData.canEditArrangements && aaViewMode === 'edit') { %>
