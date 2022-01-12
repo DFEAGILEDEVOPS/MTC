@@ -12,6 +12,7 @@ function setupDefaultSpies () {
     currentCheckId: currentCheckId
   }])
   spyOn(dataService, 'markLatestCompleteCheckAsInputAssistantAddedRetrospectively')
+  spyOn(dataService, 'deleteRetroInputAssistant')
 }
 
 describe('retro input assistant service', () => {
@@ -156,6 +157,38 @@ describe('retro input assistant service', () => {
         fail('error should have been thrown')
       } catch (error) {
         expect(error.message).toBe('schoolId is not provided')
+      }
+    })
+  })
+
+  describe('deleteFromCurrentCheck', () => {
+    test('should throw an error if pupilUrlSlug not provided', async () => {
+      setupDefaultSpies()
+      try {
+        await sut.deleteFromCurrentCheck()
+        fail('error should have been thrown')
+      } catch (error) {
+        expect(error.message).toBe('pupilUrlSlug not provided')
+      }
+    })
+
+    test('should throw an error if pupilUrlSlug is not a valid UUID', async () => {
+      setupDefaultSpies()
+      try {
+        await sut.deleteFromCurrentCheck('not a uuid')
+        fail('error should have been thrown')
+      } catch (error) {
+        expect(error.message).toBe('pupilUrlSlug is not a valid UUID')
+      }
+    })
+
+    test('should call data service if pupilUrlSlug is a valid UUID', async () => {
+      setupDefaultSpies()
+      try {
+        await sut.deleteFromCurrentCheck('6195f068-a0e1-4881-bb22-4edf337c5688')
+        expect(dataService.deleteRetroInputAssistant).toHaveBeenCalledTimes(1)
+      } catch (error) {
+        fail(error.message)
       }
     })
   })

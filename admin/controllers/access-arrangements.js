@@ -200,7 +200,7 @@ const controller = {
     })
   },
   /**
-   * Delete access arrangements for single pupil
+   * Delete access arrangements for single pupil (unused)
    * @param req
    * @param res
    * @param next
@@ -221,6 +221,30 @@ const controller = {
       return next(error)
     }
     req.flash('deleteInfo', `Access arrangements removed for ${pupil.lastName}, ${pupil.foreName}`)
+    return res.redirect(`/access-arrangements/overview?hl=${pupil.urlSlug}`)
+  },
+  /**
+   * Delete retro input assistant for single pupil
+   * @param req
+   * @param res
+   * @param next
+   * @returns {Promise.<void>}
+   */
+  getDeleteRetroInputAssistant: async function getDeleteRetroInputAssistant (req, res, next) {
+    const aaViewMode = await accessArrangementsService.getCurrentViewMode(req.user.timezone)
+    if (aaViewMode !== aaViewModes.edit) {
+      return next(new AccessArrangementsNotEditableError())
+    }
+    let pupil
+    try {
+      const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
+      await businessAvailabilityService.determineAccessArrangementsEligibility(checkWindowData)
+      const pupilUrlSlug = req.params.pupilUrlSlug || req.body.urlSlug
+      pupil = await pupilAccessArrangementsService.deleteRetroInputAssistant(pupilUrlSlug, req.user.schoolId)
+    } catch (error) {
+      return next(error)
+    }
+    req.flash('deleteInfo', `Input Assistant removed for ${pupil.lastName}, ${pupil.foreName}`)
     return res.redirect(`/access-arrangements/overview?hl=${pupil.urlSlug}`)
   }
 }
