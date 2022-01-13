@@ -7,6 +7,9 @@ const checkWindowV2Service = require('../../../services/check-window-v2.service'
 const sut = require('../../../controllers/retro-input-assistant')
 const businessAvailabilityService = require('../../../services/business-availability.service')
 const retroInputAssistantService = require('../../../services/retro-input-assistant.service')
+const accessArrangementsService = require('../../../services/access-arrangements.service')
+const aaViewModes = require('../../../lib/consts/access-arrangements-view-mode')
+const { AccessArrangementsNotEditableError } = require('../../../error-types/access-arrangements-not-editable-error')
 
 describe('retro input assistant controller:', () => {
   let next
@@ -41,6 +44,8 @@ describe('retro input assistant controller:', () => {
       const req = getReq(reqParams)
       spyOn(res, 'render')
       spyOn(checkWindowV2Service, 'getActiveCheckWindow')
+      spyOn(businessAvailabilityService, 'determineAccessArrangementsEligibility')
+      spyOn(accessArrangementsService, 'getCurrentViewMode').and.returnValue(aaViewModes.edit)
       spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({
         hdfSubmitted: false
       })
@@ -56,6 +61,8 @@ describe('retro input assistant controller:', () => {
       const req = getReq(reqParams)
       spyOn(res, 'render')
       spyOn(checkWindowV2Service, 'getActiveCheckWindow')
+      spyOn(businessAvailabilityService, 'determineAccessArrangementsEligibility')
+      spyOn(accessArrangementsService, 'getCurrentViewMode').and.returnValue(aaViewModes.edit)
       spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({
         hdfSubmitted: true
       })
@@ -71,6 +78,8 @@ describe('retro input assistant controller:', () => {
       const req = getReq(reqParams)
       spyOn(res, 'render')
       spyOn(checkWindowV2Service, 'getActiveCheckWindow')
+      spyOn(businessAvailabilityService, 'determineAccessArrangementsEligibility')
+      spyOn(accessArrangementsService, 'getCurrentViewMode').and.returnValue(aaViewModes.edit)
       spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({
         hdfSubmitted: false
       })
@@ -98,6 +107,53 @@ describe('retro input assistant controller:', () => {
       await sut.postSubmitRetroInputAssistant(req, res, next)
       expect(retroInputAssistantService.save).toHaveBeenCalledTimes(1)
       expect(res.redirect).toHaveBeenCalledWith('/access-arrangements/overview?hl=slug')
+    })
+  })
+
+  describe('getDeleteRetroInputAssistant route', () => {
+    const reqParams = (urlSlug) => {
+      return {
+        method: 'GET',
+        url: `/access-arrangements/delete-retro-input-assistant/${urlSlug}`,
+        params: {
+          pupilUrlSlug: 'pupilUrlSlug'
+        }
+      }
+    }
+
+    it('redirects to error page if edit mode not available', async () => {
+      spyOn(accessArrangementsService, 'getCurrentViewMode').and.returnValue(aaViewModes.readonly)
+      const req = getReq(reqParams)
+      const res = getRes()
+      await sut.getDeleteRetroInputAssistant(req, res, next)
+      expect(next).toHaveBeenCalledWith(new AccessArrangementsNotEditableError())
+    })
+    it('redirects to overview page when successfully deleting', async () => {
+      const res = getRes()
+      const req = getReq(reqParams('urlSlug'))
+      spyOn(res, 'redirect')
+      spyOn(checkWindowV2Service, 'getActiveCheckWindow')
+      spyOn(businessAvailabilityService, 'determineAccessArrangementsEligibility')
+      spyOn(accessArrangementsService, 'getCurrentViewMode').and.returnValue(aaViewModes.edit)
+      spyOn(retroInputAssistantService, 'deleteFromCurrentCheck')
+      await sut.getDeleteRetroInputAssistant(req, res, next)
+      expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
+      expect(businessAvailabilityService.determineAccessArrangementsEligibility).toHaveBeenCalled()
+      expect(res.redirect).toHaveBeenCalled()
+      expect(req.flash).toHaveBeenCalled()
+    })
+    it('calls next when an error occurs during service call', async () => {
+      const res = getRes()
+      const req = getReq(reqParams('urlSlug'))
+      spyOn(res, 'redirect')
+      spyOn(checkWindowV2Service, 'getActiveCheckWindow')
+      spyOn(businessAvailabilityService, 'determineAccessArrangementsEligibility')
+      spyOn(accessArrangementsService, 'getCurrentViewMode').and.returnValue(aaViewModes.edit)
+      const error = new Error('error')
+      spyOn(retroInputAssistantService, 'deleteFromCurrentCheck').and.returnValue(Promise.reject(error))
+      await sut.getDeleteRetroInputAssistant(req, res, next)
+      expect(res.redirect).not.toHaveBeenCalled()
+      expect(next).toHaveBeenCalledWith(error)
     })
   })
 })
