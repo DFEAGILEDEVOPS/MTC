@@ -14,6 +14,8 @@ const pupilAccessArrangementsService = {}
  */
 pupilAccessArrangementsService.getPupils = async (schoolId) => {
   const accessArrangementsData = await pupilAccessArrangementsDataService.sqFindPupilsWithAccessArrangements(schoolId)
+  console.log('// accessArrangementsData. after sql get...')
+  console.dir(accessArrangementsData)
   const accessArrangementsHashmap = accessArrangementsData.reduce((acc, val) => {
     const current = R.clone(val)
     delete current.description
@@ -30,6 +32,8 @@ pupilAccessArrangementsService.getPupils = async (schoolId) => {
     return acc
   }, {})
   const pupilsWithAccessArrangements = accessArrangementsHashmap && Object.keys(accessArrangementsHashmap).map((key) => accessArrangementsHashmap[key])
+  console.log('// after reduce and mapping...')
+  console.dir(pupilsWithAccessArrangements)
   return pupilIdentificationFlag.sortAndAddIdentificationFlags(pupilsWithAccessArrangements)
 }
 

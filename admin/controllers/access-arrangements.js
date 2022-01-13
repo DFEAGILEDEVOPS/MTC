@@ -29,6 +29,8 @@ const controller = {
 
     try {
       pupils = await pupilAccessArrangementsService.getPupils(req.user.schoolId)
+      console.log('pupils. after getPupils...')
+      console.dir(pupils[0])
       // short circuit if unavailable
       if (aaViewMode === aaViewModes.unavailable) {
         return res.render('access-arrangements/unavailable-access-arrangements', {
@@ -47,7 +49,6 @@ const controller = {
     const availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.schoolId, checkWindowData, req.user.timezone)
     const pupilsFormatted = accessArrangementsOverviewPresenter.getPresentationData(pupils, availabilityData, hl)
     const retroInputAssistantText = await accessArrangementsOverviewPresenter.getRetroInputAssistantText(availabilityData)
-
     return res.render('access-arrangements/overview', {
       highlight: hl,
       messages: res.locals.messages,
@@ -222,56 +223,7 @@ const controller = {
     }
     req.flash('deleteInfo', `Access arrangements removed for ${pupil.lastName}, ${pupil.foreName}`)
     return res.redirect(`/access-arrangements/overview?hl=${pupil.urlSlug}`)
-  },
-  /**
-   * Delete retro input assistant for single pupil
-   * @param req
-   * @param res
-   * @param next
-   * @returns {Promise.<void>}
-   */
-  getDeleteRetroInputAssistant: async function getDeleteRetroInputAssistant (req, res, next) {
-    const aaViewMode = await accessArrangementsService.getCurrentViewMode(req.user.timezone)
-    if (aaViewMode !== aaViewModes.edit) {
-      return next(new AccessArrangementsNotEditableError())
-    }
-    let pupil
-    try {
-      const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
-      await businessAvailabilityService.determineAccessArrangementsEligibility(checkWindowData)
-      const pupilUrlSlug = req.params.pupilUrlSlug || req.body.urlSlug
-      pupil = await pupilAccessArrangementsService.deleteRetroInputAssistant(pupilUrlSlug, req.user.schoolId)
-    } catch (error) {
-      return next(error)
-    }
-    req.flash('deleteInfo', `Input Assistant removed for ${pupil.lastName}, ${pupil.foreName}`)
-    return res.redirect(`/access-arrangements/overview?hl=${pupil.urlSlug}`)
   }
-}
-
-controller.getAddInputAssistant = async function (req, res, next) {
-  res.locals.pageTitle = 'Record input assistant used for official check'
-  req.breadcrumbs('Select pupils and access arrangements', 'select-access-arrangements')
-  req.breadcrumbs('Record input assistant')
-
-  try {
-    const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
-    await businessAvailabilityService.determineAccessArrangementsEligibility(checkWindowData)
-  } catch (error) {
-    next(error)
-  }
-
-  let pupils
-  try {
-    pupils = await pupilAccessArrangementsService.getEligiblePupilsWithFullNames(req.user.schoolId)
-  } catch (error) {
-    return next(error)
-  }
-  return res.render('access-arrangements/retro-add-input-assistant', {
-    breadcrumbs: req.breadcrumbs(),
-    pupils,
-    error: new ValidationError()
-  })
 }
 
 module.exports = controller

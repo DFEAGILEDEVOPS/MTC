@@ -53,6 +53,12 @@ if (featureToggles.isFeatureEnabled('accessArrangements')) {
     isAdminWindowAvailable,
     (req, res, next) => retroInputAssistantController.postSubmitRetroInputAssistant(req, res, next)
   )
+  router.get(
+    '/delete-retro-input-assistant/:pupilUrlSlug',
+    isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),
+    isAdminWindowAvailable,
+    (req, res, next) => retroInputAssistantController.getDeleteRetroInputAssistant(req, res, next)
+  )
 }
 
 module.exports = router

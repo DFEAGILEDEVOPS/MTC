@@ -149,7 +149,7 @@ pupilAccessArrangementsDataService.sqFindPupilsWithAccessArrangements = async (s
     }
   ]
   const sql = `
-    SELECT
+    SELECT * FROM (SELECT
       p.urlSlug,
       p.foreName,
       p.middleNames,
@@ -162,8 +162,10 @@ pupilAccessArrangementsDataService.sqFindPupilsWithAccessArrangements = async (s
       INNER JOIN [mtc_admin].pupil p ON paa.pupil_id = p.id
       INNER JOIN [mtc_admin].accessarrangements aa ON aa.id = paa.accessarrangements_id
       LEFT OUTER JOIN [mtc_admin].[check] chk ON chk.id = paa.retroInputAssistant_check_id
-    WHERE p.school_id = @schoolId
-  `
+    WHERE p.school_id = @schoolId) as pupilAAData
+    ORDER BY pupilAAData.retroInputAssistant DESC
+  ` // order by is a dirty hack in order to ensure that the retro input assistant flag is preserved during the reduction
+  // that takes place in pupilAccessArrangementsService.getPupils.  This should be refactored.
   return sqlService.readonlyQuery(sql, params)
 }
 

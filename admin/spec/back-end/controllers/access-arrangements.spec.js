@@ -456,6 +456,53 @@ describe('access arrangements controller:', () => {
       expect(next).toHaveBeenCalledWith(error)
     })
   })
+
+  describe('getDeleteRetroInputAssistant route', () => {
+    const reqParams = (urlSlug) => {
+      return {
+        method: 'GET',
+        url: `/access-arrangements/delete-retro-input-assistant/${urlSlug}`,
+        params: {
+          pupilUrlSlug: 'pupilUrlSlug'
+        }
+      }
+    }
+
+    it('redirects to error page if edit mode not available', async () => {
+      spyOn(accessArrangementsService, 'getCurrentViewMode').and.returnValue(aaViewModes.readonly)
+      const req = getReq(reqParams)
+      const res = getRes()
+      await controller.getDeleteRetroInputAssistant(req, res, next)
+      expect(next).toHaveBeenCalledWith(new AccessArrangementsNotEditableError())
+    })
+    it('redirects to overview page when successfully deleting', async () => {
+      const res = getRes()
+      const req = getReq(reqParams('urlSlug'))
+      spyOn(res, 'redirect')
+      spyOn(checkWindowV2Service, 'getActiveCheckWindow')
+      spyOn(businessAvailabilityService, 'determineAccessArrangementsEligibility')
+      spyOn(accessArrangementsService, 'getCurrentViewMode').and.returnValue(aaViewModes.edit)
+      spyOn(pupilAccessArrangementsService, 'deleteRetroInputAssistant')
+      await controller.getDeleteRetroInputAssistant(req, res, next)
+      expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
+      expect(businessAvailabilityService.determineAccessArrangementsEligibility).toHaveBeenCalled()
+      expect(res.redirect).toHaveBeenCalled()
+      expect(req.flash).toHaveBeenCalled()
+    })
+    it('calls next when an error occurs during service call', async () => {
+      const res = getRes()
+      const req = getReq(reqParams('urlSlug'))
+      spyOn(res, 'redirect')
+      spyOn(checkWindowV2Service, 'getActiveCheckWindow')
+      spyOn(businessAvailabilityService, 'determineAccessArrangementsEligibility')
+      spyOn(accessArrangementsService, 'getCurrentViewMode').and.returnValue(aaViewModes.edit)
+      const error = new Error('error')
+      spyOn(pupilAccessArrangementsService, 'deletePupilAccessArrangements').and.returnValue(Promise.reject(error))
+      await controller.getDeleteAccessArrangements(req, res, next)
+      expect(res.redirect).not.toHaveBeenCalled()
+      expect(next).toHaveBeenCalledWith(error)
+    })
+  })
 })
 
 /**
