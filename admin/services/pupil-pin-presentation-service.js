@@ -21,7 +21,7 @@ const pupilPinPresentationService = {
       } else if (featureEligibilityData.isWithinFamiliarisationUnavailableHours) {
         explanation = 'Open 6am - 4pm'
       } else if (featureEligibilityData.isFamiliarisationInTheFuture) {
-        explanation = `Open 6am - 4pm on ${ featureEligibilityData.familiarisatonCheckDateRangeLabel }`
+        explanation = `Open 6am - 4pm on ${featureEligibilityData.familiarisatonCheckDateRangeLabel}`
       }
       slot = await ejsUtil.render('partials/pupil-pin/inactive-button', {
         linkDescription,
@@ -51,7 +51,7 @@ const pupilPinPresentationService = {
       } else if (featureEligibilityData.isWithinLiveUnavailableHours) {
         explanation = 'Open 6am - 4pm'
       } else if (featureEligibilityData.isLiveInTheFuture) {
-        explanation = `Open 6am - 4pm on ${ featureEligibilityData.liveCheckDateRangeLabel }`
+        explanation = `Open 6am - 4pm on ${featureEligibilityData.liveCheckDateRangeLabel}`
       }
       slot = await ejsUtil.render('partials/pupil-pin/inactive-button', {
         linkDescription,
