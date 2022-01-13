@@ -104,6 +104,7 @@ describe('retro input assistant controller:', () => {
       const res = getRes()
       spyOn(res, 'redirect')
       spyOn(retroInputAssistantService, 'save')
+      spyOn(accessArrangementsService, 'getCurrentViewMode').and.returnValue(aaViewModes.edit)
       await sut.postSubmitRetroInputAssistant(req, res, next)
       expect(retroInputAssistantService.save).toHaveBeenCalledTimes(1)
       expect(res.redirect).toHaveBeenCalledWith('/access-arrangements/overview?hl=slug')
