@@ -1,7 +1,7 @@
 version: '3'
 services:
   sqldb:
-    image: "mcr.microsoft.com/mssql/server:2019-CU6-ubuntu-16.04"
+    image: "mcr.microsoft.com/mssql/server:2019-CU14-ubuntu-20.04"
     container_name: mtc_sql
     ports:
       - "1433:1433"
@@ -9,6 +9,7 @@ services:
       SA_PASSWORD: "Mtc-D3v.5ql_S3rv3r"
       ACCEPT_EULA: "Y"
       HOMEBREW_NO_ENV_FILTERING: 1
+      MSSQL_AGENT_ENABLED: "true"
   redis:
     image: "redis:4.0-alpine"
     container_name: mtc_redis
