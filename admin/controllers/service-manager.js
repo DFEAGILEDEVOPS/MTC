@@ -346,7 +346,7 @@ const controller = {
         name: name.trim(),
         dfeNumber: parseInt(dfeNumber, 10),
         urn: parseInt(urn, 10)
-      })
+      }, req.user.id)
       req.flash('info', 'School added')
       res.redirect('/service-manager/organisations')
     } catch (error) {
@@ -461,7 +461,7 @@ const controller = {
         leaCode: formUtil.convertFromString(req.body?.leaCode, formUtilTypes.int),
         estabCode: formUtil.convertFromString(req.body?.estabCode, formUtilTypes.int)
       }
-      await schoolService.updateSchool(req.params.slug, update)
+      await schoolService.updateSchool(req.params.slug, update, req.user.id)
       req.flash('info', 'School updated')
       return res.redirect(`/service-manager/organisations/${school.urlSlug}`)
     } catch (error) {

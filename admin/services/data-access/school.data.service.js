@@ -72,16 +72,17 @@ const schoolDataService = {
     return redisCacheService.drop(`schoolData.sqlFindOneById.${update.id}`)
   },
 
-  sqlUpdateBySlug: async function sqlUpdateBySlug (slug, update) {
+  sqlUpdateBySlug: async function sqlUpdateBySlug (slug, update, userId) {
     const sql = `
-      UPDATE mtc_admin.[school] 
-      SET 
+      UPDATE mtc_admin.[school]
+      SET
           dfeNumber = @dfeNumber,
           estabCode = @estabCode,
           leaCode = @leaCode,
           name = @name,
-          urn = @urn
-      WHERE urlSlug = @slug    
+          urn = @urn,
+          lastModifiedBy_userId=@userId
+      WHERE urlSlug = @slug
     `
     const params = [
       { name: 'dfeNumber', value: update.dfeNumber, type: TYPES.Int },
@@ -89,7 +90,8 @@ const schoolDataService = {
       { name: 'leaCode', value: update.leaCode, type: TYPES.Int },
       { name: 'name', value: update.name, type: TYPES.NVarChar(TYPES.MAX) },
       { name: 'slug', value: slug, type: TYPES.UniqueIdentifier },
-      { name: 'urn', value: update.urn, type: TYPES.Int }
+      { name: 'urn', value: update.urn, type: TYPES.Int },
+      { name: 'userId', value: userId, type: TYPES.Int }
     ]
     return sqlService.modify(sql, params)
   },
@@ -158,7 +160,7 @@ const schoolDataService = {
       SELECT
           id, name, leaCode, estabCode, name, dfeNumber, urn, urlSlug
       FROM mtc_admin.school
-      WHERE dfeNumber = @query OR urn = @query 
+      WHERE dfeNumber = @query OR urn = @query
     `
     const res = await sqlService.query(sql, params)
     if (res.length > 0) {
@@ -188,16 +190,17 @@ const schoolDataService = {
    * @param data
    * @returns {Promise<unknown>}
    */
-  sqlAddSchool: async function (data) {
+  sqlAddSchool: async function (data, userId) {
     const sql = `
-        INSERT INTO [mtc_admin].[school] (leaCode, estabCode, dfeNumber, urn, name)
-        VALUES (@leaCode, @estabCode, @dfeNumber, @urn, @name)`
+        INSERT INTO [mtc_admin].[school] (leaCode, estabCode, dfeNumber, urn, name, lastModifiedBy_userId)
+        VALUES (@leaCode, @estabCode, @dfeNumber, @urn, @name, @userId)`
     const params = [
       { name: 'estabCode', value: data.estabCode, type: TYPES.Int },
       { name: 'leaCode', value: data.leaCode, type: TYPES.Int },
       { name: 'dfeNumber', value: data.dfeNumber, type: TYPES.Int },
       { name: 'urn', value: data.urn, type: TYPES.Int },
-      { name: 'name', value: data.name, type: TYPES.NVarChar(TYPES.MAX) }
+      { name: 'name', value: data.name, type: TYPES.NVarChar(TYPES.MAX) },
+      { name: 'userId', value: userId, type: TYPES.Int }
     ]
     return sqlService.modify(sql, params)
   }
