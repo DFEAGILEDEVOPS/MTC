@@ -3,7 +3,7 @@ import { ICheckFormService } from './check-form.service'
 import * as R from 'ramda'
 import { ILogger } from '../../common/logger'
 import { ICheckMarkerFunctionBindings } from './models'
-import checkSchema from '../../schemas/complete-check.v1.json'
+import answersMock from './answers-mock.json'
 import { CheckNotificationType, ICheckNotificationMessage } from '../../schemas/check-notification-message'
 import { ReceivedCheckFunctionBindingEntity } from '../../schemas/models'
 import { CompressionService } from '../../common/compression-service'
@@ -136,7 +136,7 @@ describe('check-marker/v1', () => {
       checkVersion: 1,
       isValid: true,
       validatedAt: moment().toDate(),
-      answers: JSON.stringify(checkSchema.answers)
+      answers: JSON.stringify(answersMock.answers)
     }
 
     const functionBindings: ICheckMarkerFunctionBindings = {
@@ -170,7 +170,7 @@ describe('check-marker/v1', () => {
       checkVersion: 1,
       isValid: true,
       validatedAt: moment().toDate(),
-      answers: JSON.stringify(checkSchema.answers)
+      answers: JSON.stringify(answersMock.answers)
     }
 
     const functionBindings: ICheckMarkerFunctionBindings = {
@@ -206,7 +206,7 @@ describe('check-marker/v1', () => {
       checkVersion: 1,
       isValid: true,
       validatedAt: moment().toDate(),
-      answers: JSON.stringify(checkSchema.answers)
+      answers: JSON.stringify(answersMock.answers)
     }
 
     const functionBindings: ICheckMarkerFunctionBindings = {
@@ -243,7 +243,7 @@ describe('check-marker/v1', () => {
       checkVersion: 1,
       isValid: true,
       validatedAt: moment().toDate(),
-      answers: JSON.stringify(checkSchema.answers)
+      answers: JSON.stringify(answersMock.answers)
     }
 
     const functionBindings: ICheckMarkerFunctionBindings = {
