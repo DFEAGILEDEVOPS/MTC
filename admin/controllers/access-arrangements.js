@@ -29,8 +29,6 @@ const controller = {
 
     try {
       pupils = await pupilAccessArrangementsService.getPupils(req.user.schoolId)
-      console.log('pupils. after getPupils...')
-      console.dir(pupils[0])
       // short circuit if unavailable
       if (aaViewMode === aaViewModes.unavailable) {
         return res.render('access-arrangements/unavailable-access-arrangements', {
