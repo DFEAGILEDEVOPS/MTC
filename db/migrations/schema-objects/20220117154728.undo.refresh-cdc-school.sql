@@ -1,0 +1,1 @@
+-- no undo needed as the script just disables and renables sql cdc to ensure it captures the new columns
