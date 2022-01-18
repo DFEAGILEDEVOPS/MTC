@@ -178,7 +178,7 @@ const getViewAndCustomPrintPins = async function getViewAndCustomPrintPins (req,
   const { pinEnv } = req.params
   const isLiveCheck = pinEnv === 'live'
   res.locals.pinEnv = pinEnv
-  res.locals.pageTitle = 'View and custom print PINs'
+  res.locals.pageTitle = 'View and print PINs'
   req.breadcrumbs(
     isLiveCheck ? 'Generate school passwords and PINs for the official check' : 'Generate passwords and PINs for the try it out check',
     `/pupil-pin/generate-${pinEnv}-pins-overview`)
