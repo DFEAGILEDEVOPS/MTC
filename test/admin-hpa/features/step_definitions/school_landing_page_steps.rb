@@ -65,8 +65,8 @@ Then(/^I should see an option to manage access arrangements$/) do
   expect(school_landing_page).to have_access_arrangements
 end
 
-Then(/^I should see an option to generate pins$/) do
-  expect(school_landing_page).to have_generate_pupil_pin
+Then(/^I should see an option to generate tio and live pins$/) do
+  expect(school_landing_page).to have_generate_passwords_and_pins
 end
 
 Then(/^I should see an option to generate pins familiarisation$/) do
@@ -93,12 +93,11 @@ Then(/^I should see the school landing page matches design$/) do
   step "I should see an option to select pupils not taking the check"
   step "I should see an option to select pupils not taking the check"
   step "I should see an option to manage access arrangements"
-  step "I should see an option to generate pins"
+  step "I should see an option to generate tio and live pins"
   step "I should see an option to manage restarts"
   step "I should see an option to complete the hdf"
   step "I should see an option to view the results"
   step "I should see option to view guidance in the before you start section"
-  step "I should see an option to generate pins familiarisation"
 end
 
 Given(/^I should see a step by step navigation section$/) do
@@ -182,9 +181,9 @@ end
 
 Then(/^I should be able to navigate to the (.*)$/) do |page|
   school_landing_page.send(page).click
-  page = 'generate_pins_familiarisation_overview' if page == 'generate_pupil_pin_familiarisation'
-  page = 'generate_pins_overview' if page == 'generate_pupil_pin'
+  page = 'tio_or_live_pins' if page == 'generate_passwords_and_pins'
   page = 'declaration' if page == 'hdf'
+  p current_url
   expect(send("#{page}_page")).to be_displayed
 end
 

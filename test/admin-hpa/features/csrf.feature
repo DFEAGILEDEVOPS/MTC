@@ -21,7 +21,7 @@ Feature: CSRF token
   @deactivate_all_test_check_window
   Scenario: Generate pins form has hidden csrf field
     Given I am logged in
-    When I am on Generate pins Pupil List page
+    When I am on the generate pupil live pins page
     Then I should see the generate pins form has a hidden csrf field
 
   Scenario: Restarts form has hidden csrf field

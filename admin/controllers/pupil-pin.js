@@ -12,6 +12,8 @@ const pinService = require('../services/pin.service')
 const pupilPinPresenter = require('../helpers/pupil-pin-presenter')
 const qrService = require('../services/qr.service')
 const schoolService = require('../services/school.service')
+const schoolHomeFeatureEligibilityPresenter = require('../helpers/school-home-feature-eligibility-presenter')
+const pupilPinPresentationService = require('../services/pupil-pin-presentation-service')
 
 const getGeneratePinsOverview = async function getGeneratePinsOverview (req, res, next) {
   if (!req.params || !req.params.pinEnv) {
@@ -23,6 +25,7 @@ const getGeneratePinsOverview = async function getGeneratePinsOverview (req, res
   res.locals.pinEnv = pinEnv
   res.locals.pageTitle = isLiveCheck ? 'Generate school passwords and PINs for the official check' : 'Generate passwords and PINs for the try it out check'
   req.breadcrumbs(res.locals.pageTitle)
+  const buttonText = isLiveCheck ? 'Generate official PINs' : 'Generate Try it out PINs'
 
   const helplineNumber = config.Data.helplineNumber
   let pupils
@@ -52,7 +55,8 @@ const getGeneratePinsOverview = async function getGeneratePinsOverview (req, res
     breadcrumbs: req.breadcrumbs(),
     error,
     helplineNumber,
-    pupils
+    pupils,
+    buttonText
   })
 }
 
@@ -174,7 +178,7 @@ const getViewAndCustomPrintPins = async function getViewAndCustomPrintPins (req,
   const { pinEnv } = req.params
   const isLiveCheck = pinEnv === 'live'
   res.locals.pinEnv = pinEnv
-  res.locals.pageTitle = 'View and custom print PINs'
+  res.locals.pageTitle = 'View and print PINs'
   req.breadcrumbs(
     isLiveCheck ? 'Generate school passwords and PINs for the official check' : 'Generate passwords and PINs for the try it out check',
     `/pupil-pin/generate-${pinEnv}-pins-overview`)
@@ -222,9 +226,27 @@ const getViewAndCustomPrintPins = async function getViewAndCustomPrintPins (req,
   })
 }
 
+const getSelectOfficialOrTryItOutPinGen = async function getSelectOfficialOrTryItOutPinGenFunc (req, res, next) {
+  res.locals.pageTitle = 'Generate school passwords and PINs for the try it out and official checks'
+  req.breadcrumbs(res.locals.pageTitle)
+
+  const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
+  const featureEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData, req.user.timezone)
+  const slots = {
+    officialPinGenSlot: await pupilPinPresentationService.getOfficialPinGenSlot(featureEligibilityData),
+    tryItOutPinGenSlot: await pupilPinPresentationService.getTryItOutPinGenSlot(featureEligibilityData)
+  }
+
+  return res.render('pupil-pin/select-official-or-try-it-out-pins', {
+    breadcrumbs: req.breadcrumbs(),
+    slots
+  })
+}
+
 module.exports = {
   getGeneratePinsOverview,
   postGeneratePins,
   getGeneratePinsList,
-  getViewAndCustomPrintPins
+  getViewAndCustomPrintPins,
+  getSelectOfficialOrTryItOutPinGen
 }

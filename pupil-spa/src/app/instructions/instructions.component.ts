@@ -5,6 +5,7 @@ import { AuditService } from '../services/audit/audit.service';
 import { WarmupStarted} from '../services/audit/auditEntry';
 import { SpeechService } from '../services/speech/speech.service';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
+import { Config } from '../config.model'
 
 @Component({
   selector: 'app-instructions',
@@ -19,6 +20,7 @@ export class InstructionsComponent implements AfterViewInit, OnDestroy {
   public shouldShowMore: boolean;
   protected window: any;
   private speechListenerEvent: any;
+  public config: Config;
 
   constructor(
     private router: Router,
@@ -28,11 +30,11 @@ export class InstructionsComponent implements AfterViewInit, OnDestroy {
     protected windowRefService: WindowRefService,
     private elRef: ElementRef) {
     this.count = this.questionService.getNumberOfQuestions();
-    const config = this.questionService.getConfig();
-    this.loadingTime = config.loadingTime;
-    this.questionTime = config.questionTime;
+    this.config = this.questionService.getConfig();
+    this.loadingTime = this.config.loadingTime;
+    this.questionTime = this.config.questionTime;
     this.window = windowRefService.nativeWindow;
-    this.shouldShowMore = config && config.practice && (config.fontSize || config.colourContrast);
+    this.shouldShowMore = this.config && this.config.practice && (this.config.fontSize || this.config.colourContrast);
   }
 
   onClick() {
@@ -65,5 +67,9 @@ export class InstructionsComponent implements AfterViewInit, OnDestroy {
 
       this.elRef.nativeElement.removeEventListener('focus', this.speechListenerEvent, true);
     }
+  }
+
+  get modeText(): string {
+    return this.config.practice ? 'Try it Out' : 'Official'
   }
 }

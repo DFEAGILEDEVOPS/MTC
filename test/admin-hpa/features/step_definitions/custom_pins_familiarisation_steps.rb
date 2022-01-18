@@ -1,7 +1,7 @@
 Given(/^I am on the familiarisation custom print page$/) do
   step 'I have generated a familiarisation pin for a pupil'
   custom_pins_familiarisation_page.pins_for_fam_check_breadcrumb.click
-  generate_pins_familiarisation_overview_page.view_all_pins_btn.click
+  generate_pins_familiarisation_overview_page.generated_pin_overview.view_all_pins_btn.click
 end
 
 Then(/^I should see the familiarisation custom print page matches design$/) do
@@ -12,8 +12,7 @@ Then(/^I should see the familiarisation custom print page matches design$/) do
 end
 
 And(/^I have generated familiarisation pins for pupils without a group$/) do
-  generate_pins_familiarisation_overview_page.load
-  step 'I click Generate PINs button'
+  navigate_to_pupil_list_for_pin_gen('tio')
   @pupil_names_arr = generate_pins_familiarisation_overview_page.generate_pin_for_multiple_pupils(2)
 end
 

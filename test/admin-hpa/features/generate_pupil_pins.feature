@@ -1,15 +1,14 @@
 @generate_pupil_pins @reset_checks @deactivate_all_test_check_window
 Feature: Generate Pupil PINs
 
-  Scenario: Generate Pins Landing page displays heading and info section
+  Scenario: Generate Pins overview page displays heading and info section
     Given I am logged in
-    When I navigate to generate pupil pins page
+    When I am on the generate pupil live pins overview page
     Then generate pin overview page for live check is displayed as per design
 
   Scenario Outline: Generate Pins Pupil List Page displays lists of Pupils
     Given I have signed in with <teacher>
-    And I navigate to generate pupil pins page
-    When I click Generate PINs button
+    When I am on the generate pupil live pins page
     Then I should see a list of pupils sorted by surname in 'ascending' order on Generate Pins List Page
 
   Examples:
@@ -21,64 +20,62 @@ Feature: Generate Pupil PINs
 
   Scenario: Only 1 Live pin allowed per pupil
     Given I have generated a live pin for a pupil
-    And I am on the generate pupil pins page
-    When I click Generate PINs button
+    When I am on the generate pupil live pins page
     Then I cannot see this pupil in the list of Pupil on Generate Pin list page
 
   Scenario: Generate Pins Pupil List Page do not display pupil not taking check
     Given I have a pupil not taking the check
-    And I am on the generate pupil pins page
-    When I click Generate PINs button
+    When I am on the generate pupil live pins page
     Then I cannot see this pupil in the list of Pupil on Generate Pin list page
 
   Scenario: Sorting Pupil list on Generate Pins page
     Given I am logged in
-    And I am on Generate pins Pupil List page
+    And I am on the generate pupil live pins page
     When I click on the Pupil heading
     Then I should see a list of pupils sorted by surname in 'descending' order on Generate Pins List Page
 
   Scenario: Pupils can be selected by a checkbox on Generate Pin page
     Given I am logged in
-    And I am on Generate pins Pupil List page
+    And I am on the generate pupil live pins page
     Then I should be able to select them via a checkbox on Generate Pin page
 
   Scenario: Teachers can select all pupils on Generate Pin page
     Given I am logged in
-    And I am on Generate pins Pupil List page
+    And I am on the generate pupil live pins page
     Then I should have a option to select all pupils on Generate Pin page
 
   Scenario: Sticky banner is not displayed on on Generate Pin page if no pupil are selected
     Given I am logged in
-    And I am on Generate pins Pupil List page
+    And I am on the generate pupil live pins page
     Then I should not see a sticky banner
 
   Scenario: Sticky banner is displayed on on Generate Pin page when a pupil is selected
     Given I am logged in
-    And I am on Generate pins Pupil List page
+    And I am on the generate pupil live pins page
     When I select a Pupil from Generate Pin page
     Then I should see a sticky banner
 
   Scenario: Sticky banner is not displayed if I deselect all pupil
     Given I am logged in
-    And I am on Generate pins Pupil List page
+    And I am on the generate pupil live pins page
     When I deselect all pupils from Generate Pin Page
     Then I should not see a sticky banner
 
   Scenario: Sticky banner displays pupil count on Generate Pin page
     Given I am logged in
-    And I am on Generate pins Pupil List page
+    And I am on the generate pupil live pins page
     When I select multiple pupils from Generate Pin Page
     Then the sticky banner should display the pupil count
 
   Scenario: Sticky banner displays total pupil count for Generate Pins when all pupil is selected
     Given I am logged in
-    And I am on Generate pins Pupil List page
+    And I am on the generate pupil live pins page
     When I select all pupils for Generate pin
     Then the sticky banner should display the total pupil count on Generate Pin Page
 
   Scenario: Cancel returns user to Generate Pupil Pin Landing page if there are no pupil with pins
     Given I am logged in
-    And I am on Generate pins Pupil List page
+    And I am on the generate pupil live pins page
     And I select a Pupil from Generate Pin page
     When I choose to cancel
     Then I should be taken to Generate Pupil Pins Page
@@ -152,12 +149,12 @@ Feature: Generate Pupil PINs
 
   Scenario: Generate pins page has related content
     Given I am logged in
-    When I navigate to generate pupil pins page
+    When I am on the generate pupil live pins overview page
     Then I should see related content on the generate pins page
 
   Scenario: Live Pin Overview page is displayed after generating some pin as per design
     Given I have generated a live pin for a pupil
-    And I am on the generate pupil pins page
+    And I am on the generate pupil live pins overview page
     Then generated pin overview page for live check with some pin generated is displayed as per design
 
   @remove_all_groups @empty_new_school

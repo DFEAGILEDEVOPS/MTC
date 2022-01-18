@@ -9,67 +9,67 @@ Feature: Generate Pupil PINs Familiarisation
   Scenario: Generate Pins familiarisation Pupil List page display pupil with active pin
     Given I have generated a live pin for a pupil
     And I am on the generate pupil pins familiarisation page
-    When I click Generate PINs button
+    When I click Generate tio PINs button
     Then I can see this pupil in the list of Pupil on Generate Pin familiarisation list page
 
   Scenario: Only 1 TIO pin allowed per pupil
     Given I have generated a familiarisation pin for a pupil
     And I am on the generate pupil pins familiarisation page
-    When I click Generate PINs button
+    When I click Generate tio PINs button
     Then I cannot see this pupil in the list of Pupil on Generate Pin list page
 
   @pupil_not_taking_check
   Scenario: Generate Pins familiarisation Pupil List Page display pupil not taking check
     Given I have a pupil not taking the check
     And I am on the generate pupil pins familiarisation page
-    When I click Generate PINs button
+    When I click Generate tio PINs button
     Then I cannot see this pupil in the list of Pupil on Generate Pin familiarisation list page
 
   @pupil_not_taking_check
   Scenario: Generate Pins familiarisation Pupil List Page does not display pupil with reason left school
     Given I have a pupil not taking the check with reason 'Left school'
     And I am on the generate pupil pins familiarisation page
-    When I click Generate PINs button
+    When I click Generate tio PINs button
     Then I cannot see this pupil in the list of Pupil on Generate Pin familiarisation list page
 
   Scenario: Sorting Pupil list on Generate Pins familiarisation page
     Given I am logged in
-    And I am on familiarisation generate pins pupil List page
+    And I am on familiarisation generate pins pupil list page
     When I click on the Pupil heading
     Then I should see a list of pupils sorted by surname in 'descending' order on familiarisation Generate Pins List Page
 
   Scenario: Pupils can be selected by a checkbox on Generate Pin familiarisation page
     Given I am logged in
-    And I am on familiarisation generate pins pupil List page
+    And I am on familiarisation generate pins pupil list page
     Then I should be able to select them via a checkbox on familiarisation Generate Pin page
     And I should have a option to select all pupils on familiarisation Generate Pin page
 
   Scenario: Sticky banner is not displayed on on Generate Pin familiarisation page if no pupil are selected
     Given I am logged in
-    And I am on familiarisation generate pins pupil List page
+    And I am on familiarisation generate pins pupil list page
     Then I should not see a sticky banner
 
   Scenario: Sticky banner is displayed on on Generate Pin familiarisation page when a pupil is selected
     Given I am logged in
-    And I am on familiarisation generate pins pupil List page
+    And I am on familiarisation generate pins pupil list page
     When I select a Pupil from familiarisation Generate Pin page
     Then I should see a sticky banner
 
   Scenario: Sticky banner is not displayed if I deselect all pupil on Generate Pin familiarisation page
     Given I am logged in
-    And I am on familiarisation generate pins pupil List page
+    And I am on familiarisation generate pins pupil list page
     When I deselect all pupils from familiarisation Generate Pin Page
     Then I should not see a sticky banner
 
   Scenario: Sticky banner displays pupil count on Generate Pin familiarisation page
     Given I am logged in
-    And I am on familiarisation generate pins pupil List page
+    And I am on familiarisation generate pins pupil list page
     When I select multiple pupils from familiarisation Generate Pin Page
     Then the sticky banner should display the pupil count
 
   Scenario: Sticky banner displays total pupil count for Generate familiarisation Pins when all pupil is selected
     Given I am logged in
-    And I am on familiarisation generate pins pupil List page
+    And I am on familiarisation generate pins pupil list page
     When I select all pupils for Generate pin
     Then the sticky banner should display the total pupil count on Generate Pin Page
 

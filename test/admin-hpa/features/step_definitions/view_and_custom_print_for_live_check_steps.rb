@@ -1,9 +1,8 @@
 
 Given(/^I am on view and custom print for live check page$/) do
   step "I have generated a live pin for a pupil"
-  step "I am on the generate pupil pins page"
-  step "I click View all pins button"
-
+  generate_pins_overview_page.load
+  step "I click view all live pins button"
   @page = view_and_custom_print_live_check_page
 end
 
@@ -12,6 +11,10 @@ Then(/^view and custom print page is displayed as per design$/) do
   expect(view_and_custom_print_live_check_page).to have_generate_pin_message
   expect(custom_pins_familiarisation_page).to have_pupil_list
   expect(view_and_custom_print_live_check_page).to have_select_all_pupils
+end
+
+Then(/^I click view all live pins button$/) do
+  generate_pins_overview_page.generated_pin_overview.view_all_pins_btn.click
 end
 
 Then(/^I should be able to select them via a checkbox on Custom Print Live check page$/) do
@@ -37,8 +40,8 @@ end
 
 Given(/^I am on view and custom print for live check page with some pupil from the group$/) do
   step "I have generated pins for all pupils in a group"
-  step "I am on the generate pupil pins page"
-  step "I click View all pins button"
+  generate_pins_overview_page.load
+  step "I click view all live pins button"
 end
 
 When(/^I choose to filter via group on Custom Print Live check page$/) do

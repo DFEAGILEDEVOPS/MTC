@@ -18,10 +18,24 @@ Feature:
     And I click the Home link on breadcrumb
     Then I should be taken to the school landing page
 
-  Scenario: Verify breadcrumb on Generate Pin page
+  Scenario: Verify breadcrumb on Generate passwords and pins page for either tio or live checks
     Given I am logged in
-    And I navigate to generate pupil pins page
+    And I navigate to generate passwords and pins page
+    Then I should see the breadcrumb as "Home > Generate school passwords and PINs for the try it out and official checks"
+    And I click the Home link on breadcrumb
+    Then I should be taken to the school landing page
+
+  Scenario: Verify breadcrumb on the overview page for live pins
+    Given I am logged in
+    And I navigate to the live check overview page
     Then I should see the breadcrumb as "Home > Generate school passwords and PINs for the official check"
+    And I click the Home link on breadcrumb
+    Then I should be taken to the school landing page
+
+  Scenario: Verify breadcrumb on the overview page for tio pins
+    Given I am logged in
+    And I navigate to the tio check overview page
+    Then I should see the breadcrumb as "Home > Generate passwords and PINs for the try it out check"
     And I click the Home link on breadcrumb
     Then I should be taken to the school landing page
 
