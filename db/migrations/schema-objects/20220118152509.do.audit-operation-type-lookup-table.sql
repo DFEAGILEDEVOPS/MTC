@@ -6,3 +6,8 @@ CREATE TABLE [mtc_admin].[auditOperationTypeLookup](
 	[auditOperation] [nvarchar](255) NOT NULL,
  CONSTRAINT [PK_auditOperationTypeLookup] PRIMARY KEY (id)
 );
+
+ALTER TABLE [mtc_admin].[auditOperationTypeLookup] ADD  DEFAULT (getutcdate()) FOR [createdAt]
+GO
+ALTER TABLE [mtc_admin].[auditOperationTypeLookup] ADD  DEFAULT (getutcdate()) FOR [updatedAt]
+GO
