@@ -1,13 +1,5 @@
-And(/^I am on the generate pupil pins page$/) do
-  generate_pins_overview_page.load
-end
-
-And(/^I navigate to generate pupil pins page$/) do
-  school_landing_page.generate_pupil_pin.click
-end
-
-And(/^I navigate to generate pupil pins familiarisation page$/) do
-  school_landing_page.generate_pupil_pin_familiarisation.click
+And(/^I navigate to generate passwords and pins page$/) do
+  school_landing_page.generate_passwords_and_pins.click
 end
 
 Then(/^generate pin overview page for live check is displayed as per design$/) do
@@ -19,11 +11,6 @@ end
 
 Then(/^generated pin overview page for live check with some pin generated is displayed as per design$/) do
   expect(generate_pins_overview_page.generated_pin_overview).to be_all_there
-end
-
-And(/^I click Generate PINs button$/) do
-  generate_pins_overview_page.generate_pin_btn.click if generate_pins_overview_page.has_generate_pin_btn?
-  view_and_custom_print_live_check_page.generate_more_pin_btn.click if view_and_custom_print_live_check_page.has_generate_more_pin_btn?
 end
 
 Given(/^I have a pupil not taking the check$/) do
@@ -49,7 +36,7 @@ Then(/^I cannot see pupil in the list for pupil for not taking check$/) do
 end
 
 Then(/^I can see pupil in the list for pupil for not taking check$/) do
-  Timeout.timeout(ENV['WAIT_TIME'].to_i){visit current_url until pupil_reason_page.pupil_list.rows.map {|t| t.name.text}.join.include?(@pupil_forename)}
+  Timeout.timeout(ENV['WAIT_TIME'].to_i) {visit current_url until pupil_reason_page.pupil_list.rows.map {|t| t.name.text}.join.include?(@pupil_forename)}
 end
 
 When(/^I click on the Pupil heading$/) do
@@ -65,12 +52,6 @@ Then(/^I should see a list of pupils sorted by surname in '(.*)' order on Genera
 
   pupils_from_page = generate_pins_overview_page.pupil_list.rows.map {|x| x.name.text}
   expect(sorted_pupils_from_page).to match_array(pupils_from_page)
-end
-
-And(/^I am on Generate pins Pupil List page$/) do
-  step 'I navigate to generate pupil pins page'
-  step 'I click Generate PINs button'
-  @page = generate_pins_overview_page
 end
 
 Then(/^I should be able to select them via a checkbox on Generate Pin page$/) do
@@ -105,9 +86,13 @@ When(/^I deselect all pupils from Generate Pin Page$/) do
   generate_pins_overview_page.select_all_pupils.click
 end
 
+When('I am on the generate pupil live pins page') do
+  navigate_to_pupil_list_for_pin_gen('live')
+  @page = generate_pins_overview_page
+end
+
 When(/^I select a Pupil to Generate more pins$/) do
-  step "I am on the generate pupil pins page"
-  view_and_custom_print_live_check_page.generate_more_pin_btn.click
+  step "I am on the generate pupil live pins page"
   pupil = generate_pins_overview_page.pupil_list.rows.find {|row| row.has_no_selected?}
   pupil.checkbox.click
 end
@@ -124,8 +109,7 @@ When(/^I have generated a live pin for a pupil$/) do
   step "I am on the add pupil page"
   step "I submit the form with the name fields set as #{name}"
   step "the pupil details should be stored"
-  step "I am on the generate pupil pins page"
-  step "I click Generate PINs button"
+  navigate_to_pupil_list_for_pin_gen('live')
   @pupil_forename = name
   @page = generate_pins_overview_page
   @pupil_name = generate_pins_overview_page.generate_pin_using_name(name)
@@ -139,9 +123,9 @@ end
 
 Given(/^I have generated pin for all pupil$/) do
   SqlDbHelper.delete_pupils_not_taking_check
-  SqlDbHelper.set_pupil_attendance_via_school(5,'null')
+  SqlDbHelper.set_pupil_attendance_via_school(5, 'null')
   step "I have signed in with #{@username}"
-  step "I am on Generate pins Pupil List page"
+  step "I am on the generate pupil live pins page"
   generate_pins_overview_page.select_all_pupils.click
   generate_pins_overview_page.sticky_banner.confirm.click
 end
@@ -172,13 +156,10 @@ end
 Given(/^I have generated pins for multiple pupils$/) do
   step "I am logged in"
   step "I am on the add multiple pupil page"
-  @upn_list = add_multiple_pupil_page.create_and_upload_multiple_pupils(3,'pin_gen.csv')
-  generate_pins_overview_page.load
-  step 'I click Generate PINs button'
-  @pupil_names_arr = @upn_list.map {|upn| SqlDbHelper.pupil_details(upn, @school_id)['lastName']+', ' + SqlDbHelper.pupil_details(upn, @school_id)['foreName']}
+  @upn_list = add_multiple_pupil_page.create_and_upload_multiple_pupils(3, 'pin_gen.csv')
+  step 'I am on the generate pupil live pins page'
+  @pupil_names_arr = @upn_list.map {|upn| SqlDbHelper.pupil_details(upn, @school_id)['lastName'] + ', ' + SqlDbHelper.pupil_details(upn, @school_id)['foreName']}
   generate_pins_overview_page.generate_pin_using_list_of_names(@pupil_names_arr)
-  step "I am on the generate pupil pins page"
-
 end
 
 Then(/^each pin should be displayed next to the pupil its assigned to$/) do
@@ -249,30 +230,19 @@ Then(/^the pin should be expired$/) do
 end
 
 And(/^the status of the pupil should be (.+)$/) do |status|
-  Timeout.timeout(ENV['WAIT_TIME'].to_i){sleep 2 until SqlDbHelper.pupil_details(@stored_pupil_details['upn'], @school_id)['pupilStatus_id'] == 6}
+  Timeout.timeout(ENV['WAIT_TIME'].to_i) {sleep 2 until SqlDbHelper.pupil_details(@stored_pupil_details['upn'], @school_id)['pupilStatus_id'] == 6}
   pupil_register_page.load
   pupil_row = pupil_register_page.find_pupil_row(@pupil_name)
   expect(pupil_row.result.text).to eql(status)
 end
 
 When(/^I choose to filter via group on the generate pins page$/) do
-  generate_pins_overview_page.load
-  step 'I click Generate PINs button'
+  navigate_to_pupil_list_for_pin_gen('live')
   @page = generate_pins_overview_page
-  Timeout.timeout(ENV['WAIT_TIME'].to_i){visit current_url until !generate_pins_overview_page.group_filter.groups.empty?}
-  Timeout.timeout(ENV['WAIT_TIME'].to_i){visit current_url until generate_pins_overview_page.group_filter.groups.first.count.text.scan(/\d+/).first.to_i == (@pupil_group_array - [@excluded_pupil]).size}
+  Timeout.timeout(ENV['WAIT_TIME'].to_i) {visit current_url until !generate_pins_overview_page.group_filter.groups.empty?}
+  Timeout.timeout(ENV['WAIT_TIME'].to_i) {visit current_url until generate_pins_overview_page.group_filter.groups.first.count.text.scan(/\d+/).first.to_i == (@pupil_group_array - [@excluded_pupil]).size}
   generate_pins_overview_page.group_filter.closed_filter.click unless generate_pins_overview_page.group_filter.has_opened_filter?
   group = generate_pins_overview_page.group_filter.groups.find {|group| group.name.text.include? @group_name}
-  group.checkbox.click
-end
-
-When(/^I choose to filter via group on the generate pins familiarisation page$/) do
-  sleep 20
-  generate_pins_familiarisation_overview_page.load
-  step 'I click Generate PINs button'
-  @page = generate_pins_familiarisation_overview_page
-  generate_pins_familiarisation_overview_page.group_filter.closed_filter.click unless generate_pins_overview_page.group_filter.has_opened_filter?
-  group = generate_pins_familiarisation_overview_page.group_filter.groups.find {|group| group.name.text.include? @group_name}
   group.checkbox.click
 end
 
@@ -291,7 +261,7 @@ And(/^I should be able to generate pins for all pupils in this group$/) do
   expect((@pupil_group_array - [@excluded_pupil].sort).count - names.map {|name| name.split(' Date')[0].size}.count).to eql 0
   pupil_pin_row = view_and_custom_print_live_check_page.pupil_list.rows.find {|row| row.name.text.include?(@pupil_group_array[1])}
   @pupil_credentials = {:school_password => pupil_pin_row.school_password.text, :pin => pupil_pin_row.pin.text}
-  AzureTableHelper.wait_for_prepared_check(@pupil_credentials[:school_password],@pupil_credentials[:pin])
+  AzureTableHelper.wait_for_prepared_check(@pupil_credentials[:school_password], @pupil_credentials[:pin])
 
 end
 
@@ -330,10 +300,9 @@ Given(/^I have generated pins for all pupils in a group$/) do
   if view_and_custom_print_live_check_page.has_pupil_list?
     @before_pin_gen = view_and_custom_print_live_check_page.pupil_list.rows.size
   else
-    @before_pin_gen =  0
+    @before_pin_gen = 0
   end
-  generate_pins_overview_page.load
-  step 'I click Generate PINs button'
+  navigate_to_pupil_list_for_pin_gen('live')
   group = generate_pins_overview_page.group_filter.groups.find {|group| group.name.text.include? @group_name}
   group.checkbox.click
   generate_pins_overview_page.select_all_pupils.click
@@ -341,15 +310,9 @@ Given(/^I have generated pins for all pupils in a group$/) do
   expect(view_and_custom_print_live_check_page.pupil_list.rows.size).to eql @before_pin_gen + @pupil_group_array.size
   pupil_pin_row = view_and_custom_print_live_check_page.pupil_list.rows.find {|row| row.name.text.include?(@pupil_group_array[1])}
   @pupil_credentials = {:school_password => pupil_pin_row.school_password.text, :pin => pupil_pin_row.pin.text}
-  AzureTableHelper.wait_for_prepared_check(@pupil_credentials[:school_password],@pupil_credentials[:pin])
+  AzureTableHelper.wait_for_prepared_check(@pupil_credentials[:school_password], @pupil_credentials[:pin])
 end
 
-Given(/^I have generated familiarisation pins for all pupils in a group$/) do
-  step 'I have a group of pupils'
-  step 'I choose to filter via group on the generate pins familiarisation page'
-  step 'I should only see pupils from the group'
-  step 'I should be able to generate pins for all pupils in this group'
-end
 
 Then(/^I can no longer use this group to filter on the generate pins page$/) do
   generate_pins_overview_page.load
@@ -375,7 +338,7 @@ end
 
 Then(/^I should see an error message stating the service is unavailable$/) do
   sleep 1
-  REDIS_CLIENT. del 'checkWindow.sqlFindActiveCheckWindow'
+  REDIS_CLIENT.del 'checkWindow.sqlFindActiveCheckWindow'
   pupil_register_page.load
   generate_pins_overview_page.load
   expect(page).to have_content("The service is unavailable")
@@ -409,8 +372,7 @@ Given(/^I want to generate pins for a group of 255 pupils with a teacher$/) do
   step "I am on the create group page"
   step "I select all pupils"
   add_edit_groups_page.sticky_banner.confirm.click
-  step "I am on the generate pupil pins page"
-  step "I click Generate PINs button"
+  navigate_to_pupil_list_for_pin_gen('live')
 end
 
 When(/^I select all (\d+) pupils$/) do |arg|
@@ -442,4 +404,9 @@ Then(/^the user should be stored to identify who created the check$/) do
   check_entry = SqlDbHelper.check_details(pupil_id)
   user_id = SqlDbHelper.find_teacher(@user)['id']
   expect(check_entry['createdBy_userId']).to eql user_id
+end
+
+
+When(/^I am on the generate pupil live pins overview page$/) do
+  generate_pins_overview_page.load
 end
