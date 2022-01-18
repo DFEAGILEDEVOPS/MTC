@@ -20,7 +20,7 @@ const sqlService = require('./sql.service')
 
 /**
  * @typedef {object} SchoolAuditSummary
- * @property {moment.Moment} updatedAt
+ * @property {moment.Moment} createdAt
  */
 
 const service = {
@@ -37,9 +37,9 @@ const service = {
     }]
     const sql = `
       SELECT createdAt
-      FROM cdc.mtc_admin_school_CT
-      WHERE id=@schoolId
-      GROUP BY __$start_lsn, updatedAt`
+      FROM [mtc_admin].[schoolAudit]
+      WHERE school_id=@schoolId
+      ORDER BY id DESC`
     return sqlService.readonlyQuery(sql, params)
   }
 }
