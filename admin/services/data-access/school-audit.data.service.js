@@ -36,7 +36,7 @@ const service = {
       value: schoolId
     }]
     const sql = `
-      SELECT updatedAt
+      SELECT createdAt
       FROM cdc.mtc_admin_school_CT
       WHERE id=@schoolId
       GROUP BY __$start_lsn, updatedAt`
