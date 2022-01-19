@@ -6,7 +6,7 @@ const sqlService = require('./sql.service')
 /**
  * @typedef {object} CreateSchoolAuditEntry
  * @property {number} auditOperationTypeId
- * @property {string} newData
+ * @property {object} newData
  * @property {number} schoolId
  * @property {number} userId
  */

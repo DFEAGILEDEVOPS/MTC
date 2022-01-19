@@ -42,9 +42,20 @@ const schoolService = {
   },
 
   /**
-   *
+   * @typedef {object} schoolRecord
+   * @property {number } id
+   * @property {string} name,
+   * @property {number} leaCode,
+   * @property {number} estabCode,
+   * @property {number} dfeNumber,
+   * @property {number} urn,
+   * @property {string} urlSlug,
+   * @property {number} numberOfPupils
+   */
+
+  /**
    * @param {string} slug
-   * @return {Promise<object>}
+   * @return {Promise<schoolRecord>}
    */
   findOneBySlug: async function findOneBySlug (slug) {
     if (slug === '' || slug === undefined) {
@@ -54,14 +65,13 @@ const schoolService = {
   },
 
   /**
-   * @typedef editableSchoolDetails
-   * {
-   *   dfeNumber: number,
-   *   estabCode: number,
-   *   leaCode: number,
-   *   name: string,
-   *   urn: number
-   * }
+   * @typedef {object} editableSchoolDetails
+   * @property {number} dfeNumber,
+   * @property {number} estabCode,
+   * @property {number} leaCode,
+   * @property {string} name,
+   * @property {number} urn,
+   * @property {number } id
    */
 
   /**
@@ -90,7 +100,7 @@ const schoolService = {
     await schoolAuditDataService.createEntry({
       auditOperationTypeId: auditTypes.update,
       newData: school,
-      schoolId: 99999,
+      schoolId: school.id,
       userId: userId
     })
     return schoolDataService.sqlUpdateBySlug(slug, school, userId)

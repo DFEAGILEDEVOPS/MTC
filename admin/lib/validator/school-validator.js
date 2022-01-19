@@ -4,13 +4,12 @@ const ValidationError = require('../validation-error')
 const schoolValidator = {
   /**
    * @typedef editableSchoolDetails
-   * {
-   *   dfeNumber: number,
-   *   estabCode: number,
-   *   leaCode: number,
-   *   name: string,
-   *   urn: number
-   * }
+   * @property {number} dfeNumber,
+   * @property {number} estabCode,
+   * @property {number} leaCode,
+   * @property {string} name,
+   * @property {number} urn,
+   * @property {number } id
    */
 
   /**
@@ -49,6 +48,11 @@ const schoolValidator = {
       if (!validationError.isError('leaCode')) {
         validationError.addError('leaCode', `Unknown LEA code: ${school.leaCode}`)
       }
+    }
+    if (typeof school.id !== 'number') {
+      validationError.addError('id', `Invalid id: ${school.id}`)
+    } else if (isNaN(school.id)) {
+      validationError.addError('id', 'Please enter an id')
     }
     return validationError
   }
