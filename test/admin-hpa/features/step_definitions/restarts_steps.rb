@@ -135,14 +135,11 @@ Then(/^I should see pupil is added to the pupil restarts list with status '(.*)'
 end
 
 And(/^Pupil has taken a 2nd check$/) do
-
-  step "I am on the generate pupil pins page"
-  step "I click Generate PINs button"
+  navigate_to_pupil_list_for_pin_gen('live')
   @page = generate_pins_overview_page
   @pupil_name = generate_pins_overview_page.generate_pin_using_name(@details_hash[:first_name])
 
   step 'pupil logs in and completed the check'
-  # step "I am on the generate pupil pins page"
   restarts_page.load
 end
 
@@ -183,8 +180,7 @@ end
 
 Then(/^I should not see this pupil removed from restart in Generate Pin Pupil list$/) do
   @pupil_forename = @details_hash[:first_name]
-  step 'I am on the generate pupil pins page'
-  step 'I click Generate PINs button'
+  navigate_to_pupil_list_for_pin_gen('live')
   step 'I cannot see this pupil in the list of Pupil on Generate Pin list page'
 end
 
@@ -274,8 +270,7 @@ Given(/^pupil logs in and completed the check$/) do
 end
 
 And(/^I generate a pin for that pupil$/) do
-  step "I am on the generate pupil pins page"
-  step "I click Generate PINs button"
+  navigate_to_pupil_list_for_pin_gen('live')
   @pupil_name = generate_pins_overview_page.generate_pin_using_name(@details_hash[:first_name])
 end
 
@@ -306,8 +301,7 @@ Given(/^I have more than (\d+) pupils eligible for a restart$/) do |number_of_re
   step 'I am logged in'
   step 'I am on the add multiple pupil page'
   @upns_for_school = add_multiple_pupil_page.upload_pupils(@number_of_restarts, @school_name)
-  step "I am on the generate pupil pins page"
-  step "I click Generate PINs button"
+  navigate_to_pupil_list_for_pin_gen('live')
   generate_pins_overview_page.select_all_pupils.click
   expect(generate_pins_overview_page.sticky_banner.selected_count.text.to_i).to be >= @number_of_restarts
   generate_pins_overview_page.sticky_banner.confirm.click
