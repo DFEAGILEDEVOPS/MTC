@@ -4,6 +4,7 @@ const uuid = require('uuid')
 /* global describe, expect test jest afterEach beforeEach */
 const sut = require('../../../services/school.service')
 const schoolDataService = require('../../../services/data-access/school.data.service')
+const schoolAuditDataService = require('../../../services/data-access/school-audit.data.service')
 const schoolValidator = require('../../../lib/validator/school-validator')
 const ValidationError = require('../../../lib/validation-error')
 
@@ -131,8 +132,30 @@ describe('school.service', () => {
     test('it calls the data service to do the update if the validation passes', async () => {
       jest.spyOn(schoolDataService, 'sqlUpdateBySlug').mockImplementation(_ => Promise.resolve({}))
       jest.spyOn(schoolValidator, 'validate').mockResolvedValue(new ValidationError())
+      jest.spyOn(schoolAuditDataService, 'createEntry').mockImplementation(_ => Promise.resolve())
       await sut.updateSchool(uuid.NIL, {}, 1)
       expect(schoolDataService.sqlUpdateBySlug).toHaveBeenCalledTimes(1)
+    })
+
+    test('it calls the audit service to log the update if the validation passes', async () => {
+      let capturedAuditData
+      jest.spyOn(schoolDataService, 'sqlUpdateBySlug').mockImplementation(_ => Promise.resolve({}))
+      jest.spyOn(schoolAuditDataService, 'createEntry').mockImplementation(auditData => {
+        capturedAuditData = auditData
+        return Promise.resolve()
+      })
+      jest.spyOn(schoolValidator, 'validate').mockResolvedValue(new ValidationError())
+      const schoolDataUpdate = {
+        id: 1,
+        name: 'foo'
+      }
+      const userId = 123456
+      await sut.updateSchool(uuid.NIL, schoolDataUpdate, userId)
+      expect(schoolAuditDataService.createEntry).toHaveBeenCalledTimes(1)
+      expect(capturedAuditData).toBeDefined()
+      expect(capturedAuditData.newData).toStrictEqual(schoolDataUpdate)
+      expect(capturedAuditData.schoolId).toStrictEqual(schoolDataUpdate.id)
+      expect(capturedAuditData.userId).toStrictEqual(userId)
     })
 
     test('it throws a ValidationError if the validation fails', async () => {

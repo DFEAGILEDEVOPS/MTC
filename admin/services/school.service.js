@@ -1,8 +1,10 @@
 'use strict'
 const uuid = require('uuid')
 const schoolDataService = require('../services/data-access/school.data.service')
+const schoolAuditDataService = require('../services/data-access/school-audit.data.service')
 const schoolValidator = require('../lib/validator/school-validator')
 const ValidationError = require('../lib/validation-error')
+const auditTypes = require('../lib/consts/audit-entry-types')
 
 const schoolService = {
   /**
@@ -85,6 +87,12 @@ const schoolService = {
     if (validationError.hasError()) {
       throw validationError
     }
+    await schoolAuditDataService.createEntry({
+      auditOperationTypeId: auditTypes.update,
+      newData: school,
+      schoolId: 99999,
+      userId: userId
+    })
     return schoolDataService.sqlUpdateBySlug(slug, school, userId)
   },
 

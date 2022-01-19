@@ -4,23 +4,17 @@ const { TYPES } = require('./sql.service')
 const sqlService = require('./sql.service')
 
 /**
- * @typedef {object} SchoolAuditRecord
- * @property {moment.Moment} createdAt
- * @property {moment.Moment} updatedAt
- * @property {number} leaCode
- * @property {number} estabCode
- * @property {string} name
- * @property {string} pin
- * @property {moment.Moment} pinExpiresAt
- * @property {string} urlSlug
- * @property {number} urn
- * @property {number} dfeNumber
- * @property {number} lastModifiedBy_userId
+ * @typedef {object} CreateSchoolAuditEntry
+ * @property {number} auditOperationTypeId
+ * @property {string} newData
+ * @property {number} schoolId
+ * @property {number} userId
  */
 
 /**
  * @typedef {object} SchoolAuditSummary
  * @property {moment.Moment} createdAt
+ * @property {string} userIdentifier
  */
 
 const service = {
@@ -36,11 +30,21 @@ const service = {
       value: schoolId
     }]
     const sql = `
-      SELECT createdAt
-      FROM [mtc_admin].[schoolAudit]
-      WHERE school_id=@schoolId
-      ORDER BY id DESC`
+      SELECT sa.createdAt, u.identifier as userIdentifier
+      FROM [mtc_admin].[schoolAudit] sa
+      INNER JOIN [mtc_admin].[user] u ON
+        u.id = sa.operationBy_userId
+      WHERE sa.school_id=@schoolId
+      ORDER BY sa.id DESC`
     return sqlService.readonlyQuery(sql, params)
+  },
+  /**
+   *
+   * @param {CreateSchoolAuditEntry} auditEntry
+   * @returns {Promise<any>}
+   */
+  createEntry: async function createEntry (auditEntry) {
+    return sqlService.create('schoolAudit', auditEntry)
   }
 }
 
