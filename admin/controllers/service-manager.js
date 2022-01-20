@@ -459,7 +459,8 @@ const controller = {
         dfeNumber: formUtil.convertFromString(req.body?.dfeNumber, formUtilTypes.int),
         urn: formUtil.convertFromString(req.body?.urn, formUtilTypes.int),
         leaCode: formUtil.convertFromString(req.body?.leaCode, formUtilTypes.int),
-        estabCode: formUtil.convertFromString(req.body?.estabCode, formUtilTypes.int)
+        estabCode: formUtil.convertFromString(req.body?.estabCode, formUtilTypes.int),
+        id: formUtil.convertFromString(req.body?.id, formUtilTypes.int)
       }
       await schoolService.updateSchool(req.params.slug, update, req.user.id)
       req.flash('info', 'School updated')
@@ -520,6 +521,31 @@ const controller = {
       res.send(zipResults)
     } catch (error) {
       next(error)
+    }
+  },
+
+  getAudits: async function getAudits (req, res, next) {
+    try {
+      req.breadcrumbs('Manage organisations', '/service-manager/organisations')
+      req.breadcrumbs('Search organisations', '/service-manager/organisations/search')
+      res.locals.pageTitle = 'Edit organisation'
+      req.breadcrumbs(res.locals.pageTitle)
+      // const audits = await schoolService.getAuditHistory(req.params.slug)
+      /* if (!school) {
+        return next(new Error(`School not found ${req.params.slug}`))
+      } */
+      res.render('service-manager/organisation-audit', {
+        breadcrumbs: req.breadcrumbs(),
+        audits: [
+          {
+            createdAt: '2021-04-09 11:51:00',
+            auditOperation: 'update',
+            user: 'Joe Bloggs'
+          }
+        ]
+      })
+    } catch (error) {
+      return next(error)
     }
   }
 }

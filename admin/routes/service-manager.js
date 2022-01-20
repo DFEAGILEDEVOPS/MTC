@@ -123,6 +123,11 @@ router.post('/organisations/:slug/edit',
   serviceManagerController.postEditOrganisation
 )
 
+router.get('/organisations/:slug/audit',
+  isAuthenticated(roles.serviceManager),
+  serviceManagerController.getAudits
+)
+
 router.get('/job/:slug',
   isAuthenticated(roles.serviceManager),
   serviceManagerController.downloadJobOutput

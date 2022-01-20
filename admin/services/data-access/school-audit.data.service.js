@@ -14,7 +14,8 @@ const sqlService = require('./sql.service')
 /**
  * @typedef {object} SchoolAuditSummary
  * @property {moment.Moment} createdAt
- * @property {string} userIdentifier
+ * @property {string} auditOperation
+ * @property {string} user
  */
 
 const service = {
@@ -30,10 +31,12 @@ const service = {
       value: schoolId
     }]
     const sql = `
-      SELECT sa.createdAt, u.identifier as userIdentifier
+      SELECT sa.createdAt, aot.auditOperation, u.identifier as user
       FROM [mtc_admin].[schoolAudit] sa
       INNER JOIN [mtc_admin].[user] u ON
         u.id = sa.operationBy_userId
+      INNER JOIN [mtc_admin].[auditOperationTypeLookup] aot ON
+        aot.id = sa.auditOperationTypeLookup_id
       WHERE sa.school_id=@schoolId
       ORDER BY sa.id DESC`
     return sqlService.readonlyQuery(sql, params)

@@ -59,9 +59,6 @@
                 <a href="/service-manager/organisations/search"
                 class="govuk-button govuk-button--secondary">Back to search </a>
             </div>
-            <div>
-              Audit table
-            </div>
         </div>
         <div class="govuk-grid-column-one-third" aria-label="sidebar">
             <aside class="app-related-items" role="complementary">
@@ -73,6 +70,9 @@
                         <li>
                             <a class="govuk-link" href="<%- guidancePdf %>" target="_blank" rel="noopener noreferrer">Read the guidance and watch videos</a>
                         </li>
+                        <li>
+                          <a class="govuk-link" href="/service-manager/organisations/<%= school.urlSlug %>/audit">View Audit History</a>
+                      </li>
                     </ul>
                 </nav>
             </aside>
