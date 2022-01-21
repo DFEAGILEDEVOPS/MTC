@@ -10,10 +10,6 @@ const aaViewModes = require('../lib/consts/access-arrangements-view-mode')
 
 const controller = {
   getAddRetroInputAssistant: async function getAddRetroInputAssistant (req, res, next, error = null) {
-    const aaViewMode = await accessArrangementsService.getCurrentViewMode(req.user.timezone)
-    if (aaViewMode !== aaViewModes.edit) {
-      return next(new AccessArrangementsNotEditableError())
-    }
     res.locals.pageTitle = 'Record input assistant used for official check'
     req.breadcrumbs('Select pupils and access arrangements', 'select-access-arrangements')
     req.breadcrumbs('Record input assistant')
@@ -38,10 +34,6 @@ const controller = {
     })
   },
   postSubmitRetroInputAssistant: async function postSubmitRetroInputAssistant (req, res, next) {
-    const aaViewMode = await accessArrangementsService.getCurrentViewMode(req.user.timezone)
-    if (aaViewMode !== aaViewModes.edit) {
-      return next(new AccessArrangementsNotEditableError())
-    }
     const saveData = {
       firstName: req.body.firstname,
       lastName: req.body.lastname,
