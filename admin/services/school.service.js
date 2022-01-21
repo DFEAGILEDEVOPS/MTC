@@ -51,6 +51,7 @@ const schoolService = {
    * @property {number} urn,
    * @property {string} urlSlug,
    * @property {number} numberOfPupils
+   * @property {array} audits
    */
 
   /**
