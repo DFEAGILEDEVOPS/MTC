@@ -61,8 +61,7 @@ When(/^I generate a live pin for a pupil$/) do
   step "I am on the add pupil page"
   step "I submit the form with the name fields set as #{name}"
   step "the pupil details should be stored"
-  step "I am on the generate pupil pins page"
-  step "I click Generate PINs button"
+  navigate_to_pupil_list_for_pin_gen('live')
   @pupil_forename = name
   @page = generate_pins_overview_page
   @pupil_name = generate_pins_overview_page.generate_pin_using_name(name)
@@ -82,8 +81,7 @@ When(/^I generate a tio pin for a pupil$/) do
   step "I am on the add pupil page"
   step "I submit the form with the name fields set as #{name}"
   step "the pupil details should be stored"
-  step "I am on the generate pupil pins familiarisation page"
-  step "I click Generate PINs button"
+  navigate_to_pupil_list_for_pin_gen('tio')
   @page = generate_pins_familiarisation_overview_page
   @pupil_name = generate_pins_familiarisation_overview_page.generate_pin_using_name(name)
 end

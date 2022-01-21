@@ -5,9 +5,7 @@ class GeneratePinsFamiliarisationOverviewPage < SitePrism::Page
   element :generate_pin_message, 'p.govuk-body'
   element :access_arrangment_text, '.govuk-inset-text', text: 'Select access arrangements for pupils who need it before generating PINs'
   element :access_arrangment_link, "a[href='/access-arrangements/overview']", text: 'access arrangements'
-  element :generate_pin_btn, 'input[value="Generate PINs"]'
-  element :generate_more_pin_btn, "a[href='/pupil-pin/generate-live-pins-list/']"
-  element :view_all_pins_btn, 'a', text: "View all pins"
+  element :generate_pin_btn, 'input[value="Generate Try it out PINs"]'
 
   section :instruction_section, 'details' do
     element :toggle, '.govuk-details__summary'
@@ -19,7 +17,7 @@ class GeneratePinsFamiliarisationOverviewPage < SitePrism::Page
     element :generated_pin_information, 'tbody tr td label', text: "PINs have been generated for"
     element :pin_expiry_info, '.govuk-font-greyed-out', text: "Expires 4pm today"
     element :view_all_pins_btn, 'a', text: "View all pins"
-    element :generate_additional_pins_btn, 'a', text: "Generate PINs"
+    element :generate_additional_pins_btn, 'a', text: "Generate Try it out PINs"
   end
 
   section :group_filter, GroupFilter, '#main-content .govuk-grid-column-two-thirds'
@@ -62,5 +60,9 @@ class GeneratePinsFamiliarisationOverviewPage < SitePrism::Page
     pupil_list.rows.find {|pupil| pupil.text.include? name}
   end
 
+  def generate_pins
+    generate_pin_btn.click if has_generate_pin_btn?
+    generated_pin_overview.generate_additional_pins_btn.click if generated_pin_overview.has_generate_additional_pins_btn?
+  end
 
 end

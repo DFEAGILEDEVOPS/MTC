@@ -62,6 +62,10 @@ export class LoginSuccessComponent implements OnInit, AfterViewInit, OnDestroy {
     this.config = this.questionService.getConfig();
   }
 
+  get modeText(): string {
+    return this.config.practice ? 'Try it Out' : 'Official'
+  }
+
   async ngOnInit() {
     // Store various browser props in localStorage to be sent back to the server at the end of the check.
     await this.deviceService.capture();
