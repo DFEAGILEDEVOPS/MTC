@@ -31,7 +31,7 @@ const service = {
       value: schoolId
     }]
     const sql = `
-      SELECT sa.createdAt, aot.auditOperation, u.identifier as user
+      SELECT sa.createdAt, aot.auditOperation, u.identifier as [user]
       FROM [mtc_admin].[schoolAudit] sa
       INNER JOIN [mtc_admin].[user] u ON
         u.id = sa.operationBy_userId

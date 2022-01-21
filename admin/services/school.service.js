@@ -151,6 +151,15 @@ const schoolService = {
       throw validationError
     }
     await schoolDataService.sqlAddSchool(insertDetails, userId)
+  },
+
+  /**
+   * get list of school audit history
+   * @param {number} schoolId
+   */
+  getSchoolAudits: async function getSchoolAudits (schoolId) {
+    if (!schoolId) throw new Error('schoolId is required')
+    return schoolAuditDataService.getSummary(schoolId)
   }
 }
 

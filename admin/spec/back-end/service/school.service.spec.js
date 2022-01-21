@@ -1,12 +1,14 @@
 'use strict'
 const uuid = require('uuid')
 
-/* global describe, expect test jest afterEach beforeEach */
+/* global describe, expect test jest afterEach beforeEach fail */
 const sut = require('../../../services/school.service')
 const schoolDataService = require('../../../services/data-access/school.data.service')
 const schoolAuditDataService = require('../../../services/data-access/school-audit.data.service')
 const schoolValidator = require('../../../lib/validator/school-validator')
 const ValidationError = require('../../../lib/validation-error')
+const auditOperationTypes = require('../../../lib/consts/audit-entry-types')
+const { isArray } = require('ramda-adjunct')
 
 describe('school.service', () => {
   afterEach(() => {
@@ -231,6 +233,32 @@ describe('school.service', () => {
       jest.spyOn(schoolValidator, 'validate').mockResolvedValue(new ValidationError())
       await sut.addSchool({ dfeNumber: 1234567, name: 'Test School', urn: 2 })
       expect(schoolDataService.sqlAddSchool).toHaveBeenCalledTimes(1)
+    })
+  })
+
+  describe('getSchoolAudits', () => {
+    beforeEach(() => {
+      jest.spyOn(schoolAuditDataService, 'getSummary').mockResolvedValue([{
+        createdAt: '2022-01-02 14:53:05',
+        auditOperation: auditOperationTypes.update,
+        user: 'foo bar'
+      }])
+    })
+
+    test('it should throw error if schoolId is undefined', async () => {
+      try {
+        await sut.getSchoolAudits(undefined)
+        fail('error should have been thrown')
+      } catch (error) {
+        expect(error.message).toBe('schoolId is required')
+      }
+      expect(schoolAuditDataService.getSummary).not.toHaveBeenCalled()
+    })
+
+    test('it should return audit entries when schoolId provided', async () => {
+      const data = await sut.getSchoolAudits(1)
+      expect(data).toBeDefined()
+      expect(isArray(data)).toBe(true)
     })
   })
 })

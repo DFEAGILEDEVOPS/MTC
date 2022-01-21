@@ -407,23 +407,7 @@ const controller = {
       res.locals.pageTitle = 'View organisation'
       req.breadcrumbs(res.locals.pageTitle)
       const school = await schoolService.findOneBySlug(req.params.slug)
-      school.audits = [
-        {
-          createdAt: '2021-04-09 11:51:00',
-          auditOperation: 'update',
-          user: 'Joe Bloggs'
-        },
-        {
-          createdAt: '2021-04-11 11:51:00',
-          auditOperation: 'update',
-          user: 'Mary Smith'
-        },
-        {
-          createdAt: '2021-04-15 11:51:00',
-          auditOperation: 'update',
-          user: 'Marley Gant'
-        }
-      ]
+      school.audits = await schoolService.getSchoolAudits(school.id)
       if (!school) {
         return next(new Error(`School not found ${req.params.slug}`))
       }
@@ -538,31 +522,6 @@ const controller = {
       res.send(zipResults)
     } catch (error) {
       next(error)
-    }
-  },
-
-  getAudits: async function getAudits (req, res, next) {
-    try {
-      req.breadcrumbs('Manage organisations', '/service-manager/organisations')
-      req.breadcrumbs('Search organisations', '/service-manager/organisations/search')
-      res.locals.pageTitle = 'Edit organisation'
-      req.breadcrumbs(res.locals.pageTitle)
-      // const audits = await schoolService.getAuditHistory(req.params.slug)
-      /* if (!school) {
-        return next(new Error(`School not found ${req.params.slug}`))
-      } */
-      res.render('service-manager/organisation-audit', {
-        breadcrumbs: req.breadcrumbs(),
-        audits: [
-          {
-            createdAt: '2021-04-09 11:51:00',
-            auditOperation: 'update',
-            user: 'Joe Bloggs'
-          }
-        ]
-      })
-    } catch (error) {
-      return next(error)
     }
   }
 }
