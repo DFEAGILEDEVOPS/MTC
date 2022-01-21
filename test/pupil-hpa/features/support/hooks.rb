@@ -64,12 +64,6 @@ After('@window_date_time_reset') do
   SqlDbHelper.update_check_window(@original['id'], 'checkStartDate', @original_start_date)
 end
 
-After("@remove_access_arrangements") do
-  step 'I login to the admin app'
-  visit ENV["ADMIN_BASE_URL"] + access_arrangements_page.url
-  access_arrangements_page.remove_all_pupils
-end
-
 After do |scenario|
   if scenario.failed?
     time = Time.now.strftime("%H_%M_%S")

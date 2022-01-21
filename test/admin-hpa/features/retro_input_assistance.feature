@@ -6,6 +6,10 @@ Feature:
     When I add an input assistant after taking the check
     Then the input assistant should be stored
 
+  Scenario: Retro input assistant can be removed
+    Given I have added an input assistant retrospectively
+    Then I should be able to remove the retro input assistant
+
   Scenario: Exclude pupils with active restart
     Given I submitted pupils for Restart
     When I am on the retro input page
