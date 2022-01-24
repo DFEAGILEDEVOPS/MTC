@@ -16,11 +16,11 @@ const service = {
    * @param {number} schoolId
    * @returns {Promise<Array<SchoolAuditSummary>>}
    */
-  getSummary: async function getSummary (schoolId) {
+  getSummary: async function getSummary (urlSlug) {
     const params = [{
-      name: 'schoolId',
-      type: TYPES.Int,
-      value: schoolId
+      name: 'urlSlug',
+      type: TYPES.UniqueIdentifier,
+      value: urlSlug
     }]
     const sql = `
       SELECT sa.createdAt, aot.auditOperation, ISNULL(u.identifier, 'system') as [user]
@@ -29,7 +29,8 @@ const service = {
         u.id = sa.operationBy_userId
       INNER JOIN [mtc_admin].[auditOperationTypeLookup] aot ON
         aot.id = sa.auditOperationTypeLookup_id
-      WHERE sa.school_id=@schoolId
+      INNER JOIN [mtc_admin].[school] s ON s.id = sa.school_id
+      WHERE s.urlSlug=@urlSlug
       ORDER BY sa.id DESC`
     return sqlService.readonlyQuery(sql, params)
   }

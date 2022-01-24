@@ -407,10 +407,10 @@ const controller = {
       res.locals.pageTitle = 'View organisation'
       req.breadcrumbs(res.locals.pageTitle)
       const school = await schoolService.findOneBySlug(req.params.slug)
-      school.audits = await schoolService.getSchoolAudits(school.id)
       if (!school) {
         return next(new Error(`School not found ${req.params.slug}`))
       }
+      school.audits = await schoolService.getSchoolAudits(req.params.slug)
       res.render('service-manager/organisation-detail', {
         breadcrumbs: req.breadcrumbs(),
         school
@@ -460,8 +460,7 @@ const controller = {
         dfeNumber: formUtil.convertFromString(req.body?.dfeNumber, formUtilTypes.int),
         urn: formUtil.convertFromString(req.body?.urn, formUtilTypes.int),
         leaCode: formUtil.convertFromString(req.body?.leaCode, formUtilTypes.int),
-        estabCode: formUtil.convertFromString(req.body?.estabCode, formUtilTypes.int),
-        id: formUtil.convertFromString(req.body?.id, formUtilTypes.int)
+        estabCode: formUtil.convertFromString(req.body?.estabCode, formUtilTypes.int)
       }
       await schoolService.updateSchool(req.params.slug, update, req.user.id)
       req.flash('info', 'School updated')

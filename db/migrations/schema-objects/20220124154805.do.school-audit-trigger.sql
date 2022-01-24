@@ -11,10 +11,11 @@ BEGIN
                 BEGIN
                     -- I am an update
                     SELECT @auditOperationTypeLookupId=2
+                    DECLARE @schoolId INT
+                    SELECT @schoolId = id FROM inserted
                     -- incorporate updatedAt trigger logic, to avoid duplicate audit entries
                     UPDATE [mtc_admin].[school] SET updatedAt = GETUTCDATE()
-                    FROM inserted
-                    WHERE [school].id = inserted.id
+                    WHERE id = @schoolId
                 END
             ELSE
                 BEGIN
@@ -35,5 +36,6 @@ BEGIN
     FROM mtc_admin.school s
     INNER JOIN inserted i ON s.id = i.id
 END
-
+GO
 ALTER TABLE [mtc_admin].[school] ENABLE TRIGGER [schoolInsertUpdateAuditTrigger]
+GO

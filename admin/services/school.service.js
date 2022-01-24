@@ -149,9 +149,9 @@ const schoolService = {
    * get list of school audit history
    * @param {number} schoolId
    */
-  getSchoolAudits: async function getSchoolAudits (schoolId) {
-    if (!schoolId) throw new Error('schoolId is required')
-    return schoolAuditDataService.getSummary(schoolId)
+  getSchoolAudits: async function getSchoolAudits (urlSlug) {
+    if (!urlSlug) throw new Error('urlSlug is required')
+    return schoolAuditDataService.getSummary(urlSlug)
   }
 }
 
