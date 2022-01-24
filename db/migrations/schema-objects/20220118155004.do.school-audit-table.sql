@@ -5,7 +5,7 @@ CREATE TABLE [mtc_admin].[schoolAudit] (
     [version] [timestamp] NOT NULL,
     [newData] [nvarchar](max) NULL,
     [school_id] [int] NOT NULL,
-    [operationBy_userId] [int] NOT NULL,
+    [operationBy_userId] [int] NULL,
     CONSTRAINT [PK_schoolAudit] PRIMARY KEY (id)
 );
 
