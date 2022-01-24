@@ -4,14 +4,6 @@ const { TYPES } = require('./sql.service')
 const sqlService = require('./sql.service')
 
 /**
- * @typedef {object} CreateSchoolAuditEntry
- * @property {number} auditOperationTypeId
- * @property {object} newData
- * @property {number} schoolId
- * @property {number} userId
- */
-
-/**
  * @typedef {object} SchoolAuditSummary
  * @property {moment.Moment} createdAt
  * @property {string} auditOperation
@@ -31,23 +23,15 @@ const service = {
       value: schoolId
     }]
     const sql = `
-      SELECT sa.createdAt, aot.auditOperation, u.identifier as [user]
+      SELECT sa.createdAt, aot.auditOperation, ISNULL(u.identifier, 'system') as [user]
       FROM [mtc_admin].[schoolAudit] sa
-      INNER JOIN [mtc_admin].[user] u ON
+      LEFT OUTER JOIN [mtc_admin].[user] u ON
         u.id = sa.operationBy_userId
       INNER JOIN [mtc_admin].[auditOperationTypeLookup] aot ON
         aot.id = sa.auditOperationTypeLookup_id
       WHERE sa.school_id=@schoolId
       ORDER BY sa.id DESC`
     return sqlService.readonlyQuery(sql, params)
-  },
-  /**
-   *
-   * @param {CreateSchoolAuditEntry} auditEntry
-   * @returns {Promise<any>}
-   */
-  createEntry: async function createEntry (auditEntry) {
-    return sqlService.create('schoolAudit', auditEntry)
   }
 }
 

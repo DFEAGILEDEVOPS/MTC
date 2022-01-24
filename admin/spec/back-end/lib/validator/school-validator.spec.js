@@ -47,13 +47,6 @@ describe('school validator', () => {
     expect(ve.isError('leaCode')).toBe(true)
   })
 
-  test('fails if the id is not a number', async () => {
-    jest.spyOn(laCodeValidator, 'validate').mockResolvedValue(new ValidationError())
-    const update = { id: 'abc' }
-    const ve = await sut.validate(update)
-    expect(ve.isError('id')).toBe(true)
-  })
-
   test('passes on the happy path', async () => {
     jest.spyOn(laCodeValidator, 'validate').mockResolvedValue(new ValidationError())
     const update = {

@@ -4,7 +4,6 @@ const schoolDataService = require('../services/data-access/school.data.service')
 const schoolAuditDataService = require('../services/data-access/school-audit.data.service')
 const schoolValidator = require('../lib/validator/school-validator')
 const ValidationError = require('../lib/validation-error')
-const auditTypes = require('../lib/consts/audit-entry-types')
 
 const schoolService = {
   /**
@@ -71,8 +70,7 @@ const schoolService = {
    * @property {any} estabCode,
    * @property {any} leaCode,
    * @property {string} name,
-   * @property {any} urn,
-   * @property {any} id
+   * @property {any} urn
    */
 
   /**
@@ -98,12 +96,6 @@ const schoolService = {
     if (validationError.hasError()) {
       throw validationError
     }
-    await schoolAuditDataService.createEntry({
-      auditOperationTypeId: auditTypes.update,
-      newData: school,
-      schoolId: school.id,
-      userId: userId
-    })
     return schoolDataService.sqlUpdateBySlug(slug, school, userId)
   },
 
