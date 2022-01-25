@@ -142,7 +142,7 @@ When(/^I consume a restart using (.+) and complete the check a second time$/) do
   @pupil_name = pupil.name.text
   pupil.checkbox.click
   restarts_page.sticky_banner.confirm.click
-  visit ENV['ADMIN_BASE_URL'] + generate_pins_overview_page.url
+  navigate_to_pupil_list_for_pin_gen('live')
   generate_pins_overview_page.generate_pin_using_name(@details_hash[:last_name] + ', ' + @details_hash[:first_name])
   pupil_pin_row = view_and_custom_print_live_check_page.pupil_list.rows.find {|row| row.name.text == @details_hash[:last_name] + ', ' + @details_hash[:first_name]}
   @pupil_credentials = {:school_password => pupil_pin_row.school_password.text, :pin => pupil_pin_row.pin.text}
@@ -168,7 +168,7 @@ And(/^I consume another restart using IT issues and complete the check a third t
   @pupil_name = pupil.name.text
   pupil.checkbox.click
   restarts_page.sticky_banner.confirm.click
-  visit ENV['ADMIN_BASE_URL'] + generate_pins_overview_page.url
+  navigate_to_pupil_list_for_pin_gen('live')
   generate_pins_overview_page.generate_pin_using_name(@details_hash[:last_name] + ', ' + @details_hash[:first_name])
   pupil_pin_row = view_and_custom_print_live_check_page.pupil_list.rows.find {|row| row.name.text == @details_hash[:last_name] + ', ' + @details_hash[:first_name]}
   @pupil_credentials = {:school_password => pupil_pin_row.school_password.text, :pin => pupil_pin_row.pin.text}

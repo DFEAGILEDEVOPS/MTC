@@ -10,14 +10,13 @@ class GeneratePinsOverviewPage < SitePrism::Page
     element :toggle, '.govuk-details__summary'
     elements :info_message, '.govuk-list--number li'
   end
-  element :generate_pin_btn, 'input[value="Generate PINs"]'
+  element :generate_pin_btn, 'input[value="Generate official PINs"]'
   element :related_heading, ".govuk-heading-m", text: 'Related'
-  element :guidance, "a", text: 'Guidance'
-  element :group_pupil, "a[href='/group/pupils-list']", text: 'Group pupils'
-  element :restarts, "a[href='/restart/overview']", text: 'Restarts'
+  element :guidance, "a", text: 'Read the guidance and watch videos'
+  element :restarts, "a[href='/restart/overview']", text: 'Select pupils to restart the check'
   element :csrf, 'input[name="_csrf"]', visible: false
 
-  section :group_filter, GroupFilter, '.govuk-grid-column-two-thirds'
+  section :group_filter, GroupFilter, '#main-content .govuk-grid-column-two-thirds'
 
   element :select_all_pupils, '#tickAllCheckboxes'
   element :deselct_all_pupil, '#tickAllCheckboxes', text: 'Deselect all'
@@ -38,18 +37,15 @@ class GeneratePinsOverviewPage < SitePrism::Page
     element :error_info, 'p', text: 'National curriculum assessments helpline'
   end
 
-  element :view_all_pins_btn, 'a', text: "View all pins"
-
   section :generated_pin_overview, '#generatePins' do
     element :generated_pin_heading, 'tr', text: "Generated PINs"
     element :generated_pin_information, 'tbody tr td label', text: "PINs have been generated for"
     element :pin_expiry_info, '.govuk-font-greyed-out', text: "Expires 4pm today"
     element :view_all_pins_btn, 'a', text: "View all pins"
-    element :generate_additional_pins_btn, 'a', text: "Generate PINs"
+    element :generate_additional_pins_btn, 'a', text: "Generate official PINs"
   end
 
   def generate_pin_using_name(name)
-    has_generate_pin_btn? ? generate_pin_btn.click : generated_pin_overview.generate_additional_pins_btn.click
     pupil = find_pupil_row(name)
     name = pupil.name.text
     pupil.checkbox.click
@@ -68,7 +64,6 @@ class GeneratePinsOverviewPage < SitePrism::Page
   end
 
   def generate_pin_for_multiple_pupils(number_of_pupils)
-    has_generate_pin_btn? ? generate_pin_btn.click : generated_pin_overview.generate_additional_pins_btn.click
     pupils_with_no_pin = pupil_list.rows.select {|row| row.has_no_selected?}
     pupils_with_no_pin = pupils_with_no_pin.reject{|row| row.name.text.scan(/[a-zA-Z0-9]+/).join(" ") != row.name.text.delete(',')}
     pupil_array = pupils_with_no_pin[0..number_of_pupils.to_i]
@@ -79,8 +74,13 @@ class GeneratePinsOverviewPage < SitePrism::Page
   end
 
   def find_pupil_row(name)
-    wait_until {!(pupil_list.rows.find {|pupil| pupil.text.include? name}).nil?}
+    Timeout.timeout(ENV['WAIT_TIME'].to_i){sleep 1; visit current_url until pupil_list.rows.find {|pupil| pupil.text.include? name}}
     pupil_list.rows.find {|pupil| pupil.text.include? name}
+  end
+
+  def generate_pins
+    generate_pin_btn.click if has_generate_pin_btn?
+    generated_pin_overview.generate_additional_pins_btn.click if generated_pin_overview.has_generate_additional_pins_btn?
   end
 
 end

@@ -1,0 +1,17 @@
+<% /**
+ * inactive-button.ejs : partial to show an inactive green button with optional explanation
+ *   parameters:
+ *     1. linkDescription
+ *     2. explanationText (optional)
+ */
+ %>
+ <a aria-disabled="true" role="button" draggable="false"
+   class="govuk-button govuk-button--secondary govuk-button--disabled govuk-font-greyed-out"
+   data-module="govuk-button"><%- linkDescription %></a>
+<% if (typeof explanationText !== undefined) {%>
+<div>
+  <strong class="disabled-banner">UNAVAILABLE</strong>
+  <br />
+  <span class="govuk-!-font-size-14 govuk-font-greyed-out"><%= explanationText %></span>
+</div>
+<% } %>

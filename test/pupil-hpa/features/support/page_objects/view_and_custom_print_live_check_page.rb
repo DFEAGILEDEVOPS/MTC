@@ -6,7 +6,7 @@ class ViewAndCustomPrintLiveCheckPage < SitePrism::Page
   element :csrf, 'input[name="_csrf"]', visible: false
 
   element :heading, '.govuk-heading-xl'
-  element :generate_pin_message, '.govuk-body', text: 'Personal identification numbers (PINs) have been generated for pupils. This list contains all active PINs. These expire at 4pm daily.'
+  element :generate_pin_message, '.govuk-body', text: 'PINs have been generated for pupils. This list contains all active PINs. These expire at 4pm daily.'
 
   element :closed_filter, '.filter-label.hidden', text: 'Filter by groups'
   element :opened_filter, '.filter-label', text: 'Filter by groups'
@@ -27,7 +27,7 @@ class ViewAndCustomPrintLiveCheckPage < SitePrism::Page
       element :school_password, '.pin-content span:nth-child(2)'
       element :pin_label, '.pin-content span:nth-child(4)'
       element :pin, '.pin-content span:nth-child(5)'
-      element :group, 'td:nth-child(2)'
+      element :group, 'td:nth-child(3)'
     end
   end
 
