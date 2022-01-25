@@ -1,4 +1,5 @@
-class ViewAndCustomPrintLiveCheckPage < SitePrism::Page
+class ViewAndPrintLivePinsPage < SitePrism::Page
+# class ViewAndCustomPrintLiveCheckPage < SitePrism::Page
 
   set_url "pupil-pin/view-and-custom-print-live-pins"
 

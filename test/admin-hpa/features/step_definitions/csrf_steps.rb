@@ -27,10 +27,10 @@ Then(/^I should see the create group form has a hidden csrf field$/) do
 end
 
 Then(/^I should see the generate pins form has a hidden csrf field$/) do
-  expect(generate_pins_overview_page).to have_csrf
-  value = generate_pins_overview_page.csrf.value
+  expect(generate_live_pins_overview_page).to have_csrf
+  value = generate_live_pins_overview_page.csrf.value
   visit current_url
-  expect(generate_pins_overview_page.csrf.value).to_not eql value
+  expect(generate_live_pins_overview_page.csrf.value).to_not eql value
 end
 
 Then(/^I should see the restarts form has a hidden csrf field$/) do

@@ -52,7 +52,7 @@ end
 
 
 Then(/^the school password should be masked$/) do
-  expect(view_and_custom_print_live_check_page.pupil_list.rows.first.school_password.text).to eql '****'
+  expect(view_and_print_live_pins_page.pupil_list.rows.first.school_password.text).to eql '****'
 end
 
 
@@ -63,9 +63,9 @@ When(/^I generate a live pin for a pupil$/) do
   step "the pupil details should be stored"
   navigate_to_pupil_list_for_pin_gen('live')
   @pupil_forename = name
-  @page = generate_pins_overview_page
-  @pupil_name = generate_pins_overview_page.generate_pin_using_name(name)
-  pupil_pin_row = view_and_custom_print_live_check_page.pupil_list.rows.find {|row| row.name.text == @pupil_name}
+  @page = generate_live_pins_overview_page
+  @pupil_name = generate_live_pins_overview_page.generate_pin_using_name(name)
+  pupil_pin_row = view_and_print_live_pins_page.pupil_list.rows.find {|row| row.name.text == @pupil_name}
   @pupil_credentials = {:school_password => pupil_pin_row.school_password.text, :pin => pupil_pin_row.pin.text}
 end
 
@@ -82,13 +82,13 @@ When(/^I generate a tio pin for a pupil$/) do
   step "I submit the form with the name fields set as #{name}"
   step "the pupil details should be stored"
   navigate_to_pupil_list_for_pin_gen('tio')
-  @page = generate_pins_familiarisation_overview_page
-  @pupil_name = generate_pins_familiarisation_overview_page.generate_pin_using_name(name)
+  @page = generate_tio_pins_overview_page
+  @pupil_name = generate_tio_pins_overview_page.generate_pin_using_name(name)
 end
 
 
 But(/^the pupil pin should be visible$/) do
-  expect(view_and_custom_print_live_check_page.pupil_list.rows.first.pin.text.to_i).to be > 0
+  expect(view_and_print_live_pins_page.pupil_list.rows.first.pin.text.to_i).to be > 0
 end
 
 
@@ -98,5 +98,5 @@ Given(/^I am on the school landing page for a school using an account with the S
 end
 
 Then(/^the school password should be unmasked$/) do
-  expect(view_and_custom_print_live_check_page.pupil_list.rows.first.school_password.text).to eql SqlDbHelper.find_school(@school_id)['pin']
+  expect(view_and_print_live_pins_page.pupil_list.rows.first.school_password.text).to eql SqlDbHelper.find_school(@school_id)['pin']
 end
