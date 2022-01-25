@@ -250,4 +250,35 @@ describe('school.service', () => {
       expect(isArray(data)).toBe(true)
     })
   })
+
+  describe('getAuditPayload', () => {
+    const schoolData = [{
+      id: 1,
+      name: 'my school'
+    }]
+    const stringifiedSchoolData = JSON.stringify(schoolData)
+    const payload = {
+      newData: stringifiedSchoolData
+    }
+    beforeEach(() => {
+      jest.spyOn(schoolAuditDataService, 'getAuditPayload').mockResolvedValue([payload])
+    })
+
+    test('it should throw error if auditEntryId is not provided', async () => {
+      try {
+        await sut.getAuditPayload(undefined)
+        fail('error should have been thrown')
+      } catch (error) {
+        expect(error.message).toBe('auditEntryId is required')
+      }
+      expect(schoolAuditDataService.getAuditPayload).not.toHaveBeenCalled()
+    })
+
+    test('it should return payload when auditEntryId provided', async () => {
+      const data = await sut.getAuditPayload(1)
+      expect(data).toBeDefined()
+      const expectedPayload = JSON.parse(stringifiedSchoolData)[0]
+      expect(data).toStrictEqual(expectedPayload)
+    })
+  })
 })

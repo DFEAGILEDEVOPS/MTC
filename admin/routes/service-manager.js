@@ -128,4 +128,10 @@ router.get('/job/:slug',
   serviceManagerController.downloadJobOutput
 )
 
+router.get(
+  '/audit-payload',
+  isAuthenticated([roles.serviceManager]),
+  serviceManagerController.getAuditPayload
+)
+
 module.exports = router

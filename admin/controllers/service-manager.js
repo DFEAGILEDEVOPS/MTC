@@ -522,6 +522,25 @@ const controller = {
     } catch (error) {
       next(error)
     }
+  },
+
+  /**
+   * @description Renders audit payload
+   * @param {object} req
+   * @param {object} res
+   * @param {object} next
+   */
+  getAuditPayload: async function getAuditPayload (req, res, next) {
+    const auditEntryId = req.query.auditEntryId.trim()
+    let payload
+    try {
+      payload = await schoolService.getAuditPayload(auditEntryId)
+      res.type('json')
+      res.send(JSON.stringify(payload, null, '    '))
+    } catch (error) {
+      res.type('txt')
+      res.send(`${error}`)
+    }
   }
 }
 

@@ -4,7 +4,6 @@ const schoolDataService = require('../services/data-access/school.data.service')
 const schoolAuditDataService = require('../services/data-access/school-audit.data.service')
 const schoolValidator = require('../lib/validator/school-validator')
 const ValidationError = require('../lib/validation-error')
-const moment = require('moment-timezone')
 
 const schoolService = {
   /**
@@ -155,11 +154,25 @@ const schoolService = {
     const items = await schoolAuditDataService.getSummary(urlSlug)
     return items.map(i => {
       return {
+        id: i.id,
         createdAt: i.createdAt.format('LLL'),
         user: i.user,
         auditOperation: i.auditOperation
       }
     })
+  },
+
+  /**
+   * retrieve row data for an audit entry
+   * @param {number} auditEntryId
+   * @returns {Promise<object>}
+   */
+  getAuditPayload: async function getAuditPayload (auditEntryId) {
+    if (!auditEntryId) throw new Error('auditEntryId is required')
+    const results = await schoolAuditDataService.getAuditPayload(auditEntryId)
+    let payload = results[0]
+    payload = JSON.parse(payload.newData)
+    return payload[0]
   }
 }
 

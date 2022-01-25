@@ -81,7 +81,8 @@
                   <% school.audits.forEach((a, i)=> { %>
                     <tr class="govuk-table__row">
                       <td scope="row">
-                        <%= a.createdAt %>
+                        <a class="govuk-link" target="_blank"
+                        href="/service-manager/audit-payload?auditEntryId=<%=a.id %>"><%= a.createdAt %></a>
                       </td>
                       <td class="govuk-table__cell">
                         <%= a.auditOperation %>
