@@ -4,6 +4,7 @@ const schoolDataService = require('../services/data-access/school.data.service')
 const schoolAuditDataService = require('../services/data-access/school-audit.data.service')
 const schoolValidator = require('../lib/validator/school-validator')
 const ValidationError = require('../lib/validation-error')
+const moment = require('moment-timezone')
 
 const schoolService = {
   /**
@@ -151,7 +152,14 @@ const schoolService = {
    */
   getSchoolAudits: async function getSchoolAudits (urlSlug) {
     if (!urlSlug) throw new Error('urlSlug is required')
-    return schoolAuditDataService.getSummary(urlSlug)
+    const items = await schoolAuditDataService.getSummary(urlSlug)
+    return items.map(i => {
+      return {
+        createdAt: i.createdAt.format('LLL'),
+        user: i.user,
+        auditOperation: i.auditOperation
+      }
+    })
   }
 }
 

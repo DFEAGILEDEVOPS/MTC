@@ -9,6 +9,7 @@ const schoolValidator = require('../../../lib/validator/school-validator')
 const ValidationError = require('../../../lib/validation-error')
 const auditOperationTypes = require('../../../lib/consts/audit-entry-types')
 const { isArray } = require('ramda-adjunct')
+const moment = require('moment-timezone')
 
 describe('school.service', () => {
   afterEach(() => {
@@ -215,9 +216,10 @@ describe('school.service', () => {
   })
 
   describe('getSchoolAudits', () => {
+    const createdAt = moment('2022-01-02 14:53:05')
     beforeEach(() => {
       jest.spyOn(schoolAuditDataService, 'getSummary').mockResolvedValue([{
-        createdAt: '2022-01-02 14:53:05',
+        createdAt: createdAt,
         auditOperation: auditOperationTypes.update,
         user: 'foo bar'
       }])
@@ -237,6 +239,14 @@ describe('school.service', () => {
       const urlSlug = '5c4adea7-caea-4d4c-84d2-3e9fbb2db09c'
       const data = await sut.getSchoolAudits(urlSlug)
       expect(data).toBeDefined()
+      expect(isArray(data)).toBe(true)
+    })
+
+    test('createdAt date should be formatted to short date', async () => {
+      const urlSlug = '5c4adea7-caea-4d4c-84d2-3e9fbb2db09c'
+      const data = await sut.getSchoolAudits(urlSlug)
+      expect(data).toBeDefined()
+      expect(data[0].createdAt).toStrictEqual(createdAt.format('LLL'))
       expect(isArray(data)).toBe(true)
     })
   })
