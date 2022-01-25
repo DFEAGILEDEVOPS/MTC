@@ -24,7 +24,7 @@ controller.getSchoolLandingPage = async function getSchoolLandingPage (req, res,
 
     /**
      *
-     * @type {{tryItOutPinGenSlot: *, resultsSlot: string, groupsLinkSlot: *, hdfSlot: *, serviceMessage: unknown, restartPupilSlot: *, schoolName: unknown, officialPinGenSlot: *, pupilStatusSlot: *}}
+     * @type {{resultsSlot: string, groupsLinkSlot: *, hdfSlot: *, serviceMessage: unknown, restartPupilSlot: *, schoolName: unknown, pupilStatusSlot: *}}
      */
     const content = await schoolHomePageService.getContent(req.user)
 
@@ -33,8 +33,6 @@ controller.getSchoolLandingPage = async function getSchoolLandingPage (req, res,
       schoolName: content.schoolName,
       serviceMessage: content.serviceMessage,
       groupsLinkSlot: content.groupsLinkSlot,
-      tryItOutPinGenSlot: content.tryItOutPinGenSlot,
-      officialPinGenSlot: content.officialPinGenSlot,
       restartPupilSlot: content.restartPupilSlot,
       hdfSlot: content.hdfSlot,
       resultsSlot: content.resultsSlot,

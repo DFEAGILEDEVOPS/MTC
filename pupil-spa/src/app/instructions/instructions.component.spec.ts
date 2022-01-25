@@ -47,9 +47,21 @@ describe('InstructionsComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should set modeText to appropriate text when in practice mode', async () => {
+    component.config.practice = true;
+    const mode = component.modeText;
+    expect(mode).toEqual('Try it Out');
+  });
+
   it('redirects to practice questions instructions page', () => {
     component.onClick();
     expect(mockRouter.navigate).toHaveBeenCalledWith(['check']);
+  });
+
+  it('should set modeText to appropriate text when in live mode', async () => {
+    component.config.practice = false;
+    const mode = component.modeText;
+    expect(mode).toEqual('Official');
   });
 
   describe('audit entry', () => {

@@ -18,8 +18,7 @@ And(/^I can see instructions for generating pin for familiarisation$/) do
 end
 
 And(/^I click familiarisation Generate PINs button$/) do
-  generate_pins_familiarisation_overview_page.generate_pin_btn.click if generate_pins_overview_page.has_generate_pin_btn?
-  generate_pins_familiarisation_overview_page.generate_more_pin_btn.click if view_and_custom_print_live_check_page.has_generate_more_pin_btn?
+  navigate_to_pupil_list_for_pin_gen('tio')
 end
 
 Then(/^I cannot see this pupil in the list of Pupil on Generate Pin familiarisation list page$/) do
@@ -32,9 +31,8 @@ Then(/^I can see this pupil in the list of Pupil on Generate Pin familiarisation
   expect(pupils_from_page.join.include?(@pupil_forename)).to be_truthy, "#{@pupil_forename} is Not displayed in the list ... Expected - It Should"
 end
 
-And(/^I am on familiarisation generate pins pupil List page$/) do
-  step 'I am on the generate pupil pins familiarisation page'
-  step 'I click Generate PINs button'
+And(/^I am on familiarisation generate pins pupil list page$/) do
+  navigate_to_pupil_list_for_pin_gen('tio')
   @page = generate_pins_overview_page
 end
 
@@ -62,7 +60,7 @@ When(/^I click on the Pupil heading on familiarisation generate pin pupil list p
 end
 
 When(/^I select a Pupil from familiarisation Generate Pin page$/) do
-  step "I am on familiarisation generate pins pupil List page"
+  step "I am on familiarisation generate pins pupil list page"
   pupil = generate_pins_familiarisation_overview_page.pupil_list.rows.find {|row| row.has_no_selected?}
   pupil.checkbox.click
 end
@@ -85,8 +83,7 @@ When(/^I have generated a familiarisation pin for a pupil$/) do
   step "I am on the add pupil page"
   step "I submit the form with the name fields set as #{name}"
   step "the pupil details should be stored"
-  step "I am on the generate pupil pins familiarisation page"
-  step "I click Generate PINs button"
+  navigate_to_pupil_list_for_pin_gen('tio')
   @page = generate_pins_familiarisation_overview_page
   @pupil_name = generate_pins_familiarisation_overview_page.generate_pin_using_name(name)
 end
@@ -95,7 +92,7 @@ Then(/^the familiarisation pin should consist of (\d+) characters$/) do |size|
   expect(custom_pins_familiarisation_page.find_pupil_row(@pupil_name).pin.text.size).to eql size.to_i
 end
 
-When(/^I click View all pins button$/) do
+When(/^I click view all tio pins button$/) do
   generate_pins_familiarisation_overview_page.view_all_pins_btn.click
 end
 
@@ -136,4 +133,31 @@ end
 Then(/^familiarisation school password should be generated from the specified pool of characters$/) do
   school_pwd = custom_pins_familiarisation_page.find_pupil_row(@pupil_name).school_password.text
   school_pwd.split('').each {|char| expect("23456789abcdefghijklmnoprstuvwxyz").to include char}
+end
+
+
+When(/^I click Generate tio PINs button$/) do
+  generate_pins_familiarisation_overview_page.generate_pins
+end
+
+
+And(/^I navigate to generate pupil pins familiarisation page$/) do
+  school_landing_page.generate_passwords_and_pins.click
+  tio_or_live_pins_page.generate_tio_pins.click
+end
+
+When(/^I choose to filter via group on the generate pins familiarisation page$/) do
+  sleep 20
+  navigate_to_pupil_list_for_pin_gen('tio')
+  @page = generate_pins_familiarisation_overview_page
+  generate_pins_familiarisation_overview_page.group_filter.closed_filter.click unless generate_pins_overview_page.group_filter.has_opened_filter?
+  group = generate_pins_familiarisation_overview_page.group_filter.groups.find {|group| group.name.text.include? @group_name}
+  group.checkbox.click
+end
+
+Given(/^I have generated familiarisation pins for all pupils in a group$/) do
+  step 'I have a group of pupils'
+  step 'I choose to filter via group on the generate pins familiarisation page'
+  step 'I should only see pupils from the group'
+  step 'I should be able to generate pins for all pupils in this group'
 end

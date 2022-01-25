@@ -8,9 +8,18 @@ const {
   getGeneratePinsOverview,
   getGeneratePinsList,
   postGeneratePins,
-  getViewAndCustomPrintPins
+  getViewAndCustomPrintPins,
+  getSelectOfficialOrTryItOutPinGen
 } = require('../controllers/pupil-pin')
 
+router.get(
+  '/select-official-or-try-it-out',
+  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),
+  isAdminWindowAvailable,
+  getSelectOfficialOrTryItOutPinGen
+)
+
+// TODO: JMS: Move new page to replace the overview page which has a lot of good behaviour
 router.get(
   '/generate-:pinEnv-pins-overview',
   isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),

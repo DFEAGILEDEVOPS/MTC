@@ -1,0 +1,43 @@
+<%- partial('partials/_gds_breadcrumbs_and_sign_out', { breadcrumbs }) %>
+  <main class="govuk-main-wrapper govuk-body" id="main-content" role="main">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+        <%- partial('partials/_gds_session_expiry') %>
+          <%- partial('partials/_flash-messages') %>
+            <h1 class="govuk-heading-xl">
+              <%= pageTitle %>
+            </h1>
+
+            <p>
+              Pupils will need a PIN and a school password to access the MTC. The link for the pupil to start the check
+              is
+              <a class="govuk-link" target="_blank" rel="noopener noreferrer" href="<%= pupilAppURL %>">
+                <%= pupilAppURL %>
+              </a>
+            </p>
+
+            <p>
+              These expire at 4pm daily.
+            </p>
+
+            <p>
+              Select <a href='/access-arrangements/overview' class="govuk-link">access arrangements</a> for pupils who
+              need it before generating PINs.
+            <p>
+
+      </div>
+    </div>
+
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-one-third">
+        <div class="govuk-inset-text">
+          <%- slots.tryItOutPinGenSlot %>
+        </div>
+      </div>
+      <div class="govuk-grid-column-one-third">
+        <div class="govuk-inset-text">
+          <%- slots.officialPinGenSlot %>
+        </div>
+      </div>
+    </div
+  </main>

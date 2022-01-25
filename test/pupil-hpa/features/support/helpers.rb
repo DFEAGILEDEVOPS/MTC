@@ -102,4 +102,20 @@ module Helpers
     end
   end
 
+  def navigate_to_pupil_list_for_pin_gen(check_type)
+    visit ENV['ADMIN_BASE_URL'] + tio_or_live_pins_page.url
+    case check_type
+    when 'tio'
+      tio_or_live_pins_page.generate_tio_pins.click
+      generate_pins_familiarisation_overview_page.generate_pin_btn.click if generate_pins_familiarisation_overview_page.has_generate_pin_btn?
+      generate_pins_familiarisation_overview_page.generated_pin_overview.generate_additional_pins_btn.click if generate_pins_familiarisation_overview_page.generated_pin_overview.has_generate_additional_pins_btn?
+    when 'live'
+      tio_or_live_pins_page.generate_live_pins.click
+      generate_pins_overview_page.generate_pin_btn.click if generate_pins_overview_page.has_generate_pin_btn?
+      generate_pins_overview_page.generated_pin_overview.generate_additional_pins_btn.click if generate_pins_overview_page.generated_pin_overview.has_generate_additional_pins_btn?
+    else
+      fail 'check type not found'
+    end
+  end
+
 end

@@ -24,7 +24,7 @@ module Helpers
     end
     academic_year
   end
-  
+
   def get_highest_estab_code
     SqlDbHelper.get_schools_list.map {|school| school['estabCode']}.sort.last
   end
@@ -55,7 +55,7 @@ module Helpers
     end
   end
 
-  def prior_fridays(date,fridays_ago)
+  def prior_fridays(date, fridays_ago)
     days_before = (date.wday + 1) % 7 + 1
     most_recent = date.to_date - days_before
     diff = (date.mjd - most_recent.mjd)
@@ -69,8 +69,8 @@ module Helpers
     end
   end
 
-  def get_service_bus_queue(name,config_array)
-    config_array.select{|config| config['name'] == name}
+  def get_service_bus_queue(name, config_array)
+    config_array.select {|config| config['name'] == name}
   end
 
   def get_expected_config(name)
@@ -79,16 +79,33 @@ module Helpers
     ps_staging_max_size = ENV['SERVICE_BUS_QUEUE_MAX_SIZE_MEGABYTES_PS_REPORT_STAGING'].nil? ? 81920 : ENV['SERVICE_BUS_QUEUE_MAX_SIZE_MEGABYTES_PS_REPORT_STAGING']
     ps_export_max_size = ENV['SERVICE_BUS_QUEUE_MAX_SIZE_MEGABYTES_PS_REPORT_EXPORT'].nil? ? 81920 : ENV['SERVICE_BUS_QUEUE_MAX_SIZE_MEGABYTES_PS_REPORT_EXPORT']
     case name
-    when 'check-completion','check-notification','check-marking','check-notification','check-sync','check-validation','pupil-login','queue-replay','school-results-cache','sync-results-to-db-complete'
-      [{"maxSizeInMegabytes"=>default_max_size.to_i, "defaultMessageTimeToLive"=>"P120D", "lockDuration"=>"PT5M", "requiresDuplicateDetection"=>true, "deadLetteringOnMessageExpiration"=>true, "duplicateDetectionHistoryTimeWindow"=>"P1D", "enablePartitioning"=>false, "requiresSession"=>false, "name"=>name}]
+    when 'check-completion', 'check-notification', 'check-marking', 'check-notification', 'check-sync', 'check-validation', 'pupil-login', 'queue-replay', 'school-results-cache', 'sync-results-to-db-complete'
+      [{"maxSizeInMegabytes" => default_max_size.to_i, "defaultMessageTimeToLive" => "P120D", "lockDuration" => "PT5M", "requiresDuplicateDetection" => true, "deadLetteringOnMessageExpiration" => true, "duplicateDetectionHistoryTimeWindow" => "P1D", "enablePartitioning" => false, "requiresSession" => false, "name" => name}]
     when 'ps-report-schools'
-      [{"maxSizeInMegabytes"=>ps_schools_max_size.to_i, "defaultMessageTimeToLive"=>"P6D", "lockDuration"=>"PT5M", "requiresDuplicateDetection"=>true, "deadLetteringOnMessageExpiration"=>true, "duplicateDetectionHistoryTimeWindow"=>"P1D", "enablePartitioning"=>false, "requiresSession"=>false, "name"=>"ps-report-schools"}]
+      [{"maxSizeInMegabytes" => ps_schools_max_size.to_i, "defaultMessageTimeToLive" => "P6D", "lockDuration" => "PT5M", "requiresDuplicateDetection" => true, "deadLetteringOnMessageExpiration" => true, "duplicateDetectionHistoryTimeWindow" => "P1D", "enablePartitioning" => false, "requiresSession" => false, "name" => "ps-report-schools"}]
     when 'ps-report-staging'
-      [{"maxSizeInMegabytes"=>ps_staging_max_size.to_i, "defaultMessageTimeToLive"=>"P6D", "lockDuration"=>"PT5M", "requiresDuplicateDetection"=>true, "deadLetteringOnMessageExpiration"=>true, "duplicateDetectionHistoryTimeWindow"=>"P1D", "enablePartitioning"=>false, "requiresSession"=>false, "name"=>"ps-report-staging"}]
+      [{"maxSizeInMegabytes" => ps_staging_max_size.to_i, "defaultMessageTimeToLive" => "P6D", "lockDuration" => "PT5M", "requiresDuplicateDetection" => true, "deadLetteringOnMessageExpiration" => true, "duplicateDetectionHistoryTimeWindow" => "P1D", "enablePartitioning" => false, "requiresSession" => false, "name" => "ps-report-staging"}]
     when 'ps-report-export'
-      [{"maxSizeInMegabytes"=>ps_export_max_size.to_i, "defaultMessageTimeToLive"=>"P6D", "lockDuration"=>"PT5M", "requiresDuplicateDetection"=>true, "deadLetteringOnMessageExpiration"=>true, "duplicateDetectionHistoryTimeWindow"=>"P1D", "enablePartitioning"=>false, "requiresSession"=>false, "name"=>"ps-report-export"}]
+      [{"maxSizeInMegabytes" => ps_export_max_size.to_i, "defaultMessageTimeToLive" => "P6D", "lockDuration" => "PT5M", "requiresDuplicateDetection" => true, "deadLetteringOnMessageExpiration" => true, "duplicateDetectionHistoryTimeWindow" => "P1D", "enablePartitioning" => false, "requiresSession" => false, "name" => "ps-report-export"}]
     else
       fail 'Name of queue not found'
+    end
+  end
+
+  def navigate_to_pupil_list_for_pin_gen(check_type)
+    school_landing_page.load
+    school_landing_page.generate_passwords_and_pins.click
+    case check_type
+    when 'tio'
+      tio_or_live_pins_page.generate_tio_pins.click
+      generate_pins_familiarisation_overview_page.generate_pin_btn.click if generate_pins_familiarisation_overview_page.has_generate_pin_btn?
+      generate_pins_familiarisation_overview_page.generated_pin_overview.generate_additional_pins_btn.click if generate_pins_familiarisation_overview_page.generated_pin_overview.has_generate_additional_pins_btn?
+    when 'live'
+      tio_or_live_pins_page.generate_live_pins.click
+      generate_pins_overview_page.generate_pin_btn.click if generate_pins_overview_page.has_generate_pin_btn?
+      generate_pins_overview_page.generated_pin_overview.generate_additional_pins_btn.click if generate_pins_overview_page.generated_pin_overview.has_generate_additional_pins_btn?
+    else
+      fail 'check type not found'
     end
   end
 
