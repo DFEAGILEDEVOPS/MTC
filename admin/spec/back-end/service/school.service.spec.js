@@ -223,18 +223,19 @@ describe('school.service', () => {
       }])
     })
 
-    test('it should throw error if schoolId is undefined', async () => {
+    test('it should throw error if urlSlug is undefined', async () => {
       try {
         await sut.getSchoolAudits(undefined)
         fail('error should have been thrown')
       } catch (error) {
-        expect(error.message).toBe('schoolId is required')
+        expect(error.message).toBe('urlSlug is required')
       }
       expect(schoolAuditDataService.getSummary).not.toHaveBeenCalled()
     })
 
-    test('it should return audit entries when schoolId provided', async () => {
-      const data = await sut.getSchoolAudits(1)
+    test('it should return audit entries when urlSlug provided', async () => {
+      const urlSlug = '5c4adea7-caea-4d4c-84d2-3e9fbb2db09c'
+      const data = await sut.getSchoolAudits(urlSlug)
       expect(data).toBeDefined()
       expect(isArray(data)).toBe(true)
     })

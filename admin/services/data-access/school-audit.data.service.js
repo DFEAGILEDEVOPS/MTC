@@ -12,8 +12,8 @@ const sqlService = require('./sql.service')
 
 const service = {
   /**
-   * returns a summary of all changes for a school, grouped by the internal transaction id
-   * @param {number} schoolId
+   * returns a summary of all audited changes for a specified school
+   * @param {number} urlSlug
    * @returns {Promise<Array<SchoolAuditSummary>>}
    */
   getSummary: async function getSummary (urlSlug) {

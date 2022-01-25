@@ -50,7 +50,6 @@ describe('school validator', () => {
   test('passes on the happy path', async () => {
     jest.spyOn(laCodeValidator, 'validate').mockResolvedValue(new ValidationError())
     const update = {
-      id: 1,
       name: 'Test school',
       leaCode: 999,
       estabCode: 111,
