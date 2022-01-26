@@ -136,8 +136,8 @@ end
 
 And(/^Pupil has taken a 2nd check$/) do
   navigate_to_pupil_list_for_pin_gen('live')
-  @page = generate_pins_overview_page
-  @pupil_name = generate_pins_overview_page.generate_pin_using_name(@details_hash[:first_name])
+  @page = generate_live_pins_overview_page
+  @pupil_name = generate_live_pins_overview_page.generate_pin_using_name(@details_hash[:first_name])
 
   step 'pupil logs in and completed the check'
   restarts_page.load
@@ -271,7 +271,7 @@ end
 
 And(/^I generate a pin for that pupil$/) do
   navigate_to_pupil_list_for_pin_gen('live')
-  @pupil_name = generate_pins_overview_page.generate_pin_using_name(@details_hash[:first_name])
+  @pupil_name = generate_live_pins_overview_page.generate_pin_using_name(@details_hash[:first_name])
 end
 
 And(/^I navigate to the restarts page$/) do
@@ -279,10 +279,10 @@ And(/^I navigate to the restarts page$/) do
 end
 
 And(/^the pin should also be removed$/) do
-  view_and_custom_print_live_check_page.load
-  array_of_names = view_and_custom_print_live_check_page.pupil_list.rows.map {|row| row.name.text} unless view_and_custom_print_live_check_page.has_no_pupil_list?
-  expect(array_of_names).to_not include @details_hash[:first_name] if view_and_custom_print_live_check_page.has_pupil_list?
-  expect(view_and_custom_print_live_check_page).to_not have_pupil_list unless view_and_custom_print_live_check_page.has_pupil_list?
+  view_and_print_live_pins_page.load
+  array_of_names = view_and_print_live_pins_page.pupil_list.rows.map {|row| row.name.text} unless view_and_print_live_pins_page.has_no_pupil_list?
+  expect(array_of_names).to_not include @details_hash[:first_name] if view_and_print_live_pins_page.has_pupil_list?
+  expect(view_and_print_live_pins_page).to_not have_pupil_list unless view_and_print_live_pins_page.has_pupil_list?
 
 end
 
@@ -302,9 +302,9 @@ Given(/^I have more than (\d+) pupils eligible for a restart$/) do |number_of_re
   step 'I am on the add multiple pupil page'
   @upns_for_school = add_multiple_pupil_page.upload_pupils(@number_of_restarts, @school_name)
   navigate_to_pupil_list_for_pin_gen('live')
-  generate_pins_overview_page.select_all_pupils.click
-  expect(generate_pins_overview_page.sticky_banner.selected_count.text.to_i).to be >= @number_of_restarts
-  generate_pins_overview_page.sticky_banner.confirm.click
+  generate_live_pins_overview_page.select_all_pupils.click
+  expect(generate_live_pins_overview_page.sticky_banner.selected_count.text.to_i).to be >= @number_of_restarts
+  generate_live_pins_overview_page.sticky_banner.confirm.click
   expect(current_url).to include '/view-and-custom-print-live-pins'
   @upns_for_school.each do |upn|
     pupil_detail = SqlDbHelper.pupil_details_using_school(upn,@school_id)

@@ -23,9 +23,9 @@ end
 
 
 And(/^I navigate to the live check overview page$/) do
-  generate_pins_overview_page.load
+  generate_live_pins_overview_page.load
 end
 
 And(/^I navigate to the tio check overview page$/) do
-  generate_pins_familiarisation_overview_page.load
+  generate_tio_pins_overview_page.load
 end

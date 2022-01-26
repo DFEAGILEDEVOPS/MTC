@@ -1,4 +1,5 @@
-class GeneratePinsFamiliarisationOverviewPage < SitePrism::Page
+# class GeneratePinsFamiliarisationOverviewPage < SitePrism::Page
+class GenerateTioPinsOverviewPage < SitePrism::Page
   set_url '/pupil-pin/generate-familiarisation-pins-overview'
 
   element :heading, '.govuk-heading-xl'
