@@ -3,14 +3,14 @@ And(/^I navigate to generate passwords and pins page$/) do
 end
 
 Then(/^generate pin overview page for live check is displayed as per design$/) do
-  expect(generate_pins_overview_page).to have_heading
-  expect(generate_pins_overview_page).to have_generate_pin_message
-  expect(generate_pins_overview_page).to have_access_arrangment_text
-  expect(generate_pins_overview_page).to have_access_arrangment_link
+  expect(generate_live_pins_overview_page).to have_heading
+  expect(generate_live_pins_overview_page).to have_generate_pin_message
+  expect(generate_live_pins_overview_page).to have_access_arrangment_text
+  expect(generate_live_pins_overview_page).to have_access_arrangment_link
 end
 
 Then(/^generated pin overview page for live check with some pin generated is displayed as per design$/) do
-  expect(generate_pins_overview_page.generated_pin_overview).to be_all_there
+  expect(generate_live_pins_overview_page.generated_pin_overview).to be_all_there
 end
 
 Given(/^I have a pupil not taking the check$/) do
@@ -26,7 +26,7 @@ Given(/I have a pupil not taking the check with reason '(.*)'/) do |reason|
 end
 
 Then(/^I cannot see this pupil in the list of Pupil on Generate Pin list page$/) do
-  pupils_from_page = generate_pins_overview_page.pupil_list.rows.map {|x| x.name.text}
+  pupils_from_page = generate_live_pins_overview_page.pupil_list.rows.map {|x| x.name.text}
   expect(pupils_from_page.include?(@pupil_forename)).to be_falsy, "#{@pupil_forename} is displayed in the list ... Expected - It Shouldn't"
 end
 
@@ -40,65 +40,65 @@ Then(/^I can see pupil in the list for pupil for not taking check$/) do
 end
 
 When(/^I click on the Pupil heading$/) do
-  generate_pins_overview_page.pupil_column_heading.click
+  generate_live_pins_overview_page.pupil_column_heading.click
 end
 
 Then(/^I should see a list of pupils sorted by surname in '(.*)' order on Generate Pins List Page$/) do |sort_order|
   if sort_order.eql?('descending')
-    sorted_pupils_from_page = generate_pins_overview_page.pupil_list.rows.map {|x| x.name.text}.sort.reverse
+    sorted_pupils_from_page = generate_live_pins_overview_page.pupil_list.rows.map {|x| x.name.text}.sort.reverse
   else
-    sorted_pupils_from_page = generate_pins_overview_page.pupil_list.rows.map {|x| x.name.text}.sort
+    sorted_pupils_from_page = generate_live_pins_overview_page.pupil_list.rows.map {|x| x.name.text}.sort
   end
 
-  pupils_from_page = generate_pins_overview_page.pupil_list.rows.map {|x| x.name.text}
+  pupils_from_page = generate_live_pins_overview_page.pupil_list.rows.map {|x| x.name.text}
   expect(sorted_pupils_from_page).to match_array(pupils_from_page)
 end
 
 Then(/^I should be able to select them via a checkbox on Generate Pin page$/) do
-  generate_pins_overview_page.pupil_list.rows.each {|pupil| expect(pupil).to have_checkbox}
+  generate_live_pins_overview_page.pupil_list.rows.each {|pupil| expect(pupil).to have_checkbox}
 end
 
 Then(/^I should have a option to select all pupils on Generate Pin page$/) do
-  expect(generate_pins_overview_page).to have_select_all_pupils
+  expect(generate_live_pins_overview_page).to have_select_all_pupils
 end
 
 Then(/^I should be taken to Generate Pupil Pins Page$/) do
-  pins_page = generate_pins_overview_page.displayed? ? generate_pins_overview_page : view_and_custom_print_live_check_page
+  pins_page = generate_live_pins_overview_page.displayed? ? generate_live_pins_overview_page : view_and_print_live_pins_page
   expect(pins_page).to be_displayed
 end
 
 Then(/^I should be taken to Generated Pins Page$/) do
-  expect(generate_pins_overview_page).to be_displayed
+  expect(generate_live_pins_overview_page).to be_displayed
 end
 
 When(/^I select a Pupil from Generate Pin page$/) do
-  pupil = generate_pins_overview_page.pupil_list.rows.find {|row| row.has_no_selected?}
+  pupil = generate_live_pins_overview_page.pupil_list.rows.find {|row| row.has_no_selected?}
   pupil.checkbox.click
 end
 
 When(/^I select all pupils for Generate pin$/) do
-  generate_pins_overview_page.select_all_pupils.click
+  generate_live_pins_overview_page.select_all_pupils.click
 end
 
 When(/^I deselect all pupils from Generate Pin Page$/) do
-  generate_pins_overview_page.select_all_pupils.click
+  generate_live_pins_overview_page.select_all_pupils.click
   expect(@page).to have_sticky_banner
-  generate_pins_overview_page.select_all_pupils.click
+  generate_live_pins_overview_page.select_all_pupils.click
 end
 
 When('I am on the generate pupil live pins page') do
   navigate_to_pupil_list_for_pin_gen('live')
-  @page = generate_pins_overview_page
+  @page = generate_live_pins_overview_page
 end
 
 When(/^I select a Pupil to Generate more pins$/) do
   step "I am on the generate pupil live pins page"
-  pupil = generate_pins_overview_page.pupil_list.rows.find {|row| row.has_no_selected?}
+  pupil = generate_live_pins_overview_page.pupil_list.rows.find {|row| row.has_no_selected?}
   pupil.checkbox.click
 end
 
 When(/^I select multiple pupils from Generate Pin Page$/) do
-  @pupils = generate_pins_overview_page.pupil_list.rows.select {|row| row.has_no_selected?}
+  @pupils = generate_live_pins_overview_page.pupil_list.rows.select {|row| row.has_no_selected?}
   @pupils[0..3].each {|pupil| pupil.checkbox.click}
   @pupil_names = @pupils[0..3].map {|pupil| pupil.name.text}
 end
@@ -111,14 +111,14 @@ When(/^I have generated a live pin for a pupil$/) do
   step "the pupil details should be stored"
   navigate_to_pupil_list_for_pin_gen('live')
   @pupil_forename = name
-  @page = generate_pins_overview_page
-  @pupil_name = generate_pins_overview_page.generate_pin_using_name(name)
-  pupil_pin_row = view_and_custom_print_live_check_page.pupil_list.rows.find {|row| row.name.text == @pupil_name}
+  @page = generate_live_pins_overview_page
+  @pupil_name = generate_live_pins_overview_page.generate_pin_using_name(name)
+  pupil_pin_row = view_and_print_live_pins_page.pupil_list.rows.find {|row| row.name.text == @pupil_name}
   @pupil_credentials = {:school_password => pupil_pin_row.school_password.text, :pin => pupil_pin_row.pin.text}
 end
 
 When(/^I click view all pins button$/) do
-  generate_pins_overview_page.view_all_pins_btn.click
+  generate_live_pins_overview_page.view_all_pins_btn.click
 end
 
 Given(/^I have generated pin for all pupil$/) do
@@ -126,30 +126,30 @@ Given(/^I have generated pin for all pupil$/) do
   SqlDbHelper.set_pupil_attendance_via_school(5, 'null')
   step "I have signed in with #{@username}"
   step "I am on the generate pupil live pins page"
-  generate_pins_overview_page.select_all_pupils.click
-  generate_pins_overview_page.sticky_banner.confirm.click
+  generate_live_pins_overview_page.select_all_pupils.click
+  generate_live_pins_overview_page.sticky_banner.confirm.click
 end
 
 Then(/^the pin should consist of (\d+) characters$/) do |size|
-  expect(view_and_custom_print_live_check_page.find_pupil_row(@pupil_name).pin.text.size).to eql size.to_i
+  expect(view_and_print_live_pins_page.find_pupil_row(@pupil_name).pin.text.size).to eql size.to_i
 end
 
 Then(/^the school password should consist of (\d+) characters$/) do |size|
-  expect(view_and_custom_print_live_check_page.find_pupil_row(@pupil_name).school_password.text.size).to eql size.to_i
+  expect(view_and_print_live_pins_page.find_pupil_row(@pupil_name).school_password.text.size).to eql size.to_i
 end
 
 Then(/^the school password should not contain charachter 'q'$/) do
-  school_pwd = view_and_custom_print_live_check_page.find_pupil_row(@pupil_name).school_password.text
+  school_pwd = view_and_print_live_pins_page.find_pupil_row(@pupil_name).school_password.text
   school_pwd.split('').each {|char| expect(char.eql?('q')).to be_falsey, "'q' char is included in school password - #{school_pwd}"}
 end
 
 Then(/^all pupil pins should be generated from the specified pool of characters$/) do
-  pins_array = view_and_custom_print_live_check_page.pupil_list.rows.map {|pupil| pupil.pin.text}
+  pins_array = view_and_print_live_pins_page.pupil_list.rows.map {|pupil| pupil.pin.text}
   pins_array.each {|pin| pin.split('').each {|char| expect("23456789").to include char}}
 end
 
 Then(/^school password should be generated from the specified pool of characters$/) do
-  school_pwd = view_and_custom_print_live_check_page.find_pupil_row(@pupil_name).school_password.text
+  school_pwd = view_and_print_live_pins_page.find_pupil_row(@pupil_name).school_password.text
   school_pwd.split('').each {|char| expect("23456789abcdefghijklmnoprstuvwxyz").to include char}
 end
 
@@ -159,12 +159,12 @@ Given(/^I have generated pins for multiple pupils$/) do
   @upn_list = add_multiple_pupil_page.create_and_upload_multiple_pupils(3, 'pin_gen.csv')
   step 'I am on the generate pupil live pins page'
   @pupil_names_arr = @upn_list.map {|upn| SqlDbHelper.pupil_details(upn, @school_id)['lastName'] + ', ' + SqlDbHelper.pupil_details(upn, @school_id)['foreName']}
-  generate_pins_overview_page.generate_pin_using_list_of_names(@pupil_names_arr)
+  generate_live_pins_overview_page.generate_pin_using_list_of_names(@pupil_names_arr)
 end
 
 Then(/^each pin should be displayed next to the pupil its assigned to$/) do
-  view_and_custom_print_live_check_page.load
-  @pupil_names_arr.each {|name| expect(view_and_custom_print_live_check_page.find_pupil_row(name)).to have_pin}
+  view_and_print_live_pins_page.load
+  @pupil_names_arr.each {|name| expect(view_and_print_live_pins_page.find_pupil_row(name)).to have_pin}
 end
 
 Then(/^the pupil pin should be unique$/) do
@@ -177,7 +177,7 @@ Then(/^the pin should be stored against the pupil$/) do
   pupil_id = SqlDbHelper.pupil_details(pupil_upn, @school_id)['id']
   check_entry = SqlDbHelper.check_details(pupil_id)
   pupil_pin = SqlDbHelper.get_pupil_pin(check_entry['id'])['val']
-  expect(view_and_custom_print_live_check_page.find_pupil_row(@pupil_name).pin.text).to eql pupil_pin.to_s
+  expect(view_and_print_live_pins_page.find_pupil_row(@pupil_name).pin.text).to eql pupil_pin.to_s
 end
 
 Then(/^check form should be assigned to the pupil$/) do
@@ -191,26 +191,26 @@ end
 Then(/^I should see the school password for (.*)$/) do |teacher|
   school_id = SqlDbHelper.find_teacher(teacher)['school_id']
   school_password = SqlDbHelper.find_school(school_id)['pin']
-  expect(view_and_custom_print_live_check_page.find_pupil_row(@pupil_name).school_password.text).to eql school_password
+  expect(view_and_print_live_pins_page.find_pupil_row(@pupil_name).school_password.text).to eql school_password
 end
 
 Then(/^I should see information for Pupil pin and School password$/) do
   cd = Time.now
   str1 = "#{cd.strftime('%A')} #{cd.strftime('%-d')} #{cd.strftime('%B')}"
-  expect(view_and_custom_print_live_check_page.school_password_info.text.include?('Pupil PINs and school password generated')).to be_truthy, "Expected:'Pupil PINs and school password generated' -- not found"
-  expect(view_and_custom_print_live_check_page.school_password_info.text.include?("Valid only until 4pm, #{str1}")).to be_truthy, "Expected: 'Valid only until 4pm, #{str1}' -- not found"
+  expect(view_and_print_live_pins_page.school_password_info.text.include?('Pupil PINs and school password generated')).to be_truthy, "Expected:'Pupil PINs and school password generated' -- not found"
+  expect(view_and_print_live_pins_page.school_password_info.text.include?("Valid only until 4pm, #{str1}")).to be_truthy, "Expected: 'Valid only until 4pm, #{str1}' -- not found"
 end
 
 Then(/^I should see link to download all pupil pins$/) do
-  expect(view_and_custom_print_live_check_page).to have_download_pin_link
+  expect(view_and_print_live_pins_page).to have_download_pin_link
 end
 
 Then(/^I should see link to create custom download$/) do
-  expect(view_and_custom_print_live_check_page).to have_custom_download_link
+  expect(view_and_print_live_pins_page).to have_custom_download_link
 end
 
 Then(/^the sticky banner should display the total pupil count on Generate Pin Page$/) do
-  total_pupil_count = generate_pins_overview_page.pupil_list.rows.count
+  total_pupil_count = generate_live_pins_overview_page.pupil_list.rows.count
   expect(@page.sticky_banner.selected_count.text).to eql total_pupil_count.to_s
 end
 
@@ -220,12 +220,12 @@ When(/^I decide the pupil should not be taking the check$/) do
 end
 
 Then(/^the pin should be expired$/) do
-  generate_pins_overview_page.load
-  if generate_pins_overview_page.has_pupil_list?
-    pupil_pins = generate_pins_overview_page.pupil_list.rows.map {|row| row.name.text}
+  generate_live_pins_overview_page.load
+  if generate_live_pins_overview_page.has_pupil_list?
+    pupil_pins = generate_live_pins_overview_page.pupil_list.rows.map {|row| row.name.text}
     expect(pupil_pins).to_not include @pupil_name
   else
-    expect(generate_pins_overview_page).to have_no_pupil_list
+    expect(generate_live_pins_overview_page).to have_no_pupil_list
   end
 end
 
@@ -238,28 +238,28 @@ end
 
 When(/^I choose to filter via group on the generate pins page$/) do
   navigate_to_pupil_list_for_pin_gen('live')
-  @page = generate_pins_overview_page
-  Timeout.timeout(ENV['WAIT_TIME'].to_i) {visit current_url until !generate_pins_overview_page.group_filter.groups.empty?}
-  Timeout.timeout(ENV['WAIT_TIME'].to_i) {visit current_url until generate_pins_overview_page.group_filter.groups.first.count.text.scan(/\d+/).first.to_i == (@pupil_group_array - [@excluded_pupil]).size}
-  generate_pins_overview_page.group_filter.closed_filter.click unless generate_pins_overview_page.group_filter.has_opened_filter?
-  group = generate_pins_overview_page.group_filter.groups.find {|group| group.name.text.include? @group_name}
+  @page = generate_live_pins_overview_page
+  Timeout.timeout(ENV['WAIT_TIME'].to_i) {visit current_url until !generate_live_pins_overview_page.group_filter.groups.empty?}
+  Timeout.timeout(ENV['WAIT_TIME'].to_i) {visit current_url until generate_live_pins_overview_page.group_filter.groups.first.count.text.scan(/\d+/).first.to_i == (@pupil_group_array - [@excluded_pupil]).size}
+  generate_live_pins_overview_page.group_filter.closed_filter.click unless generate_live_pins_overview_page.group_filter.has_opened_filter?
+  group = generate_live_pins_overview_page.group_filter.groups.find {|group| group.name.text.include? @group_name}
   group.checkbox.click
 end
 
 Then(/^I should only see pupils from the group$/) do
-  filtered_pupils = generate_pins_overview_page.pupil_list.rows.map {|row| row.name.text.split('Date').first}.compact.map {|pupil| pupil.strip}
+  filtered_pupils = generate_live_pins_overview_page.pupil_list.rows.map {|row| row.name.text.split('Date').first}.compact.map {|pupil| pupil.strip}
   expect(filtered_pupils.count).to eql @pupil_group_array.count
 end
 
 And(/^I should be able to generate pins for all pupils in this group$/) do
-  generate_pins_overview_page.select_all_pupils.click
-  generate_pins_overview_page.sticky_banner.confirm.click
-  group = view_and_custom_print_live_check_page.groups.find {|group| group.name.text.include? @group_name}
+  generate_live_pins_overview_page.select_all_pupils.click
+  generate_live_pins_overview_page.sticky_banner.confirm.click
+  group = view_and_print_live_pins_page.groups.find {|group| group.name.text.include? @group_name}
   group.checkbox.click
-  pupils_with_pins = view_and_custom_print_live_check_page.pupil_list.rows.select {|row| row.group.text.include?(@group_name)}
+  pupils_with_pins = view_and_print_live_pins_page.pupil_list.rows.select {|row| row.group.text.include?(@group_name)}
   names = pupils_with_pins.map {|row| row.name.text}
   expect((@pupil_group_array - [@excluded_pupil].sort).count - names.map {|name| name.split(' Date')[0].size}.count).to eql 0
-  pupil_pin_row = view_and_custom_print_live_check_page.pupil_list.rows.find {|row| row.name.text.include?(@pupil_group_array[1])}
+  pupil_pin_row = view_and_print_live_pins_page.pupil_list.rows.find {|row| row.name.text.include?(@pupil_group_array[1])}
   @pupil_credentials = {:school_password => pupil_pin_row.school_password.text, :pin => pupil_pin_row.pin.text}
   AzureTableHelper.wait_for_prepared_check(@pupil_credentials[:school_password], @pupil_credentials[:pin])
 
@@ -288,7 +288,7 @@ And(/^that pupil is apart of a group$/) do
 end
 
 Then(/^I should only see pupils available for taking the check$/) do
-  filtered_pupils = generate_pins_overview_page.pupil_list.rows.map {|row| row.name.text.split(' Date')[0]}.compact
+  filtered_pupils = generate_live_pins_overview_page.pupil_list.rows.map {|row| row.name.text.split(' Date')[0]}.compact
   expect(@pupil_group_array.sort - [@excluded_pupil]).to eql filtered_pupils.sort
 end
 
@@ -296,43 +296,43 @@ Given(/^I have generated pins for all pupils in a group$/) do
   step 'I have a group of pupils'
   step 'I choose to filter via group on the generate pins page'
   step 'I should only see pupils from the group'
-  view_and_custom_print_live_check_page.load
-  if view_and_custom_print_live_check_page.has_pupil_list?
-    @before_pin_gen = view_and_custom_print_live_check_page.pupil_list.rows.size
+  view_and_print_live_pins_page.load
+  if view_and_print_live_pins_page.has_pupil_list?
+    @before_pin_gen = view_and_print_live_pins_page.pupil_list.rows.size
   else
     @before_pin_gen = 0
   end
   navigate_to_pupil_list_for_pin_gen('live')
-  group = generate_pins_overview_page.group_filter.groups.find {|group| group.name.text.include? @group_name}
+  group = generate_live_pins_overview_page.group_filter.groups.find {|group| group.name.text.include? @group_name}
   group.checkbox.click
-  generate_pins_overview_page.select_all_pupils.click
-  generate_pins_overview_page.sticky_banner.confirm.click
-  expect(view_and_custom_print_live_check_page.pupil_list.rows.size).to eql @before_pin_gen + @pupil_group_array.size
-  pupil_pin_row = view_and_custom_print_live_check_page.pupil_list.rows.find {|row| row.name.text.include?(@pupil_group_array[1])}
+  generate_live_pins_overview_page.select_all_pupils.click
+  generate_live_pins_overview_page.sticky_banner.confirm.click
+  expect(view_and_print_live_pins_page.pupil_list.rows.size).to eql @before_pin_gen + @pupil_group_array.size
+  pupil_pin_row = view_and_print_live_pins_page.pupil_list.rows.find {|row| row.name.text.include?(@pupil_group_array[1])}
   @pupil_credentials = {:school_password => pupil_pin_row.school_password.text, :pin => pupil_pin_row.pin.text}
   AzureTableHelper.wait_for_prepared_check(@pupil_credentials[:school_password], @pupil_credentials[:pin])
 end
 
 
 Then(/^I can no longer use this group to filter on the generate pins page$/) do
-  generate_pins_overview_page.load
-  generate_pins_overview_page.generated_pin_overview.generate_additional_pins_btn.click
-  expect(generate_pins_overview_page.group_filter).to have_no_closed_filter
-  expect(generate_pins_overview_page.group_filter).to have_no_opened_filter
+  generate_live_pins_overview_page.load
+  generate_live_pins_overview_page.generated_pin_overview.generate_additional_pins_btn.click
+  expect(generate_live_pins_overview_page.group_filter).to have_no_closed_filter
+  expect(generate_live_pins_overview_page.group_filter).to have_no_opened_filter
 end
 
 Then(/^I should be able to filter by groups on the generate pins page$/) do
-  view_and_custom_print_live_check_page.load
-  view_and_custom_print_live_check_page.generate_more_pin_btn.click
-  generate_pins_overview_page.group_filter.closed_filter.click unless generate_pins_overview_page.group_filter.has_opened_filter?
-  group = generate_pins_overview_page.group_filter.groups.find {|group| group.name.text.include? @group_name}
+  view_and_print_live_pins_page.load
+  view_and_print_live_pins_page.generate_more_pin_btn.click
+  generate_live_pins_overview_page.group_filter.closed_filter.click unless generate_live_pins_overview_page.group_filter.has_opened_filter?
+  group = generate_live_pins_overview_page.group_filter.groups.find {|group| group.name.text.include? @group_name}
   group.checkbox.click
-  filtered_pupils = generate_pins_overview_page.pupil_list.rows.map {|row| row.name.text}.reject(&:empty?)
+  filtered_pupils = generate_live_pins_overview_page.pupil_list.rows.map {|row| row.name.text}.reject(&:empty?)
   expect(filtered_pupils).to eql [@pupil_group_array.first]
 end
 
 And(/^I should be able to see a count of pupils$/) do
-  group = generate_pins_overview_page.group_filter.groups.find {|group| group.name.text.include? @group_name}
+  group = generate_live_pins_overview_page.group_filter.groups.find {|group| group.name.text.include? @group_name}
   expect(group.count.text.scan(/\d/).join('').to_i).to eql @pupil_group_array.size
 end
 
@@ -340,14 +340,13 @@ Then(/^I should see an error message stating the service is unavailable$/) do
   sleep 1
   REDIS_CLIENT.del 'checkWindow.sqlFindActiveCheckWindow'
   pupil_register_page.load
-  generate_pins_overview_page.load
+  generate_live_pins_overview_page.load
   expect(page).to have_content("The service is unavailable")
 end
 
 Then(/^I should see related content on the generate pins page$/) do
-  expect(generate_pins_overview_page).to have_related_heading
-  expect(generate_pins_overview_page).to have_guidance
-  # expect(generate_pins_overview_page).to have_group_pupil
+  expect(generate_live_pins_overview_page).to have_related_heading
+  expect(generate_live_pins_overview_page).to have_guidance
 end
 
 Then(/^I should see generated pin page as per design$/) do
@@ -376,16 +375,16 @@ Given(/^I want to generate pins for a group of 255 pupils with a teacher$/) do
 end
 
 When(/^I select all (\d+) pupils$/) do |arg|
-  group = generate_pins_overview_page.group_filter.groups.find {|group| group.name.text.include? @group_name}
+  group = generate_live_pins_overview_page.group_filter.groups.find {|group| group.name.text.include? @group_name}
   group.checkbox.click
-  generate_pins_overview_page.select_all_pupils.click
-  expect(generate_pins_overview_page.sticky_banner.selected_count.text.to_i).to eql 255
-  generate_pins_overview_page.sticky_banner.confirm.click
+  generate_live_pins_overview_page.select_all_pupils.click
+  expect(generate_live_pins_overview_page.sticky_banner.selected_count.text.to_i).to eql 255
+  generate_live_pins_overview_page.sticky_banner.confirm.click
 end
 
 Then(/^I should be able to generate pins$/) do
   expect(current_url).to include '/view-and-custom-print-live-pins'
-  expect(view_and_custom_print_live_check_page.pupil_list.rows.size).to eql 255
+  expect(view_and_print_live_pins_page.pupil_list.rows.size).to eql 255
 end
 
 
@@ -408,5 +407,5 @@ end
 
 
 When(/^I am on the generate pupil live pins overview page$/) do
-  generate_pins_overview_page.load
+  generate_live_pins_overview_page.load
 end

@@ -1,4 +1,4 @@
-class GeneratePinsOverviewPage < SitePrism::Page
+class GenerateLivePinsOverviewPage < SitePrism::Page
   set_url '/pupil-pin/generate-live-pins-overview'
 
   element :heading, '.govuk-heading-xl'
