@@ -6,8 +6,8 @@ Given(/^a pupil has started a check$/) do
   step "the pupil details should be stored"
   step "I am on the generate pupil pins page"
   step "I click Generate PINs button"
-  generate_pins_overview_page.generate_pin_using_name(name)
-  pupil_pin_row = view_and_custom_print_live_check_page.pupil_list.rows.find {|row| row.name.text == @details_hash[:last_name] + ', ' + @details_hash[:first_name]}
+  generate_live_pins_overview_page.generate_pin_using_name(name)
+  pupil_pin_row = view_and_print_live_pins_page.pupil_list.rows.find {|row| row.name.text == @details_hash[:last_name] + ', ' + @details_hash[:first_name]}
   @pupil_credentials = {:school_password => pupil_pin_row.school_password.text, :pin => pupil_pin_row.pin.text}
   AzureTableHelper.wait_for_prepared_check(@pupil_credentials[:school_password],@pupil_credentials[:pin])
   visit ENV["PUPIL_BASE_URL"] + check_sign_in_page.url
