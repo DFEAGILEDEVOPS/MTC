@@ -1,6 +1,6 @@
 'use strict'
 
-/* global describe beforeEach it expect jasmine spyOn fail */
+/* global describe beforeEach afterEach expect jest test fail */
 
 const httpMocks = require('node-mocks-http')
 const checkWindowV2Service = require('../../../services/check-window-v2.service')
@@ -23,13 +23,17 @@ describe('retro input assistant controller:', () => {
   function getReq (params) {
     const req = httpMocks.createRequest(params)
     req.user = { School: 9991001 }
-    req.breadcrumbs = jasmine.createSpy('breadcrumbs')
-    req.flash = jasmine.createSpy('flash')
+    req.breadcrumbs = jest.fn()
+    req.flash = jest.fn()
     return req
   }
 
   beforeEach(() => {
-    next = jasmine.createSpy('next')
+    next = jest.fn()
+  })
+
+  afterEach(() => {
+    jest.restoreAllMocks()
   })
 
   describe('getAddRetroInputAssistant route', () => {
@@ -39,31 +43,31 @@ describe('retro input assistant controller:', () => {
         url: '/access-arrangements/retro-add-input-assistant'
       }
     }
-    it('displays the retro input assistant page', async () => {
+    test('displays the retro input assistant page', async () => {
       const res = getRes()
       const req = getReq(reqParams)
-      spyOn(res, 'render')
-      spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-      spyOn(businessAvailabilityService, 'determineAccessArrangementsEligibility')
-      spyOn(accessArrangementsService, 'getCurrentViewMode').and.returnValue(aaViewModes.edit)
-      spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({
+      jest.spyOn(res, 'render').mockImplementation()
+      jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockImplementation()
+      jest.spyOn(businessAvailabilityService, 'determineAccessArrangementsEligibility').mockImplementation()
+      jest.spyOn(accessArrangementsService, 'getCurrentViewMode').mockResolvedValue(aaViewModes.edit)
+      jest.spyOn(businessAvailabilityService, 'getAvailabilityData').mockResolvedValue({
         hdfSubmitted: false
       })
-      spyOn(retroInputAssistantService, 'getEligiblePupilsWithFullNames')
+      jest.spyOn(retroInputAssistantService, 'getEligiblePupilsWithFullNames').mockImplementation()
       await sut.getAddRetroInputAssistant(req, res, next)
       expect(res.locals.pageTitle).toBe('Record input assistant used for official check')
       expect(res.render).toHaveBeenCalled()
       expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
       expect(retroInputAssistantService.getEligiblePupilsWithFullNames).toHaveBeenCalled()
     })
-    it('throws an error if access is attempted when the hdf has been signed', async () => {
+    test('throws an error if access is attempted when the hdf has been signed', async () => {
       const res = getRes()
       const req = getReq(reqParams)
-      spyOn(res, 'render')
-      spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-      spyOn(businessAvailabilityService, 'determineAccessArrangementsEligibility')
-      spyOn(accessArrangementsService, 'getCurrentViewMode').and.returnValue(aaViewModes.edit)
-      spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({
+      jest.spyOn(res, 'render').mockImplementation()
+      jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockImplementation()
+      jest.spyOn(businessAvailabilityService, 'determineAccessArrangementsEligibility').mockImplementation()
+      jest.spyOn(accessArrangementsService, 'getCurrentViewMode').mockResolvedValue(aaViewModes.edit)
+      jest.spyOn(businessAvailabilityService, 'getAvailabilityData').mockResolvedValue({
         hdfSubmitted: true
       })
       try {
@@ -73,18 +77,18 @@ describe('retro input assistant controller:', () => {
         expect(error.name).toBe('AccessArrangementsNotEditableError')
       }
     })
-    it('calls next when an error occurs during service call', async () => {
+    test('calls next when an error occurs during service call', async () => {
       const res = getRes()
       const req = getReq(reqParams)
-      spyOn(res, 'render')
-      spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-      spyOn(businessAvailabilityService, 'determineAccessArrangementsEligibility')
-      spyOn(accessArrangementsService, 'getCurrentViewMode').and.returnValue(aaViewModes.edit)
-      spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({
+      jest.spyOn(res, 'render').mockImplementation()
+      jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockImplementation()
+      jest.spyOn(businessAvailabilityService, 'determineAccessArrangementsEligibility').mockImplementation()
+      jest.spyOn(accessArrangementsService, 'getCurrentViewMode').mockResolvedValue(aaViewModes.edit)
+      jest.spyOn(businessAvailabilityService, 'getAvailabilityData').mockResolvedValue({
         hdfSubmitted: false
       })
       const error = new Error('error')
-      spyOn(retroInputAssistantService, 'getEligiblePupilsWithFullNames').and.throwError(error)
+      jest.spyOn(retroInputAssistantService, 'getEligiblePupilsWithFullNames').mockRejectedValue(error)
       await sut.getAddRetroInputAssistant(req, res, next)
       expect(res.render).not.toHaveBeenCalled()
       expect(next).toHaveBeenCalledWith(error)
@@ -98,13 +102,13 @@ describe('retro input assistant controller:', () => {
         url: '/access-arrangements/retro-add-input-assistant'
       }
     }
-    it('passes the request body to service for processing and redirects', async () => {
+    test('passes the request body to service for processing and redirects', async () => {
       const req = getReq(reqParams)
       req.body.pupilUrlSlug = 'slug'
       const res = getRes()
-      spyOn(res, 'redirect')
-      spyOn(retroInputAssistantService, 'save')
-      spyOn(accessArrangementsService, 'getCurrentViewMode').and.returnValue(aaViewModes.edit)
+      jest.spyOn(res, 'redirect').mockImplementation()
+      jest.spyOn(retroInputAssistantService, 'save').mockImplementation()
+      jest.spyOn(accessArrangementsService, 'getCurrentViewMode').mockResolvedValue(aaViewModes.edit)
       await sut.postSubmitRetroInputAssistant(req, res, next)
       expect(retroInputAssistantService.save).toHaveBeenCalledTimes(1)
       expect(res.redirect).toHaveBeenCalledWith('/access-arrangements/overview?hl=slug')
@@ -122,36 +126,36 @@ describe('retro input assistant controller:', () => {
       }
     }
 
-    it('redirects to error page if edit mode not available', async () => {
-      spyOn(accessArrangementsService, 'getCurrentViewMode').and.returnValue(aaViewModes.readonly)
+    test('redirects to error page if edit mode not available', async () => {
+      jest.spyOn(accessArrangementsService, 'getCurrentViewMode').mockResolvedValue(aaViewModes.readonly)
       const req = getReq(reqParams)
       const res = getRes()
       await sut.getDeleteRetroInputAssistant(req, res, next)
       expect(next).toHaveBeenCalledWith(new AccessArrangementsNotEditableError())
     })
-    it('redirects to overview page when successfully deleting', async () => {
+    test('redirects to overview page when successfully deleting', async () => {
       const res = getRes()
       const req = getReq(reqParams('urlSlug'))
-      spyOn(res, 'redirect')
-      spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-      spyOn(businessAvailabilityService, 'determineAccessArrangementsEligibility')
-      spyOn(accessArrangementsService, 'getCurrentViewMode').and.returnValue(aaViewModes.edit)
-      spyOn(retroInputAssistantService, 'deleteFromCurrentCheck')
+      jest.spyOn(res, 'redirect').mockImplementation()
+      jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockImplementation()
+      jest.spyOn(businessAvailabilityService, 'determineAccessArrangementsEligibility').mockImplementation()
+      jest.spyOn(accessArrangementsService, 'getCurrentViewMode').mockResolvedValue(aaViewModes.edit)
+      jest.spyOn(retroInputAssistantService, 'deleteFromCurrentCheck').mockImplementation()
       await sut.getDeleteRetroInputAssistant(req, res, next)
       expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
       expect(businessAvailabilityService.determineAccessArrangementsEligibility).toHaveBeenCalled()
       expect(res.redirect).toHaveBeenCalled()
       expect(req.flash).toHaveBeenCalled()
     })
-    it('calls next when an error occurs during service call', async () => {
+    test('calls next when an error occurs during service call', async () => {
       const res = getRes()
       const req = getReq(reqParams('urlSlug'))
-      spyOn(res, 'redirect')
-      spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-      spyOn(businessAvailabilityService, 'determineAccessArrangementsEligibility')
-      spyOn(accessArrangementsService, 'getCurrentViewMode').and.returnValue(aaViewModes.edit)
+      jest.spyOn(res, 'redirect').mockImplementation()
+      jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockImplementation()
+      jest.spyOn(businessAvailabilityService, 'determineAccessArrangementsEligibility').mockImplementation()
+      jest.spyOn(accessArrangementsService, 'getCurrentViewMode').mockResolvedValue(aaViewModes.edit)
       const error = new Error('error')
-      spyOn(retroInputAssistantService, 'deleteFromCurrentCheck').and.returnValue(Promise.reject(error))
+      jest.spyOn(retroInputAssistantService, 'deleteFromCurrentCheck').mockResolvedValue(Promise.reject(error))
       await sut.getDeleteRetroInputAssistant(req, res, next)
       expect(res.redirect).not.toHaveBeenCalled()
       expect(next).toHaveBeenCalledWith(error)
