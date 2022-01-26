@@ -66,7 +66,7 @@ const service = {
     }))
   },
   /**
- * Returns pupils with eligible for access arrangements
+ * removes retro input assistant from pupils current check
  * @param {string} pupilUrlSlug
  * @returns {Promise<void>}
  */
