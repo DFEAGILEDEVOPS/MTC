@@ -1,6 +1,6 @@
 'use strict'
 
-/* global describe it expect jest spyOn beforeEach */
+/* global describe expect jest test beforeEach */
 
 const httpMocks = require('node-mocks-http')
 const sut = require('../../../controllers/authentication')
@@ -45,34 +45,34 @@ describe('authentication controller', () => {
     config.Auth.Mode = authModes.local
   })
 
-  it('should be defined', () => {
+  test('should be defined', () => {
     expect(sut).toBeDefined()
   })
 
   describe('home', () => {
     describe('unauthenticated requests', () => {
       const unauthenticated = false
-      it('should redirect to signin when requested url is not /sign-in', () => {
+      test('should redirect to signin when requested url is not /sign-in', () => {
         const res = createResponse()
-        spyOn(res, 'redirect')
+        jest.spyOn(res, 'redirect').mockImplementation()
         sut.home(createRequest(unauthenticated), res)
         expect(res.redirect).toHaveBeenCalledWith('/sign-in')
         expect(res.statusCode).toBe(200)
       })
 
-      it('renders view if /sign-in is requested', () => {
+      test('renders view if /sign-in is requested', () => {
         const res = createResponse()
-        spyOn(res, 'render')
+        jest.spyOn(res, 'render').mockImplementation()
         const params = getReqParams('/sign-in')
         sut.home(createRequest(unauthenticated, params), res)
         expect(res.render).toHaveBeenCalledWith('sign-in')
         expect(res.statusCode).toBe(200)
       })
 
-      it('redirect to /oidc-sign-in if in dsi auth mode', () => {
+      test('redirect to /oidc-sign-in if in dsi auth mode', () => {
         config.Auth.mode = authModes.dfeSignIn
         const res = createResponse()
-        spyOn(res, 'redirect')
+        jest.spyOn(res, 'redirect').mockImplementation()
         sut.home(createRequest(unauthenticated), res)
         expect(res.redirect).toHaveBeenCalledWith('/oidc-sign-in')
         expect(res.statusCode).toBe(200)
@@ -84,45 +84,45 @@ describe('authentication controller', () => {
 
     describe('authenticated requests', () => {
       const authenticated = true
-      it('should redirect to correct home when teacher role is authenticated', () => {
+      test('should redirect to correct home when teacher role is authenticated', () => {
         const res = createResponse()
-        spyOn(res, 'redirect')
+        jest.spyOn(res, 'redirect').mockImplementation()
         sut.home(createRequest(authenticated), res)
         expect(res.redirect).toHaveBeenCalledWith(homeRoutes.schoolHomeRoute)
         expect(res.statusCode).toBe(200)
       })
 
-      it('should redirect to correct home when helpdesk role is authenticated', () => {
+      test('should redirect to correct home when helpdesk role is authenticated', () => {
         const res = createResponse()
         const req = createRequest(authenticated, getReqParams(), roles.helpdesk)
-        spyOn(res, 'redirect')
+        jest.spyOn(res, 'redirect').mockImplementation()
         sut.home(req, res)
         expect(res.redirect).toHaveBeenCalledWith(homeRoutes.schoolHomeRoute)
         expect(res.statusCode).toBe(200)
       })
 
-      it('should redirect to correct home when test dev role is authenticated', () => {
+      test('should redirect to correct home when test dev role is authenticated', () => {
         const res = createResponse()
         const req = createRequest(authenticated, getReqParams(), roles.testDeveloper)
-        spyOn(res, 'redirect')
+        jest.spyOn(res, 'redirect').mockImplementation()
         sut.home(req, res)
         expect(res.redirect).toHaveBeenCalledWith(homeRoutes.testDeveloperHomeRoute)
         expect(res.statusCode).toBe(200)
       })
 
-      it('should redirect to correct home when service manager is authenticated', () => {
+      test('should redirect to correct home when service manager is authenticated', () => {
         const res = createResponse()
         const req = createRequest(authenticated, getReqParams(), roles.serviceManager)
-        spyOn(res, 'redirect')
+        jest.spyOn(res, 'redirect').mockImplementation()
         sut.home(req, res)
         expect(res.redirect).toHaveBeenCalledWith(homeRoutes.serviceManagerHomeRoute)
         expect(res.statusCode).toBe(200)
       })
 
-      it('should redirect to correct home when techsupport role is authenticated', () => {
+      test('should redirect to correct home when techsupport role is authenticated', () => {
         const res = createResponse()
         const req = createRequest(authenticated, getReqParams(), roles.techSupport)
-        spyOn(res, 'redirect')
+        jest.spyOn(res, 'redirect').mockImplementation()
         sut.home(req, res)
         expect(res.redirect).toHaveBeenCalledWith(homeRoutes.techSupportHomeRoute)
         expect(res.statusCode).toBe(200)
@@ -131,21 +131,21 @@ describe('authentication controller', () => {
   })
 
   describe('getSignIn', () => {
-    it('redirects to /sign-in if unauthenticated', () => {
+    test('redirects to /sign-in if unauthenticated', () => {
       const unauthenticated = false
       const req = createRequest(unauthenticated)
       const res = createResponse()
-      spyOn(res, 'redirect')
+      jest.spyOn(res, 'redirect').mockImplementation()
       sut.getSignIn(req, res)
       expect(res.redirect).toHaveBeenCalledWith('/sign-in')
       expect(res.statusCode).toBe(200)
     })
 
-    it('redirects to home if authenticated', () => {
+    test('redirects to home if authenticated', () => {
       const unauthenticated = true
       const req = createRequest(unauthenticated)
       const res = createResponse()
-      spyOn(res, 'redirect')
+      jest.spyOn(res, 'redirect').mockImplementation()
       sut.getSignIn(req, res)
       expect(res.redirect).toHaveBeenCalledWith(homeRoutes.schoolHomeRoute)
       expect(res.statusCode).toBe(200)
@@ -153,11 +153,11 @@ describe('authentication controller', () => {
   })
 
   describe('postSignIn', () => {
-    it('redirects to home', () => {
+    test('redirects to home', () => {
       const authenticated = true
       const req = createRequest(authenticated)
       const res = createResponse()
-      spyOn(res, 'redirect')
+      jest.spyOn(res, 'redirect').mockImplementation()
       sut.postSignIn(req, res)
       expect(res.redirect).toHaveBeenCalledWith(homeRoutes.schoolHomeRoute)
       expect(res.statusCode).toBe(200)
@@ -165,13 +165,13 @@ describe('authentication controller', () => {
   })
 
   describe('getSignOut', () => {
-    it('logs the user out and regenerates a session', () => {
+    test('logs the user out and regenerates a session', () => {
       const authenticated = true
       const req = createRequest(authenticated)
       const res = createResponse()
-      spyOn(req, 'logout')
-      spyOn(req.session, 'regenerate')
-      spyOn(res, 'redirect')
+      jest.spyOn(req, 'logout').mockImplementation()
+      jest.spyOn(req.session, 'regenerate').mockImplementation()
+      jest.spyOn(res, 'redirect').mockImplementation()
       sut.getSignOut(req, res)
       expect(req.logout).toHaveBeenCalled()
       expect(req.session.regenerate).toHaveBeenCalled()
@@ -180,10 +180,10 @@ describe('authentication controller', () => {
   })
 
   describe('getSignInFailure', () => {
-    it('should render failure view', () => {
+    test('should render failure view', () => {
       const req = createRequest()
       const res = createResponse()
-      spyOn(res, 'render')
+      jest.spyOn(res, 'render').mockImplementation()
       sut.getSignInFailure(req, res)
       expect(res.render).toHaveBeenCalledWith('sign-in-failure')
       expect(res.statusCode).toBe(200)
@@ -191,10 +191,10 @@ describe('authentication controller', () => {
   })
 
   describe('getUnauthorised', () => {
-    it('should render failure view', () => {
+    test('should render failure view', () => {
       const req = createRequest()
       const res = createResponse()
-      spyOn(res, 'render')
+      jest.spyOn(res, 'render').mockImplementation()
       sut.getUnauthorised(req, res)
       expect(res.render).toHaveBeenCalledWith('unauthorised')
       expect(res.statusCode).toBe(401)
@@ -203,10 +203,10 @@ describe('authentication controller', () => {
   })
 
   describe('getSignedOut', () => {
-    it('should render signedout view', () => {
+    test('should render signedout view', () => {
       const req = createRequest()
       const res = createResponse()
-      spyOn(res, 'render')
+      jest.spyOn(res, 'render').mockImplementation()
       sut.getSignedOut(req, res)
       expect(res.render).toHaveBeenCalledWith('dsi-signedout')
       expect(res.statusCode).toBe(200)
