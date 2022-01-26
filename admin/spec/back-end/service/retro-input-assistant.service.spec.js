@@ -1,23 +1,27 @@
 'use strict'
 
-/* global describe test expect beforeEach spyOn fail */
+/* global describe test expect beforeEach afterEach fail jest */
 
 const sut = require('../../../services/retro-input-assistant.service')
 const dataService = require('../../../services/data-access/retro-input-assistant.data.service.js')
 const pupilId = 123
 const currentCheckId = 456
 function setupDefaultSpies () {
-  spyOn(dataService, 'getPupilIdAndCurrentCheckIdByUrlSlug').and.returnValue([{
+  jest.spyOn(dataService, 'getPupilIdAndCurrentCheckIdByUrlSlug').mockResolvedValue([{
     id: pupilId,
     currentCheckId: currentCheckId
   }])
-  spyOn(dataService, 'markLatestCompleteCheckAsInputAssistantAddedRetrospectively')
-  spyOn(dataService, 'deleteRetroInputAssistant')
+  jest.spyOn(dataService, 'markLatestCompleteCheckAsInputAssistantAddedRetrospectively').mockImplementation()
+  jest.spyOn(dataService, 'deleteRetroInputAssistant').mockImplementation()
 }
 
 describe('retro input assistant service', () => {
   beforeEach(() => {
-    spyOn(dataService, 'create').and.returnValue(Promise.resolve())
+    jest.spyOn(dataService, 'create').mockResolvedValue(Promise.resolve())
+  })
+
+  afterEach(() => {
+    jest.restoreAllMocks()
   })
 
   test('should be defined', () => {
@@ -85,7 +89,7 @@ describe('retro input assistant service', () => {
       expect(dataService.create).toHaveBeenCalled()
     })
     test('should throw if pupil details cannot be found', async () => {
-      spyOn(dataService, 'getPupilIdAndCurrentCheckIdByUrlSlug').and.returnValue()
+      jest.spyOn(dataService, 'getPupilIdAndCurrentCheckIdByUrlSlug').mockResolvedValue()
       try {
         await sut.save({
           firstName: 'foo',
@@ -100,7 +104,7 @@ describe('retro input assistant service', () => {
       }
     })
     test('should throw if lookedup pupil id is not a number greater than zero', async () => {
-      spyOn(dataService, 'getPupilIdAndCurrentCheckIdByUrlSlug').and.returnValue([{
+      jest.spyOn(dataService, 'getPupilIdAndCurrentCheckIdByUrlSlug').mockResolvedValue([{
         id: undefined,
         currentCheckId: 1
       }])
@@ -118,7 +122,7 @@ describe('retro input assistant service', () => {
       }
     })
     test('should throw if lookedup current check id is not a number greater than zero', async () => {
-      spyOn(dataService, 'getPupilIdAndCurrentCheckIdByUrlSlug').and.returnValue([{
+      jest.spyOn(dataService, 'getPupilIdAndCurrentCheckIdByUrlSlug').mockResolvedValue([{
         id: 1,
         currentCheckId: undefined
       }])
