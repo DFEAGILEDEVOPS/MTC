@@ -3,7 +3,7 @@ CREATE TABLE [mtc_admin].[schoolAudit] (
     [createdAt] [datetimeoffset](3) NOT NULL,
     [auditOperationTypeLookup_id] [int] NOT NULL,
     [version] [timestamp] NOT NULL,
-    [newData] [nvarchar](max) NULL,
+    [newData] [nvarchar](max) NOT NULL,
     [school_id] [int] NOT NULL,
     [operationBy_userId] [int] NULL,
     CONSTRAINT [PK_schoolAudit] PRIMARY KEY (id)
