@@ -6,6 +6,7 @@ CREATE TABLE [mtc_admin].[schoolAudit] (
     [newData] [nvarchar](max) NOT NULL,
     [school_id] [int] NOT NULL,
     [operationBy_userId] [int] NULL,
+    [sqlUserIdentifier] [nvarchar](max) NOT NULL,
     CONSTRAINT [PK_schoolAudit] PRIMARY KEY (id)
 );
 

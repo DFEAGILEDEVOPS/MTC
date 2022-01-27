@@ -31,8 +31,8 @@ BEGIN
     -- TODO convert incoming row into JSON, populate var
     SELECT @newDataJson = (SELECT * FROM inserted FOR JSON AUTO)
     INSERT INTO [mtc_admin].[schoolAudit]
-    (auditOperationTypeLookup_id, newData, school_id, operationBy_userId)
-    SELECT @auditOperationTypeLookupId, @newDataJson, i.id, i.lastModifiedBy_userId
+    (auditOperationTypeLookup_id, newData, school_id, operationBy_userId, sqlUserIdentifier)
+    SELECT @auditOperationTypeLookupId, @newDataJson, i.id, i.lastModifiedBy_userId, SUSER_SNAME()
     FROM mtc_admin.school s
     INNER JOIN inserted i ON s.id = i.id
 END

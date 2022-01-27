@@ -1,7 +1,7 @@
 'use strict'
-const uuid = require('uuid')
-
 /* global describe, expect test jest afterEach beforeEach fail */
+
+const uuid = require('uuid')
 const sut = require('../../../services/school.service')
 const schoolDataService = require('../../../services/data-access/school.data.service')
 const schoolAuditDataService = require('../../../services/data-access/school-audit.data.service')
