@@ -1,6 +1,6 @@
 'use strict'
 
-/* global describe it expect spyOn */
+/* global describe jest test expect */
 
 const httpMocks = require('node-mocks-http')
 const R = require('ramda')
@@ -21,7 +21,7 @@ describe('localStrategy', () => {
       }
     }
     const req = httpMocks.createRequest(reqParams)
-    it('validates and saves a valid helpdesk user', async () => {
+    test('validates and saves a valid helpdesk user', async () => {
       const user = {
         id: 1,
         passwordHash: '$2a$10$.WsawgZpWSAQVaa6Vz3P1.XO.1YntYJLd6Da5lrXCAkVxhhLpkOHK',
@@ -31,8 +31,8 @@ describe('localStrategy', () => {
         dfeNumber: null,
         timezone: null
       }
-      spyOn(userDataService, 'sqlFindUserInfoByIdentifier').and.returnValue(user)
-      spyOn(adminLogonEventDataService, 'sqlCreate')
+      jest.spyOn(userDataService, 'sqlFindUserInfoByIdentifier').mockResolvedValue(user)
+      jest.spyOn(adminLogonEventDataService, 'sqlCreate').mockImplementation()
       const doneFunc = (err, res) => err || res
       const result = await validateAndSave(req, 'helpdesk', 'password', doneFunc)
       // comparing everything except given timestamp
@@ -48,7 +48,7 @@ describe('localStrategy', () => {
         id: user.id
       })
     })
-    it('validates and saves a valid teacher user', async () => {
+    test('validates and saves a valid teacher user', async () => {
       const user = {
         id: 1,
         passwordHash: '$2a$10$.WsawgZpWSAQVaa6Vz3P1.XO.1YntYJLd6Da5lrXCAkVxhhLpkOHK',
@@ -58,8 +58,8 @@ describe('localStrategy', () => {
         dfeNumber: 9991000,
         timezone: ''
       }
-      spyOn(userDataService, 'sqlFindUserInfoByIdentifier').and.returnValue(user)
-      spyOn(adminLogonEventDataService, 'sqlCreate')
+      jest.spyOn(userDataService, 'sqlFindUserInfoByIdentifier').mockResolvedValue(user)
+      jest.spyOn(adminLogonEventDataService, 'sqlCreate').mockImplementation()
       const doneFunc = (err, res) => err || res
       const result = await validateAndSave(req, 'teacher1', 'password', doneFunc)
       expect(R.omit(['logonAt'], result)).toEqual({
@@ -74,9 +74,9 @@ describe('localStrategy', () => {
         id: user.id
       })
     })
-    it('registers an invalid logon event if user is not found', async () => {
-      spyOn(userDataService, 'sqlFindUserInfoByIdentifier')
-      spyOn(adminLogonEventDataService, 'sqlCreate')
+    test('registers an invalid logon event if user is not found', async () => {
+      jest.spyOn(userDataService, 'sqlFindUserInfoByIdentifier').mockImplementation()
+      jest.spyOn(adminLogonEventDataService, 'sqlCreate').mockImplementation()
       const doneFunc = (err, res) => err || res
       await validateAndSave(req, 'teacher1', 'password', doneFunc)
       expect(adminLogonEventDataService.sqlCreate).toHaveBeenCalledWith(
