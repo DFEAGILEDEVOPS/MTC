@@ -1,12 +1,12 @@
 'use strict'
 
-/* global describe it expect jasmine spyOn */
+/* global describe expect jest test */
 
 const httpMocks = require('node-mocks-http')
 
 describe('cookies page controller', () => {
   describe('Cookies MTC Form', () => {
-    it('should render the initial cookies form page', async () => {
+    test('should render the initial cookies form page', async () => {
       const res = httpMocks.createResponse()
       res.locals = {}
 
@@ -14,10 +14,10 @@ describe('cookies page controller', () => {
         method: 'GET',
         url: '/cookies'
       })
-      req.breadcrumbs = jasmine.createSpy('breadcrumbs')
+      req.breadcrumbs = jest.fn()
       const controller = require('../../../controllers/cookies')
 
-      spyOn(res, 'render').and.returnValue(null)
+      jest.spyOn(res, 'render').mockReturnValue(null)
       await controller.getCookiesForm(req, res)
 
       expect(res.locals.pageTitle).toBe('Cookies on MTC')
@@ -26,7 +26,7 @@ describe('cookies page controller', () => {
     })
   })
   describe('Cookies MTC', () => {
-    it('should render the mtc cookies report page', async () => {
+    test('should render the mtc cookies report page', async () => {
       const res = httpMocks.createResponse()
       res.locals = {}
 
@@ -34,10 +34,10 @@ describe('cookies page controller', () => {
         method: 'GET',
         url: '/cookies'
       })
-      req.breadcrumbs = jasmine.createSpy('breadcrumbs')
+      req.breadcrumbs = jest.fn()
       const controller = require('../../../controllers/cookies')
 
-      spyOn(res, 'render').and.returnValue(null)
+      jest.spyOn(res, 'render').mockReturnValue(null)
       await controller.getCookiesMtc(req, res)
 
       expect(res.locals.pageTitle).toBe('Cookies')
