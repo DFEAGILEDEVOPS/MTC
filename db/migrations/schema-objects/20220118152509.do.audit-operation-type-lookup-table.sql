@@ -4,7 +4,8 @@ CREATE TABLE [mtc_admin].[auditOperationTypeLookup](
 	[updatedAt] [datetimeoffset](3) NOT NULL,
 	[version] [timestamp] NOT NULL,
 	[auditOperation] [nvarchar](255) NOT NULL,
- CONSTRAINT [PK_auditOperationTypeLookup] PRIMARY KEY (id)
+ CONSTRAINT [PK_auditOperationTypeLookup] PRIMARY KEY (id),
+ CONSTRAINT UQ_auditOperation UNIQUE(auditOperation)
 );
 
 ALTER TABLE [mtc_admin].[auditOperationTypeLookup] ADD  DEFAULT (getutcdate()) FOR [createdAt]

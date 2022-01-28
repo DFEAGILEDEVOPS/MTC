@@ -66,11 +66,11 @@ const schoolService = {
 
   /**
    * @typedef {object} editableSchoolDetails
-   * @property {any} dfeNumber,
-   * @property {any} estabCode,
-   * @property {any} leaCode,
+   * @property {number} dfeNumber,
+   * @property {number} estabCode,
+   * @property {number} leaCode,
    * @property {string} name,
-   * @property {any} urn
+   * @property {number} urn
    */
 
   /**

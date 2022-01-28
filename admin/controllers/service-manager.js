@@ -456,11 +456,11 @@ const controller = {
         return res.redirect('/service-manager/organisations/search')
       }
       const update = {
-        name: req.body?.name?.trim() ?? '',
-        dfeNumber: formUtil.convertFromString(req.body?.dfeNumber, formUtilTypes.int),
-        urn: formUtil.convertFromString(req.body?.urn, formUtilTypes.int),
-        leaCode: formUtil.convertFromString(req.body?.leaCode, formUtilTypes.int),
-        estabCode: formUtil.convertFromString(req.body?.estabCode, formUtilTypes.int)
+        name: String(req.body?.name?.trim() ?? ''),
+        dfeNumber: Number(formUtil.convertFromString(req.body?.dfeNumber, formUtilTypes.int)),
+        urn: Number(formUtil.convertFromString(req.body?.urn, formUtilTypes.int)),
+        leaCode: Number(formUtil.convertFromString(req.body?.leaCode, formUtilTypes.int)),
+        estabCode: Number(formUtil.convertFromString(req.body?.estabCode, formUtilTypes.int))
       }
       await schoolService.updateSchool(req.params.slug, update, req.user.id)
       req.flash('info', 'School updated')
