@@ -1,22 +1,27 @@
 'use strict'
 
-/* global describe test expect beforeEach spyOn fail */
+/* global describe test expect beforeEach afterEach fail jest */
 
 const sut = require('../../../services/retro-input-assistant.service')
 const dataService = require('../../../services/data-access/retro-input-assistant.data.service.js')
 const pupilId = 123
 const currentCheckId = 456
 function setupDefaultSpies () {
-  spyOn(dataService, 'getPupilIdAndCurrentCheckIdByUrlSlug').and.returnValue([{
+  jest.spyOn(dataService, 'getPupilIdAndCurrentCheckIdByUrlSlug').mockResolvedValue([{
     id: pupilId,
     currentCheckId: currentCheckId
   }])
-  spyOn(dataService, 'markLatestCompleteCheckAsInputAssistantAddedRetrospectively')
+  jest.spyOn(dataService, 'markLatestCompleteCheckAsInputAssistantAddedRetrospectively').mockImplementation()
+  jest.spyOn(dataService, 'deleteRetroInputAssistant').mockImplementation()
 }
 
 describe('retro input assistant service', () => {
   beforeEach(() => {
-    spyOn(dataService, 'create').and.returnValue(Promise.resolve())
+    jest.spyOn(dataService, 'create').mockResolvedValue(Promise.resolve())
+  })
+
+  afterEach(() => {
+    jest.restoreAllMocks()
   })
 
   test('should be defined', () => {
@@ -84,7 +89,7 @@ describe('retro input assistant service', () => {
       expect(dataService.create).toHaveBeenCalled()
     })
     test('should throw if pupil details cannot be found', async () => {
-      spyOn(dataService, 'getPupilIdAndCurrentCheckIdByUrlSlug').and.returnValue()
+      jest.spyOn(dataService, 'getPupilIdAndCurrentCheckIdByUrlSlug').mockResolvedValue()
       try {
         await sut.save({
           firstName: 'foo',
@@ -99,7 +104,7 @@ describe('retro input assistant service', () => {
       }
     })
     test('should throw if lookedup pupil id is not a number greater than zero', async () => {
-      spyOn(dataService, 'getPupilIdAndCurrentCheckIdByUrlSlug').and.returnValue([{
+      jest.spyOn(dataService, 'getPupilIdAndCurrentCheckIdByUrlSlug').mockResolvedValue([{
         id: undefined,
         currentCheckId: 1
       }])
@@ -117,7 +122,7 @@ describe('retro input assistant service', () => {
       }
     })
     test('should throw if lookedup current check id is not a number greater than zero', async () => {
-      spyOn(dataService, 'getPupilIdAndCurrentCheckIdByUrlSlug').and.returnValue([{
+      jest.spyOn(dataService, 'getPupilIdAndCurrentCheckIdByUrlSlug').mockResolvedValue([{
         id: 1,
         currentCheckId: undefined
       }])
@@ -156,6 +161,38 @@ describe('retro input assistant service', () => {
         fail('error should have been thrown')
       } catch (error) {
         expect(error.message).toBe('schoolId is not provided')
+      }
+    })
+  })
+
+  describe('deleteFromCurrentCheck', () => {
+    test('should throw an error if pupilUrlSlug not provided', async () => {
+      setupDefaultSpies()
+      try {
+        await sut.deleteFromCurrentCheck()
+        fail('error should have been thrown')
+      } catch (error) {
+        expect(error.message).toBe('pupilUrlSlug not provided')
+      }
+    })
+
+    test('should throw an error if pupilUrlSlug is not a valid UUID', async () => {
+      setupDefaultSpies()
+      try {
+        await sut.deleteFromCurrentCheck('not a uuid')
+        fail('error should have been thrown')
+      } catch (error) {
+        expect(error.message).toBe('pupilUrlSlug is not a valid UUID')
+      }
+    })
+
+    test('should call data service if pupilUrlSlug is a valid UUID', async () => {
+      setupDefaultSpies()
+      try {
+        await sut.deleteFromCurrentCheck('6195f068-a0e1-4881-bb22-4edf337c5688')
+        expect(dataService.deleteRetroInputAssistant).toHaveBeenCalledTimes(1)
+      } catch (error) {
+        fail(error.message)
       }
     })
   })

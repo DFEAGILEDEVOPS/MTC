@@ -39,7 +39,7 @@ const service = {
    * @param {string} pupilUrlSlug
    * @returns {Promise<any>}
    */
-  getPupilIdAndCurrentCheckIdByUrlSlug: function getPupilIdAndCurrentCheckIdByUrlSlug (pupilUrlSlug) {
+  getPupilIdAndCurrentCheckIdByUrlSlug: async function getPupilIdAndCurrentCheckIdByUrlSlug (pupilUrlSlug) {
     const pupilIdSql = 'SELECT id, currentCheckId FROM mtc_admin.pupil WHERE urlSlug=@pupilUrlSlug'
     return sqlService.readonlyQuery(pupilIdSql, [{
       name: 'pupilUrlSlug',
@@ -82,11 +82,32 @@ const service = {
    * @description marks the latest complete check as input assistant being added after check taken
    * @param {number} checkId
    */
-  markLatestCompleteCheckAsInputAssistantAddedRetrospectively (checkId) {
+  markLatestCompleteCheckAsInputAssistantAddedRetrospectively: async function markLatestCompleteCheckAsInputAssistantAddedRetrospectively (checkId) {
     return sqlService.update('[check]', {
       id: checkId,
       inputAssistantAddedRetrospectively: 1
     })
+  },
+  /**
+   * @description deletes the input assistant added retrospectively
+   * @param {string} pupilUrlSlug
+   */
+  deleteRetroInputAssistant: async function deleteRetroInputAssistant (pupilUrlSlug) {
+    const params = [
+      {
+        name: 'pupilUrlSlug',
+        value: pupilUrlSlug,
+        type: TYPES.UniqueIdentifier
+      }
+    ]
+    const sql = `
+      DELETE [mtc_admin].[pupilAccessArrangements] WHERE id = (
+        SELECT paa.id FROM [mtc_admin].[pupilAccessArrangements] paa
+        INNER JOIN [mtc_admin].[pupil] p ON paa.retroInputAssistant_check_id = p.currentCheckId
+        WHERE p.urlSlug = @pupilUrlSlug
+      )
+    `
+    return sqlService.modify(sql, params)
   }
 }
 
