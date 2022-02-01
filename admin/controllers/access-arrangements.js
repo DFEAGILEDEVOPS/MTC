@@ -47,7 +47,6 @@ const controller = {
     const availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.schoolId, checkWindowData, req.user.timezone)
     const pupilsFormatted = accessArrangementsOverviewPresenter.getPresentationData(pupils, availabilityData, hl)
     const retroInputAssistantText = await accessArrangementsOverviewPresenter.getRetroInputAssistantText(availabilityData)
-
     return res.render('access-arrangements/overview', {
       highlight: hl,
       messages: res.locals.messages,
@@ -200,7 +199,7 @@ const controller = {
     })
   },
   /**
-   * Delete access arrangements for single pupil
+   * Delete access arrangements for single pupil (unused)
    * @param req
    * @param res
    * @param next
@@ -223,31 +222,6 @@ const controller = {
     req.flash('deleteInfo', `Access arrangements removed for ${pupil.lastName}, ${pupil.foreName}`)
     return res.redirect(`/access-arrangements/overview?hl=${pupil.urlSlug}`)
   }
-}
-
-controller.getAddInputAssistant = async function (req, res, next) {
-  res.locals.pageTitle = 'Record input assistant used for official check'
-  req.breadcrumbs('Select pupils and access arrangements', 'select-access-arrangements')
-  req.breadcrumbs('Record input assistant')
-
-  try {
-    const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
-    await businessAvailabilityService.determineAccessArrangementsEligibility(checkWindowData)
-  } catch (error) {
-    next(error)
-  }
-
-  let pupils
-  try {
-    pupils = await pupilAccessArrangementsService.getEligiblePupilsWithFullNames(req.user.schoolId)
-  } catch (error) {
-    return next(error)
-  }
-  return res.render('access-arrangements/retro-add-input-assistant', {
-    breadcrumbs: req.breadcrumbs(),
-    pupils,
-    error: new ValidationError()
-  })
 }
 
 module.exports = controller

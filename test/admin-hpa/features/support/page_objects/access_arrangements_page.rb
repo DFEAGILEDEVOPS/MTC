@@ -14,8 +14,13 @@ class AccessArrangementsPage < SitePrism::Page
       element :highlighted_pupil, '.govuk-highlight-item'
       element :pupil_name, 'a.name-text-wrap'
       elements :access_arrangement_name, '.access-arrangements-list div'
-      element :remove, 'td:nth-of-type(3) a'
+      element :edit, 'td:nth-of-type(3) a'
+      element :remove_retro_input, '#js-modal-link', text: 'Remove Retrospective Input Assistant'
     end
+  end
+
+  section :retro_input, '#retroAddInputAssistantInfo' do
+    element :link, "a[href='/access-arrangements/retro-add-input-assistant']"
   end
 
   section :modal, '.modal-box.show' do
@@ -23,17 +28,6 @@ class AccessArrangementsPage < SitePrism::Page
     element :contents, '.modal-content p'
     element :cancel, '#js-modal-cancel-button'
     element :confirm, '#js-modal-confirmation-button'
-  end
-
-  section :retro_input, '#retroAddInputAssistantInfo' do
-    element :link, "a[href='/access-arrangements/retro-add-input-assistant']"
-  end
-
-  def remove_all_pupils
-    unless has_no_pupils_message?
-      removable_rows = pupil_list.rows.map{|row| row if row.has_remove?}.compact
-      removable_rows.size.times {|a| all('a', text: 'Remove')[0].click; modal.confirm.click}
-    end
   end
 
   def find_pupil_row(name)

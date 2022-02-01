@@ -252,10 +252,10 @@ describe('school.service', () => {
   })
 
   describe('getAuditPayload', () => {
-    const schoolData = [{
+    const schoolData = {
       id: 1,
       name: 'my school'
-    }]
+    }
     const stringifiedSchoolData = JSON.stringify(schoolData)
     const payload = {
       newData: stringifiedSchoolData
@@ -277,7 +277,7 @@ describe('school.service', () => {
     test('it should return payload when auditEntryId provided', async () => {
       const data = await sut.getAuditPayload(1)
       expect(data).toBeDefined()
-      const expectedPayload = JSON.parse(stringifiedSchoolData)[0]
+      const expectedPayload = JSON.parse(stringifiedSchoolData)
       expect(data).toStrictEqual(expectedPayload)
     })
   })

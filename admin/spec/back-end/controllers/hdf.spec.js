@@ -1,6 +1,6 @@
 'use strict'
 
-/* global describe it expect jasmine spyOn beforeEach */
+/* global describe jest test expect beforeEach afterEach */
 
 const httpMocks = require('node-mocks-http')
 const moment = require('moment')
@@ -27,13 +27,17 @@ describe('attendance controller:', () => {
     const req = httpMocks.createRequest(params)
     req.user = params.user || { School: 9991001 }
     req.session = params.session || {}
-    req.breadcrumbs = jasmine.createSpy('breadcrumbs')
-    req.flash = jasmine.createSpy('flash')
+    req.breadcrumbs = jest.fn()
+    req.flash = jest.fn()
     return req
   }
 
   beforeEach(() => {
-    next = jasmine.createSpy('next')
+    next = jest.fn()
+  })
+
+  afterEach(() => {
+    jest.restoreAllMocks()
   })
 
   describe('getDeclarationForm', () => {
@@ -43,40 +47,40 @@ describe('attendance controller:', () => {
       params: {}
     }
 
-    it('renders the declaration form page', async () => {
+    test('renders the declaration form page', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      spyOn(checkWindowV2Service, 'getActiveCheckWindow').and.returnValue({ checkEndDate: 'value' })
-      spyOn(headteacherDeclarationService, 'getEligibilityForSchool').and.returnValue(true)
-      spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ hdfAvailable: true })
-      spyOn(headteacherDeclarationService, 'isHdfSubmittedForCurrentCheck').and.returnValue(false)
-      spyOn(res, 'render').and.returnValue(null)
+      jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockResolvedValue({ checkEndDate: 'value' })
+      jest.spyOn(headteacherDeclarationService, 'getEligibilityForSchool').mockResolvedValue(true)
+      jest.spyOn(businessAvailabilityService, 'getAvailabilityData').mockResolvedValue({ hdfAvailable: true })
+      jest.spyOn(headteacherDeclarationService, 'isHdfSubmittedForCurrentCheck').mockResolvedValue(false)
+      jest.spyOn(res, 'render').mockImplementation()
       await sut.getDeclarationForm(req, res)
       expect(res.render).toHaveBeenCalled()
     })
 
-    it('redirects when the hdf has been submitted', async () => {
+    test('redirects when the hdf has been submitted', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-      spyOn(headteacherDeclarationService, 'getEligibilityForSchool').and.returnValue(true)
-      spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ hdfAvailable: true })
-      spyOn(headteacherDeclarationService, 'isHdfSubmittedForCurrentCheck').and.returnValue(true)
-      spyOn(res, 'redirect')
-      spyOn(res, 'render')
+      jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockImplementation()
+      jest.spyOn(headteacherDeclarationService, 'getEligibilityForSchool').mockResolvedValue(true)
+      jest.spyOn(businessAvailabilityService, 'getAvailabilityData').mockResolvedValue({ hdfAvailable: true })
+      jest.spyOn(headteacherDeclarationService, 'isHdfSubmittedForCurrentCheck').mockResolvedValue(true)
+      jest.spyOn(res, 'redirect').mockImplementation()
+      jest.spyOn(res, 'render').mockImplementation()
       await sut.getDeclarationForm(req, res)
       expect(res.redirect).toHaveBeenCalled()
       expect(res.render).not.toHaveBeenCalled()
     })
-    it('renders section unavailable when hdf is not available', async () => {
+    test('renders section unavailable when hdf is not available', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-      spyOn(headteacherDeclarationService, 'getEligibilityForSchool').and.returnValue(true)
-      spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ hdfAvailable: false })
-      spyOn(headteacherDeclarationService, 'isHdfSubmittedForCurrentCheck').and.returnValue(true)
-      spyOn(res, 'redirect')
-      spyOn(res, 'render')
+      jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockImplementation()
+      jest.spyOn(headteacherDeclarationService, 'getEligibilityForSchool').mockResolvedValue(true)
+      jest.spyOn(businessAvailabilityService, 'getAvailabilityData').mockResolvedValue({ hdfAvailable: false })
+      jest.spyOn(headteacherDeclarationService, 'isHdfSubmittedForCurrentCheck').mockResolvedValue(true)
+      jest.spyOn(res, 'redirect').mockImplementation()
+      jest.spyOn(res, 'render').mockImplementation()
       await sut.getDeclarationForm(req, res)
       expect(res.redirect).not.toHaveBeenCalled()
       expect(res.render).toHaveBeenCalledWith('availability/section-unavailable', (
@@ -96,29 +100,29 @@ describe('attendance controller:', () => {
       user: { id: 1, School: 9991001 }
     }
 
-    it('redirects to the submit attendance page', async () => {
+    test('redirects to the submit attendance page', async () => {
       const res = getRes()
       const req = getReq(reqParams)
-      spyOn(checkWindowV2Service, 'getActiveCheckWindow').and.returnValue({ checkEndDate: 'value' })
-      spyOn(headteacherDeclarationService, 'getEligibilityForSchool').and.returnValue(true)
-      spyOn(res, 'redirect')
-      spyOn(res, 'render')
-      spyOn(hdfValidator, 'validate').and.returnValue(new ValidationError())
+      jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockResolvedValue({ checkEndDate: 'value' })
+      jest.spyOn(headteacherDeclarationService, 'getEligibilityForSchool').mockResolvedValue(true)
+      jest.spyOn(res, 'redirect').mockImplementation()
+      jest.spyOn(res, 'render').mockImplementation()
+      jest.spyOn(hdfValidator, 'validate').mockResolvedValue(new ValidationError())
       await sut.postDeclarationForm(req, res)
       expect(res.redirect).toHaveBeenCalled()
       expect(res.render).not.toHaveBeenCalled()
     })
 
-    it('renders declaration form if validator error occurs', async () => {
+    test('renders declaration form if validator error occurs', async () => {
       const res = getRes()
       const req = getReq(reqParams)
       const validationError = new ValidationError()
       validationError.addError('firstName', true)
-      spyOn(checkWindowV2Service, 'getActiveCheckWindow').and.returnValue({ checkEndDate: 'value' })
-      spyOn(headteacherDeclarationService, 'getEligibilityForSchool').and.returnValue(true)
-      spyOn(hdfValidator, 'validate').and.returnValue(validationError)
-      spyOn(res, 'redirect')
-      spyOn(res, 'render')
+      jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockResolvedValue({ checkEndDate: 'value' })
+      jest.spyOn(headteacherDeclarationService, 'getEligibilityForSchool').mockResolvedValue(true)
+      jest.spyOn(hdfValidator, 'validate').mockResolvedValue(validationError)
+      jest.spyOn(res, 'redirect').mockImplementation()
+      jest.spyOn(res, 'render').mockImplementation()
       await sut.postDeclarationForm(req, res)
       expect(res.redirect).not.toHaveBeenCalled()
       expect(res.render).toHaveBeenCalled()
@@ -132,11 +136,11 @@ describe('attendance controller:', () => {
       params: {}
     }
 
-    it('renders the pupil details list page', async () => {
+    test('renders the pupil details list page', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      spyOn(headteacherDeclarationService, 'findPupilsForSchool').and.returnValue([])
-      spyOn(res, 'render').and.returnValue(null)
+      jest.spyOn(headteacherDeclarationService, 'findPupilsForSchool').mockResolvedValue([])
+      jest.spyOn(res, 'render').mockImplementation()
       await sut.getReviewPupilDetails(req, res)
       expect(headteacherDeclarationService.findPupilsForSchool).toHaveBeenCalled()
       expect(res.render).toHaveBeenCalled()
@@ -152,12 +156,12 @@ describe('attendance controller:', () => {
       }
     }
 
-    it('renders the edit attendance reason page', async () => {
+    test('renders the edit attendance reason page', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      spyOn(headteacherDeclarationService, 'findPupilBySlugAndSchoolId').and.returnValue({})
-      spyOn(attendanceCodeService, 'getAttendanceCodes').and.returnValue([])
-      spyOn(res, 'render').and.returnValue(null)
+      jest.spyOn(headteacherDeclarationService, 'findPupilBySlugAndSchoolId').mockResolvedValue({})
+      jest.spyOn(attendanceCodeService, 'getAttendanceCodes').mockResolvedValue([])
+      jest.spyOn(res, 'render').mockImplementation()
       await sut.getEditReason(req, res)
       expect(headteacherDeclarationService.findPupilBySlugAndSchoolId).toHaveBeenCalled()
       expect(attendanceCodeService.getAttendanceCodes).toHaveBeenCalled()
@@ -173,12 +177,12 @@ describe('attendance controller:', () => {
       user: { id: 1, School: 1, schoolId: 2 }
     }
 
-    it('redirects to the review pupils page', async () => {
+    test('redirects to the review pupils page', async () => {
       const res = getRes()
       const req = getReq(reqParams)
-      spyOn(headteacherDeclarationService, 'findPupilBySlugAndSchoolId').and.returnValue({ pupilId: 1 })
-      spyOn(headteacherDeclarationService, 'updatePupilsAttendanceCode').and.returnValue(null)
-      spyOn(res, 'redirect')
+      jest.spyOn(headteacherDeclarationService, 'findPupilBySlugAndSchoolId').mockResolvedValue({ pupilId: 1 })
+      jest.spyOn(headteacherDeclarationService, 'updatePupilsAttendanceCode').mockResolvedValue(null)
+      jest.spyOn(res, 'redirect').mockImplementation()
       await sut.postSubmitEditReason(req, res)
       expect(headteacherDeclarationService.findPupilBySlugAndSchoolId).toHaveBeenCalled()
       expect(headteacherDeclarationService.updatePupilsAttendanceCode).toHaveBeenCalledWith(
@@ -198,39 +202,39 @@ describe('attendance controller:', () => {
       url: '/attendance/confirm-and-submit'
     }
 
-    it('renders the confirm and submit page', async () => {
+    test('renders the confirm and submit page', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      spyOn(checkWindowV2Service, 'getActiveCheckWindow').and.returnValue({ checkEndDate: 'value' })
-      spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ hdfAvailable: true })
-      spyOn(headteacherDeclarationService, 'getEligibilityForSchool').and.returnValue(true)
-      spyOn(res, 'render').and.returnValue(null)
+      jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockResolvedValue({ checkEndDate: 'value' })
+      jest.spyOn(businessAvailabilityService, 'getAvailabilityData').mockResolvedValue({ hdfAvailable: true })
+      jest.spyOn(headteacherDeclarationService, 'getEligibilityForSchool').mockResolvedValue(true)
+      jest.spyOn(res, 'render').mockResolvedValue(null)
       await sut.getConfirmSubmit(req, res)
       expect(res.render).toHaveBeenCalled()
       expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
       expect(businessAvailabilityService.getAvailabilityData).toHaveBeenCalled()
     })
-    it('calls next if a service method throws', async () => {
+    test('calls next if a service method throws', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
       const error = new Error('error')
-      spyOn(checkWindowV2Service, 'getActiveCheckWindow').and.returnValue(Promise.reject(error))
-      spyOn(headteacherDeclarationService, 'getEligibilityForSchool').and.returnValue(true)
-      spyOn(businessAvailabilityService, 'getAvailabilityData')
-      spyOn(res, 'render')
+      jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockResolvedValue(Promise.reject(error))
+      jest.spyOn(headteacherDeclarationService, 'getEligibilityForSchool').mockResolvedValue(true)
+      jest.spyOn(businessAvailabilityService, 'getAvailabilityData').mockImplementation()
+      jest.spyOn(res, 'render').mockImplementation()
       await sut.getConfirmSubmit(req, res, next)
       expect(res.render).not.toHaveBeenCalled()
       expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
       expect(businessAvailabilityService.getAvailabilityData).not.toHaveBeenCalled()
       expect(next).toHaveBeenCalled()
     })
-    it('renders declaration form page to display unavailable content when hdf eligibility is false ', async () => {
+    test('renders declaration form page to display unavailable content when hdf eligibility is false ', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      spyOn(checkWindowV2Service, 'getActiveCheckWindow').and.returnValue({ checkEndDate: 'value' })
-      spyOn(headteacherDeclarationService, 'getEligibilityForSchool').and.returnValue(false)
-      spyOn(businessAvailabilityService, 'getAvailabilityData')
-      spyOn(res, 'render')
+      jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockResolvedValue({ checkEndDate: 'value' })
+      jest.spyOn(headteacherDeclarationService, 'getEligibilityForSchool').mockResolvedValue(false)
+      jest.spyOn(businessAvailabilityService, 'getAvailabilityData').mockImplementation()
+      jest.spyOn(res, 'render').mockImplementation()
       await sut.getConfirmSubmit(req, res, next)
       expect(res.render).toHaveBeenCalledWith('hdf/declaration-form', (
         {
@@ -259,15 +263,15 @@ describe('attendance controller:', () => {
       }
     }
 
-    it('redirects to the submitted page', async () => {
+    test('redirects to the submitted page', async () => {
       const res = getRes()
       const req = getReq(reqParams)
-      spyOn(res, 'redirect')
-      spyOn(res, 'render')
-      spyOn(hdfConfirmValidator, 'validate').and.returnValue(new ValidationError())
-      spyOn(hdfValidator, 'validate').and.returnValue(new ValidationError())
-      spyOn(checkWindowV2Service, 'getActiveCheckWindow').and.returnValue({ checkEndDate: 'value' })
-      spyOn(headteacherDeclarationService, 'submitDeclaration').and.returnValue({})
+      jest.spyOn(res, 'redirect').mockImplementation()
+      jest.spyOn(res, 'render').mockImplementation()
+      jest.spyOn(hdfConfirmValidator, 'validate').mockResolvedValue(new ValidationError())
+      jest.spyOn(hdfValidator, 'validate').mockResolvedValue(new ValidationError())
+      jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockResolvedValue({ checkEndDate: 'value' })
+      jest.spyOn(headteacherDeclarationService, 'submitDeclaration').mockResolvedValue({})
       await sut.postConfirmSubmit(req, res)
       expect(hdfValidator.validate).toHaveBeenCalled()
       expect(headteacherDeclarationService.submitDeclaration).toHaveBeenCalled()
@@ -276,15 +280,15 @@ describe('attendance controller:', () => {
       expect(res.render).not.toHaveBeenCalled()
     })
 
-    it('renders confirm and submit form if validator error occurs', async () => {
+    test('renders confirm and submit form if validator error occurs', async () => {
       const res = getRes()
       const req = getReq(reqParams)
       const validationError = new ValidationError()
       validationError.addError('confirmBoxes', true)
-      spyOn(hdfConfirmValidator, 'validate').and.returnValue(validationError)
-      spyOn(sut, 'getConfirmSubmit')
-      spyOn(res, 'redirect')
-      spyOn(res, 'render')
+      jest.spyOn(hdfConfirmValidator, 'validate').mockResolvedValue(validationError)
+      jest.spyOn(sut, 'getConfirmSubmit').mockImplementation()
+      jest.spyOn(res, 'redirect').mockImplementation()
+      jest.spyOn(res, 'render').mockImplementation()
       await sut.postConfirmSubmit(req, res)
       expect(res.redirect).not.toHaveBeenCalled()
       expect(sut.getConfirmSubmit).toHaveBeenCalled()
@@ -298,22 +302,22 @@ describe('attendance controller:', () => {
       url: '/attendance/submitted'
     }
 
-    it('redirects to the submit page if there is no HDF', async () => {
+    test('redirects to the submit page if there is no HDF', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      spyOn(res, 'redirect').and.returnValue(null)
-      spyOn(res, 'render').and.returnValue(null)
-      spyOn(headteacherDeclarationService, 'findLatestHdfForSchool').and.returnValue(false)
+      jest.spyOn(res, 'redirect').mockImplementation()
+      jest.spyOn(res, 'render').mockImplementation()
+      jest.spyOn(headteacherDeclarationService, 'findLatestHdfForSchool').mockResolvedValue(false)
       await sut.getHDFSubmitted(req, res)
       expect(res.redirect).toHaveBeenCalledWith('/attendance/declaration-form')
       expect(res.render).not.toHaveBeenCalled()
     })
 
-    it('renders the submitted page', async () => {
+    test('renders the submitted page', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      spyOn(res, 'render').and.returnValue(null)
-      spyOn(headteacherDeclarationService, 'findLatestHdfForSchool').and.returnValue({
+      jest.spyOn(res, 'render').mockImplementation()
+      jest.spyOn(headteacherDeclarationService, 'findLatestHdfForSchool').mockResolvedValue({
         signedDate: moment(),
         checkEndDate: moment()
       })
@@ -328,22 +332,22 @@ describe('attendance controller:', () => {
       url: '/attendance/submitted-form'
     }
 
-    it('redirects to the submit page if there is no HDF', async () => {
+    test('redirects to the submit page if there is no HDF', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      spyOn(res, 'redirect').and.returnValue(null)
-      spyOn(res, 'render').and.returnValue(null)
-      spyOn(headteacherDeclarationService, 'findLatestHdfForSchool').and.returnValue(false)
+      jest.spyOn(res, 'redirect').mockImplementation()
+      jest.spyOn(res, 'render').mockImplementation()
+      jest.spyOn(headteacherDeclarationService, 'findLatestHdfForSchool').mockResolvedValue(false)
       await sut.getHDFSubmittedForm(req, res)
       expect(res.redirect).toHaveBeenCalledWith('/attendance/declaration-form')
       expect(res.render).not.toHaveBeenCalled()
     })
 
-    it('renders the submitted form page', async () => {
+    test('renders the submitted form page', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      spyOn(res, 'render').and.returnValue(null)
-      spyOn(headteacherDeclarationService, 'findLatestHdfForSchool').and.returnValue({
+      jest.spyOn(res, 'render').mockResolvedValue(null)
+      jest.spyOn(headteacherDeclarationService, 'findLatestHdfForSchool').mockResolvedValue({
         signedDate: moment()
       })
       await sut.getHDFSubmittedForm(req, res)
