@@ -16,7 +16,7 @@ describe('accessibility-statement page controller', () => {
     req.breadcrumbs = jest.fn()
     const controller = require('../../../controllers/accessibility-statement')
 
-    jest.spyOn(res, 'render').mockResolvedValue(null)
+    jest.spyOn(res, 'render').mockImplementation()
     await controller.getAccessibilityStatementPage(req, res)
 
     expect(res.locals.pageTitle).toBe('Accessibility statement')

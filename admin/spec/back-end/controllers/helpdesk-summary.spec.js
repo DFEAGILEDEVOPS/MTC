@@ -1,6 +1,6 @@
 'use strict'
 
-/* global describe it expect jasmine beforeEach spyOn */
+/* global describe expect jest test beforeEach afterEach */
 
 const controller = require('../../../controllers/helpdesk-summary')
 const schoolSummaryService = require('../../../services/school-summary.service')
@@ -20,24 +20,28 @@ describe('helpdesk summary controller', () => {
     const req = httpMocks.createRequest(params)
     req.user = params.user || { School: 9991001, schoolId: 123 }
     req.session = params.session || {}
-    req.breadcrumbs = jasmine.createSpy('breadcrumbs')
-    req.flash = jasmine.createSpy('flash')
+    req.breadcrumbs = jest.fn()
+    req.flash = jest.fn()
     return req
   }
 
   beforeEach(() => {
-    next = jasmine.createSpy('next')
+    next = jest.fn()
+  })
+
+  afterEach(() => {
+    jest.restoreAllMocks()
   })
 
   const reqParams = {
     method: 'GET',
     url: '/school-summary'
   }
-  it('should render the school summary', async () => {
+  test('should render the school summary', async () => {
     const req = getReq(reqParams)
     const res = getRes()
-    spyOn(res, 'render')
-    spyOn(schoolSummaryService, 'getSummary')
+    jest.spyOn(res, 'render').mockImplementation()
+    jest.spyOn(schoolSummaryService, 'getSummary').mockImplementation()
     await controller.getSummary(req, res, next)
     expect(res.render).toHaveBeenCalled()
     expect(schoolSummaryService.getSummary).toHaveBeenCalled()
