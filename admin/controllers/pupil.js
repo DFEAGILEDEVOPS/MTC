@@ -267,7 +267,6 @@ const controller = {
       res.locals.pageTitle = 'Pupil history'
       req.breadcrumbs(res.locals.pageTitle)
       const pupilHistory = await PupilHistoryService.getHistory(req.params.urlSlug)
-      console.log('Got history for pupil', pupilHistory)
       return res.render('pupil-register/pupil-history', {
         breadcrumbs: req.breadcrumbs(),
         pupilHistory
