@@ -121,17 +121,24 @@ describe('school.service', () => {
         .toThrow('Missing school details')
     })
 
+    test('it throws if the userId is undefined', async () => {
+      const slug = uuid.v4()
+      const school = {}
+      await expect(sut.updateSchool(slug, school))
+        .rejects.toThrow('Missing userId')
+    })
+
     test('it calls the data service to do the update if the validation passes', async () => {
       jest.spyOn(schoolDataService, 'sqlUpdateBySlug').mockImplementation(_ => Promise.resolve({}))
       jest.spyOn(schoolValidator, 'validate').mockResolvedValue(new ValidationError())
-      await sut.updateSchool(uuid.NIL, {})
+      await sut.updateSchool(uuid.NIL, {}, 1)
       expect(schoolDataService.sqlUpdateBySlug).toHaveBeenCalledTimes(1)
     })
 
     test('it throws a ValidationError if the validation fails', async () => {
       const validationError = new ValidationError('dfeNumber', 'Test error')
       jest.spyOn(schoolValidator, 'validate').mockResolvedValue(validationError)
-      await expect(sut.updateSchool(uuid.NIL, {}))
+      await expect(sut.updateSchool(uuid.NIL, {}, 1))
         .rejects
         .toHaveProperty('name', 'ValidationError')
     })

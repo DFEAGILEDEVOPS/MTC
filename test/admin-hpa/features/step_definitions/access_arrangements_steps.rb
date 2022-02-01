@@ -192,30 +192,40 @@ end
 
 When(/^I want to remove all access arrangement for a pupil/) do
   pupil_row = access_arrangements_page.find_pupil_row(@details_hash[:first_name])
-  pupil_row.remove.click
+  @pupil_access_arrangements = pupil_row.access_arrangement_name.map {|aa| aa.text}
+  pupil_row.edit.click
+  select_access_arrangements_page.uncheck_all_pupils_access_arrangements(@pupil_access_arrangements)
+  select_access_arrangements_page.save.click
 end
 
 When(/^I removed all access arrangement for a pupil$/) do
   pupil_row = access_arrangements_page.find_pupil_row(@details_hash[:first_name])
-  pupil_row.remove.click
-  access_arrangements_page.modal.confirm.click
+  @pupil_access_arrangements = pupil_row.access_arrangement_name.map {|aa| aa.text}
+  pupil_row.edit.click
+  select_access_arrangements_page.uncheck_all_pupils_access_arrangements(@pupil_access_arrangements)
+  select_access_arrangements_page.save.click
+  select_access_arrangements_page.modal.confirm.click
 end
 
 When(/^I decided to select no from the modal to remove access arrangment$/) do
   pupil_row = access_arrangements_page.find_pupil_row(@details_hash[:first_name])
-  pupil_row.remove.click
-  access_arrangements_page.modal.cancel.click
+  @pupil_access_arrangements = pupil_row.access_arrangement_name.map {|aa| aa.text}
+  pupil_row.edit.click
+  select_access_arrangements_page.uncheck_all_pupils_access_arrangements(@pupil_access_arrangements)
+  select_access_arrangements_page.save.click
+  select_access_arrangements_page.modal.cancel.click
+  select_access_arrangements_page.cancel.click
 end
 
 Then(/^modal to remove access arrangements is displayed as per the design$/) do
-  expect(access_arrangements_page.modal).to have_heading
-  expect(access_arrangements_page.modal.heading.text).to eql 'Remove arrangements'
+  expect(select_access_arrangements_page.modal).to have_heading
+  expect(select_access_arrangements_page.modal.heading.text).to eql 'Remove arrangements'
 
-  expect(access_arrangements_page.modal).to have_contents
-  expect(access_arrangements_page.modal.contents.text).to eql 'Are you sure you want to remove all access arrangements for this pupil?'
+  expect(select_access_arrangements_page.modal).to have_contents
+  expect(select_access_arrangements_page.modal.contents.text).to eql 'Are you sure you want to remove all access arrangements for this pupil?'
 
-  expect(access_arrangements_page.modal).to have_cancel
-  expect(access_arrangements_page.modal).to have_confirm
+  expect(select_access_arrangements_page.modal).to have_cancel
+  expect(select_access_arrangements_page.modal).to have_confirm
 end
 
 Then(/^the pupil is removed from the access arrangmenet pupil list$/) do
@@ -234,7 +244,7 @@ When(/^I decide against removing access arrangements against a pupil$/) do
   step 'I select the pupil to edit the access arrangement'
   select_access_arrangements_page.select_access_arrangement(@access_arrangement_name)
   select_access_arrangements_page.save.click
-  select_access_arrangements_page.cancel_removal.click
+  select_access_arrangements_page.modal.cancel.click
 end
 
 Then(/^there should be no change made to the pupils access arrangements$/) do
@@ -248,7 +258,7 @@ Then(/^I should be able to remove any access arrangements for the pupil from the
   step 'I select the pupil to edit the access arrangement'
   select_access_arrangements_page.select_access_arrangement(@access_arrangement_name)
   select_access_arrangements_page.save.click
-  select_access_arrangements_page.confirm_removal.click
+  select_access_arrangements_page.modal.confirm.click
   expect(access_arrangements_page.success_message.text).to eql "Access arrangements removed for #{@pupil_name}"
 end
 

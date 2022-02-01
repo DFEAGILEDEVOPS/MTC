@@ -45,11 +45,10 @@ Given(/^I have some pupils that have completed the check$/) do
   step "I have no pupils not taking the check for the school"
   step "I am on the add multiple pupil page"
   @upn_list = add_multiple_pupil_page.create_and_upload_multiple_pupils(3, 'pin_gen.csv')
-  generate_pins_overview_page.load
-  step 'I click Generate PINs button'
+  navigate_to_pupil_list_for_pin_gen('live')
   @pupil_names_arr = @upn_list.map {|upn| SqlDbHelper.pupil_details(upn,@school_id)['lastName'] + ', ' + SqlDbHelper.pupil_details(upn,@school_id)['foreName']}
-  generate_pins_overview_page.generate_pin_using_list_of_names(@pupil_names_arr)
-  step "I am on the generate pupil pins page"
+  generate_live_pins_overview_page.generate_pin_using_list_of_names(@pupil_names_arr)
+  generate_live_pins_overview_page.load
   @pupil_names_arr.each do |pupil|
     pupil_lastname = pupil.split(',')[0]
     pupil_firstname = pupil.split(',')[1].split(' Date')[0].split(' ')[0]

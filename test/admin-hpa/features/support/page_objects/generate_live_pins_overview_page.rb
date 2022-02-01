@@ -1,4 +1,4 @@
-class GeneratePinsOverviewPage < SitePrism::Page
+class GenerateLivePinsOverviewPage < SitePrism::Page
   set_url '/pupil-pin/generate-live-pins-overview'
 
   element :heading, '.govuk-heading-xl'
@@ -10,7 +10,7 @@ class GeneratePinsOverviewPage < SitePrism::Page
     element :toggle, '.govuk-details__summary'
     elements :info_message, '.govuk-list--number li'
   end
-  element :generate_pin_btn, 'input[value="Generate PINs"]'
+  element :generate_pin_btn, 'input[value="Generate official PINs"]'
   element :related_heading, ".govuk-heading-m", text: 'Related'
   element :guidance, "a", text: 'Read the guidance and watch videos'
   element :restarts, "a[href='/restart/overview']", text: 'Select pupils to restart the check'
@@ -37,14 +37,12 @@ class GeneratePinsOverviewPage < SitePrism::Page
     element :error_info, 'p', text: 'National curriculum assessments helpline'
   end
 
-  element :view_all_pins_btn, 'a', text: "View all pins"
-
   section :generated_pin_overview, '#generatePins' do
     element :generated_pin_heading, 'tr', text: "Generated PINs"
     element :generated_pin_information, 'tbody tr td label', text: "PINs have been generated for"
     element :pin_expiry_info, '.govuk-font-greyed-out', text: "Expires 4pm today"
     element :view_all_pins_btn, 'a', text: "View all pins"
-    element :generate_additional_pins_btn, 'a', text: "Generate PINs"
+    element :generate_additional_pins_btn, 'a', text: "Generate official PINs"
   end
 
   def generate_pin_using_name(name)
@@ -80,5 +78,9 @@ class GeneratePinsOverviewPage < SitePrism::Page
     pupil_list.rows.find {|pupil| pupil.text.include? name}
   end
 
+  def generate_pins
+    generate_pin_btn.click if has_generate_pin_btn?
+    generated_pin_overview.generate_additional_pins_btn.click if generated_pin_overview.has_generate_additional_pins_btn?
+  end
 
 end

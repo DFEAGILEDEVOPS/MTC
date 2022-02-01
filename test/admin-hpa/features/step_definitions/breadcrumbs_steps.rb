@@ -20,3 +20,12 @@ end
 When(/^I am on the pupils not taking check page$/) do
   school_landing_page.pupils_not_taking_check.click
 end
+
+
+And(/^I navigate to the live check overview page$/) do
+  generate_live_pins_overview_page.load
+end
+
+And(/^I navigate to the tio check overview page$/) do
+  generate_tio_pins_overview_page.load
+end

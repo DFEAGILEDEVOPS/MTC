@@ -225,12 +225,6 @@ After("@multiple_pupil_upload") do
   File.delete(File.expand_path("#{File.dirname(__FILE__)}/../../data/multiple_pupils_template.csv")) if File.exist? (File.expand_path("#{File.dirname(__FILE__)}/../../data/multiple_pupils_template.csv"))
 end
 
-After("@remove_access_arrangements") do
-  step 'I am logged in'
-  school_landing_page.access_arrangements.click
-  access_arrangements_page.remove_all_pupils
-end
-
 After("@remove_uploaded_forms or @upload_new_live_form or @upload_new_fam_form") do
   SqlDbHelper.delete_assigned_forms
   SqlDbHelper.delete_forms

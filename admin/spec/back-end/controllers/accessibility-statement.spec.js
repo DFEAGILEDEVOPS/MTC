@@ -1,11 +1,11 @@
 'use strict'
 
-/* global describe it expect jasmine spyOn */
+/* global describe expect jest test */
 
 const httpMocks = require('node-mocks-http')
 
 describe('accessibility-statement page controller', () => {
-  it('should render the initial accessibility-statement page', async () => {
+  test('should render the initial accessibility-statement page', async () => {
     const res = httpMocks.createResponse()
     res.locals = {}
 
@@ -13,10 +13,10 @@ describe('accessibility-statement page controller', () => {
       method: 'GET',
       url: '/accessibility-statement'
     })
-    req.breadcrumbs = jasmine.createSpy('breadcrumbs')
+    req.breadcrumbs = jest.fn()
     const controller = require('../../../controllers/accessibility-statement')
 
-    spyOn(res, 'render').and.returnValue(null)
+    jest.spyOn(res, 'render').mockImplementation()
     await controller.getAccessibilityStatementPage(req, res)
 
     expect(res.locals.pageTitle).toBe('Accessibility statement')

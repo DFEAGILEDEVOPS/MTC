@@ -1,11 +1,11 @@
 'use strict'
 
-/* global describe it expect jasmine spyOn */
+/* global describe jest test expect */
 
 const httpMocks = require('node-mocks-http')
 
 describe('privacy page controller', () => {
-  it('should render the initial groups page', async () => {
+  test('should render the initial groups page', async () => {
     const res = httpMocks.createResponse()
     res.locals = {}
 
@@ -13,10 +13,10 @@ describe('privacy page controller', () => {
       method: 'GET',
       url: '/privacy'
     })
-    req.breadcrumbs = jasmine.createSpy('breadcrumbs')
+    req.breadcrumbs = jest.fn()
     const controller = require('../../../controllers/privacy')
 
-    spyOn(res, 'render').and.returnValue(null)
+    jest.spyOn(res, 'render').mockImplementation()
     await controller.getPrivacyPage(req, res)
 
     expect(res.locals.pageTitle).toBe('Privacy notice')

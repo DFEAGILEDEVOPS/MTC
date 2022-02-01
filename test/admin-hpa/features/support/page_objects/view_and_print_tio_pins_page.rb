@@ -1,4 +1,5 @@
-class CustomPinsFamiliarisationPage < SitePrism::Page
+# class CustomPinsFamiliarisationPage < SitePrism::Page
+class ViewAndPrintTioPinsPage < SitePrism::Page
   set_url '/pupil-pin/view-and-custom-print-familiarisation-pins'
 
   element :heading, '.govuk-heading-xl'

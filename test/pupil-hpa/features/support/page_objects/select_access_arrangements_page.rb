@@ -20,8 +20,13 @@ class SelectAccessArrangementsPage < SitePrism::Page
       end
     end
   end
-  element :confirm_removal, '#js-modal-confirmation-button'
-  element :cancel_removal, '#js-modal-cancel-button'
+
+  section :modal, '.modal-box.show' do
+    element :heading, '#modal-title'
+    element :contents, '.modal-content p'
+    element :cancel, '#js-modal-cancel-button'
+    element :confirm, '#js-modal-confirmation-button'
+  end
 
   element :input_assistance_info, '.show-checkbox-content .govuk-label'
   element :input_assistance_reason, '#inputAssistanceInformation'
