@@ -2,6 +2,7 @@
 
 const validator = require('../lib/validator/retro-input-assistant-validator')
 const dataService = require('./data-access/retro-input-assistant.data.service')
+const validateUuid = require('uuid-validate')
 
 const service = {
   /**
@@ -63,6 +64,20 @@ const service = {
       fullName: `${p.lastName}, ${p.foreName}${p.middleNames ? ' ' + p.middleNames : ''}`,
       urlSlug: p.urlSlug
     }))
+  },
+  /**
+ * removes retro input assistant from pupils current check
+ * @param {string} pupilUrlSlug
+ * @returns {Promise<void>}
+ */
+  deleteFromCurrentCheck: async function deleteFromCurrentCheck (pupilUrlSlug) {
+    if (!pupilUrlSlug) {
+      throw new Error('pupilUrlSlug not provided')
+    }
+    if (!validateUuid(pupilUrlSlug)) {
+      throw new Error('pupilUrlSlug is not a valid UUID')
+    }
+    return dataService.deleteRetroInputAssistant(pupilUrlSlug)
   }
 }
 

@@ -1,4 +1,4 @@
-@access_arrangements @feature_toggle @remove_access_arrangements @add_a_pupil
+@access_arrangements @feature_toggle @add_a_pupil
 Feature: Access Arrangements
 
   Scenario: Access Arrangements page is displayed as per the design

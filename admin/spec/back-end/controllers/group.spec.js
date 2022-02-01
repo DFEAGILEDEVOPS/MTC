@@ -1,6 +1,6 @@
 'use strict'
 
-/* global describe beforeEach it expect jasmine spyOn */
+/* global describe beforeEach afterEach expect jest test */
 
 const httpMocks = require('node-mocks-http')
 
@@ -31,13 +31,13 @@ describe('group controller', () => {
       role: 'TEACHER',
       logonAt: 1511374645103
     }
-    req.breadcrumbs = jasmine.createSpy('breadcrumbs')
-    req.flash = jasmine.createSpy('flash')
+    req.breadcrumbs = jest.fn()
+    req.flash = jest.fn()
     return req
   }
 
   describe('Check routes', () => {
-    let controller
+    let controllerMethodUnderTest
     let next
     const goodReqParams = {
       method: 'GET',
@@ -45,24 +45,28 @@ describe('group controller', () => {
     }
 
     beforeEach(() => {
-      next = jasmine.createSpy('next')
+      next = jest.fn()
+    })
+
+    afterEach(() => {
+      jest.restoreAllMocks()
     })
 
     describe('#groupPupilsPage', () => {
       describe('(happy path)', () => {
         beforeEach(() => {
-          spyOn(groupService, 'getGroups').and.returnValue(groupsMock)
-          controller = require('../../../controllers/group')
+          jest.spyOn(groupService, 'getGroups').mockResolvedValue(groupsMock)
+          controllerMethodUnderTest = require('../../../controllers/group')
         })
 
-        it('should render the initial groups page', async () => {
+        test('should render the initial groups page', async () => {
           const res = getRes()
           const req = getReq(goodReqParams)
-          spyOn(res, 'render').and.returnValue(null)
-          spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-          spyOn(schoolHomeFeatureEligibilityPresenter, 'getPresentationData')
-          spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({})
-          await controller.groupPupilsPage(req, res, next)
+          jest.spyOn(res, 'render').mockImplementation()
+          jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockImplementation()
+          jest.spyOn(schoolHomeFeatureEligibilityPresenter, 'getPresentationData').mockImplementation()
+          jest.spyOn(businessAvailabilityService, 'getAvailabilityData').mockResolvedValue({})
+          await controllerMethodUnderTest.groupPupilsPage(req, res, next)
 
           expect(res.locals.pageTitle).toBe('Organise pupils into groups')
           expect(groupService.getGroups).toHaveBeenCalled()
@@ -77,18 +81,18 @@ describe('group controller', () => {
 
       describe('(unhappy path)', () => {
         beforeEach(() => {
-          spyOn(groupService, 'getGroups').and.returnValue(Promise.reject(new Error()))
-          controller = require('../../../controllers/group').groupPupilsPage
+          jest.spyOn(groupService, 'getGroups').mockRejectedValue(new Error())
+          controllerMethodUnderTest = require('../../../controllers/group').groupPupilsPage
         })
 
-        it('should render the initial groups page', async () => {
+        test('should render the initial groups page', async () => {
           const res = getRes()
           const req = getReq(goodReqParams)
-          spyOn(res, 'render').and.returnValue(null)
-          spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-          spyOn(schoolHomeFeatureEligibilityPresenter, 'getPresentationData')
-          spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({})
-          await controller(req, res, next)
+          jest.spyOn(res, 'render').mockImplementation()
+          jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockImplementation()
+          jest.spyOn(schoolHomeFeatureEligibilityPresenter, 'getPresentationData').mockImplementation()
+          jest.spyOn(businessAvailabilityService, 'getAvailabilityData').mockResolvedValue({})
+          await controllerMethodUnderTest(req, res, next)
 
           expect(res.locals.pageTitle).toBe('Organise pupils into groups')
           expect(groupService.getGroups).toHaveBeenCalled()
@@ -105,18 +109,18 @@ describe('group controller', () => {
     describe('#manageGroupPage', () => {
       describe('(happy path)', () => {
         beforeEach(() => {
-          spyOn(groupService, 'getGroupById').and.returnValue(groupMock)
-          spyOn(groupService, 'getPupils').and.returnValue(pupilsMock)
-          controller = require('../../../controllers/group').manageGroupPage
+          jest.spyOn(groupService, 'getGroupById').mockResolvedValue(groupMock)
+          jest.spyOn(groupService, 'getPupils').mockResolvedValue(pupilsMock)
+          controllerMethodUnderTest = require('../../../controllers/group').manageGroupPage
         })
 
-        it('should render the add page', async () => {
+        test('should render the add page', async () => {
           const res = getRes()
           const req = getReq(goodReqParams)
-          spyOn(res, 'render').and.returnValue(null)
-          spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-          spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ groupsAvailable: true })
-          await controller(req, res, next)
+          jest.spyOn(res, 'render').mockImplementation()
+          jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockImplementation()
+          jest.spyOn(businessAvailabilityService, 'getAvailabilityData').mockResolvedValue({ groupsAvailable: true })
+          await controllerMethodUnderTest(req, res, next)
 
           expect(res.locals.pageTitle).toBe('Create group')
           expect(groupService.getGroupById).not.toHaveBeenCalled()
@@ -128,14 +132,14 @@ describe('group controller', () => {
           expect(res.statusCode).toBe(200)
         })
 
-        it('should render the edit page', async () => {
+        test('should render the edit page', async () => {
           const res = getRes()
           const req = getReq(goodReqParams)
           req.params.groupId = '123456abcde'
-          spyOn(res, 'render').and.returnValue(null)
-          spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-          spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ groupsAvailable: true })
-          await controller(req, res, next)
+          jest.spyOn(res, 'render').mockImplementation()
+          jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockImplementation()
+          jest.spyOn(businessAvailabilityService, 'getAvailabilityData').mockResolvedValue({ groupsAvailable: true })
+          await controllerMethodUnderTest(req, res, next)
 
           expect(res.locals.pageTitle).toBe('Edit group')
           expect(groupService.getGroupById).toHaveBeenCalled()
@@ -150,18 +154,18 @@ describe('group controller', () => {
 
       describe('(happy path)', () => {
         beforeEach(() => {
-          spyOn(groupService, 'getGroupById').and.returnValue(groupMock)
-          spyOn(groupService, 'getPupils').and.returnValue(pupilsMock)
-          controller = require('../../../controllers/group').manageGroupPage
+          jest.spyOn(groupService, 'getGroupById').mockResolvedValue(groupMock)
+          jest.spyOn(groupService, 'getPupils').mockResolvedValue(pupilsMock)
+          controllerMethodUnderTest = require('../../../controllers/group').manageGroupPage
         })
 
-        it('should render the add page', async () => {
+        test('should render the add page', async () => {
           const res = getRes()
           const req = getReq(goodReqParams)
-          spyOn(res, 'render').and.returnValue(null)
-          spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-          spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ groupsAvailable: true })
-          await controller(req, res, next)
+          jest.spyOn(res, 'render').mockImplementation()
+          jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockImplementation()
+          jest.spyOn(businessAvailabilityService, 'getAvailabilityData').mockResolvedValue({ groupsAvailable: true })
+          await controllerMethodUnderTest(req, res, next)
 
           expect(res.locals.pageTitle).toBe('Create group')
           expect(groupService.getGroupById).not.toHaveBeenCalled()
@@ -171,14 +175,14 @@ describe('group controller', () => {
           expect(res.statusCode).toBe(200)
         })
 
-        it('should render the edit page', async () => {
+        test('should render the edit page', async () => {
           const res = getRes()
           const req = getReq(goodReqParams)
           req.params.groupId = '123456abcde'
-          spyOn(res, 'render').and.returnValue(null)
-          spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-          spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ groupsAvailable: true })
-          await controller(req, res, next)
+          jest.spyOn(res, 'render').mockImplementation()
+          jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockImplementation()
+          jest.spyOn(businessAvailabilityService, 'getAvailabilityData').mockResolvedValue({ groupsAvailable: true })
+          await controllerMethodUnderTest(req, res, next)
 
           expect(res.locals.pageTitle).toBe('Edit group')
           expect(groupService.getGroupById).toHaveBeenCalled()
@@ -191,19 +195,19 @@ describe('group controller', () => {
 
       describe('(unhappy path)', () => {
         beforeEach(() => {
-          spyOn(groupService, 'getGroupById').and.returnValue(Promise.reject(new Error()))
-          spyOn(groupService, 'getPupils').and.returnValue(pupilsMock)
-          controller = require('../../../controllers/group').manageGroupPage
+          jest.spyOn(groupService, 'getGroupById').mockResolvedValue(Promise.reject(new Error()))
+          jest.spyOn(groupService, 'getPupils').mockResolvedValue(pupilsMock)
+          controllerMethodUnderTest = require('../../../controllers/group').manageGroupPage
         })
 
-        it('should fail to render the edit page and execute next', async () => {
+        test('should fail to render the edit page and execute next', async () => {
           const res = getRes()
           const req = getReq(goodReqParams)
           req.params.groupId = '123456abcde'
-          spyOn(res, 'render').and.returnValue(null)
-          spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-          spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ groupsAvailable: true })
-          await controller(req, res, next)
+          jest.spyOn(res, 'render').mockImplementation()
+          jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockImplementation()
+          jest.spyOn(businessAvailabilityService, 'getAvailabilityData').mockResolvedValue({ groupsAvailable: true })
+          await controllerMethodUnderTest(req, res, next)
 
           expect(res.locals.pageTitle).toBe('Edit group')
           expect(groupService.getGroupById).toHaveBeenCalled()
@@ -216,18 +220,18 @@ describe('group controller', () => {
 
       describe('(unhappy path)', () => {
         beforeEach(() => {
-          spyOn(groupService, 'getGroupById').and.returnValue(groupMock)
-          spyOn(groupService, 'getPupils').and.returnValue(Promise.reject(new Error()))
-          controller = require('../../../controllers/group').manageGroupPage
+          jest.spyOn(groupService, 'getGroupById').mockResolvedValue(groupMock)
+          jest.spyOn(groupService, 'getPupils').mockResolvedValue(Promise.reject(new Error()))
+          controllerMethodUnderTest = require('../../../controllers/group').manageGroupPage
         })
 
-        it('should fail to render the add page and execute next', async () => {
+        test('should fail to render the add page and execute next', async () => {
           const res = getRes()
           const req = getReq(goodReqParams)
-          spyOn(res, 'render').and.returnValue(null)
-          spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-          spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ groupsAvailable: true })
-          await controller(req, res, next)
+          jest.spyOn(res, 'render').mockImplementation()
+          jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockImplementation()
+          jest.spyOn(businessAvailabilityService, 'getAvailabilityData').mockResolvedValue({ groupsAvailable: true })
+          await controllerMethodUnderTest(req, res, next)
 
           expect(res.locals.pageTitle).toBe('Create group')
           expect(groupService.getGroupById).not.toHaveBeenCalled()
@@ -241,7 +245,7 @@ describe('group controller', () => {
 
     describe('#addGroup', () => {
       describe('(happy path)', () => {
-        it('should create a new group', async () => {
+        test('should create a new group', async () => {
           const res = getRes()
           const req = getReq(goodReqParams)
           req.method = 'POST'
@@ -251,14 +255,14 @@ describe('group controller', () => {
           }
 
           const validationError = new ValidationError()
-          spyOn(groupValidator, 'validate').and.returnValue(validationError)
-          spyOn(groupService, 'getPupils').and.returnValue(pupilsMock)
-          spyOn(groupService, 'create').and.returnValue(Promise.resolve(groupMock))
-          spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-          spyOn(businessAvailabilityService, 'determineGroupsEligibility')
+          jest.spyOn(groupValidator, 'validate').mockResolvedValue(validationError)
+          jest.spyOn(groupService, 'getPupils').mockResolvedValue(pupilsMock)
+          jest.spyOn(groupService, 'create').mockResolvedValue(groupMock)
+          jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockImplementation()
+          jest.spyOn(businessAvailabilityService, 'determineGroupsEligibility').mockImplementation()
 
-          controller = require('../../../controllers/group').addGroup
-          await controller(req, res, next)
+          controllerMethodUnderTest = require('../../../controllers/group').addGroup
+          await controllerMethodUnderTest(req, res, next)
 
           expect(validationError.hasError()).toBeFalsy()
           expect(groupValidator.validate).toHaveBeenCalled()
@@ -272,7 +276,7 @@ describe('group controller', () => {
       })
 
       describe('(unhappy path)', () => {
-        it('should fail to create a new group', async () => {
+        test('should fail to create a new group', async () => {
           const res = getRes()
           const req = getReq(goodReqParams)
           req.method = 'POST'
@@ -282,14 +286,14 @@ describe('group controller', () => {
           }
 
           const validationError = new ValidationError()
-          spyOn(groupValidator, 'validate').and.returnValue(validationError)
-          spyOn(groupService, 'getPupils').and.returnValue(pupilsMock)
-          spyOn(groupService, 'create').and.returnValue(Promise.reject(new Error()))
-          spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-          spyOn(businessAvailabilityService, 'determineGroupsEligibility')
+          jest.spyOn(groupValidator, 'validate').mockResolvedValue(validationError)
+          jest.spyOn(groupService, 'getPupils').mockResolvedValue(pupilsMock)
+          jest.spyOn(groupService, 'create').mockRejectedValue(new Error())
+          jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockImplementation()
+          jest.spyOn(businessAvailabilityService, 'determineGroupsEligibility').mockImplementation()
 
-          controller = require('../../../controllers/group').addGroup
-          await controller(req, res, next)
+          controllerMethodUnderTest = require('../../../controllers/group').addGroup
+          await controllerMethodUnderTest(req, res, next)
 
           expect(validationError.hasError()).toBeFalsy()
           expect(groupValidator.validate).toHaveBeenCalled()
@@ -303,7 +307,7 @@ describe('group controller', () => {
       })
 
       describe('(unhappy path)', () => {
-        it('should fail when form has errors', async () => {
+        test('should fail when form has errors', async () => {
           const res = getRes()
           const req = getReq(goodReqParams)
           req.method = 'POST'
@@ -315,14 +319,14 @@ describe('group controller', () => {
           const validationError = new ValidationError()
           validationError.addError('test', 'test')
 
-          spyOn(groupValidator, 'validate').and.returnValue(validationError)
-          spyOn(groupService, 'getPupils').and.returnValue(Promise.resolve(groupMock))
-          spyOn(groupService, 'create').and.returnValue(Promise.resolve(groupMock))
-          spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-          spyOn(businessAvailabilityService, 'determineGroupsEligibility')
+          jest.spyOn(groupValidator, 'validate').mockResolvedValue(validationError)
+          jest.spyOn(groupService, 'getPupils').mockResolvedValue(groupMock)
+          jest.spyOn(groupService, 'create').mockResolvedValue(groupMock)
+          jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockImplementation()
+          jest.spyOn(businessAvailabilityService, 'determineGroupsEligibility').mockImplementation()
 
-          controller = require('../../../controllers/group').addGroup
-          await controller(req, res, next)
+          controllerMethodUnderTest = require('../../../controllers/group').addGroup
+          await controllerMethodUnderTest(req, res, next)
 
           expect(res.locals.pageTitle).toBe('Create group')
           expect(validationError.hasError()).toBeTruthy()
@@ -335,7 +339,7 @@ describe('group controller', () => {
       })
 
       describe('(unhappy path)', () => {
-        it('should fail when getPupils fails', async () => {
+        test('should fail when getPupils fails', async () => {
           const res = getRes()
           const req = getReq(goodReqParams)
           req.method = 'POST'
@@ -347,13 +351,13 @@ describe('group controller', () => {
           const validationError = new ValidationError()
           validationError.addError('test', 'test')
 
-          spyOn(groupValidator, 'validate').and.returnValue(validationError)
-          spyOn(groupService, 'getPupils').and.returnValue(Promise.reject(new Error()))
-          spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-          spyOn(businessAvailabilityService, 'determineGroupsEligibility')
+          jest.spyOn(groupValidator, 'validate').mockResolvedValue(validationError)
+          jest.spyOn(groupService, 'getPupils').mockRejectedValue(new Error())
+          jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockImplementation()
+          jest.spyOn(businessAvailabilityService, 'determineGroupsEligibility').mockImplementation()
 
-          controller = require('../../../controllers/group').addGroup
-          await controller(req, res, next)
+          controllerMethodUnderTest = require('../../../controllers/group').addGroup
+          await controllerMethodUnderTest(req, res, next)
 
           expect(res.locals.pageTitle).toBe('Create group')
           expect(validationError.hasError()).toBeTruthy()
@@ -366,13 +370,13 @@ describe('group controller', () => {
 
       describe('(unhappy path)', () => {
         beforeEach(() => {
-          spyOn(groupValidator, 'validate').and.returnValue()
-          spyOn(groupService, 'getPupils').and.returnValue(pupilsMock)
-          spyOn(groupService, 'create').and.returnValue(Promise.resolve(groupMock))
-          controller = require('../../../controllers/group').addGroup
+          jest.spyOn(groupValidator, 'validate').mockResolvedValue()
+          jest.spyOn(groupService, 'getPupils').mockResolvedValue(pupilsMock)
+          jest.spyOn(groupService, 'create').mockResolvedValue(groupMock)
+          controllerMethodUnderTest = require('../../../controllers/group').addGroup
         })
 
-        it('should redirect when name and/or pupil body are empty', async () => {
+        test('should redirect when name and/or pupil body are empty', async () => {
           const res = getRes()
           const req = getReq(goodReqParams)
           req.method = 'POST'
@@ -381,7 +385,7 @@ describe('group controller', () => {
             pupil: null
           }
 
-          await controller(req, res, next)
+          await controllerMethodUnderTest(req, res, next)
           expect(res.locals.pageTitle).toBeUndefined()
           expect(groupValidator.validate).not.toHaveBeenCalled()
           expect(groupService.getPupils).not.toHaveBeenCalled()
@@ -394,7 +398,7 @@ describe('group controller', () => {
 
     describe('#editGroup', () => {
       describe('(happy path)', () => {
-        it('should edit a group', async () => {
+        test('should edit a group', async () => {
           const res = getRes()
           const req = getReq(goodReqParams)
           req.method = 'POST'
@@ -405,15 +409,15 @@ describe('group controller', () => {
           }
 
           const validationError = new ValidationError()
-          spyOn(groupService, 'getGroupById').and.returnValue(groupMock)
-          spyOn(groupService, 'getPupils').and.returnValue(pupilsMock)
-          spyOn(groupValidator, 'validate').and.returnValue(validationError)
-          spyOn(groupService, 'update').and.returnValue(Promise.resolve(groupMock))
-          spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-          spyOn(businessAvailabilityService, 'determineGroupsEligibility')
+          jest.spyOn(groupService, 'getGroupById').mockResolvedValue(groupMock)
+          jest.spyOn(groupService, 'getPupils').mockResolvedValue(pupilsMock)
+          jest.spyOn(groupValidator, 'validate').mockResolvedValue(validationError)
+          jest.spyOn(groupService, 'update').mockResolvedValue(groupMock)
+          jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockImplementation()
+          jest.spyOn(businessAvailabilityService, 'determineGroupsEligibility').mockImplementation()
 
-          controller = require('../../../controllers/group').editGroup
-          await controller(req, res, next)
+          controllerMethodUnderTest = require('../../../controllers/group').editGroup
+          await controllerMethodUnderTest(req, res, next)
 
           expect(validationError.hasError()).toBeFalsy()
           expect(groupService.getGroupById).toHaveBeenCalled()
@@ -428,7 +432,7 @@ describe('group controller', () => {
       })
 
       describe('(unhappy path)', () => {
-        it('should redirect the user when req.body is incomplete', async () => {
+        test('should redirect the user when req.body is incomplete', async () => {
           const res = getRes()
           const req = getReq(goodReqParams)
           req.method = 'POST'
@@ -439,13 +443,13 @@ describe('group controller', () => {
           }
 
           const validationError = new ValidationError()
-          spyOn(groupService, 'getGroupById').and.returnValue(groupMock)
-          spyOn(groupService, 'getPupils').and.returnValue(pupilsMock)
-          spyOn(groupValidator, 'validate').and.returnValue(validationError)
-          spyOn(groupService, 'update').and.returnValue(Promise.resolve(groupMock))
+          jest.spyOn(groupService, 'getGroupById').mockResolvedValue(groupMock)
+          jest.spyOn(groupService, 'getPupils').mockResolvedValue(pupilsMock)
+          jest.spyOn(groupValidator, 'validate').mockResolvedValue(validationError)
+          jest.spyOn(groupService, 'update').mockRejectedValue(groupMock)
 
-          controller = require('../../../controllers/group').editGroup
-          await controller(req, res, next)
+          controllerMethodUnderTest = require('../../../controllers/group').editGroup
+          await controllerMethodUnderTest(req, res, next)
 
           expect(validationError.hasError()).toBeFalsy()
           expect(groupService.getGroupById).not.toHaveBeenCalled()
@@ -458,7 +462,7 @@ describe('group controller', () => {
       })
 
       describe('(unhappy path)', () => {
-        it('should execute next when getGroupById fails', async () => {
+        test('should execute next when getGroupById fails', async () => {
           const res = getRes()
           const req = getReq(goodReqParams)
           req.method = 'POST'
@@ -469,15 +473,15 @@ describe('group controller', () => {
           }
 
           const validationError = new ValidationError()
-          spyOn(groupService, 'getGroupById').and.returnValue(Promise.reject(new Error()))
-          spyOn(groupService, 'getPupils').and.returnValue(pupilsMock)
-          spyOn(groupValidator, 'validate').and.returnValue(validationError)
-          spyOn(groupService, 'update').and.returnValue(Promise.resolve(groupMock))
-          spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-          spyOn(businessAvailabilityService, 'determineGroupsEligibility')
+          jest.spyOn(groupService, 'getGroupById').mockRejectedValue(new Error())
+          jest.spyOn(groupService, 'getPupils').mockResolvedValue(pupilsMock)
+          jest.spyOn(groupValidator, 'validate').mockResolvedValue(validationError)
+          jest.spyOn(groupService, 'update').mockResolvedValue(groupMock)
+          jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockImplementation()
+          jest.spyOn(businessAvailabilityService, 'determineGroupsEligibility').mockImplementation()
 
-          controller = require('../../../controllers/group').editGroup
-          await controller(req, res, next)
+          controllerMethodUnderTest = require('../../../controllers/group').editGroup
+          await controllerMethodUnderTest(req, res, next)
 
           expect(validationError.hasError()).toBeFalsy()
           expect(groupService.getGroupById).toHaveBeenCalled()
@@ -492,7 +496,7 @@ describe('group controller', () => {
       })
 
       describe('(unhappy path)', () => {
-        it('should execute next when form validation fails', async () => {
+        test('should execute next when form validation fails', async () => {
           const res = getRes()
           const req = getReq(goodReqParams)
           req.method = 'POST'
@@ -505,15 +509,15 @@ describe('group controller', () => {
           const validationError = new ValidationError()
           validationError.addError('test', 'test')
 
-          spyOn(groupService, 'getGroupById').and.returnValue(Promise.resolve(groupMock))
-          spyOn(groupService, 'getPupils').and.returnValue(pupilsMock)
-          spyOn(groupValidator, 'validate').and.returnValue(validationError)
-          spyOn(groupService, 'update').and.returnValue(Promise.resolve(groupMock))
-          spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-          spyOn(businessAvailabilityService, 'determineGroupsEligibility')
+          jest.spyOn(groupService, 'getGroupById').mockResolvedValue(groupMock)
+          jest.spyOn(groupService, 'getPupils').mockResolvedValue(pupilsMock)
+          jest.spyOn(groupValidator, 'validate').mockResolvedValue(validationError)
+          jest.spyOn(groupService, 'update').mockResolvedValue(groupMock)
+          jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockImplementation()
+          jest.spyOn(businessAvailabilityService, 'determineGroupsEligibility').mockImplementation()
 
-          controller = require('../../../controllers/group').editGroup
-          await controller(req, res, next)
+          controllerMethodUnderTest = require('../../../controllers/group').editGroup
+          await controllerMethodUnderTest(req, res, next)
 
           expect(res.locals.pageTitle).toBe('Edit group')
           expect(validationError.hasError()).toBeTruthy()
@@ -529,7 +533,7 @@ describe('group controller', () => {
       })
 
       describe('(unhappy path)', () => {
-        it('should execute next when getPupils fails', async () => {
+        test('should execute next when getPupils fails', async () => {
           const res = getRes()
           const req = getReq(goodReqParams)
           req.method = 'POST'
@@ -542,15 +546,15 @@ describe('group controller', () => {
           const validationError = new ValidationError()
           validationError.addError('test', 'test')
 
-          spyOn(groupService, 'getGroupById').and.returnValue(Promise.resolve(groupMock))
-          spyOn(groupService, 'getPupils').and.returnValue(Promise.reject(new Error()))
-          spyOn(groupValidator, 'validate').and.returnValue(validationError)
-          spyOn(groupService, 'update').and.returnValue(Promise.resolve(groupMock))
-          spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-          spyOn(businessAvailabilityService, 'determineGroupsEligibility')
+          jest.spyOn(groupService, 'getGroupById').mockResolvedValue(groupMock)
+          jest.spyOn(groupService, 'getPupils').mockRejectedValue(new Error())
+          jest.spyOn(groupValidator, 'validate').mockResolvedValue(validationError)
+          jest.spyOn(groupService, 'update').mockResolvedValue(groupMock)
+          jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockImplementation()
+          jest.spyOn(businessAvailabilityService, 'determineGroupsEligibility').mockImplementation()
 
-          controller = require('../../../controllers/group').editGroup
-          await controller(req, res, next)
+          controllerMethodUnderTest = require('../../../controllers/group').editGroup
+          await controllerMethodUnderTest(req, res, next)
 
           expect(res.locals.pageTitle).toBeUndefined()
           expect(validationError.hasError()).toBeTruthy()
@@ -566,7 +570,7 @@ describe('group controller', () => {
       })
 
       describe('(unhappy path)', () => {
-        it('should execute next when update fails', async () => {
+        test('should execute next when update fails', async () => {
           const res = getRes()
           const req = getReq(goodReqParams)
           req.method = 'POST'
@@ -578,15 +582,15 @@ describe('group controller', () => {
 
           const validationError = new ValidationError()
 
-          spyOn(groupService, 'getGroupById').and.returnValue(Promise.resolve(groupMock))
-          spyOn(groupService, 'getPupils').and.returnValue(pupilsMock)
-          spyOn(groupValidator, 'validate').and.returnValue(validationError)
-          spyOn(groupService, 'update').and.returnValue(Promise.reject(new Error()))
-          spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-          spyOn(businessAvailabilityService, 'determineGroupsEligibility')
+          jest.spyOn(groupService, 'getGroupById').mockResolvedValue(groupMock)
+          jest.spyOn(groupService, 'getPupils').mockResolvedValue(pupilsMock)
+          jest.spyOn(groupValidator, 'validate').mockResolvedValue(validationError)
+          jest.spyOn(groupService, 'update').mockRejectedValue(new Error())
+          jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockImplementation()
+          jest.spyOn(businessAvailabilityService, 'determineGroupsEligibility').mockImplementation()
 
-          controller = require('../../../controllers/group').editGroup
-          await controller(req, res, next)
+          controllerMethodUnderTest = require('../../../controllers/group').editGroup
+          await controllerMethodUnderTest(req, res, next)
 
           expect(res.locals.pageTitle).toBeUndefined()
           expect(validationError.hasError()).toBeFalsy()
@@ -604,7 +608,7 @@ describe('group controller', () => {
 
     describe('#removeGroup', () => {
       describe('(happy path)', () => {
-        it('should soft-delete a group', async () => {
+        test('should soft-delete a group', async () => {
           const res = getRes()
           const req = getReq(goodReqParams)
           req.method = 'GET'
@@ -612,12 +616,12 @@ describe('group controller', () => {
             groupId: '123456abcde'
           }
 
-          spyOn(groupService, 'remove').and.returnValue(Promise.resolve(groupDeletedMock))
-          spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-          spyOn(businessAvailabilityService, 'determineGroupsEligibility')
+          jest.spyOn(groupService, 'remove').mockResolvedValue(groupDeletedMock)
+          jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockImplementation()
+          jest.spyOn(businessAvailabilityService, 'determineGroupsEligibility').mockImplementation()
 
-          controller = require('../../../controllers/group').removeGroup
-          await controller(req, res, next)
+          controllerMethodUnderTest = require('../../../controllers/group').removeGroup
+          await controllerMethodUnderTest(req, res, next)
 
           expect(groupService.remove).toHaveBeenCalled()
           expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
@@ -628,7 +632,7 @@ describe('group controller', () => {
       })
 
       describe('(unhappy path - missing parameter group id)', () => {
-        it('should soft-delete a group', async () => {
+        test('should soft-delete a group', async () => {
           const res = getRes()
           const req = getReq(goodReqParams)
           req.method = 'GET'
@@ -636,12 +640,12 @@ describe('group controller', () => {
             groupId: null
           }
 
-          spyOn(groupService, 'remove').and.returnValue(Promise.resolve(groupDeletedMock))
-          spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-          spyOn(businessAvailabilityService, 'determineGroupsEligibility')
+          jest.spyOn(groupService, 'remove').mockResolvedValue(groupDeletedMock)
+          jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockImplementation()
+          jest.spyOn(businessAvailabilityService, 'determineGroupsEligibility').mockImplementation()
 
-          controller = require('../../../controllers/group').removeGroup
-          await controller(req, res, next)
+          controllerMethodUnderTest = require('../../../controllers/group').removeGroup
+          await controllerMethodUnderTest(req, res, next)
 
           expect(groupService.remove).not.toHaveBeenCalled()
           expect(next).not.toHaveBeenCalled()
@@ -650,7 +654,7 @@ describe('group controller', () => {
       })
 
       describe('(unhappy path - soft-delete fails )', () => {
-        it('should soft-delete a group', async () => {
+        test('should soft-delete a group', async () => {
           const res = getRes()
           const req = getReq(goodReqParams)
           req.method = 'GET'
@@ -658,12 +662,12 @@ describe('group controller', () => {
             groupId: '123456abcde'
           }
 
-          spyOn(groupService, 'remove').and.returnValue(Promise.reject(new Error()))
-          spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-          spyOn(businessAvailabilityService, 'determineGroupsEligibility')
+          jest.spyOn(groupService, 'remove').mockRejectedValue(new Error())
+          jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockImplementation()
+          jest.spyOn(businessAvailabilityService, 'determineGroupsEligibility').mockImplementation()
 
-          controller = require('../../../controllers/group').removeGroup
-          await controller(req, res, next)
+          controllerMethodUnderTest = require('../../../controllers/group').removeGroup
+          await controllerMethodUnderTest(req, res, next)
 
           expect(groupService.remove).toHaveBeenCalled()
           expect(next).toHaveBeenCalled()
