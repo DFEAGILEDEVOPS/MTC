@@ -172,7 +172,7 @@ const schoolService = {
     const results = await schoolAuditDataService.getAuditPayload(auditEntryId)
     let payload = results[0]
     payload = JSON.parse(payload.newData)
-    return payload[0]
+    return payload
   }
 }
 
