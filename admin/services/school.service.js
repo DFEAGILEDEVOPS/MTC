@@ -6,6 +6,14 @@ const schoolValidator = require('../lib/validator/school-validator')
 const ValidationError = require('../lib/validation-error')
 const dateService = require('../services/date.service')
 
+/**
+ * @typedef {object} schoolAuditEntry
+ * @property {number } id
+ * @property {string} createdAt,
+ * @property {string} user,
+ * @property {string} auditOperation
+ */
+
 const schoolService = {
   /**
    * Find school name by DFE number.
@@ -51,6 +59,7 @@ const schoolService = {
    * @property {number} urn,
    * @property {string} urlSlug,
    * @property {number} numberOfPupils
+   * @property {Array<schoolAuditEntry>} audits
    */
 
   /**
