@@ -19,7 +19,7 @@ Then(/^I should see an insert entry$/) do
   db_school_record = SqlDbHelper.find_school_by_urn(@urn)
   expect(audit_entry['id']).to eql db_school_record['id']
   expect(Time.parse(audit_entry['createdAt'])).to eql db_school_record['createdAt'].utc
-  # expect(Time.parse(audit_entry['updatedAt'])).to eql db_school_record['updatedAt'].utc
+  expect(Time.parse(audit_entry['updatedAt'])).to eql db_school_record['updatedAt'].utc
   expect(audit_entry['leaCode']).to eql db_school_record['leaCode']
   expect(audit_entry['estabCode']).to eql db_school_record['estabCode']
   expect(audit_entry['name']).to eql db_school_record['name']
@@ -53,6 +53,7 @@ Then(/^I should see an update entry for updating the name$/) do
   db_school_record = SqlDbHelper.find_school_by_urn(@urn)
   expect(audit_entry['id']).to eql db_school_record['id']
   expect(Time.parse(audit_entry['createdAt'])).to eql db_school_record['createdAt'].utc
+  expect(Time.parse(audit_entry['updatedAt'])).to eql db_school_record['updatedAt'].utc
   expect(audit_entry['leaCode']).to eql db_school_record['leaCode']
   expect(audit_entry['estabCode']).to eql db_school_record['estabCode']
   expect(audit_entry['name']).to eql db_school_record['name']
@@ -79,6 +80,7 @@ Then(/^I should seen an update entry for generating a password$/) do
   db_school_record = SqlDbHelper.find_school_by_urn(@urn)
   expect(audit_entry['id']).to eql db_school_record['id']
   expect(Time.parse(audit_entry['createdAt'])).to eql db_school_record['createdAt'].utc
+  expect(Time.parse(audit_entry['updatedAt'])).to eql db_school_record['updatedAt'].utc
   expect(audit_entry['leaCode']).to eql db_school_record['leaCode']
   expect(audit_entry['estabCode']).to eql db_school_record['estabCode']
   expect(audit_entry['pin']).to eql db_school_record['pin']
@@ -112,6 +114,7 @@ Then('I should seen an update entry for updating the Dfe number') do
   db_school_record = SqlDbHelper.find_school_by_urn(@urn)
   expect(audit_entry['id']).to eql db_school_record['id']
   expect(Time.parse(audit_entry['createdAt'])).to eql db_school_record['createdAt'].utc
+  expect(Time.parse(audit_entry['updatedAt'])).to eql db_school_record['updatedAt'].utc
   expect(audit_entry['leaCode']).to eql db_school_record['leaCode']
   expect(audit_entry['estabCode']).to eql db_school_record['estabCode']
   expect(audit_entry['name']).to eql db_school_record['name']
@@ -145,6 +148,7 @@ Then(/^I should seen an update entry for updating the URN$/) do
   db_school_record = SqlDbHelper.find_school_by_urn(@urn)
   expect(audit_entry['id']).to eql db_school_record['id']
   expect(Time.parse(audit_entry['createdAt'])).to eql db_school_record['createdAt'].utc
+  expect(Time.parse(audit_entry['updatedAt'])).to eql db_school_record['updatedAt'].utc
   expect(audit_entry['leaCode']).to eql db_school_record['leaCode']
   expect(audit_entry['estabCode']).to eql db_school_record['estabCode']
   expect(audit_entry['name']).to eql db_school_record['name']
@@ -178,6 +182,7 @@ Then(/^I should seen an update entry for updating the LEA code$/) do
   db_school_record = SqlDbHelper.find_school_by_urn(@urn)
   expect(audit_entry['id']).to eql db_school_record['id']
   expect(Time.parse(audit_entry['createdAt'])).to eql db_school_record['createdAt'].utc
+  expect(Time.parse(audit_entry['updatedAt'])).to eql db_school_record['updatedAt'].utc
   expect(audit_entry['leaCode']).to eql db_school_record['leaCode']
   expect(audit_entry['estabCode']).to eql db_school_record['estabCode']
   expect(audit_entry['name']).to eql db_school_record['name']
@@ -211,6 +216,7 @@ Then(/^I should seen an update entry for updating the Estab code$/) do
   db_school_record = SqlDbHelper.find_school_by_urn(@urn)
   expect(audit_entry['id']).to eql db_school_record['id']
   expect(Time.parse(audit_entry['createdAt'])).to eql db_school_record['createdAt'].utc
+  expect(Time.parse(audit_entry['updatedAt'])).to eql db_school_record['updatedAt'].utc
   expect(audit_entry['leaCode']).to eql db_school_record['leaCode']
   expect(audit_entry['estabCode']).to eql db_school_record['estabCode']
   expect(audit_entry['name']).to eql db_school_record['name']
