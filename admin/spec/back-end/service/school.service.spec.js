@@ -10,6 +10,7 @@ const ValidationError = require('../../../lib/validation-error')
 const auditOperationTypes = require('../../../lib/consts/audit-entry-types')
 const { isArray } = require('ramda-adjunct')
 const moment = require('moment-timezone')
+const dateService = require('../../../services/date.service')
 
 describe('school.service', () => {
   afterEach(() => {
@@ -246,7 +247,8 @@ describe('school.service', () => {
       const urlSlug = '5c4adea7-caea-4d4c-84d2-3e9fbb2db09c'
       const data = await sut.getSchoolAudits(urlSlug)
       expect(data).toBeDefined()
-      expect(data[0].createdAt).toStrictEqual(createdAt.format('LLL'))
+      const expectedDateFormat = dateService.formatDateAndTime(createdAt)
+      expect(data[0].createdAt).toStrictEqual(expectedDateFormat)
       expect(isArray(data)).toBe(true)
     })
   })

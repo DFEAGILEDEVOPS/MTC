@@ -4,6 +4,7 @@ const schoolDataService = require('../services/data-access/school.data.service')
 const schoolAuditDataService = require('../services/data-access/school-audit.data.service')
 const schoolValidator = require('../lib/validator/school-validator')
 const ValidationError = require('../lib/validation-error')
+const dateService = require('../services/date.service')
 
 const schoolService = {
   /**
@@ -50,7 +51,6 @@ const schoolService = {
    * @property {number} urn,
    * @property {string} urlSlug,
    * @property {number} numberOfPupils
-   * @property {array} audits
    */
 
   /**
@@ -155,7 +155,7 @@ const schoolService = {
     return items.map(i => {
       return {
         id: i.id,
-        createdAt: i.createdAt.format('LLL'),
+        createdAt: dateService.formatDateAndTime(i.createdAt),
         user: i.user,
         auditOperation: i.auditOperation
       }
