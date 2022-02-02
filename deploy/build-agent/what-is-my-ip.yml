@@ -1,0 +1,17 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger: none
+
+pool: 
+  name: 'MTC'
+  demands:
+  # the following demand allows you to target a specific build server instance
+  # ensure this custom demand is added to each build server, and is unique
+  - mtc-instance -equals 1
+
+steps:
+- script: curl 'https://api.ipify.org?format=json'
+  displayName: 'Reveal IPv4 Address'
