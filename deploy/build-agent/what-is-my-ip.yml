@@ -13,5 +13,5 @@ pool:
   - mtc-instance -equals 1
 
 steps:
-- script: curl 'https://api.ipify.org?format=json'
+- script: echo $(curl 'https://api.ipify.org?format=json')
   displayName: 'Reveal IPv4 Address'
