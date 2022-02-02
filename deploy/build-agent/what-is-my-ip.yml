@@ -4,13 +4,15 @@
 # https://aka.ms/yaml
 
 trigger: none
+variables:
+  MTC_INSTANCE:
 
 pool: 
   name: 'MTC'
   demands:
   # the following demand allows you to target a specific build server instance
   # ensure this custom demand is added to each build server, and is unique
-  - mtc-instance -equals 1
+  - mtc-instance -equals $(MTC_INSTANCE)
 
 steps:
 - script: curl 'https://api.ipify.org?format=json'
