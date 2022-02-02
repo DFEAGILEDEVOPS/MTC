@@ -4,9 +4,6 @@ const { TYPES } = require('./sql.service')
 const R = require('ramda')
 const sqlService = require('./sql.service')
 const config = require('../../config')
-const redisCacheService = require('./redis-cache.service')
-
-const table = '[school]'
 
 const schoolDataService = {
   /**
@@ -60,16 +57,6 @@ const schoolDataService = {
       `
     const rows = await sqlService.readonlyQuery(sql, [paramDfeNumber])
     return R.head(rows)
-  },
-
-  /**
-   * Update school.
-   * @param update
-   * @returns {Promise<*>}
-   */
-  sqlUpdate: async (update) => {
-    await sqlService.update(table, update)
-    return redisCacheService.drop(`schoolData.sqlFindOneById.${update.id}`)
   },
 
   sqlUpdateBySlug: async function sqlUpdateBySlug (slug, update, userId) {

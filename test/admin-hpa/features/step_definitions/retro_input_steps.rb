@@ -65,7 +65,6 @@ Given(/^the check window is now closed$/) do
   step 'I am logged in'
   step 'I have some pupils that have completed the check'
   step 'the live check window closes'
-  binding.pry
 end
 
 Then(/^I should be able to add an input assistant retrospectively$/) do

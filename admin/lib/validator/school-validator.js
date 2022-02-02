@@ -4,13 +4,11 @@ const ValidationError = require('../validation-error')
 const schoolValidator = {
   /**
    * @typedef editableSchoolDetails
-   * {
-   *   dfeNumber: number,
-   *   estabCode: number,
-   *   leaCode: number,
-   *   name: string,
-   *   urn: number
-   * }
+   * @property {number} dfeNumber,
+   * @property {number} estabCode,
+   * @property {number} leaCode,
+   * @property {string} name,
+   * @property {number} urn
    */
 
   /**
