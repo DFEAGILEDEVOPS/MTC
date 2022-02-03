@@ -9,4 +9,11 @@ class SchoolSearchResultsPage < SitePrism::Page
   element :edit, '.govuk-button', text: 'Edit organisation'
   element :back_to_search, '.govuk-button', text: 'Back to search'
 
+  section :audit_history, '#school-audit' do
+    sections :rows, 'tbody tr' do
+      element :date, '.govuk-link'
+      element :type, 'td:nth-child(2)'
+      element :user, 'td:nth-child(3)'
+    end
+  end
 end

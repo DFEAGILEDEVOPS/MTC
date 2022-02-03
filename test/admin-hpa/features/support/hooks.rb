@@ -17,7 +17,7 @@ Before do
   p Time.now
   sign_in_page.cookies_banner.accept_all.click if sign_in_page.cookies_banner.accept_all.visible?
   visit ENV['ADMIN_BASE_URL'] + '/sign-out'
-  Dir.glob(File.expand_path("#{File.dirname(__FILE__)}/../../data/ctf_download/*")).each {|file| File.delete file}
+  Dir.glob(File.expand_path("#{File.dirname(__FILE__)}/../../data/download/*")).each {|file| File.delete file}
 end
 
 Before('@empty_new_school') do
@@ -30,6 +30,19 @@ Before('@empty_new_school') do
   @school_user = FunctionsHelper.create_user(school_uuid, @username)
   @school_id = @school_user['entity']['school_id']
   FunctionsHelper.generate_school_pin(@school_id)
+  p "Login for #{@school_name} created as - #{@username}"
+end
+
+Before('@new_school_no_password') do
+  @urn = SqlDbHelper.get_schools_list.map {|school| school['urn']}.sort.last + 1
+  @estab_code = SqlDbHelper.get_schools_list.map {|school| school['estabCode']}.sort.last + 1
+  @school_name = "Test School - #{@urn}"
+  @school = FunctionsHelper.create_school(@estab_code, @school_name, @urn)
+  school_uuid = @school['entity']['urlSlug']
+  @username = "teacher#{@urn}"
+  @school_user = FunctionsHelper.create_user(school_uuid, @username)
+  @school_id = @school_user['entity']['school_id']
+  # FunctionsHelper.generate_school_pin(@school_id)
   p "Login for #{@school_name} created as - #{@username}"
 end
 
@@ -223,12 +236,6 @@ end
 
 After("@multiple_pupil_upload") do
   File.delete(File.expand_path("#{File.dirname(__FILE__)}/../../data/multiple_pupils_template.csv")) if File.exist? (File.expand_path("#{File.dirname(__FILE__)}/../../data/multiple_pupils_template.csv"))
-end
-
-After("@remove_access_arrangements") do
-  step 'I am logged in'
-  school_landing_page.access_arrangements.click
-  access_arrangements_page.remove_all_pupils
 end
 
 After("@remove_uploaded_forms or @upload_new_live_form or @upload_new_fam_form") do

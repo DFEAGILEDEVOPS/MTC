@@ -1,6 +1,6 @@
 'use strict'
 
-/* global describe, it, spyOn expect beforeEach */
+/* global describe, it, spyOn expect beforeEach jest */
 const moment = require('moment')
 
 const checkWindowAddValidator = require('../../../../../lib/validator/check-window-v2/check-window-add-validator')
@@ -253,6 +253,11 @@ describe('New check window add validator', function () {
 
   describe('the service manager can close the checkWindow to a date in the past', () => {
     it('should raise a warning when setting the dates in the past when editing an existing checkWindow', () => {
+      // Test data notes: we can't use a previous year because another rule will flag that as illegal.
+      // At the start of the year, 1 Jan, we don't have enough days to set up a valid test.
+      // So, we will have to modify the external clock.
+      jest.useFakeTimers('modern')
+      jest.setSystemTime(moment('2021-12-25T09:00:00').toDate())
       checkWindowData = {
         adminStartDay: '01',
         adminStartMonth: '12',
@@ -285,6 +290,8 @@ describe('New check window add validator', function () {
       const validationError = checkWindowAddValidator.validate(checkWindowData, validationConfig)
       expect(validationError.hasError()).toBe(false)
       expect(validationError.hasWarning()).toBe(true)
+      jest.useRealTimers()
+      jest.restoreAllMocks()
     })
   })
 })

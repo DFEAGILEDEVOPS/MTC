@@ -2,19 +2,19 @@ import * as R from 'ramda'
 import { parallelLimit } from 'async'
 import { v4 as uuidv4 } from 'uuid'
 import moment from 'moment'
-import { Sender, ServiceBusClient } from '@azure/service-bus'
+import { ServiceBusClient, ServiceBusMessage, ServiceBusSender } from '@azure/service-bus'
 
 import { ConsoleLogger, ILogger } from '../../common/logger'
 import {
   MarkedCheck,
   ValidatedCheck
 } from '../sync-results-to-sql/models'
-import { IAsyncTableService, AsyncTableService } from '../../azure/storage-helper'
 import { UnsynchronisedCheck } from './models'
-import { MarkedCheckTableEntity, ReceivedCheckTableEntity } from '../../schemas/models'
+import { MarkedCheckTableEntity } from '../../schemas/models'
 import { CompressionService, ICompressionService } from '../../common/compression-service'
 import config from '../../config'
 import { SyncResultsInitDataService, ISyncResultsInitDataService } from './sync-results-init-data.service'
+import { AzureTableEntity, ITableService, TableService } from '../../azure/table-service'
 
 const functionName = 'sync-results-init: SyncResultsInitService'
 
@@ -34,21 +34,23 @@ export interface ISyncResultsInitServiceOptions {
 export class SyncResultsInitService {
   private readonly logger: ILogger
   private readonly dataService: ISyncResultsInitDataService
-  private readonly tableService: IAsyncTableService
+  private readonly tableService: ITableService
   private readonly compressionService: ICompressionService
   private readonly receivedCheckTableName = 'receivedCheck'
   private readonly markedCheckTableName = 'checkResult'
   private readonly outputQueueName = 'check-completion'
 
-  constructor (logger?: ILogger, dataService?: ISyncResultsInitDataService, tableService?: IAsyncTableService, compressionService?: ICompressionService) {
+  constructor (logger?: ILogger, dataService?: ISyncResultsInitDataService, tableService?: ITableService, compressionService?: ICompressionService) {
     this.logger = logger ?? new ConsoleLogger()
     this.dataService = dataService ?? new SyncResultsInitDataService()
-    this.tableService = tableService ?? new AsyncTableService()
+    this.tableService = tableService ?? new TableService()
     this.compressionService = compressionService ?? new CompressionService()
   }
 
-  private async getReceivedCheck (check: UnsynchronisedCheck): Promise<ReceivedCheckTableEntity> {
-    return this.tableService.retrieveEntityAsync(this.receivedCheckTableName, check.schoolUUID?.toLowerCase(), check.checkCode?.toLowerCase())
+  private async getReceivedCheck (check: UnsynchronisedCheck): Promise<AzureTableEntity> {
+    const partitionKey = check.schoolUUID?.toLowerCase()
+    const rowKey = check.checkCode?.toLowerCase()
+    return this.tableService.getEntity(this.receivedCheckTableName, partitionKey, rowKey)
   }
 
   private expandArchive (check: UnsynchronisedCheck, archive: string): ValidatedCheck {
@@ -64,31 +66,31 @@ export class SyncResultsInitService {
     }
   }
 
-  private tranformReceivedCheckToValidatedCheck (check: UnsynchronisedCheck, receivedCheck: ReceivedCheckTableEntity): ValidatedCheck {
-    const archive = R.pathOr('', ['archive', '_'], receivedCheck)
+  private transformReceivedCheckToValidatedCheck (check: UnsynchronisedCheck, receivedCheck: AzureTableEntity): ValidatedCheck {
+    const archive = R.pathOr('', ['archive'], receivedCheck)
     if (archive.length === 0) {
-      throw new Error('Archive not found')
+      throw new Error(`archive property not found.  checkCode:${check.checkCode}`)
     }
     const validatedCheck = this.expandArchive(check, archive)
     return validatedCheck
   }
 
-  private async getMarkedCheck (check: UnsynchronisedCheck): Promise<MarkedCheckTableEntity> {
-    return this.tableService.retrieveEntityAsync(this.markedCheckTableName, check.schoolUUID?.toLowerCase(), check.checkCode?.toLowerCase())
+  private async getMarkedCheck (check: UnsynchronisedCheck): Promise<any> {
+    return this.tableService.getEntity(this.markedCheckTableName, check.schoolUUID?.toLowerCase(), check.checkCode?.toLowerCase())
   }
 
   private transformMarkedCheckEntityToMarkedCheck (check: UnsynchronisedCheck, markedCheckEntity: MarkedCheckTableEntity): MarkedCheck {
     let markedAnswers
     try {
-      const markedAnswersString = R.pathOr('', ['markedAnswers', '_'], markedCheckEntity)
+      const markedAnswersString = R.pathOr('', ['markedAnswers'], markedCheckEntity)
       markedAnswers = JSON.parse(markedAnswersString)
     } catch (error) {
       throw new Error(`Failed to parse JSON in transformMarkedCheckEntityToMarkedCheck(): Error: ${error.message}`)
     }
-    const checkCode: null | string = R.pathOr(null, ['RowKey', '_'], markedCheckEntity)
-    const mark: null | number = R.pathOr(null, ['mark', '_'], markedCheckEntity)
-    const maxMarks: null | number = R.pathOr(null, ['maxMarks', '_'], markedCheckEntity)
-    const markedAt: null | string = R.pathOr(null, ['markedAt', '_'], markedCheckEntity)
+    const checkCode: null | string = R.pathOr(null, ['rowKey'], markedCheckEntity)
+    const mark: null | number = R.pathOr(null, ['mark'], markedCheckEntity)
+    const maxMarks: null | number = R.pathOr(null, ['maxMarks'], markedCheckEntity)
+    const markedAt: null | string = R.pathOr(null, ['markedAt'], markedCheckEntity)
 
     if (checkCode === null) throw new Error('Missing checkCode field in markedCheckEntity')
     if (mark === null) throw new Error('Missing mark field in markedCheckEntity')
@@ -121,21 +123,26 @@ export class SyncResultsInitService {
     this.logger.info(`${functionName} ${meta.messagesSent} checks done ${progressPercent}% complete in ${elapsedTimeMinutes} mins, rate is ${ratePerMinute} / minute, estimated completion at ${estFinishTime.toISOString()}`)
   }
 
-  private async processCheck (check: UnsynchronisedCheck, sbSender: Sender, meta: MetaResult): Promise<void> {
+  private async processCheck (check: UnsynchronisedCheck, sbSender: ServiceBusSender, meta: MetaResult): Promise<void> {
     const receivedCheckPromise = this.getReceivedCheck(check)
     const markedCheckPromise = this.getMarkedCheck(check)
     const [receivedCheckEntity, markedCheckEntity] = await Promise.all([receivedCheckPromise, markedCheckPromise])
-    const validatedCheck = this.tranformReceivedCheckToValidatedCheck(check, receivedCheckEntity)
+    const validatedCheck = this.transformReceivedCheckToValidatedCheck(check, receivedCheckEntity)
     const markedCheck = this.transformMarkedCheckEntityToMarkedCheck(check, markedCheckEntity)
 
-    const msg = {
+    const messageBody = {
       validatedCheck: validatedCheck,
       markedCheck: markedCheck
     }
 
     try {
       const msgId = this.generateMessageId(check)
-      await sbSender.send({ body: msg, messageId: msgId, contentType: 'application/json' })
+      const message: ServiceBusMessage = {
+        body: messageBody,
+        messageId: msgId,
+        contentType: 'application/json'
+      }
+      await sbSender.sendMessages(message)
       meta.messagesSent += 1
       if (meta.messagesSent % 1000 === 0) { // Log every 1000 messages sent
         this.logProgress(meta)
@@ -150,10 +157,8 @@ export class SyncResultsInitService {
     if (config.ServiceBus.ConnectionString === undefined) {
       throw new Error('Missing config.ServiceBus.ConnectionString')
     }
-    const sbClient = ServiceBusClient.createFromConnectionString(config.ServiceBus.ConnectionString)
-    const sbQueueClient = sbClient.createQueueClient(this.outputQueueName)
-    const sbSender = sbQueueClient.createSender()
-    await sbSender.open()
+    const sbClient = new ServiceBusClient(config.ServiceBus.ConnectionString)
+    const sbSender = sbClient.createSender(this.outputQueueName)
 
     let checks: UnsynchronisedCheck[]
     if ('checkCode' in options && options.checkCode !== undefined) {
@@ -182,7 +187,6 @@ export class SyncResultsInitService {
     })
     await parallelLimit(listOfAsyncFunctions, config.SyncResultsInit.MaxParallelTasks)
     await sbSender.close()
-    await sbQueueClient.close()
     await sbClient.close()
     return meta
   }

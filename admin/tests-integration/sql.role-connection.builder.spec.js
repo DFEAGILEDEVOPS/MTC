@@ -1,5 +1,5 @@
 'use strict'
-/* global describe it expect fail */
+/* global describe test expect fail */
 
 const path = require('path')
 const fs = require('fs')
@@ -22,11 +22,11 @@ const sqlConfig = require('../config/sql.config')
 const config = require('../config')
 
 describe('sql.role-connection.builder:integration', () => {
-  it('should be defined', () => {
+  test('should be defined', () => {
     expect(sut).toBeDefined()
   })
 
-  it('should throw an error if role not supported', () => {
+  test('should throw an error if role not supported', () => {
     try {
       sut.build('unknown role')
       fail('error should have been thrown')
@@ -36,7 +36,7 @@ describe('sql.role-connection.builder:integration', () => {
     }
   })
 
-  it('should return default config when role is teacher', () => {
+  test('should return default config when role is teacher', () => {
     const actual = sut.build(roles.teacher)
     expect(actual).toBeDefined()
     expect(typeof actual).toEqual('object')
@@ -46,7 +46,7 @@ describe('sql.role-connection.builder:integration', () => {
     expect(actual.pool.max).toEqual(sqlConfig.pool.max)
   })
 
-  it('should return specific config when role is techSupport', () => {
+  test('should return specific config when role is techSupport', () => {
     const actual = sut.build(roles.techSupport)
     expect(actual).toBeDefined()
     expect(typeof actual).toEqual('object')
@@ -56,20 +56,20 @@ describe('sql.role-connection.builder:integration', () => {
     expect(actual.pool.max).toEqual(config.Sql.TechSupport.Pool.Max)
   })
 
-  it('should be readonly if specified', () => {
+  test('should be readonly if specified', () => {
     const actual = sut.build(roles.teacher, true)
     expect(actual).toBeDefined()
     expect(typeof actual).toEqual('object')
     expect(actual.options.readOnlyIntent).toBe(true)
   })
 
-  it('should default to non read-only', () => {
+  test('should default to non read-only', () => {
     const actual = sut.build(roles.teacher)
     expect(actual).toBeDefined()
     expect(typeof actual).toEqual('object')
     expect(actual.options.readOnlyIntent).toBe(false)
   })
-  it('should return deeply frozen config object', () => {
+  test('should return deeply frozen config object', () => {
     const actual = sut.build(roles.teacher)
     expect(Object.isFrozen(actual)).toBe(true)
     expect(Object.isFrozen(actual.pool)).toBe(true)

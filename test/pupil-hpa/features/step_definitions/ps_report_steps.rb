@@ -54,7 +54,7 @@ Then(/^I should see a record for the pupil in the ps report table$/) do
   expect(ps_report_record["TimeComplete"]).to eql check_inputs.nil? ? nil : check_inputs.last['inputBrowserTimestamp']
   expect(ps_report_record["TimeTaken"]).to eql check_inputs.nil? ? nil : (check_inputs.last['inputBrowserTimestamp'] - check_events.find {|event| event['eventType'] == 'CheckStarted'}['browserTimestamp'])
   expect(ps_report_record["RestartNumber"]).to eql @check_details.nil? ? nil : pupil_restarts.size
-  expect(ps_report_record["RestartReason"]).to eql pupil_restarts.empty? ? nil : pupil_restarts.last['pupilRestartReason_id']
+  expect(ps_report_record["RestartReason"]).to eql pupil_restarts.empty? ? nil : pupil_restarts.last['restartReasonLookup_Id']
   expect(ps_report_record["FormMark"]).to eql check_result.nil? ? nil : check_result['mark']
   expect(ps_report_record["DeviceType"]).to eql nil
   expect(ps_report_record["BrowserType"]).to eql device_info.nil? ? nil : SqlDbHelper.browser_lookup(device_info['browserFamilyLookup_id'])['family'] + ' ' + device_info['browserMajorVersion'].to_s + '.' + device_info['browserMinorVersion'].to_s + '.' + device_info['browserPatchVersion'].to_s
@@ -142,7 +142,7 @@ When(/^I consume a restart using (.+) and complete the check a second time$/) do
   @pupil_name = pupil.name.text
   pupil.checkbox.click
   restarts_page.sticky_banner.confirm.click
-  visit ENV['ADMIN_BASE_URL'] + generate_pins_overview_page.url
+  navigate_to_pupil_list_for_pin_gen('live')
   generate_pins_overview_page.generate_pin_using_name(@details_hash[:last_name] + ', ' + @details_hash[:first_name])
   pupil_pin_row = view_and_custom_print_live_check_page.pupil_list.rows.find {|row| row.name.text == @details_hash[:last_name] + ', ' + @details_hash[:first_name]}
   @pupil_credentials = {:school_password => pupil_pin_row.school_password.text, :pin => pupil_pin_row.pin.text}
@@ -168,7 +168,7 @@ And(/^I consume another restart using IT issues and complete the check a third t
   @pupil_name = pupil.name.text
   pupil.checkbox.click
   restarts_page.sticky_banner.confirm.click
-  visit ENV['ADMIN_BASE_URL'] + generate_pins_overview_page.url
+  navigate_to_pupil_list_for_pin_gen('live')
   generate_pins_overview_page.generate_pin_using_name(@details_hash[:last_name] + ', ' + @details_hash[:first_name])
   pupil_pin_row = view_and_custom_print_live_check_page.pupil_list.rows.find {|row| row.name.text == @details_hash[:last_name] + ', ' + @details_hash[:first_name]}
   @pupil_credentials = {:school_password => pupil_pin_row.school_password.text, :pin => pupil_pin_row.pin.text}

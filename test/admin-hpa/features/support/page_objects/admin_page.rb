@@ -11,8 +11,6 @@ class AdminPage < SitePrism::Page
   element :upload_pupil_census_text, 'p', text: 'Enter pupil data into the check'
   element :pupil_check_settings, "a[href='/service-manager/check-settings']", text: 'Settings on pupil check'
   element :pupil_check_settings_text, 'p', text: 'Change the settings within the pupil check'
-  element :school_page_settings, "a", text: 'Settings on school pages'
-  element :school_page_settings_text, 'p', text: 'Change the settings within the school pages'
   element :mod_schools_settings, 'a', text: "Settings for Ministry of Defence schools (MOD)"
   element :mod_schools_settings_text, 'p', text: 'Set timezones, convert and remove school listed as MOD'
   element :school_page_settings_text, 'p', text: 'Change the settings within the school pages'

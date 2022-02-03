@@ -1,5 +1,5 @@
 'use strict'
-/* global describe beforeEach it expect jasmine spyOn */
+/* global describe beforeEach test expect jest */
 
 const httpMocks = require('node-mocks-http')
 const checkDiagnosticService = require('../../../services/check-diagnostic.service')
@@ -24,7 +24,7 @@ const getRequest = (params = getReqParams) => {
   req.user = {
     role: 'TECH-SUPPORT'
   }
-  req.breadcrumbs = jasmine.createSpy('breadcrumbs')
+  req.breadcrumbs = jest.fn()
   return req
 }
 
@@ -37,19 +37,19 @@ const getResponse = () => {
 describe('tech-support controller', () => {
   beforeEach(() => {
     sut = require('../../../controllers/tech-support')
-    next = jasmine.createSpy('next')
+    next = jest.fn()
   })
 
-  it('should be defined', () => {
+  test('should be defined', () => {
     expect(sut).toBeDefined()
   })
 
   describe('/home', () => {
-    it('GET: should render the home page', async () => {
+    test('GET: should render the home page', async () => {
       const req = getRequest(getReqParams)
       const res = getResponse()
-      spyOn(administrationMessageService, 'getMessage').and.returnValue(Promise.resolve(''))
-      spyOn(res, 'render').and.returnValue(null)
+      jest.spyOn(administrationMessageService, 'getMessage').mockResolvedValue(Promise.resolve(''))
+      jest.spyOn(res, 'render').mockResolvedValue(null)
       await sut.getHomePage(req, res, next)
       expect(res.statusCode).toBe(200)
       expect(res.locals.pageTitle).toBe('Tech Support Homepage')
@@ -59,10 +59,10 @@ describe('tech-support controller', () => {
   })
 
   describe('/checkview', () => {
-    it('GET: should render the checkcode input box', async () => {
+    test('GET: should render the checkcode input box', async () => {
       const req = getRequest(getReqParams)
       const res = getResponse()
-      spyOn(res, 'render').and.returnValue(null)
+      jest.spyOn(res, 'render').mockResolvedValue(null)
       await sut.getCheckViewPage(req, res, next)
       expect(res.statusCode).toBe(200)
       expect(res.locals.pageTitle).toBe('Tech Support Check View')
@@ -70,14 +70,14 @@ describe('tech-support controller', () => {
       expect(next).not.toHaveBeenCalled()
     })
 
-    it('POST: should render the check summary', async () => {
+    test('POST: should render the check summary', async () => {
       const req = getRequest(getReqParams('/tech-support/checkview', 'POST'))
       req.body = {
         checkCode: checkCode
       }
       const res = getResponse()
-      spyOn(res, 'render').and.returnValue(null)
-      spyOn(checkDiagnosticService, 'getByCheckCode').and.returnValue({})
+      jest.spyOn(res, 'render').mockResolvedValue(null)
+      jest.spyOn(checkDiagnosticService, 'getByCheckCode').mockResolvedValue({})
       await sut.postCheckViewPage(req, res, next)
       expect(res.statusCode).toBe(200)
       expect(res.render).toHaveBeenCalled()
@@ -85,11 +85,11 @@ describe('tech-support controller', () => {
       expect(checkDiagnosticService.getByCheckCode).toHaveBeenCalledWith(checkCode)
     })
 
-    it('POST: should call getCheckViewPage when validation fails', async () => {
+    test('POST: should call getCheckViewPage when validation fails', async () => {
       const req = getRequest(getReqParams('/tech-support/checkview', 'POST'))
       const res = getResponse()
-      spyOn(res, 'render')
-      spyOn(sut, 'getCheckViewPage')
+      jest.spyOn(res, 'render').mockImplementation()
+      jest.spyOn(sut, 'getCheckViewPage').mockImplementation()
       await sut.postCheckViewPage(req, res, next)
       expect(next).not.toHaveBeenCalled()
       expect(res.statusCode).toBe(200)
@@ -98,13 +98,13 @@ describe('tech-support controller', () => {
   })
 
   describe('/received-check-payload', () => {
-    it('GET: should send payload as JSON response', async () => {
+    test('GET: should send payload as JSON response', async () => {
       const req = getRequest(getReqParams('/tech-support/received-check-payload', 'GET'))
       const res = getResponse()
       req.query.checkCode = checkCode
-      spyOn(payloadService, 'getPayload')
-      spyOn(res, 'send')
-      spyOn(res, 'type')
+      jest.spyOn(payloadService, 'getPayload').mockImplementation()
+      jest.spyOn(res, 'send').mockImplementation()
+      jest.spyOn(res, 'type').mockImplementation()
       await sut.getReceivedCheckPayload(req, res, next)
       expect(res.send).toHaveBeenCalled()
       expect(res.type).toHaveBeenCalledWith('json')
@@ -114,12 +114,12 @@ describe('tech-support controller', () => {
   })
 
   describe('/queue-overview', () => {
-    it('GET: should request storage account and service bus queue summaries', async () => {
+    test('GET: should request storage account and service bus queue summaries', async () => {
       const req = getRequest(getReqParams('/tech-support/queue-overview', 'GET'))
       const res = getResponse()
-      spyOn(queueMgmtService, 'getServiceBusQueueSummary')
-      spyOn(queueMgmtService, 'getStorageAccountQueueSummary')
-      spyOn(res, 'render')
+      jest.spyOn(queueMgmtService, 'getServiceBusQueueSummary').mockImplementation()
+      jest.spyOn(queueMgmtService, 'getStorageAccountQueueSummary').mockImplementation()
+      jest.spyOn(res, 'render').mockImplementation()
       await sut.showQueueOverview(req, res, next)
       expect(res.render).toHaveBeenCalled()
       expect(next).not.toHaveBeenCalled()
@@ -129,10 +129,10 @@ describe('tech-support controller', () => {
   })
 
   describe('/results-resync-check', () => {
-    it('GET: should render the page', async () => {
+    test('GET: should render the page', async () => {
       const req = getRequest(getReqParams('/tech-support/results-resync-check', 'GET'))
       const res = getResponse()
-      spyOn(res, 'render').and.returnValue(null)
+      jest.spyOn(res, 'render').mockResolvedValue(null)
       await sut.getCheckResultsResyncCheck(req, res, next)
       expect(res.statusCode).toBe(200)
       expect(res.locals.pageTitle).toBe('Check Results - Resync Check')
@@ -140,14 +140,14 @@ describe('tech-support controller', () => {
       expect(next).not.toHaveBeenCalled()
     })
 
-    it('POST: should call the service', async () => {
+    test('POST: should call the service', async () => {
       const req = getRequest(getReqParams('/tech-support/results-resync-check', 'POST'))
       req.body = {
         checkCode: checkCode
       }
       const res = getResponse()
-      spyOn(res, 'render').and.returnValue(null)
-      spyOn(resultsResyncService, 'resyncSingleCheck').and.returnValue(Promise.resolve())
+      jest.spyOn(res, 'render').mockResolvedValue(null)
+      jest.spyOn(resultsResyncService, 'resyncSingleCheck').mockResolvedValue(Promise.resolve())
       await sut.postCheckResultsResyncCheck(req, res, next)
       expect(res.statusCode).toBe(200)
       expect(res.render).toHaveBeenCalled()

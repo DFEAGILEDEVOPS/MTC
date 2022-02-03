@@ -1,7 +1,6 @@
 'use strict'
-/* global describe beforeEach afterEach it expect jasmine spyOn */
+/* global describe beforeEach expect jest test afterEach */
 
-const sinon = require('sinon')
 const httpMocks = require('node-mocks-http')
 
 const attendanceCodesPresenter = require('../../../helpers/attendance-codes-presenter')
@@ -30,14 +29,13 @@ describe('pupils-not-taking-the-check controller:', () => {
   function getReq (params) {
     const req = httpMocks.createRequest(params)
     req.user = { School: 9991001 }
-    req.breadcrumbs = jasmine.createSpy('breadcrumbs')
-    req.flash = jasmine.createSpy('flash')
+    req.breadcrumbs = jest.fn()
+    req.flash = jest.fn()
     return req
   }
 
   describe('Check routes', () => {
     let controller
-    let sandbox
     let next
     const goodReqParams = {
       method: 'GET',
@@ -45,12 +43,11 @@ describe('pupils-not-taking-the-check controller:', () => {
     }
 
     beforeEach(() => {
-      sandbox = sinon.createSandbox()
-      next = jasmine.createSpy('next')
+      next = jest.fn()
     })
 
     afterEach(() => {
-      sandbox.restore()
+      jest.restoreAllMocks()
     })
 
     describe('#getPupilNotTakingCheck: When there are pupils for the active school', () => {
@@ -58,11 +55,11 @@ describe('pupils-not-taking-the-check controller:', () => {
         controller = require('../../../controllers/school').getPupilNotTakingCheck
       })
 
-      it('should display \'pupils not taking the check\' initial page', async () => {
-        spyOn(pupilsNotTakingCheckService, 'getPupilsWithReasons').and.returnValue(pupilsWithReasonsFormattedMock)
-        spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-        spyOn(schoolHomeFeatureEligibilityPresenter, 'getPresentationData')
-        spyOn(headteacherDeclarationService, 'isHdfSubmittedForCurrentCheck').and.returnValue(false)
+      test('should display \'pupils not taking the check\' initial page', async () => {
+        jest.spyOn(pupilsNotTakingCheckService, 'getPupilsWithReasons').mockResolvedValue(pupilsWithReasonsFormattedMock)
+        jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockImplementation()
+        jest.spyOn(schoolHomeFeatureEligibilityPresenter, 'getPresentationData').mockImplementation()
+        jest.spyOn(headteacherDeclarationService, 'isHdfSubmittedForCurrentCheck').mockResolvedValue(false)
         controller = require('../../../controllers/pupils-not-taking-the-check').getPupilNotTakingCheck
 
         const res = getRes()
@@ -77,12 +74,12 @@ describe('pupils-not-taking-the-check controller:', () => {
         expect(headteacherDeclarationService.isHdfSubmittedForCurrentCheck).toHaveBeenCalled()
       })
 
-      it('should execute next if initial page fails to render', async () => {
-        spyOn(pupilsNotTakingCheckService, 'getPupilsWithReasons').and.returnValue(Promise.reject(new Error()))
+      test('should execute next if initial page fails to render', async () => {
+        jest.spyOn(pupilsNotTakingCheckService, 'getPupilsWithReasons').mockResolvedValue(Promise.reject(new Error()))
         controller = require('../../../controllers/pupils-not-taking-the-check').getPupilNotTakingCheck
-        spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-        spyOn(schoolHomeFeatureEligibilityPresenter, 'getPresentationData')
-        spyOn(headteacherDeclarationService, 'isHdfSubmittedForCurrentCheck').and.returnValue(false)
+        jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockImplementation()
+        jest.spyOn(schoolHomeFeatureEligibilityPresenter, 'getPresentationData').mockImplementation()
+        jest.spyOn(headteacherDeclarationService, 'isHdfSubmittedForCurrentCheck').mockResolvedValue(false)
 
         const res = getRes()
         const req = getReq(goodReqParams)
@@ -98,14 +95,14 @@ describe('pupils-not-taking-the-check controller:', () => {
 
     describe('#getSelectPupilNotTakingCheck : Select reason for pupils', () => {
       beforeEach(() => {
-        spyOn(attendanceCodesPresenter, 'getPresentationData')
+        jest.spyOn(attendanceCodesPresenter, 'getPresentationData')
       })
-      it('happy path', async () => {
-        spyOn(attendanceCodeService, 'getAttendanceCodes').and.returnValue([])
-        spyOn(pupilsNotTakingCheckService, 'getPupilsWithoutReasons').and.returnValue(pupilsWithReasonsMock)
-        spyOn(groupService, 'getGroupsWithPresentPupils').and.returnValue(groupsMock)
-        spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-        spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ hdfSubmitted: false })
+      test('happy path', async () => {
+        jest.spyOn(attendanceCodeService, 'getAttendanceCodes').mockResolvedValue([])
+        jest.spyOn(pupilsNotTakingCheckService, 'getPupilsWithoutReasons').mockResolvedValue(pupilsWithReasonsMock)
+        jest.spyOn(groupService, 'getGroupsWithPresentPupils').mockResolvedValue(groupsMock)
+        jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockImplementation()
+        jest.spyOn(businessAvailabilityService, 'getAvailabilityData').mockResolvedValue({ hdfSubmitted: false })
         controller = require('../../../controllers/pupils-not-taking-the-check').getSelectPupilNotTakingCheck
 
         const res = getRes()
@@ -117,11 +114,11 @@ describe('pupils-not-taking-the-check controller:', () => {
         expect(next).not.toHaveBeenCalled()
       })
 
-      it('unhappy path - attendanceCodeService.getAttendanceCodes fails', async () => {
-        spyOn(attendanceCodeService, 'getAttendanceCodes').and.returnValue(Promise.reject(new Error()))
-        spyOn(groupService, 'getGroups').and.returnValue(groupsMock)
-        spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-        spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ hdfSubmitted: false })
+      test('unhappy path - attendanceCodeService.getAttendanceCodes fails', async () => {
+        jest.spyOn(attendanceCodeService, 'getAttendanceCodes').mockResolvedValue(Promise.reject(new Error()))
+        jest.spyOn(groupService, 'getGroups').mockResolvedValue(groupsMock)
+        jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockImplementation()
+        jest.spyOn(businessAvailabilityService, 'getAvailabilityData').mockResolvedValue({ hdfSubmitted: false })
         controller = require('../../../controllers/pupils-not-taking-the-check').getSelectPupilNotTakingCheck
 
         const res = getRes()
@@ -132,12 +129,12 @@ describe('pupils-not-taking-the-check controller:', () => {
         expect(next).toHaveBeenCalled()
       })
 
-      it('unhappy path - pupilsNotTakingCheckService.getPupilsWithoutReasons fails', async () => {
-        spyOn(attendanceCodeService, 'getAttendanceCodes').and.returnValue([])
-        spyOn(pupilsNotTakingCheckService, 'getPupilsWithoutReasons').and.returnValue(Promise.reject(new Error()))
-        spyOn(groupService, 'getGroupsWithPresentPupils').and.returnValue(groupsMock)
-        spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-        spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ hdfSubmitted: false })
+      test('unhappy path - pupilsNotTakingCheckService.getPupilsWithoutReasons fails', async () => {
+        jest.spyOn(attendanceCodeService, 'getAttendanceCodes').mockResolvedValue([])
+        jest.spyOn(pupilsNotTakingCheckService, 'getPupilsWithoutReasons').mockResolvedValue(Promise.reject(new Error()))
+        jest.spyOn(groupService, 'getGroupsWithPresentPupils').mockResolvedValue(groupsMock)
+        jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockImplementation()
+        jest.spyOn(businessAvailabilityService, 'getAvailabilityData').mockResolvedValue({ hdfSubmitted: false })
         controller = require('../../../controllers/pupils-not-taking-the-check').getSelectPupilNotTakingCheck
 
         const res = getRes()
@@ -149,12 +146,12 @@ describe('pupils-not-taking-the-check controller:', () => {
         expect(next).toHaveBeenCalled()
       })
 
-      it('unhappy path - groupService.getGroups fails', async () => {
-        spyOn(attendanceCodeService, 'getAttendanceCodes').and.returnValue([])
-        spyOn(pupilsNotTakingCheckService, 'getPupilsWithoutReasons').and.returnValue(pupilsWithReasonsMock)
-        spyOn(groupService, 'getGroupsWithPresentPupils').and.returnValue(Promise.reject(new Error()))
-        spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-        spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ hdfSubmitted: false })
+      test('unhappy path - groupService.getGroups fails', async () => {
+        jest.spyOn(attendanceCodeService, 'getAttendanceCodes').mockResolvedValue([])
+        jest.spyOn(pupilsNotTakingCheckService, 'getPupilsWithoutReasons').mockResolvedValue(pupilsWithReasonsMock)
+        jest.spyOn(groupService, 'getGroupsWithPresentPupils').mockResolvedValue(Promise.reject(new Error()))
+        jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockImplementation()
+        jest.spyOn(businessAvailabilityService, 'getAvailabilityData').mockResolvedValue({ hdfSubmitted: false })
         controller = require('../../../controllers/pupils-not-taking-the-check').getSelectPupilNotTakingCheck
 
         const res = getRes()
@@ -168,8 +165,8 @@ describe('pupils-not-taking-the-check controller:', () => {
     })
 
     describe('#savePupilNotTakingCheck: Save reason for pupil', () => {
-      it('should save and redirect', async () => {
-        spyOn(attendanceService, 'updatePupilAttendanceBySlug')
+      test('should save and redirect', async () => {
+        jest.spyOn(attendanceService, 'updatePupilAttendanceBySlug').mockImplementation()
         controller = require('../../../controllers/pupils-not-taking-the-check').savePupilNotTakingCheck
 
         const res = getRes()
@@ -191,8 +188,8 @@ describe('pupils-not-taking-the-check controller:', () => {
         expect(res.statusCode).toBe(302)
       })
 
-      it('should redirect because req.body has missing data', async () => {
-        spyOn(attendanceService, 'updatePupilAttendanceBySlug')
+      test('should redirect because req.body has missing data', async () => {
+        jest.spyOn(attendanceService, 'updatePupilAttendanceBySlug').mockImplementation()
         controller = require('../../../controllers/pupils-not-taking-the-check').savePupilNotTakingCheck
 
         const res = getRes()
@@ -214,8 +211,8 @@ describe('pupils-not-taking-the-check controller:', () => {
         expect(res.statusCode).toBe(302)
       })
 
-      it('should return next because attendanceCodeService.updatePupilAttendanceBySlug fails', async () => {
-        spyOn(attendanceService, 'updatePupilAttendanceBySlug').and.returnValue(Promise.reject(new Error()))
+      test('should return next because attendanceCodeService.updatePupilAttendanceBySlug fails', async () => {
+        jest.spyOn(attendanceService, 'updatePupilAttendanceBySlug').mockResolvedValue(Promise.reject(new Error()))
         controller = require('../../../controllers/pupils-not-taking-the-check').savePupilNotTakingCheck
 
         const res = getRes()
@@ -240,9 +237,9 @@ describe('pupils-not-taking-the-check controller:', () => {
     })
 
     describe('#removePupilNotTakingCheck: Remove:  reason for pupil', () => {
-      it('should redirect to the select pupils page if pupilId is not supplied', async () => {
-        spyOn(attendanceService, 'unsetAttendanceCode').and.returnValue(Promise.resolve(true))
-        spyOn(pupilService, 'findOneBySlugAndSchool').and.returnValue(Promise.resolve(pupilMock))
+      test('should redirect to the select pupils page if pupilId is not supplied', async () => {
+        jest.spyOn(attendanceService, 'unsetAttendanceCode').mockResolvedValue(Promise.resolve(true))
+        jest.spyOn(pupilService, 'findOneBySlugAndSchool').mockResolvedValue(Promise.resolve(pupilMock))
 
         controller = require('../../../controllers/pupils-not-taking-the-check').removePupilNotTakingCheck
 
@@ -265,9 +262,9 @@ describe('pupils-not-taking-the-check controller:', () => {
         expect(next).not.toHaveBeenCalled()
       })
 
-      it('should delete reason from pupils document and redirect', async () => {
-        spyOn(attendanceService, 'unsetAttendanceCode').and.returnValue(Promise.resolve(true))
-        spyOn(pupilService, 'findOneBySlugAndSchool').and.returnValue(Promise.resolve(pupilMock))
+      test('should delete reason from pupils document and redirect', async () => {
+        jest.spyOn(attendanceService, 'unsetAttendanceCode').mockResolvedValue(Promise.resolve(true))
+        jest.spyOn(pupilService, 'findOneBySlugAndSchool').mockResolvedValue(Promise.resolve(pupilMock))
         controller = require('../../../controllers/pupils-not-taking-the-check').removePupilNotTakingCheck
 
         const res = getRes()
@@ -289,9 +286,9 @@ describe('pupils-not-taking-the-check controller:', () => {
         expect(res.statusCode).toBe(302)
       })
 
-      it('should execute next if attendanceCodeService.unsetAttendanceCode fails', async () => {
-        spyOn(attendanceService, 'unsetAttendanceCode').and.returnValue(Promise.reject(new Error()))
-        spyOn(pupilService, 'findOneBySlugAndSchool').and.returnValue(Promise.resolve(pupilMock))
+      test('should execute next if attendanceCodeService.unsetAttendanceCode fails', async () => {
+        jest.spyOn(attendanceService, 'unsetAttendanceCode').mockResolvedValue(Promise.reject(new Error()))
+        jest.spyOn(pupilService, 'findOneBySlugAndSchool').mockResolvedValue(Promise.resolve(pupilMock))
         controller = require('../../../controllers/pupils-not-taking-the-check').removePupilNotTakingCheck
 
         const res = getRes()
@@ -315,9 +312,9 @@ describe('pupils-not-taking-the-check controller:', () => {
         expect(next).toHaveBeenCalled()
       })
 
-      it('should execute next if pupilDataService.sqlFindOneBySlugAndSchool fails', async () => {
-        spyOn(attendanceService, 'unsetAttendanceCode').and.returnValue()
-        spyOn(pupilService, 'findOneBySlugAndSchool').and.returnValue(Promise.reject(new Error()))
+      test('should execute next if pupilDataService.sqlFindOneBySlugAndSchool fails', async () => {
+        jest.spyOn(attendanceService, 'unsetAttendanceCode').mockResolvedValue()
+        jest.spyOn(pupilService, 'findOneBySlugAndSchool').mockResolvedValue(Promise.reject(new Error()))
         controller = require('../../../controllers/pupils-not-taking-the-check').removePupilNotTakingCheck
 
         const res = getRes()
@@ -343,11 +340,11 @@ describe('pupils-not-taking-the-check controller:', () => {
     })
 
     describe('#viewPupilsNotTakingTheCheck', () => {
-      it('should make a call to get the pupils', async () => {
-        spyOn(pupilsNotTakingCheckService, 'getPupilsWithReasons').and.returnValue(Promise.resolve(pupilsWithReasonsMock))
-        spyOn(headteacherDeclarationService, 'isHdfSubmittedForCurrentCheck').and.returnValue(false)
-        spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-        spyOn(schoolHomeFeatureEligibilityPresenter, 'getPresentationData')
+      test('should make a call to get the pupils', async () => {
+        jest.spyOn(pupilsNotTakingCheckService, 'getPupilsWithReasons').mockResolvedValue(Promise.resolve(pupilsWithReasonsMock))
+        jest.spyOn(headteacherDeclarationService, 'isHdfSubmittedForCurrentCheck').mockResolvedValue(false)
+        jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockImplementation()
+        jest.spyOn(schoolHomeFeatureEligibilityPresenter, 'getPresentationData').mockImplementation()
         controller = require('../../../controllers/pupils-not-taking-the-check').viewPupilsNotTakingTheCheck
         const res = getRes()
         const req = getReq(
@@ -364,11 +361,11 @@ describe('pupils-not-taking-the-check controller:', () => {
         expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
         expect(schoolHomeFeatureEligibilityPresenter.getPresentationData).toHaveBeenCalled()
       })
-      it('should execute next if pupilsNotTakingCheckService.getPupilsWithReasons fails', async () => {
-        spyOn(pupilsNotTakingCheckService, 'getPupilsWithReasons').and.returnValue(Promise.resolve(Promise.reject(new Error())))
-        spyOn(headteacherDeclarationService, 'isHdfSubmittedForCurrentCheck').and.returnValue(false)
-        spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-        spyOn(schoolHomeFeatureEligibilityPresenter, 'getPresentationData')
+      test('should execute next if pupilsNotTakingCheckService.getPupilsWithReasons fails', async () => {
+        jest.spyOn(pupilsNotTakingCheckService, 'getPupilsWithReasons').mockResolvedValue(Promise.resolve(Promise.reject(new Error())))
+        jest.spyOn(headteacherDeclarationService, 'isHdfSubmittedForCurrentCheck').mockResolvedValue(false)
+        jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockImplementation()
+        jest.spyOn(schoolHomeFeatureEligibilityPresenter, 'getPresentationData').mockImplementation()
         controller = require('../../../controllers/pupils-not-taking-the-check').viewPupilsNotTakingTheCheck
         const res = getRes()
         const req = getReq(

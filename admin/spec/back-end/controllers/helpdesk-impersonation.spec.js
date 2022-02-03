@@ -1,6 +1,6 @@
 'use strict'
 
-/* global describe it expect jasmine beforeEach spyOn */
+/* global describe jest test expect beforeEach afterEach */
 
 const controller = require('../../../controllers/helpdesk-impersonation')
 const schoolImpersonationService = require('../../../services/school-impersonation.service')
@@ -21,22 +21,28 @@ describe('helpdesk impersonation controller', () => {
     const req = httpMocks.createRequest(params)
     req.user = params.user || { School: 9991001 }
     req.session = params.session || {}
-    req.breadcrumbs = jasmine.createSpy('breadcrumbs')
-    req.flash = jasmine.createSpy('flash')
+    req.breadcrumbs = jest.fn()
+    req.flash = jest.fn()
     return req
   }
+
   beforeEach(() => {
-    next = jasmine.createSpy('next')
+    next = jest.fn()
   })
+
+  afterEach(() => {
+    jest.restoreAllMocks()
+  })
+
   describe('getSchoolImpersonation', () => {
     const reqParams = {
       method: 'GET',
       url: '/school-impersonation'
     }
-    it('should render the school impersonation form', async () => {
+    test('should render the school impersonation form', async () => {
       const req = getReq(reqParams)
       const res = getRes()
-      spyOn(res, 'render')
+      jest.spyOn(res, 'render').mockImplementation()
       await controller.getSchoolImpersonation(req, res, next)
       expect(res.render).toHaveBeenCalled()
     })
@@ -47,29 +53,29 @@ describe('helpdesk impersonation controller', () => {
       url: '/school-impersonation',
       body: { dfeNumber: '1230000' }
     }
-    it('should call schoolImpersonationService.setSchoolImpersonation method to validate dfeNumber given and create an impersonation', async () => {
+    test('should call schoolImpersonationService.setSchoolImpersonation method to validate dfeNumber given and create an impersonation', async () => {
       const req = getReq(reqParams)
       const res = getRes()
-      spyOn(schoolImpersonationService, 'setSchoolImpersonation')
+      jest.spyOn(schoolImpersonationService, 'setSchoolImpersonation').mockImplementation()
       await controller.postAddSchoolImpersonation(req, res, next)
       expect(schoolImpersonationService.setSchoolImpersonation).toHaveBeenCalled()
     })
-    it('should render the helpdesk home if no validation error occurred', async () => {
+    test('should render the helpdesk home if no validation error occurred', async () => {
       const req = getReq(reqParams)
       const res = getRes()
-      spyOn(res, 'redirect')
-      spyOn(schoolImpersonationService, 'setSchoolImpersonation').and.returnValue({ School: '1230000' })
+      jest.spyOn(res, 'redirect').mockImplementation()
+      jest.spyOn(schoolImpersonationService, 'setSchoolImpersonation').mockResolvedValue({ School: '1230000' })
       await controller.postAddSchoolImpersonation(req, res, next)
       expect(res.redirect).toHaveBeenCalled()
     })
-    it('should re-render the helpdesk impersonation form if a validation error occurred', async () => {
+    test('should re-render the helpdesk impersonation form if a validation error occurred', async () => {
       const req = getReq(reqParams)
       const res = getRes()
       const validationError = new ValidationError()
       validationError.addError('dfeNumber', 'error')
-      spyOn(schoolImpersonationService, 'setSchoolImpersonation').and.returnValue(validationError)
-      spyOn(controller, 'getSchoolImpersonation')
-      spyOn(res, 'render')
+      jest.spyOn(schoolImpersonationService, 'setSchoolImpersonation').mockResolvedValue(validationError)
+      jest.spyOn(controller, 'getSchoolImpersonation').mockImplementation()
+      jest.spyOn(res, 'render').mockImplementation()
       await controller.postAddSchoolImpersonation(req, res, next)
       expect(res.render).not.toHaveBeenCalled()
       expect(controller.getSchoolImpersonation).toHaveBeenCalled()
@@ -80,18 +86,18 @@ describe('helpdesk impersonation controller', () => {
       method: 'POST',
       url: '/remove-school-impersonation'
     }
-    it('should call schoolImpersonationService.removeImpersonation', async () => {
+    test('should call schoolImpersonationService.removeImpersonation', async () => {
       const req = getReq(reqParams)
       const res = getRes()
-      spyOn(schoolImpersonationService, 'removeImpersonation')
+      jest.spyOn(schoolImpersonationService, 'removeImpersonation').mockImplementation()
       await controller.postRemoveSchoolImpersonation(req, res, next)
       expect(schoolImpersonationService.removeImpersonation).toHaveBeenCalled()
     })
-    it('should add a flash message and redirect to school impersonation form', async () => {
+    test('should add a flash message and redirect to school impersonation form', async () => {
       const req = getReq(reqParams)
       const res = getRes()
-      spyOn(schoolImpersonationService, 'removeImpersonation')
-      spyOn(res, 'redirect')
+      jest.spyOn(schoolImpersonationService, 'removeImpersonation').mockImplementation()
+      jest.spyOn(res, 'redirect').mockImplementation()
       await controller.postRemoveSchoolImpersonation(req, res, next)
       expect(req.flash).toHaveBeenCalled()
       expect(res.redirect).toHaveBeenCalled()

@@ -19,12 +19,8 @@ class SchoolLandingPage < SitePrism::Page
   element :access_arrangements, 'a', text: 'Enable access arrangements for pupils who need them'
 
 
-  # preview check
-  element :generate_pupil_pin_familiarisation, 'a[href="/pupil-pin/generate-familiarisation-pins-overview"]'
-  element :generate_pupil_pin_familiarisation_text, 'p', text: 'Generate school password and personal identification numbers (PINs) so pupils can familiarise themselves with the MTC'
-
   # live check
-  element :generate_pupil_pin, 'a[href="/pupil-pin/generate-live-pins-overview"]'
+  element :generate_passwords_and_pins, 'a[href="/pupil-pin/select-official-or-try-it-out'
   element :generate_pupil_pin_disabled, '.disabled-link', text: 'Start the multiplication tables check - password and PINs'
 
 
@@ -50,7 +46,7 @@ class SchoolLandingPage < SitePrism::Page
 
   section :service_message, '.govuk-warning-message' do
     element :service_message_heading, '.govuk-heading-l'
-    element :service_message_text, '.govuk-body'
+    element :service_message_text, '.mtc-service-message'
   end
 
   section :helpdesk_tools, '.app-related-items', text: 'Helpdesk Tools' do

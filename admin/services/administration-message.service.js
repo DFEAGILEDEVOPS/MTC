@@ -1,18 +1,29 @@
 'use strict'
+const { marked } = require('marked')
 
 const administrationMessageDataService = require('./data-access/administration-message.data.service')
 const redisCacheService = require('./data-access/redis-cache.service')
 const emptyFieldsValidator = require('../lib/validator/common/empty-fields-validators')
 const serviceMessageErrorMessages = require('../lib/errors/service-message')
+const logService = require('./log.service')
+const logger = logService.getLogger()
+const sanitiseService = require('./sanitise.service')
 
 const administrationMessageService = {}
 const serviceMessageRedisKey = 'serviceMessage'
 
 /**
- * Get the current service message
- * @returns {Promise<any>}
+ * @typedef serviceMessage
+ * @property message string
+ * @property title string
+ * @property [id] number optional
  */
-administrationMessageService.getMessage = async () => {
+
+/**
+ * Fetch the service message from DB or cache with the message property as raw markdown, or plain text.
+ * @returns {Promise<serviceMessage | undefined>}
+ */
+administrationMessageService.fetchMessage = async function fetchServiceMessage () {
   let cachedServiceMessage
   const result = await redisCacheService.get(serviceMessageRedisKey)
   try {
@@ -22,6 +33,27 @@ administrationMessageService.getMessage = async () => {
     }
   } catch (ignore) {}
   return administrationMessageDataService.sqlFindActiveServiceMessage()
+}
+
+/**
+ * Get the current service message
+ * @returns {Promise<serviceMessage | undefined>}
+ */
+administrationMessageService.getMessage = async () => {
+  let html
+  let rawMessage // object with .message => markdown
+  try {
+    rawMessage = await administrationMessageService.fetchMessage()
+    if (rawMessage === undefined) {
+      return undefined
+    }
+    html = marked.parse(rawMessage.message)
+  } catch (error) {
+    logger.alert(`serviceMessage: failed to render.  Error: ${error.message}`)
+    return undefined // show the page at least, without the service message
+  }
+  const cleanMessage = sanitiseService.sanitise(html)
+  return { title: rawMessage.title, message: cleanMessage }
 }
 
 /**
@@ -44,8 +76,7 @@ administrationMessageService.setMessage = async (requestData, userId) => {
   }
 
   const serviceMessageData = administrationMessageService.prepareSubmissionData(requestData, userId)
-
-  await administrationMessageDataService.sqlCreate(serviceMessageData)
+  await administrationMessageDataService.sqlCreateOrUpdate(serviceMessageData)
   return redisCacheService.set(serviceMessageRedisKey, serviceMessageData)
 }
 
@@ -60,6 +91,9 @@ administrationMessageService.prepareSubmissionData = (requestData, userId) => {
   serviceMessageData.createdByUser_id = userId
   serviceMessageData.title = requestData.serviceMessageTitle
   serviceMessageData.message = requestData.serviceMessageContent
+  if (requestData.id !== undefined) {
+    serviceMessageData.id = requestData.id
+  }
   return serviceMessageData
 }
 

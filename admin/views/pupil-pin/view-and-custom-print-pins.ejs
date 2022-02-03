@@ -8,7 +8,7 @@
         <div class="govuk-grid-column-two-thirds">
             <div class="print-only">
                 <img class="sta-horizontal-logo govuk-!-margin-bottom-5" width="200" src="<%= assetPath %>images/sta-horizontal-logo.jpg" />
-                <h3 class="govuk-heading-m">Multiplication Tables Check <%= pinEnv !== 'live' ? '- Try it out' : '' %></h3>
+                <h3 class="govuk-heading-m">Multiplication Tables Check <%= pinEnv !== 'live' ? '- Try it out' : '- Official' %></h3>
                 <ul class="govuk-list govuk-list--bullet" role="listbox">
                     <li class="govuk-!-font-size-14" role="listitem">Please cut out and distribute to pupils</li>
                     <li class="govuk-!-font-size-14" role="listitem">The school passwords and pupil PINs will expire by the end of <%= date %></li>
@@ -30,7 +30,7 @@
                 </p>
             </div>
         <% } %>
-            <h1 class="no-print govuk-heading-xl">View and custom print PINs - <%= pinEnv === 'live' ? 'Start the MTC' : 'Try it out' %></h1>
+            <h1 class="no-print govuk-heading-xl">View and print PINs - <%= pinEnv === 'live' ? 'Official check' : 'Try it out check' %></h1>
             <%- partial('partials/_gds_session_expiry') %>
             <p class="no-print govuk-body">
                 PINs have been generated for pupils. This list contains all active PINs. These expire at 4pm daily.
@@ -82,8 +82,9 @@
                                 <div class="print-only watermark govuk-!-font-size-80">Try it out</div>
                                 <% } %>
                                 <label class="govuk-label" for="pupil-<%= pupil.id %>">
-                                    <strong id="pupilName"><%= pupil.fullName %></strong>
+                                    <strong id="pupilName" class="no-print"><%= pupil.fullName %></strong>
                                     <span class="print-only">
+                                        <strong><%= pupil.pupilViewFullName %></strong>
                                         <% if (pupil.group) { %>
                                             (<%= pupil.group %>)
                                         <% } %>

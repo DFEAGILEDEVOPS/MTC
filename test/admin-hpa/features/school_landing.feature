@@ -85,15 +85,14 @@ Feature:
     Then I should be able to navigate to the <page>
 
     Examples:
-      | page                               |
-      | pupil_register                     |
-      | group_pupils                       |
-      | pupils_not_taking_check            |
-      | access_arrangements                |
-      | generate_pupil_pin_familiarisation |
-      | generate_pupil_pin                 |
-      | restarts                           |
-      | hdf                                |
+      | page                        |
+      | pupil_register              |
+      | group_pupils                |
+      | pupils_not_taking_check     |
+      | access_arrangements         |
+      | generate_passwords_and_pins |
+      | restarts                    |
+      | hdf                         |
 
 
   Scenario Outline: Helpdesk user can only access pages related to the role
@@ -109,7 +108,7 @@ Feature:
       | /service-manager/upload-pupil-census      |
       | /service-manager/check-settings           |
       | /service-manager/mod-settings             |
-      | /test-developer/view-forms                    |
-      | /test-developer/upload-new-forms              |
+      | /test-developer/view-forms                |
+      | /test-developer/upload-new-forms          |
       | /test-developer/download-pupil-check-data |
       | /test-developer/view-pupil-payload        |

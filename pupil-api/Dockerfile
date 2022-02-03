@@ -1,9 +1,11 @@
-FROM node:12.18.2
+FROM node:14.18.1
 
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
-COPY package.json /usr/src/app
-COPY yarn.lock /usr/src/app
+# copying just the package.json and lock file ensures this layer will only be rebuilt when
+# changes to package.json have been made
+COPY package.json .
+COPY yarn.lock .
 RUN yarn install --ignore-engines --frozen-lockfile
 
 COPY . .

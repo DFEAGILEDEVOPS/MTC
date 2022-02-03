@@ -1,6 +1,6 @@
 'use strict'
 
-/* global describe beforeEach it expect jasmine spyOn fail test jest afterEach */
+/* global describe beforeEach expect fail test jest afterEach */
 
 const httpMocks = require('node-mocks-http')
 const R = require('ramda')
@@ -34,13 +34,13 @@ describe('access arrangements controller:', () => {
   function getReq (params) {
     const req = httpMocks.createRequest(params)
     req.user = { School: 9991001 }
-    req.breadcrumbs = jasmine.createSpy('breadcrumbs')
-    req.flash = jasmine.createSpy('flash')
+    req.breadcrumbs = jest.fn()
+    req.flash = jest.fn()
     return req
   }
 
   beforeEach(() => {
-    next = jasmine.createSpy('next')
+    next = jest.fn()
   })
 
   afterEach(() => {
@@ -53,16 +53,16 @@ describe('access arrangements controller:', () => {
       url: '/access-arrangements/overview'
     }
 
-    it('displays the access arrangements overview page', async () => {
+    test('displays the access arrangements overview page', async () => {
       const res = getRes()
       const req = getReq(reqParams)
-      spyOn(res, 'render')
-      spyOn(pupilAccessArrangementsService, 'getPupils').and.returnValue([])
-      spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-      spyOn(schoolHomeFeatureEligibilityPresenter, 'getPresentationData')
-      spyOn(accessArrangementsService, 'getCurrentViewMode').and.returnValue(aaViewModes.edit)
-      spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ accessArrangementsAvailable: true })
-      spyOn(accessArrangementsOverviewPresenter, 'getPresentationData')
+      jest.spyOn(res, 'render').mockImplementation()
+      jest.spyOn(pupilAccessArrangementsService, 'getPupils').mockResolvedValue([])
+      jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockImplementation()
+      jest.spyOn(schoolHomeFeatureEligibilityPresenter, 'getPresentationData').mockImplementation()
+      jest.spyOn(accessArrangementsService, 'getCurrentViewMode').mockResolvedValue(aaViewModes.edit)
+      jest.spyOn(businessAvailabilityService, 'getAvailabilityData').mockResolvedValue({ accessArrangementsAvailable: true })
+      jest.spyOn(accessArrangementsOverviewPresenter, 'getPresentationData').mockImplementation()
       await controller.getOverview(req, res, next)
       expect(res.locals.pageTitle).toBe('Enable access arrangements for pupils who need them')
       expect(res.render).toHaveBeenCalled()
@@ -73,15 +73,15 @@ describe('access arrangements controller:', () => {
       expect(accessArrangementsOverviewPresenter.getPresentationData).toHaveBeenCalled()
     })
 
-    it('displays the access arrangements unavailable page when the feature is not accessible', async () => {
+    test('displays the access arrangements unavailable page when the feature is not accessible', async () => {
       const res = getRes()
       const req = getReq(reqParams)
-      spyOn(res, 'render')
-      spyOn(pupilAccessArrangementsService, 'getPupils').and.returnValue([])
-      spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-      spyOn(schoolHomeFeatureEligibilityPresenter, 'getPresentationData')
-      spyOn(accessArrangementsService, 'getCurrentViewMode').and.returnValue(aaViewModes.unavailable)
-      spyOn(accessArrangementsOverviewPresenter, 'getPresentationData')
+      jest.spyOn(res, 'render').mockImplementation()
+      jest.spyOn(pupilAccessArrangementsService, 'getPupils').mockResolvedValue([])
+      jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockImplementation()
+      jest.spyOn(schoolHomeFeatureEligibilityPresenter, 'getPresentationData').mockImplementation()
+      jest.spyOn(accessArrangementsService, 'getCurrentViewMode').mockResolvedValue(aaViewModes.unavailable)
+      jest.spyOn(accessArrangementsOverviewPresenter, 'getPresentationData').mockImplementation()
       await controller.getOverview(req, res, next)
       expect(res.render).toHaveBeenCalledWith('access-arrangements/unavailable-access-arrangements', {
         aaViewMode: aaViewModes.unavailable,
@@ -90,16 +90,16 @@ describe('access arrangements controller:', () => {
       })
     })
 
-    it('displays the overview in readonly mode when editing is no longer permitted', async () => {
+    test('displays the overview in readonly mode when editing is no longer permitted', async () => {
       const res = getRes()
       const req = getReq(reqParams)
-      spyOn(res, 'render')
-      spyOn(pupilAccessArrangementsService, 'getPupils').and.returnValue([])
-      spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-      spyOn(accessArrangementsService, 'getCurrentViewMode').and.returnValue(aaViewModes.readonly)
-      spyOn(schoolHomeFeatureEligibilityPresenter, 'getPresentationData')
-      spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ accessArrangementsAvailable: true })
-      spyOn(accessArrangementsOverviewPresenter, 'getPresentationData')
+      jest.spyOn(res, 'render').mockImplementation()
+      jest.spyOn(pupilAccessArrangementsService, 'getPupils').mockResolvedValue([])
+      jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockImplementation()
+      jest.spyOn(accessArrangementsService, 'getCurrentViewMode').mockResolvedValue(aaViewModes.readonly)
+      jest.spyOn(schoolHomeFeatureEligibilityPresenter, 'getPresentationData').mockImplementation()
+      jest.spyOn(businessAvailabilityService, 'getAvailabilityData').mockResolvedValue({ accessArrangementsAvailable: true })
+      jest.spyOn(accessArrangementsOverviewPresenter, 'getPresentationData').mockImplementation()
       await controller.getOverview(req, res, next)
       expect(res.render).toHaveBeenCalledWith('access-arrangements/overview', {
         aaViewMode: aaViewModes.readonly,
@@ -116,14 +116,14 @@ describe('access arrangements controller:', () => {
       })
     })
 
-    it('throws an error if pupilAccessArrangementsService getPupils is rejected', async () => {
+    test('throws an error if pupilAccessArrangementsService getPupils is rejected', async () => {
       const res = getRes()
       const req = getReq(reqParams)
-      spyOn(res, 'render')
-      spyOn(accessArrangementsService, 'getCurrentViewMode').and.returnValue(aaViewModes.edit)
-      spyOn(pupilAccessArrangementsService, 'getPupils').and.returnValue(Promise.reject(new Error('error')))
-      spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-      spyOn(schoolHomeFeatureEligibilityPresenter, 'getPresentationData')
+      jest.spyOn(res, 'render').mockImplementation()
+      jest.spyOn(accessArrangementsService, 'getCurrentViewMode').mockResolvedValue(aaViewModes.edit)
+      jest.spyOn(pupilAccessArrangementsService, 'getPupils').mockResolvedValue(Promise.reject(new Error('error')))
+      jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockImplementation()
+      jest.spyOn(schoolHomeFeatureEligibilityPresenter, 'getPresentationData').mockImplementation()
       try {
         await controller.getOverview(req, res, next)
       } catch (error) {
@@ -211,17 +211,17 @@ describe('access arrangements controller:', () => {
       url: '/access-arrangements/select-access-arrangements'
     }
 
-    it('displays the select access arrangements page', async () => {
+    test('displays the select access arrangements page', async () => {
       const res = getRes()
       const req = getReq(reqParams)
-      spyOn(res, 'render')
-      spyOn(accessArrangementsService, 'getAccessArrangements')
-      spyOn(accessArrangementsDescriptionsPresenter, 'getPresentationData')
-      spyOn(accessArrangementsDescriptionsPresenter, 'addReasonRequiredIndication')
-      spyOn(questionReaderReasonsService, 'getQuestionReaderReasons')
-      spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-      spyOn(businessAvailabilityService, 'getAvailabilityData').and.returnValue({ accessArrangementsAvailable: true })
-      spyOn(pupilAccessArrangementsService, 'getEligiblePupilsWithFullNames')
+      jest.spyOn(res, 'render').mockImplementation()
+      jest.spyOn(accessArrangementsService, 'getAccessArrangements').mockImplementation()
+      jest.spyOn(accessArrangementsDescriptionsPresenter, 'getPresentationData').mockImplementation()
+      jest.spyOn(accessArrangementsDescriptionsPresenter, 'addReasonRequiredIndication').mockImplementation()
+      jest.spyOn(questionReaderReasonsService, 'getQuestionReaderReasons').mockImplementation()
+      jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockImplementation()
+      jest.spyOn(businessAvailabilityService, 'getAvailabilityData').mockResolvedValue({ accessArrangementsAvailable: true })
+      jest.spyOn(pupilAccessArrangementsService, 'getEligiblePupilsWithFullNames').mockImplementation()
       await controller.getSelectAccessArrangements(req, res, next)
       expect(res.locals.pageTitle).toBe('Select access arrangement for pupil')
       expect(res.render).toHaveBeenCalled()
@@ -231,18 +231,18 @@ describe('access arrangements controller:', () => {
       expect(businessAvailabilityService.getAvailabilityData).toHaveBeenCalled()
       expect(pupilAccessArrangementsService.getEligiblePupilsWithFullNames).toHaveBeenCalled()
     })
-    it('calls next when an error occurs during service call', async () => {
+    test('calls next when an error occurs during service call', async () => {
       const res = getRes()
       const req = getReq(reqParams)
-      spyOn(res, 'render')
+      jest.spyOn(res, 'render')
       const error = new Error('error')
-      spyOn(accessArrangementsService, 'getAccessArrangements').and.returnValue(Promise.reject(error))
-      spyOn(accessArrangementsDescriptionsPresenter, 'getPresentationData')
-      spyOn(accessArrangementsDescriptionsPresenter, 'addReasonRequiredIndication')
-      spyOn(questionReaderReasonsService, 'getQuestionReaderReasons')
-      spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-      spyOn(businessAvailabilityService, 'getAvailabilityData')
-      spyOn(pupilAccessArrangementsService, 'getEligiblePupilsWithFullNames')
+      jest.spyOn(accessArrangementsService, 'getAccessArrangements').mockResolvedValue(Promise.reject(error))
+      jest.spyOn(accessArrangementsDescriptionsPresenter, 'getPresentationData').mockImplementation()
+      jest.spyOn(accessArrangementsDescriptionsPresenter, 'addReasonRequiredIndication').mockImplementation()
+      jest.spyOn(questionReaderReasonsService, 'getQuestionReaderReasons').mockImplementation()
+      jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockImplementation()
+      jest.spyOn(businessAvailabilityService, 'getAvailabilityData').mockImplementation()
+      jest.spyOn(pupilAccessArrangementsService, 'getEligiblePupilsWithFullNames').mockImplementation()
       await controller.getSelectAccessArrangements(req, res, next)
       expect(res.render).not.toHaveBeenCalled()
       expect(questionReaderReasonsService.getQuestionReaderReasons).not.toHaveBeenCalled()
@@ -261,8 +261,8 @@ describe('access arrangements controller:', () => {
         School: 1
       }
     }
-    it('should fail when edit mode unavailable', async () => {
-      spyOn(accessArrangementsService, 'getCurrentViewMode').and.returnValue(aaViewModes.readonly)
+    test('should fail when edit mode unavailable', async () => {
+      jest.spyOn(accessArrangementsService, 'getCurrentViewMode').mockResolvedValue(aaViewModes.readonly)
       const req = getReq(reqParams)
       const res = getRes()
       try {
@@ -272,14 +272,14 @@ describe('access arrangements controller:', () => {
         expect(error.name).toBe('AccessArrangementsNotEditableError')
       }
     })
-    it('submits pupils access arrangements', async () => {
+    test('submits pupils access arrangements', async () => {
       const res = getRes()
       const req = getReq(reqParams)
-      spyOn(res, 'redirect')
-      spyOn(accessArrangementsService, 'getCurrentViewMode').and.returnValue(aaViewModes.edit)
-      spyOn(accessArrangementsService, 'submit').and.returnValue({ id: 1, foreName: 'foreName', lastName: 'lastName' })
-      spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-      spyOn(businessAvailabilityService, 'determineAccessArrangementsEligibility')
+      jest.spyOn(res, 'redirect').mockImplementation()
+      jest.spyOn(accessArrangementsService, 'getCurrentViewMode').mockResolvedValue(aaViewModes.edit)
+      jest.spyOn(accessArrangementsService, 'submit').mockResolvedValue({ id: 1, foreName: 'foreName', lastName: 'lastName' })
+      jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockImplementation()
+      jest.spyOn(businessAvailabilityService, 'determineAccessArrangementsEligibility').mockImplementation()
       await controller.postSubmitAccessArrangements(req, res, next)
       expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
       expect(businessAvailabilityService.determineAccessArrangementsEligibility).toHaveBeenCalled()
@@ -287,15 +287,15 @@ describe('access arrangements controller:', () => {
       expect(req.flash).toHaveBeenCalled()
       expect(accessArrangementsService.submit).toHaveBeenCalled()
     })
-    it('calls next if accessArrangementsService submit throws an error', async () => {
+    test('calls next if accessArrangementsService submit throws an error', async () => {
       const res = getRes()
       const req = getReq(reqParams)
-      spyOn(res, 'redirect')
+      jest.spyOn(res, 'redirect')
       const error = new Error('error')
-      spyOn(accessArrangementsService, 'getCurrentViewMode').and.returnValue(aaViewModes.edit)
-      spyOn(accessArrangementsService, 'submit').and.returnValue(Promise.reject(error))
-      spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-      spyOn(businessAvailabilityService, 'determineAccessArrangementsEligibility')
+      jest.spyOn(accessArrangementsService, 'getCurrentViewMode').mockResolvedValue(aaViewModes.edit)
+      jest.spyOn(accessArrangementsService, 'submit').mockResolvedValue(Promise.reject(error))
+      jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockImplementation()
+      jest.spyOn(businessAvailabilityService, 'determineAccessArrangementsEligibility').mockImplementation()
       try {
         await controller.postSubmitAccessArrangements(req, res, next)
       } catch (error) {
@@ -305,15 +305,15 @@ describe('access arrangements controller:', () => {
       expect(req.flash).not.toHaveBeenCalled()
       expect(next).toHaveBeenCalled()
     })
-    it('calls getSelectAccessArrangements if accessArrangementsService submit throws a validation Error', async () => {
+    test('calls getSelectAccessArrangements if accessArrangementsService submit throws a validation Error', async () => {
       const res = getRes()
       const req = getReq(reqParams)
-      spyOn(res, 'redirect')
-      spyOn(controller, 'getSelectAccessArrangements')
-      spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-      spyOn(accessArrangementsService, 'getCurrentViewMode').and.returnValue(aaViewModes.edit)
-      spyOn(businessAvailabilityService, 'determineAccessArrangementsEligibility')
-      spyOn(accessArrangementsService, 'submit').and.returnValue(Promise.reject(new ValidationError()))
+      jest.spyOn(res, 'redirect').mockImplementation()
+      jest.spyOn(controller, 'getSelectAccessArrangements').mockImplementation()
+      jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockImplementation()
+      jest.spyOn(accessArrangementsService, 'getCurrentViewMode').mockResolvedValue(aaViewModes.edit)
+      jest.spyOn(businessAvailabilityService, 'determineAccessArrangementsEligibility').mockImplementation()
+      jest.spyOn(accessArrangementsService, 'submit').mockResolvedValue(Promise.reject(new ValidationError()))
       try {
         await controller.postSubmitAccessArrangements(req, res, next)
       } catch (error) {
@@ -324,20 +324,20 @@ describe('access arrangements controller:', () => {
       expect(next).not.toHaveBeenCalled()
       expect(controller.getSelectAccessArrangements).toHaveBeenCalled()
     })
-    it('calls getEditAccessArrangements if accessArrangementsService submit throws a validation Error on edit view', async () => {
+    test('calls getEditAccessArrangements if accessArrangementsService submit throws a validation Error on edit view', async () => {
       const reqParamsClone = R.clone(reqParams)
       reqParamsClone.body = {
         isEditView: 'true'
       }
       const res = getRes()
       const req = getReq(reqParamsClone)
-      spyOn(res, 'redirect')
-      spyOn(controller, 'getSelectAccessArrangements')
-      spyOn(controller, 'getEditAccessArrangements')
-      spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-      spyOn(accessArrangementsService, 'getCurrentViewMode').and.returnValue(aaViewModes.edit)
-      spyOn(businessAvailabilityService, 'determineAccessArrangementsEligibility')
-      spyOn(accessArrangementsService, 'submit').and.returnValue(Promise.reject(new ValidationError()))
+      jest.spyOn(res, 'redirect').mockImplementation()
+      jest.spyOn(controller, 'getSelectAccessArrangements').mockImplementation()
+      jest.spyOn(controller, 'getEditAccessArrangements').mockImplementation()
+      jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockImplementation()
+      jest.spyOn(accessArrangementsService, 'getCurrentViewMode').mockResolvedValue(aaViewModes.edit)
+      jest.spyOn(businessAvailabilityService, 'determineAccessArrangementsEligibility').mockImplementation()
+      jest.spyOn(accessArrangementsService, 'submit').mockResolvedValue(Promise.reject(new ValidationError()))
       try {
         await controller.postSubmitAccessArrangements(req, res, next)
       } catch (error) {
@@ -360,8 +360,8 @@ describe('access arrangements controller:', () => {
         }
       }
     }
-    it('throws an error if edit mode not available', async () => {
-      spyOn(accessArrangementsService, 'getCurrentViewMode').and.returnValue(aaViewModes.readonly)
+    test('throws an error if edit mode not available', async () => {
+      jest.spyOn(accessArrangementsService, 'getCurrentViewMode').mockResolvedValue(aaViewModes.readonly)
       const req = getReq(reqParams)
       const res = getRes()
       try {
@@ -371,37 +371,37 @@ describe('access arrangements controller:', () => {
         expect(error.name).toBe('AccessArrangementsNotEditableError')
       }
     })
-    it('displays the edit access arrangements page', async () => {
+    test('displays the edit access arrangements page', async () => {
       const res = getRes()
       const req = getReq(reqParams('urlSlug'))
-      spyOn(res, 'render')
-      spyOn(accessArrangementsService, 'getAccessArrangements')
-      spyOn(accessArrangementsService, 'getCurrentViewMode').and.returnValue(aaViewModes.edit)
-      spyOn(accessArrangementsDescriptionsPresenter, 'getPresentationData')
-      spyOn(accessArrangementsDescriptionsPresenter, 'addReasonRequiredIndication')
-      spyOn(questionReaderReasonsService, 'getQuestionReaderReasons')
-      spyOn(pupilAccessArrangementsEditService, 'getEditData')
-      spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-      spyOn(businessAvailabilityService, 'determineAccessArrangementsEligibility')
+      jest.spyOn(res, 'render').mockImplementation()
+      jest.spyOn(accessArrangementsService, 'getAccessArrangements').mockImplementation()
+      jest.spyOn(accessArrangementsService, 'getCurrentViewMode').mockResolvedValue(aaViewModes.edit)
+      jest.spyOn(accessArrangementsDescriptionsPresenter, 'getPresentationData').mockImplementation()
+      jest.spyOn(accessArrangementsDescriptionsPresenter, 'addReasonRequiredIndication').mockImplementation()
+      jest.spyOn(questionReaderReasonsService, 'getQuestionReaderReasons').mockImplementation()
+      jest.spyOn(pupilAccessArrangementsEditService, 'getEditData').mockImplementation()
+      jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockImplementation()
+      jest.spyOn(businessAvailabilityService, 'determineAccessArrangementsEligibility').mockImplementation()
       await controller.getEditAccessArrangements(req, res, next)
       expect(res.locals.pageTitle).toBe('Edit access arrangement for pupil')
       expect(res.render).toHaveBeenCalled()
       expect(accessArrangementsService.getAccessArrangements).toHaveBeenCalled()
       expect(pupilAccessArrangementsEditService.getEditData).toHaveBeenCalledWith({}, 'pupilUrlSlug', 9991001)
     })
-    it('calls next when an error occurs during service call', async () => {
+    test('calls next when an error occurs during service call', async () => {
       const res = getRes()
       const req = getReq(reqParams('urlSlug'))
-      spyOn(res, 'render')
+      jest.spyOn(res, 'render')
       const error = new Error('error')
-      spyOn(accessArrangementsService, 'getAccessArrangements')
-      spyOn(accessArrangementsService, 'getCurrentViewMode').and.returnValue(aaViewModes.edit)
-      spyOn(accessArrangementsDescriptionsPresenter, 'getPresentationData')
-      spyOn(accessArrangementsDescriptionsPresenter, 'addReasonRequiredIndication')
-      spyOn(questionReaderReasonsService, 'getQuestionReaderReasons')
-      spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-      spyOn(businessAvailabilityService, 'determineAccessArrangementsEligibility')
-      spyOn(pupilAccessArrangementsEditService, 'getEditData').and.returnValue(Promise.reject(error))
+      jest.spyOn(accessArrangementsService, 'getAccessArrangements').mockImplementation()
+      jest.spyOn(accessArrangementsService, 'getCurrentViewMode').mockResolvedValue(aaViewModes.edit)
+      jest.spyOn(accessArrangementsDescriptionsPresenter, 'getPresentationData').mockImplementation()
+      jest.spyOn(accessArrangementsDescriptionsPresenter, 'addReasonRequiredIndication').mockImplementation()
+      jest.spyOn(questionReaderReasonsService, 'getQuestionReaderReasons').mockImplementation()
+      jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockImplementation()
+      jest.spyOn(businessAvailabilityService, 'determineAccessArrangementsEligibility').mockImplementation()
+      jest.spyOn(pupilAccessArrangementsEditService, 'getEditData').mockResolvedValue(Promise.reject(error))
       await controller.getEditAccessArrangements(req, res, next)
       expect(res.render).not.toHaveBeenCalled()
       expect(next).toHaveBeenCalledWith(error)
@@ -417,21 +417,21 @@ describe('access arrangements controller:', () => {
         }
       }
     }
-    it('redirects to error page if edit mode not available', async () => {
-      spyOn(accessArrangementsService, 'getCurrentViewMode').and.returnValue(aaViewModes.readonly)
+    test('redirects to error page if edit mode not available', async () => {
+      jest.spyOn(accessArrangementsService, 'getCurrentViewMode').mockResolvedValue(aaViewModes.readonly)
       const req = getReq(reqParams)
       const res = getRes()
       await controller.getDeleteAccessArrangements(req, res, next)
       expect(next).toHaveBeenCalledWith(new AccessArrangementsNotEditableError())
     })
-    it('redirects to overview page when successfully deleting', async () => {
+    test('redirects to overview page when successfully deleting', async () => {
       const res = getRes()
       const req = getReq(reqParams('urlSlug'))
-      spyOn(res, 'redirect')
-      spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-      spyOn(businessAvailabilityService, 'determineAccessArrangementsEligibility')
-      spyOn(accessArrangementsService, 'getCurrentViewMode').and.returnValue(aaViewModes.edit)
-      spyOn(pupilAccessArrangementsService, 'deletePupilAccessArrangements').and.returnValue({
+      jest.spyOn(res, 'redirect').mockImplementation()
+      jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockImplementation()
+      jest.spyOn(businessAvailabilityService, 'determineAccessArrangementsEligibility').mockImplementation()
+      jest.spyOn(accessArrangementsService, 'getCurrentViewMode').mockResolvedValue(aaViewModes.edit)
+      jest.spyOn(pupilAccessArrangementsService, 'deletePupilAccessArrangements').mockResolvedValue({
         id: 1,
         foreName: 'foreName',
         lastName: 'lastName'
@@ -442,15 +442,15 @@ describe('access arrangements controller:', () => {
       expect(res.redirect).toHaveBeenCalled()
       expect(req.flash).toHaveBeenCalled()
     })
-    it('calls next when an error occurs during service call', async () => {
+    test('calls next when an error occurs during service call', async () => {
       const res = getRes()
       const req = getReq(reqParams('urlSlug'))
-      spyOn(res, 'redirect')
-      spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-      spyOn(businessAvailabilityService, 'determineAccessArrangementsEligibility')
-      spyOn(accessArrangementsService, 'getCurrentViewMode').and.returnValue(aaViewModes.edit)
+      jest.spyOn(res, 'redirect').mockImplementation()
+      jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockImplementation()
+      jest.spyOn(businessAvailabilityService, 'determineAccessArrangementsEligibility').mockImplementation()
+      jest.spyOn(accessArrangementsService, 'getCurrentViewMode').mockResolvedValue(aaViewModes.edit)
       const error = new Error('error')
-      spyOn(pupilAccessArrangementsService, 'deletePupilAccessArrangements').and.returnValue(Promise.reject(error))
+      jest.spyOn(pupilAccessArrangementsService, 'deletePupilAccessArrangements').mockResolvedValue(Promise.reject(error))
       await controller.getDeleteAccessArrangements(req, res, next)
       expect(res.redirect).not.toHaveBeenCalled()
       expect(next).toHaveBeenCalledWith(error)

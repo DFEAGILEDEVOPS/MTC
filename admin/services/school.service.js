@@ -1,7 +1,18 @@
 'use strict'
 const uuid = require('uuid')
 const schoolDataService = require('../services/data-access/school.data.service')
+const schoolAuditDataService = require('../services/data-access/school-audit.data.service')
 const schoolValidator = require('../lib/validator/school-validator')
+const ValidationError = require('../lib/validation-error')
+const dateService = require('../services/date.service')
+
+/**
+ * @typedef {object} schoolAuditEntry
+ * @property {number } id
+ * @property {string} createdAt,
+ * @property {string} user,
+ * @property {string} auditOperation
+ */
 
 const schoolService = {
   /**
@@ -21,7 +32,7 @@ const schoolService = {
    * @param id {number}
    * @returns {Promise<*>}
    */
-  findOneById: function findOneById (id) {
+  findOneById: async function findOneById (id) {
     if (!id) {
       throw new Error('id is required')
     }
@@ -39,9 +50,21 @@ const schoolService = {
   },
 
   /**
-   *
+   * @typedef {object} schoolRecord
+   * @property {number } id
+   * @property {string} name,
+   * @property {number} leaCode,
+   * @property {number} estabCode,
+   * @property {number} dfeNumber,
+   * @property {number} urn,
+   * @property {string} urlSlug,
+   * @property {number} numberOfPupils
+   * @property {Array<schoolAuditEntry>} audits
+   */
+
+  /**
    * @param {string} slug
-   * @return {Promise<object>}
+   * @return {Promise<schoolRecord>}
    */
   findOneBySlug: async function findOneBySlug (slug) {
     if (slug === '' || slug === undefined) {
@@ -51,22 +74,21 @@ const schoolService = {
   },
 
   /**
-   * @typedef editableSchoolDetails
-   * {
-   *   dfeNumber: number,
-   *   estabCode: number,
-   *   leaCode: number,
-   *   name: string,
-   *   urn: number
-   * }
+   * @typedef {object} editableSchoolDetails
+   * @property {number} dfeNumber,
+   * @property {number} estabCode,
+   * @property {number} leaCode,
+   * @property {string} name,
+   * @property {number} urn
    */
 
   /**
    * Update details for a school
    * @param {string} slug - unique UUID to update
    * @param {editableSchoolDetails} school
+   * @param {number} userId
    */
-  updateSchool: async function updateSchool (slug, school) {
+  updateSchool: async function updateSchool (slug, school, userId) {
     if (!slug) {
       throw new Error('Missing UUID')
     }
@@ -76,11 +98,90 @@ const schoolService = {
     if (!school) {
       throw new Error('Missing school details')
     }
+    if (!userId) {
+      throw new Error('Missing userId')
+    }
     const validationError = await schoolValidator.validate(school)
     if (validationError.hasError()) {
       throw validationError
     }
-    return schoolDataService.sqlUpdateBySlug(slug, school)
+    return schoolDataService.sqlUpdateBySlug(slug, school, userId)
+  },
+
+  /**
+   * Parse the lea and estab codes from the dfeNumber
+   * @param dfeNumber
+   * @returns {{estabCode: number, leaCode: number}}
+   */
+  parseDfeNumber: function (dfeNumber) {
+    if (typeof dfeNumber !== 'number') {
+      throw new ValidationError('dfeNumber', 'The dfeNumber must be 7 digits')
+    }
+    if (dfeNumber <= 999999 || dfeNumber >= 10000000) {
+      throw new ValidationError('dfeNumber', 'The dfeNumber must be 7 digits')
+    }
+    return {
+      leaCode: parseInt(dfeNumber.toString().slice(0, 3), 10),
+      estabCode: parseInt(dfeNumber.toString().slice(3), 10)
+    }
+  },
+
+  /**
+   * @typedef newSchoolDetails
+   * {
+   *   dfeNumber: number,
+   *   name: string,
+   *   urn: number,
+   * }
+   */
+
+  /**
+   * Service manager - add a new School
+   * @param {newSchoolDetails} newSchoolDetails
+   * @param {number} userId
+   */
+  addSchool: async function addSchool (newSchoolDetails, userId) {
+    const parsed = this.parseDfeNumber(newSchoolDetails.dfeNumber)
+    const insertDetails = {
+      estabCode: parsed.estabCode,
+      leaCode: parsed.leaCode,
+      ...newSchoolDetails
+    }
+    const validationError = await schoolValidator.validate(insertDetails)
+    if (validationError.hasError()) {
+      throw validationError
+    }
+    await schoolDataService.sqlAddSchool(insertDetails, userId)
+  },
+
+  /**
+   * get list of school audit history
+   * @param {number} schoolId
+   */
+  getSchoolAudits: async function getSchoolAudits (urlSlug) {
+    if (!urlSlug) throw new Error('urlSlug is required')
+    const items = await schoolAuditDataService.getSummary(urlSlug)
+    return items.map(i => {
+      return {
+        id: i.id,
+        createdAt: dateService.formatDateAndTime(i.createdAt),
+        user: i.user,
+        auditOperation: i.auditOperation
+      }
+    })
+  },
+
+  /**
+   * retrieve row data for an audit entry
+   * @param {number} auditEntryId
+   * @returns {Promise<object>}
+   */
+  getAuditPayload: async function getAuditPayload (auditEntryId) {
+    if (!auditEntryId) throw new Error('auditEntryId is required')
+    const results = await schoolAuditDataService.getAuditPayload(auditEntryId)
+    let payload = results[0]
+    payload = JSON.parse(payload.newData)
+    return payload
   }
 }
 

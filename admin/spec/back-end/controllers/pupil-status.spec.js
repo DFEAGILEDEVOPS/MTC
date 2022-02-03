@@ -1,6 +1,6 @@
 'use strict'
 
-/* global describe it expect jasmine beforeEach spyOn */
+/* global describe expect beforeEach jest test afterEach */
 
 const controller = require('../../../controllers/pupil-status')
 const checkWindowV2Service = require('../../../services/check-window-v2.service')
@@ -22,13 +22,19 @@ describe('pupil status controller', () => {
     const req = httpMocks.createRequest(params)
     req.user = params.user || { School: 9991001 }
     req.session = params.session || {}
-    req.breadcrumbs = jasmine.createSpy('breadcrumbs')
-    req.flash = jasmine.createSpy('flash')
+    req.breadcrumbs = jest.fn()
+    req.flash = jest.fn()
     return req
   }
+
   beforeEach(() => {
-    next = jasmine.createSpy('next')
+    next = jest.fn()
   })
+
+  afterEach(() => {
+    jest.restoreAllMocks()
+  })
+
   describe('getViewPupilStatus', () => {
     const reqParams = {
       method: 'GET',
@@ -39,38 +45,44 @@ describe('pupil status controller', () => {
     }
     let req
     let res
+
     describe('if all calls are successful', () => {
       beforeEach(() => {
         req = getReq(reqParams)
         res = getRes()
-        spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-        spyOn(pupilStatusPresenter, 'getPresentationData')
-        spyOn(pupilStatusService, 'getPupilStatusData')
-        spyOn(res, 'render')
+        jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockImplementation()
+        jest.spyOn(pupilStatusService, 'getPupilStatusData').mockResolvedValue([])
+        jest.spyOn(pupilStatusPresenter, 'getPresentationData').mockResolvedValue([])
+        jest.spyOn(res, 'render').mockImplementation()
       })
-      it('should render the school pupil status', async () => {
+
+      test('should render the school pupil status', async () => {
         await controller.getViewPupilStatus(req, res, next)
         expect(res.render).toHaveBeenCalled()
       })
-      it('should call checkWindowV2Service getActiveCheckWindow method', async () => {
+
+      test('should call checkWindowV2Service getActiveCheckWindow method', async () => {
         await controller.getViewPupilStatus(req, res, next)
         expect(checkWindowV2Service.getActiveCheckWindow).toHaveBeenCalled()
       })
-      it('should call pupilStatusService getPupilStatusData method', async () => {
+
+      test('should call pupilStatusService getPupilStatusData method', async () => {
         await controller.getViewPupilStatus(req, res, next)
         expect(pupilStatusService.getPupilStatusData).toHaveBeenCalled()
       })
-      it('should call pupilStatusPresenter getPresentationData method', async () => {
+
+      test('should call pupilStatusPresenter getPresentationData method', async () => {
         await controller.getViewPupilStatus(req, res, next)
         expect(pupilStatusPresenter.getPresentationData).toHaveBeenCalled()
       })
     })
+
     describe('if calls are unsuccessful', () => {
-      it('should call next if pupilStatusService getPupilStatusData throws an error', async () => {
-        spyOn(checkWindowV2Service, 'getActiveCheckWindow')
-        spyOn(pupilStatusPresenter, 'getPresentationData')
+      test('should call next if pupilStatusService getPupilStatusData throws an error', async () => {
+        jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockImplementation()
         const error = new Error('error')
-        spyOn(pupilStatusService, 'getPupilStatusData').and.returnValue(Promise.reject(error))
+        jest.spyOn(pupilStatusService, 'getPupilStatusData').mockRejectedValue(error)
+        jest.spyOn(pupilStatusPresenter, 'getPresentationData').mockImplementation()
         try {
           await controller.getViewPupilStatus(req, res, next)
         } catch (error) {

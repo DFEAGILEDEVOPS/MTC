@@ -1,0 +1,87 @@
+<%- partial('partials/_gds_breadcrumbs_and_sign_out', { breadcrumbs }) %>
+<main class="govuk-main-wrapper govuk-body-m" id="main-content" role="main">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-heading-xl">Bulk upload organisations</h1>
+            <%- partial('partials/_gds_session_expiry') %>
+            <%- partial('partials/_flash-messages') %>
+            <p>
+                School data is available from Get Information about Schools (GIAS).  Just download the Establishment
+                data file (about 60 MB) and import to MTC by uploading it here.  MTC will automatically exclude
+                unwanted schools.
+                <br>
+                <a href="https://get-information-schools.service.gov.uk/Downloads" target="_blank" rel="noopener noreferrer">GIAS
+                    Downloads</a>
+            </p>
+
+            <form action="" method="post" enctype="multipart/form-data" id="upload-form">
+                <div class="govuk-form-group<% if (fileErrors && fileErrors.hasError()) { %> govuk-form-group--error<% } %>">
+                    <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
+                    <% if (fileErrors && fileErrors.hasError()) { %>
+                        <% fileErrors.getUniqueFields(['file-upload']).forEach(f => { %>
+                            <% const errors = fileErrors.get(f) %>
+                            <% if (Array.isArray(errors)) { %>
+                                <%  errors.forEach(e => { %>
+                                    <label class="govuk-error-message" for="file-upload"><%= e %></label>
+                            <% }) } else { %>
+                                <label class="govuk-error-message" for="file-upload"><%= errors %></label>
+                            <% } %>
+                        <% }) %>
+                    <% } else { %>
+                        <% if (jobStatus === undefined) { %>
+                                <label class="govuk-label" for="file-upload">Upload File</label>
+                        <% } %>
+                    <% } %>
+                    <% if (jobStatus !== undefined) { %>
+
+                        <p> The upload has been received and the job will run in the background.  Please reload the
+                            page for status updates.</p>
+                        <p>
+                            Job status: <strong><%= jobStatus.description %></strong>
+                        </p>
+
+                        <% if (jobStatus.code === 'FLD') { %>
+                            <div class="govuk-warning-message">
+                                <%= jobStatus.errorOutput %>
+                            </div>
+                        <% } %>
+
+                        <%/** Look for completed status's and allow the logs to be downloaded */%>
+                        <% if (['COM', 'CWR', 'FWD'].includes(jobStatus.code)) { %>
+                             <a href="/service-manager/job/<%= jobStatus.urlSlug.toLowerCase() %>">Download job
+                                 output</a>
+                        <% } %>
+
+                <% } else { %>
+
+                        <input type="reset" class="govuk-link govuk-remove-file" id="removeUploadedFile"
+                               value="Remove file" aria-label="Remove uploaded file" >
+                        <input class="govuk-file-upload" id="file-upload" name="fileOrganisations" type="file"
+                               accept="text/csv"
+                               aria-label="Choose a file to upload">
+                        <br />
+                        <div>
+                            <button type="submit" class="govuk-button" data-prevent-double-click="true"
+                                    data-disable-form-after-click="true" id="upload-form-submit">Upload</button>
+                            <a class="govuk-button govuk-button--secondary" href="/service-manager/organisations">Cancel</a>
+                        </div>
+                    <% } %>
+                </div>
+            </form>
+        </div>
+        <div class="govuk-grid-column-one-third" aria-label="sidebar">
+            <aside class="app-related-items" role="complementary">
+                <h2 class="govuk-heading-m" id="subsection-title">
+                    Related
+                </h2>
+                <nav role="navigation" aria-labelledby="subsection-title">
+                    <ul class="govuk-list govuk-!-font-size-16">
+                        <li>
+                            <a class="govuk-link" href="<%- guidancePdf %>" target="_blank" rel="noopener noreferrer">Read the guidance and watch videos</a>
+                        </li>
+                    </ul>
+                </nav>
+            </aside>
+        </div>
+    </div>
+</main>

@@ -7,6 +7,7 @@ class ManageServiceMessagePage < SitePrism::Page
   element :no_message, '.govuk-body', text: 'No service message created'
   element :flash_message, '.govuk-info-message'
   element :message, '.name-text-wrap'
+  element :edit, 'a', text: 'Edit'
   element :remove_message, '.govuk-button-as-link', text: 'Remove'
 
   section :modal, '.modal-box.show' do

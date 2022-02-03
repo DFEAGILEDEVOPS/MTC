@@ -27,4 +27,9 @@ router.post('/remove-service-message',
   serviceMessageController.postRemoveServiceMessage
 )
 
+router.get('/edit-service-message',
+  isAuthenticated(roles.serviceManager),
+  serviceMessageController.getEditServiceMessage
+)
+
 module.exports = router

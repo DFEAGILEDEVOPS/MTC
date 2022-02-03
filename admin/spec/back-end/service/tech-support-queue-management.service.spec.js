@@ -2,7 +2,7 @@
 
 /* global describe, it, expect, spyOn */
 const sut = require('../../../services/tech-support-queue-management.service')
-const storageDataService = require('../../../services/data-access/storage-queue-metadata.service')
+const storageDataService = require('../../../services/data-access/azure-queue.data.service')
 
 describe('tech support queue management service', () => {
   it('subject should be defined', () => {
@@ -22,28 +22,20 @@ describe('tech support queue management service', () => {
     it('should combine active and poison queue messages into one array item', async () => {
       const rawData = [
         {
-          result: {
-            name: 'q1',
-            approximateMessageCount: 5
-          }
+          name: 'q1',
+          approximateMessagesCount: 5
         },
         {
-          result: {
-            name: 'q1-poison',
-            approximateMessageCount: 10
-          }
+          name: 'q1-poison',
+          approximateMessagesCount: 10
         },
         {
-          result: {
-            name: 'q2',
-            approximateMessageCount: 1
-          }
+          name: 'q2',
+          approximateMessagesCount: 1
         },
         {
-          result: {
-            name: 'q2-poison',
-            approximateMessageCount: 2
-          }
+          name: 'q2-poison',
+          approximateMessagesCount: 2
         }
       ]
       spyOn(storageDataService, 'getAllQueueMessageCounts').and.returnValue(rawData)

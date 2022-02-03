@@ -15,13 +15,13 @@ pupilAccessArrangementsDataService.sqlFindPupilAccessArrangementsByPupilId = asy
   const sql = `
   SELECT
     paa.*,
-    pfs.code AS pupilFontSizeCode,
-    pcc.code AS pupilColourContrastCode
+    fslu.code AS pupilFontSizeCode,
+    cclu.code AS pupilColourContrastCode
   FROM [mtc_admin].[pupilAccessArrangements] paa
-  LEFT OUTER JOIN [mtc_admin].[pupilFontSizes] pfs
-    ON paa.pupilFontSizes_id = pfs.id
-  LEFT OUTER JOIN [mtc_admin].[pupilColourContrasts] pcc
-    ON paa.pupilColourContrasts_id = pcc.id
+  LEFT OUTER JOIN [mtc_admin].[fontSizeLookup] fslu
+    ON paa.fontSizeLookup_Id = fslu.id
+  LEFT OUTER JOIN [mtc_admin].[colourContrastLookup] cclu
+    ON paa.colourContrastLookup_Id = cclu.id
   WHERE pupil_id = @pupilId`
   const params = [
     { name: 'pupilId', type: TYPES.Int, value: pupilId }
@@ -56,7 +56,7 @@ pupilAccessArrangementsDataService.sqlInsertAccessArrangements = async (data, is
       value: pupilId,
       type: TYPES.Int
     })
-    queries.push(`DELETE ${sqlService.adminSchema}.[pupilAccessArrangements] WHERE pupil_id = @pupil_id`)
+    queries.push('DELETE [mtc_admin].[pupilAccessArrangements] WHERE pupil_id = @pupil_id')
   }
 
   accessArrangementsIdsWithCodes.forEach((aa, idx) => {
@@ -68,8 +68,8 @@ pupilAccessArrangementsDataService.sqlInsertAccessArrangements = async (data, is
       @inputAssistanceInformation${idx},
       @nextButtonInformation${idx},
       @questionReaderOtherInformation${idx},
-      @pupilFontSizes_id${idx},
-      @pupilColourContrasts_id${idx}
+      @fontSizeLookup_id${idx},
+      @colourContrastLookup_id${idx}
     )`)
     params.push({
       name: `pupil_id${idx}`,
@@ -107,18 +107,18 @@ pupilAccessArrangementsDataService.sqlInsertAccessArrangements = async (data, is
       type: TYPES.NVarChar
     })
     params.push({
-      name: `pupilFontSizes_id${idx}`,
-      value: aa.pupilFontSizes_id || null,
+      name: `fontSizeLookup_id${idx}`,
+      value: aa.fontSizeLookup_Id || null,
       type: TYPES.Int
     })
     params.push({
-      name: `pupilColourContrasts_id${idx}`,
-      value: aa.pupilColourContrasts_id || null,
+      name: `colourContrastLookup_id${idx}`,
+      value: aa.colourContrastLookup_Id || null,
       type: TYPES.Int
     })
   })
 
-  const insertSql = `INSERT INTO ${sqlService.adminSchema}.[pupilAccessArrangements] (
+  const insertSql = `INSERT INTO [mtc_admin].[pupilAccessArrangements] (
       pupil_id,
       recordedBy_user_id,
       accessArrangements_id,
@@ -126,8 +126,8 @@ pupilAccessArrangementsDataService.sqlInsertAccessArrangements = async (data, is
       inputAssistanceInformation,
       nextButtonInformation,
       questionReaderOtherInformation,
-      pupilFontSizes_id,
-      pupilColourContrasts_id
+      fontSizeLookup_Id,
+      colourContrastLookup_Id
       ) VALUES`
 
   queries.push([insertSql, inserts.join(', \n')].join(' '))
@@ -149,19 +149,23 @@ pupilAccessArrangementsDataService.sqFindPupilsWithAccessArrangements = async (s
     }
   ]
   const sql = `
-      SELECT
-          p.urlSlug,
-          p.foreName,
-          p.middleNames,
-          p.lastName,
-          p.dateOfBirth,
-          aa.description,
-          p.checkcomplete AS hasCompletedCheck
-        FROM [mtc_admin].pupilaccessarrangements paa
-             INNER JOIN [mtc_admin].pupil p ON paa.pupil_id = p.id
-             INNER JOIN [mtc_admin].accessarrangements aa ON aa.id = paa.accessarrangements_id
-       WHERE p.school_id = @schoolId
-  `
+  SELECT
+    p.urlSlug,
+    p.foreName,
+    p.middleNames,
+    p.lastName,
+    p.dateOfBirth,
+    aa.description,
+    p.checkcomplete AS hasCompletedCheck,
+    CAST(CASE WHEN (chk.id IS NOT NULL) THEN 1 ELSE 0 END AS bit) AS [retroInputAssistant]
+  FROM [mtc_admin].pupilaccessarrangements paa
+    INNER JOIN [mtc_admin].pupil p ON paa.pupil_id = p.id
+    INNER JOIN [mtc_admin].accessarrangements aa ON aa.id = paa.accessarrangements_id
+    LEFT OUTER JOIN [mtc_admin].[check] chk ON chk.id = paa.retroInputAssistant_check_id
+  WHERE p.school_id = @schoolId
+  ORDER BY retroInputAssistant DESC
+  ` // order by is a dirty hack in order to ensure that the retro input assistant flag is preserved during the reduction
+  // that takes place in pupilAccessArrangementsService.getPupils.  This should be refactored.
   return sqlService.readonlyQuery(sql, params)
 }
 
@@ -217,12 +221,12 @@ pupilAccessArrangementsDataService.sqlFindAccessArrangementsByUrlSlug = async (u
     paa.questionReaderOtherInformation,
     aa.code as accessArrangementCode,
     qrr.code as questionReaderReasonCode
-    FROM ${sqlService.adminSchema}.pupilAccessArrangements paa
-    INNER JOIN ${sqlService.adminSchema}.pupil p
+    FROM [mtc_admin].pupilAccessArrangements paa
+    INNER JOIN [mtc_admin].pupil p
       ON p.id = paa.pupil_id
-    INNER JOIN ${sqlService.adminSchema}.accessArrangements aa
+    INNER JOIN [mtc_admin].accessArrangements aa
       ON aa.id = paa.accessArrangements_id
-    LEFT JOIN ${sqlService.adminSchema}.questionReaderReasons qrr
+    LEFT JOIN [mtc_admin].questionReaderReasons qrr
       ON qrr.id = paa.questionReaderReasons_id
     WHERE p.urlSlug = @urlSlug`
   return sqlService.readonlyQuery(sql, params)
@@ -234,8 +238,8 @@ pupilAccessArrangementsDataService.sqlFindAccessArrangementsByUrlSlug = async (u
  * @return {Promise<Object>}
  */
 pupilAccessArrangementsDataService.sqlDeletePupilsAccessArrangements = async (urlSlug) => {
-  const sql = `DELETE paa FROM ${sqlService.adminSchema}.[pupilAccessArrangements] paa
-    INNER JOIN ${sqlService.adminSchema}.pupil p
+  const sql = `DELETE paa FROM [mtc_admin].[pupilAccessArrangements] paa
+    INNER JOIN [mtc_admin].pupil p
     ON p.id = paa.pupil_id
     WHERE p.urlSlug = @urlSlug`
   const params = [
@@ -249,7 +253,7 @@ pupilAccessArrangementsDataService.sqlDeletePupilsAccessArrangements = async (ur
 }
 
 pupilAccessArrangementsDataService.sqlFindPupilColourContrastsId = async (pupilId, accessArrangementsId) => {
-  const sql = `SELECT pupilColourContrasts_id FROM ${sqlService.adminSchema}.[pupilAccessArrangements]
+  const sql = `SELECT colourContrastLookup_Id FROM [mtc_admin].[pupilAccessArrangements]
     WHERE pupil_id = @pupilId
     AND accessArrangements_id = @accessArrangementsId`
 
@@ -268,11 +272,11 @@ pupilAccessArrangementsDataService.sqlFindPupilColourContrastsId = async (pupilI
   const result = await sqlService.readonlyQuery(sql, params)
   const row = R.head(result)
   // @ts-ignore
-  return row && row.pupilColourContrasts_id
+  return row && row.colourContrastLookup_Id
 }
 
 pupilAccessArrangementsDataService.sqlFindPupilFontSizesId = async (pupilId, accessArrangementsId) => {
-  const sql = `SELECT pupilFontSizes_id FROM ${sqlService.adminSchema}.[pupilAccessArrangements]
+  const sql = `SELECT fontSizeLookup_Id FROM [mtc_admin].[pupilAccessArrangements]
     WHERE pupil_id = @pupilId
     AND accessArrangements_id = @accessArrangementsId`
 
@@ -291,7 +295,7 @@ pupilAccessArrangementsDataService.sqlFindPupilFontSizesId = async (pupilId, acc
   const result = await sqlService.readonlyQuery(sql, params)
   const row = R.head(result)
   // @ts-ignore
-  return row && row.pupilFontSizes_id
+  return row && row.fontSizeLookup_Id
 }
 
 module.exports = pupilAccessArrangementsDataService

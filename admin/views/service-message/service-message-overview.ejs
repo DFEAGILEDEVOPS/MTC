@@ -7,6 +7,7 @@
                     <%= messages.info[0] %>
                 </div>
             <% } %>
+            <%- partial('partials/_service_message', { serviceMessage }) %>
             <h1 class="govuk-heading-xl">Service message</h1>
             <%- partial('partials/_gds_session_expiry') %>
             <p class="govuk-body">
@@ -26,8 +27,9 @@
                     <caption class="govuk-body govuk-table__caption">Service Message</caption>
                     <thead class="govuk-table__head">
                     <tr class="govuk-table__row">
-                        <th scope="col" class="govuk-table__header govuk-!-width-full">Title</th>
-                        <th scope="col" class="govuk-table__header"></th>
+                        <th scope="col" class="govuk-table__header govuk-!-width-75">Title</th>
+                        <th scope="col" class="govuk-table__header govuk-!-width-25"></th>
+                        <th scope="col" class="govuk-table__header govuk-!-width-75"></th>
                     </tr>
                     </thead>
                     <tbody class="govuk-table__body">
@@ -37,6 +39,9 @@
                                     <span class="govuk-!-font-weight-bold name-text-wrap"
                                        ><%= serviceMessage.title %></span>
                                 </div>
+                            </td>
+                            <td>
+                                <a href="/service-message/edit-service-message">Edit</a>
                             </td>
                             <td>
                                 <form action="/service-message/remove-service-message" id="js-modal-form" method="post" autocomplete="off">

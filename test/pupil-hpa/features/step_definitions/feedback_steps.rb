@@ -1,4 +1,3 @@
-
 Given(/^I choose to give feedback$/) do
   complete_page.feedback.click
 end
@@ -50,16 +49,8 @@ When(/^I feedback on the ways to improve$/) do
   feedback_page.comments_field.set 'Test feedback'
 end
 
-When(/^I select the feedback link from the header$/) do
-  # confirmation_page.phase_banner.feedback.link.click
-end
-
 Then(/^I should be taken to the feedback page$/) do
   expect(feedback_page).to be_displayed
-end
-
-Then(/^I select the feedback link from the complete page$/) do
-  # complete_page.feedback.click
 end
 
 Then(/^I should be able to give feedback on ways to make the check better$/) do
@@ -92,7 +83,9 @@ end
 
 Then(/^my feedback should be saved$/) do
   local_storage = JSON.parse(page.evaluate_script('window.localStorage.getItem("feedback");'))
-  stored_check = SqlDbHelper.get_pupil_check_metadata(local_storage['checkCode'])
+  wait_until(60,2){SqlDbHelper.get_check(local_storage['checkCode'])['complete'] == true}
+  stored_check = SqlDbHelper.get_check(local_storage['checkCode'])
+  expect(stored_check['complete']).to eql true
   saved_feedback = AzureTableHelper.get_pupil_feedback(stored_check['checkCode'])
   expect(saved_feedback.properties['inputType']).to eql 'Keyboard'
   expect(saved_feedback.properties['satisfactionRating']).to eql 'Very easy'

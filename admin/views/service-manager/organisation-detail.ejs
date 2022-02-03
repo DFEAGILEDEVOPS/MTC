@@ -1,78 +1,115 @@
 <%- partial('partials/_gds_breadcrumbs_and_sign_out', { breadcrumbs }) %>
-<main class="govuk-main-wrapper govuk-body" id="main-content" role="main">
+  <main class="govuk-main-wrapper govuk-body" id="main-content" role="main">
     <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-            <h1 class="govuk-heading-xl"><%= school.name %> </h1>
-            <%- partial('partials/_gds_session_expiry') %>
-            <%- partial('partials/_flash-messages') %>
+      <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl">
+          <%= school.name %>
+        </h1>
+        <%- partial('partials/_gds_session_expiry') %>
+          <%- partial('partials/_flash-messages') %>
             <dl class="govuk-summary-list">
 
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">
-                        DFE Number
-                    </dt>
-                    <dd class="govuk-summary-list__value">
-                        <%= school.dfeNumber%>
-                    </dd>
-                </div>
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                  DFE Number
+                </dt>
+                <dd class="govuk-summary-list__value">
+                  <%= school.dfeNumber%>
+                </dd>
+              </div>
 
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">
-                        URN
-                    </dt>
-                    <dd class="govuk-summary-list__value">
-                        <%=school.urn %>
-                    </dd>
-                </div>
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                  URN
+                </dt>
+                <dd class="govuk-summary-list__value">
+                  <%=school.urn %>
+                </dd>
+              </div>
 
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">
-                        LEA code
-                    </dt>
-                    <dd class="govuk-summary-list__value">
-                        <%=school.leaCode %>
-                    </dd>
-                </div>
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                  LEA code
+                </dt>
+                <dd class="govuk-summary-list__value">
+                  <%=school.leaCode %>
+                </dd>
+              </div>
 
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">
-                        Estab
-                    </dt>
-                    <dd class="govuk-summary-list__value">
-                        <%= school.estabCode %>
-                    </dd>
-                </div>
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                  Estab
+                </dt>
+                <dd class="govuk-summary-list__value">
+                  <%= school.estabCode %>
+                </dd>
+              </div>
 
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">
-                        Number of pupils
-                    </dt>
-                    <dd class="govuk-summary-list__value">
-                        <%= school.numberOfPupils %>
-                    </dd>
-                </div>
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                  Number of pupils
+                </dt>
+                <dd class="govuk-summary-list__value">
+                  <%= school.numberOfPupils %>
+                </dd>
+              </div>
             </dl>
             <div class="govuk-button-group">
-                <a href="/service-manager/organisations/<%= school.urlSlug %>/edit"
-                class="govuk-button">Edit organisation</a>
+              <a href="/service-manager/organisations/<%= school.urlSlug %>/edit" class="govuk-button">Edit
+                organisation</a>
 
-                <a href="/service-manager/organisations/search"
-                class="govuk-button govuk-button--secondary">Back to search </a>
+              <a href="/service-manager/organisations/search" class="govuk-button govuk-button--secondary">Back to
+                search </a>
             </div>
-        </div>
-        <div class="govuk-grid-column-one-third" aria-label="sidebar">
-            <aside class="app-related-items" role="complementary">
-                <h2 class="govuk-heading-m" id="subsection-title">
-                    Related
-                </h2>
-                <nav role="navigation" aria-labelledby="subsection-title">
-                    <ul class="govuk-list govuk-!-font-size-16">
-                        <li>
-                            <a class="govuk-link" href="<%- guidancePdf %>" target="_blank" rel="noopener noreferrer">Read the guidance and watch videos</a>
-                        </li>
-                    </ul>
-                </nav>
-            </aside>
-        </div>
+            <div>
+              <table id="school-audit" class="govuk-table govuk-spacious">
+                <caption class="govuk-body govuk-table__caption">Audit History</caption>
+                <thead class="govuk-table__head">
+                  <tr class="govuk-table__row">
+                    <th scope="col" class="govuk-table__header govuk-!-width-one-half">
+                      <a>Date</a>
+                    </th>
+                    <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">
+                      <a>Type</a>
+                    </th>
+                    <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">
+                      <a>User</a>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody class="govuk-table__body">
+                  <% school.audits.forEach((a, i)=> { %>
+                    <tr class="govuk-table__row">
+                      <td scope="row">
+                        <a class="govuk-link" target="_blank"
+                        href="/service-manager/audit-payload?auditEntryId=<%=a.id %>"><%= a.createdAt %></a>
+                      </td>
+                      <td class="govuk-table__cell">
+                        <%= a.auditOperation %>
+                      </td>
+                      <td class="govuk-table__cell">
+                        <%= a.user %>
+                      </td>
+                    </tr>
+                    <% }) %>
+                </tbody>
+              </table>
+            </div>
+      </div>
+      <div class="govuk-grid-column-one-third" aria-label="sidebar">
+        <aside class="app-related-items" role="complementary">
+          <h2 class="govuk-heading-m" id="subsection-title">
+            Related
+          </h2>
+          <nav role="navigation" aria-labelledby="subsection-title">
+            <ul class="govuk-list govuk-!-font-size-16">
+              <li>
+                <a class="govuk-link" href="<%- guidancePdf %>" target="_blank" rel="noopener noreferrer">Read the
+                  guidance and watch videos</a>
+              </li>
+            </ul>
+          </nav>
+        </aside>
+      </div>
     </div>
-</main>
+  </main>
