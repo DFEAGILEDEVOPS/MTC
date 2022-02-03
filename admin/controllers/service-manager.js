@@ -137,7 +137,7 @@ const controller = {
   postUploadPupilCensus: async function postUploadPupilCensus (req, res, next) {
     const uploadFile = req.files && req.files.csvPupilCensusFile
     try {
-      const validationError = await pupilCensusService.process(uploadFile)
+      const validationError = await pupilCensusService.validateFile(uploadFile)
       if (validationError.hasError()) {
         return controller.getUploadPupilCensus(req, res, next, validationError)
       }

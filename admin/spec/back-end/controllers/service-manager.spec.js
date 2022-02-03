@@ -178,10 +178,10 @@ describe('service manager controller:', () => {
     test('redirects to pupil census page when successfully uploaded a csv file', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      jest.spyOn(pupilCensusService, 'process').mockResolvedValue(new ValidationError())
+      jest.spyOn(pupilCensusService, 'validateFile').mockResolvedValue(new ValidationError())
       jest.spyOn(pupilCensusService, 'upload2').mockImplementation()
       await controller.postUploadPupilCensus(req, res, next)
-      expect(pupilCensusService.process).toHaveBeenCalled()
+      expect(pupilCensusService.validateFile).toHaveBeenCalled()
       expect(pupilCensusService.upload2).toHaveBeenCalled()
       expect(res.redirect).toHaveBeenCalled()
       expect(req.flash).toHaveBeenCalled()
@@ -190,7 +190,7 @@ describe('service manager controller:', () => {
     test('calls next when upload is rejected', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      jest.spyOn(pupilCensusService, 'process').mockResolvedValue(new ValidationError())
+      jest.spyOn(pupilCensusService, 'validateFile').mockResolvedValue(new ValidationError())
       jest.spyOn(pupilCensusService, 'upload2').mockImplementation(() => {
         throw new Error('error')
       })
@@ -204,7 +204,7 @@ describe('service manager controller:', () => {
       const req = getReq(badReqParams)
       const validationError = new ValidationError()
       validationError.addError('upload-element', 'error')
-      jest.spyOn(pupilCensusService, 'process').mockResolvedValue(validationError)
+      jest.spyOn(pupilCensusService, 'validateFile').mockResolvedValue(validationError)
       jest.spyOn(pupilCensusService, 'upload2').mockImplementation()
       jest.spyOn(controller, 'getUploadPupilCensus').mockImplementation()
       await controller.postUploadPupilCensus(req, res, next)

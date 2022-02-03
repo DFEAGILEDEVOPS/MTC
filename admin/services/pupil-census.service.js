@@ -13,7 +13,7 @@ const pupilCensusService = {}
  * @param {Object} uploadFile
  * @return {Promise<Object>} validation error
  */
-pupilCensusService.process = async (uploadFile) => {
+pupilCensusService.validateFile = async (uploadFile) => {
   return fileValidator.validate(uploadFile, 'file-upload')
 }
 
@@ -52,20 +52,6 @@ pupilCensusService.createJobRecord = async (uploadFile) => {
     jobStatus_id: jobStatus.id
   }
   return jobDataService.sqlCreate(pupilCensusRecord)
-}
-
-/**
- * Updates the output of a pupilCensus record
- * @param {Number} jobId
- * @param {Object} submissionResult
- * @returns {Promise.<void>}
- */
-pupilCensusService.updateJobOutput = async (jobId, submissionResult) => {
-  const jobStatusCode = submissionResult.errorOutput ? 'CWR' : 'COM'
-  const jobStatus = await jobStatusDataService.sqlFindOneByTypeCode(jobStatusCode)
-  const output = submissionResult.output
-  const errorOutput = submissionResult.errorOutput
-  await jobDataService.sqlUpdate(jobId, jobStatus.id, output, errorOutput)
 }
 
 /**
