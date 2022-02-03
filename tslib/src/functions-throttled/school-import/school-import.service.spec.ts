@@ -113,7 +113,6 @@ describe('#SchoolImportService', () => {
     const csv = `URN,LA (code),EstablishmentNumber,EstablishmentName,StatutoryLowAge,StatutoryHighAge,EstablishmentStatus (code),TypeOfEstablishment (code),EstablishmentTypeGroup (code)
     12345,123,4567,My School,9,9,4,3,4`
     await sut.process(csv)
-    jest.spyOn(sut, 'updateJobStatusToProcessing') // call-through is fine, the data service below is mocked
     expect(schoolDataServiceMock.updateJobStatus).toHaveBeenCalledWith(1, 'PRC')
   })
 

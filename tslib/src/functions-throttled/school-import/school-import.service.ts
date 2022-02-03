@@ -47,14 +47,14 @@ export class SchoolImportService {
     this.schoolDataService = schoolDataService ?? new SchoolDataService(this.logger, pool, jobResult)
   }
 
-  async updateJobStatusToProcessing (): Promise<void> {
+  private async updateJobStatusToProcessing (): Promise<void> {
     this.logger.verbose(`${name}: updateJobStatusToProcessing() called`)
     if (this.jobId !== undefined) {
       return this.schoolDataService.updateJobStatus(this.jobId, jobStatusCode.Processing)
     }
   }
 
-  async updateJobStatusToCompleted (): Promise<void> {
+  private async updateJobStatusToCompleted (): Promise<void> {
     this.logger.verbose(`${name}: updateJobStatusToCompleted() called`)
     if (this.jobId !== undefined) {
       if (this.jobResult.hasError()) {
@@ -65,7 +65,7 @@ export class SchoolImportService {
     }
   }
 
-  async updateJobStatusToFailed (error: Error): Promise<void> {
+  private async updateJobStatusToFailed (error: Error): Promise<void> {
     this.logger.verbose(`${name}: updateJobStatusToFailed() called`)
     if (this.jobId !== undefined) {
       return this.schoolDataService.updateJobStatusWithResultAndError(this.jobId, jobStatusCode.Failed, this.jobResult, error)
