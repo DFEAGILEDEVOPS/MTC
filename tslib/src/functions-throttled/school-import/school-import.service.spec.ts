@@ -1,13 +1,13 @@
 import { SchoolImportService } from './school-import.service'
 import { ConnectionPool } from 'mssql'
 import config from '../../config'
-import { SchoolImportJobResult } from './SchoolImportJobResult'
+import { SchoolImportJobOutput } from './SchoolImportJobOutput'
 import { ISchoolDataService } from './data-access/school.data.service'
 import { SchoolImportError } from './SchoolImportError'
 import { ConsoleLogger, ILogger } from '../../common/logger'
 
 let sut: SchoolImportService
-let jobResult: SchoolImportJobResult
+let jobResult: SchoolImportJobOutput
 let schoolDataServiceMock: ISchoolDataService
 let consoleLogger: ILogger
 
@@ -22,7 +22,7 @@ const SchoolDataServiceMock = jest.fn<ISchoolDataService, any>(() => ({
 describe('#SchoolImportService', () => {
   beforeEach(() => {
     schoolDataServiceMock = new SchoolDataServiceMock()
-    jobResult = new SchoolImportJobResult()
+    jobResult = new SchoolImportJobOutput()
     consoleLogger = new ConsoleLogger()
     sut = new SchoolImportService(new ConnectionPool(config.Sql), jobResult, consoleLogger, schoolDataServiceMock)
     // quieten down the console logs
@@ -62,7 +62,7 @@ describe('#SchoolImportService', () => {
     const csv = `URN,LA (code),EstablishmentNumber,EstablishmentName,StatutoryLowAge,StatutoryHighAge,EstablishmentStatus (code),TypeOfEstablishment (code),EstablishmentTypeGroup (code)
     12345,123,4567,My School,9,9,4,3,4`
     const jobResult = await sut.process(csv)
-    expect(jobResult).toBeInstanceOf(SchoolImportJobResult)
+    expect(jobResult).toBeInstanceOf(SchoolImportJobOutput)
     expect(jobResult.getErrorOutput()).toHaveLength(0)
   })
 
@@ -83,7 +83,7 @@ describe('#SchoolImportService', () => {
     const csv = `URN,LA (code),EstablishmentNumber,EstablishmentName,StatutoryLowAge,StatutoryHighAge,EstablishmentStatus (code),TypeOfEstablishment (code),EstablishmentTypeGroup (code)
     12345,0,4567,My School,9,9,4,3,4`
     const jobResult = await sut.process(csv)
-    expect(jobResult).toBeInstanceOf(SchoolImportJobResult)
+    expect(jobResult).toBeInstanceOf(SchoolImportJobOutput)
     expect(jobResult.getErrorOutput()).toHaveLength(0)
     expect(jobResult.stdout).toHaveLength(2)
     expect(jobResult.stdout[1]).toStrictEqual('school records excluded in filtering:1. No records to persist, exiting.')
@@ -161,9 +161,10 @@ describe('#SchoolImportService', () => {
   })
 
   test('it updates the job status failed if the upload fails', async () => {
+    const mockErrorMessage = 'mock error, please ignore'
     const csv = `URN,LA (code),EstablishmentNumber,EstablishmentName,StatutoryLowAge,StatutoryHighAge,EstablishmentStatus (code),TypeOfEstablishment (code),EstablishmentTypeGroup (code)
     12345,123,4567,My School,9,9,4,3,4`
-    jest.spyOn(schoolDataServiceMock, 'bulkUpload').mockRejectedValue(new Error('mock error'))
+    jest.spyOn(schoolDataServiceMock, 'bulkUpload').mockRejectedValue(new Error(mockErrorMessage))
 
     try {
       await sut.process(csv)
@@ -176,6 +177,6 @@ describe('#SchoolImportService', () => {
       schoolsLoaded: 0,
       stderr: [],
       stdout: []
-    }, new Error('mock error'))
+    }, new Error(mockErrorMessage))
   })
 })

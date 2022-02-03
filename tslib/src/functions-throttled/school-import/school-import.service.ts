@@ -2,7 +2,7 @@ import { ConnectionPool } from 'mssql'
 import * as csv from 'csv-string'
 import { ISchoolDataService, SchoolDataService } from './data-access/school.data.service'
 import { ConsoleLogger, ILogger } from '../../common/logger'
-import { SchoolImportJobResult } from './SchoolImportJobResult'
+import { SchoolImportJobOutput } from './SchoolImportJobOutput'
 import { ISchoolImportPredicates, Predicates } from './predicates'
 import { SchoolRecordMapper } from './school-mapper'
 import { SchoolImportError } from './SchoolImportError'
@@ -24,13 +24,13 @@ const jobStatusCode = {
 export class SchoolImportService {
   private readonly schoolDataService: ISchoolDataService
   private readonly logger: ILogger
-  private jobResult: SchoolImportJobResult
+  private jobResult: SchoolImportJobOutput
   private readonly predicates: ISchoolImportPredicates
   private readonly schoolRecordMapper: SchoolRecordMapper
   private jobId: number | undefined
 
   constructor (pool: ConnectionPool,
-    jobResult: SchoolImportJobResult,
+    jobResult: SchoolImportJobOutput,
     logger?: ILogger,
     schoolDataService?: ISchoolDataService,
     predicates?: ISchoolImportPredicates) {
@@ -72,7 +72,7 @@ export class SchoolImportService {
     }
   }
 
-  async process (blob: any): Promise<SchoolImportJobResult> {
+  async process (blob: any): Promise<SchoolImportJobOutput> {
     this.logger.verbose(`${name}: process() called`)
 
     // The admin should always create a job for this process
