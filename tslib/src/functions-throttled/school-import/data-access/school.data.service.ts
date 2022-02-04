@@ -103,7 +103,8 @@ export class SchoolDataService implements ISchoolDataService {
   async updateJobStatusWithResult (jobId: Number, code: String, jobOutput: IJobOutput): Promise<any> {
     const sql = `UPDATE mtc_admin.job
                     SET jobStatus_id = (SELECT id from mtc_admin.jobStatus WHERE jobStatusCode = @code),
-                        jobOutput = @jobOutput
+                        jobOutput = @jobOutput,
+                        completedAt = GETUTCDATE()
                   WHERE id = @id`
     const params = [
       { name: 'code', value: code, type: mssql.TYPES.Char(3) },
@@ -117,6 +118,7 @@ export class SchoolDataService implements ISchoolDataService {
     const sql = `UPDATE mtc_admin.job
                     SET jobStatus_id = (SELECT id from mtc_admin.jobStatus WHERE jobStatusCode = @code),
                         jobOutput = @jobOutput,
+                        completedAt = GETUTCDATE(),
                         errorOutput = @error
                   WHERE id = @id`
     const params = [

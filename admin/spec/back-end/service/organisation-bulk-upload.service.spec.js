@@ -1,6 +1,5 @@
 /* global describe, jest, test, expect, beforeEach, afterEach */
 const uuid = require('uuid')
-
 const sut = require('../../../services/organisation-bulk-upload.service')
 const fileValidator = require('../../../lib/validator/file-validator')
 const azureBlobDataService = require('../../../services/data-access/azure-blob.data.service')
@@ -26,10 +25,12 @@ describe('organisationBulkUploadService', () => {
       filename: '/test/foo.csv'
     }
 
+    const jobSlug = '2191e1f9-287a-49d9-835d-2aa8c336b5f7'
+
     beforeEach(() => {
       jest.spyOn(azureBlobDataService, 'createContainerIfNotExists').mockImplementation()
       jest.spyOn(azureBlobDataService, 'uploadLocalFile').mockImplementation()
-      jest.spyOn(organisationBulkUploadDataService, 'createJobRecord').mockImplementation()
+      jest.spyOn(organisationBulkUploadDataService, 'createJobRecord').mockResolvedValue(jobSlug)
     })
 
     test('it creates the azure container if it does not exist', async () => {
@@ -48,10 +49,14 @@ describe('organisationBulkUploadService', () => {
     })
 
     test('it returns the newly created job record uuid identifier', async () => {
-      const ident = uuid.NIL
-      jest.spyOn(organisationBulkUploadDataService, 'createJobRecord').mockResolvedValue(ident)
       const res = await sut.upload(testFile)
-      expect(res).toBe(ident)
+      expect(res).toBe(jobSlug)
+    })
+
+    test('it sets the remote filename to the job slug', async () => {
+      await sut.upload(testFile)
+      const expectedFilename = `${jobSlug}.csv`
+      expect(azureBlobDataService.uploadLocalFile).toHaveBeenCalledWith('school-import', expectedFilename, testFile.file)
     })
   })
 

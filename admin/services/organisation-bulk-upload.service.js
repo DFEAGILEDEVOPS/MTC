@@ -22,12 +22,12 @@ const organisationBulkUploadService = {
    * @returns {Promise<string>} job slug UUID
    */
   upload: async function upload (uploadFile) {
-    const remoteFilename = uploadFile.filename
     await azureBlobDataService.createContainerIfNotExists(container)
 
     // Create the job record first as it acts as a singleton - we only want one file upload at a time.  If we can't
     // create the job record, then we abort.
     const jobSlug = await organisationBulkUploadDataService.createJobRecord()
+    const remoteFilename = `${jobSlug}.csv`
     await azureBlobDataService.uploadLocalFile(container, remoteFilename, uploadFile.file)
     return jobSlug
   },
