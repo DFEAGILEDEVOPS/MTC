@@ -46,7 +46,8 @@ describe('restart-v2.service', () => {
       restartCheckId: 3, // the new check id generated from the restart
       restartCheckPupilLoginDate: null, // the pupilLoginDate against the restarted check
       restartCheckReceived: false, // the received flag against the restarted check
-      restartCheckComplete: false // the complete flag against the restarted check
+      restartCheckComplete: false, // the complete flag against the restarted check
+      isDiscretionaryRestartAvailable: false // set to yes to indicate an STA-ADMIN permission has been given to allow an additional restart, overriding the maximum number of restarts allowed.
     }
     let sample
 
@@ -86,6 +87,8 @@ describe('restart-v2.service', () => {
 
     test('it informs the user when the number of restarts has reached the maximum limit', async () => {
       sample.totalCheckCount = 3
+      sample.restartCheckReceived = true // Show the previous restart was received...
+      sample.restartCheckComplete = true // ...and completed
       jest.spyOn(restartDataService, 'getRestartsForSchool').mockResolvedValue([sample])
       const res = await sut.getRestartsForSchool(1)
       expect(res[0].status).toBe('Maximum number of restarts taken')
@@ -123,6 +126,18 @@ describe('restart-v2.service', () => {
       jest.spyOn(restartDataService, 'getRestartsForSchool').mockResolvedValue([sample])
       const res = await sut.getRestartsForSchool(1)
       expect(res[0].totalCheckCount).toBe(0)
+    })
+
+    test('it informs the user when a discretionary restart has been allowed', async () => {
+      // Set up so that the user has already had a check and 2 restarts. e.g. the full complement of normally allowed checks
+      sample.restartCheckReceived = true
+      sample.restartCheckComplete = true
+      sample.totalCheckCount = 3
+      // and apply a discretionary restart
+      sample.isDiscretionaryRestartAvailable = true
+      jest.spyOn(restartDataService, 'getRestartsForSchool').mockResolvedValue([sample])
+      const res = await sut.getRestartsForSchool(1)
+      expect(res[0].status).toBe('A discretionary restart is available')
     })
   })
 })
