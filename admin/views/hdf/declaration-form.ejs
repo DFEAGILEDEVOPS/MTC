@@ -30,9 +30,14 @@
             </p>
         <% } else { %>
             <p class="govuk-body govuk-!-font-size-24">
-                Confirm all pupils taking the check completed it according to
-                <a class="govuk-link" href="https://www.gov.uk/government/collections/multiplication-tables-check"
-                   target="_blank">administration guidance</a>. In the absence of the headteacher, a delegated senior
+              Headteachers must ensure that their school fully complies with the statutory arrangements for assessing the multiplication tables check.
+              This form allows the headteacher to confirm:
+              <ul>
+                <li>the official check was correctly administered to all eligible year 4 pupils</li>
+                <li>there was an issue relating to the administration of the check</li>
+              </ul>
+
+              This form should be submitted by no later than 5pm on Friday 24 June. In the absence of the headteacher, a delegated senior
                 member of staff should submit this declaration.
             </p>
             <form method="post" action="/attendance/submit-declaration-form" autocomplete="off">
@@ -95,7 +100,7 @@
                                 <div class="govuk-inset-text">
                                     <div class="govuk-form-group <%= error.isError('jobTitle') ? 'govuk-form-group--error' : '' %>">
                                         <div class="govuk-label" for="jobTitle">Job title</div>
-                                        <span class="govuk-hint">For example, Deputy headteacher</span>
+                                        <span class="govuk-hint">For example, deputy headteacher</span>
                                         <% if (error.isError('jobTitle')) { %>
                                             <span class="govuk-error-message"> <%= error.get('jobTitle') %></span>
                                         <% } %>
