@@ -39,7 +39,7 @@ describe('#SchoolImportService', () => {
 
   test('if mapping fails error details are added to job output', async () => {
     try {
-      await sut.process('')
+      await sut.process('', '')
       fail('mapping should have failed due to no data')
     } catch (error) {
       expect(error).toBeInstanceOf(SchoolImportError)
@@ -54,14 +54,14 @@ describe('#SchoolImportService', () => {
     const retainedMessage = 'foo'
     // eslint-disable-next-line @typescript-eslint/dot-notation
     sut['jobResult'].stdout.push(retainedMessage)
-    const jobResult = await sut.process(csv)
+    const jobResult = await sut.process(csv, '')
     expect(jobResult.stdout.shift()).toStrictEqual(retainedMessage)
   })
 
   test('data is filtered and persisted when valid', async () => {
     const csv = `URN,LA (code),EstablishmentNumber,EstablishmentName,StatutoryLowAge,StatutoryHighAge,EstablishmentStatus (code),TypeOfEstablishment (code),EstablishmentTypeGroup (code)
     12345,123,4567,My School,9,9,4,3,4`
-    const jobResult = await sut.process(csv)
+    const jobResult = await sut.process(csv, '')
     expect(jobResult).toBeInstanceOf(SchoolImportJobOutput)
     expect(jobResult.getErrorOutput()).toHaveLength(0)
   })
@@ -69,7 +69,7 @@ describe('#SchoolImportService', () => {
   test('when missing header error occurs, only 1 entry is logged to error output', async () => {
     const csv = '12345,123,4567,My School,9,9,4,3,4'
     try {
-      await sut.process(csv)
+      await sut.process(csv, '')
       fail('should have thrown due to no column header row')
     } catch (error) {
       expect(error).toBeInstanceOf(SchoolImportError)
@@ -82,7 +82,7 @@ describe('#SchoolImportService', () => {
   test('when predicate matches fail all records, it reports and exits', async () => {
     const csv = `URN,LA (code),EstablishmentNumber,EstablishmentName,StatutoryLowAge,StatutoryHighAge,EstablishmentStatus (code),TypeOfEstablishment (code),EstablishmentTypeGroup (code)
     12345,0,4567,My School,9,9,4,3,4`
-    const jobResult = await sut.process(csv)
+    const jobResult = await sut.process(csv, '')
     expect(jobResult).toBeInstanceOf(SchoolImportJobOutput)
     expect(jobResult.getErrorOutput()).toHaveLength(0)
     expect(jobResult.stdout).toHaveLength(2)
@@ -94,7 +94,7 @@ describe('#SchoolImportService', () => {
     const csv = `URN,LA (code),EstablishmentNumber,EstablishmentName,StatutoryLowAge,StatutoryHighAge,EstablishmentStatus (code),TypeOfEstablishment (code),EstablishmentTypeGroup (code)
 \n99900,999,9000,Guys School 1,8,10,1,7,4\n99901,999,9001,,8,10,1,7,4\n99902,999,9002,Guys Closed School,8,10,2,7,4`
     jest.spyOn(schoolDataServiceMock, 'bulkUpload').mockImplementation()
-    await sut.process(csv)
+    await sut.process(csv, '')
     expect(schoolDataServiceMock.bulkUpload).toHaveBeenCalledTimes(1)
   })
 
@@ -102,7 +102,7 @@ describe('#SchoolImportService', () => {
     const csv = ''
     jest.spyOn(schoolDataServiceMock, 'bulkUpload').mockImplementation()
     try {
-      await sut.process(csv)
+      await sut.process(csv, '')
       fail('expected to throw')
     } catch (error) {
       expect(error.message).toBe('no header row found')
@@ -112,7 +112,7 @@ describe('#SchoolImportService', () => {
   test('it updates the job status to processing when the job starts', async () => {
     const csv = `URN,LA (code),EstablishmentNumber,EstablishmentName,StatutoryLowAge,StatutoryHighAge,EstablishmentStatus (code),TypeOfEstablishment (code),EstablishmentTypeGroup (code)
     12345,123,4567,My School,9,9,4,3,4`
-    await sut.process(csv)
+    await sut.process(csv, '')
     expect(schoolDataServiceMock.updateJobStatus).toHaveBeenCalledWith(1, 'PRC')
   })
 
@@ -121,7 +121,7 @@ describe('#SchoolImportService', () => {
     12345,123,4567,My School,9,9,4,3,4`
     jest.spyOn(schoolDataServiceMock, 'getJobId').mockResolvedValue(undefined)
     jest.spyOn(consoleLogger, 'warn')
-    await sut.process(csv)
+    await sut.process(csv, '')
     expect(schoolDataServiceMock.updateJobStatus).not.toHaveBeenCalled()
     expect(consoleLogger.warn).toHaveBeenCalledWith('school-import: WARNING: no job id found')
   })
@@ -130,7 +130,7 @@ describe('#SchoolImportService', () => {
     const csv = `URN,LA (code),EstablishmentNumber,EstablishmentName,StatutoryLowAge,StatutoryHighAge,EstablishmentStatus (code),TypeOfEstablishment (code),EstablishmentTypeGroup (code)
     12345,123,4567,My School,9,9,4,3,4`
 
-    await sut.process(csv)
+    await sut.process(csv, '')
 
     expect(schoolDataServiceMock.updateJobStatusWithResult).toHaveBeenCalledWith(1, 'COM', {
       linesProcessed: 0,
@@ -145,7 +145,7 @@ describe('#SchoolImportService', () => {
     12345,123,4567,My School,9,9,4,3,4`
 
     try {
-      await sut.process(csv)
+      await sut.process(csv, '')
     } catch (ignored) {
     }
 
@@ -166,7 +166,7 @@ describe('#SchoolImportService', () => {
     jest.spyOn(schoolDataServiceMock, 'bulkUpload').mockRejectedValue(new Error(mockErrorMessage))
 
     try {
-      await sut.process(csv)
+      await sut.process(csv, '')
     } catch (ignored) {
       console.log(ignored)
     }

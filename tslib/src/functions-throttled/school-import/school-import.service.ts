@@ -9,6 +9,7 @@ import { SchoolImportError } from './SchoolImportError'
 import { ISchoolRecord } from './data-access/ISchoolRecord'
 import * as R from 'ramda'
 import * as RA from 'ramda-adjunct'
+import { IJobDataService, JobDataService } from '../../services/data/job.data.service'
 
 const name = 'school-import'
 const targetAge = 9
@@ -23,6 +24,7 @@ const jobStatusCode = {
 
 export class SchoolImportService {
   private readonly schoolDataService: ISchoolDataService
+  private readonly jobDataService: IJobDataService
   private readonly logger: ILogger
   private jobResult: SchoolImportJobOutput
   private readonly predicates: ISchoolImportPredicates
@@ -33,7 +35,8 @@ export class SchoolImportService {
     jobResult: SchoolImportJobOutput,
     logger?: ILogger,
     schoolDataService?: ISchoolDataService,
-    predicates?: ISchoolImportPredicates) {
+    predicates?: ISchoolImportPredicates,
+    jobDataService?: IJobDataService) {
     if (predicates === undefined) {
       predicates = new Predicates()
     }
@@ -45,38 +48,56 @@ export class SchoolImportService {
     this.jobResult = jobResult
     this.schoolRecordMapper = new SchoolRecordMapper()
     this.schoolDataService = schoolDataService ?? new SchoolDataService(this.logger, pool, jobResult)
+    this.jobDataService = jobDataService ?? new JobDataService()
   }
 
-  private async updateJobStatusToProcessing (): Promise<void> {
+  private async updateJobStatusToProcessing (): Promise<any> {
     this.logger.verbose(`${name}: updateJobStatusToProcessing() called`)
     if (this.jobId !== undefined) {
-      return this.schoolDataService.updateJobStatus(this.jobId, jobStatusCode.Processing)
+      return Promise.all([
+        this.jobDataService.setJobStarted(this.jobId),
+        this.schoolDataService.updateJobStatus(this.jobId, jobStatusCode.Processing)
+      ])
     }
   }
 
-  private async updateJobStatusToCompleted (): Promise<void> {
+  private async updateJobStatusToCompleted (): Promise<any> {
     this.logger.verbose(`${name}: updateJobStatusToCompleted() called`)
     if (this.jobId !== undefined) {
       if (this.jobResult.hasError()) {
-        return this.schoolDataService.updateJobStatusWithResult(this.jobId, jobStatusCode.CompletedWithErrors, this.jobResult)
+        return Promise.all([
+          this.jobDataService.setJobComplete(this.jobId),
+          this.schoolDataService.updateJobStatusWithResult(this.jobId, jobStatusCode.CompletedWithErrors, this.jobResult)
+        ])
       } else {
-        return this.schoolDataService.updateJobStatusWithResult(this.jobId, jobStatusCode.Completed, this.jobResult)
+        return Promise.all([
+          this.jobDataService.setJobComplete(this.jobId),
+          this.schoolDataService.updateJobStatusWithResult(this.jobId, jobStatusCode.Completed, this.jobResult)
+        ])
       }
     }
   }
 
-  private async updateJobStatusToFailed (error: Error): Promise<void> {
+  private async updateJobStatusToFailed (error: Error): Promise<any> {
     this.logger.verbose(`${name}: updateJobStatusToFailed() called`)
     if (this.jobId !== undefined) {
-      return this.schoolDataService.updateJobStatusWithResultAndError(this.jobId, jobStatusCode.Failed, this.jobResult, error)
+      return Promise.all([
+        this.jobDataService.setJobComplete(this.jobId),
+        this.schoolDataService.updateJobStatusWithResultAndError(this.jobId, jobStatusCode.Failed, this.jobResult, error)
+      ])
     }
   }
 
-  async process (blob: any): Promise<SchoolImportJobOutput> {
+  async process (blob: any, blobNameWithoutExtension: string): Promise<SchoolImportJobOutput> {
     this.logger.verbose(`${name}: process() called`)
-
     // The admin should always create a job for this process
-    const jobId = await this.schoolDataService.getJobId()
+    let jobId
+    try {
+      jobId = await this.schoolDataService.getJobId(blobNameWithoutExtension)
+    } catch (error) {
+      await this.updateJobStatusToFailed(error)
+      throw new SchoolImportError(this.jobResult, error)
+    }
     if (jobId !== undefined) {
       this.jobId = jobId
       await this.updateJobStatusToProcessing()

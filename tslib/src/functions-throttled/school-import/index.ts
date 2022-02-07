@@ -24,7 +24,7 @@ const blobTrigger: AzureFunction = async function schoolImportIndex (context: Co
   }
 
   try {
-    await svc.process(blob)
+    await svc.process(blob, name)
   } catch (error: any) {
     context.log.error(`${name}: ERROR: ${error.message}`, error)
   }

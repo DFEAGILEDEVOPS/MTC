@@ -6,7 +6,7 @@ import { ISqlService, SqlService } from '../../../sql/sql.service'
 const name = 'school-import'
 
 export interface ISchoolDataService {
-  getJobId (): Promise<number | undefined>
+  getJobId (jobSlug: string): Promise<number | undefined>
   updateJobStatus (jobId: number, jobStatusCode: string): Promise<any>
   updateJobStatusWithResult (jobId: number, jobStatusCode: string, jobResult: IJobOutput): Promise<any>
   updateJobStatusWithResultAndError (jobId: number, jobStatusCode: string, jobResult: IJobOutput, error: Error): Promise<any>
@@ -72,15 +72,16 @@ export class SchoolDataService implements ISchoolDataService {
     return this.jobResult
   }
 
-  async getJobId (): Promise<number | undefined> {
+  async getJobId (jobSlug: string): Promise<number | undefined> {
     this.logger.verbose(`${name}: getJobId() called`)
-    const sql = `SELECT j.id
-                   FROM mtc_admin.job j
-                        JOIN mtc_admin.jobStatus js ON (j.jobStatus_id = js.id)
-                        JOIN mtc_admin.jobType jt ON (j.jobType_id = jt.id)
-                  WHERE jt.jobTypeCode = 'ORG'
-                    AND js.jobStatusCode = 'SUB'`
-    const res = await this.sqlService.query(sql)
+    const params = [{
+      name: 'urlSlug',
+      type: mssql.TYPES.UniqueIdentifier,
+      value: jobSlug.toLowerCase()
+    }]
+    const sql = `SELECT j.id FROM mtc_admin.job j
+                 WHERE j.urlSlug = @urlSlug`
+    const res = await this.sqlService.query(sql, params)
     if (res !== undefined && Array.isArray(res)) {
       const id = res[0].id
       this.logger.verbose(`${name}: getJobId() returning ${id}`)
