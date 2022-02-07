@@ -410,6 +410,7 @@ const controller = {
       if (!school) {
         return next(new Error(`School not found ${req.params.slug}`))
       }
+      school.audits = await schoolService.getSchoolAudits(req.params.slug)
       res.render('service-manager/organisation-detail', {
         breadcrumbs: req.breadcrumbs(),
         school
@@ -455,11 +456,11 @@ const controller = {
         return res.redirect('/service-manager/organisations/search')
       }
       const update = {
-        name: req.body?.name?.trim() ?? '',
-        dfeNumber: formUtil.convertFromString(req.body?.dfeNumber, formUtilTypes.int),
-        urn: formUtil.convertFromString(req.body?.urn, formUtilTypes.int),
-        leaCode: formUtil.convertFromString(req.body?.leaCode, formUtilTypes.int),
-        estabCode: formUtil.convertFromString(req.body?.estabCode, formUtilTypes.int)
+        name: String(req.body?.name?.trim() ?? ''),
+        dfeNumber: Number(formUtil.convertFromString(req.body?.dfeNumber, formUtilTypes.int)),
+        urn: Number(formUtil.convertFromString(req.body?.urn, formUtilTypes.int)),
+        leaCode: Number(formUtil.convertFromString(req.body?.leaCode, formUtilTypes.int)),
+        estabCode: Number(formUtil.convertFromString(req.body?.estabCode, formUtilTypes.int))
       }
       await schoolService.updateSchool(req.params.slug, update, req.user.id)
       req.flash('info', 'School updated')
@@ -520,6 +521,25 @@ const controller = {
       res.send(zipResults)
     } catch (error) {
       next(error)
+    }
+  },
+
+  /**
+   * @description Renders audit payload
+   * @param {object} req
+   * @param {object} res
+   * @param {object} next
+   */
+  getAuditPayload: async function getAuditPayload (req, res, next) {
+    const auditEntryId = req.query.auditEntryId.trim()
+    let payload
+    try {
+      payload = await schoolService.getAuditPayload(auditEntryId)
+      res.type('json')
+      res.send(JSON.stringify(payload, null, '    '))
+    } catch (error) {
+      res.type('txt')
+      res.send(`${error}`)
     }
   }
 }

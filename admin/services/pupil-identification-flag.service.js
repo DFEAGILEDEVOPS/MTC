@@ -11,7 +11,6 @@ const R = require('ramda')
  * @property {string} fullName - added
  * @property {boolean} showDoB - added
  * @property {boolean} showMiddleNames - added
- *
  */
 
 /**

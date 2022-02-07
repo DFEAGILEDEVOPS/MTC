@@ -1,11 +1,16 @@
 'use strict'
-const uuid = require('uuid')
+/* global describe, expect test jest afterEach beforeEach fail */
 
-/* global describe, expect test jest afterEach beforeEach */
+const uuid = require('uuid')
 const sut = require('../../../services/school.service')
 const schoolDataService = require('../../../services/data-access/school.data.service')
+const schoolAuditDataService = require('../../../services/data-access/school-audit.data.service')
 const schoolValidator = require('../../../lib/validator/school-validator')
 const ValidationError = require('../../../lib/validation-error')
+const auditOperationTypes = require('../../../lib/consts/audit-entry-types')
+const { isArray } = require('ramda-adjunct')
+const moment = require('moment-timezone')
+const dateService = require('../../../services/date.service')
 
 describe('school.service', () => {
   afterEach(() => {
@@ -208,6 +213,74 @@ describe('school.service', () => {
       jest.spyOn(schoolValidator, 'validate').mockResolvedValue(new ValidationError())
       await sut.addSchool({ dfeNumber: 1234567, name: 'Test School', urn: 2 })
       expect(schoolDataService.sqlAddSchool).toHaveBeenCalledTimes(1)
+    })
+  })
+
+  describe('getSchoolAudits', () => {
+    const createdAt = moment('2022-01-02 14:53:05')
+    beforeEach(() => {
+      jest.spyOn(schoolAuditDataService, 'getSummary').mockResolvedValue([{
+        createdAt: createdAt,
+        auditOperation: auditOperationTypes.update,
+        user: 'foo bar'
+      }])
+    })
+
+    test('it should throw error if urlSlug is undefined', async () => {
+      try {
+        await sut.getSchoolAudits(undefined)
+        fail('error should have been thrown')
+      } catch (error) {
+        expect(error.message).toBe('urlSlug is required')
+      }
+      expect(schoolAuditDataService.getSummary).not.toHaveBeenCalled()
+    })
+
+    test('it should return audit entries when urlSlug provided', async () => {
+      const urlSlug = '5c4adea7-caea-4d4c-84d2-3e9fbb2db09c'
+      const data = await sut.getSchoolAudits(urlSlug)
+      expect(data).toBeDefined()
+      expect(isArray(data)).toBe(true)
+    })
+
+    test('createdAt date should be formatted to short date', async () => {
+      const urlSlug = '5c4adea7-caea-4d4c-84d2-3e9fbb2db09c'
+      const data = await sut.getSchoolAudits(urlSlug)
+      expect(data).toBeDefined()
+      const expectedDateFormat = dateService.formatDateAndTime(createdAt)
+      expect(data[0].createdAt).toStrictEqual(expectedDateFormat)
+      expect(isArray(data)).toBe(true)
+    })
+  })
+
+  describe('getAuditPayload', () => {
+    const schoolData = {
+      id: 1,
+      name: 'my school'
+    }
+    const stringifiedSchoolData = JSON.stringify(schoolData)
+    const payload = {
+      newData: stringifiedSchoolData
+    }
+    beforeEach(() => {
+      jest.spyOn(schoolAuditDataService, 'getAuditPayload').mockResolvedValue([payload])
+    })
+
+    test('it should throw error if auditEntryId is not provided', async () => {
+      try {
+        await sut.getAuditPayload(undefined)
+        fail('error should have been thrown')
+      } catch (error) {
+        expect(error.message).toBe('auditEntryId is required')
+      }
+      expect(schoolAuditDataService.getAuditPayload).not.toHaveBeenCalled()
+    })
+
+    test('it should return payload when auditEntryId provided', async () => {
+      const data = await sut.getAuditPayload(1)
+      expect(data).toBeDefined()
+      const expectedPayload = JSON.parse(stringifiedSchoolData)
+      expect(data).toStrictEqual(expectedPayload)
     })
   })
 })

@@ -1,8 +1,18 @@
 'use strict'
 const uuid = require('uuid')
 const schoolDataService = require('../services/data-access/school.data.service')
+const schoolAuditDataService = require('../services/data-access/school-audit.data.service')
 const schoolValidator = require('../lib/validator/school-validator')
 const ValidationError = require('../lib/validation-error')
+const dateService = require('../services/date.service')
+
+/**
+ * @typedef {object} schoolAuditEntry
+ * @property {number } id
+ * @property {string} createdAt,
+ * @property {string} user,
+ * @property {string} auditOperation
+ */
 
 const schoolService = {
   /**
@@ -40,9 +50,21 @@ const schoolService = {
   },
 
   /**
-   *
+   * @typedef {object} schoolRecord
+   * @property {number } id
+   * @property {string} name,
+   * @property {number} leaCode,
+   * @property {number} estabCode,
+   * @property {number} dfeNumber,
+   * @property {number} urn,
+   * @property {string} urlSlug,
+   * @property {number} numberOfPupils
+   * @property {Array<schoolAuditEntry>} audits
+   */
+
+  /**
    * @param {string} slug
-   * @return {Promise<object>}
+   * @return {Promise<schoolRecord>}
    */
   findOneBySlug: async function findOneBySlug (slug) {
     if (slug === '' || slug === undefined) {
@@ -52,14 +74,12 @@ const schoolService = {
   },
 
   /**
-   * @typedef editableSchoolDetails
-   * {
-   *   dfeNumber: number,
-   *   estabCode: number,
-   *   leaCode: number,
-   *   name: string,
-   *   urn: number
-   * }
+   * @typedef {object} editableSchoolDetails
+   * @property {number} dfeNumber,
+   * @property {number} estabCode,
+   * @property {number} leaCode,
+   * @property {string} name,
+   * @property {number} urn
    */
 
   /**
@@ -132,6 +152,36 @@ const schoolService = {
       throw validationError
     }
     await schoolDataService.sqlAddSchool(insertDetails, userId)
+  },
+
+  /**
+   * get list of school audit history
+   * @param {number} schoolId
+   */
+  getSchoolAudits: async function getSchoolAudits (urlSlug) {
+    if (!urlSlug) throw new Error('urlSlug is required')
+    const items = await schoolAuditDataService.getSummary(urlSlug)
+    return items.map(i => {
+      return {
+        id: i.id,
+        createdAt: dateService.formatDateAndTime(i.createdAt),
+        user: i.user,
+        auditOperation: i.auditOperation
+      }
+    })
+  },
+
+  /**
+   * retrieve row data for an audit entry
+   * @param {number} auditEntryId
+   * @returns {Promise<object>}
+   */
+  getAuditPayload: async function getAuditPayload (auditEntryId) {
+    if (!auditEntryId) throw new Error('auditEntryId is required')
+    const results = await schoolAuditDataService.getAuditPayload(auditEntryId)
+    let payload = results[0]
+    payload = JSON.parse(payload.newData)
+    return payload
   }
 }
 
