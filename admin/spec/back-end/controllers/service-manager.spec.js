@@ -14,6 +14,7 @@ const ValidationError = require('../../../lib/validation-error')
 const schoolService = require('../../../services/school.service')
 const organisationBulkUploadService = require('../../../services/organisation-bulk-upload.service')
 const administrationMessageService = require('../../../services/administration-message.service')
+const auditOperationTypes = require('../../../lib/consts/audit-entry-types')
 
 describe('service manager controller:', () => {
   let next
@@ -558,18 +559,43 @@ describe('service manager controller:', () => {
       estabCode: 1001
     }
 
+    const mockAudits = [
+      {
+        createdAt: '2022-01-14 13:53:12',
+        auditOperation: auditOperationTypes.update,
+        user: 'foo bar'
+      },
+      {
+        createdAt: '2022-01-17 14:22:11',
+        auditOperation: auditOperationTypes.update,
+        user: 'john smith'
+      }
+    ]
+
     test('retrieves the organisation details', async () => {
       const res = getRes()
       const req = getReq()
       jest.spyOn(schoolService, 'findOneBySlug').mockResolvedValue(mockSchool)
+      jest.spyOn(schoolService, 'getSchoolAudits').mockResolvedValue(mockAudits)
       await controller.getViewOrganisation(req, res, next)
       expect(schoolService.findOneBySlug).toHaveBeenCalled()
+    })
+
+    test('retrieves the audit entries', async () => {
+      const res = getRes()
+      const req = getReq()
+      jest.spyOn(schoolService, 'findOneBySlug').mockResolvedValue(mockSchool)
+      jest.spyOn(schoolService, 'getSchoolAudits').mockResolvedValue(mockAudits)
+      await controller.getViewOrganisation(req, res, next)
+      expect(schoolService.findOneBySlug).toHaveBeenCalled()
+      expect(schoolService.getSchoolAudits).toHaveBeenCalled()
     })
 
     test('renders the organisation detail page', async () => {
       const res = getRes()
       const req = getReq()
       jest.spyOn(schoolService, 'findOneBySlug').mockResolvedValue(mockSchool)
+      jest.spyOn(schoolService, 'getSchoolAudits').mockResolvedValue(mockAudits)
       await controller.getViewOrganisation(req, res, next)
       const args = res.render.mock.calls[0]
       expect(res.render).toHaveBeenCalled()
