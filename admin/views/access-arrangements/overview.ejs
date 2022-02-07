@@ -16,15 +16,17 @@
             <h1 class="govuk-heading-xl">Enable access arrangements for pupils who need them</h1>
             <%- partial('partials/_gds_session_expiry') %>
             <p class="govuk-body">
-                Modify the multiplication tables check for pupils with specific needs. The arrangements that are applied can be practised and configured by the pupils when the try it out area is open.
+              Access arrangements may be appropriate for pupils with specific needs who require additional arrangements so they can take part in the check. Support given should be based on normal classroom practice and should never advantage or disadvantage pupils.
+
+              Pupils should familiarise themselves with access arrangements applied using the try it out check, to ensure the arrangements meet their needs before taking the official check.
             </p>
         <% if (aaViewMode === 'readonly') { %>
             <button type="submit" disabled="disabled" aria-disabled="true" class="govuk-button govuk-button--disabled" data-module="govuk-button">
-                View pupils and assign arrangement
+                View pupils and assign arrangements
             </button>
         <% } else { %>
             <a href="/access-arrangements/select-access-arrangements" role="button" draggable="false" class="govuk-button" data-module="govuk-button">
-                View pupils and assign arrangement
+                View pupils and assign arrangements
             </a>
         <% } %>
         <%if (pupilsFormatted.length > 0) { %>
