@@ -1,12 +1,12 @@
-import { ICheckData, IPupilData, IRestartData, ISchoolData } from "./data-access/pupil-history.data.service"
+import { IPupilHistoryCheckData, IPupilHistoryPupilData, IPupilHistoryRestartData, IPupilHistorySchoolData } from "./data-access/pupil-history.data.service"
 import * as R from 'ramda'
 const { PupilHistoryDataService } = require('./data-access/pupil-history.data.service')
 
 export interface IPupilHistory {
-  school: ISchoolData,
-  pupil: IPupilData,
-  checks: ICheckData[],
-  restarts: IRestartData[]
+  school: IPupilHistorySchoolData,
+  pupil: IPupilHistoryPupilData,
+  checks: IPupilHistoryCheckData[],
+  restarts: IPupilHistoryRestartData[]
   meta: {
     restartTakenCount: number
   }
@@ -14,7 +14,7 @@ export interface IPupilHistory {
 
 export type TCheckStatus = 'Pin generated' | 'Logged in' | 'Check received' | 'Received data error' | 'Check complete' | 'n/a'
 export class PupilHistoryService {
-  private static getCheckStatus (check: ICheckData): TCheckStatus {
+  private static getCheckStatus (check: IPupilHistoryCheckData): TCheckStatus {
 
     if (check.complete === true) {
       return 'Check complete'

@@ -3,7 +3,7 @@ const sqlService = require('../../data-access/sql.service')
 const uuidValidate = require('uuid-validate')
 const R = require('ramda')
 
-export interface ICheckData {
+export interface IPupilHistoryCheckData {
   id: number,
   createdAt: moment.Moment
   updatedAt: moment.Moment,
@@ -23,7 +23,7 @@ export interface ICheckData {
   resultsSynchronised: boolean
 }
 
-export interface IPupilData {
+export interface IPupilHistoryPupilData {
   id: number,
   createdAt: moment.Moment,
   updatedAt: moment.Moment,
@@ -44,7 +44,7 @@ export interface IPupilData {
   lastNameAlias: string | null
 }
 
-export interface ISchoolData {
+export interface IPupilHistorySchoolData {
   id: number,
   createdAt: moment.Moment,
   updatedAt: moment.Moment,
@@ -58,7 +58,7 @@ export interface ISchoolData {
   dfeNumber: number
 }
 
-export interface IRestartData {
+export interface IPupilHistoryRestartData {
   id: number,
   createdAt: moment.Moment,
   updatedAt: moment.Moment,
@@ -70,14 +70,14 @@ export interface IRestartData {
 }
 
 export interface IPupilHistoryData {
-  pupil: IPupilData,
-  checks: ICheckData[]
-  school: ISchoolData
-  restarts: IRestartData[]
+  pupil: IPupilHistoryPupilData,
+  checks: IPupilHistoryCheckData[]
+  school: IPupilHistorySchoolData
+  restarts: IPupilHistoryRestartData[]
 }
 
 export class PupilHistoryDataService {
-  public static async getPupil(pupilUuid: string): Promise<IPupilData> {
+  public static async getPupil(pupilUuid: string): Promise<IPupilHistoryPupilData> {
     if (uuidValidate(pupilUuid) === false) {
       throw new Error(`UUID is not valid: ${pupilUuid}`)
     }
@@ -98,7 +98,7 @@ export class PupilHistoryDataService {
       throw new Error('Pupil not found')
     }
 
-    const pupil: IPupilData = {
+    const pupil: IPupilHistoryPupilData = {
       id: data[0].id as number,
       createdAt: data[0].createdAt,
       updatedAt: data[0].updatedAt,
@@ -121,7 +121,7 @@ export class PupilHistoryDataService {
     return pupil
   }
 
-  public static async getChecks (uuid: string): Promise<ICheckData[]> {
+  public static async getChecks (uuid: string): Promise<IPupilHistoryCheckData[]> {
     if (uuidValidate(uuid) === false) {
       throw new Error(`UUID is not valid: ${uuid}`)
     }
@@ -166,7 +166,7 @@ export class PupilHistoryDataService {
     })
   }
 
-  public static async getSchool (pupilUuid: string): Promise<ISchoolData> {
+  public static async getSchool (pupilUuid: string): Promise<IPupilHistorySchoolData> {
     if (uuidValidate(pupilUuid) === false) {
       throw new Error(`UUID is not valid: ${pupilUuid}`)
     }
@@ -186,7 +186,7 @@ export class PupilHistoryDataService {
     return school
   }
 
-  public static async getRestarts (pupilUuid: string): Promise<IRestartData[]> {
+  public static async getRestarts (pupilUuid: string): Promise<IPupilHistoryRestartData[]> {
     const sql = `
       SELECT
         r.*,
