@@ -313,10 +313,12 @@
                         </div>
                         <div class="app-step-nav__panel js-panel" id="step-panel-1">
                             <p class="app-step-nav__paragraph">
-                                <span class="govuk-!-font-weight-bold">Pupil check not received:</span> you may find the check is still be held on the device the pupil used to take the check . If this device is known, you should go to the  check home page and the device will attempt to recover the data if possible.
+                                <span class="govuk-!-font-weight-bold">Pupil check not received:</span> you may find the check is still be held on the device the pupil used to take the check .
+                                If this device is known, you should go to the  check home page and the device will attempt to recover the data if possible.
 
                                 <% if (pupilStatusViewData.remainingLiveCheckDays >= 0) { %>
-                                    If this does not work the pupil will need to sit the check again.  To enable this <a href="/restart/select-restart-list">select pupils to restart the check.</a> then generate school password and PINs for the official check.
+                                    If this does not work the pupil will need to sit the check again.
+                                    To enable this <a href="/restart/select-restart-list">select pupils to restart the check.</a> then generate school password and PINs for the official check.
                                 <% } else { %>
                                     The check window has now closed. <a href="/pupils-not-taking-the-check/pupils-list">Give a reason why pupils are not taking the check</a>. You can then sign the HDF.
                                 <% } %>
