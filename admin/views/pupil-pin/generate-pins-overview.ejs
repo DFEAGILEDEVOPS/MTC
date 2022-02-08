@@ -18,8 +18,8 @@
             </h1>
             <%- partial('partials/_gds_session_expiry') %>
             <p class="govuk-body">
-                Pupils will need a school password and individual PIN to sign into the [TODO:CHECK_TYPE] check.' %>.
-                Pupils can access the [TODO:CHECK_TYPE] check at: <a class="govuk-link" target="_blank" rel="noopener noreferrer" href="<%= pupilAppURL %>"><%= pupilAppURL %></a>
+                Pupils will need a school password and individual PIN to sign into the <%= pinEnv === 'live' ? 'official' : 'try it out'%> check.
+                Pupils can access the check at: <a class="govuk-link" target="_blank" rel="noopener noreferrer" href="<%= pupilAppURL %>"><%= pupilAppURL %></a>
                 <div class="govuk-body">Your school password and pupil PINs expire at 4pm daily.</div>
             </p>
             <div class="govuk-inset-text">
