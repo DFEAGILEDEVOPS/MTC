@@ -2,7 +2,7 @@
 <main class="govuk-main-wrapper" id="main-content" role="main">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            <h1 class="govuk-heading-xl">Select pupils to generate PINs -  <%= pinEnv === 'live' ? 'Official Check' : 'Try it out' %> </h1>
+            <h1 class="govuk-heading-xl">Generate school password and PINs for the <%= pinEnv === 'live' ? 'official' : 'try it out' %> check</h1>
             <%- partial('partials/_gds_session_expiry') %>
             <h3 class="govuk-heading-m">Filter by name</h3>
             <div class="govuk-form-group filter-name">

@@ -12,18 +12,16 @@
                 </p>
             </div>
         <% } %>
-            <h1 class="govuk-heading-xl"><%= pinEnv === 'live' ?
-                        'Generate school password and PINs for the official check' : 'Generate school password and PINs for the try it out check'
-                %>
+            <h1 class="govuk-heading-xl">Generate school password and pupil PINs for the <%= pinEnv === 'live' ? 'official' : 'try it out' %> check
             </h1>
             <%- partial('partials/_gds_session_expiry') %>
             <p class="govuk-body">
                 Pupils will need a school password and individual PIN to sign into the <%= pinEnv === 'live' ? 'official' : 'try it out'%> check.
                 Pupils can access the check at: <a class="govuk-link" target="_blank" rel="noopener noreferrer" href="<%= pupilAppURL %>"><%= pupilAppURL %></a>
-                <div class="govuk-body">Your school password and pupil PINs expire at 4pm daily.</div>
+                <div class="govuk-body">Your school password and pupil PINs will expire at 4pm daily.</div>
             </p>
             <div class="govuk-inset-text">
-              Pupils can use their PINs for the try it out check multiple times throughout the day.
+              <%= pinEnv === 'live' ? '' : 'Pupils can use their PINs for the try it out check multiple times throughout the day.'%><br/>
                 Enable <a class="govuk-link" href="/access-arrangements/overview">access arrangements</a> for pupils who need them before generating PINs
             </div>
             <% if(pupils && pupils.length > 0) { %>
