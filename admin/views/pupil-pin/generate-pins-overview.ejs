@@ -35,7 +35,8 @@
                         <tr class="govuk-table__row">
                             <td scope="row">
                                 <label class="govuk-label">
-                                    PINs have been generated for <% if(pupils.length == 1) { %>
+                                  <%= pinEnv === 'live' ? 'Official ' : 'try it out'%> check PINs generated for
+                                  <% if(pupils.length == 1) { %>
                                         1 pupil
                                     <% } else { %>
                                         <%= pupils.length %> pupils
