@@ -1,9 +1,24 @@
 import { TYPES } from 'mssql'
 import { ISqlParameter, ISqlService, SqlService } from '../../sql/sql.service'
 
+export enum JobStatusCode {
+  SUB='SUB',
+  PRC='PRC',
+  COM='COM',
+  CWR='CWR',
+  FLD='FLD',
+  DEL='DEL'
+}
+
+export type JobStatusOutcomes = (JobStatusCode.FLD | JobStatusCode.CWR | JobStatusCode.COM)
+
+export interface JobOutputDetails {
+  output?: string
+  errorDetails?: string
+}
 export interface IJobDataService {
   setJobStarted (jobId: number): Promise<void>
-  setJobComplete (jobId: number): Promise<void>
+  setJobComplete (jobId: number, jobStatus: JobStatusOutcomes): Promise<void>
 }
 
 export class JobDataService implements IJobDataService {
