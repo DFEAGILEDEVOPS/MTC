@@ -162,4 +162,9 @@ controller.postDeleteRestart = async function postDeleteRestart (req, res, next)
   return res.redirect('/restart/overview')
 }
 
+controller.postSubmitAllowDiscrentionaryRestart = async function postSubmitAllowDiscrentionaryRestart (req, res, next) {
+  req.flash('info', 'TODO: Discretarionary restart allowed')
+  return res.redirect('/pupil-register/pupils-list') // TODO: redirect back to the history page the pupil
+}
+
 module.exports = controller

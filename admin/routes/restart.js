@@ -30,4 +30,11 @@ router.post(
   restartController.postDeleteRestart
 )
 
+router.post(
+  '/allow-discretionary-restart',
+  isAuthenticated([roles.staAdmin]),
+  isAdminWindowAvailable,
+  restartController.postSubmitAllowDiscrentionaryRestart
+)
+
 module.exports = router

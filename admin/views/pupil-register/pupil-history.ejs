@@ -72,6 +72,18 @@
         </tbody>
     </table>
 
+    <% if (pupilHistory.pupil.restartAvailable === false && pupilHistory.checks.length >= 3) { %>
+    <div>
+        <form action="/restart/allow-discretionary-restart" method="post" novalidate class="govuk-form-button">
+            <input type="hidden" name="pupilSlug" value="<%= pupilHistory.pupil.urlSlug %>"/>
+            <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
+            <button type="submit" class="govuk-button" data-module="govuk-button">
+                Allow a discretionary restart
+            </button>
+        </form>
+    </div>
+    <% } %>
+
     <div class="govuk-back-to-top">
         <a class="govuk-link govuk-link--no-visited-state app-back-to-top__link" href="#top">
             <svg role="presentation" focusable="false" class="app-back-to-top__icon" xmlns="http://www.w3.org/2000/svg" width="13" height="17" viewBox="0 0 13 17">
