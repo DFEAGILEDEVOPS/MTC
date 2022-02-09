@@ -30,14 +30,27 @@
                 </p>
             </div>
         <% } %>
-            <h1 class="no-print govuk-heading-xl">View and print PINs - <%= pinEnv === 'live' ? 'Official check' : 'Try it out check' %></h1>
+            <h1 class="no-print govuk-heading-xl">View and print <%= pinEnv === 'live' ? 'official' : 'try it out' %> check password and PINs</h1>
             <%- partial('partials/_gds_session_expiry') %>
             <p class="no-print govuk-body">
-                PINs have been generated for pupils. This list contains all active PINs. These expire at 4pm daily.
-                <% if (pupils && pupils.length > 0) { %>
-                    You can <a class="govuk-link" href="/pupil-pin/generate-<%= pinEnv %>-pins-list">generate additional PINs</a> for pupils you have missed.
-                <% } %>
+              Your school password and <%= pinEnv === 'live' ? 'official' : 'try it out' %> check PINs have been generated for selected pupils.
+              You can print the PINs by selecting the pupils, or groups, then selecting ‘Print selected’.<br/>
+              You will notice that the printed slips have '<%= pinEnv === 'live' ? 'official' : 'try it out' %>' on them.
             </p>
+            <p>
+              This list contains all active PINs.
+            </p>
+            <% if (pinEnv !== 'live') { %>
+              <p>Pupils can use their PINs for the try it out check multiple times throughout the day.</p>
+            <% } %>
+            <p>
+              Your school password and pupil PINs will expire at 4pm each day.
+            </p>
+            <p>
+              <% if (pupils && pupils.length > 0) { %>
+                  You can <a class="govuk-link" href="/pupil-pin/generate-<%= pinEnv %>-pins-list">generate additional <%= pinEnv === 'live' ? 'official' : 'try it out' %> check PINs</a> for pupils you have missed.
+              <% } %>
+          </p>
             <div class="no-print">
                 <h3 class="govuk-heading-m">Filter by name</h3>
                 <div class="govuk-form-group filter-name">

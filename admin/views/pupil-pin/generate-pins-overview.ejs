@@ -12,17 +12,19 @@
                 </p>
             </div>
         <% } %>
-            <h1 class="govuk-heading-xl">Generate school password and pupil PINs for the <%= pinEnv === 'live' ? 'official' : 'try it out' %> check
+            <h1 class="govuk-heading-xl">Generate school password and PINs for the <%= pinEnv === 'live' ? 'official' : 'try it out' %> check
             </h1>
             <%- partial('partials/_gds_session_expiry') %>
             <p class="govuk-body">
                 Pupils will need a school password and individual PIN to sign into the <%= pinEnv === 'live' ? 'official' : 'try it out'%> check.
                 Pupils can access the check at: <a class="govuk-link" target="_blank" rel="noopener noreferrer" href="<%= pupilAppURL %>"><%= pupilAppURL %></a>
-                <div class="govuk-body">Your school password and pupil PINs will expire at 4pm daily.</div>
+                <div class="govuk-body">Your school password and pupil PINs will expire at 4pm each day.</div>
             </p>
+            <% if (pinEnv !== 'live') { %>
+              <p>Pupils can use their PINs for the try it out check multiple times throughout the day.</p>
+            <% } %>
             <div class="govuk-inset-text">
-              <%= pinEnv === 'live' ? '' : 'Pupils can use their PINs for the try it out check multiple times throughout the day.'%><br/>
-                Enable <a class="govuk-link" href="/access-arrangements/overview">access arrangements</a> for pupils who need them before generating PINs
+                Enable <a class="govuk-link" href="/access-arrangements/overview">access arrangements</a> for pupils who need them before generating PINs.
             </div>
             <% if(pupils && pupils.length > 0) { %>
                 <table id="generatePins" role="listbox" aria-label="Select pupils." class="govuk-table govuk-!-margin-bottom-9">
