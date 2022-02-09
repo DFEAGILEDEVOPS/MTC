@@ -9,7 +9,6 @@ import { SchoolImportError } from './SchoolImportError'
 import { ISchoolRecord } from './data-access/ISchoolRecord'
 import * as R from 'ramda'
 import * as RA from 'ramda-adjunct'
-import { IJobDataService, JobDataService } from '../../services/data/job.data.service'
 
 const name = 'school-import'
 const targetAge = 9
@@ -24,7 +23,6 @@ const jobStatusCode = {
 
 export class SchoolImportService {
   private readonly schoolDataService: ISchoolDataService
-  private readonly jobDataService: IJobDataService
   private readonly logger: ILogger
   private jobResult: SchoolImportJobOutput
   private readonly predicates: ISchoolImportPredicates
@@ -35,8 +33,7 @@ export class SchoolImportService {
     jobResult: SchoolImportJobOutput,
     logger?: ILogger,
     schoolDataService?: ISchoolDataService,
-    predicates?: ISchoolImportPredicates,
-    jobDataService?: IJobDataService) {
+    predicates?: ISchoolImportPredicates) {
     if (predicates === undefined) {
       predicates = new Predicates()
     }
@@ -48,14 +45,12 @@ export class SchoolImportService {
     this.jobResult = jobResult
     this.schoolRecordMapper = new SchoolRecordMapper()
     this.schoolDataService = schoolDataService ?? new SchoolDataService(this.logger, pool, jobResult)
-    this.jobDataService = jobDataService ?? new JobDataService()
   }
 
   private async updateJobStatusToProcessing (): Promise<any> {
     this.logger.verbose(`${name}: updateJobStatusToProcessing() called`)
     if (this.jobId !== undefined) {
       return Promise.all([
-        this.jobDataService.setJobStarted(this.jobId),
         this.schoolDataService.updateJobStatus(this.jobId, jobStatusCode.Processing)
       ])
     }
@@ -66,12 +61,10 @@ export class SchoolImportService {
     if (this.jobId !== undefined) {
       if (this.jobResult.hasError()) {
         return Promise.all([
-          this.jobDataService.setJobComplete(this.jobId),
           this.schoolDataService.updateJobStatusWithResult(this.jobId, jobStatusCode.CompletedWithErrors, this.jobResult)
         ])
       } else {
         return Promise.all([
-          this.jobDataService.setJobComplete(this.jobId),
           this.schoolDataService.updateJobStatusWithResult(this.jobId, jobStatusCode.Completed, this.jobResult)
         ])
       }
@@ -82,7 +75,6 @@ export class SchoolImportService {
     this.logger.verbose(`${name}: updateJobStatusToFailed() called`)
     if (this.jobId !== undefined) {
       return Promise.all([
-        this.jobDataService.setJobComplete(this.jobId),
         this.schoolDataService.updateJobStatusWithResultAndError(this.jobId, jobStatusCode.Failed, this.jobResult, error)
       ])
     }

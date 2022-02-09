@@ -3,7 +3,7 @@ import moment from 'moment'
 import * as R from 'ramda'
 import { v4 as uuidv4 } from 'uuid'
 import { CensusImportDataService, ICensusImportDataService } from './census-import.data.service'
-import { IJobDataService, JobDataService } from './job.data.service'
+import { IPupilCensusJobDataService, PupilCensusJobDataService } from './pupil-census.job.data.service'
 import * as mssql from 'mssql'
 import { ConsoleLogger, ILogger } from '../../common/logger'
 import { IBlobService, BlobService } from '../../azure/blob-service'
@@ -17,7 +17,7 @@ export interface IJobResult {
 export class CensusImportV1 {
   private readonly pool: mssql.ConnectionPool
   private readonly censusImportDataService: ICensusImportDataService
-  private readonly jobDataService: IJobDataService
+  private readonly pupilCensusJobDataService: IPupilCensusJobDataService
   private readonly blobService: IBlobService
   private readonly logger: ILogger
   private readonly redisService: IRedisService
@@ -25,7 +25,7 @@ export class CensusImportV1 {
   constructor (pool: mssql.ConnectionPool,
     logger?: ILogger,
     censusImportDataService?: ICensusImportDataService,
-    jobDataService?: IJobDataService,
+    pupilCensusJobDataService?: IPupilCensusJobDataService,
     blobService?: IBlobService,
     redisService?: IRedisService) {
     this.pool = pool
@@ -35,10 +35,10 @@ export class CensusImportV1 {
     }
     this.censusImportDataService = censusImportDataService
 
-    if (jobDataService === undefined) {
-      jobDataService = new JobDataService(this.pool)
+    if (pupilCensusJobDataService === undefined) {
+      pupilCensusJobDataService = new PupilCensusJobDataService(this.pool)
     }
-    this.jobDataService = jobDataService
+    this.pupilCensusJobDataService = pupilCensusJobDataService
 
     if (blobService === undefined) {
       blobService = new BlobService()
@@ -60,10 +60,11 @@ export class CensusImportV1 {
   }
 
   private async handleCensusImport (blob: any, blobUri: string): Promise<number> {
+    // extract the blob name (also the job slug) from the blob Uri
     const blobName = R.compose((arr: any[]) => arr[arr.length - 1], (r: string) => r.split('/'))(blobUri)
     // Update job status to Processing
     this.logger.info(`jobUrlSlug:${blobName}`)
-    const jobId = await this.jobDataService.updateStatus(blobName, 'PRC')
+    const jobId = await this.pupilCensusJobDataService.updateStatus(blobName, 'PRC')
     this.logger.info(`jobId:${jobId}`)
     const blobContent = csvString.parse(blob.toString())
     const censusTable = `[mtc_census_import].[census_import_${moment.utc().format('YYYYMMDDHHMMSS')}_${uuidv4()}]`
@@ -83,12 +84,12 @@ export class CensusImportV1 {
       }
       const errorOutput = `${pupilMeta.errorText}\nTip: Ensure all schools in the uploaded file have a matching entry in the MTC database.`
       // update job to failed
-      await this.jobDataService.updateStatus(blobName, 'CWR', jobOutput, errorOutput)
+      await this.pupilCensusJobDataService.updateStatus(blobName, 'CWR', jobOutput, errorOutput)
       this.logger.warn(`census-import: ${stagingInsertCount} rows staged, but only ${pupilMeta.insertCount} rows inserted to pupil table`)
     } else {
       const jobOutput = `${stagingInsertCount} rows staged and ${pupilMeta.insertCount} rows inserted to pupil table`
       // update job to complete
-      await this.jobDataService.updateStatus(blobName, 'COM', jobOutput)
+      await this.pupilCensusJobDataService.updateStatus(blobName, 'COM', jobOutput)
     }
 
     // Finally, delete the pupil-register cache for all schools

@@ -2,7 +2,7 @@ import { ConnectionPool } from 'mssql'
 import { CensusImportV1 } from './v1'
 import config from '../../config'
 import { ICensusImportDataService } from './census-import.data.service'
-import { IJobDataService } from './job.data.service'
+import { IPupilCensusJobDataService } from './pupil-census.job.data.service'
 import { IBlobService } from '../../azure/blob-service'
 import { ILogger } from '../../common/logger'
 import { RedisServiceMock } from '../../caching/redis-service.mock'
@@ -14,7 +14,7 @@ const CensusImportDataServiceMock = jest.fn<ICensusImportDataService, any>(() =>
   loadStagingTable: jest.fn()
 }))
 
-const JobDataServiceMock = jest.fn<IJobDataService, any>(() => ({
+const JobDataServiceMock = jest.fn<IPupilCensusJobDataService, any>(() => ({
   updateStatus: jest.fn()
 }))
 
@@ -31,7 +31,7 @@ const LoggerMock = jest.fn<ILogger, any>(() => ({
 
 let sut: CensusImportV1
 let censusImportDataServiceMock: ICensusImportDataService
-let jobDataServiceMock: IJobDataService
+let jobDataServiceMock: IPupilCensusJobDataService
 let blobServiceMock: IBlobService
 let loggerMock: ILogger
 let redisServiceMock: IRedisService

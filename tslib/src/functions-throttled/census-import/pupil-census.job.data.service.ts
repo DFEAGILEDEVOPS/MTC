@@ -1,11 +1,11 @@
 import * as mssql from 'mssql'
 import * as R from 'ramda'
 
-export interface IJobDataService {
+export interface IPupilCensusJobDataService {
   updateStatus (urlSlug: string, jobStatusCode: string, jobOutput?: string, errorOutput?: string): Promise<number>
 }
 
-export class JobDataService implements IJobDataService {
+export class PupilCensusJobDataService implements IPupilCensusJobDataService {
   private readonly pool: mssql.ConnectionPool
 
   constructor (pool: mssql.ConnectionPool) {
