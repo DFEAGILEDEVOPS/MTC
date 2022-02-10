@@ -55,7 +55,7 @@
                                 <div class="hide">
                                     <div class="govuk-inset-text govuk-!-padding-left-2 govuk-!-padding-bottom-0 govuk-!-padding-top-0">
                                         <div class="govuk-form-group <%= error.isError(errorType) ? 'govuk-form-group--error' : '' %>">
-                                            <label class="govuk-label" for=<%= errorType %>>Please provide a summary of the disruption:</label>
+                                            <label class="govuk-label" for=<%= errorType %>>Please specify:</label>
                                             <% if (error.isError(errorType)) { %>
                                                 <span class="govuk-error-message"> <%= error.get(errorType) %></span>
                                             <% } %>
@@ -97,7 +97,7 @@
                             </dt>
                             <dt>
                                 <div><strong>IT Issues</strong></div>
-                                <div>There was a problem with the digital device the pupil was using (for example, device hard drive failure or power loss.</div>
+                                <div>There was a problem with the digital device the pupil was using (for example, device failure or power loss).</div>
                             </dt>
                             <dt>
                                 <div><strong>Classroom disruption</strong></div>

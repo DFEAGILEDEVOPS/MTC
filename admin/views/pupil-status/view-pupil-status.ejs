@@ -28,7 +28,7 @@
 
             <div id="orange-card" class="govuk-panel govuk-panel custom-card orange-card" tabindex="0">
                 <div class="govuk-panel__body custom-card-small-text">
-                    Pupils that have not completed the check
+                    Pupils that have not started yet
                 </div>
                 <div class="custom-card-large-text">
                     <%= pupilStatusViewData.pupilsNotStartedCount %>
@@ -313,8 +313,8 @@
                         </div>
                         <div class="app-step-nav__panel js-panel" id="step-panel-1">
                             <p class="app-step-nav__paragraph">
-                                <span class="govuk-!-font-weight-bold">Pupil check not received:</span> you may find the check is still be held on the device the pupil used to take the check.
-                                If this device is known, you should go to the  check home page and the device will attempt to recover the data if possible.
+                                <span class="govuk-!-font-weight-bold">Pupil check not received:</span> you may find the check is still held on the device the pupil used to take the check.
+                                If this device is known, you should go to the check home page and the device will attempt to recover the data if possible.
 
                                 <% if (pupilStatusViewData.remainingLiveCheckDays >= 0) { %>
                                     If this does not work the pupil will need to sit the check again.
@@ -376,7 +376,7 @@
                             <p class="app-step-nav__paragraph">
                                 <span class="govuk-!-font-weight-bold">Processing</span>: we are aware the pupil has
                                 taken the official check.
-                                The service may be in high demand and taking longer than normal. Please check later
+                                The service may be in high demand and taking longer than normal to process. Please check later
                                 to ensure the status has updated to 'Complete'.
                             </p>
                             <p class="app-step-nav__paragraph">
@@ -419,7 +419,7 @@
 
                         <div class="app-step-nav__panel js-panel" id="step-panel-3">
                             <p class="app-step-nav__paragraph">
-                                4.	The pupil is recorded as not taking the check, you can <a href="/pupils-not-taking-the-check/pupils-list">remove if required.</a>
+                                The pupil is recorded as not taking the check, you can <a href="/pupils-not-taking-the-check/pupils-list">remove if required.</a>
                             </p>
                         </div>
                     </li>
