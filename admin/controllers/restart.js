@@ -8,6 +8,8 @@ const schoolHomeFeatureEligibilityPresenter = require('../helpers/school-home-fe
 const businessAvailabilityService = require('../services/business-availability.service')
 const ValidationError = require('../lib/validation-error')
 const logger = require('../services/log.service').getLogger()
+const pupilService = require('../services/pupil.service')
+const { DiscretionaryRestartService } = require('../services/discretionary-restart.service/discretionary-restart.service')
 
 const controller = {}
 
@@ -162,9 +164,21 @@ controller.postDeleteRestart = async function postDeleteRestart (req, res, next)
   return res.redirect('/restart/overview')
 }
 
-controller.postSubmitAllowDiscrentionaryRestart = async function postSubmitAllowDiscrentionaryRestart (req, res, next) {
-  req.flash('info', 'TODO: Discretarionary restart allowed')
-  return res.redirect('/pupil-register/pupils-list') // TODO: redirect back to the history page the pupil
+controller.postSubmitAllowDiscretionaryRestart = async function postSubmitAllowDiscretionaryRestart (req, res, next) {
+  let pupil
+  const pupilSlug = req.body && req.body.pupilSlug
+  try {
+    pupil = await pupilService.fetchOnePupilBySlug(pupilSlug, req.user.schoolId)
+    if (pupil === null || pupil === undefined) {
+      return next(new Error('Unknown pupil'))
+    }
+    await DiscretionaryRestartService.grantDiscretionaryRestart(pupilSlug)
+    req.flash('info', `Discretionary restart allowed for ${pupil.foreName} ${pupil.lastName}`)
+    return res.redirect(`/pupil-register/history/${encodeURIComponent(pupilSlug).toLowerCase()}`)
+  } catch (error) {
+    logger.error(`Failed to apply a discretionary restart for ${pupilSlug}`)
+    return next(error)
+  }
 }
 
 module.exports = controller

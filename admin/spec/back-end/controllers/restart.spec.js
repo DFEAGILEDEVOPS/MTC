@@ -14,6 +14,8 @@ const businessAvailabilityService = require('../../../services/business-availabi
 const ValidationError = require('../../../lib/validation-error')
 const pupilMock = require('../mocks/pupil')
 const pupilsMock = require('../mocks/pupils')
+const pupilService = require('../../../services/pupil.service')
+const { DiscretionaryRestartService } = require('../../../services/discretionary-restart.service/discretionary-restart.service')
 
 describe('restart controller:', () => {
   function getRes () {
@@ -273,6 +275,89 @@ describe('restart controller:', () => {
       jest.spyOn(logger, 'error').mockImplementation() // swallow the error message that is expected
       jest.spyOn(restartService, 'markDeleted').mockRejectedValue(new Error('error'))
       const controller = require('../../../controllers/restart').postDeleteRestart
+      await controller(req, res, next)
+      expect(next).toHaveBeenCalled()
+    })
+  })
+
+  describe('postSubmitAllowDiscretionaryRestart', () => {
+    let next
+    beforeEach(() => {
+      next = jest.fn()
+    })
+
+    afterEach(() => {
+      jest.restoreAllMocks()
+    })
+
+    test('it rejects when given an invalid pupil slug', async () => {
+      const controller = require('../../../controllers/restart').postSubmitAllowDiscrentionaryRestart
+      const res = getRes()
+      const goodReqParams = {
+        method: 'POST',
+        url: '/restart/allow-discretionary-restart',
+        session: {
+          id: 'ArRFdOiz1xI8w0ljtvVuD6LU39pcfgqy'
+        },
+        body: {
+          urlSlug: '3234aca8-7bfd-446d-8204-2580fc03a6d3'
+        },
+        user: {
+          id: '1111',
+          schoolId: 1
+        }
+      }
+      const req = getReq(goodReqParams)
+      jest.spyOn(pupilService, 'fetchOnePupilBySlug').mockResolvedValue(undefined)
+      await controller(req, res, next)
+      expect(next).toHaveBeenCalledWith(new Error('Unknown pupil'))
+    })
+
+    test('it calls the service', async () => {
+      const controller = require('../../../controllers/restart').postSubmitAllowDiscretionaryRestart
+      const res = getRes()
+      const goodReqParams = {
+        method: 'POST',
+        url: '/restart/allow-discretionary-restart',
+        session: {
+          id: 'ArRFdOiz1xI8w0ljtvVuD6LU39pcfgqy'
+        },
+        body: {
+          pupilSlug: '3234aca8-7bfd-446d-8204-2580fc03a6d3'
+        },
+        user: {
+          id: '1111',
+          schoolId: 1
+        }
+      }
+      const req = getReq(goodReqParams)
+      jest.spyOn(DiscretionaryRestartService, 'grantDiscretionaryRestart').mockImplementation()
+      jest.spyOn(pupilService, 'fetchOnePupilBySlug').mockResolvedValue(pupilMock)
+      jest.spyOn(res, 'redirect').mockImplementation()
+      await controller(req, res, next)
+      expect(DiscretionaryRestartService.grantDiscretionaryRestart).toHaveBeenCalledWith('3234aca8-7bfd-446d-8204-2580fc03a6d3')
+    })
+
+    test('it calls next if an error is thrown', async () => {
+      const controller = require('../../../controllers/restart').postSubmitAllowDiscretionaryRestart
+      const res = getRes()
+      const goodReqParams = {
+        method: 'POST',
+        url: '/restart/allow-discretionary-restart',
+        session: {
+          id: 'ArRFdOiz1xI8w0ljtvVuD6LU39pcfgqy'
+        },
+        body: {
+          pupilSlug: '000-000' // invalid uuid
+        },
+        user: {
+          id: '1111',
+          schoolId: 1
+        }
+      }
+      const req = getReq(goodReqParams)
+      jest.spyOn(pupilService, 'fetchOnePupilBySlug').mockRejectedValue(new Error('mock error - invalid uuid perhaps'))
+      jest.spyOn(console, 'log').mockImplementation() // prevent the logger message being emmitted
       await controller(req, res, next)
       expect(next).toHaveBeenCalled()
     })

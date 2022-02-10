@@ -41,7 +41,8 @@ export interface IPupilHistoryPupilData {
   restartAvailable: boolean,
   attendanceId: number | null,
   foreNameAlias: string | null,
-  lastNameAlias: string | null
+  lastNameAlias: string | null,
+  isDiscretionaryRestartAvailable: boolean
 }
 
 export interface IPupilHistorySchoolData {
@@ -116,7 +117,8 @@ export class PupilHistoryDataService {
       restartAvailable: data[0].restartAvailable,
       attendanceId: data[0].attendanceId,
       foreNameAlias: data[0].foreNameAlias,
-      lastNameAlias: data[0].lastNameAlias
+      lastNameAlias: data[0].lastNameAlias,
+      isDiscretionaryRestartAvailable: data[0].isDiscretionaryRestartAvailable
     }
     return pupil
   }
