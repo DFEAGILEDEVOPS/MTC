@@ -1,6 +1,5 @@
 import { TYPES, MAX } from 'mssql'
-import { ISqlParameter, ISqlService, SqlService } from '../../sql/sql.service'
-import * as R from 'ramda'
+import { IModifyResult, ISqlParameter, ISqlService, SqlService } from '../../sql/sql.service'
 import { JobStatusCode } from '../../common/job-status-code'
 import moment from 'moment'
 
@@ -12,7 +11,7 @@ export interface JobOutcomeDetails {
 }
 export interface IJobDataService {
   setJobStarted (jobSlug: string): Promise<number>
-  setJobComplete (jobSlug: string, jobStatus: JobStatusOutcomes, jobOutput?: string, errorInfo?: string): Promise<void>
+  setJobComplete (jobSlug: string, jobStatus: JobStatusOutcomes, jobOutput?: string, errorInfo?: string): Promise<IModifyResult>
 }
 
 export class JobDataService implements IJobDataService {
@@ -25,11 +24,12 @@ export class JobDataService implements IJobDataService {
   async setJobStarted (jobSlug: string): Promise<number> {
     const params: ISqlParameter[] = [
       {
-        name: '@startedAt',
+        name: 'startedAt',
         type: TYPES.DateTimeOffset,
         value: moment().toISOString()
-      }, {
-        name: '@urlSlug',
+      },
+      {
+        name: 'urlSlug',
         type: TYPES.UniqueIdentifier,
         value: jobSlug
       },
@@ -39,17 +39,20 @@ export class JobDataService implements IJobDataService {
         value: JobStatusCode.PRC
       }]
     const sql = `UPDATE mtc_admin.[job] SET
-                  startedAt=@startedAt,
+                  startedAt = @startedAt,
                   jobStatus_id = (SELECT id FROM [mtc_admin].[jobStatus] WHERE jobStatusCode = @jobStatusCode)
-                WHERE urlSlug=@urlSlug;
+                WHERE urlSlug = @urlSlug;
                 SELECT id FROM [mtc_admin].[job]
                 WHERE urlSlug = @urlSlug;`
     const result = await this.sqlService.modify(sql, params)
-    const recordset: any = R.path(['recordset'], result)
-    return R.path(['id'], R.head(recordset)) as number
+    const id = result.insertId
+    if (id !== undefined) return id
+    throw new Error('no job id returned')
+    // const recordset: any = R.path(['recordset'], result)
+    // return R.path(['id'], R.head(recordset)) as number
   }
 
-  async setJobComplete (jobSlug: string, jobStatusCode: JobStatusOutcomes, jobOutput?: string, errorInfo?: string): Promise<void> {
+  async setJobComplete (jobSlug: string, jobStatusCode: JobStatusOutcomes, jobOutput?: string, errorInfo?: string): Promise<IModifyResult> {
     const params: ISqlParameter[] = [
       {
         name: 'urlSlug',
@@ -76,7 +79,7 @@ export class JobDataService implements IJobDataService {
                     jobStatus_id = (SELECT id FROM [mtc_admin].[jobStatus] WHERE jobStatusCode = @jobStatusCode),
                     jobOutput = @jobOutput,
                     errorOutput = @errorOutput
-                  WHERE urlSlug=@urlSlug'`
+                  WHERE urlSlug = @urlSlug'`
     return this.sqlService.modify(sql, params)
   }
 }

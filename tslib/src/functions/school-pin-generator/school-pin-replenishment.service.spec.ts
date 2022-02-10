@@ -3,6 +3,7 @@ import moment from 'moment'
 import { ISchoolPinReplenishmentDataService } from './school-pin-replenishment.data.service'
 import { ILogger, ConsoleLogger } from '../../common/logger'
 import { IConfigProvider } from './config-file-provider'
+import { IModifyResult } from '../../sql/sql.service'
 
 const SchoolPinGeneratorDataServiceMock = jest.fn<ISchoolPinReplenishmentDataService, any>(() => ({
   getAllSchools: jest.fn(),
@@ -62,6 +63,8 @@ describe('school-pin-replenishment.service', () => {
     let update: SchoolPinUpdate | undefined
     jest.spyOn(dataService, 'updatePin').mockImplementation(async (schoolUpdate) => {
       update = schoolUpdate
+      const result: IModifyResult = {}
+      return result
     })
     await sut.process(logger)
     expect(dataService.updatePin).toHaveBeenCalledTimes(1)
