@@ -25,7 +25,7 @@ const getGeneratePinsOverview = async function getGeneratePinsOverview (req, res
   res.locals.pinEnv = pinEnv
   res.locals.pageTitle = isLiveCheck ? 'Generate school passwords and PINs for the official check' : 'Generate passwords and PINs for the try it out check'
   req.breadcrumbs(res.locals.pageTitle)
-  const buttonText = isLiveCheck ? 'Generate school password and PINs for the official check' : 'Generate password and PINs for the try it out check'
+  const buttonText = isLiveCheck ? 'Generate password and PINs for the official check' : 'Generate password and PINs for the try it out check'
 
   const helplineNumber = config.Data.helplineNumber
   let pupils
