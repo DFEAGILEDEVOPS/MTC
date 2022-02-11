@@ -11,7 +11,7 @@
             <h1 class="govuk-heading-xl">See how many pupils have completed the official check</h1>
             <%- partial('partials/_gds_session_expiry') %>
             <p class="govuk-body-l">
-                Review the status of your pupils to ensure all participating pupils have successfully completed the check.
+                Review the status of the pupils to ensure all of the pupils have successfully completed the check before you sign the headteacher declaration form.
             </p>
 
             <div id="red-card" class="govuk-panel govuk-panel custom-card red-card" tabindex="0">
@@ -28,7 +28,7 @@
 
             <div id="orange-card" class="govuk-panel govuk-panel custom-card orange-card" tabindex="0">
                 <div class="govuk-panel__body custom-card-small-text">
-                    Pupils that have not started yet
+                    Checks not completed
                 </div>
                 <div class="custom-card-large-text">
                     <%= pupilStatusViewData.pupilsNotStartedCount %>
@@ -40,7 +40,7 @@
 
             <div id="blue-card" class="govuk-panel govuk-panel custom-card blue-card" tabindex="0">
                 <div class="govuk-panel__body custom-card-small-text">
-                    Pupils not taking the check
+                    Checks not being taken
                 </div>
                 <div class="custom-card-large-text">
                     <%= pupilStatusViewData.pupilsNotAttendingCount %>
@@ -52,7 +52,7 @@
 
             <div id="green-card" class="govuk-panel govuk-panel custom-card green-card" tabindex="0">
                 <div class="govuk-panel__body custom-card-small-text">
-                    Completed checks
+                    Checks completed
                 </div>
                 <div class="custom-card-large-text">
                     <%= pupilStatusViewData.pupilsCompletedCount %>
