@@ -163,7 +163,8 @@ const postGeneratePins = async function postGeneratePins (req, res, next) {
       school.timezone
     )
     const pupilsText = pupilsList.length === 1 ? '1 pupil' : `${pupilsList.length} pupils`
-    req.flash('info', `PINs generated for ${pupilsText}`)
+    const mode = isLiveCheck ? 'Official check' : 'Try it out check'
+    req.flash('info', `${mode} PINs generated for ${pupilsText}`)
   } catch (error) {
     return next(error)
   }

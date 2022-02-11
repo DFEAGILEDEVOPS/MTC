@@ -55,7 +55,7 @@
                                 <div class="hide">
                                     <div class="govuk-inset-text govuk-!-padding-left-2 govuk-!-padding-bottom-0 govuk-!-padding-top-0">
                                         <div class="govuk-form-group <%= error.isError(errorType) ? 'govuk-form-group--error' : '' %>">
-                                            <label class="govuk-label" for=<%= errorType %>>Please specify:</label>
+                                            <label class="govuk-label" for=<%= errorType %>>Please provide further details:</label>
                                             <% if (error.isError(errorType)) { %>
                                                 <span class="govuk-error-message"> <%= error.get(errorType) %></span>
                                             <% } %>

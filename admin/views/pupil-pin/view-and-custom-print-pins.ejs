@@ -35,10 +35,7 @@
             <p class="no-print govuk-body">
               Your school password and <%= pinEnv === 'live' ? 'official' : 'try it out' %> check PINs have been generated for selected pupils.
               You can print the PINs by selecting the pupils, or groups, then selecting ‘Print selected’.<br/>
-              You will notice that the printed slips have '<%= pinEnv === 'live' ? 'Official' : 'try it out' %>' on them.
-            </p>
-            <p>
-              This list contains all active PINs.
+              You will notice that the printed slips have '<%= pinEnv === 'live' ? 'Official' : 'Try it out' %>' on them.
             </p>
             <% if (pinEnv !== 'live') { %>
               <p>Pupils can use their PINs for the try it out check multiple times throughout the day.</p>
