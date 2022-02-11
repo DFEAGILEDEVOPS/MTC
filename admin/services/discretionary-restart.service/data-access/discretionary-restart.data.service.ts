@@ -13,4 +13,16 @@ export class DiscretionaryRestartDataService {
     ]
     return sqlService.modify(sql, params)
   }
+
+  public static async sqlRevokeDiscretionaryRestart (pupilSlug: string):Promise<void> {
+    const sql = `
+      UPDATE [mtc_admin].[pupil]
+      SET isDiscretionaryRestartAvailable = 0
+      WHERE urlSlug = @slug
+    `
+    const params = [
+      { name: 'slug', value: pupilSlug, type: sqlService.TYPES.UniqueIdentifier }
+    ]
+    return sqlService.modify(sql, params)
+  }
 }

@@ -92,8 +92,8 @@
         </tbody>
     </table>
 
-    <% if (pupilHistory.pupil.restartAvailable === false && pupilHistory.checks.length >= 3) { %>
     <div>
+        <% if (pupilHistory.pupil.restartAvailable === false && pupilHistory.checks.length >= 3) { %>
         <form action="/restart/allow-discretionary-restart" method="post" novalidate class="govuk-form-button">
             <input type="hidden" name="pupilSlug" value="<%= pupilHistory.pupil.urlSlug %>"/>
             <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
@@ -101,8 +101,18 @@
                 Allow a discretionary restart
             </button>
         </form>
+        <% } %>
+
+        <% if (pupilHistory.pupil.isDiscretionaryRestartAvailable) { %>
+        <form action="/restart/remove-discretionary-restart" method="post" novalidate class="govuk-form-button">
+            <input type="hidden" name="pupilSlug" value="<%= pupilHistory.pupil.urlSlug %>"/>
+            <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
+            <button type="submit" class="govuk-button govuk-button--secondary" data-module="govuk-button">
+                Remove the discretionary restart
+            </button>
+        </form>
+        <% } %>
     </div>
-    <% } %>
 
     <div class="govuk-back-to-top">
         <a class="govuk-link govuk-link--no-visited-state app-back-to-top__link" href="#top">

@@ -8,4 +8,11 @@ export class DiscretionaryRestartService {
     }
     await DiscretionaryRestartDataService.sqlGrantDiscretionaryRestart(pupilSlug)
   }
+
+  public static async removeDiscretionaryRestart (pupilSlug: string): Promise<void> {
+    if (uuid.validate(pupilSlug) === false) {
+      throw new Error('Invalid uuid')
+    }
+    await DiscretionaryRestartDataService.sqlRevokeDiscretionaryRestart(pupilSlug)
+  }
 }

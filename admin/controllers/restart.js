@@ -181,4 +181,21 @@ controller.postSubmitAllowDiscretionaryRestart = async function postSubmitAllowD
   }
 }
 
+controller.postSubmitRevokeDiscretionaryRestart = async function postSubmitRevokeDiscretionaryRestart (req, res, next) {
+  let pupil
+  const pupilSlug = req.body && req.body.pupilSlug
+  try {
+    pupil = await pupilService.fetchOnePupilBySlug(pupilSlug, req.user.schoolId)
+    if (pupil === null || pupil === undefined) {
+      return next(new Error('Unknown pupil'))
+    }
+    await DiscretionaryRestartService.removeDiscretionaryRestart(pupilSlug)
+    req.flash('info', `Discretionary restart revoked for ${pupil.foreName} ${pupil.lastName}`)
+    return res.redirect(`/pupil-register/history/${encodeURIComponent(pupilSlug).toLowerCase()}`)
+  } catch (error) {
+    logger.error(`Failed to apply a discretionary restart for ${pupilSlug}`)
+    return next(error)
+  }
+}
+
 module.exports = controller
