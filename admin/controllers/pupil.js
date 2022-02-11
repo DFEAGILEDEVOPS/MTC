@@ -265,6 +265,7 @@ const controller = {
   getViewPupilHistory: async function getViewPupilHistory (req, res, next) {
     try {
       res.locals.pageTitle = 'Pupil history'
+      req.breadcrumbs('View, add or edit pupils on your school\'s register', '/pupil-register/pupils-list')
       req.breadcrumbs(res.locals.pageTitle)
       const pupilHistory = await PupilHistoryService.getHistory(req.params.urlSlug)
       return res.render('pupil-register/pupil-history', {
