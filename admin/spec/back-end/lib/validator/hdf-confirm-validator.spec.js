@@ -12,7 +12,8 @@ describe('HDF confirm validator', function () {
       confirm: 'Y',
       pupilDetails: 'checked',
       uniquePins: 'checked',
-      staffConfirm: 'checked'
+      staffConfirm: 'checked',
+      disruptionConfirm: 'checked'
     }
   })
 
@@ -43,12 +44,20 @@ describe('HDF confirm validator', function () {
       expect(validationError.isError('confirmBoxes')).toBe(true)
     })
 
+    it('requires disruptionConfirm to be checked', () => {
+      requestData.disruptionConfirm = ''
+      const validationError = hdfConfirmValidator.validate(requestData)
+      expect(validationError.hasError()).toBeTruthy()
+      expect(validationError.isError('confirmBoxes')).toBe(true)
+    })
+
     describe('when not confirmed', () => {
       beforeEach(() => {
         requestData.confirm = 'N'
         requestData.pupilDetails = ''
         requestData.uniquePins = ''
         requestData.staffConfirm = ''
+        requestData.disruptionConfirm = ''
       })
 
       it('returns validationError object with no errors if the validation is successful', () => {
