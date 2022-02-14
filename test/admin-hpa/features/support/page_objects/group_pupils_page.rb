@@ -2,7 +2,7 @@ class GroupPupilsPage < SitePrism::Page
   set_url '/group/pupils-list'
 
   element :heading, '.govuk-heading-xl', text: 'Organise pupils into groups'
-  element :intro, '.govuk-body', text: 'Sort pupils by classroom or ability. You can filter by these groups when printing pupil PINs'
+  element :intro, '.govuk-body', text: 'You can organise pupils into classes or smaller groups. This will make administering the check easier as you can filter by these groups when generating PINs, recording pupils as not taking the check, or arranging restarts.'
   element :create_group, ".govuk-button", text: 'View pupils and create new group'
   element :related_heading, "#subsection-title", text: 'Related'
   element :guidance, "a", text: 'Read the guidance and watch videos'

@@ -4,8 +4,8 @@ class TioOrLivePinsPage < SitePrism::Page
   element :heading, '.govuk-heading-xl'
   element :generate_pin_message, 'p.govuk-body'
   element :access_arrangment_link, "a[href='/access-arrangements/overview']", text: 'access arrangements'
-  element :generate_tio_pins, 'a', text: 'Generate Try it out PINs'
-  element :generate_live_pins, 'a', text: 'Generate official PINs'
+  element :generate_tio_pins, 'a[href="/pupil-pin/generate-familiarisation-pins-overview"]'
+  element :generate_live_pins, 'a[href="/pupil-pin/generate-live-pins-overview"]'
 
 
 end

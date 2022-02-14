@@ -21,7 +21,7 @@ Feature:
   Scenario: Verify breadcrumb on Generate passwords and pins page for either tio or live checks
     Given I am logged in
     And I navigate to generate passwords and pins page
-    Then I should see the breadcrumb as "Home > Generate school passwords and PINs for the try it out and official checks"
+    Then I should see the breadcrumb as "Home > Generate and view school password and PINs for the try it out and official check"
     And I click the Home link on breadcrumb
     Then I should be taken to the school landing page
 
