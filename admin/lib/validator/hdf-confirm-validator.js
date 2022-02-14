@@ -14,10 +14,12 @@ module.exports.validate = function (hdfConfirmData) {
     confirm,
     pupilDetails,
     uniquePins,
-    staffConfirm
+    staffConfirm,
+    disruptionConfirm
   } = hdfConfirmData
 
-  if (confirm === 'Y' && (pupilDetails !== 'checked' || uniquePins !== 'checked' || staffConfirm !== 'checked')) {
+  if (confirm === 'Y' && (pupilDetails !== 'checked' || uniquePins !== 'checked' ||
+    staffConfirm !== 'checked' || disruptionConfirm !== 'checked')) {
     validationError.addError('confirmBoxes', hdfConfirmErrorMessages.confirmBoxes)
   }
 
