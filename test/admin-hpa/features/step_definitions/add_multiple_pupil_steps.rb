@@ -10,11 +10,14 @@ Then(/^I can see the landing page as per the design$/) do
   expect(@page.sub_heading.map {|message| message.text}).to include "Download template"
   expect(@page.sub_heading.map {|message| message.text}).to include "Upload file"
   expect(@page.info_message.map {|message| message.text}).to include "Download the template\nPupil details template (CSV, 0.05KB)"
-  expect(@page.info_message.map {|message| message.text}).to include "Open file in a programme like Excel, OpenOffice or Google Sheets"
-  expect(@page.info_message.map {|message| message.text}).to include "Add pupil details using the given format"
+  expect(@page.info_message.map {|message| message.text}).to include "Open file in a CSV compatible programme such as Excel, OpenOffice or Google Sheets"
+  expect(@page.info_message.map {|message| message.text}).to include "add pupil details using the given format"
+  expect(@page.info_message.map {|message| message.text}).to include "enter date of birth in format dd/mm/yyyy"
+  expect(@page.info_message.map {|message| message.text}).to include "enter a gender as M or F"
   expect(@page.info_message.map {|message| message.text}).to include "Save as a CSV file on your computer"
-  expect(@page.info_message.map {|message| message.text}).to include "Select 'Choose file' button and navigate to the file on your computer"
+  expect(@page.info_message.map {|message| message.text}).to include "Select 'Choose file' and navigate to the file on your computer"
   expect(@page.info_message.map {|message| message.text}).to include "Choose the file to upload"
+  expect(@page.info_message.map {|message| message.text}).to include "Select 'Upload'"
   expect(@page).to have_chose_file
 end
 

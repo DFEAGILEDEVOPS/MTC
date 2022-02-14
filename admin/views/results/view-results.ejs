@@ -5,21 +5,20 @@
       <h1 class="govuk-heading-xl"><%= pageTitle %></h1>
       <%- partial('partials/_gds_session_expiry') %>
       <p class="govuk-body govuk-!-font-size-24">
-        These results are for pupils who participated in the 2021 optional check.
-        Until verified, these results are subject to review.
-      </p>
-      <p class="govuk-body">
-        Each score is out of <%= maxMark %>.
+        Results show a total score out of 25 for all pupils who completed the check.
+        <br/>
+        There is no expected standard threshold for the multiplication tables check.
+
       </p>
       <% if (isHdfSubmitted) { %>
         <p>
           <span class="mtc-icon-download"></span>
-          <a href="/results/ctf-download">Download result data</a>
+          <a href="/results/ctf-download">Download results data CTF file</a>
         <p>
       <% } else { %>
         <p>
           <span class="mtc-icon-download"></span>
-          <span class="mtc-disabled-link">Download result data (You must sign the HDF to be able to download the results data)</span>
+          <span class="mtc-disabled-link">Download results data CTF file (You must sign the HDF to be able to download the results data)</span>
         <p>
       <% } %>
       <%- partial('partials/_gds_groups_filter', { groups: groups }) %>

@@ -1,12 +1,11 @@
-# class GeneratePinsFamiliarisationOverviewPage < SitePrism::Page
 class GenerateTioPinsOverviewPage < SitePrism::Page
   set_url '/pupil-pin/generate-familiarisation-pins-overview'
 
   element :heading, '.govuk-heading-xl'
   element :generate_pin_message, 'p.govuk-body'
-  element :access_arrangment_text, '.govuk-inset-text', text: 'Select access arrangements for pupils who need it before generating PINs'
+  element :access_arrangment_text, '.govuk-inset-text', text: 'Enable access arrangements for pupils who need them before generating PINs.'
   element :access_arrangment_link, "a[href='/access-arrangements/overview']", text: 'access arrangements'
-  element :generate_pin_btn, 'input[value="Generate Try it out PINs"]'
+  element :generate_pin_btn, 'input[value="Generate password and PINs for the try it out check"]'
 
   section :instruction_section, 'details' do
     element :toggle, '.govuk-details__summary'
@@ -15,10 +14,10 @@ class GenerateTioPinsOverviewPage < SitePrism::Page
 
   section :generated_pin_overview, '#generatePins' do
     element :generated_pin_heading, 'tr', text: "Generated PINs"
-    element :generated_pin_information, 'tbody tr td label', text: "PINs have been generated for"
+    element :generated_pin_information, 'tbody tr td label', text: "try it out check PINs generated for "
     element :pin_expiry_info, '.govuk-font-greyed-out', text: "Expires 4pm today"
     element :view_all_pins_btn, 'a', text: "View all pins"
-    element :generate_additional_pins_btn, 'a', text: "Generate Try it out PINs"
+    element :generate_additional_pins_btn, 'a', text: "Generate password and PINs for the try it out check"
   end
 
   section :group_filter, GroupFilter, '#main-content .govuk-grid-column-two-thirds'

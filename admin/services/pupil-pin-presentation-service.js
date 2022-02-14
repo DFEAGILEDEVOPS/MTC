@@ -8,7 +8,7 @@ const pupilPinPresentationService = {
    */
   getTryItOutPinGenSlot: async function getTryItOutPinGenSlot (featureEligibilityData) {
     let slot
-    const linkDescription = 'Generate Try it out PINs'
+    const linkDescription = 'Try it out check'
     if (featureEligibilityData.isFamiliarisationPinGenerationAllowed) {
       slot = await ejsUtil.render('partials/pupil-pin/active-button', {
         linkUrl: '/pupil-pin/generate-familiarisation-pins-overview',
@@ -38,7 +38,7 @@ const pupilPinPresentationService = {
    */
   getOfficialPinGenSlot: async function officialPinGenSlot (featureEligibilityData) {
     let slot
-    const linkDescription = 'Generate official PINs'
+    const linkDescription = 'Official check'
     if (featureEligibilityData.isLivePinGenerationAllowed) {
       slot = await ejsUtil.render('partials/pupil-pin/active-button', {
         linkUrl: '/pupil-pin/generate-live-pins-overview',

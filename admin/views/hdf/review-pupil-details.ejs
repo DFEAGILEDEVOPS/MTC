@@ -11,7 +11,7 @@
             <%- partial('partials/_gds_session_expiry') %>
             <p class="govuk-body-l" id="lead-paragraph" aria-labelledby="lead-paragraph">
                 Please review your pupil list. All pupils should have a status of 'Complete' or a reason for not taking
-                the check. Click on 'edit' to update the outcome if a reason below is incorrect.
+                the check. Click on 'Edit' to update the outcome if a reason below is incorrect.
             </p>
             <form method="post" action="/school/submit-attendance-form" autocomplete="off">
                 <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
