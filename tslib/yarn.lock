@@ -4226,9 +4226,9 @@ msal@^1.0.2:
     tslib "^1.9.3"
 
 mssql@^8.0.0:
-  version "8.0.1"
-  resolved "https://registry.yarnpkg.com/mssql/-/mssql-8.0.1.tgz#ee7abdeb35d15ffab07dc149344adb0ad93ea2af"
-  integrity sha512-GZ1YnfMjfEdiXNRWZeYyTtqHWptUMA5jWrygbqfl72zsCxXsNuLPH9gPxz7m2F6+tWY48hR+ieZ92QY11ILNeg==
+  version "8.0.2"
+  resolved "https://registry.yarnpkg.com/mssql/-/mssql-8.0.2.tgz#e8c21c021ddac1ae699a4012ee53ade24d984830"
+  integrity sha512-2FKoSFjJ5Ax3QlS/m6peMOlTZ7ks4SQ6D+K7/c7X0a7rJ70EqnQrriZHSvUE6Ale6EaQTtqrjgRMFPDNM9VfXg==
   dependencies:
     "@tediousjs/connection-string" "^0.3.0"
     debug "^4.3.3"
