@@ -1,8 +1,8 @@
 class PupilsNotTakingCheckPage < SitePrism::Page
   set_url '/pupils-not-taking-the-check/pupils-list'
 
-  element :heading, '.govuk-heading-xl', text: 'Give a reason why a pupil is not taking the check'
-  element :info_text, 'p.govuk-body', text: "All pupils must be considered to take the multiplication tables check at the end of year 4. If a pupil is working below expectation or has left your school, a reason must be provided."
+  element :heading, '.govuk-heading-xl', text: 'Provide a reason why a pupil is not taking the check'
+  element :info_text, 'p.govuk-body', text: "The multiplication tables check is statutory for all year 4 pupils. If your school’s headteacher decides a pupil should not take the check, the reason must be recorded, this includes pupils who have left the school."
   element :add_reason, 'a', text: "Select pupils and reason"
   element :back_to_top, 'a', text: "Back to top"
   element :flash_message, '.govuk-info-message'

@@ -55,7 +55,7 @@
                                 <div class="hide">
                                     <div class="govuk-inset-text govuk-!-padding-left-2 govuk-!-padding-bottom-0 govuk-!-padding-top-0">
                                         <div class="govuk-form-group <%= error.isError(errorType) ? 'govuk-form-group--error' : '' %>">
-                                            <label class="govuk-label" for=<%= errorType %>>Please specify:</label>
+                                            <label class="govuk-label" for=<%= errorType %>>Please provide further details:</label>
                                             <% if (error.isError(errorType)) { %>
                                                 <span class="govuk-error-message"> <%= error.get(errorType) %></span>
                                             <% } %>
@@ -75,7 +75,7 @@
                 </div>
                 <div class="govuk-form-group">
                     <label class="govuk-label" for="restartFurtherInfo">
-                        If necessary, please provide further information:
+                       If applicable, please provide further information:
                     </label>
                     <textarea class="govuk-textarea govuk-!-width-three-quarters"
                               name="restartFurtherInfo"
@@ -93,19 +93,19 @@
                         <dl class="govuk-panel-list">
                             <dt>
                                 <div><strong>Loss of internet</strong></div>
-                                <div>Internet connections failed during the check and the data couldn't be recovered.</div>
+                                <div>Prolonged loss of internet during the check and the data could not be recovered at the end.</div>
                             </dt>
                             <dt>
                                 <div><strong>IT Issues</strong></div>
-                                <div>There was an issue with the device the pupil was using. For example, faulty equipment or power loss.</div>
+                                <div>There was a problem with the digital device the pupil was using (for example, device failure or power loss).</div>
                             </dt>
                             <dt>
                                 <div><strong>Classroom disruption</strong></div>
-                                <div>Pupils were unable to continue the check due to disruptions. For example, fire alarm, illness during the check or high level behavioural disruption.</div>
+                                <div>The pupil was significantly distracted (for example, a fire alarm or building evacuation, illness during the check or behavioural disruption in the check room).</div>
                             </dt>
                             <dt>
                                 <div><strong>Did not complete</strong></div>
-                                <div>Pupil did not complete the check. For example, pupil accidentally closed the check window.</div>
+                                <div>The pupil did not complete the check (for example, they accidentally closed the check window).</div>
                             </dt>
                         </dl>
                     </div>

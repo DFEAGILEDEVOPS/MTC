@@ -8,11 +8,10 @@
                 </div>
             <% } %>
             <%- partial('partials/_readonly', { availabilityData: { hdfSubmitted } }) %>
-            <h1 class="govuk-heading-xl" aria-describedby="heading-xlarge">Give a reason why a pupil is not taking the check</h1>
+            <h1 class="govuk-heading-xl" aria-describedby="heading-xlarge">Provide a reason why a pupil is not taking the check</h1>
             <%- partial('partials/_gds_session_expiry') %>
             <p class="govuk-body">
-                All pupils must be considered to take the multiplication tables check at the end of year 4.
-                If a pupil is working below expectation or has left your school, a reason must be provided.
+              The multiplication tables check is statutory for all year 4 pupils. If your school’s headteacher decides a pupil should not take the check, the reason must be recorded, this includes pupils who have left the school.
             </p>
             <% if (hdfSubmitted) { %>
                 <button type="submit" disabled="disabled" aria-disabled="true" class="govuk-button govuk-button--disabled" data-module="govuk-button">
