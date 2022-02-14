@@ -33,15 +33,17 @@
               Headteachers must submit the headteacher's declaration form by no later than 5pm on Friday 24 June.
             </p>
         <% } else { %>
-            <p class="govuk-body govuk-!-font-size-24">
+            <p class="govuk-body">
               Headteachers must ensure that their school fully complies with the statutory arrangements for assessing the multiplication tables check.
               This form allows the headteacher to confirm:
-              <ul>
+              <ul class="govuk-list govuk-list--bullet">
                 <li>the official check was correctly administered to all eligible year 4 pupils</li>
                 <li>there was an issue relating to the administration of the check</li>
               </ul>
-              This form should be submitted by no later than 5pm on Friday 24 June. In the absence of the headteacher, a delegated senior
+              <p class="govuk-body">
+                This form should be submitted by no later than 5pm on Friday 24 June. In the absence of the headteacher, a delegated senior
                 member of staff should submit this declaration.
+              </p>
             </p>
             <form method="post" action="/attendance/submit-declaration-form" autocomplete="off">
                 <input type="hidden" name="_csrf" value="<%= csrftoken %>" />

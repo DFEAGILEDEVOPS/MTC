@@ -112,7 +112,7 @@
             <details id="orange-card-details" class="govuk-details orange-card-details" data-module="govuk-details">
                 <summary class="govuk-details__summary">
                         <span class="govuk-details__summary-text">
-                            Pupils that have not started the check
+                            Pupils that have not completed the check
                         </span>
                 </summary>
                 <div class="govuk-details__text">
@@ -318,7 +318,10 @@
 
                                 <% if (pupilStatusViewData.remainingLiveCheckDays >= 0) { %>
                                     If this does not work the pupil will need to sit the check again.
-                                    To enable this <a href="/restart/select-restart-list">select pupils to restart the check.</a> then generate school password and PINs for the official check.
+                                    To enable this <a href="/restart/select-restart-list">select pupils to restart the
+                                      check</a>
+                                    then
+                                    <a href="/pupil-pin/generate-live-pins-overview">generate school passwords and PINs for the official check.</a>
                                 <% } else { %>
                                     The check window has now closed. <a href="/pupils-not-taking-the-check/pupils-list">Give a reason why pupils are not taking the check</a>. You can then sign the HDF.
                                 <% } %>

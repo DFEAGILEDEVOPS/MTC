@@ -35,7 +35,7 @@ class PupilReasonPage < SitePrism::Page
     element :below_standard, 'strong', text: 'Working below expectation'
     element :below_standard_explanation, 'div', text: "Pupils who are unable to answer the easiest questions or are working below the national curriculum expectation for year 2 in multiplication tables."
     element :just_arrived, 'strong', text: 'Just arrived and unable to establish abilities'
-    element :just_arrived_explanation, 'div', text: "Pupil has arrived in school during the check window and there is not enough time to establish their abilities for example, pupils with English as an additional language (EAL)."
+    element :just_arrived_explanation, 'div', text: "Pupil has arrived in school during the check window and there is not enough time to establish their abilities - for example, pupils with English as an additional language (EAL)."
     element :incorrect_registration, 'strong', text: 'Incorrect registration'
     element :incorrect_registration_explanation, 'div', text: "Pupil appears in error on the pupil register."
   end
