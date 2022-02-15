@@ -10,8 +10,9 @@ export interface JobOutcomeDetails {
   errorInfo?: string
 }
 export interface IJobDataService {
-  setJobStarted (jobSlug: string): Promise<number>
+  setJobStarted (jobSlug: string): Promise<IModifyResult>
   setJobComplete (jobSlug: string, jobStatus: JobStatusOutcomes, jobOutput?: string, errorInfo?: string): Promise<IModifyResult>
+  getJobId (jobSlug: string): Promise<number>
 }
 
 export class JobDataService implements IJobDataService {
@@ -21,7 +22,7 @@ export class JobDataService implements IJobDataService {
     this.sqlService = new SqlService()
   }
 
-  async setJobStarted (jobSlug: string): Promise<number> {
+  async setJobStarted (jobSlug: string): Promise<IModifyResult> {
     const params: ISqlParameter[] = [
       {
         name: 'startedAt',
@@ -41,15 +42,8 @@ export class JobDataService implements IJobDataService {
     const sql = `UPDATE mtc_admin.[job] SET
                   startedAt = @startedAt,
                   jobStatus_id = (SELECT id FROM [mtc_admin].[jobStatus] WHERE jobStatusCode = @jobStatusCode)
-                WHERE urlSlug = @urlSlug;
-                SELECT id FROM [mtc_admin].[job]
-                WHERE urlSlug = @urlSlug;`
-    const result = await this.sqlService.modify(sql, params)
-    const id = result.insertId
-    if (id !== undefined) return id
-    throw new Error('no job id returned')
-    // const recordset: any = R.path(['recordset'], result)
-    // return R.path(['id'], R.head(recordset)) as number
+                WHERE urlSlug = @urlSlug`
+    return this.sqlService.modify(sql, params)
   }
 
   async setJobComplete (jobSlug: string, jobStatusCode: JobStatusOutcomes, jobOutput?: string, errorInfo?: string): Promise<IModifyResult> {
@@ -74,12 +68,23 @@ export class JobDataService implements IJobDataService {
         type: TYPES.NVarChar(MAX),
         value: errorInfo
       }]
-    const sql = `'UPDATE mtc_admin.[job] SET
+    const sql = `UPDATE mtc_admin.[job] SET
                     completedAt = GETUTCDATE(),
                     jobStatus_id = (SELECT id FROM [mtc_admin].[jobStatus] WHERE jobStatusCode = @jobStatusCode),
                     jobOutput = @jobOutput,
                     errorOutput = @errorOutput
-                  WHERE urlSlug = @urlSlug'`
+                  WHERE urlSlug = @urlSlug`
     return this.sqlService.modify(sql, params)
+  }
+
+  async getJobId (jobSlug: string): Promise<number> {
+    const sql = 'SELECT id FROM [mtc_admin].[job] WHERE urlSlug = @urlSlug'
+    const params: ISqlParameter[] = [{
+      name: 'urlSlug',
+      type: TYPES.UniqueIdentifier,
+      value: jobSlug
+    }]
+    const result = await this.sqlService.query(sql, params)
+    return result[0].id
   }
 }

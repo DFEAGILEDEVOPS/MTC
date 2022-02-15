@@ -17,7 +17,8 @@ const CensusImportDataServiceMock = jest.fn<ICensusImportDataService, any>(() =>
 
 const JobDataServiceMock = jest.fn<IJobDataService, any>(() => ({
   setJobComplete: jest.fn(),
-  setJobStarted: jest.fn()
+  setJobStarted: jest.fn(),
+  getJobId: jest.fn()
 }))
 
 const BlobServiceMock = jest.fn<IBlobService, any>(() => ({
@@ -45,10 +46,10 @@ describe('census-import: v1', () => {
     jest.spyOn(censusImportDataServiceMock, 'loadPupilsFromStaging').mockImplementation(async () => Promise.resolve({ insertCount: loadAndInsertCount }))
     jest.spyOn(censusImportDataServiceMock, 'loadStagingTable').mockImplementation(async () => Promise.resolve(loadAndInsertCount))
     jobDataServiceMock = new JobDataServiceMock()
-    jest.spyOn(jobDataServiceMock, 'setJobStarted').mockResolvedValue(123)
-    blobServiceMock = new BlobServiceMock()
+    jest.spyOn(jobDataServiceMock, 'setJobStarted').mockImplementation()
     loggerMock = new LoggerMock()
     redisServiceMock = new RedisServiceMock()
+    blobServiceMock = new BlobServiceMock()
 
     sut = new CensusImportV1(new ConnectionPool(config.Sql),
       loggerMock,

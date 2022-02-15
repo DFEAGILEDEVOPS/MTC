@@ -49,8 +49,9 @@ export class CensusImportV1 {
     const blobName = R.compose((arr: any[]) => arr[arr.length - 1], (r: string) => r.split('/'))(blobUri)
     // Update job status to Processing
     this.logger.info(`jobUrlSlug:${blobName}`)
-    const jobId = await this.jobDataService.setJobStarted(blobName)
-    this.logger.info(`jobId:${jobId}`)
+    const jobSlug = blobName.toString()
+    await this.jobDataService.setJobStarted(jobSlug)
+    const jobId = await this.jobDataService.getJobId(jobSlug)
     const blobContent = csvString.parse(blob.toString())
     const censusTable = `[mtc_census_import].[census_import_${moment.utc().format('YYYYMMDDHHMMSS')}_${uuidv4()}]`
     this.logger.info(`censusTable:${censusTable}`)
