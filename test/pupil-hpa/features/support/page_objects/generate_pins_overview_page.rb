@@ -10,7 +10,7 @@ class GeneratePinsOverviewPage < SitePrism::Page
     element :toggle, '.govuk-details__summary'
     elements :info_message, '.govuk-list--number li'
   end
-  element :generate_pin_btn, 'input[value="Generate official PINs"]'
+  element :generate_pin_btn, 'input[value="Generate password and PINs for the official check"]'
   element :related_heading, ".govuk-heading-m", text: 'Related'
   element :guidance, "a", text: 'Read the guidance and watch videos'
   element :restarts, "a[href='/restart/overview']", text: 'Select pupils to restart the check'
@@ -42,7 +42,7 @@ class GeneratePinsOverviewPage < SitePrism::Page
     element :generated_pin_information, 'tbody tr td label', text: "PINs have been generated for"
     element :pin_expiry_info, '.govuk-font-greyed-out', text: "Expires 4pm today"
     element :view_all_pins_btn, 'a', text: "View all pins"
-    element :generate_additional_pins_btn, 'a', text: "Generate official PINs"
+    element :generate_additional_pins_btn, 'a', text: "Generate password and PINs for the official check"
   end
 
   def generate_pin_using_name(name)

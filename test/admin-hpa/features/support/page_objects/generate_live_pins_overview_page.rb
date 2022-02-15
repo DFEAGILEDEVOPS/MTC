@@ -3,14 +3,14 @@ class GenerateLivePinsOverviewPage < SitePrism::Page
 
   element :heading, '.govuk-heading-xl'
   element :generate_pin_message, 'p.govuk-body'
-  element :access_arrangment_text, '.govuk-inset-text', text: 'Select access arrangements for pupils who need it before generating PINs'
+  element :access_arrangment_text, '.govuk-inset-text', text: 'Enable access arrangements for pupils who need them before generating PINs.'
   element :access_arrangment_link, "a[href='/access-arrangements/overview']", text: 'access arrangements'
 
   section :instruction_section, 'details' do
     element :toggle, '.govuk-details__summary'
     elements :info_message, '.govuk-list--number li'
   end
-  element :generate_pin_btn, 'input[value="Generate official PINs"]'
+  element :generate_pin_btn, 'input[value="Generate password and PINs for the official check"]'
   element :related_heading, ".govuk-heading-m", text: 'Related'
   element :guidance, "a", text: 'Read the guidance and watch videos'
   element :restarts, "a[href='/restart/overview']", text: 'Select pupils to restart the check'
@@ -39,10 +39,10 @@ class GenerateLivePinsOverviewPage < SitePrism::Page
 
   section :generated_pin_overview, '#generatePins' do
     element :generated_pin_heading, 'tr', text: "Generated PINs"
-    element :generated_pin_information, 'tbody tr td label', text: "PINs have been generated for"
+    element :generated_pin_information, 'tbody tr td label', text: "Official check PINs generated for 1 pupil"
     element :pin_expiry_info, '.govuk-font-greyed-out', text: "Expires 4pm today"
     element :view_all_pins_btn, 'a', text: "View all pins"
-    element :generate_additional_pins_btn, 'a', text: "Generate official PINs"
+    element :generate_additional_pins_btn, 'a', text: "Generate password and PINs for the official check"
   end
 
   def generate_pin_using_name(name)

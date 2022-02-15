@@ -2,7 +2,7 @@ class AccessArrangementsPage < SitePrism::Page
   set_url '/access-arrangements/overview'
 
   element :heading, '.govuk-heading-xl', text: 'Enable access arrangements for pupils who need them'
-  element :information, '.govuk-body', text: "Modify the multiplication tables check for pupils with specific needs. The arrangements that are applied can be practised and configured by the pupils when the try it out area is open."
+  element :information, '.govuk-body', text: "Access arrangements may be appropriate for pupils with specific needs who require additional arrangements so they can take part in the check. Support given should be based on normal classroom practice and should never advantage or disadvantage pupils."
   element :select_pupil_and_arrangement_btn, 'a[href="/access-arrangements/select-access-arrangements"]'
   element :diasbled_select_pupil_and_arrangement_btn, 'button.govuk-button--disabled'
 

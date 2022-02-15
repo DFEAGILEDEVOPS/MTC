@@ -73,7 +73,7 @@ describe('results controller:', () => {
       await controller.getViewResultsPage(req, res, next)
 
       // Test
-      expect(res.locals.pageTitle).toBe('Provisional results')
+      expect(res.locals.pageTitle).toBe('Results')
       expect(res.render).toHaveBeenCalledWith('results/view-results', {
         pupilData: mockPupilData.pupils,
         isHdfSubmitted: true,
@@ -102,7 +102,7 @@ describe('results controller:', () => {
       await controller.getViewResultsPage(req, res, next)
 
       // Test
-      expect(res.locals.pageTitle).toBe('Provisional results')
+      expect(res.locals.pageTitle).toBe('Results')
       expect(next).toHaveBeenCalledWith(mockError)
     })
 
@@ -122,7 +122,7 @@ describe('results controller:', () => {
       await controller.getViewResultsPage(req, res, next)
 
       // test
-      expect(res.locals.pageTitle).toBe('Provisional results')
+      expect(res.locals.pageTitle).toBe('Results')
       expect(res.render).toHaveBeenCalledWith('results/view-incomplete-hdf', {
         resultsOpeningDate: '6 January 2020', breadcrumbs: undefined
       })
@@ -145,7 +145,7 @@ describe('results controller:', () => {
       await controller.getViewResultsPage(req, res, next)
 
       // test
-      expect(res.locals.pageTitle).toBe('Provisional results')
+      expect(res.locals.pageTitle).toBe('Results')
       expect(res.render).toHaveBeenCalledWith('results/view-results', {
         pupilData: mockPupilData.pupils,
         isHdfSubmitted: false,
@@ -173,7 +173,7 @@ describe('results controller:', () => {
       await controller.getViewResultsPage(req, res, next)
 
       // test
-      expect(res.locals.pageTitle).toBe('Provisional results')
+      expect(res.locals.pageTitle).toBe('Results')
       expect(res.render).toHaveBeenCalledWith('results/view-unavailable-results', { breadcrumbs: undefined })
     })
 
@@ -194,7 +194,7 @@ describe('results controller:', () => {
       await controller.getViewResultsPage(req, res, next)
 
       // test
-      expect(res.locals.pageTitle).toBe('Provisional results')
+      expect(res.locals.pageTitle).toBe('Results')
       expect(res.render).toHaveBeenCalledWith('results/view-results-not-found', { breadcrumbs: undefined })
     })
   })
