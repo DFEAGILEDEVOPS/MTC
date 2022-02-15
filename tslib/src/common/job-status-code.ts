@@ -1,9 +1,9 @@
 
 export enum JobStatusCode {
-  SUB = 'SUB',
-  PRC = 'PRC',
-  COM = 'COM',
-  CWR = 'CWR',
-  FLD = 'FLD',
-  DEL = 'DEL'
+  Submitted = 'SUB',
+  Processing = 'PRC',
+  CompletedSuccessfully = 'COM',
+  CompletedWithErrors = 'CWR',
+  Failed = 'FLD',
+  Deleted = 'DEL'
 }

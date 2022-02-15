@@ -3,13 +3,11 @@ import { ILogger } from '../../../common/logger'
 import { IJobOutput, SchoolImportJobOutput } from '../SchoolImportJobOutput'
 import { ISchoolRecord } from './ISchoolRecord'
 import { ISqlService, SqlService } from '../../../sql/sql.service'
-const name = 'school-import'
 
 export interface ISchoolDataService {
-  getJobId (jobSlug: string): Promise<number | undefined>
-  updateJobStatus (jobId: number, jobStatusCode: string): Promise<any>
-  updateJobStatusWithResult (jobId: number, jobStatusCode: string, jobResult: IJobOutput): Promise<any>
-  updateJobStatusWithResultAndError (jobId: number, jobStatusCode: string, jobResult: IJobOutput, error: Error): Promise<any>
+  // updateJobStatus (jobId: number, jobStatusCode: string): Promise<any>
+  // updateJobStatusWithResult (jobId: number, jobStatusCode: string, jobResult: IJobOutput): Promise<any>
+  // updateJobStatusWithResultAndError (jobId: number, jobStatusCode: string, jobResult: IJobOutput, error: Error): Promise<any>
   bulkUpload (schoolData: ISchoolRecord[]): Promise<SchoolImportJobOutput>
 }
 
@@ -70,24 +68,6 @@ export class SchoolDataService implements ISchoolDataService {
       }
     }
     return this.jobResult
-  }
-
-  async getJobId (jobSlug: string): Promise<number | undefined> {
-    this.logger.verbose(`${name}: getJobId() called`)
-    const params = [{
-      name: 'urlSlug',
-      type: mssql.TYPES.UniqueIdentifier,
-      value: jobSlug.toLowerCase()
-    }]
-    const sql = `SELECT j.id FROM mtc_admin.job j
-                 WHERE j.urlSlug = @urlSlug`
-    const res = await this.sqlService.query(sql, params)
-    if (res !== undefined && Array.isArray(res)) {
-      const id = res[0].id
-      this.logger.verbose(`${name}: getJobId() returning ${id}`)
-      return id
-    }
-    return undefined
   }
 
   async updateJobStatus (jobId: number, code: string): Promise<any> {

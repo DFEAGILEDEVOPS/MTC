@@ -47,6 +47,7 @@ describe('census-import: v1', () => {
     jest.spyOn(censusImportDataServiceMock, 'loadStagingTable').mockImplementation(async () => Promise.resolve(loadAndInsertCount))
     jobDataServiceMock = new JobDataServiceMock()
     jest.spyOn(jobDataServiceMock, 'setJobStarted').mockImplementation()
+    jest.spyOn(jobDataServiceMock, 'getJobId').mockResolvedValue(1)
     loggerMock = new LoggerMock()
     redisServiceMock = new RedisServiceMock()
     blobServiceMock = new BlobServiceMock()
@@ -68,7 +69,7 @@ describe('census-import: v1', () => {
   test('job status is updated at start and end of a successful run', async () => {
     const output = await sut.process('foo,bar', blobUri)
     expect(jobDataServiceMock.setJobStarted).toHaveBeenCalledTimes(1)
-    expect(jobDataServiceMock.setJobComplete).toHaveBeenLastCalledWith(expect.any(String), JobStatusCode.COM, expect.any(String))
+    expect(jobDataServiceMock.setJobComplete).toHaveBeenLastCalledWith(expect.any(String), JobStatusCode.CompletedSuccessfully, expect.any(String))
     expect(output.processCount).toStrictEqual(loadAndInsertCount)
   })
 
@@ -85,7 +86,7 @@ describe('census-import: v1', () => {
   test('when insert counts do not match, job is reported as failed', async () => {
     jest.spyOn(censusImportDataServiceMock, 'loadStagingTable').mockImplementation(async () => Promise.resolve(loadAndInsertCount - 1))
     await sut.process('foo,bar', blobUri)
-    expect(jobDataServiceMock.setJobComplete).toHaveBeenLastCalledWith(expect.any(String), JobStatusCode.CWR, expect.any(String), expect.any(String))
+    expect(jobDataServiceMock.setJobComplete).toHaveBeenLastCalledWith(expect.any(String), JobStatusCode.CompletedWithErrors, expect.any(String), expect.any(String))
   })
 
   test('it invalidates the pupil register', async () => {

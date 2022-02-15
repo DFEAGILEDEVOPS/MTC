@@ -52,6 +52,7 @@ export class CensusImportV1 {
     const jobSlug = blobName.toString()
     await this.jobDataService.setJobStarted(jobSlug)
     const jobId = await this.jobDataService.getJobId(jobSlug)
+    if (jobId === undefined) throw new Error('jobId is undefined')
     const blobContent = csvString.parse(blob.toString())
     const censusTable = `[mtc_census_import].[census_import_${moment.utc().format('YYYYMMDDHHMMSS')}_${uuidv4()}]`
     this.logger.info(`censusTable:${censusTable}`)
@@ -70,12 +71,12 @@ export class CensusImportV1 {
       }
       const errorOutput = `${pupilMeta.errorText}\nTip: Ensure all schools in the uploaded file have a matching entry in the MTC database.`
       // update job to failed
-      await this.jobDataService.setJobComplete(blobName, JobStatusCode.CWR, jobOutput, errorOutput)
+      await this.jobDataService.setJobComplete(blobName, JobStatusCode.CompletedWithErrors, jobOutput, errorOutput)
       this.logger.warn(`census-import: ${stagingInsertCount} rows staged, but only ${pupilMeta.insertCount} rows inserted to pupil table`)
     } else {
       const jobOutput = `${stagingInsertCount} rows staged and ${pupilMeta.insertCount} rows inserted to pupil table`
       // update job to complete
-      await this.jobDataService.setJobComplete(blobName, JobStatusCode.COM, jobOutput)
+      await this.jobDataService.setJobComplete(blobName, JobStatusCode.CompletedSuccessfully, jobOutput)
     }
 
     // Finally, delete the pupil-register cache for all schools

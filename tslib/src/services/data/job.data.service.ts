@@ -3,7 +3,7 @@ import { IModifyResult, ISqlParameter, ISqlService, SqlService } from '../../sql
 import { JobStatusCode } from '../../common/job-status-code'
 import moment from 'moment'
 
-export type JobStatusOutcomes = (JobStatusCode.FLD | JobStatusCode.CWR | JobStatusCode.COM)
+export type JobStatusOutcomes = (JobStatusCode.Failed | JobStatusCode.CompletedWithErrors | JobStatusCode.CompletedSuccessfully)
 
 export interface JobOutcomeDetails {
   output?: string
@@ -12,7 +12,7 @@ export interface JobOutcomeDetails {
 export interface IJobDataService {
   setJobStarted (jobSlug: string): Promise<IModifyResult>
   setJobComplete (jobSlug: string, jobStatus: JobStatusOutcomes, jobOutput?: string, errorInfo?: string): Promise<IModifyResult>
-  getJobId (jobSlug: string): Promise<number>
+  getJobId (jobSlug: string): Promise<number | undefined>
 }
 
 export class JobDataService implements IJobDataService {
@@ -37,7 +37,7 @@ export class JobDataService implements IJobDataService {
       {
         name: 'jobStatusCode',
         type: TYPES.Char(3),
-        value: JobStatusCode.PRC
+        value: JobStatusCode.Processing
       }]
     const sql = `UPDATE mtc_admin.[job] SET
                   startedAt = @startedAt,
@@ -77,7 +77,7 @@ export class JobDataService implements IJobDataService {
     return this.sqlService.modify(sql, params)
   }
 
-  async getJobId (jobSlug: string): Promise<number> {
+  async getJobId (jobSlug: string): Promise<number | undefined> {
     const sql = 'SELECT id FROM [mtc_admin].[job] WHERE urlSlug = @urlSlug'
     const params: ISqlParameter[] = [{
       name: 'urlSlug',
@@ -85,6 +85,7 @@ export class JobDataService implements IJobDataService {
       value: jobSlug
     }]
     const result = await this.sqlService.query(sql, params)
+    if (result === undefined || result.lenght === 0) return undefined
     return result[0].id
   }
 }
