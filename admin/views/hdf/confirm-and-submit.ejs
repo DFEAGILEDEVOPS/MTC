@@ -27,8 +27,7 @@
                     <div class="multiple-choice">
                         <input class="govuk-radios__input" id="confirmYes" type="radio" role="radio" name="confirm" value="Y" checked="checked">
                         <label for="confirmYes">
-                            <p>I <strong>confirm</strong> that my school administered the multiplication tables check according to the arrangements set out in the guidance.</p>
-                            <p>In particular:</p>
+                            <p>I <strong>can confirm:</strong></p>
                             <a id="confirmBoxes"></a>
                         </label>
                     </div>
@@ -39,26 +38,30 @@
                     <% } %>
                     <div class="multiple-choice smaller">
                         <input type="checkbox" id="pupilDetails" name="pupilDetails" value="checked" <% if (formData['pupilDetails']) {%> checked<% } %>>
-                        <label class="govuk-label" for="pupilDetails">pupil details are correct</label>
+                        <label class="govuk-label" for="pupilDetails">all eligible pupils have been registered for the check and their details are correct</label>
                     </div>
                     <div class="multiple-choice smaller">
                         <input type="checkbox" id="uniquePins" name="uniquePins" value="checked" <% if (formData['uniquePins']) {%> checked<% } %>>
-                        <label class="govuk-label" for="uniquePins">each pupil who took the check used the unique PIN generated for them</label>
+                        <label class="govuk-label" for="uniquePins">all pupils who took the check used their unique PIN generated for them</label>
                     </div>
                     <div class="multiple-choice smaller">
                         <input type="checkbox" id="staffConfirm" name="staffConfirm" value="checked" <% if (formData['staffConfirm']) {%> checked<% } %>>
-                        <label class="govuk-label" for="staffConfirm">all staff involved in the administration of the check have confirmed to me that the check was administered in line with the statutory arrangements</label>
+                        <label class="govuk-label" for="staffConfirm">all staff involved in the administration of the check confirmed that the check was administered in line with the check administration guidance</label>
                     </div>
+                    <div class="multiple-choice smaller">
+                      <input type="checkbox" id="disruptionConfirm" name="disruptionConfirm" value="checked" <% if (formData['disruptionConfirm']) {%> checked<% } %>>
+                      <label class="govuk-label" for="disruptionConfirm">pupils were only allowed to restart the check because of a significant disruption in line with the check administration guidance</label>
+                  </div>
                 </div>
 
                 <div class="govuk-form-group">
                     <div class="multiple-choice">
                         <input class="govuk-radios__input" id="confirmNo" type="radio" role="radio" name="confirm" value="N">
                         <label class="govuk-label" for="confirmNo">
-                            <p>I am <strong>unable to confirm</strong> the statements above and have reported this to the Standards and Testing Agency (STA)</p>
+                            <p>I am <strong>unable to confirm</strong> the statements above and have reported this to the Standards and Testing Agency (STA).</p>
                         </label>
                         <div class="govuk-inset-text">
-                            If you have not reported this to the STA, please contact the national curriculum assessments helpline on 0300 303 3013 before submitting this declaration.
+                            If you have not reported this to STA, please contact the national curriculum assessments helpline on 0300 303 3013 before submitting this declaration.  Failure to notify STA may result in a maladministration investigation.
                         </div>
                     </div>
                 </div>

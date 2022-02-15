@@ -7,6 +7,7 @@ class DeclarationConfirmPage < SitePrism::Page
   element :confirm_pupil_details, '#pupilDetails'
   element :unique_pins, '#uniquePins'
   element :confirm_staff, '#staffConfirm'
+  element :confirm_no_disruption, '#disruptionConfirm'
   element :submit_button, 'input[value="Submit"]'
   element :cancel_button, "a.govuk-button", text: "Cancel"
   elements :error_messages, '.govuk-error-message'
@@ -23,6 +24,7 @@ class DeclarationConfirmPage < SitePrism::Page
     confirm_pupil_details.click
     unique_pins.click
     confirm_staff.click
+    confirm_no_disruption.click
     submit_button.click
   end
 

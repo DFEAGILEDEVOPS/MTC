@@ -7,7 +7,7 @@ class SchoolLandingPage < SitePrism::Page
   element :guidance, 'a', text: 'Read guidance and watch videos'
 
   # pupil register
-  element :pupil_register, 'a', text: "View, add or edit pupils on your school's register"
+  element :pupil_register, 'a', text: "View, add or edit pupils on your register"
 
   # groups
   element :group_pupils, 'a[href="/group/pupils-list'

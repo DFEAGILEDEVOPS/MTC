@@ -1,125 +1,149 @@
 <%- partial('partials/_gds_breadcrumbs_and_sign_out', { breadcrumbs }) %>
-<main class="govuk-main-wrapper" id="main-content" role="main">
+  <main class="govuk-main-wrapper" id="main-content" role="main">
     <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-            <% if (messages && messages.info) { %>
-                <div class="govuk-info-message clickable govuk-!-margin-bottom-7">
-                    <a class="govuk-link" href="#<%= highlight %>"><%= messages.info[0] %></a>
-                </div>
-            <% } %>
-            <% if (messages && messages.deleteInfo) { %>
-                <div class="govuk-body govuk-info-message govuk-!-margin-bottom-7">
-                    <%= messages.deleteInfo[0] %>
-                </div>
-            <% } %>
-            <%- partial('partials/_readonly', {availabilityData}) %>
-            <h1 class="govuk-heading-xl">Enable access arrangements for pupils who need them</h1>
-            <%- partial('partials/_gds_session_expiry') %>
-            <p class="govuk-body">
-                Modify the multiplication tables check for pupils with specific needs. The arrangements that are applied can be practised and configured by the pupils when the try it out area is open.
-            </p>
-        <% if (aaViewMode === 'readonly') { %>
-            <button type="submit" disabled="disabled" aria-disabled="true" class="govuk-button govuk-button--disabled" data-module="govuk-button">
-                View pupils and assign arrangement
-            </button>
-        <% } else { %>
-            <a href="/access-arrangements/select-access-arrangements" role="button" draggable="false" class="govuk-button" data-module="govuk-button">
-                View pupils and assign arrangement
+      <div class="govuk-grid-column-two-thirds">
+        <% if (messages && messages.info) { %>
+          <div class="govuk-info-message clickable govuk-!-margin-bottom-7">
+            <a class="govuk-link" href="#<%= highlight %>">
+              <%= messages.info[0] %>
             </a>
-        <% } %>
-        <%if (pupilsFormatted.length > 0) { %>
-                    <table id="submitted-pupil-access-arrangements" class="govuk-table govuk-spacious govuk-!-margin-bottom-9">
-                        <caption class="govuk-body govuk-table__caption"></caption>
-                        <thead class="govuk-table__head">
-                        <tr class="govuk-table__row">
-                            <th scope="col" class="govuk-table__header govuk-!-width-full">Pupil</th>
-                            <th scope="col" class="govuk-table__header">Arrangement</th>
-                            <th scope="col" class="govuk-table__header"></th>
-                        </tr>
-                        </thead>
-                        <tbody class="govuk-table__body">
-                        <% pupilsFormatted.forEach((p) => { %>
-                            <tr class="govuk-table__row">
-                                <td scope="row" class="<% if (p.urlSlug === highlight) { %> govuk-highlight-item <% } %> <% if (p.hasAAEditDisabled) { %> govuk-!-font-weight-bold <% } %>">
-                                    <div id="<%= p.urlSlug %>" <% if (p.verticalBarStyle) { %> class="govuk-highlight-wrapper" style="<%= p.verticalBarStyle %>"<% } %>>
-                                    <% if (p.hasAAEditDisabled) { %>
-                                        <%= p.fullName %>
-                                    <% } else { %>
-                                        <a class="govuk-link govuk-!-font-weight-bold name-text-wrap"
-                                            href="/access-arrangements/select-access-arrangements/<%= p.urlSlug %>"><%= p.fullName %></a>
-                                        <% } %>
-                                        <% if (p.showDoB) { %>
-                                            <div class="govuk-font-greyed-out govuk-!-font-size-16
-                                            name-text-wrap">Date of birth: <%= p.formattedDateOfBirth %></div>
-                                        <% } %>
-                                    </div>
-                                </td>
-                                <td scope="row" class="access-arrangements-list">
-                                <% p.arrangements && p.arrangements.forEach((pupilAccessArrangement) => { %>
-                                    <div><%= pupilAccessArrangement %></div>
-                                <% }) %>
-                                </td>
-                                <td>
-                                <% if(p.hasCompletedCheck) { %>
-                                  <% if(p.retroInputAssistant === true && (availabilityData.canEditArrangements && aaViewMode === 'edit')) { %>
-                                    <a class="govuk-link modal-link" id="js-modal-link" href="/access-arrangements/delete-retro-input-assistant/<%= p.urlSlug %>">Remove Retrospective Input Assistant</a>
-                                  <% } else { %>
-                                    Completed Check
-                                  <% } %>
-                                <% } else if(p.notTakingCheck) { %>
-                                    Not taking check
-                                <% } else if (availabilityData.canEditArrangements && aaViewMode === 'edit') { %>
-                                    <a class="govuk-link" href="/access-arrangements/select-access-arrangements/<%= p.urlSlug %>">Edit</a>
-                                <% } %>
-                                </td>
-                            </tr>
-                        <% }) %>
-                        </tbody>
-                    </table>
-        <% } else { %>
-            <p class="govuk-body govuk-!-margin-top-4 govuk-!-margin-bottom-9">No pupils with access arrangements.</p>
-        <% } %>
+          </div>
+          <% } %>
+            <% if (messages && messages.deleteInfo) { %>
+              <div class="govuk-body govuk-info-message govuk-!-margin-bottom-7">
+                <%= messages.deleteInfo[0] %>
+              </div>
+              <% } %>
+                <%- partial('partials/_readonly', {availabilityData}) %>
+                  <h1 class="govuk-heading-xl">Enable access arrangements for pupils who need them</h1>
+                  <%- partial('partials/_gds_session_expiry') %>
+                    <p class="govuk-body">
+                      Access arrangements may be appropriate for pupils with specific needs who require additional
+                      arrangements so they can take part in the check. Support given should be based on normal classroom
+                      practice and should never advantage or disadvantage pupils.
+                    </p>
+                    <p>
+                      Pupils should familiarise themselves with access arrangements applied using the try it out check,
+                      to ensure the arrangements meet their needs before taking the official check.
+                    </p>
+                    <% if (aaViewMode==='readonly' ) { %>
+                      <button type="submit" disabled="disabled" aria-disabled="true"
+                        class="govuk-button govuk-button--disabled" data-module="govuk-button">
+                        View pupils and assign arrangements
+                      </button>
+                      <% } else { %>
+                        <a href="/access-arrangements/select-access-arrangements" role="button" draggable="false"
+                          class="govuk-button" data-module="govuk-button">
+                          View pupils and assign arrangements
+                        </a>
+                        <% } %>
+                          <%if (pupilsFormatted.length> 0) { %>
+                            <table id="submitted-pupil-access-arrangements"
+                              class="govuk-table govuk-spacious govuk-!-margin-bottom-9">
+                              <caption class="govuk-body govuk-table__caption"></caption>
+                              <thead class="govuk-table__head">
+                                <tr class="govuk-table__row">
+                                  <th scope="col" class="govuk-table__header govuk-!-width-full">Pupil</th>
+                                  <th scope="col" class="govuk-table__header">Arrangement</th>
+                                  <th scope="col" class="govuk-table__header"></th>
+                                </tr>
+                              </thead>
+                              <tbody class="govuk-table__body">
+                                <% pupilsFormatted.forEach((p)=> { %>
+                                  <tr class="govuk-table__row">
+                                    <td scope="row"
+                                      class="<% if (p.urlSlug === highlight) { %> govuk-highlight-item <% } %> <% if (p.hasAAEditDisabled) { %> govuk-!-font-weight-bold <% } %>">
+                                      <div id="<%= p.urlSlug %>" <% if (p.verticalBarStyle) { %>
+                                        class="govuk-highlight-wrapper" style="<%= p.verticalBarStyle %>"<% } %>>
+                                            <% if (p.hasAAEditDisabled) { %>
+                                              <%= p.fullName %>
+                                                <% } else { %>
+                                                  <a class="govuk-link govuk-!-font-weight-bold name-text-wrap"
+                                                    href="/access-arrangements/select-access-arrangements/<%= p.urlSlug %>">
+                                                    <%= p.fullName %>
+                                                  </a>
+                                                  <% } %>
+                                                    <% if (p.showDoB) { %>
+                                                      <div class="govuk-font-greyed-out govuk-!-font-size-16
+                                            name-text-wrap">Date of birth: <%= p.formattedDateOfBirth %>
+                                                      </div>
+                                                      <% } %>
+                                      </div>
+                                    </td>
+                                    <td scope="row" class="access-arrangements-list">
+                                      <% p.arrangements && p.arrangements.forEach((pupilAccessArrangement)=> { %>
+                                        <div>
+                                          <%= pupilAccessArrangement %>
+                                        </div>
+                                        <% }) %>
+                                    </td>
+                                    <td>
+                                      <% if(p.hasCompletedCheck) { %>
+                                        <% if(p.retroInputAssistant===true && (availabilityData.canEditArrangements &&
+                                          aaViewMode==='edit' )) { %>
+                                          <a class="govuk-link modal-link" id="js-modal-link"
+                                            href="/access-arrangements/delete-retro-input-assistant/<%= p.urlSlug %>">Remove
+                                            Retrospective Input Assistant</a>
+                                          <% } else { %>
+                                            Completed Check
+                                            <% } %>
+                                              <% } else if(p.notTakingCheck) { %>
+                                                Not taking check
+                                                <% } else if (availabilityData.canEditArrangements &&
+                                                  aaViewMode==='edit' ) { %>
+                                                  <a class="govuk-link"
+                                                    href="/access-arrangements/select-access-arrangements/<%= p.urlSlug %>">Edit</a>
+                                                  <% } %>
+                                    </td>
+                                  </tr>
+                                  <% }) %>
+                              </tbody>
+                            </table>
+                            <% } else { %>
+                              <p class="govuk-body govuk-!-margin-top-4 govuk-!-margin-bottom-9">No pupils with access
+                                arrangements.</p>
+                              <% } %>
 
-            <%- retroInputAssistantText %>
+                                <%- retroInputAssistantText %>
 
-            <div class="govuk-back-to-top">
-                <a class="govuk-link govuk-link--no-visited-state app-back-to-top__link" href="#top">
-                    <svg role="presentation" focusable="false" class="app-back-to-top__icon" xmlns="http://www.w3.org/2000/svg" width="13" height="17" viewBox="0 0 13 17">
-                        <path fill="currentColor" d="M6.5 0L0 6.5 1.4 8l4-4v12.7h2V4l4.3 4L13 6.4z"></path>
-                    </svg>Back to top
-                </a>
-            </div>
-        </div>
-        <div class="govuk-grid-column-one-third" aria-label="sidebar">
-            <aside class="app-related-items" role="complementary">
-                <h2 class="govuk-heading-m" id="subsection-title">
-                    Related
-                </h2>
-                <nav role="navigation" aria-labelledby="subsection-title">
-                    <ul class="govuk-list govuk-!-font-size-16">
-                        <li>
-                            <a class="govuk-link" href="<%- guidancePdf %>" target="_blank" rel="noopener noreferrer">Read the guidance and watch videos</a>
-                        </li>
-                        <li>
-                            <a class="govuk-link" href="/pupils-not-taking-the-check/pupils-list">Give a reason why
-                                pupils are not taking the check</a>
-                        </li>
-                        <li>
-                            <% if (pinGenerationEligibilityData.isFamiliarisationPinGenerationAllowed) { %>
-                                <a class="govuk-link" href="/pupil-pin/generate-familiarisation-pins-overview">Generate passwords and PINs for the try it out check</a>
-                            <% } %>
-                        </li>
-                    </ul>
-                </nav>
-            </aside>
-        </div>
+                                  <div class="govuk-back-to-top">
+                                    <a class="govuk-link govuk-link--no-visited-state app-back-to-top__link"
+                                      href="#top">
+                                      <svg role="presentation" focusable="false" class="app-back-to-top__icon"
+                                        xmlns="http://www.w3.org/2000/svg" width="13" height="17" viewBox="0 0 13 17">
+                                        <path fill="currentColor" d="M6.5 0L0 6.5 1.4 8l4-4v12.7h2V4l4.3 4L13 6.4z">
+                                        </path>
+                                      </svg>Back to top
+                                    </a>
+                                  </div>
+      </div>
+      <div class="govuk-grid-column-one-third" aria-label="sidebar">
+        <aside class="app-related-items" role="complementary">
+          <h2 class="govuk-heading-m" id="subsection-title">
+            Related
+          </h2>
+          <nav role="navigation" aria-labelledby="subsection-title">
+            <ul class="govuk-list govuk-!-font-size-16">
+              <li>
+                <a class="govuk-link" href="<%- guidancePdf %>" target="_blank" rel="noopener noreferrer">Read the
+                  guidance and watch videos</a>
+              </li>
+              <li>
+                <a class="govuk-link" href="/pupils-not-taking-the-check/pupils-list">Give a reason why
+                  pupils are not taking the check</a>
+              </li>
+              <li>
+                <% if (pinGenerationEligibilityData.isFamiliarisationPinGenerationAllowed) { %>
+                  <a class="govuk-link" href="/pupil-pin/generate-familiarisation-pins-overview">Generate passwords and
+                    PINs for the try it out check</a>
+                  <% } %>
+              </li>
+            </ul>
+          </nav>
+        </aside>
+      </div>
     </div>
-</main>
-<%- partial('partials/_gds_modal_box', {
-  modalTitle: 'Remove input assistant',
-  modalText: 'Are you sure you want to remove the input assistant for this pupil?',
-  modalConfirmationLabel: 'Yes',
-  modalConfirmationUrl: '#',
-  modalCancelLabel: 'No',
-  modalCancelUrl: '#'
-}) %>
+  </main>
+  <%- partial('partials/_gds_modal_box', { modalTitle: 'Remove input assistant' ,
+    modalText: 'Are you sure you want to remove the input assistant for this pupil?' , modalConfirmationLabel: 'Yes' ,
+    modalConfirmationUrl: '#' , modalCancelLabel: 'No' , modalCancelUrl: '#' }) %>
