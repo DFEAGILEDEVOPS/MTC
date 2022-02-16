@@ -23,7 +23,7 @@ export class SchoolImportService {
   private readonly schoolRecordMapper: SchoolRecordMapper
   private readonly jobDataService: IJobDataService
 
-  constructor(pool: ConnectionPool,
+  constructor (pool: ConnectionPool,
     jobResult: SchoolImportJobOutput,
     logger?: ILogger,
     schoolDataService?: ISchoolDataService,
@@ -71,7 +71,6 @@ export class SchoolImportService {
     }
     const jobSlug = blobNameWithoutExtension
     await this.updateJobStatusToProcessing(jobSlug)
-
 
     // Parse the CSV string and get the header mapping
     let mapping, columnHeaders, csvParsed
