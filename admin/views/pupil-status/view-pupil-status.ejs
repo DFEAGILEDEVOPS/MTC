@@ -4,8 +4,8 @@
         <div class="govuk-grid-column-two-thirds">
             <% if (pupilStatusViewData.pupilsWithErrorsCount > 0) { %>
                 <div class="govuk-body govuk-warning-message govuk-!-margin-bottom-7">
-                    <%= pupilStatusViewData.pupilsWithErrorsCount %> <%= pupilStatusViewData.pupilsWithErrorsCount > 1 ? 'issues' : 'issue' %>
-                    with pupils' checks
+                    <%= pupilStatusViewData.pupilsWithErrorsCount %> <%= pupilStatusViewData.pupilsWithErrorsCount > 1 ? 'Checks' : 'Check' %>
+                    with errors
                 </div>
             <% } %>
             <h1 class="govuk-heading-xl">See how many pupils have completed the official check</h1>
@@ -217,7 +217,7 @@
             <details id="green-card-details" class="govuk-details green-card-details" data-module="govuk-details">
                 <summary class="govuk-details__summary">
                         <span class="govuk-details__summary-text">
-                          Completed checks
+                          Checks completed
                         </span>
                 </summary>
                 <div class="govuk-details__text">
@@ -380,7 +380,7 @@
                                 <span class="govuk-!-font-weight-bold">Processing</span>: we are aware the pupil has
                                 taken the official check.
                                 The service may be in high demand and taking longer than normal to process. Please check later
-                                to ensure the status has updated to 'Complete'.
+                                to ensure the status has updated to 'Checks completed'.
                             </p>
                             <p class="app-step-nav__paragraph">
                                 <% if (pupilStatusViewData.remainingLiveCheckDays >= 0) { %>
@@ -442,7 +442,7 @@
                                   <button class="app-step-nav__button app-step-nav__button--title js-step-title-button"
                                           aria-expanded="true" aria-controls="step-panel-4">
                                       <span class="js-step-title-text">
-                                        Completed checks
+                                        Checks completed
                                        </span>
                                       <span class="app-step-nav__toggle-link js-toggle-link"
                                             aria-hidden="true">hide
