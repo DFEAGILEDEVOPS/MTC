@@ -2,6 +2,7 @@ import { TYPES, MAX } from 'mssql'
 import { IModifyResult, ISqlParameter, ISqlService, SqlService } from '../../sql/sql.service'
 import { JobStatusCode } from '../../common/job-status-code'
 import moment from 'moment'
+import { isArray } from 'ramda-adjunct'
 
 export type JobStatusOutcomes = (JobStatusCode.Failed | JobStatusCode.CompletedWithErrors | JobStatusCode.CompletedSuccessfully)
 
@@ -85,7 +86,9 @@ export class JobDataService implements IJobDataService {
       value: jobSlug
     }]
     const result = await this.sqlService.query(sql, params)
-    if (result === undefined || result.lenght === 0) return undefined
+    if (result === undefined) return undefined
+    if (!isArray(result)) return undefined
+    if (result.length === 0) return undefined
     return result[0].id
   }
 }
