@@ -4,8 +4,8 @@
         <div class="govuk-grid-column-two-thirds">
             <% if (pupilStatusViewData.pupilsWithErrorsCount > 0) { %>
                 <div class="govuk-body govuk-warning-message govuk-!-margin-bottom-7">
-                    <%= pupilStatusViewData.pupilsWithErrorsCount %> <%= pupilStatusViewData.pupilsWithErrorsCount > 1 ? 'issues' : 'issue' %>
-                    with pupils' checks
+                    <%= pupilStatusViewData.pupilsWithErrorsCount %> <%= pupilStatusViewData.pupilsWithErrorsCount > 1 ? 'Checks' : 'Check' %>
+                    with errors
                 </div>
             <% } %>
             <h1 class="govuk-heading-xl">See how many pupils have completed the official check</h1>
@@ -128,7 +128,7 @@
                                     day<%-pupilStatusViewData.remainingLiveCheckDays !== 1 ? 's' : '' %>.
                                     Please ensure pupils have taken the official check before 4pm
                                     on <%= pupilStatusViewData.liveCheckEndDate %>.
-                                    Go to <a href="/pupil-pin/generate-live-pins-overview">generate school passwords and
+                                    Go to <a href="/pupil-pin/generate-live-pins-overview">generate school password and
                                         PINs for the check</a> to continue.
                                 </p>
                             <% } else { %>
@@ -217,7 +217,7 @@
             <details id="green-card-details" class="govuk-details green-card-details" data-module="govuk-details">
                 <summary class="govuk-details__summary">
                         <span class="govuk-details__summary-text">
-                          Completed checks
+                          Checks completed
                         </span>
                 </summary>
                 <div class="govuk-details__text">
@@ -321,7 +321,7 @@
                                     To enable this <a href="/restart/select-restart-list">select pupils to restart the
                                       check</a>
                                     then
-                                    <a href="/pupil-pin/generate-live-pins-overview">generate school passwords and PINs for the official check.</a>
+                                    <a href="/pupil-pin/generate-live-pins-overview">generate school password and PINs for the official check.</a>
                                 <% } else { %>
                                     The check window has now closed. <a href="/pupils-not-taking-the-check/pupils-list">Give a reason why pupils are not taking the check</a>. You can then sign the HDF.
                                 <% } %>
@@ -333,7 +333,7 @@
                                     To enable this <a href="/restart/select-restart-list">select pupils to restart the
                                         check</a>
                                     then
-                                    <a href="/pupil-pin/generate-live-pins-overview">generate school passwords and PINs for the official check.</a>
+                                    <a href="/pupil-pin/generate-live-pins-overview">generate school password and PINs for the official check.</a>
                                 <% } else { %>
                                     The check window has now closed. <a href="/pupils-not-taking-the-check/pupils-list">Give a reason why pupils are not taking the check</a>. You can then sign the HDF.
                                 <% } %>
@@ -442,7 +442,7 @@
                                   <button class="app-step-nav__button app-step-nav__button--title js-step-title-button"
                                           aria-expanded="true" aria-controls="step-panel-4">
                                       <span class="js-step-title-text">
-                                        Completed checks
+                                        Checks completed
                                        </span>
                                       <span class="app-step-nav__toggle-link js-toggle-link"
                                             aria-hidden="true">hide

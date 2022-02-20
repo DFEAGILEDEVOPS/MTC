@@ -135,7 +135,7 @@ if (formData.urlSlug) {
                             <span class="govuk-label govuk-!-font-weight-bold" id="date-of-birth">Date of birth</span>
                         </legend>
                         <span id="date-of-birth-hint" class="govuk-hint">
-                          For example: 30 6 <%= pupilExampleYear %>
+                          Format: DD MM YYYY
                         </span>
                         <% const dobErrors = ['dob-day', 'dob-month', 'dob-year'].filter(f => err.isError(f)) %>
                         <% if (dobErrors.every(e => (err.get(e) === err.get(dobErrors[0])))) { %>

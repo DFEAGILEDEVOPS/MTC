@@ -34,11 +34,14 @@
             <%- partial('partials/_gds_session_expiry') %>
             <p class="no-print govuk-body">
               Your school password and <%= pinEnv === 'live' ? 'official' : 'try it out' %> check PINs have been generated for selected pupils.
-              You can print the PINs by selecting the pupils, or groups, then selecting ‘Print selected’.<br/>
+              You can print the PINs by selecting the pupils, or groups, then selecting ‘Print selected’.</p>
+            <p class="no-print govuk-body">
               You will notice that the printed slips have '<%= pinEnv === 'live' ? 'Official' : 'Try it out' %>' on them.
             </p>
             <% if (pinEnv !== 'live') { %>
               <p>Pupils can use their PINs for the try it out check multiple times throughout the day.</p>
+            <% } else { %>
+              <p>This list contains all active PINs, once pupils have started the official check the PIN will no longer be active.</p>
             <% } %>
             <p>
               Your school password and pupil PINs will expire at 4pm each day.
