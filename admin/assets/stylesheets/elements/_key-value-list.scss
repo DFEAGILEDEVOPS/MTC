@@ -1,0 +1,23 @@
+dl.key-value-list {
+  float: left;
+  padding: 0;
+  border-bottom: 1px solid #999;
+}
+
+.key-value-list dt {
+  clear: left;
+  float: left;
+  margin: 0;
+  padding: 5px;
+  border-top: 1px solid #999;
+  width: 10em;
+}
+
+.key-value-list dd {
+  float: left;
+  margin: 0;
+  padding: 5px;
+  border-top: 1px solid #999;
+  font-weight: bold;
+  width: 15em;
+}
