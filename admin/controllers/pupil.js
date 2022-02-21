@@ -16,6 +16,7 @@ const businessAvailabilityService = require('../services/business-availability.s
 const pupilEditService = require('../services/pupil-edit.service')
 const ValidationError = require('../lib/validation-error')
 const logger = require('../services/log.service').getLogger()
+const { PupilHistoryService } = require('../services/pupil-history-service/pupil-history-service')
 
 const controller = {
   /**
@@ -259,6 +260,21 @@ const controller = {
     res.render('redirect-delay.ejs', {
       redirectMessage: 'Saving changes...'
     })
+  },
+
+  getViewPupilHistory: async function getViewPupilHistory (req, res, next) {
+    try {
+      res.locals.pageTitle = 'Pupil history'
+      req.breadcrumbs('View, add or edit pupils on your school\'s register', '/pupil-register/pupils-list')
+      req.breadcrumbs(res.locals.pageTitle)
+      const pupilHistory = await PupilHistoryService.getHistory(req.params.urlSlug)
+      return res.render('pupil-register/pupil-history', {
+        breadcrumbs: req.breadcrumbs(),
+        pupilHistory
+      })
+    } catch (error) {
+      next(error)
+    }
   }
 }
 

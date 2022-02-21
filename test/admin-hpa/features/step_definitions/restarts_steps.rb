@@ -157,6 +157,7 @@ And(/^Pupil has taken a 3rd check$/) do
 end
 
 Then(/^I should see the Restart Status '(.*)' for the pupil$/) do |restart_status|
+  p @details_hash[:last_name], @details_hash[:first_name]
   restarts_page.load
   Timeout.timeout(ENV['WAIT_TIME'].to_i){visit current_url until (restarts_page.restarts_pupil_list.rows.find {|row| row.name.text.eql?("#{@details_hash[:last_name]}, #{@details_hash[:first_name]}")}).status.text == restart_status}
   pupil_row = restarts_page.restarts_pupil_list.rows.find {|row| row.name.text.eql?("#{@details_hash[:last_name]}, #{@details_hash[:first_name]}")}
@@ -265,8 +266,8 @@ Given(/^pupil logs in and completed the check$/) do
   Timeout.timeout(ENV['WAIT_TIME'].to_i) {sleep 1 until RequestHelper.auth(school_password, pupil_pin).code == 200}
   RequestHelper.auth(school_password, pupil_pin)
   @check_code = check_entry['checkCode']
-  FunctionsHelper.complete_check_via_check_code([@check_code])
-  AzureTableHelper.wait_for_received_check(@school['entity']['urlSlug'], @check_code)
+  FunctionsHelper.complete_check_via_check_code([@check_code]) if check_entry["isLiveCheck"]
+  AzureTableHelper.wait_for_received_check(@school['entity']['urlSlug'], @check_code) if check_entry["isLiveCheck"]
 end
 
 And(/^I generate a pin for that pupil$/) do

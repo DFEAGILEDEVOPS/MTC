@@ -8,6 +8,8 @@ const schoolHomeFeatureEligibilityPresenter = require('../helpers/school-home-fe
 const businessAvailabilityService = require('../services/business-availability.service')
 const ValidationError = require('../lib/validation-error')
 const logger = require('../services/log.service').getLogger()
+const pupilService = require('../services/pupil.service')
+const { DiscretionaryRestartService } = require('../services/discretionary-restart.service/discretionary-restart.service')
 
 const controller = {}
 
@@ -160,6 +162,40 @@ controller.postDeleteRestart = async function postDeleteRestart (req, res, next)
   }
   req.flash('info', `Restart removed for ${pupil.lastName}, ${pupil.foreName}`)
   return res.redirect('/restart/overview')
+}
+
+controller.postSubmitAllowDiscretionaryRestart = async function postSubmitAllowDiscretionaryRestart (req, res, next) {
+  let pupil
+  const pupilSlug = req.body && req.body.pupilSlug
+  try {
+    pupil = await pupilService.fetchOnePupilBySlug(pupilSlug, req.user.schoolId)
+    if (pupil === null || pupil === undefined) {
+      return next(new Error('Unknown pupil'))
+    }
+    await DiscretionaryRestartService.grantDiscretionaryRestart(pupilSlug)
+    req.flash('info', `Discretionary restart allowed for ${pupil.foreName} ${pupil.lastName}`)
+    return res.redirect(`/pupil-register/history/${encodeURIComponent(pupilSlug).toLowerCase()}`)
+  } catch (error) {
+    logger.error(`Failed to apply a discretionary restart for ${pupilSlug}`)
+    return next(error)
+  }
+}
+
+controller.postSubmitRevokeDiscretionaryRestart = async function postSubmitRevokeDiscretionaryRestart (req, res, next) {
+  let pupil
+  const pupilSlug = req.body && req.body.pupilSlug
+  try {
+    pupil = await pupilService.fetchOnePupilBySlug(pupilSlug, req.user.schoolId)
+    if (pupil === null || pupil === undefined) {
+      return next(new Error('Unknown pupil'))
+    }
+    await DiscretionaryRestartService.removeDiscretionaryRestart(pupilSlug)
+    req.flash('info', `Discretionary restart revoked for ${pupil.foreName} ${pupil.lastName}`)
+    return res.redirect(`/pupil-register/history/${encodeURIComponent(pupilSlug).toLowerCase()}`)
+  } catch (error) {
+    logger.error(`Failed to apply a discretionary restart for ${pupilSlug}`)
+    return next(error)
+  }
 }
 
 module.exports = controller

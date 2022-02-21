@@ -120,10 +120,7 @@ restartService.validateIncomingPupils = async (schoolId, pupilIds) => {
   )
 
   if (difference.size > 0) {
-    logger.error(
-      `checkStartService.prepareCheck: incoming pupiIds [${pupilIds.join(', ')}] not found for school ID [${schoolId}]: `,
-      difference
-    )
+    logger.error(`restartService.validateIncomingPupils: incoming pupiIds [${pupilIds.join(', ')}] not found for school ID [${schoolId}]: [${Array.from(difference).join(', ')}]`)
     throw new Error('One of the pupils is not eligible for a restart')
   }
 }

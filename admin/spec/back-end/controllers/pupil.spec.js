@@ -19,6 +19,7 @@ const pupilEditService = require('../../../services/pupil-edit.service')
 const ValidationError = require('../../../lib/validation-error')
 const sut = require('../../../controllers/pupil')
 const csvService = require('../../../services/csv-file.service')
+const { PupilHistoryService } = require('../../../services/pupil-history-service/pupil-history-service')
 
 describe('pupil controller:', () => {
   let next
@@ -424,6 +425,43 @@ describe('pupil controller:', () => {
       expect(schoolService.findOneById).toHaveBeenCalledWith(pupilMock.school_id)
       expect(pupilEditService.update).toHaveBeenCalled()
       expect(res.render).toHaveBeenCalled()
+    })
+  })
+
+  describe('getViewPupilHistory', () => {
+    const goodReqParams = {
+      method: 'GET',
+      url: '/pupil-register/history/9f358669-0946-49b2-a1a2-1b966e0e815a',
+      session: {
+        id: 'ArRFdOiz1xI8w0ljtvVuD6LU39pcfgqy'
+      },
+      params: {
+        urlSlug: '9f358669-0946-49b2-a1a2-1b966e0e815a'
+      }
+    }
+    test('it calls the getHistory service and renders the result', async () => {
+      const mockHistory = {
+        school: {},
+        pupils: [],
+        restarts: [],
+        checks: [],
+        meta: {}
+      }
+      const res = getRes()
+      const req = getReq(goodReqParams)
+      jest.spyOn(res, 'render').mockImplementation()
+      jest.spyOn(PupilHistoryService, 'getHistory').mockResolvedValue(mockHistory)
+      await sut.getViewPupilHistory(req, res, next)
+      expect(PupilHistoryService.getHistory).toHaveBeenCalled()
+      expect(res.render).toHaveBeenCalled()
+    })
+
+    test('it calls next() if an error is thrown in the controller', async () => {
+      const res = getRes()
+      const req = getReq(goodReqParams)
+      jest.spyOn(PupilHistoryService, 'getHistory').mockRejectedValue(new Error('mock error'))
+      await sut.getViewPupilHistory(req, res, next)
+      expect(next).toHaveBeenCalled()
     })
   })
 })
