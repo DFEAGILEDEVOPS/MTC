@@ -19,7 +19,6 @@ router.get(
   getSelectOfficialOrTryItOutPinGen
 )
 
-// TODO: JMS: Move new page to replace the overview page which has a lot of good behaviour
 router.get(
   '/generate-:pinEnv-pins-overview',
   isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),
