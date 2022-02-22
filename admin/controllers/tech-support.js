@@ -175,7 +175,7 @@ const controller = {
       res.send(JSON.stringify(payload, null, '    '))
     } catch (error) {
       res.type('txt')
-      res.send(`${ error }`)
+      res.send(`${error}`)
     }
   },
 
@@ -213,7 +213,7 @@ const controller = {
     try {
       const key = req.body.key.trim()
       if (redisService.validateKey(key)) {
-        return res.redirect(`/tech-support/redis/drop/confirm/${ encodeURIComponent(key) }`)
+        return res.redirect(`/tech-support/redis/drop/confirm/${encodeURIComponent(key)}`)
       } else {
         const error = new ValidationError()
         error.addError('key', redisErrorMessages.dropNotAllowed)
@@ -250,7 +250,7 @@ const controller = {
       const key = req.body.key
       const isAllowed = await redisService.dropKeyIfAllowed(key)
       if (isAllowed) {
-        req.flash('info', `Key '${ key }' was deleted from redis`)
+        req.flash('info', `Key '${key}' was deleted from redis`)
       } else {
         // Key is not allowed / not found
         const error = new Error('Invalid key')
@@ -284,10 +284,10 @@ const controller = {
       const item = await redisService.get(key)
       if (item === undefined) {
         const error = new ValidationError()
-        error.addError('key', `Key '${ key }' does not exist`)
+        error.addError('key', `Key '${key}' does not exist`)
         return controller.getRedisSearchKey(req, res, next, error)
       }
-      res.redirect(`/tech-support/redis/examine/${ encodeURIComponent(key) }`)
+      res.redirect(`/tech-support/redis/examine/${encodeURIComponent(key)}`)
     } catch (error) {
       return next(error)
     }
@@ -338,8 +338,8 @@ const controller = {
       if (!isValid) {
         return next(new Error('Unknown token detected'))
       }
-      const qs = keys.map(k => `k=${ encodeURIComponent(k) }`).join('&')
-      res.redirect(`/tech-support/redis/multiple/drop/confirm?${ qs }`)
+      const qs = keys.map(k => `k=${encodeURIComponent(k)}`).join('&')
+      res.redirect(`/tech-support/redis/multiple/drop/confirm?${qs}`)
     } catch (error) {
       return next(error)
     }
@@ -374,7 +374,7 @@ const controller = {
       await redisService.multiDrop(keys)
       const t2 = moment().valueOf()
       const timeTaken = (t2 - t1) / 1000
-      req.flash('info', `Redis keys [${ keys.join(', ') }] dropped in ${ timeTaken } seconds`)
+      req.flash('info', `Redis keys [${keys.join(', ')}] dropped in ${timeTaken} seconds`)
       res.redirect('/tech-support/redis-overview')
     } catch (error) {
       return next(error)

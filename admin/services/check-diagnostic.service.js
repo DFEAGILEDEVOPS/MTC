@@ -4,7 +4,6 @@ const dataService = require('./data-access/check-diagnostic.data.service')
 const schoolService = require('./school.service')
 const azureTableStorageService = require('./azure-table-storage.service')
 
-
 const service = {
   /**
    * @description looks up diagnostic check record by check code
@@ -34,21 +33,21 @@ const service = {
     return markedCheckEntity
   },
 
-    /**
+  /**
    * @description returns a marked check entity or undefined [tech-support role utility function]
    * @param {string} checkCode - valid UUID and check code
    * @returns Promise<azureTableStorageService.MarkedCheckEntity>
    */
-     getReceivedCheckEntityByCheckCode: async function getReceivedCheckEntityByCheckCode (checkCode) {
-      if (!checkCode) {
-        throw new Error('checkCode is required')
-      }
-      // We need the school UUID in order to retrieve from table storage
-      const check = await service.getByCheckCode(checkCode)
-      const school = await schoolService.findOneById(check.school_id)
-      const receivedCheckEntity = await azureTableStorageService.retrieveReceivedCheck(school.urlSlug, check.checkCode)
-      return receivedCheckEntity
+  getReceivedCheckEntityByCheckCode: async function getReceivedCheckEntityByCheckCode (checkCode) {
+    if (!checkCode) {
+      throw new Error('checkCode is required')
     }
+    // We need the school UUID in order to retrieve from table storage
+    const check = await service.getByCheckCode(checkCode)
+    const school = await schoolService.findOneById(check.school_id)
+    const receivedCheckEntity = await azureTableStorageService.retrieveReceivedCheck(school.urlSlug, check.checkCode)
+    return receivedCheckEntity
+  }
 }
 
 module.exports = service

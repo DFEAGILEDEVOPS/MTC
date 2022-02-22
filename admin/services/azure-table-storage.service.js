@@ -106,7 +106,7 @@ const azureTableStorageService = {
     if (!uuid.validate(schoolUuid)) {
       throw new Error('Invalid UUID given for school')
     }
-    if(!uuid.validate(checkCode)) {
+    if (!uuid.validate(checkCode)) {
       throw new Error('Invalid UUID given for checkCode')
     }
     const entity = await azureTableDataService.retrieveEntity(markedCheckTable, schoolUuid.toLowerCase(), checkCode.toLowerCase())
@@ -123,11 +123,11 @@ const azureTableStorageService = {
    * @param {string} checkCode
    * @returns {Promise<ReceivedCheckEntity | undefined>}
    */
-  retrieveReceivedCheck: async function retrieveReceivedCheck(schoolUuid, checkCode) {
+  retrieveReceivedCheck: async function retrieveReceivedCheck (schoolUuid, checkCode) {
     if (!uuid.validate(schoolUuid)) {
       throw new Error('Invalid UUID given for school')
     }
-    if(!uuid.validate(checkCode)) {
+    if (!uuid.validate(checkCode)) {
       throw new Error('Invalid UUID given for checkCode')
     }
     const entity = await azureTableDataService.retrieveEntity(checkReceivedTable, schoolUuid.toLowerCase(), checkCode.toLowerCase())
