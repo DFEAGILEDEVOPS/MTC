@@ -28,10 +28,12 @@ module.exports.getRestartsForSchool = async function getRestartsForSchool (schoo
       totalCheckCount: R.isNil(r.totalCheckCount) ? 0 : r.totalCheckCount,
       status: ''
     }
-    if (r.totalCheckCount === config.RESTART_MAX_ATTEMPTS + 1) {
-      update.status = 'Maximum number of restarts taken'
+    if (r.isDiscretionaryRestartAvailable) {
+      update.status = 'A discretionary restart is available'
     } else if (r.restartCheckId === null || (r.restartCheckReceived === false && r.restartCheckComplete === false)) {
       update.status = 'Remove restart'
+    } else if (r.totalCheckCount >= config.RESTART_MAX_ATTEMPTS + 1) {
+      update.status = 'Maximum number of restarts taken'
     } else {
       update.status = 'Restart taken'
     }
