@@ -29,7 +29,7 @@
     "watch:integration": "yarn jest --watch --coverage=no --config ./tests-integration/jest.integration.config.js"
   },
   "mtc": {
-    "assets-version": "603dd91e59281167a08dcacd9687f414"
+    "assets-version": "1a3a2c31afce137dfcba1d51690fef8b"
   },
   "engines": {
     "node": ">= 14"
@@ -79,7 +79,7 @@
     "merge-stream": "^2.0.0",
     "moment-timezone": "^0.5.23",
     "morgan": "~1.10.0",
-    "mssql": "7.3.0",
+    "mssql": "8.0.0",
     "nocache": "^3.0.1",
     "node-dir": "^0.1.17",
     "openid-client": "^4.2.2",
@@ -125,11 +125,11 @@
     "gulp-typescript": "^6.0.0-alpha.1",
     "gulp-uglify": "^3.0.0",
     "jest": "^27.0.6",
-    "karma": "^6.3.14",
-    "karma-chrome-launcher": "^3.1.0",
-    "karma-coverage": "^2.0.3",
-    "karma-jasmine": "^4.0.1",
-    "karma-remap-istanbul": "^0.6.0",
+    "karma": "~6.3.4",
+    "karma-chrome-launcher": "~3.1.0",
+    "karma-coverage": "~2.0.3",
+    "karma-jasmine": "~4.0.1",
+    "karma-remap-istanbul": "~0.6.0",
     "node-mocks-http": "^1.6.6",
     "nodemon": "^2.0.12",
     "standard": "^16.0.3",
