@@ -62,7 +62,7 @@ export class JobDataService implements IJobDataService {
       {
         name: 'jobOutput',
         type: TYPES.NVarChar(MAX),
-        value: jobOutput
+        value: JSON.stringify(jobOutput)
       },
       {
         name: 'errorOutput',
