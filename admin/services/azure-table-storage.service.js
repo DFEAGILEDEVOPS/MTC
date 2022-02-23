@@ -5,14 +5,14 @@ const checkReceivedTable = 'receivedCheck'
 const moment = require('moment')
 
 /**
- * @typedef {object} MarkedAnswer
+ * @typedef {object} Answer
  * @property {number} factor1
  * @property {number} factor2
  * @property {string} answer
  * @property {number} sequenceNumber
  * @property {string} question e.g. 2x10
  * @property {moment.Moment} clientTimestamp - browser timestamp of when the answer was received
- * @property {boolean} isCorrect - true if a mark was awarded
+ * @property {boolean} [isCorrect] true if a mark was awarded, only valid for checkResult table, not in receivedCheck
  *
  */
 
@@ -23,7 +23,7 @@ const moment = require('moment')
  * @property {moment.Moment} timestamp
  * @property {number} mark
  * @property {number} maxMarks
- * @property {MarkedAnswer[]} markedAnswers
+ * @property {Answer[]} markedAnswers
  * @property {moment.Moment} markedAt timestamp of when the marked was performed
  *
  */
@@ -38,7 +38,7 @@ const moment = require('moment')
  * @property {boolean} isValid
  * @property {string} processingError
  * @property {moment.Moment} validatedAt
- * @property {MarkedAnswer[] | null} answers
+ * @property {Answer[] | null} answers
  *
  */
 
@@ -83,6 +83,7 @@ const azureTableStorageService = {
         // json decode error / ignore
       }
     }
+
     return {
       partitionKey: rawReceivedCheck.partitionKey,
       rowKey: rawReceivedCheck.rowKey,
