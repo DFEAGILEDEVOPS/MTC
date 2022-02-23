@@ -1,10 +1,10 @@
 'use strict'
-
-/* globals describe expect test jest afterEach */
+/* globals describe expect test jest afterEach beforeEach */
 
 const sut = require('../../../services/check-diagnostic.service')
 const dataService = require('../../../services/data-access/check-diagnostic.data.service')
-
+const schoolService = require('../../../services/school.service')
+const azureTableStorageService = require('../../../services/azure-table-storage.service')
 const checkCode = 'dd3ed042-648f-49bd-a559-45127596716d'
 
 describe('check diagnostics service', () => {
@@ -38,6 +38,42 @@ describe('check diagnostics service', () => {
       const spacedCheckCode = ` ${checkCode} `
       await sut.getByCheckCode(spacedCheckCode)
       expect(dataService.getByCheckCode).toHaveBeenCalledWith(checkCode)
+    })
+  })
+
+  describe('#getMarkedCheckEntityByCheckCode', () => {
+    beforeEach(() => {
+      jest.spyOn(sut, 'getByCheckCode').mockResolvedValue({ checkCode: '1234', school_id: 42 })
+      jest.spyOn(schoolService, 'findOneById').mockResolvedValue({ urlSlug: '4567' })
+      jest.spyOn(azureTableStorageService, 'retrieveMarkedCheck').mockResolvedValue({ mock: 'markedCheck' })
+    })
+
+    test('it throws an error if a checkcode is not provided', async () => {
+      await expect(sut.getMarkedCheckEntityByCheckCode()).rejects.toThrow('checkCode is required')
+    })
+
+    test('it calls the service to retrieve the received check, and returns the result', async () => {
+      const res = await sut.getMarkedCheckEntityByCheckCode(checkCode)
+      expect(azureTableStorageService.retrieveMarkedCheck).toHaveBeenCalledWith('4567', '1234')
+      expect(res).toEqual({ mock: 'markedCheck' })
+    })
+  })
+
+  describe('#getReceivedCheckEntityByCheckCode', () => {
+    beforeEach(() => {
+      jest.spyOn(sut, 'getByCheckCode').mockResolvedValue({ checkCode: '1234', school_id: 42 })
+      jest.spyOn(schoolService, 'findOneById').mockResolvedValue({ urlSlug: '4567' })
+      jest.spyOn(azureTableStorageService, 'retrieveReceivedCheck').mockResolvedValue({ mock: 'receivedCheck' })
+    })
+
+    test('it throws an error if a checkcode is not provided', async () => {
+      await expect(sut.getReceivedCheckEntityByCheckCode()).rejects.toThrow('checkCode is required')
+    })
+
+    test('it calls the service to retrieve the received check, and returns the result', async () => {
+      const res = await sut.getReceivedCheckEntityByCheckCode(checkCode)
+      expect(azureTableStorageService.retrieveReceivedCheck).toHaveBeenCalledWith('4567', '1234')
+      expect(res).toEqual({ mock: 'receivedCheck' })
     })
   })
 })
