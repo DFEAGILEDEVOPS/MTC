@@ -41,6 +41,11 @@
                     <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">
                         <a class="no-underline sortingLink">Group<span class="sort-icon"><span>Sort by group</span></span></a>
                     </th>
+                    <% if (showPupilAdminLink) { %>
+                        <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">
+                            Pupil history
+                        </td>
+                    <% } %>
                 </tr>
                 </thead>
                 <tbody class="govuk-table__body">
@@ -56,13 +61,15 @@
                                     <span id="pupilName" class="govuk-!-font-weight-bold name-text-wrap"><%= p.fullName %></span>
                                 <% } %>
                                 <% if (p.showDoB) { %>
-                                    <div class="govuk-font-greyed-out govuk-!-font-size-16">Date of birth: <%= p
-                                                .formattedDateOfBirth %></div>
+                                    <div class="govuk-font-greyed-out govuk-!-font-size-16">Date of birth: <%= p.formattedDateOfBirth %></div>
                                 <% } %>
                                 <input type="hidden" id="pupilUpn-<%= i %>" name="pupilUpn" value="<%= p.upn %>"/>
                             </div>
                         </td>
                         <td class="govuk-table__cell"><%= p.group %></td>
+                        <% if (showPupilAdminLink) { %>
+                            <td class="govuk-table__cell"> <a href="/pupil-register/history/<%= p.urlSlug.toLowerCase() %>"> View </a> </td>
+                        <% } %>
                     </tr>
                 <% }) %>
                 </tbody>

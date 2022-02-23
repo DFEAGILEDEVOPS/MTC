@@ -29,10 +29,6 @@ const resultService = {
    */
   assignStatus: function assignStatus (pupil) {
     if (pupil.attendanceReason) {
-      if (pupil.currentCheckId && pupil.checkComplete === false && pupil.complete === true) {
-        // MTC 2021 only - Bug 47473 && 47477
-        return resultsStrings.complete
-      }
       return pupil.attendanceReason
     }
 

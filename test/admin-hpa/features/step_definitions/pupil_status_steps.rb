@@ -62,7 +62,7 @@ end
 
 And(/^I should see a red error box at the top of the page$/) do
   expect(pupil_status_page).to have_warning_message
-  expect(pupil_status_page.warning_message.text).to eql "#{pupil_status_page.checks_with_errors.count.text} issue with pupils' checks"
+  expect(pupil_status_page.warning_message.text).to eql "#{pupil_status_page.checks_with_errors.count.text} Check with errors"
 end
 
 

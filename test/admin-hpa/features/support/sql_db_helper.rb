@@ -636,4 +636,12 @@ class SqlDbHelper
     result.cancel
     school_res
   end
+
+  def self.count_restarts_taken_for_pupil(pupil_id)
+    sql = "select count(*) from mtc_admin.pupilRestart where pupil_id=#{pupil_id} AND isDeleted=0"
+    result = SQL_CLIENT.execute(sql)
+    school_res = result.first
+    result.cancel
+    school_res.values.first
+  end
 end
