@@ -107,7 +107,6 @@ const controller = {
     const jsonError = {
       error: 'Error'
     }
-
     try {
       const checkCode = req.params.checkCode
       if (!checkCode) {
