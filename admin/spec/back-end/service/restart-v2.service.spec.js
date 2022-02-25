@@ -128,7 +128,7 @@ describe('restart-v2.service', () => {
       expect(res[0].totalCheckCount).toBe(0)
     })
 
-    test('it informs the user when a discretionary restart has been allowed', async () => {
+    test('it subtly informs the user when a discretionary restart has been allowed', async () => {
       // Set up so that the user has already had a check and 2 restarts. e.g. the full complement of normally allowed checks
       sample.restartCheckReceived = true
       sample.restartCheckComplete = true
@@ -137,7 +137,7 @@ describe('restart-v2.service', () => {
       sample.isDiscretionaryRestartAvailable = true
       jest.spyOn(restartDataService, 'getRestartsForSchool').mockResolvedValue([sample])
       const res = await sut.getRestartsForSchool(1)
-      expect(res[0].status).toBe('A discretionary restart is available')
+      expect(res[0].status).toBe('Restart taken')
     })
   })
 })
