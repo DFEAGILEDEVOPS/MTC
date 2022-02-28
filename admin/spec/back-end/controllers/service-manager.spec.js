@@ -15,6 +15,7 @@ const schoolService = require('../../../services/school.service')
 const organisationBulkUploadService = require('../../../services/organisation-bulk-upload.service')
 const administrationMessageService = require('../../../services/administration-message.service')
 const auditOperationTypes = require('../../../lib/consts/audit-entry-types')
+const jobService = require('../../../services/job-service')
 
 describe('service manager controller:', () => {
   let next
@@ -1017,6 +1018,16 @@ describe('service manager controller:', () => {
         await controller.postAddSchool(req, res, next)
         const args = schoolService.addSchool.mock.calls[0][0]
         expect(args.name).toBe('Primary Academy')
+      })
+    })
+
+    describe('getJobs', () => {
+      test('it renders jobs', async () => {
+        jest.spyOn(jobService, 'getJobSummary')
+        const req = getReq()
+        const res = getRes()
+        await controller.getJobs(req, res, next)
+        expect(jobService.getJobSummary).toHaveBeenCalled()
       })
     })
   })

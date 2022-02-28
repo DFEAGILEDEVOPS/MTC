@@ -15,6 +15,8 @@ const featureToggles = require('feature-toggles')
 const { formUtil, formUtilTypes } = require('../lib/form-util')
 const organisationBulkUploadService = require('../services/organisation-bulk-upload.service')
 const administrationMessageService = require('../services/administration-message.service')
+const jobService = require('../services/job-service')
+
 const controller = {
 
   /**
@@ -537,6 +539,45 @@ const controller = {
       payload = await schoolService.getAuditPayload(auditEntryId)
       res.type('json')
       res.send(JSON.stringify(payload, null, '    '))
+    } catch (error) {
+      res.type('txt')
+      res.send(`${error}`)
+    }
+  },
+
+  /**
+   * @description Renders job list
+   * @param {object} req
+   * @param {object} res
+   * @param {object} next
+   */
+  getJobs: async function getJobs (req, res, next) {
+    try {
+      res.locals.pageTitle = 'View Jobs'
+      req.breadcrumbs(res.locals.pageTitle)
+      const jobs = jobService.getJobSummary()
+      res.render('service-manager/jobs', {
+        breadcrumbs: req.breadcrumbs(),
+        jobs
+      })
+    } catch (error) {
+      return next(error)
+    }
+  },
+
+  /**
+ * @description Renders audit payload
+ * @param {object} req
+ * @param {object} res
+ * @param {object} next
+ */
+  getJobOutputs: async function getJobOutputs (req, res, next) {
+    const jobId = req.query.jobId.trim()
+    let payload
+    try {
+      payload = await jobService.getJobOutputs(jobId)
+      res.type('txt')
+      res.send(payload)
     } catch (error) {
       res.type('txt')
       res.send(`${error}`)

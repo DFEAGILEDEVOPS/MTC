@@ -1,0 +1,65 @@
+<%- partial('partials/_gds_breadcrumbs_and_sign_out', { breadcrumbs }) %>
+  <main class="govuk-main-wrapper govuk-body" id="main-content" role="main">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl">Jobs</h1>
+        <%- partial('partials/_gds_session_expiry') %>
+          <%- partial('partials/_flash-messages') %>
+            <div>
+              <table id="school-audit" class="govuk-table govuk-spacious">
+                <caption class="govuk-body govuk-table__caption">Job History</caption>
+                <thead class="govuk-table__head">
+                  <tr class="govuk-table__row">
+                    <th scope="col" class="govuk-table__header govuk-!-width-one-half">
+                      <a>Date Created</a>
+                    </th>
+                    <th scope="col" class="govuk-table__header govuk-!-width-one-half">
+                      <a>Type</a>
+                    </th>
+                    <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">
+                      <a>Status</a>
+                    </th>
+                    <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">
+                      <a>Outputs</a>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody class="govuk-table__body">
+                  <% jobs.forEach((j, i)=> { %>
+                    <tr class="govuk-table__row">
+                      <td scope="row">
+                        <%= j.createdAt %>
+                      </td>
+                      <td scope="row">
+                        <%= j.jobType %>
+                      </td>
+                      <td class="govuk-table__cell">
+                        <%= j.status %>
+                      </td>
+                      <td class="govuk-table__cell">
+                        <a class="govuk-link" target="_blank"
+                        href="/service-manager/job-outputs?jobId=<%=j.id %>"><%= j.outputs %></a>
+                      </td>
+                    </tr>
+                    <% }) %>
+                </tbody>
+              </table>
+            </div>
+      </div>
+      <div class="govuk-grid-column-one-third" aria-label="sidebar">
+        <aside class="app-related-items" role="complementary">
+          <h2 class="govuk-heading-m" id="subsection-title">
+            Related
+          </h2>
+          <nav role="navigation" aria-labelledby="subsection-title">
+            <ul class="govuk-list govuk-!-font-size-16">
+              <li>
+                <a class="govuk-link" href="<%- guidancePdf %>" target="_blank" rel="noopener noreferrer">Read the
+                  guidance and watch videos</a>
+              </li>
+            </ul>
+          </nav>
+        </aside>
+      </div>
+    </div>
+  </main>

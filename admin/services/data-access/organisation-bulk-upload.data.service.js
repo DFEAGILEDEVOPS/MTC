@@ -49,15 +49,17 @@ const organisationBulkUploadDataService = {
       throw new Error(`Invalid UUID for jobSlug: ${jobSlug}`)
     }
     const sql = `
-        SELECT j.*,                 
+        SELECT j.errorOutput,
+              j.jobOutput,
+              j.urlSlug,
               jt.description as jobTypeDescription,
               jt.jobTypeCode,
               js.description as jobStatusDescription,
               js.jobStatusCode
           FROM mtc_admin.job j
                JOIN mtc_admin.jobType jt on (j.jobType_id = jt.id)
-               JOIN mtc_admin.jobStatus js on (j.jobStatus_id = js.id) 
-           AND jt.jobTypeCode = 'ORG' 
+               JOIN mtc_admin.jobStatus js on (j.jobStatus_id = js.id)
+           AND jt.jobTypeCode = 'ORG'
            AND j.urlSlug = @slug
     `
     const params = [

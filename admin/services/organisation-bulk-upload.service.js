@@ -46,7 +46,7 @@ const organisationBulkUploadService = {
       description: jobData.jobStatusDescription,
       code: jobData.jobStatusCode,
       errorOutput: jobData.errorOutput,
-      jobOutput: JSON.parse(jobData.jobOutput),
+      jobOutput: jobData.jobOutput,
       urlSlug: jobData.urlSlug
     }
   },
@@ -62,10 +62,19 @@ const organisationBulkUploadService = {
     }
     const jobData = await this.getUploadStatus(jobSlug)
     const zip = new AdmZip()
+
+    let jobOutput = ''
+    if (jobData.jobOutput) {
+      jobOutput = jobData.jobOutput
+    }
+    let errorOutput = ''
+    if (jobData.errorOutput) {
+      errorOutput = jobData.errorOutput
+    }
     // noinspection JSCheckFunctionSignatures - 3rd and 4th args are optional
-    zip.addFile('error.txt', jobData.jobOutput.stderr.join('\n'))
+    zip.addFile('error.txt', errorOutput)
     // noinspection JSCheckFunctionSignatures - 3rd and 4th args are optional
-    zip.addFile('output.txt', jobData.jobOutput.stdout.join('\n'))
+    zip.addFile('output.txt', jobOutput)
     return zip.toBuffer()
   }
 }

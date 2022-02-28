@@ -66,10 +66,7 @@ describe('organisationBulkUploadService', () => {
         jobStatusDescription: 'Submitted',
         jobStatusCode: 'SUB',
         errorOutput: 'test error',
-        jobOutput: JSON.stringify({
-          stderr: 'error line',
-          stdout: 'a message'
-        })
+        jobOutput: 'a message'
       })
     })
 
@@ -91,8 +88,7 @@ describe('organisationBulkUploadService', () => {
       expect(status.description).toBe('Submitted')
       expect(status.code).toBe('SUB')
       expect(status.errorOutput).toBe('test error')
-      expect(status.jobOutput.stderr).toBe('error line')
-      expect(status.jobOutput.stdout).toBe('a message')
+      expect(status.jobOutput).toBe('a message')
     })
   })
 
@@ -107,11 +103,11 @@ describe('organisationBulkUploadService', () => {
 
     test('it zips up the files', async () => {
       const jobSlug = uuid.NIL
+      const expectedErrorText = 'an error line\nanother error line'
+      const expectedOutputText = 'a standard line\nanother standard line'
       jest.spyOn(sut, 'getUploadStatus').mockResolvedValue({
-        jobOutput: {
-          stderr: ['an error line\nanother error line'],
-          stdout: ['a standard line\nanother standard line']
-        }
+        errorOutput: expectedErrorText,
+        jobOutput: expectedOutputText
       })
       const zipBuf = await sut.getZipResults(jobSlug)
 
@@ -122,11 +118,11 @@ describe('organisationBulkUploadService', () => {
       entries.forEach((entry) => {
         if (entry.entryName === 'error.txt') {
           // Unzip an entry to memory
-          expect(zip.readAsText(entry)).toBe('an error line\nanother error line')
+          expect(zip.readAsText(entry)).toBe(expectedErrorText)
           i += 1
         }
         if (entry.entryName === 'output.txt') {
-          expect(zip.readAsText(entry)).toBe('a standard line\nanother standard line')
+          expect(zip.readAsText(entry)).toBe(expectedOutputText)
           i += 1
         }
       })
