@@ -15,7 +15,7 @@ const schoolService = require('../../../services/school.service')
 const organisationBulkUploadService = require('../../../services/organisation-bulk-upload.service')
 const administrationMessageService = require('../../../services/administration-message.service')
 const auditOperationTypes = require('../../../lib/consts/audit-entry-types')
-const jobService = require('../../../services/job-service')
+const { JobService } = require('../../../services/job-service/job-service')
 
 describe('service manager controller:', () => {
   let next
@@ -1025,16 +1025,16 @@ describe('service manager controller:', () => {
   describe('job view', () => {
     describe('getJobs', () => {
       test('it renders job summary', async () => {
-        jest.spyOn(jobService, 'getJobSummary')
+        jest.spyOn(JobService, 'getJobSummary')
         const req = getReq()
         const res = getRes()
         await controller.getJobs(req, res, next)
-        expect(jobService.getJobSummary).toHaveBeenCalled()
+        expect(JobService.getJobSummary).toHaveBeenCalled()
       })
       test('error is passed to handler when thrown', async () => {
         const req = getReq()
         const res = getRes()
-        jest.spyOn(jobService, 'getJobSummary').mockImplementation(() => {
+        jest.spyOn(JobService, 'getJobSummary').mockImplementation(() => {
           throw new Error('test error')
         })
         await controller.getJobs(req, res, next)
@@ -1051,9 +1051,9 @@ describe('service manager controller:', () => {
           }
         })
         const res = getRes()
-        jest.spyOn(jobService, 'getJobOutputs').mockImplementation()
+        jest.spyOn(JobService, 'getJobOutputs').mockImplementation()
         await controller.getJobOutputs(req, res, next)
-        expect(jobService.getJobOutputs).toHaveBeenCalledWith(expectedJobId)
+        expect(JobService.getJobOutputs).toHaveBeenCalledWith(expectedJobId)
       })
       test('error is render as text when thrown', async () => {
         const req = getReq({
@@ -1065,7 +1065,7 @@ describe('service manager controller:', () => {
         jest.spyOn(res, 'send')
         jest.spyOn(res, 'type')
         const expectedError = new Error('test error')
-        jest.spyOn(jobService, 'getJobOutputs').mockImplementation(() => {
+        jest.spyOn(JobService, 'getJobOutputs').mockImplementation(() => {
           throw expectedError
         })
         await controller.getJobOutputs(req, res, next)

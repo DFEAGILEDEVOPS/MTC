@@ -15,7 +15,7 @@ const featureToggles = require('feature-toggles')
 const { formUtil, formUtilTypes } = require('../lib/form-util')
 const organisationBulkUploadService = require('../services/organisation-bulk-upload.service')
 const administrationMessageService = require('../services/administration-message.service')
-const jobService = require('../services/job-service')
+const { JobService } = require('../services/job-service/job-service')
 
 const controller = {
 
@@ -555,7 +555,7 @@ const controller = {
     try {
       res.locals.pageTitle = 'View Jobs'
       req.breadcrumbs(res.locals.pageTitle)
-      const jobs = jobService.getJobSummary()
+      const jobs = JobService.getJobSummary()
       res.render('service-manager/jobs', {
         breadcrumbs: req.breadcrumbs(),
         jobs
@@ -574,7 +574,7 @@ const controller = {
   getJobOutputs: async function getJobOutputs (req, res, next) {
     try {
       const jobId = req.query.jobId.trim()
-      const payload = await jobService.getJobOutputs(jobId)
+      const payload = await JobService.getJobOutputs(jobId)
       res.type('txt')
       res.send(payload)
     } catch (error) {

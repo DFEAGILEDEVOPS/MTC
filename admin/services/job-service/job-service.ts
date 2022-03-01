@@ -1,11 +1,5 @@
-'use strict'
-
-const service = {
-  getJobOutputs: async function getJobOutputs (jobId) {
-    return 'slkfjsdklfjsdlkfjsdklfjlksdfjkldsjflskdfj'
-  },
-
-  getJobSummary: async function getJobSummary () {
+export class JobService {
+  public static async getJobSummary () {
     return [
       {
         id: 1,
@@ -18,6 +12,8 @@ const service = {
       }
     ]
   }
-}
 
-module.exports = service
+  public static async getJobOutputs (jobId) {
+    return `${jobId}skdfjdskjfsdkjfsdkjf`
+  }
+}
