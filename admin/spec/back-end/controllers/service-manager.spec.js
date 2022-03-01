@@ -1020,14 +1020,57 @@ describe('service manager controller:', () => {
         expect(args.name).toBe('Primary Academy')
       })
     })
+  })
 
+  describe('job view', () => {
     describe('getJobs', () => {
-      test('it renders jobs', async () => {
+      test('it renders job summary', async () => {
         jest.spyOn(jobService, 'getJobSummary')
         const req = getReq()
         const res = getRes()
         await controller.getJobs(req, res, next)
         expect(jobService.getJobSummary).toHaveBeenCalled()
+      })
+      test('error is passed to handler when thrown', async () => {
+        const req = getReq()
+        const res = getRes()
+        jest.spyOn(jobService, 'getJobSummary').mockImplementation(() => {
+          throw new Error('test error')
+        })
+        await controller.getJobs(req, res, next)
+        expect(next).toHaveBeenCalledWith(new Error('test error'))
+      })
+    })
+
+    describe('getJobOutputs', () => {
+      const expectedJobId = '1'
+      test('it renders job outputs', async () => {
+        const req = getReq({
+          query: {
+            jobId: expectedJobId
+          }
+        })
+        const res = getRes()
+        jest.spyOn(jobService, 'getJobOutputs').mockImplementation()
+        await controller.getJobOutputs(req, res, next)
+        expect(jobService.getJobOutputs).toHaveBeenCalledWith(expectedJobId)
+      })
+      test('error is render as text when thrown', async () => {
+        const req = getReq({
+          query: {
+            jobId: expectedJobId
+          }
+        })
+        const res = getRes()
+        jest.spyOn(res, 'send')
+        jest.spyOn(res, 'type')
+        const expectedError = new Error('test error')
+        jest.spyOn(jobService, 'getJobOutputs').mockImplementation(() => {
+          throw expectedError
+        })
+        await controller.getJobOutputs(req, res, next)
+        expect(res.send).toHaveBeenCalledWith(expectedError.message)
+        expect(res.type).toHaveBeenCalledWith('txt')
       })
     })
   })

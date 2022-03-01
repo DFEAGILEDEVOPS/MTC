@@ -572,15 +572,14 @@ const controller = {
  * @param {object} next
  */
   getJobOutputs: async function getJobOutputs (req, res, next) {
-    const jobId = req.query.jobId.trim()
-    let payload
     try {
-      payload = await jobService.getJobOutputs(jobId)
+      const jobId = req.query.jobId.trim()
+      const payload = await jobService.getJobOutputs(jobId)
       res.type('txt')
       res.send(payload)
     } catch (error) {
       res.type('txt')
-      res.send(`${error}`)
+      res.send(`${error.message}`)
     }
   }
 }
