@@ -41,7 +41,7 @@ export class PrepareAnswersAndInputsDataService {
         {
           name: `userInputTypeLookupId${suffix}`,
           value: await this.userInputService.getUserInputLookupTypeId(o.eventType),
-          type: TYPES.NVarChar(40)
+          type: TYPES.Int
         },
         { name: `userInputBrowserTimestamp${suffix}`, value: o.clientTimestamp, type: TYPES.DateTimeOffset }
       )

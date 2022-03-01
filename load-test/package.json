@@ -28,7 +28,7 @@
     "ioredis": "^4.27.8",
     "number-to-words": "^1.2.3",
     "ramda": "^0.27.2",
-    "tedious": "^12.2.0",
+    "tedious": "^14.3.0",
     "uuid": "^3.3.2",
     "winston": "^3.2.1"
   }
