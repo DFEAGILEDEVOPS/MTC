@@ -72,9 +72,9 @@ const organisationBulkUploadService = {
       errorOutput = jobData.errorOutput
     }
     // noinspection JSCheckFunctionSignatures - 3rd and 4th args are optional
-    zip.addFile('error.txt', errorOutput)
+    zip.addFile('error.txt', Buffer.from(errorOutput))
     // noinspection JSCheckFunctionSignatures - 3rd and 4th args are optional
-    zip.addFile('output.txt', jobOutput)
+    zip.addFile('output.txt', Buffer.from(jobOutput))
     return zip.toBuffer()
   }
 }

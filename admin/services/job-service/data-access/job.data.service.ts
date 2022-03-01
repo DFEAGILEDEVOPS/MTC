@@ -39,6 +39,19 @@ export class JobDataService {
   }
 
   public static async getJobOutput (jobId: number): Promise<IJobOutput> {
-    throw new Error('TODO')
+    const sql = `
+      SELECT j.jobOutput, j.errorOutput
+      FROM mtc_admin.job j
+      WHERE j.id = @jobId`
+      const data = await sqlService.readonlyQuery(sql)
+      if (!Array.isArray(data)) {
+        return undefined
+      }
+
+      const record = data[0]
+      return {
+        errorInfo: record.errorOutput,
+        output: record.jobOutput
+      }
   }
 }

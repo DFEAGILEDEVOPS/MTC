@@ -1,3 +1,4 @@
+import AdmZip from 'adm-zip'
 import moment from 'moment-timezone'
 import { IJobData, JobDataService } from './data-access/job.data.service'
 import { JobService as sut } from './job.service'
@@ -31,10 +32,21 @@ describe('Job Service', () => {
 
   describe('getJobOutputs', () => {
     test('returns job outputs as zip file', async () => {
-      jest.spyOn(JobDataService, 'getJobOutput').mockImplementation()
-      const data = await sut.getJobOutputs(1)
-      expect(JobDataService.getJobOutput).toHaveBeenCalled()
-      expect(data).toBeDefined()
+      const expectedOutput = 'foo-output'
+      const expectedErrors = 'bar-errors'
+      jest.spyOn(JobDataService, 'getJobOutput').mockResolvedValue({
+        output: expectedOutput,
+        errorInfo: expectedErrors
+      })
+      const zippedBuffer = await sut.getJobOutputs(1)
+      expect(JobDataService.getJobOutput).toHaveBeenCalledTimes(1)
+      const zip = new AdmZip(zippedBuffer)
+      const entries = zip.getEntries()
+      expect(entries).toHaveLength(2)
+      const zippedOutput = entries[1]
+      expect(zip.readAsText(zippedOutput)).toBe(expectedOutput)
+      const zippedErrors = entries[0]
+      expect(zip.readAsText(zippedErrors)).toBe(expectedErrors)
     })
   })
 })
