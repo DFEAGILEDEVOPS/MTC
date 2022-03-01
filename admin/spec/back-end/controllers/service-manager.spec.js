@@ -15,7 +15,7 @@ const schoolService = require('../../../services/school.service')
 const organisationBulkUploadService = require('../../../services/organisation-bulk-upload.service')
 const administrationMessageService = require('../../../services/administration-message.service')
 const auditOperationTypes = require('../../../lib/consts/audit-entry-types')
-const { JobService } = require('../../../services/job-service/job-service')
+const { JobService } = require('../../../services/job-service/job.service')
 
 describe('service manager controller:', () => {
   let next
@@ -1025,7 +1025,7 @@ describe('service manager controller:', () => {
   describe('job view', () => {
     describe('getJobs', () => {
       test('it renders job summary', async () => {
-        jest.spyOn(JobService, 'getJobSummary')
+        jest.spyOn(JobService, 'getJobSummary').mockImplementation()
         const req = getReq()
         const res = getRes()
         await controller.getJobs(req, res, next)

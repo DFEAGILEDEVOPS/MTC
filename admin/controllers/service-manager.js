@@ -15,7 +15,7 @@ const featureToggles = require('feature-toggles')
 const { formUtil, formUtilTypes } = require('../lib/form-util')
 const organisationBulkUploadService = require('../services/organisation-bulk-upload.service')
 const administrationMessageService = require('../services/administration-message.service')
-const { JobService } = require('../services/job-service/job-service')
+const { JobService } = require('../services/job-service/job.service')
 
 const controller = {
 
