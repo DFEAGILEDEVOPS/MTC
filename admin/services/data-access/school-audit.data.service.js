@@ -24,7 +24,7 @@ const service = {
       value: urlSlug
     }]
     const sql = `
-      SELECT sa.id, sa.createdAt, aot.auditOperation, ISNULL(u.identifier, 'system') as [user]
+      SELECT sa.id, sa.createdAt, aot.auditOperation, COALESCE(u.displayName, u.identifier, 'system') as [user]
       FROM [mtc_admin].[schoolAudit] sa
       LEFT OUTER JOIN [mtc_admin].[user] u ON
         u.id = sa.operationBy_userId
