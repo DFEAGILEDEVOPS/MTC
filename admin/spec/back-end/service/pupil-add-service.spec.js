@@ -1,5 +1,5 @@
 'use strict'
-/* global describe beforeEach expect test afterEach jest */
+/* global describe beforeEach expect test afterEach jest fail */
 
 const pupilValidator = require('../../../lib/validator/pupil-validator')
 const pupilDataService = require('../../../services/data-access/pupil.data.service')
