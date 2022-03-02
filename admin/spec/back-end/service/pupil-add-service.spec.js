@@ -1,5 +1,5 @@
 'use strict'
-/* global describe beforeEach expect it spyOn fail */
+/* global describe beforeEach expect test afterEach jest */
 
 const pupilValidator = require('../../../lib/validator/pupil-validator')
 const pupilDataService = require('../../../services/data-access/pupil.data.service')
@@ -12,10 +12,10 @@ let reqBody
 describe('pupil-add-service', () => {
   const service = require('../../../services/pupil-add-service')
 
-  const validationFunctionResolves = function () {
+  const validationFunctionSucceeds = function () {
     return Promise.resolve(new ValidationError())
   }
-  const validationFunctionThrows = function () {
+  const validationFunctionFails = function () {
     const validationError = new ValidationError()
     validationError.addError('upn', 'not good')
     return Promise.resolve(validationError)
@@ -37,38 +37,31 @@ describe('pupil-add-service', () => {
     }
   })
 
+  afterEach(() => {
+    jest.restoreAllMocks()
+  })
+
   describe('#addPupil', () => {
-    it('throws if the school is not supplied', async () => {
-      try {
-        await service.addPupil(reqBody, undefined)
-      } catch (error) {
-        expect(error.message).toMatch(/Saving pupil failed/)
-      }
+    test('throws if the school is not supplied', async () => {
+      await expect(service.addPupil(reqBody, undefined)).rejects.toThrow('Saving pupil failed')
     })
 
-    it('throws if the pupil params are not supplied', async () => {
-      try {
-        await service.addPupil({}, 1)
-      } catch (error) {
-        expect(error.message).toMatch(/Saving pupil failed/)
-      }
+    test('throws if the pupil params are not supplied', async () => {
+      await expect(service.addPupil({}, 1)).rejects.toThrow('Saving pupil failed')
     })
 
-    it('validates the pupil data', async () => {
-      spyOn(pupilValidator, 'validate').and.callFake(validationFunctionResolves)
-      spyOn(pupilDataService, 'sqlCreate').and.returnValue({ insertId: 1 })
-      spyOn(pupilDataService, 'sqlFindOneById')
-      spyOn(redisCacheService, 'drop')
+    test('validates the pupil data', async () => {
+      jest.spyOn(pupilValidator, 'validate').mockImplementation(validationFunctionSucceeds)
+      jest.spyOn(pupilDataService, 'sqlCreate').mockResolvedValue({ insertId: 1 })
+      jest.spyOn(pupilDataService, 'sqlFindOneById').mockImplementation()
+      jest.spyOn(redisCacheService, 'drop').mockImplementation()
       const schoolId = 999001
-      try {
-        await service.addPupil(reqBody, schoolId)
-      } catch (error) {
-        fail(error) // shouldn't throw
-      }
+      await service.addPupil(reqBody, schoolId)
+      expect(pupilValidator.validate).toHaveBeenCalled()
     })
 
-    it('throws a validation error if the pupil data does not validate', async () => {
-      spyOn(pupilValidator, 'validate').and.callFake(validationFunctionThrows)
+    test('throws a validation error if the pupil data does not validate', async () => {
+      jest.spyOn(pupilValidator, 'validate').mockImplementation(validationFunctionFails)
       const schoolId = 999001
       try {
         await service.addPupil(reqBody, schoolId)
@@ -78,16 +71,16 @@ describe('pupil-add-service', () => {
       }
     })
 
-    it('saves the pupil data', async () => {
-      spyOn(pupilValidator, 'validate').and.callFake(validationFunctionResolves)
-      spyOn(pupilDataService, 'sqlCreate').and.returnValue({ insertId: 1 })
-      spyOn(pupilDataService, 'sqlFindOneById')
-      spyOn(pupilAgeReasonDataService, 'sqlInsertPupilAgeReason')
-      spyOn(redisCacheService, 'drop')
+    test('saves the pupil data', async () => {
+      jest.spyOn(pupilValidator, 'validate').mockImplementation(validationFunctionSucceeds)
+      jest.spyOn(pupilDataService, 'sqlCreate').mockResolvedValue({ insertId: 1 })
+      jest.spyOn(pupilDataService, 'sqlFindOneById').mockImplementation()
+      jest.spyOn(pupilAgeReasonDataService, 'sqlInsertPupilAgeReason').mockImplementation()
+      jest.spyOn(redisCacheService, 'drop').mockImplementation()
 
       await service.addPupil(reqBody, 1234)
       expect(pupilDataService.sqlCreate).toHaveBeenCalledTimes(1)
-      const saveArg = pupilDataService.sqlCreate.calls.argsFor(0)[0]
+      const saveArg = pupilDataService.sqlCreate.mock.calls[0][0]
 
       // Check that the data of birth has been added
       expect(saveArg.dateOfBirth).toBeDefined()
@@ -101,18 +94,18 @@ describe('pupil-add-service', () => {
       expect(pupilAgeReasonDataService.sqlInsertPupilAgeReason).not.toHaveBeenCalled()
     })
 
-    it('calls sqlInsertPupilAgeReason before it saves the pupil data if ageReason is supplied', async () => {
-      spyOn(pupilValidator, 'validate').and.callFake(validationFunctionResolves)
-      spyOn(pupilDataService, 'sqlCreate').and.returnValue({ insertId: 1 })
-      spyOn(pupilDataService, 'sqlFindOneById')
-      spyOn(pupilAgeReasonDataService, 'sqlInsertPupilAgeReason')
-      spyOn(redisCacheService, 'drop')
+    test('calls sqlInsertPupilAgeReason before it saves the pupil data if ageReason is supplied', async () => {
+      jest.spyOn(pupilValidator, 'validate').mockImplementation(validationFunctionSucceeds)
+      jest.spyOn(pupilDataService, 'sqlCreate').mockResolvedValue({ insertId: 1 })
+      jest.spyOn(pupilDataService, 'sqlFindOneById').mockImplementation()
+      jest.spyOn(pupilAgeReasonDataService, 'sqlInsertPupilAgeReason').mockImplementation()
+      jest.spyOn(redisCacheService, 'drop').mockImplementation()
       reqBody.ageReason = 'reason'
 
       await service.addPupil(reqBody, 1234)
 
       expect(pupilDataService.sqlCreate).toHaveBeenCalled()
-      const saveArg = pupilDataService.sqlCreate.calls.argsFor(0)[0]
+      const saveArg = pupilDataService.sqlCreate.mock.calls[0][0]
 
       // Check that the data of birth has been added
       expect(saveArg.dateOfBirth).toBeDefined()

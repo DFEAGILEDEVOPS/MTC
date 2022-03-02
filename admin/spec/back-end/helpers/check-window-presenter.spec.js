@@ -1,4 +1,4 @@
-/* global describe, expect, it */
+/* global describe, expect, test */
 const moment = require('moment')
 const { v4: uuidv4 } = require('uuid')
 
@@ -6,7 +6,7 @@ const checkWindowPresenter = require('../../../helpers/check-window-presenter')
 
 describe('checkWindowHelper', () => {
   describe('getViewModelData', () => {
-    it('fetch the checkWindow record and shape the data for the UI', () => {
+    test('fetch the checkWindow record and shape the data for the UI', () => {
       const checkWindowData = {
         id: 1,
         urlSlug: uuidv4(),
@@ -29,7 +29,7 @@ describe('checkWindowHelper', () => {
       expect(checkWindowViewData.liveCheckPeriodDisabled).toBeFalsy()
       expect(checkWindowViewData.pastCheckWindow).toBeFalsy()
     })
-    it('should have adminStartDateDisabled as false if admin start date is today', () => {
+    test('should have adminStartDateDisabled as false if admin start date is today', () => {
       const checkWindowData = {
         id: 1,
         urlSlug: uuidv4(),
@@ -52,7 +52,7 @@ describe('checkWindowHelper', () => {
       expect(checkWindowViewData.liveCheckPeriodDisabled).toBeFalsy()
       expect(checkWindowViewData.pastCheckWindow).toBeFalsy()
     })
-    it('should have adminStartDateDisabled as true if admin start date is yesterday', () => {
+    test('should have adminStartDateDisabled as true if admin start date is yesterday', () => {
       const checkWindowData = {
         id: 1,
         urlSlug: uuidv4(),
@@ -74,7 +74,7 @@ describe('checkWindowHelper', () => {
       expect(checkWindowViewData.liveCheckPeriodDisabled).toBeFalsy()
       expect(checkWindowViewData.pastCheckWindow).toBeFalsy()
     })
-    it('should have adminEndDateDisabled as false if admin end date is today', () => {
+    test('should have adminEndDateDisabled as false if admin end date is today', () => {
       const checkWindowData = {
         id: 1,
         urlSlug: uuidv4(),
@@ -95,7 +95,7 @@ describe('checkWindowHelper', () => {
       expect(checkWindowViewData.familiarisationCheckPeriodDisabled).toBeFalsy()
       expect(checkWindowViewData.liveCheckPeriodDisabled).toBeFalsy()
     })
-    it('should have adminEndDateDisabled as false, as the SM should always be able to edit it, even if the admin end' +
+    test('should have adminEndDateDisabled as false, as the SM should always be able to edit it, even if the admin end' +
       ' date is yesterday', () => {
       const checkWindowData = {
         id: 1,
