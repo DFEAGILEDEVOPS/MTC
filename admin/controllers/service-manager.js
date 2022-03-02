@@ -111,12 +111,10 @@ const controller = {
   getUploadPupilCensus: async function getUploadPupilCensus (req, res, next, error = null) {
     res.locals.pageTitle = 'Upload pupil census'
     req.breadcrumbs(res.locals.pageTitle)
-    // let pupilCensus
     let templateFileSize
     try {
       const templateFile = 'assets/csv/mtc-census-headers.csv'
       templateFileSize = uploadedFileService.getFilesize(templateFile)
-      // pupilCensus = await pupilCensusService.getUploadedFile()
     } catch (error) {
       return next(error)
     }

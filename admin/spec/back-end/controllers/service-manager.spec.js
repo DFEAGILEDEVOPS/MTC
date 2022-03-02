@@ -138,23 +138,20 @@ describe('service manager controller:', () => {
     test('renders the upload pupil census page', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      jest.spyOn(pupilCensusService, 'getUploadedFile').mockImplementation()
       jest.spyOn(uploadedFileService, 'getFilesize').mockImplementation()
       await controller.getUploadPupilCensus(req, res, next)
-      expect(pupilCensusService.getUploadedFile).toHaveBeenCalled()
       expect(res.render).toHaveBeenCalled()
     })
 
     test('throws an error if fetching existing pupil census fails', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      jest.spyOn(uploadedFileService, 'getFilesize').mockImplementation()
-      jest.spyOn(pupilCensusService, 'getUploadedFile').mockImplementation(() => {
+      jest.spyOn(uploadedFileService, 'getFilesize').mockImplementation(() => {
         throw new Error('error')
       })
       await controller.getUploadPupilCensus(req, res, next)
       expect(next).toHaveBeenCalledWith(new Error('error'))
-      expect(pupilCensusService.getUploadedFile).toHaveBeenCalled()
+      expect(uploadedFileService.getFilesize).toHaveBeenCalled()
       expect(res.render).not.toHaveBeenCalled()
     })
   })
