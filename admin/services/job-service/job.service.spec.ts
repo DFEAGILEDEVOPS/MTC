@@ -1,5 +1,6 @@
 import AdmZip from 'adm-zip'
 import moment from 'moment-timezone'
+const dateService = require('../date.service')
 import { IJobData, JobDataService } from './data-access/job.data.service'
 import { JobService as sut } from './job.service'
 
@@ -26,7 +27,15 @@ describe('Job Service', () => {
       ]
       jest.spyOn(JobDataService, 'getJobs').mockResolvedValue(mockJobData)
       const output = await sut.getJobSummary()
-      expect(output).toStrictEqual(mockJobData)
+      const expectedOutput = mockJobData.map(o => {
+        return {
+          createdAt: dateService.formatDateAndTime(o.createdAt),
+          id: o.id,
+          status: o.status,
+          type: o.type
+        }
+      })
+      expect(output).toStrictEqual(expectedOutput)
     })
   })
 

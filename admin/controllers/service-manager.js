@@ -111,19 +111,19 @@ const controller = {
   getUploadPupilCensus: async function getUploadPupilCensus (req, res, next, error = null) {
     res.locals.pageTitle = 'Upload pupil census'
     req.breadcrumbs(res.locals.pageTitle)
-    let pupilCensus
+    // let pupilCensus
     let templateFileSize
     try {
       const templateFile = 'assets/csv/mtc-census-headers.csv'
       templateFileSize = uploadedFileService.getFilesize(templateFile)
-      pupilCensus = await pupilCensusService.getUploadedFile()
+      // pupilCensus = await pupilCensusService.getUploadedFile()
     } catch (error) {
       return next(error)
     }
     res.render('service-manager/upload-pupil-census', {
       breadcrumbs: req.breadcrumbs(),
       messages: res.locals.messages,
-      pupilCensus,
+      // pupilCensus,
       templateFileSize,
       fileErrors: error || new ValidationError()
     })
@@ -147,8 +147,8 @@ const controller = {
     } catch (error) {
       return next(error)
     }
-    req.flash('info', 'File has been uploaded')
-    res.redirect('/service-manager/upload-pupil-census')
+    req.flash('info', 'Pupil Census file has been uploaded')
+    res.redirect('/service-manager/jobs')
   },
 
   /**
@@ -503,9 +503,9 @@ const controller = {
       if (validationError.hasError()) {
         return controller.getUploadOrganisations(req, res, next, validationError)
       }
-      const jobSlug = await organisationBulkUploadService.upload(uploadFile)
-      req.flash('info', 'File has been uploaded')
-      res.redirect(`/service-manager/organisations/upload/${jobSlug.toLowerCase()}`)
+      await organisationBulkUploadService.upload(uploadFile)
+      req.flash('info', 'Organisation file has been uploaded')
+      res.redirect('/service-manager/jobs')
     } catch (error) {
       return next(error)
     }

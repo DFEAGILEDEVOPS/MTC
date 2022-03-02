@@ -22,7 +22,8 @@ export class JobDataService {
         t.[description] as [type]
       FROM mtc_admin.job j
       INNER JOIN mtc_admin.jobStatus s ON s.id = j.jobStatus_id
-      INNER JOIN mtc_admin.jobType t ON t.id = j.jobType_id`
+      INNER JOIN mtc_admin.jobType t ON t.id = j.jobType_id
+      ORDER BY j.id DESC`
     const data = await sqlService.readonlyQuery(sql)
     if (!Array.isArray(data)) {
       return []
