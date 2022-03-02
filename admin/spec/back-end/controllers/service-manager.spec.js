@@ -1055,7 +1055,7 @@ describe('service manager controller:', () => {
         await controller.getJobOutputs(req, res, next)
         expect(JobService.getJobOutputs).toHaveBeenCalledWith(expectedJobId)
       })
-      test('error is render as text when thrown', async () => {
+      test('error is passed to handler when thrown', async () => {
         const req = getReq({
           query: {
             jobId: expectedJobId
@@ -1069,8 +1069,7 @@ describe('service manager controller:', () => {
           throw expectedError
         })
         await controller.getJobOutputs(req, res, next)
-        expect(res.send).toHaveBeenCalledWith(expectedError.message)
-        expect(res.type).toHaveBeenCalledWith('txt')
+        expect(next).toHaveBeenCalledWith(expectedError)
       })
     })
   })

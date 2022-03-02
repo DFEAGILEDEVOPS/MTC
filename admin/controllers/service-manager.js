@@ -555,7 +555,7 @@ const controller = {
     try {
       res.locals.pageTitle = 'View Jobs'
       req.breadcrumbs(res.locals.pageTitle)
-      const jobs = JobService.getJobSummary()
+      const jobs = await JobService.getJobSummary()
       res.render('service-manager/jobs', {
         breadcrumbs: req.breadcrumbs(),
         jobs
@@ -575,11 +575,14 @@ const controller = {
     try {
       const jobId = req.query.jobId.trim()
       const payload = await JobService.getJobOutputs(jobId)
-      res.type('txt')
+      res.set({
+        'Content-Disposition': 'attachment; filename="job-output.zip"',
+        'Content-type': 'application/octet-stream',
+        'Content-Length': payload.length // Buffer.length (bytes)
+      })
       res.send(payload)
     } catch (error) {
-      res.type('txt')
-      res.send(`${error.message}`)
+      next(error)
     }
   }
 }

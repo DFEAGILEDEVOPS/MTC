@@ -13,13 +13,13 @@ describe('Job Service', () => {
       const mockJobData: IJobData[] = [
         {
           createdAt: moment('2021-02-02 15:00'),
-          jobId: 1,
+          id: 1,
           status: 'Complete',
           type: 'org import'
         },
         {
           createdAt: moment('2021-02-03 15:00'),
-          jobId: 2,
+          id: 2,
           status: 'Failed',
           type: 'census import'
         }

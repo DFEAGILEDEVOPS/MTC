@@ -1,10 +1,10 @@
 import moment from 'moment'
-import { isNumber } from 'ramda-adjunct'
-
+import { TYPES } from '../../data-access/sql.service'
 const sqlService = require('../../data-access/sql.service')
 
+
 export interface IJobData {
-  jobId: number
+  id: number
   createdAt: moment.Moment
   status: string
   type: string
@@ -30,7 +30,7 @@ export class JobDataService {
 
     return data.map(d => {
       return {
-        jobId: d.id,
+        id: d.id,
         createdAt: d.createdAt,
         status: d.status,
         type: d.type
@@ -43,7 +43,14 @@ export class JobDataService {
       SELECT j.jobOutput, j.errorOutput
       FROM mtc_admin.job j
       WHERE j.id = @jobId`
-      const data = await sqlService.readonlyQuery(sql)
+    const params = [
+      {
+        name: 'jobId',
+        type: TYPES.Int,
+        value: jobId
+      }
+    ]
+      const data = await sqlService.readonlyQuery(sql, params)
       if (!Array.isArray(data)) {
         return undefined
       }
