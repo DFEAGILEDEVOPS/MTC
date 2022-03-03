@@ -1,42 +1,37 @@
 'use strict'
-/* global describe, it, expect, fail, spyOn, xit */
+/* global describe, test, expect, jest, afterEach */
 const R = require('ramda')
 const service = require('../../../services/payload.service')
 const payloadDataService = require('../../../services/data-access/payload.data.service')
-
+const mockCheckCode = '5d557d6a-b1d9-406e-b5d0-7c26e5f2bdb5'
 describe('payload.service', () => {
+  afterEach(() => {
+    jest.restoreAllMocks()
+  })
+
   describe('#getPayload', () => {
-    it('throws an error when called without a checkCode', async () => {
-      try {
-        await service.getPayload()
-        fail('expected to throw')
-      } catch (error) {
-        expect(error.message).toEqual('Missing checkCode')
-      }
+    test('throws an error when called without a checkCode', async () => {
+      await expect(service.getPayload()).rejects.toThrow('Missing checkCode')
     })
 
-    it('throws an error when checkCode is not valid UUID', async () => {
-      try {
-        await service.getPayload('abc')
-        fail('expected to throw')
-      } catch (error) {
-        expect(error.message).toEqual('checkCode is not a valid UUID')
-      }
+    test('throws an error when checkCode is not valid UUID', async () => {
+      await expect(service.getPayload('abc')).rejects.toThrow('checkCode is not a valid UUID')
     })
 
-    xit('adds relativeTimings', async () => {
-      spyOn(service, 'addRelativeTimings')
-      spyOn(payloadDataService, 'sqlFindOneByCheckCode').and.returnValue({
+    test('adds relativeTimings', async () => {
+      jest.spyOn(service, 'addRelativeTimings').mockImplementation()
+      jest.spyOn(payloadDataService, 'sqlFindOneByCheckCode').mockResolvedValue({
         inputs: [],
-        audit: []
+        audit: [],
+        archive: 'mocked'
       })
-      await service.getPayload('abc-def')
+      await service.getPayload(mockCheckCode)
       expect(service.addRelativeTimings).toHaveBeenCalled()
     })
   })
 
   describe('#addRelativeTimingsToSection', () => {
-    it('passes through objects without a `clientTimestamp` prop', () => {
+    test('passes through objects without a `clientTimestamp` prop', () => {
       const mock = [
         { a: 'foo', b: 'bar' },
         { a: 'baz', b: 'quux' }
@@ -46,7 +41,7 @@ describe('payload.service', () => {
       expect(R.equals(res, mock)).toBeTruthy()
     })
 
-    it('sets relativeTiming to "+0.00" for the first element', () => {
+    test('sets relativeTiming to "+0.00" for the first element', () => {
       const mock = [
         { id: 1, clientTimestamp: '2019-05-24T17:10:16.808Z' }
       ]
@@ -56,7 +51,7 @@ describe('payload.service', () => {
       expect(res[0].clientTimestamp).toEqual('2019-05-24T17:10:16.808Z')
     })
 
-    it('returns a new array', () => {
+    test('returns a new array', () => {
       const mock = [
         { id: 1, clientTimestamp: '2019-05-24T17:10:16.808Z' }
       ]
@@ -64,7 +59,7 @@ describe('payload.service', () => {
       expect(R.identical(res, mock)).toBeFalsy()
     })
 
-    it('adds relativeTimings for elements after the first one', () => {
+    test('adds relativeTimings for elements after the first one', () => {
       const mock = [
         { id: 1, clientTimestamp: '2019-05-24T17:09:32.140Z' },
         { id: 2, clientTimestamp: '2019-05-24T17:09:35.156Z' },
@@ -75,7 +70,7 @@ describe('payload.service', () => {
       expect(res[2].relativeTiming).toEqual('+0')
     })
 
-    it('timings are not reset by an obj without a timestamp prop', () => {
+    test('timings are not reset by an obj without a timestamp prop', () => {
       const mock = [
         { id: 1, clientTimestamp: '2019-05-24T17:09:32.140Z' },
         { id: 2 },
@@ -86,7 +81,7 @@ describe('payload.service', () => {
       expect(R.prop('relativeTiming', res)).toBeFalsy()
     })
 
-    it('can handle non-object input', () => {
+    test('can handle non-object input', () => {
       const mock = [
         { id: 1, clientTimestamp: '2019-05-24T17:09:32.140Z' },
         undefined,
@@ -97,7 +92,7 @@ describe('payload.service', () => {
       expect(res[1]).toBeUndefined()
     })
 
-    it('can handle times that go backward', () => {
+    test('can handle times that go backward', () => {
       const mock = [
         { id: 1, clientTimestamp: '2019-05-24T17:09:35.156Z' },
         { id: 3, clientTimestamp: '2019-05-24T17:09:32.140Z' }
@@ -108,8 +103,8 @@ describe('payload.service', () => {
   })
 
   describe('#addRelativeTimings', () => {
-    it('adds timings to the inputs and audit sections', () => {
-      spyOn(service, 'addRelativeTimingsToSection')
+    test('adds timings to the inputs and audit sections', () => {
+      jest.spyOn(service, 'addRelativeTimingsToSection').mockImplementation()
       const mock = {
         inputs: [],
         audit: []

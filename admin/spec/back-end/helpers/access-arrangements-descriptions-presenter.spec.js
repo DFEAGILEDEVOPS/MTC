@@ -1,10 +1,10 @@
-/* global describe, expect, it */
+/* global describe, expect, test */
 
 const accessArrangementsDescriptionsPresenter = require('../../../helpers/access-arrangements-descriptions-presenter')
 
 describe('accessArrangementsDescriptionsPresenter', () => {
   describe('getPresentationData', () => {
-    it('returns alphabetically sorted access arrangements descriptions data by description', () => {
+    test('returns alphabetically sorted access arrangements descriptions data by description', () => {
       const accessArrangements = [
         {
           id: 1,
@@ -95,7 +95,7 @@ describe('accessArrangementsDescriptionsPresenter', () => {
     })
   })
   describe('addReasonRequiredIndication', () => {
-    it('returns access arrangements descriptions data with reason required indications', () => {
+    test('returns access arrangements descriptions data with reason required indications', () => {
       const accessArrangements = [
         {
           id: 1,
