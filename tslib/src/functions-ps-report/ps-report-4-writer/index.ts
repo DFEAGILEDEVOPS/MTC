@@ -1,6 +1,6 @@
 import { AzureFunction, Context } from '@azure/functions'
 import { performance } from 'perf_hooks'
-import { IPsychometricReportLine } from '../../functions/ps-report-3-transformer/models'
+import { IPsychometricReportLine } from '../ps-report-3-transformer/models'
 import { PsReportWriterService } from './ps-report-writer.service'
 import { jsonReviver } from '../../common/json-reviver'
 

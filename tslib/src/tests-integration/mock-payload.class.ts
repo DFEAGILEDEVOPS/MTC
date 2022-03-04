@@ -1,6 +1,6 @@
 import moment from 'moment'
 import faker from 'faker'
-import { DfEAbsenceCode, IPsychometricReportLine, IReportLineAnswer } from '../functions/ps-report-3-transformer/models'
+import { DfEAbsenceCode, IPsychometricReportLine, IReportLineAnswer } from '../functions-ps-report/ps-report-3-transformer/models'
 const schools = [
   'The New Learning Centre',
   'Shawcroft School',
