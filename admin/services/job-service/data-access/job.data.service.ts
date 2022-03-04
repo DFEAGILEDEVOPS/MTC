@@ -4,7 +4,7 @@ const sqlService = require('../../data-access/sql.service')
 
 
 export interface IJobData {
-  id: number
+  urlSlug: string
   createdAt: moment.Moment
   status: string
   type: string
@@ -18,7 +18,7 @@ export interface IJobOutput {
 export class JobDataService {
   public static async getJobs (): Promise<IJobData[]> {
     const sql = `
-      SELECT j.id, j.createdAt, s.[description] as [status],
+      SELECT j.urlSlug, j.createdAt, s.[description] as [status],
         t.[description] as [type]
       FROM mtc_admin.job j
       INNER JOIN mtc_admin.jobStatus s ON s.id = j.jobStatus_id
@@ -31,7 +31,7 @@ export class JobDataService {
 
     return data.map(d => {
       return {
-        id: d.id,
+        urlSlug: d.urlSlug,
         createdAt: d.createdAt,
         status: d.status,
         type: d.type
@@ -39,16 +39,16 @@ export class JobDataService {
     })
   }
 
-  public static async getJobOutput (jobId: number): Promise<IJobOutput> {
+  public static async getJobOutput (jobSlug: string): Promise<IJobOutput> {
     const sql = `
       SELECT j.jobOutput, j.errorOutput
       FROM mtc_admin.job j
-      WHERE j.id = @jobId`
+      WHERE j.urlSlug = @jobSlug`
     const params = [
       {
-        name: 'jobId',
-        type: TYPES.Int,
-        value: jobId
+        name: 'jobSlug',
+        type: TYPES.UniqueIdentifier,
+        value: jobSlug
       }
     ]
       const data = await sqlService.readonlyQuery(sql, params)

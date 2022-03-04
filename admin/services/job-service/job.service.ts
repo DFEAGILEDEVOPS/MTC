@@ -8,15 +8,15 @@ export class JobService {
     return jobs.map(o => {
       return {
         createdAt: dateService.formatDateAndTime(o.createdAt),
-        id: o.id,
+        urlSlug: o.urlSlug,
         status: o.status,
         type: o.type
       }
     })
   }
 
-  public static async getJobOutputs (jobId: number): Promise<Buffer> {
-    const data = await JobDataService.getJobOutput(jobId)
+  public static async getJobOutputs (jobSlug: string): Promise<Buffer> {
+    const data = await JobDataService.getJobOutput(jobSlug)
     if (data === undefined) return undefined
     const zipFile = new AdmZip()
     let output = data.output ?? ''

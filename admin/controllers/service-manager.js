@@ -121,7 +121,6 @@ const controller = {
     res.render('service-manager/upload-pupil-census', {
       breadcrumbs: req.breadcrumbs(),
       messages: res.locals.messages,
-      // pupilCensus,
       templateFileSize,
       fileErrors: error || new ValidationError()
     })
@@ -571,8 +570,8 @@ const controller = {
  */
   getJobOutputs: async function getJobOutputs (req, res, next) {
     try {
-      const jobId = req.query.jobId.trim()
-      const payload = await JobService.getJobOutputs(jobId)
+      const urlSlug = req.query.urlSlug.trim()
+      const payload = await JobService.getJobOutputs(urlSlug)
       res.set({
         'Content-Disposition': 'attachment; filename="job-output.zip"',
         'Content-type': 'application/octet-stream',

@@ -14,13 +14,13 @@ describe('Job Service', () => {
       const mockJobData: IJobData[] = [
         {
           createdAt: moment('2021-02-02 15:00'),
-          id: 1,
+          urlSlug: '1d822a3c-7a25-4613-84c2-5d1344ac45a0',
           status: 'Complete',
           type: 'org import'
         },
         {
           createdAt: moment('2021-02-03 15:00'),
-          id: 2,
+          urlSlug: '67663f0e-e375-40ef-aa81-2b617c1678ad',
           status: 'Failed',
           type: 'census import'
         }
@@ -30,7 +30,7 @@ describe('Job Service', () => {
       const expectedOutput = mockJobData.map(o => {
         return {
           createdAt: dateService.formatDateAndTime(o.createdAt),
-          id: o.id,
+          urlSlug: o.urlSlug,
           status: o.status,
           type: o.type
         }
@@ -47,7 +47,7 @@ describe('Job Service', () => {
         output: expectedOutput,
         errorInfo: expectedErrors
       })
-      const zippedBuffer = await sut.getJobOutputs(1)
+      const zippedBuffer = await sut.getJobOutputs('foo')
       expect(JobDataService.getJobOutput).toHaveBeenCalledTimes(1)
       const zip = new AdmZip(zippedBuffer)
       const entries = zip.getEntries()
