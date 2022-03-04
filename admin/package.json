@@ -179,6 +179,7 @@
       "<rootDir>/dist"
     ],
     "verbose": false,
+    "TODOtestRunner": "jest-circus",
     "testRunner": "jest-jasmine2"
   }
 }

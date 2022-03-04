@@ -32,7 +32,7 @@ const service = {
    * @param {string} schoolTimezone
    * @returns {Promise<void>}
    */
-  prepareChecks: (checks, schoolTimezone) => {
+  prepareChecks: async (checks, schoolTimezone) => {
     if (!Array.isArray(checks)) {
       throw new Error('checks is not an array')
     }

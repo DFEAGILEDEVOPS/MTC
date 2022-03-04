@@ -1,32 +1,32 @@
-/* global describe it expect */
+/* global describe test expect */
 
 const sut = require('../../../helpers/result-presenter')
 
 describe('resultPresenter', () => {
   describe('presentPupilData', () => {
-    it('is defined', () => {
+    test('is defined', () => {
       expect(sut.presentPupilData).toBeDefined()
     })
 
-    it('returns a dash for a null score', () => {
+    test('returns a dash for a null score', () => {
       const pupil = { score: null }
       const res = sut.presentPupilData(pupil)
       expect(res.score).toBe('-')
     })
 
-    it('returns a dash for an undefined score', () => {
+    test('returns a dash for an undefined score', () => {
       const pupil = { score: undefined }
       const res = sut.presentPupilData(pupil)
       expect(res.score).toBe('-')
     })
 
-    it('handles a zero score', () => {
+    test('handles a zero score', () => {
       const pupil = { score: 0 }
       const res = sut.presentPupilData(pupil)
       expect(res.score).toBe(0)
     })
 
-    it('handles a positive score', () => {
+    test('handles a positive score', () => {
       const pupil = { score: 25 }
       const res = sut.presentPupilData(pupil)
       expect(res.score).toBe(25)
