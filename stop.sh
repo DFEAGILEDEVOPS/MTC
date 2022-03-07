@@ -10,7 +10,7 @@ echo "Purging Azure Storage..."
 
 echo "Purging Service Bus..."
 (cd ${scriptDir}/deploy/service-bus && yarn deleteqs)
-(cd ${scriptDir}/deploy/service-bus && yarn createqs)
+(cd ${scriptDir}/deploy/service-bus && yarn createV2)
 
 echo "Stopping docker..."
 docker-compose down

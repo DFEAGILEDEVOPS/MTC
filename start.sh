@@ -13,7 +13,7 @@ cd ${scriptDir}/deploy/service-bus && yarn install --frozen-lockfile
 
 echo "Purging Service Bus..."
 (cd ${scriptDir}/deploy/service-bus && yarn deleteqs)
-(cd ${scriptDir}/deploy/service-bus && yarn createqs)
+(cd ${scriptDir}/deploy/service-bus && yarn createV2)
 
 echo "Starting docker..."
 docker-compose up -d
