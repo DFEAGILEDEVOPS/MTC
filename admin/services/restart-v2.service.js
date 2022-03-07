@@ -29,7 +29,7 @@ module.exports.getRestartsForSchool = async function getRestartsForSchool (schoo
       status: ''
     }
     if (r.isDiscretionaryRestartAvailable) {
-      update.status = 'A discretionary restart is available'
+      update.status = 'Restart taken'
     } else if (r.restartCheckId === null || (r.restartCheckReceived === false && r.restartCheckComplete === false)) {
       update.status = 'Remove restart'
     } else if (r.totalCheckCount >= config.RESTART_MAX_ATTEMPTS + 1) {
