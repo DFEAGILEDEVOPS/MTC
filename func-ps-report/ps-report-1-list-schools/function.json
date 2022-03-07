@@ -18,5 +18,5 @@
       "connection": "AZURE_SERVICE_BUS_CONNECTION_STRING"
     }
   ],
-  "scriptFile": "../dist/func-ps-report/ps-report-1-list-schools/index.js"
+  "scriptFile": "../dist/functions-ps-report/ps-report-1-list-schools/index.js"
 }
