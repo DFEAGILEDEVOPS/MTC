@@ -1,5 +1,5 @@
 {
-  "name": "func-throttled",
+  "name": "func-ps-report",
   "description": "runtime host for functions defined in tslib that are part of the ps report",
   "version": "0.1.0",
   "license": "GPL-3.0",

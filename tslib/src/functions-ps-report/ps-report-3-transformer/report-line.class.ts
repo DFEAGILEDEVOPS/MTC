@@ -7,7 +7,7 @@ import {
   Event,
   Pupil,
   School, Answer, NotTakingCheckCode, RestartReasonCode
-} from '../../functions-throttled/ps-report-2-pupil-data/models'
+} from '../../functions-ps-report/ps-report-2-pupil-data/models'
 import { deepFreeze } from '../../common/deep-freeze'
 import { ReportLineAnswer } from './report-line-answer.class'
 import { DfEAbsenceCode, IPsychometricReportLine, WorkingReportLine } from './models'

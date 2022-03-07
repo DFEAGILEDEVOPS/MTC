@@ -2,7 +2,7 @@ import { AzureFunction, Context } from '@azure/functions'
 import { performance } from 'perf_hooks'
 import { ReportLine } from './report-line.class'
 import { jsonReviver } from '../../common/json-reviver'
-import { PupilResult } from '../../functions-throttled/ps-report-2-pupil-data/models'
+import { PupilResult } from '../../functions-ps-report/ps-report-2-pupil-data/models'
 const functionName = 'ps-report-transformer'
 
 /**

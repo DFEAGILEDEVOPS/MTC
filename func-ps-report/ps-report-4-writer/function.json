@@ -8,5 +8,5 @@
       "connection": "AZURE_SERVICE_BUS_CONNECTION_STRING"
     }
   ],
-  "scriptFile": "../dist/functions-throttled/ps-report-4-writer/index.js"
+  "scriptFile": "../dist/func-ps-report/ps-report-4-writer/index.js"
 }

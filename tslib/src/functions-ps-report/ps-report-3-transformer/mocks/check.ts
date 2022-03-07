@@ -1,4 +1,4 @@
-import { Check } from '../../../functions-throttled/ps-report-2-pupil-data/models'
+import { Check } from '../../../functions-ps-report/ps-report-2-pupil-data/models'
 import moment from 'moment'
 
 export const check: Check = {

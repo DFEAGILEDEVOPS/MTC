@@ -1,5 +1,5 @@
-import { PsReportWriterService } from '../functions-throttled/ps-report-4-writer/ps-report-writer.service'
-import { PsychometricReport } from '../functions-throttled/ps-report-4-writer/models'
+import { PsReportWriterService } from '../functions-ps-report/ps-report-4-writer/ps-report-writer.service'
+import { PsychometricReport } from '../functions-ps-report/ps-report-4-writer/models'
 import { IPsychometricReportLine } from '../functions-ps-report/ps-report-3-transformer/models'
 import { SqlService } from '../sql/sql.service'
 import { TYPES } from 'mssql'

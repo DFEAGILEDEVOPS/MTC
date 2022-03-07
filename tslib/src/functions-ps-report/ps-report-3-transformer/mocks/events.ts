@@ -1,4 +1,4 @@
-import { Event } from '../../../functions-throttled/ps-report-2-pupil-data/models'
+import { Event } from '../../../functions-ps-report/ps-report-2-pupil-data/models'
 import moment from 'moment'
 
 export const events: Event[] = [

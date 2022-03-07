@@ -1,4 +1,4 @@
-import { Device } from '../../../functions-throttled/ps-report-2-pupil-data/models'
+import { Device } from '../../../functions-ps-report/ps-report-2-pupil-data/models'
 
 export const device: Device = {
   type: 'Tablet',

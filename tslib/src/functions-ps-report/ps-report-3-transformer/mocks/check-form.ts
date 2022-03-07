@@ -1,4 +1,4 @@
-import { CheckForm } from '../../../functions-throttled/ps-report-2-pupil-data/models'
+import { CheckForm } from '../../../functions-ps-report/ps-report-2-pupil-data/models'
 
 export const checkForm: CheckForm = {
   id: 9,
