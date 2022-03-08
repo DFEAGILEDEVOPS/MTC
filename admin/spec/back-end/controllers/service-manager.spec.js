@@ -1040,11 +1040,11 @@ describe('service manager controller:', () => {
     })
 
     describe('getJobOutputs', () => {
-      const expectedJobId = '1'
+      const expectedJobId = 'sdkfjsdkfj-xljx409gh4t'
       test('it renders job outputs', async () => {
         const req = getReq({
           query: {
-            jobId: expectedJobId
+            urlSlug: expectedJobId
           }
         })
         const res = getRes()
@@ -1055,7 +1055,7 @@ describe('service manager controller:', () => {
       test('error is passed to handler when thrown', async () => {
         const req = getReq({
           query: {
-            jobId: expectedJobId
+            urlSlug: expectedJobId
           }
         })
         const res = getRes()
