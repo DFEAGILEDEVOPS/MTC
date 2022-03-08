@@ -36,6 +36,10 @@ const formatFullGdsDate = function (date) {
   return moment(date).format('D MMMM YYYY')
 }
 
+const formatFullGdsDateAndTime = function (date) {
+  return date.format('D MMMM YYYY h:mm a')
+}
+
 module.exports = async function (app) {
   'use strict'
   if (typeof app === 'undefined') throw new Error('express application object required')
@@ -67,6 +71,7 @@ module.exports = async function (app) {
   app.locals.formatGdsDate = formatGdsDate
   app.locals.formatFullGdsDate = formatFullGdsDate
   app.locals.formatGdsDateAndTime = formatGdsDateAndTime
+  app.locals.formatFullGdsDateAndTime = formatFullGdsDateAndTime
   app.locals.guidancePdf = 'https://www.gov.uk/government/collections/multiplication-tables-check'
   app.locals.roles = roles
   app.locals.isSubmitImpersonationUrl = false
