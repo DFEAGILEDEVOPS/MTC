@@ -4,6 +4,7 @@
   "description": "manages service bus entities",
   "main": "index.js",
   "scripts": {
+    "createqs": "node ./create-or-update.js",
     "createV2": "node ./create-or-update.js",
     "deleteqs": "node ./delete.js"
   },

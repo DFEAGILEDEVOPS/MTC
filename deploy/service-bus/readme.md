@@ -11,7 +11,7 @@ Creates service bus queues defined in queues-topics.json, if they do not already
 ## Usage
 
 `yarn deleteqs` or `npm run deleteqs` - deletes all queues specifieid in `queues-topics.json`
-`yarn createV2` or `npm run createV2` - creates all queues specifieid in `queues-topics.json`
+`yarn createqs` or `npm run createqs` - creates all queues specifieid in `queues-topics.json`
 
 ## Queue policies
 
