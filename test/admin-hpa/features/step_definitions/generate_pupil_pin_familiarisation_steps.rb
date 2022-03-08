@@ -86,6 +86,7 @@ When(/^I have generated a familiarisation pin for a pupil$/) do
   navigate_to_pupil_list_for_pin_gen('tio')
   @page = generate_tio_pins_overview_page
   @pupil_name = generate_tio_pins_overview_page.generate_pin_using_name(name)
+  @check_code = SqlDbHelper.check_details(@stored_pupil_details['id'])['checkCode']
 end
 
 Then(/^the familiarisation pin should consist of (\d+) characters$/) do |size|
