@@ -8,7 +8,7 @@ const service = {
    * @param {string} checkCode required, valid UUID
    * @returns single check record, or undefined if not found
    */
-  getByCheckCode: function getByCheckCode (checkCode) {
+  getByCheckCode: async function getByCheckCode (checkCode) {
     if (!checkCode) {
       throw new Error('checkCode is required')
     }
