@@ -374,6 +374,10 @@ describe('access arrangements controller:', () => {
     test('displays the edit access arrangements page', async () => {
       const res = getRes()
       const req = getReq(reqParams('urlSlug'))
+      const expectedSchoolId = 123
+      req.user = {
+        schoolId: expectedSchoolId
+      }
       jest.spyOn(res, 'render').mockImplementation()
       jest.spyOn(accessArrangementsService, 'getAccessArrangements').mockImplementation()
       jest.spyOn(accessArrangementsService, 'getCurrentViewMode').mockResolvedValue(aaViewModes.edit)
@@ -387,7 +391,7 @@ describe('access arrangements controller:', () => {
       expect(res.locals.pageTitle).toBe('Edit access arrangement for pupil')
       expect(res.render).toHaveBeenCalled()
       expect(accessArrangementsService.getAccessArrangements).toHaveBeenCalled()
-      expect(pupilAccessArrangementsEditService.getEditData).toHaveBeenCalledWith({}, 'pupilUrlSlug', 9991001)
+      expect(pupilAccessArrangementsEditService.getEditData).toHaveBeenCalledWith({}, 'pupilUrlSlug', expectedSchoolId)
     })
     test('calls next when an error occurs during service call', async () => {
       const res = getRes()
