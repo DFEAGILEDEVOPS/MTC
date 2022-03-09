@@ -8,10 +8,10 @@ const pupilAccessArrangementsEditService = {}
  * Get pupil access arrangements edit data
  * @param {Object} submittedData
  * @param {String} pupilUrlSlug
- * @param {Number} dfeNumber
+ * @param {Number} schoolId
  * @returns {Promise<Object>}
  */
-pupilAccessArrangementsEditService.getEditData = async (submittedData, pupilUrlSlug, dfeNumber) => {
+pupilAccessArrangementsEditService.getEditData = async (submittedData, pupilUrlSlug, schoolId) => {
   if (!pupilUrlSlug) {
     throw new Error('Pupil url slug not provided')
   }
@@ -20,7 +20,8 @@ pupilAccessArrangementsEditService.getEditData = async (submittedData, pupilUrlS
   if (Object.keys(existingData).length === 0) {
     formData = await pupilAccessArrangementsService.getPupilEditFormData(pupilUrlSlug)
   } else {
-    const pupil = await pupilService.fetchOnePupilBySlug(pupilUrlSlug, dfeNumber)
+    console.log(`GUY: fetching pupil data with pupilUrlSlug:${pupilUrlSlug} dfeNumber: ${schoolId}`)
+    const pupil = await pupilService.fetchOnePupilBySlug(pupilUrlSlug, schoolId)
     formData = existingData
     formData.foreName = pupil.foreName
     formData.lastName = pupil.lastName
