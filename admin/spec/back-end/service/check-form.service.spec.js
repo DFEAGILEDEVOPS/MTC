@@ -2,7 +2,7 @@
 /**
  * @file Unit tests for check form service
  */
-/* global describe it expect spyOn fail */
+/* global describe test expect jest */
 
 const random = require('../../../lib/random-generator')
 
@@ -24,101 +24,81 @@ describe('check-form.service', () => {
     ]
     const seenForms = [2]
 
-    it('it should return a check-form', async () => {
-      try {
-        const checkForm = await service.allocateCheckForm(availableForms, seenForms)
-        expect(typeof checkForm).toBe('object')
-        expect({}.hasOwnProperty.call(checkForm, 'id')).toBe(true)
-        expect({}.hasOwnProperty.call(checkForm, 'name')).toBe(true)
-      } catch (error) {
-        fail(error)
-      }
+    test('it should return a check-form', async () => {
+      const checkForm = await service.allocateCheckForm(availableForms, seenForms)
+      expect(typeof checkForm).toBe('object')
+      expect({}.hasOwnProperty.call(checkForm, 'id')).toBe(true)
+      expect({}.hasOwnProperty.call(checkForm, 'name')).toBe(true)
     })
 
-    it('should throw when available form param is not an array', async () => {
-      try {
-        await service.allocateCheckForm({}, seenForms)
-      } catch (error) {
-        expect(error.message).toBe('availableForms is not an array')
-      }
+    test('should throw when available form param is not an array', async () => {
+      await expect(service.allocateCheckForm({}, seenForms))
+        .rejects
+        .toThrow('availableForms is not an array')
     })
 
-    it('should throw when available form param is not an array', async () => {
-      try {
-        await service.allocateCheckForm(null, seenForms)
-      } catch (error) {
-        expect(error.message).toBe('availableForms is not an array')
-      }
+    test('should throw when available form param is not an array', async () => {
+      await expect(service.allocateCheckForm(null, seenForms))
+        .rejects
+        .toThrow('availableForms is not an array')
     })
 
-    it('should throw when the used forms param is not an array', async () => {
-      try {
-        await service.allocateCheckForm(availableForms, undefined)
-      } catch (error) {
-        expect(error.message).toBe('usedFormIds is not an array')
-      }
+    test('should throw when the used forms param is not an array', async () => {
+      await expect(service.allocateCheckForm(availableForms, undefined))
+        .rejects
+        .toThrow('usedFormIds is not an array')
     })
 
-    it('should throw when the used forms param is not an array', async () => {
-      try {
-        await service.allocateCheckForm(availableForms)
-      } catch (error) {
-        expect(error.message).toBe('usedFormIds is not an array')
-      }
+    test('should throw when the used forms param is not an array', async () => {
+      await expect(service.allocateCheckForm(availableForms))
+        .rejects
+        .toThrow('usedFormIds is not an array')
     })
 
-    it('should throw when the available forms param is an empty array', async () => {
-      try {
-        await service.allocateCheckForm([], [])
-      } catch (error) {
-        expect(error.message).toBe('There must be at least one form to select')
-      }
+    test('should throw when the available forms param is an empty array', async () => {
+      await expect(service.allocateCheckForm([], []))
+        .rejects
+        .toThrow('There must be at least one form to select')
     })
 
-    it('randomly selects a form if there are two or more unseen forms to choose', async () => {
+    test('randomly selects a form if there are two or more unseen forms to choose', async () => {
       const f = await service.allocateCheckForm(availableForms, seenForms)
       expect(f.name).toMatch(/^Form (1|3)$/)
     })
 
-    it('selects the last unseen form if there is only 1 unseen form to choose from', async () => {
+    test('selects the last unseen form if there is only 1 unseen form to choose from', async () => {
       const f = await service.allocateCheckForm(availableForms, [2, 3])
       expect(f.name).toBe('Form 1') // the only unseen form in the available forms
     })
 
-    it('randomly chooses a seen form if there are no unseen forms', async () => {
+    test('randomly chooses a seen form if there are no unseen forms', async () => {
       const f = await service.allocateCheckForm(availableForms, [1, 2, 3])
       expect(f.name).toMatch(/^Form (1|2|3)$/)
     })
 
-    it('selects the only seen form available when there is only one form provided', async () => {
+    test('selects the only seen form available when there is only one form provided', async () => {
       const f = await service.allocateCheckForm([{ id: 1, name: 'Form 1' }], [1])
       expect(f.name).toBe('Form 1')
     })
 
-    it('throws a meaningful error if the underlying library throws', async () => {
-      spyOn(random, 'getRandomIntInRange').and.throwError('a mock throw')
-      try {
-        await service.allocateCheckForm(availableForms, seenForms)
-      } catch (error) {
-        expect(error.message).toBe('Error allocating checkForm: a mock throw')
-      }
+    test('throws a meaningful error if the underlying library throws', async () => {
+      jest.spyOn(random, 'getRandomIntInRange').mockRejectedValue(new Error('a mock throw'))
+      await expect(service.allocateCheckForm(availableForms, seenForms))
+        .rejects
+        .toThrow('Error allocating checkForm: a mock throw')
     })
   })
 
   describe('#prepareQuestionData()', () => {
-    it('should prepare the question data', async () => {
-      try {
-        const questions = service.prepareQuestionData(JSON.parse(checkFormMock.formData))
-        expect(Array.isArray(questions)).toBeTruthy()
-        expect(questions.length).toBe(2)
-        questions.forEach((q) => {
-          expect({}.hasOwnProperty.call(q, 'order')).toBeTruthy()
-          expect({}.hasOwnProperty.call(q, 'factor1')).toBeTruthy()
-          expect({}.hasOwnProperty.call(q, 'factor2')).toBeTruthy()
-        })
-      } catch (error) {
-        fail(error)
-      }
+    test('should prepare the question data', async () => {
+      const questions = service.prepareQuestionData(JSON.parse(checkFormMock.formData))
+      expect(Array.isArray(questions)).toBeTruthy()
+      expect(questions.length).toBe(2)
+      questions.forEach((q) => {
+        expect({}.hasOwnProperty.call(q, 'order')).toBeTruthy()
+        expect({}.hasOwnProperty.call(q, 'factor1')).toBeTruthy()
+        expect({}.hasOwnProperty.call(q, 'factor2')).toBeTruthy()
+      })
     })
   })
 })
