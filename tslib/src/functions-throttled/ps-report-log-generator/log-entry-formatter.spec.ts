@@ -16,7 +16,7 @@ describe('log entry formatter', () => {
       source: 'pupil-generator'
     }
     const output = sut.formatMessage(message)
-    const expectedOutput = `${message.generatedAt.toISOString()}: ${message.message}`
+    const expectedOutput = `${message.generatedAt.toISOString()}: [${message.source}] ${message.message}`
     expect(output).toStrictEqual(expectedOutput)
   })
 })
