@@ -1,5 +1,5 @@
 'use strict'
-/* global describe beforeEach expect it fail spyOn */
+/* global describe beforeEach expect test jest afterEach */
 
 const moment = require('moment')
 const { v4: uuidv4 } = require('uuid')
@@ -12,24 +12,24 @@ const checkWindowV2Service = require('../../../services/check-window-v2.service'
 const ValidationError = require('../../../lib/validation-error')
 
 describe('check-window-v2-update.service', () => {
+  afterEach(() => {
+    jest.restoreAllMocks()
+  })
+
   describe('submit', () => {
     beforeEach(() => {
-      spyOn(checkWindowDataService, 'sqlFindActiveCheckWindow').and.returnValue({ id: 1 })
+      jest.spyOn(checkWindowDataService, 'sqlFindActiveCheckWindow').mockReturnValue({ id: 1 })
     })
-    it('when validation is successful should process data and perform db record update', async () => {
+    test('when validation is successful should process data and perform db record update', async () => {
       const validationError = new ValidationError()
-      spyOn(checkWindowAddValidator, 'validate').and.returnValue(validationError)
-      spyOn(checkWindowV2Service, 'prepareSubmissionData').and.returnValue({ name: 'Check window' })
-      spyOn(activeCheckWindowValidator, 'validate').and.returnValue(validationError)
-      spyOn(checkWindowDataService, 'sqlUpdate')
-      spyOn(checkWindowV2UpdateService, 'getValidationConfig')
-      spyOn(checkWindowV2Service, 'getCheckWindow').and.returnValue({ id: 1, checkWindowUrlSlug: uuidv4() })
+      jest.spyOn(checkWindowAddValidator, 'validate').mockReturnValue(validationError)
+      jest.spyOn(checkWindowV2Service, 'prepareSubmissionData').mockReturnValue({ name: 'Check window' })
+      jest.spyOn(activeCheckWindowValidator, 'validate').mockReturnValue(validationError)
+      jest.spyOn(checkWindowDataService, 'sqlUpdate').mockImplementation()
+      jest.spyOn(checkWindowV2UpdateService, 'getValidationConfig').mockImplementation()
+      jest.spyOn(checkWindowV2Service, 'getCheckWindow').mockResolvedValue({ id: 1, checkWindowUrlSlug: uuidv4() })
       const requestData = {}
-      try {
-        await checkWindowV2UpdateService.submit(requestData)
-      } catch (error) {
-        fail()
-      }
+      await checkWindowV2UpdateService.submit(requestData)
       expect(checkWindowAddValidator.validate).toHaveBeenCalled()
       expect(checkWindowV2UpdateService.getValidationConfig).toHaveBeenCalled()
       expect(checkWindowV2Service.prepareSubmissionData).toHaveBeenCalled()
@@ -37,71 +37,59 @@ describe('check-window-v2-update.service', () => {
       expect(activeCheckWindowValidator.validate).toHaveBeenCalled()
       expect(checkWindowDataService.sqlUpdate).toHaveBeenCalled()
     })
-    it('when checkWindowAddValidator validation is unsuccessful should throw a validation error', async () => {
+    test('when checkWindowAddValidator validation is unsuccessful should throw a validation error', async () => {
       const validationError = new ValidationError()
       validationError.addError('errorField', true)
-      spyOn(checkWindowAddValidator, 'validate').and.returnValue(validationError)
-      spyOn(checkWindowV2Service, 'prepareSubmissionData')
-      spyOn(activeCheckWindowValidator, 'validate')
-      spyOn(checkWindowV2UpdateService, 'getValidationConfig')
-      spyOn(checkWindowDataService, 'sqlUpdate')
-      spyOn(checkWindowV2Service, 'getCheckWindow')
+      jest.spyOn(checkWindowAddValidator, 'validate').mockReturnValue(validationError)
+      jest.spyOn(checkWindowV2Service, 'prepareSubmissionData').mockImplementation()
+      jest.spyOn(activeCheckWindowValidator, 'validate').mockImplementation()
+      jest.spyOn(checkWindowV2UpdateService, 'getValidationConfig').mockImplementation()
+      jest.spyOn(checkWindowDataService, 'sqlUpdate').mockImplementation()
+      jest.spyOn(checkWindowV2Service, 'getCheckWindow').mockImplementation()
       const requestData = {}
-      try {
-        await checkWindowV2UpdateService.submit(requestData)
-        fail()
-      } catch (error) {
-        expect(error.name).toBe('ValidationError')
-        expect(Object.keys(error.errors).length).toBe(1)
-      }
+      await expect(checkWindowV2UpdateService.submit(requestData))
+        .rejects
+        .toBeInstanceOf(ValidationError)
       expect(checkWindowAddValidator.validate).toHaveBeenCalled()
       expect(checkWindowV2Service.getCheckWindow).toHaveBeenCalled()
       expect(checkWindowV2UpdateService.getValidationConfig).toHaveBeenCalled()
       expect(checkWindowV2Service.prepareSubmissionData).not.toHaveBeenCalled()
       expect(checkWindowDataService.sqlUpdate).not.toHaveBeenCalled()
     })
-    it('when checkWindowAddValidator validation is unsuccessful should not proceed with active check window validation', async () => {
+    test('when checkWindowAddValidator validation is unsuccessful should not proceed with active check window validation', async () => {
       const validationError = new ValidationError()
       validationError.addError('errorField', true)
-      spyOn(checkWindowAddValidator, 'validate').and.returnValue(validationError)
-      spyOn(checkWindowV2Service, 'prepareSubmissionData')
-      spyOn(activeCheckWindowValidator, 'validate')
-      spyOn(checkWindowV2UpdateService, 'getValidationConfig')
-      spyOn(checkWindowDataService, 'sqlUpdate')
-      spyOn(checkWindowV2Service, 'getCheckWindow')
+      jest.spyOn(checkWindowAddValidator, 'validate').mockReturnValue(validationError)
+      jest.spyOn(checkWindowV2Service, 'prepareSubmissionData').mockImplementation()
+      jest.spyOn(activeCheckWindowValidator, 'validate').mockImplementation()
+      jest.spyOn(checkWindowV2UpdateService, 'getValidationConfig').mockImplementation()
+      jest.spyOn(checkWindowDataService, 'sqlUpdate').mockImplementation()
+      jest.spyOn(checkWindowV2Service, 'getCheckWindow').mockResolvedValue()
       const requestData = {}
-      try {
-        await checkWindowV2UpdateService.submit(requestData)
-        fail()
-      } catch (error) {
-        expect(error.name).toBe('ValidationError')
-        expect(Object.keys(error.errors).length).toBe(1)
-      }
+      await expect(checkWindowV2UpdateService.submit(requestData))
+        .rejects
+        .toBeInstanceOf(ValidationError)
       expect(activeCheckWindowValidator.validate).not.toHaveBeenCalled()
     })
-    it('when activeCheckWindowValidator validation is unsuccessful should throw a validation error and prevent sqlUpdate call', async () => {
+    test('when activeCheckWindowValidator validation is unsuccessful should throw a validation error and prevent sqlUpdate call', async () => {
       const validationError1 = new ValidationError()
       const validationError2 = new ValidationError()
       validationError2.addError('errorField', true)
-      spyOn(checkWindowAddValidator, 'validate').and.returnValue(validationError1)
-      spyOn(checkWindowV2Service, 'prepareSubmissionData')
-      spyOn(activeCheckWindowValidator, 'validate').and.returnValue(validationError2)
-      spyOn(checkWindowV2UpdateService, 'getValidationConfig')
-      spyOn(checkWindowDataService, 'sqlUpdate')
-      spyOn(checkWindowV2Service, 'getCheckWindow').and.returnValue({ id: 1 })
+      jest.spyOn(checkWindowAddValidator, 'validate').mockReturnValue(validationError1)
+      jest.spyOn(checkWindowV2Service, 'prepareSubmissionData').mockReturnValue()
+      jest.spyOn(activeCheckWindowValidator, 'validate').mockReturnValue(validationError2)
+      jest.spyOn(checkWindowV2UpdateService, 'getValidationConfig').mockReturnValue()
+      jest.spyOn(checkWindowDataService, 'sqlUpdate').mockImplementation()
+      jest.spyOn(checkWindowV2Service, 'getCheckWindow').mockResolvedValue({ id: 1 })
       const requestData = { checkWindowUrlSlug: 'abc' }
-      try {
-        await checkWindowV2UpdateService.submit(requestData)
-        fail()
-      } catch (error) {
-        expect(error.name).toBe('ValidationError')
-        expect(Object.keys(error.errors).length).toBe(1)
-      }
+      await expect(checkWindowV2UpdateService.submit(requestData))
+        .rejects
+        .toBeInstanceOf(ValidationError)
       expect(checkWindowDataService.sqlUpdate).not.toHaveBeenCalled()
     })
   })
   describe('getValidationConfig', () => {
-    it('should return no disabled attributes if all dates are in the future back to the caller', () => {
+    test('should return no disabled attributes if all dates are in the future back to the caller', () => {
       const checkWindow = {
         adminStartDate: moment.utc().add(1, 'days'),
         adminEndDate: moment.utc().add(10, 'days'),
@@ -121,7 +109,7 @@ describe('check-window-v2-update.service', () => {
       }
       expect(result).toEqual(config)
     })
-    it('should return no disabled attributes if all dates are set to the current date', () => {
+    test('should return no disabled attributes if all dates are set to the current date', () => {
       const checkWindow = {
         adminStartDate: moment.utc(),
         adminEndDate: moment.utc(),
@@ -141,7 +129,7 @@ describe('check-window-v2-update.service', () => {
       }
       expect(result).toEqual(config)
     })
-    it('should return a disabled attribute if it is in the past back to the caller', () => {
+    test('should return a disabled attribute if it is in the past back to the caller', () => {
       const checkWindow = {
         adminStartDate: moment.utc().subtract(1, 'days'),
         adminEndDate: moment.utc().add(10, 'days'),

@@ -1,6 +1,6 @@
 'use strict'
 
-/* global describe, it, expect, beforeEach, spyOn */
+/* global describe, test, expect, beforeEach, jest */
 const schoolSummaryService = require('../../../services/school-summary.service')
 const schoolSummaryDataService = require('../../../services/data-access/school-summary.data.service')
 
@@ -35,21 +35,21 @@ describe('schoolSummaryService', () => {
     }
   ]
   beforeEach(() => {
-    spyOn(schoolSummaryDataService, 'getRegisterData').and.returnValue(mockRegisterData)
-    spyOn(schoolSummaryDataService, 'getLiveCheckData').and.returnValue(mockLiveData)
-    spyOn(schoolSummaryDataService, 'getTryItOutCheckData').and.returnValue(mockTioData)
+    jest.spyOn(schoolSummaryDataService, 'getRegisterData').mockResolvedValue(mockRegisterData)
+    jest.spyOn(schoolSummaryDataService, 'getLiveCheckData').mockResolvedValue(mockLiveData)
+    jest.spyOn(schoolSummaryDataService, 'getTryItOutCheckData').mockResolvedValue(mockTioData)
   })
 
-  it('should be defined', async () => {
+  test('should be defined', async () => {
     expect(schoolSummaryService).toBeDefined()
   })
 
-  it('should transform register data correctly', async () => {
+  test('should transform register data correctly', async () => {
     const summary = await schoolSummaryService.getSummary(1)
     expect(summary.register.total).toBe(mockRegisterData.TotalCount)
   })
 
-  it('should transform live check data correctly', async () => {
+  test('should transform live check data correctly', async () => {
     const summary = await schoolSummaryService.getSummary(1)
     const liveCheck1 = summary.liveCheckSummary[0]
     const mockLiveCheck1 = mockLiveData[0]
@@ -66,7 +66,7 @@ describe('schoolSummaryService', () => {
     expect(liveCheck2.Complete).toBe(mockLiveCheck2.Complete)
   })
 
-  it('should transform tio check data correctly', async () => {
+  test('should transform tio check data correctly', async () => {
     const summary = await schoolSummaryService.getSummary(1)
     const tioCheck1 = summary.tioCheckSummary[0]
     const mockTioCheck1 = mockTioData[0]
