@@ -356,6 +356,12 @@ class SqlDbHelper
     result.do
   end
 
+  def self.delete_schools_audit_history
+    sql = "DELETE from [mtc_admin].[schoolAudit] where newData like '%Mo School%'"
+    result = SQL_CLIENT.execute(sql)
+    result.do
+  end
+
   def self.delete_schools_imported
     sql = "DELETE from [mtc_admin].[school] where name like '%Mo School%'"
     result = SQL_CLIENT.execute(sql)
