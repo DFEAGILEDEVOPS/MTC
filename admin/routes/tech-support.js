@@ -25,6 +25,18 @@ router.post(
 )
 
 router.get(
+  '/marked-check-json/:checkCode',
+  isAuthenticated([roles.techSupport]),
+  techSupportController.getJsonMarkedCheck
+)
+
+router.get(
+  '/received-check-json/:checkCode',
+  isAuthenticated([roles.techSupport]),
+  techSupportController.getJsonReceivedCheck
+)
+
+router.get(
   '/received-check-payload',
   isAuthenticated([roles.techSupport]),
   techSupportController.getReceivedCheckPayload
