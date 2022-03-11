@@ -20,7 +20,6 @@ pupilAccessArrangementsEditService.getEditData = async (submittedData, pupilUrlS
   if (Object.keys(existingData).length === 0) {
     formData = await pupilAccessArrangementsService.getPupilEditFormData(pupilUrlSlug)
   } else {
-    console.log(`GUY: fetching pupil data with pupilUrlSlug:${pupilUrlSlug} dfeNumber: ${schoolId}`)
     const pupil = await pupilService.fetchOnePupilBySlug(pupilUrlSlug, schoolId)
     formData = existingData
     formData.foreName = pupil.foreName
