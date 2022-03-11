@@ -1,10 +1,10 @@
-import { SqlService, ISqlParameter } from '../../sql/sql.service'
+import { SqlService, ISqlParameter, IModifyResult } from '../../sql/sql.service'
 import { School, SchoolPinUpdate } from './school-pin-replenishment.service'
 import { TYPES } from 'mssql'
 
 export interface ISchoolPinReplenishmentDataService {
   getAllSchools (): Promise<School[]>
-  updatePin (schoolPinUpdate: SchoolPinUpdate): Promise<void>
+  updatePin (schoolPinUpdate: SchoolPinUpdate): Promise<IModifyResult>
   getSchoolById (id: number): Promise<School | undefined>
 }
 
@@ -46,7 +46,7 @@ export class SchoolPinReplenishmentDataService implements ISchoolPinReplenishmen
     return this.sqlService.query(sql)
   }
 
-  async updatePin (school: SchoolPinUpdate): Promise<void> {
+  async updatePin (school: SchoolPinUpdate): Promise<IModifyResult> {
     const sql = `UPDATE [mtc_admin].[school]
     SET pinExpiresAt=@pinExpiresAt,
     pin=@pin

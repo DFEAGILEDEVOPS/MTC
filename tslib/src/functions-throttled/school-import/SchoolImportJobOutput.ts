@@ -1,11 +1,11 @@
-export interface ISchoolImportJobResult {
+export interface IJobOutput {
   getStandardOutput(): string
   getErrorOutput(): string
   hasError(): boolean
   reset(): void
 }
 
-export class SchoolImportJobResult implements ISchoolImportJobResult {
+export class SchoolImportJobOutput implements IJobOutput {
   constructor () {
     this.stderr = []
     this.stdout = []

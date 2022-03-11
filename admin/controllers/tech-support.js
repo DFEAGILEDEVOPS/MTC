@@ -12,13 +12,13 @@ const queueMgmtService = require('../services/tech-support-queue-management.serv
 const resultsResyncService = require('../services/tech-support/sync-results-resync.service')
 
 const controller = {
-/**
- * Renders the tech support landing page
- * @param {object} req
- * @param {object} res
- * @param {function} next
- * @returns {Promise<void>}
- */
+  /**
+   * Renders the tech support landing page
+   * @param {object} req
+   * @param {object} res
+   * @param {function} next
+   * @returns {Promise<void>}
+   */
   getHomePage: async function getHomePage (req, res, next) {
     res.locals.pageTitle = 'Tech Support Homepage'
     try {
@@ -54,11 +54,11 @@ const controller = {
     }
   },
   /**
- * Renders check view summary
- * @param {object} req
- * @param {object} res
- * @param {object} next
- */
+   * Renders check view summary
+   * @param {object} req
+   * @param {object} res
+   * @param {object} next
+   */
   postCheckViewPage: async function postCheckViewPage (req, res, next) {
     res.locals.pageTitle = 'Tech Support Check View'
     const { checkCode } = req.body
@@ -69,8 +69,15 @@ const controller = {
       }
       let found = false
       const checkSummary = await checkDiagnosticsService.getByCheckCode(checkCode)
+      let checkReceived, checkMarked
       if (checkSummary) {
         found = true
+        try {
+          checkReceived = await checkDiagnosticsService.getReceivedCheckEntityByCheckCode(checkCode)
+        } catch (ignored) {}
+        try {
+          checkMarked = await checkDiagnosticsService.getMarkedCheckEntityByCheckCode(checkCode)
+        } catch (ignored) {}
       }
       req.breadcrumbs('Check View')
       res.render('tech-support/check-view', {
@@ -80,14 +87,80 @@ const controller = {
           checkCode: checkCode
         },
         summary: checkSummary,
-        found: found
+        found: found,
+        checkReceived: checkReceived,
+        checkMarked: checkMarked
       })
     } catch (error) {
       return next(error)
     }
   },
+
   /**
-   * @description Renders received check payload
+   * Renders marked check from Azure Table Storage in JSON response, or an error.
+   * @param {*} req
+   * @param {*} res
+   * @param {*} next
+   * @returns
+   */
+  getJsonMarkedCheck: async function getJsonMarkedCheck (req, res, next) {
+    const jsonError = {
+      error: 'Error'
+    }
+    try {
+      const checkCode = req.params.checkCode
+      if (!checkCode) {
+        jsonError.error = 'Missing checkCode'
+        return res.status(400).json(jsonError)
+      }
+      const validationError = uuidValidator.validate(checkCode, 'checkCode')
+      if (validationError && validationError.hasError && validationError.hasError()) {
+        jsonError.error = 'checkCode is not a valid UUID'
+        return res.status(400).json(jsonError)
+      }
+      const markedCheck = await checkDiagnosticsService.getMarkedCheckEntityByCheckCode(checkCode)
+      res.type('json')
+      res.send(JSON.stringify(markedCheck, null, '    '))
+    } catch (error) {
+      jsonError.error = `Server error: ${error.message}`
+      res.status(500).json(jsonError)
+    }
+  },
+
+  /**
+   * Renders ReceivedCheck (minus payload) in JSON response, or an error
+   * @param {*} req
+   * @param {*} res
+   * @param {*} next
+   * @returns
+   */
+  getJsonReceivedCheck: async function getJsonReceivedCheck (req, res, next) {
+    const jsonError = {
+      error: 'Error'
+    }
+
+    try {
+      const checkCode = req.params.checkCode
+      if (!checkCode) {
+        jsonError.error = 'Missing checkCode'
+        return res.status(400).json(jsonError)
+      }
+      const validationError = uuidValidator.validate(checkCode, 'checkCode')
+      if (validationError && validationError.hasError && validationError.hasError()) {
+        jsonError.error = 'checkCode is not a valid UUID'
+        return res.status(400).json(jsonError)
+      }
+      const receivedCheck = await checkDiagnosticsService.getReceivedCheckEntityByCheckCode(checkCode)
+      res.type('json')
+      res.send(JSON.stringify(receivedCheck, null, '    '))
+    } catch (error) {
+      jsonError.error = `Server error: ${error.message}`
+      res.status(500).json(jsonError)
+    }
+  },
+
+  /**
+   * @description Renders received check payload in JSON response
    * @param {object} req
    * @param {object} res
    * @param {object} next

@@ -52,13 +52,14 @@ describe('pupilCensusService', () => {
     jest.restoreAllMocks()
   })
 
-  describe('process', () => {
+  describe('validateFile', () => {
     test('calls file validator', async () => {
       jest.spyOn(fileValidator, 'validate').mockImplementation()
-      await pupilCensusService.process(pupilCensusUploadMock)
+      await pupilCensusService.validateFile(pupilCensusUploadMock)
       expect(fileValidator.validate).toHaveBeenCalled()
     })
   })
+
   describe('upload2', () => {
     test('reads the file into stream, creates a job record and uploads to blob storage', async () => {
       jest.spyOn(pupilCensusService, 'createJobRecord').mockResolvedValue({ id: 1, urlSlug: 'urlSlug' })
@@ -96,6 +97,7 @@ describe('pupilCensusService', () => {
       expect(jobDataService.sqlUpdateStatus).toHaveBeenCalledWith('urlSlug', 'FLD')
     })
   })
+
   describe('getUploadedFile', () => {
     test('fetches a pupil census record and related status', async () => {
       jest.spyOn(jobDataService, 'sqlFindLatestByTypeId').mockResolvedValue(pupilCensusMock)
@@ -121,7 +123,8 @@ describe('pupilCensusService', () => {
       expect(jobTypeDataService.sqlFindOneByTypeCode).toHaveBeenCalled()
     })
   })
-  describe('create', () => {
+
+  describe('createJobRecord', () => {
     test('calls sqlCreate method to create the pupil census record', async () => {
       jest.spyOn(jobDataService, 'sqlCreate').mockImplementation()
       jest.spyOn(jobTypeDataService, 'sqlFindOneByTypeCode').mockResolvedValue(jobTypeMock)
@@ -130,14 +133,7 @@ describe('pupilCensusService', () => {
       expect(jobDataService.sqlCreate).toHaveBeenCalled()
     })
   })
-  describe('updateJobOutput', () => {
-    test('calls sqlUpdate method to update the pupil census record', async () => {
-      jest.spyOn(jobDataService, 'sqlUpdate').mockImplementation()
-      jest.spyOn(jobStatusDataService, 'sqlFindOneByTypeCode').mockResolvedValue(jobStatusSubmittedMock)
-      await pupilCensusService.updateJobOutput(1, { output: 'output' })
-      expect(jobDataService.sqlUpdate).toHaveBeenCalled()
-    })
-  })
+
   describe('remove', () => {
     test('calls sqlUpdate method to update the pupil census record with the deleted status', async () => {
       jest.spyOn(pupilCensusDataService, 'sqlDeletePupilsByJobId').mockImplementation()

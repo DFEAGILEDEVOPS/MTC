@@ -16,6 +16,11 @@ declare class SqlServerError extends Error {
   number?: number
 }
 
+export interface IModifyResult {
+  insertId?: number
+  insertIds?: number[]
+}
+
 const connectionLimitReachedErrorCode = 10928
 
 const dbLimitReached = (error: SqlServerError): boolean => {
@@ -99,7 +104,7 @@ export class SqlService implements ISqlService {
    * @param {array} params - Array of parameters for SQL statement
    * @return {Promise}
    */
-  async modify (sql: string, params: ISqlParameter[]): Promise<any> {
+  async modify (sql: string, params: ISqlParameter[]): Promise<IModifyResult> {
     if (config.Logging.DebugVerbosity > 1) {
       this.logger.verbose(`sql.service.modify(): ${sql}`)
     }
@@ -109,7 +114,10 @@ export class SqlService implements ISqlService {
       return request.query(sql)
     }
 
-    let returnValue: any
+    const returnValue: IModifyResult = {
+      insertId: undefined,
+      insertIds: undefined
+    }
     const insertIds = []
 
     const rawResponse = await retry<any>(modify, retryConfig, dbLimitReached)
@@ -127,7 +135,6 @@ export class SqlService implements ISqlService {
     } else if (insertIds.length > 1) {
       returnValue.insertIds = insertIds
     }
-
     return returnValue
   }
 
@@ -232,6 +239,6 @@ export interface ITransactionRequest {
 
 export interface ISqlService {
   query (sql: string, params?: ISqlParameter[]): Promise<any>
-  modify (sql: string, params: ISqlParameter[]): Promise<any>
+  modify (sql: string, params: ISqlParameter[]): Promise<IModifyResult>
   modifyWithTransaction (requests: ITransactionRequest[]): Promise<any>
 }
