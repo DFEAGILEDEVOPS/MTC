@@ -2,7 +2,7 @@ import { TYPES } from 'mssql'
 import * as R from 'ramda'
 import { Audit, Device, MarkedCheck, ValidatedCheck } from './models'
 import { IPrepareAnswersAndInputsDataService, PrepareAnswersAndInputsDataService } from './prepare-answers-and-inputs.data.service'
-import { ISqlParameter, ISqlService, ITransactionRequest, SqlService } from '../../sql/sql.service'
+import { IModifyResult, ISqlParameter, ISqlService, ITransactionRequest, SqlService } from '../../sql/sql.service'
 import { UserAgentParser } from './user-agent-parser'
 import { IPrepareEventService, PrepareEventService } from './prepare-event.service'
 import { ConsoleLogger, ILogger } from '../../common/logger'
@@ -24,7 +24,7 @@ export interface ISyncResultsDataService {
 
   deleteExistingResultIfExists (markedCheck: MarkedCheck): Promise<void>
 
-  setCheckToResultsSyncComplete (markedCheck: MarkedCheck): Promise<void>
+  setCheckToResultsSyncComplete (markedCheck: MarkedCheck): Promise<IModifyResult>
 
   setCheckToResultsSyncFailed (markedCheck: MarkedCheck, errorMessage: string): Promise<void>
 }
@@ -46,7 +46,7 @@ export class SyncResultsDataService implements ISyncResultsDataService {
    * set the check to successfully synchronised results
    * @param {MarkedCheck} markedCheck
    */
-  public async setCheckToResultsSyncComplete (markedCheck: MarkedCheck): Promise<void> {
+  public async setCheckToResultsSyncComplete (markedCheck: MarkedCheck): Promise<IModifyResult> {
     const sql = 'UPDATE [mtc_admin].[check] SET resultsSynchronised=1 WHERE checkCode=@checkCode'
     const params = new Array<ISqlParameter>()
     params.push({

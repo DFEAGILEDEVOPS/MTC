@@ -104,6 +104,7 @@
     "@babel/core": "^7.10.5",
     "@babel/preset-env": "^7.10.4",
     "@babel/preset-typescript": "^7.16.0",
+    "@types/adm-zip": "^0.4.34",
     "@types/fs-extra": "^9.0.1",
     "@types/jest": "^27.0.1",
     "@types/marked": "^4.0.0",
