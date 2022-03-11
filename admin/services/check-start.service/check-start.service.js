@@ -52,7 +52,7 @@ const checkStartService = {
  *                     * place a message on the `prepare-check` queue for writing to `preparedCheck` table
  *                     * Store the check config in the `checkConfig` table
  *                     * request pupil-status changes by writing to the `pupil-status` queue
- * @param { string[] } pupilIds - pupils selected from the UI/form / array of numeric strings
+ * @param { number[] } pupilIds - pupils IDs selected from the UI/form
  * @param { number } dfeNumber - school dfeNumber that the teachers works at
  * @param { number } schoolId - school ID that the teacher works at
  * @param { number } userId - user ID of the teacher

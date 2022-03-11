@@ -140,6 +140,9 @@ const postGeneratePins = async function postGeneratePins (req, res, next) {
     }
   }
 
+  // convert the list of pupils from strings to numbers
+  const pupilsListNums = pupilsList.map(s => parseInt(s, 10))
+
   if (!Array.isArray(pupilsList) || pupilsList.length === 0) {
     return res.redirect(`/pupil-pin/generate-${pinEnv}-pins-list`)
   }
@@ -154,7 +157,7 @@ const postGeneratePins = async function postGeneratePins (req, res, next) {
     }
 
     await checkStartService.prepareCheck2(
-      pupilsList,
+      pupilsListNums,
       req.user.School,
       req.user.schoolId,
       req.user.id,

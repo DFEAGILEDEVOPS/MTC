@@ -35,8 +35,8 @@ describe('check-start.service', () => {
     { id: 2 },
     { id: 3 }
   ]
-  const pupilIds = ['1', '2', '3'] // strings to mimic incoming form params
-  const pupilIdsHackAttempt = ['1', '2', '3', '4']
+  const pupilIds = [1, 2, 3]
+  const pupilIdsHackAttempt = [1, 2, 3, 4]
   const mockPreparedCheck = { pupil_id: 1, checkForm_id: 1, checkWindow_id: 1, isLiveCheck: true }
   const mockNewChecks = [
     { id: 1, check_checkCode: '1A', pupil_id: 1, school_pin: 'abc12xyz' },
@@ -301,6 +301,7 @@ describe('check-start.service', () => {
       })
 
       test('throws an error if the check form allocation ID param is not an array', async () => {
+        // @ts-ignore - delibrate type mismatch
         await expect(checkStartService.createPupilCheckPayloads({}, undefined))
           .rejects
           .toThrow('checks must be an array')
