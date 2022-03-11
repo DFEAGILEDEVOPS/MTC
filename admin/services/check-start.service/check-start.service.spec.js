@@ -1,6 +1,6 @@
 'use strict'
 
-/* global describe expect beforeEach spyOn fail test */
+/* global describe expect beforeEach jest test afterEach */
 const checkFormService = require('../check-form.service')
 const checkStartDataService = require('./data-access/check-start.data.service')
 const checkStartService = require('./check-start.service')
@@ -77,91 +77,78 @@ describe('check-start.service', () => {
   ]
 
   beforeEach(() => {
-    spyOn(sasTokenService, 'generateSasToken').and.callFake((s) => {
+    jest.spyOn(sasTokenService, 'generateSasToken').mockImplementation(async (s) => {
       return {
         token: '<someToken>',
         url: `http://localhost/${s}`,
         queueName: 'abc'
       }
     })
+    jest.spyOn(logger, 'debug').mockImplementation()
+  })
+
+  afterEach(() => {
+    jest.restoreAllMocks()
   })
 
   describe('#prepareCheck2', () => {
     beforeEach(() => {
-      spyOn(checkStartDataService, 'sqlFindPupilsEligibleForPinGenerationById').and.returnValue(Promise.resolve(mockPupils))
-      spyOn(checkStartDataService, 'sqlFindAllFormsAssignedToCheckWindow').and.returnValue(Promise.resolve([]))
-      spyOn(checkStartDataService, 'sqlFindAllFormsUsedByPupils').and.returnValue(Promise.resolve([]))
-      spyOn(pinGenerationDataService, 'sqlCreateBatch').and.returnValue(Promise.resolve(mockNewChecks))
-      spyOn(checkStartService, 'initialisePupilCheck').and.returnValue(Promise.resolve(mockPreparedCheck))
-      spyOn(pupilDataService, 'sqlUpdateTokensBatch').and.returnValue(Promise.resolve())
-      spyOn(checkStartService, 'createPupilCheckPayloads').and.returnValue(mockCreatePupilCheckPayloads)
-      spyOn(prepareCheckService, 'prepareChecks') // don't put checks in redis
-      spyOn(configService, 'getBatchConfig').and.returnValue(
+      jest.spyOn(checkStartDataService, 'sqlFindPupilsEligibleForPinGenerationById').mockResolvedValue(mockPupils)
+      jest.spyOn(checkStartDataService, 'sqlFindAllFormsAssignedToCheckWindow').mockResolvedValue([])
+      jest.spyOn(checkStartDataService, 'sqlFindAllFormsUsedByPupils').mockResolvedValue([])
+      jest.spyOn(pinGenerationDataService, 'sqlCreateBatch').mockResolvedValue(mockNewChecks)
+      jest.spyOn(checkStartService, 'initialisePupilCheck').mockResolvedValue(mockPreparedCheck)
+      jest.spyOn(pupilDataService, 'sqlUpdateTokensBatch').mockResolvedValue()
+      jest.spyOn(checkStartService, 'createPupilCheckPayloads').mockResolvedValue(mockCreatePupilCheckPayloads)
+      jest.spyOn(prepareCheckService, 'prepareChecks').mockImplementation() // don't put checks in redis
+      jest.spyOn(configService, 'getBatchConfig').mockResolvedValue(
         {
           1: configService.getBaseConfig(),
           2: configService.getBaseConfig(),
           3: configService.getBaseConfig()
         })
-      spyOn(checkStartDataService, 'sqlStoreBatchConfigs')
-      spyOn(redisCacheService, 'get').and.returnValue(Promise.resolve())
-      spyOn(redisCacheService, 'set').and.returnValue(Promise.resolve())
+      jest.spyOn(checkStartDataService, 'sqlStoreBatchConfigs').mockImplementation()
+      jest.spyOn(redisCacheService, 'get').mockImplementation()
+      jest.spyOn(redisCacheService, 'set').mockImplementation()
     })
 
     test('throws an error if the pupilIds are not provided', async () => {
-      try {
-        await checkStartService.prepareCheck2(undefined, dfeNumber, schoolId, userId, true, checkWindowMock)
-        fail('expected to throw')
-      } catch (error) {
-        expect(error.message).toBe('pupilIds is required')
-      }
+      await expect(checkStartService.prepareCheck2(undefined, dfeNumber, schoolId, userId, true, checkWindowMock))
+        .rejects
+        .toThrow('pupilIds is required')
     })
 
     test('throws an error if the schoolId is not provided', async () => {
-      try {
-        // @ts-ignore
-        await checkStartService.prepareCheck2(pupilIds, dfeNumber, undefined, userId, true, checkWindowMock)
-        fail('expected to throw')
-      } catch (error) {
-        expect(error.message).toBe('schoolId is required')
-      }
+      await expect(checkStartService.prepareCheck2(pupilIds, dfeNumber, undefined, userId, true, checkWindowMock))
+        .rejects
+        .toThrow('schoolId is required')
     })
 
     test('throws an error if the userId is not provided', async () => {
-      try {
-        // @ts-ignore
-        await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, undefined, true, checkWindowMock)
-        fail('expected to throw')
-      } catch (error) {
-        expect(error.message).toBe('userId is required')
-      }
+      await expect(checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, undefined, true, checkWindowMock))
+        .rejects
+        .toThrow('userId is required')
     })
 
     test('throws an error if provided with pupilIds that are not a part of the school', async () => {
-      try {
-        spyOn(logger, 'error')
-        // @ts-ignore
-        await checkStartService.prepareCheck2(pupilIdsHackAttempt, dfeNumber, schoolId, userId, true, checkWindowMock)
-        fail('expected to throw')
-      } catch (error) {
-        expect(error.message).toBe('Validation failed')
-      }
+      jest.spyOn(logger, 'error').mockImplementation()
+      await expect(checkStartService.prepareCheck2(pupilIdsHackAttempt, dfeNumber, schoolId, userId, true, checkWindowMock))
+        .rejects
+        .toThrow('Validation failed')
     })
 
     test('calls sqlFindPupilsEligibleForPinGenerationById to find pupils', async () => {
-      // @ts-ignore
       await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, userId, true, checkWindowMock)
       expect(checkStartDataService.sqlFindPupilsEligibleForPinGenerationById).toHaveBeenCalledTimes(1)
     })
 
     test('calls initialisePupilCheck to randomly select a check form', async () => {
-      // @ts-ignore
       await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, userId, true, checkWindowMock)
       expect(checkStartService.initialisePupilCheck).toHaveBeenCalledTimes(mockPupils.length)
       expect(pinGenerationDataService.sqlCreateBatch).toHaveBeenCalledTimes(1)
     })
 
     test('adds config to the database', async () => {
-      // @ts-ignore
       await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, userId, true, checkWindowMock)
       // pupil status re-calc and prepare-check queues
       expect(checkStartDataService.sqlStoreBatchConfigs).toHaveBeenCalledTimes(1)
@@ -170,91 +157,76 @@ describe('check-start.service', () => {
 
   describe('prepareCheck2:school password generation', () => {
     beforeEach(() => {
-      spyOn(checkStartDataService, 'sqlFindPupilsEligibleForPinGenerationById').and.returnValue(Promise.resolve(mockPupils))
-      spyOn(checkStartDataService, 'sqlFindAllFormsAssignedToCheckWindow').and.returnValue(Promise.resolve([]))
-      spyOn(checkStartDataService, 'sqlFindAllFormsUsedByPupils').and.returnValue(Promise.resolve([]))
+      jest.spyOn(checkStartDataService, 'sqlFindPupilsEligibleForPinGenerationById').mockResolvedValue(mockPupils)
+      jest.spyOn(checkStartDataService, 'sqlFindAllFormsAssignedToCheckWindow').mockResolvedValue([])
+      jest.spyOn(checkStartDataService, 'sqlFindAllFormsUsedByPupils').mockResolvedValue([])
+      jest.spyOn(checkStartService, 'initialisePupilCheck').mockResolvedValue(mockPreparedCheck)
+      jest.spyOn(pupilDataService, 'sqlUpdateTokensBatch').mockImplementation()
       // @ts-ignore
-      spyOn(checkStartService, 'initialisePupilCheck').and.returnValue(Promise.resolve(mockPreparedCheck))
-      spyOn(pupilDataService, 'sqlUpdateTokensBatch').and.returnValue(Promise.resolve())
-      // @ts-ignore
-      spyOn(checkStartService, 'createPupilCheckPayloads').and.returnValue(mockCreatePupilCheckPayloads)
-      spyOn(prepareCheckService, 'prepareChecks') // don't put checks in redis
-      spyOn(configService, 'getBatchConfig').and.returnValue(
+      jest.spyOn(checkStartService, 'createPupilCheckPayloads').mockResolvedValue(mockCreatePupilCheckPayloads)
+      jest.spyOn(prepareCheckService, 'prepareChecks').mockImplementation() // don't put checks in redis
+      jest.spyOn(configService, 'getBatchConfig').mockResolvedValue(
         {
           1: configService.getBaseConfig(),
           2: configService.getBaseConfig(),
           3: configService.getBaseConfig()
         })
-      spyOn(checkStartDataService, 'sqlStoreBatchConfigs')
-      spyOn(redisCacheService, 'get').and.returnValue(Promise.resolve())
-      spyOn(redisCacheService, 'set').and.returnValue(Promise.resolve())
+      jest.spyOn(checkStartDataService, 'sqlStoreBatchConfigs').mockImplementation()
+      jest.spyOn(redisCacheService, 'get').mockImplementation()
+      jest.spyOn(redisCacheService, 'set').mockImplementation()
     })
 
     test('attempts to generate school pin if error 50001 thrown and setting enabled', async () => {
-      spyOn(schoolPinService, 'generateSchoolPin')
+      jest.spyOn(schoolPinService, 'generateSchoolPin').mockImplementation()
+      jest.spyOn(logger, 'warn').mockImplementation()
       config.FeatureToggles.schoolPinGenFallbackEnabled = true
-      spyOn(pinGenerationDataService, 'sqlCreateBatch').and.callFake(() => {
+      jest.spyOn(pinGenerationDataService, 'sqlCreateBatch').mockImplementation(() => {
         throw new Error('50001: no school pin found')
       })
-      try {
-        // @ts-ignore
-        await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, userId, true, checkWindowMock)
-        fail('error should have been thrown')
-      } catch (error) {
-        expect(error).toBeDefined()
-        expect(schoolPinService.generateSchoolPin).toHaveBeenCalledTimes(1)
-        expect(pinGenerationDataService.sqlCreateBatch).toHaveBeenCalledTimes(2)
-      }
+      await expect(checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, userId, true, checkWindowMock))
+        .rejects
+        .toThrow()
+      expect(schoolPinService.generateSchoolPin).toHaveBeenCalledTimes(1)
+      expect(pinGenerationDataService.sqlCreateBatch).toHaveBeenCalledTimes(2)
     })
 
     test('does not attempt to generate school pin if error 50001 thrown and setting disabled', async () => {
-      spyOn(schoolPinService, 'generateSchoolPin')
+      jest.spyOn(schoolPinService, 'generateSchoolPin').mockImplementation()
       config.FeatureToggles.schoolPinGenFallbackEnabled = false
-      spyOn(pinGenerationDataService, 'sqlCreateBatch').and.callFake(() => {
+      jest.spyOn(pinGenerationDataService, 'sqlCreateBatch').mockImplementation(() => {
         throw new Error('50001: no school pin found')
       })
-      try {
-        // @ts-ignore
-        await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, userId, true, checkWindowMock)
-        fail('error should have been thrown')
-      } catch (error) {
-        expect(error).toBeDefined()
-        expect(schoolPinService.generateSchoolPin).not.toHaveBeenCalled()
-        expect(pinGenerationDataService.sqlCreateBatch).toHaveBeenCalledTimes(1)
-      }
+      await expect(checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, userId, true, checkWindowMock))
+        .rejects
+        .toThrow()
+      expect(schoolPinService.generateSchoolPin).not.toHaveBeenCalled()
+      expect(pinGenerationDataService.sqlCreateBatch).toHaveBeenCalledTimes(1)
     })
 
     test('does not attempt to generate school pin if error.number is not 50001', async () => {
-      spyOn(schoolPinService, 'generateSchoolPin')
+      jest.spyOn(schoolPinService, 'generateSchoolPin').mockImplementation()
       config.FeatureToggles.schoolPinGenFallbackEnabled = true
-      spyOn(pinGenerationDataService, 'sqlCreateBatch').and.callFake(() => {
+      jest.spyOn(pinGenerationDataService, 'sqlCreateBatch').mockImplementation(() => {
         const err = new Error()
         // @ts-ignore
         err.number = 49999
         throw err
       })
-      try {
-        // @ts-ignore
-        await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, userId, true, checkWindowMock)
-        fail('error should have been thrown')
-      } catch (error) {
-        expect(error).toBeDefined()
-        expect(schoolPinService.generateSchoolPin).toHaveBeenCalledTimes(0)
-        expect(pinGenerationDataService.sqlCreateBatch).toHaveBeenCalledTimes(1)
-      }
+      await expect(checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, userId, true, checkWindowMock))
+        .rejects
+        .toThrow()
+      expect(schoolPinService.generateSchoolPin).toHaveBeenCalledTimes(0)
+      expect(pinGenerationDataService.sqlCreateBatch).toHaveBeenCalledTimes(1)
     })
 
     test('does not attempt to generate school pin if sqlCreateBatch does not error', async () => {
-      spyOn(schoolPinService, 'generateSchoolPin')
+      jest.spyOn(schoolPinService, 'generateSchoolPin').mockImplementation()
       const checksWithNoSchoolPins = [
         { id: 1, check_checkCode: '1A', pupil_id: 1, school_pin: 'aaa11aaa' },
         { id: 1, check_checkCode: '2A', pupil_id: 2, school_pin: 'aaa11aaa' },
         { id: 3, check_checkCode: '3A', pupil_id: 3, school_pin: 'aaa11aaa' }
       ]
-      spyOn(pinGenerationDataService, 'sqlCreateBatch').and.callFake(() => {
-        return Promise.resolve(checksWithNoSchoolPins)
-      })
-      // @ts-ignore
+      jest.spyOn(pinGenerationDataService, 'sqlCreateBatch').mockResolvedValue(checksWithNoSchoolPins)
       await checkStartService.prepareCheck2(pupilIds, dfeNumber, schoolId, userId, true, checkWindowMock)
       expect(schoolPinService.generateSchoolPin).not.toHaveBeenCalled()
     })
@@ -262,32 +234,29 @@ describe('check-start.service', () => {
 
   describe('#initialisePupilCheck', () => {
     beforeEach(() => {
-      spyOn(pinService, 'generatePinTimestamp')
+      jest.spyOn(pinService, 'generatePinTimestamp').mockImplementation()
     })
     test('calls generatePinTimestamp to generate pinExpiresAt for a pupil', async () => {
-      spyOn(checkFormService, 'allocateCheckForm').and.returnValue(checkFormMock)
+      jest.spyOn(checkFormService, 'allocateCheckForm').mockResolvedValue(checkFormMock)
       await service.initialisePupilCheck(1, checkWindowMock, [], [], true, userId, schoolId)
       expect(pinService.generatePinTimestamp).toHaveBeenCalledTimes(1)
     })
     test('calls allocateCheckForm for a pupil', async () => {
-      spyOn(checkFormService, 'allocateCheckForm').and.returnValue(checkFormMock)
+      jest.spyOn(checkFormService, 'allocateCheckForm').mockResolvedValue(checkFormMock)
       await service.initialisePupilCheck(1, checkWindowMock, [], [], true, userId, schoolId)
       expect(checkFormService.allocateCheckForm).toHaveBeenCalledTimes(1)
     })
 
     test('throws an error if a checkform is not returned', async () => {
-      spyOn(checkFormService, 'allocateCheckForm').and.returnValue(null)
-      try {
-        await service.initialisePupilCheck(1, checkWindowMock, [], [], true, userId, schoolId)
-        fail('expected to throw')
-      } catch (error) {
-        expect(error.message).toBe('CheckForm not allocated')
-      }
+      jest.spyOn(checkFormService, 'allocateCheckForm').mockImplementation()
+      await expect(service.initialisePupilCheck(1, checkWindowMock, [], [], true, userId, schoolId))
+        .rejects
+        .toThrow('CheckForm not allocated')
     })
 
     describe('for live pins', () => {
       test('returns a check object, ready to be inserted into the db', async () => {
-        spyOn(checkFormService, 'allocateCheckForm').and.returnValue(checkFormMock)
+        jest.spyOn(checkFormService, 'allocateCheckForm').mockResolvedValue(checkFormMock)
         const c = await service.initialisePupilCheck(1, checkWindowMock, undefined, undefined, true, userId, schoolId)
         expect({}.hasOwnProperty.call(c, 'pupil_id'))
         expect({}.hasOwnProperty.call(c, 'checkWindow_id'))
@@ -298,7 +267,7 @@ describe('check-start.service', () => {
 
     describe('for test pins', () => {
       test('returns a check object, ready to be inserted into the db', async () => {
-        spyOn(checkFormService, 'allocateCheckForm').and.returnValue(checkFormMock)
+        jest.spyOn(checkFormService, 'allocateCheckForm').mockResolvedValue(checkFormMock)
         const c = await service.initialisePupilCheck(1, checkWindowMock, undefined, undefined, false, userId, schoolId)
         expect({}.hasOwnProperty.call(c, 'pupil_id'))
         expect({}.hasOwnProperty.call(c, 'checkWindow_id'))
@@ -311,13 +280,13 @@ describe('check-start.service', () => {
   describe('#createPupilCheckPayloads', () => {
     const mockCheckFormAllocationLive = require('../../spec/back-end/mocks/check-form-allocation')
     beforeEach(() => {
-      spyOn(configService, 'getBatchConfig').and.returnValue({ 1: configService.getBaseConfig() })
-      spyOn(checkFormService, 'prepareQuestionData').and.callThrough()
+      jest.spyOn(configService, 'getBatchConfig').mockResolvedValue({ 1: configService.getBaseConfig() })
+      jest.spyOn(checkFormService, 'prepareQuestionData')
     })
 
     describe('when live checks are generated', () => {
       beforeEach(() => {
-        spyOn(sasTokenService, 'getTokens').and.returnValue([
+        jest.spyOn(sasTokenService, 'getTokens').mockResolvedValue([
           { queueName: queueNameService.NAMES.CHECK_STARTED, token: 'aaa' },
           { queueName: queueNameService.NAMES.PUPIL_PREFS, token: 'aab' },
           { queueName: queueNameService.NAMES.PUPIL_FEEDBACK, token: 'aab' },
@@ -326,22 +295,15 @@ describe('check-start.service', () => {
       })
 
       test('throws an error if the check form allocation IDs are not supplied', async () => {
-        try {
-          await checkStartService.createPupilCheckPayloads(undefined, undefined)
-          fail('expected to throw')
-        } catch (error) {
-          expect(error.message).toBe('checks is not defined')
-        }
+        await expect(checkStartService.createPupilCheckPayloads(undefined, undefined))
+          .rejects
+          .toThrow('checks is not defined')
       })
 
       test('throws an error if the check form allocation ID param is not an array', async () => {
-        try {
-          // @ts-ignore
-          await checkStartService.createPupilCheckPayloads({}, undefined)
-          fail('expected to throw')
-        } catch (error) {
-          expect(error.message).toBe('checks must be an array')
-        }
+        await expect(checkStartService.createPupilCheckPayloads({}, undefined))
+          .rejects
+          .toThrow('checks must be an array')
       })
 
       test('prepares the question data', async () => {

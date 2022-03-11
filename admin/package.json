@@ -179,7 +179,7 @@
       "<rootDir>/dist"
     ],
     "verbose": false,
-    "TODOtestRunner": "jest-circus",
-    "testRunner": "jest-jasmine2"
+    "testRunner": "jest-circus",
+    "XXXtestRunner": "jest-jasmine2"
   }
 }
