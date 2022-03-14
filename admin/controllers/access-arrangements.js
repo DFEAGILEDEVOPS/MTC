@@ -171,7 +171,7 @@ const controller = {
     let questionReaderReasons
     let formData
     const pupilUrlSlug = req.params.pupilUrlSlug || req.body.urlSlug
-    const dfeNumber = req.user.School
+    const schoolId = req.user.schoolId
     try {
       const submittedData = R.pick([
         'accessArrangements',
@@ -182,7 +182,7 @@ const controller = {
         'isEditView',
         'urlSlug'
       ], req.body)
-      formData = await pupilAccessArrangementsEditService.getEditData(submittedData, pupilUrlSlug, dfeNumber)
+      formData = await pupilAccessArrangementsEditService.getEditData(submittedData, pupilUrlSlug, schoolId)
       accessArrangements = await accessArrangementsService.getAccessArrangements()
       accessArrangementsViewData = accessArrangementsDescriptionsPresenter
         .addReasonRequiredIndication(accessArrangementsDescriptionsPresenter.getPresentationData(accessArrangements))
