@@ -107,8 +107,10 @@ export interface CompleteCheckAnswer {
 
 export enum InputEventType {
   Touch = 'touch',
-  KeyDown = 'keydown',
-  Enter = 'enter'
+  Mouse = 'mouse',
+  Keyboard = 'keyboard',
+  Pen = 'pen',
+  Unknown = 'unknown'
 }
 
 export interface CompleteCheckInputEntry {
@@ -117,7 +119,6 @@ export interface CompleteCheckInputEntry {
   clientTimestamp: string
   question: string
   sequenceNumber: number
-  relativeTiming: string
 }
 
 export enum AuditEntryType {
