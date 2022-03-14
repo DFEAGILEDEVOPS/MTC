@@ -34,23 +34,11 @@
                     <% } %>
                     <% if (jobStatus !== undefined) { %>
 
-                        <p> The upload has been received and the job will run in the background.  Please reload the
-                            page for status updates.</p>
+                        <p> The upload has been received and the job will run in the background.  Please visit the
+                            <a href="/service-manager/jobs">jobs page</a> for status updates.</p>
                         <p>
                             Job status: <strong><%= jobStatus.description %></strong>
                         </p>
-
-                        <% if (jobStatus.code === 'FLD') { %>
-                            <div class="govuk-warning-message">
-                                <%= jobStatus.errorOutput %>
-                            </div>
-                        <% } %>
-
-                        <%/** Look for completed status's and allow the logs to be downloaded */%>
-                        <% if (['COM', 'CWR', 'FWD'].includes(jobStatus.code)) { %>
-                             <a href="/service-manager/job/<%= jobStatus.urlSlug.toLowerCase() %>">Download job
-                                 output</a>
-                        <% } %>
 
                 <% } else { %>
 

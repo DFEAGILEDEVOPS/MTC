@@ -1,10 +1,10 @@
-import { SchoolImportJobResult } from './SchoolImportJobResult'
+import { SchoolImportJobOutput } from './SchoolImportJobOutput'
 
 describe('SchoolImportJobResult', () => {
-  let jobResult: SchoolImportJobResult
+  let jobResult: SchoolImportJobOutput
 
   beforeEach(() => {
-    jobResult = new SchoolImportJobResult()
+    jobResult = new SchoolImportJobOutput()
     jobResult.stderr.push('error 1')
     jobResult.stdout.push('out 1')
     jobResult.stdout.push('out 2')
@@ -32,7 +32,7 @@ describe('SchoolImportJobResult', () => {
   })
 
   test('hasError', () => {
-    const jb = new SchoolImportJobResult()
+    const jb = new SchoolImportJobOutput()
     expect(jb.hasError()).toBe(false)
     jb.stderr.push('mock stderr line')
     expect(jb.hasError()).toBe(true)

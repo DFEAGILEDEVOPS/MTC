@@ -1,6 +1,5 @@
 /* global describe, jest, test, expect, beforeEach, afterEach */
 const uuid = require('uuid')
-
 const sut = require('../../../services/organisation-bulk-upload.service')
 const fileValidator = require('../../../lib/validator/file-validator')
 const azureBlobDataService = require('../../../services/data-access/azure-blob.data.service')
@@ -26,10 +25,12 @@ describe('organisationBulkUploadService', () => {
       filename: '/test/foo.csv'
     }
 
+    const jobSlug = '2191e1f9-287a-49d9-835d-2aa8c336b5f7'
+
     beforeEach(() => {
       jest.spyOn(azureBlobDataService, 'createContainerIfNotExists').mockImplementation()
       jest.spyOn(azureBlobDataService, 'uploadLocalFile').mockImplementation()
-      jest.spyOn(organisationBulkUploadDataService, 'createJobRecord').mockImplementation()
+      jest.spyOn(organisationBulkUploadDataService, 'createJobRecord').mockResolvedValue(jobSlug)
     })
 
     test('it creates the azure container if it does not exist', async () => {
@@ -48,10 +49,14 @@ describe('organisationBulkUploadService', () => {
     })
 
     test('it returns the newly created job record uuid identifier', async () => {
-      const ident = uuid.NIL
-      jest.spyOn(organisationBulkUploadDataService, 'createJobRecord').mockResolvedValue(ident)
       const res = await sut.upload(testFile)
-      expect(res).toBe(ident)
+      expect(res).toBe(jobSlug)
+    })
+
+    test('it sets the remote filename to the job slug', async () => {
+      await sut.upload(testFile)
+      const expectedFilename = `${jobSlug}.csv`
+      expect(azureBlobDataService.uploadLocalFile).toHaveBeenCalledWith('school-import', expectedFilename, testFile.file)
     })
   })
 
@@ -61,10 +66,7 @@ describe('organisationBulkUploadService', () => {
         jobStatusDescription: 'Submitted',
         jobStatusCode: 'SUB',
         errorOutput: 'test error',
-        jobOutput: JSON.stringify({
-          stderr: 'error line',
-          stdout: 'a message'
-        })
+        jobOutput: 'a message'
       })
     })
 
@@ -86,8 +88,7 @@ describe('organisationBulkUploadService', () => {
       expect(status.description).toBe('Submitted')
       expect(status.code).toBe('SUB')
       expect(status.errorOutput).toBe('test error')
-      expect(status.jobOutput.stderr).toBe('error line')
-      expect(status.jobOutput.stdout).toBe('a message')
+      expect(status.jobOutput).toBe('a message')
     })
   })
 
@@ -102,11 +103,11 @@ describe('organisationBulkUploadService', () => {
 
     test('it zips up the files', async () => {
       const jobSlug = uuid.NIL
+      const expectedErrorText = 'an error line\nanother error line'
+      const expectedOutputText = 'a standard line\nanother standard line'
       jest.spyOn(sut, 'getUploadStatus').mockResolvedValue({
-        jobOutput: {
-          stderr: ['an error line\nanother error line'],
-          stdout: ['a standard line\nanother standard line']
-        }
+        errorOutput: expectedErrorText,
+        jobOutput: expectedOutputText
       })
       const zipBuf = await sut.getZipResults(jobSlug)
 
@@ -117,11 +118,11 @@ describe('organisationBulkUploadService', () => {
       entries.forEach((entry) => {
         if (entry.entryName === 'error.txt') {
           // Unzip an entry to memory
-          expect(zip.readAsText(entry)).toBe('an error line\nanother error line')
+          expect(zip.readAsText(entry)).toBe(expectedErrorText)
           i += 1
         }
         if (entry.entryName === 'output.txt') {
-          expect(zip.readAsText(entry)).toBe('a standard line\nanother standard line')
+          expect(zip.readAsText(entry)).toBe(expectedOutputText)
           i += 1
         }
       })

@@ -1,4 +1,4 @@
-import { ISqlParameter, ISqlService, SqlService } from '../../sql/sql.service'
+import { IModifyResult, ISqlParameter, ISqlService, SqlService } from '../../sql/sql.service'
 import { ConsoleLogger, ILogger } from '../../common/logger'
 import { IPsychometricReportLine, IReportLineAnswer } from '../ps-report-3-transformer/models'
 import { TYPES, MAX } from 'mssql'
@@ -637,7 +637,7 @@ export class PsReportWriterService {
     return sql
   }
 
-  public async write (data: IPsychometricReportLine): Promise<void> {
+  public async write (data: IPsychometricReportLine): Promise<IModifyResult> {
     const params = this.generateParams(data)
     const sql = this.generateSql(data)
     return this.sqlService.modify(sql, params)
