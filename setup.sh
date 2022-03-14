@@ -51,6 +51,9 @@ install_functions () {
 
   cd ${scriptDir}/func-throttled
   yarn install && yarn clean && yarn build
+
+  cd ${scriptDir}/func-ps-report
+  yarn install && yarn clean && yarn build
 }
 
 install_service_bus () {

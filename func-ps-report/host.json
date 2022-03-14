@@ -1,0 +1,49 @@
+{
+  "version": "2.0",
+  "functionTimeout": "06:01:23",
+  "logging": {
+    "logLevel": {
+      "default": "Information",
+      "Function": "Trace"
+    }
+  },
+  "extensions": {
+    "http": {
+      "routePrefix": "api",
+      "maxOutstandingRequests": -1,
+      "maxConcurrentRequests": -1,
+      "dynamicThrottlesEnabled": false,
+      "hsts": {
+        "isEnabled": true,
+        "maxAge": "43200",
+        "includeSubDomains": true,
+        "preload": true
+      },
+      "customHeaders": {
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "SAMEORIGIN",
+        "X-Download-Options": "noopen",
+        "X-XSS-Protection": "0",
+        "X-DNS-Prefetch-Control": "off"
+      }
+    },
+    "serviceBus": {
+      "prefetchCount": 100,
+      "messageHandlerOptions": {
+        "autoComplete": true,
+        "maxConcurrentCalls": 1,
+        "maxAutoRenewDuration": "00:05:00"
+      },
+      "sessionHandlerOptions": {
+        "autoComplete": false,
+        "messageWaitTimeout": "00:00:30",
+        "maxAutoRenewDuration": "00:55:00",
+        "maxConcurrentSessions": 16
+      }
+    }
+  },
+  "extensionBundle": {
+    "id": "Microsoft.Azure.Functions.ExtensionBundle",
+    "version": "[2.*, 3.0.0)"
+  }
+}
