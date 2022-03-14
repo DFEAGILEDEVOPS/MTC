@@ -14,28 +14,22 @@ try {
 } catch (error) {
   console.error(error)
 }
-const azure = require('azure')
-const sbService = azure.createServiceBusService(process.env.AZURE_SERVICE_BUS_CONNECTION_STRING)
+
+const azSb = require('@azure/service-bus')
+const sbAdminClient = new azSb.ServiceBusAdministrationClient(process.env.AZURE_SERVICE_BUS_CONNECTION_STRING)
 const queues = require('./deploy.config')
 
-const deleteQueue = (queueName) => (new Promise((resolve, reject) => {
-  // There is no counterpart to createQueueIfNotExists, although deleteQueueIfNotExists is available
-  // for StorageQueues
-  sbService.getQueue(queueName, (error, res) => {
-    if (error) {
-      console.log(`${queueName} queue not found`)
-      return
+async function deleteQueue (queueName) {
+  const queueExists = await sbAdminClient.queueExists(queueName)
+  if (queueExists) {
+    console.log(`queue ${queueName} exists, attempting to delete... `)
+    try {
+      await sbAdminClient.deleteQueue(queueName)
+    } catch (error) {
+      console.error(`error deleting queue:${queueName}. ${error.message}`)
     }
-    sbService.deleteQueue(queueName, function (error) {
-      if (!error) {
-        console.log(`${queueName} queue deleted`)
-        resolve()
-      } else {
-        reject(error)
-      }
-    })
-  })
-}))
+  }
+}
 
 async function main () {
   const promises = queues.map(q => deleteQueue(q.name))
