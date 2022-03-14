@@ -48,8 +48,8 @@ Given(/^there is a processing error with a check$/) do
   @submission_hash = RequestHelper.build_check_submission_message(@parsed_response_pupil_auth, nil, true)
   AzureQueueHelper.create_check_submission_message(@submission_hash[:submission_message].to_json)
   school_uuid = @parsed_response_pupil_auth['school']['uuid']
-  check_code = @parsed_response_pupil_auth['checkCode']
-  AzureTableHelper.wait_for_received_check(school_uuid, check_code)
+  @check_code = @parsed_response_pupil_auth['checkCode']
+  AzureTableHelper.wait_for_received_check(school_uuid, @check_code)
 end
 
 And(/^I should see how many days I have left and when the check window closes$/) do

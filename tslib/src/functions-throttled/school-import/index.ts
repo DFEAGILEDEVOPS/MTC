@@ -3,7 +3,7 @@ import { performance } from 'perf_hooks'
 import { SchoolImportService } from './school-import.service'
 import * as mssql from 'mssql'
 import * as ConnectionPoolService from '../../sql/pool.service'
-import { SchoolImportJobResult } from './SchoolImportJobResult'
+import { SchoolImportJobOutput } from './SchoolImportJobOutput'
 
 const name = 'school-import'
 
@@ -11,7 +11,7 @@ const blobTrigger: AzureFunction = async function schoolImportIndex (context: Co
   const start = performance.now()
   context.log(`${name} started for blob \n Name: ${context.bindingData.name} \n Blob Size: ${blob.length} Bytes`)
   let pool: mssql.ConnectionPool
-  const jobResult = new SchoolImportJobResult()
+  const jobResult = new SchoolImportJobOutput()
   let svc: SchoolImportService
 
   // Setup
@@ -24,7 +24,7 @@ const blobTrigger: AzureFunction = async function schoolImportIndex (context: Co
   }
 
   try {
-    await svc.process(blob)
+    await svc.process(blob, context.bindingData.name)
   } catch (error: any) {
     context.log.error(`${name}: ERROR: ${error.message}`, error)
   }

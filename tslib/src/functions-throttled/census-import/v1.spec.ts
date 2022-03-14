@@ -2,11 +2,12 @@ import { ConnectionPool } from 'mssql'
 import { CensusImportV1 } from './v1'
 import config from '../../config'
 import { ICensusImportDataService } from './census-import.data.service'
-import { IJobDataService } from './job.data.service'
 import { IBlobService } from '../../azure/blob-service'
 import { ILogger } from '../../common/logger'
 import { RedisServiceMock } from '../../caching/redis-service.mock'
 import { IRedisService } from '../../caching/redis-service'
+import { IJobDataService } from '../../services/data/job.data.service'
+import { JobStatusCode } from '../../common/job-status-code'
 
 const CensusImportDataServiceMock = jest.fn<ICensusImportDataService, any>(() => ({
   deleteStagingTable: jest.fn(),
@@ -15,7 +16,9 @@ const CensusImportDataServiceMock = jest.fn<ICensusImportDataService, any>(() =>
 }))
 
 const JobDataServiceMock = jest.fn<IJobDataService, any>(() => ({
-  updateStatus: jest.fn()
+  setJobComplete: jest.fn(),
+  setJobStarted: jest.fn(),
+  getJobId: jest.fn()
 }))
 
 const BlobServiceMock = jest.fn<IBlobService, any>(() => ({
@@ -43,17 +46,18 @@ describe('census-import: v1', () => {
     jest.spyOn(censusImportDataServiceMock, 'loadPupilsFromStaging').mockImplementation(async () => Promise.resolve({ insertCount: loadAndInsertCount }))
     jest.spyOn(censusImportDataServiceMock, 'loadStagingTable').mockImplementation(async () => Promise.resolve(loadAndInsertCount))
     jobDataServiceMock = new JobDataServiceMock()
-    jest.spyOn(jobDataServiceMock, 'updateStatus').mockImplementation(async () => Promise.resolve(123))
-    blobServiceMock = new BlobServiceMock()
+    jest.spyOn(jobDataServiceMock, 'setJobStarted').mockImplementation()
+    jest.spyOn(jobDataServiceMock, 'getJobId').mockResolvedValue(1)
     loggerMock = new LoggerMock()
     redisServiceMock = new RedisServiceMock()
+    blobServiceMock = new BlobServiceMock()
 
     sut = new CensusImportV1(new ConnectionPool(config.Sql),
       loggerMock,
       censusImportDataServiceMock,
-      jobDataServiceMock,
       blobServiceMock,
-      redisServiceMock)
+      redisServiceMock,
+      jobDataServiceMock)
   })
 
   const blobUri = 'path/to/the/blob.csv'
@@ -64,8 +68,8 @@ describe('census-import: v1', () => {
 
   test('job status is updated at start and end of a successful run', async () => {
     const output = await sut.process('foo,bar', blobUri)
-    expect(jobDataServiceMock.updateStatus).toHaveBeenCalledTimes(2)
-    expect(jobDataServiceMock.updateStatus).toHaveBeenLastCalledWith(expect.any(String), 'COM', expect.any(String))
+    expect(jobDataServiceMock.setJobStarted).toHaveBeenCalledTimes(1)
+    expect(jobDataServiceMock.setJobComplete).toHaveBeenLastCalledWith(expect.any(String), JobStatusCode.CompletedSuccessfully, expect.any(String))
     expect(output.processCount).toStrictEqual(loadAndInsertCount)
   })
 
@@ -82,7 +86,7 @@ describe('census-import: v1', () => {
   test('when insert counts do not match, job is reported as failed', async () => {
     jest.spyOn(censusImportDataServiceMock, 'loadStagingTable').mockImplementation(async () => Promise.resolve(loadAndInsertCount - 1))
     await sut.process('foo,bar', blobUri)
-    expect(jobDataServiceMock.updateStatus).toHaveBeenLastCalledWith(expect.any(String), 'CWR', expect.any(String), expect.any(String))
+    expect(jobDataServiceMock.setJobComplete).toHaveBeenLastCalledWith(expect.any(String), JobStatusCode.CompletedWithErrors, expect.any(String), expect.any(String))
   })
 
   test('it invalidates the pupil register', async () => {

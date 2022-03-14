@@ -15,6 +15,7 @@ const schoolService = require('../../../services/school.service')
 const organisationBulkUploadService = require('../../../services/organisation-bulk-upload.service')
 const administrationMessageService = require('../../../services/administration-message.service')
 const auditOperationTypes = require('../../../lib/consts/audit-entry-types')
+const { JobService } = require('../../../services/job-service/job.service')
 
 describe('service manager controller:', () => {
   let next
@@ -137,23 +138,20 @@ describe('service manager controller:', () => {
     test('renders the upload pupil census page', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      jest.spyOn(pupilCensusService, 'getUploadedFile').mockImplementation()
       jest.spyOn(uploadedFileService, 'getFilesize').mockImplementation()
       await controller.getUploadPupilCensus(req, res, next)
-      expect(pupilCensusService.getUploadedFile).toHaveBeenCalled()
       expect(res.render).toHaveBeenCalled()
     })
 
     test('throws an error if fetching existing pupil census fails', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      jest.spyOn(uploadedFileService, 'getFilesize').mockImplementation()
-      jest.spyOn(pupilCensusService, 'getUploadedFile').mockImplementation(() => {
+      jest.spyOn(uploadedFileService, 'getFilesize').mockImplementation(() => {
         throw new Error('error')
       })
       await controller.getUploadPupilCensus(req, res, next)
       expect(next).toHaveBeenCalledWith(new Error('error'))
-      expect(pupilCensusService.getUploadedFile).toHaveBeenCalled()
+      expect(uploadedFileService.getFilesize).toHaveBeenCalled()
       expect(res.render).not.toHaveBeenCalled()
     })
   })
@@ -178,10 +176,10 @@ describe('service manager controller:', () => {
     test('redirects to pupil census page when successfully uploaded a csv file', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      jest.spyOn(pupilCensusService, 'process').mockResolvedValue(new ValidationError())
+      jest.spyOn(pupilCensusService, 'validateFile').mockResolvedValue(new ValidationError())
       jest.spyOn(pupilCensusService, 'upload2').mockImplementation()
       await controller.postUploadPupilCensus(req, res, next)
-      expect(pupilCensusService.process).toHaveBeenCalled()
+      expect(pupilCensusService.validateFile).toHaveBeenCalled()
       expect(pupilCensusService.upload2).toHaveBeenCalled()
       expect(res.redirect).toHaveBeenCalled()
       expect(req.flash).toHaveBeenCalled()
@@ -190,7 +188,7 @@ describe('service manager controller:', () => {
     test('calls next when upload is rejected', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      jest.spyOn(pupilCensusService, 'process').mockResolvedValue(new ValidationError())
+      jest.spyOn(pupilCensusService, 'validateFile').mockResolvedValue(new ValidationError())
       jest.spyOn(pupilCensusService, 'upload2').mockImplementation(() => {
         throw new Error('error')
       })
@@ -204,7 +202,7 @@ describe('service manager controller:', () => {
       const req = getReq(badReqParams)
       const validationError = new ValidationError()
       validationError.addError('upload-element', 'error')
-      jest.spyOn(pupilCensusService, 'process').mockResolvedValue(validationError)
+      jest.spyOn(pupilCensusService, 'validateFile').mockResolvedValue(validationError)
       jest.spyOn(pupilCensusService, 'upload2').mockImplementation()
       jest.spyOn(controller, 'getUploadPupilCensus').mockImplementation()
       await controller.postUploadPupilCensus(req, res, next)
@@ -1017,6 +1015,58 @@ describe('service manager controller:', () => {
         await controller.postAddSchool(req, res, next)
         const args = schoolService.addSchool.mock.calls[0][0]
         expect(args.name).toBe('Primary Academy')
+      })
+    })
+  })
+
+  describe('job view', () => {
+    describe('getJobs', () => {
+      test('it renders job summary', async () => {
+        jest.spyOn(JobService, 'getJobSummary').mockImplementation()
+        const req = getReq()
+        const res = getRes()
+        await controller.getJobs(req, res, next)
+        expect(JobService.getJobSummary).toHaveBeenCalled()
+      })
+      test('error is passed to handler when thrown', async () => {
+        const req = getReq()
+        const res = getRes()
+        jest.spyOn(JobService, 'getJobSummary').mockImplementation(() => {
+          throw new Error('test error')
+        })
+        await controller.getJobs(req, res, next)
+        expect(next).toHaveBeenCalledWith(new Error('test error'))
+      })
+    })
+
+    describe('getJobOutputs', () => {
+      const expectedJobId = 'sdkfjsdkfj-xljx409gh4t'
+      test('it renders job outputs', async () => {
+        const req = getReq({
+          query: {
+            urlSlug: expectedJobId
+          }
+        })
+        const res = getRes()
+        jest.spyOn(JobService, 'getJobOutputs').mockImplementation()
+        await controller.getJobOutputs(req, res, next)
+        expect(JobService.getJobOutputs).toHaveBeenCalledWith(expectedJobId)
+      })
+      test('error is passed to handler when thrown', async () => {
+        const req = getReq({
+          query: {
+            urlSlug: expectedJobId
+          }
+        })
+        const res = getRes()
+        jest.spyOn(res, 'send')
+        jest.spyOn(res, 'type')
+        const expectedError = new Error('test error')
+        jest.spyOn(JobService, 'getJobOutputs').mockImplementation(() => {
+          throw expectedError
+        })
+        await controller.getJobOutputs(req, res, next)
+        expect(next).toHaveBeenCalledWith(expectedError)
       })
     })
   })

@@ -51,7 +51,7 @@ describe('pupilCensusService', () => {
   describe('process', () => {
     it('calls file validator', async () => {
       spyOn(fileValidator, 'validate')
-      await pupilCensusService.process(pupilCensusUploadMock)
+      await pupilCensusService.validateFile(pupilCensusUploadMock)
       expect(fileValidator.validate).toHaveBeenCalled()
     })
   })
@@ -139,14 +139,6 @@ describe('pupilCensusService', () => {
       spyOn(jobStatusDataService, 'sqlFindOneByTypeCode').and.returnValue(jobStatusSubmittedMock)
       await pupilCensusService.createJobRecord(pupilCensusMock, { output: 'Inserted 5000 rows' })
       expect(jobDataService.sqlCreate).toHaveBeenCalled()
-    })
-  })
-  describe('updateJobOutput', () => {
-    it('calls sqlUpdate method to update the pupil census record', async () => {
-      spyOn(jobDataService, 'sqlUpdate')
-      spyOn(jobStatusDataService, 'sqlFindOneByTypeCode').and.returnValue(jobStatusSubmittedMock)
-      await pupilCensusService.updateJobOutput(1, { output: 'output' })
-      expect(jobDataService.sqlUpdate).toHaveBeenCalled()
     })
   })
   describe('remove', () => {

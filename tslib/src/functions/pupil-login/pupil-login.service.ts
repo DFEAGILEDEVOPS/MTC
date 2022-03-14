@@ -1,6 +1,7 @@
 import { IPupilLoginDataService, PupilLoginDataService } from './pupil-login.data.service'
 import { v4 as uuid } from 'uuid'
 import moment = require('moment')
+import { IModifyResult } from '../../sql/sql.service'
 export interface IPupilLoginMessage {
   version: number
   checkCode: string
@@ -30,7 +31,7 @@ export class PupilLoginService {
     this.dataService = dataService
   }
 
-  async process (message: IPupilLoginMessage, bindings: IPupilLoginFunctionBindings): Promise<void> {
+  async process (message: IPupilLoginMessage, bindings: IPupilLoginFunctionBindings): Promise<IModifyResult> {
     if (message.version !== 1) {
       throw new Error(`pupil-login message version:${message.version} unsupported`)
     }
