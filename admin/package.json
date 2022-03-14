@@ -180,7 +180,6 @@
       "<rootDir>/dist"
     ],
     "verbose": false,
-    "testRunner": "jest-circus",
-    "XXXtestRunner": "jest-jasmine2"
+    "testRunner": "jest-circus"
   }
 }
