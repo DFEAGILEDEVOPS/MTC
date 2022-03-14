@@ -63,32 +63,12 @@
               <% } %>
             <% }) %>
           <% } %>
-          <% if (!pupilCensus || (pupilCensus && ['COM', 'FLD', 'CWR'].some(c => c === pupilCensus.jobStatusCode))) { %>
             <input class="govuk-file-upload" type="file" name="csvPupilCensusFile" id="file-upload" accept="text/csv"
                    aria-label="Choose a file to upload"/>
             <input type="reset" class="govuk-link govuk-remove-file" id="removeUploadedFile" value="Remove file" aria-label="Remove uploaded file" />
             <button type="submit" class="govuk-button" id="upload-form-submit">Upload</button>
-            <a href="/service-manager/home" class="govuk-button govuk-button--secondary">Cancel</a>
-          <% } %>
         </div>
       </form>
-      <span class="govuk-body govuk-!-font-weight-bold">
-        <span>Uploaded file</span>
-        <span class="job-status">Status</span>
-      </span>
-      <dl class="govuk-body pupil-census-uploaded-file">
-          <% if (pupilCensus) { %>
-              <dd><span><%= pupilCensus.csvName %></span></dd>
-              <dd><span class="job-status-value"><%= pupilCensus.outcome %></span></dd>
-          <% } else { %>
-              <dd><span class="govuk-body no-file-uploaded">No file uploaded</span></dd>
-          <% } %>
-      </dl>
-      <% if (pupilCensus && pupilCensus.dbErrorText) { %>
-      <span>
-        <%- pupilCensus.dbErrorText %>
-      </span>
-      <% } %>
     </div>
   </div>
 </main>

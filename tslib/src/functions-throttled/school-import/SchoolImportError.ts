@@ -1,12 +1,12 @@
-import { SchoolImportJobResult } from './SchoolImportJobResult'
+import { SchoolImportJobOutput } from './SchoolImportJobOutput'
 
 export class SchoolImportError extends Error {
-  constructor (jobResult: SchoolImportJobResult, innerError: Error) {
+  constructor (jobResult: SchoolImportJobOutput, innerError: Error) {
     super(innerError.message)
     this.jobResult = jobResult
     this.innerError = innerError
   }
 
-  jobResult: SchoolImportJobResult
+  jobResult: SchoolImportJobOutput
   innerError: Error
 }

@@ -11,13 +11,8 @@ Then(/^I should see an option to upload a file$/) do
   expect(upload_pupil_census_page).to have_file_upload
 end
 
-Then(/^I should see upload and cancel buttons$/) do
+Then(/^I should see an upload button$/) do
   expect(upload_pupil_census_page).to have_upload
-  expect(upload_pupil_census_page).to have_cancel
-end
-
-Then(/^I should see an area where it displays files uploaded$/) do
-  expect(upload_pupil_census_page).to have_uploaded_title
 end
 
 When(/^I have chosen a file to submit$/) do
@@ -43,7 +38,8 @@ When(/^I have chosen a file to submit$/) do
 end
 
 Then(/^I should see the file uploaded$/) do
-  expect(upload_pupil_census_page.uploaded_file.file.text).to include @file_name.split('.').first
+  expect(view_jobs_page.message.text).to eql 'Pupil Census file has been uploaded'
+  expect(view_jobs_page.job_history.rows.first.type.text).to eql 'Pupil Census'
   jobs = SqlDbHelper.get_jobs
   expect(jobs.last['jobInput']).to include @file_name.split('.').first
 end
@@ -54,9 +50,8 @@ When(/^I have chosen a file with '(.*)' to submit$/) do |condition|
 end
 
 Then(/^I should see the completed status$/) do
-  expect(upload_pupil_census_page.uploaded_file.file.text).to include @file_name.split('.').first
-  actual_message = upload_pupil_census_page.uploaded_file.status.text
-  expect(actual_message.include?('Submitted')).to be_truthy, "Expected status: 'Submitted' to be included in Actual Message: #{actual_message}"
+  expect(view_jobs_page.job_history.rows.first.type.text).to eql "Pupil Census"
+  wait_until {(visit current_url; view_jobs_page.job_history.rows.first.status.text == 'Completed')}
   begin
     wait_until(60){SqlDbHelper.get_jobs.last['jobStatus_id'].eql?(3)|| SqlDbHelper.get_jobs.last['jobStatus_id'].eql?(4)|| SqlDbHelper.get_jobs.last['jobStatus_id'].eql?(5)}
     status_id = SqlDbHelper.get_jobs.last['jobStatus_id']
@@ -128,8 +123,7 @@ end
 Then(/^the pupil census should match design$/) do
   step 'I should see a heading on the pupil census page'
   step 'I should see an option to upload a file'
-  step 'I should see upload and cancel buttons'
-  step 'I should see an area where it displays files uploaded'
+  step 'I should see an upload button'
   step 'I should see an option to download the template'
 end
 
@@ -170,12 +164,6 @@ Then(/^I should see an error stating I need to select a file to upload$/) do
   expect(upload_pupil_census_page.error_summary.error_messages.first.text).to eql 'Select a file to upload'
   expect(upload_pupil_census_page.error_message.text).to eql 'Select a file to upload'
 end
-
-
-When(/^I decide to cancel uploading a file$/) do
-  upload_pupil_census_page.cancel.click
-end
-
 
 Given(/^I can see pupils that exist in the pupil register$/) do
   step "I am logged in"

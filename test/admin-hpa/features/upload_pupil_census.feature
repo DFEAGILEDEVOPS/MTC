@@ -50,8 +50,3 @@ Feature:
     Given I am on the upload pupil census page
     When I have not chosen a file to submit
     Then I should see an error stating I need to select a file to upload
-
-  Scenario: Cancel upload returns service manager to service manager homepage
-    Given I am on the upload pupil census page
-    When I decide to cancel uploading a file
-    Then I should be taken to the service manager homepage

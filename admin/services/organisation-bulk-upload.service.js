@@ -22,12 +22,12 @@ const organisationBulkUploadService = {
    * @returns {Promise<string>} job slug UUID
    */
   upload: async function upload (uploadFile) {
-    const remoteFilename = uploadFile.filename
     await azureBlobDataService.createContainerIfNotExists(container)
 
     // Create the job record first as it acts as a singleton - we only want one file upload at a time.  If we can't
     // create the job record, then we abort.
     const jobSlug = await organisationBulkUploadDataService.createJobRecord()
+    const remoteFilename = `${jobSlug}.csv`
     await azureBlobDataService.uploadLocalFile(container, remoteFilename, uploadFile.file)
     return jobSlug
   },
@@ -46,7 +46,7 @@ const organisationBulkUploadService = {
       description: jobData.jobStatusDescription,
       code: jobData.jobStatusCode,
       errorOutput: jobData.errorOutput,
-      jobOutput: JSON.parse(jobData.jobOutput),
+      jobOutput: jobData.jobOutput,
       urlSlug: jobData.urlSlug
     }
   },
@@ -62,10 +62,19 @@ const organisationBulkUploadService = {
     }
     const jobData = await this.getUploadStatus(jobSlug)
     const zip = new AdmZip()
+
+    let jobOutput = ''
+    if (jobData.jobOutput) {
+      jobOutput = jobData.jobOutput
+    }
+    let errorOutput = ''
+    if (jobData.errorOutput) {
+      errorOutput = jobData.errorOutput
+    }
     // noinspection JSCheckFunctionSignatures - 3rd and 4th args are optional
-    zip.addFile('error.txt', jobData.jobOutput.stderr.join('\n'))
+    zip.addFile('error.txt', Buffer.from(errorOutput))
     // noinspection JSCheckFunctionSignatures - 3rd and 4th args are optional
-    zip.addFile('output.txt', jobData.jobOutput.stdout.join('\n'))
+    zip.addFile('output.txt', Buffer.from(jobOutput))
     return zip.toBuffer()
   }
 }

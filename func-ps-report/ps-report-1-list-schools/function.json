@@ -1,0 +1,22 @@
+{
+  "bindings": [
+    {
+      "name": "psReport1ListSchools",
+      "type": "timerTrigger",
+      "direction": "in",
+      "timerDescription": "{second} {minute} {hour} {day} {month} {day-of-week}",
+      "dev-schedule": "0 */15 * * * *",
+      "prod-schedule": "0 0 22 * * 2",
+      "prod-description": "Every Tuesday at 10pm",
+      "schedule": "0 0 22 * * 2"
+    },
+    {
+      "direction": "out",
+      "type": "serviceBus",
+      "name": "schoolMessages",
+      "queueName": "ps-report-schools",
+      "connection": "AZURE_SERVICE_BUS_CONNECTION_STRING"
+    }
+  ],
+  "scriptFile": "../dist/functions-ps-report/ps-report-1-list-schools/index.js"
+}

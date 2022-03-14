@@ -63,6 +63,7 @@ Before('@school_import') do
 end
 
 Before("@delete_school_import") do
+  SqlDbHelper.delete_schools_audit_history
   SqlDbHelper.delete_schools_imported
   files = AZURE_BLOB_CLIENT.list_blobs('school-import').map {|a| a.name}
   files.each do |filename|

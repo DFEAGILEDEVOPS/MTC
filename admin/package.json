@@ -29,7 +29,7 @@
     "watch:integration": "yarn jest --watch --coverage=no --config ./tests-integration/jest.integration.config.js"
   },
   "mtc": {
-    "assets-version": "1a3a2c31afce137dfcba1d51690fef8b"
+    "assets-version": "d751ca26ae5c9e59b075d9cdb5f7c021"
   },
   "engines": {
     "node": ">= 14"
@@ -104,6 +104,7 @@
     "@babel/core": "^7.10.5",
     "@babel/preset-env": "^7.10.4",
     "@babel/preset-typescript": "^7.16.0",
+    "@types/adm-zip": "^0.4.34",
     "@types/fs-extra": "^9.0.1",
     "@types/jest": "^27.0.1",
     "@types/marked": "^4.0.0",

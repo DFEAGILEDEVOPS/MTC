@@ -26,6 +26,22 @@
       <% } %>
       <h1 class="govuk-heading-xl"><%= pageTitle %></h1>
       <%- partial('partials/_gds_session_expiry') %>
+
+      <% if (typeof(checkReceived) === 'object' && checkReceived.processingError && checkReceived.processingError.length > 0) { %>
+      <div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+        <div class="govuk-notification-banner__header">
+          <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+            Important
+          </h2>
+        </div>
+        <div class="govuk-notification-banner__content">
+          <p class="govuk-notification-banner__heading">
+           This check has a processing error: <%= checkReceived.processingError %>
+          </p>
+        </div>
+      </div>
+      <% } %>
+
       <form action="/tech-support/checkview" id="checkViewForm" method="post" autocomplete="off">
         <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
         <div class="govuk-form-group <%= err.isError('checkCode') ? 'govuk-form-group--error' : '' %>">
@@ -125,12 +141,48 @@
               Received check
             </td>
             <td>
+              <% if (checkReceived) { %>
               <a id="view-received-check" target="_blank" href="received-check-payload?checkCode=<%= summary.checkCode %>">View Payload</a>
+              <% } else { %>
+                N/A
+              <% } %>
             </td>
           </tr>
         </tbody>
       </table>
       <% } %>
+    </div>
+
+    <div class="govuk-grid-column-one-third" aria-label="sidebar">
+      <aside class="app-related-items" role="complementary">
+        <h2 class="govuk-heading-m" id="subsection-title">
+            Related
+        </h2>
+        <nav role="navigation" aria-labelledby="subsection-title">
+            <ul class="govuk-list govuk-!-font-size-16">
+              <% if (summary && summary.checkCode) { %>
+                <li>
+                  <% if (checkMarked) { %>
+                    <a class="govuk-link" href="marked-check-json/<%= summary.checkCode.toLowerCase() %>" target="_blank" rel="noopener noreferrer">
+                      View marked check
+                    </a>
+                  <% } else { %>
+                    Marked check: N/A
+                  <% } %>
+                </li>
+                <li>
+                    <% if (checkReceived) { %>
+                    <a class="govuk-link" href="received-check-json/<%= summary.checkCode.toLowerCase() %>" target="_blank" rel="noopener noreferrer">
+                      View received check
+                    </a>
+                    <% } else { %>
+                      Received check: N/A
+                    <% } %>
+                </li>
+                <% } %>
+            </ul>
+        </nav>
+      </aside>
     </div>
   </div>
 </main>
