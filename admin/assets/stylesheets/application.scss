@@ -57,3 +57,8 @@ $govuk-global-styles: true;
   display: table;
   clear: both;
 }
+
+// access arangements panel details - dt headings space
+.govuk-panel-list dt {
+  margin-top: 20px;
+}
