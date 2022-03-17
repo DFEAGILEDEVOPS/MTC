@@ -1,6 +1,6 @@
 SELECT * FROM [mtc_admin].[pupilAccessArrangements]
 
-SELECT * FROM [mtc_admin].[check] 
+SELECT * FROM [mtc_admin].[check]
 
 SELECT * FROM [mtc_admin].[check] where complete = 0;
 
@@ -12,9 +12,9 @@ SELECT * FROM [mtc_admin].[check] where completedAt is NULL
 
 
 
-SELECT count(*) FROM [mtc_admin].[check] 
+SELECT count(*) FROM [mtc_admin].[check]
 
-SELECT count(*) FROM [mtc_admin].[check] where complete = 0 
+SELECT count(*) FROM [mtc_admin].[check] where complete = 0
 
 SELECT count(*) FROM [mtc_admin].[check] where pupilLoginDate is NULL
 
@@ -40,7 +40,7 @@ SELECT count(*) FROM [mtc_admin].[pupilAccessArrangements]
 
 
 
-EXECUTE as USER = 'paul_flood';
+EXECUTE as USER = '<LOADTEST_USER>';
 GO
 
 --

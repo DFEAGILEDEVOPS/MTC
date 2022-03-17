@@ -30,7 +30,7 @@
         <collectionProp name="Arguments.arguments">
           <elementProp name="varServerName" elementType="Argument">
             <stringProp name="Argument.name">varServerName</stringProp>
-            <stringProp name="Argument.value">devadmin-as-mtc.azurewebsites.net</stringProp>
+            <stringProp name="Argument.value">${ADMIN_URL}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="varWaitTime" elementType="Argument">
@@ -59,7 +59,7 @@
         <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
           <collectionProp name="Arguments.arguments"/>
         </elementProp>
-        <stringProp name="HTTPSampler.domain">devadmin-as-mtc.azurewebsites.net</stringProp>
+        <stringProp name="HTTPSampler.domain">${ADMIN_URL}</stringProp>
         <stringProp name="HTTPSampler.port"></stringProp>
         <stringProp name="HTTPSampler.protocol">https</stringProp>
         <stringProp name="HTTPSampler.contentEncoding"></stringProp>
@@ -3041,7 +3041,7 @@ vars.put(&quot;UDV1_pupilEditUrl&quot;,JSR_pupilEditUrl)
                 </elementProp>
               </collectionProp>
             </elementProp>
-            <stringProp name="HTTPSampler.domain">devauth-as-mtc.azurewebsites.net</stringProp>
+            <stringProp name="HTTPSampler.domain">${AUTH_URL}</stringProp>
             <stringProp name="HTTPSampler.port">443</stringProp>
             <stringProp name="HTTPSampler.protocol">https</stringProp>
             <stringProp name="HTTPSampler.contentEncoding"></stringProp>
@@ -3068,7 +3068,7 @@ vars.put(&quot;UDV1_pupilEditUrl&quot;,JSR_pupilEditUrl)
                 </elementProp>
                 <elementProp name="" elementType="Header">
                   <stringProp name="Header.name">Origin</stringProp>
-                  <stringProp name="Header.value">https://devpupil-as-mtc.azurewebsites.net</stringProp>
+                  <stringProp name="Header.value">https://${PUPIL_URL}</stringProp>
                 </elementProp>
               </collectionProp>
             </HeaderManager>
@@ -3213,7 +3213,7 @@ vars.put(&quot;queueDomain&quot;, domain);
           <stringProp name="HTTPSampler.port"></stringProp>
           <stringProp name="HTTPSampler.protocol"></stringProp>
           <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-          <stringProp name="HTTPSampler.path">https://devadmin-as-mtc.azurewebsites.net/sign-out</stringProp>
+          <stringProp name="HTTPSampler.path">https://${ADMIN_URL}/sign-out</stringProp>
           <stringProp name="HTTPSampler.method">GET</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
           <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -6491,7 +6491,7 @@ vars.put(&quot;UDV1_pupilEditUrl&quot;,JSR_pupilEditUrl)
               </elementProp>
             </collectionProp>
           </elementProp>
-          <stringProp name="HTTPSampler.domain">devauth-as-mtc.azurewebsites.net</stringProp>
+          <stringProp name="HTTPSampler.domain">${AUTH_URL}</stringProp>
           <stringProp name="HTTPSampler.port">443</stringProp>
           <stringProp name="HTTPSampler.protocol">https</stringProp>
           <stringProp name="HTTPSampler.contentEncoding"></stringProp>
@@ -6518,7 +6518,7 @@ vars.put(&quot;UDV1_pupilEditUrl&quot;,JSR_pupilEditUrl)
               </elementProp>
               <elementProp name="" elementType="Header">
                 <stringProp name="Header.name">Origin</stringProp>
-                <stringProp name="Header.value">https://devpupil-as-mtc.azurewebsites.net</stringProp>
+                <stringProp name="Header.value">https://${PUPIL_URL}</stringProp>
               </elementProp>
             </collectionProp>
           </HeaderManager>
@@ -6590,7 +6590,7 @@ vars.put(&quot;queueDomain&quot;, domain);
               </elementProp>
             </collectionProp>
           </elementProp>
-          <stringProp name="HTTPSampler.domain">devauth-as-mtc.azurewebsites.net</stringProp>
+          <stringProp name="HTTPSampler.domain">${AUTH_URL}</stringProp>
           <stringProp name="HTTPSampler.port">443</stringProp>
           <stringProp name="HTTPSampler.protocol">https</stringProp>
           <stringProp name="HTTPSampler.contentEncoding"></stringProp>
@@ -6617,7 +6617,7 @@ vars.put(&quot;queueDomain&quot;, domain);
               </elementProp>
               <elementProp name="" elementType="Header">
                 <stringProp name="Header.name">Origin</stringProp>
-                <stringProp name="Header.value">https://devpupil-as-mtc.azurewebsites.net</stringProp>
+                <stringProp name="Header.value">https://${PUPIL_URL}</stringProp>
               </elementProp>
             </collectionProp>
           </HeaderManager>
@@ -6739,7 +6739,7 @@ vars.put(&quot;queueDomain&quot;, domain);
               </elementProp>
             </collectionProp>
           </elementProp>
-          <stringProp name="HTTPSampler.domain">devauth-as-mtc.azurewebsites.net</stringProp>
+          <stringProp name="HTTPSampler.domain">${AUTH_URL}</stringProp>
           <stringProp name="HTTPSampler.port">443</stringProp>
           <stringProp name="HTTPSampler.protocol">https</stringProp>
           <stringProp name="HTTPSampler.contentEncoding"></stringProp>
@@ -6766,7 +6766,7 @@ vars.put(&quot;queueDomain&quot;, domain);
               </elementProp>
               <elementProp name="" elementType="Header">
                 <stringProp name="Header.name">Origin</stringProp>
-                <stringProp name="Header.value">https://devpupil-as-mtc.azurewebsites.net</stringProp>
+                <stringProp name="Header.value">https://${PUPIL_URL}</stringProp>
               </elementProp>
             </collectionProp>
           </HeaderManager>
@@ -6888,7 +6888,7 @@ vars.put(&quot;queueDomain&quot;, domain);
               </elementProp>
             </collectionProp>
           </elementProp>
-          <stringProp name="HTTPSampler.domain">devauth-as-mtc.azurewebsites.net</stringProp>
+          <stringProp name="HTTPSampler.domain">${AUTH_URL}</stringProp>
           <stringProp name="HTTPSampler.port">443</stringProp>
           <stringProp name="HTTPSampler.protocol">https</stringProp>
           <stringProp name="HTTPSampler.contentEncoding"></stringProp>
@@ -6915,7 +6915,7 @@ vars.put(&quot;queueDomain&quot;, domain);
               </elementProp>
               <elementProp name="" elementType="Header">
                 <stringProp name="Header.name">Origin</stringProp>
-                <stringProp name="Header.value">https://devpupil-as-mtc.azurewebsites.net</stringProp>
+                <stringProp name="Header.value">https://${PUPIL_URL}</stringProp>
               </elementProp>
             </collectionProp>
           </HeaderManager>
@@ -7037,7 +7037,7 @@ vars.put(&quot;queueDomain&quot;, domain);
               </elementProp>
             </collectionProp>
           </elementProp>
-          <stringProp name="HTTPSampler.domain">devauth-as-mtc.azurewebsites.net</stringProp>
+          <stringProp name="HTTPSampler.domain">${AUTH_URL}</stringProp>
           <stringProp name="HTTPSampler.port">443</stringProp>
           <stringProp name="HTTPSampler.protocol">https</stringProp>
           <stringProp name="HTTPSampler.contentEncoding"></stringProp>
@@ -7064,7 +7064,7 @@ vars.put(&quot;queueDomain&quot;, domain);
               </elementProp>
               <elementProp name="" elementType="Header">
                 <stringProp name="Header.name">Origin</stringProp>
-                <stringProp name="Header.value">https://devpupil-as-mtc.azurewebsites.net</stringProp>
+                <stringProp name="Header.value">https://${PUPIL_URL}</stringProp>
               </elementProp>
             </collectionProp>
           </HeaderManager>
@@ -7186,7 +7186,7 @@ vars.put(&quot;queueDomain&quot;, domain);
               </elementProp>
             </collectionProp>
           </elementProp>
-          <stringProp name="HTTPSampler.domain">devauth-as-mtc.azurewebsites.net</stringProp>
+          <stringProp name="HTTPSampler.domain">${AUTH_URL}</stringProp>
           <stringProp name="HTTPSampler.port">443</stringProp>
           <stringProp name="HTTPSampler.protocol">https</stringProp>
           <stringProp name="HTTPSampler.contentEncoding"></stringProp>
@@ -7213,7 +7213,7 @@ vars.put(&quot;queueDomain&quot;, domain);
               </elementProp>
               <elementProp name="" elementType="Header">
                 <stringProp name="Header.name">Origin</stringProp>
-                <stringProp name="Header.value">https://devpupil-as-mtc.azurewebsites.net</stringProp>
+                <stringProp name="Header.value">https://${PUPIL_URL}</stringProp>
               </elementProp>
             </collectionProp>
           </HeaderManager>
@@ -7341,7 +7341,7 @@ vars.put(&quot;queueDomain&quot;, domain);
                 </elementProp>
               </collectionProp>
             </elementProp>
-            <stringProp name="HTTPSampler.domain">devauth-as-mtc.azurewebsites.net</stringProp>
+            <stringProp name="HTTPSampler.domain">${AUTH_URL}</stringProp>
             <stringProp name="HTTPSampler.port">443</stringProp>
             <stringProp name="HTTPSampler.protocol">https</stringProp>
             <stringProp name="HTTPSampler.contentEncoding"></stringProp>
@@ -7368,7 +7368,7 @@ vars.put(&quot;queueDomain&quot;, domain);
                 </elementProp>
                 <elementProp name="" elementType="Header">
                   <stringProp name="Header.name">Origin</stringProp>
-                  <stringProp name="Header.value">https://devpupil-as-mtc.azurewebsites.net</stringProp>
+                  <stringProp name="Header.value">https://${PUPIL_URL}</stringProp>
                 </elementProp>
               </collectionProp>
             </HeaderManager>
@@ -7490,7 +7490,7 @@ vars.put(&quot;queueDomain&quot;, domain);
                 </elementProp>
               </collectionProp>
             </elementProp>
-            <stringProp name="HTTPSampler.domain">devauth-as-mtc.azurewebsites.net</stringProp>
+            <stringProp name="HTTPSampler.domain">${AUTH_URL}</stringProp>
             <stringProp name="HTTPSampler.port">443</stringProp>
             <stringProp name="HTTPSampler.protocol">https</stringProp>
             <stringProp name="HTTPSampler.contentEncoding"></stringProp>
@@ -7517,7 +7517,7 @@ vars.put(&quot;queueDomain&quot;, domain);
                 </elementProp>
                 <elementProp name="" elementType="Header">
                   <stringProp name="Header.name">Origin</stringProp>
-                  <stringProp name="Header.value">https://devpupil-as-mtc.azurewebsites.net</stringProp>
+                  <stringProp name="Header.value">https://${PUPIL_URL}</stringProp>
                 </elementProp>
               </collectionProp>
             </HeaderManager>
@@ -7756,7 +7756,7 @@ vars.put(&quot;queueDomain&quot;, domain);
                 </elementProp>
               </collectionProp>
             </elementProp>
-            <stringProp name="HTTPSampler.domain">devauth-as-mtc.azurewebsites.net</stringProp>
+            <stringProp name="HTTPSampler.domain">${AUTH_URL}</stringProp>
             <stringProp name="HTTPSampler.port">443</stringProp>
             <stringProp name="HTTPSampler.protocol">https</stringProp>
             <stringProp name="HTTPSampler.contentEncoding"></stringProp>
@@ -7783,7 +7783,7 @@ vars.put(&quot;queueDomain&quot;, domain);
                 </elementProp>
                 <elementProp name="" elementType="Header">
                   <stringProp name="Header.name">Origin</stringProp>
-                  <stringProp name="Header.value">https://devpupil-as-mtc.azurewebsites.net</stringProp>
+                  <stringProp name="Header.value">https://${PUPIL_URL}</stringProp>
                 </elementProp>
               </collectionProp>
             </HeaderManager>
@@ -7999,7 +7999,7 @@ vars.put(&quot;queueDomain&quot;, domain);
           <stringProp name="HTTPSampler.port"></stringProp>
           <stringProp name="HTTPSampler.protocol"></stringProp>
           <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-          <stringProp name="HTTPSampler.path">https://devadmin-as-mtc.azurewebsites.net/sign-out</stringProp>
+          <stringProp name="HTTPSampler.path">https://${ADMIN_URL}/sign-out</stringProp>
           <stringProp name="HTTPSampler.method">GET</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
           <boolProp name="HTTPSampler.auto_redirects">false</boolProp>

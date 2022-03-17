@@ -30,7 +30,7 @@
         <collectionProp name="Arguments.arguments">
           <elementProp name="varServerName" elementType="Argument">
             <stringProp name="Argument.name">varServerName</stringProp>
-            <stringProp name="Argument.value">devadmin-as-mtc.azurewebsites.net</stringProp>
+            <stringProp name="Argument.value">${ADMIN_URL}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
         </collectionProp>
@@ -494,7 +494,7 @@
           <stringProp name="HTTPSampler.port"></stringProp>
           <stringProp name="HTTPSampler.protocol"></stringProp>
           <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-          <stringProp name="HTTPSampler.path">https://devadmin-as-mtc.azurewebsites.net/sign-out</stringProp>
+          <stringProp name="HTTPSampler.path">https://${ADMIN_URL}/sign-out</stringProp>
           <stringProp name="HTTPSampler.method">GET</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
           <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
