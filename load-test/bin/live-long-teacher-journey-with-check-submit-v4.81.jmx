@@ -6390,11 +6390,11 @@ vars.put(&quot;UDV1_pupilEditUrl&quot;,JSR_pupilEditUrl)
               </elementProp>
             </collectionProp>
           </elementProp>
-          <stringProp name="HTTPSampler.domain">dev-mtc-func-cons-v2.azurewebsites.net</stringProp>
+          <stringProp name="HTTPSampler.domain">${FUNC_CONS_URL}</stringProp>
           <stringProp name="HTTPSampler.port">443</stringProp>
           <stringProp name="HTTPSampler.protocol">https</stringProp>
           <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-          <stringProp name="HTTPSampler.path">/api/util-submit-check?code=aC/19wYnRF5RG1aUlSdA6kHd3cDN5PaBhdyBmKUXkLc1DqH4ja20CA==</stringProp>
+          <stringProp name="HTTPSampler.path">/api/util-submit-check?code=${FUNC_CONS_API_TOKEN}</stringProp>
           <stringProp name="HTTPSampler.method">POST</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
           <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -6440,11 +6440,11 @@ vars.put(&quot;UDV1_pupilEditUrl&quot;,JSR_pupilEditUrl)
               </elementProp>
             </collectionProp>
           </elementProp>
-          <stringProp name="HTTPSampler.domain">dev-mtc-func-cons-v2.azurewebsites.net</stringProp>
+          <stringProp name="HTTPSampler.domain">${FUNC_CONS_URL}</stringProp>
           <stringProp name="HTTPSampler.port">443</stringProp>
           <stringProp name="HTTPSampler.protocol">https</stringProp>
           <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-          <stringProp name="HTTPSampler.path">/api/util-submit-check?code=aC/19wYnRF5RG1aUlSdA6kHd3cDN5PaBhdyBmKUXkLc1DqH4ja20CA==</stringProp>
+          <stringProp name="HTTPSampler.path">/api/util-submit-check?code=${FUNC_CONS_API_TOKEN}</stringProp>
           <stringProp name="HTTPSampler.method">POST</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
           <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -6694,11 +6694,11 @@ vars.put(&quot;queueDomain&quot;, domain);
                 </elementProp>
               </collectionProp>
             </elementProp>
-            <stringProp name="HTTPSampler.domain">dev-mtc-func-cons-v2.azurewebsites.net</stringProp>
+            <stringProp name="HTTPSampler.domain">${FUNC_CONS_URL}</stringProp>
             <stringProp name="HTTPSampler.port">443</stringProp>
             <stringProp name="HTTPSampler.protocol">https</stringProp>
             <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-            <stringProp name="HTTPSampler.path">/api/util-submit-check?code=aC/19wYnRF5RG1aUlSdA6kHd3cDN5PaBhdyBmKUXkLc1DqH4ja20CA==</stringProp>
+            <stringProp name="HTTPSampler.path">/api/util-submit-check?code=${FUNC_CONS_API_TOKEN}</stringProp>
             <stringProp name="HTTPSampler.method">POST</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
             <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -6879,7 +6879,7 @@ vars.put(&quot;queueDomain&quot;, domain);
                 </elementProp>
               </collectionProp>
             </elementProp>
-            <stringProp name="HTTPSampler.domain">dev-mtc-func-cons-v2.azurewebsites.net/</stringProp>
+            <stringProp name="HTTPSampler.domain">${FUNC_CONS_URL}/</stringProp>
             <stringProp name="HTTPSampler.port">443</stringProp>
             <stringProp name="HTTPSampler.protocol">https</stringProp>
             <stringProp name="HTTPSampler.contentEncoding"></stringProp>
@@ -6960,7 +6960,7 @@ vars.put(&quot;queueDomain&quot;, domain);
               </elementProp>
             </collectionProp>
           </elementProp>
-          <stringProp name="HTTPSampler.domain">dev-mtc-func-cons-v2.azurewebsites.net</stringProp>
+          <stringProp name="HTTPSampler.domain">${FUNC_CONS_URL}</stringProp>
           <stringProp name="HTTPSampler.port">443</stringProp>
           <stringProp name="HTTPSampler.protocol">https</stringProp>
           <stringProp name="HTTPSampler.contentEncoding"></stringProp>
@@ -7145,7 +7145,7 @@ vars.put(&quot;queueDomain&quot;, domain);
                 </elementProp>
               </collectionProp>
             </elementProp>
-            <stringProp name="HTTPSampler.domain">dev-mtc-func-cons-v2.azurewebsites.net/</stringProp>
+            <stringProp name="HTTPSampler.domain">${FUNC_CONS_URL}/</stringProp>
             <stringProp name="HTTPSampler.port">443</stringProp>
             <stringProp name="HTTPSampler.protocol">https</stringProp>
             <stringProp name="HTTPSampler.contentEncoding"></stringProp>

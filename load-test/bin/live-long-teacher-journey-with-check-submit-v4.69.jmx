@@ -6481,7 +6481,7 @@ vars.put(&quot;queueDomain&quot;, domain);
               </elementProp>
             </collectionProp>
           </elementProp>
-          <stringProp name="HTTPSampler.domain">dev-mtc-func-cons-v2.azurewebsites.net</stringProp>
+          <stringProp name="HTTPSampler.domain">${FUNC_CONS_URL}</stringProp>
           <stringProp name="HTTPSampler.port">443</stringProp>
           <stringProp name="HTTPSampler.protocol">https</stringProp>
           <stringProp name="HTTPSampler.contentEncoding"></stringProp>
@@ -6666,7 +6666,7 @@ vars.put(&quot;queueDomain&quot;, domain);
                 </elementProp>
               </collectionProp>
             </elementProp>
-            <stringProp name="HTTPSampler.domain">dev-mtc-func-cons-v2.azurewebsites.net/</stringProp>
+            <stringProp name="HTTPSampler.domain">${FUNC_CONS_URL}/</stringProp>
             <stringProp name="HTTPSampler.port">443</stringProp>
             <stringProp name="HTTPSampler.protocol">https</stringProp>
             <stringProp name="HTTPSampler.contentEncoding"></stringProp>
