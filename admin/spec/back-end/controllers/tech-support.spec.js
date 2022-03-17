@@ -155,4 +155,92 @@ describe('tech-support controller', () => {
       expect(resultsResyncService.resyncSingleCheck).toHaveBeenCalledWith(checkCode)
     })
   })
+
+  describe('/getJsonMarkedCheck', () => {
+    test('it sends back an error if the checkcode is missing', async () => {
+      const req = getRequest(getReqParams('/tech-support/marked-check-json', 'GET'))
+      const res = getResponse()
+      req.params = { checkCode: undefined }
+      await sut.getJsonMarkedCheck(req, res, next)
+      expect(res.statusCode).toBe(400)
+      const data = res._getJSONData()
+      expect(data.error).toBe('Missing checkCode')
+    })
+
+    test('it sends back an error if the checkCode is not a valid UUID', async () => {
+      const req = getRequest(getReqParams('/tech-support/marked-check-json', 'GET'))
+      const res = getResponse()
+      req.params = { checkCode: 'invalidUUID' }
+      await sut.getJsonMarkedCheck(req, res, next)
+      expect(res.statusCode).toBe(400)
+      const data = res._getJSONData()
+      expect(data.error).toBe('checkCode is not a valid UUID')
+    })
+
+    test('it calls the service to get the data to send back', async () => {
+      const req = getRequest(getReqParams('/tech-support/marked-check-json', 'GET'))
+      const res = getResponse()
+      jest.spyOn(checkDiagnosticService, 'getMarkedCheckEntityByCheckCode').mockResolvedValue({ some: 'data' })
+      req.params = { checkCode: 'a41d8cb3-aba9-4960-b806-6daf7df19555' }
+      await sut.getJsonMarkedCheck(req, res, next)
+      expect(res.statusCode).toBe(200)
+      const data = res._getJSONData()
+      expect(data.some).toBe('data')
+    })
+
+    test('it sends a server error with technical message', async () => {
+      const req = getRequest(getReqParams('/tech-support/marked-check-json', 'GET'))
+      const res = getResponse()
+      jest.spyOn(checkDiagnosticService, 'getMarkedCheckEntityByCheckCode').mockRejectedValue(new Error('mock error'))
+      req.params = { checkCode: 'a41d8cb3-aba9-4960-b806-6daf7df19555' }
+      await sut.getJsonMarkedCheck(req, res, next)
+      expect(res.statusCode).toBe(500)
+      const data = res._getJSONData()
+      expect(data.error).toBe('Server error: mock error')
+    })
+  })
+
+  describe('/getJsonReceivedCheck', () => {
+    test('it sends back an error if the checkcode is missing', async () => {
+      const req = getRequest(getReqParams('/tech-support/received-check-json', 'GET'))
+      const res = getResponse()
+      req.params = { checkCode: undefined }
+      await sut.getJsonReceivedCheck(req, res, next)
+      expect(res.statusCode).toBe(400)
+      const data = res._getJSONData()
+      expect(data.error).toBe('Missing checkCode')
+    })
+
+    test('it sends back an error if the checkCode is not a valid UUID', async () => {
+      const req = getRequest(getReqParams('/tech-support/received-check-json', 'GET'))
+      const res = getResponse()
+      req.params = { checkCode: 'invalidUUID' }
+      await sut.getJsonReceivedCheck(req, res, next)
+      expect(res.statusCode).toBe(400)
+      const data = res._getJSONData()
+      expect(data.error).toBe('checkCode is not a valid UUID')
+    })
+
+    test('it calls the service to get the data to send back', async () => {
+      const req = getRequest(getReqParams('/tech-support/received-check-json', 'GET'))
+      const res = getResponse()
+      jest.spyOn(checkDiagnosticService, 'getReceivedCheckEntityByCheckCode').mockResolvedValue({ some: 'data' })
+      req.params = { checkCode: 'a41d8cb3-aba9-4960-b806-6daf7df19555' }
+      await sut.getJsonReceivedCheck(req, res, next)
+      expect(res.statusCode).toBe(200)
+      const data = res._getJSONData()
+      expect(data.some).toBe('data')
+    })
+
+    test('it sends a server error with technical message', async () => {
+      const req = getRequest(getReqParams('/tech-support/received-check-json', 'GET'))
+      const res = getResponse()
+      jest.spyOn(checkDiagnosticService, 'getReceivedCheckEntityByCheckCode').mockRejectedValue(new Error('mock error'))
+      req.params = { checkCode: 'a41d8cb3-aba9-4960-b806-6daf7df19555' }
+      await sut.getJsonReceivedCheck(req, res, next)
+      expect(res.statusCode).toBe(500)
+      const data = res._getJSONData()
+      expect(data.error).toBe('Server error: mock error')
+    })
+  })
 })

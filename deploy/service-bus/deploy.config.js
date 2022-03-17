@@ -20,6 +20,7 @@ const R = require('ramda')
 // constants for service bus options...
 const oneGigabyte = 1024
 const fiveGigabytes = 5120
+const twentyGigabytes = 20480
 const fourtyGigabytes = 40960
 const eightyGigabytes = 81920
 const fourteenDays = 'P14D'
@@ -44,19 +45,23 @@ const config = {
     {
       name: 'check-completion',
       defaultMessageTimeToLive: twentyThreeHours,
-      maxSizeInMegabytes: {}.hasOwnProperty.call(process.env, 'SERVICE_BUS_QUEUE_MAX_SIZE_MEGABYTES_CHECK_COMPLETION') ? parseInt(process.env.SERVICE_BUS_QUEUE_MAX_SIZE_MEGABYTES_CHECK_COMPLETION, 10) : fiveGigabytes
+      maxSizeInMegabytes: {}.hasOwnProperty.call(process.env, 'SERVICE_BUS_QUEUE_MAX_SIZE_MEGABYTES_CHECK_COMPLETION') ? parseInt(process.env.SERVICE_BUS_QUEUE_MAX_SIZE_MEGABYTES_CHECK_COMPLETION, 10) : twentyGigabytes
     },
     {
-      name: 'check-marking'
+      name: 'check-marking',
+      maxSizeInMegabytes: {}.hasOwnProperty.call(process.env, 'SERVICE_BUS_QUEUE_MAX_SIZE_MEGABYTES_CHECK_MARKING') ? parseInt(process.env.SERVICE_BUS_QUEUE_MAX_SIZE_MEGABYTES_CHECK_MARKING, 10) : twentyGigabytes
     },
     {
-      name: 'check-notification'
+      name: 'check-notification',
+      maxSizeInMegabytes: {}.hasOwnProperty.call(process.env, 'SERVICE_BUS_QUEUE_MAX_SIZE_MEGABYTES_CHECK_NOTIFICATION') ? parseInt(process.env.SERVICE_BUS_QUEUE_MAX_SIZE_MEGABYTES_CHECK_NOTIFICATION, 10) : twentyGigabytes
     },
     {
-      name: 'check-sync'
+      name: 'check-sync',
+      maxSizeInMegabytes: {}.hasOwnProperty.call(process.env, 'SERVICE_BUS_QUEUE_MAX_SIZE_MEGABYTES_CHECK_SYNC') ? parseInt(process.env.SERVICE_BUS_QUEUE_MAX_SIZE_MEGABYTES_CHECK_SYNC, 10) : twentyGigabytes
     },
     {
-      name: 'check-validation'
+      name: 'check-validation',
+      maxSizeInMegabytes: {}.hasOwnProperty.call(process.env, 'SERVICE_BUS_QUEUE_MAX_SIZE_MEGABYTES_CHECK_VALIDATION') ? parseInt(process.env.SERVICE_BUS_QUEUE_MAX_SIZE_MEGABYTES_CHECK_VALIDATION, 10) : twentyGigabytes
     },
     {
       name: 'ps-report-schools',
@@ -74,7 +79,8 @@ const config = {
       maxSizeInMegabytes: {}.hasOwnProperty.call(process.env, 'SERVICE_BUS_QUEUE_MAX_SIZE_MEGABYTES_PS_REPORT_EXPORT') ? parseInt(process.env.SERVICE_BUS_QUEUE_MAX_SIZE_MEGABYTES_PS_REPORT_EXPORT, 10) : eightyGigabytes
     },
     {
-      name: 'pupil-login'
+      name: 'pupil-login',
+      maxSizeInMegabytes: {}.hasOwnProperty.call(process.env, 'SERVICE_BUS_QUEUE_MAX_SIZE_MEGABYTES_PUPIL_LOGIN') ? parseInt(process.env.SERVICE_BUS_QUEUE_MAX_SIZE_MEGABYTES_PUPIL_LOGIN, 10) : twentyGigabytes
     },
     {
       name: 'queue-replay'
@@ -83,7 +89,8 @@ const config = {
       name: 'school-results-cache'
     },
     {
-      name: 'sync-results-to-db-complete'
+      name: 'sync-results-to-db-complete',
+      maxSizeInMegabytes: {}.hasOwnProperty.call(process.env, 'SERVICE_BUS_QUEUE_MAX_SIZE_MEGABYTES_SYNC_RESULTS_COMPLETE') ? parseInt(process.env.SERVICE_BUS_QUEUE_MAX_SIZE_MEGABYTES_SYNC_RESULTS_COMPLETE, 10) : twentyGigabytes
     }
   ]
 }

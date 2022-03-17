@@ -25,7 +25,7 @@ const getGeneratePinsOverview = async function getGeneratePinsOverview (req, res
   res.locals.pinEnv = pinEnv
   res.locals.pageTitle = isLiveCheck ? 'Generate school passwords and PINs for the official check' : 'Generate passwords and PINs for the try it out check'
   req.breadcrumbs(res.locals.pageTitle)
-  const buttonText = isLiveCheck ? 'Generate official PINs' : 'Generate Try it out PINs'
+  const buttonText = isLiveCheck ? 'Generate password and PINs for the official check' : 'Generate password and PINs for the try it out check'
 
   const helplineNumber = config.Data.helplineNumber
   let pupils
@@ -163,7 +163,8 @@ const postGeneratePins = async function postGeneratePins (req, res, next) {
       school.timezone
     )
     const pupilsText = pupilsList.length === 1 ? '1 pupil' : `${pupilsList.length} pupils`
-    req.flash('info', `PINs generated for ${pupilsText}`)
+    const mode = isLiveCheck ? 'Official check' : 'Try it out check'
+    req.flash('info', `${mode} PINs generated for ${pupilsText}`)
   } catch (error) {
     return next(error)
   }
@@ -227,7 +228,7 @@ const getViewAndCustomPrintPins = async function getViewAndCustomPrintPins (req,
 }
 
 const getSelectOfficialOrTryItOutPinGen = async function getSelectOfficialOrTryItOutPinGenFunc (req, res, next) {
-  res.locals.pageTitle = 'Generate school passwords and PINs for the try it out and official checks'
+  res.locals.pageTitle = 'Generate and view school password and PINs for the try it out and official check'
   req.breadcrumbs(res.locals.pageTitle)
 
   const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()

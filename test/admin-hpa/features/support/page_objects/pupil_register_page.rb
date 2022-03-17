@@ -27,6 +27,7 @@ class PupilRegisterPage < SitePrism::Page
       element :edited_pupil, '.govuk-highlight-item'
       element :group, 'td:nth-child(2)'
       element :edit_pupil_link, 'a'
+      element :view_history, 'a', text: 'View'
     end
   end
 

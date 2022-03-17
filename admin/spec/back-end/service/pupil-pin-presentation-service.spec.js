@@ -83,7 +83,7 @@ describe('pupilPinPresentationService', () => {
       expect(data).not.toMatch(/href=/)
       expect(data).toMatch(/UNAVAILABLE/)
       expect(data).toMatch(/Open 6am - 4pm on 7 to 25 June 2021/)
-      expect(data).toMatch(/Generate official PINs/)
+      expect(data).toMatch(/Official check/)
     })
 
     test('official check pin gen is disabled out of hours', async () => {
@@ -93,7 +93,7 @@ describe('pupilPinPresentationService', () => {
       expect(data).not.toMatch(/href=/)
       expect(data).toMatch(/UNAVAILABLE/)
       expect(data).toMatch(/Open 6am - 4pm on 7 to 25 June 2021/)
-      expect(data).toMatch(/Generate official PINs/)
+      expect(data).toMatch(/Official check/)
     })
   })
 
@@ -108,7 +108,7 @@ describe('pupilPinPresentationService', () => {
       expect(data).not.toMatch(/href=/)
       expect(data).toMatch(/UNAVAILABLE/)
       expect(data).toMatch(/Open 6am - 4pm on 7 to 25 June 2021/)
-      expect(data).toMatch(/Generate official PINs/)
+      expect(data).toMatch(/Official check/)
     })
 
     test('official check pin gen is disabled out of hours', async () => {
@@ -118,7 +118,7 @@ describe('pupilPinPresentationService', () => {
       expect(data).not.toMatch(/href=/)
       expect(data).toMatch(/UNAVAILABLE/)
       expect(data).toMatch(/Open 6am - 4pm on 7 to 25 June 2021/)
-      expect(data).toMatch(/Generate official PINs/)
+      expect(data).toMatch(/Official check/)
     })
 
     test('try it out pin gen is enabled when in hours', async () => {
@@ -126,7 +126,7 @@ describe('pupilPinPresentationService', () => {
       featureEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(mockCheckWindow, 'Europe/London')
       const data = await sut.getTryItOutPinGenSlot(featureEligibilityData)
       expect(data).toMatch(/href=/)
-      expect(data).toMatch(/Generate Try it out PINs/)
+      expect(data).toMatch(/Try it out check/)
     })
 
     test('try it out pin gen is disabled out of hours with unavailable label and explanation', async () => {
@@ -148,7 +148,7 @@ describe('pupilPinPresentationService', () => {
       featureEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(mockCheckWindow, 'Europe/London')
       const data = await sut.getTryItOutPinGenSlot(featureEligibilityData)
       expect(data).toMatch(/href=/)
-      expect(data).toMatch(/Generate Try it out PINs/)
+      expect(data).toMatch(/Try it out check/)
     })
 
     test('try it out pin gen is disabled out of hours with unavailable label and explanation', async () => {
@@ -165,7 +165,7 @@ describe('pupilPinPresentationService', () => {
       featureEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(mockCheckWindow, 'Europe/London')
       const data = await sut.getOfficialPinGenSlot(featureEligibilityData)
       expect(data).toMatch(/href=/)
-      expect(data).toMatch(/Generate official PINs/)
+      expect(data).toMatch(/Official check/)
     })
 
     test('official check pin gen is disabled out of hours', async () => {
@@ -175,7 +175,7 @@ describe('pupilPinPresentationService', () => {
       expect(data).not.toMatch(/href=/)
       expect(data).toMatch(/UNAVAILABLE/)
       expect(data).toMatch(/Open 6am - 4pm on 7 to 25 June 2021/)
-      expect(data).toMatch(/Generate official PINs/)
+      expect(data).toMatch(/Official check/)
     })
   })
 
@@ -186,7 +186,7 @@ describe('pupilPinPresentationService', () => {
       const data = await sut.getTryItOutPinGenSlot(featureEligibilityData)
       expect(data).not.toMatch(/href=/)
       expect(data).toMatch(/UNAVAILABLE/)
-      expect(data).toMatch(/Generate Try it out PINs/)
+      expect(data).toMatch(/Try it out check/)
       expect(data).toMatch(/Check window has closed/)
     })
 
@@ -196,7 +196,7 @@ describe('pupilPinPresentationService', () => {
       const data = await sut.getOfficialPinGenSlot(featureEligibilityData)
       expect(data).not.toMatch(/href=/)
       expect(data).toMatch(/UNAVAILABLE/)
-      expect(data).toMatch(/Generate official PINs/)
+      expect(data).toMatch(/Official check/)
       expect(data).toMatch(/Check window has closed/)
     })
 
@@ -206,7 +206,7 @@ describe('pupilPinPresentationService', () => {
       const data = await sut.getTryItOutPinGenSlot(featureEligibilityData)
       expect(data).not.toMatch(/href=/)
       expect(data).toMatch(/UNAVAILABLE/)
-      expect(data).toMatch(/Generate Try it out PINs/)
+      expect(data).toMatch(/Try it out check/)
       expect(data).toMatch(/Check window has closed/)
     })
 
@@ -216,7 +216,7 @@ describe('pupilPinPresentationService', () => {
       const data = await sut.getOfficialPinGenSlot(featureEligibilityData)
       expect(data).not.toMatch(/href=/)
       expect(data).toMatch(/UNAVAILABLE/)
-      expect(data).toMatch(/Generate official PINs/)
+      expect(data).toMatch(/Official check/)
       expect(data).toMatch(/Check window has closed/)
     })
   })

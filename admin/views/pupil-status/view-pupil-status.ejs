@@ -4,15 +4,14 @@
         <div class="govuk-grid-column-two-thirds">
             <% if (pupilStatusViewData.pupilsWithErrorsCount > 0) { %>
                 <div class="govuk-body govuk-warning-message govuk-!-margin-bottom-7">
-                    <%= pupilStatusViewData.pupilsWithErrorsCount %> <%= pupilStatusViewData.pupilsWithErrorsCount > 1 ? 'issues' : 'issue' %>
-                    with pupils' checks
+                    <%= pupilStatusViewData.pupilsWithErrorsCount %> <%= pupilStatusViewData.pupilsWithErrorsCount > 1 ? 'Checks' : 'Check' %>
+                    with errors
                 </div>
             <% } %>
             <h1 class="govuk-heading-xl">See how many pupils have completed the official check</h1>
             <%- partial('partials/_gds_session_expiry') %>
             <p class="govuk-body-l">
-                Review the status of the pupils to ensure the pupils have all successfully completed the check before
-                you sign the headteacher declaration form.
+                Review the status of your pupils to ensure all participating pupils have successfully completed the check.
             </p>
 
             <div id="red-card" class="govuk-panel govuk-panel custom-card red-card" tabindex="0">
@@ -29,7 +28,7 @@
 
             <div id="orange-card" class="govuk-panel govuk-panel custom-card orange-card" tabindex="0">
                 <div class="govuk-panel__body custom-card-small-text">
-                    Pupils that have not started yet
+                    Checks not completed
                 </div>
                 <div class="custom-card-large-text">
                     <%= pupilStatusViewData.pupilsNotStartedCount %>
@@ -41,7 +40,7 @@
 
             <div id="blue-card" class="govuk-panel govuk-panel custom-card blue-card" tabindex="0">
                 <div class="govuk-panel__body custom-card-small-text">
-                    Pupils not taking the check
+                    Checks not being taken
                 </div>
                 <div class="custom-card-large-text">
                     <%= pupilStatusViewData.pupilsNotAttendingCount %>
@@ -53,7 +52,7 @@
 
             <div id="green-card" class="govuk-panel govuk-panel custom-card green-card" tabindex="0">
                 <div class="govuk-panel__body custom-card-small-text">
-                    Completed checks
+                    Checks completed
                 </div>
                 <div class="custom-card-large-text">
                     <%= pupilStatusViewData.pupilsCompletedCount %>
@@ -113,7 +112,7 @@
             <details id="orange-card-details" class="govuk-details orange-card-details" data-module="govuk-details">
                 <summary class="govuk-details__summary">
                         <span class="govuk-details__summary-text">
-                            Pupils that have not started the check
+                            Pupils that have not completed the check
                         </span>
                 </summary>
                 <div class="govuk-details__text">
@@ -129,7 +128,7 @@
                                     day<%-pupilStatusViewData.remainingLiveCheckDays !== 1 ? 's' : '' %>.
                                     Please ensure pupils have taken the official check before 4pm
                                     on <%= pupilStatusViewData.liveCheckEndDate %>.
-                                    Go to <a href="/pupil-pin/generate-live-pins-overview">generate school passwords and
+                                    Go to <a href="/pupil-pin/generate-live-pins-overview">generate school password and
                                         PINs for the check</a> to continue.
                                 </p>
                             <% } else { %>
@@ -218,7 +217,7 @@
             <details id="green-card-details" class="govuk-details green-card-details" data-module="govuk-details">
                 <summary class="govuk-details__summary">
                         <span class="govuk-details__summary-text">
-                          Completed checks
+                          Checks completed
                         </span>
                 </summary>
                 <div class="govuk-details__text">
@@ -314,24 +313,27 @@
                         </div>
                         <div class="app-step-nav__panel js-panel" id="step-panel-1">
                             <p class="app-step-nav__paragraph">
-                                <span class="govuk-!-font-weight-bold">Pupil check not received:</span> it may still be
-                                held on the device that the pupil sat the check on. If this device is known please go to
-                                the pupil check home page and it will try to recover the data if possible.
+                                <span class="govuk-!-font-weight-bold">Pupil check not received:</span> you may find the check is still held on the device the pupil used to take the check.
+                                If this device is known, you should go to the check home page and the device will attempt to recover the data if possible.
 
                                 <% if (pupilStatusViewData.remainingLiveCheckDays >= 0) { %>
-                                    If this does not work please <a href="/restart/select-restart-list">select pupils to restart the check.</a>
+                                    If this does not work the pupil will need to sit the check again.
+                                    To enable this <a href="/restart/select-restart-list">select pupils to restart the
+                                      check</a>
+                                    then
+                                    <a href="/pupil-pin/generate-live-pins-overview">generate school password and PINs for the official check.</a>
                                 <% } else { %>
                                     The check window has now closed. <a href="/pupils-not-taking-the-check/pupils-list">Give a reason why pupils are not taking the check</a>. You can then sign the HDF.
                                 <% } %>
                             </p>
                             <p class="app-step-nav__paragraph">
-                                <span class="govuk-!-font-weight-bold">Error in processing:</span> the pupils check was received but was corrupt or unreadable.
+                                <span class="govuk-!-font-weight-bold">Error in processing:</span> the check was received but was corrupt or unreadable.
                                 <% if (pupilStatusViewData.remainingLiveCheckDays >= 0) { %>
                                     The pupil will need to sit the check again.
                                     To enable this <a href="/restart/select-restart-list">select pupils to restart the
                                         check</a>
                                     then
-                                    <a href="/pupil-pin/generate-live-pins-overview">generate school passwords and PINs.</a>
+                                    <a href="/pupil-pin/generate-live-pins-overview">generate school password and PINs for the official check.</a>
                                 <% } else { %>
                                     The check window has now closed. <a href="/pupils-not-taking-the-check/pupils-list">Give a reason why pupils are not taking the check</a>. You can then sign the HDF.
                                 <% } %>
@@ -354,7 +356,7 @@
                               <button class="app-step-nav__button app-step-nav__button--title js-step-title-button"
                                       aria-expanded="true" aria-controls="step-panel-2">
                                   <span class="js-step-title-text">
-                                    Pupils that have not started the check yet
+                                    Pupils that have not completed the check
                                    </span>
                                   <span class="app-step-nav__toggle-link js-toggle-link"
                                         aria-hidden="true">hide
@@ -366,9 +368,9 @@
                         <div class="app-step-nav__panel js-panel" id="step-panel-2">
                             <p class="app-step-nav__paragraph">
                                 <% if (pupilStatusViewData.remainingLiveCheckDays >= 0) { %>
-                                    <span class="govuk-!-font-weight-bold">Not started</span>: the pupil has yet to take the
-                                    official check. Go to <a href="/pupil-pin/generate-live-pins-overview">generate school
-                                    passwords and PINs</a>.
+                                    <span class="govuk-!-font-weight-bold">Not started</span>: the pupil has not started the
+                                    official check, you may need to <a href="/pupil-pin/generate-live-pins-overview">generate school
+                                    password and PINs</a> for the official check.
                                 <% } else { %>
                                         <span class="govuk-!-font-weight-bold">Not started</span>: the pupil has yet to take the
                                         official check. The check window has now closed.  <a href="/pupils-not-taking-the-check/pupils-list">Give a reason why pupils are not taking the check</a>. You can then sign the HDF.
@@ -377,18 +379,15 @@
                             <p class="app-step-nav__paragraph">
                                 <span class="govuk-!-font-weight-bold">Processing</span>: we are aware the pupil has
                                 taken the official check.
-                                The service may be in high demand and taking longer than normal. Please check tomorrow
-                                to ensure the status shows as 'Complete'.
+                                The service may be in high demand and taking longer than normal to process. Please check later
+                                to ensure the status has updated to 'Complete'.
                             </p>
                             <p class="app-step-nav__paragraph">
                                 <% if (pupilStatusViewData.remainingLiveCheckDays >= 0) { %>
-                                    <span class="govuk-!-font-weight-bold">Restart</span>: a new official PIN must be
-                                    generated when the pupil is ready to take the check again.
-                                    <br/><a href="/pupil-pin/generate-live-pins-overview">Generate school passwords and
-                                        PINs</a>.
+                                    <span class="govuk-!-font-weight-bold">Restart</span>: you have generated a restart for this pupil.
+                                    <br/>When the pupil is ready to take the check again you must <a href="/pupil-pin/generate-live-pins-overview">generate a new PIN</a> for the official check.
                                 <% } else { %>
-                                        <span class="govuk-!-font-weight-bold">Restart</span>: a new official PIN must be
-                                        generated when the pupil is ready to take the check again.
+                                        <span class="govuk-!-font-weight-bold">Restart</span>: When the pupil is ready to take the check again you must <a href="/pupil-pin/generate-live-pins-overview">generate a new PIN</a> for the official check.
                                         <br/> The check window has now closed. <a href="/pupils-not-taking-the-check/pupils-list">Give a reason why pupils are not
                                             taking the check</a>. You can then sign the HDF.
                                 <% } %>
@@ -423,11 +422,7 @@
 
                         <div class="app-step-nav__panel js-panel" id="step-panel-3">
                             <p class="app-step-nav__paragraph">
-                                You have advised that the pupil is not taking the check. If this is incorrect please go
-                                to
-                                <a href="/pupils-not-taking-the-check/pupils-list">tell us why a pupil is not taking the
-                                    check</a>
-                                and remove or amend the correct reason.
+                                The pupil is recorded as not taking the check, you can <a href="/pupils-not-taking-the-check/pupils-list">remove if required.</a>
                             </p>
                         </div>
                     </li>
@@ -447,7 +442,7 @@
                                   <button class="app-step-nav__button app-step-nav__button--title js-step-title-button"
                                           aria-expanded="true" aria-controls="step-panel-4">
                                       <span class="js-step-title-text">
-                                        Completed checks
+                                        Checks completed
                                        </span>
                                       <span class="app-step-nav__toggle-link js-toggle-link"
                                             aria-hidden="true">hide
@@ -458,10 +453,7 @@
                         </div>
                         <div class="app-step-nav__panel js-panel" id="step-panel-4">
                             <p class="app-step-nav__paragraph">
-                                The pupil has successfully completed the check and no further action is required.
-                                Once all pupils have completed the check, or have a reason for not taking the check
-                                applied,
-                                then you can proceed to sign the headteacher declaration form.
+                                The pupil has successfully completed the check. Once all pupils have completed the check or have a reason for not taking the check you can complete the headteacher declaration form.
                             </p>
                         </div>
                     </li>

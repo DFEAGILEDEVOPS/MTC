@@ -21,7 +21,7 @@ const controller = {}
  * @returns {Promise.<*>}
  */
 controller.getViewResultsPage = async function getViewResultsPage (req, res, next) {
-  res.locals.pageTitle = 'Provisional results'
+  res.locals.pageTitle = 'Results'
   req.breadcrumbs('Results')
   let pupilResultData
   let rawResultData

@@ -9,7 +9,7 @@ module.exports.sqlFindPupilsEligibleForRestart = async function sqlFindPupilsEli
   const sql = `SELECT *
                  FROM [mtc_admin].[vewPupilsEligibleForRestart]
                 WHERE school_id = @schoolId
-                  AND totalCheckCount < (@maxRestartsAllowed + 1)`
+                  AND ((totalCheckCount < (@maxRestartsAllowed + 1)) OR (isDiscretionaryRestartAvailable = 1))`
 
   const params = [
     {
@@ -39,7 +39,7 @@ module.exports.sqlFindPupilsEligibleForRestartByPupilId = async function sqlFind
   const sql = `SELECT *
                  FROM [mtc_admin].[vewPupilsEligibleForRestart]
                 WHERE school_id = @schoolId
-                  AND totalCheckCount < (@maxRestartsAllowed + 1)
+                  AND ((totalCheckCount < (@maxRestartsAllowed + 1)) OR (isDiscretionaryRestartAvailable = 1))
                   AND id IN (${paramIdentifiers.join(', ')})`
 
   const extraParams = [
@@ -71,6 +71,7 @@ module.exports.sqlFindPupilsEligibleForRestartByPupilId = async function sqlFind
  * middleNames:string,
  * dateOfBirth:moment.Moment,
  * urlSlug: string,
+ * isDiscretionaryRestartAvailable: boolean,
  * restartCheckAllocation: number,
  * totalCheckCount: number,
  * restartCheckId: number,
@@ -91,6 +92,7 @@ module.exports.getRestartsForSchool = async function getRestartsForSchool (schoo
           p.middleNames,
           p.dateOfBirth,
           p.urlSlug,
+          p.isDiscretionaryRestartAvailable,
           pr.check_id as restartCheckAllocation,
           vct.totalCheckCount,
           rc.id as restartCheckId,
@@ -136,7 +138,7 @@ module.exports.restartTransactionForPupils = async function restartTransactionFo
    * 2. Pupil Restart table: Add the restart record
    * 3. (in another service: remove the preparedCheck from (redis|table storage)
    * 4. Pupil table: Update the pupil with the restartAvailable flag, ensure the checkComplete flag is false,
-   *    unset the currentCheckId field
+   *    unset the currentCheckId field, and set the isDiscretionaryRestart flag to 0 (if the restart was given by STA-ADMIN)
    */
 
   const { params: checkParams, paramIdentifiers: checkParamIdentifiers } = sqlService.buildParameterList(
@@ -195,7 +197,8 @@ module.exports.restartTransactionForPupils = async function restartTransactionFo
       UPDATE [mtc_admin].[pupil]
          SET restartAvailable = 1,
              checkComplete = 0,
-             currentCheckId = NULL
+             currentCheckId = NULL,
+             isDiscretionaryRestartAvailable = 0
        WHERE id IN (${pupilIdentifiers.join(', ')});
 
       SELECT id, urlSlug

@@ -23,6 +23,10 @@ const formatGdsDate = function (date) {
   return moment(date).format('D MMM YYYY')
 }
 
+const formatGdsDateAndTime = function (date) {
+  return moment(date).format('D MMM h:mm a')
+}
+
 /**
  *
  * @param {Date} date
@@ -30,6 +34,10 @@ const formatGdsDate = function (date) {
  */
 const formatFullGdsDate = function (date) {
   return moment(date).format('D MMMM YYYY')
+}
+
+const formatFullGdsDateAndTime = function (date) {
+  return date.format('D MMMM YYYY h:mm a')
 }
 
 module.exports = async function (app) {
@@ -62,6 +70,8 @@ module.exports = async function (app) {
   app.locals.appBuildNumber = buildNumber
   app.locals.formatGdsDate = formatGdsDate
   app.locals.formatFullGdsDate = formatFullGdsDate
+  app.locals.formatGdsDateAndTime = formatGdsDateAndTime
+  app.locals.formatFullGdsDateAndTime = formatFullGdsDateAndTime
   app.locals.guidancePdf = 'https://www.gov.uk/government/collections/multiplication-tables-check'
   app.locals.roles = roles
   app.locals.isSubmitImpersonationUrl = false

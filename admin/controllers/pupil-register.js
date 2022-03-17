@@ -4,6 +4,7 @@ const pupilRegisterV2Service = require('../services/pupil-register-v2.service')
 const checkWindowV2Service = require('../services/check-window-v2.service')
 const businessAvailabilityService = require('../services/business-availability.service')
 const incompleteChecksPresenter = require('../helpers/incomplete-checks-presenter')
+const roles = require('../lib/consts/roles')
 
 const listPupils = async function listPupils (req, res, next) {
   res.locals.pageTitle = 'View, add or edit pupils on your school\'s register'
@@ -35,7 +36,8 @@ const listPupils = async function listPupils (req, res, next) {
     pupils: pupilsFormatted,
     breadcrumbs: req.breadcrumbs(),
     availabilityData,
-    incompletePupils
+    incompletePupils,
+    showPupilAdminLink: req.user.role === roles.staAdmin
   })
 }
 

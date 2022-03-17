@@ -356,6 +356,12 @@ class SqlDbHelper
     result.do
   end
 
+  def self.delete_schools_audit_history
+    sql = "DELETE from [mtc_admin].[schoolAudit] where newData like '%Mo School%'"
+    result = SQL_CLIENT.execute(sql)
+    result.do
+  end
+
   def self.delete_schools_imported
     sql = "DELETE from [mtc_admin].[school] where name like '%Mo School%'"
     result = SQL_CLIENT.execute(sql)
@@ -635,5 +641,13 @@ class SqlDbHelper
     school_res = result.first
     result.cancel
     school_res
+  end
+
+  def self.count_restarts_taken_for_pupil(pupil_id)
+    sql = "select count(*) from mtc_admin.pupilRestart where pupil_id=#{pupil_id} AND isDeleted=0"
+    result = SQL_CLIENT.execute(sql)
+    school_res = result.first
+    result.cancel
+    school_res.values.first
   end
 end

@@ -7,7 +7,7 @@ class ViewAndPrintLivePinsPage < SitePrism::Page
     element :csrf, 'input[name="_csrf"]', visible: false
 
   element :heading, '.govuk-heading-xl'
-  element :generate_pin_message, '.govuk-body', text: 'PINs have been generated for pupils. This list contains all active PINs. These expire at 4pm daily.'
+  element :generate_pin_message, '.govuk-body', text: "Your school password and official check PINs have been generated for selected pupils. You can print the PINs by selecting the pupils, or groups, then selecting ‘Print selected’."
 
   element :closed_filter, '.filter-label.hidden', text: 'Filter by groups'
   element :opened_filter, '.filter-label', text: 'Filter by groups'

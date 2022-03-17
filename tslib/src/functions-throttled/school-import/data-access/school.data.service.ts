@@ -1,29 +1,21 @@
 import * as mssql from 'mssql'
 import { ILogger } from '../../../common/logger'
-import { ISchoolImportJobResult, SchoolImportJobResult } from '../SchoolImportJobResult'
+import { SchoolImportJobOutput } from '../SchoolImportJobOutput'
 import { ISchoolRecord } from './ISchoolRecord'
-import { ISqlService, SqlService } from '../../../sql/sql.service'
-const name = 'school-import'
 
 export interface ISchoolDataService {
-  getJobId (): Promise<number | undefined>
-  updateJobStatus (jobId: number, jobStatusCode: string): Promise<any>
-  updateJobStatusWithResult (jobId: number, jobStatusCode: string, jobResult: ISchoolImportJobResult): Promise<any>
-  updateJobStatusWithResultAndError (jobId: number, jobStatusCode: string, jobResult: ISchoolImportJobResult, error: Error): Promise<any>
-  bulkUpload (schoolData: ISchoolRecord[]): Promise<SchoolImportJobResult>
+  bulkUpload (schoolData: ISchoolRecord[]): Promise<SchoolImportJobOutput>
 }
 
 export class SchoolDataService implements ISchoolDataService {
   private readonly logger: ILogger
   private readonly pool: mssql.ConnectionPool
-  private readonly jobResult: SchoolImportJobResult
-  private readonly sqlService: ISqlService
+  private readonly jobResult: SchoolImportJobOutput
 
-  constructor (logger: ILogger, pool: mssql.ConnectionPool, jobResult: SchoolImportJobResult, sqlService?: ISqlService) {
+  constructor (logger: ILogger, pool: mssql.ConnectionPool, jobResult: SchoolImportJobOutput) {
     this.logger = logger
     this.pool = pool
     this.jobResult = jobResult
-    this.sqlService = sqlService ?? new SqlService()
   }
 
   private logError (msg: string): void {
@@ -35,9 +27,9 @@ export class SchoolDataService implements ISchoolDataService {
    * @param context - function context object
    * @param schoolData - the csv parsed to array or arrays without header row
    * @param mapping - the mapping between our domain and the input file
-   * @return {SchoolImportJobResult}
+   * @return {SchoolImportJobOutput}
    */
-  async bulkUpload (schoolData: ISchoolRecord[]): Promise<SchoolImportJobResult> {
+  async bulkUpload (schoolData: ISchoolRecord[]): Promise<SchoolImportJobOutput> {
     this.logger.verbose('SchoolDataService.bulkUpload() called')
 
     const table = new mssql.Table('[mtc_admin].[school]')
@@ -70,61 +62,5 @@ export class SchoolDataService implements ISchoolDataService {
       }
     }
     return this.jobResult
-  }
-
-  async getJobId (): Promise<number | undefined> {
-    this.logger.verbose(`${name}: getJobId() called`)
-    const sql = `SELECT j.id
-                   FROM mtc_admin.job j
-                        JOIN mtc_admin.jobStatus js ON (j.jobStatus_id = js.id)
-                        JOIN mtc_admin.jobType jt ON (j.jobType_id = jt.id)
-                  WHERE jt.jobTypeCode = 'ORG'
-                    AND js.jobStatusCode = 'SUB'`
-    const res = await this.sqlService.query(sql)
-    if (res !== undefined && Array.isArray(res)) {
-      const id = res[0].id
-      this.logger.verbose(`${name}: getJobId() returning ${id}`)
-      return id
-    }
-    return undefined
-  }
-
-  async updateJobStatus (jobId: number, code: string): Promise<any> {
-    const sql = `UPDATE mtc_admin.job
-                    SET jobStatus_id = (SELECT id from mtc_admin.jobStatus WHERE jobStatusCode = @code)
-                  WHERE id = @id`
-    const params = [
-      { name: 'code', value: code, type: mssql.TYPES.Char(3) },
-      { name: 'id', value: jobId, type: mssql.TYPES.Int }
-    ]
-    return this.sqlService.query(sql, params)
-  }
-
-  async updateJobStatusWithResult (jobId: Number, code: String, jobResult: ISchoolImportJobResult): Promise<any> {
-    const sql = `UPDATE mtc_admin.job
-                    SET jobStatus_id = (SELECT id from mtc_admin.jobStatus WHERE jobStatusCode = @code),
-                        jobOutput = @jobOutput
-                  WHERE id = @id`
-    const params = [
-      { name: 'code', value: code, type: mssql.TYPES.Char(3) },
-      { name: 'id', value: jobId, type: mssql.TYPES.Int },
-      { name: 'jobOutput', value: JSON.stringify(jobResult), type: mssql.TYPES.NVarChar(mssql.MAX) }
-    ]
-    return this.sqlService.query(sql, params)
-  }
-
-  async updateJobStatusWithResultAndError (jobId: Number, code: String, jobResult: ISchoolImportJobResult, error: Error): Promise<any> {
-    const sql = `UPDATE mtc_admin.job
-                    SET jobStatus_id = (SELECT id from mtc_admin.jobStatus WHERE jobStatusCode = @code),
-                        jobOutput = @jobOutput,
-                        errorOutput = @error
-                  WHERE id = @id`
-    const params = [
-      { name: 'code', value: code, type: mssql.TYPES.Char(3) },
-      { name: 'id', value: jobId, type: mssql.TYPES.Int },
-      { name: 'jobOutput', value: JSON.stringify(jobResult), type: mssql.TYPES.NVarChar(mssql.MAX) },
-      { name: 'error', value: error.message, type: mssql.TYPES.NVarChar(mssql.MAX) }
-    ]
-    return this.sqlService.query(sql, params)
   }
 }
