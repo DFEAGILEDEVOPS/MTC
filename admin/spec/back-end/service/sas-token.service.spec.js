@@ -1,4 +1,4 @@
-/* global describe expect beforeEach fail it spyOn */
+/* global describe expect beforeEach test jest afterEach */
 
 const sasTokenService = require('../../../services/sas-token.service')
 const redisCacheService = require('../../../services/data-access/redis-cache.service')
@@ -7,48 +7,44 @@ const queueNameService = require('../../../services/queue-name-service')
 const sasTokenDataService = require('../../../services/data-access/queue-sas-token.data.service')
 const moment = require('moment')
 const sut = sasTokenService
+const logger = require('../../../services/log.service').getLogger()
 
 describe('sas-token.service', () => {
+  afterEach(() => {
+    jest.restoreAllMocks()
+  })
+
   describe('generateSasToken', () => {
     const queueName = 'some-queue'
     const expiryDate = moment().add(1, 'hour')
 
     describe('without redis', () => {
       beforeEach(() => {
-        spyOn(redisCacheService, 'get').and.returnValue(Promise.resolve(undefined))
-        spyOn(redisCacheService, 'set')
+        jest.spyOn(redisCacheService, 'get').mockResolvedValue()
+        jest.spyOn(redisCacheService, 'set').mockResolvedValue()
       })
 
-      it('throws an error if the expiryDate is not provided', async () => {
-        try {
-          await sasTokenService.generateSasToken(queueName, null)
-          fail('expected to throw')
-        } catch (error) {
-          expect(error.message).toBe('Invalid expiryDate')
-        }
+      test('throws an error if the expiryDate is not provided', async () => {
+        await expect(sasTokenService.generateSasToken(queueName, null))
+          .rejects
+          .toThrow('Invalid expiryDate')
       })
 
-      it('throws an error if the expiryDate is not a moment object', async () => {
-        try {
-          await sasTokenService.generateSasToken(queueName, { object: 'yes' })
-          fail('expected to throw')
-        } catch (error) {
-          expect(error.message).toBe('Invalid expiryDate')
-        }
+      test('throws an error if the expiryDate is not a moment object', async () => {
+        await expect(sasTokenService.generateSasToken(queueName, { object: 'yes' }))
+          .rejects
+          .toThrow('Invalid expiryDate')
       })
 
-      it('throws an error if the expiryDate is not a moment object', async () => {
-        try {
-          await sasTokenService.generateSasToken(queueName, new Date())
-          fail('expected to throw')
-        } catch (error) {
-          expect(error.message).toBe('Invalid expiryDate')
-        }
+      test('throws an error if the expiryDate is not a moment object', async () => {
+        await expect(sasTokenService.generateSasToken(queueName, new Date()))
+          .rejects
+          .toThrow('Invalid expiryDate')
       })
 
-      it('sets the start Date to more than 4.5 minutes in the past', async () => {
+      test('sets the start Date to more than 4.5 minutes in the past', async () => {
         let capturedStartDate
-        spyOn(sasTokenDataService, 'generateSasTokenWithPublishOnly').and.callFake((q, start, expiry) => {
+        jest.spyOn(sasTokenDataService, 'generateSasTokenWithPublishOnly').mockImplementation((q, start, expiry) => {
           capturedStartDate = start
           return 'some/url?query=foo'
         })
@@ -58,8 +54,8 @@ describe('sas-token.service', () => {
         expect(lessThanFourAndAHalfMinutesAgo).toBe(true)
       })
 
-      it('it generates the SAS token', async () => {
-        spyOn(sasTokenDataService, 'generateSasTokenWithPublishOnly').and.callFake(() => {
+      test('it generates the SAS token', async () => {
+        jest.spyOn(sasTokenDataService, 'generateSasTokenWithPublishOnly').mockImplementation(() => {
           return 'some/url?query=foo'
         })
         const res = await sasTokenService.generateSasToken(queueName, expiryDate)
@@ -69,16 +65,14 @@ describe('sas-token.service', () => {
         expect({}.hasOwnProperty.call(res, 'queueName')).toBe(true)
       })
 
-      it('makes a call to redis to try and fetch the cached token', async () => {
-        spyOn(sasTokenDataService, 'generateSasTokenWithPublishOnly').and.returnValue('url?queryString')
+      test('makes a call to redis to try and fetch the cached token', async () => {
+        jest.spyOn(sasTokenDataService, 'generateSasTokenWithPublishOnly').mockReturnValue('url?queryString')
         await sasTokenService.generateSasToken(queueName, expiryDate)
         expect(redisCacheService.get).toHaveBeenCalled()
       })
 
-      it('makes a call to redis to cache the token', async () => {
-        spyOn(sasTokenDataService, 'generateSasTokenWithPublishOnly').and.callFake(() => {
-          return 'some/url?query=foo'
-        })
+      test('makes a call to redis to cache the token', async () => {
+        jest.spyOn(sasTokenDataService, 'generateSasTokenWithPublishOnly').mockReturnValue('some/url?query=foo')
         const res = await sasTokenService.generateSasToken(queueName, expiryDate)
         const redisKey = redisKeyService.getSasTokenKey(queueName)
         const oneHourInSeconds = 1 * 60 * 60
@@ -88,11 +82,11 @@ describe('sas-token.service', () => {
 
     describe('with redis', () => {
       beforeEach(() => {
-        spyOn(redisCacheService, 'get').and.returnValue('a test token')
-        spyOn(redisCacheService, 'set')
+        jest.spyOn(redisCacheService, 'get').mockResolvedValue('a test token')
+        jest.spyOn(redisCacheService, 'set').mockResolvedValue()
       })
 
-      it('short-circuits when the token is found in cache', async () => {
+      test('short-circuits when the token is found in cache', async () => {
         const res = await sasTokenService.generateSasToken(queueName, expiryDate)
         expect(res).toBe('a test token')
         expect(redisCacheService.get).toHaveBeenCalled()
@@ -102,7 +96,7 @@ describe('sas-token.service', () => {
   })
 
   describe('getTokens', () => {
-    it('calls redis once to retrieve all the tokens', async () => {
+    test('calls redis once to retrieve all the tokens', async () => {
       // mock a response where the values are found in the cache
       const mockRedisResponse = [
         { queueName: queueNameService.NAMES.CHECK_STARTED, token: 'aaa' },
@@ -110,14 +104,14 @@ describe('sas-token.service', () => {
         { queueName: queueNameService.NAMES.PUPIL_FEEDBACK, token: 'aab' },
         { queueName: queueNameService.NAMES.CHECK_SUBMIT, token: 'aab' }
       ]
-      spyOn(redisCacheService, 'getMany').and.returnValue(mockRedisResponse)
-      spyOn(sasTokenService, 'generateSasToken')
+      jest.spyOn(redisCacheService, 'getMany').mockResolvedValue(mockRedisResponse)
+      jest.spyOn(sasTokenService, 'generateSasToken').mockImplementation()
       await sut.getTokens(true, moment().add(4, 'hours'))
       expect(redisCacheService.getMany).toHaveBeenCalledTimes(1)
       expect(sasTokenService.generateSasToken).not.toHaveBeenCalled()
     })
 
-    it('calls out to generate sas tokens if not found in redis', async () => {
+    test('calls out to generate sas tokens if not found in redis', async () => {
       // mock a response where the values are not found in the cache
       const mockRedisResponse = [
         undefined,
@@ -125,21 +119,22 @@ describe('sas-token.service', () => {
         undefined,
         undefined
       ]
-      spyOn(redisCacheService, 'getMany').and.returnValue(mockRedisResponse)
-      spyOn(sasTokenService, 'generateSasToken').and.callFake(function (queueName) {
-        console.log('call fake faked')
+      jest.spyOn(redisCacheService, 'getMany').mockResolvedValue(mockRedisResponse)
+      jest.spyOn(sasTokenService, 'generateSasToken').mockImplementation(function (queueName) {
         return {
           queueName,
           token: 'test token',
           url: 'test url'
         }
       })
+      // quieten the log
+      jest.spyOn(logger, 'debug').mockImplementation()
       await sut.getTokens(true, moment().add(4, 'hours'))
       expect(redisCacheService.getMany).toHaveBeenCalledTimes(1)
       expect(sasTokenService.generateSasToken).toHaveBeenCalledTimes(4)
     })
 
-    it('calls out to generate sas tokens if any are not found in redis', async () => {
+    test('calls out to generate sas tokens if any are not found in redis', async () => {
       // mock a response where the values are partially found in the cache
       const mockRedisResponse = [
         { queueName: queueNameService.NAMES.CHECK_STARTED, token: 'aaa' },
@@ -147,15 +142,15 @@ describe('sas-token.service', () => {
         undefined,
         undefined
       ]
-      spyOn(redisCacheService, 'getMany').and.returnValue(mockRedisResponse)
-      spyOn(sasTokenService, 'generateSasToken').and.callFake(function (queueName) {
-        console.log('call fake faked')
+      jest.spyOn(redisCacheService, 'getMany').mockReturnValue(mockRedisResponse)
+      jest.spyOn(sasTokenService, 'generateSasToken').mockImplementation(function (queueName) {
         return {
           queueName,
           token: 'test token',
           url: 'test url'
         }
       })
+      jest.spyOn(logger, 'debug').mockImplementation()
       const res = await sut.getTokens(true, moment().add(4, 'hours'))
       expect(redisCacheService.getMany).toHaveBeenCalledTimes(1)
       expect(sasTokenService.generateSasToken).toHaveBeenCalledTimes(2)
@@ -163,15 +158,15 @@ describe('sas-token.service', () => {
       expect(Object.keys(res).length).toBe(4)
     })
 
-    it('does not return the check-submitted token for tio checks', async () => {
+    test('does not return the check-submitted token for tio checks', async () => {
       // mock a response where the values are found in the cache
       const mockRedisResponse = [
         { queueName: queueNameService.NAMES.CHECK_STARTED, token: 'aaa' },
         { queueName: queueNameService.NAMES.PUPIL_PREFS, token: 'aab' },
         { queueName: queueNameService.NAMES.PUPIL_FEEDBACK, token: 'aab' }
       ]
-      spyOn(redisCacheService, 'getMany').and.returnValue(mockRedisResponse)
-      spyOn(sasTokenService, 'generateSasToken')
+      jest.spyOn(redisCacheService, 'getMany').mockReturnValue(mockRedisResponse)
+      jest.spyOn(sasTokenService, 'generateSasToken').mockImplementation()
       const result = await sut.getTokens(false, moment().add(4, 'hours'))
       expect(redisCacheService.getMany).toHaveBeenCalledTimes(1)
       expect(sasTokenService.generateSasToken).not.toHaveBeenCalled()

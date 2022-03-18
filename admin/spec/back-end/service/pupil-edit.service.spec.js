@@ -1,4 +1,4 @@
-/* global describe, it, expect beforeEach spyOn */
+/* global describe test expect beforeEach jest afterAll */
 
 const dateService = require('../../../services/date.service')
 const pupilMock = require('../mocks/pupil')
@@ -9,11 +9,16 @@ const redisCacheService = require('../../../services/data-access/redis-cache.ser
 
 describe('pupilEditService', () => {
   beforeEach(() => {
-    spyOn(pupilAgeReasonService, 'refreshPupilAgeReason')
-    spyOn(pupilDataService, 'sqlUpdate')
-    spyOn(dateService, 'createUTCFromDayMonthYear')
-    spyOn(redisCacheService, 'drop')
+    jest.spyOn(pupilAgeReasonService, 'refreshPupilAgeReason').mockImplementation()
+    jest.spyOn(pupilDataService, 'sqlUpdate').mockImplementation()
+    jest.spyOn(dateService, 'createUTCFromDayMonthYear').mockImplementation()
+    jest.spyOn(redisCacheService, 'drop').mockImplementation()
   })
+
+  afterAll(() => {
+    jest.restoreAllMocks()
+  })
+
   const requestBody = {
     foreName: 'foreName',
     lastName: 'lastName',
@@ -27,25 +32,29 @@ describe('pupilEditService', () => {
     'dob-month': 10,
     'dob-year': 10
   }
-  it('should call refreshPupilAgeReason', async () => {
+
+  test('should call refreshPupilAgeReason', async () => {
     const pupil1 = Object.assign({}, pupilMock)
     const schoolId = 1
     await pupilEditService.update(pupil1, requestBody, schoolId)
     expect(pupilAgeReasonService.refreshPupilAgeReason).toHaveBeenCalled()
   })
-  it('should call createUTCFromDayMonthYear', async () => {
+
+  test('should call createUTCFromDayMonthYear', async () => {
     const pupil1 = Object.assign({}, pupilMock)
     const schoolId = 1
     await pupilEditService.update(pupil1, requestBody, schoolId)
     expect(dateService.createUTCFromDayMonthYear).toHaveBeenCalled()
   })
-  it('should call sqlUpdate from the data service', async () => {
+
+  test('should call sqlUpdate from the data service', async () => {
     const pupil1 = Object.assign({}, pupilMock)
     const schoolId = 1
     await pupilEditService.update(pupil1, requestBody, schoolId)
     expect(pupilDataService.sqlUpdate).toHaveBeenCalled()
   })
-  it('should drop pupil register cache', async () => {
+
+  test('should drop pupil register cache', async () => {
     const pupil1 = Object.assign({}, pupilMock)
     const schoolId = 1
     await pupilEditService.update(pupil1, requestBody, schoolId)

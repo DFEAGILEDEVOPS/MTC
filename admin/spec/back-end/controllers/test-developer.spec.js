@@ -1,5 +1,5 @@
 'use strict'
-/* global describe beforeEach it expect jasmine spyOn */
+/* global describe beforeEach expect jest test */
 
 const httpMocks = require('node-mocks-http')
 
@@ -19,12 +19,12 @@ describe('test-developer controller:', () => {
       role: 'TEST-DEVELOPER',
       logonAt: 1511374645103
     }
-    req.breadcrumbs = jasmine.createSpy('breadcrumbs')
-    req.flash = jasmine.createSpy('flash')
+    req.breadcrumbs = jest.fn()
+    req.flash = jest.fn()
     return req
   }
 
-  describe('Test develope routes', () => {
+  describe('Test developer routes', () => {
     let controller
     let next
     const goodReqParams = {
@@ -33,7 +33,7 @@ describe('test-developer controller:', () => {
     }
 
     beforeEach(() => {
-      next = jasmine.createSpy('next')
+      next = jest.fn()
     })
 
     describe('#getTestDeveloperHomePage - Happy path', () => {
@@ -41,15 +41,23 @@ describe('test-developer controller:', () => {
         controller = require('../../../controllers/test-developer').getTestDeveloperHomePage
       })
 
-      it('should render the \'test-developer\'s the landing page', async () => {
+      test('should render the \'test-developer\'s the landing page', async () => {
         const res = getRes()
         const req = getReq(goodReqParams)
-        spyOn(res, 'render').and.returnValue(null)
+        jest.spyOn(res, 'render').mockImplementation()
         await controller(req, res, next)
         expect(res.statusCode).toBe(200)
         expect(res.locals.pageTitle).toBe('MTC for test development')
         expect(res.render).toHaveBeenCalled()
         expect(next).not.toHaveBeenCalled()
+      })
+
+      test('it calls next if there is an error thrown', async () => {
+        const res = getRes()
+        const req = getReq(goodReqParams)
+        jest.spyOn(res, 'render').mockImplementation(() => { throw new Error('mock rejection') })
+        await controller(req, res, next)
+        expect(next).toHaveBeenCalledTimes(1)
       })
     })
   })

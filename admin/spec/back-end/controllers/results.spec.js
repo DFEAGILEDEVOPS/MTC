@@ -1,6 +1,6 @@
 'use strict'
 
-/* global describe beforeEach it expect jasmine spyOn */
+/* global describe beforeEach jest expect test */
 
 const httpMocks = require('node-mocks-http')
 const moment = require('moment-timezone')
@@ -17,9 +17,9 @@ const ctfService = require('../../../services/ctf-service/ctf.service')
 describe('results controller:', () => {
   let next
   beforeEach(() => {
-    next = jasmine.createSpy('next')
+    next = jest.fn()
     const currentDate = moment.utc()
-    spyOn(moment, 'tz').and.returnValue(currentDate)
+    jest.spyOn(moment, 'tz').mockReturnValue(currentDate)
   })
 
   function getRes () {
@@ -31,8 +31,8 @@ describe('results controller:', () => {
   function getReq (params) {
     const req = httpMocks.createRequest(params)
     req.user = { School: 9991001 }
-    req.breadcrumbs = jasmine.createSpy('breadcrumbs')
-    req.flash = jasmine.createSpy('flash')
+    req.breadcrumbs = jest.fn()
+    req.flash = jest.fn()
     return req
   }
 
@@ -56,18 +56,18 @@ describe('results controller:', () => {
       generatedAt: moment('2020-07-01T04:12:34')
     }
 
-    it('renders result view page', async () => {
+    test('renders result view page', async () => {
       // Setup
       const res = getRes()
       const req = getReq(reqParams)
-      spyOn(res, 'render')
-      spyOn(checkWindowV2Service, 'getActiveCheckWindow').and.returnValue({ id: 1 })
-      spyOn(groupService, 'getGroups').and.returnValue(mockGroups)
-      spyOn(headteacherDeclarationService, 'isHdfSubmittedForCurrentCheck').and.returnValue(true)
-      spyOn(resultPageAvailabilityService, 'getResultsOpeningDate')
-      spyOn(resultPageAvailabilityService, 'isResultsFeatureAccessible').and.returnValue(true)
-      spyOn(resultPageAvailabilityService, 'isResultsPageAccessibleForIncompleteHdfs').and.returnValue(true)
-      spyOn(resultService, 'getPupilResultData').and.returnValue(mockPupilData)
+      jest.spyOn(res, 'render').mockImplementation()
+      jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockResolvedValue({ id: 1 })
+      jest.spyOn(groupService, 'getGroups').mockResolvedValue(mockGroups)
+      jest.spyOn(headteacherDeclarationService, 'isHdfSubmittedForCurrentCheck').mockResolvedValue(true)
+      jest.spyOn(resultPageAvailabilityService, 'getResultsOpeningDate').mockImplementation()
+      jest.spyOn(resultPageAvailabilityService, 'isResultsFeatureAccessible').mockReturnValue(true)
+      jest.spyOn(resultPageAvailabilityService, 'isResultsPageAccessibleForIncompleteHdfs').mockReturnValue(true)
+      jest.spyOn(resultService, 'getPupilResultData').mockResolvedValue(mockPupilData)
 
       // Exec
       await controller.getViewResultsPage(req, res, next)
@@ -84,19 +84,19 @@ describe('results controller:', () => {
       })
     })
 
-    it('calls next when getPupilResultData throws an error', async () => {
+    test('calls next when getPupilResultData throws an error', async () => {
       // Setup
       const res = getRes()
       const req = getReq(reqParams)
       const mockError = new Error('mock error')
-      spyOn(res, 'render')
-      spyOn(checkWindowV2Service, 'getActiveCheckWindow').and.returnValue({ id: 1 })
-      spyOn(groupService, 'getGroups').and.returnValue(mockGroups)
-      spyOn(headteacherDeclarationService, 'isHdfSubmittedForCurrentCheck').and.returnValue(true)
-      spyOn(resultPageAvailabilityService, 'getResultsOpeningDate').and.returnValue(moment('2020-07-01T04:12:34'))
-      spyOn(resultPageAvailabilityService, 'isResultsFeatureAccessible').and.returnValue(true)
-      spyOn(resultPageAvailabilityService, 'isResultsPageAccessibleForIncompleteHdfs').and.returnValue(true)
-      spyOn(resultService, 'getPupilResultData').and.throwError(mockError)
+      jest.spyOn(res, 'render').mockImplementation()
+      jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockResolvedValue({ id: 1 })
+      jest.spyOn(groupService, 'getGroups').mockResolvedValue(mockGroups)
+      jest.spyOn(headteacherDeclarationService, 'isHdfSubmittedForCurrentCheck').mockReturnValue(true)
+      jest.spyOn(resultPageAvailabilityService, 'getResultsOpeningDate').mockResolvedValue(moment('2020-07-01T04:12:34'))
+      jest.spyOn(resultPageAvailabilityService, 'isResultsFeatureAccessible').mockReturnValue(true)
+      jest.spyOn(resultPageAvailabilityService, 'isResultsPageAccessibleForIncompleteHdfs').mockReturnValue(true)
+      jest.spyOn(resultService, 'getPupilResultData').mockRejectedValue(mockError)
 
       // Exec
       await controller.getViewResultsPage(req, res, next)
@@ -106,17 +106,17 @@ describe('results controller:', () => {
       expect(next).toHaveBeenCalledWith(mockError)
     })
 
-    it('renders incomplete hdf page when hdf record for school is not found and current date is before second Monday after check end date', async () => {
+    test('renders incomplete hdf page when hdf record for school is not found and current date is before second Monday after check end date', async () => {
       const res = getRes()
       const req = getReq(reqParams)
-      spyOn(res, 'render')
-      spyOn(checkWindowV2Service, 'getActiveCheckWindow').and.returnValue({ id: 1 })
-      spyOn(groupService, 'getGroups').and.returnValue(mockGroups)
-      spyOn(headteacherDeclarationService, 'isHdfSubmittedForCurrentCheck').and.returnValue(false)
-      spyOn(resultService, 'getPupilResultData').and.returnValue(mockPupilData)
-      spyOn(resultPageAvailabilityService, 'getResultsOpeningDate').and.returnValue(moment('2020-01-06T06:00:00'))
-      spyOn(resultPageAvailabilityService, 'isResultsFeatureAccessible').and.returnValue(true)
-      spyOn(resultPageAvailabilityService, 'isResultsPageAccessibleForIncompleteHdfs').and.returnValue(false)
+      jest.spyOn(res, 'render').mockImplementation()
+      jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockResolvedValue({ id: 1 })
+      jest.spyOn(groupService, 'getGroups').mockResolvedValue(mockGroups)
+      jest.spyOn(headteacherDeclarationService, 'isHdfSubmittedForCurrentCheck').mockResolvedValue(false)
+      jest.spyOn(resultService, 'getPupilResultData').mockResolvedValue(mockPupilData)
+      jest.spyOn(resultPageAvailabilityService, 'getResultsOpeningDate').mockReturnValue(moment('2020-01-06T06:00:00'))
+      jest.spyOn(resultPageAvailabilityService, 'isResultsFeatureAccessible').mockReturnValue(true)
+      jest.spyOn(resultPageAvailabilityService, 'isResultsPageAccessibleForIncompleteHdfs').mockReturnValue(false)
 
       // exec
       await controller.getViewResultsPage(req, res, next)
@@ -128,18 +128,18 @@ describe('results controller:', () => {
       })
     })
 
-    it('renders results view page when hdf record for school is not found but datetime for unsubmitted hdfs has passed', async () => {
+    test('renders results view page when hdf record for school is not found but datetime for unsubmitted hdfs has passed', async () => {
       // setup
       const res = getRes()
       const req = getReq(reqParams)
-      spyOn(res, 'render')
-      spyOn(checkWindowV2Service, 'getActiveCheckWindow').and.returnValue({ id: 1 })
-      spyOn(groupService, 'getGroups').and.returnValue(mockGroups)
-      spyOn(headteacherDeclarationService, 'isHdfSubmittedForCurrentCheck').and.returnValue(false)
-      spyOn(resultPageAvailabilityService, 'getResultsOpeningDate')
-      spyOn(resultPageAvailabilityService, 'isResultsFeatureAccessible').and.returnValue(true)
-      spyOn(resultPageAvailabilityService, 'isResultsPageAccessibleForIncompleteHdfs').and.returnValue(true)
-      spyOn(resultService, 'getPupilResultData').and.returnValue(mockPupilData)
+      jest.spyOn(res, 'render').mockImplementation()
+      jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockResolvedValue({ id: 1 })
+      jest.spyOn(groupService, 'getGroups').mockResolvedValue(mockGroups)
+      jest.spyOn(headteacherDeclarationService, 'isHdfSubmittedForCurrentCheck').mockResolvedValue(false)
+      jest.spyOn(resultPageAvailabilityService, 'getResultsOpeningDate').mockImplementation()
+      jest.spyOn(resultPageAvailabilityService, 'isResultsFeatureAccessible').mockReturnValue(true)
+      jest.spyOn(resultPageAvailabilityService, 'isResultsPageAccessibleForIncompleteHdfs').mockReturnValue(true)
+      jest.spyOn(resultService, 'getPupilResultData').mockReturnValue(mockPupilData)
 
       // exec
       await controller.getViewResultsPage(req, res, next)
@@ -156,18 +156,18 @@ describe('results controller:', () => {
       })
     })
 
-    it('renders unavailable page when results page is not yet accessible', async () => {
+    test('renders unavailable page when results page is not yet accessible', async () => {
       // setup
       const res = getRes()
       const req = getReq(reqParams)
-      spyOn(res, 'render')
-      spyOn(checkWindowV2Service, 'getActiveCheckWindow').and.returnValue({ id: 1 })
-      spyOn(groupService, 'getGroups')
-      spyOn(headteacherDeclarationService, 'isHdfSubmittedForCurrentCheck').and.returnValue(true)
-      spyOn(resultPageAvailabilityService, 'getResultsOpeningDate')
-      spyOn(resultPageAvailabilityService, 'isResultsFeatureAccessible').and.returnValue(false)
-      spyOn(resultPageAvailabilityService, 'isResultsPageAccessibleForIncompleteHdfs').and.returnValue(false)
-      spyOn(resultService, 'getPupilResultData')
+      jest.spyOn(res, 'render').mockImplementation()
+      jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockResolvedValue({ id: 1 })
+      jest.spyOn(groupService, 'getGroups').mockImplementation()
+      jest.spyOn(headteacherDeclarationService, 'isHdfSubmittedForCurrentCheck').mockReturnValue(true)
+      jest.spyOn(resultPageAvailabilityService, 'getResultsOpeningDate').mockImplementation()
+      jest.spyOn(resultPageAvailabilityService, 'isResultsFeatureAccessible').mockReturnValue(false)
+      jest.spyOn(resultPageAvailabilityService, 'isResultsPageAccessibleForIncompleteHdfs').mockReturnValue(false)
+      jest.spyOn(resultService, 'getPupilResultData').mockImplementation()
 
       // exec
       await controller.getViewResultsPage(req, res, next)
@@ -177,18 +177,18 @@ describe('results controller:', () => {
       expect(res.render).toHaveBeenCalledWith('results/view-unavailable-results', { breadcrumbs: undefined })
     })
 
-    it('renders unavailable page when getPupilResultData does not return data', async () => {
+    test('renders unavailable page when getPupilResultData does not return data', async () => {
       // setup
       const res = getRes()
       const req = getReq(reqParams)
-      spyOn(res, 'render')
-      spyOn(checkWindowV2Service, 'getActiveCheckWindow').and.returnValue({ id: 1 })
-      spyOn(groupService, 'getGroups')
-      spyOn(headteacherDeclarationService, 'isHdfSubmittedForCurrentCheck').and.returnValue(true)
-      spyOn(resultPageAvailabilityService, 'getResultsOpeningDate')
-      spyOn(resultPageAvailabilityService, 'isResultsFeatureAccessible').and.returnValue(true)
-      spyOn(resultPageAvailabilityService, 'isResultsPageAccessibleForIncompleteHdfs').and.returnValue(false)
-      spyOn(resultService, 'getPupilResultData').and.returnValue({ pupils: [] })
+      jest.spyOn(res, 'render').mockImplementation()
+      jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockReturnValue({ id: 1 })
+      jest.spyOn(groupService, 'getGroups').mockImplementation()
+      jest.spyOn(headteacherDeclarationService, 'isHdfSubmittedForCurrentCheck').mockResolvedValue(true)
+      jest.spyOn(resultPageAvailabilityService, 'getResultsOpeningDate').mockImplementation()
+      jest.spyOn(resultPageAvailabilityService, 'isResultsFeatureAccessible').mockReturnValue(true)
+      jest.spyOn(resultPageAvailabilityService, 'isResultsPageAccessibleForIncompleteHdfs').mockReturnValue(false)
+      jest.spyOn(resultService, 'getPupilResultData').mockReturnValue({ pupils: [] })
 
       // exec
       await controller.getViewResultsPage(req, res, next)
@@ -205,69 +205,69 @@ describe('results controller:', () => {
       url: '/results/ctf-download'
     }
 
-    it('is defined', () => {
+    test('is defined', () => {
       expect(controller.getCtfDownload).toBeDefined()
     })
 
-    it('calls next() if the schoolId is missing', async () => {
+    test('calls next() if the schoolId is missing', async () => {
       const res = getRes()
       const req = getReq(reqParams)
       await controller.getCtfDownload(req, res, next)
-      const error = next.calls.first().args[0]
+      const error = next.mock.calls[0][0]
       expect(error.message).toBe('School ID Missing')
     })
 
-    it('calls ctfService.getSchoolResultDataAsXmlString to get the data', async () => {
+    test('calls ctfService.getSchoolResultDataAsXmlString to get the data', async () => {
       const res = getRes()
-      res.attachment = jasmine.createSpy('attachment')
+      res.attachment = jest.fn()
       const req = getReq(reqParams)
       req.user = { schoolId: 42 }
-      spyOn(ctfService, 'getSchoolResultDataAsXmlString').and.returnValue('<CTfile>mock</CTfile>')
+      jest.spyOn(ctfService, 'getSchoolResultDataAsXmlString').mockReturnValue('<CTfile>mock</CTfile>')
       await controller.getCtfDownload(req, res, next)
       expect(ctfService.getSchoolResultDataAsXmlString).toHaveBeenCalled()
     })
 
-    it('sends the download file as an attachment', async () => {
+    test('sends the download file as an attachment', async () => {
       const res = getRes()
-      res.attachment = jasmine.createSpy('attachment')
+      res.attachment = jest.fn()
       const req = getReq(reqParams)
       req.user = { schoolId: 42, School: 9991001 }
-      spyOn(ctfService, 'getSchoolResultDataAsXmlString').and.returnValue('<CTfile>mock</CTfile>')
+      jest.spyOn(ctfService, 'getSchoolResultDataAsXmlString').mockReturnValue('<CTfile>mock</CTfile>')
       await controller.getCtfDownload(req, res, next)
       expect(res.attachment).toHaveBeenCalledWith('9991001_KS2_9991001_001.xml')
     })
 
-    it('sets the Content-type to text/xml', async () => {
+    test('sets the Content-type to text/xml', async () => {
       const res = getRes()
-      res.attachment = jasmine.createSpy('attachment')
+      res.attachment = jest.fn()
       const req = getReq(reqParams)
       req.user = { schoolId: 42 }
-      spyOn(ctfService, 'getSchoolResultDataAsXmlString').and.returnValue('<CTfile>mock</CTfile>')
+      jest.spyOn(ctfService, 'getSchoolResultDataAsXmlString').mockReturnValue('<CTfile>mock</CTfile>')
       await controller.getCtfDownload(req, res, next)
       expect(res.get('Content-Type')).toBe('text/xml')
     })
 
-    it('sends the XML file out as the attachment', async () => {
+    test('sends the XML file out as the attachment', async () => {
       const res = getRes()
-      res.attachment = jasmine.createSpy('attachment')
-      res.send = jasmine.createSpy('send')
+      res.attachment = jest.fn()
+      res.send = jest.fn()
       const req = getReq(reqParams)
       req.user = { schoolId: 42 }
-      spyOn(ctfService, 'getSchoolResultDataAsXmlString').and.returnValue('<CTfile>mock</CTfile>')
+      jest.spyOn(ctfService, 'getSchoolResultDataAsXmlString').mockReturnValue('<CTfile>mock</CTfile>')
       await controller.getCtfDownload(req, res, next)
-      const response = res.send.calls.first().args[0]
+      const response = res.send.mock.calls[0][0]
       expect(response).toBe('<CTfile>mock</CTfile>')
     })
 
-    it('calls next() if there is an error thrown from processing', async () => {
+    test('calls next() if there is an error thrown from processing', async () => {
       const res = getRes()
-      res.attachment = jasmine.createSpy('attachment')
+      res.attachment = jest.fn()
       const req = getReq(reqParams)
       req.user = { schoolId: 42 }
-      spyOn(ctfService, 'getSchoolResultDataAsXmlString').and.throwError('mock error')
+      jest.spyOn(ctfService, 'getSchoolResultDataAsXmlString').mockRejectedValue(new Error('mock error'))
       await controller.getCtfDownload(req, res, next)
       expect(next).toHaveBeenCalled()
-      const error = next.calls.first().args[0]
+      const error = next.mock.calls[0][0]
       expect(error.message).toBe('mock error')
     })
   })

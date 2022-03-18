@@ -23,7 +23,6 @@ const sasTokenService = {
    *
    * @param {string} queueName
    * @param {moment.Moment} expiryDate
-   * @param {Object} serviceImplementation
    * @return {Promise<SasToken>}
    */
   generateSasToken: async function (queueName, expiryDate) {

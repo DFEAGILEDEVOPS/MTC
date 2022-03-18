@@ -1,6 +1,6 @@
 'use strict'
 
-/* global describe, it, expect */
+/* global describe, test, expect */
 
 const moment = require('moment-timezone')
 const checkWindowErrorMessages = require('../../../../../lib/errors/check-window-v2')
@@ -19,12 +19,12 @@ const activeCheckWindow = {
 }
 
 describe('Active check window validator', function () {
-  it('returns no errors if no active check window is found', () => {
+  test('returns no errors if no active check window is found', () => {
     const requestData = {}
     const validationError = activeCheckWindowValidator.validate(requestData, {})
     expect(validationError.hasError()).toBeFalsy()
   })
-  it('returns a validation error if a date is found in between the administration period', () => {
+  test('returns a validation error if a date is found in between the administration period', () => {
     const requestData = {
       adminStartDate: moment.utc().subtract(3, 'days'),
       adminEndDate: moment.utc().add(6, 'days'),
@@ -36,7 +36,7 @@ describe('Active check window validator', function () {
     const validationError = activeCheckWindowValidator.validate(requestData, activeCheckWindow)
     expect(validationError.errors.withinActiveCheckWindowAdminDateRage).toBe(checkWindowErrorMessages.withinActiveCheckWindowAdminDateRage)
   })
-  it('returns a validation error if a date is found in between the try-out period', () => {
+  test('returns a validation error if a date is found in between the try-out period', () => {
     const requestData = {
       adminStartDate: moment.utc().subtract(3, 'days'),
       adminEndDate: moment.utc().add(6, 'days'),
@@ -48,7 +48,7 @@ describe('Active check window validator', function () {
     const validationError = activeCheckWindowValidator.validate(requestData, activeCheckWindow)
     expect(validationError.errors.withinActiveCheckWindowFamiliarisationDateRage).toBe(checkWindowErrorMessages.withinActiveCheckWindowFamiliarisationDateRage)
   })
-  it('returns a validation error if a date is found in between the live period', () => {
+  test('returns a validation error if a date is found in between the live period', () => {
     const requestData = {
       adminStartDate: moment.utc().subtract(3, 'days'),
       adminEndDate: moment.utc().add(6, 'days'),
@@ -60,7 +60,7 @@ describe('Active check window validator', function () {
     const validationError = activeCheckWindowValidator.validate(requestData, activeCheckWindow)
     expect(validationError.errors.withinActiveCheckWindowLiveDateRage).toBe(checkWindowErrorMessages.withinActiveCheckWindowLiveDateRage)
   })
-  it('returns no validation error if the request admin start date matches the active check window admin end date', () => {
+  test('returns no validation error if the request admin start date matches the active check window admin end date', () => {
     const requestData = {
       adminStartDate: moment.utc().add(10, 'days'),
       adminEndDate: moment.utc().add(20, 'days'),
@@ -72,7 +72,7 @@ describe('Active check window validator', function () {
     const validationError = activeCheckWindowValidator.validate(requestData, activeCheckWindow)
     expect(validationError.hasError()).toBeFalsy()
   })
-  it('returns no validation error if active check window urlSlug matches the requestData urlSlug', () => {
+  test('returns no validation error if active check window urlSlug matches the requestData urlSlug', () => {
     const requestData = {
       adminStartDate: moment.utc().add(10, 'days'),
       adminEndDate: moment.utc().add(20, 'days'),

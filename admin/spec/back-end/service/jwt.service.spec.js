@@ -1,5 +1,5 @@
 'use strict'
-/* global beforeEach describe it expect jest fail */
+/* global beforeEach describe test expect jest afterEach */
 
 const moment = require('moment')
 const jwt = require('jsonwebtoken')
@@ -25,20 +25,21 @@ describe('JWT service', () => {
       foreName: 'TestForename'
     }
     expiryDate = moment().add(1, 'day')
+    jwtService = require('../../../services/jwt.service')
+  })
+
+  afterEach(() => {
+    jest.restoreAllMocks()
   })
 
   describe('#createToken', () => {
-    beforeEach(() => {
-      jwtService = require('../../../services/jwt.service')
-    })
-
-    it('creates a token', async () => {
+    test('creates a token', async () => {
       const token = await jwtService.createToken(pupil, expiryDate)
       expect(token.token).toBeTruthy()
       expect(token.token.split('.').length).toBe(3)
     })
 
-    it('the token details look correct', async () => {
+    test('the token details look correct', async () => {
       const token = await jwtService.createToken(pupil, expiryDate)
       const decoded = jwt.verify(token.token, token.jwtSecret)
       expect(decoded).toBeTruthy()
@@ -48,31 +49,16 @@ describe('JWT service', () => {
       expect(decoded.sub).toBe(1)
     })
 
-    it('throws an error when the pupil object is missing', async () => {
-      try {
-        await jwtService.createToken()
-        fail('expected to throw')
-      } catch (error) {
-        expect(error.message).toBe('Pupil is required')
-      }
+    test('throws an error when the pupil object is missing', async () => {
+      await expect(jwtService.createToken()).rejects.toThrow('Pupil is required')
     })
 
-    it('throws an error when the expiry date is missing', async () => {
-      try {
-        await jwtService.createToken(pupil)
-        fail('expected to throw')
-      } catch (error) {
-        expect(error.message).toBe('Expiry date is required')
-      }
+    test('throws an error when the expiry date is missing', async () => {
+      await expect(jwtService.createToken(pupil)).rejects.toThrow('Expiry date is required')
     })
 
-    it('throws an error when the expiry date is not a moment object', async () => {
-      try {
-        await jwtService.createToken(pupil, new Date())
-        fail('expected to throw')
-      } catch (error) {
-        expect(error.message).toBe('Invalid expiry date')
-      }
+    test('throws an error when the expiry date is not a moment object', async () => {
+      await expect(jwtService.createToken(pupil, new Date())).rejects.toThrow('Invalid expiry date')
     })
   })
 
@@ -83,24 +69,14 @@ describe('JWT service', () => {
         pupilDataService.sqlFindOneById = jest.fn(() => Promise.resolve(pupil))
       })
 
-      it('throws when not provided a token', async () => {
-        try {
-          await jwtService.verify()
-          fail('expected to throw')
-        } catch (error) {
-          expect(error.message).toBe('Token is required')
-        }
+      test('throws when not provided a token', async () => {
+        await expect(jwtService.verify()).rejects.toThrow('Token is required')
       })
 
-      it('then it is able to decode a valid token', async () => {
+      test('then it is able to decode a valid token', async () => {
         const token = await jwtService.createToken(pupil, expiryDate)
-        try {
-          pupil.jwtSecret = token.jwtSecret
-          const isVerified = await jwtService.verify(token.token)
-          expect(isVerified).toBe(true)
-        } catch (error) {
-          fail(error)
-        }
+        pupil.jwtSecret = token.jwtSecret
+        await expect(jwtService.verify(token.token)).resolves.toBe(true)
       })
     })
 
@@ -109,14 +85,9 @@ describe('JWT service', () => {
         pupilDataService.sqlUpdate = jest.fn(() => Promise.resolve())
         pupilDataService.sqlFindOneById = jest.fn(() => Promise.resolve(null))
       })
-      it('then it throws an error', async () => {
+      test('then it throws an error', async () => {
         const token = await jwtService.createToken(pupil, expiryDate)
-        try {
-          await jwtService.verify(token.token)
-          fail('expected to throw')
-        } catch (error) {
-          expect(error.message).toBe('Subject not found')
-        }
+        await expect(jwtService.verify(token.token)).rejects.toThrow('Subject not found')
       })
     })
 
@@ -125,19 +96,14 @@ describe('JWT service', () => {
         pupilDataService.sqlUpdate = jest.fn(() => Promise.resolve())
         pupilDataService.sqlFindOneById = jest.fn(() => Promise.resolve(pupil))
       })
-      it('then it throws an error', async () => {
+      test('then it throws an error', async () => {
         const result = await jwtService.createToken(pupil, expiryDate)
         pupil.jwtSecret = undefined
         // Note we pass in pupil, and this object gets the secret saved in it
-        // But we wasn't to mimic the the key not being found on the object
+        // But we aren't able to mimic the the key not being found on the object
         // (as it is not a required property) so we get the sandbox to returned a cloned object that
         // definitely does not have a valid `jwtSecret` property.
-        try {
-          await jwtService.verify(result.token)
-          fail('expected to throw')
-        } catch (error) {
-          expect(error.message).toBe('Error - missing secret')
-        }
+        await expect(jwtService.verify(result.token)).rejects.toThrow('Error - missing secret')
       })
     })
     describe('and the pupil has an incorrect jwtSecret', () => {
@@ -145,15 +111,10 @@ describe('JWT service', () => {
         pupilDataService.sqlUpdate = jest.fn(() => Promise.resolve())
         pupilDataService.sqlFindOneById = jest.fn(() => Promise.resolve(pupil))
       })
-      it('then it throws an error', async () => {
+      test('then it throws an error', async () => {
         const token = await jwtService.createToken(pupil, expiryDate)
         pupil.jwtSecret = 'incorrect secret'
-        try {
-          await jwtService.verify(token.token)
-          fail('expected to throw')
-        } catch (error) {
-          expect(error.message).toBe('Unable to verify: invalid signature')
-        }
+        await expect(jwtService.verify(token.token)).rejects.toThrow('Unable to verify: invalid signature')
       })
     })
   })
@@ -163,7 +124,7 @@ describe('JWT service', () => {
       pupilDataService.sqlUpdate = jest.fn(() => Promise.resolve())
       pupilDataService.sqlFindOneById = jest.fn(() => Promise.resolve(pupil))
     })
-    it('denies a token that has expired 1 hour ago', async () => {
+    test('denies a token that has expired 1 hour ago', async () => {
       // Setup
       const payload = {
         iss: 'MTC Admin', // Issuer
@@ -174,15 +135,10 @@ describe('JWT service', () => {
       pupil.jwtSecret = 'testing123'
       const token = jwt.sign(payload, pupil.jwtSecret)
       // Test
-      try {
-        await jwtService.verify(token)
-        fail('expected to throw')
-      } catch (error) {
-        expect(error.message).toBe('Unable to verify: jwt expired')
-      }
+      await expect(jwtService.verify(token)).rejects.toThrow('Unable to verify: jwt expired')
     })
 
-    it('denies a token that has expired 1 second ago', async () => {
+    test('denies a token that has expired 1 second ago', async () => {
       // Setup
       const payload = {
         iss: 'MTC Admin', // Issuer
@@ -193,15 +149,10 @@ describe('JWT service', () => {
       pupil.jwtSecret = 'testing123'
       const token = jwt.sign(payload, pupil.jwtSecret)
       // Test
-      try {
-        await jwtService.verify(token)
-        fail('expected to throw')
-      } catch (error) {
-        expect(error.message).toBe('Unable to verify: jwt expired')
-      }
+      await expect(jwtService.verify(token)).rejects.toThrow('Unable to verify: jwt expired')
     })
 
-    it('denies a token that is not yet active, but has not yet expired', async () => {
+    test('denies a token that is not yet active, but has not yet expired', async () => {
       // Setup
       const payload = {
         iss: 'MTC Admin', // Issuer
@@ -212,15 +163,10 @@ describe('JWT service', () => {
       pupil.jwtSecret = 'testing123'
       const token = jwt.sign(payload, pupil.jwtSecret)
       // Test
-      try {
-        await jwtService.verify(token)
-        fail('expected to throw')
-      } catch (error) {
-        expect(error.message).toBe('Unable to verify: jwt not active')
-      }
+      await expect(jwtService.verify(token)).rejects.toThrow('Unable to verify: jwt not active')
     })
 
-    it('denies a token that is almost active, but has not yet expired', async () => {
+    test('denies a token that is almost active, but has not yet expired', async () => {
       // Setup
       const payload = {
         iss: 'MTC Admin', // Issuer
@@ -231,15 +177,10 @@ describe('JWT service', () => {
       pupil.jwtSecret = 'testing123'
       const token = jwt.sign(payload, pupil.jwtSecret)
       // Test
-      try {
-        await jwtService.verify(token)
-        fail('expected to throw')
-      } catch (error) {
-        expect(error.message).toBe('Unable to verify: jwt not active')
-      }
+      await expect(jwtService.verify(token)).rejects.toThrow('Unable to verify: jwt not active')
     })
 
-    it('denies a token that not active, and has expired', async () => {
+    test('denies a token that not active, and has expired', async () => {
       // Setup
       const payload = {
         iss: 'MTC Admin', // Issuer
@@ -250,15 +191,10 @@ describe('JWT service', () => {
       pupil.jwtSecret = 'testing123'
       const token = jwt.sign(payload, pupil.jwtSecret)
       // Test
-      try {
-        await jwtService.verify(token)
-        fail('expected to throw')
-      } catch (error) {
-        expect(error.message).toBe('Unable to verify: jwt not active')
-      }
+      await expect(jwtService.verify(token)).rejects.toThrow('Unable to verify: jwt not active')
     })
 
-    it('denies a weird token', async () => {
+    test('denies a weird token', async () => {
       // Setup
       const payload = {
         iss: 'MTC Admin', // Issuer
@@ -269,12 +205,7 @@ describe('JWT service', () => {
       pupil.jwtSecret = 'testing123'
       const token = jwt.sign(payload, pupil.jwtSecret)
       // Test
-      try {
-        await jwtService.verify(token)
-        fail('expected to throw')
-      } catch (error) {
-        expect(error.message).toBe('Unable to verify: jwt expired')
-      }
+      await expect(jwtService.verify(token)).rejects.toThrow('Unable to verify: jwt expired')
     })
   })
 })

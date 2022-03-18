@@ -1,24 +1,24 @@
 'use strict'
 
-/* global describe it expect */
+/* global describe test expect */
 
 const sut = require('../../../lib/deep-freeze')
 
 describe('deep-freeze', () => {
-  it('performs a standard freeze if no child objects are present', () => {
+  test('performs a standard freeze if no child objects are present', () => {
     const obj = {}
     const actual = sut(obj)
     expect(Object.isFrozen(actual)).toBe(true)
     expect(actual).toBe(obj)
   })
-  it('freezes child objects', () => {
+  test('freezes child objects', () => {
     const obj = {
       child: {}
     }
     const actual = sut(obj)
     expect(Object.isFrozen(actual.child)).toBe(true)
   })
-  it('freezes recursively', () => {
+  test('freezes recursively', () => {
     const obj = {
       child1: {
         child2: {

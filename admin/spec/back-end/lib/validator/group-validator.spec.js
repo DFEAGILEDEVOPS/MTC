@@ -1,18 +1,22 @@
 'use strict'
 
-/* global beforeEach, describe, it, expect spyOn */
+/* global beforeEach describe test expect jest afterEach */
 
 const groupValidator = require('../../../../lib/validator/group-validator')
 const groupDataService = require('../../../../services/data-access/group.data.service')
 const groupErrorMessages = require('../../../../lib/errors/group').group
 
 describe('groupValidation', function () {
+  afterEach(() => {
+    jest.restoreAllMocks()
+  })
+
   describe('happy path', () => {
     beforeEach(() => {
-      spyOn(groupDataService, 'sqlFindOneByName').and.returnValue(null)
+      jest.spyOn(groupDataService, 'sqlFindOneByName').mockReturnValue(null)
     })
 
-    it('should return false if all is OK', async () => {
+    test('should return false if all is OK', async () => {
       const data = {
         name: 'Group Tests 1',
         pupil: [1, 2, 3]
@@ -26,10 +30,10 @@ describe('groupValidation', function () {
 
   describe('unhappy paths', () => {
     beforeEach(() => {
-      spyOn(groupDataService, 'sqlFindOneByName').and.returnValue(null)
+      jest.spyOn(groupDataService, 'sqlFindOneByName').mockReturnValue(null)
     })
 
-    it('should return an error if group name is missing', async () => {
+    test('should return an error if group name is missing', async () => {
       const data = {
         name: '',
         pupil: [1, 2, 3]
@@ -39,7 +43,7 @@ describe('groupValidation', function () {
       expect(result.errors.name).toBe(groupErrorMessages.nameIsRequired)
     })
 
-    it('should return an error if group name is longer than 35 characters', async () => {
+    test('should return an error if group name is longer than 35 characters', async () => {
       const data = {
         name: 'tenletterstenletterstenletterstenletters',
         pupil: [1, 2, 3]
@@ -49,7 +53,7 @@ describe('groupValidation', function () {
       expect(result.errors.name).toBe(groupErrorMessages.nameIsTooLong)
     })
 
-    it('should return an error if group name contains special character', async () => {
+    test('should return an error if group name contains special character', async () => {
       const data = {
         name: 'Test$',
         pupil: [1, 2, 3]
@@ -59,7 +63,7 @@ describe('groupValidation', function () {
       expect(result.errors.name).toBe(groupErrorMessages.nameInvalidCharacters)
     })
 
-    it('should return an error if pupils are missing', async () => {
+    test('should return an error if pupils are missing', async () => {
       const data = {
         name: 'Test Group 1'
       }

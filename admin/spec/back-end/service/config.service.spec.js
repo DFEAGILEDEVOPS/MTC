@@ -1,5 +1,5 @@
 'use strict'
-/* global describe it expect spyOn */
+/* global describe test expect jest afterEach */
 const R = require('ramda')
 
 const configService = require('../../../services/config.service')
@@ -7,10 +7,14 @@ const configDataService = require('../../../services/data-access/config.data.ser
 const logger = require('../../../services/log.service').getLogger()
 
 describe('config service', () => {
+  afterEach(() => {
+    jest.restoreAllMocks()
+  })
+
   describe('batch config', () => {
-    it('returns a base config when no AA are set', async () => {
+    test('returns a base config when no AA are set', async () => {
       const pupilId = 5
-      spyOn(configDataService, 'getBatchConfig').and.returnValue(
+      jest.spyOn(configDataService, 'getBatchConfig').mockResolvedValue(
         [{
           pupilId: pupilId,
           schoolId: 18601,
@@ -35,9 +39,9 @@ describe('config service', () => {
       expect(config.questionTime).toBe(2)
     })
 
-    it('set audible sounds correctly', async () => {
+    test('set audible sounds correctly', async () => {
       const pupilId = 5
-      spyOn(configDataService, 'getBatchConfig').and.returnValue(
+      jest.spyOn(configDataService, 'getBatchConfig').mockResolvedValue(
         [{
           pupilId: pupilId,
           schoolId: 18601,
@@ -53,9 +57,9 @@ describe('config service', () => {
       expect(config.audibleSounds).toBe(true)
     })
 
-    it('set input assistance correctly', async () => {
+    test('set input assistance correctly', async () => {
       const pupilId = 5
-      spyOn(configDataService, 'getBatchConfig').and.returnValue(
+      jest.spyOn(configDataService, 'getBatchConfig').mockResolvedValue(
         [{
           pupilId: pupilId,
           schoolId: 18601,
@@ -71,9 +75,9 @@ describe('config service', () => {
       expect(config.inputAssistance).toBe(true)
     })
 
-    it('set colour contrast correctly without a colour contrast code already set', async () => {
+    test('set colour contrast correctly without a colour contrast code already set', async () => {
       const pupilId = 5
-      spyOn(configDataService, 'getBatchConfig').and.returnValue(
+      jest.spyOn(configDataService, 'getBatchConfig').mockResolvedValue(
         [{
           pupilId: pupilId,
           schoolId: 18601,
@@ -90,9 +94,9 @@ describe('config service', () => {
       expect(config.colourContrastCode).toBeFalsy()
     })
 
-    it('sets the font size correctly without a font size code already set', async () => {
+    test('sets the font size correctly without a font size code already set', async () => {
       const pupilId = 5
-      spyOn(configDataService, 'getBatchConfig').and.returnValue(
+      jest.spyOn(configDataService, 'getBatchConfig').mockResolvedValue(
         [{
           pupilId: pupilId,
           schoolId: 18601,
@@ -109,9 +113,9 @@ describe('config service', () => {
       expect(config.fontSizeCode).toBeFalsy()
     })
 
-    it('sets the font size correctly with a font size code already set', async () => {
+    test('sets the font size correctly with a font size code already set', async () => {
       const pupilId = 5
-      spyOn(configDataService, 'getBatchConfig').and.returnValue(
+      jest.spyOn(configDataService, 'getBatchConfig').mockResolvedValue(
         [{
           pupilId: pupilId,
           schoolId: 18601,
@@ -128,9 +132,9 @@ describe('config service', () => {
       expect(config.fontSizeCode).toBe('XLG')
     })
 
-    it('sets the next-between-questions flag correctly', async () => {
+    test('sets the next-between-questions flag correctly', async () => {
       const pupilId = 5
-      spyOn(configDataService, 'getBatchConfig').and.returnValue(
+      jest.spyOn(configDataService, 'getBatchConfig').mockResolvedValue(
         [{
           pupilId: pupilId,
           schoolId: 18601,
@@ -146,9 +150,9 @@ describe('config service', () => {
       expect(config.nextBetweenQuestions).toBe(true)
     })
 
-    it('sets the question reader flag correctly', async () => {
+    test('sets the question reader flag correctly', async () => {
       const pupilId = 5
-      spyOn(configDataService, 'getBatchConfig').and.returnValue(
+      jest.spyOn(configDataService, 'getBatchConfig').mockResolvedValue(
         [{
           pupilId: pupilId,
           schoolId: 18601,
@@ -164,9 +168,9 @@ describe('config service', () => {
       expect(config.questionReader).toBe(true)
     })
 
-    it('sets the numpad removal flag correctly', async () => {
+    test('sets the numpad removal flag correctly', async () => {
       const pupilId = 5
-      spyOn(configDataService, 'getBatchConfig').and.returnValue(
+      jest.spyOn(configDataService, 'getBatchConfig').mockResolvedValue(
         [{
           pupilId: pupilId,
           schoolId: 18601,
@@ -182,10 +186,10 @@ describe('config service', () => {
       expect(config.numpadRemoval).toBe(true)
     })
 
-    it('logs any unknown access arrangement code', async () => {
+    test('logs any unknown access arrangement code', async () => {
       const pupilId = 5
-      spyOn(logger, 'error')
-      spyOn(configDataService, 'getBatchConfig').and.returnValue(
+      jest.spyOn(logger, 'error').mockImplementation()
+      jest.spyOn(configDataService, 'getBatchConfig').mockResolvedValue(
         [{
           pupilId: pupilId,
           schoolId: 18601,
@@ -200,9 +204,9 @@ describe('config service', () => {
       expect(logger.error).toHaveBeenCalledTimes(1)
     })
 
-    it('can set multiple access codes', async () => {
+    test('can set multiple access codes', async () => {
       const pupilId = 5
-      spyOn(configDataService, 'getBatchConfig').and.returnValue(
+      jest.spyOn(configDataService, 'getBatchConfig').mockResolvedValue(
         [{
           pupilId: pupilId,
           schoolId: 18601,
@@ -241,27 +245,27 @@ describe('config service', () => {
       fontSizeCode: null,
       colourContrastCode: null
     }]
-    it('throws if passed null', () => {
+    test('throws if passed null', () => {
       expect(function () { configService.validateConfigData(null) }).toThrowError('Pupil config data is not valid')
     })
-    it('throws if passed undefined', () => {
+    test('throws if passed undefined', () => {
       expect(function () { configService.validateConfigData(undefined) }).toThrowError('Pupil config data is not valid')
     })
-    it('throws if passed {}', () => {
+    test('throws if passed {}', () => {
       expect(function () { configService.validateConfigData({}) }).toThrowError('Pupil config data is not valid')
     })
-    it('throws if passed an empty array', () => {
+    test('throws if passed an empty array', () => {
       expect(function () { configService.validateConfigData([]) }).toThrowError(/^Missing settings:/)
     })
-    it('throws if passed a 0 second questionTime', () => {
+    test('throws if passed a 0 second questionTime', () => {
       const testData = R.map(R.assoc('questionTime', 0), mockData)
       expect(function () { configService.validateConfigData(testData) }).toThrowError('questionTime is required to be set in the database')
     })
-    it('throws if passed a 0 second loadingTime', () => {
+    test('throws if passed a 0 second loadingTime', () => {
       const testData = R.map(R.assoc('loadingTime', 0), mockData)
       expect(function () { configService.validateConfigData(testData) }).toThrowError('loadingTime is required to be set in the database')
     })
-    it('throws if passed a 0 second checkTime', () => {
+    test('throws if passed a 0 second checkTime', () => {
       const testData = R.map(R.assoc('checkTime', 0), mockData)
       expect(function () { configService.validateConfigData(testData) }).toThrowError('checkTime is required to be set in the database')
     })

@@ -1,6 +1,6 @@
 'use strict'
 
-/* global beforeEach, describe, it, expect, spyOn jest */
+/* global beforeEach, describe, test, expect, jest */
 
 const pupilValidator = require('../../../../lib/validator/pupil-validator')
 const pupilDataService = require('../../../../services/data-access/pupil.data.service')
@@ -41,15 +41,15 @@ describe('pupil validator', function () {
         this.params[name] = name
       }
     }
-    spyOn(laCodeService, 'getLaCodes').and.returnValue([801, 813])
+    jest.spyOn(laCodeService, 'getLaCodes').mockReturnValue([801, 813])
   })
 
   describe('and the pupil uniqueness check passes', () => {
     beforeEach(() => {
-      spyOn(pupilDataService, 'sqlFindOneByUpnAndSchoolId').and.returnValue(undefined)
+      jest.spyOn(pupilDataService, 'sqlFindOneByUpnAndSchoolId').mockReturnValue(undefined)
     })
 
-    it('allows a valid request', async () => {
+    test('allows a valid request', async () => {
       req.body = getBody()
       const schoolId = 2
       const validationError = await pupilValidator.validate(req.body, schoolId)
@@ -57,7 +57,7 @@ describe('pupil validator', function () {
     })
 
     describe('then foreName', () => {
-      it('requires a foreName', async () => {
+      test('requires a foreName', async () => {
         req.body = getBody()
         req.body.foreName = ''
         const schoolId = 2
@@ -67,7 +67,7 @@ describe('pupil validator', function () {
         expect(validationError.get('foreName')).toBe(pupilErrors.addPupil.firstNameRequired)
       })
 
-      it('allows latin chars, hyphen and apostrophe in the forename', async () => {
+      test('allows latin chars, hyphen and apostrophe in the forename', async () => {
         req.body = getBody()
         req.body.foreName = 'Rén-\'e'
         const schoolId = 2
@@ -75,7 +75,7 @@ describe('pupil validator', function () {
         expect(validationError.hasError()).toBe(false)
       })
 
-      it('allows spaces in and around the name', async () => {
+      test('allows spaces in and around the name', async () => {
         req.body = getBody()
         req.body.foreName = ' Pup il '
         const schoolId = 2
@@ -83,7 +83,7 @@ describe('pupil validator', function () {
         expect(validationError.hasError()).toBe(false)
       })
 
-      it('rejects only spaces', async () => {
+      test('rejects only spaces', async () => {
         req.body = getBody()
         req.body.foreName = ' '
         const schoolId = 2
@@ -93,7 +93,7 @@ describe('pupil validator', function () {
         expect(validationError.get('foreName')).toBe(pupilErrors.addPupil.firstNameRequired)
       })
 
-      it('does not allow punctuation in the forename', async () => {
+      test('does not allow punctuation in the forename', async () => {
         req.body = getBody()
         for (const char of notAllowed()) {
           req.body.foreName = 'Réne' + char
@@ -105,7 +105,7 @@ describe('pupil validator', function () {
         }
       })
 
-      it('foreName can include numbers', async () => {
+      test('foreName can include numbers', async () => {
         req.body = getBody()
         req.body.foreName = 'Smithy99'
         const schoolId = 2
@@ -116,7 +116,7 @@ describe('pupil validator', function () {
     })
 
     describe('then middleNames', () => {
-      it('is optional', async () => {
+      test('is optional', async () => {
         req.body = getBody()
         req.body.middleNames = ''
         const schoolId = 2
@@ -125,7 +125,7 @@ describe('pupil validator', function () {
         expect(validationError.isError('middleNames')).toBe(false)
       })
 
-      it('allows latin1 hyphen apostrophe and a space', async () => {
+      test('allows latin1 hyphen apostrophe and a space', async () => {
         req.body = getBody()
         req.body.middleNames = 'Mårk Anthøny Doublé-Barræll\'d'
         const schoolId = 2
@@ -134,7 +134,7 @@ describe('pupil validator', function () {
         expect(validationError.isError('middleNames')).toBe(false)
       })
 
-      it('does not allow punctuation in the middlename', async () => {
+      test('does not allow punctuation in the middlename', async () => {
         req.body = getBody()
         for (const char of notAllowed()) {
           req.body.middleNames = 'Réne' + char
@@ -146,7 +146,7 @@ describe('pupil validator', function () {
         }
       })
 
-      it('middleNames can include numbers', async () => {
+      test('middleNames can include numbers', async () => {
         req.body = getBody()
         req.body.middleNames = 'Smithy99'
         const schoolId = 2
@@ -157,7 +157,7 @@ describe('pupil validator', function () {
     })
 
     describe('then lastname', () => {
-      it('is required', async () => {
+      test('is required', async () => {
         req.body = getBody()
         req.body.lastName = ''
         const schoolId = 2
@@ -167,7 +167,7 @@ describe('pupil validator', function () {
         expect(validationError.get('lastName')).toBe(pupilErrors.addPupil.lastNameRequired)
       })
 
-      it('can include numbers', async () => {
+      test('can include numbers', async () => {
         req.body = getBody()
         req.body.lastName = 'Smithy99'
         const schoolId = 2
@@ -176,7 +176,7 @@ describe('pupil validator', function () {
         expect(validationError.isError('lastName')).toBe(false)
       })
 
-      it('allows latin chars, hyphen and apostrophe', async () => {
+      test('allows latin chars, hyphen and apostrophe', async () => {
         req.body = getBody()
         req.body.foreName = 'Rén-\'e'
         const schoolId = 2
@@ -184,7 +184,7 @@ describe('pupil validator', function () {
         expect(validationError.hasError()).toBe(false)
       })
 
-      it('allows spaces in and around the name', async () => {
+      test('allows spaces in and around the name', async () => {
         req.body = getBody()
         req.body.lastName = ' Pup il '
         const schoolId = 2
@@ -192,7 +192,7 @@ describe('pupil validator', function () {
         expect(validationError.hasError()).toBe(false)
       })
 
-      it('rejects only spaces', async () => {
+      test('rejects only spaces', async () => {
         req.body = getBody()
         req.body.lastName = ' '
         const schoolId = 2
@@ -202,7 +202,7 @@ describe('pupil validator', function () {
         expect(validationError.get('lastName')).toBe(pupilErrors.addPupil.lastNameRequired)
       })
 
-      it('does not allow punctuation', async () => {
+      test('does not allow punctuation', async () => {
         req.body = getBody()
         for (const char of notAllowed()) {
           req.body.lastName = 'Réne' + char
@@ -216,7 +216,7 @@ describe('pupil validator', function () {
     })
 
     describe('then foreNameAlias', () => {
-      it('is optional', async () => {
+      test('is optional', async () => {
         req.body = getBody()
         req.body.foreNameAlias = ''
         const schoolId = 2
@@ -225,7 +225,7 @@ describe('pupil validator', function () {
         expect(validationError.isError('foreNameAlias')).toBe(false)
       })
 
-      it('allows latin1 hyphen apostrophe and a space', async () => {
+      test('allows latin1 hyphen apostrophe and a space', async () => {
         req.body = getBody()
         req.body.foreNameAlias = 'Mårk Anthøny Doublé-Barræll\'d'
         const schoolId = 2
@@ -234,7 +234,7 @@ describe('pupil validator', function () {
         expect(validationError.isError('foreNameAlias')).toBe(false)
       })
 
-      it('does not allow punctuation in the middlename', async () => {
+      test('does not allow punctuation in the middlename', async () => {
         req.body = getBody()
         for (const char of notAllowed()) {
           req.body.foreNameAlias = 'Réne' + char
@@ -246,7 +246,7 @@ describe('pupil validator', function () {
         }
       })
 
-      it('foreNameAlias can include numbers', async () => {
+      test('foreNameAlias can include numbers', async () => {
         req.body = getBody()
         req.body.foreNameAlias = 'Smithy99'
         const schoolId = 2
@@ -257,7 +257,7 @@ describe('pupil validator', function () {
     })
 
     describe('then lastNameAlias', () => {
-      it('is optional', async () => {
+      test('is optional', async () => {
         req.body = getBody()
         req.body.lastNameAlias = ''
         const schoolId = 2
@@ -266,7 +266,7 @@ describe('pupil validator', function () {
         expect(validationError.isError('lastNameAlias')).toBe(false)
       })
 
-      it('allows latin1 hyphen apostrophe and a space', async () => {
+      test('allows latin1 hyphen apostrophe and a space', async () => {
         req.body = getBody()
         req.body.lastNameAlias = 'Mårk Anthøny Doublé-Barræll\'d'
         const schoolId = 2
@@ -275,7 +275,7 @@ describe('pupil validator', function () {
         expect(validationError.isError('lastNameAlias')).toBe(false)
       })
 
-      it('does not allow punctuation in the middlename', async () => {
+      test('does not allow punctuation in the middlename', async () => {
         req.body = getBody()
         for (const char of notAllowed()) {
           req.body.lastNameAlias = 'Réne' + char
@@ -287,7 +287,7 @@ describe('pupil validator', function () {
         }
       })
 
-      it('lastNameAlias can include numbers', async () => {
+      test('lastNameAlias can include numbers', async () => {
         req.body = getBody()
         req.body.lastNameAlias = 'Smithy99'
         const schoolId = 2
@@ -300,7 +300,7 @@ describe('pupil validator', function () {
     describe('then date of birth:', () => {
       const validYear = (new Date()).getFullYear() - 9
 
-      it('accepts single digit days and months', async () => {
+      test('accepts single digit days and months', async () => {
         req.body = getBody()
         req.body['dob-day'] = '1'
         req.body['dob-month'] = '1'
@@ -310,7 +310,7 @@ describe('pupil validator', function () {
         expect(validationError.hasError()).toBe(false)
       })
 
-      it('accepts single digit day', async () => {
+      test('accepts single digit day', async () => {
         req.body = getBody()
         req.body['dob-day'] = '7'
         req.body['dob-month'] = '07'
@@ -320,7 +320,7 @@ describe('pupil validator', function () {
         expect(validationError.hasError()).toBe(false)
       })
 
-      it('accepts single digit month', async () => {
+      test('accepts single digit month', async () => {
         req.body = getBody()
         req.body['dob-day'] = '10'
         req.body['dob-month'] = '7'
@@ -330,7 +330,7 @@ describe('pupil validator', function () {
         expect(validationError.hasError()).toBe(false)
       })
 
-      it('Can\'t be in the future', async () => {
+      test('Can\'t be in the future', async () => {
         req.body = getBody()
         req.body['dob-day'] = '01'
         req.body['dob-month'] = '12'
@@ -346,7 +346,7 @@ describe('pupil validator', function () {
         expect(validationError.get('dob-year')).toBe(pupilErrors.addPupil.dobOutOfRange)
       })
 
-      it('day: can\'t be blank', async () => {
+      test('day: can\'t be blank', async () => {
         req.body = getBody()
         req.body['dob-day'] = ''
         req.body['dob-month'] = '12'
@@ -360,7 +360,7 @@ describe('pupil validator', function () {
         expect(validationError.get('dob-day')).toBe(pupilErrors.addPupil.dobRequired)
       })
 
-      it('month: can\'t be blank', async () => {
+      test('month: can\'t be blank', async () => {
         req.body = getBody()
         req.body['dob-day'] = '21'
         req.body['dob-month'] = ''
@@ -374,7 +374,7 @@ describe('pupil validator', function () {
         expect(validationError.get('dob-month')).toBe(pupilErrors.addPupil.dobRequired)
       })
 
-      it('year: can\'t be blank', async () => {
+      test('year: can\'t be blank', async () => {
         req.body = getBody()
         req.body['dob-day'] = '21'
         req.body['dob-month'] = '01'
@@ -392,7 +392,7 @@ describe('pupil validator', function () {
     describe('date of birth:', () => {
       const validYear = (new Date()).getFullYear() - 9
 
-      it('Can\'t be in the future', async () => {
+      test('Can\'t be in the future', async () => {
         req.body = getBody()
         req.body['dob-day'] = '01'
         req.body['dob-month'] = '12'
@@ -408,7 +408,7 @@ describe('pupil validator', function () {
         expect(validationError.get('dob-year')).toBe(pupilErrors.addPupil.dobOutOfRange)
       })
 
-      it('month: must be numerical', async () => {
+      test('month: must be numerical', async () => {
         req.body = getBody()
         req.body['dob-day'] = '02'
         req.body['dob-month'] = 'a'
@@ -422,7 +422,7 @@ describe('pupil validator', function () {
         expect(validationError.get('dob-month')).toBe(pupilErrors.addPupil.dobInvalidChars)
       })
 
-      it('year: must be numerical', async () => {
+      test('year: must be numerical', async () => {
         req.body = getBody()
         req.body['dob-day'] = '02'
         req.body['dob-month'] = '12'
@@ -436,7 +436,7 @@ describe('pupil validator', function () {
         expect(validationError.get('dob-year')).toBe(pupilErrors.addPupil.dobInvalidChars)
       })
 
-      it('invalid date should be rejected', async () => {
+      test('invalid date should be rejected', async () => {
         req.body = getBody()
         req.body['dob-day'] = '32'
         req.body['dob-month'] = '13'
@@ -452,7 +452,7 @@ describe('pupil validator', function () {
         expect(validationError.get('dob-day')).toBe(pupilErrors.addPupil['dob-day'])
       })
 
-      it('day can\'t be more than 2 digits', async () => {
+      test('day can\'t be more than 2 digits', async () => {
         req.body = getBody()
         req.body['dob-day'] = '022'
         req.body['dob-month'] = '02'
@@ -466,7 +466,7 @@ describe('pupil validator', function () {
         expect(validationError.get('dob-day')).toBe(pupilErrors.addPupil['dob-day'])
       })
 
-      it('month can\'t be more than 2 digits', async () => {
+      test('month can\'t be more than 2 digits', async () => {
         req.body = getBody()
         req.body['dob-day'] = '02'
         req.body['dob-month'] = '010'
@@ -480,7 +480,7 @@ describe('pupil validator', function () {
         expect(validationError.get('dob-month')).toBe(pupilErrors.addPupil['dob-month'])
       })
 
-      it('year must be 4 digits', async () => {
+      test('year must be 4 digits', async () => {
         req.body = getBody()
         req.body['dob-day'] = '02'
         req.body['dob-month'] = '10'
@@ -496,7 +496,7 @@ describe('pupil validator', function () {
     })
 
     describe('date of birth:', () => {
-      it('should be out of accepted range if the input date is before 2nd September of 11 years before the academic year', async () => {
+      test('should be out of accepted range if the input date is before 2nd September of 11 years before the academic year', async () => {
         const currentYear = (new Date()).getFullYear()
         const baseTime = new Date(currentYear, 11, 31)
         Date.now = jest.fn(() => {
@@ -516,7 +516,7 @@ describe('pupil validator', function () {
         expect(validationError.get('dob-month')).toBe(pupilErrors.addPupil.dobOutOfRange)
         expect(validationError.get('dob-year')).toBe(pupilErrors.addPupil.dobOutOfRange)
       })
-      it('should be out of accepted range if the input date is after 1nd September of 7 years before the academic year', async () => {
+      test('should be out of accepted range if the input date is after 1nd September of 7 years before the academic year', async () => {
         const currentYear = (new Date()).getFullYear()
         const baseTime = new Date(currentYear, 11, 31)
         Date.now = jest.fn(() => {
@@ -536,7 +536,7 @@ describe('pupil validator', function () {
         expect(validationError.get('dob-month')).toBe(pupilErrors.addPupil.dobOutOfRange)
         expect(validationError.get('dob-year')).toBe(pupilErrors.addPupil.dobOutOfRange)
       })
-      it('should display for multiple pupils submission an error message when out of accepted range if the input date is after 1nd September of 7 years before the academic year', async () => {
+      test('should display for multiple pupils submission an error message when out of accepted range if the input date is after 1nd September of 7 years before the academic year', async () => {
         const currentYear = (new Date()).getFullYear()
         const baseTime = new Date(currentYear, 11, 31)
         const schoolId = 2
@@ -556,7 +556,7 @@ describe('pupil validator', function () {
         expect(validationError.get('dob-month')).toBe(pupilErrors.addPupil.dobOutOfRange)
         expect(validationError.get('dob-year')).toBe(pupilErrors.addPupil.dobOutOfRange)
       })
-      it('should display for multiple pupils submission an error message when a pupil is 7 years on the academic year', async () => {
+      test('should display for multiple pupils submission an error message when a pupil is 7 years on the academic year', async () => {
         const currentYear = (new Date()).getFullYear()
         const baseTime = new Date(currentYear, 11, 31)
         const schoolId = 2
@@ -576,7 +576,7 @@ describe('pupil validator', function () {
         expect(validationError.get('dob-month')).toBe(pupilErrors.addPupil.dobMultipleRequiresReason)
         expect(validationError.get('dob-year')).toBe(pupilErrors.addPupil.dobMultipleRequiresReason)
       })
-      it('should be within the accepted range if the input date is after 2nd September of 11 years before the academic year', async () => {
+      test('should be within the accepted range if the input date is after 2nd September of 11 years before the academic year', async () => {
         const currentYear = (new Date()).getFullYear()
         const baseTime = new Date(currentYear, 11, 31)
         const schoolId = 2
@@ -592,7 +592,7 @@ describe('pupil validator', function () {
         expect(validationError.isError('dob-month')).toBeFalsy()
         expect(validationError.isError('dob-year')).toBeFalsy()
       })
-      it('should require age reason if the input date is at 2nd September of 11 years before the academic year', async () => {
+      test('should require age reason if the input date is at 2nd September of 11 years before the academic year', async () => {
         const currentYear = (new Date()).getFullYear()
         const baseTime = new Date(currentYear, 11, 31)
         const schoolId = 2
@@ -606,7 +606,7 @@ describe('pupil validator', function () {
         const validationError = await pupilValidator.validate(req.body, schoolId)
         expect(validationError.isError('ageReason')).toBeTruthy()
       })
-      it('should require age reason if the input date is at 31st August of 7 years before the academic year', async () => {
+      test('should require age reason if the input date is at 31st August of 7 years before the academic year', async () => {
         const currentYear = (new Date()).getFullYear()
         const baseTime = new Date(currentYear, 11, 31)
         const schoolId = 2
@@ -620,7 +620,7 @@ describe('pupil validator', function () {
         const validationError = await pupilValidator.validate(req.body, schoolId)
         expect(validationError.isError('ageReason')).toBeTruthy()
       })
-      it('should not require age reason if the input date is before 2nd September of 11 years before the academic year', async () => {
+      test('should not require age reason if the input date is before 2nd September of 11 years before the academic year', async () => {
         const currentYear = (new Date()).getFullYear()
         const baseTime = new Date(currentYear, 11, 31)
         const schoolId = 2
@@ -634,7 +634,7 @@ describe('pupil validator', function () {
         const validationError = await pupilValidator.validate(req.body, schoolId)
         expect(validationError.isError('ageReason')).toBeFalsy()
       })
-      it('should not require age reason if the input date is after 1nd September of 7 years before the academic year', async () => {
+      test('should not require age reason if the input date is after 1nd September of 7 years before the academic year', async () => {
         const currentYear = (new Date()).getFullYear()
         const baseTime = new Date(currentYear, 11, 31)
         const schoolId = 2
@@ -651,7 +651,7 @@ describe('pupil validator', function () {
     })
 
     describe('then gender', () => {
-      it('is required', async () => {
+      test('is required', async () => {
         req.body = getBody()
         req.body.gender = ''
         const schoolId = 2
@@ -660,7 +660,7 @@ describe('pupil validator', function () {
         expect(validationError.isError('gender')).toBe(true)
         expect(validationError.get('gender')).toBe(pupilErrors.addPupil.genderRequired)
       })
-      it('can be accepted in lowercase', async () => {
+      test('can be accepted in lowercase', async () => {
         req.body = getBody()
         req.body.gender = 'f'
         const schoolId = 2
@@ -670,7 +670,7 @@ describe('pupil validator', function () {
     })
 
     describe('then UPN validator:', () => {
-      it('detects when the UPN is in invalid format', async () => {
+      test('detects when the UPN is in invalid format', async () => {
         req.body = getBody()
         // Example UPN taken from
         // https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/270560/Unique_Pupil_Numbers_-_guidance.pdf
@@ -686,7 +686,7 @@ describe('pupil validator', function () {
           pupilErrors.addPupil.upnInvalidCharacter13])
       })
 
-      it('detects when the UPN has an error in char 1 and 5', async () => {
+      test('detects when the UPN has an error in char 1 and 5', async () => {
         req.body = getBody()
         // Example UPN taken from
         // https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/270560/Unique_Pupil_Numbers_-_guidance.pdf
@@ -701,7 +701,7 @@ describe('pupil validator', function () {
         ])
       })
 
-      it('detects when the UPN has an error in char 6', async () => {
+      test('detects when the UPN has an error in char 6', async () => {
         req.body = getBody()
         // Example UPN taken from
         // https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/270560/Unique_Pupil_Numbers_-_guidance.pdf
@@ -716,7 +716,7 @@ describe('pupil validator', function () {
         ])
       })
 
-      it('detects when the UPN has an error in char 7', async () => {
+      test('detects when the UPN has an error in char 7', async () => {
         req.body = getBody()
         const schoolId = 2
         // Example UPN taken from
@@ -731,7 +731,7 @@ describe('pupil validator', function () {
         ])
       })
 
-      it('detects when the UPN has an error in char 8', async () => {
+      test('detects when the UPN has an error in char 8', async () => {
         req.body = getBody()
         // Example UPN taken from
         // https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/270560/Unique_Pupil_Numbers_-_guidance.pdf
@@ -746,7 +746,7 @@ describe('pupil validator', function () {
         ])
       })
 
-      it('detects when the UPN has an error in char 9', async () => {
+      test('detects when the UPN has an error in char 9', async () => {
         req.body = getBody()
         // Example UPN taken from
         // https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/270560/Unique_Pupil_Numbers_-_guidance.pdf
@@ -761,7 +761,7 @@ describe('pupil validator', function () {
         ])
       })
 
-      it('detects when the UPN has an error in char 10', async () => {
+      test('detects when the UPN has an error in char 10', async () => {
         req.body = getBody()
         // Example UPN taken from
         // https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/270560/Unique_Pupil_Numbers_-_guidance.pdf
@@ -776,7 +776,7 @@ describe('pupil validator', function () {
         ])
       })
 
-      it('detects when the UPN has an error in char 11', async () => {
+      test('detects when the UPN has an error in char 11', async () => {
         req.body = getBody()
         // Example UPN taken from
         // https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/270560/Unique_Pupil_Numbers_-_guidance.pdf
@@ -791,7 +791,7 @@ describe('pupil validator', function () {
         ])
       })
 
-      it('detects when the UPN has an error in char 12', async () => {
+      test('detects when the UPN has an error in char 12', async () => {
         req.body = getBody()
         // Example UPN taken from
         // https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/270560/Unique_Pupil_Numbers_-_guidance.pdf
@@ -805,7 +805,7 @@ describe('pupil validator', function () {
           pupilErrors.addPupil.upnInvalidCharacters5To12
         ])
       })
-      it('detects when the UPN has more than one alphabetic characters between position 5 to 12', async () => {
+      test('detects when the UPN has more than one alphabetic characters between position 5 to 12', async () => {
         req.body = getBody()
         // Example UPN taken from
         // https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/270560/Unique_Pupil_Numbers_-_guidance.pdf
@@ -820,7 +820,7 @@ describe('pupil validator', function () {
         ])
       })
 
-      it('validates the check letter', async () => {
+      test('validates the check letter', async () => {
         req.body = getBody()
         // Example UPN taken from
         // https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/270560/Unique_Pupil_Numbers_-_guidance.pdf
@@ -831,7 +831,7 @@ describe('pupil validator', function () {
         expect(validationError.isError('upn')).toBe(false)
       })
 
-      it('provides an error message when the check letter is wrong', async () => {
+      test('provides an error message when the check letter is wrong', async () => {
         req.body = getBody()
         // Example UPN taken from
         // https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/270560/Unique_Pupil_Numbers_-_guidance.pdf
@@ -845,7 +845,7 @@ describe('pupil validator', function () {
         ])
       })
 
-      it('provides an error message when the LA code is wrong', async () => {
+      test('provides an error message when the LA code is wrong', async () => {
         req.body = getBody()
         // Example UPN taken from
         // https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/270560/Unique_Pupil_Numbers_-_guidance.pdf
@@ -859,7 +859,7 @@ describe('pupil validator', function () {
         ])
       })
 
-      it('it validates a temporary UPN', async () => {
+      test('it validates a temporary UPN', async () => {
         req.body = getBody()
         // Example UPN taken from
         // https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/270560/Unique_Pupil_Numbers_-_guidance.pdf
@@ -869,7 +869,7 @@ describe('pupil validator', function () {
         expect(validationError.hasError()).toBe(false)
       })
 
-      it('validates a lowercase upn, and uppercases it for the user', async () => {
+      test('validates a lowercase upn, and uppercases it for the user', async () => {
         req.body = getBody()
         req.body.upn = 'g80120000101a '
         const schoolId = 2
@@ -877,7 +877,7 @@ describe('pupil validator', function () {
         expect(validationError.hasError()).toBe(false)
       })
 
-      it('checks for invalid character 13 letter: S', async () => {
+      test('checks for invalid character 13 letter: S', async () => {
         req.body = getBody()
         req.body.upn = 'G80120000101S'
         const schoolId = 2
@@ -889,7 +889,7 @@ describe('pupil validator', function () {
         ])
       })
 
-      it('checks for invalid character 13 letter: I', async () => {
+      test('checks for invalid character 13 letter: I', async () => {
         req.body = getBody()
         req.body.upn = 'G80120000101I'
         const schoolId = 2
@@ -901,7 +901,7 @@ describe('pupil validator', function () {
         ])
       })
 
-      it('checks for invalid character 13 letter: O', async () => {
+      test('checks for invalid character 13 letter: O', async () => {
         req.body = getBody()
         req.body.upn = 'G80120000101O'
         const schoolId = 2
@@ -913,7 +913,7 @@ describe('pupil validator', function () {
         ])
       })
 
-      it('checks for valid character 13 letter: A', async () => {
+      test('checks for valid character 13 letter: A', async () => {
         req.body = getBody()
         req.body.upn = 'G80120000101A'
         const schoolId = 2
@@ -928,10 +928,10 @@ describe('pupil validator', function () {
       const pupil = Object.assign({}, pupilMock)
       pupil.id = '12345'
       pupil.upn = 'H801200001001'
-      spyOn(pupilDataService, 'sqlFindOneByUpnAndSchoolId').and.returnValue(pupil)
+      jest.spyOn(pupilDataService, 'sqlFindOneByUpnAndSchoolId').mockResolvedValue(pupil)
     })
 
-    it('it ensures the UPN is unique when adding new pupil', async () => {
+    test('it ensures the UPN is unique when adding new pupil', async () => {
       req.body = getBody()
       // Make it looks like a new pupil
       req.body.urlSlug = undefined
@@ -944,7 +944,7 @@ describe('pupil validator', function () {
       ])
     })
 
-    it('it ensures the UPN is unique when editing pupil', async () => {
+    test('it ensures the UPN is unique when editing pupil', async () => {
       req.body = getBody()
       const schoolId = 2
       const validationError = await pupilValidator.validate(req.body, schoolId)

@@ -7,18 +7,18 @@ const pupilMock = require('../mocks/pupil')
 const schoolMock = require('../mocks/school')
 const sorting = require('../../../helpers/table-sorting')
 
-/* global describe, it, expect, spyOn, fail */
+/* global describe, expect, jest, test, afterEach */
 
 describe('pupil service', () => {
   const getPupil = () => R.assoc('school', R.clone(schoolMock), pupilMock)
 
-  const pupilMockPromise = () => {
-    return Promise.resolve(getPupil())
-  }
+  afterEach(() => {
+    jest.restoreAllMocks()
+  })
 
   describe('#fetchOnePupil', () => {
-    it('it makes a call to the pupilDataService', async () => {
-      spyOn(pupilDataService, 'sqlFindOneByIdAndSchool').and.returnValue(pupilMockPromise())
+    test('it makes a call to the pupilDataService', async () => {
+      jest.spyOn(pupilDataService, 'sqlFindOneByIdAndSchool').mockResolvedValue(getPupil())
       await sut.fetchOnePupil('arg1', 'arg2')
       expect(pupilDataService.sqlFindOneByIdAndSchool).toHaveBeenCalledWith('arg1', 'arg2')
     })
@@ -26,81 +26,57 @@ describe('pupil service', () => {
 
   describe('#fetchOnePupilBySlug', () => {
     const schoolId = 1
-    it('it makes a call to the pupilDataService', async () => {
-      spyOn(pupilDataService, 'sqlFindOneBySlugAndSchool').and.returnValue(pupilMockPromise())
+    test('it makes a call to the pupilDataService', async () => {
+      jest.spyOn(pupilDataService, 'sqlFindOneBySlugAndSchool').mockResolvedValue(getPupil())
       await sut.fetchOnePupilBySlug('slug', schoolId)
       expect(pupilDataService.sqlFindOneBySlugAndSchool).toHaveBeenCalledWith('slug', schoolId)
     })
   })
 
   describe('#getPupilsWithFullNames', () => {
-    it('it returns a sorted object with combined name values and urlSlug', async () => {
+    test('it returns a sorted object with combined name values and urlSlug', async () => {
       const pupilMocks = [
         { foreName: 'John', middleNames: 'Test', lastName: 'Johnson', urlSlug: 'AA-12345' },
         { foreName: 'John2', middleNames: '', lastName: 'Johnson2', urlSlug: 'BB-12345' }
       ]
-      spyOn(pupilDataService, 'sqlFindPupilsBySchoolId').and.returnValue(pupilMocks)
-      spyOn(sorting, 'sortByProps').and.returnValue(pupilMocks)
-      let pupils
-      try {
-        pupils = await sut.getPupilsWithFullNames(1234567)
-      } catch (error) {
-        fail()
-      }
+      jest.spyOn(pupilDataService, 'sqlFindPupilsBySchoolId').mockResolvedValue(pupilMocks)
+      jest.spyOn(sorting, 'sortByProps').mockReturnValue(pupilMocks)
+      const pupils = await sut.getPupilsWithFullNames(1234567)
       expect(sorting.sortByProps).toHaveBeenCalled()
       expect(pupils[0].fullName).toBe('Johnson John Test')
       expect(pupils[1].fullName).toBe('Johnson2 John2')
       expect(pupils[0].urlSlug).toBe('AA-12345')
       expect(pupils.length).toBe(2)
     })
-    it('it throws an error when schoolId is not provided', async () => {
-      spyOn(pupilDataService, 'sqlFindPupilsBySchoolId')
-      try {
-        await sut.getPupilsWithFullNames()
-        fail()
-      } catch (error) {
-        expect(error.message).toBe('schoolId is required')
-      }
+    test('it throws an error when schoolId is not provided', async () => {
+      jest.spyOn(pupilDataService, 'sqlFindPupilsBySchoolId').mockImplementation()
+      await expect(sut.getPupilsWithFullNames()).rejects.toThrow('schoolId is required')
       expect(pupilDataService.sqlFindPupilsBySchoolId).not.toHaveBeenCalled()
     })
   })
 
   describe('#findPupilsBySchoolId', () => {
-    it('sorts the pupils before returning them', async () => {
+    test('sorts the pupils before returning them', async () => {
       const pupilMocks = [
         { foreName: 'John', middleNames: 'Test', lastName: 'Johnson', urlSlug: 'AA-12345' },
         { foreName: 'John2', middleNames: '', lastName: 'Johnson2', urlSlug: 'BB-12345' }
       ]
-      spyOn(pupilDataService, 'sqlFindPupilsBySchoolId').and.returnValue(pupilMocks)
-      spyOn(sorting, 'sortByProps')
-      try {
-        await sut.findPupilsBySchoolId(1)
-        expect(sorting.sortByProps).toHaveBeenCalled()
-      } catch (error) {
-        fail(error.message)
-      }
+      jest.spyOn(pupilDataService, 'sqlFindPupilsBySchoolId').mockResolvedValue(pupilMocks)
+      jest.spyOn(sorting, 'sortByProps').mockImplementation()
+      await sut.findPupilsBySchoolId(1)
+      expect(sorting.sortByProps).toHaveBeenCalled()
     })
-    it('it throws an error when schoolId is not provided', async () => {
-      spyOn(pupilDataService, 'sqlFindPupilsBySchoolId')
-      try {
-        await sut.findPupilsBySchoolId()
-        fail()
-      } catch (error) {
-        expect(error.message).toBe('schoolId is required')
-      }
+    test('it throws an error when schoolId is not provided', async () => {
+      jest.spyOn(pupilDataService, 'sqlFindPupilsBySchoolId').mockImplementation()
+      await expect(sut.findPupilsBySchoolId()).rejects.toThrow('schoolId is required')
       expect(pupilDataService.sqlFindPupilsBySchoolId).not.toHaveBeenCalled()
     })
   })
 
   describe('#findOneBySlugAndSchool', () => {
-    it('it throws an error when schoolId is not provided', async () => {
-      spyOn(pupilDataService, 'sqlFindOneBySlugAndSchool')
-      try {
-        await sut.findOneBySlugAndSchool()
-        fail()
-      } catch (error) {
-        expect(error.message).toBe('schoolId is required')
-      }
+    test('it throws an error when schoolId is not provided', async () => {
+      jest.spyOn(pupilDataService, 'sqlFindOneBySlugAndSchool').mockImplementation()
+      await expect(sut.findOneBySlugAndSchool()).rejects.toThrow('schoolId is required')
       expect(pupilDataService.sqlFindOneBySlugAndSchool).not.toHaveBeenCalled()
     })
   })
