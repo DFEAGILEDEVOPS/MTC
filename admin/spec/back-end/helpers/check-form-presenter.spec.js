@@ -1,4 +1,4 @@
-/* global describe, expect, it */
+/* global describe, expect, test */
 const moment = require('moment')
 
 const checkFormPresenter = require('../../../helpers/check-form-presenter')
@@ -6,7 +6,7 @@ const dateService = require('../../../services/date.service')
 
 describe('checkFormPresenter', () => {
   describe('getPresentationListData', () => {
-    it('shapes the data in the appropriate format for the presentation view', () => {
+    test('shapes the data in the appropriate format for the presentation view', () => {
       const checkFormData = [{
         name: 'name',
         isLiveCheckForm: true,
@@ -26,7 +26,7 @@ describe('checkFormPresenter', () => {
     })
   })
   describe('getPresentationCheckFormData', () => {
-    it('fetches data for presenting single check form', () => {
+    test('fetches data for presenting single check form', () => {
       const checkFormData = {
         name: 'name',
         isLiveCheckForm: true,
@@ -54,7 +54,7 @@ describe('checkFormPresenter', () => {
     })
   })
   describe('getFlashMessageData', () => {
-    it('returns flash message data for the list view', () => {
+    test('returns flash message data for the list view', () => {
       const uploadData = [{
         filename: 'filename.csv'
       }]
@@ -66,7 +66,7 @@ describe('checkFormPresenter', () => {
     })
   })
   describe('getPresentationCheckWindowListData', () => {
-    it('returns check window list data formatted', () => {
+    test('returns check window list data formatted', () => {
       const checkWindows = [{
         name: 'name',
         urlSlug: 'urlSlug',
@@ -91,7 +91,7 @@ describe('checkFormPresenter', () => {
     })
   })
   describe('getPresentationCheckWindowData', () => {
-    it('returns check window data formatted', () => {
+    test('returns check window data formatted', () => {
       const checkWindow = {
         name: 'name',
         urlSlug: 'urlSlug',
@@ -115,7 +115,7 @@ describe('checkFormPresenter', () => {
     })
   })
   describe('getPresentationAvailableFormsData', () => {
-    it('returns check window data formatted', () => {
+    test('returns check window data formatted', () => {
       const availableCheckForms = [{
         name: 'name',
         isLiveCheckForm: true,
@@ -135,28 +135,28 @@ describe('checkFormPresenter', () => {
     })
   })
   describe('getAssignFormsFlashMessage', () => {
-    it('returns appropriate highlight message for the number of check forms assigned to the live check window', () => {
+    test('returns appropriate highlight message for the number of check forms assigned to the live check window', () => {
       const checkForms = [{ id: 1 }, { id: 2 }]
       const checkWindowName = 'checkWindowName'
       const checkFormType = 'live'
       const result = checkFormPresenter.getAssignFormsFlashMessage(checkForms, checkWindowName, checkFormType)
       expect(result).toEqual('2 forms have been assigned to checkWindowName, MTC')
     })
-    it('returns appropriate highlight message for a single check form that has been assigned to the live check window', () => {
+    test('returns appropriate highlight message for a single check form that has been assigned to the live check window', () => {
       const checkForms = [{ id: 1 }]
       const checkWindowName = 'checkWindowName'
       const checkFormType = 'live'
       const result = checkFormPresenter.getAssignFormsFlashMessage(checkForms, checkWindowName, checkFormType)
       expect(result).toEqual('1 form has been assigned to checkWindowName, MTC')
     })
-    it('returns appropriate highlight message for a single check form that has been assigned to the familiarisation check window', () => {
+    test('returns appropriate highlight message for a single check form that has been assigned to the familiarisation check window', () => {
       const checkForms = [{ id: 1 }]
       const checkWindowName = 'checkWindowName'
       const checkFormType = 'familiarisation'
       const result = checkFormPresenter.getAssignFormsFlashMessage(checkForms, checkWindowName, checkFormType)
       expect(result).toEqual('1 form has been assigned to checkWindowName, Try it out')
     })
-    it('returns appropriate highlight message for a single check form that has been unassigned to the familiarisation check window', () => {
+    test('returns appropriate highlight message for a single check form that has been unassigned to the familiarisation check window', () => {
       const checkForms = undefined
       const checkWindowName = 'checkWindowName'
       const checkFormType = 'familiarisation'

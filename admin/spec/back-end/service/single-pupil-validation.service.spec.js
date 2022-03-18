@@ -1,5 +1,5 @@
 'use strict'
-/* global describe, beforeEach, it, expect, spyOn */
+/* global describe, beforeEach, test, expect, jest, afterEach */
 
 const singlePupilValidationCSVService = require('../../../services/single-pupil-validation.service')
 const PupilValidator = require('../../../lib/validator/pupil-validator')
@@ -8,13 +8,17 @@ const addPupilErrorMessages = require('../../../lib/errors/pupil').addPupil
 const schoolMock = require('../mocks/school')
 
 describe('single-pupil-validation.service', () => {
+  afterEach(() => {
+    jest.restoreAllMocks()
+  })
+
   describe('generate with valid arguments', () => {
     beforeEach(() => {
       // An empty validation error - indicating no errors at all
-      spyOn(PupilValidator, 'validate').and.returnValue(Promise.resolve(new ValidationError()))
+      jest.spyOn(PupilValidator, 'validate').mockResolvedValue(new ValidationError())
     })
 
-    it('returns a pupil with no errors', async () => {
+    test('returns a pupil with no errors', async () => {
       const school = { _id: '001' }
       const data = ['John', 'Lawrence', 'Smith', 'X822200014001', '5/22/2005', 'M']
       const isMultiplePupilsSubmission = true
@@ -24,7 +28,7 @@ describe('single-pupil-validation.service', () => {
       expect(single[6]).toBeUndefined()
     })
 
-    it('detects duplicate upns in the upload file', async () => {
+    test('detects duplicate upns in the upload file', async () => {
       const pupilCsvData = [
         ['surname', 'firstname', 'middlename', '21/11/2000', 'm', 'Y308212001120'],
         ['surname2', 'firstname2', 'middlename2', '22/11/2001', 'm', 'Y308212001120'] // dup upn!
@@ -47,10 +51,10 @@ describe('single-pupil-validation.service', () => {
       .addError('dob-month', 'Date of birth can\'t be in the future')
 
     beforeEach(() => {
-      spyOn(PupilValidator, 'validate').and.returnValue(Promise.resolve(validationError))
+      jest.spyOn(PupilValidator, 'validate').mockResolvedValue(validationError)
     })
 
-    it('returns a pupil with errors', async () => {
+    test('returns a pupil with errors', async () => {
       const school = { _id: '001' }
       const data = ['John', 'Lawrence', 'Smith', 'X8222000140011', '5/22/2005', 'M']
       singlePupilValidationCSVService.init()

@@ -4,10 +4,10 @@
  * @file Integration Tests for Check Form Service
  */
 
-/* global describe test expect beforeAll jasmine */
+/* global describe test expect beforeAll jest */
 
-// This test may take some time to complete
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 120000
+// These tests take a long time, so they are usually skipped unless we change the implementation
+jest.setTimeout(120000)
 
 const fs = require('fs')
 const moment = require('moment')

@@ -1,5 +1,5 @@
 'use strict'
-/* global describe, it, expect */
+/* global describe, test, expect */
 
 const moment = require('moment-timezone')
 
@@ -7,7 +7,7 @@ const resultPageAvailabilityService = require('../../../services/results-page-av
 
 describe('results-page-availability.service', () => {
   describe('isResultsFeatureAccessible', () => {
-    it('disallows access to results feature when live check period is active', () => {
+    test('disallows access to results feature when live check period is active', () => {
       const checkWindowData = {
         id: 1,
         adminStartDate: moment.utc().subtract(3, 'days'),
@@ -22,7 +22,7 @@ describe('results-page-availability.service', () => {
       const isResultsFeatureAccessible = resultPageAvailabilityService.isResultsFeatureAccessible(currentDate, resultsOpeningDate)
       expect(isResultsFeatureAccessible).toBeFalsy()
     })
-    it('disallows access to results feature if attempted to be accessed before the opening Monday time on the allowed day', () => {
+    test('disallows access to results feature if attempted to be accessed before the opening Monday time on the allowed day', () => {
       const checkWindowData = {
         id: 1,
         adminStartDate: moment.utc().subtract(10, 'days'),
@@ -39,7 +39,7 @@ describe('results-page-availability.service', () => {
       const isResultsFeatureAccessible = resultPageAvailabilityService.isResultsFeatureAccessible(currentDate, resultsOpeningDate)
       expect(isResultsFeatureAccessible).toBeFalsy()
     })
-    it('allows access to results feature if live check period is in the past', () => {
+    test('allows access to results feature if live check period is in the past', () => {
       const checkWindowData = {
         id: 1,
         adminStartDate: moment.utc().subtract(15, 'days'),
@@ -57,7 +57,7 @@ describe('results-page-availability.service', () => {
   })
   describe('isResultsPageAccessibleForIncompleteHdfs', () => {
     describe('providing hdf is not submitted', () => {
-      it('disallows results before the second Monday after check end date', () => {
+      test('disallows results before the second Monday after check end date', () => {
         const checkWindowData = {
           id: 1,
           adminStartDate: moment.utc().subtract(15, 'days'),
@@ -71,7 +71,7 @@ describe('results-page-availability.service', () => {
         const isResultsPageAccessibleForIncompleteHdfs = resultPageAvailabilityService.isResultsPageAccessibleForIncompleteHdfs(allowedDateTime, checkWindowData, false)
         expect(isResultsPageAccessibleForIncompleteHdfs).toBeFalsy()
       })
-      it('allows results after the second Monday after check end date', () => {
+      test('allows results after the second Monday after check end date', () => {
         const checkWindowData = {
           id: 1,
           adminStartDate: moment.utc().subtract(25, 'days'),

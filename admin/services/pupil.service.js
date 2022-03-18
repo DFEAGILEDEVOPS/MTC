@@ -62,7 +62,7 @@ pupilService.findPupilsBySchoolId = async function findPupilsBySchoolId (schoolI
  * @param schoolId required
  * @returns {Promise<*>}
  */
-pupilService.findOneBySlugAndSchool = function findOneBySlugAndSchool (urlSlug, schoolId) {
+pupilService.findOneBySlugAndSchool = async function findOneBySlugAndSchool (urlSlug, schoolId) {
   if (!schoolId) {
     throw new Error('schoolId is required')
   }

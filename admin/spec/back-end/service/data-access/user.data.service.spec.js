@@ -1,5 +1,5 @@
 'use strict'
-/* global describe beforeEach it expect spyOn */
+/* global describe beforeEach test expect jest afterEach */
 
 const sqlService = require('../../../../services/data-access/sql.service')
 const sut = require('../../../../services/data-access/user.data.service')
@@ -7,10 +7,14 @@ const sut = require('../../../../services/data-access/user.data.service')
 describe('user.data.service', () => {
   describe('#sqlFindOneByIdentifier', () => {
     beforeEach(() => {
-      spyOn(sqlService, 'query').and.returnValue(Promise.resolve([{ userMock: 'true' }]))
+      jest.spyOn(sqlService, 'query').mockResolvedValue([{ userMock: 'true' }])
     })
 
-    it('makes the expected calls', async () => {
+    afterEach(() => {
+      jest.restoreAllMocks()
+    })
+
+    test('makes the expected calls', async () => {
       const identifier = 'teacher42'
       const res = await sut.sqlFindOneByIdentifier(identifier)
       expect(sqlService.query).toHaveBeenCalled()

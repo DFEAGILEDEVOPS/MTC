@@ -1,6 +1,6 @@
 'use strict'
 
-/* global beforeEach, afterEach, describe, it, expect, spyOn, fail, jest */
+/* global beforeEach, afterEach, describe, test, expect, jest */
 
 const prepareCheckService = require('../../../services/prepare-check.service')
 const pupilDataService = require('../../../services/data-access/pupil.data.service')
@@ -11,22 +11,21 @@ const restartService = require('../../../services/restart.service')
 const pupilMock = require('../mocks/pupil')
 
 describe('restart.service', () => {
+  afterEach(() => {
+    jest.restoreAllMocks()
+  })
+
   describe('restart', () => {
-    it('throws an error if the schoolId is not provided', async () => {
-      try {
-        await restartService.restart([1, 2], 'Test', '', '', '', '59c38bcf3cd57f97b7da2002', undefined)
-        fail('expected to throw')
-      } catch (error) {
-        expect(error.message).toBe('Missing parameter: `schoolId`')
-      }
+    test('throws an error if the schoolId is not provided', async () => {
+      await expect(restartService.restart([1, 2], 'Test', '', '', '', '59c38bcf3cd57f97b7da2002', undefined)).rejects.toThrow('Missing parameter: `schoolId`')
     })
 
-    it('it should call restartTransactionForPupils if the pupil can be restarted', async () => {
+    test('it should call restartTransactionForPupils if the pupil can be restarted', async () => {
       const schoolId = 42
       // allow `incomingPupilValidation()` to match
-      spyOn(restartDataService, 'sqlFindPupilsEligibleForRestartByPupilId').and.returnValue([{ id: 1 }, { id: 2 }])
-      spyOn(restartDataService, 'getLiveCheckDataByPupilId').and.returnValue(
-        Promise.resolve([
+      jest.spyOn(restartDataService, 'sqlFindPupilsEligibleForRestartByPupilId').mockResolvedValue([{ id: 1 }, { id: 2 }])
+      jest.spyOn(restartDataService, 'getLiveCheckDataByPupilId').mockResolvedValue(
+        [
           {
             checkId: 1,
             pupilId: 1,
@@ -39,36 +38,28 @@ describe('restart.service', () => {
             pupilPin: 5678,
             schoolPin: 'abc12def'
           }
-        ])
+        ]
       )
-      spyOn(restartDataService, 'restartTransactionForPupils').and.returnValue(Promise.resolve(
+      jest.spyOn(restartDataService, 'restartTransactionForPupils').mockResolvedValue(
         [
           { id: 1, urlSlug: 'abc-def' },
           { id: 2, urlSlug: 'def-hij' }
         ]
-      ))
-      spyOn(prepareCheckService, 'removeChecks')
-      let results
-      try {
-        results = await restartService.restart([1, 2], 'IT issues', '', '', '', '59c38bcf3cd57f97b7da2002', schoolId)
-      } catch (error) {
-        fail(error)
-      }
+      )
+      jest.spyOn(prepareCheckService, 'removeChecks').mockImplementation()
+      await expect(restartService.restart([1, 2], 'IT issues', '', '', '', '59c38bcf3cd57f97b7da2002', schoolId))
+        .resolves
+        .toHaveLength(2)
       expect(restartDataService.restartTransactionForPupils).toHaveBeenCalledTimes(1)
       expect(prepareCheckService.removeChecks).toHaveBeenCalledTimes(1)
-      expect(results.length).toBe(2)
     })
 
-    it('it should throw an error if the pupil cannot be restarted', async () => {
+    test('it should throw an error if the pupil cannot be restarted', async () => {
       const schoolId = 42
-      try {
-        // allow `incomingPupilValidation()` to fail
-        spyOn(restartDataService, 'sqlFindPupilsEligibleForRestartByPupilId').and.returnValue([{ id: 1 }]) // #2 is missing
-        await restartService.restart([pupilMock.id], 'IT issues', '', '', '', '59c38bcf3cd57f97b7da2002', schoolId)
-        fail('expected to throw')
-      } catch (error) {
-        expect(error.message).toBe('One of the pupils is not eligible for a restart')
-      }
+      jest.spyOn(restartDataService, 'sqlFindPupilsEligibleForRestartByPupilId').mockResolvedValue([{ id: 1 }]) // #2 is missing
+      await expect(restartService.restart([pupilMock.id], 'IT issues', '', '', '', '59c38bcf3cd57f97b7da2002', schoolId))
+        .rejects
+        .toThrow('One of the pupils is not eligible for a restart')
     })
   })
 
@@ -85,40 +76,28 @@ describe('restart.service', () => {
       jest.spyOn(prepareCheckService, 'removeChecks').mockImplementation(() => null)
     })
 
-    afterEach(() => {
-      jest.restoreAllMocks()
-    })
-
-    it('returns the pupil object of the pupil who is mark as deleted', async () => {
+    test('returns the pupil object of the pupil who is mark as deleted', async () => {
       const deleted = await restartService.markDeleted('slug', 1, 2)
       expect(deleted).toBeDefined()
     })
 
-    it('if no pupil is found it throws an error', async () => {
+    test('if no pupil is found it throws an error', async () => {
       pupilDataService.sqlFindOneBySlug.mockImplementation(() => null)
       expect.assertions(1)
-      try {
-        await restartService.markDeleted('slug', 1, 2)
-      } catch (error) {
-        expect(error.message).toBe('pupil not found')
-      }
+      await expect(restartService.markDeleted('slug', 1, 2)).rejects.toThrow('pupil not found')
     })
 
-    it('find the open restart for the pupil', async () => {
+    test('find the open restart for the pupil', async () => {
       await restartService.markDeleted('slug', 1, 2)
       expect(pupilRestartDataService.sqlMarkRestartAsDeleted).toHaveBeenCalled()
     })
 
-    it('throws an error if the restart is not found', async () => {
+    test('throws an error if the restart is not found', async () => {
       pupilRestartDataService.sqlFindOpenRestartForPupil.mockImplementation(() => null)
-      try {
-        await restartService.markDeleted('slug', 1, 2)
-      } catch (error) {
-        expect(error.message).toBe('No restarts found to remove')
-      }
+      await expect(restartService.markDeleted('slug', 1, 2)).rejects.toThrow('No restarts found to remove')
     })
 
-    it('does not remove any preparedChecks if the restart does not have any', async () => {
+    test('does not remove any preparedChecks if the restart does not have any', async () => {
       pupilRestartDataService.sqlFindOpenRestartForPupil.mockImplementation(() => {
         return {
           id: 1,
@@ -129,7 +108,7 @@ describe('restart.service', () => {
       expect(prepareCheckService.removeChecks).not.toHaveBeenCalled()
     })
 
-    it('does removes preparedChecks if the restart has one', async () => {
+    test('does removes preparedChecks if the restart has one', async () => {
       pupilRestartDataService.sqlFindOpenRestartForPupil.mockImplementation(() => {
         return {
           id: 1,
@@ -143,8 +122,8 @@ describe('restart.service', () => {
   })
 
   describe('getReasons', () => {
-    it('ensures data service method was called', async () => {
-      spyOn(pupilRestartDataService, 'sqlFindRestartReasons').and.returnValue(null)
+    test('ensures data service method was called', async () => {
+      jest.spyOn(pupilRestartDataService, 'sqlFindRestartReasons').mockResolvedValue(null)
       await restartService.getReasons()
       expect(pupilRestartDataService.sqlFindRestartReasons).toHaveBeenCalled()
     })

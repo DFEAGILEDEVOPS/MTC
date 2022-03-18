@@ -1,5 +1,5 @@
 'use strict'
-/* global describe it expect spyOn jest */
+/* global describe test expect jest afterEach */
 
 const dateService = require('../../../services/date.service')
 const requestMock = require('../mocks/dates-req-mock')
@@ -7,35 +7,39 @@ const moment = require('moment')
 const logger = require('../../../services/log.service.js').getLogger()
 
 function invalidInputTests (method) {
-  it('returns an empty string if the parameter is an empty string', () => {
-    spyOn(logger, 'warn')
+  test('returns an empty string if the parameter is an empty string', () => {
+    jest.spyOn(logger, 'warn').mockImplementation()
     expect(dateService[method]('')).toBe('')
   })
 
-  it('returns an empty string if the parameter is missing', () => {
-    spyOn(logger, 'warn')
+  test('returns an empty string if the parameter is missing', () => {
+    jest.spyOn(logger, 'warn').mockImplementation()
     expect(dateService[method]()).toBe('')
   })
 
-  it('returns an empty string if the parameter is null', () => {
-    spyOn(logger, 'warn')
+  test('returns an empty string if the parameter is null', () => {
+    jest.spyOn(logger, 'warn').mockImplementation()
     expect(dateService[method](null)).toBe('')
   })
 
-  it('returns an empty string if the date is invalid', () => {
-    spyOn(logger, 'warn')
+  test('returns an empty string if the date is invalid', () => {
+    jest.spyOn(logger, 'warn').mockImplementation()
     expect(dateService[method]('rotten-input')).toBe('')
   })
 }
 
 describe('date service', () => {
+  afterEach(() => {
+    jest.restoreAllMocks()
+  })
+
   describe('#formatFullGdsDate', () => {
-    it('correctly formats a date', () => {
+    test('correctly formats a date', () => {
       const date = new Date(2010, 11, 31, 14, 10, 0, 0)
       expect(dateService.formatFullGdsDate(date)).toBe('31 December 2010')
     })
 
-    it('can be given a moment object as input', () => {
+    test('can be given a moment object as input', () => {
       const date = moment('2010-12-31 14:10Z')
       expect(dateService.formatFullGdsDate(date)).toBe('31 December 2010')
     })
@@ -44,7 +48,7 @@ describe('date service', () => {
   })
 
   describe('#formatShortGdsdate', () => {
-    it('correctly formats a date', () => {
+    test('correctly formats a date', () => {
       const date = new Date(2010, 11, 31, 14, 10, 0, 0)
       expect(dateService.formatShortGdsDate(date)).toBe('31 Dec 2010')
     })
@@ -53,7 +57,7 @@ describe('date service', () => {
   })
 
   describe('#formatUKDate', () => {
-    it('correctly formats a date', () => {
+    test('correctly formats a date', () => {
       const date = new Date(2010, 11, 31, 14, 10, 0, 0)
       expect(dateService.formatUKDate(date)).toBe('31/12/2010')
     })
@@ -62,7 +66,7 @@ describe('date service', () => {
   })
 
   describe('#reverseFormatNoSeparator', () => {
-    it('correctly formats a date', () => {
+    test('correctly formats a date', () => {
       const date = new Date(2010, 11, 31, 14, 10, 0, 0)
       expect(dateService.reverseFormatNoSeparator(date)).toBe('20101231')
     })
@@ -71,12 +75,12 @@ describe('date service', () => {
   })
 
   describe('#formatTimeWithSeconds', () => {
-    it('formats the time correctly, with single digits', () => {
+    test('formats the time correctly, with single digits', () => {
       const date = new Date(2010, 11, 31, 14, 10, 29, 59)
       expect(dateService.formatTimeWithSeconds(date)).toBe('2:10:29 pm')
     })
 
-    it('formats the time correctly, with double digits', () => {
+    test('formats the time correctly, with double digits', () => {
       const date = new Date(2010, 11, 31, 22, 10, 59, 30)
       expect(dateService.formatTimeWithSeconds(date)).toBe('10:10:59 pm')
     })
@@ -85,17 +89,17 @@ describe('date service', () => {
   })
 
   describe('#formatIso8601', () => {
-    it('only accept a moment date as the parameter', () => {
+    test('only accept a moment date as the parameter', () => {
       expect(() => dateService.formatIso8601(new Date())).toThrowError('Parameter must be of type Moment')
     })
 
-    it('checks the moment param to make sure it is valid and throws if it isnt', () => {
+    test('checks the moment param to make sure it is valid and throws if it isnt', () => {
       // Moment will output a warning because of the deliberately bad arg
-      spyOn(console, 'warn')
+      jest.spyOn(console, 'warn').mockImplementation()
       expect(() => dateService.formatIso8601(moment('garbage'))).toThrowError('Not a valid date')
     })
 
-    it('returns the expected ISO date as a String', () => {
+    test('returns the expected ISO date as a String', () => {
       const s = '2017-07-16T14:01:02.123+01:00'
       const m = moment(s).utcOffset('+0100')
       const res = dateService.formatIso8601(m)
@@ -104,35 +108,35 @@ describe('date service', () => {
   })
 
   describe('#formatIso8601WithoutTimezone', () => {
-    it('correctly formats a date', () => {
+    test('correctly formats a date', () => {
       const date = new Date(2010, 11, 31, 14, 10, 2, 3)
       expect(dateService.formatIso8601WithoutTimezone(date)).toBe('2010-12-31T14:10:02.003')
     })
   })
 
   describe('#formatDayAndDate', () => {
-    it('correctly formats a date', () => {
+    test('correctly formats a date', () => {
       const date = new Date(2010, 11, 31, 14, 10, 0, 0)
       expect(dateService.formatDayAndDate(date)).toBe('Friday, 31 December')
     })
   })
 
   describe('#formatDayDateAndYear', () => {
-    it('correctly formats a date', () => {
+    test('correctly formats a date', () => {
       const date = new Date(2010, 11, 31, 14, 10, 0, 0)
       expect(dateService.formatDayDateAndYear(date)).toBe('Friday 31 December 2010')
     })
   })
 
   describe('#formatDateAndTime', () => {
-    it('correctly formats a date', () => {
+    test('correctly formats a date', () => {
       const date = new Date(2010, 11, 31, 14, 10, 12, 13)
       expect(dateService.formatDateAndTime(date)).toBe('31 December 2010 2:10pm')
     })
   })
 
   describe('#formatDateFromRequest', () => {
-    it('should return a date correctly formatted', () => {
+    test('should return a date correctly formatted', () => {
       const result1 = dateService.formatDateFromRequest(requestMock, 'adminStartDay', 'adminStartMonth', 'adminStartYear')
       const result2 = dateService.formatDateFromRequest(requestMock, 'checkStartDay', 'checkStartMonth', 'checkStartYear')
       const result3 = dateService.formatDateFromRequest(requestMock, 'checkEndDay', 'checkEndMonth', 'checkEndYear')
@@ -143,143 +147,143 @@ describe('date service', () => {
   })
 
   describe('#formatCheckPeriod', () => {
-    it('should return a date correctly formatted', () => {
+    test('should return a date correctly formatted', () => {
       const result = dateService.formatCheckPeriod(moment('2017-11-01'), moment('2017-11-20'))
       expect(result).toBe('1 Nov to 20 Nov 2017')
     })
   })
 
   describe('createUTCFromDayMonthYear', () => {
-    it('creates a moment date object', () => {
+    test('creates a moment date object', () => {
       const res1 = dateService.createUTCFromDayMonthYear(30, 6, 2007)
       expect(res1).toBeTruthy()
     })
-    it('sets the date of month', () => {
+    test('sets the date of month', () => {
       const res1 = dateService.createUTCFromDayMonthYear(30, 6, 2007)
       expect(res1.date()).toBe(30)
     })
-    it('sets the month', () => {
+    test('sets the month', () => {
       const res1 = dateService.createUTCFromDayMonthYear(30, 6, 2007)
       expect(res1.format('M')).toBe('6')
     })
-    it('sets the year', () => {
+    test('sets the year', () => {
       const res1 = dateService.createUTCFromDayMonthYear(30, 6, 2007)
       expect(res1.year()).toBe(2007)
     })
-    it('sets the hours to zero', () => {
+    test('sets the hours to zero', () => {
       const res1 = dateService.createUTCFromDayMonthYear(30, 6, 2007)
       expect(res1.hour()).toBe(0)
     })
-    it('sets the minutes to zero', () => {
+    test('sets the minutes to zero', () => {
       const res1 = dateService.createUTCFromDayMonthYear(30, 6, 2007)
       expect(res1.minutes()).toBe(0)
     })
-    it('sets the seconds to zero', () => {
+    test('sets the seconds to zero', () => {
       const res1 = dateService.createUTCFromDayMonthYear(30, 6, 2007)
       expect(res1.seconds()).toBe(0)
     })
-    it('sets the milliseconds to zero', () => {
+    test('sets the milliseconds to zero', () => {
       const res1 = dateService.createUTCFromDayMonthYear(30, 6, 2007)
       expect(res1.milliseconds()).toBe(0)
     })
-    it('creates a moment date object from strings', () => {
+    test('creates a moment date object from strings', () => {
       const res1 = dateService.createUTCFromDayMonthYear('31', '7', '2008')
       expect(res1.toISOString()).toBe('2008-07-31T00:00:00.000Z')
     })
-    it('returns null if given an invalid date', () => {
+    test('returns null if given an invalid date', () => {
       const res1 = dateService.createUTCFromDayMonthYear(31, 6, 1999)
       expect(res1).toBeNull()
     })
-    it('returns null when arguments are missing', () => {
+    test('returns null when arguments are missing', () => {
       const res1 = dateService.createUTCFromDayMonthYear(undefined, undefined, undefined)
       expect(res1).toBeNull()
     })
-    it('returns null when an argument are null', () => {
+    test('returns null when an argument are null', () => {
       const res1 = dateService.createUTCFromDayMonthYear(null, null, null)
       expect(res1).toBeNull()
     })
   })
   describe('createLocalTimeFromDayMonthYear', () => {
-    it('creates a moment date object', () => {
+    test('creates a moment date object', () => {
       const res1 = dateService.createLocalTimeFromDayMonthYear(30, 6, 2007)
       expect(res1).toBeTruthy()
     })
-    it('sets the date of month', () => {
+    test('sets the date of month', () => {
       const res1 = dateService.createLocalTimeFromDayMonthYear(30, 6, 2007)
       expect(res1.date()).toBe(30)
     })
-    it('sets the month', () => {
+    test('sets the month', () => {
       const res1 = dateService.createLocalTimeFromDayMonthYear(30, 6, 2007)
       expect(res1.format('M')).toBe('6')
     })
-    it('sets the year', () => {
+    test('sets the year', () => {
       const res1 = dateService.createLocalTimeFromDayMonthYear(30, 6, 2007)
       expect(res1.year()).toBe(2007)
     })
-    it('sets the hours to zero', () => {
+    test('sets the hours to zero', () => {
       const res1 = dateService.createLocalTimeFromDayMonthYear(30, 6, 2007)
       expect(res1.hour()).toBe(0)
     })
-    it('sets the minutes to zero', () => {
+    test('sets the minutes to zero', () => {
       const res1 = dateService.createLocalTimeFromDayMonthYear(30, 6, 2007)
       expect(res1.minutes()).toBe(0)
     })
-    it('sets the seconds to zero', () => {
+    test('sets the seconds to zero', () => {
       const res1 = dateService.createLocalTimeFromDayMonthYear(30, 6, 2007)
       expect(res1.seconds()).toBe(0)
     })
-    it('sets the milliseconds to zero', () => {
+    test('sets the milliseconds to zero', () => {
       const res1 = dateService.createLocalTimeFromDayMonthYear(30, 6, 2007)
       expect(res1.milliseconds()).toBe(0)
     })
-    it('returns null if given an invalid date', () => {
+    test('returns null if given an invalid date', () => {
       const res1 = dateService.createLocalTimeFromDayMonthYear(31, 6, 1999)
       expect(res1).toBeNull()
     })
-    it('returns null when arguments are missing', () => {
+    test('returns null when arguments are missing', () => {
       const res1 = dateService.createLocalTimeFromDayMonthYear(undefined, undefined, undefined)
       expect(res1).toBeNull()
     })
-    it('returns null when an argument are null', () => {
+    test('returns null when an argument are null', () => {
       const res1 = dateService.createLocalTimeFromDayMonthYear(null, null, null)
       expect(res1).toBeNull()
     })
-    it('returns null when the date is invalid', () => {
+    test('returns null when the date is invalid', () => {
       const res1 = dateService.createLocalTimeFromDayMonthYear(99, 99, 99)
       expect(res1).toBeNull()
     })
   })
 
   describe('#formatFileName', () => {
-    it('correctly formats a date', () => {
+    test('correctly formats a date', () => {
       const date = new Date(2010, 11, 31, 14, 10, 0, 0)
       expect(dateService.formatFileName(date)).toBe('2010-12-31-1410')
     })
     invalidInputTests('formatUKDate')
   })
   describe('#isBetweenInclusive', () => {
-    it('returns true if the date matches the start date', () => {
+    test('returns true if the date matches the start date', () => {
       const testDate = moment('2016-10-30')
       const startDate = moment('2016-10-30')
       const endDate = moment('2016-12-30')
       const result = dateService.isBetweenInclusive(testDate, startDate, endDate)
       expect(result).toBeTruthy()
     })
-    it('returns true if the date matches the end date', () => {
+    test('returns true if the date matches the end date', () => {
       const testDate = moment('2016-12-30')
       const startDate = moment('2016-10-30')
       const endDate = moment('2016-12-30')
       const result = dateService.isBetweenInclusive(testDate, startDate, endDate)
       expect(result).toBeTruthy()
     })
-    it('returns true if the date is between the start and end dates', () => {
+    test('returns true if the date is between the start and end dates', () => {
       const testDate = moment('2016-11-01')
       const startDate = moment('2016-10-30')
       const endDate = moment('2016-12-30')
       const result = dateService.isBetweenInclusive(testDate, startDate, endDate)
       expect(result).toBeTruthy()
     })
-    it('returns false if the date is before the start date', () => {
+    test('returns false if the date is before the start date', () => {
       const testDate = moment('2016-10-29')
       const startDate = moment('2016-10-30')
       const endDate = moment('2016-12-30')
@@ -289,21 +293,21 @@ describe('date service', () => {
   })
 
   describe('getGdsDateRangeLabel', () => {
-    it('it lists the whole dates when the dates are not in the same month', () => {
+    test('it lists the whole dates when the dates are not in the same month', () => {
       const d1 = moment('2021-05-01T09:00:00')
       const d2 = moment('2021-06-20T23:59:59')
       const label = dateService.getGdsDateRangeLabel(d1, d2)
       expect(label).toBe('1 May 2021 to 20 June 2021')
     })
 
-    it('produces a condensed version when the two dates are in the same month and year', () => {
+    test('produces a condensed version when the two dates are in the same month and year', () => {
       const d1 = moment('2021-06-01T09:00:00')
       const d2 = moment('2021-06-07T23:59:59')
       const label = dateService.getGdsDateRangeLabel(d1, d2)
       expect(label).toBe('1 to 7 June 2021')
     })
 
-    it('handles the edge case when the month is the same but the year is different', () => {
+    test('handles the edge case when the month is the same but the year is different', () => {
       const d1 = moment('2020-05-01T09:00:00')
       const d2 = moment('2021-06-20T23:59:59')
       const label = dateService.getGdsDateRangeLabel(d1, d2)
@@ -312,21 +316,21 @@ describe('date service', () => {
   })
 
   describe('tzStartOfDDay', () => {
-    it('gives the start of the day when no tz is given during GMT', () => {
+    test('gives the start of the day when no tz is given during GMT', () => {
       setupFakeTime(moment('2020-12-20T10:30:00'))
       const dt = dateService.tzStartOfDay()
       expect(dt.toISOString()).toBe('2020-12-20T00:00:00.000Z')
       tearDownFakeTime()
     })
 
-    it('gives the start of the day when no tz is given during BST', () => {
+    test('gives the start of the day when no tz is given during BST', () => {
       setupFakeTime(moment('2020-06-23T10:30:00'))
       const dt = dateService.tzStartOfDay()
       expect(dt.toISOString()).toBe('2020-06-22T23:00:00.000Z') // 11pm GMT is midnight BST
       tearDownFakeTime()
     })
 
-    it('gives the start of the day when a TZ is given', () => {
+    test('gives the start of the day when a TZ is given', () => {
       setupFakeTime(moment('2021-04-12T10:30:00'))
       const dt = dateService.tzStartOfDay('Europe/Prague')
       expect(dt.toISOString()).toBe('2021-04-11T22:00:00.000Z') // Prague is GMT-2 in April
@@ -335,21 +339,21 @@ describe('date service', () => {
   })
 
   describe('tzEightAmToday', () => {
-    it('works correctly when no tz is given during GMT', () => {
+    test('works correctly when no tz is given during GMT', () => {
       setupFakeTime(moment('2020-12-20T10:30:00'))
       const dt = dateService.tzEightAmToday()
       expect(dt.toISOString()).toBe('2020-12-20T08:00:00.000Z')
       tearDownFakeTime()
     })
 
-    it('works correctly when when no tz is given during BST', () => {
+    test('works correctly when when no tz is given during BST', () => {
       setupFakeTime(moment('2020-06-23T10:30:00'))
       const dt = dateService.tzEightAmToday()
       expect(dt.toISOString()).toBe('2020-06-23T07:00:00.000Z') // 7am GMT is 8am BST
       tearDownFakeTime()
     })
 
-    it('works correctly when a TZ is given', () => {
+    test('works correctly when a TZ is given', () => {
       setupFakeTime(moment('2021-04-12T15:30:00'))
       const dt = dateService.tzEightAmToday('Europe/Prague')
       expect(dt.toISOString()).toBe('2021-04-12T06:00:00.000Z') // Prague is GMT-2 in April
@@ -358,14 +362,14 @@ describe('date service', () => {
   })
 
   describe('tzFourPmToday', () => {
-    it('works correctly when no tz is given during GMT', () => {
+    test('works correctly when no tz is given during GMT', () => {
       setupFakeTime(moment('2020-12-20T23:10:00'))
       const dt = dateService.tzFourPmToday()
       expect(dt.toISOString()).toBe('2020-12-20T16:00:00.000Z')
       tearDownFakeTime()
     })
 
-    it('works correctly when when no tz is given during BST', () => {
+    test('works correctly when when no tz is given during BST', () => {
       setupFakeTime(moment('2020-06-24T00:30:00.000+01:00')) // 12:30am in BST
       const dt = dateService.tzFourPmToday()
       expect(dt.toISOString()).toBe('2020-06-24T15:00:00.000Z') // Should keep the new day, and not lose it.  Note
@@ -373,7 +377,7 @@ describe('date service', () => {
       tearDownFakeTime()
     })
 
-    it('works correctly when a TZ is given', () => {
+    test('works correctly when a TZ is given', () => {
       setupFakeTime(moment('2021-04-12T16:00:00'))
       const dt = dateService.tzFourPmToday('Europe/London')
       expect(dt.toISOString()).toBe('2021-04-12T15:00:00.000Z') //  1500 GMT is 1600 BST.
@@ -382,14 +386,14 @@ describe('date service', () => {
   })
 
   describe('tzEndOfDay', () => {
-    it('works correctly when no tz is given during GMT', () => {
+    test('works correctly when no tz is given during GMT', () => {
       setupFakeTime(moment('2020-12-20T23:10:00'))
       const dt = dateService.tzEndOfDay()
       expect(dt.toISOString()).toBe('2020-12-20T23:59:59.999Z')
       tearDownFakeTime()
     })
 
-    it('works correctly when when no tz is given during BST', () => {
+    test('works correctly when when no tz is given during BST', () => {
       setupFakeTime(moment('2020-06-24T00:30:00.000+01:00')) // 12:30am in BST
       const dt = dateService.tzEndOfDay()
       expect(dt.toISOString()).toBe('2020-06-24T22:59:59.999Z') // Should keep the new day, and not lose it.  Note
@@ -397,7 +401,7 @@ describe('date service', () => {
       tearDownFakeTime()
     })
 
-    it('works correctly when a TZ is given', () => {
+    test('works correctly when a TZ is given', () => {
       setupFakeTime(moment('2021-04-12T16:00:00'))
       const dt = dateService.tzEndOfDay('Europe/London')
       expect(dt.toISOString()).toBe('2021-04-12T22:59:59.999Z') //  11pm GMT is 12PM BST.

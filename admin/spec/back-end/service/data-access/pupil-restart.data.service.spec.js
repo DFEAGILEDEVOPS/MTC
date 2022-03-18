@@ -1,5 +1,5 @@
 'use strict'
-/* global describe, beforeEach, it, expect, spyOn */
+/* global describe, beforeEach, test, expect, jest, afterEach */
 
 const pupilRestartMock = require('../../mocks/pupil-restart')
 const restartCodesMock = require('../../mocks/restart-codes')
@@ -9,13 +9,17 @@ const sqlService = require('../../../../services/data-access/sql.service')
 describe('pupil-restart.data.service', () => {
   let service
 
+  afterEach(() => {
+    jest.restoreAllMocks()
+  })
+
   describe('#sqlFindLatestRestart', () => {
     beforeEach(() => {
-      spyOn(sqlService, 'query').and.returnValue(Promise.resolve([pupilRestartMock]))
+      jest.spyOn(sqlService, 'query').mockResolvedValue([pupilRestartMock])
       service = require('../../../../services/data-access/pupil-restart.data.service')
     })
 
-    it('it makes the expected calls', async () => {
+    test('it makes the expected calls', async () => {
       const res = await service.sqlFindLatestRestart(pupilMock._id)
       expect(sqlService.query).toHaveBeenCalled()
       expect(typeof res).toBe('object')
@@ -24,11 +28,11 @@ describe('pupil-restart.data.service', () => {
 
   describe('#sqlFindRestartCodes', () => {
     beforeEach(() => {
-      spyOn(sqlService, 'query').and.returnValue(Promise.resolve(restartCodesMock))
+      jest.spyOn(sqlService, 'query').mockResolvedValue(restartCodesMock)
       service = require('../../../../services/data-access/pupil-restart.data.service')
     })
 
-    it('it makes the expected calls', async () => {
+    test('it makes the expected calls', async () => {
       const res = await service.sqlFindRestartCodes()
       expect(sqlService.query).toHaveBeenCalled()
       expect(Array.isArray(res)).toBe(true)
@@ -37,11 +41,11 @@ describe('pupil-restart.data.service', () => {
 
   describe('#sqlMarkRestartAsDeleted', () => {
     beforeEach(() => {
-      spyOn(sqlService, 'modifyWithTransactionAndResponse').and.returnValue({ rowsModified: 1 })
+      jest.spyOn(sqlService, 'modifyWithTransactionAndResponse').mockResolvedValue({ rowsModified: 1 })
       service = require('../../../../services/data-access/pupil-restart.data.service')
     })
 
-    it('it makes the expected calls', async () => {
+    test('it makes the expected calls', async () => {
       await service.sqlMarkRestartAsDeleted(pupilMock._id, 'some_id')
       expect(sqlService.modifyWithTransactionAndResponse).toHaveBeenCalled()
     })

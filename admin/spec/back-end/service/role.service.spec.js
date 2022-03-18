@@ -1,6 +1,6 @@
 'use strict'
 
-/* global describe it expect spyOn beforeEach test */
+/* global describe test expect jest beforeEach afterEach */
 const roles = require('../../../lib/consts/roles')
 const roleService = require('../../../services/role.service')
 
@@ -10,20 +10,19 @@ describe('role.service', () => {
     beforeEach(() => {
       roleDataService = require('../../../services/data-access/role.data.service')
     })
-    it('throws an error when name not provided', async () => {
-      spyOn(roleDataService, 'sqlFindOneByTitle')
-      try {
-        await roleService.findByTitle(undefined)
-        expect('error').toBe('to have been thrown')
-      } catch (error) {
-        expect(error).toBeDefined()
-        expect(error.message).toBe('roleTitle is required')
-      }
+
+    afterEach(() => {
+      jest.restoreAllMocks()
     })
 
-    it('returns entry provided by data service', async () => {
+    test('throws an error when name not provided', async () => {
+      jest.spyOn(roleDataService, 'sqlFindOneByTitle').mockImplementation()
+      await expect(roleService.findByTitle(undefined)).rejects.toThrow('roleTitle is required')
+    })
+
+    test('returns entry provided by data service', async () => {
       const serviceManagerRoleName = roles.serviceManager
-      spyOn(roleDataService, 'sqlFindOneByTitle').and.returnValue(Promise.resolve({ id: 1, name: serviceManagerRoleName }))
+      jest.spyOn(roleDataService, 'sqlFindOneByTitle').mockResolvedValue({ id: 1, name: serviceManagerRoleName })
       const actual = await roleService.findByTitle('a role that returns service manager')
       expect(actual).toBeDefined()
       expect(actual.id).toBe(1)

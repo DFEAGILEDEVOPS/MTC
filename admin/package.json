@@ -29,7 +29,7 @@
     "watch:integration": "yarn jest --watch --coverage=no --config ./tests-integration/jest.integration.config.js"
   },
   "mtc": {
-    "assets-version": "536d7e251d5c24416de339189a85addc"
+    "assets-version": "d751ca26ae5c9e59b075d9cdb5f7c021"
   },
   "engines": {
     "node": ">= 14"
@@ -180,6 +180,6 @@
       "<rootDir>/dist"
     ],
     "verbose": false,
-    "testRunner": "jest-jasmine2"
+    "testRunner": "jest-circus"
   }
 }

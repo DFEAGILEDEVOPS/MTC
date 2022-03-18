@@ -1,6 +1,6 @@
 'use strict'
 
-/* global describe, it, spyOn expect beforeEach afterEach jest */
+/* global describe test expect beforeEach afterEach jest */
 
 const moment = require('moment')
 const checkWindowErrorMessages = require('../../../../../lib/errors/check-window-v2')
@@ -10,7 +10,6 @@ const dateValidator = require('../../../../../lib/validator/common/date-validato
 describe('New check window date validator', function () {
   describe('validate', function () {
     let validationData
-    let addErrorSpy
     const validationError = new ValidationError()
     beforeEach(() => {
       validationData = {
@@ -28,69 +27,70 @@ describe('New check window date validator', function () {
         yearInvalidChars: checkWindowErrorMessages.adminEndYearInvalidChars,
         dateInThePast: 'adminEndDateInThePast'
       }
-      addErrorSpy = spyOn(validationError, 'addError').and.callThrough()
+      jest.spyOn(validationError, 'addError')
     })
     afterEach(() => {
       validationError.errors = {}
+      jest.restoreAllMocks()
     })
-    it('should not call addError method if the validation is successful', () => {
+    test('should not call addError method if the validation is successful', () => {
       dateValidator.validate(validationError, validationData)
       expect(validationError.addError).not.toHaveBeenCalled()
     })
-    it('calls addError with adminEndDayWrong message if the admin end day is missing', () => {
+    test('calls addError with adminEndDayWrong message if the admin end day is missing', () => {
       validationData.day = ''
       dateValidator.validate(validationError, validationData)
       expect(validationError.addError).toHaveBeenCalledWith('adminEndDay', checkWindowErrorMessages.adminEndDayWrong)
     })
-    it('calls addError with adminEndDayWrong and adminEndDayInvalidChars messages if the admin end day is invalid', () => {
+    test('calls addError with adminEndDayWrong and adminEndDayInvalidChars messages if the admin end day is invalid', () => {
       validationData.day = 'on'
       dateValidator.validate(validationError, validationData)
       expect(validationError.addError).toHaveBeenCalledWith('adminEndDay', checkWindowErrorMessages.adminEndDayWrong)
       expect(validationError.addError).toHaveBeenCalledWith('adminEndDay', checkWindowErrorMessages.adminEndDayInvalidChars)
     })
-    it('calls addError with adminEndMonthWrong, message if the admin end month is missing', () => {
+    test('calls addError with adminEndMonthWrong, message if the admin end month is missing', () => {
       validationData.month = ''
       dateValidator.validate(validationError, validationData)
       expect(validationError.addError).toHaveBeenCalledWith('adminEndMonth', checkWindowErrorMessages.adminEndMonthWrong)
     })
-    it('calls addError with adminEndMonthWrong and adminEndMonthInvalidChars messages if the admin end month is invalid', () => {
+    test('calls addError with adminEndMonthWrong and adminEndMonthInvalidChars messages if the admin end month is invalid', () => {
       validationData.month = 'tw'
       dateValidator.validate(validationError, validationData)
       expect(validationError.addError).toHaveBeenCalledWith('adminEndMonth', checkWindowErrorMessages.adminEndMonthWrong)
       expect(validationError.addError).toHaveBeenCalledWith('adminEndMonth', checkWindowErrorMessages.adminEndMonthInvalidChars)
     })
-    it('calls addError with adminEndYearWrong, message if the admin end year is missing', () => {
+    test('calls addError with adminEndYearWrong, message if the admin end year is missing', () => {
       validationData.year = ''
       dateValidator.validate(validationError, validationData)
       expect(validationError.addError).toHaveBeenCalledWith('adminEndYear', checkWindowErrorMessages.adminEndYearWrong)
     })
-    it('calls addError with adminEndYearWrong and adminEndYearInvalidChars messages if the admin end year is invalid', () => {
+    test('calls addError with adminEndYearWrong and adminEndYearInvalidChars messages if the admin end year is invalid', () => {
       validationData.year = 'th'
       dateValidator.validate(validationError, validationData)
       expect(validationError.addError).toHaveBeenCalledWith('adminEndYear', checkWindowErrorMessages.adminEndYearWrong)
       expect(validationError.addError).toHaveBeenCalledWith('adminEndYear', checkWindowErrorMessages.adminEndYearInvalidChars)
     })
-    it('calls addError with adminEndYearWrong and adminEndYearInvalidChars messages if the admin end year is invalid', () => {
+    test('calls addError with adminEndYearWrong and adminEndYearInvalidChars messages if the admin end year is invalid', () => {
       validationData.year = moment.utc().add(1, 'days').format('YY')
       dateValidator.validate(validationError, validationData)
       expect(validationError.addError).toHaveBeenCalledWith('adminEndYear', checkWindowErrorMessages.adminEndYearWrong)
       expect(validationError.addError).toHaveBeenCalledWith('adminEndYear', checkWindowErrorMessages.adminEndYearInvalidChars)
     })
-    it('calls addError with adminEndYearWrong and adminEndDateInThePast messages if the admin end year is in the past', () => {
+    test('calls addError with adminEndYearWrong and adminEndDateInThePast messages if the admin end year is in the past', () => {
       validationData.year = moment.utc().subtract(1, 'year').format('YYYY')
       if (validationData.day === '29' && validationData.month === '02') {
         validationData.day = '28' // well this is awkward
       }
       dateValidator.validate(validationError, validationData)
       expect(validationError.addError).toHaveBeenCalledWith('adminEndYear', checkWindowErrorMessages.adminEndYearWrong)
-      expect(addErrorSpy.calls.argsFor(1)).toEqual(['adminEndDateInThePast', true])
+      expect(validationError.addError.mock.calls[1]).toEqual(['adminEndDateInThePast', true])
     })
-    it('does not call addError with adminEndYearWrong and adminEndDateInThePast messages if the admin end year is today', () => {
+    test('does not call addError with adminEndYearWrong and adminEndDateInThePast messages if the admin end year is today', () => {
       validationData.year = moment.utc().format('YYYY')
       dateValidator.validate(validationError, validationData)
       expect(validationError.addError).not.toHaveBeenCalled()
     })
-    it('calls addError with adminEndDay message if the admin end day exceeds the maximum for the specific month', () => {
+    test('calls addError with adminEndDay message if the admin end day exceeds the maximum for the specific month', () => {
       validationData.day = '30'
       validationData.month = '02'
       validationData.year = moment.utc().add(1, 'days').format('YYYY')
@@ -98,7 +98,7 @@ describe('New check window date validator', function () {
       expect(validationError.errors.adminEndDay).toBeTruthy()
       expect(Object.keys(validationError.errors).length).toBe(1)
     })
-    it('test day with leading zero', () => {
+    test('test day with leading zero', () => {
       jest.useFakeTimers('modern')
       jest.setSystemTime(moment('2021-12-25T09:00').toDate())
       const data = {
@@ -117,10 +117,9 @@ describe('New check window date validator', function () {
         dateInThePast: 'adminEndDateInThePast'
       }
       // This is setting the `currentDay` var in the sut
-      spyOn(moment, 'utc').and.returnValue(moment('2021-02-01T09:01:02.333Z'))
+      jest.spyOn(moment, 'utc').mockReturnValue(moment('2021-02-01T09:01:02.333Z'))
       dateValidator.validate(validationError, data)
       expect(validationError.addError).not.toHaveBeenCalled()
-      jest.restoreAllMocks()
       jest.useRealTimers()
     })
   })

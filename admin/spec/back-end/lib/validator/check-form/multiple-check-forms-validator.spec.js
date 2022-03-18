@@ -1,5 +1,5 @@
 'use strict'
-/* global describe, it, expect beforeEach */
+/* global describe test expect beforeEach */
 
 const checkFormErrorMessages = require('../../../../../lib/errors/check-form')
 const multipleCheckFormsValidator = require('../../../../../lib/validator/check-form/multiple-check-forms-validator')
@@ -14,7 +14,7 @@ describe('multipleCheckFormsValidator', function () {
       }
     })
     describe('calls multiple check form validation and validates check form type', () => {
-      it('and returns a validation error object with no errors', async () => {
+      test('and returns a validation error object with no errors', async () => {
         const uploadedFiles = [
           { filename: 'filename.csv', file: 'spec/back-end/mocks/check-forms/check-form-valid.csv' },
           { filename: 'filename2.csv', file: 'spec/back-end/mocks/check-forms/check-form-valid.csv' }
@@ -27,7 +27,7 @@ describe('multipleCheckFormsValidator', function () {
         const multipleCheckFormErrors = multipleCheckFormsValidator.validate(uploadedFiles, existingCheckForms, checkFormTypes, checkFormType)
         expect(multipleCheckFormErrors.length).toBe(0)
       })
-      it('and returns a validation error object with duplicate check form name error', async () => {
+      test('and returns a validation error object with duplicate check form name error', async () => {
         const uploadedFiles = [
           { filename: 'filename.csv', file: 'spec/back-end/mocks/check-forms/check-form-valid.csv' },
           { filename: 'filename.csv', file: 'spec/back-end/mocks/check-forms/check-form-valid.csv' }
@@ -41,7 +41,7 @@ describe('multipleCheckFormsValidator', function () {
         const multipleCheckFormErrors = multipleCheckFormsValidator.validate(uploadedFiles, existingCheckForms, checkFormTypes, checkFormType)
         expect(multipleCheckFormErrors).toEqual([`${duplicateFileName} ${checkFormErrorMessages.duplicateCheckFormName}`])
       })
-      it('and returns a validation error object with max uploaded files reached error', async () => {
+      test('and returns a validation error object with max uploaded files reached error', async () => {
         const uploadedFiles = [
           { filename: 'filename.csv', file: 'spec/back-end/mocks/check-forms/check-form-valid.csv' },
           { filename: 'filename1.csv', file: 'spec/back-end/mocks/check-forms/check-form-valid.csv' },
@@ -64,7 +64,7 @@ describe('multipleCheckFormsValidator', function () {
         const multipleCheckFormErrors = multipleCheckFormsValidator.validate(uploadedFiles, existingCheckForms, checkFormTypes, checkFormType)
         expect(multipleCheckFormErrors).toEqual([checkFormErrorMessages.maxUploadedFiles])
       })
-      it('and returns a validation error object with multiple familiarisation forms error', async () => {
+      test('and returns a validation error object with multiple familiarisation forms error', async () => {
         const uploadedFiles = [
           { filename: 'filename.csv', file: 'spec/back-end/mocks/check-forms/check-form-valid.csv' },
           { filename: 'filename1.csv', file: 'spec/back-end/mocks/check-forms/check-form-valid.csv' }
@@ -77,7 +77,7 @@ describe('multipleCheckFormsValidator', function () {
         const multipleCheckFormErrors = multipleCheckFormsValidator.validate(uploadedFiles, existingCheckForms, checkFormTypes, checkFormType)
         expect(multipleCheckFormErrors).toEqual([checkFormErrorMessages.multipleFamiliarisationForms])
       })
-      it('and returns a validation error object with assigned existing familiarisation form error', async () => {
+      test('and returns a validation error object with assigned existing familiarisation form error', async () => {
         const uploadedFiles = [
           { filename: 'filename.csv', file: 'spec/back-end/mocks/check-forms/check-form-valid.csv' }
         ]
@@ -89,7 +89,7 @@ describe('multipleCheckFormsValidator', function () {
         const multipleCheckFormErrors = multipleCheckFormsValidator.validate(uploadedFiles, existingCheckForms, checkFormTypes, checkFormType)
         expect(multipleCheckFormErrors).toEqual([checkFormErrorMessages.familiarisationFormAssigned])
       })
-      it('and returns no validation error object with deleted assigned existing familiarisation form error', async () => {
+      test('and returns no validation error object with deleted assigned existing familiarisation form error', async () => {
         const uploadedFiles = [
           { filename: 'filename.csv', file: 'spec/back-end/mocks/check-forms/check-form-valid.csv' }
         ]
@@ -101,7 +101,7 @@ describe('multipleCheckFormsValidator', function () {
         const multipleCheckFormErrors = multipleCheckFormsValidator.validate(uploadedFiles, existingCheckForms, checkFormTypes, checkFormType)
         expect(multipleCheckFormErrors.length).toBe(0)
       })
-      it('and returns validation error object with assigned existing familiarisation form error that is not deleted', async () => {
+      test('and returns validation error object with assigned existing familiarisation form error that is not deleted', async () => {
         const uploadedFiles = [
           { filename: 'filename.csv', file: 'spec/back-end/mocks/check-forms/check-form-valid.csv' }
         ]

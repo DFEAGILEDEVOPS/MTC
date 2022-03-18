@@ -1,6 +1,6 @@
 'use strict'
 
-/* global describe it expect beforeEach spyOn fail */
+/* global describe test expect beforeEach afterEach jest */
 const sut = require('../../../services/prepare-check.service')
 const pinService = require('../../../services/pin.service')
 const redisService = require('../../../services/data-access/redis-cache.service')
@@ -9,8 +9,12 @@ const moment = require('moment')
 let check
 
 describe('prepare-check.service', () => {
+  afterEach(() => {
+    jest.restoreAllMocks()
+  })
+
   beforeEach(() => {
-    spyOn(pinService, 'generatePinTimestamp')
+    jest.spyOn(pinService, 'generatePinTimestamp').mockImplementation()
     check = {
       checkCode: 'check-code',
       schoolPin: 'school-pin',
@@ -39,28 +43,22 @@ describe('prepare-check.service', () => {
       ]
     }
   })
-  it('should be defined', () => {
+  test('should be defined', () => {
     expect(sut).toBeDefined()
   })
 
-  it('rejects an argument that is not an array', async () => {
-    try {
-      await sut.prepareChecks('bad argument')
-      fail('error should have been thrown')
-    } catch (error) {
-      expect(error).toBeDefined()
-      expect(error.message).toEqual('checks is not an array')
-    }
+  test('rejects an argument that is not an array', async () => {
+    await expect(sut.prepareChecks('bad argument')).rejects.toThrow('checks is not an array')
   })
 
-  it('should add each check with the expected cache key and a lookup item', async () => {
+  test('should add each check with the expected cache key and a lookup item', async () => {
     let actualPreparedCheckKey, actualPreparedCheckLookupKey, actualPupilUuidLookupKey
     check.schoolPin = 'schoolPin'
     check.pupilPin = 'pupilPin'
     const expectedPreparedCheckLookupKey = `prepared-check-lookup:${check.checkCode}`
     const expectedPreparedCheckKey = `preparedCheck:${check.schoolPin}:${check.pupilPin}`
     const expectedPupilUuidLookupKey = `pupil-uuid-lookup:${check.checkCode}`
-    spyOn(redisService, 'setMany').and.callFake((batch, ttl) => {
+    jest.spyOn(redisService, 'setMany').mockImplementation((batch, ttl) => {
       actualPreparedCheckKey = batch[0].key
       actualPreparedCheckLookupKey = batch[1].key
       actualPupilUuidLookupKey = batch[2].key
@@ -71,9 +69,9 @@ describe('prepare-check.service', () => {
     expect(actualPupilUuidLookupKey).toEqual(expectedPupilUuidLookupKey)
   })
 
-  it('should cache each item with the expected structure', async () => {
+  test('should cache each item with the expected structure', async () => {
     let cachedObject
-    spyOn(redisService, 'setMany').and.callFake((batch, ttl) => {
+    jest.spyOn(redisService, 'setMany').mockImplementation((batch, ttl) => {
       cachedObject = batch[0].value
     })
     await sut.prepareChecks([check])
@@ -89,11 +87,11 @@ describe('prepare-check.service', () => {
     expect(cachedObject.updatedAt).toBeDefined()
   })
 
-  it('should cache each item with the expected ttl', async () => {
+  test('should cache each item with the expected ttl', async () => {
     let actualPreparedCheckTtl, actualLookupKeyTtl
     const fullTestRunToleranceInSeconds = 60
     const fiveHoursInSeconds = 18000
-    spyOn(redisService, 'setMany').and.callFake((items) => {
+    jest.spyOn(redisService, 'setMany').mockImplementation((items) => {
       actualPreparedCheckTtl = items[0].ttl
       actualLookupKeyTtl = items[1].ttl
     })
