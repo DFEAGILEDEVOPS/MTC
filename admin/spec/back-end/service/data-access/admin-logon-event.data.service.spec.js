@@ -1,5 +1,5 @@
 'use strict'
-/* global describe beforeEach it expect spyOn */
+/* global describe beforeEach test expect jest afterEach */
 
 const sqlService = require('../../../../services/data-access/sql.service')
 const sqlModifyResponse = require('../../mocks/sql-modify-response')
@@ -8,10 +8,14 @@ const sut = require('../../../../services/data-access/admin-logon-event.data.ser
 describe('admin-logon-event.data.service', () => {
   describe('#sqlCreate', () => {
     beforeEach(() => {
-      spyOn(sqlService, 'create').and.returnValue(Promise.resolve(sqlModifyResponse))
+      jest.spyOn(sqlService, 'create').mockResolvedValue(sqlModifyResponse)
     })
 
-    it('makes the expected calls', async () => {
+    afterEach(() => {
+      jest.restoreAllMocks()
+    })
+
+    test('makes the expected calls', async () => {
       const data = { test: 'property' }
       await sut.sqlCreate(data)
       expect(sqlService.create).toHaveBeenCalledWith('[adminLogonEvent]', data)

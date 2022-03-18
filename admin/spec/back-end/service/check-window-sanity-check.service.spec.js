@@ -1,4 +1,4 @@
-/* global describe, it, expect, spyOn */
+/* global describe, test, expect, jest, afterEach */
 
 const checkWindowDataService = require('../../../services/data-access/check-window.data.service')
 const checkFormV2DataService = require('../../../services/data-access/check-form-v2.data.service')
@@ -10,23 +10,27 @@ const checkWindowMock = require('../mocks/check-window').legacy
 const checkFormMock = require('../mocks/check-form')
 
 describe('check-window-sanity-check.service', () => {
-  it('returns an error if there is no active checkwindow', async () => {
-    spyOn(checkWindowDataService, 'sqlFindOneCurrent')
-    spyOn(checkFormV2DataService, 'sqlFindCheckFormsByCheckWindowIdAndType')
+  afterEach(() => {
+    jest.restoreAllMocks()
+  })
+
+  test('returns an error if there is no active checkwindow', async () => {
+    jest.spyOn(checkWindowDataService, 'sqlFindOneCurrent').mockImplementation()
+    jest.spyOn(checkFormV2DataService, 'sqlFindCheckFormsByCheckWindowIdAndType').mockImplementation()
     const isLiveCheck = true
     const error = await checkWindowSanityCheckService.check(isLiveCheck)
     expect(error).toBe(serviceManagerErrorMessages.noCurrentCheckWindow)
   })
-  it('returns an error if there are no check forms assigned', async () => {
-    spyOn(checkWindowDataService, 'sqlFindOneCurrent').and.returnValue(checkWindowMock)
-    spyOn(checkFormV2DataService, 'sqlFindCheckFormsByCheckWindowIdAndType')
+  test('returns an error if there are no check forms assigned', async () => {
+    jest.spyOn(checkWindowDataService, 'sqlFindOneCurrent').mockResolvedValue(checkWindowMock)
+    jest.spyOn(checkFormV2DataService, 'sqlFindCheckFormsByCheckWindowIdAndType').mockImplementation()
     const isLiveCheck = true
     const error = await checkWindowSanityCheckService.check(isLiveCheck)
     expect(error).toBe(testDeveloperErrorMessages.noCheckFormsAssigned)
   })
-  it('returns undefined if there is an active check window and check forms assigned', async () => {
-    spyOn(checkWindowDataService, 'sqlFindOneCurrent').and.returnValue(checkWindowMock)
-    spyOn(checkFormV2DataService, 'sqlFindCheckFormsByCheckWindowIdAndType').and.returnValue([checkFormMock])
+  test('returns undefined if there is an active check window and check forms assigned', async () => {
+    jest.spyOn(checkWindowDataService, 'sqlFindOneCurrent').mockResolvedValue(checkWindowMock)
+    jest.spyOn(checkFormV2DataService, 'sqlFindCheckFormsByCheckWindowIdAndType').mockResolvedValue([checkFormMock])
     const isLiveCheck = true
     const result = await checkWindowSanityCheckService.check(isLiveCheck)
     expect(result).toBeUndefined()

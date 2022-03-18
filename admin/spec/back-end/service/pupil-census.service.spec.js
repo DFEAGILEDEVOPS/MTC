@@ -1,5 +1,5 @@
 'use strict'
-/* global spyOn, describe, it, expect, fail */
+/* global describe, expect, jest, test, afterEach */
 
 const pupilCensusService = require('../../../services/pupil-census.service')
 const jobDataService = require('../../../services/data-access/job.data.service')
@@ -48,119 +48,107 @@ const jobTypeMock = {
 }
 
 describe('pupilCensusService', () => {
-  describe('process', () => {
-    it('calls file validator', async () => {
-      spyOn(fileValidator, 'validate')
+  afterEach(() => {
+    jest.restoreAllMocks()
+  })
+
+  describe('validateFile', () => {
+    test('calls file validator', async () => {
+      jest.spyOn(fileValidator, 'validate').mockImplementation()
       await pupilCensusService.validateFile(pupilCensusUploadMock)
       expect(fileValidator.validate).toHaveBeenCalled()
     })
   })
+
   describe('upload2', () => {
-    it('reads the file into stream, creates a job record and uploads to blob storage', async () => {
-      spyOn(pupilCensusService, 'createJobRecord').and.returnValue({ id: 1, urlSlug: 'urlSlug' })
-      spyOn(azureBlobDataService, 'createContainerIfNotExists')
-      spyOn(azureBlobDataService, 'uploadLocalFile')
-      spyOn(jobDataService, 'sqlUpdateStatus')
+    test('reads the file into stream, creates a job record and uploads to blob storage', async () => {
+      jest.spyOn(pupilCensusService, 'createJobRecord').mockResolvedValue({ id: 1, urlSlug: 'urlSlug' })
+      jest.spyOn(azureBlobDataService, 'createContainerIfNotExists').mockImplementation()
+      jest.spyOn(azureBlobDataService, 'uploadLocalFile').mockImplementation()
+      jest.spyOn(jobDataService, 'sqlUpdateStatus').mockImplementation()
       await pupilCensusService.upload2(pupilCensusUploadMock)
       expect(pupilCensusService.createJobRecord).toHaveBeenCalled()
       expect(azureBlobDataService.createContainerIfNotExists).toHaveBeenCalled()
       expect(azureBlobDataService.uploadLocalFile).toHaveBeenCalled()
       expect(jobDataService.sqlUpdateStatus).not.toHaveBeenCalled()
     })
-    it('throws error if the job creation fails', async () => {
-      spyOn(pupilCensusService, 'createJobRecord').and.returnValue({})
-      spyOn(azureBlobDataService, 'createContainerIfNotExists')
-      spyOn(azureBlobDataService, 'uploadLocalFile')
-      spyOn(jobDataService, 'sqlUpdateStatus')
-      try {
-        await pupilCensusService.upload2(pupilCensusUploadMock)
-        fail()
-      } catch (error) {
-        expect(error.message).toBe('Job has not been created')
-      }
+    test('throws error if the job creation fails', async () => {
+      jest.spyOn(pupilCensusService, 'createJobRecord').mockResolvedValue({})
+      jest.spyOn(azureBlobDataService, 'createContainerIfNotExists').mockImplementation()
+      jest.spyOn(azureBlobDataService, 'uploadLocalFile').mockImplementation()
+      jest.spyOn(jobDataService, 'sqlUpdateStatus').mockImplementation()
+      await expect(pupilCensusService.upload2(pupilCensusUploadMock)).rejects.toThrowError('Job has not been created')
       expect(pupilCensusService.createJobRecord).toHaveBeenCalled()
       expect(azureBlobDataService.createContainerIfNotExists).not.toHaveBeenCalled()
       expect(azureBlobDataService.uploadLocalFile).not.toHaveBeenCalled()
       expect(jobDataService.sqlUpdateStatus).not.toHaveBeenCalled()
     })
-    it('calls sqlUpdateStatus with failed status code if if blob uploading fails', async () => {
+    test('calls sqlUpdateStatus with failed status code if if blob uploading fails', async () => {
       const error = new Error()
       error.message = 'error'
-      spyOn(pupilCensusService, 'createJobRecord').and.returnValue({ id: 1, urlSlug: 'urlSlug' })
-      spyOn(azureBlobDataService, 'createContainerIfNotExists')
-      spyOn(azureBlobDataService, 'uploadLocalFile').and.returnValue(Promise.reject(error))
-      spyOn(jobDataService, 'sqlUpdateStatus')
-      try {
-        await pupilCensusService.upload2(pupilCensusUploadMock)
-        fail()
-      } catch (error) {
-        expect(error.message).toBe('error')
-      }
+      jest.spyOn(pupilCensusService, 'createJobRecord').mockResolvedValue({ id: 1, urlSlug: 'urlSlug' })
+      jest.spyOn(azureBlobDataService, 'createContainerIfNotExists').mockImplementation()
+      jest.spyOn(azureBlobDataService, 'uploadLocalFile').mockRejectedValue(error)
+      jest.spyOn(jobDataService, 'sqlUpdateStatus').mockImplementation()
+      await expect(pupilCensusService.upload2(pupilCensusUploadMock)).rejects.toThrowError('error')
       expect(pupilCensusService.createJobRecord).toHaveBeenCalled()
       expect(azureBlobDataService.createContainerIfNotExists).toHaveBeenCalled()
       expect(azureBlobDataService.uploadLocalFile).toHaveBeenCalled()
       expect(jobDataService.sqlUpdateStatus).toHaveBeenCalledWith('urlSlug', 'FLD')
     })
   })
+
   describe('getUploadedFile', () => {
-    it('fetches a pupil census record and related status', async () => {
-      spyOn(jobDataService, 'sqlFindLatestByTypeId').and.returnValue(pupilCensusMock)
-      spyOn(jobTypeDataService, 'sqlFindOneByTypeCode').and.returnValue(jobTypeMock)
+    test('fetches a pupil census record and related status', async () => {
+      jest.spyOn(jobDataService, 'sqlFindLatestByTypeId').mockResolvedValue(pupilCensusMock)
+      jest.spyOn(jobTypeDataService, 'sqlFindOneByTypeCode').mockResolvedValue(jobTypeMock)
       await pupilCensusService.getUploadedFile()
       expect(jobDataService.sqlFindLatestByTypeId).toHaveBeenCalled()
       expect(jobTypeDataService.sqlFindOneByTypeCode).toHaveBeenCalled()
     })
-    it('returns if no pupil census record is found', async () => {
-      spyOn(jobDataService, 'sqlFindLatestByTypeId')
-      spyOn(jobTypeDataService, 'sqlFindOneByTypeCode').and.returnValue(jobTypeMock)
+    test('returns if no pupil census record is found', async () => {
+      jest.spyOn(jobDataService, 'sqlFindLatestByTypeId').mockImplementation()
+      jest.spyOn(jobTypeDataService, 'sqlFindOneByTypeCode').mockResolvedValue(jobTypeMock)
       await pupilCensusService.getUploadedFile()
       expect(jobDataService.sqlFindLatestByTypeId).toHaveBeenCalled()
       expect(jobTypeDataService.sqlFindOneByTypeCode).toHaveBeenCalled()
     })
-    it('throws an error pupil census record does not have a job status code', async () => {
-      spyOn(jobTypeDataService, 'sqlFindOneByTypeCode').and.returnValue(jobTypeMock)
+    test('throws an error pupil census record does not have a job status code', async () => {
+      jest.spyOn(jobTypeDataService, 'sqlFindOneByTypeCode').mockResolvedValue(jobTypeMock)
       const errorPupilCensusMock = Object.assign({}, pupilCensusMock)
       errorPupilCensusMock.jobStatusCode = undefined
-      spyOn(jobDataService, 'sqlFindLatestByTypeId').and.returnValue(errorPupilCensusMock)
-      try {
-        await pupilCensusService.getUploadedFile()
-        fail()
-      } catch (error) {
-        expect(error.message).toBe('Pupil census record does not have a job status reference')
-      }
+      jest.spyOn(jobDataService, 'sqlFindLatestByTypeId').mockResolvedValue(errorPupilCensusMock)
+      await expect(pupilCensusService.getUploadedFile()).rejects.toThrowError('Pupil census record does not have a job status reference')
       expect(jobDataService.sqlFindLatestByTypeId).toHaveBeenCalled()
       expect(jobTypeDataService.sqlFindOneByTypeCode).toHaveBeenCalled()
     })
   })
-  describe('create', () => {
-    it('calls sqlCreate method to create the pupil census record', async () => {
-      spyOn(jobDataService, 'sqlCreate')
-      spyOn(jobTypeDataService, 'sqlFindOneByTypeCode').and.returnValue(jobTypeMock)
-      spyOn(jobStatusDataService, 'sqlFindOneByTypeCode').and.returnValue(jobStatusSubmittedMock)
+
+  describe('createJobRecord', () => {
+    test('calls sqlCreate method to create the pupil census record', async () => {
+      jest.spyOn(jobDataService, 'sqlCreate').mockImplementation()
+      jest.spyOn(jobTypeDataService, 'sqlFindOneByTypeCode').mockResolvedValue(jobTypeMock)
+      jest.spyOn(jobStatusDataService, 'sqlFindOneByTypeCode').mockResolvedValue(jobStatusSubmittedMock)
       await pupilCensusService.createJobRecord(pupilCensusMock, { output: 'Inserted 5000 rows' })
       expect(jobDataService.sqlCreate).toHaveBeenCalled()
     })
   })
+
   describe('remove', () => {
-    it('calls sqlUpdate method to update the pupil census record with the deleted status', async () => {
-      spyOn(pupilCensusDataService, 'sqlDeletePupilsByJobId')
-      spyOn(jobStatusDataService, 'sqlFindOneByTypeCode').and.returnValue(jobStatusDeletedMock)
-      spyOn(jobDataService, 'sqlUpdate')
+    test('calls sqlUpdate method to update the pupil census record with the deleted status', async () => {
+      jest.spyOn(pupilCensusDataService, 'sqlDeletePupilsByJobId').mockImplementation()
+      jest.spyOn(jobStatusDataService, 'sqlFindOneByTypeCode').mockResolvedValue(jobStatusDeletedMock)
+      jest.spyOn(jobDataService, 'sqlUpdate').mockImplementation()
       await pupilCensusService.remove(1)
       expect(pupilCensusDataService.sqlDeletePupilsByJobId).toHaveBeenCalled()
       expect(jobStatusDataService.sqlFindOneByTypeCode).toHaveBeenCalledWith('DEL')
       expect(jobDataService.sqlUpdate).toHaveBeenCalled()
     })
-    it('throws an error when argument passed is undefined', async () => {
-      spyOn(pupilCensusDataService, 'sqlDeletePupilsByJobId')
-      spyOn(jobStatusDataService, 'sqlFindOneByTypeCode')
-      spyOn(jobDataService, 'sqlUpdate')
-      try {
-        await pupilCensusService.remove(undefined)
-        fail()
-      } catch (error) {
-        expect(error.message).toBe('No pupil census id is provided for deletion')
-      }
+    test('throws an error when argument passed is undefined', async () => {
+      jest.spyOn(pupilCensusDataService, 'sqlDeletePupilsByJobId').mockImplementation()
+      jest.spyOn(jobStatusDataService, 'sqlFindOneByTypeCode').mockImplementation()
+      jest.spyOn(jobDataService, 'sqlUpdate').mockImplementation()
+      await expect(pupilCensusService.remove(undefined)).rejects.toThrow('No pupil census id is provided for deletion')
       expect(pupilCensusDataService.sqlDeletePupilsByJobId).not.toHaveBeenCalled()
       expect(jobStatusDataService.sqlFindOneByTypeCode).not.toHaveBeenCalledWith('DEL')
       expect(jobDataService.sqlUpdate).not.toHaveBeenCalled()

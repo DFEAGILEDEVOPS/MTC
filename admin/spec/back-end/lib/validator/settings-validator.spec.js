@@ -1,6 +1,6 @@
 'use strict'
 
-/* global beforeEach, describe, it, expect */
+/* global beforeEach, describe, test, expect */
 
 const settingsValidator = require('../../../../lib/validator/settings-validator')
 
@@ -26,13 +26,13 @@ describe('Settings validator', function () {
     }
   })
 
-  it('should allow a valid request', async () => {
+  test('should allow a valid request', async () => {
     req.body = getBody()
     const validationError = await settingsValidator.validate(req.body)
     expect(validationError.hasError()).toBe(false)
   })
 
-  it('should require questionTimeLimit as mandatory', async () => {
+  test('should require questionTimeLimit as mandatory', async () => {
     req.body = getBody()
     req.body.questionTimeLimit = ''
     const validationError = await settingsValidator.validate(req.body)
@@ -40,7 +40,7 @@ describe('Settings validator', function () {
     expect(validationError.isError('questionTimeLimit')).toBe(true)
   })
 
-  it('should require questionTimeLimit to be at least 1', async () => {
+  test('should require questionTimeLimit to be at least 1', async () => {
     req.body = getBody()
     req.body.questionTimeLimit = '0'
     const validationError = await settingsValidator.validate(req.body)
@@ -48,7 +48,7 @@ describe('Settings validator', function () {
     expect(validationError.isError('questionTimeLimit')).toBe(true)
   })
 
-  it('should require questionTimeLimit to be not greater than 60', async () => {
+  test('should require questionTimeLimit to be not greater than 60', async () => {
     req.body = getBody()
     req.body.questionTimeLimit = '62'
     const validationError = await settingsValidator.validate(req.body)
@@ -56,7 +56,7 @@ describe('Settings validator', function () {
     expect(validationError.isError('questionTimeLimit')).toBe(true)
   })
 
-  it('should require loadingTimeLimit as mandatory', async () => {
+  test('should require loadingTimeLimit as mandatory', async () => {
     req.body = getBody()
     req.body.loadingTimeLimit = ''
     const validationError = await settingsValidator.validate(req.body)
@@ -64,7 +64,7 @@ describe('Settings validator', function () {
     expect(validationError.isError('loadingTimeLimit')).toBe(true)
   })
 
-  it('should require loadingTimeLimit to be at least 1', async () => {
+  test('should require loadingTimeLimit to be at least 1', async () => {
     req.body = getBody()
     req.body.loadingTimeLimit = '0'
     const validationError = await settingsValidator.validate(req.body)
@@ -72,7 +72,7 @@ describe('Settings validator', function () {
     expect(validationError.isError('loadingTimeLimit')).toBe(true)
   })
 
-  it('should require loadingTimeLimit to be no more than 5', async () => {
+  test('should require loadingTimeLimit to be no more than 5', async () => {
     req.body = getBody()
     req.body.loadingTimeLimit = '7'
     const validationError = await settingsValidator.validate(req.body)
@@ -80,7 +80,7 @@ describe('Settings validator', function () {
     expect(validationError.isError('loadingTimeLimit')).toBe(true)
   })
 
-  it('should require checkTimeLimit as mandatory', async () => {
+  test('should require checkTimeLimit as mandatory', async () => {
     req.body = getBody()
     req.body.checkTimeLimit = ''
     const validationError = await settingsValidator.validate(req.body)
@@ -88,7 +88,7 @@ describe('Settings validator', function () {
     expect(validationError.isError('checkTimeLimit')).toBe(true)
   })
 
-  it('should require checkTimeLimit to be at least 10', async () => {
+  test('should require checkTimeLimit to be at least 10', async () => {
     req.body = getBody()
     req.body.checkTimeLimit = '9'
     const validationError = await settingsValidator.validate(req.body)
@@ -96,7 +96,7 @@ describe('Settings validator', function () {
     expect(validationError.isError('checkTimeLimit')).toBe(true)
   })
 
-  it('should require checkTimeLimit to be not greater than 90', async () => {
+  test('should require checkTimeLimit to be not greater than 90', async () => {
     req.body = getBody()
     req.body.checkTimeLimit = '91'
     const validationError = await settingsValidator.validate(req.body)
