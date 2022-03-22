@@ -110,5 +110,4 @@ Feature:
       | /service-manager/mod-settings             |
       | /test-developer/view-forms                |
       | /test-developer/upload-new-forms          |
-      | /test-developer/download-pupil-check-data |
       | /test-developer/view-pupil-payload        |

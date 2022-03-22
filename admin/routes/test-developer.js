@@ -18,16 +18,6 @@ router.get('/home',
   testDeveloperController.getTestDeveloperHomePage
 )
 
-router.get('/download-pupil-check-data',
-  isAuthenticated(roles.testDeveloper),
-  testDeveloperController.getDownloadPupilCheckData
-)
-
-router.get('/file-download-pupil-check-data/:urlSlug',
-  isAuthenticated(roles.testDeveloper),
-  testDeveloperController.getFileDownloadPupilCheckData
-)
-
 router.get('/view-pupil-payload',
   isAuthenticated(roles.testDeveloper),
   payloadController.getViewPayloadForm

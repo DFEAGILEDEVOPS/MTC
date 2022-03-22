@@ -1,10 +1,10 @@
-/* global describe, expect, it */
+/* global describe, expect, test */
 
 const attendanceCodesPresenter = require('../../../helpers/attendance-codes-presenter')
 
 describe('attendanceCodesPresenter', () => {
   describe('getPresentationData', () => {
-    it('returns alphabetically sorted attendance codes data by reason', () => {
+    test('returns alphabetically sorted attendance codes data by reason', () => {
       const attendanceCodes = [
         {
           id: 1,

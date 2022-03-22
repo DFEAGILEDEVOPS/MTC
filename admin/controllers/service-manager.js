@@ -15,6 +15,8 @@ const featureToggles = require('feature-toggles')
 const { formUtil, formUtilTypes } = require('../lib/form-util')
 const organisationBulkUploadService = require('../services/organisation-bulk-upload.service')
 const administrationMessageService = require('../services/administration-message.service')
+const { JobService } = require('../services/job-service/job.service')
+
 const controller = {
 
   /**
@@ -109,19 +111,16 @@ const controller = {
   getUploadPupilCensus: async function getUploadPupilCensus (req, res, next, error = null) {
     res.locals.pageTitle = 'Upload pupil census'
     req.breadcrumbs(res.locals.pageTitle)
-    let pupilCensus
     let templateFileSize
     try {
       const templateFile = 'assets/csv/mtc-census-headers.csv'
       templateFileSize = uploadedFileService.getFilesize(templateFile)
-      pupilCensus = await pupilCensusService.getUploadedFile()
     } catch (error) {
       return next(error)
     }
     res.render('service-manager/upload-pupil-census', {
       breadcrumbs: req.breadcrumbs(),
       messages: res.locals.messages,
-      pupilCensus,
       templateFileSize,
       fileErrors: error || new ValidationError()
     })
@@ -137,7 +136,7 @@ const controller = {
   postUploadPupilCensus: async function postUploadPupilCensus (req, res, next) {
     const uploadFile = req.files && req.files.csvPupilCensusFile
     try {
-      const validationError = await pupilCensusService.process(uploadFile)
+      const validationError = await pupilCensusService.validateFile(uploadFile)
       if (validationError.hasError()) {
         return controller.getUploadPupilCensus(req, res, next, validationError)
       }
@@ -145,8 +144,8 @@ const controller = {
     } catch (error) {
       return next(error)
     }
-    req.flash('info', 'File has been uploaded')
-    res.redirect('/service-manager/upload-pupil-census')
+    req.flash('info', 'Pupil Census file has been uploaded')
+    res.redirect('/service-manager/jobs')
   },
 
   /**
@@ -501,9 +500,9 @@ const controller = {
       if (validationError.hasError()) {
         return controller.getUploadOrganisations(req, res, next, validationError)
       }
-      const jobSlug = await organisationBulkUploadService.upload(uploadFile)
-      req.flash('info', 'File has been uploaded')
-      res.redirect(`/service-manager/organisations/upload/${jobSlug.toLowerCase()}`)
+      await organisationBulkUploadService.upload(uploadFile)
+      req.flash('info', 'Organisation file has been uploaded')
+      res.redirect('/service-manager/jobs')
     } catch (error) {
       return next(error)
     }
@@ -540,6 +539,47 @@ const controller = {
     } catch (error) {
       res.type('txt')
       res.send(`${error}`)
+    }
+  },
+
+  /**
+   * @description Renders job list
+   * @param {object} req
+   * @param {object} res
+   * @param {object} next
+   */
+  getJobs: async function getJobs (req, res, next) {
+    try {
+      res.locals.pageTitle = 'View Jobs'
+      req.breadcrumbs(res.locals.pageTitle)
+      const jobs = await JobService.getJobSummary()
+      res.render('service-manager/jobs', {
+        breadcrumbs: req.breadcrumbs(),
+        jobs
+      })
+    } catch (error) {
+      return next(error)
+    }
+  },
+
+  /**
+ * @description Renders audit payload
+ * @param {object} req
+ * @param {object} res
+ * @param {object} next
+ */
+  getJobOutputs: async function getJobOutputs (req, res, next) {
+    try {
+      const urlSlug = req.query.urlSlug.trim()
+      const payload = await JobService.getJobOutputs(urlSlug)
+      res.set({
+        'Content-Disposition': 'attachment; filename="job-output.zip"',
+        'Content-type': 'application/octet-stream',
+        'Content-Length': payload.length // Buffer.length (bytes)
+      })
+      res.send(payload)
+    } catch (error) {
+      next(error)
     }
   }
 }

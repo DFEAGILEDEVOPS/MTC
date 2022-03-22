@@ -1,8 +1,8 @@
 import { TYPES } from 'mssql'
-import { SqlService } from '../../sql/sql.service'
+import { IModifyResult, SqlService } from '../../sql/sql.service'
 
 export interface IPupilLoginDataService {
-  updateCheckWithLoginTimestamp (checkCode: string, loginDateTime: Date): Promise<void>
+  updateCheckWithLoginTimestamp (checkCode: string, loginDateTime: Date): Promise<IModifyResult>
 }
 
 export class PupilLoginDataService implements IPupilLoginDataService {
@@ -12,7 +12,7 @@ export class PupilLoginDataService implements IPupilLoginDataService {
     this.sqlService = new SqlService()
   }
 
-  async updateCheckWithLoginTimestamp (checkCode: string, loginDateTime: Date): Promise<void> {
+  async updateCheckWithLoginTimestamp (checkCode: string, loginDateTime: Date): Promise<IModifyResult> {
     const sql = `UPDATE [mtc_admin].[check]
                     SET pupilLoginDate = @loginDate
                   WHERE checkCode = @checkCode

@@ -12,19 +12,17 @@ export class FakeCheckInputsGeneratorService {
         inputs.push({
           input: char,
           clientTimestamp: moment().toISOString(),
-          eventType: InputEventType.KeyDown,
+          eventType: InputEventType.Keyboard,
           question: `${answer.factor1}x${answer.factor2}`,
-          sequenceNumber: answer.sequenceNumber,
-          relativeTiming: '+0'
+          sequenceNumber: answer.sequenceNumber
         })
       }
       inputs.push({
         input: 'Enter',
         clientTimestamp: moment().toISOString(),
-        eventType: InputEventType.KeyDown,
+        eventType: InputEventType.Keyboard,
         question: `${answer.factor1}x${answer.factor2}`,
-        sequenceNumber: answer.sequenceNumber,
-        relativeTiming: '+0'
+        sequenceNumber: answer.sequenceNumber
       })
     }
     return inputs

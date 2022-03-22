@@ -1,5 +1,5 @@
 'use strict'
-/* global describe, beforeEach, test, expect, spyOn */
+/* global describe, beforeEach, test, expect, jest, afterEach */
 const redisService = require('../../../services/data-access/redis-cache.service')
 const logService = require('../../../services/log.service')
 const laCodeDataService = require('../../../services/data-access/la-code.data.service')
@@ -10,21 +10,25 @@ describe('la code service', () => {
 
   beforeEach(() => {
     logger = logService.getLogger()
-    spyOn(logger, 'info') // shush
+    jest.spyOn(logger, 'info').mockImplementation() // shush
+  })
+
+  afterEach(() => {
+    jest.restoreAllMocks()
   })
 
   test('it retrieves the la codes from redis first', async () => {
-    spyOn(redisService, 'get').and.returnValue(Promise.resolve([201, 202, 203]))
-    spyOn(laCodeDataService, 'sqlGetLaCodes').and.returnValue([])
+    jest.spyOn(redisService, 'get').mockResolvedValue([201, 202, 203])
+    jest.spyOn(laCodeDataService, 'sqlGetLaCodes').mockReturnValue([])
     const codes = await sut.getLaCodes()
     expect(redisService.get).toHaveBeenCalled()
     expect(codes).toStrictEqual([201, 202, 203])
   })
 
   test('it retrieves codes from the database if they are not in redis', async () => {
-    spyOn(redisService, 'get').and.returnValue(Promise.resolve(undefined))
-    spyOn(laCodeDataService, 'sqlGetLaCodes').and.returnValue([201, 202, 203])
-    spyOn(redisService, 'set')
+    jest.spyOn(redisService, 'get').mockImplementation()
+    jest.spyOn(laCodeDataService, 'sqlGetLaCodes').mockResolvedValue([201, 202, 203])
+    jest.spyOn(redisService, 'set').mockImplementation()
     const codes = await sut.getLaCodes()
     expect(redisService.get).toHaveBeenCalled()
     expect(laCodeDataService.sqlGetLaCodes).toHaveBeenCalled()
@@ -32,9 +36,9 @@ describe('la code service', () => {
   })
 
   test('it sets the codes in redis if it retrieves from the database', async () => {
-    spyOn(redisService, 'get').and.returnValue(Promise.resolve(undefined))
-    spyOn(laCodeDataService, 'sqlGetLaCodes').and.returnValue([201, 202, 203])
-    spyOn(redisService, 'set')
+    jest.spyOn(redisService, 'get').mockImplementation()
+    jest.spyOn(laCodeDataService, 'sqlGetLaCodes').mockResolvedValue([201, 202, 203])
+    jest.spyOn(redisService, 'set').mockImplementation()
     const codes = await sut.getLaCodes()
     expect(redisService.get).toHaveBeenCalled()
     expect(laCodeDataService.sqlGetLaCodes).toHaveBeenCalled()
@@ -42,7 +46,7 @@ describe('la code service', () => {
   })
 
   test('getLaCodeSetOfStrings returns a set of the la codes', async () => {
-    spyOn(redisService, 'get').and.returnValue(Promise.resolve([1, 201, 202, 203]))
+    jest.spyOn(redisService, 'get').mockResolvedValue([1, 201, 202, 203])
     const set = await sut.getLaCodeSetOfStrings()
     expect(set instanceof Set).toBe(true)
     expect(set.has('001')).toBe(true)

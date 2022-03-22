@@ -1,11 +1,11 @@
 'use strict'
 
-/* global describe, it, expect */
+/* global describe, test, expect */
 
 const randomGenerator = require('../../../lib/random-generator')
 
 describe('random-generator', () => {
-  it('returns a random string', () => {
+  test('returns a random string', () => {
     const len = 10
     const chars = 'abcdefghijklmnop'
     const r1 = randomGenerator.getRandom(len, chars)
@@ -13,7 +13,7 @@ describe('random-generator', () => {
     expect(r1.match(/^[a-p]{10}$/)).toBeTruthy()
   })
 
-  it('throws an error if chars are not given', () => {
+  test('throws an error if chars are not given', () => {
     expect(
       function () { randomGenerator.getRandom(10, '') }
     ).toThrowError('Argument \'chars\' is undefined')
@@ -22,7 +22,7 @@ describe('random-generator', () => {
     ).toThrowError('Argument \'chars\' is undefined')
   })
 
-  it('throws an error if chars are too long', () => {
+  test('throws an error if chars are too long', () => {
     expect(
       function () { randomGenerator.getRandom(10, 'c'.repeat(257)) }
     ).toThrowError(`Argument 'chars' should not have more than 256 characters,

@@ -1,47 +1,37 @@
 'use strict'
 
-/* global describe expect it fail */
+/* global describe expect test */
 
 const redisKeyService = require('../../../services/redis-key.service')
 const sut = redisKeyService
 
 describe('redis-key.service', () => {
   describe('getPupilRegisterViewDataKey', () => {
-    it('returns the pupil register view key based on school id', () => {
-      let keyName
-      try {
-        keyName = redisKeyService.getPupilRegisterViewDataKey(1)
-      } catch (ignore) {
-        fail()
-      }
+    test('returns the pupil register view key based on school id', () => {
+      const keyName = redisKeyService.getPupilRegisterViewDataKey(1)
       expect(keyName).toBe('pupilRegisterViewData:1')
     })
-    it('throws an error if school id is not provided', () => {
-      try {
-        redisKeyService.getPupilRegisterViewDataKey(undefined)
-        fail()
-      } catch (error) {
-        expect(error.message).toBe('School id parameter not provided')
-      }
+    test('throws an error if school id is not provided', () => {
+      expect(() => { redisKeyService.getPupilRegisterViewDataKey(undefined) }).toThrowError('School id parameter not provided')
     })
   })
 
   describe('getSasTokenKey', () => {
-    it('is defined', () => {
+    test('is defined', () => {
       expect(sut.getSasTokenKey).toBeDefined()
     })
 
-    it('returns the redis key value for the queue', () => {
+    test('returns the redis key value for the queue', () => {
       expect(sut.getSasTokenKey('fooQueue')).toBe('sasToken:fooQueue')
     })
   })
 
   describe('getSchoolResultsKey', () => {
-    it('is defined', () => {
+    test('is defined', () => {
       expect(sut.getSchoolResultsKey).toBeDefined()
     })
 
-    it('returns the redis key for the school', () => {
+    test('returns the redis key for the school', () => {
       expect(sut.getSchoolResultsKey(321)).toBe('result:321')
     })
   })

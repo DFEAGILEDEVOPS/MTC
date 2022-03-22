@@ -2,7 +2,7 @@ When(/^the data sync and ps report function has run$/) do
   step 'the data sync function has run'
   sleep ENV['PS_REPORT_WAIT_TIME'].to_i
   uuid = SqlDbHelper.find_school(@school_id)['urlSlug']
-  response = FunctionsHelper.trigger_func('ps-report-2-pupil-data', {name: @school_name, uuid: uuid})
+  response = FunctionsHelper.trigger_ps_function('ps-report-2-pupil-data', {name: @school_name, uuid: uuid})
   expect(response.code).to eql 202
   sleep ENV['PS_REPORT_WAIT_TIME'].to_i
   wait_until(600, 20) {SqlDbHelper.count_all_ps_records_for_school(@school_id) == @upns_for_school.size + [@details_hash[:upn]].size}

@@ -57,3 +57,8 @@ $govuk-global-styles: true;
   display: table;
   clear: both;
 }
+
+// A way to hide radio buttons on a form.  Used in cookies-form.ejs
+.mtc-not-visible-not-accessible {
+  visibility: hidden;
+}

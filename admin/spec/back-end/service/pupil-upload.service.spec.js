@@ -13,9 +13,17 @@ const dummyCSV = {
   file: path.join(__dirname, '../../../data/fixtures/dummy.csv')
 }
 
-/* global beforeEach, describe, it, expect spyOn jest */
+/* global beforeEach, describe, xdescribe, expect, test, jest, afterEach */
 
 describe('pupil-upload service', () => {
+  afterEach(() => {
+    jest.restoreAllMocks()
+  })
+
+  beforeEach(() => {
+    redisCacheService.drop = jest.fn()
+  })
+
   describe('upload', () => {
     beforeEach(() => {
       validateCSVService.process = jest.fn(async () => {
@@ -24,10 +32,9 @@ describe('pupil-upload service', () => {
           hasValidationError: true
         }
       })
-      redisCacheService.drop = jest.fn()
     })
 
-    it('returns an object after utilizing the promisified csv library', async () => {
+    test('returns an object after utilizing the promisified csv library', async () => {
       const pr = await pupilUploadService.upload(schoolMock, dummyCSV)
       expect(pr).toBeDefined()
       expect(typeof pr).toBe('object')
@@ -35,61 +42,66 @@ describe('pupil-upload service', () => {
     })
   })
 
-  describe('generates csv validation errors', () => {
+  xdescribe('generates csv validation errors', () => {
     beforeEach(() => {
-      spyOn(validateCSVService, 'process').and.returnValue({
+      jest.spyOn(validateCSVService, 'process').mockResolvedValue({
         csvData: [['test', 'test', 'test', 'test', 'test', 'test', 'Error'],
           ['test', 'test', 'test', 'test', 'test', 'test', 'Error']]
       })
+    })
 
-      describe('on csv error', () => {
-        beforeEach(() => {
-          spyOn(generateErrorCSVService, 'generate').and.returnValue({ file: { name: 'test.csv' } })
-        })
-
-        it('returns error csv file if csv has errors', async () => {
-          const pr = await pupilUploadService.upload(schoolMock, dummyCSV)
-          expect(pr.csvErrorFile).toBe('test.csv')
-        })
-      })
-      describe('on csv generation error', () => {
-        spyOn(generateErrorCSVService, 'generate').and.returnValue({ error: 'error' })
+    describe('on csv error', () => {
+      beforeEach(() => {
+        jest.spyOn(generateErrorCSVService, 'generate').mockResolvedValue({ file: { name: 'test.csv' } })
       })
 
-      it('returns error csv file if csv has errors', async () => {
+      test('returns error csv file if csv has errors', async () => {
         const pr = await pupilUploadService.upload(schoolMock, dummyCSV)
-        expect(pr.error).toBe('error')
+        expect(pr.csvErrorFile).toBe('test.csv')
       })
+    })
+
+    describe('on csv generation error', () => {
+      jest.spyOn(generateErrorCSVService, 'generate').mockResolvedValue({ error: 'error' })
+    })
+
+    test('returns error csv file if csv has errors', async () => {
+      const pr = await pupilUploadService.upload(schoolMock, dummyCSV)
+      expect(pr.error).toBe('error')
     })
   })
 
   describe('attempts to save csv errors', () => {
     beforeEach(() => {
-      spyOn(validateCSVService, 'process').and.returnValue({
+      jest.spyOn(validateCSVService, 'process').mockResolvedValue({
         csvData: [['test', 'test', 'test', 'test', 'test', 'test'],
           ['test', 'test', 'test', 'test', 'test', 'test']]
       })
-      spyOn(generateErrorCSVService, 'generate').and.returnValue({ file: { name: 'test.csv' } })
+      jest.spyOn(generateErrorCSVService, 'generate').mockResolvedValue({ file: { name: 'test.csv' } })
     })
+
     describe('and returns an object with pupils', () => {
       beforeEach(() => {
-        spyOn(pupilDataService, 'sqlInsertMany').and.returnValue({ insertId: [1, 2], rowsModified: 4 })
-        spyOn(redisCacheService, 'drop')
-        spyOn(redisKeyService, 'getPupilRegisterViewDataKey')
+        jest.spyOn(pupilDataService, 'sqlInsertMany').mockResolvedValue({ insertId: [1, 2], rowsModified: 4 })
+        jest.spyOn(redisCacheService, 'drop').mockImplementation()
+        jest.spyOn(redisKeyService, 'getPupilRegisterViewDataKey').mockImplementation()
       })
-      it('when saved successfully', async () => {
+
+      test('when saved successfully', async () => {
         const pr = await pupilUploadService.upload(schoolMock, dummyCSV)
         expect(pr.pupilIds.length).toBe(2)
         expect(pr).toEqual({ pupilIds: [1, 2] })
       })
     })
+
     describe('and returns an object with an error if save fails', () => {
       beforeEach(() => {
-        spyOn(pupilDataService, 'sqlInsertMany').and.returnValue(null)
-        spyOn(redisCacheService, 'drop')
-        spyOn(redisKeyService, 'getPupilRegisterViewDataKey')
+        jest.spyOn(pupilDataService, 'sqlInsertMany').mockResolvedValue(null)
+        jest.spyOn(redisCacheService, 'drop').mockImplementation()
+        jest.spyOn(redisKeyService, 'getPupilRegisterViewDataKey').mockImplementation()
       })
-      it('when saved successfully', async () => {
+
+      test('when saved successfully', async () => {
         const pr = await pupilUploadService.upload(schoolMock, dummyCSV)
         expect(pr.message).toBe('No pupils were saved')
       })
