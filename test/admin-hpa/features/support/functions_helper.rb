@@ -1,11 +1,6 @@
 class FunctionsHelper
   include HTTParty
 
-  def self.trigger_func(function_name)
-    HTTParty.post(ENV['FUNC_THROTTLED_BASE_URL'] + "/#{function_name}", :body => {'input' => "test"}.to_json, headers: {'Content-Type' => 'application/json', 'x-functions-key' => ENV['FUNC_THROTTLED_MASTER_KEY']})
-  end
-
-
   def self.sync_check_code(check_code)
     HTTParty.post(ENV['FUNC_THROTTLED_BASE_URL'] + "/sync-results-init", :body => {'checkCode' => check_code}.to_json, headers: {'Content-Type' => 'application/json', 'x-functions-key' => ENV['FUNC_THROTTLED_MASTER_KEY']})
   end
