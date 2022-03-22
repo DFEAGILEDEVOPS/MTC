@@ -27,7 +27,8 @@ end
 
 Then(/^I should be taken to the cookies prefs page$/) do
  expect(cookies_form_page).to have_heading
- expect(cookies_form_page).to have_gov_speak_text
+ expect(cookies_form_page).to have_cookies_saved_text
+ expect(cookies_form_page).to have_cookies_usage_text
  expect(cookies_form_page).to have_settings_heading
  expect(cookies_form_page).to have_website_use_heading
  expect(cookies_form_page).to have_necessary_cookies_heading

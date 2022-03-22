@@ -4,16 +4,15 @@
         <main id="content" role="main" class="group help-page cookie-settings govuk-grid-column-two-thirds">
             <div class="cookie-settings__confirmation" data-cookie-confirmation="true">
                 <section class="govuk-notice-summary govuk-!-margin-bottom-8" aria-label="Notice" aria-live="polite"
-                         role="region">
+                    role="region">
                     <h2 class="govuk-heading-m">Your cookie settings were saved</h2>
 
                     <p>Government services may set additional cookies and, if so, will have their own cookie policy and
                         banner.</p>
                     <a class="govuk-link cookie-settings__prev-page" href="/" data-module="track-click"
-                       data-track-category="cookieSettings" data-track-action="back">
+                        data-track-category="cookieSettings" data-track-action="back">
                         Go back
                     </a>
-
                 </section>
             </div>
 
@@ -23,27 +22,22 @@
                 </h1>
             </div>
 
-            <div class="gem-c-govspeak govuk-govspeak " data-module="govspeak">
-
+            <div>
                 <p>Cookies are files saved on your phone, tablet or computer when you visit a website.</p>
                 <p>We use cookies to store information about how you use the MTC service, such as the pages you
                     visit.</p>
-
             </div>
 
             <h2 class="govuk-heading-m">Cookie settings</h2>
 
             <div class="cookie-settings__no-js">
-
-                <div class="gem-c-govspeak govuk-govspeak " data-module="govspeak">
-
+                <div>
                     <p>We use Javascript to set most of our cookies. Unfortunately Javascript is not running on your
                         browser, so you cannot change your settings. You can try:</p>
                     <ul>
                         <li>reloading the page</li>
                         <li>turning on Javascript in your browser</li>
                     </ul>
-
                 </div>
             </div>
 
@@ -59,7 +53,7 @@
                                 website use
                             </legend>
 
-                            <div id="hint-61b03936" class="gem-c-hint govuk-hint govuk-!-margin-bottom-3">
+                            <div id="hint-61b03936" class="govuk-hint govuk-!-margin-bottom-3">
                                 We use Google Analytics to measure how you use the website so we can improve it based on
                                 user needs. Google Analytics sets cookies that store anonymised information about:
                                 <ul>
@@ -70,128 +64,51 @@
                                     <li>what you click on while you're visiting the site</li>
                                 </ul>
                                 We do not allow Google to use or share the data about how you use this site.
-
                             </div>
 
                             <div class="govuk-radios govuk-radios--inline">
-                                <div class="gem-c-radio govuk-radios__item">
+                                <div class="govuk-radios__item">
                                     <input type="radio" name="cookies-usage" id="radio-51383d9f-0" value="on"
-                                           class="govuk-radios__input">
+                                        class="govuk-radios__input">
 
-                                    <label for="radio-51383d9f-0" class="gem-c-label govuk-label govuk-radios__label">
-                                        <span class="translation_missing"
-                                              title="translation missing: en.cookies.on">On</span>
+                                    <label for="radio-51383d9f-0" class="govuk-label govuk-radios__label">
+                                        On
                                     </label>
-
                                 </div>
 
-                                <div class="gem-c-radio govuk-radios__item">
+                                <div class="govuk-radios__item">
                                     <input type="radio" name="cookies-usage" id="radio-51383d9f-1" value="off"
-                                           class="govuk-radios__input">
+                                        class="govuk-radios__input">
 
-                                    <label for="radio-51383d9f-1" class="gem-c-label govuk-label govuk-radios__label">
-                                        <span class="translation_missing" title="translation missing: en.cookies.off">Off</span>
+                                    <label for="radio-51383d9f-1" class="govuk-label govuk-radios__label">
+                                        Off
                                     </label>
-
                                 </div>
-
                             </div>
                         </fieldset>
                     </div>
 
-                    <div class="govuk-form-group govuk-visually-hidden">
-                        <fieldset class="govuk-fieldset" aria-describedby="hint-8b7bf33a">
+                    <% /* The following hidden radio buttons are for compatabilty with the cookies JS which is an
+                        external library */%>
+                        <input type="radio" name="cookies-campaigns" value="on" class="mtc-not-visible-not-accessible">
+                        <input type="radio" name="cookies-campaigns" value="off" class="mtc-not-visible-not-accessible">
+                        <input type="radio" name="cookies-settings" value="on" class="mtc-not-visible-not-accessible">
+                        <input type="radio" name="cookies-settings" value="off" class="mtc-not-visible-not-accessible">
 
-                            <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Cookies that help with our
-                                communications and marketing
-                            </legend>
+                        <div>
+                            <h2 class="govuk-heading-m">Strictly necessary cookies</h2>
+                            <p>These essential cookies do things like recording telemetry and usage data to support our
+                                users and enhance the MTC service.</p>
+                            <p>They always need to be on.</p>
+                            <p>
+                                <a href="/cookies-mtc" data-module="track-click" data-track-category="cookieSettings"
+                                    data-track-action="Find out more about cookies">
+                                    Find out more about cookies on MTC
+                                </a>
+                            </p>
+                        </div>
 
-                            <div id="hint-8b7bf33a" class="gem-c-hint govuk-hint govuk-!-margin-bottom-3">
-                                These cookies may be set by third party websites and do things like measure how you view
-                                YouTube videos that are on GOV.UK.
-
-                            </div>
-
-                            <div class="govuk-radios govuk-radios--inline">
-                                <div class="gem-c-radio govuk-radios__item">
-                                    <input type="radio" name="cookies-campaigns" id="radio-aba07dd3-0" value="on"
-                                           class="govuk-radios__input">
-
-                                    <label for="radio-aba07dd3-0" class="gem-c-label govuk-label govuk-radios__label">
-                                        <span class="translation_missing"
-                                              title="translation missing: en.cookies.on">On</span>
-                                    </label>
-
-                                </div>
-
-                                <div class="gem-c-radio govuk-radios__item">
-                                    <input type="radio" name="cookies-campaigns" id="radio-aba07dd3-1" value="off"
-                                           class="govuk-radios__input">
-
-                                    <label for="radio-aba07dd3-1" class="gem-c-label govuk-label govuk-radios__label">
-                                        <span class="translation_missing" title="translation missing: en.cookies.off">Off</span>
-                                    </label>
-
-                                </div>
-
-                            </div>
-                        </fieldset>
-                    </div>
-
-                    <div class="govuk-form-group govuk-visually-hidden">
-                        <fieldset class="govuk-fieldset" aria-describedby="hint-fe4d06b2">
-
-                            <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">Cookies that remember your
-                                settings
-                            </legend>
-
-                            <div id="hint-fe4d06b2" class="gem-c-hint govuk-hint govuk-!-margin-bottom-3">
-                                These cookies do things like remember your preferences and the choices you make, to
-                                personalise your experience of using the site.
-                            </div>
-
-                            <div class="govuk-radios govuk-radios--inline">
-                                <div class="gem-c-radio govuk-radios__item">
-                                    <input type="radio" name="cookies-settings" id="radio-ad3039e9-0" value="on"
-                                           class="govuk-radios__input">
-
-                                    <label for="radio-ad3039e9-0" class="gem-c-label govuk-label govuk-radios__label">
-                                        <span class="translation_missing"
-                                              title="translation missing: en.cookies.on">On</span>
-                                    </label>
-
-                                </div>
-
-                                <div class="gem-c-radio govuk-radios__item">
-                                    <input type="radio" name="cookies-settings" id="radio-ad3039e9-1" value="off"
-                                           class="govuk-radios__input">
-
-                                    <label for="radio-ad3039e9-1" class="gem-c-label govuk-label govuk-radios__label">
-                                        <span class="translation_missing" title="translation missing: en.cookies.off">Off</span>
-                                    </label>
-
-                                </div>
-
-                            </div>
-                        </fieldset>
-                    </div>
-
-                    <div class="gem-c-govspeak govuk-govspeak " data-module="govspeak">
-
-                        <h2 class="govuk-heading-m">Strictly necessary cookies</h2>
-                        <p>These essential cookies do things like recording telemetry and usage data to support our users and enhance the MTC service.</p>
-                        <p>They always need to be on.</p>
-                        <p>
-                            <a href="/cookies-mtc" data-module="track-click"
-                               data-track-category="cookieSettings" data-track-action="Find out more about cookies">
-                                Find out more about cookies on MTC
-                            </a>
-                        </p>
-
-                    </div>
-
-                    <button class="gem-c-button govuk-button" type="submit">Save changes</button>
-
+                        <button class="govuk-button" type="submit">Save changes</button>
                 </form>
             </div>
         </main>
