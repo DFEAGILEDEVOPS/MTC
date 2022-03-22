@@ -31,7 +31,6 @@
   display: block;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: pre-wrap;
   word-wrap: break-word;
   max-width: govuk-em(200px, $govuk-root-font-size);
 }
