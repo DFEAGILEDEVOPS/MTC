@@ -1,6 +1,6 @@
 'use strict'
 
-/* global beforeEach, describe, it, expect */
+/* global beforeEach, describe, test, expect */
 
 const ValidationError = require('../../../lib/validation-error')
 const errorConverter = require('../../../lib/error-converter')
@@ -28,15 +28,15 @@ describe('ErrorConverter class : fromExpressValidator()', function () {
     }
   })
 
-  it('has a function to convert from express validator', function () {
+  test('has a function to convert from express validator', function () {
     expect(typeof errorConverter.fromExpressValidator).toBe('function')
   })
 
-  it('returns a ValidationError', function () {
+  test('returns a ValidationError', function () {
     expect(errorConverter.fromExpressValidator(exampleResult) instanceof ValidationError).toBe(true)
   })
 
-  it('contains all the expected errors', function () {
+  test('contains all the expected errors', function () {
     const err = errorConverter.fromExpressValidator(exampleResult)
     Object.keys(exampleResult).forEach(k => {
       expect(err.isError(k)).toBe(true)

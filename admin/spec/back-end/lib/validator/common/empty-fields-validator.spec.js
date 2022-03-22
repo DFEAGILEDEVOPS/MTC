@@ -1,12 +1,12 @@
 'use strict'
 
-/* global describe, it, expect */
+/* global describe, test, expect */
 
 const emptyFieldsValidator = require('../../../../../lib/validator/common/empty-fields-validators')
 
 describe('emptyFieldValidator', function () {
   describe('validate', function () {
-    it('returns a validationError object with errors if the value is an empty string', () => {
+    test('returns a validationError object with errors if the value is an empty string', () => {
       const fields = [{
         fieldKey: 'fieldKey',
         fieldValue: '',
@@ -15,7 +15,7 @@ describe('emptyFieldValidator', function () {
       const validationError = emptyFieldsValidator.validate(fields)
       expect(validationError.hasError()).toBeTruthy()
     })
-    it('returns a validationError object with errors if the value is a spaced string', () => {
+    test('returns a validationError object with errors if the value is a spaced string', () => {
       const fields = [{
         fieldKey: 'fieldKey',
         fieldValue: ' ',
@@ -24,7 +24,7 @@ describe('emptyFieldValidator', function () {
       const validationError = emptyFieldsValidator.validate(fields)
       expect(validationError.hasError()).toBeTruthy()
     })
-    it('returns a validationError object with errors if the value is undefined', () => {
+    test('returns a validationError object with errors if the value is undefined', () => {
       const fields = [{
         fieldKey: 'fieldKey',
         fieldValue: undefined,
@@ -33,7 +33,7 @@ describe('emptyFieldValidator', function () {
       const validationError = emptyFieldsValidator.validate(fields)
       expect(validationError.hasError()).toBeTruthy()
     })
-    it('returns a validationError object with errors if the value is null', () => {
+    test('returns a validationError object with errors if the value is null', () => {
       const fields = [{
         fieldKey: 'fieldKey',
         fieldValue: null,
@@ -42,7 +42,7 @@ describe('emptyFieldValidator', function () {
       const validationError = emptyFieldsValidator.validate(fields)
       expect(validationError.hasError()).toBeTruthy()
     })
-    it('returns a validationError object with no errors if the value contains special characters', () => {
+    test('returns a validationError object with no errors if the value contains special characters', () => {
       const fields = [{
         fieldKey: 'fieldKey',
         fieldValue: '@fieldValue',
@@ -51,7 +51,7 @@ describe('emptyFieldValidator', function () {
       const validationError = emptyFieldsValidator.validate(fields)
       expect(validationError.hasError()).toBeFalsy()
     })
-    it('returns a validationError object with no errors if the value contains no special characters', () => {
+    test('returns a validationError object with no errors if the value contains no special characters', () => {
       const fields = [{
         fieldKey: 'fieldKey',
         fieldValue: 'fieldValue',

@@ -1,5 +1,5 @@
 'use strict'
-/* global describe, it, expect spyOn beforeEach */
+/* global describe, test, expect jest beforeEach afterEach */
 
 const sut = require('../../../services/access-arrangements.service')
 const accessArrangementsDataService = require('../../../services/data-access/access-arrangements.data.service')
@@ -14,8 +14,12 @@ const moment = require('moment-timezone')
 const checkWindowService = require('../../../services/check-window-v2.service')
 
 describe('accessArrangementsService', () => {
+  afterEach(() => {
+    jest.restoreAllMocks()
+  })
+
   describe('getAccessArrangements', () => {
-    it('calls and returns access arrangements list', async () => {
+    test('calls and returns access arrangements list', async () => {
       const accessArrangements = [
         {
           id: 1,
@@ -30,7 +34,7 @@ describe('accessArrangementsService', () => {
           code: 'XYZ'
         }
       ]
-      spyOn(accessArrangementsDataService, 'sqlFindAccessArrangements').and.returnValue(accessArrangements)
+      jest.spyOn(accessArrangementsDataService, 'sqlFindAccessArrangements').mockResolvedValue(accessArrangements)
       const result = await sut.getAccessArrangements()
       expect(accessArrangementsDataService.sqlFindAccessArrangements).toHaveBeenCalled()
       expect(result).toStrictEqual(accessArrangements)
@@ -38,12 +42,12 @@ describe('accessArrangementsService', () => {
   })
 
   describe('submit', () => {
-    it('calls preparedCheckSync service and returns access arrangements list', async () => {
-      spyOn(accessArrangementsValidator, 'validate').and.returnValue((new ValidationError()))
-      spyOn(sut, 'prepareData')
-      spyOn(pupilDataService, 'sqlFindOneBySlugAndSchool').and.returnValue({ id: 1 })
-      spyOn(sut, 'save')
-      spyOn(preparedCheckSyncService, 'addMessages')
+    test('calls preparedCheckSync service and returns access arrangements list', async () => {
+      jest.spyOn(accessArrangementsValidator, 'validate').mockReturnValue((new ValidationError()))
+      jest.spyOn(sut, 'prepareData').mockImplementation()
+      jest.spyOn(pupilDataService, 'sqlFindOneBySlugAndSchool').mockResolvedValue({ id: 1 })
+      jest.spyOn(sut, 'save').mockImplementation()
+      jest.spyOn(preparedCheckSyncService, 'addMessages').mockImplementation()
       await sut.submit({}, 12345, 1)
       expect(accessArrangementsValidator.validate).toHaveBeenCalled()
       expect(pupilDataService.sqlFindOneBySlugAndSchool).toHaveBeenCalled()
@@ -51,20 +55,18 @@ describe('accessArrangementsService', () => {
       expect(sut.save).toHaveBeenCalled()
       expect(preparedCheckSyncService.addMessages).toHaveBeenCalled()
     })
-    it('throws a validation error if validation is unsuccessful', async () => {
+    test('throws a validation error if validation is unsuccessful', async () => {
       const validationError = new ValidationError()
       validationError.addError('pupil-autocomplete-container', accessArrangementsErrorMessages.missingPupilName)
       validationError.addError('accessArrangementsList', accessArrangementsErrorMessages.missingAccessArrangements)
-      spyOn(accessArrangementsValidator, 'validate').and.returnValue(validationError)
-      spyOn(sut, 'prepareData')
-      spyOn(pupilDataService, 'sqlFindOneBySlugAndSchool').and.returnValue({ id: 1 })
-      spyOn(sut, 'save')
-      spyOn(preparedCheckSyncService, 'addMessages')
-      try {
-        await sut.submit({}, 12345, 1)
-      } catch (error) {
-        expect(error.name).toBe('ValidationError')
-      }
+      jest.spyOn(accessArrangementsValidator, 'validate').mockReturnValue(validationError)
+      jest.spyOn(sut, 'prepareData').mockImplementation()
+      jest.spyOn(pupilDataService, 'sqlFindOneBySlugAndSchool').mockReturnValue({ id: 1 })
+      jest.spyOn(sut, 'save').mockImplementation()
+      jest.spyOn(preparedCheckSyncService, 'addMessages').mockImplementation()
+      await expect(sut.submit({}, 12345, 1))
+        .rejects
+        .toBeInstanceOf(ValidationError)
       expect(accessArrangementsValidator.validate).toHaveBeenCalled()
       expect(pupilDataService.sqlFindOneBySlugAndSchool).not.toHaveBeenCalled()
       expect(sut.prepareData).not.toHaveBeenCalled()
@@ -74,7 +76,7 @@ describe('accessArrangementsService', () => {
   })
 
   describe('prepareData', () => {
-    it('returns a processed access arrangements submission object', async () => {
+    test('returns a processed access arrangements submission object', async () => {
       const requestData = {
         pupilUrlSlug: 'pupilUrlSlug',
         accessArrangements: [accessArrangementsDataService.CODES.AUDIBLE_SOUNDS],
@@ -83,9 +85,9 @@ describe('accessArrangementsService', () => {
         nextButtonInformation: '',
         questionReaderOtherInformation: ''
       }
-      spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsIdsWithCodes').and.returnValue([{ id: 1, code: 'ATA' }])
-      spyOn(pupilAccessArrangementsDataService, 'sqlFindPupilColourContrastsId')
-      spyOn(pupilAccessArrangementsDataService, 'sqlFindPupilFontSizesId')
+      jest.spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsIdsWithCodes').mockResolvedValue([{ id: 1, code: 'ATA' }])
+      jest.spyOn(pupilAccessArrangementsDataService, 'sqlFindPupilColourContrastsId').mockImplementation()
+      jest.spyOn(pupilAccessArrangementsDataService, 'sqlFindPupilFontSizesId').mockImplementation()
       const result = await sut.prepareData(requestData, { id: 1 }, 12345, 1)
       expect(accessArrangementsDataService.sqlFindAccessArrangementsIdsWithCodes).toHaveBeenCalled()
       expect(result).toEqual(Object({
@@ -97,23 +99,23 @@ describe('accessArrangementsService', () => {
       expect(pupilAccessArrangementsDataService.sqlFindPupilColourContrastsId).not.toHaveBeenCalled()
       expect(pupilAccessArrangementsDataService.sqlFindPupilFontSizesId).not.toHaveBeenCalled()
     })
-    it('throws an error if accessArrangement are not found based on codes provided', async () => {
+    test('throws an error if accessArrangement are not found based on codes provided', async () => {
       const requestData = {
         pupilUrlSlug: 'pupilUrlSlug',
-        accessArrangements: ['ATS'],
+        accessArrangements: ['NONSENSE_CODE'],
         questionReaderReason: '',
         inputAssistanceInformation: '',
         nextButtonInformation: '',
         questionReaderOtherInformation: ''
       }
-      spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsIdsWithCodes').and.returnValue([])
-      try {
-        await sut.prepareData(requestData, { id: 1 }, 12345, 1)
-      } catch (error) {
-        expect(error.message).toBe('No access arrangements found')
-      }
+      jest.spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsIdsWithCodes').mockImplementation(() => {
+        throw new Error('Code does not exist')
+      })
+      await expect(sut.prepareData(requestData, { id: 1 }, 12345, 1))
+        .rejects
+        .toThrow('Code does not exist')
     })
-    it('throws an error if pupil record is not found', async () => {
+    test('throws an error if pupil record is not found', async () => {
       const requestData = {
         pupilUrlSlug: 'pupilUrlSlug',
         accessArrangements: [accessArrangementsDataService.CODES.AUDIBLE_SOUNDS],
@@ -122,14 +124,12 @@ describe('accessArrangementsService', () => {
         nextButtonInformation: '',
         questionReaderOtherInformation: ''
       }
-      spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsIdsWithCodes').and.returnValue([1])
-      try {
-        await sut.prepareData(requestData, {}, 12345, 1)
-      } catch (error) {
-        expect(error.message).toBe('Pupil object is not found')
-      }
+      jest.spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsIdsWithCodes').mockResolvedValue([1])
+      await expect(sut.prepareData(requestData, undefined, 12345, 1))
+        .rejects
+        .toThrow('Pupil object is not found')
     })
-    it('expects inputAssistanceInformation to be defined when the accessArrangements is matched', async () => {
+    test('expects inputAssistanceInformation to be defined when the accessArrangements is matched', async () => {
       const requestData = {
         pupilUrlSlug: 'pupilUrlSlug',
         accessArrangements: [
@@ -141,7 +141,7 @@ describe('accessArrangementsService', () => {
         nextButtonInformation: '',
         questionReaderOtherInformation: ''
       }
-      spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsIdsWithCodes').and.returnValue([{ id: 1, code: 'ATA' }, { id: 2, code: 'ITA' }])
+      jest.spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsIdsWithCodes').mockResolvedValue([{ id: 1, code: 'ATA' }, { id: 2, code: 'ITA' }])
       const result = await sut.prepareData(requestData, { id: 1 }, 12345, 1)
       expect(result).toEqual(Object({
         pupil_id: 1,
@@ -154,7 +154,7 @@ describe('accessArrangementsService', () => {
         questionReaderReasonCode: ''
       }))
     })
-    it('expects nextButtonInformation to be defined when the accessArrangements is matched', async () => {
+    test('expects nextButtonInformation to be defined when the accessArrangements is matched', async () => {
       const requestData = {
         pupilUrlSlug: 'pupilUrlSlug',
         accessArrangements: [
@@ -166,7 +166,8 @@ describe('accessArrangementsService', () => {
         nextButtonInformation: 'nextButtonInformation',
         questionReaderOtherInformation: ''
       }
-      spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsIdsWithCodes').and.returnValue([{ id: 1, code: 'ATA' }, { id: 2, code: 'NBQ' }])
+      jest.spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsIdsWithCodes')
+        .mockResolvedValue([{ id: 1, code: 'ATA' }, { id: 2, code: 'NBQ' }])
       const result = await sut.prepareData(requestData, { id: 1 }, 12345, 1)
       expect(result).toEqual(Object({
         pupil_id: 1,
@@ -179,7 +180,7 @@ describe('accessArrangementsService', () => {
         questionReaderReasonCode: ''
       }))
     })
-    it('expects questionReaderReasons_id to be defined when the accessArrangements is matched', async () => {
+    test('expects questionReaderReasons_id to be defined when the accessArrangements is matched', async () => {
       const requestData = {
         pupilUrlSlug: 'pupilUrlSlug',
         accessArrangements: [
@@ -191,11 +192,11 @@ describe('accessArrangementsService', () => {
         nextButtonInformation: '',
         questionReaderOtherInformation: ''
       }
-      spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsIdsWithCodes').and.returnValue([
+      jest.spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsIdsWithCodes').mockResolvedValue([
         { id: 1, code: accessArrangementsDataService.CODES.AUDIBLE_SOUNDS },
         { id: 3, code: accessArrangementsDataService.CODES.QUESTION_READER }
       ])
-      spyOn(questionReaderReasonsDataService, 'sqlFindQuestionReaderReasonIdByCode').and.returnValue(1)
+      jest.spyOn(questionReaderReasonsDataService, 'sqlFindQuestionReaderReasonIdByCode').mockResolvedValue(1)
       const result = await sut.prepareData(requestData, { id: 1 }, 12345, 1)
       expect(questionReaderReasonsDataService.sqlFindQuestionReaderReasonIdByCode).toHaveBeenCalled()
       expect(result).toEqual(Object({
@@ -209,7 +210,7 @@ describe('accessArrangementsService', () => {
         questionReaderReasons_id: 1
       }))
     })
-    it('expects questionReaderOtherInformation to be defined when the accessArrangements and questionReaderReason is matched', async () => {
+    test('expects questionReaderOtherInformation to be defined when the accessArrangements and questionReaderReason is matched', async () => {
       const requestData = {
         pupilUrlSlug: 'pupilUrlSlug',
         accessArrangements: [
@@ -221,11 +222,11 @@ describe('accessArrangementsService', () => {
         nextButtonInformation: '',
         questionReaderOtherInformation: 'questionReaderOtherInformation'
       }
-      spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsIdsWithCodes').and.returnValue([
+      jest.spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsIdsWithCodes').mockResolvedValue([
         { id: 1, code: accessArrangementsDataService.CODES.AUDIBLE_SOUNDS },
         { id: 3, code: accessArrangementsDataService.CODES.QUESTION_READER }
       ])
-      spyOn(questionReaderReasonsDataService, 'sqlFindQuestionReaderReasonIdByCode').and.returnValue(4)
+      jest.spyOn(questionReaderReasonsDataService, 'sqlFindQuestionReaderReasonIdByCode').mockResolvedValue(4)
       const result = await sut.prepareData(requestData, { id: 1 }, 12345, 1)
       expect(result).toEqual(Object({
         pupil_id: 1,
@@ -239,7 +240,7 @@ describe('accessArrangementsService', () => {
         questionReaderOtherInformation: 'questionReaderOtherInformation'
       }))
     })
-    it('expects pupilFontSizes_id property and pupilColourContrasts_id property to be set from existing ', async () => {
+    test('expects pupilFontSizes_id property and pupilColourContrasts_id property to be set from existing ', async () => {
       const requestData = {
         pupilUrlSlug: 'pupilUrlSlug',
         accessArrangements: [
@@ -251,9 +252,9 @@ describe('accessArrangementsService', () => {
         nextButtonInformation: '',
         questionReaderOtherInformation: ''
       }
-      spyOn(pupilAccessArrangementsDataService, 'sqlFindPupilColourContrastsId').and.returnValue(2)
-      spyOn(pupilAccessArrangementsDataService, 'sqlFindPupilFontSizesId').and.returnValue(4)
-      spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsIdsWithCodes').and.returnValue([
+      jest.spyOn(pupilAccessArrangementsDataService, 'sqlFindPupilColourContrastsId').mockResolvedValue(2)
+      jest.spyOn(pupilAccessArrangementsDataService, 'sqlFindPupilFontSizesId').mockResolvedValue(4)
+      jest.spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsIdsWithCodes').mockResolvedValue([
         { id: 2, code: accessArrangementsDataService.CODES.COLOUR_CONTRAST },
         { id: 3, code: accessArrangementsDataService.CODES.FONT_SIZE }
       ])
@@ -274,16 +275,16 @@ describe('accessArrangementsService', () => {
   })
 
   describe('save', () => {
-    it('calls sqlInsertAccessArrangements without isUpdated boolean if pupilAccessArrangement record does not exist', async () => {
-      spyOn(pupilAccessArrangementsDataService, 'sqlFindPupilAccessArrangementsByPupilId')
-      spyOn(pupilAccessArrangementsDataService, 'sqlInsertAccessArrangements')
+    test('calls sqlInsertAccessArrangements without isUpdated boolean if pupilAccessArrangement record does not exist', async () => {
+      jest.spyOn(pupilAccessArrangementsDataService, 'sqlFindPupilAccessArrangementsByPupilId').mockImplementation()
+      jest.spyOn(pupilAccessArrangementsDataService, 'sqlInsertAccessArrangements').mockImplementation()
       const pupil = await sut.save({}, { id: '1', urlSlug: 'pupilUrlSlug' })
       expect(pupilAccessArrangementsDataService.sqlInsertAccessArrangements).toHaveBeenCalledWith({})
       expect(pupil.urlSlug).toBe('pupilUrlSlug')
     })
-    it('calls sqlInsertAccessArrangements with isUpdated boolean if pupilAccessArrangement record exists', async () => {
-      spyOn(pupilAccessArrangementsDataService, 'sqlFindPupilAccessArrangementsByPupilId').and.returnValue([{ pupil_id: 1 }])
-      spyOn(pupilAccessArrangementsDataService, 'sqlInsertAccessArrangements')
+    test('calls sqlInsertAccessArrangements with isUpdated boolean if pupilAccessArrangement record exists', async () => {
+      jest.spyOn(pupilAccessArrangementsDataService, 'sqlFindPupilAccessArrangementsByPupilId').mockResolvedValue([{ pupil_id: 1 }])
+      jest.spyOn(pupilAccessArrangementsDataService, 'sqlInsertAccessArrangements').mockImplementation()
       await sut.save({}, { id: '1', urlSlug: 'pupilUrlSlug' })
       expect(pupilAccessArrangementsDataService.sqlInsertAccessArrangements).toHaveBeenCalledWith({}, true)
     })
@@ -303,41 +304,41 @@ describe('accessArrangementsService', () => {
       }
     })
 
-    it('should return \'unavailable\' if current date before admin start date', async () => {
-      spyOn(moment, 'tz').and.returnValue(moment('2020-06-30T23:59:59'))
-      spyOn(checkWindowService, 'getActiveCheckWindow').and.returnValue(checkWindowData)
+    test('should return \'unavailable\' if current date before admin start date', async () => {
+      jest.spyOn(moment, 'tz').mockReturnValue(moment('2020-06-30T23:59:59'))
+      jest.spyOn(checkWindowService, 'getActiveCheckWindow').mockResolvedValue(checkWindowData)
       expect(await sut.getCurrentViewMode()).toBe('unavailable')
     })
 
     // Edge case - the TIO period is expected to start when the admin period starts.  This test is to ensure the AA
     // are not active when they shouldn't be.
-    it('should return \'readonly\' if current date after admin start date but before the try it out starts', async () => {
-      spyOn(moment, 'tz').and.returnValue(moment('2020-07-01T05:59:59'))
-      spyOn(checkWindowService, 'getActiveCheckWindow').and.returnValue(checkWindowData)
+    test('should return \'readonly\' if current date after admin start date but before the try it out starts', async () => {
+      jest.spyOn(moment, 'tz').mockReturnValue(moment('2020-07-01T05:59:59'))
+      jest.spyOn(checkWindowService, 'getActiveCheckWindow').mockResolvedValue(checkWindowData)
       expect(await sut.getCurrentViewMode()).toBe('readonly')
     })
 
-    it('should return \'edit\' if Try it out is active and main check is inactive', async () => {
-      spyOn(moment, 'tz').and.returnValue(moment('2020-07-02T09:00:00'))
-      spyOn(checkWindowService, 'getActiveCheckWindow').and.returnValue(checkWindowData)
+    test('should return \'edit\' if Try it out is active and main check is inactive', async () => {
+      jest.spyOn(moment, 'tz').mockReturnValue(moment('2020-07-02T09:00:00'))
+      jest.spyOn(checkWindowService, 'getActiveCheckWindow').mockReturnValue(checkWindowData)
       expect(await sut.getCurrentViewMode()).toBe('readonly')
     })
 
-    it('should return \'edit\' if current date within check period', async () => {
-      spyOn(moment, 'tz').and.returnValue(moment('2020-07-14T06:00:00'))
-      spyOn(checkWindowService, 'getActiveCheckWindow').and.returnValue(checkWindowData)
+    test('should return \'edit\' if current date within check period', async () => {
+      jest.spyOn(moment, 'tz').mockReturnValue(moment('2020-07-14T06:00:00'))
+      jest.spyOn(checkWindowService, 'getActiveCheckWindow').mockResolvedValue(checkWindowData)
       expect(await sut.getCurrentViewMode()).toBe('edit')
     })
 
-    it('should return \'readonly\' if current date past check end date but before admin end date', async () => {
-      spyOn(moment, 'tz').and.returnValue(moment('2020-07-26T09:00:00'))
-      spyOn(checkWindowService, 'getActiveCheckWindow').and.returnValue(checkWindowData)
+    test('should return \'readonly\' if current date past check end date but before admin end date', async () => {
+      jest.spyOn(moment, 'tz').mockReturnValue(moment('2020-07-26T09:00:00'))
+      jest.spyOn(checkWindowService, 'getActiveCheckWindow').mockResolvedValue(checkWindowData)
       expect(await sut.getCurrentViewMode()).toBe('readonly')
     })
 
-    it('should return \'unavailable\' if current date after admin end date', async () => {
-      spyOn(moment, 'tz').and.returnValue(moment('2020-08-31T09:00:00'))
-      spyOn(checkWindowService, 'getActiveCheckWindow').and.returnValue(checkWindowData)
+    test('should return \'unavailable\' if current date after admin end date', async () => {
+      jest.spyOn(moment, 'tz').mockReturnValue(moment('2020-08-31T09:00:00'))
+      jest.spyOn(checkWindowService, 'getActiveCheckWindow').mockResolvedValue(checkWindowData)
       expect(await sut.getCurrentViewMode()).toBe('unavailable')
     })
   })

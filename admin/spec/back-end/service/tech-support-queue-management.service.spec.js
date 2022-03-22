@@ -1,17 +1,21 @@
 'use strict'
 
-/* global describe, it, expect, spyOn */
+/* global describe, test, expect, jest, afterEach */
 const sut = require('../../../services/tech-support-queue-management.service')
 const storageDataService = require('../../../services/data-access/azure-queue.data.service')
 
 describe('tech support queue management service', () => {
-  it('subject should be defined', () => {
+  afterEach(() => {
+    jest.restoreAllMocks()
+  })
+
+  test('subject should be defined', () => {
     expect(sut).toBeDefined()
   })
 
   describe('storage account functionality', () => {
-    it('should return empty array when no queues found', async () => {
-      spyOn(storageDataService, 'getAllQueueMessageCounts')
+    test('should return empty array when no queues found', async () => {
+      jest.spyOn(storageDataService, 'getAllQueueMessageCounts').mockImplementation()
       const output = await sut.getStorageAccountQueueSummary()
       expect(storageDataService.getAllQueueMessageCounts).toHaveBeenCalledTimes(1)
       expect(output).toBeDefined()
@@ -19,7 +23,7 @@ describe('tech support queue management service', () => {
       expect(output.length).toBe(0)
     })
 
-    it('should combine active and poison queue messages into one array item', async () => {
+    test('should combine active and poison queue messages into one array item', async () => {
       const rawData = [
         {
           name: 'q1',
@@ -38,7 +42,7 @@ describe('tech support queue management service', () => {
           approximateMessagesCount: 2
         }
       ]
-      spyOn(storageDataService, 'getAllQueueMessageCounts').and.returnValue(rawData)
+      jest.spyOn(storageDataService, 'getAllQueueMessageCounts').mockResolvedValue(rawData)
       const output = await sut.getStorageAccountQueueSummary()
       expect(storageDataService.getAllQueueMessageCounts).toHaveBeenCalledTimes(1)
       expect(output).toBeDefined()

@@ -1,4 +1,4 @@
-/* global describe, beforeEach, expect, it spyOn */
+/* global describe, beforeEach, expect, test, jest, afterEach */
 
 const moment = require('moment-timezone')
 
@@ -6,12 +6,15 @@ const schoolHomeFeatureEligibilityPresenter = require('../../../helpers/school-h
 const config = require('../../../config')
 
 describe('schoolHomeFeatureEligibilityPresenter', () => {
+  afterEach(() => {
+    jest.restoreAllMocks()
+  })
   describe('getPresentationData', () => {
     describe('when override is disabled', () => {
       beforeEach(() => {
         config.OverridePinExpiry = false
       })
-      it('allows both familiarisation and live pin generation if within admin period and within check periods ', async () => {
+      test('allows both familiarisation and live pin generation if within admin period and within check periods ', async () => {
         const checkWindowData = {
           id: 1,
           adminStartDate: moment.utc().subtract(3, 'days'),
@@ -22,7 +25,7 @@ describe('schoolHomeFeatureEligibilityPresenter', () => {
           checkEndDate: moment.utc().add(5, 'days')
         }
         const allowedDateTime = moment.utc().set({ hour: 11 })
-        spyOn(moment, 'tz').and.returnValue(allowedDateTime)
+        jest.spyOn(moment, 'tz').mockReturnValue(allowedDateTime)
         const pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
         expect(pinGenerationEligibilityData.isFamiliarisationPinGenerationAllowed).toBeTruthy()
         expect(pinGenerationEligibilityData.isLivePinGenerationAllowed).toBeTruthy()
@@ -31,7 +34,7 @@ describe('schoolHomeFeatureEligibilityPresenter', () => {
         expect(pinGenerationEligibilityData.isFamiliarisationInTheFuture).toBeFalsy()
         expect(pinGenerationEligibilityData.isLiveInTheFuture).toBeFalsy()
       })
-      it('disallows both familiarisation and live pin generation if check window is in the past', async () => {
+      test('disallows both familiarisation and live pin generation if check window is in the past', async () => {
         const checkWindowData = {
           id: 1,
           adminStartDate: moment.utc().subtract(10, 'days'),
@@ -42,7 +45,7 @@ describe('schoolHomeFeatureEligibilityPresenter', () => {
           checkEndDate: moment.utc().subtract(2, 'days')
         }
         const allowedDateTime = moment.utc().set({ hour: 11 })
-        spyOn(moment, 'tz').and.returnValue(allowedDateTime)
+        jest.spyOn(moment, 'tz').mockReturnValue(allowedDateTime)
         const pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
         expect(pinGenerationEligibilityData.isFamiliarisationPinGenerationAllowed).toBeFalsy()
         expect(pinGenerationEligibilityData.isLivePinGenerationAllowed).toBeFalsy()
@@ -51,7 +54,7 @@ describe('schoolHomeFeatureEligibilityPresenter', () => {
         expect(pinGenerationEligibilityData.isFamiliarisationInTheFuture).toBeFalsy()
         expect(pinGenerationEligibilityData.isLiveInTheFuture).toBeFalsy()
       })
-      it('disallows both familiarisation and live pin generation if check window is in the future', async () => {
+      test('disallows both familiarisation and live pin generation if check window is in the future', async () => {
         const checkWindowData = {
           id: 1,
           adminStartDate: moment.utc().add(2, 'days'),
@@ -62,7 +65,7 @@ describe('schoolHomeFeatureEligibilityPresenter', () => {
           checkEndDate: moment.utc().add(12, 'days')
         }
         const allowedDateTime = moment.utc().set({ hour: 11 })
-        spyOn(moment, 'tz').and.returnValue(allowedDateTime)
+        jest.spyOn(moment, 'tz').mockReturnValue(allowedDateTime)
         const pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
         expect(pinGenerationEligibilityData.isFamiliarisationPinGenerationAllowed).toBeFalsy()
         expect(pinGenerationEligibilityData.isLivePinGenerationAllowed).toBeFalsy()
@@ -71,7 +74,7 @@ describe('schoolHomeFeatureEligibilityPresenter', () => {
         expect(pinGenerationEligibilityData.isFamiliarisationInTheFuture).toBeTruthy()
         expect(pinGenerationEligibilityData.isLiveInTheFuture).toBeTruthy()
       })
-      it('disallow live pin generation and allows familiarisation pin generation if within only familiarisation period', async () => {
+      test('disallow live pin generation and allows familiarisation pin generation if within only familiarisation period', async () => {
         const checkWindowData = {
           id: 1,
           adminStartDate: moment.utc().subtract(3, 'days'),
@@ -82,7 +85,7 @@ describe('schoolHomeFeatureEligibilityPresenter', () => {
           checkEndDate: moment.utc().add(6, 'days')
         }
         const allowedDateTime = moment.utc().set({ hour: 11 })
-        spyOn(moment, 'tz').and.returnValue(allowedDateTime)
+        jest.spyOn(moment, 'tz').mockReturnValue(allowedDateTime)
         const pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
         expect(pinGenerationEligibilityData.isFamiliarisationPinGenerationAllowed).toBeTruthy()
         expect(pinGenerationEligibilityData.isLivePinGenerationAllowed).toBeFalsy()
@@ -91,7 +94,7 @@ describe('schoolHomeFeatureEligibilityPresenter', () => {
         expect(pinGenerationEligibilityData.isFamiliarisationInTheFuture).toBeFalsy()
         expect(pinGenerationEligibilityData.isLiveInTheFuture).toBeTruthy()
       })
-      it('disallows any familiarisation pin generation when date is within that period and outside of available times', async () => {
+      test('disallows any familiarisation pin generation when date is within that period and outside of available times', async () => {
         const checkWindowData = {
           id: 1,
           adminStartDate: moment.utc().subtract(3, 'days'),
@@ -102,7 +105,7 @@ describe('schoolHomeFeatureEligibilityPresenter', () => {
           checkEndDate: moment.utc().add(5, 'days')
         }
         const disallowedDateTime = moment.utc().set({ hour: 18 })
-        spyOn(moment, 'tz').and.returnValue(disallowedDateTime)
+        jest.spyOn(moment, 'tz').mockReturnValue(disallowedDateTime)
         const pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
         expect(pinGenerationEligibilityData.isFamiliarisationPinGenerationAllowed).toBeFalsy()
         expect(pinGenerationEligibilityData.isLivePinGenerationAllowed).toBeFalsy()
@@ -111,7 +114,7 @@ describe('schoolHomeFeatureEligibilityPresenter', () => {
         expect(pinGenerationEligibilityData.isFamiliarisationInTheFuture).toBeFalsy()
         expect(pinGenerationEligibilityData.isLiveInTheFuture).toBeTruthy()
       })
-      it('disallows any live pin generation when date is within that period and outside of available times', async () => {
+      test('disallows any live pin generation when date is within that period and outside of available times', async () => {
         const checkWindowData = {
           id: 1,
           adminStartDate: moment.utc().subtract(3, 'days'),
@@ -122,7 +125,7 @@ describe('schoolHomeFeatureEligibilityPresenter', () => {
           checkEndDate: moment.utc().add(5, 'days')
         }
         const disallowedDateTime = moment.utc().set({ hour: 18 })
-        spyOn(moment, 'tz').and.returnValue(disallowedDateTime)
+        jest.spyOn(moment, 'tz').mockReturnValue(disallowedDateTime)
         const pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
         expect(pinGenerationEligibilityData.isFamiliarisationPinGenerationAllowed).toBeFalsy()
         expect(pinGenerationEligibilityData.isLivePinGenerationAllowed).toBeFalsy()
@@ -131,7 +134,7 @@ describe('schoolHomeFeatureEligibilityPresenter', () => {
         expect(pinGenerationEligibilityData.isFamiliarisationInTheFuture).toBeFalsy()
         expect(pinGenerationEligibilityData.isLiveInTheFuture).toBeFalsy()
       })
-      it('disallows restarts and groups when outside of a live check window', async () => {
+      test('disallows restarts and groups when outside of a live check window', async () => {
         const checkWindowData = {
           id: 1,
           adminStartDate: moment.utc().subtract(3, 'days'),
@@ -142,7 +145,7 @@ describe('schoolHomeFeatureEligibilityPresenter', () => {
           checkEndDate: moment.utc().add(5, 'days')
         }
         const disallowedDateTime = moment.utc().set({ hour: 18 })
-        spyOn(moment, 'tz').and.returnValue(disallowedDateTime)
+        jest.spyOn(moment, 'tz').mockReturnValue(disallowedDateTime)
         const pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
         expect(pinGenerationEligibilityData.isFamiliarisationPinGenerationAllowed).toBeFalsy()
         expect(pinGenerationEligibilityData.isLivePinGenerationAllowed).toBeFalsy()
@@ -151,7 +154,7 @@ describe('schoolHomeFeatureEligibilityPresenter', () => {
         expect(pinGenerationEligibilityData.isFamiliarisationInTheFuture).toBeFalsy()
         expect(pinGenerationEligibilityData.isLiveInTheFuture).toBeFalsy()
       })
-      it('disallows restarts when outside of a live check window', async () => {
+      test('disallows restarts when outside of a live check window', async () => {
         const checkWindowData = {
           id: 1,
           adminStartDate: moment.utc().add(2, 'days'),
@@ -162,12 +165,12 @@ describe('schoolHomeFeatureEligibilityPresenter', () => {
           checkEndDate: moment.utc().add(12, 'days')
         }
         const allowedDateTime = moment.utc().set({ hour: 11 })
-        spyOn(moment, 'tz').and.returnValue(allowedDateTime)
+        jest.spyOn(moment, 'tz').mockReturnValue(allowedDateTime)
         const pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
         expect(pinGenerationEligibilityData.isRestartsPageAccessible).toBeFalsy()
         expect(pinGenerationEligibilityData.isGroupsPageAccessible).toBeFalsy()
       })
-      it('allows restarts when inside of a live check window', async () => {
+      test('allows restarts when inside of a live check window', async () => {
         const checkWindowData = {
           id: 1,
           adminStartDate: moment.utc().subtract(3, 'days'),
@@ -178,11 +181,11 @@ describe('schoolHomeFeatureEligibilityPresenter', () => {
           checkEndDate: moment.utc().add(5, 'days')
         }
         const allowedDateTime = moment.utc().set({ hour: 11 })
-        spyOn(moment, 'tz').and.returnValue(allowedDateTime)
+        jest.spyOn(moment, 'tz').mockReturnValue(allowedDateTime)
         const pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
         expect(pinGenerationEligibilityData.isRestartsPageAccessible).toBeTruthy()
       })
-      it('disallows groups when after live check end date', async () => {
+      test('disallows groups when after live check end date', async () => {
         const checkWindowData = {
           id: 1,
           adminStartDate: moment.utc().subtract(10, 'days'),
@@ -193,11 +196,11 @@ describe('schoolHomeFeatureEligibilityPresenter', () => {
           checkEndDate: moment.utc().subtract(2, 'days')
         }
         const allowedDateTime = moment.utc().set({ hour: 11 })
-        spyOn(moment, 'tz').and.returnValue(allowedDateTime)
+        jest.spyOn(moment, 'tz').mockReturnValue(allowedDateTime)
         const pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
         expect(pinGenerationEligibilityData.isGroupsPageAccessible).toBeFalsy()
       })
-      it('disallows groups when before admin start date', async () => {
+      test('disallows groups when before admin start date', async () => {
         const checkWindowData = {
           id: 1,
           adminStartDate: moment.utc().add(1, 'days'),
@@ -208,11 +211,11 @@ describe('schoolHomeFeatureEligibilityPresenter', () => {
           checkEndDate: moment.utc().add(5, 'days')
         }
         const allowedDateTime = moment.utc().set({ hour: 11 })
-        spyOn(moment, 'tz').and.returnValue(allowedDateTime)
+        jest.spyOn(moment, 'tz').mockReturnValue(allowedDateTime)
         const pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
         expect(pinGenerationEligibilityData.isGroupsPageAccessible).toBeFalsy()
       })
-      it('allow groups when within live check period', async () => {
+      test('allow groups when within live check period', async () => {
         const checkWindowData = {
           id: 1,
           adminStartDate: moment.utc().subtract(3, 'days'),
@@ -223,11 +226,11 @@ describe('schoolHomeFeatureEligibilityPresenter', () => {
           checkEndDate: moment.utc().add(5, 'days')
         }
         const allowedDateTime = moment.utc().set({ hour: 11 })
-        spyOn(moment, 'tz').and.returnValue(allowedDateTime)
+        jest.spyOn(moment, 'tz').mockReturnValue(allowedDateTime)
         const pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
         expect(pinGenerationEligibilityData.isGroupsPageAccessible).toBeTruthy()
       })
-      it('disallows hdf before live check period', async () => {
+      test('disallows hdf before live check period', async () => {
         const checkWindowData = {
           id: 1,
           adminStartDate: moment.utc().subtract(3, 'days'),
@@ -238,11 +241,11 @@ describe('schoolHomeFeatureEligibilityPresenter', () => {
           checkEndDate: moment.utc().add(5, 'days')
         }
         const allowedDateTime = moment.utc().set({ hour: 11 })
-        spyOn(moment, 'utc').and.returnValue(allowedDateTime)
+        jest.spyOn(moment, 'utc').mockReturnValue(allowedDateTime)
         const pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
         expect(pinGenerationEligibilityData.isHdfPageAccessible).toBeFalsy()
       })
-      it('allows hdf when within live check period', async () => {
+      test('allows hdf when within live check period', async () => {
         const checkWindowData = {
           id: 1,
           adminStartDate: moment.utc().subtract(10, 'days'),
@@ -253,11 +256,11 @@ describe('schoolHomeFeatureEligibilityPresenter', () => {
           checkEndDate: moment.utc().add(7, 'days')
         }
         const allowedDateTime = moment.utc().set({ hour: 11 })
-        spyOn(moment, 'utc').and.returnValue(allowedDateTime)
+        jest.spyOn(moment, 'utc').mockReturnValue(allowedDateTime)
         const pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
         expect(pinGenerationEligibilityData.isHdfPageAccessible).toBeTruthy()
       })
-      it('calculates when the check window is closed', async () => {
+      test('calculates when the check window is closed', async () => {
         const checkWindowData = {
           id: 1,
           adminStartDate: moment.utc().subtract(10, 'day'),
@@ -268,11 +271,11 @@ describe('schoolHomeFeatureEligibilityPresenter', () => {
           checkEndDate: moment.utc().subtract(1, 'days')
         }
         const allowedDateTime = moment.utc().set({ hour: 11 })
-        spyOn(moment, 'utc').and.returnValue(allowedDateTime)
+        jest.spyOn(moment, 'utc').mockReturnValue(allowedDateTime)
         const pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
         expect(pinGenerationEligibilityData.isCheckWindowClosed).toBe(true)
       })
-      it('calculates when the check window is open', async () => {
+      test('calculates when the check window is open', async () => {
         const checkWindowData = {
           id: 1,
           adminStartDate: moment.utc().subtract(10, 'day'),
@@ -283,7 +286,7 @@ describe('schoolHomeFeatureEligibilityPresenter', () => {
           checkEndDate: moment.utc().add(1, 'days')
         }
         const allowedDateTime = moment.utc().set({ hour: 11 })
-        spyOn(moment, 'utc').and.returnValue(allowedDateTime)
+        jest.spyOn(moment, 'utc').mockReturnValue(allowedDateTime)
         const pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
         expect(pinGenerationEligibilityData.isCheckWindowClosed).toBe(false)
       })
@@ -292,7 +295,7 @@ describe('schoolHomeFeatureEligibilityPresenter', () => {
       beforeEach(() => {
         config.OverridePinExpiry = true
       })
-      it('allows both familiarisation and live pin generation if regardless of check window period', async () => {
+      test('allows both familiarisation and live pin generation if regardless of check window period', async () => {
         const checkWindowData = {
           id: 1,
           adminStartDate: moment.utc().subtract(10, 'days'),
@@ -303,7 +306,7 @@ describe('schoolHomeFeatureEligibilityPresenter', () => {
           checkEndDate: moment.utc().subtract(2, 'days')
         }
         const allowedDateTime = moment.utc().set({ hour: 11 })
-        spyOn(moment, 'tz').and.returnValue(allowedDateTime)
+        jest.spyOn(moment, 'tz').mockReturnValue(allowedDateTime)
         const pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData)
         expect(pinGenerationEligibilityData.isFamiliarisationPinGenerationAllowed).toBeTruthy()
         expect(pinGenerationEligibilityData.isLivePinGenerationAllowed).toBeTruthy()

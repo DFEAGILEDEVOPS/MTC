@@ -1,6 +1,6 @@
 'use strict'
 
-/* global describe it expect beforeEach  */
+/* global describe test expect beforeEach  */
 
 let sut
 
@@ -11,25 +11,25 @@ describe('UUID validator', () => {
     sut = require('../../../../../lib/validator/common/uuid-validator')
   })
 
-  it('should be defined', () => {
+  test('should be defined', () => {
     expect(sut).toBeDefined()
   })
 
-  it('should fail when value is empty string', () => {
+  test('should fail when value is empty string', () => {
     const actual = sut.validate('', valueName)
     expect(actual.hasError()).toBe(true)
     const error = actual.get(valueName)
     expect(error).toBe(`${valueName} is required`)
   })
 
-  it('should fail when value is not a uuid', () => {
+  test('should fail when value is not a uuid', () => {
     const actual = sut.validate('not a uuid', valueName)
     expect(actual.hasError()).toBe(true)
     const error = actual.get(valueName)
     expect(error).toBe(`${valueName} is not a valid UUID`)
   })
 
-  it('should fail when value is a uuid of incorrect length', () => {
+  test('should fail when value is a uuid of incorrect length', () => {
     const oneCharShortUuid = '6a2f41a3-c54c-fce8-32d2-0324e1c32e2'
     const actual = sut.validate(oneCharShortUuid, valueName)
     expect(actual.hasError()).toBe(true)
@@ -37,7 +37,7 @@ describe('UUID validator', () => {
     expect(error).toBe(`${valueName} is not a valid UUID`)
   })
 
-  it('should pass when value is a valid uuid', () => {
+  test('should pass when value is a valid uuid', () => {
     const oneCharShortUuid = '6a2f41a3-c54c-fce8-32d2-0324e1c32e21'
     const actual = sut.validate(oneCharShortUuid, valueName)
     expect(actual.hasError()).toBe(false)

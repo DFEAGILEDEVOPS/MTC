@@ -1,5 +1,5 @@
 'use strict'
-/* global describe, beforeEach, it, expect, spyOn */
+/* global describe, beforeEach, test, expect, jest, afterEach */
 
 const schoolMock = require('../../mocks/school')
 const sqlService = require('../../../../services/data-access/sql.service')
@@ -8,10 +8,14 @@ const sut = require('../../../../services/data-access/school.data.service')
 describe('school.data.service', () => {
   describe('#sqlFindOneBySchoolPin', () => {
     beforeEach(() => {
-      spyOn(sqlService, 'readonlyQuery').and.returnValue(Promise.resolve([schoolMock]))
+      jest.spyOn(sqlService, 'readonlyQuery').mockResolvedValue([schoolMock])
     })
 
-    it('it makes the expected calls', async () => {
+    afterEach(() => {
+      jest.restoreAllMocks()
+    })
+
+    test('it makes the expected calls', async () => {
       const res = await sut.sqlFindOneBySchoolPin('9999z')
       expect(sqlService.readonlyQuery).toHaveBeenCalled()
       expect(typeof res).toBe('object')
@@ -20,10 +24,10 @@ describe('school.data.service', () => {
 
   describe('#sqlFindOneByDfeNumber', () => {
     beforeEach(() => {
-      spyOn(sqlService, 'readonlyQuery').and.returnValue(Promise.resolve([schoolMock]))
+      jest.spyOn(sqlService, 'readonlyQuery').mockResolvedValue([schoolMock])
     })
 
-    it('it makes the expected calls', async () => {
+    test('it makes the expected calls', async () => {
       const res = await sut.sqlFindOneByDfeNumber(12345678)
       expect(sqlService.readonlyQuery).toHaveBeenCalled()
       expect(typeof res).toBe('object')

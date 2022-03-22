@@ -1,5 +1,5 @@
 'use strict'
-/* global beforeEach describe expect it fail spyOn jest */
+/* global beforeEach describe expect jest test afterEach */
 
 const moment = require('moment')
 const { v4: uuidv4 } = require('uuid')
@@ -9,47 +9,58 @@ const dateService = require('../../../services/date.service')
 const MtcCheckWindowNotFoundError = require('../../../error-types/MtcCheckWindowNotFoundError')
 
 describe('check-window-v2.service', () => {
+  afterEach(() => {
+    jest.restoreAllMocks()
+  })
+
   describe('getCheckWindow', () => {
     let urlSlug
     beforeEach(() => {
       urlSlug = uuidv4().toUpperCase()
     })
-    it('should get check window based on urlSlug', async () => {
-      spyOn(checkWindowDataService, 'sqlFindOneByUrlSlug').and.returnValue({ name: 'Check window' })
+
+    test('should get check window based on urlSlug', async () => {
+      jest.spyOn(checkWindowDataService, 'sqlFindOneByUrlSlug').mockResolvedValue({ name: 'Check window' })
       const result = await checkWindowV2Service.getCheckWindow(urlSlug)
       expect(result).toEqual({ name: 'Check window' })
     })
-    it('should throw an MtcCheckWindowNotFound error type if urlSlug is empty', async () => {
-      spyOn(checkWindowDataService, 'sqlFindOneByUrlSlug')
+
+    test('should throw an MtcCheckWindowNotFound error type if urlSlug is empty', async () => {
+      jest.spyOn(checkWindowDataService, 'sqlFindOneByUrlSlug').mockImplementation()
+
+      // Test 1: it rejects
+      await expect(checkWindowV2Service.getCheckWindow(undefined)).rejects.toThrowError(MtcCheckWindowNotFoundError)
+
+      // Test 2: with the correct error
       try {
         await checkWindowV2Service.getCheckWindow(undefined)
-        fail()
       } catch (error) {
-        expect(error instanceof MtcCheckWindowNotFoundError).toBeTruthy()
-        expect(error.name).toBe('MtcCheckWindowNotFound')
         expect(error.message).toEqual('Check window url slug is not valid')
         expect(error.userMessage).toEqual('The service manager must configure a valid check window')
       }
       expect(checkWindowDataService.sqlFindOneByUrlSlug).not.toHaveBeenCalled()
     })
-    it('should throw an MtcCheckWindowNotFound error type if urlSlug is invalid', async () => {
-      spyOn(checkWindowDataService, 'sqlFindOneByUrlSlug')
+
+    test('should throw an MtcCheckWindowNotFound error type if urlSlug is invalid', async () => {
+      jest.spyOn(checkWindowDataService, 'sqlFindOneByUrlSlug').mockImplementation()
       urlSlug = urlSlug.substring(0, urlSlug.length - 1)
+      // Test 1: it rejects
+      await expect(checkWindowV2Service.getCheckWindow(urlSlug)).rejects.toThrowError(MtcCheckWindowNotFoundError)
+
+      // Test 2: the error
       try {
         await checkWindowV2Service.getCheckWindow(urlSlug)
-        fail()
       } catch (error) {
-        expect(error instanceof MtcCheckWindowNotFoundError).toBeTruthy()
-        expect(error.name).toBe('MtcCheckWindowNotFound')
         expect(error.message).toEqual('Check window url slug is not valid')
         expect(error.userMessage).toEqual('The service manager must configure a valid check window')
       }
       expect(checkWindowDataService.sqlFindOneByUrlSlug).not.toHaveBeenCalled()
     })
   })
+
   describe('getCheckWindows', () => {
-    it('should get check windows names with statuses and provide canRemove boolean flag', async () => {
-      spyOn(checkWindowDataService, 'sqlFindCheckWindowsWithStatus').and.returnValue([
+    test('should get check windows names with statuses and provide canRemove boolean flag', async () => {
+      jest.spyOn(checkWindowDataService, 'sqlFindCheckWindowsWithStatus').mockResolvedValue([
         {
           name: 'name1',
           status: 'Inactive'
@@ -69,9 +80,10 @@ describe('check-window-v2.service', () => {
       expect(result[2].canRemove).toBeFalsy()
     })
   })
+
   describe('getPresentAndFutureCheckWindows', () => {
-    it('should get check windows that are not in the past', async () => {
-      spyOn(checkWindowDataService, 'sqlFindCheckWindowsWithStatusAndFormCountByType').and.returnValue([
+    test('should get check windows that are not in the past', async () => {
+      jest.spyOn(checkWindowDataService, 'sqlFindCheckWindowsWithStatusAndFormCountByType').mockResolvedValue([
         {
           name: 'name1',
           status: 'Inactive'
@@ -98,97 +110,81 @@ describe('check-window-v2.service', () => {
       ])
     })
   })
+
   describe('markDeleted', () => {
     let urlSlug
+
     beforeEach(() => {
       urlSlug = uuidv4().toUpperCase()
     })
-    it('should mark the check window as deleted when it is in the future', async () => {
-      spyOn(checkWindowDataService, 'sqlFindOneByUrlSlug').and.returnValue({
+
+    test('should mark the check window as deleted when it is in the future', async () => {
+      jest.spyOn(checkWindowDataService, 'sqlFindOneByUrlSlug').mockResolvedValue({
         id: 1,
         adminStartDate: moment.utc().add(1, 'days'),
         adminEndDate: moment.utc().add(2, 'days')
       })
-      spyOn(checkWindowDataService, 'sqlDeleteCheckWindow')
+      jest.spyOn(checkWindowDataService, 'sqlDeleteCheckWindow').mockImplementation()
       await checkWindowV2Service.markDeleted(urlSlug)
       expect(checkWindowDataService.sqlDeleteCheckWindow).toHaveBeenCalled()
     })
-    it('should throw an error if check window url slug is not found', async () => {
-      spyOn(checkWindowDataService, 'sqlFindOneByUrlSlug').and.returnValue({
+
+    test('should throw an error if check window url slug is not found', async () => {
+      jest.spyOn(checkWindowDataService, 'sqlFindOneByUrlSlug').mockResolvedValue({
         id: 1,
         adminStartDate: moment.utc().add(1, 'days'),
         adminEndDate: moment.utc().add(2, 'days')
       })
-      spyOn(checkWindowDataService, 'sqlDeleteCheckWindow')
-      try {
-        await checkWindowV2Service.markDeleted('')
-        fail()
-      } catch (error) {
-        expect(error.message).toBe('Check window url slug is not valid')
-      }
+      jest.spyOn(checkWindowDataService, 'sqlDeleteCheckWindow').mockImplementation()
+      await expect(checkWindowV2Service.markDeleted('')).rejects.toThrow('Check window url slug is not valid')
       expect(checkWindowDataService.sqlDeleteCheckWindow).not.toHaveBeenCalled()
     })
-    it('should throw an error if check window url slug is invalid', async () => {
-      spyOn(checkWindowDataService, 'sqlFindOneByUrlSlug').and.returnValue({
+
+    test('should throw an error if check window url slug is invalid', async () => {
+      jest.spyOn(checkWindowDataService, 'sqlFindOneByUrlSlug').mockResolvedValue({
         id: 1,
         adminStartDate: moment.utc().add(1, 'days'),
         adminEndDate: moment.utc().add(2, 'days')
       })
-      spyOn(checkWindowDataService, 'sqlDeleteCheckWindow')
+      jest.spyOn(checkWindowDataService, 'sqlDeleteCheckWindow').mockImplementation()
       urlSlug = urlSlug.substring(0, urlSlug.length - 1)
-      try {
-        await checkWindowV2Service.markDeleted(urlSlug)
-        fail()
-      } catch (error) {
-        expect(error.message).toBe('Check window url slug is not valid')
-      }
+      await expect(checkWindowV2Service.markDeleted(urlSlug)).rejects.toThrow('Check window url slug is not valid')
       expect(checkWindowDataService.sqlDeleteCheckWindow).not.toHaveBeenCalled()
     })
-    it('should throw an error if check window is not found', async () => {
-      spyOn(checkWindowDataService, 'sqlFindOneByUrlSlug').and.returnValue(undefined)
-      spyOn(checkWindowDataService, 'sqlDeleteCheckWindow')
-      try {
-        await checkWindowV2Service.markDeleted(urlSlug)
-        fail()
-      } catch (error) {
-        expect(error.message).toBe('Check window not found')
-      }
+
+    test('should throw an error if check window is not found', async () => {
+      jest.spyOn(checkWindowDataService, 'sqlFindOneByUrlSlug').mockResolvedValue(undefined)
+      jest.spyOn(checkWindowDataService, 'sqlDeleteCheckWindow').mockImplementation()
+      await expect(checkWindowV2Service.markDeleted(urlSlug)).rejects.toThrow('Check window not found')
       expect(checkWindowDataService.sqlDeleteCheckWindow).not.toHaveBeenCalled()
     })
-    it('should throw an error if check window is active', async () => {
-      spyOn(checkWindowDataService, 'sqlFindOneByUrlSlug').and.returnValue({
+
+    test('should throw an error if check window is active', async () => {
+      jest.spyOn(checkWindowDataService, 'sqlFindOneByUrlSlug').mockResolvedValue({
         id: 1,
         adminStartDate: moment.utc().subtract(1, 'days'),
         adminEndDate: moment.utc().add(2, 'days')
       })
-      spyOn(checkWindowDataService, 'sqlDeleteCheckWindow')
-      try {
-        await checkWindowV2Service.markDeleted(urlSlug)
-        fail()
-      } catch (error) {
-        expect(error.message).toBe('Deleting an active check window is not permitted')
-      }
+      jest.spyOn(checkWindowDataService, 'sqlDeleteCheckWindow').mockImplementation()
+      await expect(checkWindowV2Service.markDeleted(urlSlug)).rejects.toThrow('Deleting an active check window is not permitted')
       expect(checkWindowDataService.sqlDeleteCheckWindow).not.toHaveBeenCalled()
     })
-    it('should throw an error if check window is a past one', async () => {
-      spyOn(checkWindowDataService, 'sqlFindOneByUrlSlug').and.returnValue({
+
+    test('should throw an error if check window is a past one', async () => {
+      jest.spyOn(checkWindowDataService, 'sqlFindOneByUrlSlug').mockResolvedValue({
         id: 1,
         adminStartDate: moment.utc().subtract(4, 'days'),
         adminEndDate: moment.utc().subtract(2, 'days')
       })
-      spyOn(checkWindowDataService, 'sqlDeleteCheckWindow')
-      try {
-        await checkWindowV2Service.markDeleted(urlSlug)
-        fail()
-      } catch (error) {
-        expect(error.message).toBe('Deleting an past check window is not permitted')
-      }
+      jest.spyOn(checkWindowDataService, 'sqlDeleteCheckWindow').mockImplementation()
+      await expect(checkWindowV2Service.markDeleted(urlSlug)).rejects.toThrow('Deleting an past check window is not permitted')
       expect(checkWindowDataService.sqlDeleteCheckWindow).not.toHaveBeenCalled()
     })
   })
+
   describe('prepareSubmissionData', () => {
-    it('should prepare data for submission', async () => {
-      spyOn(dateService, 'createUTCFromDayMonthYear').and.returnValue(moment.utc())
+    test('should prepare data for submission', async () => {
+      jest.spyOn(dateService, 'createUTCFromDayMonthYear').mockReturnValue(moment.utc())
       const requestData = {
         checkWindowName: 'Check window'
       }
@@ -207,10 +203,10 @@ describe('check-window-v2.service', () => {
     })
   })
   describe('getActiveCheckWindow', () => {
-    it('should cache successive calls on prod', async () => {
+    test('should cache successive calls on prod', async () => {
       const nodeEnvSaved = process.env.NODE_ENV
       process.env.NODE_ENV = 'production'
-      spyOn(checkWindowDataService, 'sqlFindActiveCheckWindow').and.returnValue(Promise.resolve({ mock: 'yes' }))
+      jest.spyOn(checkWindowDataService, 'sqlFindActiveCheckWindow').mockResolvedValue({ mock: 'yes' })
       await checkWindowV2Service.getActiveCheckWindow(true)
       await checkWindowV2Service.getActiveCheckWindow()
       await checkWindowV2Service.getActiveCheckWindow()
@@ -218,10 +214,10 @@ describe('check-window-v2.service', () => {
       process.env.NODE_ENV = nodeEnvSaved
     })
 
-    it('should NOT cache successive calls on non-prod', async () => {
+    test('should NOT cache successive calls on non-prod', async () => {
       const nodeEnvSaved = process.env.NODE_ENV
       process.env.NODE_ENV = 'development'
-      spyOn(checkWindowDataService, 'sqlFindActiveCheckWindow').and.returnValue(Promise.resolve({ mock: 'yes' }))
+      jest.spyOn(checkWindowDataService, 'sqlFindActiveCheckWindow').mockResolvedValue({ mock: 'yes' })
       await checkWindowV2Service.getActiveCheckWindow(true)
       await checkWindowV2Service.getActiveCheckWindow()
       await checkWindowV2Service.getActiveCheckWindow()
@@ -229,11 +225,11 @@ describe('check-window-v2.service', () => {
       process.env.NODE_ENV = nodeEnvSaved
     })
 
-    it('only caches for 60 seconds on prod envs', async () => {
+    test('only caches for 60 seconds on prod envs', async () => {
       const now = new Date()
       const nodeEnvSaved = process.env.NODE_ENV
       process.env.NODE_ENV = 'production'
-      spyOn(checkWindowDataService, 'sqlFindActiveCheckWindow').and.returnValue(Promise.resolve({ mock: 'yes' }))
+      jest.spyOn(checkWindowDataService, 'sqlFindActiveCheckWindow').mockResolvedValue({ mock: 'yes' })
       await checkWindowV2Service.getActiveCheckWindow(true) // 1st call
 
       const nowPlus60 = new Date(now.getTime() + 60.010 * 1000)
