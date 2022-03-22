@@ -135,5 +135,8 @@ export default {
   SyncResultsInit: {
     MaxParallelTasks: parseInt(parser.valueOrSubstitute(process.env.SYNC_RESULTS_INIT_MAX_PARALLEL_TASKS, 5), 10)
   },
-  LiveFormQuestionCount: getLinesPerCheck()
+  LiveFormQuestionCount: getLinesPerCheck(),
+  PsReportLogWriter: {
+    MessagesPerBatch: parseInt(parser.valueOrSubstitute(process.env.PS_REPORT_LOG_WRITER_MESSAGE_BATCH_SIZE, 200), 10)
+  }
 }

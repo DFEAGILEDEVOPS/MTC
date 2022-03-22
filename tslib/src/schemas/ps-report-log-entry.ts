@@ -6,4 +6,9 @@ export interface IPsReportLogEntry {
   generatedAt: moment.Moment
 }
 
-export type PsReportSource = 'school-generator' | 'pupil-generator' | 'transformer' | 'writer'
+export enum PsReportSource {
+  SchoolGenerator = 'School Generator',
+  PupilGenerator = 'Pupil Generator',
+  Transformer = 'Transformer',
+  Writer = 'Writer'
+}
