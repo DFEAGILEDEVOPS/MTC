@@ -25,6 +25,7 @@ const blobService = {
   uploadLocalFile: async function uploadLocalFile (containerName, remoteFilename, localFilename) {
     const client = BlobServiceClient.fromConnectionString(config.AZURE_STORAGE_CONNECTION_STRING)
     const containerClient = client.getContainerClient(containerName)
+    await containerClient.createIfNotExists()
     const blobClient = containerClient.getBlockBlobClient(remoteFilename)
     return blobClient.uploadFile(localFilename)
   },
