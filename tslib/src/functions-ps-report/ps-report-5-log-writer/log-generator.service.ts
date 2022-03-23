@@ -26,7 +26,7 @@ export class PsLogGeneratorService {
           this.writerLog.push(formattedEntry)
           break
         default:
-          throw new Error(`unhandled function type: ${entry.source}`)
+          throw new Error(`unhandled function source: ${entry.source}`)
       }
     }
     return {
