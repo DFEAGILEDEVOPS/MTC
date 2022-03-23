@@ -1,34 +1,33 @@
+import moment from 'moment'
+import { IBlobService } from '../../azure/blob-service'
+import { IDateTimeService } from '../../common/datetime.service'
 import { IPsReportLogSet } from './log-generator.service'
 import { PsLogWriter } from './log-writer'
-import { IPsLogBlobStorageDataService } from './ps-log-blob.data.service'
 
 let sut: PsLogWriter
-const DataServiceMock = jest.fn<IPsLogBlobStorageDataService, any>(() => ({
-  createBlobTextFile: jest.fn(),
-  createContainerIfNotExists: jest.fn()
+const DataServiceMock = jest.fn<IBlobService, any>(() => ({
+  createBlob: jest.fn(),
+  deleteBlob: jest.fn()
 }))
-let dataService: IPsLogBlobStorageDataService
+const DateTimeServiceMock = jest.fn<IDateTimeService, any>(() => ({
+  convertDateToMoment: jest.fn(),
+  convertMomentToJsDate: jest.fn(),
+  formatIso8601: jest.fn(),
+  utcNow: jest.fn()
+}))
+
+let dataService: IBlobService
+let dateTimeService: IDateTimeService
 
 describe('ps report log writer', () => {
   beforeEach(() => {
     dataService = new DataServiceMock()
-    sut = new PsLogWriter(dataService)
+    dateTimeService = new DateTimeServiceMock()
+    sut = new PsLogWriter(dataService, dateTimeService)
   })
 
   test('subject should be defined', () => {
     expect(sut).toBeDefined()
-  })
-
-  test('it should create a container for todays log files', async () => {
-    const logSet: IPsReportLogSet = {
-      ListSchoolsLog: ['sldkfjsdlkfj'],
-      PupilDataLog: ['sldfjdslkfj'],
-      TransformerLog: ['wouergh'],
-      WriterLog: ['sldfjsdklfj']
-    }
-    const containerName = 'foo'
-    await sut.writeToStorage(logSet, containerName)
-    expect(dataService.createContainerIfNotExists).toHaveBeenCalledWith(containerName)
   })
 
   test('it should write each log file to blob storage container', async () => {
@@ -39,11 +38,19 @@ describe('ps report log writer', () => {
       WriterLog: ['sldfjsdklfj']
     }
     const containerName = 'foo'
+    const mockDateTime = moment('2022-03-23 14:50:31')
+    jest.spyOn(dateTimeService, 'utcNow').mockReturnValue(mockDateTime)
+    const mockDateTimeIsoString = mockDateTime.toISOString()
+    const expectedListSchoolsFileName = `list-schools-log-${mockDateTimeIsoString}.txt`
+    const expectedPupilDataFileName = `pupil-data-log-${mockDateTimeIsoString}.txt`
+    const expectedTransformerFileName = `transformer-log-${mockDateTimeIsoString}.txt`
+    const expectedWriterFileName = `writer-log-${mockDateTimeIsoString}.txt`
+
     await sut.writeToStorage(logSet, containerName)
-    expect(dataService.createBlobTextFile).toHaveBeenCalledTimes(4)
-    expect(dataService.createBlobTextFile).toHaveBeenNthCalledWith(1, logSet.ListSchoolsLog.join('\n'), 'list-schools.txt', containerName)
-    expect(dataService.createBlobTextFile).toHaveBeenNthCalledWith(2, logSet.PupilDataLog.join('\n'), 'pupil-data.txt', containerName)
-    expect(dataService.createBlobTextFile).toHaveBeenNthCalledWith(3, logSet.TransformerLog.join('\n'), 'transformer.txt', containerName)
-    expect(dataService.createBlobTextFile).toHaveBeenNthCalledWith(4, logSet.WriterLog.join('\n'), 'writer.txt', containerName)
+    expect(dataService.createBlob).toHaveBeenCalledTimes(4)
+    expect(dataService.createBlob).toHaveBeenNthCalledWith(1, Buffer.from(logSet.ListSchoolsLog.join('\n')), expectedListSchoolsFileName, containerName)
+    expect(dataService.createBlob).toHaveBeenNthCalledWith(2, Buffer.from(logSet.PupilDataLog.join('\n')), expectedPupilDataFileName, containerName)
+    expect(dataService.createBlob).toHaveBeenNthCalledWith(3, Buffer.from(logSet.TransformerLog.join('\n')), expectedTransformerFileName, containerName)
+    expect(dataService.createBlob).toHaveBeenNthCalledWith(4, Buffer.from(logSet.WriterLog.join('\n')), expectedWriterFileName, containerName)
   })
 })
