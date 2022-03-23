@@ -8,6 +8,7 @@ import { PsLogGeneratorService } from './log-generator.service'
 import { ServiceBusMessageParser } from './message-parser'
 
 const functionName = 'ps-report-log-generator'
+const queueName = 'ps-report-log'
 
 const funcImplementation: AzureFunction = async function (context: Context, timer: IFunctionTimer): Promise<void> {
   if (timer.isPastDue) {
@@ -32,7 +33,7 @@ const funcImplementation: AzureFunction = async function (context: Context, time
   try {
     context.log(`${functionName}: connecting to service bus...`)
     busClient = new sb.ServiceBusClient(config.ServiceBus.ConnectionString)
-    receiver = busClient.createReceiver('check-notification', {
+    receiver = busClient.createReceiver(queueName, {
       receiveMode: 'peekLock'
     })
     context.log(`${functionName}: connected to service bus instance ${busClient.fullyQualifiedNamespace}`)
@@ -53,8 +54,7 @@ const funcImplementation: AzureFunction = async function (context: Context, time
     const messageParser = new ServiceBusMessageParser()
     const entries = messageParser.parse(messages)
     const logGenerator = new PsLogGeneratorService()
-    logGenerator.generate(entries)
-    await logGenerator.write()
+    await logGenerator.generate(entries)
     await disconnect()
     finish(start, context)
     return
