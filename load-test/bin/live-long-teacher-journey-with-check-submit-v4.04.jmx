@@ -74,10 +74,10 @@
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
           <boolProp name="LoopController.continue_forever">false</boolProp>
-          <stringProp name="LoopController.loops">1</stringProp>
+          <stringProp name="LoopController.loops">100</stringProp>
         </elementProp>
-        <stringProp name="ThreadGroup.num_threads">${__P(threads,1)}</stringProp>
-        <stringProp name="ThreadGroup.ramp_time">${__P(rampup,1)}</stringProp>
+        <stringProp name="ThreadGroup.num_threads">${__P(threads,50)}</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">${__P(rampup,5)}</stringProp>
         <boolProp name="ThreadGroup.scheduler">false</boolProp>
         <stringProp name="ThreadGroup.duration">${__P(duration,300)}</stringProp>
         <stringProp name="ThreadGroup.delay"></stringProp>
@@ -108,16 +108,22 @@
 if (props.get(&quot;grid_index&quot;) != null) {
 	machineIndex = Integer.parseInt(props.get(&quot;grid_index&quot;));
 }
+//log.info(&quot;machineIndex is &quot; + machineIndex);
 
 int lastTeacher = (machineIndex + 1) * 1000;
 int firstTeacher = lastTeacher - 999;
-log.info(&quot;this test node range is &quot; + firstTeacher + &quot; to &quot; + lastTeacher);
+//log.info(&quot;this test node range is &quot; + firstTeacher + &quot; to &quot; + lastTeacher);
+
 int threadNumber = ${__threadNum};
+//log.info(&quot;threadNumber is &quot; + threadNumber.toString());
+
 int thisTeacher = firstTeacher + (threadNumber - 1);
+//log.info(&quot;thisTeacher is &quot; + thisTeacher.toString());
+
 vars.put(&quot;teacherIndex&quot;, thisTeacher.toString());
 
-log.info(&quot;thisTeacher &quot; + thisTeacher.toString());
-log.info(&quot;teacherIndex is &quot; + teacherIndex);</stringProp>
+//vars.get to see debug value
+//log.info(&quot;teacherIndex is &quot; + teacherIndex);</stringProp>
         </BeanShellPreProcessor>
         <hashTree/>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST Admin Sign-In - Single User for Debug" enabled="false">
@@ -184,7 +190,7 @@ log.info(&quot;teacherIndex is &quot; + teacherIndex);</stringProp>
             <collectionProp name="Arguments.arguments">
               <elementProp name="username" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">teacher${teacherIndex}</stringProp>
+                <stringProp name="Argument.value">teachernew${teacherIndex}</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
                 <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 <stringProp name="Argument.name">username</stringProp>
@@ -237,6 +243,10 @@ log.info(&quot;teacherIndex is &quot; + teacherIndex);</stringProp>
             <stringProp name="ConstantTimer.delay">${__Random(10000,20000)}</stringProp>
           </ConstantTimer>
           <hashTree/>
+          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Wait 5 seconds" enabled="true">
+            <stringProp name="ConstantTimer.delay">5</stringProp>
+          </ConstantTimer>
+          <hashTree/>
         </hashTree>
         <LoopController guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller - GET Organise pupils into groups" enabled="true">
           <boolProp name="LoopController.continue_forever">true</boolProp>
@@ -266,6 +276,10 @@ log.info(&quot;teacherIndex is &quot; + teacherIndex);</stringProp>
               <stringProp name="ConstantTimer.delay">${__Random(10000,15000)}</stringProp>
             </ConstantTimer>
             <hashTree/>
+            <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Wait 5 seconds" enabled="true">
+              <stringProp name="ConstantTimer.delay">5</stringProp>
+            </ConstantTimer>
+            <hashTree/>
           </hashTree>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GET school home" enabled="true">
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
@@ -288,6 +302,10 @@ log.info(&quot;teacherIndex is &quot; + teacherIndex);</stringProp>
           <hashTree>
             <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Wait 10 - 15 seconds" enabled="false">
               <stringProp name="ConstantTimer.delay">${__Random(10000,15000)}</stringProp>
+            </ConstantTimer>
+            <hashTree/>
+            <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Wait 5 seconds" enabled="true">
+              <stringProp name="ConstantTimer.delay">5</stringProp>
             </ConstantTimer>
             <hashTree/>
           </hashTree>
@@ -320,6 +338,10 @@ log.info(&quot;teacherIndex is &quot; + teacherIndex);</stringProp>
               <stringProp name="ConstantTimer.delay">${__Random(10000,15000)}</stringProp>
             </ConstantTimer>
             <hashTree/>
+            <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Wait 5 seconds" enabled="true">
+              <stringProp name="ConstantTimer.delay">5</stringProp>
+            </ConstantTimer>
+            <hashTree/>
           </hashTree>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GET school home" enabled="true">
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
@@ -342,6 +364,10 @@ log.info(&quot;teacherIndex is &quot; + teacherIndex);</stringProp>
           <hashTree>
             <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Wait 10 - 15 seconds" enabled="false">
               <stringProp name="ConstantTimer.delay">${__Random(10000,15000)}</stringProp>
+            </ConstantTimer>
+            <hashTree/>
+            <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Wait 5 seconds" enabled="true">
+              <stringProp name="ConstantTimer.delay">5</stringProp>
             </ConstantTimer>
             <hashTree/>
           </hashTree>
@@ -374,6 +400,10 @@ log.info(&quot;teacherIndex is &quot; + teacherIndex);</stringProp>
               <stringProp name="ConstantTimer.delay">${__Random(10000,15000)}</stringProp>
             </ConstantTimer>
             <hashTree/>
+            <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Wait 5 seconds" enabled="true">
+              <stringProp name="ConstantTimer.delay">5</stringProp>
+            </ConstantTimer>
+            <hashTree/>
           </hashTree>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GET school home" enabled="true">
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
@@ -396,6 +426,10 @@ log.info(&quot;teacherIndex is &quot; + teacherIndex);</stringProp>
           <hashTree>
             <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Wait 10 - 15 seconds" enabled="false">
               <stringProp name="ConstantTimer.delay">${__Random(10000,15000)}</stringProp>
+            </ConstantTimer>
+            <hashTree/>
+            <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Wait 5 seconds" enabled="true">
+              <stringProp name="ConstantTimer.delay">5</stringProp>
             </ConstantTimer>
             <hashTree/>
           </hashTree>
@@ -428,6 +462,10 @@ log.info(&quot;teacherIndex is &quot; + teacherIndex);</stringProp>
               <stringProp name="ConstantTimer.delay">${__Random(10000,15000)}</stringProp>
             </ConstantTimer>
             <hashTree/>
+            <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Wait 5 seconds" enabled="true">
+              <stringProp name="ConstantTimer.delay">5</stringProp>
+            </ConstantTimer>
+            <hashTree/>
           </hashTree>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GET school home" enabled="true">
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
@@ -450,6 +488,10 @@ log.info(&quot;teacherIndex is &quot; + teacherIndex);</stringProp>
           <hashTree>
             <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Wait 10 - 15 seconds" enabled="false">
               <stringProp name="ConstantTimer.delay">${__Random(10000,15000)}</stringProp>
+            </ConstantTimer>
+            <hashTree/>
+            <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Wait 5 seconds" enabled="true">
+              <stringProp name="ConstantTimer.delay">5</stringProp>
             </ConstantTimer>
             <hashTree/>
           </hashTree>
@@ -500,6 +542,10 @@ log.info(&quot;teacherIndex is &quot; + teacherIndex);</stringProp>
             <hashTree/>
             <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Wait 15 - 30 seconds" enabled="false">
               <stringProp name="ConstantTimer.delay">${__Random(15000,30000)}</stringProp>
+            </ConstantTimer>
+            <hashTree/>
+            <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Wait 5 seconds" enabled="true">
+              <stringProp name="ConstantTimer.delay">5</stringProp>
             </ConstantTimer>
             <hashTree/>
           </hashTree>
@@ -581,6 +627,10 @@ vars.put(&quot;UDV1_pupilEditUrl&quot;,JSR_pupilEditUrl)
             <hashTree/>
             <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Wait 15 - 30 seconds" enabled="false">
               <stringProp name="ConstantTimer.delay">${__Random(15000,30000)}</stringProp>
+            </ConstantTimer>
+            <hashTree/>
+            <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Wait 5 seconds" enabled="true">
+              <stringProp name="ConstantTimer.delay">5</stringProp>
             </ConstantTimer>
             <hashTree/>
           </hashTree>
@@ -707,6 +757,10 @@ vars.put(&quot;UDV1_pupilEditUrl&quot;,JSR_pupilEditUrl)
               <stringProp name="RandomTimer.range">10000</stringProp>
             </UniformRandomTimer>
             <hashTree/>
+            <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Wait 5 seconds" enabled="true">
+              <stringProp name="ConstantTimer.delay">5</stringProp>
+            </ConstantTimer>
+            <hashTree/>
           </hashTree>
         </hashTree>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GET school home" enabled="true">
@@ -730,6 +784,10 @@ vars.put(&quot;UDV1_pupilEditUrl&quot;,JSR_pupilEditUrl)
         <hashTree>
           <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Wait 10 - 15 seconds" enabled="false">
             <stringProp name="ConstantTimer.delay">${__Random(10000,15000)}</stringProp>
+          </ConstantTimer>
+          <hashTree/>
+          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Wait 5 seconds" enabled="true">
+            <stringProp name="ConstantTimer.delay">5</stringProp>
           </ConstantTimer>
           <hashTree/>
         </hashTree>
@@ -759,6 +817,10 @@ vars.put(&quot;UDV1_pupilEditUrl&quot;,JSR_pupilEditUrl)
           <hashTree>
             <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Wait 10 - 15 seconds" enabled="false">
               <stringProp name="ConstantTimer.delay">${__Random(10000,15000)}</stringProp>
+            </ConstantTimer>
+            <hashTree/>
+            <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Wait 5 seconds" enabled="true">
+              <stringProp name="ConstantTimer.delay">5</stringProp>
             </ConstantTimer>
             <hashTree/>
           </hashTree>
@@ -793,6 +855,10 @@ vars.put(&quot;UDV1_pupilEditUrl&quot;,JSR_pupilEditUrl)
             <hashTree/>
             <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Wait 10 - 15 seconds" enabled="false">
               <stringProp name="ConstantTimer.delay">${__Random(10000,15000)}</stringProp>
+            </ConstantTimer>
+            <hashTree/>
+            <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Wait 5 seconds" enabled="true">
+              <stringProp name="ConstantTimer.delay">5</stringProp>
             </ConstantTimer>
             <hashTree/>
           </hashTree>
@@ -845,6 +911,10 @@ vars.put(&quot;UDV1_pupilEditUrl&quot;,JSR_pupilEditUrl)
                 <stringProp name="ConstantTimer.delay">${__Random(10000,15000)}</stringProp>
               </ConstantTimer>
               <hashTree/>
+              <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Wait 5 seconds" enabled="true">
+                <stringProp name="ConstantTimer.delay">5</stringProp>
+              </ConstantTimer>
+              <hashTree/>
             </hashTree>
             <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST AA preferences New - Update CCT" enabled="true">
               <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
@@ -889,6 +959,10 @@ vars.put(&quot;UDV1_pupilEditUrl&quot;,JSR_pupilEditUrl)
             <hashTree>
               <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Wait 10 - 15 seconds" enabled="false">
                 <stringProp name="ConstantTimer.delay">${__Random(10000,15000)}</stringProp>
+              </ConstantTimer>
+              <hashTree/>
+              <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Wait 5 seconds" enabled="true">
+                <stringProp name="ConstantTimer.delay">5</stringProp>
               </ConstantTimer>
               <hashTree/>
             </hashTree>
@@ -937,6 +1011,10 @@ vars.put(&quot;UDV1_pupilEditUrl&quot;,JSR_pupilEditUrl)
                 <stringProp name="ConstantTimer.delay">${__Random(10000,15000)}</stringProp>
               </ConstantTimer>
               <hashTree/>
+              <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Wait 5 seconds" enabled="true">
+                <stringProp name="ConstantTimer.delay">5</stringProp>
+              </ConstantTimer>
+              <hashTree/>
             </hashTree>
             <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST AA preferences New - Update RON" enabled="true">
               <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
@@ -981,6 +1059,10 @@ vars.put(&quot;UDV1_pupilEditUrl&quot;,JSR_pupilEditUrl)
             <hashTree>
               <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Wait 10 - 15 seconds" enabled="false">
                 <stringProp name="ConstantTimer.delay">${__Random(10000,15000)}</stringProp>
+              </ConstantTimer>
+              <hashTree/>
+              <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Wait 5 seconds" enabled="true">
+                <stringProp name="ConstantTimer.delay">5</stringProp>
               </ConstantTimer>
               <hashTree/>
             </hashTree>
@@ -1064,6 +1146,10 @@ vars.put(&quot;UDV1_pupilEditUrl&quot;,JSR_pupilEditUrl)
                 <stringProp name="ConstantTimer.delay">${__Random(10000,15000)}</stringProp>
               </ConstantTimer>
               <hashTree/>
+              <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Wait 5 seconds" enabled="true">
+                <stringProp name="ConstantTimer.delay">5</stringProp>
+              </ConstantTimer>
+              <hashTree/>
             </hashTree>
           </hashTree>
         </hashTree>
@@ -1088,6 +1174,10 @@ vars.put(&quot;UDV1_pupilEditUrl&quot;,JSR_pupilEditUrl)
         <hashTree>
           <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Wait 10 - 15 seconds" enabled="false">
             <stringProp name="ConstantTimer.delay">${__Random(10000,15000)}</stringProp>
+          </ConstantTimer>
+          <hashTree/>
+          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Wait 5 seconds" enabled="true">
+            <stringProp name="ConstantTimer.delay">5</stringProp>
           </ConstantTimer>
           <hashTree/>
         </hashTree>
@@ -1134,6 +1224,10 @@ vars.put(&quot;UDV1_pupilEditUrl&quot;,JSR_pupilEditUrl)
           <hashTree/>
           <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Wait 15 - 60 seconds" enabled="false">
             <stringProp name="ConstantTimer.delay">${__Random(15000,60000)}</stringProp>
+          </ConstantTimer>
+          <hashTree/>
+          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Wait 5 seconds" enabled="true">
+            <stringProp name="ConstantTimer.delay">5</stringProp>
           </ConstantTimer>
           <hashTree/>
         </hashTree>
@@ -1207,6 +1301,10 @@ vars.put(&quot;UDV1_pupilEditUrl&quot;,JSR_pupilEditUrl)
               <stringProp name="ConstantTimer.delay">${__Random(60000,120000)}</stringProp>
             </ConstantTimer>
             <hashTree/>
+            <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Wait 5 seconds" enabled="true">
+              <stringProp name="ConstantTimer.delay">5</stringProp>
+            </ConstantTimer>
+            <hashTree/>
           </hashTree>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST Generate Pins - Pupil 6 - 10" enabled="true">
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
@@ -1272,6 +1370,10 @@ vars.put(&quot;UDV1_pupilEditUrl&quot;,JSR_pupilEditUrl)
           <hashTree>
             <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Wait 60 - 120 seconds" enabled="false">
               <stringProp name="ConstantTimer.delay">${__Random(60000,120000)}</stringProp>
+            </ConstantTimer>
+            <hashTree/>
+            <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Wait 5 seconds" enabled="true">
+              <stringProp name="ConstantTimer.delay">5</stringProp>
             </ConstantTimer>
             <hashTree/>
           </hashTree>
@@ -1346,6 +1448,10 @@ vars.put(&quot;UDV1_pupilEditUrl&quot;,JSR_pupilEditUrl)
               <stringProp name="ConstantTimer.delay">${__Random(60000,120000)}</stringProp>
             </ConstantTimer>
             <hashTree/>
+            <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Wait 5 seconds" enabled="true">
+              <stringProp name="ConstantTimer.delay">5</stringProp>
+            </ConstantTimer>
+            <hashTree/>
           </hashTree>
           <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST Generate Pins - Pupil 16 - 20" enabled="true">
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
@@ -1411,6 +1517,10 @@ vars.put(&quot;UDV1_pupilEditUrl&quot;,JSR_pupilEditUrl)
           <hashTree>
             <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Wait 60 - 120 seconds" enabled="false">
               <stringProp name="ConstantTimer.delay">${__Random(60000,120000)}</stringProp>
+            </ConstantTimer>
+            <hashTree/>
+            <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Wait 5 seconds" enabled="true">
+              <stringProp name="ConstantTimer.delay">5</stringProp>
             </ConstantTimer>
             <hashTree/>
           </hashTree>
@@ -1486,6 +1596,10 @@ vars.put(&quot;UDV1_pupilEditUrl&quot;,JSR_pupilEditUrl)
               <stringProp name="ConstantTimer.delay">${__Random(60000,120000)}</stringProp>
             </ConstantTimer>
             <hashTree/>
+            <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Wait 5 seconds" enabled="true">
+              <stringProp name="ConstantTimer.delay">5</stringProp>
+            </ConstantTimer>
+            <hashTree/>
           </hashTree>
         </hashTree>
         <LoopController guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller - Random Select - Pupil 26 - 30" enabled="true">
@@ -1557,6 +1671,10 @@ vars.put(&quot;UDV1_pupilEditUrl&quot;,JSR_pupilEditUrl)
           <hashTree>
             <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Wait 60 - 120 seconds" enabled="false">
               <stringProp name="ConstantTimer.delay">${__Random(60000,120000)}</stringProp>
+            </ConstantTimer>
+            <hashTree/>
+            <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Wait 5 seconds" enabled="true">
+              <stringProp name="ConstantTimer.delay">5</stringProp>
             </ConstantTimer>
             <hashTree/>
           </hashTree>
@@ -1632,6 +1750,10 @@ vars.put(&quot;UDV1_pupilEditUrl&quot;,JSR_pupilEditUrl)
               <stringProp name="ConstantTimer.delay">${__Random(60000,120000)}</stringProp>
             </ConstantTimer>
             <hashTree/>
+            <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Wait 5 seconds" enabled="true">
+              <stringProp name="ConstantTimer.delay">5</stringProp>
+            </ConstantTimer>
+            <hashTree/>
           </hashTree>
         </hashTree>
         <LoopController guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller - Random Select - Pupil 35 - 40" enabled="true">
@@ -1705,6 +1827,10 @@ vars.put(&quot;UDV1_pupilEditUrl&quot;,JSR_pupilEditUrl)
               <stringProp name="ConstantTimer.delay">${__Random(60000,120000)}</stringProp>
             </ConstantTimer>
             <hashTree/>
+            <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Wait 5 seconds" enabled="true">
+              <stringProp name="ConstantTimer.delay">5</stringProp>
+            </ConstantTimer>
+            <hashTree/>
           </hashTree>
         </hashTree>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GET school home" enabled="true">
@@ -1728,6 +1854,10 @@ vars.put(&quot;UDV1_pupilEditUrl&quot;,JSR_pupilEditUrl)
         <hashTree>
           <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Wait 5 - 20 seconds" enabled="false">
             <stringProp name="ConstantTimer.delay">${__Random(5000,20000)}</stringProp>
+          </ConstantTimer>
+          <hashTree/>
+          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Wait 5 seconds" enabled="true">
+            <stringProp name="ConstantTimer.delay">5</stringProp>
           </ConstantTimer>
           <hashTree/>
         </hashTree>
@@ -1776,6 +1906,10 @@ vars.put(&quot;UDV1_pupilEditUrl&quot;,JSR_pupilEditUrl)
             <stringProp name="ConstantTimer.delay">${__Random(120000,300000)}</stringProp>
           </ConstantTimer>
           <hashTree/>
+          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Wait 5 seconds" enabled="true">
+            <stringProp name="ConstantTimer.delay">5</stringProp>
+          </ConstantTimer>
+          <hashTree/>
         </hashTree>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GET school home" enabled="true">
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
@@ -1800,8 +1934,12 @@ vars.put(&quot;UDV1_pupilEditUrl&quot;,JSR_pupilEditUrl)
             <stringProp name="ConstantTimer.delay">${__Random(5000,20000)}</stringProp>
           </ConstantTimer>
           <hashTree/>
+          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Wait 5 seconds" enabled="true">
+            <stringProp name="ConstantTimer.delay">5</stringProp>
+          </ConstantTimer>
+          <hashTree/>
         </hashTree>
-        <ForeachController guiclass="ForeachControlPanel" testclass="ForeachController" testname="ForEach Controller - New" enabled="true">
+        <ForeachController guiclass="ForeachControlPanel" testclass="ForeachController" testname="ForEach Controller - New" enabled="false">
           <stringProp name="ForeachController.inputVal">PUPIL_PIN</stringProp>
           <stringProp name="ForeachController.returnVal">pupilPin</stringProp>
           <boolProp name="ForeachController.useSeparator">true</boolProp>
@@ -2004,8 +2142,13 @@ vars.put(&quot;queueDomain&quot;, domain);
           <stringProp name="HTTPSampler.connect_timeout"></stringProp>
           <stringProp name="HTTPSampler.response_timeout"></stringProp>
         </HTTPSamplerProxy>
-        <hashTree/>
-        <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
+        <hashTree>
+          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Wait 5 seconds" enabled="true">
+            <stringProp name="ConstantTimer.delay">5</stringProp>
+          </ConstantTimer>
+          <hashTree/>
+        </hashTree>
+        <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="false">
           <boolProp name="ResultCollector.error_logging">false</boolProp>
           <objProp>
             <name>saveConfig</name>
@@ -2042,7 +2185,7 @@ vars.put(&quot;queueDomain&quot;, domain);
           <stringProp name="filename"></stringProp>
         </ResultCollector>
         <hashTree/>
-        <DebugSampler guiclass="TestBeanGUI" testclass="DebugSampler" testname="Debug Sampler" enabled="true">
+        <DebugSampler guiclass="TestBeanGUI" testclass="DebugSampler" testname="Debug Sampler" enabled="false">
           <boolProp name="displayJMeterProperties">false</boolProp>
           <boolProp name="displayJMeterVariables">true</boolProp>
           <boolProp name="displaySystemProperties">false</boolProp>

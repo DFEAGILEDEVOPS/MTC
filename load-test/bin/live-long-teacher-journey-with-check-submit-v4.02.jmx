@@ -74,10 +74,10 @@
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
           <boolProp name="LoopController.continue_forever">false</boolProp>
-          <stringProp name="LoopController.loops">1</stringProp>
+          <stringProp name="LoopController.loops">1000</stringProp>
         </elementProp>
-        <stringProp name="ThreadGroup.num_threads">${__P(threads,1)}</stringProp>
-        <stringProp name="ThreadGroup.ramp_time">${__P(rampup,1)}</stringProp>
+        <stringProp name="ThreadGroup.num_threads">${__P(threads,50)}</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">${__P(rampup,5)}</stringProp>
         <boolProp name="ThreadGroup.scheduler">false</boolProp>
         <stringProp name="ThreadGroup.duration">${__P(duration,300)}</stringProp>
         <stringProp name="ThreadGroup.delay"></stringProp>
@@ -108,16 +108,22 @@
 if (props.get(&quot;grid_index&quot;) != null) {
 	machineIndex = Integer.parseInt(props.get(&quot;grid_index&quot;));
 }
+//log.info(&quot;machineIndex is &quot; + machineIndex);
 
 int lastTeacher = (machineIndex + 1) * 1000;
 int firstTeacher = lastTeacher - 999;
-log.info(&quot;this test node range is &quot; + firstTeacher + &quot; to &quot; + lastTeacher);
+//log.info(&quot;this test node range is &quot; + firstTeacher + &quot; to &quot; + lastTeacher);
+
 int threadNumber = ${__threadNum};
+//log.info(&quot;threadNumber is &quot; + threadNumber.toString());
+
 int thisTeacher = firstTeacher + (threadNumber - 1);
+//log.info(&quot;thisTeacher is &quot; + thisTeacher.toString());
+
 vars.put(&quot;teacherIndex&quot;, thisTeacher.toString());
 
-log.info(&quot;thisTeacher &quot; + thisTeacher.toString());
-log.info(&quot;teacherIndex is &quot; + teacherIndex);</stringProp>
+//vars.get to see debug value
+//log.info(&quot;teacherIndex is &quot; + teacherIndex);</stringProp>
         </BeanShellPreProcessor>
         <hashTree/>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST Admin Sign-In - Single User for Debug" enabled="false">
@@ -184,7 +190,7 @@ log.info(&quot;teacherIndex is &quot; + teacherIndex);</stringProp>
             <collectionProp name="Arguments.arguments">
               <elementProp name="username" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                <stringProp name="Argument.value">teacher${teacherIndex}</stringProp>
+                <stringProp name="Argument.value">teachernew${teacherIndex}</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
                 <boolProp name="HTTPArgument.use_equals">true</boolProp>
                 <stringProp name="Argument.name">username</stringProp>
@@ -1801,7 +1807,7 @@ vars.put(&quot;UDV1_pupilEditUrl&quot;,JSR_pupilEditUrl)
           </ConstantTimer>
           <hashTree/>
         </hashTree>
-        <ForeachController guiclass="ForeachControlPanel" testclass="ForeachController" testname="ForEach Controller - New" enabled="true">
+        <ForeachController guiclass="ForeachControlPanel" testclass="ForeachController" testname="ForEach Controller - New" enabled="false">
           <stringProp name="ForeachController.inputVal">PUPIL_PIN</stringProp>
           <stringProp name="ForeachController.returnVal">pupilPin</stringProp>
           <boolProp name="ForeachController.useSeparator">true</boolProp>
@@ -2005,7 +2011,7 @@ vars.put(&quot;queueDomain&quot;, domain);
           <stringProp name="HTTPSampler.response_timeout"></stringProp>
         </HTTPSamplerProxy>
         <hashTree/>
-        <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
+        <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="false">
           <boolProp name="ResultCollector.error_logging">false</boolProp>
           <objProp>
             <name>saveConfig</name>
@@ -2042,7 +2048,7 @@ vars.put(&quot;queueDomain&quot;, domain);
           <stringProp name="filename"></stringProp>
         </ResultCollector>
         <hashTree/>
-        <DebugSampler guiclass="TestBeanGUI" testclass="DebugSampler" testname="Debug Sampler" enabled="true">
+        <DebugSampler guiclass="TestBeanGUI" testclass="DebugSampler" testname="Debug Sampler" enabled="false">
           <boolProp name="displayJMeterProperties">false</boolProp>
           <boolProp name="displayJMeterVariables">true</boolProp>
           <boolProp name="displaySystemProperties">false</boolProp>
