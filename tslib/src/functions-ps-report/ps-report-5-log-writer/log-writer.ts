@@ -22,7 +22,7 @@ export class PsLogWriter implements IPsLogWriter {
     const transformerBuffer = Buffer.from(logSet.TransformerLog.join('\n'))
     const writerBuffer = Buffer.from(logSet.WriterLog.join('\n'))
 
-    const dateTimeStamp = this.dateTimeService.utcNow().toISOString()
+    const dateTimeStamp = this.dateTimeService.utcNow().format('YYYYMMDDHHmmss')
     const containerName = `${LogContainerPrefix}-${dateTimeStamp}`
 
     const listSchoolsFileName = `list-schools-log-${dateTimeStamp}.txt`

@@ -4,7 +4,7 @@ import { IServiceBusMessageLike } from './log.service'
 export class PsLogMessageParser {
   parse (messages: IServiceBusMessageLike[]): IPsReportLogEntry[] {
     return messages.map(m => {
-      const entry: IPsReportLogEntry = JSON.parse(m.body)
+      const entry: IPsReportLogEntry = m.body
       return entry
     })
   }

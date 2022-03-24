@@ -39,12 +39,12 @@ describe('ps report log writer', () => {
     }
     const mockDateTime = moment('2022-03-23 14:50:31')
     jest.spyOn(dateTimeService, 'utcNow').mockReturnValue(mockDateTime)
-    const mockDateTimeIsoString = mockDateTime.toISOString()
-    const expectedListSchoolsFileName = `list-schools-log-${mockDateTimeIsoString}.txt`
-    const expectedPupilDataFileName = `pupil-data-log-${mockDateTimeIsoString}.txt`
-    const expectedTransformerFileName = `transformer-log-${mockDateTimeIsoString}.txt`
-    const expectedWriterFileName = `writer-log-${mockDateTimeIsoString}.txt`
-    const expectedContainerName = `${LogContainerPrefix}-${mockDateTimeIsoString}`
+    const mockDateTimeNoSymbols = mockDateTime.format('YYYYMMDDHHmmss')
+    const expectedListSchoolsFileName = `list-schools-log-${mockDateTimeNoSymbols}.txt`
+    const expectedPupilDataFileName = `pupil-data-log-${mockDateTimeNoSymbols}.txt`
+    const expectedTransformerFileName = `transformer-log-${mockDateTimeNoSymbols}.txt`
+    const expectedWriterFileName = `writer-log-${mockDateTimeNoSymbols}.txt`
+    const expectedContainerName = `${LogContainerPrefix}-${mockDateTimeNoSymbols}`
 
     await sut.writeToStorage(logSet)
     expect(dataService.createBlob).toHaveBeenCalledTimes(4)

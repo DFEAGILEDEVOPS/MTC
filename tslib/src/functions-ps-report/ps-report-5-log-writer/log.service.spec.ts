@@ -35,7 +35,7 @@ const entries: IPsReportLogEntry[] = [
 
 const messages: IServiceBusMessageLike[] = entries.map(e => {
   return {
-    body: JSON.stringify(e)
+    body: e
   }
 })
 

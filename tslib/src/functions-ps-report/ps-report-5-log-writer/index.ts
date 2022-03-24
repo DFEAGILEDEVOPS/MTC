@@ -42,16 +42,20 @@ const funcImplementation: AzureFunction = async function (context: Context, time
   }
 
   try {
-    const messageBatch = await receiver.receiveMessages(config.PsReportLogWriter.MessagesPerBatch)
+    let messageBatch = await receiver.receiveMessages(config.PsReportLogWriter.MessagesPerBatch)
     const messages = new Array<sb.ServiceBusReceivedMessage>()
     while (!RA.isNilOrEmpty(messageBatch)) {
+      context.log(`${functionName}: adding ${messageBatch.length} log messages...`)
       messages.push(...messageBatch)
+      messageBatch = await receiver.receiveMessages(config.PsReportLogWriter.MessagesPerBatch)
     }
     if (RA.isNilOrEmpty(messages)) {
       context.log(`${functionName}: no messages to process`)
+    } else {
+      const logService = new LogService()
+      context.log(`${functionName}: passing ${messages.length} to log service...`)
+      await logService.create(messages)
     }
-    const logService = new LogService()
-    await logService.create(messages)
     await disconnect()
     finish(start, context)
     return
