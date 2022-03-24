@@ -4,8 +4,7 @@ import { IFunctionTimer } from '../../azure/functions'
 import config from '../../config'
 import * as sb from '@azure/service-bus'
 import * as RA from 'ramda-adjunct'
-import { PsLogGeneratorService } from './log-generator.service'
-import { ServiceBusMessageParser } from './message-parser'
+import { LogService } from './log.service'
 
 const functionName = 'ps-report-log-generator'
 const queueName = 'ps-report-log'
@@ -51,10 +50,8 @@ const funcImplementation: AzureFunction = async function (context: Context, time
     if (RA.isNilOrEmpty(messages)) {
       context.log(`${functionName}: no messages to process`)
     }
-    const messageParser = new ServiceBusMessageParser()
-    const entries = messageParser.parse(messages)
-    const logGenerator = new PsLogGeneratorService()
-    await logGenerator.generate(entries)
+    const logService = new LogService()
+    await logService.create(messages)
     await disconnect()
     finish(start, context)
     return

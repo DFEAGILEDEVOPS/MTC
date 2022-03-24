@@ -2,7 +2,12 @@ import { IPsReportLogSet } from './log-generator.service'
 import { BlobService, IBlobService } from '../../azure/blob-service'
 import { DateTimeService, IDateTimeService } from '../../common/datetime.service'
 
-export class PsLogWriter {
+export const LogContainerPrefix = 'ps-report-log'
+export interface IPsLogWriter {
+  writeToStorage (logSet: IPsReportLogSet): Promise<void>
+}
+
+export class PsLogWriter implements IPsLogWriter {
   private readonly dataService: IBlobService
   private readonly dateTimeService: IDateTimeService
 
@@ -11,13 +16,14 @@ export class PsLogWriter {
     this.dateTimeService = dateTimeService ?? new DateTimeService()
   }
 
-  async writeToStorage (logSet: IPsReportLogSet, containerName: string): Promise<void> {
+  async writeToStorage (logSet: IPsReportLogSet): Promise<void> {
     const listSchoolsBuffer = Buffer.from(logSet.ListSchoolsLog.join('\n'))
     const pupilDataBuffer = Buffer.from(logSet.PupilDataLog.join('\n'))
     const transformerBuffer = Buffer.from(logSet.TransformerLog.join('\n'))
     const writerBuffer = Buffer.from(logSet.WriterLog.join('\n'))
 
     const dateTimeStamp = this.dateTimeService.utcNow().toISOString()
+    const containerName = `${LogContainerPrefix}-${dateTimeStamp}`
 
     const listSchoolsFileName = `list-schools-log-${dateTimeStamp}.txt`
     const pupilDataFileName = `pupil-data-log-${dateTimeStamp}.txt`

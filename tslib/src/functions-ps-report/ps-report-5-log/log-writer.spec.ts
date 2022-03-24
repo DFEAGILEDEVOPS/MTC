@@ -2,7 +2,7 @@ import moment from 'moment'
 import { IBlobService } from '../../azure/blob-service'
 import { IDateTimeService } from '../../common/datetime.service'
 import { IPsReportLogSet } from './log-generator.service'
-import { PsLogWriter } from './log-writer'
+import { PsLogWriter, LogContainerPrefix } from './log-writer'
 
 let sut: PsLogWriter
 const DataServiceMock = jest.fn<IBlobService, any>(() => ({
@@ -37,7 +37,6 @@ describe('ps report log writer', () => {
       TransformerLog: ['wouergh'],
       WriterLog: ['sldfjsdklfj']
     }
-    const containerName = 'foo'
     const mockDateTime = moment('2022-03-23 14:50:31')
     jest.spyOn(dateTimeService, 'utcNow').mockReturnValue(mockDateTime)
     const mockDateTimeIsoString = mockDateTime.toISOString()
@@ -45,12 +44,13 @@ describe('ps report log writer', () => {
     const expectedPupilDataFileName = `pupil-data-log-${mockDateTimeIsoString}.txt`
     const expectedTransformerFileName = `transformer-log-${mockDateTimeIsoString}.txt`
     const expectedWriterFileName = `writer-log-${mockDateTimeIsoString}.txt`
+    const expectedContainerName = `${LogContainerPrefix}-${mockDateTimeIsoString}`
 
-    await sut.writeToStorage(logSet, containerName)
+    await sut.writeToStorage(logSet)
     expect(dataService.createBlob).toHaveBeenCalledTimes(4)
-    expect(dataService.createBlob).toHaveBeenNthCalledWith(1, Buffer.from(logSet.ListSchoolsLog.join('\n')), expectedListSchoolsFileName, containerName)
-    expect(dataService.createBlob).toHaveBeenNthCalledWith(2, Buffer.from(logSet.PupilDataLog.join('\n')), expectedPupilDataFileName, containerName)
-    expect(dataService.createBlob).toHaveBeenNthCalledWith(3, Buffer.from(logSet.TransformerLog.join('\n')), expectedTransformerFileName, containerName)
-    expect(dataService.createBlob).toHaveBeenNthCalledWith(4, Buffer.from(logSet.WriterLog.join('\n')), expectedWriterFileName, containerName)
+    expect(dataService.createBlob).toHaveBeenNthCalledWith(1, Buffer.from(logSet.ListSchoolsLog.join('\n')), expectedListSchoolsFileName, expectedContainerName)
+    expect(dataService.createBlob).toHaveBeenNthCalledWith(2, Buffer.from(logSet.PupilDataLog.join('\n')), expectedPupilDataFileName, expectedContainerName)
+    expect(dataService.createBlob).toHaveBeenNthCalledWith(3, Buffer.from(logSet.TransformerLog.join('\n')), expectedTransformerFileName, expectedContainerName)
+    expect(dataService.createBlob).toHaveBeenNthCalledWith(4, Buffer.from(logSet.WriterLog.join('\n')), expectedWriterFileName, expectedContainerName)
   })
 })
