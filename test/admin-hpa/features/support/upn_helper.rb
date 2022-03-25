@@ -187,6 +187,8 @@ class UpnHelper
         936
         937
         938
+        940
+        941
         999
        )
     end
