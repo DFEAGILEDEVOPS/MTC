@@ -41,9 +41,10 @@ const funcImplementation: AzureFunction = async function (context: Context, time
     throw error
   }
 
+  const messages: sb.ServiceBusReceivedMessage[] = new Array<sb.ServiceBusReceivedMessage>()
+
   try {
     let messageBatch = await receiver.receiveMessages(config.PsReportLogWriter.MessagesPerBatch)
-    const messages = new Array<sb.ServiceBusReceivedMessage>()
     while (!RA.isNilOrEmpty(messageBatch)) {
       context.log(`${functionName}: adding ${messageBatch.length} log messages...`)
       messages.push(...messageBatch)
@@ -56,12 +57,43 @@ const funcImplementation: AzureFunction = async function (context: Context, time
       context.log(`${functionName}: passing ${messages.length} to log service...`)
       await logService.create(messages)
     }
+    await completeMessages(messages, receiver, context)
     await disconnect()
     finish(start, context)
     return
   } catch (error) {
     context.log.error(error)
+    await abandonMessages(messages, receiver, context)
     throw error
+  }
+}
+
+async function completeMessages (messageBatch: sb.ServiceBusReceivedMessage[], receiver: sb.ServiceBusReceiver, context: Context): Promise<void> {
+  context.log(`${functionName}: batch processed successfully, completing all messages in batch`)
+  for (let index = 0; index < messageBatch.length; index++) {
+    const msg = messageBatch[index]
+    try {
+      await receiver.completeMessage(msg)
+    } catch (error) {
+      try {
+        await receiver.abandonMessage(msg)
+      } catch {
+        context.log.error(`${functionName}: unable to abandon message:${error.message}`)
+        // do nothing.
+        // the lock will expire and message reprocessed at a later time
+      }
+    }
+  }
+}
+
+async function abandonMessages (messageBatch: sb.ServiceBusReceivedMessage[], receiver: sb.ServiceBusReceiver, context: Context): Promise<void> {
+  for (let index = 0; index < messageBatch.length; index++) {
+    const msg = messageBatch[index]
+    try {
+      await receiver.abandonMessage(msg)
+    } catch (error) {
+      context.log.error(`${functionName}: unable to abandon message:${error.message}`)
+    }
   }
 }
 
