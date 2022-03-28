@@ -53,47 +53,42 @@
                                   <tr class="govuk-table__row">
                                     <td scope="row"
                                       class="<% if (p.urlSlug === highlight) { %> govuk-highlight-item <% } %> <% if (p.hasAAEditDisabled) { %> govuk-!-font-weight-bold <% } %>">
-                                      <div id="<%= p.urlSlug %>" <% if (p.verticalBarStyle) { %>
-                                        class="govuk-highlight-wrapper" style="<%= p.verticalBarStyle %>"<% } %>>
-                                            <% if (p.hasAAEditDisabled) { %>
-                                              <%= p.fullName %>
-                                                <% } else { %>
-                                                  <a class="govuk-link govuk-!-font-weight-bold name-text-wrap"
-                                                    href="/access-arrangements/select-access-arrangements/<%= p.urlSlug %>">
-                                                    <%= p.fullName %>
-                                                  </a>
-                                                  <% } %>
-                                                    <% if (p.showDoB) { %>
-                                                      <div class="govuk-font-greyed-out govuk-!-font-size-16
+                                      <div id="<%= p.urlSlug %>" <% if (p.verticalBarStyle) { %> class="govuk-highlight-wrapper" style="<%= p.verticalBarStyle %>"<% } %>>
+                                        <% if (p.hasAAEditDisabled) { %>
+                                          <span class="name-text-wrap"><%= p.fullName %></span>
+                                        <% } else { %>
+                                          <a class="govuk-link govuk-!-font-weight-bold name-text-wrap"
+                                            href="/access-arrangements/select-access-arrangements/<%= p.urlSlug %>"><%= p.fullName %></a>
+                                        <% } %>
+                                        <% if (p.showDoB) { %>
+                                          <div class="govuk-font-greyed-out govuk-!-font-size-16
                                             name-text-wrap">Date of birth: <%= p.formattedDateOfBirth %>
-                                                      </div>
-                                                      <% } %>
-                                      </div>
+                                          </div>
+                                       <% } %>
+                                     </div>
                                     </td>
                                     <td scope="row" class="access-arrangements-list">
                                       <% p.arrangements && p.arrangements.forEach((pupilAccessArrangement)=> { %>
                                         <div>
                                           <%= pupilAccessArrangement %>
                                         </div>
-                                        <% }) %>
+                                      <% }) %>
                                     </td>
                                     <td>
                                       <% if(p.hasCompletedCheck) { %>
-                                        <% if(p.retroInputAssistant===true && (availabilityData.canEditArrangements &&
-                                          aaViewMode==='edit' )) { %>
+                                        <% if(p.retroInputAssistant===true && (availabilityData.canEditArrangements && aaViewMode==='edit' )) { %>
                                           <a class="govuk-link modal-link" id="js-modal-link"
                                             href="/access-arrangements/delete-retro-input-assistant/<%= p.urlSlug %>">Remove
                                             Retrospective Input Assistant</a>
-                                          <% } else { %>
-                                            Completed Check
-                                            <% } %>
-                                              <% } else if(p.notTakingCheck) { %>
-                                                Not taking check
-                                                <% } else if (availabilityData.canEditArrangements &&
-                                                  aaViewMode==='edit' ) { %>
-                                                  <a class="govuk-link"
-                                                    href="/access-arrangements/select-access-arrangements/<%= p.urlSlug %>">Edit</a>
-                                                  <% } %>
+                                        <% } else { %>
+                                          Completed Check
+                                        <% } %>
+                                      <% } else if(p.notTakingCheck) { %>
+                                          Not taking check
+                                      <% } else if (availabilityData.canEditArrangements && aaViewMode==='edit' ) { %>
+                                          <a class="govuk-link"
+                                             href="/access-arrangements/select-access-arrangements/<%= p.urlSlug %>">Edit</a>
+                                      <% } %>
                                     </td>
                                   </tr>
                                   <% }) %>
