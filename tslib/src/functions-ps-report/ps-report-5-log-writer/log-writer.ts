@@ -1,4 +1,4 @@
-import { IPsReportLogSet } from './models'
+import { IPsReportLogSet } from './ps-report-log-set'
 import { BlobService, IBlobService } from '../../azure/blob-service'
 import { DateTimeService, IDateTimeService } from '../../common/datetime.service'
 export interface IPsLogWriter {

@@ -5,6 +5,4 @@ export interface IPsReportLogSet {
   WriterLog: string[]
 }
 
-export interface IServiceBusMessageLike {
-  body: any
-}
+

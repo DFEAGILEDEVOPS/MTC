@@ -1,5 +1,5 @@
 import moment from 'moment'
-import { IPsReportLogEntry, PsReportLogLevel, PsReportSource } from '../common/ps-report-log-entry'
+import { IPsReportLogEntry, PsReportSource } from '../common/ps-report-log-entry'
 import { PsLogEntryFormatter } from './log-entry-formatter'
 
 let sut: PsLogEntryFormatter
@@ -14,7 +14,7 @@ describe('log entry formatter', () => {
       generatedAt: moment('2022-03-18 14:43:02'),
       message: 'foo-bar',
       source: PsReportSource.PupilGenerator,
-      level: PsReportLogLevel.Info
+      level: 'info'
     }
     const output = sut.formatMessage(message)
     const expectedOutput = `${message.generatedAt.toISOString()}: [${message.source}] ${message.level} - ${message.message}`

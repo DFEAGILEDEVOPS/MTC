@@ -14,9 +14,4 @@ export enum PsReportSource {
   Writer = 'ps-report-4-writer'
 }
 
-export enum PsReportLogLevel {
-  Info = 'info',
-  Warning = 'warning',
-  Verbose = 'verbose',
-  Error = 'error'
-}
+export type PsReportLogLevel = 'info' | 'warning' | 'verbose' | 'error'

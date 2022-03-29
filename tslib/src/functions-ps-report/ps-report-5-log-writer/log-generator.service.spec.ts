@@ -1,8 +1,8 @@
 import moment from 'moment'
-import { IPsReportLogEntry, PsReportLogLevel, PsReportSource } from '../common/ps-report-log-entry'
+import { IPsReportLogEntry, PsReportSource } from '../common/ps-report-log-entry'
 import { PsLogEntryFormatter } from './log-entry-formatter'
 import { PsLogGeneratorService } from './log-generator.service'
-import { IPsReportLogSet } from './models'
+import { IPsReportLogSet } from './ps-report-log-set'
 
 let sut: PsLogGeneratorService
 let formatter: PsLogEntryFormatter
@@ -22,19 +22,19 @@ describe('log generator service', () => {
       generatedAt: moment('2022-03-10 12:00:00'),
       message: 'foo',
       source: PsReportSource.PupilGenerator,
-      level: PsReportLogLevel.Error
+      level: 'error'
     }
     const transformerMessage: IPsReportLogEntry = {
       generatedAt: moment('2022-03-10 12:00:03'),
       message: 'bar',
       source: PsReportSource.Transformer,
-      level: PsReportLogLevel.Info
+      level: 'info'
     }
     const writerMessage: IPsReportLogEntry = {
       generatedAt: moment('2022-03-10 12:11:00'),
       message: 'qux',
       source: PsReportSource.Writer,
-      level: PsReportLogLevel.Warning
+      level: 'warning'
     }
     const expected: IPsReportLogSet = {
       ListSchoolsLog: [],

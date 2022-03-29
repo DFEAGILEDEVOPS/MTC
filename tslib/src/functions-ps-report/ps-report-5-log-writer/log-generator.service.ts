@@ -1,5 +1,5 @@
 import { IPsReportLogEntry, PsReportSource } from '../common/ps-report-log-entry'
-import { IPsReportLogSet } from './models'
+import { IPsReportLogSet } from './ps-report-log-set'
 import { PsLogEntryFormatter } from './log-entry-formatter'
 
 export class PsLogGeneratorService {
