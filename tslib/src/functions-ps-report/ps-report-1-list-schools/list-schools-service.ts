@@ -1,7 +1,5 @@
-import { IContextLike } from '../../common/ContextLike'
 import { ISqlService, SqlService } from '../../sql/sql.service'
-
-const functionName = 'ps-report-1-list-schools'
+import { IPsReportLogger } from '../common/ps-report-logger'
 
 export interface School {
   id: number
@@ -19,11 +17,11 @@ export interface IListSchoolsService {
 }
 
 export class ListSchoolsService implements IListSchoolsService {
-  private readonly context: IContextLike
+  private readonly logger: IPsReportLogger
   private readonly sqlService: ISqlService
 
-  constructor (context: IContextLike, sqlService?: ISqlService) {
-    this.context = context
+  constructor (logger: IPsReportLogger, sqlService?: ISqlService) {
+    this.logger = logger
     this.sqlService = sqlService ?? new SqlService()
   }
 
@@ -33,8 +31,7 @@ export class ListSchoolsService implements IListSchoolsService {
   }
 
   public async getSchoolMessages (): Promise<SchoolMessage[]> {
-    this.context.log.verbose(`${functionName}: ListSchoolsService called - retrieving all schools`)
-    // await this.psReportLogger.log('ListSchoolsService called - retrieving all schools', PsReportSource.SchoolGenerator)
+    this.logger.verbose('ListSchoolsService called - retrieving all schools')
     const schools = await this.getSchools()
     const schoolMessages: SchoolMessage[] = schools.map(school => {
       return {
@@ -42,7 +39,7 @@ export class ListSchoolsService implements IListSchoolsService {
         name: school.name
       }
     })
-    this.context.log.info(`${functionName}: getSchoolMessages() retrieved ${schoolMessages.length} schools`)
+    this.logger.info(`getSchoolMessages() retrieved ${schoolMessages.length} schools`)
     return schoolMessages
   }
 }

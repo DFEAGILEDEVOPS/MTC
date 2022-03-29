@@ -13,23 +13,21 @@ const timerTrigger: AzureFunction = async function (context: Context, timer: IFu
     context.log(`${functionName}: timer is past due, exiting.`)
     return
   }
-  const logger = new PsReportLogger()
+  const logger = new PsReportLogger(context, PsReportSource.SchoolGenerator)
   const start = performance.now()
   const meta = { processCount: 0, errorCount: 0 }
   try {
-    const schoolListService = new ListSchoolsService(context)
+    const schoolListService = new ListSchoolsService(logger)
     const messages = await schoolListService.getSchoolMessages()
     context.bindings.schoolMessages = messages
     meta.processCount = messages.length
   } catch (error) {
-    logger.error(error.message, PsReportSource.SchoolGenerator, context)
+    logger.error(error.message)
     throw error
   }
   const end = performance.now()
   const durationInMilliseconds = end - start
-  const timeStamp = new Date().toISOString()
-  logger.info(`${timeStamp} processed ${meta.processCount} records, run took ${durationInMilliseconds} ms`,
-    PsReportSource.SchoolGenerator, context)
+  logger.info(`processed ${meta.processCount} records, run took ${durationInMilliseconds} ms`)
 }
 
 export default timerTrigger

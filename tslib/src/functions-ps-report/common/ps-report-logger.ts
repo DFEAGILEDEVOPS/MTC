@@ -5,47 +5,53 @@ import { IPsReportLogEntry, PsReportLogLevel, PsReportSource } from './ps-report
 
 const formatter = new PsLogEntryFormatter()
 
-const queueName = 'ps-report-log'
-
 export interface IPsReportLogger {
-  info (message: string, source: PsReportSource, context: IContextLike): void
-  verbose (message: string, source: PsReportSource, context: IContextLike): void
-  warn (message: string, source: PsReportSource, context: IContextLike): void
-  error (message: string, source: PsReportSource, context: IContextLike): void
+  info (message: string): void
+  verbose (message: string): void
+  warn (message: string): void
+  error (message: string): void
 }
 
 export class PsReportLogger {
-  private log (message: string, source: PsReportSource, context: IContextLike, level: PsReportLogLevel): string {
+  private readonly context: IContextLike
+  private readonly source: PsReportSource
+
+  constructor (context: IContextLike, sourceFunction: PsReportSource) {
+    this.context = context
+    this.source = sourceFunction
+  }
+
+  private log (message: string, level: PsReportLogLevel): string {
     const entry: IPsReportLogEntry = {
       generatedAt: moment(),
       message: message,
-      source: source,
+      source: this.source,
       level: level
     }
-    if (context.bindings[queueName] === undefined) {
-      context.bindings[queueName] = []
+    if (this.context.bindings.logs === undefined) {
+      this.context.bindings.logs = []
     }
-    context.bindings[queueName].push(entry)
+    this.context.bindings.logs.push(entry)
     return formatter.formatEntry(entry)
   }
 
-  info (message: string, source: PsReportSource, context: IContextLike): void {
-    const formatted = this.log(message, source, context, 'info')
-    context.log.info(formatted)
+  info (message: string): void {
+    const formatted = this.log(message, 'info')
+    this.context.log.info(formatted)
   }
 
-  verbose (message: string, source: PsReportSource, context: IContextLike): void {
-    const formatted = this.log(message, source, context, 'verbose')
-    context.log.verbose(formatted)
+  verbose (message: string): void {
+    const formatted = this.log(message, 'verbose')
+    this.context.log.verbose(formatted)
   }
 
-  warn (message: string, source: PsReportSource, context: IContextLike): void {
-    const formatted = this.log(message, source, context, 'warning')
-    context.log.warn(formatted)
+  warn (message: string): void {
+    const formatted = this.log(message, 'warning')
+    this.context.log.warn(formatted)
   }
 
-  error (message: string, source: PsReportSource, context: IContextLike): void {
-    const formatted = this.log(message, source, context, 'error')
-    context.log.error(formatted)
+  error (message: string): void {
+    const formatted = this.log(message, 'error')
+    this.context.log.error(formatted)
   }
 }

@@ -1,16 +1,17 @@
 import { ListSchoolsService } from './list-schools-service'
-import { MockLogger } from '../../common/logger'
 import { ISqlService } from '../../sql/sql.service'
-import { IContextLike } from '../../common/ContextLike'
+import { IPsReportLogger } from '../common/ps-report-logger'
 
 describe('ListSchoolsService', () => {
   let sut: ListSchoolsService
   let mockSqlService: ISqlService
-  let mockContextLike: IContextLike
+  let mockPsLogger: IPsReportLogger
 
-  const ContextLikeMock = jest.fn<IContextLike, any>(() => ({
-    bindings: jest.fn(),
-    log: new MockLogger()
+  const PsReportLoggerMock = jest.fn<IPsReportLogger, any>(() => ({
+    error: jest.fn(),
+    info: jest.fn(),
+    verbose: jest.fn(),
+    warn: jest.fn()
   }))
 
   const mockResponse = [
@@ -19,13 +20,13 @@ describe('ListSchoolsService', () => {
   ]
 
   beforeEach(() => {
-    mockContextLike = new ContextLikeMock()
+    mockPsLogger = new PsReportLoggerMock()
     mockSqlService = {
       query: jest.fn().mockResolvedValueOnce(mockResponse),
       modify: jest.fn(),
       modifyWithTransaction: jest.fn()
     }
-    sut = new ListSchoolsService(mockContextLike, mockSqlService)
+    sut = new ListSchoolsService(mockPsLogger, mockSqlService)
   })
 
   test('is defined', () => {
