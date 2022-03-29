@@ -1,7 +1,8 @@
 import moment from 'moment'
-import { IPsReportLogEntry, PsReportSource } from '../../schemas/ps-report-log-entry'
+import { IPsReportLogEntry, PsReportLogLevel, PsReportSource } from '../common/ps-report-log-entry'
 import { IPsLogWriter } from './log-writer'
-import { IServiceBusMessageLike, LogService } from './log.service'
+import { LogService } from './log.service'
+import { IServiceBusMessageLike } from './models'
 
 const LogWriterMock = jest.fn<IPsLogWriter, any>(() => ({
   writeToStorage: jest.fn()
@@ -14,22 +15,26 @@ const entries: IPsReportLogEntry[] = [
   {
     generatedAt: moment('2021-12-15 18:43:12'),
     message: 'this is a test message',
-    source: PsReportSource.PupilGenerator
+    source: PsReportSource.PupilGenerator,
+    level: PsReportLogLevel.Info
   },
   {
     generatedAt: moment('2021-12-15 18:44:02'),
     message: 'this is a test message',
-    source: PsReportSource.SchoolGenerator
+    source: PsReportSource.SchoolGenerator,
+    level: PsReportLogLevel.Error
   },
   {
     generatedAt: moment('2021-12-15 18:45:11'),
     message: 'this is a test message',
-    source: PsReportSource.Transformer
+    source: PsReportSource.Transformer,
+    level: PsReportLogLevel.Verbose
   },
   {
     generatedAt: moment('2021-12-15 18:45:19'),
     message: 'this is a test message',
-    source: PsReportSource.Writer
+    source: PsReportSource.Writer,
+    level: PsReportLogLevel.Warning
   }
 ]
 

@@ -1,5 +1,5 @@
-import { IPsReportLogEntry } from '../../schemas/ps-report-log-entry'
-import { IServiceBusMessageLike } from './log.service'
+import { IPsReportLogEntry } from '../common/ps-report-log-entry'
+import { IServiceBusMessageLike } from './models'
 
 export class PsLogMessageParser {
   parse (messages: IServiceBusMessageLike[]): IPsReportLogEntry[] {

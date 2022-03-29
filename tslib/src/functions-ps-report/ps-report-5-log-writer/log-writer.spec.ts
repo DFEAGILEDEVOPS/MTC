@@ -1,7 +1,7 @@
 import moment from 'moment'
 import { IBlobService } from '../../azure/blob-service'
 import { IDateTimeService } from '../../common/datetime.service'
-import { IPsReportLogSet } from './log-generator.service'
+import { IPsReportLogSet } from './models'
 import { PsLogWriter, LogContainerPrefix } from './log-writer'
 
 let sut: PsLogWriter

@@ -1,12 +1,11 @@
-import { IPsReportLogSet } from './log-generator.service'
+import { IPsReportLogSet } from './models'
 import { BlobService, IBlobService } from '../../azure/blob-service'
 import { DateTimeService, IDateTimeService } from '../../common/datetime.service'
-
-export const LogContainerPrefix = 'ps-report-log'
 export interface IPsLogWriter {
   writeToStorage (logSet: IPsReportLogSet): Promise<void>
 }
 
+export const LogContainerPrefix = 'ps-report-log'
 export class PsLogWriter implements IPsLogWriter {
   private readonly dataService: IBlobService
   private readonly dateTimeService: IDateTimeService

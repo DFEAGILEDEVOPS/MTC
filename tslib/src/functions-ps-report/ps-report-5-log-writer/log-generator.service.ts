@@ -1,4 +1,5 @@
-import { IPsReportLogEntry, PsReportSource } from '../../schemas/ps-report-log-entry'
+import { IPsReportLogEntry, PsReportSource } from '../common/ps-report-log-entry'
+import { IPsReportLogSet } from './models'
 import { PsLogEntryFormatter } from './log-entry-formatter'
 
 export class PsLogGeneratorService {
@@ -36,11 +37,4 @@ export class PsLogGeneratorService {
       WriterLog: this.writerLog
     }
   }
-}
-
-export interface IPsReportLogSet {
-  ListSchoolsLog: string[]
-  PupilDataLog: string[]
-  TransformerLog: string[]
-  WriterLog: string[]
 }

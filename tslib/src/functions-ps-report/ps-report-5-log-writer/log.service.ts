@@ -1,10 +1,7 @@
 import { PsLogGeneratorService } from './log-generator.service'
 import { IPsLogWriter, PsLogWriter } from './log-writer'
 import { PsLogMessageParser } from './message-parser'
-
-export interface IServiceBusMessageLike {
-  body: any
-}
+import { IServiceBusMessageLike } from './models'
 
 export class LogService {
   private readonly generator: PsLogGeneratorService
