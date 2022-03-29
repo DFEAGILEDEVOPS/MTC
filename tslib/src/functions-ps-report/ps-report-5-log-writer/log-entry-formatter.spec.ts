@@ -16,7 +16,7 @@ describe('log entry formatter', () => {
       source: PsReportSource.PupilGenerator,
       level: 'info'
     }
-    const output = sut.formatMessage(message)
+    const output = sut.formatEntry(message)
     const expectedOutput = `${message.generatedAt.toISOString()}: [${message.source}] ${message.level} - ${message.message}`
     expect(output).toStrictEqual(expectedOutput)
   })

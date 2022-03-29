@@ -2,7 +2,7 @@ import { AzureFunction, Context, HttpRequest } from '@azure/functions'
 import moment from 'moment'
 import { performance } from 'perf_hooks'
 import config from '../../config'
-import { IPsReportLogEntry, PsReportLogLevel, PsReportSource } from '../../functions-ps-report/common/ps-report-log-entry'
+import { IPsReportLogEntry, PsReportSource } from '../../functions-ps-report/common/ps-report-log-entry'
 import * as uuid from 'uuid'
 
 const functionName = 'util-gen-ps-report-logs'
@@ -33,25 +33,25 @@ const funcImplementation: AzureFunction = async function (context: Context, req:
         generatedAt: moment(),
         message: `${uuid.v4()} this is a test message`,
         source: PsReportSource.PupilGenerator,
-        level: PsReportLogLevel.Error
+        level: 'error'
       },
       {
         generatedAt: moment(),
         message: `${uuid.v4()} this is a test message`,
         source: PsReportSource.SchoolGenerator,
-        level: PsReportLogLevel.Error
+        level: 'error'
       },
       {
         generatedAt: moment(),
         message: `${uuid.v4()} this is a test message`,
         source: PsReportSource.Transformer,
-        level: PsReportLogLevel.Info
+        level: 'info'
       },
       {
         generatedAt: moment(),
         message: `${uuid.v4()} this is a test message`,
         source: PsReportSource.Writer,
-        level: PsReportLogLevel.Verbose
+        level: 'verbose'
       }
     ]
     messages.push(...batch)

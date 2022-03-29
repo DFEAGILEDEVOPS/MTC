@@ -12,7 +12,7 @@ export class PsLogGeneratorService {
   generate (entries: IPsReportLogEntry[]): IPsReportLogSet {
     for (let index = 0; index < entries.length; index++) {
       const entry = entries[index]
-      const formattedEntry = this.formatter.formatMessage(entry)
+      const formattedEntry = this.formatter.formatEntry(entry)
       switch (entry.source) {
         case PsReportSource.PupilGenerator:
           this.pupilDataLog.push(formattedEntry)

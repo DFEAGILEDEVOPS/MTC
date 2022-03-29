@@ -38,9 +38,9 @@ describe('log generator service', () => {
     }
     const expected: IPsReportLogSet = {
       ListSchoolsLog: [],
-      PupilDataLog: [formatter.formatMessage(pupilGeneratorMessage)],
-      TransformerLog: [formatter.formatMessage(transformerMessage)],
-      WriterLog: [formatter.formatMessage(writerMessage)]
+      PupilDataLog: [formatter.formatEntry(pupilGeneratorMessage)],
+      TransformerLog: [formatter.formatEntry(transformerMessage)],
+      WriterLog: [formatter.formatEntry(writerMessage)]
     }
     const actual = sut.generate([pupilGeneratorMessage, transformerMessage, writerMessage])
     expect(actual).toStrictEqual(expected)

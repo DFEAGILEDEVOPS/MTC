@@ -4,5 +4,3 @@ export interface IPsReportLogSet {
   TransformerLog: string[]
   WriterLog: string[]
 }
-
-
