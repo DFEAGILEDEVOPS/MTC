@@ -54,6 +54,16 @@
                                 id="serviceMessageContent"
                                 rows="10"><%= formData['message'] %></textarea>
                     </div>
+                    <div class="govuk-form-group">
+                        <label class="govuk-label govuk-!-font-weight-bold" for="border-colour">
+                          Message border colour
+                        </label>
+                        <select class="govuk-select" id="border-color" name="border-color">
+                          <option value="red" selected>Red</option>
+                          <option value="yellow">Yellow</option>
+                          <option value="green">Green</option>
+                        </select>
+                      </div>
                 </div>
                 <button class="govuk-button govuk-!-margin-right-2" id="submit-service-message-button" type="submit">Save</button>
                 <a href="/service-message" class="govuk-button govuk-button--secondary">Cancel</a>
