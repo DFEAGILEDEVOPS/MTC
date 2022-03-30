@@ -3,26 +3,27 @@ import { performance } from 'perf_hooks'
 import { IPsychometricReportLine } from '../ps-report-3-transformer/models'
 import { PsReportWriterService } from './ps-report-writer.service'
 import { jsonReviver } from '../../common/json-reviver'
-
-const functionName = 'ps-report-4-writer'
+import { PsReportLogger } from '../common/ps-report-logger'
+import { PsReportSource } from '../common/ps-report-log-entry'
 
 const serviceBusQueueTrigger: AzureFunction = async function (context: Context, incomingMessage: IPsychometricReportLine): Promise<void> {
   const start = performance.now()
   const messageWithDates = revive(incomingMessage)
-  context.log.verbose(`Message received for pupil ${messageWithDates.PupilID} in school ${messageWithDates.SchoolName}`)
+  const logger = new PsReportLogger(context, PsReportSource.Writer)
 
-  const reportWriter = new PsReportWriterService(context.log)
+  logger.verbose(`Message received for pupil ${messageWithDates.PupilID} in school ${messageWithDates.SchoolName}`)
+
+  const reportWriter = new PsReportWriterService(logger)
   try {
     await reportWriter.write(messageWithDates)
   } catch (error) {
-    context.log.error(`Failed to write data for pupil ${messageWithDates.PupilID}
+    logger.error(`Failed to write data for pupil ${messageWithDates.PupilID}
     ERROR: ${error.message}`)
     throw error
   }
   const end = performance.now()
   const durationInMilliseconds = end - start
-  const timeStamp = new Date().toISOString()
-  context.log.info(`${functionName}: ${timeStamp} processed 1 pupil, run took ${durationInMilliseconds} ms`)
+  logger.info(`processed 1 pupil, run took ${durationInMilliseconds} ms`)
 }
 
 /**

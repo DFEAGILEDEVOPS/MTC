@@ -47,6 +47,7 @@ const funcImplementation: AzureFunction = async function (context: Context, time
     let messageBatch = await receiver.receiveMessages(config.PsReportLogWriter.MessagesPerBatch)
     while (!RA.isNilOrEmpty(messageBatch)) {
       context.log(`${functionName}: adding ${messageBatch.length} log messages...`)
+      context.log(`first message id is ${messageBatch[0].messageId}`)
       messages.push(...messageBatch)
       messageBatch = await receiver.receiveMessages(config.PsReportLogWriter.MessagesPerBatch)
     }
@@ -69,7 +70,7 @@ const funcImplementation: AzureFunction = async function (context: Context, time
 }
 
 async function completeMessages (messageBatch: sb.ServiceBusReceivedMessage[], receiver: sb.ServiceBusReceiver, context: Context): Promise<void> {
-  context.log(`${functionName}: batch processed successfully, completing all messages in batch`)
+  context.log(`${functionName}: ${messageBatch.length} messages successfully processed, completing all messages in batch...`)
   for (let index = 0; index < messageBatch.length; index++) {
     const msg = messageBatch[index]
     try {
@@ -78,7 +79,7 @@ async function completeMessages (messageBatch: sb.ServiceBusReceivedMessage[], r
       try {
         await receiver.abandonMessage(msg)
       } catch {
-        context.log.error(`${functionName}: unable to abandon message:${error.message}`)
+        context.log.error(`${functionName}: unable to abandon message with id ${msg.messageId} ERROR:${error.message}`)
         // do nothing.
         // the lock will expire and message reprocessed at a later time
       }
@@ -92,7 +93,7 @@ async function abandonMessages (messageBatch: sb.ServiceBusReceivedMessage[], re
     try {
       await receiver.abandonMessage(msg)
     } catch (error) {
-      context.log.error(`${functionName}: unable to abandon message:${error.message}`)
+      context.log.error(`${functionName}: unable to abandon message with id:${msg.messageId} ERROR:${error.message}`)
     }
   }
 }

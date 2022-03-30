@@ -1,5 +1,5 @@
+import { ILogger } from '../../common/logger'
 import { ISqlService, SqlService } from '../../sql/sql.service'
-import { IPsReportLogger } from '../common/ps-report-logger'
 
 export interface School {
   id: number
@@ -17,10 +17,10 @@ export interface IListSchoolsService {
 }
 
 export class ListSchoolsService implements IListSchoolsService {
-  private readonly logger: IPsReportLogger
+  private readonly logger: ILogger
   private readonly sqlService: ISqlService
 
-  constructor (logger: IPsReportLogger, sqlService?: ISqlService) {
+  constructor (logger: ILogger, sqlService?: ISqlService) {
     this.logger = logger
     this.sqlService = sqlService ?? new SqlService()
   }

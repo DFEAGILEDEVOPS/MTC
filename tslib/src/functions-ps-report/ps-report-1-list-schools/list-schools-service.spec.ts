@@ -1,18 +1,11 @@
 import { ListSchoolsService } from './list-schools-service'
 import { ISqlService } from '../../sql/sql.service'
-import { IPsReportLogger } from '../common/ps-report-logger'
+import { ILogger, MockLogger } from '../../common/logger'
 
 describe('ListSchoolsService', () => {
   let sut: ListSchoolsService
   let mockSqlService: ISqlService
-  let mockPsLogger: IPsReportLogger
-
-  const PsReportLoggerMock = jest.fn<IPsReportLogger, any>(() => ({
-    error: jest.fn(),
-    info: jest.fn(),
-    verbose: jest.fn(),
-    warn: jest.fn()
-  }))
+  let mockLogger: ILogger
 
   const mockResponse = [
     { id: 1, uuid: 'uuid1', name: 'School One' },
@@ -20,13 +13,13 @@ describe('ListSchoolsService', () => {
   ]
 
   beforeEach(() => {
-    mockPsLogger = new PsReportLoggerMock()
+    mockLogger = new MockLogger()
     mockSqlService = {
       query: jest.fn().mockResolvedValueOnce(mockResponse),
       modify: jest.fn(),
       modifyWithTransaction: jest.fn()
     }
-    sut = new ListSchoolsService(mockPsLogger, mockSqlService)
+    sut = new ListSchoolsService(mockLogger, mockSqlService)
   })
 
   test('is defined', () => {

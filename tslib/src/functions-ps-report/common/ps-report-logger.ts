@@ -1,18 +1,12 @@
 import moment from 'moment'
 import { IContextLike } from '../../common/ContextLike'
+import { ILogger } from '../../common/logger'
 import { PsLogEntryFormatter } from '../ps-report-5-log-writer/log-entry-formatter'
 import { IPsReportLogEntry, PsReportLogLevel, PsReportSource } from './ps-report-log-entry'
 
 const formatter = new PsLogEntryFormatter()
 
-export interface IPsReportLogger {
-  info (message: string): void
-  verbose (message: string): void
-  warn (message: string): void
-  error (message: string): void
-}
-
-export class PsReportLogger {
+export class PsReportLogger implements ILogger {
   private readonly context: IContextLike
   private readonly source: PsReportSource
 
