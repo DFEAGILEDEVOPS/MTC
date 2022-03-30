@@ -86,7 +86,7 @@ end
 
 Then(/^I should see the pin gen reflected in the check history$/) do
   check_details = SqlDbHelper.check_details(@pupil_details['id'])
-  expect(pupil_history_page.check_history.rows.first.pin_gen.text).to eql check_details['createdAt'].strftime("%-d %b %l:%M %P").gsub("  ", " ")
+  expect(pupil_history_page.check_history.rows.first.pin_gen.text).to eql check_details['createdAt'].utc.strftime("%-d %b %l:%M %P").gsub("  ", " ")
   expect(pupil_history_page.check_history.rows.first.login.text).to eql ""
   expect(pupil_history_page.check_history.rows.first.recieved.text).to eql @check_type == 'Official' ? '' : 'n/a'
   expect(pupil_history_page.check_history.rows.first.active.text).to eql @check_type == 'Official' ? '*' : ''
@@ -108,8 +108,8 @@ end
 
 Then(/^I should see the pupil login reflected in the check history$/) do
   check_details = SqlDbHelper.check_details(@pupil_details['id'])
-  expect(pupil_history_page.check_history.rows.first.pin_gen.text).to eql check_details['createdAt'].strftime("%-d %b %l:%M %P").gsub("  ", " ")
-  expect(pupil_history_page.check_history.rows.first.login.text).to eql check_details['pupilLoginDate'].strftime("%-d %b %l:%M %P").gsub("  ", " ")
+  expect(pupil_history_page.check_history.rows.first.pin_gen.text).to eql check_details['createdAt'].utc.strftime("%-d %b %l:%M %P").gsub("  ", " ")
+  expect(pupil_history_page.check_history.rows.first.login.text).to eql check_details['pupilLoginDate'].utc.strftime("%-d %b %l:%M %P").gsub("  ", " ")
   expect(pupil_history_page.check_history.rows.first.recieved.text).to eql @check_type == 'Official' ? '' : 'n/a'
   expect(pupil_history_page.check_history.rows.first.active.text).to eql @check_type == 'Official' ? '*' : ''
   expect(pupil_history_page.check_history.rows.first.type.text).to eql @check_type
@@ -138,9 +138,9 @@ end
 
 Then(/^I should see the completed check reflected in the check history$/) do
   check_details = SqlDbHelper.check_details(@pupil_details['id'])
-  expect(pupil_history_page.check_history.rows.first.pin_gen.text).to eql check_details['createdAt'].strftime("%-d %b %l:%M %P").gsub("  ", " ")
-  expect(pupil_history_page.check_history.rows.first.login.text).to eql check_details['pupilLoginDate'].strftime("%-d %b %l:%M %P").gsub("  ", " ")
-  expect(pupil_history_page.check_history.rows.first.recieved.text).to eql @check_type == 'Official' ? check_details['receivedByServerAt'].strftime("%-d %b %l:%M %P").gsub("  ", " ") : 'n/a'
+  expect(pupil_history_page.check_history.rows.first.pin_gen.text).to eql check_details['createdAt'].utc.strftime("%-d %b %l:%M %P").gsub("  ", " ")
+  expect(pupil_history_page.check_history.rows.first.login.text).to eql check_details['pupilLoginDate'].utc.strftime("%-d %b %l:%M %P").gsub("  ", " ")
+  expect(pupil_history_page.check_history.rows.first.recieved.text).to eql @check_type == 'Official' ? check_details['receivedByServerAt'].utc.strftime("%-d %b %l:%M %P").gsub("  ", " ") : 'n/a'
   expect(pupil_history_page.check_history.rows.first.active.text).to eql @check_type == 'Official' ? '*' : ''
   expect(pupil_history_page.check_history.rows.first.type.text).to eql @check_type
   expect(pupil_history_page.check_history.rows.first.status.text).to eql @check_type == 'Official' ? "Check complete" : 'Logged in'
@@ -160,9 +160,9 @@ Then(/^I should see a list of all checks with the latest being marked as active$
   pupil_checks = SqlDbHelper.get_all_checks_from_school(@school_id).select {|check| check['pupil_id'] == @pupil_details['id']}.sort_by {|check| check['id']}
   latest_check = pupil_checks.last
   pupil_history_page.check_history.rows.each_with_index do |check, index|
-    expect(check.pin_gen.text).to eql pupil_checks[index]['createdAt'].strftime("%-d %b %l:%M %P").gsub("  ", " ")
-    expect(check.login.text).to eql pupil_checks[index]['pupilLoginDate'].strftime("%-d %b %l:%M %P").gsub("  ", " ")
-    expect(check.recieved.text).to eql pupil_checks[index]['receivedByServerAt'].strftime("%-d %b %l:%M %P").gsub("  ", " ")
+    expect(check.pin_gen.text).to eql pupil_checks[index]['createdAt'].utc.strftime("%-d %b %l:%M %P").gsub("  ", " ")
+    expect(check.login.text).to eql pupil_checks[index]['pupilLoginDate'].utc.strftime("%-d %b %l:%M %P").gsub("  ", " ")
+    expect(check.recieved.text).to eql pupil_checks[index]['receivedByServerAt'].utc.strftime("%-d %b %l:%M %P").gsub("  ", " ")
     expect(check.active.text).to eql pupil_checks[index] == latest_check ? '*' : ''
     expect(check.type.text).to eql 'Official'
     expect(check.status.text).to eql 'Check complete'
@@ -198,9 +198,9 @@ Then(/^I should see a list of all checks including the consumed discretionary re
   pupil_checks = SqlDbHelper.get_all_checks_from_school(@school_id).select {|check| check['pupil_id'] == @pupil_details['id']}.sort_by {|check| check['id']}
   latest_check = pupil_checks.last
   pupil_history_page.check_history.rows.each_with_index do |check, index|
-    expect(check.pin_gen.text).to eql pupil_checks[index]['createdAt'].strftime("%-d %b %l:%M %P").gsub("  ", " ")
-    expect(check.login.text).to eql pupil_checks[index]['pupilLoginDate'].strftime("%-d %b %l:%M %P").gsub("  ", " ")
-    expect(check.recieved.text).to eql pupil_checks[index]['receivedByServerAt'].strftime("%-d %b %l:%M %P").gsub("  ", " ")
+    expect(check.pin_gen.text).to eql pupil_checks[index]['createdAt'].utc.strftime("%-d %b %l:%M %P").gsub("  ", " ")
+    expect(check.login.text).to eql pupil_checks[index]['pupilLoginDate'].utc.strftime("%-d %b %l:%M %P").gsub("  ", " ")
+    expect(check.recieved.text).to eql pupil_checks[index]['receivedByServerAt'].utc.strftime("%-d %b %l:%M %P").gsub("  ", " ")
     expect(check.active.text).to eql pupil_checks[index] == latest_check ? '*' : ''
     expect(check.type.text).to eql 'Official'
     expect(check.status.text).to eql 'Check complete'
