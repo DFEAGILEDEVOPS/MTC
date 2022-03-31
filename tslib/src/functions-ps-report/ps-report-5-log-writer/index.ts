@@ -5,6 +5,7 @@ import config from '../../config'
 import * as sb from '@azure/service-bus'
 import * as RA from 'ramda-adjunct'
 import { LogService } from './log.service'
+import moment from 'moment'
 
 const functionName = 'ps-report-log-generator'
 const queueName = 'ps-report-log'
@@ -41,36 +42,34 @@ const funcImplementation: AzureFunction = async function (context: Context, time
     throw error
   }
 
-  const messages: sb.ServiceBusReceivedMessage[] = new Array<sb.ServiceBusReceivedMessage>()
-
+  const setId = `${moment().format('YYYYMMDDHHmmss')}`
+  let messageBatch = new Array<sb.ServiceBusReceivedMessage>()
+  context.log(`${functionName}: attempting to process log set ${setId}...`)
   try {
-    let messageBatch = await receiver.receiveMessages(config.PsReportLogWriter.MessagesPerBatch)
+    messageBatch = await receiver.receiveMessages(config.PsReportLogWriter.MessagesPerBatch)
+    let messageCount = 0
     while (!RA.isNilOrEmpty(messageBatch)) {
       context.log(`${functionName}: adding ${messageBatch.length} log messages...`)
-      context.log(`first message id is ${messageBatch[0].messageId}`)
-      messages.push(...messageBatch)
+      const logService = new LogService()
+      await logService.createV2(setId, messageBatch)
+      await completeMessages(messageBatch, receiver, context)
+      messageCount += messageBatch.length
       messageBatch = await receiver.receiveMessages(config.PsReportLogWriter.MessagesPerBatch)
     }
-    if (RA.isNilOrEmpty(messages)) {
-      context.log(`${functionName}: no messages to process`)
-    } else {
-      const logService = new LogService()
-      context.log(`${functionName}: passing ${messages.length} to log service...`)
-      await logService.create(messages)
-    }
-    await completeMessages(messages, receiver, context)
+    context.log(`${functionName}: processed ${messageCount} messages...`)
     await disconnect()
     finish(start, context)
     return
   } catch (error) {
     context.log.error(error)
-    await abandonMessages(messages, receiver, context)
+    if (!RA.isNilOrEmpty(messageBatch)) {
+      await abandonMessages(messageBatch, receiver, context)
+    }
     throw error
   }
 }
 
 async function completeMessages (messageBatch: sb.ServiceBusReceivedMessage[], receiver: sb.ServiceBusReceiver, context: Context): Promise<void> {
-  context.log(`${functionName}: ${messageBatch.length} messages successfully processed, completing all messages in batch...`)
   for (let index = 0; index < messageBatch.length; index++) {
     const msg = messageBatch[index]
     try {

@@ -1,6 +1,7 @@
-export interface IPsReportLogSet {
-  ListSchoolsLog: string[]
-  PupilDataLog: string[]
-  TransformerLog: string[]
-  WriterLog: string[]
+export interface IPsReportLogSetBatch {
+  setId: string
+  listSchoolsLog: string[]
+  pupilDataLog: string[]
+  transformerLog: string[]
+  writerLog: string[]
 }

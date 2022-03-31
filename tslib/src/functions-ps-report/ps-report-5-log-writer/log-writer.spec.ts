@@ -1,56 +1,57 @@
-import moment from 'moment'
 import { IBlobService } from '../../azure/blob-service'
-import { IDateTimeService } from '../../common/datetime.service'
-import { IPsReportLogSet } from './ps-report-log-set'
+import { IPsReportLogSetBatch } from './ps-report-log-set'
 import { PsLogWriter, LogContainerPrefix } from './log-writer'
 
 let sut: PsLogWriter
 const DataServiceMock = jest.fn<IBlobService, any>(() => ({
   createBlob: jest.fn(),
-  deleteBlob: jest.fn()
-}))
-const DateTimeServiceMock = jest.fn<IDateTimeService, any>(() => ({
-  convertDateToMoment: jest.fn(),
-  convertMomentToJsDate: jest.fn(),
-  formatIso8601: jest.fn(),
-  utcNow: jest.fn()
+  deleteBlob: jest.fn(),
+  appendBlob: jest.fn()
 }))
 
 let dataService: IBlobService
-let dateTimeService: IDateTimeService
 
 describe('ps report log writer', () => {
   beforeEach(() => {
     dataService = new DataServiceMock()
-    dateTimeService = new DateTimeServiceMock()
-    sut = new PsLogWriter(dataService, dateTimeService)
+    sut = new PsLogWriter(dataService)
   })
 
   test('subject should be defined', () => {
     expect(sut).toBeDefined()
   })
 
-  test('it should write each log file to blob storage container', async () => {
-    const logSet: IPsReportLogSet = {
-      ListSchoolsLog: ['sldkfjsdlkfj'],
-      PupilDataLog: ['sldfjdslkfj'],
-      TransformerLog: ['wouergh'],
-      WriterLog: ['sldfjsdklfj']
+  test('it should write each log file to the same blob storage container', async () => {
+    const logSet: IPsReportLogSetBatch = {
+      setId: '[the-set-id]',
+      listSchoolsLog: ['sdfsdfdsfsdfsd', 'erh43h5ehergdr', 'rdgfds', 'xxxdf'],
+      pupilDataLog: ['sldfjdslkfj', '3408gwaehiow4ty8'],
+      transformerLog: ['wouergh', 'o8324thof48g4', '3o84ghegopijey4p9u'],
+      writerLog: ['sldfjsdklfj']
     }
-    const mockDateTime = moment('2022-03-23 14:50:31')
-    jest.spyOn(dateTimeService, 'utcNow').mockReturnValue(mockDateTime)
-    const mockDateTimeNoSymbols = mockDateTime.format('YYYYMMDDHHmmss')
-    const expectedListSchoolsFileName = `list-schools-log-${mockDateTimeNoSymbols}.txt`
-    const expectedPupilDataFileName = `pupil-data-log-${mockDateTimeNoSymbols}.txt`
-    const expectedTransformerFileName = `transformer-log-${mockDateTimeNoSymbols}.txt`
-    const expectedWriterFileName = `writer-log-${mockDateTimeNoSymbols}.txt`
-    const expectedContainerName = `${LogContainerPrefix}-${mockDateTimeNoSymbols}`
+    const expectedListSchoolsFileName = `list-schools-log-${logSet.setId}.txt`
+    const expectedPupilDataFileName = `pupil-data-log-${logSet.setId}.txt`
+    const expectedTransformerFileName = `transformer-log-${logSet.setId}.txt`
+    const expectedWriterFileName = `writer-log-${logSet.setId}.txt`
+    const expectedContainerName = `${LogContainerPrefix}-${logSet.setId}`
 
     await sut.writeToStorage(logSet)
-    expect(dataService.createBlob).toHaveBeenCalledTimes(4)
-    expect(dataService.createBlob).toHaveBeenNthCalledWith(1, Buffer.from(logSet.ListSchoolsLog.join('\n')), expectedListSchoolsFileName, expectedContainerName)
-    expect(dataService.createBlob).toHaveBeenNthCalledWith(2, Buffer.from(logSet.PupilDataLog.join('\n')), expectedPupilDataFileName, expectedContainerName)
-    expect(dataService.createBlob).toHaveBeenNthCalledWith(3, Buffer.from(logSet.TransformerLog.join('\n')), expectedTransformerFileName, expectedContainerName)
-    expect(dataService.createBlob).toHaveBeenNthCalledWith(4, Buffer.from(logSet.WriterLog.join('\n')), expectedWriterFileName, expectedContainerName)
+    expect(dataService.appendBlob).toHaveBeenCalledTimes(4)
+    expect(dataService.appendBlob).toHaveBeenNthCalledWith(1, Buffer.from(`\n${logSet.listSchoolsLog.join('\n')}`), expectedListSchoolsFileName, expectedContainerName)
+    expect(dataService.appendBlob).toHaveBeenNthCalledWith(2, Buffer.from(`\n${logSet.pupilDataLog.join('\n')}`), expectedPupilDataFileName, expectedContainerName)
+    expect(dataService.appendBlob).toHaveBeenNthCalledWith(3, Buffer.from(`\n${logSet.transformerLog.join('\n')}`), expectedTransformerFileName, expectedContainerName)
+    expect(dataService.appendBlob).toHaveBeenNthCalledWith(4, Buffer.from(`\n${logSet.writerLog.join('\n')}`), expectedWriterFileName, expectedContainerName)
+  })
+
+  test('it should not attempt to append blob data if a set item is empty', async () => {
+    const logSet: IPsReportLogSetBatch = {
+      setId: '[the-set-id]',
+      listSchoolsLog: [],
+      pupilDataLog: ['sldfjdslkfj', '3408gwaehiow4ty8'],
+      transformerLog: ['wouergh', 'o8324thof48g4', '3o84ghegopijey4p9u'],
+      writerLog: ['sldfjsdklfj']
+    }
+    await sut.writeToStorage(logSet)
+    expect(dataService.appendBlob).toHaveBeenCalledTimes(3)
   })
 })

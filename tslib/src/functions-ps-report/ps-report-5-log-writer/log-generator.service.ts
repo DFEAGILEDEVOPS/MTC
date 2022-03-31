@@ -1,15 +1,16 @@
 import { IPsReportLogEntry, PsReportSource } from '../common/ps-report-log-entry'
-import { IPsReportLogSet } from './ps-report-log-set'
+import { IPsReportLogSetBatch } from './ps-report-log-set'
 import { PsLogEntryFormatter } from './log-entry-formatter'
 
-export class PsLogGeneratorService {
+export class PsLogSetGeneratorService {
   private readonly formatter = new PsLogEntryFormatter()
   private readonly listSchoolsLog = new Array<string>()
   private readonly pupilDataLog = new Array<string>()
   private readonly transformerLog = new Array<string>()
   private readonly writerLog = new Array<string>()
 
-  generate (entries: IPsReportLogEntry[]): IPsReportLogSet {
+  generate (setId: string | undefined, entries: IPsReportLogEntry[]): IPsReportLogSetBatch {
+    if (setId === undefined) throw new Error('setId required')
     for (let index = 0; index < entries.length; index++) {
       const entry = entries[index]
       const formattedEntry = this.formatter.formatEntry(entry)
@@ -31,10 +32,11 @@ export class PsLogGeneratorService {
       }
     }
     return {
-      ListSchoolsLog: this.listSchoolsLog,
-      PupilDataLog: this.pupilDataLog,
-      TransformerLog: this.transformerLog,
-      WriterLog: this.writerLog
+      setId: setId,
+      listSchoolsLog: this.listSchoolsLog,
+      pupilDataLog: this.pupilDataLog,
+      transformerLog: this.transformerLog,
+      writerLog: this.writerLog
     }
   }
 }

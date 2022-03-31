@@ -1,15 +1,15 @@
 import moment from 'moment'
 import { IPsReportLogEntry, PsReportSource } from '../common/ps-report-log-entry'
 import { PsLogEntryFormatter } from './log-entry-formatter'
-import { PsLogGeneratorService } from './log-generator.service'
-import { IPsReportLogSet } from './ps-report-log-set'
+import { PsLogSetGeneratorService } from './log-generator.service'
+import { IPsReportLogSetBatch } from './ps-report-log-set'
 
-let sut: PsLogGeneratorService
+let sut: PsLogSetGeneratorService
 let formatter: PsLogEntryFormatter
 
 describe('log generator service', () => {
   beforeEach(() => {
-    sut = new PsLogGeneratorService()
+    sut = new PsLogSetGeneratorService()
     formatter = new PsLogEntryFormatter()
   })
 
@@ -18,6 +18,7 @@ describe('log generator service', () => {
   })
 
   test('it returns log set containing formatted messages', () => {
+    const setId = 'foo-bar'
     const pupilGeneratorMessage: IPsReportLogEntry = {
       generatedAt: moment('2022-03-10 12:00:00'),
       message: 'foo',
@@ -36,13 +37,14 @@ describe('log generator service', () => {
       source: PsReportSource.Writer,
       level: 'warning'
     }
-    const expected: IPsReportLogSet = {
-      ListSchoolsLog: [],
-      PupilDataLog: [formatter.formatEntry(pupilGeneratorMessage)],
-      TransformerLog: [formatter.formatEntry(transformerMessage)],
-      WriterLog: [formatter.formatEntry(writerMessage)]
+    const expected: IPsReportLogSetBatch = {
+      setId: setId,
+      listSchoolsLog: [],
+      pupilDataLog: [formatter.formatEntry(pupilGeneratorMessage)],
+      transformerLog: [formatter.formatEntry(transformerMessage)],
+      writerLog: [formatter.formatEntry(writerMessage)]
     }
-    const actual = sut.generate([pupilGeneratorMessage, transformerMessage, writerMessage])
+    const actual = sut.generate(setId, [pupilGeneratorMessage, transformerMessage, writerMessage])
     expect(actual).toStrictEqual(expected)
   })
 })

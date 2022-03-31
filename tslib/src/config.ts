@@ -137,6 +137,6 @@ export default {
   },
   LiveFormQuestionCount: getLinesPerCheck(),
   PsReportLogWriter: {
-    MessagesPerBatch: parseInt(parser.valueOrSubstitute(process.env.PS_REPORT_LOG_WRITER_MESSAGE_BATCH_SIZE, 250), 10)
+    MessagesPerBatch: parseInt(parser.valueOrSubstitute(process.env.PS_REPORT_LOG_WRITER_MESSAGE_BATCH_SIZE, 100), 10)
   }
 }
