@@ -21,13 +21,13 @@ const controller = {
     let serviceMessage
     try {
       serviceMessage = await administrationMessageService.getMessage()
+      res.render('service-message/service-message-overview', {
+        breadcrumbs: req.breadcrumbs(),
+        serviceMessage
+      })
     } catch (error) {
       return next(error)
     }
-    res.render('service-message/service-message-overview', {
-      breadcrumbs: req.breadcrumbs(),
-      serviceMessage
-    })
   },
 
   /**
@@ -111,7 +111,12 @@ const controller = {
       req.breadcrumbs(res.locals.pageTitle)
       res.render('service-message/service-message-form', {
         err: err,
-        formData: { title: serviceMessageMarkdown.title, message: serviceMessageMarkdown.message, id: serviceMessageMarkdown.id },
+        formData: {
+          title: serviceMessageMarkdown.title,
+          message: serviceMessageMarkdown.message,
+          id: serviceMessageMarkdown.id,
+          borderColourCode: serviceMessageMarkdown.borderColourCode
+        },
         breadcrumbs: req.breadcrumbs()
       })
     } catch (error) {

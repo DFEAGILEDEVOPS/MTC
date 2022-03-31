@@ -15,8 +15,9 @@ GO
 
 INSERT INTO mtc_admin.serviceMessageBorderColourLookup (displayOrder, description, code) VALUES
 	(1, 'Red', 'R'),
-	(2, 'Yellow', 'Y'),
-	(3, 'Green', 'G');
+	(2, 'Orange', 'O'),
+	(3, 'Green', 'G'),
+	(4, 'Blue', 'B');
 GO
 
 
@@ -49,4 +50,3 @@ ADD CONSTRAINT [FK_serviceMessage_borderColourLookupId_serviceMessageBorderColou
 FOREIGN KEY (borderColourLookupId) REFERENCES [mtc_admin].[serviceMessageBorderColourLookup] (id)
 ;
 GO
-	

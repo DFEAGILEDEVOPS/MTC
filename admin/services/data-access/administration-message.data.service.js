@@ -12,16 +12,38 @@ const administrationMessageDataService = {}
  * @return
  */
 administrationMessageDataService.sqlCreateOrUpdate = async (data) => {
+  const params = [
+    { name: 'title', value: data.title, type: TYPES.NVarChar(TYPES.MAX) },
+    { name: 'message', value: data.message, type: TYPES.NVarChar(TYPES.MAX) },
+    { name: 'code', value: data.borderColourCode, type: TYPES.Char(1) }
+  ]
+
   if (data.id !== undefined) {
-    const sql = 'UPDATE [mtc_admin].[serviceMessage] SET title = @title, message = @message WHERE id = @id'
-    const params = [
-      { name: 'id', value: data.id, type: TYPES.Int },
-      { name: 'title', value: data.title, type: TYPES.NVarChar(TYPES.MAX) },
-      { name: 'message', value: data.message, type: TYPES.NVarChar(TYPES.MAX) }
-    ]
+    // edit / update
+    const sql = `
+      UPDATE [mtc_admin].[serviceMessage]
+      SET title = @title,
+          message = @message,
+          borderColourLookupId = (SELECT id FROM [mtc_admin].[serviceMessageBorderColourLookup] WHERE code = @code)
+      WHERE id = @id`
+
+      params.push(
+        { name: 'id', value: data.id, type: TYPES.Int }
+      )
+
     await sqlService.modify(sql, params)
   } else {
-    await sqlService.create('serviceMessage', data)
+    // create
+    const sql = `
+      INSERT INTO [mtc_admin].[serviceMessage] (createdByUser_id, title, message, borderColourLookupId) values (
+        @createdByUserId, @title, @message, (SELECT id FROM [mtc_admin].[serviceMessageBorderColourLookup] where code = @code)
+      )
+    `
+    params.push(
+      { name: 'createdByUserId', value: data.createdByUser_id, type: TYPES.Int }
+    )
+
+    await sqlService.modify(sql, params)
   }
 }
 
@@ -38,13 +60,16 @@ administrationMessageDataService.sqlDeleteServiceMessage = async () => {
 
 /**
  * Fetch active service message
- * @return {Promise<{ title: string, message: string, id: number }>}
+ * @return {Promise<{ title: string, message: string, id: number, borderColourCode: string }>}
  */
 administrationMessageDataService.sqlFindActiveServiceMessage = async () => {
   const sql = `
     SELECT TOP 1
-    *
-    FROM [mtc_admin].serviceMessage
+    sm.id,
+    sm.title,
+    sm.message,
+    smbcl.code as borderColourCode
+    FROM [mtc_admin].serviceMessage sm JOIN [mtc_admin].serviceMessageBorderColourLookup smbcl ON (sm.borderColourLookupId = smbcl.id)
   `
   const result = await sqlService.readonlyQuery(sql)
   // @ts-ignore

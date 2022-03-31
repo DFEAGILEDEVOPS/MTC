@@ -1,5 +1,14 @@
-<% if (serviceMessage) { %>
-    <div class="govuk-body govuk-warning-message govuk-!-margin-bottom-7 govuk-!-margin-top-0">
+<% if (serviceMessage) {
+    let borderColour = 'govuk-warning-message'
+    if (serviceMessage.borderColourCode === 'G') {
+        borderColour = 'govuk-info-message'
+    } else if (serviceMessage.borderColourCode === 'B') {
+        borderColour = 'govuk-blue-message'
+    } else if (serviceMessage.borderColourCode === 'O') {
+        borderColour = 'govuk-orange-message'
+    }
+    %>
+    <div class="govuk-body <%= borderColour %> govuk-!-margin-bottom-7 govuk-!-margin-top-0">
         <h2 class="govuk-heading-l">
             <%= serviceMessage.title %>
         </h2>

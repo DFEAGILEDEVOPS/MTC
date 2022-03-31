@@ -38,6 +38,46 @@
   }
 }
 
+.govuk-blue-message {
+  border: 5px solid  govuk-colour("blue");
+  padding: 1em;
+  margin-top: 40px;
+  color: govuk-colour("blue");
+  font-weight: bold;
+
+  a,
+  a:link,
+  a:visited,
+  a:active,
+  a:hover {
+    color: govuk-colour("blue");
+  }
+  &.clickable {
+    text-decoration: underline;
+    color: govuk-colour("blue");
+  }
+}
+
+.govuk-orange-message {
+  border: 5px solid  govuk-colour("orange");
+  padding: 1em;
+  margin-top: 40px;
+  color: govuk-colour("orange");
+  font-weight: bold;
+
+  a,
+  a:link,
+  a:visited,
+  a:active,
+  a:hover {
+    color: govuk-colour("orange");
+  }
+  &.clickable {
+    text-decoration: underline;
+    color: govuk-colour("orange");
+  }
+}
+
 // Green border to highlight table cell content
 .govuk-highlight-item {
   display: flex;

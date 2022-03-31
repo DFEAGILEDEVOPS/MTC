@@ -58,10 +58,12 @@
                         <label class="govuk-label govuk-!-font-weight-bold" for="border-colour">
                           Message border colour
                         </label>
-                        <select class="govuk-select" id="border-color" name="border-color">
-                          <option value="red" selected>Red</option>
-                          <option value="yellow">Yellow</option>
-                          <option value="green">Green</option>
+                        <% console.log(formData) %>
+                        <select class="govuk-select" id="border-colour" name="border-colour">
+                          <option value="R" <%= formData['borderColourCode'] === 'R' ? 'selected' : ''  %>>Red</option>
+                          <option value="O" <%= formData['borderColourCode'] === 'O' ? 'selected' : '' %>>Orange</option>
+                          <option value="G" <%= formData['borderColourCode'] === 'G' ? 'selected' : '' %>>Green</option>
+                          <option value="B" <%= formData['borderColourCode'] === 'B' ? 'selected' : '' %>>Blue</option>
                         </select>
                       </div>
                 </div>
