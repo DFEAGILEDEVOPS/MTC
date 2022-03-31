@@ -73,7 +73,7 @@ administrationMessageService.setMessage = async (requestData, userId) => {
   const serviceMessageErrors = emptyFieldsValidator.validate([
     { fieldKey: 'serviceMessageTitle', fieldValue: serviceMessageTitle, errorMessage: serviceMessageErrorMessages.emptyServiceMessageTitle },
     { fieldKey: 'serviceMessageContent', fieldValue: serviceMessageContent, errorMessage: serviceMessageErrorMessages.emptyServiceMessageContent },
-    { fieldKey: 'borderColourCode', fieldValue: borderColourCode, errorMessage: serviceMessageErrorMessages.emptyServiceMessgeBorderColour },
+    { fieldKey: 'borderColourCode', fieldValue: borderColourCode, errorMessage: serviceMessageErrorMessages.emptyServiceMessgeBorderColour }
   ])
   if (serviceMessageErrors.hasError()) {
     return serviceMessageErrors

@@ -27,9 +27,9 @@ administrationMessageDataService.sqlCreateOrUpdate = async (data) => {
           borderColourLookupId = (SELECT id FROM [mtc_admin].[serviceMessageBorderColourLookup] WHERE code = @code)
       WHERE id = @id`
 
-      params.push(
-        { name: 'id', value: data.id, type: TYPES.Int }
-      )
+    params.push(
+      { name: 'id', value: data.id, type: TYPES.Int }
+    )
 
     await sqlService.modify(sql, params)
   } else {
