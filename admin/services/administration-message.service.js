@@ -67,9 +67,7 @@ administrationMessageService.setMessage = async (requestData, userId) => {
   if (!userId) {
     throw new Error('User id not found in session')
   }
-  const { serviceMessageTitle, serviceMessageContent } = requestData
-  console.log('border colour', requestData)
-  const borderColourCode = requestData['border-colour']
+  const { serviceMessageTitle, serviceMessageContent, borderColourCode } = requestData
   const serviceMessageErrors = emptyFieldsValidator.validate([
     { fieldKey: 'serviceMessageTitle', fieldValue: serviceMessageTitle, errorMessage: serviceMessageErrorMessages.emptyServiceMessageTitle },
     { fieldKey: 'serviceMessageContent', fieldValue: serviceMessageContent, errorMessage: serviceMessageErrorMessages.emptyServiceMessageContent },
@@ -98,7 +96,7 @@ administrationMessageService.prepareSubmissionData = (requestData, userId) => {
   if (requestData.id !== undefined) {
     serviceMessageData.id = requestData.id
   }
-  serviceMessageData.borderColourCode = requestData['border-colour']
+  serviceMessageData.borderColourCode = requestData.borderColourCode
   return serviceMessageData
 }
 

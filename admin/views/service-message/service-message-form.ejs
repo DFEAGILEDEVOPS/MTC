@@ -29,6 +29,7 @@
                 </div>
             <% } %>
             <h1 class="govuk-heading-xl"><%= pageTitle %></h1>
+            <%- partial('partials/_gds_session_expiry') %>
 
 
             <p>
@@ -37,7 +38,6 @@
                 formatting, it is up to the user to provide the bold formatting.
             </p>
 
-            <%- partial('partials/_gds_session_expiry') %>
             <form action="/service-message/submit-service-message" id="serviceMessageForm" method="post" autocomplete="off">
                 <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
                 <div class="govuk-form-group <%= err.isError('serviceMessageTitle') ? 'govuk-form-group--error' : '' %>">
@@ -50,7 +50,7 @@
                            id="serviceMessageTitle"
                            class="govuk-input govuk-!-width-three-quarters <%= err.isError('serviceMessageTitle') ? 'govuk-input--error' : '' %>"
                            name="serviceMessageTitle"
-                           value="<%= formData['title'] %>"/>
+                           value="<%= formData['serviceMessageTitle'] %>"/>
                     <div class="govuk-!-margin-top-5 govuk-form-group <%= err.isError('serviceMessageContent') ? 'govuk-form-group--error' : '' %>">
                         <div class="govuk-label govuk-!-font-weight-bold" for="serviceMessageContent">Message</div>
                         <% if (err.isError('serviceMessageContent')) { %>
@@ -60,18 +60,17 @@
                                 class="govuk-textarea govuk-!-width-three-quarters <%= err.isError('serviceMessageContent') ? 'govuk-textarea--error' : '' %>"
                                 name="serviceMessageContent"
                                 id="serviceMessageContent"
-                                rows="10"><%= formData['message'] %></textarea>
+                                rows="10"><%= formData['serviceMessageContent'] %></textarea>
                     </div>
                     <div class="govuk-form-group">
-                        <label class="govuk-label govuk-!-font-weight-bold" for="border-colour">
+                        <label class="govuk-label govuk-!-font-weight-bold" for="borderColourCode">
                           Message border colour
                         </label>
-                        <% console.log(formData) %>
-                        <select class="govuk-select" id="border-colour" name="border-colour">
+                        <select class="govuk-select" id="borderColourCode" name="borderColourCode">
                           <option value="R" <%= formData['borderColourCode'] === 'R' ? 'selected' : ''  %>>Red</option>
                           <option value="O" <%= formData['borderColourCode'] === 'O' ? 'selected' : '' %>>Orange</option>
                           <option value="G" <%= formData['borderColourCode'] === 'G' ? 'selected' : '' %>>Green</option>
-                          <option value="B" <%= formData['borderColourCode'] === 'B' ? 'selected' : '' %>>Blue</option>
+                          <option value="B" <%= formData['borderColourCode'] === 'B' || formData['borderColourCode'] === undefined ? 'selected' : '' %>>Blue</option>
                         </select>
                       </div>
                 </div>

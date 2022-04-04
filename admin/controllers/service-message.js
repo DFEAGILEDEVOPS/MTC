@@ -112,8 +112,8 @@ const controller = {
       res.render('service-message/service-message-form', {
         err: err,
         formData: {
-          title: serviceMessageMarkdown.title,
-          message: serviceMessageMarkdown.message,
+          serviceMessageTitle: serviceMessageMarkdown.title,
+          serviceMessageContent: serviceMessageMarkdown.message,
           id: serviceMessageMarkdown.id,
           borderColourCode: serviceMessageMarkdown.borderColourCode
         },
