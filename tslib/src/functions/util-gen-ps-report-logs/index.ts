@@ -21,11 +21,11 @@ const funcImplementation: AzureFunction = async function (context: Context, req:
     return
   }
   const start = performance.now()
-  let messageCount = 100
+  let messageCount = 10000
   if (req.query.messageCount !== undefined) {
     messageCount = parseInt(req.query.messageCount, 10)
   }
-
+  context.log(`attempting to add ${messageCount} messages onto the ps-report-log service bus queue...`)
   const messages: IPsReportLogEntry[] = []
   for (let index = 0; index < messageCount; index++) {
     const batch: IPsReportLogEntry[] = [
@@ -57,8 +57,13 @@ const funcImplementation: AzureFunction = async function (context: Context, req:
     messages.push(...batch)
   }
   context.bindings.psReportLogQueue = messages
-
+  context.log(`finished adding ${messageCount} messages onto the ps-report-log service bus queue...`)
   finish(start, context)
+  context.res = {
+    status: 204,
+    body: ''
+  }
+  context.done()
 }
 
 export default funcImplementation

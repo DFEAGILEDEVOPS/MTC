@@ -34,7 +34,7 @@ const funcImplementation: AzureFunction = async function (context: Context, time
     context.log(`${functionName}: connecting to service bus...`)
     busClient = new sb.ServiceBusClient(config.ServiceBus.ConnectionString)
     receiver = busClient.createReceiver(queueName, {
-      receiveMode: 'peekLock'
+      receiveMode: 'receiveAndDelete'
     })
     context.log(`${functionName}: connected to service bus instance ${busClient.fullyQualifiedNamespace}`)
   } catch (error) {
@@ -52,7 +52,6 @@ const funcImplementation: AzureFunction = async function (context: Context, time
       context.log(`${functionName}: adding ${messageBatch.length} log messages...`)
       const logService = new LogService()
       await logService.createV2(setId, messageBatch)
-      await completeMessages(messageBatch, receiver, context)
       messageCount += messageBatch.length
       messageBatch = await receiver.receiveMessages(config.PsReportLogWriter.MessagesPerBatch)
     }
@@ -62,38 +61,10 @@ const funcImplementation: AzureFunction = async function (context: Context, time
     return
   } catch (error) {
     context.log.error(error)
-    if (!RA.isNilOrEmpty(messageBatch)) {
+    /*     if (!RA.isNilOrEmpty(messageBatch)) {
       await abandonMessages(messageBatch, receiver, context)
-    }
+    } */
     throw error
-  }
-}
-
-async function completeMessages (messageBatch: sb.ServiceBusReceivedMessage[], receiver: sb.ServiceBusReceiver, context: Context): Promise<void> {
-  for (let index = 0; index < messageBatch.length; index++) {
-    const msg = messageBatch[index]
-    try {
-      await receiver.completeMessage(msg)
-    } catch (error) {
-      try {
-        await receiver.abandonMessage(msg)
-      } catch {
-        context.log.error(`${functionName}: unable to abandon message with id ${msg.messageId} ERROR:${error.message}`)
-        // do nothing.
-        // the lock will expire and message reprocessed at a later time
-      }
-    }
-  }
-}
-
-async function abandonMessages (messageBatch: sb.ServiceBusReceivedMessage[], receiver: sb.ServiceBusReceiver, context: Context): Promise<void> {
-  for (let index = 0; index < messageBatch.length; index++) {
-    const msg = messageBatch[index]
-    try {
-      await receiver.abandonMessage(msg)
-    } catch (error) {
-      context.log.error(`${functionName}: unable to abandon message with id:${msg.messageId} ERROR:${error.message}`)
-    }
   }
 }
 
