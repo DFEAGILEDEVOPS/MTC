@@ -29,6 +29,14 @@
                 </div>
             <% } %>
             <h1 class="govuk-heading-xl"><%= pageTitle %></h1>
+
+
+            <p>
+                The GDS guidelines for notication banners suggest using bold
+                text for the message.  As this message allows user-defined
+                formatting, it is up to the user to provide the bold formatting.
+            </p>
+
             <%- partial('partials/_gds_session_expiry') %>
             <form action="/service-message/submit-service-message" id="serviceMessageForm" method="post" autocomplete="off">
                 <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
