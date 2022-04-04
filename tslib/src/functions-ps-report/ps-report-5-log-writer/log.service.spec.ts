@@ -57,7 +57,7 @@ describe('log service', () => {
   test('orchestrates parsing, formatting and writing of log files', async () => {
     const setId = 'foo-bar'
     jest.spyOn(logWriter, 'writeToStorage').mockImplementation()
-    await sut.createV2(setId, messages)
+    await sut.create(setId, messages)
     expect(logWriter.writeToStorage).toHaveBeenCalledTimes(1)
   })
 })

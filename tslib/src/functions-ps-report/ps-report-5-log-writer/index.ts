@@ -50,7 +50,7 @@ const funcImplementation: AzureFunction = async function (context: Context, time
     while (!RA.isNilOrEmpty(messageBatch)) {
       context.log(`${functionName}: adding ${messageBatch.length} log messages...`)
       const logService = new LogService()
-      await logService.createV2(setId, messageBatch)
+      await logService.create(setId, messageBatch)
       messageCount += messageBatch.length
       messageBatch = await receiver.receiveMessages(config.PsReportLogWriter.MessagesPerBatch)
     }

@@ -14,7 +14,7 @@ export class LogService {
     this.writer = logWriter ?? new PsLogWriter()
   }
 
-  async createV2 (setId: string, messages: IServiceBusMessageLike[]): Promise<void> {
+  async create (setId: string, messages: IServiceBusMessageLike[]): Promise<void> {
     // setId must be created and owned by caller
     // create set container if not exists
     // create set files if not exists
