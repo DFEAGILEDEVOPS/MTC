@@ -62,3 +62,9 @@ $govuk-global-styles: true;
 .mtc-not-visible-not-accessible {
   visibility: hidden;
 }
+
+// access arangements panel details - dt headings space
+.govuk-panel-list dt {
+  margin-top: 20px;
+  margin-bottom: 5px;
+}
