@@ -29,7 +29,6 @@ const funcImplementation: AzureFunction = async function (context: Context, time
     await busClient.close()
   }
 
-  // connect to service bus...
   try {
     context.log(`${functionName}: connecting to service bus...`)
     busClient = new sb.ServiceBusClient(config.ServiceBus.ConnectionString)
@@ -61,9 +60,6 @@ const funcImplementation: AzureFunction = async function (context: Context, time
     return
   } catch (error) {
     context.log.error(error)
-    /*     if (!RA.isNilOrEmpty(messageBatch)) {
-      await abandonMessages(messageBatch, receiver, context)
-    } */
     throw error
   }
 }
