@@ -1,7 +1,7 @@
 trigger: none
 
 pool:
-  name: 'MTC' # TODO set to MS managed
+  name: 'Azure Pipelines'
 
 steps:
 - script: az keyvault network-rule add --name $(KeyVaultInstance) --resource-group $(ResourceGroup) --ip-address $(ipAddress)
