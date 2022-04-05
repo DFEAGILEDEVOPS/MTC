@@ -156,4 +156,10 @@ router.post(
   techSupportController.postCheckResultsResyncAll
 )
 
+router.get(
+  '/ps-report-logs',
+  isAuthenticated([roles.techSupport]),
+  techSupportController.getPsReportLogs
+)
+
 module.exports = router
