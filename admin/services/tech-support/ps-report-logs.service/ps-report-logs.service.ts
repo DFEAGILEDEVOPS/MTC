@@ -1,9 +1,10 @@
-export class PsReportLogsDownloadService {
-  public static async getDownloadList (): Promise<IPsReportLogDownloadItem> {
-    throw new Error('not implemented')
-  }
-}
+import { PsReportLogsDataService } from './data-access/ps-report-logs.data.service'
+import * as R from 'ramda'
 
-export interface IPsReportLogDownloadItem {
-  name: string
+export class PsReportLogsDownloadService {
+  public static async getDownloadList (): Promise<Array<string>> {
+    const containers = await PsReportLogsDataService.getContainerList()
+    const hasCorrectPrefix = c => c.startsWith('ps-report-log-')
+    return R.filter(hasCorrectPrefix, containers)
+  }
 }

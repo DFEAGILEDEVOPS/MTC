@@ -10,6 +10,7 @@ const redisErrorMessages = require('../lib/errors/redis').redis
 const moment = require('moment')
 const queueMgmtService = require('../services/tech-support-queue-management.service')
 const resultsResyncService = require('../services/tech-support/sync-results-resync.service')
+const psReportLogsDownloadService = require('../services/tech-support/ps-report-logs.service/ps-report-logs.service').PsReportLogsDownloadService
 
 const controller = {
   /**
@@ -511,23 +512,12 @@ const controller = {
 
   getPsReportLogs: async function getPsReportLogs (req, res, next) {
     try {
+      const logs = await psReportLogsDownloadService.getDownloadList()
       res.locals.pageTitle = 'PS Report Logs'
       req.breadcrumbs('PS Report Logs')
       res.render('tech-support/ps-report-logs', {
         breadcrumbs: req.breadcrumbs(),
-        logs: [
-          {
-            name: 'foo',
-            url: 'https://www.bbc.co.uk'
-          },
-          {
-            name: 'bar',
-            url: 'https://www.channel4.co.uk'
-          },
-          {
-            name: 'baz',
-            url: 'https://www.itv.co.uk'
-          }]
+        logs: logs
       })
     } catch (error) {
       return next(error)
