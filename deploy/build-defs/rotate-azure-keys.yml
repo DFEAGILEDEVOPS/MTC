@@ -26,7 +26,7 @@ jobs:
     inputs:
       azureSubscription: $(AzureSubscription)
       scriptType: bash
-      scriptPath: 'deploy/azure/key-vault/key-rotation/redis.sh'
+      scriptPath: 'deploy/key-rotation/redis.sh'
       arguments: $(ResourceGroupName) $(KeyVaultName) $(RedisName) $(KeyType)
       failOnStandardError: true
 - job: ServiceBusKey
@@ -36,7 +36,7 @@ jobs:
     inputs:
       azureSubscription: $(AzureSubscription)
       scriptType: bash
-      scriptPath: 'deploy/azure/key-vault/key-rotation/service-bus.sh'
+      scriptPath: 'deploy/key-rotation/service-bus.sh'
       arguments: $(ResourceGroupName) $(KeyVaultName) $(ServiceBusName) $(KeyType) $(ServiceBusUser)
       failOnStandardError: true
 - job: StorageAccountKey
@@ -46,6 +46,6 @@ jobs:
     inputs:
       azureSubscription: $(AzureSubscription)
       scriptType: bash
-      scriptPath: 'deploy/azure/key-vault/key-rotation/storage.sh'
+      scriptPath: 'deploy/key-rotation/storage.sh'
       arguments: $(ResourceGroupName) $(KeyVaultName) $(StorageAccountName) $(KeyType)
       failOnStandardError: true
