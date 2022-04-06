@@ -1,6 +1,6 @@
 import { ListSchoolsService } from './list-schools-service'
-import { MockLogger, ILogger } from '../../common/logger'
 import { ISqlService } from '../../sql/sql.service'
+import { ILogger, MockLogger } from '../../common/logger'
 
 describe('ListSchoolsService', () => {
   let sut: ListSchoolsService

@@ -1,5 +1,4 @@
 import { ISqlService, SqlService } from '../../sql/sql.service'
-import { ConsoleLogger, ILogger } from '../../common/logger'
 import { TYPES } from 'mssql'
 import {
   Answer,
@@ -22,6 +21,7 @@ import {
 } from './models'
 import * as R from 'ramda'
 import moment from 'moment'
+import { ILogger } from '../../common/logger'
 
 const functionName = 'ps-report-2-pupil-data'
 
@@ -34,12 +34,12 @@ export interface IPsReportDataService {
 }
 
 export class PsReportDataService {
-  private readonly logger: ILogger
   private readonly sqlService: ISqlService
+  private readonly logger: ILogger
   private readonly checkFormCache: Map<number, CheckForm> = new Map()
 
-  constructor (logger?: ILogger, sqlService?: ISqlService) {
-    this.logger = logger ?? new ConsoleLogger()
+  constructor (logger: ILogger, sqlService?: ISqlService) {
+    this.logger = logger
     this.sqlService = sqlService ?? new SqlService(this.logger)
   }
 
