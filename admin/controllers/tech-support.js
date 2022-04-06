@@ -515,7 +515,19 @@ const controller = {
       req.breadcrumbs('PS Report Logs')
       res.render('tech-support/ps-report-logs', {
         breadcrumbs: req.breadcrumbs(),
-        logs: [{ name: 'foo', url: 'https://www.bbc.co.uk' }, { name: 'bar', url: 'https://www.channel4.co.uk' }, { name: 'baz', url: 'https://www.itv.co.uk' }]
+        logs: [
+          {
+            name: 'foo',
+            url: 'https://www.bbc.co.uk'
+          },
+          {
+            name: 'bar',
+            url: 'https://www.channel4.co.uk'
+          },
+          {
+            name: 'baz',
+            url: 'https://www.itv.co.uk'
+          }]
       })
     } catch (error) {
       return next(error)
