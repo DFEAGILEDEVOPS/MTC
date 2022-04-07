@@ -15,4 +15,12 @@ export class PsReportLogsDataService {
     }
     return list
   }
+
+  public static async getFileContents (containerName: string, fileName: string): Promise<string> {
+    throw new Error('not impl')
+  }
+
+  public static async getContainerFileList (containerName: string): Promise<string[]> {
+    throw new Error('not impl')
+  }
 }
