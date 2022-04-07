@@ -3,7 +3,8 @@ import { performance } from 'perf_hooks'
 import { ReportLine } from './report-line.class'
 import { jsonReviver } from '../../common/json-reviver'
 import { PupilResult } from '../../functions-ps-report/ps-report-2-pupil-data/models'
-const functionName = 'ps-report-transformer'
+import { PsReportLogger } from '../common/ps-report-logger'
+import { PsReportSource } from '../common/ps-report-log-entry'
 
 /**
  * This functions receives a message from a sb queue and outputs a message to a sb queue that will later be written
@@ -18,7 +19,8 @@ const functionName = 'ps-report-transformer'
 
 const serviceBusQueueTrigger: AzureFunction = async function (context: Context, inputData: PupilResult): Promise<void> {
   const start = performance.now()
-  context.log.info(`${functionName}: message received for pupil ${inputData.pupil.slug}`)
+  const logger = new PsReportLogger(context, PsReportSource.Transformer)
+  logger.info(`message received for pupil ${inputData.pupil.slug}`)
   try {
     /**
      * The inputData type is not absolutely correctly typed.  The Moment datetime's are still strings as the JSON parsing happens
@@ -36,14 +38,13 @@ const serviceBusQueueTrigger: AzureFunction = async function (context: Context, 
     const outputData = reportLine.transform()
     context.bindings.outputData = outputData
   } catch (error) {
-    context.log.error(`${functionName}: ERROR: ${error.message}`)
+    logger.error(`ERROR: ${error.message}`)
     throw error
   }
 
   const end = performance.now()
   const durationInMilliseconds = end - start
-  const timeStamp = new Date().toISOString()
-  context.log(`${functionName}: ${timeStamp} run complete: ${durationInMilliseconds} ms`)
+  logger.info(`run complete: ${durationInMilliseconds} ms`)
 }
 
 /**
