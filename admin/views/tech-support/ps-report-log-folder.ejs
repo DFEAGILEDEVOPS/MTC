@@ -2,21 +2,21 @@
   <main class="govuk-main-wrapper govuk-body" id="main-content" role="main">
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-two-thirds">
-        <h1 class="govuk-heading-xl">PS Report Logs</h1>
+        <h1 class="govuk-heading-xl">PS Report Log Folder</h1>
         <%- partial('partials/_gds_session_expiry') %>
           <%- partial('partials/_flash-messages') %>
-            <h3 class="govuk-heading-m">Logs</h3>
+            <h3 class="govuk-heading-m">Files</h3>
             <table class="govuk-table govuk-spacious govuk-!-font-size-16">
               <thead class="govuk-table__head">
                 <tr class="govuk-table__row">
-                  <th scope="col">Log Folders</th>
+                  <th scope="col">File Name</th>
                 </tr>
               </thead>
               <tbody>
-                <% logs.forEach((log)=> { %>
+                <% files.forEach((file)=> { %>
                   <tr class="govuk-table__row">
                     <td>
-                      <a href="/tech-support/ps-report-log-folder/<%= log %>"><%= log %></a>
+                      <a href="#" target="_blank"><%= file %></a>
                     </td>
                   </tr>
                   <% }) %>

@@ -512,7 +512,7 @@ const controller = {
 
   getPsReportLogs: async function getPsReportLogs (req, res, next) {
     try {
-      const logs = await psReportLogsDownloadService.getDownloadList()
+      const logs = await psReportLogsDownloadService.getLogFoldersList()
       res.locals.pageTitle = 'PS Report Logs'
       req.breadcrumbs('PS Report Logs')
       res.render('tech-support/ps-report-logs', {
@@ -522,6 +522,24 @@ const controller = {
     } catch (error) {
       return next(error)
     }
+  },
+
+  getPsReportLogsFileList: async function getPsReportLogsFileList (req, res, next) {
+    try {
+      const files = await psReportLogsDownloadService.getLogFolderFileList(req.params.folder)
+      res.locals.pageTitle = 'PS Report Log Folder Files'
+      req.breadcrumbs('PS Report Log Folder Files')
+      res.render('tech-support/ps-report-log-folder', {
+        breadcrumbs: req.breadcrumbs(),
+        files: files
+      })
+    } catch (error) {
+      return next(error)
+    }
+  },
+
+  getPsReportLogFileContents: async function getPsReportLogFileContents (req, res, next) {
+    throw new Error('not implemented')
   }
 }
 

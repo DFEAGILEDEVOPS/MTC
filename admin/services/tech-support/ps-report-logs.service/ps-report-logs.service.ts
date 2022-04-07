@@ -2,7 +2,7 @@ import { PsReportLogsDataService } from './data-access/ps-report-logs.data.servi
 import * as R from 'ramda'
 
 export class PsReportLogsDownloadService {
-  public static async getDownloadList (): Promise<Array<string>> {
+  public static async getLogFoldersList (): Promise<Array<string>> {
     const containers = await PsReportLogsDataService.getContainerList()
     const hasCorrectPrefix = c => c.startsWith('ps-report-log-')
     return R.filter(hasCorrectPrefix, containers)
@@ -16,5 +16,12 @@ export class PsReportLogsDownloadService {
       throw new Error('containerName is required')
     }
     return PsReportLogsDataService.getFileContents(containerName, fileName)
+  }
+
+  public static async getLogFolderFileList (containerName: string): Promise<Array<string>> {
+    if (containerName.length === 0) {
+      throw new Error('containerName is required')
+    }
+    return PsReportLogsDataService.getContainerFileList(containerName)
   }
 }

@@ -21,7 +21,7 @@ describe('ps report logs service', () => {
       ]
       jest.spyOn(PsReportLogsDataService, 'getContainerList').mockResolvedValue(allContainers)
       const expectedLength = 3
-      const actualContainerList = await PsReportLogsDownloadService.getDownloadList()
+      const actualContainerList = await PsReportLogsDownloadService.getLogFoldersList()
       expect(actualContainerList).toHaveLength(expectedLength)
       for (let index = 0; index < actualContainerList.length; index++) {
         const container = actualContainerList[index]
@@ -31,14 +31,23 @@ describe('ps report logs service', () => {
   })
 
   describe('downloadLogFile', () => {
-    test('throws error if fileName empty', async () => {
-      await expect(PsReportLogsDownloadService.downloadLogFile('')).rejects.toThrow('fileName is required')
+    test('throws error if fileName is empty', async () => {
+      await expect(PsReportLogsDownloadService.downloadLogFile('container', '')).rejects.toThrow('fileName is required')
+    })
+
+    test('throws error if containerName is empty', async () => {
+      await expect(PsReportLogsDownloadService.downloadLogFile('', 'fileName')).rejects.toThrow('containerName is required')
     })
 
     test('returns file contents as string when exists', async () => {
       const mockFileContents = 'yada-yada-yada-yada-yada'
       jest.spyOn(PsReportLogsDataService, 'getFileContents').mockResolvedValue(mockFileContents)
-      await expect(PsReportLogsDownloadService.downloadLogFile('somefile')).resolves.toReturnWith(mockFileContents)
+      await expect(PsReportLogsDownloadService.downloadLogFile('some container', 'somefile')).resolves.toBe(mockFileContents)
+    })
+
+    test('returns undefined when file specified does not exist', async () => {
+      jest.spyOn(PsReportLogsDataService, 'getFileContents').mockResolvedValue(undefined)
+      await expect(PsReportLogsDownloadService.downloadLogFile('some container', 'somefile')).resolves.toBe(undefined)
     })
   })
 })

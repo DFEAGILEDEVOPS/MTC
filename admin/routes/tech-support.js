@@ -162,4 +162,10 @@ router.get(
   techSupportController.getPsReportLogs
 )
 
+router.get(
+  '/ps-report-log-folder/:folder',
+  isAuthenticated([roles.techSupport]),
+  techSupportController.getPsReportLogsFileList
+)
+
 module.exports = router
