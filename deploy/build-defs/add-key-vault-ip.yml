@@ -1,0 +1,13 @@
+trigger: none
+
+pool:
+  name: 'Azure Pipelines'
+
+steps:
+- task: AzureCLI@2
+  displayName: 'Add IPv4 Address to KeyVault'
+  inputs:
+    azureSubscription: $(AzureSubscription)
+    scriptType: bash
+    scriptPath: 'deploy/build-defs/add-key-vault-ip.sh'
+    arguments: $(KeyVaultName) $(ResourceGroup) $(IpAddress)

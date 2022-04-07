@@ -2,8 +2,8 @@ import { AzureFunction, Context } from '@azure/functions'
 import { performance } from 'perf_hooks'
 import { PsReportService } from './ps-report.service'
 import { PupilResult } from './models'
-
-const functionName = 'ps-report-2-pupil-data'
+import { PsReportLogger } from '../common/ps-report-logger'
+import { PsReportSource } from '../common/ps-report-log-entry'
 
 /**
  * Incoming message is just the name and UUID of the school to process
@@ -17,15 +17,15 @@ interface IncomingMessage {
 
 const serviceBusQueueTrigger: AzureFunction = async function (context: Context, incomingMessage: IncomingMessage): Promise<void> {
   const start = performance.now()
-  context.log.verbose(`${functionName}: called for school ${incomingMessage.name}`)
+  const logger = new PsReportLogger(context, PsReportSource.PupilGenerator)
+  logger.verbose(`called for school ${incomingMessage.name}`)
   const outputBinding: PupilResult[] = []
   context.bindings.psReportPupilMessage = outputBinding
-  const psReportService = new PsReportService(outputBinding, context.log)
+  const psReportService = new PsReportService(outputBinding, logger)
   await psReportService.process(incomingMessage.uuid)
   const end = performance.now()
   const durationInMilliseconds = end - start
-  const timeStamp = new Date().toISOString()
-  context.log.info(`${functionName}: ${timeStamp} processed ${outputBinding.length} pupils, run took ${durationInMilliseconds} ms`)
+  logger.info(`processed ${outputBinding.length} pupils, run took ${durationInMilliseconds} ms`)
 }
 
 export default serviceBusQueueTrigger
