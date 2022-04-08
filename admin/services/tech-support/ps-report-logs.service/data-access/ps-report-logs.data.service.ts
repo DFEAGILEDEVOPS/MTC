@@ -28,14 +28,23 @@ export class PsReportLogsDataService {
     return blobBuffer.toString()
   }
 
-  public static async getContainerFileList (containerName: string): Promise<string[]> {
+  public static async getContainerFileList (containerName: string): Promise<IPsReportLogFile[]> {
     const client = BlobServiceClient.fromConnectionString(config.AZURE_STORAGE_CONNECTION_STRING)
     const containerClient = await client.getContainerClient(containerName)
     if (!containerClient.exists()) return []
-    const files = new Array<string>()
-    for await (const file of containerClient.listBlobsFlat({ includeMetadata: false, includeDeleted: false })) {
-      files.push(file.name)
+    const files = new Array<IPsReportLogFile>()
+    // properties.contentLength: 7271623 (6.9MB)
+    for await (const file of containerClient.listBlobsFlat({ includeDeleted: false })) {
+      files.push({
+        contentLength: file.properties?.contentLength,
+        name: file.name
+      })
     }
     return files
   }
+}
+
+export interface IPsReportLogFile {
+  name: string,
+  contentLength?: number
 }

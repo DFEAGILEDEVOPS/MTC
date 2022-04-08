@@ -159,13 +159,13 @@ router.post(
 router.get(
   '/ps-report-logs',
   isAuthenticated([roles.techSupport]),
-  techSupportController.getPsReportLogs
+  techSupportController.getPsReportFolders
 )
 
 router.get(
   '/ps-report-log-folder/:folder',
   isAuthenticated([roles.techSupport]),
-  techSupportController.getPsReportLogsFileList
+  techSupportController.getPsReportFolderFileList
 )
 
 router.get(
