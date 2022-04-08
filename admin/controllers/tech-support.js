@@ -510,7 +510,7 @@ const controller = {
     }
   },
 
-  getPsReportLogs: async function getPsReportLogs (req, res, next) {
+  getPsReportFolders: async function getPsReportFolders (req, res, next) {
     try {
       const logs = await psReportLogsDownloadService.getLogFoldersList()
       res.locals.pageTitle = 'PS Report Logs'
@@ -524,7 +524,7 @@ const controller = {
     }
   },
 
-  getPsReportLogsFileList: async function getPsReportLogsFileList (req, res, next) {
+  getPsReportFolderFileList: async function getPsReportFolderFileList (req, res, next) {
     try {
       const files = await psReportLogsDownloadService.getLogFolderFileList(req.params.folder)
       res.locals.pageTitle = 'PS Report Log Folder Files'
