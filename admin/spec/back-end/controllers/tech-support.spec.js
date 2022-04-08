@@ -7,6 +7,7 @@ const payloadService = require('../../../services/payload.service')
 const administrationMessageService = require('../../../services/administration-message.service')
 const queueMgmtService = require('../../../services/tech-support-queue-management.service')
 const resultsResyncService = require('../../../services/tech-support/sync-results-resync.service')
+const { PsReportLogsDownloadService } = require('../../../services/tech-support/ps-report-logs.service/ps-report-logs.service')
 
 let sut
 let next
@@ -241,6 +242,49 @@ describe('tech-support controller', () => {
       expect(res.statusCode).toBe(500)
       const data = res._getJSONData()
       expect(data.error).toBe('Server error: mock error')
+    })
+  })
+
+  describe('/ps-report-logs', () => {
+    test('GET: should render the page', async () => {
+      const req = getRequest(getReqParams('/tech-support/ps-report-logs', 'GET'))
+      const res = getResponse()
+      jest.spyOn(res, 'render').mockResolvedValue(null)
+      jest.spyOn(PsReportLogsDownloadService, 'getLogFoldersList').mockResolvedValue(['one', 'two', 'three'])
+      await sut.getPsReportLogs(req, res, next)
+      expect(res.statusCode).toBe(200)
+      expect(res.locals.pageTitle).toBe('PS Report Logs')
+      expect(res.render).toHaveBeenCalled()
+      expect(next).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('/ps-report-log-folder/folder', () => {
+    test('GET: should render the page', async () => {
+      const req = getRequest(getReqParams('/tech-support/ps-report-log-folder/myfolder', 'GET'))
+      const res = getResponse()
+      jest.spyOn(res, 'render').mockResolvedValue(null)
+      jest.spyOn(PsReportLogsDownloadService, 'getLogFolderFileList').mockResolvedValue(['one.txt', 'two.txt', 'three.txt'])
+      await sut.getPsReportLogsFileList(req, res, next)
+      expect(res.statusCode).toBe(200)
+      expect(res.locals.pageTitle).toBe('PS Report Log Folder Files')
+      expect(res.render).toHaveBeenCalled()
+      expect(next).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('/ps-report-log-folder/folder/file', () => {
+    test('GET: should render the page', async () => {
+      const req = getRequest(getReqParams('/tech-support/ps-report-log-folder/myfolder/myfile.txt', 'GET'))
+      const res = getResponse()
+      jest.spyOn(res, 'send').mockResolvedValue(null)
+      jest.spyOn(res, 'set').mockResolvedValue(null)
+      jest.spyOn(PsReportLogsDownloadService, 'downloadLogFile').mockResolvedValue('slifjdsfjsdlkfjsdlkjfdsk')
+      await sut.getPsReportLogFileContents(req, res, next)
+      expect(res.statusCode).toBe(200)
+      expect(res.send).toHaveBeenCalled()
+      expect(res.set).toHaveBeenCalled()
+      expect(next).not.toHaveBeenCalled()
     })
   })
 })

@@ -531,7 +531,8 @@ const controller = {
       req.breadcrumbs('PS Report Log Folder Files')
       res.render('tech-support/ps-report-log-folder', {
         breadcrumbs: req.breadcrumbs(),
-        files: files
+        files: files,
+        folder: req.params.folder
       })
     } catch (error) {
       return next(error)
@@ -539,7 +540,17 @@ const controller = {
   },
 
   getPsReportLogFileContents: async function getPsReportLogFileContents (req, res, next) {
-    throw new Error('not implemented')
+    try {
+      const file = await psReportLogsDownloadService.downloadLogFile(req.params.folder, req.params.file)
+      res.set({
+        'Content-Disposition': `attachment; filename="${req.params.file}"`,
+        'Content-type': 'application/octet-stream',
+        'Content-Length': file.length
+      })
+      res.send(file)
+    } catch (error) {
+      return next(error)
+    }
   }
 }
 
