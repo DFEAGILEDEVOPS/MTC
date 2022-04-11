@@ -10,13 +10,17 @@
               <thead class="govuk-table__head">
                 <tr class="govuk-table__row">
                   <th scope="col">File Name</th>
+                  <th scope="col">Size</th>
                 </tr>
               </thead>
               <tbody>
                 <% files.forEach((file)=> { %>
                   <tr class="govuk-table__row">
                     <td>
-                      <a href="/tech-support/ps-report-log-folder/<%= folder %>/<%= file %>" target="_blank"><%= file %></a>
+                      <a href="/tech-support/ps-report-log-folder/<%= folder %>/<%= file.name %>" target="_blank"><%= file.name %></a>
+                    </td>
+                    <td>
+                      <%= file.size %>
                     </td>
                   </tr>
                   <% }) %>

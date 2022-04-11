@@ -1,5 +1,5 @@
-import { PsReportLogsDataService } from './data-access/ps-report-logs.data.service'
-import { PsReportLogsDownloadService } from './ps-report-logs.service'
+import { IPsReportLogFileData, PsReportLogsDataService } from './data-access/ps-report-logs.data.service'
+import { IPsReportLogFile, PsReportLogsDownloadService } from './ps-report-logs.service'
 
 
 describe('ps report logs service', () => {
@@ -7,7 +7,7 @@ describe('ps report logs service', () => {
     jest.restoreAllMocks()
   })
 
-  describe('getDownloadList', () => {
+  describe('getLogFoldersList', () => {
     test('it only returns containers that are prefixed with the correct name', async () => {
       const correctPrefix = 'ps-report-log-'
       const allContainers = [
@@ -48,6 +48,20 @@ describe('ps report logs service', () => {
     test('returns undefined when file specified does not exist', async () => {
       jest.spyOn(PsReportLogsDataService, 'getFileContents').mockResolvedValue(undefined)
       await expect(PsReportLogsDownloadService.downloadLogFile('some container', 'somefile')).resolves.toBe(undefined)
+    })
+  })
+
+  describe('getLogFolderFileList', () => {
+    test('raw file length sizes are converted to meaningful MB summaries', async () => {
+      const rawData: Array<IPsReportLogFileData> = [{
+        name: 'myfile.txt',
+        byteLength: 1048576
+      }]
+      jest.spyOn(PsReportLogsDataService, 'getContainerFileList').mockResolvedValue(rawData)
+      const entries = await PsReportLogsDownloadService.getLogFolderFileList('myContainer')
+      expect(entries).toHaveLength(1)
+      expect(entries[0].name).toStrictEqual(rawData[0].name)
+      expect(entries[0].size).toStrictEqual('1.0MB')
     })
   })
 })

@@ -18,10 +18,25 @@ export class PsReportLogsDownloadService {
     return PsReportLogsDataService.getFileContents(containerName, fileName)
   }
 
-  public static async getLogFolderFileList (containerName: string): Promise<Array<string>> {
+  public static async getLogFolderFileList (containerName: string): Promise<Array<IPsReportLogFile>> {
     if (containerName.length === 0) {
       throw new Error('containerName is required')
     }
-    return PsReportLogsDataService.getContainerFileList(containerName)
+    const data = await PsReportLogsDataService.getContainerFileList(containerName)
+    return data.map(d => {
+      return {
+        name: d.name,
+        size: this.convertBytesToMegabytes(d.byteLength)
+      }
+    })
   }
+
+  private static convertBytesToMegabytes (bytes: number) {
+    return ((bytes / 1024) / 1024).toFixed(1) + 'MB';
+  }
+}
+
+export interface IPsReportLogFile {
+  name: string,
+  size: string
 }
