@@ -5,7 +5,7 @@ export class PsReportLogsDownloadService {
   public static async getLogFoldersList (): Promise<Array<string>> {
     const containers = await PsReportLogsDataService.getContainerList()
     const hasCorrectPrefix = c => c.startsWith('ps-report-log-')
-    return R.filter(hasCorrectPrefix, containers)
+    return R.filter(hasCorrectPrefix, containers).sort().reverse()
   }
 
   public static async downloadLogFile (containerName: string, fileName: string): Promise<string | undefined> {
@@ -26,13 +26,17 @@ export class PsReportLogsDownloadService {
     return data.map(d => {
       return {
         name: d.name,
-        size: this.convertBytesToMegabytes(d.byteLength)
+        size: this.bytesToSize(d.byteLength)
       }
     })
   }
 
-  private static convertBytesToMegabytes (bytes: number) {
-    return ((bytes / 1024) / 1024).toFixed(1) + 'MB';
+  private static bytesToSize(bytes): string {
+    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB']
+    if (bytes == 0) return 'n/a'
+    const i = Math.floor(Math.log(bytes) / Math.log(1024))
+    if (i == 0) return bytes + ' ' + sizes[i]
+    return (bytes / Math.pow(1024, i)).toFixed(2) + sizes[i]
   }
 }
 

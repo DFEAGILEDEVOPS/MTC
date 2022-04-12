@@ -528,6 +528,7 @@ const controller = {
     try {
       const files = await psReportLogsDownloadService.getLogFolderFileList(req.params.folder)
       res.locals.pageTitle = 'PS Report Log Folder Files'
+      req.breadcrumbs('PS Report Logs', '/tech-support/ps-report-logs')
       req.breadcrumbs('PS Report Log Folder Files')
       res.render('tech-support/ps-report-log-folder', {
         breadcrumbs: req.breadcrumbs(),
