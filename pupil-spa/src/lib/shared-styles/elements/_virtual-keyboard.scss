@@ -1,6 +1,6 @@
 @import "./aa-variables.scss";
 
-@mixin customsize($size, $button-width, $button-preview-width, $button-height, $button-number-size, $button-text-size, $answer-width, $answer-height) {
+@mixin customsize($size, $button-width, $button-preview-width, $button-height, $button-number-size, $button-text-size, $question-width, $answer-width, $answer-height) {
 
   .copy-size-#{$size} .question-container {
     table {
@@ -24,7 +24,7 @@
     }
 
     .question {
-      min-width: $answer-width !important;
+      min-width: $question-width !important;
       height: $answer-height !important;
       line-height: $answer-height !important;
     }
@@ -95,6 +95,7 @@
   $aa-numpad-button-number-size-xsmall,
   $aa-numpad-button-text-size-xsmall,
   200px,
+  200px,
   50px
 );
 @include customsize(
@@ -104,6 +105,7 @@
   $aa-numpad-button-height-small,
   $aa-numpad-button-number-size-small,
   $aa-numpad-button-text-size-small,
+  230px,
   230px,
   70px
 );
@@ -115,6 +117,7 @@
   $aa-numpad-button-number-size-regular,
   $aa-numpad-button-text-size-regular,
   320px,
+  320px,
   100px
 );
 @include customsize(
@@ -124,6 +127,7 @@
   $aa-numpad-button-height-large,
   $aa-numpad-button-number-size-large,
   $aa-numpad-button-text-size-large,
+  320px,
   320px,
   100px
 );
@@ -135,6 +139,7 @@
   $aa-numpad-button-number-size-xlarge,
   $aa-numpad-button-text-size-xlarge,
   395px,
+  395px,
   120px
 );
 @include customsize(
@@ -144,6 +149,7 @@
   $aa-numpad-button-height-xxlarge,
   $aa-numpad-button-number-size-xxlarge,
   $aa-numpad-button-text-size-xxlarge,
+  677px,
   510px,
   150px
 );
