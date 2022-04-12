@@ -1,6 +1,7 @@
 import { IPsReportLogFileData, PsReportLogsDataService } from './data-access/ps-report-logs.data.service'
-import { IPsReportLogFile, PsReportLogsDownloadService } from './ps-report-logs.service'
+import { PsReportLogsDownloadService } from './ps-report-logs.service'
 
+const validContainerName = 'ps-report-log-20220412153502'
 
 describe('ps report logs service', () => {
   afterEach(() => {
@@ -52,22 +53,26 @@ describe('ps report logs service', () => {
 
   describe('downloadLogFile', () => {
     test('throws error if fileName is empty', async () => {
-      await expect(PsReportLogsDownloadService.downloadLogFile('container', '')).rejects.toThrow('fileName is required')
+      await expect(PsReportLogsDownloadService.downloadLogFile(validContainerName, '')).rejects.toThrow('fileName is required')
     })
 
     test('throws error if containerName is empty', async () => {
       await expect(PsReportLogsDownloadService.downloadLogFile('', 'fileName')).rejects.toThrow('containerName is required')
     })
 
+    test('only accepts container names that match correct format', async () => {
+      await expect(PsReportLogsDownloadService.downloadLogFile('bad-container-name', 'fileName.txt')).rejects.toThrow('incorrect container name format')
+    })
+
     test('returns file contents as string when exists', async () => {
       const mockFileContents = 'yada-yada-yada-yada-yada'
       jest.spyOn(PsReportLogsDataService, 'getFileContents').mockResolvedValue(mockFileContents)
-      await expect(PsReportLogsDownloadService.downloadLogFile('some container', 'somefile')).resolves.toBe(mockFileContents)
+      await expect(PsReportLogsDownloadService.downloadLogFile(validContainerName, 'somefile')).resolves.toBe(mockFileContents)
     })
 
     test('returns undefined when file specified does not exist', async () => {
       jest.spyOn(PsReportLogsDataService, 'getFileContents').mockResolvedValue(undefined)
-      await expect(PsReportLogsDownloadService.downloadLogFile('some container', 'somefile')).resolves.toBe(undefined)
+      await expect(PsReportLogsDownloadService.downloadLogFile(validContainerName, 'somefile')).resolves.toBe(undefined)
     })
   })
 

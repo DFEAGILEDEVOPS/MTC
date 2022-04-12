@@ -1,21 +1,16 @@
 import { PsReportLogsDataService } from './data-access/ps-report-logs.data.service'
 import * as R from 'ramda'
+import XRegExp from 'xregexp'
 
 export class PsReportLogsDownloadService {
+  private static logFolderPrefix = 'ps-report-log-'
+  private static textFileRegex: string = `[a-zA-Z0-9]*\.txt`
+  private static logContainerNameRegex: string = `${this.logFolderPrefix}[0-9]{14}$`
+
   public static async getLogFoldersList (): Promise<Array<string>> {
     const containers = await PsReportLogsDataService.getContainerList()
-    const hasCorrectPrefix = c => c.startsWith('ps-report-log-')
+    const hasCorrectPrefix = c => c.startsWith(this.logFolderPrefix)
     return R.filter(hasCorrectPrefix, containers).sort().reverse()
-  }
-
-  public static async downloadLogFile (containerName: string, fileName: string): Promise<string | undefined> {
-    if (fileName.length === 0) {
-      throw new Error('fileName is required')
-    }
-    if (containerName.length === 0) {
-      throw new Error('containerName is required')
-    }
-    return PsReportLogsDataService.getFileContents(containerName, fileName)
   }
 
   public static async getLogFolderFileList (containerName: string): Promise<Array<IPsReportLogFile>> {
@@ -29,6 +24,21 @@ export class PsReportLogsDownloadService {
         size: this.bytesToSize(d.byteLength)
       }
     })
+  }
+
+  public static async downloadLogFile (containerName: string, fileName: string): Promise<string | undefined> {
+    if (containerName.length === 0) {
+      throw new Error('containerName is required')
+    }
+
+    if (!XRegExp(this.logContainerNameRegex).test(containerName)) {
+      throw new Error('incorrect container name format')
+    }
+
+    if (fileName.length === 0) {
+      throw new Error('fileName is required')
+    }
+    return PsReportLogsDataService.getFileContents(containerName, fileName)
   }
 
   private static bytesToSize(bytes): string {

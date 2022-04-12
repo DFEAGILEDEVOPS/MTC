@@ -542,13 +542,13 @@ const controller = {
 
   getPsReportLogFileContents: async function getPsReportLogFileContents (req, res, next) {
     try {
-      const file = await psReportLogsDownloadService.downloadLogFile(req.params.folder, req.params.file)
+      const fileContents = await psReportLogsDownloadService.downloadLogFile(req.params.folder, req.params.file)
       res.set({
         'Content-Disposition': `attachment; filename="${req.params.file}"`,
         'Content-type': 'application/octet-stream',
-        'Content-Length': file.length
+        'Content-Length': fileContents.length
       })
-      res.send(file)
+      res.send(fileContents)
     } catch (error) {
       return next(error)
     }
