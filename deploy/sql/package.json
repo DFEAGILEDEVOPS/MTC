@@ -17,11 +17,11 @@
     "node": ">= 14"
   },
   "dependencies": {
-    "axios": "^0.21.1",
+    "axios": "^0.21.2",
     "command-line-args": "^5.1.1",
     "dotenv": "^8.2.0",
     "fast-csv": "^3.6.0",
-    "moment": "^2.24.0",
+    "moment": "^2.29.2",
     "mssql": "^6.0.1",
     "postgrator": "^3.11.0",
     "ramda": "^0.26.1",
