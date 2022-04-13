@@ -5,7 +5,7 @@ import XRegExp from 'xregexp'
 export class PsReportLogsDownloadService {
   private static logFolderPrefix = 'ps-report-log-'
   private static textFileRegex: string = `[a-zA-Z0-9]*\.txt`
-  private static logContainerNameRegex: string = `${this.logFolderPrefix}[0-9]{14}$`
+  private static logContainerNameRegex: string = `${PsReportLogsDownloadService.logFolderPrefix}[0-9]{14}$`
 
   public static async getLogFoldersList (): Promise<Array<string>> {
     const containers = await PsReportLogsDataService.getContainerList()
