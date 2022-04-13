@@ -17,6 +17,10 @@ export class PsReportLogsDownloadService {
     if (containerName.length === 0) {
       throw new Error('containerName is required')
     }
+    if (!XRegExp(this.logContainerNameRegex).test(containerName)) {
+      throw new Error('incorrect container name format')
+    }
+
     const data = await PsReportLogsDataService.getContainerFileList(containerName)
     return data.map(d => {
       return {
@@ -30,13 +34,14 @@ export class PsReportLogsDownloadService {
     if (containerName.length === 0) {
       throw new Error('containerName is required')
     }
-
     if (!XRegExp(this.logContainerNameRegex).test(containerName)) {
       throw new Error('incorrect container name format')
     }
-
     if (fileName.length === 0) {
       throw new Error('fileName is required')
+    }
+    if (!XRegExp(this.textFileRegex).test(fileName)) {
+      throw new Error('incorrect file name format')
     }
     return PsReportLogsDataService.getFileContents(containerName, fileName)
   }

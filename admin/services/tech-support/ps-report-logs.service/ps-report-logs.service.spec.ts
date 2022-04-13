@@ -57,22 +57,26 @@ describe('ps report logs service', () => {
     })
 
     test('throws error if containerName is empty', async () => {
-      await expect(PsReportLogsDownloadService.downloadLogFile('', 'fileName')).rejects.toThrow('containerName is required')
+      await expect(PsReportLogsDownloadService.downloadLogFile('', 'fileName.txt')).rejects.toThrow('containerName is required')
     })
 
     test('only accepts container names that match correct format', async () => {
       await expect(PsReportLogsDownloadService.downloadLogFile('bad-container-name', 'fileName.txt')).rejects.toThrow('incorrect container name format')
     })
 
+    test('only accepts file names that are txt', async () => {
+      await expect(PsReportLogsDownloadService.downloadLogFile(validContainerName, 'not-a-text-file.doc')).rejects.toThrow('incorrect file name format')
+    })
+
     test('returns file contents as string when exists', async () => {
       const mockFileContents = 'yada-yada-yada-yada-yada'
       jest.spyOn(PsReportLogsDataService, 'getFileContents').mockResolvedValue(mockFileContents)
-      await expect(PsReportLogsDownloadService.downloadLogFile(validContainerName, 'somefile')).resolves.toBe(mockFileContents)
+      await expect(PsReportLogsDownloadService.downloadLogFile(validContainerName, 'somefile.txt')).resolves.toBe(mockFileContents)
     })
 
     test('returns undefined when file specified does not exist', async () => {
       jest.spyOn(PsReportLogsDataService, 'getFileContents').mockResolvedValue(undefined)
-      await expect(PsReportLogsDownloadService.downloadLogFile(validContainerName, 'somefile')).resolves.toBe(undefined)
+      await expect(PsReportLogsDownloadService.downloadLogFile(validContainerName, 'somefile.txt')).resolves.toBe(undefined)
     })
   })
 
@@ -93,11 +97,15 @@ describe('ps report logs service', () => {
         }
     ]
       jest.spyOn(PsReportLogsDataService, 'getContainerFileList').mockResolvedValue(rawData)
-      const entries = await PsReportLogsDownloadService.getLogFolderFileList('myContainer')
+      const entries = await PsReportLogsDownloadService.getLogFolderFileList(validContainerName)
       expect(entries).toHaveLength(3)
       expect(entries[0].size).toStrictEqual('10.32KB')
       expect(entries[1].size).toStrictEqual('18.36MB')
       expect(entries[2].size).toStrictEqual('123 Bytes')
+    })
+
+    test('incorrectly formatted container names cause an error', async () => {
+      await expect(PsReportLogsDownloadService.getLogFolderFileList('some-sensitive-container')).rejects.toThrow('incorrect container name format')
     })
   })
 })
