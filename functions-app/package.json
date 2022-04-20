@@ -21,7 +21,7 @@
   },
   "dependencies": {
     "archiver": "^4.0.1",
-    "async": "^3.2.0",
+    "async": "^3.2.2",
     "azure-storage": "^2.10.3",
     "bluebird": "^3.7.2",
     "csv-string": "^3.1.8",
