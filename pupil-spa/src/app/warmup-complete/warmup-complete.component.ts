@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter, AfterViewInit, ElementRef, OnDestroy } from '@angular/core';
+import { Component, Output, EventEmitter, AfterViewInit, ElementRef, OnDestroy } from '@angular/core';
 
 import { AuditService } from '../services/audit/audit.service';
 import { WarmupCompleteRendered } from '../services/audit/auditEntry';
@@ -10,7 +10,7 @@ import { QuestionService } from '../services/question/question.service';
   templateUrl: './warmup-complete.component.html',
   styles: []
 })
-export class WarmupCompleteComponent implements OnInit, AfterViewInit, OnDestroy {
+export class WarmupCompleteComponent implements AfterViewInit, OnDestroy {
   private speechListenerEvent: any;
 
   /**
@@ -32,9 +32,6 @@ export class WarmupCompleteComponent implements OnInit, AfterViewInit, OnDestroy
     this.count = this.questionService.getNumberOfQuestions();
     const config = this.questionService.getConfig();
     this.shouldShowMore = config && config.practice && (config.fontSize || config.colourContrast);
-  }
-
-  ngOnInit() {
   }
 
   ngAfterViewInit() {
