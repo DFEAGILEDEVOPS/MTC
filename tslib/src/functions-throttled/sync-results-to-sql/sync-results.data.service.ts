@@ -269,13 +269,11 @@ export class SyncResultsDataService implements ISyncResultsDataService {
     params.push({
       name: 'userAgent',
       type: TYPES.NVarChar(4000),
-      // @ts-ignore eslint fails to recognise that the userAgent in the ternary condition will be a string
       value: (typeof userAgent) === 'string' ? userAgent.substr(0, 4000) : null
     })
     params.push({ name: 'ident', type: TYPES.NVarChar, value: deviceId })
     params.push({ name: 'checkCode', type: TYPES.UniqueIdentifier, value: validatedCheck.checkCode })
 
-    // tslint:disable:no-trailing-whitespace
     const sql = `
 
         DECLARE @userDeviceId INT;
@@ -470,7 +468,6 @@ export class SyncResultsDataService implements ISyncResultsDataService {
                 );
         END CATCH
     `
-    // tslint:enable:no-trailing-whitespace
     return { sql, params: params }
   }
 
