@@ -269,6 +269,7 @@ export class SyncResultsDataService implements ISyncResultsDataService {
     params.push({
       name: 'userAgent',
       type: TYPES.NVarChar(4000),
+      // @ts-ignore eslint fails to recognise that the userAgent in the ternary condition will be a string
       value: (typeof userAgent) === 'string' ? userAgent.substr(0, 4000) : null
     })
     params.push({ name: 'ident', type: TYPES.NVarChar, value: deviceId })
