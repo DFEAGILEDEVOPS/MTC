@@ -385,6 +385,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit, OnDestr
     if (this.timeout) {
       // console.log(`Clearing timeout: ${this.timeout}`);
       clearTimeout(this.timeout);
+      this.timeout = undefined;
     } else {
       // timeout didn't start so nothing to submit
       // console.log('timeout not available, returning false');
@@ -399,6 +400,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit, OnDestr
         isWarmup: this.isWarmUpQuestion
       }));
       clearInterval(this.countdownInterval);
+      this.countdownInterval = undefined;
     }
 
     this.addQuestionAnsweredEvent();

@@ -196,7 +196,7 @@ describe('QuestionComponent', () => {
   describe('#onSubmit', () => {
     it('stores the answer when submit is pressed', () => {
       component.answer = '9'
-      auditServiceSpy.calls.reset()
+      answerServiceSpy.calls.reset()
       component.onSubmit()
       expect(answerServiceSpy).toHaveBeenCalled()
     })

@@ -14,6 +14,12 @@ import { SpokenQuestionComponent } from './spoken-question.component';
 import { StorageService } from '../services/storage/storage.service';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
 
+function dispatchKeyEvent(keyboardDict) {
+  const event = new KeyboardEvent('keydown', keyboardDict);
+  event.initEvent('keydown', true, true);
+  document.dispatchEvent(event);
+  return event;
+}
 describe('SpokenQuestionComponent', () => {
   let component: SpokenQuestionComponent;
   let fixture: ComponentFixture<SpokenQuestionComponent>;
@@ -21,6 +27,8 @@ describe('SpokenQuestionComponent', () => {
   let answerServiceSpy: any;
   let registerInputService: RegisterInputService;
   let registerInputServiceSpy: any;
+  let auditService: AuditService;
+  let auditServiceSpy: any;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -41,16 +49,24 @@ describe('SpokenQuestionComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(SpokenQuestionComponent);
     component = fixture.componentInstance;
+    component.config.questionReader = true;
     component.soundComponent = new SoundComponentMock();
-    // Get a ref to services for easy spying
-    speechService = fixture.debugElement.injector.get(SpeechService);
+
     storageService = fixture.debugElement.injector.get(StorageService);
-    answerService = fixture.debugElement.injector.get(AnswerService);
+
+    speechService = fixture.debugElement.injector.get(SpeechService);
     // prevent SpeechServiceMock from calling 'end' by default
     spyOn(speechService, 'speakQuestion');
-    answerServiceSpy = spyOn(answerService, 'setAnswer');
+
+    answerService = fixture.debugElement.injector.get(AnswerService);
+    answerServiceSpy = spyOn(answerService, 'setAnswer').and.callThrough()
+
     registerInputService = fixture.debugElement.injector.get(RegisterInputService);
     registerInputServiceSpy = spyOn(registerInputService, 'storeEntry');
+
+    auditService = fixture.debugElement.injector.get(AuditService)
+    auditServiceSpy = spyOn(auditService, 'addEntry')
+
     fixture.detectChanges();
   });
 
@@ -84,13 +100,6 @@ describe('SpokenQuestionComponent', () => {
   });
 
   describe('handleKeyboardEvent', () => {
-    function dispatchKeyEvent(keyboardDict) {
-      const event = new KeyboardEvent('keydown', keyboardDict);
-      event.initEvent('keydown', true, true);
-      document.dispatchEvent(event);
-      return event;
-    }
-
     it('does not register key strokes after submission', () => {
       component.startTimer();
       dispatchKeyEvent({ key: '1' });
@@ -104,4 +113,48 @@ describe('SpokenQuestionComponent', () => {
       expect(component.answer).toBe('123');
     });
   });
+
+  describe('onSubmit', () => {
+    it('waits for the end of speech before moving to the pause screen', () => {
+      spyOn(speechService, 'waitForEndOfSpeech').and.callThrough()
+      component.config.questionReader = true;
+      // Add some input to cause the speech reader to do some work
+      component.startTimer();
+      dispatchKeyEvent({ key: '2' });
+      dispatchKeyEvent({ key: '2' });
+      dispatchKeyEvent({ key: '2' });
+
+      // Simulate pressing or clicking enter
+      component.onSubmit();
+
+      // Test that the component called the expected function
+      expect(speechService.waitForEndOfSpeech).toHaveBeenCalled()
+    })
+
+    it('stores the answer when submit is pressed', () => {
+      answerServiceSpy.calls.reset()
+      component.factor1 = 1
+      component.factor2 = 2
+      component.sequenceNumber = 3
+      component.startTimer()
+      dispatchKeyEvent({ key: '2' });
+      component.onSubmit()
+      expect(answerServiceSpy).toHaveBeenCalled()
+    })
+
+    it('stores the answer before it stores the QuestionAnswered Audit', () => {
+      auditServiceSpy.calls.reset()
+      component.startTimer()
+      dispatchKeyEvent({ key: '8' });
+      component.onSubmit()
+      const answerTimestamp = answerServiceSpy.calls.mostRecent().args[0].clientTimestamp
+      const auditArgs = auditServiceSpy.calls.allArgs()
+      const questionAnsweredArg = auditArgs.find(o => o[0].type === 'QuestionAnswered')
+      const questionAnsweredTimestamp = questionAnsweredArg[0].clientTimestamp
+      if (!questionAnsweredTimestamp || !answerTimestamp) {
+        fail('Missing timestamp')
+      }
+      expect(answerTimestamp.getTime()).toBeLessThanOrEqual(questionAnsweredTimestamp.getTime())
+    })
+  })
 });
