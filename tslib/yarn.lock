@@ -883,9 +883,9 @@
     "@types/node" "*"
 
 "@types/async@^3.2.7":
-  version "3.2.10"
-  resolved "https://registry.yarnpkg.com/@types/async/-/async-3.2.10.tgz#0d575eb2988398f754121aa19e3e08f9c5d5f11f"
-  integrity sha512-/bPr8eB1/00J14EGHrZiGqCal/zA0nE/8W1YCM3lGnUcfiWPW6liQwThgGzjt/3uIrYbLtLCPg3ZmpUe6YmFRw==
+  version "3.2.12"
+  resolved "https://registry.yarnpkg.com/@types/async/-/async-3.2.12.tgz#0ebbfaf3f249ffa0fdc50179b07705f69c90d70c"
+  integrity sha512-4i4w4tfNDo73BOjk0qHcB2YJ8A2SjITCrU4BTsgdJFTsVr6atPDXa0T9r0QZTrX3axtWwkqpZqF4B3gR0TqBGw==
 
 "@types/babel__core@^7.0.0", "@types/babel__core@^7.1.7":
   version "7.1.16"
@@ -1441,9 +1441,9 @@ async-listener@^0.6.0:
     shimmer "^1.1.0"
 
 async@^3.2.1:
-  version "3.2.2"
-  resolved "https://registry.yarnpkg.com/async/-/async-3.2.2.tgz#2eb7671034bb2194d45d30e31e24ec7e7f9670cd"
-  integrity sha512-H0E+qZaDEfx/FY4t7iLRv1W2fFI6+pyCeTw1uN20AQPiwqwM6ojPxHxdLv4z8hi2DtnW9BOckSspLucW7pIE5g==
+  version "3.2.3"
+  resolved "https://registry.yarnpkg.com/async/-/async-3.2.3.tgz#ac53dafd3f4720ee9e8a160628f18ea91df196c9"
+  integrity sha512-spZRyzKL5l5BZQrr/6m/SqFdBN0q3OCI0f9rjfBzCMBIP4p75P620rR3gTmaksNOhmzgdxcaxdNfMy6anrbM0g==
 
 asynckit@^0.4.0:
   version "0.4.0"

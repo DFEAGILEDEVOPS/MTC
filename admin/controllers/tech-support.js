@@ -10,6 +10,7 @@ const redisErrorMessages = require('../lib/errors/redis').redis
 const moment = require('moment')
 const queueMgmtService = require('../services/tech-support-queue-management.service')
 const resultsResyncService = require('../services/tech-support/sync-results-resync.service')
+const psReportLogsDownloadService = require('../services/tech-support/ps-report-logs.service/ps-report-logs.service').PsReportLogsDownloadService
 
 const controller = {
   /**
@@ -504,6 +505,50 @@ const controller = {
         },
         response: 'request sent to function API successfully'
       })
+    } catch (error) {
+      return next(error)
+    }
+  },
+
+  getPsReportFolders: async function getPsReportFolders (req, res, next) {
+    try {
+      const logs = await psReportLogsDownloadService.getLogFoldersList()
+      res.locals.pageTitle = 'PS Report Logs'
+      req.breadcrumbs('PS Report Logs')
+      res.render('tech-support/ps-report-logs', {
+        breadcrumbs: req.breadcrumbs(),
+        logs: logs
+      })
+    } catch (error) {
+      return next(error)
+    }
+  },
+
+  getPsReportFolderFileList: async function getPsReportFolderFileList (req, res, next) {
+    try {
+      const files = await psReportLogsDownloadService.getLogFolderFileList(req.params.folder)
+      res.locals.pageTitle = 'PS Report Log Folder Files'
+      req.breadcrumbs('PS Report Logs', '/tech-support/ps-report-logs')
+      req.breadcrumbs('PS Report Log Folder Files')
+      res.render('tech-support/ps-report-log-folder', {
+        breadcrumbs: req.breadcrumbs(),
+        files: files,
+        folder: req.params.folder
+      })
+    } catch (error) {
+      return next(error)
+    }
+  },
+
+  getPsReportLogFileContents: async function getPsReportLogFileContents (req, res, next) {
+    try {
+      const fileContents = await psReportLogsDownloadService.downloadLogFile(req.params.folder, req.params.file)
+      res.set({
+        'Content-Disposition': `attachment; filename="${req.params.file}"`,
+        'Content-type': 'application/octet-stream',
+        'Content-Length': fileContents.length
+      })
+      res.send(fileContents)
     } catch (error) {
       return next(error)
     }
