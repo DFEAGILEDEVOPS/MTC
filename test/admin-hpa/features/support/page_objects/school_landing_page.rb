@@ -44,9 +44,9 @@ class SchoolLandingPage < SitePrism::Page
   element :sign_out, 'a[href="/sign-out"]', text: 'Sign out'
   element :remove_impersonation, '.govuk-button-as-link', text: 'Remove impersonation'
 
-  section :service_message, '.govuk-warning-message' do
-    element :service_message_heading, '.govuk-heading-l'
-    element :service_message_text, '.mtc-service-message'
+  section :service_message, 'div[class^="mtc-notification-banner"]' do
+    element :service_message_heading, '#govuk-notification-banner-title'
+    element :service_message_text, '.govuk-notification-banner__content'
   end
 
   section :helpdesk_tools, '.app-related-items', text: 'Helpdesk Tools' do

@@ -1,10 +1,23 @@
-<% if (serviceMessage) { %>
-    <div class="govuk-body govuk-warning-message govuk-!-margin-bottom-7 govuk-!-margin-top-0">
-        <h2 class="govuk-heading-l">
-            <%= serviceMessage.title %>
+<% if (serviceMessage) {
+    let borderColour = 'mtc-notification-banner-blue'
+    if (serviceMessage.borderColourCode === 'G') {
+        borderColour = 'mtc-notification-banner-green'
+    } else if (serviceMessage.borderColourCode === 'R') {
+        borderColour = 'mtc-notification-banner-red'
+    } else if (serviceMessage.borderColourCode === 'O') {
+        borderColour = 'mtc-notification-banner-orange'
+    }
+    %>
+    <div class="<%= borderColour %>" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+      <div class="govuk-notification-banner__header">
+        <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+          <%= serviceMessage.title %>
         </h2>
-        <div class="mtc-service-message">
-            <%- serviceMessage.message %>
+      </div>
+      <div class="govuk-notification-banner__content">
+        <div class="govuk-notification-banner__heading">
+          <%- serviceMessage.message %>
         </div>
+      </div>
     </div>
-<% } %>
+  <% } %>
