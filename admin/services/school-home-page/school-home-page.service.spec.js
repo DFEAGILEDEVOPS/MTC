@@ -50,7 +50,7 @@ describe('school home page service', () => {
   })
 
   test('the service message is returned', async () => {
-    const mockMessage = { title: 'test', message: 'a test message' }
+    const mockMessage = { title: 'test', message: 'a test message', borderColourCode: 'R' }
     jest.spyOn(administrationMessageService, 'getMessage').mockResolvedValue(mockMessage)
     const data = await sut.getContent(user)
     expect(data.serviceMessage).toEqual(mockMessage)
