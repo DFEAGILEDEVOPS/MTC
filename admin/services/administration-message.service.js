@@ -16,6 +16,7 @@ const serviceMessageRedisKey = 'serviceMessage'
  * @typedef serviceMessage
  * @property message string
  * @property title string
+ * @property borderColourCode string
  * @property [id] number optional
  */
 
@@ -53,7 +54,7 @@ administrationMessageService.getMessage = async () => {
     return undefined // show the page at least, without the service message
   }
   const cleanMessage = sanitiseService.sanitise(html)
-  return { title: rawMessage.title, message: cleanMessage }
+  return { title: rawMessage.title, message: cleanMessage, borderColourCode: rawMessage.borderColourCode }
 }
 
 /**
@@ -66,10 +67,11 @@ administrationMessageService.setMessage = async (requestData, userId) => {
   if (!userId) {
     throw new Error('User id not found in session')
   }
-  const { serviceMessageTitle, serviceMessageContent } = requestData
+  const { serviceMessageTitle, serviceMessageContent, borderColourCode } = requestData
   const serviceMessageErrors = emptyFieldsValidator.validate([
     { fieldKey: 'serviceMessageTitle', fieldValue: serviceMessageTitle, errorMessage: serviceMessageErrorMessages.emptyServiceMessageTitle },
-    { fieldKey: 'serviceMessageContent', fieldValue: serviceMessageContent, errorMessage: serviceMessageErrorMessages.emptyServiceMessageContent }
+    { fieldKey: 'serviceMessageContent', fieldValue: serviceMessageContent, errorMessage: serviceMessageErrorMessages.emptyServiceMessageContent },
+    { fieldKey: 'borderColourCode', fieldValue: borderColourCode, errorMessage: serviceMessageErrorMessages.emptyServiceMessgeBorderColour }
   ])
   if (serviceMessageErrors.hasError()) {
     return serviceMessageErrors
@@ -94,6 +96,7 @@ administrationMessageService.prepareSubmissionData = (requestData, userId) => {
   if (requestData.id !== undefined) {
     serviceMessageData.id = requestData.id
   }
+  serviceMessageData.borderColourCode = requestData.borderColourCode
   return serviceMessageData
 }
 
