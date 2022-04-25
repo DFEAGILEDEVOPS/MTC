@@ -5,16 +5,16 @@ pool:
 
 steps:
 - task: AzureCLI@2
-  displayName: 'Add Build Server IPv4 Address to PreProd KeyVault'
+  displayName: 'Remove Build Server IPv4 Address from PreProd KeyVault'
   inputs:
     azureSubscription: $(PreProdServiceConnection)
     scriptType: bash
-    scriptPath: 'deploy/build-defs/add-key-vault-ip.sh'
+    scriptPath: 'deploy/build-defs/remove-key-vault-ip.sh'
     arguments: $(PreProdKeyVaultName) $(PreProdResourceGroup) $(IpAddress)
 - task: AzureCLI@2
-  displayName: 'Add Build Server IPv4 Address to Prod KeyVault'
+  displayName: 'Remove Build Server IPv4 Address from Prod KeyVault'
   inputs:
     azureSubscription: $(ProdServiceConnection)
     scriptType: bash
-    scriptPath: 'deploy/build-defs/add-key-vault-ip.sh'
+    scriptPath: 'deploy/build-defs/remove-key-vault-ip.sh'
     arguments: $(ProdKeyVaultName) $(ProdResourceGroup) $(IpAddress)
