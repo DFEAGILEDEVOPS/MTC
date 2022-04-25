@@ -23,3 +23,15 @@ KEY_VAULT_NAME=$1
 RES_GRP=$2
 IP_ADDRESS=$3
 az keyvault network-rule remove --name $KEY_VAULT_NAME --resource-group $RES_GRP --ip-address $IP_ADDRESS
+
+if [ -z "$4" ]
+then
+  exit 0
+
+az keyvault network-rule remove --name $KEY_VAULT_NAME --resource-group $RES_GRP --ip-address $4
+
+if [ -z "$5" ]
+then
+  exit 0
+
+az keyvault network-rule remove --name $KEY_VAULT_NAME --resource-group $RES_GRP --ip-address $5
