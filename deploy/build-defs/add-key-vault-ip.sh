@@ -27,11 +27,13 @@ az keyvault network-rule add --name $KEY_VAULT_NAME --resource-group $RES_GRP --
 if [ -z "$4" ]
 then
   exit 0
+fi
 
 az keyvault network-rule add --name $KEY_VAULT_NAME --resource-group $RES_GRP --ip-address $4
 
 if [ -z "$5" ]
 then
   exit 0
+fi
 
 az keyvault network-rule add --name $KEY_VAULT_NAME --resource-group $RES_GRP --ip-address $5
