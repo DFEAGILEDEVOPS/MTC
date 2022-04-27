@@ -2,28 +2,25 @@
 <main class="govuk-main-wrapper" id="main-content" role="main">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            <h1 class="govuk-heading-xl">Search organisations</h1>
+            <h1 class="govuk-heading-xl">Pupil Search</h1>
             <%- partial('partials/_gds_session_expiry') %>
             <%- partial('partials/_flash-messages') %>
             <%- partial('partials/_form-error', {
-                pageFields: ['q'],
-                error
-            }) %>
+              pageFields: ['q'],
+              error
+          }) %>
 
             <form action="" method="post">
                 <input type="hidden" name="_csrf" value="<%= csrftoken %>"/>
                 <div class="govuk-form-group">
                     <label class="govuk-label" for="q">
-                        Search
+                        Search by UPN
                     </label>
-                    <div id="q-hint" class="govuk-hint">
-                        Search for organisation using DfE number or URN
-                    </div>
                     <input class="govuk-input" id="q" name="q" type="input" spellcheck="false"
                            aria-describedby="q-hint" value="<%= query %>">
                 </div>
                 <button type="submit" id="search-btn" class="govuk-button">Search</button>
-                <a class="govuk-button govuk-button--secondary" href="/service-manager/organisations">Cancel</a>
+                <a class="govuk-button govuk-button--secondary" href="/service-manager/home">Cancel</a>
             </form>
         </div>
         <div class="govuk-grid-column-one-third" aria-label="sidebar">

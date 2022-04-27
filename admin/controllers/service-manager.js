@@ -581,6 +581,61 @@ const controller = {
     } catch (error) {
       next(error)
     }
+  },
+
+  /**
+ * @description Renders pupil search
+ * @param {object} req
+ * @param {object} res
+ * @param {object} next
+ * @param {object} validationError
+ */
+  getPupilSearch: async function getPupilSearch (req, res, next, validationError = new ValidationError()) {
+    res.locals.pageTitle = 'Pupil Search'
+    req.breadcrumbs(res.locals.pageTitle)
+
+    try {
+      const query = req.body.q ?? ''
+      res.render('service-manager/pupil-search', {
+        breadcrumbs: req.breadcrumbs(),
+        query,
+        error: validationError
+      })
+    } catch (error) {
+      return next(error)
+    }
+  },
+
+  /**
+ * @description Renders pupil search
+ * @param {object} req
+ * @param {object} res
+ * @param {object} next
+ */
+  postPupilSearch: async function postPupilSearch (req, res, next) {
+    const noPupilFound = (req, res, next, errorMsg = 'No pupil found') => {
+      const error = new ValidationError()
+      error.addError('q', errorMsg)
+      return controller.getPupilSearch(req, res, next, error)
+    }
+    try {
+      const query = req.body.q
+      if (query === undefined || query === '') {
+        return noPupilFound(req, res, next, 'No query provided')
+      }
+      let result
+      try {
+        result = await pupilService.searchByUpn(parseInt(req.body.q?.trim(), 10))
+      } catch (error) {
+        return noPupilFound(req, res, next)
+      }
+      if (!result || result.length === 0) {
+        return noPupilFound(req, res, next)
+      }
+      return res.redirect(`/service-manager/pupil-summary/${encodeURIComponent(result.urlSlug).toLowerCase()}`)
+    } catch (error) {
+      return next(error)
+    }
   }
 }
 
