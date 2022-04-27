@@ -9,4 +9,8 @@ describe('service manager pupil service', () => {
   test('subject should be defined', () => {
     expect(sut).toBeDefined()
   })
+
+  describe('findPupilByUpn', () => {
+    
+  })
 })
