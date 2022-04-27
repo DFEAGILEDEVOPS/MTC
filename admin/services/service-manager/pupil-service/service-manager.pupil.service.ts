@@ -13,6 +13,13 @@ export class ServiceManagerPupilService {
   }
 }
 
+export class BasicUpnValidator {
+  validate (upn: string): boolean {
+    return upn !== undefined && upn.length === 13
+    //TODO add regex for 13 chars or numbers only
+  }
+}
+
 export interface ServiceManagerPupilSearchResult {
   id: number
   firstName: string

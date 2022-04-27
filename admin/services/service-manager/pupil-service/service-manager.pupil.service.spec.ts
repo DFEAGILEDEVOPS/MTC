@@ -11,6 +11,10 @@ describe('service manager pupil service', () => {
   })
 
   describe('findPupilByUpn', () => {
-    
+
   })
+})
+
+describe('basic upn validator', () => {
+
 })
