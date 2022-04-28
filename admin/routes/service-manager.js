@@ -150,4 +150,8 @@ router.get('/pupil-search',
   isAuthenticated([roles.serviceManager]),
   serviceManagerController.getPupilSearch)
 
+router.post('/pupil-search',
+  isAuthenticated([roles.serviceManager]),
+  serviceManagerController.postPupilSearch)
+
 module.exports = router

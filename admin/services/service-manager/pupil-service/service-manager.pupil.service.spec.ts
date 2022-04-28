@@ -8,7 +8,8 @@ const validUpn = 'ThirteenChar5'
 describe('service manager pupil service', () => {
   beforeEach(() => {
     dataService = new ServiceManagerPupilDataService()
-    sut = ServiceManagerPupilService.createInstance(dataService)
+    sut = new ServiceManagerPupilService(dataService)
+    jest.restoreAllMocks()
   })
   test('subject should be defined', () => {
     expect(sut).toBeDefined()
@@ -32,7 +33,13 @@ describe('service manager pupil service', () => {
       await sut.findPupilByUpn(validUpn)
       expect(dataService.findPupilByUpn).toHaveBeenCalledTimes(1)
     })
-    test.todo('force uppercase after entry')
+
+    test('forces uppercase of UPN entry', async () => {
+      jest.spyOn(dataService, 'findPupilByUpn').mockImplementation()
+      await sut.findPupilByUpn(validUpn.toLowerCase())
+      expect(dataService.findPupilByUpn).toHaveBeenCalledWith(validUpn.toUpperCase())
+    })
+
     test.todo('maps raw data result correctly into search result')
   })
 })

@@ -16,6 +16,8 @@ const { formUtil, formUtilTypes } = require('../lib/form-util')
 const organisationBulkUploadService = require('../services/organisation-bulk-upload.service')
 const administrationMessageService = require('../services/administration-message.service')
 const { JobService } = require('../services/job-service/job.service')
+const { ServiceManagerPupilService } = require('../services/service-manager/pupil-service/service-manager.pupil.service')
+const serviceManagerPupilService = new ServiceManagerPupilService()
 
 const controller = {
 
@@ -613,7 +615,7 @@ const controller = {
  * @param {object} next
  */
   postPupilSearch: async function postPupilSearch (req, res, next) {
-    const noPupilFound = (req, res, next, errorMsg = 'No pupil found') => {
+    const pupilSearchErrorHandler = (req, res, next, errorMsg = 'No pupil found') => {
       const error = new ValidationError()
       error.addError('q', errorMsg)
       return controller.getPupilSearch(req, res, next, error)
@@ -621,18 +623,23 @@ const controller = {
     try {
       const query = req.body.q
       if (query === undefined || query === '') {
-        return noPupilFound(req, res, next, 'No query provided')
+        return pupilSearchErrorHandler(req, res, next, 'No query provided')
       }
       let result
       try {
-        result = await pupilService.searchByUpn(parseInt(req.body.q?.trim(), 10))
+        result = await serviceManagerPupilService.findPupilByUpn(query)
       } catch (error) {
-        return noPupilFound(req, res, next)
+        return pupilSearchErrorHandler(req, res, next, error.message)
       }
       if (!result || result.length === 0) {
-        return noPupilFound(req, res, next)
+        return pupilSearchErrorHandler(req, res, next)
       }
-      return res.redirect(`/service-manager/pupil-summary/${encodeURIComponent(result.urlSlug).toLowerCase()}`)
+      if (result.length === 1) {
+        return res.redirect(`/service-manager/pupil-summary/${encodeURIComponent(result[0].urlSlug).toLowerCase()}`)
+      } else {
+        // TODO more than one result not currently supported (unique index on UPN)
+        // return res.redirect('/service-manager/pupil-searc-results', )
+      }
     } catch (error) {
       return next(error)
     }

@@ -10,7 +10,8 @@ export class ServiceManagerPupilDataService implements IServiceManagerPupilDataS
   async findPupilByUpn (upn: string): Promise<any> {
     const sql = `
       SELECT p.foreName, p.lastName, p.dateOfBirth,
-        s.name as [schoolName], s.urn, s.dfeNumber
+        s.name as [schoolName], s.urn, s.dfeNumber,
+        p.urlSlug
       FROM mtc_admin.pupil p
       INNER JOIN mtc_admin.school s ON s.id = p.school_id
       WHERE upn = @upn`
