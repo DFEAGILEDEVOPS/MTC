@@ -1,6 +1,11 @@
-import { TYPES } from 'services/data-access/sql.service'
+import { TYPES } from '../../data-access/sql.service'
+const sqlService = require('../../data-access/sql.service')
 
-export class ServiceManagerPupilDataService {
+export interface IServiceManagerPupilDataService {
+  findPupilByUpn (upn: string): Promise<any>
+}
+
+export class ServiceManagerPupilDataService implements IServiceManagerPupilDataService {
 
   async findPupilByUpn (upn: string): Promise<any> {
     const sql = `
@@ -16,7 +21,6 @@ export class ServiceManagerPupilDataService {
         type: TYPES.NVarChar
       }
     ]
-    throw new Error('not implemented')
-    // TODO use sql.service
+    return await sqlService.readonlyQuery(sql, params)
   }
 }
