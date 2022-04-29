@@ -1,13 +1,9 @@
 import { TYPES } from '../../data-access/sql.service'
 const sqlService = require('../../data-access/sql.service')
 
-export interface IServiceManagerPupilDataService {
-  findPupilByUpn (upn: string): Promise<any>
-}
+export class ServiceManagerPupilDataService {
 
-export class ServiceManagerPupilDataService implements IServiceManagerPupilDataService {
-
-  async findPupilByUpn (upn: string): Promise<any> {
+  static async findPupilByUpn (upn: string): Promise<any> {
     const sql = `
       SELECT p.foreName, p.lastName, p.dateOfBirth,
         s.name as [schoolName], s.urn, s.dfeNumber,

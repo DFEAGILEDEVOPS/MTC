@@ -17,10 +17,8 @@ const organisationBulkUploadService = require('../services/organisation-bulk-upl
 const administrationMessageService = require('../services/administration-message.service')
 const { JobService } = require('../services/job-service/job.service')
 const { ServiceManagerPupilService } = require('../services/service-manager/pupil-service/service-manager.pupil.service')
-const serviceManagerPupilService = new ServiceManagerPupilService()
 
 const controller = {
-
   /**
    * Returns the service-manager (role) landing page
    * @param req
@@ -627,7 +625,7 @@ const controller = {
       }
       let result
       try {
-        result = await serviceManagerPupilService.findPupilByUpn(query)
+        result = await ServiceManagerPupilService.findPupilByUpn(query)
       } catch (error) {
         return pupilSearchErrorHandler(req, res, next, error.message)
       }
@@ -637,12 +635,16 @@ const controller = {
       if (result.length === 1) {
         return res.redirect(`/service-manager/pupil-summary/${encodeURIComponent(result[0].urlSlug).toLowerCase()}`)
       } else {
-        // TODO more than one result not currently supported (unique index on UPN)
-        // return res.redirect('/service-manager/pupil-searc-results', )
+        // multiple results to select from...
+        return res.redirect('/service-manager/pupil-search-results')
       }
     } catch (error) {
       return next(error)
     }
+  },
+
+  getPupilSummary: async function getPupilSummary (req, res, next) {
+    const pupilUrlSlug = req.params.slug
   }
 }
 
