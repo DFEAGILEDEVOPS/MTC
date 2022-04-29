@@ -11,7 +11,6 @@ export async function getInstance (logger?: ILogger): Promise<ConnectionPool> {
     logger = new ConsoleLogger()
   }
 
-  // tslint:disable-next-line: strict-type-predicates
   if (pool === undefined) {
     pool = new ConnectionPool(config.Sql)
     await pool.connect()

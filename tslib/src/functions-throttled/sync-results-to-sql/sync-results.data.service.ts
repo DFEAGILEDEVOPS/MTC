@@ -275,7 +275,6 @@ export class SyncResultsDataService implements ISyncResultsDataService {
     params.push({ name: 'ident', type: TYPES.NVarChar, value: deviceId })
     params.push({ name: 'checkCode', type: TYPES.UniqueIdentifier, value: validatedCheck.checkCode })
 
-    // tslint:disable:no-trailing-whitespace
     const sql = `
 
         DECLARE @userDeviceId INT;
@@ -470,7 +469,6 @@ export class SyncResultsDataService implements ISyncResultsDataService {
                 );
         END CATCH
     `
-    // tslint:enable:no-trailing-whitespace
     return { sql, params: params }
   }
 
