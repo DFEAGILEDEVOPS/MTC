@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, ViewChild, ElementRef } from '@angular/core';
 import { QuestionService } from '../services/question/question.service';
 
 @Component({
@@ -6,14 +6,11 @@ import { QuestionService } from '../services/question/question.service';
   templateUrl: './sound.component.html',
   styleUrls: ['./sound.component.scss']
 })
-export class SoundComponent implements OnInit {
+export class SoundComponent {
   @ViewChild('endOfQuestionSound', { static: true }) public endOfQuestionSound: ElementRef;
   @ViewChild('timeRunningOutAlertSound', { static: true }) public timeRunningOutAlertSound: ElementRef;
 
   constructor(private questionService: QuestionService) {
-  }
-
-  ngOnInit() {
   }
 
   playEndOfQuestionSound() {
