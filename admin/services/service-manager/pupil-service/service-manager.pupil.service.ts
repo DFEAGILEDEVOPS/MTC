@@ -1,6 +1,6 @@
-import moment from 'moment-timezone'
 import XRegExp from 'xregexp'
 import { ServiceManagerPupilDataService } from './service-manager.pupil.data.service'
+const dateTimeService = require('../../date.service')
 
 export class ServiceManagerPupilService {
 
@@ -20,7 +20,7 @@ export class ServiceManagerPupilService {
         id: r.id,
         firstName: r.foreName,
         lastName: r.lastName,
-        dateOfBirth: moment(r.dateOfBirth).toISOString(),
+        dateOfBirth: dateTimeService.formatShortGdsDate(r.dateOfBirth),
         schoolName: r.schoolName,
         schoolUrn: r.urn,
         dfeNumber: r.dfeNumber

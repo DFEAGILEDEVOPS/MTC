@@ -1,5 +1,5 @@
 <%- partial('partials/_gds_breadcrumbs_and_sign_out', { breadcrumbs }) %>
-<main class="govuk-main-wrapper" id="main-content" role="main">
+<main class="govuk-main-wrapper govuk-body" id="main-content" role="main">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <h1 class="govuk-heading-xl">Pupil Search</h1>
@@ -22,8 +22,27 @@
                 <button type="submit" id="search-btn" class="govuk-button">Search</button>
                 <a class="govuk-button govuk-button--secondary" href="/service-manager/home">Cancel</a>
             </form>
-            <% if (results) { %>
-              <div>we have results</div>
+            <% if (results && results.length > 0) { %>
+              <table class="govuk-spacious">
+                <thead>
+                  <th title="pupil name">Name</th>
+                  <th title="Date of Birth">Date of Birth</th>
+                  <th title="School Name">School</th>
+                  <th title="School URN">URN</th>
+                  <th title="School DfE Number">Dfe Number</th>
+                </thead>
+                <tbody class="govuk-body-s">
+                  <% for (let i = 0; i < results.length; i++) { %>
+                    <tr>
+                      <td><a href="/service-manager/pupil-summary/<%= encodeURIComponent(results[i].urlSlug) %>"><%= results[i].lastName %>, <%= results[i].firstName %></a></td>
+                      <td><%= results[i].dateOfBirth %></td>
+                      <td><%= results[i].schoolName %></td>
+                      <td><%= results[i].schoolUrn %></td>
+                      <td><%= results[i].dfeNumber %></td>
+                    </tr>
+                  <% } %>
+                </tbody>
+              </table>
             <% } %>
         </div>
         <div class="govuk-grid-column-one-third" aria-label="sidebar">
