@@ -22,6 +22,9 @@
                 <button type="submit" id="search-btn" class="govuk-button">Search</button>
                 <a class="govuk-button govuk-button--secondary" href="/service-manager/home">Cancel</a>
             </form>
+            <% if (results) { %>
+              <div>we have results</div>
+            <% } %>
         </div>
         <div class="govuk-grid-column-one-third" aria-label="sidebar">
             <aside class="app-related-items" role="complementary">

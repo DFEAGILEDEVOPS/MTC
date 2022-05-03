@@ -599,7 +599,8 @@ const controller = {
       res.render('service-manager/pupil-search', {
         breadcrumbs: req.breadcrumbs(),
         query,
-        error: validationError
+        error: validationError,
+        results: undefined
       })
     } catch (error) {
       return next(error)
@@ -623,20 +624,26 @@ const controller = {
       if (query === undefined || query === '') {
         return pupilSearchErrorHandler(req, res, next, 'No query provided')
       }
-      let result
+      let results
       try {
-        result = await ServiceManagerPupilService.findPupilByUpn(query)
+        results = await ServiceManagerPupilService.findPupilByUpn(query)
       } catch (error) {
         return pupilSearchErrorHandler(req, res, next, error.message)
       }
-      if (!result || result.length === 0) {
+      if (!results || results.length === 0) {
         return pupilSearchErrorHandler(req, res, next)
       }
-      if (result.length === 1) {
-        return res.redirect(`/service-manager/pupil-summary/${encodeURIComponent(result[0].urlSlug).toLowerCase()}`)
+      if (results.length === 1) {
+        return res.redirect(`/service-manager/pupil-summary/${encodeURIComponent(results[0].urlSlug).toLowerCase()}`)
       } else {
         // multiple results to select from...
-        return res.redirect('/service-manager/pupil-search-results')
+        res.locals.pageTitle = 'Pupil Search'
+        return res.render('service-manager/pupil-search', {
+          breadcrumbs: req.breadcrumbs(),
+          results: results,
+          query: query,
+          error: new ValidationError()
+        })
       }
     } catch (error) {
       return next(error)
@@ -644,7 +651,8 @@ const controller = {
   },
 
   getPupilSummary: async function getPupilSummary (req, res, next) {
-    const pupilUrlSlug = req.params.slug
+    // const pupilUrlSlug = req.params.slug
+    throw new Error('not implemented')
   }
 }
 
