@@ -33,6 +33,15 @@ const init = (app) => {
     }
   }))
 
+  // Permissions policy replaces feature policy.
+  app.use((req, res, next) => {
+    res.setHeader(
+      'Permissions-Policy',
+      'accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=(), interest-cohort=()'
+    )
+    next()
+  })
+
   // Sets request header "Strict-Transport-Security: max-age=31536000; includeSubDomains".
   const oneYearInSeconds = 31536000
   app.use(helmet.hsts({
