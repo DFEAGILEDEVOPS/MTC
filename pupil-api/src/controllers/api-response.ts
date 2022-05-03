@@ -1,4 +1,5 @@
 import { Response } from 'express'
+import { DefaultSecurityHeaders } from '../routes/default-security-headers'
 
 const apiResponse = {
   unauthorised: (res: Response): Response => {
@@ -22,9 +23,7 @@ const apiResponse = {
   },
 
   setDefaultHeaders: (res: Response): void => {
-    res.setHeader('X-Content-Type-Options', 'nosniff')
-    res.setHeader('Cache-Control', 'no-store')
-    res.setHeader('Pragma', 'no-cache')
+    DefaultSecurityHeaders.setResponseHeaders(res)
     res.setHeader('Content-Type', 'application/json')
   }
 }

@@ -1,5 +1,6 @@
 import { Request, Response } from 'express'
 import * as moment from 'moment'
+import { DefaultSecurityHeaders } from '../routes/default-security-headers'
 import { PingService } from '../services/ping.service'
 
 export class PingController {
@@ -25,6 +26,7 @@ export class PingController {
     }
 
     res.setHeader('Content-Type', 'application/json')
+    DefaultSecurityHeaders.setResponseHeaders(res)
     const obj = {
       Build: buildNumber,
       Commit: commitId,
