@@ -41,7 +41,14 @@ const attendanceService = {
    * @returns {Promise<*>}
    */
   getAttendanceCodes: async () => {
-    return attendanceCodeDataService.sqlFindAttendanceCodes()
+    const codes = await attendanceCodeDataService.sqlFindAttendanceCodes()
+    if (Array.isArray(codes) && codes.length > 0) {
+      const sorted = codes.sort((a, b) => {
+        return a.order - b.order
+      })
+      return sorted
+    }
+    return codes
   },
 
   /**
