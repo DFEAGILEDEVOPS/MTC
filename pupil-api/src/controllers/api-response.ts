@@ -1,27 +1,29 @@
 import { Response } from 'express'
+import { DefaultSecurityHeaders } from '../routes/default-security-headers'
 
 const apiResponse = {
-  unauthorised: (res: Response) => {
-    apiResponse.setJsonHeader(res)
+  unauthorised: (res: Response): Response => {
+    apiResponse.setDefaultHeaders(res)
     return res.status(401).json({ error: 'Unauthorised' })
   },
 
-  badRequest: (res: Response) => {
-    apiResponse.setJsonHeader(res)
+  badRequest: (res: Response): Response => {
+    apiResponse.setDefaultHeaders(res)
     return res.status(400).json({ error: 'Bad request' })
   },
 
-  serverError: (res: Response) => {
-    apiResponse.setJsonHeader(res)
+  serverError: (res: Response): Response => {
+    apiResponse.setDefaultHeaders(res)
     return res.status(500).json({ error: 'Server error' })
   },
 
-  sendJson: (res: Response, obj: object | string, code: number = 200) => {
-    apiResponse.setJsonHeader(res)
+  sendJson: (res: Response, obj: object | string, code: number = 200): Response => {
+    apiResponse.setDefaultHeaders(res)
     return res.status(code).json(obj)
   },
 
-  setJsonHeader: (res: Response) => {
+  setDefaultHeaders: (res: Response): void => {
+    DefaultSecurityHeaders.setResponseHeaders(res)
     res.setHeader('Content-Type', 'application/json')
   }
 }
