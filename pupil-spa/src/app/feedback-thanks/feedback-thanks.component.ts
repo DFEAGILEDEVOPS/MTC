@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, ElementRef, AfterViewInit, OnDestroy } from '@angular/core';
 import { SpeechService } from '../services/speech/speech.service';
 import { QuestionService } from '../services/question/question.service';
 
@@ -7,7 +7,7 @@ import { QuestionService } from '../services/question/question.service';
   templateUrl: './feedback-thanks.component.html',
   styleUrls: ['./feedback-thanks.component.scss']
 })
-export class FeedbackThanksComponent implements OnInit, AfterViewInit, OnDestroy {
+export class FeedbackThanksComponent implements AfterViewInit, OnDestroy {
 
   speechListenerEvent: any;
 
@@ -16,9 +16,6 @@ export class FeedbackThanksComponent implements OnInit, AfterViewInit, OnDestroy
     private questionService: QuestionService,
     private elRef: ElementRef
   ) { }
-
-  ngOnInit() {
-  }
 
   ngAfterViewInit() {
     if (this.questionService.getConfig().questionReader) {
