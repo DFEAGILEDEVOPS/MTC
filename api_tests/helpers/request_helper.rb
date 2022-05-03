@@ -18,6 +18,14 @@ class RequestHelper
 
   def spa_home
     fail 'Please check your URL it looks like it might be wrong for SPA' if BASE_URL.include? 'admin'
+    p BASE_URL
+    self.class.get(BASE_URL)
+  end
+
+  def api_home
+    fail 'Please check your URL it looks like it might be wrong for API' if BASE_URL.include? 'admin'
+    fail 'Please check your URL it looks like it might be wrong for API' if BASE_URL.include? 'pupil'
+    p BASE_URL
     self.class.get(BASE_URL)
   end
 
