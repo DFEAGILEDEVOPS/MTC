@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, OnDestroy, Output } from '@angular/core';
 
 import {
   QuestionIntroRendered,
@@ -14,7 +14,7 @@ import { CheckStartService } from '../services/check-start/check-start.service';
   templateUrl: './questions-intro.component.html',
   styleUrls: ['./questions-intro.component.scss']
 })
-export class QuestionsIntroComponent implements OnInit, AfterViewInit, OnDestroy {
+export class QuestionsIntroComponent implements AfterViewInit, OnDestroy {
 
   private speechListenerEvent: any;
 
@@ -35,9 +35,6 @@ export class QuestionsIntroComponent implements OnInit, AfterViewInit, OnDestroy
     private elRef: ElementRef
   ) {
     this.count = this.questionService.getNumberOfQuestions();
-  }
-
-  ngOnInit() {
   }
 
   ngAfterViewInit() {
