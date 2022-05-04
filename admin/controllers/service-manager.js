@@ -17,6 +17,7 @@ const organisationBulkUploadService = require('../services/organisation-bulk-upl
 const administrationMessageService = require('../services/administration-message.service')
 const { JobService } = require('../services/job-service/job.service')
 const { ServiceManagerPupilService } = require('../services/service-manager/pupil-service/service-manager.pupil.service')
+const { validate } = require('uuid')
 
 const controller = {
   /**
@@ -651,8 +652,20 @@ const controller = {
   },
 
   getPupilSummary: async function getPupilSummary (req, res, next) {
-    // const pupilUrlSlug = req.params.slug
-    throw new Error('not implemented')
+    const pupilUrlSlug = req.params.slug
+    if (!pupilUrlSlug) {
+      return res.redirect('/service-manager/pupil-search/')
+    }
+    if (!validate(pupilUrlSlug)) {
+      return next(new Error(`${pupilUrlSlug} is not a valid uuid`))
+    }
+    const pupilData = await ServiceManagerPupilService.getPupilByUrlSlug(pupilUrlSlug)
+    res.locals.pageTitle = 'Pupil Summary'
+    req.breadcrumbs(res.locals.pageTitle)
+    res.render('service-manager/pupil-summary', {
+      breadcrumbs: req.breadcrumbs(),
+      pupilData: pupilData
+    })
   }
 }
 

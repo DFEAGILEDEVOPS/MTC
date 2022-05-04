@@ -1,6 +1,7 @@
 import XRegExp from 'xregexp'
 import { ServiceManagerPupilDataService } from './service-manager.pupil.data.service'
 const dateTimeService = require('../../date.service')
+import { validate } from 'uuid'
 
 export class ServiceManagerPupilService {
 
@@ -26,6 +27,25 @@ export class ServiceManagerPupilService {
         dfeNumber: r.dfeNumber
       }
     })
+  }
+
+  static async getPupilByUrlSlug (urlSlug: string): Promise<ServiceManagerPupilSearchResult> {
+    if (!validate(urlSlug)) {
+      throw new Error(`${urlSlug} is not a valid UUID`)
+    }
+    const p = await ServiceManagerPupilDataService.getPupilByUrlSlug(urlSlug)
+    if (p.length === 0) return undefined
+
+    return {
+      dateOfBirth: p[0].dateOfBirth,
+      dfeNumber: p[0].dfeNumber,
+      firstName: p[0].foreName,
+      id: p[0].id,
+      lastName: p[0].lastName,
+      schoolName: p[0].schoolName,
+      schoolUrn: p[0].urn,
+      urlSlug: p[0].urlSlug
+    }
   }
 }
 
