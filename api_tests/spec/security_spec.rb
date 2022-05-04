@@ -67,7 +67,6 @@ describe 'Security API spec' do
       expect(response.headers['content-type']).to eql "application/json; charset=utf-8"
       expect(response.headers['cache-control']).to eql "no-store"
       expect(response.headers['pragma']).to eql "no-cache"
-      expect(response.headers['content-length']).to eql "89"
       expect(response.headers['connection']).to eql "close"
     end
   end
