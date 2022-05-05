@@ -664,7 +664,7 @@ const controller = {
     req.breadcrumbs(res.locals.pageTitle)
     res.render('service-manager/pupil-summary', {
       breadcrumbs: req.breadcrumbs(),
-      pupilData: pupilData
+      pupil: pupilData
     })
   }
 }

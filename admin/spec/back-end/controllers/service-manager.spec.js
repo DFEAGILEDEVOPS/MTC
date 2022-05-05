@@ -1255,7 +1255,7 @@ describe('service manager controller:', () => {
       await controller.getPupilSummary(req, res, next)
       expect(res.render).toHaveBeenCalledWith('service-manager/pupil-summary', {
         breadcrumbs: undefined,
-        pupilData: thePupilData
+        pupil: thePupilData
       })
     })
   })

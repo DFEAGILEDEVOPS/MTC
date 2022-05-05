@@ -24,12 +24,12 @@ export class ServiceManagerPupilDataService {
 
   static async getPupilByUrlSlug (urlSlug: string): Promise<PupilSearchResult[]> {
     const sql = `
-      SELECT p.foreName, p.lastName, p.dateOfBirth,
+      SELECT p.id, p.foreName, p.lastName, p.dateOfBirth,
         s.name as [schoolName], s.urn, s.dfeNumber,
         p.urlSlug
       FROM mtc_admin.pupil p
       INNER JOIN mtc_admin.school s ON s.id = p.school_id
-      WHERE urlSlug = @urlSlug`
+      WHERE p.urlSlug = @urlSlug`
     const params = [
       {
         name: 'urlSlug',
