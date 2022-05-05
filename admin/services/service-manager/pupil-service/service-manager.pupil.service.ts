@@ -25,7 +25,8 @@ export class ServiceManagerPupilService {
         dateOfBirth: dateService.formatShortGdsDate(r.dateOfBirth),
         schoolName: r.schoolName,
         schoolUrn: r.urn,
-        dfeNumber: r.dfeNumber
+        dfeNumber: r.dfeNumber,
+        upn: r.upn
       }
     })
   }
@@ -45,7 +46,8 @@ export class ServiceManagerPupilService {
       lastName: p[0].lastName,
       schoolName: p[0].schoolName,
       schoolUrn: p[0].urn,
-      urlSlug: p[0].urlSlug
+      urlSlug: p[0].urlSlug,
+      upn: p[0].upn
     }
   }
 }
@@ -59,4 +61,5 @@ export interface ServiceManagerPupilSearchResult {
   schoolName: string
   schoolUrn: number
   dfeNumber: number
+  upn: string
 }

@@ -44,7 +44,8 @@ describe('service manager pupil service', () => {
         dateOfBirth: moment('2021-10-04T15:23'),
         schoolName: 'school name',
         urn: 123456,
-        dfeNumber: 4994494
+        dfeNumber: 4994494,
+        upn: 'N999199900001'
       }
       jest.spyOn(ServiceManagerPupilDataService, 'findPupilByUpn').mockResolvedValue([expected])
       const actual = await ServiceManagerPupilService.findPupilByUpn(validUpn)
@@ -55,6 +56,7 @@ describe('service manager pupil service', () => {
       expect(actual[0].schoolName).toStrictEqual(expected.schoolName)
       expect(actual[0].urlSlug).toStrictEqual(expected.urlSlug)
       expect(actual[0].id).toStrictEqual(expected.id)
+      expect(actual[0].upn).toStrictEqual(expected.upn)
     })
   })
 
@@ -79,7 +81,8 @@ describe('service manager pupil service', () => {
         dateOfBirth: moment('2021-10-04T15:23'),
         schoolName: 'school name',
         urn: 123456,
-        dfeNumber: 4994494
+        dfeNumber: 4994494,
+        upn: 'N999199900001'
       }
       jest.spyOn(ServiceManagerPupilDataService, 'getPupilByUrlSlug').mockResolvedValue([expected])
       const actual = await ServiceManagerPupilService.getPupilByUrlSlug('455cc6b4-a688-469a-ab72-9c7e137a1ea8')
@@ -90,6 +93,7 @@ describe('service manager pupil service', () => {
       expect(actual.schoolName).toStrictEqual(expected.schoolName)
       expect(actual.urlSlug).toStrictEqual(expected.urlSlug)
       expect(actual.id).toStrictEqual(expected.id)
+      expect(actual.upn).toStrictEqual(expected.upn)
     })
   })
 })

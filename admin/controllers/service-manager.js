@@ -661,6 +661,7 @@ const controller = {
     }
     const pupilData = await ServiceManagerPupilService.getPupilByUrlSlug(pupilUrlSlug)
     res.locals.pageTitle = 'Pupil Summary'
+    req.breadcrumbs('Pupil Search', '/service-manager/pupil-search')
     req.breadcrumbs(res.locals.pageTitle)
     res.render('service-manager/pupil-summary', {
       breadcrumbs: req.breadcrumbs(),
