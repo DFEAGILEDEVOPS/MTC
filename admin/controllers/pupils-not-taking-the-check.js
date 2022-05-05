@@ -55,7 +55,6 @@ const getSelectPupilNotTakingCheck = async function getSelectPupilNotTakingCheck
   req.breadcrumbs(res.locals.pageTitle)
 
   let attendanceCodes
-  let attendanceCodesPresentationData
   let pupilsList
   let groups = []
   const groupIds = req.params.groupIds || ''
