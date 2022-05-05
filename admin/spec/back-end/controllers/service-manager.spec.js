@@ -18,6 +18,7 @@ const auditOperationTypes = require('../../../lib/consts/audit-entry-types')
 const { JobService } = require('../../../services/job-service/job.service')
 const { ServiceManagerPupilDataService } = require('../../../services/service-manager/pupil-service/service-manager.pupil.data.service')
 const { ServiceManagerPupilService } = require('../../../services/service-manager/pupil-service/service-manager.pupil.service')
+const moment = require('moment-timezone')
 
 describe('service manager controller:', () => {
   let next
@@ -1154,7 +1155,7 @@ describe('service manager controller:', () => {
         id: 1,
         firstName: 'string',
         lastName: 'string',
-        dateOfBirth: '1999-12-30',
+        dateOfBirth: moment('1999-12-30'),
         schoolName: 'string',
         schoolUrn: 12345,
         dfeNumber: 65794
@@ -1175,7 +1176,7 @@ describe('service manager controller:', () => {
           id: 1,
           firstName: 'string',
           lastName: 'string',
-          dateOfBirth: '1999-12-30',
+          dateOfBirth: moment('1999-12-30'),
           schoolName: 'string',
           schoolUrn: 12345,
           dfeNumber: 65794
@@ -1185,7 +1186,7 @@ describe('service manager controller:', () => {
           id: 2,
           firstName: 'string',
           lastName: 'string',
-          dateOfBirth: '1999-12-30',
+          dateOfBirth: moment('1999-12-30'),
           schoolName: 'string',
           schoolUrn: 12345,
           dfeNumber: 65794

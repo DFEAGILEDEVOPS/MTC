@@ -1,7 +1,8 @@
 import XRegExp from 'xregexp'
 import { ServiceManagerPupilDataService } from './service-manager.pupil.data.service'
-const dateTimeService = require('../../date.service')
+const dateService = require('../../date.service')
 import { validate } from 'uuid'
+import moment from 'moment'
 
 export class ServiceManagerPupilService {
 
@@ -21,7 +22,7 @@ export class ServiceManagerPupilService {
         id: r.id,
         firstName: r.foreName,
         lastName: r.lastName,
-        dateOfBirth: dateTimeService.formatShortGdsDate(r.dateOfBirth),
+        dateOfBirth: dateService.formatShortGdsDate(r.dateOfBirth),
         schoolName: r.schoolName,
         schoolUrn: r.urn,
         dfeNumber: r.dfeNumber
@@ -37,7 +38,7 @@ export class ServiceManagerPupilService {
     if (p.length === 0) return undefined
 
     return {
-      dateOfBirth: p[0].dateOfBirth,
+      dateOfBirth: dateService.formatShortGdsDate(moment(p[0].dateOfBirth)),
       dfeNumber: p[0].dfeNumber,
       firstName: p[0].foreName,
       id: p[0].id,

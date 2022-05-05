@@ -1,6 +1,7 @@
 import { ServiceManagerPupilService } from './service-manager.pupil.service'
 import { PupilSearchResult, ServiceManagerPupilDataService } from './service-manager.pupil.data.service'
-const dateTimeService = require('../../date.service')
+import moment from 'moment-timezone'
+const dateService = require('../../date.service')
 
 const validUpn = 'ThirteenChar5'
 
@@ -40,14 +41,14 @@ describe('service manager pupil service', () => {
         urlSlug: 'urlSlug',
         foreName: 'forename',
         lastName: 'lastname',
-        dateOfBirth: '2021-10-04 15:23',
+        dateOfBirth: moment('2021-10-04T15:23'),
         schoolName: 'school name',
         urn: 123456,
         dfeNumber: 4994494
       }
       jest.spyOn(ServiceManagerPupilDataService, 'findPupilByUpn').mockResolvedValue([expected])
       const actual = await ServiceManagerPupilService.findPupilByUpn(validUpn)
-      expect(actual[0].dateOfBirth).toStrictEqual(dateTimeService.formatShortGdsDate(expected.dateOfBirth))
+      expect(actual[0].dateOfBirth).toStrictEqual(dateService.formatShortGdsDate(expected.dateOfBirth))
       expect(actual[0].dfeNumber).toStrictEqual(expected.dfeNumber)
       expect(actual[0].firstName).toStrictEqual(expected.foreName)
       expect(actual[0].lastName).toStrictEqual(expected.lastName)
@@ -75,14 +76,14 @@ describe('service manager pupil service', () => {
         urlSlug: 'urlSlug',
         foreName: 'forename',
         lastName: 'lastname',
-        dateOfBirth: '2021-10-04 15:23',
+        dateOfBirth: moment('2021-10-04T15:23'),
         schoolName: 'school name',
         urn: 123456,
         dfeNumber: 4994494
       }
       jest.spyOn(ServiceManagerPupilDataService, 'getPupilByUrlSlug').mockResolvedValue([expected])
       const actual = await ServiceManagerPupilService.getPupilByUrlSlug('455cc6b4-a688-469a-ab72-9c7e137a1ea8')
-      expect(actual.dateOfBirth).toStrictEqual(dateTimeService.formatShortGdsDate(expected.dateOfBirth))
+      expect(actual.dateOfBirth).toStrictEqual(dateService.formatShortGdsDate(expected.dateOfBirth))
       expect(actual.dfeNumber).toStrictEqual(expected.dfeNumber)
       expect(actual.firstName).toStrictEqual(expected.foreName)
       expect(actual.lastName).toStrictEqual(expected.lastName)

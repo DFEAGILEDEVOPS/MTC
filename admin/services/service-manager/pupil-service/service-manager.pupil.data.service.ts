@@ -1,3 +1,4 @@
+import { Moment } from 'moment-timezone'
 import { TYPES } from '../../data-access/sql.service'
 const sqlService = require('../../data-access/sql.service')
 
@@ -45,7 +46,7 @@ export interface PupilSearchResult {
   urlSlug: string
   foreName: string
   lastName: string
-  dateOfBirth: string
+  dateOfBirth: Moment
   schoolName: string
   urn: number
   dfeNumber: number
