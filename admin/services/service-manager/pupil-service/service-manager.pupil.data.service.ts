@@ -1,4 +1,4 @@
-import { Moment } from 'moment-timezone'
+import moment, { Moment } from 'moment-timezone'
 import { TYPES } from '../../data-access/sql.service'
 const sqlService = require('../../data-access/sql.service')
 
@@ -39,6 +39,44 @@ export class ServiceManagerPupilDataService {
     ]
     return await sqlService.readonlyQuery(sql, params)
   }
+
+  static async getPupilStatusData (pupilId: number): Promise<PupilStatusData> {
+    const sql = `
+      SELECT *
+      FROM mtc_admin.vewPupilStatus
+      WHERE pupilId=@pupilId`
+  const params = [
+    {
+      name: 'pupilId',
+      value: pupilId,
+      type: TYPES.Int
+    }
+  ]
+  return await sqlService.readonlyQuery(sql, params)
+  }
+}
+
+export interface PupilStatusData {
+  id: number
+  foreName: string
+  lastName: string
+  middleNames: string
+  dateOfBirth: Moment
+  group_id: number
+  urlSlug: string
+  school_id: number
+  reason: string
+  reasonCode: string
+  attendanceId: number
+  pupilCheckComplete: boolean
+  currentCheckId: number
+  pupilId: number
+  restartAvailable: boolean
+  checkReceived: boolean
+  checkComplete: boolean
+  processingFailed: boolean
+  pupilLoginDate: Moment
+  pinExpiresAt: Moment
 }
 
 export interface PupilSearchResult {

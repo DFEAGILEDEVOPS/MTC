@@ -96,4 +96,9 @@ describe('service manager pupil service', () => {
       expect(actual.upn).toStrictEqual(expected.upn)
     })
   })
+
+  describe('getPupilStatus', () => {
+    test.todo('should return valid status when pupil found')
+    test.todo('should return empty string when pupil not found')
+  })
 })

@@ -141,7 +141,8 @@
   "standard": {
     "ignore": [
       "assets/javascripts/jquery-3.5.1.js",
-      "assets/vendor-js/*"
+      "assets/vendor-js/*",
+      "**/*.ts"
     ]
   },
   "jest": {

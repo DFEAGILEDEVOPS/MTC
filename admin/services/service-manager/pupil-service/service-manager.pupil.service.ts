@@ -50,6 +50,10 @@ export class ServiceManagerPupilService {
       upn: p[0].upn
     }
   }
+
+  static async getPupilStatus (pupilId: number): Promise<string> {
+    throw new Error('not implemented')
+  }
 }
 
 export interface ServiceManagerPupilSearchResult {
