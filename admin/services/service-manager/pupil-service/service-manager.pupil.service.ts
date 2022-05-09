@@ -3,6 +3,9 @@ import { ServiceManagerPupilDataService } from './service-manager.pupil.data.ser
 const dateService = require('../../date.service')
 import { validate } from 'uuid'
 import moment from 'moment'
+import R from 'ramda'
+const settingService = require('../../setting.service')
+const pupilStatusService = require('../../pupil-status.service')
 
 export class ServiceManagerPupilService {
 
@@ -31,12 +34,14 @@ export class ServiceManagerPupilService {
     })
   }
 
-  static async getPupilByUrlSlug (urlSlug: string): Promise<ServiceManagerPupilSearchResult> {
+  static async getPupilDetailsByUrlSlug (urlSlug: string): Promise<ServiceManagerPupilDetails> {
     if (!validate(urlSlug)) {
       throw new Error(`${urlSlug} is not a valid UUID`)
     }
     const p = await ServiceManagerPupilDataService.getPupilByUrlSlug(urlSlug)
     if (p.length === 0) return undefined
+
+    const status = await this.getPupilStatus(p[0].id)
 
     return {
       dateOfBirth: dateService.formatShortGdsDate(moment(p[0].dateOfBirth)),
@@ -47,12 +52,17 @@ export class ServiceManagerPupilService {
       schoolName: p[0].schoolName,
       schoolUrn: p[0].urn,
       urlSlug: p[0].urlSlug,
-      upn: p[0].upn
+      upn: p[0].upn,
+      attendance: p[0].attendanceReason ?? '',
+      status: status
     }
   }
 
-  static async getPupilStatus (pupilId: number): Promise<string> {
-    throw new Error('not implemented')
+  private static async getPupilStatus (pupilId: number): Promise<any> {
+    const pupilData = await ServiceManagerPupilDataService.getPupilStatusData(pupilId)
+    const settingData = await settingService.get()
+    const pupilStatus = pupilStatusService.addStatus(settingData, pupilData)
+    return pupilStatus.status
   }
 }
 
@@ -66,4 +76,18 @@ export interface ServiceManagerPupilSearchResult {
   schoolUrn: number
   dfeNumber: number
   upn: string
+}
+
+export interface ServiceManagerPupilDetails {
+  urlSlug: string
+  id: number
+  firstName: string
+  lastName: string
+  dateOfBirth: string
+  schoolName: string
+  schoolUrn: number
+  dfeNumber: number
+  upn: string
+  attendance: string
+  status: string
 }

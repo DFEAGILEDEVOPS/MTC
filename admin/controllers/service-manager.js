@@ -659,7 +659,7 @@ const controller = {
     if (!validate(pupilUrlSlug)) {
       return next(new Error(`${pupilUrlSlug} is not a valid uuid`))
     }
-    const pupilData = await ServiceManagerPupilService.getPupilByUrlSlug(pupilUrlSlug)
+    const pupilData = await ServiceManagerPupilService.getPupilDetailsByUrlSlug(pupilUrlSlug)
     res.locals.pageTitle = 'Pupil Summary'
     req.breadcrumbs('Pupil Search', '/service-manager/pupil-search')
     req.breadcrumbs(res.locals.pageTitle)

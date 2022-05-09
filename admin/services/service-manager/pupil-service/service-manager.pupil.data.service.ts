@@ -19,16 +19,17 @@ export class ServiceManagerPupilDataService {
         type: TYPES.NVarChar
       }
     ]
-    return await sqlService.readonlyQuery(sql, params)
+    return sqlService.readonlyQuery(sql, params)
   }
 
   static async getPupilByUrlSlug (urlSlug: string): Promise<PupilSearchResult[]> {
     const sql = `
       SELECT p.id, p.foreName, p.lastName, p.dateOfBirth,
         s.name as [schoolName], s.urn, s.dfeNumber,
-        p.urlSlug, p.upn
+        p.urlSlug, p.upn, ac.reason as [attendanceReason]
       FROM mtc_admin.pupil p
       INNER JOIN mtc_admin.school s ON s.id = p.school_id
+      LEFT OUTER JOIN mtc_admin.attendanceCode ac ON ac.id = p.attendanceId
       WHERE p.urlSlug = @urlSlug`
     const params = [
       {
@@ -37,10 +38,10 @@ export class ServiceManagerPupilDataService {
         type: TYPES.NVarChar
       }
     ]
-    return await sqlService.readonlyQuery(sql, params)
+    return sqlService.readonlyQuery(sql, params)
   }
 
-  static async getPupilStatusData (pupilId: number): Promise<PupilStatusData> {
+  static async getPupilStatusData (pupilId: number): Promise<PupilStatusData[]> {
     const sql = `
       SELECT *
       FROM mtc_admin.vewPupilStatus
@@ -52,7 +53,7 @@ export class ServiceManagerPupilDataService {
       type: TYPES.Int
     }
   ]
-  return await sqlService.readonlyQuery(sql, params)
+  return sqlService.readonlyQuery(sql, params)
   }
 }
 
@@ -89,4 +90,5 @@ export interface PupilSearchResult {
   urn: number
   dfeNumber: number
   upn: string
+  attendanceReason?: string
 }

@@ -1,6 +1,7 @@
-import { ServiceManagerPupilService } from './service-manager.pupil.service'
-import { PupilSearchResult, ServiceManagerPupilDataService } from './service-manager.pupil.data.service'
+import { ServiceManagerPupilDetails, ServiceManagerPupilService } from './service-manager.pupil.service'
+import { PupilSearchResult, PupilStatusData, ServiceManagerPupilDataService } from './service-manager.pupil.data.service'
 import moment from 'moment-timezone'
+const settingService = require('../../setting.service')
 const dateService = require('../../date.service')
 
 const validUpn = 'ThirteenChar5'
@@ -60,15 +61,48 @@ describe('service manager pupil service', () => {
     })
   })
 
-  describe('getPupilByUrlSlug', () => {
+  describe('getPupilDetailsByUrlSlug', () => {
+    let mockPupilDetailsData: PupilStatusData
+    beforeEach(() => {
+      mockPupilDetailsData = {
+        id: 3,
+        foreName: 'Davenport',
+        lastName: 'Mendoza',
+        middleNames: 'Yellow',
+        dateOfBirth: moment('2012-09-05T00:00:00Z'),
+        group_id: null,
+        urlSlug: 'FC34AD5D-3A44-448B-8EA1-24C0D7A3EB24',
+        school_id: 2,
+        reason: null,
+        reasonCode: null,
+        attendanceId: null,
+        pupilCheckComplete: false,
+        currentCheckId: null,
+        pupilId: 3,
+        restartAvailable: false,
+        checkReceived: null,
+        checkComplete: null,
+        processingFailed: null,
+        pupilLoginDate: null,
+        pinExpiresAt: null
+      }
+      jest.spyOn(ServiceManagerPupilDataService, 'getPupilStatusData').mockResolvedValue([mockPupilDetailsData])
+      jest.spyOn(settingService, 'get').mockResolvedValue(
+        {
+          loadingTimeLimit: 3,
+          questionTimeLimit: 6,
+          checkTimeLimit: 30
+      })
+    })
+
     test('validates the url slug as uuid', async () => {
       const invalidUuid = 'invalid-uuid-value'
-      await expect(ServiceManagerPupilService.getPupilByUrlSlug(invalidUuid)).rejects.toThrow(`${invalidUuid} is not a valid UUID`)
+      await expect(ServiceManagerPupilService.getPupilDetailsByUrlSlug(invalidUuid)).rejects.toThrow(`${invalidUuid} is not a valid UUID`)
     })
 
     test('returns undefined if nothing found', async () => {
       jest.spyOn(ServiceManagerPupilDataService, 'getPupilByUrlSlug').mockResolvedValue([])
-      await expect(ServiceManagerPupilService.getPupilByUrlSlug('455cc6b4-a688-469a-ab72-9c7e137a1ea8'))
+      await expect(ServiceManagerPupilService.getPupilDetailsByUrlSlug('455cc6b4-a688-469a-ab72-9c7e137a1ea8'))
         .resolves.toBeUndefined()
     })
 
@@ -82,10 +116,11 @@ describe('service manager pupil service', () => {
         schoolName: 'school name',
         urn: 123456,
         dfeNumber: 4994494,
-        upn: 'N999199900001'
+        upn: 'N999199900001',
+        attendanceReason: 'the-attendance'
       }
       jest.spyOn(ServiceManagerPupilDataService, 'getPupilByUrlSlug').mockResolvedValue([expected])
-      const actual = await ServiceManagerPupilService.getPupilByUrlSlug('455cc6b4-a688-469a-ab72-9c7e137a1ea8')
+      const actual = await ServiceManagerPupilService.getPupilDetailsByUrlSlug('455cc6b4-a688-469a-ab72-9c7e137a1ea8')
       expect(actual.dateOfBirth).toStrictEqual(dateService.formatShortGdsDate(expected.dateOfBirth))
       expect(actual.dfeNumber).toStrictEqual(expected.dfeNumber)
       expect(actual.firstName).toStrictEqual(expected.foreName)
@@ -94,11 +129,43 @@ describe('service manager pupil service', () => {
       expect(actual.urlSlug).toStrictEqual(expected.urlSlug)
       expect(actual.id).toStrictEqual(expected.id)
       expect(actual.upn).toStrictEqual(expected.upn)
+      expect(actual.attendance).toStrictEqual(expected.attendanceReason)
     })
-  })
 
-  describe('getPupilStatus', () => {
-    test.todo('should return valid status when pupil found')
-    test.todo('should return empty string when pupil not found')
+    test('when no attendance set, returns empty string', async () => {
+      const expected: PupilSearchResult = {
+        id: 123,
+        urlSlug: 'urlSlug',
+        foreName: 'forename',
+        lastName: 'lastname',
+        dateOfBirth: moment('2021-10-04T15:23'),
+        schoolName: 'school name',
+        urn: 123456,
+        dfeNumber: 4994494,
+        upn: 'N999199900001',
+        attendanceReason: undefined
+      }
+      jest.spyOn(ServiceManagerPupilDataService, 'getPupilByUrlSlug').mockResolvedValue([expected])
+      const actual = await ServiceManagerPupilService.getPupilDetailsByUrlSlug('455cc6b4-a688-469a-ab72-9c7e137a1ea8')
+      expect(actual.attendance).toStrictEqual('')
+    })
+
+    test('should return valid status when pupil found', async () => {
+      const expected: PupilSearchResult = {
+        id: 123,
+        urlSlug: 'urlSlug',
+        foreName: 'forename',
+        lastName: 'lastname',
+        dateOfBirth: moment('2021-10-04T15:23'),
+        schoolName: 'school name',
+        urn: 123456,
+        dfeNumber: 4994494,
+        upn: 'N999199900001',
+        attendanceReason: undefined
+      }
+      jest.spyOn(ServiceManagerPupilDataService, 'getPupilByUrlSlug').mockResolvedValue([expected])
+      const pupilDetails = await ServiceManagerPupilService.getPupilDetailsByUrlSlug(mockPupilDetailsData.urlSlug)
+      expect(pupilDetails.status).toStrictEqual('Not started')
+    })
   })
 })

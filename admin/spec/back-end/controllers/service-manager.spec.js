@@ -1249,7 +1249,7 @@ describe('service manager controller:', () => {
         schoolUrn: 12345,
         dfeNumber: 65794
       }
-      jest.spyOn(ServiceManagerPupilService, 'getPupilByUrlSlug').mockResolvedValue(thePupilData)
+      jest.spyOn(ServiceManagerPupilService, 'getPupilDetailsByUrlSlug').mockResolvedValue(thePupilData)
       const res = getRes()
       jest.spyOn(res, 'render')
       await controller.getPupilSummary(req, res, next)
