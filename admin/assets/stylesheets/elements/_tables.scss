@@ -1,15 +1,16 @@
 table.govuk-spacious {
-  border-bottom: 1px solid govuk-colour("mid-grey");
-  border-collapse: collapse;
-  margin-bottom: $govuk-gutter *1.5;
-  margin-top: $govuk-gutter *1.5;
   width: 100%;
+  margin-top: $govuk-gutter * 1.5;
+  margin-bottom: $govuk-gutter * 1.5;
+  border-collapse: collapse;
+  border-bottom: 1px solid govuk-colour("mid-grey");
 
   tr {
     border-bottom: 1px solid govuk-colour("mid-grey");
   }
 
-  th, td {
+  th,
+  td {
     display: table-cell;
 
     &:first-child:not(.allow-wrap) {
@@ -18,8 +19,8 @@ table.govuk-spacious {
   }
 
   th {
-    text-align: left;
     padding-bottom: 10px;
+    text-align: left;
 
     a {
       color: govuk-colour("black");
@@ -28,16 +29,14 @@ table.govuk-spacious {
   }
 
   td {
-    padding-bottom: $govuk-gutter-half;
     padding-top: $govuk-gutter-half;
+    padding-bottom: $govuk-gutter-half;
 
     a {
       text-decoration: none;
     }
   }
-}
 
-table.govuk-spacious {
   .govuk-button--secondary {
     text-decoration: none;
   }
