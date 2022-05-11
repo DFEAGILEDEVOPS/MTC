@@ -8,7 +8,9 @@
     "dev-build": "gulp dev-build",
     "shell-build": "./build.sh",
     "clean": "rm -rf dist; rm -f .env",
-    "lint": "standard",
+    "lint":  "yarn run lint:js && yarn run lint:scss",
+    "lint:js": "standard",
+    "lint:scss": "stylelint \"assets/**/*.scss\"",
     "lintAndBuild": "yarn lint && yarn build",
     "migrate-sql": "node ../db/engine/migrate.js",
     "migrate-and-seed-sql": "yarn migrate-sql && yarn seed-sql",
@@ -33,10 +35,6 @@
   },
   "engines": {
     "node": ">= 14"
-  },
-  "resolutions": {
-    "**/**/lodash": "^4.17.21",
-    "**/**/ajv": "^6.12.6"
   },
   "dependencies": {
     "@azure/data-tables": "^12.1.2",
@@ -133,7 +131,11 @@
     "karma-remap-istanbul": "~0.6.0",
     "node-mocks-http": "^1.6.6",
     "nodemon": "^2.0.12",
+    "postcss": "^8.4.13",
     "standard": "^16.0.3",
+    "stylelint": "^14.8.2",
+    "stylelint-config-gds": "^0.2.0",
+    "stylelint-order": "^5.0.0",
     "supertest": "^6.0.1",
     "ts-node": "^10.4.0",
     "typescript": "4.3.5"
