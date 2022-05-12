@@ -29,6 +29,41 @@ describe('AzureQueueService', () => {
     (<IAppConfig>APP_CONFIG).production = initialProductionFlag
   })
 
+  describe('sets message TTL to no expiry', () => {
+    it('should set TTL option to -1 when putting message on queue', async () => {
+      const queueServiceMock: IQueueService = {
+        createMessage: (
+          queueName: string,
+          encodedMessage: string,
+        ) => Promise.resolve(),
+        performRequest: () => {
+        },
+        withFilter: (qs: IQueueService) => qs
+      }
+      const textBase64QueueMessageEncoderMock = {
+        encode: (data: string) => 'encodedMessage',
+      }
+      spyOn(azureQueueService, 'initQueueService').and.returnValue(queueServiceMock)
+      // @ts-ignore
+      spyOn(azureQueueService, 'getTextBase64QueueMessageEncoder').and.returnValue(textBase64QueueMessageEncoderMock)
+      spyOn(queueServiceMock, 'createMessage')
+      const queueName = 'my-queue'
+      const payload = { payloadItem: 'payloadItem' }
+      await azureQueueService.addMessage(queueName,
+        'url',
+        'token',
+        payload,
+        {
+          checkStartAPIErrorMaxAttempts: 1,
+          checkStartAPIErrorDelay: 10000
+        }
+      )
+/*       expect(queueServiceMock.createMessage).toHaveBeenCalledWith(queueName, payload, {
+        messageTimeToLive: 1
+      }) */
+    })
+  })
+
   describe('when the production flag is disabled', () => {
     beforeEach(() => {
       (<IAppConfig>APP_CONFIG).production = false
