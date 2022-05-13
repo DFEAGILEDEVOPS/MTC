@@ -1,0 +1,14 @@
+{
+  "name": "azure-storage-queue-js",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "@azure/storage-queue": "^12.9.0"
+  },
+  "scripts": {
+    "build:dev": "webpack --mode=development",
+    "build": "webpack --mode=production",
+    "clean": "rm -rf ./dist"
+  }
+}
