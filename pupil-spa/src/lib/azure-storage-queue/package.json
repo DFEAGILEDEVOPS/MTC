@@ -9,6 +9,7 @@
   "scripts": {
     "build:dev": "webpack --mode=development",
     "build": "webpack --mode=production",
-    "clean": "rm -rf ./dist"
+    "clean": "rm -rf ./dist",
+    "updateref": "cp ./dist/main.js ./ref/main.js"
   }
 }
