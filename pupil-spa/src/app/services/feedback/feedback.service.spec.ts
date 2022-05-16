@@ -5,7 +5,7 @@ import { FeedbackService } from './feedback.service'
 import { StorageService } from '../storage/storage.service'
 import { TokenService } from '../token/token.service'
 import { AppConfigService, loadConfigMockService } from '../config/config.service'
-import { QUEUE_STORAGE_TOKEN } from '../azure-queue/azureStorage'
+import { QUEUE_STORAGE_TOKEN } from '../azure-queue/azure-storage'
 
 let azureQueueService: AzureQueueService
 let feedbackService: FeedbackService

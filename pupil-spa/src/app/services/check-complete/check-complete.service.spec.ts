@@ -1,5 +1,5 @@
 import { APP_INITIALIZER } from '@angular/core';
-import { QUEUE_STORAGE_TOKEN } from '../azure-queue/azureStorage';
+import { QUEUE_STORAGE_TOKEN } from '../azure-queue/azure-storage';
 import { Router } from '@angular/router';
 import { AuditService } from '../audit/audit.service';
 import { AzureQueueService } from '../azure-queue/azure-queue.service';

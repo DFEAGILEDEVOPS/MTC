@@ -66,7 +66,7 @@ import { PageModificationsComponent } from './page-modifications/page-modificati
 import { PracticeQuestionComponent } from './practice-question/practice-question.component';
 import { PupilPrefsService } from './services/pupil-prefs/pupil-prefs.service';
 import { QuestionsIntroComponent } from './questions-intro/questions-intro.component';
-import { QUEUE_STORAGE_TOKEN, IAzureStorage } from './services/azure-queue/azureStorage';
+import { QUEUE_STORAGE_TOKEN, IAzureStorage } from './services/azure-queue/azure-storage';
 import { SessionExpiredComponent } from './session-expired/session-expired.component';
 import { SpokenPracticeQuestionComponent } from './spoken-practice-question/spoken-practice-question.component';
 import { SpokenQuestionComponent } from './spoken-question/spoken-question.component';

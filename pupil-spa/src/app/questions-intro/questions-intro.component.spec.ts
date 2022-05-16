@@ -13,7 +13,7 @@ import { AuditEntry, CheckStarted, QuestionIntroRendered } from '../services/aud
 import { AzureQueueService } from '../services/azure-queue/azure-queue.service';
 import { TokenService } from '../services/token/token.service';
 import { StorageService } from '../services/storage/storage.service';
-import { QUEUE_STORAGE_TOKEN } from '../services/azure-queue/azureStorage';
+import { QUEUE_STORAGE_TOKEN } from '../services/azure-queue/azure-storage';
 import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { AppUsageService } from '../services/app-usage/app-usage.service';

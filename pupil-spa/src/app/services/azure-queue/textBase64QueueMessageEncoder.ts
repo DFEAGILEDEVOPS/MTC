@@ -1,7 +1,7 @@
 import {
   IQueueMessageEncoder,
   ITextBase64QueueMessageEncoder,
-} from './azureStorage';
+} from './azure-storage';
 
 export class TextBase64QueueMessageEncoder implements ITextBase64QueueMessageEncoder {
   private encoder;

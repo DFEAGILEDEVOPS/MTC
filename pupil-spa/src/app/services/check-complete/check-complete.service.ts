@@ -1,6 +1,6 @@
 import { APP_CONFIG } from '../config/config.service';
 import { AuditService } from '../audit/audit.service';
-import { AzureQueueService } from '../azure-queue/azure-queue.service';
+import { AzureQueueService, QueueMessageRetryConfig } from '../azure-queue/azure-queue.service';
 import {
   CheckSubmissionApiCalled,
   CheckSubmissionAPIFailed,
@@ -63,9 +63,9 @@ export class CheckCompleteService {
       return this.onSuccess(startTime);
     }
     const {url, token, queueName} = this.tokenService.getToken('checkComplete');
-    const retryConfig = {
-      errorDelay: this.checkSubmissionApiErrorDelay,
-      errorMaxAttempts: this.checkSubmissionAPIErrorMaxAttempts
+    const retryConfig: QueueMessageRetryConfig = {
+      DelayBetweenErrors: this.checkSubmissionApiErrorDelay,
+      MaxAttempts: this.checkSubmissionAPIErrorMaxAttempts
     };
     this.auditService.addEntry(new CheckSubmissionApiCalled());
     const items = this.storageService.getAllItems();
@@ -82,7 +82,7 @@ export class CheckCompleteService {
       message.version = 1;
     }
     try {
-      await this.azureQueueService.addMessage(queueName, url, token, message, retryConfig);
+      await this.azureQueueService.addMessageToQueue(queueName, url, token, message, retryConfig);
       this.auditService.addEntry(new CheckSubmissionAPICallSucceeded());
       await this.onSuccess(startTime);
     } catch (error) {

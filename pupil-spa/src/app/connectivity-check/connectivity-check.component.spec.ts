@@ -11,7 +11,7 @@ import { ConnectivityService } from '../services/connectivity-service/connectivi
 import { DeviceService } from '../services/device/device.service'
 import { StorageService } from '../services/storage/storage.service'
 import { WindowRefService } from '../services/window-ref/window-ref.service'
-import { QUEUE_STORAGE_TOKEN } from '../services/azure-queue/azureStorage'
+import { QUEUE_STORAGE_TOKEN } from '../services/azure-queue/azure-storage'
 import { Router } from '@angular/router'
 import { loadConfigMockService } from '../services/config/config.service'
 

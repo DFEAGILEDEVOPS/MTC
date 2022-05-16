@@ -5,7 +5,7 @@ import { AzureQueueService } from '../azure-queue/azure-queue.service'
 import { AuditService } from '../audit/audit.service'
 import { TokenService } from '../token/token.service'
 import { AppConfigService, loadConfigMockService } from '../config/config.service'
-import { QUEUE_STORAGE_TOKEN } from '../azure-queue/azureStorage'
+import { QUEUE_STORAGE_TOKEN } from '../azure-queue/azure-storage'
 import { APP_INITIALIZER } from '@angular/core'
 
 let checkStartService: CheckStartService

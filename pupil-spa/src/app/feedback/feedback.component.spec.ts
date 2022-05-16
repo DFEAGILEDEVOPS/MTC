@@ -12,7 +12,7 @@ import { SpeechService } from '../services/speech/speech.service'
 import { SpeechServiceMock } from '../services/speech/speech.service.mock'
 import { WindowRefService } from '../services/window-ref/window-ref.service'
 import { NO_ERRORS_SCHEMA } from '@angular/core'
-import { QUEUE_STORAGE_TOKEN } from '../services/azure-queue/azureStorage'
+import { QUEUE_STORAGE_TOKEN } from '../services/azure-queue/azure-storage'
 import { FeedbackServiceMock } from '../services/feedback/feedback.service.mock'
 
 describe('FeedbackComponent', () => {

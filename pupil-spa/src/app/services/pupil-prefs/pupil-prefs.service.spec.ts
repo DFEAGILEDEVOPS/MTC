@@ -5,7 +5,7 @@ import { PupilPrefsService } from './pupil-prefs.service';
 import { StorageService } from '../storage/storage.service';
 import { TokenService } from '../token/token.service';
 import { AppConfigService, loadConfigMockService } from '../config/config.service';
-import { QUEUE_STORAGE_TOKEN } from '../azure-queue/azureStorage';
+import { QUEUE_STORAGE_TOKEN } from '../azure-queue/azure-storage';
 import { AuditService } from '../audit/audit.service';
 import { QuestionService } from '../question/question.service';
 import { QuestionServiceMock } from '../question/question.service.mock';

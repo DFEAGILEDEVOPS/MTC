@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { APP_CONFIG } from '../config/config.service';
-import { AzureQueueService } from '../azure-queue/azure-queue.service';
+import { AzureQueueService, QueueMessageRetryConfig } from '../azure-queue/azure-queue.service';
 import { StorageService } from '../storage/storage.service';
 import { TokenService } from '../token/token.service';
 import { AccessArrangementsConfig, AccessArrangements } from '../../access-arrangements';
@@ -37,9 +37,9 @@ export class PupilPrefsService {
     const contrastSetting = this.contrastSettings.find(f => f.val === accessArrangements.contrast);
     const pupil = this.storageService.getPupil() as Pupil;
     const {url, token, queueName} = this.tokenService.getToken('pupilPreferences');
-    const retryConfig = {
-      errorDelay: this.pupilPrefsAPIErrorDelay,
-      errorMaxAttempts: this.pupilPrefsAPIErrorMaxAttempts
+    const retryConfig: QueueMessageRetryConfig = {
+      DelayBetweenErrors: this.pupilPrefsAPIErrorDelay,
+      MaxAttempts: this.pupilPrefsAPIErrorMaxAttempts
     };
     const payload = {
       preferences: {
@@ -57,7 +57,7 @@ export class PupilPrefsService {
     }
     try {
       this.auditService.addEntry(new PupilPrefsAPICalled());
-      await this.azureQueueService.addMessage(queueName, url, token, payload, retryConfig);
+      await this.azureQueueService.addMessageToQueue(queueName, url, token, payload, retryConfig);
       this.auditService.addEntry(new PupilPrefsAPICallSucceeded());
     } catch (error) {
       this.auditService.addEntry(new PupilPrefsAPICallFailed(error));
