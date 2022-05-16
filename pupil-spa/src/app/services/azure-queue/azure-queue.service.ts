@@ -1,41 +1,14 @@
-import { Inject, Injectable } from '@angular/core';
-import * as bluebird from 'bluebird';
-import {
-  IQueueStorage,
-  IQueueService,
-  QUEUE_STORAGE_TOKEN,
-} from './azureStorage';
+import { Injectable } from '@angular/core';
 import { TextBase64QueueMessageEncoder } from './textBase64QueueMessageEncoder';
 import { APP_CONFIG } from '../config/config.service';
-
-/**
- * Declaration of azure queue service
- */
+import { HttpClient } from '@angular/common/http';
 
 @Injectable()
 export class AzureQueueService {
 
-  constructor(@Inject(QUEUE_STORAGE_TOKEN) private queueStorage: IQueueStorage) {
+  constructor(private http: HttpClient) {
   }
 
-  /**
-   * Create a queue service and promisify library calls
-   * @param {String} queueName
-   * @param {String} url
-   * @param {String} token
-   * @param {Object} retryConfig
-   * @returns {Object}
-   */
-  public initQueueService (queueName: string, url: string, token: string, retryConfig): IQueueService {
-    const service = this.queueStorage
-      .createQueueServiceWithSas(url.replace(queueName, ''), token)
-      .withFilter(
-        new this.queueStorage.LinearRetryPolicyFilter(retryConfig.errorMaxAttempts, retryConfig.errorDelay)
-      );
-    service.performRequest = bluebird.promisify(service.performRequest, service);
-    service.createMessage = bluebird.promisify(service.createMessage, service);
-    return service;
-  }
 
   /**
    * Create a text base64 queue message encoder
@@ -54,22 +27,23 @@ export class AzureQueueService {
    * @param {Object} retryConfig
    * @returns {Promise.<Object>}
    */
-  public async addMessage (queueName: string, url: string, token: string, payload: object, retryConfig: object): Promise<Object> {
+  public async addMessageToQueue (queueName: string, storageAccountUrl: string, sasTokenQueryString: string, payload: object, retryConfig: object): Promise<Object> {
     // to increase message expiry add this object as 3rd param to createMessage call
     // const twentyEightDaysInSeconds = 2419200
     // const options = {
     //   messageTimeToLive: twentyEightDaysInSeconds
     // }
-    const queueService = this.initQueueService(queueName, url, token, retryConfig);
+    const queueEndpointUrl = `${storageAccountUrl}/${queueName}messages?messagettl=-1&${sasTokenQueryString}`
     const encoder = this.getTextBase64QueueMessageEncoder();
     const message = JSON.stringify(payload);
     const encodedMessage = encoder.encode(message);
-    return queueService.createMessage(queueName, encodedMessage, {
-      messageTimeToLive: -1
-    }).catch(err => {
-      if (!APP_CONFIG.production) {
-        throw err;
-      }
+    // set TTL to -1
+    // base64 encode
+    // allow retries (linear and expo?)
+    const headers = { 'x-ms-date': 'TODO current date time ISO format' };
+    await this.http.post(queueEndpointUrl, encodedMessage, {
+      headers: headers
+    })
 
       const fallbackUrl = `${window.location.origin}/queue`;
       const fallbackQueueService = this.initQueueService(queueName, fallbackUrl, token, retryConfig);
