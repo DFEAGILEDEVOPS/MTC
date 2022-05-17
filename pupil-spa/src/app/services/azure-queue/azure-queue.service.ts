@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core'
 import { HttpClient } from '@angular/common/http'
-import { TokenService } from '../token/token.service'
-import { APP_CONFIG } from '../config/config.service'
 import { Observable } from 'rxjs'
+import { Buffer } from 'buffer'
 
 export interface QueueMessageRetryConfig {
   DelayBetweenErrors: number
@@ -33,16 +32,22 @@ export class AzureQueueService {
     const queueEndpointUrl = `${storageAccountUrl}/${queueName}messages?messagettl=-1&${sasToken}`
     const message = JSON.stringify(payload)
     // encode to base64
-    const encodedMessage = btoa(message)
+    const encodedMessage = Buffer.from(message, 'utf8').toString('base64')
     const wrappedXmlMessage = `<?xml version="1.0" encoding="utf-8"?><QueueMessage><MessageText>${encodedMessage}</MessageText></QueueMessage>`
     // TODO allow linear retries via config
     const headers = {
       'x-ms-date': (new Date()).toISOString(),
       'Content-Type': `application/atom+xml;charset="utf-8"`
     }
-    return this.http.post(queueEndpointUrl, wrappedXmlMessage, {
-      headers: headers
-    })
+    try {
+      console.log(`GUY: posting message to ${queueEndpointUrl}`)
+      console.log(`GUY: message body ${wrappedXmlMessage}`)
+      await this.http.post(queueEndpointUrl, wrappedXmlMessage, {
+        headers: headers
+      })
+    } catch (error) {
+      console.log(`GUY: error posting... ${error.toString()}`)
+    }
 
     //TODO fallback queue
 /*     const fallbackUrl = `${window.location.origin}/queue`
