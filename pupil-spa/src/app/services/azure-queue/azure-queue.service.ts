@@ -23,15 +23,9 @@ export class AzureQueueService {
    * @param {Object} retryConfig
    * @returns {Promise.<Object>}
    */
-  public async addMessageToQueue (queueName: string, storageAccountUrl: string, sasToken: string, payload: object, retryConfig: QueueMessageRetryConfig): Promise<Observable<Object>> {
-    // to increase message expiry add this object as 3rd param to createMessage call
-    // const twentyEightDaysInSeconds = 2419200
-    // const options = {
-    //   messageTimeToLive: twentyEightDaysInSeconds
-    // }
-    const queueEndpointUrl = `${storageAccountUrl}/${queueName}messages?messagettl=-1&${sasToken}`
+  public async addMessageToQueue (queueName: string, storageAccountUrl: string, sasToken: string, payload: object, retryConfig: QueueMessageRetryConfig): Promise<void> {
+    const queueEndpointUrl = `${storageAccountUrl}/messages?messagettl=-1&${sasToken}`
     const message = JSON.stringify(payload)
-    // encode to base64
     const encodedMessage = Buffer.from(message, 'utf8').toString('base64')
     const wrappedXmlMessage = `<?xml version="1.0" encoding="utf-8"?><QueueMessage><MessageText>${encodedMessage}</MessageText></QueueMessage>`
     // TODO allow linear retries via config
@@ -47,6 +41,7 @@ export class AzureQueueService {
       })
     } catch (error) {
       console.log(`GUY: error posting... ${error.toString()}`)
+      throw error
     }
 
     //TODO fallback queue
