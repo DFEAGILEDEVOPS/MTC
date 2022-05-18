@@ -60,8 +60,10 @@ export class ServiceManagerPupilService {
 
   private static async getPupilStatus (pupilId: number): Promise<any> {
     const pupilData = await ServiceManagerPupilDataService.getPupilStatusData(pupilId)
+    if (pupilData.length === 0) return ''
     const settingData = await settingService.get()
-    const pupilStatus = pupilStatusService.addStatus(settingData, pupilData)
+    const pupilStatus = pupilStatusService.addStatus(settingData, pupilData[0])
+    console.dir(pupilData)
     return pupilStatus.status
   }
 }
