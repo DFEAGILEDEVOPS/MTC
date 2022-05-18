@@ -6,13 +6,15 @@ import * as polly from 'polly-js';
   providedIn: 'root'
 })
 export class HttpService {
+
+  private readonly defaultRetryCount = 5
   /**
    * Provide HTTP with a client retry by default
    */
   constructor(private http: HttpClient) { }
 
   private config = {
-    retryTimes: 5
+    retryTimes: this.defaultRetryCount
   };
 
   /**
@@ -24,27 +26,28 @@ export class HttpService {
    */
   public async postJson(url: string, body: any): Promise<any> {
     try {
-      return this.doPost(url, body, 0, new HttpHeaders( { 'Content-Type': 'application/json' }));
+      return this.doPost(url, body, this.config.retryTimes, new HttpHeaders( { 'Content-Type': 'application/json' }));
     } catch (error) {
       console.log(`http post error: status was ${error.status} - ${error.message}`, error);
       throw error;
     }
   }
 
-  public async post(url: string, body: any, errorCount: number, headers: HttpHeaders) {
+  public async post(url: string, body: any, headers: HttpHeaders, retryCount = this.defaultRetryCount) {
     try {
-      return this.doPost(url, body, errorCount, headers);
+      return this.doPost(url, body, retryCount, headers);
     } catch (error) {
       console.log(`http post error: status was ${error.status} - ${error.message}`, error);
       throw error;
     }
   }
 
-  private async doPost(url: string, body: any, errorCount = 0, headers: HttpHeaders): Promise<any> {
+  private async doPost(url: string, body: any, retryCount: number, headers: HttpHeaders): Promise<any> {
     const options = {
       headers: headers
     };
     const _that = this;
+    _that.config.retryTimes = retryCount;
     const response = await polly()
       .handle(error => {
         // Any requests that don't give a 200 status code will raise an Exception that can be handled here.

@@ -34,28 +34,15 @@ export class AzureQueueService {
       'Content-Type': `application/atom+xml;charset="utf-8"`
     })
 
-    console.log(`GUY: posting message to ${queueEndpointUrl}`)
-    const p = new Promise(async (resolve, reject) => {
-      await this.http.post(queueEndpointUrl, wrappedXmlMessage, 0, headers)
-        .then(data => {
-          console.log(`GUY: posted message without error.  response...`)
-          console.dir(data)
-          resolve(true);
-        },
-        (err) => {
-          reject(err);
-        }).catch(error => {
-          console.log(`GUY: error posting... ${error.toString()}`)
-          reject(error)
-        });
-    });
-
-    await p
-
-
-    //TODO fallback queue
-/*     const fallbackUrl = `${window.location.origin}/queue`
-    const fallbackQueueService = this.initQueueService(this.queueName, fallbackUrl, this.sasTokenQueryString, this.retryConfig)
-    return fallbackQueueService.createMessage(this.queueName, encodedMessage) */
+    try {
+      const data = await this.http.post(queueEndpointUrl, wrappedXmlMessage, headers)
+      console.dir(data)
+    } catch (error) {
+      console.error(error)
+      //TODO fallback queue
+  /*     const fallbackUrl = `${window.location.origin}/queue`
+      const fallbackQueueService = this.initQueueService(this.queueName, fallbackUrl, this.sasTokenQueryString, this.retryConfig)
+      return fallbackQueueService.createMessage(this.queueName, encodedMessage) */
+    }
   }
 }

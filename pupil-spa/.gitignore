@@ -50,5 +50,3 @@ test/reports/
 test/screenshots/
 test/*.html
 test/*.png
-
-/src/lib/azure-storage-queue/dist
