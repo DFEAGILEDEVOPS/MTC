@@ -29,7 +29,7 @@ export class UserService {
     const buildTag = this.metaService.getTag('name="build:number"')
     const buildVersion = buildTag.content
     return new Promise(async (resolve, reject) => {
-      await this.http.post(`${APP_CONFIG.authURL}`, { schoolPin, pupilPin, buildVersion })
+      await this.http.postJson(`${APP_CONFIG.authURL}`, { schoolPin, pupilPin, buildVersion })
         .then(data => {
           this.loggedIn = true;
           this.storageService.clear();

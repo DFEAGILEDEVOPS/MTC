@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse, HttpHeaders, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import * as polly from 'polly-js';
 
 @Injectable({
@@ -22,18 +22,27 @@ export class HttpService {
    * @returns - whatever the URL returns on success
    * @throws HttpErrorResponse - the app error from the server is in error.error - check `error.status` for the HTTP status code.
    */
-  public async post(url: string, body: any): Promise<any> {
+  public async postJson(url: string, body: any): Promise<any> {
     try {
-      return this.doPost(url, body);
+      return this.doPost(url, body, 0, new HttpHeaders( { 'Content-Type': 'application/json' }));
     } catch (error) {
       console.log(`http post error: status was ${error.status} - ${error.message}`, error);
       throw error;
     }
   }
 
-  private async doPost(url: string, body: any, errorCount = 0): Promise<any> {
+  public async post(url: string, body: any, errorCount: number, headers: HttpHeaders) {
+    try {
+      return this.doPost(url, body, errorCount, headers);
+    } catch (error) {
+      console.log(`http post error: status was ${error.status} - ${error.message}`, error);
+      throw error;
+    }
+  }
+
+  private async doPost(url: string, body: any, errorCount = 0, headers: HttpHeaders): Promise<any> {
     const options = {
-      headers: new HttpHeaders( { 'Content-Type': 'application/json' })
+      headers: headers
     };
     const _that = this;
     const response = await polly()
