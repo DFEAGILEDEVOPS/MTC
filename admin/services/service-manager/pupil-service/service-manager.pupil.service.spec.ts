@@ -1,4 +1,4 @@
-import { ServiceManagerPupilDetails, ServiceManagerPupilService } from './service-manager.pupil.service'
+import { ServiceManagerPupilService } from './service-manager.pupil.service'
 import { PupilSearchResult, PupilStatusData, ServiceManagerPupilDataService } from './service-manager.pupil.data.service'
 import moment from 'moment-timezone'
 const settingService = require('../../setting.service')
@@ -116,8 +116,7 @@ describe('service manager pupil service', () => {
         schoolName: 'school name',
         urn: 123456,
         dfeNumber: 4994494,
-        upn: 'N999199900001',
-        attendanceReason: 'the-attendance'
+        upn: 'N999199900001'
       }
       jest.spyOn(ServiceManagerPupilDataService, 'getPupilByUrlSlug').mockResolvedValue([expected])
       const actual = await ServiceManagerPupilService.getPupilDetailsByUrlSlug('455cc6b4-a688-469a-ab72-9c7e137a1ea8')
@@ -129,25 +128,6 @@ describe('service manager pupil service', () => {
       expect(actual.urlSlug).toStrictEqual(expected.urlSlug)
       expect(actual.id).toStrictEqual(expected.id)
       expect(actual.upn).toStrictEqual(expected.upn)
-      expect(actual.attendance).toStrictEqual(expected.attendanceReason)
-    })
-
-    test('when no attendance set, returns empty string', async () => {
-      const expected: PupilSearchResult = {
-        id: 123,
-        urlSlug: 'urlSlug',
-        foreName: 'forename',
-        lastName: 'lastname',
-        dateOfBirth: moment('2021-10-04T15:23'),
-        schoolName: 'school name',
-        urn: 123456,
-        dfeNumber: 4994494,
-        upn: 'N999199900001',
-        attendanceReason: undefined
-      }
-      jest.spyOn(ServiceManagerPupilDataService, 'getPupilByUrlSlug').mockResolvedValue([expected])
-      const actual = await ServiceManagerPupilService.getPupilDetailsByUrlSlug('455cc6b4-a688-469a-ab72-9c7e137a1ea8')
-      expect(actual.attendance).toStrictEqual('')
     })
 
     test('should return valid status when pupil found', async () => {
@@ -160,8 +140,7 @@ describe('service manager pupil service', () => {
         schoolName: 'school name',
         urn: 123456,
         dfeNumber: 4994494,
-        upn: 'N999199900001',
-        attendanceReason: undefined
+        upn: 'N999199900001'
       }
       jest.spyOn(ServiceManagerPupilDataService, 'getPupilByUrlSlug').mockResolvedValue([expected])
       const pupilDetails = await ServiceManagerPupilService.getPupilDetailsByUrlSlug(mockPupilDetailsData.urlSlug)

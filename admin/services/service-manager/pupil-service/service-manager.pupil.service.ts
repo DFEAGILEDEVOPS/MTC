@@ -53,7 +53,6 @@ export class ServiceManagerPupilService {
       schoolUrn: p[0].urn,
       urlSlug: p[0].urlSlug,
       upn: p[0].upn,
-      attendance: p[0].attendanceReason ?? '',
       status: status
     }
   }
@@ -90,6 +89,5 @@ export interface ServiceManagerPupilDetails {
   schoolUrn: number
   dfeNumber: number
   upn: string
-  attendance: string
   status: string
 }
