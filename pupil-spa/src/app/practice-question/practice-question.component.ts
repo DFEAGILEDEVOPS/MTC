@@ -247,6 +247,14 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit, OnDestr
   }
 
   ngOnDestroy () {
+    // clear both timeout and intervals
+    if (this.countdownInterval !== undefined) {
+      clearInterval( this.countdownInterval )
+    }
+    if (this.timeout !== undefined) {
+      clearTimeout( this.timeout )
+    }
+
     // remove all the event listeners
     if (this.cleanUpFunctions.length > 0) {
       this.cleanUpFunctions.forEach(f => f());
@@ -432,11 +440,11 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit, OnDestr
       this.answerService.setAnswer(answer);
     }
 
-    if (!this.config.questionReader) {
-      return this.soundComponent.playEndOfQuestionSound();
+    if (this.config.questionReader) {
+      await this.speechService.waitForEndOfSpeech();
     }
 
-    await this.speechService.waitForEndOfSpeech();
+    // This checks the config itself
     this.soundComponent.playEndOfQuestionSound();
   }
 

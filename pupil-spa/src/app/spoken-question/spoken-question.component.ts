@@ -48,8 +48,8 @@ export class SpokenQuestionComponent extends QuestionComponent implements OnInit
           this.startTimer();
           this.shouldShowQuestion = true;
         }
-      } );
-    } );
+      });
+    });
   }
 
   /**
@@ -74,6 +74,14 @@ export class SpokenQuestionComponent extends QuestionComponent implements OnInit
 
   ngOnDestroy () {
     this.subscription.unsubscribe();
+
+    // clear both timeout and intervals
+    if (this.countdownInterval !== undefined) {
+      clearInterval( this.countdownInterval )
+    }
+    if (this.timeout !== undefined) {
+      clearTimeout( this.timeout )
+    }
 
     // remove all the event listeners
     if ( this.cleanUpFunctions.length > 0 ) {

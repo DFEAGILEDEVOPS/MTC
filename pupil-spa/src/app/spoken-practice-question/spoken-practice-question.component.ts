@@ -72,6 +72,15 @@ export class SpokenPracticeQuestionComponent extends PracticeQuestionComponent i
 
   ngOnDestroy() {
     this.subscription.unsubscribe();
+
+    // clear both timeout and intervals
+    if (this.countdownInterval !== undefined) {
+      clearInterval( this.countdownInterval )
+    }
+    if (this.timeout !== undefined) {
+      clearTimeout( this.timeout )
+    }
+
     if (this.cleanUpFunctions.length > 0) {
       this.cleanUpFunctions.forEach(f => f());
     }

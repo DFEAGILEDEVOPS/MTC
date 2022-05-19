@@ -28,6 +28,7 @@ import { IdleModalComponent } from '../modal/idle.modal.component';
 export class LoadingComponent implements AfterViewInit, OnDestroy, AfterViewChecked {
 
   protected speechListenerEvent: any;
+  protected timeouts: number[] = [];
   public config: Config;
   public nextButtonDelayFinished = false;
 
@@ -123,23 +124,26 @@ export class LoadingComponent implements AfterViewInit, OnDestroy, AfterViewChec
     }
 
     if (this.config.nextBetweenQuestions && this.shouldShowWarningModal) {
-      setTimeout(async () => {
+      const timeout1 = window.setTimeout(async () => {
         this.showWarningModal();
       }, this.nextQuestionIdleTimeout * 1000);
+      this.timeouts.push(timeout1)
     }
 
     if (!this.config.nextBetweenQuestions) {
-      setTimeout(async () => {
+      const timeout2 = window.setTimeout(async () => {
         if (this.config.questionReader) {
           await this.speechService.waitForEndOfSpeech();
         }
 
         this.sendTimeoutEvent();
       }, this.loadingTimeout * 1000);
+      this.timeouts.push(timeout2)
     } else {
-      setTimeout(() => {
+      const timeout3 = window.setTimeout(() => {
         this.nextButtonDelayFinished = true;
       }, this.nextQuestionButtonDelay * 1000);
+      this.timeouts.push(timeout3)
     }
   }
 
@@ -151,9 +155,13 @@ export class LoadingComponent implements AfterViewInit, OnDestroy, AfterViewChec
     // stop the current speech process if the page is changed
     if (this.questionService.getConfig().questionReader) {
       this.speechService.cancel();
-
       this.elRef.nativeElement.removeEventListener('focus', this.speechListenerEvent, true);
     }
+    this.cleanupTheTimeouts()
+  }
+
+  protected cleanupTheTimeouts (): void {
+    this.timeouts.forEach(n => { window.clearTimeout(n) })
   }
 
   ngAfterViewChecked() {
