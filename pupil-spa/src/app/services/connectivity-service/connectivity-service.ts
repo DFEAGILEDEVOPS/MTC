@@ -69,7 +69,7 @@ export class ConnectivityService {
 
   async canAccessAzureStorageQueue() {
     const retryConfig: QueueMessageRetryConfig = {
-      DelayBetweenErrors: this.testPupilConnectionDelay,
+      DelayBetweenRetries: this.testPupilConnectionDelay,
       MaxAttempts: this.testPupilConnectionMaxAttempts
     };
     try {

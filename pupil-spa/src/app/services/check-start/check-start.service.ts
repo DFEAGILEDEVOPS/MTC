@@ -42,7 +42,7 @@ export class CheckStartService {
     payload.clientCheckStartedAt = new Date();
     payload.version = 1;
     const retryConfig: QueueMessageRetryConfig = {
-      DelayBetweenErrors: this.checkStartAPIErrorDelay,
+      DelayBetweenRetries: this.checkStartAPIErrorDelay,
       MaxAttempts: this.checkStartAPIErrorMaxAttempts
     };
 

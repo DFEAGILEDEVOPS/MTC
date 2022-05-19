@@ -1,10 +1,5 @@
+/*
 import { InjectionToken } from '@angular/core';
-
-/**
- * encode message as base64
- * send correct headers
- * retry mechanism
- */
 
 export const QUEUE_STORAGE_TOKEN = new InjectionToken<IQueueStorage>('QUEUE_STORAGE_TOKEN');
 
@@ -34,3 +29,4 @@ export interface ITextBase64QueueMessageEncoder {
   encode: (message: string) => string;
 }
 
+ */

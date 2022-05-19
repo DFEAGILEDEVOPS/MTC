@@ -64,7 +64,7 @@ export class CheckCompleteService {
     }
     const {url, token, queueName} = this.tokenService.getToken('checkComplete');
     const retryConfig: QueueMessageRetryConfig = {
-      DelayBetweenErrors: this.checkSubmissionApiErrorDelay,
+      DelayBetweenRetries: this.checkSubmissionApiErrorDelay,
       MaxAttempts: this.checkSubmissionAPIErrorMaxAttempts
     };
     this.auditService.addEntry(new CheckSubmissionApiCalled());

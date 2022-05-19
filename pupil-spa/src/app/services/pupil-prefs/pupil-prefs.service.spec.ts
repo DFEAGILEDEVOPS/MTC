@@ -57,7 +57,7 @@ describe('PupilPrefsService', () => {
     it('should call pupil prefs azure queue storage', async () => {
       spyOn(mockQuestionService, 'getConfig').and.returnValue({colourContrast: false});
       spyOn(tokenService, 'getToken').and.returnValue({url: 'url', token: 'token', queueName: 'the-queue'});
-      const addMessageSpy = spyOn(azureQueueService, 'addMessage');
+      const addMessageSpy = spyOn(azureQueueService, 'addMessageToQueue');
       const addEntrySpy = spyOn(auditService, 'addEntry');
       spyOn(storageService, 'getAccessArrangements').and.returnValue(storedPrefs);
       spyOn(storageService, 'getPupil').and.returnValue({ checkCode: 'checkCode' });
@@ -88,7 +88,7 @@ describe('PupilPrefsService', () => {
     it('should audit log the error when azureQueueService add Message fails', async () => {
       spyOn(mockQuestionService, 'getConfig').and.returnValue({colourContrast: false});
       spyOn(tokenService, 'getToken').and.returnValue({url: 'url', token: 'token', queueName: 'the-queue'});
-      spyOn(azureQueueService, 'addMessage').and.returnValue(Promise.reject(new Error('error')));
+      spyOn(azureQueueService, 'addMessageToQueue').and.returnValue(Promise.reject(new Error('error')));
       const addEntrySpy = spyOn(auditService, 'addEntry');
       spyOn(storageService, 'getAccessArrangements').and.returnValue(storedPrefs);
       spyOn(storageService, 'getPupil').and.returnValue({ checkCode: 'checkCode' });
@@ -96,7 +96,7 @@ describe('PupilPrefsService', () => {
       expect(storageService.getAccessArrangements).toHaveBeenCalled();
       expect(storageService.getPupil).toHaveBeenCalled();
       expect(tokenService.getToken).toHaveBeenCalled();
-      expect(azureQueueService.addMessage).toHaveBeenCalled();
+      expect(azureQueueService.addMessageToQueue).toHaveBeenCalled();
       expect(addEntrySpy.calls.all()[1].args[0].type).toEqual('PupilPrefsAPICallFailed');
     });
   });

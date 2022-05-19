@@ -4,7 +4,7 @@ import { Buffer } from 'buffer'
 import { HttpService } from '../http/http.service'
 
 export interface QueueMessageRetryConfig {
-  DelayBetweenErrors: number
+  DelayBetweenRetries: number
   MaxAttempts: number
   SubmitPendingViewMinDisplayTime?: number
 }

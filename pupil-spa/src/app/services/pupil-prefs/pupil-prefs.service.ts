@@ -38,7 +38,7 @@ export class PupilPrefsService {
     const pupil = this.storageService.getPupil() as Pupil;
     const {url, token, queueName} = this.tokenService.getToken('pupilPreferences');
     const retryConfig: QueueMessageRetryConfig = {
-      DelayBetweenErrors: this.pupilPrefsAPIErrorDelay,
+      DelayBetweenRetries: this.pupilPrefsAPIErrorDelay,
       MaxAttempts: this.pupilPrefsAPIErrorMaxAttempts
     };
     const payload = {

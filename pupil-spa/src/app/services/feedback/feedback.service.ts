@@ -55,7 +55,7 @@ export class FeedbackService implements IFeedbackService {
     const { url, token, queueName } = this.tokenService.getToken('pupilFeedback');
     // Create a model for the payload
     const retryConfig: QueueMessageRetryConfig = {
-      DelayBetweenErrors: this.feedbackAPIErrorDelay,
+      DelayBetweenRetries: this.feedbackAPIErrorDelay,
       MaxAttempts: this.feedbackAPIErrorMaxAttempts
     };
     await this.azureQueueService.addMessageToQueue(queueName, url, token, payload, retryConfig);

@@ -67,10 +67,10 @@ describe('FeedbackService', () => {
     it('should call azureQueueService addMessage',
       inject([FeedbackService], async (service: FeedbackService) => {
         spyOn(tokenService, 'getToken').and.returnValue({ url: 'url', token: 'token' })
-        spyOn(azureQueueService, 'addMessage')
+        spyOn(azureQueueService, 'addMessageToQueue')
         await service.queueSubmit({})
         expect(tokenService.getToken).toHaveBeenCalled()
-        expect(azureQueueService.addMessage).toHaveBeenCalled()
+        expect(azureQueueService.addMessageToQueue).toHaveBeenCalled()
       }))
   })
 })

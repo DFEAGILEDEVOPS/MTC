@@ -92,7 +92,7 @@ describe('CheckCompleteService', () => {
     expect(appUsageService.store).toHaveBeenCalledTimes(1);
     expect(addEntrySpy.calls.all()[0].args[0].type).toEqual('CheckSubmissionApiCalled');
     expect(addEntrySpy.calls.all()[1].args[0].type).toEqual('CheckSubmissionAPICallSucceeded');
-    expect(azureQueueService.addMessage).toHaveBeenCalledTimes(1);
+    expect(azureQueueService.addMessageToQueue).toHaveBeenCalledTimes(1);
     expect(capturedMessage).toBeDefined();
     expect(capturedMessage.schoolUUID).toBe(expectedSchoolUUID);
     expect(storageService.setPendingSubmission).toHaveBeenCalledTimes(1);
@@ -135,7 +135,7 @@ describe('CheckCompleteService', () => {
     spyOn(storageService, 'setPendingSubmission');
     spyOn(storageService, 'setCompletedSubmission');
     spyOn(storageService, 'getAllItems').and.returnValue({pupil: {checkCode: 'checkCode'}});
-    spyOn(azureQueueService, 'addMessage')
+    spyOn(azureQueueService, 'addMessageToQueue')
       .and.returnValue(Promise.reject(new Error('error')));
     spyOn(checkCompleteService, 'getPayload').and.returnValue({});
     await checkCompleteService.submit(Date.now());
@@ -143,7 +143,7 @@ describe('CheckCompleteService', () => {
     expect(appUsageService.store).toHaveBeenCalledTimes(1);
     expect(addEntrySpy.calls.all()[0].args[0].type).toEqual('CheckSubmissionApiCalled');
     expect(addEntrySpy.calls.all()[1].args[0].type).toEqual('CheckSubmissionAPIFailed');
-    expect(azureQueueService.addMessage).toHaveBeenCalledTimes(1);
+    expect(azureQueueService.addMessageToQueue).toHaveBeenCalledTimes(1);
     expect(storageService.setPendingSubmission).toHaveBeenCalledTimes(0);
     expect(storageService.setCompletedSubmission).toHaveBeenCalledTimes(0);
     expect(storageService.getAllItems).toHaveBeenCalledTimes(1);
@@ -165,14 +165,14 @@ describe('CheckCompleteService', () => {
       statusCode: 403,
       authenticationerrordetail: 'Signature not valid in the specified time frame: Start - Expiry - Current'
     };
-    spyOn(azureQueueService, 'addMessage').and.returnValue(Promise.reject(sasTokenExpiredError));
+    spyOn(azureQueueService, 'addMessageToQueue').and.returnValue(Promise.reject(sasTokenExpiredError));
     await checkCompleteService.submit(Date.now());
     expect(addEntrySpy).toHaveBeenCalledTimes(2);
     expect(appUsageService.store).toHaveBeenCalledTimes(1);
     expect(checkCompleteService.getPayload).toHaveBeenCalledTimes(1);
     expect(addEntrySpy.calls.all()[0].args[0].type).toEqual('CheckSubmissionApiCalled');
     expect(addEntrySpy.calls.all()[1].args[0].type).toEqual('CheckSubmissionAPIFailed');
-    expect(azureQueueService.addMessage).toHaveBeenCalledTimes(1);
+    expect(azureQueueService.addMessageToQueue).toHaveBeenCalledTimes(1);
     expect(storageService.setPendingSubmission).toHaveBeenCalledTimes(0);
     expect(storageService.setCompletedSubmission).toHaveBeenCalledTimes(0);
     expect(storageService.getAllItems).toHaveBeenCalledTimes(1);
@@ -190,12 +190,12 @@ describe('CheckCompleteService', () => {
     spyOn(storageService, 'setCompletedSubmission');
     spyOn(storageService, 'getAllItems');
     spyOn(checkCompleteService, 'getPayload').and.returnValue({});
-    spyOn(azureQueueService, 'addMessage');
+    spyOn(azureQueueService, 'addMessageToQueue');
     await checkCompleteService.submit(Date.now());
     expect(addEntrySpy).toHaveBeenCalledTimes(0);
     expect(checkCompleteService.getPayload).toHaveBeenCalledTimes(0);
     expect(appUsageService.store).toHaveBeenCalledTimes(1);
-    expect(azureQueueService.addMessage).toHaveBeenCalledTimes(0);
+    expect(azureQueueService.addMessageToQueue).toHaveBeenCalledTimes(0);
     expect(storageService.getAllItems).toHaveBeenCalledTimes(0);
     expect(storageService.setPendingSubmission).toHaveBeenCalledTimes(1);
     expect(storageService.setCompletedSubmission).toHaveBeenCalledTimes(1);

@@ -1,6 +1,5 @@
 import { TestBed, waitForAsync } from '@angular/core/testing'
 import { APP_CONFIG, IAppConfig, loadConfigMockService } from '../config/config.service'
-import { IQueueService, QUEUE_STORAGE_TOKEN } from './azure-storage'
 import { AzureQueueService } from './azure-queue.service'
 import { APP_INITIALIZER } from '@angular/core'
 
@@ -13,7 +12,6 @@ describe('AzureQueueService', () => {
     TestBed.configureTestingModule({
       providers: [
         AzureQueueService,
-        { provide: QUEUE_STORAGE_TOKEN, useValue: undefined },
         { provide: APP_INITIALIZER, useFactory: loadConfigMockService, multi: true },
       ]
     })
@@ -31,31 +29,17 @@ describe('AzureQueueService', () => {
 
   describe('sets message TTL to no expiry', () => {
     it('should set TTL option to -1 when putting message on queue', async () => {
-      const queueServiceMock: IQueueService = {
-        createMessage: (
-          queueName: string,
-          encodedMessage: string,
-        ) => Promise.resolve(),
-        performRequest: () => {
-        },
-        withFilter: (qs: IQueueService) => qs
-      }
-      const textBase64QueueMessageEncoderMock = {
-        encode: (data: string) => 'encodedMessage',
-      }
-      spyOn(azureQueueService, 'initQueueService').and.returnValue(queueServiceMock)
       // @ts-ignore
-      spyOn(azureQueueService, 'getTextBase64QueueMessageEncoder').and.returnValue(textBase64QueueMessageEncoderMock)
       spyOn(queueServiceMock, 'createMessage')
       const queueName = 'my-queue'
       const payload = { payloadItem: 'payloadItem' }
-      await azureQueueService.addMessage(queueName,
+      await azureQueueService.addMessageToQueue(queueName,
         'url',
         'token',
         payload,
         {
-          checkStartAPIErrorMaxAttempts: 1,
-          checkStartAPIErrorDelay: 10000
+          MaxAttempts: 1,
+          DelayBetweenRetries: 10000
         }
       )
 /*       expect(queueServiceMock.createMessage).toHaveBeenCalledWith(queueName, payload, {
@@ -70,29 +54,14 @@ describe('AzureQueueService', () => {
     })
 
     it('should not try to fallback when failing to send a message', async () => {
-      const queueServiceMock: IQueueService = {
-        createMessage: (
-          queueName: string,
-          encodedMessage: string,
-        ) => Promise.reject(false),
-        performRequest: () => {
-        },
-        withFilter: (qs: IQueueService) => qs
-      }
-      const textBase64QueueMessageEncoderMock = {
-        encode: (data: string) => 'encodedMessage',
-      }
-      spyOn(azureQueueService, 'initQueueService').and.returnValue(queueServiceMock)
-      // @ts-ignore
-      spyOn(azureQueueService, 'getTextBase64QueueMessageEncoder').and.returnValue(textBase64QueueMessageEncoderMock)
       try {
-        await azureQueueService.addMessage('queue',
+        await azureQueueService.addMessageToQueue('queue',
           'url',
           'token',
           { payloadItem: 'payloadItem' },
           {
-            checkStartAPIErrorMaxAttempts: 1,
-            checkStartAPIErrorDelay: 10000,
+            MaxAttempts: 1,
+            DelayBetweenRetries: 10000,
           }
         )
         fail('should have failed')
@@ -102,22 +71,11 @@ describe('AzureQueueService', () => {
     })
 
     it('should successfully send a message to the queue', async () => {
-      const queueServiceMock: IQueueService = {
-        createMessage: (
-          queueName: string,
-          encodedMessage: string,
-        ) => Promise.resolve({ messageId: '1' }),
-        performRequest: () => {
-        },
-        withFilter: (qs: IQueueService) => qs
-      }
-      const textBase64QueueMessageEncoderMock = {
-        encode: () => 'encodedMessage'
-      }
+
       spyOn(azureQueueService, 'initQueueService').and.returnValue(queueServiceMock)
       // @ts-ignore
       spyOn(azureQueueService, 'getTextBase64QueueMessageEncoder').and.returnValue(textBase64QueueMessageEncoderMock)
-      const message = await azureQueueService.addMessage('queue',
+      const message = await azureQueueService.addMessageToQueue('queue',
         'url',
         'token',
         { payloadItem: 'payloadItem' },
@@ -153,7 +111,7 @@ describe('AzureQueueService', () => {
       // @ts-ignore
       spyOn(azureQueueService, 'getTextBase64QueueMessageEncoder').and.returnValue(textBase64QueueMessageEncoderMock)
       try {
-        await azureQueueService.addMessage('queue',
+        await azureQueueService.addMessageToQueue('queue',
           'url',
           'token',
           { payloadItem: 'payloadItem' },
@@ -184,7 +142,7 @@ describe('AzureQueueService', () => {
       spyOn(azureQueueService, 'initQueueService').and.returnValue(queueServiceMock)
       // @ts-ignore
       spyOn(azureQueueService, 'getTextBase64QueueMessageEncoder').and.returnValue(textBase64QueueMessageEncoderMock)
-      const message = await azureQueueService.addMessage('queue',
+      const message = await azureQueueService.addMessageToQueue('queue',
         'url',
         'token',
         { payloadItem: 'payloadItem' },
