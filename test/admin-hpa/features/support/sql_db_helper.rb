@@ -650,4 +650,10 @@ class SqlDbHelper
     result.cancel
     school_res.values.first
   end
+
+  def self.get_all_pupil_checks(pupil_id)
+    sql = "SELECT * FROM [mtc_admin].[check] WHERE pupil_id='#{pupil_id}'"
+    result = SQL_CLIENT.execute(sql)
+    result.each {|row| row.map}
+  end
 end
