@@ -64,7 +64,10 @@ export class AzureQueueService {
     const encoder = this.getTextBase64QueueMessageEncoder();
     const message = JSON.stringify(payload);
     const encodedMessage = encoder.encode(message);
-    return queueService.createMessage(queueName, encodedMessage).catch(err => {
+    const messageOptions = {
+      messageTimeToLive: -1
+    }
+    return queueService.createMessage(queueName, encodedMessage, messageOptions).catch(err => {
       if (!APP_CONFIG.production) {
         throw err;
       }
