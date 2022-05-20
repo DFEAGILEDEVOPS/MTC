@@ -66,7 +66,6 @@ import { PageModificationsComponent } from './page-modifications/page-modificati
 import { PracticeQuestionComponent } from './practice-question/practice-question.component';
 import { PupilPrefsService } from './services/pupil-prefs/pupil-prefs.service';
 import { QuestionsIntroComponent } from './questions-intro/questions-intro.component';
-import { QUEUE_STORAGE_TOKEN, IAzureStorage } from './services/azure-queue/azure-storage';
 import { SessionExpiredComponent } from './session-expired/session-expired.component';
 import { SpokenPracticeQuestionComponent } from './spoken-practice-question/spoken-practice-question.component';
 import { SpokenQuestionComponent } from './spoken-question/spoken-question.component';
@@ -84,8 +83,6 @@ import { ApplicationInsightsService } from './services/app-insights/app-insights
 import { TestErrorComponent } from './test-error/test-error.component';
 import { HttpService } from './services/http/http.service';
 import { ErrorLocalStorageComponent } from './error-localstorage/error-local-storage.component';
-
-declare var AzureStorage: IAzureStorage;
 
 const appRoutes: Routes = [
   {path: '', redirectTo: 'connectivity-check', pathMatch: 'full'},
@@ -207,11 +204,7 @@ const appRoutes: Routes = [
     TokenService,
     UserService,
     WarmupQuestionService,
-    WindowRefService,
-    {
-      provide: QUEUE_STORAGE_TOKEN,
-      useValue: AzureStorage.Queue
-    }
+    WindowRefService
   ],
   entryComponents: [
     IdleModalComponent
