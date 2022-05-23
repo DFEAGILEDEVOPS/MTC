@@ -23,7 +23,7 @@
     cursor: pointer;
 
     // IE8 doesn’t support pseudoelements, so we don’t want to hide native elements there.
-    @if  $govuk-is-ie8 == false {
+    @if $govuk-is-ie8 == false {
       margin: 0;
       zoom: 1;
       filter: alpha(opacity=0);

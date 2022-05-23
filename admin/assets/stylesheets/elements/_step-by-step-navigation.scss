@@ -20,7 +20,8 @@
 }
 
 .app-step-nav-header__title {
-  @include govuk-font(24, $weight: bold); }
+  @include govuk-font(24, $weight: bold);
+}
 
 .app-step-nav-related {
   margin-bottom: 30px;
@@ -130,7 +131,8 @@
   text-align: left;
 
   .app-step-nav--large & {
-    @include govuk-font(24, $weight: bold); }
+    @include govuk-font(24, $weight: bold);
+  }
 }
 
 .app-step-nav__button--controls {
@@ -145,7 +147,8 @@
   }
 
   .app-step-nav--large & {
-    @include govuk-font(16); }
+    @include govuk-font(16);
+  }
 }
 
 .app-step-nav__steps {
@@ -400,7 +403,8 @@
 }
 
 .app-step-nav--large .app-step-nav__panel {
-  @include govuk-font(19); }
+  @include govuk-font(19);
+}
 
 .app-step-nav__heading,
 .app-step-nav__paragraph {
