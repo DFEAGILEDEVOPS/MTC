@@ -16,9 +16,10 @@ const { formUtil, formUtilTypes } = require('../lib/form-util')
 const organisationBulkUploadService = require('../services/organisation-bulk-upload.service')
 const administrationMessageService = require('../services/administration-message.service')
 const { JobService } = require('../services/job-service/job.service')
+const { ServiceManagerPupilService } = require('../services/service-manager/pupil-service/service-manager.pupil.service')
+const { validate } = require('uuid')
 
 const controller = {
-
   /**
    * Returns the service-manager (role) landing page
    * @param req
@@ -581,6 +582,91 @@ const controller = {
     } catch (error) {
       next(error)
     }
+  },
+
+  /**
+ * @description Renders pupil search
+ * @param {object} req
+ * @param {object} res
+ * @param {object} next
+ * @param {object} validationError
+ */
+  getPupilSearch: async function getPupilSearch (req, res, next, validationError = new ValidationError()) {
+    res.locals.pageTitle = 'Pupil Search'
+    req.breadcrumbs(res.locals.pageTitle)
+
+    try {
+      const query = req.body.q ?? ''
+      res.render('service-manager/pupil-search', {
+        breadcrumbs: req.breadcrumbs(),
+        query,
+        error: validationError,
+        results: undefined
+      })
+    } catch (error) {
+      return next(error)
+    }
+  },
+
+  /**
+ * @description Renders pupil search
+ * @param {object} req
+ * @param {object} res
+ * @param {object} next
+ */
+  postPupilSearch: async function postPupilSearch (req, res, next) {
+    const pupilSearchErrorHandler = (req, res, next, errorMsg = 'No pupil found') => {
+      const error = new ValidationError()
+      error.addError('q', errorMsg)
+      return controller.getPupilSearch(req, res, next, error)
+    }
+    try {
+      const query = req.body.q
+      if (query === undefined || query === '') {
+        return pupilSearchErrorHandler(req, res, next, 'No query provided')
+      }
+      let results
+      try {
+        results = await ServiceManagerPupilService.findPupilByUpn(query)
+      } catch (error) {
+        return pupilSearchErrorHandler(req, res, next, error.message)
+      }
+      if (!results || results.length === 0) {
+        return pupilSearchErrorHandler(req, res, next)
+      }
+      if (results.length === 1) {
+        return res.redirect(`/service-manager/pupil-summary/${encodeURIComponent(results[0].urlSlug).toLowerCase()}`)
+      } else {
+        // multiple results to select from...
+        res.locals.pageTitle = 'Pupil Search'
+        return res.render('service-manager/pupil-search', {
+          breadcrumbs: req.breadcrumbs(),
+          results: results,
+          query: query,
+          error: new ValidationError()
+        })
+      }
+    } catch (error) {
+      return next(error)
+    }
+  },
+
+  getPupilSummary: async function getPupilSummary (req, res, next) {
+    const pupilUrlSlug = req.params.slug
+    if (!pupilUrlSlug) {
+      return res.redirect('/service-manager/pupil-search/')
+    }
+    if (!validate(pupilUrlSlug)) {
+      return next(new Error(`${pupilUrlSlug} is not a valid uuid`))
+    }
+    const pupilData = await ServiceManagerPupilService.getPupilDetailsByUrlSlug(pupilUrlSlug)
+    res.locals.pageTitle = 'Pupil Summary'
+    req.breadcrumbs('Pupil Search', '/service-manager/pupil-search')
+    req.breadcrumbs(res.locals.pageTitle)
+    res.render('service-manager/pupil-summary', {
+      breadcrumbs: req.breadcrumbs(),
+      pupil: pupilData
+    })
   }
 }
 
