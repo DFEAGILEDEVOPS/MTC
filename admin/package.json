@@ -8,7 +8,7 @@
     "dev-build": "gulp dev-build",
     "shell-build": "./build.sh",
     "clean": "rm -rf dist; rm -f .env",
-    "lint":  "yarn run lint:js && yarn run lint:scss",
+    "lint": "yarn run lint:js && yarn run lint:scss",
     "lint:js": "standard",
     "lint:scss": "stylelint \"assets/**/*.scss\"",
     "lintAndBuild": "yarn lint && yarn build",
@@ -31,7 +31,7 @@
     "watch:integration": "yarn jest --watch --coverage=no --config ./tests-integration/jest.integration.config.js"
   },
   "mtc": {
-    "assets-version": "90cd5f4e303b17b48b569c927e0c7b01"
+    "assets-version": "3b645b4cd81437459f1412160d332734"
   },
   "engines": {
     "node": ">= 14"
