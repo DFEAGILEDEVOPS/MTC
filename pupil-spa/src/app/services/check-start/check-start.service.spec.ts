@@ -1,11 +1,10 @@
 import { TestBed } from '@angular/core/testing'
 import { CheckStartService } from './check-start.service'
 import { StorageService } from '../storage/storage.service'
-import { AzureQueueService } from '../azure-queue/azure-queue.service'
+import { AzureQueueService, QueueMessageRetryConfig } from '../azure-queue/azure-queue.service'
 import { AuditService } from '../audit/audit.service'
 import { TokenService } from '../token/token.service'
 import { AppConfigService, loadConfigMockService } from '../config/config.service'
-import { QUEUE_STORAGE_TOKEN } from '../azure-queue/azure-storage'
 import { APP_INITIALIZER } from '@angular/core'
 
 let checkStartService: CheckStartService
@@ -19,7 +18,6 @@ describe('CheckStartService', () => {
     const inject = TestBed.configureTestingModule({
         providers: [
           AppConfigService,
-          { provide: QUEUE_STORAGE_TOKEN, useValue: undefined },
           { provide: APP_INITIALIZER, useFactory: loadConfigMockService, multi: true },
           TokenService,
           AzureQueueService,
@@ -48,9 +46,11 @@ describe('CheckStartService', () => {
     spyOn(tokenService, 'getToken').and.returnValue({ url: 'url', token: 'token' })
     let actualPayload
     spyOn(azureQueueService, 'addMessageToQueue').and
-      .callFake(async (queueName, url, token, payload, retryConfig) => {
+      .callFake(async (queueName: string, url: string,
+        token: string, payload: object,
+        retryConfig: QueueMessageRetryConfig): Promise<void> => {
         actualPayload = payload
-        return {}
+        return Promise.resolve()
       })
     await checkStartService.submit()
     expect(addEntrySpy).toHaveBeenCalledTimes(2)

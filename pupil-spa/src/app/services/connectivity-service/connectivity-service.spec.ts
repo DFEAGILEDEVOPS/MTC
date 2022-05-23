@@ -4,7 +4,6 @@ import { HttpClient } from '@angular/common/http'
 
 import { AzureQueueService } from '../azure-queue/azure-queue.service'
 import { ConnectivityService } from './connectivity-service'
-import { QUEUE_STORAGE_TOKEN } from '../azure-queue/azure-storage'
 import { default as connectivityErrorMessages } from './connectivity-error-messages'
 
 let connectivityService
@@ -18,8 +17,7 @@ describe('ConnectivityService', () => {
       imports: [HttpClientTestingModule],
       providers: [
         AzureQueueService,
-        ConnectivityService,
-        { provide: QUEUE_STORAGE_TOKEN, useValue: undefined },
+        ConnectivityService
       ]
     })
     httpClient = TestBed.inject(HttpClient)

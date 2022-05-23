@@ -5,7 +5,6 @@ import { FeedbackService } from './feedback.service'
 import { StorageService } from '../storage/storage.service'
 import { TokenService } from '../token/token.service'
 import { AppConfigService, loadConfigMockService } from '../config/config.service'
-import { QUEUE_STORAGE_TOKEN } from '../azure-queue/azure-storage'
 
 let azureQueueService: AzureQueueService
 let feedbackService: FeedbackService
@@ -20,7 +19,6 @@ describe('FeedbackService', () => {
       providers: [
         AppConfigService,
         { provide: APP_INITIALIZER, useFactory: loadConfigMockService, multi: true },
-        { provide: QUEUE_STORAGE_TOKEN, useValue: undefined },
         AzureQueueService,
         FeedbackService,
         StorageService,

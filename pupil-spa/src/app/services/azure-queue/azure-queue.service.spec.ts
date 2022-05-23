@@ -2,23 +2,27 @@ import { TestBed, waitForAsync } from '@angular/core/testing'
 import { APP_CONFIG, IAppConfig, loadConfigMockService } from '../config/config.service'
 import { AzureQueueService } from './azure-queue.service'
 import { APP_INITIALIZER } from '@angular/core'
+import { HttpService } from '../http/http.service'
 
 describe('AzureQueueService', () => {
 
   let sut: AzureQueueService
   let initialProductionFlag: boolean
+  let httpServiceSpy: { post: jasmine.Spy }
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       providers: [
         AzureQueueService,
         { provide: APP_INITIALIZER, useFactory: loadConfigMockService, multi: true },
+        { provide: HttpService, useValue: httpServiceSpy }
       ]
     })
       .compileComponents()
   }))
 
   beforeEach(() => {
+    httpServiceSpy = jasmine.createSpyObj('HttpService', ['post'])
     sut = TestBed.inject(AzureQueueService)
     initialProductionFlag = APP_CONFIG.production
   })
@@ -29,7 +33,10 @@ describe('AzureQueueService', () => {
 
   describe('sets message TTL to no expiry', () => {
     it('should set TTL option to -1 when putting message on queue', async () => {
-      // @ts-ignore
+      let actualUrl = ''
+      httpServiceSpy.post.and.callFake((queueUrl: string, message: any, headers: any) => {
+        actualUrl = queueUrl
+      })
       const queueName = 'my-queue'
       const payload = { payloadItem: 'payloadItem' }
       await sut.addMessageToQueue(queueName,
@@ -41,11 +48,7 @@ describe('AzureQueueService', () => {
           DelayBetweenRetries: 10000
         }
       )
-      // TODO check url has messageTtl set to -1 in query string
-      
-/*       expect(queueServiceMock.createMessage).toHaveBeenCalledWith(queueName, payload, {
-        messageTimeToLive: 1
-      }) */
+      expect(actualUrl).toContain('messagettl=-1')
     })
   })
 
@@ -67,26 +70,22 @@ describe('AzureQueueService', () => {
         )
         fail('should have failed')
       } catch (e) {
-        expect(sut.initQueueService).toHaveBeenCalledTimes(1)
+        expect(httpServiceSpy.post).toHaveBeenCalledTimes(1)
       }
     })
 
     it('should successfully send a message to the queue', async () => {
 
-      spyOn(sut, 'initQueueService').and.returnValue(queueServiceMock)
-      // @ts-ignore
-      spyOn(sut, 'getTextBase64QueueMessageEncoder').and.returnValue(textBase64QueueMessageEncoderMock)
-      const message = await sut.addMessageToQueue('queue',
+      await sut.addMessageToQueue('queue',
         'url',
         'token',
         { payloadItem: 'payloadItem' },
         {
-          checkStartAPIErrorMaxAttempts: 1,
-          checkStartAPIErrorDelay: 10000,
+          MaxAttempts: 1,
+          DelayBetweenRetries: 10000,
         }
       )
-      expect(message).toEqual({ messageId: '1' })
-      expect(sut.initQueueService).toHaveBeenCalledTimes(1)
+      expect(httpServiceSpy.post).toHaveBeenCalledTimes(1)
     })
   })
 
@@ -96,64 +95,33 @@ describe('AzureQueueService', () => {
     })
 
     it('should try to fallback when failing to send a message', async () => {
-      const queueServiceMock: IQueueService = {
-        createMessage: (
-          queueName: string,
-          encodedMessage: string,
-        ) => Promise.reject(false),
-        performRequest: () => {
-        },
-        withFilter: (qs: IQueueService) => qs
-      }
-      const textBase64QueueMessageEncoderMock = {
-        encode: () => 'encodedMessage'
-      }
-      spyOn(sut, 'initQueueService').and.returnValue(queueServiceMock)
-      // @ts-ignore
-      spyOn(sut, 'getTextBase64QueueMessageEncoder').and.returnValue(textBase64QueueMessageEncoderMock)
       try {
         await sut.addMessageToQueue('queue',
           'url',
           'token',
           { payloadItem: 'payloadItem' },
           {
-            checkStartAPIErrorMaxAttempts: 1,
-            checkStartAPIErrorDelay: 10000,
+            MaxAttempts: 1,
+            DelayBetweenRetries: 10000,
           }
         )
         fail('should have failed')
       } catch (e) {
-        expect(sut.initQueueService).toHaveBeenCalledTimes(2)
+        expect(httpServiceSpy.post).toHaveBeenCalledTimes(2)
       }
     })
 
     it('should successfully send a message to the queue', async () => {
-      const queueServiceMock: IQueueService = {
-        createMessage: (
-          queueName: string,
-          encodedMessage: string,
-        ) => Promise.resolve({ messageId: '1' }),
-        performRequest: () => {
-        },
-        withFilter: (qs: IQueueService) => qs
-      }
-      const textBase64QueueMessageEncoderMock = {
-        encode: () => 'encodedMessage'
-      }
-      spyOn(sut, 'initQueueService').and.returnValue(queueServiceMock)
-      // @ts-ignore
-      spyOn(sut, 'getTextBase64QueueMessageEncoder').and.returnValue(textBase64QueueMessageEncoderMock)
-      const message = await sut.addMessageToQueue('queue',
+      await sut.addMessageToQueue('queue',
         'url',
         'token',
         { payloadItem: 'payloadItem' },
         {
-          checkStartAPIErrorMaxAttempts: 1,
-          checkStartAPIErrorDelay: 10000,
+          MaxAttempts: 1,
+          DelayBetweenRetries: 10000,
         }
       )
-      expect(message).toEqual({ messageId: '1' })
-      expect(sut.initQueueService).toHaveBeenCalledTimes(1)
+      expect(httpServiceSpy.post).toHaveBeenCalledTimes(1)
     })
   })
 })

@@ -1,8 +1,7 @@
 import { APP_INITIALIZER } from '@angular/core';
-import { QUEUE_STORAGE_TOKEN } from '../azure-queue/azure-storage';
 import { Router } from '@angular/router';
 import { AuditService } from '../audit/audit.service';
-import { AzureQueueService } from '../azure-queue/azure-queue.service';
+import { AzureQueueService, QueueMessageRetryConfig } from '../azure-queue/azure-queue.service';
 import { CheckCompleteService } from './check-complete.service';
 import { AppConfigService, loadConfigMockService } from '../config/config.service';
 import { StorageService } from '../storage/storage.service';
@@ -38,7 +37,6 @@ describe('CheckCompleteService', () => {
           AppUsageService,
           Meta,
           { provide: APP_INITIALIZER, useFactory: loadConfigMockService, multi: true },
-          { provide: QUEUE_STORAGE_TOKEN, useValue: undefined },
           { provide: Router, useValue: mockRouter }
         ]
       }
@@ -78,9 +76,9 @@ describe('CheckCompleteService', () => {
       }
     });
     let capturedMessage;
-    spyOn(azureQueueService, 'addMessageToQueue').and.callFake((queueName, url, token, message, retryConfig) => {
+    spyOn(azureQueueService, 'addMessageToQueue').and.callFake((queueName: string, url: string, token: string, message: object, retryConfig: QueueMessageRetryConfig): Promise<void> => {
       capturedMessage = message;
-      return Promise.resolve({});
+      return Promise.resolve()
     });
     spyOn(checkCompleteService, 'getPayload').and.returnValue({ checkCode: 'checkCode', schoolUUID: expectedSchoolUUID });
 

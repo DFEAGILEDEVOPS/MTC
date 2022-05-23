@@ -12,7 +12,6 @@ import { SpeechService } from '../services/speech/speech.service'
 import { SpeechServiceMock } from '../services/speech/speech.service.mock'
 import { WindowRefService } from '../services/window-ref/window-ref.service'
 import { NO_ERRORS_SCHEMA } from '@angular/core'
-import { QUEUE_STORAGE_TOKEN } from '../services/azure-queue/azure-storage'
 import { FeedbackServiceMock } from '../services/feedback/feedback.service.mock'
 
 describe('FeedbackComponent', () => {
@@ -35,7 +34,6 @@ describe('FeedbackComponent', () => {
       imports: [],
       schemas: [NO_ERRORS_SCHEMA], // we don't need to test sub-components
       providers: [
-        { provide: QUEUE_STORAGE_TOKEN, useValue: undefined },
         { provide: Router, useValue: mockRouter },
         { provide: SpeechService, useClass: SpeechServiceMock },
         { provide: QuestionService, useClass: QuestionServiceMock },

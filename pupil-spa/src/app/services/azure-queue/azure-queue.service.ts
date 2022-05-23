@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core'
 import { HttpHeaders } from '@angular/common/http'
 import { Buffer } from 'buffer'
 import { HttpService } from '../http/http.service'
+import { APP_CONFIG } from '../config/config.service';
 
 export interface QueueMessageRetryConfig {
   DelayBetweenRetries: number
@@ -35,14 +36,14 @@ export class AzureQueueService {
     })
 
     try {
-      const data = await this.http.post(queueEndpointUrl, wrappedXmlMessage, headers)
-      console.dir(data)
+      await this.http.post(queueEndpointUrl, wrappedXmlMessage, headers)
     } catch (error) {
-      console.error(error)
-      //TODO fallback queue
-  /*     const fallbackUrl = `${window.location.origin}/queue`
-      const fallbackQueueService = this.initQueueService(this.queueName, fallbackUrl, this.sasTokenQueryString, this.retryConfig)
-      return fallbackQueueService.createMessage(this.queueName, encodedMessage) */
+      if (!APP_CONFIG.production) {
+        throw error;
+      } else {
+        const fallbackUrl = `${window.location.origin}/queue?messagettl=-1&${sasToken}`
+        await this.http.post(fallbackUrl, wrappedXmlMessage, headers)
+      }
     }
   }
 }

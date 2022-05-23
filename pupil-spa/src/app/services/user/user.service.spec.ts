@@ -23,7 +23,7 @@ const configDataKey = new ConfigStorageKey()
 const schoolDataKey = new SchoolStorageKey()
 
 describe('UserService', () => {
-  let httpServiceSpy: { post: jasmine.Spy }
+  let httpServiceSpy: { postJson: jasmine.Spy }
   let storageServiceSpy: {
     clear: jasmine.Spy,
     setConfig: jasmine.Spy,
@@ -37,7 +37,7 @@ describe('UserService', () => {
   }
 
   beforeEach(() => {
-    httpServiceSpy = jasmine.createSpyObj('HttpService', ['post'])
+    httpServiceSpy = jasmine.createSpyObj('HttpService', ['postJson'])
     storageServiceSpy = jasmine.createSpyObj('StorageService',
       ['clear', 'setQuestions', 'setConfig', 'setPupil', 'setSchool', 'setToken', 'getAccessArrangements']
     )
@@ -61,7 +61,7 @@ describe('UserService', () => {
   describe('login', () => {
     it('should persist response body to storage', () => {
       // setup
-      httpServiceSpy.post.and.returnValue(Promise.resolve(mockLoginResponseBody))
+      httpServiceSpy.postJson.and.returnValue(Promise.resolve(mockLoginResponseBody))
       // execute
       userService.login('abc12345', '9999a').then(() => {
 
@@ -87,12 +87,12 @@ describe('UserService', () => {
           fail(error)
         })
 
-      expect(httpServiceSpy.post).toHaveBeenCalledTimes(1)
+      expect(httpServiceSpy.postJson).toHaveBeenCalledTimes(1)
       expect(metaServiceSpy.getTag).toHaveBeenCalledTimes(1)
     })
 
     it('should return a promise that rejects on invalid login', () => {
-      httpServiceSpy.post.and.returnValue(Promise.reject(new HttpErrorResponse({
+      httpServiceSpy.postJson.and.returnValue(Promise.reject(new HttpErrorResponse({
         error: { error: 'Unathorised' },
         status: 401,
         statusText: 'Unathorized'
@@ -110,7 +110,7 @@ describe('UserService', () => {
       })
 
       expect(storageService.setQuestions).not.toHaveBeenCalled()
-      expect(httpServiceSpy.post).toHaveBeenCalledTimes(1)
+      expect(httpServiceSpy.postJson).toHaveBeenCalledTimes(1)
     })
   })
 
