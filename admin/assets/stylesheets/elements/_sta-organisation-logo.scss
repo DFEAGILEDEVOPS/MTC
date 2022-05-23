@@ -4,35 +4,35 @@
 }
 
 .govuk-organisation-logo {
-  background-image: url('/images/org_crest_13px.png');
-  background-position: 5px top;
-  background-repeat: no-repeat;
-  background-size: auto 20px;
+  padding: 20px 0 0 6px;
   border-left: 2px solid govuk-organisation-colour("department-for-education");
-  font-family: "Helvetica", "Arial";
+  background-image: url("/images/org_crest_13px.png");
+  background-repeat: no-repeat;
+  background-position: 5px top;
+  background-size: auto 20px;
+  font-family: Helvetica, Arial;
   font-size: 13px;
   font-weight: normal;
   line-height: 15px;
-  padding: 20px 0 0 6px;
 
   @include govuk-media-query($until: tablet) {
-    background-image: url('/images/org_crest_18px.png');
+    padding: 25px 0 0 7px;
+    border-width: 2px;
+    background-image: url("/images/org_crest_18px.png");
     background-position: 6px top;
     background-size: auto 25px;
-    border-width: 2px;
     font-size: 18px;
     line-height: 20px;
-    padding: 25px 0 0 7px;
   }
 
   @include govuk-media-query($from: desktop) {
-    background-image: url('/images/org_crest_27px.png');
+    padding: 40px 0 0 10px;
+    border-width: 3px;
+    background-image: url("/images/org_crest_27px.png");
     background-position: 6px top;
     background-size: auto 40px;
-    border-width: 3px;
     font-size: 27px;
     line-height: 30px;
-    padding: 40px 0 0 10px;
   }
 }
 

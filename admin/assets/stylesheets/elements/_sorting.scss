@@ -2,8 +2,8 @@
   display: inline-block;
   width: 0;
   height: 0;
-  border-style: solid;
   border-width: govuk-em(8, $govuk-root-font-size) govuk-em(5, $govuk-root-font-size) 0 govuk-em(5, $govuk-root-font-size);
+  border-style: solid;
   border-color: govuk-colour("black") transparent transparent transparent;
 }
 
@@ -25,8 +25,8 @@ table.govuk-spacious.sorting {
       margin-left: govuk-em(7, $govuk-root-font-size);
 
       span {
-        font-size: govuk-em(12, $govuk-root-font-size);
         display: none;
+        font-size: govuk-em(12, $govuk-root-font-size);
       }
     }
   }
@@ -41,7 +41,6 @@ body.js-enabled .tick-all-checkboxes.all-hide {
   visibility: hidden;
 }
 
-
 // Client side sorting
 .sort-icon {
   position: relative;
@@ -49,40 +48,43 @@ body.js-enabled .tick-all-checkboxes.all-hide {
 
 .sort-icon:before,
 .sort-icon:after {
-  content: '';
-  border: 5px solid transparent;
-  right: govuk-em(-10px, $govuk-root-font-size);
+  content: "";
+  position: absolute;
   top: 45%;
+  right: govuk-em(-10px, $govuk-root-font-size);
   width: 0;
   height: 0;
-  position: absolute;
+  border: 5px solid transparent;
 }
 
 .sort-icon:before {
-  border-bottom-color: govuk-colour("black");
   margin-top: -9px;
+  border-bottom-color: govuk-colour("black");
 }
+
 .sort-icon:after {
-  border-top-color: govuk-colour("black");
   margin-top: 2px;
+  border-top-color: govuk-colour("black");
 }
 
 .sort-icon.asc:before {
+  margin-top: govuk-em(-4px, $govuk-root-font-size);
   border-width: 0 govuk-em(5, $govuk-root-font-size) govuk-em(8, $govuk-root-font-size) govuk-em(5, $govuk-root-font-size);
   border-color: transparent transparent govuk-colour("black") transparent;
-  margin-top: govuk-em(-4px, $govuk-root-font-size);
 }
+
 .sort-icon.asc:after {
-  border-top-color: transparent;
   margin-top: 0;
+  border-top-color: transparent;
 }
 
 .sort-icon.desc:before {
+  margin-top: govuk-em(-4px, $govuk-root-font-size);
   border-width: govuk-em(8, $govuk-root-font-size) govuk-em(5, $govuk-root-font-size) 0 govuk-em(5, $govuk-root-font-size);
   border-color: govuk-colour("black") transparent transparent transparent;
-  margin-top: govuk-em(-4px, $govuk-root-font-size);
 }
+
 .sort-icon.desc:after {
-  border-top-color: transparent;
   margin-top: 0;
+  border-top-color: transparent;
 }

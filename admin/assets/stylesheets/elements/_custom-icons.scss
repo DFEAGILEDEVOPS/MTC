@@ -1,27 +1,27 @@
 .govuk-icon-download {
   &:before {
     content: " ";
-    background-image: url('/images/icon-file-download.png');
-    background-size: 21px 26px;
-    background-repeat: no-repeat;
     display: inline-block;
-    height: 26px;
-    width: 30px;
-    top: 6px;
     position: relative;
+    top: 6px;
+    width: 30px;
+    height: 26px;
+    background-image: url("/images/icon-file-download.png");
+    background-repeat: no-repeat;
+    background-size: 21px 26px;
   }
 }
 
 .mtc-icon-download {
   &:before {
     content: " ";
-    background-image: url('/images/custom-download-2.svg');
-    background-size: 23px 25px;
-    background-repeat: no-repeat;
     display: inline-block;
-    height: 26px;
-    width: 30px;
-    top: 6px;
     position: relative;
+    top: 6px;
+    width: 30px;
+    height: 26px;
+    background-image: url("/images/custom-download-2.svg");
+    background-repeat: no-repeat;
+    background-size: 23px 25px;
   }
 }

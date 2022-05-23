@@ -1,7 +1,7 @@
 // Flash message
 .govuk-info-message {
-  border: 5px solid govuk-colour("green");
   padding: 1em;
+  border: 5px solid govuk-colour("green");
   color: govuk-colour("black");
   font-weight: bold;
 
@@ -12,16 +12,17 @@
   a:hover {
     color: govuk-colour("green");
   }
+
   &.clickable {
-    text-decoration: underline;
     color: govuk-colour("green");
+    text-decoration: underline;
   }
 }
 
 .govuk-warning-message {
-  border: 5px solid govuk-colour("red");
-  padding: 1em;
   margin-top: 40px;
+  padding: 1em;
+  border: 5px solid govuk-colour("red");
   color: govuk-colour("red");
   font-weight: bold;
 
@@ -32,9 +33,10 @@
   a:hover {
     color: govuk-colour("red");
   }
+
   &.clickable {
-    text-decoration: underline;
     color: govuk-colour("red");
+    text-decoration: underline;
   }
 }
 
@@ -69,12 +71,12 @@
   display: flex;
 
   &:before {
-    content: '';
-    border-left: 7px solid govuk-colour("green");
+    content: "";
     display: table-cell;
-    padding-left: 10px;
     margin-top: -5px;
     margin-bottom: -5px;
+    padding-left: 10px;
+    border-left: 7px solid govuk-colour("green");
   }
 
   .govuk-highlight-wrapper {
@@ -84,12 +86,12 @@
 
 // Red border to display warning on table cell content
 .govuk-warning-item {
-  border-left: 7px solid govuk-colour("red");
+  min-height: 50px;
   margin-top: 5px;
   margin-bottom: 5px;
   padding-left: 10px;
-  min-height: 50px;
   border-bottom: none;
+  border-left: 7px solid govuk-colour("red");
 
   .govuk-highlight-wrapper {
     display: table-cell;
@@ -98,6 +100,7 @@
 
 .govuk-green-panel {
   border-color: govuk-colour("green");
+
   div:first-child {
     margin-top: -15px;
   }
@@ -105,6 +108,7 @@
 
 .mtc-service-message {
   @extend .govuk-body;
+
   a,
   a:link,
   a:visited,
@@ -112,8 +116,9 @@
   a:hover {
     color: govuk-colour("blue");
   }
+
   &.clickable {
-    text-decoration: underline;
     color: govuk-colour("blue");
+    text-decoration: underline;
   }
 }

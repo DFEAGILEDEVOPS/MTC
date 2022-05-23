@@ -3,28 +3,32 @@
     padding: 0 govuk-em(10px, $govuk-root-font-size);
   }
 }
+
 .restart-pupil-name {
-  max-width: govuk-em(150px, $govuk-root-font-size);
   min-width: govuk-em(135px, $govuk-root-font-size);
+  max-width: govuk-em(150px, $govuk-root-font-size);
 }
+
 .restart-reason {
-  max-width: govuk-em(150px, $govuk-root-font-size);
-   min-width: govuk-em(135px, $govuk-root-font-size);
- }
-.restart-status {
-  max-width: govuk-em(150px, $govuk-root-font-size);
   min-width: govuk-em(135px, $govuk-root-font-size);
+  max-width: govuk-em(150px, $govuk-root-font-size);
+}
+
+.restart-status {
+  min-width: govuk-em(135px, $govuk-root-font-size);
+  max-width: govuk-em(150px, $govuk-root-font-size);
 }
 
 .hide {
   display: none;
 }
 
-input[type=radio]:checked ~ .hide {
+input[type="radio"]:checked ~ .hide {
   display: block;
   position: relative;
   margin-top: govuk-em(25px, $govuk-root-font-size);
   margin-left: govuk-em(-35px, $govuk-root-font-size);
+
   .form-group {
     margin-bottom: govuk-em(-10px, $govuk-root-font-size);
   }
@@ -40,12 +44,12 @@ input[type=radio]:checked ~ .hide {
 
 .link-button {
   padding-left: 0;
-  background: none;
   border: none;
+  color: $govuk-link-colour;
+  background: none;
+  font-size: 19px;
   text-decoration: underline;
   cursor: pointer;
-  font-size: 19px;
-  color: $govuk-link-colour;
 }
 
 .link-button:visited {

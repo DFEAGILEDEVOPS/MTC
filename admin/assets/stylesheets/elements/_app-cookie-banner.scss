@@ -1,17 +1,17 @@
 .app-cookie-banner {
-  font-family: $govuk-font-family;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  font-weight: 400;
-  font-size: 14px;
-  line-height: 1.14286;
-  color: #0b0c0c;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
   width: 100%;
   padding-top: 15px;
   padding-bottom: 15px;
-  background-color: #d5e8f3
+  color: #0b0c0c;
+  background-color: #d5e8f3;
+  font-family: $govuk-font-family;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.14286;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 @media print {
@@ -22,7 +22,7 @@
 
 @media (min-width: 40.0625em) {
   .app-cookie-banner {
-    font-size:16px;
+    font-size: 16px;
     line-height: 1.25;
   }
 }
@@ -30,22 +30,22 @@
 @media print {
   .app-cookie-banner {
     font-size: 14pt;
-    line-height: 1.2
+    line-height: 1.2;
   }
 }
 
 @media print {
   .app-cookie-banner {
-    color: #000
+    color: #000000;
   }
 }
 
 .app-cookie-banner {
-  display: none
+  display: none;
 }
 
 @media print {
   .app-cookie-banner {
-    display: none !important
+    display: none !important;
   }
 }

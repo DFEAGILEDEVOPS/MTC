@@ -3,17 +3,17 @@
 }
 
 table.govuk-spacious .print-only {
-  display: none
+  display: none;
 }
 
 @media print {
   .govuk-template {
-    background-color: govuk-colour('white');
+    background-color: govuk-colour("white");
   }
 
   .no-print {
     display: none;
-    background-color: govuk-colour('white');
+    background-color: govuk-colour("white");
   }
 
   .print-only {
@@ -28,13 +28,15 @@ table.govuk-spacious .print-only {
     display: block;
   }
 
-  table.govuk-spacious tr, table.govuk-spacious-two-column tr {
+  table.govuk-spacious tr,
+  table.govuk-spacious-two-column tr {
     display: inline-table;
     width: 100%;
     page-break-before: auto;
     page-break-after: auto;
     page-break-inside: avoid;
     border-bottom: 1px dashed govuk-colour("black");
+
     &.hidden {
       display: none;
     }
@@ -44,7 +46,9 @@ table.govuk-spacious .print-only {
     display: none;
   }
 
-  table, td, tr {
+  table,
+  td,
+  tr {
     border-top: 1px dashed govuk-colour("black");
     text-align: left;
     vertical-align: middle;
@@ -55,33 +59,33 @@ table.govuk-spacious .print-only {
   }
 
   .govuk-label {
-    word-break: break-word;
     width: 440px;
+    word-break: break-word;
   }
 
   .line-checktype {
-    font-size: govuk-em(16px, $govuk-root-font-size);
     display: inline-block;
-    height: govuk-em(110px, $govuk-root-font-size);
-    vertical-align: middle;
-    margin-left: 10px;
-    margin-right: 10px;
-    padding: 0;
-    border-left: 1px solid govuk-colour("black");
-    border-right: 1px solid govuk-colour("black");
-    -webkit-print-color-adjust: exact;
-    min-width: 20px;
     width: 20px;
+    min-width: 20px;
+    height: govuk-em(110px, $govuk-root-font-size);
+    margin-right: 10px;
+    margin-left: 10px;
+    padding: 0;
+    border-right: 1px solid govuk-colour("black");
+    border-left: 1px solid govuk-colour("black");
+    font-size: govuk-em(16px, $govuk-root-font-size);
+    vertical-align: middle;
+    -webkit-print-color-adjust: exact;
 
     &.live {
-      background-color: govuk-colour("black");
       color: govuk-colour("white");
+      background-color: govuk-colour("black");
 
       div {
         height: govuk-em(60px, $govuk-root-font-size);
+        margin-top: 25px;
         font-weight: bold;
         white-space: nowrap;
-        margin-top: 25px;
       }
 
       &.live-end-line {
@@ -92,27 +96,27 @@ table.govuk-spacious .print-only {
     &.try-it-out {
       div {
         height: govuk-em(105px, $govuk-root-font-size);
-        font-weight: bold;
-        white-space: normal;
-        font-size: 16px;
-        text-align: center;
-        margin-left: 2px;
         margin-top: 10px;
+        margin-left: 2px;
+        font-size: 16px;
+        font-weight: bold;
+        text-align: center;
+        white-space: normal;
       }
 
       &.try-it-out-end-line {
-        min-width: 35px;
         width: 35px;
+        min-width: 35px;
         margin-right: 10px;
         padding-right: 5px;
       }
     }
 
     div {
-      writing-mode: vertical-rl;
-      -ms-writing-mode: tb-rl;
-      transform: rotate(180deg);
       -ms-transform: rotate(180deg);
+      transform: rotate(180deg);
+      -ms-writing-mode: tb-rl;
+      writing-mode: vertical-rl;
     }
   }
 
@@ -121,15 +125,15 @@ table.govuk-spacious .print-only {
   }
 
   .pin-content .label {
-    font-size: govuk-em(12px, $govuk-root-font-size);
     margin-bottom: govuk-em(5px, $govuk-root-font-size);
+    font-size: govuk-em(12px, $govuk-root-font-size);
   }
 
   .url {
-    font-size: govuk-em(10px, $govuk-root-font-size);
-    float: left;
-    margin-top: govuk-em(10px, $govuk-root-font-size);
     min-width: govuk-em(400px, $govuk-root-font-size);
+    margin-top: govuk-em(10px, $govuk-root-font-size);
+    float: left;
+    font-size: govuk-em(10px, $govuk-root-font-size);
   }
 
   .qr {
@@ -137,18 +141,18 @@ table.govuk-spacious .print-only {
     left: 12px;
 
     img {
+      position: static;
       width: govuk-em(80px, $govuk-root-font-size);
       height: govuk-em(80px, $govuk-root-font-size);
-      float: right;
-      position: static;
       margin-top: govuk-em(-65px, $govuk-root-font-size);
+      float: right;
     }
   }
 
   .watermark {
     position: relative;
     margin-bottom: -80px;
-    opacity: 0.1;
+    opacity: .1;
     text-align: center;
   }
 }

@@ -2,12 +2,13 @@
   margin-top: 0;
   padding-left: 0;
 
-  li, dt {
+  li,
+  dt {
     margin-bottom: 15px;
 
     ul > li {
-      list-style-type: disc;
       margin-bottom: 5px;
+      list-style-type: disc;
     }
   }
 }

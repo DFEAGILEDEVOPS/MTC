@@ -1,24 +1,24 @@
 // Pupils list
 
 .pupils-print-pins {
-  font-size: .8em;
   padding-right: .5em;
+  font-size: .8em;
 
   &:before {
-    background-image: url('/images/icon-printer.png');
-    background-repeat: no-repeat;
     content: " ";
-    margin-left: .5em;
     margin-top: 12px;
-    padding-left: .5em;
+    margin-left: .5em;
     padding-right: 1.5em;
+    padding-left: .5em;
+    background-image: url("/images/icon-printer.png");
+    background-repeat: no-repeat;
   }
 }
 
 .pupil-name-container {
-  margin-bottom: govuk-em(5px, $govuk-root-font-size);
-  margin-top: govuk-em(5px, $govuk-root-font-size);
   position: relative;
+  margin-top: govuk-em(5px, $govuk-root-font-size);
+  margin-bottom: govuk-em(5px, $govuk-root-font-size);
 }
 
 // pupil listing indent highlighted lines as the 'highlight' is positioned absolutely
@@ -29,10 +29,10 @@
 // pupil listing - hide exceptionally large names that overflow
 .name-text-wrap {
   display: block;
+  max-width: govuk-em(200px, $govuk-root-font-size);
   overflow: hidden;
   text-overflow: ellipsis;
   word-wrap: break-word;
-  max-width: govuk-em(200px, $govuk-root-font-size);
 }
 
 // pupil form
@@ -41,24 +41,27 @@
 }
 
 #ageReason {
-  margin-top: govuk-em(10px, $govuk-root-font-size);
   width: govuk-em(370px, $govuk-root-font-size);
+  margin-top: govuk-em(10px, $govuk-root-font-size);
 }
 
-.panel, .warning-panel, .panel-no-border {
+.panel,
+.warning-panel,
+.panel-no-border {
   margin-bottom: 0;
 }
 
 // Generated Pins list
 .icon-custom-download {
-  display:inline-block;
+  display: inline-block;
   white-space: nowrap;
+
   &:before {
-    background-image: url('/images/custom-download.png');
-    background-repeat: no-repeat;
-    background-size: 25px 25px;
     content: " ";
     padding-left: 28px;
+    background-image: url("/images/custom-download.png");
+    background-repeat: no-repeat;
+    background-size: 25px 25px;
   }
 }
 
@@ -76,8 +79,8 @@
 }
 
 .pupil-group {
-  font-size: small;
   display: block;
+  font-size: small;
 }
 
 // multiple pupils submission
@@ -87,8 +90,8 @@
 }
 
 .error-csv-link {
-  margin-top: govuk-em(10px, $govuk-root-font-size);
   display: inline-block;
-  padding-left: govuk-em(10px, $govuk-root-font-size);
+  margin-top: govuk-em(10px, $govuk-root-font-size);
   padding-bottom: govuk-em(10px, $govuk-root-font-size);
+  padding-left: govuk-em(10px, $govuk-root-font-size);
 }

@@ -1,24 +1,26 @@
 .pin-content {
-  text-align: left;
-  font-size: 12px;
   display: flex;
-  align-items: flex-end;
   margin-top: govuk-em(20px, $govuk-root-font-size);
+  font-size: 12px;
+  text-align: left;
   white-space: normal;
+  align-items: flex-end;
 
   .information {
-    font-size: 26px;
-    background: none;
-    text-align: left;
-    font-weight: bold;
-    margin: 0 govuk-em(5px, $govuk-root-font-size);
     width: auto;
+    margin: 0 govuk-em(5px, $govuk-root-font-size);
+    background: none;
+    font-size: 26px;
+    font-weight: bold;
     line-height: 1;
+    text-align: left;
   }
+
   .label {
-    font-size: 16px;
     max-width: govuk-em(80px, $govuk-root-font-size);
+    font-size: 16px;
   }
+
   .separator {
     padding: 0 govuk-em(30px, $govuk-root-font-size);
   }

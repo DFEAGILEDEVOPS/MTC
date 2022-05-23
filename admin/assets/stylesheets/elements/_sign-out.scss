@@ -1,23 +1,23 @@
 // Sign-out
 
 #sign-out {
-  font-family: $govuk-font-family;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  font-size: medium;
-  text-decoration: none;
-  float: right;
   padding-top: 10px;
   padding-bottom: 15px;
+  float: right;
+  font-family: $govuk-font-family;
+  font-size: medium;
+  text-decoration: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .signed-in-as {
-  font-family: $govuk-font-family;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  font-size: medium;
+  margin-right: 20px;
   padding-top: 10px;
   padding-bottom: 15px;
-  margin-right: 20px;
   float: right;
+  font-family: $govuk-font-family;
+  font-size: medium;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }

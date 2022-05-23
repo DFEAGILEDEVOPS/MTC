@@ -6,14 +6,17 @@
 
 .score-presenter {
   margin-bottom: govuk-em(35px, $govuk-root-font-size);
+
   > dd {
     display: inline-block;
     width: 47%;
+
     > h3:first-child {
-      border-bottom: 1px solid govuk-colour("mid-grey") govuk-em(12px, $govuk-root-font-size);
-      padding-bottom: govuk-em(10px, $govuk-root-font-size);
       margin-right: govuk-em(20px, $govuk-root-font-size);
+      padding-bottom: govuk-em(10px, $govuk-root-font-size);
+      border-bottom: 1px solid govuk-colour("mid-grey") govuk-em(12px, $govuk-root-font-size);
     }
+
     > div {
       margin-top: govuk-em(10px, $govuk-root-font-size);
     }

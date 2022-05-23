@@ -6,10 +6,10 @@
   &.no-underline {
     text-decoration: none;
   }
-  background: none;
-  border: none;
   padding: 0;
+  border: none;
+  color: $govuk-link-colour;
+  background: none;
   text-decoration: underline;
   cursor: pointer;
-  color: $govuk-link-colour;
 }

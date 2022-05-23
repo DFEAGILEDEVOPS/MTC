@@ -1,34 +1,33 @@
 .check-icon-background {
   content: "\00a0";
-  border: solid 8px govuk-colour('green');
-  border-radius: 9px;
+  display: inline-block;
+  width: 0;
+  height: 0;
+  border: solid 8px govuk-colour("green");
   -moz-border-radius: 9px;
   -webkit-border-radius: 9px;
-  height: 0;
-  width: 0;
-  display: inline-block;
+  border-radius: 9px;
 }
 
-
 .check-icon {
-  height: 6px;
+  display: block;
   width: 3px;
-  border: solid govuk-colour('white');
-  border-width: 0px 2px 2px 0px;
+  height: 6px;
+  margin-top: -5px;
+  margin-left: -2px;
   -webkit-transform: rotate(45deg);
   -moz-transform: rotate(45deg);
   -o-transform: rotate(45deg);
   transform: rotate(45deg);
-  display: block;
-  margin-top: -5px;
-  margin-left: -2px;
+  border: solid govuk-colour("white");
+  border-width: 0 2px 2px 0;
 }
 
 .warning-text__icon-small {
   position: relative;
   min-width: 15px;
+  min-height: 0;
+  margin-right: 5px;
   font-size: 19px;
   line-height: 19px;
-  margin-right: 5px;
-  min-height: 0;
 }

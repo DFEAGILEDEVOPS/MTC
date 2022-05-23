@@ -33,13 +33,13 @@
 }
 
 .start-date {
-  float: left;
   margin-bottom: 0;
+  float: left;
 }
 
 .end-date {
-  float: left;
   margin-bottom: 0;
+  float: left;
   @include govuk-media-query($from: desktop) {
     margin-left: 20px;
   }
@@ -49,9 +49,9 @@
 }
 
 .date-input-separator {
-  float: left;
   margin-top: govuk-em(30px, $govuk-root-font-size);
   margin-right: govuk-em(20px, $govuk-root-font-size);
+  float: left;
 }
 
 .hint-spacious {

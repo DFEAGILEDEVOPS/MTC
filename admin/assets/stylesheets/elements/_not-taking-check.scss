@@ -10,8 +10,8 @@
 
     @include govuk-media-query($from: desktop) {
       width: 50%;
-      float: left;
       min-height: 65px;
+      float: left;
     }
     @include govuk-media-query($until: tablet) {
       margin-top: 5px;
@@ -21,11 +21,13 @@
 
 #pupils-not-taking-checks {
   .column-full {
-    z-index: 1
+    z-index: 1;
   }
+
   .column-two-thirds {
-    z-index: 2
+    z-index: 2;
   }
+
   .align-right a {
     text-decoration: underline;
   }
@@ -43,12 +45,13 @@
     width: auto;
     white-space: normal;
   }
+
   td:nth-child(3) {
     width: 10%;
   }
 }
 
 .highlight-table-cell {
-  border-left: 10px solid green;
   padding-left: 15px;
+  border-left: 10px solid green;
 }

@@ -1,15 +1,15 @@
 .govuk-sticky-banner-wrapper {
-  background-color: rgba(217, 236, 226, 1);
   display: none;
-  margin: 0;
-  padding: 0;
-  text-align: right;
-  width: 100%;
-  z-index: 999;
   position: sticky;
   position: -webkit-sticky;
+  z-index: 999;
   bottom: 0;
   left: 0;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: rgba(217, 236, 226, 1);
+  text-align: right;
 
   &.show {
     display: block;
@@ -21,11 +21,11 @@
   }
 
   #content {
-    padding: 0;
 
     max-width: 960px;
 
     margin: 0 $govuk-gutter-half;
+    padding: 0;
 
     @include govuk-media-query($until: tablet) {
       margin: 0 $govuk-gutter;
@@ -82,8 +82,8 @@
 
 .sticky-banner {
   position: fixed;
-  left: 0;
   top: 0;
+  left: 0;
 }
 
 #totalPupilsSelected {

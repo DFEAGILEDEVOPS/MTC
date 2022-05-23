@@ -3,9 +3,10 @@
 }
 
 .show-checkbox-content {
-  margin-top: 10px;
   display: block;
   position: relative;
+  margin-top: 10px;
+
   .form-group {
     margin-bottom: govuk-em(-10px, $govuk-root-font-size);
   }
@@ -26,6 +27,7 @@
 .access-arrangements-list {
   width: govuk-em(230px, $govuk-root-font-size);
   line-height: govuk-em(30px, $govuk-root-font-size);
+
   > div {
     width: govuk-em(235px, $govuk-root-font-size);
   }

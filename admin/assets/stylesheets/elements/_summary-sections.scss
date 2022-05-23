@@ -1,7 +1,7 @@
 .govuk-notice-summary {
-  color: govuk-colour("black");
-  padding: 15px;
   margin-bottom: 30px;
+  padding: 15px;
   clear: both;
-  border: 5px solid govuk-colour('blue');
+  border: 5px solid govuk-colour("blue");
+  color: govuk-colour("black");
 }

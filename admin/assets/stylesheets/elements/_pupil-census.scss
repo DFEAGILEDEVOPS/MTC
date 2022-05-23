@@ -1,16 +1,18 @@
 .pupil-census-uploaded-file {
-  border-top: 1px solid govuk-colour('mid-grey');
-  border-bottom: 1px solid govuk-colour('mid-grey');
   display: inline-flex;
   min-width: 100%;
+  border-top: 1px solid govuk-colour("mid-grey");
+  border-bottom: 1px solid govuk-colour("mid-grey");
+
   > dd {
     padding-top: govuk-em(10px, $govuk-root-font-size);
     padding-bottom: govuk-em(10px, $govuk-root-font-size);
     margin-inline-start: 0;
+
     > span:first-child {
-      display:inline-block;
-      word-wrap: break-word;
+      display: inline-block;
       width: govuk-em(120px, $govuk-root-font-size);
+      word-wrap: break-word;
     }
   }
 }

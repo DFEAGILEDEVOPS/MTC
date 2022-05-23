@@ -1,14 +1,14 @@
 .single-column-list {
-  overflow: visible;
   margin-left: govuk-em(-4px, $govuk-root-font-size);
+  overflow: visible;
 
   .multiple-choice {
     margin: govuk-em(4px, $govuk-root-font-size);
   }
 
   li {
-    overflow: visible;
     margin-top: govuk-em(10px, $govuk-root-font-size);
+    overflow: visible;
 
     @include govuk-media-query($from: desktop) {
       width: 100%;

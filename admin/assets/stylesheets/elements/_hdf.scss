@@ -3,7 +3,7 @@
 }
 
 .multiple-choice.smaller {
-  input[type=checkbox] + label {
+  input[type="checkbox"] + label {
     padding-top: 0;
 
     &:before {
@@ -12,10 +12,10 @@
     }
 
     &:after {
-      width: 12px;
-      height: 7px;
       top: 4px;
       left: 4px;
+      width: 12px;
+      height: 7px;
       border-width: 0 0 3px 3px;
     }
   }

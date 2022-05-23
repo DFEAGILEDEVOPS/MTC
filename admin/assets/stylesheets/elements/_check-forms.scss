@@ -17,30 +17,30 @@
 .icon-download {
   &:before {
     content: " ";
-    background-image: url('/images/icon-file-download.png');
-    background-size: 21px 26px;
-    background-repeat: no-repeat;
     display: inline-block;
-    height: 26px;
-    width: 30px;
-    top: 6px;
     position: relative;
+    top: 6px;
+    width: 30px;
+    height: 26px;
+    background-image: url("/images/icon-file-download.png");
+    background-repeat: no-repeat;
+    background-size: 21px 26px;
   }
 }
 
 dl.inline-definition-list {
-  font-size: govuk-em(12px, $govuk-root-font-size);
-  margin: 0;
-  overflow: hidden;
-  padding: 0;
   width: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  font-size: govuk-em(12px, $govuk-root-font-size);
 
   dd {
-    font-size: govuk-em(36px, $govuk-root-font-size);
-    float: left;
-    margin: 0 0 1em 0;
-    padding: 0;
     width: 90%;
+    margin: 0 0 1em;
+    padding: 0;
+    float: left;
+    font-size: govuk-em(36px, $govuk-root-font-size);
     @include govuk-media-query($from: tablet) {
       width: 80%;
     }
@@ -50,32 +50,32 @@ dl.inline-definition-list {
   }
 
   dt {
-    font-size: 24px;
-
-    color: govuk-colour("dark-grey");
-    float: left;
+    width: 10%;
     margin: 0;
     padding: 5px 0;
-    width: 10%;
+    float: left;
+
+    color: govuk-colour("dark-grey");
+    font-size: 24px;
 
     @include govuk-media-query($from: tablet) {
-      float: left;
       width: 20%;
+      float: left;
     }
 
     @include govuk-media-query($from: desktop) {
-      float: left;
       width: 10%;
+      float: left;
     }
   }
 }
 
 .first-factor {
   display: inline-block;
-  margin-left: govuk-em(40px, $govuk-root-font-size);
-  margin-right: govuk-em(6px, $govuk-root-font-size);
-  text-align: right;
   width: govuk-em(17px, $govuk-root-font-size);
+  margin-right: govuk-em(6px, $govuk-root-font-size);
+  margin-left: govuk-em(40px, $govuk-root-font-size);
+  text-align: right;
 
   @include govuk-media-query($from: tablet) {
     margin-left: govuk-em(10px, $govuk-root-font-size);
@@ -88,18 +88,18 @@ dl.inline-definition-list {
 
 .second-factor {
   display: inline-block;
+  width: govuk-em(15px, $govuk-root-font-size);
   margin-left: govuk-em(6px, $govuk-root-font-size);
   text-align: left;
-  width: govuk-em(15px, $govuk-root-font-size);
 }
 
 .equals-sign {
-  margin-left: govuk-em(5px, $govuk-root-font-size);
   margin-right: govuk-em(5px, $govuk-root-font-size);
+  margin-left: govuk-em(5px, $govuk-root-font-size);
 
   @include govuk-media-query($from: tablet) {
-    margin-left: govuk-em(5px, $govuk-root-font-size);
     margin-right: govuk-em(5px, $govuk-root-font-size);
+    margin-left: govuk-em(5px, $govuk-root-font-size);
   }
 }
 

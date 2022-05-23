@@ -1,12 +1,12 @@
 .modal-overlay {
-  background-color: rgba(0, 0, 0, 0.35);
-  background-size: cover;
-  height: 100%;
+  display: none;
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
-  display: none;
+  height: 100%;
+  background-color: rgba(0, 0, 0, .35);
+  background-size: cover;
 
   &.show {
     display: block;
@@ -16,42 +16,42 @@
 #modal-wrapper {
   margin: 0;
   padding: 0;
-  vertical-align: baseline;
   font-family: $govuk-font-family;
+  vertical-align: baseline;
 }
 
 dialog.modal-box {
-  background-color: govuk-colour("white");
-  border-width: 0;
   display: none;
-  margin: 0;
   position: fixed;
-  padding: 8px;
   top: 50%;
   left: 50%;
+  margin: 0;
+  padding: 8px;
   transform: translate(-50%, -50%);
+  border-width: 0;
+  background-color: govuk-colour("white");
 
   &.show {
     display: block;
   }
 
   h1 {
-    background-color: govuk-colour("blue");
-    color: govuk-colour("white");
-    font-size: 22px;
     margin-bottom: 10px;
-    padding: 12px 12px 10px 12px;
+    padding: 12px 12px 10px;
+    color: govuk-colour("white");
+    background-color: govuk-colour("blue");
+    font-size: 22px;
 
     &:before {
-      background-image: url('/images/icon-warning-white.png');
-      background-repeat: no-repeat;
-      background-size: 25px 25px;
       content: " ";
       padding-left: 35px;
+      background-image: url("/images/icon-warning-white.png");
+      background-repeat: no-repeat;
+      background-size: 25px 25px;
     }
   }
 
   .modal-content {
-    padding: 10px 12px 10px 12px;
+    padding: 10px 12px;
   }
 }
