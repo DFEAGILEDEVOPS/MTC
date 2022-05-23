@@ -3,7 +3,7 @@ class SearchOrganisationsPage < SitePrism::Page
 
   element :heading, '.govuk-heading-xl', text: 'Search organisations'
   element :input, '#q'
-  element :search, '#searchh-btn'
+  element :search, '#search-btn'
   element :cancel, 'a', text: 'Cancel'
   element :school_not_found, 'a', text: 'No school found'
 

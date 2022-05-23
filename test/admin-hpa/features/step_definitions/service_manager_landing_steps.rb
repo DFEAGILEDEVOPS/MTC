@@ -86,7 +86,10 @@ Then(/^I should be given the option to manage organisations/) do
   expect(admin_page).to have_school_search_text
 end
 
-
+Then(/^I should be given the option to search for pupils/) do
+  expect(admin_page).to have_pupil_search
+  expect(admin_page).to have_pupil_search_text
+end
 
 And(/^the service managers homepage should match design$/) do
   step "I should see service-manager's name"
