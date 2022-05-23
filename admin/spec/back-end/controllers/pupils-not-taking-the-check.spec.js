@@ -3,7 +3,6 @@
 
 const httpMocks = require('node-mocks-http')
 
-const attendanceCodesPresenter = require('../../../helpers/attendance-codes-presenter')
 const businessAvailabilityService = require('../../../services/business-availability.service')
 const attendanceCodeService = require('../../../services/attendance.service')
 const attendanceService = require('../../../services/attendance.service')
@@ -94,9 +93,6 @@ describe('pupils-not-taking-the-check controller:', () => {
     })
 
     describe('#getSelectPupilNotTakingCheck : Select reason for pupils', () => {
-      beforeEach(() => {
-        jest.spyOn(attendanceCodesPresenter, 'getPresentationData')
-      })
       test('happy path', async () => {
         jest.spyOn(attendanceCodeService, 'getAttendanceCodes').mockResolvedValue([])
         jest.spyOn(pupilsNotTakingCheckService, 'getPupilsWithoutReasons').mockResolvedValue(pupilsWithReasonsMock)

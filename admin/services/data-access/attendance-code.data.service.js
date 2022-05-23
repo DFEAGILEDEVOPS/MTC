@@ -8,10 +8,10 @@ const sqlService = require('./sql.service')
 const attendanceCodeDataService = {
   /**
    * Find Attendance Codes.
-   * @returns {Promise<*>}
+   * @returns {Promise<[{id: number, reason: string, code: string, order: number}] | undefined>}
    */
   sqlFindAttendanceCodes: async () => {
-    const sql = `SELECT id, reason, code FROM ${sqlService.adminSchema}.[attendanceCode] ORDER BY [order]`
+    const sql = `SELECT id, reason, code, [order] FROM ${sqlService.adminSchema}.[attendanceCode] WHERE isPrivileged = 0`
     return sqlService.readonlyQuery(sql)
   },
 

@@ -11,11 +11,14 @@ const pupilsNotTakingCheckDataService = {
  */
   sqlFindPupilsWithReasons: async (schoolId) => {
     const sql = `
-      SELECT p.*, ac.reason
+      SELECT
+        p.*,
+        ac.reason,
+        ac.isPrivileged as attendanceCodeIsPrivileged
       FROM [mtc_admin].[pupil] p
         INNER JOIN [mtc_admin].[pupilAttendance] pa ON p.id = pa.pupil_id
         INNER JOIN [mtc_admin].[attendanceCode] ac ON pa.attendanceCode_id = ac.id
-      WHERE p.school_id = @schoolId AND pa.isDeleted = 0      
+      WHERE p.school_id = @schoolId AND pa.isDeleted = 0
     `
 
     const params = [{
@@ -47,9 +50,9 @@ const pupilsNotTakingCheckDataService = {
                  p.currentCheckId IS NULL OR
                  -- a check has been generated, but was never logged in and has now expired
                  (c.pupilLoginDate IS NULL
-                      -- and has expired or been deleted (happens on a schedule after expiry)                   
+                      -- and has expired or been deleted (happens on a schedule after expiry)
                       AND (cp.check_id IS NULL OR SYSDATETIMEOFFSET() > cp.pinExpiresAt)))
-           AND p.attendanceId IS NULL         
+           AND p.attendanceId IS NULL
     `
     const params = [{
       name: 'schoolId',
@@ -77,7 +80,7 @@ const pupilsNotTakingCheckDataService = {
                  p.currentCheckId IS NULL OR
                  -- Or, a check was assigned but not received - cover new, collected and not received checks
                  (p.currentCheckId IS NOT NULL AND p.checkComplete = 0 AND c.received = 0))
-           AND p.attendanceId IS NULL         
+           AND p.attendanceId IS NULL
     `
     const params = [{
       name: 'schoolId',
