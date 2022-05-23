@@ -11,6 +11,7 @@ describe('AzureQueueService', () => {
   let httpServiceSpy: { post: jasmine.Spy }
 
   beforeEach(waitForAsync(() => {
+    httpServiceSpy = jasmine.createSpyObj('HttpService', ['post'])
     TestBed.configureTestingModule({
       providers: [
         AzureQueueService,
@@ -18,14 +19,10 @@ describe('AzureQueueService', () => {
         { provide: HttpService, useValue: httpServiceSpy }
       ]
     })
-      .compileComponents()
-  }))
-
-  beforeEach(() => {
-    httpServiceSpy = jasmine.createSpyObj('HttpService', ['post'])
-    sut = TestBed.inject(AzureQueueService)
+    .compileComponents()
     initialProductionFlag = APP_CONFIG.production
-  })
+    sut = TestBed.inject(AzureQueueService)
+  }))
 
   afterEach(() => {
     (<IAppConfig>APP_CONFIG).production = initialProductionFlag
@@ -58,6 +55,7 @@ describe('AzureQueueService', () => {
     })
 
     it('should not try to fallback when failing to send a message', async () => {
+      httpServiceSpy.post.and.throwError(new Error('fail'))
       try {
         await sut.addMessageToQueue('queue',
           'url',
@@ -95,6 +93,7 @@ describe('AzureQueueService', () => {
     })
 
     it('should try to fallback when failing to send a message', async () => {
+      httpServiceSpy.post.and.throwError(new Error('fail'))
       try {
         await sut.addMessageToQueue('queue',
           'url',
