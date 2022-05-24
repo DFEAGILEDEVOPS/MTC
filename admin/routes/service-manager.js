@@ -146,4 +146,19 @@ router.get(
   serviceManagerController.getJobOutputs
 )
 
+router.get('/pupil-search',
+  isAuthenticated([roles.serviceManager]),
+  serviceManagerController.getPupilSearch
+)
+
+router.post('/pupil-search',
+  isAuthenticated([roles.serviceManager]),
+  serviceManagerController.postPupilSearch
+)
+
+router.get('/pupil-summary/:slug',
+  isAuthenticated([roles.serviceManager]),
+  serviceManagerController.getPupilSummary
+)
+
 module.exports = router

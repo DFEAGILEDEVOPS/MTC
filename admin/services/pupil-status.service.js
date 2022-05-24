@@ -57,9 +57,9 @@ const pupilStatusService = {
    * @property {Number} attendanceId
    * @property {Boolean} checkComplete
    * @property {Boolean} checkReceived
-   * @property {Number} currentCheckid
+   * @property {Number} currentCheckId
    * @property {Number} notReceivedExpiryInMinutes
-   * @property {Date} pinExpiresAt
+   * @property {import('moment-timezone').Moment} pinExpiresAt
    * @property {Boolean} processingFailed
    * @property {Boolean} pupilCheckComplete
    * @property {Number} pupilId
@@ -70,7 +70,7 @@ const pupilStatusService = {
 
   /**
    * Return the process status using new pupil status fields
-   * @param {ProcessStatus} arg object containing the parameters
+   * @param {ProcessStatus} processStatus object containing the parameters
    * @return {string}
    */
   getProcessStatusV2: function (processStatus) {

@@ -36,11 +36,28 @@ pupilAttendanceDataService.sqlDeleteOneByPupilId = async (pupilId) => {
     throw new Error('pupilId is required for a DELETE')
   }
   const sql = `
+  --
+  -- Ensure the attendance code we are about to unset is not privileged
+  --
+  DECLARE @isPrivileged Bit = (
+      SELECT ac.isPrivileged
+      FROM [mtc_admin].[attendanceCode] ac
+      JOIN [mtc_admin].[pupilAttendance] pa ON (ac.id = pa.attendanceCode_id)
+      WHERE pa.pupil_id = @pupilId AND pa.isDeleted = 0
+  )
+  IF @isPrivileged = 1
+    THROW 51000, 'attempt to remove a privileged attendance code', 1;
+
+  --
+  -- Remove the attendance code
+  --
   UPDATE [mtc_admin].[pupilAttendance]
   SET isDeleted=1
   WHERE pupil_id = @pupilId;
 
-  -- maintain the pupil state
+  --
+  -- Maintain the pupil state
+  --
   UPDATE [mtc_admin].[pupil]
   SET attendanceId = NULL
   WHERE id = @pupilId;
@@ -120,7 +137,7 @@ pupilAttendanceDataService.markAsNotAttending = async (slugs, code, userId, scho
   -- Mark pupils as not attending
   --
 
-  DECLARE @attendanceCode_id Int = (SELECT id from [mtc_admin].[attendanceCode] where code = @code);
+  DECLARE @attendanceCode_id Int = (SELECT id from [mtc_admin].[attendanceCode] where code = @code AND isPrivileged = 0);
 
   IF @attendanceCode_id IS NULL
     THROW 51000, 'unknown attendanceCode.code', 1;

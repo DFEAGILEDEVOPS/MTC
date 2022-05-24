@@ -16,6 +16,9 @@ const organisationBulkUploadService = require('../../../services/organisation-bu
 const administrationMessageService = require('../../../services/administration-message.service')
 const auditOperationTypes = require('../../../lib/consts/audit-entry-types')
 const { JobService } = require('../../../services/job-service/job.service')
+const { ServiceManagerPupilDataService } = require('../../../services/service-manager/pupil-service/service-manager.pupil.data.service')
+const { ServiceManagerPupilService } = require('../../../services/service-manager/pupil-service/service-manager.pupil.service')
+const moment = require('moment-timezone')
 
 describe('service manager controller:', () => {
   let next
@@ -1067,6 +1070,192 @@ describe('service manager controller:', () => {
         })
         await controller.getJobOutputs(req, res, next)
         expect(next).toHaveBeenCalledWith(expectedError)
+      })
+    })
+  })
+
+  describe('getPupilSearch', () => {
+    let baseReq
+    beforeEach(() => {
+      baseReq = {
+        method: 'GET',
+        url: '/service-manager/pupil-search'
+      }
+    })
+
+    test('renders the pupil search page', async () => {
+      const res = getRes()
+      const req = getReq(baseReq)
+      await controller.getPupilSearch(req, res, next)
+      const args = res.render.mock.calls[0]
+      expect(res.render).toHaveBeenCalled()
+      expect(args[0]).toBe('service-manager/pupil-search')
+    })
+  })
+
+  describe('postPupilSearch', () => {
+    let baseReq
+    beforeEach(() => {
+      baseReq = {
+        method: 'POST',
+        url: '/service-manager/pupil-search',
+        body: {
+          q: 'THIRTE3NCH4RS'
+        }
+      }
+      jest.restoreAllMocks()
+    })
+
+    test('shows no query provided error if search box empty', async () => {
+      const res = getRes()
+      const req = getReq({
+        method: 'POST',
+        url: '/service-manager/pupil-search',
+        body: {
+          q: ''
+        }
+      })
+      await controller.postPupilSearch(req, res, next)
+      const args = res.render.mock.calls[0]
+      const validationError = args[1].error
+      expect(validationError.get('q')).toBe('No query provided')
+    })
+
+    test('shows invalid input message when invalid upn provided', async () => {
+      const res = getRes()
+      const req = getReq({
+        method: 'POST',
+        url: '/service-manager/pupil-search',
+        body: {
+          q: 'invalid-upn!'
+        }
+      })
+      await controller.postPupilSearch(req, res, next)
+      const args = res.render.mock.calls[0]
+      const validationError = args[1].error
+      expect(validationError.get('q')).toBe('upn should be 13 characters and numbers')
+    })
+
+    test('shows no pupil found error if results empty', async () => {
+      const res = getRes()
+      const req = getReq(baseReq)
+      jest.spyOn(ServiceManagerPupilDataService, 'findPupilByUpn').mockResolvedValue([])
+      await controller.postPupilSearch(req, res, next)
+      const args = res.render.mock.calls[0]
+      const validationError = args[1].error
+      expect(validationError.get('q')).toBe('No pupil found')
+    })
+
+    test('redirects straight to the pupil summary if 1 pupil is found', async () => {
+      const res = getRes()
+      const req = getReq(baseReq)
+      const mockUrlSlug = 'my-mock-slug'
+      jest.spyOn(ServiceManagerPupilDataService, 'findPupilByUpn').mockResolvedValue([{
+        urlSlug: mockUrlSlug,
+        id: 1,
+        firstName: 'string',
+        lastName: 'string',
+        dateOfBirth: moment('1999-12-30'),
+        schoolName: 'string',
+        schoolUrn: 12345,
+        dfeNumber: 65794
+      }])
+      await controller.postPupilSearch(req, res, next)
+      const args = res.redirect.mock.calls[0]
+      expect(res.render).not.toHaveBeenCalled()
+      expect(res.redirect).toHaveBeenCalled()
+      expect(args[0]).toBe(`/service-manager/pupil-summary/${encodeURIComponent(mockUrlSlug).toLowerCase()}`)
+    })
+
+    test('redirects to the search results if more than 1 pupil is found', async () => {
+      const res = getRes()
+      const req = getReq(baseReq)
+      jest.spyOn(ServiceManagerPupilDataService, 'findPupilByUpn').mockResolvedValue([
+        {
+          urlSlug: 'slug1',
+          id: 1,
+          firstName: 'string',
+          lastName: 'string',
+          dateOfBirth: moment('1999-12-30'),
+          schoolName: 'string',
+          schoolUrn: 12345,
+          dfeNumber: 65794
+        },
+        {
+          urlSlug: 'slug2',
+          id: 2,
+          firstName: 'string',
+          lastName: 'string',
+          dateOfBirth: moment('1999-12-30'),
+          schoolName: 'string',
+          schoolUrn: 12345,
+          dfeNumber: 65794
+        }
+      ])
+      await controller.postPupilSearch(req, res, next)
+      const args = res.render.mock.calls[0]
+      expect(res.render).toHaveBeenCalled()
+      expect(args[0]).toBe('service-manager/pupil-search')
+      expect(args[1].results.length).toBe(2)
+    })
+  })
+
+  describe('getPupilSummary', () => {
+    let baseReq
+    beforeEach(() => {
+      baseReq = {
+        method: 'GET'
+      }
+      jest.restoreAllMocks()
+    })
+
+    test('redirects back to search if no pupil slug provided', async () => {
+      const req = getReq(baseReq)
+      req.params = {}
+      const res = getRes()
+      jest.spyOn(res, 'redirect')
+      await controller.getPupilSummary(req, res, next)
+      expect(res.redirect).toHaveBeenCalledWith('/service-manager/pupil-search/')
+    })
+
+    test('it throws an error if pupil slug not valid uuid', async () => {
+      const invalidUuid = 'not-a-uuid'
+      const req = getReq(baseReq)
+      req.params = {
+        slug: invalidUuid
+      }
+      const res = getRes()
+      jest.spyOn(res, 'redirect')
+      await controller.getPupilSummary(req, res, next)
+      expect(res.redirect).not.toHaveBeenCalledWith('/service-manager/pupil-search/')
+      expect(next).toHaveBeenCalled()
+      const args = next.mock.calls[0]
+      expect(args[0].message).toEqual(`${invalidUuid} is not a valid uuid`)
+    })
+
+    test('it renders pupil data when found by uuid', async () => {
+      const validUuid = '4dc3212a-92ca-46da-b4bc-2cb7881ec593'
+      const req = getReq(baseReq)
+      req.params = {
+        slug: validUuid
+      }
+      const thePupilData = {
+        urlSlug: 'slug1',
+        id: 1,
+        firstName: 'firstName',
+        lastName: 'lastName',
+        dateOfBirth: '1999-12-30',
+        schoolName: 'school name',
+        schoolUrn: 12345,
+        dfeNumber: 65794
+      }
+      jest.spyOn(ServiceManagerPupilService, 'getPupilDetailsByUrlSlug').mockResolvedValue(thePupilData)
+      const res = getRes()
+      jest.spyOn(res, 'render')
+      await controller.getPupilSummary(req, res, next)
+      expect(res.render).toHaveBeenCalledWith('service-manager/pupil-summary', {
+        breadcrumbs: undefined,
+        pupil: thePupilData
       })
     })
   })

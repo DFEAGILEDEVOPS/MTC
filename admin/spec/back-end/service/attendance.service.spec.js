@@ -7,6 +7,7 @@ const pupilAttendanceDataService = require('../../../services/data-access/pupil-
 const redisCacheService = require('../../../services/data-access/redis-cache.service')
 
 const service = require('../../../services/attendance.service')
+const attendanceCodeDataService = require('../../../services/data-access/attendance-code.data.service')
 
 describe('attendanceService', () => {
   afterEach(() => {
@@ -86,6 +87,21 @@ describe('attendanceService', () => {
         const result = await service.hasAttendance('id', 'familiarisation')
         expect(result).toBe(false)
       })
+    })
+  })
+
+  describe('#getAttendanceCodes', () => {
+    test('it sorts on the order prop', async () => {
+      const attendanceData = [
+        { id: 1, order: 3 },
+        { id: 2, order: 2 },
+        { id: 3, order: 1 }
+      ]
+      jest.spyOn(attendanceCodeDataService, 'sqlFindAttendanceCodes').mockResolvedValue(attendanceData)
+      const actual = await service.getAttendanceCodes()
+      expect(actual[0].id).toBe(3)
+      expect(actual[1].id).toBe(2)
+      expect(actual[2].id).toBe(1)
     })
   })
 })
