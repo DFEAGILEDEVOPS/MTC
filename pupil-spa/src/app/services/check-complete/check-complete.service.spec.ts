@@ -11,7 +11,9 @@ import { AppUsageService } from '../app-usage/app-usage.service';
 import { Meta } from '@angular/platform-browser'
 
 let auditService: AuditService;
-let azureQueueServiceSpy: IAzureQueueService;
+let azureQueueServiceSpy: {
+  addMessageToQueue: jasmine.Spy
+};
 let checkCompleteService: CheckCompleteService;
 let storageService: StorageService;
 let tokenService: TokenService;
@@ -48,7 +50,6 @@ describe('CheckCompleteService', () => {
     checkCompleteService = testBed.inject(CheckCompleteService);
     appUsageService = TestBed.inject(AppUsageService);
     tokenService = testBed.inject(TokenService);
-    azureQueueServiceSpy = testBed.inject(AzureQueueService);
     auditService = testBed.inject(AuditService);
     storageService = TestBed.inject(StorageService);
     checkCompleteService.checkSubmissionApiErrorDelay = 100;
@@ -79,7 +80,7 @@ describe('CheckCompleteService', () => {
       }
     });
     let capturedMessage;
-    spyOn(azureQueueServiceSpy, 'addMessageToQueue').and.callFake((queueName: string, url: string, token: string, message: object, retryConfig: QueueMessageRetryConfig): Promise<void> => {
+    azureQueueServiceSpy.addMessageToQueue.and.callFake((queueName: string, url: string, token: string, message: object, retryConfig: QueueMessageRetryConfig): Promise<void> => {
       capturedMessage = message;
       return Promise.resolve()
     });
@@ -136,8 +137,7 @@ describe('CheckCompleteService', () => {
     spyOn(storageService, 'setPendingSubmission');
     spyOn(storageService, 'setCompletedSubmission');
     spyOn(storageService, 'getAllItems').and.returnValue({pupil: {checkCode: 'checkCode'}});
-    spyOn(azureQueueServiceSpy, 'addMessageToQueue')
-      .and.returnValue(Promise.reject(new Error('error')));
+    azureQueueServiceSpy.addMessageToQueue.and.returnValue(Promise.reject(new Error('error')));
     spyOn(checkCompleteService, 'getPayload').and.returnValue({});
     await checkCompleteService.submit(Date.now());
     expect(addEntrySpy).toHaveBeenCalledTimes(2);
@@ -166,7 +166,7 @@ describe('CheckCompleteService', () => {
       statusCode: 403,
       authenticationerrordetail: 'Signature not valid in the specified time frame: Start - Expiry - Current'
     };
-    spyOn(azureQueueServiceSpy, 'addMessageToQueue').and.returnValue(Promise.reject(sasTokenExpiredError));
+    azureQueueServiceSpy.addMessageToQueue.and.returnValue(Promise.reject(sasTokenExpiredError));
     await checkCompleteService.submit(Date.now());
     expect(addEntrySpy).toHaveBeenCalledTimes(2);
     expect(appUsageService.store).toHaveBeenCalledTimes(1);
@@ -191,7 +191,6 @@ describe('CheckCompleteService', () => {
     spyOn(storageService, 'setCompletedSubmission');
     spyOn(storageService, 'getAllItems');
     spyOn(checkCompleteService, 'getPayload').and.returnValue({});
-    spyOn(azureQueueServiceSpy, 'addMessageToQueue');
     await checkCompleteService.submit(Date.now());
     expect(addEntrySpy).toHaveBeenCalledTimes(0);
     expect(checkCompleteService.getPayload).toHaveBeenCalledTimes(0);

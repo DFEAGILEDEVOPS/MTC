@@ -10,7 +10,9 @@ import { QuestionService } from '../question/question.service';
 import { QuestionServiceMock } from '../question/question.service.mock';
 import { AccessArrangements } from '../../access-arrangements';
 
-let azureQueueServiceSpy: IAzureQueueService;
+let azureQueueServiceSpy: {
+  addMessageToQueue: jasmine.Spy
+};
 let pupilPrefsService: PupilPrefsService;
 let auditService: AuditService;
 let mockQuestionService;
@@ -36,7 +38,6 @@ describe('PupilPrefsService', () => {
         { provide: AzureQueueService, useValue: azureQueueServiceSpy }
       ]
     });
-    azureQueueServiceSpy = injector.inject(AzureQueueService);
     pupilPrefsService = injector.inject(PupilPrefsService);
     tokenService = injector.inject(TokenService);
     mockQuestionService = injector.inject(QuestionService);
@@ -57,7 +58,6 @@ describe('PupilPrefsService', () => {
     it('should call pupil prefs azure queue storage', async () => {
       spyOn(mockQuestionService, 'getConfig').and.returnValue({colourContrast: false});
       spyOn(tokenService, 'getToken').and.returnValue({url: 'url', token: 'token', queueName: 'the-queue'});
-      const addMessageSpy = spyOn(azureQueueServiceSpy, 'addMessageToQueue');
       const addEntrySpy = spyOn(auditService, 'addEntry');
       spyOn(storageService, 'getAccessArrangements').and.returnValue(storedPrefs);
       spyOn(storageService, 'getPupil').and.returnValue({ checkCode: 'checkCode' });
@@ -78,17 +78,17 @@ describe('PupilPrefsService', () => {
         DelayBetweenRetries: pupilPrefsService.pupilPrefsAPIErrorDelay,
         MaxAttempts: pupilPrefsService.pupilPrefsAPIErrorMaxAttempts
       };
-      expect(addMessageSpy.calls.all()[0].args[0]).toEqual('the-queue');
-      expect(addMessageSpy.calls.all()[0].args[1]).toEqual('url');
-      expect(addMessageSpy.calls.all()[0].args[2]).toEqual('token');
-      expect(addMessageSpy.calls.all()[0].args[3]).toEqual(payload);
-      expect(addMessageSpy.calls.all()[0].args[4]).toEqual(retryConfig);
+      expect(azureQueueServiceSpy.addMessageToQueue.calls.all()[0].args[0]).toEqual('the-queue');
+      expect(azureQueueServiceSpy.addMessageToQueue.calls.all()[0].args[1]).toEqual('url');
+      expect(azureQueueServiceSpy.addMessageToQueue.calls.all()[0].args[2]).toEqual('token');
+      expect(azureQueueServiceSpy.addMessageToQueue.calls.all()[0].args[3]).toEqual(payload);
+      expect(azureQueueServiceSpy.addMessageToQueue.calls.all()[0].args[4]).toEqual(retryConfig);
       expect(addEntrySpy.calls.all()[1].args[0].type).toEqual('PupilPrefsAPICallSucceeded');
     });
     it('should audit log the error when azureQueueService add Message fails', async () => {
       spyOn(mockQuestionService, 'getConfig').and.returnValue({colourContrast: false});
       spyOn(tokenService, 'getToken').and.returnValue({url: 'url', token: 'token', queueName: 'the-queue'});
-      spyOn(azureQueueServiceSpy, 'addMessageToQueue').and.returnValue(Promise.reject(new Error('error')));
+      azureQueueServiceSpy.addMessageToQueue.and.returnValue(Promise.reject(new Error('error')));
       const addEntrySpy = spyOn(auditService, 'addEntry');
       spyOn(storageService, 'getAccessArrangements').and.returnValue(storedPrefs);
       spyOn(storageService, 'getPupil').and.returnValue({ checkCode: 'checkCode' });

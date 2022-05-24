@@ -9,18 +9,23 @@ import { APP_INITIALIZER } from '@angular/core'
 
 let checkStartService: CheckStartService
 let tokenService: TokenService
-let azureQueueService: AzureQueueService
+let azureQueueServiceSpy: {
+  addMessageToQueue: jasmine.Spy
+};
 let auditService: AuditService
 let storageService: StorageService
 
 describe('CheckStartService', () => {
   beforeEach(() => {
+    azureQueueServiceSpy = {
+      addMessageToQueue: jasmine.createSpy('addMessageToQueue')
+    }
     const inject = TestBed.configureTestingModule({
         providers: [
           AppConfigService,
           { provide: APP_INITIALIZER, useFactory: loadConfigMockService, multi: true },
+          { provide: AzureQueueService, useValue: azureQueueServiceSpy },
           TokenService,
-          AzureQueueService,
           AuditService,
           CheckStartService,
           StorageService
@@ -29,7 +34,6 @@ describe('CheckStartService', () => {
     )
     checkStartService = inject.inject(CheckStartService)
     tokenService = inject.inject(TokenService)
-    azureQueueService = inject.inject(AzureQueueService)
     storageService = inject.inject(StorageService)
     auditService = inject.inject(AuditService)
     checkStartService.checkStartAPIErrorDelay = 100
@@ -45,7 +49,7 @@ describe('CheckStartService', () => {
     const addEntrySpy = spyOn(auditService, 'addEntry')
     spyOn(tokenService, 'getToken').and.returnValue({ url: 'url', token: 'token' })
     let actualPayload
-    spyOn(azureQueueService, 'addMessageToQueue').and
+    azureQueueServiceSpy.addMessageToQueue.and
       .callFake(async (queueName: string, url: string,
         token: string, payload: object,
         retryConfig: QueueMessageRetryConfig): Promise<void> => {
@@ -55,18 +59,17 @@ describe('CheckStartService', () => {
     await checkStartService.submit()
     expect(addEntrySpy).toHaveBeenCalledTimes(2)
     expect(addEntrySpy.calls.all()[1].args[0].type).toEqual('CheckStartedAPICallSucceeded')
-    expect(azureQueueService.addMessageToQueue).toHaveBeenCalledTimes(1)
+    expect(azureQueueServiceSpy.addMessageToQueue).toHaveBeenCalledTimes(1)
     expect(actualPayload.version).toBe(1)
     expect(actualPayload.clientCheckStartedAt).toBeDefined()
   })
   it('submit should call azure queue service service unsuccessfully and audit failure', async () => {
     const addEntrySpy = spyOn(auditService, 'addEntry')
     spyOn(tokenService, 'getToken').and.returnValue({ url: 'url', token: 'token' })
-    spyOn(azureQueueService, 'addMessageToQueue')
-      .and.returnValue(Promise.reject(new Error('error')))
+    azureQueueServiceSpy.addMessageToQueue.and.returnValue(Promise.reject(new Error('error')))
     await checkStartService.submit()
     expect(addEntrySpy).toHaveBeenCalledTimes(2)
     expect(addEntrySpy.calls.all()[1].args[0].type).toEqual('CheckStartedAPICallFailed')
-    expect(azureQueueService.addMessageToQueue).toHaveBeenCalledTimes(1)
+    expect(azureQueueServiceSpy.addMessageToQueue).toHaveBeenCalledTimes(1)
   })
 })
