@@ -17,6 +17,19 @@
     "lib": [
       "es2017",
       "dom"
-    ]
-  }
+    ],
+    "noImplicitAny": false, // TODO: move to true
+    "noImplicitReturns": false, // TODO: move to true
+    "allowUnreachableCode": false,
+    "alwaysStrict": false, // TODO: set to true
+    "noUnusedLocals": false, // TODO: move to true
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "strict": false, // TODO: move to true
+    "strictFunctionTypes": false, // TODO: move to true
+    "strictNullChecks": false // TODO: move to true
+  },
+  "exclude": [
+    "node_modules"
+  ]
 }
