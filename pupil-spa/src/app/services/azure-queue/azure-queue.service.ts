@@ -10,8 +10,13 @@ export interface QueueMessageRetryConfig {
   SubmitPendingViewMinDisplayTime?: number
 }
 
+export interface IAzureQueueService {
+  addMessageToQueue (queueName: string, storageAccountUrl: string, sasToken: string,
+    payload: object, retryConfig: QueueMessageRetryConfig): Promise<void>
+}
+
 @Injectable()
-export class AzureQueueService {
+export class AzureQueueService implements IAzureQueueService {
 
   constructor(private http: HttpService) {}
 
@@ -24,7 +29,8 @@ export class AzureQueueService {
    * @param {Object} retryConfig
    * @returns {Promise.<Object>}
    */
-  public async addMessageToQueue (queueName: string, storageAccountUrl: string, sasToken: string, payload: object, retryConfig: QueueMessageRetryConfig): Promise<void> {
+  public async addMessageToQueue (queueName: string, storageAccountUrl: string, sasToken: string,
+    payload: object, retryConfig: QueueMessageRetryConfig): Promise<void> {
     const queueEndpointUrl = `${storageAccountUrl}/messages?messagettl=-1&${sasToken}`
     const message = JSON.stringify(payload)
     const encodedMessage = Buffer.from(message, 'utf8').toString('base64')

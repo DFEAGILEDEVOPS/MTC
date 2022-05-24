@@ -13,7 +13,7 @@ import { SpeechServiceMock } from '../services/speech/speech.service.mock'
 import { StorageService } from '../services/storage/storage.service'
 import { CheckStatusService } from '../services/check-status/check-status.service'
 import { CheckStatusServiceMock } from '../services/check-status/check-status.service.mock'
-import { AzureQueueService } from '../services/azure-queue/azure-queue.service'
+import { AzureQueueService, IAzureQueueService } from '../services/azure-queue/azure-queue.service'
 import { TokenService } from '../services/token/token.service'
 import { APP_INITIALIZER, NO_ERRORS_SCHEMA } from '@angular/core'
 import { AppUsageService } from '../services/app-usage/app-usage.service'
@@ -28,16 +28,20 @@ describe('SubmissionPendingComponent', () => {
   let component
   let router: Router
   let activatedRoute: ActivatedRoute
+  let azureQueueServiceSpy: IAzureQueueService
   beforeEach(waitForAsync(() => {
+    azureQueueServiceSpy = {
+      addMessageToQueue: jasmine.createSpy('addMessageToQueue')
+    }
     TestBed.configureTestingModule({
       declarations: [SubmissionPendingComponent],
       imports: [RouterTestingModule.withRoutes([])],
       schemas: [NO_ERRORS_SCHEMA], // we don't need to test sub-components
       providers: [
         CheckCompleteService,
-        AzureQueueService,
         TokenService,
         AppUsageService,
+        { provide: AzureQueueService, useValue: azureQueueServiceSpy },
         { provide: AuditService, useClass: AuditServiceMock },
         { provide: CheckStatusService, useClass: CheckStatusServiceMock },
         { provide: SpeechService, useClass: SpeechServiceMock },

@@ -7,8 +7,7 @@ import {
   ConfigStorageKey,
   PupilStorageKey,
   QuestionsStorageKey,
-  SchoolStorageKey,
-  TokensStorageKey
+  SchoolStorageKey
 } from '../storage/storageKey'
 import { HttpService } from '../http/http.service'
 import { APP_INITIALIZER } from '@angular/core'

@@ -1,6 +1,6 @@
-import { TestBed, inject } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { APP_INITIALIZER } from '@angular/core';
-import { AzureQueueService, QueueMessageRetryConfig } from '../azure-queue/azure-queue.service';
+import { AzureQueueService, IAzureQueueService, QueueMessageRetryConfig } from '../azure-queue/azure-queue.service';
 import { PupilPrefsService } from './pupil-prefs.service';
 import { StorageService } from '../storage/storage.service';
 import { TokenService } from '../token/token.service';
@@ -10,7 +10,7 @@ import { QuestionService } from '../question/question.service';
 import { QuestionServiceMock } from '../question/question.service.mock';
 import { AccessArrangements } from '../../access-arrangements';
 
-let azureQueueService: AzureQueueService;
+let azureQueueServiceSpy: IAzureQueueService;
 let pupilPrefsService: PupilPrefsService;
 let auditService: AuditService;
 let mockQuestionService;
@@ -20,21 +20,23 @@ let storedPrefs;
 
 describe('PupilPrefsService', () => {
   beforeEach(() => {
-
+    azureQueueServiceSpy = {
+      addMessageToQueue: jasmine.createSpy('addMessageToQueue')
+    }
     const injector = TestBed.configureTestingModule({
       imports: [],
       providers: [
         AppConfigService,
         { provide: APP_INITIALIZER, useFactory: loadConfigMockService, multi: true },
-        AzureQueueService,
         PupilPrefsService,
         TokenService,
         AuditService,
         StorageService,
-        { provide: QuestionService, useClass: QuestionServiceMock }
+        { provide: QuestionService, useClass: QuestionServiceMock },
+        { provide: AzureQueueService, useValue: azureQueueServiceSpy }
       ]
     });
-    azureQueueService = injector.inject(AzureQueueService);
+    azureQueueServiceSpy = injector.inject(AzureQueueService);
     pupilPrefsService = injector.inject(PupilPrefsService);
     tokenService = injector.inject(TokenService);
     mockQuestionService = injector.inject(QuestionService);
@@ -55,7 +57,7 @@ describe('PupilPrefsService', () => {
     it('should call pupil prefs azure queue storage', async () => {
       spyOn(mockQuestionService, 'getConfig').and.returnValue({colourContrast: false});
       spyOn(tokenService, 'getToken').and.returnValue({url: 'url', token: 'token', queueName: 'the-queue'});
-      const addMessageSpy = spyOn(azureQueueService, 'addMessageToQueue');
+      const addMessageSpy = spyOn(azureQueueServiceSpy, 'addMessageToQueue');
       const addEntrySpy = spyOn(auditService, 'addEntry');
       spyOn(storageService, 'getAccessArrangements').and.returnValue(storedPrefs);
       spyOn(storageService, 'getPupil').and.returnValue({ checkCode: 'checkCode' });
@@ -86,7 +88,7 @@ describe('PupilPrefsService', () => {
     it('should audit log the error when azureQueueService add Message fails', async () => {
       spyOn(mockQuestionService, 'getConfig').and.returnValue({colourContrast: false});
       spyOn(tokenService, 'getToken').and.returnValue({url: 'url', token: 'token', queueName: 'the-queue'});
-      spyOn(azureQueueService, 'addMessageToQueue').and.returnValue(Promise.reject(new Error('error')));
+      spyOn(azureQueueServiceSpy, 'addMessageToQueue').and.returnValue(Promise.reject(new Error('error')));
       const addEntrySpy = spyOn(auditService, 'addEntry');
       spyOn(storageService, 'getAccessArrangements').and.returnValue(storedPrefs);
       spyOn(storageService, 'getPupil').and.returnValue({ checkCode: 'checkCode' });
@@ -94,7 +96,7 @@ describe('PupilPrefsService', () => {
       expect(storageService.getAccessArrangements).toHaveBeenCalled();
       expect(storageService.getPupil).toHaveBeenCalled();
       expect(tokenService.getToken).toHaveBeenCalled();
-      expect(azureQueueService.addMessageToQueue).toHaveBeenCalled();
+      expect(azureQueueServiceSpy.addMessageToQueue).toHaveBeenCalled();
       expect(addEntrySpy.calls.all()[1].args[0].type).toEqual('PupilPrefsAPICallFailed');
     });
   });
