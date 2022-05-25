@@ -10,7 +10,7 @@
                     <% if (attendanceCodesPresentationData && attendanceCodesPresentationData.length > 1) { %>
                         <h2 class="govuk-heading-m">1. Select reason</h2>
                         <%- partial('partials/_attendance_code_reasons') %>
-                        <ul class="govuk-list attendance-code-list">
+                        <ul class="govuk-list attendance-code-list group">
                             <div class="govuk-radios">
                                 <% attendanceCodesPresentationData.forEach( (aValues) => { %>
                                     <li>

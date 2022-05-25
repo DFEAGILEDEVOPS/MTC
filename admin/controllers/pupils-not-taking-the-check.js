@@ -8,7 +8,6 @@ const pupilService = require('../services/pupil.service')
 const schoolHomeFeatureEligibilityPresenter = require('../helpers/school-home-feature-eligibility-presenter')
 const headteacherDeclarationService = require('../services/headteacher-declaration.service')
 const businessAvailabilityService = require('../services/business-availability.service')
-const attendanceCodesPresenter = require('../helpers/attendance-codes-presenter')
 
 /**
  * Pupils not taking the check: initial page.
@@ -56,7 +55,6 @@ const getSelectPupilNotTakingCheck = async function getSelectPupilNotTakingCheck
   req.breadcrumbs(res.locals.pageTitle)
 
   let attendanceCodes
-  let attendanceCodesPresentationData
   let pupilsList
   let groups = []
   const groupIds = req.params.groupIds || ''
@@ -71,7 +69,6 @@ const getSelectPupilNotTakingCheck = async function getSelectPupilNotTakingCheck
       })
     }
     attendanceCodes = await attendanceCodeService.getAttendanceCodes()
-    attendanceCodesPresentationData = attendanceCodesPresenter.getPresentationData(attendanceCodes)
     if (availabilityData.inAdminEndPeriod) {
       // When we are in the post-check final admin period, pupils who have not been marked as complete are allowed
       // to be marked as not attending, as there is no other option for them, and this allows the HDF to be signed.
@@ -93,7 +90,7 @@ const getSelectPupilNotTakingCheck = async function getSelectPupilNotTakingCheck
 
   return res.render('pupils-not-taking-the-check/pupils-list', {
     breadcrumbs: req.breadcrumbs(),
-    attendanceCodesPresentationData,
+    attendanceCodesPresentationData: attendanceCodes,
     pupilsList,
     highlight: [],
     groups,
