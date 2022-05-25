@@ -78,7 +78,8 @@ export class ConnectivityService {
         this.testPupilConnectionQueueUrl,
         this.testPupilConnectionQueueToken,
         {},
-        retryConfig);
+        retryConfig,
+        60);
     } catch (err) {
       this.errorMessages.push(connectivityErrorMessages.testQueueError);
       return false;
