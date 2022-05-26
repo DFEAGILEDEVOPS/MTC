@@ -81,7 +81,7 @@ export class CheckComponent implements OnInit, CanExit {
    * @return {boolean}
    */
   @HostListener('document:touchend', [ '$event' ])
-  handleTouchEndEvent(event) {
+  handleTouchEndEvent(event: any) {
     event.preventDefault();
     event.target.dispatchEvent(new Event('click', { bubbles: true }));
     return false;
@@ -440,7 +440,7 @@ export class CheckComponent implements OnInit, CanExit {
     return isWarmUp;
   }
 
-  isValidState(state) {
+  isValidState(state: any) {
     if (!this.allowedStates[ state ]) {
       return false;
     }

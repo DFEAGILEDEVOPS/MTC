@@ -18,11 +18,11 @@
       "es2017",
       "dom"
     ],
-    "noImplicitAny": false, // TODO: move to true
+    "noImplicitAny": false, // TODO: in progress to move to true
     "noImplicitReturns": false, // TODO: move to true
     "allowUnreachableCode": false,
     "alwaysStrict": false, // TODO: set to true
-    "noUnusedLocals": true, // TODO: move to true
+    "noUnusedLocals": true,
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "strict": false, // TODO: move to true

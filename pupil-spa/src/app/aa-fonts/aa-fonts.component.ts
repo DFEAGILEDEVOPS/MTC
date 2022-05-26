@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { Pupil } from '../pupil';
 import { QuestionService } from '../services/question/question.service';
 import { StorageService } from '../services/storage/storage.service';
-import { AccessArrangementsConfig } from '../access-arrangements';
+import { AccessArrangements, AccessArrangementsConfig } from '../access-arrangements';
 import { RouteService } from '../services/route/route.service';
 import { PupilPrefsService } from '../services/pupil-prefs/pupil-prefs.service';
 import { SpeechService } from '../services/speech/speech.service';
@@ -17,9 +17,9 @@ import { SpeechService } from '../services/speech/speech.service';
 export class AAFontsComponent implements AfterViewInit, OnDestroy {
   pupil: Pupil;
   validSelection = false;
-  selectedSize;
-  fontSettings;
-  accessArrangements;
+  selectedSize: AccessArrangements["fontSize"];
+  fontSettings: Object[];
+  accessArrangements: AccessArrangements;
   speechListenerEvent: any;
 
   constructor(
@@ -39,8 +39,8 @@ export class AAFontsComponent implements AfterViewInit, OnDestroy {
     this.pupil = storageService.getPupil() as Pupil;
   }
 
-  selectionChange(selectedFont) {
-    this.selectedSize = selectedFont;
+  selectionChange(selectedSize: AccessArrangements["fontSize"]) {
+    this.selectedSize = selectedSize;
     this.checkValidSelection();
   }
 
@@ -80,7 +80,7 @@ export class AAFontsComponent implements AfterViewInit, OnDestroy {
       });
 
       this.speechListenerEvent = this.elRef.nativeElement.addEventListener('focus',
-        (event) => { this.speechService.focusEventListenerHook(event); },
+        (event: any) => { this.speechService.focusEventListenerHook(event); },
         true
       );
     }

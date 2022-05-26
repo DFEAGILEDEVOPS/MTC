@@ -12,7 +12,7 @@ export class GlobalErrorHandler implements ErrorHandler {
 
   constructor(private injector: Injector) { }
 
-  handleError(error) {
+  handleError(error: any) {
     if (console && console.log) {
       console.log('Global error handler: ', error);
     }
