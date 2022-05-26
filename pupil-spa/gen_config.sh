@@ -1,5 +1,6 @@
 #!/bin/sh
 # This script must run on developer localhost as well as an alpine docker image which does not have /bin/bash
+# see the README.md file 'SAS TOKEN' section for details on how to generate a correct sas token
 set -e
 # set -x
 scriptDir="$( cd "$( dirname "$0" )" >/dev/null && pwd )"

@@ -30,12 +30,13 @@ export class AzureQueueService implements IAzureQueueService {
    * @returns {Promise.<Object>}
    */
   public async addMessageToQueue (queueName: string, storageAccountUrl: string, sasToken: string,
-    payload: object, retryConfig: QueueMessageRetryConfig): Promise<void> {
-    const queueEndpointUrl = `${storageAccountUrl}/messages?messagettl=-1&${sasToken}`
+    payload: object, retryConfig: QueueMessageRetryConfig, messageLifeTimeInSeconds: number = -1): Promise<void> {
+    const queueEndpointUrl = `${storageAccountUrl}/messages?messagettl=${messageLifeTimeInSeconds}&${sasToken}`
     const message = JSON.stringify(payload)
     const encodedMessage = Buffer.from(message, 'utf8').toString('base64')
     const wrappedXmlMessage = `<?xml version="1.0" encoding="utf-8"?><QueueMessage><MessageText>${encodedMessage}</MessageText></QueueMessage>`
     // TODO allow linear retries via config
+    // TODO pin version of API to use via config setting???
     const headers = new HttpHeaders ({
       'x-ms-date': (new Date()).toISOString(),
       'Content-Type': `application/atom+xml;charset="utf-8"`

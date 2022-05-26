@@ -15,7 +15,6 @@ describe('WarmupCompleteComponent', () => {
   let fixture: ComponentFixture<WarmupCompleteComponent>;
   let auditEntryInserted: AuditEntry;
   let auditService;
-  let addEntrySpy;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({

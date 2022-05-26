@@ -26,7 +26,6 @@ describe('SubmissionPendingComponent', () => {
   let checkStatusService
   let storageService
   let component
-  let router: Router
   let activatedRoute: ActivatedRoute
   let azureQueueServiceSpy: IAzureQueueService
   beforeEach(waitForAsync(() => {
@@ -52,7 +51,6 @@ describe('SubmissionPendingComponent', () => {
       ]
     })
       .compileComponents()
-    router = TestBed.inject(Router)
     activatedRoute = TestBed.inject(ActivatedRoute)
   }))
 

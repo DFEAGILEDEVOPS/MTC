@@ -46,6 +46,15 @@ The following environment variables can be injected at start up...
 |`TEST_PUPIL_CONNECTION_ERROR_DELAY`   |`integer`   | The delay in milliseconds between attempts in submitting a message to the test queue   |
 |`TEST_PUPIL_CONNECTION_MAX_ATTEMPTS`   |`integer`   | The max number of attempts in submitting a message to the test queue   |
 
+## SAS Token
+
+When generating a SAS token, you must ensure you set the following...
+|Type   |Value    |
+|---|---|
+|`Allowed Services`   |`Queue`    |
+|`Allowed Resource Types`|    `Object`    |
+|`Allowed Permissions`|   `Add`   |
+
 ## Running unit tests
 
 Run `yarn test` to execute the unit tests via [Karma](https://karma-runner.github.io).
