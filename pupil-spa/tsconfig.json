@@ -22,7 +22,7 @@
     "noImplicitReturns": false, // TODO: move to true
     "allowUnreachableCode": false,
     "alwaysStrict": false, // TODO: set to true
-    "noUnusedLocals": false, // TODO: move to true
+    "noUnusedLocals": true, // TODO: move to true
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "strict": false, // TODO: move to true

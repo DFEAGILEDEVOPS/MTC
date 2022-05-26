@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { Meta } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { WindowRefService } from './services/window-ref/window-ref.service';
 import { APP_CONFIG } from './services/config/config.service'
@@ -17,7 +16,6 @@ export class AppComponent {
 
   constructor(
     protected windowRefService: WindowRefService,
-    private meta: Meta,
     private routeService: RouteService,
     private router: Router,
   ) {

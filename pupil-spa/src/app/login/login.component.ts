@@ -25,6 +25,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
   public loginSucceeded: boolean
   public connectionFailed: boolean
   public loginPendingViewMinDisplay: number
+  //@ts-ignore used in ngOnInit 
   private errorMessage: string
   public isUnsupportedBrowser: boolean
   public isLocalStorageEnabled: boolean

@@ -26,7 +26,7 @@ export class AASettingsComponent implements AfterViewInit, OnInit, OnDestroy {
     private storageService: StorageService,
     private speechService: SpeechService
   ) {
-    this.config = questionService.getConfig();
+    this.config = this.questionService.getConfig();
   }
 
   ngOnInit() {

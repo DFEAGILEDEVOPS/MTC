@@ -336,12 +336,6 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit, OnDestr
 
     // if it isn't a warmup question it must be a live question, so log the input.
     if (!this.isWarmUpQuestion) {
-      const questionData = {
-        questionNumber: this.sequenceNumber,
-        factor1: this.factor1,
-        factor2: this.factor2
-      };
-
       this.registerInputService.storeEntry(
         input,
         this.getEventType(event),
@@ -529,17 +523,10 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit, OnDestr
   handleKeyboardEvent (event: KeyboardEvent) {
     event.preventDefault();
     event.stopPropagation();
-    // console.log('practice-question.component: handleKeyboardEvent(): event: ', event);
     if (this.submitted) {
       return false;
     }
     if (!this.isWarmUpQuestion) {
-      const questionData = {
-        questionNumber: this.sequenceNumber,
-        factor1: this.factor1,
-        factor2: this.factor2
-      };
-      // this.registerInputService.addEntry(event, questionData);
       this.registerInputService.storeEntry(event.key,
         this.getEventType(event),
         this.sequenceNumber,

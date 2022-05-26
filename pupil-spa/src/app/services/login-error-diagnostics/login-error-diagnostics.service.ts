@@ -16,7 +16,7 @@ export class LoginErrorDiagnosticsService {
     private loginErrorService: LoginErrorService,
     private windowRefService: WindowRefService
   ) {
-    this.window = windowRefService.nativeWindow;
+    this.window = this.windowRefService.nativeWindow;
     this.isBrowserStatusOnline = this.window.navigator.onLine;
   }
 

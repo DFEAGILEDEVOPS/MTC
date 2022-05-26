@@ -1,5 +1,4 @@
 import { ErrorHandler, Injectable, Injector } from '@angular/core';
-import { WindowRefService } from './services/window-ref/window-ref.service';
 import { AuditService } from './services/audit/audit.service';
 import { AppError } from './services/audit/auditEntry';
 import {LocationStrategy, PathLocationStrategy} from '@angular/common';
@@ -20,8 +19,6 @@ export class GlobalErrorHandler implements ErrorHandler {
 
     // Pick up our dependencies.  Don't use dependency injection - so this module can be loaded first.
     const auditService = this.injector.get(AuditService);
-    const windowRefService = this.injector.get(WindowRefService);
-    const window = windowRefService.nativeWindow;
     const location = this.injector.get(LocationStrategy);
 
     // Get the error details

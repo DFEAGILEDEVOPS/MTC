@@ -1,5 +1,4 @@
-import { Component, Input, OnDestroy, AfterViewInit, ElementRef } from '@angular/core';
-import { Config } from '../config.model';
+import { Component, OnDestroy, AfterViewInit, ElementRef } from '@angular/core';
 import { QuestionService } from '../services/question/question.service';
 import { SpeechService } from '../services/speech/speech.service';
 import { TimerService } from '../services/timer/timer.service';
