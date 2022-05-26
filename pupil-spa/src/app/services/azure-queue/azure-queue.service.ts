@@ -54,7 +54,7 @@ export class AzureQueueService {
    * @param {Object} retryConfig
    * @returns {Promise.<Object>}
    */
-  public async addMessage (queueName: string, url: string, token: string, payload: object, retryConfig: object): Promise<Object> {
+  public async addMessage (queueName: string, url: string, token: string, payload: object, retryConfig: object, messageLifeTimeInSeconds: number = -1): Promise<Object> {
     // to increase message expiry add this object as 3rd param to createMessage call
     // const twentyEightDaysInSeconds = 2419200
     // const options = {
@@ -64,7 +64,10 @@ export class AzureQueueService {
     const encoder = this.getTextBase64QueueMessageEncoder();
     const message = JSON.stringify(payload);
     const encodedMessage = encoder.encode(message);
-    return queueService.createMessage(queueName, encodedMessage).catch(err => {
+    const messageOptions = {
+      messageTimeToLive: messageLifeTimeInSeconds
+    }
+    return queueService.createMessage(queueName, encodedMessage, messageOptions).catch(err => {
       if (!APP_CONFIG.production) {
         throw err;
       }
