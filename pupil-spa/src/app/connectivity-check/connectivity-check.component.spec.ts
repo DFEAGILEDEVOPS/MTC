@@ -17,8 +17,6 @@ import { loadConfigMockService } from '../services/config/config.service'
 describe('ConnectivityCheckComponent', () => {
   let component: ConnectivityCheckComponent
   let fixture: ComponentFixture<ConnectivityCheckComponent>
-  let httpClient: HttpClient
-  let httpTestingController: HttpTestingController
   let mockRouter
   let hasUnfinishedCheckSpy
   let checkStatusService
@@ -50,8 +48,8 @@ describe('ConnectivityCheckComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(ConnectivityCheckComponent)
     component = fixture.componentInstance
-    httpClient = TestBed.inject(HttpClient)
-    httpTestingController = TestBed.inject(HttpTestingController)
+    TestBed.inject(HttpClient)
+    TestBed.inject(HttpTestingController)
     checkStatusService = TestBed.inject(CheckStatusService)
     connectivityService = TestBed.inject(ConnectivityService)
     hasUnfinishedCheckSpy = spyOn(checkStatusService, 'hasUnfinishedCheck')

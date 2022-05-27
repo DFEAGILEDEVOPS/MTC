@@ -24,9 +24,6 @@ describe('QuestionsIntroComponent', () => {
   let auditEntryInserted: AuditEntry;
   let auditService;
   let checkStartService;
-  let addEntrySpy;
-  let httpClient: HttpClient;
-  let httpTestingController: HttpTestingController;
 
   beforeEach(waitForAsync(() => {
     const inject = TestBed.configureTestingModule({
@@ -46,8 +43,8 @@ describe('QuestionsIntroComponent', () => {
         AppUsageService
       ]
     });
-    httpClient = TestBed.inject(HttpClient);
-    httpTestingController = TestBed.inject(HttpTestingController);
+    TestBed.inject(HttpClient);
+    TestBed.inject(HttpTestingController);
     checkStartService = inject.inject(CheckStartService);
     inject.compileComponents();
   }));
@@ -56,7 +53,7 @@ describe('QuestionsIntroComponent', () => {
     fixture = TestBed.createComponent(QuestionsIntroComponent);
     component = fixture.componentInstance;
     auditService = fixture.debugElement.injector.get(AuditService);
-    addEntrySpy = spyOn(auditService, 'addEntry').and.callFake((entry) => {
+    spyOn(auditService, 'addEntry').and.callFake((entry) => {
       auditEntryInserted = entry;
     });
     fixture.detectChanges();

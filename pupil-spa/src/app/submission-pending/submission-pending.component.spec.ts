@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
-import { Router, ActivatedRoute } from '@angular/router'
+import { ActivatedRoute } from '@angular/router'
 import { RouterTestingModule } from '@angular/router/testing'
 
 import { SubmissionPendingComponent } from './submission-pending.component'

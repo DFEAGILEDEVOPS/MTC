@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { APP_INITIALIZER } from '@angular/core';
-import { AzureQueueService, IAzureQueueService, QueueMessageRetryConfig } from '../azure-queue/azure-queue.service';
+import { AzureQueueService, QueueMessageRetryConfig } from '../azure-queue/azure-queue.service';
 import { PupilPrefsService } from './pupil-prefs.service';
 import { StorageService } from '../storage/storage.service';
 import { TokenService } from '../token/token.service';

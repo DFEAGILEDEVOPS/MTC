@@ -1,7 +1,5 @@
 import { inject, TestBed } from '@angular/core/testing'
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing'
-import { HttpClient } from '@angular/common/http'
-
+import { HttpClientTestingModule } from '@angular/common/http/testing'
 import { LoginErrorDiagnosticsService } from './login-error-diagnostics.service'
 import { WindowRefService } from '../window-ref/window-ref.service'
 import { LoginErrorService } from '../login-error/login-error.service'
@@ -11,10 +9,8 @@ import { loadConfigMockService } from '../config/config.service'
 let loginErrorDiagnosticsService
 
 describe('LoginErrorDiagnosticsService', () => {
-  let httpClient: HttpClient
-  let httpTestingController: HttpTestingController
+
   let loginErrorService: LoginErrorService
-  let windowRefService: WindowRefService
 
   beforeEach(() => {
     const injector = TestBed.configureTestingModule({
@@ -26,12 +22,8 @@ describe('LoginErrorDiagnosticsService', () => {
         { provide: APP_INITIALIZER, useFactory: loadConfigMockService, multi: true },
       ]
     })
-    httpClient = TestBed.inject(HttpClient)
-    httpTestingController = TestBed.inject(HttpTestingController)
-
     loginErrorDiagnosticsService = injector.inject(LoginErrorDiagnosticsService)
     loginErrorService = injector.inject(LoginErrorService)
-    windowRefService = injector.inject(WindowRefService)
   })
 
   it('should be created', inject([LoginErrorDiagnosticsService], (service: LoginErrorDiagnosticsService) => {

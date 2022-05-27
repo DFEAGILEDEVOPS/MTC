@@ -1,7 +1,5 @@
 import { inject, TestBed } from '@angular/core/testing'
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing'
-import { HttpClient } from '@angular/common/http'
-
+import { HttpClientTestingModule } from '@angular/common/http/testing'
 import { AzureQueueService } from '../azure-queue/azure-queue.service'
 import { ConnectivityService } from './connectivity-service'
 import { default as connectivityErrorMessages } from './connectivity-error-messages'
@@ -9,8 +7,6 @@ import { default as connectivityErrorMessages } from './connectivity-error-messa
 let connectivityService
 
 describe('ConnectivityService', () => {
-  let httpClient: HttpClient
-  let httpTestingController: HttpTestingController
 
   beforeEach(() => {
     const injector = TestBed.configureTestingModule({
@@ -20,8 +16,6 @@ describe('ConnectivityService', () => {
         ConnectivityService
       ]
     })
-    httpClient = TestBed.inject(HttpClient)
-    httpTestingController = TestBed.inject(HttpTestingController)
     connectivityService = injector.inject(ConnectivityService)
     connectivityService.errorMessages = []
   })

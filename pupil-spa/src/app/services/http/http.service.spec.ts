@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpService } from './http.service';
 import { HttpErrorResponse, HttpHeaders } from '@angular/common/http';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { defer } from 'rxjs/internal/observable/defer';
 
 /** Create async observable that emits-once and completes
@@ -55,7 +55,7 @@ describe('HttpService', () => {
         status: 401,
         statusText: 'Unauthorized'
       })));
-      const res = await httpService.postJson('http://localhost', { foo: 'bar' });
+      await httpService.postJson('http://localhost', { foo: 'bar' });
       fail('Should have thrown');
     } catch (error) {
       expect(error.status).toBe(401);

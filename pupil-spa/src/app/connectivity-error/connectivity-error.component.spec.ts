@@ -11,9 +11,6 @@ import { loadConfigMockService } from '../services/config/config.service'
 describe('ConnectivityErrorComponent', () => {
   let component: ConnectivityErrorComponent
   let fixture: ComponentFixture<ConnectivityErrorComponent>
-  let httpClient: HttpClient
-  let httpTestingController: HttpTestingController
-
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -27,8 +24,8 @@ describe('ConnectivityErrorComponent', () => {
       ]
     })
       .compileComponents()
-    httpClient = TestBed.inject(HttpClient)
-    httpTestingController = TestBed.inject(HttpTestingController)
+    TestBed.inject(HttpClient)
+    TestBed.inject(HttpTestingController)
   }))
 
   beforeEach(() => {
