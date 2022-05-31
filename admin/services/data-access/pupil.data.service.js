@@ -6,6 +6,7 @@ const R = require('ramda')
 const table = '[pupil]'
 const pupilDataService = {}
 const sqlService = require('./sql.service')
+const pupilIdentificationFlag = require('services/pupil-identification-flag.service')
 
 /** SQL METHODS */
 
@@ -352,6 +353,16 @@ pupilDataService.sqlInsertMany = async (pupils) => {
   const sql = [insertSql, values.join(',\n'), output].join(' ')
   const res = await sqlService.query(sql, params)
   return { insertId: res.map(x => x.id) }
+}
+
+pupilDataService.isFrozen = async (pupilId) => {
+  const sql = 'SELECT frozen FROM mtc_admin.pupil WHERE id=@pupilId'
+  const params = [{
+    name: 'pupilId',
+    type: TYPES.Int,
+    value: pupilId
+  }]
+  return sqlService.readonlyQuery(sql, params)
 }
 
 module.exports = pupilDataService
