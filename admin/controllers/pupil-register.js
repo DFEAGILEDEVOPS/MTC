@@ -3,7 +3,6 @@
 const pupilRegisterV2Service = require('../services/pupil-register-v2.service')
 const checkWindowV2Service = require('../services/check-window-v2.service')
 const businessAvailabilityService = require('../services/business-availability.service')
-const incompleteChecksPresenter = require('../helpers/incomplete-checks-presenter')
 const roles = require('../lib/consts/roles')
 
 const listPupils = async function listPupils (req, res, next) {
@@ -22,8 +21,6 @@ const listPupils = async function listPupils (req, res, next) {
     next(error)
   }
 
-  const incompletePupils = incompleteChecksPresenter.getPupilWithIncompleteChecks(pupilsFormatted)
-
   req.breadcrumbs(res.locals.pageTitle)
   let { hl } = req.query
   if (hl) {
@@ -36,7 +33,6 @@ const listPupils = async function listPupils (req, res, next) {
     pupils: pupilsFormatted,
     breadcrumbs: req.breadcrumbs(),
     availabilityData,
-    incompletePupils,
     showPupilAdminLink: req.user.role === roles.staAdmin
   })
 }
