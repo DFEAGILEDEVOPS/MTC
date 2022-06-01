@@ -25,6 +25,5 @@ describe('Pupil Frozen Service', () => {
       }])
       await expect(PupilFrozenService.throwIfFrozen(1)).resolves.toBeUndefined()
     })
-
   })
 })
