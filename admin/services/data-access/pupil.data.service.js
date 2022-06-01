@@ -6,7 +6,6 @@ const R = require('ramda')
 const table = '[pupil]'
 const pupilDataService = {}
 const sqlService = require('./sql.service')
-const pupilIdentificationFlag = require('services/pupil-identification-flag.service')
 
 /** SQL METHODS */
 
