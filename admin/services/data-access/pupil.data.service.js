@@ -364,4 +364,14 @@ pupilDataService.isFrozen = async (pupilId) => {
   return sqlService.readonlyQuery(sql, params)
 }
 
+pupilDataService.isFrozenByUrlSlug = async (pupilUrlSlug) => {
+  const sql = 'SELECT frozen FROM mtc_admin.pupil WHERE urlSlug=@pupilUrlSlug'
+  const params = [{
+    name: 'pupilUrlSlug',
+    type: TYPES.UniqueIdentifier,
+    value: pupilUrlSlug
+  }]
+  return sqlService.readonlyQuery(sql, params)
+}
+
 module.exports = pupilDataService

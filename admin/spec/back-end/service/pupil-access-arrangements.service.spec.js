@@ -5,6 +5,7 @@ const preparedCheckSyncService = require('../../../services/prepared-check-sync.
 const pupilAccessArrangementsService = require('../../../services/pupil-access-arrangements.service')
 const pupilDataService = require('../../../services/data-access/pupil.data.service')
 const pupilAccessArrangementsDataService = require('../../../services/data-access/pupil-access-arrangements.data.service')
+const { PupilFrozenService } = require('../../../services/pupil-frozen.service/pupil-frozen.service')
 const uuid = require('uuid')
 const moment = require('moment')
 
@@ -188,6 +189,7 @@ describe('pupilAccessArrangementsService', () => {
 
   describe('deletePupilAccessArrangements', () => {
     test('returns pupil data when successfully deleting relevant access arrangements', async () => {
+      jest.spyOn(PupilFrozenService, 'throwIfFrozenByUrlSlug').mockResolvedValue()
       jest.spyOn(pupilDataService, 'sqlFindOneBySlugAndSchool').mockReturnValue({ id: 1, foreName: 'foreName', lastName: 'lastName' })
       jest.spyOn(pupilAccessArrangementsDataService, 'sqlDeletePupilsAccessArrangements').mockImplementation()
       jest.spyOn(preparedCheckSyncService, 'addMessages').mockImplementation()
@@ -200,6 +202,7 @@ describe('pupilAccessArrangementsService', () => {
     })
 
     test('rejects if url slug is not present', async () => {
+      jest.spyOn(PupilFrozenService, 'throwIfFrozenByUrlSlug').mockResolvedValue()
       jest.spyOn(pupilDataService, 'sqlFindOneBySlugAndSchool').mockImplementation()
       jest.spyOn(pupilAccessArrangementsDataService, 'sqlDeletePupilsAccessArrangements').mockImplementation()
       jest.spyOn(preparedCheckSyncService, 'addMessages').mockImplementation()
@@ -212,6 +215,14 @@ describe('pupilAccessArrangementsService', () => {
       expect(pupilDataService.sqlFindOneBySlugAndSchool).not.toHaveBeenCalled()
       expect(pupilAccessArrangementsDataService.sqlDeletePupilsAccessArrangements).not.toHaveBeenCalled()
       expect(preparedCheckSyncService.addMessages).not.toHaveBeenCalled()
+    })
+
+    test('throws an error if pupil is frozen', async () => {
+      jest.spyOn(PupilFrozenService, 'throwIfFrozenByUrlSlug').mockImplementation(() => {
+        throw new Error('frozen')
+      })
+      const urlSlug = uuid.v4()
+      await expect(pupilAccessArrangementsService.deletePupilAccessArrangements(urlSlug, 9991001)).rejects.toThrow('frozen')
     })
   })
 

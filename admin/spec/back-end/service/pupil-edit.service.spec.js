@@ -35,7 +35,7 @@ describe('pupilEditService', () => {
   }
 
   test('should call refreshPupilAgeReason', async () => {
-    jest.spyOn(PupilFrozenService, 'throwIfFrozen').mockResolvedValue()
+    jest.spyOn(PupilFrozenService, 'throwIfFrozenById').mockResolvedValue()
     const pupil1 = Object.assign({}, pupilMock)
     const schoolId = 1
     await pupilEditService.update(pupil1, requestBody, schoolId)
@@ -43,7 +43,7 @@ describe('pupilEditService', () => {
   })
 
   test('should call createUTCFromDayMonthYear', async () => {
-    jest.spyOn(PupilFrozenService, 'throwIfFrozen').mockResolvedValue()
+    jest.spyOn(PupilFrozenService, 'throwIfFrozenById').mockResolvedValue()
     const pupil1 = Object.assign({}, pupilMock)
     const schoolId = 1
     await pupilEditService.update(pupil1, requestBody, schoolId)
@@ -51,7 +51,7 @@ describe('pupilEditService', () => {
   })
 
   test('should call sqlUpdate from the data service', async () => {
-    jest.spyOn(PupilFrozenService, 'throwIfFrozen').mockResolvedValue()
+    jest.spyOn(PupilFrozenService, 'throwIfFrozenById').mockResolvedValue()
     const pupil1 = Object.assign({}, pupilMock)
     const schoolId = 1
     await pupilEditService.update(pupil1, requestBody, schoolId)
@@ -59,7 +59,7 @@ describe('pupilEditService', () => {
   })
 
   test('should drop pupil register cache', async () => {
-    jest.spyOn(PupilFrozenService, 'throwIfFrozen').mockResolvedValue()
+    jest.spyOn(PupilFrozenService, 'throwIfFrozenById').mockResolvedValue()
     const pupil1 = Object.assign({}, pupilMock)
     const schoolId = 1
     await pupilEditService.update(pupil1, requestBody, schoolId)
@@ -67,7 +67,7 @@ describe('pupilEditService', () => {
   })
 
   test('should throw an error if pupil frozen', async () => {
-    jest.spyOn(PupilFrozenService, 'throwIfFrozen').mockImplementation(() => {
+    jest.spyOn(PupilFrozenService, 'throwIfFrozenById').mockImplementation(() => {
       throw new Error('frozen')
     })
     const pupil1 = Object.assign({}, pupilMock)

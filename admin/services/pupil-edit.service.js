@@ -19,7 +19,7 @@ const pupilEditService = {}
  * @returns {Promise<any>}
  */
 pupilEditService.update = async function (pupil, requestBody, schoolId) {
-  await PupilFrozenService.throwIfFrozen(pupil.id)
+  await PupilFrozenService.throwIfFrozenById(pupil.id)
   const trimAndUppercase = R.compose(R.toUpper, R.trim)
   await pupilAgeReasonService.refreshPupilAgeReason(pupil.id, requestBody.ageReason, pupil.ageReason)
   const update = {
