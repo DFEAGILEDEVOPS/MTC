@@ -17,6 +17,12 @@ Feature:
     And I should see a flash message to state the pupil has been updated
     And I should see the updated pupil details on the pupil register page
 
+  Scenario: Pupil data is updated when valid details are entered with a temporary upn
+    When I update with valid pupil data with a temporary upn
+    Then this should be saved
+    And I should see a flash message to state the pupil has been updated
+    And I should see the updated pupil details on the pupil register page
+
   Scenario: Pupil data is not updated when invalid details are entered
     When I have submitted invalid pupil details
     Then the pupil details should not be updated
@@ -125,8 +131,16 @@ Feature:
     When I submit valid details with a already used UPN
     Then I should see an error stating more than 1 pupil with the same UPN
 
-  Scenario: Validation for Add Pupil for UPN field
-    Then I should see validation error for the UPN field fo the following
+  Scenario: Validation for Edit Pupil for UPN field
+    Then I should see validation error for the UPN field for the following
+      | condition                                |
+      | wrong check letter                       |
+      | invalid LA code                          |
+      | alpha characters between characters 5-12 |
+      | invalid alhpa character at position 13   |
+
+  Scenario: Validation for Edit Pupil for UPN field when using a temporary upn
+    Then I should see validation error for the UPN field when using a temporary upn for the following
       | condition                                |
       | wrong check letter                       |
       | invalid LA code                          |
@@ -135,6 +149,10 @@ Feature:
 
   Scenario: UPN can have lowercase alpha characters
     When I submit valid details with a UPN has a lowercase alpha character
+    Then the pupil details should be stored
+
+  Scenario: Temporary UPN can have lowercase alpha characters
+    When I submit valid details with a temporary UPN has a lowercase alpha character
     Then the pupil details should be stored
 
   Scenario: Reason field must be entered if displayed

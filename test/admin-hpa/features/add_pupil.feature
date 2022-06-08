@@ -17,6 +17,12 @@ Feature:
     Then the pupil details should be stored
     Then I should see a flash message to state the pupil has been added
 
+  Scenario: Pupil data is stored when valid details including a temporary upn are entered
+    Given I am on the add pupil page
+    When I have submitted valid pupil details including a temporary upn
+    Then the pupil details should be stored
+    Then I should see a flash message to state the pupil has been added
+
   Scenario: Pupil data is not stored when invalid details are entered
     Given I am on the add pupil page
     When I have submitted invalid pupil details
@@ -148,7 +154,16 @@ Feature:
 
   Scenario: Validation for Add Pupil for UPN field
     Given I am on the add pupil page
-    Then I should see validation error for the UPN field fo the following
+    Then I should see validation error for the UPN field for the following
+      | condition                                |
+      | wrong check letter                       |
+      | invalid LA code                          |
+      | alpha characters between characters 5-12 |
+      | invalid alhpa character at position 13   |
+
+  Scenario: Validation for Add Pupil for UPN field when using a temporary upn
+    Given I am on the add pupil page
+    Then I should see validation error for the UPN field when using a temporary upn for the following
       | condition                                |
       | wrong check letter                       |
       | invalid LA code                          |
@@ -158,6 +173,11 @@ Feature:
   Scenario: UPN can have lowercase alpha characters
     Given I am on the add pupil page
     When I submit valid details with a UPN has a lowercase alpha character
+    Then the pupil details should be stored
+
+  Scenario: Temporary UPN can have lowercase alpha characters
+    Given I am on the add pupil page
+    When I submit valid details with a temporary UPN has a lowercase alpha character
     Then the pupil details should be stored
 
   Scenario: Reason field must be entered if displayed
