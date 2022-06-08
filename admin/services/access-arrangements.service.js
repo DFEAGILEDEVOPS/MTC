@@ -9,6 +9,7 @@ const config = require('../config')
 const moment = require('moment-timezone')
 const checkWindowService = require('./check-window-v2.service')
 const aaViewModes = require('../lib/consts/access-arrangements-view-mode')
+const { PupilFrozenService } = require('./pupil-frozen.service/pupil-frozen.service')
 
 const accessArrangementsService = {
 /**
@@ -27,6 +28,7 @@ const accessArrangementsService = {
  */
   submit: async function submit (submittedData, schoolId, userId) {
     const urlSlug = submittedData.pupilUrlSlug || submittedData.urlSlug
+    await PupilFrozenService.throwIfFrozenByUrlSlug(urlSlug)
     const validationError = accessArrangementsValidator.validate(submittedData)
     if (validationError.hasError()) {
       throw validationError

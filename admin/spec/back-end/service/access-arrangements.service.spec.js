@@ -12,6 +12,7 @@ const accessArrangementsErrorMessages = require('../../../lib/errors/access-arra
 const preparedCheckSyncService = require('../../../services/prepared-check-sync.service')
 const moment = require('moment-timezone')
 const checkWindowService = require('../../../services/check-window-v2.service')
+const { PupilFrozenService } = require('../../../services/pupil-frozen.service/pupil-frozen.service')
 
 describe('accessArrangementsService', () => {
   afterEach(() => {
@@ -42,6 +43,9 @@ describe('accessArrangementsService', () => {
   })
 
   describe('submit', () => {
+    beforeEach(() => {
+      jest.spyOn(PupilFrozenService, 'throwIfFrozenByUrlSlug').mockResolvedValue()
+    })
     test('calls preparedCheckSync service and returns access arrangements list', async () => {
       jest.spyOn(accessArrangementsValidator, 'validate').mockReturnValue((new ValidationError()))
       jest.spyOn(sut, 'prepareData').mockImplementation()
@@ -72,6 +76,18 @@ describe('accessArrangementsService', () => {
       expect(sut.prepareData).not.toHaveBeenCalled()
       expect(sut.save).not.toHaveBeenCalled()
       expect(preparedCheckSyncService.addMessages).not.toHaveBeenCalled()
+    })
+
+    test('throws an error if pupil is frozen', async () => {
+      jest.spyOn(accessArrangementsValidator, 'validate').mockReturnValue((new ValidationError()))
+      jest.spyOn(sut, 'prepareData').mockImplementation()
+      jest.spyOn(pupilDataService, 'sqlFindOneBySlugAndSchool').mockResolvedValue({ id: 1 })
+      jest.spyOn(sut, 'save').mockImplementation()
+      jest.spyOn(preparedCheckSyncService, 'addMessages').mockImplementation()
+      jest.spyOn(PupilFrozenService, 'throwIfFrozenByUrlSlug').mockImplementation(() => {
+        throw new Error('frozen')
+      })
+      await expect(sut.submit({}, 12345, 1)).rejects.toThrow('frozen')
     })
   })
 
