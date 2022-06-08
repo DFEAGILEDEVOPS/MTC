@@ -3,6 +3,7 @@
 const validator = require('../lib/validator/retro-input-assistant-validator')
 const dataService = require('./data-access/retro-input-assistant.data.service')
 const validateUuid = require('uuid-validate')
+const { PupilFrozenService } = require('./pupil-frozen.service/pupil-frozen.service')
 
 const service = {
   /**
@@ -23,6 +24,8 @@ const service = {
     if (validationResult.hasError()) {
       throw validationResult
     }
+
+    await PupilFrozenService.throwIfFrozenByUrlSlug(retroInputAssistantData.pupilUuid)
 
     const pupilData = await dataService.getPupilIdAndCurrentCheckIdByUrlSlug(retroInputAssistantData.pupilUuid)
     if (!pupilData || pupilData.length === 0) {
@@ -77,6 +80,7 @@ const service = {
     if (!validateUuid(pupilUrlSlug)) {
       throw new Error('pupilUrlSlug is not a valid UUID')
     }
+    await PupilFrozenService.throwIfFrozenByUrlSlug(pupilUrlSlug)
     return dataService.deleteRetroInputAssistant(pupilUrlSlug)
   }
 }
