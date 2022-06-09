@@ -8,14 +8,15 @@ const redisCacheService = require('../../../services/data-access/redis-cache.ser
 
 const service = require('../../../services/attendance.service')
 const attendanceCodeDataService = require('../../../services/data-access/attendance-code.data.service')
+// const { PupilFrozenService } = require('../../../services/pupil-frozen.service/pupil-frozen.service')
 
 describe('attendanceService', () => {
   afterEach(() => {
     jest.restoreAllMocks()
   })
 
-  describe('#updatePupilAttendanceBySlug', () => {
-    test('just calls the data service', async () => {
+  describe('updatePupilAttendanceBySlug', () => {
+    test('calls the data service', async () => {
       jest.spyOn(redisCacheService, 'drop').mockImplementation()
       const slugs = ['slug1', 'slug2', 'slug3']
       const code = 'ABSNT'
@@ -25,9 +26,11 @@ describe('attendanceService', () => {
       await service.updatePupilAttendanceBySlug(slugs, code, userId, schoolId)
       expect(pupilAttendanceDataService.markAsNotAttending).toHaveBeenCalled()
     })
+
+    test.todo('throws an error if pupil is frozen')
   })
 
-  describe('#unsetAttendanceCode', () => {
+  describe('unsetAttendanceCode', () => {
     const pupilSlug = 'slug1'
     const dfeNumber = 9991999
 
@@ -54,7 +57,7 @@ describe('attendanceService', () => {
     })
   })
 
-  describe('#hasAttendance', () => {
+  describe('hasAttendance', () => {
     describe('for live env', () => {
       test('returns valid if pupil has any attendance', async () => {
         jest.spyOn(pupilAttendanceDataService, 'findOneByPupilId').mockResolvedValue({ id: 'id', code: 'A' })
@@ -90,7 +93,7 @@ describe('attendanceService', () => {
     })
   })
 
-  describe('#getAttendanceCodes', () => {
+  describe('getAttendanceCodes', () => {
     test('it sorts on the order prop', async () => {
       const attendanceData = [
         { id: 1, order: 3 },

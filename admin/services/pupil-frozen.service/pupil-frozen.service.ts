@@ -16,9 +16,16 @@ export class PupilFrozenService {
     this.throwIfFrozen(isFrozen)
   }
 
-  private static throwIfFrozen (frozenFlag: boolean): void {
+  static async throwIfFrozenByUrlSlugs (pupilUrlSlugs: Array<string>): Promise<void> {
+    if (pupilUrlSlugs === undefined) throw new Error('pupilUrlSlugs is required')
+    if (pupilUrlSlugs.length === 0) return
+    const frozenResult = await pupilDataService.countFrozenByUrlSlugs(pupilUrlSlugs)
+    this.throwIfFrozen(frozenResult[0].frozenCount > 0, 'one or more pupils are frozen')
+  }
+
+  private static throwIfFrozen (frozenFlag: boolean, errorMsg: string = 'Pupil record is frozen and cannot be edited'): void {
     if (frozenFlag) {
-      throw new Error('Pupil record is frozen and cannot be edited')
+      throw new Error(errorMsg)
     }
   }
 }

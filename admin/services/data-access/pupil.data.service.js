@@ -354,6 +354,11 @@ pupilDataService.sqlInsertMany = async (pupils) => {
   return { insertId: res.map(x => x.id) }
 }
 
+/**
+ * @description look up a pupils frozen flag by their id
+ * @param {number} pupilId
+ * @returns {Promise<Array<any>>}
+ */
 pupilDataService.isFrozen = async (pupilId) => {
   const sql = 'SELECT frozen FROM mtc_admin.pupil WHERE id=@pupilId'
   const params = [{
@@ -364,6 +369,11 @@ pupilDataService.isFrozen = async (pupilId) => {
   return sqlService.readonlyQuery(sql, params)
 }
 
+/**
+ * @description look up a pupils frozen flag by their urlSlug
+ * @param {string} pupilUrlSlug
+ * @returns {Promise<Array<any>>}
+ */
 pupilDataService.isFrozenByUrlSlug = async (pupilUrlSlug) => {
   const sql = 'SELECT frozen FROM mtc_admin.pupil WHERE urlSlug=@pupilUrlSlug'
   const params = [{
@@ -371,6 +381,17 @@ pupilDataService.isFrozenByUrlSlug = async (pupilUrlSlug) => {
     type: TYPES.UniqueIdentifier,
     value: pupilUrlSlug
   }]
+  return sqlService.readonlyQuery(sql, params)
+}
+
+/**
+ * @description get the count of pupils who are frozen within a set of urlSlugs
+ * @param {Array<string>} pupilUrlSlugs
+ * @returns {Promise<Array<any>>}
+ */
+pupilDataService.countFrozenByUrlSlugs = async (pupilUrlSlugs) => {
+  const { params, paramIdentifiers } = sqlService.buildParameterList(pupilUrlSlugs, TYPES.UniqueIdentifier, 'pupilUrlSlug')
+  const sql = `SELECT COUNT(id) as [frozenCount] FROM mtc_admin.pupil WHERE frozen=1 AND id IN (${paramIdentifiers.join(', ')})`
   return sqlService.readonlyQuery(sql, params)
 }
 
