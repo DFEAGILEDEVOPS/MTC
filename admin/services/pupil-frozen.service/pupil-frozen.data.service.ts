@@ -40,6 +40,19 @@ export class PupilFrozenDataService {
     const { params, paramIdentifiers } = sqlService.buildParameterList(pupilUrlSlugs, sqlService.TYPES.UniqueIdentifier,
       'pupilUrlSlug')
     const sql = `SELECT COUNT(id) as [frozenCount]
+      FROM mtc_admin.pupil WHERE frozen=1 AND urlSlug IN (${paramIdentifiers.join(', ')})`
+    return sqlService.readonlyQuery(sql, params)
+  }
+
+  /**
+ * @description get the count of pupils who are frozen within a set of urlSlugs
+ * @param {Array<string>} pupilIds
+ * @returns {Promise<Array<any>>}
+ */
+   public static async countFrozenByPupilIds (pupilIds: Array<number>): Promise<any> {
+    const { params, paramIdentifiers } = sqlService.buildParameterList(pupilIds, sqlService.TYPES.Int,
+      'pupilId')
+    const sql = `SELECT COUNT(id) as [frozenCount]
       FROM mtc_admin.pupil WHERE frozen=1 AND id IN (${paramIdentifiers.join(', ')})`
     return sqlService.readonlyQuery(sql, params)
   }

@@ -89,7 +89,7 @@ restartService.markDeleted = async (pupilUrlSlug, userId, schoolId) => {
     throw new Error('pupil not found')
   }
 
-  await PupilFrozenService.throwIfFrozenById(pupil.id)
+  await PupilFrozenService.throwIfFrozenByIds(pupil.id)
 
   // Ideally the slug would refer to the restart itself and not the pupil.
   const restart = await pupilRestartDataService.sqlFindOpenRestartForPupil(pupilUrlSlug, schoolId)

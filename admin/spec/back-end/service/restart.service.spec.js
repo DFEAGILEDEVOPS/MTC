@@ -75,7 +75,7 @@ describe('restart.service', () => {
       })
       jest.spyOn(pupilRestartDataService, 'sqlMarkRestartAsDeleted').mockImplementation(() => null)
       jest.spyOn(prepareCheckService, 'removeChecks').mockImplementation(() => null)
-      jest.spyOn(PupilFrozenService, 'throwIfFrozenById').mockResolvedValue()
+      jest.spyOn(PupilFrozenService, 'throwIfFrozenByIds').mockResolvedValue()
     })
 
     test('returns the pupil object of the pupil who is mark as deleted', async () => {
@@ -90,7 +90,7 @@ describe('restart.service', () => {
     })
 
     test('if pupil is frozen it throws an error', async () => {
-      jest.spyOn(PupilFrozenService, 'throwIfFrozenById').mockImplementation(() => {
+      jest.spyOn(PupilFrozenService, 'throwIfFrozenByIds').mockImplementation(() => {
         throw new Error('frozen')
       })
       await expect(restartService.markDeleted('slug, 1, 2')).rejects.toThrow('frozen')

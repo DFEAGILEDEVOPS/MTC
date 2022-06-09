@@ -6,24 +6,31 @@ describe('Pupil Frozen Service', () => {
     jest.restoreAllMocks()
   })
 
-  describe('throwIfFrozenById', () => {
-    test('throws an error if pupilId is undefined', async () => {
+  describe('throwIfFrozenByIds', () => {
+    test('throws an error if pupilIds is undefined', async () => {
       const x = undefined
-      await expect(PupilFrozenService.throwIfFrozenById(x)).rejects.toThrow('pupilId is required')
+      await expect(PupilFrozenService.throwIfFrozenByIds(x)).rejects.toThrow('pupilIds is required')
     })
 
-    test('throws an error if pupil is frozen', async () => {
-      jest.spyOn(PupilFrozenDataService, 'isFrozen').mockResolvedValue([{
-        frozen: true
-      }])
-      await expect(PupilFrozenService.throwIfFrozenById(1)).rejects.toThrow('Pupil record is frozen and cannot be edited')
+    test('exits early if pupilIds is empty', async () => {
+      jest.spyOn(PupilFrozenDataService, 'countFrozenByPupilIds').mockImplementation()
+      const x = []
+      await PupilFrozenService.throwIfFrozenByIds(x)
+      expect(PupilFrozenDataService.countFrozenByPupilIds).not.toHaveBeenCalled()
     })
 
-    test('does not throw an error if pupil is not frozen', async () => {
-      jest.spyOn(PupilFrozenDataService, 'isFrozen').mockResolvedValue([{
-        frozen: false
+    test('throws an error if one pupil is frozen', async () => {
+      jest.spyOn(PupilFrozenDataService, 'countFrozenByPupilIds').mockResolvedValue([{
+        frozenCount: 1
       }])
-      await expect(PupilFrozenService.throwIfFrozenById(1)).resolves.toBeUndefined()
+      await expect(PupilFrozenService.throwIfFrozenByIds([1,2,3,4])).rejects.toThrow('frozen pupils cannot be modified')
+    })
+
+    test('does not throw an error if no pupils in set are frozen', async () => {
+      jest.spyOn(PupilFrozenDataService, 'countFrozenByPupilIds').mockResolvedValue([{
+        frozenCount: 0
+      }])
+      await expect(PupilFrozenService.throwIfFrozenByIds([1,2,3,4])).resolves.toBeUndefined()
     })
   })
 
@@ -49,7 +56,7 @@ describe('Pupil Frozen Service', () => {
       jest.spyOn(PupilFrozenDataService, 'countFrozenByUrlSlugs').mockResolvedValue([{
         frozenCount: 1
       }])
-      await expect(PupilFrozenService.throwIfFrozenByUrlSlugs(slugs)).rejects.toThrow('one or more pupils are frozen')
+      await expect(PupilFrozenService.throwIfFrozenByUrlSlugs(slugs)).rejects.toThrow('frozen pupils cannot be modified')
     })
 
     test('throws an error if more than one pupil in set is frozen', async () => {
@@ -64,7 +71,7 @@ describe('Pupil Frozen Service', () => {
       jest.spyOn(PupilFrozenDataService, 'countFrozenByUrlSlugs').mockResolvedValue([{
         frozenCount: 3
       }])
-      await expect(PupilFrozenService.throwIfFrozenByUrlSlugs(slugs)).rejects.toThrow('one or more pupils are frozen')
+      await expect(PupilFrozenService.throwIfFrozenByUrlSlugs(slugs)).rejects.toThrow('frozen pupils cannot be modified')
     })
 
     test('does not throw an error if no pupils in set are frozen', async () => {
