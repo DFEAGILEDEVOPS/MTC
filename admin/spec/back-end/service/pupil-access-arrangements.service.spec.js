@@ -189,7 +189,7 @@ describe('pupilAccessArrangementsService', () => {
 
   describe('deletePupilAccessArrangements', () => {
     test('returns pupil data when successfully deleting relevant access arrangements', async () => {
-      jest.spyOn(PupilFrozenService, 'throwIfFrozenByUrlSlug').mockResolvedValue()
+      jest.spyOn(PupilFrozenService, 'throwIfFrozenByUrlSlugs').mockResolvedValue()
       jest.spyOn(pupilDataService, 'sqlFindOneBySlugAndSchool').mockReturnValue({ id: 1, foreName: 'foreName', lastName: 'lastName' })
       jest.spyOn(pupilAccessArrangementsDataService, 'sqlDeletePupilsAccessArrangements').mockImplementation()
       jest.spyOn(preparedCheckSyncService, 'addMessages').mockImplementation()
@@ -202,7 +202,7 @@ describe('pupilAccessArrangementsService', () => {
     })
 
     test('rejects if url slug is not present', async () => {
-      jest.spyOn(PupilFrozenService, 'throwIfFrozenByUrlSlug').mockResolvedValue()
+      jest.spyOn(PupilFrozenService, 'throwIfFrozenByUrlSlugs').mockResolvedValue()
       jest.spyOn(pupilDataService, 'sqlFindOneBySlugAndSchool').mockImplementation()
       jest.spyOn(pupilAccessArrangementsDataService, 'sqlDeletePupilsAccessArrangements').mockImplementation()
       jest.spyOn(preparedCheckSyncService, 'addMessages').mockImplementation()
@@ -218,7 +218,7 @@ describe('pupilAccessArrangementsService', () => {
     })
 
     test('throws an error if pupil is frozen', async () => {
-      jest.spyOn(PupilFrozenService, 'throwIfFrozenByUrlSlug').mockImplementation(() => {
+      jest.spyOn(PupilFrozenService, 'throwIfFrozenByUrlSlugs').mockImplementation(() => {
         throw new Error('frozen')
       })
       const urlSlug = uuid.v4()

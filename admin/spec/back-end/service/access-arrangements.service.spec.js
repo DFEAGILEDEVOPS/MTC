@@ -44,7 +44,7 @@ describe('accessArrangementsService', () => {
 
   describe('submit', () => {
     beforeEach(() => {
-      jest.spyOn(PupilFrozenService, 'throwIfFrozenByUrlSlug').mockResolvedValue()
+      jest.spyOn(PupilFrozenService, 'throwIfFrozenByUrlSlugs').mockResolvedValue()
     })
     test('calls preparedCheckSync service and returns access arrangements list', async () => {
       jest.spyOn(accessArrangementsValidator, 'validate').mockReturnValue((new ValidationError()))
@@ -84,7 +84,7 @@ describe('accessArrangementsService', () => {
       jest.spyOn(pupilDataService, 'sqlFindOneBySlugAndSchool').mockResolvedValue({ id: 1 })
       jest.spyOn(sut, 'save').mockImplementation()
       jest.spyOn(preparedCheckSyncService, 'addMessages').mockImplementation()
-      jest.spyOn(PupilFrozenService, 'throwIfFrozenByUrlSlug').mockImplementation(() => {
+      jest.spyOn(PupilFrozenService, 'throwIfFrozenByUrlSlugs').mockImplementation(() => {
         throw new Error('frozen')
       })
       await expect(sut.submit({}, 12345, 1)).rejects.toThrow('frozen')

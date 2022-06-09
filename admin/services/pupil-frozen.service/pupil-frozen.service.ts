@@ -9,13 +9,6 @@ export class PupilFrozenService {
     this.throwIfFrozen(isFrozen)
   }
 
-  static async throwIfFrozenByUrlSlug (pupilUrlSlug: string): Promise<void> {
-    if (pupilUrlSlug === undefined) throw new Error('pupilUrlSlug is required')
-    const frozenResult = await pupilDataService.isFrozenByUrlSlug(pupilUrlSlug)
-    const isFrozen = frozenResult[0].frozen
-    this.throwIfFrozen(isFrozen)
-  }
-
   static async throwIfFrozenByUrlSlugs (pupilUrlSlugs: Array<string>): Promise<void> {
     if (pupilUrlSlugs === undefined) throw new Error('pupilUrlSlugs is required')
     if (pupilUrlSlugs.length === 0) return

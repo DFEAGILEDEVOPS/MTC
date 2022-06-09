@@ -20,7 +20,7 @@ function setupDefaultSpies () {
 describe('retro input assistant service', () => {
   beforeEach(() => {
     jest.spyOn(dataService, 'create').mockResolvedValue(Promise.resolve())
-    jest.spyOn(PupilFrozenService, 'throwIfFrozenByUrlSlug').mockResolvedValue()
+    jest.spyOn(PupilFrozenService, 'throwIfFrozenByUrlSlugs').mockResolvedValue()
   })
 
   afterEach(() => {
@@ -44,7 +44,7 @@ describe('retro input assistant service', () => {
 
     test('should throw an error if pupil is frozen', async () => {
       setupDefaultSpies()
-      jest.spyOn(PupilFrozenService, 'throwIfFrozenByUrlSlug').mockImplementation(() => {
+      jest.spyOn(PupilFrozenService, 'throwIfFrozenByUrlSlugs').mockImplementation(() => {
         throw new Error('frozen')
       })
       await expect(sut.save({
@@ -212,7 +212,7 @@ describe('retro input assistant service', () => {
     })
 
     test('should throw an error if pupil is frozen', async () => {
-      jest.spyOn(PupilFrozenService, 'throwIfFrozenByUrlSlug').mockImplementation(() => {
+      jest.spyOn(PupilFrozenService, 'throwIfFrozenByUrlSlugs').mockImplementation(() => {
         throw new Error('frozen')
       })
       await expect(sut.deleteFromCurrentCheck('6195f068-a0e1-4881-bb22-4edf337c5688')).rejects.toThrow('frozen')

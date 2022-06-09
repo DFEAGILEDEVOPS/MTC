@@ -27,29 +27,6 @@ describe('Pupil Frozen Service', () => {
     })
   })
 
-  describe('throwIfFrozenByUrlSlug', () => {
-    test('throws an error if pupilUrlSlug is undefined', async () => {
-      const x = undefined
-      await expect(PupilFrozenService.throwIfFrozenByUrlSlug(x)).rejects.toThrow('pupilUrlSlug is required')
-    })
-
-    test('throws an error if pupil is frozen', async () => {
-      jest.spyOn(pupilDataService, 'isFrozenByUrlSlug').mockReturnValue([{
-        frozen: true
-      }])
-      await expect(PupilFrozenService.throwIfFrozenByUrlSlug('856ed79a-1fc9-4c14-bb32-dc7e026a6c3f'))
-        .rejects.toThrow('Pupil record is frozen and cannot be edited')
-    })
-
-    test('does not throw an error if pupil is not frozen', async () => {
-      jest.spyOn(pupilDataService, 'isFrozenByUrlSlug').mockReturnValue([{
-        frozen: false
-      }])
-      await expect(PupilFrozenService.throwIfFrozenByUrlSlug('856ed79a-1fc9-4c14-bb32-dc7e026a6c3f'))
-        .resolves.toBeUndefined()
-    })
-  })
-
   describe('throwIfFrozenByUrlSlugs', () => {
     test('throws an error if pupilUrlSlugs is undefined', async () => {
       const x = undefined
@@ -75,5 +52,35 @@ describe('Pupil Frozen Service', () => {
       await expect(PupilFrozenService.throwIfFrozenByUrlSlugs(slugs)).rejects.toThrow('one or more pupils are frozen')
     })
 
+    test('throws an error if more than one pupil in set is frozen', async () => {
+      const slugs: Array<string> = [
+        '985d8211-0bed-44c1-ab58-b08e6ec9ed58',
+        '79de5922-1180-4f9c-9d8a-b3e5e6e59829',
+        '6d0229ef-9eba-4d9a-b884-a41cbe63b2fd',
+        '27a07106-a579-4755-b45f-01035d14a859',
+        '06efbfe4-c9ac-4033-803e-9841e411b3eb',
+        'c5146bc2-1f73-4bde-b66b-ca84cb397ceb'
+      ]
+      jest.spyOn(pupilDataService, 'countFrozenByUrlSlugs').mockReturnValue([{
+        frozenCount: 3
+      }])
+      await expect(PupilFrozenService.throwIfFrozenByUrlSlugs(slugs)).rejects.toThrow('one or more pupils are frozen')
+    })
+
+    test('does not throw an error if no pupils in set are frozen', async () => {
+      const slugs: Array<string> = [
+        '985d8211-0bed-44c1-ab58-b08e6ec9ed58',
+        '79de5922-1180-4f9c-9d8a-b3e5e6e59829',
+        '6d0229ef-9eba-4d9a-b884-a41cbe63b2fd',
+        '27a07106-a579-4755-b45f-01035d14a859',
+        '06efbfe4-c9ac-4033-803e-9841e411b3eb',
+        'c5146bc2-1f73-4bde-b66b-ca84cb397ceb'
+      ]
+      jest.spyOn(pupilDataService, 'countFrozenByUrlSlugs').mockReturnValue([{
+        frozenCount: 0
+      }])
+      await PupilFrozenService.throwIfFrozenByUrlSlugs(slugs)
+      expect(pupilDataService.countFrozenByUrlSlugs).toHaveBeenCalledTimes(1)
+    })
   })
 })

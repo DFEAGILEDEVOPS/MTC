@@ -88,7 +88,7 @@ pupilAccessArrangementsService.deletePupilAccessArrangements = async (pupilUrlSl
   if (!uuidValidator(pupilUrlSlug)) {
     throw new Error(`pupilUrlSlug: '${pupilUrlSlug}' is not a valid UUID`)
   }
-  await PupilFrozenService.throwIfFrozenByUrlSlug(pupilUrlSlug)
+  await PupilFrozenService.throwIfFrozenByUrlSlugs([pupilUrlSlug])
   const pupil = await pupilDataService.sqlFindOneBySlugAndSchool(pupilUrlSlug, schoolId)
   if (!pupil) {
     throw new Error(`Pupil ${pupilUrlSlug} not found in school ID ${schoolId}`)

@@ -25,7 +25,7 @@ const service = {
       throw validationResult
     }
 
-    await PupilFrozenService.throwIfFrozenByUrlSlug(retroInputAssistantData.pupilUuid)
+    await PupilFrozenService.throwIfFrozenByUrlSlugs([retroInputAssistantData.pupilUuid])
 
     const pupilData = await dataService.getPupilIdAndCurrentCheckIdByUrlSlug(retroInputAssistantData.pupilUuid)
     if (!pupilData || pupilData.length === 0) {
@@ -80,7 +80,7 @@ const service = {
     if (!validateUuid(pupilUrlSlug)) {
       throw new Error('pupilUrlSlug is not a valid UUID')
     }
-    await PupilFrozenService.throwIfFrozenByUrlSlug(pupilUrlSlug)
+    await PupilFrozenService.throwIfFrozenByUrlSlugs([pupilUrlSlug])
     return dataService.deleteRetroInputAssistant(pupilUrlSlug)
   }
 }
