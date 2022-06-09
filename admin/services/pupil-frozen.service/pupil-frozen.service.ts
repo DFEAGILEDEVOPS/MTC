@@ -1,10 +1,10 @@
 
-const pupilDataService = require('../data-access/pupil.data.service')
+const { PupilFrozenDataService } = require('./pupil-frozen.data.service')
 
 export class PupilFrozenService {
   static async throwIfFrozenById (pupilId: number): Promise<void> {
     if (pupilId === undefined) throw new Error('pupilId is required')
-    const frozenResult = await pupilDataService.isFrozen(pupilId)
+    const frozenResult = await PupilFrozenDataService.isFrozen(pupilId)
     const isFrozen = frozenResult[0].frozen
     this.throwIfFrozen(isFrozen)
   }
@@ -12,7 +12,7 @@ export class PupilFrozenService {
   static async throwIfFrozenByUrlSlugs (pupilUrlSlugs: Array<string>): Promise<void> {
     if (pupilUrlSlugs === undefined) throw new Error('pupilUrlSlugs is required')
     if (pupilUrlSlugs.length === 0) return
-    const frozenResult = await pupilDataService.countFrozenByUrlSlugs(pupilUrlSlugs)
+    const frozenResult = await PupilFrozenDataService.countFrozenByUrlSlugs(pupilUrlSlugs)
     this.throwIfFrozen(frozenResult[0].frozenCount > 0, 'one or more pupils are frozen')
   }
 

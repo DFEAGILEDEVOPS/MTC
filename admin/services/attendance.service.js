@@ -29,6 +29,7 @@ const attendanceService = {
    * @return {Promise<*>}
    */
   unsetAttendanceCode: async (pupilSlug, schoolId) => {
+    await PupilFrozenService.throwIfFrozenByUrlSlugs([pupilSlug])
     const pupil = await pupilDataService.sqlFindOneBySlugAndSchool(pupilSlug, schoolId)
     if (!pupil) {
       throw new Error(`Pupil with id ${pupilSlug} and school ${schoolId} not found`)
