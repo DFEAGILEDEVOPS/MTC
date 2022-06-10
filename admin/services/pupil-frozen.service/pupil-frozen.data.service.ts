@@ -1,4 +1,5 @@
-const {sqlService } = require('../data-access/sql.service')
+const sqlService = require('../data-access/sql.service')
+import { TYPES } from '../data-access/sql.service'
 
 export class PupilFrozenDataService {
 /**
@@ -10,7 +11,7 @@ export class PupilFrozenDataService {
     const sql = 'SELECT frozen FROM mtc_admin.pupil WHERE id=@pupilId'
     const params = [{
       name: 'pupilId',
-      type: sqlService.TYPES.Int,
+      type: TYPES.Int,
       value: pupilId
     }]
     return sqlService.readonlyQuery(sql, params)
@@ -25,7 +26,7 @@ export class PupilFrozenDataService {
     const sql = 'SELECT frozen FROM mtc_admin.pupil WHERE urlSlug=@pupilUrlSlug'
     const params = [{
       name: 'pupilUrlSlug',
-      type: sqlService.TYPES.UniqueIdentifier,
+      type: TYPES.UniqueIdentifier,
       value: pupilUrlSlug
     }]
     return sqlService.readonlyQuery(sql, params)
@@ -37,7 +38,7 @@ export class PupilFrozenDataService {
  * @returns {Promise<Array<any>>}
  */
   public static async countFrozenByUrlSlugs (pupilUrlSlugs: Array<string>): Promise<any> {
-    const { params, paramIdentifiers } = sqlService.buildParameterList(pupilUrlSlugs, sqlService.TYPES.UniqueIdentifier,
+    const { params, paramIdentifiers } = sqlService.buildParameterList(pupilUrlSlugs, TYPES.UniqueIdentifier,
       'pupilUrlSlug')
     const sql = `SELECT COUNT(id) as [frozenCount]
       FROM mtc_admin.pupil WHERE frozen=1 AND urlSlug IN (${paramIdentifiers.join(', ')})`
@@ -50,10 +51,12 @@ export class PupilFrozenDataService {
  * @returns {Promise<Array<any>>}
  */
    public static async countFrozenByPupilIds (pupilIds: Array<number>): Promise<any> {
-    const { params, paramIdentifiers } = sqlService.buildParameterList(pupilIds, sqlService.TYPES.Int,
+     console.dir(pupilIds)
+    const paramData = sqlService.buildParameterList(pupilIds, TYPES.Int,
       'pupilId')
+    console.dir(paramData)
     const sql = `SELECT COUNT(id) as [frozenCount]
-      FROM mtc_admin.pupil WHERE frozen=1 AND id IN (${paramIdentifiers.join(', ')})`
-    return sqlService.readonlyQuery(sql, params)
+      FROM mtc_admin.pupil WHERE frozen=1 AND id IN (${paramData.paramIdentifiers.join(', ')})`
+    return sqlService.readonlyQuery(sql, paramData.params)
   }
 }
