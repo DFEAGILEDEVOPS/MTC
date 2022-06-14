@@ -426,7 +426,7 @@ Then(/^I should see validation error for the DOB field fo the following$/) do |t
   end
 end
 
-Then(/^I should see validation error for the UPN field fo the following$/) do |table|
+Then(/^I should see validation error for the UPN field for the following$/) do |table|
   table.hashes.each do |hash|
     visit current_url if Capybara.current_driver.to_s.include? 'ie11'
     p hash['condition']
@@ -564,4 +564,91 @@ end
 
 Then(/^it should include the newly added pupil$/) do
   expect(@pupils_from_redis).to include @details_hash[:last_name] + ', ' + @details_hash[:first_name]
+end
+
+When(/^I have submitted valid pupil details including a temporary upn$/) do
+    today_date = Date.today + 1
+    @upn = UpnGenerator.generate_temporary
+    pupil_name = (0...8).map {(65 + rand(26)).chr}.join
+    @details_hash = {first_name: pupil_name, middle_name: pupil_name, last_name: pupil_name, upn: @upn, female: true, day: "#{today_date.day}", month: "#{today_date.month}", year: "#{today_date.year - 10}"}
+    @page.enter_details(@details_hash)
+    @page.add_pupil.click unless @page == edit_pupil_page
+    @page.save_changes.click if @page == edit_pupil_page
+    @time_stored = Time.now.utc.strftime("%Y-%m-%d %H")
+end
+
+
+When(/^I submit valid details with a temp UPN that has a incorrect check letter$/) do
+  dob = calculate_age(9)
+  @upn = UpnGenerator.generate_temporary
+  @upn[0]= 'O'
+  @details_hash = {first_name: 'valid', middle_name: 'valid', last_name: 'valid', female: true, upn: @upn, day: dob.day.to_s, month: dob.month.to_s, year: dob.year.to_s}
+  @page.enter_details(@details_hash)
+  @page.add_pupil.click unless @page == edit_pupil_page
+  @page.save_changes.click if @page == edit_pupil_page
+  @time_stored = Helpers.time_to_nearest_hour(Time.now.utc)
+end
+
+
+When(/^I submit valid details with a temp UPN that has a invalid LA code$/) do
+  dob = calculate_age(9)
+  @details_hash = {first_name: 'valid', middle_name: 'valid', last_name: 'valid', female: true, upn: 'Z00011320001X', day: dob.day.to_s, month: dob.month.to_s, year: dob.year.to_s}
+  @page.enter_details(@details_hash)
+  @page.add_pupil.click unless @page == edit_pupil_page
+  @page.save_changes.click if @page == edit_pupil_page
+  @time_stored = Helpers.time_to_nearest_hour(Time.now.utc)
+end
+
+
+When(/^I submit valid details with a temp UPN that has a alpha character between characters 5\-12$/) do
+  dob = calculate_age(9)
+  @details_hash = {first_name: 'valid', middle_name: 'valid', last_name: 'valid', female: true, upn: 'U38201A30110B', day: dob.day.to_s, month: dob.month.to_s, year: dob.year.to_s}
+  @page.enter_details(@details_hash)
+  @page.add_pupil.click unless @page == edit_pupil_page
+  @page.save_changes.click if @page == edit_pupil_page
+  @time_stored = Helpers.time_to_nearest_hour(Time.now.utc)
+end
+
+
+When(/^I submit valid details with a temp UPN that has a invalid alpha character at character 13$/) do
+  dob = calculate_age(9)
+  @upn = UpnGenerator.generate_temporary
+  @upn[12]= 'S'
+  @details_hash = {first_name: 'valid', middle_name: 'valid', last_name: 'valid', female: true, upn: @upn, day: dob.day.to_s, month: dob.month.to_s, year: dob.year.to_s}
+  @page.enter_details(@details_hash)
+  @page.add_pupil.click unless @page == edit_pupil_page
+  @page.save_changes.click if @page == edit_pupil_page
+  @time_stored = Helpers.time_to_nearest_hour(Time.now.utc)
+end
+
+Then(/^I should see validation error for the UPN field when using a temporary upn for the following$/) do |table|
+  table.hashes.each do |hash|
+    visit current_url if Capybara.current_driver.to_s.include? 'ie11'
+    p hash['condition']
+    case hash['condition']
+    when 'wrong check letter'
+      step 'I submit valid details with a temp UPN that has a incorrect check letter'
+      step 'I should see an error stating wrong check letter at character 1'
+    when 'invalid LA code'
+      step 'I submit valid details with a temp UPN that has a invalid LA code'
+      step 'I should see an error stating characters between 2-4 are invalid'
+    when 'alpha characters between characters 5-12'
+      step 'I submit valid details with a temp UPN that has a alpha character between characters 5-12'
+      step 'I should see an error stating characters between 5-12 are invalid'
+    when 'invalid alhpa character at position 13'
+      step 'I submit valid details with a temp UPN that has a invalid alpha character at character 13'
+      step 'I should see an error stating character 13 is invalid'
+    end
+  end
+end
+
+
+When(/^I submit valid details with a temporary UPN has a lowercase alpha character$/) do
+  dob = calculate_age(9)
+  @upn = UpnGenerator.generate_temporary
+  @details_hash = {first_name: 'valid', middle_name: 'valid', last_name: 'valid', female: true, upn: @upn.downcase, day: dob.day.to_s, month: dob.month.to_s, year: dob.year.to_s}
+  @page.enter_details(@details_hash)
+  @page.add_pupil.click unless @page == edit_pupil_page
+  @page.save_changes.click if @page == edit_pupil_page
+  @time_stored = Helpers.time_to_nearest_hour(Time.now.utc)
 end
