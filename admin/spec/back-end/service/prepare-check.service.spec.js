@@ -5,6 +5,7 @@ const sut = require('../../../services/prepare-check.service')
 const pinService = require('../../../services/pin.service')
 const redisService = require('../../../services/data-access/redis-cache.service')
 const moment = require('moment')
+const { PupilFrozenService } = require('../../../services/pupil-frozen.service/pupil-frozen.service')
 
 let check
 
@@ -49,6 +50,11 @@ describe('prepare-check.service', () => {
 
   test('rejects an argument that is not an array', async () => {
     await expect(sut.prepareChecks('bad argument')).rejects.toThrow('checks is not an array')
+  })
+
+  test('throws an error if one or more pupils are frozen', async () => {
+    jest.spyOn(PupilFrozenService, 'throwIfFrozenByIds').mockRejectedValue(new Error('frozen'))
+    await expect(sut.prepareChecks([check])).rejects.toThrow('frozen')
   })
 
   test('should add each check with the expected cache key and a lookup item', async () => {
