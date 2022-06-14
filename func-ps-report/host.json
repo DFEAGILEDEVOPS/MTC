@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "functionTimeout": "22:59:59",
+  "functionTimeout": "23:00:00",
   "logging": {
     "logLevel": {
       "default": "Error",
