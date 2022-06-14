@@ -3,7 +3,7 @@
   "functionTimeout": "06:01:23",
   "logging": {
     "logLevel": {
-      "default": "Information",
+      "default": "Error",
       "Function": "Trace"
     }
   },
