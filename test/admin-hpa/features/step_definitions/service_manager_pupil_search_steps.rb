@@ -13,7 +13,7 @@ Then(/^the summary page is displayed with the status set to (.+) along with deta
   pupil_details = SqlDbHelper.pupil_details(@upn, @school_id)
   school_details = SqlDbHelper.find_school(@school_id)
   expect(pupil_summary_page.pupil_name.text).to eql pupil_details['lastName'] + ',' + pupil_details['foreName']
-  expect(pupil_summary_page.dob.text).to eql pupil_details['dateOfBirth'].strftime("%d %B %Y")
+  expect(pupil_summary_page.dob.text).to eql pupil_details['dateOfBirth'].strftime("%-d %b %Y")
   expect(pupil_summary_page.upn.text).to eql pupil_details['upn']
   expect(pupil_summary_page.pupil_id.text).to eql pupil_details['id'].to_s
   expect(pupil_summary_page.school.text).to eql school_details['name']
@@ -74,7 +74,7 @@ Then(/^I should see the pupil results page with a list of matched pupils$/) do
     pupil_row = pupil_search_page.pupil_results.pupil_row.find {|pupil| pupil.text.include? pupil_details['foreName']}
     school_details = SqlDbHelper.find_school(pupil_details['school_id'])
     expect(pupil_row.name.text).to eql pupil_details['lastName'] + ', ' + pupil_details['foreName']
-    expect(pupil_row.dob.text).to eql pupil_details['dateOfBirth'].strftime("%d %B %Y")
+    expect(pupil_row.dob.text).to eql pupil_details['dateOfBirth'].strftime("%-d %b %Y")
     expect(pupil_row.school.text).to eql school_details['name']
     expect(pupil_row.urn.text).to eql school_details['urn'].to_s
     expect(pupil_row.dfe_number.text).to eql school_details['dfeNumber'].to_s
@@ -157,7 +157,7 @@ Then(/^the summary page is displayed with the attendance status set to (.+) alon
   pupil_details = SqlDbHelper.pupil_details(@upn, @school_id)
   school_details = SqlDbHelper.find_school(@school_id)
   expect(pupil_summary_page.pupil_name.text).to eql pupil_details['lastName'] + ',' + pupil_details['foreName']
-  expect(pupil_summary_page.dob.text).to eql pupil_details['dateOfBirth'].strftime("%d %B %Y")
+  expect(pupil_summary_page.dob.text).to eql pupil_details['dateOfBirth'].strftime("%-d %b %Y")
   expect(pupil_summary_page.upn.text).to eql pupil_details['upn']
   expect(pupil_summary_page.pupil_id.text).to eql pupil_details['id'].to_s
   expect(pupil_summary_page.school.text).to eql school_details['name']

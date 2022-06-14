@@ -83,3 +83,19 @@ end
 Then(/^it should include the newly added pupils$/) do
   expect(@pupils_from_redis.select {|x| x == @pupil_detail_array[0] + ', '+ @pupil_detail_array[0] + ' ' + @pupil_detail_array[2]}.size).to eql 2
 end
+
+
+When(/^I Upload a valid CSV file to add Multiple Pupil using temporary upns$/) do
+  dobs = add_multiple_pupil_page.get_dob_for_pupil_for_multiple_upload
+  @old_date1 = dobs[0]
+  @old_date2 = dobs[1]
+  @upn = UpnGenerator.generate_temporary
+  @pupil_name = (0...8).map {(65 + rand(26)).chr}.join
+  @pupil_detail_array = [@pupil_name, @pupil_name, @pupil_name, @old_date1, "f", @upn]
+
+  @upn2 = UpnGenerator.generate
+  @pupil_detail_array2 = [@pupil_name, @pupil_name, @pupil_name, @old_date2, "M", @upn2]
+
+  add_multiple_pupil_page.upload_multiple_pupil(@pupil_detail_array, @pupil_detail_array2)
+  add_multiple_pupil_page.save.click
+end
