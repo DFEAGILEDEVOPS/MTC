@@ -1,4 +1,7 @@
-ALTER   VIEW [mtc_admin].[vewPupilsEligibleForTryItOutPin]
+DROP VIEW IF EXISTS [mtc_admin].[vewPupilsEligibleForTryItOutPin]
+GO
+
+CREATE VIEW [mtc_admin].[vewPupilsEligibleForTryItOutPin]
 AS
 SELECT
     p.id,

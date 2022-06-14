@@ -1,4 +1,5 @@
 DROP VIEW IF EXISTS [mtc_admin].[vewPupilsWithActiveFamiliarisationPins]
+GO
 
 CREATE VIEW [mtc_admin].[vewPupilsWithActiveFamiliarisationPins]
 AS

@@ -1,4 +1,5 @@
 DROP VIEW IF EXISTS [mtc_admin].[vewPupilsWithActiveLivePins]
+GO
 
 CREATE VIEW [mtc_admin].[vewPupilsWithActiveLivePins]
 AS

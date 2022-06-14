@@ -16,6 +16,7 @@ describe('prepare-check.service', () => {
 
   beforeEach(() => {
     jest.spyOn(pinService, 'generatePinTimestamp').mockImplementation()
+    jest.spyOn(PupilFrozenService, 'throwIfFrozenByIds').mockImplementation()
     check = {
       checkCode: 'check-code',
       schoolPin: 'school-pin',

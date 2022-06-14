@@ -8,7 +8,12 @@ describe('DiscretationryRestartService', () => {
     jest.restoreAllMocks()
   })
 
+  beforeEach(() => {
+    jest.spyOn(PupilFrozenService, 'throwIfFrozenByUrlSlugs').mockImplementation()
+  })
+
   describe('grantDiscretionaryRestart', () => {
+
     test('it validates that a uuid has been passed in', async () => {
       await expect(DiscretionaryRestartService.grantDiscretionaryRestart('not a valid uuid')).rejects.toThrow(/Invalid uuid/)
     })

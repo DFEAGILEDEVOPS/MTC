@@ -1,4 +1,7 @@
-ALTER VIEW [mtc_admin].[vewPupilsEligibleForLivePinGeneration] AS
+DROP VIEW IF EXISTS [mtc_admin].[vewPupilsEligibleForLivePinGeneration]
+GO
+
+CREATE VIEW [mtc_admin].[vewPupilsEligibleForLivePinGeneration] AS
     SELECT p.id,
            p.foreName,
            p.middleNames,
@@ -18,7 +21,7 @@ ALTER VIEW [mtc_admin].[vewPupilsEligibleForLivePinGeneration] AS
          -- We could avoid this join by moving pinExpiresAt to the check (along with the proposed field `pinValidFrom`)
          [mtc_admin].[checkPin] cp ON (c.id = cp.check_id)
     WHERE p.attendanceId IS NULL
-          p.frozen = 0
+      AND p.frozen = 0
       AND (
             -- no check has ever been allocated
             p.currentCheckId IS NULL

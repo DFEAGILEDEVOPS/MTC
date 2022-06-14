@@ -1,3 +1,6 @@
+DROP VIEW IF EXISTS [mtc_admin].[vewPupilsEligibleForLivePinGeneration]
+GO
+
 ALTER VIEW [mtc_admin].[vewPupilsEligibleForLivePinGeneration] AS
     SELECT p.id,
            p.foreName,
