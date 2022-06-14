@@ -1,9 +1,9 @@
 'use strict'
-
-/** @namespace */
-
 const laCodeService = require('./la-code.service')
 
+/**
+ * @type {Object<number, string>}
+ */
 const remainderLookup = {
   0: 'A',
   1: 'B',
@@ -31,13 +31,40 @@ const remainderLookup = {
 }
 
 /**
+ * Determine if it is a temporary upn
+ * @param {Array} protoUpn - a UPN without the initial check letter
+ * @returns boolean
+ */
+function isTemporaryUpn (protoUpn) {
+  if (protoUpn.length !== 12) {
+    return false
+  }
+  const last = protoUpn[protoUpn.length - 1]
+  if (last.length === 1 && last.match(/[A-Z]/)) {
+    return true
+  }
+  return false
+}
+
+/**
  * Takes any number of args as input.  Do not supply char 1 of the UPN code
  * @return {Array}
  */
-function multiplyByCharacterPosition () {
-  // Convert all the arguments back into an array as numbers and discard
-  // the first position
-  const tail = [...arguments].map(f => parseInt(f, 10))
+function multiplyByCharacterPosition (...theArgs) {
+  if (isTemporaryUpn(theArgs)) {
+    const letter = theArgs[11]
+    /**
+     * entry - key/val array pair [index: number, letter: string]
+     */
+    const entry = Object.entries(remainderLookup).find(a => a[1] === letter)
+    if (entry && entry[0] !== undefined) {
+      const letterValue = entry[0]
+      // perform the replacement if we have a valid letter
+      theArgs[11] = letterValue
+    }
+  }
+  // convert to numbers
+  const tail = theArgs.map(f => parseInt(f, 10))
   // tail now contains only the digits
   // We need to return an array contain the multiplication product
   // of the digit multiplied by the character position, remembering that

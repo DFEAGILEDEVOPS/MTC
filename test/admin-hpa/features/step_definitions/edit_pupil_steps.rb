@@ -15,8 +15,6 @@ When(/^I update with valid pupil data$/) do
   @updated_upn = UpnGenerator.generate
   pupil_name = (0...8).map {(65 + rand(26)).chr}.join
   @updated_details_hash = {first_name: pupil_name, middle_name: pupil_name, last_name: pupil_name, first_name_alias: pupil_name, last_name_alias: pupil_name, upn: @updated_upn, male: true, day: dob.day.to_s, month: dob.month.to_s, year: dob.year.to_s}
-  @updated_details_hash[:upn]=@upn if @page == edit_pupil_page
-  @updated_upn = @upn if @page == edit_pupil_page
   @page.enter_details(@updated_details_hash)
   @page.save_changes.click
 end
@@ -81,4 +79,17 @@ end
 Then(/^it should include the newly edited pupil$/) do
   expect(@pupils_from_redis).to include @updated_details_hash[:last_name] + ', ' + @updated_details_hash[:first_name]
   expect(@pupils_from_redis).to_not include @details_hash[:last_name] + ', ' + @details_hash[:first_name]
+end
+
+
+When(/^I update with valid pupil data with a temporary upn$/) do
+  dob = calculate_age(9)
+  @updated_upn = UpnGenerator.generate_temporary
+  pupil_name = (0...8).map {(65 + rand(26)).chr}.join
+  p pupil_name
+  @updated_details_hash = {first_name: pupil_name, middle_name: pupil_name, last_name: pupil_name, first_name_alias: pupil_name, last_name_alias: pupil_name, upn: @updated_upn, male: true, day: dob.day.to_s, month: dob.month.to_s, year: dob.year.to_s}
+  @updated_details_hash[:upn]=@upn if @page == edit_pupil_page
+  @updated_upn = @upn if @page == edit_pupil_page
+  @page.enter_details(@updated_details_hash)
+  @page.save_changes.click
 end
