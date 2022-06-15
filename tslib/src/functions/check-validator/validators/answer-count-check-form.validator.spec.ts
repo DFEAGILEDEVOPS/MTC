@@ -1,7 +1,6 @@
 import { AnswerCountCheckFormValidator } from './answer-count-check-form.validator'
 import { ICheckValidationError } from './validator-types'
-import { CheckFormService } from '../../../services/check-form.service'
-jest.mock('../../../services/check-form.service') // CheckFormService is now mocked
+import { ICheckFormService } from '../../../services/check-form.service'
 
 let sut: AnswerCountCheckFormValidator
 
@@ -13,9 +12,18 @@ const checkForm = [
   { f1: 6, f2: 2 }
 ]
 
+const CheckFormServiceMock = jest.fn<ICheckFormService, any>(() => ({
+  getCheckFormForCheckCode: jest.fn(),
+  getCheckFormDataByCheckCode: jest.fn()
+}))
+
 describe('answer-count.validator', () => {
+  afterAll(() => {
+    jest.restoreAllMocks()
+  })
+
   beforeEach(() => {
-    const checkFormServiceMock = new CheckFormService()
+    const checkFormServiceMock = new CheckFormServiceMock()
     jest.spyOn(checkFormServiceMock, 'getCheckFormForCheckCode').mockResolvedValue(checkForm)
     sut = new AnswerCountCheckFormValidator(checkFormServiceMock)
   })

@@ -52,6 +52,10 @@ describe('check-validator', () => {
     }
   })
 
+  afterEach(() => {
+    jest.restoreAllMocks()
+  })
+
   test('subject under test should be defined', () => {
     expect(sut).toBeDefined()
   })
