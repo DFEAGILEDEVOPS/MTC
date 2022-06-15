@@ -12,8 +12,20 @@ import { TokensValidator } from './tokens.validator'
 import { LiveCheckValidator } from './live-check.validator'
 import { ISubmittedCheckValidator, IAsyncSubmittedCheckValidator } from './validator-types'
 import { AnswerCountCheckFormValidator } from './answer-count-check-form.validator'
+import { CheckFormService, ICheckFormService } from '../../../services/check-form.service'
+
+export interface IValidatorProvider {
+  getValidators (): ISubmittedCheckValidator[]
+  getAsyncValidators (): IAsyncSubmittedCheckValidator[]
+}
 
 export class ValidatorProvider {
+  private readonly checkFormService: ICheckFormService
+
+  constructor (checkFormService?: ICheckFormService) {
+    this.checkFormService = checkFormService ?? new CheckFormService()
+  }
+
   getValidators (): ISubmittedCheckValidator[] {
     return [
       new AnswerCountValidator(),
@@ -36,7 +48,7 @@ export class ValidatorProvider {
    */
   getAsyncValidators (): IAsyncSubmittedCheckValidator[] {
     return [
-      new AnswerCountCheckFormValidator()
+      new AnswerCountCheckFormValidator(this.checkFormService)
     ]
   }
 }

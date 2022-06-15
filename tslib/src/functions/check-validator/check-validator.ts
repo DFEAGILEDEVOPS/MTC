@@ -5,7 +5,7 @@ import Moment from 'moment'
 import { ICompressionService, CompressionService } from '../../common/compression-service'
 import { ICheckNotificationMessage, CheckNotificationType } from '../../schemas/check-notification-message'
 import { ICheckValidationError } from './validators/validator-types'
-import { ValidatorProvider } from './validators/validator.provider'
+import { ValidatorProvider, IValidatorProvider } from './validators/validator.provider'
 import { ITableService, TableService } from '../../azure/table-service'
 import { ReceivedCheckBindingEntityTransformer } from '../../services/receivedCheckBindingEntityTransformer'
 
@@ -21,22 +21,13 @@ export interface ICheckValidatorFunctionBindings {
 export class CheckValidator {
   private readonly tableService: ITableService
   private readonly compressionService: ICompressionService
-  private readonly validatorProvider: ValidatorProvider
+  private readonly validatorProvider: IValidatorProvider
   private readonly receivedCheckTransformer: ReceivedCheckBindingEntityTransformer
 
-  constructor (tableService?: ITableService, compressionService?: ICompressionService) {
-    if (tableService !== undefined) {
-      this.tableService = tableService
-    } else {
-      this.tableService = new TableService()
-    }
-
-    if (compressionService !== undefined) {
-      this.compressionService = compressionService
-    } else {
-      this.compressionService = new CompressionService()
-    }
-    this.validatorProvider = new ValidatorProvider()
+  constructor (tableService?: ITableService, compressionService?: ICompressionService, validatorProvider?: IValidatorProvider) {
+    this.tableService = tableService ?? new TableService()
+    this.compressionService = compressionService ?? new CompressionService()
+    this.validatorProvider = validatorProvider ?? new ValidatorProvider()
     this.receivedCheckTransformer = new ReceivedCheckBindingEntityTransformer()
   }
 
@@ -123,7 +114,7 @@ export class CheckValidator {
     const asyncValidators = this.validatorProvider.getAsyncValidators()
     const asyncValidationErrors: ICheckValidationError[] = []
     for (let index = 0; index < asyncValidators.length; index++) {
-      const validator = validators[index]
+      const validator = asyncValidators[index]
       const validationResult = await validator.validate(submittedCheck)
       if (validationResult !== undefined) {
         asyncValidationErrors.push(validationResult)

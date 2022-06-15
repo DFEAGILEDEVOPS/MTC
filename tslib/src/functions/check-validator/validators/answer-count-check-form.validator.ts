@@ -43,6 +43,13 @@ export class AnswerCountCheckFormValidator implements IAsyncSubmittedCheckValida
     }
 
     const checkForm = await this.checkFormService.getCheckFormForCheckCode(checkCode)
+
+    if (checkForm === undefined) {
+      return {
+        message: `check form not found for checkCode ${checkCode}`
+      }
+    }
+
     // sort the received answers by timestamp, so we easily find the FIRST answer provided (in the scenario
     // where multiple answers may be received.)
     const sortedAnswers: Answer[] = this.answerSort(answers)
