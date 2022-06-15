@@ -6,13 +6,13 @@ import { IAsyncSubmittedCheckValidator, CheckValidationResult } from './validato
 import { CheckFormService, ICheckFormService } from '../../../services/check-form.service'
 
 export class AnswerCountCheckFormValidator implements IAsyncSubmittedCheckValidator {
-  private checkFormService: ICheckFormService
+  private readonly checkFormService: ICheckFormService
 
-  constructor(checkFormService?: ICheckFormService) {
+  constructor (checkFormService?: ICheckFormService) {
     this.checkFormService = checkFormService ?? new CheckFormService()
   }
 
-  private answerSort(answers: Answer[]): Answer[] {
+  private answerSort (answers: Answer[]): Answer[] {
     const cmp = (a: Answer, b: Answer): number => {
       const aDate = new Date(a.clientTimestamp)
       const bDate = new Date(b.clientTimestamp)
@@ -45,7 +45,7 @@ export class AnswerCountCheckFormValidator implements IAsyncSubmittedCheckValida
     const checkForm = await this.checkFormService.getCheckFormForCheckCode(checkCode)
     // sort the received answers by timestamp, so we easily find the FIRST answer provided (in the scenario
     // where multiple answers may be received.)
-    const sortedAnswers:Answer[] = this.answerSort(answers)
+    const sortedAnswers: Answer[] = this.answerSort(answers)
 
     // there should be an answer for every item in the checkForm
     // Initialise an array of 25 items to 0
@@ -58,7 +58,7 @@ export class AnswerCountCheckFormValidator implements IAsyncSubmittedCheckValida
       const answer = sortedAnswers.find(ans => ans.sequenceNumber === questionNumber &&
         ans.factor1 === checkFormItem.f1 &&
         ans.factor2 === checkFormItem.f2)
-      if (answer != undefined) {
+      if (answer !== undefined) {
         // Set the corresponding 'seen' item in the array to show that this question has been found, index 0 = questionNumber 1
         foundAnswers[index] = 1
       }

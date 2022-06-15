@@ -6,11 +6,11 @@ jest.mock('../../../services/check-form.service') // CheckFormService is now moc
 let sut: AnswerCountCheckFormValidator
 
 const checkForm = [
-  {f1: 2, f2: 2},
-  {f1: 3, f2: 2},
-  {f1: 4, f2: 2},
-  {f1: 5, f2: 2},
-  {f1: 6, f2: 2}
+  { f1: 2, f2: 2 },
+  { f1: 3, f2: 2 },
+  { f1: 4, f2: 2 },
+  { f1: 5, f2: 2 },
+  { f1: 6, f2: 2 }
 ]
 
 describe('answer-count.validator', () => {
@@ -27,7 +27,6 @@ describe('answer-count.validator', () => {
     const error = await sut.validate(check)
     expect(error?.message).toBe('no answers property found')
   })
-
 
   test('returns an error if the answers property is null', async () => {
     const check = {
@@ -73,7 +72,6 @@ describe('answer-count.validator', () => {
     expect(error).toBeUndefined()
   })
 
-
   test('more answers than exptected passes validation', async () => {
     const expectedQuestionCount = checkForm.length
     const check = {
@@ -93,7 +91,6 @@ describe('answer-count.validator', () => {
     const error = await sut.validate(check)
     expect(error).toBeUndefined()
   })
-
 
   test('less answers fails validation', async () => {
     const expectedQuestionCount = checkForm.length
@@ -143,6 +140,6 @@ describe('answer-count.validator', () => {
     }
     const error = await sut.validate(check)
     expect(error).toBeDefined()
-    expect((error as ICheckValidationError).message).toBe(`submitted check has 3 answers`)
+    expect((error as ICheckValidationError).message).toBe('submitted check has 3 answers')
   })
 })

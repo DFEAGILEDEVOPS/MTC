@@ -4,7 +4,7 @@ import { SqlService } from '../sql/sql.service'
 import * as RA from 'ramda-adjunct'
 
 interface CheckFormItem {
-  f1: number,
+  f1: number
   f2: number
 }
 
@@ -12,7 +12,6 @@ export interface ICheckFormService {
   getCheckFormDataByCheckCode (checkCode: string): Promise<any>
   getCheckFormForCheckCode (checkCode: string): Promise<CheckFormItem[]>
 }
-
 
 export class CheckFormService implements ICheckFormService {
   private readonly sqlService: SqlService
@@ -41,17 +40,17 @@ export class CheckFormService implements ICheckFormService {
   }
 
   async getCheckFormForCheckCode (checkCode: string): Promise<CheckFormItem[]> {
-      const rawCheckFormData = await this.getCheckFormDataByCheckCode(checkCode)
-      if (rawCheckFormData === undefined) { throw Error(`check-receiver: CheckFormData not found for checkCode ${checkCode}`) }
-      let checkForm: CheckFormItem[]
-      try {
-        checkForm = JSON.parse(rawCheckFormData.formData)
-      } catch (error) {
-        throw new Error(`check-receiver: Failed to parse JSON in checkForm for checkCode ${checkCode}`)
-      }
-      if (checkForm === undefined) {
-        throw new Error(`check-receiver: CheckForm not found for checkCode ${checkCode}`)
-      }
-      return checkForm
+    const rawCheckFormData = await this.getCheckFormDataByCheckCode(checkCode)
+    if (rawCheckFormData === undefined) { throw Error(`check-receiver: CheckFormData not found for checkCode ${checkCode}`) }
+    let checkForm: CheckFormItem[]
+    try {
+      checkForm = JSON.parse(rawCheckFormData.formData)
+    } catch (error) {
+      throw new Error(`check-receiver: Failed to parse JSON in checkForm for checkCode ${checkCode}`)
+    }
+    if (checkForm === undefined) {
+      throw new Error(`check-receiver: CheckForm not found for checkCode ${checkCode}`)
+    }
+    return checkForm
   }
 }

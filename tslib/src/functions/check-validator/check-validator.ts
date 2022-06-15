@@ -9,7 +9,6 @@ import { ValidatorProvider } from './validators/validator.provider'
 import { ITableService, TableService } from '../../azure/table-service'
 import { ReceivedCheckBindingEntityTransformer } from '../../services/receivedCheckBindingEntityTransformer'
 
-
 const functionName = 'check-validator'
 const tableStorageTableName = 'receivedCheck'
 
@@ -125,7 +124,7 @@ export class CheckValidator {
     const asyncValidationErrors: ICheckValidationError[] = []
     for (let index = 0; index < asyncValidators.length; index++) {
       const validator = validators[index]
-      const validationResult = await validator.validate( submittedCheck )
+      const validationResult = await validator.validate(submittedCheck)
       if (validationResult !== undefined) {
         asyncValidationErrors.push(validationResult)
       }
