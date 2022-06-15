@@ -30,4 +30,8 @@ class UpnHelper
         22 => 'Z'
     }
   end
+
+  def self.temporary_letter(remainder)
+    check_letter_hash[remainder]
+  end
 end
