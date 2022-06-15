@@ -40,6 +40,7 @@ export class CheckFormService implements ICheckFormService {
   }
 
   async getCheckFormForCheckCode (checkCode: string): Promise<CheckFormItem[]> {
+    console.log(`getCheckFormForCheckCode() calledfor checkCode ${checkCode}`)
     const rawCheckFormData = await this.getCheckFormDataByCheckCode(checkCode)
     if (rawCheckFormData === undefined) { throw Error(`check-receiver: CheckFormData not found for checkCode ${checkCode}`) }
     let checkForm: CheckFormItem[]
