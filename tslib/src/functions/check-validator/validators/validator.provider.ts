@@ -32,7 +32,7 @@ export class ValidatorProvider {
   }
 
   /**
-   * Async validators may perform network IO, and should be called after the non-async validators
+   * Async validators may perform network IO, and should be called after the synchronous validators
    */
   getAsyncValidators (): IAsyncSubmittedCheckValidator[] {
     return [
