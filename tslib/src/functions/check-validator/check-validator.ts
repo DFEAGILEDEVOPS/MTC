@@ -9,6 +9,7 @@ import { ValidatorProvider } from './validators/validator.provider'
 import { ITableService, TableService } from '../../azure/table-service'
 import { ReceivedCheckBindingEntityTransformer } from '../../services/receivedCheckBindingEntityTransformer'
 
+
 const functionName = 'check-validator'
 const tableStorageTableName = 'receivedCheck'
 
@@ -51,7 +52,7 @@ export class CheckValidator {
       }
       const decompressedString = this.compressionService.decompress(receivedCheck.archive)
       checkData = JSON.parse(decompressedString)
-      this.validateCheckStructure(checkData)
+      await this.validateCheckStructure(checkData)
     } catch (error: any) {
       await this.setReceivedCheckAsInvalid(error.message, receivedCheck)
       // dispatch message to indicate validation failure
@@ -99,7 +100,7 @@ export class CheckValidator {
     return receivedCheckRef[0]
   }
 
-  private validateCheckStructure (submittedCheck: any): void {
+  private async validateCheckStructure (submittedCheck: any): Promise<void> {
     const validators = this.validatorProvider.getValidators()
     const validationErrors: ICheckValidationError[] = []
     for (let index = 0; index < validators.length; index++) {
@@ -116,6 +117,26 @@ export class CheckValidator {
         validationErrorsMessage += `\n\t-\t${error.message}`
       }
       throw new Error(validationErrorsMessage)
+    }
+
+    // Async Validators - run these after the non-async validators to catch what we can before making expensive
+    // network calls.
+    const asyncValidators = this.validatorProvider.getAsyncValidators()
+    const asyncValidationErrors: ICheckValidationError[] = []
+    for (let index = 0; index < asyncValidators.length; index++) {
+      const validator = validators[index]
+      const validationResult = await validator.validate( submittedCheck )
+      if (validationResult !== undefined) {
+        asyncValidationErrors.push(validationResult)
+      }
+    }
+    if (asyncValidationErrors.length > 0) {
+      let asyncValidationErrorsMessage = `${functionName}: check validation failed. checkCode: ${submittedCheck.checkCode}`
+      for (let index = 0; index < asyncValidationErrors.length; index++) {
+        const error = asyncValidationErrors[index]
+        asyncValidationErrorsMessage += `\n\t-\t${error.message}`
+      }
+      throw new Error(asyncValidationErrorsMessage)
     }
   }
 }
