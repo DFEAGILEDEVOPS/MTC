@@ -40,14 +40,13 @@ export class CheckFormService implements ICheckFormService {
   }
 
   async getCheckFormForCheckCode (checkCode: string): Promise<CheckFormItem[]> {
-    console.log(`getCheckFormForCheckCode() calledfor checkCode ${checkCode}`)
     const rawCheckFormData = await this.getCheckFormDataByCheckCode(checkCode)
     if (rawCheckFormData === undefined) { throw Error(`check-receiver: CheckFormData not found for checkCode ${checkCode}`) }
     let checkForm: CheckFormItem[]
     try {
-      checkForm = JSON.parse(rawCheckFormData.formData)
-    } catch (error) {
-      throw new Error(`check-receiver: Failed to parse JSON in checkForm for checkCode ${checkCode}`)
+      checkForm = JSON.parse(rawCheckFormData)
+    } catch (error: any) {
+      throw new Error(`check-receiver: Failed to parse JSON in checkForm for checkCode ${checkCode} error: ${error.message}`)
     }
     if (checkForm === undefined) {
       throw new Error(`check-receiver: CheckForm not found for checkCode ${checkCode}`)

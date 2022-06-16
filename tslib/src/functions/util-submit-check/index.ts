@@ -8,6 +8,15 @@ const functionName = 'util-submit-check'
 const fakeSubmittedCheckBuilder = new FakeSubmittedCheckMessageGeneratorService()
 const liveSchoolChecksDataService = new SchoolChecksDataService()
 
+interface IUtilSubmitCheckConfig {
+  schoolUuid?: string   // Use schoolUuid to complete an entire school at once, OR
+  checkCodes?: string[] // use `checkCdodes` to have fine grain control of specific checks.
+  answers?: {
+    numberFromCorrectCheckForm: number // the number of answers from the correct check form
+    numberFromIncorrectCheckForm: number // the number of answers from some other check form that bulk up the answer count to the expected level.
+  }
+}
+
 const httpTrigger: AzureFunction = async function (context: Context, req: HttpRequest): Promise<void> {
   if (!config.DevTestUtils.TestSupportApi) {
     context.log(`${functionName} exiting as config.DevTestUtils.TestSupportApi is not enabled (default behaviour)`)
@@ -15,9 +24,19 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
     return
   }
 
-  const schoolUuid = req.body?.schoolUuid
-  if (schoolUuid !== undefined) {
-    const liveCheckCodes = await liveSchoolChecksDataService.fetchBySchoolUuid(schoolUuid)
+  const funcConfig: IUtilSubmitCheckConfig = {
+    schoolUuid: req.body?.schoolUuid,
+    checkCodes: req.body?.checkCodes,
+    answers: {
+      numberFromCorrectCheckForm: req.body?.answerNumberFromCorrectCheckForm,
+      numberFromIncorrectCheckForm: req.body?.answerNumberFromIncorrectCheckForm
+    }
+  }
+  context.log(`${functionName} config parsed as: ${JSON.stringify(funcConfig)})`)
+
+  // const schoolUuid = req.body?.schoolUuid
+  if (funcConfig.schoolUuid !== undefined) {
+    const liveCheckCodes = await liveSchoolChecksDataService.fetchBySchoolUuid(funcConfig.schoolUuid)
     const promises = liveCheckCodes.map(async record => {
       return fakeSubmittedCheckBuilder.createSubmittedCheckMessage(record.checkCode)
     })
@@ -27,8 +46,8 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
     return
   }
 
-  const checkCodes = req.body?.checkCodes
-  if (checkCodes === undefined || !Array.isArray(checkCodes)) {
+  // const checkCodes = req.body?.checkCodes
+  if (funcConfig.checkCodes === undefined || !Array.isArray(funcConfig.checkCodes)) {
     context.res = {
       status: 400,
       body: 'checkCodes array is required'
@@ -39,8 +58,8 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
     throw new Error('invalid check functionality not yet implemented')
   }
   const messages = []
-  for (let index = 0; index < checkCodes.length; index++) {
-    const checkCode = checkCodes[index]
+  for (let index = 0; index < funcConfig.checkCodes.length; index++) {
+    const checkCode = funcConfig.checkCodes[index]
     messages.push(await fakeSubmittedCheckBuilder.createSubmittedCheckMessage(checkCode))
   }
   context.bindings.submittedCheckQueue = messages
