@@ -59,4 +59,8 @@ export class PupilFrozenDataService {
       FROM mtc_admin.pupil WHERE frozen=1 AND id IN (${paramData.paramIdentifiers.join(', ')})`
     return sqlService.readonlyQuery(sql, paramData.params)
   }
+
+  public static async freezePupil (pupilId: number): Promise<void> {
+    throw new Error('todo')
+  }
 }
