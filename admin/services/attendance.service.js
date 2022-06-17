@@ -15,11 +15,11 @@ const attendanceService = {
    * @param userId - user.id of user performing the action
    * @returns {Promise<void>}
    */
-  updatePupilAttendanceBySlug: async (slugs, code, userId, schoolId) => {
+  updatePupilAttendanceBySlug: async (slugs, code, userId, pupilSchoolId) => {
     await PupilFrozenService.throwIfFrozenByUrlSlugs(slugs)
-    await pupilAttendanceDataService.markAsNotAttending(slugs, code, userId, schoolId)
+    await pupilAttendanceDataService.markAsNotAttending(slugs, code, userId, pupilSchoolId)
     // Drop the now invalid cache for the school results if it exists
-    await redisCacheService.drop(redisKeyService.getSchoolResultsKey(schoolId))
+    await redisCacheService.drop(redisKeyService.getSchoolResultsKey(pupilSchoolId))
   },
 
   /**
