@@ -51,16 +51,30 @@ export class PupilFrozenDataService {
  * @returns {Promise<Array<any>>}
  */
    public static async countFrozenByPupilIds (pupilIds: Array<number>): Promise<any> {
-     console.dir(pupilIds)
     const paramData = sqlService.buildParameterList(pupilIds, TYPES.Int,
       'pupilId')
-    console.dir(paramData)
     const sql = `SELECT COUNT(id) as [frozenCount]
       FROM mtc_admin.pupil WHERE frozen=1 AND id IN (${paramData.paramIdentifiers.join(', ')})`
     return sqlService.readonlyQuery(sql, paramData.params)
   }
 
-  public static async freezePupil (pupilId: number): Promise<void> {
-    throw new Error('todo')
+  public static async freezePupil (pupilUrlSlug: string): Promise<void> {
+    const sql = 'UPDATE mtc_admin.pupil SET frozen=1 WHERE urlSlug=@pupilUrlSlug'
+    const params = [{
+      name: 'pupilUrlSlug',
+      type: TYPES.UniqueIdentifier,
+      value: pupilUrlSlug
+    }]
+    return sqlService.modify(sql, params)
+  }
+
+  public static async thawPupil (pupilUrlSlug: string): Promise<void> {
+    const sql = 'UPDATE mtc_admin.pupil SET frozen=0 WHERE urlSlug=@pupilUrlSlug'
+    const params = [{
+      name: 'pupilUrlSlug',
+      type: TYPES.UniqueIdentifier,
+      value: pupilUrlSlug
+    }]
+    return sqlService.modify(sql, params)
   }
 }

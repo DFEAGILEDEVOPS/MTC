@@ -1,15 +1,29 @@
 import { PupilFrozenDataService } from '../../pupil-frozen.service/pupil-frozen.data.service'
+const attendanceService = require('../../attendance.service')
+import{ validate as validateUuid } from 'uuid'
 
 export class PupilAnnulmentService {
-  static async applyAnnulment (pupilId: number): Promise<void> {
-    if (pupilId === undefined) {
-      throw new Error('pupilId is required')
+  private static readonly annulmentCode = 'ABC'
+
+  static async applyAnnulment (pupilUrlSlug: string, serviceManagerUserId): Promise<void> {
+    if (pupilUrlSlug === undefined) {
+      throw new Error('pupilUrlSlug is required')
     }
-    return PupilFrozenDataService.freezePupil(pupilId)
-    throw new Error('set attendance code to annuled')
+
+    if (!validateUuid(pupilUrlSlug)) {
+      throw new Error('a valid uuid is required for pupilUrlSlug')
+    }
+    await PupilFrozenDataService.freezePupil(pupilUrlSlug)
+    return attendanceService.updatePupilAttendanceBySlug([pupilUrlSlug], this.annulmentCode, serviceManagerUserId, null)
   }
 
-  static async removeAnnulment (): Promise<void> {
-    throw new Error('todo')
+  static async removeAnnulment (pupilUrlSlug: string): Promise<void> {
+    if (pupilUrlSlug === undefined) {
+      throw new Error('pupilUrlSlug is required')
+    }
+
+    if (!validateUuid(pupilUrlSlug)) {
+      throw new Error('a valid uuid is required for pupilUrlSlug')
+    }
   }
 }
