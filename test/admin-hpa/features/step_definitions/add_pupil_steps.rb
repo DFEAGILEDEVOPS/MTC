@@ -487,7 +487,6 @@ When(/^I add 2 pupil with same firstname lastname and same dob$/) do
   @page.save_changes.click if @page == edit_pupil_page
 end
 
-
 When(/^I submit the form with the pupil dob (\d+) years ago$/) do |years_old|
   @upn = UpnGenerator.generate unless @page == edit_pupil_page
   pupil_name = (0...8).map {(65 + rand(26)).chr}.join
@@ -506,7 +505,6 @@ When(/^I submit the form with the pupil dob (\d+) years ago$/) do |years_old|
   @time_stored = Helpers.time_to_nearest_hour(Time.now.utc)
 end
 
-
 Then(/^I should see an error with the DOB$/) do
   expect(@page.error_messages.map {|message| message.text}).to include "Enter a valid date of birth"
   expect(@page.error_summary.year.text).to include "Enter a valid date of birth"
@@ -517,7 +515,6 @@ Then(/^I should still be able to add the pupil after filling in the reason box$/
   step 'the pupil details should be stored'
   expect(SqlDbHelper.pupil_reason(@stored_pupil_details['id'])['reason']).to eql @reason_text
 end
-
 
 When(/^I fill in the form with the pupil dob (\d+) years ago$/) do |years_old|
   @upn = UpnGenerator.generate unless @page == edit_pupil_page
@@ -532,7 +529,6 @@ When(/^I fill in the form with the pupil dob (\d+) years ago$/) do |years_old|
   @page.enter_details(@details_hash)
 end
 
-
 And(/^I submit$/) do
   @page.add_pupil.click unless @page == edit_pupil_page
   @page.save_changes.click if @page == edit_pupil_page
@@ -542,7 +538,6 @@ Then(/^I should see an error with the reason field$/) do
   expect(@page.error_messages.map {|message| message.text}).to include "Enter a reason"
   expect(@page.error_summary.reason.text).to include "Enter a reason"
 end
-
 
 And(/^I add a pupil with names beginning with Z$/) do
   step "I am on the add pupil page"
@@ -555,7 +550,6 @@ Given(/^I have added a pupil$/) do
   step 'I have submitted valid pupil details'
   step 'the pupil details should be stored'
 end
-
 
 When(/^I check the redis cache$/) do
   @pupils_from_redis = (JSON.parse(JSON.parse(REDIS_CLIENT.get('pupilRegisterViewData:2'))['value'])).map{|x| x['fullName']}
@@ -577,7 +571,6 @@ When(/^I have submitted valid pupil details including a temporary upn$/) do
     @time_stored = Time.now.utc.strftime("%Y-%m-%d %H")
 end
 
-
 When(/^I submit valid details with a temp UPN that has a incorrect check letter$/) do
   dob = calculate_age(9)
   @upn = UpnGenerator.generate_temporary
@@ -589,7 +582,6 @@ When(/^I submit valid details with a temp UPN that has a incorrect check letter$
   @time_stored = Helpers.time_to_nearest_hour(Time.now.utc)
 end
 
-
 When(/^I submit valid details with a temp UPN that has a invalid LA code$/) do
   dob = calculate_age(9)
   @details_hash = {first_name: 'valid', middle_name: 'valid', last_name: 'valid', female: true, upn: 'Z00011320001X', day: dob.day.to_s, month: dob.month.to_s, year: dob.year.to_s}
@@ -598,7 +590,6 @@ When(/^I submit valid details with a temp UPN that has a invalid LA code$/) do
   @page.save_changes.click if @page == edit_pupil_page
   @time_stored = Helpers.time_to_nearest_hour(Time.now.utc)
 end
-
 
 When(/^I submit valid details with a temp UPN that has a alpha character between characters 5\-12$/) do
   dob = calculate_age(9)
@@ -641,7 +632,6 @@ Then(/^I should see validation error for the UPN field when using a temporary up
     end
   end
 end
-
 
 When(/^I submit valid details with a temporary UPN has a lowercase alpha character$/) do
   dob = calculate_age(9)
