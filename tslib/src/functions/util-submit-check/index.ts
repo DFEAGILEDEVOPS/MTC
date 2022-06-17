@@ -1,4 +1,3 @@
-
 import { AzureFunction, Context, HttpRequest } from '@azure/functions'
 import config from '../../config'
 import { FakeSubmittedCheckMessageGeneratorService } from './fake-submitted-check-generator.service'
@@ -9,7 +8,7 @@ const functionName = 'util-submit-check'
 const liveSchoolChecksDataService = new SchoolChecksDataService()
 
 export interface IUtilSubmitCheckConfig {
-  schoolUuid?: string   // Use schoolUuid to complete an entire school at once, OR
+  schoolUuid?: string // Use schoolUuid to complete an entire school at once, OR
   checkCodes?: string[] // use `checkCdodes` to have fine grain control of specific checks.
   answers?: {
     numberFromCorrectCheckForm: number // the number of answers from the correct check form

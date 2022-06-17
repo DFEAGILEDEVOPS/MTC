@@ -26,7 +26,7 @@ export class FakeSubmittedCheckMessageGeneratorService {
     this.prepCheckService = prepCheckService
   }
 
-  setConfig (funcConfig: IUtilSubmitCheckConfig) {
+  setConfig (funcConfig: IUtilSubmitCheckConfig): void {
     this.funcConfig = funcConfig
   }
 

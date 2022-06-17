@@ -5,10 +5,6 @@ import { CheckQuestion, CompleteCheckAnswer } from '../../schemas/check-schemas/
 let sut: FakeCompletedCheckGeneratorService
 
 class TestFakeCompletedCheckGeneratorService extends FakeCompletedCheckGeneratorService implements ICompletedCheckGeneratorService {
-  constructor () {
-    super()
-  }
-
   public testCreateAnswers (questions: CheckQuestion[], numberFromCorrectCheckForm: number = questions.length, numberFromIncorrectCheckForm: number = 0): CompleteCheckAnswer[] {
     return this.createAnswers(questions, numberFromCorrectCheckForm, numberFromIncorrectCheckForm)
   }
@@ -46,7 +42,6 @@ describe('submitted-check-generator-service', () => {
     const tsut = new TestFakeCompletedCheckGeneratorService()
     const answers = tsut.testCreateAnswers(mockPreparedCheck.questions, 7) // the mock has 10 questions
     expect(answers).toHaveLength(7)
-
   })
 
   test('answer count from the incorrect forms should equal the amount requested', () => {
