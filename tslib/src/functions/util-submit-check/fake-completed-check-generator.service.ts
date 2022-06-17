@@ -4,9 +4,11 @@ import * as faker from 'faker'
 import moment from 'moment'
 import { FakeCheckAuditGeneratorService } from './fake-check-audit-generator.service'
 import { FakeCheckInputsGeneratorService } from './fake-check-inputs-generator.service'
+import { IUtilSubmitCheckConfig } from '.'
+import { Answer } from '../check-marker/models'
 
 export interface ICompletedCheckGeneratorService {
-  create (preparedCheck: PreparedCheck): ValidCheck
+  create (preparedCheck: PreparedCheck, funcConfig?: IUtilSubmitCheckConfig): ValidCheck
 }
 
 export class FakeCompletedCheckGeneratorService implements ICompletedCheckGeneratorService {
@@ -41,30 +43,47 @@ export class FakeCompletedCheckGeneratorService implements ICompletedCheckGenera
     })
   }
 
-  private createAnswers (questions: CheckQuestion[]): CompleteCheckAnswer[] {
-    const answers = questions.map(q => {
+  protected createAnswers (questions: CheckQuestion[], numberFromCorrectCheckForm: number = questions.length, numberFromIncorrectCheckForm: number = 0): CompleteCheckAnswer[] {
+    const answers: Answer[] = []
+    for (let i = 0; i < numberFromCorrectCheckForm; i++) {
+      const q = questions[i]
       const correctAnswer = q.factor1 * q.factor2
-      return {
+      answers.push({
         answer: `${correctAnswer}`,
         clientTimestamp: moment().add(q.order, 'seconds').toISOString(),
         factor1: q.factor1,
         factor2: q.factor2,
         question: `${q.factor1}x${q.factor2}`,
         sequenceNumber: q.order
-      }
-    })
-    const numberOfPotentiallyWrongAnswers = faker.datatype.number({ min: 0, max: questions.length })
+      })
+    }
+
+    const numberOfPotentiallyWrongAnswers = faker.datatype.number({ min: 0, max: answers.length })
     for (let index = 0; index < numberOfPotentiallyWrongAnswers; index++) {
       const answer = faker.random.arrayElement(answers)
       // just pick any number in the given range, it could be correct or not...
       const newAnswer = faker.datatype.number({ min: 0, max: 144 })
       answer.answer = `${newAnswer}`
     }
+
+    // Optionally add some new answers from wrong forms mimining data corruption in local storage
+    for (let i = 0; i < numberFromIncorrectCheckForm; i++) {
+      const index = answers.length + i
+      answers.push({
+        answer: '1',
+        clientTimestamp: moment().add(index, 'seconds').toISOString(),
+        factor1: 0,
+        factor2: index,
+        question: `0x${index}`,
+        sequenceNumber: index
+      })
+    }
+
     return answers
   }
 
-  create (preparedCheck: PreparedCheck): ValidCheck {
-    const answers = this.createAnswers(preparedCheck.questions)
+  create (preparedCheck: PreparedCheck, funcConfig?: IUtilSubmitCheckConfig): ValidCheck {
+    const answers = this.createAnswers(preparedCheck.questions, funcConfig?.answers?.numberFromCorrectCheckForm, funcConfig?.answers?.numberFromIncorrectCheckForm)
     const audits = this.fakeCheckAuditBuilderService.createAudits(preparedCheck.questions)
     const inputs = this.fakeCheckInputsGeneratorService.create(answers)
 

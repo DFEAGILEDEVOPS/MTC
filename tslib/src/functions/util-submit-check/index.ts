@@ -5,10 +5,10 @@ import { FakeSubmittedCheckMessageGeneratorService } from './fake-submitted-chec
 import { SchoolChecksDataService } from './school-checks.data.service'
 
 const functionName = 'util-submit-check'
-const fakeSubmittedCheckBuilder = new FakeSubmittedCheckMessageGeneratorService()
+
 const liveSchoolChecksDataService = new SchoolChecksDataService()
 
-interface IUtilSubmitCheckConfig {
+export interface IUtilSubmitCheckConfig {
   schoolUuid?: string   // Use schoolUuid to complete an entire school at once, OR
   checkCodes?: string[] // use `checkCdodes` to have fine grain control of specific checks.
   answers?: {
@@ -33,7 +33,8 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
     }
   }
   context.log(`${functionName} config parsed as: ${JSON.stringify(funcConfig)})`)
-
+  const fakeSubmittedCheckBuilder = new FakeSubmittedCheckMessageGeneratorService()
+  fakeSubmittedCheckBuilder.setConfig(funcConfig)
   // const schoolUuid = req.body?.schoolUuid
   if (funcConfig.schoolUuid !== undefined) {
     const liveCheckCodes = await liveSchoolChecksDataService.fetchBySchoolUuid(funcConfig.schoolUuid)
