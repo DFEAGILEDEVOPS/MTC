@@ -667,6 +667,16 @@ const controller = {
       breadcrumbs: req.breadcrumbs(),
       pupil: pupilData
     })
+  },
+
+  getPupilAnnulment: async function getPupilAnnulment (req, res, next) {
+    const urlSlug = req.query.slug
+    res.locals.pageTitle = 'Annul Pupil'
+    req.breadcrumbs('Pupil Summary', `/service-manager/pupil-summary/${encodeURIComponent(urlSlug).toLowerCase()}`)
+    req.breadcrumbs(res.locals.pageTitle)
+    res.render('service-manager/annul-pupil', {
+      breadcrumbs: req.breadcrumbs()
+    })
   }
 }
 

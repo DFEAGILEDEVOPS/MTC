@@ -161,4 +161,9 @@ router.get('/pupil-summary/:slug',
   serviceManagerController.getPupilSummary
 )
 
+router.get('/annul-pupil/:slug',
+  isAuthenticated([roles.serviceManager]),
+  serviceManagerController.getPupilAnnulment
+)
+
 module.exports = router
