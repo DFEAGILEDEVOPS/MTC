@@ -34,7 +34,6 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
   context.log(`${functionName} config parsed as: ${JSON.stringify(funcConfig)})`)
   const fakeSubmittedCheckBuilder = new FakeSubmittedCheckMessageGeneratorService()
   fakeSubmittedCheckBuilder.setConfig(funcConfig)
-  // const schoolUuid = req.body?.schoolUuid
   if (funcConfig.schoolUuid !== undefined) {
     const liveCheckCodes = await liveSchoolChecksDataService.fetchBySchoolUuid(funcConfig.schoolUuid)
     const promises = liveCheckCodes.map(async record => {
@@ -46,7 +45,6 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
     return
   }
 
-  // const checkCodes = req.body?.checkCodes
   if (funcConfig.checkCodes === undefined || !Array.isArray(funcConfig.checkCodes)) {
     context.res = {
       status: 400,
