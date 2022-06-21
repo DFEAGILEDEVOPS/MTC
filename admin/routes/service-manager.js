@@ -166,4 +166,9 @@ router.get('/annul-pupil/:slug',
   serviceManagerController.getPupilAnnulment
 )
 
+router.post('/annul-pupil/:slug',
+  isAuthenticated([roles.serviceManager]),
+  serviceManagerController.postPupilAnnulment
+)
+
 module.exports = router

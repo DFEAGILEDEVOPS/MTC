@@ -669,14 +669,40 @@ const controller = {
     })
   },
 
-  getPupilAnnulment: async function getPupilAnnulment (req, res, next) {
-    const urlSlug = req.query.slug
+  getPupilAnnulment: async function getPupilAnnulment (req, res, next, validationError = new ValidationError()) {
+    const urlSlug = req.params.slug
     res.locals.pageTitle = 'Annul Pupil'
+    const pupil = await ServiceManagerPupilService.getPupilDetailsByUrlSlug(urlSlug)
     req.breadcrumbs('Pupil Summary', `/service-manager/pupil-summary/${encodeURIComponent(urlSlug).toLowerCase()}`)
     req.breadcrumbs(res.locals.pageTitle)
     res.render('service-manager/annul-pupil', {
-      breadcrumbs: req.breadcrumbs()
+      breadcrumbs: req.breadcrumbs(),
+      error: validationError,
+      pupil: pupil
     })
+  },
+
+  postPupilAnnulment: async function postPupilAnnulment (req, res, next) {
+    const annulPupilErrorHandler = (req, res, next, errorMsg = 'No matching pupil found with specified UPN') => {
+      const error = new ValidationError()
+      error.addError('upn', errorMsg)
+      return controller.getPupilAnnulment(req, res, next, error)
+    }
+    try {
+      const confirmedUpn = req.body.upn
+      if (confirmedUpn === undefined || confirmedUpn === '') {
+        return annulPupilErrorHandler(req, res, next, 'No upn provided')
+      }
+      try {
+        const urlSlug = req.params.slug
+        const pupil = await ServiceManagerPupilService.getPupilDetailsByUrlSlug(urlSlug)
+        if (pupil.upn !== confirmedUpn) return annulPupilErrorHandler(req, res, next, 'UPN does not match pupil')
+      } catch (error) {
+        return annulPupilErrorHandler(req, res, next, error.message)
+      }
+    } catch (error) {
+      return next(error)
+    }
   }
 }
 
