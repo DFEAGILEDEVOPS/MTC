@@ -18,6 +18,7 @@ const administrationMessageService = require('../services/administration-message
 const { JobService } = require('../services/job-service/job.service')
 const { ServiceManagerPupilService } = require('../services/service-manager/pupil-service/service-manager.pupil.service')
 const { validate } = require('uuid')
+const { PupilAnnulmentService } = require('../services/service-manager/pupil-annulment/pupil-annulment.service')
 
 const controller = {
   /**
@@ -693,15 +694,13 @@ const controller = {
       if (confirmedUpn === undefined || confirmedUpn === '') {
         return annulPupilErrorHandler(req, res, next, 'No upn provided')
       }
-      try {
-        const urlSlug = req.params.slug
-        const pupil = await ServiceManagerPupilService.getPupilDetailsByUrlSlug(urlSlug)
-        if (pupil.upn !== confirmedUpn) return annulPupilErrorHandler(req, res, next, 'UPN does not match pupil')
-      } catch (error) {
-        return annulPupilErrorHandler(req, res, next, error.message)
-      }
+      const urlSlug = req.params.slug
+      const pupil = await ServiceManagerPupilService.getPupilDetailsByUrlSlug(urlSlug)
+      if (pupil.upn !== confirmedUpn) return annulPupilErrorHandler(req, res, next, 'UPN does not match pupil')
+      await PupilAnnulmentService.applyAnnulment(urlSlug, pupil.schoolId, req.user.id)
+      // TODO confirm annulment
     } catch (error) {
-      return next(error)
+      return annulPupilErrorHandler(req, res, next, error.message)
     }
   }
 }

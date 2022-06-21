@@ -29,7 +29,8 @@ export class ServiceManagerPupilService {
         schoolName: r.schoolName,
         schoolUrn: r.urn,
         dfeNumber: r.dfeNumber,
-        upn: r.upn
+        upn: r.upn,
+        schoolId: r.schoolId
       }
     })
   }
@@ -53,7 +54,8 @@ export class ServiceManagerPupilService {
       schoolUrn: p[0].urn,
       urlSlug: p[0].urlSlug,
       upn: p[0].upn,
-      status: status
+      status: status,
+      schoolId: p[0].schoolId
     }
   }
 
@@ -76,6 +78,7 @@ export interface ServiceManagerPupilSearchResult {
   schoolUrn: number
   dfeNumber: number
   upn: string
+  schoolId: number
 }
 
 export interface ServiceManagerPupilDetails {
@@ -89,4 +92,5 @@ export interface ServiceManagerPupilDetails {
   dfeNumber: number
   upn: string
   status: string
+  schoolId: number
 }
