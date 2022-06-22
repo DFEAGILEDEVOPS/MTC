@@ -1,7 +1,6 @@
-import { PupilFrozenDataService } from '../../pupil-frozen.service/pupil-frozen.data.service'
+import { PupilAnnulmentDataService } from './pupil-annulment.data.service'
 import { PupilAnnulmentService } from './pupil-annulment.service'
 const attendanceService = require('../../attendance.service')
-const attendanceCodes = require('../../../lib/consts/pupil-attendance-codes')
 
 describe('pupil annulment service', () => {
   afterEach(() => {
@@ -24,9 +23,10 @@ describe('pupil annulment service', () => {
       const serviceManagerUserId = 555
       const pupilSchoolId = 345
       jest.spyOn(attendanceService, 'updatePupilAttendanceBySlug').mockImplementation()
-      jest.spyOn(PupilFrozenDataService, 'freezePupil').mockImplementation()
+      jest.spyOn(PupilAnnulmentDataService, 'setAnnulmentByUrlSlug').mockImplementation()
       await PupilAnnulmentService.applyAnnulment(pupilUrlSlug, pupilSchoolId, serviceManagerUserId)
-      expect(PupilFrozenDataService.freezePupil).toHaveBeenCalledWith(pupilUrlSlug)
+      expect(PupilAnnulmentDataService.setAnnulmentByUrlSlug).toHaveBeenCalledWith(pupilUrlSlug)
+      // TODO refactor...
       expect(attendanceService.updatePupilAttendanceBySlug).toHaveBeenCalledWith([pupilUrlSlug],
          PupilAnnulmentService.annulmentCode, serviceManagerUserId, pupilSchoolId)
     })
@@ -47,9 +47,8 @@ describe('pupil annulment service', () => {
       const pupilUrlSlug = '30fd51ab-0c40-4da4-8be5-99360f8a8829'
       const pupilSchoolId = 456
       jest.spyOn(attendanceService, 'unsetAttendanceCode').mockImplementation()
-      jest.spyOn(PupilFrozenDataService, 'thawPupil').mockImplementation()
+      jest.spyOn(PupilAnnulmentDataService, 'undoAnnulmentByUrlSlug').mockImplementation()
       await PupilAnnulmentService.removeAnnulment(pupilUrlSlug, pupilSchoolId, true)
-      expect(PupilFrozenDataService.thawPupil).not.toHaveBeenCalled()
       expect(attendanceService.unsetAttendanceCode).toHaveBeenCalledWith(pupilUrlSlug, pupilSchoolId)
     })
 
@@ -57,9 +56,9 @@ describe('pupil annulment service', () => {
       const pupilUrlSlug = '21fd51ab-0c40-4da4-8be5-97360f8a4829'
       const pupilSchoolId = 4545
       jest.spyOn(attendanceService, 'unsetAttendanceCode').mockImplementation()
-      jest.spyOn(PupilFrozenDataService, 'thawPupil').mockImplementation()
+      jest.spyOn(PupilAnnulmentDataService, 'undoAnnulmentByUrlSlug').mockImplementation()
       await PupilAnnulmentService.removeAnnulment(pupilUrlSlug, pupilSchoolId, false)
-      expect(PupilFrozenDataService.thawPupil).toHaveBeenCalledWith(pupilUrlSlug)
+      expect(PupilAnnulmentDataService.undoAnnulmentByUrlSlug).toHaveBeenCalledWith(pupilUrlSlug)
       expect(attendanceService.unsetAttendanceCode).toHaveBeenCalledWith(pupilUrlSlug, pupilSchoolId)
     })
   })

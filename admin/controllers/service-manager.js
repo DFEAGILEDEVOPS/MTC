@@ -698,7 +698,7 @@ const controller = {
       const pupil = await ServiceManagerPupilService.getPupilDetailsByUrlSlug(urlSlug)
       if (pupil.upn !== confirmedUpn) return annulPupilErrorHandler(req, res, next, 'UPN does not match pupil')
       await PupilAnnulmentService.applyAnnulment(urlSlug, pupil.schoolId, req.user.id)
-      // TODO confirm annulment
+      return res.redirect(`/service-manager/pupil-summary/${encodeURIComponent(urlSlug).toLowerCase()}`)
     } catch (error) {
       return annulPupilErrorHandler(req, res, next, error.message)
     }
