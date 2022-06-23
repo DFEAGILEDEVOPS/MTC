@@ -18,17 +18,14 @@ describe('pupil annulment service', () => {
       await expect(PupilAnnulmentService.applyAnnulment(invalidUuid, 1, 2)).rejects.toThrow('a valid uuid is required for pupilUrlSlug')
     })
 
-    test('pupil should be frozen before applying annulment attendance code', async () => {
+    test('data service should be called to set annulment', async () => {
       const pupilUrlSlug = '686bf762-35f4-45ce-aedf-f3ba01872663'
       const serviceManagerUserId = 555
       const pupilSchoolId = 345
       jest.spyOn(attendanceService, 'updatePupilAttendanceBySlug').mockImplementation()
       jest.spyOn(PupilAnnulmentDataService, 'setAnnulmentByUrlSlug').mockImplementation()
       await PupilAnnulmentService.applyAnnulment(pupilUrlSlug, pupilSchoolId, serviceManagerUserId)
-      expect(PupilAnnulmentDataService.setAnnulmentByUrlSlug).toHaveBeenCalledWith(pupilUrlSlug)
-      // TODO refactor...
-      expect(attendanceService.updatePupilAttendanceBySlug).toHaveBeenCalledWith([pupilUrlSlug],
-         PupilAnnulmentService.annulmentCode, serviceManagerUserId, pupilSchoolId)
+      expect(PupilAnnulmentDataService.setAnnulmentByUrlSlug).toHaveBeenCalledWith(pupilUrlSlug, serviceManagerUserId)
     })
   })
 

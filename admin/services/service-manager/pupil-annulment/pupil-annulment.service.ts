@@ -13,7 +13,7 @@ export class PupilAnnulmentService {
     if (!validateUuid(pupilUrlSlug)) {
       throw new Error('a valid uuid is required for pupilUrlSlug')
     }
-    return PupilAnnulmentDataService.setPupilAnnuledByUrlSlug(pupilUrlSlug, serviceManagerUserId)
+    return PupilAnnulmentDataService.setAnnulmentByUrlSlug(pupilUrlSlug, serviceManagerUserId)
   }
 
   static async removeAnnulment (pupilUrlSlug: string, pupilSchoolId: number, preserveFreeze: boolean): Promise<void> {
