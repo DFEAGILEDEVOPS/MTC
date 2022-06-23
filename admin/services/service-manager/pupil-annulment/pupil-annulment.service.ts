@@ -4,7 +4,6 @@ import{ validate as validateUuid } from 'uuid'
 import { PupilAnnulmentDataService } from './pupil-annulment.data.service'
 
 export class PupilAnnulmentService {
-  public static readonly annulmentCode = 'ANLLD'
 
   static async applyAnnulment (pupilUrlSlug: string, pupilSchoolId: number, serviceManagerUserId: number): Promise<void> {
     if (pupilUrlSlug === undefined) {
@@ -24,11 +23,6 @@ export class PupilAnnulmentService {
     if (!validateUuid(pupilUrlSlug)) {
       throw new Error('a valid uuid is required for pupilUrlSlug')
     }
-
-    if (!preserveFreeze) {
-      await PupilFrozenDataService.thawPupil(pupilUrlSlug)
-    }
-    // TODO add to annulment data service?
-    return attendanceService.unsetAttendanceCode(pupilUrlSlug, pupilSchoolId)
+    throw new Error('not implemented')
   }
 }
