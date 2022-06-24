@@ -28,6 +28,7 @@ export class PupilAnnulmentDataService {
 
     DECLARE @currentPupilCheckCompleteValue bit
     DECLARE @currentPupilRestartAvailableValue bit
+    DECLARE @currentAttendanceId int
 
     SELECT
       @currentPupilCheckCompleteValue = checkComplete,
@@ -72,6 +73,8 @@ export class PupilAnnulmentDataService {
       isDeleted=1
     WHERE
       pupil_id=@pupilId
+    AND
+      id = @currentPupilAttendanceId
 
     -- soft delete any unconsumed restarts
     UPDATE
@@ -95,10 +98,10 @@ export class PupilAnnulmentDataService {
         recordedBy_user_id,
         attendanceCode_id,
         pupil_id,
-        previousPupilCheckCompleteValue,
+        previousCheckCompleteValue,
         previousRestartAvailableValue,
-        previousPupilAttendanceId,
-        previousPupilRestartId
+        previousAttendanceId,
+        previousRestartId
       )
     VALUES
       (
@@ -128,8 +131,97 @@ export class PupilAnnulmentDataService {
   }
 
   static async undoAnnulmentByUrlSlug (pupilUrlSlug: string, currentUserId: number): Promise<void> {
-    // set pupilAttendance record to deleted
-    // update pupil record to attendanceId=NULL
-    // update pupil record to frozen=0 IF we are not preserving the freeze
+    const params = [{
+      name: 'pupilUrlSlug',
+      type: TYPES.UniqueIdentifier,
+      value: pupilUrlSlug
+    },
+    {
+      name: 'userId',
+      type: TYPES.Int,
+      value: currentUserId
+    },
+    {
+      name: 'annuledAttendanceCode',
+      type: TYPES.Char(5),
+      value: PupilAnnulmentDataService.annulmentCode
+    }]
+
+    const sql = `
+    DECLARE @attendanceCode_id Int = (SELECT id from [mtc_admin].[attendanceCode] where code = @annuledAttendanceCode)
+    DECLARE @pupilId Int = (SELECT id from [mtc_admin].[pupil] where urlSlug = @pupilUrlSlug)
+
+    -- get values of rollback info into variables
+    DECLARE @previousCheckCompleteValue bit
+    DECLARE @previousRestartAvailableValue bit
+    DECLARE @previousPupilAttendanceId int
+    DECLARE @previousRestartId int
+    DECLARE @annulmentPupilAttendanceId int
+    DECLARE @previousAttendanceId
+
+    SELECT
+      @previousAttendanceId = attendanceCode_id
+    FROM
+      [mtc_admin].[pupilAttendance]
+    WHERE
+      id = @previousPupilAttendanceId
+
+    SELECT
+      @annulmentPupilAttendanceId = pa.id
+      @previousCheckCompleteValue = pa.previousCheckCompleteValue,
+      @previousRestartAvailableValue = pa.previousRestartAvailableValue,
+      @previousPupilAttendanceId = pa.previousAttendanceId,
+      @previousRestartId = pa.previousRestartId
+    FROM
+      [mtc_admin].[pupilAttendance] pa
+    WHERE
+      pa.pupil_id = @pupilId
+    AND
+      pa.attendanceCode_id = @attendanceCode_id
+    AND
+      pa.isDeleted = 0
+
+    -- soft delete pupilAttendanceRecord for annulment
+    UPDATE
+      [mtc_admin].[pupilAttendance]
+    SET
+      isDeleted=1
+    WHERE
+      id = @annulmentPupilAttendanceId
+
+    -- set previous attendance, restartAvailable & completeCheck, frozen=0 on pupil record
+    UPDATE
+      [mtc_admin].[pupil]
+    SET
+      frozen = 0,
+      checkComplete = @previousCheckComplete,
+      restartAvailable = @previousRestartAvailable,
+      attendanceId = @previousAttendanceCode
+    WHERE
+      id = @pupilId
+
+    -- if previous attendanceId, undo soft delete, set pupil.attendanceId
+    IF @previousPupilAttendanceId IS NOT NULL
+      BEGIN
+        UPDATE
+          [mtc_admin].[pupilAttendance]
+        SET
+          isDeleted = 0
+        WHERE
+          id = @previousPupilAttendanceId
+      END
+
+    -- if previous pupilRestartId, undo soft delete
+    IF @previousRestartId IS NOT NULL
+      BEGIN
+        UPDATE
+          [mtc_admin].[pupilRestart]
+        SET
+          isDeleted = 0
+        WHERE
+          id = @previousRestartId
+      END
+
+    `
   }
 }

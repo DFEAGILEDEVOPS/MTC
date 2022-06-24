@@ -1,7 +1,7 @@
 
 ALTER TABLE mtc_admin.[pupilAttendance]
   DROP COLUMN
-    previousPupilCheckCompleteValue,
+    previousCheckCompleteValue,
     previousRestartAvailableValue,
-    previousPupilAttendanceId,
-    previousPupilRestartId
+    previousAttendanceId,
+    previousRestartId

@@ -2,7 +2,7 @@
 ALTER TABLE
   mtc_admin.[pupilAttendance]
 ADD
-  previousPupilCheckCompleteValue bit NULL,
+  previousCheckCompleteValue bit NULL,
   previousRestartAvailableValue bit NULL,
-  previousPupilAttendanceId int NULL,
-  previousPupilRestartId int NULL
+  previousAttendanceId int NULL,
+  previousRestartId int NULL
