@@ -1,11 +1,9 @@
-import { TYPES } from '../../../services/data-access/sql.service'
+import sqlService, { TYPES } from '../../../services/data-access/sql.service'
 
 export class PupilAnnulmentDataService {
   public static readonly annulmentCode = 'ANLLD'
 
   static async setAnnulmentByUrlSlug (pupilUrlSlug: string, currentUserId: number): Promise<void> {
-    // does the pupil have existing attendance? if yes, soft delete?
-    // get attendance code id
     const params = [{
       name: 'annuledAttendanceCode',
       type: TYPES.Char(5),
@@ -22,31 +20,111 @@ export class PupilAnnulmentDataService {
     const sql = `
     -- Pupil Annulment transaction
 
-    DECLARE @attendanceCode_id Int = (SELECT id from [mtc_admin].[attendanceCode] where code = @code);
-    DECLARE @pupilId Int = (SELECT id from [mtc_admin].[pupil] where urlSlug = @pupilUrlSlug);
+    DECLARE @attendanceCode_id Int = (SELECT id from [mtc_admin].[attendanceCode] where code = @annuledAttendanceCode)
+    DECLARE @pupilId Int = (SELECT id from [mtc_admin].[pupil] where urlSlug = @pupilUrlSlug)
 
     IF @attendanceCode_id IS NULL
       THROW 51000, 'unknown attendanceCode.code', 1;
 
+    DECLARE @currentPupilCheckCompleteValue bit
+    DECLARE @currentPupilRestartAvailableValue bit
+
+    SELECT
+      @currentPupilCheckCompleteValue = checkComplete,
+      @currentPupilRestartAvailableValue = restartAvailable
+    FROM
+      [mtc_admin].[pupil]
+    WHERE
+      id = @pupilId
+
+    -- get id of any unconsumed restart
+    DECLARE @currentUnconsumedRestartId int
+
+    SELECT TOP 1
+      @currentUnconsumedRestartId = pr.id
+    FROM
+      [mtc_admin].[pupilRestart] pr
+    WHERE
+      pr.isDeleted = 0
+    AND
+      pr.pupil_id = @pupilId
+    AND
+      pr.check_id IS NULL
+    ORDER BY 1 DESC
+
+    -- get id of any active attendance
+    DECLARE @currentPupilAttendanceId int
+
+    SELECT TOP 1
+      @currentPupilAttendanceId = pa.id
+    FROM
+      [mtc_admin].[pupilAttendance] pa
+    WHERE
+      pa.isDeleted = 0
+    AND
+      pa.pupil_id = @pupilId
+    ORDER BY 1 desc
+
     -- soft delete any existing attendance for pupil
-    UPDATE mtc_admin.[pupilAttendance] SET isDeleted=1 WHERE pupil_id=@pupilId
+    UPDATE
+      [mtc_admin].[pupilAttendance]
+    SET
+      isDeleted=1
+    WHERE
+      pupil_id=@pupilId
+
+    -- soft delete any unconsumed restarts
+    UPDATE
+      [mtc_admin].[pupilRestart]
+    SET
+      isDeleted = 1,
+      deletedByUser_id = @userId
+    FROM
+      [mtc_admin].[pupil]
+    WHERE
+      isDeleted  = 0
+    AND
+      pupil_id = @pupilId
+    AND
+      check_id IS NULL
 
     -- create new attendance record for annulment, with rollback info
-    INSERT mtc_admin.[pupilAttendance] (recordedBy_user_id, attendanceCode_id, pupil_id)
-    VALUES (@userId, @attendanceCode_id, @pupilId)
+    INSERT
+      mtc_admin.[pupilAttendance]
+      (
+        recordedBy_user_id,
+        attendanceCode_id,
+        pupil_id,
+        previousPupilCheckCompleteValue,
+        previousRestartAvailableValue,
+        previousPupilAttendanceId,
+        previousPupilRestartId
+      )
+    VALUES
+      (
+        @userId,
+        @attendanceCode_id,
+        @pupilId,
+        @currentPupilCheckCompleteValue,
+        @currentPupilRestartAvailableValue,
+        @currentPupilAttendanceId,
+        @currentUnconsumedRestartId
+      )
 
     -- update pupil record with annulment and freeze
-    UPDATE mtc_admin.[pupil]
+    UPDATE
+      mtc_admin.[pupil]
     SET
       attendanceId=@attendanceCode_id,
       frozen=1,
       checkComplete=0,
       restartAvailable=0
-    WHERE id=@pupilId
+    WHERE
+      id=@pupilId
     `
-    // soft delete and make new attendance record?
-    // set pupil record (attendanceId, restartAvailable=0, checkComplete=0, frozen=1)
+    // get previously active restart record id and attendance record id for rollback
     // delete unconsumed restarts
+    return sqlService.modifyWithTransaction(sql, params)
   }
 
   static async undoAnnulmentByUrlSlug (pupilUrlSlug: string, currentUserId: number): Promise<void> {
