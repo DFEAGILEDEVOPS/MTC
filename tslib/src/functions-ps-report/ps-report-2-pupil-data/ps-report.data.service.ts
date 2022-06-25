@@ -20,6 +20,7 @@ import {
   School
 } from './models'
 import * as R from 'ramda'
+import * as RA from 'ramda-adjunct'
 import moment from 'moment'
 import { ILogger } from '../../common/logger'
 
@@ -33,6 +34,11 @@ export interface IPsReportDataService {
   getSchool (schoolId: number): Promise<School>
 }
 
+interface PupilRestart {
+  id: number
+  code: RestartReasonCode
+}
+
 export class PsReportDataService {
   private readonly sqlService: ISqlService
   private readonly logger: ILogger
@@ -41,6 +47,46 @@ export class PsReportDataService {
   constructor (logger: ILogger, sqlService?: ISqlService) {
     this.logger = logger
     this.sqlService = sqlService ?? new SqlService(this.logger)
+  }
+
+  /**
+   * Return all the pupil restarts that are not deleted for pupil in creation order
+   * @param pupilId - mtc_admin.pupil.id value
+   * @returns
+   */
+  private async sqlFindPupilRestart (pupilId: number): Promise<PupilRestart[]> {
+    const sql = `
+    SELECT
+    pr.id,
+    rrl.code
+  FROM
+    mtc_admin.[pupilRestart] pr
+    JOIN mtc_admin.[restartReasonLookup] rrl ON (
+      pr.restartReasonLookup_Id = rrl.id
+    )
+  WHERE
+    pr.isDeleted = 0
+  AND
+    pupil_id = @pupilId
+  ORDER BY
+    pr.id
+  ;
+    `
+    const params = [
+      { name: 'pupilId', value: pupilId, type: TYPES.Int }
+    ]
+    return this.sqlService.query(sql, params)
+  }
+
+  private async sqlFindRestartReasonCode (pupilId: number, pupilRestartNumber: number): Promise<RestartReasonCode|null> {
+    const pupilRestarts = await this.sqlFindPupilRestart(pupilId)
+    if (Array.isArray(pupilRestarts)) {
+      if (pupilRestartNumber <= pupilRestarts.length) {
+        const pr = pupilRestarts[pupilRestartNumber - 1]
+        return pr.code
+      }
+    }
+    return null
   }
 
   /**
@@ -190,6 +236,7 @@ export class PsReportDataService {
             cr.mark,
             c.processingFailed,
             c.pupilLoginDate,
+            c.pupil_id as pupilId,
             c.received,
             rr.code as restartReason,
             (select count(*) from mtc_admin.pupilRestart where pupil_id = c.pupil_id and isDeleted = 0) as restartNumber
@@ -211,6 +258,7 @@ export class PsReportDataService {
       isLiveCheck: boolean
       mark: number
       processingFailed: boolean
+      pupilId: number
       pupilLoginDate: moment.Moment
       received: boolean
       restartNumber: number
@@ -240,6 +288,19 @@ export class PsReportDataService {
       restartNumber: data.restartNumber,
       restartReason: data.restartReason
     }
+
+    if (RA.isInteger(check.restartNumber) && check.restartNumber > 0 && R.isNil(check.restartReason)) {
+      // One or more restarts has been used, but the restart reason was not found using the lookup
+      // provided in the `pupilRestart` table.  This can happen when the pin generated after the restart
+      // is not used, so it expires.
+      // TODO: consider NULLing the pupilRestart.check_id field when the pin is expired, or some other way to
+      // maintain this relationship.
+      const restartReason = await this.sqlFindRestartReasonCode(data.pupilId, check.restartNumber)
+      if (!R.isNil(restartReason)) {
+        check.restartReason = restartReason
+      }
+    }
+
     return Object.freeze(check)
   }
 
