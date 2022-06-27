@@ -5,9 +5,9 @@ export class PupilFrozenDataService {
 /**
  * @description look up a pupils frozen flag by their id
  * @param {number} pupilId
- * @returns {Promise<Array<any>>}
+ * @returns {Promise<{frozen: boolean}[] | []>}
  */
-  public static async isFrozen (pupilId: number): Promise<any> {
+  public static async getFrozenByPupilId (pupilId: number): Promise<{frozen: boolean}[] | []> {
     const sql = 'SELECT frozen FROM mtc_admin.pupil WHERE id=@pupilId'
     const params = [{
       name: 'pupilId',
@@ -20,9 +20,9 @@ export class PupilFrozenDataService {
 /**
  * @description look up a pupils frozen flag by their urlSlug
  * @param {string} pupilUrlSlug
- * @returns {Promise<Array<any>>}
+ * @returns {Promise<{frozen: boolean}[] | []>}
  */
-  public static async isFrozenByUrlSlug (pupilUrlSlug: string): Promise<any> {
+  public static async getFrozenByUrlSlug (pupilUrlSlug: string): Promise<{frozen: boolean}[] | []> {
     const sql = 'SELECT frozen FROM mtc_admin.pupil WHERE urlSlug=@pupilUrlSlug'
     const params = [{
       name: 'pupilUrlSlug',
@@ -35,9 +35,9 @@ export class PupilFrozenDataService {
 /**
  * @description get the count of pupils who are frozen within a set of urlSlugs
  * @param {Array<string>} pupilUrlSlugs
- * @returns {Promise<Array<any>>}
+ * @returns {Promise<[ { frozenCount: number } ]>}
  */
-  public static async countFrozenByUrlSlugs (pupilUrlSlugs: Array<string>): Promise<any> {
+  public static async getFrozenCountByUrlSlugs (pupilUrlSlugs: Array<string>): Promise<[ { frozenCount: number } ]> {
     const { params, paramIdentifiers } = sqlService.buildParameterList(pupilUrlSlugs, TYPES.UniqueIdentifier,
       'pupilUrlSlug')
     const sql = `SELECT COUNT(id) as [frozenCount]
@@ -48,9 +48,9 @@ export class PupilFrozenDataService {
   /**
  * @description get the count of pupils who are frozen within a set of urlSlugs
  * @param {Array<string>} pupilIds
- * @returns {Promise<Array<any>>}
+ * @returns {Promise<[ { frozenCount: number } ]>}
  */
-   public static async countFrozenByPupilIds (pupilIds: Array<number>): Promise<any> {
+   public static async getFrozenCountByPupilIds (pupilIds: Array<number>): Promise<[{ frozenCount: number}]> {
     const paramData = sqlService.buildParameterList(pupilIds, TYPES.Int,
       'pupilId')
     const sql = `SELECT COUNT(id) as [frozenCount]
@@ -58,6 +58,11 @@ export class PupilFrozenDataService {
     return sqlService.readonlyQuery(sql, paramData.params)
   }
 
+  /**
+ * @description freeze a pupil record
+ * @param {string} pupilUrlSlug
+ * @returns {Promise<{void>}
+ */
   public static async freezePupil (pupilUrlSlug: string): Promise<void> {
     const sql = 'UPDATE mtc_admin.pupil SET frozen=1 WHERE urlSlug=@pupilUrlSlug'
     const params = [{
@@ -68,6 +73,11 @@ export class PupilFrozenDataService {
     return sqlService.modify(sql, params)
   }
 
+    /**
+ * @description thaw a pupil record
+ * @param {string} pupilUrlSlug
+ * @returns {Promise<{void>}
+ */
   public static async thawPupil (pupilUrlSlug: string): Promise<void> {
     const sql = 'UPDATE mtc_admin.pupil SET frozen=0 WHERE urlSlug=@pupilUrlSlug'
     const params = [{

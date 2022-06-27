@@ -13,21 +13,21 @@ describe('Pupil Frozen Service', () => {
     })
 
     test('exits early if pupilIds is empty', async () => {
-      jest.spyOn(PupilFrozenDataService, 'countFrozenByPupilIds').mockImplementation()
+      jest.spyOn(PupilFrozenDataService, 'getFrozenCountByPupilIds').mockImplementation()
       const x = []
       await PupilFrozenService.throwIfFrozenByIds(x)
-      expect(PupilFrozenDataService.countFrozenByPupilIds).not.toHaveBeenCalled()
+      expect(PupilFrozenDataService.getFrozenCountByPupilIds).not.toHaveBeenCalled()
     })
 
     test('throws an error if one pupil is frozen', async () => {
-      jest.spyOn(PupilFrozenDataService, 'countFrozenByPupilIds').mockResolvedValue([{
+      jest.spyOn(PupilFrozenDataService, 'getFrozenCountByPupilIds').mockResolvedValue([{
         frozenCount: 1
       }])
       await expect(PupilFrozenService.throwIfFrozenByIds([1,2,3,4])).rejects.toThrow('frozen pupils cannot be modified')
     })
 
     test('does not throw an error if no pupils in set are frozen', async () => {
-      jest.spyOn(PupilFrozenDataService, 'countFrozenByPupilIds').mockResolvedValue([{
+      jest.spyOn(PupilFrozenDataService, 'getFrozenCountByPupilIds').mockResolvedValue([{
         frozenCount: 0
       }])
       await expect(PupilFrozenService.throwIfFrozenByIds([1,2,3,4])).resolves.toBeUndefined()
@@ -41,10 +41,10 @@ describe('Pupil Frozen Service', () => {
     })
 
     test('exits early if pupilUrlSlugs is empty', async () => {
-      jest.spyOn(PupilFrozenDataService, 'countFrozenByUrlSlugs').mockImplementation()
+      jest.spyOn(PupilFrozenDataService, 'getFrozenCountByUrlSlugs').mockImplementation()
       const x = []
       await PupilFrozenService.throwIfFrozenByUrlSlugs(x)
-      expect(PupilFrozenDataService.countFrozenByUrlSlugs).not.toHaveBeenCalled()
+      expect(PupilFrozenDataService.getFrozenCountByUrlSlugs).not.toHaveBeenCalled()
     })
 
     test('throws an error if one pupil in set is frozen', async () => {
@@ -53,7 +53,7 @@ describe('Pupil Frozen Service', () => {
         '79de5922-1180-4f9c-9d8a-b3e5e6e59829',
         '6d0229ef-9eba-4d9a-b884-a41cbe63b2fd'
       ]
-      jest.spyOn(PupilFrozenDataService, 'countFrozenByUrlSlugs').mockResolvedValue([{
+      jest.spyOn(PupilFrozenDataService, 'getFrozenCountByUrlSlugs').mockResolvedValue([{
         frozenCount: 1
       }])
       await expect(PupilFrozenService.throwIfFrozenByUrlSlugs(slugs)).rejects.toThrow('frozen pupils cannot be modified')
@@ -68,7 +68,7 @@ describe('Pupil Frozen Service', () => {
         '06efbfe4-c9ac-4033-803e-9841e411b3eb',
         'c5146bc2-1f73-4bde-b66b-ca84cb397ceb'
       ]
-      jest.spyOn(PupilFrozenDataService, 'countFrozenByUrlSlugs').mockResolvedValue([{
+      jest.spyOn(PupilFrozenDataService, 'getFrozenCountByUrlSlugs').mockResolvedValue([{
         frozenCount: 3
       }])
       await expect(PupilFrozenService.throwIfFrozenByUrlSlugs(slugs)).rejects.toThrow('frozen pupils cannot be modified')
@@ -83,11 +83,11 @@ describe('Pupil Frozen Service', () => {
         '06efbfe4-c9ac-4033-803e-9841e411b3eb',
         'c5146bc2-1f73-4bde-b66b-ca84cb397ceb'
       ]
-      jest.spyOn(PupilFrozenDataService, 'countFrozenByUrlSlugs').mockResolvedValue([{
+      jest.spyOn(PupilFrozenDataService, 'getFrozenCountByUrlSlugs').mockResolvedValue([{
         frozenCount: 0
       }])
       await PupilFrozenService.throwIfFrozenByUrlSlugs(slugs)
-      expect(PupilFrozenDataService.countFrozenByUrlSlugs).toHaveBeenCalledTimes(1)
+      expect(PupilFrozenDataService.getFrozenCountByUrlSlugs).toHaveBeenCalledTimes(1)
     })
   })
 })
