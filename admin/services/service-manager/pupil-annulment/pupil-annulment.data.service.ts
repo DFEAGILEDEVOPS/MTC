@@ -223,5 +223,6 @@ export class PupilAnnulmentDataService {
       END
 
     `
+    return sqlService.modifyWithTransaction(sql, params)
   }
 }
