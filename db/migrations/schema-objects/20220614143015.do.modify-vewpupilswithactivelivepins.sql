@@ -29,5 +29,5 @@ SELECT
    AND chk.pupilLoginDate IS NULL
    AND p.attendanceId IS NULL
    AND p.currentCheckId IS NOT NULL
-   AND P.frozen = 0
+   AND p.frozen = 0
 ;
