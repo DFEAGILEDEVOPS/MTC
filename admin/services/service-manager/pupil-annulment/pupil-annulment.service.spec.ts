@@ -9,12 +9,12 @@ describe('pupil annulment service', () => {
   describe('apply annulment', () => {
     test('error is thrown if pupil identifier is not specified', async () => {
       const pupilUrlSlug = undefined
-      await expect(PupilAnnulmentService.applyAnnulment(pupilUrlSlug, 1, 2)).rejects.toThrow('pupilUrlSlug is required')
+      await expect(PupilAnnulmentService.applyAnnulment(pupilUrlSlug, 1)).rejects.toThrow('pupilUrlSlug is required')
     })
 
     test('error is thrown if pupil identifier is invalid', async () => {
       const invalidUuid = 'sdlfjsdlfkjdskfljsdfkljsd'
-      await expect(PupilAnnulmentService.applyAnnulment(invalidUuid, 1, 2)).rejects.toThrow('a valid uuid is required for pupilUrlSlug')
+      await expect(PupilAnnulmentService.applyAnnulment(invalidUuid, 1)).rejects.toThrow('a valid uuid is required for pupilUrlSlug')
     })
 
     test('data service should be called to set annulment', async () => {

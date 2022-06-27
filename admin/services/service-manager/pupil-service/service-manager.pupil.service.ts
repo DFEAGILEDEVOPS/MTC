@@ -4,6 +4,7 @@ const dateService = require('../../date.service')
 import { validate } from 'uuid'
 import moment from 'moment'
 import R from 'ramda'
+import { PupilAnnulmentDataService } from '../pupil-annulment/pupil-annulment.data.service'
 const settingService = require('../../setting.service')
 const pupilStatusService = require('../../pupil-status.service')
 
@@ -43,6 +44,8 @@ export class ServiceManagerPupilService {
     if (p.length === 0) return undefined
 
     const status = await this.getPupilStatus(p[0].id)
+    console.log(`GUY: attendanceCode:${p[0].attendanceCode}`)
+    const isAnnulled = p[0].attendanceCode === PupilAnnulmentDataService.annulmentCode
 
     return {
       dateOfBirth: dateService.formatShortGdsDate(moment(p[0].dateOfBirth)),
@@ -55,7 +58,8 @@ export class ServiceManagerPupilService {
       urlSlug: p[0].urlSlug,
       upn: p[0].upn,
       status: status,
-      schoolId: p[0].schoolId
+      schoolId: p[0].schoolId,
+      isAnnulled: isAnnulled
     }
   }
 
@@ -93,4 +97,5 @@ export interface ServiceManagerPupilDetails {
   upn: string
   status: string
   schoolId: number
+  isAnnulled: boolean
 }

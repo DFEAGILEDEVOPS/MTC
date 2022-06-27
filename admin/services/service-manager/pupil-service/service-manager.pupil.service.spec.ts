@@ -47,7 +47,8 @@ describe('service manager pupil service', () => {
         urn: 123456,
         dfeNumber: 4994494,
         upn: 'N999199900001',
-        schoolId: 123
+        schoolId: 123,
+        attendanceCode: 'ABC'
       }
       jest.spyOn(ServiceManagerPupilDataService, 'findPupilByUpn').mockResolvedValue([expected])
       const actual = await ServiceManagerPupilService.findPupilByUpn(validUpn)
@@ -119,7 +120,8 @@ describe('service manager pupil service', () => {
         urn: 123456,
         dfeNumber: 4994494,
         upn: 'N999199900001',
-        schoolId: 456
+        schoolId: 456,
+        attendanceCode: 'EDFG'
       }
       jest.spyOn(ServiceManagerPupilDataService, 'getPupilByUrlSlug').mockResolvedValue([expected])
       const actual = await ServiceManagerPupilService.getPupilDetailsByUrlSlug('455cc6b4-a688-469a-ab72-9c7e137a1ea8')
@@ -145,7 +147,8 @@ describe('service manager pupil service', () => {
         urn: 123456,
         dfeNumber: 4994494,
         upn: 'N999199900001',
-        schoolId: 45656
+        schoolId: 45656,
+        attendanceCode: 'BEUF'
       }
       jest.spyOn(ServiceManagerPupilDataService, 'getPupilByUrlSlug').mockResolvedValue([expected])
       const pupilDetails = await ServiceManagerPupilService.getPupilDetailsByUrlSlug(mockPupilDetailsData.urlSlug)

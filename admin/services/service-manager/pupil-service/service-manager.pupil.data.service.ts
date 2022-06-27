@@ -26,9 +26,11 @@ export class ServiceManagerPupilDataService {
     const sql = `
       SELECT p.id, p.foreName, p.lastName, p.dateOfBirth,
         s.name as [schoolName], s.urn, s.dfeNumber,
-        p.urlSlug, p.upn, s.id as [schoolId]
+        p.urlSlug, p.upn, s.id as [schoolId],
+        ac.code as [attendanceCode]
       FROM mtc_admin.pupil p
       INNER JOIN mtc_admin.school s ON s.id = p.school_id
+      LEFT OUTER JOIN mtc_admin.attendanceCode ac ON ac.id = p.attendanceId
       WHERE p.urlSlug = @urlSlug`
     const params = [
       {
@@ -90,4 +92,5 @@ export interface PupilSearchResult {
   dfeNumber: number
   upn: string
   schoolId: number
+  attendanceCode: string
 }

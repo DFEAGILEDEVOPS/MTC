@@ -157,7 +157,7 @@ export class PupilAnnulmentDataService {
     DECLARE @previousPupilAttendanceId int
     DECLARE @previousRestartId int
     DECLARE @annulmentPupilAttendanceId int
-    DECLARE @previousAttendanceId
+    DECLARE @previousAttendanceId int
 
     SELECT
       @previousAttendanceId = attendanceCode_id
@@ -167,7 +167,7 @@ export class PupilAnnulmentDataService {
       id = @previousPupilAttendanceId
 
     SELECT
-      @annulmentPupilAttendanceId = pa.id
+      @annulmentPupilAttendanceId = pa.id,
       @previousCheckCompleteValue = pa.previousCheckCompleteValue,
       @previousRestartAvailableValue = pa.previousRestartAvailableValue,
       @previousPupilAttendanceId = pa.previousAttendanceId,
@@ -194,9 +194,9 @@ export class PupilAnnulmentDataService {
       [mtc_admin].[pupil]
     SET
       frozen = 0,
-      checkComplete = @previousCheckComplete,
-      restartAvailable = @previousRestartAvailable,
-      attendanceId = @previousAttendanceCode
+      checkComplete = @previousCheckCompleteValue,
+      restartAvailable = @previousRestartAvailableValue,
+      attendanceId = @previousAttendanceId
     WHERE
       id = @pupilId
 

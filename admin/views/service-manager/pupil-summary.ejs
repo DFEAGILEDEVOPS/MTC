@@ -84,7 +84,11 @@
                 <a class="govuk-link" href="<%- guidancePdf %>" target="_blank" rel="noopener noreferrer">Read the
                   guidance and watch videos</a>
               </li>
-              <a class="govuk-link" href="/service-manager/annul-pupil/<%=pupil.urlSlug %>" >Annul this pupils results</a>
+              <% if (pupil.isAnnulled) { %>
+                <a class="govuk-link" href="/service-manager/annul-pupil-undo/<%=pupil.urlSlug %>" >Undo Annulment</a>
+                <% } else { %>
+                  <a class="govuk-link" href="/service-manager/annul-pupil/<%=pupil.urlSlug %>" >Annul this pupils results</a>
+              <% } %>
             </li>
             </ul>
           </nav>
