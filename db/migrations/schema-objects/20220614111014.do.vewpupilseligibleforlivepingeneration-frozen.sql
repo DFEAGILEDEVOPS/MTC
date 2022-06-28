@@ -1,7 +1,4 @@
-DROP VIEW IF EXISTS [mtc_admin].[vewPupilsEligibleForLivePinGeneration]
-GO
-
-CREATE VIEW [mtc_admin].[vewPupilsEligibleForLivePinGeneration] AS
+CREATE OR ALTER VIEW [mtc_admin].[vewPupilsEligibleForLivePinGeneration] AS
     SELECT p.id,
            p.foreName,
            p.middleNames,
@@ -18,21 +15,23 @@ CREATE VIEW [mtc_admin].[vewPupilsEligibleForLivePinGeneration] AS
            p.currentCheckId
     FROM [mtc_admin].[pupil] p LEFT JOIN
          [mtc_admin].[check] c ON (p.currentCheckId = c.id) LEFT JOIN
-         -- We could avoid this join by moving pinExpiresAt to the check (along with the proposed field `pinValidFrom`)
+          -- We could avoid this join by moving pinExpiresAt to the check (along with the proposed field `pinValidFrom`)
          [mtc_admin].[checkPin] cp ON (c.id = cp.check_id)
+          -- exclude pupils not attending
     WHERE p.attendanceId IS NULL
+          -- exclude frozen pupils
       AND p.frozen = 0
       AND (
-            -- no check has ever been allocated
-            p.currentCheckId IS NULL
-            OR
-            p.restartAvailable = 1
-            OR
-            (
-                -- the check was assigned but then expired
-                p.currentCheckId IS NOT NULL
-                AND (cp.pinExpiresAt IS NULL OR SYSDATETIMEOFFSET() > cp.pinExpiresAt)
-                AND c.pupilLoginDate IS NULL -- the check must be pristine
-            )
+          -- no check has ever been allocated
+          p.currentCheckId IS NULL
+          OR
+          p.restartAvailable = 1
+          OR
+          (
+            -- the check was assigned but then expired
+            p.currentCheckId IS NOT NULL
+            AND (cp.pinExpiresAt IS NULL OR SYSDATETIMEOFFSET() > cp.pinExpiresAt)
+            AND c.pupilLoginDate IS NULL -- the check must be pristine
+          )
         )
 ;

@@ -1,7 +1,4 @@
-DROP VIEW IF EXISTS [mtc_admin].[vewPupilsEligibleForRestart]
-GO
-
-CREATE VIEW [mtc_admin].[vewPupilsEligibleForRestart] AS
+CREATE OR ALTER VIEW [mtc_admin].[vewPupilsEligibleForRestart] AS
 
 SELECT
     p.id,

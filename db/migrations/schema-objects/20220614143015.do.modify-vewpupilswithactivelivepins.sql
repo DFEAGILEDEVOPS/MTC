@@ -1,7 +1,4 @@
-DROP VIEW IF EXISTS [mtc_admin].[vewPupilsWithActiveLivePins]
-GO
-
-CREATE VIEW [mtc_admin].[vewPupilsWithActiveLivePins]
+CREATE OR ALTER VIEW [mtc_admin].[vewPupilsWithActiveLivePins]
 AS
 SELECT
     p.id,
@@ -29,5 +26,6 @@ SELECT
    AND chk.pupilLoginDate IS NULL
    AND p.attendanceId IS NULL
    AND p.currentCheckId IS NOT NULL
+  -- exclude frozen pupils
    AND p.frozen = 0
 ;

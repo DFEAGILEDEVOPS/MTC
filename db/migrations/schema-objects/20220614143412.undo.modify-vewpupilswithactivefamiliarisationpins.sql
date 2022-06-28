@@ -1,7 +1,4 @@
-DROP VIEW IF EXISTS [mtc_admin].[vewPupilsWithActiveFamiliarisationPins]
-GO
-
-CREATE VIEW [mtc_admin].[vewPupilsWithActiveFamiliarisationPins]
+CREATE OR ALTER VIEW [mtc_admin].[vewPupilsWithActiveFamiliarisationPins]
 AS
 SELECT
     p.id,

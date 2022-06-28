@@ -1,7 +1,4 @@
-DROP VIEW IF EXISTS [mtc_admin].[vewPupilsEligibleForTryItOutPin]
-GO
-
-CREATE VIEW [mtc_admin].[vewPupilsEligibleForTryItOutPin]
+CREATE OR ALTER VIEW [mtc_admin].[vewPupilsEligibleForTryItOutPin]
 AS
 SELECT
     p.id,
@@ -22,6 +19,7 @@ SELECT
     -- don't allow a try it out check for anyone who has left
       p.attendanceId IS NULL
     AND
+    -- exclude frozen pupils
       p.frozen = 0
     -- and exclude anyone who has a check that is not new
     AND

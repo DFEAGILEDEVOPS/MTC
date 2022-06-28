@@ -1,7 +1,4 @@
-DROP VIEW IF EXISTS [mtc_admin].[vewPupilsWithActiveFamiliarisationPins]
-GO
-
-CREATE VIEW [mtc_admin].[vewPupilsWithActiveFamiliarisationPins]
+CREATE OR ALTER VIEW [mtc_admin].[vewPupilsWithActiveFamiliarisationPins]
 AS
 SELECT
     p.id,
@@ -29,5 +26,6 @@ SELECT
    AND chk.isLiveCheck = 0
    -- don't include pupils who are not taking the check
    AND p.attendanceId IS NULL
+   -- exclude frozen pupils
    AND p.frozen = 0
 ;
