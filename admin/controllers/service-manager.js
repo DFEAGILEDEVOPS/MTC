@@ -697,7 +697,7 @@ const controller = {
       const urlSlug = req.params.slug
       const pupil = await ServiceManagerPupilService.getPupilDetailsByUrlSlug(urlSlug)
       if (pupil.upn !== confirmedUpn) return annulPupilErrorHandler(req, res, next, 'UPN does not match pupil')
-      await PupilAnnulmentService.applyAnnulment(urlSlug, req.user.id)
+      await PupilAnnulmentService.applyAnnulment(urlSlug, req.user.id, pupil.schoolId)
       return res.redirect(`/service-manager/pupil-summary/${encodeURIComponent(urlSlug).toLowerCase()}`)
     } catch (error) {
       return annulPupilErrorHandler(req, res, next, error.message)
@@ -731,7 +731,7 @@ const controller = {
       const urlSlug = req.params.slug
       const pupil = await ServiceManagerPupilService.getPupilDetailsByUrlSlug(urlSlug)
       if (pupil.upn !== confirmedUpn) return annulPupilErrorHandler(req, res, next, 'UPN does not match pupil')
-      await PupilAnnulmentService.removeAnnulment(urlSlug, req.user.id)
+      await PupilAnnulmentService.removeAnnulment(urlSlug, req.user.id, pupil.schoolId)
       return res.redirect(`/service-manager/pupil-summary/${encodeURIComponent(urlSlug).toLowerCase()}`)
     } catch (error) {
       return annulPupilErrorHandler(req, res, next, error.message)
