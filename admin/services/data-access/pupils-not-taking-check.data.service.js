@@ -78,8 +78,8 @@ const pupilsNotTakingCheckDataService = {
            AND (
              -- No check has been generated for the pupil
                  p.currentCheckId IS NULL OR
-                 -- Or, a check was assigned but not received - cover new, collected and not received checks
-                 (p.currentCheckId IS NOT NULL AND p.checkComplete = 0 AND c.received = 0))
+                 -- Or, a check was assigned but is not complete - cover new, collected and not received checks
+                 (p.currentCheckId IS NOT NULL AND p.checkComplete = 0))
            AND p.attendanceId IS NULL
     `
     const params = [{
