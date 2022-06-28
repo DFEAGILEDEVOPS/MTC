@@ -3,44 +3,6 @@ import { TYPES } from '../data-access/sql.service'
 
 export class PupilFrozenDataService {
 /**
- * @description look up a pupils frozen flag by their id
- * @param {number} pupilId
- * @returns {Promise<boolean>}
- */
-  public static async getFrozenByPupilId (pupilId: number): Promise<boolean> {
-    const sql = 'SELECT frozen FROM mtc_admin.pupil WHERE id=@pupilId'
-    const params = [{
-      name: 'pupilId',
-      type: TYPES.Int,
-      value: pupilId
-    }]
-    const result = await sqlService.readonlyQuery(sql, params)
-    if (result.length > 0) {
-      return result[0].frozen
-    }
-    return false
-  }
-
-/**
- * @description look up a pupils frozen flag by their urlSlug
- * @param {string} pupilUrlSlug
- * @returns {Promise<boolean>}
- */
-  public static async getFrozenByUrlSlug (pupilUrlSlug: string): Promise<boolean> {
-    const sql = 'SELECT frozen FROM mtc_admin.pupil WHERE urlSlug=@pupilUrlSlug'
-    const params = [{
-      name: 'pupilUrlSlug',
-      type: TYPES.UniqueIdentifier,
-      value: pupilUrlSlug
-    }]
-    const result = sqlService.readonlyQuery(sql, params)
-    if (result.length > 0) {
-      return result[0].frozen
-    }
-    return false
-  }
-
-/**
  * @description get the count of pupils who are frozen within a set of urlSlugs
  * @param {Array<string>} pupilUrlSlugs
  * @returns {Promise<number>}
