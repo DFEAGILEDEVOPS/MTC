@@ -84,14 +84,7 @@ const pupilsNotTakingCheckDataService = {
       AND
         p.attendanceId IS NULL
       AND
-        (
-          -- No check has been generated for the pupil
-          p.currentCheckId IS NULL
-        OR
-          -- Or, a check was assigned but is not complete
-          -- covers new, collected and not received checks
-          p.currentCheckId IS NOT NULL AND p.checkComplete = 0
-        )
+        p.checkComplete = 0
     `
     const params = [{
       name: 'schoolId',
