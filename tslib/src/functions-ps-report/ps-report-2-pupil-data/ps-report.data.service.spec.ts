@@ -162,7 +162,6 @@ describe('ps-report.data.service', () => {
   })
 
   describe('#getCheck', () => {
-
     test('it returns nulls if no check was taken', async () => {
       const check = await sut.getCheck(null)
       expect(check).toBeNull()
@@ -239,8 +238,8 @@ describe('ps-report.data.service', () => {
     })
 
     test('if the restart count is positive and the restart code is not found, it looks up the correct restart code', async () => {
-      // @ts-ignore
-      jest.spyOn(sut, 'sqlFindPupilRestart').mockResolvedValue([ { code: 'LOI' } ])
+      // @ts-ignore - spying on private method
+      jest.spyOn(sut, 'sqlFindPupilRestart').mockResolvedValue([{ code: 'LOI' }])
       ;(mockSqlService.query as jest.Mock).mockResolvedValueOnce([
         {
           checkCode: 'abc',
@@ -265,7 +264,8 @@ describe('ps-report.data.service', () => {
         fail('check is null')
       }
       expect(check.restartReason).toBe('LOI')
-      expect(sut['sqlFindPupilRestart'] as jest.Mock).toHaveBeenCalledWith(42)
+      // @ts-ignore ignore non-standard access to private method
+      expect(sut.sqlFindPupilRestart as jest.Mock).toHaveBeenCalledWith(42)
     })
   })
 
