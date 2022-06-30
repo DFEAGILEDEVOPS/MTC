@@ -162,6 +162,7 @@ describe('ps-report.data.service', () => {
   })
 
   describe('#getCheck', () => {
+
     test('it returns nulls if no check was taken', async () => {
       const check = await sut.getCheck(null)
       expect(check).toBeNull()
@@ -180,6 +181,7 @@ describe('ps-report.data.service', () => {
           isLiveCheck: false,
           mark: 4,
           processingFailed: true,
+          pupilId: 42,
           pupilLoginDate: moment('2021-01-04T10:00:00.123Z'),
           received: false,
           restartNumber: 5,
@@ -225,6 +227,7 @@ describe('ps-report.data.service', () => {
           isLiveCheck: false,
           mark: 4,
           processingFailed: true,
+          pupilId: 42,
           pupilLoginDate: moment('2021-01-04T10:00:00.123Z'),
           received: false,
           restartNumber: 5,
@@ -233,6 +236,36 @@ describe('ps-report.data.service', () => {
       ])
       const check = await sut.getCheck(3)
       expect(Object.isFrozen(check)).toBe(true)
+    })
+
+    test('if the restart count is positive and the restart code is not found, it looks up the correct restart code', async () => {
+      // @ts-ignore
+      jest.spyOn(sut, 'sqlFindPupilRestart').mockResolvedValue([ { code: 'LOI' } ])
+      ;(mockSqlService.query as jest.Mock).mockResolvedValueOnce([
+        {
+          checkCode: 'abc',
+          checkForm_id: 1,
+          checkWindow_id: 2,
+          complete: true,
+          completedAt: moment('2021-01-04T10:07:12.345Z'),
+          id: 3,
+          inputAssistantAddedRetrospectively: true,
+          isLiveCheck: false,
+          mark: 4,
+          processingFailed: true,
+          pupilId: 42,
+          pupilLoginDate: moment('2021-01-04T10:00:00.123Z'),
+          received: false,
+          restartNumber: 1,
+          restartReason: null
+        }
+      ])
+      const check = await sut.getCheck(1)
+      if (check === null) {
+        fail('check is null')
+      }
+      expect(check.restartReason).toBe('LOI')
+      expect(sut['sqlFindPupilRestart'] as jest.Mock).toHaveBeenCalledWith(42)
     })
   })
 
