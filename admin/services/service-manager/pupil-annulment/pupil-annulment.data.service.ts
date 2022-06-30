@@ -23,12 +23,16 @@ export class PupilAnnulmentDataService {
     DECLARE @attendanceCode_id Int = (SELECT id from [mtc_admin].[attendanceCode] where code = @annuledAttendanceCode)
     DECLARE @pupilId Int = (SELECT id from [mtc_admin].[pupil] where urlSlug = @pupilUrlSlug)
 
+    IF @pupilId IS NULL
+      THROW 51000, 'pupil not found', 1
+
     IF @attendanceCode_id IS NULL
       THROW 51000, 'unknown attendanceCode.code', 1;
 
     DECLARE @currentPupilCheckCompleteValue bit
     DECLARE @currentPupilRestartAvailableValue bit
     DECLARE @currentAttendanceId int
+    DECLARE @currentUnconsumedRestartId int
 
     SELECT
       @currentPupilCheckCompleteValue = checkComplete,
@@ -39,7 +43,6 @@ export class PupilAnnulmentDataService {
       id = @pupilId
 
     -- get id of any unconsumed restart
-    DECLARE @currentUnconsumedRestartId int
 
     SELECT TOP 1
       @currentUnconsumedRestartId = pr.id
@@ -67,14 +70,17 @@ export class PupilAnnulmentDataService {
     ORDER BY 1 desc
 
     -- soft delete any existing attendance for pupil
-    UPDATE
-      [mtc_admin].[pupilAttendance]
-    SET
-      isDeleted=1
-    WHERE
-      pupil_id=@pupilId
-    AND
-      id = @currentPupilAttendanceId
+    IF @currentPupilAttendanceId IS NOT NULL
+    BEGIN
+      UPDATE
+        [mtc_admin].[pupilAttendance]
+      SET
+        isDeleted=1
+      WHERE
+        pupil_id=@pupilId
+      AND
+        id = @currentPupilAttendanceId
+    END
 
     -- soft delete any unconsumed restarts
     UPDATE
@@ -182,12 +188,15 @@ export class PupilAnnulmentDataService {
       pa.isDeleted = 0
 
     -- soft delete pupilAttendanceRecord for annulment
-    UPDATE
-      [mtc_admin].[pupilAttendance]
-    SET
-      isDeleted=1
-    WHERE
-      id = @annulmentPupilAttendanceId
+    IF @annulmentPupilAttendanceId IS NOT NULL
+    BEGIN
+      UPDATE
+        [mtc_admin].[pupilAttendance]
+      SET
+        isDeleted=1
+      WHERE
+        id = @annulmentPupilAttendanceId
+    END
 
     -- set previous attendance, restartAvailable & completeCheck, frozen=0 on pupil record
     UPDATE
