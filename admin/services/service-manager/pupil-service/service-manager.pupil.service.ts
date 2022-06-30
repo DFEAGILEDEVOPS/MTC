@@ -44,7 +44,6 @@ export class ServiceManagerPupilService {
     if (p.length === 0) return undefined
 
     const status = await this.getPupilStatus(p[0].id)
-    console.log(`GUY: attendanceCode:${p[0].attendanceCode}`)
     const isAnnulled = p[0].attendanceCode === PupilAnnulmentDataService.annulmentCode
 
     return {

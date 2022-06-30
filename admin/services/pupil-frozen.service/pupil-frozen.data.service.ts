@@ -16,7 +16,7 @@ export class PupilFrozenDataService {
     return result[0].frozenCount
   }
 
-  /**
+ /**
  * @description get the count of pupils who are frozen within a set of urlSlugs
  * @param {Array<number>} pupilIds
  * @returns {Promise<number>}
@@ -30,10 +30,10 @@ export class PupilFrozenDataService {
     return result[0].frozenCount
   }
 
-  /**
+ /**
  * @description freeze a pupil record
  * @param {string} pupilUrlSlug
- * @returns {Promise<void>}
+ * @returns {Promise<void>} lacks parity with sqlService.modify as it isn't fully typed beyond 'promise'
  */
   public static async freezePupil (pupilUrlSlug: string): Promise<void> {
     const sql = 'UPDATE mtc_admin.pupil SET frozen=1 WHERE urlSlug=@pupilUrlSlug'
@@ -45,10 +45,10 @@ export class PupilFrozenDataService {
     return sqlService.modify(sql, params)
   }
 
-    /**
+ /**
  * @description thaw a pupil record
  * @param {string} pupilUrlSlug
- * @returns {Promise<void>}
+ * @returns {Promise<void>} lacks parity with sqlService.modify as it isn't fully typed beyond 'promise'
  */
   public static async thawPupil (pupilUrlSlug: string): Promise<void> {
     const sql = 'UPDATE mtc_admin.pupil SET frozen=0 WHERE urlSlug=@pupilUrlSlug'
