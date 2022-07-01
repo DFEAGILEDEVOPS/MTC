@@ -86,6 +86,8 @@ When(/^I have generated a familiarisation pin for a pupil$/) do
   navigate_to_pupil_list_for_pin_gen('tio')
   @page = generate_tio_pins_overview_page
   @pupil_name = generate_tio_pins_overview_page.generate_pin_using_name(name)
+  pupil_pin_row = view_and_print_tio_pins_page.pupil_list.rows.find {|row| row.name.text == @pupil_name}
+  @pupil_credentials = {:school_password => pupil_pin_row.school_password.text, :pin => pupil_pin_row.pin.text}
   @check_code = SqlDbHelper.check_details(@stored_pupil_details['id'])['checkCode']
 end
 

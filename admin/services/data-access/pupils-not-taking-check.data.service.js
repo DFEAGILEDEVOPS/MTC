@@ -45,6 +45,7 @@ const pupilsNotTakingCheckDataService = {
                LEFT JOIN [mtc_admin].[check] c ON (p.currentCheckId = c.id)
                LEFT JOIN [mtc_admin].[checkPin] cp ON (cp.check_id = c.id)
          WHERE p.school_id = @schoolId
+          AND p.frozen = 0
            AND (
              -- No check has been generated for the pupil
                  p.currentCheckId IS NULL OR
@@ -75,6 +76,7 @@ const pupilsNotTakingCheckDataService = {
                LEFT JOIN [mtc_admin].[check] c ON (p.currentCheckId = c.id)
                LEFT JOIN [mtc_admin].[checkPin] cp ON (cp.check_id = c.id)
          WHERE p.school_id = @schoolId
+          AND p.frozen = 0
            AND (
              -- No check has been generated for the pupil
                  p.currentCheckId IS NULL OR
