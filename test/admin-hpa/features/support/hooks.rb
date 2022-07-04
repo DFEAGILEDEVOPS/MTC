@@ -71,6 +71,11 @@ Before("@delete_school_import") do
   end
 end
 
+
+After("@processing_error_hdf") do
+  SqlDbHelper.update_check_end_date((Date.today) + 2)
+end
+
 Before('@incomplete_pupil') do
   REDIS_CLIENT.del 'settings'
   SqlDbHelper.set_check_time_limit(1)
