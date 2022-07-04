@@ -202,8 +202,9 @@ class SqlDbHelper
     pupil_att_code_res
   end
 
-  def self.set_attendance_code_for_a_pupil(pupil_id)
-    sql = "INSERT INTO [mtc_admin].[pupilAttendance] (recordedBy_user_id, attendanceCode_id, pupil_id) VALUES (1, 1, #{pupil_id})"
+  def self.set_attendance_code_for_a_pupil(pupil_id,attendance_code=nil)
+    attendance_code.nil? ? 1 : attendance_code
+    sql = "INSERT INTO [mtc_admin].[pupilAttendance] (recordedBy_user_id, attendanceCode_id, pupil_id) VALUES (1, #{attendance_code}, #{pupil_id})"
     result = SQL_CLIENT.execute(sql)
     result.insert
   end
@@ -656,4 +657,19 @@ class SqlDbHelper
     result = SQL_CLIENT.execute(sql)
     result.each {|row| row.map}
   end
+
+  def self.update_attendance_code_id_for_pupil(pupil_id,new_attendance_code)
+    sql = "update mtc_admin.pupilAttendance set attendanceCode_id = #{new_attendance_code} where pupil_id=#{pupil_id}"
+    result = SQL_CLIENT.execute(sql)
+    result.do
+  end
+
+  def self.set_pupil_as_frozen(pupil_id,new_attendance_code)
+    sql = "update mtc_admin.pupil set frozen = 1, attendanceId = #{new_attendance_code} where id=#{pupil_id}"
+    result = SQL_CLIENT.execute(sql)
+    result.do
+    set_attendance_code_for_a_pupil(pupil_id, 7)
+  end
+
+
 end
