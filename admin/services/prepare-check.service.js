@@ -10,6 +10,7 @@ const prepareCheckDataService = require('./data-access/prepare-check.data.servic
 const redisCacheService = require('./data-access/redis-cache.service')
 const redisKeyService = require('./redis-key.service')
 const redisService = require('./data-access/redis-cache.service')
+const { PupilFrozenService } = require('./pupil-frozen.service/pupil-frozen.service')
 
 /**
  * Unprepared Check
@@ -23,6 +24,7 @@ const redisService = require('./data-access/redis-cache.service')
 /**
 * @typedef {Object} Pupil
 * @property {string} uuid
+* @property {number} id
 */
 
 const service = {
@@ -36,6 +38,10 @@ const service = {
     if (!Array.isArray(checks)) {
       throw new Error('checks is not an array')
     }
+    const pupilIds = checks.map(c => {
+      return c.pupil.id
+    })
+    await PupilFrozenService.throwIfFrozenByIds(pupilIds)
     const lookupKeys = []
     const cacheItems = checks.map(check => {
       const preparedCheck = constructPreparedCheck(check, schoolTimezone)

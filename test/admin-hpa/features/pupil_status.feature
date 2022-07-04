@@ -68,6 +68,15 @@ Feature: Pupil Status Outcome
     When I am on the Pupil Status page
     Then I can see the status for the pupil is 'Error in processing'
 
+  @processing_error_hdf
+  Scenario: Pupil with processing error can have a reason for NTC in order to sign HDF
+    Given there is a processing error with a check
+    And all other pupils are not taking the check
+    And the HDF cannot be signed
+    When the check period closes and the admin period is still active
+    Then the pupil with the processing error can have a reason for not taking the check applied
+    And then the HDF can be signed
+
 
 
 

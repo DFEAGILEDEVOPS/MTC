@@ -5,6 +5,7 @@ const pupilDataService = require('../services/data-access/pupil.data.service')
 const pupilRestartDataService = require('../services/data-access/pupil-restart.data.service')
 const restartDataService = require('./data-access/restart-v2.data.service')
 const setValidationService = require('./set-validation.service')
+const { PupilFrozenService } = require('./pupil-frozen.service/pupil-frozen.service')
 
 const restartService = {}
 
@@ -87,6 +88,8 @@ restartService.markDeleted = async (pupilUrlSlug, userId, schoolId) => {
   if (!pupil) {
     throw new Error('pupil not found')
   }
+
+  await PupilFrozenService.throwIfFrozenByIds([pupil.id])
 
   // Ideally the slug would refer to the restart itself and not the pupil.
   const restart = await pupilRestartDataService.sqlFindOpenRestartForPupil(pupilUrlSlug, schoolId)

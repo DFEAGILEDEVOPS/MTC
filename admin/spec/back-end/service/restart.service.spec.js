@@ -7,6 +7,7 @@ const pupilDataService = require('../../../services/data-access/pupil.data.servi
 const pupilRestartDataService = require('../../../services/data-access/pupil-restart.data.service')
 const restartDataService = require('../../../services/data-access/restart-v2.data.service')
 const restartService = require('../../../services/restart.service')
+const { PupilFrozenService } = require('../../../services/pupil-frozen.service/pupil-frozen.service')
 
 const pupilMock = require('../mocks/pupil')
 
@@ -74,6 +75,7 @@ describe('restart.service', () => {
       })
       jest.spyOn(pupilRestartDataService, 'sqlMarkRestartAsDeleted').mockImplementation(() => null)
       jest.spyOn(prepareCheckService, 'removeChecks').mockImplementation(() => null)
+      jest.spyOn(PupilFrozenService, 'throwIfFrozenByIds').mockResolvedValue()
     })
 
     test('returns the pupil object of the pupil who is mark as deleted', async () => {
@@ -85,6 +87,13 @@ describe('restart.service', () => {
       pupilDataService.sqlFindOneBySlug.mockImplementation(() => null)
       expect.assertions(1)
       await expect(restartService.markDeleted('slug', 1, 2)).rejects.toThrow('pupil not found')
+    })
+
+    test('if pupil is frozen it throws an error', async () => {
+      jest.spyOn(PupilFrozenService, 'throwIfFrozenByIds').mockImplementation(() => {
+        throw new Error('frozen')
+      })
+      await expect(restartService.markDeleted('slug, 1, 2')).rejects.toThrow('frozen')
     })
 
     test('find the open restart for the pupil', async () => {
