@@ -3,7 +3,7 @@
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-two-thirds">
         <h1 class="govuk-heading-xl">
-          <%=pupil.lastName %>,<%=pupil.firstName %>
+          <%=pupil.lastName %>, <%=pupil.firstName %>
         </h1>
         <%- partial('partials/_gds_session_expiry') %>
           <%- partial('partials/_flash-messages') %>
@@ -84,6 +84,12 @@
                 <a class="govuk-link" href="<%- guidancePdf %>" target="_blank" rel="noopener noreferrer">Read the
                   guidance and watch videos</a>
               </li>
+              <% if (pupil.isAnnulled) { %>
+                <a class="govuk-link" href="/service-manager/annul-pupil-undo/<%=pupil.urlSlug %>" >Undo Annulment</a>
+                <% } else { %>
+                  <a class="govuk-link" href="/service-manager/annul-pupil/<%=pupil.urlSlug %>" >Annul this pupils results</a>
+              <% } %>
+            </li>
             </ul>
           </nav>
         </aside>

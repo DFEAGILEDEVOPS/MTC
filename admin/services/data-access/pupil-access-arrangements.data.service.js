@@ -198,6 +198,7 @@ pupilAccessArrangementsDataService.sqlFindEligiblePupilsBySchoolId = async (scho
          AND p.attendanceId IS NULL
          AND p.checkComplete = 0
          AND paa.pupil_id IS NULL
+         AND p.frozen = 0
        ORDER BY lastName;
   `
   return sqlService.readonlyQuery(sql, params)
@@ -241,7 +242,8 @@ pupilAccessArrangementsDataService.sqlDeletePupilsAccessArrangements = async (ur
   const sql = `DELETE paa FROM [mtc_admin].[pupilAccessArrangements] paa
     INNER JOIN [mtc_admin].pupil p
     ON p.id = paa.pupil_id
-    WHERE p.urlSlug = @urlSlug`
+    WHERE p.urlSlug = @urlSlug
+    AND p.frozen = 0`
   const params = [
     {
       name: 'urlSlug',
