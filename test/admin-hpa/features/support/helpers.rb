@@ -109,4 +109,28 @@ module Helpers
     end
   end
 
+  def freeze_pupil(upn, school_id)
+    visit ENV['ADMIN_BASE_URL'] + '/sign-out'
+    step 'I have signed in with service-manager'
+    admin_page.pupil_search.click
+    pupil_search_page.upn.set upn
+    pupil_search_page.search.click
+    pupil_summary_page.annul_results.click
+    pupil_annulment_confirmation_page.upn.set upn
+    pupil_annulment_confirmation_page.confirm.click
+    visit ENV['ADMIN_BASE_URL'] + '/sign-out'
+  end
+
+  def undo_frozen_pupil(upn, school_id)
+    visit ENV['ADMIN_BASE_URL'] + '/sign-out'
+    step 'I have signed in with service-manager'
+    admin_page.pupil_search.click
+    pupil_search_page.upn.set upn
+    pupil_search_page.search.click
+    pupil_summary_page.undo_annulment.click
+    pupil_annulment_confirmation_page.upn.set upn
+    pupil_annulment_confirmation_page.confirm.click
+    visit ENV['ADMIN_BASE_URL'] + '/sign-out'
+  end
+
 end

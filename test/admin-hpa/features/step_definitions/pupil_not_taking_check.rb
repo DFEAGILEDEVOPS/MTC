@@ -119,6 +119,7 @@ end
 When(/^I select a pupil$/) do
   pupil = pupil_reason_page.pupil_list.rows.find {|row| row.has_no_selected?}
   pupil.checkbox.click
+  @pupil = pupil
 end
 
 When(/^I select all pupil for pupil not taking check$/) do
@@ -142,13 +143,13 @@ Then(/^my selections are cleared$/) do
 end
 
 When(/^I add (.+) as a reason for a particular pupil$/) do |reason|
+  @reason = reason
   pupil_reason_page.select_reason(reason)
   @pupil_row = pupil_reason_page.pupil_list.rows.select {|row| row.name.text.include?(@name)}
   @pupil_forename = @pupil_row.first.name.text.split(',')[1].strip
   @pupil_lastname = @pupil_row.first.name.text.split(',')[0].strip
   @pupil_row.first.checkbox.click
   pupil_reason_page.sticky_banner.confirm.click
-
 end
 
 Then(/^the (.+) reason should be stored against the pupils$/) do |reason|

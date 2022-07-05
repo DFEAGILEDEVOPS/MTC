@@ -7,8 +7,8 @@
       "timerDescription": "{second} {minute} {hour} {day} {month} {day-of-week}",
       "dev-schedule": "0 */15 * * * *",
       "prod-schedule": "0 0 22 * * 2",
-      "prod-description": "Every Tuesday at 10pm",
-      "schedule": "0 0 22 * * 2"
+      "prod-description": "Every Tuesday and Friday at 10pm",
+      "schedule": "0 0 22 * * 2,5"
     },
     {
       "direction": "out",
