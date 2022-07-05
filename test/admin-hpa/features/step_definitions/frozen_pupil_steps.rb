@@ -74,7 +74,7 @@ But(/^the pupil is frozen before the submission takes place$/) do
 end
 
 Then(/^a error is displayed$/) do
-  expect(page.text).to include 'Error: frozen pupils cannot be modified'
+  expect(page.text).to include 'An error occurred'
 end
 
 
