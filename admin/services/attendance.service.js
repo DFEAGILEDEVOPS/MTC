@@ -5,6 +5,7 @@ const pupilAttendanceDataService = require('./data-access/pupil-attendance.data.
 const pupilDataService = require('./data-access/pupil.data.service')
 const redisCacheService = require('./data-access/redis-cache.service')
 const redisKeyService = require('./redis-key.service')
+const { PupilFrozenService } = require('./pupil-frozen.service/pupil-frozen.service')
 
 const attendanceService = {
   /**
@@ -14,10 +15,11 @@ const attendanceService = {
    * @param userId - user.id of user performing the action
    * @returns {Promise<void>}
    */
-  updatePupilAttendanceBySlug: async (slugs, code, userId, schoolId) => {
-    await pupilAttendanceDataService.markAsNotAttending(slugs, code, userId, schoolId)
+  updatePupilAttendanceBySlug: async (slugs, code, userId, pupilSchoolId) => {
+    await PupilFrozenService.throwIfFrozenByUrlSlugs(slugs)
+    await pupilAttendanceDataService.markAsNotAttending(slugs, code, userId, pupilSchoolId)
     // Drop the now invalid cache for the school results if it exists
-    await redisCacheService.drop(redisKeyService.getSchoolResultsKey(schoolId))
+    await redisCacheService.drop(redisKeyService.getSchoolResultsKey(pupilSchoolId))
   },
 
   /**
@@ -27,6 +29,7 @@ const attendanceService = {
    * @return {Promise<*>}
    */
   unsetAttendanceCode: async (pupilSlug, schoolId) => {
+    await PupilFrozenService.throwIfFrozenByUrlSlugs([pupilSlug])
     const pupil = await pupilDataService.sqlFindOneBySlugAndSchool(pupilSlug, schoolId)
     if (!pupil) {
       throw new Error(`Pupil with id ${pupilSlug} and school ${schoolId} not found`)

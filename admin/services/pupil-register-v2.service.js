@@ -39,7 +39,8 @@ const pupilRegisterV2Service = {
         middleNames: d.middleNames,
         dateOfBirth: d.dateOfBirth,
         group: d.groupName,
-        upn: d.upn
+        upn: d.upn,
+        frozen: d.frozen
       }
     })
     const pupilRegisterViewData = pupilIdentificationFlagService.sortAndAddIdentificationFlags(pupilRegister)

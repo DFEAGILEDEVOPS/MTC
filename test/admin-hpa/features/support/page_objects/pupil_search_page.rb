@@ -7,6 +7,7 @@ class PupilSearchPage < SitePrism::Page
   element :cancel, 'a', text: 'Cancel'
   element :no_pupils_found, 'a', text: 'No pupil found'
 
+
   section :pupil_results, '.govuk-spacious' do
     sections :pupil_row, 'tbody tr' do
       element :name, 'td:nth-child(1)'
