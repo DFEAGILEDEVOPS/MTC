@@ -82,13 +82,10 @@ export class CheckCompleteService {
       message.version = 1;
     }
     try {
-      console.log('GUY: preparing to call add message...')
       await this.azureQueueService.addMessageToQueue(queueName, url, token, message, retryConfig);
-      console.log('GUY: called add message OK...')
       this.auditService.addEntry(new CheckSubmissionAPICallSucceeded());
       await this.onSuccess(startTime);
     } catch (error) {
-      console.log(`GUY: error calling add message...`)
       console.dir(error)
       this.auditService.addEntry(new CheckSubmissionAPIFailed(error));
       if (error.statusCode === 403
