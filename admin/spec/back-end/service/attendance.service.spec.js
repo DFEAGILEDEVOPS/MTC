@@ -8,45 +8,70 @@ const redisCacheService = require('../../../services/data-access/redis-cache.ser
 
 const service = require('../../../services/attendance.service')
 const attendanceCodeDataService = require('../../../services/data-access/attendance-code.data.service')
+const { PupilFrozenService } = require('../../../services/pupil-frozen.service/pupil-frozen.service')
 
 describe('attendanceService', () => {
   afterEach(() => {
     jest.restoreAllMocks()
   })
 
-  describe('#updatePupilAttendanceBySlug', () => {
-    test('just calls the data service', async () => {
+  describe('updatePupilAttendanceBySlug', () => {
+    test('calls the data service', async () => {
       jest.spyOn(redisCacheService, 'drop').mockImplementation()
       const slugs = ['slug1', 'slug2', 'slug3']
       const code = 'ABSNT'
       const userId = 1
       const schoolId = 7
       jest.spyOn(pupilAttendanceDataService, 'markAsNotAttending').mockImplementation()
+      jest.spyOn(PupilFrozenService, 'throwIfFrozenByUrlSlugs').mockImplementation()
       await service.updatePupilAttendanceBySlug(slugs, code, userId, schoolId)
       expect(pupilAttendanceDataService.markAsNotAttending).toHaveBeenCalled()
     })
+
+    test('throws an error if any pupils are frozen', async () => {
+      jest.spyOn(PupilFrozenService, 'throwIfFrozenByUrlSlugs').mockImplementation(() => {
+        throw new Error('frozen')
+      })
+      const slugs = ['slug1', 'slug2', 'slug3']
+      const code = 'ABSNT'
+      const userId = 1
+      const schoolId = 7
+      await expect(service.updatePupilAttendanceBySlug(slugs, code, userId, schoolId)).rejects.toThrow('frozen')
+    })
   })
 
-  describe('#unsetAttendanceCode', () => {
+  describe('unsetAttendanceCode', () => {
     const pupilSlug = 'slug1'
     const dfeNumber = 9991999
 
     test('makes a call to get the pupil', async () => {
       jest.spyOn(pupilDataService, 'sqlFindOneBySlugAndSchool').mockResolvedValue({})
       jest.spyOn(pupilAttendanceDataService, 'sqlDeleteOneByPupilId').mockImplementation()
+      jest.spyOn(PupilFrozenService, 'throwIfFrozenByUrlSlugs').mockImplementation()
       jest.spyOn(redisCacheService, 'drop').mockImplementation()
       await expect(service.unsetAttendanceCode(pupilSlug, dfeNumber)).resolves.not.toThrow()
       expect(pupilDataService.sqlFindOneBySlugAndSchool).toHaveBeenCalled()
     })
 
     test('throws if the pupil is not found', async () => {
+      jest.spyOn(PupilFrozenService, 'throwIfFrozenByUrlSlugs').mockImplementation()
       jest.spyOn(pupilDataService, 'sqlFindOneBySlugAndSchool').mockImplementation()
       jest.spyOn(redisCacheService, 'drop').mockImplementation()
       await expect(service.unsetAttendanceCode(pupilSlug, dfeNumber)).rejects.toThrow(`Pupil with id ${pupilSlug} and school ${dfeNumber} not found`)
     })
 
+    test('throws if the pupil is frozen', async () => {
+      jest.spyOn(pupilDataService, 'sqlFindOneBySlugAndSchool').mockImplementation()
+      jest.spyOn(redisCacheService, 'drop').mockImplementation()
+      jest.spyOn(PupilFrozenService, 'throwIfFrozenByUrlSlugs').mockImplementation(() => {
+        throw new Error('frozen')
+      })
+      await expect(service.unsetAttendanceCode(pupilSlug, dfeNumber)).rejects.toThrow('frozen')
+    })
+
     test('makes a call to delete the pupilAttendance record if the pupil is found', async () => {
       jest.spyOn(pupilDataService, 'sqlFindOneBySlugAndSchool').mockResolvedValue(pupilMock)
+      jest.spyOn(PupilFrozenService, 'throwIfFrozenByUrlSlugs').mockImplementation()
       jest.spyOn(pupilAttendanceDataService, 'sqlDeleteOneByPupilId').mockImplementation()
       jest.spyOn(redisCacheService, 'drop').mockImplementation()
       await service.unsetAttendanceCode(pupilSlug, dfeNumber)
@@ -54,7 +79,7 @@ describe('attendanceService', () => {
     })
   })
 
-  describe('#hasAttendance', () => {
+  describe('hasAttendance', () => {
     describe('for live env', () => {
       test('returns valid if pupil has any attendance', async () => {
         jest.spyOn(pupilAttendanceDataService, 'findOneByPupilId').mockResolvedValue({ id: 'id', code: 'A' })
@@ -90,7 +115,7 @@ describe('attendanceService', () => {
     })
   })
 
-  describe('#getAttendanceCodes', () => {
+  describe('getAttendanceCodes', () => {
     test('it sorts on the order prop', async () => {
       const attendanceData = [
         { id: 1, order: 3 },

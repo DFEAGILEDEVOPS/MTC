@@ -45,6 +45,7 @@ const pupilsNotTakingCheckDataService = {
                LEFT JOIN [mtc_admin].[check] c ON (p.currentCheckId = c.id)
                LEFT JOIN [mtc_admin].[checkPin] cp ON (cp.check_id = c.id)
          WHERE p.school_id = @schoolId
+          AND p.frozen = 0
            AND (
              -- No check has been generated for the pupil
                  p.currentCheckId IS NULL OR
@@ -70,17 +71,21 @@ const pupilsNotTakingCheckDataService = {
    */
   sqlFindPupilsWithoutReasonsInAdminPeriod: async (schoolId) => {
     const sql = `
-        SELECT p.foreName, p.middleNames, p.lastName, p.dateOfBirth, p.urlSlug, p.group_id
-          FROM [mtc_admin].[pupil] p
-               LEFT JOIN [mtc_admin].[check] c ON (p.currentCheckId = c.id)
-               LEFT JOIN [mtc_admin].[checkPin] cp ON (cp.check_id = c.id)
-         WHERE p.school_id = @schoolId
-           AND (
-             -- No check has been generated for the pupil
-                 p.currentCheckId IS NULL OR
-                 -- Or, a check was assigned but not received - cover new, collected and not received checks
-                 (p.currentCheckId IS NOT NULL AND p.checkComplete = 0 AND c.received = 0))
-           AND p.attendanceId IS NULL
+      SELECT
+        p.foreName,
+        p.middleNames,
+        p.lastName,
+        p.dateOfBirth,
+        p.urlSlug,
+        p.group_id
+      FROM
+        [mtc_admin].[pupil] p
+      WHERE
+        p.school_id = @schoolId
+      AND
+        p.attendanceId IS NULL
+      AND
+        p.checkComplete = 0
     `
     const params = [{
       name: 'schoolId',

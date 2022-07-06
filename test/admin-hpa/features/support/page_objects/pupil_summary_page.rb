@@ -9,5 +9,7 @@ class PupilSummaryPage < SitePrism::Page
   element :dfe_number, '.govuk-summary-list .govuk-summary-list__row:nth-of-type(5) dd'
   element :urn, '.govuk-summary-list .govuk-summary-list__row:nth-of-type(6) dd'
   element :status, '.govuk-summary-list .govuk-summary-list__row:nth-of-type(7) dd'
+  element :annul_results, '.govuk-link', text: "Annul this pupils results"
+  element :undo_annulment, '.govuk-link', text: "Undo Annulment"
 
 end
