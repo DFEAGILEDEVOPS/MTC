@@ -101,12 +101,11 @@ export class CheckComponent implements OnInit, CanExit {
   });
 
     this.familiarisationCheck = this.config && this.config.practice;
-
     this.initStates();
 
     // Prevent the user going back a page
     history.pushState(null, null, location.href);
-    window.onpopstate = function (event) {
+    window.onpopstate = function (event: Event) {
       history.go(1);
     };
 

@@ -25,7 +25,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
   public loginSucceeded: boolean
   public connectionFailed: boolean
   public loginPendingViewMinDisplay: number
-  //@ts-ignore used in ngOnInit 
+  //@ts-ignore used in ngOnInit
   private errorMessage: string
   public isUnsupportedBrowser: boolean
   public isLocalStorageEnabled: boolean
@@ -63,15 +63,15 @@ export class LoginComponent implements OnInit, AfterViewInit {
   ngAfterViewInit () {
     // disable pin change when input is scrolled
     const input = this.elRef.nativeElement.querySelector('#pupilPin')
-    input.addEventListener('mousewheel', function (e) {
+    input.addEventListener('mousewheel', function (e: Event) {
       e.preventDefault()
     })
     // firefox uses DOMMouseScroll instead of mousewheel
-    input.addEventListener('DOMMouseScroll', function (e) {
+    input.addEventListener('DOMMouseScroll', function (e: Event) {
       e.preventDefault()
     })
     // prevent arrow up or down to change the input value
-    input.addEventListener('keydown', function (e) {
+    input.addEventListener('keydown', function (e: any) {
       if (e.which === 38 || e.which === 40) {
         e.preventDefault()
       }
@@ -81,7 +81,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
   /**
    * Handler for the login form submit action
    */
-  onSubmit (schoolPin, pupilPin) {
+  onSubmit (schoolPin: string, pupilPin: string) {
     const startTime = Date.now()
     this.loginPending = true
     if (this.submitted === true) {
@@ -138,7 +138,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
    * @param {Number} startTime
    * @returns {Promise.<void>}
    */
-  async displayMinTime (startTime) {
+  async displayMinTime (startTime: number) {
     const endTime = Date.now()
     const duration = endTime - startTime
     const minDisplay = this.loginPendingViewMinDisplay
@@ -153,7 +153,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
    * @param {Number} ms
    * @returns {Promise.<void>}
    */
-  private sleep (ms) {
+  private sleep (ms: number) {
     return new Promise(resolve => setTimeout(resolve, ms))
   }
 }

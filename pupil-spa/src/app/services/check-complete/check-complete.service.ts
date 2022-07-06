@@ -46,7 +46,7 @@ export class CheckCompleteService {
    * @param {Number} ms
    * @returns {Promise.<void>}
    */
-  private sleep(ms) {
+  private sleep(ms: number) {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 
@@ -55,9 +55,9 @@ export class CheckCompleteService {
    * @param {Number} startTime Date time in milliseconds on the exact moment before check submission is called
    * @returns {Promise.<void>}
    */
-  public async submit(startTime): Promise<void> {
+  public async submit(startTime: number): Promise<void> {
     this.appUsageService.store();
-    let message;
+    let message: any;
     const checkConfig = this.storageService.getConfig();
     if (checkConfig.practice) {
       return this.onSuccess(startTime);
@@ -112,7 +112,7 @@ export class CheckCompleteService {
     const sortedMatchingKeys = matchingKeys.sort((a, b) =>
       new Date(items[a].clientTimestamp).getTime() - new Date(items[b].clientTimestamp).getTime()
     );
-    const matchingItems = [];
+    const matchingItems = new Array<any>();
     sortedMatchingKeys.forEach(s => {
       matchingItems.push(items[s]);
     });
@@ -126,8 +126,8 @@ export class CheckCompleteService {
    */
   getPayload(items: object): object {
     const payload = {
-      checkCode: undefined,
-      schoolUUID: undefined,
+      checkCode: '',
+      schoolUUID: '',
       buildVersion: ''
     };
     const includedSingularItems = ['config', 'device', 'pupil', 'questions', 'school', 'tokens'];
@@ -149,7 +149,7 @@ export class CheckCompleteService {
    * @param {Number} startTime
    * @returns {Promise.<void>}
    */
-  async onSuccess(startTime): Promise<void> {
+  async onSuccess(startTime: number): Promise<void> {
     this.storageService.setPendingSubmission(false);
     this.storageService.setCompletedSubmission(true);
     // Display pending screen for the minimum configurable time

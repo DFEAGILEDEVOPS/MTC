@@ -51,7 +51,7 @@ export class FeedbackService implements IFeedbackService {
    * @param {Object} payload
    * @returns {Promise.<void>}
    */
-  async queueSubmit(payload) {
+  async queueSubmit(payload: any) {
     const { url, token, queueName } = this.tokenService.getToken('pupilFeedback');
     // Create a model for the payload
     const retryConfig: QueueMessageRetryConfig = {

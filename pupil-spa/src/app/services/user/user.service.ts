@@ -25,7 +25,7 @@ export class UserService {
     this.loggedIn = !!this.storageService.getAccessArrangements();
   }
 
-  login(schoolPin, pupilPin): Promise<any> {
+  login(schoolPin: string, pupilPin: string): Promise<any> {
     const buildTag = this.metaService.getTag('name="build:number"')
     const buildVersion = buildTag.content
     return new Promise(async (resolve, reject) => {

@@ -125,7 +125,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit, OnDestr
   /**
    * Reference to the Sound component
    */
-  @Input() public soundComponent;
+  @Input() public soundComponent: any;
 
   public shouldShowQuestion: boolean;
 
@@ -139,7 +139,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit, OnDestr
    */
   @Input() public sequenceNumber = 0;
 
-  @Input() public questionTimeoutSecs;
+  @Input() public questionTimeoutSecs: number;
 
   @Output() public manualSubmitEvent: EventEmitter<any> = new EventEmitter();
 
@@ -257,7 +257,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit, OnDestr
    * Hook that is called each time the countdown timer is called.  Roughly every 100 ms.
    * @param remainingTime
    */
-  countdownIntervalHook (remainingTime) {
+  countdownIntervalHook (remainingTime: number) {
     if (remainingTime === 2 && !this.hasAudibleAlertPlayed) {
       this.soundComponent.playTimeRunningOutAlertSound();
       this.hasAudibleAlertPlayed = true;
@@ -350,7 +350,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit, OnDestr
    * Called from clicking the backspace button on the virtual keyboard
    * @param {Object} event
    */
-  onClickBackspace (event) {
+  onClickBackspace (event: Event) {
     this.deleteChar();
   }
 
@@ -565,7 +565,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit, OnDestr
     return false;
   }
 
-  whatClass (obj) {
+  whatClass (obj: any) {
     return obj.toString().match(/ (\w+)/)[1];
   }
 

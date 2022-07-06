@@ -33,7 +33,7 @@ export class IdleModalComponent implements AfterViewInit, OnDestroy {
         });
 
         this.speechListenerEvent = this.elRef.nativeElement.addEventListener('focus',
-          (event) => { this.speechService.focusEventListenerHook(event); },
+          (event: Event) => { this.speechService.focusEventListenerHook(event); },
           true
         );
       }

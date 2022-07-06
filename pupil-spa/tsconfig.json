@@ -18,7 +18,7 @@
       "es2017",
       "dom"
     ],
-    "noImplicitAny": false, // TODO: in progress to move to true
+    "noImplicitAny": true, // TODO: in progress to move to true
     "noImplicitReturns": false, // TODO: move to true
     "allowUnreachableCode": false,
     "alwaysStrict": false, // TODO: set to true

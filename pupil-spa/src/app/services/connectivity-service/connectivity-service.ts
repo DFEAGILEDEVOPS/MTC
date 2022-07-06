@@ -19,7 +19,7 @@ export class ConnectivityService {
 
   private connectivityMessageSource = new BehaviorSubject('');
   public currentConnectivityMessageSource = this.connectivityMessageSource.asObservable();
-  public errorMessages = [];
+  public errorMessages = new Array<string>();
 
   constructor(
     private azureQueueService: AzureQueueService,

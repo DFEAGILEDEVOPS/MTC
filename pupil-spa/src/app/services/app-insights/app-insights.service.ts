@@ -18,8 +18,8 @@ export interface MtcCustomProperties {
 })
 export class ApplicationInsightsService {
   private appInsights: ApplicationInsights
-  private buildNumber
-  private commitId
+  private buildNumber: string
+  private commitId: string
 
 
   constructor (private router: Router, private meta: Meta, private storageService: StorageService) {

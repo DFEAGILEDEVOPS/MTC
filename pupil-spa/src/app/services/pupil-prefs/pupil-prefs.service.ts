@@ -13,7 +13,7 @@ export class PupilPrefsService {
 
   pupilPrefsAPIErrorDelay;
   pupilPrefsAPIErrorMaxAttempts;
-  accessArrangements;
+  accessArrangements: AccessArrangements;
   fontSettings;
   contrastSettings;
 
@@ -43,8 +43,8 @@ export class PupilPrefsService {
     };
     const payload = {
       preferences: {
-        fontSizeCode: null,
-        colourContrastCode: null
+        fontSizeCode: '',
+        colourContrastCode: ''
       },
       version: 1,
       checkCode: pupil.checkCode

@@ -137,7 +137,7 @@ export class StorageService implements IStorageService {
     return this.getItem(deviceStorageKey);
   }
 
-  setDeviceData(deviceData) {
+  setDeviceData(deviceData: any) {
     this.setItem(deviceStorageKey, deviceData);
   }
 
@@ -251,7 +251,7 @@ export class StorageService implements IStorageService {
       try {
         item = JSON.parse(item);
       } catch (_) { }
-      obj[key] = item;
+      obj[key]= item;
       return obj;
     }, {});
   }

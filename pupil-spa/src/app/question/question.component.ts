@@ -42,7 +42,7 @@ export class QuestionComponent extends PracticeQuestionComponent implements OnIn
    * Called from clicking the backspace button on the virtual keyboard
    * @param {Object} event
    */
-  onClickBackspace(event) {
+  onClickBackspace(event: Event) {
     if (this.submitted) {
       return;
     }
@@ -102,7 +102,7 @@ export class QuestionComponent extends PracticeQuestionComponent implements OnIn
    * Called when the user clicks the enter button on the virtual keypad
    * @param {Object} event
    */
-  onClickSubmit(event) {
+  onClickSubmit(event: Event) {
     if (this.submitted) {
       return;
     }
