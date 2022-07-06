@@ -244,15 +244,18 @@ export class StorageService implements IStorageService {
     return Object.keys(localStorage);
   }
 
-  getAllItems(): any {
-    return Object.keys(localStorage).reduce((obj, key) => {
+  getAllItems(): Record<string, any> {
+    const output: Record<string, any> = {}
+    Object.keys(localStorage).reduce((obj: any, key: string) => {
       let item = localStorage.getItem(key);
       // try/catch as not all localstorage items are JSON, e.g. ai_session
       try {
         item = JSON.parse(item);
-      } catch (_) { }
-      obj[key]= item;
-      return obj;
+      } catch (_) {
+        // do nothing, it wasn't JSON
+       }
+     output[key] = item
     }, {});
+    return output;
   }
 }

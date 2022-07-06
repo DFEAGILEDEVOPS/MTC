@@ -106,7 +106,7 @@ export class CheckCompleteService {
    * @param {Object} items
    * @returns {Array}
    */
-  getAllEntriesByKey(key: string, items: object): any {
+  getAllEntriesByKey(key: string, items: Record<any, any>): any {
     const matchingKeys =
       Object.keys(items).filter(lsi => lsi.startsWith(key.toString()));
     const sortedMatchingKeys = matchingKeys.sort((a, b) =>
@@ -124,8 +124,8 @@ export class CheckCompleteService {
    * @param {Object} items
    * @returns {Object}
    */
-  getPayload(items: object): object {
-    const payload = {
+  getPayload(items: Record<any, any>): Record<string, any> {
+    const payload: Record<string, any> = {
       checkCode: '',
       schoolUUID: '',
       buildVersion: ''

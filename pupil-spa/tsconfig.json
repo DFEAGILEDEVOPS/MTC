@@ -11,23 +11,16 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "target": "es2015",
+    // code tightening
+
+    // ---------------
     "typeRoots": [
       "node_modules/@types"
     ],
     "lib": [
       "es2017",
       "dom"
-    ],
-    "noImplicitAny": true, // TODO: in progress to move to true
-    "noImplicitReturns": false, // TODO: move to true
-    "allowUnreachableCode": false,
-    "alwaysStrict": false, // TODO: set to true
-    "noUnusedLocals": true,
-    "skipLibCheck": true,
-    "skipDefaultLibCheck": true,
-    "strict": false, // TODO: move to true
-    "strictFunctionTypes": false, // TODO: move to true
-    "strictNullChecks": false // TODO: move to true
+    ]
   },
   "exclude": [
     "node_modules"

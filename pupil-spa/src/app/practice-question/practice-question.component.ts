@@ -320,10 +320,13 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit, OnDestr
     }
 
     let i: number;
+    // @ts-ignore - use of implicit any
     if (event.target['id'] === '') {
       // this is the span element, so to access the data-value attribute we need to access the parent
+      // @ts-ignore - use of implicit any
       i = event.target['parentNode'].dataset.value;
     } else {
+      // @ts-ignore - use of implicit any
       i = event.target['dataset'].value;
     }
 
