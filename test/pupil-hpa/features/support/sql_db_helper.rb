@@ -450,4 +450,11 @@ class SqlDbHelper
     result.cancel
     school_res.values.first
   end
+
+
+  def self.delete_check_pin(check_id)
+    sql = "DELETE FROM [mtc_admin].[checkPin] where check_id=#{check_id}"
+    result = SQL_CLIENT.execute(sql)
+    result.do
+  end
 end
