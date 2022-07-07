@@ -289,3 +289,64 @@ Then(/^the PS report should include the AA for the pupil$/) do
   pupil_aa = SqlDbHelper.get_ps_record_for_pupil(pupil_details['id'])['AccessArr']
   expect(pupil_aa).to eql '[1]'
 end
+
+
+Given(/^I generated a pin after applying a restart$/) do
+  step "I have completed the check"
+  step 'I login to the admin app'
+  visit ENV["ADMIN_BASE_URL"] + restarts_page.url
+  restarts_page.select_pupil_to_restart_btn.click
+  restarts_page.reason_2.click
+  pupil = restarts_page.find_pupil_row(@details_hash[:first_name])
+  @pupil_name = pupil.name.text
+  pupil.checkbox.click
+  restarts_page.sticky_banner.confirm.click
+  navigate_to_pupil_list_for_pin_gen('live')
+  generate_pins_overview_page.generate_pin_using_name(@details_hash[:last_name] + ', ' + @details_hash[:first_name])
+  pupil_pin_row = view_and_custom_print_live_check_page.pupil_list.rows.find {|row| row.name.text == @details_hash[:last_name] + ', ' + @details_hash[:first_name]}
+  @pupil_credentials = {:school_password => pupil_pin_row.school_password.text, :pin => pupil_pin_row.pin.text}
+  p @pupil_credentials
+  AzureTableHelper.wait_for_prepared_check(@pupil_credentials[:school_password],@pupil_credentials[:pin])
+end
+
+But(/^the pin expires$/) do
+  @pupil_details = SqlDbHelper.pupil_details_using_school(@details_hash[:upn], @school_id)
+  @check_details = SqlDbHelper.get_all_pupil_checks(@pupil_details['id']).sort_by {|hsh| hsh['createdAt']}.last
+  SqlDbHelper.delete_check_pin(@check_details["id"])
+end
+
+
+When(/^I generate a new pin and complete the check$/) do
+  navigate_to_pupil_list_for_pin_gen('live')
+  generate_pins_overview_page.generate_pin_using_name(@details_hash[:last_name] + ', ' + @details_hash[:first_name])
+  pupil_pin_row = view_and_custom_print_live_check_page.pupil_list.rows.find {|row| row.name.text == @details_hash[:last_name] + ', ' + @details_hash[:first_name]}
+  @pupil_credentials = {:school_password => pupil_pin_row.school_password.text, :pin => pupil_pin_row.pin.text}
+  p @pupil_credentials
+  AzureTableHelper.wait_for_prepared_check(@pupil_credentials[:school_password],@pupil_credentials[:pin])
+  step 'I have logged in'
+  confirmation_page.read_instructions.click
+  start_page.start_warm_up.click
+  warm_up_page.start_now.click
+  step "I complete the warm up questions using the numpad"
+  warm_up_complete_page.start_check.click
+  mtc_check_start_page.start_now.click
+  questions = JSON.parse page.evaluate_script('window.localStorage.getItem("questions");')
+  check_page.complete_check_with_correct_answers(questions.size, 'numpad')
+  complete_page.wait_for_complete_page
+  expect(complete_page).to have_completion_text
+  storage1 = page.evaluate_script('window.localStorage;')
+  @check_code = JSON.parse(storage1['pupil'])['checkCode']
+  @school_uuid = JSON.parse(storage1['school'])['uuid']
+  storage_audit_keys = storage1.keys.select {|x| x.include?('audit')}
+  @audit = []
+  storage_audit_keys.each do |key|
+    @audit << (JSON.parse page.evaluate_script("window.localStorage.getItem('#{key}');"))
+  end
+  p @check_code
+end
+
+
+Then(/^I should see the restart reason in the ps report record$/) do
+  ps_report_record = SqlDbHelper.get_ps_record_for_pupil(@pupil_details['id'])
+  expect(ps_report_record['RestartReason']).to eql 2
+end
