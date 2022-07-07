@@ -105,6 +105,7 @@ end
 Then(/^the pupil with the processing error can have a reason for not taking the check applied$/) do
   pupils_not_taking_check_page.load
   step 'I want to add a reason'
+  wait_until(60, 1) {sleep 1; visit current_url; pupil_reason_page.has_attendance_codes?}
   pupil_reason_page.attendance_codes.first.click
   expect(pupil_reason_page.pupil_list.rows.first.name.text).to eql "#{@details_hash[:last_name]}, #{@details_hash[:first_name]}"
   pupil_reason_page.select_pupil(@details_hash[:last_name])
