@@ -279,13 +279,13 @@ describe('PractiseQuestionComponent', () => {
   describe('onClickBackspace', () => {
     it('deletes the end character from the answer', () => {
       component.answer = '12345';
-      const event = {};
+      const event = new Event('event');
       component.onClickBackspace(event);
       expect(component.answer).toBe('1234');
     });
     it('behaves when the answer is empty', () => {
       component.answer = '';
-      const event = {};
+      const event = new Event('event');
       component.onClickBackspace(event);
       expect(component.answer).toBe('');
     });
@@ -316,6 +316,7 @@ describe('PractiseQuestionComponent', () => {
       component.timeoutEvent.subscribe(g => {
         expect(g).toEqual('125');
         done();
+        component.timeoutEvent.unsubscribe();
       });
     });
 

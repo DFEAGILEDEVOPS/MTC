@@ -106,6 +106,7 @@ describe('QuestionComponent', () => {
       component.factor1 = 1
       component.factor2 = 2
       const event = { timeStamp: 1519211809934 }
+      //@ts-ignore need to mock timestamp
       component.onClickBackspace(event)
       expect(registerInputServiceSpy).toHaveBeenCalledTimes(1)
       expect(registerInputServiceSpy).toHaveBeenCalledWith('Backspace', 'mouse', 1, '1x2', 1519211809934)
@@ -113,17 +114,17 @@ describe('QuestionComponent', () => {
 
     it('deletes a char from the answer', () => {
       component['answer'] = '1444'
-      const event = {}
+      const event = new Event('event')
       component.onClickBackspace(event)
       expect(component['answer']).toBe('144')
     })
 
     it('does not delete a char from the answer once it has been submitted', () => {
-      const event = {}
+      const event = new Event('event')
       component['answer'] = '1444'
-      component.onClickBackspace({})
+      component.onClickBackspace(new Event('event'))
       expect(component['answer']).toBe('144')
-      component.onClickSubmit({})
+      component.onClickSubmit(new Event('event'))
       component.onClickBackspace(event)
       expect(component['answer']).toBe('144')
     })
@@ -143,12 +144,12 @@ describe('QuestionComponent', () => {
       component.button1.nativeElement.dispatchEvent(e1)
       component.button1.nativeElement.dispatchEvent(e1)
       // answer = '111'
-      component.onClickBackspace({})
-      component.onClickBackspace({})
+      component.onClickBackspace(new Event('event'))
+      component.onClickBackspace(new Event('event'))
       // answer = '1'
       expect(registerInputService.storeEntry).toHaveBeenCalledTimes(5)
-      component.onClickSubmit({}) // needs something in the answer box
-      component.onClickBackspace({})
+      component.onClickSubmit(new Event('event')) // needs something in the answer box
+      component.onClickBackspace(new Event('event'))
 
       // We expect the input service to have been called 1 more time for the submit event, but not for the additional click
       expect(registerInputService.storeEntry).toHaveBeenCalledTimes(6)
@@ -161,6 +162,7 @@ describe('QuestionComponent', () => {
       component.factor1 = 1
       component.factor2 = 2
       const event = { timeStamp: 1519211809934 }
+      //@ts-ignore need to mock timestamp
       component.onClickSubmit(event)
       expect(registerInputServiceSpy).toHaveBeenCalledTimes(1)
       expect(registerInputServiceSpy).toHaveBeenCalledWith('Enter', 'mouse', 1, '1x2', 1519211809934)
@@ -169,6 +171,7 @@ describe('QuestionComponent', () => {
     it('calls onSubmit()', () => {
       spyOn(component, 'onSubmit')
       const event = {}
+      //@ts-ignore need to mock timestamp
       component.onClickSubmit(event)
       expect(component.onSubmit).toHaveBeenCalledTimes(1)
     })
@@ -185,9 +188,9 @@ describe('QuestionComponent', () => {
       })
       component.button9.nativeElement.dispatchEvent(e1)
       component.button9.nativeElement.dispatchEvent(e1)
-      component.onClickSubmit({})
+      component.onClickSubmit(new Event('event'))
       expect(registerInputServiceSpy).toHaveBeenCalledTimes(3)
-      component.onClickSubmit({})
+      component.onClickSubmit(new Event('event'))
       // It should not call the registerInputService again not that submit has been clicked already
       expect(registerInputServiceSpy).toHaveBeenCalledTimes(3)
     })
