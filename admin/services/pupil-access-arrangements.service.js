@@ -4,6 +4,7 @@ const preparedCheckSyncService = require('../services/prepared-check-sync.servic
 const pupilAccessArrangementsDataService = require('../services/data-access/pupil-access-arrangements.data.service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
 const pupilIdentificationFlag = require('../services/pupil-identification-flag.service')
+const { PupilFrozenService } = require('./pupil-frozen.service/pupil-frozen.service')
 
 const pupilAccessArrangementsService = {}
 
@@ -87,6 +88,7 @@ pupilAccessArrangementsService.deletePupilAccessArrangements = async (pupilUrlSl
   if (!uuidValidator(pupilUrlSlug)) {
     throw new Error(`pupilUrlSlug: '${pupilUrlSlug}' is not a valid UUID`)
   }
+  await PupilFrozenService.throwIfFrozenByUrlSlugs([pupilUrlSlug])
   const pupil = await pupilDataService.sqlFindOneBySlugAndSchool(pupilUrlSlug, schoolId)
   if (!pupil) {
     throw new Error(`Pupil ${pupilUrlSlug} not found in school ID ${schoolId}`)

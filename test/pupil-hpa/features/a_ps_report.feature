@@ -77,3 +77,9 @@ Feature:
     Then the PS report should include the AA for the pupil
 
 
+  Scenario: Restart bug
+    Given I generated a pin after applying a restart
+    But the pin expires
+    When I generate a new pin and complete the check
+    And the data sync and ps report function has run
+    Then I should see the restart reason in the ps report record

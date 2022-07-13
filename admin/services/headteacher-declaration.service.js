@@ -14,6 +14,7 @@ const headteacherDeclarationService = {}
 const settingService = require('./setting.service')
 const redisCacheService = require('../services/data-access/redis-cache.service')
 const redisKeyService = require('../services/redis-key.service')
+const { PupilFrozenService } = require('./pupil-frozen.service/pupil-frozen.service')
 /**
  * @typedef {Object} hdfPupil
  * @property {number} pupilId
@@ -179,6 +180,7 @@ headteacherDeclarationService.updatePupilsAttendanceCode = async (pupilIds, code
   if (!pupilIds || !code || !userId) {
     throw new Error('pupilIds, code and userId are required')
   }
+  await PupilFrozenService.throwIfFrozenByIds(pupilIds)
   const attendanceCode = await attendanceCodeDataService.sqlFindOneAttendanceCodeByCode(code)
   if (!attendanceCode) {
     throw new Error(`attendanceCode not found: ${code}`)

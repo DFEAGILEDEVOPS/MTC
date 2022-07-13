@@ -18,6 +18,7 @@ const settingsService = require('../../../services/setting.service')
 const pupilStatusService = require('../../../services/pupil-status.service')
 const redisCacheService = require('../../../services/data-access/redis-cache.service')
 const service = require('../../../services/headteacher-declaration.service')
+const { PupilFrozenService } = require('../../../services/pupil-frozen.service/pupil-frozen.service')
 
 describe('headteacherDeclarationService', () => {
   afterEach(() => {
@@ -266,6 +267,10 @@ describe('headteacherDeclarationService', () => {
     const schoolId = 42
     const service = require('../../../services/headteacher-declaration.service')
 
+    beforeEach(() => {
+      jest.spyOn(PupilFrozenService, 'throwIfFrozenByIds').mockResolvedValue()
+    })
+
     test('throws an error when no pupilIds are provided', async () => {
       await expect(service.updatePupilsAttendanceCode(null, attendanceCode, userId, schoolId)).rejects.toThrow('pupilIds, code and userId are required')
     })
@@ -278,6 +283,11 @@ describe('headteacherDeclarationService', () => {
     test('throws an error when no userId is provided', async () => {
       jest.spyOn(redisCacheService, 'drop').mockImplementation()
       await expect(service.updatePupilsAttendanceCode(pupilIds, attendanceCode, null, schoolId)).rejects.toThrow('pupilIds, code and userId are required')
+    })
+
+    test('throws an error when at least one pupil is frozen', async () => {
+      jest.spyOn(PupilFrozenService, 'throwIfFrozenByIds').mockRejectedValue(new Error('frozen'))
+      await expect(service.updatePupilsAttendanceCode(pupilIds, attendanceCode, userId, schoolId)).rejects.toThrow('frozen')
     })
 
     test('throws an error when an invalid attendance code is provided', async () => {

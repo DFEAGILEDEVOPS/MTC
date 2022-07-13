@@ -22,7 +22,8 @@ const service = {
          p.dateOfBirth,
          p.school_id,
          p.group_id,
-         ISNULL(g.name, '-') as groupName
+         ISNULL(g.name, '-') as groupName,
+         p.frozen
       FROM
            [mtc_admin].[pupil] p LEFT JOIN
            [mtc_admin].[group] g ON (p.group_id = g.id)
