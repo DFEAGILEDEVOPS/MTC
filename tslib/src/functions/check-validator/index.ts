@@ -15,7 +15,7 @@ const serviceBusQueueTrigger: AzureFunction = async function (context: Context, 
       throw new Error(`Message schema version ${version} unsupported`)
     }
     await validator.validate(context.bindings as ICheckValidatorFunctionBindings, validateCheckMessage, context.log)
-  } catch (error) {
+  } catch (error: any) {
     context.log.error(`${functionName}: ERROR: ${error.message}`)
     throw error
   }
