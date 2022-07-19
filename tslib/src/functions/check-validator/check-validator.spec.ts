@@ -8,6 +8,8 @@ import { CheckNotificationType } from '../../schemas/check-notification-message'
 import { getValidatedCheck } from '../../schemas/check-schemas/validated-check'
 import { ITableService } from '../../azure/table-service'
 import { TableEntity } from '@azure/data-tables'
+import { ICheckFormService } from '../../services/check-form.service'
+import { IValidatorProvider, ValidatorProvider } from './validators/validator.provider'
 
 const TableServiceMock = jest.fn<ITableService, any>(() => ({
   createEntity: jest.fn(),
@@ -34,22 +36,62 @@ let validateReceivedCheckQueueMessage: ValidateCheckMessageV1 = {
   version: 1
 }
 
+const CheckFormServiceMock = jest.fn<ICheckFormService, any>(() => ({
+  getCheckFormForCheckCode: jest.fn(),
+  getCheckFormDataByCheckCode: jest.fn()
+}))
+
 let sut: CheckValidator
 let loggerMock: ILogger
 let tableServiceMock: ITableService
 let compressionServiceMock: ICompressionService
+let checkFormServiceMock: ICheckFormService
+let validatorProvider: IValidatorProvider
 
 describe('check-validator', () => {
   beforeEach(() => {
     tableServiceMock = new TableServiceMock()
     compressionServiceMock = new CompressionServiceMock()
-    sut = new CheckValidator(tableServiceMock, compressionServiceMock)
+    checkFormServiceMock = new CheckFormServiceMock()
+    validatorProvider = new ValidatorProvider(checkFormServiceMock)
+    sut = new CheckValidator(tableServiceMock, compressionServiceMock, validatorProvider)
     loggerMock = new LoggerMock()
     validateReceivedCheckQueueMessage = {
       schoolUUID: 'abc',
       checkCode: 'xyz',
       version: 1
     }
+    jest.spyOn(checkFormServiceMock, 'getCheckFormForCheckCode').mockResolvedValue([
+      { f1: 0, f2: 0 },
+      { f1: 1, f2: 1 },
+      { f1: 2, f2: 2 },
+      { f1: 3, f2: 3 },
+      { f1: 4, f2: 4 },
+      { f1: 5, f2: 5 },
+      { f1: 6, f2: 6 },
+      { f1: 7, f2: 7 },
+      { f1: 8, f2: 8 },
+      { f1: 9, f2: 9 },
+      { f1: 10, f2: 10 },
+      { f1: 11, f2: 11 },
+      { f1: 12, f2: 12 },
+      { f1: 13, f2: 13 },
+      { f1: 14, f2: 14 },
+      { f1: 15, f2: 15 },
+      { f1: 16, f2: 16 },
+      { f1: 17, f2: 17 },
+      { f1: 18, f2: 18 },
+      { f1: 19, f2: 19 },
+      { f1: 20, f2: 20 },
+      { f1: 21, f2: 21 },
+      { f1: 22, f2: 22 },
+      { f1: 23, f2: 23 },
+      { f1: 24, f2: 24 }
+    ])
+  })
+
+  afterEach(() => {
+    jest.restoreAllMocks()
   })
 
   test('subject under test should be defined', () => {
