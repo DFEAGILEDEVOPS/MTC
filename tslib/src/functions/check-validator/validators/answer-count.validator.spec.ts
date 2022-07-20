@@ -14,14 +14,14 @@ describe('answer-count.validator', () => {
     const check = {
       answers: [] as any
     }
-    for (let index = 1; index < expectedQuestionCount; index++) {
+    for (let index = 1; index < expectedQuestionCount; index++) { // omits final question
       check.answers.push({
         answer: index,
         clientTimestamp: '',
         factor1: 1,
         factor2: 1,
         question: '1x1',
-        sequenceNumber: 1
+        sequenceNumber: index
       })
     }
     const error = sut.validate(check)
@@ -46,17 +46,18 @@ describe('answer-count.validator', () => {
   })
 
   test('correct answer count passes validation', () => {
+    const expectedQuestionCount = config.LiveFormQuestionCount
     const check = {
       answers: [] as any
     }
-    for (let index = 0; index < 25; index++) {
+    for (let index = 0; index < expectedQuestionCount; index++) {
       check.answers.push({
         answer: index,
         clientTimestamp: '',
         factor1: 1,
         factor2: 1,
         question: '1x1',
-        sequenceNumber: 1
+        sequenceNumber: index + 1
       })
     }
     const error = sut.validate(check)
@@ -64,20 +65,40 @@ describe('answer-count.validator', () => {
   })
 
   test('more answers passes validation', () => {
+    const expectedQuestionCount = config.LiveFormQuestionCount
     const check = {
       answers: [] as any
     }
-    for (let index = 0; index < 35; index++) {
+    for (let index = 0; index < expectedQuestionCount + 10; index++) {
       check.answers.push({
         answer: index,
         clientTimestamp: '',
         factor1: 1,
         factor2: 1,
         question: '1x1',
-        sequenceNumber: 1
+        sequenceNumber: index + 1 < expectedQuestionCount ? index + 1 : expectedQuestionCount
       })
     }
     const error = sut.validate(check)
     expect(error).not.toBeDefined()
+  })
+
+  test('more answers but one answer is missing fails validation', () => {
+    const expectedQuestionCount = config.LiveFormQuestionCount
+    const check = {
+      answers: [] as any
+    }
+    for (let index = 1; index < expectedQuestionCount + 10; index++) { // omit sequenceNumber 1
+      check.answers.push({
+        answer: index,
+        clientTimestamp: '',
+        factor1: 1,
+        factor2: 1,
+        question: '1x1',
+        sequenceNumber: index < expectedQuestionCount ? index + 1 : expectedQuestionCount
+      })
+    }
+    const error = sut.validate(check)
+    expect(error).toBeDefined()
   })
 })

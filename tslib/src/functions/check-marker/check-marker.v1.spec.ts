@@ -1,14 +1,15 @@
-import * as Subject from './check-marker.v1'
-import { ICheckFormService } from './check-form.service'
+import uuid = require('uuid')
+import moment = require('moment')
 import * as R from 'ramda'
+
+import * as Subject from './check-marker.v1'
+import { ICheckFormService } from '../../services/check-form.service'
 import { ILogger } from '../../common/logger'
 import { ICheckMarkerFunctionBindings } from './models'
 import answersMock from './answers-mock.json'
 import { CheckNotificationType, ICheckNotificationMessage } from '../../schemas/check-notification-message'
 import { ReceivedCheckFunctionBindingEntity } from '../../schemas/models'
 import { CompressionService } from '../../common/compression-service'
-import uuid = require('uuid')
-import moment = require('moment')
 import { ITableService } from '../../azure/table-service'
 
 const compressionService = new CompressionService()
@@ -22,6 +23,7 @@ const TableServiceMock = jest.fn<ITableService, any>(() => ({
 
 const SqlServiceMock = jest.fn<ICheckFormService, any>(() => ({
   getCheckFormDataByCheckCode: jest.fn(),
+  getCheckFormForCheckCode: jest.fn(),
   init: jest.fn()
 }))
 
