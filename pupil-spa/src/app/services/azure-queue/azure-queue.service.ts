@@ -44,8 +44,9 @@ export class AzureQueueService implements IAzureQueueService {
     // TODO allow linear retries via config
     // TODO pin version of API to use via config setting???
     const headers = new HttpHeaders ({
-      'x-ms-date': (new Date()).toISOString(),
-      'Content-Type': `application/atom+xml;charset="utf-8"`
+      'Accept': 'application/xml',
+      'Content-Type': 'application/xml',
+      'x-ms-date': (new Date()).toISOString()
     })
 
     try {
