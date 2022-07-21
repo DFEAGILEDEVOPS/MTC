@@ -50,7 +50,7 @@ describe('CheckStartService', () => {
     spyOn(tokenService, 'getToken').and.returnValue({ url: 'url', token: 'token' })
     let actualPayload
     azureQueueServiceSpy.addMessageToQueue.and
-      .callFake(async (queueName: string, url: string,
+      .callFake(async (url: string,
         token: string, payload: object,
         retryConfig: QueueMessageRetryConfig): Promise<void> => {
         actualPayload = payload

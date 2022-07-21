@@ -52,12 +52,12 @@ export class FeedbackService implements IFeedbackService {
    * @returns {Promise.<void>}
    */
   async queueSubmit(payload: any) {
-    const { url, token, queueName } = this.tokenService.getToken('pupilFeedback');
+    const { url, token } = this.tokenService.getToken('pupilFeedback');
     // Create a model for the payload
     const retryConfig: QueueMessageRetryConfig = {
       DelayBetweenRetries: this.feedbackAPIErrorDelay,
       MaxAttempts: this.feedbackAPIErrorMaxAttempts
     };
-    await this.azureQueueService.addMessageToQueue(queueName, url, token, payload, retryConfig);
+    await this.azureQueueService.addMessageToQueue(url, token, payload, retryConfig);
   }
 }

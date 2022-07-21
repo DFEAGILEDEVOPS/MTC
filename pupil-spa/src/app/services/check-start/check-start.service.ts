@@ -36,7 +36,7 @@ export class CheckStartService {
    * @returns {Promise.<void>}
    */
   public async submit(): Promise<void> {
-    const { queueName, url, token } = this.tokenService.getToken('checkStarted');
+    const { url, token } = this.tokenService.getToken('checkStarted');
     // Create a model for the payload
     const payload = this.storageService.getPupil();
     payload.clientCheckStartedAt = new Date();
@@ -48,7 +48,7 @@ export class CheckStartService {
 
     try {
       this.auditService.addEntry(new CheckStartedApiCalled());
-      await this.azureQueueService.addMessageToQueue(queueName, url, token, payload, retryConfig);
+      await this.azureQueueService.addMessageToQueue(url, token, payload, retryConfig);
       this.auditService.addEntry(new CheckStartedAPICallSucceeded());
     } catch (error) {
       this.auditService.addEntry(new CheckStartedAPICallFailed(error));

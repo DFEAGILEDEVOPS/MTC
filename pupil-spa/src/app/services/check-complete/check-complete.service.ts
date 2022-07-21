@@ -62,7 +62,7 @@ export class CheckCompleteService {
     if (checkConfig.practice) {
       return this.onSuccess(startTime);
     }
-    const {url, token, queueName} = this.tokenService.getToken('checkComplete');
+    const {url, token} = this.tokenService.getToken('checkComplete');
     const retryConfig: QueueMessageRetryConfig = {
       DelayBetweenRetries: this.checkSubmissionApiErrorDelay,
       MaxAttempts: this.checkSubmissionAPIErrorMaxAttempts
@@ -82,7 +82,7 @@ export class CheckCompleteService {
       message.version = 1;
     }
     try {
-      await this.azureQueueService.addMessageToQueue(queueName, url, token, message, retryConfig);
+      await this.azureQueueService.addMessageToQueue(url, token, message, retryConfig);
       this.auditService.addEntry(new CheckSubmissionAPICallSucceeded());
       await this.onSuccess(startTime);
     } catch (error) {

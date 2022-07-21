@@ -80,7 +80,7 @@ describe('CheckCompleteService', () => {
       }
     });
     let capturedMessage;
-    azureQueueServiceSpy.addMessageToQueue.and.callFake((queueName: string, url: string, token: string, message: object, retryConfig: QueueMessageRetryConfig): Promise<void> => {
+    azureQueueServiceSpy.addMessageToQueue.and.callFake((url: string, token: string, message: object, retryConfig: QueueMessageRetryConfig): Promise<void> => {
       capturedMessage = message;
       return Promise.resolve()
     });

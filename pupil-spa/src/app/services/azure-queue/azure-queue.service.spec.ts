@@ -34,9 +34,8 @@ describe('AzureQueueService', () => {
       httpServiceSpy.post.and.callFake((queueUrl: string, message: any, headers: any) => {
         actualUrl = queueUrl
       })
-      const queueName = 'my-queue'
       const payload = { payloadItem: 'payloadItem' }
-      await sut.addMessageToQueue(queueName,
+      await sut.addMessageToQueue(
         'url',
         'token',
         payload,
@@ -58,7 +57,6 @@ describe('AzureQueueService', () => {
       httpServiceSpy.post.and.throwError(new Error('fail'))
       try {
         await sut.addMessageToQueue('queue',
-          'url',
           'token',
           { payloadItem: 'payloadItem' },
           {
@@ -75,7 +73,6 @@ describe('AzureQueueService', () => {
     it('should successfully send a message to the queue', async () => {
 
       await sut.addMessageToQueue('queue',
-        'url',
         'token',
         { payloadItem: 'payloadItem' },
         {
@@ -96,7 +93,6 @@ describe('AzureQueueService', () => {
       httpServiceSpy.post.and.throwError(new Error('fail'))
       try {
         await sut.addMessageToQueue('queue',
-          'url',
           'token',
           { payloadItem: 'payloadItem' },
           {
@@ -112,7 +108,6 @@ describe('AzureQueueService', () => {
 
     it('should successfully send a message to the queue', async () => {
       await sut.addMessageToQueue('queue',
-        'url',
         'token',
         { payloadItem: 'payloadItem' },
         {

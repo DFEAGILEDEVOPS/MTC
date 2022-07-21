@@ -74,7 +74,6 @@ export class ConnectivityService {
     };
     try {
       await this.azureQueueService.addMessageToQueue(
-        this.testPupilConnectionQueueName,
         this.testPupilConnectionQueueUrl,
         this.testPupilConnectionQueueToken,
         {},

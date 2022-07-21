@@ -11,8 +11,11 @@ export interface QueueMessageRetryConfig {
 }
 
 export interface IAzureQueueService {
-  addMessageToQueue (queueName: string, storageAccountUrl: string, sasToken: string,
-    payload: object, retryConfig: QueueMessageRetryConfig): Promise<void>
+  addMessageToQueue (
+                    storageAccountUrl: string,
+                    sasToken: string,
+                    payload: object,
+                    retryConfig: QueueMessageRetryConfig): Promise<void>
 }
 
 @Injectable()
@@ -22,15 +25,18 @@ export class AzureQueueService implements IAzureQueueService {
 
   /**
    * Add message to the queue
-   * @param {String} queueName
    * @param {String} storageAccountUrl
    * @param {String} sasToken
    * @param {Object} payload
    * @param {Object} retryConfig
    * @returns {Promise.<Object>}
    */
-  public async addMessageToQueue (queueName: string, storageAccountUrl: string, sasToken: string,
-    payload: object, retryConfig: QueueMessageRetryConfig, messageLifeTimeInSeconds: number = -1): Promise<void> {
+  public async addMessageToQueue (
+                    storageAccountUrl: string,
+                    sasToken: string,
+                    payload: object,
+                    retryConfig: QueueMessageRetryConfig,
+                    messageLifeTimeInSeconds: number = -1): Promise<void> {
     const queueEndpointUrl = `${storageAccountUrl}/messages?messagettl=${messageLifeTimeInSeconds}&${sasToken}`
     const message = JSON.stringify(payload)
     const encodedMessage = Buffer.from(message, 'utf8').toString('base64')
@@ -43,7 +49,7 @@ export class AzureQueueService implements IAzureQueueService {
     })
 
     try {
-      await this.http.post(queueEndpointUrl, wrappedXmlMessage, headers)
+      await this.http.post(queueEndpointUrl, wrappedXmlMessage, headers, retryConfig.MaxAttempts)
     } catch (error) {
       if (!APP_CONFIG.production) {
         throw error;

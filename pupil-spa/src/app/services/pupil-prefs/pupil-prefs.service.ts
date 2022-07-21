@@ -36,7 +36,7 @@ export class PupilPrefsService {
     const fontSetting = this.fontSettings.find(f => f.val === accessArrangements.fontSize);
     const contrastSetting = this.contrastSettings.find(f => f.val === accessArrangements.contrast);
     const pupil = this.storageService.getPupil() as Pupil;
-    const {url, token, queueName} = this.tokenService.getToken('pupilPreferences');
+    const {url, token} = this.tokenService.getToken('pupilPreferences');
     const retryConfig: QueueMessageRetryConfig = {
       DelayBetweenRetries: this.pupilPrefsAPIErrorDelay,
       MaxAttempts: this.pupilPrefsAPIErrorMaxAttempts
@@ -57,7 +57,7 @@ export class PupilPrefsService {
     }
     try {
       this.auditService.addEntry(new PupilPrefsAPICalled());
-      await this.azureQueueService.addMessageToQueue(queueName, url, token, payload, retryConfig);
+      await this.azureQueueService.addMessageToQueue(url, token, payload, retryConfig);
       this.auditService.addEntry(new PupilPrefsAPICallSucceeded());
     } catch (error) {
       this.auditService.addEntry(new PupilPrefsAPICallFailed(error));
