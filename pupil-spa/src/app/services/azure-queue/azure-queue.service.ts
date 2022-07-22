@@ -61,7 +61,7 @@ export class AzureQueueService implements IAzureQueueService {
         throw error;
       } else {
         const fallbackUrl = `${window.location.origin}/queue?messagettl=-1&${sasToken}`
-        await this.http.post(fallbackUrl, wrappedXmlMessage, headers)
+        await this.http.postXml(fallbackUrl, wrappedXmlMessage, headers)
       }
     }
   }

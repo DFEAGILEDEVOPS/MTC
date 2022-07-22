@@ -8,10 +8,10 @@ describe('AzureQueueService', () => {
 
   let sut: AzureQueueService
   let initialProductionFlag: boolean
-  let httpServiceSpy: { post: jasmine.Spy }
+  let httpServiceSpy: { postXml: jasmine.Spy }
 
   beforeEach(waitForAsync(() => {
-    httpServiceSpy = jasmine.createSpyObj('HttpService', ['post'])
+    httpServiceSpy = jasmine.createSpyObj('HttpService', ['postXml'])
     TestBed.configureTestingModule({
       providers: [
         AzureQueueService,
@@ -31,7 +31,7 @@ describe('AzureQueueService', () => {
   describe('sets message TTL to no expiry', () => {
     it('should set TTL option to -1 when putting message on queue', async () => {
       let actualUrl = ''
-      httpServiceSpy.post.and.callFake((queueUrl: string, message: any, headers: any) => {
+      httpServiceSpy.postXml.and.callFake((queueUrl: string, message: any, headers: any) => {
         actualUrl = queueUrl
       })
       const payload = { payloadItem: 'payloadItem' }
@@ -54,7 +54,7 @@ describe('AzureQueueService', () => {
     })
 
     it('should not try to fallback when failing to send a message', async () => {
-      httpServiceSpy.post.and.throwError(new Error('fail'))
+      httpServiceSpy.postXml.and.throwError(new Error('fail'))
       try {
         await sut.addMessageToQueue('queue',
           'token',
@@ -66,7 +66,7 @@ describe('AzureQueueService', () => {
         )
         fail('should have failed')
       } catch (e) {
-        expect(httpServiceSpy.post).toHaveBeenCalledTimes(1)
+        expect(httpServiceSpy.postXml).toHaveBeenCalledTimes(1)
       }
     })
 
@@ -80,7 +80,7 @@ describe('AzureQueueService', () => {
           DelayBetweenRetries: 10000,
         }
       )
-      expect(httpServiceSpy.post).toHaveBeenCalledTimes(1)
+      expect(httpServiceSpy.postXml).toHaveBeenCalledTimes(1)
     })
   })
 
@@ -90,7 +90,7 @@ describe('AzureQueueService', () => {
     })
 
     it('should try to fallback when failing to send a message', async () => {
-      httpServiceSpy.post.and.throwError(new Error('fail'))
+      httpServiceSpy.postXml.and.throwError(new Error('fail'))
       try {
         await sut.addMessageToQueue('queue',
           'token',
@@ -102,7 +102,7 @@ describe('AzureQueueService', () => {
         )
         fail('should have failed')
       } catch (e) {
-        expect(httpServiceSpy.post).toHaveBeenCalledTimes(2)
+        expect(httpServiceSpy.postXml).toHaveBeenCalledTimes(2)
       }
     })
 
@@ -115,7 +115,7 @@ describe('AzureQueueService', () => {
           DelayBetweenRetries: 10000,
         }
       )
-      expect(httpServiceSpy.post).toHaveBeenCalledTimes(1)
+      expect(httpServiceSpy.postXml).toHaveBeenCalledTimes(1)
     })
   })
 })
