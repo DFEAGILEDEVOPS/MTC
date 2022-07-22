@@ -24,6 +24,28 @@ export class HttpService {
    * @returns - whatever the URL returns on success
    * @throws HttpErrorResponse - the app error from the server is in error.error - check `error.status` for the HTTP status code.
    */
+   public async postXml(url: string, body: any, headers: HttpHeaders, retryCount = this.defaultRetryCount): Promise<any> {
+    try {
+      const _that = this;
+      _that.config.retryTimes = retryCount;
+      return _that.http.request('POST', url, {
+        headers: headers.set('Content-Type', 'text/xml'),
+        body: body,
+        responseType: 'text'
+      }).toPromise()
+    } catch (error) {
+      console.error(`http request error: ${error.message}`, error);
+      throw error;
+    }
+  }
+
+  /**
+   * Simple HTTP service that retries by default
+   * @param {string} url
+   * @param {object} body
+   * @returns - whatever the URL returns on success
+   * @throws HttpErrorResponse - the app error from the server is in error.error - check `error.status` for the HTTP status code.
+   */
   public async postJson(url: string, body: any): Promise<any> {
     try {
       return this.doPost(url, body, this.config.retryTimes, new HttpHeaders( { 'Content-Type': 'application/json' }));

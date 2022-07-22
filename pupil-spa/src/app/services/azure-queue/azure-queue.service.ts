@@ -43,14 +43,19 @@ export class AzureQueueService implements IAzureQueueService {
     const wrappedXmlMessage = `<?xml version="1.0" encoding="utf-8"?><QueueMessage><MessageText>${encodedMessage}</MessageText></QueueMessage>`
     // TODO allow linear retries via config
     // TODO pin version of API to use via config setting???
-    const headers = new HttpHeaders ({
+/*     const headers1 = new HttpHeaders ({
       'Accept': 'application/xml',
       'Content-Type': 'application/xml',
       'x-ms-date': (new Date()).toISOString()
-    })
+    }) */
+
+    const headers = new HttpHeaders()
+        .set('Content-Type', 'text/xml')
+        .append('Accept', 'application/xml, text/xml')
+        .append('x-ms-date', (new Date()).toISOString())
 
     try {
-      await this.http.post(queueEndpointUrl, wrappedXmlMessage, headers, retryConfig.MaxAttempts)
+      await this.http.postXml(queueEndpointUrl, wrappedXmlMessage, headers, retryConfig.MaxAttempts)
     } catch (error) {
       if (!APP_CONFIG.production) {
         throw error;
