@@ -76,7 +76,7 @@ describe('fake-submitted-check-message-builder-service', () => {
     try {
       await sut.createSubmittedCheckMessage(checkCode)
       fail('error should have been thrown due to prepared check not being found in redis')
-    } catch (error) {
+    } catch (error: any) {
       expect(error.message).toStrictEqual(`prepared check not found in redis with checkCode:${checkCode}`)
     }
   })

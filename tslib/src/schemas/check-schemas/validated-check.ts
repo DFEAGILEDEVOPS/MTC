@@ -166,7 +166,7 @@ export function getValidatedCheck (): ValidCheck {
       factor1: index,
       factor2: index,
       question: `${index}x${index}`,
-      sequenceNumber: index
+      sequenceNumber: index + 1
     })
   }
   const check: ValidCheck = {

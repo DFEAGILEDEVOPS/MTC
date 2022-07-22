@@ -7,6 +7,7 @@ const pupilAgeReasonService = require('../services/pupil-age-reason.service')
 const pupilDataService = require('../services/data-access/pupil.data.service')
 const redisCacheService = require('../services/data-access/redis-cache.service')
 const redisKeyService = require('../services/redis-key.service')
+const { PupilFrozenService } = require('./pupil-frozen.service/pupil-frozen.service')
 
 const pupilEditService = {}
 
@@ -18,9 +19,9 @@ const pupilEditService = {}
  * @returns {Promise<any>}
  */
 pupilEditService.update = async function (pupil, requestBody, schoolId) {
+  await PupilFrozenService.throwIfFrozenByIds([pupil.id])
   const trimAndUppercase = R.compose(R.toUpper, R.trim)
   await pupilAgeReasonService.refreshPupilAgeReason(pupil.id, requestBody.ageReason, pupil.ageReason)
-  // TODO: old core! Needs refactor this to a service and data service
   const update = {
     id: pupil.id,
     foreName: requestBody.foreName,

@@ -46,7 +46,9 @@ describe('service manager pupil service', () => {
         schoolName: 'school name',
         urn: 123456,
         dfeNumber: 4994494,
-        upn: 'N999199900001'
+        upn: 'N999199900001',
+        schoolId: 123,
+        attendanceCode: 'ABC'
       }
       jest.spyOn(ServiceManagerPupilDataService, 'findPupilByUpn').mockResolvedValue([expected])
       const actual = await ServiceManagerPupilService.findPupilByUpn(validUpn)
@@ -58,6 +60,7 @@ describe('service manager pupil service', () => {
       expect(actual[0].urlSlug).toStrictEqual(expected.urlSlug)
       expect(actual[0].id).toStrictEqual(expected.id)
       expect(actual[0].upn).toStrictEqual(expected.upn)
+      expect(actual[0].schoolId).toStrictEqual(expected.schoolId)
     })
   })
 
@@ -116,7 +119,9 @@ describe('service manager pupil service', () => {
         schoolName: 'school name',
         urn: 123456,
         dfeNumber: 4994494,
-        upn: 'N999199900001'
+        upn: 'N999199900001',
+        schoolId: 456,
+        attendanceCode: 'EDFG'
       }
       jest.spyOn(ServiceManagerPupilDataService, 'getPupilByUrlSlug').mockResolvedValue([expected])
       const actual = await ServiceManagerPupilService.getPupilDetailsByUrlSlug('455cc6b4-a688-469a-ab72-9c7e137a1ea8')
@@ -128,6 +133,7 @@ describe('service manager pupil service', () => {
       expect(actual.urlSlug).toStrictEqual(expected.urlSlug)
       expect(actual.id).toStrictEqual(expected.id)
       expect(actual.upn).toStrictEqual(expected.upn)
+      expect(actual.schoolId).toStrictEqual(expected.schoolId)
     })
 
     test('should return valid status when pupil found', async () => {
@@ -140,7 +146,9 @@ describe('service manager pupil service', () => {
         schoolName: 'school name',
         urn: 123456,
         dfeNumber: 4994494,
-        upn: 'N999199900001'
+        upn: 'N999199900001',
+        schoolId: 45656,
+        attendanceCode: 'BEUF'
       }
       jest.spyOn(ServiceManagerPupilDataService, 'getPupilByUrlSlug').mockResolvedValue([expected])
       const pupilDetails = await ServiceManagerPupilService.getPupilDetailsByUrlSlug(mockPupilDetailsData.urlSlug)

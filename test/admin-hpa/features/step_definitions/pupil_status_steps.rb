@@ -72,7 +72,6 @@ Given(/^I have logged in to the check$/) do
   expect(resp.code).to eql 200
 end
 
-
 Then(/^the counts should equal the total number of pupils in the school$/) do
  page_total = (pupil_status_page.checks_with_errors.count.text.to_i +
   pupil_status_page.not_started_checks.count.text.to_i +
@@ -80,4 +79,41 @@ Then(/^the counts should equal the total number of pupils in the school$/) do
   pupil_status_page.completed_checks.count.text.to_i)
   db_total = SqlDbHelper.list_of_pupils_from_school(SqlDbHelper.find_teacher(@user)['school_id']).count
   expect(page_total).to eql db_total
+end
+
+And(/^all other pupils are not taking the check$/) do
+  pupils_not_taking_check_page.load
+  step 'I want to add a reason'
+  pupil_reason_page.attendance_codes.first.click
+  pupil_reason_page.select_all_pupils.click
+  pupil_reason_page.sticky_banner.confirm.click
+end
+
+And(/^the HDF cannot be signed$/) do
+  hdf_form_page.load
+  expect(hdf_form_page).to_not have_first_name
+  expect(hdf_form_page).to_not have_last_name
+  expect(hdf_form_page).to_not have_is_headteacher_yes
+  expect(hdf_form_page).to_not have_is_headteacher_no
+  expect(hdf_form_page).to_not have_continue
+end
+
+When(/^the check period closes and the admin period is still active$/) do
+  SqlDbHelper.update_check_end_date((Date.today)-2)
+end
+
+Then(/^the pupil with the processing error can have a reason for not taking the check applied$/) do
+  pupils_not_taking_check_page.load
+  step 'I want to add a reason'
+  wait_until(60, 1) {sleep 1; visit current_url; pupil_reason_page.has_attendance_codes?}
+  pupil_reason_page.attendance_codes.first.click
+  expect(pupil_reason_page.pupil_list.rows.first.name.text).to eql "#{@details_hash[:last_name]}, #{@details_hash[:first_name]}"
+  pupil_reason_page.select_pupil(@details_hash[:last_name])
+  pupil_reason_page.sticky_banner.confirm.click
+end
+
+And(/^then the HDF can be signed$/) do
+  step 'I am on the confirm and submit page'
+  step 'I submit the form with confirmation'
+  step 'I can see the declaration submitted page as per the design'
 end
