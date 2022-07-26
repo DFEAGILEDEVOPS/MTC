@@ -164,21 +164,6 @@ describe('authentication controller', () => {
     })
   })
 
-  describe('getSignOut', () => {
-    test('logs the user out and regenerates a session', () => {
-      const authenticated = true
-      const req = createRequest(authenticated)
-      const res = createResponse()
-      jest.spyOn(req, 'logout').mockImplementation()
-      jest.spyOn(req.session, 'regenerate').mockImplementation()
-      jest.spyOn(res, 'redirect').mockImplementation()
-      sut.getSignOut(req, res)
-      expect(req.logout).toHaveBeenCalled()
-      expect(req.session.regenerate).toHaveBeenCalled()
-      expect(res.statusCode).toBe(200)
-    })
-  })
-
   describe('getSignInFailure', () => {
     test('should render failure view', () => {
       const req = createRequest()
