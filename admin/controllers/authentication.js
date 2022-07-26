@@ -86,14 +86,14 @@ const getSignOut = (req, res, next) => {
     })
   })
 
-  req.session.regenerate(function () {
+/*   req.session.regenerate(function () {
     switch (config.Auth.mode) {
       case authModes.dfeSignIn:
         return res.redirect(dfeSignOutUrl)
       default: //  local
         return res.redirect('/')
     }
-  })
+  }) */
 }
 
 const getSignInFailure = (req, res) => {
