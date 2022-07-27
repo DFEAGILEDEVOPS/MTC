@@ -37,3 +37,14 @@ Then(/^I should be taken to the cookies prefs page$/) do
  expect(cookies_form_page).to have_mtc_cookies_link
  expect(cookies_form_page).to have_save
 end
+
+And(/^the session ID cookie is set$/) do
+  @session_cookie_before_logout = Capybara.current_session.driver.browser.manage.all_cookies.find{|cookie| cookie[:name] == "mtc-admin-session-id" }
+  expect(@session_cookie_before_logout).to_not be_nil
+end
+
+Then(/^the value of the session ID should change$/) do
+  session_cookie_after_logout = Capybara.current_session.driver.browser.manage.all_cookies.find{|cookie| cookie[:name] == "mtc-admin-session-id" }
+  expect(session_cookie_after_logout).to_not be_nil
+  expect(@session_cookie_before_logout[:value]).to_not eql session_cookie_after_logout[:value]
+end
