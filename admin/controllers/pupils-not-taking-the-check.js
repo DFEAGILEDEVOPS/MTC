@@ -183,13 +183,18 @@ const viewPupilsNotTakingTheCheck = async function viewPupilsNotTakingTheCheck (
     checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
     pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData, req.user.timezone)
     hdfSubmitted = await headteacherDeclarationService.isHdfSubmittedForCurrentCheck(req.user.schoolId, checkWindowData && checkWindowData.id)
+    // @ts-ignore - defined in server.js
+    const isReadOnly = global.checkWindowPhase === checkWindowPhaseConsts.readOnlyAdmin
+    const showSelectPupilButton = isReadOnly ? false : !hdfSubmitted
     return res.render('pupils-not-taking-the-check/select-pupils', {
       breadcrumbs: req.breadcrumbs(),
       pupilsList,
       messages: res.locals.messages,
       highlight,
       pinGenerationEligibilityData,
-      hdfSubmitted
+      hdfSubmitted,
+      showSelectPupilButton,
+      isReadOnly,
     })
   } catch (error) {
     return next(error)
