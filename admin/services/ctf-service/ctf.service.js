@@ -14,6 +14,7 @@ const pupilAttendanceCodes = require('../../lib/consts/pupil-attendance-codes')
 const resultsPageAvailabilityService = require('../results-page-availability.service')
 const resultsService = require('../result.service')
 const ctfVersion = '20.0'
+const checkWindowPhaseConsts = require('../../lib/consts/check-window-phase')
 
 const ctfService = {
   /**
@@ -28,8 +29,10 @@ const ctfService = {
     // that case, they still do NOT get to download the results until the HDF is signed.
     // Feature ticket: 36582
     const isHdfSigned = await ctfDataService.isHdfSigned(schoolId, checkWindow.id)
+    // @ts-ignore - defined in server.js
+    const checkWindowPhaseIsReadOnly = global.checkWindowPhase == checkWindowPhaseConsts.readOnlyAdmin
 
-    if (!isHdfSigned) {
+    if (!checkWindowPhaseIsReadOnly && !isHdfSigned ) {
       throw new NotAvailableError('Unable to download CTF file as the HDF has not been signed')
     }
 
