@@ -93,7 +93,7 @@ const ctfService = {
 
   /**
    * Create the CTF Format XML data as a String
-   * @param {{id: number, leaCode: number, estabCode: string, urn: number, name: string}} schoolData
+   * @param {{id: number, leaCode: number, estabCode: string, urn: number, name: string}} school
    * @param {{upn:string, lastName:string, foreName:string, originalDateOfBirth: moment.Moment, dateOfBirth:moment.Moment, gender:string, ctfResult:string|number}[]} pupilData
    * @param {number} academicYear: e.g. 2019
    * @param {number} stageAssessmentYear: e.g. 2020
@@ -109,16 +109,16 @@ const ctfService = {
       .ele('DocumentQualifier').txt('partial').up()
       .ele('SupplierID').txt('Multiplication Tables Check').up()
       .ele('SourceSchool')
-      .ele('LEA').txt(school.leaCode).up()
+      .ele('LEA').txt(school.leaCode.toString()).up()
       .ele('Estab').txt(school.estabCode).up()
-      .ele('URN').txt(school.urn).up()
+      .ele('URN').txt(school.urn.toString()).up()
       .ele('SchoolName').txt(school.name).up()
       .ele('AcademicYear').txt(academicYear.toString()).up()
       .up() // SourceSchool
       .ele('DestSchool')
-      .ele('LEA').txt(school.leaCode).up()
+      .ele('LEA').txt(school.leaCode.toString()).up()
       .ele('Estab').txt(school.estabCode).up()
-      .ele('URN').txt(school.urn).up()
+      .ele('URN').txt(school.urn.toString()).up()
       .up() // DestSchool
       .up() // Header
       .ele('CTFpupilData')
