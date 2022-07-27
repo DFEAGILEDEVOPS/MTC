@@ -36,7 +36,7 @@ const getPupilNotTakingCheck = async function getPupilNotTakingCheck (req, res, 
 
   // @ts-ignore - defined in server.js
   const isReadOnly = global.checkWindowPhase === checkWindowPhaseConsts.readOnlyAdmin
-  const showSelectPupilButton = isReadOnly ? false : (hdfSubmitted ? false : true)
+  const showSelectPupilButton = isReadOnly ? false : !hdfSubmitted
 
   return res.render('pupils-not-taking-the-check/select-pupils', {
     breadcrumbs: req.breadcrumbs(),

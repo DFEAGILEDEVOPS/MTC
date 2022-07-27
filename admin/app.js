@@ -284,7 +284,6 @@ app.use(function (req, res, next) {
   next()
 })
 
-
 // CSRF setup - needs to be set up after session()
 // also exclude if url in the csrfExcludedPaths
 const csrf = csurf()

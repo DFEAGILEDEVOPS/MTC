@@ -30,9 +30,9 @@ const ctfService = {
     // Feature ticket: 36582
     const isHdfSigned = await ctfDataService.isHdfSigned(schoolId, checkWindow.id)
     // @ts-ignore - defined in server.js
-    const checkWindowPhaseIsReadOnly = global.checkWindowPhase == checkWindowPhaseConsts.readOnlyAdmin
+    const checkWindowPhaseIsReadOnly = global.checkWindowPhase === checkWindowPhaseConsts.readOnlyAdmin
 
-    if (!checkWindowPhaseIsReadOnly && !isHdfSigned ) {
+    if (!checkWindowPhaseIsReadOnly && !isHdfSigned) {
       throw new NotAvailableError('Unable to download CTF file as the HDF has not been signed')
     }
 

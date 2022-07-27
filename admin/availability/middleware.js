@@ -13,7 +13,7 @@ async function isAdminWindowAvailable (req, res, next) {
   }
   try {
     const currentDate = moment.utc()
-    let checkWindow = await checkWindowV2Service.getActiveCheckWindow()
+    const checkWindow = await checkWindowV2Service.getActiveCheckWindow()
     if (checkWindow && currentDate.isBetween(checkWindow.adminStartDate, checkWindow.adminEndDate)) {
       return next()
     }
@@ -40,20 +40,20 @@ async function isAdminWindowAvailable (req, res, next) {
   }
 }
 
-  /**
+/**
    * The UK academic year starts in September and continues through to August of the following year.
    * TODO: move to lib
    * @param {moment.Moment} date
    * @return {number}
    */
-   function getAcademicYear (date) {
-    const i = date.month()
-    const y = date.year()
-    const september = 8
-    if (i >= september) {
-      return y
-    }
-    return y - 1
+function getAcademicYear (date) {
+  const i = date.month()
+  const y = date.year()
+  const september = 8
+  if (i >= september) {
+    return y
   }
+  return y - 1
+}
 
 module.exports = isAdminWindowAvailable
