@@ -49,7 +49,7 @@ async function isAdminWindowAvailable (req, res, next) {
 function getAcademicYear (date) {
   const i = date.month()
   const y = date.year()
-  const september = 8
+  const september = 8 // zero-based
   if (i >= september) {
     return y
   }
