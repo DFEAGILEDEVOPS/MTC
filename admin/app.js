@@ -41,7 +41,7 @@ const { v4: uuidv4 } = require('uuid')
 const authModes = require('./lib/consts/auth-modes')
 const dfeSignInStrategy = require('./authentication/dfe-signin-strategy')
 const redisCacheService = require('./services/data-access/redis-cache.service')
-const checkWindowPhaseConsts = require('./lib/consts/check-window-phase')
+const { CheckWindowPhaseService } = require('./services/check-window-phase/check-window-phase.service')
 
 const logger = require('./services/log.service').getLogger()
 const sqlService = require('./services/data-access/sql.service')
@@ -276,11 +276,11 @@ app.use(function (req, res, next) {
   next()
 })
 
-app.use(function (req, res, next) {
+app.use(async function (req, res, next) {
   // set up the current check window phase
   // do this for every request
   // @ts-ignore - var declared in server.js
-  global.checkWindowPhase = checkWindowPhaseConsts.readOnlyAdmin // TODO: query data and check window period to perform this check dynamically
+  global.checkWindowPhase = await CheckWindowPhaseService.getPhase()
   next()
 })
 
