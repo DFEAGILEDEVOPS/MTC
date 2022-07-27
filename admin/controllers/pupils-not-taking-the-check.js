@@ -8,6 +8,7 @@ const pupilService = require('../services/pupil.service')
 const schoolHomeFeatureEligibilityPresenter = require('../helpers/school-home-feature-eligibility-presenter')
 const headteacherDeclarationService = require('../services/headteacher-declaration.service')
 const businessAvailabilityService = require('../services/business-availability.service')
+const checkWindowPhaseConsts = require('../lib/consts/check-window-phase')
 
 /**
  * Pupils not taking the check: initial page.
@@ -32,13 +33,20 @@ const getPupilNotTakingCheck = async function getPupilNotTakingCheck (req, res, 
   } catch (error) {
     return next(error)
   }
+
+  // @ts-ignore - defined in server.js
+  const isReadOnly = global.checkWindowPhase === checkWindowPhaseConsts.readOnlyAdmin
+  const showSelectPupilButton = isReadOnly ? false : (hdfSubmitted ? false : true)
+
   return res.render('pupils-not-taking-the-check/select-pupils', {
     breadcrumbs: req.breadcrumbs(),
     pupilsList: pupils,
     highlight: [],
     messages: req.flash('info'),
     pinGenerationEligibilityData,
-    hdfSubmitted
+    hdfSubmitted,
+    showSelectPupilButton,
+    isReadOnly
   })
 }
 

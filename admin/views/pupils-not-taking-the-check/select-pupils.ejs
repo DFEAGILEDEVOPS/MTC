@@ -13,14 +13,15 @@
             <p class="govuk-body">
               The multiplication tables check is statutory for all year 4 pupils. If your school’s headteacher decides a pupil should not take the check, the reason must be recorded, this includes pupils who have left the school.
             </p>
-            <% if (hdfSubmitted) { %>
-                <button type="submit" disabled="disabled" aria-disabled="true" class="govuk-button govuk-button--disabled" data-module="govuk-button">
-                    Select pupils and reason
-                </button>
-            <% } else { %>
+            <% if (showSelectPupilButton) { %>
                 <a href="/pupils-not-taking-the-check/select-pupils" role="button" draggable="false" class="govuk-button" data-module="govuk-button">
                     Select pupils and reason
                 </a>
+
+            <% } else { %>
+                <button type="submit" disabled="disabled" aria-disabled="true" class="govuk-button govuk-button--disabled" data-module="govuk-button">
+                    Select pupils and reason
+                </button>
             <% } %>
             <% if (pupilsList && pupilsList.length > 0) { %>
                 <table id="pupilsList" role="listbox" aria-label="Select pupils." class="govuk-table govuk-spacious govuk-!-margin-bottom-9">
@@ -48,7 +49,7 @@
                             </td>
                             <td><%= pupil.reason || '-' %></td>
                             <td class="">
-                                <% if (!hdfSubmitted  && pupil.attendanceCodeIsPrivileged === false) { %>
+                                <% if ((!isReadOnly || !hdfSubmitted) && pupil.attendanceCodeIsPrivileged === false) { %>
                                     <a href="/pupils-not-taking-the-check/remove/<%= pupil.urlSlug %>" class="govuk-link modal-link font-small">Remove reason</a>
                                 <% } %>
                             </td>
