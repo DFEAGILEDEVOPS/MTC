@@ -194,7 +194,7 @@ const viewPupilsNotTakingTheCheck = async function viewPupilsNotTakingTheCheck (
       pinGenerationEligibilityData,
       hdfSubmitted,
       showSelectPupilButton,
-      isReadOnly,
+      isReadOnly
     })
   } catch (error) {
     return next(error)
