@@ -41,6 +41,7 @@ const { v4: uuidv4 } = require('uuid')
 const authModes = require('./lib/consts/auth-modes')
 const dfeSignInStrategy = require('./authentication/dfe-signin-strategy')
 const redisCacheService = require('./services/data-access/redis-cache.service')
+const checkWindowPhaseConsts = require('./lib/consts/check-window-phase')
 
 const logger = require('./services/log.service').getLogger()
 const sqlService = require('./services/data-access/sql.service')
@@ -274,6 +275,17 @@ app.use(function (req, res, next) {
   }
   next()
 })
+
+app.use(function (req, res, next) {
+  // set up the current check window phase
+  // do this for every request
+  // @ts-ignore - var declared in server.js
+  global.checkWindowPhase = checkWindowPhaseConsts.readOnlyAdmin // TODO: query data and check window period to perform this check dynamically
+  // Make it available in views
+  res.locals.checkWindowPhase = global.checkWindowPhase
+  next()
+})
+
 
 // CSRF setup - needs to be set up after session()
 // also exclude if url in the csrfExcludedPaths

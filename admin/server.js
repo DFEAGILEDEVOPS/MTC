@@ -8,6 +8,12 @@ const app = require('./app')
 const http = require('http')
 const config = require('./config')
 const logger = require('./services/log.service').getLogger()
+
+/**
+ * Global variable declarations
+ */
+var checkWindowPhase = require('./lib/consts/check-window-phase').unavailable // default - get's overridden in middleware on each request
+
 /**
  * Get port from environment and store in Express.
  */
