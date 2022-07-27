@@ -281,8 +281,6 @@ app.use(function (req, res, next) {
   // do this for every request
   // @ts-ignore - var declared in server.js
   global.checkWindowPhase = checkWindowPhaseConsts.readOnlyAdmin // TODO: query data and check window period to perform this check dynamically
-  // Make it available in views
-  res.locals.checkWindowPhase = global.checkWindowPhase
   next()
 })
 
