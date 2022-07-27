@@ -62,7 +62,7 @@ const postSignIn = (req, res) => {
   return home(req, res)
 }
 
-const getSignOut = (req, res) => {
+const getSignOut = (req, res, next) => {
   let dfeSignOutUrl
   if (config.Auth.mode === authModes.dfeSignIn) {
     const dfeUrl = new url.URL(config.Auth.dfeSignIn.signOutUrl)
@@ -70,15 +70,20 @@ const getSignOut = (req, res) => {
     dfeUrl.searchParams.append('post_logout_redirect_uri', `${config.Runtime.externalHost}/sign-out-dso`)
     dfeSignOutUrl = dfeUrl.toString()
   }
-  req.logout()
 
-  req.session.regenerate(function () {
-    switch (config.Auth.mode) {
-      case authModes.dfeSignIn:
-        return res.redirect(dfeSignOutUrl)
-      default: //  local
-        return res.redirect('/')
+  // req.logout is now async as of passport 0.6.0 - https://medium.com/passportjs/fixing-session-fixation-b2b68619c51d
+  req.logout(function (err) {
+    if (err) {
+      return next(err)
     }
+    req.session.regenerate(function () {
+      switch (config.Auth.mode) {
+        case authModes.dfeSignIn:
+          return res.redirect(dfeSignOutUrl)
+        default: //  local
+          return res.redirect('/')
+      }
+    })
   })
 }
 
