@@ -57,9 +57,7 @@
 
 | Psychometric field | Source                          | Comment                                       |
 | ------------------ | ------------------------------- | --------------------------------------------- |
-| DeviceType         | **mtc_results.userDevice.TODO** |                                               |
 | BrowserType        | mtc_results.userDevice.browser* | 4 fields to get browser family and version    |
-| DeviceTypeModel    | **mtc_results.userDevice.TODO** |                                               |
 | DeviceID           | mtc_results.userDevice.ident    | Determined by a cookie on the pupil's browser |
 
 
