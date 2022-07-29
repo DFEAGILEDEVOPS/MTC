@@ -29,7 +29,7 @@
     "watch:integration": "yarn jest --watch --coverage=no --config ./tests-integration/jest.integration.config.js"
   },
   "mtc": {
-    "assets-version": "90cd5f4e303b17b48b569c927e0c7b01"
+    "assets-version": "44936cfddc56f525dff225f264f7a828"
   },
   "engines": {
     "node": ">= 14"
@@ -81,7 +81,7 @@
     "nocache": "^3.0.1",
     "node-dir": "^0.1.17",
     "openid-client": "^4.2.2",
-    "passport": "^0.4.0",
+    "passport": "^0.6.0",
     "passport-local": "^1.0.0",
     "qrcode": "^1.5.0",
     "ramda": "^0.27.2",

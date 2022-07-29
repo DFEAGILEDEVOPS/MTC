@@ -10,6 +10,7 @@ const headteacherDeclarationService = require('../services/headteacher-declarati
 const resultPageAvailabilityService = require('../services/results-page-availability.service')
 const resultPresenter = require('../helpers/result-presenter')
 const resultService = require('../services/result.service')
+const checkWindowPhaseConsts = require('../lib/consts/check-window-phase')
 
 const controller = {}
 
@@ -73,6 +74,8 @@ controller.getViewResultsPage = async function getViewResultsPage (req, res, nex
     })
   }
   const generatedAt = resultPresenter.formatGeneratedAtValue(rawResultData.generatedAt)
+  // @ts-ignore - defined in server.js
+  const checkWindowPhaseIsReadOnly = global.checkWindowPhase === checkWindowPhaseConsts.readOnlyAdmin
 
   return res.render('results/view-results', {
     pupilData: pupilResultData,
@@ -80,7 +83,8 @@ controller.getViewResultsPage = async function getViewResultsPage (req, res, nex
     generatedAt,
     maxMark: config.LINES_PER_CHECK_FORM,
     groups,
-    breadcrumbs: req.breadcrumbs()
+    breadcrumbs: req.breadcrumbs(),
+    checkWindowPhaseIsReadOnly
   })
 }
 
