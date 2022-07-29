@@ -6,7 +6,7 @@
             <% if(isBeforeStartDate) { %>
                 <p class="govuk-body">You will be able to use the service from <%= startDateFormatted %></p>
             <% } else { %>
-                <p class="govuk-body">The service is now closed for the 2021 test cycle.</p>
+                <p class="govuk-body">The service is now closed for the <%= academicYear %> test cycle.</p>
             <% } %>
 
             <% if (isAuthenticated) { %>

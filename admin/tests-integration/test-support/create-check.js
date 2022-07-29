@@ -8,7 +8,7 @@ const createCheck = async function createCheck (code, isLiveCheck) {
       declare @pupilId int,
               @schoolId int;
       declare @checkFormId int = (select top 1 id from [mtc_admin].[checkForm] where isDeleted = 0 and isLiveCheckForm = 1);
-      declare @checkWindowId int = (select top 1 id from [mtc_admin].[checkWindow] where isDeleted = 0 and GETUTCDATE() between checkStartDate and checkEndDate);
+      declare @checkWindowId int = (select top 1 id from [mtc_admin].[checkWindow] where isDeleted = 0 order by adminEndDate Desc);
       declare @endOfDay datetimeoffset = (select dateadd(ms, -3, dateadd(day, datediff(day, 0, getutcdate()), 1)));
 
       select
