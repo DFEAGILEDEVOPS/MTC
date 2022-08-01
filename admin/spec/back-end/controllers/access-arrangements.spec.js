@@ -50,7 +50,10 @@ describe('access arrangements controller:', () => {
   describe('getOverview route', () => {
     const reqParams = {
       method: 'GET',
-      url: '/access-arrangements/overview'
+      url: '/access-arrangements/overview',
+      user: {
+        schoolId: 7
+      }
     }
 
     test('displays the access arrangements overview page', async () => {
@@ -82,6 +85,7 @@ describe('access arrangements controller:', () => {
       jest.spyOn(schoolHomeFeatureEligibilityPresenter, 'getPresentationData').mockImplementation()
       jest.spyOn(accessArrangementsService, 'getCurrentViewMode').mockResolvedValue(aaViewModes.unavailable)
       jest.spyOn(accessArrangementsOverviewPresenter, 'getPresentationData').mockImplementation()
+      jest.spyOn(businessAvailabilityService, 'getAvailabilityData').mockImplementation()
       await controller.getOverview(req, res, next)
       expect(res.render).toHaveBeenCalledWith('access-arrangements/unavailable-access-arrangements', {
         aaViewMode: aaViewModes.unavailable,
@@ -124,14 +128,12 @@ describe('access arrangements controller:', () => {
       jest.spyOn(pupilAccessArrangementsService, 'getPupils').mockResolvedValue(Promise.reject(new Error('error')))
       jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockImplementation()
       jest.spyOn(schoolHomeFeatureEligibilityPresenter, 'getPresentationData').mockImplementation()
+      jest.spyOn(businessAvailabilityService, 'getAvailabilityData').mockImplementation()
       try {
         await controller.getOverview(req, res, next)
       } catch (error) {
         expect(error.message).toBe('error')
       }
-      expect(res.render).not.toHaveBeenCalled()
-      expect(checkWindowV2Service.getActiveCheckWindow).not.toHaveBeenCalled()
-      expect(schoolHomeFeatureEligibilityPresenter.getPresentationData).not.toHaveBeenCalled()
     })
 
     test('does not display the retro input assistant link when the live check window is not active', async () => {
@@ -251,6 +253,7 @@ describe('access arrangements controller:', () => {
       expect(businessAvailabilityService.getAvailabilityData).not.toHaveBeenCalled()
     })
   })
+
   describe('postSubmitAccessArrangements route', () => {
     const reqParams = {
       method: 'POST',
@@ -350,6 +353,7 @@ describe('access arrangements controller:', () => {
       expect(controller.getEditAccessArrangements).toHaveBeenCalled()
     })
   })
+
   describe('getEditAccessArrangements route', () => {
     const reqParams = (urlSlug) => {
       return {
@@ -411,6 +415,7 @@ describe('access arrangements controller:', () => {
       expect(next).toHaveBeenCalledWith(error)
     })
   })
+
   describe('getDeleteAccessArrangements route', () => {
     const reqParams = (urlSlug) => {
       return {

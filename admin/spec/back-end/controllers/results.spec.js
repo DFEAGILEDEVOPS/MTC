@@ -80,7 +80,8 @@ describe('results controller:', () => {
         generatedAt: '1 July 2020 4:12am',
         maxMark: config.LINES_PER_CHECK_FORM,
         groups: mockGroups,
-        breadcrumbs: undefined
+        breadcrumbs: undefined,
+        checkWindowPhaseIsReadOnly: false
       })
     })
 
@@ -152,7 +153,8 @@ describe('results controller:', () => {
         generatedAt: '1 July 2020 4:12am',
         maxMark: config.LINES_PER_CHECK_FORM,
         groups: mockGroups,
-        breadcrumbs: undefined
+        breadcrumbs: undefined,
+        checkWindowPhaseIsReadOnly: false
       })
     })
 
