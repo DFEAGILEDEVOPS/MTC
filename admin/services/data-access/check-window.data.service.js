@@ -145,11 +145,16 @@ const checkWindowDataService = {
    */
   sqlFindActiveCheckWindow: async () => {
     const sql = `SELECT TOP 1 *
-    FROM ${sqlService.adminSchema}.${table}
+    FROM mtc_admin.checkWindow
     WHERE isDeleted = 0
     AND GETUTCDATE() > adminStartDate AND GETUTCDATE() < adminEndDate`
     const result = await sqlService.readonlyQuery(sql, [], 'checkWindow.sqlFindActiveCheckWindow')
-    return R.head(result)
+    let cw = R.head(result)
+    if (cw === undefined) {
+      // Or find one that already ended - e.g. R/O mode
+      cw = await checkWindowDataService.sqlFindLatestCheckWindow()
+    }
+    return cw
   },
 
   /**
@@ -158,9 +163,9 @@ const checkWindowDataService = {
    */
   sqlFindLatestCheckWindow: async () => {
     const sql = `SELECT TOP 1 *
-    FROM ${sqlService.adminSchema}.${table}
+    FROM mtc_admin.checkWindow
     WHERE isDeleted = 0
-    ORDER BY createdAt DESC`
+    ORDER BY adminEndDate DESC`
     const result = await sqlService.readonlyQuery(sql)
     return R.head(result)
   }
