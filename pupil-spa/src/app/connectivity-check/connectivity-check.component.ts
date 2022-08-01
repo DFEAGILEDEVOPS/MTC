@@ -13,8 +13,8 @@ import { DeviceService } from '../services/device/device.service'
 })
 export class ConnectivityCheckComponent implements OnInit {
 
-  connectivityCheckViewMinDisplay
-  isUnsupportedBrowser
+  connectivityCheckViewMinDisplay: number
+  isUnsupportedBrowser: boolean
 
   constructor (
     private deviceService: DeviceService,
@@ -31,7 +31,7 @@ export class ConnectivityCheckComponent implements OnInit {
    * @param {Number} ms
    * @returns {Promise.<void>}
    */
-  private sleep (ms) {
+  private sleep (ms: number) {
     return new Promise(resolve => setTimeout(resolve, ms))
   }
 
@@ -57,7 +57,7 @@ export class ConnectivityCheckComponent implements OnInit {
     }
   }
 
-  async displayMinTime (startTime) {
+  async displayMinTime (startTime: number) {
     const endTime = Date.now()
     const duration = endTime - startTime
     const minDisplay = this.connectivityCheckViewMinDisplay

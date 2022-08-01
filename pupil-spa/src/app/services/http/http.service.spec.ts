@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpService } from './http.service';
 import { HttpErrorResponse, HttpHeaders } from '@angular/common/http';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { defer } from 'rxjs/internal/observable/defer';
 
 /** Create async observable that emits-once and completes
@@ -40,7 +40,7 @@ describe('HttpService', () => {
     try {
       const expectedResponse = { checkCode: '1111-2222-3333-4444' };
       httpClientSpy.post.and.returnValue(asyncData(expectedResponse));
-      const res = await httpService.post('http://localhost', { foo: 'bar' });
+      const res = await httpService.postJson('http://localhost', { foo: 'bar' });
       expect(res.checkCode).toBeTruthy();
       expect(httpClientSpy.post).toHaveBeenCalledTimes(1);
     } catch (error) {
@@ -55,7 +55,7 @@ describe('HttpService', () => {
         status: 401,
         statusText: 'Unauthorized'
       })));
-      const res = await httpService.post('http://localhost', { foo: 'bar' });
+      await httpService.postJson('http://localhost', { foo: 'bar' });
       fail('Should have thrown');
     } catch (error) {
       expect(error.status).toBe(401);
@@ -78,7 +78,7 @@ describe('HttpService', () => {
         // 2nd response
         asyncData(expectedResponse)
       );
-    const res = await httpService.post('http://localhost', { foo: 'bar' });
+    const res = await httpService.postJson('http://localhost', { foo: 'bar' });
     expect(res.checkCode).toBeTruthy();
     expect(httpClientSpy.post).toHaveBeenCalledTimes(2);
   });
@@ -96,7 +96,7 @@ describe('HttpService', () => {
         // 2nd response
         asyncData(expectedResponse)
       );
-    const res = await httpService.post('http://localhost', { foo: 'bar' });
+    const res = await httpService.postJson('http://localhost', { foo: 'bar' });
     expect(res.checkCode).toBeTruthy();
     expect(httpClientSpy.post).toHaveBeenCalledTimes(2);
   });
@@ -114,7 +114,7 @@ describe('HttpService', () => {
         // 2nd response
         asyncData(expectedResponse)
       );
-    const res = await httpService.post('http://localhost', { foo: 'bar' });
+    const res = await httpService.postJson('http://localhost', { foo: 'bar' });
     expect(res.checkCode).toBeTruthy();
     expect(httpClientSpy.post).toHaveBeenCalledTimes(2);
   });
@@ -132,7 +132,7 @@ describe('HttpService', () => {
         // 2nd response
         asyncData(expectedResponse)
       );
-    const res = await httpService.post('http://localhost', { foo: 'bar' });
+    const res = await httpService.postJson('http://localhost', { foo: 'bar' });
     expect(res.checkCode).toBeTruthy();
     expect(httpClientSpy.post).toHaveBeenCalledTimes(2);
   });
@@ -150,7 +150,7 @@ describe('HttpService', () => {
         // 2nd response
         asyncData(expectedResponse)
       );
-    const res = await httpService.post('http://localhost', { foo: 'bar' });
+    const res = await httpService.postJson('http://localhost', { foo: 'bar' });
     expect(res.checkCode).toBeTruthy();
     expect(httpClientSpy.post).toHaveBeenCalledTimes(2);
   });
@@ -168,7 +168,7 @@ describe('HttpService', () => {
         // 2nd response
         asyncData(expectedResponse)
       );
-    const res = await httpService.post('http://localhost', { foo: 'bar' });
+    const res = await httpService.postJson('http://localhost', { foo: 'bar' });
     expect(res.checkCode).toBeTruthy();
     expect(httpClientSpy.post).toHaveBeenCalledTimes(2);
   });
@@ -212,7 +212,7 @@ describe('HttpService', () => {
         asyncData(expectedResponse)
       );
     const startTime = Date.now();
-    const res = await httpService.post('http://localhost', { foo: 'bar' });
+    const res = await httpService.postJson('http://localhost', { foo: 'bar' });
     const endTime = Date.now();
     expect(res.checkCode).toBeTruthy();
     expect(httpClientSpy.post).toHaveBeenCalledTimes(6);
@@ -239,7 +239,7 @@ describe('HttpService', () => {
         // 2nd response
         asyncData(expectedResponse)
       );
-    const res = await httpService.post('http://localhost', { foo: 'bar' });
+    const res = await httpService.postJson('http://localhost', { foo: 'bar' });
     expect(res.checkCode).toBeTruthy();
     expect(httpClientSpy.post).toHaveBeenCalledTimes(2);
   });

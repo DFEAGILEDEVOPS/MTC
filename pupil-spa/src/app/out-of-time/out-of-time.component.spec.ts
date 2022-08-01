@@ -17,7 +17,6 @@ describe('OutOfTimeComponent', () => {
   let mockQuestionService
   let mockWarmupQuestionService
   let mockUserService
-  let storageService
 
   beforeEach(waitForAsync(() => {
     const injector = TestBed.configureTestingModule({
@@ -35,7 +34,7 @@ describe('OutOfTimeComponent', () => {
     mockQuestionService = injector.inject(QuestionService)
     mockWarmupQuestionService = injector.inject(WarmupQuestionService)
     mockUserService = injector.inject(UserService)
-    storageService = injector.inject(StorageService)
+    injector.inject(StorageService)
 
     spyOn(mockQuestionService, 'reset')
     spyOn(mockWarmupQuestionService, 'reset')

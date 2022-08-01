@@ -10,7 +10,7 @@ describe('AppConfigService', () => {
   let http: HttpClient
 
   beforeEach(() => {
-    const injector = TestBed.configureTestingModule({
+    TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
       providers: [
         AppConfigService

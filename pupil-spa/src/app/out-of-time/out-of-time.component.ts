@@ -2,7 +2,6 @@ import { Component, AfterViewInit, ElementRef, OnDestroy } from '@angular/core';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
 import { SpeechService } from '../services/speech/speech.service';
 import { QuestionService } from '../services/question/question.service';
-import { StorageService } from '../services/storage/storage.service';
 import { UserService } from '../services/user/user.service';
 import { WarmupQuestionService } from '../services/question/warmup-question.service';
 
@@ -18,7 +17,6 @@ export class OutOfTimeComponent implements AfterViewInit, OnDestroy {
   public familiarisationCheck: boolean;
 
   constructor(protected windowRefService: WindowRefService,
-              private storageService: StorageService,
               private userService: UserService,
               private questionService: QuestionService,
               private warmupQuestionService: WarmupQuestionService,
@@ -39,7 +37,7 @@ export class OutOfTimeComponent implements AfterViewInit, OnDestroy {
       });
 
       this.speechListenerEvent = this.elRef.nativeElement.addEventListener('focus',
-        (event) => { this.speechService.focusEventListenerHook(event); },
+        (event: Event) => { this.speechService.focusEventListenerHook(event); },
         true
       );
     }
