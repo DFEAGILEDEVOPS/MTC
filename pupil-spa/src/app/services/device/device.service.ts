@@ -13,7 +13,7 @@ export class DeviceService {
   constructor(private storageService: StorageService,
               private windowRefService: WindowRefService,
               private cookieService: CookieService) {
-    this.window = windowRefService.nativeWindow;
+    this.window = this.windowRefService.nativeWindow;
   }
 
   /**

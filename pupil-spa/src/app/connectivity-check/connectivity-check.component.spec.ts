@@ -11,15 +11,12 @@ import { ConnectivityService } from '../services/connectivity-service/connectivi
 import { DeviceService } from '../services/device/device.service'
 import { StorageService } from '../services/storage/storage.service'
 import { WindowRefService } from '../services/window-ref/window-ref.service'
-import { QUEUE_STORAGE_TOKEN } from '../services/azure-queue/azureStorage'
 import { Router } from '@angular/router'
 import { loadConfigMockService } from '../services/config/config.service'
 
 describe('ConnectivityCheckComponent', () => {
   let component: ConnectivityCheckComponent
   let fixture: ComponentFixture<ConnectivityCheckComponent>
-  let httpClient: HttpClient
-  let httpTestingController: HttpTestingController
   let mockRouter
   let hasUnfinishedCheckSpy
   let checkStatusService
@@ -41,7 +38,6 @@ describe('ConnectivityCheckComponent', () => {
         DeviceService,
         StorageService,
         WindowRefService,
-        { provide: QUEUE_STORAGE_TOKEN, useValue: undefined },
         { provide: Router, useValue: mockRouter },
         { provide: APP_INITIALIZER, useFactory: loadConfigMockService, multi: true },
       ]
@@ -52,8 +48,8 @@ describe('ConnectivityCheckComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(ConnectivityCheckComponent)
     component = fixture.componentInstance
-    httpClient = TestBed.inject(HttpClient)
-    httpTestingController = TestBed.inject(HttpTestingController)
+    TestBed.inject(HttpClient)
+    TestBed.inject(HttpTestingController)
     checkStatusService = TestBed.inject(CheckStatusService)
     connectivityService = TestBed.inject(ConnectivityService)
     hasUnfinishedCheckSpy = spyOn(checkStatusService, 'hasUnfinishedCheck')

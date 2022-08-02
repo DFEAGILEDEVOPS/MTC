@@ -10,7 +10,7 @@
         There is no expected standard threshold for the multiplication tables check.
 
       </p>
-      <% if (isHdfSubmitted) { %>
+      <% if (isHdfSubmitted || checkWindowPhaseIsReadOnly) { %>
         <p>
           <span class="mtc-icon-download"></span>
           <a href="/results/ctf-download">Download results data CTF file</a>

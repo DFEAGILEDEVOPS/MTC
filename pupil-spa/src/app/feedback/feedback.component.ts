@@ -15,8 +15,8 @@ export class FeedbackComponent implements OnInit, AfterViewInit, OnDestroy {
 
   public inputTypes: object;
   public satisfactionRatings: object;
-  public selectedInputType;
-  public selectedSatisfactionRating;
+  public selectedInputType: any;
+  public selectedSatisfactionRating: any;
   public errorExists: boolean;
   public errorInputType: boolean;
   public errorSatisfactionRating: boolean;
@@ -74,7 +74,7 @@ export class FeedbackComponent implements OnInit, AfterViewInit, OnDestroy {
       this.speechService.speakElement(this.elRef.nativeElement);
 
       this.speechListenerEvent = this.elRef.nativeElement.addEventListener('focus',
-        (event) => { this.speechService.focusEventListenerHook(event); },
+        (event: any) => { this.speechService.focusEventListenerHook(event); },
         true
       );
     }
@@ -94,7 +94,7 @@ export class FeedbackComponent implements OnInit, AfterViewInit, OnDestroy {
     return this.feedbackExists
   }
 
-  onSelectionChange(fieldType, fieldValue) {
+  onSelectionChange(fieldType: string, fieldValue: any) {
     switch (fieldType) {
       case 'inputType':
         this.selectedInputType = fieldValue;
@@ -109,7 +109,7 @@ export class FeedbackComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-   onSubmit(comments) {
+   onSubmit(comments: string) {
     if (this.submitted === true) {
       return;
     }
@@ -123,7 +123,7 @@ export class FeedbackComponent implements OnInit, AfterViewInit, OnDestroy {
         'satisfactionRating': this.selectedSatisfactionRating,
         'comments': comments,
         'createdAt': new Date(),
-        'checkCode': this.pupilData['checkCode']
+        'checkCode': this.pupilData['checkCode' as keyof Object]
       };
       this.storageService.setFeedback(this.feedbackData);
       this.enableSubmit = false;

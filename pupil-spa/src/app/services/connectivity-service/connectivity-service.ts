@@ -4,7 +4,7 @@ import { first } from 'rxjs/operators';
 import { BehaviorSubject } from 'rxjs';
 
 import { APP_CONFIG } from '../config/config.service';
-import { AzureQueueService } from '../azure-queue/azure-queue.service';
+import { AzureQueueService, QueueMessageRetryConfig } from '../azure-queue/azure-queue.service';
 
 import { default as connectivityErrorMessages } from './connectivity-error-messages';
 
@@ -19,7 +19,7 @@ export class ConnectivityService {
 
   private connectivityMessageSource = new BehaviorSubject('');
   public currentConnectivityMessageSource = this.connectivityMessageSource.asObservable();
-  public errorMessages = [];
+  public errorMessages = new Array<string>();
 
   constructor(
     private azureQueueService: AzureQueueService,
@@ -68,13 +68,12 @@ export class ConnectivityService {
   }
 
   async canAccessAzureStorageQueue() {
-    const retryConfig = {
-      errorDelay: this.testPupilConnectionDelay,
-      errorMaxAttempts: this.testPupilConnectionMaxAttempts
+    const retryConfig: QueueMessageRetryConfig = {
+      DelayBetweenRetries: this.testPupilConnectionDelay,
+      MaxAttempts: this.testPupilConnectionMaxAttempts
     };
     try {
-      await this.azureQueueService.addMessage(
-        this.testPupilConnectionQueueName,
+      await this.azureQueueService.addMessageToQueue(
         this.testPupilConnectionQueueUrl,
         this.testPupilConnectionQueueToken,
         {},

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { APP_CONFIG } from '../services/config/config.service';
 
 @Component({
@@ -11,7 +11,7 @@ import { APP_CONFIG } from '../services/config/config.service';
 export class WebsiteOfflineComponent implements OnInit {
   public title: string;
 
-  constructor(private route: ActivatedRoute, private router: Router) { }
+  constructor(private router: Router) { }
 
   ngOnInit() {
     if (!APP_CONFIG.websiteOffline) {

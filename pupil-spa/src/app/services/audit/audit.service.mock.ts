@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AuditEntry, AuditEntryType } from './auditEntry';
+import { AuditEntry } from './auditEntry';
 
 @Injectable()
 export class AuditServiceMock {

@@ -44,7 +44,7 @@ export class CheckCompleteComponent implements OnInit, AfterViewInit, OnDestroy 
       });
 
       this.speechListenerEvent = this.elRef.nativeElement.addEventListener('focus',
-        (event) => { this.speechService.focusEventListenerHook(event); },
+        (event: any) => { this.speechService.focusEventListenerHook(event); },
         true
       );
     }
@@ -59,7 +59,7 @@ export class CheckCompleteComponent implements OnInit, AfterViewInit, OnDestroy 
     }
   }
 
-  onStartAgainClick(event): void {
+  onStartAgainClick(event: any): void {
     event.preventDefault();
     this.storageService.removeCheckState();
     this.storageService.removeTimeout();

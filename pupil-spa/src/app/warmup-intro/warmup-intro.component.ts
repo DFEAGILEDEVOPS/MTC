@@ -1,4 +1,4 @@
-import { Component, OnInit, EventEmitter, ElementRef, Output, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, EventEmitter, ElementRef, Output, AfterViewInit, OnDestroy } from '@angular/core';
 import { AuditService } from '../services/audit/audit.service';
 import { WarmupIntroRendered } from '../services/audit/auditEntry';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
@@ -44,7 +44,7 @@ export class WarmupIntroComponent implements AfterViewInit, OnDestroy {
       });
 
       this.speechListenerEvent = this.elRef.nativeElement.addEventListener('focus',
-        (event) => { this.speechService.focusEventListenerHook(event); },
+        (event: Event) => { this.speechService.focusEventListenerHook(event); },
         true
       );
     }

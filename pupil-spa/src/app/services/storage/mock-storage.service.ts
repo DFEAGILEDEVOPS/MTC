@@ -1,4 +1,4 @@
-import { AccessArrangementsStorageKey, CheckStateStorageKey, InputsStorageKey } from './storageKey'
+import { AccessArrangementsStorageKey, CheckStateStorageKey } from './storageKey'
 import { AccessArrangements } from '../../access-arrangements'
 import { Answer } from '../answer/answer.model'
 import { AuditEntry } from '../audit/auditEntry'

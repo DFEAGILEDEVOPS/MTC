@@ -16,11 +16,11 @@ export class LoginErrorDiagnosticsService {
     private loginErrorService: LoginErrorService,
     private windowRefService: WindowRefService
   ) {
-    this.window = windowRefService.nativeWindow;
+    this.window = this.windowRefService.nativeWindow;
     this.isBrowserStatusOnline = this.window.navigator.onLine;
   }
 
-  async process(err) {
+  async process(err: any) {
     if (err.status !== 0) {
       return;
     }
@@ -34,7 +34,7 @@ export class LoginErrorDiagnosticsService {
     }
   }
 
-  async canAccessURL(url) {
+  async canAccessURL(url: string) {
     return new Promise(async (resolve) => {
       await this.http.get(url, { observe: 'response' })
         .pipe(first())

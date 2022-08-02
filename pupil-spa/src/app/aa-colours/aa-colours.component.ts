@@ -15,10 +15,10 @@ import { QuestionService } from '../services/question/question.service';
   styleUrls: ['./aa-colours.component.scss']
 })
 export class AAColoursComponent implements OnInit, AfterViewInit, OnDestroy {
-  selectedContrast;
-  contrastSettings;
-  accessArrangements;
-  backLinkUrl;
+  selectedContrast: string;
+  contrastSettings: Object[];
+  accessArrangements: any;
+  backLinkUrl: string;
   speechListenerEvent: any;
 
   constructor(
@@ -43,7 +43,7 @@ export class AAColoursComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
 
-  selectionChange(selectedContrast) {
+  selectionChange(selectedContrast: string) {
     this.selectedContrast = selectedContrast;
   }
 
@@ -67,7 +67,7 @@ export class AAColoursComponent implements OnInit, AfterViewInit, OnDestroy {
       });
 
       this.speechListenerEvent = this.elRef.nativeElement.addEventListener('focus',
-        (event) => { this.speechService.focusEventListenerHook(event); },
+        (event: any) => { this.speechService.focusEventListenerHook(event); },
         true
       );
     }

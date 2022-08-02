@@ -24,7 +24,7 @@ export class FeedbackThanksComponent implements AfterViewInit, OnDestroy {
       });
 
       this.speechListenerEvent = this.elRef.nativeElement.addEventListener('focus',
-        (event) => { this.speechService.focusEventListenerHook(event); },
+        (event: any) => { this.speechService.focusEventListenerHook(event); },
         true
       );
     }

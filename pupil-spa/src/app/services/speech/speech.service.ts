@@ -13,13 +13,13 @@ export class SpeechService implements OnDestroy {
   public static readonly questionSpeechStarted = 'questionstart';
   public static readonly questionSpeechEnded = 'questionend';
   private speaking = false;
-  private cancelTimeout;
+  private cancelTimeout: number;
   private speechStatusSource = new Subject<string>();
   protected synth;
   private userActionEvents = ['keydown', 'mousedown']; // touchstart should work as well in theory, doesn't in practice
   // Garbage Collector hack for Chrome implementations of the speech API..
   // See https://bugs.chromium.org/p/chromium/issues/detail?id=509488 for why this is necessary
-  private utterancesGC = [];
+  private utterancesGC = new Array<string>();
   private focusTriggeredByCode = false; // to disable reading out focused elements when focused through code
   private focusInterruptedPageSpeech = false; // to disable changing focus at the end of speech when interrupted
 
@@ -151,7 +151,7 @@ export class SpeechService implements OnDestroy {
    * @param nativeElement
    * @returns {clonedElement}
    */
-  removeUnspokenElements(nativeElement): HTMLElement {
+  removeUnspokenElements(nativeElement: any): HTMLElement {
     // clone the element in memory to make non-visible modifications
     const clonedElement = nativeElement.cloneNode(true);
 
@@ -167,7 +167,7 @@ export class SpeechService implements OnDestroy {
    * Parse the source of a NativeElement and speak the text
    * @param nativeElement
    */
-  speakElement(nativeElement): Promise<{}> {
+  speakElement(nativeElement: any): Promise<{}> {
     this.focusInterruptedPageSpeech = false;
     const elementsToSpeak = 'h1, h2, h3, h4, h5, h6, p, li, div > span, div > button, div > input[type="submit"], div > a, div > label'
       + ', *[speak="true"]';
@@ -209,7 +209,7 @@ export class SpeechService implements OnDestroy {
    * Speak a specific, focused element
    * @param nativeElement
    */
-  speakFocusedElement(nativeElement): void {
+  speakFocusedElement(nativeElement: any): void {
     const { id, nodeName, parentNode } = nativeElement;
 
     let toSpeak = nativeElement.cloneNode(true);
@@ -228,7 +228,7 @@ export class SpeechService implements OnDestroy {
    * Focus this item after the page is being read out
    * @param nativeElement
    */
-  focusEndOfSpeech(nativeElement): void {
+  focusEndOfSpeech(nativeElement: any): void {
     this.waitForEndOfSpeech().then(() => {
       if (this.focusInterruptedPageSpeech) {
         return;
@@ -245,7 +245,7 @@ export class SpeechService implements OnDestroy {
    * Call this function when an element is focused on the page
    * @param event
    */
-  focusEventListenerHook(event): void {
+  focusEventListenerHook(event: Event): void {
     if (!this.focusTriggeredByCode) {
       this.speakFocusedElement(event.target);
       this.focusInterruptedPageSpeech = true;
@@ -257,7 +257,7 @@ export class SpeechService implements OnDestroy {
    * if nothing to add.
    * @param nativeElement
    */
-  addTextBeforeSpeakingElement(nativeElement): string {
+  addTextBeforeSpeakingElement(nativeElement: any): string {
     if (nativeElement.tagName === 'INPUT' && nativeElement.type === 'submit') {
       return 'Button: ' + nativeElement.value;
     } else if (nativeElement.tagName === 'BUTTON' || nativeElement.classList.contains('button')) {
@@ -315,13 +315,13 @@ export class SpeechService implements OnDestroy {
    */
   waitForEndOfSpeech(): Promise<any> {
     const _window = this.windowRefService.nativeWindow;
-    return new Promise(resolve => {
+    return new Promise((resolve: (value?: any) => void, reject: (reason?: any) => void) => {
       if (!this.isSpeaking() && !this.isPending()) {
         // if there is nothing in the queue, resolve() immediately
         resolve();
       } else {
         // wait for the last speechEnded event to resolve()
-        let subscription, timeout;
+        let subscription: any, timeout: number;
 
         subscription = this.speechStatus.subscribe(speechStatus => {
           if (speechStatus === SpeechService.speechEnded) {
