@@ -1,5 +1,3 @@
-import { TestBed, inject } from '@angular/core/testing';
-
 import { CompressorService } from './compressor.service';
 
 describe('CompressorService', () => {

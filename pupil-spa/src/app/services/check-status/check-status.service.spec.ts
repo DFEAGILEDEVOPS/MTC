@@ -1,7 +1,6 @@
 import { TestBed } from '@angular/core/testing'
 import { StorageService } from '../storage/storage.service'
 import { CheckStatusService } from './check-status.service'
-import * as localStorageFailedSubmissionMock from './local.storage.failed.submission.mock.json'
 
 let checkStatusService: CheckStatusService
 let storageService: StorageService

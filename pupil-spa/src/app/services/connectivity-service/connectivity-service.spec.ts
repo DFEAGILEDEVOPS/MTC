@@ -1,29 +1,24 @@
 import { inject, TestBed } from '@angular/core/testing'
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing'
-import { HttpClient } from '@angular/common/http'
-
 import { AzureQueueService } from '../azure-queue/azure-queue.service'
 import { ConnectivityService } from './connectivity-service'
-import { QUEUE_STORAGE_TOKEN } from '../azure-queue/azureStorage'
 import { default as connectivityErrorMessages } from './connectivity-error-messages'
+import { HttpClient } from '@angular/common/http'
 
 let connectivityService
 
 describe('ConnectivityService', () => {
-  let httpClient: HttpClient
-  let httpTestingController: HttpTestingController
 
   beforeEach(() => {
     const injector = TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
       providers: [
         AzureQueueService,
-        ConnectivityService,
-        { provide: QUEUE_STORAGE_TOKEN, useValue: undefined },
+        ConnectivityService
       ]
     })
-    httpClient = TestBed.inject(HttpClient)
-    httpTestingController = TestBed.inject(HttpTestingController)
+    TestBed.inject(HttpClient)
+    TestBed.inject(HttpTestingController)
     connectivityService = injector.inject(ConnectivityService)
     connectivityService.errorMessages = []
   })

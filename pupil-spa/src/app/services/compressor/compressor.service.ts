@@ -6,11 +6,11 @@ export class CompressorService {
 
   constructor() { }
 
-  static compress(data: String): string {
+  static compress(data: string): string {
     return lzString.compressToUTF16(data);
   }
 
-  static decompress(archiveData: String): string {
+  static decompress(archiveData: string): string {
     return lzString.decompressFromUTF16(archiveData);
   }
 }

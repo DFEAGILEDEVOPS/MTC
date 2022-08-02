@@ -1,8 +1,6 @@
-import * as uuid from 'uuid'
-
 import { TestBed } from '@angular/core/testing'
 import { StorageService } from './storage.service'
-import { AuditStorageKey, DeviceStorageKey, InputsStorageKey, TimeoutStorageKey } from './storageKey'
+import { DeviceStorageKey, TimeoutStorageKey } from './storageKey'
 
 let service: StorageService
 const deviceStorageKey = new DeviceStorageKey()
@@ -55,11 +53,7 @@ describe('StorageService', () => {
     })
 
     it('returns null when key provided and item does not exist', () => {
-      const key = 'device'
-      const value = 'getItem_Value'
-
       const data = service.getDeviceData()
-
       expect(data).toBeNull()
     })
   })

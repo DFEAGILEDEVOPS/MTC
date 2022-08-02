@@ -39,7 +39,7 @@ export class SubmissionFailedComponent implements OnInit, AfterViewInit, OnDestr
       })
 
       this.speechListenerEvent = this.elRef.nativeElement.addEventListener('focus',
-        (event) => {
+        (event: Event) => {
           this.speechService.focusEventListenerHook(event)
         },
         true

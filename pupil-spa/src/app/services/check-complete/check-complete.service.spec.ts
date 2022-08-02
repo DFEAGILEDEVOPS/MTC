@@ -1,8 +1,7 @@
 import { APP_INITIALIZER } from '@angular/core';
-import { QUEUE_STORAGE_TOKEN } from '../azure-queue/azureStorage';
 import { Router } from '@angular/router';
 import { AuditService } from '../audit/audit.service';
-import { AzureQueueService } from '../azure-queue/azure-queue.service';
+import { AzureQueueService, QueueMessageRetryConfig } from '../azure-queue/azure-queue.service';
 import { CheckCompleteService } from './check-complete.service';
 import { AppConfigService, loadConfigMockService } from '../config/config.service';
 import { StorageService } from '../storage/storage.service';
@@ -12,7 +11,9 @@ import { AppUsageService } from '../app-usage/app-usage.service';
 import { Meta } from '@angular/platform-browser'
 
 let auditService: AuditService;
-let azureQueueService: AzureQueueService;
+let azureQueueServiceSpy: {
+  addMessageToQueue: jasmine.Spy
+};
 let checkCompleteService: CheckCompleteService;
 let storageService: StorageService;
 let tokenService: TokenService;
@@ -26,20 +27,22 @@ describe('CheckCompleteService', () => {
     mockRouter = {
       navigate: jasmine.createSpy('navigate')
     };
+    azureQueueServiceSpy = {
+      addMessageToQueue: jasmine.createSpy('addMessageToQueue')
+    }
 
     const testBed = TestBed.configureTestingModule({
         providers: [
           AppConfigService,
           AuditService,
           CheckCompleteService,
-          AzureQueueService,
           StorageService,
           TokenService,
           AppUsageService,
           Meta,
           { provide: APP_INITIALIZER, useFactory: loadConfigMockService, multi: true },
-          { provide: QUEUE_STORAGE_TOKEN, useValue: undefined },
-          { provide: Router, useValue: mockRouter }
+          { provide: Router, useValue: mockRouter },
+          { provide: AzureQueueService, useValue: azureQueueServiceSpy }
         ]
       }
     );
@@ -47,7 +50,6 @@ describe('CheckCompleteService', () => {
     checkCompleteService = testBed.inject(CheckCompleteService);
     appUsageService = TestBed.inject(AppUsageService);
     tokenService = testBed.inject(TokenService);
-    azureQueueService = testBed.inject(AzureQueueService);
     auditService = testBed.inject(AuditService);
     storageService = TestBed.inject(StorageService);
     checkCompleteService.checkSubmissionApiErrorDelay = 100;
@@ -78,9 +80,9 @@ describe('CheckCompleteService', () => {
       }
     });
     let capturedMessage;
-    spyOn(azureQueueService, 'addMessage').and.callFake((queueName, url, token, message, retryConfig) => {
+    azureQueueServiceSpy.addMessageToQueue.and.callFake((url: string, token: string, message: object, retryConfig: QueueMessageRetryConfig): Promise<void> => {
       capturedMessage = message;
-      return Promise.resolve({});
+      return Promise.resolve()
     });
     spyOn(checkCompleteService, 'getPayload').and.returnValue({ checkCode: 'checkCode', schoolUUID: expectedSchoolUUID });
 
@@ -92,7 +94,7 @@ describe('CheckCompleteService', () => {
     expect(appUsageService.store).toHaveBeenCalledTimes(1);
     expect(addEntrySpy.calls.all()[0].args[0].type).toEqual('CheckSubmissionApiCalled');
     expect(addEntrySpy.calls.all()[1].args[0].type).toEqual('CheckSubmissionAPICallSucceeded');
-    expect(azureQueueService.addMessage).toHaveBeenCalledTimes(1);
+    expect(azureQueueServiceSpy.addMessageToQueue).toHaveBeenCalledTimes(1);
     expect(capturedMessage).toBeDefined();
     expect(capturedMessage.schoolUUID).toBe(expectedSchoolUUID);
     expect(storageService.setPendingSubmission).toHaveBeenCalledTimes(1);
@@ -135,15 +137,14 @@ describe('CheckCompleteService', () => {
     spyOn(storageService, 'setPendingSubmission');
     spyOn(storageService, 'setCompletedSubmission');
     spyOn(storageService, 'getAllItems').and.returnValue({pupil: {checkCode: 'checkCode'}});
-    spyOn(azureQueueService, 'addMessage')
-      .and.returnValue(Promise.reject(new Error('error')));
+    azureQueueServiceSpy.addMessageToQueue.and.returnValue(Promise.reject(new Error('error')));
     spyOn(checkCompleteService, 'getPayload').and.returnValue({});
     await checkCompleteService.submit(Date.now());
     expect(addEntrySpy).toHaveBeenCalledTimes(2);
     expect(appUsageService.store).toHaveBeenCalledTimes(1);
     expect(addEntrySpy.calls.all()[0].args[0].type).toEqual('CheckSubmissionApiCalled');
     expect(addEntrySpy.calls.all()[1].args[0].type).toEqual('CheckSubmissionAPIFailed');
-    expect(azureQueueService.addMessage).toHaveBeenCalledTimes(1);
+    expect(azureQueueServiceSpy.addMessageToQueue).toHaveBeenCalledTimes(1);
     expect(storageService.setPendingSubmission).toHaveBeenCalledTimes(0);
     expect(storageService.setCompletedSubmission).toHaveBeenCalledTimes(0);
     expect(storageService.getAllItems).toHaveBeenCalledTimes(1);
@@ -165,14 +166,14 @@ describe('CheckCompleteService', () => {
       statusCode: 403,
       authenticationerrordetail: 'Signature not valid in the specified time frame: Start - Expiry - Current'
     };
-    spyOn(azureQueueService, 'addMessage').and.returnValue(Promise.reject(sasTokenExpiredError));
+    azureQueueServiceSpy.addMessageToQueue.and.returnValue(Promise.reject(sasTokenExpiredError));
     await checkCompleteService.submit(Date.now());
     expect(addEntrySpy).toHaveBeenCalledTimes(2);
     expect(appUsageService.store).toHaveBeenCalledTimes(1);
     expect(checkCompleteService.getPayload).toHaveBeenCalledTimes(1);
     expect(addEntrySpy.calls.all()[0].args[0].type).toEqual('CheckSubmissionApiCalled');
     expect(addEntrySpy.calls.all()[1].args[0].type).toEqual('CheckSubmissionAPIFailed');
-    expect(azureQueueService.addMessage).toHaveBeenCalledTimes(1);
+    expect(azureQueueServiceSpy.addMessageToQueue).toHaveBeenCalledTimes(1);
     expect(storageService.setPendingSubmission).toHaveBeenCalledTimes(0);
     expect(storageService.setCompletedSubmission).toHaveBeenCalledTimes(0);
     expect(storageService.getAllItems).toHaveBeenCalledTimes(1);
@@ -190,12 +191,11 @@ describe('CheckCompleteService', () => {
     spyOn(storageService, 'setCompletedSubmission');
     spyOn(storageService, 'getAllItems');
     spyOn(checkCompleteService, 'getPayload').and.returnValue({});
-    spyOn(azureQueueService, 'addMessage');
     await checkCompleteService.submit(Date.now());
     expect(addEntrySpy).toHaveBeenCalledTimes(0);
     expect(checkCompleteService.getPayload).toHaveBeenCalledTimes(0);
     expect(appUsageService.store).toHaveBeenCalledTimes(1);
-    expect(azureQueueService.addMessage).toHaveBeenCalledTimes(0);
+    expect(azureQueueServiceSpy.addMessageToQueue).toHaveBeenCalledTimes(0);
     expect(storageService.getAllItems).toHaveBeenCalledTimes(0);
     expect(storageService.setPendingSubmission).toHaveBeenCalledTimes(1);
     expect(storageService.setCompletedSubmission).toHaveBeenCalledTimes(1);
