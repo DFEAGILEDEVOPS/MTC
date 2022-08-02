@@ -10,11 +10,12 @@ const settingLogDataService = {}
  * @param loadingTimeLimit number to 2 decimal places
  * @param questionTimeLimit number to 2 decimal places
  * @param checkTimeLimit number
+ * @param isPostAdminEndDateUnavailable boolean
  * @param userId
  * @return {Promise.<*>}
  */
-settingLogDataService.sqlCreate = async function (loadingTimeLimit, questionTimeLimit, checkTimeLimit, userId) {
-  const sql = `INSERT ${sqlService.adminSchema}.[settingsLog] (loadingTimeLimit, questionTimeLimit, checkTimeLimit, user_id) 
+settingLogDataService.sqlCreate = async function (loadingTimeLimit, questionTimeLimit, checkTimeLimit, isPostAdminEndDateUnavailable, userId) {
+  const sql = `INSERT ${sqlService.adminSchema}.[settingsLog] (loadingTimeLimit, questionTimeLimit, checkTimeLimit, user_id)
   VALUES (@loadingTimeLimit, @questionTimeLimit, @checkTimeLimit, @userId)`
   const params = [
     {
@@ -40,6 +41,11 @@ settingLogDataService.sqlCreate = async function (loadingTimeLimit, questionTime
       name: 'userId',
       value: userId,
       type: TYPES.Int
+    },
+    {
+      name: 'isPostAdminEndDateUnavailable',
+      value: isPostAdminEndDateUnavailable,
+      type: TYPES.Bit
     }
   ]
   return sqlService.modify(sql, params)

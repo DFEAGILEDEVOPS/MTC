@@ -77,15 +77,15 @@
                     </legend>
                     <div class="govuk-radios" data-module="govuk-radios">
                         <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="read-only" name="post-admin-mode" type="radio" value="read-only"
-                                <%- settings.isPostAdminEndDateUnavailable === false ? 'checked=1' : '' %>>
+                            <input class="govuk-radios__input" id="read-only" name="isPostAdminEndDateUnavailable" type="radio" value="0"
+                                <%- settings.isPostAdminEndDateUnavailable === false ? 'checked' : '' %>>
                             <label class="govuk-label govuk-radios__label" for="read-only">
                                 Read-only (teachers will be able to see the register and download the CTF file)
                             </label>
                         </div>
                         <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="unavailable" name="post-admin-mode" type="radio" value="unavailable"
-                                <%- settings.isPostAdminEndDateUnavailable ? 'checked=1' : '' %>>
+                            <input class="govuk-radios__input" id="unavailable" name="isPostAdminEndDateUnavailable" type="radio" value="1"
+                                <%- settings.isPostAdminEndDateUnavailable === true ? 'checked' : '' %>>
                             <label class="govuk-label govuk-radios__label" for="unavailable">
                                 Unavailable (teachers will only see the <em>Service Unavailable</em> page)
                             </label>

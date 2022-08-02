@@ -11,7 +11,8 @@ describe('Settings validator', function () {
     return {
       questionTimeLimit: '20',
       loadingTimeLimit: '3',
-      checkTimeLimit: '30'
+      checkTimeLimit: '30',
+      isPostAdminEndDateUnavailable: false
     }
   }
 
