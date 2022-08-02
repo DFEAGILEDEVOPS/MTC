@@ -15,8 +15,20 @@ const settingLogDataService = {}
  * @return {Promise.<*>}
  */
 settingLogDataService.sqlCreate = async function (loadingTimeLimit, questionTimeLimit, checkTimeLimit, isPostAdminEndDateUnavailable, userId) {
-  const sql = `INSERT ${sqlService.adminSchema}.[settingsLog] (loadingTimeLimit, questionTimeLimit, checkTimeLimit, user_id)
-  VALUES (@loadingTimeLimit, @questionTimeLimit, @checkTimeLimit, @userId)`
+  const sql = `
+    INSERT [mtc_admin].[settingsLog] (
+      loadingTimeLimit,
+      questionTimeLimit,
+      checkTimeLimit,
+      isPostAdminEndDateUnavailable,
+      user_id
+    ) VALUES (
+      @loadingTimeLimit,
+      @questionTimeLimit,
+      @checkTimeLimit,
+      @isPostAdminEndDateUnavailable,
+      @userId
+    )`
   const params = [
     {
       name: 'loadingTimeLimit',
