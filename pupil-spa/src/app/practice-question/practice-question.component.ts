@@ -125,7 +125,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit, OnDestr
   /**
    * Reference to the Sound component
    */
-  @Input() public soundComponent;
+  @Input() public soundComponent: any;
 
   public shouldShowQuestion: boolean;
 
@@ -139,7 +139,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit, OnDestr
    */
   @Input() public sequenceNumber = 0;
 
-  @Input() public questionTimeoutSecs;
+  @Input() public questionTimeoutSecs: number;
 
   @Output() public manualSubmitEvent: EventEmitter<any> = new EventEmitter();
 
@@ -257,7 +257,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit, OnDestr
    * Hook that is called each time the countdown timer is called.  Roughly every 100 ms.
    * @param remainingTime
    */
-  countdownIntervalHook (remainingTime) {
+  countdownIntervalHook (remainingTime: number) {
     if (remainingTime === 2 && !this.hasAudibleAlertPlayed) {
       this.soundComponent.playTimeRunningOutAlertSound();
       this.hasAudibleAlertPlayed = true;
@@ -320,10 +320,13 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit, OnDestr
     }
 
     let i: number;
+    // @ts-ignore - use of implicit any
     if (event.target['id'] === '') {
       // this is the span element, so to access the data-value attribute we need to access the parent
+      // @ts-ignore - use of implicit any
       i = event.target['parentNode'].dataset.value;
     } else {
+      // @ts-ignore - use of implicit any
       i = event.target['dataset'].value;
     }
 
@@ -336,12 +339,6 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit, OnDestr
 
     // if it isn't a warmup question it must be a live question, so log the input.
     if (!this.isWarmUpQuestion) {
-      const questionData = {
-        questionNumber: this.sequenceNumber,
-        factor1: this.factor1,
-        factor2: this.factor2
-      };
-
       this.registerInputService.storeEntry(
         input,
         this.getEventType(event),
@@ -356,7 +353,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit, OnDestr
    * Called from clicking the backspace button on the virtual keyboard
    * @param {Object} event
    */
-  onClickBackspace (event) {
+  onClickBackspace (event: Event) {
     this.deleteChar();
   }
 
@@ -529,17 +526,10 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit, OnDestr
   handleKeyboardEvent (event: KeyboardEvent) {
     event.preventDefault();
     event.stopPropagation();
-    // console.log('practice-question.component: handleKeyboardEvent(): event: ', event);
     if (this.submitted) {
       return false;
     }
     if (!this.isWarmUpQuestion) {
-      const questionData = {
-        questionNumber: this.sequenceNumber,
-        factor1: this.factor1,
-        factor2: this.factor2
-      };
-      // this.registerInputService.addEntry(event, questionData);
       this.registerInputService.storeEntry(event.key,
         this.getEventType(event),
         this.sequenceNumber,
@@ -578,7 +568,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit, OnDestr
     return false;
   }
 
-  whatClass (obj) {
+  whatClass (obj: any) {
     return obj.toString().match(/ (\w+)/)[1];
   }
 

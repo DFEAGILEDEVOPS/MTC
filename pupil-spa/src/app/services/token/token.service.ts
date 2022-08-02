@@ -7,7 +7,7 @@ export class TokenService {
   constructor(private storageService: StorageService) {
   }
 
-  getToken(key) {
+  getToken(key: string) {
     const token = this.storageService.getToken();
     return token[key];
   }

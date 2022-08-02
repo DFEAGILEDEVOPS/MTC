@@ -17,7 +17,7 @@ import { WindowRefService } from '../services/window-ref/window-ref.service';
 describe('SpokenQuestionComponent', () => {
   let component: SpokenQuestionComponent;
   let fixture: ComponentFixture<SpokenQuestionComponent>;
-  let speechService, storageService, answerService;
+  let speechService, answerService;
   let answerServiceSpy: any;
   let registerInputService: RegisterInputService;
   let registerInputServiceSpy: any;
@@ -44,7 +44,6 @@ describe('SpokenQuestionComponent', () => {
     component.soundComponent = new SoundComponentMock();
     // Get a ref to services for easy spying
     speechService = fixture.debugElement.injector.get(SpeechService);
-    storageService = fixture.debugElement.injector.get(StorageService);
     answerService = fixture.debugElement.injector.get(AnswerService);
     // prevent SpeechServiceMock from calling 'end' by default
     spyOn(speechService, 'speakQuestion');

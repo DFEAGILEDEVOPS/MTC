@@ -1,11 +1,8 @@
 import { Injectable } from '@angular/core'
 import { TestBed, inject } from '@angular/core/testing'
-
-import { QuestionServiceMock } from '../question/question.service.mock'
 import { RegisterInputService } from './registerInput.service'
 import { StorageService } from '../storage/storage.service'
 
-let mockQuestionService: QuestionServiceMock
 let mockStorageService: StorageService
 
 @Injectable()
@@ -19,7 +16,6 @@ export class TestRegisterInputService extends RegisterInputService {
 describe('RegisterInputService', () => {
   let storageServiceSetInputSpy
   beforeEach(() => {
-    mockQuestionService = new QuestionServiceMock()
     const injector = TestBed.configureTestingModule({
       imports: [],
       providers: [

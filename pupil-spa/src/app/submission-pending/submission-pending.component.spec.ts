@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
-import { Router, ActivatedRoute } from '@angular/router'
+import { ActivatedRoute } from '@angular/router'
 import { RouterTestingModule } from '@angular/router/testing'
 
 import { SubmissionPendingComponent } from './submission-pending.component'
@@ -13,9 +13,8 @@ import { SpeechServiceMock } from '../services/speech/speech.service.mock'
 import { StorageService } from '../services/storage/storage.service'
 import { CheckStatusService } from '../services/check-status/check-status.service'
 import { CheckStatusServiceMock } from '../services/check-status/check-status.service.mock'
-import { AzureQueueService } from '../services/azure-queue/azure-queue.service'
+import { AzureQueueService, IAzureQueueService } from '../services/azure-queue/azure-queue.service'
 import { TokenService } from '../services/token/token.service'
-import { QUEUE_STORAGE_TOKEN } from '../services/azure-queue/azureStorage'
 import { APP_INITIALIZER, NO_ERRORS_SCHEMA } from '@angular/core'
 import { AppUsageService } from '../services/app-usage/app-usage.service'
 import { loadConfigMockService } from '../services/config/config.service'
@@ -27,30 +26,31 @@ describe('SubmissionPendingComponent', () => {
   let checkStatusService
   let storageService
   let component
-  let router: Router
   let activatedRoute: ActivatedRoute
+  let azureQueueServiceSpy: IAzureQueueService
   beforeEach(waitForAsync(() => {
+    azureQueueServiceSpy = {
+      addMessageToQueue: jasmine.createSpy('addMessageToQueue')
+    }
     TestBed.configureTestingModule({
       declarations: [SubmissionPendingComponent],
       imports: [RouterTestingModule.withRoutes([])],
       schemas: [NO_ERRORS_SCHEMA], // we don't need to test sub-components
       providers: [
         CheckCompleteService,
-        AzureQueueService,
         TokenService,
         AppUsageService,
+        { provide: AzureQueueService, useValue: azureQueueServiceSpy },
         { provide: AuditService, useClass: AuditServiceMock },
         { provide: CheckStatusService, useClass: CheckStatusServiceMock },
         { provide: SpeechService, useClass: SpeechServiceMock },
         { provide: QuestionService, useClass: QuestionServiceMock },
         { provide: ActivatedRoute, useValue: { snapshot: { queryParams: {} } } },
-        { provide: QUEUE_STORAGE_TOKEN, useValue: undefined },
         { provide: APP_INITIALIZER, useFactory: loadConfigMockService, multi: true },
         StorageService
       ]
     })
       .compileComponents()
-    router = TestBed.inject(Router)
     activatedRoute = TestBed.inject(ActivatedRoute)
   }))
 

@@ -8,7 +8,7 @@ import { ConnectivityService } from '../services/connectivity-service/connectivi
 })
 export class ConnectivityErrorComponent implements OnInit, AfterViewInit {
 
-  public serviceErrorMessage;
+  public serviceErrorMessage: string;
 
   constructor(
     private connectivityService: ConnectivityService

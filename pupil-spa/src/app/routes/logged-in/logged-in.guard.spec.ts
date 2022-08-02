@@ -1,4 +1,4 @@
-import { TestBed, inject, waitForAsync } from '@angular/core/testing'
+import { TestBed, inject } from '@angular/core/testing'
 import { Router } from '@angular/router'
 
 import { LoggedInGuard } from './logged-in.guard'
