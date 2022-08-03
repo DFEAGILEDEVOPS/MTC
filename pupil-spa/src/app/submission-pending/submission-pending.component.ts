@@ -16,7 +16,7 @@ export class SubmissionPendingComponent implements OnInit, AfterViewInit, OnDest
   @Output()
   clickEvent: EventEmitter<any> = new EventEmitter();
 
-  public title;
+  public title: string;
   constructor(private router: Router,
               private route: ActivatedRoute,
               private questionService: QuestionService,
@@ -42,7 +42,7 @@ export class SubmissionPendingComponent implements OnInit, AfterViewInit, OnDest
     if (this.questionService.getConfig().questionReader) {
       this.speechService.speakElement(this.elRef.nativeElement);
 
-      this.speechListenerEvent = this.elRef.nativeElement.addEventListener('focus', (event) => {
+      this.speechListenerEvent = this.elRef.nativeElement.addEventListener('focus', (event: Event) => {
         this.speechService.speakFocusedElement(event.target);
       }, true);
     }

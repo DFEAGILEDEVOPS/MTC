@@ -5,7 +5,7 @@ import {
   CheckStartedAPICallFailed,
   CheckStartedAPICallSucceeded,
 } from '../audit/auditEntry';
-import { AzureQueueService } from '../azure-queue/azure-queue.service';
+import { AzureQueueService, QueueMessageRetryConfig } from '../azure-queue/azure-queue.service';
 import { AuditService } from '../audit/audit.service';
 import { StorageService } from '../storage/storage.service';
 import { TokenService } from '../token/token.service';
@@ -36,18 +36,19 @@ export class CheckStartService {
    * @returns {Promise.<void>}
    */
   public async submit(): Promise<void> {
-    const { url, token, queueName } = this.tokenService.getToken('checkStarted');
+    const { url, token } = this.tokenService.getToken('checkStarted');
     // Create a model for the payload
     const payload = this.storageService.getPupil();
     payload.clientCheckStartedAt = new Date();
     payload.version = 1;
-    const retryConfig = {
-      errorDelay: this.checkStartAPIErrorDelay,
-      errorMaxAttempts: this.checkStartAPIErrorMaxAttempts
+    const retryConfig: QueueMessageRetryConfig = {
+      DelayBetweenRetries: this.checkStartAPIErrorDelay,
+      MaxAttempts: this.checkStartAPIErrorMaxAttempts
     };
+
     try {
       this.auditService.addEntry(new CheckStartedApiCalled());
-      await this.azureQueueService.addMessage(queueName, url, token, payload, retryConfig);
+      await this.azureQueueService.addMessageToQueue(url, token, payload, retryConfig);
       this.auditService.addEntry(new CheckStartedAPICallSucceeded());
     } catch (error) {
       this.auditService.addEntry(new CheckStartedAPICallFailed(error));

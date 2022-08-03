@@ -4,6 +4,7 @@ const pupilRegisterV2Service = require('../services/pupil-register-v2.service')
 const checkWindowV2Service = require('../services/check-window-v2.service')
 const businessAvailabilityService = require('../services/business-availability.service')
 const roles = require('../lib/consts/roles')
+const checkWindowPhaseConsts = require('../lib/consts/check-window-phase')
 
 const listPupils = async function listPupils (req, res, next) {
   res.locals.pageTitle = 'View, add or edit pupils on your school\'s register'
@@ -33,7 +34,9 @@ const listPupils = async function listPupils (req, res, next) {
     pupils: pupilsFormatted,
     breadcrumbs: req.breadcrumbs(),
     availabilityData,
-    showPupilAdminLink: req.user.role === roles.staAdmin
+    showPupilAdminLink: req.user.role === roles.staAdmin,
+    // @ts-ignore - defined in server.js
+    showAddPupilButtons: global.checkWindowPhase !== checkWindowPhaseConsts.readOnlyAdmin && global.checkWindowPhase !== checkWindowPhaseConsts.unavailable
   })
 }
 

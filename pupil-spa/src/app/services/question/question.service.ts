@@ -9,8 +9,8 @@ import { Config } from '../../config.model';
 @Injectable()
 export class QuestionService {
 
-  protected currentQuestion;
-  protected questions;
+  protected currentQuestion: number;
+  protected questions: Array<any>;
   protected config: Config;
 
   constructor(protected storageService: StorageService,

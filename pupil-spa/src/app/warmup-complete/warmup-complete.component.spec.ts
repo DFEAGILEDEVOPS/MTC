@@ -15,7 +15,6 @@ describe('WarmupCompleteComponent', () => {
   let fixture: ComponentFixture<WarmupCompleteComponent>;
   let auditEntryInserted: AuditEntry;
   let auditService;
-  let addEntrySpy;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -34,7 +33,7 @@ describe('WarmupCompleteComponent', () => {
     fixture = TestBed.createComponent(WarmupCompleteComponent);
     component = fixture.componentInstance;
     auditService = fixture.debugElement.injector.get(AuditService);
-    addEntrySpy = spyOn(auditService, 'addEntry').and.callFake((entry) => {
+    spyOn(auditService, 'addEntry').and.callFake((entry) => {
       auditEntryInserted = entry;
     });
     fixture.detectChanges();

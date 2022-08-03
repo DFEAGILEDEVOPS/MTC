@@ -24,8 +24,11 @@ const controller = {
     res.locals.pageTitle = 'Enable access arrangements for pupils who need them'
     req.breadcrumbs(res.locals.pageTitle)
     let pupils
-
     const aaViewMode = await accessArrangementsService.getCurrentViewMode(req.user.timezone)
+    const { hl } = req.query
+    const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
+    const pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData, req.user.timezone)
+    const availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.schoolId, checkWindowData, req.user.timezone)
 
     try {
       pupils = await pupilAccessArrangementsService.getPupils(req.user.schoolId)
@@ -34,19 +37,17 @@ const controller = {
         return res.render('access-arrangements/unavailable-access-arrangements', {
           title: res.locals.pageTitle,
           breadcrumbs: req.breadcrumbs(),
-          aaViewMode
+          aaViewMode,
+          availabilityData
         })
       }
     } catch (error) {
       return next(error)
     }
-    const { hl } = req.query
 
-    const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
-    const pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData, req.user.timezone)
-    const availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.schoolId, checkWindowData, req.user.timezone)
     const pupilsFormatted = accessArrangementsOverviewPresenter.getPresentationData(pupils, availabilityData, hl)
     const retroInputAssistantText = await accessArrangementsOverviewPresenter.getRetroInputAssistantText(availabilityData)
+
     return res.render('access-arrangements/overview', {
       highlight: hl,
       messages: res.locals.messages,

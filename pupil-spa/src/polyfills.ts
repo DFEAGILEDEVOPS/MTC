@@ -59,3 +59,9 @@ import 'zone.js/dist/zone';  // Included with Angular CLI.
  * Need to import at least one locale-data with intl.
  */
 // import 'intl/locale-data/jsonp/en';
+
+/***************************************************************************************************
+ * Buffer is required to encode non latin characters in the storage queue payload to base64.
+ */
+(window as any)['global'] = window;
+global.Buffer = global.Buffer || require('buffer').Buffer;

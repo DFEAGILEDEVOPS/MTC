@@ -1,6 +1,6 @@
 import { APP_CONFIG } from '../config/config.service';
 import { AuditService } from '../audit/audit.service';
-import { AzureQueueService } from '../azure-queue/azure-queue.service';
+import { AzureQueueService, QueueMessageRetryConfig } from '../azure-queue/azure-queue.service';
 import {
   CheckSubmissionApiCalled,
   CheckSubmissionAPIFailed,
@@ -46,7 +46,7 @@ export class CheckCompleteService {
    * @param {Number} ms
    * @returns {Promise.<void>}
    */
-  private sleep(ms) {
+  private sleep(ms: number) {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 
@@ -55,17 +55,17 @@ export class CheckCompleteService {
    * @param {Number} startTime Date time in milliseconds on the exact moment before check submission is called
    * @returns {Promise.<void>}
    */
-  public async submit(startTime): Promise<void> {
+  public async submit(startTime: number): Promise<void> {
     this.appUsageService.store();
-    let message;
+    let message: any;
     const checkConfig = this.storageService.getConfig();
     if (checkConfig.practice) {
       return this.onSuccess(startTime);
     }
-    const {url, token, queueName} = this.tokenService.getToken('checkComplete');
-    const retryConfig = {
-      errorDelay: this.checkSubmissionApiErrorDelay,
-      errorMaxAttempts: this.checkSubmissionAPIErrorMaxAttempts
+    const {url, token} = this.tokenService.getToken('checkComplete');
+    const retryConfig: QueueMessageRetryConfig = {
+      DelayBetweenRetries: this.checkSubmissionApiErrorDelay,
+      MaxAttempts: this.checkSubmissionAPIErrorMaxAttempts
     };
     this.auditService.addEntry(new CheckSubmissionApiCalled());
     const items = this.storageService.getAllItems();
@@ -82,7 +82,7 @@ export class CheckCompleteService {
       message.version = 1;
     }
     try {
-      await this.azureQueueService.addMessage(queueName, url, token, message, retryConfig);
+      await this.azureQueueService.addMessageToQueue(url, token, message, retryConfig);
       this.auditService.addEntry(new CheckSubmissionAPICallSucceeded());
       await this.onSuccess(startTime);
     } catch (error) {
@@ -102,13 +102,13 @@ export class CheckCompleteService {
    * @param {Object} items
    * @returns {Array}
    */
-  getAllEntriesByKey(key: string, items: object): any {
+  getAllEntriesByKey(key: string, items: Record<any, any>): any {
     const matchingKeys =
       Object.keys(items).filter(lsi => lsi.startsWith(key.toString()));
     const sortedMatchingKeys = matchingKeys.sort((a, b) =>
       new Date(items[a].clientTimestamp).getTime() - new Date(items[b].clientTimestamp).getTime()
     );
-    const matchingItems = [];
+    const matchingItems = new Array<any>();
     sortedMatchingKeys.forEach(s => {
       matchingItems.push(items[s]);
     });
@@ -116,14 +116,14 @@ export class CheckCompleteService {
   }
 
   /**
-   * Get check payload for submission
+ * Get check payload for submission
    * @param {Object} items
    * @returns {Object}
    */
-  getPayload(items: object): object {
-    const payload = {
-      checkCode: undefined,
-      schoolUUID: undefined,
+  getPayload(items: Record<any, any>): Record<string, any> {
+    const payload: Record<string, any> = {
+      checkCode: '',
+      schoolUUID: '',
       buildVersion: ''
     };
     const includedSingularItems = ['config', 'device', 'pupil', 'questions', 'school', 'tokens'];
@@ -145,7 +145,7 @@ export class CheckCompleteService {
    * @param {Number} startTime
    * @returns {Promise.<void>}
    */
-  async onSuccess(startTime): Promise<void> {
+  async onSuccess(startTime: number): Promise<void> {
     this.storageService.setPendingSubmission(false);
     this.storageService.setCompletedSubmission(true);
     // Display pending screen for the minimum configurable time

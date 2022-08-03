@@ -33,6 +33,7 @@ settingService.update = async (updatedLoadingTimeLimit, updatedQuestionTimeLimit
  * @property {number} loadingTimeLimit - time in seconds between questions
  * @property {number} checkTimeLimit - total allowed check time in minutes
  * @property {number} questionTimeLimit - time in seconds allowed for each question to be displayed
+ * @property {boolean} isPostAdminEndDateUnavailable - set to false to allow the site to run in read-only mode after the admin end date, or true to make the site unavailable.
  */
 
 /**

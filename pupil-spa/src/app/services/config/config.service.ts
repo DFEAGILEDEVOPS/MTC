@@ -60,7 +60,7 @@ export class AppConfig implements IAppConfig {
 }
 
 class MockAppConfig implements IAppConfig {
-  applicationInsightsInstrumentationKey = undefined
+  applicationInsightsInstrumentationKey: string
   authPingURL = 'authPingUrl'
   authURL = 'authUrl'
   checkStartAPIErrorDelay: 9
@@ -118,7 +118,7 @@ export function loadConfigMockService (): Function {
 export class AppConfigService {
   private configFileURL = '/assets/config.json'
 
-  errorMessages = []
+  errorMessages = new Array<string>()
 
   constructor (private http: HttpClient) {
   }

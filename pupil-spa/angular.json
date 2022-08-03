@@ -31,9 +31,7 @@
             "styles": [
               "src/styles.scss"
             ],
-            "scripts": [
-              "src/lib/azure-storage/azure-storage.queue.min.js"
-            ]
+            "scripts": []
           },
           "configurations": {
             "production": {
