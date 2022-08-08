@@ -27,7 +27,6 @@ describe('LoginComponent', () => {
   let mockRouter
   let mockUserService
   let mockQuestionService
-  let storageService
   let mockWarmupQuestionService
   let mockCheckStatusService
   let mockPupilPrefsService
@@ -35,9 +34,6 @@ describe('LoginComponent', () => {
   let hasUnfinishedCheckSpy
   let loginErrorService
   let loginErrorDiagnosticsService
-  let httpClient: HttpClient
-  let httpTestingController: HttpTestingController
-  let windowRefService: WindowRefService
   let mockDeviceService
 
   beforeEach(waitForAsync(() => {
@@ -88,10 +84,10 @@ describe('LoginComponent', () => {
     mockPupilPrefsService = injector.inject(PupilPrefsService)
     loginErrorService = injector.inject(LoginErrorService)
     loginErrorDiagnosticsService = injector.inject(LoginErrorDiagnosticsService)
-    httpClient = TestBed.inject(HttpClient)
-    httpTestingController = TestBed.inject(HttpTestingController)
-    storageService = TestBed.inject(StorageService)
-    windowRefService = injector.inject(WindowRefService)
+    TestBed.inject(HttpClient)
+    TestBed.inject(HttpTestingController)
+    TestBed.inject(StorageService)
+    injector.inject(WindowRefService)
     mockDeviceService = TestBed.inject(DeviceService)
 
     spyOn(mockQuestionService, 'initialise')

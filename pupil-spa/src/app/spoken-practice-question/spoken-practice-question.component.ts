@@ -1,4 +1,4 @@
-import { Component, NgZone, OnInit, AfterViewInit, OnDestroy, Input, Renderer2 } from '@angular/core';
+import { Component, NgZone, OnInit, AfterViewInit, OnDestroy, Renderer2 } from '@angular/core';
 import { Subscription } from 'rxjs';
 
 import { AnswerService } from '../services/answer/answer.service';

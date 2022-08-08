@@ -113,7 +113,7 @@ export class LoadingComponent implements AfterViewInit, OnDestroy, AfterViewChec
     // wait for the component to be rendered first, before parsing the text
     if (this.questionService.getConfig().questionReader) {
       this.speechService.speakElement(this.elRef.nativeElement);
-      this.speechListenerEvent = this.elRef.nativeElement.addEventListener('focus', async (event) => {
+      this.speechListenerEvent = this.elRef.nativeElement.addEventListener('focus', async (event: Event) => {
         if (document.getElementsByClassName('modal-overlay').length) {
           // a modal is open, ignore focus events on this component
           return false;

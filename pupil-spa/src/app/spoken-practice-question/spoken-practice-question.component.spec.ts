@@ -17,9 +17,8 @@ import { WindowRefService } from '../services/window-ref/window-ref.service';
 describe('SpokenPracticeQuestionComponent', () => {
   let component: SpokenPracticeQuestionComponent;
   let fixture: ComponentFixture<SpokenPracticeQuestionComponent>;
-  let speechService, auditService, storageService;
+  let speechService, auditService;
   let answerService: AnswerService;
-  let answerServiceSpy: any;
   let registerInputService: RegisterInputService;
   let registerInputServiceSpy: any;
 
@@ -44,11 +43,9 @@ describe('SpokenPracticeQuestionComponent', () => {
     component = fixture.componentInstance;
     speechService = fixture.debugElement.injector.get(SpeechService);
     auditService = fixture.debugElement.injector.get(AuditService);
-    storageService = fixture.debugElement.injector.get(StorageService);
 
     answerService = fixture.debugElement.injector.get(AnswerService);
-    answerServiceSpy = spyOn(answerService, 'setAnswer');
-
+    spyOn(answerService, 'setAnswer');
     spyOn(speechService, 'speakQuestion');
     spyOn(auditService, 'addEntry');
 
@@ -112,23 +109,23 @@ describe('SpokenPracticeQuestionComponent', () => {
 
     it('does not add to the answer after submission', () => {
       component.startTimer();
-      const event1 = dispatchKeyEvent({ key: '1' });
-      const event2 = dispatchKeyEvent({ key: '2' });
-      const event3 = dispatchKeyEvent({ key: '3' });
+      dispatchKeyEvent({ key: '1' });
+      dispatchKeyEvent({ key: '2' });
+      dispatchKeyEvent({ key: '3' });
       expect(component.answer).toBe('123');
       component.onSubmit(); // press enter
-      const event4 = dispatchKeyEvent({ key: '4' });
+      dispatchKeyEvent({ key: '4' });
       expect(component.answer).toBe('123');
     });
 
     it('does not register key strokes for warm up questions', () => {
       component.startTimer();
-      const event1 = dispatchKeyEvent({ key: '1' });
-      const event2 = dispatchKeyEvent({ key: '2' });
-      const event3 = dispatchKeyEvent({ key: '3' });
+      dispatchKeyEvent({ key: '1' });
+      dispatchKeyEvent({ key: '2' });
+      dispatchKeyEvent({ key: '3' });
       expect(component.answer).toBe('123');
       component.onSubmit(); // press enter
-      const event4 = dispatchKeyEvent({ key: 'r' });
+      dispatchKeyEvent({ key: 'r' });
       expect(registerInputServiceSpy.calls.count()).toBe(0);
     });
   });

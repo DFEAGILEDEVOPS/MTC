@@ -1,8 +1,8 @@
-import { Component, OnInit, AfterViewInit, NgZone, OnDestroy, Input, Renderer2 } from '@angular/core';
+import { Component, OnInit, AfterViewInit, NgZone, OnDestroy, Renderer2 } from '@angular/core';
 import { AnswerService } from '../services/answer/answer.service';
 import { AuditService } from '../services/audit/audit.service';
 import { QuestionComponent } from '../question/question.component';
-import { QuestionRendered, QuestionTimerCancelled } from '../services/audit/auditEntry';
+import { QuestionRendered, QuestionTimerEnded } from '../services/audit/auditEntry';
 import { QuestionService } from '../services/question/question.service';
 import { RegisterInputService } from '../services/register-input/registerInput.service';
 import { SpeechService } from '../services/speech/speech.service';
@@ -11,7 +11,7 @@ import { Subscription } from 'rxjs';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
 import { Answer } from '../services/answer/answer.model';
 
-@Component( {
+@Component({
   selector: 'app-spoken-question',
   templateUrl: '../question/question.component.html',
   styleUrls: ['../question/question.component.css'],
@@ -25,25 +25,25 @@ export class SpokenQuestionComponent extends QuestionComponent implements OnInit
    */
   public isWarmUpQuestion = false;
 
-  constructor( protected auditService: AuditService,
-    protected windowRefService: WindowRefService,
-    protected registerInputService: RegisterInputService,
-    protected zone: NgZone,
-    protected storageService: StorageService,
-    protected speechService: SpeechService,
-    protected questionService: QuestionService,
-    protected answerService: AnswerService,
-    protected renderer: Renderer2 ) {
-    super( auditService, windowRefService, questionService, storageService, speechService, answerService, registerInputService, renderer );
+  constructor(protected auditService: AuditService,
+              protected windowRefService: WindowRefService,
+              protected registerInputService: RegisterInputService,
+              protected zone: NgZone,
+              protected storageService: StorageService,
+              protected speechService: SpeechService,
+              protected questionService: QuestionService,
+              protected answerService: AnswerService,
+              protected renderer: Renderer2) {
+    super(auditService, windowRefService, questionService, storageService, speechService, answerService, registerInputService, renderer);
   }
 
-  ngOnInit () {
+  ngOnInit() {
     this.remainingTime = this.questionTimeoutSecs;
     this.shouldShowQuestion = false;
 
-    this.subscription = this.speechService.speechStatus.subscribe( speechStatus => {
-      this.zone.run( () => {
-        if ( !this.timeout && speechStatus === SpeechService.questionSpeechEnded ) {
+    this.subscription = this.speechService.speechStatus.subscribe(speechStatus => {
+      this.zone.run(() => {
+        if (!this.timeout && speechStatus === SpeechService.questionSpeechEnded) {
           // console.log('SpokenQuestionComponent: Starting the timer');
           this.startTimer();
           this.shouldShowQuestion = true;
@@ -60,7 +60,7 @@ export class SpokenQuestionComponent extends QuestionComponent implements OnInit
       sequenceNumber: this.sequenceNumber,
       question: `${ this.factor1 }x${ this.factor2 }`,
       isWarmup: this.isWarmUpQuestion
-    } ) );
+    }));
 
     // Set up listening events depending on the browser's capability
     if ( this.shouldSetupPointerEvents() ) {
@@ -69,12 +69,11 @@ export class SpokenQuestionComponent extends QuestionComponent implements OnInit
       this.setupKeypadEventListeners( 'click' );
     }
 
-    this.speechService.speakQuestion( `${ this.factor1 } times ${ this.factor2 }?`, this.sequenceNumber );
+    this.speechService.speakQuestion(`${this.factor1} times ${this.factor2}?`, this.sequenceNumber);
   }
 
-  ngOnDestroy () {
+  ngOnDestroy() {
     this.subscription.unsubscribe();
-
     // clear both timeout and intervals
     if (this.countdownInterval !== undefined) {
       clearInterval( this.countdownInterval )

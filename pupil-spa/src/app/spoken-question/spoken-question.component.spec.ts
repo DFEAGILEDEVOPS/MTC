@@ -20,6 +20,7 @@ function dispatchKeyEvent(keyboardDict) {
   document.dispatchEvent(event);
   return event;
 }
+
 describe('SpokenQuestionComponent', () => {
   let component: SpokenQuestionComponent;
   let fixture: ComponentFixture<SpokenQuestionComponent>;
@@ -51,14 +52,13 @@ describe('SpokenQuestionComponent', () => {
     component = fixture.componentInstance;
     component.config.questionReader = true;
     component.soundComponent = new SoundComponentMock();
-
+    // Get a ref to services for easy spying
+    speechService = fixture.debugElement.injector.get(SpeechService);
+    answerService = fixture.debugElement.injector.get(AnswerService);
     storageService = fixture.debugElement.injector.get(StorageService);
 
-    speechService = fixture.debugElement.injector.get(SpeechService);
     // prevent SpeechServiceMock from calling 'end' by default
     spyOn(speechService, 'speakQuestion');
-
-    answerService = fixture.debugElement.injector.get(AnswerService);
     answerServiceSpy = spyOn(answerService, 'setAnswer').and.callThrough()
 
     registerInputService = fixture.debugElement.injector.get(RegisterInputService);
@@ -100,6 +100,7 @@ describe('SpokenQuestionComponent', () => {
   });
 
   describe('handleKeyboardEvent', () => {
+
     it('does not register key strokes after submission', () => {
       component.startTimer();
       dispatchKeyEvent({ key: '1' });

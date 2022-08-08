@@ -1,34 +1,30 @@
 import { TestBed, inject } from '@angular/core/testing'
 import { APP_INITIALIZER } from '@angular/core'
-import { AzureQueueService } from '../azure-queue/azure-queue.service'
+import { AzureQueueService, IAzureQueueService } from '../azure-queue/azure-queue.service'
 import { FeedbackService } from './feedback.service'
 import { StorageService } from '../storage/storage.service'
 import { TokenService } from '../token/token.service'
 import { AppConfigService, loadConfigMockService } from '../config/config.service'
-import { QUEUE_STORAGE_TOKEN } from '../azure-queue/azureStorage'
 
-let azureQueueService: AzureQueueService
-let feedbackService: FeedbackService
 let storageService: StorageService
 let tokenService: TokenService
+let azureQueueServiceSpy: IAzureQueueService
+
 
 describe('FeedbackService', () => {
   beforeEach(() => {
-
+    azureQueueServiceSpy = jasmine.createSpyObj('AzureQueueService', ['addMessageToQueue'])
     const injector = TestBed.configureTestingModule({
       imports: [],
       providers: [
         AppConfigService,
         { provide: APP_INITIALIZER, useFactory: loadConfigMockService, multi: true },
-        { provide: QUEUE_STORAGE_TOKEN, useValue: undefined },
-        AzureQueueService,
+        { provide: AzureQueueService, useValue: azureQueueServiceSpy },
         FeedbackService,
         StorageService,
         TokenService
       ]
     })
-    azureQueueService = injector.inject(AzureQueueService)
-    feedbackService = injector.inject(FeedbackService)
     storageService = injector.inject(StorageService)
     tokenService = injector.inject(TokenService)
   })
@@ -67,10 +63,9 @@ describe('FeedbackService', () => {
     it('should call azureQueueService addMessage',
       inject([FeedbackService], async (service: FeedbackService) => {
         spyOn(tokenService, 'getToken').and.returnValue({ url: 'url', token: 'token' })
-        spyOn(azureQueueService, 'addMessage')
         await service.queueSubmit({})
         expect(tokenService.getToken).toHaveBeenCalled()
-        expect(azureQueueService.addMessage).toHaveBeenCalled()
+        expect(azureQueueServiceSpy.addMessageToQueue).toHaveBeenCalled()
       }))
   })
 })
