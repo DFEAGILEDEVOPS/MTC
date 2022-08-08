@@ -279,13 +279,13 @@ describe('PractiseQuestionComponent', () => {
   describe('onClickBackspace', () => {
     it('deletes the end character from the answer', () => {
       component.answer = '12345';
-      const event = {};
+      const event = new Event('event');
       component.onClickBackspace(event);
       expect(component.answer).toBe('1234');
     });
     it('behaves when the answer is empty', () => {
       component.answer = '';
-      const event = {};
+      const event = new Event('event');
       component.onClickBackspace(event);
       expect(component.answer).toBe('');
     });
@@ -316,6 +316,7 @@ describe('PractiseQuestionComponent', () => {
       component.timeoutEvent.subscribe(g => {
         expect(g).toEqual('125');
         done();
+        component.timeoutEvent.unsubscribe();
       });
     });
 
@@ -346,22 +347,22 @@ describe('PractiseQuestionComponent', () => {
     });
 
     it('does not add to the answer after submission', () => {
-      const event1 = dispatchKeyEvent({ key: '1' });
-      const event2 = dispatchKeyEvent({ key: '2' });
-      const event3 = dispatchKeyEvent({ key: '3' });
+      dispatchKeyEvent({ key: '1' });
+      dispatchKeyEvent({ key: '2' });
+      dispatchKeyEvent({ key: '3' });
       expect(component.answer).toBe('123');
       component.onSubmit(); // press enter
-      const event4 = dispatchKeyEvent({ key: '4' });
+      dispatchKeyEvent({ key: '4' });
       expect(component.answer).toBe('123');
     });
 
     it('does not register key strokes for warm up questions', () => {
-      const event1 = dispatchKeyEvent({ key: '1' });
-      const event2 = dispatchKeyEvent({ key: '2' });
-      const event3 = dispatchKeyEvent({ key: '3' });
+      dispatchKeyEvent({ key: '1' });
+      dispatchKeyEvent({ key: '2' });
+      dispatchKeyEvent({ key: '3' });
       expect(component.answer).toBe('123');
       component.onSubmit(); // press enter
-      const event4 = dispatchKeyEvent({ key: 'r' });
+      dispatchKeyEvent({ key: 'r' });
       expect(registerInputServiceSpy.calls.count()).toBe(0);
     });
 

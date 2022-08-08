@@ -13,7 +13,6 @@ import { AuditEntry, CheckStarted, QuestionIntroRendered } from '../services/aud
 import { AzureQueueService } from '../services/azure-queue/azure-queue.service';
 import { TokenService } from '../services/token/token.service';
 import { StorageService } from '../services/storage/storage.service';
-import { QUEUE_STORAGE_TOKEN } from '../services/azure-queue/azureStorage';
 import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { AppUsageService } from '../services/app-usage/app-usage.service';
@@ -25,9 +24,6 @@ describe('QuestionsIntroComponent', () => {
   let auditEntryInserted: AuditEntry;
   let auditService;
   let checkStartService;
-  let addEntrySpy;
-  let httpClient: HttpClient;
-  let httpTestingController: HttpTestingController;
 
   beforeEach(waitForAsync(() => {
     const inject = TestBed.configureTestingModule({
@@ -38,7 +34,6 @@ describe('QuestionsIntroComponent', () => {
         { provide: AuditService, useClass: AuditServiceMock},
         { provide: SpeechService, useClass: SpeechServiceMock },
         { provide: QuestionService, useClass: QuestionServiceMock },
-        { provide: QUEUE_STORAGE_TOKEN, useValue: undefined },
         { provide: APP_INITIALIZER, useFactory: loadConfigMockService, multi: true },
         AzureQueueService,
         TokenService,
@@ -48,8 +43,8 @@ describe('QuestionsIntroComponent', () => {
         AppUsageService
       ]
     });
-    httpClient = TestBed.inject(HttpClient);
-    httpTestingController = TestBed.inject(HttpTestingController);
+    TestBed.inject(HttpClient);
+    TestBed.inject(HttpTestingController);
     checkStartService = inject.inject(CheckStartService);
     inject.compileComponents();
   }));
@@ -58,7 +53,7 @@ describe('QuestionsIntroComponent', () => {
     fixture = TestBed.createComponent(QuestionsIntroComponent);
     component = fixture.componentInstance;
     auditService = fixture.debugElement.injector.get(AuditService);
-    addEntrySpy = spyOn(auditService, 'addEntry').and.callFake((entry) => {
+    spyOn(auditService, 'addEntry').and.callFake((entry) => {
       auditEntryInserted = entry;
     });
     fixture.detectChanges();

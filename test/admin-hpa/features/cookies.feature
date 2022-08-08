@@ -15,3 +15,9 @@ Feature:
     Given I am on the sign in page
     When I select the cookies link
     Then I should be taken to the cookies prefs page
+
+  Scenario: Session Id cookie value changes upon logging out
+    Given I am logged in
+    And the session ID cookie is set
+    When I decide to logout
+    Then the value of the session ID should change

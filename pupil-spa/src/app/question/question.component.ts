@@ -3,7 +3,7 @@ import { AnswerService } from '../services/answer/answer.service';
 import { Answer } from '../services/answer/answer.model';
 import { AuditService } from '../services/audit/audit.service';
 import { PracticeQuestionComponent } from '../practice-question/practice-question.component';
-import { QuestionRendered, QuestionAnswered, QuestionTimerCancelled } from '../services/audit/auditEntry';
+import { QuestionAnswered, QuestionTimerCancelled } from '../services/audit/auditEntry';
 import { QuestionService } from '../services/question/question.service';
 import { RegisterInputService } from '../services/register-input/registerInput.service';
 import { SpeechService } from '../services/speech/speech.service';
@@ -42,7 +42,7 @@ export class QuestionComponent extends PracticeQuestionComponent implements OnIn
    * Called from clicking the backspace button on the virtual keyboard
    * @param {Object} event
    */
-  onClickBackspace(event) {
+  onClickBackspace(event: Event) {
     if (this.submitted) {
       return;
     }
@@ -102,7 +102,7 @@ export class QuestionComponent extends PracticeQuestionComponent implements OnIn
    * Called when the user clicks the enter button on the virtual keypad
    * @param {Object} event
    */
-  onClickSubmit(event) {
+  onClickSubmit(event: Event) {
     if (this.submitted) {
       return;
     }

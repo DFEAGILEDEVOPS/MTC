@@ -36,4 +36,4 @@ NAME="$ENV-redis-$SUFFIX"
 
 echo "creating redis instance $NAME sku:$SKU plan:$PLAN"
 # https://docs.microsoft.com/en-us/cli/azure/redis?view=azure-cli-latest#az_redis_create
-az redis create -o none -g $RES_GRP -l $LOCATION -n $NAME --sku $SKU --vm-size $PLAN --minimum-tls-version '1.2'
+az redis create -o none -g $RES_GRP -l $LOCATION -n $NAME --sku $SKU --vm-size $PLAN --minimum-tls-version '1.2' --redis-version 6

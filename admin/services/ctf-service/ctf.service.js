@@ -14,6 +14,7 @@ const pupilAttendanceCodes = require('../../lib/consts/pupil-attendance-codes')
 const resultsPageAvailabilityService = require('../results-page-availability.service')
 const resultsService = require('../result.service')
 const ctfVersion = '20.0'
+const checkWindowPhaseConsts = require('../../lib/consts/check-window-phase')
 
 const ctfService = {
   /**
@@ -28,8 +29,10 @@ const ctfService = {
     // that case, they still do NOT get to download the results until the HDF is signed.
     // Feature ticket: 36582
     const isHdfSigned = await ctfDataService.isHdfSigned(schoolId, checkWindow.id)
+    // @ts-ignore - defined in server.js
+    const checkWindowPhaseIsReadOnly = global.checkWindowPhase === checkWindowPhaseConsts.readOnlyAdmin
 
-    if (!isHdfSigned) {
+    if (!checkWindowPhaseIsReadOnly && !isHdfSigned) {
       throw new NotAvailableError('Unable to download CTF file as the HDF has not been signed')
     }
 
@@ -90,7 +93,7 @@ const ctfService = {
 
   /**
    * Create the CTF Format XML data as a String
-   * @param {{id: number, leaCode: number, estabCode: string, urn: number, name: string}} schoolData
+   * @param {{id: number, leaCode: number, estabCode: string, urn: number, name: string}} school
    * @param {{upn:string, lastName:string, foreName:string, originalDateOfBirth: moment.Moment, dateOfBirth:moment.Moment, gender:string, ctfResult:string|number}[]} pupilData
    * @param {number} academicYear: e.g. 2019
    * @param {number} stageAssessmentYear: e.g. 2020
@@ -106,16 +109,16 @@ const ctfService = {
       .ele('DocumentQualifier').txt('partial').up()
       .ele('SupplierID').txt('Multiplication Tables Check').up()
       .ele('SourceSchool')
-      .ele('LEA').txt(school.leaCode).up()
+      .ele('LEA').txt(school.leaCode.toString()).up()
       .ele('Estab').txt(school.estabCode).up()
-      .ele('URN').txt(school.urn).up()
+      .ele('URN').txt(school.urn.toString()).up()
       .ele('SchoolName').txt(school.name).up()
       .ele('AcademicYear').txt(academicYear.toString()).up()
       .up() // SourceSchool
       .ele('DestSchool')
-      .ele('LEA').txt(school.leaCode).up()
+      .ele('LEA').txt(school.leaCode.toString()).up()
       .ele('Estab').txt(school.estabCode).up()
-      .ele('URN').txt(school.urn).up()
+      .ele('URN').txt(school.urn.toString()).up()
       .up() // DestSchool
       .up() // Header
       .ele('CTFpupilData')
