@@ -9,8 +9,6 @@ import * as helmet from 'helmet'
 import { v4 as uuidv4 } from 'uuid'
 import * as appInsights from './helpers/app-insights'
 import logger from './services/log.service'
-import { rateLimit } from './helpers/rate-limit'
-import config from './config'
 import authRoutes from './routes/auth'
 import pingRoute from './routes/ping'
 import headRoute from './routes/head'
@@ -68,20 +66,6 @@ class App {
       includeSubDomains: true,
       preload: true
     }))
-
-    // rate limit requests
-    this.express.use(async (req, res, next) => {
-      try {
-        if (!config.RateLimit.Enabled) {
-          return next()
-        }
-        await rateLimit(req)
-        next()
-      } catch (error) {
-        // Rate limit exceeded
-        next(error)
-      }
-    })
     this.express.use(bodyParser.json())
   }
 
