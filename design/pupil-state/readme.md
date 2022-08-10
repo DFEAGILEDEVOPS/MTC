@@ -19,7 +19,6 @@ When a teacher creates a restart for a pupil, the following happens...
 
 ## Unconsumed restart
 
-If the restart is not used, should we provide a way for the teacher to remove
-it, effectively reactivating the last check.
+The teacher can remove the restart
 
 
