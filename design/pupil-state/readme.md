@@ -12,8 +12,7 @@ The pupil state is a composite of three key attributes
 ## Restarts
 
 When a teacher creates a restart for a pupil, the following happens...
-- entry is created in `mtc_admin.pupilRestart`
-- `mtc_admin.check.pupilRestart_id` is updated with the restart id
+- entry is created in `mtc_admin.pupilRestart` and links back to mtc_admin.check.id
 - `mtc_admin.pupil.restartAvailable` flag is set to true
 - existing allocated form in redis is removed (pin can be preserved)
 - new form is allocated and stored in redis
