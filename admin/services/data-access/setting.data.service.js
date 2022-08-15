@@ -20,10 +20,19 @@ settingDataService.sqlFindOne = async () => {
  * @param {number} loadingTimeLimit - the loadingTime for each question
  * @param {number} questionTimeLimit - the time given for each question
  * @param {number} checkTimeLimit - the maximum length of check
+ * @param {boolean} isPostAdminEndDateUnavailable - true for unavailable, false for read-only
  * @return {Promise.<*>} returns a sql service response object `{ rowsModified: 1 }`
  */
-settingDataService.sqlUpdate = async (loadingTimeLimit, questionTimeLimit, checkTimeLimit) => {
-  const sql = 'UPDATE [Settings] SET loadingTimeLimit=@loadingTimeLimit, questionTimeLimit=@questionTimeLimit, checkTimeLimit=@checkTimeLimit, updatedAt=GETUTCDATE() WHERE id=1'
+settingDataService.sqlUpdate = async (loadingTimeLimit, questionTimeLimit, checkTimeLimit, isPostAdminEndDateUnavailable) => {
+  const sql = `
+    UPDATE [mtc_admin].[settings]
+    SET
+      loadingTimeLimit=@loadingTimeLimit,
+      questionTimeLimit=@questionTimeLimit,
+      checkTimeLimit=@checkTimeLimit,
+      isPostAdminEndDateUnavailable=@isPostAdminEndDateUnavailable,
+      updatedAt=GETUTCDATE()
+  `
   const params = [
     {
       name: 'loadingTimeLimit',
@@ -43,6 +52,11 @@ settingDataService.sqlUpdate = async (loadingTimeLimit, questionTimeLimit, check
       name: 'checkTimeLimit',
       value: checkTimeLimit,
       type: TYPES.Int
+    },
+    {
+      name: 'isPostAdminEndDateUnavailable',
+      value: isPostAdminEndDateUnavailable,
+      type: TYPES.Bit
     }
   ]
   return sqlService.modify(sql, params)

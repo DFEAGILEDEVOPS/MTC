@@ -3,6 +3,7 @@
 const ValidationError = require('../validation-error')
 const { isInt, isFloat } = require('validator')
 const settingsErrorMessages = require('../errors/settings')
+const { isNotBoolean } = require('ramda-adjunct')
 
 module.exports.validate = async (settingsData) => {
   const validationError = new ValidationError()
@@ -14,6 +15,9 @@ module.exports.validate = async (settingsData) => {
   }
   if (!settingsData.checkTimeLimit || !isInt(settingsData.checkTimeLimit, { min: 10, max: 90 })) {
     validationError.addError('checkTimeLimit', settingsErrorMessages.checkTimeLimit)
+  }
+  if (isNotBoolean(settingsData.isPostAdminEndDateUnavailable)) {
+    validationError.addError('isPostAdminEndDateUnavailable', settingsErrorMessages.isPostAdminEndDateUnavailable)
   }
   return validationError
 }
