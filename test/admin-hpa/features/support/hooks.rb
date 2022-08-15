@@ -62,6 +62,12 @@ Before('@school_import') do
   end
 end
 
+After('@post_check_window_settings') do
+  SqlDbHelper.update_check_end_date((Date.today) + 30)
+  SqlDbHelper.update_admin_end_date((Date.today) + 30)
+  REDIS_CLIENT. del 'checkWindow.sqlFindActiveCheckWindow'
+end
+
 Before("@delete_school_import") do
   SqlDbHelper.delete_schools_audit_history
   SqlDbHelper.delete_schools_imported
