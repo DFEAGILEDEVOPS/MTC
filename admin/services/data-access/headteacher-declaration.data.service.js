@@ -74,7 +74,8 @@ headteacherDeclarationDataService.sqlFindPupilsBlockingHdfBeforeCheckEndDate = a
 /**
  * Find count of pupils blocking hdf submission after check end date
  * Blocking pupils are defined as pupils who have not completed the check, or at least attempted the check (and are not
- * marked as not-attending)
+ * marked as not-attending).  Pupils that have logged in but not completed the check will block.  Pupils have been assigned
+ * PIN but have not logged in, will not block.
  * @param schoolId
  * @return {Promise<Number>}
  */
