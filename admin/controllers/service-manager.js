@@ -19,6 +19,7 @@ const { JobService } = require('../services/job-service/job.service')
 const { ServiceManagerPupilService } = require('../services/service-manager/pupil-service/service-manager.pupil.service')
 const { validate } = require('uuid')
 const { PupilAnnulmentService } = require('../services/service-manager/pupil-annulment/pupil-annulment.service')
+const { TypeOfEstablishmentService } = require('../services/type-of-establishment-service/type-of-establishment-service')
 
 const controller = {
   /**
@@ -428,6 +429,8 @@ const controller = {
       res.locals.pageTitle = 'Edit organisation'
       req.breadcrumbs(res.locals.pageTitle)
       const school = await schoolService.findOneBySlug(req.params.slug)
+      const typeOfEstablishmentData = await TypeOfEstablishmentService.getEstablishmentDataSortedByName()
+
       if (!school) {
         return next(new Error(`School not found ${req.params.slug}`))
       }
@@ -436,12 +439,15 @@ const controller = {
         dfeNumber: 'dfeNumber' in req.body ? req.body.dfeNumber : school.dfeNumber,
         urn: 'urn' in req.body ? req.body.urn : school.urn,
         leaCode: 'leaCode' in req.body ? req.body.leaCode : school.leaCode,
-        estabCode: 'estabCode' in req.body ? req.body.estabCode : school.estabCode
+        estabCode: 'estabCode' in req.body ? req.body.estabCode : school.estabCode,
+        typeOfEstablishmentCode: 'typeOfEstablishmentCode' in req.body ? req.body.typeOfEstablishmentCode : school.typeOfEstablishmentCode
       }
+
       res.render('service-manager/organisation-detail-edit', {
         breadcrumbs: req.breadcrumbs(),
         school,
         error: validationError,
+        typeOfEstablishmentData,
         defaults
       })
     } catch (error) {
@@ -456,16 +462,18 @@ const controller = {
         req.flash('info', 'School not found')
         return res.redirect('/service-manager/organisations/search')
       }
+
       const update = {
         name: String(req.body?.name?.trim() ?? ''),
         dfeNumber: Number(formUtil.convertFromString(req.body?.dfeNumber, formUtilTypes.int)),
         urn: Number(formUtil.convertFromString(req.body?.urn, formUtilTypes.int)),
         leaCode: Number(formUtil.convertFromString(req.body?.leaCode, formUtilTypes.int)),
-        estabCode: Number(formUtil.convertFromString(req.body?.estabCode, formUtilTypes.int))
+        estabCode: Number(formUtil.convertFromString(req.body?.estabCode, formUtilTypes.int)),
+        typeOfEstablishmentCode: Number(formUtil.convertFromString(req.body?.typeOfEstablishmentCode, formUtilTypes.Int))
       }
       await schoolService.updateSchool(req.params.slug, update, req.user.id)
       req.flash('info', 'School updated')
-      return res.redirect(`/service-manager/organisations/${school.urlSlug}`)
+      return res.redirect(`/service-manager/organisations/${school.urlSlug.toLowerCase()}`)
     } catch (error) {
       if (error.name === 'ValidationError') {
         return controller.getEditOrganisation(req, res, next, error)

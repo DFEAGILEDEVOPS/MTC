@@ -29,7 +29,7 @@
     "watch:integration": "yarn jest --watch --coverage=no --config ./tests-integration/jest.integration.config.js"
   },
   "mtc": {
-    "assets-version": "44936cfddc56f525dff225f264f7a828"
+    "assets-version": "90cd5f4e303b17b48b569c927e0c7b01"
   },
   "engines": {
     "node": ">= 14"
@@ -100,6 +100,8 @@
   },
   "devDependencies": {
     "@babel/core": "^7.10.5",
+    "@babel/preset-env": "^7.10.4",
+    "@babel/preset-typescript": "^7.16.0",
     "@types/adm-zip": "^0.4.34",
     "@types/dompurify": "^2.3.1",
     "@types/fs-extra": "^9.0.1",
@@ -107,8 +109,6 @@
     "@types/jsdom": "^16.2.13",
     "@types/marked": "^4.0.0",
     "@types/node": "14",
-    "@babel/preset-env": "^7.10.4",
-    "@babel/preset-typescript": "^7.16.0",
     "@types/ramda": "^0.27.6",
     "@types/uuid": "^8.3.4",
     "babel-jest": "^27.4.2",

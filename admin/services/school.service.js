@@ -59,6 +59,8 @@ const schoolService = {
    * @property {number} urn,
    * @property {string} urlSlug,
    * @property {number} numberOfPupils
+   * @property {number} typeOfEstablishmentCode
+   * @property {string} typeOfEstablishmentName
    * @property {Array<schoolAuditEntry>} audits
    */
 
@@ -79,7 +81,8 @@ const schoolService = {
    * @property {number} estabCode,
    * @property {number} leaCode,
    * @property {string} name,
-   * @property {number} urn
+   * @property {number} urn,
+   * @property {number} typeOfEstablishmentCode
    */
 
   /**
