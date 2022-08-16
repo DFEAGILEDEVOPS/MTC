@@ -11,20 +11,17 @@ const settingsRedisKey = 'settings'
 
 /**
  * Update check settings
- * @param {number} updatedLoadingTimeLimit
- * @param {number} updatedQuestionTimeLimit
- * @param {number} updatedCheckTimeLimit
+ * @param {{questionTimeLimit: number, loadingTimeLimit: number, checkTimeLimit: number, isPostAdminEndDateUnavailable: boolean}} newSettings
  * @param {number} userId
  */
 
-settingService.update = async (updatedLoadingTimeLimit, updatedQuestionTimeLimit, updatedCheckTimeLimit, userId) => {
-  const questionTimeLimit = Math.round(updatedQuestionTimeLimit * 100) / 100
-  const loadingTimeLimit = Math.round(updatedLoadingTimeLimit * 100) / 100
-  const checkTimeLimit = Math.round(updatedCheckTimeLimit)
-  await settingDataService.sqlUpdate(loadingTimeLimit, questionTimeLimit, checkTimeLimit)
-  await settingLogDataService.sqlCreate(loadingTimeLimit, questionTimeLimit, checkTimeLimit, userId)
-  const settings = { loadingTimeLimit, questionTimeLimit, checkTimeLimit }
-  return redisCacheService.set(settingsRedisKey, settings)
+settingService.update = async (newSettings, userId) => {
+  const questionTimeLimit = Math.round(newSettings.questionTimeLimit * 100) / 100
+  const loadingTimeLimit = Math.round(newSettings.loadingTimeLimit * 100) / 100
+  const checkTimeLimit = Math.round(newSettings.checkTimeLimit)
+  await settingDataService.sqlUpdate(loadingTimeLimit, questionTimeLimit, checkTimeLimit, newSettings.isPostAdminEndDateUnavailable)
+  await settingLogDataService.sqlCreate(loadingTimeLimit, questionTimeLimit, checkTimeLimit, newSettings.isPostAdminEndDateUnavailable, userId)
+  return redisCacheService.drop(settingsRedisKey)
 }
 
 /**
@@ -50,7 +47,8 @@ settingService.get = async () => {
     settings = {
       questionTimeLimit: config.QUESTION_TIME_LIMIT,
       loadingTimeLimit: config.TIME_BETWEEN_QUESTIONS,
-      checkTimeLimit: config.LENGTH_OF_CHECK_MINUTES
+      checkTimeLimit: config.LENGTH_OF_CHECK_MINUTES,
+      isPostAdminEndDateUnavailable: false
     }
   }
   await redisCacheService.set(settingsRedisKey, settings)

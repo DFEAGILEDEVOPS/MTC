@@ -11,6 +11,8 @@ class CheckSettingsPage < SitePrism::Page
   element :error_summary, '.govuk-grid-column-two-thirds .govuk-error-summary__body p'
   element :successful_submission, '.govuk-info-message'
   element :csrf, 'input[name="_csrf"]', visible: false
+  element :read_only, '#read-only'
+  element :unavailable, '#unavailable'
 
   def update_question_time_limit(value)
     question_time_limit.set ''
