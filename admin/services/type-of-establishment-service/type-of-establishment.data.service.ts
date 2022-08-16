@@ -1,5 +1,4 @@
 const sqlService = require('../data-access/sql.service')
-// const tableSorting = require('../../helpers/table-sorting')
 
 export interface TypeOfEstablishmentData {
   code: number,
