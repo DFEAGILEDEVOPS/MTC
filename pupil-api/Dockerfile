@@ -6,7 +6,7 @@ WORKDIR /usr/src/app
 # changes to package.json have been made
 COPY package.json .
 COPY yarn.lock .
-RUN yarn install --ignore-engines --frozen-lockfile
+RUN yarn install --ignore-engines --frozen-lockfile --production
 
 COPY . .
 RUN yarn build

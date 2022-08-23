@@ -4,5 +4,5 @@
 set -e
 
 cd ../deploy/sql
-yarn install
+yarn install --frozen-lockfile --production
 yarn dummy:all
