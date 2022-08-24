@@ -84,18 +84,24 @@ const controller = {
   setUpdateTiming: async function setUpdateTiming (req, res, next) {
     res.locals.pageTitle = 'Settings on pupil check'
     try {
-      const validationError = await settingsValidator.validate(req.body)
+      const newSettings = {
+        questionTimeLimit: req.body.questionTimeLimit,
+        loadingTimeLimit: req.body.loadingTimeLimit,
+        checkTimeLimit: req.body.checkTimeLimit,
+        isPostAdminEndDateUnavailable: req.body.isPostAdminEndDateUnavailable === '1'
+      }
+      const validationError = await settingsValidator.validate(newSettings)
       if (validationError.hasError()) {
         res.locals.pageTitle = 'Settings on pupil check'
         req.breadcrumbs(res.locals.pageTitle)
         return res.render('service-manager/check-settings', {
-          settings: req.body,
+          settings: newSettings,
           error: validationError,
           errorMessage: settingsErrorMessages,
           breadcrumbs: req.breadcrumbs()
         })
       }
-      await settingService.update(req.body.loadingTimeLimit, req.body.questionTimeLimit, req.body.checkTimeLimit, req.user.id)
+      await settingService.update(newSettings, req.user.id)
     } catch (error) {
       return next(error)
     }
