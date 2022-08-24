@@ -6,10 +6,12 @@ WORKDIR /usr/src/app
 # changes to package.json have been made
 COPY package.json .
 COPY yarn.lock .
-RUN yarn install --ignore-engines --frozen-lockfile --production
+RUN yarn install --ignore-engines --frozen-lockfile
 
 COPY . .
 RUN yarn build
+RUN rm -rf ./node_modules
+RUN yarn install --ignore-engines --frozen-lockfile --production
 RUN yarn global add pm2
 
 # ssh
