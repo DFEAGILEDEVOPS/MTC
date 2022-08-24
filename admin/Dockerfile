@@ -1,11 +1,15 @@
-FROM node:14.18.1
+FROM node:14.18.1 as builder
 
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 COPY . .
-RUN yarn install --ignore-engines --frozen-lockfile --production
+RUN yarn install --ignore-engines --frozen-lockfile
 RUN yarn build
 RUN yarn global add pm2
+# remove and reinstall node_modules in prod only mode
+RUN rm -rf ./node_modules
+RUN yarn install --ignore-engines --frozen-lockfile --production
+
 
 # ssh
 ENV SSH_PASSWD "root:Docker!"

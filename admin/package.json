@@ -12,12 +12,11 @@
     "lintAndBuild": "yarn lint && yarn build",
     "migrate-sql": "node ../db/engine/migrate.js",
     "migrate-and-seed-sql": "yarn migrate-sql && yarn seed-sql",
-    "postinstall": "gulp build",
     "purgestorage": "bin/init-dev-storage.js",
     "seed-sql": "node ../db/engine/seed.js",
     "sasswatch": "gulp watch",
     "start:js": "node --max-http-header-size 15000 ./server.js",
-    "start": "yarn build && node --max-http-header-size 15000 ./dist/server.js",
+    "start": "node --max-http-header-size 15000 ./dist/server.js",
     "start:dev": "yarn dev-build && concurrently -r 'nodemon --inspect --delay 1500ms --watch ./dist --max-http-header-size 15000 ./dist/server.js' 'gulp watch'",
     "test": "yarn lint && yarn jest",
     "test:watch": "yarn jest --watch --verbose",
@@ -29,7 +28,7 @@
     "watch:integration": "yarn jest --watch --coverage=no --config ./tests-integration/jest.integration.config.js"
   },
   "mtc": {
-    "assets-version": "44936cfddc56f525dff225f264f7a828"
+    "assets-version": "90cd5f4e303b17b48b569c927e0c7b01"
   },
   "engines": {
     "node": ">= 14"
