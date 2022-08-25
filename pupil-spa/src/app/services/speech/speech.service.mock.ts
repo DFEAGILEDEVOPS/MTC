@@ -34,7 +34,11 @@ export class SpeechServiceMock {
 
   speakElement (arg) {}
 
-  waitForEndOfSpeech () {
-    return Promise.resolve(true);
+  waitForEndOfSpeech (): Promise<void> {
+   return Promise.resolve()
+  }
+
+  speakQueued (arg) {
+    this.speak(arg)
   }
 }
