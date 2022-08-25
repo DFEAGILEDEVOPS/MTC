@@ -943,6 +943,7 @@ describe('service manager controller:', () => {
       test('it renders the add-school page', async () => {
         const req = getReq()
         const res = getRes()
+        jest.spyOn(TypeOfEstablishmentService, 'getEstablishmentDataSortedByName').mockResolvedValue()
         await controller.getAddSchool(req, res, next)
         expect(res.render).toHaveBeenCalled()
         expect(res.render.mock.calls[0][0]).toBe('service-manager/add-school')
@@ -953,6 +954,7 @@ describe('service manager controller:', () => {
         jest.spyOn(res, 'render').mockImplementation(() => {
           throw new Error('test error')
         })
+        jest.spyOn(TypeOfEstablishmentService, 'getEstablishmentDataSortedByName').mockResolvedValue()
         await controller.getAddSchool(req, res, next)
         expect(next).toHaveBeenCalled()
       })
@@ -963,7 +965,8 @@ describe('service manager controller:', () => {
           body: {
             name: 'Primary Academy',
             dfeNumber: '1231234',
-            urn: '123456'
+            urn: '123456',
+            typeOfEstablishmentCode: '999'
           }
         })
         req.user = {
@@ -981,7 +984,8 @@ describe('service manager controller:', () => {
           body: {
             name: 'Primary Academy',
             dfeNumber: '1231234',
-            urn: '123456'
+            urn: '123456',
+            typeOfEstablishmentCode: '999'
           }
         })
         req.user = {
