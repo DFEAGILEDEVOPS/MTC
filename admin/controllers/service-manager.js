@@ -336,11 +336,13 @@ const controller = {
     res.locals.pageTitle = 'Add organisation'
     req.breadcrumbs(res.locals.pageTitle)
     try {
+      const typeOfEstablishmentData = await TypeOfEstablishmentService.getEstablishmentDataSortedByName()
       res.render('service-manager/add-school', {
         breadcrumbs: req.breadcrumbs(),
         formData: req.body,
         messages: res.locals.messages,
-        error: error
+        error: error,
+        typeOfEstablishmentData
       })
     } catch (error) {
       return next(error)
@@ -349,11 +351,12 @@ const controller = {
 
   postAddSchool: async function postAddSchool (req, res, next) {
     try {
-      const { name, dfeNumber, urn } = req.body
+      const { name, dfeNumber, urn, typeOfEstablishmentCode } = req.body
       await schoolService.addSchool({
         name: name.trim(),
         dfeNumber: parseInt(dfeNumber, 10),
-        urn: parseInt(urn, 10)
+        urn: parseInt(urn, 10),
+        typeOfEstablishmentCode: parseInt(typeOfEstablishmentCode, 10)
       }, req.user.id)
       req.flash('info', 'School added')
       res.redirect('/service-manager/organisations')

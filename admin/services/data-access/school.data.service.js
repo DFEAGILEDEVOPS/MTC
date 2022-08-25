@@ -210,15 +210,25 @@ const schoolDataService = {
    */
   sqlAddSchool: async function (data, userId) {
     const sql = `
-        INSERT INTO [mtc_admin].[school] (leaCode, estabCode, dfeNumber, urn, name, lastModifiedBy_userId)
-        VALUES (@leaCode, @estabCode, @dfeNumber, @urn, @name, @userId)`
+        DECLARE @typeOfEstablishmentLookupId Int = (SELECT id FROM mtc_admin.typeOfEstablishmentLookup WHERE code = @typeOfEstablishmentCode);
+
+        IF @typeOfEstablishmentLookupId IS NULL
+          BEGIN
+            DECLARE @msg NVARCHAR(128) = CONCAT('unknown typeOfEstablishmentCode: ', CAST(@typeOfEstablishmentCode as NVARCHAR(10)));
+            THROW 51000, @msg, 1;
+          END;
+
+        INSERT INTO [mtc_admin].[school] (leaCode, estabCode, dfeNumber, urn, name, lastModifiedBy_userId, typeOfEstablishmentLookup_id)
+        VALUES (@leaCode, @estabCode, @dfeNumber, @urn, @name, @userId, @typeOfEstablishmentLookupId)
+    `
     const params = [
       { name: 'estabCode', value: data.estabCode, type: TYPES.Int },
       { name: 'leaCode', value: data.leaCode, type: TYPES.Int },
       { name: 'dfeNumber', value: data.dfeNumber, type: TYPES.Int },
       { name: 'urn', value: data.urn, type: TYPES.Int },
       { name: 'name', value: data.name, type: TYPES.NVarChar(TYPES.MAX) },
-      { name: 'userId', value: userId, type: TYPES.Int }
+      { name: 'userId', value: userId, type: TYPES.Int },
+      { name: 'typeOfEstablishmentCode', value: data.typeOfEstablishmentCode, type: TYPES.Int }
     ]
     return sqlService.modify(sql, params)
   }
