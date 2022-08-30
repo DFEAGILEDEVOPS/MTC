@@ -1,5 +1,6 @@
 import * as mssql from 'mssql'
 import { ILogger } from '../../../common/logger'
+import { ISqlParameter } from '../../../sql/sql.service'
 import { SchoolImportJobOutput } from '../SchoolImportJobOutput'
 import { ISchoolRecord } from './ISchoolRecord'
 
@@ -59,6 +60,30 @@ export class SchoolDataService implements ISchoolDataService {
         this.logError(`Bulk request failed. Error was:\n ${error.message}`)
         error.jobResult = this.jobResult
         throw error
+      }
+    }
+    return this.jobResult
+  }
+
+  async resilientUpload (schoolData: ISchoolRecord[]): Promise<SchoolImportJobOutput> {
+    const sql = `INSERT [mtc_admin].[school] (dfeNumber, estabCode, leaCode, name, urn)
+                  VALUES (@dfeNumber, @estabCode, @leaCode, @name, @urn)`
+    const request = new mssql.Request(this.pool)
+    for (let index = 0; index < schoolData.length; index++) {
+      const school = schoolData[index]
+      request.input('dfeNumber', mssql.TYPES.Int, `${school.leaCode}${school.estabCode}`)
+      request.input('estabCode', mssql.TYPES.Int, school.estabCode)
+      request.input('leaCode', mssql.TYPES.Int, school.leaCode)
+      request.input('name', mssql.TYPES.NVarChar(mssql.MAX), school.name)
+      request.input('urn', mssql.TYPES.Int, school.urn)
+      try {
+        await request.execute(sql)
+        this.logger.info(`school imported. urn:${school.urn}`)
+        this.jobResult.linesProcessed += 1
+        this.jobResult.schoolsLoaded += 1
+      } catch (error) {
+        this.logError(`insert failed for school. urn:${school.urn} error: ${error.message}`)
+        this.jobResult.linesProcessed += 1
       }
     }
     return this.jobResult
