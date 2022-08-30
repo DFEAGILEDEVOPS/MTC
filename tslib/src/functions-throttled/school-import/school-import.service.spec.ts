@@ -15,7 +15,8 @@ let consoleLogger: ILogger
 let jobDataServiceMock: IJobDataService
 
 const SchoolDataServiceMock = jest.fn<ISchoolDataService, any>(() => ({
-  bulkUpload: jest.fn()
+  bulkUpload: jest.fn(),
+  resilientUpload: jest.fn()
 }))
 
 const JobDataServiceMock = jest.fn<IJobDataService, any>(() => ({
