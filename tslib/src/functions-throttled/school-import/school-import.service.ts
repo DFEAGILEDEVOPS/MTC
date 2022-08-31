@@ -92,9 +92,9 @@ export class SchoolImportService {
         this.logger.verbose(`${name}: no schools found to upload. Exiting.`)
         return this.jobResult
       }
-      this.logger.verbose(`${name}  bulkUpload starting`)
+      this.logger.verbose(`${name}  school import starting`)
       await this.schoolDataService.resilientUpload(filteredSchools)
-      this.logger.verbose(`${name}  bulkUpload complete`)
+      this.logger.verbose(`${name}  school import complete`)
       await this.updateJobStatusToCompleted(jobSlug)
       return this.jobResult
     } catch (error) {
