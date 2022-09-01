@@ -5,7 +5,7 @@ import { ISchoolRecord } from './ISchoolRecord'
 
 export interface ISchoolDataService {
   bulkUpload (schoolData: ISchoolRecord[]): Promise<SchoolImportJobOutput>
-  resilientUpload (schoolData: ISchoolRecord[]): Promise<SchoolImportJobOutput>
+  individualUpload (schoolData: ISchoolRecord[]): Promise<SchoolImportJobOutput>
 }
 
 export class SchoolDataService implements ISchoolDataService {
@@ -65,7 +65,7 @@ export class SchoolDataService implements ISchoolDataService {
     return this.jobResult
   }
 
-  async resilientUpload (schoolData: ISchoolRecord[]): Promise<SchoolImportJobOutput> {
+  async individualUpload (schoolData: ISchoolRecord[]): Promise<SchoolImportJobOutput> {
     const sql = `INSERT [mtc_admin].[school] (dfeNumber, estabCode, leaCode, name, urn)
                   VALUES (@dfeNumber, @estabCode, @leaCode, @name, @urn)`
     for (let index = 0; index < schoolData.length; index++) {

@@ -93,7 +93,7 @@ export class SchoolImportService {
         return this.jobResult
       }
       this.logger.verbose(`${name}  school import starting`)
-      await this.schoolDataService.resilientUpload(filteredSchools)
+      await this.schoolDataService.individualUpload(filteredSchools)
       this.logger.verbose(`${name}  school import complete`)
       await this.updateJobStatusToCompleted(jobSlug)
       return this.jobResult
