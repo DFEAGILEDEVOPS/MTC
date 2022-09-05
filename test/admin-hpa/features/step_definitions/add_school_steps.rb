@@ -10,8 +10,8 @@ When(/^I submit an empty form$/) do
 end
 
 Then(/^I should see errors stating that the fields are mandatory$/) do
-  expect(add_school_page.error_summary.error_messages.map {|a| a.text}.sort).to eql ["Please enter a DFE number", "Please enter a URN", "School name is too short", "Unknown LEA code: NaN"]
-  expect(add_school_page.error_messages.map {|a| a.text}.sort).to eql ["Please enter a DFE number", "Please enter a URN", "School name is too short"]
+  expect(add_school_page.error_summary.error_messages.map {|a| a.text}.sort).to eql ["Please choose one of the establishment types", "Please enter a DFE number", "Please enter a URN", "School name is too short", "Unknown LEA code: NaN"]
+  expect(add_school_page.error_messages.map {|a| a.text}.sort).to eql ["Please choose one of the establishment types", "Please enter a DFE number", "Please enter a URN", "School name is too short"]
 end
 
 When(/^I submit valid values for a new school$/) do
@@ -36,6 +36,8 @@ When(/^I submit a duplicate value for dfe number$/) do
   @name = 'New school ' + rand(934753).to_s
   add_school_page.school_name.set @name
   add_school_page.dfe_number.set school['dfeNumber']
+  @toe = SqlDbHelper.type_of_establishment.sample
+  add_school_page.type_of_establishment.select @toe
   add_school_page.urn.set rand.to_s[2..5]
   add_school_page.add_school.click
 end
@@ -50,6 +52,8 @@ When(/^I enter details of a school which has a invalid LEA code$/) do
   add_school_page.dfe_number.set '100' + rand.to_s[2..5]
   @urn = rand.to_s[2..5]
   add_school_page.urn.set @urn
+  @toe = SqlDbHelper.type_of_establishment.sample
+  add_school_page.type_of_establishment.select @toe
   add_school_page.add_school.click
 end
 
@@ -64,6 +68,8 @@ When(/^I submit a duplicate value for urn number$/) do
   add_school_page.school_name.set @name
   add_school_page.dfe_number.set SqlDbHelper.get_list_of_la_codes[30] + rand.to_s[2..5]
   add_school_page.urn.set school['urn']
+  @toe = SqlDbHelper.type_of_establishment.sample
+  add_school_page.type_of_establishment.select @toe
   add_school_page.add_school.click
 end
 
