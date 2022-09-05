@@ -24,4 +24,6 @@ Key format | parameters | Description
  `sasToken:${queueName}` | queueName | returns the active sas token for the specified storage queue
  `lacodes` | (none) | returns the set of LA codes for schools
 `result:${schoolId}` | schoolId | returns the school results dataset
+`serviceMessage` | (none) | returns the current system wide service message
+`settings` | (none) | returns system wide settings
 
