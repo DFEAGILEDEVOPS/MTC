@@ -16,6 +16,7 @@ import { IdleModalComponent } from '../modal/idle.modal.component';
 import { TimerService } from '../services/timer/timer.service';
 import { TimerServiceMock } from '../services/timer/timer.service.mock';
 import { SvgClockComponent } from '../svg/svg.clock.component';
+import { servicesVersion } from 'typescript';
 
 describe('LoadingComponent', () => {
   let component: LoadingComponent;
@@ -67,4 +68,11 @@ describe('LoadingComponent', () => {
     expect((<any> auditEntryInserted.data).sequenceNumber).toBe(1);
     expect((<any> auditEntryInserted.data).question).toBe('2x3');
   });
+
+  it('should clean up the timeouts when destroyed', () => {
+    // @ts-ignore: spying on protected method
+    const spy = spyOn(component, 'cleanupTheTimeouts').and.callThrough()
+    component.ngOnDestroy()
+    expect(spy).toHaveBeenCalled()
+  })
 });
