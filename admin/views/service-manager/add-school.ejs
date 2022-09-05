@@ -7,7 +7,7 @@
             <%- partial('partials/_gds_session_expiry') %>
             <%- partial('partials/_flash-messages') %>
             <%- partial('partials/_form-error', {
-                pageFields: ['dfeNumber', 'name', 'urn'],
+                pageFields: ['dfeNumber', 'name', 'urn', 'typeOfEstablishmentCode'],
                 error
             }) %>
 
@@ -60,7 +60,7 @@
                         <% for (let i = 0; i < typeOfEstablishmentData.length; i++) {
                             const d = typeOfEstablishmentData[i]
                         %>
-                            <option value="<%= d.code %>" <%= d.code === formData.typeOfEstablishmentCode ? 'selected' : '' %>><%= d.name %> (<%= d.code %>)</option>
+                            <option value="<%= d.code %>" <%= d.code == formData.typeOfEstablishmentCode ? 'selected' : '' %>><%= d.name %> (<%= d.code %>)</option>
                         <% } %>
                     </select>
                 </div>

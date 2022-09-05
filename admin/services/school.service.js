@@ -159,7 +159,7 @@ const schoolService = {
 
   /**
    * get list of school audit history
-   * @param {number} schoolId
+   * @param {string} urlSlug - school uuid
    */
   getSchoolAudits: async function getSchoolAudits (urlSlug) {
     if (!urlSlug) throw new Error('urlSlug is required')

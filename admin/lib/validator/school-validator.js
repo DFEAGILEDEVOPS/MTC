@@ -52,10 +52,12 @@ const schoolValidator = {
 
     if (typeof school.typeOfEstablishmentCode !== 'number') {
       validationError.addError('typeOfEstablishmentCode', `Invalid Type Of Establishment code: ${school.typeOfEstablishmentCode}`)
+    } else if (isNaN(school.typeOfEstablishmentCode)) {
+      validationError.addError('typeOfEstablishmentCode', 'Please choose one of the establishment types')
     }
 
     if (school.typeOfEstablishmentCode === 0) {
-      validationError.addError('typeOfEstablishmentCode', 'Please choose one the establishment types')
+      validationError.addError('typeOfEstablishmentCode', 'Please choose one of the establishment types')
     }
 
     return validationError
