@@ -285,7 +285,7 @@ export class SpeechService implements OnDestroy {
    * Delete previous timeout to ensure previous speech doesn't
    * happen if it's being cancelled here.
    */
-  cancel(): any {
+  cancel(): Promise<void> {
     // console.log('SpeechAPI cancel() called');
     const _window = this.windowRefService.nativeWindow;
     _window.clearTimeout(this.cancelTimeout);
@@ -313,7 +313,7 @@ export class SpeechService implements OnDestroy {
    * can get randomly cancelled when ending at the same time
    * with another utterance
    */
-  waitForEndOfSpeech(): Promise<any> {
+  waitForEndOfSpeech(): Promise<void> {
     const _window = this.windowRefService.nativeWindow;
     return new Promise((resolve: (value?: any) => void, reject: (reason?: any) => void) => {
       if (!this.isSpeaking() && !this.isPending()) {
