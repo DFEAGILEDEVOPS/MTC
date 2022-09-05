@@ -45,6 +45,29 @@ describe('check-started.service', () => {
     expect(dataServiceMock.updateCheckStartedDate).toHaveBeenCalledTimes(1)
   })
 
+  test('it does not update the mtc_admin.check record with check started datetime if TIO check', async () => {
+    const message: ICheckStartedMessage = {
+      checkCode: 'check-code',
+      clientCheckStartedAt: new Date(),
+      version: 1
+    }
+    const preparedCheckKey = 'prepared-check-key'
+
+    jest.spyOn(redisServiceMock, 'get').mockImplementation(async (key: string) => {
+      if (key.startsWith('prepared-check-lookup')) {
+        return preparedCheckKey
+      } else {
+        return {
+          config: {
+            practice: true
+          }
+        }
+      }
+    })
+    await sut.process(message)
+    expect(dataServiceMock.updateCheckStartedDate).not.toHaveBeenCalled()
+  })
+
   test('it drops preparedCheck from redis if a live check', async () => {
     const message: ICheckStartedMessage = {
       checkCode: 'check-code',
