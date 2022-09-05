@@ -973,10 +973,10 @@ describe('service manager controller:', () => {
           id: 1
         }
         const res = getRes()
-        jest.spyOn(schoolService, 'addSchool').mockImplementation()
+        jest.spyOn(schoolService, 'addSchool').mockResolvedValue({ urlSlug: '00000000-00000000-D0000000-00000000' })
         await controller.postAddSchool(req, res, next)
         expect(schoolService.addSchool).toHaveBeenCalled()
-        expect(res.redirect).toHaveBeenCalledWith('/service-manager/organisations')
+        expect(res.redirect).toHaveBeenCalledWith('/service-manager/organisations/00000000-00000000-d0000000-00000000')
       })
 
       test('it displays the page again if the validation fails', async () => {

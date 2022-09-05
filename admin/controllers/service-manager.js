@@ -352,14 +352,14 @@ const controller = {
   postAddSchool: async function postAddSchool (req, res, next) {
     try {
       const { name, dfeNumber, urn, typeOfEstablishmentCode } = req.body
-      await schoolService.addSchool({
+      const newSchool = await schoolService.addSchool({
         name: name.trim(),
         dfeNumber: parseInt(dfeNumber, 10),
         urn: parseInt(urn, 10),
         typeOfEstablishmentCode: parseInt(typeOfEstablishmentCode, 10)
       }, req.user.id)
       req.flash('info', 'School added')
-      res.redirect('/service-manager/organisations')
+      res.redirect(`/service-manager/organisations/${newSchool.urlSlug.toLowerCase()}`)
     } catch (error) {
       if (error.constructor === ValidationError) {
         return controller.getAddSchool(req, res, next, error)

@@ -142,6 +142,7 @@ const schoolService = {
    * Service manager - add a new School
    * @param {newSchoolDetails} newSchoolDetails
    * @param {number} userId
+   * @return {Promise<object>} school
    */
   addSchool: async function addSchool (newSchoolDetails, userId) {
     const parsed = this.parseDfeNumber(newSchoolDetails.dfeNumber)
@@ -155,6 +156,8 @@ const schoolService = {
       throw validationError
     }
     await schoolDataService.sqlAddSchool(insertDetails, userId)
+    const school = await schoolDataService.sqlFindOneByDfeNumber(insertDetails.dfeNumber)
+    return school
   },
 
   /**

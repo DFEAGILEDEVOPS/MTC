@@ -117,6 +117,6 @@ describe('school validator', () => {
     }
     const ve = await sut.validate(update)
     expect(ve.hasError()).toBe(true)
-    expect(ve.get('typeOfEstablishmentCode')).toEqual('Please choose one the establishment types')
+    expect(ve.get('typeOfEstablishmentCode')).toEqual('Please choose one of the establishment types')
   })
 })

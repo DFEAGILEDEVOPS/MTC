@@ -219,7 +219,7 @@ const schoolDataService = {
           END;
 
         INSERT INTO [mtc_admin].[school] (leaCode, estabCode, dfeNumber, urn, name, lastModifiedBy_userId, typeOfEstablishmentLookup_id)
-        VALUES (@leaCode, @estabCode, @dfeNumber, @urn, @name, @userId, @typeOfEstablishmentLookupId)
+        VALUES (@leaCode, @estabCode, @dfeNumber, @urn, @name, @userId, @typeOfEstablishmentLookupId);
     `
     const params = [
       { name: 'estabCode', value: data.estabCode, type: TYPES.Int },
