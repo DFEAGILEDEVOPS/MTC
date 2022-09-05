@@ -42,7 +42,7 @@ export const sqlAzureRequestTimeoutRetryPredicate: IRetryPredicate = (error: any
  * @returns
  */
 export const sqlAzureResourceLimitReachedPredicate: IRetryPredicate = (error: any) => {
-  if (error && {}.hasOwnProperty.call(error, 'number')) {
+  if (error !== undefined && {}.hasOwnProperty.call(error, 'number')) {
     // https://docs.microsoft.com/en-gb/azure/sql-database/troubleshoot-connectivity-issues-microsoft-azure-sql-database#resource-governance-errors
     return error.number === 10928
   }
@@ -55,10 +55,17 @@ export const sqlAzureResourceLimitReachedPredicate: IRetryPredicate = (error: an
  * @returns
  */
 export const socketErrorPredicate: IRetryPredicate = (error: any) => {
-  if (error && {}.hasOwnProperty.call(error, 'code')) {
+  if (error !== undefined && {}.hasOwnProperty.call(error, 'code')) {
     return error.code === 'ESOCKET'
   }
   return false
+}
+
+export const retryOnAllSoftErrorsPredicate: IRetryPredicate = (error: any) => {
+  return sqlAzureResourceLimitReachedPredicate(error) ||
+  sqlAzureTimeoutRetryPredicate(error) ||
+  sqlAzureRequestTimeoutRetryPredicate(error) ||
+  socketErrorPredicate(error)
 }
 
 export interface IRetryStrategy {

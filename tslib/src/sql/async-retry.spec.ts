@@ -250,7 +250,7 @@ describe('async-retry', () => {
 
     test('should not attempt retry if name is not TimeoutError', async () => {
       let callCount = 0
-      const func = () => {
+      const func = async (): Promise<void> => {
         callCount++
         const error = new Error()
         error.name = 'SomeError'
@@ -267,7 +267,7 @@ describe('async-retry', () => {
 
     test('should attempt retry if name is TimeoutError', async () => {
       let callCount = 0
-      const func = () => {
+      const func = async (): Promise<void> => {
         callCount++
         const error = new Error('this is a timeout error')
         error.name = 'TimeoutError'
@@ -286,7 +286,7 @@ describe('async-retry', () => {
   describe('sql azure resource limit reached predicate', () => {
     test('should not attempt retry if error does not have a number property', async () => {
       let callCount = 0
-      const func = () => {
+      const func = async (): Promise<void> => {
         callCount++
         return Promise.reject(new Error())
       }
@@ -301,7 +301,7 @@ describe('async-retry', () => {
 
     test('should not attempt retry if error.number is not 10928', async () => {
       let callCount = 0
-      const func = () => {
+      const func = async (): Promise<void> => {
         callCount++
         const error: any = new Error()
         error.number = 12345
@@ -318,7 +318,7 @@ describe('async-retry', () => {
 
     test('should attempt retry if error.number is 10928', async () => {
       let callCount = 0
-      const func = () => {
+      const func = async (): Promise<void> => {
         callCount++
         const error: any = new Error()
         error.number = 10928
@@ -337,7 +337,7 @@ describe('async-retry', () => {
   describe('socket error predicate', () => {
     test('should not attempt retry if the error does not have a status property', async () => {
       let callCount = 0
-      const func = () => {
+      const func = async (): Promise<void> => {
         callCount++
         const error = new Error('mock error from unit testing')
         return Promise.reject(error)
@@ -353,7 +353,7 @@ describe('async-retry', () => {
 
     test('should not attempt retry if code is not ESOCKET', async () => {
       let callCount = 0
-      const func = () => {
+      const func = async (): Promise<void> => {
         callCount++
         const error: any = new Error('mock error from unit testing')
         error.code = 'SOMECODE'
@@ -370,7 +370,7 @@ describe('async-retry', () => {
 
     test('should attempt retry if code is ESOCKET', async () => {
       let callCount = 0
-      const func = () => {
+      const func = async (): Promise<void> => {
         callCount++
         const error: any = new Error('mock error from unit testing')
         error.code = 'ESOCKET'
