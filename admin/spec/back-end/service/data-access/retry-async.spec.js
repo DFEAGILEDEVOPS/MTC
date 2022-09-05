@@ -227,39 +227,39 @@ describe('async-retry', () => {
         expect(callCount).toBe(1)
       }
     })
-  })
 
-  test('should not attempt retry if code is not ESOCKET', async () => {
-    let callCount = 0
-    const func = () => {
-      callCount++
-      const error = new Error('mock error from unit testing')
-      error.code = 'SOMECODE'
-      return Promise.reject(error)
-    }
-    try {
-      await asyncRetryHandler(func, retryPolicy, socketErrorPredicate)
-      fail('error should have thrown')
-    } catch (error) {
-      expect(error).toBeDefined()
-      expect(callCount).toBe(1)
-    }
-  })
+    test('should not attempt retry if code is not ESOCKET', async () => {
+      let callCount = 0
+      const func = () => {
+        callCount++
+        const error = new Error('mock error from unit testing')
+        error.code = 'SOMECODE'
+        return Promise.reject(error)
+      }
+      try {
+        await asyncRetryHandler(func, retryPolicy, socketErrorPredicate)
+        fail('error should have thrown')
+      } catch (error) {
+        expect(error).toBeDefined()
+        expect(callCount).toBe(1)
+      }
+    })
 
-  test('should attempt retry if code is ESOCKET', async () => {
-    let callCount = 0
-    const func = () => {
-      callCount++
-      const error = new Error('mock error from unit testing')
-      error.code = 'ESOCKET'
-      return Promise.reject(error)
-    }
-    try {
-      await asyncRetryHandler(func, retryPolicy, socketErrorPredicate)
-      fail('error should have thrown')
-    } catch (error) {
-      expect(error).toBeDefined()
-      expect(callCount).toBe(3)
-    }
+    test('should attempt retry if code is ESOCKET', async () => {
+      let callCount = 0
+      const func = () => {
+        callCount++
+        const error = new Error('mock error from unit testing')
+        error.code = 'ESOCKET'
+        return Promise.reject(error)
+      }
+      try {
+        await asyncRetryHandler(func, retryPolicy, socketErrorPredicate)
+        fail('error should have thrown')
+      } catch (error) {
+        expect(error).toBeDefined()
+        expect(callCount).toBe(3)
+      }
+    })
   })
 })

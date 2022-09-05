@@ -1,4 +1,4 @@
-import retry, { IRetryStrategy, sqlTimeoutRetryPredicate } from './async-retry'
+import retry, { IRetryStrategy, socketErrorPredicate, sqlAzureRequestTimeoutRetryPredicate, sqlAzureResourceLimitReachedPredicate, sqlAzureTimeoutRetryPredicate } from './async-retry'
 import { ConnectionError, RequestError, PreparedStatementError, TransactionError } from 'mssql'
 
 let retryPolicy: IRetryStrategy
@@ -103,7 +103,7 @@ describe('async-retry', () => {
         return Promise.reject(new Error())
       }
       try {
-        await retry<unknown>(func, retryPolicy, sqlTimeoutRetryPredicate)
+        await retry<unknown>(func, retryPolicy, sqlAzureRequestTimeoutRetryPredicate)
         fail('error should have thrown')
       } catch (error) {
         expect(error).toBeDefined()
@@ -118,7 +118,7 @@ describe('async-retry', () => {
         return Promise.reject(new ConnectionError('error', 'not a timeout'))
       }
       try {
-        await retry<unknown>(func, retryPolicy, sqlTimeoutRetryPredicate)
+        await retry<unknown>(func, retryPolicy, sqlAzureRequestTimeoutRetryPredicate)
         fail('error should have thrown')
       } catch (error) {
         expect(error).toBeDefined()
@@ -133,7 +133,7 @@ describe('async-retry', () => {
         return Promise.reject(new RequestError('error', 'not a timeout'))
       }
       try {
-        await retry<unknown>(func, retryPolicy, sqlTimeoutRetryPredicate)
+        await retry<unknown>(func, retryPolicy, sqlAzureRequestTimeoutRetryPredicate)
         fail('error should have thrown')
       } catch (error) {
         expect(error).toBeDefined()
@@ -148,7 +148,7 @@ describe('async-retry', () => {
         return Promise.reject(new PreparedStatementError('error', 'not a timeout'))
       }
       try {
-        await retry<unknown>(func, retryPolicy, sqlTimeoutRetryPredicate)
+        await retry<unknown>(func, retryPolicy, sqlAzureRequestTimeoutRetryPredicate)
         fail('error should have thrown')
       } catch (error) {
         expect(error).toBeDefined()
@@ -163,7 +163,7 @@ describe('async-retry', () => {
         return Promise.reject(new TransactionError('error', 'not a timeout'))
       }
       try {
-        await retry<unknown>(func, retryPolicy, sqlTimeoutRetryPredicate)
+        await retry<unknown>(func, retryPolicy, sqlAzureRequestTimeoutRetryPredicate)
         fail('error should have thrown')
       } catch (error) {
         expect(error).toBeDefined()
@@ -178,7 +178,7 @@ describe('async-retry', () => {
         return Promise.reject(new ConnectionError('error', 'ETIMEOUT'))
       }
       try {
-        await retry<unknown>(func, retryPolicy, sqlTimeoutRetryPredicate)
+        await retry<unknown>(func, retryPolicy, sqlAzureRequestTimeoutRetryPredicate)
         fail('error should have thrown')
       } catch (error) {
         expect(error).toBeDefined()
@@ -193,7 +193,7 @@ describe('async-retry', () => {
         return Promise.reject(new RequestError('error', 'ETIMEOUT'))
       }
       try {
-        await retry<unknown>(func, retryPolicy, sqlTimeoutRetryPredicate)
+        await retry<unknown>(func, retryPolicy, sqlAzureRequestTimeoutRetryPredicate)
         fail('error should have thrown')
       } catch (error) {
         expect(error).toBeDefined()
@@ -208,7 +208,7 @@ describe('async-retry', () => {
         return Promise.reject(new PreparedStatementError('error', 'ETIMEOUT'))
       }
       try {
-        await retry<unknown>(func, retryPolicy, sqlTimeoutRetryPredicate)
+        await retry<unknown>(func, retryPolicy, sqlAzureRequestTimeoutRetryPredicate)
         fail('error should have thrown')
       } catch (error) {
         expect(error).toBeDefined()
@@ -223,7 +223,161 @@ describe('async-retry', () => {
         return Promise.reject(new TransactionError('error', 'ETIMEOUT'))
       }
       try {
-        await retry<unknown>(func, retryPolicy, sqlTimeoutRetryPredicate)
+        await retry<unknown>(func, retryPolicy, sqlAzureRequestTimeoutRetryPredicate)
+        fail('error should have thrown')
+      } catch (error) {
+        expect(error).toBeDefined()
+        expect(callCount).toBe(3)
+      }
+    })
+  })
+
+  describe('sql timeout retry predicate', () => {
+    test('should not attempt retry if does not have a name property', async () => {
+      let callCount = 0
+      const func = async (): Promise<void> => {
+        callCount++
+        return Promise.reject(new Error())
+      }
+      try {
+        await retry(func, retryPolicy, sqlAzureTimeoutRetryPredicate)
+        fail('error should have thrown')
+      } catch (error) {
+        expect(error).toBeDefined()
+        expect(callCount).toBe(1)
+      }
+    })
+
+    test('should not attempt retry if name is not TimeoutError', async () => {
+      let callCount = 0
+      const func = () => {
+        callCount++
+        const error = new Error()
+        error.name = 'SomeError'
+        return Promise.reject(error)
+      }
+      try {
+        await retry(func, retryPolicy, sqlAzureTimeoutRetryPredicate)
+        fail('error should have thrown')
+      } catch (error) {
+        expect(error).toBeDefined()
+        expect(callCount).toBe(1)
+      }
+    })
+
+    test('should attempt retry if name is TimeoutError', async () => {
+      let callCount = 0
+      const func = () => {
+        callCount++
+        const error = new Error('this is a timeout error')
+        error.name = 'TimeoutError'
+        return Promise.reject(error)
+      }
+      try {
+        await retry(func, retryPolicy, sqlAzureTimeoutRetryPredicate)
+        fail('error should have thrown')
+      } catch (error) {
+        expect(error).toBeDefined()
+        expect(callCount).toBe(3)
+      }
+    })
+  })
+
+  describe('sql azure resource limit reached predicate', () => {
+    test('should not attempt retry if error does not have a number property', async () => {
+      let callCount = 0
+      const func = () => {
+        callCount++
+        return Promise.reject(new Error())
+      }
+      try {
+        await retry(func, retryPolicy, sqlAzureResourceLimitReachedPredicate)
+        fail('error should have thrown')
+      } catch (error) {
+        expect(error).toBeDefined()
+        expect(callCount).toBe(1)
+      }
+    })
+
+    test('should not attempt retry if error.number is not 10928', async () => {
+      let callCount = 0
+      const func = () => {
+        callCount++
+        const error: any = new Error()
+        error.number = 12345
+        return Promise.reject(error)
+      }
+      try {
+        await retry(func, retryPolicy, sqlAzureResourceLimitReachedPredicate)
+        fail('error should have thrown')
+      } catch (error) {
+        expect(error).toBeDefined()
+        expect(callCount).toBe(1)
+      }
+    })
+
+    test('should attempt retry if error.number is 10928', async () => {
+      let callCount = 0
+      const func = () => {
+        callCount++
+        const error: any = new Error()
+        error.number = 10928
+        return Promise.reject(error)
+      }
+      try {
+        await retry(func, retryPolicy, sqlAzureResourceLimitReachedPredicate)
+        fail('error should have thrown')
+      } catch (error) {
+        expect(error).toBeDefined()
+        expect(callCount).toBe(3)
+      }
+    })
+  })
+
+  describe('socket error predicate', () => {
+    test('should not attempt retry if the error does not have a status property', async () => {
+      let callCount = 0
+      const func = () => {
+        callCount++
+        const error = new Error('mock error from unit testing')
+        return Promise.reject(error)
+      }
+      try {
+        await retry(func, retryPolicy, socketErrorPredicate)
+        fail('error should have thrown')
+      } catch (error) {
+        expect(error).toBeDefined()
+        expect(callCount).toBe(1)
+      }
+    })
+
+    test('should not attempt retry if code is not ESOCKET', async () => {
+      let callCount = 0
+      const func = () => {
+        callCount++
+        const error: any = new Error('mock error from unit testing')
+        error.code = 'SOMECODE'
+        return Promise.reject(error)
+      }
+      try {
+        await retry(func, retryPolicy, socketErrorPredicate)
+        fail('error should have thrown')
+      } catch (error) {
+        expect(error).toBeDefined()
+        expect(callCount).toBe(1)
+      }
+    })
+
+    test('should attempt retry if code is ESOCKET', async () => {
+      let callCount = 0
+      const func = () => {
+        callCount++
+        const error: any = new Error('mock error from unit testing')
+        error.code = 'ESOCKET'
+        return Promise.reject(error)
+      }
+      try {
+        await retry(func, retryPolicy, socketErrorPredicate)
         fail('error should have thrown')
       } catch (error) {
         expect(error).toBeDefined()
