@@ -19,7 +19,7 @@ describe('async-retry', () => {
       pauseTimeMs: 50,
       pauseMultiplier: 1.1
     }
-    jest.spyOn(logger, 'log').mockImplementation(() => {})
+    jest.spyOn(logger, 'log').mockImplementation()
   })
 
   afterEach(() => {
