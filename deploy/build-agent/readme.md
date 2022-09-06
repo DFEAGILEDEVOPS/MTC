@@ -13,7 +13,7 @@
 4. delete existing build server container instances in azure
 5. run `./create-instance.sh` to create new build servers
 6. once new agents are up and running, assign a 'user defined capability' to each one via the build agent management screen in VSO.
-7. Add name as MTC_INSTANCE and number them consecutively, starting at 1.  This allows us to source and whitelist the IP address of each.
+7. Add name as mtc-instance and number them consecutively, starting at 1.  This allows us to source and whitelist the IP address of each.
 
 example execution of `create-instance.sh`...
 
