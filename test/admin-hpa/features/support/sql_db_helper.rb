@@ -266,6 +266,12 @@ class SqlDbHelper
     result.do
   end
 
+  def self.update_admin_end_date(check_end_date)
+    sql = "UPDATE [mtc_admin].[checkWindow] set adminEndDate = '#{check_end_date}' WHERE id IN (1)"
+    result = SQL_CLIENT.execute(sql)
+    result.do
+  end
+
   def self.activate_or_deactivate_active_check_window(check_end_date)
     sql = "UPDATE [mtc_admin].[checkWindow] set adminEndDate = '#{check_end_date}' WHERE id NOT IN (2)"
     result = SQL_CLIENT.execute(sql)
@@ -669,6 +675,21 @@ class SqlDbHelper
     result = SQL_CLIENT.execute(sql)
     result.do
     set_attendance_code_for_a_pupil(pupil_id, 7)
+  end
+
+  def self.type_of_establishment
+    sql = "select * from mtc_admin.typeOfEstablishmentLookup"
+    result = SQL_CLIENT.execute(sql)
+    type_of_establishment = result.each {|row| row.map}
+    type_of_establishment.map {|toe| toe['name'] + ' ('+ toe['code'].to_s + ')'}
+  end
+
+  def self.find_type_of_establishment(name)
+    sql = "select * from mtc_admin.typeOfEstablishmentLookup where name='#{name}'"
+    result = SQL_CLIENT.execute(sql)
+    pupil_details_res = result.first
+    result.cancel
+    pupil_details_res
   end
 
 
