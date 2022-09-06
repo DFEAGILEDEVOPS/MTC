@@ -59,6 +59,8 @@ const schoolService = {
    * @property {number} urn,
    * @property {string} urlSlug,
    * @property {number} numberOfPupils
+   * @property {number} typeOfEstablishmentCode
+   * @property {string} typeOfEstablishmentName
    * @property {Array<schoolAuditEntry>} audits
    */
 
@@ -79,7 +81,8 @@ const schoolService = {
    * @property {number} estabCode,
    * @property {number} leaCode,
    * @property {string} name,
-   * @property {number} urn
+   * @property {number} urn,
+   * @property {number} typeOfEstablishmentCode
    */
 
   /**
@@ -139,6 +142,7 @@ const schoolService = {
    * Service manager - add a new School
    * @param {newSchoolDetails} newSchoolDetails
    * @param {number} userId
+   * @return {Promise<object>} school
    */
   addSchool: async function addSchool (newSchoolDetails, userId) {
     const parsed = this.parseDfeNumber(newSchoolDetails.dfeNumber)
@@ -152,11 +156,13 @@ const schoolService = {
       throw validationError
     }
     await schoolDataService.sqlAddSchool(insertDetails, userId)
+    const school = await schoolDataService.sqlFindOneByDfeNumber(insertDetails.dfeNumber)
+    return school
   },
 
   /**
    * get list of school audit history
-   * @param {number} schoolId
+   * @param {string} urlSlug - school uuid
    */
   getSchoolAudits: async function getSchoolAudits (urlSlug) {
     if (!urlSlug) throw new Error('urlSlug is required')

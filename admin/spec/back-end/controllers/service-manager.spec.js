@@ -18,6 +18,7 @@ const auditOperationTypes = require('../../../lib/consts/audit-entry-types')
 const { JobService } = require('../../../services/job-service/job.service')
 const { ServiceManagerPupilDataService } = require('../../../services/service-manager/pupil-service/service-manager.pupil.data.service')
 const { ServiceManagerPupilService } = require('../../../services/service-manager/pupil-service/service-manager.pupil.service')
+const { TypeOfEstablishmentService } = require('../../../services/type-of-establishment-service/type-of-establishment-service')
 const moment = require('moment-timezone')
 
 describe('service manager controller:', () => {
@@ -605,6 +606,13 @@ describe('service manager controller:', () => {
   })
 
   describe('getEditOrganisation', () => {
+    beforeEach(() => {
+      jest.spyOn(TypeOfEstablishmentService, 'getEstablishmentDataSortedByName').mockResolvedValue([
+        { code: 10, name: 'Type 10' },
+        { code: 46, name: 'Type 46' }
+      ])
+    })
+
     test('throws if the school is not found', async () => {
       const params = {
         slug: uuid.NIL
@@ -645,7 +653,8 @@ describe('service manager controller:', () => {
         dfeNumber: 1111,
         leaCode: 2222,
         estabCode: 3333,
-        urn: 4444
+        urn: 4444,
+        typeOfEstablishmentCode: 10
       }
       jest.spyOn(schoolService, 'findOneBySlug').mockResolvedValue(school)
       await controller.getEditOrganisation(req, res, next)
@@ -657,6 +666,7 @@ describe('service manager controller:', () => {
       expect(defaults.leaCode).toBe(2222)
       expect(defaults.estabCode).toBe(3333)
       expect(defaults.urn).toBe(4444)
+      expect(defaults.typeOfEstablishmentCode).toBe(10)
     })
 
     test('when called from the post with user-supplied defaults it uses the shows the user-supplied ones', async () => {
@@ -669,7 +679,8 @@ describe('service manager controller:', () => {
         dfeNumber: 5555,
         leaCode: 6666,
         estabCode: 7777,
-        urn: 8888
+        urn: 8888,
+        typeOfEstablishmentCode: 46
       }
       const res = getRes()
       jest.spyOn(res, 'render').mockImplementation()
@@ -678,7 +689,8 @@ describe('service manager controller:', () => {
         dfeNumber: 1111,
         leaCode: 2222,
         estabCode: 3333,
-        urn: 4444
+        urn: 4444,
+        typeOfEstablishmentCode: 10
       }
       jest.spyOn(schoolService, 'findOneBySlug').mockResolvedValue(school)
       await controller.getEditOrganisation(req, res, next)
@@ -690,6 +702,7 @@ describe('service manager controller:', () => {
       expect(defaults.leaCode).toBe(6666)
       expect(defaults.estabCode).toBe(7777)
       expect(defaults.urn).toBe(8888)
+      expect(defaults.typeOfEstablishmentCode).toBe(46)
     })
   })
 
@@ -702,8 +715,7 @@ describe('service manager controller:', () => {
       expect(res.redirect).toHaveBeenCalled()
     })
 
-    test('happy path: it converts the incoming strings to JS types suitable for the service, and calls the service' +
-      ' to persist the data', async () => {
+    test('happy path: it converts the incoming strings to JS types suitable for the service, and calls the service to persist the data', async () => {
       const res = getRes()
       const req = getReq()
       const userId = 9999
@@ -712,17 +724,19 @@ describe('service manager controller:', () => {
       }
       req.body = {
         name: ' updated name ',
-        dfeNumber: 5555,
-        leaCode: 6666,
-        estabCode: 7777,
-        urn: 8888
+        dfeNumber: '5555',
+        leaCode: '6666',
+        estabCode: '7777',
+        urn: '8888',
+        typeOfEstablishmentCode: '46'
       }
       const school = {
         name: 'Test school',
         dfeNumber: 9991999,
         leaCode: 999,
         estabCode: 1999,
-        urn: 888900
+        urn: 888900,
+        typeOfEstablishmentCode: 10
       }
       jest.spyOn(schoolService, 'findOneBySlug').mockResolvedValue(school)
       jest.spyOn(schoolService, 'updateSchool').mockImplementation(_ => { return Promise.resolve() })
@@ -929,6 +943,7 @@ describe('service manager controller:', () => {
       test('it renders the add-school page', async () => {
         const req = getReq()
         const res = getRes()
+        jest.spyOn(TypeOfEstablishmentService, 'getEstablishmentDataSortedByName').mockResolvedValue()
         await controller.getAddSchool(req, res, next)
         expect(res.render).toHaveBeenCalled()
         expect(res.render.mock.calls[0][0]).toBe('service-manager/add-school')
@@ -939,6 +954,7 @@ describe('service manager controller:', () => {
         jest.spyOn(res, 'render').mockImplementation(() => {
           throw new Error('test error')
         })
+        jest.spyOn(TypeOfEstablishmentService, 'getEstablishmentDataSortedByName').mockResolvedValue()
         await controller.getAddSchool(req, res, next)
         expect(next).toHaveBeenCalled()
       })
@@ -949,17 +965,18 @@ describe('service manager controller:', () => {
           body: {
             name: 'Primary Academy',
             dfeNumber: '1231234',
-            urn: '123456'
+            urn: '123456',
+            typeOfEstablishmentCode: '999'
           }
         })
         req.user = {
           id: 1
         }
         const res = getRes()
-        jest.spyOn(schoolService, 'addSchool').mockImplementation()
+        jest.spyOn(schoolService, 'addSchool').mockResolvedValue({ urlSlug: '00000000-00000000-D0000000-00000000' })
         await controller.postAddSchool(req, res, next)
         expect(schoolService.addSchool).toHaveBeenCalled()
-        expect(res.redirect).toHaveBeenCalledWith('/service-manager/organisations')
+        expect(res.redirect).toHaveBeenCalledWith('/service-manager/organisations/00000000-00000000-d0000000-00000000')
       })
 
       test('it displays the page again if the validation fails', async () => {
@@ -967,7 +984,8 @@ describe('service manager controller:', () => {
           body: {
             name: 'Primary Academy',
             dfeNumber: '1231234',
-            urn: '123456'
+            urn: '123456',
+            typeOfEstablishmentCode: '999'
           }
         })
         req.user = {
