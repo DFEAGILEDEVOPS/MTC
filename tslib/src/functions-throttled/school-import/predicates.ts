@@ -71,9 +71,9 @@ export class Predicates implements ISchoolImportPredicates {
         return new SchoolPredicateResult(true)
       case EstabTypeGroupCode.specialSchool:
         // eslint-disable-next-line no-case-declarations
-        const isCommunityOrFoundationSpecial = school.estabTypeCode === EstabTypeCode.communitySpecialSchool ||
-        school.estabTypeCode === EstabTypeCode.foundationSpecialSchool
-        if (isCommunityOrFoundationSpecial) {
+        const isCommunityOrFoundationSpecialOrNonMaintained = school.estabTypeCode === EstabTypeCode.communitySpecialSchool ||
+          school.estabTypeCode === EstabTypeCode.foundationSpecialSchool || school.estabTypeCode === EstabTypeCode.nonMaintainedSpecialSchool
+        if (isCommunityOrFoundationSpecialOrNonMaintained) {
           return new SchoolPredicateResult(true)
         } else {
           return new SchoolPredicateResult(false,

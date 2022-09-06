@@ -151,6 +151,14 @@ describe('School Import Predicates', () => {
       expect(result.message).toStrictEqual('')
     })
 
+    test('loads estabTypeGroupCode 5 and TypeOfEstablishment = Non maintained special school', () => {
+      school.estabTypeGroupCode = EstabTypeGroupCode.specialSchool
+      school.estabTypeCode = EstabTypeCode.nonMaintainedSpecialSchool
+      const result = sut.isRequiredEstablishmentTypeGroup(school)
+      expect(result.isMatch).toBe(true)
+      expect(result.message).toStrictEqual('')
+    })
+
     test('loads estabTypeGroupCode 9 for estabTypeCode 26 only', () => {
       school.estabTypeGroupCode = EstabTypeGroupCode.otherTypes
       school.estabTypeCode = EstabTypeCode.serviceChildrensEducation

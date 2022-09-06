@@ -37,4 +37,9 @@ Feature:
     When I view audit history of the school
     Then I should seen an update entry for updating the Estab code
 
+  Scenario: Updating the type of Estab triggers an audit entry
+    Given I have updated the type of Estab for a school
+    When I view audit history of the school
+    Then I should seen an update entry for updating the type of Estab
+
 

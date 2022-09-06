@@ -7,7 +7,7 @@
             <%- partial('partials/_gds_session_expiry') %>
             <%- partial('partials/_flash-messages') %>
             <%- partial('partials/_form-error', {
-                pageFields: ['dfeNumber', 'name', 'urn'],
+                pageFields: ['dfeNumber', 'name', 'urn', 'typeOfEstablishmentCode'],
                 error
             }) %>
 
@@ -48,6 +48,22 @@
                            spellcheck="false" value="<%= formData.urn %>">
                 </div>
 
+                <div class="govuk-form-group <%= error.isError('typeOfEstablishmentCode') ? 'govuk-form-group--error' : '' %>">
+                    <label class="govuk-label" for="typeOfEstablishmentCode">
+                        Establishment Type
+                        <% if (error.isError('typeOfEstablishmentCode')) { %>
+                            <span class="govuk-error-message"><%= error.get('typeOfEstablishmentCode') %></span>
+                        <% } %>
+                    </label>
+                    <select class="govuk-select <%= error.isError('typeOfEstablishmentCode') ? 'govuk-input--error' : '' %>" id="typeOfEstablishmentCode" name="typeOfEstablishmentCode">
+                        <option value="">Please choose an establishment type</option>
+                        <% for (let i = 0; i < typeOfEstablishmentData.length; i++) {
+                            const d = typeOfEstablishmentData[i]
+                        %>
+                            <option value="<%= d.code %>" <%= d.code == formData.typeOfEstablishmentCode ? 'selected' : '' %>><%= d.name %> (<%= d.code %>)</option>
+                        <% } %>
+                    </select>
+                </div>
 
                 <button type="submit" id="searchh-btn" class="govuk-button">Add</button>
                 <a class="govuk-button govuk-button--secondary" href="/service-manager/organisations">Cancel</a>
