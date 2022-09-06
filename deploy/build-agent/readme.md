@@ -3,7 +3,7 @@
 ## Purpose
 
 - `build-push-docker-hub.sh` Builds the build agent docker image and pushes it to docker hub.  Any changes must be committed before running this script, as the commit hash is used for the image tag.
-- `cleanup.sh` Removes any temporary files and 'dead weight' from the image before it is finished building.
+- `cleanup.sh` Removes any temporary files and 'dead weight' from the image before it is finished building.  You do not need to execute this script, as it is called from within the Dockerfile itself.
 - `create-instance.sh` creates a container instance using the latest image in docker hub, via the Azure CLI.
 
 ## Steps
