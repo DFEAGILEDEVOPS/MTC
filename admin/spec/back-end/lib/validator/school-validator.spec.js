@@ -54,9 +54,69 @@ describe('school validator', () => {
       leaCode: 999,
       estabCode: 111,
       dfeNumber: 999111,
-      urn: 888100
+      urn: 888100,
+      typeOfEstablishmentCode: 10
     }
     const ve = await sut.validate(update)
     expect(ve.hasError()).toBe(false)
+  })
+
+  test('fails if the typeOfEstablishmentCode is missing', async () => {
+    jest.spyOn(laCodeValidator, 'validate').mockResolvedValue(new ValidationError())
+    const update = {
+      name: 'Test school',
+      leaCode: 999,
+      estabCode: 111,
+      dfeNumber: 999111,
+      urn: 888100
+    }
+    const ve = await sut.validate(update)
+    expect(ve.hasError()).toBe(true)
+    expect(ve.get('typeOfEstablishmentCode')).toEqual('Invalid Type Of Establishment code: undefined')
+  })
+
+  test('fails if the typeOfEstablishmentCode is null', async () => {
+    jest.spyOn(laCodeValidator, 'validate').mockResolvedValue(new ValidationError())
+    const update = {
+      name: 'Test school',
+      leaCode: 999,
+      estabCode: 111,
+      dfeNumber: 999111,
+      urn: 888100,
+      typeOfEstablishmentCode: null
+    }
+    const ve = await sut.validate(update)
+    expect(ve.hasError()).toBe(true)
+    expect(ve.get('typeOfEstablishmentCode')).toEqual('Invalid Type Of Establishment code: null')
+  })
+
+  test('fails if the typeOfEstablishmentCode is null', async () => {
+    jest.spyOn(laCodeValidator, 'validate').mockResolvedValue(new ValidationError())
+    const update = {
+      name: 'Test school',
+      leaCode: 999,
+      estabCode: 111,
+      dfeNumber: 999111,
+      urn: 888100,
+      typeOfEstablishmentCode: ''
+    }
+    const ve = await sut.validate(update)
+    expect(ve.hasError()).toBe(true)
+    expect(ve.get('typeOfEstablishmentCode')).toEqual('Invalid Type Of Establishment code: ')
+  })
+
+  test('fails if the typeOfEstablishmentCode is 0', async () => {
+    jest.spyOn(laCodeValidator, 'validate').mockResolvedValue(new ValidationError())
+    const update = {
+      name: 'Test school',
+      leaCode: 999,
+      estabCode: 111,
+      dfeNumber: 999111,
+      urn: 888100,
+      typeOfEstablishmentCode: 0
+    }
+    const ve = await sut.validate(update)
+    expect(ve.hasError()).toBe(true)
+    expect(ve.get('typeOfEstablishmentCode')).toEqual('Please choose one of the establishment types')
   })
 })

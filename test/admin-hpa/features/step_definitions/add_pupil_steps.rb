@@ -157,7 +157,7 @@ When(/^I have submitted valid pupil details$/) do
   today_date = Date.today + 1 
   @upn = UpnGenerator.generate
   pupil_name = (0...8).map {(65 + rand(26)).chr}.join
-  @details_hash = {first_name: pupil_name, middle_name: pupil_name, last_name: pupil_name, upn: @upn, female: true, day: "#{today_date.day}", month: "#{today_date.month}", year: "#{today_date.year - 10}"}
+  @details_hash = {first_name: pupil_name, middle_name: pupil_name, last_name: pupil_name, upn: @upn, female: true, day: "#{today_date.day}", month: "#{today_date.month}", year: "#{today_date.year - 9}"}
   @page.enter_details(@details_hash)
   @page.add_pupil.click unless @page == edit_pupil_page
   @page.save_changes.click if @page == edit_pupil_page
@@ -183,7 +183,7 @@ end
 When(/^I have submitted invalid pupil details$/) do
   today_date = Date.today
   @upn = UpnGenerator.generate unless @page == edit_pupil_page
-  @details_hash = {first_name: '', middle_name: 'm', last_name: 'a', first_name_alias: 's', last_name_alias: 'e', upn: @upn, female: true, day: "#{today_date.day}", month: "#{today_date.month}", year: "#{today_date.year - 10}"}
+  @details_hash = {first_name: '', middle_name: 'm', last_name: 'a', first_name_alias: 's', last_name_alias: 'e', upn: @upn, female: true, day: "#{today_date.day}", month: "#{today_date.month}", year: "#{today_date.year - 9}"}
   @page.enter_details(@details_hash)
   @page.add_pupil.click unless @page == edit_pupil_page
   @page.save_changes.click if @page == edit_pupil_page
@@ -196,7 +196,7 @@ end
 When(/^I submit the form with the name fields set as (.*)$/) do |value|
   today_date = Date.today + 1
   @upn = UpnGenerator.generate unless @page == edit_pupil_page
-  @details_hash = {first_name: value, middle_name: value, last_name: value, first_name_alias: value, last_name_alias: value,  upn: @upn, female: true, day: "#{today_date.day}", month: "#{today_date.month}", year: "#{today_date.year - 10}"}
+  @details_hash = {first_name: value, middle_name: value, last_name: value, first_name_alias: value, last_name_alias: value,  upn: @upn, female: true, day: "#{today_date.day}", month: "#{today_date.month}", year: "#{today_date.year - 9}"}
   @page.enter_details(@details_hash)
   @page.add_pupil.click unless @page == edit_pupil_page
   @page.save_changes.click if @page == edit_pupil_page
@@ -228,7 +228,7 @@ end
 When(/^I have submitted valid pupil details without choosing a gender$/) do
   today_date = Date.today
   @upn = UpnGenerator.generate
-  @details_hash = {first_name: 'valid', middle_name: 'valid', last_name: 'valud', upn: @upn, day: "#{today_date.day}", month: "#{today_date.month}", year: "#{today_date.year - 10}"}
+  @details_hash = {first_name: 'valid', middle_name: 'valid', last_name: 'valud', upn: @upn, day: "#{today_date.day}", month: "#{today_date.month}", year: "#{today_date.year - 9}"}
   @page.enter_details(@details_hash)
   @page.add_pupil.click unless @page == edit_pupil_page
   @page.save_changes.click if @page == edit_pupil_page
@@ -243,7 +243,7 @@ end
 When(/^I submit the form with a DOB that has (\d+) (as the day of the month|day in a month|days in a month)$/) do |days, _x|
   today_date = Date.today
   @upn = UpnGenerator.generate unless @page == edit_pupil_page
-  @details_hash = {first_name: 'valid', middle_name: 'valid', last_name: 'valid', female: true, upn: @upn, day: days, month: "#{today_date.month}", year: "#{today_date.year - 10}"}
+  @details_hash = {first_name: 'valid', middle_name: 'valid', last_name: 'valid', female: true, upn: @upn, day: days, month: "#{today_date.month}", year: "#{today_date.year - 9}"}
   @page.enter_details(@details_hash)
   @page.add_pupil.click unless @page == edit_pupil_page
   @page.save_changes.click if @page == edit_pupil_page
@@ -474,14 +474,14 @@ When(/^I add 2 pupil with same firstname lastname and same dob$/) do
   step "I am on the add pupil page"
   name = (0...8).map {(65 + rand(26)).chr}.join
   @upn = UpnGenerator.generate unless @page == edit_pupil_page
-  @details_hash = {first_name: name, middle_name: 'MiddleName1', last_name: name, upn: @upn, female: true, day: "#{today_date.day}", month: "#{today_date.month}", year: "#{today_date.year - 10}"}
+  @details_hash = {first_name: name, middle_name: 'MiddleName1', last_name: name, upn: @upn, female: true, day: "#{today_date.day}", month: "#{today_date.month}", year: "#{today_date.year - 9}"}
   @page.enter_details(@details_hash)
   @page.add_pupil.click unless @page == edit_pupil_page
   @page.save_changes.click if @page == edit_pupil_page
   @time_stored = Helpers.time_to_nearest_hour(Time.now.utc)
   step "I am on the add pupil page"
   @upn = UpnGenerator.generate unless @page == edit_pupil_page
-  @details_hash = {first_name: name, middle_name: 'MiddleName2', last_name: name, upn: @upn, female: true, day: "#{today_date.day}", month: "#{today_date.month}", year: "#{today_date.year - 10}"}
+  @details_hash = {first_name: name, middle_name: 'MiddleName2', last_name: name, upn: @upn, female: true, day: "#{today_date.day}", month: "#{today_date.month}", year: "#{today_date.year - 9}"}
   @page.enter_details(@details_hash)
   @page.add_pupil.click unless @page == edit_pupil_page
   @page.save_changes.click if @page == edit_pupil_page
@@ -570,7 +570,7 @@ When(/^I have submitted valid pupil details including a temporary upn$/) do
     today_date = Date.today + 1
     @upn = UpnGenerator.generate_temporary
     pupil_name = (0...8).map {(65 + rand(26)).chr}.join
-    @details_hash = {first_name: pupil_name, middle_name: pupil_name, last_name: pupil_name, upn: @upn, female: true, day: "#{today_date.day}", month: "#{today_date.month}", year: "#{today_date.year - 10}"}
+    @details_hash = {first_name: pupil_name, middle_name: pupil_name, last_name: pupil_name, upn: @upn, female: true, day: "#{today_date.day}", month: "#{today_date.month}", year: "#{today_date.year - 9}"}
     @page.enter_details(@details_hash)
     @page.add_pupil.click unless @page == edit_pupil_page
     @page.save_changes.click if @page == edit_pupil_page
