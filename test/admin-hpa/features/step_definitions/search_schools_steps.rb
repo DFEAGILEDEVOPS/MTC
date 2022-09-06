@@ -15,6 +15,8 @@ Then(/^I should see results relating to that school$/) do
   expect(school_search_results_page.urn.text).to eql @school['entity']['urn'].to_s
   expect(school_search_results_page.lea_code.text).to eql @school['entity']['leaCode'].to_s
   expect(school_search_results_page.estab.text).to eql @school['entity']['estabCode'].to_s
+  expect(school_search_results_page.type_of_estab_code.text).to eql @toe.nil? ? 'null' : SqlDbHelper.find_type_of_establishment(@toe.split(" (")[0])['code'].to_s
+  expect(school_search_results_page.type_of_estab_name.text).to eql @toe.nil? ? 'null' : SqlDbHelper.find_type_of_establishment(@toe.split(" (")[0])['name']
   expect(school_search_results_page.number_of_pupils.text).to eql SqlDbHelper.list_of_pupils_from_school(@school_id).size.to_s
 end
 

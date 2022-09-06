@@ -8,6 +8,8 @@ class AddSchoolPage < SitePrism::Page
   element :add_school, 'button', text: 'Add'
   element :cancel, 'a', text: 'Cancel'
   elements :error_messages, '.govuk-error-message'
+  element :type_of_establishment, "#typeOfEstablishmentCode"
+
 
   section :error_summary, ".govuk-error-summary__list" do
     element :error_text, 'p', text: 'See highlighted errors below.'

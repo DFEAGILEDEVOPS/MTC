@@ -37,7 +37,7 @@ const createMigration = options => {
     fs.writeFileSync(upFileName, '')
     fs.writeFileSync(downFileName, '')
   }
-  console.log(`Created ${upFileName} and ${downFileName}`)
+  console.log(`Created:\n${upFileName}\n${downFileName}`)
 }
 
 try {

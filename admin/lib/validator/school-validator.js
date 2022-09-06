@@ -8,7 +8,8 @@ const schoolValidator = {
    * @property {number} estabCode,
    * @property {number} leaCode,
    * @property {string} name,
-   * @property {number} urn
+   * @property {number} urn,
+   * @property {number} typeOfEstablishmentCode
    */
 
   /**
@@ -48,6 +49,17 @@ const schoolValidator = {
         validationError.addError('leaCode', `Unknown LEA code: ${school.leaCode}`)
       }
     }
+
+    if (typeof school.typeOfEstablishmentCode !== 'number') {
+      validationError.addError('typeOfEstablishmentCode', `Invalid Type Of Establishment code: ${school.typeOfEstablishmentCode}`)
+    } else if (isNaN(school.typeOfEstablishmentCode)) {
+      validationError.addError('typeOfEstablishmentCode', 'Please choose one of the establishment types')
+    }
+
+    if (school.typeOfEstablishmentCode === 0) {
+      validationError.addError('typeOfEstablishmentCode', 'Please choose one of the establishment types')
+    }
+
     return validationError
   }
 }
