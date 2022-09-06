@@ -32,6 +32,7 @@ export enum EstabTypeGroupCode {
 
 export enum EstabTypeCode {
   communitySpecialSchool = 7,
+  nonMaintainedSpecialSchool = 8,
   foundationSpecialSchool = 12,
   serviceChildrensEducation = 26,
   offshore = 25

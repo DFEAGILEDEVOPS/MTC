@@ -677,5 +677,20 @@ class SqlDbHelper
     set_attendance_code_for_a_pupil(pupil_id, 7)
   end
 
+  def self.type_of_establishment
+    sql = "select * from mtc_admin.typeOfEstablishmentLookup"
+    result = SQL_CLIENT.execute(sql)
+    type_of_establishment = result.each {|row| row.map}
+    type_of_establishment.map {|toe| toe['name'] + ' ('+ toe['code'].to_s + ')'}
+  end
+
+  def self.find_type_of_establishment(name)
+    sql = "select * from mtc_admin.typeOfEstablishmentLookup where name='#{name}'"
+    result = SQL_CLIENT.execute(sql)
+    pupil_details_res = result.first
+    result.cancel
+    pupil_details_res
+  end
+
 
 end
