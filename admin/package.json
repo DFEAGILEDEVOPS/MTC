@@ -75,7 +75,7 @@
     "marked": "^4.0.10",
     "md5": "^2.2.1",
     "merge-stream": "^2.0.0",
-    "moment-timezone": "^0.5.34",
+    "moment-timezone": "^0.5.35",
     "morgan": "~1.10.0",
     "mssql": "8.0.0",
     "nocache": "^3.0.1",
