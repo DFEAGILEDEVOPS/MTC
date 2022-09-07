@@ -25,7 +25,8 @@
             <% if (results && results.length > 0) { %>
               <table class="govuk-spacious">
                 <thead>
-                  <th title="pupil name">Name</th>
+                  <th title="Created At">Created At</th>
+                  <th title="Pupil Name">Name</th>
                   <th title="Date of Birth">Date of Birth</th>
                   <th title="School Name">School</th>
                   <th title="School URN">URN</th>
@@ -34,6 +35,7 @@
                 <tbody class="govuk-body-s">
                   <% for (let i = 0; i < results.length; i++) { %>
                     <tr>
+                      <td><%= results[i].createdAt %></td>
                       <td><a href="/service-manager/pupil-summary/<%= encodeURIComponent(results[i].urlSlug) %>"><%= results[i].lastName %>, <%= results[i].firstName %></a></td>
                       <td><%= results[i].dateOfBirth %></td>
                       <td><%= results[i].schoolName %></td>
