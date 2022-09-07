@@ -10,11 +10,12 @@ class PupilSearchPage < SitePrism::Page
 
   section :pupil_results, '.govuk-spacious' do
     sections :pupil_row, 'tbody tr' do
-      element :name, 'td:nth-child(1)'
-      element :dob, 'td:nth-child(2)'
-      element :school, 'td:nth-child(3)'
-      element :urn, 'td:nth-child(4)'
-      element :dfe_number, 'td:nth-child(5)'
+      element :created_at, 'td:nth-child(1)'
+      element :name, 'td:nth-child(2)'
+      element :dob, 'td:nth-child(3)'
+      element :school, 'td:nth-child(4)'
+      element :urn, 'td:nth-child(5)'
+      element :dfe_number, 'td:nth-child(6)'
     end
   end
 
