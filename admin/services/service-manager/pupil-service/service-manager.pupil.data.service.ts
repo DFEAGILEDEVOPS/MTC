@@ -6,7 +6,7 @@ export class ServiceManagerPupilDataService {
 
   static async findPupilByUpn (upn: string): Promise<PupilSearchResult[]> {
     const sql = `
-      SELECT p.foreName, p.lastName, p.dateOfBirth,
+      SELECT p.createdAt, p.foreName, p.lastName, p.dateOfBirth,
         s.name as [schoolName], s.urn, s.dfeNumber,
         p.urlSlug, s.id as [schoolId]
       FROM mtc_admin.pupil p
@@ -24,7 +24,7 @@ export class ServiceManagerPupilDataService {
 
   static async getPupilByUrlSlug (urlSlug: string): Promise<PupilSearchResult[]> {
     const sql = `
-      SELECT p.id, p.foreName, p.lastName, p.dateOfBirth,
+      SELECT p.createdAt, p.id, p.foreName, p.lastName, p.dateOfBirth,
         s.name as [schoolName], s.urn, s.dfeNumber,
         p.urlSlug, p.upn, s.id as [schoolId],
         ac.code as [attendanceCode]
@@ -82,6 +82,7 @@ export interface PupilStatusData {
 }
 
 export interface PupilSearchResult {
+  createdAt: moment.Moment
   id: number
   urlSlug: string
   foreName: string
