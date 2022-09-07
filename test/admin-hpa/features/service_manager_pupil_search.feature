@@ -19,7 +19,7 @@ Feature:
 
   Scenario: Pupil summary page is displayed when pupil is selected from pupil results page
     Given I have searched for 2 pupils with the same upn
-    When I click on on of the pupils in the list
+    When I click on one of the pupils in the list
     Then the summary page is displayed with the status set to Not started along with details of the pupil
 
   Scenario: Status is set to complete when pupil has completed a check
