@@ -40,6 +40,7 @@ export class SchoolDataService implements ISchoolDataService {
     table.columns.add('leaCode', mssql.Int, { nullable: false })
     table.columns.add('name', mssql.NVarChar(mssql.MAX), { nullable: false })
     table.columns.add('urn', mssql.Int, { nullable: false })
+    table.columns.add('typeOfEstablishmentLookup_id', mssql.Int, { nullable: true })
 
     for (let i = 0; i < schoolData.length; i++) {
       const school = schoolData[i]
@@ -49,14 +50,14 @@ export class SchoolDataService implements ISchoolDataService {
       if (dfeNumber.toString().length !== 7) {
         this.logError(`WARN: school [${school.urn}] has an unusual dfeNumber [${dfeNumber}]`)
       }
-      table.rows.add(dfeNumber, school.estabCode, school.leaCode, school.name, school.urn)
+      table.rows.add(dfeNumber, school.estabCode, school.leaCode, school.name, school.urn, school.estabTypeCode)
     }
     const request = new mssql.Request(this.pool)
     if (this.jobResult.schoolsLoaded > 0) {
       try {
         const res = await request.bulk(table)
         this.logger.info('bulk request complete: ', res)
-      } catch (error) {
+      } catch (error: any) {
         this.logError(`Bulk request failed. Error was:\n ${error.message}`)
         error.jobResult = this.jobResult
         throw error

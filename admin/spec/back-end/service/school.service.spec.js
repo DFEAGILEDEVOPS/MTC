@@ -184,6 +184,7 @@ describe('school.service', () => {
   describe('addSchool', () => {
     beforeEach(() => {
       jest.spyOn(schoolDataService, 'sqlAddSchool').mockImplementation()
+      jest.spyOn(schoolDataService, 'sqlFindOneByDfeNumber').mockReturnValue({ urlSlug: '00000000-00000000-00000000-00000000' })
     })
 
     test('it parses the dfeNumber to capture the leaCode and estabCode', async () => {
@@ -202,7 +203,7 @@ describe('school.service', () => {
       jest.spyOn(schoolValidator, 'validate').mockRejectedValue(new ValidationError('urn', 'mock validation message'))
       expect.assertions(2)
       try {
-        await sut.addSchool({ dfeNumber: 2011234, name: 'Test School', urn: 'fail' })
+        await sut.addSchool({ dfeNumber: 2011234, name: 'Test School', urn: 'fail', typeOfEstablishmentCode: 1 })
       } catch (error) {
         expect(error.constructor).toBe(ValidationError)
       }
@@ -211,8 +212,15 @@ describe('school.service', () => {
 
     test('it calls the data service if the validation passes', async () => {
       jest.spyOn(schoolValidator, 'validate').mockResolvedValue(new ValidationError())
-      await sut.addSchool({ dfeNumber: 1234567, name: 'Test School', urn: 2 })
+      await sut.addSchool({ dfeNumber: 1234567, name: 'Test School', urn: 2, typeOfEstablishmentCode: 1 })
       expect(schoolDataService.sqlAddSchool).toHaveBeenCalledTimes(1)
+    })
+
+    test('it returns the details of the new school', async () => {
+      jest.spyOn(schoolValidator, 'validate').mockResolvedValue(new ValidationError())
+      const school = await sut.addSchool({ dfeNumber: 2011234, name: 'Test School', urn: 3, typeOfEstablishmentCode: 1 })
+      expect(schoolDataService.sqlFindOneByDfeNumber).toHaveBeenCalled()
+      expect(school.urlSlug).toEqual('00000000-00000000-00000000-00000000')
     })
   })
 
