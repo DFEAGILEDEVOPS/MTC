@@ -49,9 +49,8 @@ jspm_packages
 # ignore test reports folder
 /test/reports/
 
-# ignore personal vscode configs and workspace files
+# ignore personal workspace files
 *.code-workspace
-.vscode/**
 
 # ignore jsdoc output folder
 /admin/out
