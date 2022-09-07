@@ -61,6 +61,14 @@ const schoolDataService = {
 
   sqlUpdateBySlug: async function sqlUpdateBySlug (slug, update, userId) {
     const sql = `
+      DECLARE @typeOfEstablishmentLookupId Int = (SELECT id FROM mtc_admin.typeOfEstablishmentLookup WHERE code = @typeOfEstablishmentCode);
+
+      IF @typeOfEstablishmentLookupId IS NULL
+        BEGIN
+          DECLARE @msg NVARCHAR(128) = CONCAT('unknown typeOfEstablishmentCode: ', CAST(@typeOfEstablishmentCode as NVARCHAR(10)));
+          THROW 51000, @msg, 1;
+        END;
+
       UPDATE mtc_admin.[school]
       SET
           dfeNumber = @dfeNumber,
@@ -68,6 +76,7 @@ const schoolDataService = {
           leaCode = @leaCode,
           name = @name,
           urn = @urn,
+          typeOfEstablishmentLookup_id = @typeOfEstablishmentLookupId,
           lastModifiedBy_userId=@userId
       WHERE urlSlug = @slug
     `
@@ -78,7 +87,8 @@ const schoolDataService = {
       { name: 'name', value: update.name, type: TYPES.NVarChar(TYPES.MAX) },
       { name: 'slug', value: slug, type: TYPES.UniqueIdentifier },
       { name: 'urn', value: update.urn, type: TYPES.Int },
-      { name: 'userId', value: userId, type: TYPES.Int }
+      { name: 'userId', value: userId, type: TYPES.Int },
+      { name: 'typeOfEstablishmentCode', value: update.typeOfEstablishmentCode, type: TYPES.Int }
     ]
     return sqlService.modify(sql, params)
   },
@@ -164,10 +174,31 @@ const schoolDataService = {
     const params = [
       { name: 'slug', value: slug, type: TYPES.UniqueIdentifier }
     ]
-    const sql = `SELECT s.id, s.name, s.leaCode, s.estabCode, s.dfeNumber, s.urn, s.urlSlug,
-                        (SELECT count(*) from mtc_admin.pupil WHERE school_id = s.id) as numberOfPupils
-                   FROM mtc_admin.school s
-                  WHERE s.urlSlug = @slug`
+    const sql = `SELECT
+        s.id,
+        s.name,
+        s.leaCode,
+        s.estabCode,
+        s.dfeNumber,
+        s.urn,
+        s.urlSlug,
+        (
+          SELECT
+            COUNT(*)
+          FROM
+            mtc_admin.pupil
+          WHERE
+            school_id = s.id
+        ) AS numberOfPupils,
+        el.code as typeOfEstablishmentCode,
+        el.name as typeOfEstablishmentName
+      FROM
+        mtc_admin.school s
+        LEFT JOIN mtc_admin.typeOfEstablishmentLookup el ON (
+          s.typeOfEstablishmentLookup_id = el.id
+        )
+      WHERE
+        s.urlSlug = @slug`
     const res = await sqlService.query(sql, params)
     return R.head(res)
   },
@@ -179,15 +210,25 @@ const schoolDataService = {
    */
   sqlAddSchool: async function (data, userId) {
     const sql = `
-        INSERT INTO [mtc_admin].[school] (leaCode, estabCode, dfeNumber, urn, name, lastModifiedBy_userId)
-        VALUES (@leaCode, @estabCode, @dfeNumber, @urn, @name, @userId)`
+        DECLARE @typeOfEstablishmentLookupId Int = (SELECT id FROM mtc_admin.typeOfEstablishmentLookup WHERE code = @typeOfEstablishmentCode);
+
+        IF @typeOfEstablishmentLookupId IS NULL
+          BEGIN
+            DECLARE @msg NVARCHAR(128) = CONCAT('unknown typeOfEstablishmentCode: ', CAST(@typeOfEstablishmentCode as NVARCHAR(10)));
+            THROW 51000, @msg, 1;
+          END;
+
+        INSERT INTO [mtc_admin].[school] (leaCode, estabCode, dfeNumber, urn, name, lastModifiedBy_userId, typeOfEstablishmentLookup_id)
+        VALUES (@leaCode, @estabCode, @dfeNumber, @urn, @name, @userId, @typeOfEstablishmentLookupId);
+    `
     const params = [
       { name: 'estabCode', value: data.estabCode, type: TYPES.Int },
       { name: 'leaCode', value: data.leaCode, type: TYPES.Int },
       { name: 'dfeNumber', value: data.dfeNumber, type: TYPES.Int },
       { name: 'urn', value: data.urn, type: TYPES.Int },
       { name: 'name', value: data.name, type: TYPES.NVarChar(TYPES.MAX) },
-      { name: 'userId', value: userId, type: TYPES.Int }
+      { name: 'userId', value: userId, type: TYPES.Int },
+      { name: 'typeOfEstablishmentCode', value: data.typeOfEstablishmentCode, type: TYPES.Int }
     ]
     return sqlService.modify(sql, params)
   }

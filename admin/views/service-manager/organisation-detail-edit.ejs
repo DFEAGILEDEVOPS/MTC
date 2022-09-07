@@ -1,97 +1,129 @@
 <%- partial('partials/_gds_breadcrumbs_and_sign_out', { breadcrumbs }) %>
-<main class="govuk-main-wrapper govuk-body" id="main-content" role="main">
+  <main class="govuk-main-wrapper govuk-body" id="main-content" role="main">
     <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-            <h1 class="govuk-heading-xl"><%= school.name %></h1>
-            <h2 class="govuk-heading-m"> <%= school.numberOfPupils %> pupils</h2>
-            <%- partial('partials/_gds_session_expiry') %>
-            <%- partial('partials/_flash-messages') %>
-            <%- partial('partials/_form-error', {
-                pageFields: ['dfeNumber', 'leaCode', 'estabCode', 'urn', 'name'],
-                error
-            }) %>
-            <form action="" method="post">
+      <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl">
+          <%= school.name %>
+        </h1>
+        <h2 class="govuk-heading-m">
+          <%= school.numberOfPupils %> pupils
+        </h2>
+        <%- partial('partials/_gds_session_expiry') %>
+          <%- partial('partials/_flash-messages') %>
+            <%- partial('partials/_form-error', { pageFields: ['dfeNumber', 'leaCode' , 'estabCode' , 'urn' , 'name' ],
+              error }) %>
+              <form action="" method="post">
                 <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
 
                 <div class="govuk-form-group <%= error.isError('name') ? 'govuk-form-group--error' : '' %>">
-                    <label class="govuk-label" for="name">
-                        Name
-                        <% if (error.isError('name')) { %>
-                            <span class="govuk-error-message"><%= error.get('name') %></span>
-                        <% } %>
-                    </label>
-                    <input class="govuk-input govuk-input--width-10 <%= error.isError('name') ? 'govuk-input--error' :
-                            '' %>"
-                           id="name" name="name" type="text" value="<%= defaults.name %>">
+                  <label class="govuk-label" for="name">
+                    Name
+                    <% if (error.isError('name')) { %>
+                      <span class="govuk-error-message">
+                        <%= error.get('name') %>
+                      </span>
+                      <% } %>
+                  </label>
+                  <input class="govuk-input govuk-input--width-10 <%= error.isError('name') ? 'govuk-input--error' :
+                            '' %>" id="name" name="name" type="text" value="<%= defaults.name %>">
                 </div>
 
                 <div class="govuk-form-group <%= error.isError('dfeNumber') ? 'govuk-form-group--error' : '' %>">
-                    <label class="govuk-label" for="dfeNumber">
-                        DFE Number
-                        <% if (error.isError('dfeNumber')) { %>
-                            <span class="govuk-error-message"><%= error.get('dfeNumber') %></span>
-                        <% } %>
-                    </label>
-                    <input class="govuk-input govuk-input--width-10 <%= error.isError('dfeNumber') ? 'govuk-input--error' : '' %>"
-                           id="dfeNumber" name="dfeNumber" type="text" value="<%= defaults.dfeNumber %>">
+                  <label class="govuk-label" for="dfeNumber">
+                    DFE Number
+                    <% if (error.isError('dfeNumber')) { %>
+                      <span class="govuk-error-message">
+                        <%= error.get('dfeNumber') %>
+                      </span>
+                      <% } %>
+                  </label>
+                  <input
+                    class="govuk-input govuk-input--width-10 <%= error.isError('dfeNumber') ? 'govuk-input--error' : '' %>"
+                    id="dfeNumber" name="dfeNumber" type="text" value="<%= defaults.dfeNumber %>">
                 </div>
 
                 <div class="govuk-form-group <%= error.isError('urn') ? 'govuk-form-group--error' : '' %>">
-                    <label class="govuk-label" for="urn">
-                        URN
-                        <% if (error.isError('urn')) { %>
-                            <span class="govuk-error-message"><%= error.get('urn') %></span>
-                        <% } %>
-                    </label>
-                    <input class="govuk-input govuk-input--width-10" id="urn" name="urn" type="text"
-                           value="<%= defaults.urn %>">
+                  <label class="govuk-label" for="urn">
+                    URN
+                    <% if (error.isError('urn')) { %>
+                      <span class="govuk-error-message">
+                        <%= error.get('urn') %>
+                      </span>
+                      <% } %>
+                  </label>
+                  <input class="govuk-input govuk-input--width-10" id="urn" name="urn" type="text"
+                    value="<%= defaults.urn %>">
                 </div>
 
                 <div class="govuk-form-group <%= error.isError('leaCode') ? 'govuk-form-group--error' : '' %>">
-                    <label class="govuk-label" for="leaCode">
-                        LEA Code
-                        <% if (error.isError('leaCode')) { %>
-                            <span class="govuk-error-message"><%= error.get('leaCode') %></span>
-                        <% } %>
-                    </label>
-                    <input class="govuk-input govuk-input--width-3 <%= error.isError('leaCode') ? 'govuk-input--error'
-                            : '' %>" id="leaCode" name="leaCode" type="text"
-                           value="<%= defaults.leaCode %>">
+                  <label class="govuk-label" for="leaCode">
+                    LEA Code
+                    <% if (error.isError('leaCode')) { %>
+                      <span class="govuk-error-message">
+                        <%= error.get('leaCode') %>
+                      </span>
+                      <% } %>
+                  </label>
+                  <input class="govuk-input govuk-input--width-3 <%= error.isError('leaCode') ? 'govuk-input--error'
+                            : '' %>" id="leaCode" name="leaCode" type="text" value="<%= defaults.leaCode %>">
                 </div>
 
                 <div class="govuk-form-group <%= error.isError('estabCode') ? 'govuk-form-group--error' : '' %>">
-                    <label class="govuk-label" for="estabCode">
-                        Establishment Code
-                        <% if (error.isError('estabCode')) { %>
-                            <span class="govuk-error-message"><%= error.get('estabCode') %></span>
-                        <% } %>
-                    </label>
-                    <input class="govuk-input govuk-input--width-3 <%= error.isError('estabCode') ?
-                            'govuk-input--error' : '' %>" id="estabCode" name="estabCode" type="text"
-                           value="<%= defaults.estabCode %>">
+                  <label class="govuk-label" for="estabCode">
+                      Establishment Code
+                      <% if (error.isError('estabCode')) { %>
+                          <span class="govuk-error-message"><%= error.get('estabCode') %></span>
+                      <% } %>
+                  </label>
+                  <input class="govuk-input govuk-input--width-3 <%= error.isError('estabCode') ?
+                          'govuk-input--error' : '' %>" id="estabCode" name="estabCode" type="text"
+                         value="<%= defaults.estabCode %>">
+              </div>
+
+                <div
+                  class="govuk-form-group <%= error.isError('typeOfEstablishmentCode') ? 'govuk-form-group--error' : '' %>">
+                  <label class="govuk-label" for="typeOfEstablishmentCode">
+                    Establishment Type
+                    <% if (error.isError('typeOfEstablishmentCode')) { %>
+                      <span class="govuk-error-message">
+                        <%= error.get('typeOfEstablishmentCode') %>
+                      </span>
+                      <% } %>
+                  </label>
+                  <select
+                    class="govuk-select <%= error.isError('typeOfEstablishmentCode') ? 'govuk-input--error' : '' %>"
+                    id="typeOfEstablishmentCode" name="typeOfEstablishmentCode">
+                    <option value="">Please choose an establishment type</option>
+                    <% for (let i=0; i < typeOfEstablishmentData.length; i++) { const d=typeOfEstablishmentData[i] %>
+                      <option value="<%= d.code %>" <%=d.code===defaults.typeOfEstablishmentCode ? 'selected' : '' %>>
+                        <%= d.name %> (<%= d.code %>)
+                      </option>
+                      <% } %>
+                  </select>
                 </div>
 
                 <div class="govuk-button-group">
-                   <button class="govuk-button" type="submit">Update organisation</button>
+                  <button class="govuk-button" type="submit">Update organisation</button>
 
-                    <a href="/service-manager/organisations/<%= school.urlSlug %>"
-                       class="govuk-button govuk-button--secondary">Discard edits and view organisation</a>
+                  <a href="/service-manager/organisations/<%= school.urlSlug %>"
+                    class="govuk-button govuk-button--secondary">Discard edits and view organisation</a>
                 </div>
-            </form>
-        </div>
-        <div class="govuk-grid-column-one-third" aria-label="sidebar">
-            <aside class="app-related-items" role="complementary">
-                <h2 class="govuk-heading-m" id="subsection-title">
-                    Related
-                </h2>
-                <nav role="navigation" aria-labelledby="subsection-title">
-                    <ul class="govuk-list govuk-!-font-size-16">
-                        <li>
-                            <a class="govuk-link" href="<%- guidancePdf %>" target="_blank" rel="noopener noreferrer">Read the guidance and watch videos</a>
-                        </li>
-                    </ul>
-                </nav>
-            </aside>
-        </div>
+              </form>
+      </div>
+      <div class="govuk-grid-column-one-third" aria-label="sidebar">
+        <aside class="app-related-items" role="complementary">
+          <h2 class="govuk-heading-m" id="subsection-title">
+            Related
+          </h2>
+          <nav role="navigation" aria-labelledby="subsection-title">
+            <ul class="govuk-list govuk-!-font-size-16">
+              <li>
+                <a class="govuk-link" href="<%- guidancePdf %>" target="_blank" rel="noopener noreferrer">Read the
+                  guidance and watch videos</a>
+              </li>
+            </ul>
+          </nav>
+        </aside>
+      </div>
     </div>
-</main>
+  </main>
