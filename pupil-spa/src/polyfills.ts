@@ -22,20 +22,10 @@ import '@angular/localize/init';
 * BROWSER POLYFILLS
 */
 
-
-/** IE10 and IE11 requires the following for NgClass support on SVG elements */
-// import 'classlist.js';  // Run `npm install --save classlist.js`.
-
 /** Evergreen browsers require these. **/
 import 'core-js/es6/reflect';
 
 import 'govuk_frontend_toolkit/javascripts/govuk/details.polyfill';
-
-/**
- * Required to support Web Animations `@angular/animation`.
- * Needed for: All but Chrome, Firefox and Opera. http://caniuse.com/#feat=web-animation
- **/
-// import 'web-animations-js';  // Run `npm install --save web-animations-js`.
 
 
 
