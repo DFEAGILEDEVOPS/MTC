@@ -144,6 +144,7 @@
     "karma-remap-istanbul": "~0.6.0",
     "node-mocks-http": "^1.6.6",
     "nodemon": "^2.0.12",
+    "standard": "^17.0.0",
     "supertest": "^6.0.1",
     "ts-node": "^10.4.0",
     "typescript": "4.3.5"
