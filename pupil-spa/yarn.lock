@@ -6171,14 +6171,6 @@ ngx-cookie-service@^14.0.1:
   dependencies:
     tslib "^2.0.0"
 
-ngx-logger@4.3.3:
-  version "4.3.3"
-  resolved "https://registry.yarnpkg.com/ngx-logger/-/ngx-logger-4.3.3.tgz#29432fa27a8c935bfc8e21dcaf4488572b413f5b"
-  integrity sha512-LvHBt0OWIyjwVroecgxmZVDH+9lCYYd3gSiup9wNgtK0a3f+D+h2LCb8p9RI16wqCVFqYe/QChqJA8PGJzZTcw==
-  dependencies:
-    tslib "^2.0.0"
-    vlq "^1.0.0"
-
 nice-napi@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/nice-napi/-/nice-napi-1.0.2.tgz#dc0ab5a1eac20ce548802fc5686eaa6bc654927b"
@@ -8869,11 +8861,6 @@ vinyl@^2.0.0:
     cloneable-readable "^1.0.0"
     remove-trailing-separator "^1.0.1"
     replace-ext "^1.0.0"
-
-vlq@^1.0.0:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/vlq/-/vlq-1.0.1.tgz#c003f6e7c0b4c1edd623fd6ee50bbc0d6a1de468"
-  integrity sha512-gQpnTgkubC6hQgdIcRdYGDSDc+SaujOdyesZQMv6JlfQee/9Mp0Qhnys6WxDWvQnL5WZdT7o2Ul187aSt0Rq+w==
 
 void-elements@^2.0.0:
   version "2.0.1"
