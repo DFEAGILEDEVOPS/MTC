@@ -11,7 +11,6 @@
     "test": "yarn genconfig && ng test",
     "coverage": "yarn genconfig && ng test --no-watch --browsers ChromeHeadless --code-coverage",
     "test-single": "yarn genconfig && ng test --watch false --browsers ChromeHeadless",
-    "lint": "ng lint",
     "genconfig": "./gen_config.sh && mv config.json src/assets/config.json"
   },
   "engines": {
