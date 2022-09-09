@@ -285,7 +285,7 @@
     events "^3.0.0"
     tslib "^2.2.0"
 
-"@azure/storage-queue@^12.10.0":
+"@azure/storage-queue@^12.7.0":
   version "12.10.0"
   resolved "https://registry.yarnpkg.com/@azure/storage-queue/-/storage-queue-12.10.0.tgz#b2b1f42c7a0f02b2d6104ca4076b9b5588d7bdcb"
   integrity sha512-N0x0fZLwFmn+nNLxLvYhZIfUfg7XXdzutCwoealT4Bm1Hxjeosoqx66UZDYxIcRT57+ESFYenbpzCtcZY8JCIA==
@@ -5386,6 +5386,9 @@ string.prototype.trimstart@^1.0.4:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/string.prototype.trimstart/-/string.prototype.trimstart-1.0.4.tgz#b36399af4ab2999b4c9c648bd7a3fb2bb26feeed"
   integrity sha512-jh6e984OBfvxS50tdY2nRZnoC5/mLFKOREQfw8t5yytkoUsJRNxvI/E39qu1sD0OtWI3OC0XgKSmcWwziwYuZw==
+  dependencies:
+    call-bind "^1.0.2"
+    define-properties "^1.1.3"
 
 string_decoder@^1.1.1:
   version "1.3.0"
