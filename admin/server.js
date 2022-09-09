@@ -76,9 +76,11 @@ function onError (error) {
     case 'EACCES':
       console.error(bind + ' requires elevated privileges')
       process.exit(1)
+    // eslint-disable-next-line no-use-before-define, no-fallthrough
     case 'EADDRINUSE':
       console.error(bind + ' is already in use')
       process.exit(1)
+    // eslint-disable-next-line no-use-before-define, no-fallthrough
     default:
       throw error
   }

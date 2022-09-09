@@ -1,3 +1,18 @@
 {
-  "extends": "standard"
+  "extends": "standard",
+  "root": true,
+  "env": {
+    "node": true
+  },
+  "rules": {
+    "no-return-await": "off",
+    "object-shorthand": "off"
+  },
+  "ignorePatterns": [
+    "assets/javascripts/jquery-3.5.1.js",
+    "assets/vendor-js/*",
+    "**/*.ts",
+    "dist/",
+    "public/"
+  ]
 }
