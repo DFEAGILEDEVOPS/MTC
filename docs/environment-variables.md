@@ -30,7 +30,7 @@ Env Var | Type | Default value | Required | Components | Description
  AZURE_SERVICE_BUS_CONNECTION_STRING | String | NULL | Required | AA, FC, FT, PAPI | Connection string as given in the Azure portal for Azure Service Bus.
  AZURE_STORAGE_CONNECTION_STRING | String | (empty string) | Required | AA, FC, FT | The Azure storage connection string.
  AZURE_TABLE_PREFIX | String | '' | Optional | AA | A prefix that can be automatically applied to the required tables.
- AZURE_ACCOUNT_NAME | String | '' | Required | PA | The string provided will be inserted into the template string `https://<azure_account_name>.queue.core.windows.net/$1` and used a a fallback proxy for the check-submitted queue.<br />E.g. `testsamtc` for the test instance 
+ AZURE_ACCOUNT_NAME | String | '' | Required | PA | The string provided will be inserted into the template string `https://<azure_account_name>.queue.core.windows.net/$1` and used a a fallback proxy for the check-submitted queue.<br />E.g. `testsamtc` for the test instance
  BANNED_WORDS | String | 'dim' | Optional | FC | Provides a way to negate words that may be in the allowed list ensuring that they never appear in a pin.
  CHECK_ALLOCATION_EXPIRY_SECONDS | Int | 15778476 | Optional | none | The number of seconds to cache the pupil check in Redis for before expiring it. Possibly no longer used.
  CHECK_COMPLETION_QUEUE_MAX_DELIVERY_COUNT | Int | 10 | Optional | FT | Taken from the `check-completion` Azure service bus queue: maxDeliveryCount
@@ -84,9 +84,6 @@ Env Var | Type | Default value | Required | Components | Description
  PUPIL_APP_URL | String | NULL | Required | AA | The URL of the pupil app - used to generate the QR code on the pin slips
  PUPIL_APP_USE_COMPRESSION | Boolean | true | Optional | AA | Determines whether the pupil app should compress the payload before sending it back.  Leave this as true.
  PUPIL_CENSUS_MAX_FILE_UPLOAD_MB | Int | 104857600 | Optional | AA | Not used?
- RATE_LIMIT_THRESHOLD | Int | 1000 | Optional | PAPI | Number of requests originating from one IP Address to invoke the rate limiter
- RATE_LIMIT_DURATION | Int | 60000 | Optional | PAPI | Timeframe for rate limit threshold measurement
- RATE_LIMIT_ENABLED | Boolean | false | Optional | PAPI | Enables or disables rate limiting module
  REDIS_HOST | String | NULL | Required | AA, FC, FC, PAPI | The redis hostname or IP address.
  REDIS_KEY | String | NULL | Optional | AA, FC, FT, PAPI | The redis secret key to use to connect to a password enabled Redis server.
  REDIS_PORT | Int | 6379 | Optional | AA, FC, FT, PAPI | The redis port to connect to.
@@ -128,7 +125,7 @@ Env Var | Type | Default value | Required | Components | Description
  SQL_TECH_SUPPORT_USER_PASSWORD | String | N/A | Required | AA | Experimental setting.  The password to use when connecting to the SQL DB as this user.
  SQL_TRUST_SERVER_CERTIFICATE | Bool | true | Optional | AA | Used when establising a TLS connection to MSSQL Server.[See the docs.](https://docs.microsoft.com/en-us/sql/connect/jdbc/connecting-with-ssl-encryption?view=sql-server-ver15)
  SUBMIT_CHECK_FUNCTION_ENABLED | Boolean | false | Optional | FC | Used by the Developer Test tools
- SYNC_RESULTS_INIT_MAX_PARALLEL_TASKS | Int | 5 | Optional | FT | Configure the number of parallel tasks when running the sync-results-init function. 
+ SYNC_RESULTS_INIT_MAX_PARALLEL_TASKS | Int | 5 | Optional | FT | Configure the number of parallel tasks when running the sync-results-init function.
  TECH_SUPPORT_SQL_POOL_MIN_COUNT | Int | 0 | Optional | AA | Experimental setting.  The minimum number of sql connections to hold in the tech-support sql connection pool.
  TECH_SUPPORT_SQL_POOL_MIN_COUNT | Int | 2 | Optional | AA | Experimental setting.  The maximum number of sql connections to hold in the tech-support sql connection pool.
  WAIT_TIME_BEFORE_EXIT | Int | 30 | Optional | AA | The amount of time to wait, in seconds, before exiting in the event that the app is unable to initialise a connection to the database.

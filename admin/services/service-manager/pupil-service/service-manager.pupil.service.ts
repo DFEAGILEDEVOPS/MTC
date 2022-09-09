@@ -22,6 +22,7 @@ export class ServiceManagerPupilService {
     if (results === undefined) return []
     return results.map(r => {
       return {
+        createdAt: dateService.formatShortGdsDate(r.createdAt),
         urlSlug: r.urlSlug,
         id: r.id,
         firstName: r.foreName,
@@ -72,6 +73,7 @@ export class ServiceManagerPupilService {
 }
 
 export interface ServiceManagerPupilSearchResult {
+  createdAt: string
   urlSlug: string
   id: number
   firstName: string

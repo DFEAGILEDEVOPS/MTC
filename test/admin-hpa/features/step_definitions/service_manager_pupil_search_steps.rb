@@ -73,6 +73,7 @@ Then(/^I should see the pupil results page with a list of matched pupils$/) do
   [pupil_a_details, pupil_b_details].each do |pupil_details|
     pupil_row = pupil_search_page.pupil_results.pupil_row.find {|pupil| pupil.text.include? pupil_details['foreName']}
     school_details = SqlDbHelper.find_school(pupil_details['school_id'])
+    expect(pupil_row.created_at.text).to eql pupil_details['createdAt'].strftime("%-d %b %Y")
     expect(pupil_row.name.text).to eql pupil_details['lastName'] + ', ' + pupil_details['foreName']
     expect(pupil_row.dob.text).to eql pupil_details['dateOfBirth'].strftime("%-d %b %Y")
     expect(pupil_row.school.text).to eql school_details['name']
@@ -87,7 +88,7 @@ Given(/^I have searched for 2 pupils with the same upn$/) do
   step 'I search for a pupil using a upn that matches more than one pupil'
 end
 
-When(/^I click on on of the pupils in the list$/) do
+When(/^I click on one of the pupils in the list$/) do
   pupil_row = pupil_search_page.pupil_results.pupil_row.sample
   @school_id = SqlDbHelper.find_school_by_name(pupil_row.school.text)['id']
   pupil_row.name.click
