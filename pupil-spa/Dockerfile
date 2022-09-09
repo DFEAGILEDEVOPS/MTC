@@ -19,7 +19,7 @@ WORKDIR /ng-app
 COPY . .
 
 ## Build the angular app in production mode and store the artifacts in dist folder
-RUN yarn run ng build --prod --aot --build-optimizer
+RUN yarn build:prod
 
 ### STAGE 2: Setup ###
 
