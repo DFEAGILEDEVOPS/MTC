@@ -61,7 +61,7 @@
     "ramda": "^0.27.2",
     "ramda-adjunct": "^2.33.0",
     "random-number-csprng": "^1.0.2",
-    "ua-parser-js": "^0.7.28",
+    "ua-parser-js": "^0.8.1",
     "uuid": "^8.3.1"
   }
 }
