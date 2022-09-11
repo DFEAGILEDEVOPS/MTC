@@ -4,6 +4,8 @@ import { AzureQueueService } from '../azure-queue/azure-queue.service'
 import { ConnectivityService } from './connectivity-service'
 import { default as connectivityErrorMessages } from './connectivity-error-messages'
 import { HttpClient } from '@angular/common/http'
+import { APP_INITIALIZER } from '@angular/core'
+import { loadConfigMockService } from '../config/config.service'
 
 let connectivityService
 
@@ -14,7 +16,8 @@ describe('ConnectivityService', () => {
       imports: [HttpClientTestingModule],
       providers: [
         AzureQueueService,
-        ConnectivityService
+        ConnectivityService,
+        { provide: APP_INITIALIZER, useFactory: loadConfigMockService, multi: true },
       ]
     })
     TestBed.inject(HttpClient)
