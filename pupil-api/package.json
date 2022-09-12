@@ -8,7 +8,7 @@
     "coverage": "yarn jest --coverage",
     "lint": "yarn eslint . --ext .js,.jsx,.ts,.tsx",
     "lint:fix": "yarn eslint . --ext .js,.jsx,.ts,.tsx --fix",
-    "start": "yarn run build && node ./dist/index.js",
+    "start": "node ./dist/index.js",
     "test": "yarn lint && yarn jest",
     "watch": "yarn jest --watch",
     "clean": "rm -rf ./dist"
@@ -30,7 +30,6 @@
     "feature-toggles": "^1.4.0",
     "helmet": "^4.3.1",
     "ioredis": "^4.27.8",
-    "ioredis-ratelimit": "^2.0.1",
     "moment": "^2.29.4",
     "morgan": "^1.9.0",
     "ramda": "^0.28.0",
