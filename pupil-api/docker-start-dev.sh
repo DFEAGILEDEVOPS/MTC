@@ -3,5 +3,5 @@ set -x
 set -e
 
 yarn install --frozen-lockfile
-yarn clean
+yarn build
 yarn start

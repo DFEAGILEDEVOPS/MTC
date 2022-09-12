@@ -41,11 +41,6 @@ module.exports = {
       Username: process.env.SQL_PUPIL_CENSUS_USER || 'CensusImportUser',
       Password: process.env.SQL_PUPIL_CENSUS_USER_PASSWORD
     },
-    FunctionsApp: {
-      // used by the etl function to sync the table storage results to sql server
-      Username: process.env.SQL_FUNCTIONS_APP_USER || 'functionsAppSystemUser',
-      Password: process.env.SQL_FUNCTIONS_APP_USER_PASSWORD || 'functionsAppSystemP4ssw0rd!' // default only for local docker
-    },
     Azure: {
       Scale: process.env.SQL_AZURE_SCALE
     }

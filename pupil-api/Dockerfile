@@ -10,6 +10,8 @@ RUN yarn install --ignore-engines --frozen-lockfile
 
 COPY . .
 RUN yarn build
+RUN rm -rf ./node_modules
+RUN yarn install --ignore-engines --frozen-lockfile --production
 RUN yarn global add pm2
 
 # ssh
