@@ -369,13 +369,14 @@
   resolved "https://registry.yarnpkg.com/@types/lz-string/-/lz-string-1.3.34.tgz#69bfadde419314b4a374bf2c8e58659c035ed0a5"
   integrity sha512-j6G1e8DULJx3ONf6NdR5JiR2ZY3K3PaaqiEuKYkLQO0Czfi1AzrtjfnfCROyWGeDd5IVMKCwsgSmMip9OWijow==
 
-"@types/mssql@^6.0.7":
-  version "6.0.8"
-  resolved "https://registry.yarnpkg.com/@types/mssql/-/mssql-6.0.8.tgz#f2831267c4c577022d1584943b371af87e8a147d"
-  integrity sha512-N3dr3o1c6EXhHhhNRaKpLTdAoXT/s6qDEJET5FID2gFCj58vIV9q/7RtkvYdE6ntpkJF5F9hpURhxT/oC62yLw==
+"@types/mssql@^8.1.1":
+  version "8.1.1"
+  resolved "https://registry.yarnpkg.com/@types/mssql/-/mssql-8.1.1.tgz#c46d4b9952d7aa860a7de4631771b8d304148829"
+  integrity sha512-5gNrxeTBbF9OYe+tj6FVPlBypH4B6MjmBKMtEoU7sOjbpnzi17AZ5M0ob5nQNFo+EFdopGMXlKkUdysUoZ/TRQ==
   dependencies:
     "@types/node" "*"
     "@types/tedious" "*"
+    tarn "^3.0.1"
 
 "@types/node-fetch@^2.5.0":
   version "2.6.1"
@@ -395,10 +396,10 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-10.17.60.tgz#35f3d6213daed95da7f0f73e75bcc6980e90597b"
   integrity sha512-F0KIgDJfy2nA3zMLmWGKxcH2ZVEtCZXHHdOQs2gSaQ27+lNeEfGxzkIw90aXswATX7AZ33tahPbzy6KAfUreVw==
 
-"@types/ramda@^0.27.11":
-  version "0.27.66"
-  resolved "https://registry.yarnpkg.com/@types/ramda/-/ramda-0.27.66.tgz#f1a23d13b0087d806a62e3ff941e5e59b3318999"
-  integrity sha512-i2YW+E2U6NfMt3dp0RxNcejox+bxJUNDjB7BpYuRuoHIzv5juPHkJkNgcUOu+YSQEmaWu8cnAo/8r63C0NnuVA==
+"@types/ramda@^0.28.15":
+  version "0.28.15"
+  resolved "https://registry.yarnpkg.com/@types/ramda/-/ramda-0.28.15.tgz#36bb4c8de430e3bbcd29590537569aef64409716"
+  integrity sha512-FCaLNVZry65jW8x/FDnKgjgkCNQxgc5AYMQwdNn6yW5M+62R+0nt2Y36U43dTNora9hcquemfrY5gxhE5pcilQ==
   dependencies:
     ts-toolbelt "^6.15.1"
 
@@ -2577,9 +2578,9 @@ mixin-deep@^1.2.0:
     is-extendable "^1.0.1"
 
 moment-timezone@^0.5.35:
-  version "0.5.35"
-  resolved "https://registry.yarnpkg.com/moment-timezone/-/moment-timezone-0.5.35.tgz#6fa2631bdbe8ff04f6b8753f7199516be6dc9839"
-  integrity sha512-cY/pBOEXepQvlgli06ttCTKcIf8cD1nmNwOKQQAdHBqYApQSpAqotBMX0RJZNgMp6i0PlZuf1mFtnlyEkwyvFw==
+  version "0.5.37"
+  resolved "https://registry.yarnpkg.com/moment-timezone/-/moment-timezone-0.5.37.tgz#adf97f719c4e458fdb12e2b4e87b8bec9f4eef1e"
+  integrity sha512-uEDzDNFhfaywRl+vwXxffjjq1q0Vzr+fcQpQ1bU0kbzorfS7zVtZnCnGc8mhWmF39d4g4YriF6kwA75mJKE/Zg==
   dependencies:
     moment ">= 2.9.0"
 
@@ -3013,10 +3014,10 @@ r-json@^1.2.10:
   resolved "https://registry.yarnpkg.com/r-json/-/r-json-1.2.10.tgz#62a73d9cafa7eabf670e5c2812c27bdb220a968b"
   integrity sha512-hu9vyLjSlHXT62NAS7DjI9WazDlvjN0lgp3n431dCVnirVcLkZIpzSwA3orhZEKzdDD2jqNYI+w0yG0aFf4kpA==
 
-ramda-adjunct@^2.33.0:
-  version "2.36.0"
-  resolved "https://registry.yarnpkg.com/ramda-adjunct/-/ramda-adjunct-2.36.0.tgz#3c8b722afa645014894736189a09af87c6707d27"
-  integrity sha512-8w+/Hx73oByS+vo+BfAPOG3HYL2ay6O5fjrJpR7NFxMoFWksKz6vSOtvjqdfMM6MfAimHizq9tpdI0OD4xbKog==
+ramda-adjunct@^3.2.0:
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/ramda-adjunct/-/ramda-adjunct-3.2.0.tgz#bd4f9d95ae24bb1d4c0b4a9429766a81da90788d"
+  integrity sha512-lfpDz3VX5vS5YE1pgLYHOqWiX8+0gKnCDbm/DpIYpMsWx90g2I5c5/SfgUojjt3P4GidRauJrPc5OY2aoeLrWw==
 
 ramda@^0.28.0:
   version "0.28.0"
@@ -3569,7 +3570,7 @@ sver-compat@^1.5.0:
     es6-iterator "^2.0.1"
     es6-symbol "^3.1.1"
 
-tarn@^3.0.2:
+tarn@^3.0.1, tarn@^3.0.2:
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/tarn/-/tarn-3.0.2.tgz#73b6140fbb881b71559c4f8bfde3d9a4b3d27693"
   integrity sha512-51LAVKUSZSVfI05vjPESNc5vwqqZpbXCsU+/+wxlOrUjk2SnFTt97v9ZgQrD4YmxYW1Px6w2KjaDitCfkvgxMQ==
