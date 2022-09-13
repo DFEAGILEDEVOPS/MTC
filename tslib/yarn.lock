@@ -1965,10 +1965,10 @@ cssstyle@^2.3.0:
   dependencies:
     cssom "~0.3.6"
 
-csv-string@^4.0.1:
-  version "4.0.1"
-  resolved "https://registry.yarnpkg.com/csv-string/-/csv-string-4.0.1.tgz#1fb4a88c869badad056d55247f57336e1e748b00"
-  integrity sha512-nCdK+EWDbqLvZ2MmVQhHTmidMEsHbK3ncgTJb4oguNRpkmH5OOr+KkDRB4nqsVrJ7oK0AdO1QEsBp0+z7KBtGQ==
+csv-string@^4.1.0:
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/csv-string/-/csv-string-4.1.0.tgz#3fd5101e67cfb4e0f428f40263837044737f1457"
+  integrity sha512-67UM45fosQvvh+HUvC8iNgg2B4UHWJ5Qud7TWy1EcbIQ9levAFKWudMk2k8U3LgXZP/Drr6eBwBwbSWq2N8HZA==
 
 data-urls@^2.0.0:
   version "2.0.0"
