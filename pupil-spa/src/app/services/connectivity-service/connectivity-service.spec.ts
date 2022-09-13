@@ -25,9 +25,11 @@ describe('ConnectivityService', () => {
     connectivityService = injector.inject(ConnectivityService)
     connectivityService.errorMessages = []
   })
+
   it('should be created', inject([ConnectivityService], (service: ConnectivityService) => {
     expect(service).toBeTruthy()
   }))
+
   describe('connectivityCheckSucceeded', () => {
     it('should return true if both pupil api ping and test connectivity queue message creation are successful', async () => {
       spyOn(connectivityService, 'canAccessPupilAuthURL').and.returnValue(true)
