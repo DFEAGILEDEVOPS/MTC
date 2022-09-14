@@ -53,7 +53,7 @@
     "dompurify": "^2.3.3",
     "dotenv": "^10.0.0",
     "edit-json-file": "^1.4.0",
-    "ejs": "^3.1.7",
+    "ejs": "^3.1.8",
     "express": "^4.16.2",
     "express-breadcrumbs": "https://github.com/DFEAGILEDEVOPS/express-breadcrumbs.git",
     "express-busboy": "^8.0.0",
