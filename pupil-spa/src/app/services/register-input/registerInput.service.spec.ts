@@ -39,16 +39,17 @@ describe('RegisterInputService', () => {
       expect(storageServiceSetInputSpy).toHaveBeenCalledTimes(1)
     }))
 
-  it('StoreEntry to should store entry',
+  it('StoreEntry should store entry',
     inject([TestRegisterInputService], (service: TestRegisterInputService) => {
+      const d1 = new Date()
       const entry = {
         input: '0',
         eventType: 'keydown',
-        clientTimestamp: (new Date()).toISOString(),
+        clientTimestamp: d1.toISOString(),
         question: '2x3',
         sequenceNumber: 7,
       }
-      service.storeEntry(entry.input, entry.eventType, entry.sequenceNumber, entry.question)
+      service.storeEntry(entry.input, entry.eventType, entry.sequenceNumber, entry.question, d1.valueOf())
       expect(storageServiceSetInputSpy).toHaveBeenCalledTimes(1)
       const arg = storageServiceSetInputSpy.calls.all()[0].args[0]
       expect(arg).toEqual(entry)

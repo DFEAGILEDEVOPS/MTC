@@ -7,10 +7,11 @@ export class RegisterInputService {
 
   public storeEntry(eventValue: string, eventType: string, questionNumber: number, question: string, eventTimeStamp: number = null) {
     // event.timestamp is now being changed to be a DOMHiResTimestamp
+    const eventDate = eventTimeStamp !== null ? new Date(eventTimeStamp) : new Date()
     const questionInput = {
       input: eventValue,
       eventType: eventType,
-      clientTimestamp: (new Date()).toISOString(),
+      clientTimestamp: eventDate.toISOString(),
       question: question,
       sequenceNumber: questionNumber
     };
