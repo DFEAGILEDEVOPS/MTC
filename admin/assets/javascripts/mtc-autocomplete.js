@@ -23,8 +23,8 @@ if (!window.MTCAdmin) {
         return window.accessibleAutocomplete.enhanceSelectElement($.extend(
           {
             selectElement: document.querySelector(autoCompleteContainer),
-            minLength: minLength,
-            defaultValue: defaultValue
+            minLength,
+            defaultValue
           },
           extraOptions
         ))
@@ -73,10 +73,10 @@ if (!window.MTCAdmin) {
     createLinkedComponent: function (autoCompleteContainer, id, source, minLength, linkedContainer, findValueFunc) {
       window.accessibleAutocomplete({
         element: document.querySelector(autoCompleteContainer),
-        id: id,
+        id,
         name: id,
-        source: source,
-        minLength: minLength,
+        source,
+        minLength,
         defaultValue: '',
         onConfirm: function (name) {
           $(autoCompleteContainer).trigger('confirm', [name])

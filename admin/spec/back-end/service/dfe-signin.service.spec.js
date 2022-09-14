@@ -149,7 +149,7 @@ describe('dfe-signin.service', () => {
     const lastName = 'egg'
     const email = 'ralph@codemasters.com'
     jest.spyOn(adminLogonEventDataService, 'sqlCreate').mockImplementation()
-    const user = await sut.initialiseUser({ given_name: firstName, family_name: lastName, email: email }, token)
+    const user = await sut.initialiseUser({ given_name: firstName, family_name: lastName, email }, token)
     expect(user).toBeDefined()
     expect(user.displayName).toBe(`${firstName} ${lastName} (${email})`)
   })

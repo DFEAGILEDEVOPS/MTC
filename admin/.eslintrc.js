@@ -4,72 +4,67 @@ module.exports = {
     node: true,
     jest: true
   },
-  rules: {
-    'no-return-await': 'off',
-    'object-shorthand': 'off'
+  parser: '@typescript-eslint/parser',
+  parserOptions: {
+    tsconfigRootDir: __dirname,
+    project: './tsconfig.json',
+    warnOnUnsupportedTypeScriptVersion: true
   },
-  ignorePatterns: [
-    'assets/javascripts/jquery-3.5.1.js',
-    'assets/vendor-js/*',
-    'dist/',
-    'public/',
-    '**/*.ts'
+  plugins: [
+    '@typescript-eslint',
+    'jest'
   ],
   extends: [
-    'standard'
+    'standard-with-typescript',
+    'plugin:jest/recommended',
+    'plugin:jest/style'
   ],
-
-  // =================================
-  // Overrides for Specific Files
-  // =================================
-  overrides: [
+  ignorePatterns: [
+    'dist/',
+    'public/',
+    '**/*.js'
+  ],
+  rules: {
+    'no-return-await': 'off',
+    '@typescript-eslint/no-extraneous-class': 'off',
+    '@typescript-eslint/return-await': ['error', 'in-try-catch'],
+    '@typescript-eslint/prefer-ts-expect-error': 'off',
+    '@typescript-eslint/no-explicit-any': 'off',
+    '@typescript-eslint/no-var-requires': 'off',
+    '@typescript-eslint/method-signature-style': 'off',
+    '@typescript-eslint/restrict-template-expressions': 'off',
+    '@typescript-eslint/ban-ts-comment': [
+      'warn',
+      {
+        'ts-expect-error': true,
+        'ts-ignore': 'allow-with-description',
+        'ts-nocheck': true,
+        'ts-check': false,
+        minimumDescriptionLength: 5
+      },
+    ],
+    'jest/consistent-test-it': ['error',
     {
-      files: ['**/*.{ts,tsx}'],
-
-      // Global ESLint Settings
-      // =================================
-      env: {
-        jest: true,
-        node: true
-      },
-      settings: {
-        'import/parsers': {
-          '@typescript-eslint/parser': ['.ts', '.tsx']
-        },
-        'import/resolver': {
-          typescript: {
-            project: './tsconfig.json'
-          }
-        }
-      },
-
-      // Parser Settings
-      // =================================
-      // allow ESLint to understand TypeScript syntax
-      // https://github.com/iamturns/eslint-config-airbnb-typescript/blob/master/lib/shared.js#L10
-      parser: '@typescript-eslint/parser',
-      parserOptions: {
-        // Lint with Type Information
-        // https://github.com/typescript-eslint/typescript-eslint/blob/master/docs/getting-started/linting/TYPED_LINTING.md
-        tsconfigRootDir: __dirname,
-        project: './tsconfig.json'
-      },
-
-      // Plugins
-      // =================================
-      plugins: [
-        '@typescript-eslint'
-      ],
-      extends: [
-        'standard-with-typescript',
-        'eslint:recommended',
-        'plugin:@typescript-eslint/recommended',
-        'plugin:@typescript-eslint/eslint-recommended',
-        'plugin:@typescript-eslint/recommended-requiring-type-checking',
-        'plugin:import/errors',
-        'plugin:import/warnings',
-        'plugin:import/typescript'
-      ]
-    }
-  ]
+      'fn': 'test',
+      'withinDescribe': 'test'
+    }],
+    'jest/no-conditional-expect': 'off',
+    'jest/no-jasmine-globals': 'off', // must be addressed soon, as Jasmine API is due to be phased out from Jest internals.
+    'jest/no-restricted-matchers': [
+      'error',
+      {
+        'toBeFalsy': 'Ambiguous expectation. Use `toBe(false)` for boolean and `toBeDefined()` for instance verification.',
+        'toBeTruthy': 'Ambiguous expectation. Use `toBe(true)` for boolean and `toBeDefined()` for instance verification.',
+        'not.toHaveBeenCalledWith': 'narrow expectation by using `toHaveBeenCalledWith`'
+      }
+    ],
+    'jest/no-test-return-statement': 'error',
+    'jest/no-try-expect': 'off', // a lot of code to change due to usage of fail.  removing use of fail ties in with [no-jasmine-globals] rule, as its jasmine API
+    'jest/prefer-called-with': 'warn',
+    'jest/prefer-spy-on': 'warn',
+    'jest/prefer-strict-equal': 'error',
+    'jest/prefer-todo': 'error',
+    'jest/require-to-throw-message': 'warn',
+    'jest/require-top-level-describe': 'error'
+  }
 }

@@ -8,7 +8,8 @@
     "dev-build": "gulp dev-build",
     "shell-build": "./build.sh",
     "clean": "rm -rf dist; rm -f .env",
-    "lint": "yarn eslint .",
+    "lint": "standard && yarn lint:ts",
+    "lint:ts": "yarn eslint .",
     "lintAndBuild": "yarn lint && yarn build",
     "migrate-sql": "node ../db/engine/migrate.js",
     "migrate-and-seed-sql": "yarn migrate-sql && yarn seed-sql",
@@ -121,6 +122,7 @@
     "eslint-config-standard": "^17.0.0",
     "eslint-config-standard-with-typescript": "^22.0.0",
     "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-jest": "^27.0.4",
     "eslint-plugin-n": "^15.2.5",
     "eslint-plugin-promise": "^6.0.1",
     "gulp": "^4.0.2",
@@ -141,6 +143,7 @@
     "karma-remap-istanbul": "~0.6.0",
     "node-mocks-http": "^1.6.6",
     "nodemon": "^2.0.12",
+    "standard": "^17.0.0",
     "supertest": "^6.0.1",
     "ts-node": "^10.4.0",
     "typescript": "4.3.5"
@@ -149,7 +152,8 @@
     "ignore": [
       "assets/javascripts/jquery-3.5.1.js",
       "assets/vendor-js/*",
-      "**/*.ts"
+      "**/*.ts",
+      ".eslintrc.js"
     ]
   },
   "jest": {
