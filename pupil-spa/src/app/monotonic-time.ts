@@ -25,10 +25,10 @@ export class MonotonicTime {
   }
 
   public formatAsMilliseconds (): number {
-    if (this.timeOrigin && this.now) {
+    if (this.timeOrigin !== undefined && this.now !== undefined)  {
       return this.timeOrigin + this.now
     } else {
-      return this.date.getMilliseconds()
+      return this.date.valueOf()
     }
   }
 
