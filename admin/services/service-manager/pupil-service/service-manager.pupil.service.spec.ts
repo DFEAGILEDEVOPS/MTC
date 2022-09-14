@@ -97,7 +97,7 @@ describe('service manager pupil service', () => {
           loadingTimeLimit: 3,
           questionTimeLimit: 6,
           checkTimeLimit: 30
-      })
+        })
     })
 
     test('validates the url slug as uuid', async () => {
@@ -156,7 +156,7 @@ describe('service manager pupil service', () => {
       }
       jest.spyOn(ServiceManagerPupilDataService, 'getPupilByUrlSlug').mockResolvedValue([expected])
       const pupilDetails = await ServiceManagerPupilService.getPupilDetailsByUrlSlug(mockPupilDetailsData.urlSlug)
-      expect(pupilDetails.status).toStrictEqual('Not started')
+      expect(pupilDetails.status).toBe('Not started')
     })
   })
 })

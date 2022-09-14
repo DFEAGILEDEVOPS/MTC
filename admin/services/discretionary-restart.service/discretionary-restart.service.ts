@@ -4,7 +4,7 @@ import { DiscretionaryRestartDataService } from './data-access/discretionary-res
 
 export class DiscretionaryRestartService {
   public static async grantDiscretionaryRestart (pupilSlug: string): Promise<void> {
-    if (uuid.validate(pupilSlug) === false) {
+    if (!uuid.validate(pupilSlug)) {
       throw new Error('Invalid uuid')
     }
     await PupilFrozenService.throwIfFrozenByUrlSlugs([pupilSlug])
@@ -12,7 +12,7 @@ export class DiscretionaryRestartService {
   }
 
   public static async removeDiscretionaryRestart (pupilSlug: string): Promise<void> {
-    if (uuid.validate(pupilSlug) === false) {
+    if (!uuid.validate(pupilSlug)) {
       throw new Error('Invalid uuid')
     }
     await PupilFrozenService.throwIfFrozenByUrlSlugs([pupilSlug])

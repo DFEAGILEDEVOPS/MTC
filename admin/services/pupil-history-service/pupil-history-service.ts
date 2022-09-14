@@ -1,11 +1,11 @@
-import { IPupilHistoryCheckData, IPupilHistoryPupilData, IPupilHistoryRestartData, IPupilHistorySchoolData } from "./data-access/pupil-history.data.service"
+import { IPupilHistoryCheckData, IPupilHistoryPupilData, IPupilHistoryRestartData, IPupilHistorySchoolData } from './data-access/pupil-history.data.service'
 import * as R from 'ramda'
 const { PupilHistoryDataService } = require('./data-access/pupil-history.data.service')
 
 export interface IPupilHistory {
-  school: IPupilHistorySchoolData,
-  pupil: IPupilHistoryPupilData,
-  checks: IPupilHistoryCheckData[],
+  school: IPupilHistorySchoolData
+  pupil: IPupilHistoryPupilData
+  checks: IPupilHistoryCheckData[]
   restarts: IPupilHistoryRestartData[]
   meta: {
     restartTakenCount: number
@@ -15,16 +15,15 @@ export interface IPupilHistory {
 export type TCheckStatus = 'Pin generated' | 'Logged in' | 'Check received' | 'Received data error' | 'Check complete' | 'n/a'
 export class PupilHistoryService {
   private static getCheckStatus (check: IPupilHistoryCheckData): TCheckStatus {
-
-    if (check.complete === true) {
+    if (check.complete) {
       return 'Check complete'
-    } else if (check.processingFailed === true) {
+    } else if (check.processingFailed) {
       return 'Received data error'
-    } else if (check.complete === false && check.pupilLoginDate !== null && check.received === false && check.processingFailed === false) {
+    } else if (!check.complete && check.pupilLoginDate !== null && !check.received && !check.processingFailed) {
       return 'Logged in'
-    } else if (check.complete === false && check.pupilLoginDate !== null && check.received === true && check.processingFailed === false) {
+    } else if (!check.complete && check.pupilLoginDate !== null && check.received && !check.processingFailed) {
       return 'Check received'
-    } else if (check.complete === false && check.pupilLoginDate === null && check.received === false && check.processingFailed === false) {
+    } else if (!check.complete && check.pupilLoginDate === null && !check.received && !check.processingFailed) {
       return 'Pin generated'
     }
 
@@ -32,7 +31,7 @@ export class PupilHistoryService {
   }
 
   public static async getHistory (pupilUuid) {
-    const rawPupilHistory  = await PupilHistoryDataService.getPupilHistory(pupilUuid)
+    const rawPupilHistory = await PupilHistoryDataService.getPupilHistory(pupilUuid)
 
     // Add a check status to each check
     const transformedChecks = rawPupilHistory.checks.map(check => {

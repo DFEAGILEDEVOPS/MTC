@@ -3,7 +3,6 @@ import { TYPES } from '../../data-access/sql.service'
 const sqlService = require('../../data-access/sql.service')
 
 export class ServiceManagerPupilDataService {
-
   static async findPupilByUpn (upn: string): Promise<PupilSearchResult[]> {
     const sql = `
       SELECT p.createdAt, p.foreName, p.lastName, p.dateOfBirth,
@@ -47,14 +46,14 @@ export class ServiceManagerPupilDataService {
       SELECT *
       FROM mtc_admin.vewPupilStatus
       WHERE pupilId=@pupilId`
-  const params = [
-    {
-      name: 'pupilId',
-      value: pupilId,
-      type: TYPES.Int
-    }
-  ]
-  return sqlService.readonlyQuery(sql, params)
+    const params = [
+      {
+        name: 'pupilId',
+        value: pupilId,
+        type: TYPES.Int
+      }
+    ]
+    return sqlService.readonlyQuery(sql, params)
   }
 }
 

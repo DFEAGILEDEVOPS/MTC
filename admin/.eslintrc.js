@@ -33,6 +33,7 @@ module.exports = {
     '@typescript-eslint/no-var-requires': 'off',
     '@typescript-eslint/method-signature-style': 'off',
     '@typescript-eslint/restrict-template-expressions': 'off',
+    '@typescript-eslint/strict-boolean-expressions': 'off', // causes a problem with require statements when enabled
     '@typescript-eslint/ban-ts-comment': [
       'warn',
       {

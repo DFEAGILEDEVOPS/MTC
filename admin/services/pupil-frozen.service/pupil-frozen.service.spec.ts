@@ -1,5 +1,5 @@
 import { PupilFrozenDataService } from './pupil-frozen.data.service'
-import { PupilFrozenService } from './pupil-frozen.service';
+import { PupilFrozenService } from './pupil-frozen.service'
 
 describe('Pupil Frozen Service', () => {
   beforeEach(() => {
@@ -21,12 +21,12 @@ describe('Pupil Frozen Service', () => {
 
     test('throws an error if one pupil is frozen', async () => {
       jest.spyOn(PupilFrozenDataService, 'getFrozenCountByPupilIds').mockResolvedValue(1)
-      await expect(PupilFrozenService.throwIfFrozenByIds([1,2,3,4])).rejects.toThrow('frozen pupils cannot be modified')
+      await expect(PupilFrozenService.throwIfFrozenByIds([1, 2, 3, 4])).rejects.toThrow('frozen pupils cannot be modified')
     })
 
     test('does not throw an error if no pupils in set are frozen', async () => {
       jest.spyOn(PupilFrozenDataService, 'getFrozenCountByPupilIds').mockResolvedValue(0)
-      await expect(PupilFrozenService.throwIfFrozenByIds([1,2,3,4])).resolves.toBeUndefined()
+      await expect(PupilFrozenService.throwIfFrozenByIds([1, 2, 3, 4])).resolves.toBeUndefined()
     })
   })
 
@@ -44,7 +44,7 @@ describe('Pupil Frozen Service', () => {
     })
 
     test('throws an error if one pupil in set is frozen', async () => {
-      const slugs: Array<string> = [
+      const slugs: string[] = [
         '985d8211-0bed-44c1-ab58-b08e6ec9ed58',
         '79de5922-1180-4f9c-9d8a-b3e5e6e59829',
         '6d0229ef-9eba-4d9a-b884-a41cbe63b2fd'
@@ -54,7 +54,7 @@ describe('Pupil Frozen Service', () => {
     })
 
     test('throws an error if more than one pupil in set is frozen', async () => {
-      const slugs: Array<string> = [
+      const slugs: string[] = [
         '985d8211-0bed-44c1-ab58-b08e6ec9ed58',
         '79de5922-1180-4f9c-9d8a-b3e5e6e59829',
         '6d0229ef-9eba-4d9a-b884-a41cbe63b2fd',
@@ -67,7 +67,7 @@ describe('Pupil Frozen Service', () => {
     })
 
     test('does not throw an error if no pupils in set are frozen', async () => {
-      const slugs: Array<string> = [
+      const slugs: string[] = [
         '985d8211-0bed-44c1-ab58-b08e6ec9ed58',
         '79de5922-1180-4f9c-9d8a-b3e5e6e59829',
         '6d0229ef-9eba-4d9a-b884-a41cbe63b2fd',

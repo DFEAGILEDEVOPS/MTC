@@ -39,7 +39,7 @@ describe('PupilHistoryDataService', () => {
     test('it returns a list of checks', async () => {
       jest.spyOn(sqlService, 'readonlyQuery').mockResolvedValue([mockDbCheck])
       const checks = await PupilHistoryDataService.getChecks('d6d98b88-c866-4496-9bd4-de7ba48d0f52')
-      expect(checks.length).toBe(1)
+      expect(checks).toHaveLength(1)
       expect(checks[0].checkWindowId).toBe(1)
       expect(checks[0].checkFormId).toBe(2)
       expect(checks[0].createdByUserId).toBe(3)

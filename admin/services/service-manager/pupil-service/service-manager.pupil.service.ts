@@ -1,16 +1,15 @@
 import XRegExp from 'xregexp'
 import { ServiceManagerPupilDataService } from './service-manager.pupil.data.service'
-const dateService = require('../../date.service')
 import { validate } from 'uuid'
 import moment from 'moment'
 import R from 'ramda'
 import { PupilAnnulmentDataService } from '../pupil-annulment/pupil-annulment.data.service'
+const dateService = require('../../date.service')
 const settingService = require('../../setting.service')
 const pupilStatusService = require('../../pupil-status.service')
 
 export class ServiceManagerPupilService {
-
-  private static alphaNumericRegexPattern = `^[a-zA-Z0-9]+$`
+  private static readonly alphaNumericRegexPattern = '^[a-zA-Z0-9]+$'
 
   static async findPupilByUpn (upn: string): Promise<ServiceManagerPupilSearchResult[]> {
     if (upn === undefined || upn === '') throw new Error('upn is required')
@@ -57,9 +56,9 @@ export class ServiceManagerPupilService {
       schoolUrn: p[0].urn,
       urlSlug: p[0].urlSlug,
       upn: p[0].upn,
-      status: status,
+      status,
       schoolId: p[0].schoolId,
-      isAnnulled: isAnnulled
+      isAnnulled
     }
   }
 

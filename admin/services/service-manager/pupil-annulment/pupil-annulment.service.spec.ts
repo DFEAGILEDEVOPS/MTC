@@ -1,7 +1,7 @@
-const redisCacheService = require('../../data-access/redis-cache.service')
-const redisKeyService = require('../../redis-key.service')
 import { PupilAnnulmentDataService } from './pupil-annulment.data.service'
 import { PupilAnnulmentService } from './pupil-annulment.service'
+const redisCacheService = require('../../data-access/redis-cache.service')
+const redisKeyService = require('../../redis-key.service')
 
 describe('pupil annulment service', () => {
   afterEach(() => {
@@ -28,8 +28,8 @@ describe('pupil annulment service', () => {
       jest.spyOn(redisCacheService, 'drop').mockImplementation()
       jest.spyOn(PupilAnnulmentDataService, 'setAnnulmentByUrlSlug').mockImplementation()
       await PupilAnnulmentService.applyAnnulment(pupilUrlSlug, serviceManagerUserId, pupilSchoolId)
-      expect(redisCacheService.drop).nthCalledWith(1, pupilRegisterViewKey)
-      expect(redisCacheService.drop).nthCalledWith(2, schoolResultsKey)
+      expect(redisCacheService.drop).toHaveBeenNthCalledWith(1, pupilRegisterViewKey)
+      expect(redisCacheService.drop).toHaveBeenNthCalledWith(2, schoolResultsKey)
       expect(PupilAnnulmentDataService.setAnnulmentByUrlSlug).toHaveBeenCalledWith(pupilUrlSlug, serviceManagerUserId)
     })
   })

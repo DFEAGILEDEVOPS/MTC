@@ -1,84 +1,84 @@
-import moment from 'moment';
+import moment from 'moment'
 const sqlService = require('../../data-access/sql.service')
 const uuidValidate = require('uuid-validate')
 const R = require('ramda')
 
 export interface IPupilHistoryCheckData {
-  id: number,
+  id: number
   createdAt: moment.Moment
-  updatedAt: moment.Moment,
-  pupilId: number,
-  checkCode: string,
-  checkWindowId: number,
-  checkFormId: number,
-  pupilLoginDate: null | moment.Moment,
-  receivedByServerAt: null | moment.Moment,
-  isLiveCheck: boolean,
-  received: boolean,
-  complete: boolean,
-  completedAt: null | moment.Moment,
-  processingFailed: boolean,
-  createdByUserId: number,
-  inputAssistantAddedRetrospectively: boolean,
+  updatedAt: moment.Moment
+  pupilId: number
+  checkCode: string
+  checkWindowId: number
+  checkFormId: number
+  pupilLoginDate: null | moment.Moment
+  receivedByServerAt: null | moment.Moment
+  isLiveCheck: boolean
+  received: boolean
+  complete: boolean
+  completedAt: null | moment.Moment
+  processingFailed: boolean
+  createdByUserId: number
+  inputAssistantAddedRetrospectively: boolean
   resultsSynchronised: boolean
 }
 
 export interface IPupilHistoryPupilData {
-  id: number,
-  createdAt: moment.Moment,
-  updatedAt: moment.Moment,
-  schoolId: number,
-  foreName: string,
-  middleNames: string,
-  lastName: string,
-  gender: string,
-  dateOfBirth: moment.Moment,
-  upn: string,
-  urlSlug: string,
-  groupId: number | null,
-  currentCheckId: number | null,
-  checkComplete: boolean,
-  restartAvailable: boolean,
-  attendanceId: number | null,
-  foreNameAlias: string | null,
-  lastNameAlias: string | null,
+  id: number
+  createdAt: moment.Moment
+  updatedAt: moment.Moment
+  schoolId: number
+  foreName: string
+  middleNames: string
+  lastName: string
+  gender: string
+  dateOfBirth: moment.Moment
+  upn: string
+  urlSlug: string
+  groupId: number | null
+  currentCheckId: number | null
+  checkComplete: boolean
+  restartAvailable: boolean
+  attendanceId: number | null
+  foreNameAlias: string | null
+  lastNameAlias: string | null
   isDiscretionaryRestartAvailable: boolean
 }
 
 export interface IPupilHistorySchoolData {
-  id: number,
-  createdAt: moment.Moment,
-  updatedAt: moment.Moment,
-  leaCode: number,
-  estabCode: number,
-  name: string,
-  pin: string | null,
-  pinExpiresAt: moment.Moment | null,
-  urlSlug: string,
-  urn: number,
+  id: number
+  createdAt: moment.Moment
+  updatedAt: moment.Moment
+  leaCode: number
+  estabCode: number
+  name: string
+  pin: string | null
+  pinExpiresAt: moment.Moment | null
+  urlSlug: string
+  urn: number
   dfeNumber: number
 }
 
 export interface IPupilHistoryRestartData {
-  id: number,
-  createdAt: moment.Moment,
-  updatedAt: moment.Moment,
-  pupilId: number,
-  restartReason: string,
-  restartReasonCode: string,
-  checkId: number,
+  id: number
+  createdAt: moment.Moment
+  updatedAt: moment.Moment
+  pupilId: number
+  restartReason: string
+  restartReasonCode: string
+  checkId: number
   originCheckId: number
 }
 
 export interface IPupilHistoryData {
-  pupil: IPupilHistoryPupilData,
+  pupil: IPupilHistoryPupilData
   checks: IPupilHistoryCheckData[]
   school: IPupilHistorySchoolData
   restarts: IPupilHistoryRestartData[]
 }
 
 export class PupilHistoryDataService {
-  public static async getPupil(pupilUuid: string): Promise<IPupilHistoryPupilData> {
+  public static async getPupil (pupilUuid: string): Promise<IPupilHistoryPupilData> {
     if (uuidValidate(pupilUuid) === false) {
       throw new Error(`UUID is not valid: ${pupilUuid}`)
     }
@@ -145,7 +145,7 @@ export class PupilHistoryDataService {
       return []
     }
 
-    return data.map( o => {
+    return data.map(o => {
       return {
         checkCode: o.checkCode,
         checkFormId: o.checkForm_id,
@@ -209,7 +209,7 @@ export class PupilHistoryDataService {
     ]
 
     const data = await sqlService.readonlyQuery(sql, params)
-    return data.map( o => {
+    return data.map(o => {
       return {
         id: o.id,
         pupilId: o.pupil_id,

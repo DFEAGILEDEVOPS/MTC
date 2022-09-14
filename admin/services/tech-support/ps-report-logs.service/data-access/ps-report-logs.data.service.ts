@@ -4,11 +4,11 @@ import { familiarisationCheckEndDateAfterAdminEndDate } from 'lib/errors/check-w
 import config from '../../../../config'
 
 export interface IPsReportLogsDataService {
-  getContainerList (): Promise<Array<string>>
+  getContainerList (): Promise<string[]>
 }
 
 export class PsReportLogsDataService {
-  public static async getContainerList (): Promise<Array<string>> {
+  public static async getContainerList (): Promise<string[]> {
     const client = BlobServiceClient.fromConnectionString(config.AZURE_STORAGE_CONNECTION_STRING)
     const list = new Array<string>()
     for await (const container of client.listContainers({ includeMetadata: false })) {
@@ -45,6 +45,6 @@ export class PsReportLogsDataService {
 }
 
 export interface IPsReportLogFileData {
-  name: string,
+  name: string
   byteLength: number
 }

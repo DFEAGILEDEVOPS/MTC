@@ -1,11 +1,11 @@
 import * as checkWindowPhaseConsts from '../../lib/consts/check-window-phase'
-const checkWindowService = require('../check-window-v2.service')
 import * as moment from 'moment'
+const checkWindowService = require('../check-window-v2.service')
 const settingsService = require('../setting.service')
 const logger = require('../log.service').getLogger()
 
 export class CheckWindowPhaseService {
-  static async getPhase () :Promise<number>  {
+  static async getPhase (): Promise<number> {
     try {
       const cw = await checkWindowService.getActiveCheckWindow(true)
       const currentDate = moment.utc()
@@ -38,7 +38,6 @@ export class CheckWindowPhaseService {
       }
 
       return checkWindowPhaseConsts.unavailable
-
     } catch (error) {
       logger.error(`Unable to determine current check window phase: ${error.message}`)
 

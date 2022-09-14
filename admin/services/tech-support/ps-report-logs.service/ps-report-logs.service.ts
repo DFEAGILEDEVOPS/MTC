@@ -3,17 +3,17 @@ import * as R from 'ramda'
 import XRegExp from 'xregexp'
 
 export class PsReportLogsDownloadService {
-  private static logFolderPrefix = 'ps-report-log-'
-  private static textFileRegex: string = `[a-zA-Z0-9]*\.txt`
-  private static logContainerNameRegex: string = `${PsReportLogsDownloadService.logFolderPrefix}[0-9]{14}$`
+  private static readonly logFolderPrefix = 'ps-report-log-'
+  private static readonly textFileRegex: string = '[a-zA-Z0-9]*\.txt'
+  private static readonly logContainerNameRegex: string = `${PsReportLogsDownloadService.logFolderPrefix}[0-9]{14}$`
 
-  public static async getLogFoldersList (): Promise<Array<string>> {
+  public static async getLogFoldersList (): Promise<string[]> {
     const containers = await PsReportLogsDataService.getContainerList()
     const hasCorrectPrefix = c => c.startsWith(this.logFolderPrefix)
     return R.filter(hasCorrectPrefix, containers).sort().reverse()
   }
 
-  public static async getLogFolderFileList (containerName: string): Promise<Array<IPsReportLogFile>> {
+  public static async getLogFolderFileList (containerName: string): Promise<IPsReportLogFile[]> {
     if (containerName.length === 0) {
       throw new Error('containerName is required')
     }
@@ -46,7 +46,7 @@ export class PsReportLogsDownloadService {
     return PsReportLogsDataService.getFileContents(containerName, fileName)
   }
 
-  private static bytesToSize(bytes): string {
+  private static bytesToSize (bytes): string {
     const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB']
     if (bytes == 0) return 'n/a'
     const i = Math.floor(Math.log(bytes) / Math.log(1024))
@@ -56,6 +56,6 @@ export class PsReportLogsDownloadService {
 }
 
 export interface IPsReportLogFile {
-  name: string,
+  name: string
   size: string
 }
