@@ -35,7 +35,7 @@ class App {
   public express: express.Application
 
   // Run configuration methods on the Express instance.
-  constructor () {
+  constructor() {
     this.express = express()
     this.middleware()
     this.routes()
