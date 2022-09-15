@@ -11,7 +11,7 @@
 | PupilID              | mtc_admin.pupil.upn                                 |                                                              |
 | Forename             | mtc_admin.pupil.foreName                            |                                                              |
 | Surname              | mtc_admin.pupil.lastName                            |                                                              |
-| ReasonNotTakingCheck | mtc_admin.pupilAttendance                           | **Blank** - no reason not taking the check**, 1** - Incorrect registration,  **2** - Absent,  **3** - Left school,   **4** - Unable to access,  **5** - Working below the overall standard of the check,  **6** - Just arrived |
+| ReasonNotTakingCheck | mtc_admin.pupilAttendance                           | **Blank** - no reason not taking the check, **Z** - Incorrect registration,  **A** - Absent,  **L** - Left school,   **U** - Unable to access,  **B** - Working below the overall standard of the check,  **J** - Just arrived |
 | PupilStatus          | mtc_admin.pupil.complete, mtc_admin.pupilAttendance | calculated                                                   |
 
 
