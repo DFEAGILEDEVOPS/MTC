@@ -4,12 +4,12 @@ import XRegExp from 'xregexp'
 
 export class PsReportLogsDownloadService {
   private static readonly logFolderPrefix = 'ps-report-log-'
-  private static readonly textFileRegex: string = '[a-zA-Z0-9]*\.txt'
+  private static readonly textFileRegex: string = '[a-zA-Z0-9]*.txt'
   private static readonly logContainerNameRegex: string = `${PsReportLogsDownloadService.logFolderPrefix}[0-9]{14}$`
 
   public static async getLogFoldersList (): Promise<string[]> {
     const containers = await PsReportLogsDataService.getContainerList()
-    const hasCorrectPrefix = c => c.startsWith(this.logFolderPrefix)
+    const hasCorrectPrefix = (c: string): boolean => c.startsWith(this.logFolderPrefix)
     return R.filter(hasCorrectPrefix, containers).sort().reverse()
   }
 
@@ -46,11 +46,11 @@ export class PsReportLogsDownloadService {
     return PsReportLogsDataService.getFileContents(containerName, fileName)
   }
 
-  private static bytesToSize (bytes): string {
+  private static bytesToSize (bytes: number): string {
     const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB']
-    if (bytes == 0) return 'n/a'
+    if (bytes === 0) return 'n/a'
     const i = Math.floor(Math.log(bytes) / Math.log(1024))
-    if (i == 0) return bytes + ' ' + sizes[i]
+    if (i === 0) return bytes.toString() + ' ' + sizes[i]
     return (bytes / Math.pow(1024, i)).toFixed(2) + sizes[i]
   }
 }
