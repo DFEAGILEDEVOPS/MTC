@@ -6,7 +6,7 @@ const moment = require('moment')
 
 module.exports.generateSql = function () {
   const targetEnvironments = ['Azure-UAT', 'Local-Dev']
-  if (R.contains(config.Environment, targetEnvironments)) {
+  if (R.includes(config.Environment, targetEnvironments)) {
     let foreName, lastName, gender, dateOfBirth, upn
     const insertStatements = []
     const pupilPerSchoolCount = 60
