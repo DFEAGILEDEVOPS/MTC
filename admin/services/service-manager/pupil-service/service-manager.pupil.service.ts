@@ -2,7 +2,6 @@ import XRegExp from 'xregexp'
 import { ServiceManagerPupilDataService } from './service-manager.pupil.data.service'
 import { validate } from 'uuid'
 import moment from 'moment'
-import R from 'ramda'
 import { PupilAnnulmentDataService } from '../pupil-annulment/pupil-annulment.data.service'
 const dateService = require('../../date.service')
 const settingService = require('../../setting.service')
