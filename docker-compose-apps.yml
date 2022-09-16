@@ -13,6 +13,8 @@ services:
     environment:
       SQL_SERVER: 'sqldb'
       SQL_PORT: '1433'
+      SQL_TRUST_SERVER_CERTIFICATE: 'true'
+      SQL_TECH_SUPPORT_USER_PASSWORD: 'Mtc-D3v.5ql_S3rv3r'
     depends_on:
       - sqldb
   func_throttled:
