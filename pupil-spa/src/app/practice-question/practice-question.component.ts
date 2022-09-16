@@ -13,7 +13,6 @@ import {
 } from '@angular/core';
 
 import { AccessArrangements } from '../access-arrangements';
-import { Answer } from '../services/answer/answer.model';
 import { AnswerService } from '../services/answer/answer.service';
 import { AuditService } from '../services/audit/audit.service';
 import { Config } from '../config.model';
@@ -185,10 +184,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit, OnDestr
    * Start the timer when the view is ready.
    */
   shouldSetupPointerEvents(): boolean {
-    if ('onpointerup' in this.window) {
-      return true;
-    }
-    return false;
+    return 'onpointerup' in this.window;
   }
 
   ngAfterViewInit () {
@@ -433,8 +429,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit, OnDestr
    */
   async preSendTimeoutEvent () {
     if (!this.isWarmUpQuestion) {
-      const answer = new Answer(this.factor1, this.factor2, this.answer, this.sequenceNumber);
-      this.answerService.setAnswer(answer);
+      this.answerService.setAnswer(this.factor1, this.factor2, this.answer, this.sequenceNumber);
     }
 
     if (this.config.questionReader) {

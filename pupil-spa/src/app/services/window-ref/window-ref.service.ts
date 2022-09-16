@@ -5,6 +5,10 @@ function getWindow(): any {
   return window;
 }
 
+export interface IWindowRefService {
+  get nativeWindow(): any
+}
+
 @Injectable()
 export class WindowRefService {
   get nativeWindow(): any {

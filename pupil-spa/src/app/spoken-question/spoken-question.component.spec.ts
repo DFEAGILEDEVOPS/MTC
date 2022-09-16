@@ -11,8 +11,10 @@ import { SoundComponentMock } from '../sound/sound-component-mock';
 import { SpeechService } from '../services/speech/speech.service';
 import { SpeechServiceMock } from '../services/speech/speech.service.mock';
 import { SpokenQuestionComponent } from './spoken-question.component';
-import { StorageService } from '../services/storage/storage.service';
+import { IStorageService, StorageService } from '../services/storage/storage.service'
+import { StorageServiceMock } from '../services/storage/mock-storage.service'
 import { WindowRefService } from '../services/window-ref/window-ref.service';
+import { MonotonicTimeService } from '../services/monotonic-time/monotonic-time.service'
 
 function dispatchKeyEvent(keyboardDict) {
   const event = new KeyboardEvent('keydown', keyboardDict);
@@ -24,24 +26,27 @@ function dispatchKeyEvent(keyboardDict) {
 describe('SpokenQuestionComponent', () => {
   let component: SpokenQuestionComponent;
   let fixture: ComponentFixture<SpokenQuestionComponent>;
-  let speechService, storageService, answerService;
+  let speechService, storageService: IStorageService, answerService: AnswerService;
   let answerServiceSpy: any;
   let registerInputService: RegisterInputService;
   let registerInputServiceSpy: any;
   let auditService: AuditService;
   let auditServiceSpy: any;
+  let storageServiceSetAnswerSpy: jasmine.Spy
 
   beforeEach(waitForAsync(() => {
+    storageService = new StorageServiceMock()
+    answerService = new AnswerService(storageService, new MonotonicTimeService(new WindowRefService()))
     TestBed.configureTestingModule({
       declarations: [ SpokenQuestionComponent ],
       providers: [
         { provide: AuditService, useClass: AuditServiceMock },
-        { provide: QuestionService, useClass: QuestionServiceMock },
-        { provide: RegisterInputService, useClass: RegisterInputServiceMock },
-        { provide: SpeechService, useClass: SpeechServiceMock },
-        AnswerService,
-        StorageService,
         WindowRefService,
+        { provide: QuestionService, useClass: QuestionServiceMock },
+        { provide: StorageService, useValue: storageService},
+        { provide: SpeechService, useClass: SpeechServiceMock },
+        { provide: AnswerService, useValue: answerService },
+        { provide: RegisterInputService, useClass: RegisterInputServiceMock },
       ]
     })
     .compileComponents();
@@ -54,8 +59,6 @@ describe('SpokenQuestionComponent', () => {
     component.soundComponent = new SoundComponentMock();
     // Get a ref to services for easy spying
     speechService = fixture.debugElement.injector.get(SpeechService);
-    answerService = fixture.debugElement.injector.get(AnswerService);
-    storageService = fixture.debugElement.injector.get(StorageService);
 
     // prevent SpeechServiceMock from calling 'end' by default
     spyOn(speechService, 'speakQuestion');
@@ -67,6 +70,7 @@ describe('SpokenQuestionComponent', () => {
     auditService = fixture.debugElement.injector.get(AuditService)
     auditServiceSpy = spyOn(auditService, 'addEntry')
 
+    storageServiceSetAnswerSpy = spyOn(storageService, 'setAnswer')
     fixture.detectChanges();
   });
 
@@ -119,6 +123,10 @@ describe('SpokenQuestionComponent', () => {
     it('waits for the end of speech before moving to the pause screen', () => {
       spyOn(speechService, 'waitForEndOfSpeech').and.callThrough()
       component.config.questionReader = true;
+      component.factor1 = 1
+      component.factor2 = 2
+      component.sequenceNumber = 3
+      component.answer = ''
       // Add some input to cause the speech reader to do some work
       component.startTimer();
       dispatchKeyEvent({ key: '2' });
@@ -137,6 +145,7 @@ describe('SpokenQuestionComponent', () => {
       component.factor1 = 1
       component.factor2 = 2
       component.sequenceNumber = 3
+      component.answer = ''
       component.startTimer()
       dispatchKeyEvent({ key: '2' });
       component.onSubmit()
@@ -148,7 +157,8 @@ describe('SpokenQuestionComponent', () => {
       component.startTimer()
       dispatchKeyEvent({ key: '8' });
       component.onSubmit()
-      const answerTimestamp = answerServiceSpy.calls.mostRecent().args[0].clientTimestamp
+      const answerArgs = storageServiceSetAnswerSpy.calls.mostRecent().args[0]
+      const answerTimestamp = answerArgs.clientTimestamp.getLegacyDate()
       const auditArgs = auditServiceSpy.calls.allArgs()
       const questionAnsweredArg = auditArgs.find(o => o[0].type === 'QuestionAnswered')
       const questionAnsweredTimestamp = questionAnsweredArg[0].clientTimestamp

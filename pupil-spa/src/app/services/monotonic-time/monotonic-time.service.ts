@@ -2,6 +2,10 @@ import { Injectable } from '@angular/core';
 import { MonotonicTime } from '../../monotonic-time'
 import { WindowRefService } from '../window-ref/window-ref.service'
 
+export interface IMonotonicTimeService {
+  getMonotonicDateTime: MonotonicTime
+}
+
 /**
  * A handy service class to handle dependency injection and to store an incrementing sequence number that
  * can be stored in the MonotonicTime class to aid sorting later, e.g. when 2 events happen on the same millisecond.

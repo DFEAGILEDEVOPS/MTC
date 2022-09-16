@@ -46,8 +46,18 @@ describe('MonotonicTime', () => {
       const monotonicTime = new MonotonicTime(mockWindowRefService, 42)
       expect(monotonicTime.getSequenceNumber()).toEqual(42)
     })
-  })
 
+    describe('#toJSON', () => {
+      it('outputs JSON', () => {
+        const monotonicTime = new MonotonicTime(mockWindowRefService, 43)
+        const s = monotonicTime.toJSON()
+        const parsed = JSON.parse(s)
+        expect(parsed.now).toBe(123.4)
+        expect(parsed.timeOrigin).toBe(1641027600000)
+        expect(parsed.legacyDate).toBe('2022-01-01T09:00:00.000Z')
+      })
+    })
+  })
 
 
   describe('perf api is not available', () => {

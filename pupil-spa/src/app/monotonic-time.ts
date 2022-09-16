@@ -8,7 +8,7 @@ export class MonotonicTime {
   private readonly sequenceNumber: number
 
   constructor (private windowRefService: WindowRefService, sequenceNumber: number) {
-    this.window = windowRefService.nativeWindow
+    this.window = this.windowRefService.nativeWindow
 
     // capture current datetime as well.  We will send this back in payload as well as the monotonic time.
     this.date = new Date()
@@ -38,5 +38,19 @@ export class MonotonicTime {
 
   public getLegacyDate (): Date {
     return this.date
+  }
+
+  public toJSON (): string {
+    return JSON.stringify({
+      class: this.constructor.name,
+      timeOrigin: this.timeOrigin,
+      now: this.now,
+      legacyDate: this.date.toISOString(),
+      sequenceNumber: this.sequenceNumber
+    })
+  }
+
+  public toString (): string {
+    return this.toJSON()
   }
 }

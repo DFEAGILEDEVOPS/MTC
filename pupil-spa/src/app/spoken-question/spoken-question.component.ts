@@ -9,7 +9,6 @@ import { SpeechService } from '../services/speech/speech.service';
 import { StorageService } from '../services/storage/storage.service';
 import { Subscription } from 'rxjs';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
-import { Answer } from '../services/answer/answer.model';
 
 @Component({
   selector: 'app-spoken-question',
@@ -110,8 +109,7 @@ export class SpokenQuestionComponent extends QuestionComponent implements OnInit
     }
 
     // Store the answer
-    const answer = new Answer( this.factor1, this.factor2, this.answer, this.sequenceNumber );
-    this.answerService.setAnswer( answer );
+    this.answerService.setAnswer( this.factor1, this.factor2, this.answer, this.sequenceNumber );
 
     // Clear the interval timer and add a QuestionTimerCancelled event.question.
     if ( this.countdownInterval ) {

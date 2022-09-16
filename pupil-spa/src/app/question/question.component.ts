@@ -1,6 +1,5 @@
 import { Component, OnInit, AfterViewInit, Renderer2 } from '@angular/core';
 import { AnswerService } from '../services/answer/answer.service';
-import { Answer } from '../services/answer/answer.model';
 import { AuditService } from '../services/audit/audit.service';
 import { PracticeQuestionComponent } from '../practice-question/practice-question.component';
 import { QuestionAnswered, QuestionTimerCancelled } from '../services/audit/auditEntry';
@@ -67,7 +66,6 @@ export class QuestionComponent extends PracticeQuestionComponent implements OnIn
     if (!this.hasAnswer()) {
       return false;
     }
-
     // Prevent the default timeout from firing later
     if (this.timeout) {
       clearTimeout(this.timeout);
@@ -75,10 +73,8 @@ export class QuestionComponent extends PracticeQuestionComponent implements OnIn
     } else {
       return false;
     }
-
     // Store the answer
-    const answer = new Answer(this.factor1, this.factor2, this.answer, this.sequenceNumber);
-    this.answerService.setAnswer(answer);
+    this.answerService.setAnswer(this.factor1, this.factor2, this.answer, this.sequenceNumber);
 
     // Clear the interval timer and add a QuestionTimerCancelled event.question.
     if (this.countdownInterval) {
