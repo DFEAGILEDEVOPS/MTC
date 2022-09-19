@@ -5,29 +5,18 @@ const R = require('ramda')
 
 export interface IPupilHistoryCheckData {
   id: number
-  createdAt: moment.Moment
-  updatedAt: moment.Moment
-  pupilId: number
   checkCode: string
-  checkWindowId: number
-  checkFormId: number
   pupilLoginDate: null | moment.Moment
-  receivedByServerAt: null | moment.Moment
   isLiveCheck: boolean
   received: boolean
   complete: boolean
-  completedAt: null | moment.Moment
   processingFailed: boolean
-  createdByUserId: number
-  inputAssistantAddedRetrospectively: boolean
-  resultsSynchronised: boolean
+  checkStatus: string
 }
 
 export interface IPupilHistoryPupilData {
   id: number
   createdAt: moment.Moment
-  updatedAt: moment.Moment
-  schoolId: number
   foreName: string
   middleNames: string
   lastName: string
@@ -35,7 +24,6 @@ export interface IPupilHistoryPupilData {
   dateOfBirth: moment.Moment
   upn: string
   urlSlug: string
-  groupId: number | null
   currentCheckId: number | null
   checkComplete: boolean
   restartAvailable: boolean
@@ -47,8 +35,6 @@ export interface IPupilHistoryPupilData {
 
 export interface IPupilHistorySchoolData {
   id: number
-  createdAt: moment.Moment
-  updatedAt: moment.Moment
   leaCode: number
   estabCode: number
   name: string
@@ -73,7 +59,6 @@ export interface IPupilHistoryRestartData {
 export interface IPupilHistoryData {
   pupil: IPupilHistoryPupilData
   checks: IPupilHistoryCheckData[]
-  school: IPupilHistorySchoolData
   restarts: IPupilHistoryRestartData[]
 }
 
@@ -102,8 +87,6 @@ export class PupilHistoryDataService {
     const pupil: IPupilHistoryPupilData = {
       id: data[0].id as number,
       createdAt: data[0].createdAt,
-      updatedAt: data[0].updatedAt,
-      schoolId: data[0].school_id,
       foreName: data[0].foreName,
       middleNames: data[0].middleNames,
       lastName: data[0].lastName,
@@ -111,7 +94,6 @@ export class PupilHistoryDataService {
       dateOfBirth: data[0].dateOfBirth,
       upn: data[0].upn,
       urlSlug: data[0].urlSlug,
-      groupId: data[0].group_id,
       currentCheckId: data[0].currentCheckId,
       checkComplete: data[0].checkComplete,
       restartAvailable: data[0].restartAvailable,
@@ -145,7 +127,7 @@ export class PupilHistoryDataService {
       return []
     }
 
-    return data.map(o => {
+    const returnValue: IPupilHistoryCheckData[] = data.map(o => {
       return {
         checkCode: o.checkCode,
         checkFormId: o.checkForm_id,
@@ -163,9 +145,12 @@ export class PupilHistoryDataService {
         received: o.received,
         receivedByServerAt: o.receivedByServerAt,
         resultsSynchronised: o.resultsSynchronised,
-        updatedAt: o.updatedAt
+        updatedAt: o.updatedAt,
+        checkStatus: ''
       }
     })
+
+    return returnValue
   }
 
   public static async getSchool (pupilUuid: string): Promise<IPupilHistorySchoolData> {
@@ -226,12 +211,10 @@ export class PupilHistoryDataService {
   public static async getPupilHistory (pupilUuid: string): Promise<IPupilHistoryData> {
     const pupil = await PupilHistoryDataService.getPupil(pupilUuid)
     const checks = await PupilHistoryDataService.getChecks(pupilUuid)
-    const school = await PupilHistoryDataService.getSchool(pupilUuid)
     const restarts = await PupilHistoryDataService.getRestarts(pupilUuid)
     return {
       pupil,
       checks,
-      school,
       restarts
     }
   }

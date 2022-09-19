@@ -5,6 +5,7 @@
   "license": "GPL-3.0",
   "scripts": {
     "build": "gulp build",
+    "build:watch": "yarn tsc --watch",
     "dev-build": "gulp dev-build",
     "shell-build": "./build.sh",
     "clean": "rm -rf dist; rm -f .env",
@@ -29,7 +30,7 @@
     "watch:integration": "yarn jest --watch --coverage=no --config ./tests-integration/jest.integration.config.js"
   },
   "mtc": {
-    "assets-version": "90cd5f4e303b17b48b569c927e0c7b01"
+    "assets-version": "16f5f82889eb6721d3f5c31dbe915c6f"
   },
   "engines": {
     "node": ">= 14"

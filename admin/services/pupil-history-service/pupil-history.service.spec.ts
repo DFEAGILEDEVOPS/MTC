@@ -79,7 +79,7 @@ describe('PupilHistoryService', () => {
     expect(pupilHistory.checks[0].checkStatus).toBe('Check received')
   })
 
-  test('it computes the "Check complete" check status', async () => {
+  test('it computes the Check complete check status', async () => {
     const mock = {
       school: {},
       restarts: [],
@@ -94,15 +94,27 @@ describe('PupilHistoryService', () => {
   })
 
   test('it fails to "n/a" check status', async () => {
-    const mock = {
-      school: {},
+    const mock: IPupilHistory = {
+      school: null,
       restarts: [],
-      pupil: {},
+      pupil: null,
+      meta: {
+        restartTakenCount: 0
+      },
       checks: [
-        { id: 1, complete: false, pupilLoginDate: null, received: null, processingFailed: null }
+        {
+          id: 1,
+          complete: false,
+          pupilLoginDate: null,
+          received: false,
+          processingFailed: null,
+          checkCode: 'x',
+          isLiveCheck: true,
+          checkStatus: null
+        }
       ]
     }
-    jest.spyOn(PupilHistoryDataService, 'getPupilHistory').mockResolvedValue(mock as IPupilHistory)
+    jest.spyOn(PupilHistoryDataService, 'getPupilHistory').mockResolvedValue(mock)
     const pupilHistory = await PupilHistoryService.getHistory(mockPupilUuid)
     expect(pupilHistory.checks[0].checkStatus).toBe('n/a')
   })

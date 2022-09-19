@@ -33,7 +33,10 @@ module.exports = {
     '@typescript-eslint/no-var-requires': 'off',
     '@typescript-eslint/method-signature-style': 'off',
     '@typescript-eslint/restrict-template-expressions': 'off',
-    '@typescript-eslint/strict-boolean-expressions': 'off', // causes a problem with require statements when enabled
+    // causes a problem with require statements when enabled...
+    '@typescript-eslint/strict-boolean-expressions': 'off',
+    // disabled until we can turn strictNullChecks on, as this allows undefined/nulls to slip through as boolean checks...
+    '@typescript-eslint/no-unnecessary-boolean-literal-compare': 'off',
     '@typescript-eslint/ban-ts-comment': [
       'warn',
       {

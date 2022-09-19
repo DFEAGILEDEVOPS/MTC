@@ -17,20 +17,20 @@ export class PupilHistoryService {
   private static getCheckStatus (check: IPupilHistoryCheckData): TCheckStatus {
     if (check.complete) {
       return 'Check complete'
-    } else if (check.processingFailed) {
+    } else if (check.processingFailed === true) {
       return 'Received data error'
-    } else if (!check.complete && check.pupilLoginDate !== null && !check.received && !check.processingFailed) {
+    } else if (check.complete === false && check.pupilLoginDate !== null && check.received === false && check.processingFailed === false) {
       return 'Logged in'
-    } else if (!check.complete && check.pupilLoginDate !== null && check.received && !check.processingFailed) {
+    } else if (check.complete === false && check.pupilLoginDate !== null && check.received === true && check.processingFailed === false) {
       return 'Check received'
-    } else if (!check.complete && check.pupilLoginDate === null && !check.received && !check.processingFailed) {
+    } else if (check.complete === false && check.pupilLoginDate === null && check.received === false && check.processingFailed === false) {
       return 'Pin generated'
     }
 
     return 'n/a'
   }
 
-  public static async getHistory (pupilUuid) {
+  public static async getHistory (pupilUuid): Promise<IPupilHistory> {
     const rawPupilHistory = await PupilHistoryDataService.getPupilHistory(pupilUuid)
 
     // Add a check status to each check
@@ -40,15 +40,14 @@ export class PupilHistoryService {
       return transCheck
     })
 
-    const pupilHistory = {
+    return {
       school: rawPupilHistory.school,
       restarts: rawPupilHistory.restarts,
       pupil: rawPupilHistory.pupil,
       checks: transformedChecks,
       meta: {
-        restartsTakenCount: rawPupilHistory.restarts.length
+        restartTakenCount: rawPupilHistory.restarts.length
       }
     }
-    return pupilHistory
   }
 }
