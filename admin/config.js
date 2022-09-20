@@ -37,7 +37,7 @@ module.exports = {
   ADMIN_SESSION_DISPLAY_NOTICE_AFTER: parseInt(process.env.ADMIN_SESSION_DISPLAY_NOTICE_AFTER) || 300, // Display notice after 5 minutes by default
   ADMIN_SESSION_EXPIRATION_TIME_IN_SECONDS: parseInt(process.env.ADMIN_SESSION_EXPIRATION_TIME_IN_SECONDS) || 600, // Expire after 10 minutes inactivity by default
   AssetPath: process.env.ASSET_PATH || '/',
-  AZURE_STORAGE_CONNECTION_STRING: process.env.AZURE_STORAGE_CONNECTION_STRING  ?? 'will throw error',
+  AZURE_STORAGE_CONNECTION_STRING: process.env.AZURE_STORAGE_CONNECTION_STRING ?? 'will throw error',
   CHECK_FORM_MAX_FILES_PER_UPLOAD: 10,
   CHECK_FORM_MAX_INTEGER: 12,
   CHECK_FORM_MIN_INTEGER: 1,
