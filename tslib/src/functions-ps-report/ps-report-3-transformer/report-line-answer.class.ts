@@ -208,7 +208,7 @@ export class ReportLineAnswer {
     if (methodsUsed.length > 1) this._inputMethods = 'x' // mixed inputs for this question
 
     this._keystrokes = this.getUserInput(inputs)
-    const firstInput = R.head(inputs)
+    const firstInput = R.head(this.filterInputsToThoseFormingTheAnswer(inputs))
     if (firstInput !== undefined) {
       this._firstKey = firstInput.browserTimestamp
     }

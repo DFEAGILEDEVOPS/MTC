@@ -68,7 +68,7 @@ export class PreparedCheckMergeService implements IPreparedCheckMergeService {
       colourContrastCode: undefined
     }
     if (newConfig === undefined || newConfig.length === 0) {
-      return R.merge(oldConfig, baseConfig)
+      return R.mergeRight(oldConfig, baseConfig)
     }
     const fontSizeAa = newConfig.find((aa: any) => aa.pupilFontSizeCode)
     const colourContrastAa = newConfig.find((aa: any) => aa.pupilColourContrastCode)
@@ -97,7 +97,7 @@ export class PreparedCheckMergeService implements IPreparedCheckMergeService {
       if (code === AccessArrangementCodes.QUESTION_READER) baseConfig.questionReader = true
       if (code === AccessArrangementCodes.NEXT_BETWEEN_QUESTIONS) baseConfig.nextBetweenQuestions = true
     })
-    return R.merge(oldConfig, baseConfig)
+    return R.mergeRight(oldConfig, baseConfig)
   }
 }
 
