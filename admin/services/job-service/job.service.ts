@@ -15,7 +15,7 @@ export class JobService {
     })
   }
 
-  public static async getJobOutputs (jobSlug: string): Promise<Buffer> {
+  public static async getJobOutputs (jobSlug: string): Promise<Buffer | undefined> {
     const data = await JobDataService.getJobOutput(jobSlug)
     if (data === undefined) return undefined
     const zipFile = new AdmZip()

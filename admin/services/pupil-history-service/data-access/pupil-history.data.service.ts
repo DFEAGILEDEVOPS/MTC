@@ -60,6 +60,7 @@ export interface IPupilHistoryData {
   pupil: IPupilHistoryPupilData
   checks: IPupilHistoryCheckData[]
   restarts: IPupilHistoryRestartData[]
+  school: IPupilHistorySchoolData
 }
 
 export class PupilHistoryDataService {
@@ -194,7 +195,12 @@ export class PupilHistoryDataService {
     ]
 
     const data = await sqlService.readonlyQuery(sql, params)
-    return data.map(o => {
+
+    if (!Array.isArray(data)) {
+      return []
+    }
+
+    const returnValue: IPupilHistoryRestartData[] = data.map(o => {
       return {
         id: o.id,
         pupilId: o.pupil_id,
@@ -206,16 +212,20 @@ export class PupilHistoryDataService {
         originCheckId: o.originCheck_id
       }
     })
+
+    return returnValue
   }
 
   public static async getPupilHistory (pupilUuid: string): Promise<IPupilHistoryData> {
     const pupil = await PupilHistoryDataService.getPupil(pupilUuid)
     const checks = await PupilHistoryDataService.getChecks(pupilUuid)
     const restarts = await PupilHistoryDataService.getRestarts(pupilUuid)
+    const school = await PupilHistoryDataService.getSchool(pupilUuid)
     return {
       pupil,
       checks,
-      restarts
+      restarts,
+      school
     }
   }
 }

@@ -1,6 +1,5 @@
-import { IPupilHistoryCheckData, IPupilHistoryPupilData, IPupilHistoryRestartData, IPupilHistorySchoolData } from './data-access/pupil-history.data.service'
+import { IPupilHistoryCheckData, IPupilHistoryPupilData, IPupilHistoryRestartData, IPupilHistorySchoolData, PupilHistoryDataService } from './data-access/pupil-history.data.service'
 import * as R from 'ramda'
-const { PupilHistoryDataService } = require('./data-access/pupil-history.data.service')
 
 export interface IPupilHistory {
   school: IPupilHistorySchoolData
@@ -30,7 +29,7 @@ export class PupilHistoryService {
     return 'n/a'
   }
 
-  public static async getHistory (pupilUuid): Promise<IPupilHistory> {
+  public static async getHistory (pupilUuid: string): Promise<IPupilHistory> {
     const rawPupilHistory = await PupilHistoryDataService.getPupilHistory(pupilUuid)
 
     // Add a check status to each check

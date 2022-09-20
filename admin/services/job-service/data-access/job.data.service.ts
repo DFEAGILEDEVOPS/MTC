@@ -38,7 +38,7 @@ export class JobDataService {
     })
   }
 
-  public static async getJobOutput (jobSlug: string): Promise<IJobOutput> {
+  public static async getJobOutput (jobSlug: string): Promise<IJobOutput | undefined> {
     const sql = `
       SELECT j.jobOutput, j.errorOutput
       FROM mtc_admin.job j
