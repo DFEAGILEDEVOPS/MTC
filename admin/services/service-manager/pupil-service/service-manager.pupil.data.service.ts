@@ -63,21 +63,21 @@ export interface PupilStatusData {
   lastName: string
   middleNames: string
   dateOfBirth: Moment
-  group_id: number
+  group_id: number | null
   urlSlug: string
   school_id: number
-  reason: string
-  reasonCode: string
-  attendanceId: number
+  reason: string | null
+  reasonCode: string | null
+  attendanceId: number | null
   pupilCheckComplete: boolean
-  currentCheckId: number
+  currentCheckId: number | null
   pupilId: number
   restartAvailable: boolean
-  checkReceived: boolean
-  checkComplete: boolean
-  processingFailed: boolean
-  pupilLoginDate: Moment
-  pinExpiresAt: Moment
+  checkReceived: boolean | null
+  checkComplete: boolean | null
+  processingFailed: boolean | null
+  pupilLoginDate: Moment | null
+  pinExpiresAt: Moment | null
 }
 
 export interface PupilSearchResult {

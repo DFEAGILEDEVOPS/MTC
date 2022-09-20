@@ -107,10 +107,10 @@ describe('PupilHistoryService', () => {
           complete: false,
           pupilLoginDate: null,
           received: false,
-          processingFailed: null,
+          processingFailed: false,
           checkCode: 'x',
           isLiveCheck: true,
-          checkStatus: null
+          checkStatus: undefined
         }
       ]
     }

@@ -40,7 +40,7 @@ export class ServiceManagerPupilService {
       throw new Error(`${urlSlug} is not a valid UUID`)
     }
     const p = await ServiceManagerPupilDataService.getPupilByUrlSlug(urlSlug)
-    if (p.length === 0) return undefined
+    if (p.length === 0) throw new Error(`no pupil found with specified urlSlug '${urlSlug}'`)
 
     const status = await this.getPupilStatus(p[0].id)
     const isAnnulled = p[0].attendanceCode === PupilAnnulmentDataService.annulmentCode

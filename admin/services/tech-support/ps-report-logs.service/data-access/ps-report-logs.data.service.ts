@@ -35,7 +35,7 @@ export class PsReportLogsDataService {
     // properties.contentLength unt is bytes
     for await (const file of containerClient.listBlobsFlat({ includeDeleted: false })) {
       files.push({
-        byteLength: file.properties?.contentLength || 0,
+        byteLength: file.properties?.contentLength ?? 0,
         name: file.name
       })
     }

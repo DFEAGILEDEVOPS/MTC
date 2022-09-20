@@ -11,7 +11,7 @@ export interface IPupilHistoryCheckData {
   received: boolean
   complete: boolean
   processingFailed: boolean
-  checkStatus: string
+  checkStatus?: string
 }
 
 export interface IPupilHistoryPupilData {
