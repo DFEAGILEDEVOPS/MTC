@@ -10,7 +10,7 @@ export interface IPupilHistoryCheckData {
   isLiveCheck: boolean
   received: boolean
   complete: boolean
-  processingFailed: boolean
+  processingFailed: boolean | null
   checkStatus?: string
 }
 
