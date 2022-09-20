@@ -3,7 +3,7 @@
 set -e
 set -x
 
-yarn install --frozen-lockfile
+yarn install --frozen-lockfile --production
 
 until ./wait-for-it.sh -h $SQL_SERVER -p $SQL_PORT -s -q -t 300
 do

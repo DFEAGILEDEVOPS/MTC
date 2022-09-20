@@ -38,6 +38,7 @@ describe('service manager pupil service', () => {
 
     test('maps raw data result correctly into search result', async () => {
       const expected: PupilSearchResult = {
+        createdAt: moment('2022-01-30T15:24:24'),
         id: 123,
         urlSlug: 'urlSlug',
         foreName: 'forename',
@@ -61,6 +62,7 @@ describe('service manager pupil service', () => {
       expect(actual[0].id).toStrictEqual(expected.id)
       expect(actual[0].upn).toStrictEqual(expected.upn)
       expect(actual[0].schoolId).toStrictEqual(expected.schoolId)
+      expect(actual[0].createdAt).toStrictEqual(dateService.formatShortGdsDate(expected.createdAt))
     })
   })
 
@@ -111,6 +113,7 @@ describe('service manager pupil service', () => {
 
     test('maps raw data to return object', async () => {
       const expected: PupilSearchResult = {
+        createdAt: moment('2022-01-30T15:24:24'),
         id: 123,
         urlSlug: 'urlSlug',
         foreName: 'forename',
@@ -138,6 +141,7 @@ describe('service manager pupil service', () => {
 
     test('should return valid status when pupil found', async () => {
       const expected: PupilSearchResult = {
+        createdAt: moment('2022-01-30T15:24:24'),
         id: 123,
         urlSlug: 'urlSlug',
         foreName: 'forename',
