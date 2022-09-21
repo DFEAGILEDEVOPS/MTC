@@ -4245,16 +4245,16 @@ expect@^27.5.1:
   dependencies:
     lodash "~4.17.15"
 
-express-busboy@^8.0.0:
-  version "8.0.0"
-  resolved "https://registry.yarnpkg.com/express-busboy/-/express-busboy-8.0.0.tgz#46a8f020470c3e6f89ae4e3c982aff4ec752415f"
-  integrity sha512-BrNjpjio/A3mr1P83ZwvYK+7ClJC98KHN9io+ybo58Gx2mO7TDFR/Ol1uwR/dWOAWzIFT3OnSxq1m0PFIvDo/w==
+express-busboy@^8.0.2:
+  version "8.0.2"
+  resolved "https://registry.yarnpkg.com/express-busboy/-/express-busboy-8.0.2.tgz#81a75430a15e06807b1af79227d599b45e72e84d"
+  integrity sha512-ibujglH1hheInN/h3ZY/JDtSn5WJ1QHsFFBoROX4eb9ENYdYwIeJLIgWUynLnL4gjFoCFE42XJCaEYIUzar2OQ==
   dependencies:
     body "~5.1.0"
     connect-busboy "~0.0.1"
-    mkdirp "~0.5.0"
+    mkdirp "^1.0.4"
     qs "^6.4.0"
-    uuid "~1.4.1"
+    uuid "^8.3.2"
 
 express-partials@^0.3.0:
   version "0.3.0"
@@ -7352,12 +7352,17 @@ mixin-deep@^1.2.0:
     for-in "^1.0.2"
     is-extendable "^1.0.1"
 
-mkdirp@0.5.x, mkdirp@^0.5.5, mkdirp@~0.5.0:
+mkdirp@0.5.x, mkdirp@^0.5.5:
   version "0.5.5"
   resolved "https://registry.yarnpkg.com/mkdirp/-/mkdirp-0.5.5.tgz#d91cefd62d1436ca0f41620e251288d420099def"
   integrity sha512-NKmAlESf6jMGym1++R0Ra7wvhV+wFW63FaSOFPwRahvea0gMUcGUhVeAg/0BC0wiv9ih5NYPB1Wn1UEI1/L+xQ==
   dependencies:
     minimist "^1.2.5"
+
+mkdirp@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/mkdirp/-/mkdirp-1.0.4.tgz#3eb5ed62622756d79a5f0e2a221dfebad75c2f7e"
+  integrity sha512-vVqVZQyf3WLx2Shd0qJ9xuvqgAyKPLAiqITEtqW0oIUjzo3PePDd6fW9iFz30ef7Ysp/oiWqbhszeGWW2T6Gzw==
 
 moment-timezone@^0.5.35:
   version "0.5.35"
@@ -10160,11 +10165,6 @@ uuid@^8.3.0, uuid@^8.3.2:
   version "8.3.2"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-8.3.2.tgz#80d5b5ced271bb9af6c445f21a1a04c606cefbe2"
   integrity sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==
-
-uuid@~1.4.1:
-  version "1.4.2"
-  resolved "https://registry.yarnpkg.com/uuid/-/uuid-1.4.2.tgz#453019f686966a6df83cdc5244e7c990ecc332fc"
-  integrity sha1-RTAZ9oaWam34PNxSROfJkOzDMvw=
 
 v8-compile-cache-lib@^3.0.0:
   version "3.0.0"
