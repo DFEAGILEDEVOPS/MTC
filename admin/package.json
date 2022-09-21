@@ -58,7 +58,7 @@
     "express-breadcrumbs": "https://github.com/DFEAGILEDEVOPS/express-breadcrumbs.git",
     "express-busboy": "^8.0.0",
     "express-partials": "^0.3.0",
-    "express-session": "^1.15.6",
+    "express-session": "^1.17.3",
     "express-winston": "^4.1.0",
     "fast-csv": "^4.1.1",
     "feature-toggles": "^1.4.0",
