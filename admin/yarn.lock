@@ -1160,12 +1160,12 @@
     "@babel/helper-validator-option" "^7.16.7"
     "@babel/plugin-transform-typescript" "^7.16.7"
 
-"@babel/runtime-corejs3@^7.14.9":
-  version "7.17.2"
-  resolved "https://registry.yarnpkg.com/@babel/runtime-corejs3/-/runtime-corejs3-7.17.2.tgz#fdca2cd05fba63388babe85d349b6801b008fd13"
-  integrity sha512-NcKtr2epxfIrNM4VOmPKO46TvDMCBhgi2CrSHaEarrz+Plk2K5r9QemmOFTGpZaoKnWoGH5MO+CzeRsih/Fcgg==
+"@babel/runtime-corejs3@^7.16.5":
+  version "7.19.1"
+  resolved "https://registry.yarnpkg.com/@babel/runtime-corejs3/-/runtime-corejs3-7.19.1.tgz#f0cbbe7edda7c4109cd253bb1dee99aba4594ad9"
+  integrity sha512-j2vJGnkopRzH+ykJ8h68wrHnEUmtK//E723jjixiAl/PPf6FhqY/vYRcMVlNydRKQjQsTsYEjpx+DZMIvnGk/g==
   dependencies:
-    core-js-pure "^3.20.2"
+    core-js-pure "^3.25.1"
     regenerator-runtime "^0.13.4"
 
 "@babel/runtime@^7.8.4":
@@ -3251,10 +3251,10 @@ core-js-compat@^3.20.2, core-js-compat@^3.21.0:
     browserslist "^4.19.1"
     semver "7.0.0"
 
-core-js-pure@^3.20.2:
-  version "3.21.1"
-  resolved "https://registry.yarnpkg.com/core-js-pure/-/core-js-pure-3.21.1.tgz#8c4d1e78839f5f46208de7230cebfb72bc3bdb51"
-  integrity sha512-12VZfFIu+wyVbBebyHmRTuEE/tZrB4tJToWcwAMcsp3h4+sHR+fMJWbKpYiCRWlhFBq+KNyO8rIV9rTkeVmznQ==
+core-js-pure@^3.25.1:
+  version "3.25.2"
+  resolved "https://registry.yarnpkg.com/core-js-pure/-/core-js-pure-3.25.2.tgz#44a4fd873bdd4fecf6ca11512bcefedbe87e744a"
+  integrity sha512-ItD7YpW1cUB4jaqFLZXe1AXkyqIxz6GqPnsDV4uF4hVcWh/WAGIqSqw5p0/WdsILM0Xht9s3Koyw05R3K6RtiA==
 
 core-util-is@~1.0.0:
   version "1.0.3"
@@ -10587,12 +10587,12 @@ xmlchars@^2.2.0:
   resolved "https://registry.yarnpkg.com/xmlchars/-/xmlchars-2.2.0.tgz#060fe1bcb7f9c76fe2a17db86a9bc3ab894210cb"
   integrity sha512-JZnDKK8B0RCDw84FNdDAIpZK+JuJw+s7Lz8nksI7SIuU3UXJJslUthsi+uWBUYOwPFwW7W7PRLRfUKpxjtjFCw==
 
-xregexp@^5.1.0:
-  version "5.1.0"
-  resolved "https://registry.yarnpkg.com/xregexp/-/xregexp-5.1.0.tgz#c87e7ae5ffa5fdc520f898a467dcba02b0d391e9"
-  integrity sha512-PynwUWtXnSZr8tpQlDPMZfPTyv78EYuA4oI959ukxcQ0a9O/lvndLVKy5wpImzzA26eMxpZmnAXJYiQA13AtWA==
+xregexp@^5.1.1:
+  version "5.1.1"
+  resolved "https://registry.yarnpkg.com/xregexp/-/xregexp-5.1.1.tgz#6d3fe18819e3143aaf52f9284d34f49a59583ebb"
+  integrity sha512-fKXeVorD+CzWvFs7VBuKTYIW63YD1e1osxwQ8caZ6o1jg6pDAbABDG54LCIq0j5cy7PjRvGIq6sef9DYPXpncg==
   dependencies:
-    "@babel/runtime-corejs3" "^7.14.9"
+    "@babel/runtime-corejs3" "^7.16.5"
 
 xtend@~4.0.0, xtend@~4.0.1:
   version "4.0.2"
