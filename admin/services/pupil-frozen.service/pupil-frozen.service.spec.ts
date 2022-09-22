@@ -14,6 +14,11 @@ describe('Pupil Frozen Service', () => {
       expect(PupilFrozenDataService.getFrozenCountByPupilIds).not.toHaveBeenCalled()
     })
 
+    test('throws an error if pupilIds is undefined', async () => {
+      // @ts-ignore:next-line assert if undefined handled correctly at runtime
+      await expect(PupilFrozenService.throwIfFrozenByIds(undefined)).rejects.toThrow('pupilIds is required')
+    })
+
     test('throws an error if one pupil is frozen', async () => {
       jest.spyOn(PupilFrozenDataService, 'getFrozenCountByPupilIds').mockResolvedValue(1)
       await expect(PupilFrozenService.throwIfFrozenByIds([1, 2, 3, 4])).rejects.toThrow('frozen pupils cannot be modified')
@@ -26,6 +31,11 @@ describe('Pupil Frozen Service', () => {
   })
 
   describe('throwIfFrozenByUrlSlugs', () => {
+    test('throws an error if pupilUrlSlugs is undefined', async () => {
+      // @ts-ignore:next-line assert if undefined handled correctly at runtime
+      await expect(PupilFrozenService.throwIfFrozenByUrlSlugs(undefined)).rejects.toThrow('pupilUrlSlugs is required')
+    })
+
     test('exits early if pupilUrlSlugs is empty', async () => {
       jest.spyOn(PupilFrozenDataService, 'getFrozenCountByUrlSlugs').mockImplementation()
       const x: string[] = []

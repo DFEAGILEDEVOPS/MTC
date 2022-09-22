@@ -12,6 +12,10 @@ describe('service manager pupil service', () => {
   })
 
   describe('findPupilByUpn', () => {
+    test('error is thrown if upn is undefined', async () => {
+      // @ts-ignore:next-line assert if undefined handled correctly at runtime
+      await expect(ServiceManagerPupilService.findPupilByUpn(undefined)).rejects.toThrow('upn is required')
+    })
     test('error is thrown if upn is empty string', async () => {
       await expect(ServiceManagerPupilService.findPupilByUpn('')).rejects.toThrow('upn is required')
     })
