@@ -36,7 +36,7 @@ describe('SpokenQuestionComponent', () => {
 
   beforeEach(waitForAsync(() => {
     storageService = new StorageServiceMock()
-    answerService = new AnswerService(storageService, new MonotonicTimeService(new WindowRefService()))
+    answerService = new AnswerService(storageService as StorageService, new MonotonicTimeService(new WindowRefService()))
     TestBed.configureTestingModule({
       declarations: [ SpokenQuestionComponent ],
       providers: [
