@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
-import { IStorageService } from '../storage/storage.service';
+import { StorageService } from '../storage/storage.service'
 import { Answer } from './answer.model';
 import { MonotonicTimeService } from '../monotonic-time/monotonic-time.service'
 
 @Injectable()
 export class AnswerService {
   constructor(
-    private storageService: IStorageService,
+    private storageService: StorageService,
     private monotonicTimeService: MonotonicTimeService
   ) { }
 
