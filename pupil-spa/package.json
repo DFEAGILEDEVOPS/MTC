@@ -34,7 +34,7 @@
     "@angular/router": "^11.2.14",
     "@microsoft/applicationinsights-web": "^2.5.10",
     "bluebird": "^3.7.1",
-    "core-js": "2.6.10",
+    "core-js": "2.6.12",
     "dotenv": "^10.0.0",
     "lz-string": "https://github.com/pieroxy/lz-string#1.4.4",
     "ngx-cookie-service": "^11.0.2",
