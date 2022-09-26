@@ -18,7 +18,7 @@ When(/^I go from the instructions page to the complete page$/) do
   warm_up_page.start_now.click
   step "I complete the warm up questions using the numpad"
   warm_up_complete_page.start_check.click
-  mtc_check_start_page.start_now.click
+start_mtc
   questions = JSON.parse page.evaluate_script('window.localStorage.getItem("questions");')
   @answers = check_page.complete_check_with_correct_answers(questions.size, 'numpad')
   complete_page.wait_for_complete_page
@@ -41,7 +41,7 @@ When(/^I have completed 2 checks$/) do
     warm_up_page.start_now.click
     step "I complete the warm up questions using the numpad"
     warm_up_complete_page.start_check.click
-    mtc_check_start_page.start_now.click
+  start_mtc
     questions = JSON.parse page.evaluate_script('window.localStorage.getItem("questions");')
     @answers = check_page.complete_check_with_correct_answers(questions.size, 'numpad')
     complete_page.wait_for_complete_page
