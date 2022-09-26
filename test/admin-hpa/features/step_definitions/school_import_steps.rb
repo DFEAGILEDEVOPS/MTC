@@ -32,36 +32,40 @@ And(/^closed schools should not be imported$/) do
   end
 end
 
-Given(/^I have inserted a school successfully$/) do
-  @school_import = File.expand_path("#{File.dirname(__FILE__)}/../../data/duplicate-school-data.csv")
+Given(/^I have imported a csv with schools including duplicates$/) do
+  CSV.open(File.expand_path("#{File.dirname(__FILE__)}/../../data/duplicate_and_new_school.csv"), 'wb') do |csv_object|
+    csv_object << ["URN","LA (code)","EstablishmentNumber","EstablishmentName","StatutoryLowAge","StatutoryHighAge","EstablishmentStatus (code)","EstablishmentTypeGroup (code)","TypeOfEstablishment (code)"]
+    csv_object << [(SqlDbHelper.get_schools_list.map {|school| school['urn']}.sort.first).to_s, "999","9000","Mo School 1","8","10","1","4","7"]
+    csv_object << [(SqlDbHelper.get_schools_list.map {|school| school['urn']}.sort.last + 1).to_s, "999",(SqlDbHelper.get_schools_list.map {|school| school['estabCode']}.sort.last+1).to_s,"Mo School 55","8","10","4","11","26"]
+  end
+  @school_import = File.expand_path("#{File.dirname(__FILE__)}/../../data/duplicate_and_new_school.csv")
   @urns_included_array = CSV.parse(@school_import).map {|z| z[0] unless z[6] == '2' || z[0] == 'URN'}.compact
   step 'I have signed in with service-manager'
   admin_page.school_search.click
   manage_organisations_page.upload.click
   upload_organisations_page.upload_schools(@school_import)
   upload_organisations_page.upload.click
-  step 'they should be stored alongside the existing schools'
+  @upload_time = Time.now
 end
 
-When(/^I attempt to insert the school again$/) do
-  @school_import = File.expand_path("#{File.dirname(__FILE__)}/../../data/duplicate-school-data.csv")
-  @urns_included_array = CSV.parse(File.read(@school_import)).map {|z| z[0] unless z[6] == '2' || z[0] == 'URN'}.compact
-  manage_organisations_page.load
-  manage_organisations_page.upload.click
-  upload_organisations_page.upload_schools(@school_import)
-  upload_organisations_page.upload.click
-end
-
-Then(/^I should get an error saying the school is a duplicate$/) do
+Then(/^I should see that unique schools are added$/) do
   expect(view_jobs_page.message.text).to eql "Organisation file has been uploaded"
   expect(view_jobs_page.job_history.rows.first.type.text).to eql "Organisation file upload"
-  wait_until {(visit current_url; view_jobs_page.job_history.rows.first.status.text == 'Failed')}
+  wait_until {(visit current_url; view_jobs_page.job_history.rows.first.status.text == 'Completed with errors')}
   view_jobs_page.job_history.rows.first.outputs.click
   zip_path = File.expand_path("#{File.dirname(__FILE__)}/../../data/download/job-output.zip")
   destination = File.expand_path("#{File.dirname(__FILE__)}/../../data/download")
   wait_until {File.exist? zip_path}
-  output_hash = upload_organisations_page.extract_job_output(zip_path, destination)
-  expect(output_hash[:error].map {|x| x.split('Z ').last}).to include "Cannot insert duplicate key row in object 'mtc_admin.school' with unique index 'school_dfeNumber_uindex'. The duplicate key value is (#{CSV.parse(File.read(@school_import))[1][1..2].join()})."
+  @output_hash = upload_organisations_page.extract_job_output(zip_path, destination)
+  expect(SqlDbHelper.find_school_by_urn(CSV.parse(File.read(@school_import))[2][0])).to_not be_nil
+end
+
+And(/^I should get an error saying there is a school that is a duplicate$/) do
+  expect(@output_hash[:error].map {|x| x.split('Z ').last}).to include "school-import: insert failed for school. urn:#{CSV.parse(File.read(@school_import))[1][0]} error: Cannot insert duplicate key row in object 'mtc_admin.school' with unique index 'school_urn_uindex'. The duplicate key value is (#{CSV.parse(File.read(@school_import))[1][0]})."
+end
+
+And(/^the duplicate school should not be added$/) do
+  expect(@upload_time - SqlDbHelper.find_school_by_urn(CSV.parse(File.read(@school_import))[1][0])['createdAt']).to be > 60
 end
 
 Given(/^I attempt to import using a csv file that is in the incorrect format$/) do
@@ -182,3 +186,4 @@ Then(/^I should get an error stating that school name can not be null$/) do
   end
   expect(output_hash[:output].map {|x| x.split('Z ').last}).to include "school records excluded in filtering:2. No records to persist, exiting."
 end
+

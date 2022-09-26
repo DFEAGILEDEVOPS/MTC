@@ -8,9 +8,10 @@ Feature:
     And closed schools should not be imported
 
   Scenario: Duplicate schools can not be added
-    Given I have inserted a school successfully
-    When I attempt to insert the school again
-    Then I should get an error saying the school is a duplicate
+    Given I have imported a csv with schools including duplicates
+    Then I should see that unique schools are added
+    And I should get an error saying there is a school that is a duplicate
+    And the duplicate school should not be added
 
   Scenario: School import CSV has to be in the correct format
     Given I attempt to import using a csv file that is in the incorrect format

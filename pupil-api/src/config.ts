@@ -52,11 +52,6 @@ export default {
     Key: process.env.REDIS_KEY,
     useTLS: getEnvironment() !== 'Local-Dev'
   },
-  RateLimit: {
-    Threshold: parseToInt(process.env.RATE_LIMIT_THRESHOLD, 10) ?? 1000,
-    Duration: parseToInt(process.env.RATE_LIMIT_DURATION, 10) ?? 1000 * 60, // 1 minute in ms
-    Enabled: parser.propertyExists(process.env, 'RATE_LIMIT_ENABLED') ? parser.primitiveToBoolean(process.env.RATE_LIMIT_ENABLED) : false
-  },
   RedisPreparedCheckExpiryInSeconds: parseToInt(process.env.PREPARED_CHECK_EXPIRY_SECONDS, 10) ?? 1800,
   FeatureToggles: {},
   ServiceBus: {

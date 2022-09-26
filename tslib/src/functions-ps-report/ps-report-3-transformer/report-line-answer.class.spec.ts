@@ -401,4 +401,68 @@ describe('PsychometricReportLineAnswer', () => {
       expect(sut.lastKey?.toISOString()).toBe('2020-01-21T09:00:05.126Z')
     })
   })
+
+  describe('the first digit is picked up correctly', () => {
+    test('it ignores non-numeric input as the first digit as does not form part of the answer', () => {
+      const inputs: Input[] = [
+        {
+          answerId: 1,
+          input: 'x',
+          inputType: 'K',
+          browserTimestamp: moment('2020-01-21T09:00:05.121Z')
+        },
+        {
+          answerId: 2,
+          input: '2',
+          inputType: 'K',
+          browserTimestamp: moment('2020-01-21T09:00:05.122Z')
+        }
+      ]
+      sut.addInputs(inputs)
+      expect(sut.firstKey?.toISOString()).toBe('2020-01-21T09:00:05.122Z')
+    })
+
+    test('it ignores multiple non-numeric inputs as the first digit as does not form part of the answer', () => {
+      const inputs: Input[] = [
+        {
+          answerId: 1,
+          input: 'a',
+          inputType: 'K',
+          browserTimestamp: moment('2020-01-21T09:00:05.121Z')
+        },
+        {
+          answerId: 2,
+          input: 'b',
+          inputType: 'K',
+          browserTimestamp: moment('2020-01-21T09:00:05.122Z')
+        },
+        {
+          answerId: 3,
+          input: 'c',
+          inputType: 'K',
+          browserTimestamp: moment('2020-01-21T09:00:05.123Z')
+        },
+        {
+          answerId: 4,
+          input: 'd',
+          inputType: 'K',
+          browserTimestamp: moment('2020-01-21T09:00:05.124Z')
+        },
+        {
+          answerId: 5,
+          input: 'x',
+          inputType: 'K',
+          browserTimestamp: moment('2020-01-21T09:00:05.125Z')
+        },
+        {
+          answerId: 2,
+          input: '2',
+          inputType: 'K',
+          browserTimestamp: moment('2020-01-21T09:00:05.127Z')
+        }
+      ]
+      sut.addInputs(inputs)
+      expect(sut.firstKey?.toISOString()).toBe('2020-01-21T09:00:05.127Z')
+    })
+  })
 })

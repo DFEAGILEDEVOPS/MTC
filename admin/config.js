@@ -80,11 +80,6 @@ module.exports = {
       Username: sql.user,
       Password: sql.password
     },
-    FunctionsApp: {
-      // TODO: Legacy from the database migrations: delete on another PR
-      Username: process.env.SQL_FUNCTIONS_APP_USER || 'functionsAppSystemUser',
-      Password: process.env.SQL_FUNCTIONS_APP_USER_PASSWORD || 'functionsAppSystemP4ssw0rd!' // default only for local docker
-    },
     Pooling: {
       MinCount: sql.pool.min,
       MaxCount: sql.pool.max,

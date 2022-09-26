@@ -37,8 +37,8 @@ const sixMonthsInSeconds = 15778800
 export default {
   Environment: getEnvironment(),
   Sql: {
-    user: process.env.SQL_FUNCTIONS_APP_USER,
-    password: process.env.SQL_FUNCTIONS_APP_USER_PASSWORD,
+    user: parser.valueOrSubstitute(process.env.SQL_FUNCTIONS_APP_USER, 'functionsAppSystemUser'),
+    password: parser.valueOrSubstitute(process.env.SQL_FUNCTIONS_APP_USER_PASSWORD, 'functionsAppSystemP4ssw0rd!'),
     server: process.env.SQL_SERVER ?? 'localhost',
     port: parseInt(parser.valueOrSubstitute(process.env.SQL_PORT, 1433), 10),
     database: process.env.SQL_DATABASE ?? 'mtc',
