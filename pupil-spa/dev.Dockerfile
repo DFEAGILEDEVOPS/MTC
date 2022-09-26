@@ -1,4 +1,4 @@
-FROM node:12.18.2
+FROM node:14.18.1
 
 RUN mkdir -p /mtc/pupil-spa
 WORKDIR /mtc/pupil-spa

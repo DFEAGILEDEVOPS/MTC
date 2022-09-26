@@ -15,7 +15,8 @@ let consoleLogger: ILogger
 let jobDataServiceMock: IJobDataService
 
 const SchoolDataServiceMock = jest.fn<ISchoolDataService, any>(() => ({
-  bulkUpload: jest.fn()
+  bulkUpload: jest.fn(),
+  individualUpload: jest.fn()
 }))
 
 const JobDataServiceMock = jest.fn<IJobDataService, any>(() => ({
@@ -98,7 +99,7 @@ describe('#SchoolImportService', () => {
     expect(jobResult.getErrorOutput()).toHaveLength(0)
     expect(jobResult.stdout).toHaveLength(2)
     expect(jobResult.stdout[1]).toStrictEqual('school records excluded in filtering:1. No records to persist, exiting.')
-    expect(schoolDataServiceMock.bulkUpload).toHaveBeenCalledTimes(0)
+    expect(schoolDataServiceMock.individualUpload).toHaveBeenCalledTimes(0)
   })
 
   test('does not import schools without a name', async () => {
@@ -107,12 +108,12 @@ describe('#SchoolImportService', () => {
     jest.spyOn(schoolDataServiceMock, 'bulkUpload').mockImplementation()
     const blobName = 'aad9f3b5-7a77-44cd-96b6-dcdc41c9ea76'
     await sut.process(csv, blobName)
-    expect(schoolDataServiceMock.bulkUpload).toHaveBeenCalledTimes(1)
+    expect(schoolDataServiceMock.individualUpload).toHaveBeenCalledTimes(1)
   })
 
   test('throws an error if the csv does not have a header row', async () => {
     const csv = ''
-    jest.spyOn(schoolDataServiceMock, 'bulkUpload').mockImplementation()
+    jest.spyOn(schoolDataServiceMock, 'individualUpload').mockImplementation()
     try {
       const blobName = 'aad9f3b5-7a77-44cd-96b6-dcdc41c9ea76'
       await sut.process(csv, blobName)
@@ -168,7 +169,7 @@ describe('#SchoolImportService', () => {
     const mockErrorMessage = 'mock error, please ignore'
     const csv = `URN,LA (code),EstablishmentNumber,EstablishmentName,StatutoryLowAge,StatutoryHighAge,EstablishmentStatus (code),TypeOfEstablishment (code),EstablishmentTypeGroup (code)
     12345,123,4567,My School,9,9,4,3,4`
-    jest.spyOn(schoolDataServiceMock, 'bulkUpload').mockRejectedValue(new Error(mockErrorMessage))
+    jest.spyOn(schoolDataServiceMock, 'individualUpload').mockRejectedValue(new Error(mockErrorMessage))
     const blobName = 'aad9f3b5-7a77-44cd-96b6-dcdc41c9ea76'
     try {
       await sut.process(csv, blobName)
