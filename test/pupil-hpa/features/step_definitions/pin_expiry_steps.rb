@@ -24,7 +24,7 @@ Given(/^I have completed the check(?: using the (.+))?$/) do |input|
   warm_up_page.start_now.click
   step "I complete the warm up questions using the #{input_type}"
   warm_up_complete_page.start_check.click
-  mtc_check_start_page.start_now.click
+start_mtc
   questions = JSON.parse page.evaluate_script('window.localStorage.getItem("questions");')
   check_page.complete_check_with_correct_answers(questions.size, 'numpad')
   complete_page.wait_for_complete_page
@@ -90,7 +90,7 @@ end
 
 When(/^I completed the check anyway$/) do
   warm_up_complete_page.start_check.click
-  mtc_check_start_page.start_now.click
+start_mtc
   check_page.complete_check_with_correct_answers(@questions.size, 'numpad')
   # expect(complete_page).to have_completion_text
 end

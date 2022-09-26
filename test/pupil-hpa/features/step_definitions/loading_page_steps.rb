@@ -38,7 +38,7 @@ end
 
 Given(/^I start the questions$/) do
   warm_up_complete_page.start_check.click
-  mtc_check_start_page.start_now.click
+start_mtc
 end
 
 Then(/^I should be redirected when the check time limit expires$/) do

@@ -35,11 +35,11 @@ export class CheckStartService {
    * Check start submission
    * @returns {Promise.<void>}
    */
-  public async submit(): Promise<void> {
+  public async submit(startButtonClickDateTime: Date): Promise<void> {
     const { url, token } = this.tokenService.getToken('checkStarted');
     // Create a model for the payload
     const payload = this.storageService.getPupil();
-    payload.clientCheckStartedAt = new Date();
+    payload.clientCheckStartedAt = startButtonClickDateTime;
     payload.version = 1;
     const retryConfig: QueueMessageRetryConfig = {
       DelayBetweenRetries: this.checkStartAPIErrorDelay,

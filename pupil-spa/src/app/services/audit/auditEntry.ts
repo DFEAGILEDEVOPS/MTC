@@ -82,8 +82,8 @@ export class QuestionRendered extends AuditEntry {
 }
 
 export class CheckStarted extends AuditEntry {
-  constructor(data?: any) {
-    super('CheckStarted', new Date(), data);
+  constructor(startButtonClickDateTime: Date, data?: any) {
+    super('CheckStarted', startButtonClickDateTime, data);
   }
 }
 
