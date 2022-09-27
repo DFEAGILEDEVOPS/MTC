@@ -4,10 +4,11 @@ const settingDataService = require('./data-access/setting.data.service')
 const settingLogDataService = require('./data-access/setting-log.data.service')
 const redisCacheService = require('./data-access/redis-cache.service')
 const config = require('../config')
+const redisKeyService = require('./redis-key.service')
 
 const settingService = {}
 
-const settingsRedisKey = 'settings'
+const settingsRedisKey = redisKeyService.getSettingsKey()
 
 /**
  * Update check settings

@@ -53,9 +53,10 @@ export class QuestionsIntroComponent implements AfterViewInit, OnDestroy {
   }
 
   async onClick() {
-    this.auditService.addEntry(new CheckStarted());
+    const startButtonClickDateTime = new Date();
+    this.auditService.addEntry(new CheckStarted(startButtonClickDateTime));
     this.clickEvent.emit(null);
-    await this.checkStartService.submit();
+    await this.checkStartService.submit(startButtonClickDateTime);
   }
 
   ngOnDestroy(): void {
