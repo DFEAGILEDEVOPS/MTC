@@ -12,7 +12,13 @@ export class AnswerService {
 
   setAnswer(factor1: number, factor2: number, userAnswer: string, sequenceNumber: number): void {
     const mtime = this.monotonicTimeService.getMonotonicDateTime()
-    const answer = new Answer(factor1, factor2, userAnswer, sequenceNumber, mtime)
+    const answer = new Answer(factor1,
+      factor2,
+      userAnswer,
+      sequenceNumber,
+      mtime.formatAsDate(),
+      mtime.getDto()
+     )
     this.storageService.setAnswer(answer)
   }
 }

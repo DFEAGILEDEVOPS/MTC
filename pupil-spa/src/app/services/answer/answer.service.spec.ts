@@ -53,16 +53,8 @@ describe('AnswerService', () => {
     expect(answerArg.factor1).toBe(1)
     expect(answerArg.factor2).toBe(2)
     expect(answerArg.question).toBe('1x2')
-    expect(answerArg.clientTimestamp instanceof MonotonicTime).toBe(true)
+    expect(answerArg.clientTimestamp.toISOString()).toBe('1970-01-01T09:00:00.123Z') // has extra precision
     expect(answerArg.sequenceNumber).toBe(25)
-  })
-
-  it('adds the current monotonic time to the answer object', () => {
-    const setAnswerSpy = spyOn(storageService, 'setAnswer')
-    service.setAnswer(1, 2, '3', 25)
-    const answerArg = setAnswerSpy.calls.allArgs()[0][0]
-    const mtime = answerArg.clientTimestamp
-    expect(mtime.getLegacyDate().toISOString()).toEqual(mockDate.toISOString())
-    expect(mtime.formatAsMilliseconds()).toEqual(mockDate.valueOf() + mockWindowRefService.nativeWindow.performance.now())
+    expect(answerArg.monotonicTime.legacyDate.toISOString()).toBe('1970-01-01T09:00:00.000Z')
   })
 })

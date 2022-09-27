@@ -158,14 +158,15 @@ describe('SpokenQuestionComponent', () => {
       dispatchKeyEvent({ key: '8' });
       component.onSubmit()
       const answerArgs = storageServiceSetAnswerSpy.calls.mostRecent().args[0]
-      const answerTimestamp = answerArgs.clientTimestamp.getLegacyDate()
+      const answerTimestamp: string = answerArgs.clientTimestamp
       const auditArgs = auditServiceSpy.calls.allArgs()
+      const answerDateTime = new Date(answerTimestamp)
       const questionAnsweredArg = auditArgs.find(o => o[0].type === 'QuestionAnswered')
       const questionAnsweredTimestamp = questionAnsweredArg[0].clientTimestamp
       if (!questionAnsweredTimestamp || !answerTimestamp) {
         fail('Missing timestamp')
       }
-      expect(answerTimestamp.getTime()).toBeLessThanOrEqual(questionAnsweredTimestamp.getTime())
+      expect(answerDateTime.getTime()).toBeLessThanOrEqual(questionAnsweredTimestamp.getTime())
     })
   })
 });

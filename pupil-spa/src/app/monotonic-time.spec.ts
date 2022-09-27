@@ -57,6 +57,13 @@ describe('MonotonicTime', () => {
         expect(parsed.legacyDate).toBe('2022-01-01T09:00:00.000Z')
       })
     })
+
+    describe('#formatAsISOString()', () => {
+      it('converts the date time to an ISO string', () => {
+        const monotonicTime = new MonotonicTime(mockWindowRefService, 44)
+        expect(monotonicTime.formatAsISOString()).toEqual('2022-01-01T09:00:00.123Z') // Lossy - lost 0.4ms
+      })
+    })
   })
 
 

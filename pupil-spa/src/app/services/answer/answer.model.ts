@@ -1,4 +1,4 @@
-import { MonotonicTime } from '../../monotonic-time'
+import { IMonotonicTimeDto } from '../../monotonic-time'
 
 export class Answer {
 
@@ -7,7 +7,8 @@ export class Answer {
     public factor2: number,
     public answer: string,
     public sequenceNumber: number,
-    public clientTimestamp: MonotonicTime,
+    public clientTimestamp: Date, // date time string derived from performance api
+    public monotonicTime: IMonotonicTimeDto,
     public question: string = `${factor1}x${factor2}`,
   ) { }
 }

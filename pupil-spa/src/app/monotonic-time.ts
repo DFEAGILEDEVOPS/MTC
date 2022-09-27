@@ -1,7 +1,13 @@
 import { WindowRefService } from './services/window-ref/window-ref.service'
 
+export interface IMonotonicTimeDto {
+  milliseconds: number, // milliseconds since Jan 1 1970. Float.
+  legacyDate: Date,
+  sequenceNumber: number // for disambiguation.  Number incremented on each call to the MonotonicTimeService.
+}
+
 export class MonotonicTime {
-  private window: any;
+  private readonly window: any;
   private readonly timeOrigin: DOMHighResTimeStamp
   private readonly now: DOMHighResTimeStamp
   private readonly date: Date
@@ -29,6 +35,33 @@ export class MonotonicTime {
       return this.timeOrigin + this.now
     } else {
       return this.date.valueOf()
+    }
+  }
+
+  public formatAsISOString (): string {
+    if (this.timeOrigin !== undefined && this.now !== undefined)  {
+      const dt = new Date(this.timeOrigin + this.now)
+      return dt.toISOString()
+    } else {
+      return this.date.toISOString()
+    }
+  }
+
+  /**
+   * Warning: this will lose any decimal part of the milliseconds
+   */
+  public formatAsDate (): Date {
+    return new Date(this.formatAsMilliseconds())
+  }
+
+  /**
+   * Return a Data Transfer Object - for sending across the network
+   */
+  public getDto (): IMonotonicTimeDto {
+    return {
+      milliseconds: this.timeOrigin + this.now,
+      legacyDate: this.date,
+      sequenceNumber: this.sequenceNumber
     }
   }
 
