@@ -8,9 +8,10 @@ const serviceMessageErrorMessages = require('../lib/errors/service-message')
 const logService = require('./log.service')
 const logger = logService.getLogger()
 const sanitiseService = require('./sanitise.service')
+const redisKeyService = require('./redis-key.service')
 
 const administrationMessageService = {}
-const serviceMessageRedisKey = 'serviceMessage'
+const serviceMessageRedisKey = redisKeyService.getServiceMessageKey()
 
 /**
  * @typedef serviceMessage
