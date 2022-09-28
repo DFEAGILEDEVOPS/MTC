@@ -28,7 +28,7 @@ module.exports.getRestartsForSchool = async function getRestartsForSchool (schoo
       totalCheckCount: R.isNil(r.totalCheckCount) ? 0 : r.totalCheckCount,
       status: ''
     }
-    if (r.isDiscretionaryRestartAvailable) {
+    if (r.isDiscretionaryRestartAvailable || r.restartCheckPupilLoginDate !== null) {
       update.status = 'Restart taken'
     } else if (r.restartCheckId === null || (r.restartCheckReceived === false && r.restartCheckComplete === false)) {
       update.status = 'Remove restart'
