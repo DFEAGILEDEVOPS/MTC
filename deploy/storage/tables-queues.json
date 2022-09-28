@@ -8,7 +8,6 @@
   ],
   "tables": [
     "checkResult",
-    "checkStartedEvents",
     "pupilEvent",
     "pupilFeedback",
     "receivedCheck"
