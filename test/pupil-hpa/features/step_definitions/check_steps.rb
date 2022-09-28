@@ -7,7 +7,7 @@ Given(/^I have started the check(?: using the (.+))?$/) do |input|
   warm_up_page.start_now.click
   step "I complete the warm up questions using the #{input_type}"
   warm_up_complete_page.start_check.click
-  mtc_check_start_page.start_now.click
+  start_mtc
 end
 
 Given(/^I complete the warm up questions using the (.+)$/) do |input_type|

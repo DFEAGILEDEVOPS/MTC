@@ -1,4 +1,3 @@
-
 Given(/I am logged with familiarisation pin/) do
   step 'I have generated a familiarisation pin'
   step 'I have logged in'
@@ -12,7 +11,6 @@ Given(/^I am on the familiarisation complete page$/) do
   step "I complete the warm up questions using the keyboard"
   warm_up_complete_page.start_check.click
   mtc_check_start_page.start_now.click
-
   step 'I should be able to use the on screen keyboard to complete the test'
 end
 
