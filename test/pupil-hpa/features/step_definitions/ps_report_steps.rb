@@ -99,7 +99,7 @@ And(/^I complete the check$/) do
   warm_up_page.start_now.click
   step "I complete the warm up questions using the numpad"
   warm_up_complete_page.start_check.click
-  mtc_check_start_page.start_now.click
+start_mtc
   @answers = check_page.complete_check_with_correct_answers(25, 'keyboard')
   complete_page.wait_for_complete_page
   expect(complete_page).to have_heading
@@ -153,7 +153,7 @@ When(/^I consume a restart using (.+) and complete the check a second time$/) do
   warm_up_page.start_now.click
   step "I complete the warm up questions using the keyboard"
   warm_up_complete_page.start_check.click
-  mtc_check_start_page.start_now.click
+start_mtc
   step 'I should be able to use the on screen keyboard to complete the test'
   storage_pupil = JSON.parse page.evaluate_script('window.localStorage.getItem("pupil");')
   @second_check_code = storage_pupil['checkCode']
@@ -179,7 +179,7 @@ And(/^I consume another restart using IT issues and complete the check a third t
   warm_up_page.start_now.click
   step "I complete the warm up questions using the keyboard"
   warm_up_complete_page.start_check.click
-  mtc_check_start_page.start_now.click
+start_mtc
   step 'I should be able to use the on screen keyboard to complete the test'
   storage_pupil = JSON.parse page.evaluate_script('window.localStorage.getItem("pupil");')
   @third_check_code = storage_pupil['checkCode']
@@ -219,7 +219,7 @@ When(/^the pupil completes the check$/) do
   warm_up_page.start_now.click
   step "I complete the warm up questions using the keyboard"
   warm_up_complete_page.start_check.click
-  mtc_check_start_page.start_now.click
+start_mtc
   questions = JSON.parse page.evaluate_script('window.localStorage.getItem("questions");')
   check_page.complete_check_with_correct_answers(questions.size, 'numpad')
   complete_page.wait_for_complete_page
@@ -265,7 +265,7 @@ And(/^complete the check$/) do
   warm_up_page.start_now.click
   step "I complete the warm up questions using the numpad"
   warm_up_complete_page.start_check.click
-  mtc_check_start_page.start_now.click
+start_mtc
   questions = JSON.parse page.evaluate_script('window.localStorage.getItem("questions");')
   check_page.complete_check_with_correct_answers(questions.size, 'numpad')
   complete_page.wait_for_complete_page
@@ -329,7 +329,7 @@ When(/^I generate a new pin and complete the check$/) do
   warm_up_page.start_now.click
   step "I complete the warm up questions using the numpad"
   warm_up_complete_page.start_check.click
-  mtc_check_start_page.start_now.click
+start_mtc
   questions = JSON.parse page.evaluate_script('window.localStorage.getItem("questions");')
   check_page.complete_check_with_correct_answers(questions.size, 'numpad')
   complete_page.wait_for_complete_page

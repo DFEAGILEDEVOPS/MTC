@@ -72,6 +72,22 @@ const redisKeyService = {
    */
   getLaCodesKey () {
     return 'lacodes'
+  },
+
+  /**
+   * Return the key for the system wide service message
+   * @return {string}
+   */
+  getServiceMessageKey () {
+    return 'serviceMessage'
+  },
+
+  /**
+   * Return the key for the system wide settings
+   * @return {string}
+   */
+  getSettingsKey () {
+    return 'settings'
   }
 }
 

@@ -41,7 +41,7 @@ When(/^I complete a check after a restart$/) do
   warm_up_page.start_now.click
   step "I complete the warm up questions using the keyboard"
   warm_up_complete_page.start_check.click
-  mtc_check_start_page.start_now.click
+start_mtc
   step 'I should be able to use the on screen keyboard to complete the test'
 end
 
