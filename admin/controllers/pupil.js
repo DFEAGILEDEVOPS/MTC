@@ -248,7 +248,7 @@ const controller = {
       })
     }
     try {
-      await pupilEditService.update(pupil, req.body, req.user.schoolId)
+      await pupilEditService.update(pupil, req.body, req.user.schoolId, req.user.id)
       req.flash('info', 'Changes to pupil details have been saved')
     } catch (error) {
       next(error)
