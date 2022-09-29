@@ -72,6 +72,13 @@ export class AuditEntryFactory {
     const mtime = this.monotonicTimeService.getMonotonicDateTime()
     return new QuestionRendered(mtime, data)
   }
+
+  createCheckStarted(mtime?: MonotonicTime, data?: any): CheckStarted {
+    if (mtime === undefined) {
+      mtime = this.monotonicTimeService.getMonotonicDateTime()
+    }
+    return new CheckStarted(mtime, data)
+  }
 }
 
 
@@ -161,8 +168,9 @@ export class QuestionRendered extends AuditEntry {
 }
 
 export class CheckStarted extends AuditEntry {
-  constructor(startButtonClickDateTime: Date, data?: any) {
-    super('CheckStarted', startButtonClickDateTime, data);
+  constructor(mtime: MonotonicTime, data: any = {}) {
+    data.monotonicTime = mtime.getDto()
+    super('CheckStarted', mtime.formatAsDate(), data);
   }
 }
 

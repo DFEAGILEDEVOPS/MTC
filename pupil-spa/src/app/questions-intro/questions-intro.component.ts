@@ -1,12 +1,11 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, OnDestroy, Output } from '@angular/core';
 
-import {
-  CheckStarted, AuditEntryFactory,
-} from '../services/audit/auditEntry'
+import { AuditEntryFactory } from '../services/audit/auditEntry'
 import { AuditService } from '../services/audit/audit.service';
 import { SpeechService } from '../services/speech/speech.service';
 import { QuestionService } from '../services/question/question.service';
 import { CheckStartService } from '../services/check-start/check-start.service';
+import { MonotonicTimeService } from '../services/monotonic-time/monotonic-time.service'
 
 @Component({
   selector: 'app-questions-intro',
@@ -32,7 +31,8 @@ export class QuestionsIntroComponent implements AfterViewInit, OnDestroy {
     private speechService: SpeechService,
     private checkStartService: CheckStartService,
     private elRef: ElementRef,
-    private auditEntryFactory: AuditEntryFactory
+    private auditEntryFactory: AuditEntryFactory,
+    private monotonicTimeService: MonotonicTimeService
   ) {
     this.count = this.questionService.getNumberOfQuestions();
   }
@@ -53,10 +53,10 @@ export class QuestionsIntroComponent implements AfterViewInit, OnDestroy {
   }
 
   async onClick() {
-    const startButtonClickDateTime = new Date();
-    this.auditService.addEntry(new CheckStarted(startButtonClickDateTime));
+    const mtime = this.monotonicTimeService.getMonotonicDateTime()
+    this.auditService.addEntry(this.auditEntryFactory.createCheckStarted(mtime));
     this.clickEvent.emit(null);
-    await this.checkStartService.submit(startButtonClickDateTime);
+    await this.checkStartService.submit(mtime.formatAsDate());
   }
 
   ngOnDestroy(): void {

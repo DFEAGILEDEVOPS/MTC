@@ -1,4 +1,4 @@
-import { AuditEntryFactory, CheckStartedAPICallSucceeded, WarmupCompleteRendered, WarmupIntroRendered } from './auditEntry'
+import { AuditEntryFactory, CheckStarted, CheckStartedAPICallSucceeded, WarmupCompleteRendered, WarmupIntroRendered } from './auditEntry'
 import { TestBed } from '@angular/core/testing'
 import { MonotonicTimeService } from '../monotonic-time/monotonic-time.service'
 
@@ -81,6 +81,13 @@ describe('auditEntryFactory', () => {
     it('factory method creates CheckStartedAPICallFailed obj', () => {
       const c = factory.createCheckStartedAPICallFailed()
       expect(c.constructor.name).toBe('CheckStartedAPICallFailed')
+    })
+  })
+
+  describe('#createCheckStarted', () => {
+    it('factory method creates CheckStarted obj', () => {
+      const c = factory.createCheckStarted()
+      expect(c.constructor.name).toBe('CheckStarted')
     })
   })
 })
