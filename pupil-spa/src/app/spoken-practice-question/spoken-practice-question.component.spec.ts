@@ -14,6 +14,7 @@ import { SpokenPracticeQuestionComponent } from './spoken-practice-question.comp
 import { StorageService } from '../services/storage/storage.service';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
 import { MonotonicTimeService } from '../services/monotonic-time/monotonic-time.service'
+import { AuditEntryFactory } from '../services/audit/auditEntry'
 
 describe('SpokenPracticeQuestionComponent', () => {
   let component: SpokenPracticeQuestionComponent;
@@ -34,6 +35,7 @@ describe('SpokenPracticeQuestionComponent', () => {
         { provide: QuestionService, useClass: QuestionServiceMock },
         { provide: AnswerService, useClass: AnswerService, deps: [ MonotonicTimeService ]},
         { provide: RegisterInputService, useClass: RegisterInputServiceMock },
+        AuditEntryFactory
       ]
     })
     .compileComponents();

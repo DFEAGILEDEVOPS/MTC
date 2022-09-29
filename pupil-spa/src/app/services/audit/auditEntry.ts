@@ -43,14 +43,34 @@ export class AuditEntryFactory {
     return new WarmupIntroRendered(mtime, data)
   }
 
+  createQuestionIntroRendered(data?: any): QuestionIntroRendered {
+    const mtime = this.monotonicTimeService.getMonotonicDateTime()
+    return new QuestionIntroRendered(mtime, data)
+  }
+
   createWarmupCompleteRendered(data?: any): WarmupCompleteRendered {
     const mtime = this.monotonicTimeService.getMonotonicDateTime()
     return new WarmupCompleteRendered(mtime, data)
   }
 
-  createQuestionIntroRendered(data?: any): QuestionIntroRendered {
+  createCheckStartedApiCalled(data?: any): CheckStartedApiCalled {
     const mtime = this.monotonicTimeService.getMonotonicDateTime()
-    return new QuestionIntroRendered(mtime, data)
+    return new CheckStartedApiCalled(mtime, data)
+  }
+
+  createCheckStartedAPICallSucceeded(data?: any): CheckStartedAPICallSucceeded {
+    const mtime = this.monotonicTimeService.getMonotonicDateTime()
+    return new CheckStartedAPICallSucceeded(mtime, data)
+  }
+
+  createCheckStartedAPICallFailed(data?: any): CheckStartedAPICallFailed {
+    const mtime = this.monotonicTimeService.getMonotonicDateTime()
+    return new CheckStartedAPICallFailed(mtime, data)
+  }
+
+  createQuestionRendered(data?: any): QuestionRendered {
+    const mtime = this.monotonicTimeService.getMonotonicDateTime()
+    return new QuestionRendered(mtime, data)
   }
 }
 
@@ -113,26 +133,30 @@ export class WarmupCompleteRendered extends AuditEntry {
 }
 
 export class CheckStartedApiCalled extends AuditEntry {
-  constructor(data?: any) {
-    super('CheckStartedApiCalled', new Date(), data);
+  constructor(mtime: MonotonicTime, data: any = {}) {
+    data.monotonicTime = mtime.getDto()
+    super('CheckStartedApiCalled', mtime.formatAsDate(), data);
   }
 }
 
 export class CheckStartedAPICallSucceeded extends AuditEntry {
-  constructor(data?: any) {
-    super('CheckStartedAPICallSucceeded', new Date(), data);
+  constructor(mtime: MonotonicTime, data: any = {}) {
+    data.monotonicTime = mtime.getDto()
+    super('CheckStartedAPICallSucceeded', mtime.formatAsDate(), data);
   }
 }
 
 export class CheckStartedAPICallFailed extends AuditEntry {
-  constructor(data?: any) {
-    super('CheckStartedAPICallFailed', new Date(), data);
+  constructor(mtime: MonotonicTime, data: any = {}) {
+    data.monotonicTime = mtime.getDto()
+    super('CheckStartedAPICallFailed', mtime.formatAsDate(), data);
   }
 }
 
 export class QuestionRendered extends AuditEntry {
-  constructor(data?: any) {
-    super('QuestionRendered', new Date(), data);
+  constructor(mtime: MonotonicTime, data: any = {}) {
+    data.monotonicTime = mtime.getDto()
+    super('QuestionRendered', mtime.formatAsDate(), data);
   }
 }
 

@@ -4,7 +4,7 @@ import { AnswerService } from '../services/answer/answer.service'
 import { AuditService } from '../services/audit/audit.service'
 import { AuditServiceMock } from '../services/audit/audit.service.mock'
 import { QuestionComponent } from './question.component'
-import { QuestionAnswered, QuestionTimerCancelled } from '../services/audit/auditEntry'
+import { AuditEntryFactory, QuestionAnswered, QuestionTimerCancelled } from '../services/audit/auditEntry'
 import { QuestionService } from '../services/question/question.service'
 import { QuestionServiceMock } from '../services/question/question.service.mock'
 import { RegisterInputService } from '../services/register-input/registerInput.service'
@@ -46,6 +46,7 @@ describe('QuestionComponent', () => {
         { provide: AnswerService, useValue: answerService },
         { provide: RegisterInputService, useClass: RegisterInputServiceMock },
         Renderer2,
+        AuditEntryFactory
       ]
     }).compileComponents().catch(error => {
       console.error(error)

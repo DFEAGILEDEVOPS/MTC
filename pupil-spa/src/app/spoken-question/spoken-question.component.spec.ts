@@ -15,6 +15,7 @@ import { IStorageService, StorageService } from '../services/storage/storage.ser
 import { StorageServiceMock } from '../services/storage/mock-storage.service'
 import { WindowRefService } from '../services/window-ref/window-ref.service';
 import { MonotonicTimeService } from '../services/monotonic-time/monotonic-time.service'
+import { AuditEntryFactory } from '../services/audit/auditEntry'
 
 function dispatchKeyEvent(keyboardDict) {
   const event = new KeyboardEvent('keydown', keyboardDict);
@@ -47,6 +48,7 @@ describe('SpokenQuestionComponent', () => {
         { provide: SpeechService, useClass: SpeechServiceMock },
         { provide: AnswerService, useValue: answerService },
         { provide: RegisterInputService, useClass: RegisterInputServiceMock },
+        AuditEntryFactory
       ]
     })
     .compileComponents();

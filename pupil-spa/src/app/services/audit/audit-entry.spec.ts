@@ -1,4 +1,4 @@
-import { AuditEntryFactory, WarmupIntroRendered } from './auditEntry'
+import { AuditEntryFactory, CheckStartedAPICallSucceeded, WarmupCompleteRendered, WarmupIntroRendered } from './auditEntry'
 import { TestBed } from '@angular/core/testing'
 import { MonotonicTimeService } from '../monotonic-time/monotonic-time.service'
 
@@ -53,6 +53,34 @@ describe('auditEntryFactory', () => {
     it('factory method creates QuestionIntroRendered obj', () => {
       const c = factory.createQuestionIntroRendered()
       expect(c.constructor.name).toBe('QuestionIntroRendered')
+    })
+  })
+
+  describe('#createWarmupCompleteRendered', () => {
+    it('factory method creates WarmupCompleteRendered obj', () => {
+      const c = factory.createWarmupCompleteRendered()
+      expect(c.constructor.name).toBe('WarmupCompleteRendered')
+    })
+  })
+
+  describe('#createCheckStartedApiCalled', () => {
+    it('factory method creates CheckStartedApiCalled obj', () => {
+      const c = factory.createCheckStartedApiCalled()
+      expect(c.constructor.name).toBe('CheckStartedApiCalled')
+    })
+  })
+
+  describe('#createCheckStartedAPICallSucceeded', () => {
+    it('factory method creates CheckStartedAPICallSucceeded obj', () => {
+      const c = factory.createCheckStartedAPICallSucceeded()
+      expect(c.constructor.name).toBe('CheckStartedAPICallSucceeded')
+    })
+  })
+
+  describe('#createCheckStartedAPICallFailed', () => {
+    it('factory method creates CheckStartedAPICallFailed obj', () => {
+      const c = factory.createCheckStartedAPICallFailed()
+      expect(c.constructor.name).toBe('CheckStartedAPICallFailed')
     })
   })
 })

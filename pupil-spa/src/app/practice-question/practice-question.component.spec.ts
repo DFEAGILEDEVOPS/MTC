@@ -15,6 +15,7 @@ import { StorageService } from '../services/storage/storage.service';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
 import { Renderer2 } from '@angular/core'
 import { MonotonicTimeService } from '../services/monotonic-time/monotonic-time.service'
+import { AuditEntryFactory } from '../services/audit/auditEntry'
 
 describe('PractiseQuestionComponent', () => {
   let component: PracticeQuestionComponent;
@@ -47,6 +48,7 @@ describe('PractiseQuestionComponent', () => {
         { provide: RegisterInputService, useClass: RegisterInputServiceMock },
         StorageService,
         Renderer2,
+        AuditEntryFactory
       ]
     })
     .compileComponents();
