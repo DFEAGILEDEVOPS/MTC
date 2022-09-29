@@ -1,9 +1,8 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, OnDestroy, Output } from '@angular/core';
 
 import {
-  QuestionIntroRendered,
-  CheckStarted,
-} from '../services/audit/auditEntry';
+  CheckStarted, AuditEntryFactory,
+} from '../services/audit/auditEntry'
 import { AuditService } from '../services/audit/audit.service';
 import { SpeechService } from '../services/speech/speech.service';
 import { QuestionService } from '../services/question/question.service';
@@ -32,13 +31,14 @@ export class QuestionsIntroComponent implements AfterViewInit, OnDestroy {
     private questionService: QuestionService,
     private speechService: SpeechService,
     private checkStartService: CheckStartService,
-    private elRef: ElementRef
+    private elRef: ElementRef,
+    private auditEntryFactory: AuditEntryFactory
   ) {
     this.count = this.questionService.getNumberOfQuestions();
   }
 
   ngAfterViewInit() {
-    this.auditService.addEntry(new QuestionIntroRendered());
+    this.auditService.addEntry(this.auditEntryFactory.createQuestionIntroRendered());
 
     if (this.questionService.getConfig().questionReader) {
       this.speechService.speakElement(this.elRef.nativeElement).then(() => {

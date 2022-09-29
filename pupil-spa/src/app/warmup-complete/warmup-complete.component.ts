@@ -1,7 +1,7 @@
 import { Component, Output, EventEmitter, AfterViewInit, ElementRef, OnDestroy } from '@angular/core';
 
 import { AuditService } from '../services/audit/audit.service';
-import { WarmupCompleteRendered } from '../services/audit/auditEntry';
+import { AuditEntryFactory } from '../services/audit/auditEntry'
 import { SpeechService } from '../services/speech/speech.service';
 import { QuestionService } from '../services/question/question.service';
 
@@ -27,7 +27,8 @@ export class WarmupCompleteComponent implements AfterViewInit, OnDestroy {
     private auditService: AuditService,
     private questionService: QuestionService,
     private speechService: SpeechService,
-    private elRef: ElementRef
+    private elRef: ElementRef,
+    private auditEntryFactrory: AuditEntryFactory
   ) {
     this.count = this.questionService.getNumberOfQuestions();
     const config = this.questionService.getConfig();
@@ -35,7 +36,7 @@ export class WarmupCompleteComponent implements AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit() {
-    this.auditService.addEntry(new WarmupCompleteRendered());
+    this.auditService.addEntry(this.auditEntryFactrory.createWarmupCompleteRendered());
 
     if (this.questionService.getConfig().questionReader) {
       this.speechService.speakElement(this.elRef.nativeElement).then(() => {

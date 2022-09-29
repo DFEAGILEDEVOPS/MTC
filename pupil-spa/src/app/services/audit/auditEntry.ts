@@ -1,3 +1,7 @@
+import { MonotonicTimeService } from '../monotonic-time/monotonic-time.service'
+import { MonotonicTime } from '../../monotonic-time'
+import { Injectable } from '@angular/core'
+
 export type AuditEntryType = 'PupilPrefsAPICalled' | 'PupilPrefsAPICallSucceeded' | 'PupilPrefsAPICallFailed' |
   'WarmupStarted' | 'WarmupIntroRendered' | 'WarmupCompleteRendered'  | 'QuestionIntroRendered'|
   'CheckStartedApiCalled' | 'CheckStartedAPICallSucceeded' | 'CheckStartedAPICallFailed' |
@@ -6,6 +10,50 @@ export type AuditEntryType = 'PupilPrefsAPICalled' | 'PupilPrefsAPICallSucceeded
   'PauseRendered' | 'RefreshDetected' |'UtteranceStarted' | 'UtteranceEnded' | 'QuestionReadingStarted' | 'QuestionReadingEnded' |
   'QuestionTimerStarted' | 'QuestionTimerEnded' | 'QuestionTimerCancelled' | 'AppError' |
   'AppVisible' | 'AppHidden' | 'RefreshOrTabCloseDetected';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class AuditEntryFactory {
+  constructor (private monotonicTimeService: MonotonicTimeService) {
+  }
+
+  createPupilPrefsAPICalled (data?: any) {
+    const mtime = this.monotonicTimeService.getMonotonicDateTime()
+    return new PupilPrefsAPICalled(mtime, data)
+  }
+
+  createPupilPrefsAPICallSucceeded(data?: any) {
+    const mtime = this.monotonicTimeService.getMonotonicDateTime()
+    return new PupilPrefsAPICallSucceeded(mtime, data)
+  }
+
+  createPupilPrefsAPICallFailed(data?: any): PupilPrefsAPICallFailed {
+    const mtime = this.monotonicTimeService.getMonotonicDateTime()
+    return new PupilPrefsAPICallFailed(mtime, data)
+  }
+
+  createWarmupStarted(data?: any): WarmupStarted {
+    const mtime = this.monotonicTimeService.getMonotonicDateTime()
+    return new WarmupStarted(mtime, data)
+  }
+
+  createWarmupIntroRendered(data?: any): WarmupIntroRendered {
+    const mtime = this.monotonicTimeService.getMonotonicDateTime()
+    return new WarmupIntroRendered(mtime, data)
+  }
+
+  createWarmupCompleteRendered(data?: any): WarmupCompleteRendered {
+    const mtime = this.monotonicTimeService.getMonotonicDateTime()
+    return new WarmupCompleteRendered(mtime, data)
+  }
+
+  createQuestionIntroRendered(data?: any): QuestionIntroRendered {
+    const mtime = this.monotonicTimeService.getMonotonicDateTime()
+    return new QuestionIntroRendered(mtime, data)
+  }
+}
+
 
 export abstract class AuditEntry {
 
@@ -16,44 +64,51 @@ export abstract class AuditEntry {
 }
 
 export class PupilPrefsAPICalled extends AuditEntry {
-  constructor(data?: any) {
-    super('PupilPrefsAPICalled', new Date(), data);
+  constructor(mtime: MonotonicTime, data: any = {}) {
+    data.monotonicTime = mtime.getDto()
+    super('PupilPrefsAPICalled', mtime.formatAsDate(), data);
   }
 }
 
 export class PupilPrefsAPICallSucceeded extends AuditEntry {
-  constructor(data?: any) {
-    super('PupilPrefsAPICallSucceeded', new Date(), data);
+  constructor(mtime: MonotonicTime, data: any = {}) {
+    data.monotonicTime = mtime.getDto()
+    super('PupilPrefsAPICallSucceeded', mtime.formatAsDate(), data);
   }
 }
 
 export class PupilPrefsAPICallFailed extends AuditEntry {
-  constructor(data?: any) {
-    super('PupilPrefsAPICallFailed', new Date(), data);
+  constructor(mtime: MonotonicTime, data: any = {}) {
+    data.monotonicTime = mtime.getDto()
+    super('PupilPrefsAPICallFailed', mtime.formatAsDate(), data);
   }
 }
 
 export class WarmupStarted extends AuditEntry {
-  constructor(data?: any) {
-    super('WarmupStarted', new Date(), data);
+  constructor(mtime: MonotonicTime, data: any = {}) {
+    data.monotonicTime = mtime.getDto()
+    super('WarmupStarted', mtime.formatAsDate(), data);
   }
 }
 
 export class WarmupIntroRendered extends AuditEntry {
-  constructor(data?: any) {
-    super('WarmupIntroRendered', new Date(), data);
+  constructor(mtime: MonotonicTime, data: any = {}) {
+    data.monotonicTime = mtime.getDto()
+    super('WarmupIntroRendered', mtime.formatAsDate(), data);
   }
 }
 
 export class QuestionIntroRendered extends AuditEntry {
-  constructor(data?: any) {
-    super('QuestionIntroRendered', new Date(), data);
+  constructor(mtime: MonotonicTime, data: any = {}) {
+    data.monotonicTime = mtime.getDto()
+    super('QuestionIntroRendered', mtime.formatAsDate(), data);
   }
 }
 
 export class WarmupCompleteRendered extends AuditEntry {
-  constructor(data?: any) {
-    super('WarmupCompleteRendered', new Date(), data);
+  constructor(mtime: MonotonicTime, data: any = {}) {
+    data.monotonicTime = mtime.getDto()
+    super('WarmupCompleteRendered', mtime.formatAsDate(), data);
   }
 }
 

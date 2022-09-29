@@ -12,6 +12,7 @@ import { AnswerService } from './services/answer/answer.service';
 import { AppComponent } from './app.component';
 import { AppUsageService } from './services/app-usage/app-usage.service';
 import { AuditService } from './services/audit/audit.service';
+import { AuditEntryFactory } from './services/audit/auditEntry'
 import { AzureQueueService } from './services/azure-queue/azure-queue.service';
 import { BreadcrumbsComponent } from './breadcrumbs/breadcrumbs.component';
 import { CheckCompleteComponent } from './check-complete/check-complete.component';
@@ -178,6 +179,7 @@ const appRoutes: Routes = [
         ApplicationInsightsService,
         AppUsageService,
         AuditService,
+        AuditEntryFactory,
         AzureQueueService,
         CanExitGuard,
         CheckCompleteService,

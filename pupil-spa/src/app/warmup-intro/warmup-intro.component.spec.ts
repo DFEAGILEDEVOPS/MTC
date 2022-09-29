@@ -7,7 +7,7 @@ import { QuestionService } from '../services/question/question.service';
 import { QuestionServiceMock } from '../services/question/question.service.mock';
 import { SpeechService } from '../services/speech/speech.service';
 import { SpeechServiceMock } from '../services/speech/speech.service.mock';
-import { WarmupIntroRendered, AuditEntry } from '../services/audit/auditEntry';
+import { WarmupIntroRendered, AuditEntry, AuditEntryFactory } from '../services/audit/auditEntry'
 import { WindowRefService } from '../services/window-ref/window-ref.service';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 
@@ -24,6 +24,7 @@ describe('WarmupIntroComponent', () => {
         { provide: AuditService, useClass: AuditServiceMock},
         { provide: SpeechService, useClass: SpeechServiceMock },
         { provide: QuestionService, useClass: QuestionServiceMock },
+        { provide: AuditEntryFactory },
         WindowRefService,
       ]
     })
