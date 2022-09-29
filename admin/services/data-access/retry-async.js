@@ -27,6 +27,13 @@ const sqlAzureResourceLimitReachedPredicate = (error) => {
   return false
 }
 
+const socketErrorPredicate = (error) => {
+  if (error && {}.hasOwnProperty.call(error, 'code')) {
+    return error.code === 'ESOCKET'
+  }
+  return false
+}
+
 const defaultRetryPredicate = () => false
 
 const defaultConfiguration = {
@@ -84,5 +91,6 @@ module.exports = {
   asyncRetryHandler,
   sqlAzureTimeoutRetryPredicate,
   sqlAzureResourceLimitReachedPredicate,
-  sqlAzureRequestTimeoutRetryPredicate
+  sqlAzureRequestTimeoutRetryPredicate,
+  socketErrorPredicate
 }
