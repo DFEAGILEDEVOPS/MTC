@@ -130,7 +130,7 @@ export class SpeechService implements OnDestroy {
     };
     sayThis.onend = (event) => {
       this.speaking = false;
-      this.audit.addEntry(new QuestionReadingEnded({ sequenceNumber }));
+      this.audit.addEntry(this.auditEntryFactory.createQuestionReadingEnded({ sequenceNumber }));
       this.announceQuestionSpeechEnded();
       this.announceSpeechReset();
     };
