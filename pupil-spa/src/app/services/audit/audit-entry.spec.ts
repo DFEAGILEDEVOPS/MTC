@@ -7,7 +7,7 @@ import {
   CheckSubmissionFailed,
   CheckSubmissionPending,
   PauseRendered,
-  QuestionAnswered,
+  QuestionAnswered, SessionExpired,
   WarmupCompleteRendered,
   WarmupIntroRendered
 } from './auditEntry'
@@ -149,6 +149,13 @@ describe('auditEntryFactory', () => {
     it('factory method creates CheckSubmissionFailed obj', () => {
       const c = factory.createCheckSubmissionFailed()
       expect(c.constructor.name).toBe('CheckSubmissionFailed')
+    })
+  })
+
+  describe('#createSessionExpired', () => {
+    it('factory method creates SessionExpired obj', () => {
+      const c = factory.createSessionExpired()
+      expect(c.constructor.name).toBe('SessionExpired')
     })
   })
 })

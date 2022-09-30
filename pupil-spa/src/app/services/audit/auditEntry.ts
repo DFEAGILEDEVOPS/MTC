@@ -114,6 +114,11 @@ export class AuditEntryFactory {
     const mtime = this.monotonicTimeService.getMonotonicDateTime()
     return new CheckSubmissionFailed(mtime, data)
   }
+
+  createSessionExpired(data?: any): SessionExpired {
+    const mtime = this.monotonicTimeService.getMonotonicDateTime()
+    return new SessionExpired(mtime, data)
+  }
 }
 
 
@@ -259,8 +264,9 @@ export class CheckSubmissionFailed extends AuditEntry {
 }
 
 export class SessionExpired extends AuditEntry {
-  constructor(data?: any) {
-    super('SessionExpired', new Date(), data);
+  constructor(mtime: MonotonicTime, data: any = {}) {
+    data.monotonicTime = mtime.getDto()
+    super('CheckSubmissionFailed', mtime.formatAsDate(), data);
   }
 }
 
