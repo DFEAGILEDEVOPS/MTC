@@ -4,8 +4,8 @@ import { AzureQueueService, QueueMessageRetryConfig } from '../azure-queue/azure
 import {
   CheckSubmissionApiCalled,
   CheckSubmissionAPIFailed,
-  CheckSubmissionAPICallSucceeded,
-} from '../audit/auditEntry';
+  CheckSubmissionAPICallSucceeded, AuditEntryFactory,
+} from '../audit/auditEntry'
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { StorageService } from '../storage/storage.service';
@@ -30,7 +30,8 @@ export class CheckCompleteService {
               private storageService: StorageService,
               private tokenService: TokenService,
               private appUsageService: AppUsageService,
-              private metaService: Meta) {
+              private metaService: Meta,
+              private auditEntryFactory: AuditEntryFactory) {
     const {
       checkSubmissionApiErrorDelay,
       checkSubmissionAPIErrorMaxAttempts,
@@ -67,7 +68,7 @@ export class CheckCompleteService {
       DelayBetweenRetries: this.checkSubmissionApiErrorDelay,
       MaxAttempts: this.checkSubmissionAPIErrorMaxAttempts
     };
-    this.auditService.addEntry(new CheckSubmissionApiCalled());
+    this.auditService.addEntry(this.auditEntryFactory.createCheckSubmissionApiCalled());
     const items = this.storageService.getAllItems();
     const payload = this.getPayload(items);
     if (checkConfig.compressCompletedCheck) {

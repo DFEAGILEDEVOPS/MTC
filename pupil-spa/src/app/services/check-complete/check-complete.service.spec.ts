@@ -9,6 +9,7 @@ import { TestBed } from '@angular/core/testing';
 import { TokenService } from '../token/token.service';
 import { AppUsageService } from '../app-usage/app-usage.service';
 import { Meta } from '@angular/platform-browser'
+import { AuditEntryFactory } from '../audit/auditEntry'
 
 let auditService: AuditService;
 let azureQueueServiceSpy: {
@@ -42,7 +43,8 @@ describe('CheckCompleteService', () => {
           Meta,
           { provide: APP_INITIALIZER, useFactory: loadConfigMockService, multi: true },
           { provide: Router, useValue: mockRouter },
-          { provide: AzureQueueService, useValue: azureQueueServiceSpy }
+          { provide: AzureQueueService, useValue: azureQueueServiceSpy },
+          AuditEntryFactory
         ]
       }
     );

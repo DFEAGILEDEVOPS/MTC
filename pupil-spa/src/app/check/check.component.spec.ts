@@ -16,7 +16,6 @@ import { TimerServiceMock } from '../services/timer/timer.service.mock'
 import { Router } from '@angular/router'
 import { loadConfigMockService } from '../services/config/config.service'
 import { MonotonicTimeService } from '../services/monotonic-time/monotonic-time.service'
-import { ApplicationInsightsService } from '../services/app-insights/app-insights.service'
 
 describe('CheckComponent', () => {
   let component: CheckComponent

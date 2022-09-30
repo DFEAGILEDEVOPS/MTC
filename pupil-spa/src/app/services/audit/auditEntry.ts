@@ -94,6 +94,11 @@ export class AuditEntryFactory {
     const mtime = this.monotonicTimeService.getMonotonicDateTime()
     return new CheckSubmissionPending(mtime, data)
   }
+
+  createCheckSubmissionApiCalled(data?: any): CheckSubmissionApiCalled {
+    const mtime = this.monotonicTimeService.getMonotonicDateTime()
+    return new CheckSubmissionApiCalled(mtime, data)
+  }
 }
 
 
@@ -211,8 +216,9 @@ export class CheckSubmissionPending extends AuditEntry {
 }
 
 export class CheckSubmissionApiCalled extends AuditEntry {
-  constructor(data?: any) {
-    super('CheckSubmissionApiCalled', new Date(), data);
+  constructor(mtime: MonotonicTime, data: any = {}) {
+    data.monotonicTime = mtime.getDto()
+    super('CheckSubmissionApiCalled', mtime.formatAsDate(), data);
   }
 }
 

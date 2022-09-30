@@ -1,7 +1,7 @@
 import {
   AuditEntryFactory,
   CheckStarted,
-  CheckStartedAPICallSucceeded, CheckSubmissionPending, PauseRendered,
+  CheckStartedAPICallSucceeded, CheckSubmissionApiCalled, CheckSubmissionPending, PauseRendered,
   QuestionAnswered,
   WarmupCompleteRendered,
   WarmupIntroRendered
@@ -116,6 +116,13 @@ describe('auditEntryFactory', () => {
     it('factory method creates CheckSubmissionPending obj', () => {
       const c = factory.createCheckSubmissionPending()
       expect(c.constructor.name).toBe('CheckSubmissionPending')
+    })
+  })
+
+  describe('#createCheckSubmissionApiCalled', () => {
+    it('factory method creates CheckSubmissionApiCalled obj', () => {
+      const c = factory.createCheckSubmissionApiCalled()
+      expect(c.constructor.name).toBe('CheckSubmissionApiCalled')
     })
   })
 })
