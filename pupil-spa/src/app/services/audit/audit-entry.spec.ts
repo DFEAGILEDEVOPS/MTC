@@ -7,7 +7,7 @@ import {
   CheckSubmissionFailed,
   CheckSubmissionPending,
   PauseRendered,
-  QuestionAnswered, RefreshDetected, SessionExpired, UtteranceStarted,
+  QuestionAnswered, QuestionReadingStarted, RefreshDetected, SessionExpired, UtteranceStarted,
   WarmupCompleteRendered,
   WarmupIntroRendered
 } from './auditEntry'
@@ -177,6 +177,13 @@ describe('auditEntryFactory', () => {
     it('factory method creates UtteranceEnded obj', () => {
       const c = factory.createUtteranceEnded()
       expect(c.constructor.name).toBe('UtteranceEnded')
+    })
+  })
+
+  describe('#createQuestionReadingStarted', () => {
+    it('factory method creates QuestionReadingStarted obj', () => {
+      const c = factory.createQuestionReadingStarted()
+      expect(c.constructor.name).toBe('QuestionReadingStarted')
     })
   })
 })

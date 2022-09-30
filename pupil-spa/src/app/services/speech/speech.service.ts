@@ -126,7 +126,7 @@ export class SpeechService implements OnDestroy {
     sayThis.onstart = (event) => {
       this.speaking = true;
       this.announceQuestionSpeechStarted();
-      this.audit.addEntry(new QuestionReadingStarted({ sequenceNumber }));
+      this.audit.addEntry(this.auditEntryFactory.createQuestionReadingStarted({ sequenceNumber }));
     };
     sayThis.onend = (event) => {
       this.speaking = false;
