@@ -9,7 +9,7 @@ import {
   PauseRendered,
   QuestionAnswered,
   QuestionReadingEnded,
-  QuestionReadingStarted,
+  QuestionReadingStarted, QuestionTimerCancelled,
   QuestionTimerEnded,
   QuestionTimerStarted,
   RefreshDetected,
@@ -212,6 +212,13 @@ describe('auditEntryFactory', () => {
     it('factory method creates QuestionTimerEnded obj', () => {
       const c = factory.createQuestionTimerEnded()
       expect(c.constructor.name).toBe('QuestionTimerEnded')
+    })
+  })
+
+  describe('#createQuestionTimerCancelled', () => {
+    it('factory method creates QuestionTimerCancelled obj', () => {
+      const c = factory.createQuestionTimerCancelled()
+      expect(c.constructor.name).toBe('QuestionTimerCancelled')
     })
   })
 })

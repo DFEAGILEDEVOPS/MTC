@@ -16,9 +16,7 @@ import { AccessArrangements } from '../access-arrangements';
 import { AnswerService } from '../services/answer/answer.service';
 import { AuditService } from '../services/audit/audit.service';
 import { Config } from '../config.model';
-import {
-  QuestionTimerCancelled, AuditEntryFactory
-} from '../services/audit/auditEntry'
+import { AuditEntryFactory } from '../services/audit/auditEntry'
 import { QuestionService } from '../services/question/question.service';
 import { RegisterInputService } from '../services/register-input/registerInput.service';
 import { SpeechService } from '../services/speech/speech.service';
@@ -394,11 +392,12 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit, OnDestr
 
     // Clear the interval timer
     if (this.countdownInterval) {
-      this.auditService.addEntry(new QuestionTimerCancelled({
+      const data = {
         sequenceNumber: this.sequenceNumber,
         question: `${this.factor1}x${this.factor2}`,
         isWarmup: this.isWarmUpQuestion
-      }));
+      }
+      this.auditService.addEntry(this.auditEntryFactory.createQuestionTimerCancelled(data));
       clearInterval(this.countdownInterval);
       this.countdownInterval = undefined;
     }

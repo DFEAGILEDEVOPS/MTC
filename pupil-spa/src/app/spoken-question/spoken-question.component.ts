@@ -2,7 +2,7 @@ import { Component, OnInit, AfterViewInit, NgZone, OnDestroy, Renderer2 } from '
 import { AnswerService } from '../services/answer/answer.service';
 import { AuditService } from '../services/audit/audit.service';
 import { QuestionComponent } from '../question/question.component';
-import { AuditEntryFactory, QuestionTimerCancelled } from '../services/audit/auditEntry'
+import { AuditEntryFactory } from '../services/audit/auditEntry'
 import { QuestionService } from '../services/question/question.service';
 import { RegisterInputService } from '../services/register-input/registerInput.service';
 import { SpeechService } from '../services/speech/speech.service';
@@ -114,12 +114,13 @@ export class SpokenQuestionComponent extends QuestionComponent implements OnInit
     this.answerService.setAnswer( this.factor1, this.factor2, this.answer, this.sequenceNumber );
 
     // Clear the interval timer and add a QuestionTimerCancelled event.question.
-    if ( this.countdownInterval ) {
-      this.auditService.addEntry( new QuestionTimerCancelled( {
+    if (this.countdownInterval !== undefined) {
+      const data = {
         sequenceNumber: this.sequenceNumber,
         question: `${ this.factor1 }x${ this.factor2 }`,
         isWarmup: this.isWarmUpQuestion
-      } ) );
+      }
+      this.auditService.addEntry(this.auditEntryFactory.createQuestionTimerCancelled(data));
       clearInterval( this.countdownInterval );
       this.countdownInterval = undefined;
     }
