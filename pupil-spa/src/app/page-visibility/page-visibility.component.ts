@@ -1,6 +1,6 @@
 import { Component, HostListener } from '@angular/core';
 
-import { AppHidden, AppVisible, AuditEntryFactory, RefreshOrTabCloseDetected } from '../services/audit/auditEntry'
+import { AppHidden, AuditEntryFactory, RefreshOrTabCloseDetected } from '../services/audit/auditEntry'
 import { AuditService } from '../services/audit/audit.service';
 import { StorageService } from '../services/storage/storage.service';
 
