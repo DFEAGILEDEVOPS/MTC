@@ -84,6 +84,11 @@ export class AuditEntryFactory {
     const mtime = this.monotonicTimeService.getMonotonicDateTime()
     return new QuestionAnswered(mtime, data)
   }
+
+  createPauseRendered(data?: any): PauseRendered {
+    const mtime = this.monotonicTimeService.getMonotonicDateTime()
+    return new PauseRendered(mtime, data)
+  }
 }
 
 
@@ -187,8 +192,9 @@ export class QuestionAnswered extends AuditEntry {
 }
 
 export class PauseRendered extends AuditEntry {
-  constructor(data?: any) {
-    super('PauseRendered', new Date(), data);
+  constructor(mtime: MonotonicTime, data: any = {}) {
+    data.monotonicTime = mtime.getDto()
+    super('PauseRendered', mtime.formatAsDate(), data);
   }
 }
 

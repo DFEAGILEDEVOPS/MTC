@@ -12,7 +12,7 @@ import { Component,
   ViewContainerRef
 } from '@angular/core';
 import { AuditService } from '../services/audit/audit.service';
-import { PauseRendered } from '../services/audit/auditEntry';
+import { AuditEntryFactory } from '../services/audit/auditEntry';
 import { SpeechService } from '../services/speech/speech.service';
 import { QuestionService } from '../services/question/question.service';
 import { Question } from '../services/question/question.model';
@@ -60,7 +60,8 @@ export class LoadingComponent implements AfterViewInit, OnDestroy, AfterViewChec
               protected speechService: SpeechService,
               protected elRef: ElementRef,
               protected componentFactoryResolver: ComponentFactoryResolver,
-              protected viewContainerRef: ViewContainerRef) {
+              protected viewContainerRef: ViewContainerRef,
+              protected auditEntryFactory: AuditEntryFactory) {
     this.config = this.questionService.getConfig();
   }
 
@@ -92,11 +93,12 @@ export class LoadingComponent implements AfterViewInit, OnDestroy, AfterViewChec
   }
 
   addAuditServiceEntry() {
-    this.auditService.addEntry(new PauseRendered({
+    const data = {
       sequenceNumber: this.question.sequenceNumber,
       question: `${this.question.factor1}x${this.question.factor2}`,
       isWarmup: false
-    }));
+    }
+    this.auditService.addEntry(this.auditEntryFactory.createPauseRendered(data))
   }
 
   showWarningModal() {

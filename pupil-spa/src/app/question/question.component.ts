@@ -99,7 +99,7 @@ export class QuestionComponent extends PracticeQuestionComponent implements OnIn
    * Called when the user clicks the enter button on the virtual keypad
    * @param {Object} event
    */
-  onClickSubmit(event: Event) {
+  onClickSubmit(event: Event): void {
     if (this.submitted) {
       return;
     }
@@ -112,7 +112,7 @@ export class QuestionComponent extends PracticeQuestionComponent implements OnIn
     this.onSubmit();
   }
 
-  addQuestionAnsweredEvent() {
+  addQuestionAnsweredEvent(): void {
     const data = {
         sequenceNumber: this.sequenceNumber,
         question: `${this.factor1}x${this.factor2}`,

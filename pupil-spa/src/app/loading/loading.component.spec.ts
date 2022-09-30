@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { LoadingComponent } from './loading.component';
 import { AuditServiceMock } from '../services/audit/audit.service.mock';
 import { AuditService } from '../services/audit/audit.service';
-import { AuditEntry, PauseRendered } from '../services/audit/auditEntry';
+import { AuditEntry, AuditEntryFactory, PauseRendered } from '../services/audit/auditEntry'
 import { SpeechService } from '../services/speech/speech.service';
 import { SpeechServiceMock } from '../services/speech/speech.service.mock';
 import { StorageService } from '../services/storage/storage.service';
@@ -39,7 +39,8 @@ describe('LoadingComponent', () => {
         { provide: SpeechService, useClass: SpeechServiceMock },
         { provide: QuestionService, useClass: QuestionServiceMock },
         StorageService,
-        WindowRefService
+        WindowRefService,
+        AuditEntryFactory
       ]
     })
       .compileComponents();

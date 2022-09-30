@@ -1,7 +1,7 @@
 import {
   AuditEntryFactory,
   CheckStarted,
-  CheckStartedAPICallSucceeded,
+  CheckStartedAPICallSucceeded, PauseRendered,
   QuestionAnswered,
   WarmupCompleteRendered,
   WarmupIntroRendered
@@ -102,6 +102,13 @@ describe('auditEntryFactory', () => {
     it('factory method creates QuestionAnswered obj', () => {
       const c = factory.createQuestionAnswered()
       expect(c.constructor.name).toBe('QuestionAnswered')
+    })
+  })
+
+  describe('#createPauseRendered', () => {
+    it('factory method creates PauseRendered obj', () => {
+      const c = factory.createPauseRendered()
+      expect(c.constructor.name).toBe('PauseRendered')
     })
   })
 })
