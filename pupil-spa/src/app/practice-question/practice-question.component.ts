@@ -272,11 +272,12 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit, OnDestr
    * Start the countdown timer on the page and set the time-out counter
    */
   startTimer () {
-    this.auditService.addEntry(new QuestionTimerStarted({
+    const data = {
       sequenceNumber: this.sequenceNumber,
       question: `${this.factor1}x${this.factor2}`,
       isWarmup: this.isWarmUpQuestion
-    }));
+    }
+    this.auditService.addEntry(this.auditEntryFactory.createQuestionTimerStarted(data));
     this.stopTime = (new Date().getTime() + (this.questionTimeoutSecs * 1000));
 
     // Set the amount of time the user can have on the question
