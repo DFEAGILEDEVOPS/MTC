@@ -301,7 +301,7 @@ pupilDataService.sqlInsertMany = async (pupils, userId) => {
   const insertSql = `
   DECLARE @output TABLE (id int);
   INSERT INTO [mtc_admin].[pupil]
-  (school_id, foreName, lastName, middleNames, gender, upn, dateOfBirth, lastModifiedByUserId)
+  (school_id, foreName, lastName, middleNames, gender, upn, dateOfBirth, lastModifiedBy_userId)
   OUTPUT inserted.ID INTO @output
   VALUES
   `
@@ -355,6 +355,7 @@ pupilDataService.sqlInsertMany = async (pupils, userId) => {
     )
   }
   const sql = [insertSql, values.join(',\n'), output].join(' ')
+  console.log(sql)
   const res = await sqlService.query(sql, params)
   return { insertId: res.map(x => x.id) }
 }

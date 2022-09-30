@@ -34,7 +34,7 @@ const pupilAddService = {
       'dob-day': pupilData['dob-day'],
       'dob-year': pupilData['dob-year'],
       ageReason: pupilData.ageReason,
-      lastModifiedByUserId: userId
+      lastModifiedBy_userId: userId
     }
 
     const validationError = await pupilValidator.validate(pupilDataRow, schoolId)
