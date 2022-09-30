@@ -1,6 +1,6 @@
 import { Component, HostListener } from '@angular/core';
 
-import { AppHidden, AppVisible, RefreshOrTabCloseDetected } from '../services/audit/auditEntry';
+import { AppHidden, AppVisible, AuditEntryFactory, RefreshOrTabCloseDetected } from '../services/audit/auditEntry'
 import { AuditService } from '../services/audit/audit.service';
 import { StorageService } from '../services/storage/storage.service';
 
@@ -13,7 +13,8 @@ import { StorageService } from '../services/storage/storage.service';
 export class PageVisibilityComponent {
   constructor(
     private auditService: AuditService,
-    private storageService: StorageService) {
+    private storageService: StorageService,
+    private auditEntryFactory: AuditEntryFactory) {
   }
 
   @HostListener('window:beforeunload', ['$event'])
@@ -34,7 +35,7 @@ export class PageVisibilityComponent {
       this.auditService.addEntry(new AppHidden());
     }
     if (visibilityState === 'visible') {
-      this.auditService.addEntry(new AppVisible());
+      this.auditService.addEntry(this.auditEntryFactory.createAppVisible());
     }
   }
 }
