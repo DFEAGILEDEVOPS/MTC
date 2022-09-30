@@ -149,6 +149,11 @@ export class AuditEntryFactory {
     const mtime = this.monotonicTimeService.getMonotonicDateTime()
     return new QuestionTimerStarted(mtime, data)
   }
+
+  createQuestionTimerEnded(data?: any): QuestionTimerEnded {
+    const mtime = this.monotonicTimeService.getMonotonicDateTime()
+    return new QuestionTimerEnded(mtime, data)
+  }
 }
 
 
@@ -343,8 +348,9 @@ export class QuestionTimerStarted extends AuditEntry {
 }
 
 export class QuestionTimerEnded extends AuditEntry {
-  constructor(data?: any) {
-    super('QuestionTimerEnded', new Date(), data);
+  constructor(mtime: MonotonicTime, data: any = {}) {
+    data.monotonicTime = mtime.getDto()
+    super('QuestionTimerStarted', mtime.formatAsDate(), data);
   }
 }
 

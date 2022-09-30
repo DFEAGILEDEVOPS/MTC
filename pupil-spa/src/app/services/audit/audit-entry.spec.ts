@@ -7,7 +7,14 @@ import {
   CheckSubmissionFailed,
   CheckSubmissionPending,
   PauseRendered,
-  QuestionAnswered, QuestionReadingEnded, QuestionReadingStarted, QuestionTimerStarted, RefreshDetected, SessionExpired, UtteranceStarted,
+  QuestionAnswered,
+  QuestionReadingEnded,
+  QuestionReadingStarted,
+  QuestionTimerEnded,
+  QuestionTimerStarted,
+  RefreshDetected,
+  SessionExpired,
+  UtteranceStarted,
   WarmupCompleteRendered,
   WarmupIntroRendered
 } from './auditEntry'
@@ -198,6 +205,13 @@ describe('auditEntryFactory', () => {
     it('factory method creates QuestionTimerStarted obj', () => {
       const c = factory.createQuestionTimerStarted()
       expect(c.constructor.name).toBe('QuestionTimerStarted')
+    })
+  })
+
+  describe('#createQuestionTimerEnded', () => {
+    it('factory method creates QuestionTimerEnded obj', () => {
+      const c = factory.createQuestionTimerEnded()
+      expect(c.constructor.name).toBe('QuestionTimerEnded')
     })
   })
 })

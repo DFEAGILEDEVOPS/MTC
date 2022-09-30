@@ -17,8 +17,6 @@ import { AnswerService } from '../services/answer/answer.service';
 import { AuditService } from '../services/audit/audit.service';
 import { Config } from '../config.model';
 import {
-  QuestionTimerStarted,
-  QuestionTimerEnded,
   QuestionTimerCancelled, AuditEntryFactory
 } from '../services/audit/auditEntry'
 import { QuestionService } from '../services/question/question.service';
@@ -451,11 +449,13 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit, OnDestr
     if (this.submitted) {
       return false;
     }
-    this.auditService.addEntry(new QuestionTimerEnded({
+    const data = {
       sequenceNumber: this.sequenceNumber,
       question: `${this.factor1}x${this.factor2}`,
       isWarmup: this.isWarmUpQuestion
-    }));
+    }
+    this.auditService.addEntry(this.auditEntryFactory.createQuestionTimerEnded(data));
+
     this.submitted = true;
     if (this.config.questionReader) {
       await this.speechService.waitForEndOfSpeech();
