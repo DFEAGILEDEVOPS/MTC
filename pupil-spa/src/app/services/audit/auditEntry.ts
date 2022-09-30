@@ -89,6 +89,11 @@ export class AuditEntryFactory {
     const mtime = this.monotonicTimeService.getMonotonicDateTime()
     return new PauseRendered(mtime, data)
   }
+
+  createCheckSubmissionPending(data?: any): CheckSubmissionPending {
+    const mtime = this.monotonicTimeService.getMonotonicDateTime()
+    return new CheckSubmissionPending(mtime, data)
+  }
 }
 
 
@@ -199,8 +204,9 @@ export class PauseRendered extends AuditEntry {
 }
 
 export class CheckSubmissionPending extends AuditEntry {
-  constructor(data?: any) {
-    super('CheckSubmissionPending', new Date(), data);
+  constructor(mtime: MonotonicTime, data: any = {}) {
+    data.monotonicTime = mtime.getDto()
+    super('CheckSubmissionPending', mtime.formatAsDate(), data);
   }
 }
 

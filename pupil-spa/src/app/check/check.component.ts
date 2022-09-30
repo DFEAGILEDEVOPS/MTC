@@ -2,7 +2,7 @@ import { Component, OnInit, HostListener } from '@angular/core';
 
 import { AnswerService } from '../services/answer/answer.service';
 import { AuditService } from '../services/audit/audit.service';
-import { CheckSubmissionPending, RefreshDetected } from '../services/audit/auditEntry';
+import { AuditEntryFactory, RefreshDetected } from '../services/audit/auditEntry'
 import { Config } from '../config.model';
 import { Question } from '../services/question/question.model';
 import { QuestionService } from '../services/question/question.service';
@@ -49,7 +49,8 @@ export class CheckComponent implements OnInit, CanExit {
               private storageService: StorageService,
               protected windowRefService: WindowRefService,
               private appInsightsService: ApplicationInsightsService,
-              private router: Router) {
+              private router: Router,
+              private auditEntryFactory: AuditEntryFactory) {
     this.window = windowRefService.nativeWindow;
   }
 
@@ -257,7 +258,7 @@ export class CheckComponent implements OnInit, CanExit {
         // Stop the check timer
         this.timerService.stopCheckTimer();
         // Display pending screen
-        this.auditService.addEntry(new CheckSubmissionPending());
+        this.auditService.addEntry(this.auditEntryFactory.createCheckSubmissionPending());
         this.storageService.setPendingSubmission(true);
         this.isWarmUp = false;
         this.viewState = 'submission-pending';

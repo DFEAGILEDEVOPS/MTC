@@ -2,7 +2,7 @@ import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angul
 import { APP_INITIALIZER, NO_ERRORS_SCHEMA } from '@angular/core'
 
 import { AnswerService } from '../services/answer/answer.service'
-import { AuditEntry, CheckSubmissionPending, RefreshDetected } from '../services/audit/auditEntry'
+import { AuditEntry, AuditEntryFactory, CheckSubmissionPending, RefreshDetected } from '../services/audit/auditEntry'
 import { AuditService } from '../services/audit/audit.service'
 import { AuditServiceMock } from '../services/audit/audit.service.mock'
 import { CheckComponent } from './check.component'
@@ -58,7 +58,8 @@ describe('CheckComponent', () => {
         { provide: TimerService, useClass: TimerServiceMock },
         { provide: Router, useValue: mockRouter },
         { provide: APP_INITIALIZER, useFactory: loadConfigMockService, multi: true },
-        WindowRefService
+        WindowRefService,
+        AuditEntryFactory
       ]
     })
       .compileComponents()
