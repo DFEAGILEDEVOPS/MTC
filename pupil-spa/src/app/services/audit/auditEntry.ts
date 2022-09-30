@@ -159,6 +159,11 @@ export class AuditEntryFactory {
     const mtime = this.monotonicTimeService.getMonotonicDateTime()
     return new QuestionTimerCancelled(mtime, data)
   }
+
+  createAppError(data?: any): AppError {
+    const mtime = this.monotonicTimeService.getMonotonicDateTime()
+    return new AppError(mtime, data)
+  }
 }
 
 
@@ -367,8 +372,9 @@ export class QuestionTimerCancelled extends AuditEntry {
 }
 
 export class AppError extends AuditEntry {
-  constructor(data?: any) {
-    super('AppError', new Date(), data);
+  constructor(mtime: MonotonicTime, data: any = {}) {
+    data.monotonicTime = mtime.getDto()
+    super('AppError', mtime.formatAsDate(), data);
   }
 }
 

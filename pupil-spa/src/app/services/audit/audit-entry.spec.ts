@@ -1,4 +1,5 @@
 import {
+  AppError,
   AuditEntryFactory,
   CheckStarted,
   CheckStartedAPICallSucceeded,
@@ -219,6 +220,13 @@ describe('auditEntryFactory', () => {
     it('factory method creates QuestionTimerCancelled obj', () => {
       const c = factory.createQuestionTimerCancelled()
       expect(c.constructor.name).toBe('QuestionTimerCancelled')
+    })
+  })
+
+  describe('#createAppError', () => {
+    it('factory method creates AppError obj', () => {
+      const c = factory.createAppError()
+      expect(c.constructor.name).toBe('AppError')
     })
   })
 })
