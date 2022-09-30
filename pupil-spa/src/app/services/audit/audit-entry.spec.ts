@@ -1,7 +1,7 @@
 import {
   AuditEntryFactory,
   CheckStarted,
-  CheckStartedAPICallSucceeded, CheckSubmissionApiCalled, CheckSubmissionPending, PauseRendered,
+  CheckStartedAPICallSucceeded, CheckSubmissionApiCalled, CheckSubmissionAPIFailed, CheckSubmissionPending, PauseRendered,
   QuestionAnswered,
   WarmupCompleteRendered,
   WarmupIntroRendered
@@ -130,6 +130,13 @@ describe('auditEntryFactory', () => {
     it('factory method creates CheckSubmissionAPICallSucceeded obj', () => {
       const c = factory.createCheckSubmissionAPICallSucceeded()
       expect(c.constructor.name).toBe('CheckSubmissionAPICallSucceeded')
+    })
+  })
+
+  describe('#createCheckSubmissionAPIFailed', () => {
+    it('factory method creates CheckSubmissionAPIFailed obj', () => {
+      const c = factory.createCheckSubmissionAPIFailed()
+      expect(c.constructor.name).toBe('CheckSubmissionAPIFailed')
     })
   })
 })

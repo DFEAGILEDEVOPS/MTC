@@ -1,10 +1,7 @@
 import { APP_CONFIG } from '../config/config.service';
 import { AuditService } from '../audit/audit.service';
 import { AzureQueueService, QueueMessageRetryConfig } from '../azure-queue/azure-queue.service';
-import {
-  AuditEntryFactory,
-  CheckSubmissionAPIFailed,
-} from '../audit/auditEntry'
+import { AuditEntryFactory } from '../audit/auditEntry'
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { StorageService } from '../storage/storage.service';
@@ -86,7 +83,7 @@ export class CheckCompleteService {
       this.auditService.addEntry(this.auditEntryFactory.createCheckSubmissionAPICallSucceeded());
       await this.onSuccess(startTime);
     } catch (error) {
-      this.auditService.addEntry(new CheckSubmissionAPIFailed(error));
+      this.auditService.addEntry(this.auditEntryFactory.createCheckSubmissionAPIFailed());
       if (error.statusCode === 403
         && error.authenticationerrordetail.includes('Signature not valid in the specified time frame')) {
         this.router.navigate(['/session-expired']);
