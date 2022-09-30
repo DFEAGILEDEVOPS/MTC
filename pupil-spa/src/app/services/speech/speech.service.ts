@@ -2,7 +2,7 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
 
 import { AuditService } from '../audit/audit.service';
-import { QuestionReadingStarted, QuestionReadingEnded, AuditEntryFactory } from '../audit/auditEntry'
+import { AuditEntryFactory } from '../audit/auditEntry'
 import { WindowRefService } from '../window-ref/window-ref.service';
 
 @Injectable()
