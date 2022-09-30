@@ -17,7 +17,6 @@ import { AnswerService } from '../services/answer/answer.service';
 import { AuditService } from '../services/audit/audit.service';
 import { Config } from '../config.model';
 import {
-  QuestionAnswered,
   QuestionTimerStarted,
   QuestionTimerEnded,
   QuestionTimerCancelled, AuditEntryFactory
@@ -418,11 +417,12 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit, OnDestr
   }
 
   addQuestionAnsweredEvent () {
-    this.auditService.addEntry(new QuestionAnswered({
-      sequenceNumber: this.sequenceNumber,
-      question: `${this.factor1}x${this.factor2}`,
-      isWarmup: this.isWarmUpQuestion
-    }));
+    const data = {
+        sequenceNumber: this.sequenceNumber,
+        question: `${this.factor1}x${this.factor2}`,
+        isWarmup: this.isWarmUpQuestion
+    }
+    this.auditService.addEntry(this.auditEntryFactory.createQuestionAnswered(data))
   }
 
   /**
