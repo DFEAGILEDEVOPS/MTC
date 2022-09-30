@@ -7,7 +7,7 @@ import {
   CheckSubmissionFailed,
   CheckSubmissionPending,
   PauseRendered,
-  QuestionAnswered, SessionExpired,
+  QuestionAnswered, RefreshDetected, SessionExpired, UtteranceStarted,
   WarmupCompleteRendered,
   WarmupIntroRendered
 } from './auditEntry'
@@ -156,6 +156,20 @@ describe('auditEntryFactory', () => {
     it('factory method creates SessionExpired obj', () => {
       const c = factory.createSessionExpired()
       expect(c.constructor.name).toBe('SessionExpired')
+    })
+  })
+
+  describe('#createRefreshDetected', () => {
+    it('factory method creates RefreshDetected obj', () => {
+      const c = factory.createRefreshDetected()
+      expect(c.constructor.name).toBe('RefreshDetected')
+    })
+  })
+
+  describe('#createUtteranceStarted', () => {
+    it('factory method creates UtteranceStarted obj', () => {
+      const c = factory.createUtteranceStarted()
+      expect(c.constructor.name).toBe('UtteranceStarted')
     })
   })
 })

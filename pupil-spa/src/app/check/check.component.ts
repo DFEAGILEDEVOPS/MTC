@@ -360,7 +360,7 @@ export class CheckComponent implements OnInit, CanExit {
   refreshDetected() {
     const stateDesc = this.getStateDescription();
     console.log(`Refresh detected during state ${this.state} ${stateDesc}`);
-    this.auditService.addEntry(new RefreshDetected());
+    this.auditService.addEntry(this.auditEntryFactory.createRefreshDetected());
 
     // Let's say that handling reloads during the check should always show the current screen
     // in which case handling the reload whilst a question was being shown is a special case

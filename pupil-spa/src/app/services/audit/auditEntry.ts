@@ -119,6 +119,16 @@ export class AuditEntryFactory {
     const mtime = this.monotonicTimeService.getMonotonicDateTime()
     return new SessionExpired(mtime, data)
   }
+
+  createRefreshDetected(data?: any): RefreshDetected {
+    const mtime = this.monotonicTimeService.getMonotonicDateTime()
+    return new RefreshDetected(mtime, data)
+  }
+
+  createUtteranceStarted(data?: any): UtteranceStarted {
+    const mtime = this.monotonicTimeService.getMonotonicDateTime()
+    return new UtteranceStarted(mtime, data)
+  }
 }
 
 
@@ -271,14 +281,16 @@ export class SessionExpired extends AuditEntry {
 }
 
 export class RefreshDetected extends AuditEntry {
-  constructor(data?: any) {
-    super('RefreshDetected', new Date(), data);
+  constructor(mtime: MonotonicTime, data: any = {}) {
+    data.monotonicTime = mtime.getDto()
+    super('CheckSubmissionFailed', mtime.formatAsDate(), data);
   }
 }
 
 export class UtteranceStarted extends AuditEntry {
-  constructor(data?: any) {
-    super('UtteranceStarted', new Date(), data);
+  constructor(mtime: MonotonicTime, data: any = {}) {
+    data.monotonicTime = mtime.getDto()
+    super('UtteranceStarted', mtime.formatAsDate(), data);
   }
 }
 
