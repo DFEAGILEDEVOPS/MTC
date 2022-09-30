@@ -109,6 +109,11 @@ export class AuditEntryFactory {
     const mtime = this.monotonicTimeService.getMonotonicDateTime()
     return new CheckSubmissionAPIFailed(mtime, data)
   }
+
+  createCheckSubmissionFailed(data?: any): CheckSubmissionFailed {
+    const mtime = this.monotonicTimeService.getMonotonicDateTime()
+    return new CheckSubmissionFailed(mtime, data)
+  }
 }
 
 
@@ -247,8 +252,9 @@ export class CheckSubmissionAPIFailed extends AuditEntry {
 }
 
 export class CheckSubmissionFailed extends AuditEntry {
-  constructor(data?: any) {
-    super('CheckSubmissionFailed', new Date(), data);
+  constructor(mtime: MonotonicTime, data: any = {}) {
+    data.monotonicTime = mtime.getDto()
+    super('CheckSubmissionFailed', mtime.formatAsDate(), data);
   }
 }
 
