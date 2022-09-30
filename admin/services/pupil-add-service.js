@@ -11,9 +11,9 @@ const redisKeyService = require('../services/redis-key.service')
 const pupilAddService = {
   /**
    * Add pupil.
-   * @param pupilData {object}
-   * @param schoolId {number}
-   * @param userId {number}
+   * @param {object} pupilData
+   * @param {number} schoolId
+   * @param {number} userId
    * @returns {Promise<any>}
    */
   addPupil: async function addPupil (pupilData, schoolId, userId) {

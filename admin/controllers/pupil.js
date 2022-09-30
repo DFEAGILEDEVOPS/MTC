@@ -140,7 +140,7 @@ const controller = {
     }
     let uploadResult
     try {
-      uploadResult = await pupilUploadService.upload(school, uploadFile)
+      uploadResult = await pupilUploadService.upload(school, uploadFile, req.user.id)
     } catch (error) {
       return next(error)
     }

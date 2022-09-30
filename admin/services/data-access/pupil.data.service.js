@@ -297,11 +297,11 @@ pupilDataService.sqlUpdateTokensBatch = async (pupils) => {
   return sqlService.modify(sql, params)
 }
 
-pupilDataService.sqlInsertMany = async (pupils) => {
+pupilDataService.sqlInsertMany = async (pupils, userId) => {
   const insertSql = `
   DECLARE @output TABLE (id int);
   INSERT INTO [mtc_admin].[pupil]
-  (school_id, foreName, lastName, middleNames, gender, upn, dateOfBirth)
+  (school_id, foreName, lastName, middleNames, gender, upn, dateOfBirth, lastModifiedByUserId)
   OUTPUT inserted.ID INTO @output
   VALUES
   `
@@ -310,7 +310,7 @@ pupilDataService.sqlInsertMany = async (pupils) => {
   const params = []
 
   for (let i = 0; i < pupils.length; i++) {
-    values.push(`(@school_id${i}, @foreName${i}, @lastName${i}, @middleNames${i}, @gender${i}, @upn${i}, @dateOfBirth${i})`)
+    values.push(`(@school_id${i}, @foreName${i}, @lastName${i}, @middleNames${i}, @gender${i}, @upn${i}, @dateOfBirth${i}, @lastModifiedByUserId${i})`)
     params.push(
       {
         name: `school_id${i}`,
@@ -346,6 +346,11 @@ pupilDataService.sqlInsertMany = async (pupils) => {
         name: `dateOfBirth${i}`,
         value: pupils[i].dateOfBirth,
         type: TYPES.DateTimeOffset
+      },
+      {
+        name: `lastModifiedByUserId${i}`,
+        value: userId,
+        type: TYPES.Int
       }
     )
   }
