@@ -2,7 +2,7 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
 
 import { AuditService } from '../audit/audit.service';
-import { UtteranceEnded, QuestionReadingStarted, QuestionReadingEnded, AuditEntryFactory } from '../audit/auditEntry'
+import { QuestionReadingStarted, QuestionReadingEnded, AuditEntryFactory } from '../audit/auditEntry'
 import { WindowRefService } from '../window-ref/window-ref.service';
 
 @Injectable()
@@ -104,7 +104,7 @@ export class SpeechService implements OnDestroy {
     };
     sayThis.onend = (event) => {
       this.speaking = false;
-      this.audit.addEntry(new UtteranceEnded());
+      this.audit.addEntry(this.auditEntryFactory.createUtteranceEnded());
       this.announceSpeechEnded();
       this.announceSpeechReset();
     };

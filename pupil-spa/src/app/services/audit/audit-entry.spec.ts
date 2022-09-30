@@ -172,4 +172,11 @@ describe('auditEntryFactory', () => {
       expect(c.constructor.name).toBe('UtteranceStarted')
     })
   })
+
+  describe('#createUtteranceEnded', () => {
+    it('factory method creates UtteranceEnded obj', () => {
+      const c = factory.createUtteranceEnded()
+      expect(c.constructor.name).toBe('UtteranceEnded')
+    })
+  })
 })

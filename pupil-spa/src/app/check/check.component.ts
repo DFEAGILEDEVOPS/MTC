@@ -2,7 +2,7 @@ import { Component, OnInit, HostListener } from '@angular/core';
 
 import { AnswerService } from '../services/answer/answer.service';
 import { AuditService } from '../services/audit/audit.service';
-import { AuditEntryFactory, RefreshDetected } from '../services/audit/auditEntry'
+import { AuditEntryFactory } from '../services/audit/auditEntry'
 import { Config } from '../config.model';
 import { Question } from '../services/question/question.model';
 import { QuestionService } from '../services/question/question.service';
