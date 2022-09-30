@@ -13,7 +13,7 @@ import {
   QuestionReadingStarted, QuestionTimerCancelled,
   QuestionTimerEnded,
   QuestionTimerStarted,
-  RefreshDetected,
+  RefreshDetected, RefreshOrTabCloseDetected,
   SessionExpired,
   UtteranceStarted,
   WarmupCompleteRendered,
@@ -241,6 +241,13 @@ describe('auditEntryFactory', () => {
     it('factory method creates AppHidden obj', () => {
       const c = factory.createAppHidden()
       expect(c.constructor.name).toBe('AppHidden')
+    })
+  })
+
+  describe('#createRefreshOrTabCloseDetected', () => {
+    it('factory method creates RefreshOrTabCloseDetected obj', () => {
+      const c = factory.createRefreshOrTabCloseDetected()
+      expect(c.constructor.name).toBe('RefreshOrTabCloseDetected')
     })
   })
 })

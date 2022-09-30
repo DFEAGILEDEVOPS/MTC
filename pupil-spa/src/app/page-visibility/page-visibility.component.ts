@@ -1,6 +1,6 @@
 import { Component, HostListener } from '@angular/core';
 
-import { AuditEntryFactory, RefreshOrTabCloseDetected } from '../services/audit/auditEntry'
+import { AuditEntryFactory } from '../services/audit/auditEntry'
 import { AuditService } from '../services/audit/audit.service';
 import { StorageService } from '../services/storage/storage.service';
 
@@ -24,7 +24,7 @@ export class PageVisibilityComponent {
     // Check component handles refresh detection accurately at that stage
     // If check state is detected in local storage we can safely assume the check route is active
     if (!checkState) {
-      this.auditService.addEntry(new RefreshOrTabCloseDetected());
+      this.auditService.addEntry(this.auditEntryFactory.createRefreshOrTabCloseDetected());
     }
   }
 

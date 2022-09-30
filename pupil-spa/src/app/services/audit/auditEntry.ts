@@ -174,6 +174,11 @@ export class AuditEntryFactory {
     const mtime = this.monotonicTimeService.getMonotonicDateTime()
     return new AppHidden(mtime, data)
   }
+
+  createRefreshOrTabCloseDetected(data?: any): RefreshOrTabCloseDetected {
+    const mtime = this.monotonicTimeService.getMonotonicDateTime()
+    return new RefreshOrTabCloseDetected(mtime, data)
+  }
 }
 
 
@@ -403,7 +408,8 @@ export class AppHidden extends AuditEntry {
 }
 
 export class RefreshOrTabCloseDetected extends AuditEntry {
-  constructor(data?: any) {
-    super('RefreshOrTabCloseDetected', new Date(), data);
+  constructor(mtime: MonotonicTime, data: any = {}) {
+    data.monotonicTime = mtime.getDto()
+    super('RefreshOrTabCloseDetected', mtime.formatAsDate(), data);
   }
 }
