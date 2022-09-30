@@ -2,9 +2,8 @@ import { APP_CONFIG } from '../config/config.service';
 import { AuditService } from '../audit/audit.service';
 import { AzureQueueService, QueueMessageRetryConfig } from '../azure-queue/azure-queue.service';
 import {
-  CheckSubmissionApiCalled,
+  AuditEntryFactory,
   CheckSubmissionAPIFailed,
-  CheckSubmissionAPICallSucceeded, AuditEntryFactory,
 } from '../audit/auditEntry'
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
@@ -84,7 +83,7 @@ export class CheckCompleteService {
     }
     try {
       await this.azureQueueService.addMessageToQueue(url, token, message, retryConfig);
-      this.auditService.addEntry(new CheckSubmissionAPICallSucceeded());
+      this.auditService.addEntry(this.auditEntryFactory.createCheckSubmissionAPICallSucceeded());
       await this.onSuccess(startTime);
     } catch (error) {
       this.auditService.addEntry(new CheckSubmissionAPIFailed(error));

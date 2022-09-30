@@ -162,8 +162,9 @@ describe('SpokenQuestionComponent', () => {
       const answerArgs = storageServiceSetAnswerSpy.calls.mostRecent().args[0]
       const answerTimestamp = answerArgs.monotonicTime.legacyDate
       const auditArgs = auditServiceSpy.calls.allArgs()
+      console.log('auditArgs', auditArgs)
       const questionAnsweredArg = auditArgs.find(o => o[0].type === 'QuestionAnswered')
-      const questionAnsweredTimestamp = questionAnsweredArg[0].clientTimestamp
+      const questionAnsweredTimestamp = questionAnsweredArg[0].data.monotonicTime.legacyDate
       if (!questionAnsweredTimestamp || !answerTimestamp) {
         fail('Missing timestamp')
       }

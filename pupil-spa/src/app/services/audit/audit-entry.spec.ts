@@ -125,4 +125,11 @@ describe('auditEntryFactory', () => {
       expect(c.constructor.name).toBe('CheckSubmissionApiCalled')
     })
   })
+
+  describe('#createCheckSubmissionAPICallSucceeded', () => {
+    it('factory method creates CheckSubmissionAPICallSucceeded obj', () => {
+      const c = factory.createCheckSubmissionAPICallSucceeded()
+      expect(c.constructor.name).toBe('CheckSubmissionAPICallSucceeded')
+    })
+  })
 })
