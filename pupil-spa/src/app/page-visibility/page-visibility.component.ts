@@ -1,6 +1,6 @@
 import { Component, HostListener } from '@angular/core';
 
-import { AppHidden, AuditEntryFactory, RefreshOrTabCloseDetected } from '../services/audit/auditEntry'
+import { AuditEntryFactory, RefreshOrTabCloseDetected } from '../services/audit/auditEntry'
 import { AuditService } from '../services/audit/audit.service';
 import { StorageService } from '../services/storage/storage.service';
 
@@ -32,7 +32,7 @@ export class PageVisibilityComponent {
   visibilityChange() {
     const visibilityState = document.visibilityState;
     if (visibilityState === 'hidden') {
-      this.auditService.addEntry(new AppHidden());
+      this.auditService.addEntry(this.auditEntryFactory.createAppHidden());
     }
     if (visibilityState === 'visible') {
       this.auditService.addEntry(this.auditEntryFactory.createAppVisible());

@@ -1,5 +1,5 @@
 import {
-  AppError, AppVisible,
+  AppError, AppHidden, AppVisible,
   AuditEntryFactory,
   CheckStarted,
   CheckStartedAPICallSucceeded,
@@ -234,6 +234,13 @@ describe('auditEntryFactory', () => {
     it('factory method creates AppVisible obj', () => {
       const c = factory.createAppVisible()
       expect(c.constructor.name).toBe('AppVisible')
+    })
+  })
+
+  describe('#createAppHidden', () => {
+    it('factory method creates AppHidden obj', () => {
+      const c = factory.createAppHidden()
+      expect(c.constructor.name).toBe('AppHidden')
     })
   })
 })

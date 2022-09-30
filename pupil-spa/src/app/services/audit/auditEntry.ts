@@ -169,6 +169,11 @@ export class AuditEntryFactory {
     const mtime = this.monotonicTimeService.getMonotonicDateTime()
     return new AppVisible(mtime, data)
   }
+
+  createAppHidden(data?: any): AppHidden {
+    const mtime = this.monotonicTimeService.getMonotonicDateTime()
+    return new AppHidden(mtime, data)
+  }
 }
 
 
@@ -391,8 +396,9 @@ export class AppVisible extends AuditEntry {
 }
 
 export class AppHidden extends AuditEntry {
-  constructor(data?: any) {
-    super('AppHidden', new Date(), data);
+  constructor(mtime: MonotonicTime, data: any = {}) {
+    data.monotonicTime = mtime.getDto()
+    super('AppVisible', mtime.formatAsDate(), data);
   }
 }
 
