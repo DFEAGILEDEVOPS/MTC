@@ -1,6 +1,6 @@
 import { Request, TYPES, Transaction, IResult, ISOLATION_LEVEL } from 'mssql'
 import { ILogger, ConsoleLogger } from '../common/logger'
-import retry from './async-retry'
+import retry, { retryOnAllSoftErrorsPredicate } from './async-retry'
 import config from '../config'
 import * as R from 'ramda'
 import { DateTimeService, IDateTimeService } from '../common/datetime.service'
@@ -11,23 +11,10 @@ const retryConfig = {
   pauseTimeMs: config.DatabaseRetry.InitialPauseMs,
   pauseMultiplier: config.DatabaseRetry.PauseMultiplier
 }
-
-declare class SqlServerError extends Error {
-  number?: number
-}
-
 export interface IModifyResult {
   insertId?: number
   insertIds?: number[]
 }
-
-const connectionLimitReachedErrorCode = 10928
-
-const dbLimitReached = (error: SqlServerError): boolean => {
-  // https://docs.microsoft.com/en-us/azure/sql-database/sql-database-develop-error-messages
-  return error.number === connectionLimitReachedErrorCode
-}
-
 export class SqlService implements ISqlService {
   private readonly dateTimeService: IDateTimeService
   private readonly logger: ILogger
@@ -64,13 +51,6 @@ export class SqlService implements ISqlService {
     if (recordSet === undefined) {
       return []
     }
-    // TODO remove version property using R.omit()
-    /*
-    return R.map(R.pipe(
-    R.omit(['version']),
-    R.map(convertDateToMoment)
-  ), recordSet)
-    */
     return R.map(R.pipe(R.map(this.dateTimeService.convertDateToMoment)), recordSet)
   }
 
@@ -95,7 +75,7 @@ export class SqlService implements ISqlService {
       const result = await request.query(sql)
       return this.transformQueryResult(result)
     }
-    return retry<any>(query, retryConfig, dbLimitReached)
+    return retry<any>(query, retryConfig, retryOnAllSoftErrorsPredicate)
   }
 
   /**
@@ -120,7 +100,7 @@ export class SqlService implements ISqlService {
     }
     const insertIds = []
 
-    const rawResponse = await retry<any>(modify, retryConfig, dbLimitReached)
+    const rawResponse = await retry<any>(modify, retryConfig, retryOnAllSoftErrorsPredicate)
 
     if (rawResponse?.recordset !== undefined) {
       for (const obj of rawResponse.recordset) {
@@ -156,7 +136,7 @@ export class SqlService implements ISqlService {
         return req.query(request.sql)
       }
       try {
-        await retry<any>(modify, retryConfig, dbLimitReached)
+        await retry<any>(modify, retryConfig, retryOnAllSoftErrorsPredicate)
       } catch (error) {
         const sqlSnippet = request.sql.slice(0, 999) + '...'
         this.logger.error(`error thrown from statement within transaction:${sqlSnippet}`)

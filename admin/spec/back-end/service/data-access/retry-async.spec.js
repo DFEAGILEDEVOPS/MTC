@@ -1,11 +1,14 @@
 'use strict'
-/* global describe, expect, fail beforeEach, test */
+/* global describe, expect, fail beforeEach, test, jest, afterEach */
 
 const {
   asyncRetryHandler,
   sqlAzureTimeoutRetryPredicate,
-  sqlAzureResourceLimitReachedPredicate
+  sqlAzureResourceLimitReachedPredicate,
+  socketErrorPredicate
 } = require('../../../../services/data-access/retry-async')
+
+const logger = require('../../../../services/log.service').getLogger()
 
 let retryPolicy
 
@@ -16,6 +19,11 @@ describe('async-retry', () => {
       pauseTimeMs: 50,
       pauseMultiplier: 1.1
     }
+    jest.spyOn(logger, 'log').mockImplementation()
+  })
+
+  afterEach(() => {
+    jest.restoreAllMocks()
   })
 
   describe('default behaviour', () => {
@@ -195,6 +203,58 @@ describe('async-retry', () => {
       }
       try {
         await asyncRetryHandler(func, retryPolicy, sqlAzureResourceLimitReachedPredicate)
+        fail('error should have thrown')
+      } catch (error) {
+        expect(error).toBeDefined()
+        expect(callCount).toBe(3)
+      }
+    })
+  })
+
+  describe('socket error predicate', () => {
+    test('should not attempt retry if the error does not have a status property', async () => {
+      let callCount = 0
+      const func = () => {
+        callCount++
+        const error = new Error('mock error from unit testing')
+        return Promise.reject(error)
+      }
+      try {
+        await asyncRetryHandler(func, retryPolicy, socketErrorPredicate)
+        fail('error should have thrown')
+      } catch (error) {
+        expect(error).toBeDefined()
+        expect(callCount).toBe(1)
+      }
+    })
+
+    test('should not attempt retry if code is not ESOCKET', async () => {
+      let callCount = 0
+      const func = () => {
+        callCount++
+        const error = new Error('mock error from unit testing')
+        error.code = 'SOMECODE'
+        return Promise.reject(error)
+      }
+      try {
+        await asyncRetryHandler(func, retryPolicy, socketErrorPredicate)
+        fail('error should have thrown')
+      } catch (error) {
+        expect(error).toBeDefined()
+        expect(callCount).toBe(1)
+      }
+    })
+
+    test('should attempt retry if code is ESOCKET', async () => {
+      let callCount = 0
+      const func = () => {
+        callCount++
+        const error = new Error('mock error from unit testing')
+        error.code = 'ESOCKET'
+        return Promise.reject(error)
+      }
+      try {
+        await asyncRetryHandler(func, retryPolicy, socketErrorPredicate)
         fail('error should have thrown')
       } catch (error) {
         expect(error).toBeDefined()
