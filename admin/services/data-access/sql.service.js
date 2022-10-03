@@ -9,7 +9,8 @@ const {
   asyncRetryHandler,
   sqlAzureTimeoutRetryPredicate,
   sqlAzureResourceLimitReachedPredicate,
-  sqlAzureRequestTimeoutRetryPredicate
+  sqlAzureRequestTimeoutRetryPredicate,
+  socketErrorPredicate
 } = require('./retry-async')
 const config = require('../../config')
 const redisCacheService = require('./redis-cache.service')
@@ -22,11 +23,12 @@ const retryConfig = {
   pauseMultiplier: config.DatabaseRetry.PauseMultiplier
 }
 
-// only retry if request times out or azure db limit reached
+// Retry only on these errors
 const combinedTimeoutAndResourceLimitsReachedPredicate = (error) => {
   return sqlAzureResourceLimitReachedPredicate(error) ||
     sqlAzureTimeoutRetryPredicate(error) ||
-    sqlAzureRequestTimeoutRetryPredicate(error)
+    sqlAzureRequestTimeoutRetryPredicate(error) ||
+    socketErrorPredicate(error)
 }
 
 let cache = {}
