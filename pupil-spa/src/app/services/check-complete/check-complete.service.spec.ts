@@ -216,6 +216,32 @@ describe('CheckCompleteService', () => {
         expect(keyItems[1].value).toBe('value1');
         expect(keyItems[2].value).toBe('value2');
       });
+
+      it('will sub-sort Answers on the monotonic time sequence number if the datetime is the same', () => {
+        const t1 = Date.now() - 1500
+        const localStorageItems = {
+          'audit-1': { value: 'value1', clientTimestamp: t1, monotonicTime: { sequenceNumber: 11 }},
+          'audit-2': { value: 'value2', clientTimestamp: t1, monotonicTime: { sequenceNumber: 10 }},
+          'audit-3': { value: 'value3', clientTimestamp: Date.now(), monotonicTime: { sequenceNumber: 12 }},
+        }
+        const keyItems = checkCompleteService.getAllEntriesByKey('audit', localStorageItems);
+        expect(keyItems[0].value).toBe('value2');
+        expect(keyItems[1].value).toBe('value1');
+        expect(keyItems[2].value).toBe('value3');
+      })
+
+    it('will sub-sort Audits on the monotonic time sequence number if the datetime is the same', () => {
+      const t1 = Date.now() - 1500
+      const localStorageItems = {
+        'audit-1': { value: 'value1', clientTimestamp: t1, data: { monotonicTime: { sequenceNumber: 11 }}},
+        'audit-2': { value: 'value2', clientTimestamp: t1, data: { monotonicTime: { sequenceNumber: 10 }}},
+        'audit-3': { value: 'value3', clientTimestamp: Date.now(), data: { monotonicTime: { sequenceNumber: 12 }}},
+      }
+      const keyItems = checkCompleteService.getAllEntriesByKey('audit', localStorageItems);
+      expect(keyItems[0].value).toBe('value2');
+      expect(keyItems[1].value).toBe('value1');
+      expect(keyItems[2].value).toBe('value3');
+    })
   });
 
   describe('getPayload', () => {

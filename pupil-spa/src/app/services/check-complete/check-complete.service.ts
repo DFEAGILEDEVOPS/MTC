@@ -102,9 +102,15 @@ export class CheckCompleteService {
   getAllEntriesByKey(key: string, items: Record<any, any>): any {
     const matchingKeys =
       Object.keys(items).filter(lsi => lsi.startsWith(key.toString()));
-    const sortedMatchingKeys = matchingKeys.sort((a, b) =>
-      new Date(items[a].clientTimestamp).getTime() - new Date(items[b].clientTimestamp).getTime()
-    );
+    const sortedMatchingKeys = matchingKeys.sort((a, b) => {
+      const diff = new Date(items[a].clientTimestamp).getTime() - new Date(items[b].clientTimestamp).getTime()
+      if (diff === 0) {
+        const aMonotonicTime = items[a].monotonicTime || items[a].data.monotonicTime
+        const bMonotonicTime = items[b].monotonicTime || items[b].data.monotonicTime
+        return aMonotonicTime.sequenceNumber - bMonotonicTime.sequenceNumber
+      }
+      return diff
+    });
     const matchingItems = new Array<any>();
     sortedMatchingKeys.forEach(s => {
       matchingItems.push(items[s]);
