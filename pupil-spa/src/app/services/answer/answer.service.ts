@@ -16,7 +16,7 @@ export class AnswerService {
       factor2,
       userAnswer,
       sequenceNumber,
-      mtime.formatAsDate(),
+      mtime.getLegacyDate(),
       mtime.getDto()
      )
     this.storageService.setAnswer(answer)

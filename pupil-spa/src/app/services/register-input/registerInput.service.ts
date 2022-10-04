@@ -12,7 +12,7 @@ export class RegisterInputService {
     const monotonicTime = this.monotonicTimeService.getMonotonicDateTime()
     let eventDate: Date
     if (eventTimeStamp === null) {
-      eventDate = monotonicTime.formatAsDate()
+      eventDate = monotonicTime.getLegacyDate()
     } else {
       eventDate = new Date(eventTimeStamp)
     }

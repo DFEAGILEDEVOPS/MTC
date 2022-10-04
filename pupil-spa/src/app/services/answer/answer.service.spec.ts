@@ -53,7 +53,7 @@ describe('AnswerService', () => {
     expect(answerArg.factor1).toBe(1)
     expect(answerArg.factor2).toBe(2)
     expect(answerArg.question).toBe('1x2')
-    expect(answerArg.clientTimestamp.toISOString()).toBe('1970-01-01T09:00:00.123Z') // has extra precision
+    expect(answerArg.clientTimestamp.toISOString()).toBe('1970-01-01T09:00:00.000Z')
     expect(answerArg.sequenceNumber).toBe(25)
     expect(answerArg.monotonicTime.legacyDate.toISOString()).toBe('1970-01-01T09:00:00.000Z')
   })

@@ -193,161 +193,161 @@ export abstract class AuditEntry {
 export class PupilPrefsAPICalled extends AuditEntry {
   constructor(mtime: MonotonicTime, data: any = {}) {
     data.monotonicTime = mtime.getDto()
-    super('PupilPrefsAPICalled', mtime.formatAsDate(), data);
+    super('PupilPrefsAPICalled', mtime.getLegacyDate(), data);
   }
 }
 
 export class PupilPrefsAPICallSucceeded extends AuditEntry {
   constructor(mtime: MonotonicTime, data: any = {}) {
     data.monotonicTime = mtime.getDto()
-    super('PupilPrefsAPICallSucceeded', mtime.formatAsDate(), data);
+    super('PupilPrefsAPICallSucceeded', mtime.getLegacyDate(), data);
   }
 }
 
 export class PupilPrefsAPICallFailed extends AuditEntry {
   constructor(mtime: MonotonicTime, data: any = {}) {
     data.monotonicTime = mtime.getDto()
-    super('PupilPrefsAPICallFailed', mtime.formatAsDate(), data);
+    super('PupilPrefsAPICallFailed', mtime.getLegacyDate(), data);
   }
 }
 
 export class WarmupStarted extends AuditEntry {
   constructor(mtime: MonotonicTime, data: any = {}) {
     data.monotonicTime = mtime.getDto()
-    super('WarmupStarted', mtime.formatAsDate(), data);
+    super('WarmupStarted', mtime.getLegacyDate(), data);
   }
 }
 
 export class WarmupIntroRendered extends AuditEntry {
   constructor(mtime: MonotonicTime, data: any = {}) {
     data.monotonicTime = mtime.getDto()
-    super('WarmupIntroRendered', mtime.formatAsDate(), data);
+    super('WarmupIntroRendered', mtime.getLegacyDate(), data);
   }
 }
 
 export class QuestionIntroRendered extends AuditEntry {
   constructor(mtime: MonotonicTime, data: any = {}) {
     data.monotonicTime = mtime.getDto()
-    super('QuestionIntroRendered', mtime.formatAsDate(), data);
+    super('QuestionIntroRendered', mtime.getLegacyDate(), data);
   }
 }
 
 export class WarmupCompleteRendered extends AuditEntry {
   constructor(mtime: MonotonicTime, data: any = {}) {
     data.monotonicTime = mtime.getDto()
-    super('WarmupCompleteRendered', mtime.formatAsDate(), data);
+    super('WarmupCompleteRendered', mtime.getLegacyDate(), data);
   }
 }
 
 export class CheckStartedApiCalled extends AuditEntry {
   constructor(mtime: MonotonicTime, data: any = {}) {
     data.monotonicTime = mtime.getDto()
-    super('CheckStartedApiCalled', mtime.formatAsDate(), data);
+    super('CheckStartedApiCalled', mtime.getLegacyDate(), data);
   }
 }
 
 export class CheckStartedAPICallSucceeded extends AuditEntry {
   constructor(mtime: MonotonicTime, data: any = {}) {
     data.monotonicTime = mtime.getDto()
-    super('CheckStartedAPICallSucceeded', mtime.formatAsDate(), data);
+    super('CheckStartedAPICallSucceeded', mtime.getLegacyDate(), data);
   }
 }
 
 export class CheckStartedAPICallFailed extends AuditEntry {
   constructor(mtime: MonotonicTime, data: any = {}) {
     data.monotonicTime = mtime.getDto()
-    super('CheckStartedAPICallFailed', mtime.formatAsDate(), data);
+    super('CheckStartedAPICallFailed', mtime.getLegacyDate(), data);
   }
 }
 
 export class QuestionRendered extends AuditEntry {
   constructor(mtime: MonotonicTime, data: any = {}) {
     data.monotonicTime = mtime.getDto()
-    super('QuestionRendered', mtime.formatAsDate(), data);
+    super('QuestionRendered', mtime.getLegacyDate(), data);
   }
 }
 
 export class CheckStarted extends AuditEntry {
   constructor(mtime: MonotonicTime, data: any = {}) {
     data.monotonicTime = mtime.getDto()
-    super('CheckStarted', mtime.formatAsDate(), data);
+    super('CheckStarted', mtime.getLegacyDate(), data);
   }
 }
 
 export class QuestionAnswered extends AuditEntry {
   constructor(mtime: MonotonicTime, data: any = {}) {
     data.monotonicTime = mtime.getDto()
-    super('QuestionAnswered', mtime.formatAsDate(), data);
+    super('QuestionAnswered', mtime.getLegacyDate(), data);
   }
 }
 
 export class PauseRendered extends AuditEntry {
   constructor(mtime: MonotonicTime, data: any = {}) {
     data.monotonicTime = mtime.getDto()
-    super('PauseRendered', mtime.formatAsDate(), data);
+    super('PauseRendered', mtime.getLegacyDate(), data);
   }
 }
 
 export class CheckSubmissionPending extends AuditEntry {
   constructor(mtime: MonotonicTime, data: any = {}) {
     data.monotonicTime = mtime.getDto()
-    super('CheckSubmissionPending', mtime.formatAsDate(), data);
+    super('CheckSubmissionPending', mtime.getLegacyDate(), data);
   }
 }
 
 export class CheckSubmissionApiCalled extends AuditEntry {
   constructor(mtime: MonotonicTime, data: any = {}) {
     data.monotonicTime = mtime.getDto()
-    super('CheckSubmissionApiCalled', mtime.formatAsDate(), data);
+    super('CheckSubmissionApiCalled', mtime.getLegacyDate(), data);
   }
 }
 
 export class CheckSubmissionAPICallSucceeded extends AuditEntry {
   constructor(mtime: MonotonicTime, data: any = {}) {
     data.monotonicTime = mtime.getDto()
-    super('CheckSubmissionAPICallSucceeded', mtime.formatAsDate(), data);
+    super('CheckSubmissionAPICallSucceeded', mtime.getLegacyDate(), data);
   }
 }
 
 export class CheckSubmissionAPIFailed extends AuditEntry {
   constructor(mtime: MonotonicTime, data: any = {}) {
     data.monotonicTime = mtime.getDto()
-    super('CheckSubmissionAPIFailed', mtime.formatAsDate(), data);
+    super('CheckSubmissionAPIFailed', mtime.getLegacyDate(), data);
   }
 }
 
 export class CheckSubmissionFailed extends AuditEntry {
   constructor(mtime: MonotonicTime, data: any = {}) {
     data.monotonicTime = mtime.getDto()
-    super('CheckSubmissionFailed', mtime.formatAsDate(), data);
+    super('CheckSubmissionFailed', mtime.getLegacyDate(), data);
   }
 }
 
 export class SessionExpired extends AuditEntry {
   constructor(mtime: MonotonicTime, data: any = {}) {
     data.monotonicTime = mtime.getDto()
-    super('CheckSubmissionFailed', mtime.formatAsDate(), data);
+    super('CheckSubmissionFailed', mtime.getLegacyDate(), data);
   }
 }
 
 export class RefreshDetected extends AuditEntry {
   constructor(mtime: MonotonicTime, data: any = {}) {
     data.monotonicTime = mtime.getDto()
-    super('CheckSubmissionFailed', mtime.formatAsDate(), data);
+    super('CheckSubmissionFailed', mtime.getLegacyDate(), data);
   }
 }
 
 export class UtteranceStarted extends AuditEntry {
   constructor(mtime: MonotonicTime, data: any = {}) {
     data.monotonicTime = mtime.getDto()
-    super('UtteranceStarted', mtime.formatAsDate(), data);
+    super('UtteranceStarted', mtime.getLegacyDate(), data);
   }
 }
 
 export class UtteranceEnded extends AuditEntry {
   constructor(mtime: MonotonicTime, data: any = {}) {
     data.monotonicTime = mtime.getDto()
-    super('UtteranceEnded', mtime.formatAsDate(), data);
+    super('UtteranceEnded', mtime.getLegacyDate(), data);
   }
 }
 
@@ -361,55 +361,55 @@ export class QuestionReadingStarted extends AuditEntry {
 export class QuestionReadingEnded extends AuditEntry {
   constructor(mtime: MonotonicTime, data: any = {}) {
     data.monotonicTime = mtime.getDto()
-    super('QuestionReadingEnded', mtime.formatAsDate(), data);
+    super('QuestionReadingEnded', mtime.getLegacyDate(), data);
   }
 }
 
 export class QuestionTimerStarted extends AuditEntry {
   constructor(mtime: MonotonicTime, data: any = {}) {
     data.monotonicTime = mtime.getDto()
-    super('QuestionTimerStarted', mtime.formatAsDate(), data);
+    super('QuestionTimerStarted', mtime.getLegacyDate(), data);
   }
 }
 
 export class QuestionTimerEnded extends AuditEntry {
   constructor(mtime: MonotonicTime, data: any = {}) {
     data.monotonicTime = mtime.getDto()
-    super('QuestionTimerStarted', mtime.formatAsDate(), data);
+    super('QuestionTimerStarted', mtime.getLegacyDate(), data);
   }
 }
 
 export class QuestionTimerCancelled extends AuditEntry {
   constructor(mtime: MonotonicTime, data: any = {}) {
     data.monotonicTime = mtime.getDto()
-    super('QuestionTimerStarted', mtime.formatAsDate(), data);
+    super('QuestionTimerStarted', mtime.getLegacyDate(), data);
   }
 }
 
 export class AppError extends AuditEntry {
   constructor(mtime: MonotonicTime, data: any = {}) {
     data.monotonicTime = mtime.getDto()
-    super('AppError', mtime.formatAsDate(), data);
+    super('AppError', mtime.getLegacyDate(), data);
   }
 }
 
 export class AppVisible extends AuditEntry {
   constructor(mtime: MonotonicTime, data: any = {}) {
     data.monotonicTime = mtime.getDto()
-    super('AppVisible', mtime.formatAsDate(), data);
+    super('AppVisible', mtime.getLegacyDate(), data);
   }
 }
 
 export class AppHidden extends AuditEntry {
   constructor(mtime: MonotonicTime, data: any = {}) {
     data.monotonicTime = mtime.getDto()
-    super('AppVisible', mtime.formatAsDate(), data);
+    super('AppVisible', mtime.getLegacyDate(), data);
   }
 }
 
 export class RefreshOrTabCloseDetected extends AuditEntry {
   constructor(mtime: MonotonicTime, data: any = {}) {
     data.monotonicTime = mtime.getDto()
-    super('RefreshOrTabCloseDetected', mtime.formatAsDate(), data);
+    super('RefreshOrTabCloseDetected', mtime.getLegacyDate(), data);
   }
 }
