@@ -12,11 +12,6 @@ BEGIN
                 BEGIN
                     -- I am an update
                     SELECT @auditOperationTypeLookupId=2
-                    DECLARE @pupilId INT
-                    SELECT @pupilId = id FROM inserted
-                    -- incorporate updatedAt trigger logic, to avoid duplicate audit entries
-                    UPDATE [mtc_admin].[pupil] SET updatedAt = @updatedTimestamp
-                    WHERE id = @pupilId
                 END
             ELSE
                 BEGIN
@@ -29,16 +24,34 @@ BEGIN
             -- I am a delete (not currently supported)
             SELECT @auditOperationTypeLookupId=3
         END
-    -- grab incoming data as JSON
-    SELECT @newDataJson = (SELECT * FROM inserted FOR JSON AUTO, WITHOUT_ARRAY_WRAPPER)
-    PRINT @newDataJson
-    SET @newDataJson = JSON_MODIFY(@newDataJson, '$.updatedAt', CAST(@updatedTimestamp AS NVARCHAR))
-    PRINT @newDataJson
-    INSERT INTO [mtc_admin].[pupilAudit]
-    (auditOperationTypeLookup_id, newData, pupil_id, operationBy_userId, sqlUserIdentifier)
-    SELECT @auditOperationTypeLookupId, @newDataJson, i.id, i.lastModifiedBy_userId, SUSER_SNAME()
-    FROM mtc_admin.pupil s
-    INNER JOIN inserted i ON s.id = i.id
+
+    DECLARE @pupilId int
+    DECLARE @lastModifiedBy_userId int
+    DECLARE db_cursor CURSOR FOR
+      SELECT i.id, i.lastModifiedBy_userId
+      FROM inserted i
+
+      OPEN db_cursor
+        FETCH NEXT FROM db_cursor INTO @pupilId, @lastModifiedBy_userId
+        WHILE @@FETCH_STATUS = 0
+        BEGIN
+          -- incorporate updatedAt trigger logic, to avoid duplicate audit entries
+          IF @auditOperationTypeLookupId = 2
+            BEGIN
+              UPDATE [mtc_admin].[pupil] SET updatedAt = @updatedTimestamp WHERE id = @pupilId
+            END
+          SELECT @newDataJson = (SELECT TOP 1 * FROM inserted i WHERE i.id = @pupilId FOR JSON AUTO, WITHOUT_ARRAY_WRAPPER)
+          SET @newDataJson = JSON_MODIFY(@newDataJson, '$.updatedAt', CAST(@updatedTimestamp AS NVARCHAR))
+          -- do insert into pupil audit
+          INSERT INTO [mtc_admin].[pupilAudit]
+            (auditOperationTypeLookup_id, newData, pupil_id, operationBy_userId, sqlUserIdentifier)
+          VALUES (@auditOperationTypeLookupId, @newDataJson, @pupilId, @lastModifiedBy_userId, SUSER_SNAME())
+
+          FETCH NEXT FROM db_cursor INTO @pupilId, @lastModifiedBy_userId
+        END
+
+      CLOSE db_cursor
+    DEALLOCATE db_cursor
 END
 GO
 ALTER TABLE [mtc_admin].[pupil] ENABLE TRIGGER [pupilInsertUpdateAuditTrigger]
