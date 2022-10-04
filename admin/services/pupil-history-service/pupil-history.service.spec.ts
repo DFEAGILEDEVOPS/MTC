@@ -6,7 +6,7 @@ const R = require('ramda')
 
 const mockPupilHistoryDefault: IPupilHistory = {
   meta: {
-    restartTakenCount: 0
+    restartsTakenCount: 0
   },
   school: {
     dfeNumber: 12345,

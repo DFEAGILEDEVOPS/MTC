@@ -7,7 +7,7 @@ export interface IPupilHistory {
   checks: IPupilHistoryCheckData[]
   restarts: IPupilHistoryRestartData[]
   meta: {
-    restartTakenCount: number
+    restartsTakenCount: number
   }
 }
 
@@ -31,7 +31,6 @@ export class PupilHistoryService {
 
   public static async getHistory (pupilUuid: string): Promise<IPupilHistory> {
     const rawPupilHistory = await PupilHistoryDataService.getPupilHistory(pupilUuid)
-
     // Add a check status to each check
     const transformedChecks = rawPupilHistory.checks.map(check => {
       const status = PupilHistoryService.getCheckStatus(check)
@@ -45,7 +44,7 @@ export class PupilHistoryService {
       pupil: rawPupilHistory.pupil,
       checks: transformedChecks,
       meta: {
-        restartTakenCount: rawPupilHistory.restarts.length
+        restartsTakenCount: rawPupilHistory.restarts.length
       }
     }
   }
