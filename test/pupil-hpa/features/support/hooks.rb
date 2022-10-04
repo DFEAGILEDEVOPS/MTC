@@ -66,7 +66,7 @@ After('@window_date_time_reset') do
 
 After do
   p @check_code
-  (wait_until(60,1, "Check Started to be populated"){p SqlDbHelper.get_check(@check_code)['startedAt'].is_a?(Time)}) unless @check_code.nil?
+  (wait_until(60,1, "Check Started to be populated"){SqlDbHelper.get_check(@check_code)['startedAt'].is_a?(Time)}) unless @check_code.nil?
   p (SqlDbHelper.get_check(@check_code)['startedAt']) unless @check_code.nil?
 end
 
