@@ -355,7 +355,6 @@ pupilDataService.sqlInsertMany = async (pupils, userId) => {
     )
   }
   const sql = [insertSql, values.join(',\n'), output].join(' ')
-  console.log(sql)
   const res = await sqlService.query(sql, params)
   return { insertId: res.map(x => x.id) }
 }
