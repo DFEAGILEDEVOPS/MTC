@@ -62,6 +62,12 @@ end
 After('@window_date_time_reset') do
   SqlDbHelper.update_check_window(@original['id'], 'checkEndDate', @original_end_date)
   SqlDbHelper.update_check_window(@original['id'], 'checkStartDate', @original_start_date)
+  end
+
+After do
+  p @check_code
+  (wait_until(60,1){SqlDbHelper.get_check(@check_code)['startedAt'].is_a?(Time)}) unless @check_code.nil?
+  p (SqlDbHelper.get_check(@check_code)['startedAt']) unless @check_code.nil?
 end
 
 After do |scenario|
