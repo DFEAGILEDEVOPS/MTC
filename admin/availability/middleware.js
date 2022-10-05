@@ -32,20 +32,4 @@ async function isAdminWindowAvailable (req, res, next) {
   }
 }
 
-/**
-   * The UK academic year starts in September and continues through to August of the following year.
-   * TODO: move to lib
-   * @param {moment.Moment} date
-   * @return {number}
-   */
-// function getAcademicYear (date) {
-//   const i = date.month()
-//   const y = date.year()
-//   const september = 8 // zero-based
-//   if (i >= september) {
-//     return y
-//   }
-//   return y - 1
-// }
-
 module.exports = isAdminWindowAvailable
