@@ -3,7 +3,6 @@
 const moment = require('moment')
 const config = require('../config')
 const checkWindowV2Service = require('../services/check-window-v2.service')
-const dateService = require('../services/date.service')
 const settingsService = require('../services/setting.service')
 
 async function isAdminWindowAvailable (req, res, next) {
@@ -26,15 +25,8 @@ async function isAdminWindowAvailable (req, res, next) {
       return next()
     }
 
-    const isBeforeStartDate = checkWindow && currentDate.isBefore(checkWindow.adminStartDate)
-    const startDateFormatted = checkWindow && dateService.formatDayDateAndYear(checkWindow.adminStartDate)
-    const academicYear = getAcademicYear(checkWindow.checkStartDate)
     res.locals.pageTitle = 'Unavailable'
-    return res.render('availability/admin-window-unavailable', {
-      academicYear,
-      isBeforeStartDate,
-      startDateFormatted
-    })
+    return res.render('availability/admin-window-unavailable', {})
   } catch (error) {
     next(error)
   }
@@ -46,14 +38,14 @@ async function isAdminWindowAvailable (req, res, next) {
    * @param {moment.Moment} date
    * @return {number}
    */
-function getAcademicYear (date) {
-  const i = date.month()
-  const y = date.year()
-  const september = 8 // zero-based
-  if (i >= september) {
-    return y
-  }
-  return y - 1
-}
+// function getAcademicYear (date) {
+//   const i = date.month()
+//   const y = date.year()
+//   const september = 8 // zero-based
+//   if (i >= september) {
+//     return y
+//   }
+//   return y - 1
+// }
 
 module.exports = isAdminWindowAvailable
