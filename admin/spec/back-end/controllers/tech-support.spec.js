@@ -15,8 +15,8 @@ const checkCode = 'dd3ed042-648f-49bd-a559-45127596716d'
 
 const getReqParams = (url = '/tech-support/home', method = 'GET') => {
   return {
-    method: method,
-    url: url
+    method,
+    url
   }
 }
 
@@ -74,7 +74,7 @@ describe('tech-support controller', () => {
     test('POST: should render the check summary', async () => {
       const req = getRequest(getReqParams('/tech-support/checkview', 'POST'))
       req.body = {
-        checkCode: checkCode
+        checkCode
       }
       const res = getResponse()
       jest.spyOn(res, 'render').mockResolvedValue(null)
@@ -144,7 +144,7 @@ describe('tech-support controller', () => {
     test('POST: should call the service', async () => {
       const req = getRequest(getReqParams('/tech-support/results-resync-check', 'POST'))
       req.body = {
-        checkCode: checkCode
+        checkCode
       }
       const res = getResponse()
       jest.spyOn(res, 'render').mockResolvedValue(null)

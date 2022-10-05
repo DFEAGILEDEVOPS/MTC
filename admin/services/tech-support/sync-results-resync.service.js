@@ -8,7 +8,7 @@ const service = {
       throw new Error('checkCode parameter is required')
     }
     return dataService.callSyncResultsInitFunction({
-      checkCode: checkCode
+      checkCode
     })
   },
 
@@ -17,13 +17,13 @@ const service = {
       throw new Error('schoolUuid parameter is required')
     }
     return dataService.callSyncResultsInitFunction({
-      schoolUuid: schoolUuid
+      schoolUuid
     })
   },
 
   resyncAllChecks: async function resyncChecks (resyncAll = false) {
     return dataService.callSyncResultsInitFunction({
-      resyncAll: resyncAll
+      resyncAll
     })
   }
 }

@@ -26,7 +26,7 @@ controller.getViewPupilStatus = async function getViewPupilStatus (req, res, nex
   }
   return res.render('pupil-status/view-pupil-status', {
     breadcrumbs: req.breadcrumbs(),
-    pupilStatusViewData: pupilStatusViewData
+    pupilStatusViewData
   })
 }
 
