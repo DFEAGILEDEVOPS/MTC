@@ -13,7 +13,6 @@ describe('DiscretationryRestartService', () => {
   })
 
   describe('grantDiscretionaryRestart', () => {
-
     test('it validates that a uuid has been passed in', async () => {
       await expect(DiscretionaryRestartService.grantDiscretionaryRestart('not a valid uuid')).rejects.toThrow(/Invalid uuid/)
     })
@@ -26,7 +25,7 @@ describe('DiscretationryRestartService', () => {
     test('it calls the data service', async () => {
       jest.spyOn(DiscretionaryRestartDataService, 'sqlGrantDiscretionaryRestart').mockImplementation()
       await DiscretionaryRestartService.grantDiscretionaryRestart(uuid.v4())
-      expect(DiscretionaryRestartDataService.sqlGrantDiscretionaryRestart).toHaveBeenCalled()
+      expect(DiscretionaryRestartDataService.sqlGrantDiscretionaryRestart).toHaveBeenCalledTimes(1)
     })
   })
 
@@ -43,7 +42,7 @@ describe('DiscretationryRestartService', () => {
     test('it calls the data service', async () => {
       jest.spyOn(DiscretionaryRestartDataService, 'sqlRevokeDiscretionaryRestart').mockImplementation()
       await DiscretionaryRestartService.removeDiscretionaryRestart(uuid.v4())
-      expect(DiscretionaryRestartDataService.sqlRevokeDiscretionaryRestart).toHaveBeenCalled()
+      expect(DiscretionaryRestartDataService.sqlRevokeDiscretionaryRestart).toHaveBeenCalledTimes(1)
     })
   })
 })

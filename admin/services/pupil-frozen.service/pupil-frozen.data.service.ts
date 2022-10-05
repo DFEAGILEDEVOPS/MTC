@@ -1,5 +1,5 @@
-const sqlService = require('../data-access/sql.service')
 import { TYPES } from '../data-access/sql.service'
+const sqlService = require('../data-access/sql.service')
 
 export class PupilFrozenDataService {
 /**
@@ -7,7 +7,7 @@ export class PupilFrozenDataService {
  * @param {Array<string>} pupilUrlSlugs
  * @returns {Promise<number>}
  */
-  public static async getFrozenCountByUrlSlugs (pupilUrlSlugs: Array<string>): Promise<number> {
+  public static async getFrozenCountByUrlSlugs (pupilUrlSlugs: string[]): Promise<number> {
     const { params, paramIdentifiers } = sqlService.buildParameterList(pupilUrlSlugs, TYPES.UniqueIdentifier,
       'pupilUrlSlug')
     const sql = `SELECT COUNT(id) as [frozenCount]
@@ -16,12 +16,12 @@ export class PupilFrozenDataService {
     return result[0].frozenCount
   }
 
- /**
+  /**
  * @description get the count of pupils who are frozen within a set of urlSlugs
  * @param {Array<number>} pupilIds
  * @returns {Promise<number>}
  */
-   public static async getFrozenCountByPupilIds (pupilIds: Array<number>): Promise<number> {
+  public static async getFrozenCountByPupilIds (pupilIds: number[]): Promise<number> {
     const paramData = sqlService.buildParameterList(pupilIds, TYPES.Int,
       'pupilId')
     const sql = `SELECT COUNT(id) as [frozenCount]
@@ -30,7 +30,7 @@ export class PupilFrozenDataService {
     return result[0].frozenCount
   }
 
- /**
+  /**
  * @description freeze a pupil record
  * @param {string} pupilUrlSlug
  * @returns {Promise<void>} lacks parity with sqlService.modify as it isn't fully typed beyond 'promise'
@@ -45,7 +45,7 @@ export class PupilFrozenDataService {
     return sqlService.modify(sql, params)
   }
 
- /**
+  /**
  * @description thaw a pupil record
  * @param {string} pupilUrlSlug
  * @returns {Promise<void>} lacks parity with sqlService.modify as it isn't fully typed beyond 'promise'

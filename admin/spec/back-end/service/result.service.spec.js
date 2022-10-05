@@ -191,7 +191,7 @@ describe('result.service', () => {
       jest.spyOn(redisCacheService, 'set').mockImplementation() // spy on the write to redis
       const resultData = {
         generatedAt: moment('2020-06-03T11:23:45'),
-        schoolId: schoolId,
+        schoolId,
         pupils: [
           { fullName: 'Smith, Jon', score: 10, status: '', group_id: 4, urlSlug: 'aaa' },
           { fullName: 'Everett, Katy', score: 9, status: '', group_id: 4, urlSlug: 'bbb' }

@@ -85,12 +85,12 @@ const controller = {
         breadcrumbs: req.breadcrumbs(),
         err: new ValidationError(),
         formData: {
-          checkCode: checkCode
+          checkCode
         },
         summary: checkSummary,
-        found: found,
-        checkReceived: checkReceived,
-        checkMarked: checkMarked
+        found,
+        checkReceived,
+        checkMarked
       })
     } catch (error) {
       return next(error)
@@ -389,7 +389,7 @@ const controller = {
       const storageQueueInfo = await queueMgmtService.getStorageAccountQueueSummary()
       res.render('tech-support/queue-overview', {
         breadcrumbs: req.breadcrumbs(),
-        sbQueueInfo: sbQueueInfo,
+        sbQueueInfo,
         saQueueInfo: storageQueueInfo
       })
     } catch (error) {
@@ -427,7 +427,7 @@ const controller = {
         breadcrumbs: req.breadcrumbs(),
         err: new ValidationError(),
         formData: {
-          checkCode: checkCode
+          checkCode
         },
         response: 'request sent to function API successfully'
       })
@@ -466,7 +466,7 @@ const controller = {
         breadcrumbs: req.breadcrumbs(),
         err: new ValidationError(),
         formData: {
-          schoolUuid: schoolUuid
+          schoolUuid
         },
         response: 'request sent to function API successfully'
       })
@@ -501,7 +501,7 @@ const controller = {
         breadcrumbs: req.breadcrumbs(),
         err: new ValidationError(),
         formData: {
-          resyncAll: resyncAll
+          resyncAll
         },
         response: 'request sent to function API successfully'
       })
@@ -517,7 +517,7 @@ const controller = {
       req.breadcrumbs('PS Report Logs')
       res.render('tech-support/ps-report-logs', {
         breadcrumbs: req.breadcrumbs(),
-        logs: logs
+        logs
       })
     } catch (error) {
       return next(error)
@@ -532,7 +532,7 @@ const controller = {
       req.breadcrumbs('PS Report Log Folder Files')
       res.render('tech-support/ps-report-log-folder', {
         breadcrumbs: req.breadcrumbs(),
-        files: files,
+        files,
         folder: req.params.folder
       })
     } catch (error) {

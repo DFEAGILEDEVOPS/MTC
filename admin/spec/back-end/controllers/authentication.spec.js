@@ -11,15 +11,15 @@ const authModes = require('../../../lib/consts/auth-modes')
 
 const getReqParams = (url = '/', method = 'GET') => {
   return {
-    method: method,
-    url: url
+    method,
+    url
   }
 }
 
 const createRequest = (isAuthenticated, params = getReqParams, role = 'TEACHER') => {
   const req = httpMocks.createRequest(params)
   req.user = {
-    role: role
+    role
   }
   req.isAuthenticated = () => isAuthenticated
   req.breadcrumbs = jest.fn().mockReturnValue('breadcrumbs')

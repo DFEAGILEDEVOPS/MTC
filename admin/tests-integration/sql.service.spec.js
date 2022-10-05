@@ -438,7 +438,7 @@ describe('sql.service:integration', () => {
       const value = 3.14
       const params = [{
         name: 'tDecimal',
-        value: value,
+        value,
         type: TYPES.Decimal,
         precision: 5,
         scale: 2
@@ -475,7 +475,7 @@ describe('sql.service:integration', () => {
       const value = 96.489
       const params = [{
         name: 'tNumeric',
-        value: value,
+        value,
         type: TYPES.Numeric,
         precision: 5,
         scale: 3
@@ -512,7 +512,7 @@ describe('sql.service:integration', () => {
       const value = 9.80665
       const params = [{
         name: 'tFloat',
-        value: value,
+        value,
         type: TYPES.Float
       }]
       const insertResult = await sql.modify(`
@@ -547,7 +547,7 @@ describe('sql.service:integration', () => {
       const value = 'the quick' // 9 chars, col length is 10
       const params = [{
         name: 'tNvarchar',
-        value: value,
+        value,
         type: TYPES.NVarChar
       }]
 
