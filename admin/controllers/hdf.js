@@ -170,8 +170,8 @@ controller.getEditReason = async function getEditReason (req, res, next) {
 
   return res.render('hdf/attendance-edit-reason', {
     breadcrumbs: req.breadcrumbs(),
-    pupil: pupil,
-    attendanceCodes: attendanceCodes
+    pupil,
+    attendanceCodes
   })
 }
 
@@ -338,7 +338,7 @@ controller.getHDFSubmittedForm = async function getHDFSubmittedForm (req, res, n
     }
     return res.render('hdf/submitted-form', {
       breadcrumbs: req.breadcrumbs(),
-      hdf: hdf,
+      hdf,
       signedDate: dateService.formatFullGdsDate(hdf.signedDate)
     })
   } catch (error) {

@@ -31,7 +31,7 @@ class Logger {
     const baseLogOptions = {
       levels: winston.config.syslog.levels,
       level: this.level,
-      format: format,
+      format,
       transports: [
         new winston.transports.Console({ level: this.level, silent: false, consoleWarnLevels: ['warn', 'error'] })
       ],

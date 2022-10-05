@@ -1,14 +1,16 @@
 {
-  "name": "check-development-app",
+  "name": "mtc-admin-app",
   "version": "1.2.0",
   "private": false,
   "license": "GPL-3.0",
   "scripts": {
     "build": "gulp build",
+    "build:watch": "yarn tsc --watch",
     "dev-build": "gulp dev-build",
     "shell-build": "./build.sh",
     "clean": "rm -rf dist; rm -f .env",
-    "lint": "standard",
+    "lint": "standard && yarn lint:ts",
+    "lint:ts": "yarn eslint .",
     "lintAndBuild": "yarn lint && yarn build",
     "migrate-sql": "node ../db/engine/migrate.js",
     "migrate-and-seed-sql": "yarn migrate-sql && yarn seed-sql",
@@ -110,11 +112,20 @@
     "@types/node": "14",
     "@types/ramda": "^0.27.6",
     "@types/uuid": "^8.3.4",
+    "@typescript-eslint/eslint-plugin": "^5.37.0",
+    "@typescript-eslint/parser": "^5.37.0",
     "babel-jest": "^27.4.2",
     "chalk": "^4.1.0",
     "command-line-args": "^5.0.2",
     "concurrently": "^6.2.1",
     "csv-string": "^4.0.1",
+    "eslint": "^8.23.0",
+    "eslint-config-standard": "^17.0.0",
+    "eslint-config-standard-with-typescript": "^22.0.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-jest": "^27.0.4",
+    "eslint-plugin-n": "^15.2.5",
+    "eslint-plugin-promise": "^6.0.1",
     "gulp": "^4.0.2",
     "gulp-babel": "^8.0.0",
     "gulp-clean": "^0.4.0",
@@ -133,7 +144,7 @@
     "karma-remap-istanbul": "~0.6.0",
     "node-mocks-http": "^1.6.6",
     "nodemon": "^2.0.12",
-    "standard": "^16.0.3",
+    "standard": "^17.0.0",
     "supertest": "^6.0.1",
     "ts-node": "^10.4.0",
     "typescript": "4.3.5"
@@ -142,7 +153,8 @@
     "ignore": [
       "assets/javascripts/jquery-3.5.1.js",
       "assets/vendor-js/*",
-      "**/*.ts"
+      "**/*.ts",
+      ".eslintrc.js"
     ]
   },
   "jest": {

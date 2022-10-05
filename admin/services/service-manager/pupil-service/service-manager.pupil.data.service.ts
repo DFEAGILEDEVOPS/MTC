@@ -3,7 +3,6 @@ import { TYPES } from '../../data-access/sql.service'
 const sqlService = require('../../data-access/sql.service')
 
 export class ServiceManagerPupilDataService {
-
   static async findPupilByUpn (upn: string): Promise<PupilSearchResult[]> {
     const sql = `
       SELECT p.createdAt, p.foreName, p.lastName, p.dateOfBirth,
@@ -47,14 +46,14 @@ export class ServiceManagerPupilDataService {
       SELECT *
       FROM mtc_admin.vewPupilStatus
       WHERE pupilId=@pupilId`
-  const params = [
-    {
-      name: 'pupilId',
-      value: pupilId,
-      type: TYPES.Int
-    }
-  ]
-  return sqlService.readonlyQuery(sql, params)
+    const params = [
+      {
+        name: 'pupilId',
+        value: pupilId,
+        type: TYPES.Int
+      }
+    ]
+    return sqlService.readonlyQuery(sql, params)
   }
 }
 
@@ -64,21 +63,21 @@ export interface PupilStatusData {
   lastName: string
   middleNames: string
   dateOfBirth: Moment
-  group_id: number
+  group_id: number | null
   urlSlug: string
   school_id: number
-  reason: string
-  reasonCode: string
-  attendanceId: number
+  reason: string | null
+  reasonCode: string | null
+  attendanceId: number | null
   pupilCheckComplete: boolean
-  currentCheckId: number
+  currentCheckId: number | null
   pupilId: number
   restartAvailable: boolean
-  checkReceived: boolean
-  checkComplete: boolean
-  processingFailed: boolean
-  pupilLoginDate: Moment
-  pinExpiresAt: Moment
+  checkReceived: boolean | null
+  checkComplete: boolean | null
+  processingFailed: boolean | null
+  pupilLoginDate: Moment | null
+  pinExpiresAt: Moment | null
 }
 
 export interface PupilSearchResult {

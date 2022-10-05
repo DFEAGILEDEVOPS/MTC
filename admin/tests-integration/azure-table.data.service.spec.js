@@ -65,9 +65,9 @@ describe('azure-table.data.service', () => {
       const customData = 'foo'
       const client = TableClient.fromConnectionString(connectionString, tableName)
       await client.createEntity({
-        partitionKey: partitionKey,
-        rowKey: rowKey,
-        customData: customData
+        partitionKey,
+        rowKey,
+        customData
       })
       const actual = await sut.retrieveEntity(tableName, partitionKey, rowKey)
       expect(actual).toBeDefined()

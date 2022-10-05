@@ -50,7 +50,7 @@ const service = {
       lookupKeys.push({
         key: redisKeyService.getPreparedCheckLookup(check.checkCode),
         value: preparedCheckKey,
-        ttl: ttl
+        ttl
       })
       lookupKeys.push({
         key: redisKeyService.getPupilUuidLookupKey(check.checkCode),
@@ -60,7 +60,7 @@ const service = {
       return {
         key: preparedCheckKey,
         value: preparedCheck,
-        ttl: ttl
+        ttl
       }
     })
     cacheItems.push(...lookupKeys)
@@ -113,7 +113,7 @@ function constructPreparedCheck (check, schoolTimezone) {
     config: check.config,
     createdAt: moment(),
     pinExpiresAtUtc: moment(check.pupil.pinExpiresAt),
-    pinValidFromUtc: pinValidFromUtc,
+    pinValidFromUtc,
     pupil: R.omit(['id', 'checkFormAllocationId', 'pinExpiresAt'], check.pupil),
     pupilId: check.pupil.id,
     questions: check.questions,
