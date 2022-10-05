@@ -341,7 +341,7 @@ const controller = {
         breadcrumbs: req.breadcrumbs(),
         formData: req.body,
         messages: res.locals.messages,
-        error: error,
+        error,
         typeOfEstablishmentData
       })
     } catch (error) {
@@ -505,7 +505,7 @@ const controller = {
       res.render('service-manager/bulk-upload-organisations', {
         breadcrumbs: req.breadcrumbs(),
         fileErrors: error,
-        jobStatus: jobStatus
+        jobStatus
       })
     } catch (error) {
       return next(error)
@@ -659,8 +659,8 @@ const controller = {
         res.locals.pageTitle = 'Pupil Search'
         return res.render('service-manager/pupil-search', {
           breadcrumbs: req.breadcrumbs(),
-          results: results,
-          query: query,
+          results,
+          query,
           error: new ValidationError()
         })
       }
@@ -696,7 +696,7 @@ const controller = {
     res.render('service-manager/annul-pupil', {
       breadcrumbs: req.breadcrumbs(),
       error: validationError,
-      pupil: pupil
+      pupil
     })
   },
 
@@ -730,7 +730,7 @@ const controller = {
     res.render('service-manager/annul-pupil-undo', {
       breadcrumbs: req.breadcrumbs(),
       error: validationError,
-      pupil: pupil
+      pupil
     })
   },
 

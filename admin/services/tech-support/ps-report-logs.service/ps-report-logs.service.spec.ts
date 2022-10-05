@@ -36,7 +36,7 @@ describe('ps report logs service', () => {
         'ps-report-log-202204121546',
         'ps-report-log-202204111545',
         'ps-report-log-202203121545',
-        'ps-report-log-202204251545',
+        'ps-report-log-202204251545'
       ]
       jest.spyOn(PsReportLogsDataService, 'getContainerList').mockResolvedValue(containerList)
       const expectedOrder = [
@@ -44,7 +44,7 @@ describe('ps report logs service', () => {
         'ps-report-log-202204121546',
         'ps-report-log-202204121545',
         'ps-report-log-202204111545',
-        'ps-report-log-202203121545',
+        'ps-report-log-202203121545'
       ]
       const actualOrder = await PsReportLogsDownloadService.getLogFoldersList()
       expect(expectedOrder).toStrictEqual(actualOrder)
@@ -76,13 +76,13 @@ describe('ps report logs service', () => {
 
     test('returns undefined when file specified does not exist', async () => {
       jest.spyOn(PsReportLogsDataService, 'getFileContents').mockResolvedValue(undefined)
-      await expect(PsReportLogsDownloadService.downloadLogFile(validContainerName, 'somefile.txt')).resolves.toBe(undefined)
+      await expect(PsReportLogsDownloadService.downloadLogFile(validContainerName, 'somefile.txt')).resolves.toBeUndefined()
     })
   })
 
   describe('getLogFolderFileList', () => {
     test('raw file length sizes are converted to meaningful summaries', async () => {
-      const rawData: Array<IPsReportLogFileData> = [
+      const rawData: IPsReportLogFileData[] = [
         {
           name: 'myfile.txt',
           byteLength: 10569
@@ -95,13 +95,13 @@ describe('ps report logs service', () => {
           name: 'bar.txt',
           byteLength: 123
         }
-    ]
+      ]
       jest.spyOn(PsReportLogsDataService, 'getContainerFileList').mockResolvedValue(rawData)
       const entries = await PsReportLogsDownloadService.getLogFolderFileList(validContainerName)
       expect(entries).toHaveLength(3)
-      expect(entries[0].size).toStrictEqual('10.32KB')
-      expect(entries[1].size).toStrictEqual('18.36MB')
-      expect(entries[2].size).toStrictEqual('123 Bytes')
+      expect(entries[0].size).toBe('10.32KB')
+      expect(entries[1].size).toBe('18.36MB')
+      expect(entries[2].size).toBe('123 Bytes')
     })
 
     test('incorrectly formatted container names cause an error', async () => {

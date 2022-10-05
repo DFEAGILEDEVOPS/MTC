@@ -1,22 +1,20 @@
-import { IPupilHistoryCheckData, IPupilHistoryPupilData, IPupilHistoryRestartData, IPupilHistorySchoolData } from "./data-access/pupil-history.data.service"
+import { IPupilHistoryCheckData, IPupilHistoryPupilData, IPupilHistoryRestartData, IPupilHistorySchoolData, PupilHistoryDataService } from './data-access/pupil-history.data.service'
 import * as R from 'ramda'
-const { PupilHistoryDataService } = require('./data-access/pupil-history.data.service')
 
 export interface IPupilHistory {
-  school: IPupilHistorySchoolData,
-  pupil: IPupilHistoryPupilData,
-  checks: IPupilHistoryCheckData[],
+  school: IPupilHistorySchoolData
+  pupil: IPupilHistoryPupilData
+  checks: IPupilHistoryCheckData[]
   restarts: IPupilHistoryRestartData[]
   meta: {
-    restartTakenCount: number
+    restartsTakenCount: number
   }
 }
 
 export type TCheckStatus = 'Pin generated' | 'Logged in' | 'Check received' | 'Received data error' | 'Check complete' | 'n/a'
 export class PupilHistoryService {
   private static getCheckStatus (check: IPupilHistoryCheckData): TCheckStatus {
-
-    if (check.complete === true) {
+    if (check.complete) {
       return 'Check complete'
     } else if (check.processingFailed === true) {
       return 'Received data error'
@@ -31,9 +29,8 @@ export class PupilHistoryService {
     return 'n/a'
   }
 
-  public static async getHistory (pupilUuid) {
-    const rawPupilHistory  = await PupilHistoryDataService.getPupilHistory(pupilUuid)
-
+  public static async getHistory (pupilUuid: string): Promise<IPupilHistory> {
+    const rawPupilHistory = await PupilHistoryDataService.getPupilHistory(pupilUuid)
     // Add a check status to each check
     const transformedChecks = rawPupilHistory.checks.map(check => {
       const status = PupilHistoryService.getCheckStatus(check)
@@ -41,7 +38,7 @@ export class PupilHistoryService {
       return transCheck
     })
 
-    const pupilHistory = {
+    return {
       school: rawPupilHistory.school,
       restarts: rawPupilHistory.restarts,
       pupil: rawPupilHistory.pupil,
@@ -50,6 +47,5 @@ export class PupilHistoryService {
         restartsTakenCount: rawPupilHistory.restarts.length
       }
     }
-    return pupilHistory
   }
 }
