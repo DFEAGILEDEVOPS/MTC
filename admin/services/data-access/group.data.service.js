@@ -161,28 +161,35 @@ groupDataService.sqlUpdate = async (id, name, schoolId) => {
 
 /**
  * Update pupils assigned to group.
- * @param groupId
- * @param pupilIds
+ * @param {number} groupId
+ * @param {Array<number>} pupilIds
+ * @param {number} userId
  * @returns {Promise<boolean>}
  */
-groupDataService.sqlModifyGroupMembers = async (groupId, pupilIds) => {
+groupDataService.sqlModifyGroupMembers = async (groupId, pupilIds, userId) => {
   if (pupilIds.length < 1) {
     return false
   }
-  const groupIdParam =
-    {
+  const parameters =
+    [{
       name: 'groupId',
       value: groupId,
       type: TYPES.Int
-    }
+    },
+    {
+      name: 'userId',
+      value: userId,
+      type: TYPES.Int
+    }]
   const pupilIdValues = Object.values(pupilIds)
   const { params, paramIdentifiers } = sqlService.buildParameterList(pupilIdValues, TYPES.Int)
   const whereClause = 'WHERE id IN (' + paramIdentifiers.join(', ') + ')'
-  params.push(groupIdParam)
+  params.push(...parameters)
 
   // reset group members to none, then re-apply set
+  // note - do not set lastModifiedBy_userId in first statement, as it will create 2 audit entries
   let sql = `UPDATE mtc_admin.pupil SET group_id = NULL WHERE group_id = @groupId;
-     UPDATE mtc_admin.pupil SET group_id = @groupId ${whereClause};`
+     UPDATE mtc_admin.pupil SET group_id = @groupId, lastModifiedBy_userId=@userId ${whereClause};`
   const modifyResult = await sqlService.modifyWithTransaction(sql, params)
 
   sql = 'SELECT school_id FROM [mtc_admin].[group] WHERE id=@groupId'
@@ -269,7 +276,7 @@ groupDataService.sqlMarkGroupAsDeleted = async (groupId, schoolId) => {
       UPDATE [mtc_admin].[pupil]
          SET group_id=NULL
        WHERE group_id = @groupId;
-      
+
       DELETE [mtc_admin].[group]
        WHERE id = @groupId`
 

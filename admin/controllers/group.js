@@ -244,7 +244,7 @@ const editGroup = async function editGroup (req, res, next) {
   }
 
   try {
-    await groupService.update(req.body.groupId, group, req.user.schoolId)
+    await groupService.update(req.body.groupId, group, req.user.schoolId, req.user.id)
   } catch (error) {
     return next(error)
   }

@@ -121,6 +121,7 @@ describe('group.service', () => {
 
   describe('#update', () => {
     let service
+    let userId = 123
 
     describe('happy path', () => {
       beforeEach(() => {
@@ -136,16 +137,16 @@ describe('group.service', () => {
         const schoolId = 123
         const thisGroupMock = JSON.parse(JSON.stringify(groupMock))
         thisGroupMock.pupils = [2]
-        await service.update(1, thisGroupMock, schoolId)
+        await service.update(1, thisGroupMock, schoolId, userId)
         expect(groupDataService.sqlUpdate).toHaveBeenCalled()
-        expect(groupDataService.sqlModifyGroupMembers).toHaveBeenCalled()
+        expect(groupDataService.sqlModifyGroupMembers).toHaveBeenCalledWith(thisGroupMock.id, thisGroupMock.pupils, userId)
       })
 
       test('should update group (including pupils) when sent as an object', async () => {
         const schoolId = 123
         const thisGroupMock = JSON.parse(JSON.stringify(groupMock))
         thisGroupMock.pupils = { 2: 2 }
-        await service.update(1, thisGroupMock, schoolId)
+        await service.update(1, thisGroupMock, schoolId, userId)
         expect(groupDataService.sqlUpdate).toHaveBeenCalled()
         expect(groupDataService.sqlModifyGroupMembers).toHaveBeenCalled()
       })
@@ -154,7 +155,7 @@ describe('group.service', () => {
         const schoolId = 123
         const thisGroupMock = JSON.parse(JSON.stringify(groupMock))
         thisGroupMock.pupils = [3]
-        await service.update(1, thisGroupMock, schoolId)
+        await service.update(1, thisGroupMock, schoolId, userId)
         expect(groupDataService.sqlUpdate).toHaveBeenCalled()
         expect(groupDataService.sqlModifyGroupMembers).toHaveBeenCalledTimes(0)
       })
@@ -163,7 +164,7 @@ describe('group.service', () => {
         const schoolId = 123
         const thisGroupMock = JSON.parse(JSON.stringify(groupMock))
         thisGroupMock.name = 'Test '
-        await service.update(1, thisGroupMock, schoolId)
+        await service.update(1, thisGroupMock, schoolId, userId)
         expect(groupDataService.sqlUpdate).toHaveBeenCalledWith(thisGroupMock.id, 'Test', schoolId)
       })
     })
@@ -177,13 +178,23 @@ describe('group.service', () => {
         jest.spyOn(redisKeyService, 'getPupilRegisterViewDataKey').mockImplementation()
       })
 
+      test('should return an error if userId is missing', async () => {
+        const schoolId = 456
+        try {
+          await service.update(1, groupMock, schoolId, undefined)
+          fail('error not thrown')
+        } catch (error) {
+          expect(error.message).toEqual('id, group.name, schoolId and userId are required')
+        }
+      })
+
       test('should return an error if schoolId is missing', async () => {
         const schoolId = null
         try {
-          await service.update(1, groupMock, schoolId)
+          await service.update(1, groupMock, schoolId, userId)
           fail('error not thrown')
         } catch (error) {
-          expect(error.message).toEqual('id, group.name and schoolId are required')
+          expect(error.message).toEqual('id, group.name, schoolId and userId are required')
         }
       })
     })
@@ -200,7 +211,7 @@ describe('group.service', () => {
       test('should not update group', async () => {
         try {
           const schoolId = 123
-          const group = await service.update(1, groupMock, schoolId)
+          const group = await service.update(1, groupMock, schoolId, userId)
           fail('error not thrown')
           expect(group).toEqual(groupMock)
         } catch (error) {
@@ -244,10 +255,20 @@ describe('group.service', () => {
         jest.spyOn(redisKeyService, 'getPupilRegisterViewDataKey').mockImplementation()
       })
 
-      test('should return an error if groupName or schoolId are missing', async () => {
+      test('should return an error if schoolId is missing', async () => {
         const schoolId = null
         try {
           await service.create(groupMock.name, [6, 2, 3], schoolId)
+          fail('error not thrown')
+        } catch (error) {
+          expect(error.message).toEqual('groupName and schoolId are required')
+        }
+      })
+
+      test('should return an error if groupName is missing', async () => {
+        const schoolId = 123
+        try {
+          await service.create(undefined, [6, 2, 3], schoolId)
           fail('error not thrown')
         } catch (error) {
           expect(error.message).toEqual('groupName and schoolId are required')
