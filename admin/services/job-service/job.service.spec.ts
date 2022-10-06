@@ -1,8 +1,8 @@
 import AdmZip from 'adm-zip'
 import moment from 'moment-timezone'
-const dateService = require('../date.service')
 import { IJobData, JobDataService } from './data-access/job.data.service'
 import { JobService as sut } from './job.service'
+const dateService = require('../date.service')
 
 describe('Job Service', () => {
   afterEach(() => {

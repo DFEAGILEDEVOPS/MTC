@@ -11,7 +11,7 @@ const { PupilFrozenService } = require('../../../services/pupil-frozen.service/p
 function setupDefaultSpies () {
   jest.spyOn(dataService, 'getPupilIdAndCurrentCheckIdByUrlSlug').mockResolvedValue([{
     id: pupilId,
-    currentCheckId: currentCheckId
+    currentCheckId
   }])
   jest.spyOn(dataService, 'markLatestCompleteCheckAsInputAssistantAddedRetrospectively').mockImplementation()
   jest.spyOn(dataService, 'deleteRetroInputAssistant').mockImplementation()

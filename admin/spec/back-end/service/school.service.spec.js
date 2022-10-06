@@ -29,7 +29,7 @@ describe('school.service', () => {
       const schoolName = 'school1'
       const school = {
         id: 123,
-        dfeNumber: dfeNumber,
+        dfeNumber,
         name: schoolName
       }
       jest.spyOn(schoolDataService, 'sqlFindOneByDfeNumber').mockResolvedValue(school)
@@ -228,7 +228,7 @@ describe('school.service', () => {
     const createdAt = moment('2022-01-02 14:53:05')
     beforeEach(() => {
       jest.spyOn(schoolAuditDataService, 'getSummary').mockResolvedValue([{
-        createdAt: createdAt,
+        createdAt,
         auditOperation: auditOperationTypes.update,
         user: 'foo bar'
       }])

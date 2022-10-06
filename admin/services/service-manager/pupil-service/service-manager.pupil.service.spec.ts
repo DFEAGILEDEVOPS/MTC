@@ -13,6 +13,7 @@ describe('service manager pupil service', () => {
 
   describe('findPupilByUpn', () => {
     test('error is thrown if upn is undefined', async () => {
+      // @ts-ignore:next-line assert if undefined handled correctly at runtime
       await expect(ServiceManagerPupilService.findPupilByUpn(undefined)).rejects.toThrow('upn is required')
     })
     test('error is thrown if upn is empty string', async () => {
@@ -97,7 +98,7 @@ describe('service manager pupil service', () => {
           loadingTimeLimit: 3,
           questionTimeLimit: 6,
           checkTimeLimit: 30
-      })
+        })
     })
 
     test('validates the url slug as uuid', async () => {
@@ -105,10 +106,10 @@ describe('service manager pupil service', () => {
       await expect(ServiceManagerPupilService.getPupilDetailsByUrlSlug(invalidUuid)).rejects.toThrow(`${invalidUuid} is not a valid UUID`)
     })
 
-    test('returns undefined if nothing found', async () => {
+    test('throws error if nothing found', async () => {
       jest.spyOn(ServiceManagerPupilDataService, 'getPupilByUrlSlug').mockResolvedValue([])
       await expect(ServiceManagerPupilService.getPupilDetailsByUrlSlug('455cc6b4-a688-469a-ab72-9c7e137a1ea8'))
-        .resolves.toBeUndefined()
+        .rejects.toThrow('no pupil found with specified urlSlug')
     })
 
     test('maps raw data to return object', async () => {
@@ -156,7 +157,7 @@ describe('service manager pupil service', () => {
       }
       jest.spyOn(ServiceManagerPupilDataService, 'getPupilByUrlSlug').mockResolvedValue([expected])
       const pupilDetails = await ServiceManagerPupilService.getPupilDetailsByUrlSlug(mockPupilDetailsData.urlSlug)
-      expect(pupilDetails.status).toStrictEqual('Not started')
+      expect(pupilDetails.status).toBe('Not started')
     })
   })
 })

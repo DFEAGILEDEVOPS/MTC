@@ -28,7 +28,7 @@ const controller = {
     }
     return res.render('access-arrangements/retro-add-input-assistant', {
       breadcrumbs: req.breadcrumbs(),
-      pupils: pupils,
+      pupils,
       error: error || new ValidationError(),
       formData: req.body
     })

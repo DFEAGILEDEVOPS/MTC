@@ -119,10 +119,9 @@ module Helpers
   end
 
   def start_mtc
-    check_code = (JSON.parse page.evaluate_script('window.localStorage.getItem("pupil");'))['checkCode']
-    expect(SqlDbHelper.get_check(check_code)['startedAt']).to be_nil
+    @check_code = (JSON.parse page.evaluate_script('window.localStorage.getItem("pupil");'))['checkCode']
+    expect(SqlDbHelper.get_check(@check_code)['startedAt']).to be_nil
     mtc_check_start_page.start_now.click
-    wait_until{!SqlDbHelper.get_check(check_code)['startedAt'].nil?}
   end
 
 end

@@ -15,12 +15,12 @@ export class JobService {
     })
   }
 
-  public static async getJobOutputs (jobSlug: string): Promise<Buffer> {
+  public static async getJobOutputs (jobSlug: string): Promise<Buffer | undefined> {
     const data = await JobDataService.getJobOutput(jobSlug)
     if (data === undefined) return undefined
     const zipFile = new AdmZip()
-    let output = data.output ?? ''
-    let errorInfo = data.errorInfo ?? ''
+    const output = data.output ?? ''
+    const errorInfo = data.errorInfo ?? ''
     zipFile.addFile('output.txt', Buffer.from(output))
     zipFile.addFile('error.txt', Buffer.from(errorInfo))
     return zipFile.toBuffer()
