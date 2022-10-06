@@ -1,7 +1,7 @@
 const sqlService = require('../data-access/sql.service')
 
 export interface TypeOfEstablishmentData {
-  code: number,
+  code: number
   name: string
 }
 

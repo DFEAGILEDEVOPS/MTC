@@ -110,7 +110,7 @@ const controller = {
       res.locals.pageTitle = 'Edit service message'
       req.breadcrumbs(res.locals.pageTitle)
       res.render('service-message/service-message-form', {
-        err: err,
+        err,
         formData: {
           serviceMessageTitle: serviceMessageMarkdown.title,
           serviceMessageContent: serviceMessageMarkdown.message,

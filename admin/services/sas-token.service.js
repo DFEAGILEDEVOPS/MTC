@@ -54,7 +54,7 @@ const sasTokenService = {
     const tokenObject = {
       token: parts[1],
       url: parts[0],
-      queueName: queueName
+      queueName
     }
 
     // Store the sasToken in redis
