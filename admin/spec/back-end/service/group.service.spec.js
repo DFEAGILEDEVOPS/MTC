@@ -121,7 +121,7 @@ describe('group.service', () => {
 
   describe('#update', () => {
     let service
-    let userId = 123
+    const userId = 123
 
     describe('happy path', () => {
       beforeEach(() => {
@@ -223,11 +223,13 @@ describe('group.service', () => {
 
   describe('#create', () => {
     let service
+    const userId = 456
+    const createdGroupId = 789
 
     describe('happy path', () => {
       beforeEach(() => {
         service = require('../../../services/group.service')
-        jest.spyOn(groupDataService, 'sqlCreate').mockResolvedValue({ insertId: 1 })
+        jest.spyOn(groupDataService, 'sqlCreate').mockResolvedValue({ insertId: createdGroupId })
         jest.spyOn(groupDataService, 'sqlModifyGroupMembers').mockImplementation()
         jest.spyOn(redisCacheService, 'drop').mockImplementation()
         jest.spyOn(redisKeyService, 'getPupilRegisterViewDataKey').mockImplementation()
@@ -235,14 +237,21 @@ describe('group.service', () => {
 
       test('should create group', async () => {
         const schoolId = 123
-        const group = await service.create(groupMock.name, [6, 2, 3], schoolId)
-        expect(group).toEqual(groupMock.id)
+        const group = await service.create(groupMock.name, [6, 2, 3], schoolId, userId)
+        expect(group).toEqual(createdGroupId)
       })
 
       test('should trim whitespace from name', async () => {
         const schoolId = 123
-        await service.create('Test ', [6, 2, 3], schoolId)
+        await service.create('Test ', [6, 2, 3], schoolId, userId)
         expect(groupDataService.sqlCreate).toHaveBeenCalledWith({ name: 'Test', school_id: schoolId })
+      })
+
+      test('should call data service to add group members', async () => {
+        const schoolId = 123
+        const pupils = [6, 2, 3]
+        await service.create('my group', pupils, schoolId, userId)
+        expect(groupDataService.sqlModifyGroupMembers).toHaveBeenCalledWith(createdGroupId, pupils, userId)
       })
     })
 
@@ -258,20 +267,30 @@ describe('group.service', () => {
       test('should return an error if schoolId is missing', async () => {
         const schoolId = null
         try {
-          await service.create(groupMock.name, [6, 2, 3], schoolId)
+          await service.create(groupMock.name, [6, 2, 3], schoolId, userId)
           fail('error not thrown')
         } catch (error) {
-          expect(error.message).toEqual('groupName and schoolId are required')
+          expect(error.message).toEqual('groupName, schoolId and userId are required')
         }
       })
 
       test('should return an error if groupName is missing', async () => {
         const schoolId = 123
         try {
-          await service.create(undefined, [6, 2, 3], schoolId)
+          await service.create(undefined, [6, 2, 3], schoolId, userId)
           fail('error not thrown')
         } catch (error) {
-          expect(error.message).toEqual('groupName and schoolId are required')
+          expect(error.message).toEqual('groupName, schoolId and userId are required')
+        }
+      })
+
+      test('should return an error if userId is missing', async () => {
+        const schoolId = 123
+        try {
+          await service.create(undefined, [6, 2, 3], schoolId, undefined)
+          fail('error not thrown')
+        } catch (error) {
+          expect(error.message).toEqual('groupName, schoolId and userId are required')
         }
       })
     })
@@ -288,7 +307,7 @@ describe('group.service', () => {
       test('should fail to create a group', async () => {
         try {
           const schoolId = 123
-          await service.create(groupMock.name, [6, 2, 3], schoolId)
+          await service.create(groupMock.name, [6, 2, 3], schoolId, userId)
           fail('error not thrown')
         } catch (error) {
           expect(error.message).toBe('Failed to create group')

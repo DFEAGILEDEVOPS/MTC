@@ -100,18 +100,19 @@ groupService.update = async (id, group, schoolId, userId) => {
 
 /**
  * Create group.
- * @param groupName
+ * @param {string} groupName
  * @param groupPupils
  * @param schoolId
+ * @param userId
  * @returns {Promise<number>} id of inserted group
  */
-groupService.create = async (groupName, groupPupils, schoolId) => {
-  if (!groupName || !schoolId) {
-    throw new Error('groupName and schoolId are required')
+groupService.create = async (groupName, groupPupils, schoolId, userId) => {
+  if (!groupName || !schoolId || !userId) {
+    throw new Error('groupName, schoolId and userId are required')
   }
   groupName = groupName.trim()
   const newGroup = await groupDataService.sqlCreate({ name: groupName, school_id: schoolId })
-  await groupDataService.sqlModifyGroupMembers(newGroup.insertId, groupPupils)
+  await groupDataService.sqlModifyGroupMembers(newGroup.insertId, groupPupils, userId)
   const pupilRegisterRedisKey = redisKeyService.getPupilRegisterViewDataKey(schoolId)
   await redisCacheService.drop(pupilRegisterRedisKey)
   return newGroup.insertId

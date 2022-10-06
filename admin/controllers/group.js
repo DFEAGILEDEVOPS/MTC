@@ -164,7 +164,7 @@ const addGroup = async function addGroup (req, res, next) {
   }
   let groupId
   try {
-    groupId = await groupService.create(group.name, group.pupils, req.user.schoolId)
+    groupId = await groupService.create(group.name, group.pupils, req.user.schoolId, req.user.id)
   } catch (error) {
     return next(error)
   }
