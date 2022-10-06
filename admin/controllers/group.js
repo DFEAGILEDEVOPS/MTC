@@ -263,7 +263,7 @@ const removeGroup = async function (req, res, next) {
   try {
     const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
     await businessAvailabilityService.determineGroupsEligibility(checkWindowData)
-    await groupService.remove(req.user.schoolId, parseInt(req.params.groupId, 10))
+    await groupService.remove(req.user.schoolId, parseInt(req.params.groupId, 10), parseInt(req.user.id, 10))
   } catch (error) {
     return next(error)
   }

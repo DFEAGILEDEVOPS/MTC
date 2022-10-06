@@ -397,14 +397,19 @@ describe('group.service', () => {
       }
     })
 
+    test('should throw if userId is not provided', async () => {
+      await expect(groupService.remove(123, 4, undefined)).rejects.toThrow('userId is required')
+    })
+
     test('should get the pupil register redis key, invalidate the relevant cache value and perform soft delete', async () => {
       const schoolId = 1
-      const groupId = 1
+      const groupId = 2
+      const userId = 3
       try {
-        await groupService.remove(schoolId, groupId)
+        await groupService.remove(schoolId, groupId, userId)
         expect(redisKeyService.getPupilRegisterViewDataKey).toHaveBeenCalled()
         expect(redisCacheService.drop).toHaveBeenCalled()
-        expect(groupDataService.sqlMarkGroupAsDeleted).toHaveBeenCalled()
+        expect(groupDataService.sqlMarkGroupAsDeleted).toHaveBeenCalledWith(groupId, schoolId, userId)
       } catch (error) {
         fail()
       }

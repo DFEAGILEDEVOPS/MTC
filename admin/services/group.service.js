@@ -153,20 +153,24 @@ groupService.assignGroupsToPupils = async (schoolId, pupils) => {
 
 /**
  * Remove existing group
- * @param schoolId
- * @param groupId
- * @returns {Promise<*>}
+ * @param {number} schoolId
+ * @param {number} groupId
+ * @param {number} userId
+ * @returns {Promise<any>}
  */
-groupService.remove = async (schoolId, groupId) => {
+groupService.remove = async (schoolId, groupId, userId) => {
   if (!schoolId) {
     throw new Error('schoolId is required')
   }
   if (!groupId) {
     throw new Error('groupId is required')
   }
+  if (!userId) {
+    throw new Error('userId is required')
+  }
   const pupilRegisterRedisKey = redisKeyService.getPupilRegisterViewDataKey(schoolId)
   await redisCacheService.drop(pupilRegisterRedisKey)
-  return groupDataService.sqlMarkGroupAsDeleted(groupId, schoolId)
+  return groupDataService.sqlMarkGroupAsDeleted(groupId, schoolId, userId)
 }
 
 module.exports = groupService

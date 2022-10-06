@@ -244,9 +244,10 @@ groupDataService.sqlFindPupilsInNoGroupOrSpecificGroup = async (schoolId, groupI
  * Soft deletes a group.
  * @param {number} groupId the id of the group to mark as deleted
  * @param {number} schoolId - the guaranteed schoolId of the teacher
+ * @param {number} userId - the user deleting the group
  * @returns {Promise<*>}
  */
-groupDataService.sqlMarkGroupAsDeleted = async (groupId, schoolId) => {
+groupDataService.sqlMarkGroupAsDeleted = async (groupId, schoolId, userId) => {
   if (!isPositive(schoolId)) {
     throw new Error('Param error schoolId')
   }
@@ -265,6 +266,11 @@ groupDataService.sqlMarkGroupAsDeleted = async (groupId, schoolId) => {
       name: 'schoolId',
       value: schoolId,
       type: TYPES.Int
+    },
+    {
+      name: 'userId',
+      value: userId,
+      type: TYPES.Int
     }
   ]
   const sql = `
@@ -274,7 +280,8 @@ groupDataService.sqlMarkGroupAsDeleted = async (groupId, schoolId) => {
           THROW 51000, 'FORBIDDEN: the user is not allowed to edit this group', 1;
 
       UPDATE [mtc_admin].[pupil]
-         SET group_id=NULL
+         SET group_id=NULL,
+         lastModifiedBy_userId=@userId
        WHERE group_id = @groupId;
 
       DELETE [mtc_admin].[group]
