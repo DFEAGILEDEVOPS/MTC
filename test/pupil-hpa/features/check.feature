@@ -16,6 +16,7 @@ Feature: Check questions
     Then the question should display for the configured number of seconds
     And I should be moved to the next question
 
+
   Scenario: Route remains /check during the check
     Given I have started the check
     Then the route remains the same
@@ -43,6 +44,7 @@ Feature: Check questions
     Given I am on the MTC check start page
     Then I should see the number of questions
 
+  @check_started
   Scenario Outline: Pupil Score is calculated after the check is completed
     Given I have just completed the check with only <correct_answers> correct answers
     Then my score should be calculated as <correct_answers> and stored
