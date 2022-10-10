@@ -4662,10 +4662,10 @@ queue-microtask@^1.2.2:
   resolved "https://registry.yarnpkg.com/queue-microtask/-/queue-microtask-1.2.3.tgz#4929228bbc724dfac43e0efb058caf7b6cfb6243"
   integrity sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==
 
-ramda-adjunct@^3.2.0:
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/ramda-adjunct/-/ramda-adjunct-3.2.0.tgz#bd4f9d95ae24bb1d4c0b4a9429766a81da90788d"
-  integrity sha512-lfpDz3VX5vS5YE1pgLYHOqWiX8+0gKnCDbm/DpIYpMsWx90g2I5c5/SfgUojjt3P4GidRauJrPc5OY2aoeLrWw==
+ramda-adjunct@^3.3.0:
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/ramda-adjunct/-/ramda-adjunct-3.3.0.tgz#647c0cd4945b354cc179d583ead877fe0dce76a7"
+  integrity sha512-ycIrNN0rEsBKQ8CD0ZMhmGPTdZulQe20Aj4bZxVP2dWVnZRVe5dR4EedhIc0YxJW8pr7ljaaJ8/KR0VFHfjTLw==
 
 ramda@^0.28.0:
   version "0.28.0"
