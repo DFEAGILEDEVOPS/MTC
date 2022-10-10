@@ -56,7 +56,9 @@ describe('RegisterInputService', () => {
       service.storeEntry(entry.input, entry.eventType, entry.sequenceNumber, entry.question, now)
       expect(storageServiceSetInputSpy).toHaveBeenCalledTimes(1)
       const arg = storageServiceSetInputSpy.calls.all()[0].args[0]
-      expect(arg).toEqual(jasmine.objectContaining(entry))
+      const entryWithoutTimestamp = JSON.parse(JSON.stringify(entry))
+      delete entryWithoutTimestamp.clientTimestamp
+      expect(arg).toEqual(jasmine.objectContaining(entryWithoutTimestamp)) // clientTimestamp is currently unused
     }))
 
   it('StoreEntry will generate new Date if the event timestamp is undefined',

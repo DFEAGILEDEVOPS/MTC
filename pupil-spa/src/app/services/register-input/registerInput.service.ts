@@ -7,6 +7,14 @@ export class RegisterInputService {
   constructor(protected storageService: StorageService,
               protected monotonicTimeService: MonotonicTimeService) {}
 
+  /**
+   * Note: the eventTimeStamp is ignored for now.
+   * @param eventValue
+   * @param eventType
+   * @param questionNumber
+   * @param question
+   * @param eventTimeStamp
+   */
   public storeEntry(eventValue: string, eventType: string, questionNumber: number, question: string, eventTimeStamp: number = null) {
     const monotonicTime = this.monotonicTimeService.getMonotonicDateTime()
     let eventDate: Date
