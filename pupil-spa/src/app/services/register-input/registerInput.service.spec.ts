@@ -3,7 +3,6 @@ import { TestBed, inject } from '@angular/core/testing'
 import { RegisterInputService } from './registerInput.service'
 import { StorageService } from '../storage/storage.service'
 import { MonotonicTimeService } from '../monotonic-time/monotonic-time.service'
-import { MonotonicTime } from '../../monotonic-time'
 
 let mockStorageService: StorageService
 
@@ -45,7 +44,8 @@ describe('RegisterInputService', () => {
 
   it('StoreEntry should store entry',
     inject([TestRegisterInputService], (service: TestRegisterInputService) => {
-      const d1 = new Date()
+      const now = performance.now()
+      const d1 = new Date(now + performance.timeOrigin)
       const entry = {
         input: '0',
         eventType: 'keydown',
@@ -53,7 +53,7 @@ describe('RegisterInputService', () => {
         question: '2x3',
         sequenceNumber: 7,
       }
-      service.storeEntry(entry.input, entry.eventType, entry.sequenceNumber, entry.question, d1.valueOf())
+      service.storeEntry(entry.input, entry.eventType, entry.sequenceNumber, entry.question, now)
       expect(storageServiceSetInputSpy).toHaveBeenCalledTimes(1)
       const arg = storageServiceSetInputSpy.calls.all()[0].args[0]
       expect(arg).toEqual(jasmine.objectContaining(entry))

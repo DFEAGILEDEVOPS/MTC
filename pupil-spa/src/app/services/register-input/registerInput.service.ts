@@ -8,13 +8,15 @@ export class RegisterInputService {
               protected monotonicTimeService: MonotonicTimeService) {}
 
   public storeEntry(eventValue: string, eventType: string, questionNumber: number, question: string, eventTimeStamp: number = null) {
-    // event.timestamp is now being changed to be a DOMHiResTimestamp
     const monotonicTime = this.monotonicTimeService.getMonotonicDateTime()
     let eventDate: Date
     if (eventTimeStamp === null) {
       eventDate = monotonicTime.getLegacyDate()
     } else {
-      eventDate = new Date(eventTimeStamp)
+      // In theory, and AIUI, this ought to work.  It doesn't - it can be several hours out.
+      // eventDate = new Date(Math.round(eventTimeStamp + performance.timeOrigin))
+      // Here is the fix:
+      eventDate = monotonicTime.getLegacyDate()
     }
     const questionInput = {
       input: eventValue,
