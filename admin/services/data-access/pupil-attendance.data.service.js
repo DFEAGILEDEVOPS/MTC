@@ -190,7 +190,8 @@ pupilAttendanceDataService.markAsNotAttending = async (slugs, code, userId, scho
   SET
       attendanceId = t1.attendanceCode_id,
       restartAvailable = 0,
-      checkComplete = 0
+      checkComplete = 0,
+      lastModifiedBy_userId = t1.recordedBy_user_id
   FROM
       [mtc_admin].[pupil] p JOIN
       #pupilsToSet t1 ON (p.id = t1.id)
