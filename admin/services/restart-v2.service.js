@@ -28,12 +28,13 @@ module.exports.getRestartsForSchool = async function getRestartsForSchool (schoo
       totalCheckCount: R.isNil(r.totalCheckCount) ? 0 : r.totalCheckCount,
       status: ''
     }
-    if (r.isDiscretionaryRestartAvailable || r.restartCheckPupilLoginDate !== null) {
+
+    if ((r.totalCheckCount >= config.RESTART_MAX_ATTEMPTS + 1) && !r.isDiscretionaryRestartAvailable) {
+      update.status = 'Maximum number of restarts taken'
+    } else if (r.isDiscretionaryRestartAvailable || r.restartCheckPupilLoginDate !== null) {
       update.status = 'Restart taken'
     } else if (r.restartCheckId === null || (r.restartCheckReceived === false && r.restartCheckComplete === false)) {
       update.status = 'Remove restart'
-    } else if (r.totalCheckCount >= config.RESTART_MAX_ATTEMPTS + 1) {
-      update.status = 'Maximum number of restarts taken'
     } else {
       update.status = 'Restart taken'
     }
