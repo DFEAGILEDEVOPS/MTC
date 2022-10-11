@@ -20,7 +20,8 @@ pupilAttendanceDataService.sqlUpdateBatch = async (pupilIds, attendanceCodeId, u
 
     UPDATE [mtc_admin].[pupil]
     SET
-        attendanceId = @attendanceCodeId
+        attendanceId = @attendanceCodeId,
+        lastModifiedBy_userId = @userId
     WHERE
         id IN (${where.paramIdentifiers.join(', ')});
   `
