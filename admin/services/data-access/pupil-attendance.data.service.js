@@ -32,9 +32,12 @@ pupilAttendanceDataService.sqlUpdateBatch = async (pupilIds, attendanceCodeId, u
   return sqlService.modifyWithTransaction(update, R.concat(params, where.params))
 }
 
-pupilAttendanceDataService.sqlDeleteOneByPupilId = async (pupilId) => {
+pupilAttendanceDataService.sqlDeleteOneByPupilId = async (pupilId, userId) => {
   if (!pupilId) {
     throw new Error('pupilId is required for a DELETE')
+  }
+  if (!userId) {
+    throw new Error('userId is required for a DELETE')
   }
   const sql = `
   --
@@ -60,11 +63,22 @@ pupilAttendanceDataService.sqlDeleteOneByPupilId = async (pupilId) => {
   -- Maintain the pupil state
   --
   UPDATE [mtc_admin].[pupil]
-  SET attendanceId = NULL
+  SET attendanceId = NULL,
+  lastModifiedBy_userId = @userId
   WHERE id = @pupilId;
   `
-  const param = { name: 'pupilId', value: pupilId, type: TYPES.Int }
-  return sqlService.modifyWithTransaction(sql, [param])
+  const params = [
+    {
+      name: 'pupilId',
+      value: pupilId,
+      type: TYPES.Int
+    },
+    {
+      name: 'userId',
+      type: TYPES.Int,
+      value: userId
+    }]
+  return sqlService.modifyWithTransaction(sql, params)
 }
 
 /**
