@@ -9,7 +9,7 @@ end
 
 Then(/^they should be stored alongside the existing schools$/) do
   @urns_included_array = CSV.parse(File.read(@school_import)).map {|z| z[0] unless z[6] == '2' || z[0] == 'URN'}.compact
-  Timeout.timeout(ENV['WAIT_TIME'].to_i) {sleep 1 until !SqlDbHelper.find_school_by_urn(@urns_included_array[0]).nil?}
+  Timeout.timeout(ENV['WAIT_TIME'].to_i) {sleep 1 until !SqlDbHelper.find_school_by_urn(@urns_included_array.last).nil?}
   @urns_included_array.each do |urn|
     expect(SqlDbHelper.find_school_by_urn(urn)).to_not be_nil
   end

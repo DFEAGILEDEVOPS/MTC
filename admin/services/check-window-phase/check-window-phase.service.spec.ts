@@ -1,8 +1,8 @@
 import { CheckWindowPhaseService } from './check-window-phase.service'
 import * as checkWindowMocks from '../../spec/back-end/mocks/check-window'
+import * as checkWindowPhaseConsts from '../../lib/consts/check-window-phase'
 const checkWindowService = require('../check-window-v2.service')
 const settingsService = require('../setting.service')
-import * as checkWindowPhaseConsts from '../../lib/consts/check-window-phase'
 const sut = CheckWindowPhaseService
 
 describe('CheckWindowPhaseService', () => {

@@ -2,7 +2,6 @@ import moment from 'moment'
 import { TYPES } from '../../data-access/sql.service'
 const sqlService = require('../../data-access/sql.service')
 
-
 export interface IJobData {
   urlSlug: string
   createdAt: moment.Moment
@@ -39,7 +38,7 @@ export class JobDataService {
     })
   }
 
-  public static async getJobOutput (jobSlug: string): Promise<IJobOutput> {
+  public static async getJobOutput (jobSlug: string): Promise<IJobOutput | undefined> {
     const sql = `
       SELECT j.jobOutput, j.errorOutput
       FROM mtc_admin.job j
@@ -51,15 +50,15 @@ export class JobDataService {
         value: jobSlug
       }
     ]
-      const data = await sqlService.readonlyQuery(sql, params)
-      if (!Array.isArray(data)) {
-        return undefined
-      }
+    const data = await sqlService.readonlyQuery(sql, params)
+    if (!Array.isArray(data)) {
+      return undefined
+    }
 
-      const record = data[0]
-      return {
-        errorInfo: record.errorOutput,
-        output: record.jobOutput
-      }
+    const record = data[0]
+    return {
+      errorInfo: record.errorOutput,
+      output: record.jobOutput
+    }
   }
 }

@@ -3,11 +3,9 @@
         <div class="govuk-grid-column-two-thirds">
             <h1 class="govuk-heading-xl">The service is unavailable</h1>
             <%- partial('partials/_gds_session_expiry') %>
-            <% if(isBeforeStartDate) { %>
-                <p class="govuk-body">You will be able to use the service from <%= startDateFormatted %></p>
-            <% } else { %>
-                <p class="govuk-body">The service is now closed for the <%= academicYear %> test cycle.</p>
-            <% } %>
+
+            <p class="govuk-body">The service is closed.</p>
+
 
             <% if (isAuthenticated) { %>
                 <p><a class="govuk-link" href="/sign-out">Sign out</a></p>

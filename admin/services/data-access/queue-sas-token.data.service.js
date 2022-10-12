@@ -10,7 +10,7 @@ const service = {
     const permissions = new QueueSASPermissions()
     permissions.add = true
     return queueClient.generateSasUrl({
-      permissions: permissions,
+      permissions,
       startsOn: startDate,
       expiresOn: expiryDate
     })

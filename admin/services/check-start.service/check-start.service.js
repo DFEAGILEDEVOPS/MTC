@@ -225,7 +225,7 @@ const checkStartService = {
       pupil_id: pupilId,
       checkForm_id: checkForm.id,
       checkWindow_id: checkWindow.id,
-      isLiveCheck: isLiveCheck
+      isLiveCheck
     }
     checkData.pinExpiresAt = pinService.generatePinTimestamp(config.OverridePinExpiry, schoolTimezone)
     checkData.school_id = schoolId

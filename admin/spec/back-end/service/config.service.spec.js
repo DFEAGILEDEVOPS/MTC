@@ -16,7 +16,7 @@ describe('config service', () => {
       const pupilId = 5
       jest.spyOn(configDataService, 'getBatchConfig').mockResolvedValue(
         [{
-          pupilId: pupilId,
+          pupilId,
           schoolId: 18601,
           loadingTime: 1,
           questionTime: 2,
@@ -43,7 +43,7 @@ describe('config service', () => {
       const pupilId = 5
       jest.spyOn(configDataService, 'getBatchConfig').mockResolvedValue(
         [{
-          pupilId: pupilId,
+          pupilId,
           schoolId: 18601,
           loadingTime: 1,
           questionTime: 2,
@@ -61,7 +61,7 @@ describe('config service', () => {
       const pupilId = 5
       jest.spyOn(configDataService, 'getBatchConfig').mockResolvedValue(
         [{
-          pupilId: pupilId,
+          pupilId,
           schoolId: 18601,
           loadingTime: 1,
           questionTime: 2,
@@ -79,7 +79,7 @@ describe('config service', () => {
       const pupilId = 5
       jest.spyOn(configDataService, 'getBatchConfig').mockResolvedValue(
         [{
-          pupilId: pupilId,
+          pupilId,
           schoolId: 18601,
           loadingTime: 1,
           questionTime: 2,
@@ -98,7 +98,7 @@ describe('config service', () => {
       const pupilId = 5
       jest.spyOn(configDataService, 'getBatchConfig').mockResolvedValue(
         [{
-          pupilId: pupilId,
+          pupilId,
           schoolId: 18601,
           loadingTime: 1,
           questionTime: 2,
@@ -117,7 +117,7 @@ describe('config service', () => {
       const pupilId = 5
       jest.spyOn(configDataService, 'getBatchConfig').mockResolvedValue(
         [{
-          pupilId: pupilId,
+          pupilId,
           schoolId: 18601,
           loadingTime: 1,
           questionTime: 2,
@@ -136,7 +136,7 @@ describe('config service', () => {
       const pupilId = 5
       jest.spyOn(configDataService, 'getBatchConfig').mockResolvedValue(
         [{
-          pupilId: pupilId,
+          pupilId,
           schoolId: 18601,
           loadingTime: 1,
           questionTime: 2,
@@ -154,7 +154,7 @@ describe('config service', () => {
       const pupilId = 5
       jest.spyOn(configDataService, 'getBatchConfig').mockResolvedValue(
         [{
-          pupilId: pupilId,
+          pupilId,
           schoolId: 18601,
           loadingTime: 1,
           questionTime: 2,
@@ -172,7 +172,7 @@ describe('config service', () => {
       const pupilId = 5
       jest.spyOn(configDataService, 'getBatchConfig').mockResolvedValue(
         [{
-          pupilId: pupilId,
+          pupilId,
           schoolId: 18601,
           loadingTime: 1,
           questionTime: 2,
@@ -191,7 +191,7 @@ describe('config service', () => {
       jest.spyOn(logger, 'error').mockImplementation()
       jest.spyOn(configDataService, 'getBatchConfig').mockResolvedValue(
         [{
-          pupilId: pupilId,
+          pupilId,
           schoolId: 18601,
           loadingTime: 1,
           questionTime: 2,
@@ -208,7 +208,7 @@ describe('config service', () => {
       const pupilId = 5
       jest.spyOn(configDataService, 'getBatchConfig').mockResolvedValue(
         [{
-          pupilId: pupilId,
+          pupilId,
           schoolId: 18601,
           loadingTime: 5,
           questionTime: 7,

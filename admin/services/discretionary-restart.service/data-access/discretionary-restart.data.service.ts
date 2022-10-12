@@ -1,7 +1,7 @@
 const sqlService = require('../../data-access/sql.service')
 
 export class DiscretionaryRestartDataService {
-  public static async sqlGrantDiscretionaryRestart (pupilSlug: string):Promise<void> {
+  public static async sqlGrantDiscretionaryRestart (pupilSlug: string): Promise<void> {
     const sql = `
       UPDATE [mtc_admin].[pupil]
       SET isDiscretionaryRestartAvailable = 1
@@ -14,7 +14,7 @@ export class DiscretionaryRestartDataService {
     return sqlService.modify(sql, params)
   }
 
-  public static async sqlRevokeDiscretionaryRestart (pupilSlug: string):Promise<void> {
+  public static async sqlRevokeDiscretionaryRestart (pupilSlug: string): Promise<void> {
     const sql = `
       UPDATE [mtc_admin].[pupil]
       SET isDiscretionaryRestartAvailable = 0

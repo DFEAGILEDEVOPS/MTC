@@ -122,7 +122,7 @@ const resultService = {
     const data = await resultDataService.sqlFindPupilResultsForSchool(schoolId)
     return {
       generatedAt: moment(),
-      schoolId: schoolId,
+      schoolId,
       // @ts-ignore - ignore
       pupils: pupilIdentificationFlagService.sortAndAddIdentificationFlags(this.createPupilData(data))
     }

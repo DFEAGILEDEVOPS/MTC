@@ -1,84 +1,70 @@
-import moment from 'moment';
+import moment from 'moment'
 const sqlService = require('../../data-access/sql.service')
 const uuidValidate = require('uuid-validate')
 const R = require('ramda')
 
 export interface IPupilHistoryCheckData {
-  id: number,
-  createdAt: moment.Moment
-  updatedAt: moment.Moment,
-  pupilId: number,
-  checkCode: string,
-  checkWindowId: number,
-  checkFormId: number,
-  pupilLoginDate: null | moment.Moment,
-  receivedByServerAt: null | moment.Moment,
-  isLiveCheck: boolean,
-  received: boolean,
-  complete: boolean,
-  completedAt: null | moment.Moment,
-  processingFailed: boolean,
-  createdByUserId: number,
-  inputAssistantAddedRetrospectively: boolean,
-  resultsSynchronised: boolean
+  id: number
+  checkCode: string
+  pupilLoginDate: null | moment.Moment
+  isLiveCheck: boolean
+  received: boolean
+  complete: boolean
+  processingFailed: boolean | null
+  checkStatus?: string
 }
 
 export interface IPupilHistoryPupilData {
-  id: number,
-  createdAt: moment.Moment,
-  updatedAt: moment.Moment,
-  schoolId: number,
-  foreName: string,
-  middleNames: string,
-  lastName: string,
-  gender: string,
-  dateOfBirth: moment.Moment,
-  upn: string,
-  urlSlug: string,
-  groupId: number | null,
-  currentCheckId: number | null,
-  checkComplete: boolean,
-  restartAvailable: boolean,
-  attendanceId: number | null,
-  foreNameAlias: string | null,
-  lastNameAlias: string | null,
+  id: number
+  createdAt: moment.Moment
+  foreName: string
+  middleNames: string
+  lastName: string
+  gender: string
+  dateOfBirth: moment.Moment
+  upn: string
+  urlSlug: string
+  currentCheckId: number | null
+  checkComplete: boolean
+  restartAvailable: boolean
+  attendanceId: number | null
+  foreNameAlias: string | null
+  lastNameAlias: string | null
   isDiscretionaryRestartAvailable: boolean
 }
 
 export interface IPupilHistorySchoolData {
-  id: number,
-  createdAt: moment.Moment,
-  updatedAt: moment.Moment,
-  leaCode: number,
-  estabCode: number,
-  name: string,
-  pin: string | null,
-  pinExpiresAt: moment.Moment | null,
-  urlSlug: string,
-  urn: number,
+  id: number
+  leaCode: number
+  estabCode: number
+  name: string
+  pin: string | null
+  pinExpiresAt: moment.Moment | null
+  urlSlug: string
+  urn: number
   dfeNumber: number
 }
 
 export interface IPupilHistoryRestartData {
-  id: number,
-  createdAt: moment.Moment,
-  updatedAt: moment.Moment,
-  pupilId: number,
-  restartReason: string,
-  restartReasonCode: string,
-  checkId: number,
+  id: number
+  createdAt: moment.Moment
+  updatedAt: moment.Moment
+  pupilId: number
+  restartReason: string
+  restartReasonCode: string
+  checkId: number
   originCheckId: number
 }
 
 export interface IPupilHistoryData {
-  pupil: IPupilHistoryPupilData,
+  pupil: IPupilHistoryPupilData
   checks: IPupilHistoryCheckData[]
-  school: IPupilHistorySchoolData
   restarts: IPupilHistoryRestartData[]
+  school: IPupilHistorySchoolData
 }
 
 export class PupilHistoryDataService {
-  public static async getPupil(pupilUuid: string): Promise<IPupilHistoryPupilData> {
+  public static async getPupil (pupilUuid: string): Promise<IPupilHistoryPupilData> {
     if (uuidValidate(pupilUuid) === false) {
       throw new Error(`UUID is not valid: ${pupilUuid}`)
     }
@@ -102,8 +88,6 @@ export class PupilHistoryDataService {
     const pupil: IPupilHistoryPupilData = {
       id: data[0].id as number,
       createdAt: data[0].createdAt,
-      updatedAt: data[0].updatedAt,
-      schoolId: data[0].school_id,
       foreName: data[0].foreName,
       middleNames: data[0].middleNames,
       lastName: data[0].lastName,
@@ -111,7 +95,6 @@ export class PupilHistoryDataService {
       dateOfBirth: data[0].dateOfBirth,
       upn: data[0].upn,
       urlSlug: data[0].urlSlug,
-      groupId: data[0].group_id,
       currentCheckId: data[0].currentCheckId,
       checkComplete: data[0].checkComplete,
       restartAvailable: data[0].restartAvailable,
@@ -145,7 +128,7 @@ export class PupilHistoryDataService {
       return []
     }
 
-    return data.map( o => {
+    const returnValue: IPupilHistoryCheckData[] = data.map(o => {
       return {
         checkCode: o.checkCode,
         checkFormId: o.checkForm_id,
@@ -163,9 +146,12 @@ export class PupilHistoryDataService {
         received: o.received,
         receivedByServerAt: o.receivedByServerAt,
         resultsSynchronised: o.resultsSynchronised,
-        updatedAt: o.updatedAt
+        updatedAt: o.updatedAt,
+        checkStatus: ''
       }
     })
+
+    return returnValue
   }
 
   public static async getSchool (pupilUuid: string): Promise<IPupilHistorySchoolData> {
@@ -209,7 +195,12 @@ export class PupilHistoryDataService {
     ]
 
     const data = await sqlService.readonlyQuery(sql, params)
-    return data.map( o => {
+
+    if (!Array.isArray(data)) {
+      return []
+    }
+
+    const returnValue: IPupilHistoryRestartData[] = data.map(o => {
       return {
         id: o.id,
         pupilId: o.pupil_id,
@@ -221,18 +212,20 @@ export class PupilHistoryDataService {
         originCheckId: o.originCheck_id
       }
     })
+
+    return returnValue
   }
 
   public static async getPupilHistory (pupilUuid: string): Promise<IPupilHistoryData> {
     const pupil = await PupilHistoryDataService.getPupil(pupilUuid)
     const checks = await PupilHistoryDataService.getChecks(pupilUuid)
-    const school = await PupilHistoryDataService.getSchool(pupilUuid)
     const restarts = await PupilHistoryDataService.getRestarts(pupilUuid)
+    const school = await PupilHistoryDataService.getSchool(pupilUuid)
     return {
       pupil,
       checks,
-      school,
-      restarts
+      restarts,
+      school
     }
   }
 }

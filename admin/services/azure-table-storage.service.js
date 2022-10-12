@@ -61,7 +61,7 @@ const azureTableStorageService = {
       timestamp: moment(rawMarkedCheck.timestamp),
       mark: rawMarkedCheck.mark,
       maxMarks: rawMarkedCheck.maxMarks,
-      markedAnswers: markedAnswers,
+      markedAnswers,
       markedAt: moment(rawMarkedCheck.markedAt)
     }
   },
@@ -93,7 +93,7 @@ const azureTableStorageService = {
       isValid: rawReceivedCheck.isValid,
       processingError: rawReceivedCheck.processingError,
       validatedAt: moment(rawReceivedCheck.validatedAt),
-      answers: answers
+      answers
     }
   },
 
