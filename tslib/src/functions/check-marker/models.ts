@@ -6,6 +6,12 @@ export interface ICheckMarkerFunctionBindings {
   checkResultTable: any[]
 }
 
+export interface IMonotonicTimeDto {
+  legacyDate: string // ISO format string
+  milliseconds: number
+  sequenceNumber: number
+}
+
 export interface Answer {
   factor1: number
   factor2: number
@@ -13,6 +19,7 @@ export interface Answer {
   sequenceNumber: number
   question: string
   clientTimestamp: string
+  monotonicTime?: IMonotonicTimeDto
 }
 
 export interface MarkedAnswer extends Answer {
