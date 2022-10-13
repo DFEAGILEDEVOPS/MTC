@@ -215,7 +215,11 @@ export class CheckMarkerV1 {
       if (aDate < bDate) {
         return -1
       } else if (aDate.getTime() === bDate.getTime()) {
-        return 0
+        if (a?.monotonicTime?.sequenceNumber !== undefined && b?.monotonicTime?.sequenceNumber !== undefined) {
+          return a.monotonicTime.sequenceNumber - b.monotonicTime.sequenceNumber
+        } else {
+          return 0
+        }
       }
       return 1
     }
