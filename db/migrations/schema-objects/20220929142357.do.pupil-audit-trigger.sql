@@ -21,7 +21,7 @@ BEGIN
         END
     ELSE
         BEGIN
-            -- I am a delete (not currently supported)
+            -- i am a delete
             SELECT @auditOperationTypeLookupId=3
         END
 
