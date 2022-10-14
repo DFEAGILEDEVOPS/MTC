@@ -165,6 +165,18 @@ export class CheckMarkerV1 {
       if (answerRecord !== undefined) {
         markedAnswer.answer = answerRecord.answer
         markedAnswer.clientTimestamp = answerRecord.clientTimestamp
+        if (answerRecord.monotonicTime !== undefined) {
+          markedAnswer.monotonicTime = {}
+          if (answerRecord.monotonicTime.milliseconds !== undefined) {
+            markedAnswer.monotonicTime.milliseconds = answerRecord.monotonicTime.milliseconds
+          }
+          if (answerRecord.monotonicTime.sequenceNumber !== undefined) {
+            markedAnswer.monotonicTime.sequenceNumber = answerRecord.monotonicTime.sequenceNumber
+          }
+          if (answerRecord.monotonicTime.legacyDate !== undefined) {
+            markedAnswer.monotonicTime.legacyDate = answerRecord.monotonicTime.legacyDate
+          }
+        }
       }
       const answer = answerRecord?.answer ?? ''
 

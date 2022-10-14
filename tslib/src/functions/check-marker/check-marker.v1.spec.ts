@@ -697,7 +697,12 @@ describe('check-marker/v1', () => {
       sequenceNumber: 1,
       question: '2x5',
       clientTimestamp: '2018-09-24T12:00:00.811Z',
-      isCorrect: false
+      isCorrect: false,
+      monotonicTime: {
+        milliseconds: 0,
+        legacyDate: '2018-09-24T12:00:00.811Z',
+        sequenceNumber: 1
+      }
     })
 
     expect(checkResult.mark).toBe(1)

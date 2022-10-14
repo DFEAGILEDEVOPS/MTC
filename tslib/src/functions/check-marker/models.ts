@@ -7,9 +7,9 @@ export interface ICheckMarkerFunctionBindings {
 }
 
 export interface IMonotonicTimeDto {
-  legacyDate: string // ISO format string
-  milliseconds: number
-  sequenceNumber: number
+  legacyDate?: string // ISO format string
+  milliseconds?: number
+  sequenceNumber?: number
 }
 
 export interface Answer {
