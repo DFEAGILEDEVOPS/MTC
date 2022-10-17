@@ -18,6 +18,15 @@ We install the current and last node versions on the build agent to ensure it ca
 
 The Circle CI base image for pull request testing must be updated to include the least supported version of node, plus current.  Details and instructions [here](!./../../deploy/docker/circleci-node-multi/README.md)
 
-## Ensure function apps runtime is compatible with Node JS runtime
+## Upgrade the Azure functions
+
+### Ensure function apps runtime is compatible with Node JS runtime
 
 https://learn.microsoft.com/en-us/azure/azure-functions/functions-versions?tabs=azure-cli%2Cwindows%2Cin-process%2Cv4&pivots=programming-language-javascript#changing-version-of-apps-in-azure
+
+### Update the release pipeline variables to the new Node JS version and function runtime
+
+within the VSO release library for each environment there are variables that cover the function runtime and node version respectively...
+
+`Functions.Runtime.Version`
+`Functions.Node.Version`
