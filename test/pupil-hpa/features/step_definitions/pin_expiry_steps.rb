@@ -92,7 +92,6 @@ When(/^I completed the check anyway$/) do
   warm_up_complete_page.start_check.click
 start_mtc
   check_page.complete_check_with_correct_answers(@questions.size, 'numpad')
-  # expect(complete_page).to have_completion_text
 end
 
 When(/^I start the check$/) do
@@ -116,4 +115,21 @@ Then(/^I should see the check start time is recorded$/) do
 
   check_start_time = Time.parse(local_storage.select {|a| a['type'] == 'CheckStarted'}.first['clientTimestamp'])
   expect((check_start_time - @time).to_i).to eql 0
+end
+
+Then(/^the pupil should be eligible for a live pin$/) do
+  navigate_to_pupil_list_for_pin_gen('live')
+  generate_pins_overview_page.generate_pin_using_name(@details_hash[:last_name] + ', ' + @details_hash[:first_name])
+  pupil_pin_row = view_and_custom_print_live_check_page.pupil_list.rows.find {|row| row.name.text == @details_hash[:last_name] + ', ' + @details_hash[:first_name]}
+  @new_pupil_credentials = {:school_password => pupil_pin_row.school_password.text, :pin => pupil_pin_row.pin.text}
+  expect(@new_pupil_credentials).to_not be_nil
+  expect(@new_pupil_credentials[:pin]).to_not eql @pupil_credentials[:pin]
+end
+
+Then(/^I should not see the remove restart button$/) do
+  visit ENV["ADMIN_BASE_URL"] + restarts_page.url
+  pupil_name = @details_hash[:first_name]
+  wait_until(5,1){(visit current_url; restarts_page.restarts_pupil_list.rows.find{|row| row.status.text.include? 'Restart taken'})}
+  pupil_row = restarts_page.restarts_pupil_list.rows.find{|row| row.name.text.include? pupil_name}
+  expect(pupil_row.status.text).to eql 'Restart taken'
 end
