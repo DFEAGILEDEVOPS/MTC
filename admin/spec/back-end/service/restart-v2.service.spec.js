@@ -75,14 +75,14 @@ describe('restart-v2.service', () => {
       expect(res[0].status).toBe('Remove restart')
     })
 
-    test('it allows a restart to be deleted when it has a check raised against it and the pupil has logged in', async () => {
+    test('it does not allow a restart to be deleted when it has a check raised against it and the pupil has logged in', async () => {
       sample.restartCheckId = 1
       sample.restartCheckPupilLoginDate = moment()
       sample.restartCheckReceived = false
       sample.restartCheckComplete = false
       jest.spyOn(restartDataService, 'getRestartsForSchool').mockResolvedValue([sample])
       const res = await sut.getRestartsForSchool(1)
-      expect(res[0].status).toBe('Remove restart')
+      expect(res[0].status).toBe('Restart taken')
     })
 
     test('it informs the user when the number of restarts has reached the maximum limit', async () => {

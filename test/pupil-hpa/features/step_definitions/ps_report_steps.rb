@@ -65,7 +65,7 @@ Then(/^I should see a record for the pupil in the ps report table$/) do
     question = index + 1
     expect(ps_report_record["Q#{question}ID"]).to eql check_inputs.nil? ? nil : check_inputs.find {|inputs| inputs["questionNumber"] == question}["question"]
     expect(ps_report_record["Q#{question}Response"]).to eql check_answers.nil? ? nil : check_answers.find {|answer| answer["questionNumber"] == question}["answer"]
-    input_methods = check_inputs.select {|inputs| inputs["questionNumber"] == question}.map{|input| input['name']}.uniq unless check_inputs.nil?
+    input_methods = check_inputs.select {|inputs| inputs["questionNumber"] == question}.map {|input| input['name']}.uniq unless check_inputs.nil?
     expect(ps_report_record["Q#{question}InputMethods"]).to eql check_inputs.nil? ? nil : input_methods.size > 1 ? 'x' : input_methods.first.first.downcase
     expect(ps_report_record["Q#{question}K"]).to eql check_inputs.nil? ? nil : check_inputs.select {|input| input["questionNumber"] == question}.map {|input| input["name"].first.downcase + "[#{input["userInput"]}]"}.join(", ")
     expect(ps_report_record["Q#{question}Sco"]).to eql check_answers.nil? ? nil : check_answers.find {|answer| answer["questionNumber"] == question}["isCorrect"] ? 1 : 0
@@ -99,7 +99,7 @@ And(/^I complete the check$/) do
   warm_up_page.start_now.click
   step "I complete the warm up questions using the numpad"
   warm_up_complete_page.start_check.click
-start_mtc
+  start_mtc
   @answers = check_page.complete_check_with_correct_answers(25, 'keyboard')
   complete_page.wait_for_complete_page
   expect(complete_page).to have_heading
@@ -153,7 +153,7 @@ When(/^I consume a restart using (.+) and complete the check a second time$/) do
   warm_up_page.start_now.click
   step "I complete the warm up questions using the keyboard"
   warm_up_complete_page.start_check.click
-start_mtc
+  start_mtc
   step 'I should be able to use the on screen keyboard to complete the test'
   storage_pupil = JSON.parse page.evaluate_script('window.localStorage.getItem("pupil");')
   @second_check_code = storage_pupil['checkCode']
@@ -179,7 +179,7 @@ And(/^I consume another restart using IT issues and complete the check a third t
   warm_up_page.start_now.click
   step "I complete the warm up questions using the keyboard"
   warm_up_complete_page.start_check.click
-start_mtc
+  start_mtc
   step 'I should be able to use the on screen keyboard to complete the test'
   storage_pupil = JSON.parse page.evaluate_script('window.localStorage.getItem("pupil");')
   @third_check_code = storage_pupil['checkCode']
@@ -219,7 +219,7 @@ When(/^the pupil completes the check$/) do
   warm_up_page.start_now.click
   step "I complete the warm up questions using the keyboard"
   warm_up_complete_page.start_check.click
-start_mtc
+  start_mtc
   questions = JSON.parse page.evaluate_script('window.localStorage.getItem("questions");')
   check_page.complete_check_with_correct_answers(questions.size, 'numpad')
   complete_page.wait_for_complete_page
@@ -265,7 +265,7 @@ And(/^complete the check$/) do
   warm_up_page.start_now.click
   step "I complete the warm up questions using the numpad"
   warm_up_complete_page.start_check.click
-start_mtc
+  start_mtc
   questions = JSON.parse page.evaluate_script('window.localStorage.getItem("questions");')
   check_page.complete_check_with_correct_answers(questions.size, 'numpad')
   complete_page.wait_for_complete_page
@@ -293,6 +293,7 @@ end
 
 Given(/^I generated a pin after applying a restart$/) do
   step "I have completed the check"
+  binding.pry
   step 'I login to the admin app'
   visit ENV["ADMIN_BASE_URL"] + restarts_page.url
   restarts_page.select_pupil_to_restart_btn.click
@@ -306,7 +307,8 @@ Given(/^I generated a pin after applying a restart$/) do
   pupil_pin_row = view_and_custom_print_live_check_page.pupil_list.rows.find {|row| row.name.text == @details_hash[:last_name] + ', ' + @details_hash[:first_name]}
   @pupil_credentials = {:school_password => pupil_pin_row.school_password.text, :pin => pupil_pin_row.pin.text}
   p @pupil_credentials
-  AzureTableHelper.wait_for_prepared_check(@pupil_credentials[:school_password],@pupil_credentials[:pin])
+  AzureTableHelper.wait_for_prepared_check(@pupil_credentials[:school_password], @pupil_credentials[:pin])
+  binding.pr
 end
 
 But(/^the pin expires$/) do
@@ -322,14 +324,14 @@ When(/^I generate a new pin and complete the check$/) do
   pupil_pin_row = view_and_custom_print_live_check_page.pupil_list.rows.find {|row| row.name.text == @details_hash[:last_name] + ', ' + @details_hash[:first_name]}
   @pupil_credentials = {:school_password => pupil_pin_row.school_password.text, :pin => pupil_pin_row.pin.text}
   p @pupil_credentials
-  AzureTableHelper.wait_for_prepared_check(@pupil_credentials[:school_password],@pupil_credentials[:pin])
+  AzureTableHelper.wait_for_prepared_check(@pupil_credentials[:school_password], @pupil_credentials[:pin])
   step 'I have logged in'
   confirmation_page.read_instructions.click
   start_page.start_warm_up.click
   warm_up_page.start_now.click
   step "I complete the warm up questions using the numpad"
   warm_up_complete_page.start_check.click
-start_mtc
+  start_mtc
   questions = JSON.parse page.evaluate_script('window.localStorage.getItem("questions");')
   check_page.complete_check_with_correct_answers(questions.size, 'numpad')
   complete_page.wait_for_complete_page
