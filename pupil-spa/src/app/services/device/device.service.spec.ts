@@ -81,27 +81,27 @@ describe('DeviceService', () => {
     it('returns true when browser is IE11', () => {
       windowRefService.nativeWindow.navigator.userAgent = 'Mozilla/5.0 (Windows NT 10.0; Trident/7.0; rv:11.0) like Gecko'
       const isUnsupportedBrowser = service.isUnsupportedBrowser()
-      expect(isUnsupportedBrowser).toBeFalsy()
+      expect(isUnsupportedBrowser).toBeTruthy()
     })
-    it('returns true when browser is Edge version 80.0.361.62', () => {
+    it('returns false when browser is Edge version 80.0.361.62', () => {
       windowRefService.nativeWindow.navigator.userAgent =
         'Mozilla/5.0 (Windows NT 10.0; Win64; x64) ' +
         'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36 Edg/80.0.361.62'
       const isUnsupportedBrowser = service.isUnsupportedBrowser()
       expect(isUnsupportedBrowser).toBeFalsy()
     })
-    it('returns true when browser is Firefox 74', () => {
+    it('returns false when browser is Firefox 74', () => {
       windowRefService.nativeWindow.navigator.userAgent = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:54.0) Gecko/20100101 Firefox/74.0'
       const isUnsupportedBrowser = service.isUnsupportedBrowser()
       expect(isUnsupportedBrowser).toBeFalsy()
     })
-    it('returns true when browser is Safari 605.1.15', () => {
+    it('returns false when browser is Safari 605.1.15', () => {
       windowRefService.nativeWindow.navigator.userAgent =
         'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0 Safari/605.1.15'
       const isUnsupportedBrowser = service.isUnsupportedBrowser()
       expect(isUnsupportedBrowser).toBeFalsy()
     })
-    it('returns true when browser is Chrome version 80.0.3987.149', () => {
+    it('returns false when browser is Chrome version 80.0.3987.149', () => {
       windowRefService.nativeWindow.navigator.userAgent =
         'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36'
       const isUnsupportedBrowser = service.isUnsupportedBrowser()
