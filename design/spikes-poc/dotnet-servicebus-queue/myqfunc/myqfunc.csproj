@@ -2,11 +2,13 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <AzureFunctionsVersion>v4</AzureFunctionsVersion>
-    <RootNamespace>func_ps2</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.Storage" Version="4.0.5" />
     <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="4.1.1" />
+    <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.ServiceBus" Version="4.3.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="Microsoft.Azure.WebJobs.Extensions.ServiceBus" />
   </ItemGroup>
   <ItemGroup>
     <None Update="host.json">
