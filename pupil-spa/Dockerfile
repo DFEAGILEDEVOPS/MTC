@@ -44,7 +44,7 @@ COPY --from=builder /ng-app/gen_config.sh /
 COPY --from=builder /ng-app/docker-start.sh /
 
 # Copy over the unsupported-browser.html, which is not in the dist folder
-COPY --from=builder /ng-app/src/unsupported-browser.html /usr/share/nginx/html/
+COPY --from=builder /ng-app/unsupported /usr/share/nginx/html/unsupported
 
 # install ssh server
 # Credentials are for Azure / Kudu - don't change them.
