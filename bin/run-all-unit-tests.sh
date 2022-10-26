@@ -31,7 +31,7 @@ cd ../pupil-spa
 nvm use
 yarn test-single
 mybanner 'SPA supported browser tests'
-yarn runSupportedBrowserTests
+yarn runUnsupportedBrowserTests
 
 mybanner 'Testing API'
 cd ../pupil-api

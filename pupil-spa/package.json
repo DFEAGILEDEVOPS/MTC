@@ -14,7 +14,7 @@
     "test-single": "yarn genconfig && ng test --watch false --browsers ChromeHeadless",
     "genconfig": "./gen_config.sh && mv config.json src/assets/config.json",
     "lint": "ng lint",
-    "runSupportedBrowserTests": "./supported-browser-tests/run-supported-browser-tests.sh"
+    "runUnsupportedBrowserTests": "./unsupported-browser-tests/run-unsupported-browser-tests.sh"
   },
   "engines": {
     "node": ">= 14"
