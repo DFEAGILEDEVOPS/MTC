@@ -33,7 +33,6 @@ describe('AnswerModel', () => {
       mtime.formatAsDate(),
       mtime.getDto(),
       '1x2')
-    console.log('a', a)
     expect(a.factor1).toBe(1)
     expect(a.factor2).toBe(2)
     expect(a.sequenceNumber).toBe(4)
