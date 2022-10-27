@@ -103,7 +103,7 @@ const ctfService = {
       .ele('CTfile')
       .ele('Header')
       .ele('DocumentName').txt('Common Transfer File').up()
-      .ele('CTFversion').txt(this.getCtfVersion()).up()
+      .ele('CTFversion').txt(this.getCtfVersion(academicYear)).up()
       .ele('DateTime').txt(moment().format('YYYY-MM-DDTHH:mm:ss')).up()
       .ele('DocumentQualifier').txt('partial').up()
       .ele('SupplierID').txt('Multiplication Tables Check').up()
@@ -199,11 +199,10 @@ const ctfService = {
 
   /**
    * The version is the current academic year as a string.
-   * @returns
+   * @param number academicYear e.g. 2023
+   * @returns string e.g. 23.0
    */
-  getCtfVersion: function () {
-    const now = moment()
-    const academicYear = this.getAcademicYear(now)
+  getCtfVersion: function (academicYear) {
     const version = academicYear.toString().slice(-2).concat('.0')
     return version
   }
