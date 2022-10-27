@@ -1,5 +1,5 @@
 'use strict'
-/* global describe expect jest beforeAll test */
+/* global describe expect jest beforeAll test afterEach */
 const moment = require('moment')
 const xmlbuilder2 = require('xmlbuilder2')
 
@@ -11,6 +11,10 @@ const NotAvailableError = require('../../error-types/not-available')
 const resultsStrings = require('../../lib/consts/mtc-results')
 
 describe('ctfService', () => {
+  afterEach(() => {
+    jest.restoreAllMocks()
+  })
+
   const mockCheckWindow = {
     id: 1,
     checkEndDate: moment()
@@ -154,6 +158,10 @@ describe('ctfService', () => {
   })
 
   describe('buildXmlString', () => {
+    const testDate = '2022-10-25T09:00:00 +01:00'
+    jest.mock('moment', () => {
+      return () => jest.requireActual('moment')(testDate)
+    })
     const mockSchool = {
       id: 1,
       name: 'School of Mock',
@@ -199,7 +207,7 @@ describe('ctfService', () => {
 
     test('the Header element has a CTFversion', () => {
       expect(obj.CTfile.Header).toHaveProperty('CTFversion')
-      expect(obj.CTfile.Header.CTFversion).toEqual('20.0')
+      expect(obj.CTfile.Header.CTFversion).toEqual('22.0')
     })
 
     test('the Header element has a DateTime', () => {
@@ -383,6 +391,28 @@ describe('ctfService', () => {
       const d = moment('2010-01-01T09:00:00Z')
       const academicYear = sut.getAcademicYear(d)
       expect(academicYear).toStrictEqual(2009)
+    })
+  })
+
+  describe('getCtfVersion', () => {
+    test('the version returns is the last two digits of the current academic year, with .0 at the end, as a string', () => {
+      jest.spyOn(sut, 'getAcademicYear').mockReturnValue(2022)
+      expect(sut.getCtfVersion()).toBe('22.0')
+    })
+
+    test('works when range at end of range', () => {
+      jest.spyOn(sut, 'getAcademicYear').mockReturnValue(1999)
+      expect(sut.getCtfVersion()).toBe('99.0')
+    })
+
+    test('works when range at beginning of range', () => {
+      jest.spyOn(sut, 'getAcademicYear').mockReturnValue(2100)
+      expect(sut.getCtfVersion()).toBe('00.0')
+    })
+
+    test('is a string', () => {
+      jest.spyOn(sut, 'getAcademicYear').mockReturnValue(2022)
+      expect(typeof sut.getCtfVersion()).toBe('string')
     })
   })
 })
