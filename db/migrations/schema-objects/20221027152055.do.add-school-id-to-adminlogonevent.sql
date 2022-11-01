@@ -25,4 +25,5 @@ IF NOT EXISTS(SELECT *
     END
 
 -- add an index
-
+DROP INDEX IF EXISTS [mtc_admin].[adminLogonEvent].[IX_adminLogonEvent_school_id];
+CREATE INDEX IX_adminLogonEvent_school_id ON mtc_admin.adminLogonEvent([school_id]);

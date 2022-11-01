@@ -1,3 +1,6 @@
+-- drop index
+DROP INDEX IF EXISTS [mtc_admin].[adminLogonEvent].[IX_adminLogonEvent_school_id];
+
 -- drop foreign key
 IF EXISTS(SELECT *
             FROM INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE
@@ -9,6 +12,8 @@ IF EXISTS(SELECT *
         ALTER TABLE [mtc_admin].[adminLogonEvent]
             DROP CONSTRAINT [FK_adminLogonEvent_school_id];
     END
+
+
 
 -- drop column
 ALTER TABLE [mtc_admin].[adminLogonEvent] DROP COLUMN IF EXISTS  [school_id];
