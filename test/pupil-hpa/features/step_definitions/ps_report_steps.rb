@@ -293,7 +293,6 @@ end
 
 Given(/^I generated a pin after applying a restart$/) do
   step "I have completed the check"
-  binding.pry
   step 'I login to the admin app'
   visit ENV["ADMIN_BASE_URL"] + restarts_page.url
   restarts_page.select_pupil_to_restart_btn.click
