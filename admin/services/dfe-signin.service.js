@@ -96,7 +96,7 @@ const service = {
     if (schoolRecord) {
       logonEvent.school_id = schoolRecord.id
     }
-    
+
     await adminLogonEventDataService.sqlCreate(logonEvent)
 
     // set id to sql record id
