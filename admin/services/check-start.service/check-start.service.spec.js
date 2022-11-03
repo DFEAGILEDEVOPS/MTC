@@ -9,7 +9,6 @@ const configService = require('../config.service')
 const logger = require('../log.service.js').getLogger()
 const pinGenerationDataService = require('../data-access/pin-generation.data.service')
 const prepareCheckService = require('../prepare-check.service')
-const pupilDataService = require('../data-access/pupil.data.service')
 const sasTokenService = require('../sas-token.service')
 const redisCacheService = require('../data-access/redis-cache.service')
 const queueNameService = require('../queue-name-service')
@@ -98,7 +97,6 @@ describe('check-start.service', () => {
       jest.spyOn(checkStartDataService, 'sqlFindAllFormsUsedByPupils').mockResolvedValue([])
       jest.spyOn(pinGenerationDataService, 'sqlCreateBatch').mockResolvedValue(mockNewChecks)
       jest.spyOn(checkStartService, 'initialisePupilCheck').mockResolvedValue(mockPreparedCheck)
-      jest.spyOn(pupilDataService, 'sqlUpdateTokensBatch').mockResolvedValue()
       jest.spyOn(checkStartService, 'createPupilCheckPayloads').mockResolvedValue(mockCreatePupilCheckPayloads)
       jest.spyOn(prepareCheckService, 'prepareChecks').mockImplementation() // don't put checks in redis
       jest.spyOn(configService, 'getBatchConfig').mockResolvedValue(
@@ -161,7 +159,6 @@ describe('check-start.service', () => {
       jest.spyOn(checkStartDataService, 'sqlFindAllFormsAssignedToCheckWindow').mockResolvedValue([])
       jest.spyOn(checkStartDataService, 'sqlFindAllFormsUsedByPupils').mockResolvedValue([])
       jest.spyOn(checkStartService, 'initialisePupilCheck').mockResolvedValue(mockPreparedCheck)
-      jest.spyOn(pupilDataService, 'sqlUpdateTokensBatch').mockImplementation()
       // @ts-ignore
       jest.spyOn(checkStartService, 'createPupilCheckPayloads').mockResolvedValue(mockCreatePupilCheckPayloads)
       jest.spyOn(prepareCheckService, 'prepareChecks').mockImplementation() // don't put checks in redis

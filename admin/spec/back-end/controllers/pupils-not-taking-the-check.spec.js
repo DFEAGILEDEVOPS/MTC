@@ -272,12 +272,13 @@ describe('pupils-not-taking-the-check controller:', () => {
               pupilId: '59d02ab09b865f35a3f51940'
             },
             user: {
-              schoolId: '42'
+              schoolId: '42',
+              id: '245'
             }
           }
         )
         await controller(req, res, next)
-        expect(attendanceService.unsetAttendanceCode).toHaveBeenCalledWith(req.params.pupilId, req.user.schoolId)
+        expect(attendanceService.unsetAttendanceCode).toHaveBeenCalledWith(req.params.pupilId, req.user.schoolId, req.user.id)
         expect(req.flash).toHaveBeenCalled()
         expect(res.statusCode).toBe(302)
       })
@@ -296,12 +297,13 @@ describe('pupils-not-taking-the-check controller:', () => {
               pupilId: '59d02ab09b865f35a3f51940'
             },
             user: {
-              schoolId: '42'
+              schoolId: '42',
+              id: '245'
             }
           }
         )
         await controller(req, res, next)
-        expect(attendanceService.unsetAttendanceCode).toHaveBeenCalledWith(req.params.pupilId, req.user.schoolId)
+        expect(attendanceService.unsetAttendanceCode).toHaveBeenCalledWith(req.params.pupilId, req.user.schoolId, req.user.id)
         expect(pupilService.findOneBySlugAndSchool).not.toHaveBeenCalled()
         expect(req.flash).not.toHaveBeenCalled()
         expect(res.statusCode).toBe(200)
@@ -322,12 +324,13 @@ describe('pupils-not-taking-the-check controller:', () => {
               pupilId: '59d02ab09b865f35a3f51940'
             },
             user: {
-              schoolId: '42'
+              schoolId: '42',
+              id: '245'
             }
           }
         )
         await controller(req, res, next)
-        expect(attendanceService.unsetAttendanceCode).toHaveBeenCalledWith(req.params.pupilId, req.user.schoolId)
+        expect(attendanceService.unsetAttendanceCode).toHaveBeenCalledWith(req.params.pupilId, req.user.schoolId, req.user.id)
         expect(pupilService.findOneBySlugAndSchool).toHaveBeenCalled()
         expect(req.flash).not.toHaveBeenCalled()
         expect(res.statusCode).toBe(200)
