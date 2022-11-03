@@ -198,7 +198,8 @@ module.exports.restartTransactionForPupils = async function restartTransactionFo
          SET restartAvailable = 1,
              checkComplete = 0,
              currentCheckId = NULL,
-             isDiscretionaryRestartAvailable = 0
+             isDiscretionaryRestartAvailable = 0,
+             lastModifiedBy_userId = @rbu0
        WHERE id IN (${pupilIdentifiers.join(', ')});
 
       SELECT id, urlSlug

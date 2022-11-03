@@ -154,7 +154,7 @@ const removePupilNotTakingCheck = async function removePupilNotTakingCheck (req,
   }
   const pupilSlug = req.params.pupilId
   try {
-    await attendanceCodeService.unsetAttendanceCode(pupilSlug, req.user.schoolId)
+    await attendanceCodeService.unsetAttendanceCode(pupilSlug, req.user.schoolId, req.user.id)
     const pupil = await pupilService.findOneBySlugAndSchool(pupilSlug, req.user.schoolId)
     req.flash('info', `Reason removed for ${pupil.lastName}, ${pupil.foreName}`)
     const highlight = JSON.stringify(pupilSlug)
