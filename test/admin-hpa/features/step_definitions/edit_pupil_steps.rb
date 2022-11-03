@@ -4,6 +4,7 @@ Given(/^I want to edit a previously added pupil$/) do
   step "I am on the add pupil page"
   step "I submit the form with the name fields set as #{pupil_name}"
   step "the pupil details should be stored"
+
   @page = edit_pupil_page
   # pupil_register_page.load
   @pupil = pupil_register_page.find_pupil_row(pupil_name)
