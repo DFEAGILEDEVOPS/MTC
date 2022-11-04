@@ -271,37 +271,11 @@ pupilDataService.sqlFindByIds = async (ids, schoolId) => {
   return sqlService.query(sql, params)
 }
 
-/**
- * Pupil Token Update
- * @typedef {Object} PupilTokenUpdate
- * @property {number} id - pupil id
- * @property {string} jwtSecret - the jwt token secret
- * @property {string} jwtToken - the jwt token
- */
-
-/**
- * Update several pupil tokens in one query
- * @param {Array<PupilTokenUpdate>} pupils
- * @return {Promise<any>}
- */
-pupilDataService.sqlUpdateTokensBatch = async (pupils) => {
-  const params = []
-  const update = []
-  pupils.forEach((pupil, i) => {
-    update.push(`UPDATE [mtc_admin].[pupil] SET jwtToken = @jwtToken${i}, jwtSecret = @jwtSecret${i} WHERE id = @id${i}`)
-    params.push({ name: `jwtToken${i}`, value: pupil.jwtToken, type: TYPES.NVarChar })
-    params.push({ name: `jwtSecret${i}`, value: pupil.jwtSecret, type: TYPES.NVarChar })
-    params.push({ name: `id${i}`, value: pupil.id, type: TYPES.Int })
-  })
-  const sql = update.join('; \n')
-  return sqlService.modify(sql, params)
-}
-
-pupilDataService.sqlInsertMany = async (pupils) => {
+pupilDataService.sqlInsertMany = async (pupils, userId) => {
   const insertSql = `
   DECLARE @output TABLE (id int);
   INSERT INTO [mtc_admin].[pupil]
-  (school_id, foreName, lastName, middleNames, gender, upn, dateOfBirth)
+  (school_id, foreName, lastName, middleNames, gender, upn, dateOfBirth, lastModifiedBy_userId)
   OUTPUT inserted.ID INTO @output
   VALUES
   `
@@ -310,7 +284,7 @@ pupilDataService.sqlInsertMany = async (pupils) => {
   const params = []
 
   for (let i = 0; i < pupils.length; i++) {
-    values.push(`(@school_id${i}, @foreName${i}, @lastName${i}, @middleNames${i}, @gender${i}, @upn${i}, @dateOfBirth${i})`)
+    values.push(`(@school_id${i}, @foreName${i}, @lastName${i}, @middleNames${i}, @gender${i}, @upn${i}, @dateOfBirth${i}, @lastModifiedByUserId${i})`)
     params.push(
       {
         name: `school_id${i}`,
@@ -346,6 +320,11 @@ pupilDataService.sqlInsertMany = async (pupils) => {
         name: `dateOfBirth${i}`,
         value: pupils[i].dateOfBirth,
         type: TYPES.DateTimeOffset
+      },
+      {
+        name: `lastModifiedByUserId${i}`,
+        value: userId,
+        type: TYPES.Int
       }
     )
   }

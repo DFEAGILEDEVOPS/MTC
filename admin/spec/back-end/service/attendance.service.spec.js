@@ -42,14 +42,27 @@ describe('attendanceService', () => {
 
   describe('unsetAttendanceCode', () => {
     const pupilSlug = 'slug1'
-    const dfeNumber = 9991999
+    const schoolId = 9991999
+    const userId = 12345
+
+    test('throws if pupilSlug is not defined', async () => {
+      await expect(service.unsetAttendanceCode(undefined, schoolId, userId)).rejects.toThrow('pupilSlug is not defined')
+    })
+
+    test('throws if schoolId is not defined', async () => {
+      await expect(service.unsetAttendanceCode(pupilSlug, undefined, userId)).rejects.toThrow('schoolId is not a number')
+    })
+
+    test('throws if userId is not defined', async () => {
+      await expect(service.unsetAttendanceCode(pupilSlug, schoolId, undefined)).rejects.toThrow('userId is not a number')
+    })
 
     test('makes a call to get the pupil', async () => {
       jest.spyOn(pupilDataService, 'sqlFindOneBySlugAndSchool').mockResolvedValue({})
       jest.spyOn(pupilAttendanceDataService, 'sqlDeleteOneByPupilId').mockImplementation()
       jest.spyOn(PupilFrozenService, 'throwIfFrozenByUrlSlugs').mockImplementation()
       jest.spyOn(redisCacheService, 'drop').mockImplementation()
-      await expect(service.unsetAttendanceCode(pupilSlug, dfeNumber)).resolves.not.toThrow()
+      await expect(service.unsetAttendanceCode(pupilSlug, schoolId, userId)).resolves.not.toThrow()
       expect(pupilDataService.sqlFindOneBySlugAndSchool).toHaveBeenCalled()
     })
 
@@ -57,7 +70,7 @@ describe('attendanceService', () => {
       jest.spyOn(PupilFrozenService, 'throwIfFrozenByUrlSlugs').mockImplementation()
       jest.spyOn(pupilDataService, 'sqlFindOneBySlugAndSchool').mockImplementation()
       jest.spyOn(redisCacheService, 'drop').mockImplementation()
-      await expect(service.unsetAttendanceCode(pupilSlug, dfeNumber)).rejects.toThrow(`Pupil with id ${pupilSlug} and school ${dfeNumber} not found`)
+      await expect(service.unsetAttendanceCode(pupilSlug, schoolId, userId)).rejects.toThrow(`Pupil with id ${pupilSlug} and school ${schoolId} not found`)
     })
 
     test('throws if the pupil is frozen', async () => {
@@ -66,7 +79,7 @@ describe('attendanceService', () => {
       jest.spyOn(PupilFrozenService, 'throwIfFrozenByUrlSlugs').mockImplementation(() => {
         throw new Error('frozen')
       })
-      await expect(service.unsetAttendanceCode(pupilSlug, dfeNumber)).rejects.toThrow('frozen')
+      await expect(service.unsetAttendanceCode(pupilSlug, schoolId, userId)).rejects.toThrow('frozen')
     })
 
     test('makes a call to delete the pupilAttendance record if the pupil is found', async () => {
@@ -74,8 +87,8 @@ describe('attendanceService', () => {
       jest.spyOn(PupilFrozenService, 'throwIfFrozenByUrlSlugs').mockImplementation()
       jest.spyOn(pupilAttendanceDataService, 'sqlDeleteOneByPupilId').mockImplementation()
       jest.spyOn(redisCacheService, 'drop').mockImplementation()
-      await service.unsetAttendanceCode(pupilSlug, dfeNumber)
-      expect(pupilAttendanceDataService.sqlDeleteOneByPupilId).toHaveBeenCalledWith(pupilMock.id)
+      await service.unsetAttendanceCode(pupilSlug, schoolId, userId)
+      expect(pupilAttendanceDataService.sqlDeleteOneByPupilId).toHaveBeenCalledWith(pupilMock.id, userId)
     })
   })
 
