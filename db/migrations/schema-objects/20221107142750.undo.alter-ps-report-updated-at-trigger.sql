@@ -1,3 +1,4 @@
+-- Undo modify the updatedAt trigger as the PK is now PupilId, not id.
 ALTER TRIGGER [mtc_results].[psychometricReportUpdatedAtTrigger]
     ON [mtc_results].[psychometricReport]
     FOR UPDATE AS
