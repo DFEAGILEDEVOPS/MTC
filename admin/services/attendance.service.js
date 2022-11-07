@@ -6,6 +6,7 @@ const pupilDataService = require('./data-access/pupil.data.service')
 const redisCacheService = require('./data-access/redis-cache.service')
 const redisKeyService = require('./redis-key.service')
 const { PupilFrozenService } = require('./pupil-frozen.service/pupil-frozen.service')
+const { isNumber } = require('ramda-adjunct')
 
 const attendanceService = {
   /**
@@ -24,17 +25,21 @@ const attendanceService = {
 
   /**
    * Delete a pupil attendance code
-   * @param pupilSlug
-   * @param schoolId
+   * @param {string} pupilSlug
+   * @param {number} schoolId
+   * @param {number} userId
    * @return {Promise<*>}
    */
-  unsetAttendanceCode: async (pupilSlug, schoolId) => {
+  unsetAttendanceCode: async (pupilSlug, schoolId, userId) => {
+    if (pupilSlug === undefined) throw new Error('pupilSlug is not defined')
+    if (!isNumber(schoolId)) throw new Error('schoolId is not a number')
+    if (!isNumber(userId)) throw new Error('userId is not a number')
     await PupilFrozenService.throwIfFrozenByUrlSlugs([pupilSlug])
     const pupil = await pupilDataService.sqlFindOneBySlugAndSchool(pupilSlug, schoolId)
     if (!pupil) {
       throw new Error(`Pupil with id ${pupilSlug} and school ${schoolId} not found`)
     }
-    await pupilAttendanceDataService.sqlDeleteOneByPupilId(pupil.id)
+    await pupilAttendanceDataService.sqlDeleteOneByPupilId(pupil.id, userId)
     // Drop the now invalid cache for the school results if it exists
     await redisCacheService.drop(redisKeyService.getSchoolResultsKey(schoolId))
   },

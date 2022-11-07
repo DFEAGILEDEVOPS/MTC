@@ -4,7 +4,7 @@ const path = require('path')
 const pupilUploadService = require('../../../services/pupil-upload.service')
 const schoolMock = require('../mocks/school')
 const generateErrorCSVService = require('../../../services/generate-error-csv.service')
-const validateCSVService = require('../../../services/validate-csv.service')
+const validateCSVService = require('../../../services/pupil-validate-csv.service')
 const pupilDataService = require('../../../services/data-access/pupil.data.service')
 const redisCacheService = require('../../../services/data-access/redis-cache.service')
 const redisKeyService = require('../../../services/redis-key.service')
@@ -14,6 +14,7 @@ const dummyCSV = {
 }
 
 /* global beforeEach, describe, xdescribe, expect, test, jest, afterEach */
+const userId = 456
 
 describe('pupil-upload service', () => {
   afterEach(() => {
@@ -34,8 +35,12 @@ describe('pupil-upload service', () => {
       })
     })
 
+    test('throws an error if userId is undefined', async () => {
+      await expect(pupilUploadService.upload(schoolMock, dummyCSV, undefined)).rejects.toThrow('userId is required')
+    })
+
     test('returns an object after utilizing the promisified csv library', async () => {
-      const pr = await pupilUploadService.upload(schoolMock, dummyCSV)
+      const pr = await pupilUploadService.upload(schoolMock, dummyCSV, userId)
       expect(pr).toBeDefined()
       expect(typeof pr).toBe('object')
       expect(pr.fileErrors.errors).toBe('')
@@ -56,7 +61,7 @@ describe('pupil-upload service', () => {
       })
 
       test('returns error csv file if csv has errors', async () => {
-        const pr = await pupilUploadService.upload(schoolMock, dummyCSV)
+        const pr = await pupilUploadService.upload(schoolMock, dummyCSV, userId)
         expect(pr.csvErrorFile).toBe('test.csv')
       })
     })
@@ -66,7 +71,7 @@ describe('pupil-upload service', () => {
     })
 
     test('returns error csv file if csv has errors', async () => {
-      const pr = await pupilUploadService.upload(schoolMock, dummyCSV)
+      const pr = await pupilUploadService.upload(schoolMock, dummyCSV, userId)
       expect(pr.error).toBe('error')
     })
   })
@@ -88,7 +93,7 @@ describe('pupil-upload service', () => {
       })
 
       test('when saved successfully', async () => {
-        const pr = await pupilUploadService.upload(schoolMock, dummyCSV)
+        const pr = await pupilUploadService.upload(schoolMock, dummyCSV, userId)
         expect(pr.pupilIds.length).toBe(2)
         expect(pr).toEqual({ pupilIds: [1, 2] })
       })
@@ -102,7 +107,7 @@ describe('pupil-upload service', () => {
       })
 
       test('when saved successfully', async () => {
-        const pr = await pupilUploadService.upload(schoolMock, dummyCSV)
+        const pr = await pupilUploadService.upload(schoolMock, dummyCSV, userId)
         expect(pr.message).toBe('No pupils were saved')
       })
     })
