@@ -98,7 +98,7 @@ export class PsReportWriterService {
         BEGIN
            UPDATE [mtc_results].[psychometricReport]
            SET
-              PupilUPN = @pupilUpn, DOB = @dob, Gender = @gender, Forename = @forename, Surname = @surname, FormMark = @formMark, QDisplayTime = @qDisplayTime,
+              PupilUPN = @pupilUPN, DOB = @dob, Gender = @gender, Forename = @forename, Surname = @surname, FormMark = @formMark, QDisplayTime = @qDisplayTime,
               PauseLength = @pauseLength, AccessArr = @accessArr, RestartReason = @restartReason, RestartNumber = @restartNumber,
               ReasonNotTakingCheck = @ReasonNotTakingCheck, PupilStatus = @pupilStatus, DeviceId = @deviceId, BrowserType = @browserType, SchoolName = @schoolName, Estab = @estab,
               SchoolURN = @schoolURN, LANum = @laNum, AttemptId = @attemptId, FormID = @formId, TestDate = @testDate, TimeStart = @timeStart,
