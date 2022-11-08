@@ -14,9 +14,9 @@ describe('ps report writer service integration test', () => {
     sqlService = new SqlService()
   })
 
-  async function getRow (id: number): Promise<PsychometricReport | undefined> {
-    const res: PsychometricReport[] = await sqlService.query('SELECT * FROM mtc_results.psychometricReport WHERE id = @id',
-      [{ name: 'id', value: id, type: TYPES.Int }])
+  async function getRow (pupilId: number): Promise<PsychometricReport | undefined> {
+    const res: PsychometricReport[] = await sqlService.query('SELECT * FROM mtc_results.psychometricReport WHERE PupilId = @pupilId',
+      [{ name: 'pupilId', value: pupilId, type: TYPES.Int }])
     return R.head(res)
   }
 
@@ -31,10 +31,10 @@ describe('ps report writer service integration test', () => {
     await reportWriter.write(payload)
     ids.push(payload.PupilDatabaseId)
     const data = await getRow(payload.PupilDatabaseId)
-    expect(data?.id).toBe(payload.PupilDatabaseId)
+    expect(data?.PupilId).toBe(payload.PupilDatabaseId)
     expect(data?.DOB?.format('YYYY-MM-DD')).toBe(payload.DOB?.format('YYYY-MM-DD'))
     expect(data?.Gender).toBe(payload.Gender)
-    expect(data?.PupilId).toBe(payload.PupilID)
+    expect(data?.PupilUPN).toBe(payload.PupilUPN)
     expect(data?.Forename).toBe(payload.Forename)
     expect(data?.Surname).toBe(payload.Surname)
     expect(data?.FormMark).toBe(payload.FormMark)
@@ -495,10 +495,10 @@ describe('ps report writer service integration test', () => {
     await reportWriter.write(payload) // update
     const data = await getRow(payload.PupilDatabaseId)
 
-    expect(data?.id).toBe(payload.PupilDatabaseId)
+    expect(data?.PupilId).toBe(payload.PupilDatabaseId)
     expect(data?.DOB?.format('YYYY-MM-DD')).toStrictEqual(payload.DOB?.format('YYYY-MM-DD'))
     expect(data?.Gender).toBe(payload.Gender)
-    expect(data?.PupilId).toBe(payload.PupilID)
+    expect(data?.PupilUPN).toBe(payload.PupilUPN)
     expect(data?.Forename).toBe(payload.Forename)
     expect(data?.Surname).toBe(payload.Surname)
     expect(data?.FormMark).toBe(payload.FormMark)
