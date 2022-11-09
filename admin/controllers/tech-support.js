@@ -560,7 +560,31 @@ const controller = {
       req.breadcrumbs('PS Report Run')
       res.render('tech-support/ps-report-run', {
         breadcrumbs: req.breadcrumbs(),
-        logs
+        runReport: req.body?.runReport ?? false,
+        response: ''
+      })
+    } catch (error) {
+      return next(error)
+    }
+  },
+
+  postPsReportRun: async function postPsReportRun (req, res, next) {
+    const runReport = req.body.runReport === 'true'
+    const response = runReport === true ? 'PS Report Requested' : 'Report NOT Requested - checkbox tick required'
+    res.locals.pageTitle = 'PS Report Run'
+    try {
+      if (runReport === true)
+      {
+        // TODO create job
+        // TODO put message on queue containing job uuid
+      }
+      req.breadcrumbs('PS Report Run')
+      res.render('tech-support/ps-report-run', {
+        breadcrumbs: req.breadcrumbs(),
+        formData: {
+          runReport
+        },
+        response: response
       })
     } catch (error) {
       return next(error)

@@ -4,14 +4,14 @@
     <div class="govuk-grid-column-two-thirds">
       <h1 class="govuk-heading-xl"><%= pageTitle %></h1>
       <%- partial('partials/_gds_session_expiry') %>
-      <form action="/tech-support/results-resync-all" id="runPsReportForm" method="post" autocomplete="off">
+      <form action="/tech-support/ps-report-run" id="runPsReportForm" method="post" autocomplete="off">
         <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
         <div class="govuk-form-group">
           <div class="govuk-checkboxes">
             <div class="govuk-checkboxes__item">
               <input class="govuk-checkboxes__input" id="runReport" name="runReport" type="checkbox" value="true">
               <label class="govuk-label govuk-checkboxes__label" for="runReport">
-                Run PS Report
+                Confirm execution of PS Report
               </label>
             </div>
           </div>
