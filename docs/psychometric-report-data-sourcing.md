@@ -6,6 +6,7 @@
 
 | Psychometric field   | Source                                              | Comment                                                      |
 | -------------------- | --------------------------------------------------- | ------------------------------------------------------------ |
+| PupilId              | mtc_admin.pupil.id                                  | Unique synthetic id for the psychometric report and pupil tables       |
 | DOB                  | mtc_admin.pupil.dateOfBirth                         |                                                              |
 | Gender               | mtc_admin.pupil.gender                              |                                                              |
 | PupilID              | mtc_admin.pupil.upn                                 |                                                              |
