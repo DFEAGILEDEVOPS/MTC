@@ -1,6 +1,6 @@
 
 export class PsReportExecService {
   public static async requestReportGeneration (currentUserId: number): Promise<any> {
-    // do some work
+    throw new Error('currentUserId must be a non negative number')
   }
 }
