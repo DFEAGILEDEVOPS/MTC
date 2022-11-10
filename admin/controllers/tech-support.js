@@ -573,8 +573,7 @@ const controller = {
     const response = runReport === true ? 'PS Report Requested' : 'Report NOT Requested - checkbox tick required'
     res.locals.pageTitle = 'PS Report Run'
     try {
-      if (runReport === true)
-      {
+      if (runReport === true) {
         // TODO create job
         // TODO put message on queue containing job uuid
       }
@@ -584,7 +583,7 @@ const controller = {
         formData: {
           runReport
         },
-        response: response
+        response
       })
     } catch (error) {
       return next(error)

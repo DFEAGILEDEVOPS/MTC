@@ -8,6 +8,7 @@ const administrationMessageService = require('../../../services/administration-m
 const queueMgmtService = require('../../../services/tech-support-queue-management.service')
 const resultsResyncService = require('../../../services/tech-support/sync-results-resync.service')
 const { PsReportLogsDownloadService } = require('../../../services/tech-support/ps-report-logs.service/ps-report-logs.service')
+const { PsReportExecService } = require('../../../services/tech-support/ps-report-exec.service/ps-report-exec.service')
 
 let sut
 let next
@@ -285,6 +286,55 @@ describe('tech-support controller', () => {
       expect(res.send).toHaveBeenCalled()
       expect(res.set).toHaveBeenCalled()
       expect(next).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('/ps-report-run', () => {
+    test('GET: should render page', async () => {
+      const reqParams = getReqParams('/tech-support/ps-report-run', 'GET')
+      const req = getRequest(reqParams)
+      const res = getResponse()
+      jest.spyOn(res, 'render').mockImplementation()
+      await sut.getPsReportRun(req, res, next)
+      expect(res.statusCode).toBe(200)
+      expect(res.render).toHaveBeenCalled()
+      expect(next).not.toHaveBeenCalled()
+    })
+
+    test('POST: should not run report if confirmation checkbox left unticked', async () => {
+      const reqParams = getReqParams('/tech-support/ps-report-run', 'GET')
+      const req = getRequest(reqParams)
+      req.body.runReport = undefined
+      const res = getResponse()
+      let responseMessage = 'not set'
+      jest.spyOn(PsReportExecService, 'requestReportGeneration')
+      jest.spyOn(res, 'render').mockImplementation((view, data) => {
+        responseMessage = data.response
+      })
+      await sut.postPsReportRun(req, res, next)
+      expect(responseMessage).toEqual('Report NOT Requested - checkbox tick required')
+      expect(res.statusCode).toBe(200)
+      expect(res.render).toHaveBeenCalled()
+      expect(next).not.toHaveBeenCalled()
+      expect(PsReportExecService.requestReportGeneration).not.toHaveBeenCalled()
+    })
+
+    test('POST: should run report if confirmation checkbox ticked', async () => {
+      const reqParams = getReqParams('/tech-support/ps-report-run', 'GET')
+      const req = getRequest(reqParams)
+      req.body.runReport = 'true'
+      const res = getResponse()
+      let responseMessage = 'not set'
+      jest.spyOn(PsReportExecService, 'requestReportGeneration')
+      jest.spyOn(res, 'render').mockImplementation((view, data) => {
+        responseMessage = data.response
+      })
+      await sut.postPsReportRun(req, res, next)
+      expect(responseMessage).toEqual('PS Report Requested')
+      expect(res.statusCode).toBe(200)
+      expect(res.render).toHaveBeenCalled()
+      expect(next).not.toHaveBeenCalled()
+      expect(PsReportExecService.requestReportGeneration).toHaveBeenCalled()
     })
   })
 })

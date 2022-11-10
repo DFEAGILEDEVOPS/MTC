@@ -1,15 +1,9 @@
 const sb = require('@azure/service-bus')
 const config = require('../../../config')
-const jobService = require('../../job-service/job.service')
+// const jobService = require('../../job-service/job.service')
 
 let sbClient
 let sbQueueSender
-
-interface IncomingMessage {
-  requestedBy: string
-  dateTimeRequested: moment.Moment
-  jobUuid: string
-}
 
 const preparedCheckSyncService = {}
 
@@ -23,11 +17,11 @@ const triggerPsReport = async (currentUserId) => {
     sbQueueSender = sbClient.createSender('ps-report-exec')
   }
 
-  const jobUuid = await jobService.
+  // TODO const jobUuid = await jobService.
 
   await sbQueueSender.sendMessages({
     body: {
-      requestedBy: currentUsername,
+      requestedBy: 'currentUsername looked up from db',
       version: 1
     }
   })
