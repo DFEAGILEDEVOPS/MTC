@@ -14,6 +14,11 @@ export interface IJobOutput {
   errorInfo: string
 }
 
+export interface IJobInfo {
+  jobId: number
+  jobUuid: string
+}
+
 export class JobDataService {
   public static async getJobs (): Promise<IJobData[]> {
     const sql = `
@@ -60,5 +65,37 @@ export class JobDataService {
       errorInfo: record.errorOutput,
       output: record.jobOutput
     }
+  }
+
+  public static async createJob (jobInput: string, job) {
+    const sql = `
+                  DECLARE @jobType_id int
+                  DECLARE @jobStatus_id int
+                  SELECT @jobType_id = id FROM mtc_admin.jobType WHERE jobTypeCode = @jobTypeCode
+                  INSERT INTO mtc_admin.job (jobInput, jobType_id, jobStatus_id)
+                  OUTPUT inserted.id, inserted.urlSlug
+                  VALUES (
+                    @jobInput,
+                    @jobType_id,
+                    @jobStatus_id)`
+    const params = [
+      {
+        name: 'jobInput',
+        value: jobInfo.jobInput,
+        type: TYPES.NVarChar
+      },
+      {
+        name: 'jobType_id',
+        value: jobInfo.jobType_id,
+        type: TYPES.Int
+      },
+      {
+        name: 'jobStatus_id',
+        value: jobInfo.jobStatus_id,
+        type: TYPES.Int
+      }
+    ]
+    const result = await sqlService.query(sql, params)
+    return R.head(result)
   }
 }
