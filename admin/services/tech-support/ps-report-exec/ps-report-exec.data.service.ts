@@ -1,6 +1,6 @@
 import { TYPES } from '../../data-access/sql.service'
-const sqlService = require('../../data-access/sql.service')
 import { ServiceBusClient, ServiceBusSender } from '@azure/service-bus'
+const sqlService = require('../../data-access/sql.service')
 const config = require('../../../config')
 
 export interface IUserInfoData {
@@ -18,7 +18,7 @@ export class PsReportExecDataService {
   private static sbClient: ServiceBusClient
   private static sbSender: ServiceBusSender
 
-  public static async getUsersName (userId: number): Promise<IUserInfoData | undefined> {
+  public static async getUserInfo (userId: number): Promise<IUserInfoData | undefined> {
     const sql = `
     SELECT TOP (1) [identifier],[displayName] FROM [mtc_admin].[user]
     WHERE id = @userId`

@@ -8,7 +8,7 @@ const administrationMessageService = require('../../../services/administration-m
 const queueMgmtService = require('../../../services/tech-support-queue-management.service')
 const resultsResyncService = require('../../../services/tech-support/sync-results-resync.service')
 const { PsReportLogsDownloadService } = require('../../../services/tech-support/ps-report-logs.service/ps-report-logs.service')
-const { PsReportExecService } = require('../../../services/tech-support/ps-report-exec.service/ps-report-exec.service')
+const { PsReportExecService } = require('../../../services/tech-support/ps-report-exec/ps-report-exec.service')
 
 let sut
 let next
@@ -322,10 +322,16 @@ describe('tech-support controller', () => {
     test('POST: should run report if confirmation checkbox ticked', async () => {
       const reqParams = getReqParams('/tech-support/ps-report-run', 'GET')
       const req = getRequest(reqParams)
-      req.body.runReport = 'true'
+      req.body = {
+        runReport: 'true'
+      }
+      const userId = 4359
+      req.user = {
+        id: userId
+      }
       const res = getResponse()
       let responseMessage = 'not set'
-      jest.spyOn(PsReportExecService, 'requestReportGeneration')
+      jest.spyOn(PsReportExecService, 'requestReportGeneration').mockImplementation()
       jest.spyOn(res, 'render').mockImplementation((view, data) => {
         responseMessage = data.response
       })
@@ -334,7 +340,7 @@ describe('tech-support controller', () => {
       expect(res.statusCode).toBe(200)
       expect(res.render).toHaveBeenCalled()
       expect(next).not.toHaveBeenCalled()
-      expect(PsReportExecService.requestReportGeneration).toHaveBeenCalled()
+      expect(PsReportExecService.requestReportGeneration).toHaveBeenCalledWith(userId)
     })
   })
 })

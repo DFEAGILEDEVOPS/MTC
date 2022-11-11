@@ -10,6 +10,7 @@ const redisErrorMessages = require('../lib/errors/redis').redis
 const moment = require('moment')
 const queueMgmtService = require('../services/tech-support-queue-management.service')
 const resultsResyncService = require('../services/tech-support/sync-results-resync.service')
+const { PsReportExecService } = require('../services/tech-support/ps-report-exec/ps-report-exec.service')
 const psReportLogsDownloadService = require('../services/tech-support/ps-report-logs.service/ps-report-logs.service').PsReportLogsDownloadService
 
 const controller = {
@@ -574,8 +575,7 @@ const controller = {
     res.locals.pageTitle = 'PS Report Run'
     try {
       if (runReport === true) {
-        // TODO create job
-        // TODO put message on queue containing job uuid
+        await PsReportExecService.requestReportGeneration(req.user.id)
       }
       req.breadcrumbs('PS Report Run')
       res.render('tech-support/ps-report-run', {
