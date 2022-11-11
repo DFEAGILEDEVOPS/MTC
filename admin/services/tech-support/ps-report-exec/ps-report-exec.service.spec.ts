@@ -20,21 +20,20 @@ describe('PS Report Exec Service', () => {
         displayName: 'John Smith',
         identifier: 'jsmith@xyz.com'
       }
+      const createdJobUuid = '7b20429d-b9bb-4e9d-bd4d-58090e1b49dd'
       jest.spyOn(PsReportExecDataService, 'sendPsReportExecMessage').mockImplementation()
       const currentDateTimeMock = moment('2022-11-10 15:30')
       jest.spyOn(dateService, 'utcNowAsMoment').mockReturnValue(currentDateTimeMock)
       jest.spyOn(PsReportExecDataService, 'getUserInfo').mockResolvedValue(userInfoData)
       jest.spyOn(JobService, 'createJob').mockResolvedValue({
-        jobUuid: 'xyz'
+        jobUuid: createdJobUuid
       })
       const expectedRequestorDetails = `${userInfoData.displayName} (${userInfoData.identifier})`
-      // TODO spy on job service and use job uuid
       await sut.requestReportGeneration(userId)
       expect(PsReportExecDataService.getUserInfo).toHaveBeenCalledWith(userId)
-      // TODO assert that message was sent including job uuid and user info...
       const expectedMessage: IExecPsReportRequest = {
         dateTimeRequested: currentDateTimeMock,
-        jobUuid: 'xyz',
+        jobUuid: createdJobUuid,
         requestedBy: expectedRequestorDetails
       }
       expect(JobService.createJob).toHaveBeenCalledWith(

@@ -46,6 +46,9 @@ export class JobService {
   }
 
   public static async createJob (jobInput: string, jobType: JobType, status: JobStatus): Promise<ICreatedJob> {
-    throw new Error('todo')
+    const response = await JobDataService.createJob(jobInput, status, jobType)
+    return {
+      jobUuid: response.urlSlug
+    }
   }
 }
