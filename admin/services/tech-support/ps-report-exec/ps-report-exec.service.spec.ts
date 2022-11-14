@@ -28,7 +28,7 @@ describe('PS Report Exec Service', () => {
       jest.spyOn(JobService, 'createJob').mockResolvedValue({
         jobUuid: createdJobUuid
       })
-      const expectedRequestorDetails = `${userInfoData.displayName} (${userInfoData.identifier})`
+      const expectedRequestorDetails = `requested by ${userInfoData.displayName} (${userInfoData.identifier})`
       await sut.requestReportGeneration(userId)
       expect(PsReportExecDataService.getUserInfo).toHaveBeenCalledWith(userId)
       const expectedMessage: IExecPsReportRequest = {

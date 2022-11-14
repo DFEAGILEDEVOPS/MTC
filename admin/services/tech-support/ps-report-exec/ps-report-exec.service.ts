@@ -8,7 +8,7 @@ export class PsReportExecService {
       throw new Error('currentUserId must be greater than zero')
     }
     const userInfo = await PsReportExecDataService.getUserInfo(currentUserId)
-    const requestorDetails = `${userInfo?.displayName} (${userInfo?.identifier})`
+    const requestorDetails = `requested by ${userInfo?.displayName} (${userInfo?.identifier})`
     const job = await JobService.createJob(requestorDetails, JobType.PsychometricianReport, JobStatus.Submitted)
     return PsReportExecDataService.sendPsReportExecMessage({
       dateTimeRequested: dateService.utcNowAsMoment(),
