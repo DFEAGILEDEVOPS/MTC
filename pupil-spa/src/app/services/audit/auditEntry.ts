@@ -375,14 +375,14 @@ export class QuestionTimerStarted extends AuditEntry {
 export class QuestionTimerEnded extends AuditEntry {
   constructor(mtime: MonotonicTime, data: any = {}) {
     data.monotonicTime = mtime.getDto()
-    super('QuestionTimerStarted', mtime.getLegacyDate(), data);
+    super('QuestionTimerEnded', mtime.getLegacyDate(), data);
   }
 }
 
 export class QuestionTimerCancelled extends AuditEntry {
   constructor(mtime: MonotonicTime, data: any = {}) {
     data.monotonicTime = mtime.getDto()
-    super('QuestionTimerStarted', mtime.getLegacyDate(), data);
+    super('QuestionTimerCancelled', mtime.getLegacyDate(), data);
   }
 }
 

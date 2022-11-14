@@ -17,231 +17,231 @@ describe('auditEntryFactory', () => {
   describe('#createPupilPrefsAPICalled', () => {
     it('factory method creates createPupilPrefsAPICalled obj', () => {
       const c = factory.createPupilPrefsAPICalled()
-      expect(c.constructor.name).toBe('PupilPrefsAPICalled')
+      expect(c.type).toBe('PupilPrefsAPICalled')
     })
   })
 
   describe('#createpupilPrefsAPICallSucceeded', () => {
     it('factory method creates PupilPrefsAPICallSucceeded obj', () => {
       const c = factory.createPupilPrefsAPICallSucceeded()
-      expect(c.constructor.name).toBe('PupilPrefsAPICallSucceeded')
+      expect(c.type).toBe('PupilPrefsAPICallSucceeded')
     })
   })
 
   describe('#createPupilPrefsAPICallFailed', () => {
     it('factory method creates PupilPrefsAPICallFailed obj', () => {
       const c = factory.createPupilPrefsAPICallFailed()
-      expect(c.constructor.name).toBe('PupilPrefsAPICallFailed')
+      expect(c.type).toBe('PupilPrefsAPICallFailed')
     })
   })
 
   describe('#createWarmupStarted', () => {
     it('factory method creates cWarmupStarted obj', () => {
       const c = factory.createWarmupStarted()
-      expect(c.constructor.name).toBe('WarmupStarted')
+      expect(c.type).toBe('WarmupStarted')
     })
   })
 
   describe('#createWarmupIntroRendered', () => {
     it('factory method creates WarmupIntroRendered obj', () => {
       const c = factory.createWarmupIntroRendered()
-      expect(c.constructor.name).toBe('WarmupIntroRendered')
+      expect(c.type).toBe('WarmupIntroRendered')
     })
   })
 
   describe('#createQuestionIntroRendered', () => {
     it('factory method creates QuestionIntroRendered obj', () => {
       const c = factory.createQuestionIntroRendered()
-      expect(c.constructor.name).toBe('QuestionIntroRendered')
+      expect(c.type).toBe('QuestionIntroRendered')
     })
   })
 
   describe('#createWarmupCompleteRendered', () => {
     it('factory method creates WarmupCompleteRendered obj', () => {
       const c = factory.createWarmupCompleteRendered()
-      expect(c.constructor.name).toBe('WarmupCompleteRendered')
+      expect(c.type).toBe('WarmupCompleteRendered')
     })
   })
 
   describe('#createWarmupCompleteRendered', () => {
     it('factory method creates WarmupCompleteRendered obj', () => {
       const c = factory.createWarmupCompleteRendered()
-      expect(c.constructor.name).toBe('WarmupCompleteRendered')
+      expect(c.type).toBe('WarmupCompleteRendered')
     })
   })
 
   describe('#createCheckStartedApiCalled', () => {
     it('factory method creates CheckStartedApiCalled obj', () => {
       const c = factory.createCheckStartedApiCalled()
-      expect(c.constructor.name).toBe('CheckStartedApiCalled')
+      expect(c.type).toBe('CheckStartedApiCalled')
     })
   })
 
   describe('#createCheckStartedAPICallSucceeded', () => {
     it('factory method creates CheckStartedAPICallSucceeded obj', () => {
       const c = factory.createCheckStartedAPICallSucceeded()
-      expect(c.constructor.name).toBe('CheckStartedAPICallSucceeded')
+      expect(c.type).toBe('CheckStartedAPICallSucceeded')
     })
   })
 
   describe('#createCheckStartedAPICallFailed', () => {
     it('factory method creates CheckStartedAPICallFailed obj', () => {
       const c = factory.createCheckStartedAPICallFailed()
-      expect(c.constructor.name).toBe('CheckStartedAPICallFailed')
+      expect(c.type).toBe('CheckStartedAPICallFailed')
     })
   })
 
   describe('#createQuestionRendered', () => {
     it('factory method creates QuestionRendered obj', () => {
-      const c = factory.createCheckStarted()
-      expect(c.constructor.name).toBe('QuestionRendered')
+      const c = factory.createQuestionRendered()
+      expect(c.type).toBe('QuestionRendered')
     })
   })
 
   describe('#createCheckStarted', () => {
     it('factory method creates CheckStarted obj', () => {
       const c = factory.createCheckStarted()
-      expect(c.constructor.name).toBe('CheckStarted')
+      expect(c.type).toBe('CheckStarted')
     })
   })
 
   describe('#createQuestionAnswered', () => {
     it('factory method creates QuestionAnswered obj', () => {
       const c = factory.createQuestionAnswered()
-      expect(c.constructor.name).toBe('QuestionAnswered')
+      expect(c.type).toBe('QuestionAnswered')
     })
   })
 
   describe('#createPauseRendered', () => {
     it('factory method creates PauseRendered obj', () => {
       const c = factory.createPauseRendered()
-      expect(c.constructor.name).toBe('PauseRendered')
+      expect(c.type).toBe('PauseRendered')
     })
   })
 
   describe('#createCheckSubmissionPending', () => {
     it('factory method creates CheckSubmissionPending obj', () => {
       const c = factory.createCheckSubmissionPending()
-      expect(c.constructor.name).toBe('CheckSubmissionPending')
+      expect(c.type).toBe('CheckSubmissionPending')
     })
   })
 
   describe('#createCheckSubmissionApiCalled', () => {
     it('factory method creates CheckSubmissionApiCalled obj', () => {
       const c = factory.createCheckSubmissionApiCalled()
-      expect(c.constructor.name).toBe('CheckSubmissionApiCalled')
+      expect(c.type).toBe('CheckSubmissionApiCalled')
     })
   })
 
   describe('#createCheckSubmissionAPICallSucceeded', () => {
     it('factory method creates CheckSubmissionAPICallSucceeded obj', () => {
       const c = factory.createCheckSubmissionAPICallSucceeded()
-      expect(c.constructor.name).toBe('CheckSubmissionAPICallSucceeded')
+      expect(c.type).toBe('CheckSubmissionAPICallSucceeded')
     })
   })
 
   describe('#createCheckSubmissionAPIFailed', () => {
     it('factory method creates CheckSubmissionAPIFailed obj', () => {
       const c = factory.createCheckSubmissionAPIFailed()
-      expect(c.constructor.name).toBe('CheckSubmissionAPIFailed')
+      expect(c.type).toBe('CheckSubmissionAPIFailed')
     })
   })
 
   describe('#createCheckSubmissionFailed', () => {
     it('factory method creates CheckSubmissionFailed obj', () => {
       const c = factory.createCheckSubmissionFailed()
-      expect(c.constructor.name).toBe('CheckSubmissionFailed')
+      expect(c.type).toBe('CheckSubmissionFailed')
     })
   })
 
   describe('#createSessionExpired', () => {
     it('factory method creates SessionExpired obj', () => {
       const c = factory.createSessionExpired()
-      expect(c.constructor.name).toBe('SessionExpired')
+      expect(c.type).toBe('SessionExpired')
     })
   })
 
   describe('#createRefreshDetected', () => {
     it('factory method creates RefreshDetected obj', () => {
       const c = factory.createRefreshDetected()
-      expect(c.constructor.name).toBe('XXXRefreshDetected')
+      expect(c.type).toBe('RefreshDetected')
     })
   })
 
   describe('#createUtteranceStarted', () => {
     it('factory method creates UtteranceStarted obj', () => {
       const c = factory.createUtteranceStarted()
-      expect(c.constructor.name).toBe('UtteranceStarted')
+      expect(c.type).toBe('UtteranceStarted')
     })
   })
 
   describe('#createUtteranceEnded', () => {
     it('factory method creates UtteranceEnded obj', () => {
       const c = factory.createUtteranceEnded()
-      expect(c.constructor.name).toBe('UtteranceEnded')
+      expect(c.type).toBe('UtteranceEnded')
     })
   })
 
   describe('#createQuestionReadingStarted', () => {
     it('factory method creates QuestionReadingStarted obj', () => {
       const c = factory.createQuestionReadingStarted()
-      expect(c.constructor.name).toBe('QuestionReadingStarted')
+      expect(c.type).toBe('QuestionReadingStarted')
     })
   })
 
   describe('#createQuestionReadingEnded', () => {
     it('factory method creates QuestionReadingEnded obj', () => {
       const c = factory.createQuestionReadingEnded()
-      expect(c.constructor.name).toBe('QuestionReadingEnded')
+      expect(c.type).toBe('QuestionReadingEnded')
     })
   })
 
   describe('#createQuestionTimerStarted', () => {
     it('factory method creates QuestionTimerStarted obj', () => {
       const c = factory.createQuestionTimerStarted()
-      expect(c.constructor.name).toBe('QuestionTimerStarted')
+      expect(c.type).toBe('QuestionTimerStarted')
     })
   })
 
   describe('#createQuestionTimerEnded', () => {
     it('factory method creates QuestionTimerEnded obj', () => {
       const c = factory.createQuestionTimerEnded()
-      expect(c.constructor.name).toBe('QuestionTimerEnded')
+      expect(c.type).toBe('QuestionTimerEnded')
     })
   })
 
   describe('#createQuestionTimerCancelled', () => {
     it('factory method creates QuestionTimerCancelled obj', () => {
       const c = factory.createQuestionTimerCancelled()
-      expect(c.constructor.name).toBe('QuestionTimerCancelled')
+      expect(c.type).toBe('QuestionTimerCancelled')
     })
   })
 
   describe('#createAppError', () => {
     it('factory method creates AppError obj', () => {
       const c = factory.createAppError()
-      expect(c.constructor.name).toBe('AppError')
+      expect(c.type).toBe('AppError')
     })
   })
 
   describe('#createAppVisible', () => {
     it('factory method creates AppVisible obj', () => {
       const c = factory.createAppVisible()
-      expect(c.constructor.name).toBe('AppVisible')
+      expect(c.type).toBe('AppVisible')
     })
   })
 
   describe('#createAppHidden', () => {
     it('factory method creates AppHidden obj', () => {
       const c = factory.createAppHidden()
-      expect(c.constructor.name).toBe('AppHidden')
+      expect(c.type).toBe('AppHidden')
     })
   })
 
   describe('#createRefreshOrTabCloseDetected', () => {
     it('factory method creates RefreshOrTabCloseDetected obj', () => {
       const c = factory.createRefreshOrTabCloseDetected()
-      expect(c.constructor.name).toBe('RefreshOrTabCloseDetected')
+      expect(c.type).toBe('RefreshOrTabCloseDetected')
     })
   })
 })
