@@ -1,24 +1,4 @@
-import {
-  AppError, AppHidden, AppVisible,
-  AuditEntryFactory,
-  CheckStarted,
-  CheckStartedAPICallSucceeded,
-  CheckSubmissionApiCalled,
-  CheckSubmissionAPIFailed,
-  CheckSubmissionFailed,
-  CheckSubmissionPending,
-  PauseRendered,
-  QuestionAnswered,
-  QuestionReadingEnded,
-  QuestionReadingStarted, QuestionTimerCancelled,
-  QuestionTimerEnded,
-  QuestionTimerStarted,
-  RefreshDetected, RefreshOrTabCloseDetected,
-  SessionExpired,
-  UtteranceStarted,
-  WarmupCompleteRendered,
-  WarmupIntroRendered
-} from './auditEntry'
+import { AuditEntryFactory } from './auditEntry'
 import { TestBed } from '@angular/core/testing'
 import { MonotonicTimeService } from '../monotonic-time/monotonic-time.service'
 
@@ -55,6 +35,13 @@ describe('auditEntryFactory', () => {
     })
   })
 
+  describe('#createWarmupStarted', () => {
+    it('factory method creates cWarmupStarted obj', () => {
+      const c = factory.createWarmupStarted()
+      expect(c.constructor.name).toBe('WarmupStarted')
+    })
+  })
+
   describe('#createWarmupIntroRendered', () => {
     it('factory method creates WarmupIntroRendered obj', () => {
       const c = factory.createWarmupIntroRendered()
@@ -62,17 +49,17 @@ describe('auditEntryFactory', () => {
     })
   })
 
-  describe('#createWarmupCompleteRendered', () => {
-    it('factory method creates WarmupCompleteRendered obj', () => {
-      const c = factory.createWarmupCompleteRendered()
-      expect(c.constructor.name).toBe('WarmupCompleteRendered')
-    })
-  })
-
   describe('#createQuestionIntroRendered', () => {
     it('factory method creates QuestionIntroRendered obj', () => {
       const c = factory.createQuestionIntroRendered()
       expect(c.constructor.name).toBe('QuestionIntroRendered')
+    })
+  })
+
+  describe('#createWarmupCompleteRendered', () => {
+    it('factory method creates WarmupCompleteRendered obj', () => {
+      const c = factory.createWarmupCompleteRendered()
+      expect(c.constructor.name).toBe('WarmupCompleteRendered')
     })
   })
 
@@ -101,6 +88,13 @@ describe('auditEntryFactory', () => {
     it('factory method creates CheckStartedAPICallFailed obj', () => {
       const c = factory.createCheckStartedAPICallFailed()
       expect(c.constructor.name).toBe('CheckStartedAPICallFailed')
+    })
+  })
+
+  describe('#createQuestionRendered', () => {
+    it('factory method creates QuestionRendered obj', () => {
+      const c = factory.createCheckStarted()
+      expect(c.constructor.name).toBe('QuestionRendered')
     })
   })
 
@@ -170,7 +164,7 @@ describe('auditEntryFactory', () => {
   describe('#createRefreshDetected', () => {
     it('factory method creates RefreshDetected obj', () => {
       const c = factory.createRefreshDetected()
-      expect(c.constructor.name).toBe('RefreshDetected')
+      expect(c.constructor.name).toBe('XXXRefreshDetected')
     })
   })
 

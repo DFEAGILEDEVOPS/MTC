@@ -326,14 +326,14 @@ export class CheckSubmissionFailed extends AuditEntry {
 export class SessionExpired extends AuditEntry {
   constructor(mtime: MonotonicTime, data: any = {}) {
     data.monotonicTime = mtime.getDto()
-    super('CheckSubmissionFailed', mtime.getLegacyDate(), data);
+    super('SessionExpired', mtime.getLegacyDate(), data);
   }
 }
 
 export class RefreshDetected extends AuditEntry {
   constructor(mtime: MonotonicTime, data: any = {}) {
     data.monotonicTime = mtime.getDto()
-    super('CheckSubmissionFailed', mtime.getLegacyDate(), data);
+    super('RefreshDetected', mtime.getLegacyDate(), data);
   }
 }
 
@@ -403,7 +403,7 @@ export class AppVisible extends AuditEntry {
 export class AppHidden extends AuditEntry {
   constructor(mtime: MonotonicTime, data: any = {}) {
     data.monotonicTime = mtime.getDto()
-    super('AppVisible', mtime.getLegacyDate(), data);
+    super('AppHidden', mtime.getLegacyDate(), data);
   }
 }
 
