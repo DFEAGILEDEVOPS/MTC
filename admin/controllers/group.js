@@ -164,7 +164,7 @@ const addGroup = async function addGroup (req, res, next) {
   }
   let groupId
   try {
-    groupId = await groupService.create(group.name, group.pupils, req.user.schoolId)
+    groupId = await groupService.create(group.name, group.pupils, req.user.schoolId, req.user.id)
   } catch (error) {
     return next(error)
   }
@@ -244,7 +244,7 @@ const editGroup = async function editGroup (req, res, next) {
   }
 
   try {
-    await groupService.update(req.body.groupId, group, req.user.schoolId)
+    await groupService.update(req.body.groupId, group, req.user.schoolId, req.user.id)
   } catch (error) {
     return next(error)
   }
@@ -263,7 +263,7 @@ const removeGroup = async function (req, res, next) {
   try {
     const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
     await businessAvailabilityService.determineGroupsEligibility(checkWindowData)
-    await groupService.remove(req.user.schoolId, parseInt(req.params.groupId, 10))
+    await groupService.remove(req.user.schoolId, parseInt(req.params.groupId, 10), parseInt(req.user.id, 10))
   } catch (error) {
     return next(error)
   }

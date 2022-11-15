@@ -11,45 +11,47 @@ const redisKeyService = require('../services/redis-key.service')
 const pupilAddService = {
   /**
    * Add pupil.
-   * @param reqBody
-   * @param schoolId
+   * @param {object} pupilData
+   * @param {number} schoolId
+   * @param {number} userId
    * @returns {Promise<any>}
    */
-  addPupil: async function addPupil (reqBody, schoolId) {
-    if (!reqBody || Object.keys(reqBody).length < 11 || !schoolId || schoolId.length < 1) {
-      throw new Error('Invalid req.body and/or school id. Saving pupil failed.')
-    }
+  addPupil: async function addPupil (pupilData, schoolId, userId) {
+    if (pupilData === undefined || Object.keys(pupilData).length < 11) throw new Error('pupilData is required')
+    if (isNaN(schoolId)) throw new Error('schoolId is required')
+    if (isNaN(userId)) throw new Error('userId is required')
 
-    const pupilData = {
+    const pupilDataRow = {
       school_id: schoolId,
-      upn: reqBody.upn,
-      foreName: reqBody.foreName,
-      lastName: reqBody.lastName,
-      middleNames: reqBody.middleNames,
-      foreNameAlias: reqBody.foreNameAlias,
-      lastNameAlias: reqBody.lastNameAlias,
-      gender: reqBody.gender,
-      'dob-month': reqBody['dob-month'],
-      'dob-day': reqBody['dob-day'],
-      'dob-year': reqBody['dob-year'],
-      ageReason: reqBody.ageReason
+      upn: pupilData.upn,
+      foreName: pupilData.foreName,
+      lastName: pupilData.lastName,
+      middleNames: pupilData.middleNames,
+      foreNameAlias: pupilData.foreNameAlias,
+      lastNameAlias: pupilData.lastNameAlias,
+      gender: pupilData.gender,
+      'dob-month': pupilData['dob-month'],
+      'dob-day': pupilData['dob-day'],
+      'dob-year': pupilData['dob-year'],
+      ageReason: pupilData.ageReason,
+      lastModifiedBy_userId: userId
     }
 
-    const validationError = await pupilValidator.validate(pupilData, schoolId)
+    const validationError = await pupilValidator.validate(pupilDataRow, schoolId)
     if (validationError.hasError()) {
       throw validationError
     }
 
-    const saveData = R.omit(['dob-day', 'dob-month', 'dob-year', 'ageReason'], pupilData)
+    const saveData = R.omit(['dob-day', 'dob-month', 'dob-year', 'ageReason'], pupilDataRow)
     // @ts-ignore
-    saveData.dateOfBirth = dateService.createUTCFromDayMonthYear(pupilData['dob-day'], pupilData['dob-month'], pupilData['dob-year'])
-    saveData.upn = R.pathOr('', ['upn'], pupilData).trim().toUpperCase()
+    saveData.dateOfBirth = dateService.createUTCFromDayMonthYear(pupilDataRow['dob-day'], pupilDataRow['dob-month'], pupilDataRow['dob-year'])
+    saveData.upn = R.pathOr('', ['upn'], pupilDataRow).trim().toUpperCase()
 
     const res = await pupilDataService.sqlCreate(saveData)
     const pupilRecord = await pupilDataService.sqlFindOneById(res.insertId)
 
-    if (pupilData.ageReason) {
-      await pupilAgeReasonDataService.sqlInsertPupilAgeReason(res.insertId, pupilData.ageReason)
+    if (pupilDataRow.ageReason) {
+      await pupilAgeReasonDataService.sqlInsertPupilAgeReason(res.insertId, pupilDataRow.ageReason)
     }
     const pupilRegisterRedisKey = redisKeyService.getPupilRegisterViewDataKey(schoolId)
     await redisCacheService.drop(pupilRegisterRedisKey)

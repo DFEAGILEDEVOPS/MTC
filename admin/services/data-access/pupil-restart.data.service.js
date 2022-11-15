@@ -137,7 +137,7 @@ pupilRestartDataService.sqlMarkRestartAsDeleted = async (restartId, userId) => {
                     @newCheckReceived = c.received,
                     @newCheckComplete = c.complete
                    FROM [mtc_admin].[check] c LEFT JOIN
-                       [mtc_admin].[checkPin] cp ON (c.id = cp.check_id)                        
+                       [mtc_admin].[checkPin] cp ON (c.id = cp.check_id)
                    WHERE
                         c.id = @newCheckId;
 
@@ -159,7 +159,8 @@ pupilRestartDataService.sqlMarkRestartAsDeleted = async (restartId, userId) => {
                UPDATE [mtc_admin].[pupil]
                SET currentCheckId = @originCheckId,
                    restartAvailable = 0,
-                   checkComplete = IIF (@originCheckComplete = 1, 1, 0)
+                   checkComplete = IIF (@originCheckComplete = 1, 1, 0),
+                   lastModifiedBy_userId = @userId
                WHERE
                    id = @pupilId;
                `
