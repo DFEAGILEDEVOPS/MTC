@@ -493,7 +493,7 @@ const controller = {
   },
 
   postCheckResultsResyncAll: async function postCheckResultsResyncAll (req, res, next) {
-    res.locals.pageTitle = 'Resync Uncalculated Results'
+    res.locals.pageTitle = 'Synchronise new checks from Table Storage to main SQL database'
     const resyncAll = req.body.resyncAll === 'true' // convert string to bool- the user must tick the checkbox
     try {
       await resultsResyncService.resyncAllChecks(resyncAll)
@@ -561,7 +561,7 @@ const controller = {
       req.breadcrumbs('PS Report Run')
       res.render('tech-support/ps-report-run', {
         breadcrumbs: req.breadcrumbs(),
-        runReport: req.body?.runReport ?? false,
+        runReport: req.body?.runReport ?? 'false',
         response: ''
       })
     } catch (error) {
@@ -570,18 +570,17 @@ const controller = {
   },
 
   postPsReportRun: async function postPsReportRun (req, res, next) {
-    const runReport = req.body.runReport === 'true'
-    const response = runReport === true ? 'PS Report Requested' : 'Report NOT Requested - checkbox tick required'
+    const response = req.body.runReport === 'true' ? 'PS Report Requested' : 'Report NOT Requested - checkbox tick required'
     res.locals.pageTitle = 'PS Report Run'
     try {
-      if (runReport === true) {
+      if (req.body.runReport === 'true') {
         await PsReportExecService.requestReportGeneration(req.user.id)
       }
       req.breadcrumbs('PS Report Run')
       res.render('tech-support/ps-report-run', {
         breadcrumbs: req.breadcrumbs(),
         formData: {
-          runReport
+          runReport: req.body.runReport
         },
         response
       })
