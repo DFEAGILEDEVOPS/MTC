@@ -28,7 +28,7 @@ BEGIN CATCH
 SELECT @schoolId = id FROM [mtc_admin].school WHERE dfeNumber = 9991003
 END CATCH
 INSERT INTO [mtc_admin].[user] (identifier, passwordHash, school_id, role_id, displayName)
-  VALUES ('teacher3', '$2a$10$.WsawgZpWSAQVaa6Vz3P1.XO.1YntYJLd6Da5lrXCAkVxhhLpkOHK', @schoolId, 3, ' Teacher 3 Local User');
+  VALUES ('teacher3', '$2a$10$.WsawgZpWSAQVaa6Vz3P1.XO.1YntYJLd6Da5lrXCAkVxhhLpkOHK', @schoolId, 3, 'Teacher 3 Local User');
 
 BEGIN TRY
 INSERT INTO [mtc_admin].school (leaCode, estabCode, urn, dfeNumber, name, pin, pinExpiresAt) VALUES (999, '1004', 89004, 9991004, 'Example School Four', 'ddd44ddd', DATEADD(DAY, 1, GETUTCDATE()));

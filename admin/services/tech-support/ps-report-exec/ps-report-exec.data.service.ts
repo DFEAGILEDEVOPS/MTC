@@ -46,7 +46,6 @@ export class PsReportExecDataService {
       this.sbClient = new ServiceBusClient(config.ServiceBus.connectionString)
       this.sbSender = this.sbClient.createSender('ps-report-exec')
     }
-    console.dir(message)
     return this.sbSender.sendMessages({
       body: message
     })

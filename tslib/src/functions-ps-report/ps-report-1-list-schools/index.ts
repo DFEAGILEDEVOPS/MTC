@@ -8,13 +8,13 @@ import { JobStatusCode } from '../../common/job-status-code'
 
 interface IncomingMessage {
   requestedBy: string
-  dateTimeRequested: moment.Moment
+  dateTimeRequested: string
   jobUuid: string
 }
 
 const serviceBusTrigger: AzureFunction = async function (context: Context, jobInfo: IncomingMessage): Promise<void> {
   const logger = new PsReportLogger(context, PsReportSource.SchoolGenerator)
-  logger.verbose(`requested at ${jobInfo.dateTimeRequested.toISOString()} by ${jobInfo.requestedBy}`)
+  logger.verbose(`requested at ${jobInfo.dateTimeRequested} by ${jobInfo.requestedBy}`)
   const start = performance.now()
   const meta = { processCount: 0, errorCount: 0 }
   const jobDataService = new JobDataService()

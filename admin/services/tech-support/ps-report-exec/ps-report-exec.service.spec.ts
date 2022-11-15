@@ -28,7 +28,7 @@ describe('PS Report Exec Service', () => {
       jest.spyOn(JobService, 'createJob').mockResolvedValue({
         jobUuid: createdJobUuid
       })
-      const expectedRequestorDetails = `requested by ${userInfoData.displayName} (${userInfoData.identifier})`
+      const expectedRequestorDetails = `${userInfoData.displayName} (${userInfoData.identifier})`
       await sut.requestReportGeneration(userId)
       expect(PsReportExecDataService.getUserInfo).toHaveBeenCalledWith(userId)
       const expectedMessage: IExecPsReportRequest = {
@@ -37,9 +37,8 @@ describe('PS Report Exec Service', () => {
         requestedBy: expectedRequestorDetails
       }
       expect(JobService.createJob).toHaveBeenCalledWith(
-        expectedRequestorDetails, JobType.PsychometricianReport, JobStatus.Submitted)
+        `requested by ${expectedRequestorDetails}`, JobType.PsychometricianReport, JobStatus.Submitted)
       expect(PsReportExecDataService.sendPsReportExecMessage).toHaveBeenCalledWith(expectedMessage)
     })
-    test.todo('creates job and passes over user id')
   })
 })
