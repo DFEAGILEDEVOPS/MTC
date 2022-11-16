@@ -18,8 +18,11 @@ const pupilEditService = {}
  * @param {Number} schoolId
  * @returns {Promise<any>}
  */
-pupilEditService.update = async function (pupil, requestBody, schoolId) {
+pupilEditService.update = async function (pupil, requestBody, schoolId, userId) {
+  if (pupil === undefined) throw new Error('pupil is required')
   await PupilFrozenService.throwIfFrozenByIds([pupil.id])
+  if (userId === undefined) throw new Error('userId is required')
+  if (schoolId === undefined) throw new Error('schoolId is required')
   const trimAndUppercase = R.compose(R.toUpper, R.trim)
   await pupilAgeReasonService.refreshPupilAgeReason(pupil.id, requestBody.ageReason, pupil.ageReason)
   const update = {
@@ -31,7 +34,8 @@ pupilEditService.update = async function (pupil, requestBody, schoolId) {
     lastName: requestBody.lastName,
     upn: trimAndUppercase(R.pathOr('', ['upn'], requestBody)),
     gender: requestBody.gender,
-    dateOfBirth: dateService.createUTCFromDayMonthYear(requestBody['dob-day'], requestBody['dob-month'], requestBody['dob-year'])
+    dateOfBirth: dateService.createUTCFromDayMonthYear(requestBody['dob-day'], requestBody['dob-month'], requestBody['dob-year']),
+    lastModifiedBy_userId: userId
   }
   await pupilDataService.sqlUpdate(update)
   const pupilRegisterRedisKey = redisKeyService.getPupilRegisterViewDataKey(schoolId)
