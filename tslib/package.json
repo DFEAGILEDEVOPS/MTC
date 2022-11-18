@@ -20,7 +20,7 @@
     "watch:integration": "yarn jest --watch --config ./src/tests-integration/jest.integration.config.js"
   },
   "engines": {
-    "node": ">= 16"
+    "node": ">= 14"
   },
   "description": "Root MTC Typescript project.  Contains all shared components and azure function implementations",
   "resolutions": {
