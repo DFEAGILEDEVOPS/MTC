@@ -1,7 +1,7 @@
 version: '3'
 services:
   sqldb:
-    image: "mcr.microsoft.com/mssql/server:2019-CU16-GDR1-ubuntu-20.04"
+    image: "mcr.microsoft.com/mssql/server:2022-latest"
     #image: "mcr.microsoft.com/azure-sql-edge"
     container_name: mtc_mssql
     ports:
