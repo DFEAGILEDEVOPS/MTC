@@ -1,8 +1,4 @@
-DROP TRIGGER IF EXISTS [mtc_admin].[schoolInsertUpdateAuditTrigger];
-
-go
-
-CREATE OR ALTER TRIGGER [schoolInsertUpdateAuditTrigger] ON [mtc_admin].[school]
+CREATE OR ALTER TRIGGER [mtc_admin].[schoolInsertUpdateAuditTrigger] ON [mtc_admin].[school]
 AFTER INSERT, UPDATE
 AS
 BEGIN
