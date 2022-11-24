@@ -1,5 +1,5 @@
 CREATE OR ALTER TRIGGER  [mtc_admin].[schoolInsertUpdateAuditTrigger] ON [mtc_admin].[school]
-AFTER INSERT, UPDATE
+AFTER INSERT, UPDATE, DELETE
 AS
 BEGIN
     DECLARE @auditOperationTypeLookupId int;
@@ -26,7 +26,7 @@ BEGIN
         END
     ELSE
         BEGIN
-            -- I am a delete (not currently supported)
+            -- Delete operation
             SELECT @auditOperationTypeLookupId=3
         END
 
@@ -34,18 +34,23 @@ BEGIN
     DECLARE db_cursor CURSOR FOR
         SELECT i.id, i.lastModifiedBy_userId
         FROM inserted i;
+    DECLARE db_deleted_cursor CURSOR FOR
+        SELECT d.id, d.lastModifiedBy_userId
+        FROM deleted d;
 
+    IF @auditOperationTypeLookupId IN (1,2)
+      BEGIN
         OPEN db_cursor
-          FETCH NEXT FROM db_cursor INTO @schoolId, @lastModifiedBy_userId
-          WHILE @@FETCH_STATUS = 0
+        FETCH NEXT FROM db_cursor INTO @schoolId, @lastModifiedBy_userId
+        WHILE @@FETCH_STATUS = 0
           BEGIN
+          SELECT @newDataJson = (SELECT TOP 1 * FROM inserted i WHERE i.id = @schoolId FOR JSON AUTO, WITHOUT_ARRAY_WRAPPER);
             -- incorporate updatedAt trigger logic, to avoid duplicate audit entries
             IF @auditOperationTypeLookupId = 2
               BEGIN
                 UPDATE [mtc_admin].[school] SET updatedAt = @updatedTimestamp WHERE id = @schoolId;
+                SET @newDataJson = JSON_MODIFY(@newDataJson, '$.updatedAt', CAST(@updatedTimestamp AS NVARCHAR));
               END
-            SELECT @newDataJson = (SELECT TOP 1 * FROM inserted i WHERE i.id = @schoolId FOR JSON AUTO, WITHOUT_ARRAY_WRAPPER);
-            SET @newDataJson = JSON_MODIFY(@newDataJson, '$.updatedAt', CAST(@updatedTimestamp AS NVARCHAR));
             -- do insert into school audit
             INSERT INTO [mtc_admin].[schoolAudit]
               (auditOperationTypeLookup_id, newData, school_id, operationBy_userId, sqlUserIdentifier)
@@ -54,6 +59,26 @@ BEGIN
             FETCH NEXT FROM db_cursor INTO @schoolId, @lastModifiedBy_userId
           END
 
-    CLOSE db_cursor
-    DEALLOCATE db_cursor
+        CLOSE db_cursor
+        DEALLOCATE db_cursor
+      END
+
+      IF @auditOperationTypeLookupId = 3
+      BEGIN
+        OPEN db_deleted_cursor
+        FETCH NEXT FROM db_deleted_cursor INTO @schoolId, @lastModifiedBy_userId
+        WHILE @@FETCH_STATUS = 0
+          BEGIN
+            SELECT @newDataJson = (SELECT TOP 1 * FROM deleted d WHERE d.id = @schoolId FOR JSON AUTO, WITHOUT_ARRAY_WRAPPER);
+            -- do insert into school audit
+            INSERT INTO [mtc_admin].[schoolAudit]
+              (auditOperationTypeLookup_id, newData, school_id, operationBy_userId, sqlUserIdentifier)
+            VALUES (@auditOperationTypeLookupId, @newDataJson, @schoolId, @lastModifiedBy_userId, SUSER_SNAME());
+
+            FETCH NEXT FROM db_deleted_cursor INTO @schoolId, @lastModifiedBy_userId
+          END
+
+        CLOSE db_deleted_cursor
+        DEALLOCATE db_deleted_cursor
+      END
 END
