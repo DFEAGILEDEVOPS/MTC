@@ -29,10 +29,16 @@ module.exports.getRestartsForSchool = async function getRestartsForSchool (schoo
       status: ''
     }
 
+    // if all restarts used and no discretionary restart available...
     if ((r.totalCheckCount >= config.RESTART_MAX_ATTEMPTS + 1) && !r.isDiscretionaryRestartAvailable) {
       update.status = 'Maximum number of restarts taken'
+      // if a pin has been generated against the restart...
+    } else if (r.restartCheckId !== null) {
+      update.status = 'Restart taken'
+    // if discretionary restart available orelse pupil has logged in to the restart check...
     } else if (r.isDiscretionaryRestartAvailable || r.restartCheckPupilLoginDate !== null) {
       update.status = 'Restart taken'
+    // if no check generated against restart orelse restart check not received and restart check not marked as complete
     } else if (r.restartCheckId === null || (r.restartCheckReceived === false && r.restartCheckComplete === false)) {
       update.status = 'Remove restart'
     } else {
