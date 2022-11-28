@@ -1,13 +1,10 @@
 UPDATE mtc_admin.school
-SET leaCode = 201
+SET
+  leaCode = 201,
+  dfeNumber = CAST(CONCAT('201', CAST(estabCode as VARCHAR)) as INT),
+  isTestSchool = 0
 WHERE
   leaCode = 999
 AND
   estabCode <> 1004
 ;
-
-
-UPDATE mtc_admin.school
-SET dfeNumber = CONCAT(CAST(leaCode as VARCHAR), CAST(estabCode as VARCHAR))
-WHERE
-  leaCode = 201;
