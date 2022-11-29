@@ -13,6 +13,9 @@ import { SpeechService } from '../services/speech/speech.service';
 import { SpeechServiceMock } from '../services/speech/speech.service.mock';
 import { StorageService } from '../services/storage/storage.service';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
+import { Renderer2 } from '@angular/core'
+import { MonotonicTimeService } from '../services/monotonic-time/monotonic-time.service'
+import { AuditEntryFactory } from '../services/audit/auditEntry'
 
 describe('PractiseQuestionComponent', () => {
   let component: PracticeQuestionComponent;
@@ -38,12 +41,14 @@ describe('PractiseQuestionComponent', () => {
       declarations: [ PracticeQuestionComponent ],
       providers: [
         { provide: AuditService, useClass: AuditServiceMock },
-        { provide: SpeechService, useValue: mockSpeechService },
+        WindowRefService,
         { provide: QuestionService, useClass: QuestionServiceMock },
+        { provide: SpeechService, useValue: mockSpeechService },
+        { provide: AnswerService, useClass: AnswerService, deps: [ MonotonicTimeService] },
         { provide: RegisterInputService, useClass: RegisterInputServiceMock },
         StorageService,
-        WindowRefService,
-        AnswerService
+        Renderer2,
+        AuditEntryFactory
       ]
     })
     .compileComponents();

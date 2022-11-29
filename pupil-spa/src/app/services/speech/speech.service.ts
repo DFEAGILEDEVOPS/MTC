@@ -2,7 +2,7 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
 
 import { AuditService } from '../audit/audit.service';
-import { UtteranceStarted, UtteranceEnded, QuestionReadingStarted, QuestionReadingEnded } from '../audit/auditEntry';
+import { AuditEntryFactory } from '../audit/auditEntry'
 import { WindowRefService } from '../window-ref/window-ref.service';
 
 @Injectable()
@@ -40,7 +40,9 @@ export class SpeechService implements OnDestroy {
     }
   }
 
-  constructor(protected audit: AuditService, protected windowRefService: WindowRefService) {
+  constructor(protected audit: AuditService,
+              protected windowRefService: WindowRefService,
+              protected auditEntryFactory: AuditEntryFactory) {
     const _window = windowRefService.nativeWindow;
     if (_window.speechSynthesis) {
       console.log('Speech synthesis detected');
@@ -98,11 +100,11 @@ export class SpeechService implements OnDestroy {
     sayThis.onstart = (event) => {
       this.speaking = true;
       this.announceSpeechStarted();
-      this.audit.addEntry(new UtteranceStarted());
+      this.audit.addEntry(this.auditEntryFactory.createUtteranceStarted());
     };
     sayThis.onend = (event) => {
       this.speaking = false;
-      this.audit.addEntry(new UtteranceEnded());
+      this.audit.addEntry(this.auditEntryFactory.createUtteranceEnded());
       this.announceSpeechEnded();
       this.announceSpeechReset();
     };
@@ -124,11 +126,11 @@ export class SpeechService implements OnDestroy {
     sayThis.onstart = (event) => {
       this.speaking = true;
       this.announceQuestionSpeechStarted();
-      this.audit.addEntry(new QuestionReadingStarted({ sequenceNumber }));
+      this.audit.addEntry(this.auditEntryFactory.createQuestionReadingStarted({ sequenceNumber }));
     };
     sayThis.onend = (event) => {
       this.speaking = false;
-      this.audit.addEntry(new QuestionReadingEnded({ sequenceNumber }));
+      this.audit.addEntry(this.auditEntryFactory.createQuestionReadingEnded({ sequenceNumber }));
       this.announceQuestionSpeechEnded();
       this.announceSpeechReset();
     };

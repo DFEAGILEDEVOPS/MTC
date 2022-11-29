@@ -2,14 +2,13 @@ import { Component, OnInit, AfterViewInit, NgZone, OnDestroy, Renderer2 } from '
 import { AnswerService } from '../services/answer/answer.service';
 import { AuditService } from '../services/audit/audit.service';
 import { QuestionComponent } from '../question/question.component';
-import { QuestionRendered, QuestionTimerCancelled } from '../services/audit/auditEntry';
+import { AuditEntryFactory } from '../services/audit/auditEntry'
 import { QuestionService } from '../services/question/question.service';
 import { RegisterInputService } from '../services/register-input/registerInput.service';
 import { SpeechService } from '../services/speech/speech.service';
 import { StorageService } from '../services/storage/storage.service';
 import { Subscription } from 'rxjs';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
-import { Answer } from '../services/answer/answer.model';
 
 @Component({
   selector: 'app-spoken-question',
@@ -33,8 +32,9 @@ export class SpokenQuestionComponent extends QuestionComponent implements OnInit
               protected speechService: SpeechService,
               protected questionService: QuestionService,
               protected answerService: AnswerService,
-              protected renderer: Renderer2) {
-    super(auditService, windowRefService, questionService, storageService, speechService, answerService, registerInputService, renderer);
+              protected renderer: Renderer2,
+              protected auditEntryFactory: AuditEntryFactory) {
+    super(auditService, windowRefService, questionService, storageService, speechService, answerService, registerInputService, renderer, auditEntryFactory);
   }
 
   ngOnInit() {
@@ -56,11 +56,12 @@ export class SpokenQuestionComponent extends QuestionComponent implements OnInit
    * Start the timer when the view is ready.
    */
   ngAfterViewInit () {
-    this.auditService.addEntry( new QuestionRendered( {
+    const data = {
       sequenceNumber: this.sequenceNumber,
       question: `${ this.factor1 }x${ this.factor2 }`,
       isWarmup: this.isWarmUpQuestion
-    }));
+    }
+    this.auditService.addEntry(this.auditEntryFactory.createQuestionRendered(data));
 
     // Set up listening events depending on the browser's capability
     if ( this.shouldSetupPointerEvents() ) {
@@ -110,16 +111,16 @@ export class SpokenQuestionComponent extends QuestionComponent implements OnInit
     }
 
     // Store the answer
-    const answer = new Answer( this.factor1, this.factor2, this.answer, this.sequenceNumber );
-    this.answerService.setAnswer( answer );
+    this.answerService.setAnswer( this.factor1, this.factor2, this.answer, this.sequenceNumber );
 
     // Clear the interval timer and add a QuestionTimerCancelled event.question.
-    if ( this.countdownInterval ) {
-      this.auditService.addEntry( new QuestionTimerCancelled( {
+    if (this.countdownInterval !== undefined) {
+      const data = {
         sequenceNumber: this.sequenceNumber,
         question: `${ this.factor1 }x${ this.factor2 }`,
         isWarmup: this.isWarmUpQuestion
-      } ) );
+      }
+      this.auditService.addEntry(this.auditEntryFactory.createQuestionTimerCancelled(data));
       clearInterval( this.countdownInterval );
       this.countdownInterval = undefined;
     }

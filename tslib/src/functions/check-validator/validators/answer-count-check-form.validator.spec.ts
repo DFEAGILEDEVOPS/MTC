@@ -60,27 +60,33 @@ describe('answer-count.validator', () => {
     expect(error?.message).toBe('checkCode is missing')
   })
 
-  test('minimim number of answers passes validation', async () => {
+  test('minimum number of answers passes validation', async () => {
     const expectedQuestionCount = checkForm.length
     const check = {
       answers: [] as any,
       checkCode: '0000-0000-0000-000000'
     }
     for (let index = 1; index < expectedQuestionCount + 1; index++) { // 1 answer for each question
+      const d = new Date()
       check.answers.push({
         answer: index,
         clientTimestamp: (new Date()).toUTCString(),
         factor1: index + 1,
         factor2: 2,
         question: `${index + 1}x2`,
-        sequenceNumber: index
+        sequenceNumber: index,
+        monotonicTime: {
+          sequenceNumber: index + 1,
+          legacyDate: d.toUTCString(),
+          milliseconds: d.valueOf() + 0.4
+        }
       })
     }
     const error = await sut.validate(check)
     expect(error).toBeUndefined()
   })
 
-  test('more answers than exptected passes validation', async () => {
+  test('more answers than expected passes validation', async () => {
     const expectedQuestionCount = checkForm.length
     const check = {
       answers: [] as any,

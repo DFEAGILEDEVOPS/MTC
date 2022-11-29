@@ -2,14 +2,16 @@ import { Injectable } from '@angular/core'
 import { TestBed, inject } from '@angular/core/testing'
 import { RegisterInputService } from './registerInput.service'
 import { StorageService } from '../storage/storage.service'
+import { MonotonicTimeService } from '../monotonic-time/monotonic-time.service'
 
 let mockStorageService: StorageService
 
 @Injectable()
 export class TestRegisterInputService extends RegisterInputService {
 
-  constructor (protected storageService: StorageService) {
-    super(storageService)
+  constructor (protected storageService: StorageService,
+               protected monotonicTimeService: MonotonicTimeService) {
+    super(storageService, monotonicTimeService)
   }
 }
 
@@ -21,6 +23,7 @@ describe('RegisterInputService', () => {
       providers: [
         TestRegisterInputService,
         StorageService,
+        MonotonicTimeService
       ]
     })
     mockStorageService = injector.inject(StorageService)
@@ -39,19 +42,23 @@ describe('RegisterInputService', () => {
       expect(storageServiceSetInputSpy).toHaveBeenCalledTimes(1)
     }))
 
-  it('StoreEntry to should store entry',
+  it('StoreEntry should store entry',
     inject([TestRegisterInputService], (service: TestRegisterInputService) => {
+      const now = performance.now()
+      const d1 = new Date(now + performance.timeOrigin)
       const entry = {
         input: '0',
         eventType: 'keydown',
-        clientTimestamp: (new Date()).toISOString(),
+        clientTimestamp: d1.toISOString(),
         question: '2x3',
         sequenceNumber: 7,
       }
-      service.storeEntry(entry.input, entry.eventType, entry.sequenceNumber, entry.question)
+      service.storeEntry(entry.input, entry.eventType, entry.sequenceNumber, entry.question, now)
       expect(storageServiceSetInputSpy).toHaveBeenCalledTimes(1)
       const arg = storageServiceSetInputSpy.calls.all()[0].args[0]
-      expect(arg).toEqual(entry)
+      const entryWithoutTimestamp = JSON.parse(JSON.stringify(entry))
+      delete entryWithoutTimestamp.clientTimestamp
+      expect(arg).toEqual(jasmine.objectContaining(entryWithoutTimestamp)) // clientTimestamp is currently unused
     }))
 
   it('StoreEntry will generate new Date if the event timestamp is undefined',
@@ -65,6 +72,16 @@ describe('RegisterInputService', () => {
       expect(clientTimestamp).toBeTruthy()
       const cts = new Date(clientTimestamp)
       const now = new Date()
-      expect(Math.abs(cts.getTime() - now.getTime())).toBeLessThan(10) // Should be set to this year not 1970
+      expect(Math.abs(cts.getTime() - now.getTime())).toBeLessThan(150)
+    }))
+
+  it('StoreEntry will generate a high-precision timestamp',
+    inject([TestRegisterInputService], (service: TestRegisterInputService) => {
+      const eventValue = '0'
+      const eventType = 'keydown'
+      service.storeEntry(eventValue, eventType, 7, '2x3')
+      const mtime = storageServiceSetInputSpy.calls.all()[0].args[0].monotonicTime
+      expect(mtime).toBeDefined()
+      expect(Object.keys(mtime)).toEqual(['milliseconds', 'legacyDate', 'sequenceNumber'])
     }))
 })

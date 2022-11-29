@@ -54,7 +54,6 @@ export class CheckCompleteComponent implements OnInit, AfterViewInit, OnDestroy 
     // stop the current speech process if the page is changed
     if (this.questionService.getConfig().questionReader) {
       this.speechService.cancel();
-
       this.elRef.nativeElement.removeEventListener('focus', this.speechListenerEvent, true);
     }
   }

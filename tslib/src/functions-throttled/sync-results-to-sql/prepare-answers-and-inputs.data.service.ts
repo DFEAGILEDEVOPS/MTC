@@ -4,6 +4,7 @@ import * as R from 'ramda'
 import { TYPES } from 'mssql'
 import { IQuestionService, QuestionService } from './question.service'
 import { IUserInputService, UserInputService } from './user-input.service'
+import { payloadSort } from '../../services/payload-sort'
 
 export interface UserInputTypeLookup {
   id: number
@@ -30,10 +31,11 @@ export class PrepareAnswersAndInputsDataService {
    * @params answerId E.g. '@answerId1' - the SQL parameterName for the answerId that was already set when preparing the answers
    */
   private async prepareInputs (rawInputs: Input[], question: DBQuestion, sqlAnswerVar: string): Promise<ITransactionRequest> {
+    const sortedInputs = payloadSort(rawInputs)
     const params: ISqlParameter[] = []
     const sqls: string[] = []
     let j = 0
-    for (const o of rawInputs) {
+    for (const o of sortedInputs) {
       const suffix = `${question.id}${j}`
       params.push(
         { name: `userInputQuestionId${suffix}`, value: question.id, type: TYPES.SmallInt },
