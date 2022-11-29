@@ -1,6 +1,6 @@
 Given(/^I have used all the keys on the on screen keyboard to complete the check$/) do
   step 'I have started the check'
-  first= check_page.complete_question('12345', 'numpad')
+  first = check_page.complete_question('12345', 'numpad')
   second = check_page.complete_question('67890', 'numpad')
   remaining = check_page.complete_check_with_correct_answers(23, 'numpad')
   @answers = [first, second, remaining].flatten
@@ -13,15 +13,18 @@ Then(/^I should see all my number pad inputs recorded$/) do
   check = JSON.parse(LZString::UTF16.decompress(check_result['archive']))
   local_storage = check['inputs']
 
-  questions = JSON.parse(page.evaluate_script('window.localStorage.getItem("questions");')).map{|x| x['factor1'].to_s + 'x'+ x['factor2'].to_s }
+  questions = JSON.parse(page.evaluate_script('window.localStorage.getItem("questions");')).map {|x| x['factor1'].to_s + 'x' + x['factor2'].to_s}
   inputs1 = local_storage.compact
   inputs = inputs1.each {|a| a.delete('clientTimestamp')}
-  expect(inputs.flatten).to eql check_page.array_of_inputs_from_numpad(@answers, questions).flatten
+  monotonic_time = inputs.flatten.map {|m| m['monotonicTime']}
+  array_of_inputs = check_page.array_of_inputs_from_numpad(@answers, questions).flatten
+  array_of_inputs.each_with_index {|b, index| b['monotonicTime'] = monotonic_time[index]}
+  expect(inputs.flatten).to eql array_of_inputs
 end
 
 Given(/^I have used the physical screen keyboard to complete the check$/) do
   step 'I have started the check using the keyboard'
-  first= check_page.complete_question('12345', 'keyboard')
+  first = check_page.complete_question('12345', 'keyboard')
   second = check_page.complete_question('67890', 'keyboard')
   remaining = check_page.complete_check_with_correct_answers(23, 'keyboard')
   @answers = [first, second, remaining].flatten
@@ -37,8 +40,12 @@ Then(/^I should see all my keyboard inputs recorded$/) do
 
   inputs1 = local_storage.compact
   inputs = inputs1.each {|a| a.delete('clientTimestamp')}
-  questions = JSON.parse(page.evaluate_script('window.localStorage.getItem("questions");')).map{|x| x['factor1'].to_s + 'x'+ x['factor2'].to_s }
-  expect(inputs.flatten).to eql check_page.array_of_inputs_from_keyboard(@answers,questions).flatten
+  questions = JSON.parse(page.evaluate_script('window.localStorage.getItem("questions");')).map {|x| x['factor1'].to_s + 'x' + x['factor2'].to_s}
+  monotonic_time = inputs.flatten.map {|m| m['monotonicTime']}
+  array_of_inputs = check_page.array_of_inputs_from_keyboard(@answers, questions).flatten
+  array_of_inputs.each_with_index {|b, index| b['monotonicTime'] = monotonic_time[index]}
+
+  expect(inputs.flatten).to eql array_of_inputs
 end
 
 
@@ -60,7 +67,9 @@ Then(/^I should see backspace numpad event recorded$/) do
   inputs1 = local_storage.compact
   inputs = inputs1.each {|a| a.delete('clientTimestamp')}
   backspace_input = inputs.select {|i| i['input'] == 'Backspace'}
-  expected = ["input"=>"Backspace", "eventType"=>"mouse", "question"=>"1x1", "sequenceNumber"=>1]
+  monotonic_time = backspace_input.map {|m| m['monotonicTime']}
+  expected = ["input" => "Backspace", "eventType" => "mouse", "question" => "1x1", "sequenceNumber" => 1]
+  expected.first["monotonicTime"] = monotonic_time.first
   expect(backspace_input).to eql expected
 end
 
@@ -84,6 +93,8 @@ Then(/^I should see backspace keyboard event recorded$/) do
   inputs1 = local_storage.compact
   inputs = inputs1.each {|a| a.delete('clientTimestamp')}
   backspace_input = inputs.select {|i| i['input'] == 'Backspace'}
-  expected = ["input"=>"Backspace", "eventType"=>"keyboard", "question"=>"1x1", "sequenceNumber"=>1]
+  monotonic_time = backspace_input.map {|m| m['monotonicTime']}
+  expected = ["input" => "Backspace", "eventType" => "keyboard", "question" => "1x1", "sequenceNumber" => 1, "monotonicTime" => monotonic_time]
+  expected.first["monotonicTime"] = monotonic_time.first
   expect(backspace_input).to eql expected
 end
