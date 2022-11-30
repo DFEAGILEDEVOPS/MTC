@@ -1,11 +1,7 @@
 import { APP_CONFIG } from '../config/config.service';
 import { AuditService } from '../audit/audit.service';
 import { AzureQueueService, QueueMessageRetryConfig } from '../azure-queue/azure-queue.service';
-import {
-  CheckSubmissionApiCalled,
-  CheckSubmissionAPIFailed,
-  CheckSubmissionAPICallSucceeded,
-} from '../audit/auditEntry';
+import { AuditEntryFactory } from '../audit/auditEntry'
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { StorageService } from '../storage/storage.service';
@@ -30,7 +26,8 @@ export class CheckCompleteService {
               private storageService: StorageService,
               private tokenService: TokenService,
               private appUsageService: AppUsageService,
-              private metaService: Meta) {
+              private metaService: Meta,
+              private auditEntryFactory: AuditEntryFactory) {
     const {
       checkSubmissionApiErrorDelay,
       checkSubmissionAPIErrorMaxAttempts,
@@ -67,7 +64,7 @@ export class CheckCompleteService {
       DelayBetweenRetries: this.checkSubmissionApiErrorDelay,
       MaxAttempts: this.checkSubmissionAPIErrorMaxAttempts
     };
-    this.auditService.addEntry(new CheckSubmissionApiCalled());
+    this.auditService.addEntry(this.auditEntryFactory.createCheckSubmissionApiCalled());
     const items = this.storageService.getAllItems();
     const payload = this.getPayload(items);
     if (checkConfig.compressCompletedCheck) {
@@ -83,10 +80,10 @@ export class CheckCompleteService {
     }
     try {
       await this.azureQueueService.addMessageToQueue(url, token, message, retryConfig);
-      this.auditService.addEntry(new CheckSubmissionAPICallSucceeded());
+      this.auditService.addEntry(this.auditEntryFactory.createCheckSubmissionAPICallSucceeded());
       await this.onSuccess(startTime);
     } catch (error) {
-      this.auditService.addEntry(new CheckSubmissionAPIFailed(error));
+      this.auditService.addEntry(this.auditEntryFactory.createCheckSubmissionAPIFailed());
       if (error.statusCode === 403
         && error.authenticationerrordetail.includes('Signature not valid in the specified time frame')) {
         this.router.navigate(['/session-expired']);
@@ -105,9 +102,15 @@ export class CheckCompleteService {
   getAllEntriesByKey(key: string, items: Record<any, any>): any {
     const matchingKeys =
       Object.keys(items).filter(lsi => lsi.startsWith(key.toString()));
-    const sortedMatchingKeys = matchingKeys.sort((a, b) =>
-      new Date(items[a].clientTimestamp).getTime() - new Date(items[b].clientTimestamp).getTime()
-    );
+    const sortedMatchingKeys = matchingKeys.sort((a, b) => {
+      const diff = new Date(items[a].clientTimestamp).getTime() - new Date(items[b].clientTimestamp).getTime()
+      if (diff === 0) {
+        const aMonotonicTime = items[a].monotonicTime || items[a].data.monotonicTime
+        const bMonotonicTime = items[b].monotonicTime || items[b].data.monotonicTime
+        return aMonotonicTime.sequenceNumber - bMonotonicTime.sequenceNumber
+      }
+      return diff
+    });
     const matchingItems = new Array<any>();
     sortedMatchingKeys.forEach(s => {
       matchingItems.push(items[s]);
