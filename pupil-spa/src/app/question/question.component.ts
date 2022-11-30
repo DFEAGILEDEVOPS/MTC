@@ -1,9 +1,8 @@
 import { Component, OnInit, AfterViewInit, Renderer2 } from '@angular/core';
 import { AnswerService } from '../services/answer/answer.service';
-import { Answer } from '../services/answer/answer.model';
 import { AuditService } from '../services/audit/audit.service';
 import { PracticeQuestionComponent } from '../practice-question/practice-question.component';
-import { QuestionAnswered, QuestionTimerCancelled } from '../services/audit/auditEntry';
+import { AuditEntryFactory } from '../services/audit/auditEntry'
 import { QuestionService } from '../services/question/question.service';
 import { RegisterInputService } from '../services/register-input/registerInput.service';
 import { SpeechService } from '../services/speech/speech.service';
@@ -29,8 +28,9 @@ export class QuestionComponent extends PracticeQuestionComponent implements OnIn
               protected speechService: SpeechService,
               protected answerService: AnswerService,
               protected registerInputService: RegisterInputService,
-              protected renderer: Renderer2) {
-    super(auditService, windowRefService, questionService, storageService, speechService, answerService, registerInputService, renderer);
+              protected renderer: Renderer2,
+              protected auditEntryFactory: AuditEntryFactory) {
+    super(auditService, windowRefService, questionService, storageService, speechService, answerService, registerInputService, renderer, auditEntryFactory);
     this.window = windowRefService.nativeWindow;
   }
 
@@ -67,7 +67,6 @@ export class QuestionComponent extends PracticeQuestionComponent implements OnIn
     if (!this.hasAnswer()) {
       return false;
     }
-
     // Prevent the default timeout from firing later
     if (this.timeout) {
       clearTimeout(this.timeout);
@@ -75,18 +74,17 @@ export class QuestionComponent extends PracticeQuestionComponent implements OnIn
     } else {
       return false;
     }
-
     // Store the answer
-    const answer = new Answer(this.factor1, this.factor2, this.answer, this.sequenceNumber);
-    this.answerService.setAnswer(answer);
+    this.answerService.setAnswer(this.factor1, this.factor2, this.answer, this.sequenceNumber);
 
     // Clear the interval timer and add a QuestionTimerCancelled event.question.
-    if (this.countdownInterval) {
-      this.auditService.addEntry(new QuestionTimerCancelled({
+    if (this.countdownInterval !== undefined) {
+      const data = {
         sequenceNumber: this.sequenceNumber,
         question: `${this.factor1}x${this.factor2}`,
         isWarmup: this.isWarmUpQuestion
-      }));
+      }
+      this.auditService.addEntry(this.auditEntryFactory.createQuestionTimerCancelled(data));
       clearInterval(this.countdownInterval);
       this.countdownInterval = undefined;
     }
@@ -102,7 +100,7 @@ export class QuestionComponent extends PracticeQuestionComponent implements OnIn
    * Called when the user clicks the enter button on the virtual keypad
    * @param {Object} event
    */
-  onClickSubmit(event: Event) {
+  onClickSubmit(event: Event): void {
     if (this.submitted) {
       return;
     }
@@ -115,11 +113,12 @@ export class QuestionComponent extends PracticeQuestionComponent implements OnIn
     this.onSubmit();
   }
 
-  addQuestionAnsweredEvent() {
-    this.auditService.addEntry(new QuestionAnswered({
-      sequenceNumber: this.sequenceNumber,
-      question: `${this.factor1}x${this.factor2}`,
-      isWarmup: this.isWarmUpQuestion
-    }));
+  addQuestionAnsweredEvent(): void {
+    const data = {
+        sequenceNumber: this.sequenceNumber,
+        question: `${this.factor1}x${this.factor2}`,
+        isWarmup: this.isWarmUpQuestion
+    }
+    this.auditService.addEntry(this.auditEntryFactory.createQuestionAnswered(data))
   }
 }

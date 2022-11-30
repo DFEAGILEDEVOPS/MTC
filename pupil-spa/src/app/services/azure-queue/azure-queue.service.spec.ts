@@ -10,7 +10,7 @@ describe('AzureQueueService', () => {
   let initialProductionFlag: boolean
   let httpServiceSpy: { postXml: jasmine.Spy }
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(async () => {
     httpServiceSpy = jasmine.createSpyObj('HttpService', ['postXml'])
     TestBed.configureTestingModule({
       providers: [
@@ -22,7 +22,7 @@ describe('AzureQueueService', () => {
     .compileComponents()
     initialProductionFlag = APP_CONFIG.production
     sut = TestBed.inject(AzureQueueService)
-  }))
+  })
 
   afterEach(() => {
     (<IAppConfig>APP_CONFIG).production = initialProductionFlag

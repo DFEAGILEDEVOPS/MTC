@@ -14,7 +14,7 @@
                       value="{{selectedFont.val}}"
                       id="font-{{selectedFont.val}}"
                       name="font-size"
-                      [checked]="selectedSize == selectedFont.val"
+                      [checked]="selectedSize === selectedFont.val"
                       (change)="selectionChange(selectedFont.val)">
                 <label class="aa-copy-size-{{selectedFont.val}}" for="font-{{selectedFont.val}}"><span>{{selectedFont.label}}</span></label>
               </div>
