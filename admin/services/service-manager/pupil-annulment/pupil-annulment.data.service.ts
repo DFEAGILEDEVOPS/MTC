@@ -127,7 +127,8 @@ export class PupilAnnulmentDataService {
       attendanceId=@attendanceCode_id,
       frozen=1,
       checkComplete=0,
-      restartAvailable=0
+      restartAvailable=0,
+      lastModifiedBy_userId=@userId
     WHERE
       id=@pupilId
     `
@@ -205,7 +206,8 @@ export class PupilAnnulmentDataService {
       frozen = 0,
       checkComplete = @previousCheckCompleteValue,
       restartAvailable = @previousRestartAvailableValue,
-      attendanceId = @previousAttendanceId
+      attendanceId = @previousAttendanceId,
+      lastModifiedBy_userId = @userId
     WHERE
       id = @pupilId
 

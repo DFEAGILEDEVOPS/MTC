@@ -61,7 +61,7 @@ const controller = {
   postAddPupil: async function postAddPupil (req, res, next) {
     res.locals.pageTitle = 'Add pupil'
     try {
-      const pupil = await pupilAddService.addPupil(req.body, req.user.schoolId)
+      const pupil = await pupilAddService.addPupil(req.body, req.user.schoolId, req.user.id)
       req.flash('info', '1 new pupil has been added')
       const highlight = JSON.stringify([pupil.urlSlug.toString()])
       res.redirect(`/pupil-register/pupils-list?hl=${highlight}`)
@@ -140,7 +140,7 @@ const controller = {
     }
     let uploadResult
     try {
-      uploadResult = await pupilUploadService.upload(school, uploadFile)
+      uploadResult = await pupilUploadService.upload(school, uploadFile, req.user.id)
     } catch (error) {
       return next(error)
     }
@@ -248,7 +248,7 @@ const controller = {
       })
     }
     try {
-      await pupilEditService.update(pupil, req.body, req.user.schoolId)
+      await pupilEditService.update(pupil, req.body, req.user.schoolId, req.user.id)
       req.flash('info', 'Changes to pupil details have been saved')
     } catch (error) {
       next(error)

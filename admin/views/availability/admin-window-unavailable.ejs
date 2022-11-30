@@ -1,10 +1,12 @@
 <main class="govuk-main-wrapper" id="main-content" role="main">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            <h1 class="govuk-heading-xl">The service is unavailable</h1>
+            <h1 class="govuk-heading-xl">The service is currently closed</h1>
             <%- partial('partials/_gds_session_expiry') %>
 
-            <p class="govuk-body">The service is closed.</p>
+            <p class="govuk-body">For further information on the next MTC assessment cycle, please go to
+                <a href="https://www.gov.uk/government/collections/multiplication-tables-check" target="_blank" rel="noopener noreferrer">https://www.gov.uk/government/collections/multiplication-tables-check</a>
+            </p>
 
 
             <% if (isAuthenticated) { %>

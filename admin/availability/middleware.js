@@ -25,7 +25,7 @@ async function isAdminWindowAvailable (req, res, next) {
       return next()
     }
 
-    res.locals.pageTitle = 'Unavailable'
+    res.locals.pageTitle = 'The service is currently closed'
     return res.render('availability/admin-window-unavailable', {})
   } catch (error) {
     next(error)

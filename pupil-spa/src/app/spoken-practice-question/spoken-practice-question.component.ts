@@ -4,7 +4,7 @@ import { Subscription } from 'rxjs';
 import { AnswerService } from '../services/answer/answer.service';
 import { AuditService } from '../services/audit/audit.service';
 import { PracticeQuestionComponent } from '../practice-question/practice-question.component';
-import { QuestionRendered } from '../services/audit/auditEntry';
+import { AuditEntryFactory } from '../services/audit/auditEntry'
 import { QuestionService } from '../services/question/question.service';
 import { RegisterInputService } from '../services/register-input/registerInput.service';
 import { SpeechService } from '../services/speech/speech.service';
@@ -33,8 +33,9 @@ export class SpokenPracticeQuestionComponent extends PracticeQuestionComponent i
               protected questionService: QuestionService,
               protected answerService: AnswerService,
               protected registerInputService: RegisterInputService,
-              protected renderer: Renderer2) {
-    super(auditService, windowRefService, questionService, storageService, speechService, answerService, registerInputService, renderer);
+              protected renderer: Renderer2,
+              protected auditEntryFactory: AuditEntryFactory) {
+    super(auditService, windowRefService, questionService, storageService, speechService, answerService, registerInputService, renderer, auditEntryFactory);
   }
 
   ngOnInit() {
@@ -54,11 +55,12 @@ export class SpokenPracticeQuestionComponent extends PracticeQuestionComponent i
    * Start the timer when the view is ready.
    */
   ngAfterViewInit() {
-    this.auditService.addEntry(new QuestionRendered({
+    const data = {
       sequenceNumber: this.sequenceNumber,
       question: `${this.factor1}x${this.factor2}`,
       isWarmup: this.isWarmUpQuestion
-    }));
+    }
+    this.auditService.addEntry(this.auditEntryFactory.createQuestionRendered(data));
 
     // Set up listening events depending on the browser's capability
     if (this.shouldSetupPointerEvents()) {

@@ -121,6 +121,7 @@ describe('group.service', () => {
 
   describe('#update', () => {
     let service
+    const userId = 123
 
     describe('happy path', () => {
       beforeEach(() => {
@@ -136,16 +137,16 @@ describe('group.service', () => {
         const schoolId = 123
         const thisGroupMock = JSON.parse(JSON.stringify(groupMock))
         thisGroupMock.pupils = [2]
-        await service.update(1, thisGroupMock, schoolId)
+        await service.update(1, thisGroupMock, schoolId, userId)
         expect(groupDataService.sqlUpdate).toHaveBeenCalled()
-        expect(groupDataService.sqlModifyGroupMembers).toHaveBeenCalled()
+        expect(groupDataService.sqlModifyGroupMembers).toHaveBeenCalledWith(thisGroupMock.id, thisGroupMock.pupils, userId)
       })
 
       test('should update group (including pupils) when sent as an object', async () => {
         const schoolId = 123
         const thisGroupMock = JSON.parse(JSON.stringify(groupMock))
         thisGroupMock.pupils = { 2: 2 }
-        await service.update(1, thisGroupMock, schoolId)
+        await service.update(1, thisGroupMock, schoolId, userId)
         expect(groupDataService.sqlUpdate).toHaveBeenCalled()
         expect(groupDataService.sqlModifyGroupMembers).toHaveBeenCalled()
       })
@@ -154,7 +155,7 @@ describe('group.service', () => {
         const schoolId = 123
         const thisGroupMock = JSON.parse(JSON.stringify(groupMock))
         thisGroupMock.pupils = [3]
-        await service.update(1, thisGroupMock, schoolId)
+        await service.update(1, thisGroupMock, schoolId, userId)
         expect(groupDataService.sqlUpdate).toHaveBeenCalled()
         expect(groupDataService.sqlModifyGroupMembers).toHaveBeenCalledTimes(0)
       })
@@ -163,7 +164,7 @@ describe('group.service', () => {
         const schoolId = 123
         const thisGroupMock = JSON.parse(JSON.stringify(groupMock))
         thisGroupMock.name = 'Test '
-        await service.update(1, thisGroupMock, schoolId)
+        await service.update(1, thisGroupMock, schoolId, userId)
         expect(groupDataService.sqlUpdate).toHaveBeenCalledWith(thisGroupMock.id, 'Test', schoolId)
       })
     })
@@ -177,13 +178,23 @@ describe('group.service', () => {
         jest.spyOn(redisKeyService, 'getPupilRegisterViewDataKey').mockImplementation()
       })
 
+      test('should return an error if userId is missing', async () => {
+        const schoolId = 456
+        try {
+          await service.update(1, groupMock, schoolId, undefined)
+          fail('error not thrown')
+        } catch (error) {
+          expect(error.message).toEqual('id, group.name, schoolId and userId are required')
+        }
+      })
+
       test('should return an error if schoolId is missing', async () => {
         const schoolId = null
         try {
-          await service.update(1, groupMock, schoolId)
+          await service.update(1, groupMock, schoolId, userId)
           fail('error not thrown')
         } catch (error) {
-          expect(error.message).toEqual('id, group.name and schoolId are required')
+          expect(error.message).toEqual('id, group.name, schoolId and userId are required')
         }
       })
     })
@@ -200,7 +211,7 @@ describe('group.service', () => {
       test('should not update group', async () => {
         try {
           const schoolId = 123
-          const group = await service.update(1, groupMock, schoolId)
+          const group = await service.update(1, groupMock, schoolId, userId)
           fail('error not thrown')
           expect(group).toEqual(groupMock)
         } catch (error) {
@@ -212,11 +223,13 @@ describe('group.service', () => {
 
   describe('#create', () => {
     let service
+    const userId = 456
+    const createdGroupId = 789
 
     describe('happy path', () => {
       beforeEach(() => {
         service = require('../../../services/group.service')
-        jest.spyOn(groupDataService, 'sqlCreate').mockResolvedValue({ insertId: 1 })
+        jest.spyOn(groupDataService, 'sqlCreate').mockResolvedValue({ insertId: createdGroupId })
         jest.spyOn(groupDataService, 'sqlModifyGroupMembers').mockImplementation()
         jest.spyOn(redisCacheService, 'drop').mockImplementation()
         jest.spyOn(redisKeyService, 'getPupilRegisterViewDataKey').mockImplementation()
@@ -224,14 +237,21 @@ describe('group.service', () => {
 
       test('should create group', async () => {
         const schoolId = 123
-        const group = await service.create(groupMock.name, [6, 2, 3], schoolId)
-        expect(group).toEqual(groupMock.id)
+        const group = await service.create(groupMock.name, [6, 2, 3], schoolId, userId)
+        expect(group).toEqual(createdGroupId)
       })
 
       test('should trim whitespace from name', async () => {
         const schoolId = 123
-        await service.create('Test ', [6, 2, 3], schoolId)
+        await service.create('Test ', [6, 2, 3], schoolId, userId)
         expect(groupDataService.sqlCreate).toHaveBeenCalledWith({ name: 'Test', school_id: schoolId })
+      })
+
+      test('should call data service to add group members', async () => {
+        const schoolId = 123
+        const pupils = [6, 2, 3]
+        await service.create('my group', pupils, schoolId, userId)
+        expect(groupDataService.sqlModifyGroupMembers).toHaveBeenCalledWith(createdGroupId, pupils, userId)
       })
     })
 
@@ -244,13 +264,33 @@ describe('group.service', () => {
         jest.spyOn(redisKeyService, 'getPupilRegisterViewDataKey').mockImplementation()
       })
 
-      test('should return an error if groupName or schoolId are missing', async () => {
+      test('should return an error if schoolId is missing', async () => {
         const schoolId = null
         try {
-          await service.create(groupMock.name, [6, 2, 3], schoolId)
+          await service.create(groupMock.name, [6, 2, 3], schoolId, userId)
           fail('error not thrown')
         } catch (error) {
-          expect(error.message).toEqual('groupName and schoolId are required')
+          expect(error.message).toEqual('groupName, schoolId and userId are required')
+        }
+      })
+
+      test('should return an error if groupName is missing', async () => {
+        const schoolId = 123
+        try {
+          await service.create(undefined, [6, 2, 3], schoolId, userId)
+          fail('error not thrown')
+        } catch (error) {
+          expect(error.message).toEqual('groupName, schoolId and userId are required')
+        }
+      })
+
+      test('should return an error if userId is missing', async () => {
+        const schoolId = 123
+        try {
+          await service.create(undefined, [6, 2, 3], schoolId, undefined)
+          fail('error not thrown')
+        } catch (error) {
+          expect(error.message).toEqual('groupName, schoolId and userId are required')
         }
       })
     })
@@ -267,7 +307,7 @@ describe('group.service', () => {
       test('should fail to create a group', async () => {
         try {
           const schoolId = 123
-          await service.create(groupMock.name, [6, 2, 3], schoolId)
+          await service.create(groupMock.name, [6, 2, 3], schoolId, userId)
           fail('error not thrown')
         } catch (error) {
           expect(error.message).toBe('Failed to create group')
@@ -357,14 +397,19 @@ describe('group.service', () => {
       }
     })
 
+    test('should throw if userId is not provided', async () => {
+      await expect(groupService.remove(123, 4, undefined)).rejects.toThrow('userId is required')
+    })
+
     test('should get the pupil register redis key, invalidate the relevant cache value and perform soft delete', async () => {
       const schoolId = 1
-      const groupId = 1
+      const groupId = 2
+      const userId = 3
       try {
-        await groupService.remove(schoolId, groupId)
+        await groupService.remove(schoolId, groupId, userId)
         expect(redisKeyService.getPupilRegisterViewDataKey).toHaveBeenCalled()
         expect(redisCacheService.drop).toHaveBeenCalled()
-        expect(groupDataService.sqlMarkGroupAsDeleted).toHaveBeenCalled()
+        expect(groupDataService.sqlMarkGroupAsDeleted).toHaveBeenCalledWith(groupId, schoolId, userId)
       } catch (error) {
         fail()
       }

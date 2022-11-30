@@ -41,13 +41,24 @@ describe('pupil-add-service', () => {
     jest.restoreAllMocks()
   })
 
+  const schoolId = 1
+  const userId = 2
+
   describe('#addPupil', () => {
     test('throws if the school is not supplied', async () => {
-      await expect(service.addPupil(reqBody, undefined)).rejects.toThrow('Saving pupil failed')
+      await expect(service.addPupil(reqBody, undefined, userId)).rejects.toThrow('schoolId is required')
     })
 
-    test('throws if the pupil params are not supplied', async () => {
-      await expect(service.addPupil({}, 1)).rejects.toThrow('Saving pupil failed')
+    test('throws if pupilData does not have required number of properties', async () => {
+      await expect(service.addPupil({}, schoolId, userId)).rejects.toThrow('pupilData is required')
+    })
+
+    test('throws if pupilData is undefined', async () => {
+      await expect(service.addPupil(undefined, schoolId, userId)).rejects.toThrow('pupilData is required')
+    })
+
+    test('throws if the userId is not supplied', async () => {
+      await expect(service.addPupil(reqBody, schoolId, undefined)).rejects.toThrow('userId is required')
     })
 
     test('validates the pupil data', async () => {
@@ -56,7 +67,7 @@ describe('pupil-add-service', () => {
       jest.spyOn(pupilDataService, 'sqlFindOneById').mockImplementation()
       jest.spyOn(redisCacheService, 'drop').mockImplementation()
       const schoolId = 999001
-      await service.addPupil(reqBody, schoolId)
+      await service.addPupil(reqBody, schoolId, userId)
       expect(pupilValidator.validate).toHaveBeenCalled()
     })
 
@@ -64,7 +75,7 @@ describe('pupil-add-service', () => {
       jest.spyOn(pupilValidator, 'validate').mockImplementation(validationFunctionFails)
       const schoolId = 999001
       try {
-        await service.addPupil(reqBody, schoolId)
+        await service.addPupil(reqBody, schoolId, userId)
         fail('expected to throw')
       } catch (error) {
         expect(error.name).toBe('ValidationError')
@@ -78,7 +89,7 @@ describe('pupil-add-service', () => {
       jest.spyOn(pupilAgeReasonDataService, 'sqlInsertPupilAgeReason').mockImplementation()
       jest.spyOn(redisCacheService, 'drop').mockImplementation()
 
-      await service.addPupil(reqBody, 1234)
+      await service.addPupil(reqBody, schoolId, userId)
       expect(pupilDataService.sqlCreate).toHaveBeenCalledTimes(1)
       const saveArg = pupilDataService.sqlCreate.mock.calls[0][0]
 
@@ -102,7 +113,7 @@ describe('pupil-add-service', () => {
       jest.spyOn(redisCacheService, 'drop').mockImplementation()
       reqBody.ageReason = 'reason'
 
-      await service.addPupil(reqBody, 1234)
+      await service.addPupil(reqBody, schoolId, userId)
 
       expect(pupilDataService.sqlCreate).toHaveBeenCalled()
       const saveArg = pupilDataService.sqlCreate.mock.calls[0][0]

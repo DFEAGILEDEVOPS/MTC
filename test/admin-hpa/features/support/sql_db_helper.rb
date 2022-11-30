@@ -692,5 +692,10 @@ class SqlDbHelper
     pupil_details_res
   end
 
+  def self.pupil_audit_record(pupil_id)
+    sql = "SELECT * FROM [mtc_admin].[pupilAudit] WHERE pupil_id='#{pupil_id}'"
+    result = SQL_CLIENT.execute(sql)
+    result.each {|row| row.map}
+  end
 
 end
