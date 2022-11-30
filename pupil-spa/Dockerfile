@@ -19,7 +19,7 @@ WORKDIR /ng-app
 COPY . .
 
 ## Build the angular app in production mode and store the artifacts in dist folder
-RUN yarn run ng build --prod --aot --build-optimizer
+RUN yarn build:prod
 
 ### STAGE 2: Setup ###
 
@@ -28,6 +28,10 @@ FROM nginx:stable-alpine
 # defer until SSL integrated, need to get package
 # RUN openssl dhparam -out /etc/nginx/ssl/dhparam.pem 2048
 
+## Copy over the main nginx.conf - this includes everything under conf.d/*
+COPY nginx/nginx.conf /etc/nginx/
+## Copy over the unsupported browsers routing
+COPY nginx/browsers-map.conf /etc/nginx/
 ## Copy our default nginx config
 COPY nginx/default.conf /etc/nginx/conf.d/
 
@@ -38,6 +42,9 @@ RUN rm -rf /usr/share/nginx/html/*
 COPY --from=builder /ng-app/dist /usr/share/nginx/html
 COPY --from=builder /ng-app/gen_config.sh /
 COPY --from=builder /ng-app/docker-start.sh /
+
+# Copy over the unsupported-browser.html, which is not in the dist folder
+COPY --from=builder /ng-app/unsupported /usr/share/nginx/html/unsupported
 
 # install ssh server
 # Credentials are for Azure / Kudu - don't change them.

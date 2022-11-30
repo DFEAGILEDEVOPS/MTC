@@ -1,9 +1,8 @@
 import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing'
 import { APP_INITIALIZER, NO_ERRORS_SCHEMA } from '@angular/core'
 
-import { Answer } from '../services/answer/answer.model'
 import { AnswerService } from '../services/answer/answer.service'
-import { AuditEntry, CheckSubmissionPending, RefreshDetected } from '../services/audit/auditEntry'
+import { AuditEntry, AuditEntryFactory, CheckSubmissionPending, RefreshDetected } from '../services/audit/auditEntry'
 import { AuditService } from '../services/audit/audit.service'
 import { AuditServiceMock } from '../services/audit/audit.service.mock'
 import { CheckComponent } from './check.component'
@@ -16,6 +15,7 @@ import { TimerService } from '../services/timer/timer.service'
 import { TimerServiceMock } from '../services/timer/timer.service.mock'
 import { Router } from '@angular/router'
 import { loadConfigMockService } from '../services/config/config.service'
+import { MonotonicTimeService } from '../services/monotonic-time/monotonic-time.service'
 
 describe('CheckComponent', () => {
   let component: CheckComponent
@@ -40,7 +40,6 @@ describe('CheckComponent', () => {
   }
 
   beforeEach(waitForAsync(() => {
-
     mockRouter = {
       navigate: jasmine.createSpy('navigate')
     }
@@ -50,15 +49,16 @@ describe('CheckComponent', () => {
       declarations: [CheckComponent],
       schemas: [NO_ERRORS_SCHEMA],         // we don't need to test sub-components
       providers: [
-        AnswerService,
+        { provide: AnswerService, useClass: AnswerService, deps: [ MonotonicTimeService ] },
         { provide: AuditService, useClass: AuditServiceMock },
         { provide: QuestionService, useClass: QuestionServiceMock },
+        StorageService,
         { provide: WarmupQuestionService, useClass: QuestionServiceMock },
         { provide: TimerService, useClass: TimerServiceMock },
         { provide: Router, useValue: mockRouter },
         { provide: APP_INITIALIZER, useFactory: loadConfigMockService, multi: true },
-        StorageService,
-        WindowRefService
+        WindowRefService,
+        AuditEntryFactory
       ]
     })
       .compileComponents()
@@ -247,7 +247,7 @@ describe('CheckComponent', () => {
     let auditEntryInserted: AuditEntry
     let auditService: AuditService
     let answerService: AnswerService
-    let answerInserted: Answer
+    let setAnswerSpy: jasmine.Spy
 
     beforeEach(() => {
       // find the state for the first warmup question
@@ -265,9 +265,7 @@ describe('CheckComponent', () => {
       })
 
       answerService = fixture.debugElement.injector.get(AnswerService)
-      spyOn(answerService, 'setAnswer').and.callFake((ans) => {
-        answerInserted = ans
-      })
+      setAnswerSpy = spyOn(answerService, 'setAnswer').and.callFake((factor1, factor2, userAnswer, sequenceNumber) => {})
     })
 
     it('calls refreshDetected during init when the checkstate is found', () => {
@@ -351,7 +349,8 @@ describe('CheckComponent', () => {
       checkStateMock = state
       component.ngOnInit()
       expect(answerService.setAnswer).toHaveBeenCalledTimes(1)
-      expect(answerInserted.answer).toBe('')
+      const args = setAnswerSpy.calls.allArgs()[0]
+      expect(args[2]).toBe('') // expect the 3rd arg to setAnswer to be blank
     })
 
     it('throws an error when the existing state is an out of range number', () => {

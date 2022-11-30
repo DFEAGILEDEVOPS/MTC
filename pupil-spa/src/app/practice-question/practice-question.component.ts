@@ -13,17 +13,10 @@ import {
 } from '@angular/core';
 
 import { AccessArrangements } from '../access-arrangements';
-import { Answer } from '../services/answer/answer.model';
 import { AnswerService } from '../services/answer/answer.service';
 import { AuditService } from '../services/audit/audit.service';
 import { Config } from '../config.model';
-import {
-  QuestionRendered,
-  QuestionAnswered,
-  QuestionTimerStarted,
-  QuestionTimerEnded,
-  QuestionTimerCancelled
-} from '../services/audit/auditEntry';
+import { AuditEntryFactory } from '../services/audit/auditEntry'
 import { QuestionService } from '../services/question/question.service';
 import { RegisterInputService } from '../services/register-input/registerInput.service';
 import { SpeechService } from '../services/speech/speech.service';
@@ -167,7 +160,8 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit, OnDestr
                protected speechService: SpeechService,
                protected answerService: AnswerService,
                protected registerInputService: RegisterInputService,
-               protected renderer: Renderer2) {
+               protected renderer: Renderer2,
+               protected auditEntryFactory: AuditEntryFactory) {
     this.window = windowRefService.nativeWindow;
     this.config = this.questionService.getConfig();
     const accessArrangementsData = storageService.getAccessArrangements();
@@ -185,18 +179,16 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit, OnDestr
    * Start the timer when the view is ready.
    */
   shouldSetupPointerEvents(): boolean {
-    if ('onpointerup' in this.window) {
-      return true;
-    }
-    return false;
+    return 'onpointerup' in this.window;
   }
 
   ngAfterViewInit () {
-    this.auditService.addEntry(new QuestionRendered({
+    const data = {
       sequenceNumber: this.sequenceNumber,
       question: `${this.factor1}x${this.factor2}`,
       isWarmup: this.isWarmUpQuestion
-    }));
+    }
+    this.auditService.addEntry(this.auditEntryFactory.createQuestionRendered(data));
 
     // Set up listening events depending on the browser's capability
     if (this.shouldSetupPointerEvents()) {
@@ -276,11 +268,12 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit, OnDestr
    * Start the countdown timer on the page and set the time-out counter
    */
   startTimer () {
-    this.auditService.addEntry(new QuestionTimerStarted({
+    const data = {
       sequenceNumber: this.sequenceNumber,
       question: `${this.factor1}x${this.factor2}`,
       isWarmup: this.isWarmUpQuestion
-    }));
+    }
+    this.auditService.addEntry(this.auditEntryFactory.createQuestionTimerStarted(data));
     this.stopTime = (new Date().getTime() + (this.questionTimeoutSecs * 1000));
 
     // Set the amount of time the user can have on the question
@@ -399,11 +392,12 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit, OnDestr
 
     // Clear the interval timer
     if (this.countdownInterval) {
-      this.auditService.addEntry(new QuestionTimerCancelled({
+      const data = {
         sequenceNumber: this.sequenceNumber,
         question: `${this.factor1}x${this.factor2}`,
         isWarmup: this.isWarmUpQuestion
-      }));
+      }
+      this.auditService.addEntry(this.auditEntryFactory.createQuestionTimerCancelled(data));
       clearInterval(this.countdownInterval);
       this.countdownInterval = undefined;
     }
@@ -421,11 +415,12 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit, OnDestr
   }
 
   addQuestionAnsweredEvent () {
-    this.auditService.addEntry(new QuestionAnswered({
-      sequenceNumber: this.sequenceNumber,
-      question: `${this.factor1}x${this.factor2}`,
-      isWarmup: this.isWarmUpQuestion
-    }));
+    const data = {
+        sequenceNumber: this.sequenceNumber,
+        question: `${this.factor1}x${this.factor2}`,
+        isWarmup: this.isWarmUpQuestion
+    }
+    this.auditService.addEntry(this.auditEntryFactory.createQuestionAnswered(data))
   }
 
   /**
@@ -433,8 +428,7 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit, OnDestr
    */
   async preSendTimeoutEvent () {
     if (!this.isWarmUpQuestion) {
-      const answer = new Answer(this.factor1, this.factor2, this.answer, this.sequenceNumber);
-      this.answerService.setAnswer(answer);
+      this.answerService.setAnswer(this.factor1, this.factor2, this.answer, this.sequenceNumber);
     }
 
     if (this.config.questionReader) {
@@ -454,11 +448,13 @@ export class PracticeQuestionComponent implements OnInit, AfterViewInit, OnDestr
     if (this.submitted) {
       return false;
     }
-    this.auditService.addEntry(new QuestionTimerEnded({
+    const data = {
       sequenceNumber: this.sequenceNumber,
       question: `${this.factor1}x${this.factor2}`,
       isWarmup: this.isWarmUpQuestion
-    }));
+    }
+    this.auditService.addEntry(this.auditEntryFactory.createQuestionTimerEnded(data));
+
     this.submitted = true;
     if (this.config.questionReader) {
       await this.speechService.waitForEndOfSpeech();
