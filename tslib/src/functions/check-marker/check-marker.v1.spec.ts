@@ -614,6 +614,101 @@ describe('check-marker/v1', () => {
     persistMarkSpy.mockRestore()
   })
 
+  test('marking uses the first provided answer if there are duplicates, with the same timestamp', async () => {
+    const answers = [
+      {
+        factor1: 2,
+        factor2: 5,
+        answer: '10',
+        sequenceNumber: 1,
+        question: '2x5',
+        clientTimestamp: '2018-09-24T12:00:00.811Z', // Duplicate answer to Q1 - e.g. app error
+        monotonicTime: {
+          milliseconds: 0,
+          legacyDate: '2018-09-24T12:00:00.811Z',
+          sequenceNumber: 2
+        }
+      },
+      {
+        factor1: 11,
+        factor2: 2,
+        answer: '22',
+        sequenceNumber: 2,
+        question: '11x2',
+        clientTimestamp: '2018-09-24T12:00:03.963Z', // 3rd answer
+        monotonicTime: {
+          milliseconds: 0,
+          legacyDate: '2018-09-24T12:00:03.963Z',
+          sequenceNumber: 3
+        }
+      },
+      {
+        factor1: 2,
+        factor2: 5,
+        answer: '99',
+        sequenceNumber: 1,
+        question: '2x5',
+        clientTimestamp: '2018-09-24T12:00:00.811Z', // 1st answer out of sequence
+        monotonicTime: {
+          milliseconds: 0,
+          legacyDate: '2018-09-24T12:00:00.811Z',
+          sequenceNumber: 1
+        }
+      }
+    ]
+    const validatedCheckEntity: ReceivedCheckFunctionBindingEntity = {
+      PartitionKey: uuid.v4(),
+      RowKey: uuid.v4(),
+      archive: compressionService.compress(JSON.stringify({})),
+      checkReceivedAt: moment().toDate(),
+      checkVersion: 1,
+      isValid: true,
+      validatedAt: moment().toDate(),
+      answers: JSON.stringify(answers)
+    }
+
+    const functionBindings: ICheckMarkerFunctionBindings = {
+      receivedCheckTable: [validatedCheckEntity],
+      checkNotificationQueue: [],
+      checkResultTable: []
+    }
+
+    jest.spyOn(sqlServiceMock, 'getCheckFormDataByCheckCode').mockImplementation(async () => {
+      return JSON.stringify([
+        {
+          f1: 2,
+          f2: 5
+        },
+        {
+          f1: 11,
+          f2: 2
+        }])
+    })
+    const persistMarkSpy = jest.spyOn<any, any>(sut, 'persistMark')
+
+    await sut.mark(functionBindings, loggerMock)
+    expect(persistMarkSpy).toHaveBeenCalledTimes(1)
+    const checkResult: any = persistMarkSpy.mock.calls[0][0]
+
+    expect(checkResult.markedAnswers[0]).toStrictEqual({
+      factor1: 2,
+      factor2: 5,
+      answer: '99',
+      sequenceNumber: 1,
+      question: '2x5',
+      clientTimestamp: '2018-09-24T12:00:00.811Z',
+      isCorrect: false,
+      monotonicTime: {
+        milliseconds: 0,
+        legacyDate: '2018-09-24T12:00:00.811Z',
+        sequenceNumber: 1
+      }
+    })
+
+    expect(checkResult.mark).toBe(1)
+    persistMarkSpy.mockRestore()
+  })
+
   test('marking is correct even if an answer is missing from the input', async () => {
     const answers = [
       {

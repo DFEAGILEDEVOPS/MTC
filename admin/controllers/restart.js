@@ -172,7 +172,7 @@ controller.postSubmitAllowDiscretionaryRestart = async function postSubmitAllowD
     if (pupil === null || pupil === undefined) {
       return next(new Error('Unknown pupil'))
     }
-    await DiscretionaryRestartService.grantDiscretionaryRestart(pupilSlug)
+    await DiscretionaryRestartService.grantDiscretionaryRestart(pupilSlug, req.user.id)
     req.flash('info', `Discretionary restart allowed for ${pupil.foreName} ${pupil.lastName}`)
     return res.redirect(`/pupil-register/history/${encodeURIComponent(pupilSlug).toLowerCase()}`)
   } catch (error) {
@@ -189,7 +189,7 @@ controller.postSubmitRevokeDiscretionaryRestart = async function postSubmitRevok
     if (pupil === null || pupil === undefined) {
       return next(new Error('Unknown pupil'))
     }
-    await DiscretionaryRestartService.removeDiscretionaryRestart(pupilSlug)
+    await DiscretionaryRestartService.removeDiscretionaryRestart(pupilSlug, req.user.id)
     req.flash('info', `Discretionary restart revoked for ${pupil.foreName} ${pupil.lastName}`)
     return res.redirect(`/pupil-register/history/${encodeURIComponent(pupilSlug).toLowerCase()}`)
   } catch (error) {

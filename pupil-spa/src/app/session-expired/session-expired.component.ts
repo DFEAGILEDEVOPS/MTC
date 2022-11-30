@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit } from '@angular/core';
-import { SessionExpired } from '../services/audit/auditEntry';
+import { AuditEntryFactory } from '../services/audit/auditEntry'
 import { AuditService } from '../services/audit/audit.service';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
 import { QuestionService } from '../services/question/question.service';
@@ -21,14 +21,15 @@ export class SessionExpiredComponent implements OnInit, AfterViewInit, OnDestroy
               protected windowRefService: WindowRefService,
               private questionService: QuestionService,
               private speechService: SpeechService,
-              private elRef: ElementRef) {
+              private elRef: ElementRef,
+              private auditEntryFactory: AuditEntryFactory) {
     this.supportNumber = APP_CONFIG.supportNumber;
     this.window = windowRefService.nativeWindow;
   }
 
 
   ngOnInit() {
-    this.auditService.addEntry(new SessionExpired());
+    this.auditService.addEntry(this.auditEntryFactory.createSessionExpired());
   }
 
   // wait for the component to be rendered first, before parsing the text

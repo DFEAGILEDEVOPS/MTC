@@ -1,5 +1,5 @@
 import { Component, OnInit, ElementRef, AfterViewInit, OnDestroy } from '@angular/core'
-import { CheckSubmissionFailed } from '../services/audit/auditEntry'
+import { AuditEntryFactory } from '../services/audit/auditEntry'
 import { AuditService } from '../services/audit/audit.service'
 import { WindowRefService } from '../services/window-ref/window-ref.service'
 import { APP_CONFIG } from '../services/config/config.service'
@@ -21,13 +21,14 @@ export class SubmissionFailedComponent implements OnInit, AfterViewInit, OnDestr
                protected windowRefService: WindowRefService,
                private questionService: QuestionService,
                private speechService: SpeechService,
-               private elRef: ElementRef) {
+               private elRef: ElementRef,
+               private auditEntryFactory: AuditEntryFactory) {
     this.supportNumber = APP_CONFIG.supportNumber
     this.window = windowRefService.nativeWindow
   }
 
   ngOnInit () {
-    this.auditService.addEntry(new CheckSubmissionFailed())
+    this.auditService.addEntry(this.auditEntryFactory.createCheckSubmissionFailed())
   }
 
   // wait for the component to be rendered first, before parsing the text

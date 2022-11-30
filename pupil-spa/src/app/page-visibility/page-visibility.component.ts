@@ -1,6 +1,6 @@
 import { Component, HostListener } from '@angular/core';
 
-import { AppHidden, AppVisible, RefreshOrTabCloseDetected } from '../services/audit/auditEntry';
+import { AuditEntryFactory } from '../services/audit/auditEntry'
 import { AuditService } from '../services/audit/audit.service';
 import { StorageService } from '../services/storage/storage.service';
 
@@ -13,7 +13,8 @@ import { StorageService } from '../services/storage/storage.service';
 export class PageVisibilityComponent {
   constructor(
     private auditService: AuditService,
-    private storageService: StorageService) {
+    private storageService: StorageService,
+    private auditEntryFactory: AuditEntryFactory) {
   }
 
   @HostListener('window:beforeunload', ['$event'])
@@ -23,7 +24,7 @@ export class PageVisibilityComponent {
     // Check component handles refresh detection accurately at that stage
     // If check state is detected in local storage we can safely assume the check route is active
     if (!checkState) {
-      this.auditService.addEntry(new RefreshOrTabCloseDetected());
+      this.auditService.addEntry(this.auditEntryFactory.createRefreshOrTabCloseDetected());
     }
   }
 
@@ -31,10 +32,10 @@ export class PageVisibilityComponent {
   visibilityChange() {
     const visibilityState = document.visibilityState;
     if (visibilityState === 'hidden') {
-      this.auditService.addEntry(new AppHidden());
+      this.auditService.addEntry(this.auditEntryFactory.createAppHidden());
     }
     if (visibilityState === 'visible') {
-      this.auditService.addEntry(new AppVisible());
+      this.auditService.addEntry(this.auditEntryFactory.createAppVisible());
     }
   }
 }

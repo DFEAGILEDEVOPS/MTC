@@ -30,6 +30,8 @@ mybanner 'Testing SPA'
 cd ../pupil-spa
 nvm use
 yarn test-single
+mybanner 'SPA Unsupported browser tests'
+yarn runUnsupportedBrowserTests
 
 mybanner 'Testing API'
 cd ../pupil-api
