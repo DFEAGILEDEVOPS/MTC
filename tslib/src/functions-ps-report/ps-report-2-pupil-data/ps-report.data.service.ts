@@ -159,8 +159,12 @@ export class PsReportDataService {
    * @param schoolId
    */
   public async getSchool (schoolId: number): Promise<School> {
+    // 54227: Do not include test schools in the ps report
+    // ps-report-1-list-schools will exlude test schools from the fan-out, but it's possible
+    // for a message to be placed on the queue manually (for consumption by this function ps-report-2-pupil-data) which
+    // could be a test school.  This will cause the function to throw.
     const sql = `
-        SELECT estabCode, id, leaCode, name, urlSlug, urn
+        SELECT estabCode, id, leaCode, name, urlSlug, urn, isTestSchool
           FROM mtc_admin.school
          WHERE school.id = @schoolId
     `
@@ -171,11 +175,15 @@ export class PsReportDataService {
       name: string
       urlSlug: string
       urn: number
+      isTestSchool: boolean
     }
     const res: DBSchool[] = await this.sqlService.query(sql, [{ name: 'schoolId', value: schoolId, type: TYPES.Int }])
     const data = R.head(res)
     if (data === undefined) {
       throw new Error(`${functionName}: ERROR: School not found: ${schoolId}`)
+    }
+    if (data.isTestSchool) {
+      throw new Error(`${functionName}: ERROR: School is a test school ${schoolId}`)
     }
     const school: School = {
       estabCode: data.estabCode,
