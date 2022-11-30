@@ -1,6 +1,6 @@
 import { Component, AfterViewInit, OnDestroy, Input, ElementRef, ComponentFactoryResolver, ViewContainerRef } from '@angular/core'
 import { LoadingComponent } from '../loading/loading.component';
-import { PauseRendered } from '../services/audit/auditEntry';
+import { AuditEntryFactory } from '../services/audit/auditEntry'
 import { AuditService } from '../services/audit/audit.service'
 import { QuestionService } from '../services/question/question.service'
 import { SpeechService } from '../services/speech/speech.service'
@@ -19,15 +19,17 @@ export class WarmupLoadingComponent extends LoadingComponent implements AfterVie
               protected speechService: SpeechService,
               protected elRef: ElementRef,
               protected componentFactoryResolver: ComponentFactoryResolver,
-              protected viewContainerRef: ViewContainerRef) {
-    super(auditService, questionService, speechService, elRef, componentFactoryResolver, viewContainerRef)
+              protected viewContainerRef: ViewContainerRef,
+              protected auditEntryFactory: AuditEntryFactory) {
+    super(auditService, questionService, speechService, elRef, componentFactoryResolver, viewContainerRef, auditEntryFactory)
   }
 
   addAuditServiceEntry() {
-    this.auditService.addEntry(new PauseRendered({
+    const data = {
       sequenceNumber: this.question.sequenceNumber,
       question: `${this.question.factor1}x${this.question.factor2}`,
       isWarmup: true
-    }));
+    }
+    this.auditService.addEntry(this.auditEntryFactory.createPauseRendered(data))
   }
 }

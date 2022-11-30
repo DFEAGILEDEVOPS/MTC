@@ -31,30 +31,27 @@ Then(/^all answers events and inputs match$/) do
       'answer' => a['answer'].to_s,
       'question_id' => SqlDbHelper.get_question_id(a['question'].split('x')[0], a['question'].split('x')[1], false)['id'],
       'isCorrect' => (a['question'].split('x')[0].to_i * a['question'].split('x')[1].to_i) == a['answer'].to_i,
-      'browserTimestamp' => (a['clientTimestamp'])
+      'browserTimestamp' => (a['clientTimestamp']),
     }
   }
   expect(db_answers).to eql answer_payload
   event_type_payload = @archive['audit'].map {|event|
     {'browserTimestamp' => event['clientTimestamp'],
      'eventType' => event['type'],
-     'eventData' => (event['data'].nil? ? nil : {'sequenceNumber' => event['data']['sequenceNumber'],
-                                                 'question' => event['data']['question'],
-                                                 'isWarmup' => event['data']['isWarmup']}),
-     'question_id' => (event['data'].nil? ? nil : (event['data']['isWarmup'] == true) ? nil : SqlDbHelper.get_question_id(event['data']['question'].split('x')[0],
-                                                                                                                          event['data']['question'].split('x')[1],
-                                                                                                                          event['data']['isWarmup'])['id']),
-     'questionNumber' => (event['data'].nil? ? nil : (event['data']['isWarmup'] == true) ? nil : event['data']['sequenceNumber'])}}
+     'eventData' => (event['data']['sequenceNumber'].nil? ? {'monotonicTime' => event['data']['monotonicTime']} : {
+       'sequenceNumber' => event['data']['sequenceNumber'],
+       'question' => event['data']['question'],
+       'isWarmup' => event['data']['isWarmup'],
+     'monotonicTime' => event['data']['monotonicTime']}),
+     'question_id' => (event['data']['sequenceNumber'].nil? ? nil : (event['data']['isWarmup'] == true) ? nil : SqlDbHelper.get_question_id(event['data']['question'].split('x')[0], event['data']['question'].split('x')[1], event['data']['isWarmup'])['id']),
+     'questionNumber' => (event['data']['sequenceNumber'].nil? ? nil : (event['data']['isWarmup'] == true) ? nil : event['data']['sequenceNumber'])}}
 
   db_event_types = SqlDbHelper.get_event_types_for_check(check_result_id).map {|event|
     {'browserTimestamp' => event['browserTimestamp'].utc.strftime("%Y-%m-%dT%H:%M:%S.%LZ"),
      'eventType' => event['eventType'],
      'eventData' => (event['eventData'].nil? ? nil : (JSON.parse(event['eventData']))),
-     'question_id' => (event['eventData'].nil? || event['eventData'].include?('true') ? nil : SqlDbHelper.get_question_id((
-                                                                                                                          JSON.parse(event['eventData'])['question']).split('x')[0],
-                                                                                                                          (JSON.parse(event['eventData'])['question']).split('x')[1],
-                                                                                                                          (JSON.parse(event['eventData'])['isWarmup']))['id']),
-     'questionNumber' => (event['eventData'].nil? || event['eventData'].include?('true') ? nil : (JSON.parse(event['eventData'])['sequenceNumber']))}}
+     'question_id' => event['question_id'],
+     'questionNumber' => event['questionNumber']}}
   expect(event_type_payload.sort_by {|h| [h['browserTimestamp'], h['eventType']]}).to eql db_event_types.sort_by {|h| [h['browserTimestamp'], h['eventType']]}
   db_inputs = SqlDbHelper.get_input_data(check_result_id)
   db_inputs_hash = db_inputs.map {|input| {input: input['userInput'],
@@ -62,7 +59,8 @@ Then(/^all answers events and inputs match$/) do
                                            clientTimestamp: input['inputBrowserTimestamp'].utc.strftime("%Y-%m-%dT%H:%M:%S.%LZ"),
                                            question: input['question'],
                                            sequenceNumber: input['questionNumber']}}
-  expect(@archive['inputs'].map {|hash| hash.transform_keys {|key| key.to_sym}}).to eql db_inputs_hash
+  @archive['inputs'].delete('monotonicTime')
+  expect(@archive['inputs'].map {|hash| hash.delete('monotonicTime'); hash.transform_keys {|key| key.to_sym}}).to eql db_inputs_hash
   check_result = SqlDbHelper.get_check_result(check_id)
   expect(check_result['mark']).to eql @mark.to_i
 end

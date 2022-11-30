@@ -1,6 +1,6 @@
 import { ErrorHandler, Injectable, Injector } from '@angular/core';
 import { AuditService } from './services/audit/audit.service';
-import { AppError } from './services/audit/auditEntry';
+import { AuditEntryFactory } from './services/audit/auditEntry'
 import {LocationStrategy, PathLocationStrategy} from '@angular/common';
 import { APP_CONFIG } from './services/config/config.service';
 import { ApplicationInsightsService } from './services/app-insights/app-insights.service';
@@ -10,7 +10,9 @@ export class GlobalErrorHandler implements ErrorHandler {
 
   protected window: any;
 
-  constructor(private injector: Injector) { }
+  constructor(private injector: Injector,
+              private auditEntryFactory: AuditEntryFactory
+  ) { }
 
   handleError(error: any) {
     if (console && console.log) {
@@ -25,13 +27,12 @@ export class GlobalErrorHandler implements ErrorHandler {
     const errorMessage =  error.message ? error.message : error.toString();
     const url = location instanceof PathLocationStrategy ? location.path() : '';
 
-    auditService.addEntry(
-      new AppError({
-          errorMessage,
-          url,
-          stackTrace: error.stack
-        }
-      ));
+    const data = {
+      errorMessage,
+      url,
+      stackTrace: error.stack
+    }
+    auditService.addEntry(this.auditEntryFactory.createAppError(data));
 
     if (APP_CONFIG.applicationInsightsInstrumentationKey) {
       // using injector directly to avoid recursive errors...

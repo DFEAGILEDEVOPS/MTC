@@ -58,7 +58,7 @@ describe('TimerService', () => {
     spyOn(mockStorageService, 'getCheckStartTime').and.returnValue(`${t}`)
     service.startCheckTimer()
     expect(mockStorageService.getCheckStartTime).toHaveBeenCalledTimes(1)
-    expect(Math.abs(service.timeRemaining - tenMinutesInMilliseconds)).toBeLessThan(10)
+    expect(Math.abs(service.timeRemaining - tenMinutesInMilliseconds)).toBeLessThan(12)
     service.stopCheckTimer()
   })
 

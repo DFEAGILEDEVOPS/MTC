@@ -1,10 +1,8 @@
 import { Injectable } from '@angular/core';
 import { APP_CONFIG } from '../config/config.service';
 import {
-  CheckStartedApiCalled,
-  CheckStartedAPICallFailed,
-  CheckStartedAPICallSucceeded,
-} from '../audit/auditEntry';
+  AuditEntryFactory,
+} from '../audit/auditEntry'
 import { AzureQueueService, QueueMessageRetryConfig } from '../azure-queue/azure-queue.service';
 import { AuditService } from '../audit/audit.service';
 import { StorageService } from '../storage/storage.service';
@@ -22,7 +20,8 @@ export class CheckStartService {
   constructor(private azureQueueService: AzureQueueService,
               private storageService: StorageService,
               private tokenService: TokenService,
-              private auditService: AuditService) {
+              private auditService: AuditService,
+              private auditEntryFactory: AuditEntryFactory) {
     const {
       checkStartAPIErrorDelay,
       checkStartAPIErrorMaxAttempts
@@ -47,11 +46,11 @@ export class CheckStartService {
     };
 
     try {
-      this.auditService.addEntry(new CheckStartedApiCalled());
+      this.auditService.addEntry(this.auditEntryFactory.createCheckStartedApiCalled());
       await this.azureQueueService.addMessageToQueue(url, token, payload, retryConfig);
-      this.auditService.addEntry(new CheckStartedAPICallSucceeded());
+      this.auditService.addEntry(this.auditEntryFactory.createCheckStartedAPICallSucceeded());
     } catch (error) {
-      this.auditService.addEntry(new CheckStartedAPICallFailed(error));
+      this.auditService.addEntry(this.auditEntryFactory.createCheckStartedAPICallFailed());
     }
   }
 }
