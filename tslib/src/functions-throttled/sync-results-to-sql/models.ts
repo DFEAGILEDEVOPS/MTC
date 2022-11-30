@@ -1,3 +1,9 @@
+export interface IMonotonicTimeDto {
+  milliseconds?: number
+  legacyDate?: string
+  sequenceNumber?: number
+}
+
 export interface MarkedCheck {
   mark: number
   checkCode: string
@@ -13,6 +19,7 @@ export interface Answer {
   sequenceNumber: number
   question: string
   clientTimestamp: string
+  monotonicTime?: IMonotonicTimeDto
 }
 
 export interface MarkedAnswer extends Answer {
@@ -43,6 +50,7 @@ export interface Data {
   question: string
   sequenceNumber?: number
   isWarmup?: boolean
+  monotonicTime?: IMonotonicTimeDto
 }
 
 export interface Config {

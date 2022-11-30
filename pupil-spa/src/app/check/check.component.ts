@@ -1,9 +1,8 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 
-import { Answer } from '../services/answer/answer.model';
 import { AnswerService } from '../services/answer/answer.service';
 import { AuditService } from '../services/audit/audit.service';
-import { CheckSubmissionPending, RefreshDetected } from '../services/audit/auditEntry';
+import { AuditEntryFactory } from '../services/audit/auditEntry'
 import { Config } from '../config.model';
 import { Question } from '../services/question/question.model';
 import { QuestionService } from '../services/question/question.service';
@@ -20,7 +19,6 @@ import { ApplicationInsightsService } from '../services/app-insights/app-insight
   templateUrl: './check.component.html',
   styleUrls: [ './check.component.scss' ]
 })
-
 export class CheckComponent implements OnInit, CanExit {
   private static warmupIntroRe = /^warmup-intro$/;
   private static warmupLoadingRe = /^LW(\d+)$/;
@@ -51,14 +49,15 @@ export class CheckComponent implements OnInit, CanExit {
               private storageService: StorageService,
               protected windowRefService: WindowRefService,
               private appInsightsService: ApplicationInsightsService,
-              private router: Router) {
+              private router: Router,
+              private auditEntryFactory: AuditEntryFactory) {
     this.window = windowRefService.nativeWindow;
   }
 
   /**
-   * By default disable the keyboard during the check.
+   * By default, disable the keyboard during the check.
    * Prevents many issues, increases control.
-   * NB:// This also disables <tab> used for keyboard navigation.
+   * NB This also disables <tab> used for keyboard navigation.
    * @param {KeyboardEvent} event
    * @return {boolean}
    */
@@ -259,7 +258,7 @@ export class CheckComponent implements OnInit, CanExit {
         // Stop the check timer
         this.timerService.stopCheckTimer();
         // Display pending screen
-        this.auditService.addEntry(new CheckSubmissionPending());
+        this.auditService.addEntry(this.auditEntryFactory.createCheckSubmissionPending());
         this.storageService.setPendingSubmission(true);
         this.isWarmUp = false;
         this.viewState = 'submission-pending';
@@ -282,7 +281,7 @@ export class CheckComponent implements OnInit, CanExit {
   }
 
   /**
-   * Handle the timeout caused by the the timer reaching zero.  We accept whatever answer is available.
+   * Handle the timeout caused by the timer reaching zero.  We accept whatever answer is available.
    * @param {string} answer
    */
   questionTimeoutHandler(answer: string) {
@@ -327,7 +326,7 @@ export class CheckComponent implements OnInit, CanExit {
   initStates(): void {
     this.allowedStates = [];
 
-    // Setup the Warmup
+    // Set up the Warmup
     this.allowedStates.push('warmup-intro');
     for (let i = 0; i < this.warmupQuestionService.getNumberOfQuestions(); i++) {
       this.allowedStates.push(`LW${i + 1}`);
@@ -340,7 +339,7 @@ export class CheckComponent implements OnInit, CanExit {
     this.allowedStates.push('warmup-complete');
     this.allowedStates.push('questions-intro');
 
-    // Setup the Questions
+    // Set up the Questions
     for (let i = 0; i < this.questionService.getNumberOfQuestions(); i++) {
       this.allowedStates.push(`L${i + 1}`);
       if (this.config.questionReader) {
@@ -361,9 +360,9 @@ export class CheckComponent implements OnInit, CanExit {
   refreshDetected() {
     const stateDesc = this.getStateDescription();
     console.log(`Refresh detected during state ${this.state} ${stateDesc}`);
-    this.auditService.addEntry(new RefreshDetected());
+    this.auditService.addEntry(this.auditEntryFactory.createRefreshDetected());
 
-    // Lets say that handling reloads during the check should always show the current screen
+    // Let's say that handling reloads during the check should always show the current screen
     // in which case handling the reload whilst a question was being shown is a special case
     // where the state is incremented.
     if (CheckComponent.questionRe.test(stateDesc)) {
@@ -373,8 +372,7 @@ export class CheckComponent implements OnInit, CanExit {
       const matches = CheckComponent.questionRe.exec(stateDesc);
       const questionNum = parseInt(matches[ 1 ], 10);
       this.question = this.questionService.getQuestion(questionNum);
-      const answer = new Answer(this.question.factor1, this.question.factor2, '', this.question.sequenceNumber);
-      this.answerService.setAnswer(answer);
+      this.answerService.setAnswer(this.question.factor1, this.question.factor2, '', this.question.sequenceNumber);
       // console.log('refreshDetected(): calling changeState()');
       this.changeState();
     } else if (CheckComponent.spokenQuestionRe.test(stateDesc)) {
@@ -384,8 +382,7 @@ export class CheckComponent implements OnInit, CanExit {
       const matches = CheckComponent.spokenQuestionRe.exec(stateDesc);
       const questionNum = parseInt(matches[ 1 ], 10);
       this.question = this.questionService.getQuestion(questionNum);
-      const answer = new Answer(this.question.factor1, this.question.factor2, '', this.question.sequenceNumber);
-      this.answerService.setAnswer(answer);
+      this.answerService.setAnswer(this.question.factor1, this.question.factor2, '', this.question.sequenceNumber);
       // console.log('refreshDetected(): calling changeState()');
       this.changeState();
     } else if (CheckComponent.warmupQuestionRe.test(stateDesc) || CheckComponent.spokenWarmupQuestionRe.test(stateDesc)) {

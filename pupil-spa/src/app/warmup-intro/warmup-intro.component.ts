@@ -1,6 +1,6 @@
 import { Component, EventEmitter, ElementRef, Output, AfterViewInit, OnDestroy } from '@angular/core';
 import { AuditService } from '../services/audit/audit.service';
-import { WarmupIntroRendered } from '../services/audit/auditEntry';
+import { AuditEntryFactory } from '../services/audit/auditEntry'
 import { WindowRefService } from '../services/window-ref/window-ref.service';
 import { SpeechService } from '../services/speech/speech.service';
 import { QuestionService } from '../services/question/question.service';
@@ -29,14 +29,15 @@ export class WarmupIntroComponent implements AfterViewInit, OnDestroy {
               protected windowRefService: WindowRefService,
               private questionService: QuestionService,
               private speechService: SpeechService,
-              private elRef: ElementRef) {
+              private elRef: ElementRef,
+              private auditEntryFactory: AuditEntryFactory) {
     this.window = windowRefService.nativeWindow;
     const config = questionService.getConfig();
     this.shouldShowMore = config && config.practice && (config.fontSize || config.colourContrast);
   }
 
   ngAfterViewInit() {
-    this.auditService.addEntry(new WarmupIntroRendered());
+    this.auditService.addEntry(this.auditEntryFactory.createWarmupIntroRendered());
 
     if (this.questionService.getConfig().questionReader) {
       this.speechService.speakElement(this.elRef.nativeElement).then(() => {

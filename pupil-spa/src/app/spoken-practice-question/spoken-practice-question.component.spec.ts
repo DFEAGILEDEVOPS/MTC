@@ -13,6 +13,8 @@ import { SpeechServiceMock } from '../services/speech/speech.service.mock';
 import { SpokenPracticeQuestionComponent } from './spoken-practice-question.component';
 import { StorageService } from '../services/storage/storage.service';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
+import { MonotonicTimeService } from '../services/monotonic-time/monotonic-time.service'
+import { AuditEntryFactory } from '../services/audit/auditEntry'
 
 describe('SpokenPracticeQuestionComponent', () => {
   let component: SpokenPracticeQuestionComponent;
@@ -26,13 +28,14 @@ describe('SpokenPracticeQuestionComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ SpokenPracticeQuestionComponent ],
       providers: [
-        { provide: SpeechService, useClass: SpeechServiceMock },
         { provide: AuditService, useClass: AuditServiceMock },
-        { provide: QuestionService, useClass: QuestionServiceMock },
-        { provide: RegisterInputService, useClass: RegisterInputServiceMock },
-        StorageService,
         WindowRefService,
-        AnswerService
+        { provide: SpeechService, useClass: SpeechServiceMock },
+        StorageService,
+        { provide: QuestionService, useClass: QuestionServiceMock },
+        { provide: AnswerService, useClass: AnswerService, deps: [ MonotonicTimeService ]},
+        { provide: RegisterInputService, useClass: RegisterInputServiceMock },
+        AuditEntryFactory
       ]
     })
     .compileComponents();
