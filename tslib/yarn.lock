@@ -1378,10 +1378,10 @@ anymatch@^3.0.3:
     normalize-path "^3.0.0"
     picomatch "^2.0.4"
 
-applicationinsights@^2.3.4:
-  version "2.3.4"
-  resolved "https://registry.yarnpkg.com/applicationinsights/-/applicationinsights-2.3.4.tgz#94fba0ca98956cb13e12574b975ad3cb7a2c5b5b"
-  integrity sha512-B/u2MepyV8r70NtG9nQ+7/MFog0j0P0tdEAz9coZGwNcW/T816ewROrre5QWBNyjYnsUB3dUF5OscGd0F0l2fA==
+applicationinsights@^2.3.5:
+  version "2.3.5"
+  resolved "https://registry.yarnpkg.com/applicationinsights/-/applicationinsights-2.3.5.tgz#a48d1e759f8003968adac811af88ca094ef1edaa"
+  integrity sha512-QU6EEZbobj9NL2o/XLIDStCMfwrrLwFrbJrDw9ih1wb5bz7v0cwUm6kPXiKtNAAny4hWp9/BtBhtFKvc3tWZ3w==
   dependencies:
     "@azure/core-http" "^2.2.3"
     "@microsoft/applicationinsights-web-snippet" "^1.0.1"
@@ -1923,9 +1923,9 @@ cssstyle@^2.3.0:
     cssom "~0.3.6"
 
 csv-string@^4.1.0:
-  version "4.1.0"
-  resolved "https://registry.yarnpkg.com/csv-string/-/csv-string-4.1.0.tgz#3fd5101e67cfb4e0f428f40263837044737f1457"
-  integrity sha512-67UM45fosQvvh+HUvC8iNgg2B4UHWJ5Qud7TWy1EcbIQ9levAFKWudMk2k8U3LgXZP/Drr6eBwBwbSWq2N8HZA==
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/csv-string/-/csv-string-4.1.1.tgz#3ab81c702e15adb3396a9f98c3a703b77a0391cc"
+  integrity sha512-KGvaJEZEdh2O/EVvczwbPLqJZtSQaWQ4cEJbiOJEG4ALq+dBBqNmBkRXTF4NV79V25+XYtiqbco1IWrmHLm5FQ==
 
 data-urls@^2.0.0:
   version "2.0.0"
@@ -4662,10 +4662,10 @@ queue-microtask@^1.2.2:
   resolved "https://registry.yarnpkg.com/queue-microtask/-/queue-microtask-1.2.3.tgz#4929228bbc724dfac43e0efb058caf7b6cfb6243"
   integrity sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==
 
-ramda-adjunct@^3.2.0:
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/ramda-adjunct/-/ramda-adjunct-3.2.0.tgz#bd4f9d95ae24bb1d4c0b4a9429766a81da90788d"
-  integrity sha512-lfpDz3VX5vS5YE1pgLYHOqWiX8+0gKnCDbm/DpIYpMsWx90g2I5c5/SfgUojjt3P4GidRauJrPc5OY2aoeLrWw==
+ramda-adjunct@^3.3.0:
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/ramda-adjunct/-/ramda-adjunct-3.3.0.tgz#647c0cd4945b354cc179d583ead877fe0dce76a7"
+  integrity sha512-ycIrNN0rEsBKQ8CD0ZMhmGPTdZulQe20Aj4bZxVP2dWVnZRVe5dR4EedhIc0YxJW8pr7ljaaJ8/KR0VFHfjTLw==
 
 ramda@^0.28.0:
   version "0.28.0"
