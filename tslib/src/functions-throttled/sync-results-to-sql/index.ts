@@ -32,12 +32,13 @@ const functionName = 'sync-results-to-sql'
  */
 const maxDeliveryAttempts = config.ServiceBus.CheckCompletionQueueMaxDeliveryCount
 
-/*
+/**
+ *
  * The function is running as a singleton, and the receiver is therefore exclusive
-  we do not expect another receive operation to be in progress.
-  if the message is abandoned 10 times (the current 'max delivery count') it will be
-  put on the dead letter queue automatically.
-*/
+ * we do not expect another receive operation to be in progress.
+ * if the message is abandoned 10 times (the current 'max delivery count') it will be
+ * put on the dead letter queue automatically.
+ */
 const serviceBusTrigger: AzureFunction = async function (context: Context, checkCompletionMessage: ICheckCompletionMessage): Promise<void> {
   const start = performance.now()
   const syncResultsServiceFactory = new SyncResultsServiceFactory(context.log)

@@ -14,7 +14,7 @@
                         value="{{contrastSetting.val}}"
                         id="contrast-{{contrastSetting.val}}"
                         name="colour-contrast"
-                        [checked]="selectedContrast == contrastSetting.val"
+                        [checked]="selectedContrast === contrastSetting.val"
                         (change)="selectionChange(contrastSetting.val)">
                 <label for="contrast-{{contrastSetting.val}}"><span class="aa-contrast-{{contrastSetting.val}} aa-copy-size {{accessArrangements.fontSize}}">{{contrastSetting.label}}</span></label>
               </div>
