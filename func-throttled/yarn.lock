@@ -994,10 +994,10 @@ create-error@^0.3.1:
   resolved "https://registry.yarnpkg.com/create-error/-/create-error-0.3.1.tgz#69810245a629e654432bf04377360003a5351a23"
   integrity sha512-n/Q4aSCtYuuDneEW5Q+nd0IIZwbwmX/oF6wKcDUhXGJNwhmp2WHEoWKz7X+/H7rBtjimInW7f0ceouxU0SmuzQ==
 
-csv-string@^4.1.0:
-  version "4.1.0"
-  resolved "https://registry.yarnpkg.com/csv-string/-/csv-string-4.1.0.tgz#3fd5101e67cfb4e0f428f40263837044737f1457"
-  integrity sha512-67UM45fosQvvh+HUvC8iNgg2B4UHWJ5Qud7TWy1EcbIQ9levAFKWudMk2k8U3LgXZP/Drr6eBwBwbSWq2N8HZA==
+csv-string@^4.1.1:
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/csv-string/-/csv-string-4.1.1.tgz#3ab81c702e15adb3396a9f98c3a703b77a0391cc"
+  integrity sha512-KGvaJEZEdh2O/EVvczwbPLqJZtSQaWQ4cEJbiOJEG4ALq+dBBqNmBkRXTF4NV79V25+XYtiqbco1IWrmHLm5FQ==
 
 d@1, d@^1.0.1:
   version "1.0.1"
