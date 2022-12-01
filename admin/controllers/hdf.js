@@ -12,47 +12,11 @@ const pupilPresenter = require('../helpers/pupil-presenter')
 const hdfPresenter = require('../helpers/hdf-presenter')
 const schoolService = require('../services/school.service')
 const checkWindowV2Service = require('../services/check-window-v2.service')
-const scoreService = require('../services/score.service')
 const businessAvailabilityService = require('../services/business-availability.service')
 const ValidationError = require('../lib/validation-error')
 const attendanceCodeService = require('../services/attendance.service')
 
 const controller = {}
-
-controller.getResults = async function getResults (req, res, next) {
-  res.locals.pageTitle = 'Results'
-  const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
-  const pupils = await pupilService.findPupilsBySchoolId(req.user.schoolId)
-  const school = await schoolService.findOneById(req.user.schoolId)
-  let pupilsFormatted = await Promise.all(pupils.map(async (p) => {
-    const fullName = `${p.foreName} ${p.lastName}`
-    const score = await scoreService.getScorePercentage(p.id)
-    const hasScore = (score !== undefined)
-    return {
-      fullName,
-      hasScore,
-      score,
-      urlSlug: p.urlSlug
-    }
-  })).catch((error) => next(error))
-  req.breadcrumbs(res.locals.pageTitle)
-  pupilsFormatted = pupilsFormatted.filter((p) => p.hasScore)
-
-  const hdfSubmitted = await headteacherDeclarationService.isHdfSubmittedForCurrentCheck(req.user.School, checkWindowData && checkWindowData.id)
-
-  if (hdfSubmitted &&
-    (typeof pupilsFormatted === 'object' && Object.keys(pupilsFormatted).length > 0)) {
-    return res.render('school/results', {
-      breadcrumbs: req.breadcrumbs(),
-      pupils: pupilsFormatted,
-      school
-    })
-  } else {
-    return res.render('school/no-results', {
-      breadcrumbs: req.breadcrumbs()
-    })
-  }
-}
 
 // TODO: refactor this into a service call
 controller.downloadResults = async function downloadResults (req, res, next) {

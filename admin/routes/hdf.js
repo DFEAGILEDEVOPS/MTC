@@ -7,19 +7,6 @@ const isAdminWindowAvailable = require('../availability/middleware')
 const hdfController = require('../controllers/hdf')
 
 router.get(
-  ['/', '/results'],
-  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),
-  isAdminWindowAvailable,
-  hdfController.getResults
-)
-router.get(
-  '/download-results',
-  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),
-  isAdminWindowAvailable,
-  hdfController.downloadResults
-)
-
-router.get(
   '/declaration-form',
   isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),
   isAdminWindowAvailable,
