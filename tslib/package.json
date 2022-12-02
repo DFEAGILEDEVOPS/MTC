@@ -17,7 +17,7 @@
     "clean": "rm -rf ./dist",
     "coverage": "yarn jest --coverage",
     "tests:integration": "yarn test:integration",
-    "test:integration":"yarn jest --config ./src/tests-integration/jest.integration.config.js",
+    "test:integration": "yarn jest --config ./src/tests-integration/jest.integration.config.js",
     "watch:integration": "yarn jest --watch --config ./src/tests-integration/jest.integration.config.js"
   },
   "engines": {
