@@ -43,6 +43,17 @@ Feature: Results tests
     When I have submitted the HDF
     Then I should see the results and reasons for not taking the check
 
+  @hdf @check_start_date_reset
+  Scenario: CTF Version is dynamic
+    Given I download a ctf file in August
+    Then I should see the version set to the correct academic year when downloaded in August
+
+  @hdf @check_start_date_reset
+  Scenario: CTF Version is dynamic
+    Given I download a ctf file in September
+    Then I should see the version set to the correct academic year when downloaded in September
+
+
   @wip
   Scenario: Pupils with no over all score, or reason for not taking the check applied, the ctf file must show 'X'
     Given I have multiple pupils with no score or reason for not taking the check
