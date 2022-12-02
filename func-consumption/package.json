@@ -42,7 +42,7 @@
   "dependencies": {
     "@azure/core-asynciterator-polyfill": "^1.0.2",
     "@azure/data-tables": "^12.1.2",
-    "@azure/service-bus": "^7.7.0",
+    "@azure/service-bus": "^7.7.3",
     "@azure/storage-blob": "^12.11.0",
     "@azure/storage-queue": "^12.10.0",
     "adm-zip": "^0.5.6",
