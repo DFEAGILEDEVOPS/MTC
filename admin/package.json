@@ -73,7 +73,7 @@
     "jsonwebtoken": "^8.1.1",
     "login.dfe.async-retry": "git+https://github.com/DFE-Digital/login.dfe.async-retry.git#v1.0",
     "lz-string": "^1.4.4",
-    "marked": "^4.0.19",
+    "marked": "^4.2.2",
     "md5": "^2.2.1",
     "merge-stream": "^2.0.0",
     "moment-timezone": "^0.5.37",
