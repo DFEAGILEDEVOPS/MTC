@@ -100,6 +100,13 @@
   dependencies:
     tslib "^2.2.0"
 
+"@azure/core-paging@^1.4.0":
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/@azure/core-paging/-/core-paging-1.4.0.tgz#b04a73ad18149733a848c3089a5e5ed144592338"
+  integrity sha512-tabFtZTg8D9XqZKEfNUOGh63SuYeOxmvH4GDcOJN+R1bZWZ1FZskctgY9Pmuwzhn+0Xvq9rmimK9hsvtLkeBsw==
+  dependencies:
+    tslib "^2.2.0"
+
 "@azure/core-rest-pipeline@^1.1.0", "@azure/core-rest-pipeline@^1.3.0", "@azure/core-rest-pipeline@^1.8.0", "@azure/core-rest-pipeline@^1.9.1":
   version "1.9.2"
   resolved "https://registry.yarnpkg.com/@azure/core-rest-pipeline/-/core-rest-pipeline-1.9.2.tgz#47ee72ca96e2b82e3d1362c29fd7688dc7464527"
@@ -136,6 +143,14 @@
   resolved "https://registry.yarnpkg.com/@azure/core-util/-/core-util-1.1.0.tgz#36736b274e9abee4b6cc6e4d162683b4e1e3db52"
   integrity sha512-+i93lNJNA3Pl3KSuC6xKP2jTL4YFeDfO6VNOaYdk0cppZcLCxt811gS878VsqsCisaltdhl9lhMzK5kbxCiF4w==
   dependencies:
+    tslib "^2.2.0"
+
+"@azure/core-util@^1.1.1":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@azure/core-util/-/core-util-1.1.1.tgz#8f87b3dd468795df0f0849d9f096c3e7b29452c1"
+  integrity sha512-A4TBYVQCtHOigFb2ETiiKFDocBoI1Zk2Ui1KpI42aJSIDexF7DHQFpnjonltXAIU/ceH+1fsZAWWgvX6/AKzog==
+  dependencies:
+    "@azure/abort-controller" "^1.0.0"
     tslib "^2.2.0"
 
 "@azure/core-xml@^1.0.0":
@@ -228,19 +243,19 @@
     jsonwebtoken "^8.5.1"
     uuid "^8.3.0"
 
-"@azure/service-bus@^7.7.0":
-  version "7.7.1"
-  resolved "https://registry.yarnpkg.com/@azure/service-bus/-/service-bus-7.7.1.tgz#7721a11863cc4e5688c3278f4e742957d78ecc6d"
-  integrity sha512-n04GNKZodxpUa5YGfW+LcIQvCzDQ9y8eY5SURv11cys+P67rVF4RNt5GVTE+FzoFFVS57y8Cb2IOmA4MClSI0g==
+"@azure/service-bus@^7.7.3":
+  version "7.7.3"
+  resolved "https://registry.yarnpkg.com/@azure/service-bus/-/service-bus-7.7.3.tgz#0f845d6ffd27d997b7bc0df1a5974657e7db3257"
+  integrity sha512-nPSPjV74/olhu/QlT0IWMc72CTp5GdzI6d5Ov+B1rmZ9F1FvTeS8kwOx+hBVnFLnBfYLreT5tQxlyTzDmK93Zg==
   dependencies:
     "@azure/abort-controller" "^1.0.0"
     "@azure/core-amqp" "^3.1.0"
     "@azure/core-auth" "^1.3.0"
     "@azure/core-client" "^1.0.0"
-    "@azure/core-paging" "^1.1.1"
+    "@azure/core-paging" "^1.4.0"
     "@azure/core-rest-pipeline" "^1.1.0"
     "@azure/core-tracing" "^1.0.0"
-    "@azure/core-util" "^1.1.0"
+    "@azure/core-util" "^1.1.1"
     "@azure/core-xml" "^1.0.0"
     "@azure/logger" "^1.0.0"
     "@types/is-buffer" "^2.0.0"
@@ -266,10 +281,10 @@
     events "^3.0.0"
     tslib "^2.2.0"
 
-"@azure/storage-queue@^12.10.0":
-  version "12.10.0"
-  resolved "https://registry.yarnpkg.com/@azure/storage-queue/-/storage-queue-12.10.0.tgz#b2b1f42c7a0f02b2d6104ca4076b9b5588d7bdcb"
-  integrity sha512-N0x0fZLwFmn+nNLxLvYhZIfUfg7XXdzutCwoealT4Bm1Hxjeosoqx66UZDYxIcRT57+ESFYenbpzCtcZY8JCIA==
+"@azure/storage-queue@^12.11.0":
+  version "12.11.0"
+  resolved "https://registry.yarnpkg.com/@azure/storage-queue/-/storage-queue-12.11.0.tgz#ebb04299ff22e0d492c83d28d2ba6efa6e56f143"
+  integrity sha512-fP8tfFrdLN6n7Q0SMtTBJevr0Pr5pgCsUKww7VJg6FxPkP/1Mtv45hGBQvufU71LuYdSwVGJXa0H6BLDm+K8Qg==
   dependencies:
     "@azure/abort-controller" "^1.0.0"
     "@azure/core-http" "^2.0.0"
