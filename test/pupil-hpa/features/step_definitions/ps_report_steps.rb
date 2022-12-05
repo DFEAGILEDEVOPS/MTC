@@ -293,7 +293,6 @@ end
 
 Given(/^I generated a pin after applying a restart$/) do
   step "I have completed the check"
-  binding.pry
   step 'I login to the admin app'
   visit ENV["ADMIN_BASE_URL"] + restarts_page.url
   restarts_page.select_pupil_to_restart_btn.click
@@ -308,7 +307,6 @@ Given(/^I generated a pin after applying a restart$/) do
   @pupil_credentials = {:school_password => pupil_pin_row.school_password.text, :pin => pupil_pin_row.pin.text}
   p @pupil_credentials
   AzureTableHelper.wait_for_prepared_check(@pupil_credentials[:school_password], @pupil_credentials[:pin])
-  binding.pr
 end
 
 But(/^the pin expires$/) do

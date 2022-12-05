@@ -2,7 +2,7 @@ import { Component, ElementRef, AfterViewInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { QuestionService } from '../services/question/question.service';
 import { AuditService } from '../services/audit/audit.service';
-import { WarmupStarted} from '../services/audit/auditEntry';
+import { AuditEntryFactory } from '../services/audit/auditEntry'
 import { SpeechService } from '../services/speech/speech.service';
 import { WindowRefService } from '../services/window-ref/window-ref.service';
 import { Config } from '../config.model'
@@ -28,6 +28,7 @@ export class InstructionsComponent implements AfterViewInit, OnDestroy {
     private auditService: AuditService,
     private speechService: SpeechService,
     protected windowRefService: WindowRefService,
+    private auditEntryFactory: AuditEntryFactory,
     private elRef: ElementRef) {
     this.count = this.questionService.getNumberOfQuestions();
     this.config = this.questionService.getConfig();
@@ -38,7 +39,7 @@ export class InstructionsComponent implements AfterViewInit, OnDestroy {
   }
 
   onClick() {
-    this.auditService.addEntry(new WarmupStarted());
+    this.auditService.addEntry(this.auditEntryFactory.createWarmupStarted());
     this.router.navigate(['check']);
   }
 

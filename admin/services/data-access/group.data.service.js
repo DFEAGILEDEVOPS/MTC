@@ -161,28 +161,35 @@ groupDataService.sqlUpdate = async (id, name, schoolId) => {
 
 /**
  * Update pupils assigned to group.
- * @param groupId
- * @param pupilIds
+ * @param {number} groupId
+ * @param {Array<number>} pupilIds
+ * @param {number} userId
  * @returns {Promise<boolean>}
  */
-groupDataService.sqlModifyGroupMembers = async (groupId, pupilIds) => {
+groupDataService.sqlModifyGroupMembers = async (groupId, pupilIds, userId) => {
   if (pupilIds.length < 1) {
     return false
   }
-  const groupIdParam =
-    {
+  const parameters =
+    [{
       name: 'groupId',
       value: groupId,
       type: TYPES.Int
-    }
+    },
+    {
+      name: 'userId',
+      value: userId,
+      type: TYPES.Int
+    }]
   const pupilIdValues = Object.values(pupilIds)
   const { params, paramIdentifiers } = sqlService.buildParameterList(pupilIdValues, TYPES.Int)
   const whereClause = 'WHERE id IN (' + paramIdentifiers.join(', ') + ')'
-  params.push(groupIdParam)
+  params.push(...parameters)
 
   // reset group members to none, then re-apply set
+  // note - do not set lastModifiedBy_userId in first statement, as it will create 2 audit entries
   let sql = `UPDATE mtc_admin.pupil SET group_id = NULL WHERE group_id = @groupId;
-     UPDATE mtc_admin.pupil SET group_id = @groupId ${whereClause};`
+     UPDATE mtc_admin.pupil SET group_id = @groupId, lastModifiedBy_userId=@userId ${whereClause};`
   const modifyResult = await sqlService.modifyWithTransaction(sql, params)
 
   sql = 'SELECT school_id FROM [mtc_admin].[group] WHERE id=@groupId'
@@ -237,9 +244,10 @@ groupDataService.sqlFindPupilsInNoGroupOrSpecificGroup = async (schoolId, groupI
  * Soft deletes a group.
  * @param {number} groupId the id of the group to mark as deleted
  * @param {number} schoolId - the guaranteed schoolId of the teacher
+ * @param {number} userId - the user deleting the group
  * @returns {Promise<*>}
  */
-groupDataService.sqlMarkGroupAsDeleted = async (groupId, schoolId) => {
+groupDataService.sqlMarkGroupAsDeleted = async (groupId, schoolId, userId) => {
   if (!isPositive(schoolId)) {
     throw new Error('Param error schoolId')
   }
@@ -258,6 +266,11 @@ groupDataService.sqlMarkGroupAsDeleted = async (groupId, schoolId) => {
       name: 'schoolId',
       value: schoolId,
       type: TYPES.Int
+    },
+    {
+      name: 'userId',
+      value: userId,
+      type: TYPES.Int
     }
   ]
   const sql = `
@@ -267,9 +280,10 @@ groupDataService.sqlMarkGroupAsDeleted = async (groupId, schoolId) => {
           THROW 51000, 'FORBIDDEN: the user is not allowed to edit this group', 1;
 
       UPDATE [mtc_admin].[pupil]
-         SET group_id=NULL
+         SET group_id=NULL,
+         lastModifiedBy_userId=@userId
        WHERE group_id = @groupId;
-      
+
       DELETE [mtc_admin].[group]
        WHERE id = @groupId`
 

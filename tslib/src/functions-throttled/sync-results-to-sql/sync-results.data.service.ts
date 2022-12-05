@@ -6,6 +6,7 @@ import { IModifyResult, ISqlParameter, ISqlService, ITransactionRequest, SqlServ
 import { UserAgentParser } from './user-agent-parser'
 import { IPrepareEventService, PrepareEventService } from './prepare-event.service'
 import { ConsoleLogger, ILogger } from '../../common/logger'
+import { payloadSort } from '../../services/payload-sort'
 
 const name = 'sync-results-to-sql: data service'
 
@@ -161,6 +162,7 @@ export class SyncResultsDataService implements ISyncResultsDataService {
    */
   public async prepareEvents (validatedCheck: ValidatedCheck): Promise<ITransactionRequest[]> {
     const audits: Audit[] = R.propOr([], 'audit', validatedCheck)
+    const sortedAudits = payloadSort(audits)
     const transactions: ITransactionRequest[] = []
     let auditParams = []
     let auditSqls = []
@@ -177,7 +179,7 @@ export class SyncResultsDataService implements ISyncResultsDataService {
     auditParams.push(headParam)
 
     let j = 0
-    for (const audit of audits) {
+    for (const audit of sortedAudits) {
       const transactionRequest = await this.prepareEventService.prepareEvent(audit, validatedCheck.checkCode, j)
       auditSqls.push(transactionRequest.sql)
       auditParams.push(...transactionRequest.params)

@@ -6,7 +6,7 @@ import { TokenService } from '../token/token.service';
 import { AccessArrangementsConfig, AccessArrangements } from '../../access-arrangements';
 import { Pupil } from '../../pupil';
 import { AuditService } from '../audit/audit.service';
-import { PupilPrefsAPICalled, PupilPrefsAPICallSucceeded, PupilPrefsAPICallFailed } from '../audit/auditEntry';
+import { AuditEntryFactory } from '../audit/auditEntry';
 
 @Injectable()
 export class PupilPrefsService {
@@ -20,7 +20,8 @@ export class PupilPrefsService {
   constructor(private azureQueueService: AzureQueueService,
               private storageService: StorageService,
               private tokenService: TokenService,
-              private auditService: AuditService) {
+              private auditService: AuditService,
+              private auditEntryFactory: AuditEntryFactory) {
     const {
       pupilPrefsAPIErrorDelay,
       pupilPrefsAPIErrorMaxAttempts
@@ -56,11 +57,11 @@ export class PupilPrefsService {
       payload.preferences.colourContrastCode = contrastSetting.code;
     }
     try {
-      this.auditService.addEntry(new PupilPrefsAPICalled());
+      this.auditService.addEntry(this.auditEntryFactory.createPupilPrefsAPICalled());
       await this.azureQueueService.addMessageToQueue(url, token, payload, retryConfig);
-      this.auditService.addEntry(new PupilPrefsAPICallSucceeded());
+      this.auditService.addEntry(this.auditEntryFactory.createPupilPrefsAPICallSucceeded());
     } catch (error) {
-      this.auditService.addEntry(new PupilPrefsAPICallFailed(error));
+      this.auditService.addEntry(this.auditEntryFactory.createPupilPrefsAPICallFailed());
     }
   }
 

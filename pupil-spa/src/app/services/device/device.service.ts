@@ -122,9 +122,21 @@ export class DeviceService {
    * @return {Boolean}
    */
   isUnsupportedBrowser(): boolean {
+    // Detect IE 10 and older
     const userAgent = this.window.navigator.userAgent;
-    return userAgent.indexOf('MSIE') >= 0;
+    if(userAgent.indexOf('MSIE') >= 0) {
+      return true // IE10 and older are unsupported
+    }
+
+    // Detect IE11
+    const trident = userAgent.indexOf('Trident/')
+    if (trident > 0) {
+      return true // IE11 unsupported
+    }
+
+    return false // other browsers are supported
   }
+
 
   isLocalStorageEnabled(): boolean {
     try {

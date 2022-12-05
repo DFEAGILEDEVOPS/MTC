@@ -9,7 +9,7 @@ import { QuestionService } from '../services/question/question.service';
 import { AuditService } from '../services/audit/audit.service';
 import { CheckStartService } from '../services/check-start/check-start.service';
 import { QuestionServiceMock } from '../services/question/question.service.mock';
-import { AuditEntry, CheckStarted, QuestionIntroRendered } from '../services/audit/auditEntry';
+import { AuditEntry, AuditEntryFactory, CheckStarted, QuestionIntroRendered } from '../services/audit/auditEntry'
 import { AzureQueueService } from '../services/azure-queue/azure-queue.service';
 import { TokenService } from '../services/token/token.service';
 import { StorageService } from '../services/storage/storage.service';
@@ -40,7 +40,8 @@ describe('QuestionsIntroComponent', () => {
         StorageService,
         CheckStartService,
         CheckStartService,
-        AppUsageService
+        AppUsageService,
+        AuditEntryFactory
       ]
     });
     TestBed.inject(HttpClient);
