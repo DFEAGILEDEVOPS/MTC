@@ -11,6 +11,7 @@
     "prod:clean": "rm -rf ./node_modules && yarn install --frozen-lockfile --production",
     "rebuild": "yarn clean && yarn build",
     "sync": "node ./sync-tslib-deps.js && yarn install",
+    "sync:settings": "node ./sync-local-settings.js",
     "delete-specs": "find . -name \"*.spec.js\" -type f -delete",
     "clean": "rm -rf ./dist",
     "start:host": "func start",
@@ -64,5 +65,11 @@
     "random-number-csprng": "^1.0.2",
     "ua-parser-js": "^0.8.1",
     "uuid": "^8.3.1"
+  },
+  "function-settings": {
+    "FUNCTIONS_WORKER_RUNTIME": "node",
+    "FUNCTIONS_EXTENSION_VERSION": "~4",
+    "WEBSITE_NODE_DEFAULT_VERSION": "~16",
+    "AzureWebJobs.check-notifier.Disabled": "true"
   }
 }
