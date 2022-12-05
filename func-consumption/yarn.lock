@@ -508,10 +508,10 @@ append-buffer@^1.0.2:
   dependencies:
     buffer-equal "^1.0.0"
 
-applicationinsights@^2.3.4:
-  version "2.3.4"
-  resolved "https://registry.yarnpkg.com/applicationinsights/-/applicationinsights-2.3.4.tgz#94fba0ca98956cb13e12574b975ad3cb7a2c5b5b"
-  integrity sha512-B/u2MepyV8r70NtG9nQ+7/MFog0j0P0tdEAz9coZGwNcW/T816ewROrre5QWBNyjYnsUB3dUF5OscGd0F0l2fA==
+applicationinsights@^2.3.5:
+  version "2.3.6"
+  resolved "https://registry.yarnpkg.com/applicationinsights/-/applicationinsights-2.3.6.tgz#91277ce44e5f6d2f85336922c05d90f8699c2e70"
+  integrity sha512-ZzXXpZpDRGcy6Pp5V319nDF9/+Ey7jNknEXZyaBajtC5onN0dcBem6ng5jcb3MPH2AjYWRI8XgyNEuzP/6Y5/A==
   dependencies:
     "@azure/core-http" "^2.2.3"
     "@microsoft/applicationinsights-web-snippet" "^1.0.1"
@@ -3056,10 +3056,10 @@ r-json@^1.2.10:
   resolved "https://registry.yarnpkg.com/r-json/-/r-json-1.2.10.tgz#62a73d9cafa7eabf670e5c2812c27bdb220a968b"
   integrity sha512-hu9vyLjSlHXT62NAS7DjI9WazDlvjN0lgp3n431dCVnirVcLkZIpzSwA3orhZEKzdDD2jqNYI+w0yG0aFf4kpA==
 
-ramda-adjunct@^3.2.0:
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/ramda-adjunct/-/ramda-adjunct-3.2.0.tgz#bd4f9d95ae24bb1d4c0b4a9429766a81da90788d"
-  integrity sha512-lfpDz3VX5vS5YE1pgLYHOqWiX8+0gKnCDbm/DpIYpMsWx90g2I5c5/SfgUojjt3P4GidRauJrPc5OY2aoeLrWw==
+ramda-adjunct@^3.3.0:
+  version "3.4.0"
+  resolved "https://registry.yarnpkg.com/ramda-adjunct/-/ramda-adjunct-3.4.0.tgz#3b07f4d879406b8cbb5415b165bea48d2fe0ab06"
+  integrity sha512-qKRgqwZzJUZmPJfGK8/uLVxQXkiftKhW6FW9NUCUlQrzsBUZBvFAZUxwH7nTRwDMg+ChRU69rVVuS/4EUgtuIg==
 
 ramda@^0.28.0:
   version "0.28.0"
