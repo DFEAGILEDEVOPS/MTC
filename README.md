@@ -7,7 +7,7 @@
 ## Project tooling requirements
 
 - Docker (current LTS)
-- Node JS (best installed via nvm)
+- Node JS (best installed via [nvm](https://github.com/nvm-sh/nvm))
 - Text Editor
 - bash
 - Azure storage explorer
