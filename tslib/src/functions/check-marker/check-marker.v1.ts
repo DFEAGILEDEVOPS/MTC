@@ -165,6 +165,18 @@ export class CheckMarkerV1 {
       if (answerRecord !== undefined) {
         markedAnswer.answer = answerRecord.answer
         markedAnswer.clientTimestamp = answerRecord.clientTimestamp
+        if (answerRecord.monotonicTime !== undefined) {
+          markedAnswer.monotonicTime = {}
+          if (answerRecord.monotonicTime.milliseconds !== undefined) {
+            markedAnswer.monotonicTime.milliseconds = answerRecord.monotonicTime.milliseconds
+          }
+          if (answerRecord.monotonicTime.sequenceNumber !== undefined) {
+            markedAnswer.monotonicTime.sequenceNumber = answerRecord.monotonicTime.sequenceNumber
+          }
+          if (answerRecord.monotonicTime.legacyDate !== undefined) {
+            markedAnswer.monotonicTime.legacyDate = answerRecord.monotonicTime.legacyDate
+          }
+        }
       }
       const answer = answerRecord?.answer ?? ''
 
@@ -215,7 +227,11 @@ export class CheckMarkerV1 {
       if (aDate < bDate) {
         return -1
       } else if (aDate.getTime() === bDate.getTime()) {
-        return 0
+        if (a?.monotonicTime?.sequenceNumber !== undefined && b?.monotonicTime?.sequenceNumber !== undefined) {
+          return a.monotonicTime.sequenceNumber - b.monotonicTime.sequenceNumber
+        } else {
+          return 0
+        }
       }
       return 1
     }

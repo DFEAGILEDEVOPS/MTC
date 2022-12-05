@@ -49,5 +49,5 @@ end
 
 Then(/^teachers should see the service unavailable page$/) do
   step 'I am logged in'
-  expect(page.text).to include "The service is unavailable"
+  expect(page.text).to include "The service is currently closed"
 end

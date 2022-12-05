@@ -33,7 +33,7 @@
     "assets-version": "e3cf7309a51a6a6af117a4d5f04dedec"
   },
   "engines": {
-    "node": ">= 14"
+    "node": ">= 16"
   },
   "resolutions": {
     "**/**/lodash": "^4.17.21",
@@ -76,7 +76,7 @@
     "marked": "^4.0.19",
     "md5": "^2.2.1",
     "merge-stream": "^2.0.0",
-    "moment-timezone": "^0.5.35",
+    "moment-timezone": "^0.5.37",
     "morgan": "~1.10.0",
     "mssql": "8.0.0",
     "nocache": "^3.0.4",
@@ -84,7 +84,7 @@
     "openid-client": "^4.2.2",
     "passport": "^0.6.0",
     "passport-local": "^1.0.0",
-    "qrcode": "^1.5.0",
+    "qrcode": "^1.5.1",
     "ramda": "^0.27.2",
     "ramda-adjunct": "^2.21.0",
     "random-number-csprng": "^1.0.2",
@@ -97,7 +97,7 @@
     "winston": "^3.1.0",
     "winston-azure-application-insights": "^3.0.0",
     "xmlbuilder2": "^3.0.2",
-    "xregexp": "^5.1.0"
+    "xregexp": "^5.1.1"
   },
   "devDependencies": {
     "@babel/core": "^7.10.5",

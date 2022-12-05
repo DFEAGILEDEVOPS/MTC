@@ -316,6 +316,7 @@ describe('restart controller:', () => {
     test('it calls the service', async () => {
       const controller = require('../../../controllers/restart').postSubmitAllowDiscretionaryRestart
       const res = getRes()
+      const userId = 34896
       const goodReqParams = {
         method: 'POST',
         url: '/restart/allow-discretionary-restart',
@@ -326,7 +327,7 @@ describe('restart controller:', () => {
           pupilSlug: '3234aca8-7bfd-446d-8204-2580fc03a6d3'
         },
         user: {
-          id: '1111',
+          id: userId,
           schoolId: 1
         }
       }
@@ -335,7 +336,7 @@ describe('restart controller:', () => {
       jest.spyOn(pupilService, 'fetchOnePupilBySlug').mockResolvedValue(pupilMock)
       jest.spyOn(res, 'redirect').mockImplementation()
       await controller(req, res, next)
-      expect(DiscretionaryRestartService.grantDiscretionaryRestart).toHaveBeenCalledWith('3234aca8-7bfd-446d-8204-2580fc03a6d3')
+      expect(DiscretionaryRestartService.grantDiscretionaryRestart).toHaveBeenCalledWith('3234aca8-7bfd-446d-8204-2580fc03a6d3', userId)
     })
 
     test('it calls next if an error is thrown', async () => {
@@ -399,6 +400,7 @@ describe('restart controller:', () => {
     test('it calls the service', async () => {
       const controller = require('../../../controllers/restart').postSubmitRevokeDiscretionaryRestart
       const res = getRes()
+      const userId = 454566
       const goodReqParams = {
         method: 'POST',
         url: '/restart/remove-discretionary-restart',
@@ -409,7 +411,7 @@ describe('restart controller:', () => {
           pupilSlug: '3234aca8-7bfd-446d-8204-2580fc03a6d3'
         },
         user: {
-          id: '1111',
+          id: userId,
           schoolId: 1
         }
       }
@@ -418,7 +420,7 @@ describe('restart controller:', () => {
       jest.spyOn(pupilService, 'fetchOnePupilBySlug').mockResolvedValue(pupilMock)
       jest.spyOn(res, 'redirect').mockImplementation()
       await controller(req, res, next)
-      expect(DiscretionaryRestartService.removeDiscretionaryRestart).toHaveBeenCalledWith('3234aca8-7bfd-446d-8204-2580fc03a6d3')
+      expect(DiscretionaryRestartService.removeDiscretionaryRestart).toHaveBeenCalledWith('3234aca8-7bfd-446d-8204-2580fc03a6d3', userId)
     })
 
     test('it calls next if an error is thrown', async () => {

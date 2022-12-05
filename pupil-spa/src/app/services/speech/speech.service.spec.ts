@@ -4,6 +4,7 @@ import { SpeechService } from './speech.service';
 import { AuditService } from '../audit/audit.service';
 import { AuditServiceMock } from '../audit/audit.service.mock';
 import { WindowRefService } from '../window-ref/window-ref.service';
+import { AuditEntryFactory } from '../audit/auditEntry'
 
 describe('SpeechService', () => {
   const auditServiceMock = new AuditServiceMock();
@@ -13,7 +14,8 @@ describe('SpeechService', () => {
       providers: [
         SpeechService,
         { provide: AuditService, useValue: auditServiceMock },
-        WindowRefService
+        WindowRefService,
+        AuditEntryFactory
       ]
     });
   });

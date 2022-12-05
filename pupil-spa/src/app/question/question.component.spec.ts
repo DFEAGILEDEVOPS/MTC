@@ -4,7 +4,7 @@ import { AnswerService } from '../services/answer/answer.service'
 import { AuditService } from '../services/audit/audit.service'
 import { AuditServiceMock } from '../services/audit/audit.service.mock'
 import { QuestionComponent } from './question.component'
-import { QuestionAnswered, QuestionTimerCancelled } from '../services/audit/auditEntry'
+import { AuditEntryFactory, QuestionAnswered, QuestionTimerCancelled } from '../services/audit/auditEntry'
 import { QuestionService } from '../services/question/question.service'
 import { QuestionServiceMock } from '../services/question/question.service.mock'
 import { RegisterInputService } from '../services/register-input/registerInput.service'
@@ -12,8 +12,11 @@ import { RegisterInputServiceMock } from '../services/register-input/register-in
 import { SoundComponentMock } from '../sound/sound-component-mock'
 import { SpeechService } from '../services/speech/speech.service'
 import { SpeechServiceMock } from '../services/speech/speech.service.mock'
-import { StorageService } from '../services/storage/storage.service'
+import { IStorageService, StorageService } from '../services/storage/storage.service'
 import { WindowRefService } from '../services/window-ref/window-ref.service'
+import { Renderer2 } from '@angular/core'
+import { MonotonicTimeService } from '../services/monotonic-time/monotonic-time.service'
+import { StorageServiceMock } from '../services/storage/mock-storage.service'
 
 describe('QuestionComponent', () => {
   let component: QuestionComponent
@@ -25,19 +28,25 @@ describe('QuestionComponent', () => {
   let answerServiceSpy: any
   let auditService: AuditService
   let auditServiceSpy
+  let storageService: StorageService
+  let storageServiceSetAnswerSpy: jasmine.Spy
 
   beforeEach(waitForAsync(() => {
+    storageService = new StorageServiceMock() as StorageService
+    answerService = new AnswerService(storageService, new MonotonicTimeService(new WindowRefService()))
     TestBed.configureTestingModule({
       imports: [],
       declarations: [QuestionComponent],
       providers: [
         { provide: AuditService, useValue: auditServiceMock },
-        { provide: QuestionService, useClass: QuestionServiceMock },
-        { provide: RegisterInputService, useClass: RegisterInputServiceMock },
-        { provide: SpeechService, useClass: SpeechServiceMock },
-        AnswerService,
-        StorageService,
         WindowRefService,
+        { provide: QuestionService, useClass: QuestionServiceMock },
+        { provide: StorageService, useValue: storageService},
+        { provide: SpeechService, useClass: SpeechServiceMock },
+        { provide: AnswerService, useValue: answerService },
+        { provide: RegisterInputService, useClass: RegisterInputServiceMock },
+        Renderer2,
+        AuditEntryFactory
       ]
     }).compileComponents().catch(error => {
       console.error(error)
@@ -54,12 +63,13 @@ describe('QuestionComponent', () => {
     registerInputService = fixture.debugElement.injector.get(RegisterInputService)
     registerInputServiceSpy = spyOn(registerInputService, 'storeEntry')
 
-    answerService = fixture.debugElement.injector.get(AnswerService)
-    answerServiceSpy = spyOn(answerService, 'setAnswer')
+    answerServiceSpy = spyOn(answerService, 'setAnswer').and.callThrough()
 
     auditService = fixture.debugElement.injector.get(AuditService)
     auditServiceSpy = spyOn(auditService, 'addEntry')
 
+    // storageService = fixture.debugElement.injector.get(StorageService)
+    storageServiceSetAnswerSpy = spyOn(storageService, 'setAnswer')
     // Place this last so the spies above are registered.
     fixture.detectChanges()
   })
@@ -205,17 +215,23 @@ describe('QuestionComponent', () => {
     })
 
     it('stores the answer before it stores the QuestionAnswered Audit', () => {
+      component.factor1 = 1
+      component.factor2 = 2
       component.answer = '8'
+      component.sequenceNumber = 1
       auditServiceSpy.calls.reset()
+      storageServiceSetAnswerSpy.calls.reset()
       component.onSubmit()
-      const answerTimestamp = answerServiceSpy.calls.mostRecent().args[0].clientTimestamp
+      const answerArgs = storageServiceSetAnswerSpy.calls.mostRecent().args[0]
+      const answerTimestamp: string = answerArgs.clientTimestamp
+      const answerDateTime = new Date(answerTimestamp)
       const auditArgs = auditServiceSpy.calls.allArgs()
       const questionAnsweredArg = auditArgs.find(o => o[0].type === 'QuestionAnswered')
       const questionAnsweredTimestamp = questionAnsweredArg[0].clientTimestamp
       if (!questionAnsweredTimestamp || !answerTimestamp) {
         fail('Missing timestamp')
       }
-      expect(answerTimestamp.getTime()).toBeLessThanOrEqual(questionAnsweredTimestamp.getTime())
+      expect(answerDateTime.getTime()).toBeLessThanOrEqual(questionAnsweredTimestamp.getTime())
     })
   })
 

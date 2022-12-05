@@ -35,12 +35,16 @@ export class PupilFrozenDataService {
  * @param {string} pupilUrlSlug
  * @returns {Promise<void>} lacks parity with sqlService.modify as it isn't fully typed beyond 'promise'
  */
-  public static async freezePupil (pupilUrlSlug: string): Promise<void> {
-    const sql = 'UPDATE mtc_admin.pupil SET frozen=1 WHERE urlSlug=@pupilUrlSlug'
+  public static async freezePupil (pupilUrlSlug: string, currentUserId: number): Promise<void> {
+    const sql = 'UPDATE mtc_admin.pupil SET frozen=1, lastModifiedBy_userId=@userId WHERE urlSlug=@pupilUrlSlug'
     const params = [{
       name: 'pupilUrlSlug',
       type: TYPES.UniqueIdentifier,
       value: pupilUrlSlug
+    }, {
+      name: 'userId',
+      type: TYPES.Int,
+      value: currentUserId
     }]
     return sqlService.modify(sql, params)
   }
@@ -50,12 +54,16 @@ export class PupilFrozenDataService {
  * @param {string} pupilUrlSlug
  * @returns {Promise<void>} lacks parity with sqlService.modify as it isn't fully typed beyond 'promise'
  */
-  public static async thawPupil (pupilUrlSlug: string): Promise<void> {
-    const sql = 'UPDATE mtc_admin.pupil SET frozen=0 WHERE urlSlug=@pupilUrlSlug'
+  public static async thawPupil (pupilUrlSlug: string, currentUserId: number): Promise<void> {
+    const sql = 'UPDATE mtc_admin.pupil SET frozen=0, lastModifiedBy_userId=@userId WHERE urlSlug=@pupilUrlSlug'
     const params = [{
       name: 'pupilUrlSlug',
       type: TYPES.UniqueIdentifier,
       value: pupilUrlSlug
+    }, {
+      name: 'userId',
+      type: TYPES.Int,
+      value: currentUserId
     }]
     return sqlService.modify(sql, params)
   }

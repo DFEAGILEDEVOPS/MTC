@@ -34,35 +34,34 @@ describe('pupilEditService', () => {
     'dob-year': 10
   }
 
+  const userId = 1
+  const schoolId = 2
+
   test('should call refreshPupilAgeReason', async () => {
     jest.spyOn(PupilFrozenService, 'throwIfFrozenByIds').mockResolvedValue()
     const pupil1 = Object.assign({}, pupilMock)
-    const schoolId = 1
-    await pupilEditService.update(pupil1, requestBody, schoolId)
+    await pupilEditService.update(pupil1, requestBody, schoolId, userId)
     expect(pupilAgeReasonService.refreshPupilAgeReason).toHaveBeenCalled()
   })
 
   test('should call createUTCFromDayMonthYear', async () => {
     jest.spyOn(PupilFrozenService, 'throwIfFrozenByIds').mockResolvedValue()
     const pupil1 = Object.assign({}, pupilMock)
-    const schoolId = 1
-    await pupilEditService.update(pupil1, requestBody, schoolId)
+    await pupilEditService.update(pupil1, requestBody, schoolId, userId)
     expect(dateService.createUTCFromDayMonthYear).toHaveBeenCalled()
   })
 
   test('should call sqlUpdate from the data service', async () => {
     jest.spyOn(PupilFrozenService, 'throwIfFrozenByIds').mockResolvedValue()
     const pupil1 = Object.assign({}, pupilMock)
-    const schoolId = 1
-    await pupilEditService.update(pupil1, requestBody, schoolId)
+    await pupilEditService.update(pupil1, requestBody, schoolId, userId)
     expect(pupilDataService.sqlUpdate).toHaveBeenCalled()
   })
 
   test('should drop pupil register cache', async () => {
     jest.spyOn(PupilFrozenService, 'throwIfFrozenByIds').mockResolvedValue()
     const pupil1 = Object.assign({}, pupilMock)
-    const schoolId = 1
-    await pupilEditService.update(pupil1, requestBody, schoolId)
+    await pupilEditService.update(pupil1, requestBody, schoolId, userId)
     expect(redisCacheService.drop).toHaveBeenCalled()
   })
 
@@ -71,7 +70,24 @@ describe('pupilEditService', () => {
       throw new Error('frozen')
     })
     const pupil1 = Object.assign({}, pupilMock)
-    const schoolId = 1
-    await expect(pupilEditService.update(pupil1, requestBody, schoolId)).rejects.toThrow('frozen')
+    await expect(pupilEditService.update(pupil1, requestBody, schoolId, userId)).rejects.toThrow('frozen')
+  })
+
+  test('should throw an error if userId not provided', async () => {
+    jest.spyOn(PupilFrozenService, 'throwIfFrozenByIds').mockResolvedValue()
+    const pupil1 = Object.assign({}, pupilMock)
+    await expect(pupilEditService.update(pupil1, requestBody, schoolId)).rejects.toThrow('userId is required')
+  })
+
+  test('should throw an error if schoolId not provided', async () => {
+    jest.spyOn(PupilFrozenService, 'throwIfFrozenByIds').mockResolvedValue()
+    const pupil1 = Object.assign({}, pupilMock)
+    await expect(pupilEditService.update(pupil1, requestBody, undefined, userId)).rejects.toThrow('schoolId is required')
+  })
+
+  test('should throw an error if pupil not provided', async () => {
+    jest.spyOn(PupilFrozenService, 'throwIfFrozenByIds').mockResolvedValue()
+    const pupil1 = undefined
+    await expect(pupilEditService.update(pupil1, requestBody, schoolId, userId)).rejects.toThrow('pupil is required')
   })
 })

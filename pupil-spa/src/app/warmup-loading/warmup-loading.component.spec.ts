@@ -7,6 +7,7 @@ import { QuestionService } from '../services/question/question.service';
 import { QuestionServiceMock } from '../services/question/question.service.mock';
 import { SpeechService } from '../services/speech/speech.service';
 import { SpeechServiceMock } from '../services/speech/speech.service.mock';
+import { AuditEntryFactory } from '../services/audit/auditEntry'
 
 
 describe('WarmupLoadingComponent', () => {
@@ -20,6 +21,7 @@ describe('WarmupLoadingComponent', () => {
         { provide: AuditService, useClass: AuditServiceMock },
         { provide: QuestionService, useClass: QuestionServiceMock },
         { provide: SpeechService, useClass: SpeechServiceMock },
+        AuditEntryFactory
       ]
     })
     .compileComponents();
