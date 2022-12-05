@@ -17,7 +17,7 @@
     "runUnsupportedBrowserTests": "./unsupported-browser-tests/run-unsupported-browser-tests.sh"
   },
   "engines": {
-    "node": ">= 14"
+    "node": ">= 16"
   },
   "resolutions": {
     "**/**/lodash": ">=4.17.21",
