@@ -497,7 +497,7 @@ const controller = {
     const resyncAll = req.body.resyncAll === 'true' // convert string to bool- the user must tick the checkbox
     try {
       await resultsResyncService.resyncAllChecks(resyncAll)
-      req.breadcrumbs('Check Results - Resync Uncalculated')
+      req.breadcrumbs('Check Results - Resync All')
       res.render('tech-support/results-resync-all', {
         breadcrumbs: req.breadcrumbs(),
         err: new ValidationError(),
