@@ -35,10 +35,10 @@ module.exports.getRestartsForSchool = async function getRestartsForSchool (schoo
       // if a pin has been generated against the restart...
     } else if (r.restartCheckId !== null) {
       update.status = 'Restart taken'
-    // if discretionary restart available orelse pupil has logged in to the restart check...
+    // if discretionary restart available or else pupil has logged in to the restart check...
     } else if (r.isDiscretionaryRestartAvailable) {
       update.status = 'Restart taken'
-    // if no check generated against restart orelse restart check not received and restart check not marked as complete
+    // if no check generated against restart or else restart check not received and restart check not marked as complete
     } else if (r.restartCheckId === null || (r.restartCheckReceived === false && r.restartCheckComplete === false)) {
       update.status = 'Remove restart'
     } else {
