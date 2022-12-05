@@ -58,7 +58,7 @@
     "ioredis": "^4.27.9",
     "lz-string": "^1.4.4",
     "moment": "^2.29.4",
-    "moment-timezone": "^0.5.35",
+    "moment-timezone": "^0.5.38",
     "mssql": "^8.1.4",
     "ramda": "^0.28.0",
     "ramda-adjunct": "^3.3.0",
