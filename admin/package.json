@@ -33,7 +33,7 @@
     "assets-version": "e214052e162d4bb534f3f53033a72164"
   },
   "engines": {
-    "node": ">= 14"
+    "node": ">= 16"
   },
   "resolutions": {
     "**/**/lodash": "^4.17.21",
