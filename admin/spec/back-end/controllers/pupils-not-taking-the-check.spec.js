@@ -10,7 +10,7 @@ const checkWindowV2Service = require('../../../services/check-window-v2.service'
 const pupilService = require('../../../services/pupil.service')
 const pupilsNotTakingCheckService = require('../../../services/pupils-not-taking-check.service')
 const groupService = require('../../../services/group.service')
-const headteacherDeclarationService = require('../../../services/headteacher-declaration.service')
+const headteacherDeclarationService = require('../../../services/hdf.service')
 
 const pupilMock = require('../mocks/pupil-with-reason')
 const pupilsWithReasonsFormattedMock = require('../mocks/pupils-with-reason-formatted')

@@ -4,7 +4,7 @@
 const config = require('../../../config')
 const schoolHomeFeatureEligibilityPresenter = require('../../../helpers/school-home-feature-eligibility-presenter')
 const businessAvailabilityService = require('../../../services/business-availability.service')
-const headTeacherDeclarationService = require('../../../services/headteacher-declaration.service')
+const headTeacherDeclarationService = require('../../../services/hdf.service')
 
 describe('businessAvailabilityService', () => {
   afterEach(() => {

@@ -20,7 +20,7 @@ const aaViewModes = require('../../../lib/consts/access-arrangements-view-mode')
 const { AccessArrangementsNotEditableError } = require('../../../error-types/access-arrangements-not-editable-error')
 const moment = require('moment')
 const uuid = require('uuid')
-const headteacherDeclarationService = require('../../../services/headteacher-declaration.service')
+const headteacherDeclarationService = require('../../../services/hdf.service')
 
 describe('access arrangements controller:', () => {
   let next

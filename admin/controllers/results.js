@@ -6,7 +6,7 @@ const checkWindowV2Service = require('../services/check-window-v2.service')
 const config = require('../config')
 const ctfService = require('../services/ctf-service/ctf.service')
 const groupService = require('../services/group.service')
-const headteacherDeclarationService = require('../services/headteacher-declaration.service')
+const hdfService = require('../services/hdf.service')
 const resultPageAvailabilityService = require('../services/results-page-availability.service')
 const resultPresenter = require('../helpers/result-presenter')
 const resultService = require('../services/result.service')
@@ -32,7 +32,7 @@ controller.getViewResultsPage = async function getViewResultsPage (req, res, nex
   try {
     checkWindow = await checkWindowV2Service.getActiveCheckWindow()
     groups = await groupService.getGroups(req.user.schoolId)
-    isHdfSubmitted = await headteacherDeclarationService.isHdfSubmittedForCurrentCheck(req.user.schoolId, checkWindow && checkWindow.id)
+    isHdfSubmitted = await hdfService.isHdfSubmittedForCurrentCheck(req.user.schoolId, checkWindow && checkWindow.id)
   } catch (error) {
     return next(error)
   }

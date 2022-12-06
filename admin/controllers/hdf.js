@@ -6,7 +6,7 @@ const moment = require('moment')
 const dateService = require('../services/date.service')
 const hdfValidator = require('../lib/validator/hdf-validator')
 const hdfConfirmValidator = require('../lib/validator/hdf-confirm-validator')
-const headteacherDeclarationService = require('../services/headteacher-declaration.service')
+const hdfService = require('../services/hdf.service')
 const pupilService = require('../services/pupil.service')
 const pupilPresenter = require('../helpers/pupil-presenter')
 const hdfPresenter = require('../helpers/hdf-presenter')
@@ -97,7 +97,7 @@ controller.getReviewPupilDetails = async function getReviewPupilDetails (req, re
   req.breadcrumbs("Headteacher's declaration form", '/attendance/declaration-form')
   req.breadcrumbs(res.locals.pageTitle)
   try {
-    const pupils = await headteacherDeclarationService.findPupilsForSchool(req.user.schoolId)
+    const pupils = await hdfService.findPupilsForSchool(req.user.schoolId)
     if (!pupils) {
       return next('No pupils found')
     }
@@ -122,7 +122,7 @@ controller.getEditReason = async function getEditReason (req, res, next) {
 
   let pupil, attendanceCodes
   try {
-    pupil = await headteacherDeclarationService.findPupilBySlugAndSchoolId(req.params.urlSlug, req.user.schoolId)
+    pupil = await hdfService.findPupilBySlugAndSchoolId(req.params.urlSlug, req.user.schoolId)
     attendanceCodes = await attendanceCodeService.getAttendanceCodes()
   } catch (error) {
     return next(error)
@@ -142,8 +142,8 @@ controller.getEditReason = async function getEditReason (req, res, next) {
 controller.postSubmitEditReason = async function postSubmitEditReason (req, res, next) {
   const { urlSlug, attendanceCode } = req.body
   try {
-    const pupil = await headteacherDeclarationService.findPupilBySlugAndSchoolId(urlSlug, req.user.schoolId)
-    await headteacherDeclarationService.updatePupilsAttendanceCode([pupil.pupilId], attendanceCode, req.user.id, req.user.schoolId)
+    const pupil = await hdfService.findPupilBySlugAndSchoolId(urlSlug, req.user.schoolId)
+    await hdfService.updatePupilsAttendanceCode([pupil.pupilId], attendanceCode, req.user.id, req.user.schoolId)
     req.flash('info', `Outcome updated for ${pupil.lastName}, ${pupil.foreName} `)
     req.flash('urlSlug', pupil.urlSlug)
     return res.redirect('/attendance/review-pupil-details')
@@ -161,7 +161,7 @@ controller.getConfirmSubmit = async function getConfirmSubmit (req, res, next) {
   try {
     const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
     const availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.schoolId, checkWindowData, req.user.timezone)
-    const hdfEligibility = await headteacherDeclarationService.getEligibilityForSchool(req.user.schoolId, checkWindowData.checkEndDate, req.user.timezone)
+    const hdfEligibility = await hdfService.getEligibilityForSchool(req.user.schoolId, checkWindowData.checkEndDate, req.user.timezone)
     if (!hdfEligibility) {
       return res.render('hdf/declaration-form', {
         hdfEligibility,
@@ -202,7 +202,7 @@ controller.postConfirmSubmit = async function postConfirmSubmit (req, res, next)
 
   try {
     const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
-    await headteacherDeclarationService
+    await hdfService
       .submitDeclaration({ ...hdfFormData, ...req.body }, req.user.id, req.user.schoolId, checkWindowData.checkEndDate, req.user.timezone)
   } catch (error) {
     return next(error)
@@ -219,7 +219,7 @@ controller.getDeclarationForm = async function getDeclarationForm (req, res, nex
   try {
     const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
     const availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.schoolId, checkWindowData, req.user.timezone)
-    const hdfSubmitted = await headteacherDeclarationService.isHdfSubmittedForCurrentCheck(req.user.schoolId, checkWindowData && checkWindowData.id)
+    const hdfSubmitted = await hdfService.isHdfSubmittedForCurrentCheck(req.user.schoolId, checkWindowData && checkWindowData.id)
     if (!availabilityData.hdfAvailable) {
       return res.render('availability/section-unavailable', {
         title: res.locals.pageTitle,
@@ -229,7 +229,7 @@ controller.getDeclarationForm = async function getDeclarationForm (req, res, nex
     if (hdfSubmitted) {
       return res.redirect('/attendance/submitted')
     }
-    hdfEligibility = await headteacherDeclarationService.getEligibilityForSchool(req.user.schoolId, checkWindowData.checkEndDate, req.user.timezone)
+    hdfEligibility = await hdfService.getEligibilityForSchool(req.user.schoolId, checkWindowData.checkEndDate, req.user.timezone)
   } catch (error) {
     return next(error)
   }
@@ -249,7 +249,7 @@ controller.postDeclarationForm = async function postDeclarationForm (req, res, n
 
   let hdfEligibility
   try {
-    hdfEligibility = await headteacherDeclarationService.getEligibilityForSchool(req.user.schoolId, checkWindowData.checkEndDate, req.user.timezone)
+    hdfEligibility = await hdfService.getEligibilityForSchool(req.user.schoolId, checkWindowData.checkEndDate, req.user.timezone)
   } catch (error) {
     return next(error)
   }
@@ -275,7 +275,7 @@ controller.getHDFSubmitted = async function getHDFSubmitted (req, res, next) {
   res.locals.pageTitle = "Headteacher's declaration form"
   req.breadcrumbs(res.locals.pageTitle)
   try {
-    const hdf = await headteacherDeclarationService.findLatestHdfForSchool(req.user.School)
+    const hdf = await hdfService.findLatestHdfForSchool(req.user.School)
     if (!hdf) {
       return res.redirect('/attendance/declaration-form')
     }
@@ -296,7 +296,7 @@ controller.getHDFSubmittedForm = async function getHDFSubmittedForm (req, res, n
   req.breadcrumbs("Headteacher's declaration form", '/attendance/declaration-form')
   req.breadcrumbs(res.locals.pageTitle)
   try {
-    const hdf = await headteacherDeclarationService.findLatestHdfForSchool(req.user.School)
+    const hdf = await hdfService.findLatestHdfForSchool(req.user.School)
     if (!hdf) {
       return res.redirect('/attendance/declaration-form')
     }

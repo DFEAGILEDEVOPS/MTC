@@ -4,7 +4,7 @@ const moment = require('moment-timezone')
 const config = require('../config')
 const schoolHomeFeatureEligibilityPresenter = require('../helpers/school-home-feature-eligibility-presenter')
 const dateService = require('../services/date.service')
-const headteacherDeclarationService = require('../services/headteacher-declaration.service')
+const hdfService = require('./hdf.service')
 
 const businessAvailabilityService = {}
 
@@ -136,7 +136,7 @@ businessAvailabilityService.determineAccessArrangementsEligibility = (checkWindo
 businessAvailabilityService.getAvailabilityData = async (schoolId, checkWindowData, timezone = undefined) => {
   const currentDate = moment.tz(timezone || config.DEFAULT_TIMEZONE)
   const isWithinOpeningHours = currentDate.hour() >= 6 && currentDate.hour() < 16
-  const hdfSubmitted = await headteacherDeclarationService.isHdfSubmittedForCheck(schoolId, checkWindowData.id)
+  const hdfSubmitted = await hdfService.isHdfSubmittedForCheck(schoolId, checkWindowData.id)
   const familiarisationWindowStarted = currentDate.isAfter(checkWindowData.familiarisationCheckStartDate)
   const familiarisationWindowClosed = currentDate.isAfter(checkWindowData.familiarisationCheckEndDate)
   const checkWindowStarted = currentDate.isAfter(checkWindowData.checkStartDate)

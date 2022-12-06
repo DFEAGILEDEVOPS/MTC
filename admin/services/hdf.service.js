@@ -3,17 +3,17 @@
 const moment = require('moment-timezone')
 
 const config = require('../config')
-const schoolDataService = require('../services/data-access/school.data.service')
-const checkWindowV2Service = require('../services/check-window-v2.service')
+const schoolDataService = require('./data-access/school.data.service')
+const checkWindowV2Service = require('./check-window-v2.service')
 const attendanceCodeDataService = require('./data-access/attendance-code.data.service')
-const pupilAttendanceDataService = require('../services/data-access/pupil-attendance.data.service')
-const pupilStatusService = require('../services/pupil-status.service')
+const pupilAttendanceDataService = require('./data-access/pupil-attendance.data.service')
+const pupilStatusService = require('./pupil-status.service')
 const headteacherDeclarationDataService = require('./data-access/headteacher-declaration.data.service')
 const pupilStatusDataService = require('./data-access/pupil-status.data.service')
-const headteacherDeclarationService = {}
+const hdfService = {}
 const settingService = require('./setting.service')
-const redisCacheService = require('../services/data-access/redis-cache.service')
-const redisKeyService = require('../services/redis-key.service')
+const redisCacheService = require('./data-access/redis-cache.service')
+const redisKeyService = require('./redis-key.service')
 const { PupilFrozenService } = require('./pupil-frozen.service/pupil-frozen.service')
 /**
  * @typedef {Object} hdfPupil
@@ -34,7 +34,7 @@ const { PupilFrozenService } = require('./pupil-frozen.service/pupil-frozen.serv
  * @param schoolId
  * @return {Promise<hdfPupil[]>}
  */
-headteacherDeclarationService.findPupilsForSchool = async (schoolId) => {
+hdfService.findPupilsForSchool = async (schoolId) => {
   if (!schoolId) {
     throw new Error('schoolId is required')
   }
@@ -48,7 +48,7 @@ headteacherDeclarationService.findPupilsForSchool = async (schoolId) => {
  * @param schoolId
  * @return {Promise<object>}
  */
-headteacherDeclarationService.findPupilBySlugAndSchoolId = async function findPupilBySlugAndSchoolId (urlSlug, schoolId) {
+hdfService.findPupilBySlugAndSchoolId = async function findPupilBySlugAndSchoolId (urlSlug, schoolId) {
   if (!urlSlug) {
     throw new Error('urlSlug param is required')
   }
@@ -67,7 +67,7 @@ headteacherDeclarationService.findPupilBySlugAndSchoolId = async function findPu
  * @param timezone
  * @returns {Promise<boolean>}
  */
-headteacherDeclarationService.getEligibilityForSchool = async (schoolId, checkEndDate, timezone) => {
+hdfService.getEligibilityForSchool = async (schoolId, checkEndDate, timezone) => {
   if (!checkEndDate) {
     throw new Error('Check end date missing or not found')
   }
@@ -89,14 +89,14 @@ headteacherDeclarationService.getEligibilityForSchool = async (schoolId, checkEn
  * @param {string} timezone
  * @return {Promise<any>}
  */
-headteacherDeclarationService.submitDeclaration = async (form, userId, schoolId, checkEndDate, timezone) => {
+hdfService.submitDeclaration = async (form, userId, schoolId, checkEndDate, timezone) => {
   const school = await schoolDataService.sqlFindOneById(schoolId)
 
   if (!school) {
     throw new Error(`school ${schoolId} not found`)
   }
 
-  const hdfEligibility = await headteacherDeclarationService.getEligibilityForSchool(schoolId, checkEndDate, timezone)
+  const hdfEligibility = await hdfService.getEligibilityForSchool(schoolId, checkEndDate, timezone)
   if (!hdfEligibility) {
     throw new Error('Not eligible to submit declaration')
   }
@@ -124,7 +124,7 @@ headteacherDeclarationService.submitDeclaration = async (form, userId, schoolId,
  * @param {number} dfeNumber
  * @return {Promise<any>}
  */
-headteacherDeclarationService.findLatestHdfForSchool = async (dfeNumber) => {
+hdfService.findLatestHdfForSchool = async (dfeNumber) => {
   // TODO: hdf: role checks? Date checks?
   const school = await schoolDataService.sqlFindOneByDfeNumber(dfeNumber)
   if (!school) {
@@ -141,11 +141,11 @@ headteacherDeclarationService.findLatestHdfForSchool = async (dfeNumber) => {
  * @param checkWindowId
  * @return {Promise<boolean>}
  */
-headteacherDeclarationService.isHdfSubmittedForCurrentCheck = async (schoolId, checkWindowId) => {
+hdfService.isHdfSubmittedForCurrentCheck = async (schoolId, checkWindowId) => {
   if (!checkWindowId || !schoolId) {
     return false
   }
-  return headteacherDeclarationService.isHdfSubmittedForCheck(schoolId, checkWindowId)
+  return hdfService.isHdfSubmittedForCheck(schoolId, checkWindowId)
 }
 
 /**
@@ -155,7 +155,7 @@ headteacherDeclarationService.isHdfSubmittedForCurrentCheck = async (schoolId, c
  * @param checkWindowId
  * @return {Promise<boolean>}
  */
-headteacherDeclarationService.isHdfSubmittedForCheck = async (schoolId, checkWindowId) => {
+hdfService.isHdfSubmittedForCheck = async (schoolId, checkWindowId) => {
   if (!schoolId || !checkWindowId) {
     throw new Error('schoolId and checkWindowId are required')
   }
@@ -176,7 +176,7 @@ headteacherDeclarationService.isHdfSubmittedForCheck = async (schoolId, checkWin
  * @param userId
  * @return {Promise<object>}
  */
-headteacherDeclarationService.updatePupilsAttendanceCode = async (pupilIds, code, userId, schoolId) => {
+hdfService.updatePupilsAttendanceCode = async (pupilIds, code, userId, schoolId) => {
   if (!pupilIds || !code || !userId) {
     throw new Error('pupilIds, code and userId are required')
   }
@@ -189,4 +189,4 @@ headteacherDeclarationService.updatePupilsAttendanceCode = async (pupilIds, code
   await redisCacheService.drop(redisKeyService.getSchoolResultsKey(schoolId))
 }
 
-module.exports = headteacherDeclarationService
+module.exports = hdfService

@@ -17,7 +17,7 @@ const checkWindowMock = require('../mocks/check-window').legacy
 const settingsService = require('../../../services/setting.service')
 const pupilStatusService = require('../../../services/pupil-status.service')
 const redisCacheService = require('../../../services/data-access/redis-cache.service')
-const service = require('../../../services/headteacher-declaration.service')
+const sut = require('../../../services/hdf.service')
 const { PupilFrozenService } = require('../../../services/pupil-frozen.service/pupil-frozen.service')
 
 describe('headteacherDeclarationService', () => {
@@ -32,21 +32,21 @@ describe('headteacherDeclarationService', () => {
       test('should call sqlFindPupilsBlockingHdfBeforeCheckEndDate', async () => {
         jest.spyOn(headteacherDeclarationDataService, 'sqlFindPupilsBlockingHdfBeforeCheckEndDate').mockImplementation()
         const checkEndDate = moment.utc().add(5, 'days')
-        await service.getEligibilityForSchool(dfeNumber, checkEndDate)
+        await sut.getEligibilityForSchool(dfeNumber, checkEndDate)
         expect(headteacherDeclarationDataService.sqlFindPupilsBlockingHdfBeforeCheckEndDate).toHaveBeenCalled()
       })
 
       test('should return true if no pupils blocking are detected', async () => {
         jest.spyOn(headteacherDeclarationDataService, 'sqlFindPupilsBlockingHdfBeforeCheckEndDate').mockResolvedValue(0)
         const checkEndDate = moment.utc().add(5, 'days')
-        const result = await service.getEligibilityForSchool(dfeNumber, checkEndDate)
+        const result = await sut.getEligibilityForSchool(dfeNumber, checkEndDate)
         expect(result).toBeTruthy()
       })
 
       test('should return false if no pupils blocking are detected', async () => {
         jest.spyOn(headteacherDeclarationDataService, 'sqlFindPupilsBlockingHdfBeforeCheckEndDate').mockResolvedValue(1)
         const checkEndDate = moment.utc().add(5, 'days')
-        const result = await service.getEligibilityForSchool(dfeNumber, checkEndDate)
+        const result = await sut.getEligibilityForSchool(dfeNumber, checkEndDate)
         expect(result).toBeFalsy()
       })
     })
@@ -55,21 +55,21 @@ describe('headteacherDeclarationService', () => {
       test('should call sqlFindPupilsBlockingHdfBeforeCheckEndDate', async () => {
         jest.spyOn(headteacherDeclarationDataService, 'sqlFindPupilsBlockingHdfAfterCheckEndDate').mockImplementation()
         const checkEndDate = moment.utc().subtract(5, 'days')
-        await service.getEligibilityForSchool(dfeNumber, checkEndDate)
+        await sut.getEligibilityForSchool(dfeNumber, checkEndDate)
         expect(headteacherDeclarationDataService.sqlFindPupilsBlockingHdfAfterCheckEndDate).toHaveBeenCalled()
       })
 
       test('should return true if no pupils blocking are detected', async () => {
         jest.spyOn(headteacherDeclarationDataService, 'sqlFindPupilsBlockingHdfAfterCheckEndDate').mockResolvedValue(0)
         const checkEndDate = moment.utc().subtract(5, 'days')
-        const result = await service.getEligibilityForSchool(dfeNumber, checkEndDate)
+        const result = await sut.getEligibilityForSchool(dfeNumber, checkEndDate)
         expect(result).toBeTruthy()
       })
 
       test('should return false if no pupils blocking are detected', async () => {
         jest.spyOn(headteacherDeclarationDataService, 'sqlFindPupilsBlockingHdfAfterCheckEndDate').mockResolvedValue(1)
         const checkEndDate = moment.utc().subtract(5, 'days')
-        const result = await service.getEligibilityForSchool(dfeNumber, checkEndDate)
+        const result = await sut.getEligibilityForSchool(dfeNumber, checkEndDate)
         expect(result).toBeFalsy()
       })
     })
@@ -79,7 +79,7 @@ describe('headteacherDeclarationService', () => {
     /**
      * @type headteacherDeclarationService
      */
-    const service = require('../../../services/headteacher-declaration.service')
+    const service = require('../../../services/hdf.service')
     const form = {
       jobTitle: 'Head',
       fullName: 'Hubert J. Farnsworth',
@@ -145,7 +145,7 @@ describe('headteacherDeclarationService', () => {
 
   describe('findLatestHdfForSchool', () => {
     const dfeNumber = 9991999
-    const service = require('../../../services/headteacher-declaration.service')
+    const service = require('../../../services/hdf.service')
     test('finds the school using the dfeNumber', async () => {
       jest.spyOn(schoolDataService, 'sqlFindOneByDfeNumber').mockResolvedValue(schoolMock)
       jest.spyOn(headteacherDeclarationDataService, 'sqlFindLatestHdfBySchoolId').mockImplementation()
@@ -170,7 +170,7 @@ describe('headteacherDeclarationService', () => {
 
   describe('#isHdfSubmittedForCurrentCheck', () => {
     const dfeNumber = 9991999
-    const service = require('../../../services/headteacher-declaration.service')
+    const service = require('../../../services/hdf.service')
 
     test('calls isHdfSubmittedForCheck', async () => {
       const checkWindowId = 1
@@ -187,7 +187,7 @@ describe('headteacherDeclarationService', () => {
 
   describe('#isHdfSubmittedForCheck', () => {
     const dfeNumber = 9991999
-    const service = require('../../../services/headteacher-declaration.service')
+    const service = require('../../../services/hdf.service')
 
     test('throws an error when no dfeNumber is provided', async () => {
       await expect(service.isHdfSubmittedForCheck(null, 1)).rejects.toThrow('schoolId and checkWindowId are required')
@@ -225,7 +225,7 @@ describe('headteacherDeclarationService', () => {
 
   describe('findPupilsForSchool', () => {
     const schoolId = 123
-    const service = require('../../../services/headteacher-declaration.service')
+    const service = require('../../../services/hdf.service')
 
     test('throws an error when no schoolId is provided', async () => {
       await expect(service.findPupilsForSchool(null)).rejects.toThrow('schoolId is required')
@@ -241,7 +241,7 @@ describe('headteacherDeclarationService', () => {
   describe('findPupilBySlugAndSchoolId', () => {
     const urlSlug = 'xxx-xxx-xxx-xxx'
     const schoolId = 1
-    const service = require('../../../services/headteacher-declaration.service')
+    const service = require('../../../services/hdf.service')
 
     test('throws an error when no urlSlug is provided', async () => {
       await expect(service.findPupilBySlugAndSchoolId(null, schoolId)).rejects.toThrow('urlSlug param is required')
@@ -265,7 +265,7 @@ describe('headteacherDeclarationService', () => {
     const userId = 1
     const attendanceCode = 'XXX'
     const schoolId = 42
-    const service = require('../../../services/headteacher-declaration.service')
+    const service = require('../../../services/hdf.service')
 
     beforeEach(() => {
       jest.spyOn(PupilFrozenService, 'throwIfFrozenByIds').mockResolvedValue()

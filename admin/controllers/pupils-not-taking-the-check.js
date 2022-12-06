@@ -6,7 +6,7 @@ const groupService = require('../services/group.service')
 const pupilsNotTakingCheckService = require('../services/pupils-not-taking-check.service')
 const pupilService = require('../services/pupil.service')
 const schoolHomeFeatureEligibilityPresenter = require('../helpers/school-home-feature-eligibility-presenter')
-const headteacherDeclarationService = require('../services/headteacher-declaration.service')
+const hdfService = require('../services/hdf.service')
 const businessAvailabilityService = require('../services/business-availability.service')
 const checkWindowPhaseConsts = require('../lib/consts/check-window-phase')
 
@@ -29,7 +29,7 @@ const getPupilNotTakingCheck = async function getPupilNotTakingCheck (req, res, 
     pupils = await pupilsNotTakingCheckService.getPupilsWithReasons(req.user.schoolId)
     checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
     pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData, req.user.timezone)
-    hdfSubmitted = await headteacherDeclarationService.isHdfSubmittedForCurrentCheck(req.user.schoolId, checkWindowData && checkWindowData.id)
+    hdfSubmitted = await hdfService.isHdfSubmittedForCurrentCheck(req.user.schoolId, checkWindowData && checkWindowData.id)
   } catch (error) {
     return next(error)
   }
@@ -182,7 +182,7 @@ const viewPupilsNotTakingTheCheck = async function viewPupilsNotTakingTheCheck (
     const pupilsList = await pupilsNotTakingCheckService.getPupilsWithReasons(req.user.schoolId)
     checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
     pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData, req.user.timezone)
-    hdfSubmitted = await headteacherDeclarationService.isHdfSubmittedForCurrentCheck(req.user.schoolId, checkWindowData && checkWindowData.id)
+    hdfSubmitted = await hdfService.isHdfSubmittedForCurrentCheck(req.user.schoolId, checkWindowData && checkWindowData.id)
     // @ts-ignore - defined in server.js
     const isReadOnly = global.checkWindowPhase === checkWindowPhaseConsts.readOnlyAdmin
     const showSelectPupilButton = isReadOnly ? false : !hdfSubmitted
