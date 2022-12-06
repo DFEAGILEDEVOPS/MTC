@@ -1,5 +1,5 @@
 'use strict'
-/* global describe expect jest beforeAll test */
+/* global describe expect jest beforeAll test afterEach */
 const moment = require('moment')
 const xmlbuilder2 = require('xmlbuilder2')
 
@@ -11,6 +11,10 @@ const NotAvailableError = require('../../error-types/not-available')
 const resultsStrings = require('../../lib/consts/mtc-results')
 
 describe('ctfService', () => {
+  afterEach(() => {
+    jest.restoreAllMocks()
+  })
+
   const mockCheckWindow = {
     id: 1,
     checkEndDate: moment()
@@ -154,6 +158,12 @@ describe('ctfService', () => {
   })
 
   describe('buildXmlString', () => {
+    // We need to set a particular test date in order to know in advance what the ctfVersion will be, which is one of the tests.  However, we also want to ensure that
+    // if a teacher downloads the results from June in the September, in the next academic year, that the version will reflect the previous academic year.
+    const testDate = '2022-10-25T09:00:00 +01:00'
+    jest.mock('moment', () => {
+      return () => jest.requireActual('moment')(testDate)
+    })
     const mockSchool = {
       id: 1,
       name: 'School of Mock',
@@ -199,7 +209,7 @@ describe('ctfService', () => {
 
     test('the Header element has a CTFversion', () => {
       expect(obj.CTfile.Header).toHaveProperty('CTFversion')
-      expect(obj.CTfile.Header.CTFversion).toEqual('20.0')
+      expect(obj.CTfile.Header.CTFversion).toEqual('19.0') // academic year set above
     })
 
     test('the Header element has a DateTime', () => {
@@ -383,6 +393,24 @@ describe('ctfService', () => {
       const d = moment('2010-01-01T09:00:00Z')
       const academicYear = sut.getAcademicYear(d)
       expect(academicYear).toStrictEqual(2009)
+    })
+  })
+
+  describe('getCtfVersion', () => {
+    test('the version returns is the last two digits of the current academic year, with .0 at the end, as a string', () => {
+      expect(sut.getCtfVersion(2022)).toBe('22.0')
+    })
+
+    test('works when range at end of range', () => {
+      expect(sut.getCtfVersion(1999)).toBe('99.0')
+    })
+
+    test('works when range at beginning of range', () => {
+      expect(sut.getCtfVersion(2100)).toBe('00.0')
+    })
+
+    test('is a string', () => {
+      expect(typeof sut.getCtfVersion(2022)).toBe('string')
     })
   })
 })

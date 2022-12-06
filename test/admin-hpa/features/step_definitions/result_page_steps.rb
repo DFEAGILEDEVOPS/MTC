@@ -179,11 +179,11 @@ Then(/^I should see the results and reasons for not taking the check$/) do
   ctf_path = File.expand_path("#{File.dirname(__FILE__)}/../../data/download/999#{@estab_code}_KS2_999#{@estab_code}_001.xml")
   Timeout.timeout(120) {sleep 2 until File.exist?(ctf_path)}
   ctf_file = File.read(ctf_path)
-  doc = Nokogiri::XML ctf_file
+  @doc = Nokogiri::XML ctf_file
   pupil_results_with_code = pupils_not_taking.map {|pupil| {name: pupil[:name], mark: calculate_ctf_reason_code(pupil[:reason])}}
   pupil_results_with_mark = results_page.results.pupil_list.map {|pupil| ({name: pupil.name.text.split(',')[0] + ', ' + pupil.name.text.split(',')[0], mark: pupil.score.text}) unless pupil.score.text == '-'}.compact
   complete_results = (pupil_results_with_code + pupil_results_with_mark).sort_by {|hsh| hsh[:name]}
-  ctf_results_hash = doc.css('Pupil').map {|p| {name: p.children.css('Forename').text + ", " + p.children.css('Surname').text, mark: p.children.css('Result').text}}.sort_by {|hsh| hsh[:name]}
+  ctf_results_hash = @doc.css('Pupil').map {|p| {name: p.children.css('Forename').text + ", " + p.children.css('Surname').text, mark: p.children.css('Result').text}}.sort_by {|hsh| hsh[:name]}
   expect(complete_results).to eql ctf_results_hash
 end
 
@@ -229,4 +229,45 @@ Then('the results reflect these changes') do
   pupil_results_with_code = pupils_not_taking.map {|pupil| {name: pupil[:name].split(' ')[0] + ' ' +  pupil[:name].split(' ')[1], mark: calculate_ctf_reason_code(pupil[:reason])}}
   ctf_results_hash = doc.css('Pupil').map {|p| {name: p.children.css('Forename').text + ", " + p.children.css('Surname').text, mark: p.children.css('Result').text}}.sort_by {|hsh| hsh[:name]}
   expect(pupil_results_with_code).to eql ctf_results_hash
+end
+
+Then(/^I should see the version set to the current academic year$/) do
+  expect(@doc.css('CTFversion').text).to eql(@academic_year - 1.year).strftime("%y.0")
+end
+
+
+Given(/^I download a ctf file in August$/) do
+  step 'multiple pupils have completed the check'
+  step 'some pupils who have been marked as not taking the check'
+  step 'the data sync function has run'
+  step 'we are in 1st week of check end date'
+  step 'I have submitted the HDF'
+  @check_window = SqlDbHelper.check_window_details('Development Phase')
+  @original_check_start_date = @check_window['checkStartDate']
+  @academic_year = Time.parse("31/08/#{Time.now.strftime("%Y")}")
+  SqlDbHelper.update_check_window(@check_window['id'], 'checkStartDate', @academic_year.strftime("%Y-%m-%d %H:%M:%S.%LZ"))
+  step 'I should see the results and reasons for not taking the check'
+end
+
+
+Given(/^I download a ctf file in September$/) do
+  step 'multiple pupils have completed the check'
+  step 'some pupils who have been marked as not taking the check'
+  step 'the data sync function has run'
+  step 'we are in 1st week of check end date'
+  step 'I have submitted the HDF'
+  @check_window = SqlDbHelper.check_window_details('Development Phase')
+  @original_check_start_date = @check_window['checkStartDate']
+  p @original_check_start_date
+  @academic_year = Time.parse("1/09/#{Time.now.strftime("%Y")}")
+  SqlDbHelper.update_check_window(@check_window['id'], 'checkStartDate', @academic_year.strftime("%Y-%m-%d %H:%M:%S.%LZ"))
+  step 'I should see the results and reasons for not taking the check'
+end
+
+Then(/^I should see the version set to the correct academic year when downloaded in August$/) do
+  expect(@doc.css('CTFversion').text).to eql (@academic_year - 1.year).strftime("%y.0")
+end
+
+Then(/^I should see the version set to the correct academic year when downloaded in September$/) do
+  expect(@doc.css('CTFversion').text).to eql (@academic_year).strftime("%y.0")
 end
