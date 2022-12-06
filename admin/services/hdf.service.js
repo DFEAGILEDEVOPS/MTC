@@ -72,6 +72,13 @@ hdfService.getEligibilityForSchool = async (schoolId, checkEndDate, timezone) =>
     throw new Error('Check end date missing or not found')
   }
   const currentDate = moment.tz(timezone || config.DEFAULT_TIMEZONE)
+  const settings = await settingService.get()
+  if (settings.isPostAdminEndDateUnavailable === false) {
+    const doNotIncludeFraction = false
+    const daysSinceCheckEndDate = currentDate.diff(moment(checkEndDate), 'days', doNotIncludeFraction)
+    return daysSinceCheckEndDate < 15
+  }
+
   const ineligiblePupilsCount = currentDate.isBefore(checkEndDate)
     ? await headteacherDeclarationDataService.sqlFindPupilsBlockingHdfBeforeCheckEndDate(schoolId)
     : await headteacherDeclarationDataService.sqlFindPupilsBlockingHdfAfterCheckEndDate(schoolId)
