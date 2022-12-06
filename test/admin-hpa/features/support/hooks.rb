@@ -62,6 +62,10 @@ Before('@school_import') do
   end
 end
 
+After('@check_start_date_reset') do
+  SqlDbHelper.update_check_window(@check_window['id'], 'checkStartDate', @original_check_start_date.strftime("%Y-%m-%d %H:%M:%S.%LZ"))
+end
+
 After('@post_check_window_settings') do
   SqlDbHelper.update_check_end_date((Date.today) + 30)
   SqlDbHelper.update_admin_end_date((Date.today) + 30)
