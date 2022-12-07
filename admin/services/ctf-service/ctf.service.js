@@ -13,7 +13,6 @@ const NotAvailableError = require('../../error-types/not-available')
 const pupilAttendanceCodes = require('../../lib/consts/pupil-attendance-codes')
 const resultsPageAvailabilityService = require('../results-page-availability.service')
 const resultsService = require('../result.service')
-const ctfVersion = '20.0'
 const checkWindowPhaseConsts = require('../../lib/consts/check-window-phase')
 
 const ctfService = {
@@ -104,7 +103,7 @@ const ctfService = {
       .ele('CTfile')
       .ele('Header')
       .ele('DocumentName').txt('Common Transfer File').up()
-      .ele('CTFversion').txt(ctfVersion).up()
+      .ele('CTFversion').txt(this.getCtfVersion(academicYear)).up()
       .ele('DateTime').txt(moment().format('YYYY-MM-DDTHH:mm:ss')).up()
       .ele('DocumentQualifier').txt('partial').up()
       .ele('SupplierID').txt('Multiplication Tables Check').up()
@@ -196,6 +195,16 @@ const ctfService = {
       return y
     }
     return y - 1
+  },
+
+  /**
+   * The version is the current academic year as a string.
+   * @param number academicYear e.g. 2023
+   * @returns string e.g. 23.0
+   */
+  getCtfVersion: function (academicYear) {
+    const version = academicYear.toString().slice(-2).concat('.0')
+    return version
   }
 }
 
