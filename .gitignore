@@ -94,6 +94,8 @@ test/admin-hpa/reports/*
 test/admin-hpa/*.png
 test/admin-hpa/*.html
 test/admin-hpa/features/support/dev_env.rb
+test/admin-hpa/rerun.txt
+test/admin-hpa/data/duplicate_and_new_school.csv
 
 test-output/*/*
 
