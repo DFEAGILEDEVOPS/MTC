@@ -22,3 +22,16 @@ Feature:
     Given I am on the sign in page
     When I decide to get in contact
     Then I should be taken to the contact page for mtc
+
+  Scenario Outline: School ID is recorded when a user logs in
+    Given I have logged in with <role>
+    Then school ID or null should be recorded depnding if the user is linked to a school or not
+
+    Examples:
+      | role            |
+      | teacher1        |
+      | test-developer  |
+      | service-manager |
+      | helpdesk        |
+      | tech-support    |
+      | sta-admin       |
