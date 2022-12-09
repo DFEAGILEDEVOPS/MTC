@@ -62,6 +62,16 @@ Then(/^the sign in page should match design$/) do
 end
 
 Given(/^I have logged in with (.*)$/) do |teacher|
+  @teacher = teacher
   sign_in_page.load
-  sign_in_page.login(teacher, 'password')
+  sign_in_page.login(@teacher, 'password')
+end
+
+
+Then(/^school ID or null should be recorded depnding if the user is linked to a school or not$/) do
+  user = SqlDbHelper.find_teacher(@teacher)
+  logon_event_school_id = SqlDbHelper.login_event(user['id']).map {|a| a['school_id']}.uniq
+  expect(logon_event_school_id.size).to eql 1
+  user_school_id = user['school_id']
+  expect(user_school_id).to eql logon_event_school_id.first
 end
