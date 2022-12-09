@@ -9,7 +9,7 @@
 | PupilId              | mtc_admin.pupil.id                                  | Unique synthetic id for the psychometric report and pupil tables       |
 | DOB                  | mtc_admin.pupil.dateOfBirth                         |                                                              |
 | Gender               | mtc_admin.pupil.gender                              |                                                              |
-| PupilID              | mtc_admin.pupil.upn                                 |                                                              |
+| PupilUPN              | mtc_admin.pupil.upn                                 |                                                              |
 | Forename             | mtc_admin.pupil.foreName                            |                                                              |
 | Surname              | mtc_admin.pupil.lastName                            |                                                              |
 | ReasonNotTakingCheck | mtc_admin.pupilAttendance                           | **Blank** - no reason not taking the check, **Z** - Incorrect registration,  **A** - Absent,  **L** - Left school,   **U** - Unable to access,  **B** - Working below the overall standard of the check,  **J** - Just arrived |
