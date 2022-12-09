@@ -92,7 +92,7 @@ describe('#SchoolImportService', () => {
 
   test('when predicate matches fail all records, it reports and exits', async () => {
     const csv = `URN,LA (code),EstablishmentNumber,EstablishmentName,StatutoryLowAge,StatutoryHighAge,EstablishmentStatus (code),TypeOfEstablishment (code),EstablishmentTypeGroup (code)
-    12345,0,4567,My School,9,9,4,3,4`
+    12345,0,4567,My School,9,9,1,3,4`
     const blobName = 'aad9f3b5-7a77-44cd-96b6-dcdc41c9ea76'
     const jobResult = await sut.process(csv, blobName)
     expect(jobResult).toBeInstanceOf(SchoolImportJobOutput)
@@ -146,7 +146,7 @@ describe('#SchoolImportService', () => {
 
   test('it updates the job status if it completes without errors', async () => {
     const csv = `URN,LA (code),EstablishmentNumber,EstablishmentName,StatutoryLowAge,StatutoryHighAge,EstablishmentStatus (code),TypeOfEstablishment (code),EstablishmentTypeGroup (code)
-    12345,123,4567,My School,9,9,4,3,4`
+    12345,123,4567,My School,9,9,1,3,4`
     const blobName = 'aad9f3b5-7a77-44cd-96b6-dcdc41c9ea76'
     await sut.process(csv, blobName)
 
@@ -168,7 +168,7 @@ describe('#SchoolImportService', () => {
   test('it updates the job status failed if the upload fails', async () => {
     const mockErrorMessage = 'mock error, please ignore'
     const csv = `URN,LA (code),EstablishmentNumber,EstablishmentName,StatutoryLowAge,StatutoryHighAge,EstablishmentStatus (code),TypeOfEstablishment (code),EstablishmentTypeGroup (code)
-    12345,123,4567,My School,9,9,4,3,4`
+    12345,123,4567,My School,9,9,3,3,4`
     jest.spyOn(schoolDataServiceMock, 'individualUpload').mockRejectedValue(new Error(mockErrorMessage))
     const blobName = 'aad9f3b5-7a77-44cd-96b6-dcdc41c9ea76'
     try {
