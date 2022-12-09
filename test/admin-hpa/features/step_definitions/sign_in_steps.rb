@@ -68,7 +68,7 @@ Given(/^I have logged in with (.*)$/) do |teacher|
 end
 
 
-Then(/^school ID or null should be recorded depnding if the user is linked to a school or not$/) do |value|
+Then(/^school ID or null should be recorded depnding if the user is linked to a school or not$/) do
   user = SqlDbHelper.find_teacher(@teacher)
   logon_event_school_id = SqlDbHelper.login_event(user['id']).map {|a| a['school_id']}.uniq
   expect(logon_event_school_id.size).to eql 1
