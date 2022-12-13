@@ -6,6 +6,7 @@ const logger = require('../services/log.service').getLogger()
 
 const userDataService = require('../services/data-access/user.data.service')
 const adminLogonEventDataService = require('../services/data-access/admin-logon-event.data.service')
+const { isNumber, isNotNil, isInteger } = require('ramda-adjunct')
 
 module.exports = async function (req, userIdentifier, password, done) {
   /**
@@ -16,7 +17,8 @@ module.exports = async function (req, userIdentifier, password, done) {
     body: JSON.stringify(R.omit(['password'], R.prop('body', req))),
     remoteIp: req.headers['x-forwarded-for'] || req.connection.remoteAddress,
     userAgent: req.headers['user-agent'],
-    loginMethod: 'local'
+    loginMethod: 'local',
+    school_id: null
   }
 
   try {
@@ -46,6 +48,10 @@ module.exports = async function (req, userIdentifier, password, done) {
       role: user.roleName,
       logonAt: Date.now(),
       id: user.id
+    }
+
+    if (isNotNil(user.schoolId) && isNumber(user.schoolId) && isInteger(user.schoolId)) {
+      logonEvent.school_id = user.schoolId
     }
 
     // Success - valid login

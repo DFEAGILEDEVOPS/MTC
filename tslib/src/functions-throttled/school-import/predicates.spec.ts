@@ -48,11 +48,11 @@ describe('School Import Predicates', () => {
       expect(result.message).toStrictEqual('')
     })
 
-    test('returns true when the school is proposed to open', () => {
+    test('returns false when the school is proposed to open', () => {
       school.estabStatusCode = EstabStatusCode.ProposedToOpen
       const result = sut.isSchoolOpen(school)
-      expect(result.isMatch).toBe(true)
-      expect(result.message).toStrictEqual('')
+      expect(result.isMatch).toBe(false)
+      expect(result.message).toStrictEqual('Excluding school 1 it is proposed to open - estabStatusCode is [4]')
     })
   })
 
