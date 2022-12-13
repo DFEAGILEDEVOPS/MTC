@@ -27,13 +27,13 @@ Then(/^I should see a record for the pupil in the ps report table$/) do
   device_info = SqlDbHelper.get_device_information(device_cookie[:value]) unless @check_details.nil?
   wait_until(ENV['WAIT_TIME'].to_i, 20) {!SqlDbHelper.get_ps_record_for_pupil(pupil_details['id']).nil?}
   ps_report_record = SqlDbHelper.get_ps_record_for_pupil(pupil_details['id'])
-  p "PS_REPORT RECORD - " + ps_report_record["id"].to_s
+  p "PS_REPORT RECORD - " + ps_report_record["PupilId"].to_s
   ps_report_record = ps_report_record.map {|k, v| [k, (v.is_a?(BigDecimal) ? v.to_f : v)]}.to_h
 
   expect(ps_report_record["DOB"].strftime("%D")).to eql pupil_details["dateOfBirth"].strftime("%D")
   expect(ps_report_record["Gender"]).to eql pupil_details["gender"]
-  expect(ps_report_record["PupilId"]).to eql pupil_details['upn']
-  expect(ps_report_record["id"]).to eql pupil_details['id']
+  expect(ps_report_record["PupilUPN"]).to eql pupil_details['upn']
+  expect(ps_report_record["PupilId"]).to eql pupil_details['id']
   expect(ps_report_record["Forename"]).to eql pupil_details['foreName']
   expect(ps_report_record["Surname"]).to eql pupil_details['lastName']
   expect(ps_report_record["ReasonNotTakingCheck"]).to eql reason.nil? ? nil : pupil_attendance

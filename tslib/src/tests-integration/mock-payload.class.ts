@@ -155,7 +155,7 @@ export class MockPayload implements IPsychometricReportLine {
   PupilDatabaseId: number
   DOB: moment.Moment | null
   Gender: string
-  PupilID: string
+  PupilUPN: string
   Forename: string
   Surname: string
   ReasonNotTakingCheck: DfEAbsenceCode | null
@@ -188,7 +188,7 @@ export class MockPayload implements IPsychometricReportLine {
 
   public constructor () {
     this.PupilDatabaseId = faker.datatype.number({ min: 1, max: 750000 })
-    this.PupilID = veryFakeUpn()
+    this.PupilUPN = veryFakeUpn()
     const tenYearsAgo = moment().subtract(10, 'years')
     const nineYearsAgo = moment().subtract(9, 'years')
     this.DOB = moment.utc(faker.date.between(tenYearsAgo.toDate(), nineYearsAgo.toDate())).startOf('day')
