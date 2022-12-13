@@ -416,7 +416,7 @@ class SqlDbHelper
   end
 
   def self.get_ps_record_for_pupil(pupil_id)
-    sql = "SELECT * FROM [mtc_results].[psychometricReport] WHERE id='#{pupil_id}'"
+    sql = "SELECT * FROM [mtc_results].[psychometricReport] WHERE PupilId='#{pupil_id}'"
     result = SQL_CLIENT.execute(sql)
     ps_report = result.first
     result.cancel
@@ -444,7 +444,7 @@ class SqlDbHelper
   end
 
   def self.count_all_ps_records_for_school(school_id)
-    sql =  "select count(*) from mtc_results.psychometricReport where PupilId in (Select mtc_admin.pupil.upn from mtc_admin.pupil where school_id=#{school_id})"
+    sql =  "select count(*) from mtc_results.psychometricReport where PupilUPN in (Select mtc_admin.pupil.upn from mtc_admin.pupil where school_id=#{school_id})"
     result = SQL_CLIENT.execute(sql)
     school_res = result.first
     result.cancel
