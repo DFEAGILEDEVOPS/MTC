@@ -1,5 +1,5 @@
 'use strict'
-/* global describe, test, expect */
+/* global describe test expect jest */
 
 const qrService = require('../../../services/qr.service')
 const redisKeyService = require('../../../services/redis-key.service')

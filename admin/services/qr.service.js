@@ -12,8 +12,7 @@ const qrService = {
         async (error, qrCodeData) => {
           if (error) {
             reject(error)
-          }
-          else {
+          } else {
             await redisCacheService.set(redisKeyService.getQrCodeUrlPrefix(url))
             return resolve(qrCodeData)
           }
