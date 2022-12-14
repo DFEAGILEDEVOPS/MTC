@@ -4,6 +4,7 @@
 const qrService = require('../../../services/qr.service')
 const redisKeyService = require('../../../services/redis-key.service')
 const redisService = require('../../../services/data-access/redis-cache.service')
+const qrCode = require('qrcode')
 
 const googleUrlQrCodeData = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIQAAACECAYAAABRRIOn' +
 'AAAAAklEQVR4AewaftIAAAOOSURBVO3BQY5biRUEwcwH3v/KZS0GcK0+QJCtkeyKML8w849jphwz5Z' +
@@ -29,7 +30,7 @@ describe('qr.service', () => {
     beforeEach(() => {
       jest.restoreAllMocks()
     })
-    test('returns a qr encoded data image', async () => {
+    test('returns a base 64 encoded image of the QR code', async () => {
       const googleUrl = 'https://www.google.co.uk'
       jest.spyOn(redisService, 'get').mockResolvedValue(undefined)
       jest.spyOn(redisService, 'set').mockResolvedValue()
@@ -49,11 +50,17 @@ describe('qr.service', () => {
       jest.spyOn(redisService, 'get').mockResolvedValue(cachedQrCode)
       jest.spyOn(redisService, 'set').mockResolvedValue()
       jest.spyOn(redisKeyService, 'getQrCodeUrlPrefix')
-      const qrCode = await qrService.getDataURL('url')
-      expect(redisService.get).toHaveBeenCalled()
-      expect(redisKeyService.getQrCodeUrlPrefix).toHaveBeenCalledTimes(1)
-      expect(qrCode).toEqual(cachedQrCode)
+      jest.spyOn(qrCode, 'toDataURL')
+      const qrCode1 = await qrService.getDataURL('url')
+      const qrCode2 = await qrService.getDataURL('url')
+      const qrCode3 = await qrService.getDataURL('url')
+      expect(redisService.get).toHaveBeenCalledTimes(3)
+      expect(redisKeyService.getQrCodeUrlPrefix).toHaveBeenCalledTimes(3)
+      expect(qrCode1).toEqual(cachedQrCode)
+      expect(qrCode2).toEqual(cachedQrCode)
+      expect(qrCode3).toEqual(cachedQrCode)
       expect(redisService.set).not.toHaveBeenCalled()
+      expect(qrCode.toDataURL).not.toHaveBeenCalled()
     })
   })
 })
