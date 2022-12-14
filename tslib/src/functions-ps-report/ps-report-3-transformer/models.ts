@@ -6,7 +6,7 @@ export interface IReportLineBase {
   PupilDatabaseId: number
   DOB: moment.Moment | null
   Gender: string
-  PupilID: string
+  PupilUPN: string
   Forename: string
   Surname: string
   ReasonNotTakingCheck: DfEAbsenceCode | null

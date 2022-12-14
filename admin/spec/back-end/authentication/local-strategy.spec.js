@@ -21,6 +21,7 @@ describe('localStrategy', () => {
       }
     }
     const req = httpMocks.createRequest(reqParams)
+
     test('validates and saves a valid helpdesk user', async () => {
       const user = {
         id: 1,
@@ -48,6 +49,7 @@ describe('localStrategy', () => {
         id: user.id
       })
     })
+
     test('validates and saves a valid teacher user', async () => {
       const user = {
         id: 1,
@@ -74,13 +76,14 @@ describe('localStrategy', () => {
         id: user.id
       })
     })
+
     test('registers an invalid logon event if user is not found', async () => {
       jest.spyOn(userDataService, 'sqlFindUserInfoByIdentifier').mockImplementation()
       jest.spyOn(adminLogonEventDataService, 'sqlCreate').mockImplementation()
       const doneFunc = (err, res) => err || res
       await validateAndSave(req, 'teacher1', 'password', doneFunc)
       expect(adminLogonEventDataService.sqlCreate).toHaveBeenCalledWith(
-        { sessionId: 1, body: '{}', remoteIp: 'remoteAddress', userAgent: undefined, loginMethod: 'local', errorMsg: 'Invalid user', isAuthenticated: false }
+        { sessionId: 1, body: '{}', remoteIp: 'remoteAddress', userAgent: undefined, loginMethod: 'local', errorMsg: 'Invalid user', isAuthenticated: false, school_id: null }
       )
     })
   })

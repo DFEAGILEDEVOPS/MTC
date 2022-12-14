@@ -1,6 +1,6 @@
 export interface PsychometricReport {
-  id: number
-  PupilId: string
+  PupilId: number
+  PupilUPN: string
   createdAt: moment.Moment | null
   updatedAt: moment.Moment | null
   DOB: moment.Moment | null
