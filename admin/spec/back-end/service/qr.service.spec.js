@@ -26,6 +26,10 @@ const googleUrlQrCodeData = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIQAA
 
 describe('qr.service', () => {
   describe('getDataURL', () => {
+
+    beforeEach(() => {
+      jest.restoreAllMocks()
+    })
     test('returns a qr encoded data image', async () => {
       const googleUrl = 'https://www.google.co.uk'
       jest.spyOn(redisService, 'get').mockResolvedValue(undefined)
