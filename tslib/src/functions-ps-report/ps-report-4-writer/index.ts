@@ -11,13 +11,13 @@ const serviceBusQueueTrigger: AzureFunction = async function (context: Context, 
   const messageWithDates = revive(incomingMessage)
   const logger = new PsReportLogger(context, PsReportSource.Writer)
 
-  logger.verbose(`Message received for pupil ${messageWithDates.PupilID} in school ${messageWithDates.SchoolName}`)
+  logger.verbose(`Message received for pupil ${messageWithDates.PupilUPN} in school ${messageWithDates.SchoolName}`)
 
   const reportWriter = new PsReportWriterService(logger)
   try {
     await reportWriter.write(messageWithDates)
-  } catch (error) {
-    logger.error(`Failed to write data for pupil ${messageWithDates.PupilID}
+  } catch (error: any) {
+    logger.error(`Failed to write data for pupil ${messageWithDates.PupilUPN}
     ERROR: ${error.message}`)
     throw error
   }
