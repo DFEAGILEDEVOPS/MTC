@@ -1,5 +1,5 @@
 'use strict'
-/* global describe test expect jest */
+/* global describe test expect jest beforeEach */
 
 const qrService = require('../../../services/qr.service')
 const redisKeyService = require('../../../services/redis-key.service')
@@ -26,7 +26,6 @@ const googleUrlQrCodeData = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIQAA
 
 describe('qr.service', () => {
   describe('getDataURL', () => {
-
     beforeEach(() => {
       jest.restoreAllMocks()
     })
