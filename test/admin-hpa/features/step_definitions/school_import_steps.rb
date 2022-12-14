@@ -8,7 +8,7 @@ Given(/^I have imported a csv with schools$/) do
 end
 
 Then(/^they should be stored alongside the existing schools$/) do
-  @urns_included_array = CSV.parse(File.read(@school_import)).map {|z| z[0] unless z[6] == '2' || z[0] == 'URN'}.compact
+  @urns_included_array = CSV.parse(File.read(@school_import)).map {|z| z[0] unless z[6] == '2' || z[6] == '4' || z[0] == 'URN' }.compact
   Timeout.timeout(ENV['WAIT_TIME'].to_i) {sleep 1 until !SqlDbHelper.find_school_by_urn(@urns_included_array.last).nil?}
   @urns_included_array.each do |urn|
     expect(SqlDbHelper.find_school_by_urn(urn)).to_not be_nil
@@ -18,8 +18,9 @@ Then(/^they should be stored alongside the existing schools$/) do
 end
 
 And(/^closed schools should not be imported$/) do
-  urns_exlcuded_array = CSV.parse(File.read(@school_import)).map {|z| z[0] if z[6] == '2'}.compact
-  urns_exlcuded_array.each do |urn|
+  closed_urns_array = CSV.parse(File.read(@school_import)).map {|z| z[0] if z[6] == '2'}.compact
+  proposed_to_open_urns_array = CSV.parse(File.read(@school_import)).map {|z| z[0] if z[6] == '4'}.compact
+  proposed_to_open_urns_array + closed_urns_array.each do |urn|
     expect(SqlDbHelper.find_school_by_urn(urn)).to be_nil
   end
   view_jobs_page.job_history.rows.first.outputs.click
@@ -27,8 +28,11 @@ And(/^closed schools should not be imported$/) do
   destination = File.expand_path("#{File.dirname(__FILE__)}/../../data/download")
   wait_until {File.exist? zip_path}
   output_hash = upload_organisations_page.extract_job_output(zip_path, destination)
-  urns_exlcuded_array.each do |urn|
+  closed_urns_array.each do |urn|
     expect(output_hash[:output].map {|x| x.split('Z ').last}).to include "school-import: Excluding school #{urn} it is closed - estabStatusCode is [2]"
+  end
+  proposed_to_open_urns_array.each do |urn|
+    expect(output_hash[:output].map {|x| x.split('Z ').last}).to include "school-import: Excluding school #{urn} it is proposed to open - estabStatusCode is [4]"
   end
 end
 
@@ -36,7 +40,7 @@ Given(/^I have imported a csv with schools including duplicates$/) do
   CSV.open(File.expand_path("#{File.dirname(__FILE__)}/../../data/duplicate_and_new_school.csv"), 'wb') do |csv_object|
     csv_object << ["URN","LA (code)","EstablishmentNumber","EstablishmentName","StatutoryLowAge","StatutoryHighAge","EstablishmentStatus (code)","EstablishmentTypeGroup (code)","TypeOfEstablishment (code)"]
     csv_object << [(SqlDbHelper.get_schools_list.map {|school| school['urn']}.sort.first).to_s, "999","9000","Mo School 1","8","10","1","4","7"]
-    csv_object << [(SqlDbHelper.get_schools_list.map {|school| school['urn']}.sort.last + 1).to_s, "999",(SqlDbHelper.get_schools_list.map {|school| school['estabCode']}.sort.last+1).to_s,"Mo School 55","8","10","4","11","26"]
+    csv_object << [(SqlDbHelper.get_schools_list.map {|school| school['urn']}.sort.last + 1).to_s, "999",(SqlDbHelper.get_schools_list.map {|school| school['estabCode']}.sort.last+1).to_s,"Mo School 55","8","10","1","11","26"]
   end
   @school_import = File.expand_path("#{File.dirname(__FILE__)}/../../data/duplicate_and_new_school.csv")
   @urns_included_array = CSV.parse(@school_import).map {|z| z[0] unless z[6] == '2' || z[0] == 'URN'}.compact
