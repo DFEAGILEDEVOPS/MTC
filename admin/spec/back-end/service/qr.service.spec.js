@@ -34,6 +34,7 @@ describe('qr.service', () => {
       expect(dataUrl).toBe(googleUrlQrCodeData)
       const googleUrlCacheKey = redisKeyService.getQrCodeUrlPrefix(googleUrl)
       expect(redisService.get).toHaveBeenCalledWith(googleUrlCacheKey)
+      expect(redisService.set).toHaveBeenCalledWith(googleUrlCacheKey, dataUrl)
     })
     test('returns null when url parameter is not defined', async () => {
       const dataUrl = await qrService.getDataURL('')
@@ -43,11 +44,13 @@ describe('qr.service', () => {
     test('qr code data is returned from the cache if it exists', async () => {
       const cachedQrCode = 'foo'
       jest.spyOn(redisService, 'get').mockResolvedValue(cachedQrCode)
+      jest.spyOn(redisService, 'set').mockResolvedValue()
       jest.spyOn(redisKeyService, 'getQrCodeUrlPrefix')
       const qrCode = await qrService.getDataURL('url')
       expect(redisService.get).toHaveBeenCalled()
       expect(redisKeyService.getQrCodeUrlPrefix).toHaveBeenCalledTimes(1)
       expect(qrCode).toEqual(cachedQrCode)
+      expect(redisService.set).not.toHaveBeenCalled()
     })
   })
 })

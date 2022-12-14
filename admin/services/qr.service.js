@@ -13,7 +13,7 @@ const qrService = {
           if (error) {
             reject(error)
           } else {
-            await redisCacheService.set(redisKeyService.getQrCodeUrlPrefix(url))
+            await redisCacheService.set(redisKeyService.getQrCodeUrlPrefix(url), qrCodeData)
             return resolve(qrCodeData)
           }
         }
