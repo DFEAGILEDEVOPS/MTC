@@ -44,6 +44,7 @@ export interface Audit {
   type: string
   clientTimestamp: string
   data?: Data
+  monotonicTime?: IMonotonicTimeDto
 }
 
 export interface Data {
