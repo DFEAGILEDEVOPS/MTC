@@ -457,4 +457,10 @@ class SqlDbHelper
     result = SQL_CLIENT.execute(sql)
     result.do
   end
+
+  def self.set_school_as_test_school(dfe_number)
+    sql = "update [mtc_admin].[school] set isTestSchool=1 where dfeNumber=#{dfe_number}"
+    result = SQL_CLIENT.execute(sql)
+    result.do
+  end
 end

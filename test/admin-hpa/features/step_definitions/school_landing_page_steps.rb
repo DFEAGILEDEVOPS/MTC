@@ -138,7 +138,7 @@ end
 
 Given(/^I have impersonated a school with the helpdesk user$/) do
   step 'I have signed in with helpdesk'
-  step 'I enter and submit a valid 9991001 for impersonation'
+  step 'I enter and submit a valid 2011001 for impersonation'
 end
 
 

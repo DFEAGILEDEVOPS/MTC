@@ -350,3 +350,24 @@ Then(/^I should see the restart reason in the ps report record$/) do
   ps_report_record = SqlDbHelper.get_ps_record_for_pupil(@pupil_details['id'])
   expect(ps_report_record['RestartReason']).to eql 2
 end
+
+
+Given(/^I have completed the check for a pupil attending a test school$/) do
+  SqlDbHelper.set_school_as_test_school(@school['entity']['dfeNumber'])
+  step 'I have completed the check'
+end
+
+
+Then(/^I should not see any records for the test school$/) do
+  expect(SqlDbHelper.count_all_ps_records_for_school(@school_id)).to eql 0
+end
+
+
+When(/^the data sync and ps report function has run for the test school$/) do
+  step 'the data sync function has run'
+  sleep ENV['PS_REPORT_WAIT_TIME'].to_i
+  uuid = SqlDbHelper.find_school(@school_id)['urlSlug']
+  response = FunctionsHelper.trigger_ps_function('ps-report-2-pupil-data', {name: @school_name, uuid: uuid})
+  expect(response.code).to eql 202
+  sleep ENV['PS_REPORT_WAIT_TIME'].to_i
+end
