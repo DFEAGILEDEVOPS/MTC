@@ -70,7 +70,6 @@ export class PrepareAnswersAndInputsDataService {
         }
       }
     }
-    console.log('Matches', matches)
     return matches
   }
 
@@ -197,9 +196,7 @@ export class PrepareAnswersAndInputsDataService {
               tmpInputs.push(input)
             }
           })
-          if (tmpInputs.length > 0) {
-            inputsForThisQuestion = tmpInputs
-          }
+          inputsForThisQuestion = tmpInputs
         }
       }
 

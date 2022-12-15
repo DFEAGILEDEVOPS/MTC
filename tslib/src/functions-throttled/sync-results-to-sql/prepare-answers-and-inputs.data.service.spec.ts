@@ -185,7 +185,6 @@ describe('PrepareAnswersAndInputsDataService', () => {
     )
 
     await sut.prepareAnswersAndInputs(mockCompletionCheckMessage.markedCheck, validatedCheck)
-    console.log('called inputs', prepareInputsSpy.mock.calls[8][0])
     // We expect only the first inputs, and those we added in above.
     expect(prepareInputsSpy.mock.calls[8][0]).toStrictEqual([{
       input: '3',
@@ -208,5 +207,95 @@ describe('PrepareAnswersAndInputsDataService', () => {
       question: '6x5',
       sequenceNumber: 9
     }])
+  })
+
+  test('it removes inputs from duplicate answers when the first answer has no inputs (left blank)', async () => {
+    jest.spyOn(questionService, 'findQuestion').mockResolvedValue(mockQuestion)
+    const prepareInputsSpy = jest.spyOn(sut, 'prepareInputs')
+    const validatedCheck: ValidatedCheck = JSON.parse(JSON.stringify(mockCompletionCheckMessage.validatedCheck))
+    validatedCheck.answers.forEach(ans => {
+      if (ans.sequenceNumber === 9) {
+        ans.answer = '' // blank answer for Q9
+      }
+    })
+    // We need to remove all inputs from the validatedCheck for our blank answer
+    validatedCheck.inputs = validatedCheck.inputs.filter(inp => inp.sequenceNumber !== 9)
+    // Add a second attempt at Q9 to the end of the questions
+    validatedCheck.answers.push({
+      factor1: 6,
+      factor2: 5,
+      answer: '99',
+      sequenceNumber: 9,
+      question: '6x5',
+      clientTimestamp: '2020-09-29T12:26:36.345Z'
+    })
+    // Add the inputs for the duplicate answer. The first question was already answered at 2020-09-29T12:26:27
+    validatedCheck.inputs.push({
+      input: '9',
+      eventType: 'keydown',
+      clientTimestamp: '2020-09-29T12:26:36.300Z',
+      question: '6x5',
+      sequenceNumber: 9
+    })
+    validatedCheck.inputs.push({
+      input: '9',
+      eventType: 'keydown',
+      clientTimestamp: '2020-09-29T12:26:36.310Z',
+      question: '6x5',
+      sequenceNumber: 9
+    })
+    validatedCheck.inputs.push({
+      input: 'Enter',
+      eventType: 'keydown',
+      clientTimestamp: '2020-09-29T12:26:36.344Z',
+      question: '6x5',
+      sequenceNumber: 9
+    })
+    // Add events for the duplicate answer
+    validatedCheck.audit.push(
+      {
+        type: 'PauseRendered',
+        clientTimestamp: '2020-09-29T12:26:30.000Z',
+        data: {
+          sequenceNumber: 9,
+          question: '6x5'
+        }
+      },
+      {
+        type: 'QuestionTimerStarted',
+        clientTimestamp: '2020-09-29T12:26:30.000Z',
+        data: {
+          sequenceNumber: 9,
+          question: '6x5'
+        }
+      },
+      {
+        type: 'QuestionRendered',
+        clientTimestamp: '2020-09-29T12:26:33.000Z',
+        data: {
+          sequenceNumber: 9,
+          question: '6x5'
+        }
+      },
+      {
+        type: 'QuestionTimerCancelled',
+        clientTimestamp: '2020-09-29T12:26:36.344Z',
+        data: {
+          sequenceNumber: 9,
+          question: '6x5'
+        }
+      },
+      {
+        type: 'QuestionAnswered',
+        clientTimestamp: '2020-09-29T12:26:36.345Z',
+        data: {
+          sequenceNumber: 9,
+          question: '6x5'
+        }
+      }
+    )
+    await sut.prepareAnswersAndInputs(mockCompletionCheckMessage.markedCheck, validatedCheck)
+    // There should not be any inputs for Q9
+    expect(prepareInputsSpy.mock.calls[8][0]).toStrictEqual([])
   })
 })
