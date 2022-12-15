@@ -43,10 +43,13 @@ export class Predicates implements ISchoolImportPredicates {
 
   isSchoolOpen (school: ISchoolRecord): SchoolPredicateResult {
     // we want to load all schools that are open, proposed to open, proposed to close
-    // this is the same as every school that isn't closed
+    // this is the same as every school that isn't closed and isn't Proposed to Open
     if (school.estabStatusCode === EstabStatusCode.Closed) {
-      // 1 - open, 2 - closed, 3 - open proposed to close, 4 - Proposed to open
+      // 1 - open, 2 - closed, 3 - open proposed to close, 4 = proposed to open
       return new SchoolPredicateResult(false, `Excluding school ${school.urn} it is closed - estabStatusCode is [${school.estabStatusCode}]`)
+    }
+    if (school.estabStatusCode === EstabStatusCode.ProposedToOpen) {
+      return new SchoolPredicateResult(false, `Excluding school ${school.urn} it is proposed to open - estabStatusCode is [${school.estabStatusCode}]`)
     }
     return new SchoolPredicateResult(true)
   }

@@ -26,7 +26,7 @@ export class ReportLine {
     PupilDatabaseId: -1,
     DOB: null,
     Gender: '',
-    PupilID: '',
+    PupilUPN: '',
     Forename: '',
     Surname: '',
     ReasonNotTakingCheck: null,
@@ -311,7 +311,7 @@ export class ReportLine {
     this._report.PupilDatabaseId = this.pupil.id
     this._report.DOB = this.pupil.dateOfBirth
     this._report.Gender = this.pupil.gender.toUpperCase()
-    this._report.PupilID = this.pupil.upn
+    this._report.PupilUPN = this.pupil.upn
     this._report.Forename = this.pupil.forename
     this._report.Surname = this.pupil.lastname
     this._report.ReasonNotTakingCheck = ReportLine.getReasonNotTakingCheck(this._pupil.notTakingCheckCode)
@@ -366,7 +366,7 @@ export class ReportLine {
       PupilDatabaseId: this._report.PupilDatabaseId,
       DOB: this._report.DOB,
       Gender: this._report.Gender,
-      PupilID: this._report.PupilID,
+      PupilUPN: this._report.PupilUPN,
       Forename: this._report.Forename,
       Surname: this._report.Surname,
       ReasonNotTakingCheck: this._report.ReasonNotTakingCheck,
