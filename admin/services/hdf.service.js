@@ -75,6 +75,7 @@ hdfService.getEligibilityForSchool = async (schoolId, checkEndDate, timezone) =>
   const settings = await settingService.get()
   if (settings.isPostAdminEndDateUnavailable === false) {
     const doNotIncludeFraction = false
+    // allow signing if within 14 days of live check period end date
     const daysSinceCheckEndDate = currentDate.diff(moment(checkEndDate), 'days', doNotIncludeFraction)
     return daysSinceCheckEndDate < 15
   }
