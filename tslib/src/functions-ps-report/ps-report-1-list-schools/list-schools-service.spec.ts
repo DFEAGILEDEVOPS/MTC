@@ -28,7 +28,6 @@ describe('ListSchoolsService', () => {
 
   test('getSchoolMessages returns messages', async () => {
     const resp = await sut.getSchoolMessages()
-    console.log(resp)
     expect(resp).toHaveLength(2)
     expect(resp[0].name).toBe('School One')
     expect(resp[0].uuid).toBe('uuid1')
