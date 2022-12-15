@@ -62,11 +62,12 @@ export class PrepareAnswersAndInputsDataService {
     for (const audit of audits) {
       // Eliminate audits with the wrong type
       for (const stype of searchType) {
-        if (audit.type !== stype) { continue } // move to next iteration
-      }
-      if (audit.data?.sequenceNumber === markedAnswer.sequenceNumber &&
-        audit.data?.question === markedAnswer.question) {
-        matches.push(audit)
+        if (audit.type === stype) {
+          if (audit.data?.sequenceNumber === markedAnswer.sequenceNumber &&
+            audit.data?.question === markedAnswer.question) {
+            matches.push(audit)
+          }
+        }
       }
     }
     console.log('Matches', matches)
@@ -192,7 +193,7 @@ export class PrepareAnswersAndInputsDataService {
         if (timerStarted !== null && timerEnded !== null) {
           inputsForThisQuestion.forEach(input => {
             const inputTime = moment(input.clientTimestamp)
-            if (inputTime.isBetween(timerStarted, timerEnded)) {
+            if (inputTime.isBetween(timerStarted, timerEnded, undefined, '[]')) { // inclusive of the moment timestamps
               tmpInputs.push(input)
             }
           })
