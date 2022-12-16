@@ -27,13 +27,13 @@ Then(/^I should see a record for the pupil in the ps report table$/) do
   device_info = SqlDbHelper.get_device_information(device_cookie[:value]) unless @check_details.nil?
   wait_until(ENV['WAIT_TIME'].to_i, 20) {!SqlDbHelper.get_ps_record_for_pupil(pupil_details['id']).nil?}
   ps_report_record = SqlDbHelper.get_ps_record_for_pupil(pupil_details['id'])
-  p "PS_REPORT RECORD - " + ps_report_record["id"].to_s
+  p "PS_REPORT RECORD - " + ps_report_record["PupilId"].to_s
   ps_report_record = ps_report_record.map {|k, v| [k, (v.is_a?(BigDecimal) ? v.to_f : v)]}.to_h
 
   expect(ps_report_record["DOB"].strftime("%D")).to eql pupil_details["dateOfBirth"].strftime("%D")
   expect(ps_report_record["Gender"]).to eql pupil_details["gender"]
-  expect(ps_report_record["PupilId"]).to eql pupil_details['upn']
-  expect(ps_report_record["id"]).to eql pupil_details['id']
+  expect(ps_report_record["PupilUPN"]).to eql pupil_details['upn']
+  expect(ps_report_record["PupilId"]).to eql pupil_details['id']
   expect(ps_report_record["Forename"]).to eql pupil_details['foreName']
   expect(ps_report_record["Surname"]).to eql pupil_details['lastName']
   expect(ps_report_record["ReasonNotTakingCheck"]).to eql reason.nil? ? nil : pupil_attendance
@@ -349,4 +349,25 @@ end
 Then(/^I should see the restart reason in the ps report record$/) do
   ps_report_record = SqlDbHelper.get_ps_record_for_pupil(@pupil_details['id'])
   expect(ps_report_record['RestartReason']).to eql 2
+end
+
+
+Given(/^I have completed the check for a pupil attending a test school$/) do
+  SqlDbHelper.set_school_as_test_school(@school['entity']['dfeNumber'])
+  step 'I have completed the check'
+end
+
+
+Then(/^I should not see any records for the test school$/) do
+  expect(SqlDbHelper.count_all_ps_records_for_school(@school_id)).to eql 0
+end
+
+
+When(/^the data sync and ps report function has run for the test school$/) do
+  step 'the data sync function has run'
+  sleep ENV['PS_REPORT_WAIT_TIME'].to_i
+  uuid = SqlDbHelper.find_school(@school_id)['urlSlug']
+  response = FunctionsHelper.trigger_ps_function('ps-report-2-pupil-data', {name: @school_name, uuid: uuid})
+  expect(response.code).to eql 202
+  sleep ENV['PS_REPORT_WAIT_TIME'].to_i
 end

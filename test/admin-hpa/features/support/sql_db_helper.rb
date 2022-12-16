@@ -704,4 +704,10 @@ class SqlDbHelper
     result.each {|row| row.map}
   end
 
+  def self.login_event(user_id)
+    sql = "SELECT * FROM [mtc_admin].[adminLogonEvent] WHERE user_id = #{user_id}"
+    result = SQL_CLIENT.execute(sql)
+    result.each {|row| row.map}
+  end
+
 end

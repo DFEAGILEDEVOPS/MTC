@@ -82,6 +82,7 @@ test/pupil-hpa/reports/*
 test/pupil-hpa/*.png
 test/pupil-hpa/*.html
 test/pupil-hpa/features/support/dev_env.rb
+test/pupil-hpa/rerun.txt
 
 
 #admin
@@ -94,6 +95,8 @@ test/admin-hpa/reports/*
 test/admin-hpa/*.png
 test/admin-hpa/*.html
 test/admin-hpa/features/support/dev_env.rb
+test/admin-hpa/rerun.txt
+test/admin-hpa/data/duplicate_and_new_school.csv
 
 test-output/*/*
 
