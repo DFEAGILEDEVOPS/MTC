@@ -28,6 +28,10 @@ describe('ps-report.data.service', () => {
     sut = new PsReportDataService(logger, mockSqlService)
   })
 
+  afterEach(() => {
+    jest.resetAllMocks()
+  })
+
   test('it is defined', () => {
     expect(sut).toBeDefined()
   })
@@ -100,7 +104,8 @@ describe('ps-report.data.service', () => {
           leaCode: 3,
           name: 'abc',
           urlSlug: 'def',
-          urn: 4
+          urn: 4,
+          isTestSchool: false
         }
       ])
       const school = await sut.getSchool(2)
@@ -114,7 +119,22 @@ describe('ps-report.data.service', () => {
 
     test('it throws if the school can\'t be found', async () => {
       (mockSqlService.query as jest.Mock).mockResolvedValueOnce([])
-      await expect(async () => { await sut.getSchool(1) }).rejects.toThrow(/ERROR: School not found/)
+      await expect(sut.getSchool(1)).rejects.toThrow(/ERROR: School not found/)
+    })
+
+    test('it throws if the school is a test school', async () => {
+      (mockSqlService.query as jest.Mock).mockResolvedValueOnce([
+        {
+          estabCode: 1,
+          id: 3,
+          leaCode: 3,
+          name: 'abc',
+          urlSlug: 'def',
+          urn: 5,
+          isTestSchool: true
+        }
+      ])
+      await expect(sut.getSchool(3)).rejects.toThrow(/ERROR: School is a test school/)
     })
 
     test('the return object is readonly', async () => {
@@ -125,7 +145,8 @@ describe('ps-report.data.service', () => {
           leaCode: 3,
           name: 'abc',
           urlSlug: 'def',
-          urn: 4
+          urn: 4,
+          isTestSchool: false
         }
       ])
       const school = await sut.getSchool(2)
