@@ -15,6 +15,8 @@ const settingService = require('./setting.service')
 const redisCacheService = require('./data-access/redis-cache.service')
 const redisKeyService = require('./redis-key.service')
 const { PupilFrozenService } = require('./pupil-frozen.service/pupil-frozen.service')
+const dateService = require('./date.service')
+
 /**
  * @typedef {Object} hdfPupil
  * @property {number} pupilId
@@ -61,6 +63,25 @@ hdfService.findPupilBySlugAndSchoolId = async function findPupilBySlugAndSchoolI
 }
 
 /**
+ * Determine eligibility for school on signing HDF in current state
+ * @param schoolId
+ * @param timezone
+ * @returns {Promise<boolean>}
+ */
+hdfService.canBeSigned = async (schoolId, timezone) => {
+  /* establish which phase of the check window we are in...
+    - checks still active
+    - checks closed, but within last 14 days (can still sign), within admin period
+    - outside admin period
+  */
+  const currentDate = dateService.utcNowAsMoment().tz(timezone || config.DEFAULT_TIMEZONE)
+  const settings = await settingService.get()
+  const checkWindowDates = checkWindowV2Service.getActiveCheckWindow()
+  if (!currentDate.isSameOrAfter(checkWindowDates.checkStartDate)) return false
+  // const OnOrBeforeCheckEndDate = currentDate.isSameOrBefore(checkWindowDates.checkEndDate)
+}
+
+/**
  * Fetch pupils and return eligibility to generate HDF
  * @param schoolId
  * @param checkEndDate
@@ -73,6 +94,7 @@ hdfService.getEligibilityForSchool = async (schoolId, checkEndDate, timezone) =>
   }
   const currentDate = moment.tz(timezone || config.DEFAULT_TIMEZONE)
   const settings = await settingService.get()
+
   if (settings.isPostAdminEndDateUnavailable === false) {
     const doNotIncludeFraction = false
     // allow signing if within 14 days of live check period end date
