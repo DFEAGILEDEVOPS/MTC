@@ -4,9 +4,9 @@ const { TYPES } = require('./sql.service')
 const R = require('ramda')
 const sqlService = require('./sql.service')
 const table = '[hdf]'
-const headteacherDeclarationDataService = {}
+const service = {}
 
-headteacherDeclarationDataService.sqlCreate = async function (data) {
+service.sqlCreate = async function (data) {
   return sqlService.create(table, data)
 }
 
@@ -16,7 +16,7 @@ headteacherDeclarationDataService.sqlCreate = async function (data) {
  * @param {number} schoolId
  * @return {Promise<object>}
  */
-headteacherDeclarationDataService.sqlFindLatestHdfBySchoolId = async (schoolId) => {
+service.sqlFindLatestHdfBySchoolId = async (schoolId) => {
   const sql = `
   SELECT TOP 1
     h.*, c.checkEndDate
@@ -35,7 +35,7 @@ headteacherDeclarationDataService.sqlFindLatestHdfBySchoolId = async (schoolId) 
  * @param checkWindowId
  * @return {Promise<object|undefined>}
  */
-headteacherDeclarationDataService.sqlFindHdfForCheck = async (schoolId, checkWindowId) => {
+service.sqlFindHdfForCheck = async (schoolId, checkWindowId) => {
   const paramSchoolId = { name: 'schoolId', type: TYPES.Int, value: schoolId }
   const paramCheckWindow = { name: 'checkWindowId', type: TYPES.BigInt, value: checkWindowId }
   const sql = `
@@ -55,7 +55,7 @@ headteacherDeclarationDataService.sqlFindHdfForCheck = async (schoolId, checkWin
  * @param schoolId
  * @return {Promise<Number>}
  */
-headteacherDeclarationDataService.sqlFindPupilsBlockingHdfBeforeCheckEndDate = async (schoolId) => {
+service.sqlFindPupilsBlockingHdfBeforeCheckEndDate = async (schoolId) => {
   const sql = `
     SELECT COUNT(p.id) as pupilsCount
     FROM [mtc_admin].[pupil] p
@@ -79,7 +79,7 @@ headteacherDeclarationDataService.sqlFindPupilsBlockingHdfBeforeCheckEndDate = a
  * @param schoolId
  * @return {Promise<Number>}
  */
-headteacherDeclarationDataService.sqlFindPupilsBlockingHdfAfterCheckEndDate = async (schoolId) => {
+service.sqlFindPupilsBlockingHdfAfterCheckEndDate = async (schoolId) => {
   const sql = `
     SELECT COUNT(p.id) as pupilsCount
     FROM [mtc_admin].[pupil] p
@@ -98,4 +98,16 @@ headteacherDeclarationDataService.sqlFindPupilsBlockingHdfAfterCheckEndDate = as
   return R.path(['pupilsCount'], R.head(result))
 }
 
-module.exports = headteacherDeclarationDataService
+/**
+ * Find count of pupils who are incomplete and have no attendance set
+ * @param schoolId
+ * @return {Promise<Number>}
+ */
+service.pupilsWithNoFinalState = async (schoolId) => {
+  const sql = `
+    SELECT COUNT(p.id) as pupilCount
+    FROM mtc_admin.pupil p
+    WHERE p.attendanceId IS NULL and p.checkComplete = 0`
+}
+
+module.exports = service

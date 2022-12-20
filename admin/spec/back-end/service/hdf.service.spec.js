@@ -28,6 +28,8 @@ describe('hdf service', () => {
   })
 
   describe('canBeSigned', () => {
+    const schoolId = 123
+    const timezone = undefined
     /*
     to keep the test setup simple the check window dates will remain static and are set before each test
     meaning only the date service needs to be setup on each test to shift the current date
@@ -39,6 +41,10 @@ describe('hdf service', () => {
     checkEndDate:                   15th Jan 2000
     adminEndDate:                   30th Jan 2000
     */
+
+    function setDateServiceNow(nowIsoString) {
+      jest.spyOn(dateService, 'utcNowAsMoment').mockReturnValue(moment(nowIsoString))
+    }
 
     beforeEach(() => {
       jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockResolvedValue({
@@ -54,20 +60,28 @@ describe('hdf service', () => {
       })
     })
 
-    test('check period not started - cannot sign', async () => {
-      jest.spyOn(dateService, 'utcNowAsMoment').mockReturnValue(moment('1999-12-20'))
-      const actual = await sut.canBeSigned(1, undefined)
+    test('live check period:before - cannot sign', async () => {
+      setDateServiceNow('2000-01-07')
+      const actual = await sut.canBeSigned(schoolId, timezone)
       expect(actual).toBe(false)
     })
 
-    test.todo('check period active, pupils complete - can sign')
-    test.todo('check period active, pupils incomplete - cannot sign')
-    test.todo('check period ended less than 14 days ago, pupils complete - can sign')
-    test.todo('check period ended less than 14 days ago, pupils incomplete - cannot sign')
-    test.todo('check period ended more than 14 days ago, pupils complete - cannot sign')
-    test.todo('check period ended more than 14 days ago, pupils incomplete - cannot sign')
-    test.todo('admin period ended, pupils incomplete - cannot sign')
-    test.todo('admin period ended, pupils complete - cannot sign')
+    test('live check period:during, pupils:complete - can sign', async () => {
+      setDateServiceNow('2000-01-09')
+      const actual = await sut.canBeSigned(schoolId, timezone)
+      expect(actual).toBe(true)
+    })
+
+    test('live check period:during, pupils:incomplete - cannot sign', async () => {
+      setDateServiceNow('2000-01-09')
+      const actual = await sut.canBeSigned(schoolId, timezone)
+      expect(actual).toBe(false)
+    })
+
+    test.todo('live check period:ended less than 14 days ago, pupils:complete - can sign')
+    test.todo('live check period:ended less than 14 days ago, pupils incomplete - cannot sign')
+    test.todo('live check period:ended more than 14 days ago, pupils complete - cannot sign')
+    test.todo('live check period:ended more than 14 days ago, pupils incomplete - cannot sign')
   })
 
   describe('#getEligibilityForSchool', () => {

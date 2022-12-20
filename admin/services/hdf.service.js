@@ -77,6 +77,7 @@ hdfService.canBeSigned = async (schoolId, timezone) => {
   const currentDate = dateService.utcNowAsMoment().tz(timezone || config.DEFAULT_TIMEZONE)
   const settings = await settingService.get()
   const checkWindowDates = checkWindowV2Service.getActiveCheckWindow()
+  if (currentDate.isBefore(checkWindowDates.adminStartDate)) return false
   if (!currentDate.isSameOrAfter(checkWindowDates.checkStartDate)) return false
   // const OnOrBeforeCheckEndDate = currentDate.isSameOrBefore(checkWindowDates.checkEndDate)
 }
