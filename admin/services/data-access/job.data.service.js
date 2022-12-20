@@ -9,28 +9,28 @@ const table = '[job]'
 
 /**
  * Create a new job.
- * @param {object} pupilCensusRecord
+ * @param {object} jobInfo
  * @return {Promise}
  */
-jobDataService.sqlCreate = async (pupilCensusRecord) => {
-  const sql = `INSERT INTO ${sqlService.adminSchema}.${table}
+jobDataService.sqlCreate = async (jobInfo) => {
+  const sql = `INSERT INTO [mtc_admin].${table}
   (jobInput, jobType_id, jobStatus_id)
   OUTPUT inserted.id, inserted.urlSlug
   VALUES (@jobInput, @jobType_id, @jobStatus_id)`
   const params = [
     {
       name: 'jobInput',
-      value: pupilCensusRecord.jobInput,
+      value: jobInfo.jobInput,
       type: TYPES.NVarChar
     },
     {
       name: 'jobType_id',
-      value: pupilCensusRecord.jobType_id,
+      value: jobInfo.jobType_id,
       type: TYPES.Int
     },
     {
       name: 'jobStatus_id',
-      value: pupilCensusRecord.jobStatus_id,
+      value: jobInfo.jobStatus_id,
       type: TYPES.Int
     }
   ]
@@ -45,7 +45,7 @@ jobDataService.sqlCreate = async (pupilCensusRecord) => {
  */
 jobDataService.sqlFindById = async (jobId) => {
   const sql = `SELECT TOP 1 *
-  FROM ${sqlService.adminSchema}.${table}
+  FROM [mtc_admin].${table}
   WHERE id=@jobId`
   const params = [
     {
@@ -68,8 +68,8 @@ jobDataService.sqlFindLatestByTypeId = async (jobTypeId) => {
   j.*,
   js.jobStatusCode,
   js.description as jobStatusDescription
-  FROM ${sqlService.adminSchema}.${table} j
-  INNER JOIN ${sqlService.adminSchema}.[jobStatus] js
+  FROM [mtc_admin].${table} j
+  INNER JOIN [mtc_admin].[jobStatus] js
     ON  js.id = j.jobStatus_id
   WHERE jobType_id=@jobTypeId
   ORDER BY createdAt DESC`
@@ -93,7 +93,7 @@ jobDataService.sqlFindLatestByTypeId = async (jobTypeId) => {
  * @return {Promise}
  */
 jobDataService.sqlUpdate = async (jobId, jobStatusId, jobOutput = undefined, errorOutput = undefined) => {
-  const sql = `UPDATE ${sqlService.adminSchema}.${table}
+  const sql = `UPDATE [mtc_admin].${table}
   SET jobStatus_id=@jobStatusId, jobOutput=@jobOutput, errorOutput=@errorOutput
   WHERE id=@jobId`
   const params = [
@@ -130,11 +130,11 @@ jobDataService.sqlUpdate = async (jobId, jobStatusId, jobOutput = undefined, err
  * @return {Promise}
  */
 jobDataService.sqlUpdateStatus = async (urlSlug, jobStatusCode, jobOutput = undefined, errorOutput = undefined) => {
-  const sql = `UPDATE ${sqlService.adminSchema}.${table}
+  const sql = `UPDATE [mtc_admin].${table}
   SET
   jobStatus_id = (
     SELECT id
-    FROM ${sqlService.adminSchema}.[jobStatus]
+    FROM [mtc_admin].[jobStatus]
     WHERE jobStatusCode = @jobStatusCode
   ),
   jobOutput=@jobOutput,

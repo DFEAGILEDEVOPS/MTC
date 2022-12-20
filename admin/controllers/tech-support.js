@@ -10,6 +10,7 @@ const redisErrorMessages = require('../lib/errors/redis').redis
 const moment = require('moment')
 const queueMgmtService = require('../services/tech-support-queue-management.service')
 const resultsResyncService = require('../services/tech-support/sync-results-resync.service')
+const { PsReportExecService } = require('../services/tech-support/ps-report-exec/ps-report-exec.service')
 const psReportLogsDownloadService = require('../services/tech-support/ps-report-logs.service/ps-report-logs.service').PsReportLogsDownloadService
 
 const controller = {
@@ -492,7 +493,7 @@ const controller = {
   },
 
   postCheckResultsResyncAll: async function postCheckResultsResyncAll (req, res, next) {
-    res.locals.pageTitle = 'Resync All Results'
+    res.locals.pageTitle = 'Synchronise new checks from Table Storage to main SQL database'
     const resyncAll = req.body.resyncAll === 'true' // convert string to bool- the user must tick the checkbox
     try {
       await resultsResyncService.resyncAllChecks(resyncAll)
@@ -549,6 +550,40 @@ const controller = {
         'Content-Length': fileContents.length
       })
       res.send(fileContents)
+    } catch (error) {
+      return next(error)
+    }
+  },
+
+  getPsReportRun: async function getPsReportRun (req, res, next) {
+    try {
+      res.locals.pageTitle = 'PS Report Run'
+      req.breadcrumbs('PS Report Run')
+      res.render('tech-support/ps-report-run', {
+        breadcrumbs: req.breadcrumbs(),
+        runReport: req.body?.runReport ?? 'false',
+        response: ''
+      })
+    } catch (error) {
+      return next(error)
+    }
+  },
+
+  postPsReportRun: async function postPsReportRun (req, res, next) {
+    const response = req.body.runReport === 'true' ? 'PS Report Requested' : 'Report NOT Requested - checkbox tick required'
+    res.locals.pageTitle = 'PS Report Run'
+    try {
+      if (req.body.runReport === 'true') {
+        await PsReportExecService.requestReportGeneration(req.user.id)
+      }
+      req.breadcrumbs('PS Report Run')
+      res.render('tech-support/ps-report-run', {
+        breadcrumbs: req.breadcrumbs(),
+        formData: {
+          runReport: req.body.runReport
+        },
+        response
+      })
     } catch (error) {
       return next(error)
     }

@@ -2,6 +2,25 @@ import AdmZip from 'adm-zip'
 import { JobDataService, IJobData } from './data-access/job.data.service'
 const dateService = require('../date.service')
 
+export interface ICreatedJob {
+  jobUuid: string
+}
+
+export enum JobStatus {
+  Submitted = 'SUB',
+  Processing = 'PRC',
+  CompletedSuccessfully = 'COM',
+  CompletedWithErrors = 'CWR',
+  Failed = 'FLD',
+  Deleted = 'DEL'
+}
+
+export enum JobType {
+  PupilCensus = 'CEN',
+  PsychometricianReport = 'PSY',
+  OrganisationFileUpload = 'ORG'
+}
+
 export class JobService {
   public static async getJobSummary (): Promise<IJobData[]> {
     const jobs = await JobDataService.getJobs()
@@ -24,5 +43,12 @@ export class JobService {
     zipFile.addFile('output.txt', Buffer.from(output))
     zipFile.addFile('error.txt', Buffer.from(errorInfo))
     return zipFile.toBuffer()
+  }
+
+  public static async createJob (jobInput: string, jobType: JobType, status: JobStatus): Promise<ICreatedJob> {
+    const response = await JobDataService.createJob(jobInput, status, jobType)
+    return {
+      jobUuid: response.urlSlug
+    }
   }
 }
