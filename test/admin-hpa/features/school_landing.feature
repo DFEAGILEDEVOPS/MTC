@@ -33,10 +33,10 @@ Feature:
 
     Examples:
       | helpdesk | dfenumber |
-      | helpdesk | 9991001   |
-      | helpdesk | 9991002   |
-      | helpdesk | 9991003   |
-      | helpdesk | 9991004   |
+      | helpdesk | 2011001   |
+      | helpdesk | 2011002   |
+      | helpdesk | 2011003   |
+      | helpdesk | 2011005   |
 
   Scenario Outline: Helpdesk can login as a teacher
     Given I have signed in with <helpdesk>
@@ -46,23 +46,23 @@ Feature:
 
     Examples:
       | helpdesk | dfenumber           |
-      | helpdesk | 9a9c9v1bfb0n0m1m    |
-      | helpdesk | 9-991001            |
-      | helpdesk | 99-91001            |
-      | helpdesk | 999-1001            |
-      | helpdesk | 99910-01            |
-      | helpdesk | 999100-1            |
-      | helpdesk | 9/991001            |
-      | helpdesk | 99/91001            |
-      | helpdesk | 999/1001            |
-      | helpdesk | 9991/001            |
-      | helpdesk | 99910/01            |
-      | helpdesk | 999100/1            |
-      | helpdesk | 9991001/            |
-      | helpdesk | 9a9c9v1bfb0n0m1m    |
-      | helpdesk | 9!9@9£1$0%0^2&      |
-      | helpdesk | 9*9(9)1-0+0}3]{     |
-      | helpdesk | "[99'9;"1:0?0/4.,<" |
+      | helpdesk | 2a0c1v1bfb0n0m1m    |
+      | helpdesk | 201-1001            |
+      | helpdesk | 20-11001            |
+      | helpdesk | 201-1001            |
+      | helpdesk | 20110-01            |
+      | helpdesk | 201100-1            |
+      | helpdesk | 2/011001            |
+      | helpdesk | 20/11001            |
+      | helpdesk | 201/1001            |
+      | helpdesk | 2011/001            |
+      | helpdesk | 20110/01            |
+      | helpdesk | 201100/1            |
+      | helpdesk | 2011001/            |
+      | helpdesk | 2a0c1v1bfb0n0m1m    |
+      | helpdesk | 2!0@1£1$0%0^2&      |
+      | helpdesk | 2*0(1)1-0+0}3]{     |
+      | helpdesk | "[20'1;"1:0?0/5.,<" |
 
 
   Scenario: Removing Impersonation returns user to Helpdesk impersonation page
