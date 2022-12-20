@@ -1,14 +1,11 @@
 {
   "bindings": [
     {
-      "name": "psReport1ListSchools",
-      "type": "timerTrigger",
       "direction": "in",
-      "timerDescription": "{second} {minute} {hour} {day} {month} {day-of-week}",
-      "dev-schedule": "0 */15 * * * *",
-      "prod-schedule": "0 0 22 * * 2",
-      "prod-description": "Every Tuesday and Friday at 10pm",
-      "schedule": "0 0 22 * * 2,5"
+      "type": "serviceBusTrigger",
+      "name": "jobInfo",
+      "queueName": "ps-report-exec",
+      "connection": "AZURE_SERVICE_BUS_CONNECTION_STRING"
     },
     {
       "direction": "out",
