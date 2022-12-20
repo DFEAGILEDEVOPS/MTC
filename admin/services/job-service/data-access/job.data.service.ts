@@ -1,5 +1,6 @@
 import moment from 'moment'
 import { TYPES } from '../../data-access/sql.service'
+import * as R from 'ramda'
 const sqlService = require('../../data-access/sql.service')
 
 export interface IJobData {
@@ -12,6 +13,11 @@ export interface IJobData {
 export interface IJobOutput {
   output: string
   errorInfo: string
+}
+
+export interface IJobInfo {
+  jobId: number
+  jobUuid: string
 }
 
 export class JobDataService {
@@ -60,5 +66,38 @@ export class JobDataService {
       errorInfo: record.errorOutput,
       output: record.jobOutput
     }
+  }
+
+  public static async createJob (jobInput: string, jobStatusCode: string, jobTypeCode: string): Promise<any> {
+    const sql = `
+                  DECLARE @jobType_id int
+                  DECLARE @jobStatus_id int
+                  SELECT @jobType_id = id FROM mtc_admin.jobType WHERE jobTypeCode = @jobTypeCode
+                  SELECT @jobStatus_id = id FROM mtc_admin.jobStatus WHERE jobStatusCode = @jobStatusCode
+                  INSERT INTO mtc_admin.job (jobInput, jobType_id, jobStatus_id)
+                  OUTPUT inserted.id, inserted.urlSlug
+                  VALUES (
+                    @jobInput,
+                    @jobType_id,
+                    @jobStatus_id)`
+    const params = [
+      {
+        name: 'jobInput',
+        value: jobInput,
+        type: TYPES.NVarChar
+      },
+      {
+        name: 'jobTypeCode',
+        value: jobTypeCode,
+        type: TYPES.Char
+      },
+      {
+        name: 'jobStatusCode',
+        value: jobStatusCode,
+        type: TYPES.Char
+      }
+    ]
+    const result = await sqlService.query(sql, params)
+    return R.head(result)
   }
 }
