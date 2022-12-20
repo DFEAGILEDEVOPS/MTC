@@ -75,6 +75,7 @@ test/pupil/*.html
 # pupil-hpa
 test/pupil-hpa/reports/
 test/pupil-hpa/screenshots/*.png
+test/pupil-hpa/data/school_testschool*
 test/pupil-hpa/test/screenshots/*.html
 test/pupil-hpa/test/screenshots/*/*.png
 test/pupil-hpa/screenshots/*/*.png

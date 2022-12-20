@@ -317,3 +317,6 @@ After do |scenario|
   p Time.now
 end
 
+at_exit do
+  SqlDbHelper.update_to_10_questions
+end
