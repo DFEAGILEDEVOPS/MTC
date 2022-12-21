@@ -36,9 +36,9 @@ array_of_features.each do |features|
 end
 
 features = Dir["features/*.feature"]
-array_of_features = features.sort.each_slice( (features.size/ENV['SERVER_COUNT'].to_f).ceil ).to_a
+array_of_features = features.sort.each_slice((features.size / ENV['SERVER_COUNT'].to_f).ceil).to_a
 array_of_features.each_with_index do |features, index|
-  index = index+1
+  index = index + 1
   Cucumber::Rake::Task.new(('feature_set_' + index.to_s).to_sym, "Runs following features #{features.join(' ')}") do |t|
     File.truncate('rerun.txt', 0) if File.exist?('rerun.txt')
     @start_time = Time.now
@@ -58,4 +58,6 @@ task :features do
 end
 
 
-
+at_exit do
+  $?.exitstatus == 0 ? (p 'TEST SUITE PASSED') :  (p 'TEST SUITE FAILED')
+end
