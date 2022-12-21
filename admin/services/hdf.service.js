@@ -84,7 +84,9 @@ hdfService.canBeSigned = async (schoolId, timezone) => {
     const doNotIncludeFraction = false
     // allow signing if within 14 days of live check period end date
     const daysSinceCheckEndDate = currentDate.diff(moment(checkWindowDates.checkEndDate), 'days', doNotIncludeFraction)
-    return (daysSinceCheckEndDate < 15 && incompletePupils === 0)
+    return (settings.isPostAdminEndDateUnavailable === false &&
+          daysSinceCheckEndDate < 15 &&
+          incompletePupils === 0)
   }
 }
 

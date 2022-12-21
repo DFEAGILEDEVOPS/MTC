@@ -80,27 +80,37 @@ describe('hdf service', () => {
       expect(actual).toBe(false)
     })
 
-    test('live check period:ended within 14 days, pupils:complete - can sign', async () => {
+    test('live check period:ended within 14 days, readonly:enabled, pupils:complete - can sign', async () => {
       setDateServiceNow('2000-01-29')
       jest.spyOn(hdfDataService, 'pupilCountWithNoFinalState').mockResolvedValue(0)
       const actual = await sut.canBeSigned(schoolId, timezone)
       expect(actual).toBe(true)
     })
 
-    test('live check period:ended less than 14 days ago, pupils incomplete - cannot sign', async () => {
+    test('live check period:ended within 14 days, readonly:disabled, pupils:complete - cannot sign', async () => {
+      setDateServiceNow('2000-01-29')
+      jest.spyOn(hdfDataService, 'pupilCountWithNoFinalState').mockResolvedValue(0)
+      jest.spyOn(settingService, 'get').mockResolvedValue({
+        isPostAdminEndDateUnavailable: true
+      })
+      const actual = await sut.canBeSigned(schoolId, timezone)
+      expect(actual).toBe(false)
+    })
+
+    test('live check period:ended less than 14 days ago, readonly:enabled, pupils incomplete - cannot sign', async () => {
       setDateServiceNow('2000-01-29')
       jest.spyOn(hdfDataService, 'pupilCountWithNoFinalState').mockResolvedValue(1)
       const actual = await sut.canBeSigned(schoolId, timezone)
       expect(actual).toBe(false)
     })
 
-    test('live check period:ended more than 14 days ago, pupils complete - cannot sign', async () => {
+    test('live check period:ended more than 14 days ago, readonly:enabled, pupils complete - cannot sign', async () => {
       setDateServiceNow('2000-01-30')
       jest.spyOn(hdfDataService, 'pupilCountWithNoFinalState').mockResolvedValue(0)
       const actual = await sut.canBeSigned(schoolId, timezone)
       expect(actual).toBe(false)
     })
-    test('live check period:ended more than 14 days ago, pupils incomplete - cannot sign', async () => {
+    test('live check period:ended more than 14 days ago, readonly:enabled, pupils incomplete - cannot sign', async () => {
       setDateServiceNow('2000-01-30')
       jest.spyOn(hdfDataService, 'pupilCountWithNoFinalState').mockResolvedValue(1)
       const actual = await sut.canBeSigned(schoolId, timezone)
