@@ -39,7 +39,7 @@ describe('hdf service', () => {
     checkStartDate:                 8th Jan 2000
     familiarisationCheckEndDate:    10th Jan 2000
     checkEndDate:                   15th Jan 2000
-    adminEndDate:                   30th Jan 2000
+    adminEndDate:                   31st Jan 2000
     */
 
     function setDateServiceNow(nowIsoString) {
@@ -49,18 +49,18 @@ describe('hdf service', () => {
     beforeEach(() => {
       jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockResolvedValue({
         adminStartDate: moment('2000-01-01'),
+        adminEndDate: moment('2000-01-31'),
         familiarisationCheckStartDate: moment('2000-01-05'),
-        checkStartDate: moment('2000-01-08'),
         familiarisationCheckEndDate: moment('2000-01-10'),
-        checkEndDate: moment('2000-01-15'),
-        adminEndDate: moment('2000-01-30')
+        checkStartDate: moment('2000-01-08'),
+        checkEndDate: moment('2000-01-15')
       })
       jest.spyOn(settingService, 'get').mockResolvedValue({
         isPostAdminEndDateUnavailable: false
       })
     })
 
-    test('live check period:before - cannot sign', async () => {
+    test('live check period: before - cannot sign', async () => {
       setDateServiceNow('2000-01-07')
       const actual = await sut.canBeSigned(schoolId, timezone)
       expect(actual).toBe(false)
@@ -68,20 +68,44 @@ describe('hdf service', () => {
 
     test('live check period:during, pupils:complete - can sign', async () => {
       setDateServiceNow('2000-01-09')
+      jest.spyOn(hdfDataService, 'pupilCountWithNoFinalState').mockResolvedValue(0)
       const actual = await sut.canBeSigned(schoolId, timezone)
       expect(actual).toBe(true)
     })
 
     test('live check period:during, pupils:incomplete - cannot sign', async () => {
       setDateServiceNow('2000-01-09')
+      jest.spyOn(hdfDataService, 'pupilCountWithNoFinalState').mockResolvedValue(1)
       const actual = await sut.canBeSigned(schoolId, timezone)
       expect(actual).toBe(false)
     })
 
-    test.todo('live check period:ended less than 14 days ago, pupils:complete - can sign')
-    test.todo('live check period:ended less than 14 days ago, pupils incomplete - cannot sign')
-    test.todo('live check period:ended more than 14 days ago, pupils complete - cannot sign')
-    test.todo('live check period:ended more than 14 days ago, pupils incomplete - cannot sign')
+    test('live check period:ended within 14 days, pupils:complete - can sign', async () => {
+      setDateServiceNow('2000-01-29')
+      jest.spyOn(hdfDataService, 'pupilCountWithNoFinalState').mockResolvedValue(0)
+      const actual = await sut.canBeSigned(schoolId, timezone)
+      expect(actual).toBe(true)
+    })
+
+    test('live check period:ended less than 14 days ago, pupils incomplete - cannot sign', async () => {
+      setDateServiceNow('2000-01-29')
+      jest.spyOn(hdfDataService, 'pupilCountWithNoFinalState').mockResolvedValue(1)
+      const actual = await sut.canBeSigned(schoolId, timezone)
+      expect(actual).toBe(false)
+    })
+
+    test('live check period:ended more than 14 days ago, pupils complete - cannot sign', async () => {
+      setDateServiceNow('2000-01-30')
+      jest.spyOn(hdfDataService, 'pupilCountWithNoFinalState').mockResolvedValue(0)
+      const actual = await sut.canBeSigned(schoolId, timezone)
+      expect(actual).toBe(false)
+    })
+    test('live check period:ended more than 14 days ago, pupils incomplete - cannot sign', async () => {
+      setDateServiceNow('2000-01-30')
+      jest.spyOn(hdfDataService, 'pupilCountWithNoFinalState').mockResolvedValue(1)
+      const actual = await sut.canBeSigned(schoolId, timezone)
+      expect(actual).toBe(false)
+    })
   })
 
   describe('#getEligibilityForSchool', () => {

@@ -103,11 +103,20 @@ service.sqlFindPupilsBlockingHdfAfterCheckEndDate = async (schoolId) => {
  * @param schoolId
  * @return {Promise<Number>}
  */
-service.pupilsWithNoFinalState = async (schoolId) => {
+service.pupilCountWithNoFinalState = async (schoolId) => {
   const sql = `
     SELECT COUNT(p.id) as pupilCount
     FROM mtc_admin.pupil p
-    WHERE p.attendanceId IS NULL and p.checkComplete = 0`
+    WHERE (p.attendanceId IS NULL
+      and p.checkComplete = 0)
+      and p.school_id = @schoolId`
+  const params = [{
+    name: '@schoolId',
+    type: TYPES.Int,
+    value: schoolId
+  }]
+  const result = await sqlService.query(sql, params)
+  return R.path(['pupilCount'], R.head(result))
 }
 
 module.exports = service

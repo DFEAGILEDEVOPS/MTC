@@ -8,7 +8,7 @@ const checkWindowV2Service = require('./check-window-v2.service')
 const attendanceCodeDataService = require('./data-access/attendance-code.data.service')
 const pupilAttendanceDataService = require('./data-access/pupil-attendance.data.service')
 const pupilStatusService = require('./pupil-status.service')
-const headteacherDeclarationDataService = require('./data-access/headteacher-declaration.data.service')
+const hdfDataService = require('./data-access/headteacher-declaration.data.service')
 const pupilStatusDataService = require('./data-access/pupil-status.data.service')
 const hdfService = {}
 const settingService = require('./setting.service')
@@ -69,17 +69,23 @@ hdfService.findPupilBySlugAndSchoolId = async function findPupilBySlugAndSchoolI
  * @returns {Promise<boolean>}
  */
 hdfService.canBeSigned = async (schoolId, timezone) => {
-  /* establish which phase of the check window we are in...
-    - checks still active
-    - checks closed, but within last 14 days (can still sign), within admin period
-    - outside admin period
-  */
   const currentDate = dateService.utcNowAsMoment().tz(timezone || config.DEFAULT_TIMEZONE)
   const settings = await settingService.get()
-  const checkWindowDates = checkWindowV2Service.getActiveCheckWindow()
-  if (currentDate.isBefore(checkWindowDates.adminStartDate)) return false
-  if (!currentDate.isSameOrAfter(checkWindowDates.checkStartDate)) return false
-  // const OnOrBeforeCheckEndDate = currentDate.isSameOrBefore(checkWindowDates.checkEndDate)
+  const checkWindowDates = await checkWindowV2Service.getActiveCheckWindow()
+  if (currentDate.isBefore(checkWindowDates.checkStartDate)) return false
+  const includeFromToDates = '[]'
+  const withinCheckDates = (currentDate.isBetween(checkWindowDates.checkStartDate, checkWindowDates.checkEndDate, 'day', includeFromToDates))
+  const incompletePupils = await hdfDataService.pupilCountWithNoFinalState(schoolId)
+  if (withinCheckDates) {
+    return incompletePupils === 0
+  }
+
+  if (currentDate.isAfter(checkWindowDates.checkEndDate)) {
+    const doNotIncludeFraction = false
+    // allow signing if within 14 days of live check period end date
+    const daysSinceCheckEndDate = currentDate.diff(moment(checkWindowDates.checkEndDate), 'days', doNotIncludeFraction)
+    return (daysSinceCheckEndDate < 15 && incompletePupils === 0)
+  }
 }
 
 /**
@@ -104,8 +110,8 @@ hdfService.getEligibilityForSchool = async (schoolId, checkEndDate, timezone) =>
   }
 
   const ineligiblePupilsCount = currentDate.isBefore(checkEndDate)
-    ? await headteacherDeclarationDataService.sqlFindPupilsBlockingHdfBeforeCheckEndDate(schoolId)
-    : await headteacherDeclarationDataService.sqlFindPupilsBlockingHdfAfterCheckEndDate(schoolId)
+    ? await hdfDataService.sqlFindPupilsBlockingHdfBeforeCheckEndDate(schoolId)
+    : await hdfDataService.sqlFindPupilsBlockingHdfAfterCheckEndDate(schoolId)
   return ineligiblePupilsCount === 0
 }
 
@@ -147,7 +153,7 @@ hdfService.submitDeclaration = async (form, userId, schoolId, checkEndDate, time
     fullName: [form.firstName, form.lastName].join(' ')
   }
 
-  return headteacherDeclarationDataService.sqlCreate(data)
+  return hdfDataService.sqlCreate(data)
 }
 
 /**
@@ -161,7 +167,7 @@ hdfService.findLatestHdfForSchool = async (dfeNumber) => {
   if (!school) {
     return null
   }
-  return headteacherDeclarationDataService.sqlFindLatestHdfBySchoolId(school.id)
+  return hdfDataService.sqlFindLatestHdfBySchoolId(school.id)
 }
 
 /**
@@ -190,7 +196,7 @@ hdfService.isHdfSubmittedForCheck = async (schoolId, checkWindowId) => {
   if (!schoolId || !checkWindowId) {
     throw new Error('schoolId and checkWindowId are required')
   }
-  const hdf = await headteacherDeclarationDataService.sqlFindHdfForCheck(schoolId, checkWindowId)
+  const hdf = await hdfDataService.sqlFindHdfForCheck(schoolId, checkWindowId)
   if (!hdf) {
     return false
   }
