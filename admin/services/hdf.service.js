@@ -91,33 +91,6 @@ hdfService.canBeSigned = async (schoolId, timezone) => {
 }
 
 /**
- * Fetch pupils and return eligibility to generate HDF
- * @param schoolId
- * @param checkEndDate
- * @param timezone
- * @returns {Promise<boolean>}
- */
-hdfService.getEligibilityForSchool = async (schoolId, checkEndDate, timezone) => {
-  if (!checkEndDate) {
-    throw new Error('Check end date missing or not found')
-  }
-  const currentDate = moment.tz(timezone || config.DEFAULT_TIMEZONE)
-  const settings = await settingService.get()
-
-  if (settings.isPostAdminEndDateUnavailable === false) {
-    const doNotIncludeFraction = false
-    // allow signing if within 14 days of live check period end date
-    const daysSinceCheckEndDate = currentDate.diff(moment(checkEndDate), 'days', doNotIncludeFraction)
-    return daysSinceCheckEndDate < 15
-  }
-
-  const ineligiblePupilsCount = currentDate.isBefore(checkEndDate)
-    ? await hdfDataService.sqlFindPupilsBlockingHdfBeforeCheckEndDate(schoolId)
-    : await hdfDataService.sqlFindPupilsBlockingHdfAfterCheckEndDate(schoolId)
-  return ineligiblePupilsCount === 0
-}
-
-/**
  * Declare the results of the check, to be used by the Headteacher or equivalent role
  * This is the personal sign-off from the head, and closes the check for their school.
  * @param {object} form
@@ -135,8 +108,8 @@ hdfService.submitDeclaration = async (form, userId, schoolId, checkEndDate, time
     throw new Error(`school ${schoolId} not found`)
   }
 
-  const hdfEligibility = await hdfService.getEligibilityForSchool(schoolId, checkEndDate, timezone)
-  if (!hdfEligibility) {
+  const canBeSigned = await hdfService.canBeSigned(schoolId, timezone)
+  if (!canBeSigned) {
     throw new Error('Not eligible to submit declaration')
   }
 

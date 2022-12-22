@@ -42,7 +42,7 @@ describe('hdf service', () => {
     adminEndDate:                   31st Jan 2000
     */
 
-    function setDateServiceNow(nowIsoString) {
+    function setDateServiceNow (nowIsoString) {
       jest.spyOn(dateService, 'utcNowAsMoment').mockReturnValue(moment(nowIsoString))
     }
 
@@ -118,119 +118,6 @@ describe('hdf service', () => {
     })
   })
 
-  describe('#getEligibilityForSchool', () => {
-    const dfeNumber = 123
-
-    describe('when check end date is in the future', () => {
-      test('should call sqlFindPupilsBlockingHdfBeforeCheckEndDate', async () => {
-        jest.spyOn(hdfDataService, 'sqlFindPupilsBlockingHdfBeforeCheckEndDate').mockImplementation()
-        const checkEndDate = moment.utc().add(5, 'days')
-        jest.spyOn(settingsService, 'get').mockResolvedValue({
-          questionTimeLimit: 1,
-          loadingTimeLimit: 2,
-          checkTimeLimit: 3,
-          isPostAdminEndDateUnavailable: true
-        })
-        await sut.getEligibilityForSchool(dfeNumber, checkEndDate)
-        expect(hdfDataService.sqlFindPupilsBlockingHdfBeforeCheckEndDate).toHaveBeenCalled()
-      })
-
-      test('should return true if no pupils blocking are detected', async () => {
-        jest.spyOn(hdfDataService, 'sqlFindPupilsBlockingHdfBeforeCheckEndDate').mockResolvedValue(0)
-        const checkEndDate = moment.utc().add(5, 'days')
-        jest.spyOn(settingsService, 'get').mockResolvedValue({
-          questionTimeLimit: 1,
-          loadingTimeLimit: 2,
-          checkTimeLimit: 3,
-          isPostAdminEndDateUnavailable: true
-        })
-        const result = await sut.getEligibilityForSchool(dfeNumber, checkEndDate)
-        expect(result).toBe(true)
-      })
-
-      test('should return false if pupils blocking are detected', async () => {
-        jest.spyOn(hdfDataService, 'sqlFindPupilsBlockingHdfBeforeCheckEndDate').mockResolvedValue(1)
-        const checkEndDate = moment.utc().add(5, 'days')
-        jest.spyOn(settingsService, 'get').mockResolvedValue({
-          questionTimeLimit: 1,
-          loadingTimeLimit: 2,
-          checkTimeLimit: 3,
-          isPostAdminEndDateUnavailable: true
-        })
-        const result = await sut.getEligibilityForSchool(dfeNumber, checkEndDate)
-        expect(result).toBe(false)
-      })
-    })
-
-    describe('when check end date is in the past', () => {
-      test('should call sqlFindPupilsBlockingHdfBeforeCheckEndDate', async () => {
-        jest.spyOn(hdfDataService, 'sqlFindPupilsBlockingHdfAfterCheckEndDate').mockImplementation()
-        const checkEndDate = moment.utc().subtract(5, 'days')
-        jest.spyOn(settingsService, 'get').mockResolvedValue({
-          questionTimeLimit: 1,
-          loadingTimeLimit: 2,
-          checkTimeLimit: 3,
-          isPostAdminEndDateUnavailable: true
-        })
-        await sut.getEligibilityForSchool(dfeNumber, checkEndDate)
-        expect(hdfDataService.sqlFindPupilsBlockingHdfAfterCheckEndDate).toHaveBeenCalled()
-      })
-
-      test('should return true if no pupils blocking are detected', async () => {
-        jest.spyOn(hdfDataService, 'sqlFindPupilsBlockingHdfAfterCheckEndDate').mockResolvedValue(0)
-        const checkEndDate = moment.utc().subtract(5, 'days')
-        jest.spyOn(settingsService, 'get').mockResolvedValue({
-          questionTimeLimit: 1,
-          loadingTimeLimit: 2,
-          checkTimeLimit: 3,
-          isPostAdminEndDateUnavailable: true
-        })
-        const result = await sut.getEligibilityForSchool(dfeNumber, checkEndDate)
-        expect(result).toBe(true)
-      })
-
-      test('should return false if no pupils blocking are detected', async () => {
-        jest.spyOn(hdfDataService, 'sqlFindPupilsBlockingHdfAfterCheckEndDate').mockResolvedValue(1)
-        const checkEndDate = moment.utc().subtract(5, 'days')
-        jest.spyOn(settingsService, 'get').mockResolvedValue({
-          questionTimeLimit: 1,
-          loadingTimeLimit: 2,
-          checkTimeLimit: 3,
-          isPostAdminEndDateUnavailable: true
-        })
-        const result = await sut.getEligibilityForSchool(dfeNumber, checkEndDate)
-        expect(result).toBe(false)
-      })
-
-      describe('readonly mode', () => {
-        test('should return true if readonly mode active, less than 14 days after check end date', async () => {
-          jest.spyOn(hdfDataService, 'sqlFindPupilsBlockingHdfAfterCheckEndDate').mockResolvedValue(0)
-          jest.spyOn(settingsService, 'get').mockResolvedValue({
-            questionTimeLimit: 1,
-            loadingTimeLimit: 2,
-            checkTimeLimit: 3,
-            isPostAdminEndDateUnavailable: false
-          })
-          const checkEndDate = moment.utc().subtract(5, 'days')
-          const eligibility = await sut.getEligibilityForSchool(dfeNumber, checkEndDate)
-          expect(eligibility).toBe(true)
-        })
-        test('should return false if readonly mode active, greater than 14 days after check end date', async () => {
-          jest.spyOn(hdfDataService, 'sqlFindPupilsBlockingHdfAfterCheckEndDate').mockResolvedValue(0)
-          jest.spyOn(settingsService, 'get').mockResolvedValue({
-            questionTimeLimit: 1,
-            loadingTimeLimit: 2,
-            checkTimeLimit: 3,
-            isPostAdminEndDateUnavailable: false
-          })
-          const checkEndDate = moment.utc().subtract(15, 'days')
-          const eligibility = await sut.getEligibilityForSchool(dfeNumber, checkEndDate)
-          expect(eligibility).toBe(false)
-        })
-      })
-    })
-  })
-
   describe('#submitDeclaration', () => {
     /**
      * @type headteacherDeclarationService
@@ -249,12 +136,12 @@ describe('hdf service', () => {
         jest.spyOn(hdfDataService, 'sqlCreate').mockResolvedValue(sqlResponseMock)
         jest.spyOn(schoolDataService, 'sqlFindOneById').mockResolvedValue(schoolMock)
         jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockResolvedValue(checkWindowMock)
-        jest.spyOn(service, 'getEligibilityForSchool').mockResolvedValue(true)
+        jest.spyOn(service, 'canBeSigned').mockResolvedValue(true)
       })
 
-      test('calls getEligibilityForSchool', async () => {
+      test('calls canBeSigned', async () => {
         await service.submitDeclaration(form, userId, schoolId)
-        expect(service.getEligibilityForSchool).toHaveBeenCalled()
+        expect(service.canBeSigned).toHaveBeenCalled()
       })
 
       test('calls the headteacher data service', async () => {
@@ -293,7 +180,7 @@ describe('hdf service', () => {
       test('throws an error', async () => {
         jest.spyOn(hdfDataService, 'sqlCreate').mockResolvedValue(sqlResponseMock)
         jest.spyOn(schoolDataService, 'sqlFindOneById').mockResolvedValue(schoolMock)
-        jest.spyOn(service, 'getEligibilityForSchool').mockResolvedValue(false)
+        jest.spyOn(service, 'canBeSigned').mockResolvedValue(false)
         await expect(service.submitDeclaration(form, userId, schoolId)).rejects.toThrow('Not eligible to submit declaration')
       })
     })

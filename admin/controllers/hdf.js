@@ -161,7 +161,7 @@ controller.getConfirmSubmit = async function getConfirmSubmit (req, res, next) {
   try {
     const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
     const availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.schoolId, checkWindowData, req.user.timezone)
-    const hdfEligibility = await hdfService.getEligibilityForSchool(req.user.schoolId, checkWindowData.checkEndDate, req.user.timezone)
+    const hdfEligibility = await hdfService.canBeSigned(req.user.schoolId, req.user.timezone)
     if (!hdfEligibility) {
       return res.render('hdf/declaration-form', {
         hdfEligibility,
@@ -229,7 +229,7 @@ controller.getDeclarationForm = async function getDeclarationForm (req, res, nex
     if (hdfSubmitted) {
       return res.redirect('/attendance/submitted')
     }
-    hdfEligibility = await hdfService.getEligibilityForSchool(req.user.schoolId, checkWindowData.checkEndDate, req.user.timezone)
+    hdfEligibility = await hdfService.canBeSigned(req.user.schoolId, req.user.timezone)
   } catch (error) {
     return next(error)
   }
@@ -245,11 +245,10 @@ controller.getDeclarationForm = async function getDeclarationForm (req, res, nex
 controller.postDeclarationForm = async function postDeclarationForm (req, res, next) {
   const { firstName, lastName, isHeadteacher, jobTitle } = req.body
   const form = { firstName, lastName, isHeadteacher, jobTitle }
-  const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
 
-  let hdfEligibility
+  let canBeSigned
   try {
-    hdfEligibility = await hdfService.getEligibilityForSchool(req.user.schoolId, checkWindowData.checkEndDate, req.user.timezone)
+    canBeSigned = await hdfService.canBeSigned(req.user.schoolId, req.user.timezone)
   } catch (error) {
     return next(error)
   }
@@ -259,7 +258,7 @@ controller.postDeclarationForm = async function postDeclarationForm (req, res, n
     res.locals.pageTitle = "Headteacher's declaration form"
     req.breadcrumbs(res.locals.pageTitle)
     return res.render('hdf/declaration-form', {
-      hdfEligibility,
+      hdfEligibility: canBeSigned,
       formData: form,
       error: validationError,
       breadcrumbs: req.breadcrumbs()
