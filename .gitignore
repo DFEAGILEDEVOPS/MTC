@@ -75,6 +75,7 @@ test/pupil/*.html
 # pupil-hpa
 test/pupil-hpa/reports/
 test/pupil-hpa/screenshots/*.png
+test/pupil-hpa/data/school_testschool*
 test/pupil-hpa/test/screenshots/*.html
 test/pupil-hpa/test/screenshots/*/*.png
 test/pupil-hpa/screenshots/*/*.png
@@ -89,8 +90,7 @@ test/pupil-hpa/rerun.txt
 test/admin-hpa/reports/
 test/admin-hpa/data/fixtures/pupil-census-data-*
 test/admin-hpa/data/school_testschool*
-test/admin-hpa/screenshots/*.png
-test/admin-hpa/screenshots/*.html
+test/admin-hpa/screenshots/*
 test/admin-hpa/reports/*
 test/admin-hpa/*.png
 test/admin-hpa/*.html

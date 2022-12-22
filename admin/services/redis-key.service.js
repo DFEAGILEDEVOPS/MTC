@@ -88,6 +88,15 @@ const redisKeyService = {
    */
   getSettingsKey () {
     return 'settings'
+  },
+
+  /**
+   * Return the key for the Qr Code URL
+   * @param {string} url
+   * @return {string}
+   */
+  getQrCodeUrlPrefix (url) {
+    return `qrCodeUrl:${url}`
   }
 }
 
