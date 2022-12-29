@@ -58,5 +58,5 @@ task :features do
 end
 
 at_exit do
-  $?.exitstatus == 0 ? (p "************" + "\n" +"TEST SUITE PASSED") :  (p 'TEST SUITE FAILED')
+  $?.exitstatus == 0 ? (p "TEST SUITE PASSED") :  (p 'TEST SUITE FAILED')
 end
