@@ -1,3 +1,4 @@
+// Angular modules
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
@@ -6,7 +7,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { GlobalErrorHandler } from './error-handler';
 import { AppConfigService, loadConfigService } from './services/config/config.service';
 import { CookieService } from 'ngx-cookie-service';
-
+// Services
 import { AccessibilityStatementComponent } from './accessibility-statement/accessibility-statement.component';
 import { AnswerService } from './services/answer/answer.service';
 import { AppComponent } from './app.component';
@@ -53,7 +54,7 @@ import { WarmupIntroComponent } from './warmup-intro/warmup-intro.component';
 import { WarmupLoadingComponent } from './warmup-loading/warmup-loading.component';
 import { WarmupQuestionService } from './services/question/warmup-question.service';
 import { WindowRefService } from './services/window-ref/window-ref.service';
-
+// Components
 import { AAColoursComponent } from './aa-colours/aa-colours.component';
 import { AAFontsComponent } from './aa-fonts/aa-fonts.component';
 import { AASettingsComponent } from './aa-settings/aa-settings.component';
@@ -84,6 +85,7 @@ import { ApplicationInsightsService } from './services/app-insights/app-insights
 import { TestErrorComponent } from './test-error/test-error.component';
 import { HttpService } from './services/http/http.service';
 import { ErrorLocalStorageComponent } from './error-localstorage/error-local-storage.component';
+import { QrCodeArrivalComponent } from './qr-code-arrival/qr-code-arrival.component'
 
 const appRoutes: Routes = [
   {path: '', redirectTo: 'connectivity-check', pathMatch: 'full'},
@@ -99,8 +101,10 @@ const appRoutes: Routes = [
   {path: 'feedback', component: FeedbackComponent, canActivate: [LoggedInGuard]},
   {path: 'feedback-thanks', component: FeedbackThanksComponent, canActivate: [LoggedInGuard]},
   {path: 'font-choice', component: AAFontsComponent },
+  {path: 'local-storage-error', component: ErrorLocalStorageComponent}, // no need for login here
   {path: 'out-of-time', component: OutOfTimeComponent },
   {path: 'privacy', component: PrivacyComponent },
+  {path: 'qr', component: QrCodeArrivalComponent },
   {path: 'service-unavailable', component: WebsiteOfflineComponent },
   {path: 'session-expired', component: SessionExpiredComponent },
   {path: 'sign-in', component: LoginComponent},
@@ -109,7 +113,6 @@ const appRoutes: Routes = [
   {path: 'sign-out', component: LogoutComponent, canActivate: [LoggedInGuard]},
   {path: 'submission-failed', component: SubmissionFailedComponent },
   {path: 'test-error', component: TestErrorComponent}, // no need for login here
-  {path: 'local-storage-error', component: ErrorLocalStorageComponent} // no need for login here
   // { path: '**', component: NotFoundComponent }
 ];
 

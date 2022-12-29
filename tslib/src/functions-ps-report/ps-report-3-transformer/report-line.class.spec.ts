@@ -208,7 +208,7 @@ describe('report line class', () => {
 
       test('it outputs the pupil ID', () => {
         const out = sut.transform()
-        expect(out.PupilID).toBe('TEST987')
+        expect(out.PupilUPN).toBe('TEST987')
       })
 
       test('it outputs the pupil forename', () => {
@@ -517,7 +517,7 @@ describe('report line class', () => {
 
       test('it outputs the pupil ID', () => {
         const out = sut.transform()
-        expect(out.PupilID).toBe('TEST985')
+        expect(out.PupilUPN).toBe('TEST985')
       })
 
       test('it outputs the pupil forename', () => {
@@ -687,7 +687,7 @@ describe('report line class', () => {
 
       test('it outputs the pupil ID', () => {
         const out = sut.transform()
-        expect(out.PupilID).toBe('TEST986')
+        expect(out.PupilUPN).toBe('TEST986')
       })
 
       test('it outputs the pupil forename', () => {

@@ -18,6 +18,7 @@ const schoolService = require('../../../services/school.service')
 const groupsMock = require('../mocks/groups')
 const schoolMock = require('../mocks/school')
 const moment = require('moment-timezone')
+const config = require('../../../config')
 
 describe('pupilPin controller:', () => {
   let next
@@ -497,6 +498,7 @@ describe('pupilPin controller:', () => {
         expect(dataPassedToRender.pupils[1].pupilViewFullName).toBe('Onelast, Oneforealias') // forename alias only
         expect(dataPassedToRender.pupils[2].pupilViewFullName).toBe('Threelastalias, Threeforealias') // both aliases
         expect(dataPassedToRender.pupils[3].pupilViewFullName).toBe('Twolastalias, Twofore') // forename alias only
+        expect(qrService.getDataURL).toHaveBeenCalledWith(`${config.PUPIL_APP_URL}${config.Data.QrCodePupilAppPath}`)
       })
     })
 

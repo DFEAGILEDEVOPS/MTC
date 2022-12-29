@@ -213,7 +213,7 @@ const getViewAndCustomPrintPins = async function getViewAndCustomPrintPins (req,
       groups = await groupService.findGroupsByPupil(req.user.schoolId, pupils)
       pupilsPresentationData = pupilPinPresenter.getPupilPinViewData(await groupService.assignGroupsToPupils(req.user.schoolId, pupils))
     }
-    qrDataURL = await qrService.getDataURL(config.PUPIL_APP_URL)
+    qrDataURL = await qrService.getDataURL(`${config.PUPIL_APP_URL}${config.Data.QrCodePupilAppPath}`)
   } catch (error) {
     return next(error)
   }
