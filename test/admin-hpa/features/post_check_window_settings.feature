@@ -2,6 +2,7 @@
 Feature:
   Service manager post check window settings
 
+  @wip
   Scenario: Ready only mode
     Given the admin window is closed
     And read only mode is enabled by the service manager
