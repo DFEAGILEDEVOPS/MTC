@@ -261,10 +261,10 @@
   resolved "https://registry.yarnpkg.com/@angular/language-service/-/language-service-14.2.5.tgz#f5ccdbf83fb47c838867ad33a4b0da09598f6ca0"
   integrity sha512-YqbsCbCq470ve6+MGjeEf2I6L5LcBYALvh+S5XsZkfEQEjSYYC1ZE1ftq7clICrMOOoM4XSghq8b/eNtZoTJkg==
 
-"@angular/localize@14.2.5":
-  version "14.2.5"
-  resolved "https://registry.yarnpkg.com/@angular/localize/-/localize-14.2.5.tgz#0ee34cd5d045f7ebe4c7dae328c3c7ea5444b17d"
-  integrity sha512-QKDa0stq5vRadvYKThh1kE2+/7a2fg6Ue7OFwOZNzuBSItKoXVdEWdkz1idcY7IoGNtMYv6TeHbTDdaFZZDC7Q==
+"@angular/localize@14.2.12":
+  version "14.2.12"
+  resolved "https://registry.yarnpkg.com/@angular/localize/-/localize-14.2.12.tgz#d422654ded5d1a014440438031af1af0e276c91b"
+  integrity sha512-6TTnuvubvYL1LDIJhDfd7ygxTaj0ShTILCDXT4URBhZKQbQ3HAorDqsc6SXqZVGCHdqF0hGTaeN/7zVvgP9kzA==
   dependencies:
     "@babel/core" "7.18.9"
     glob "8.0.3"
