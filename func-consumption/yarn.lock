@@ -3071,10 +3071,10 @@ r-json@^1.2.10:
   resolved "https://registry.yarnpkg.com/r-json/-/r-json-1.2.10.tgz#62a73d9cafa7eabf670e5c2812c27bdb220a968b"
   integrity sha512-hu9vyLjSlHXT62NAS7DjI9WazDlvjN0lgp3n431dCVnirVcLkZIpzSwA3orhZEKzdDD2jqNYI+w0yG0aFf4kpA==
 
-ramda-adjunct@^3.3.0:
-  version "3.3.0"
-  resolved "https://registry.yarnpkg.com/ramda-adjunct/-/ramda-adjunct-3.3.0.tgz#647c0cd4945b354cc179d583ead877fe0dce76a7"
-  integrity sha512-ycIrNN0rEsBKQ8CD0ZMhmGPTdZulQe20Aj4bZxVP2dWVnZRVe5dR4EedhIc0YxJW8pr7ljaaJ8/KR0VFHfjTLw==
+ramda-adjunct@^3.4.0:
+  version "3.4.0"
+  resolved "https://registry.yarnpkg.com/ramda-adjunct/-/ramda-adjunct-3.4.0.tgz#3b07f4d879406b8cbb5415b165bea48d2fe0ab06"
+  integrity sha512-qKRgqwZzJUZmPJfGK8/uLVxQXkiftKhW6FW9NUCUlQrzsBUZBvFAZUxwH7nTRwDMg+ChRU69rVVuS/4EUgtuIg==
 
 ramda@^0.28.0:
   version "0.28.0"
