@@ -61,7 +61,7 @@
     "moment-timezone": "^0.5.39",
     "mssql": "^8.1.4",
     "ramda": "^0.28.0",
-    "ramda-adjunct": "^3.3.0",
+    "ramda-adjunct": "^3.4.0",
     "random-number-csprng": "^1.0.2",
     "ua-parser-js": "^0.8.1",
     "uuid": "^8.3.1"
