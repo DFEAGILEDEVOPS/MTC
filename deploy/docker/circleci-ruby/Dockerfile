@@ -1,4 +1,4 @@
-FROM circleci/ruby:2.6.0
+FROM circleci/ruby:2.7.6
 RUN sudo apt-get update && sudo apt-get upgrade
 RUN gem install bundler
 ENV FREETDS_VERSION='1.2.12'
