@@ -1,5 +1,9 @@
-FROM circleci/ruby:2.7.6
+FROM circleci/ruby:2.7-node-browsers-legacy
+# Get the latest Google GPG key and import it
+RUN wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo tee /etc/apt/trusted.gpg.d/google.com.asc
+# Update the system
 RUN sudo apt-get update && sudo apt-get upgrade
+# Install freetds, and ruby bundler
 RUN gem install bundler
 ENV FREETDS_VERSION='1.2.12'
 RUN echo $FREETDS_VERSION
