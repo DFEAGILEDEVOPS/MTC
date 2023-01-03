@@ -174,4 +174,16 @@ router.get(
   techSupportController.getPsReportLogFileContents
 )
 
+router.get(
+  '/ps-report-run',
+  isAuthenticated([roles.techSupport]),
+  techSupportController.getPsReportRun
+)
+
+router.post(
+  '/ps-report-run',
+  isAuthenticated([roles.techSupport]),
+  techSupportController.postPsReportRun
+)
+
 module.exports = router

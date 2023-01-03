@@ -57,3 +57,6 @@ task :features do
   end
 end
 
+at_exit do
+  $?.exitstatus == 0 ? (p "TEST SUITE PASSED") :  (p 'TEST SUITE FAILED')
+end

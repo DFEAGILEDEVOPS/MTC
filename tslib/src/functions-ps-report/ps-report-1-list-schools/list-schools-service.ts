@@ -26,7 +26,8 @@ export class ListSchoolsService implements IListSchoolsService {
   }
 
   private async getSchools (): Promise<School[]> {
-    const sql = 'SELECT id, name, urlSlug as uuid from mtc_admin.school'
+    // 54227: Do not include test schools in the PS Report
+    const sql = 'SELECT id, name, urlSlug as uuid from mtc_admin.school WHERE isTestSchool = 0'
     return this.sqlService.query(sql)
   }
 

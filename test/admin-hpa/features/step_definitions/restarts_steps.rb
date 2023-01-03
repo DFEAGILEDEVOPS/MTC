@@ -337,3 +337,8 @@ And(/^I should see the pupils have a restart$/) do
   expect(@before_submission + @number_of_restarts).to eql after_submission
 end
 
+
+Then(/^I should not be able to remove the restart$/) do
+  pupil_row = restarts_page.restarts_pupil_list.rows.find {|row| row.name.text.eql?("#{@details_hash[:last_name]}, #{@details_hash[:first_name]}")}
+  expect(pupil_row).to have_no_remove_restart
+end
