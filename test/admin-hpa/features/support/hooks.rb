@@ -18,6 +18,8 @@ Before do
   sign_in_page.cookies_banner.accept_all.click if sign_in_page.cookies_banner.accept_all.visible?
   visit ENV['ADMIN_BASE_URL'] + '/sign-out'
   Dir.glob(File.expand_path("#{File.dirname(__FILE__)}/../../data/download/*")).each {|file| File.delete file}
+  p "MTC0100 = #{JSON.parse(SqlDbHelper.get_form(1)['formData']).size} questions"
+  p "MTC0103 = #{JSON.parse(SqlDbHelper.get_form(4)['formData']).size} questions"
 end
 
 Before('@empty_new_school') do
@@ -315,8 +317,4 @@ After do |scenario|
   visit ENV['ADMIN_BASE_URL'] + '/sign-out'
   visit ENV['ADMIN_BASE_URL']
   p Time.now
-end
-
-at_exit do
-  SqlDbHelper.update_to_10_questions
 end

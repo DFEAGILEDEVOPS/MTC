@@ -15,6 +15,7 @@ Before do
   visit ENV['ADMIN_BASE_URL'] + '/sign-out'
   page.current_window.resize_to(1270, 768)
   p "MTC0100 = #{JSON.parse(SqlDbHelper.get_form(1)['formData']).size} questions"
+  p "MTC0103 = #{JSON.parse(SqlDbHelper.get_form(4)['formData']).size} questions"
 end
 
 Before('@generate_live_pin') do
@@ -86,6 +87,3 @@ After do |scenario|
   end
 end
 
-at_exit do
-  SqlDbHelper.update_to_10_questions
-end
