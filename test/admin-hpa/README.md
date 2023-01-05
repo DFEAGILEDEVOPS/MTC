@@ -15,11 +15,11 @@ Follow installation instructions for installing RVM here:
 
 https://rvm.io/rvm/install
 
-Once rvm is installed, we need ruby version 2.7.6, to install use the following:
- `rvm install 2.7.6`
+Once rvm is installed, we need ruby version 2.7.7, to install use the following:
+ `rvm install 2.7.7`
 
-Use ruby version 2.7.6 and set it as your default:
- `rvm use 2.7.6 --default`
+Use ruby version 2.7.7 and set it as your default:
+ `rvm use 2.7.7 --default`
 
 ## Install FreeTDS dependency
 
