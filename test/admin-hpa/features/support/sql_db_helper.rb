@@ -710,4 +710,13 @@ class SqlDbHelper
     result.each {|row| row.map}
   end
 
+
+  def self.get_form(form_id)
+    sql = "SELECT * FROM [mtc_admin].[checkForm] WHERE id = '#{form_id}'"
+    result = SQL_CLIENT.execute(sql)
+    chk_form_res = result.first
+    result.cancel
+    chk_form_res
+  end
+
 end
