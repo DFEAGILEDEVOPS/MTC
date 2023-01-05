@@ -688,32 +688,32 @@ end
 
 When(/^I enter all the years for each of the dates with an invalid year$/) do
   today_date = Date.today
-  @admin_start_date = today_date.next_year(5) + 3
-  @admin_end_date = today_date.next_year(5) + 11
-  @familiarisation_start_date = today_date.next_year(5) + 4
-  @familiarisation_end_date = today_date.next_year(5) + 10
-  @live_start_date = today_date.next_year(5) + 4
-  @live_end_date = today_date.next_year(5) + 10
+  @admin_start_date = today_date.years_ago(20)
+  @admin_end_date = @admin_start_date + 11
+  @familiarisation_start_date = @admin_start_date + 4
+  @familiarisation_end_date = @admin_start_date + 10
+  @live_start_date = @admin_start_date + 4
+  @live_end_date = @admin_start_date + 10
   check_window_name = "TestCheck-#{today_date.day}-#{today_date.month}-#{today_date.year}-#{rand(1..10000)}"
   @check_window_hash = {check_name: check_window_name,
                         admin_start_day: @admin_start_date.day,
                         admin_start_month: @admin_start_date.month,
-                        admin_start_year: '2000',
+                        admin_start_year: @admin_start_date.year,
                         admin_end_day: @admin_end_date.day,
                         admin_end_month: @admin_end_date.month,
-                        admin_end_year: '2000',
+                        admin_end_year: @admin_end_date.year,
                         familiarisation_start_day: @familiarisation_start_date.day,
                         familiarisation_start_month: @familiarisation_start_date.month,
-                        familiarisation_start_year: '2000',
+                        familiarisation_start_year: @familiarisation_start_date.year,
                         familiarisation_end_day: @familiarisation_end_date.day,
                         familiarisation_end_month: @familiarisation_end_date.month,
-                        familiarisation_end_year: '2000',
+                        familiarisation_end_year: @familiarisation_end_date.year,
                         live_start_day: @live_start_date.day,
                         live_start_month: @live_start_date.month,
-                        live_start_year: '2000',
+                        live_start_year: @live_start_date.year,
                         live_end_day: @live_end_date.day,
                         live_end_month: @live_end_date.month,
-                        live_end_year: '2000'
+                        live_end_year: @live_end_date.year
   }
   add_edit_check_window_v2_page.enter_details(@check_window_hash)
   add_edit_check_window_v2_page.save_changes.click

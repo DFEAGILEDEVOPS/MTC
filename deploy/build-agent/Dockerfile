@@ -1,4 +1,6 @@
-FROM stamtc/ruby-builder:latest
+FROM ubuntu:20.04
+
+ENV RUBY_VERSION=2.7.7
 
 # to make it easier for build and release pipelines to run apt-get,
 # configure apt to not require confirmation (assume the -y argument by default)
@@ -13,21 +15,21 @@ RUN apt-get update && \
     ca-certificates \
     curl \
     git \
-    jq \
     iputils-ping \
+    jq \
     libcurl4 \
     libicu66 \
     libssl1.0 \
     libunwind8 \
     netcat \
     # ruby -> free-tds
+    build-essential \
     freetds-bin \
     freetds-dev \
-    build-essential \
-    libssl-dev \
     libreadline-dev \
-    zlib1g-dev \
+    libssl-dev \
     unixodbc \
+    zlib1g-dev \
     # ruby -> chrome
     wget \
     # dotnet, powershell
@@ -38,9 +40,19 @@ RUN apt-get update && \
     gnupg2 \
     # ruby (via brightbox), powershell
     software-properties-common \
+    # rbenv specifics
+    autoconf \
+    bison \
+    libffi-dev \
+    libgdbm-dev \
+    libncurses5-dev \
+    libyaml-dev \
     # for zipping up function apps
     zip \
     && rm -rf /var/lib/apt/lists/*
+
+# rbenv specifics
+RUN apt install -y --no-install-recommends
 
 # install google chrome 'the right way'
 RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
@@ -84,10 +96,20 @@ RUN adduser --disabled-password $BUILD_USER && chown -R $BUILD_USER /azp
 USER $BUILD_USER
 SHELL ["/bin/bash", "-l", "-c"]
 
+# install ruby via rbenv (new for 2023, experimental)
+RUN echo 'export PATH="/home/$BUILD_USER/.rbenv/bin:$PATH"' >> /home/$BUILD_USER/.bashrc
+RUN curl -fsSL https://github.com/rbenv/rbenv-installer/raw/HEAD/bin/rbenv-installer | bash
+RUN echo 'eval "$(rbenv init -)"' >> /home/$BUILD_USER/.bashrc
+RUN cat /home/$BUILD_USER/.bashrc
+ENV PATH=$PATH:/home/$BUILD_USER/.rbenv/bin
+RUN rbenv init -
+RUN rbenv install $RUBY_VERSION
+RUN rbenv global $RUBY_VERSION
+
 # set up ruby environment for user
 RUN mkdir -p ~/gems
 RUN echo "export GEM_HOME=~/gems" >> ~/.profile
-RUN echo "export GEM_PATH=$GEM_HOME:/usr/local/lib/ruby/gems/2.6.0" >> ~/.profile
+RUN echo "export GEM_PATH=$GEM_HOME:/usr/local/lib/ruby/gems/$RUBY_VERSION" >> ~/.profile
 
 # install nvm and current node runtimes
 ENV NVM_DIR=/home/$BUILD_USER/.nvm
