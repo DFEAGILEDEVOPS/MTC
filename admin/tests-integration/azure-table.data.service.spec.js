@@ -102,7 +102,7 @@ describe('azure-table.data.service', () => {
       const failures = []
       for (let index = 0; index < tableNames.length; index++) {
         const table = tableNames[index]
-        if (!RA.contained(actualTables, table)) {
+        if (!RA.included(actualTables, table)) {
           failures.push(table)
         }
       }
