@@ -2,11 +2,11 @@ DECLARE @schoolId INT
 
 BEGIN TRY
 INSERT INTO [mtc_admin].school (leaCode, estabCode, urn, dfeNumber, name, urlSlug, pin, pinExpiresAt)
-VALUES (999, '1999', 89000, 9991999, 'Test School', 'ED443B10-FD26-41FE-AA22-4F220ACB64C1', 'abc22def', DATEADD(DAY, 1, GETUTCDATE()));
+VALUES (201, '1999', 89000, 2011999, 'Test School', 'ED443B10-FD26-41FE-AA22-4F220ACB64C1', 'abc22def', DATEADD(DAY, 1, GETUTCDATE()));
 SELECT @schoolId = SCOPE_IDENTITY()
 END TRY
 BEGIN CATCH
-SELECT @schoolId = id FROM [mtc_admin].school WHERE dfeNumber = 9991999
+SELECT @schoolId = id FROM [mtc_admin].school WHERE dfeNumber = 2011999
 END CATCH
 
 INSERT INTO [mtc_admin].pupil (school_id, foreName, middleNames, lastName, gender, dateOfBirth, upn,  isTestAccount)
