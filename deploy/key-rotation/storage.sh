@@ -11,19 +11,19 @@ KEY_VAULT_NAME=$2 # key vault instance
 STORAGE_ACCOUNT_NAME=$3 # storage account
 KEY_TYPE=$4 # accepted values are 'primary' or 'secondary'
 
-STORAGE_ACCOUNT_KEY_TYPE="" # valid values are 'primary', 'secondary'
+STORAGE_ACCOUNT_KEY_TYPE="" # valid values are 'key1', 'key2'
 
 # Azure CLI uses slightly different identifiers for key type across different services :-/
 # align them for each service...
 if [ "$KEY_TYPE" = "primary" ]
 then
   # set keys to primary
-  STORAGE_ACCOUNT_KEY_TYPE="primary"
+  STORAGE_ACCOUNT_KEY_TYPE="key1"
 
 elif [ "$KEY_TYPE" = "secondary" ]
 then
   # set keys to secondary
-  STORAGE_ACCOUNT_KEY_TYPE="secondary"
+  STORAGE_ACCOUNT_KEY_TYPE="key2"
 
 else
   # throw error
