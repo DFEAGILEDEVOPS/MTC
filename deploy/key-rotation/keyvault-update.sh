@@ -1,7 +1,6 @@
 #!/bin/bash
 
-# obsolete - no longer used.  kept for reference
-# obtains current connection strings for service bus and storage accounts, and updates the relevant key vault secret value.
+# obtains secret values for service bus and storage accounts, and updates the relevant key vault secret value.
 # Limitations
 # -----------
 # Service Bus auth rule names are hardcoded
@@ -10,6 +9,7 @@ RES_GROUP=$1 # the target resource group
 KEY_VAULT_NAME=$2 # the key vault name
 SERVICE_BUS_NAME=$3 # the service bus to extract keys from
 STORAGE_ACCOUNT_NAME=$4 # the storage account to extract keys from
+REDIS_INSTANCE_NAME=$5 # the redis instance to obtain key vbalue from
 
 ### Service Bus
 # get connection string for consumer apps...
@@ -26,3 +26,12 @@ az keyvault secret set --vault-name $KEY_VAULT_NAME --name "ServiceBusConnection
 SA_CONNECTION_STRING=$(az storage account show-connection-string -g $RES_GROUP -n $STORAGE_ACCOUNT_NAME | jq -r .connectionString)
 # put it in key vault...
 az keyvault secret set --vault-name $KEY_VAULT_NAME --name "StorageAccountConnectionString" --value "$SA_CONNECTION_STRING"
+
+SA_KEY_VALUE=$(az storage account keys list --account-name $STORAGE_ACCOUNT_NAME | jq '.[0].value')
+# put it in key vault...
+az keyvault secret set --vault-name $KEY_VAULT_NAME --name "StorageAccountKey" --value "$SA_KEY_VALUE"
+
+### Redis
+REDIS_KEY_VALUE=$(az redis list-keys -n $REDIS_INSTANCE_NAME -g $RES_GROUP | jq '.primaryKey')
+# put it in key vault...
+az keyvault secret set --vault-name $KEY_VAULT_NAME --name "RedisKey" --value "$REDIS_KEY_VALUE"

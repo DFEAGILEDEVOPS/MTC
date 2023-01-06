@@ -1,6 +1,7 @@
 FROM ubuntu:20.04
 
 ENV RUBY_VERSION=2.7.7
+ENV AZURE_FUNCTIONS_CORE_TOOLS_VERSION=4
 
 # to make it easier for build and release pipelines to run apt-get,
 # configure apt to not require confirmation (assume the -y argument by default)
@@ -51,9 +52,6 @@ RUN apt-get update && \
     zip \
     && rm -rf /var/lib/apt/lists/*
 
-# rbenv specifics
-RUN apt install -y --no-install-recommends
-
 # install google chrome 'the right way'
 RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
 RUN echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list
@@ -79,7 +77,7 @@ RUN curl https://packages.microsoft.com/keys/microsoft.asc | gpg2 --dearmor > mi
 RUN mv microsoft.gpg /etc/apt/trusted.gpg.d/microsoft.gpg
 RUN echo "deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-ubuntu-$(lsb_release -cs)-prod $(lsb_release -cs) main" \
   > /etc/apt/sources.list.d/dotnetdev.list
-RUN apt-get update && apt-get install azure-functions-core-tools-3
+RUN apt-get update && apt-get install azure-functions-core-tools-$AZURE_FUNCTIONS_CORE_TOOLS_VERSION
 
 # install yarn
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
