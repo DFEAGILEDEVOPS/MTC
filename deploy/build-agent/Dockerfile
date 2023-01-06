@@ -100,7 +100,8 @@ RUN curl -fsSL https://github.com/rbenv/rbenv-installer/raw/HEAD/bin/rbenv-insta
 RUN echo 'eval "$(rbenv init -)"' >> /home/$BUILD_USER/.bashrc
 RUN cat /home/$BUILD_USER/.bashrc
 ENV PATH=$PATH:/home/$BUILD_USER/.rbenv/bin
-RUN rbenv init -
+# not needed
+# RUN rbenv init -
 RUN rbenv install $RUBY_VERSION
 RUN rbenv global $RUBY_VERSION
 

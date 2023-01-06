@@ -15,23 +15,23 @@ REDIS_INSTANCE_NAME=$5 # the redis instance to obtain key vbalue from
 # get connection string for consumer apps...
 SB_CONSUMER_CONNECTION_STRING=$(az servicebus namespace authorization-rule keys list --resource-group $RES_GROUP --namespace-name $SERVICE_BUS_NAME --name mtc-consumer | jq -r .primaryConnectionString)
 # put it in key vault...
-az keyvault secret set --vault-name $KEY_VAULT_NAME --name "ServiceBusConnectionString" --value "$SB_CONSUMER_CONNECTION_STRING"
+az keyvault secret set --vault-name $KEY_VAULT_NAME --name "ServiceBusConnectionString" --value "$SB_CONSUMER_CONNECTION_STRING" -o none
 
   # get connection string for consumer apps...
 SB_DEPLOY_CONNECTION_STRING=$(az servicebus namespace authorization-rule keys list --resource-group $RES_GROUP --namespace-name $SERVICE_BUS_NAME --name RootManageSharedAccessKey | jq -r .primaryConnectionString)
 # put it in key vault...
-az keyvault secret set --vault-name $KEY_VAULT_NAME --name "ServiceBusConnectionString-Deploy" --value "$SB_DEPLOY_CONNECTION_STRING"
+az keyvault secret set --vault-name $KEY_VAULT_NAME --name "ServiceBusConnectionString-Deploy" --value "$SB_DEPLOY_CONNECTION_STRING" -o none
 
 ### Storage Account
 SA_CONNECTION_STRING=$(az storage account show-connection-string -g $RES_GROUP -n $STORAGE_ACCOUNT_NAME | jq -r .connectionString)
 # put it in key vault...
-az keyvault secret set --vault-name $KEY_VAULT_NAME --name "StorageAccountConnectionString" --value "$SA_CONNECTION_STRING"
+az keyvault secret set --vault-name $KEY_VAULT_NAME --name "StorageAccountConnectionString" --value "$SA_CONNECTION_STRING" -o none
 
-SA_KEY_VALUE=$(az storage account keys list --account-name $STORAGE_ACCOUNT_NAME | jq '.[0].value')
+SA_KEY_VALUE=$(az storage account keys list --account-name $STORAGE_ACCOUNT_NAME | jq -r .[0].value)
 # put it in key vault...
-az keyvault secret set --vault-name $KEY_VAULT_NAME --name "StorageAccountKey" --value "$SA_KEY_VALUE"
+az keyvault secret set --vault-name $KEY_VAULT_NAME --name "StorageAccountKey" --value "$SA_KEY_VALUE" -o none
 
 ### Redis
-REDIS_KEY_VALUE=$(az redis list-keys -n $REDIS_INSTANCE_NAME -g $RES_GROUP | jq '.primaryKey')
+REDIS_KEY_VALUE=$(az redis list-keys -n $REDIS_INSTANCE_NAME -g $RES_GROUP | jq -r .primaryKey)
 # put it in key vault...
-az keyvault secret set --vault-name $KEY_VAULT_NAME --name "RedisKey" --value "$REDIS_KEY_VALUE"
+az keyvault secret set --vault-name $KEY_VAULT_NAME --name "RedisKey" --value "$REDIS_KEY_VALUE" -o none
