@@ -54,7 +54,7 @@ jobs:
     inputs:
       azureSubscription: $(AzureSubscription)
       scriptType: bash
-      scriptPath: './redis.sh'
+      scriptPath: 'deploy/keys/redis.sh'
       arguments: $(ResourceGroupName) $(KeyVaultName) $(RedisName) $(KeyType)
       failOnStandardError: true
 - job: ServiceBusKey
@@ -64,7 +64,7 @@ jobs:
     inputs:
       azureSubscription: $(AzureSubscription)
       scriptType: bash
-      scriptPath: './service-bus.sh'
+      scriptPath: 'deploy/keys/service-bus.sh'
       arguments: $(ResourceGroupName) $(KeyVaultName) $(ServiceBusName) $(KeyType) $(ServiceBusUser)
       failOnStandardError: true
 - job: StorageAccountKey
@@ -74,7 +74,7 @@ jobs:
     inputs:
       azureSubscription: $(AzureSubscription)
       scriptType: bash
-      scriptPath: './storage.sh'
+      scriptPath: 'deploy/keys/storage.sh'
       arguments: $(ResourceGroupName) $(KeyVaultName) $(StorageAccountName) $(KeyType)
       failOnStandardError: true
 - job: ExpressSessionSecret
@@ -84,6 +84,6 @@ jobs:
     inputs:
       azureSubscription: $(AzureSubscription)
       scriptType: bash
-      scriptPath: './express-session.sh'
+      scriptPath: 'deploy/keys/express-session.sh'
       arguments: $(KeyVaultName)
       failOnStandardError: true
