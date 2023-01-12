@@ -21,10 +21,6 @@ variables:
   value:
 
 parameters:
-- name:         renewExpressSessionSecret
-  displayName:  Renew Express Session Secret
-  type:         boolean
-  default:      true
 - name:         keyType
   displayName:  Which Key to Renew (if applicable)
   type:         string
@@ -79,7 +75,6 @@ jobs:
       scriptPath: './storage.sh'
       arguments: $(ResourceGroupName) $(KeyVaultName) $(StorageAccountName) $(KeyType)
       failOnStandardError: true
-- ${{ if eq(parameters.renewExpressSessionSecret, true) }}:
 - job: ExpressSessionSecret
   steps:
   - task: AzureCLI@2
