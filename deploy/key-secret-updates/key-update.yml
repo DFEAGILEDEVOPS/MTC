@@ -1,0 +1,92 @@
+# AzureDevops build defintion for Azure services key rotation and key vault update
+resources:
+  - repo: self
+
+name: Azure-Key-Rotation-$(date:yyyyMMdd)$(rev:.r)
+
+variables:
+- name:         BuildAgentPool
+  value:        MTC
+- name:         KeyVaultName
+  value:
+- name:         RedisName
+  value:
+- name:         ResourceGroupName
+  value:
+- name:         ServiceBusName
+  value:
+- name:         ServiceBusUser
+  value:        mtc-consumer
+- name:         StorageAccountName
+  value:
+
+parameters:
+- name:         renewExpressSessionSecret
+  displayName:  Renew Express Session Secret
+  type:         boolean
+  default:      true
+- name:         keyType
+  displayName:  Which Key to Renew (if applicable)
+  type:         string
+  default:      primary
+  values:
+  - primary
+  - secondary
+
+
+# do not trigger automatically
+trigger: none
+
+pool:
+  name: $(BuildAgentPool)
+# schedules:
+# - cron: "0 3 * * *"
+#   displayName: "3am daily"
+#   branches:
+#     include:
+#     - master
+#     - /feature/46006-key-rotation-build-task
+#   always: true
+
+jobs:
+- job: RedisKey
+  steps:
+  - task: AzureCLI@2
+    displayName: renew Redis Key
+    inputs:
+      azureSubscription: $(AzureSubscription)
+      scriptType: bash
+      scriptPath: './redis.sh'
+      arguments: $(ResourceGroupName) $(KeyVaultName) $(RedisName) $(KeyType)
+      failOnStandardError: true
+- job: ServiceBusKey
+  steps:
+  - task: AzureCLI@2
+    displayName: renew Service Bus Key
+    inputs:
+      azureSubscription: $(AzureSubscription)
+      scriptType: bash
+      scriptPath: './service-bus.sh'
+      arguments: $(ResourceGroupName) $(KeyVaultName) $(ServiceBusName) $(KeyType) $(ServiceBusUser)
+      failOnStandardError: true
+- job: StorageAccountKey
+  steps:
+  - task: AzureCLI@2
+    displayName: renew Storage Account Key
+    inputs:
+      azureSubscription: $(AzureSubscription)
+      scriptType: bash
+      scriptPath: './storage.sh'
+      arguments: $(ResourceGroupName) $(KeyVaultName) $(StorageAccountName) $(KeyType)
+      failOnStandardError: true
+- ${{ if eq(parameters.renewExpressSessionSecret, true) }}:
+- job: ExpressSessionSecret
+  steps:
+  - task: AzureCLI@2
+    displayName: renew express session secret
+    inputs:
+      azureSubscription: $(AzureSubscription)
+      scriptType: bash
+      scriptPath: './express-session.sh'
+      arguments: $(KeyVaultName)
+      failOnStandardError: true

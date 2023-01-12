@@ -50,5 +50,5 @@ KEY_VALUE=$(az servicebus namespace authorization-rule keys renew --key $SERVICE
 
 SERVICE_BUS_USER_KEY="ServiceBusConnectionString-$SERVICE_BUS_USER"
 ## update key vault values
-az keyvault secret set --vault-name $KEY_VAULT_NAME --name $SERVICE_BUS_USER_KEY --value "$KEY_VALUE" > /dev/null
+az keyvault secret set --vault-name $KEY_VAULT_NAME --name $SERVICE_BUS_USER_KEY --value "$KEY_VALUE"  -o none
 echo "$SERVICE_BUS_USER_KEY updated in key vault"
