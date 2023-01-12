@@ -7,18 +7,20 @@ name: Azure-Key-Rotation-$(date:yyyyMMdd)$(rev:.r)
 variables:
 - name:         BuildAgentPool
   value:        MTC
+- name:         AzureSubscription
+  value:        ''
 - name:         KeyVaultName
-  value:
+  value:        ''
 - name:         RedisName
-  value:
+  value:        ''
 - name:         ResourceGroupName
-  value:
+  value:        ''
 - name:         ServiceBusName
-  value:
+  value:        ''
 - name:         ServiceBusUser
   value:        mtc-consumer
 - name:         StorageAccountName
-  value:
+  value:        ''
 
 parameters:
 - name:         keyType
