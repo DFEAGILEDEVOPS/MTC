@@ -21,7 +21,7 @@ variables:
   value:        ''
 
 parameters:
-- name:         KeyType
+- name:         keyType
   displayName:  Which Key to Renew (if applicable)
   type:         string
   default:      primary
@@ -45,7 +45,7 @@ jobs:
       azureSubscription: $(AzureSubscription)
       scriptType: bash
       scriptPath: 'deploy/keys/redis.sh'
-      arguments: $(ResourceGroupName) $(KeyVaultName) $(RedisName) $(KeyType)
+      arguments: $(ResourceGroupName) $(KeyVaultName) $(RedisName) ${{ parameters.keyType }}
       failOnStandardError: true
 - job: ServiceBusKey
   steps:
@@ -55,7 +55,7 @@ jobs:
       azureSubscription: $(AzureSubscription)
       scriptType: bash
       scriptPath: 'deploy/keys/service-bus.sh'
-      arguments: $(ResourceGroupName) $(KeyVaultName) $(ServiceBusName) $(KeyType) $(ServiceBusUser)
+      arguments: $(ResourceGroupName) $(KeyVaultName) $(ServiceBusName) ${{ parameters.keyType }} $(ServiceBusUser)
       failOnStandardError: true
 - job: StorageAccountKey
   steps:
@@ -65,7 +65,7 @@ jobs:
       azureSubscription: $(AzureSubscription)
       scriptType: bash
       scriptPath: 'deploy/keys/storage.sh'
-      arguments: $(ResourceGroupName) $(KeyVaultName) $(StorageAccountName) $(KeyType)
+      arguments: $(ResourceGroupName) $(KeyVaultName) $(StorageAccountName) ${{ parameters.keyType }}
       failOnStandardError: true
 - job: ExpressSessionSecret
   steps:
