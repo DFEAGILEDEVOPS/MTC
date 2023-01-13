@@ -34,3 +34,4 @@ jobs:
 - job: OutputVars
   steps:
   - bash: echo 'var 1 is $(var1), var 2 is $(var2), var 3 is ${{ variables.var3 }}.  running in agent pool $(buildAgentPool)'
+  - bash: echo 'setvar1 is $(setvar1), setvar2 is $(setvar2), nosetvar3 is $(nosetvar3)'
