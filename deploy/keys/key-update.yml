@@ -4,22 +4,6 @@ resources:
 
 name: Azure-Key-Rotation-$(date:yyyyMMdd)$(rev:.r)
 
-variables:
-- name:         BuildAgentPool
-  value:        MTC
-- name:         KeyVaultName
-  value:        ''
-- name:         RedisName
-  value:        ''
-- name:         ResourceGroupName
-  value:        ''
-- name:         ServiceBusName
-  value:        ''
-- name:         ServiceBusUser
-  value:        mtc-consumer
-- name:         StorageAccountName
-  value:        ''
-
 parameters:
 - name:         keyType
   displayName:  Which Key to Renew (if applicable)
@@ -29,12 +13,41 @@ parameters:
   - primary
   - secondary
 
+- name:         serviceBusUser
+  displayName:  service bus user id for consumer
+  type:         string
+  default:      mtc-consumer
+
+- name:         buildAgentPool
+  displayName:  agent pool to execute job
+  type:         string
+  default:      MTC
+
+- name:         keyVaultName
+  displayName:  name of key vault to update
+  type:         string
+
+- name:         resourceGroupName
+  displayName:  target resource group
+  type:         string
+
+- name:         redisName
+  displayName:  target redis instance
+  type:         string
+
+- name:         serviceBusName
+  displayName:  target service bus instance
+  type:         string
+
+- name:         storageAccountName
+  displayName:  target storage account
+  type:         string
 
 # do not trigger automatically
 trigger: none
 
 pool:
-  name: $(BuildAgentPool)
+  name: ${{ parameters.buildAgentPool }}
 
 jobs:
 - job: RedisKey
@@ -45,7 +58,7 @@ jobs:
       azureSubscription: $(AzureSubscription)
       scriptType: bash
       scriptPath: 'deploy/keys/redis.sh'
-      arguments: $(ResourceGroupName) $(KeyVaultName) $(RedisName) ${{ parameters.keyType }}
+      arguments: ${{ parameters.resourceGroupName }} ${{ parameters.keyVaultName }} ${{ parameters.redisName }} ${{ parameters.keyType }}
       failOnStandardError: true
 - job: ServiceBusKey
   steps:
@@ -55,7 +68,7 @@ jobs:
       azureSubscription: $(AzureSubscription)
       scriptType: bash
       scriptPath: 'deploy/keys/service-bus.sh'
-      arguments: $(ResourceGroupName) $(KeyVaultName) $(ServiceBusName) ${{ parameters.keyType }} $(ServiceBusUser)
+      arguments: ${{ parameters.resourceGroupName }} ${{ parameters.keyVaultName }} ${{ parameters.serviceBusName }} ${{ parameters.keyType }} ${{ parameters.serviceBusUser }}
       failOnStandardError: true
 - job: StorageAccountKey
   steps:
@@ -65,7 +78,7 @@ jobs:
       azureSubscription: $(AzureSubscription)
       scriptType: bash
       scriptPath: 'deploy/keys/storage.sh'
-      arguments: $(ResourceGroupName) $(KeyVaultName) $(StorageAccountName) ${{ parameters.keyType }}
+      arguments: ${{ parameters.resourceGroupName }} ${{ parameters.keyVaultName }} ${{ parameters.storageAccountName }} ${{ parameters.keyType }}
       failOnStandardError: true
 - job: ExpressSessionSecret
   steps:
@@ -75,5 +88,5 @@ jobs:
       azureSubscription: $(AzureSubscription)
       scriptType: bash
       scriptPath: 'deploy/keys/express-session.sh'
-      arguments: $(KeyVaultName)
+      arguments: ${{ parameters.keyVaultName }}
       failOnStandardError: true
