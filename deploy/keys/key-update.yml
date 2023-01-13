@@ -7,8 +7,6 @@ name: Azure-Key-Rotation-$(date:yyyyMMdd)$(rev:.r)
 variables:
 - name:         BuildAgentPool
   value:        MTC
-- name:         AzureSubscription
-  value:        ''
 - name:         KeyVaultName
   value:        ''
 - name:         RedisName
