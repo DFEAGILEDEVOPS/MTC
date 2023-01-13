@@ -78,6 +78,6 @@ jobs:
     inputs:
       azureSubscription: $(Azure.ServicePrincipal.Name)
       scriptType: bash
-      scriptPath: 'deploy/keys/express-session.sh' ${{ parameters.updateKeyVault }}
-      arguments: $(KeyVault.Name)
+      scriptPath: 'deploy/keys/express-session.sh'
+      arguments: $(KeyVault.Name) ${{ parameters.updateKeyVault }}
       failOnStandardError: true
