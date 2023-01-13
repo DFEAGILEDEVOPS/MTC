@@ -46,7 +46,7 @@ parameters:
 trigger: none
 
 pool:
-  name: ${{ parameters.buildAgentPool }}
+  name: $(buildAgentPool)
 
 jobs:
 - job: RedisKey
