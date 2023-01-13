@@ -42,6 +42,11 @@ parameters:
   displayName:  target storage account
   type:         string
 
+- name:         updateKeyVault
+  displayName:  update key vault secrets with renewed values
+  type:         boolean
+  default:      true
+
 # do not trigger automatically
 trigger: none
 
