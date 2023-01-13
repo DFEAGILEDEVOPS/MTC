@@ -4,6 +4,10 @@ resources:
 
 name: Azure-Key-Rotation-$(date:yyyyMMdd)$(rev:.r)
 
+variables:
+- name: buildAgentPool
+  value: MTC
+
 parameters:
 - name:         keyType
   displayName:  Which Key to Renew (if applicable)
@@ -17,11 +21,6 @@ parameters:
   displayName:  service bus user id for consumer
   type:         string
   default:      mtc-consumer
-
-- name:         buildAgentPool
-  displayName:  agent pool to execute job
-  type:         string
-  default:      MTC
 
 - name:         keyVaultName
   displayName:  name of key vault to update
