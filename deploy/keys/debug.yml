@@ -1,0 +1,36 @@
+# debug vars issue
+resources:
+  - repo: self
+
+name: debug-vars-$(date:yyyyMMdd)$(rev:.r)
+
+variables:
+- name:         var1
+  value:
+- name:         var2
+  value:        xyz
+
+parameters:
+- name:         keyType
+  displayName:  Which Key to Renew (if applicable)
+  type:         string
+  default:      primary
+  values:
+  - primary
+  - secondary
+- name:         buildAgentPool
+  displayName:  Build Agent to run this job
+  type:         string
+  default:      MTC
+
+
+# do not trigger automatically
+trigger: none
+
+pool:
+  name: $(buildAgentPool)
+
+jobs:
+- job: OutputVars
+  steps:
+  - bash: echo 'var 1 is $(var1) and var 2 is $(var2).  running in agent pool $(buildAgentPool)'
