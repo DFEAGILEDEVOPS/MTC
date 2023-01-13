@@ -21,7 +21,7 @@ variables:
   value:        ''
 
 parameters:
-- name:         keyType
+- name:         KeyType
   displayName:  Which Key to Renew (if applicable)
   type:         string
   default:      primary
