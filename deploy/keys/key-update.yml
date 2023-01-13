@@ -37,14 +37,6 @@ trigger: none
 
 pool:
   name: $(BuildAgentPool)
-# schedules:
-# - cron: "0 3 * * *"
-#   displayName: "3am daily"
-#   branches:
-#     include:
-#     - master
-#     - /feature/46006-key-rotation-build-task
-#   always: true
 
 jobs:
 - job: RedisKey
