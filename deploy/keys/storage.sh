@@ -60,7 +60,7 @@ fi
 CONNECTION_STRING=$(az storage account show-connection-string -g $RES_GROUP -n $STORAGE_ACCOUNT_NAME --key $STORAGE_ACCOUNT_KEY_TYPE | jq -r .connectionString)
 
 # skip key vault update if requested
-if [ $UPDATE_KV_SECRET == "false" ]; then exit 0; fi
+if [ $UPDATE_KV_SECRET == "False" ]; then exit 0; fi
 
 # update key vault connection string
 az keyvault secret set --vault-name $KEY_VAULT_NAME --name "StorageAccountConnectionString" --value "$CONNECTION_STRING"  -o none

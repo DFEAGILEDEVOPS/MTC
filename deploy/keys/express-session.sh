@@ -14,7 +14,7 @@ SECRET_VALUE=$(LC_ALL=C tr -dc A-Za-z0-9 </dev/urandom | head -c $SECRET_LENGTH 
 SECRET_NAME=ExpressSessionSecret
 
 # skip key vault update if requested
-if [ $UPDATE_KV_SECRET == "false" ]; then exit 0; fi
+if [ $UPDATE_KV_SECRET == "False" ]; then exit 0; fi
 
 az keyvault secret set --vault-name $KEY_VAULT_NAME --name $SECRET_NAME --value $SECRET_VALUE  -o none
 echo "$SECRET_NAME updated in Key Vault"

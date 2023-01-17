@@ -50,7 +50,7 @@ echo "renewing $SERVICE_BUS_KEY_TYPE key for user $SERVICE_BUS_USER in service b
 KEY_VALUE=$(az servicebus namespace authorization-rule keys renew --key $SERVICE_BUS_KEY_TYPE --name $SERVICE_BUS_USER --namespace-name $SERVICE_BUS_NAME --resource-group $RES_GROUP | jq -r .$KEY_IDENTIFIER)
 
 # skip key vault update if requested
-if [ $UPDATE_KV_SECRET == "false" ]; then exit 0; fi
+if [ $UPDATE_KV_SECRET == "False" ]; then exit 0; fi
 
 SERVICE_BUS_USER_KEY="ServiceBusConnectionString-$SERVICE_BUS_USER"
 ## update key vault values
