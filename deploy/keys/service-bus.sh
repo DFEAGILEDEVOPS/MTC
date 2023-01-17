@@ -11,7 +11,7 @@ KEY_VAULT_NAME=$2 # key vault instance
 SERVICE_BUS_NAME=$3 # service bus instance
 KEY_TYPE=$4 # accepted values are 'primary' or 'secondary'
 SERVICE_BUS_USER=$5 # the target user for key rotation
-SKIP_KV_UPDATE="${6:-false}"  # skips the key vault update if true
+UPDATE_KV_SECRET="${6:-false}"  # skips the key vault update if true
 
 SERVICE_BUS_KEY_TYPE="" # valid values are 'PrimaryKey', 'SecondaryKey'
 KEY_IDENTIFIER="" # valid valuees are 'primaryConnectionString', 'secondaryConnectionString'
@@ -50,7 +50,7 @@ echo "renewing $SERVICE_BUS_KEY_TYPE key for user $SERVICE_BUS_USER in service b
 KEY_VALUE=$(az servicebus namespace authorization-rule keys renew --key $SERVICE_BUS_KEY_TYPE --name $SERVICE_BUS_USER --namespace-name $SERVICE_BUS_NAME --resource-group $RES_GROUP | jq -r .$KEY_IDENTIFIER)
 
 # skip key vault update if requested
-if [ $SKIP_KV_UPDATE == "true" ]; then exit 0; fi
+if [ $UPDATE_KV_SECRET == "false" ]; then exit 0; fi
 
 SERVICE_BUS_USER_KEY="ServiceBusConnectionString-$SERVICE_BUS_USER"
 ## update key vault values

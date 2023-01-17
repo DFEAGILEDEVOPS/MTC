@@ -10,7 +10,7 @@ RES_GROUP=$1 # target resource group
 KEY_VAULT_NAME=$2 # key vault instance
 STORAGE_ACCOUNT_NAME=$3 # storage account
 KEY_TYPE=$4 # accepted values are 'primary' or 'secondary'
-SKIP_KV_UPDATE="${5:-false}"  # skips the key vault update if true
+UPDATE_KV_SECRET="${5:-false}"  # skips the key vault update if true
 
 STORAGE_ACCOUNT_KEY_TYPE="" # valid values are 'key1', 'key2'
 
@@ -60,7 +60,7 @@ fi
 CONNECTION_STRING=$(az storage account show-connection-string -g $RES_GROUP -n $STORAGE_ACCOUNT_NAME --key $STORAGE_ACCOUNT_KEY_TYPE | jq -r .connectionString)
 
 # skip key vault update if requested
-if [ $SKIP_KV_UPDATE == "true" ]; then exit 0; fi
+if [ $UPDATE_KV_SECRET == "false" ]; then exit 0; fi
 
 # update key vault connection string
 az keyvault secret set --vault-name $KEY_VAULT_NAME --name "StorageAccountConnectionString" --value "$CONNECTION_STRING"  -o none
