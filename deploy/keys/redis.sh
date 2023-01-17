@@ -43,8 +43,9 @@ fi
 echo "renewing $REDIS_KEY_TYPE key for redis instance $REDIS_NAME..."
 KEY_VALUE=$(az redis regenerate-keys --key-type $REDIS_KEY_TYPE --name $REDIS_NAME --resource-group $RES_GROUP | jq -r .$KEY_IDENTIFIER)
 
+echo "flag for kv update is $SKIP_KV_UPDATE"
 # skip key vault update if requested
-if [ $SKIP_KV_UPDATE == "true" ]; then exit 0; fi
+if [ $SKIP_KV_UPDATE == true ]; then exit 0; fi
 
 ## update key vault value...
 az keyvault secret set --vault-name $KEY_VAULT_NAME --name "RedisKey" --value $KEY_VALUE  -o none
