@@ -4,6 +4,7 @@
 
 * **FT** - functions throttled
 * **FC** - functions consumption
+* **FP** - functions PS Report
 * **AA** - admin app
 * **PA** - pupil app (SPA)
 * **PAPI** - pupil API
@@ -14,8 +15,8 @@ All environment variables are strings, but they are converted to appropriate typ
 Booleans can be set to the string `'true'` or `'false'` or numeric `1` or `0` which will be converted from a string
  to the equivalent boolean value.
 
-Env Var | Type | Default value | Required | Components | Description
---- | --- | --- | --- | --- | ---
+Env Var | Type | Default value | Required | Components | Description | CICD Config Item Name
+--- | --- | --- | --- | --- | --- | ---
  ADMIN_SESSION_DISPLAY_NOTICE_AFTER | Int | 300 | Optional | AA | Show a notice to the user that their session is about to end this many seconds before the session expires.
  ADMIN_SESSION_EXPIRATION_TIME_IN_SECONDS | Int | 600 | Optional | AA | The session will expire after this many seconds of inactivity.
  ALLOWED_WORDS | String | FC:'aaa,bbb,ccc,ddd,eee,dim'<br />AA:'aaa,bcd,dcd,tfg,bxx' | Required | FC | Required to generated random school pins in the form WORD + NUMBER + NUMBER + WORD
