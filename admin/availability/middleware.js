@@ -42,9 +42,9 @@ async function isPostLiveOrLaterCheckPhase (req, res, next) {
    * global.checkWindowPhase is an int. Later phases have larger number.
    */
   try {
-    res.locals.pageTitle = 'Section unavailable'
-    req.breadcrumbs(res.locals.pageTitle)
     if (global.checkWindowPhase >= checkWindowPhaseConsts.postCheckAdmin) {
+      res.locals.pageTitle = 'Section unavailable'
+      req.breadcrumbs(res.locals.pageTitle)
       return res.render('availability/section-unavailable', { breadcrumbs: req.breadcrumbs(), title: 'Section unavailable' })
     }
     return next()
