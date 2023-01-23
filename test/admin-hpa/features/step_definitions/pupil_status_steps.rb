@@ -113,7 +113,9 @@ Then(/^the pupil with the processing error can have a reason for not taking the 
 end
 
 And(/^then the HDF can be signed$/) do
-  step 'I am on the confirm and submit page'
+  step 'I am on the HDF form page'
+  step 'I submit the form with the hdf name fields set as Test'
+  declaration_review_pupils_page.continue_button.click
   step 'I submit the form with confirmation'
   step 'I can see the declaration submitted page as per the design'
 end
