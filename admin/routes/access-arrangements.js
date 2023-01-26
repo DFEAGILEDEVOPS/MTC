@@ -3,7 +3,7 @@
 const express = require('express')
 const router = express.Router()
 const isAuthenticated = require('../authentication/middleware')
-const isAdminWindowAvailable = require('../availability/middleware')
+const { isAdminWindowAvailable } = require('../availability/middleware')
 const featureToggles = require('feature-toggles')
 const roles = require('../lib/consts/roles')
 const accessArrangementsController = require('../controllers/access-arrangements')

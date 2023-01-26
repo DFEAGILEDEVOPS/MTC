@@ -281,6 +281,7 @@ app.use(async function (req, res, next) {
   // do this for every request
   // @ts-ignore - var declared in server.js
   global.checkWindowPhase = await CheckWindowPhaseService.getPhase()
+  logger.info(`CheckWindow Phase is ${global.checkWindowPhase}`)
   next()
 })
 

@@ -4,6 +4,7 @@ const moment = require('moment')
 const config = require('../config')
 const checkWindowV2Service = require('../services/check-window-v2.service')
 const settingsService = require('../services/setting.service')
+const checkWindowPhaseConsts = require('../lib/consts/check-window-phase')
 
 async function isAdminWindowAvailable (req, res, next) {
   // If this env var is set it will ignore this check entirely
@@ -32,4 +33,24 @@ async function isAdminWindowAvailable (req, res, next) {
   }
 }
 
-module.exports = isAdminWindowAvailable
+async function isPostLiveOrLaterCheckPhase (req, res, next) {
+  // If this env var is set it will ignore this check entirely
+  if (config.OVERRIDE_AVAILABILITY_MIDDLEWARE) {
+    return next()
+  }
+  /**
+   * global.checkWindowPhase is an int. Later phases have larger number.
+   */
+  try {
+    if (global.checkWindowPhase >= checkWindowPhaseConsts.postCheckAdmin) {
+      res.locals.pageTitle = 'Section unavailable'
+      req.breadcrumbs(res.locals.pageTitle)
+      return res.render('availability/section-unavailable', { breadcrumbs: req.breadcrumbs(), title: 'Section unavailable' })
+    }
+    return next()
+  } catch (error) {
+    next(error)
+  }
+}
+
+module.exports = { isAdminWindowAvailable, isPostLiveOrLaterCheckPhase }
