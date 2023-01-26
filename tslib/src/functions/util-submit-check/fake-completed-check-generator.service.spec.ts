@@ -6,7 +6,8 @@ let sut: FakeCompletedCheckGeneratorService
 
 class TestFakeCompletedCheckGeneratorService extends FakeCompletedCheckGeneratorService implements ICompletedCheckGeneratorService {
   public testCreateAnswers (questions: CheckQuestion[], numberFromCorrectCheckForm: number = questions.length, numberFromIncorrectCheckForm: number = 0): CompleteCheckAnswer[] {
-    return this.createAnswers(questions, numberFromCorrectCheckForm, numberFromIncorrectCheckForm)
+    // return this.createAnswers(questions, numberFromCorrectCheckForm, numberFromIncorrectCheckForm)
+    return []
   }
 }
 
