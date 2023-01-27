@@ -141,7 +141,6 @@ export class FakeCompletedCheckGeneratorService implements ICompletedCheckGenera
     const input: string = wantRandomAnswer ? faker.datatype.number({ min: 1, max: 150 }).toString() : (question.factor1 * question.factor2).toString()
     const audits: CompleteCheckAuditEntry[] = []
 
-    // Capture the loading screen
     // Add 3 seconds to mimic the load screen
     audits.push(this.createAuditEvent(AuditEntryType.PauseRendered, baseTime, question, false))
     baseTime.add(3, 'seconds')
@@ -198,14 +197,38 @@ export class FakeCompletedCheckGeneratorService implements ICompletedCheckGenera
      */
   createResponses (questions: CheckQuestion[], numberFromCorrectCheckForm: number = questions.length, numberFromIncorrectCheckForm: number = 0, numberOfDuplicateAnswers: number = 0): { answers: CompleteCheckAnswer[], inputs: CompleteCheckInputEntry[], audits: CompleteCheckAuditEntry[] } {
     const responses: { answers: CompleteCheckAnswer[], inputs: CompleteCheckInputEntry[], audits: CompleteCheckAuditEntry[] } = { answers: [], inputs: [], audits: [] }
+
+    // The check starts now.  We will pass `dt` around by reference and keep adding more time to it, to
+    // make the timings look authentic.
     const dt = moment()
+    responses.audits.push(this.createAuditEvent(AuditEntryType.CheckStarted, dt))
 
     for (let i = 0; i < questions.length; i++) {
-      const response = this.createMockResponse(i + 1, questions[i], dt, true)
-      responses.answers.push(response.answer)
-      responses.inputs.push(...response.inputs)
-      responses.audits.push(...response.audits)
+      const resp = this.createMockResponse(i + 1, questions[i], dt, true)
+      responses.answers.push(resp.answer)
+      responses.inputs.push(...resp.inputs)
+      responses.audits.push(...resp.audits)
     }
+
+    console.log('number iof duplicates is ', numberOfDuplicateAnswers)
+    if (numberOfDuplicateAnswers > 0 ) {
+      if (numberOfDuplicateAnswers > 25) { // You might want more duplicates.  This seems enough though.
+        throw new Error('Error: too many duplicates requested')
+      }
+      for (let i = 0; i < numberOfDuplicateAnswers; i++) {
+        const qidx = i + 1 <= questions.length? i : questions.length - 1
+        const resp = this.createMockResponse(qidx + 1, questions[qidx], dt, true)
+        responses.answers.push(resp.answer)
+        responses.inputs.push(...resp.inputs)
+        responses.audits.push(...resp.audits)
+      }
+    }
+
+    // Add some final audits
+    dt.add(1, 'millisecond')
+    responses.audits.push(this.createAuditEvent(AuditEntryType.CheckSubmissionPending, dt))
+    dt.add(1, 'millisecond')
+    responses.audits.push(this.createAuditEvent(AuditEntryType.CheckSubmissionApiCalled, dt))
 
     return responses
   }
@@ -216,19 +239,7 @@ export class FakeCompletedCheckGeneratorService implements ICompletedCheckGenera
       funcConfig?.answers?.numberFromIncorrectCheckForm,
       funcConfig?.answers?.numberOfDuplicateAnswers)
 
-    // TODO: JMS: rework this duplicate answers
-    // if (funcConfig?.answers?.numberOfDuplicateAnswers !== undefined) {
-    //   const numDuplicates: number = funcConfig?.answers?.numberOfDuplicateAnswers
-    //   if (numDuplicates < 0) {
-    //     throw new Error('Error: negative duplicates')
-    //   }
-    //   if (numDuplicates > 25) { // You might want more duplicates.  This seems enough though.
-    //     throw new Error('Error: too many duplicates requested')
-    //   }
-    //   if (numDuplicates > 0) {
-    //     const duplicateAnswers = this.createAnswers(numDuplicates)
-    //   }
-    // }
+
 
     return {
       answers: response.answers,

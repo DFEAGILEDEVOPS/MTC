@@ -35,6 +35,7 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
   }
   context.log(`${functionName} config parsed as: ${JSON.stringify(funcConfig)})`)
   const fakeSubmittedCheckBuilder = new FakeSubmittedCheckMessageGeneratorService()
+  fakeSubmittedCheckBuilder.setLogger(context.log)
   fakeSubmittedCheckBuilder.setConfig(funcConfig)
   if (funcConfig.schoolUuid !== undefined) {
     const liveCheckCodes = await liveSchoolChecksDataService.fetchBySchoolUuid(funcConfig.schoolUuid)
