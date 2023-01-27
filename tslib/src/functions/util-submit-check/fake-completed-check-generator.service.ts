@@ -2,8 +2,6 @@ import { PreparedCheck } from '../../schemas/check-schemas/prepared-check'
 import { CheckQuestion, CompleteCheckAnswer, CompleteCheckAuditEntry, CompleteCheckInputEntry, ValidCheck, InputEventType, AuditEntryType } from '../../schemas/check-schemas/validated-check'
 import { faker } from '@faker-js/faker'
 import moment from 'moment'
-// import { FakeCheckAuditGeneratorService } from './fake-check-audit-generator.service'
-// import { FakeCheckInputsGeneratorService } from './fake-check-inputs-generator.service'
 import { IUtilSubmitCheckConfig } from '.'
 import { Answer } from '../check-marker/models'
 
@@ -12,14 +10,6 @@ export interface ICompletedCheckGeneratorService {
 }
 
 export class FakeCompletedCheckGeneratorService implements ICompletedCheckGeneratorService {
-  // private readonly fakeCheckAuditBuilderService: FakeCheckAuditGeneratorService
-  // private readonly fakeCheckInputsGeneratorService: FakeCheckInputsGeneratorService
-
-  // constructor () {
-  //   // this.fakeCheckAuditBuilderService = new FakeCheckAuditGeneratorService()
-  //   // this.fakeCheckInputsGeneratorService = new FakeCheckInputsGeneratorService()
-  // }
-
   private readonly languages = ['en-GB', 'en-US', 'en', 'en-ie']
   private readonly platforms = ['win32', 'MacIntel', 'Win64', 'LINUX X86_64']
   private readonly userAgents = [
@@ -42,80 +32,6 @@ export class FakeCompletedCheckGeneratorService implements ICompletedCheckGenera
       max: 1600
     })
   }
-
-  // /**
-  //  *
-  //  * @param {CheckQuestion} question Create a single answer.
-  //  * @param {boolean} isCorrect
-  //  * @param {moment.Moment} baseTime represents the time the timer was started
-  //  * @returns CompleteCheckAnswer
-  //  */
-  // private createAnswer(question: CheckQuestion, isCorrect: boolean, baseTime: moment.Moment): CompleteCheckAnswer {
-  //   const correctAnswer = question.factor1 * question.factor2
-  //   const answer: CompleteCheckAnswer = {
-  //       answer: `${correctAnswer}`,
-  //       clientTimestamp: moment().add(question.order, 'seconds').toISOString(),
-  //       factor1: q.factor1,
-  //       factor2: q.factor2,
-  //       question: `${q.factor1}x${q.factor2}`,
-  //       sequenceNumber: q.order
-  //     })
-  //   return answer
-  // }
-
-  // protected createAnswersOLD (questions: CheckQuestion[], numberFromCorrectCheckForm: number = questions.length, numberFromIncorrectCheckForm: number = 0, numberOfDuplicateAnswers: number = 0): CompleteCheckAnswer[] {
-  //   const answers: Answer[] = []
-  //   for (let i = 0; i < numberFromCorrectCheckForm; i++) {
-  //     const q = questions[i]
-  //     const correctAnswer = q.factor1 * q.factor2
-  //     answers.push({
-  //       answer: `${correctAnswer}`,
-  //       clientTimestamp: moment().add(q.order, 'seconds').toISOString(),
-  //       factor1: q.factor1,
-  //       factor2: q.factor2,
-  //       question: `${q.factor1}x${q.factor2}`,
-  //       sequenceNumber: q.order
-  //     })
-  //   }
-
-  //   const numberOfPotentiallyWrongAnswers = faker.datatype.number({ min: 0, max: answers.length })
-  //   for (let index = 0; index < numberOfPotentiallyWrongAnswers; index++) {
-  //     const answer = faker.random.arrayElement(answers)
-  //     // just pick any number in the given range, it could be correct or not...
-  //     const newAnswer = faker.datatype.number({ min: 0, max: 144 })
-  //     answer.answer = `${newAnswer}`
-  //   }
-
-  //   // Optionally add some new answers from wrong forms mimining data corruption in local storage
-  //   for (let i = 0; i < numberFromIncorrectCheckForm; i++) {
-  //     const index = answers.length + i
-  //     answers.push({
-  //       answer: '1',
-  //       clientTimestamp: moment().add(index, 'seconds').toISOString(),
-  //       factor1: 0,
-  //       factor2: index,
-  //       question: `0x${index}`,
-  //       sequenceNumber: index
-  //     })
-  //   }
-
-  //   if (numberOfDuplicateAnswers > 0) {
-  //     // start the duplications at the first question
-  //     for (let i = 0; i < numberOfDuplicateAnswers; i++) {
-  //       const sequenceNumber = i + 1
-  //       answers.push({
-  //         answer: '216',
-  //         clientTimestamp: moment().add(i, 'seconds').toISOString(),
-  //         factor1: 0,
-  //         factor2: i,
-  //         question: `0x${i}`,
-  //         sequenceNumber: sequenceNumber
-  //       })
-  //     }
-  //   }
-
-  //   return answers
-  // }
 
   private createAuditEvent (auditType: AuditEntryType, dt: moment.Moment, question?: CheckQuestion, isWarmup?: boolean): CompleteCheckAuditEntry {
     const data: any = {}
@@ -203,21 +119,32 @@ export class FakeCompletedCheckGeneratorService implements ICompletedCheckGenera
     const dt = moment()
     responses.audits.push(this.createAuditEvent(AuditEntryType.CheckStarted, dt))
 
-    for (let i = 0; i < questions.length; i++) {
-      const resp = this.createMockResponse(i + 1, questions[i], dt, true)
+    for (let i = 0; i < numberFromCorrectCheckForm; i++) {
+      const resp = this.createMockResponse(i + 1, questions[i], dt, faker.datatype.boolean())
       responses.answers.push(resp.answer)
       responses.inputs.push(...resp.inputs)
       responses.audits.push(...resp.audits)
     }
 
-    console.log('number iof duplicates is ', numberOfDuplicateAnswers)
+    for (let i = 0; i < numberFromIncorrectCheckForm; i++) {
+      const randomQuestion = {
+        order: faker.datatype.number({ min: 1, max: 25}),
+        factor1: faker.datatype.number({ min: 1, max: 12}),
+        factor2: faker.datatype.number({ min: 1, max: 12})
+      }
+      const resp = this.createMockResponse(i + 1, randomQuestion, dt, faker.datatype.boolean())
+      responses.answers.push(resp.answer)
+      responses.inputs.push(...resp.inputs)
+      responses.audits.push(...resp.audits)
+    }
+
     if (numberOfDuplicateAnswers > 0 ) {
       if (numberOfDuplicateAnswers > 25) { // You might want more duplicates.  This seems enough though.
         throw new Error('Error: too many duplicates requested')
       }
       for (let i = 0; i < numberOfDuplicateAnswers; i++) {
         const qidx = i + 1 <= questions.length? i : questions.length - 1
-        const resp = this.createMockResponse(qidx + 1, questions[qidx], dt, true)
+        const resp = this.createMockResponse(qidx + 1, questions[qidx], dt, faker.datatype.boolean())
         responses.answers.push(resp.answer)
         responses.inputs.push(...resp.inputs)
         responses.audits.push(...resp.audits)
@@ -238,8 +165,6 @@ export class FakeCompletedCheckGeneratorService implements ICompletedCheckGenera
       funcConfig?.answers?.numberFromCorrectCheckForm,
       funcConfig?.answers?.numberFromIncorrectCheckForm,
       funcConfig?.answers?.numberOfDuplicateAnswers)
-
-
 
     return {
       answers: response.answers,
