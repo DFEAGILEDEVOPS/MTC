@@ -29,9 +29,9 @@ parameters:
   - prod
 
 variables:
-- group: vars-${{ parameters.targetEnvironment }}
-- name: buildAgentPool
-  value: MTC
+- group:        vars-${{ parameters.targetEnvironment }}
+- name:         buildAgentPool
+  value:        MTC
 
 
 # do not trigger automatically
