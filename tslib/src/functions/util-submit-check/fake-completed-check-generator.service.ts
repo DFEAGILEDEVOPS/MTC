@@ -216,7 +216,7 @@ export class FakeCompletedCheckGeneratorService implements ICompletedCheckGenera
       },
       questions: preparedCheck.questions,
       school: {
-        name: faker.company.companyName(),
+        name: faker.company.name(),
         uuid: preparedCheck.school.uuid
       },
       schoolUUID: preparedCheck.school.uuid,
