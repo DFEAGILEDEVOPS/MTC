@@ -47,7 +47,7 @@
     "@azure/service-bus": "^7.7.3",
     "@azure/storage-blob": "^12.12.0",
     "@azure/storage-queue": "^12.11.0",
-    "adm-zip": "^0.5.6",
+    "adm-zip": "^0.5.10",
     "applicationinsights": "^2.3.5",
     "async": "^3.2.4",
     "axios": "^0.27.2",
@@ -58,12 +58,12 @@
     "ioredis": "^4.27.9",
     "lz-string": "^1.4.4",
     "moment": "^2.29.4",
-    "moment-timezone": "^0.5.39",
+    "moment-timezone": "^0.5.40",
     "mssql": "^8.1.4",
     "ramda": "^0.28.0",
     "ramda-adjunct": "^3.4.0",
     "random-number-csprng": "^1.0.2",
-    "ua-parser-js": "^0.8.1",
+    "ua-parser-js": "^1.0.33",
     "uuid": "^8.3.1"
   },
   "function-settings": {

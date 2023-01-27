@@ -446,10 +446,10 @@
   resolved "https://registry.yarnpkg.com/@types/uuid/-/uuid-8.3.4.tgz#bd86a43617df0594787d38b735f55c805becf1bc"
   integrity sha512-c/I8ZRb51j+pYGAu5CrFMRxqZ2ke4y2grEBO5AUjgSkSk+qT2Ea+OdWElz/OiMf5MNpn2b17kuVBwZLQJXzihw==
 
-adm-zip@^0.5.6:
-  version "0.5.9"
-  resolved "https://registry.yarnpkg.com/adm-zip/-/adm-zip-0.5.9.tgz#b33691028333821c0cf95c31374c5462f2905a83"
-  integrity sha512-s+3fXLkeeLjZ2kLjCBwQufpI5fuN+kIGBxu6530nVQZGVol0d7Y/M88/xw9HGGUcJjKf8LutN3VPRUBq6N7Ajg==
+adm-zip@^0.5.10:
+  version "0.5.10"
+  resolved "https://registry.yarnpkg.com/adm-zip/-/adm-zip-0.5.10.tgz#4a51d5ab544b1f5ce51e1b9043139b639afff45b"
+  integrity sha512-x0HvcHqVJNTPk/Bw8JbLWlWoo6Wwnsug0fnYYro1HBrjxZ3G7/AZk7Ahv8JwDe1uIcz8eBqvu86FuF1POiG7vQ==
 
 agent-base@6:
   version "6.0.2"
@@ -2629,10 +2629,10 @@ mixin-deep@^1.2.0:
     for-in "^1.0.2"
     is-extendable "^1.0.1"
 
-moment-timezone@^0.5.39:
-  version "0.5.39"
-  resolved "https://registry.yarnpkg.com/moment-timezone/-/moment-timezone-0.5.39.tgz#342625a3b98810f04c8f4ea917e448d3525e600b"
-  integrity sha512-hoB6suq4ISDj7BDgctiOy6zljBsdYT0++0ZzZm9rtxIvJhIbQ3nmbgSWe7dNFGurl6/7b1OUkHlmN9JWgXVz7w==
+moment-timezone@^0.5.40:
+  version "0.5.40"
+  resolved "https://registry.yarnpkg.com/moment-timezone/-/moment-timezone-0.5.40.tgz#c148f5149fd91dd3e29bf481abc8830ecba16b89"
+  integrity sha512-tWfmNkRYmBkPJz5mr9GVDn9vRlVZOTe6yqY92rFxiOdWXbjaR0+9LwQnZGGuNR63X456NqmEkbskte8tWL5ePg==
   dependencies:
     moment ">= 2.9.0"
 
@@ -3796,10 +3796,10 @@ typescript@4.3.5:
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.3.5.tgz#4d1c37cc16e893973c45a06886b7113234f119f4"
   integrity sha512-DqQgihaQ9cUrskJo9kIyW/+g0Vxsk8cDtZ52a3NGh0YNTfpUSArXSohyUGnvbPazEPLu398C0UxmKSOrPumUzA==
 
-ua-parser-js@^0.8.1:
-  version "0.8.1"
-  resolved "https://registry.yarnpkg.com/ua-parser-js/-/ua-parser-js-0.8.1.tgz#aa3fea52565c5e36cd84ad5a47497e8f2abadc9a"
-  integrity sha512-top37bpoaHp+wJBAqjm5KNz7qNfSZ/tmHEisuMMK5uzjdIo/L6uWovDFuYboO+q8EMz1f67exTnd+OPYESuu8Q==
+ua-parser-js@^1.0.33:
+  version "1.0.33"
+  resolved "https://registry.yarnpkg.com/ua-parser-js/-/ua-parser-js-1.0.33.tgz#f21f01233e90e7ed0f059ceab46eb190ff17f8f4"
+  integrity sha512-RqshF7TPTE0XLYAqmjlu5cLLuGdKrNu9O1KLA/qp39QtbZwuzwv1dT46DZSopoUMsYgXpB3Cv8a03FI8b74oFQ==
 
 unbox-primitive@^1.0.2:
   version "1.0.2"

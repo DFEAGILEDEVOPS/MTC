@@ -4,7 +4,7 @@ const roles = require('../lib/consts/roles')
 const express = require('express')
 const router = express.Router()
 const isAuthenticated = require('../authentication/middleware')
-const isAdminWindowAvailable = require('../availability/middleware')
+const { isAdminWindowAvailable } = require('../availability/middleware')
 
 const schoolController = require('../controllers/school')
 

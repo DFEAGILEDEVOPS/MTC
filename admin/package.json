@@ -44,7 +44,7 @@
     "@azure/service-bus": "^7.0.5",
     "@azure/storage-blob": "^12.8.0",
     "@azure/storage-queue": "^12.7.0",
-    "adm-zip": "^0.5.7",
+    "adm-zip": "^0.5.10",
     "applicationinsights": "^2.3.6",
     "axios": "^0.24.0",
     "bcryptjs": "^2.4.3",
