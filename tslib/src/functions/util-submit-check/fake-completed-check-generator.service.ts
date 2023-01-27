@@ -36,7 +36,7 @@ export class FakeCompletedCheckGeneratorService implements ICompletedCheckGenera
   private createAuditEvent (auditType: AuditEntryType, dt: moment.Moment, question?: CheckQuestion, isWarmup?: boolean): CompleteCheckAuditEntry {
     const data: any = {}
     if (question !== undefined) {
-      data.question =`${question.factor1}x${question.factor2}`
+      data.question = `${question.factor1}x${question.factor2}`
       data.sequenceNumber = question.order
       if (isWarmup !== undefined) {
         data.isWarmup = isWarmup
@@ -128,9 +128,9 @@ export class FakeCompletedCheckGeneratorService implements ICompletedCheckGenera
 
     for (let i = 0; i < numberFromIncorrectCheckForm; i++) {
       const randomQuestion = {
-        order: faker.datatype.number({ min: 1, max: 25}),
-        factor1: faker.datatype.number({ min: 1, max: 12}),
-        factor2: faker.datatype.number({ min: 1, max: 12})
+        order: faker.datatype.number({ min: 1, max: 25 }),
+        factor1: faker.datatype.number({ min: 1, max: 12 }),
+        factor2: faker.datatype.number({ min: 1, max: 12 })
       }
       const resp = this.createMockResponse(i + 1, randomQuestion, dt, faker.datatype.boolean())
       responses.answers.push(resp.answer)
@@ -138,12 +138,12 @@ export class FakeCompletedCheckGeneratorService implements ICompletedCheckGenera
       responses.audits.push(...resp.audits)
     }
 
-    if (numberOfDuplicateAnswers > 0 ) {
+    if (numberOfDuplicateAnswers > 0) {
       if (numberOfDuplicateAnswers > 25) { // You might want more duplicates.  This seems enough though.
         throw new Error('Error: too many duplicates requested')
       }
       for (let i = 0; i < numberOfDuplicateAnswers; i++) {
-        const qidx = i + 1 <= questions.length? i : questions.length - 1
+        const qidx = i + 1 <= questions.length ? i : questions.length - 1
         const resp = this.createMockResponse(qidx + 1, questions[qidx], dt, faker.datatype.boolean())
         responses.answers.push(resp.answer)
         responses.inputs.push(...resp.inputs)

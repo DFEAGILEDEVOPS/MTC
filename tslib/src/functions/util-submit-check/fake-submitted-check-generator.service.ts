@@ -33,7 +33,7 @@ export class FakeSubmittedCheckMessageGeneratorService {
     this.funcConfig = funcConfig
   }
 
-  setLogger(logger: ILogger): void {
+  setLogger (logger: ILogger): void {
     this.logger = logger
   }
 
