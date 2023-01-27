@@ -29,14 +29,16 @@ const listPupils = async function listPupils (req, res, next) {
     hl = typeof hl === 'string' ? JSON.parse(hl) : hl
   }
 
+  // const showAddPupilButtons = global.checkWindowPhase <= checkWindowPhaseConsts.officialCheck // Add buttons allowed up to the official check, but not after in the admin period, or the post admin period.
+  const showAddPupilButtons = global.checkWindowPhase !== checkWindowPhaseConsts.readOnlyAdmin && global.checkWindowPhase !== checkWindowPhaseConsts.unavailable && global.checkWindowPhase !== checkWindowPhaseConsts.postCheckAdmin
+
   res.render(pupilsListView, {
     highlight: hl && new Set(hl),
     pupils: pupilsFormatted,
     breadcrumbs: req.breadcrumbs(),
     availabilityData,
     showPupilAdminLink: req.user.role === roles.staAdmin,
-    // @ts-ignore - defined in server.js
-    showAddPupilButtons: global.checkWindowPhase !== checkWindowPhaseConsts.readOnlyAdmin && global.checkWindowPhase !== checkWindowPhaseConsts.unavailable
+    showAddPupilButtons
   })
 }
 
