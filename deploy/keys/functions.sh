@@ -3,7 +3,11 @@
 # set errors on
 set -e
 
-echo "currently unable to update master key via CLI"
+# this script is unfinished as we are renew the master key via the CLI
+# the only workable solution i have found is to use the rest API and post a JSON file,
+# which isn't very practical - https://www.michaelscollier.com/azure-functions-system-key-change/
+# this will be performed manually until further notice
+echo "currently unable to update master key via CLI, please perform manual renew via portal"
 return -1
 
 # renews key for azure redis and updates key vault
