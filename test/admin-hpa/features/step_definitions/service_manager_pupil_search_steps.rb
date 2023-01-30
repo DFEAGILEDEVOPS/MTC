@@ -19,6 +19,7 @@ Then(/^the summary page is displayed with the status set to (.+) along with deta
   expect(pupil_summary_page.school.text).to eql school_details['name']
   expect(pupil_summary_page.dfe_number.text).to eql school_details['dfeNumber'].to_s
   expect(pupil_summary_page.urn.text).to eql school_details['urn'].to_s
+  Timeout.timeout(10,2){visit current_url until pupil_summary_page.status.text.eql? status}
   expect(pupil_summary_page.status.text).to eql status
 end
 
