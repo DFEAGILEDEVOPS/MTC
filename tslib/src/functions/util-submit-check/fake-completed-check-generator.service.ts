@@ -129,7 +129,7 @@ export class FakeCompletedCheckGeneratorService implements ICompletedCheckGenera
     for (let i = 0; i < numberFromIncorrectCheckForm; i++) {
       const randomQuestion = {
         order: faker.datatype.number({ min: 1, max: 25 }),
-        factor1: faker.datatype.number({ min: 1, max: 12 }),
+        factor1: 13, // Using 13 provides a way of ensuring that this question is not in the questions array provided as the first arg to this function.
         factor2: faker.datatype.number({ min: 1, max: 12 })
       }
       const resp = this.createMockResponse(i + 1, randomQuestion, dt, faker.datatype.boolean())
