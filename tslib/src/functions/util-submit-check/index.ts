@@ -62,7 +62,6 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
   for (let index = 0; index < funcConfig.checkCodes.length; index++) {
     const checkCode = funcConfig.checkCodes[index]
     messages.push(await fakeSubmittedCheckBuilder.createSubmittedCheckMessage(checkCode))
-    context.log(JSON.stringify(messages[-1], null, 4))
   }
   context.bindings.submittedCheckQueue = messages
 }
