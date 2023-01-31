@@ -44,6 +44,7 @@ describe('service manager pupil service', () => {
         urlSlug: 'urlSlug',
         foreName: 'forename',
         lastName: 'lastname',
+        middleNames: 'middle names',
         dateOfBirth: moment('2021-10-04T15:23'),
         schoolName: 'school name',
         urn: 123456,
@@ -58,6 +59,7 @@ describe('service manager pupil service', () => {
       expect(actual[0].dfeNumber).toStrictEqual(expected.dfeNumber)
       expect(actual[0].firstName).toStrictEqual(expected.foreName)
       expect(actual[0].lastName).toStrictEqual(expected.lastName)
+      expect(actual[0].middleNames).toStrictEqual(expected.middleNames)
       expect(actual[0].schoolName).toStrictEqual(expected.schoolName)
       expect(actual[0].urlSlug).toStrictEqual(expected.urlSlug)
       expect(actual[0].id).toStrictEqual(expected.id)
@@ -119,6 +121,7 @@ describe('service manager pupil service', () => {
         urlSlug: 'urlSlug',
         foreName: 'forename',
         lastName: 'lastname',
+        middleNames: 'middle names',
         dateOfBirth: moment('2021-10-04T15:23'),
         schoolName: 'school name',
         urn: 123456,
@@ -147,6 +150,7 @@ describe('service manager pupil service', () => {
         urlSlug: 'urlSlug',
         foreName: 'forename',
         lastName: 'lastname',
+        middleNames: 'middle names',
         dateOfBirth: moment('2021-10-04T15:23'),
         schoolName: 'school name',
         urn: 123456,

@@ -25,6 +25,7 @@ export class ServiceManagerPupilService {
         id: r.id,
         firstName: r.foreName,
         lastName: r.lastName,
+        middleNames: r.middleNames,
         dateOfBirth: dateService.formatShortGdsDate(r.dateOfBirth),
         schoolName: r.schoolName,
         schoolUrn: r.urn,
@@ -51,6 +52,7 @@ export class ServiceManagerPupilService {
       firstName: p[0].foreName,
       id: p[0].id,
       lastName: p[0].lastName,
+      middleNames: p[0].middleNames,
       schoolName: p[0].schoolName,
       schoolUrn: p[0].urn,
       urlSlug: p[0].urlSlug,
@@ -76,6 +78,7 @@ export interface ServiceManagerPupilSearchResult {
   id: number
   firstName: string
   lastName: string
+  middleNames: string
   dateOfBirth: string
   schoolName: string
   schoolUrn: number
@@ -89,6 +92,7 @@ export interface ServiceManagerPupilDetails {
   id: number
   firstName: string
   lastName: string
+  middleNames: string
   dateOfBirth: string
   schoolName: string
   schoolUrn: number

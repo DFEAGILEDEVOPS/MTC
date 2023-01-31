@@ -146,6 +146,11 @@ router.get(
   serviceManagerController.getJobOutputs
 )
 
+router.get('/pupil/move/:slug',
+isAuthenticated([roles.serviceManager]),
+  serviceManagerController.getPupilMove
+)
+
 router.get('/pupil-search',
   isAuthenticated([roles.serviceManager]),
   serviceManagerController.getPupilSearch

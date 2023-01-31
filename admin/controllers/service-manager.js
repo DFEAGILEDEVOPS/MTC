@@ -753,7 +753,23 @@ const controller = {
     } catch (error) {
       return annulPupilErrorHandler(req, res, next, error.message)
     }
+  },
+
+  getPupilMove: async function getPupilMove (req, res, next, validationError = new ValidationError()) {
+    const urlSlug = req.params.slug
+    res.locals.pageTitle = 'Move pupil'
+    const pupil = await ServiceManagerPupilService.getPupilDetailsByUrlSlug(urlSlug.trim().toUpperCase())
+    console.log(pupil)
+    // req.breadcrumbs('Move pupil', `/service-manager/pupil/move/${encodeURIComponent(urlSlug).toLowerCase()}`)
+    req.breadcrumbs(res.locals.pageTitle)
+    res.render('service-manager/pupil/move-form', {
+      breadcrumbs: req.breadcrumbs(),
+      error: validationError,
+      pupil
+    })
   }
+
+
 }
 
 module.exports = controller

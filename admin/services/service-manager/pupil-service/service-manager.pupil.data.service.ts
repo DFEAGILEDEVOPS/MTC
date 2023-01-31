@@ -5,7 +5,7 @@ const sqlService = require('../../data-access/sql.service')
 export class ServiceManagerPupilDataService {
   static async findPupilByUpn (upn: string): Promise<PupilSearchResult[]> {
     const sql = `
-      SELECT p.createdAt, p.foreName, p.lastName, p.dateOfBirth,
+      SELECT p.createdAt, p.foreName, p.lastName, p.middleNames, p.dateOfBirth,
         s.name as [schoolName], s.urn, s.dfeNumber,
         p.urlSlug, s.id as [schoolId]
       FROM mtc_admin.pupil p
@@ -23,7 +23,7 @@ export class ServiceManagerPupilDataService {
 
   static async getPupilByUrlSlug (urlSlug: string): Promise<PupilSearchResult[]> {
     const sql = `
-      SELECT p.createdAt, p.id, p.foreName, p.lastName, p.dateOfBirth,
+      SELECT p.createdAt, p.id, p.foreName, p.middleNames, p.lastName, p.dateOfBirth,
         s.name as [schoolName], s.urn, s.dfeNumber,
         p.urlSlug, p.upn, s.id as [schoolId],
         ac.code as [attendanceCode]
@@ -86,6 +86,7 @@ export interface PupilSearchResult {
   urlSlug: string
   foreName: string
   lastName: string
+  middleNames: string
   dateOfBirth: Moment
   schoolName: string
   urn: number
