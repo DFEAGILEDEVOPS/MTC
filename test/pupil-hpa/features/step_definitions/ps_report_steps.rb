@@ -235,16 +235,13 @@ When(/^the pupil completes the check$/) do
   p @check_code
 end
 
-
 Then(/^the ps report record should be updated with all the check details$/) do
   step 'I should see a record for the pupil in the ps report table'
 end
 
-
 And(/^the latest check is recorded$/) do
   expect(@check_details['checkCode']).eql? @second_check_code
 end
-
 
 When(/^I add an AA arrangement$/) do
   access_arrangments_type = "Audible time alert"
@@ -281,7 +278,6 @@ And(/^complete the check$/) do
   p @check_code
 end
 
-
 Then(/^the PS report should include the AA for the pupil$/) do
   step 'the data sync and ps report function has run'
   step 'I should see a record for the pupil in the ps report table'
@@ -289,7 +285,6 @@ Then(/^the PS report should include the AA for the pupil$/) do
   pupil_aa = SqlDbHelper.get_ps_record_for_pupil(pupil_details['id'])['AccessArr']
   expect(pupil_aa).to eql '[1]'
 end
-
 
 Given(/^I generated a pin after applying a restart$/) do
   step "I have completed the check"
@@ -314,7 +309,6 @@ But(/^the pin expires$/) do
   @check_details = SqlDbHelper.get_all_pupil_checks(@pupil_details['id']).sort_by {|hsh| hsh['createdAt']}.last
   SqlDbHelper.delete_check_pin(@check_details["id"])
 end
-
 
 When(/^I generate a new pin and complete the check$/) do
   navigate_to_pupil_list_for_pin_gen('live')
@@ -345,23 +339,19 @@ When(/^I generate a new pin and complete the check$/) do
   p @check_code
 end
 
-
 Then(/^I should see the restart reason in the ps report record$/) do
   ps_report_record = SqlDbHelper.get_ps_record_for_pupil(@pupil_details['id'])
   expect(ps_report_record['RestartReason']).to eql 2
 end
-
 
 Given(/^I have completed the check for a pupil attending a test school$/) do
   SqlDbHelper.set_school_as_test_school(@school['entity']['dfeNumber'])
   step 'I have completed the check'
 end
 
-
 Then(/^I should not see any records for the test school$/) do
   expect(SqlDbHelper.count_all_ps_records_for_school(@school_id)).to eql 0
 end
-
 
 When(/^the data sync and ps report function has run for the test school$/) do
   step 'the data sync function has run'
@@ -370,4 +360,36 @@ When(/^the data sync and ps report function has run for the test school$/) do
   response = FunctionsHelper.trigger_ps_function('ps-report-2-pupil-data', {name: @school_name, uuid: uuid})
   expect(response.code).to eql 202
   sleep ENV['PS_REPORT_WAIT_TIME'].to_i
+end
+
+Given(/^I have completed a check with duplicate questions$/) do
+  name = (0...8).map {(65 + rand(26)).chr}.join
+  step 'I add a pupil'
+  step 'I login to the admin app'
+  navigate_to_pupil_list_for_pin_gen('live')
+  generate_pins_overview_page.generate_pin_using_name(@details_hash[:last_name] + ', ' + @details_hash[:first_name])
+  pupil_pin_row = view_and_custom_print_live_check_page.pupil_list.rows.find {|row| row.name.text == @details_hash[:last_name] + ', ' + @details_hash[:first_name]}
+  @pupil_credentials = {:school_password => pupil_pin_row.school_password.text, :pin => pupil_pin_row.pin.text}
+  p @pupil_credentials
+  AzureTableHelper.wait_for_prepared_check(@pupil_credentials[:school_password], @pupil_credentials[:pin])
+  @check_code = SqlDbHelper.check_details(@stored_pupil_details['id'])['checkCode']
+  @pupil_id = @stored_pupil_details['id']
+  check_entry = SqlDbHelper.check_details(@pupil_id)
+  Timeout.timeout(ENV['WAIT_TIME'].to_i) {sleep 1 until RequestHelper.auth(@pupil_credentials[:school_password], @pupil_credentials[:pin]).code == 200}
+  RequestHelper.auth(@pupil_credentials[:school_password], @pupil_credentials[:pin])
+  @check_code = check_entry['checkCode']
+  FunctionsHelper.complete_check_with_duplicates([@check_code], 25, 0, rand(25)) if check_entry["isLiveCheck"]
+  @recieved_check = AzureTableHelper.wait_for_received_check(@school['entity']['urlSlug'], @check_code) if check_entry["isLiveCheck"]
+  p @check_code
+end
+
+Then(/^I should see the ps report showing the first input$/) do
+  @answers = JSON.parse(LZString::UTF16.decompress(@recieved_check['archive']))['answers']
+  grouped = @answers.group_by {|row| [row['sequenceNumber'], row['question']]}
+  duplicates = grouped.values.select {|a| a.size > 1}
+  expected_answers = duplicates.map {|d| d.first['answer']}
+  expected_questions = duplicates.map {|d| d.first['sequenceNumber'].to_s}
+  ps_report_record = SqlDbHelper.get_ps_record_for_pupil(@pupil_id)
+  answers = expected_questions.map {|question| ps_report_record["Q#{question}Response"]}
+  expect(expected_answers).to eql answers
 end
