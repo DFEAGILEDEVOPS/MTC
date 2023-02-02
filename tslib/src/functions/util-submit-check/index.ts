@@ -9,10 +9,11 @@ const liveSchoolChecksDataService = new SchoolChecksDataService()
 
 export interface IUtilSubmitCheckConfig {
   schoolUuid?: string // Use schoolUuid to complete an entire school at once, OR
-  checkCodes?: string[] // use `checkCdodes` to have fine grain control of specific checks.
+  checkCodes?: string[] // use `checkCodes` to have fine grain control of specific checks.
   answers?: {
     numberFromCorrectCheckForm: number // the number of answers from the correct check form
     numberFromIncorrectCheckForm: number // the number of answers from some other check form that bulk up the answer count to the expected level.
+    numberOfDuplicateAnswers: number // mimic the pupil answering the question for a second time
   }
 }
 
@@ -28,11 +29,13 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
     checkCodes: req.body?.checkCodes,
     answers: {
       numberFromCorrectCheckForm: req.body?.answerNumberFromCorrectCheckForm,
-      numberFromIncorrectCheckForm: req.body?.answerNumberFromIncorrectCheckForm
+      numberFromIncorrectCheckForm: req.body?.answerNumberFromIncorrectCheckForm,
+      numberOfDuplicateAnswers: req.body?.answerNumberOfDuplicates
     }
   }
   context.log(`${functionName} config parsed as: ${JSON.stringify(funcConfig)})`)
   const fakeSubmittedCheckBuilder = new FakeSubmittedCheckMessageGeneratorService()
+  fakeSubmittedCheckBuilder.setLogger(context.log)
   fakeSubmittedCheckBuilder.setConfig(funcConfig)
   if (funcConfig.schoolUuid !== undefined) {
     const liveCheckCodes = await liveSchoolChecksDataService.fetchBySchoolUuid(funcConfig.schoolUuid)
