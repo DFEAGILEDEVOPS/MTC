@@ -112,17 +112,17 @@ export interface ServiceManagerPupilSearchResult {
 }
 
 export interface ServiceManagerPupilDetails {
-  urlSlug: string
-  id: number
+  dateOfBirth: string
+  dfeNumber: number
   firstName: string
+  id: number
+  isAnnulled: boolean
   lastName: string
   middleNames: string
-  dateOfBirth: string
+  schoolId: number
   schoolName: string
   schoolUrn: number
-  dfeNumber: number
-  upn: string
   status: string
-  schoolId: number
-  isAnnulled: boolean
+  upn: string
+  urlSlug: string
 }

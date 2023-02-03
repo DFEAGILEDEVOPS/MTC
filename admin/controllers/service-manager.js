@@ -792,6 +792,9 @@ const controller = {
       try {
         targetSchool = await ServiceManagerSchoolService.findSchoolByUrn(targetSchoolURN)
         pupil = await ServiceManagerPupilService.getPupilDetailsByUrlSlug(pupilUrlSlug)
+        if (pupil.schoolId === targetSchool.id) {
+          return pupilMoveErrorHandler(req, res, next,'Target school is the existing school!')
+        }
       } catch (error) {
         return pupilMoveErrorHandler(req, res, next, 'Error retrieving school: ' + error.message)
       }
@@ -830,9 +833,7 @@ const controller = {
       const schoolUrlSlug = req.params.schoolSlug
       pupil = await ServiceManagerPupilService.getPupilDetailsByUrlSlug(pupilUrlSlug.trim().toUpperCase())
       school = await ServiceManagerSchoolService.findSchoolBySlug(schoolUrlSlug.trim().toUpperCase())
-      if (pupil.schoolId === pupil.id) {
-        throw new Error('Target school is the existing school!')
-      }
+
       await ServiceManagerPupilService.movePupilToSchool(pupil, school, req.user.id)
     } catch (error) {
       req.flash('error', `${error.message}`)

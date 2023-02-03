@@ -15,6 +15,7 @@ export class ServiceManagerSchoolDataService {
   static async sqlFindSchoolByUrn (urn: number): Promise<ServiceManagerSchoolResult> {
     const sql = `
       SELECT
+        id,
         leaCode,
         estabCode,
         name,
@@ -40,13 +41,13 @@ export class ServiceManagerSchoolDataService {
 
     const record: any = R.head(data)
     return {
-      id: record.number,
+      id: record.id,
       leaCode: record.leaCode,
       estabCode: record.estabCode,
       name: record.name,
       urlSlug: record.urlSlug,
       urn: record.urn,
-      dfeNumber: record.urn
+      dfeNumber: record.dfeNumber
     }
   }
 
@@ -85,7 +86,7 @@ export class ServiceManagerSchoolDataService {
       name: record.name,
       urlSlug: record.urlSlug,
       urn: record.urn,
-      dfeNumber: record.urn
+      dfeNumber: record.dfeNumber
     }
   }
 }

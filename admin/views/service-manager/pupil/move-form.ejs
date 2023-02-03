@@ -14,8 +14,7 @@
               <form action="" method="post">
                 <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
 
-                <p>Moving <b><%= `${pupil.lastName}, ${pupil.firstName} ${pupil.middleNames}` %></b> (DOB: <%= pupil.dateOfBirth %>) %></p>
-                <p>From school: <b><%= pupil.schoolName %></b> (DfE# <%= pupil.dfeNumber %>) %></p>
+               <%- partial('partials/service-manager/pupil/_pupil-summary', { pupil }) %>
 
                 <input type="hidden" name="pupilUrlSlug" value="<%= pupil.urlSlug.toLowerCase() %>">
 
