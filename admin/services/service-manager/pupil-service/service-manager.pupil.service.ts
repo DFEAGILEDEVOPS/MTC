@@ -63,6 +63,20 @@ export class ServiceManagerPupilService {
     }
   }
 
+  static async movePupilToSchool (pupilId: number, schoolId: number, userId: number): Promise<void> {
+    console.log('movePupilToSchool() called')
+    if (pupilId === undefined) {
+      throw new Error('Missing pupilId')
+    }
+    if (schoolId === undefined) {
+      throw new Error('Missing schoolId')
+    }
+    if (userId === undefined) {
+      throw new Error('Missing user ID')
+    }
+    await ServiceManagerPupilDataService.sqlMovePupilToSchool(pupilId, schoolId, userId)
+  }
+
   private static async getPupilStatus (pupilId: number): Promise<any> {
     const pupilData = await ServiceManagerPupilDataService.getPupilStatusData(pupilId)
     if (pupilData.length === 0) return ''

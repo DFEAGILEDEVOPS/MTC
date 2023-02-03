@@ -3,36 +3,21 @@
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-two-thirds">
         <h1 class="govuk-heading-xl">
-          <%= pupil.lastName %>, <%= pupil.firstName %>
+          Confirm pupil move
         </h1>
         <h2 class="govuk-heading-m">
-          Move to a new school
+          <%= pupil.lastName %>, <%= pupil.firstName %>
         </h2>
         <%- partial('partials/_gds_session_expiry') %>
           <%- partial('partials/_flash-messages') %>
-            <%- partial('partials/_form-error', { pageFields: [], error }) %>
               <form action="" method="post">
                 <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
 
                 <p>Moving <b><%= `${pupil.lastName}, ${pupil.firstName} ${pupil.middleNames}` %></b> (DOB: <%= pupil.dateOfBirth %>) %></p>
                 <p>From school: <b><%= pupil.schoolName %></b> (DfE# <%= pupil.dfeNumber %>) %></p>
+                <p>To school: <b><%= school.name %></b> URN: <%= school.urn %> DFE number: <%= school.dfeNumber %> </p>
 
-                <input type="hidden" name="pupilUrlSlug" value="<%= pupil.urlSlug.toLowerCase() %>">
-
-                <div class="govuk-form-group <%= error.isError('targetSchoolURN') ? 'govuk-form-group--error' : '' %>">
-                  <label class="govuk-label" for="targetSchoolURN">
-                    URN of the target school
-                    <% if (error.isError('targetSchoolURN')) { %>
-                      <span class="govuk-error-message">
-                        <%= error.get('targetSchoolURN') %>
-                      </span>
-                      <% } %>
-                  </label>
-                  <input class="govuk-input govuk-input--width-10 <%= error.isError('targetSchoolURN') ? 'govuk-input--error' :
-                            '' %>" id="targetSchoolURN" name="targetSchoolURN" type="text" value="">
-                </div>
-
-                <button type="submit" id="searchh-btn" class="govuk-button">Go to confirmation page</button>
+                <button type="submit" id="searchh-btn" class="govuk-button">Move the pupil to <%= school.name %></button>
                 <a class="govuk-button govuk-button--secondary" href="/service-manager/pupil-summary/<%= pupil.urlSlug.toLowerCase() %>">Cancel</a>
 
               </form>

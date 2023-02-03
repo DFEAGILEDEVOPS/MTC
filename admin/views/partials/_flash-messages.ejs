@@ -1,3 +1,9 @@
+<% if (messages && messages.error && messages.error.length) { %>
+    <div class="govuk-body govuk-error-message govuk-!-margin-bottom-7">
+        <%= messages.error %>
+    </div>
+<% } %>
+
 <% if (messages && messages.info && messages.info.length) { %>
     <div class="govuk-body govuk-info-message govuk-!-margin-bottom-7">
         <%= messages.info %>

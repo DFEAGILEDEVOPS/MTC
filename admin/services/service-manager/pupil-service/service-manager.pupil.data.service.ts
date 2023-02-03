@@ -55,6 +55,24 @@ export class ServiceManagerPupilDataService {
     ]
     return sqlService.readonlyQuery(sql, params)
   }
+
+  static async sqlMovePupilToSchool (pupilId: number, schoolId: number, userId: number): Promise<void> {
+    console.log('sqlMovePupilToSchool() called')
+    const sql = `
+      UPDATE mtc_admin.pupil
+      SET
+        school_id = @schoolId,
+        lastModifiedBy_userId = @userId
+      WHERE
+        id = @pupilId
+    `
+    const params = [
+      { name: 'pupilId', value: pupilId, type: TYPES.Int },
+      { name: 'schoolId', value: schoolId, type: TYPES.Int },
+      { name: 'userId', value: userId, type: TYPES.Int }
+    ]
+    return sqlService.modify(sql, params)
+  }
 }
 
 export interface PupilStatusData {
