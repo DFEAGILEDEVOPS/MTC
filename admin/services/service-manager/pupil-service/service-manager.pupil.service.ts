@@ -3,6 +3,9 @@ import { ServiceManagerPupilDataService } from './service-manager.pupil.data.ser
 import { validate } from 'uuid'
 import moment from 'moment'
 import { PupilAnnulmentDataService } from '../pupil-annulment/pupil-annulment.data.service'
+import { ServiceManagerSchoolResult } from '../school/school.data.service'
+const redisCacheService = require('../../../services/data-access/redis-cache.service')
+const redisKeyService = require('../../../services/redis-key.service')
 const dateService = require('../../date.service')
 const settingService = require('../../setting.service')
 const pupilStatusService = require('../../pupil-status.service')
@@ -63,18 +66,25 @@ export class ServiceManagerPupilService {
     }
   }
 
-  static async movePupilToSchool (pupilId: number, schoolId: number, userId: number): Promise<void> {
-    console.log('movePupilToSchool() called')
-    if (pupilId === undefined) {
-      throw new Error('Missing pupilId')
+  static async movePupilToSchool (pupil: ServiceManagerPupilDetails, school: ServiceManagerSchoolResult, userId: number): Promise<void> {
+    if (pupil === undefined) {
+      throw new Error('Missing pupil')
     }
-    if (schoolId === undefined) {
-      throw new Error('Missing schoolId')
+    if (school === undefined) {
+      throw new Error('Missing school')
     }
     if (userId === undefined) {
       throw new Error('Missing user ID')
     }
-    await ServiceManagerPupilDataService.sqlMovePupilToSchool(pupilId, schoolId, userId)
+    await ServiceManagerPupilDataService.sqlMovePupilToSchool(pupil.id, school.id, userId)
+
+    // As the pupil has now been moved we need to drop the cache for the previous and new schools
+    const cacheKeys = []
+    cacheKeys.push(redisKeyService.getPupilRegisterViewDataKey(school.id)) // target school
+    cacheKeys.push(redisKeyService.getPupilRegisterViewDataKey(pupil.schoolId)) // source school
+    cacheKeys.push(redisKeyService.getSchoolResultsKey(school.id)) // target school
+    cacheKeys.push(redisKeyService.getSchoolResultsKey(pupil.schoolId)) // source school
+    await redisCacheService.drop(cacheKeys)
   }
 
   private static async getPupilStatus (pupilId: number): Promise<any> {

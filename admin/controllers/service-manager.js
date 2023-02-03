@@ -833,7 +833,7 @@ const controller = {
       if (pupil.schoolId === pupil.id) {
         throw new Error('Target school is the existing school!')
       }
-      await ServiceManagerPupilService.movePupilToSchool(pupil.id, school.id, req.user.id)
+      await ServiceManagerPupilService.movePupilToSchool(pupil, school, req.user.id)
     } catch (error) {
       req.flash('error', `${error.message}`)
       res.redirect(`/service-manager/pupil/move/${pupil.urlSlug.toLowerCase()}`)
