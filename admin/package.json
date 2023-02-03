@@ -160,7 +160,7 @@
     "bail": true,
     "collectCoverage": false,
     "collectCoverageFrom": [
-      "**/*.{js,jsx}",
+      "**/*.{js,jsx,ts}",
       "!**/node_modules/**",
       "!**/vendor/**",
       "!**/data-access/**",
