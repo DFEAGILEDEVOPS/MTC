@@ -154,7 +154,8 @@ export class SchoolImportService {
       ['StatutoryHighAge', 'statHighAge'],
       ['EstablishmentStatus (code)', 'estabStatusCode'],
       ['TypeOfEstablishment (code)', 'estabTypeCode'],
-      ['EstablishmentTypeGroup (code)', 'estabTypeGroupCode']
+      ['EstablishmentTypeGroup (code)', 'estabTypeGroupCode'],
+      ['TypeOfEstablishment (name)', 'estabTypeName']
     ]
 
     try {
