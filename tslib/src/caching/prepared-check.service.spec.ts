@@ -1,6 +1,6 @@
 import { IRedisService } from './redis-service'
 import { RedisServiceMock } from './redis-service.mock'
-import * as faker from 'faker'
+import { faker } from '@faker-js/faker'
 import redisKeyService from './redis-key.service'
 import { PreparedCheckService } from './prepared-check.service'
 
