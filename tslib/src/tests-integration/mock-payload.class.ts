@@ -1,5 +1,5 @@
 import moment from 'moment'
-import faker from 'faker'
+import { faker } from '@faker-js/faker'
 import { DfEAbsenceCode, IPsychometricReportLine, IReportLineAnswer } from '../functions-ps-report/ps-report-3-transformer/models'
 const schools = [
   'The New Learning Centre',
@@ -133,8 +133,8 @@ export class MockReportLineAnswer implements IReportLineAnswer {
     this.questionNumber = questionNumber
     this.id = `${questionNumber}x${questionNumber}`
     this.response = faker.datatype.number({ min: 0, max: 144 }).toString()
-    this.inputMethods = faker.random.arrayElement(['k', 'm', 'p', 't', 'x'])
-    this.keystrokes = this.response.split('').map(v => `${faker.random.arrayElement(['k', 'm', 'p', 't'])}[${v}]`).join(', ')
+    this.inputMethods = faker.helpers.arrayElement(['k', 'm', 'p', 't', 'x'])
+    this.keystrokes = this.response.split('').map(v => `${faker.helpers.arrayElement(['k', 'm', 'p', 't'])}[${v}]`).join(', ')
     this.score = faker.datatype.number({ min: 0, max: 100 }) > 75 ? 0 : 1
     this.firstKey = moment().subtract(faker.datatype.number({ min: 0, max: 100 }), 'minutes')
     this.lastKey = moment().subtract(faker.datatype.number({ min: 0, max: 100 }), 'minutes')
@@ -192,12 +192,12 @@ export class MockPayload implements IPsychometricReportLine {
     const tenYearsAgo = moment().subtract(10, 'years')
     const nineYearsAgo = moment().subtract(9, 'years')
     this.DOB = moment.utc(faker.date.between(tenYearsAgo.toDate(), nineYearsAgo.toDate())).startOf('day')
-    this.Gender = faker.random.arrayElement(['M', 'F'])
+    this.Gender = faker.helpers.arrayElement(['M', 'F'])
     this.Forename = faker.name.firstName()
     this.Surname = faker.name.lastName()
-    this.ReasonNotTakingCheck = faker.random.arrayElement(['A', 'Z', 'L', 'U', 'B', 'J'])
+    this.ReasonNotTakingCheck = faker.helpers.arrayElement(['A', 'Z', 'L', 'U', 'B', 'J'])
     this.PupilStatus = faker.helpers.shuffle(['Incomplete', 'Complete', 'Not taking the Check'])[0]
-    this.SchoolName = faker.random.arrayElement(schools)
+    this.SchoolName = faker.helpers.arrayElement(schools)
     this.Estab = faker.datatype.number({ min: 1000, max: 9999 })
     this.SchoolURN = faker.datatype.number({ min: 89000, max: 89999 })
     this.LAnum = faker.datatype.number({ min: 201, max: 999 })
@@ -205,7 +205,7 @@ export class MockPayload implements IPsychometricReportLine {
     this.PauseLength = faker.datatype.float({ min: 3.00, max: 6.00 })
     this.AccessArr = faker.datatype.number({ min: 1, max: 6 }).toString()
     this.AttemptID = faker.datatype.uuid()
-    this.FormID = faker.random.arrayElement(['MTC001', 'MTC002', 'MTC003', 'MTC004', 'MTC005', 'MTC006', 'MTC007'])
+    this.FormID = faker.helpers.arrayElement(['MTC001', 'MTC002', 'MTC003', 'MTC004', 'MTC005', 'MTC006', 'MTC007'])
     this.TestDate = moment().subtract(13, 'minutes')
     this.TimeStart = moment().subtract(faker.datatype.number({ min: 1, max: 30 }), 'minutes')
     this.TimeComplete = moment()

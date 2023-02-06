@@ -4,12 +4,14 @@ import { ICompletedCheckGeneratorService, FakeCompletedCheckGeneratorService } f
 import { CompressionService, ICompressionService } from '../../common/compression-service'
 import { IPreparedCheckService, PreparedCheckService } from '../../caching/prepared-check.service'
 import { IUtilSubmitCheckConfig } from './index'
+import { ILogger } from '../../common/logger'
 
 export class FakeSubmittedCheckMessageGeneratorService {
   private readonly completedCheckGenerator: ICompletedCheckGeneratorService
   private readonly compressionService: ICompressionService
   private readonly prepCheckService: IPreparedCheckService
   private funcConfig: IUtilSubmitCheckConfig | undefined
+  private logger: ILogger | undefined
 
   constructor (submittedCheckBuilder?: ICompletedCheckGeneratorService, compressionService?: ICompressionService, prepCheckService?: IPreparedCheckService) {
     if (submittedCheckBuilder === undefined) {
@@ -27,7 +29,12 @@ export class FakeSubmittedCheckMessageGeneratorService {
   }
 
   setConfig (funcConfig: IUtilSubmitCheckConfig): void {
+    this.logger?.info('funcConfig is', funcConfig)
     this.funcConfig = funcConfig
+  }
+
+  setLogger (logger: ILogger): void {
+    this.logger = logger
   }
 
   async createSubmittedCheckMessage (checkCode: string): Promise<SubmittedCheckMessageV2> {
