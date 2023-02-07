@@ -71,53 +71,61 @@ export class SchoolDataService implements ISchoolDataService {
     return this.jobResult
   }
 
-  private async getToeCodes (): Promise<Array<Record<string, number>>> {
+  private async getExistingEstabTypes (): Promise<Array<Record<string, number>>> {
     const sql = `SELECT [id], [code]
                  FROM
                  [mtc_admin].[typeOfEstablishmentLookup] `
     const request = new mssql.Request(this.pool)
     const sqlResult = await request.query(sql)
-    // const toeCodes: Array<Record<string, number>> = []
     const recordset = sqlResult.recordset
-    const codes = recordset.map(rec => {
+    const estabTypes = recordset.map(rec => {
       const x: Record<string, number> = {
         id: rec.id,
         code: rec.code
       }
       return x
     })
-    return codes
+    return estabTypes
   }
 
-  private getToeCodeId (toeCode: number, existingToeCodes: Array<Record<string, number>>): number {
-    // get lookup table for TOE codes into dictionary
-    const toeCodeEntry = R.find(R.propEq('code', toeCode), existingToeCodes)
-    if (toeCodeEntry === undefined) {
-      this.logError(`no toeCodeEntry found with code ${toeCode}`)
-      return 0
+  private async getEstabTypeId (estabTypeCode: number, estabTypeName: string, existingEstabTypes: Array<Record<string, number>>): Promise<number> {
+    const estabTypeEntry = R.find(R.propEq('code', estabTypeCode), existingEstabTypes)
+    if (estabTypeEntry === undefined) {
+      this.logInfo(`no estabType found with code ${estabTypeCode}, attempting to add...`)
+      const newId = await this.addEstabType(estabTypeCode, estabTypeName)
+      existingEstabTypes.push({
+        id: newId,
+        code: estabTypeCode
+      })
+      return newId
     }
-    this.logInfo(`found entry for code ${toeCode}... ${JSON.stringify(toeCodeEntry, null, 2)}`)
-    return toeCodeEntry.id
-    /*  let toeCodeId = 0
-    // check it exists, insert if not
-    if (toeCodeEntry === undefined) {
-      // insert it
-      const insertedId = 999
-      toeCodeId = insertedId
-    } else {
-      toeCodeId = toeCodeEntry.id
-    }
-    return toeCodeId */
+    return estabTypeEntry.id
+  }
+
+  private async addEstabType (estabTypeCode: number, estabTypeName: string): Promise<number> {
+    this.logInfo(`adding new estabType. code:${estabTypeCode} name:${estabTypeName}.`)
+    const sql = `
+      INSERT mtc_admin.[typeOfEstablishmentLookup] ([name], [code])
+      VALUES (@name, @code);
+      SELECT SCOPE_IDENTITY() AS [insertedId]`
+    const request = new mssql.Request(this.pool)
+    request.input('name', mssql.TYPES.NVarChar(50), estabTypeName)
+    request.input('code', mssql.TYPES.Int, estabTypeCode)
+    request.output('insertedId', mssql.TYPES.Int)
+    const result = await request.query(sql)
+    const id = result.output.insertedId
+    this.logInfo(`inserted estabType. id is ${id}`)
+    return id
   }
 
   async individualUpload (schoolData: ISchoolRecord[]): Promise<SchoolImportJobOutput> {
-    const toeCodes = await this.getToeCodes()
-    this.logInfo(`toeCodes are...\n ${JSON.stringify(toeCodes, null, 2)}`)
-    const sql = `INSERT [mtc_admin].[school] (dfeNumber, estabCode, leaCode, name, urn, typeOfEstablishmentLookup_id)
-    VALUES (@dfeNumber, @estabCode, @leaCode, @name, @urn, @toeCodeId)`
+    const toeCodes = await this.getExistingEstabTypes()
+    const sql = `
+      INSERT [mtc_admin].[school] (dfeNumber, estabCode, leaCode, name, urn, typeOfEstablishmentLookup_id)
+      VALUES (@dfeNumber, @estabCode, @leaCode, @name, @urn, @toeCodeId);`
     for (let index = 0; index < schoolData.length; index++) {
       const school = schoolData[index]
-      const toeCodeId = this.getToeCodeId(school.estabTypeCode, toeCodes)
+      const toeCodeId = await this.getEstabTypeId(school.estabTypeCode, school.estabTypeName, toeCodes)
       const request = new mssql.Request(this.pool)
       request.input('dfeNumber', mssql.TYPES.Int, `${school.leaCode}${school.estabCode}`)
       request.input('estabCode', mssql.TYPES.Int, school.estabCode)
@@ -125,7 +133,6 @@ export class SchoolDataService implements ISchoolDataService {
       request.input('name', mssql.TYPES.NVarChar(mssql.MAX), school.name)
       request.input('urn', mssql.TYPES.Int, school.urn)
       request.input('toeCodeId', mssql.TYPES.Int, toeCodeId)
-      // add param for sql insert
       try {
         await request.query(sql)
         this.logger.info(`school imported. urn:${school.urn}`)
