@@ -150,12 +150,12 @@ export class SchoolImportService {
       ['LA (code)', 'leaCode'],
       ['EstablishmentNumber', 'estabCode'],
       ['EstablishmentName', 'name'],
+      ['TypeOfEstablishment (code)', 'estabTypeCode'],
+      ['TypeOfEstablishment (name)', 'estabTypeName'],
       ['StatutoryLowAge', 'statLowAge'],
       ['StatutoryHighAge', 'statHighAge'],
       ['EstablishmentStatus (code)', 'estabStatusCode'],
-      ['TypeOfEstablishment (code)', 'estabTypeCode'],
-      ['EstablishmentTypeGroup (code)', 'estabTypeGroupCode'],
-      ['TypeOfEstablishment (name)', 'estabTypeName']
+      ['EstablishmentTypeGroup (code)', 'estabTypeGroupCode']
     ]
 
     try {

@@ -113,7 +113,7 @@ export class SchoolDataService implements ISchoolDataService {
     request.input('code', mssql.TYPES.Int, estabTypeCode)
     request.output('insertedId', mssql.TYPES.Int)
     const result = await request.query(sql)
-    const id = result.output.insertedId
+    const id = result.recordset[0].insertedId
     this.logInfo(`inserted estabType. id is ${id}`)
     return id
   }
