@@ -1485,4 +1485,99 @@ describe('service manager controller:', () => {
       expect(args[0]).toBe('/service-manager/pupil/move/daeb9d73-8b55-4b06-8ae2-6c0dbee03bd0/confirm/f76d7a46-69a0-4f48-8111-9252d138540a')
     })
   })
+
+  describe('getPupilMoveConfirm', () => {
+    let baseReq
+    beforeEach(() => {
+      baseReq = {
+        method: 'GET',
+        url: '/service-manager/pupil/move/daeb9d73-8b55-4b06-8ae2-6c0dbee03bd0/confirm/f76d7a46-69a0-4f48-8111-9252d138540a',
+        params: {
+          pupilSlug: 'daeb9d73-8b55-4b06-8ae2-6c0dbee03bd0',
+          schoolSlug: 'f76d7a46-69a0-4f48-8111-9252d138540a'
+        }
+      }
+      jest.spyOn(ServiceManagerPupilService, 'getPupilDetailsByUrlSlug').mockResolvedValue({ id: 1 })
+      jest.spyOn(ServiceManagerSchoolService, 'findSchoolBySlug').mockResolvedValue({ id: 2 })
+    })
+
+    test('it renders the confirmation page', async () => {
+      const req = getReq(baseReq)
+      const res = getRes()
+      await controller.getPupilMoveConfirm(req, res, next)
+      expect(res.render).toHaveBeenCalled()
+      const args = res.render.mock.calls[0]
+      expect(args[0]).toBe('service-manager/pupil/move-confirm')
+    })
+
+    test('it handles a pupil db lookup error by redirecting to pupil move page with a flash message', async () => {
+      const req = getReq(baseReq)
+      const res = getRes()
+      jest.spyOn(ServiceManagerPupilService, 'getPupilDetailsByUrlSlug').mockRejectedValue(new Error('mock error from testing'))
+      jest.spyOn(req, 'flash')
+      await controller.getPupilMoveConfirm(req, res, next)
+      expect(res.redirect).toHaveBeenCalled()
+      const args = res.redirect.mock.calls[0]
+      expect(args[0]).toBe('/service-manager/pupil/move/daeb9d73-8b55-4b06-8ae2-6c0dbee03bd0')
+      const flashArgs = req.flash.mock.calls[0]
+      expect(flashArgs[0]).toBe('error')
+      expect(flashArgs[1]).toMatch(/Error confirming target school/)
+    })
+
+    test('it handles a school db lookup error by redirecting to pupil move page with a flash message', async () => {
+      const req = getReq(baseReq)
+      const res = getRes()
+      jest.spyOn(ServiceManagerSchoolService, 'findSchoolBySlug').mockRejectedValue(new Error('mock error from testing'))
+      jest.spyOn(req, 'flash')
+      await controller.getPupilMoveConfirm(req, res, next)
+      expect(res.redirect).toHaveBeenCalled()
+      const args = res.redirect.mock.calls[0]
+      expect(args[0]).toBe('/service-manager/pupil/move/daeb9d73-8b55-4b06-8ae2-6c0dbee03bd0')
+      const flashArgs = req.flash.mock.calls[0]
+      expect(flashArgs[0]).toBe('error')
+      expect(flashArgs[1]).toMatch(/Error confirming target school/)
+    })
+  })
+
+  describe('postPupilMoveConfirmed', () => {
+    let baseReq
+    beforeEach(() => {
+      baseReq = {
+        method: 'POST',
+        url: '/service-manager/pupil/move/daeb9d73-8b55-4b06-8ae2-6c0dbee03bd0/confirm/f76d7a46-69a0-4f48-8111-9252d138540a',
+        params: {
+          pupilSlug: 'daeb9d73-8b55-4b06-8ae2-6c0dbee03bd0',
+          schoolSlug: 'f76d7a46-69a0-4f48-8111-9252d138540a'
+        },
+        user: {
+          id: '102'
+        }
+      }
+      jest.spyOn(ServiceManagerPupilService, 'getPupilDetailsByUrlSlug').mockResolvedValue({ id: 1 })
+      jest.spyOn(ServiceManagerSchoolService, 'findSchoolBySlug').mockResolvedValue({ id: 2 })
+      jest.spyOn(ServiceManagerPupilService, 'movePupilToSchool').mockResolvedValue()
+    })
+
+    test('it moves the pupil to the new school', async () => {
+      const req = getReq(baseReq)
+      const res = getRes()
+      await controller.postPupilMoveConfirmed(req, res, next)
+      expect(ServiceManagerPupilService.movePupilToSchool).toHaveBeenCalled()
+    })
+
+    test('on error it redirects back to the pupil move summary and shows a flash message', async function () {
+      const req = getReq(baseReq)
+      const res = getRes()
+      jest.spyOn(req, 'flash')
+      jest.spyOn(ServiceManagerPupilService, 'movePupilToSchool').mockRejectedValue(new Error('mock error from unit test'))
+      await controller.postPupilMoveConfirmed(req, res)
+      expect(req.flash).toHaveBeenCalled()
+      const flashArgs = req.flash.mock.calls[0]
+      expect(flashArgs[0]).toBe('error')
+      expect(flashArgs[1]).toBe('mock error from unit test')
+      expect(res.redirect).toHaveBeenCalled()
+      const redirectArgs = res.redirect.mock.calls[0]
+      expect(redirectArgs[0]).toBe('/service-manager/pupil/move/daeb9d73-8b55-4b06-8ae2-6c0dbee03bd0')
+    })
+  })
 })

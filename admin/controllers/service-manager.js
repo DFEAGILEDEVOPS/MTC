@@ -805,11 +805,11 @@ const controller = {
   },
 
   getPupilMoveConfirm: async function getPupilMoveConfirm (req, res, next) {
-    let pupil, school
+    let pupil, school, pupilUrlSlug, schoolUrlSlug
     try {
       res.locals.pageTitle = 'Confirm move pupil'
-      const pupilUrlSlug = req.params.pupilSlug
-      const schoolUrlSlug = req.params.schoolSlug
+      pupilUrlSlug = req.params.pupilSlug
+      schoolUrlSlug = req.params.schoolSlug
       pupil = await ServiceManagerPupilService.getPupilDetailsByUrlSlug(pupilUrlSlug.trim().toUpperCase())
       school = await ServiceManagerSchoolService.findSchoolBySlug(schoolUrlSlug.trim().toUpperCase())
       req.breadcrumbs('Pupil search', '/service-manager/pupil-search')
@@ -822,25 +822,24 @@ const controller = {
       })
     } catch (error) {
       req.flash('error', `Error confirming target school: ${error.message}`)
-      res.redirect(`/service-manager/pupil/move/${encodeURIComponent(pupil.urlSlug.toLowerCase())}`)
+      res.redirect(`/service-manager/pupil/move/${encodeURIComponent(pupilUrlSlug)}`)
     }
   },
 
   postPupilMoveConfirmed: async function postPupilMoveConfirmed (req, res, next) {
-    let pupil, school
+    let pupil, school, pupilUrlSlug, schoolUrlSlug
     try {
-      const pupilUrlSlug = req.params.pupilSlug
-      const schoolUrlSlug = req.params.schoolSlug
+      pupilUrlSlug = req.params.pupilSlug
+      schoolUrlSlug = req.params.schoolSlug
       pupil = await ServiceManagerPupilService.getPupilDetailsByUrlSlug(pupilUrlSlug.trim().toUpperCase())
       school = await ServiceManagerSchoolService.findSchoolBySlug(schoolUrlSlug.trim().toUpperCase())
-
       await ServiceManagerPupilService.movePupilToSchool(pupil, school, req.user.id)
     } catch (error) {
       req.flash('error', `${error.message}`)
-      res.redirect(`/service-manager/pupil/move/${pupil.urlSlug.toLowerCase()}`)
+      res.redirect(`/service-manager/pupil/move/${encodeURIComponent(pupilUrlSlug)}`)
     }
     req.flash('info', `Pupil moved to ${school.name} (${school.urn})`)
-    res.redirect(`/service-manager/pupil-summary/${pupil.urlSlug.toLowerCase()}`)
+    res.redirect(`/service-manager/pupil-summary/${encodeURIComponent(pupilUrlSlug)}`)
   }
 }
 
