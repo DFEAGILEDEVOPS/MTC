@@ -14,6 +14,7 @@ describe('ServiceManagerSchoolService', () => {
     })
 
     test('it calls the data service', async () => {
+      // @ts-ignore - {} is a mock result
       jest.spyOn(ServiceManagerSchoolDataService, 'sqlFindSchoolByUrn').mockResolvedValue({})
       await sut.findSchoolByUrn(123)
       expect(ServiceManagerSchoolDataService.sqlFindSchoolByUrn).toHaveBeenCalledWith(123)
@@ -30,6 +31,7 @@ describe('ServiceManagerSchoolService', () => {
     })
 
     test('it calls the data service', async () => {
+      // @ts-ignore {} is a mock result
       jest.spyOn(ServiceManagerSchoolDataService, 'sqlFindSchoolBySlug').mockResolvedValue({})
       await sut.findSchoolBySlug('slug')
       expect(ServiceManagerSchoolDataService.sqlFindSchoolBySlug).toHaveBeenCalledWith('slug')
