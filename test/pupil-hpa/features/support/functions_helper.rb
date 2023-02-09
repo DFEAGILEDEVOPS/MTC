@@ -25,4 +25,8 @@ class FunctionsHelper
     HTTParty.post(ENV['FUNC_CONSUMP_BASE_URL'] + "/api/util-submit-check", :body => {'checkCodes': check_code_array}.to_json, headers: {'Content-Type' => 'application/json', 'x-functions-key' => ENV['FUNC_CONSUMP_MASTER_KEY']})
   end
 
+  def self.complete_check_with_duplicates(check_code_array, correct_answers,incorrect_answers,duplicate_answers)
+    HTTParty.post(ENV['FUNC_CONSUMP_BASE_URL'] + "/api/util-submit-check", :body => {'checkCodes': check_code_array, 'answerNumberFromCorrectCheckForm': correct_answers, 'answerNumberFromIncorrectCheckForm': incorrect_answers, 'answerNumberOfDuplicates': duplicate_answers}.to_json, headers: {'Content-Type' => 'application/json', 'x-functions-key' => ENV['FUNC_CONSUMP_MASTER_KEY']})
+  end
+
 end

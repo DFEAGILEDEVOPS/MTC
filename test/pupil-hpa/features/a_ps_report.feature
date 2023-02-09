@@ -83,3 +83,8 @@ Feature:
     When I generate a new pin and complete the check
     And the data sync and ps report function has run
     Then I should see the restart reason in the ps report record
+
+  Scenario: Only first input used when a duplicate question is shown
+    Given I have completed a check with duplicate questions
+    And the data sync and ps report function has run
+    Then I should see the ps report showing the first input
