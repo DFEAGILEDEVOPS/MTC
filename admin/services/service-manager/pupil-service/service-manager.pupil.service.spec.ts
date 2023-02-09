@@ -1,10 +1,13 @@
-import { ServiceManagerPupilService } from './service-manager.pupil.service'
+import { ServiceManagerPupilService, ServiceManagerPupilDetails } from './service-manager.pupil.service'
 import { PupilSearchResult, PupilStatusData, ServiceManagerPupilDataService } from './service-manager.pupil.data.service'
 import moment from 'moment-timezone'
+import redisCacheService from '../../../services/data-access/redis-cache.service'
+import { ServiceManagerSchoolResult } from '../school/school.data.service'
 const settingService = require('../../setting.service')
 const dateService = require('../../date.service')
 
 const validUpn = 'ThirteenChar5'
+const sut = ServiceManagerPupilService
 
 describe('service manager pupil service', () => {
   beforeEach(() => {
@@ -162,6 +165,69 @@ describe('service manager pupil service', () => {
       jest.spyOn(ServiceManagerPupilDataService, 'getPupilByUrlSlug').mockResolvedValue([expected])
       const pupilDetails = await ServiceManagerPupilService.getPupilDetailsByUrlSlug(mockPupilDetailsData.urlSlug)
       expect(pupilDetails.status).toBe('Not started')
+    })
+  })
+
+  describe('movePupilToSchool', () => {
+    const pupil: ServiceManagerPupilDetails = {
+      dateOfBirth: '1 April 2013',
+      dfeNumber: 1234567,
+      firstName: 'firstname',
+      id: 1,
+      isAnnulled: false,
+      lastName: 'Lastname',
+      middleNames: 'Middle Names',
+      schoolId: 2,
+      schoolName: 'School Name',
+      schoolUrn: 777111,
+      status: 'Not Started',
+      upn: 'G10000000',
+      urlSlug: 'slug'
+    }
+    const school: ServiceManagerSchoolResult = {
+      id: 100,
+      leaCode: 999,
+      estabCode: 100,
+      name: 'Example School',
+      urlSlug: 'slug',
+      urn: 891000,
+      dfeNumber: 999100
+    }
+
+    let redisCacheDropSpy: jest.SpyInstance
+
+    beforeEach(() => {
+      redisCacheDropSpy = jest.spyOn(redisCacheService, 'drop').mockImplementation()
+      jest.spyOn(ServiceManagerPupilDataService, 'sqlMovePupilToSchool').mockImplementation()
+    })
+
+    test('it checks that the pupil param is defined', async () => {
+      // @ts-ignore passing undef instead of object for pupil param
+      await expect(sut.movePupilToSchool()).rejects.toThrow('Missing pupil')
+    })
+
+    test('it checks that the school param is defined', async () => {
+      // @ts-ignore passing undef instead of object for school param
+      await expect(sut.movePupilToSchool(pupil)).rejects.toThrow('Missing school')
+    })
+
+    test('it checks that the userId param is defined', async () => {
+      // @ts-ignore passing undef instead of number for userId param
+      await expect(sut.movePupilToSchool(pupil, school)).rejects.toThrow('Missing user ID')
+    })
+
+    test('it calls the data serice to move the pupil', async () => {
+      const userId = 99
+      await sut.movePupilToSchool(pupil, school, userId)
+      expect(ServiceManagerPupilDataService.sqlMovePupilToSchool).toHaveBeenCalledWith(1, 100, 99)
+    })
+
+    test('it drops items from the cache that might be outdated', async () => {
+      const userId = 99
+      await sut.movePupilToSchool(pupil, school, userId)
+      expect(redisCacheDropSpy).toHaveBeenCalledTimes(1)
+      const cacheDropArgs = redisCacheDropSpy.mock.calls[0]
+      expect(cacheDropArgs[0]).toHaveLength(4) // array of keys to drop
     })
   })
 })

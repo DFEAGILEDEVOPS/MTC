@@ -9,7 +9,7 @@ export class ServiceManagerSchoolService {
   }
 
   static async findSchoolBySlug (slug: string): Promise<ServiceManagerSchoolResult> {
-    if (slug === undefined) {
+    if (slug === undefined || slug === '') {
       throw new Error('School URL slug not provided')
     }
     return ServiceManagerSchoolDataService.sqlFindSchoolBySlug(slug)
