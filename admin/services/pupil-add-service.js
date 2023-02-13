@@ -51,7 +51,7 @@ const pupilAddService = {
     const pupilRecord = await pupilDataService.sqlFindOneById(res.insertId)
 
     if (pupilDataRow.ageReason) {
-      await pupilAgeReasonDataService.sqlInsertPupilAgeReason(res.insertId, pupilDataRow.ageReason)
+      await pupilAgeReasonDataService.sqlInsertPupilAgeReason(res.insertId, pupilDataRow.ageReason, userId)
     }
     const pupilRegisterRedisKey = redisKeyService.getPupilRegisterViewDataKey(schoolId)
     await redisCacheService.drop(pupilRegisterRedisKey)
