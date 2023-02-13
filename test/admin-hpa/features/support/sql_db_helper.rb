@@ -698,6 +698,24 @@ class SqlDbHelper
     pupil_details_res
   end
 
+  def self.find_type_of_establishment_by_code(code)
+    sql = "select * from mtc_admin.typeOfEstablishmentLookup where code='#{code}'"
+    result = SQL_CLIENT.execute(sql)
+    pupil_details_res = result.first
+    result.cancel
+    pupil_details_res
+  end
+
+
+  def self.find_type_of_establishment_by_id(id)
+    sql = "select * from mtc_admin.typeOfEstablishmentLookup where id='#{id}'"
+    result = SQL_CLIENT.execute(sql)
+    pupil_details_res = result.first
+    result.cancel
+    pupil_details_res
+  end
+
+
   def self.pupil_audit_record(pupil_id)
     sql = "SELECT * FROM [mtc_admin].[pupilAudit] WHERE pupil_id='#{pupil_id}'"
     result = SQL_CLIENT.execute(sql)
