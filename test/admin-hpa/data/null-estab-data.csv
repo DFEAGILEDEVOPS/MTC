@@ -1,3 +1,3 @@
-URN,LA (code),EstablishmentNumber,EstablishmentName,StatutoryLowAge,StatutoryHighAge,EstablishmentStatus (code),EstablishmentTypeGroup (code),TypeOfEstablishment (code)
+URN,LA (code),EstablishmentNumber,EstablishmentName,StatutoryLowAge,StatutoryHighAge,EstablishmentStatus (code),EstablishmentTypeGroup (code),TypeOfEstablishment (code),TypeOfEstablishment (name)
 99600,999,,Mo School 1,8,10,1,4,7
 99601,999,,Mo School 2,8,10,1,4,12
