@@ -5,6 +5,7 @@ export interface ISchoolRecord {
   estabCode: number | undefined
   estabTypeGroupCode: EstabTypeGroupCode
   estabTypeCode: EstabTypeCode
+  estabTypeName: string
   estabStatusCode: EstabStatusCode
   statLowAge?: number
   statHighAge?: number
