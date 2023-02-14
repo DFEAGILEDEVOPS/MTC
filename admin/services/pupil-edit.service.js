@@ -24,7 +24,10 @@ pupilEditService.update = async function (pupil, requestBody, schoolId, userId) 
   if (userId === undefined) throw new Error('userId is required')
   if (schoolId === undefined) throw new Error('schoolId is required')
   const trimAndUppercase = R.compose(R.toUpper, R.trim)
-  await pupilAgeReasonService.refreshPupilAgeReason(pupil.id, requestBody.ageReason, pupil.ageReason, userId)
+  if (pupil.ageReason !== requestBody.ageReason) {
+    // Only update the reason if it has changed, not simply because the pupil was edited
+    await pupilAgeReasonService.refreshPupilAgeReason(pupil.id, requestBody.ageReason, pupil.ageReason, userId)
+  }
   const update = {
     id: pupil.id,
     foreName: requestBody.foreName,
