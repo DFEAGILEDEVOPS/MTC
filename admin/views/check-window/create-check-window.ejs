@@ -98,7 +98,7 @@
                 error.isError('adminEndDateBeforeAdminStartDate') || error.isError('adminEndDateBeforeLiveCheckEndDate') || error.isError('adminEndDateBeforeFamiliarisationCheckEndDate')
                         ? 'govuk-form-group--error' : '' %>">
                     <label class="govuk-label govuk-!-font-weight-bold">
-                        School administration period
+                        School administration period: the entire check window from beginning to end
                         <% if (!checkWindowData.adminPeriodDisabled) { %>
                             <span class="govuk-hint hint-spacious">For example, 28 4 <%= currentYear %></span>
                         <% } %>
@@ -267,7 +267,7 @@
                     error.isError('familiarisationCheckEndDateBeforeAdminStartDate') ||error.isError('familiarisationCheckEndDateAfterAdminEndDate') || error.isError('familiarisationCheckEndDateBeforeFamiliarisationCheckStartDate') ||
                     error.isError('familiarisationCheckEndDateNotEqualLiveCheckEndDate') ? 'govuk-form-group--error' : '' %>">
                         <label class="govuk-label govuk-!-font-weight-bold">
-                            Try it out period
+                            Try it out period: should end at the same time as the official check period
                             <% if (!checkWindowData.familiarisationCheckPeriodDisabled) { %>
                                 <span class="govuk-hint hint-spacious">For example, 28 4 <%= currentYear %></span>
                             <% } %>
@@ -439,7 +439,7 @@
                     error.isError('liveCheckStartDateBeforeFamiliarisationCheckStartDate') ||error.isError('liveCheckEndDateBeforeLiveCheckStartDate') || error.isError('liveCheckEndDateBeforeAdminStartDate') ||
                     error.isError('liveCheckEndDateNotEqualFamiliarisationCheckEndDate') ? 'govuk-form-group--error' : '' %>">
                         <label class="govuk-label govuk-!-font-weight-bold">
-                            Multiplication tables check period
+                            The official check period
                             <% if (!checkWindowData.liveCheckPeriodDisabled) { %>
                                 <span class="govuk-hint hint-spacious">For example, 28 4 <%= currentYear %></span>
                             <% } %>
