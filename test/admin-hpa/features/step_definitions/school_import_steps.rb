@@ -38,7 +38,7 @@ end
 
 Given(/^I have imported a csv with schools including duplicates$/) do
   CSV.open(File.expand_path("#{File.dirname(__FILE__)}/../../data/duplicate_and_new_school.csv"), 'wb') do |csv_object|
-    csv_object << ["URN","LA (code)","EstablishmentNumber","EstablishmentName","StatutoryLowAge","StatutoryHighAge","EstablishmentStatus (code)","EstablishmentTypeGroup (code)","TypeOfEstablishment (code)"]
+    csv_object << ["URN","LA (code)","EstablishmentNumber","EstablishmentName","StatutoryLowAge","StatutoryHighAge","EstablishmentStatus (code)","EstablishmentTypeGroup (code)","TypeOfEstablishment (code)",'TypeOfEstablishment (name)']
     csv_object << [(SqlDbHelper.get_schools_list.map {|school| school['urn']}.sort.first).to_s, "999","9000","Mo School 1","8","10","1","4","7"]
     csv_object << [(SqlDbHelper.get_schools_list.map {|school| school['urn']}.sort.last + 1).to_s, "999",(SqlDbHelper.get_schools_list.map {|school| school['estabCode']}.sort.last+1).to_s,"Mo School 55","8","10","1","11","26"]
   end
@@ -90,7 +90,7 @@ Then(/^I should get an error saying the csv is incorrect$/) do
   destination = File.expand_path("#{File.dirname(__FILE__)}/../../data/download")
   wait_until {File.exist? zip_path}
   output_hash = upload_organisations_page.extract_job_output(zip_path, destination)
-  expect(output_hash[:error].map {|x| x.split('Z ').last}).to include 'Headers "URN", "LA (code)", "EstablishmentNumber", "EstablishmentName", "StatutoryLowAge", "StatutoryHighAge", "EstablishmentStatus (code)", "TypeOfEstablishment (code)", "EstablishmentTypeGroup (code)" not found'
+  expect(output_hash[:error].map {|x| x.split('Z ').last}).to include "Headers \"URN\", \"LA (code)\", \"EstablishmentNumber\", \"EstablishmentName\", \"TypeOfEstablishment (code)\", \"TypeOfEstablishment (name)\", \"StatutoryLowAge\", \"StatutoryHighAge\", \"EstablishmentStatus (code)\", \"EstablishmentTypeGroup (code)\" not found"
 end
 
 Given(/^I attempt to import using a csv file that has leaCode set to null$/) do
@@ -191,3 +191,41 @@ Then(/^I should get an error stating that school name can not be null$/) do
   expect(output_hash[:output].map {|x| x.split('Z ').last}).to include "school records excluded in filtering:2. No records to persist, exiting."
 end
 
+
+Then(/^I should see each imported school with a TOE code$/) do
+  @urns_and_toe = CSV.parse(File.read(@school_import)).map {|z| [z[0],z[8], z[9]] unless z[6] == '2' || z[6] == '4' || z[0] == 'URN' }.compact
+  Timeout.timeout(ENV['WAIT_TIME'].to_i) {sleep 1 until !SqlDbHelper.find_school_by_urn(@urns_and_toe.last[0]).nil?}
+  @urns_and_toe.each do |urn|
+    school = SqlDbHelper.find_school_by_urn(urn[0])
+    expect(school).to_not be_nil
+    toe_name = SqlDbHelper.find_type_of_establishment_by_code(urn[1])['name']
+    expect(urn[2]).to eql toe_name
+  end
+end
+
+
+Given(/^I have imported a csv with schools with a new TOE code$/) do
+  @new_toe_code = SqlDbHelper.type_of_establishment.last.split('(').last.delete(')').to_i + 1
+  @new_toe_name = "Test TOE name #{rand(2344)}"
+  CSV.open(File.expand_path("#{File.dirname(__FILE__)}/../../data/new_toe.csv"), 'wb') do |csv_object|
+    csv_object << ["URN","LA (code)","EstablishmentNumber","EstablishmentName","StatutoryLowAge","StatutoryHighAge","EstablishmentStatus (code)","EstablishmentTypeGroup (code)","TypeOfEstablishment (code)",'TypeOfEstablishment (name)']
+    csv_object << [(SqlDbHelper.get_schools_list.map {|school| school['urn']}.sort.last + 1).to_s, "999",(SqlDbHelper.get_schools_list.map {|school| school['estabCode']}.sort.last+1).to_s,"Mo School 55","8","10","1","11",@new_toe_code, @new_toe_name]
+  end
+  @school_import = File.expand_path("#{File.dirname(__FILE__)}/../../data/new_toe.csv")
+  @urn = CSV.parse(File.read(@school_import)).map {|z| z[0] unless z[6] == '2' || z[6] == '4' || z[0] == 'URN' }.compact
+  step 'I have signed in with service-manager'
+  admin_page.school_search.click
+  manage_organisations_page.upload.click
+  upload_organisations_page.upload_schools(@school_import)
+  upload_organisations_page.upload.click
+  Timeout.timeout(ENV['WAIT_TIME'].to_i) {sleep 1 until !SqlDbHelper.find_school_by_urn(@urn.first).nil?}
+end
+
+
+Then(/^I should see the new TOE code persisted$/) do
+  school = SqlDbHelper.find_school_by_urn(@urn.first)
+  toe_record = SqlDbHelper.find_type_of_establishment_by_id(school['typeOfEstablishmentLookup_id'])
+  expect(toe_record['code']).to eql @new_toe_code
+  expect(toe_record['name']).to eql @new_toe_name
+
+end

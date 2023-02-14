@@ -32,3 +32,11 @@ Feature:
   Scenario: School name can not be null
     Given I attempt to import using a csv file that has school name set to null
     Then I should get an error stating that school name can not be null
+
+  Scenario: TOE code is persisted during school import
+    Given I have imported a csv with schools
+    Then I should see each imported school with a TOE code
+
+  Scenario: New TOE codes are persisted during school import
+    Given I have imported a csv with schools with a new TOE code
+    Then I should see the new TOE code persisted
