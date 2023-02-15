@@ -1,4 +1,4 @@
-import * as Redis from 'ioredis'
+import { Redis, RedisOptions } from 'ioredis'
 import config from '../config'
 import { Logger } from './log.service'
 
@@ -16,7 +16,7 @@ export interface IRedisService {
    * @param {object | string} value the item to persist in redis cache
    * @param {number} ttl how long to store the item in seconds
    * @throws when the incoming item datatype is not supported and when the setex redis operation fails
-   * @returns {Promise<void} an awaitable promise
+   * @returns {Promise<void>} an awaitable promise
    */
   setex (key: string, value: string | object, ttl: number): Promise<void>
   /**
@@ -24,7 +24,7 @@ export interface IRedisService {
    * @param {Array<string>} keys an array of keys to invalidate
    * @returns {Promise<void>}
    */
-  drop (keys: string[]): Promise<Array<[Error | null, any]>>
+  drop (keys: string[]): Promise<Array<[error: Error | null, result: unknown]> | null>
   /**
    * @description cleans up the underlying redis client implementation
    * @returns void
@@ -49,11 +49,11 @@ export interface IRedisService {
  * Not used within Pupil API yet.
  */
 export class RedisService implements IRedisService {
-  private readonly redis: Redis.Redis
+  private readonly redis: Redis
   private readonly logger: Logger
 
   constructor () {
-    const options: Redis.RedisOptions = {
+    const options: RedisOptions = {
       port: Number(config.Redis.Port),
       host: config.Redis.Host,
       password: config.Redis.Key
@@ -127,7 +127,7 @@ export class RedisService implements IRedisService {
     }
   }
 
-  async drop (keys: string[]): Promise<Array<[Error | null, any]>> {
+  async drop (keys: string[]): Promise<Array<[error: Error | null, result: unknown]> | null> {
     if (keys.length === 0) {
       throw new Error('Invalid key list')
     }
