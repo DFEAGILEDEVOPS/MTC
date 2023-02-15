@@ -18,7 +18,8 @@ describe('School Import Predicates', () => {
       estabTypeCode: EstabTypeCode.communitySpecialSchool,
       estabStatusCode: EstabStatusCode.Open,
       statLowAge: targetAge - 1,
-      statHighAge: targetAge + 1
+      statHighAge: targetAge + 1,
+      estabTypeName: 'x'
     }
   })
 
@@ -202,7 +203,8 @@ describe('School Import Predicates', () => {
         estabTypeGroupCode: EstabTypeGroupCode.localAuthorityMaintainedSchool,
         leaCode: 743,
         name: 'school',
-        urn: 12345
+        urn: 12345,
+        estabTypeName: 'x'
       }
     })
     test('returns false when estabCode is empty', () => {
