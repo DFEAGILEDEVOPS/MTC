@@ -1,4 +1,5 @@
-import { ServiceBusClient, ServiceBusSender } from '@azure/service-bus'
+import { ServiceBusClient } from '@azure/service-bus'
+import type { ServiceBusSender } from '@azure/service-bus'
 import config from '../config'
 
 export interface IQueueMessageService {

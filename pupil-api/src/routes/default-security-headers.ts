@@ -1,4 +1,4 @@
-import { Response } from 'express'
+import type { Response } from 'express'
 
 export class DefaultSecurityHeaders {
   static setResponseHeaders (res: Response): void {

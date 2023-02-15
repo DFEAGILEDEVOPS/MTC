@@ -1,4 +1,5 @@
-import { Router, Request, Response } from 'express'
+import { Router } from 'express'
+import type { Request, Response } from 'express'
 import { RedisAuthController } from '../controllers/redis.auth.controller'
 
 export interface IAuthController {
@@ -16,7 +17,7 @@ export class AuthRouter {
   }
 
   public init (): any {
-    this.router.route('/').all((req: Request, res: Response) => {
+    this.router.route('/').all((req: Request, res: Response) => { // eslint-disable-line @typescript-eslint/no-misused-promises
       if (req.method !== 'POST') return res.sendStatus(405)
       return this.authController.postAuth(req, res)
     })

@@ -39,7 +39,7 @@ class App {
     this.express = express()
     this.middleware()
     this.routes()
-    appInsights.startInsightsIfConfigured().catch(e => logger.error(e))
+    appInsights.startInsightsIfConfigured().catch(e => { logger.error(e) })
   }
 
   // Configure Express middleware.
@@ -105,7 +105,7 @@ class App {
       err.errorId = errorId
       err.status = err.status ?? 500
       if (req.app.get('env') === 'development') {
-        res.status(err.status).json({ error: err.message, errorId: errorId })
+        res.status(err.status).json({ error: err.message, errorId })
       } else {
         res.status(err.status).json({ error: 'An error occurred' })
       }
