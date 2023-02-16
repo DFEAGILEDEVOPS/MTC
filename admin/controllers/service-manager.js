@@ -20,6 +20,7 @@ const { ServiceManagerPupilService } = require('../services/service-manager/pupi
 const { validate } = require('uuid')
 const { PupilAnnulmentService } = require('../services/service-manager/pupil-annulment/pupil-annulment.service')
 const { TypeOfEstablishmentService } = require('../services/type-of-establishment-service/type-of-establishment-service')
+const { ServiceManagerSchoolService } = require('../services/service-manager/school/school.service')
 
 const controller = {
   /**
@@ -753,6 +754,92 @@ const controller = {
     } catch (error) {
       return annulPupilErrorHandler(req, res, next, error.message)
     }
+  },
+
+  getPupilMove: async function getPupilMove (req, res, next, validationError = new ValidationError()) {
+    const urlSlug = req.params.slug
+    res.locals.pageTitle = 'Move pupil'
+    const pupil = await ServiceManagerPupilService.getPupilDetailsByUrlSlug(urlSlug.trim().toUpperCase())
+    req.breadcrumbs('Pupil search', '/service-manager/pupil-search')
+    req.breadcrumbs('Pupil summary', `/service-manager/pupil-summary/${encodeURIComponent(urlSlug).toLowerCase()}`)
+    req.breadcrumbs(res.locals.pageTitle)
+    res.render('service-manager/pupil/move-form', {
+      breadcrumbs: req.breadcrumbs(),
+      error: validationError,
+      pupil
+    })
+  },
+
+  postPupilMove: async function postPupilMove (req, res, next) {
+    const pupilMoveErrorHandler = (req, res, next, errorMsg = 'No school found') => {
+      const error = new ValidationError()
+      error.addError('targetSchoolURN', errorMsg)
+      return controller.getPupilMove(req, res, next, error)
+    }
+
+    let targetSchool
+    let pupil
+
+    try {
+      const pupilUrlSlug = req.body.pupilUrlSlug
+      if (pupilUrlSlug === undefined || pupilUrlSlug === '') {
+        return pupilMoveErrorHandler(req, res, next, 'Pupil not found')
+      }
+      const targetSchoolURN = req.body.targetSchoolURN
+      if (targetSchoolURN === undefined || targetSchoolURN === '') {
+        return pupilMoveErrorHandler(req, res, next, 'No target school provided')
+      }
+      try {
+        targetSchool = await ServiceManagerSchoolService.findSchoolByUrn(targetSchoolURN)
+        pupil = await ServiceManagerPupilService.getPupilDetailsByUrlSlug(pupilUrlSlug)
+        if (pupil.schoolId === targetSchool.id) {
+          return pupilMoveErrorHandler(req, res, next, 'Target school is the existing school!')
+        }
+      } catch (error) {
+        return pupilMoveErrorHandler(req, res, next, 'Error retrieving school: ' + error.message)
+      }
+    } catch (error) {
+      return pupilMoveErrorHandler(req, res, next, 'Processing error: ' + error.message)
+    }
+    res.redirect(`/service-manager/pupil/move/${encodeURIComponent(pupil.urlSlug.toLowerCase())}/confirm/${encodeURIComponent(targetSchool.urlSlug.toLowerCase())}`)
+  },
+
+  getPupilMoveConfirm: async function getPupilMoveConfirm (req, res, next) {
+    let pupil, school, pupilUrlSlug, schoolUrlSlug
+    try {
+      res.locals.pageTitle = 'Confirm move pupil'
+      pupilUrlSlug = req.params.pupilSlug
+      schoolUrlSlug = req.params.schoolSlug
+      pupil = await ServiceManagerPupilService.getPupilDetailsByUrlSlug(pupilUrlSlug.trim().toUpperCase())
+      school = await ServiceManagerSchoolService.findSchoolBySlug(schoolUrlSlug.trim().toUpperCase())
+      req.breadcrumbs('Pupil search', '/service-manager/pupil-search')
+      req.breadcrumbs('Pupil summary', `/service-manager/pupil-summary/${encodeURIComponent(pupilUrlSlug).toLowerCase()}`)
+      req.breadcrumbs(res.locals.pageTitle)
+      res.render('service-manager/pupil/move-confirm', {
+        breadcrumbs: req.breadcrumbs(),
+        pupil,
+        school
+      })
+    } catch (error) {
+      req.flash('error', `Error confirming target school: ${error.message}`)
+      res.redirect(`/service-manager/pupil/move/${encodeURIComponent(pupilUrlSlug)}`)
+    }
+  },
+
+  postPupilMoveConfirmed: async function postPupilMoveConfirmed (req, res, next) {
+    let pupil, school, pupilUrlSlug, schoolUrlSlug
+    try {
+      pupilUrlSlug = req.params.pupilSlug
+      schoolUrlSlug = req.params.schoolSlug
+      pupil = await ServiceManagerPupilService.getPupilDetailsByUrlSlug(pupilUrlSlug.trim().toUpperCase())
+      school = await ServiceManagerSchoolService.findSchoolBySlug(schoolUrlSlug.trim().toUpperCase())
+      await ServiceManagerPupilService.movePupilToSchool(pupil, school, req.user.id)
+    } catch (error) {
+      req.flash('error', `${error.message}`)
+      res.redirect(`/service-manager/pupil/move/${encodeURIComponent(pupilUrlSlug)}`)
+    }
+    req.flash('info', `Pupil moved to ${school.name} (${school.urn})`)
+    res.redirect(`/service-manager/pupil-summary/${encodeURIComponent(pupilUrlSlug)}`)
   }
 }
 

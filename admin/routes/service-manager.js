@@ -146,6 +146,26 @@ router.get(
   serviceManagerController.getJobOutputs
 )
 
+router.get('/pupil/move/:pupilSlug/confirm/:schoolSlug',
+  isAuthenticated([roles.serviceManager]),
+  serviceManagerController.getPupilMoveConfirm
+)
+
+router.post('/pupil/move/:pupilSlug/confirm/:schoolSlug',
+  isAuthenticated([roles.serviceManager]),
+  serviceManagerController.postPupilMoveConfirmed
+)
+
+router.get('/pupil/move/:slug',
+  isAuthenticated([roles.serviceManager]),
+  serviceManagerController.getPupilMove
+)
+
+router.post('/pupil/move/:slug',
+  isAuthenticated([roles.serviceManager]),
+  serviceManagerController.postPupilMove
+)
+
 router.get('/pupil-search',
   isAuthenticated([roles.serviceManager]),
   serviceManagerController.getPupilSearch
