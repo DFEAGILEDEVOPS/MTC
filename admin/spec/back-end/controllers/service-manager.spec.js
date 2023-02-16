@@ -20,6 +20,7 @@ const { ServiceManagerPupilDataService } = require('../../../services/service-ma
 const { ServiceManagerPupilService } = require('../../../services/service-manager/pupil-service/service-manager.pupil.service')
 const { TypeOfEstablishmentService } = require('../../../services/type-of-establishment-service/type-of-establishment-service')
 const moment = require('moment-timezone')
+const { ServiceManagerSchoolService } = require('../../../services/service-manager/school/school.service')
 
 describe('service manager controller:', () => {
   let next
@@ -1275,6 +1276,308 @@ describe('service manager controller:', () => {
         breadcrumbs: undefined,
         pupil: thePupilData
       })
+    })
+  })
+
+  describe('getPupilMove', () => {
+    let baseReq
+    beforeEach(() => {
+      baseReq = {
+        method: 'GET',
+        url: '/service-manager/pupil/move/123456789',
+        params: {
+          slug: '123456789'
+        }
+      }
+
+      jest.spyOn(ServiceManagerPupilService, 'getPupilDetailsByUrlSlug').mockResolvedValue({
+        dateOfBirth: '1 March 2019',
+        dfeNumber: 9991234,
+        firstName: 'First',
+        id: 1,
+        lastName: 'Last',
+        isAnnulled: false,
+        middleNames: 'Middle Name',
+        schoolId: 2,
+        schoolName: 'Test School',
+        schoolUrn: 200,
+        status: 'Not Started',
+        upn: 'G10020344',
+        urlSlug: 'B5D5BE3-A522-4B6A-90DF-00133BFE8D07'
+      })
+    })
+
+    test('renders the pupil move page', async () => {
+      const res = getRes()
+      const req = getReq(baseReq)
+      await controller.getPupilMove(req, res, next)
+      const args = res.render.mock.calls[0]
+      expect(res.render).toHaveBeenCalled()
+      expect(args[0]).toBe('service-manager/pupil/move-form')
+    })
+  })
+
+  describe('postPupilMove', () => {
+    let baseReq
+    beforeEach(() => {
+      baseReq = {
+        method: 'POST',
+        url: '/service-manager/pupil/move/daeb9d73-8b55-4b06-8ae2-6c0dbee03bd0',
+        params: {
+          slug: 'daeb9d73-8b55-4b06-8ae2-6c0dbee03bd0'
+        },
+        body: {
+          pupilUrlSlug: 'daeb9d73-8b55-4b06-8ae2-6c0dbee03bd0',
+          targetSchoolURN: '89002'
+        }
+      }
+    })
+
+    test('it detects when the pupil is empty and shows the form again', async () => {
+      jest.spyOn(ServiceManagerPupilService, 'getPupilDetailsByUrlSlug').mockResolvedValue({
+        dateOfBirth: '1 March 2019',
+        dfeNumber: 9991234,
+        firstName: 'First',
+        id: 1,
+        lastName: 'Last',
+        isAnnulled: false,
+        middleNames: 'Middle Name',
+        schoolId: 2,
+        schoolName: 'Test School',
+        schoolUrn: 200,
+        status: 'Not Started',
+        upn: 'G10020344',
+        urlSlug: 'daeb9d73-8b55-4b06-8ae2-6c0dbee03bd0'
+      })
+      baseReq.body.pupilUrlSlug = ''
+      const req = getReq(baseReq)
+      const res = getRes()
+      await controller.postPupilMove(req, res, next)
+      const args = res.render.mock.calls[0]
+      expect(res.render).toHaveBeenCalled()
+      expect(args[0]).toBe('service-manager/pupil/move-form')
+    })
+
+    test('it detects when the school is empty and shows the form again', async () => {
+      jest.spyOn(ServiceManagerPupilService, 'getPupilDetailsByUrlSlug').mockResolvedValue({
+        dateOfBirth: '1 March 2019',
+        dfeNumber: 9991234,
+        firstName: 'First',
+        id: 1,
+        lastName: 'Last',
+        isAnnulled: false,
+        middleNames: 'Middle Name',
+        schoolId: 2,
+        schoolName: 'Test School',
+        schoolUrn: 200,
+        status: 'Not Started',
+        upn: 'G10020344',
+        urlSlug: 'daeb9d73-8b55-4b06-8ae2-6c0dbee03bd0'
+      })
+      jest.spyOn(ServiceManagerSchoolService, 'findSchoolByUrn').mockResolvedValue({
+        id: 3,
+        leaCode: 999,
+        estabCode: 7777,
+        name: 'Test School',
+        urlSlug: 'f76d7a46-69a0-4f48-8111-9252d138540a',
+        urn: 89002,
+        dfeNumber: 9997777
+      })
+      baseReq.body.targetSchoolURN = '' // error: empty target school
+      const req = getReq(baseReq)
+      const res = getRes()
+      await controller.postPupilMove(req, res, next)
+      const args = res.render.mock.calls[0]
+      expect(res.render).toHaveBeenCalled()
+      expect(args[0]).toBe('service-manager/pupil/move-form')
+    })
+
+    test('it checks to see if the target school is the same as the origin school, and shows the form again if so', async () => {
+      jest.spyOn(ServiceManagerPupilService, 'getPupilDetailsByUrlSlug').mockResolvedValue({
+        dateOfBirth: '1 March 2019',
+        dfeNumber: 9997777,
+        firstName: 'First',
+        id: 1,
+        lastName: 'Last',
+        isAnnulled: false,
+        middleNames: 'Middle Name',
+        schoolId: 2,
+        schoolName: 'Test School',
+        schoolUrn: 200,
+        status: 'Not Started',
+        upn: 'G10020344',
+        urlSlug: 'daeb9d73-8b55-4b06-8ae2-6c0dbee03bd0'
+      })
+      jest.spyOn(ServiceManagerSchoolService, 'findSchoolByUrn').mockResolvedValue({
+        id: 2,
+        leaCode: 999,
+        estabCode: 7777,
+        name: 'Test School',
+        urlSlug: 'f76d7a46-69a0-4f48-8111-9252d138540a',
+        urn: 200,
+        dfeNumber: 9997777
+      })
+      baseReq.body.targetSchoolURN = '200' // error: this is the same as the school the pupil is currently at
+      const req = getReq(baseReq)
+      const res = getRes()
+      await controller.postPupilMove(req, res, next)
+      const args = res.render.mock.calls[0]
+      expect(res.render).toHaveBeenCalled()
+      expect(args[0]).toBe('service-manager/pupil/move-form')
+    })
+
+    test('it catches errors from looking up the school and redirects to the form', async () => {
+      jest.spyOn(ServiceManagerPupilService, 'getPupilDetailsByUrlSlug').mockResolvedValue({
+        dateOfBirth: '1 March 2019',
+        dfeNumber: 9997777,
+        firstName: 'First',
+        id: 1,
+        lastName: 'Last',
+        isAnnulled: false,
+        middleNames: 'Middle Name',
+        schoolId: 2,
+        schoolName: 'Test School',
+        schoolUrn: 200,
+        status: 'Not Started',
+        upn: 'G10020344',
+        urlSlug: 'daeb9d73-8b55-4b06-8ae2-6c0dbee03bd0'
+      })
+      jest.spyOn(ServiceManagerSchoolService, 'findSchoolByUrn').mockRejectedValue(new Error('mock error simulating sql error'))
+      baseReq.body.targetSchoolURN = '300'
+      const req = getReq(baseReq)
+      const res = getRes()
+      await controller.postPupilMove(req, res, next)
+      const args = res.render.mock.calls[0]
+      expect(res.render).toHaveBeenCalled()
+      expect(args[0]).toBe('service-manager/pupil/move-form')
+    })
+
+    test('on success it redirects to the confirmation page', async () => {
+      jest.spyOn(ServiceManagerPupilService, 'getPupilDetailsByUrlSlug').mockResolvedValue({
+        dateOfBirth: '1 March 2019',
+        dfeNumber: 9997777,
+        firstName: 'First',
+        id: 1,
+        lastName: 'Last',
+        isAnnulled: false,
+        middleNames: 'Middle Name',
+        schoolId: 2,
+        schoolName: 'Test School',
+        schoolUrn: 200,
+        status: 'Not Started',
+        upn: 'G10020344',
+        urlSlug: 'daeb9d73-8b55-4b06-8ae2-6c0dbee03bd0'
+      })
+      jest.spyOn(ServiceManagerSchoolService, 'findSchoolByUrn').mockResolvedValue({
+        id: 4,
+        leaCode: 999,
+        estabCode: 7775,
+        name: 'Test School',
+        urlSlug: 'f76d7a46-69a0-4f48-8111-9252d138540a',
+        urn: 300,
+        dfeNumber: 9997775
+      })
+      const req = getReq(baseReq)
+      const res = getRes()
+      await controller.postPupilMove(req, res, next)
+      const args = res.redirect.mock.calls[0]
+      expect(res.redirect).toHaveBeenCalled()
+      expect(args[0]).toBe('/service-manager/pupil/move/daeb9d73-8b55-4b06-8ae2-6c0dbee03bd0/confirm/f76d7a46-69a0-4f48-8111-9252d138540a')
+    })
+  })
+
+  describe('getPupilMoveConfirm', () => {
+    let baseReq
+    beforeEach(() => {
+      baseReq = {
+        method: 'GET',
+        url: '/service-manager/pupil/move/daeb9d73-8b55-4b06-8ae2-6c0dbee03bd0/confirm/f76d7a46-69a0-4f48-8111-9252d138540a',
+        params: {
+          pupilSlug: 'daeb9d73-8b55-4b06-8ae2-6c0dbee03bd0',
+          schoolSlug: 'f76d7a46-69a0-4f48-8111-9252d138540a'
+        }
+      }
+      jest.spyOn(ServiceManagerPupilService, 'getPupilDetailsByUrlSlug').mockResolvedValue({ id: 1 })
+      jest.spyOn(ServiceManagerSchoolService, 'findSchoolBySlug').mockResolvedValue({ id: 2 })
+    })
+
+    test('it renders the confirmation page', async () => {
+      const req = getReq(baseReq)
+      const res = getRes()
+      await controller.getPupilMoveConfirm(req, res, next)
+      expect(res.render).toHaveBeenCalled()
+      const args = res.render.mock.calls[0]
+      expect(args[0]).toBe('service-manager/pupil/move-confirm')
+    })
+
+    test('it handles a pupil db lookup error by redirecting to pupil move page with a flash message', async () => {
+      const req = getReq(baseReq)
+      const res = getRes()
+      jest.spyOn(ServiceManagerPupilService, 'getPupilDetailsByUrlSlug').mockRejectedValue(new Error('mock error from testing'))
+      jest.spyOn(req, 'flash')
+      await controller.getPupilMoveConfirm(req, res, next)
+      expect(res.redirect).toHaveBeenCalled()
+      const args = res.redirect.mock.calls[0]
+      expect(args[0]).toBe('/service-manager/pupil/move/daeb9d73-8b55-4b06-8ae2-6c0dbee03bd0')
+      const flashArgs = req.flash.mock.calls[0]
+      expect(flashArgs[0]).toBe('error')
+      expect(flashArgs[1]).toMatch(/Error confirming target school/)
+    })
+
+    test('it handles a school db lookup error by redirecting to pupil move page with a flash message', async () => {
+      const req = getReq(baseReq)
+      const res = getRes()
+      jest.spyOn(ServiceManagerSchoolService, 'findSchoolBySlug').mockRejectedValue(new Error('mock error from testing'))
+      jest.spyOn(req, 'flash')
+      await controller.getPupilMoveConfirm(req, res, next)
+      expect(res.redirect).toHaveBeenCalled()
+      const args = res.redirect.mock.calls[0]
+      expect(args[0]).toBe('/service-manager/pupil/move/daeb9d73-8b55-4b06-8ae2-6c0dbee03bd0')
+      const flashArgs = req.flash.mock.calls[0]
+      expect(flashArgs[0]).toBe('error')
+      expect(flashArgs[1]).toMatch(/Error confirming target school/)
+    })
+  })
+
+  describe('postPupilMoveConfirmed', () => {
+    let baseReq
+    beforeEach(() => {
+      baseReq = {
+        method: 'POST',
+        url: '/service-manager/pupil/move/daeb9d73-8b55-4b06-8ae2-6c0dbee03bd0/confirm/f76d7a46-69a0-4f48-8111-9252d138540a',
+        params: {
+          pupilSlug: 'daeb9d73-8b55-4b06-8ae2-6c0dbee03bd0',
+          schoolSlug: 'f76d7a46-69a0-4f48-8111-9252d138540a'
+        },
+        user: {
+          id: '102'
+        }
+      }
+      jest.spyOn(ServiceManagerPupilService, 'getPupilDetailsByUrlSlug').mockResolvedValue({ id: 1 })
+      jest.spyOn(ServiceManagerSchoolService, 'findSchoolBySlug').mockResolvedValue({ id: 2 })
+      jest.spyOn(ServiceManagerPupilService, 'movePupilToSchool').mockResolvedValue()
+    })
+
+    test('it moves the pupil to the new school', async () => {
+      const req = getReq(baseReq)
+      const res = getRes()
+      await controller.postPupilMoveConfirmed(req, res, next)
+      expect(ServiceManagerPupilService.movePupilToSchool).toHaveBeenCalled()
+    })
+
+    test('on error it redirects back to the pupil move summary and shows a flash message', async function () {
+      const req = getReq(baseReq)
+      const res = getRes()
+      jest.spyOn(req, 'flash')
+      jest.spyOn(ServiceManagerPupilService, 'movePupilToSchool').mockRejectedValue(new Error('mock error from unit test'))
+      await controller.postPupilMoveConfirmed(req, res)
+      expect(req.flash).toHaveBeenCalled()
+      const flashArgs = req.flash.mock.calls[0]
+      expect(flashArgs[0]).toBe('error')
+      expect(flashArgs[1]).toBe('mock error from unit test')
+      expect(res.redirect).toHaveBeenCalled()
+      const redirectArgs = res.redirect.mock.calls[0]
+      expect(redirectArgs[0]).toBe('/service-manager/pupil/move/daeb9d73-8b55-4b06-8ae2-6c0dbee03bd0')
     })
   })
 })
