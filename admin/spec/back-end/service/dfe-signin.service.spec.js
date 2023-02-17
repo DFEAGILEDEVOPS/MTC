@@ -40,8 +40,8 @@ describe('dfe-signin.service', () => {
     }
     const expectedErrorMessage = `User ${dfeSignInUser.sub} has no organisation data`
     await expect(sut.initialiseUser(dfeSignInUser, token))
-    .rejects
-    .toThrow(expectedErrorMessage)
+      .rejects
+      .toThrow(expectedErrorMessage)
   })
   test('throws an error if dfeUser object does not have a defined organisation.urn property', async () => {
     jest.spyOn(dfeDataService, 'getDfeRole').mockResolvedValue('mtc_teacher')
