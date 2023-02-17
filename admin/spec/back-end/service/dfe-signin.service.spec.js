@@ -34,16 +34,26 @@ describe('dfe-signin.service', () => {
   test('throws an error if dfeUser object does not have a defined organisation property', async () => {
     jest.spyOn(dfeDataService, 'getDfeRole').mockResolvedValue('mtc_teacher')
     jest.spyOn(roleService, 'findByTitle').mockResolvedValue({ id: 3, title: roles.teacher })
-    await expect(sut.initialiseUser({ organisation: undefined }, token))
-      .rejects
-      .toThrow('user.organisation or user.organisation.urn not found on dfeUser object')
+    const dfeSignInUser = {
+      organisation: undefined,
+      sub: 'mock-user-id'
+    }
+    const expectedErrorMessage = `User ${dfeSignInUser.sub} has no organisation data`
+    await expect(sut.initialiseUser(dfeSignInUser, token))
+    .rejects
+    .toThrow(expectedErrorMessage)
   })
   test('throws an error if dfeUser object does not have a defined organisation.urn property', async () => {
     jest.spyOn(dfeDataService, 'getDfeRole').mockResolvedValue('mtc_teacher')
     jest.spyOn(roleService, 'findByTitle').mockResolvedValue({ id: 3, title: roles.teacher })
-    await expect(sut.initialiseUser({ organisation: { urn: undefined } }, token))
+    const dfeSignInUser = {
+      organisation: undefined,
+      sub: 'mock-user-id'
+    }
+    const expectedErrorMessage = `User ${dfeSignInUser.sub} has no organisation data`
+    await expect(sut.initialiseUser(dfeSignInUser, token))
       .rejects
-      .toThrowError('user.organisation or user.organisation.urn not found on dfeUser object')
+      .toThrowError(expectedErrorMessage)
   })
 
   test('does look up school if role is teacher', async () => {
