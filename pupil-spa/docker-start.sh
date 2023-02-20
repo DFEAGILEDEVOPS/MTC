@@ -10,7 +10,7 @@
 /bin/sed -i "s/<azure_account_name>/${AZURE_ACCOUNT_NAME}/g" /etc/nginx/conf.d/default.conf
 
 # update the unsupported browser page with the app insights instrumentation key
-/bin/sed -i "s/<instrumentation_key>/${APPINSIGHTS_INSTRUMENTATIONKEY}/g" /etc/nginx/html/unsupported/browser.html
+/bin/sed -i "s/<instrumentation_key>/${APPINSIGHTS_INSTRUMENTATIONKEY}/g" /usr/share/nginx/html/unsupported/browser.html
 
 # Start nginx
 nginx -g 'daemon off;'
