@@ -19,7 +19,7 @@
   "dependencies": {
     "command-line-args": "^5.1.1",
     "moment": "^2.29.4",
-    "mssql": "^7.2.1",
+    "mssql": "^9.1.1",
     "postgrator": "^4.1.0",
     "ramda": "^0.28.0",
     "to-bool": "^0.0.1",
