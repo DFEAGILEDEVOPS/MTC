@@ -160,7 +160,7 @@
     "bail": true,
     "collectCoverage": false,
     "collectCoverageFrom": [
-      "**/*.{js,jsx}",
+      "**/*.{js,jsx,ts}",
       "!**/node_modules/**",
       "!**/vendor/**",
       "!**/data-access/**",
@@ -175,7 +175,8 @@
       "!**/coverage/**",
       "!**/bin/**",
       "!<rootDir>/dist/**",
-      "!<rootDir>/routes/**"
+      "!<rootDir>/routes/**",
+      "!**/*.data.service.[jt]s"
     ],
     "coverageDirectory": "<rootDir>/coverage",
     "testMatch": [
