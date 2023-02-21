@@ -524,10 +524,6 @@ Then(/^I should still be able to add the pupil after filling in the reason box$/
   expect(pupil_reason_row['createdAt']).to_not be_nil
 end
 
-
-
-
-
 When(/^I fill in the form with the pupil dob (\d+) years ago$/) do |years_old|
   @upn = UpnGenerator.generate unless @page == edit_pupil_page
   pupil_name = (0...8).map {(65 + rand(26)).chr}.join
