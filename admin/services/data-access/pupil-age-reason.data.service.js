@@ -7,17 +7,18 @@ const pupilAgeReasonDataService = {}
 
 /**
  * Insert pupil age reason record and link with pupil age reason id
- * @param {Number} pupilId
- * @param {String} reason
+ * @param {number} pupilId
+ * @param {string} reason
+ * @param {number} userId
  * @returns {Promise<Array>}
  */
-pupilAgeReasonDataService.sqlInsertPupilAgeReason = async function (pupilId, reason) {
+pupilAgeReasonDataService.sqlInsertPupilAgeReason = async function (pupilId, reason, userId) {
   const sql = `
-  INSERT INTO ${sqlService.adminSchema}.[pupilAgeReason]
-  (pupil_id, reason)
-  VALUES (@pupilId, @reason)
-  
-  UPDATE ${sqlService.adminSchema}.[pupil]
+  INSERT INTO [mtc_admin].[pupilAgeReason]
+  (pupil_id, reason, lastUpdatedBy_userId, recordedBy_userId)
+  VALUES (@pupilId, @reason, @userId, @userId)
+
+  UPDATE [mtc_admin].[pupil]
   SET pupilAgeReason_id = SCOPE_IDENTITY()
   WHERE id = @pupilId
   `
@@ -32,6 +33,11 @@ pupilAgeReasonDataService.sqlInsertPupilAgeReason = async function (pupilId, rea
       name: 'reason',
       value: reason,
       type: TYPES.NVarChar
+    },
+    {
+      name: 'userId',
+      value: userId,
+      type: TYPES.Int
     }
   ]
 
@@ -40,14 +46,15 @@ pupilAgeReasonDataService.sqlInsertPupilAgeReason = async function (pupilId, rea
 
 /**
  * Update pupil age reason record
- * @param {Number} pupilId
- * @param {String} reason
+ * @param {number} pupilId
+ * @param {string} reason
+ * @param {number} userId
  * @returns {Promise<Array>}
  */
-pupilAgeReasonDataService.sqlUpdatePupilAgeReason = async function (pupilId, reason) {
+pupilAgeReasonDataService.sqlUpdatePupilAgeReason = async function (pupilId, reason, userId) {
   const sql = `
-    UPDATE ${sqlService.adminSchema}.pupilAgeReason
-    SET reason = @reason
+    UPDATE [mtc_admin].pupilAgeReason
+    SET reason = @reason, lastUpdatedBy_userId = @userId
     WHERE pupil_id = @pupilId
   `
 
@@ -61,6 +68,11 @@ pupilAgeReasonDataService.sqlUpdatePupilAgeReason = async function (pupilId, rea
       name: 'reason',
       value: reason,
       type: TYPES.NVarChar
+    },
+    {
+      name: 'userId',
+      value: userId,
+      type: TYPES.Int
     }
   ]
 
@@ -74,12 +86,12 @@ pupilAgeReasonDataService.sqlUpdatePupilAgeReason = async function (pupilId, rea
  */
 pupilAgeReasonDataService.sqlRemovePupilAgeReason = async function (pupilId) {
   const sql = `
-    UPDATE ${sqlService.adminSchema}.pupil
+    UPDATE [mtc_admin].pupil
     SET pupilAgeReason_id = NULL
-    WHERE id = @pupilId
-  
-    DELETE ${sqlService.adminSchema}.pupilAgeReason
-    WHERE pupil_id = @pupilId
+    WHERE id = @pupilId;
+
+    DELETE [mtc_admin].pupilAgeReason
+    WHERE pupil_id = @pupilId;
   `
 
   const params = [
