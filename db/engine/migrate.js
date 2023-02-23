@@ -30,27 +30,35 @@ async function main () {
    * @param {mssql.ConnectionPool} client
    */
   function getMigratorConfig (database, client) {
+    const asyncExecQuery = async function (query) {
+      const request = new mssql.Request(client)
+      const goStatementRegex = new RegExp(/^\s*GO\s*$/im)
+
+      if (query.match(goStatementRegex) !== null) {
+        console.log('Multi statement mode')
+        const batches = query.split(goStatementRegex)
+        for (const batch of batches) {
+          await request.batch(batch)
+        }
+      } else {
+        console.log('Single statement mode', query)
+        const result = await request.batch(query)
+        return {
+          rows: result && result.recordset ? result.recordset : result
+        }
+      }
+    }
+
     return {
       migrationPattern: path.join(__dirname, '..', 'migrations', '**'),
       driver: 'mssql',
       database,
       validateChecksums: false,
       schemaTable: 'migrationLog',
-      execQuery: (query) => {
-        return new Promise((resolve, reject) => {
-          const request = new mssql.Request(client)
-          request.query(query, (err, result) => {
-            if (err) {
-              return reject(err)
-            }
-            return resolve({
-              rows: result && result.recordset ? result.recordset : result
-            })
-          })
-        })
-      }
+      execQuery: asyncExecQuery
     }
   }
+
 
   class Migrator extends Postgrator.default {
     /*
