@@ -1,8 +1,8 @@
 import { RedisAuthController } from './redis.auth.controller'
 import * as httpMocks from 'node-mocks-http'
 import logger from '../services/log.service'
-import { IPupilAuthenticationService } from '../services/redis-pupil-auth.service'
-import { Request } from 'express'
+import type { IPupilAuthenticationService } from '../services/redis-pupil-auth.service'
+import type { Request } from 'express'
 
 const RedisPupilAuthServiceMock = jest.fn<IPupilAuthenticationService, any>(() => ({
   authenticate: jest.fn()
@@ -120,7 +120,7 @@ describe('redis auth controller', () => {
   })
 })
 
-function createMockRequest (contentType: String): any {
+function createMockRequest (contentType: string): any {
   return httpMocks.createRequest({
     method: 'POST',
     url: '/auth',
