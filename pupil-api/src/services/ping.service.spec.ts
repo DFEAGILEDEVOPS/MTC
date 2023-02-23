@@ -9,11 +9,11 @@ describe('ping.service', () => {
 
   test('getCommitId - returns error message when cannot be obtained', async () => {
     const actual = await sut.getCommitId()
-    expect(actual).toStrictEqual('NOT FOUND')
+    expect(actual).toBe('NOT FOUND')
   })
 
   test('getBuildNumber - returns error message when cannot be obtained', async () => {
     const actual = await sut.getBuildNumber()
-    expect(actual).toStrictEqual('NOT FOUND')
+    expect(actual).toBe('NOT FOUND')
   })
 })

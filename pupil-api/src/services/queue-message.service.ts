@@ -1,5 +1,5 @@
-
-import * as sb from '@azure/service-bus'
+import { ServiceBusClient } from '@azure/service-bus'
+import type { ServiceBusSender } from '@azure/service-bus'
 import config from '../config'
 
 export interface IQueueMessageService {
@@ -11,18 +11,18 @@ export interface IServiceBusQueueMessage {
 }
 
 export class SbQueueMessageService implements IQueueMessageService {
-  private readonly sender: sb.Sender
+  private readonly sender: ServiceBusSender
+  private readonly queueName = 'pupil-login'
 
   constructor () {
     if (config.ServiceBus.connectionString === undefined) {
       throw new Error('Azure Service Bus Connection String missing')
     }
-    const sbClient = sb.ServiceBusClient.createFromConnectionString(config.ServiceBus.connectionString)
-    const sbQueueClient = sbClient.createQueueClient('pupil-login')
-    this.sender = sbQueueClient.createSender()
+    const serviceBusClient = new ServiceBusClient(config.ServiceBus.connectionString)
+    this.sender = serviceBusClient.createSender(this.queueName)
   }
 
   async dispatch (message: IServiceBusQueueMessage): Promise<void> {
-    return this.sender.send(message)
+    return this.sender.sendMessages(message)
   }
 }

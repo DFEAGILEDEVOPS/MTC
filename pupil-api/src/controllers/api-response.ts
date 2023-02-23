@@ -1,4 +1,4 @@
-import { Response } from 'express'
+import type { Response } from 'express'
 import { DefaultSecurityHeaders } from '../routes/default-security-headers'
 
 const apiResponse = {
