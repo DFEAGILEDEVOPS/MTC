@@ -1,4 +1,4 @@
-import { Request, Response } from 'express'
+import type { Request, Response } from 'express'
 import * as moment from 'moment'
 import { DefaultSecurityHeaders } from '../routes/default-security-headers'
 import { PingService } from '../services/ping.service'

@@ -85,7 +85,8 @@ import { ApplicationInsightsService } from './services/app-insights/app-insights
 import { TestErrorComponent } from './test-error/test-error.component';
 import { HttpService } from './services/http/http.service';
 import { ErrorLocalStorageComponent } from './error-localstorage/error-local-storage.component';
-import { QrCodeArrivalComponent } from './qr-code-arrival/qr-code-arrival.component'
+import { QrCodeArrivalComponent } from './qr-code-arrival/qr-code-arrival.component';
+import { PageNotFoundComponent } from './page-not-found/page-not-found.component'
 
 const appRoutes: Routes = [
   {path: '', redirectTo: 'connectivity-check', pathMatch: 'full'},
@@ -113,7 +114,7 @@ const appRoutes: Routes = [
   {path: 'sign-out', component: LogoutComponent, canActivate: [LoggedInGuard]},
   {path: 'submission-failed', component: SubmissionFailedComponent },
   {path: 'test-error', component: TestErrorComponent}, // no need for login here
-  // { path: '**', component: NotFoundComponent }
+  { path: '**', component: PageNotFoundComponent }
 ];
 
 @NgModule({
@@ -164,7 +165,8 @@ const appRoutes: Routes = [
         WarmupLoadingComponent,
         WebsiteOfflineComponent,
         TestErrorComponent,
-        ErrorLocalStorageComponent
+        ErrorLocalStorageComponent,
+        PageNotFoundComponent
     ],
     imports: [
         BrowserModule,

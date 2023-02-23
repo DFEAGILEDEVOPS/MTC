@@ -1,0 +1,4 @@
+ALTER TABLE [mtc_admin].[pupilAgeReason]
+    ADD [createdAt] DATETIMEOFFSET(7) CONSTRAINT [DF_createdAt] DEFAULT (GETUTCDATE()) NOT NULL,
+        [updatedAt] DATETIMEOFFSET(7) CONSTRAINT [DF_updatedAt] DEFAULT (GETUTCDATE()) NOT NULL
+;
