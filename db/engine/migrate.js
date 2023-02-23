@@ -35,13 +35,11 @@ async function main () {
       const goStatementRegex = new RegExp(/^\s*GO\s*$/im)
 
       if (query.match(goStatementRegex) !== null) {
-        console.log('Multi statement mode')
         const batches = query.split(goStatementRegex)
         for (const batch of batches) {
           await request.batch(batch)
         }
       } else {
-        console.log('Single statement mode', query)
         const result = await request.batch(query)
         return {
           rows: result && result.recordset ? result.recordset : result
