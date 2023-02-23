@@ -1,0 +1,55 @@
+<%- partial('partials/_gds_breadcrumbs_and_sign_out', { breadcrumbs }) %>
+  <main class="govuk-main-wrapper govuk-body" id="main-content" role="main">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl">
+          <%= pupil.lastName %>, <%= pupil.firstName %>
+        </h1>
+        <h2 class="govuk-heading-m">
+          Move to a new school
+        </h2>
+        <%- partial('partials/_gds_session_expiry') %>
+          <%- partial('partials/_flash-messages') %>
+            <%- partial('partials/_form-error', { pageFields: [], error }) %>
+              <form action="" method="post">
+                <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
+
+               <%- partial('partials/service-manager/pupil/_pupil-summary', { pupil }) %>
+
+                <input type="hidden" name="pupilUrlSlug" value="<%= pupil.urlSlug.toLowerCase() %>">
+
+                <div class="govuk-form-group <%= error.isError('targetSchoolURN') ? 'govuk-form-group--error' : '' %>">
+                  <label class="govuk-label" for="targetSchoolURN">
+                    URN of the target school
+                    <% if (error.isError('targetSchoolURN')) { %>
+                      <span class="govuk-error-message">
+                        <%= error.get('targetSchoolURN') %>
+                      </span>
+                      <% } %>
+                  </label>
+                  <input class="govuk-input govuk-input--width-10 <%= error.isError('targetSchoolURN') ? 'govuk-input--error' :
+                            '' %>" id="targetSchoolURN" name="targetSchoolURN" type="text" value="">
+                </div>
+
+                <button type="submit" id="searchh-btn" class="govuk-button">Go to confirmation page</button>
+                <a class="govuk-button govuk-button--secondary" href="/service-manager/pupil-summary/<%= pupil.urlSlug.toLowerCase() %>">Cancel</a>
+
+              </form>
+      </div>
+      <div class="govuk-grid-column-one-third" aria-label="sidebar">
+        <aside class="app-related-items" role="complementary">
+          <h2 class="govuk-heading-m" id="subsection-title">
+            Related
+          </h2>
+          <nav role="navigation" aria-labelledby="subsection-title">
+            <ul class="govuk-list govuk-!-font-size-16">
+              <li>
+                <a class="govuk-link" href="<%- guidancePdf %>" target="_blank" rel="noopener noreferrer">Read the
+                  guidance and watch videos</a>
+              </li>
+            </ul>
+          </nav>
+        </aside>
+      </div>
+    </div>
+  </main>

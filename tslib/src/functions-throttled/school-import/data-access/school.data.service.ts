@@ -1,4 +1,5 @@
 import * as mssql from 'mssql'
+import * as R from 'ramda'
 import { ILogger } from '../../../common/logger'
 import { SchoolImportJobOutput } from '../SchoolImportJobOutput'
 import { ISchoolRecord } from './ISchoolRecord'
@@ -21,6 +22,10 @@ export class SchoolDataService implements ISchoolDataService {
 
   private logError (msg: string): void {
     this.jobResult.stderr.push(`${(new Date()).toISOString()} school-import: ${msg}`)
+  }
+
+  private logInfo (msg: string): void {
+    this.jobResult.stdout.push(`${(new Date()).toISOString()} school-import: ${msg}`)
   }
 
   /**
@@ -66,17 +71,68 @@ export class SchoolDataService implements ISchoolDataService {
     return this.jobResult
   }
 
+  private async getExistingEstabTypes (): Promise<Array<Record<string, number>>> {
+    const sql = `SELECT [id], [code]
+                 FROM
+                 [mtc_admin].[typeOfEstablishmentLookup] `
+    const request = new mssql.Request(this.pool)
+    const sqlResult = await request.query(sql)
+    const recordset = sqlResult.recordset
+    const estabTypes = recordset.map(rec => {
+      const x: Record<string, number> = {
+        id: rec.id,
+        code: rec.code
+      }
+      return x
+    })
+    return estabTypes
+  }
+
+  private async getEstabTypeId (estabTypeCode: number, estabTypeName: string, existingEstabTypes: Array<Record<string, number>>): Promise<number> {
+    const estabTypeEntry = R.find(R.propEq('code', estabTypeCode), existingEstabTypes)
+    if (estabTypeEntry === undefined) {
+      this.logInfo(`no estabType found with code ${estabTypeCode}, attempting to add...`)
+      const newId = await this.addEstabType(estabTypeCode, estabTypeName)
+      existingEstabTypes.push({
+        id: newId,
+        code: estabTypeCode
+      })
+      return newId
+    }
+    return estabTypeEntry.id
+  }
+
+  private async addEstabType (estabTypeCode: number, estabTypeName: string): Promise<number> {
+    this.logInfo(`adding new estabType. code:${estabTypeCode} name:${estabTypeName}.`)
+    const sql = `
+      INSERT mtc_admin.[typeOfEstablishmentLookup] ([name], [code])
+      VALUES (@name, @code);
+      SELECT SCOPE_IDENTITY() AS [insertedId]`
+    const request = new mssql.Request(this.pool)
+    request.input('name', mssql.TYPES.NVarChar(50), estabTypeName)
+    request.input('code', mssql.TYPES.Int, estabTypeCode)
+    request.output('insertedId', mssql.TYPES.Int)
+    const result = await request.query(sql)
+    const id = result.recordset[0].insertedId
+    this.logInfo(`inserted estabType. id is ${id}`)
+    return id
+  }
+
   async individualUpload (schoolData: ISchoolRecord[]): Promise<SchoolImportJobOutput> {
-    const sql = `INSERT [mtc_admin].[school] (dfeNumber, estabCode, leaCode, name, urn)
-                  VALUES (@dfeNumber, @estabCode, @leaCode, @name, @urn)`
+    const toeCodes = await this.getExistingEstabTypes()
+    const sql = `
+      INSERT [mtc_admin].[school] (dfeNumber, estabCode, leaCode, name, urn, typeOfEstablishmentLookup_id)
+      VALUES (@dfeNumber, @estabCode, @leaCode, @name, @urn, @toeCodeId);`
     for (let index = 0; index < schoolData.length; index++) {
-      const request = new mssql.Request(this.pool)
       const school = schoolData[index]
+      const toeCodeId = await this.getEstabTypeId(school.estabTypeCode, school.estabTypeName, toeCodes)
+      const request = new mssql.Request(this.pool)
       request.input('dfeNumber', mssql.TYPES.Int, `${school.leaCode}${school.estabCode}`)
       request.input('estabCode', mssql.TYPES.Int, school.estabCode)
       request.input('leaCode', mssql.TYPES.Int, school.leaCode)
       request.input('name', mssql.TYPES.NVarChar(mssql.MAX), school.name)
       request.input('urn', mssql.TYPES.Int, school.urn)
+      request.input('toeCodeId', mssql.TYPES.Int, toeCodeId)
       try {
         await request.query(sql)
         this.logger.info(`school imported. urn:${school.urn}`)
