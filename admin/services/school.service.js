@@ -135,6 +135,7 @@ const schoolService = {
    *   dfeNumber: number,
    *   name: string,
    *   urn: number,
+   *   isTestSchool; bool
    * }
    */
 
