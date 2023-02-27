@@ -18,8 +18,8 @@ class DsiMissingSchoolInfoError extends mtcError {
       const message = `User ${dfeSignInUser.providerUserId} has no urn associated with their organisation data`
       super(message, 'We could not find a URN in your associated school data')
     } else {
-      const message = `User ${dfeSignInUser.providerUserId} has no urn associated with their organisation data`
-      super(message, 'We could not find a URN in your associated school data')
+      const message = `An unknown error occured when signing in user with ID:${dfeSignInUser.providerUserId}`
+      super(message, 'An unknown error occured')
     }
   }
 }
