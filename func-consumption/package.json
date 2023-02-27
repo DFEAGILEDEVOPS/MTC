@@ -54,7 +54,7 @@
     "bluebird": "^3.7.0",
     "csv-string": "^4.1.0",
     "dotenv": "^10.0.0",
-    "fast-xml-parser": "^3.20.0",
+    "fast-xml-parser": "^4.1.2",
     "ioredis": "^4.27.9",
     "lz-string": "^1.4.4",
     "moment": "^2.29.4",
