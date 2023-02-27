@@ -3,6 +3,9 @@ import { ServiceManagerPupilDataService } from './service-manager.pupil.data.ser
 import { validate } from 'uuid'
 import moment from 'moment'
 import { PupilAnnulmentDataService } from '../pupil-annulment/pupil-annulment.data.service'
+import { ServiceManagerSchoolResult } from '../school/school.data.service'
+const redisCacheService = require('../../../services/data-access/redis-cache.service')
+const redisKeyService = require('../../../services/redis-key.service')
 const dateService = require('../../date.service')
 const settingService = require('../../setting.service')
 const pupilStatusService = require('../../pupil-status.service')
@@ -25,6 +28,7 @@ export class ServiceManagerPupilService {
         id: r.id,
         firstName: r.foreName,
         lastName: r.lastName,
+        middleNames: r.middleNames,
         dateOfBirth: dateService.formatShortGdsDate(r.dateOfBirth),
         schoolName: r.schoolName,
         schoolUrn: r.urn,
@@ -51,6 +55,7 @@ export class ServiceManagerPupilService {
       firstName: p[0].foreName,
       id: p[0].id,
       lastName: p[0].lastName,
+      middleNames: p[0].middleNames,
       schoolName: p[0].schoolName,
       schoolUrn: p[0].urn,
       urlSlug: p[0].urlSlug,
@@ -59,6 +64,27 @@ export class ServiceManagerPupilService {
       schoolId: p[0].schoolId,
       isAnnulled
     }
+  }
+
+  static async movePupilToSchool (pupil: ServiceManagerPupilDetails, school: ServiceManagerSchoolResult, userId: number): Promise<void> {
+    if (pupil === undefined) {
+      throw new Error('Missing pupil')
+    }
+    if (school === undefined) {
+      throw new Error('Missing school')
+    }
+    if (userId === undefined) {
+      throw new Error('Missing user ID')
+    }
+    await ServiceManagerPupilDataService.sqlMovePupilToSchool(pupil.id, school.id, userId)
+
+    // As the pupil has now been moved we need to drop the cache for the previous and new schools
+    const cacheKeys = []
+    cacheKeys.push(redisKeyService.getPupilRegisterViewDataKey(school.id)) // target school
+    cacheKeys.push(redisKeyService.getPupilRegisterViewDataKey(pupil.schoolId)) // source school
+    cacheKeys.push(redisKeyService.getSchoolResultsKey(school.id)) // target school
+    cacheKeys.push(redisKeyService.getSchoolResultsKey(pupil.schoolId)) // source school
+    await redisCacheService.drop(cacheKeys)
   }
 
   private static async getPupilStatus (pupilId: number): Promise<any> {
@@ -76,6 +102,7 @@ export interface ServiceManagerPupilSearchResult {
   id: number
   firstName: string
   lastName: string
+  middleNames: string
   dateOfBirth: string
   schoolName: string
   schoolUrn: number
@@ -85,16 +112,17 @@ export interface ServiceManagerPupilSearchResult {
 }
 
 export interface ServiceManagerPupilDetails {
-  urlSlug: string
-  id: number
-  firstName: string
-  lastName: string
   dateOfBirth: string
+  dfeNumber: number
+  firstName: string
+  id: number
+  isAnnulled: boolean
+  lastName: string
+  middleNames: string
+  schoolId: number
   schoolName: string
   schoolUrn: number
-  dfeNumber: number
-  upn: string
   status: string
-  schoolId: number
-  isAnnulled: boolean
+  upn: string
+  urlSlug: string
 }

@@ -10,6 +10,8 @@ class PupilSummaryPage < SitePrism::Page
   element :urn, '.govuk-summary-list .govuk-summary-list__row:nth-of-type(6) dd'
   element :status, '.govuk-summary-list .govuk-summary-list__row:nth-of-type(7) dd'
   element :annul_results, '.govuk-link', text: "Annul this pupils results"
+  element :move_pupil, '.govuk-link', text: "Move pupil to different school"
   element :undo_annulment, '.govuk-link', text: "Undo Annulment"
+  element :confirm_move_flash, '.govuk-info-message'
 
 end

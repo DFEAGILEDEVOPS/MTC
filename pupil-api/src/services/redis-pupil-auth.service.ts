@@ -1,8 +1,10 @@
 import * as R from 'ramda'
 import * as moment from 'moment'
-import { IRedisService, RedisService } from './redis.service'
+import type { IRedisService } from './redis.service'
+import { RedisService } from './redis.service'
 import config from '../config'
-import { IQueueMessageService, SbQueueMessageService } from './queue-message.service'
+import { SbQueueMessageService } from './queue-message.service'
+import type { IQueueMessageService } from './queue-message.service'
 import { PingService } from './ping.service'
 
 export interface IPupilAuthenticationService {
