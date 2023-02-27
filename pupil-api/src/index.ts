@@ -27,6 +27,7 @@ function normalizePort (val: number | string): number | string | boolean {
 function onError (error: NodeJS.ErrnoException): void {
   if (error.syscall !== 'listen') throw error
   const bind = (typeof port === 'string') ? `Pipe ${port}` : `Port ${port}`
+  /* eslint-disable no-fallthrough */
   switch (error.code) {
     case 'EACCES':
       console.error(`${bind} requires elevated privileges`)
@@ -37,6 +38,7 @@ function onError (error: NodeJS.ErrnoException): void {
     default:
       throw error
   }
+  /* eslint-enable no-fallthrough */
 }
 
 function onListening (): void {
