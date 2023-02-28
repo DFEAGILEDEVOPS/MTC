@@ -2,7 +2,7 @@
 
 const sqlService = require('./sql.service')
 const R = require('ramda')
-const axios = require('axios').default
+const axios = require('axios/dist/node/axios.cjs')
 const config = require('../../config')
 
 const functionUrl = `${config.Functions.Throttled.BaseAdminUrl}/sync-results-init`
