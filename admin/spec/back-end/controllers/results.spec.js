@@ -13,6 +13,7 @@ const headteacherDeclarationService = require('../../../services/headteacher-dec
 const resultPageAvailabilityService = require('../../../services/results-page-availability.service')
 const resultService = require('../../../services/result.service')
 const ctfService = require('../../../services/ctf-service/ctf.service')
+const checkWindowPhaseConsts = require('../../../lib/consts/check-window-phase')
 
 describe('results controller:', () => {
   let next
@@ -198,6 +199,31 @@ describe('results controller:', () => {
       // test
       expect(res.locals.pageTitle).toBe('Results')
       expect(res.render).toHaveBeenCalledWith('results/view-results-not-found', { breadcrumbs: undefined })
+    })
+
+    test('a school can download the CTF results in the Read Only period, even if they havn\'t signed the HDF', async () => {
+       // setup
+      global.checkWindowPhase = checkWindowPhaseConsts.readOnlyAdmin
+      const res = getRes()
+      const req = getReq(reqParams)
+      jest.spyOn(res, 'render').mockImplementation()
+      jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockReturnValue({ id: 1 })
+      jest.spyOn(groupService, 'getGroups').mockImplementation()
+      jest.spyOn(headteacherDeclarationService, 'isHdfSubmittedForCurrentCheck').mockResolvedValue(false)
+      jest.spyOn(resultPageAvailabilityService, 'getResultsOpeningDate').mockImplementation()
+      jest.spyOn(resultPageAvailabilityService, 'isResultsFeatureAccessible').mockReturnValue(true)
+      jest.spyOn(resultPageAvailabilityService, 'isResultsPageAccessibleForIncompleteHdfs').mockReturnValue(true)
+      jest.spyOn(resultService, 'getPupilResultData').mockReturnValue(mockPupilData)
+
+      // exec
+      await controller.getViewResultsPage(req, res, next)
+
+      // test
+      expect(res.locals.pageTitle).toBe('Results')
+      expect(res.render).toHaveBeenCalledWith('results/view-results', expect.objectContaining({
+        checkWindowPhaseIsReadOnly: true,
+        isHdfSubmitted: false
+      }))
     })
   })
 
