@@ -202,7 +202,7 @@ describe('results controller:', () => {
     })
 
     test('a school can download the CTF results in the Read Only period, even if they havn\'t signed the HDF', async () => {
-       // setup
+      // setup
       global.checkWindowPhase = checkWindowPhaseConsts.readOnlyAdmin
       const res = getRes()
       const req = getReq(reqParams)
