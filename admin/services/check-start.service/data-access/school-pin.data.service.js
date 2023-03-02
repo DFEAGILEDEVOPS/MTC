@@ -1,6 +1,6 @@
 'use strict'
 
-const axios = require('axios').default
+const axios = require('axios')
 const config = require('../../../config')
 
 const functionUrl = config.SchoolPinGeneratorFunction.FunctionUrl
