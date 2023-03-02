@@ -376,6 +376,11 @@ app.use(function (err, req, res, next) {
   // catch CSRF errors and redirect to the previous location
   if (err.code === 'EBADCSRFTOKEN') return res.redirect('back')
 
+  if (err.code === 'SYSTEM_UNAVAILABLE') {
+    res.locals.pageTitle = 'The service is currently closed'
+    return res.render('availability/admin-window-unavailable', {})
+  }
+
   // render the error page
   res.locals.message = 'An error occurred'
   res.locals.userMessage = err.userMessage
