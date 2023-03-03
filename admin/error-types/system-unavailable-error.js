@@ -3,10 +3,11 @@
 const { mtcError } = require('./mtc-error')
 
 class SystemUnavailableError extends mtcError {
-  constructor (message, userMessage = '') {
+  constructor () {
+    const message = 'The system is unavailable at this time'
     super(message)
     this.name = 'SystemUnavailableError'
-    this.userMessage = userMessage
+    this.userMessage = message
     this.code = 'SYSTEM_UNAVAILABLE'
   }
 }
