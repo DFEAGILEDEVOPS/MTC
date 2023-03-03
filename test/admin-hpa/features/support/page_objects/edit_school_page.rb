@@ -6,6 +6,7 @@ class EditSchoolPage < SitePrism::Page
   element :lea_code, '#leaCode'
   element :estab_code, '#estabCode'
   element :type_of_establishment, "#typeOfEstablishmentCode"
+  element :is_test_school, "#isTestSchool"
   element :update, '.govuk-button', text: 'Update organisation'
   element :discard, '.govuk-button', text: 'Discard edits and view organisation'
 
