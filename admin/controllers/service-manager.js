@@ -451,7 +451,8 @@ const controller = {
         urn: 'urn' in req.body ? req.body.urn : school.urn,
         leaCode: 'leaCode' in req.body ? req.body.leaCode : school.leaCode,
         estabCode: 'estabCode' in req.body ? req.body.estabCode : school.estabCode,
-        typeOfEstablishmentCode: 'typeOfEstablishmentCode' in req.body ? req.body.typeOfEstablishmentCode : school.typeOfEstablishmentCode
+        typeOfEstablishmentCode: 'typeOfEstablishmentCode' in req.body ? req.body.typeOfEstablishmentCode : school.typeOfEstablishmentCode,
+        isTestSchool: 'isTestSchool' in req.body ? req.body.isTestSchool === 'true' : school.isTestSchool
       }
 
       res.render('service-manager/organisation-detail-edit', {
@@ -481,7 +482,7 @@ const controller = {
         leaCode: Number(formUtil.convertFromString(req.body?.leaCode, formUtilTypes.int)),
         estabCode: Number(formUtil.convertFromString(req.body?.estabCode, formUtilTypes.int)),
         typeOfEstablishmentCode: Number(formUtil.convertFromString(req.body?.typeOfEstablishmentCode, formUtilTypes.Int)),
-        isTestSchool: req.body?.isTestSchool === 'isTestSchool'
+        isTestSchool: req.body?.isTestSchool === 'true'
       }
       await schoolService.updateSchool(req.params.slug, update, req.user.id)
       req.flash('info', 'School updated')
