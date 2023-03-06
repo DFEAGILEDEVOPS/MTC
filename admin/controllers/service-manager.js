@@ -352,12 +352,13 @@ const controller = {
 
   postAddSchool: async function postAddSchool (req, res, next) {
     try {
-      const { name, dfeNumber, urn, typeOfEstablishmentCode } = req.body
+      const { name, dfeNumber, urn, typeOfEstablishmentCode, isTestSchool } = req.body
       const newSchool = await schoolService.addSchool({
         name: name.trim(),
         dfeNumber: parseInt(dfeNumber, 10),
         urn: parseInt(urn, 10),
-        typeOfEstablishmentCode: parseInt(typeOfEstablishmentCode, 10)
+        typeOfEstablishmentCode: parseInt(typeOfEstablishmentCode, 10),
+        isTestSchool: isTestSchool === 'isTestSchool'
       }, req.user.id)
       req.flash('info', 'School added')
       res.redirect(`/service-manager/organisations/${newSchool.urlSlug.toLowerCase()}`)
@@ -450,7 +451,8 @@ const controller = {
         urn: 'urn' in req.body ? req.body.urn : school.urn,
         leaCode: 'leaCode' in req.body ? req.body.leaCode : school.leaCode,
         estabCode: 'estabCode' in req.body ? req.body.estabCode : school.estabCode,
-        typeOfEstablishmentCode: 'typeOfEstablishmentCode' in req.body ? req.body.typeOfEstablishmentCode : school.typeOfEstablishmentCode
+        typeOfEstablishmentCode: 'typeOfEstablishmentCode' in req.body ? req.body.typeOfEstablishmentCode : school.typeOfEstablishmentCode,
+        isTestSchool: 'isTestSchool' in req.body ? req.body.isTestSchool === 'true' : school.isTestSchool
       }
 
       res.render('service-manager/organisation-detail-edit', {
@@ -479,7 +481,8 @@ const controller = {
         urn: Number(formUtil.convertFromString(req.body?.urn, formUtilTypes.int)),
         leaCode: Number(formUtil.convertFromString(req.body?.leaCode, formUtilTypes.int)),
         estabCode: Number(formUtil.convertFromString(req.body?.estabCode, formUtilTypes.int)),
-        typeOfEstablishmentCode: Number(formUtil.convertFromString(req.body?.typeOfEstablishmentCode, formUtilTypes.Int))
+        typeOfEstablishmentCode: Number(formUtil.convertFromString(req.body?.typeOfEstablishmentCode, formUtilTypes.Int)),
+        isTestSchool: req.body?.isTestSchool === 'true'
       }
       await schoolService.updateSchool(req.params.slug, update, req.user.id)
       req.flash('info', 'School updated')

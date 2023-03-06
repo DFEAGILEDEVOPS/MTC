@@ -65,6 +65,19 @@
                     </select>
                 </div>
 
+                <div class="govuk-form-group">
+                    <fieldset class="govuk-fieldset">
+                        <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+                            <div class="govuk-checkboxes__item">
+                                <input class="govuk-checkboxes__input" id="isTestSchool" name="isTestSchool" type="checkbox"
+                                    value="isTestSchool" <%= formData.isTestSchool === 'isTestSchool' ? 'checked' : ''  %>>
+                                <label class="govuk-label govuk-checkboxes__label" for="isTestSchool">
+                                    Is this a test school?
+                                </label>
+                            </div>
+                    </fieldset>
+                </div>
+
                 <button type="submit" id="searchh-btn" class="govuk-button">Add</button>
                 <a class="govuk-button govuk-button--secondary" href="/service-manager/organisations">Cancel</a>
             </form>

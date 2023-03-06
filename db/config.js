@@ -9,7 +9,7 @@ try {
     // console.log('globalDotEnvFile found', globalDotEnvFile)
     require('dotenv').config({ path: globalDotEnvFile })
   } else {
-    console.log('No .env file found at project root')
+    console.log('config.js: No .env file found at project root')
   }
 } catch (error) {
   console.error(error)
