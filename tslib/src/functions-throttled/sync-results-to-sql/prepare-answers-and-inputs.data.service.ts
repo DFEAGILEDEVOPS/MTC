@@ -1,10 +1,11 @@
-import { DBQuestion, Input, MarkedAnswer, MarkedCheck, ValidatedCheck } from './models'
+import { DBQuestion, Input, MarkedAnswer, MarkedCheck, ValidatedCheck, Answer, Audit } from './models'
 import { ISqlParameter, ITransactionRequest } from '../../sql/sql.service'
 import * as R from 'ramda'
 import { TYPES } from 'mssql'
 import { IQuestionService, QuestionService } from './question.service'
 import { IUserInputService, UserInputService } from './user-input.service'
 import { payloadSort } from '../../services/payload-sort'
+import moment from 'moment'
 
 export interface UserInputTypeLookup {
   id: number
@@ -23,6 +24,73 @@ export class PrepareAnswersAndInputsDataService {
   constructor (questionService?: IQuestionService, userInputService?: IUserInputService) {
     this.questionService = questionService ?? new QuestionService()
     this.userInputService = userInputService ?? new UserInputService()
+  }
+
+  private questionWasAnsweredMoreThanOnce (answers: Answer[], markedAnswer: MarkedAnswer): boolean {
+    const isMatch = (answer: Answer): boolean => answer.sequenceNumber === markedAnswer.sequenceNumber &&
+      answer.factor1 === markedAnswer.factor1 &&
+      answer.factor2 === markedAnswer.factor2
+    const count = R.count(isMatch, answers)
+    return count > 1
+  }
+
+  private sortEvents (events: Audit[]): Audit[] {
+    const comparator = (a: Audit, b: Audit): number => {
+      const aDate = new Date(a.clientTimestamp)
+      const bDate = new Date(b.clientTimestamp)
+      if (aDate < bDate) {
+        return -1
+      } else if (aDate.getTime() === bDate.getTime()) {
+        if (a?.data?.monotonicTime?.sequenceNumber !== undefined && b?.data?.monotonicTime?.sequenceNumber !== undefined) {
+          return a?.data?.monotonicTime?.sequenceNumber - b?.data?.monotonicTime?.sequenceNumber
+        } else {
+          return 0
+        }
+      }
+      return 1
+    }
+    // Return a new sorted array, no mutation
+    return R.sort(comparator, events)
+  }
+
+  private findQuestionEventsByType (searchType: string | string[], markedAnswer: MarkedAnswer, audits: Audit[]): Audit[] {
+    const matches = []
+    if (typeof searchType === 'string') {
+      searchType = [searchType]
+    }
+
+    for (const audit of audits) {
+      // Eliminate audits with the wrong type
+      for (const stype of searchType) {
+        if (audit.type === stype) {
+          if (audit.data?.sequenceNumber === markedAnswer.sequenceNumber &&
+            audit.data?.question === markedAnswer.question) {
+            matches.push(audit)
+          }
+        }
+      }
+    }
+    return matches
+  }
+
+  private getTimerStarted (audits: Audit[], markedAnswer: MarkedAnswer): moment.Moment | null {
+    const matches = this.findQuestionEventsByType('QuestionTimerStarted', markedAnswer, audits)
+    // We only accept the first answer, so this will correspond to the first event.  The validated check may not be sorted.
+    const sortedMatches = this.sortEvents(matches)
+    if (sortedMatches.length === 0) {
+      return null
+    }
+    return moment(sortedMatches[0].clientTimestamp)
+  }
+
+  private getTimerFinished (audits: Audit[], markedAnswer: MarkedAnswer): moment.Moment | null {
+    const timerFinishedMatches = this.findQuestionEventsByType(['QuestionTimerEnded', 'QuestionTimerCancelled'], markedAnswer, audits)
+    // We only accept the first answer, so this will correspond to the first event.  The validated check may not be sorted.
+    const sortedMatches = this.sortEvents(timerFinishedMatches)
+    if (sortedMatches.length === 0) {
+      return null
+    }
+    return moment(sortedMatches[0].clientTimestamp)
   }
 
   /**
@@ -81,6 +149,12 @@ export class PrepareAnswersAndInputsDataService {
     sqls.push(sqlHead)
     params.push(headParam)
 
+    /**
+     * NB
+     *
+     * markedAnswers are by definition only going to be the 25 questions that were marked.  The inputs are still in raw form, and could potentially include
+     * inputs from a re-played question, which can happen somehow for a very small number of checks.
+     */
     for (const markedAnswer of markedAnswers) {
       let question: DBQuestion
       try {
@@ -101,7 +175,31 @@ export class PrepareAnswersAndInputsDataService {
         { name: `answerQuestionId${suffix}`, value: question.id, type: TYPES.Int },
         { name: `answerIsCorrect${suffix}`, value: markedAnswer.isCorrect, type: TYPES.Bit },
         { name: `answerBrowserTimestamp${suffix}`, value: markedAnswer.clientTimestamp, type: TYPES.DateTimeOffset })
-      const inputsForThisQuestion = rawInputs.filter(o => o.question === markedAnswer.question && o.sequenceNumber === markedAnswer.sequenceNumber)
+
+      /**
+       * NB
+       *
+       * We need to filter the inputs in the case of duplicate questions as the raw inputs will include the inputs from more than one question.
+       *
+       */
+      let inputsForThisQuestion = rawInputs.filter(o => o.question === markedAnswer.question && o.sequenceNumber === markedAnswer.sequenceNumber)
+      const tmpInputs: Input[] = []
+
+      // Only filter the inputs if we have a duplicate question to minimise any adverse filtering.
+      if (this.questionWasAnsweredMoreThanOnce(validatedCheck.answers, markedAnswer)) {
+        const timerStarted = this.getTimerStarted(validatedCheck.audit, markedAnswer)
+        const timerEnded = this.getTimerFinished(validatedCheck.audit, markedAnswer)
+        if (timerStarted !== null && timerEnded !== null) {
+          inputsForThisQuestion.forEach(input => {
+            const inputTime = moment(input.clientTimestamp)
+            if (inputTime.isBetween(timerStarted, timerEnded, undefined, '[]')) { // inclusive of the moment timestamps
+              tmpInputs.push(input)
+            }
+          })
+          inputsForThisQuestion = tmpInputs
+        }
+      }
+
       const { sql: inputSql, params: inputParams } = await this.prepareInputs(inputsForThisQuestion, question, `@answerId${suffix}`)
 
       sqls.push(inputSql)

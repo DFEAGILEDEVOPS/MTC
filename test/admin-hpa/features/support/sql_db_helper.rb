@@ -39,6 +39,12 @@ class SqlDbHelper
     teacher_res
   end
 
+  def self.list_all_schools
+    sql = "SELECT * FROM [mtc_admin].[school]"
+    result = SQL_CLIENT.execute(sql)
+    @array_of_schools = result.each {|row| row.map}
+  end
+
   def self.find_school(school_id)
     sql = "SELECT * FROM [mtc_admin].[school] WHERE id='#{school_id}'"
     result = SQL_CLIENT.execute(sql)
@@ -698,6 +704,24 @@ class SqlDbHelper
     pupil_details_res
   end
 
+  def self.find_type_of_establishment_by_code(code)
+    sql = "select * from mtc_admin.typeOfEstablishmentLookup where code='#{code}'"
+    result = SQL_CLIENT.execute(sql)
+    pupil_details_res = result.first
+    result.cancel
+    pupil_details_res
+  end
+
+
+  def self.find_type_of_establishment_by_id(id)
+    sql = "select * from mtc_admin.typeOfEstablishmentLookup where id='#{id}'"
+    result = SQL_CLIENT.execute(sql)
+    pupil_details_res = result.first
+    result.cancel
+    pupil_details_res
+  end
+
+
   def self.pupil_audit_record(pupil_id)
     sql = "SELECT * FROM [mtc_admin].[pupilAudit] WHERE pupil_id='#{pupil_id}'"
     result = SQL_CLIENT.execute(sql)
@@ -718,5 +742,15 @@ class SqlDbHelper
     result.cancel
     chk_form_res
   end
+
+
+  def self.pupil_details_by_upn(upn)
+    sql = "SELECT * FROM [mtc_admin].[pupil] WHERE upn='#{upn}'"
+    result = SQL_CLIENT.execute(sql)
+    pupil_details_res = result.first
+    result.cancel
+    pupil_details_res
+  end
+
 
 end

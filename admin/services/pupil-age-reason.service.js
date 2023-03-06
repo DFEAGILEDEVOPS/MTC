@@ -4,17 +4,21 @@ const pupilAgeReasonService = {}
 
 /**
  * Update pupil age reason
- * @param {Number} pupilId
- * @param {String} newAgeReason
- * @param {String} existingAgeReason
+ * @param {number} pupilId
+ * @param {string} newAgeReason
+ * @param {string} existingAgeReason
+ * @param {number} userId - the value from the id field of the user table
  * @returns {Promise.<*>}
  */
-pupilAgeReasonService.refreshPupilAgeReason = async (pupilId, newAgeReason, existingAgeReason) => {
+pupilAgeReasonService.refreshPupilAgeReason = async (pupilId, newAgeReason, existingAgeReason, userId) => {
+  if (!userId) {
+    throw new Error('missing userId')
+  }
   if (newAgeReason && !existingAgeReason) {
-    return pupilAgeReasonDataService.sqlInsertPupilAgeReason(pupilId, newAgeReason)
+    return pupilAgeReasonDataService.sqlInsertPupilAgeReason(pupilId, newAgeReason, userId)
   }
   if (newAgeReason && existingAgeReason) {
-    return pupilAgeReasonDataService.sqlUpdatePupilAgeReason(pupilId, newAgeReason)
+    return pupilAgeReasonDataService.sqlUpdatePupilAgeReason(pupilId, newAgeReason, userId)
   }
 
   if (!newAgeReason && existingAgeReason) {

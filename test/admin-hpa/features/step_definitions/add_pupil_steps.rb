@@ -515,9 +515,14 @@ end
 
 Then(/^I should still be able to add the pupil after filling in the reason box$/) do
   step 'the pupil details should be stored'
-  expect(SqlDbHelper.pupil_reason(@stored_pupil_details['id'])['reason']).to eql @reason_text
+  pupil_reason_row = SqlDbHelper.pupil_reason(@stored_pupil_details['id'])
+  expect(pupil_reason_row['reason']).to eql @reason_text
+  user = SqlDbHelper.find_teacher(@username)
+  expect(pupil_reason_row['recordedBy_userId']).to eql user['id']
+  expect(pupil_reason_row['lastUpdatedBy_userId']).to eql user['id']
+  expect(pupil_reason_row['updatedAt']).to_not be_nil
+  expect(pupil_reason_row['createdAt']).to_not be_nil
 end
-
 
 When(/^I fill in the form with the pupil dob (\d+) years ago$/) do |years_old|
   @upn = UpnGenerator.generate unless @page == edit_pupil_page

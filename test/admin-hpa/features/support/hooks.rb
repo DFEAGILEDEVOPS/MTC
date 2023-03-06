@@ -1,8 +1,11 @@
 Before do
   @urn = SqlDbHelper.get_schools_list.map {|school| school['urn']}.sort.last + 1
-  @estab_code = SqlDbHelper.get_schools_list.map {|school| school['estabCode']}.sort.last + 1
+  dfe_number = create_dfe_number
   @school_name = "Test School - #{@urn}"
-  @school = FunctionsHelper.create_school(@estab_code, @school_name, @urn)
+  @school = FunctionsHelper.create_school(dfe_number[:lea_code],dfe_number[:estab_code], @school_name, @urn)
+  if @school['result'] == 'Failed'
+    fail "#{@school['message']}"
+  end
   school_uuid = @school['entity']['urlSlug']
   @username = "teacher#{@urn}"
   @school_user = FunctionsHelper.create_user(school_uuid, @username)
@@ -24,9 +27,12 @@ end
 
 Before('@empty_new_school') do
   @urn = SqlDbHelper.get_schools_list.map {|school| school['urn']}.sort.last + 1
-  @estab_code = SqlDbHelper.get_schools_list.map {|school| school['estabCode']}.sort.last + 1
+  dfe_number = create_dfe_number
   @school_name = "Test School - #{@urn}"
-  @school = FunctionsHelper.create_school(@estab_code, @school_name, @urn)
+  @school = FunctionsHelper.create_school(dfe_number[:lea_code],dfe_number[:estab_code], @school_name, @urn)
+  if @school['result'] == 'Failed'
+    fail "#{@school['message']}"
+  end
   school_uuid = @school['entity']['urlSlug']
   @username = "teacher#{@urn}"
   @school_user = FunctionsHelper.create_user(school_uuid, @username)
@@ -37,9 +43,12 @@ end
 
 Before('@new_school_no_password') do
   @urn = SqlDbHelper.get_schools_list.map {|school| school['urn']}.sort.last + 1
-  @estab_code = SqlDbHelper.get_schools_list.map {|school| school['estabCode']}.sort.last + 1
+  dfe_number = create_dfe_number
   @school_name = "Test School - #{@urn}"
-  @school = FunctionsHelper.create_school(@estab_code, @school_name, @urn)
+  @school = FunctionsHelper.create_school(dfe_number[:lea_code],dfe_number[:estab_code], @school_name, @urn)
+  if @school['result'] == 'Failed'
+    fail "#{@school['message']}"
+  end
   school_uuid = @school['entity']['urlSlug']
   @username = "teacher#{@urn}"
   @school_user = FunctionsHelper.create_user(school_uuid, @username)

@@ -36,3 +36,7 @@ Feature:
     Given I am on the add school page
     When I enter a Dfe number that is 6 digits exactly
     Then I should see an error stating dfe number must be 7 digits
+
+  Scenario: Test schools can be added
+    Given I have added a test school
+    Then the new school should be added as a test school

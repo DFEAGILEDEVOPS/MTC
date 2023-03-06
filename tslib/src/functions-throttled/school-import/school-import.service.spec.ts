@@ -25,6 +25,8 @@ const JobDataServiceMock = jest.fn<IJobDataService, any>(() => ({
   setJobStarted: jest.fn()
 }))
 
+const csvHeaders = 'URN,LA (code),EstablishmentNumber,EstablishmentName,StatutoryLowAge,StatutoryHighAge,EstablishmentStatus (code),TypeOfEstablishment (code),EstablishmentTypeGroup (code),TypeOfEstablishment (name)'
+
 describe('#SchoolImportService', () => {
   beforeEach(() => {
     schoolDataServiceMock = new SchoolDataServiceMock()
@@ -57,7 +59,7 @@ describe('#SchoolImportService', () => {
   })
 
   test('data service job results should be appended to existing job result object', async () => {
-    const csv = `URN,LA (code),EstablishmentNumber,EstablishmentName,StatutoryLowAge,StatutoryHighAge,EstablishmentStatus (code),TypeOfEstablishment (code),EstablishmentTypeGroup (code)
+    const csv = `${csvHeaders}
     12345,123,4567,My School,9,9,4,3,4`
     const retainedMessage = 'foo'
     const blobName = 'aad9f3b5-7a77-44cd-96b6-dcdc41c9ea76'
@@ -68,7 +70,7 @@ describe('#SchoolImportService', () => {
   })
 
   test('data is filtered and persisted when valid', async () => {
-    const csv = `URN,LA (code),EstablishmentNumber,EstablishmentName,StatutoryLowAge,StatutoryHighAge,EstablishmentStatus (code),TypeOfEstablishment (code),EstablishmentTypeGroup (code)
+    const csv = `${csvHeaders}
     12345,123,4567,My School,9,9,4,3,4`
     const blobName = 'aad9f3b5-7a77-44cd-96b6-dcdc41c9ea76'
     const jobResult = await sut.process(csv, blobName)
@@ -91,7 +93,7 @@ describe('#SchoolImportService', () => {
   })
 
   test('when predicate matches fail all records, it reports and exits', async () => {
-    const csv = `URN,LA (code),EstablishmentNumber,EstablishmentName,StatutoryLowAge,StatutoryHighAge,EstablishmentStatus (code),TypeOfEstablishment (code),EstablishmentTypeGroup (code)
+    const csv = `${csvHeaders}
     12345,0,4567,My School,9,9,1,3,4`
     const blobName = 'aad9f3b5-7a77-44cd-96b6-dcdc41c9ea76'
     const jobResult = await sut.process(csv, blobName)
@@ -103,7 +105,7 @@ describe('#SchoolImportService', () => {
   })
 
   test('does not import schools without a name', async () => {
-    const csv = `URN,LA (code),EstablishmentNumber,EstablishmentName,StatutoryLowAge,StatutoryHighAge,EstablishmentStatus (code),TypeOfEstablishment (code),EstablishmentTypeGroup (code)
+    const csv = `${csvHeaders}
 \n99900,999,9000,Guys School 1,8,10,1,7,4\n99901,999,9001,,8,10,1,7,4\n99902,999,9002,Guys Closed School,8,10,2,7,4`
     jest.spyOn(schoolDataServiceMock, 'bulkUpload').mockImplementation()
     const blobName = 'aad9f3b5-7a77-44cd-96b6-dcdc41c9ea76'
@@ -124,7 +126,7 @@ describe('#SchoolImportService', () => {
   })
 
   test('it updates the job status to processing when the job starts', async () => {
-    const csv = `URN,LA (code),EstablishmentNumber,EstablishmentName,StatutoryLowAge,StatutoryHighAge,EstablishmentStatus (code),TypeOfEstablishment (code),EstablishmentTypeGroup (code)
+    const csv = `${csvHeaders}
     12345,123,4567,My School,9,9,4,3,4`
     const blobName = 'aad9f3b5-7a77-44cd-96b6-dcdc41c9ea76'
     await sut.process(csv, blobName)
@@ -132,7 +134,7 @@ describe('#SchoolImportService', () => {
   })
 
   test('it throws an error if the blobName/jobSlug is not provided', async () => {
-    const csv = `URN,LA (code),EstablishmentNumber,EstablishmentName,StatutoryLowAge,StatutoryHighAge,EstablishmentStatus (code),TypeOfEstablishment (code),EstablishmentTypeGroup (code)
+    const csv = `${csvHeaders}
     12345,123,4567,My School,9,9,4,3,4`
     jest.spyOn(consoleLogger, 'warn')
     try {
@@ -145,7 +147,7 @@ describe('#SchoolImportService', () => {
   })
 
   test('it updates the job status if it completes without errors', async () => {
-    const csv = `URN,LA (code),EstablishmentNumber,EstablishmentName,StatutoryLowAge,StatutoryHighAge,EstablishmentStatus (code),TypeOfEstablishment (code),EstablishmentTypeGroup (code)
+    const csv = `${csvHeaders}
     12345,123,4567,My School,9,9,1,3,4`
     const blobName = 'aad9f3b5-7a77-44cd-96b6-dcdc41c9ea76'
     await sut.process(csv, blobName)
@@ -154,7 +156,8 @@ describe('#SchoolImportService', () => {
   })
 
   test('it updates the job status failed if the mapping fails', async () => {
-    const csv = `URN,LA (code),EstablishmentNumber,EstablishmentName,StatutoryHighAge,EstablishmentStatus (code),TypeOfEstablishment (code),EstablishmentTypeGroup (code)
+    // low age header excluded from csv
+    const csv = `URN,LA (code),EstablishmentNumber,EstablishmentName,StatutoryHighAge,EstablishmentStatus (code),TypeOfEstablishment (code),EstablishmentTypeGroup (code),TypeOfEstablishment (name)
     12345,123,4567,My School,9,9,4,3,4`
     const blobName = 'aad9f3b5-7a77-44cd-96b6-dcdc41c9ea76'
     try {
@@ -167,7 +170,7 @@ describe('#SchoolImportService', () => {
 
   test('it updates the job status failed if the upload fails', async () => {
     const mockErrorMessage = 'mock error, please ignore'
-    const csv = `URN,LA (code),EstablishmentNumber,EstablishmentName,StatutoryLowAge,StatutoryHighAge,EstablishmentStatus (code),TypeOfEstablishment (code),EstablishmentTypeGroup (code)
+    const csv = `${csvHeaders}
     12345,123,4567,My School,9,9,3,3,4`
     jest.spyOn(schoolDataServiceMock, 'individualUpload').mockRejectedValue(new Error(mockErrorMessage))
     const blobName = 'aad9f3b5-7a77-44cd-96b6-dcdc41c9ea76'

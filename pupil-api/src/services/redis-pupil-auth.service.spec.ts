@@ -1,7 +1,8 @@
 import * as moment from 'moment'
-import { RedisPupilAuthenticationService, IPupilLoginMessage } from './redis-pupil-auth.service'
-import { IRedisService } from './redis.service'
-import { IQueueMessageService } from './queue-message.service'
+import type { IPupilLoginMessage } from './redis-pupil-auth.service'
+import { RedisPupilAuthenticationService } from './redis-pupil-auth.service'
+import type { IRedisService } from './redis.service'
+import type { IQueueMessageService } from './queue-message.service'
 
 let sut: RedisPupilAuthenticationService
 let redisServiceMock: IRedisService
@@ -51,7 +52,7 @@ describe('redis-pupil-auth.service', () => {
     try {
       await sut.authenticate(schoolPin, pupilPin, buildNumber)
       fail('expected error to be thrown')
-    } catch (error) {
+    } catch (error: any) {
       expect(error.message).toBe('schoolPin is required')
     }
     expect(redisServiceMock.get).not.toHaveBeenCalled()
@@ -64,7 +65,7 @@ describe('redis-pupil-auth.service', () => {
     try {
       await sut.authenticate(schoolPin, pupilPin, buildNumber)
       fail('expected error to be thrown')
-    } catch (error) {
+    } catch (error: any) {
       expect(error.message).toBe('schoolPin is required')
     }
     expect(redisServiceMock.get).not.toHaveBeenCalled()
@@ -77,7 +78,7 @@ describe('redis-pupil-auth.service', () => {
     try {
       await sut.authenticate(schoolPin, pupilPin, buildNumber)
       fail('expected error to be thrown')
-    } catch (error) {
+    } catch (error: any) {
       expect(error.message).toBe('pupilPin is required')
     }
     expect(redisServiceMock.get).not.toHaveBeenCalled()
@@ -90,7 +91,7 @@ describe('redis-pupil-auth.service', () => {
     try {
       await sut.authenticate(schoolPin, pupilPin, buildNumber)
       fail('expected error to be thrown')
-    } catch (error) {
+    } catch (error: any) {
       expect(error.message).toBe('pupilPin is required')
     }
     expect(redisServiceMock.get).not.toHaveBeenCalled()
@@ -103,7 +104,7 @@ describe('redis-pupil-auth.service', () => {
     try {
       await sut.authenticate(schoolPin, pupilPin, buildNumber)
       fail('expected error to be thrown')
-    } catch (error) {
+    } catch (error: any) {
       expect(error.message).toBe('buildVersion is required')
     }
     expect(redisServiceMock.get).not.toHaveBeenCalled()
@@ -116,7 +117,7 @@ describe('redis-pupil-auth.service', () => {
     try {
       await sut.authenticate(schoolPin, pupilPin, buildNumber)
       fail('expected error to be thrown')
-    } catch (error) {
+    } catch (error: any) {
       expect(error.message).toBe('buildVersion is required')
     }
     expect(redisServiceMock.get).not.toHaveBeenCalled()
@@ -130,8 +131,8 @@ describe('redis-pupil-auth.service', () => {
       config: {
         practice: true
       },
-      pinValidFromUtc: pinValidFromUtc,
-      pinExpiresAtUtc: pinExpiresAtUtc
+      pinValidFromUtc,
+      pinExpiresAtUtc
     }
     jest.spyOn(redisServiceMock, 'get').mockResolvedValue(expectedPayload)
     const schoolPin = 'abc12def'
@@ -149,8 +150,8 @@ describe('redis-pupil-auth.service', () => {
       config: {
         practice: false
       },
-      pinValidFromUtc: pinValidFromUtc,
-      pinExpiresAtUtc: pinExpiresAtUtc
+      pinValidFromUtc,
+      pinExpiresAtUtc
     }
     jest.spyOn(redisServiceMock, 'get').mockResolvedValue(expectedPayload)
     const schoolPin = 'abc12def'
@@ -168,8 +169,8 @@ describe('redis-pupil-auth.service', () => {
       config: {
         practice: false
       },
-      pinValidFromUtc: pinValidFromUtc,
-      pinExpiresAtUtc: pinExpiresAtUtc
+      pinValidFromUtc,
+      pinExpiresAtUtc
     }
     jest.spyOn(redisServiceMock, 'get').mockResolvedValue(expectedPayload)
     const schoolPin = 'abc12def'

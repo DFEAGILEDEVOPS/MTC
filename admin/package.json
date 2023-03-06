@@ -30,7 +30,7 @@
     "watch:integration": "yarn jest --watch --coverage=no --config ./tests-integration/jest.integration.config.js"
   },
   "mtc": {
-    "assets-version": "e214052e162d4bb534f3f53033a72164"
+    "assets-version": "5aac26a8929ffe763043da4a8a2bcbd8"
   },
   "engines": {
     "node": ">= 16"
@@ -40,20 +40,20 @@
     "**/**/ajv": "^6.12.6"
   },
   "dependencies": {
-    "@azure/data-tables": "^12.1.2",
+    "@azure/data-tables": "^13.2.1",
     "@azure/service-bus": "^7.0.5",
     "@azure/storage-blob": "^12.8.0",
     "@azure/storage-queue": "^12.7.0",
     "adm-zip": "^0.5.10",
     "applicationinsights": "^2.3.6",
-    "axios": "^0.24.0",
+    "axios": "^1.3.4",
     "bcryptjs": "^2.4.3",
     "bluebird": "^3.5.1",
     "connect-flash": "^0.1.1",
     "connect-redis": "^6.1.3",
     "csurf": "^1.9.0",
     "dompurify": "^2.4.2",
-    "dotenv": "^10.0.0",
+    "dotenv": "^16.0.3",
     "edit-json-file": "^1.4.0",
     "ejs": "^3.1.8",
     "express": "^4.16.2",
@@ -65,7 +65,7 @@
     "fast-csv": "^4.1.1",
     "feature-toggles": "^1.4.0",
     "font-awesome": "^4.7.0",
-    "fs-extra": "^10.1.0",
+    "fs-extra": "^11.1.0",
     "govuk-frontend": "^3.2.0",
     "helmet": "^4.3.1",
     "ioredis": "4.28.0",
@@ -73,7 +73,7 @@
     "jsonwebtoken": "^9.0.0",
     "login.dfe.async-retry": "git+https://github.com/DFE-Digital/login.dfe.async-retry.git#v1.0",
     "lz-string": "^1.4.4",
-    "marked": "^4.2.4",
+    "marked": "^4.2.6",
     "md5": "^2.2.1",
     "merge-stream": "^2.0.0",
     "moment-timezone": "^0.5.37",
@@ -91,7 +91,7 @@
     "sass": "^1.56.2",
     "simplemde": "^1.11.2",
     "to-bool": "^0.0.1",
-    "uuid": "^8.3.2",
+    "uuid": "^9.0.0",
     "uuid-validate": "^0.0.3",
     "validator": "^13.7.0",
     "winston": "^3.1.0",
@@ -160,7 +160,7 @@
     "bail": true,
     "collectCoverage": false,
     "collectCoverageFrom": [
-      "**/*.{js,jsx}",
+      "**/*.{js,jsx,ts}",
       "!**/node_modules/**",
       "!**/vendor/**",
       "!**/data-access/**",
@@ -175,7 +175,8 @@
       "!**/coverage/**",
       "!**/bin/**",
       "!<rootDir>/dist/**",
-      "!<rootDir>/routes/**"
+      "!<rootDir>/routes/**",
+      "!**/*.data.service.[jt]s"
     ],
     "coverageDirectory": "<rootDir>/coverage",
     "testMatch": [
@@ -192,6 +193,9 @@
       "<rootDir>/dist"
     ],
     "verbose": false,
-    "testRunner": "jest-circus"
+    "testRunner": "jest-circus",
+    "moduleNameMapper": {
+      "axios": "axios/dist/node/axios.cjs"
+    }
   }
 }

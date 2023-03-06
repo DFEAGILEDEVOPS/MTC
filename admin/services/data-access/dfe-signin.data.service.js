@@ -4,7 +4,7 @@ const config = require('../../config')
 const logger = require('../log.service').getLogger()
 const bluebird = require('bluebird')
 const jwt = bluebird.promisifyAll(require('jsonwebtoken'))
-const axios = require('axios').default
+const axios = require('axios')
 
 const service = {
 /**

@@ -5,7 +5,7 @@ const sqlService = require('../../data-access/sql.service')
 export class ServiceManagerPupilDataService {
   static async findPupilByUpn (upn: string): Promise<PupilSearchResult[]> {
     const sql = `
-      SELECT p.createdAt, p.foreName, p.lastName, p.dateOfBirth,
+      SELECT p.createdAt, p.foreName, p.lastName, p.middleNames, p.dateOfBirth,
         s.name as [schoolName], s.urn, s.dfeNumber,
         p.urlSlug, s.id as [schoolId]
       FROM mtc_admin.pupil p
@@ -23,7 +23,7 @@ export class ServiceManagerPupilDataService {
 
   static async getPupilByUrlSlug (urlSlug: string): Promise<PupilSearchResult[]> {
     const sql = `
-      SELECT p.createdAt, p.id, p.foreName, p.lastName, p.dateOfBirth,
+      SELECT p.createdAt, p.id, p.foreName, p.middleNames, p.lastName, p.dateOfBirth,
         s.name as [schoolName], s.urn, s.dfeNumber,
         p.urlSlug, p.upn, s.id as [schoolId],
         ac.code as [attendanceCode]
@@ -54,6 +54,24 @@ export class ServiceManagerPupilDataService {
       }
     ]
     return sqlService.readonlyQuery(sql, params)
+  }
+
+  static async sqlMovePupilToSchool (pupilId: number, schoolId: number, userId: number): Promise<void> {
+    console.log('sqlMovePupilToSchool() called')
+    const sql = `
+      UPDATE mtc_admin.pupil
+      SET
+        school_id = @schoolId,
+        lastModifiedBy_userId = @userId
+      WHERE
+        id = @pupilId
+    `
+    const params = [
+      { name: 'pupilId', value: pupilId, type: TYPES.Int },
+      { name: 'schoolId', value: schoolId, type: TYPES.Int },
+      { name: 'userId', value: userId, type: TYPES.Int }
+    ]
+    return sqlService.modify(sql, params)
   }
 }
 
@@ -86,6 +104,7 @@ export interface PupilSearchResult {
   urlSlug: string
   foreName: string
   lastName: string
+  middleNames: string
   dateOfBirth: Moment
   schoolName: string
   urn: number

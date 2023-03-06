@@ -77,7 +77,8 @@ const schoolDataService = {
           name = @name,
           urn = @urn,
           typeOfEstablishmentLookup_id = @typeOfEstablishmentLookupId,
-          lastModifiedBy_userId=@userId
+          lastModifiedBy_userId=@userId,
+          isTestSchool = @isTestSchool
       WHERE urlSlug = @slug
     `
     const params = [
@@ -88,7 +89,8 @@ const schoolDataService = {
       { name: 'slug', value: slug, type: TYPES.UniqueIdentifier },
       { name: 'urn', value: update.urn, type: TYPES.Int },
       { name: 'userId', value: userId, type: TYPES.Int },
-      { name: 'typeOfEstablishmentCode', value: update.typeOfEstablishmentCode, type: TYPES.Int }
+      { name: 'typeOfEstablishmentCode', value: update.typeOfEstablishmentCode, type: TYPES.Int },
+      { name: 'isTestSchool', value: update.isTestSchool, type: TYPES.Bit }
     ]
     return sqlService.modify(sql, params)
   },
@@ -182,6 +184,7 @@ const schoolDataService = {
         s.dfeNumber,
         s.urn,
         s.urlSlug,
+        s.isTestSchool,
         (
           SELECT
             COUNT(*)
@@ -218,8 +221,8 @@ const schoolDataService = {
             THROW 51000, @msg, 1;
           END;
 
-        INSERT INTO [mtc_admin].[school] (leaCode, estabCode, dfeNumber, urn, name, lastModifiedBy_userId, typeOfEstablishmentLookup_id)
-        VALUES (@leaCode, @estabCode, @dfeNumber, @urn, @name, @userId, @typeOfEstablishmentLookupId);
+        INSERT INTO [mtc_admin].[school] (leaCode, estabCode, dfeNumber, urn, name, lastModifiedBy_userId, typeOfEstablishmentLookup_id, isTestSchool)
+        VALUES (@leaCode, @estabCode, @dfeNumber, @urn, @name, @userId, @typeOfEstablishmentLookupId, @isTestSchool);
     `
     const params = [
       { name: 'estabCode', value: data.estabCode, type: TYPES.Int },
@@ -228,7 +231,8 @@ const schoolDataService = {
       { name: 'urn', value: data.urn, type: TYPES.Int },
       { name: 'name', value: data.name, type: TYPES.NVarChar(TYPES.MAX) },
       { name: 'userId', value: userId, type: TYPES.Int },
-      { name: 'typeOfEstablishmentCode', value: data.typeOfEstablishmentCode, type: TYPES.Int }
+      { name: 'typeOfEstablishmentCode', value: data.typeOfEstablishmentCode, type: TYPES.Int },
+      { name: 'isTestSchool', value: data.isTestSchool, type: TYPES.Bit }
     ]
     return sqlService.modify(sql, params)
   }

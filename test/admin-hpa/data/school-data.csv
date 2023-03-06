@@ -1,57 +1,57 @@
-URN,LA (code),EstablishmentNumber,EstablishmentName,StatutoryLowAge,StatutoryHighAge,EstablishmentStatus (code),EstablishmentTypeGroup (code),TypeOfEstablishment (code)
-99600,999,9000,Mo School 1,8,10,1,4,7
-99601,999,9001,Mo School 2,8,10,1,4,12
-99602,999,9002,Mo School 3,8,10,1,4,26
-99603,999,9003,Mo School 4,8,10,1,4,25
-99604,999,9004,Mo School 5,8,10,2,4,7
-99605,999,9005,Mo School 6,8,10,2,4,12
-99606,999,9006,Mo School 7,8,10,2,4,26
-99607,999,9007,Mo School 8,8,10,2,4,25
-99608,999,9008,Mo School 9,8,10,3,4,7
-99609,999,9009,Mo School 10,8,10,3,4,12
-99610,999,9010,Mo School 11,8,10,3,4,26
-99611,999,9011,Mo School 12,8,10,3,4,25
-99612,999,9012,Mo School 13,8,10,4,4,7
-99613,999,9013,Mo School 14,8,10,4,4,12
-99614,999,9014,Mo School 15,8,10,4,4,26
-99615,999,9015,Mo School 16,8,10,4,4,25
-99616,999,9016,Mo School 17,8,10,1,5,7
-99617,999,9017,Mo School 18,8,10,1,5,12
-99618,999,9018,Mo School 19,8,10,2,5,7
-99619,999,9019,Mo School 20,8,10,2,5,12
-99620,999,9020,Mo School 21,8,10,3,5,7
-99621,999,9021,Mo School 22,8,10,3,5,12
-99622,999,9022,Mo School 23,8,10,4,5,7
-99623,999,9023,Mo School 24,8,10,4,5,12
-99624,999,9024,Mo School 25,8,10,1,10,7
-99625,999,9025,Mo School 26,8,10,1,10,12
-99626,999,9026,Mo School 27,8,10,1,10,26
-99627,999,9027,Mo School 28,8,10,1,10,25
-99628,999,9028,Mo School 29,8,10,2,10,7
-99629,999,9029,Mo School 30,8,10,2,10,12
-99630,999,9030,Mo School 31,8,10,2,10,26
-99631,999,9031,Mo School 32,8,10,2,10,25
-99632,999,9032,Mo School 33,8,10,3,10,7
-99633,999,9033,Mo School 34,8,10,3,10,12
-99634,999,9034,Mo School 35,8,10,3,10,26
-99635,999,9035,Mo School 36,8,10,3,10,25
-99636,999,9036,Mo School 37,8,10,4,10,7
-99637,999,9037,Mo School 38,8,10,4,10,12
-99638,999,9038,Mo School 39,8,10,4,10,26
-99639,999,9039,Mo School 40,8,10,4,10,25
-99640,999,9040,Mo School 41,8,10,1,11,7
-99641,999,9041,Mo School 42,8,10,1,11,12
-99642,999,9042,Mo School 43,8,10,1,11,26
-99643,999,9043,Mo School 44,8,10,1,11,25
-99644,999,9044,Mo School 45,8,10,2,11,7
-99645,999,9045,Mo School 46,8,10,2,11,12
-99646,999,9046,Mo School 47,8,10,2,11,26
-99647,999,9047,Mo School 48,8,10,2,11,25
-99648,999,9048,Mo School 49,8,10,3,11,7
-99649,999,9049,Mo School 50,8,10,3,11,12
-99650,999,9050,Mo School 51,8,10,3,11,26
-99651,999,9051,Mo School 52,8,10,3,11,25
-99652,999,9052,Mo School 53,8,10,4,11,7
-99653,999,9053,Mo School 54,8,10,4,11,12
-99654,999,9054,Mo School 55,8,10,4,11,26
-99655,999,9055,Mo School 56,8,10,4,11,25
+URN,LA (code),EstablishmentNumber,EstablishmentName,StatutoryLowAge,StatutoryHighAge,EstablishmentStatus (code),EstablishmentTypeGroup (code),TypeOfEstablishment (code),TypeOfEstablishment (name)
+99600,999,9000,Mo School 1,8,10,1,4,7,Community special school
+99601,999,9001,Mo School 2,8,10,1,4,12,Foundation special school
+99602,999,9002,Mo School 3,8,10,1,4,26,Service children's education
+99603,999,9003,Mo School 4,8,10,1,4,25,Offshore schools
+99604,999,9004,Mo School 5,8,10,2,4,7,Community special school
+99605,999,9005,Mo School 6,8,10,2,4,12,Foundation special school
+99606,999,9006,Mo School 7,8,10,2,4,26,Service children's education
+99607,999,9007,Mo School 8,8,10,2,4,25,Offshore schools
+99608,999,9008,Mo School 9,8,10,3,4,7,Community special school
+99609,999,9009,Mo School 10,8,10,3,4,12,Foundation special school
+99610,999,9010,Mo School 11,8,10,3,4,26,Service children's education
+99611,999,9011,Mo School 12,8,10,3,4,25,Offshore schools
+99612,999,9012,Mo School 13,8,10,4,4,7,Community special school
+99613,999,9013,Mo School 14,8,10,4,4,12,Foundation special school
+99614,999,9014,Mo School 15,8,10,4,4,26,Service children's education
+99615,999,9015,Mo School 16,8,10,4,4,25,Offshore schools
+99616,999,9016,Mo School 17,8,10,1,5,7,Community special school
+99617,999,9017,Mo School 18,8,10,1,5,12,Foundation special school
+99618,999,9018,Mo School 19,8,10,2,5,7,Community special school
+99619,999,9019,Mo School 20,8,10,2,5,12,Foundation special school
+99620,999,9020,Mo School 21,8,10,3,5,7,Community special school
+99621,999,9021,Mo School 22,8,10,3,5,12,Foundation special school
+99622,999,9022,Mo School 23,8,10,4,5,7,Community special school
+99623,999,9023,Mo School 24,8,10,4,5,12,Foundation special school
+99624,999,9024,Mo School 25,8,10,1,10,7,Community special school
+99625,999,9025,Mo School 26,8,10,1,10,12,Foundation special school
+99626,999,9026,Mo School 27,8,10,1,10,26,Service children's education
+99627,999,9027,Mo School 28,8,10,1,10,25,Offshore schools
+99628,999,9028,Mo School 29,8,10,2,10,7,Community special school
+99629,999,9029,Mo School 30,8,10,2,10,12,Foundation special school
+99630,999,9030,Mo School 31,8,10,2,10,26,Service children's education
+99631,999,9031,Mo School 32,8,10,2,10,25,Offshore schools
+99632,999,9032,Mo School 33,8,10,3,10,7,Community special school
+99633,999,9033,Mo School 34,8,10,3,10,12,Foundation special school
+99634,999,9034,Mo School 35,8,10,3,10,26,Service children's education
+99635,999,9035,Mo School 36,8,10,3,10,25,Offshore schools
+99636,999,9036,Mo School 37,8,10,4,10,7,Community special school
+99637,999,9037,Mo School 38,8,10,4,10,12,Foundation special school
+99638,999,9038,Mo School 39,8,10,4,10,26,Service children's education
+99639,999,9039,Mo School 40,8,10,4,10,25,Offshore schools
+99640,999,9040,Mo School 41,8,10,1,11,7,Community special school
+99641,999,9041,Mo School 42,8,10,1,11,12,Foundation special school
+99642,999,9042,Mo School 43,8,10,1,11,26,Service children's education
+99643,999,9043,Mo School 44,8,10,1,11,25,Offshore schools
+99644,999,9044,Mo School 45,8,10,2,11,7,Community special school
+99645,999,9045,Mo School 46,8,10,2,11,12,Foundation special school
+99646,999,9046,Mo School 47,8,10,2,11,26,Service children's education
+99647,999,9047,Mo School 48,8,10,2,11,25,Offshore schools
+99648,999,9048,Mo School 49,8,10,3,11,7,Community special school
+99649,999,9049,Mo School 50,8,10,3,11,12,Foundation special school
+99650,999,9050,Mo School 51,8,10,3,11,26,Service children's education
+99651,999,9051,Mo School 52,8,10,3,11,25,Offshore schools
+99652,999,9052,Mo School 53,8,10,4,11,7,Community special school
+99653,999,9053,Mo School 54,8,10,4,11,12,Foundation special school
+99654,999,9054,Mo School 55,8,10,4,11,26,Service children's education
+99655,999,9055,Mo School 56,8,10,4,11,25,Offshore schools

@@ -7,71 +7,7 @@
         </h1>
         <%- partial('partials/_gds_session_expiry') %>
           <%- partial('partials/_flash-messages') %>
-            <dl class="govuk-summary-list">
-
-              <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                  Date of Birth
-                </dt>
-                <dd class="govuk-summary-list__value">
-                  <%=pupil.dateOfBirth %>
-                </dd>
-              </div>
-
-              <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                  UPN
-                </dt>
-                <dd class="govuk-summary-list__value">
-                  <%=pupil.upn %>
-                </dd>
-              </div>
-
-              <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                  Pupil ID
-                </dt>
-                <dd class="govuk-summary-list__value">
-                  <%= pupil.id %>
-                </dd>
-              </div>
-
-              <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                  School
-                </dt>
-                <dd class="govuk-summary-list__value">
-                  <%= pupil.schoolName %>
-                </dd>
-              </div>
-
-              <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                  DFE Number
-                </dt>
-                <dd class="govuk-summary-list__value">
-                  <%= pupil.dfeNumber%>
-                </dd>
-              </div>
-
-              <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                  URN
-                </dt>
-                <dd class="govuk-summary-list__value">
-                  <%=pupil.schoolUrn %>
-                </dd>
-              </div>
-
-              <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                  Status
-                </dt>
-                <dd class="govuk-summary-list__value">
-                  <%=pupil.status %>
-                </dd>
-              </div>
-            </dl>
+          <%- partial('partials/service-manager/pupil/_pupil-summary', { pupil }) %>
       </div>
       <div class="govuk-grid-column-one-third" aria-label="sidebar">
         <aside class="app-related-items" role="complementary">
@@ -84,12 +20,16 @@
                 <a class="govuk-link" href="<%- guidancePdf %>" target="_blank" rel="noopener noreferrer">Read the
                   guidance and watch videos</a>
               </li>
+              <li>
               <% if (pupil.isAnnulled) { %>
                 <a class="govuk-link" href="/service-manager/annul-pupil-undo/<%=pupil.urlSlug %>" >Undo Annulment</a>
                 <% } else { %>
                   <a class="govuk-link" href="/service-manager/annul-pupil/<%=pupil.urlSlug %>" >Annul this pupils results</a>
               <% } %>
-            </li>
+              </li>
+              <li>
+                <a class="govuk-link" href="/service-manager/pupil/move/<%=pupil.urlSlug.toLowerCase() %>" >Move pupil to different school</a>
+              </li>
             </ul>
           </nav>
         </aside>

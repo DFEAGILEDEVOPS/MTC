@@ -122,6 +122,7 @@ end
 
 
 And(/^I enter and submit a valid (.*) for impersonation$/) do |dfenumber|
+
   helpdesk_impersonation_page.dfe_number.set dfenumber
   sleep 2
   helpdesk_impersonation_page.submit.click
