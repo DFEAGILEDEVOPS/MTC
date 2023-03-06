@@ -94,6 +94,7 @@ end
 
 Given(/^I am on the school landing page for a school using an account with the STA admin role$/) do
   step 'I have signed in with sta-admin'
+  p @school['entity']['dfeNumber']
   step "I enter and submit a valid #{@school['entity']['dfeNumber']} for impersonation"
 end
 

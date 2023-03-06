@@ -12,3 +12,9 @@ Feature:
     When I change all the details of the school
     And I discard the changes
     Then these changes are not reflected in the DB
+
+  Scenario: Schools can become a test school
+    Given I have searched for a school
+    When I set the school to be a test school
+    And I save these changes
+    Then this change is reflected in the DB
