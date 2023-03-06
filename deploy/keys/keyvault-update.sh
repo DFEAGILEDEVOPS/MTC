@@ -5,7 +5,7 @@
 # -----------
 # Service Bus auth rule names are hardcoded
 
-# should not be used as limited by only supporting the primary keys
+echo "this script should not be used as limited by only supporting the primary keys" >&2
 exit -1
 
 RES_GROUP=$1 # the target resource group
