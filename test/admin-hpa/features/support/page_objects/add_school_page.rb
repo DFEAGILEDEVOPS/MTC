@@ -9,6 +9,7 @@ class AddSchoolPage < SitePrism::Page
   element :cancel, 'a', text: 'Cancel'
   elements :error_messages, '.govuk-error-message'
   element :type_of_establishment, "#typeOfEstablishmentCode"
+  element :is_test_school, "#isTestSchool"
 
 
   section :error_summary, ".govuk-error-summary__list" do

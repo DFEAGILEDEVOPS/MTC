@@ -1,6 +1,6 @@
 'use strict'
 
-const { TableClient } = require('@azure/data-tables')
+const { TableServiceClient, TableClient } = require('@azure/data-tables')
 const config = require('../../config')
 
 const connectionString = config.AZURE_STORAGE_CONNECTION_STRING
@@ -21,9 +21,9 @@ const service = {
   },
 
   createTables: async function createTables (tables) {
+    const tableService = TableServiceClient.fromConnectionString(connectionString)
     const tableCreates = tables.map(table => {
-      const tableClient = TableClient.fromConnectionString(connectionString, table)
-      return tableClient.createTable(table)
+      return tableService.createTable(table)
     })
     return Promise.all(tableCreates)
   }
