@@ -100,7 +100,8 @@ module.exports = {
     },
     AllowReadsFromReplica: {}.hasOwnProperty.call(process.env, 'SQL_ALLOW_REPLICA_FOR_READS') ? toBool(process.env.SQL_ALLOW_REPLICA_FOR_READS) : false,
     TechSupport: {
-      // Used by the experimental role connection builder
+      // Repurposed March 2023 for use by technical support team when performing ad-hoc queries against the system for helpdesk and internal teams
+      // previously experimental idea for when tech support users log on to MTC
       Username: process.env.SQL_TECH_SUPPORT_USER || 'TechSupportUser',
       Password: process.env.SQL_TECH_SUPPORT_USER_PASSWORD,
       Pool: {

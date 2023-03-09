@@ -2,7 +2,6 @@
 
 const roles = require('../../lib/consts/roles')
 const sqlConfig = require('../../config/sql.config')
-const config = require('../../config')
 const R = require('ramda')
 const deepFreeze = require('../../lib/deep-freeze')
 
@@ -18,14 +17,8 @@ const builder = {
     switch (roleName) {
       case roles.teacher:
         break
-      case roles.techSupport:
-        cfg.user = config.Sql.TechSupport.Username
-        cfg.password = config.Sql.TechSupport.Password
-        cfg.pool.min = config.Sql.TechSupport.Pool.Min
-        cfg.pool.max = config.Sql.TechSupport.Pool.Max
-        break
       default:
-        throw new Error('role not supported')
+        throw new Error(`role '${roleName}' not yet supported in connection builder`)
     }
     cfg.options.readOnlyIntent = readonly
     return deepFreeze(cfg)

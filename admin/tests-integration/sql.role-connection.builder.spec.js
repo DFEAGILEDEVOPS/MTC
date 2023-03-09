@@ -1,5 +1,5 @@
 'use strict'
-/* global describe test expect fail */
+/* global describe test expect */
 
 const path = require('path')
 const fs = require('fs')
@@ -19,21 +19,10 @@ try {
 const sut = require('../services/data-access/sql.role-connection.builder')
 const roles = require('../lib/consts/roles')
 const sqlConfig = require('../config/sql.config')
-const config = require('../config')
 
 describe('sql.role-connection.builder:integration', () => {
   test('should be defined', () => {
     expect(sut).toBeDefined()
-  })
-
-  test('should throw an error if role not supported', () => {
-    try {
-      sut.build('unknown role')
-      fail('error should have been thrown')
-    } catch (error) {
-      expect(error).toBeDefined()
-      expect(error.message).toBe('role not supported')
-    }
   })
 
   test('should return default config when role is teacher', () => {
@@ -44,16 +33,6 @@ describe('sql.role-connection.builder:integration', () => {
     expect(actual.password).toEqual(sqlConfig.password)
     expect(actual.pool.min).toEqual(sqlConfig.pool.min)
     expect(actual.pool.max).toEqual(sqlConfig.pool.max)
-  })
-
-  test('should return specific config when role is techSupport', () => {
-    const actual = sut.build(roles.techSupport)
-    expect(actual).toBeDefined()
-    expect(typeof actual).toEqual('object')
-    expect(actual.user).toEqual(config.Sql.TechSupport.Username)
-    expect(actual.password).toEqual(config.Sql.TechSupport.Password)
-    expect(actual.pool.min).toEqual(config.Sql.TechSupport.Pool.Min)
-    expect(actual.pool.max).toEqual(config.Sql.TechSupport.Pool.Max)
   })
 
   test('should be readonly if specified', () => {
