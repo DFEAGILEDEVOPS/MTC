@@ -1,171 +1,207 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport"
-          content="height=device-height, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>GOV.UK Unsupported browser</title>
-    <base href="/">
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
-    <link rel="mask-icon" href="assets/govuk_template/images/gov.uk_logotype_crown.svg" color="#0b0c0c">
-    <link rel="apple-touch-icon" sizes="180x180" href="assets/govuk_template/images/apple-touch-icon-180x180.png">
-    <link rel="apple-touch-icon" sizes="167x167" href="assets/govuk_template/images/apple-touch-icon-167x167.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="assets/govuk_template/images/apple-touch-icon-152x152.png">
-    <link rel="apple-touch-icon" href="assets/govuk_template/images/apple-touch-icon.png">
-    <meta name="theme-color" content="#0b0c0c">
-    <meta property="og:image" content="public/govuk_template/images/opengraph-image.png">
-    <style>
-        html, body {
-            font-family: nta, Arial, sans-serif
-        }
+  <meta charset="utf-8">
+  <meta name="viewport"
+    content="height=device-height, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>GOV.UK Unsupported browser</title>
+  <base href="/">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="mask-icon" href="assets/govuk_template/images/gov.uk_logotype_crown.svg" color="#0b0c0c">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/govuk_template/images/apple-touch-icon-180x180.png">
+  <link rel="apple-touch-icon" sizes="167x167" href="assets/govuk_template/images/apple-touch-icon-167x167.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="assets/govuk_template/images/apple-touch-icon-152x152.png">
+  <link rel="apple-touch-icon" href="assets/govuk_template/images/apple-touch-icon.png">
+  <meta name="theme-color" content="#0b0c0c">
+  <meta property="og:image" content="public/govuk_template/images/opengraph-image.png">
+  <style>
+    html,
+    body {
+      font-family: nta, Arial, sans-serif
+    }
 
-        html, body, div {
-            margin: 0;
-            padding: 0;
-            vertical-align: baseline
-        }
+    html,
+    body,
+    div {
+      margin: 0;
+      padding: 0;
+      vertical-align: baseline
+    }
 
-        html {
-            -webkit-text-size-adjust: 100%;
-            -ms-text-size-adjust: 100%;
-            background-color: #fff
-        }
+    html {
+      -webkit-text-size-adjust: 100%;
+      -ms-text-size-adjust: 100%;
+      background-color: #fff
+    }
 
-        html {
-            -ms-overflow-style: scrollbar
-        }
+    html {
+      -ms-overflow-style: scrollbar
+    }
 
-        body {
-            background: #fff;
-            color: #0b0c0c;
-            line-height: 1.5;
-            font-weight: 400;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale
-        }
+    body {
+      background: #fff;
+      color: #0b0c0c;
+      line-height: 1.5;
+      font-weight: 400;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale
+    }
 
-        html {
-            font-size: 62.5%;
-            overflow-y: scroll;
-            -webkit-tap-highlight-color: rgba(0, 0, 0, 0)
-        }
+    html {
+      font-size: 62.5%;
+      overflow-y: scroll;
+      -webkit-tap-highlight-color: rgba(0, 0, 0, 0)
+    }
 
-        body {
-            font-size: 160%;
-            margin: 0
-        }
+    body {
+      font-size: 160%;
+      margin: 0
+    }
 
-        .hidden {
-            display: none;
-            visibility: hidden
-        }
+    .hidden {
+      display: none;
+      visibility: hidden
+    }
 
-        html {
-            background-color: #dee0e2
-        }
+    html {
+      background-color: #dee0e2
+    }
 
-        .hidden {
-            display: none
-        }
+    .hidden {
+      display: none
+    }
 
-        body {
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            user-select: none;
-            -ms-touch-action: manipulation !important
-        }
-    </style>
-    <!-- the unsupported browser page is standalone, and has it's own stylesheet -->
-    <link rel="stylesheet" href="/unsupported/styles.css">
+    body {
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      user-select: none;
+      -ms-touch-action: manipulation !important
+    }
+
+  </style>
+  <!-- the unsupported browser page is standalone, and has it's own stylesheet -->
+  <link rel="stylesheet" href="/unsupported/styles.css">
 </head>
 
 <body>
-<header role="banner" id="global-header" aria-hidden="true" class="with-proposition aa-contrast-header">
+  <header role="banner" id="global-header" aria-hidden="true" class="with-proposition aa-contrast-header">
     <div class="header-wrapper aa-contrast-header">
-        <div class="header-global">
-            <div class="header-logo"><span class="content aa-contrast-header"><app-svg-crown aria-hidden="true"><svg
-                    width="36" height="32" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 39.93 29.23"
-                    class="svg-crown"><g id="Layer_2" data-name="Layer 2">
-													<g id="Layer_1-2" data-name="Layer 1">
-														<path d="M21.86,0c-.3,1-.6,2-.88,3a2.31,2.31,0,0,0,0,.59,2.25,2.25,0,0,0,.58,0c.7-.19,1.4-.42,2.17-.65V6.8c-.71-.38-1.4-.75-2.11-1.1A3.21,3.21,0,0,0,21,5.56a2.35,2.35,0,0,0,0,.65c.44,1.4.93,2.78,1.36,4.18A2.5,2.5,0,0,1,18,12.69a2.42,2.42,0,0,1-.42-2.34c.44-1.37.9-2.73,1.34-4.1a3.6,3.6,0,0,0,0-.66,2.63,2.63,0,0,0-.7.13c-.67.33-1.33.69-2.07,1.08V2.91l2.23.68c.54.16.7,0,.54-.55-.3-1-.63-2-.94-3Z"></path>
-														<path d="M29.76,20.12c2.17-.2,2.92.78,2.07,2.77l-.4-.48a1.07,1.07,0,0,0-1.89.26,2.06,2.06,0,0,0,.32,2.25,2.13,2.13,0,0,0,2.41.51,5.85,5.85,0,0,0,2.82-3.1L35,22.12,33,23l1.28-4.33L35.4,21a4.4,4.4,0,0,0,.21-3l2.86,1a28.86,28.86,0,0,0-4.25,10.18,106.73,106.73,0,0,0-28.51,0A29.16,29.16,0,0,0,1.47,19l2.75-1v2.88l.28.1,1.17-2.37L7,23l-2.07-1A4.89,4.89,0,0,0,8,25.54,2,2,0,0,0,10.48,23a1.6,1.6,0,0,0-1-.95c-.32-.08-.77.35-1.15.58-.09.05-.13.17-.25.33A2.19,2.19,0,0,1,8,20.72c.5-.77,1.3-.74,2.33-.52-2-2-2.28-4.06-.54-6.25,2.26,1.57,2.48,3.63,1.42,6.14.86-.61,1.62-1,2.4-.36A1.92,1.92,0,0,1,14,22a1.16,1.16,0,0,0-.24-.19c-.39-.15-.81-.46-1.18-.4-.57.09-.74.67-.78,1.21a2,2,0,0,0,.81,1.73,4.83,4.83,0,0,0,5.33.22c1.2-.87,1.27-2.17,1.34-3.57-1.5.12-2.34,1.11-3.31,2.18l-.42-4.83a4.91,4.91,0,0,0,3.66,1.52A14.21,14.21,0,0,0,17,16.43H22.9l-2.37,3.41a4.93,4.93,0,0,0,3.85-1.49L24,23.15c-1-1-1.78-2-3.2-2.14-.52,2.69,1.57,4.68,4.44,4.18a6,6,0,0,0,2.12-.89,1.8,1.8,0,0,0,.76-2,1,1,0,0,0-1.79-.63L26,22a1.89,1.89,0,0,1,.28-2.18c.81-.69,1.57-.29,2.44.29-1.05-2.5-.81-4.56,1.43-6.11C31.76,15.93,31.68,17.43,29.76,20.12Z"></path>
-														<path d="M8.33,9.38A2.07,2.07,0,0,1,6.24,7.25,2.13,2.13,0,0,1,8.36,5.14a2.16,2.16,0,0,1,2.11,2.15A2.12,2.12,0,0,1,8.33,9.38Z"></path>
-														<path d="M3.49,12.21a2.09,2.09,0,0,1-2.08-2.14A2.13,2.13,0,0,1,3.55,8a2.16,2.16,0,0,1,2.1,2.15A2.13,2.13,0,0,1,3.49,12.21Z"></path>
-														<path d="M2.11,13.34a2.13,2.13,0,1,1,0,4.25,2.13,2.13,0,0,1,0-4.25Z"></path>
-														<path d="M13.69,11.08a2.08,2.08,0,0,1-2.07-2.14,2.13,2.13,0,0,1,2.14-2.1A2.16,2.16,0,0,1,15.85,9,2.12,2.12,0,0,1,13.69,11.08Z"></path>
-														<path d="M26.18,11.08A2.08,2.08,0,0,1,24.1,8.94a2.12,2.12,0,0,1,2.13-2.1A2.16,2.16,0,0,1,28.33,9,2.11,2.11,0,0,1,26.18,11.08Z"></path>
-														<path d="M36.45,12.21a2.07,2.07,0,0,1-2.14-2.08A2.1,2.1,0,0,1,36.38,8a2.15,2.15,0,0,1,2.15,2.09A2.1,2.1,0,0,1,36.45,12.21Z"></path>
-														<path d="M31.58,9.38a2.09,2.09,0,0,1-2.1-2.12A2.11,2.11,0,0,1,31.6,5.14a2.16,2.16,0,0,1,2.11,2.14A2.1,2.1,0,0,1,31.58,9.38Z"></path>
-														<path d="M35.72,15.46a2.09,2.09,0,0,1,2.1-2.12,2.13,2.13,0,1,1-2.1,2.12Z"></path>
-													</g>
-												</g></svg></app-svg-crown> GOV.UK</span></div>
+      <div class="header-global">
+        <div class="header-logo"><span class="content aa-contrast-header"><app-svg-crown aria-hidden="true"><svg
+                width="36" height="32" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 39.93 29.23" class="svg-crown">
+                <g id="Layer_2" data-name="Layer 2">
+                  <g id="Layer_1-2" data-name="Layer 1">
+                    <path
+                      d="M21.86,0c-.3,1-.6,2-.88,3a2.31,2.31,0,0,0,0,.59,2.25,2.25,0,0,0,.58,0c.7-.19,1.4-.42,2.17-.65V6.8c-.71-.38-1.4-.75-2.11-1.1A3.21,3.21,0,0,0,21,5.56a2.35,2.35,0,0,0,0,.65c.44,1.4.93,2.78,1.36,4.18A2.5,2.5,0,0,1,18,12.69a2.42,2.42,0,0,1-.42-2.34c.44-1.37.9-2.73,1.34-4.1a3.6,3.6,0,0,0,0-.66,2.63,2.63,0,0,0-.7.13c-.67.33-1.33.69-2.07,1.08V2.91l2.23.68c.54.16.7,0,.54-.55-.3-1-.63-2-.94-3Z">
+                    </path>
+                    <path
+                      d="M29.76,20.12c2.17-.2,2.92.78,2.07,2.77l-.4-.48a1.07,1.07,0,0,0-1.89.26,2.06,2.06,0,0,0,.32,2.25,2.13,2.13,0,0,0,2.41.51,5.85,5.85,0,0,0,2.82-3.1L35,22.12,33,23l1.28-4.33L35.4,21a4.4,4.4,0,0,0,.21-3l2.86,1a28.86,28.86,0,0,0-4.25,10.18,106.73,106.73,0,0,0-28.51,0A29.16,29.16,0,0,0,1.47,19l2.75-1v2.88l.28.1,1.17-2.37L7,23l-2.07-1A4.89,4.89,0,0,0,8,25.54,2,2,0,0,0,10.48,23a1.6,1.6,0,0,0-1-.95c-.32-.08-.77.35-1.15.58-.09.05-.13.17-.25.33A2.19,2.19,0,0,1,8,20.72c.5-.77,1.3-.74,2.33-.52-2-2-2.28-4.06-.54-6.25,2.26,1.57,2.48,3.63,1.42,6.14.86-.61,1.62-1,2.4-.36A1.92,1.92,0,0,1,14,22a1.16,1.16,0,0,0-.24-.19c-.39-.15-.81-.46-1.18-.4-.57.09-.74.67-.78,1.21a2,2,0,0,0,.81,1.73,4.83,4.83,0,0,0,5.33.22c1.2-.87,1.27-2.17,1.34-3.57-1.5.12-2.34,1.11-3.31,2.18l-.42-4.83a4.91,4.91,0,0,0,3.66,1.52A14.21,14.21,0,0,0,17,16.43H22.9l-2.37,3.41a4.93,4.93,0,0,0,3.85-1.49L24,23.15c-1-1-1.78-2-3.2-2.14-.52,2.69,1.57,4.68,4.44,4.18a6,6,0,0,0,2.12-.89,1.8,1.8,0,0,0,.76-2,1,1,0,0,0-1.79-.63L26,22a1.89,1.89,0,0,1,.28-2.18c.81-.69,1.57-.29,2.44.29-1.05-2.5-.81-4.56,1.43-6.11C31.76,15.93,31.68,17.43,29.76,20.12Z">
+                    </path>
+                    <path
+                      d="M8.33,9.38A2.07,2.07,0,0,1,6.24,7.25,2.13,2.13,0,0,1,8.36,5.14a2.16,2.16,0,0,1,2.11,2.15A2.12,2.12,0,0,1,8.33,9.38Z">
+                    </path>
+                    <path
+                      d="M3.49,12.21a2.09,2.09,0,0,1-2.08-2.14A2.13,2.13,0,0,1,3.55,8a2.16,2.16,0,0,1,2.1,2.15A2.13,2.13,0,0,1,3.49,12.21Z">
+                    </path>
+                    <path d="M2.11,13.34a2.13,2.13,0,1,1,0,4.25,2.13,2.13,0,0,1,0-4.25Z"></path>
+                    <path
+                      d="M13.69,11.08a2.08,2.08,0,0,1-2.07-2.14,2.13,2.13,0,0,1,2.14-2.1A2.16,2.16,0,0,1,15.85,9,2.12,2.12,0,0,1,13.69,11.08Z">
+                    </path>
+                    <path
+                      d="M26.18,11.08A2.08,2.08,0,0,1,24.1,8.94a2.12,2.12,0,0,1,2.13-2.1A2.16,2.16,0,0,1,28.33,9,2.11,2.11,0,0,1,26.18,11.08Z">
+                    </path>
+                    <path
+                      d="M36.45,12.21a2.07,2.07,0,0,1-2.14-2.08A2.1,2.1,0,0,1,36.38,8a2.15,2.15,0,0,1,2.15,2.09A2.1,2.1,0,0,1,36.45,12.21Z">
+                    </path>
+                    <path
+                      d="M31.58,9.38a2.09,2.09,0,0,1-2.1-2.12A2.11,2.11,0,0,1,31.6,5.14a2.16,2.16,0,0,1,2.11,2.14A2.1,2.1,0,0,1,31.58,9.38Z">
+                    </path>
+                    <path d="M35.72,15.46a2.09,2.09,0,0,1,2.1-2.12,2.13,2.13,0,1,1-2.1,2.12Z"></path>
+                  </g>
+                </g>
+              </svg></app-svg-crown> GOV.UK</span></div>
+      </div>
+      <div class="header-proposition">
+        <div class="content"><span id="proposition-name" class="aa-contrast-header">Multiplication Tables Check</span>
         </div>
-        <div class="header-proposition">
-            <div class="content"><span id="proposition-name"
-                                       class="aa-contrast-header">Multiplication Tables Check</span></div>
-        </div>
+      </div>
     </div>
-</header>
-<div id="global-header-bar"></div>
-<main id="content" role="main" class="js-content">
+  </header>
+  <div id="global-header-bar"></div>
+  <main id="content" role="main" class="js-content">
 
     <div>
-        <div class="heading-block">
-            <header>
-                <div class="organisation-logo">
-                    <div class="logo-text">Standards<br>&amp; Testing<br>Agency</div>
-                </div>
-            </header>
+      <div class="heading-block">
+        <header>
+          <div class="organisation-logo">
+            <div class="logo-text">Standards<br>&amp; Testing<br>Agency</div>
+          </div>
+        </header>
+      </div>
+      <div class="grid-row">
+        <div class="column-two-thirds">
+          <header>
+            <h1 class="heading-xlarge">This browser is not supported</h1>
+          </header>
+          <p class="lede" tabindex="0">
+            You can view additional information on supported browsers
+            in the MTC IT guidance on GOV.UK: <a
+              href="https://www.gov.uk/government/collections/multiplication-tables-check">
+              https://www.gov.uk/government/collections/multiplication-tables-check</a>
+          </p>
         </div>
-        <div class="grid-row">
-            <div class="column-two-thirds">
-                <header>
-                    <h1 class="heading-xlarge">This browser is not supported</h1>
-                </header>
-                <p class="lede" tabindex="0">
-                    You can view additional information on supported browsers
-                    in the MTC IT guidance on GOV.UK: <a
-                        href="https://www.gov.uk/government/collections/multiplication-tables-check">
-                    https://www.gov.uk/government/collections/multiplication-tables-check</a>
-                </p>
-            </div>
-        </div>
+      </div>
     </div>
-</main>
-<footer id="footer" role="contentinfo" class="group js-footer">
+  </main>
+  <footer id="footer" role="contentinfo" class="group js-footer">
     <div class="footer-wrapper">
-        <div class="footer-meta">
-            <div class="footer-meta-inner">
-                <h2 class="visuallyhidden">Support links</h2>
-                <ul>
-                    <li><a href="/contact">Contact</a></li>
-                    <li><a target="_blank"
-                           href="/accessibility-statement">Accessibility Satatement</a></li>
-                    <li><a target="_blank" href="/privacy">Privacy notice</a></li>
-                    <li>Built by the <a href="https://www.gov.uk/government/organisations/standards-and-testing-agency">Standards
-                        and Testing Agency</a></li>
-                </ul>
-                <div class="open-government-licence">
-                    <p class="logo"><a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
-                                       rel="license">Open Government Licence</a></p>
-                    <p>All content is available under the <a
-                            href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
-                            rel="license">Open Government Licence v3.0</a>, except where otherwise stated</p>
-                </div>
-            </div>
-            <div class="copyright"><a
-                    href="http://www.nationalarchives.gov.uk/information-management/re-using-public-sector-information/copyright-and-re-use/crown-copyright/">©
-                Crown copyright</a></div>
+      <div class="footer-meta">
+        <div class="footer-meta-inner">
+          <h2 class="visuallyhidden">Support links</h2>
+          <ul>
+            <li><a href="/contact">Contact</a></li>
+            <li><a target="_blank" href="/accessibility-statement">Accessibility Satatement</a></li>
+            <li><a target="_blank" href="/privacy">Privacy notice</a></li>
+            <li>Built by the <a
+                href="https://www.gov.uk/government/organisations/standards-and-testing-agency">Standards
+                and Testing Agency</a></li>
+          </ul>
+          <div class="open-government-licence">
+            <p class="logo"><a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
+                rel="license">Open Government Licence</a></p>
+            <p>All content is available under the <a
+                href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" rel="license">Open
+                Government Licence v3.0</a>, except where otherwise stated</p>
+          </div>
         </div>
+        <div class="copyright"><a
+            href="http://www.nationalarchives.gov.uk/information-management/re-using-public-sector-information/copyright-and-re-use/crown-copyright/">©
+            Crown copyright</a></div>
+      </div>
     </div>
-</footer>
-<script>
-  if (typeof window.GOVUK === 'undefined') document.body.className = document.body.className.replace('js-enabled', '')
-</script>
-<script>
-  window.ga = window.ga || function () {(ga.q = ga.q || []).push(arguments)}
-  ga.l = +new Date
-</script>
+  </footer>
+  <script>
+    if (typeof window.GOVUK === 'undefined') document.body.className = document.body.className.replace('js-enabled', '')
+  </script>
+  <script>
+    window.ga = window.ga || function () { (ga.q = ga.q || []).push(arguments) }
+    ga.l = +new Date
+  </script>
+  <script type="text/javascript" src="https://js.monitor.azure.com/scripts/b/ai.2.min.js"></script>
+  <script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', function () {
+      var options = {
+        config: {
+          connectionString: "InstrumentationKey=<instrumentation_key>"
+        }
+      }
+      var init = new Microsoft.ApplicationInsights.ApplicationInsights(options)
+      var appInsights = init.loadAppInsights()
+      appInsights.trackPageView({ name: 'unsupported browser' })
+    })
+  </script>
 </body>
+
 </html>
