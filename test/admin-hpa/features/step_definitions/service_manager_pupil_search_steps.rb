@@ -37,9 +37,12 @@ end
 Given(/^I have (\d+) pupils with the same upns but at different schools$/) do |arg|
   @same_upn = @upns_for_school.first
   @urn = SqlDbHelper.get_schools_list.map {|school| school['urn']}.sort.last + 1
-  @estab_code = SqlDbHelper.get_schools_list.map {|school| school['estabCode']}.sort.last + 1
+  dfe_number = create_dfe_number
   @school_name = "Test School - #{@urn}"
-  @school = FunctionsHelper.create_school(@estab_code, @school_name, @urn)
+  @school = FunctionsHelper.create_school(dfe_number[:lea_code],dfe_number[:estab_code], @school_name, @urn)
+  if @school['result'] == 'Failed'
+    fail "#{@school['message']}"
+  end
   school_uuid = @school['entity']['urlSlug']
   @username = "teacher#{@urn}"
   @school_user = FunctionsHelper.create_user(school_uuid, @username)

@@ -88,3 +88,8 @@ Feature:
     Given I have completed a check with duplicate questions
     And the data sync and ps report function has run
     Then I should see the ps report showing the first input
+
+  Scenario: Test schools do not have a ps report record
+    Given I have completed the check for a pupil attending a test school
+    When the data sync and ps report function has run for the test school
+    Then I should not see any records for the test school
