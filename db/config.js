@@ -82,11 +82,13 @@ module.exports = {
       Scale: process.env.SQL_AZURE_SCALE
     },
     AllowReadsFromReplica: {}.hasOwnProperty.call(process.env, 'SQL_ALLOW_REPLICA_FOR_READS') ? toBool(process.env.SQL_ALLOW_REPLICA_FOR_READS) : false,
-    // obsolete as of March 2023
-    // to be removed once all environments have dropped the user via migration 20230309163833
     TechSupport: {
       Username: process.env.SQL_TECH_SUPPORT_USER || 'TechSupportUser',
-      Password: process.env.SQL_TECH_SUPPORT_USER_PASSWORD
+      Password: process.env.SQL_TECH_SUPPORT_USER_PASSWORD,
+      Pool: {
+        Min: parseInt(process.env.TECH_SUPPORT_SQL_POOL_MIN_COUNT, 10) || 0,
+        Max: parseInt(process.env.TECH_SUPPORT_SQL_POOL_MIN_COUNT, 10) || 2
+      }
     },
     SqlSupport: {
       Username: process.env.SQL_SUPPORT_USER || 'SqlSupportUser',

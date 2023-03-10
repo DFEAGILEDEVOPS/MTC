@@ -19,6 +19,7 @@ try {
 const sut = require('../services/data-access/sql.role-connection.builder')
 const roles = require('../lib/consts/roles')
 const sqlConfig = require('../config/sql.config')
+const config = require('../config')
 
 describe('sql.role-connection.builder:integration', () => {
   test('should be defined', () => {
@@ -40,6 +41,16 @@ describe('sql.role-connection.builder:integration', () => {
     expect(actual).toBeDefined()
     expect(typeof actual).toEqual('object')
     expect(actual.options.readOnlyIntent).toBe(true)
+  })
+
+  test('should return specific config when role is techSupport', () => {
+    const actual = sut.build(roles.techSupport)
+    expect(actual).toBeDefined()
+    expect(typeof actual).toEqual('object')
+    expect(actual.user).toEqual(config.Sql.TechSupport.Username)
+    expect(actual.password).toEqual(config.Sql.TechSupport.Password)
+    expect(actual.pool.min).toEqual(config.Sql.TechSupport.Pool.Min)
+    expect(actual.pool.max).toEqual(config.Sql.TechSupport.Pool.Max)
   })
 
   test('should default to non read-only', () => {
