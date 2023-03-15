@@ -14,6 +14,7 @@
 | Surname              | mtc_admin.pupil.lastName                            |                                                              |
 | ReasonNotTakingCheck | mtc_admin.pupilAttendance                           | **Blank** - no reason not taking the check, **Z** - Incorrect registration,  **A** - Absent,  **L** - Left school,   **U** - Unable to access,  **B** - Working below the overall standard of the check,  **J** - Just arrived |
 | PupilStatus          | mtc_admin.pupil.complete, mtc_admin.pupilAttendance | calculated                                                   |
+| ImportedFromCensus | mtc_admin.pupil.job_id | True is a job_id is present, false otherwise.  True means the puil record was imported from census data (e.g. by the Service Manager).  Note it may be edited later by the school. |
 
 
 
@@ -25,6 +26,7 @@
 | Estab              | mtc_admin.school.estabCode |         |
 | SchoolURN          | mtc_admin.school.urn       |         |
 | LAnum              | mtc_admin.school.laCode    |         |
+| ToECode            | mtc_admin.typeOfEstablishmentLookup.code | Type Of Establishment Code |
 
 
 
