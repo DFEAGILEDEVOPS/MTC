@@ -21,11 +21,11 @@
                     </div>
                 </div>
                 <% } %>
-                <h1 class="govuk-heading-xl">Confirm and submit</h1>
+                <h1 class="govuk-heading-xl">You should carefully read the statement below, select the box that applies to you and submit</h1>
                 <%- partial('partials/_gds_session_expiry') %>
                 <div class="govuk-form-group" id="confirm">
                     <div class="multiple-choice">
-                        <input class="govuk-radios__input" id="confirmYes" type="radio" role="radio" name="confirm" value="Y" checked="checked">
+                        <input class="govuk-radios__input" id="confirmYes" type="radio" role="radio" name="confirm" value="confirmAll" checked="checked">
                         <label for="confirmYes">
                             <p>I <strong>can confirm:</strong></p>
                             <a id="confirmBoxes"></a>
@@ -38,8 +38,12 @@
                     <% } %>
                     <div class="multiple-choice smaller">
                         <input type="checkbox" id="pupilDetails" name="pupilDetails" value="checked" <% if (formData['pupilDetails']) {%> checked<% } %>>
-                        <label class="govuk-label" for="pupilDetails">all eligible pupils have been registered for the check and their details are correct</label>
+                        <label class="govuk-label" for="pupilDetails">all eligible pupils have been included within my pupil register and their details are correct</label>
                     </div>
+                    <div class="multiple-choice smaller">
+                      <input type="checkbox" id="correctReasons" name="correctReasons" value="checked" <% if (formData['correctReasons']) {%> checked<% } %>>
+                      <label class="govuk-label" for="uniquePins">all pupils not taking the check have the correct reason provided</label>
+                  </div>
                     <div class="multiple-choice smaller">
                         <input type="checkbox" id="uniquePins" name="uniquePins" value="checked" <% if (formData['uniquePins']) {%> checked<% } %>>
                         <label class="govuk-label" for="uniquePins">all pupils who took the check used their unique PIN generated for them</label>
@@ -55,10 +59,21 @@
                 </div>
 
                 <div class="govuk-form-group">
+                  <div class="multiple-choice">
+                      <input class="govuk-radios__input" id="confirmNone" type="radio" role="radio" name="confirm" value="confirmNone">
+                      <label class="govuk-label" for="confirmNo">
+                          <p>None of my pupils took the check, but all eligible pupils have been included within my pupil register, their details are correct and the correct ‘reason for not taking the check’ has been provided.</p>
+                      </label>
+                  </div>
+              </div>
+
+                <div class="govuk-form-group">
                     <div class="multiple-choice">
-                        <input class="govuk-radios__input" id="confirmNo" type="radio" role="radio" name="confirm" value="N">
+                        <input class="govuk-radios__input" id="confirmNo" type="radio" role="radio" name="confirm" value="confirmNo">
                         <label class="govuk-label" for="confirmNo">
-                            <p>I am <strong>unable to confirm</strong> the statements above and have reported this to the Standards and Testing Agency (STA).</p>
+                            <p>I am <strong>unable to confirm</strong> the statements above and have reported this to the Standards and Testing Agency (STA).  Please provide further information in the free text box below:</p>
+                            <textarea id="noConfirmInfo" name="noConfirmInfo" class="govuk-textarea govuk-!-width-three-quarters" rows="3" maxlength="1000" aria-required="true"
+                            aria-label="Enter further information." spellcheck="false" autocorrect="off"></textarea>
                         </label>
                         <div class="govuk-inset-text">
                             If you have not reported this to STA, please contact the national curriculum assessments helpline on 0300 303 3013 before submitting this declaration.  Failure to notify STA may result in a maladministration investigation.
