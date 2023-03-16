@@ -1,83 +1,111 @@
 <div class="govuk-grid-row">
-    <div class="govuk-grid-column-full">
-        <%- partial('partials/_name_and_sign_out') %>
-    </div>
+  <div class="govuk-grid-column-full">
+    <%- partial('partials/_name_and_sign_out') %>
+  </div>
 </div>
 <main class="govuk-main-wrapper" id="main-content" role="main">
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-            <%- partial('partials/_service_message', { serviceMessage }) %>
-            <h1 class="govuk-heading-xl">Manage the multiplication tables check for <%= schoolName %></h1>
-            <%- partial('partials/_gds_session_expiry') %>
-            <h3 class="govuk-heading-m">Prepare for the check</h3>
-            <ol class="govuk-list">
-                <li class="govuk-!-margin-bottom-4">
-                    <h2 class="govuk-heading-s arrow-up"><a class="govuk-link" href="<%- guidancePdf %>" target="_blank">Read guidance and watch videos</a></h2>
-                </li>
-                <li class="govuk-!-margin-bottom-4">
-                    <h2 class="govuk-heading-s arrow-up"><a class="govuk-link" href="/pupil-register/pupils-list">View, add or edit pupils on your register</a></h2>
-                </li>
-                <li class="govuk-!-margin-bottom-4">
-                    <%- groupsLinkSlot %>
-                </li>
-                <li class="govuk-!-margin-bottom-4">
-                    <h2 class="govuk-heading-s arrow-up"><a class="govuk-link"
-                                                            href="/pupils-not-taking-the-check/pupils-list">
-                            Provide a reason why a pupil is not taking the check
-                        </a></h2>
-                </li>
-                <li class="govuk-!-margin-bottom-4">
-                    <% if (isFeatureEnabled('accessArrangements')) { %>
-                        <h2 class="govuk-heading-s arrow-up">
-                            <a class="govuk-link" href="/access-arrangements/overview">Enable access arrangements for pupils who need them</a>
-                        </h2>
-                    <% } %>
-                </li>
-            </ol>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <%- partial('partials/_service_message', { serviceMessage }) %>
+        <h1 class="govuk-heading-xl">Manage the multiplication tables check for <%= schoolName %>
+        </h1>
+        <%- partial('partials/_gds_session_expiry') %>
+          <h3 class="govuk-heading-m">Prepare for the check</h3>
+          <ol class="govuk-list">
+            <li class="govuk-!-margin-bottom-4">
+              <h2 class="govuk-heading-s arrow-up"><a class="govuk-link" href="<%- guidancePdf %>" target="_blank">Read
+                  guidance</a></h2>
+            </li>
+            <li class="govuk-!-margin-bottom-4">
+              <h2 class="govuk-heading-s arrow-up"><a class="govuk-link" href="/pupil-register/pupils-list">View, add or
+                  edit pupils on your register</a></h2>
+            </li>
+            <li class="govuk-!-margin-bottom-4">
+              <%- groupsLinkSlot %>
+            </li>
+            <li class="govuk-!-margin-bottom-4">
+              <h2 class="govuk-heading-s arrow-up"><a class="govuk-link"
+                  href="/pupils-not-taking-the-check/pupils-list">
+                  Provide a reason why a pupil is not taking the check
+                </a></h2>
+            </li>
+            <li class="govuk-!-margin-bottom-4">
+              <% if (isFeatureEnabled('accessArrangements')) { %>
+                <h2 class="govuk-heading-s arrow-up">
+                  <a class="govuk-link" href="/access-arrangements/overview">Enable access arrangements for pupils who
+                    need them</a>
+                </h2>
+                <% } %>
+            </li>
+          </ol>
 
-            <h3 class="govuk-heading-m govuk-!-margin-top-9">Generate and view password and PINs</h3>
-            <ol class="govuk-list">
-                <li class="govuk-!-margin-bottom-4">
-                  <h2 class="govuk-heading-s arrow-up">
-                    <a href="/pupil-pin/select-official-or-try-it-out">Generate and view password and PINs for the try it out and official check</a>
-                  </h2>
-                </li>
-            </ol>
-
-            <h3 class="govuk-heading-m govuk-!-margin-top-9">Review the check</h3>
-            <ol class="govuk-list">
-                <li class="govuk-!-margin-bottom-4">
-                    <%- pupilStatusSlot %>
-                </li>
-                <li class="govuk-!-margin-bottom-4">
-                    <%- restartPupilSlot %>
-                </li>
-            </ol>
-            <h3 class="govuk-heading-m govuk-!-margin-top-9">After the check</h3>
-            <ol class="govuk-list">
-                <li class="govuk-!-margin-bottom-4">
-                    <%- hdfSlot %>
-                </li>
-                <li class="govuk-!-margin-bottom-4">
-                    <%- resultsSlot %>
-                </li>
-            </ol>
-        </div>
-        <% if (user && (user.role === roles.helpdesk || user.role === roles.staAdmin)) { %>
-        <div class="govuk-grid-column-one-third" aria-label="sidebar">
-          <aside class="app-related-items" role="complementary">
-              <h2 class="govuk-heading-m" id="subsection-title">
-                  Helpdesk Tools
+          <h3 class="govuk-heading-m govuk-!-margin-top-9">Generate and view password and PINs</h3>
+          <ol class="govuk-list">
+            <li class="govuk-!-margin-bottom-4">
+              <h2 class="govuk-heading-s arrow-up">
+                <a href="/pupil-pin/select-official-or-try-it-out">Generate and view password and PINs for the try it
+                  out and official check</a>
               </h2>
-              <nav role="navigation" aria-labelledby="subsection-title">
-                  <ul class="govuk-list govuk-!-font-size-16">
-                      <li>
-                          <a class="govuk-link" href="/helpdesk/school-summary" rel="noopener noreferrer">View PIN usage</a>
-                      </li>
-                  </ul>
-              </nav>
-          </aside>
+            </li>
+          </ol>
+
+          <h3 class="govuk-heading-m govuk-!-margin-top-9">Review the check</h3>
+          <ol class="govuk-list">
+            <li class="govuk-!-margin-bottom-4">
+              <%- pupilStatusSlot %>
+            </li>
+            <li class="govuk-!-margin-bottom-4">
+              <%- restartPupilSlot %>
+            </li>
+          </ol>
+          <h3 class="govuk-heading-m govuk-!-margin-top-9">After the check</h3>
+          <ol class="govuk-list">
+            <li class="govuk-!-margin-bottom-4">
+              <%- hdfSlot %>
+            </li>
+            <li class="govuk-!-margin-bottom-4">
+              <%- resultsSlot %>
+            </li>
+          </ol>
+    </div>
+    <% if (user && (user.role===roles.helpdesk || user.role===roles.staAdmin)) { %>
+      <div class="govuk-grid-column-one-third" aria-label="sidebar">
+        <aside class="app-related-items" role="complementary">
+          <h2 class="govuk-heading-m" id="subsection-title">
+            Helpdesk Tools
+          </h2>
+          <nav role="navigation" aria-labelledby="subsection-title">
+            <ul class="govuk-list govuk-!-font-size-16">
+              <li>
+                <a class="govuk-link" href="/helpdesk/school-summary" rel="noopener noreferrer">View PIN usage</a>
+              </li>
+            </ul>
+          </nav>
+        </aside>
       </div>
       <% } %>
-    </div>
+      <% if (user && (user.role===roles.teacher)) { %>
+        <div class="govuk-grid-column-one-third" aria-label="sidebar">
+          <aside class="app-related-items" role="complementary">
+            <h2 class="govuk-heading-m" id="subsection-title">
+              Related
+            </h2>
+            <nav role="navigation" aria-labelledby="subsection-title">
+              <ul class="govuk-list govuk-!-font-size-16">
+                <li>
+                  <a class="govuk-link" href="https://youtu.be/QN8koK9_ifM" target="_blank"
+                    rel="noopener noreferrer">Watch our video on how to navigate the system</a>
+                </li>
+                <li>
+                  <a class="govuk-link" href="https://www.youtube.com/watch?v=eg31DiJlQ_k" target="_blank"
+                    rel="noopener noreferrer">
+                    Watch our video that demonstrates access arrangements
+                  </a>
+                </li>
+              </ul>
+            </nav>
+          </aside>
+        </div>
+      <% } %>
+  </div>
 </main>
