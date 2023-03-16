@@ -191,7 +191,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  activesupport (>= 7.0.4.1)
+  activesupport (>= 7.0.4.3)
   azure-storage-blob (>= 2.0.3)
   azure-storage-queue (>= 2.0.4)
   azure-storage-table (>= 2.0.4)
@@ -209,7 +209,7 @@ DEPENDENCIES
   parallel_tests
   poltergeist (>= 1.18.1)
   pry
-  rack (>= 3.0.4.2)
+  rack (>= 3.0.6.1)
   rake
   rb-readline
   redis
