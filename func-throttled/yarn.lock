@@ -259,10 +259,10 @@
     jsonwebtoken "^8.5.1"
     uuid "^8.3.0"
 
-"@azure/service-bus@^7.8.0":
-  version "7.8.0"
-  resolved "https://registry.yarnpkg.com/@azure/service-bus/-/service-bus-7.8.0.tgz#e37f52fbae880b6045fc486806c3f3d8a7f44d9f"
-  integrity sha512-wcgCHOK3FRDUb+2WAxjzCAQRpNkdebnrS83zflfBlnwKo9D8XA37qh8K5XFqHUY07DbziGLpOakatx4Nlca62A==
+"@azure/service-bus@^7.7.3":
+  version "7.8.1"
+  resolved "https://registry.yarnpkg.com/@azure/service-bus/-/service-bus-7.8.1.tgz#36d799f667eff11e4529bfabf852a1c2f883e6d3"
+  integrity sha512-Mo/tCxNiYUT92rKj5mSILeccD5H2ndyPqpZZ+IdtFusa/e3mIz8Kghm1otsxpJCB3XHj6vPJxON/gDRE4exe7Q==
   dependencies:
     "@azure/abort-controller" "^1.0.0"
     "@azure/core-amqp" "^3.1.0"
@@ -479,10 +479,10 @@ append-buffer@^1.0.2:
   dependencies:
     buffer-equal "^1.0.0"
 
-applicationinsights@^2.4.0:
-  version "2.4.1"
-  resolved "https://registry.yarnpkg.com/applicationinsights/-/applicationinsights-2.4.1.tgz#4de4c4dd3c7c4a44445cfbf3d15808fc0dcc423d"
-  integrity sha512-0n0Ikd0gzSm460xm+M0UTWIwXrhrH/0bqfZatcJjYObWyefxfAxapGEyNnSGd1Tg90neHz+Yhf+Ff/zgvPiQYA==
+applicationinsights@^2.4.2:
+  version "2.5.0"
+  resolved "https://registry.yarnpkg.com/applicationinsights/-/applicationinsights-2.5.0.tgz#f008580b2f68267a5d233cce4e1f50b587bdf3c4"
+  integrity sha512-6kIFmpANRok+6FhCOmO7ZZ/mh7fdNKn17BaT13cg/RV5roLPJlA6q8srWexayHd3MPcwMb9072e8Zp0P47s/pw==
   dependencies:
     "@azure/core-auth" "^1.4.0"
     "@azure/core-rest-pipeline" "^1.10.0"
