@@ -14,7 +14,12 @@ end
 
 When('I save these changes') do
   edit_school_page.update.click
-  expect(school_search_results_page.heading.text).to eql @hash[:name]
+  if @hash
+    school_name = @hash[:name]
+  else
+    school_name = @school_name
+  end
+  expect(school_search_results_page.heading.text).to eql school_name
 end
 
 Then('these changes are reflected in the DB') do
@@ -42,4 +47,15 @@ Then(/^these changes are not reflected in the DB$/) do
   expect(@after['estabCode']).to eql school_search_results_page.estab.text.to_i
   expect(@after['dfeNumber']).to eql school_search_results_page.dfe_number.text.to_i
   expect(@after['urn']).to eql school_search_results_page.urn.text.to_i
+end
+
+
+When(/^I set the school to be a test school$/) do
+  school_search_results_page.edit.click
+  edit_school_page.type_of_establishment.select SqlDbHelper.type_of_establishment.sample
+  edit_school_page.is_test_school.click
+end
+
+Then(/^this change is reflected in the DB$/) do
+  expect(SqlDbHelper.find_school_by_urn(@urn)['isTestSchool']).to be_truthy
 end

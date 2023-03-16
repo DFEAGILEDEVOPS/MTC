@@ -1,0 +1,83 @@
+# AzureDevops build defintion for Azure services key rotation and key vault update
+resources:
+  - repo: self
+
+name: Azure-Key-Rotation-$(date:yyyyMMdd)$(rev:.r)
+
+parameters:
+- name:         keyType
+  displayName:  Target key to renew
+  type:         string
+  default:      primary
+  values:
+  - primary
+  - secondary
+
+- name:         updateKeyVault
+  displayName:  Update key vault secrets with renewed values
+  type:         boolean
+  default:      true
+
+- name:         targetEnvironment
+  displayName:  Target environment
+  type:         string
+  default:      dev
+  values:
+  - dev
+  - test
+  - preprod
+  - prod
+
+variables:
+- group:        vars-${{ parameters.targetEnvironment }}
+- name:         buildAgentPool
+  value:        MTC
+
+
+# do not trigger automatically
+trigger: none
+
+pool:
+  name: $(buildAgentPool)
+
+jobs:
+- job: RedisKey
+  steps:
+  - task: AzureCLI@2
+    displayName: renew Redis Key
+    inputs:
+      azureSubscription: $(Azure.ServicePrincipal.Name)
+      scriptType: bash
+      scriptPath: 'deploy/keys/redis.sh'
+      arguments: $(ResourceGroup.Name) $(KeyVault.Name) $(Redis.Name) ${{ parameters.keyType }} ${{ parameters.updateKeyVault }}
+      failOnStandardError: true
+- job: ServiceBusKey
+  steps:
+  - task: AzureCLI@2
+    displayName: renew Service Bus Key
+    inputs:
+      azureSubscription: $(Azure.ServicePrincipal.Name)
+      scriptType: bash
+      scriptPath: 'deploy/keys/service-bus.sh'
+      arguments: $(ResourceGroup.Name) $(KeyVault.Name) $(ServiceBus.Name) ${{ parameters.keyType }} $(ServiceBus.User.Consumer) ${{ parameters.updateKeyVault }}
+      failOnStandardError: true
+- job: StorageAccountKey
+  steps:
+  - task: AzureCLI@2
+    displayName: renew Storage Account Key
+    inputs:
+      azureSubscription: $(Azure.ServicePrincipal.Name)
+      scriptType: bash
+      scriptPath: 'deploy/keys/storage.sh'
+      arguments: $(ResourceGroup.Name) $(KeyVault.Name) $(StorageAccountName) ${{ parameters.keyType }} ${{ parameters.updateKeyVault }}
+      failOnStandardError: true
+- job: ExpressSessionSecret
+  steps:
+  - task: AzureCLI@2
+    displayName: renew express session secret
+    inputs:
+      azureSubscription: $(Azure.ServicePrincipal.Name)
+      scriptType: bash
+      scriptPath: 'deploy/keys/express-session.sh'
+      arguments: $(KeyVault.Name) ${{ parameters.updateKeyVault }}
+      failOnStandardError: true

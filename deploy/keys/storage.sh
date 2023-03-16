@@ -10,20 +10,21 @@ RES_GROUP=$1 # target resource group
 KEY_VAULT_NAME=$2 # key vault instance
 STORAGE_ACCOUNT_NAME=$3 # storage account
 KEY_TYPE=$4 # accepted values are 'primary' or 'secondary'
+UPDATE_KV_SECRET="${5:-false}"  # skips the key vault update if true
 
-STORAGE_ACCOUNT_KEY_TYPE="" # valid values are 'primary', 'secondary'
+STORAGE_ACCOUNT_KEY_TYPE="" # valid values are 'key1', 'key2'
 
 # Azure CLI uses slightly different identifiers for key type across different services :-/
 # align them for each service...
 if [ "$KEY_TYPE" = "primary" ]
 then
   # set keys to primary
-  STORAGE_ACCOUNT_KEY_TYPE="primary"
+  STORAGE_ACCOUNT_KEY_TYPE="key1"
 
 elif [ "$KEY_TYPE" = "secondary" ]
 then
   # set keys to secondary
-  STORAGE_ACCOUNT_KEY_TYPE="secondary"
+  STORAGE_ACCOUNT_KEY_TYPE="key2"
 
 else
   # throw error
@@ -58,9 +59,12 @@ fi
 
 CONNECTION_STRING=$(az storage account show-connection-string -g $RES_GROUP -n $STORAGE_ACCOUNT_NAME --key $STORAGE_ACCOUNT_KEY_TYPE | jq -r .connectionString)
 
+# skip key vault update if requested
+if [ $UPDATE_KV_SECRET == "False" ]; then exit 0; fi
+
 # update key vault connection string
-az keyvault secret set --vault-name $KEY_VAULT_NAME --name "StorageAccountConnectionString" --value "$CONNECTION_STRING" > /dev/null
+az keyvault secret set --vault-name $KEY_VAULT_NAME --name "StorageAccountConnectionString" --value "$CONNECTION_STRING"  -o none
 echo "StorageAccountConnectionString updated in Key Vault"
 ## update key vault account key
-az keyvault secret set --vault-name $KEY_VAULT_NAME --name "StorageAccountKey" --value $ACCOUNT_KEY > /dev/null
+az keyvault secret set --vault-name $KEY_VAULT_NAME --name "StorageAccountKey" --value $ACCOUNT_KEY  -o none
 echo "StorageAccountKey updated in Key Vault"
