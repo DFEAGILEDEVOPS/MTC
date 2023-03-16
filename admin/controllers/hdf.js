@@ -226,6 +226,7 @@ controller.postConfirmSubmit = async function postConfirmSubmit (req, res, next)
   let validationError = await hdfConfirmValidator.validate(req.body)
   if (validationError.hasError()) {
     res.error = validationError
+    console.dir(req.body)
     return controller.getConfirmSubmit(req, res, next)
   }
 
