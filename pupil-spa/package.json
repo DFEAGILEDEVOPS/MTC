@@ -34,7 +34,7 @@
     "@angular/platform-browser-dynamic": "^14.2.10",
     "@angular/platform-server": "^14.2.10",
     "@angular/router": "^14.2.10",
-    "@microsoft/applicationinsights-web": "^2.8.7",
+    "@microsoft/applicationinsights-web": "^2.8.10",
     "core-js": "2.6.12",
     "dotenv": "^16.0.3",
     "lz-string": "https://github.com/pieroxy/lz-string#1.4.4",
@@ -42,7 +42,7 @@
     "polly-js": "^1.8.2",
     "rxjs": "^6.5.3",
     "sass": "^1.58.0",
-    "tslib": "^2.4.1",
+    "tslib": "^2.5.0",
     "uuid": "^9.0.0",
     "zone.js": "~0.12.0"
   },
