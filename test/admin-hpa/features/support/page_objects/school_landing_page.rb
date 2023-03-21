@@ -4,7 +4,7 @@ class SchoolLandingPage < SitePrism::Page
   element :heading, '.govuk-heading-xl'
   # prepare for the check
 
-  element :guidance, 'a', text: 'Read guidance and watch videos'
+  element :guidance, 'a', text: 'Read guidance'
 
   # pupil register
   element :pupil_register, 'a', text: "View, add or edit pupils on your register"
