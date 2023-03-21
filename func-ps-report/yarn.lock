@@ -259,10 +259,10 @@
     jsonwebtoken "^8.5.1"
     uuid "^8.3.0"
 
-"@azure/service-bus@^7.7.3":
-  version "7.7.3"
-  resolved "https://registry.yarnpkg.com/@azure/service-bus/-/service-bus-7.7.3.tgz#0f845d6ffd27d997b7bc0df1a5974657e7db3257"
-  integrity sha512-nPSPjV74/olhu/QlT0IWMc72CTp5GdzI6d5Ov+B1rmZ9F1FvTeS8kwOx+hBVnFLnBfYLreT5tQxlyTzDmK93Zg==
+"@azure/service-bus@^7.8.1":
+  version "7.8.1"
+  resolved "https://registry.yarnpkg.com/@azure/service-bus/-/service-bus-7.8.1.tgz#36d799f667eff11e4529bfabf852a1c2f883e6d3"
+  integrity sha512-Mo/tCxNiYUT92rKj5mSILeccD5H2ndyPqpZZ+IdtFusa/e3mIz8Kghm1otsxpJCB3XHj6vPJxON/gDRE4exe7Q==
   dependencies:
     "@azure/abort-controller" "^1.0.0"
     "@azure/core-amqp" "^3.1.0"
