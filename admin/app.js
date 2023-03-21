@@ -382,6 +382,12 @@ app.use(function (err, req, res, next) {
     return res.render('availability/admin-window-unavailable', {})
   }
 
+    // catch school not found errors and redirect to the relevant page
+    if (err.code === 'SCHOOL_NOT_FOUND') {
+      res.locals.pageTitle = 'School Not Found'
+      return res.render('availability/school-not-found', {})
+    }
+
   // render the error page
   res.locals.message = 'An error occurred'
   res.locals.userMessage = err.userMessage
