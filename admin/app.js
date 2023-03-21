@@ -43,6 +43,7 @@ const dfeSignInStrategy = require('./authentication/dfe-signin-strategy')
 const redisCacheService = require('./services/data-access/redis-cache.service')
 const { CheckWindowPhaseService } = require('./services/check-window-phase/check-window-phase.service')
 const checkWindowPhaseConsts = require('./lib/consts/check-window-phase')
+const userInitErrorConsts = require('./lib/errors/user')
 
 const logger = require('./services/log.service').getLogger()
 const sqlService = require('./services/data-access/sql.service')
@@ -382,11 +383,11 @@ app.use(function (err, req, res, next) {
     return res.render('availability/admin-window-unavailable', {})
   }
 
-    // catch school not found errors and redirect to the relevant page
-    if (err.code === 'SCHOOL_NOT_FOUND') {
-      res.locals.pageTitle = 'School Not Found'
-      return res.render('availability/school-not-found', {})
-    }
+  // catch school not found errors and redirect to the relevant page
+  if (err.code === userInitErrorConsts.schoolNotFound) {
+    res.locals.pageTitle = 'School not found'
+    return res.render('availability/school-not-found', {})
+  }
 
   // render the error page
   res.locals.message = 'An error occurred'
