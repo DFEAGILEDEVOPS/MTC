@@ -8,6 +8,8 @@ const roles = require('../lib/consts/roles')
 const dfeSigninDataService = require('./data-access/dfe-signin.data.service')
 const adminLogonEventDataService = require('./data-access/admin-logon-event.data.service')
 const { DsiSchoolNotFoundError } = require('../error-types/DsiSchoolNotFoundError')
+const checkWindowPhaseConsts = require('../lib/consts/check-window-phase')
+const { SystemUnavailableError } = require('../error-types/system-unavailable-error')
 
 const service = {
   /**
@@ -34,6 +36,10 @@ const service = {
     let schoolRecord
     // lookup school if in teacher or headteacher role
     if (dfeUser.role === roles.teacher) {
+      // short circuit out of this if the check window is closed
+      if (global.checkWindowPhase === checkWindowPhaseConsts.unavailable) {
+        throw new SystemUnavailableError()
+      }
       if (dfeUser.organisation && dfeUser.organisation.urn) {
         schoolRecord = await schoolDataService.sqlFindOneByUrn(dfeUser.organisation.urn)
         if (!schoolRecord) {
