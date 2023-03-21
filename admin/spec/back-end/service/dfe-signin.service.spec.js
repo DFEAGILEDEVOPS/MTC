@@ -6,6 +6,7 @@ let sut, schoolDataService, userDataService, roleService, dfeDataService, adminL
 const token = { id_token: 'the-token' }
 const config = require('../../../config')
 const roles = require('../../../lib/consts/roles')
+const checkWindowPhaseConsts = require('../../../lib/consts/check-window-phase')
 
 describe('dfe-signin.service', () => {
   beforeEach(() => {
@@ -15,6 +16,7 @@ describe('dfe-signin.service', () => {
     roleService = require('../../../services/role.service')
     dfeDataService = require('../../../services/data-access/dfe-signin.data.service')
     adminLogonEventDataService = require('../../../services/data-access/admin-logon-event.data.service')
+    global.checkWindowPhase = checkWindowPhaseConsts.officialCheck
   })
 
   afterEach(() => {
@@ -44,6 +46,13 @@ describe('dfe-signin.service', () => {
     await expect(sut.initialiseUser({ organisation: { urn: undefined } }, token))
       .rejects
       .toThrowError('user.organisation or user.organisation.urn not found on dfeUser object')
+  })
+
+  test('throws system unavailable error if teacher logging on when system is not available', async () => {
+    jest.spyOn(dfeDataService, 'getDfeRole').mockResolvedValue('mtc_teacher')
+    jest.spyOn(roleService, 'findByTitle').mockResolvedValue({ id: 3, title: roles.teacher })
+    global.checkWindowPhase = checkWindowPhaseConsts.unavailable
+    await expect(sut.initialiseUser({ organisation: { urn: 12345 } }, token)).rejects.toThrowError('The system is unavailable at this time')
   })
 
   test('does look up school if role is teacher', async () => {
