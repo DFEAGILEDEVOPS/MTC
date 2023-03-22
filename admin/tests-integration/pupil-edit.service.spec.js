@@ -1,5 +1,5 @@
 'use strict'
-/* global expect describe test beforeEach afterAll */
+/* global expect describe test afterAll */
 
 /**
  * @file Integration Tests for Pupil Edit Service
@@ -208,7 +208,6 @@ describe('pupilEditService', () => {
     await pupilAddService.addPupil(pupilData, schoolId, userId)
     const dbPupilData = await pupilTestService.findPupilByUPN(pupilData.upn)
 
-    // Pre-test - confirm the isEdited flag state
     const ts1 = dbPupilData.updatedAt
 
     // Apply any change
@@ -219,4 +218,58 @@ describe('pupilEditService', () => {
     expect(newPupilData.updatedAt.valueOf()).toBeGreaterThan(ts1.valueOf()) // compare in milliseconds from moment objects.
     expect(newPupilData.lastNameAlias).toBe('last alias')
   })
+
+  test('updating an already-edited pupil record keeps the isEdited field set to true', async () => {
+    // setup - add a fresh pupil
+    const pupilData = fakePupilData()
+    await pupilAddService.addPupil(pupilData, schoolId, userId)
+    const dbPupilData = await pupilTestService.findPupilByUPN(pupilData.upn)
+
+    // Pre-test
+    expect(dbPupilData.isEdited).toBe(false)
+
+    // Apply any change
+    await pupilTestService.updateLastname(dbPupilData.id, 'Newman')
+
+    // Check the isEdited flag is now applied.  As it is a trigger it will run on changes from the admin app, and even DB Admin.
+    const newPupilData = await pupilTestService.findPupilByUPN(dbPupilData.upn)
+    expect(newPupilData.isEdited).toBe(true)
+    expect(newPupilData.lastName).toBe('Newman')
+
+    // update again
+    await pupilTestService.updateForename(newPupilData.id, 'Zwei')
+    const updatedPupilData = await pupilTestService.findPupilByUPN(newPupilData.upn)
+
+    // final checks
+    expect(updatedPupilData.isEdited).toBe(true)
+    expect(updatedPupilData.foreName).toBe('Zwei')
+  })
+
+  test('updating an already-edited pupil record keeps the isEdited field set to false (it was already false)e', async () => {
+    // setup - add a fresh pupil
+    const pupilData = fakePupilData()
+    await pupilAddService.addPupil(pupilData, schoolId, userId)
+    const dbPupilData = await pupilTestService.findPupilByUPN(pupilData.upn)
+
+    // Pre-test
+    expect(dbPupilData.isEdited).toBe(false)
+
+    // Apply a change that does not set the isEdited flag to true
+    await pupilTestService.updateForenameAlias(dbPupilData.id, 'first alias')
+
+    // Review the results
+    await pupilTestService.updateForenameAlias(dbPupilData.id, 'first alias')
+    const newPupilData = await pupilTestService.findPupilByUPN(dbPupilData.upn)
+    expect(newPupilData.isEdited).toBe(false)
+    expect(newPupilData.foreNameAlias).toBe('first alias')
+
+    // Re-apply a change (that does not set the isEdited flag to true
+    await pupilTestService.updateForenameAlias(dbPupilData.id, 'updated alias')
+
+    // review
+    const updatedPupilData = await pupilTestService.findPupilByUPN(dbPupilData.upn)
+    expect(updatedPupilData.isEdited).toBe(false)
+    expect(updatedPupilData.foreNameAlias).toBe('updated alias')
+  })
+
 })
