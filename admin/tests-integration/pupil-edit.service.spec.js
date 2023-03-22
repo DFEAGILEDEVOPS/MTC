@@ -271,5 +271,4 @@ describe('pupilEditService', () => {
     expect(updatedPupilData.isEdited).toBe(false)
     expect(updatedPupilData.foreNameAlias).toBe('updated alias')
   })
-
 })
