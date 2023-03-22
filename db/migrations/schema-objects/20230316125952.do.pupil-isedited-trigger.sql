@@ -105,17 +105,3 @@ BEGIN
           DEALLOCATE db_deleted_cursor
       END
 END
-
-
-
-
-
-
-
-
-
-
-
-
-
-
