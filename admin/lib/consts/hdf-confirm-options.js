@@ -1,5 +1,5 @@
 module.exports = Object.freeze({
-  confirmAll: 'confirmAll',
-  confirmNone: 'confirmNone',
-  confirmNo: 'confirmNo'
+  confirmAll: 'YES',
+  confirmNone: 'NON',
+  confirmNo: 'NOC'
 })
