@@ -15,7 +15,7 @@ const settingService = require('./setting.service')
 const redisCacheService = require('../services/data-access/redis-cache.service')
 const redisKeyService = require('../services/redis-key.service')
 const { PupilFrozenService } = require('./pupil-frozen.service/pupil-frozen.service')
-const hdfConfirmOptions = require('lib/consts/hdf-confirm-options')
+
 /**
  * @typedef {Object} hdfPupil
  * @property {number} pupilId
@@ -115,7 +115,8 @@ headteacherDeclarationService.submitDeclaration = async (form, userId, schoolId,
     headTeacher: form.isHeadteacher === 'Y',
     jobTitle: form.jobTitle,
     fullName: [form.firstName, form.lastName].join(' '),
-    hdfStatusCode: form.confirm
+    hdfStatusCode: form.confirm,
+    noPupilsFurtherInfo: form.noPupilsFurtherInfo
   }
 
   return headteacherDeclarationDataService.sqlCreate(data)

@@ -15,7 +15,7 @@ describe('HDF confirm validator', function () {
       uniquePins: 'checked',
       staffConfirm: 'checked',
       disruptionConfirm: 'checked',
-      noConfirmInfo: undefined
+      noPupilsFurtherInfo: undefined
     }
   })
 
@@ -63,13 +63,13 @@ describe('HDF confirm validator', function () {
       })
 
       test('returns validationError object with no errors if the validation is successful', () => {
-        requestData.noConfirmInfo = 'the info'
+        requestData.noPupilsFurtherInfo = 'the info'
         const validationError = hdfConfirmValidator.validate(requestData)
         expect(validationError.hasError()).toBeFalsy()
       })
 
       test('returns validationError object with error if no info provided', () => {
-        requestData.noConfirmInfo = ''
+        requestData.noPupilsFurtherInfo = ''
         const validationError = hdfConfirmValidator.validate(requestData)
         expect(validationError.hasError()).toBe(true)
       })
@@ -82,7 +82,7 @@ describe('HDF confirm validator', function () {
         requestData.uniquePins = ''
         requestData.staffConfirm = ''
         requestData.disruptionConfirm = ''
-        requestData.noConfirmInfo = ''
+        requestData.noPupilsFurtherInfo = ''
       })
 
       test('returns validationError object with no errors', () => {

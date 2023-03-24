@@ -30,8 +30,8 @@
               <% } %>
                 <div class="govuk-form-group" id="confirm">
                     <div class="multiple-choice">
-                        <input class="govuk-radios__input" id="confirmAll" type="radio" role="radio" name="confirm" value="confirmAll" <%= formData['confirm'] === 'confirmAll' ? 'checked' : '' %>>
-                        <label for="confirmYes">
+                        <input class="govuk-radios__input" id="confirmAll" type="radio" role="radio" name="confirm" value="YES" <%= formData['confirm'] === 'YES' ? 'checked' : '' %>>
+                        <label for="confirmAll">
                             <p>I <strong>can confirm:</strong></p>
                             <a id="confirmBoxes"></a>
                         </label>
@@ -65,7 +65,7 @@
 
                 <div class="govuk-form-group">
                   <div class="multiple-choice">
-                      <input class="govuk-radios__input" id="confirmNone" type="radio" role="radio" name="confirm" value="confirmNone" <%= formData['confirm'] === 'confirmNone' ? 'checked' : '' %>>
+                      <input class="govuk-radios__input" id="confirmNone" type="radio" role="radio" name="confirm" value="NON" <%= formData['confirm'] === 'NON' ? 'checked' : '' %>>
                       <label class="govuk-label" for="confirmNone">
                           <p><strong>None of my pupils</strong> took the check, but all eligible pupils have been included within my pupil register, their details are correct and the correct ‘reason for not taking the check’ has been provided.</p>
                       </label>
@@ -78,11 +78,11 @@
                     <% } %>
                     <div class="multiple-choice">
                       <a id="noConfirmSection"></a>
-                        <input class="govuk-radios__input" id="confirmNo" type="radio" role="radio" name="confirm" value="confirmNo" <%= formData['confirm'] === 'confirmNo' ? 'checked' : '' %>>
+                        <input class="govuk-radios__input" id="confirmNo" type="radio" role="radio" name="confirm" value="NOC" <%= formData['confirm'] === 'NOC' ? 'checked' : '' %>>
                         <label class="govuk-label" for="confirmNo">
                             <p>I am <strong>unable to confirm</strong> the statements above and have reported this to the Standards and Testing Agency (STA).  Please provide further information in the free text box below:</p>
-                            <textarea id="noConfirmInfo" name="noConfirmInfo" class="govuk-textarea govuk-!-width-three-quarters" rows="3" maxlength="1000" aria-required="true"
-                            aria-label="Enter further information." spellcheck="false" autocorrect="off"><%= formData['noConfirmInfo'] && formData['noConfirmInfo'].trim() %></textarea>
+                            <textarea id="noPupilsFurtherInfo" name="noPupilsFurtherInfo" class="govuk-textarea govuk-!-width-three-quarters" rows="3" maxlength="1000" aria-required="true"
+                            aria-label="Enter further information." spellcheck="false" autocorrect="off"><%= formData['noPupilsFurtherInfo'] && formData['noPupilsFurtherInfo'].trim() %></textarea>
                         </label>
                         <div class="govuk-inset-text">
                             If you have not reported this to STA, please contact the national curriculum assessments helpline on 0300 303 3013 before submitting this declaration.  Failure to notify STA may result in a maladministration investigation.

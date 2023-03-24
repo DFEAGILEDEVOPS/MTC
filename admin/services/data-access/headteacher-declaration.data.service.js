@@ -17,7 +17,8 @@ headteacherDeclarationDataService.sqlCreate = async function (data) {
               ,[user_id]
               ,[checkWindow_id]
               ,[headTeacher]
-              ,[hdfStatus_id])
+              ,[hdfStatus_id]
+              ,[noPupilsFurtherInfo])
             VALUES (
               @signedDate,
               @jobTitle,
@@ -26,48 +27,54 @@ headteacherDeclarationDataService.sqlCreate = async function (data) {
               @user_id,
               @checkWindow_id,
               @headTeacher,
-              @hdfStatus_id)`
+              @hdfStatus_id,
+              @noPupilsFurtherInfo)`
   const params = [
-            {
-            name: 'signedDate',
-            value: data.signedDate,
-            type: TYPES.DateTimeOffset
-            },
-            {
-            name: 'jobTitle',
-            value: data.jobTitle,
-            type: TYPES.NVarChar
-            },
-            {
-            name: 'fullName',
-            value: data.fullName,
-            type: TYPES.NVarChar
-            },
-            {
-            name: 'school_id',
-            value: data.fullName,
-            type: TYPES.Int
-            },
-            {
-            name: 'user_id',
-            value: data.user_id,
-            type: TYPES.Int
-            },
-            {
-            name: 'checkWindow_id',
-            value: data.checkWindow_id,
-            type: TYPES.Int
-            },
-            {
-            name: 'headTeacher',
-            value: data.headTeacher,
-            type: TYPES.Bit
-            },
-            {
-            name: 'hdfStatusCode',
-            value: data.hdfStatusCode,
-            type: TYPES.Char
-            }
+    {
+      name: 'signedDate',
+      value: data.signedDate,
+      type: TYPES.DateTimeOffset
+    },
+    {
+      name: 'jobTitle',
+      value: data.jobTitle,
+      type: TYPES.NVarChar
+    },
+    {
+      name: 'fullName',
+      value: data.fullName,
+      type: TYPES.NVarChar
+    },
+    {
+      name: 'school_id',
+      value: data.school_id,
+      type: TYPES.Int
+    },
+    {
+      name: 'user_id',
+      value: data.user_id,
+      type: TYPES.Int
+    },
+    {
+      name: 'checkWindow_id',
+      value: data.checkWindow_id,
+      type: TYPES.Int
+    },
+    {
+      name: 'headTeacher',
+      value: data.headTeacher,
+      type: TYPES.Bit
+    },
+    {
+      name: 'hdfStatusCode',
+      value: data.hdfStatusCode,
+      type: TYPES.Char
+    },
+    {
+      name: 'noPupilsFurtherInfo',
+      value: data.noPupilsFurtherInfo,
+      type: TYPES.NVarChar(TYPES.MAX)
+    }
   ]
   return sqlService.query(sql, params)
 }

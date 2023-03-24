@@ -17,7 +17,7 @@ module.exports.validate = function (hdfConfirmData) {
     uniquePins,
     staffConfirm,
     disruptionConfirm,
-    noConfirmInfo
+    noPupilsFurtherInfo
   } = hdfConfirmData
 
   if (confirm === undefined) {
@@ -29,7 +29,7 @@ module.exports.validate = function (hdfConfirmData) {
     validationError.addError('confirmBoxes', hdfConfirmErrorMessages.confirmBoxes)
   }
 
-  if (confirm === confirmOptions.confirmNo && (noConfirmInfo === undefined | noConfirmInfo === '')) {
+  if (confirm === confirmOptions.confirmNo && (noPupilsFurtherInfo === undefined | noPupilsFurtherInfo === '')) {
     validationError.addError('noConfirmSection', hdfConfirmErrorMessages.noConfirmInfo)
   }
 
