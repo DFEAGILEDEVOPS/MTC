@@ -38,12 +38,13 @@ describe('sql.pool.service:integration', () => {
       sut.closePool(roles.teacher)
     })
     test('allows builder error to bubble up if role not supported', () => {
+      const unsupportedRoleName = 'sldkfj34t08rgey'
       try {
-        sut.createPool('void role')
+        sut.createPool(unsupportedRoleName)
         fail('error should have been thrown')
       } catch (error) {
         expect(error).toBeDefined()
-        expect(error.message).toEqual('role not supported')
+        expect(error.message).toEqual(`role '${unsupportedRoleName}' not yet supported in connection builder`)
       }
     })
   })
