@@ -7,4 +7,3 @@ IF NOT EXISTS(
         ALTER TABLE [mtc_admin].[hdf]
             ADD [noPupilsFurtherInfo] NVARCHAR(MAX) NULL;
     END
-`
