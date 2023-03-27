@@ -29,7 +29,7 @@ module.exports.validate = function (hdfConfirmData) {
     validationError.addError('confirmBoxes', hdfConfirmErrorMessages.confirmBoxes)
   }
 
-  if (confirm === confirmOptions.confirmNo && (noPupilsFurtherInfo === undefined | noPupilsFurtherInfo === '')) {
+  if (confirm === confirmOptions.confirmNo && (noPupilsFurtherInfo === undefined || noPupilsFurtherInfo === '')) {
     validationError.addError('noConfirmSection', hdfConfirmErrorMessages.noConfirmInfo)
   }
 

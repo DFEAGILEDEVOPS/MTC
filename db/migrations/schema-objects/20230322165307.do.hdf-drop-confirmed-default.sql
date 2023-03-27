@@ -15,12 +15,6 @@ SELECT object_id FROM sys.objects
             AND [name] LIKE '%confirmed%'
             AND type = 'D')
 
-PRINT OBJECT_ID(@defaultName)
-
-IF OBJECT_ID(@defaultName) IS NULL RETURN
-
 DECLARE @sql NVARCHAR(MAX)
 SELECT @sql = 'ALTER TABLE [mtc_admin].[hdf] DROP CONSTRAINT ' + @defaultName
 EXEC sp_executesql @sql
-
-ALTER TABLE [mtc_admin].[hdf] DROP COLUMN IF EXISTS [confirmed]

@@ -69,8 +69,14 @@ describe('HDF confirm validator', function () {
         expect(validationError.hasError()).toBe(false)
       })
 
-      test('returns validationError object with error if no info provided', () => {
+      test('returns validationError object with error if info is empty string', () => {
         requestData.noPupilsFurtherInfo = ''
+        const validationError = hdfConfirmValidator.validate(requestData)
+        expect(validationError.hasError()).toBe(true)
+      })
+
+      test('returns validationError object with error if info is undefined', () => {
+        requestData.noPupilsFurtherInfo = undefined
         const validationError = hdfConfirmValidator.validate(requestData)
         expect(validationError.hasError()).toBe(true)
       })
@@ -94,7 +100,7 @@ describe('HDF confirm validator', function () {
 
       test('returns validationError object with no errors', () => {
         const validationError = hdfConfirmValidator.validate(requestData)
-        expect(validationError.hasError()).toBeFalsy()
+        expect(validationError.hasError()).toBe(false)
       })
     })
   })
