@@ -5,5 +5,5 @@ IF NOT EXISTS(
                  AND col_name(object_ID, column_Id) = 'noPupilsFurtherInfo')
     BEGIN
         ALTER TABLE [mtc_admin].[hdf]
-            ADD [noPupilsFurtherInfo] NVARCHAR(MAX) NULL;
+            ADD [noPupilsFurtherInfo] NVARCHAR(1000) NULL;
     END

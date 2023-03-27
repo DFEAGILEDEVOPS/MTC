@@ -1,1 +1,1 @@
-DELETE FROM mtc_admin.hdfStatus
+DELETE FROM mtc_admin.hdfStatusLookup

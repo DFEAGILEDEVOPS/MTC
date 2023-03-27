@@ -60,16 +60,23 @@ describe('HDF confirm validator', function () {
         requestData.uniquePins = ''
         requestData.staffConfirm = ''
         requestData.disruptionConfirm = ''
+        requestData.noPupilsFurtherInfo = ''
       })
 
       test('returns validationError object with no errors if the validation is successful', () => {
         requestData.noPupilsFurtherInfo = 'the info'
         const validationError = hdfConfirmValidator.validate(requestData)
-        expect(validationError.hasError()).toBeFalsy()
+        expect(validationError.hasError()).toBe(false)
       })
 
       test('returns validationError object with error if no info provided', () => {
         requestData.noPupilsFurtherInfo = ''
+        const validationError = hdfConfirmValidator.validate(requestData)
+        expect(validationError.hasError()).toBe(true)
+      })
+
+      test('returns validationError object with error if info is too long', () => {
+        requestData.noPupilsFurtherInfo = 'x'.repeat(1001)
         const validationError = hdfConfirmValidator.validate(requestData)
         expect(validationError.hasError()).toBe(true)
       })

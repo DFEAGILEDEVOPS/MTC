@@ -17,5 +17,5 @@ IF NOT EXISTS(SELECT *
     BEGIN
         ALTER TABLE [mtc_admin].[hdf]
             ADD CONSTRAINT [FK_hdf_hdfStatus_id]
-                FOREIGN KEY (hdfStatus_id) REFERENCES [mtc_admin].[hdfStatus] (id);
+                FOREIGN KEY (hdfStatus_id) REFERENCES [mtc_admin].[hdfStatusLookup] (id);
     END

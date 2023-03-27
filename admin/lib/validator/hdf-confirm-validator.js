@@ -33,5 +33,9 @@ module.exports.validate = function (hdfConfirmData) {
     validationError.addError('noConfirmSection', hdfConfirmErrorMessages.noConfirmInfo)
   }
 
+  if (confirm === confirmOptions.confirmNo && (noPupilsFurtherInfo !== undefined && noPupilsFurtherInfo.length > 1000)) {
+    validationError.addError('noConfirmSection', hdfConfirmErrorMessages.noConfirmInfoLength)
+  }
+
   return validationError
 }
