@@ -232,6 +232,25 @@ export class PsReportDataService {
       return null
     }
     const sql = `
+        DECLARE @pupilId INT = (SELECT pupil_id FROM [mtc_admin].[check] WHERE id = @checkId);
+        DECLARE @checksLoggedInCount INT = (SELECT count(*) FROM mtc_admin.[check] where pupil_id = @pupilId AND pupilLoginDate IS NOT NULL);
+        DECLARE @restartReasonCode NVARCHAR(50) = NULL;
+
+        IF (@checksLoggedInCount > 1)
+          BEGIN
+            SET @restartReasonCode = (SELECT TOP 1
+                                    rrl.code
+                                  FROM
+                                    [mtc_admin].[pupilRestart] pr JOIN [mtc_admin].[restartReasonLookup] rrl ON (pr.restartReasonLookup_id = rrl.id)
+                                  WHERE
+                                    pr.pupil_id = @pupilId
+                                  AND
+                                    pr.isDeleted = 0
+                                  ORDER BY
+                                    pr.id DESC) -- grab the latest undeleted restart reason for the pupil
+          END
+
+
         SELECT
             c.id,
             c.checkCode,
@@ -246,12 +265,13 @@ export class PsReportDataService {
             c.pupilLoginDate,
             c.pupil_id as pupilId,
             c.received,
-            rr.code as restartReason,
-            (select count(*) from mtc_admin.pupilRestart where pupil_id = c.pupil_id and isDeleted = 0) as restartNumber
+            @restartReasonCode as restartReasonCode,
+            CASE
+              WHEN @checksLoggedInCount > 0 THEN @checksLoggedInCount - 1
+              WHEN @checksLoggedInCount = 0 THEN @checksLoggedInCount
+            END as restartNumber
           FROM mtc_admin.[check] c
                LEFT JOIN mtc_results.checkResult cr ON (c.id = cr.check_id)
-               LEFT JOIN mtc_admin.pupilRestart pr ON (c.id = pr.check_id)
-               LEFT JOIN mtc_admin.restartReasonLookUp rr ON (pr.restartReasonLookUp_Id = rr.id)
          WHERE c.id = @checkId
     `
 
