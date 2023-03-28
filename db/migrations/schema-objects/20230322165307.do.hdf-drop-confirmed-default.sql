@@ -12,7 +12,7 @@ SELECT object_id FROM sys.objects
 
  DECLARE @defaultName nvarchar(max) = (SELECT [name] FROM sys.objects
          WHERE parent_object_id = @hdfTableId
-            AND [name] LIKE '%confirmed%'
+            AND [name] LIKE '%confirm%'
             AND type = 'D')
 
 DECLARE @sql NVARCHAR(MAX)
