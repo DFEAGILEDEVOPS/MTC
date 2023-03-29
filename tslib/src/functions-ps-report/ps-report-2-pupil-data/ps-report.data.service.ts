@@ -233,7 +233,7 @@ export class PsReportDataService {
     }
     const sql = `
         DECLARE @pupilId INT = (SELECT pupil_id FROM [mtc_admin].[check] WHERE id = @checkId);
-        DECLARE @checksLoggedInCount INT = (SELECT count(*) FROM mtc_admin.[check] where pupil_id = @pupilId AND pupilLoginDate IS NOT NULL);
+        DECLARE @checksLoggedInCount INT = (SELECT count(*) FROM mtc_admin.[check] where isLiveCheck = 1 AND pupil_id = @pupilId AND pupilLoginDate IS NOT NULL);
         DECLARE @restartReasonCode NVARCHAR(50) = NULL;
 
         IF (@checksLoggedInCount > 1)
