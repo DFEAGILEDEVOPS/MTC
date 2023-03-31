@@ -29,7 +29,7 @@ BEGIN
     DECLARE @lastModifiedBy_userId int
     DECLARE db_cursor CURSOR FOR
       SELECT i.id, i.lastModifiedBy_userId
-      FROM inserted i JOIN deleted d ON (i.id = d.id);
+      FROM inserted i LEFT JOIN deleted d ON (i.id = d.id);
     DECLARE db_deleted_cursor CURSOR FOR
         SELECT d.id, d.lastModifiedBy_userId
         FROM deleted d;
@@ -46,35 +46,35 @@ BEGIN
 	          -- incorporate updatedAt trigger logic, to avoid duplicate audit entries
 	          IF @auditOperationTypeLookupId = 2
 	            BEGIN
-	              UPDATE [mtc_admin].[pupil] SET updatedAt = @updatedTimestamp WHERE id = @pupilId
-	              SET @newDataJson = JSON_MODIFY(@newDataJson, '$.updatedAt', CAST(@updatedTimestamp AS NVARCHAR));
+                    UPDATE [mtc_admin].[pupil] SET updatedAt = @updatedTimestamp WHERE id = @pupilId
+                    SET @newDataJson = JSON_MODIFY(@newDataJson, '$.updatedAt', CAST(@updatedTimestamp AS NVARCHAR));
 
-                -- Set the isEdited flag if one of the core fields changed
-                UPDATE [mtc_admin].[pupil]
-                SET isEdited = 1
-                FROM inserted i join deleted d ON (i.id = d.id)
-                WHERE
-                  pupil.id = i.id
-                AND
-                  (i.foreName <> d.foreName
-                OR
-                  i.middleNames <> d.middleNames
-                OR
-                  i.lastName <> d.lastName
-                OR
-                  i.upn <> d.upn
-                OR
-                  i.gender <> d.gender
-                OR
-                  CAST(i.dateOfBirth as DATE) <> CAST(d.dateOfBirth as DATE)
-                );
+                    -- Set the isEdited flag if one of the core fields changed
+                    UPDATE [mtc_admin].[pupil]
+                    SET isEdited = 1
+                    FROM inserted i join deleted d ON (i.id = d.id)
+                    WHERE
+                    pupil.id = i.id
+                    AND
+                    (i.foreName <> d.foreName
+                    OR
+                    i.middleNames <> d.middleNames
+                    OR
+                    i.lastName <> d.lastName
+                    OR
+                    i.upn <> d.upn
+                    OR
+                    i.gender <> d.gender
+                    OR
+                    CAST(i.dateOfBirth as DATE) <> CAST(d.dateOfBirth as DATE)
+                    );
+
+                     -- read the isEdited value back so we can modify the audit data.
+                    SET @isEdited = (SELECT isEdited FROM [mtc_admin].[pupil] WHERE id = @pupilId);
+                    SET @newDataJson = JSON_MODIFY(@newDataJson, '$.isEdited', @isEdited);
 	            END
 
-              -- read the isEdited value back so we can modify the audit data.
-              SET @isEdited = (SELECT isEdited FROM [mtc_admin].[pupil] WHERE id = @pupilId);
-              SET @newDataJson = JSON_MODIFY(@newDataJson, '$.isEdited', @isEdited);
-
-	          -- do insert into pupil audit
+	          -- do insert into pupil audit for insert and update
 	          INSERT INTO [mtc_admin].[pupilAudit]
 	            (auditOperationTypeLookup_id, newData, pupil_id, operationBy_userId, sqlUserIdentifier)
 	          VALUES (@auditOperationTypeLookupId, @newDataJson, @pupilId, @lastModifiedBy_userId, SUSER_SNAME())
@@ -82,7 +82,7 @@ BEGIN
 	          FETCH NEXT FROM db_cursor INTO @pupilId, @lastModifiedBy_userId
 	        END
 
-	      CLOSE db_cursor
+	    CLOSE db_cursor
 	    DEALLOCATE db_cursor
 	END
 
