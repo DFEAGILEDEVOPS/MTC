@@ -21,6 +21,7 @@ const { validate } = require('uuid')
 const { PupilAnnulmentService } = require('../services/service-manager/pupil-annulment/pupil-annulment.service')
 const { TypeOfEstablishmentService } = require('../services/type-of-establishment-service/type-of-establishment-service')
 const { ServiceManagerSchoolService } = require('../services/service-manager/school/school.service')
+const { PupilFreezeService } = require('../services/service-manager/pupil-freeze/pupil-freeze.service')
 
 const controller = {
   /**
@@ -843,6 +844,40 @@ const controller = {
     }
     req.flash('info', `Pupil moved to ${school.name} (${school.urn})`)
     res.redirect(`/service-manager/pupil-summary/${encodeURIComponent(pupilUrlSlug)}`)
+  },
+
+  getPupilFreeze: async function getPupilFreeze (req, res, next, validationError = new ValidationError()) {
+    const urlSlug = req.params.slug
+    res.locals.pageTitle = 'Freeze Pupil'
+    const pupil = await ServiceManagerPupilService.getPupilDetailsByUrlSlug(urlSlug)
+    req.breadcrumbs('Pupil Summary', `/service-manager/pupil-summary/${encodeURIComponent(urlSlug).toLowerCase()}`)
+    req.breadcrumbs(res.locals.pageTitle)
+    res.render('service-manager/pupil/freeze', {
+      breadcrumbs: req.breadcrumbs(),
+      error: validationError,
+      pupil
+    })
+  },
+
+  postPupilFreeze: async function postPupilFreeze (req, res, next) {
+    const freezePupilErrorHandler = (req, res, next, errorMsg = 'No matching pupil found with specified UPN') => {
+      const error = new ValidationError()
+      error.addError('upn', errorMsg)
+      return controller.getPupilFreeze(req, res, next, error)
+    }
+    try {
+      const confirmedUpn = req.body.upn
+      if (confirmedUpn === undefined || confirmedUpn === '') {
+        return freezePupilErrorHandler(req, res, next, 'No upn provided')
+      }
+      const urlSlug = req.params.slug
+      const pupil = await ServiceManagerPupilService.getPupilDetailsByUrlSlug(urlSlug)
+      if (pupil.upn !== confirmedUpn) return freezePupilErrorHandler(req, res, next, 'UPN does not match pupil')
+      await PupilFreezeService.applyFreeze(urlSlug, req.user.id, pupil.schoolId)
+      return res.redirect(`/service-manager/pupil-summary/${encodeURIComponent(urlSlug).toLowerCase()}`)
+    } catch (error) {
+      return freezePupilErrorHandler(req, res, next, error.message)
+    }
   }
 }
 
