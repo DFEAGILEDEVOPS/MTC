@@ -166,6 +166,16 @@ router.post('/pupil/move/:slug',
   serviceManagerController.postPupilMove
 )
 
+router.get('/pupil/freeze/:slug',
+  isAuthenticated([roles.serviceManager]),
+  serviceManagerController.getPupilFreeze
+)
+
+router.post('/pupil/freeze/:slug',
+  isAuthenticated([roles.serviceManager]),
+  serviceManagerController.postPupilFreeze
+)
+
 router.get('/pupil-search',
   isAuthenticated([roles.serviceManager]),
   serviceManagerController.getPupilSearch
