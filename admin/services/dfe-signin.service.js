@@ -102,6 +102,9 @@ const service = {
 
     if (schoolRecord) {
       logonEvent.school_id = schoolRecord.id
+      logonEvent.urn = dfeUser.organisation.urn
+      logonEvent.mtcRole = dfeUser.role
+      logonEvent.dfeRole = dfeRole
     }
 
     await adminLogonEventDataService.sqlCreate(logonEvent)
