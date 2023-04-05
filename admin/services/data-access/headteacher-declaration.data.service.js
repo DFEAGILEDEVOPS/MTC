@@ -7,8 +7,8 @@ const headteacherDeclarationDataService = {}
 
 headteacherDeclarationDataService.sqlCreate = async function (data) {
   const sql = `
-            DECLARE @hdfStatus_id int
-            SELECT @hdfStatus_id = id FROM mtc_admin.hdfStatus WHERE hdfStatusCode = @hdfStatusCode
+            DECLARE @hdfStatusLookup_id int
+            SELECT @hdfStatusLookup_id = id FROM mtc_admin.hdfStatusLookup WHERE hdfStatusCode = @hdfStatusCode
             INSERT INTO mtc_admin.[hdf] (
               [signedDate]
               ,[jobTitle]
@@ -27,7 +27,7 @@ headteacherDeclarationDataService.sqlCreate = async function (data) {
               @user_id,
               @checkWindow_id,
               @headTeacher,
-              @hdfStatus_id,
+              @hdfStatusLookup_id,
               @noPupilsFurtherInfo)`
   const params = [
     {
