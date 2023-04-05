@@ -1658,13 +1658,14 @@ describe('service manager controller:', () => {
     })
 
     test('handles unexpected errors by showing the form page again', async () => {
-      jest.spyOn(ServiceManagerPupilService, 'getPupilDetailsByUrlSlug').mockRejectedValue(new Error('mock error'))
+      // Careful here.  This call (getPupilDetailsByUrlSlug) is also used in the GET handler, which we want to succeed in this case.
+      jest.spyOn(ServiceManagerPupilService, 'getPupilDetailsByUrlSlug').mockRejectedValueOnce(new Error('mock error'))
       const req = getReq(baseReq)
       const res = getRes()
       await controller.postPupilFreeze(req, res, next)
       expect(controller.getPupilFreeze).toHaveBeenCalled()
       const validationErrorArg = controller.getPupilFreeze.mock.calls[0][3]
-      expect(validationErrorArg.errors.upn).toBe('UPN does not match pupil')
+      expect(validationErrorArg.errors.upn).toBe('mock error')
     })
   })
 })
