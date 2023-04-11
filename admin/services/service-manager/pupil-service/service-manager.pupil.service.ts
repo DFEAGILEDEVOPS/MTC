@@ -35,7 +35,7 @@ export class ServiceManagerPupilService {
         dfeNumber: r.dfeNumber,
         upn: r.upn,
         schoolId: r.schoolId,
-        frozen: r.frozen
+        isFrozen: r.frozen
       }
     })
   }
@@ -64,7 +64,7 @@ export class ServiceManagerPupilService {
       status,
       schoolId: p[0].schoolId,
       isAnnulled,
-      frozen: p[0].frozen
+      isFrozen: p[0].frozen
     }
   }
 
@@ -111,7 +111,7 @@ export interface ServiceManagerPupilSearchResult {
   dfeNumber: number
   upn: string
   schoolId: number
-  frozen: boolean
+  isFrozen: boolean
 }
 
 export interface ServiceManagerPupilDetails {
@@ -120,6 +120,7 @@ export interface ServiceManagerPupilDetails {
   firstName: string
   id: number
   isAnnulled: boolean
+  isFrozen: boolean
   lastName: string
   middleNames: string
   schoolId: number
@@ -128,5 +129,4 @@ export interface ServiceManagerPupilDetails {
   status: string
   upn: string
   urlSlug: string
-  frozen: boolean
 }

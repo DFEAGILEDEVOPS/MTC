@@ -17,4 +17,18 @@ export class PupilFreezeService {
     await redisCacheService.drop(schoolResultsKey)
     await PupilFreezeDataService.setFreezeFlag(pupilUrlSlug, serviceManagerUserId)
   }
+
+  static async applyThaw (pupilUrlSlug: string, serviceManagerUserId: number, pupilSchoolId: number): Promise<void> {
+    if (pupilUrlSlug === undefined) {
+      throw new Error('pupilUrlSlug is required')
+    }
+    if (!validateUuid(pupilUrlSlug)) {
+      throw new Error('a valid uuid is required for pupilUrlSlug')
+    }
+    const pupilRegisterRedisKey = redisKeyService.getPupilRegisterViewDataKey(pupilSchoolId)
+    await redisCacheService.drop(pupilRegisterRedisKey)
+    const schoolResultsKey = redisKeyService.getSchoolResultsKey(pupilSchoolId)
+    await redisCacheService.drop(schoolResultsKey)
+    await PupilFreezeDataService.unsetFreezeFlag(pupilUrlSlug, serviceManagerUserId)
+  }
 }
