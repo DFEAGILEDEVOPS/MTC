@@ -878,7 +878,42 @@ const controller = {
     } catch (error) {
       return freezePupilErrorHandler(req, res, next, error.message)
     }
+  },
+
+  getPupilThaw: async function getPupilThaw (req, res, next, validationError = new ValidationError()) {
+    const urlSlug = req.params.slug
+    res.locals.pageTitle = 'Thaw Pupil'
+    const pupil = await ServiceManagerPupilService.getPupilDetailsByUrlSlug(urlSlug)
+    req.breadcrumbs('Pupil Summary', `/service-manager/pupil-summary/${encodeURIComponent(urlSlug).toLowerCase()}`)
+    req.breadcrumbs(res.locals.pageTitle)
+    res.render('service-manager/pupil/thaw', {
+      breadcrumbs: req.breadcrumbs(),
+      error: validationError,
+      pupil
+    })
+  },
+
+  postPupilThaw: async function postPupilThaw (req, res, next) {
+    const thawPupilErrorHandler = (req, res, next, errorMsg = 'No matching pupil found with specified UPN') => {
+      const error = new ValidationError()
+      error.addError('upn', errorMsg)
+      return controller.getPupilThaw(req, res, next, error)
+    }
+    try {
+      const confirmedUpn = req.body.upn
+      if (confirmedUpn === undefined || confirmedUpn === '') {
+        return thawPupilErrorHandler(req, res, next, 'No upn provided')
+      }
+      const urlSlug = req.params.slug
+      const pupil = await ServiceManagerPupilService.getPupilDetailsByUrlSlug(urlSlug)
+      if (pupil.upn !== confirmedUpn) return thawPupilErrorHandler(req, res, next, 'UPN does not match pupil')
+      await PupilFreezeService.applyThaw(urlSlug, req.user.id, pupil.schoolId)
+      return res.redirect(`/service-manager/pupil-summary/${encodeURIComponent(urlSlug).toLowerCase()}`)
+    } catch (error) {
+      return thawPupilErrorHandler(req, res, next, error.message)
+    }
   }
+
 }
 
 module.exports = controller

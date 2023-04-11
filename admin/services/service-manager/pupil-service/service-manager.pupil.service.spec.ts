@@ -146,7 +146,7 @@ describe('service manager pupil service', () => {
       expect(actual.id).toStrictEqual(expected.id)
       expect(actual.upn).toStrictEqual(expected.upn)
       expect(actual.schoolId).toStrictEqual(expected.schoolId)
-      expect(actual.frozen).toBe(false)
+      expect(actual.isFrozen).toBe(false)
     })
 
     test('should return valid status when pupil found', async () => {
@@ -187,7 +187,7 @@ describe('service manager pupil service', () => {
       status: 'Not Started',
       upn: 'G10000000',
       urlSlug: 'slug',
-      frozen: false
+      isFrozen: false
     }
     const school: ServiceManagerSchoolResult = {
       id: 100,
