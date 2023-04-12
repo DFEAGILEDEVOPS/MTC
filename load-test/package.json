@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "@azure/data-tables": "^13.1.1",
-    "@azure/storage-queue": "^12.7.0",
+    "@azure/storage-queue": "^12.12.0",
     "artillery": "^2.0.0-14",
     "axios": "^0.27.2",
     "bcryptjs": "^2.4.3",
