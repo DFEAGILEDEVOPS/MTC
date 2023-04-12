@@ -31,12 +31,14 @@ export class ReportLine {
     Surname: '',
     ReasonNotTakingCheck: null,
     PupilStatus: null,
+    ImportedFromCensus: false,
 
     // School fields
     SchoolName: '',
     Estab: null,
     SchoolURN: null,
     LAnum: null,
+    ToECode: null,
 
     // Check Settings
     QDisplayTime: null,
@@ -334,6 +336,8 @@ export class ReportLine {
     this._report.BrowserType = this.getBrowser()
     this._report.DeviceID = this.device?.deviceId ?? null
     this._report.PupilStatus = this.getPupilStatus()
+    this._report.ImportedFromCensus = this.pupil.jobId !== null
+    this._report.ToECode = this.school.typeOfEstablishmentCode
 
     // Question data
     this.answers?.forEach(answer => {
@@ -389,7 +393,9 @@ export class ReportLine {
       FormMark: this._report.FormMark,
       BrowserType: this._report.BrowserType,
       DeviceID: this._report.DeviceID,
-      answers: this._report.answers.map(o => o.toObject())
+      answers: this._report.answers.map(o => o.toObject()),
+      ImportedFromCensus: this._report.ImportedFromCensus,
+      ToECode: this._report.ToECode
     }
   }
 

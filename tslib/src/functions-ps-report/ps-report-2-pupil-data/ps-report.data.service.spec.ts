@@ -23,7 +23,8 @@ describe('ps-report.data.service', () => {
       laCode: 999,
       name: 'test school',
       slug: 'abc',
-      urn: 0
+      urn: 0,
+      typeOfEstablishmentCode: 2 // This is the mtc_admin.typeOfEstablishmentLookup(code) value, not the FK ID.
     }
     sut = new PsReportDataService(logger, mockSqlService)
   })
