@@ -27,6 +27,8 @@ export interface PsychometricReport {
   TimeStart: moment.Moment | null
   TimeComplete: moment.Moment | null
   TimeTaken: number | null
+  ToECode: number | null
+  ImportedFromCensus: boolean
 
   // Questions
 

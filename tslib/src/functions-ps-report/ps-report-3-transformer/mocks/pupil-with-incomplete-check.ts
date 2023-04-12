@@ -8,6 +8,7 @@ export const pupil: Pupil = {
   forename: 'abc',
   gender: 'M',
   id: 3,
+  jobId: 1,
   lastname: 'def',
   notTakingCheckReason: null,
   notTakingCheckCode: null,

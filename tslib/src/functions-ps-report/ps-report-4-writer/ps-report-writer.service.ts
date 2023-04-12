@@ -59,8 +59,11 @@ export class PsReportWriterService {
       { name: 'testDate', value: data.TestDate?.toDate(), type: TYPES.Date },
       { name: 'timeStart', value: data.TimeStart?.toDate(), type: TYPES.DateTimeOffset(3) },
       { name: 'timeComplete', value: data.TimeComplete?.toDate(), type: TYPES.DateTimeOffset(3) },
-      { name: 'timeTaken', value: data.TimeTaken, type: TYPES.Decimal(9, 3) }
+      { name: 'timeTaken', value: data.TimeTaken, type: TYPES.Decimal(9, 3) },
+      { name: 'toeCode', value: data.ToECode, type: TYPES.Int },
+      { name: 'importedFromCensus', value: data.ImportedFromCensus, type: TYPES.Bit }
     ]
+
     for (let i = 1; i <= 25; i++) {
       /* eslint-disable no-multi-spaces */
       params.push({ name: `q${i}Id`,              value: data.answers[i - 1]?.id,                            type: TYPES.NVarChar(16) })
@@ -102,7 +105,7 @@ export class PsReportWriterService {
               PauseLength = @pauseLength, AccessArr = @accessArr, RestartReason = @restartReason, RestartNumber = @restartNumber,
               ReasonNotTakingCheck = @ReasonNotTakingCheck, PupilStatus = @pupilStatus, DeviceId = @deviceId, BrowserType = @browserType, SchoolName = @schoolName, Estab = @estab,
               SchoolURN = @schoolURN, LANum = @laNum, AttemptId = @attemptId, FormID = @formId, TestDate = @testDate, TimeStart = @timeStart,
-              TimeComplete = @timeComplete, TimeTaken = @timeTaken,
+              TimeComplete = @timeComplete, TimeTaken = @timeTaken, ToECode = @toeCode, ImportedFromCensus = @importedFromCensus,
 
               ${updateAnswers.join(',\n')}
 
@@ -113,7 +116,8 @@ export class PsReportWriterService {
           INSERT into [mtc_results].[psychometricReport] (PupilId, DOB, Gender, PupilUPN, Forename, Surname, FormMark, QDisplayTime, PauseLength,
                                                         AccessArr, RestartReason, RestartNumber, ReasonNotTakingCheck, PupilStatus,
                                                         DeviceId, BrowserType, SchoolName, Estab, SchoolURN,
-                                                        LANum, AttemptId, FormID, TestDate, TimeStart, TimeComplete, TimeTaken,
+                                                        LANum, AttemptId, FormID, TestDate, TimeStart, TimeComplete, TimeTaken, ToECode,
+                                                        ImportedFromCensus,
                                                         Q1ID, Q1Response, Q1InputMethods, Q1K, Q1Sco, Q1ResponseTime, Q1TimeOut,
                                                         Q1TimeOutResponse, Q1TimeOutSco, Q1tLoad, Q1tFirstKey, Q1tLastKey, Q1OverallTime,
                                                         Q1RecallTime, Q1ReaderStart, Q1ReaderEnd,
@@ -207,6 +211,8 @@ export class PsReportWriterService {
                 @timeStart,
                 @timeComplete,
                 @timeTaken,
+                @toeCode,
+                @importedFromCensus,
 
                 @q1Id,
                 @q1response,
