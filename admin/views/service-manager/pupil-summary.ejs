@@ -23,7 +23,7 @@
               <li>
               <% if (pupil.isAnnulled) { %>
                 <a class="govuk-link" href="/service-manager/annul-pupil-undo/<%=pupil.urlSlug %>" >Undo Annulment</a>
-                <% } else if (!pupil.isFrozen) { %>
+                <% } else { %>
                   <a class="govuk-link" href="/service-manager/annul-pupil/<%=pupil.urlSlug %>" >Annul this pupils results</a>
               <% } %>
               </li>
