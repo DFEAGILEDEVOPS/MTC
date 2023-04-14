@@ -88,10 +88,13 @@ headteacherDeclarationDataService.sqlCreate = async function (data) {
 headteacherDeclarationDataService.sqlFindLatestHdfBySchoolId = async (schoolId) => {
   const sql = `
   SELECT TOP 1
-    h.*, c.checkEndDate
+    h.fullName, h.headTeacher, h.jobTitle,
+	  hsl.hdfStatusCode, c.checkEndDate,
+    h.signedDate
   FROM [mtc_admin].[hdf] h
-  INNER JOIN checkWindow c ON h.checkWindow_id = c.id
-  WHERE school_id = @schoolId
+  INNER JOIN mtc_admin.hdfStatusLookup hsl ON hsl.id = h.hdfStatus_id
+  INNER JOIN mtc_admin.checkWindow c ON h.checkWindow_id = c.id
+  WHERE h.school_id = @schoolId
   ORDER BY signedDate DESC`
   const paramSchoolId = { name: 'schoolId', type: TYPES.Int, value: schoolId }
   const rows = await sqlService.query(sql, [paramSchoolId])
