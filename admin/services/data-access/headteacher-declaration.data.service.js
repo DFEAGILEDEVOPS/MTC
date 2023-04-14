@@ -89,7 +89,7 @@ headteacherDeclarationDataService.sqlFindLatestHdfBySchoolId = async (schoolId) 
   const sql = `
   SELECT TOP 1
     h.fullName, h.headTeacher, h.jobTitle,
-	  hsl.hdfStatusCode, c.checkEndDate,
+    hsl.hdfStatusCode, c.checkEndDate,
     h.signedDate
   FROM [mtc_admin].[hdf] h
   INNER JOIN mtc_admin.hdfStatusLookup hsl ON hsl.id = h.hdfStatus_id
