@@ -31,7 +31,7 @@ export class PsReportService {
         const result: PupilResult = await this.dataService.getPupilData(pupil, school)
         // this.logger.verbose(`${functionName}: pupil result retrieved: ${JSON.stringify(result, null, 4)}`)
         this.outputBinding.push(result)
-      } catch (error) {
+      } catch (error: any) {
         // Ignore the error on the particular pupil and carry on so it reports on the rest of the school
         this.logger.error(`ERROR: Failed to retrieve pupil data for pupil ${pupil.slug} in school ${schoolUuid}
         Error was ${error.message}`)
