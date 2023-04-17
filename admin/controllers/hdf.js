@@ -202,6 +202,7 @@ controller.getConfirmSubmit = async function getConfirmSubmit (req, res, next) {
       return res.render('hdf/declaration-form', {
         hdfEligibility,
         formData: req.body,
+        checkEndDate: dateService.formatDayAndDate(checkWindowData.checkEndDate),
         error: new ValidationError(),
         breadcrumbs: req.breadcrumbs()
       })
@@ -250,10 +251,11 @@ controller.postConfirmSubmit = async function postConfirmSubmit (req, res, next)
 controller.getDeclarationForm = async function getDeclarationForm (req, res, next) {
   res.locals.pageTitle = "Headteacher's declaration form"
   req.breadcrumbs(res.locals.pageTitle)
-
+  let checkWindowData
   let hdfEligibility
+
   try {
-    const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
+    checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
     const availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.schoolId, checkWindowData, req.user.timezone)
     const hdfSubmitted = await headteacherDeclarationService.isHdfSubmittedForCurrentCheck(req.user.schoolId, checkWindowData && checkWindowData.id)
     if (!availabilityData.hdfAvailable) {
@@ -273,6 +275,7 @@ controller.getDeclarationForm = async function getDeclarationForm (req, res, nex
   return res.render('hdf/declaration-form', {
     hdfEligibility,
     formData: req.body,
+    checkEndDate: dateService.formatDayAndDate(checkWindowData.checkEndDate),
     error: new ValidationError(),
     breadcrumbs: req.breadcrumbs()
   })
@@ -297,6 +300,7 @@ controller.postDeclarationForm = async function postDeclarationForm (req, res, n
     return res.render('hdf/declaration-form', {
       hdfEligibility,
       formData: form,
+      checkEndDate: dateService.formatDayAndDate(checkWindowData.checkEndDate),
       error: validationError,
       breadcrumbs: req.breadcrumbs()
     })
