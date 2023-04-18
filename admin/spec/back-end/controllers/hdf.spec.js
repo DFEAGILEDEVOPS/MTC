@@ -13,6 +13,7 @@ const attendanceCodeService = require('../../../services/attendance.service')
 const hdfValidator = require('../../../lib/validator/hdf-validator')
 const hdfConfirmValidator = require('../../../lib/validator/hdf-confirm-validator')
 const ValidationError = require('../../../lib/validation-error')
+const dateService = require('../../../services/date.service')
 
 describe('attendance controller:', () => {
   let next
@@ -231,7 +232,9 @@ describe('attendance controller:', () => {
     test('renders declaration form page to display unavailable content when hdf eligibility is false ', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockResolvedValue({ checkEndDate: 'value' })
+      const checkEndDate = new Date('2001-01-01')
+      const formattedCheckEndDate = dateService.formatDayAndDate(checkEndDate)
+      jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockResolvedValue({ checkEndDate })
       jest.spyOn(headteacherDeclarationService, 'getEligibilityForSchool').mockResolvedValue(false)
       jest.spyOn(businessAvailabilityService, 'getAvailabilityData').mockImplementation()
       jest.spyOn(res, 'render').mockImplementation()
@@ -240,6 +243,7 @@ describe('attendance controller:', () => {
         {
           hdfEligibility: false,
           formData: {},
+          checkEndDate: formattedCheckEndDate,
           error: new ValidationError(),
           breadcrumbs: undefined
         })

@@ -39,12 +39,13 @@ checkWindowV2Service.getCheckWindow = async (urlSlug) => {
  * @property {Date} familiarisationCheckEndDate
  */
 
+let cachedActiveCheckWindow
+let cachedActiveCheckWindowExpiresAt
+
 /**
  * Get active check window
  * @returns {Promise<CheckWindowData>} Check window object
  */
-let cachedActiveCheckWindow
-let cachedActiveCheckWindowExpiresAt
 checkWindowV2Service.getActiveCheckWindow = async (cacheBust = false) => {
   const now = Date.now()
   const nodeEnv = process.env.NODE_ENV
