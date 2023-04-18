@@ -2,6 +2,7 @@
 
 const ValidationError = require('../validation-error')
 const hdfConfirmErrorMessages = require('../errors/hdf-confirm')
+const confirmOptions = require('../../lib/consts/hdf-confirm-options')
 
 /**
  * Validates HDF confirmation data
@@ -15,12 +16,25 @@ module.exports.validate = function (hdfConfirmData) {
     pupilDetails,
     uniquePins,
     staffConfirm,
-    disruptionConfirm
+    disruptionConfirm,
+    noPupilsFurtherInfo
   } = hdfConfirmData
 
-  if (confirm === 'Y' && (pupilDetails !== 'checked' || uniquePins !== 'checked' ||
+  if (confirm === undefined) {
+    validationError.addError('noSelection', hdfConfirmErrorMessages.noSelection)
+  }
+
+  if (confirm === confirmOptions.confirmAll && (pupilDetails !== 'checked' || uniquePins !== 'checked' ||
     staffConfirm !== 'checked' || disruptionConfirm !== 'checked')) {
     validationError.addError('confirmBoxes', hdfConfirmErrorMessages.confirmBoxes)
+  }
+
+  if (confirm === confirmOptions.confirmNo && (noPupilsFurtherInfo === undefined || noPupilsFurtherInfo === '')) {
+    validationError.addError('noConfirmSection', hdfConfirmErrorMessages.noConfirmInfo)
+  }
+
+  if (confirm === confirmOptions.confirmNo && (noPupilsFurtherInfo !== undefined && noPupilsFurtherInfo.length > 1000)) {
+    validationError.addError('noConfirmSection', hdfConfirmErrorMessages.noConfirmInfoLength)
   }
 
   return validationError
