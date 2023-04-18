@@ -14,9 +14,9 @@ describe('headteacher-declaration.data.service', () => {
 
   describe('#sqlCreate', () => {
     test('calls sqlService', async () => {
-      jest.spyOn(sqlService, 'create').mockResolvedValue(sqlMockResponse)
+      jest.spyOn(sqlService, 'query').mockResolvedValue(sqlMockResponse)
       await service.sqlCreate({ prop: 'value' })
-      expect(sqlService.create).toHaveBeenCalled()
+      expect(sqlService.query).toHaveBeenCalled()
     })
   })
 
