@@ -3,17 +3,19 @@
 /* global beforeEach, describe, test, expect */
 
 const hdfConfirmValidator = require('../../../../lib/validator/hdf-confirm-validator')
+const hdfConfirmOptions = require('../../../../lib/consts/hdf-confirm-options')
 
 describe('HDF confirm validator', function () {
   let requestData
 
   beforeEach(() => {
     requestData = {
-      confirm: 'Y',
+      confirm: hdfConfirmOptions.confirmAll,
       pupilDetails: 'checked',
       uniquePins: 'checked',
       staffConfirm: 'checked',
-      disruptionConfirm: 'checked'
+      disruptionConfirm: 'checked',
+      noPupilsFurtherInfo: undefined
     }
   })
 
@@ -53,16 +55,52 @@ describe('HDF confirm validator', function () {
 
     describe('when not confirmed', () => {
       beforeEach(() => {
-        requestData.confirm = 'N'
+        requestData.confirm = hdfConfirmOptions.confirmNo
         requestData.pupilDetails = ''
         requestData.uniquePins = ''
         requestData.staffConfirm = ''
         requestData.disruptionConfirm = ''
+        requestData.noPupilsFurtherInfo = ''
       })
 
       test('returns validationError object with no errors if the validation is successful', () => {
+        requestData.noPupilsFurtherInfo = 'the info'
         const validationError = hdfConfirmValidator.validate(requestData)
-        expect(validationError.hasError()).toBeFalsy()
+        expect(validationError.hasError()).toBe(false)
+      })
+
+      test('returns validationError object with error if info is empty string', () => {
+        requestData.noPupilsFurtherInfo = ''
+        const validationError = hdfConfirmValidator.validate(requestData)
+        expect(validationError.hasError()).toBe(true)
+      })
+
+      test('returns validationError object with error if info is undefined', () => {
+        requestData.noPupilsFurtherInfo = undefined
+        const validationError = hdfConfirmValidator.validate(requestData)
+        expect(validationError.hasError()).toBe(true)
+      })
+
+      test('returns validationError object with error if info is too long', () => {
+        requestData.noPupilsFurtherInfo = 'x'.repeat(1001)
+        const validationError = hdfConfirmValidator.validate(requestData)
+        expect(validationError.hasError()).toBe(true)
+      })
+    })
+
+    describe('when no pupils taking check', () => {
+      beforeEach(() => {
+        requestData.confirm = hdfConfirmOptions.confirmNone
+        requestData.pupilDetails = ''
+        requestData.uniquePins = ''
+        requestData.staffConfirm = ''
+        requestData.disruptionConfirm = ''
+        requestData.noPupilsFurtherInfo = ''
+      })
+
+      test('returns validationError object with no errors', () => {
+        const validationError = hdfConfirmValidator.validate(requestData)
+        expect(validationError.hasError()).toBe(false)
       })
     })
   })
