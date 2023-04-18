@@ -39,10 +39,10 @@ export class IdleModalComponent implements AfterViewInit, OnDestroy {
       }
     }
 
-    ngOnDestroy(): void {
+    async ngOnDestroy(): Promise<void> {
 
       if (this.questionService.getConfig().questionReader) {
-        this.speechService.cancel();
+        await this.speechService.cancel();
 
         this.elRef.nativeElement.removeEventListener('focus', this.speechListenerEvent, true);
       }
