@@ -11,11 +11,13 @@ export interface IReportLineBase {
   Surname: string
   ReasonNotTakingCheck: DfEAbsenceCode | null
   PupilStatus: string | null
+  ImportedFromCensus: boolean
   // School
   SchoolName: string
   Estab: number | null
   SchoolURN: number | null
   LAnum: number | null
+  ToECode: number | null
   // Settings
   QDisplayTime: number | null
   PauseLength: number | null

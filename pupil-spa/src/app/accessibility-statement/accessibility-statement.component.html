@@ -4,12 +4,15 @@
   <app-breadcrumbs [breadcrumbs]="[{ url: '.', name: 'Home' }, { name: 'Accessibility Statement' } ]"></app-breadcrumbs>
   <div class="grid-row">
     <div class="column-two-thirds">
-      <h1 class="heading-xlarge">Accessibility statement for the multiplication tables check (MTC) service</h1>
+      <h1 class="heading-xlarge">Accessibility statement for the multiplication tables check service</h1>
       <p>
-        This statement applies to content published on the
-        <a class="govuk-link" href="https://pupil.multiplication-tables-check.service.gov.uk/">MTC pupil check application</a> and school administration area of the MTC.
-        We're constantly working to make the MTC accessible and user-friendly for all pupils, regardless of any physical,
-        cognitive or emotional impairment.
+        This statement applies to content published on the multiplication tables check (MTC) service.
+        This includes the school administration application accessed via DfE Sign-in and the pupil try it out and official
+        <a class="govuk-link" href="/">check application.</a>
+      </p>
+
+      <p>
+        We are committed to making the MTC service accessible and user-friendly for school staff and pupils, regardless of any physical, cognitive or emotional impairment.
       </p>
 
       <p>
@@ -27,7 +30,7 @@
       <h3 class="heading-medium">Conformance status</h3>
 
       <p>
-        We seek to ensure that all aspects of the service meet the
+        We seek to ensure that most of the service meets the
         <a target="_blank" rel="noopener noreferrer" href="https://www.w3.org/WAI/standards-guidelines/wcag/">
           Web Content Accessibility Guidelines (WCAG)</a> <img alt="" src="/images/icon-link.png"/>
         2.1 at Level AA. The MTC is partially conformant with WCAG 2.1 level AA.
@@ -37,24 +40,24 @@
 
       <h3 class="heading-medium">Pupil site</h3>
 
-      <p>The MTC does not support third-party screen readers due to compatibility issues with the timed element of the check.</p>
+      <p>The MTC pupil application does not support third-party screen readers due to compatibility issues with the timed element of the check.</p>
 
       <p>
-        To address this, there are a number of access arrangements that can be applied to the pupil check.
-        The following table shows which access arrangements are compatible with each device.
+        To address this and other accessibility needs, a number of access arrangements can be applied to the pupil check.
+        The following table shows which access arrangement compatibility with browsers and devices.
       </p>
 
       <table class="table-font-xsmall">
         <thead>
         <tr>
           <th>Access arrangement</th>
-          <th>Recommended browser and device</th>
+          <th>Browser and device compatibility</th>
         </tr>
         </thead>
         <tbody>
         <tr>
           <td>Audible time alert</td>
-          <td>Not compatible with any version of IE and any version of Microsoft Edge v 14 and below</td>
+          <td>Not compatible with any version of Internet Explorer and below version 14 for Microsoft Edge</td>
         </tr>
         <tr>
           <td>Colour contrast</td>
@@ -74,31 +77,31 @@
         </tr>
         <tr>
           <td>Audio version</td>
-          <td>Not recommended for IOS 9.3 <br />
-            Not compatible with any version of IE and any version of Microsoft Edge v 14 and below
+          <td>Not recommended for iOS and Safari below version 13,
+            not compatible with any version of Internet Explorer and below version 14 of Microsoft Edge
           </td>
         </tr>
         <tr>
           <td>Remove on-screen number pad</td>
-          <td>Any browser/device (External keyboard required for tablets)</td>
+          <td>Any browser/device (external keyboard required for tablets)</td>
         </tr>
         </tbody>
       </table>
 
-      <h3 class="heading-medium">Teacher site</h3>
+      <h3 class="heading-medium">School administration website</h3>
 
-      <p>MTC does not currently have any built-in access arrangements for the teacher site.</p>
+      <p>The school administration website does not currently have any built-in access arrangements.</p>
 
-      <p>The MTC teacher site has been designed to be compatible with recent versions of the following screen readers:</p>
+      <p>The school administration website has been designed to be compatible with current versions (as of April 2023) of the following screen readers:</p>
 
       <ul class="list list-bullet">
         <li>job access with speech (JAWS)</li>
         <li>non-visual desktop access (NVDA)</li>
-        <li>voiceOver</li>
+        <li>VoiceOver</li>
       </ul>
 
 
-      <p>The site has also been designed to be compatible with:</p>
+      <p>The website has also been designed to be compatible with:</p>
 
       <ul class="list list-bullet">
         <li>basic operating system screen magnifiers, such as ZoomText magnifier</li>
@@ -106,7 +109,7 @@
         <li>operating system speech packages</li>
       </ul>
 
-      <h3 class="heading-medium">Get help for Teacher Site</h3>
+      <h3 class="heading-medium">Get help for the school administration website</h3>
 
       <p>AbilityNet provides guidance about how to:</p>
 
@@ -129,9 +132,20 @@
 
       <h3 class="heading-medium">How accessible this website is</h3>
 
-      <p>Parts of the MTC website are not fully accessible for example:</p>
+      <p>Parts of the MTC service are not fully accessible for example:</p>
       <ul class="list list-bullet">
-        <li>some error messages are not clearly associated with form controls</li>
+        <li>some feedback messages are not clearly associated with form fields, instead all feedback is presented at the top of the page.</li>
+        <li>focus indicators and tab order for keyboard users may be inconsistent with the layout.</li>
+        <li>some elements and images are missing descriptive alternative text, their function should, however, be evident by their location.</li>
+        <li>the “loading wheel” animation continues for longer than 3 seconds and cannot be paused.</li>
+        <li>users are not warned of the idle 5-minute time-out function on pages until notified by a notification box. There is no option to extend or turn off this 5-minute time-out function.</li>
+        <li>the "skip to main content" function does not always move the cursor to the main content.</li>
+        <li>the search function and filter controls automatically update the content presented as input is given.</li>
+        <li>some tables in the service are not presented as tables or are missing headers. The layout is, however, consistent.</li>
+        <li>the structure, formatting, and use of headings may not be consistent or defined across the service.</li>
+        <li>with some presented information some elements do not have unique IDs for assistive technologies. Their content is, however, sufficiently unique to ascertain their purpose.</li>
+        <li>some elements such as filters and controls will not be accessible by keyboard. Please use the search box where possible to navigate the site and manual operation may be required.</li>
+        <li>screen reader users may have a different experience to content provided on screen.</li>
       </ul>
 
       <h3 class="heading-medium">How to request content in an accessible format</h3>
@@ -141,7 +155,7 @@
       <h3 class="heading-medium">Reporting accessibility problems with this website</h3>
 
       <p>If you find any problems that are not listed on this page
-        or you think we’re not meeting the accessibility requirements,
+        or you think we are not meeting the accessibility requirements,
         please contact the national curriculum assessments helpline on 0300 303 3013 or email assessments@education.gov.uk.
       </p>
 
@@ -151,21 +165,32 @@
         please <a href="https://www.equalityadvisoryservice.com/">contact the Equality Advisory and Support Service (EASS).</a>
       </p>
 
-      <p>The Equality and Human Rights Commission (EHRC) is responsible for enforcing the Public Sector Bodies (Websites and Mobile Applications)
-        (No. 2) Accessibility Regulations 2018 (the ‘accessibility regulations’).
+      <p>The Equality and Human Rights Commission
+        (EHRC) is responsible for enforcing the <a
+        class="govuk-link" target="_blank" rel="noopener noreferrer"
+        href="https://www.legislation.gov.uk/uksi/2018/952/contents/made">
+        Public Sector Bodies (Websites and Mobile Applications) (No. 2)
+        Accessibility Regulations 2018 (the ‘accessibility
+        regulations’)</a>.
       </p>
 
       <h3 class="heading-medium">How we tested this website</h3>
 
-      <p>This website was and is currently being tested for compliance with the Web Content Accessibility Guidelines V2.1 level A and level AA,
-        and these tests have been carried out internally.
+      <p>We have tested this website for compliance
+        with the <a href="https://www.w3.org/TR/WCAG21/" class="govuk-link"
+      target="_blank" rel="noopener noreferrer">
+      Web Content Accessibility Guidelines V2.1</a> level A and level
+      AA, and these tests have been carried out internally.
       </p>
 
       <h3 class="heading-medium">What we’re doing to improve accessibility</h3>
 
-      <p>Ahead of the 2021/22 MTC cycle we will audit our content again and update the service according to report findings.</p>
+      <p class="govuk-body">We audit our content annually and update the service according to report findings.</p>
 
-      <p>This statement was prepared based on an independent accessibility audit carried out in July 2019. It was last updated on 19 April 2021.</p>
+      <p>This statement was prepared based on an
+        independent accessibility audit of the full MTC service carried out
+        in July 2019. It was last updated on 5 April 2023 following an
+        annual accessibility assurance audit.</p>
       <div class="back-to-top-container">
         <a [routerLink]="['/accessibility-statement']" fragment="top">Back to top</a>
       </div>
@@ -177,7 +202,6 @@
         <nav role="navigation">
           <ul class="list">
             <li>
-              <a href="/privacy">Privacy notice</a>
             </li>
           </ul>
         </nav>

@@ -31,15 +31,15 @@ const dateService = {
   },
 
   formatDayAndDate: function (date) {
-    return moment(date).format(dayAndDateFormat)
+    return dateService.checkAndFormat(date, dayAndDateFormat)
   },
 
   formatDayDateAndYear: function (date) {
-    return moment(date).format(dayDateAndYearFormat)
+    return dateService.checkAndFormat(date, dayDateAndYearFormat)
   },
 
   formatDateAndTime: function (date) {
-    return moment(date).format(dateAndTimeFormat)
+    return dateService.checkAndFormat(date, dateAndTimeFormat)
   },
 
   formatUKDate: function (date) {

@@ -39,7 +39,6 @@ import { LoginErrorDiagnosticsService } from './services/login-error-diagnostics
 import { LoginErrorService } from './services/login-error/login-error.service';
 import { LoginSuccessComponent } from './login-success/login-success.component';
 import { LogoutComponent } from './logout/logout.component';
-import { PrivacyComponent } from './privacy/privacy.component';
 import { QuestionComponent } from './question/question.component';
 import { QuestionService } from './services/question/question.service';
 import { RegisterInputService} from './services/register-input/registerInput.service';
@@ -104,7 +103,6 @@ const appRoutes: Routes = [
   {path: 'font-choice', component: AAFontsComponent },
   {path: 'local-storage-error', component: ErrorLocalStorageComponent}, // no need for login here
   {path: 'out-of-time', component: OutOfTimeComponent },
-  {path: 'privacy', component: PrivacyComponent },
   {path: 'qr', component: QrCodeArrivalComponent },
   {path: 'service-unavailable', component: WebsiteOfflineComponent },
   {path: 'session-expired', component: SessionExpiredComponent },
@@ -145,7 +143,6 @@ const appRoutes: Routes = [
         PageModificationsComponent,
         PageVisibilityComponent,
         PracticeQuestionComponent,
-        PrivacyComponent,
         QuestionComponent,
         QuestionsIntroComponent,
         SessionExpiredComponent,

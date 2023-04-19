@@ -4,7 +4,7 @@ import config from '../config'
 import { v4 as uuidv4 } from 'uuid'
 
 let sut: RedisService
-let ioRedis: Redis.Redis
+let ioRedis: Redis
 const redisItemKey = 'INTEGRATION_TEST'
 
 describe('RedisService', () => {

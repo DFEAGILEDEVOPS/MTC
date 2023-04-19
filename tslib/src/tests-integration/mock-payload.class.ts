@@ -160,11 +160,13 @@ export class MockPayload implements IPsychometricReportLine {
   Surname: string
   ReasonNotTakingCheck: DfEAbsenceCode | null
   PupilStatus: string | null
+  ImportedFromCensus: boolean
   // School',
   SchoolName: string
   Estab: number | null
   SchoolURN: number | null
   LAnum: number | null
+  ToECode: number | null
   // Settings
   QDisplayTime: number | null
   PauseLength: number | null
@@ -215,6 +217,8 @@ export class MockPayload implements IPsychometricReportLine {
     this.FormMark = faker.datatype.number({ min: 0, max: 25 })
     this.BrowserType = `${faker.lorem.words(2)} ${faker.system.semver()}`
     this.DeviceID = faker.datatype.uuid()
+    this.ImportedFromCensus = faker.datatype.boolean()
+    this.ToECode = faker.helpers.arrayElement([1, 2, 3, 5, 6, 7, 8, 42, 43, 44])
 
     for (let i = 0; i < 25; i++) {
       const answer = new MockReportLineAnswer(i + 1)
