@@ -106,6 +106,7 @@ export class PsReportDataService {
                         p.currentCheckId,
                         p.school_id,
                         p.urlSlug,
+                        p.job_id,
                         ac.reason as notTakingCheckReason,
                         ac.code as notTakingCheckCode
           FROM mtc_admin.pupil p
@@ -124,6 +125,7 @@ export class PsReportDataService {
       foreName: string
       gender: 'M' | 'F'
       id: number
+      job_id: number
       lastName: string
       notTakingCheckReason: string | null
       notTakingCheckCode: NotTakingCheckCode
@@ -142,6 +144,7 @@ export class PsReportDataService {
         forename: o.foreName,
         gender: o.gender,
         id: o.id,
+        jobId: o.job_id,
         lastname: o.lastName,
         notTakingCheckReason: o.notTakingCheckReason,
         notTakingCheckCode: o.notTakingCheckCode,
@@ -164,9 +167,20 @@ export class PsReportDataService {
     // for a message to be placed on the queue manually (for consumption by this function ps-report-2-pupil-data) which
     // could be a test school.  This will cause the function to throw.
     const sql = `
-        SELECT estabCode, id, leaCode, name, urlSlug, urn, isTestSchool
-          FROM mtc_admin.school
-         WHERE school.id = @schoolId
+        SELECT
+        s.estabCode,
+        s.id,
+        s.leaCode,
+        s.name,
+        s.urlSlug,
+        s.urn,
+        s.isTestSchool,
+        toe.code as typeOfEstablishmentCode
+      FROM
+        mtc_admin.school s LEFT JOIN
+        mtc_admin.typeOfEstablishmentLookup toe ON (s.typeOfEstablishmentLookup_id = toe.id)
+      WHERE
+        s.id = @schoolId
     `
     interface DBSchool {
       estabCode: number
@@ -176,6 +190,7 @@ export class PsReportDataService {
       urlSlug: string
       urn: number
       isTestSchool: boolean
+      typeOfEstablishmentCode: number
     }
     const res: DBSchool[] = await this.sqlService.query(sql, [{ name: 'schoolId', value: schoolId, type: TYPES.Int }])
     const data = R.head(res)
@@ -191,7 +206,8 @@ export class PsReportDataService {
       laCode: data.leaCode,
       name: data.name,
       slug: data.urlSlug,
-      urn: data.urn
+      urn: data.urn,
+      typeOfEstablishmentCode: data.typeOfEstablishmentCode
     }
     return Object.freeze(school)
   }

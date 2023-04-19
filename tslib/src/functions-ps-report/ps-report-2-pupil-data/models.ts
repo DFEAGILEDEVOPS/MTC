@@ -7,6 +7,7 @@ export interface Pupil {
   forename: string
   gender: 'M' | 'F'
   id: number
+  jobId: number
   lastname: string
   notTakingCheckReason: string | null
   notTakingCheckCode: NotTakingCheckCode | null
@@ -21,6 +22,7 @@ export interface School {
   laCode: number
   name: string
   slug: string
+  typeOfEstablishmentCode: number
   urn: number
 }
 

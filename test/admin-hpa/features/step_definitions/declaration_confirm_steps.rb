@@ -5,7 +5,6 @@ end
 
 Then(/^I can see the confirm and submit page as per the design$/) do
   expect(declaration_confirm_page).to have_heading
-  expect(declaration_confirm_page).to have_form
   expect(declaration_confirm_page).to have_submit_button
   expect(declaration_confirm_page).to have_cancel_button
 end

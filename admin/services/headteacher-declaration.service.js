@@ -15,6 +15,7 @@ const settingService = require('./setting.service')
 const redisCacheService = require('../services/data-access/redis-cache.service')
 const redisKeyService = require('../services/redis-key.service')
 const { PupilFrozenService } = require('./pupil-frozen.service/pupil-frozen.service')
+
 /**
  * @typedef {Object} hdfPupil
  * @property {number} pupilId
@@ -105,15 +106,17 @@ headteacherDeclarationService.submitDeclaration = async (form, userId, schoolId,
   if (!checkWindow || !checkWindow.id) {
     throw new Error('Active check window not found')
   }
+
   const data = {
     signedDate: new Date(),
     checkWindow_id: checkWindow.id,
     school_id: school.id,
     user_id: userId,
-    confirmed: form.confirm === 'Y',
     headTeacher: form.isHeadteacher === 'Y',
     jobTitle: form.jobTitle,
-    fullName: [form.firstName, form.lastName].join(' ')
+    fullName: [form.firstName, form.lastName].join(' '),
+    hdfStatusCode: form.confirm,
+    noPupilsFurtherInfo: form.noPupilsFurtherInfo
   }
 
   return headteacherDeclarationDataService.sqlCreate(data)

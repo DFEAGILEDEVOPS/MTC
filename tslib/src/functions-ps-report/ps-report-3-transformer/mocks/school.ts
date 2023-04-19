@@ -6,5 +6,6 @@ export const school: School = {
   laCode: 1001,
   name: 'test town primary school',
   slug: 'abc-def-1234',
+  typeOfEstablishmentCode: 2,
   urn: 80001
 }
