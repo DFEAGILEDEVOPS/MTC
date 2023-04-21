@@ -150,7 +150,7 @@ export interface PupilResult {
  * BLSTD: Working below expectation
  * JSTAR: Just arrived and unable to establish abilities
  */
-export type NotTakingCheckCode = 'ABSNT' | 'LEFTT' | 'INCRG' | 'NOACC' | 'BLSTD' | 'JSTAR'
+export type NotTakingCheckCode = 'ABSNT' | 'LEFTT' | 'INCRG' | 'NOACC' | 'BLSTD' | 'JSTAR' | 'ANLLD'
 
 /**
  * LOI: Loss of internet
