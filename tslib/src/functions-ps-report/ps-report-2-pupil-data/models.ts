@@ -149,6 +149,7 @@ export interface PupilResult {
  * NOACC: Unable to access
  * BLSTD: Working below expectation
  * JSTAR: Just arrived and unable to establish abilities
+ * ANLLD: Pupil Annulled
  */
 export type NotTakingCheckCode = 'ABSNT' | 'LEFTT' | 'INCRG' | 'NOACC' | 'BLSTD' | 'JSTAR' | 'ANLLD'
 
