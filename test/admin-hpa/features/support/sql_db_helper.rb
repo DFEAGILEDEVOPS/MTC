@@ -436,6 +436,14 @@ class SqlDbHelper
     count.values.first
   end
 
+  def self.find_pupil_restart(pupil_id)
+    sql = "SELECT * FROM [mtc_admin].[pupilRestart] where pupil_id=#{pupil_id}"
+    result = SQL_CLIENT.execute(sql)
+    pupil_details_res = result.first
+    result.cancel
+    pupil_details_res
+  end
+
   def self.create_group(group_name, school_id)
     sql = "INSERT INTO [mtc_admin].[group] (name, createdAt, updatedAt, school_id) VALUES ('#{group_name}','2019-06-25 17:46:39.557', '2019-06-25 17:46:39.557', #{school_id})"
     result = SQL_CLIENT.execute(sql)
