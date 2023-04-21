@@ -237,6 +237,7 @@ Then(/^the pupil should be able to remove the restart$/) do
   step "I am logged in"
   restarts_page.load
   restarts_page.restarts_pupil_list.rows.first.remove_restart.click
+  @time_removed = Time.now.utc
   step 'I should see a flash message to state the pupil has been removed from restart'
 end
 

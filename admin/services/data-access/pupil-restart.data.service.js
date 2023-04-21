@@ -125,7 +125,7 @@ pupilRestartDataService.sqlMarkRestartAsDeleted = async (restartId, userId) => {
 
                -- Soft-delete the restart record
                UPDATE [mtc_admin].[pupilRestart]
-               SET isDeleted=1, deletedByUser_id=@userId
+               SET isDeleted=1, deletedByUser_id=@userId, deletedAt=sysdatetimeoffset()
                WHERE id = @restartId;
 
                -- See if there is a new check raised against the restart to consume it
