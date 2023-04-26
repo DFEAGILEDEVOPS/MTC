@@ -14,18 +14,23 @@
             <% } %>
             <p class="govuk-body"><strong>Date of submission:</strong> <%= signedDate %></p>
             <p class="govuk-body"><strong>Declaration:</strong></p>
-            <% if (hdf.confirmed) { %>
+            <% if (hdf.hdfStatusCode === 'YES') { %>
                 <p class="govuk-body">I <strong>confirm</strong> that my school administered the multiplication tables check according to the arrangements set out in the guidance, and in particular:</p>
                 <ul class="govuk-list govuk-list--bullet">
                     <li><a class="govuk-link" href="/pupil-register/pupils-list">pupil details</a> are correct</li>
                     <li>each pupil who took the check used the unique PIN generated for them</li>
                     <li>all staff involved in the administration of the check have confirmed to me that the check was administered according to the statutory arrangements</li>
                 </ul>
-            <% } else {%>
+            <% } else if (hdf.hdfStatusCode === 'NOC') {%>
                 <p class="govuk-body">I am <strong>unable to confirm</strong> the statements above and have reported this to the Standards and Testing Agency (STA)</p>
                 <div class="govuk-inset-text">
                     <p>If you have not reported this to the STA, please contact the national curriculum assessments helpline on 0300 303 3013 before submitting this declaration.</p>
                 </div>
+            <% } else if (hdf.hdfStatusCode === 'NON') {%>
+              <p class="govuk-body"><strong>None of my pupils</strong> took the check, but all eligible pupils have been included within my pupil register, their details are correct and the correct ‘reason for not taking the check’ has been provided.</p>
+              <div class="govuk-inset-text">
+                  <p>If you have not reported this to the STA, please contact the national curriculum assessments helpline on 0300 303 3013 before submitting this declaration.</p>
+              </div>
             <% } %>
             <div class="govuk-back-to-top govuk-!-margin-top-9">
                 <a class="govuk-link govuk-link--no-visited-state app-back-to-top__link" href="#top">

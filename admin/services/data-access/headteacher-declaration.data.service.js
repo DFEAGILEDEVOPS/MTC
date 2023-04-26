@@ -3,11 +3,80 @@
 const { TYPES } = require('./sql.service')
 const R = require('ramda')
 const sqlService = require('./sql.service')
-const table = '[hdf]'
 const headteacherDeclarationDataService = {}
 
 headteacherDeclarationDataService.sqlCreate = async function (data) {
-  return sqlService.create(table, data)
+  const sql = `
+            DECLARE @hdfStatusLookup_id int
+            SELECT @hdfStatusLookup_id = id FROM mtc_admin.hdfStatusLookup WHERE hdfStatusCode = @hdfStatusCode
+            INSERT INTO mtc_admin.[hdf] (
+              [signedDate]
+              ,[jobTitle]
+              ,[fullName]
+              ,[school_id]
+              ,[user_id]
+              ,[checkWindow_id]
+              ,[headTeacher]
+              ,[hdfStatus_id]
+              ,[noPupilsFurtherInfo])
+            VALUES (
+              @signedDate,
+              @jobTitle,
+              @fullName,
+              @school_id,
+              @user_id,
+              @checkWindow_id,
+              @headTeacher,
+              @hdfStatusLookup_id,
+              @noPupilsFurtherInfo)`
+  const params = [
+    {
+      name: 'signedDate',
+      value: data.signedDate,
+      type: TYPES.DateTimeOffset
+    },
+    {
+      name: 'jobTitle',
+      value: data.jobTitle,
+      type: TYPES.NVarChar
+    },
+    {
+      name: 'fullName',
+      value: data.fullName,
+      type: TYPES.NVarChar
+    },
+    {
+      name: 'school_id',
+      value: data.school_id,
+      type: TYPES.Int
+    },
+    {
+      name: 'user_id',
+      value: data.user_id,
+      type: TYPES.Int
+    },
+    {
+      name: 'checkWindow_id',
+      value: data.checkWindow_id,
+      type: TYPES.Int
+    },
+    {
+      name: 'headTeacher',
+      value: data.headTeacher,
+      type: TYPES.Bit
+    },
+    {
+      name: 'hdfStatusCode',
+      value: data.hdfStatusCode,
+      type: TYPES.Char
+    },
+    {
+      name: 'noPupilsFurtherInfo',
+      value: data.noPupilsFurtherInfo,
+      type: TYPES.NVarChar(TYPES.MAX)
+    }
+  ]
+  return sqlService.query(sql, params)
 }
 
 /**
@@ -19,10 +88,13 @@ headteacherDeclarationDataService.sqlCreate = async function (data) {
 headteacherDeclarationDataService.sqlFindLatestHdfBySchoolId = async (schoolId) => {
   const sql = `
   SELECT TOP 1
-    h.*, c.checkEndDate
-  FROM ${sqlService.adminSchema}.${table} h
-  INNER JOIN checkWindow c ON h.checkWindow_id = c.id
-  WHERE school_id = @schoolId
+    h.fullName, h.headTeacher, h.jobTitle,
+    hsl.hdfStatusCode, c.checkEndDate,
+    h.signedDate
+  FROM [mtc_admin].[hdf] h
+  INNER JOIN mtc_admin.hdfStatusLookup hsl ON hsl.id = h.hdfStatus_id
+  INNER JOIN mtc_admin.checkWindow c ON h.checkWindow_id = c.id
+  WHERE h.school_id = @schoolId
   ORDER BY signedDate DESC`
   const paramSchoolId = { name: 'schoolId', type: TYPES.Int, value: schoolId }
   const rows = await sqlService.query(sql, [paramSchoolId])
@@ -41,7 +113,7 @@ headteacherDeclarationDataService.sqlFindHdfForCheck = async (schoolId, checkWin
   const sql = `
   SELECT TOP 1
     *
-  FROM ${sqlService.adminSchema}.${table}
+  FROM [mtc_admin].[hdf]
   WHERE checkWindow_id = @checkWindowId
   AND school_id = @schoolId`
   const result = await sqlService.query(sql, [paramCheckWindow, paramSchoolId])
