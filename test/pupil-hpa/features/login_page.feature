@@ -25,6 +25,13 @@ Feature: Login page
     And I should see all the correct pupil details
     And pupil name is removed from local storage
 
+  @generate_live_pin
+  Scenario: Users can login with a space in the password
+    Given I have logged in with a space in the password
+    Then I should be taken to the confirmation page
+    And I should see all the correct pupil details
+    And pupil name is removed from local storage
+
   Scenario: Login failure message is displayed on the sign in page
     Given I am on the sign in page
     When I want to try login with invalid credentials
