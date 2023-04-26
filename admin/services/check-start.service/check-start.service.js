@@ -233,12 +233,12 @@ const checkStartService = {
     return checkData
   },
   /**
- * Return pupil login payloads
- * The payload needs to contain everything the pupil needs to login and take the check
- * @param {Array<any>} checks
- * @param {number} schoolId - DB PK - school.id
- * @return {Promise<Array>}
- */
+   * Return pupil login payloads
+   * The payload needs to contain everything the pupil needs to login and take the check
+   * @param {Array<any>} checks
+   * @param {number} schoolId - DB PK - school.id
+   * @return {Promise<Array>}
+   */
   createPupilCheckPayloads: async function createPupilCheckPayloads (checks, schoolId) {
     if (!checks) {
       throw new Error('checks is not defined')
