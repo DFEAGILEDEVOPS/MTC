@@ -4,9 +4,11 @@ import logger from '../services/log.service'
 import type { IPupilAuthenticationService } from '../services/redis-pupil-auth.service'
 import type { Request } from 'express'
 
-const RedisPupilAuthServiceMock = jest.fn<IPupilAuthenticationService, any>(() => ({
-  authenticate: jest.fn()
-}))
+class RedisPupilAuthServiceMock implements IPupilAuthenticationService {
+  async authenticate (): Promise<object | undefined> {
+    return undefined
+  }
+}
 
 let req: Request
 let res: any
@@ -20,6 +22,11 @@ describe('redis auth controller', () => {
     res = httpMocks.createResponse()
     redisPupilAuthService = new RedisPupilAuthServiceMock()
     authController = new RedisAuthController(redisPupilAuthService)
+    jest.spyOn(redisPupilAuthService, 'authenticate')
+  })
+
+  afterEach(() => {
+    jest.restoreAllMocks()
   })
 
   test('returns an 400 error if the request is not JSON', async () => {
@@ -93,7 +100,8 @@ describe('redis auth controller', () => {
     jest.spyOn(logger, 'error').mockImplementation()
     req.body = {
       pupilPin: '123',
-      schoolPin: '1234'
+      schoolPin: 'def4ger'
+      // buildVersion: '42' // we do not want a build version
     }
     await authController.postAuth(req, res)
     expect(redisPupilAuthService.authenticate).not.toHaveBeenCalled()
@@ -117,6 +125,45 @@ describe('redis auth controller', () => {
     expect(res.statusCode).toBe(401)
     const data = JSON.parse(res._getData())
     expect(data.error).toBe('Unauthorised')
+  })
+
+  test('trims leading whitespace from the schoolPin', async () => {
+    req.body = {
+      pupilPin: '123',
+      schoolPin: ' abc',
+      buildVersion: '123'
+    }
+    const redisPupilAuthServiceMock = jest.spyOn(redisPupilAuthService, 'authenticate').mockResolvedValue({})
+    await authController.postAuth(req, res)
+    expect(res.statusCode).toBe(200) // it succeeds even though the leading space is superflous
+    const authArgs = redisPupilAuthServiceMock.mock.calls[0]
+    expect(authArgs[0]).toBe('abc') // leading space removed
+  })
+
+  test('trims trailing whitespace from the schoolPin', async () => {
+    req.body = {
+      pupilPin: '123',
+      schoolPin: 'def   ',
+      buildVersion: '123'
+    }
+    const redisPupilAuthServiceMock = jest.spyOn(redisPupilAuthService, 'authenticate').mockResolvedValue({})
+    await authController.postAuth(req, res)
+    expect(res.statusCode).toBe(200) // it succeeds even though the trailing space is superflous
+    const authArgs = redisPupilAuthServiceMock.mock.calls[0]
+    expect(authArgs[0]).toBe('def') // trailing space removed
+  })
+
+  test('trims leading and trailing whitespace from the schoolPin', async () => {
+    req.body = {
+      pupilPin: '123',
+      schoolPin: '  xyz   ',
+      buildVersion: '123'
+    }
+    const redisPupilAuthServiceMock = jest.spyOn(redisPupilAuthService, 'authenticate').mockResolvedValue({})
+    await authController.postAuth(req, res)
+    expect(res.statusCode).toBe(200) // it succeeds even though the trailing space is superflous
+    const authArgs = redisPupilAuthServiceMock.mock.calls[0]
+    expect(authArgs[0]).toBe('xyz') // trailing space removed
   })
 })
 
