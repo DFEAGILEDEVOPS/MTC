@@ -843,6 +843,19 @@ const controller = {
     }
     req.flash('info', `Pupil moved to ${school.name} (${school.urn})`)
     res.redirect(`/service-manager/pupil-summary/${encodeURIComponent(pupilUrlSlug)}`)
+  },
+
+  getAttendanceCodes: async function getAttendanceCodes (req, res, next) {
+    const urlSlug = req.params.slug
+    const attendanceCodes = await ServiceManagerPupilService.getAttendanceCodes(pupil.schoolId)
+    req.breadcrumbs('Pupil search', '/service-manager/pupil-search')
+    req.breadcrumbs('Pupil summary', `/service-manager/pupil-summary/${encodeURIComponent(urlSlug).toLowerCase()}`)
+    req.breadcrumbs('Attendance codes')
+    res.render('service-manager/pupil/attendance-codes', {
+      breadcrumbs: req.breadcrumbs(),
+      pupil,
+      attendanceCodes
+    })
   }
 }
 

@@ -201,4 +201,9 @@ router.post('/annul-pupil-undo/:slug',
   serviceManagerController.postPupilAnnulmentUndo
 )
 
+router.get('/attendance-codes',
+  isAuthenticated([roles.serviceManager]),
+  serviceManagerController.getAttendanceCodes
+)
+
 module.exports = router
