@@ -26,7 +26,7 @@ export class RedisAuthController implements IAuthController {
     if (schoolPin === undefined || pupilPin === undefined || buildVersion === undefined) return apiResponse.unauthorised(res)
 
     try {
-      const data = await this.redisAuthService.authenticate(schoolPin, pupilPin, buildVersion)
+      const data = await this.redisAuthService.authenticate(schoolPin.trim(), pupilPin, buildVersion)
       if (data === undefined) {
         return apiResponse.unauthorised(res)
       }
