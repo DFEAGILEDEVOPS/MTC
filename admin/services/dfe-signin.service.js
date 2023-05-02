@@ -15,6 +15,7 @@ const service = {
   /**
    * @description maps an authenticated dfe sign-in user to an MTC user, school and role
    * @param {object} dfeUser all decrypted user information sent in the request payload
+   * @param {object} tokenset identification data associated with login provider
    */
   initialiseUser: async (dfeUser, tokenset) => {
     if (!dfeUser) {
@@ -101,6 +102,9 @@ const service = {
 
     if (schoolRecord) {
       logonEvent.school_id = schoolRecord.id
+      logonEvent.urn = dfeUser.organisation.urn
+      logonEvent.mtcRole = dfeUser.role
+      logonEvent.dfeRole = dfeRole
     }
 
     await adminLogonEventDataService.sqlCreate(logonEvent)
