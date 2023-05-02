@@ -127,39 +127,12 @@ headteacherDeclarationDataService.sqlFindHdfForCheck = async (schoolId, checkWin
  * @param schoolId
  * @return {Promise<Number>}
  */
-headteacherDeclarationDataService.sqlFindPupilsBlockingHdfBeforeCheckEndDate = async (schoolId) => {
+headteacherDeclarationDataService.sqlFindPupilsBlockingHdf = async (schoolId) => {
   const sql = `
     SELECT COUNT(p.id) as pupilsCount
     FROM [mtc_admin].[pupil] p
     WHERE p.school_id = @schoolId
     AND (p.attendanceId IS NULL AND p.checkComplete <> 1)
-  `
-
-  const params = [
-    { name: 'schoolId', type: TYPES.Int, value: schoolId }
-  ]
-
-  const result = await sqlService.query(sql, params)
-  return R.path(['pupilsCount'], R.head(result))
-}
-
-/**
- * Find count of pupils blocking hdf submission after check end date
- * Blocking pupils are defined as pupils who have not completed the check, or at least attempted the check (and are not
- * marked as not-attending).  Pupils that have logged in but not completed the check will block.  Pupils have been assigned
- * PIN but have not logged in, will not block.
- * @param schoolId
- * @return {Promise<Number>}
- */
-headteacherDeclarationDataService.sqlFindPupilsBlockingHdfAfterCheckEndDate = async (schoolId) => {
-  const sql = `
-    SELECT COUNT(p.id) as pupilsCount
-    FROM [mtc_admin].[pupil] p
-    LEFT JOIN [mtc_admin].[check] chk ON (p.currentCheckId = chk.id)
-    WHERE (p.attendanceId IS NULL
-          AND (p.currentCheckId is NULL OR chk.pupilLoginDate IS NOT NULL))
-          AND p.school_id = @schoolId
-          AND p.checkComplete <> 1
   `
 
   const params = [
