@@ -21,6 +21,15 @@ Given(/^I have logged in$/) do
   sign_in_page.sign_in_button.click
 end
 
+
+Given('I have logged in with a space in the password') do
+  sign_in_page.load
+  @pupil_credentials[:school_password] = ' ' + @pupil_credentials[:school_password] + ' '
+  p "login credentials " + "'#{@pupil_credentials[:school_password]}'" + ', ' + "'#{@pupil_credentials[:pin]}'"
+  sign_in_page.login(@pupil_credentials[:school_password], @pupil_credentials[:pin])
+  sign_in_page.sign_in_button.click
+end
+
 Given(/^I am on the welcome page$/) do
   step 'I have generated a live pin'
   step 'I have logged in'
