@@ -60,15 +60,10 @@ headteacherDeclarationService.findPupilBySlugAndSchoolId = async function findPu
 
 /**
  * Fetch pupils and return eligibility to generate HDF
- * @param schoolId
- * @param checkEndDate
- * @param timezone
+ * @param schoolId dfeNumber
  * @returns {Promise<boolean>} Returns true if there the school is eligible to submit their HDF, false otherwise.
  */
-headteacherDeclarationService.getEligibilityForSchool = async (schoolId, checkEndDate, timezone) => {
-  if (!checkEndDate) {
-    throw new Error('Check end date missing or not found')
-  }
+headteacherDeclarationService.getEligibilityForSchool = async (schoolId) => {
   const ineligiblePupilsCount = await headteacherDeclarationDataService.sqlFindPupilsBlockingHdf(schoolId)
   return ineligiblePupilsCount === 0
 }
@@ -77,7 +72,6 @@ headteacherDeclarationService.getEligibilityForSchool = async (schoolId, checkEn
  * Declare the results of the check, to be used by the Headteacher or equivalent role
  * This is the personal sign-off from the head, and closes the check for their school.
  * @param {object} form
- * @param {number} schoolId
  * @param {number} userId
  * @param {number} schoolId
  * @param {object} checkEndDate

@@ -2,7 +2,6 @@
 /* global describe expect beforeEach test jest afterEach */
 
 const R = require('ramda')
-const moment = require('moment')
 
 const headteacherDeclarationDataService = require('../../../services/data-access/headteacher-declaration.data.service')
 const pupilStatusDataService = require('../../../services/data-access/pupil-status.data.service')
@@ -28,50 +27,22 @@ describe('headteacherDeclarationService', () => {
   describe('#getEligibilityForSchool', () => {
     const dfeNumber = 123
 
-    describe('when check end date is in the future', () => {
-      test('should call sqlFindPupilsBlockingHdfBeforeCheckEndDate', async () => {
-        jest.spyOn(headteacherDeclarationDataService, 'sqlFindPupilsBlockingHdfBeforeCheckEndDate').mockImplementation()
-        const checkEndDate = moment.utc().add(5, 'days')
-        await service.getEligibilityForSchool(dfeNumber, checkEndDate)
-        expect(headteacherDeclarationDataService.sqlFindPupilsBlockingHdfBeforeCheckEndDate).toHaveBeenCalled()
-      })
-
-      test('should return true if no pupils blocking are detected', async () => {
-        jest.spyOn(headteacherDeclarationDataService, 'sqlFindPupilsBlockingHdfBeforeCheckEndDate').mockResolvedValue(0)
-        const checkEndDate = moment.utc().add(5, 'days')
-        const result = await service.getEligibilityForSchool(dfeNumber, checkEndDate)
-        expect(result).toBeTruthy()
-      })
-
-      test('should return false if no pupils blocking are detected', async () => {
-        jest.spyOn(headteacherDeclarationDataService, 'sqlFindPupilsBlockingHdfBeforeCheckEndDate').mockResolvedValue(1)
-        const checkEndDate = moment.utc().add(5, 'days')
-        const result = await service.getEligibilityForSchool(dfeNumber, checkEndDate)
-        expect(result).toBeFalsy()
-      })
+    test('should call sqlFindPupilsBlockingHdf', async () => {
+      jest.spyOn(headteacherDeclarationDataService, 'sqlFindPupilsBlockingHdf').mockImplementation()
+      await service.getEligibilityForSchool(dfeNumber)
+      expect(headteacherDeclarationDataService.sqlFindPupilsBlockingHdf).toHaveBeenCalled()
     })
 
-    describe('when check end date is in the past', () => {
-      test('should call sqlFindPupilsBlockingHdfBeforeCheckEndDate', async () => {
-        jest.spyOn(headteacherDeclarationDataService, 'sqlFindPupilsBlockingHdfAfterCheckEndDate').mockImplementation()
-        const checkEndDate = moment.utc().subtract(5, 'days')
-        await service.getEligibilityForSchool(dfeNumber, checkEndDate)
-        expect(headteacherDeclarationDataService.sqlFindPupilsBlockingHdfAfterCheckEndDate).toHaveBeenCalled()
-      })
+    test('should return true if no blocking pupils are detected', async () => {
+      jest.spyOn(headteacherDeclarationDataService, 'sqlFindPupilsBlockingHdf').mockResolvedValue(0)
+      const result = await service.getEligibilityForSchool(dfeNumber)
+      expect(result).toBeTruthy()
+    })
 
-      test('should return true if no pupils blocking are detected', async () => {
-        jest.spyOn(headteacherDeclarationDataService, 'sqlFindPupilsBlockingHdfAfterCheckEndDate').mockResolvedValue(0)
-        const checkEndDate = moment.utc().subtract(5, 'days')
-        const result = await service.getEligibilityForSchool(dfeNumber, checkEndDate)
-        expect(result).toBeTruthy()
-      })
-
-      test('should return false if no pupils blocking are detected', async () => {
-        jest.spyOn(headteacherDeclarationDataService, 'sqlFindPupilsBlockingHdfAfterCheckEndDate').mockResolvedValue(1)
-        const checkEndDate = moment.utc().subtract(5, 'days')
-        const result = await service.getEligibilityForSchool(dfeNumber, checkEndDate)
-        expect(result).toBeFalsy()
-      })
+    test('should return false ifblocking  pupils  are detected', async () => {
+      jest.spyOn(headteacherDeclarationDataService, 'sqlFindPupilsBlockingHdf').mockResolvedValue(1)
+      const result = await service.getEligibilityForSchool(dfeNumber)
+      expect(result).toBeFalsy()
     })
   })
 
