@@ -38,7 +38,7 @@ jobs:
       scriptLocation: inlineScript
       inlineScript: |
         echo "attempting to create database $(Build.BuildNumber) on server $(TargetDbServer)..."
-        az sql db create --name $(Build.BuildNumber) --resource-group $(TargetDbResourceGroup) --server $(TargetDbServer) --service-objective GP_Gen5_S_1
+        az sql db create --name $(Build.BuildNumber) --resource-group $(TargetDbResourceGroup) --server $(TargetDbServer) --service-objective GP_Gen5_S_2
   - bash: |
       export NVM_DIR="$HOME/.nvm"
       [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
