@@ -45,7 +45,7 @@ Feature:
   @pupil_not_taking_check
   Scenario: Sticky banner displays pupil count
     Given I am on the pupil reason page
-    When I select multiple pupils with the Absent during check window reason
+    When I select multiple pupils with the Incorrect registration reason
     Then the sticky banner should display the pupil count
 
   @pupil_not_taking_check
@@ -77,7 +77,6 @@ Feature:
     Examples:
       | reason                                         |
       | Incorrect registration                         |
-      | Absent during check window                     |
       | Left school                                    |
       | Unable to access                               |
       | Working below expectation                      |
@@ -86,7 +85,7 @@ Feature:
   @pupil_not_taking_check
   Scenario: Teachers can add multiple pupils
     Given I am on the pupil reason page for multiple new pupil
-    When I add Absent during check window as a reason for multiple pupils
+    When I add Incorrect registration as a reason for multiple pupils
     Then the reason should be stored against the pupils
     And I should see the updated pupils on the hub page
 

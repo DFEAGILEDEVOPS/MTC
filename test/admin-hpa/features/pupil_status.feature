@@ -32,8 +32,7 @@ Feature: Pupil Status Outcome
     Then I can see the status for the pupil is <reason> for pupil not taking the check
 
     Examples:
-      | reason                     |
-      | Absent during check window |
+      | reason                                         |
       | Incorrect registration                         |
       | Left school                                    |
       | Working below expectation                      |
