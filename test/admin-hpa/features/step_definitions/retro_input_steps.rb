@@ -6,7 +6,7 @@ end
 When(/^I add an input assistant after taking the check$/) do
   access_arrangements_page.load
   access_arrangements_page.retro_input.link.click
-  Timeout.timeout(ENV['WAIT_TIME'].to_i) {(visit current_url; retro_input_page.search_pupil.set(@details_hash[:first_name])) until retro_input_page.auto_search_list[0].text.include? @details_hash[:first_name]}
+  SafeTimeout.timeout(ENV['WAIT_TIME'].to_i) {(visit current_url; retro_input_page.search_pupil.set(@details_hash[:first_name])) until retro_input_page.auto_search_list[0].text.include? @details_hash[:first_name]}
   retro_input_page.search_pupil.set(@details_hash[:first_name])
   retro_input_page.auto_search_list[0].click
   retro_input_page.enter_input_assistant_details
@@ -72,7 +72,7 @@ Then(/^I should be able to add an input assistant retrospectively$/) do
   step "I am logged in"
   school_landing_page.access_arrangements.click
   access_arrangements_page.retro_input.link.click
-  Timeout.timeout(ENV['WAIT_TIME'].to_i) {(visit current_url; retro_input_page.search_pupil.set(@pupil_names_arr.first.split(',')[0])) until retro_input_page.auto_search_list[0].text.include? @pupil_names_arr.first.split(',')[0]}
+  SafeTimeout.timeout(ENV['WAIT_TIME'].to_i) {(visit current_url; retro_input_page.search_pupil.set(@pupil_names_arr.first.split(',')[0])) until retro_input_page.auto_search_list[0].text.include? @pupil_names_arr.first.split(',')[0]}
   retro_input_page.search_pupil.set(@pupil_names_arr.first.split(',')[0])
   retro_input_page.auto_search_list[0].click
   retro_input_page.enter_input_assistant_details
@@ -93,7 +93,7 @@ end
 When(/^I add an input assistant details which are over 128 chars for first name and last name$/) do
   access_arrangements_page.load
   access_arrangements_page.retro_input.link.click
-  Timeout.timeout(ENV['WAIT_TIME'].to_i) {(visit current_url; retro_input_page.search_pupil.set(@details_hash[:first_name])) until retro_input_page.auto_search_list[0].text.include? @details_hash[:first_name]}
+  SafeTimeout.timeout(ENV['WAIT_TIME'].to_i) {(visit current_url; retro_input_page.search_pupil.set(@details_hash[:first_name])) until retro_input_page.auto_search_list[0].text.include? @details_hash[:first_name]}
   retro_input_page.search_pupil.set(@details_hash[:first_name])
   retro_input_page.auto_search_list[0].click
   retro_input_page.first_name.set 'I' * 129
@@ -111,7 +111,7 @@ end
 When(/^I add an input assistant details which include special chars for first name and last name$/) do
   access_arrangements_page.load
   access_arrangements_page.retro_input.link.click
-  Timeout.timeout(ENV['WAIT_TIME'].to_i) {(visit current_url; retro_input_page.search_pupil.set(@details_hash[:first_name])) until retro_input_page.auto_search_list[0].text.include? @details_hash[:first_name]}
+  SafeTimeout.timeout(ENV['WAIT_TIME'].to_i) {(visit current_url; retro_input_page.search_pupil.set(@details_hash[:first_name])) until retro_input_page.auto_search_list[0].text.include? @details_hash[:first_name]}
   retro_input_page.search_pupil.set(@details_hash[:first_name])
   retro_input_page.auto_search_list[0].click
   retro_input_page.first_name.set 'Sp£cial!@£$%^&*()_+-=[];\/.,`'

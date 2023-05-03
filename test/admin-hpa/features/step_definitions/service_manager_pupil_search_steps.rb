@@ -19,7 +19,7 @@ Then(/^the summary page is displayed with the status set to (.+) along with deta
   expect(pupil_summary_page.school.text).to eql school_details['name']
   expect(pupil_summary_page.dfe_number.text).to eql school_details['dfeNumber'].to_s
   expect(pupil_summary_page.urn.text).to eql school_details['urn'].to_s
-  Timeout.timeout(10,2){visit current_url until pupil_summary_page.status.text.eql? status}
+  SafeTimeout.timeout(10){visit current_url until pupil_summary_page.status.text.eql? status}
   expect(pupil_summary_page.status.text).to eql status
 end
 
@@ -121,7 +121,7 @@ Given(/^a pupil has logged into a check$/) do
   pupil_pin_detail = SqlDbHelper.get_pupil_pin(check_entry['id'])
   pupil_pin = pupil_pin_detail['val']
   school_password = SqlDbHelper.find_school(pupil_detail['school_id'])['pin']
-  Timeout.timeout(ENV['WAIT_TIME'].to_i) {sleep 1 until RequestHelper.auth(school_password, pupil_pin).code == 200}
+  SafeTimeout.timeout(ENV['WAIT_TIME'].to_i) {sleep 1 until RequestHelper.auth(school_password, pupil_pin).code == 200}
   RequestHelper.auth(school_password, pupil_pin)
   @check_code = check_entry['checkCode']
   visit ENV['ADMIN_BASE_URL'] + '/sign-out'

@@ -111,16 +111,16 @@ class PupilStatusPage < SitePrism::Page
   def find_status_for_pupil(status, name)
     case status
     when 'Not started'
-      Timeout.timeout(20) {not_started_checks.count.click until not_started_checks_details.pupil_list.visible?}
+      SafeTimeout.timeout(20) {not_started_checks.count.click until not_started_checks_details.pupil_list.visible?}
       not_started_checks_details.pupil_list.pupil_row.find {|r| r.text.include? name}
     when 'Complete'
-      Timeout.timeout(20) {completed_checks.count.click until completed_checks_details.pupil_list.visible?}
+      SafeTimeout.timeout(20) {completed_checks.count.click until completed_checks_details.pupil_list.visible?}
       completed_checks_details.pupil_list.pupil_row.find {|r| r.text.include? name}
     when 'Restart'
-      Timeout.timeout(20) {not_started_checks.count.click until not_started_checks_details.pupil_list.visible?}
+      SafeTimeout.timeout(20) {not_started_checks.count.click until not_started_checks_details.pupil_list.visible?}
       not_started_checks_details.pupil_list.pupil_row.find {|r| r.text.include? name}
     when "Pupil check not received", "Error in processing"
-      Timeout.timeout(20) {checks_with_errors.count.click until checks_with_errors_details.pupil_list.visible?}
+      SafeTimeout.timeout(20) {checks_with_errors.count.click until checks_with_errors_details.pupil_list.visible?}
       checks_with_errors_details.pupil_list.pupil_row.find {|r| r.text.include? name}
     else
       fail "Status - #{status} not found"

@@ -30,7 +30,7 @@ Given(/^I have a new pupil with a reason for not taking a check$/) do
 
   step 'the Absent during check window reason should be stored against the pupils'
   pupil_status_page.load
-  Timeout.timeout(20) {pupil_status_page.not_taking_checks.count.click until pupil_status_page.not_taking_checks_details.pupil_list.visible? }
+  SafeTimeout.timeout(20) {pupil_status_page.not_taking_checks.count.click until pupil_status_page.not_taking_checks_details.pupil_list.visible? }
   pupil_row = pupil_status_page.not_taking_checks_details.pupil_list.pupil_row.find { |r| r.text.include? @pupil_forename}
   expect(pupil_row.status.text).to_not be_nil
 end

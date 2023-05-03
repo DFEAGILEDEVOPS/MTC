@@ -74,7 +74,7 @@ class GeneratePinsOverviewPage < SitePrism::Page
   end
 
   def find_pupil_row(name)
-    Timeout.timeout(ENV['WAIT_TIME'].to_i){sleep 1; visit current_url until pupil_list.rows.find {|pupil| pupil.text.include? name}}
+    SafeTimeout.timeout(ENV['WAIT_TIME'].to_i){sleep 1; visit current_url until pupil_list.rows.find {|pupil| pupil.text.include? name}}
     pupil_list.rows.find {|pupil| pupil.text.include? name}
   end
 

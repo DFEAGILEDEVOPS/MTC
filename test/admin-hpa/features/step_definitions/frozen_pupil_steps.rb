@@ -1,7 +1,7 @@
-Given(/^the service manager has set a pupil to be frozen$/) do
+Given(/^the service manager has set a pupil to be annulled$/) do
   pupil_upn = @upns_for_school.sample
   @pupil_details = SqlDbHelper.pupil_details(pupil_upn, @school_id)
-  freeze_pupil(pupil_upn, @school_id)
+  annul_pupil(pupil_upn, @school_id)
 end
 
 When(/^I view the pupil register page$/) do
@@ -9,18 +9,18 @@ When(/^I view the pupil register page$/) do
   step "I am on the Pupil Register page"
 end
 
-Then(/^the frozen pupil should be read only$/) do
+Then(/^the annulled pupil should be read only$/) do
   expect(pupil_register_page.find_pupil_row(@pupil_details['foreName'])).to_not have_edit_pupil_link
 end
 
 When(/^the service manager has set a pupil from the group to be frozen$/) do
   pupil_name = @pupil_group_array.sample
   @pupil_details = SqlDbHelper.pupil_details_using_names(pupil_name, pupil_name, @school_id)
-  freeze_pupil(@pupil_details['upn'], @school_id)
+  annul_pupil(@pupil_details['upn'], @school_id)
   expect(SqlDbHelper.get_pupil_ids_from_group(@group_name)).to include @pupil_details['id']
 end
 
-Then(/^the frozen pupil can be removed from the group$/) do
+Then(/^the annulled pupil can be removed from the group$/) do
   step 'I am logged in'
   group_pupils_page.load
   previoulsy_created_group = group_pupils_page.group_list.rows.find {|row| row.group_name.text.include? @group_name}
@@ -32,7 +32,7 @@ Then(/^the frozen pupil can be removed from the group$/) do
   expect(SqlDbHelper.get_pupil_ids_from_group(@group_name)).to_not include @pupil_details['id']
 end
 
-Then(/^the frozen pupil can be added to a group$/) do
+Then(/^the annulled pupil can be added to a group$/) do
   step 'I have a group of pupils'
   expect(SqlDbHelper.get_pupil_ids_from_group(@group_name)).to_not include @pupil_details['id']
   group_pupils_page.load
@@ -45,14 +45,14 @@ Then(/^the frozen pupil can be added to a group$/) do
   expect(SqlDbHelper.get_pupil_ids_from_group(@group_name)).to include @pupil_details['id']
 end
 
-Then(/^I should see the frozen pupil is read only$/) do
+Then(/^I should see the annulled pupil is read only$/) do
   frozen_pupil_row = pupils_not_taking_check_page.pupil_list.rows.find {|row| row.name.text.include?  @pupil_details['foreName']}
   expect(frozen_pupil_row).to_not have_remove
   expect(frozen_pupil_row.reason.text).to eql "Results annulled"
 end
 
 
-Then(/^the frozen pupil is not in the list of available pupils$/) do
+Then(/^the annulled pupil is not in the list of available pupils$/) do
   expect(pupil_reason_page.pupil_list.rows.find {|row| row.name.text.include? @pupil_details['foreName']}).to be_nil
 end
 
@@ -78,7 +78,7 @@ Then(/^a error is displayed$/) do
 end
 
 
-When(/^I search for the frozen pupil$/) do
+When(/^I search for the annulled pupil$/) do
   step "I am logged in"
   access_arrangements_page.load
   access_arrangements_page.select_pupil_and_arrangement_btn.click
@@ -113,7 +113,7 @@ Then(/^they are not eligible for a TIO pin$/) do
   step "I am logged in"
   navigate_to_pupil_list_for_pin_gen('tio')
   pupils_from_page = generate_tio_pins_overview_page.pupil_list.rows.map {|x| x.name.text}
-  expect(pupils_from_page.include?(@pupil_details['foreName'])).to be_falsy, "#{@pupil_details['foreName']} is displayed in the list ... Expected - It Shouldn't"
+  expect(pupils_from_page.include?(@pupil_details['foreName'])).to be_falsy, "#{@pupil_details['foreName']} is displayed in the list ... Expected - they Shouldn't"
 end
 
 
@@ -121,7 +121,7 @@ Then(/^they are not eligible for a live pin$/) do
   step "I am logged in"
   navigate_to_pupil_list_for_pin_gen('live')
   pupils_from_page = generate_live_pins_overview_page.pupil_list.rows.map {|x| x.name.text}
-  expect(pupils_from_page.include?(@pupil_details['foreName'])).to be_falsy, "#{@pupil_details['foreName']} is displayed in the list ... Expected - It Shouldn't"
+  expect(pupils_from_page.include?(@pupil_details['foreName'])).to be_falsy, "#{@pupil_details['foreName']} is displayed in the list ... Expected - they Shouldn't"
 end
 
 
@@ -147,12 +147,12 @@ Given(/^a pupil completes a check$/) do
 end
 
 But(/^the pupil is frozen straight after completion$/) do
-  SqlDbHelper.set_pupil_as_frozen(@pupil_id, 7)
-  REDIS_CLIENT.del "pupilRegisterViewData:#{@school_id}"
+  freeze_pupil(@details_hash[:upn], @school_id)
 end
 
 
 Then(/^the pupil is not eligble for a restart$/) do
+  step "I am logged in"
   restarts_page.load
   restarts_page.select_pupil_to_restart_btn.click
   expect(restarts_page).to have_no_pupils
@@ -166,18 +166,21 @@ end
 
 
 When(/^the pupil is frozen$/) do
-  SqlDbHelper.set_pupil_as_frozen(@pupil_id, 7)
-  REDIS_CLIENT.del "pupilRegisterViewData:#{@school_id}"
+  freeze_pupil(@details_hash[:upn], @school_id)
 end
 
 
 Then(/^the restart cannot be removed$/) do
+  step "I am logged in"
+  restarts_page.load
   restarts_page.restarts_pupil_list.rows.first.remove_restart.click
   step 'a error is displayed'
 end
 
 
 Then(/^the AA cannot be edited$/) do
+  step "I am logged in"
+  access_arrangements_page.load
   access_arrangements_page.pupil_list.rows.first.edit.click
   select_access_arrangements_page.save.click
   step 'a error is displayed'
@@ -190,8 +193,8 @@ Given(/^a pupil has an existing AA$/) do
 end
 
 
-Then(/^the service manager should be able to undo the freeze$/) do
-  undo_frozen_pupil(@pupil_details['upn'], @school_id)
+Then(/^the service manager should be able to undo the annulment$/) do
+  undo_annulment(@pupil_details['upn'], @school_id)
   step "I am logged in"
   step "I am on the Pupil Register page"
   expect(pupil_register_page.find_pupil_row(@pupil_details['foreName'])).to have_edit_pupil_link
@@ -211,12 +214,12 @@ end
 
 Given(/^a pupil has been frozen after completing a check$/) do
   step 'a pupil completes a check'
-  freeze_pupil(@details_hash[:upn], @school_id)
+  annul_pupil(@details_hash[:upn], @school_id)
 end
 
 
 When(/^the annulment is removed$/) do
-  undo_frozen_pupil(@details_hash[:upn], @school_id)
+  undo_annulment(@details_hash[:upn], @school_id)
 end
 
 
@@ -230,7 +233,7 @@ end
 
 Given(/^a frozen pupil who had an unconsumed restart$/) do
   step 'I applied a restart to a pupil'
-  freeze_pupil(@details_hash[:upn], @school_id)
+  annul_pupil(@details_hash[:upn], @school_id)
 end
 
 Then(/^the pupil should be able to remove the restart$/) do
@@ -249,7 +252,7 @@ Given(/^a pupil who had a reason for not taking the check and was then frozen$/)
   hightlighted_row = pupils_not_taking_check_page.pupil_list.rows.find {|row| row.has_highlight?}
   expect(hightlighted_row.text).to include("#{@details_hash[:last_name]}, #{@details_hash[:first_name]}")
   expect(hightlighted_row.text).to include @reason
-  freeze_pupil(@details_hash[:upn], @school_id)
+  annul_pupil(@details_hash[:upn], @school_id)
   step "I am logged in"
   pupils_not_taking_check_page.load
   frozen_pupil_row = pupils_not_taking_check_page.pupil_list.rows.find {|row| row.name.text.include?  @details_hash[:first_name]}
@@ -267,7 +270,7 @@ end
 
 Given(/^a pupil completes a check and then is frozen$/) do
   step 'a pupil completes a check'
-  freeze_pupil(@details_hash[:upn], @school_id)
+  annul_pupil(@details_hash[:upn], @school_id)
   step "I am logged in"
   step "I am on the Pupil Status page"
   pupil_status_page.not_taking_checks.count.click
@@ -284,9 +287,9 @@ Then(/^the pupils previous state of complete should be reinstated$/) do
 end
 
 
-Given(/^a pupil has a live pin generated and then is frozen$/) do
+Given(/^a pupil has a live pin generated and then is annulled$/) do
   step "I have generated a live pin for a pupil"
-  freeze_pupil(@details_hash[:upn], @school_id)
+  annul_pupil(@details_hash[:upn], @school_id)
   step "I am logged in"
   navigate_to_pupil_list_for_pin_gen('live')
   pupils_from_page = generate_live_pins_overview_page.pupil_list.rows.map {|x| x.name.text}
@@ -308,9 +311,9 @@ Then(/^the pupils previous state of having a live pin generated is reinstated$/)
 end
 
 
-Given(/^a pupil has a tio pin generated and then is frozen$/) do
+Given(/^a pupil has a tio pin generated and then is annulled$/) do
   step "I have generated a familiarisation pin for a pupil"
-  freeze_pupil(@details_hash[:upn], @school_id)
+  annul_pupil(@details_hash[:upn], @school_id)
   step "I am logged in"
   navigate_to_pupil_list_for_pin_gen('tio')
   pupils_from_page = generate_tio_pins_overview_page.pupil_list.rows.map {|x| x.name.text}
@@ -329,4 +332,40 @@ Then(/^the pupils previous state of having a tio pin generated is reinstated$/) 
   expect(view_and_print_tio_pins_page.pupil_list.rows.first.name.text).to eql @details_hash[:last_name] + ", " + @details_hash[:first_name]
   expect(view_and_print_tio_pins_page.pupil_list.rows.first.pin.text).to eql @pupil_credentials[:pin]
   expect(view_and_print_tio_pins_page.pupil_list.rows.first.school_password.text).to eql @pupil_credentials[:school_password]
+end
+
+
+Given(/^the service manager has set a pupil to be frozen$/) do
+  pupil_upn = @upns_for_school.sample
+  @pupil_details = SqlDbHelper.pupil_details(pupil_upn, @school_id)
+  freeze_pupil(pupil_upn, @school_id)
+end
+
+
+Then(/^the pupil is set to read only$/) do
+  #Pupil register
+  step 'I view the pupil register page'
+  expect(pupil_register_page.find_pupil_row(@pupil_details['foreName'])).to_not have_edit_pupil_link
+
+  #pupils not taking check
+  pupils_not_taking_check_page.load
+  step 'I want to add a reason'
+  expect(pupil_reason_page.pupil_list.rows.find {|row| row.name.text.include? @pupil_details['foreName']}).to be_nil
+
+  #access arrangements
+  access_arrangements_page.load
+  access_arrangements_page.select_pupil_and_arrangement_btn.click
+  step "I search for pupil '#{@pupil_details['foreName']}'"
+  step 'the search list should be empty'
+
+  #live pin gen
+  navigate_to_pupil_list_for_pin_gen('live')
+  pupils_from_page = generate_live_pins_overview_page.pupil_list.rows.map {|x| x.name.text}
+  expect(pupils_from_page.include?(@pupil_details['foreName'])).to be_falsy, "#{@pupil_details['foreName']} is displayed in the list ... Expected - they Shouldn't"
+
+  #tio pin gen
+  navigate_to_pupil_list_for_pin_gen('tio')
+  pupils_from_page = generate_tio_pins_overview_page.pupil_list.rows.map {|x| x.name.text}
+  expect(pupils_from_page.include?(@pupil_details['foreName'])).to be_falsy, "#{@pupil_details['foreName']} is displayed in the list ... Expected - they Shouldn't"
+
 end

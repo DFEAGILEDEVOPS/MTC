@@ -47,18 +47,18 @@ end
 
 Then(/^I can see the status for the pupil is '(.*)'$/) do |status|
   unless status == 'Not started'
-    Timeout.timeout(ENV['WAIT_TIME'].to_i) {sleep 1 until SqlDbHelper.check_details(SqlDbHelper.pupil_details(@details_hash[:upn], @school_id)['id'])['complete']} unless status == 'Error in processing' || status == 'Pupil check not received'
-    Timeout.timeout(ENV['WAIT_TIME'].to_i) {sleep 1 until SqlDbHelper.check_details(SqlDbHelper.pupil_details(@details_hash[:upn], @school_id)['id'])['processingFailed']} if status == 'Error in processing'
+    SafeTimeout.timeout(ENV['WAIT_TIME'].to_i) {sleep 1 until SqlDbHelper.check_details(SqlDbHelper.pupil_details(@details_hash[:upn], @school_id)['id'])['complete']} unless status == 'Error in processing' || status == 'Pupil check not received'
+    SafeTimeout.timeout(ENV['WAIT_TIME'].to_i) {sleep 1 until SqlDbHelper.check_details(SqlDbHelper.pupil_details(@details_hash[:upn], @school_id)['id'])['processingFailed']} if status == 'Error in processing'
   end
   status == 'Restart' ? status = 'Not started' : status = status
   pupil_status_page.load
-  Timeout.timeout(ENV['WAIT_TIME'].to_i) {pupil_status_page.load until pupil_status_page.find_status_for_pupil(status, @details_hash[:first_name])}
+  SafeTimeout.timeout(ENV['WAIT_TIME'].to_i) {pupil_status_page.load until pupil_status_page.find_status_for_pupil(status, @details_hash[:first_name])}
   pupil_row = pupil_status_page.find_status_for_pupil(status, @details_hash[:first_name])
   expect(pupil_row.status.text).to include status
 end
 
 Then(/^I can see the status for the pupil is (.*) for pupil not taking the check$/) do |status|
-  Timeout.timeout(20) {pupil_status_page.not_taking_checks.count.click until pupil_status_page.not_taking_checks_details.pupil_list.visible?}
+  SafeTimeout.timeout(20) {pupil_status_page.not_taking_checks.count.click until pupil_status_page.not_taking_checks_details.pupil_list.visible?}
   pupil_row = pupil_status_page.not_taking_checks_details.pupil_list.pupil_row.find {|r| r.text.include? @pupil['lastName']}
   expect(pupil_row.status.text).to include status
 end
@@ -75,7 +75,7 @@ Then(/^any pupils not part of a group should not have an entry for group$/) do
 end
 
 Then(/^these pupils should be highlighted in red$/) do
-  Timeout.timeout(ENV['WAIT_TIME'].to_i) {visit current_url until pupil_register_page.find_pupil_row(@pupil_name).has_incomplete_pupil?}
+  SafeTimeout.timeout(ENV['WAIT_TIME'].to_i) {visit current_url until pupil_register_page.find_pupil_row(@pupil_name).has_incomplete_pupil?}
   expect(pupil_register_page).to have_incomplete_message
   pupil_row = pupil_register_page.find_pupil_row(@pupil_name)
   expect(pupil_row).to have_incomplete_pupil

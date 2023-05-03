@@ -43,7 +43,7 @@ end
 Then(/^I should have an expired pin$/) do
   visit Capybara.app_host + '/sign-out'
   AzureTableHelper.wait_for_received_check(@school_uuid, @check_code)
-  Timeout.timeout(ENV['WAIT_TIME'].to_i) do
+  SafeTimeout.timeout(ENV['WAIT_TIME'].to_i) do
     sign_in_page.load;
     sign_in_page.login(@pupil_credentials[:school_password], @pupil_credentials[:pin]);
     sign_in_page.sign_in_button.click;

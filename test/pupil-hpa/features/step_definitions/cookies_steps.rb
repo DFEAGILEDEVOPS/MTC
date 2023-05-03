@@ -18,7 +18,7 @@ end
 
 Then(/^the device cookie is stored$/) do
   mtc_device_cookie = Capybara.current_session.driver.browser.manage.cookie_named('mtc_device')
-  Timeout.timeout(ENV['WAIT_TIME'].to_i){sleep 3 until SqlDbHelper.get_device_information(mtc_device_cookie[:value]) != nil }
+  SafeTimeout.timeout(ENV['WAIT_TIME'].to_i){sleep 3 until SqlDbHelper.get_device_information(mtc_device_cookie[:value]) != nil }
   db_device_info = SqlDbHelper.get_device_information(mtc_device_cookie[:value])
   expect(db_device_info).to_not be_nil
 end

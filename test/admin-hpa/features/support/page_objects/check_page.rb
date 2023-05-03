@@ -32,7 +32,7 @@ class CheckPage < SitePrism::Page
         i = i + 1
       end
     end
-    # Timeout.timeout(time){sleep 0.5 until question.visible?}
+    # SafeTimeout.timeout(time){sleep 0.5 until question.visible?}
     j = 0
     while j < 120
       if(has_question?)
@@ -45,7 +45,7 @@ class CheckPage < SitePrism::Page
   end
 
   def wait_for_answer(time=15)
-    Timeout.timeout(time){sleep 1 until answer.visible?}
+    SafeTimeout.timeout(time){sleep 1 until answer.visible?}
   end
 
   def answer_question_via(input_type, answer)

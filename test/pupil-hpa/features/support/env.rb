@@ -26,6 +26,7 @@ require 'redis'
 require 'lz_string'
 require_relative '../../features/support/app'
 require 'dotenv'
+require 'safe_timeout'
 
 require_relative 'helpers'
 include Helpers

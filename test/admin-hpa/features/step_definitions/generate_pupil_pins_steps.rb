@@ -36,7 +36,7 @@ Then(/^I cannot see pupil in the list for pupil for not taking check$/) do
 end
 
 Then(/^I can see pupil in the list for pupil for not taking check$/) do
-  Timeout.timeout(ENV['WAIT_TIME'].to_i) {visit current_url until pupil_reason_page.pupil_list.rows.map {|t| t.name.text}.join.include?(@pupil_forename)}
+  SafeTimeout.timeout(ENV['WAIT_TIME'].to_i) {visit current_url until pupil_reason_page.pupil_list.rows.map {|t| t.name.text}.join.include?(@pupil_forename)}
 end
 
 When(/^I click on the Pupil heading$/) do
@@ -231,7 +231,7 @@ Then(/^the pin should be expired$/) do
 end
 
 And(/^the status of the pupil should be (.+)$/) do |status|
-  Timeout.timeout(ENV['WAIT_TIME'].to_i) {sleep 2 until SqlDbHelper.pupil_details(@stored_pupil_details['upn'], @school_id)['pupilStatus_id'] == 6}
+  SafeTimeout.timeout(ENV['WAIT_TIME'].to_i) {sleep 2 until SqlDbHelper.pupil_details(@stored_pupil_details['upn'], @school_id)['pupilStatus_id'] == 6}
   pupil_register_page.load
   pupil_row = pupil_register_page.find_pupil_row(@pupil_name)
   expect(pupil_row.result.text).to eql(status)
@@ -240,8 +240,8 @@ end
 When(/^I choose to filter via group on the generate pins page$/) do
   navigate_to_pupil_list_for_pin_gen('live')
   @page = generate_live_pins_overview_page
-  Timeout.timeout(ENV['WAIT_TIME'].to_i) {visit current_url until !generate_live_pins_overview_page.group_filter.groups.empty?}
-  Timeout.timeout(ENV['WAIT_TIME'].to_i) {visit current_url until generate_live_pins_overview_page.group_filter.groups.first.count.text.scan(/\d+/).first.to_i == (@pupil_group_array - [@excluded_pupil]).size}
+  SafeTimeout.timeout(ENV['WAIT_TIME'].to_i) {visit current_url until !generate_live_pins_overview_page.group_filter.groups.empty?}
+  SafeTimeout.timeout(ENV['WAIT_TIME'].to_i) {visit current_url until generate_live_pins_overview_page.group_filter.groups.first.count.text.scan(/\d+/).first.to_i == (@pupil_group_array - [@excluded_pupil]).size}
   generate_live_pins_overview_page.group_filter.closed_filter.click unless generate_live_pins_overview_page.group_filter.has_opened_filter?
   group = generate_live_pins_overview_page.group_filter.groups.find {|group| group.name.text.include? @group_name}
   group.checkbox.click
@@ -393,7 +393,7 @@ Given(/^I am on the generate pupil pins page after logging in with a teacher$/) 
   expect(REDIS_CLIENT.get("checkWindow.sqlFindActiveCheckWindow")).to be_nil
   step "I am logged in"
   expect(school_landing_page).to be_displayed
-  Timeout.timeout(20) {visit current_url until REDIS_CLIENT.get("checkWindow.sqlFindActiveCheckWindow") != nil}
+  SafeTimeout.timeout(20) {visit current_url until REDIS_CLIENT.get("checkWindow.sqlFindActiveCheckWindow") != nil}
   expect(JSON.parse(JSON.parse(REDIS_CLIENT.get("checkWindow.sqlFindActiveCheckWindow"))['value'])['recordset']).to be_empty
 end
 

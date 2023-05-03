@@ -17,7 +17,7 @@ When(/^I choose to sign out$/) do
 end
 
 Then(/^I should be taken back to the sign in page$/) do
-  Timeout.timeout(8){sleep 0.2 until current_url.include? sign_in_page.url}
+  SafeTimeout.timeout(8){sleep 0.2 until current_url.include? sign_in_page.url}
   expect(sign_in_page).to be_displayed
 end
 

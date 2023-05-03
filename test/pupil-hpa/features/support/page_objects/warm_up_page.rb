@@ -37,11 +37,11 @@ class WarmUpPage < SitePrism::Page
       end
     end
     # sleep 1
-    Timeout.timeout(time){sleep 0.5 until question.visible?}
+    SafeTimeout.timeout(time){sleep 0.5 until question.visible?}
   end
 
   def wait_for_answer(time=15)
-    Timeout.timeout(time){sleep 1 until answer.visible?}
+    SafeTimeout.timeout(time){sleep 1 until answer.visible?}
   end
 
   def answer_question_via(input_type, answer)

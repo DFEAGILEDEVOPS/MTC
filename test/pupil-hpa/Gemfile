@@ -1,4 +1,4 @@
-source 'http://rubygems.org'
+source "http://rubygems.org"
 ruby "2.7.7"
 
 gem 'activesupport', '>= 7.0.4.3'
@@ -31,3 +31,4 @@ gem 'redis'
 gem 'lz_string'
 gem "rack", ">= 3.0.6.1"
 gem 'dotenv'
+gem 'safe_timeout'

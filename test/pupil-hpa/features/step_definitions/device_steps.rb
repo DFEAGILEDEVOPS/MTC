@@ -49,7 +49,7 @@ When(/^I have completed 2 checks$/) do
     @check_code = JSON.parse(page.evaluate_script('window.localStorage.getItem("pupil");'))['checkCode']
     @school_uuid = JSON.parse(page.evaluate_script('window.localStorage.getItem("school");'))['uuid']
     complete_page.sign_out.click
-    Timeout.timeout(8) {sleep 0.2 until current_url.include? sign_in_page.url}
+    SafeTimeout.timeout(8) {sleep 0.2 until current_url.include? sign_in_page.url}
   end
 end
 

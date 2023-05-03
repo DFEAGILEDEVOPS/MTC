@@ -3,7 +3,7 @@ Given(/^I have retrospectively added an input assistant$/) do
   step 'I login to the admin app'
   visit ENV["ADMIN_BASE_URL"] + access_arrangements_page.url
   access_arrangements_page.retro_input.link.click
-  Timeout.timeout(ENV['WAIT_TIME'].to_i) {(visit current_url; retro_input_page.search_pupil.set(@details_hash[:first_name])) until
+  SafeTimeout.timeout(ENV['WAIT_TIME'].to_i) {(visit current_url; retro_input_page.search_pupil.set(@details_hash[:first_name])) until
     retro_input_page.auto_search_list[0].text.include? @details_hash[:first_name]}
   retro_input_page.search_pupil.set(@details_hash[:first_name])
   retro_input_page.auto_search_list[0].click

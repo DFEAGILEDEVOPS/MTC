@@ -111,7 +111,7 @@ Given(/^there is a pupil with an incomplete status$/) do
 end
 
 Then(/^I should see a incomplete banner$/) do
-  Timeout.timeout(ENV['WAIT_TIME'].to_i) {visit current_url until school_landing_page.has_incomplete_banner?}
+  SafeTimeout.timeout(ENV['WAIT_TIME'].to_i) {visit current_url until school_landing_page.has_incomplete_banner?}
   expect(school_landing_page).to have_incomplete_banner
   expect(school_landing_page).to have_incomplete_banner_text
 end

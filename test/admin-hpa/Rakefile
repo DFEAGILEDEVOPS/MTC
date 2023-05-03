@@ -18,7 +18,7 @@ Cucumber::Rake::Task.new(:run_all, 'Run all features') do |t|
 end
 
 Cucumber::Rake::Task.new(:rerun, 'Rerun using rerun.txt') do |t|
-  t.cucumber_opts = ["@rerun.txt --format pretty DRIVER=#{(ENV['DRIVER']) ? ENV['DRIVER'] : 'headless_chrome'}"]
+  t.cucumber_opts = ["@rerun.txt --format pretty --retry 1 DRIVER=#{(ENV['DRIVER']) ? ENV['DRIVER'] : 'headless_chrome'}"]
   t.cucumber_opts << " #{ENV['OPTS']}" unless ENV['OPTS'].nil?
 end
 

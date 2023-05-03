@@ -375,7 +375,7 @@ Given(/^I have completed a check with duplicate questions$/) do
   @check_code = SqlDbHelper.check_details(@stored_pupil_details['id'])['checkCode']
   @pupil_id = @stored_pupil_details['id']
   check_entry = SqlDbHelper.check_details(@pupil_id)
-  Timeout.timeout(ENV['WAIT_TIME'].to_i) {sleep 1 until RequestHelper.auth(@pupil_credentials[:school_password], @pupil_credentials[:pin]).code == 200}
+  SafeTimeout.timeout(ENV['WAIT_TIME'].to_i) {sleep 1 until RequestHelper.auth(@pupil_credentials[:school_password], @pupil_credentials[:pin]).code == 200}
   RequestHelper.auth(@pupil_credentials[:school_password], @pupil_credentials[:pin])
   @check_code = check_entry['checkCode']
   FunctionsHelper.complete_check_with_duplicates([@check_code], 25, 0, rand(25)) if check_entry["isLiveCheck"]

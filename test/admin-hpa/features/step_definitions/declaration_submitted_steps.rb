@@ -58,7 +58,7 @@ Given(/^I have some pupils that have completed the check$/) do
     pupil_pin_detail = SqlDbHelper.get_pupil_pin(check_entry['id'])
     pupil_pin = pupil_pin_detail['val']
     school_password = SqlDbHelper.find_school(pupil_detail['school_id'])['pin']
-    Timeout.timeout(ENV['WAIT_TIME'].to_i) {sleep 1 until RequestHelper.auth(school_password, pupil_pin).code == 200}
+    SafeTimeout.timeout(ENV['WAIT_TIME'].to_i) {sleep 1 until RequestHelper.auth(school_password, pupil_pin).code == 200}
     response_pupil_auth = RequestHelper.auth(school_password, pupil_pin)
     @parsed_response_pupil_auth = JSON.parse(response_pupil_auth.body)
     @check_code = check_entry['checkCode']
@@ -94,7 +94,7 @@ end
 
 Then(/^I should be able to submit the HDF$/) do
   step 'I am on the HDF form page'
-  Timeout.timeout(120) {visit current_url until hdf_form_page.has_continue?}
+  SafeTimeout.timeout(120) {visit current_url until hdf_form_page.has_continue?}
   expect(@page).to have_first_name
   expect(@page).to have_last_name
   expect(@page).to have_is_headteacher_yes
