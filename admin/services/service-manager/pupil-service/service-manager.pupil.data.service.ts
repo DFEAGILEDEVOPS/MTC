@@ -73,14 +73,6 @@ export class ServiceManagerPupilDataService {
     ]
     return sqlService.modify(sql, params)
   }
-
-  static async getAttendanceCodes (): Promise<AttendanceCode[]> {
-    const sql = `
-      SELECT id, code, description, [order], visible
-      FROM mtc_admin.attendanceCode
-      ORDER BY [order]`
-    return sqlService.readonlyQuery(sql)
-  }
 }
 
 export interface PupilStatusData {
@@ -120,12 +112,4 @@ export interface PupilSearchResult {
   upn: string
   schoolId: number
   attendanceCode: string
-}
-
-export interface AttendanceCode {
-  id: number
-  code: string
-  description: string
-  order: number
-  visible: boolean
 }

@@ -21,6 +21,7 @@ const { validate } = require('uuid')
 const { PupilAnnulmentService } = require('../services/service-manager/pupil-annulment/pupil-annulment.service')
 const { TypeOfEstablishmentService } = require('../services/type-of-establishment-service/type-of-establishment-service')
 const { ServiceManagerSchoolService } = require('../services/service-manager/school/school.service')
+const { ServiceManagerAttendanceService } = require('../services/service-manager/attendance/service-manager.attendance.service')
 
 const controller = {
   /**
@@ -846,16 +847,17 @@ const controller = {
   },
 
   getAttendanceCodes: async function getAttendanceCodes (req, res, next) {
-    const urlSlug = req.params.slug
-    const attendanceCodes = await ServiceManagerPupilService.getAttendanceCodes(pupil.schoolId)
-    req.breadcrumbs('Pupil search', '/service-manager/pupil-search')
-    req.breadcrumbs('Pupil summary', `/service-manager/pupil-summary/${encodeURIComponent(urlSlug).toLowerCase()}`)
-    req.breadcrumbs('Attendance codes')
-    res.render('service-manager/pupil/attendance-codes', {
-      breadcrumbs: req.breadcrumbs(),
-      pupil,
-      attendanceCodes
-    })
+    res.locals.pageTitle = 'Attendance codes'
+    req.breadcrumbs(res.locals.pageTitle)
+    try {
+      const attendanceCodes = await ServiceManagerAttendanceService.getAttendanceCodes()
+      res.render('service-manager/attendance-codes', {
+        breadcrumbs: req.breadcrumbs(),
+        attendanceCodes
+      })
+    } catch (error) {
+      return next(error)
+    }
   }
 }
 

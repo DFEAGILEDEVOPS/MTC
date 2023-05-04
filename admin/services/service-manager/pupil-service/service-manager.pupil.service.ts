@@ -1,5 +1,5 @@
 import XRegExp from 'xregexp'
-import { AttendanceCode, ServiceManagerPupilDataService } from './service-manager.pupil.data.service'
+import { ServiceManagerPupilDataService } from './service-manager.pupil.data.service'
 import { validate } from 'uuid'
 import moment from 'moment'
 import { PupilAnnulmentDataService } from '../pupil-annulment/pupil-annulment.data.service'
@@ -93,10 +93,6 @@ export class ServiceManagerPupilService {
     const settingData = await settingService.get()
     const pupilStatus = pupilStatusService.addStatus(settingData, pupilData[0])
     return pupilStatus.status
-  }
-
-  static async getAttendanceCodes (): Promise<AttendanceCode[]> {
-    return ServiceManagerPupilDataService.getAttendanceCodes()
   }
 }
 
