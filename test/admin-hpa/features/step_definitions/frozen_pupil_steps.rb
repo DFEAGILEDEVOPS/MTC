@@ -336,9 +336,9 @@ end
 
 
 Given(/^the service manager has set a pupil to be frozen$/) do
-  pupil_upn = @upns_for_school.sample
-  @pupil_details = SqlDbHelper.pupil_details(pupil_upn, @school_id)
-  freeze_pupil(pupil_upn, @school_id)
+  @pupil_upn = @upns_for_school.sample
+  @pupil_details = SqlDbHelper.pupil_details(@pupil_upn, @school_id)
+  freeze_pupil(@pupil_upn, @school_id)
 end
 
 
@@ -367,5 +367,39 @@ Then(/^the pupil is set to read only$/) do
   navigate_to_pupil_list_for_pin_gen('tio')
   pupils_from_page = generate_tio_pins_overview_page.pupil_list.rows.map {|x| x.name.text}
   expect(pupils_from_page.include?(@pupil_details['foreName'])).to be_falsy, "#{@pupil_details['foreName']} is displayed in the list ... Expected - they Shouldn't"
+end
+
+
+When(/^the pupil is thawed$/) do
+  undo_freeze(@pupil_upn, @school_id)
+end
+
+
+Then(/^the pupil is no longer frozen$/) do
+  #Pupil register
+  step 'I view the pupil register page'
+  expect(pupil_register_page.find_pupil_row(@pupil_details['foreName'])).to have_edit_pupil_link
+
+  #pupils not taking check
+  pupils_not_taking_check_page.load
+  step 'I want to add a reason'
+  expect(pupil_reason_page.pupil_list.rows.find {|row| row.name.text.include? @pupil_details['foreName']}).to_not be_nil
+
+  #access arrangements
+  access_arrangements_page.load
+  access_arrangements_page.select_pupil_and_arrangement_btn.click
+  step "I search for pupil '#{@pupil_details['foreName']}'"
+  expect(select_access_arrangements_page.auto_search_list[0].text).to eql "#{@pupil_details['lastName']}, #{@pupil_details['middleNames']} #{@pupil_details['foreName']}"
+
+  #live pin gen
+  navigate_to_pupil_list_for_pin_gen('live')
+  pupils_from_page = generate_live_pins_overview_page.pupil_list.rows.map {|x| x.name.text}
+  expect(pupils_from_page.include?("#{@pupil_details['lastName']}, #{@pupil_details['foreName']}")).to be_truthy
+
+  #tio pin gen
+  navigate_to_pupil_list_for_pin_gen('tio')
+  pupils_from_page = generate_tio_pins_overview_page.pupil_list.rows.map {|x| x.name.text}
+  p @pupil_details['foreName']
+  expect(pupils_from_page.include?("#{@pupil_details['lastName']}, #{@pupil_details['foreName']}")).to be_truthy
 
 end

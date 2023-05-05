@@ -106,6 +106,11 @@ Feature:
     Given the service manager has set a pupil to be frozen
     Then the pupil is set to read only
 
+  Scenario: Pupils can be thawed after being frozen
+    Given the service manager has set a pupil to be frozen
+    When the pupil is thawed
+    Then the pupil is no longer frozen
+
 
 
 
