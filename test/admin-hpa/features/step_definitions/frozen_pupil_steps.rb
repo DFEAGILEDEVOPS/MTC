@@ -13,7 +13,7 @@ Then(/^the annulled pupil should be read only$/) do
   expect(pupil_register_page.find_pupil_row(@pupil_details['foreName'])).to_not have_edit_pupil_link
 end
 
-When(/^the service manager has set a pupil from the group to be frozen$/) do
+When(/^the service manager has set a pupil from the group to be annulled$/) do
   pupil_name = @pupil_group_array.sample
   @pupil_details = SqlDbHelper.pupil_details_using_names(pupil_name, pupil_name, @school_id)
   annul_pupil(@pupil_details['upn'], @school_id)
@@ -125,7 +125,7 @@ Then(/^they are not eligible for a live pin$/) do
 end
 
 
-Then(/^I should see the frozen pupil$/) do
+Then(/^I should see the annulled pupil$/) do
   pupil_status_page.not_taking_checks.count.click
   expect(pupil_status_page.not_taking_checks_details.pupil_list.pupil_row.first.names.text).to eql @pupil_details['lastName'] + ", " + @pupil_details['foreName']
   expect(pupil_status_page.not_taking_checks_details.pupil_list.pupil_row.first.status.text).to eql "Results annulled"
@@ -212,7 +212,7 @@ Then(/^the service manager should be able to undo the annulment$/) do
 end
 
 
-Given(/^a pupil has been frozen after completing a check$/) do
+Given(/^a pupil has been annulled after completing a check$/) do
   step 'a pupil completes a check'
   annul_pupil(@details_hash[:upn], @school_id)
 end
@@ -231,7 +231,7 @@ Then(/^the pupil should be eligible for a restart$/) do
 end
 
 
-Given(/^a frozen pupil who had an unconsumed restart$/) do
+Given(/^a annulled pupil who had an unconsumed restart$/) do
   step 'I applied a restart to a pupil'
   annul_pupil(@details_hash[:upn], @school_id)
 end
@@ -244,7 +244,7 @@ Then(/^the pupil should be able to remove the restart$/) do
   step 'I should see a flash message to state the pupil has been removed from restart'
 end
 
-Given(/^a pupil who had a reason for not taking the check and was then frozen$/) do
+Given(/^a pupil who had a reason for not taking the check and was then annulled$/) do
   step 'I am on the pupil reason page for new pupil'
   step 'I add Incorrect registration as a reason for a particular pupil'
   expect(pupils_not_taking_check_page).to have_flash_message
@@ -268,7 +268,7 @@ Then(/^the pupil is returned to not taking the check for the reason that was ini
   expect(pupil_row.reason.text).to eql @reason
 end
 
-Given(/^a pupil completes a check and then is frozen$/) do
+Given(/^a pupil completes a check and then is annulled$/) do
   step 'a pupil completes a check'
   annul_pupil(@details_hash[:upn], @school_id)
   step "I am logged in"
@@ -402,4 +402,15 @@ Then(/^the pupil is no longer frozen$/) do
   p @pupil_details['foreName']
   expect(pupils_from_page.include?("#{@pupil_details['lastName']}, #{@pupil_details['foreName']}")).to be_truthy
 
+end
+
+
+When(/^the pupil is then set to annulled$/) do
+  annul_pupil(@pupil_upn, @school_id)
+end
+
+
+And(/^the pupils results are annulled$/) do
+  pupils_not_taking_check_page.load
+  step 'I should see the annulled pupil is read only'
 end
