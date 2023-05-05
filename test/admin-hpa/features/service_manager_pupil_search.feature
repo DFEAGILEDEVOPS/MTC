@@ -66,3 +66,8 @@ Feature:
       | Working below expectation                      |
       | Unable to access                               |
       | Just arrived and unable to establish abilities |
+
+
+  Scenario: Frozen pupil is shown on the summary page
+    Given I have searched for a frozen pupil
+    Then the summary page displays the pupil as frozen
