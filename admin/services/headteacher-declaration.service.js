@@ -60,7 +60,7 @@ headteacherDeclarationService.findPupilBySlugAndSchoolId = async function findPu
 
 /**
  * Fetch pupils and return eligibility to generate HDF
- * @param schoolId dfeNumber
+ * @param schoolId - the db school.id int value
  * @returns {Promise<boolean>} Returns true if there the school is eligible to submit their HDF, false otherwise.
  */
 headteacherDeclarationService.getEligibilityForSchool = async (schoolId) => {

@@ -25,23 +25,23 @@ describe('headteacherDeclarationService', () => {
   })
 
   describe('#getEligibilityForSchool', () => {
-    const dfeNumber = 123
+    const schoolId = 123
 
     test('should call sqlFindPupilsBlockingHdf', async () => {
       jest.spyOn(headteacherDeclarationDataService, 'sqlFindPupilsBlockingHdf').mockImplementation()
-      await service.getEligibilityForSchool(dfeNumber)
+      await service.getEligibilityForSchool(schoolId)
       expect(headteacherDeclarationDataService.sqlFindPupilsBlockingHdf).toHaveBeenCalled()
     })
 
     test('should return true if no blocking pupils are detected', async () => {
       jest.spyOn(headteacherDeclarationDataService, 'sqlFindPupilsBlockingHdf').mockResolvedValue(0)
-      const result = await service.getEligibilityForSchool(dfeNumber)
+      const result = await service.getEligibilityForSchool(schoolId)
       expect(result).toBeTruthy()
     })
 
     test('should return false ifblocking  pupils  are detected', async () => {
       jest.spyOn(headteacherDeclarationDataService, 'sqlFindPupilsBlockingHdf').mockResolvedValue(1)
-      const result = await service.getEligibilityForSchool(dfeNumber)
+      const result = await service.getEligibilityForSchool(schoolId)
       expect(result).toBeFalsy()
     })
   })
