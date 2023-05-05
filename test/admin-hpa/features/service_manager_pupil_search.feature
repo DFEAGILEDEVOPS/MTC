@@ -60,8 +60,7 @@ Feature:
     Then the summary page is displayed with the attendance status set to <reason> along with details of the pupil
 
     Examples:
-      | reason                     |
-      | Absent during check window |
+      | reason                                         |
       | Incorrect registration                         |
       | Left school                                    |
       | Working below expectation                      |
