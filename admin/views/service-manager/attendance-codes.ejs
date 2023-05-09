@@ -5,9 +5,11 @@
         <h1 class="govuk-heading-xl">Attendance Codes</h1>
         <%- partial('partials/_gds_session_expiry') %>
           <%- partial('partials/_flash-messages') %>
-            <form type="post" action="/service-manager/attendance-codes-submit/">
+            <form method="post" action="/service-manager/attendance-codes-submit">
+              <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
               <% if (attendanceCodes && attendanceCodes.length> 0) { %>
-                <table class="govuk-spacious">
+                <div class="govuk-form-group
+                <table class=" govuk-spacious">
                   <thead>
                     <th title="Code">Code</th>
                     <th title="Reason">Reason</th>
@@ -28,13 +30,14 @@
                           <%= attendanceCodes[i].order %>
                         </td>
                         <td>
-                          <input type="checkbox" value="<%= attendanceCodes[i].id %>" <% if (attendanceCodes[i].visible)
-                            {%> checked<% } %>>
+                          <input type="checkbox" value="<%= attendanceCodes[i].code %>" <% if
+                            (attendanceCodes[i].visible) {%> checked<% } %>>
                         </td>
                       </tr>
                       <% } %>
                   </tbody>
-                </table>
+                  </table>
+                </div>
                 <button class="govuk-button" type="submit" value="Save">Save changes</button>
                 <% } %>
             </form>
