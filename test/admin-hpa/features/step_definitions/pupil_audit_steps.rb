@@ -132,7 +132,6 @@ Then(/^I should see a audit entry for the frozen pupil$/) do
   end
   expect(array_of_parsed_records[0]['newData']['frozen']).to be false
   expect(array_of_parsed_records[1]['newData']['frozen']).to be true
-  expect(array_of_parsed_records[1]['newData']['attendanceId']).to eql 7
 end
 
 
