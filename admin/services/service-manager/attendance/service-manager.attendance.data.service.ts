@@ -6,6 +6,7 @@ export class ServiceManagerAttendanceDataService {
     const sql = `
       SELECT id, code, reason, [order], visible
       FROM mtc_admin.attendanceCode
+      WHERE isPrivileged = 0
       ORDER BY [order]`
     return sqlService.readonlyQuery(sql)
   }
