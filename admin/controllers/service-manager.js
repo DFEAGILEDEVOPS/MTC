@@ -858,6 +858,18 @@ const controller = {
     } catch (error) {
       return next(error)
     }
+  },
+
+  postUpdateAttendanceCodes: async function postUpdateAttendanceCodes (req, res, next) {
+    try {
+      console.dir(req.formData)
+      return res.redirect('/service-manager/attendance-codes')
+      // await ServiceManagerAttendanceService.toggleVisibility(attendanceCodeId)
+    } catch (error) {
+      return next(error)
+    }
+    req.flash('info', 'Attendance code visibility changed')
+    res.redirect('/service-manager/attendance-codes')
   }
 }
 

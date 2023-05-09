@@ -206,4 +206,9 @@ router.get('/attendance-codes',
   serviceManagerController.getAttendanceCodes
 )
 
+router.post('/attendance-codes-submit',
+  isAuthenticated([roles.serviceManager]),
+  serviceManagerController.postUpdateAttendanceCodes
+)
+
 module.exports = router
