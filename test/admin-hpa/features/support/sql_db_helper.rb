@@ -199,7 +199,7 @@ class SqlDbHelper
 
   def self.get_attendance_codes
     @array_of_attCode = []
-    sql = "SELECT * FROM [mtc_admin].[attendanceCode]"
+    sql = "SELECT * FROM [mtc_admin].[attendanceCode] where visible=1"
     result = SQL_CLIENT.execute(sql)
     @array_of_attCode = result.each {|row| row.map}
     result.cancel

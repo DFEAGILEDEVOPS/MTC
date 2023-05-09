@@ -11,7 +11,7 @@ const attendanceCodeDataService = {
    * @returns {Promise<[{id: number, reason: string, code: string, order: number}] | undefined>}
    */
   sqlFindAttendanceCodes: async () => {
-    const sql = `SELECT id, reason, code, [order] FROM ${sqlService.adminSchema}.[attendanceCode] WHERE isPrivileged = 0`
+    const sql = `SELECT id, reason, code, [order] FROM ${sqlService.adminSchema}.[attendanceCode] WHERE isPrivileged = 0 AND visible = 1`
     return sqlService.readonlyQuery(sql)
   },
 
