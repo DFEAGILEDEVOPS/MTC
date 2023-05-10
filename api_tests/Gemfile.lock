@@ -30,7 +30,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  httparty
+  httparty (>= 0.21.0)
   pry
   rspec
 
