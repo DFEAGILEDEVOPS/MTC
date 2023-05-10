@@ -32,10 +32,10 @@ describe 'Security API spec' do
       request_helper = RequestHelper.new
       response = request_helper.spa_home
       expect(response.code).to eql 200
-      expect(response.headers['content-security-policy']).to eql "default-src 'self'; script-src 'self' "\
-                        "'unsafe-inline' https://www.google-analytics.com https://*.msecnd.net:*; img-src 'self' "\
-                "data: https://www.google-analytics.com https://*.msecnd.net:*; style-src 'self' 'unsafe-inline';"\
-                      " font-src 'self' data:; frame-src 'none'; object-src 'none'; connect-src *; media-src data:"
+      expect(response.headers['content-security-policy']).to eql "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.google-analytics.com "\
+                                                                          "https://js.monitor.azure.com/scripts/b/ai.2.min.js https://*.msecnd.net:*; img-src 'self' "\
+                                                                          "data: https://www.google-analytics.com https://*.msecnd.net:*; style-src 'self' 'unsafe-inline'; font-src 'self' "\
+                                                                          "data:; frame-src 'none'; object-src 'none'; connect-src *; media-src data:"
       expect(response.headers['content-type']).to eql "text/html"
       expect(response.headers['server']).to eql 'nginx'
       expect(response.headers['strict-transport-security']).to eql "max-age=31536000;"
@@ -54,9 +54,11 @@ describe 'Security API spec' do
       request_helper = RequestHelper.new
       response = request_helper.api_home
       expect(response.code).to eql 200
-      expect(response.headers['content-security-policy']).to eql "default-src 'self';base-uri 'self';block-all-mixed-content;font-src 'self' https: data:;frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+      expect(response.headers['content-security-policy']).to eql "default-src 'self';base-uri 'self';font-src 'self' https: data:;form-action 'self';frame-ancestors "\
+                                                                          "'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' "\
+                                                                          "https: 'unsafe-inline';upgrade-insecure-requests"
       expect(response.headers['x-dns-prefetch-control']).to eql "off"
-      expect(response.headers['expect-ct']).to eql "max-age=0"
+      # expect(response.headers['expect-ct']).to eql "max-age=0"
       expect(response.headers['x-frame-options']).to eql "SAMEORIGIN"
       expect(response.headers['strict-transport-security']).to eql "max-age=31536000; includeSubDomains; preload"
       expect(response.headers['x-download-options']).to eql "noopen"

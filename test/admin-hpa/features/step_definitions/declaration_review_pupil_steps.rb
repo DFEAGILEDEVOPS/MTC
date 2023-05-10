@@ -21,14 +21,14 @@ Given(/^I have a new pupil with a reason for not taking a check$/) do
   pupils_not_taking_check_page.add_reason.click
   page.execute_script "window.scrollBy(0,500)"
   @page = pupil_reason_page
-  pupil_reason_page.select_reason('Absent during check window')
+  pupil_reason_page.select_reason('Incorrect registration')
   @pupil_row = pupil_reason_page.pupil_list.rows.select {|row| row.name.text.include?(name)}
   @pupil_forename = @pupil_row.first.name.text.split(',')[1].strip
   @pupil_lastname = @pupil_row.first.name.text.split(',')[0].strip
   @pupil_row.first.checkbox.click
   pupil_reason_page.sticky_banner.confirm.click
 
-  step 'the Absent during check window reason should be stored against the pupils'
+  step 'the Incorrect registration reason should be stored against the pupils'
   pupil_status_page.load
   Timeout.timeout(20) {pupil_status_page.not_taking_checks.count.click until pupil_status_page.not_taking_checks_details.pupil_list.visible? }
   pupil_row = pupil_status_page.not_taking_checks_details.pupil_list.pupil_row.find { |r| r.text.include? @pupil_forename}
