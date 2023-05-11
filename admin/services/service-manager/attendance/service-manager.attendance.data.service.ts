@@ -4,7 +4,7 @@ const sqlService = require('../../data-access/sql.service')
 export class ServiceManagerAttendanceDataService {
   static async getAttendanceCodes (): Promise<AttendanceCode[]> {
     const sql = `
-      SELECT id, code, reason, [order], visible
+      SELECT code, reason, [order], visible
       FROM mtc_admin.attendanceCode
       WHERE isPrivileged = 0
       ORDER BY [order]`
@@ -28,12 +28,11 @@ export class ServiceManagerAttendanceDataService {
         type: TYPES.Bit
       }
     ]
-    await sqlService.query(sql, params)
+    await sqlService.modify(sql, params)
   }
 }
 
 export interface AttendanceCode {
-  id: number
   code: string
   reason: string
   order: number

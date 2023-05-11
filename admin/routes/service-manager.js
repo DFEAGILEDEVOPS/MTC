@@ -226,7 +226,7 @@ router.get('/attendance-codes',
   serviceManagerController.getAttendanceCodes
 )
 
-router.post('/attendance-codes-submit',
+router.post('/attendance-codes',
   isAuthenticated([roles.serviceManager]),
   serviceManagerController.postUpdateAttendanceCodes
 )

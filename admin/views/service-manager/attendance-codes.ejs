@@ -5,7 +5,7 @@
         <h1 class="govuk-heading-xl">Attendance Codes</h1>
         <%- partial('partials/_gds_session_expiry') %>
           <%- partial('partials/_flash-messages') %>
-            <form method="post" action="/service-manager/attendance-codes-submit">
+            <form method="post" action="/service-manager/attendance-codes">
               <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
               <% if (attendanceCodes && attendanceCodes.length> 0) { %>
                 <div class="govuk-form-group">
