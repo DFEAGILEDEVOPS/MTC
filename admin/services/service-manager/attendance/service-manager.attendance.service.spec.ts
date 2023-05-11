@@ -1,12 +1,12 @@
 import { ServiceManagerAttendanceService } from './service-manager.attendance.service'
-import { ServiceManagerAttendanceDataService } from './service-manager.attendance.data.service'
+import { AttendanceCodeVisibility, ServiceManagerAttendanceDataService } from './service-manager.attendance.data.service'
 
 describe('service manager attendance service', () => {
   beforeEach(() => {
     jest.restoreAllMocks()
   })
 
-  describe('bulkUpdateAttendanceCodesVisibility', () => {
+  describe('setVisibleAttendanceCodes', () => {
     test('updates each and every attendance code', async () => {
       const attendanceCodesToBeVisible = ['ABCDE', 'FGHIJ']
       const attendanceCodesToBeInvisible = ['KLMNO', 'PQRST', 'UVWXY']
@@ -19,16 +19,17 @@ describe('service manager attendance service', () => {
           order: index,
           visible: true
         })))
-      const setVisibilityDataServiceSpy = jest.spyOn(ServiceManagerAttendanceDataService, 'setVisibility').mockResolvedValue()
+      const setVisibilityDataServiceSpy = jest.spyOn(ServiceManagerAttendanceDataService, 'setVisibility2').mockResolvedValue()
 
       await ServiceManagerAttendanceService.setVisibleAttendanceCodes(attendanceCodesToBeVisible)
+      const expectedSet = new Array<AttendanceCodeVisibility>()
+      expectedSet.push({ code: 'ABCDE', visible: true })
+      expectedSet.push({ code: 'FGHIJ', visible: true })
+      expectedSet.push({ code: 'KLMNO', visible: false })
+      expectedSet.push({ code: 'PQRST', visible: false })
+      expectedSet.push({ code: 'UVWXY', visible: false })
 
-      expect(setVisibilityDataServiceSpy).toHaveBeenCalledTimes(allAttendanceCodes.length)
-      expect(setVisibilityDataServiceSpy).toHaveBeenCalledWith('ABCDE', true)
-      expect(setVisibilityDataServiceSpy).toHaveBeenCalledWith('FGHIJ', true)
-      expect(setVisibilityDataServiceSpy).toHaveBeenCalledWith('KLMNO', false)
-      expect(setVisibilityDataServiceSpy).toHaveBeenCalledWith('PQRST', false)
-      expect(setVisibilityDataServiceSpy).toHaveBeenCalledWith('UVWXY', false)
+      expect(setVisibilityDataServiceSpy).toHaveBeenCalledWith(expectedSet)
     })
 
     test('if none visible, sets all to not visible', async () => {
@@ -41,16 +42,18 @@ describe('service manager attendance service', () => {
           order: index,
           visible: true
         })))
-      const setVisibilityDataServiceSpy = jest.spyOn(ServiceManagerAttendanceDataService, 'setVisibility').mockResolvedValue()
+      const setVisibilityDataServiceSpy = jest.spyOn(ServiceManagerAttendanceDataService, 'setVisibility2').mockResolvedValue()
 
       await ServiceManagerAttendanceService.setVisibleAttendanceCodes(undefined)
 
-      expect(setVisibilityDataServiceSpy).toHaveBeenCalledTimes(allAttendanceCodes.length)
-      expect(setVisibilityDataServiceSpy).toHaveBeenCalledWith('ABCDE', false)
-      expect(setVisibilityDataServiceSpy).toHaveBeenCalledWith('FGHIJ', false)
-      expect(setVisibilityDataServiceSpy).toHaveBeenCalledWith('KLMNO', false)
-      expect(setVisibilityDataServiceSpy).toHaveBeenCalledWith('PQRST', false)
-      expect(setVisibilityDataServiceSpy).toHaveBeenCalledWith('UVWXY', false)
+      const expectedSet = new Array<AttendanceCodeVisibility>()
+      expectedSet.push({ code: 'ABCDE', visible: false })
+      expectedSet.push({ code: 'FGHIJ', visible: false })
+      expectedSet.push({ code: 'KLMNO', visible: false })
+      expectedSet.push({ code: 'PQRST', visible: false })
+      expectedSet.push({ code: 'UVWXY', visible: false })
+
+      expect(setVisibilityDataServiceSpy).toHaveBeenCalledWith(expectedSet)
     })
   })
 })

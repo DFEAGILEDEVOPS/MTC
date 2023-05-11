@@ -1,4 +1,4 @@
-import { AttendanceCode, ServiceManagerAttendanceDataService } from './service-manager.attendance.data.service'
+import { AttendanceCode, AttendanceCodeVisibility, ServiceManagerAttendanceDataService } from './service-manager.attendance.data.service'
 
 export class ServiceManagerAttendanceService {
   static async getAttendanceCodes (): Promise<AttendanceCode[]> {
@@ -14,10 +14,15 @@ export class ServiceManagerAttendanceService {
     if (!visibleAttendanceCodes || visibleAttendanceCodes.length === 0) {
       visibleAttendanceCodes = []
     }
+    const codes = new Array<AttendanceCodeVisibility>()
     const allAttendanceCodes = await ServiceManagerAttendanceDataService.getAttendanceCodes()
     for (const attendanceCode of allAttendanceCodes) {
       const visible = visibleAttendanceCodes.includes(attendanceCode.code)
-      await ServiceManagerAttendanceDataService.setVisibility(attendanceCode.code, visible)
+      codes.push({
+        code: attendanceCode.code,
+        visible
+      })
     }
+    await ServiceManagerAttendanceDataService.setVisibility2(codes)
   }
 }
