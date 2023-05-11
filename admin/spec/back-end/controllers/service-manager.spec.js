@@ -22,6 +22,7 @@ const { TypeOfEstablishmentService } = require('../../../services/type-of-establ
 const moment = require('moment-timezone')
 const { ServiceManagerSchoolService } = require('../../../services/service-manager/school/school.service')
 const { PupilFreezeService } = require('../../../services/service-manager/pupil-freeze/pupil-freeze.service')
+const { ServiceManagerAttendanceService } = require('../../../services/service-manager/attendance/service-manager.attendance.service')
 
 describe('service manager controller:', () => {
   let next
@@ -1802,7 +1803,7 @@ describe('service manager controller:', () => {
         method: 'POST',
         url: '/service-manager/attendance-codes',
         body: {
-          attendanceCodes: attendanceCodes
+          attendanceCodes
         }
       })
       const res = getRes()

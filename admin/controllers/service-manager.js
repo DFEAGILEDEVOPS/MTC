@@ -21,11 +21,8 @@ const { validate } = require('uuid')
 const { PupilAnnulmentService } = require('../services/service-manager/pupil-annulment/pupil-annulment.service')
 const { TypeOfEstablishmentService } = require('../services/type-of-establishment-service/type-of-establishment-service')
 const { ServiceManagerSchoolService } = require('../services/service-manager/school/school.service')
-<<<<<<< HEAD
 const { ServiceManagerAttendanceService } = require('../services/service-manager/attendance/service-manager.attendance.service')
-=======
 const { PupilFreezeService } = require('../services/service-manager/pupil-freeze/pupil-freeze.service')
->>>>>>> master
 
 const controller = {
   /**
