@@ -862,8 +862,8 @@ const controller = {
 
   postUpdateAttendanceCodes: async function postUpdateAttendanceCodes (req, res, next) {
     try {
-      console.dir(req.body)
-      // await ServiceManagerAttendanceService.toggleVisibility(attendanceCodeId)
+      const visibleCodes = req.body.attendanceCodes
+      await ServiceManagerAttendanceService.setVisibleAttendanceCodes(visibleCodes)
     } catch (error) {
       return next(error)
     }

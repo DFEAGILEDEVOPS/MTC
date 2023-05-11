@@ -21,6 +21,7 @@ const { ServiceManagerPupilService } = require('../../../services/service-manage
 const { TypeOfEstablishmentService } = require('../../../services/type-of-establishment-service/type-of-establishment-service')
 const moment = require('moment-timezone')
 const { ServiceManagerSchoolService } = require('../../../services/service-manager/school/school.service')
+const { ServiceManagerAttendanceService } = require('../../../services/service-manager/attendance/service-manager.attendance.service')
 
 describe('service manager controller:', () => {
   let next
@@ -1578,6 +1579,62 @@ describe('service manager controller:', () => {
       expect(res.redirect).toHaveBeenCalled()
       const redirectArgs = res.redirect.mock.calls[0]
       expect(redirectArgs[0]).toBe('/service-manager/pupil/move/daeb9d73-8b55-4b06-8ae2-6c0dbee03bd0')
+    })
+  })
+
+  describe('getAttendanceCodes', () => {
+    let baseReq
+    beforeEach(() => {
+      baseReq = {
+        method: 'GET',
+        url: '/service-manager/attendance-codes',
+        query: {
+          page: 1
+        }
+      }
+      jest.spyOn(ServiceManagerAttendanceService, 'getAttendanceCodes').mockResolvedValue({
+        data: [],
+        pagination: {
+          page: 1,
+          pageCount: 1,
+          perPage: 10,
+          total: 1
+        }
+      })
+    })
+
+    test('it renders the attendance codes page', async () => {
+      const req = getReq(baseReq)
+      const res = getRes()
+      await controller.getAttendanceCodes(req, res, next)
+      expect(res.render).toHaveBeenCalled()
+      const args = res.render.mock.calls[0]
+      expect(args[0]).toBe('service-manager/attendance-codes')
+    })
+
+    test('it handles an error by calling next', async () => {
+      const req = getReq(baseReq)
+      const res = getRes()
+      jest.spyOn(ServiceManagerAttendanceService, 'getAttendanceCodes').mockRejectedValue(new Error('mock error from testing'))
+      await controller.getAttendanceCodes(req, res, next)
+      expect(next).toHaveBeenCalled()
+    })
+  })
+
+  describe('postUpdateAttendanceCodes', () => {
+    test('it updates the attendance codes', async () => {
+      const attendanceCodes = ['ABCDE', 'FGHIJ', 'KLMNO']
+      const req = getReq({
+        method: 'POST',
+        url: '/service-manager/attendance-codes',
+        body: {
+          attendanceCodes: attendanceCodes
+        }
+      })
+      const res = getRes()
+      const serviceSpy = jest.spyOn(ServiceManagerAttendanceService, 'setVisibleAttendanceCodes').mockResolvedValue()
+      await controller.postUpdateAttendanceCodes(req, res, next)
+      expect(serviceSpy).toHaveBeenCalledWith(attendanceCodes)
     })
   })
 })

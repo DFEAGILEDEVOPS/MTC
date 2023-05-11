@@ -11,16 +11,16 @@ export class ServiceManagerAttendanceDataService {
     return sqlService.readonlyQuery(sql)
   }
 
-  static async setVisibility (attendanceCodeId: number, visible: boolean): Promise<void> {
+  static async setVisibility (attendanceCode: string, visible: boolean): Promise<void> {
     const sql = `
       UPDATE mtc_admin.attendanceCode
       SET visible = @visible
-      WHERE id = @attendanceCodeId`
+      WHERE code = @attendanceCode`
     const params = [
       {
-        name: 'attendanceCodeId',
-        value: attendanceCodeId,
-        type: TYPES.Int
+        name: 'attendanceCode',
+        value: attendanceCode,
+        type: TYPES.Char(5)
       },
       {
         name: 'visible',
