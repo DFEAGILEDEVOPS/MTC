@@ -21,7 +21,7 @@ const { ServiceManagerPupilService } = require('../../../services/service-manage
 const { TypeOfEstablishmentService } = require('../../../services/type-of-establishment-service/type-of-establishment-service')
 const moment = require('moment-timezone')
 const { ServiceManagerSchoolService } = require('../../../services/service-manager/school/school.service')
-const { ServiceManagerAttendanceService } = require('../../../services/service-manager/attendance/service-manager.attendance.service')
+const { PupilFreezeService } = require('../../../services/service-manager/pupil-freeze/pupil-freeze.service')
 
 describe('service manager controller:', () => {
   let next
@@ -1579,6 +1579,180 @@ describe('service manager controller:', () => {
       expect(res.redirect).toHaveBeenCalled()
       const redirectArgs = res.redirect.mock.calls[0]
       expect(redirectArgs[0]).toBe('/service-manager/pupil/move/daeb9d73-8b55-4b06-8ae2-6c0dbee03bd0')
+    })
+  })
+
+  describe('getPupilFreeze', () => {
+    let baseReq
+    beforeEach(() => {
+      baseReq = {
+        method: 'GET',
+        url: '/service-manager/pupil/freeze/daeb9d73-8b55-4b06-8ae2-6c0dbee03bd0',
+        params: {
+          slug: 'daeb9d73-8b55-4b06-8ae2-6c0dbee03bd0'
+        }
+      }
+      jest.spyOn(ServiceManagerPupilService, 'getPupilDetailsByUrlSlug').mockResolvedValue({ id: 1 })
+    })
+
+    test('it renders the confirmation page', async () => {
+      const req = getReq(baseReq)
+      const res = getRes()
+      await controller.getPupilFreeze(req, res, next)
+      expect(res.render).toHaveBeenCalled()
+      const args = res.render.mock.calls[0]
+      expect(args[0]).toBe('service-manager/pupil/freeze')
+    })
+  })
+
+  describe('postPupilFreeze', () => {
+    let baseReq
+    beforeEach(() => {
+      baseReq = {
+        method: 'POST',
+        url: '/service-manager/pupil/freeze/daeb9d73-8b55-4b06-8ae2-6c0dbee03bd0',
+        params: {
+          slug: 'daeb9d73-8b55-4b06-8ae2-6c0dbee03bd0'
+        },
+        body: {
+          upn: 'GOODUPN'
+        },
+        user: {
+          id: 42
+        }
+      }
+      jest.spyOn(ServiceManagerPupilService, 'getPupilDetailsByUrlSlug').mockResolvedValue({ id: 1, upn: 'GOODUPN' })
+      jest.spyOn(PupilFreezeService, 'applyFreeze').mockImplementation()
+      jest.spyOn(controller, 'getPupilFreeze')
+    })
+
+    test('shows the form again if the upn is not provided', async () => {
+      // Call the post handler, which errors out, and then calls the get handler to redisplay the form
+      baseReq.body.upn = '' // the user fails to supply a UPN
+      const req = getReq(baseReq)
+      const res = getRes()
+      await controller.postPupilFreeze(req, res, next)
+      expect(controller.getPupilFreeze).toHaveBeenCalled()
+      const validationErrorArg = controller.getPupilFreeze.mock.calls[0][3]
+      expect(validationErrorArg.errors.upn).toBe('No upn provided')
+    })
+
+    test('shows the form again if the upn does not match the expected value from the db', async () => {
+      // Call the post handler, which errors out, and then calls the get handler to redisplay the form
+      baseReq.body.upn = 'BADUPN'
+      const req = getReq(baseReq)
+      const res = getRes()
+      await controller.postPupilFreeze(req, res, next)
+      expect(controller.getPupilFreeze).toHaveBeenCalled()
+      const validationErrorArg = controller.getPupilFreeze.mock.calls[0][3]
+      expect(validationErrorArg.errors.upn).toBe('UPN does not match pupil')
+    })
+
+    test('calls the freeze service to apply make the pupil read-only', async () => {
+      // Call the post handler, which errors out, and then calls the get handler to redisplay the form
+      baseReq.body.upn = 'GOODUPN'
+      const req = getReq(baseReq)
+      const res = getRes()
+      await controller.postPupilFreeze(req, res, next)
+      expect(PupilFreezeService.applyFreeze).toHaveBeenCalled()
+    })
+
+    test('handles unexpected errors by showing the form page again', async () => {
+      // Careful here.  This call (getPupilDetailsByUrlSlug) is also used in the GET handler, which we want to succeed in this case.
+      jest.spyOn(ServiceManagerPupilService, 'getPupilDetailsByUrlSlug').mockRejectedValueOnce(new Error('mock error'))
+      const req = getReq(baseReq)
+      const res = getRes()
+      await controller.postPupilFreeze(req, res, next)
+      expect(controller.getPupilFreeze).toHaveBeenCalled()
+      const validationErrorArg = controller.getPupilFreeze.mock.calls[0][3]
+      expect(validationErrorArg.errors.upn).toBe('mock error')
+    })
+  })
+
+  describe('getPupilThaw', () => {
+    let baseReq
+    beforeEach(() => {
+      baseReq = {
+        method: 'GET',
+        url: '/service-manager/pupil/thaw/daeb9d73-8b55-4b06-8ae2-6c0dbee03bd0',
+        params: {
+          slug: 'daeb9d73-8b55-4b06-8ae2-6c0dbee03bd0'
+        }
+      }
+      jest.spyOn(ServiceManagerPupilService, 'getPupilDetailsByUrlSlug').mockResolvedValue({ id: 1 })
+    })
+
+    test('it renders the confirmation page', async () => {
+      const req = getReq(baseReq)
+      const res = getRes()
+      await controller.getPupilThaw(req, res, next)
+      expect(res.render).toHaveBeenCalled()
+      const args = res.render.mock.calls[0]
+      expect(args[0]).toBe('service-manager/pupil/thaw')
+    })
+  })
+
+  describe('postPupilThaw', () => {
+    let baseReq
+    beforeEach(() => {
+      baseReq = {
+        method: 'POST',
+        url: '/service-manager/pupil/thaw/daeb9d73-8b55-4b06-8ae2-6c0dbee03bd0',
+        params: {
+          slug: 'daeb9d73-8b55-4b06-8ae2-6c0dbee03bd0'
+        },
+        body: {
+          upn: 'GOODUPN'
+        },
+        user: {
+          id: 42
+        }
+      }
+      jest.spyOn(ServiceManagerPupilService, 'getPupilDetailsByUrlSlug').mockResolvedValue({ id: 1, upn: 'GOODUPN' })
+      jest.spyOn(PupilFreezeService, 'applyThaw').mockImplementation()
+      jest.spyOn(controller, 'getPupilThaw')
+    })
+
+    test('shows the form again if the upn is not provided', async () => {
+      // Call the post handler, which errors out, and then calls the get handler to redisplay the form
+      baseReq.body.upn = '' // the user fails to supply a UPN
+      const req = getReq(baseReq)
+      const res = getRes()
+      await controller.postPupilThaw(req, res, next)
+      expect(controller.getPupilThaw).toHaveBeenCalled()
+      const validationErrorArg = controller.getPupilThaw.mock.calls[0][3]
+      expect(validationErrorArg.errors.upn).toBe('No upn provided')
+    })
+
+    test('shows the form again if the upn does not match the expected value from the db', async () => {
+      // Call the post handler, which errors out, and then calls the get handler to redisplay the form
+      baseReq.body.upn = 'BADUPN'
+      const req = getReq(baseReq)
+      const res = getRes()
+      await controller.postPupilThaw(req, res, next)
+      expect(controller.getPupilThaw).toHaveBeenCalled()
+      const validationErrorArg = controller.getPupilThaw.mock.calls[0][3]
+      expect(validationErrorArg.errors.upn).toBe('UPN does not match pupil')
+    })
+
+    test('calls the freeze service to apply make the pupil read-only', async () => {
+      // Call the post handler, which errors out, and then calls the get handler to redisplay the form
+      baseReq.body.upn = 'GOODUPN'
+      const req = getReq(baseReq)
+      const res = getRes()
+      await controller.postPupilThaw(req, res, next)
+      expect(PupilFreezeService.applyThaw).toHaveBeenCalled()
+    })
+
+    test('handles unexpected errors by showing the form page again', async () => {
+      // Careful here.  This call (getPupilDetailsByUrlSlug) is also used in the GET handler, which we want to succeed in this case.
+      jest.spyOn(ServiceManagerPupilService, 'getPupilDetailsByUrlSlug').mockRejectedValueOnce(new Error('mock error'))
+      const req = getReq(baseReq)
+      const res = getRes()
+      await controller.postPupilThaw(req, res, next)
+      expect(controller.getPupilThaw).toHaveBeenCalled()
+      const validationErrorArg = controller.getPupilThaw.mock.calls[0][3]
+      expect(validationErrorArg.errors.upn).toBe('mock error')
     })
   })
 

@@ -29,3 +29,8 @@ end
 And(/^I navigate to the tio check overview page$/) do
   generate_tio_pins_overview_page.load
 end
+
+
+When(/^I navigate to the cookies form page$/) do
+  cookies_form_page.load
+end
