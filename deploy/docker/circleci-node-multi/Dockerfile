@@ -1,4 +1,5 @@
 # This is a custom dockerfile to allow us to run multiple versions of node
+# https://circleci.com/developer/images/image/cimg/node
 #  +nvm
 FROM cimg/node:14.18.1-browsers
 RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
