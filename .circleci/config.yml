@@ -7,7 +7,7 @@ jobs:
   unit_tests:
     working_directory: ~/repo/
     docker:
-      - image: stamtc/mtc_circleci:latest
+      - image: stamtc/mtc_circleci:next
     environment:
       TZ: Europe/London
     steps:
@@ -132,7 +132,7 @@ jobs:
   docker_build_admin_assets:
     working_directory: ~/repo/
     docker:
-      - image: stamtc/mtc_circleci:latest
+      - image: stamtc/mtc_circleci:next
     environment:
       TZ: Europe/London
     steps:
