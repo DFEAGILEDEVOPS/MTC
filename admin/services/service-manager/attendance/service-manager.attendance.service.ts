@@ -1,4 +1,5 @@
-import { AttendanceCode, AttendanceCodeVisibility, ServiceManagerAttendanceDataService } from './service-manager.attendance.data.service'
+import type { AttendanceCode, AttendanceCodeVisibility } from './service-manager.attendance.data.service'
+import { ServiceManagerAttendanceDataService } from './service-manager.attendance.data.service'
 
 export class ServiceManagerAttendanceService {
   static async getAttendanceCodes (): Promise<AttendanceCode[]> {
