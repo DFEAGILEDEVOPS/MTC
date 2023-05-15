@@ -11,7 +11,7 @@ const businessAvailabilityService = require('../services/business-availability.s
 const checkWindowPhaseConsts = require('../lib/consts/check-window-phase')
 
 /**
- * Pupils not taking the check: initial page.
+ * Pupils not taking the check: lists any pupils with attendance set.
  * @param req
  * @param res
  * @param next
@@ -51,7 +51,7 @@ const getPupilNotTakingCheck = async function getPupilNotTakingCheck (req, res, 
 }
 
 /**
- * Pupils not taking the check: pupil selection to add a new reason or change a reason
+ * Pupils not taking the check: pupil selection to add a new reason or remove a reason
  * @param req
  * @param res
  * @param next
