@@ -109,19 +109,19 @@ export class LoadingComponent implements AfterViewInit, OnDestroy, AfterViewChec
     };
   }
 
-  ngAfterViewInit() {
+  async ngAfterViewInit() {
     this.addAuditServiceEntry();
 
     // wait for the component to be rendered first, before parsing the text
     if (this.questionService.getConfig().questionReader) {
-      this.speechService.speakElement(this.elRef.nativeElement);
+      await this.speechService.speakElement(this.elRef.nativeElement);
       this.speechListenerEvent = this.elRef.nativeElement.addEventListener('focus', async (event: Event) => {
         if (document.getElementsByClassName('modal-overlay').length) {
           // a modal is open, ignore focus events on this component
           return false;
         }
         await this.speechService.waitForEndOfSpeech();
-        this.speechService.speakFocusedElement(event.target);
+        await this.speechService.speakFocusedElement(event.target);
       }, true);
     }
 
@@ -149,14 +149,23 @@ export class LoadingComponent implements AfterViewInit, OnDestroy, AfterViewChec
     }
   }
 
-  sendTimeoutEvent() {
+  /**
+   * Usually this screenis shown for 3 seconds, except when the next button between questions is shown
+   * the button just calls this function in the onClick handler.
+   */
+  async sendTimeoutEvent() {
+    // Make sure we cancel the speech service before we trigger the next page. PBI #58403
+    // There may be duplication of code here, but getting the order correct prevents a possible race condition.
+    if (this.questionService.getConfig().questionReader) {
+      await this.speechService.cancel();
+    }
     this.timeoutEvent.emit(null);
   }
 
-  ngOnDestroy(): void {
+  async ngOnDestroy(): Promise<void> {
     // stop the current speech process if the page is changed
     if (this.questionService.getConfig().questionReader) {
-      this.speechService.cancel();
+      await this.speechService.cancel();
       this.elRef.nativeElement.removeEventListener('focus', this.speechListenerEvent, true);
     }
     this.cleanupTheTimeouts()

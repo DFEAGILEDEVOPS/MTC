@@ -1,5 +1,5 @@
 [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/9f1ef3308c8c407284322926f501d537)](https://www.codacy.com/app/js_4/MTC?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=DFEAGILEDEVOPS/MTC&amp;utm_campaign=Badge_Grade)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/6524c6996d9240e4b7c9b63960677efe)](https://app.codacy.com/gh/DFEAGILEDEVOPS/MTC/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 [![CircleCI](https://circleci.com/gh/DFEAGILEDEVOPS/MTC.svg?style=svg)](https://circleci.com/gh/DFEAGILEDEVOPS/MTC)
 
 # Multiplication Tables Check (MTC) Project
