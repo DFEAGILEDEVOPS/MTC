@@ -60,10 +60,14 @@ Feature:
     Then the summary page is displayed with the attendance status set to <reason> along with details of the pupil
 
     Examples:
-      | reason                     |
-      | Absent during check window |
+      | reason                                         |
       | Incorrect registration                         |
       | Left school                                    |
       | Working below expectation                      |
       | Unable to access                               |
       | Just arrived and unable to establish abilities |
+
+
+  Scenario: Frozen pupil is shown on the summary page
+    Given I have searched for a frozen pupil
+    Then the summary page displays the pupil as frozen

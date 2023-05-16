@@ -54,7 +54,8 @@ describe('service manager pupil service', () => {
         dfeNumber: 4994494,
         upn: 'N999199900001',
         schoolId: 123,
-        attendanceCode: 'ABC'
+        attendanceCode: 'ABC',
+        frozen: false
       }
       jest.spyOn(ServiceManagerPupilDataService, 'findPupilByUpn').mockResolvedValue([expected])
       const actual = await ServiceManagerPupilService.findPupilByUpn(validUpn)
@@ -131,7 +132,8 @@ describe('service manager pupil service', () => {
         dfeNumber: 4994494,
         upn: 'N999199900001',
         schoolId: 456,
-        attendanceCode: 'EDFG'
+        attendanceCode: 'EDFG',
+        frozen: false
       }
       jest.spyOn(ServiceManagerPupilDataService, 'getPupilByUrlSlug').mockResolvedValue([expected])
       const actual = await ServiceManagerPupilService.getPupilDetailsByUrlSlug('455cc6b4-a688-469a-ab72-9c7e137a1ea8')
@@ -144,6 +146,7 @@ describe('service manager pupil service', () => {
       expect(actual.id).toStrictEqual(expected.id)
       expect(actual.upn).toStrictEqual(expected.upn)
       expect(actual.schoolId).toStrictEqual(expected.schoolId)
+      expect(actual.isFrozen).toBe(false)
     })
 
     test('should return valid status when pupil found', async () => {
@@ -160,7 +163,8 @@ describe('service manager pupil service', () => {
         dfeNumber: 4994494,
         upn: 'N999199900001',
         schoolId: 45656,
-        attendanceCode: 'BEUF'
+        attendanceCode: 'BEUF',
+        frozen: false
       }
       jest.spyOn(ServiceManagerPupilDataService, 'getPupilByUrlSlug').mockResolvedValue([expected])
       const pupilDetails = await ServiceManagerPupilService.getPupilDetailsByUrlSlug(mockPupilDetailsData.urlSlug)
@@ -182,7 +186,8 @@ describe('service manager pupil service', () => {
       schoolUrn: 777111,
       status: 'Not Started',
       upn: 'G10000000',
-      urlSlug: 'slug'
+      urlSlug: 'slug',
+      isFrozen: false
     }
     const school: ServiceManagerSchoolResult = {
       id: 100,

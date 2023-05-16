@@ -1,0 +1,41 @@
+<%- partial('partials/_gds_breadcrumbs_and_sign_out', { breadcrumbs }) %>
+<main class="govuk-main-wrapper govuk-body" id="main-content" role="main">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-heading-xl">Confirm Pupil Thaw</h1>
+            <%- partial('partials/_gds_session_expiry') %>
+            <%- partial('partials/_flash-messages') %>
+            <%- partial('partials/_form-error', {
+              pageFields: ['upn'],
+              error
+          }) %>
+
+            <form action="" method="post">
+                <input type="hidden" name="_csrf" value="<%= csrftoken %>"/>
+                <div class="govuk-form-group">
+                    <label class="govuk-label" for="upn">
+                        Confirm UPN for <%=pupil.lastName %>, <%=pupil.firstName %>
+                    </label>
+                    <input class="govuk-input" id="upn" name="upn" type="input" spellcheck="false"
+                           aria-describedby="upn-hint">
+                </div>
+                <button type="submit" id="search-btn" class="govuk-button">Confirm Thaw</button>
+                <a class="govuk-button govuk-button--secondary" href="/service-manager/home">Cancel</a>
+            </form>
+        </div>
+        <div class="govuk-grid-column-one-third" aria-label="sidebar">
+            <aside class="app-related-items" role="complementary">
+                <h2 class="govuk-heading-m" id="subsection-title">
+                    Related
+                </h2>
+                <nav role="navigation" aria-labelledby="subsection-title">
+                    <ul class="govuk-list govuk-!-font-size-16">
+                        <li>
+                            <a class="govuk-link" href="<%- guidancePdf %>" target="_blank" rel="noopener noreferrer">Read the guidance and watch videos</a>
+                        </li>
+                    </ul>
+                </nav>
+            </aside>
+        </div>
+    </div>
+</main>

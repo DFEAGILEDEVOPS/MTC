@@ -21,7 +21,6 @@ Feature:
     Examples:
       | reason                                         |
       | Incorrect registration                         |
-      | Absent during check window                     |
       | Left school                                    |
       | Unable to access                               |
       | Working below expectation                      |

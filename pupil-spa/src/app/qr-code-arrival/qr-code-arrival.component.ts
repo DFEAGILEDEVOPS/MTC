@@ -3,7 +3,7 @@ import { Router } from '@angular/router'
 import { ApplicationInsightsService } from '../services/app-insights/app-insights.service';
 
 @Component({
-  selector: 'qr-code-arrival',
+  selector: 'app-qr-code-arrival',
   templateUrl: './qr-code-arrival.component.html'
 })
 export class QrCodeArrivalComponent implements OnInit {

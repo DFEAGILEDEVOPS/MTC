@@ -100,12 +100,12 @@ export class LoginSuccessComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  ngOnDestroy(): void {
+  async ngOnDestroy(): Promise<void> {
     // remove pupil data from memory once component is destroyed
     this.pupil = undefined;
     // stop the current speech process if the page is changed
     if (this.config.questionReader) {
-      this.speechService.cancel();
+      await this.speechService.cancel();
 
       this.elRef.nativeElement.removeEventListener('focus', this.speechListenerEvent, true);
     }

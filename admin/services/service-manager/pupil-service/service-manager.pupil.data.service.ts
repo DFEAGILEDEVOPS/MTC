@@ -6,8 +6,8 @@ export class ServiceManagerPupilDataService {
   static async findPupilByUpn (upn: string): Promise<PupilSearchResult[]> {
     const sql = `
       SELECT p.createdAt, p.foreName, p.lastName, p.middleNames, p.dateOfBirth,
-        s.name as [schoolName], s.urn, s.dfeNumber,
-        p.urlSlug, s.id as [schoolId]
+        s.name as [schoolName], s.urn, s.dfeNumber, p.urlSlug, s.id as [schoolId],
+        p.frozen
       FROM mtc_admin.pupil p
       INNER JOIN mtc_admin.school s ON s.id = p.school_id
       WHERE upn = @upn`
@@ -24,9 +24,8 @@ export class ServiceManagerPupilDataService {
   static async getPupilByUrlSlug (urlSlug: string): Promise<PupilSearchResult[]> {
     const sql = `
       SELECT p.createdAt, p.id, p.foreName, p.middleNames, p.lastName, p.dateOfBirth,
-        s.name as [schoolName], s.urn, s.dfeNumber,
-        p.urlSlug, p.upn, s.id as [schoolId],
-        ac.code as [attendanceCode]
+        s.name as [schoolName], s.urn, s.dfeNumber, p.urlSlug, p.upn, s.id as [schoolId],
+        p.frozen, ac.code as [attendanceCode]
       FROM mtc_admin.pupil p
       INNER JOIN mtc_admin.school s ON s.id = p.school_id
       LEFT OUTER JOIN mtc_admin.attendanceCode ac ON ac.id = p.attendanceId
@@ -112,4 +111,5 @@ export interface PupilSearchResult {
   upn: string
   schoolId: number
   attendanceCode: string
+  frozen: boolean
 }

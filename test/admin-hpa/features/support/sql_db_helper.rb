@@ -199,7 +199,7 @@ class SqlDbHelper
 
   def self.get_attendance_codes
     @array_of_attCode = []
-    sql = "SELECT * FROM [mtc_admin].[attendanceCode]"
+    sql = "SELECT * FROM [mtc_admin].[attendanceCode] where visible=1"
     result = SQL_CLIENT.execute(sql)
     @array_of_attCode = result.each {|row| row.map}
     result.cancel
@@ -434,6 +434,14 @@ class SqlDbHelper
     count = result.first
     result.cancel
     count.values.first
+  end
+
+  def self.find_pupil_restart(pupil_id)
+    sql = "SELECT * FROM [mtc_admin].[pupilRestart] where pupil_id=#{pupil_id}"
+    result = SQL_CLIENT.execute(sql)
+    pupil_details_res = result.first
+    result.cancel
+    pupil_details_res
   end
 
   def self.create_group(group_name, school_id)
