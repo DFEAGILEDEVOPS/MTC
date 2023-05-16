@@ -70,10 +70,10 @@ describe('LoadingComponent', () => {
     expect((<any> auditEntryInserted.data).question).toBe('2x3');
   });
 
-  it('should clean up the timeouts when destroyed', () => {
+  it('should clean up the timeouts when destroyed', async () => {
     // @ts-ignore: spying on protected method
     const spy = spyOn(component, 'cleanupTheTimeouts').and.callThrough()
-    component.ngOnDestroy()
+    await component.ngOnDestroy()
     expect(spy).toHaveBeenCalled()
   })
 });
