@@ -367,7 +367,7 @@ export class SpeechService implements OnDestroy {
   /**
    * Ensure that we don't carry on speaking if the app is unloaded
    */
-  ngOnDestroy(): void {
-    this.cancel();
+  async ngOnDestroy(): Promise<void> {
+    await this.cancel();
   }
 }
