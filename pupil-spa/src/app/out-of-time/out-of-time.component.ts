@@ -46,11 +46,11 @@ export class OutOfTimeComponent implements AfterViewInit, OnDestroy {
     this.warmupQuestionService.reset();
   }
 
-  ngOnDestroy(): void {
+  async ngOnDestroy(): Promise<void> {
     const config = this.questionService.getConfig();
     // stop the current speech process if the page is changed
     if (config && config.questionReader) {
-      this.speechService.cancel();
+      await this.speechService.cancel();
 
       this.elRef.nativeElement.removeEventListener('focus', this.speechListenerEvent, true);
     }
