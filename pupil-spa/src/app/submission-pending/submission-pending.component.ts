@@ -48,10 +48,10 @@ export class SubmissionPendingComponent implements OnInit, AfterViewInit, OnDest
     }
   }
 
-  ngOnDestroy(): void {
+  async ngOnDestroy(): Promise<void> {
     // stop the current speech process if the page is changed
     if (this.questionService.getConfig().questionReader) {
-      this.speechService.cancel();
+      await this.speechService.cancel();
 
       this.elRef.nativeElement.removeEventListener('focus', this.speechListenerEvent, true);
     }
