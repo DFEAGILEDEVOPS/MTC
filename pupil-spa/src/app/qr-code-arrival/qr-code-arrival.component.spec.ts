@@ -1,5 +1,4 @@
 import { QrCodeArrivalComponent } from './qr-code-arrival.component';
-import { ApplicationInsightsService } from '../services/app-insights/app-insights.service';
 
 describe('QrCodeArrivalComponent', () => {
   let sut: QrCodeArrivalComponent;
