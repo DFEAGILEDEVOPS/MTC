@@ -87,14 +87,14 @@ describe('SpokenPracticeQuestionComponent', () => {
       }
     });
 
-    it('cleans up the timers on destroy', () => {
+    it('cleans up the timers on destroy', async () => {
       // @ts-ignore: protected property
       component.countdownInterval = 1
       // @ts-ignore: protected property
       component.timeout = 2
       const spy1 = spyOn(window, 'clearInterval')
       const spy2 = spyOn(window, 'clearTimeout')
-      component.ngOnDestroy()
+      await component.ngOnDestroy()
       // @ts-ignore
       expect(spy1).toHaveBeenCalledWith(1)
       // @ts-ignore
