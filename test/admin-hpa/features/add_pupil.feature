@@ -152,6 +152,12 @@ Feature:
     When I submit valid details with a already used UPN
     Then I should see an error stating more than 1 pupil with the same UPN
 
+  @upn
+  Scenario: UPN cannot be assigned twice even with a space at the beginning
+    Given I am on the add pupil page
+    When I submit valid details with a already used UPN with a space at the beginning
+    Then I should see an error stating more than 1 pupil with the same UPN
+
   Scenario: Validation for Add Pupil for UPN field
     Given I am on the add pupil page
     Then I should see validation error for the UPN field for the following
