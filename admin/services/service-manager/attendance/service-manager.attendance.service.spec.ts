@@ -1,5 +1,5 @@
 import { ServiceManagerAttendanceService } from './service-manager.attendance.service'
-import { AttendanceCodeVisibility, ServiceManagerAttendanceDataService } from './service-manager.attendance.data.service'
+import { ServiceManagerAttendanceDataService, type AttendanceCodeVisibility } from './service-manager.attendance.data.service'
 
 describe('service manager attendance service', () => {
   beforeEach(() => {
@@ -19,7 +19,7 @@ describe('service manager attendance service', () => {
           order: index,
           visible: true
         })))
-      const setVisibilityDataServiceSpy = jest.spyOn(ServiceManagerAttendanceDataService, 'setVisibility2').mockResolvedValue()
+      const setVisibilityDataServiceSpy = jest.spyOn(ServiceManagerAttendanceDataService, 'setVisibility').mockResolvedValue()
 
       await ServiceManagerAttendanceService.setVisibleAttendanceCodes(attendanceCodesToBeVisible)
       const expectedSet = new Array<AttendanceCodeVisibility>()
@@ -42,7 +42,7 @@ describe('service manager attendance service', () => {
           order: index,
           visible: true
         })))
-      const setVisibilityDataServiceSpy = jest.spyOn(ServiceManagerAttendanceDataService, 'setVisibility2').mockResolvedValue()
+      const setVisibilityDataServiceSpy = jest.spyOn(ServiceManagerAttendanceDataService, 'setVisibility').mockResolvedValue()
 
       await ServiceManagerAttendanceService.setVisibleAttendanceCodes(undefined)
 

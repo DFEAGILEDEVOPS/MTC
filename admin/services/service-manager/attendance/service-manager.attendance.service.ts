@@ -23,6 +23,6 @@ export class ServiceManagerAttendanceService {
         visible
       })
     }
-    await ServiceManagerAttendanceDataService.setVisibility2(codes)
+    await ServiceManagerAttendanceDataService.setVisibility(codes)
   }
 }

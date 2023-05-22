@@ -11,7 +11,7 @@ export class ServiceManagerAttendanceDataService {
     return sqlService.readonlyQuery(sql)
   }
 
-  static async setVisibility2 (attendanceCodes: AttendanceCodeVisibility[]): Promise<void> {
+  static async setVisibility (attendanceCodes: AttendanceCodeVisibility[]): Promise<void> {
     const updates = new Array<string>()
     const params = new Array<any>()
     for (let i = 0; i < attendanceCodes.length; i++) {
@@ -29,26 +29,6 @@ export class ServiceManagerAttendanceDataService {
       })
     }
     await sqlService.modifyWithTransaction(updates, params)
-  }
-
-  static async setVisibility (attendanceCode: string, visible: boolean): Promise<void> {
-    const sql = `
-      UPDATE mtc_admin.attendanceCode
-      SET visible = @visible
-      WHERE code = @attendanceCode`
-    const params = [
-      {
-        name: 'attendanceCode',
-        value: attendanceCode,
-        type: TYPES.Char(5)
-      },
-      {
-        name: 'visible',
-        value: visible,
-        type: TYPES.Bit
-      }
-    ]
-    await sqlService.modify(sql, params)
   }
 }
 
