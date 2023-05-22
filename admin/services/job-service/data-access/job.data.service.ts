@@ -1,4 +1,4 @@
-import moment from 'moment'
+import type moment from 'moment'
 import { TYPES } from '../../data-access/sql.service'
 import * as R from 'ramda'
 const sqlService = require('../../data-access/sql.service')

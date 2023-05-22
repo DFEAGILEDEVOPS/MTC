@@ -1,4 +1,4 @@
-import moment from 'moment'
+import type moment from 'moment'
 const sqlService = require('../../data-access/sql.service')
 const uuidValidate = require('uuid-validate')
 const R = require('ramda')
