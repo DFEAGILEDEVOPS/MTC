@@ -37,7 +37,6 @@ module.exports = {
     '@typescript-eslint/strict-boolean-expressions': 'off',
     // disabled until we can turn strictNullChecks on, as this allows undefined/nulls to slip through as boolean checks...
     '@typescript-eslint/no-unnecessary-boolean-literal-compare': 'off',
-    '@typescript-eslint/consistent-type-imports': 'off',
     '@typescript-eslint/ban-ts-comment': [
       'warn',
       {
