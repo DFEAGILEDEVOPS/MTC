@@ -1,5 +1,5 @@
 import { ServiceManagerAttendanceService } from './service-manager.attendance.service'
-import { ServiceManagerAttendanceDataService, type AttendanceCodeVisibility } from './service-manager.attendance.data.service'
+import { ServiceManagerAttendanceDataService, AttendanceCodeVisibility } from './service-manager.attendance.data.service'
 
 describe('service manager attendance service', () => {
   beforeEach(() => {
