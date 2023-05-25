@@ -1,9 +1,9 @@
-import { SchoolPinReplenishmnentService, School, SchoolPinUpdate } from './school-pin-replenishment.service'
+import { SchoolPinReplenishmnentService, type School, type SchoolPinUpdate } from './school-pin-replenishment.service'
 import moment from 'moment'
-import { ISchoolPinReplenishmentDataService } from './school-pin-replenishment.data.service'
-import { ILogger, ConsoleLogger } from '../../common/logger'
-import { IConfigProvider } from './config-file-provider'
-import { IModifyResult } from '../../sql/sql.service'
+import { type ISchoolPinReplenishmentDataService } from './school-pin-replenishment.data.service'
+import { type ILogger, ConsoleLogger } from '../../common/logger'
+import { type IConfigProvider } from './config-file-provider'
+import { type IModifyResult } from '../../sql/sql.service'
 
 const SchoolPinGeneratorDataServiceMock = jest.fn<ISchoolPinReplenishmentDataService, any>(() => ({
   getAllSchools: jest.fn(),
@@ -70,7 +70,7 @@ describe('school-pin-replenishment.service', () => {
     expect(dataService.updatePin).toHaveBeenCalledTimes(1)
     expect(update).toBeDefined()
     // optional chaining not currently supported in our ts-jest setup
-    expect(update?.id).toStrictEqual(2)
+    expect(update?.id).toBe(2)
   })
 
   test('it should fail after making configured number of attempts', async () => {

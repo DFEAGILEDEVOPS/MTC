@@ -1,5 +1,5 @@
-import { IPsReportLogSetBatch } from './ps-report-log-set'
-import { BlobService, IBlobService } from '../../azure/blob-service'
+import { type IPsReportLogSetBatch } from './ps-report-log-set'
+import { BlobService, type IBlobService } from '../../azure/blob-service'
 import { PsLogEntryConverter } from './log-entry.converter'
 export interface IPsLogWriter {
   writeToStorage (logSet: IPsReportLogSetBatch): Promise<void>

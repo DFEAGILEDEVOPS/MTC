@@ -1,12 +1,12 @@
-import { ISqlService, SqlService } from '../../sql/sql.service'
-import { UserInputTypeLookup } from './prepare-answers-and-inputs.data.service'
+import { type ISqlService, SqlService } from '../../sql/sql.service'
+import { type UserInputTypeLookup } from './prepare-answers-and-inputs.data.service'
 
 export interface IUserInputService {
   getUserInputLookupTypeId (eventType: string): Promise<number | undefined>
 }
 
 export class UserInputService implements IUserInputService {
-  private readonly userInputLookupCache: Map<string, number> = new Map()
+  private readonly userInputLookupCache = new Map<string, number>()
   private readonly sqlService: ISqlService
   private initialised = false
 

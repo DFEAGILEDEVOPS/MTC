@@ -1,6 +1,6 @@
-import { AzureFunction, Context } from '@azure/functions'
+import { type AzureFunction, type Context } from '@azure/functions'
 import { performance } from 'perf_hooks'
-import { IPupilFeedbackMessage, PupilFeedbackService, IPupilFeedbackFunctionBinding } from './feedback.service'
+import { type IPupilFeedbackMessage, PupilFeedbackService, type IPupilFeedbackFunctionBinding } from './feedback.service'
 
 const functionName = 'pupil-feedback'
 const service = new PupilFeedbackService()

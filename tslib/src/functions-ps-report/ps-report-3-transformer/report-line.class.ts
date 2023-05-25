@@ -1,16 +1,16 @@
-import moment from 'moment'
+import type moment from 'moment'
 import {
-  AnswersOrNull,
-  CheckConfigOrNull,
-  CheckFormOrNull,
-  CheckOrNull, DeviceOrNull, EventsOrNull,
-  Event,
-  Pupil,
-  School, Answer, NotTakingCheckCode, RestartReasonCode
+  type AnswersOrNull,
+  type CheckConfigOrNull,
+  type CheckFormOrNull,
+  type CheckOrNull, type DeviceOrNull, type EventsOrNull,
+  type Event,
+  type Pupil,
+  type School, type Answer, type NotTakingCheckCode, type RestartReasonCode
 } from '../../functions-ps-report/ps-report-2-pupil-data/models'
 import { deepFreeze } from '../../common/deep-freeze'
 import { ReportLineAnswer } from './report-line-answer.class'
-import { DfEAbsenceCode, IPsychometricReportLine, WorkingReportLine } from './models'
+import { type DfEAbsenceCode, type IPsychometricReportLine, type WorkingReportLine } from './models'
 
 export class ReportLine {
   private readonly _answers: AnswersOrNull
@@ -21,7 +21,7 @@ export class ReportLine {
   private readonly _events: EventsOrNull
   private readonly _pupil: Pupil
   private readonly _school: School
-  private _report: WorkingReportLine = {
+  private readonly _report: WorkingReportLine = {
     // Pupil fields
     PupilDatabaseId: -1,
     DOB: null,
@@ -168,7 +168,7 @@ export class ReportLine {
       numpadRemoval: 7
     }
 
-    const arrangements: String[] = []
+    const arrangements: string[] = []
     Object.keys(map).forEach(k => {
       // @ts-ignore - ignore, `map` is badly typed
       if (this.checkConfig[k] === true) {

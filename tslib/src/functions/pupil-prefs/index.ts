@@ -1,7 +1,7 @@
-import { AzureFunction, Context } from '@azure/functions'
+import { type AzureFunction, type Context } from '@azure/functions'
 import { performance } from 'perf_hooks'
 import { PupilPrefsService } from './pupil-prefs.service'
-import { IPupilPrefsFunctionBindings } from './IPupilPrefsFunctionBindings'
+import { type IPupilPrefsFunctionBindings } from './IPupilPrefsFunctionBindings'
 
 const functionName = 'pupil-prefs'
 

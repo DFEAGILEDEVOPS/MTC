@@ -1,8 +1,8 @@
 import moment from 'moment'
-import { IPsReportLogEntry, PsReportSource } from '../common/ps-report-log-entry'
-import { IPsLogWriter } from './log-writer'
+import { type IPsReportLogEntry, PsReportSource } from '../common/ps-report-log-entry'
+import { type IPsLogWriter } from './log-writer'
 import { LogService } from './log.service'
-import { IServiceBusMessageLike } from './service-bus-message-like'
+import { type IServiceBusMessageLike } from './service-bus-message-like'
 
 const LogWriterMock = jest.fn<IPsLogWriter, any>(() => ({
   writeToStorage: jest.fn()

@@ -1,8 +1,8 @@
-import { AzureFunction, Context } from '@azure/functions'
+import { type AzureFunction, type Context } from '@azure/functions'
 import { performance } from 'perf_hooks'
 import * as V1 from './check-marker.v1'
-import { ICheckMarkerFunctionBindings } from './models'
-import { MarkCheckMessageV1 } from '../../schemas/models'
+import { type ICheckMarkerFunctionBindings } from './models'
+import { type MarkCheckMessageV1 } from '../../schemas/models'
 
 const functionName = 'check-marker'
 const marker = new V1.CheckMarkerV1()

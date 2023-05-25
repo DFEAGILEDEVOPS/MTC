@@ -1,5 +1,5 @@
 import * as RA from 'ramda-adjunct'
-import { ISchoolRecord, EstabTypeCode, EstabTypeGroupCode, EstabStatusCode } from './data-access/ISchoolRecord'
+import { type ISchoolRecord, EstabTypeCode, EstabTypeGroupCode, EstabStatusCode } from './data-access/ISchoolRecord'
 
 const schoolsInGibraltarLaCode = 704
 

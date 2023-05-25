@@ -1,4 +1,4 @@
-import { AzureFunction, Context, HttpRequest } from '@azure/functions'
+import { type AzureFunction, type Context, type HttpRequest } from '@azure/functions'
 import config from '../../config'
 import { ReceivedCheckPayloadService } from './received-check-payload.service'
 const functionName = 'util-replay-check'

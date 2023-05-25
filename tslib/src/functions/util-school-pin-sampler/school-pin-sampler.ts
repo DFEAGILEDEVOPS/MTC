@@ -1,7 +1,7 @@
 import * as tzutil from '../school-pin-generator/timezone-util'
 import { SchoolPinGenerator } from '../school-pin-generator/school-pin-generator'
 import { SchoolPinExpiryGenerator } from '../school-pin-generator/school-pin-expiry-generator'
-import { IDateTimeService } from '../../common/datetime.service'
+import { type IDateTimeService } from '../../common/datetime.service'
 import { RandomGenerator } from '../school-pin-generator/random-generator'
 import moment = require('moment')
 

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/dot-notation */
 
 import { SchoolResultsCacheDeterminerService } from './school-results-cache-determiner.service'
-import { ConsoleLogger, ILogger } from '../../common/logger'
+import { ConsoleLogger, type ILogger } from '../../common/logger'
 import config from '../../config'
 import moment from 'moment'
 

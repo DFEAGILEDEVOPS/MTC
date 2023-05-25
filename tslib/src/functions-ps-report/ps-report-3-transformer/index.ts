@@ -1,8 +1,8 @@
-import { AzureFunction, Context } from '@azure/functions'
+import { type AzureFunction, type Context } from '@azure/functions'
 import { performance } from 'perf_hooks'
 import { ReportLine } from './report-line.class'
 import { jsonReviver } from '../../common/json-reviver'
-import { PupilResult } from '../../functions-ps-report/ps-report-2-pupil-data/models'
+import { type PupilResult } from '../../functions-ps-report/ps-report-2-pupil-data/models'
 import { PsReportLogger } from '../common/ps-report-logger'
 import { PsReportSource } from '../common/ps-report-log-entry'
 

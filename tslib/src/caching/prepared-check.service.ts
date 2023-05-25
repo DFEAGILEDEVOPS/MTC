@@ -1,4 +1,4 @@
-import { IRedisService, RedisService } from './redis-service'
+import { type IRedisService, RedisService } from './redis-service'
 import redisKeyService from './redis-key.service'
 
 export interface IPreparedCheckService {

@@ -1,11 +1,11 @@
-import { AzureFunction, Context } from '@azure/functions'
+import { type AzureFunction, type Context } from '@azure/functions'
 import { performance } from 'perf_hooks'
 import * as sb from '@azure/service-bus'
 import config from '../../config'
-import { ICheckNotificationMessage } from '../../schemas/check-notification-message'
+import { type ICheckNotificationMessage } from '../../schemas/check-notification-message'
 import { BatchCheckNotifier } from './batch-check-notifier.service'
 import * as RA from 'ramda-adjunct'
-import { IFunctionTimer } from '../../azure/functions'
+import { type IFunctionTimer } from '../../azure/functions'
 
 const functionName = 'check-notifier-batch'
 /*

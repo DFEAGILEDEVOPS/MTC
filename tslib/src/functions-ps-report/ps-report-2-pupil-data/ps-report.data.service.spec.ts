@@ -1,8 +1,8 @@
 import { PsReportDataService } from './ps-report.data.service'
 import { MockLogger } from '../../common/logger'
-import { ISqlService } from '../../sql/sql.service'
+import { type ISqlService } from '../../sql/sql.service'
 import moment from 'moment'
-import { School } from './models'
+import { type School } from './models'
 
 describe('ps-report.data.service', () => {
   let sut: PsReportDataService
@@ -540,7 +540,7 @@ describe('ps-report.data.service', () => {
       }
       expect(events).toHaveLength(1)
       const event = events[0]
-      expect(event.browserTimestamp.toISOString()).toStrictEqual('2021-01-05T05:56:01.122Z')
+      expect(event.browserTimestamp.toISOString()).toBe('2021-01-05T05:56:01.122Z')
       expect(event.data).toStrictEqual({ question: '1x1' })
       expect(event.id).toBe(1)
       expect(event.isWarmup).toBe(false)

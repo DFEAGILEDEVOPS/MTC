@@ -1,4 +1,4 @@
-import { PupilFeedbackService, IPupilFeedbackFunctionBinding, IPupilFeedbackMessage, IPupilFeedbackTableEntity } from './feedback.service'
+import { PupilFeedbackService, type IPupilFeedbackFunctionBinding, type IPupilFeedbackMessage, type IPupilFeedbackTableEntity } from './feedback.service'
 import { v4 as uuidv4 } from 'uuid'
 
 let sut: PupilFeedbackService

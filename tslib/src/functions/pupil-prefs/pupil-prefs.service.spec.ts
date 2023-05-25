@@ -1,10 +1,10 @@
 import {
   PupilPrefsService,
-  IPupilPrefsDataService,
-  IPupilPreferenceDataUpdate,
-  IPupilPreferenceUpdate
+  type IPupilPrefsDataService,
+  type IPupilPreferenceDataUpdate,
+  type IPupilPreferenceUpdate
 } from './pupil-prefs.service'
-import { IPupilPrefsFunctionBindings } from './IPupilPrefsFunctionBindings'
+import { type IPupilPrefsFunctionBindings } from './IPupilPrefsFunctionBindings'
 
 const PupilPrefsDataServiceMock = jest.fn<IPupilPrefsDataService, any>(() => ({
   updatePupilPreferences: jest.fn(),

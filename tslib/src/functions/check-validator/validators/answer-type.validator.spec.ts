@@ -1,5 +1,5 @@
 import { AnswerTypeValidator } from './answer-type.validator'
-import { ICheckValidationError } from './validator-types'
+import { type ICheckValidationError } from './validator-types'
 
 let sut: AnswerTypeValidator
 
@@ -192,6 +192,6 @@ describe('answer-type.validator', () => {
       sequenceNumber: 3
     })
     const error = sut.validate(check)
-    expect(error).not.toBeDefined()
+    expect(error).toBeUndefined()
   })
 })

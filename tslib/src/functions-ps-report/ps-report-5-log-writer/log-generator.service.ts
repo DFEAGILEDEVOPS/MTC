@@ -1,5 +1,5 @@
-import { IPsReportLogEntry, PsReportSource } from '../common/ps-report-log-entry'
-import { IPsReportLogSetBatch } from './ps-report-log-set'
+import { type IPsReportLogEntry, PsReportSource } from '../common/ps-report-log-entry'
+import { type IPsReportLogSetBatch } from './ps-report-log-set'
 import { PsLogEntryFormatter } from './log-entry-formatter'
 
 export class PsLogSetGeneratorService {
@@ -32,7 +32,7 @@ export class PsLogSetGeneratorService {
       }
     }
     return {
-      setId: setId,
+      setId,
       listSchoolsLog: this.listSchoolsLog,
       pupilDataLog: this.pupilDataLog,
       transformerLog: this.transformerLog,

@@ -2,7 +2,7 @@ import * as R from 'ramda'
 import moment from 'moment'
 
 import { SqlService } from '../../sql/sql.service'
-import { ConsoleLogger, ILogger } from '../../common/logger'
+import { ConsoleLogger, type ILogger } from '../../common/logger'
 import config from '../../config'
 
 const functionName = 'school-results-cache-determiner'
@@ -19,7 +19,7 @@ export interface ISchoolResultsCacheDeterminerFunctionBindings {
 export class SchoolResultsCacheDeterminerService {
   private readonly dataService: ISchoolResultsCacheDeterminerDataService
   private readonly logger: ILogger
-  private functionBindings: ISchoolResultsCacheDeterminerFunctionBindings
+  private readonly functionBindings: ISchoolResultsCacheDeterminerFunctionBindings
 
   constructor (functionBindings: ISchoolResultsCacheDeterminerFunctionBindings | any, logger?: ILogger, dataService?: ISchoolResultsCacheDeterminerDataService) {
     this.functionBindings = functionBindings
@@ -99,7 +99,7 @@ export class SchoolResultsCacheDeterminerService {
 
 export interface ISchoolResultsCacheDeterminerDataService {
   sqlFindActiveCheckWindow (): Promise<any>
-  sqlGetSchoolGuids (): Promise<Array<{schoolName: string, schoolGuid: string}>>
+  sqlGetSchoolGuids (): Promise<Array<{ schoolName: string, schoolGuid: string }>>
 }
 
 export class SchoolResultsCacheDeterminerDataService implements ISchoolResultsCacheDeterminerDataService {
@@ -120,7 +120,7 @@ export class SchoolResultsCacheDeterminerDataService implements ISchoolResultsCa
     return R.head(result)
   }
 
-  async sqlGetSchoolGuids (): Promise<Array<{schoolName: string, schoolGuid: string}>> {
+  async sqlGetSchoolGuids (): Promise<Array<{ schoolName: string, schoolGuid: string }>> {
     const sql = 'SELECT name as schoolName, urlSlug as schoolGuid FROM mtc_admin.school'
     return this.sqlService.query(sql)
   }

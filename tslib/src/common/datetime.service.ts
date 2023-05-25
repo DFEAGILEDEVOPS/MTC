@@ -1,4 +1,4 @@
-import { Moment } from 'moment'
+import { type Moment } from 'moment'
 import moment = require('moment')
 
 const iso8601WithMsPrecisionAndTimeZone = 'YYYY-MM-DDTHH:mm:ss.SSSZ'

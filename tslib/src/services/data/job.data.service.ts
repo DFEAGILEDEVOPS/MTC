@@ -1,5 +1,5 @@
 import { TYPES, MAX } from 'mssql'
-import { IModifyResult, ISqlParameter, ISqlService, SqlService } from '../../sql/sql.service'
+import { type IModifyResult, type ISqlParameter, type ISqlService, SqlService } from '../../sql/sql.service'
 import { JobStatusCode } from '../../common/job-status-code'
 import moment from 'moment'
 import { isArray } from 'ramda-adjunct'

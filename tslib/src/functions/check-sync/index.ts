@@ -1,7 +1,7 @@
-import { AzureFunction, Context } from '@azure/functions'
+import { type AzureFunction, type Context } from '@azure/functions'
 import { performance } from 'perf_hooks'
 import { PreparedCheckSyncService } from './prepared-check-sync.service'
-import { IPreparedCheckSyncMessage } from './IPreparedCheckSyncMessage'
+import { type IPreparedCheckSyncMessage } from './IPreparedCheckSyncMessage'
 const functionName = 'check-sync'
 
 /**

@@ -1,10 +1,10 @@
-import Redis, { RedisOptions } from 'ioredis'
+import Redis, { type RedisOptions } from 'ioredis'
 import config from '../config'
 import * as Logger from '../common/logger'
-import { RedisCacheItem, RedisItemDataType } from './RedisCacheItemMetadata'
+import { type RedisCacheItem, RedisItemDataType } from './RedisCacheItemMetadata'
 import { isNil } from 'ramda'
-import { ILogger } from '../common/logger'
-import axios, { AxiosRequestConfig } from 'axios'
+import { type ILogger } from '../common/logger'
+import axios, { type AxiosRequestConfig } from 'axios'
 
 export interface IRedisService {
   /**

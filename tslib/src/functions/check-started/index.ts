@@ -1,6 +1,6 @@
-import { AzureFunction, Context } from '@azure/functions'
+import { type AzureFunction, type Context } from '@azure/functions'
 import { performance } from 'perf_hooks'
-import { ICheckStartedMessage, CheckStartedService } from './check-started.service'
+import { type ICheckStartedMessage, CheckStartedService } from './check-started.service'
 import * as os from 'os'
 const functionName = 'check-started'
 

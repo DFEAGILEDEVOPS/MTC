@@ -1,4 +1,4 @@
-import { AzureFunction, Context, HttpRequest } from '@azure/functions'
+import { type AzureFunction, type Context, type HttpRequest } from '@azure/functions'
 import { performance } from 'perf_hooks'
 import config from '../../config'
 import { SchoolApi } from './school-api'
@@ -45,7 +45,7 @@ const httpTriggerFunc: AzureFunction = async function (context: Context, req: Ht
 
 async function createSchool (context: Context, req: HttpRequest): Promise<void> {
   if (req.body === undefined || req.rawBody?.length === 0) {
-    return generateResponse(context, 'Failed', 400, 'Missing body')
+    generateResponse(context, 'Failed', 400, 'Missing body'); return
   }
 
   try {
@@ -59,7 +59,7 @@ async function createSchool (context: Context, req: HttpRequest): Promise<void> 
 
 async function createUser (context: Context, req: HttpRequest): Promise<void> {
   if (req.body === undefined || req.rawBody?.length === 0) {
-    return generateResponse(context, 'Failed', 400, 'Missing body')
+    generateResponse(context, 'Failed', 400, 'Missing body'); return
   }
 
   try {

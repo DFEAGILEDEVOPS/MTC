@@ -1,7 +1,7 @@
-import { IPreparedCheckSyncDataService, PreparedCheckSyncDataService, IActiveCheckReference } from './prepared-check-sync.data.service'
-import { IPreparedCheckMergeService, PreparedCheckMergeService, IPreparedCheck } from './prepared-check-merge.service'
-import { IRedisService, RedisService } from '../../caching/redis-service'
-import { ILogger, ConsoleLogger } from '../../common/logger'
+import { type IPreparedCheckSyncDataService, PreparedCheckSyncDataService, type IActiveCheckReference } from './prepared-check-sync.data.service'
+import { type IPreparedCheckMergeService, PreparedCheckMergeService, type IPreparedCheck } from './prepared-check-merge.service'
+import { type IRedisService, RedisService } from '../../caching/redis-service'
+import { type ILogger, ConsoleLogger } from '../../common/logger'
 import { isNil } from 'ramda'
 
 export class PreparedCheckSyncService {

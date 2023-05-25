@@ -1,7 +1,7 @@
 import { CheckNotificationType } from '../../schemas/check-notification-message'
-import { IBatchCheckNotifierDataService } from './batch-check-notifier.data.service'
+import { type IBatchCheckNotifierDataService } from './batch-check-notifier.data.service'
 import { BatchCheckNotifier } from './batch-check-notifier.service'
-import { ITransactionRequest } from '../../sql/sql.service'
+import { type ITransactionRequest } from '../../sql/sql.service'
 
 const CheckNotifyDataServiceMock = jest.fn<IBatchCheckNotifierDataService, any>(() => ({
   createProcessingFailedRequest: jest.fn(),

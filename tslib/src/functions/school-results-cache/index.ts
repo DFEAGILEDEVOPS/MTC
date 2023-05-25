@@ -1,11 +1,11 @@
-import { AzureFunction, Context } from '@azure/functions'
+import { type AzureFunction, type Context } from '@azure/functions'
 import { performance } from 'perf_hooks'
 import * as RA from 'ramda-adjunct'
 import * as sb from '@azure/service-bus'
 
 import config from '../../config'
 import { ResultService } from './services/result.service'
-import { IFunctionTimer } from '../../azure/functions'
+import { type IFunctionTimer } from '../../azure/functions'
 
 const functionName = 'school-results-cache'
 
