@@ -122,7 +122,11 @@ describe('result.service', () => {
         await sut.getPupilResultDataFromDb('a fake guid')
         fail('expected to throw')
       } catch (error) {
-        expect(error.message).toBe('Unable to find school with Guid a fake guid')
+        let errorMessage = 'unknown error'
+        if (error instanceof Error) {
+          errorMessage = error.message
+        }
+        expect(errorMessage).toBe('Unable to find school with Guid a fake guid')
       }
     })
 

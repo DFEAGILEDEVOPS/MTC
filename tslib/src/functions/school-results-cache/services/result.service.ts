@@ -127,7 +127,11 @@ export class ResultService {
     try {
       await this.redisService.setex(redisKey, result, config.SchoolResultsCache.RedisResultsExpiryInSeconds)
     } catch (error) {
-      this.logger.error(`${logPrefix}: Failed to write to Redis: ${error.message}`)
+      let errorMessage = 'unknown error'
+      if (error instanceof Error) {
+        errorMessage = error.message
+      }
+      this.logger.error(`${logPrefix}: Failed to write to Redis: ${errorMessage}`)
       // This is likely a temporary error.  We should throw here, and let the message
       // be delivered and processed again.
       throw error

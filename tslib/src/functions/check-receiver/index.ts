@@ -17,7 +17,11 @@ const queueTrigger: AzureFunction = async function (context: Context, submittedC
     }
     await receiver.process(context, submittedCheck)
   } catch (error) {
-    context.log.error(`${functionName}: ERROR: ${error.message}`)
+    let errorMessage = 'unknown error'
+    if (error instanceof Error) {
+      errorMessage = error.message
+    }
+    context.log.error(`${functionName}: ERROR: ${errorMessage}`)
     throw error
   }
 

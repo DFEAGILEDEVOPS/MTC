@@ -30,7 +30,11 @@ describe('pupil feedback service', () => {
       sut.process(bindings, message)
       fail('error should have been thrown')
     } catch (error) {
-      expect(error.message).toBe(`version:${message.version} unsupported`)
+      let errorMessage = 'unknown error'
+      if (error instanceof Error) {
+        errorMessage = error.message
+      }
+      expect(errorMessage).toBe(`version:${message.version} unsupported`)
     }
   })
 

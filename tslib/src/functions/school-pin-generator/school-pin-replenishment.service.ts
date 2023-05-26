@@ -83,7 +83,11 @@ export class SchoolPinReplenishmnentService {
             pinUpdated = true
           } catch (error) {
             attemptsMade++
-            logger.error(`error thrown attempting sql update:${error.message}`)
+            let errorMessage = 'unknown error'
+            if (error instanceof Error) {
+              errorMessage = error.message
+            }
+            logger.error(`error thrown attempting sql update:${errorMessage}`)
             update.newPin = this.pinGenerator.generate()
           }
         }

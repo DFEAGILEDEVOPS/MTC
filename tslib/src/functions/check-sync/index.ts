@@ -23,7 +23,11 @@ const queueTrigger: AzureFunction = async function (context: Context, preparedCh
     const prepCheckSyncService = new PreparedCheckSyncService()
     await prepCheckSyncService.process(preparedCheckSyncMessage.pupilUUID)
   } catch (error) {
-    context.log.error(`${functionName}: ERROR: ${error.message}`)
+    let errorMessage = 'unknown error'
+    if (error instanceof Error) {
+      errorMessage = error.message
+    }
+    context.log.error(`${functionName}: ERROR: ${errorMessage}`)
     throw error
   }
 

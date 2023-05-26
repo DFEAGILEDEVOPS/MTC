@@ -61,7 +61,11 @@ describe('check-marker/v1', () => {
       await sut.mark(functionBindings, loggerMock)
       fail('error should have been thrown due to empty receivedCheckData')
     } catch (error) {
-      expect(error.message).toBe('received check reference is empty')
+      let errorMessage = 'unknown error'
+      if (error instanceof Error) {
+        errorMessage = error.message
+      }
+      expect(errorMessage).toBe('received check reference is empty')
     }
   })
 

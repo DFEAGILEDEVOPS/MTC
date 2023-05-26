@@ -104,7 +104,11 @@ export class CheckMarkerV1 {
       rawCheckForm = await this.sqlService.getCheckFormDataByCheckCode(checkCode)
     } catch (error) {
       logger.error(error)
-      await this.updateReceivedCheckWithMarkingError(validatedCheck, `checkForm lookup failed:${error.message}`)
+      let errorMessage = 'unknown error'
+      if (error instanceof Error) {
+        errorMessage = error.message
+      }
+      await this.updateReceivedCheckWithMarkingError(validatedCheck, `checkForm lookup failed:${errorMessage}`)
       return
     }
 

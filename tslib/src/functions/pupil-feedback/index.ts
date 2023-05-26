@@ -16,7 +16,11 @@ const queueTrigger: AzureFunction = async function (context: Context, feedbackMe
     }
     service.process(context.bindings as IPupilFeedbackFunctionBinding, feedbackMessage)
   } catch (error) {
-    context.log.error(`${functionName}: ERROR: ${error.message}`)
+    let errorMessage = 'unknown error'
+    if (error instanceof Error) {
+      errorMessage = error.message
+    }
+    context.log.error(`${functionName}: ERROR: ${errorMessage}`)
     throw error
   }
 

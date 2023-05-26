@@ -57,7 +57,11 @@ export class PreparedCheckSyncService {
       try {
         await this.dataService.sqlUpdateCheckConfig(ref.checkCode, updatedConfig)
       } catch (error) {
-        this.logger.error(`Error failed to update check ${ref.checkCode} with new access arrangements: ${error.message}`)
+        let errorMessage = 'unknown error'
+        if (error instanceof Error) {
+          errorMessage = error.message
+        }
+        this.logger.error(`Error failed to update check ${ref.checkCode} with new access arrangements: ${errorMessage}`)
       }
     }
   }
