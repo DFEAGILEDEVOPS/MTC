@@ -79,12 +79,6 @@ export class SchoolImportService {
       columnHeaders = csvParsed.shift()
       mapping = this.getMapping(columnHeaders)
     } catch (error) {
-      let errorMessage = 'unknown error'
-      if (error instanceof Error) {
-        errorMessage = error.message
-      } else {
-        error = new Error(errorMessage)
-      }
       await this.updateJobStatusToFailed(jobSlug, error as Error)
       throw new SchoolImportError(this.jobResult, error as Error)
     }
@@ -104,12 +98,6 @@ export class SchoolImportService {
       await this.updateJobStatusToCompleted(jobSlug)
       return this.jobResult
     } catch (error) {
-      let errorMessage = 'unknown error'
-      if (error instanceof Error) {
-        errorMessage = error.message
-      } else {
-        error = new Error(errorMessage)
-      }
       await this.updateJobStatusToFailed(jobSlug, error as Error)
       throw new SchoolImportError(this.jobResult, error as Error)
     }

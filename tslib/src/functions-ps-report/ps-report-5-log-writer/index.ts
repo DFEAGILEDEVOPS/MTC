@@ -37,7 +37,11 @@ const funcImplementation: AzureFunction = async function (context: Context, time
     })
     context.log(`${functionName}: connected to service bus instance ${busClient.fullyQualifiedNamespace}`)
   } catch (error) {
-    context.log.error(`${functionName}: unable to connect to service bus at this time:${error.message}`)
+    let errorMessage = 'unknown error'
+    if (error instanceof Error) {
+      errorMessage = error.message
+    }
+    context.log.error(`${functionName}: unable to connect to service bus at this time:${errorMessage}`)
     throw error
   }
 

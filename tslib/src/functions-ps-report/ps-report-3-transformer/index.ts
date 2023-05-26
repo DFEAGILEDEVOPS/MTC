@@ -38,7 +38,11 @@ const serviceBusQueueTrigger: AzureFunction = async function (context: Context, 
     const outputData = reportLine.transform()
     context.bindings.outputData = outputData
   } catch (error) {
-    logger.error(`ERROR: ${error.message}`)
+    let errorMessage = 'unknown error'
+    if (error instanceof Error) {
+      errorMessage = error.message
+    }
+    logger.error(`ERROR: ${errorMessage}`)
     throw error
   }
 

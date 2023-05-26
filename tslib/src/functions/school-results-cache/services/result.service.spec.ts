@@ -640,7 +640,11 @@ describe('result.service', () => {
         await sut.cacheResultData(schoolGuid)
         fail()
       } catch (error) {
-        expect(error.message).toBe('schoolGuid not found')
+        let errorMessage = 'unknown error'
+        if (error instanceof Error) {
+          errorMessage = error.message
+        }
+        expect(errorMessage).toBe('schoolGuid not found')
       }
       expect(mockRedisService.setex).not.toHaveBeenCalled()
     })

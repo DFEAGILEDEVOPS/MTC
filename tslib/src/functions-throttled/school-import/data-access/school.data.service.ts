@@ -139,7 +139,11 @@ export class SchoolDataService implements ISchoolDataService {
         this.jobResult.linesProcessed += 1
         this.jobResult.schoolsLoaded += 1
       } catch (error) {
-        this.logError(`insert failed for school. urn:${school.urn} error: ${error.message}`)
+        let errorMessage = 'unknown error'
+        if (error instanceof Error) {
+          errorMessage = error.message
+        }
+        this.logError(`insert failed for school. urn:${school.urn} error: ${errorMessage}`)
         this.jobResult.linesProcessed += 1
       }
     }

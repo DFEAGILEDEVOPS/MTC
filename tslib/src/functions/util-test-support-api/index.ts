@@ -53,7 +53,11 @@ async function createSchool (context: Context, req: HttpRequest): Promise<void> 
     const entity = await schoolApi.create(req.body)
     generateResponse(context, 'Success', 201, 'Created', entity)
   } catch (error) {
-    generateResponse(context, 'Failed', 500, error.message)
+    let errorMessage = 'unknown error'
+    if (error instanceof Error) {
+      errorMessage = error.message
+    }
+    generateResponse(context, 'Failed', 500, errorMessage)
   }
 }
 
@@ -67,7 +71,11 @@ async function createUser (context: Context, req: HttpRequest): Promise<void> {
     const entity = await userApi.create(req.body)
     generateResponse(context, 'Success', 201, 'Created', entity)
   } catch (error) {
-    generateResponse(context, 'Failed', 500, error.message)
+    let errorMessage = 'unknown error'
+    if (error instanceof Error) {
+      errorMessage = error.message
+    }
+    generateResponse(context, 'Failed', 500, errorMessage)
   }
 }
 
