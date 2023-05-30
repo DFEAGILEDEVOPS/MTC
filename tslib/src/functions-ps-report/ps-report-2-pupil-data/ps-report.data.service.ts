@@ -242,11 +242,19 @@ export class PsReportDataService {
    * Retrieve the check and result from the database
    * @param checkId
    */
-  public async getCheck (checkId: number | null): Promise<CheckOrNull> {
+  public async getCheck (pupil: Pupil): Promise<CheckOrNull> {
+    const checkId = pupil.currentCheckId
     if (checkId === null) {
       // For pupils that have not taken a check, or are not attending
       return null
     }
+
+    // Deal with pupils marked as not attending that may have a currentCheckId
+    const NotTakingCheckAnnulledCode: NotTakingCheckCode = 'ANLLD'
+    if (pupil.notTakingCheckCode !== null && pupil.notTakingCheckCode !== NotTakingCheckAnnulledCode) {
+      return null
+    }
+
     const sql = `
         DECLARE @pupilId INT = (SELECT pupil_id FROM [mtc_admin].[check] WHERE id = @checkId);
         DECLARE @checksLoggedInCount INT = (SELECT count(*) FROM mtc_admin.[check] where isLiveCheck = 1 AND pupil_id = @pupilId AND pupilLoginDate IS NOT NULL);
@@ -598,6 +606,15 @@ export class PsReportDataService {
   }
 
   /**
+   * Determine if a pupil is not taking a check
+   * @param pupil
+   * @returns boolean - true if the pupil is marked as not taking the check.
+   */
+  public pupilIsNotTakingCheck (pupil: Pupil): boolean {
+    return pupil.notTakingCheckCode !== null
+  }
+
+  /**
    * Entry point to create the data structure to pass to the transform step in the psychometric report generation
    * @param pupil
    */
@@ -610,7 +627,7 @@ export class PsReportDataService {
       Promise<EventsOrNull>
     ] = [
       this.getCheckConfig(pupil.currentCheckId),
-      this.getCheck(pupil.currentCheckId),
+      this.getCheck(pupil),
       this.getAnswers(pupil.currentCheckId),
       this.getDevice(pupil.currentCheckId),
       this.getEvents(pupil.currentCheckId)
