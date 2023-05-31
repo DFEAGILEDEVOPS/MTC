@@ -75,7 +75,7 @@ describe('FeedbackComponent', () => {
   it('should include one question', () => {
     const compiled = fixture.debugElement.nativeElement
     const questions = compiled.querySelectorAll('h2.heading-medium')
-    expect(questions[0].textContent).toMatch(/How easy or difficult was it to enter your answers today?/)
+    expect(questions[0].textContent).toMatch(/How did you find the multiplication tables check?/)
   })
 
   it('should include 5 optional answers for satisfactionRating field', () => {
