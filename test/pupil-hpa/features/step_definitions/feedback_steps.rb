@@ -2,13 +2,6 @@ Given(/^I choose to give feedback$/) do
   complete_page.feedback.click
 end
 
-Then(/^I should be able to provide my method of entry$/) do
-  expect(feedback_page).to have_touchscreen
-  expect(feedback_page).to have_mouse
-  expect(feedback_page).to have_keyboard
-  expect(feedback_page).to have_mix
-end
-
 Then(/^I should be able to give feedback on how difficult it was to enter answers$/) do
   expect(feedback_page).to have_very_easy
   expect(feedback_page).to have_easy
@@ -18,9 +11,7 @@ Then(/^I should be able to give feedback on how difficult it was to enter answer
 end
 
 When(/^I have provided my feedback$/) do
-  feedback_page.keyboard.click
   feedback_page.very_easy.click
-  feedback_page.comments_field.set 'Test feedback'
 end
 
 Then(/^I should be able to submit my feedback$/) do
@@ -39,10 +30,6 @@ end
 
 Then(/^I should see the submit button disabled$/) do
   expect(feedback_page.submit).to be_disabled
-end
-
-When(/^I feedback on the method of entry used$/) do
-  feedback_page.keyboard.click
 end
 
 When(/^I feedback on the ways to improve$/) do
@@ -87,9 +74,7 @@ Then(/^my feedback should be saved$/) do
   stored_check = SqlDbHelper.get_check(local_storage['checkCode'])
   expect(stored_check['complete']).to eql true
   saved_feedback = AzureTableHelper.get_pupil_feedback(stored_check['checkCode'])
-  expect(saved_feedback.properties['inputType']).to eql 'Keyboard'
   expect(saved_feedback.properties['satisfactionRating']).to eql 'Very easy'
-  expect(saved_feedback.properties['comments']).to eql 'Test feedback'
 end
 
 
