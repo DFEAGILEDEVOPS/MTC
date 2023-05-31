@@ -3,6 +3,8 @@ Given(/^I choose to give feedback$/) do
 end
 
 Then(/^I should be able to give feedback on how difficult it was to enter answers$/) do
+  expect(feedback_page).to have_heading
+  expect(feedback_page).to have_question
   expect(feedback_page).to have_very_easy
   expect(feedback_page).to have_easy
   expect(feedback_page).to have_neither
