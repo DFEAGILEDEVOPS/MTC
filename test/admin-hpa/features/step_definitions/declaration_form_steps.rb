@@ -61,3 +61,36 @@ end
 Then(/^I should be taken to the attendance page$/) do
   expect(current_url).to eql "#{ENV["ADMIN_BASE_URL"]}/attendance/review-pupil-details"
 end
+
+
+Given(/^I generate a live pin$/) do
+  name = (0...8).map {(65 + rand(26)).chr}.join
+  step "I am on the add pupil page"
+  step "I submit the form with the name fields set as #{name}"
+  step "the pupil details should be stored"
+  navigate_to_pupil_list_for_pin_gen('live')
+  @pupil_forename = name
+  @page = generate_live_pins_overview_page
+  @pupil_name = generate_live_pins_overview_page.generate_pin_using_name(name)
+  pupil_pin_row = view_and_print_live_pins_page.pupil_list.rows.find {|row| row.name.text == @pupil_name}
+  @pupil_credentials = {:school_password => pupil_pin_row.school_password.text, :pin => pupil_pin_row.pin.text}
+  @check_code = SqlDbHelper.check_details(@stored_pupil_details['id'])['checkCode']
+end
+
+
+Given('the pin expires') do
+  @pupil_details = SqlDbHelper.pupil_details_using_school(@details_hash[:upn], @school_id)
+  @check_details = SqlDbHelper.get_all_pupil_checks(@pupil_details['id']).sort_by {|hsh| hsh['createdAt']}.last
+  SqlDbHelper.delete_check_pin(@check_details["id"])
+end
+
+Then('I should not be able to sign the HDF') do
+  visit ENV['ADMIN_BASE_URL'] + '/sign-out'
+  step "I am logged in"
+  step 'I am on the HDF form page'
+  expect(@page).to_not have_first_name
+  expect(@page).to_not have_last_name
+  expect(@page).to_not have_is_headteacher_yes
+  expect(@page).to_not have_is_headteacher_no
+  expect(@page).to_not have_continue
+end

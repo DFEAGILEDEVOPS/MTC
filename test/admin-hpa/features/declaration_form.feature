@@ -90,3 +90,10 @@ Feature: Declaration form
     And I submit the form with the hdf name fields set as Test
     Then I should see a validation error for job title
 
+  @live_tio_expired
+  Scenario: HDF cannot be signed when a pupil has an expired pin and the live check window is closed
+    Given I generate a live pin
+    But the pin expires
+    When the live check window closes
+    Then I should not be able to sign the HDF
+
