@@ -167,13 +167,6 @@ export class PupilAnnulmentDataService {
     DECLARE @previousAttendanceId int
 
     SELECT
-      @previousAttendanceId = attendanceCode_id
-    FROM
-      [mtc_admin].[pupilAttendance]
-    WHERE
-      id = @previousPupilAttendanceId
-
-    SELECT
       @annulmentPupilAttendanceId = pa.id,
       @previousCheckCompleteValue = pa.previousCheckCompleteValue,
       @previousRestartAvailableValue = pa.previousRestartAvailableValue,
@@ -187,6 +180,13 @@ export class PupilAnnulmentDataService {
       pa.attendanceCode_id = @attendanceCode_id
     AND
       pa.isDeleted = 0
+
+    SELECT
+      @previousAttendanceId = attendanceCode_id
+    FROM
+      [mtc_admin].[pupilAttendance]
+    WHERE
+      id = @previousPupilAttendanceId
 
     -- soft delete pupilAttendanceRecord for annulment
     IF @annulmentPupilAttendanceId IS NOT NULL
