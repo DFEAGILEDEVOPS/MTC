@@ -20,10 +20,11 @@ const pupilAddService = {
     if (pupilData === undefined || Object.keys(pupilData).length < 11) throw new Error('pupilData is required')
     if (isNaN(schoolId)) throw new Error('schoolId is required')
     if (isNaN(userId)) throw new Error('userId is required')
+    const cleanUPN = R.pathOr('', ['upn'], pupilData).trim().toUpperCase()
 
     const pupilDataRow = {
       school_id: schoolId,
-      upn: pupilData.upn,
+      upn: cleanUPN,
       foreName: pupilData.foreName,
       lastName: pupilData.lastName,
       middleNames: pupilData.middleNames,
@@ -45,8 +46,6 @@ const pupilAddService = {
     const saveData = R.omit(['dob-day', 'dob-month', 'dob-year', 'ageReason'], pupilDataRow)
     // @ts-ignore
     saveData.dateOfBirth = dateService.createUTCFromDayMonthYear(pupilDataRow['dob-day'], pupilDataRow['dob-month'], pupilDataRow['dob-year'])
-    saveData.upn = R.pathOr('', ['upn'], pupilDataRow).trim().toUpperCase()
-
     const res = await pupilDataService.sqlCreate(saveData)
     const pupilRecord = await pupilDataService.sqlFindOneById(res.insertId)
 

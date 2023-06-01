@@ -658,3 +658,14 @@ When(/^I submit valid details with a temporary UPN has a lowercase alpha charact
   @page.save_changes.click if @page == edit_pupil_page
   @time_stored = Helpers.time_to_nearest_hour(Time.now.utc)
 end
+
+
+When(/^I submit valid details with a already used UPN with a space at the beginning$/) do
+  dob = calculate_age(9)
+  @upn = @upns_for_school.sample
+  @details_hash = {first_name: 'valid', middle_name: 'valid', last_name: 'valid', female: true, upn: " " + @upn, day: dob.day.to_s, month: dob.month.to_s, year: dob.year.to_s}
+  @page.enter_details(@details_hash)
+  @page.add_pupil.click unless @page == edit_pupil_page
+  @page.save_changes.click if @page == edit_pupil_page
+  @time_stored = Helpers.time_to_nearest_hour(Time.now.utc)
+end
