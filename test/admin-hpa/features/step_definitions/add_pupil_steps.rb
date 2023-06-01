@@ -165,6 +165,7 @@ When(/^I have submitted valid pupil details$/) do
 end
 
 Then(/^the pupil details should be stored$/) do
+  sleep 2
   expect(pupil_register_page).to be_displayed
   gender = @details_hash[:male] ? 'M' : 'F'
   wait_until {!(SqlDbHelper.pupil_details(@upn.to_s,@school_id)).nil?}
