@@ -309,7 +309,6 @@ export class ReportLine {
     return 'Incomplete'
   }
 
-
   private getFormMark (): number | null {
     if (this._pupil.notTakingCheckCode !== null) {
       // Pupils marked as not taking the check should have a null FormMark.  This is generic case
