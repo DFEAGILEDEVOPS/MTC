@@ -912,4 +912,20 @@ describe('report line class', () => {
       expect(res).toBeNull()
     })
   })
+
+  describe('device', () => {
+    test('a null device id reports as a null for the BrowserType', () => {
+      const sut = new ReportLine(
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        pupilCompletedCheck,
+        school)
+      const outputData = sut.transform()
+      expect(outputData.BrowserType).toBeNull()
+    })
+  })
 })
