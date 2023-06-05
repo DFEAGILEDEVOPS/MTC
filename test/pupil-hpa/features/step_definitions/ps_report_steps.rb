@@ -393,3 +393,52 @@ Then(/^I should see the ps report showing the first input$/) do
   answers = expected_questions.map {|question| ps_report_record["Q#{question}Response"]}
   expect(expected_answers).to eql answers
 end
+
+
+Given(/^I have annulled a pupil$/) do
+  step 'I add a pupil'
+  pupil_upn = @details_hash[:upn]
+  @pupil_details = SqlDbHelper.pupil_details(pupil_upn)
+  annul_pupil(pupil_upn, @school_id)
+end
+
+
+And(/^I should see the correct code for an annulled pupil$/) do
+  pupil_details = SqlDbHelper.pupil_details_using_school(@details_hash[:upn], @school_id)
+  ps_report_record = SqlDbHelper.get_ps_record_for_pupil(pupil_details['id'])
+  expect(ps_report_record["ReasonNotTakingCheck"]).to eql 'Q'
+end
+
+
+Given(/^I have removed a pupils annulment$/) do
+  step 'I have annulled a pupil'
+  step 'the data sync and ps report function has run'
+  step 'I should see a record for the pupil in the ps report table'
+  step 'I should see the correct code for an annulled pupil'
+  undo_annulment(@details_hash[:upn], @school_id)
+
+end
+
+
+And(/^I should see the annulment has been removed$/) do
+  pupil_details = SqlDbHelper.pupil_details_using_school(@details_hash[:upn], @school_id)
+  ps_report_record = SqlDbHelper.get_ps_record_for_pupil(pupil_details['id'])
+  expect(ps_report_record["ReasonNotTakingCheck"]).to be_nil
+end
+
+
+And(/^I remove a previously applied annulment$/) do
+  pupil_upn = @details_hash[:upn]
+  @pupil_details = SqlDbHelper.pupil_details(pupil_upn)
+  annul_pupil(pupil_upn, @school_id)
+  step 'the data sync and ps report function has run'
+  step 'I should see a record for the pupil in the ps report table'
+  step 'I should see the correct code for an annulled pupil'
+  undo_annulment(@details_hash[:upn], @school_id)
+end
+
+And(/^this is code is stored$/) do
+  reason = SqlDbHelper.get_attendance_code_for_a_pupil(@stored_pupil_details['id'])
+  attendance_code_name = SqlDbHelper.check_attendance_code(reason['attendanceCode_id'])
+  @original_pupil_attendance = calculate_not_taking_reason_code(attendance_code_name['reason'])
+end

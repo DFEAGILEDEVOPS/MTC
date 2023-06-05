@@ -68,4 +68,4 @@ export interface WorkingReportLine extends IReportLineBase {
   answers: ReportLineAnswer[]
 }
 
-export type DfEAbsenceCode = 'Z' | 'A' | 'L' | 'U' | 'B' | 'J'
+export type DfEAbsenceCode = 'Z' | 'A' | 'L' | 'U' | 'B' | 'J' | 'Q'

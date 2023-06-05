@@ -17,7 +17,8 @@
     "node": ">= 16"
   },
   "resolutions": {
-    "**/**/lodash": "^4.17.21"
+    "**/**/lodash": "^4.17.21",
+    "**/**/logform": "2.4.2"
   },
   "overrides": {
     "logform": "2.4.2"
