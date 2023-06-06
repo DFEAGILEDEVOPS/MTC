@@ -927,5 +927,27 @@ describe('report line class', () => {
       const outputData = sut.transform()
       expect(outputData.BrowserType).toBeNull()
     })
+
+    test('an all-null device obj reports as a null for the BrowserType', () => {
+      const sut = new ReportLine(
+        null,
+        null,
+        null,
+        null,
+        {
+          browserFamily: null,
+          browserMajorVersion: null,
+          browserMinorVersion: null,
+          browserPatchVersion: null,
+          type: null,
+          typeModel: null,
+          deviceId: null
+        },
+        null,
+        pupilCompletedCheck,
+        school)
+      const outputData = sut.transform()
+      expect(outputData.BrowserType).toBeNull()
+    })
   })
 })

@@ -251,7 +251,11 @@ export class ReportLine {
     if (this.device === null) {
       return null
     }
-    return `${this.device.browserFamily} ${this.getBrowserVersion()}`
+    const browserVersion = this.getBrowserVersion()
+    if (this.device.browserFamily !== null && browserVersion !== null) {
+      return `${this.device.browserFamily} ${this.getBrowserVersion()}`
+    }
+    return null
   }
 
   private getTimeout (questionNumber: number): boolean {

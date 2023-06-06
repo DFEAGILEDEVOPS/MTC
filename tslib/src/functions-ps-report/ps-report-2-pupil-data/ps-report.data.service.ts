@@ -78,7 +78,7 @@ export class PsReportDataService {
     return this.sqlService.query(sql, params)
   }
 
-  private async sqlFindRestartReasonCode (pupilId: number, pupilRestartNumber: number): Promise<RestartReasonCode|null> {
+  private async sqlFindRestartReasonCode (pupilId: number, pupilRestartNumber: number): Promise<RestartReasonCode | null> {
     const pupilRestarts = await this.sqlFindPupilRestart(pupilId)
     if (Array.isArray(pupilRestarts)) {
       if (pupilRestartNumber <= pupilRestarts.length) {
@@ -528,6 +528,18 @@ export class PsReportDataService {
       browserPatchVersion: number | null
       ident: string | null
     }
+
+    /**
+     * Note that if there isn't any device information at all, DBDevice[0] will be this:
+     *
+     * {
+     *    browserFamily: null,
+     *    browserMajorVersion: null,
+     *    browserMinorVersion: null,
+     *    browserPatchVersion: null,
+     *    ident: null
+     * }
+     */
 
     const res: DBDevice[] = await this.sqlService.query(sql, [{ name: 'checkId', value: checkId, type: TYPES.Int }])
     const data = R.head(res)
