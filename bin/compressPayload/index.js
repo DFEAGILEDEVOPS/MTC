@@ -1,10 +1,14 @@
 const LZString = require('lz-string')
 const fs = require('fs')
+const process = require('process')
+const path = require('path')
 
 /**
  * Processing
  *
- * The payload is stored in Azure table-storage.  Here is the method that worked for me.
+ * The payload is stored in Azure table-storage.  Here is the method that worked for me.  NOTE THAT
+ * IT COMPRESSES TO BASE64!.  If you plan on using this tool, you will need to modify any decompression
+ * libraries to also switch from UTF16 (nightmare) to Base64 encoded character sets.
  *
  * 1. Create the compressed payload file using this tool:
  *    node index.js payload.json > payload.compressed.txt
@@ -22,5 +26,13 @@ if (process.argv.length < 3) {
   process.exit(1)
 }
 
-const archive = fs.readFileSync(process.argv[2], { encoding: 'utf16le' })
-console.log(LZString.compressToUTF16(archive))
+const parsedPath = path.parse(process.argv[2])
+const outputFile = path.join(
+  parsedPath.dir,
+  parsedPath.name + '.compressed.txt'
+)
+console.log(`Writing compressed data to: ${outputFile}`)
+
+const input = fs.readFileSync(process.argv[2], { encoding: 'utf8' }) // json file
+const compressedString = LZString.compressToBase64(input)
+fs.writeFileSync(outputFile, compressedString, { encoding: 'utf8'}) // output file
