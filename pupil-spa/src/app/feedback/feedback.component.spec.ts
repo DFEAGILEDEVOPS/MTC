@@ -72,20 +72,10 @@ describe('FeedbackComponent', () => {
     expect(compiled.querySelector('.page-header h1').textContent).toMatch(/Give feedback/)
   })
 
-  it('should include three questions', () => {
+  it('should include one question', () => {
     const compiled = fixture.debugElement.nativeElement
     const questions = compiled.querySelectorAll('h2.heading-medium')
-    expect(questions[0].textContent).toMatch(/How did you enter your answers today?/)
-    expect(questions[1].textContent).toMatch(/How easy or difficult was it to enter your answers today?/)
-    expect(questions[2].textContent).toMatch(/What would make it better?/)
-  })
-
-  it('should include 4 optional answers for InputType field', () => {
-    const compiled = fixture.debugElement.nativeElement
-    const inputTypeAnswers = compiled.querySelectorAll('input[name=inputType]')
-    for (let i = 1; i <= 4; i++) {
-      expect(inputTypeAnswers[i - 1].value).toEqual(i.toString())
-    }
+    expect(questions[0].textContent).toMatch(/How did you find the multiplication tables check?/)
   })
 
   it('should include 5 optional answers for satisfactionRating field', () => {
@@ -94,11 +84,6 @@ describe('FeedbackComponent', () => {
     for (let i = 1; i <= 5; i++) {
       expect(satisfactionRatingAnswers[i - 1].value).toEqual(i.toString())
     }
-  })
-
-  it('should include a textarea for commentText field', () => {
-    const compiled = fixture.debugElement.nativeElement
-    expect(compiled.querySelector('textarea[name=commentText]')).toBeDefined()
   })
 
   it('should include a submit button', () => {
@@ -111,13 +96,6 @@ describe('FeedbackComponent', () => {
     expect(compiled.querySelector('input[type=submit]').disabled).toBe(true)
   })
 
-  it('should onSelectionChange be called when clicking inputType radio button', fakeAsync(() => {
-    const compiled = fixture.debugElement.nativeElement
-    compiled.querySelector('input[id=input-type-1]').click()
-    tick()
-    expect(component.onSelectionChange).toHaveBeenCalledWith('inputType', { id: 1, value: 'Touchscreen' })
-  }))
-
   it('should onSelectionChange be called when clicking satisfactionRate radio button', fakeAsync(() => {
     const compiled = fixture.debugElement.nativeElement
     compiled.querySelector('input[id=satisfaction-rating-2]').click()
@@ -126,18 +104,16 @@ describe('FeedbackComponent', () => {
   }))
 
   it('should submit feedback onSubmit when there are no errors', () => {
-    component.selectedInputType = 'foo'
     component.selectedSatisfactionRating = 'bar'
     component['enableSubmit'] = true
-    component.onSubmit('mock comments')
+    component.onSubmit()
     expect(feedbackServiceSpy).toHaveBeenCalledTimes(1)
   })
 
   it('should onSubmit NOT be called when clicking button and there are errors', () => {
-    component.selectedInputType = undefined
     component.selectedSatisfactionRating = undefined
     component.enableSubmit = true
-    component.onSubmit('mock error comments')
+    component.onSubmit()
     expect(feedbackServiceSpy).not.toHaveBeenCalled()
   })
 })

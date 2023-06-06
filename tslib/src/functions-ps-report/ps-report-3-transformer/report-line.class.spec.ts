@@ -880,6 +880,11 @@ describe('report line class', () => {
       expect(res).toBe('J')
     })
 
+    test('returns Q for pupils who are anulled', () => {
+      const res = ReportLineTest.getReasonNotTakingCheck('ANLLD')
+      expect(res).toBe('Q')
+    })
+
     test('returns null if the code is null', () => {
       const res = ReportLineTest.getReasonNotTakingCheck(null)
       expect(res).toBeNull()

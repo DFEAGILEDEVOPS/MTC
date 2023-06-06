@@ -128,5 +128,22 @@ describe('pupil-add-service', () => {
       expect(saveArg['dob-year']).toBeUndefined()
       expect(pupilAgeReasonDataService.sqlInsertPupilAgeReason).toHaveBeenCalled()
     })
+
+    test('validates the UPN with the trimmed and uppercased UPN', async () => {
+      jest.spyOn(pupilValidator, 'validate').mockImplementation(validationFunctionSucceeds)
+      jest.spyOn(pupilDataService, 'sqlCreate').mockResolvedValue({ insertId: 1 })
+      jest.spyOn(pupilDataService, 'sqlFindOneById').mockImplementation()
+      jest.spyOn(pupilAgeReasonDataService, 'sqlInsertPupilAgeReason').mockImplementation()
+      jest.spyOn(redisCacheService, 'drop').mockImplementation()
+      reqBody.ageReason = 'reason'
+      reqBody.upn = ' l860100210012 ' // what the user typed into the form
+      const transformedUPN = 'L860100210012' // what is expected to get passed to the validator and the sqlCreate functions
+      await service.addPupil(reqBody, schoolId, userId)
+      expect(pupilValidator.validate).toHaveBeenCalled()
+      const validationArgs = pupilValidator.validate.mock.calls[0]
+      expect(validationArgs[0].upn).toBe(transformedUPN)
+      const sqlCreateArgs = pupilDataService.sqlCreate.mock.calls[0]
+      expect(sqlCreateArgs[0].upn).toBe(transformedUPN) // the DB should get the same transformed upn
+    })
   })
 })

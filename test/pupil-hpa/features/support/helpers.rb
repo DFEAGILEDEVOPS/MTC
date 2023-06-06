@@ -97,6 +97,8 @@ module Helpers
       'B'
     when 'Just arrived and unable to establish abilities'
       'J'
+    when 'Results annulled'
+      'Q'
     else
       fail "Reason ID #{reason} - not found"
     end
@@ -140,6 +142,33 @@ module Helpers
       @lea_code =  lea_code_list.sample
     end
     {estab_code: @estab_code, lea_code: @lea_code}
+  end
+
+  def annul_pupil(upn, school_id)
+    visit ENV['ADMIN_BASE_URL'] + '/sign-out'
+    visit ENV['ADMIN_BASE_URL']
+    admin_sign_in_page.login('service-manager', 'password')
+    admin_page.pupil_search.click
+    pupil_search_page.upn.set upn
+    pupil_search_page.search.click
+    pupil_summary_page.annul_results.click
+    pupil_annulment_confirmation_page.upn.set upn
+    pupil_annulment_confirmation_page.confirm.click
+    visit ENV['ADMIN_BASE_URL'] + '/sign-out'
+  end
+
+
+  def undo_annulment(upn, school_id)
+    visit ENV['ADMIN_BASE_URL'] + '/sign-out'
+    visit ENV['ADMIN_BASE_URL']
+    admin_sign_in_page.login('service-manager', 'password')
+    admin_page.pupil_search.click
+    pupil_search_page.upn.set upn
+    pupil_search_page.search.click
+    pupil_summary_page.undo_annulment.click
+    pupil_annulment_confirmation_page.upn.set upn
+    pupil_annulment_confirmation_page.confirm.click
+    visit ENV['ADMIN_BASE_URL'] + '/sign-out'
   end
 
 end
