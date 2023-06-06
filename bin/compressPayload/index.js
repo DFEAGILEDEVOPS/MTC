@@ -10,13 +10,13 @@ const path = require('path')
  * IT COMPRESSES TO BASE64!.  If you plan on using this tool, you will need to modify any decompression
  * libraries to also switch from UTF16 (nightmare) to Base64 encoded character sets.
  *
- * 1. Create the compressed payload file using this tool:
- *    node index.js payload.json > payload.compressed.txt
- * 2. Open data in BBEdit using char-encoding UTF-16 little endian, No BOM.
- *    Select all.
- * 3. Edit the row in Azure Table Storage, being careful to overwrite the previous archive value.
+ * 1. Edit the JSON payload as required.
+ * 2. Run this tool on it to create a BASE64 compressed version:
+ *    `node index.js payload.json` will create `payload.compressed.txt`
+ * 3. You can now copy and paste to edit the row in Azure Table Storage, being careful to overwrite
+ *    the previous archive value.
  * 4. Save the update
- * 5. Re-run sync-results via API to re-process the payload.
+ * 5. Re-run sync-results via API to re-process the payload (if required).
  *
  */
 
