@@ -28,7 +28,7 @@ export class ServiceManagerAttendanceDataService {
         value: attendanceCode.code
       })
     }
-    await sqlService.modifyWithTransaction(updates, params)
+    await sqlService.modifyWithTransaction(updates.join('\n'), params)
   }
 }
 
