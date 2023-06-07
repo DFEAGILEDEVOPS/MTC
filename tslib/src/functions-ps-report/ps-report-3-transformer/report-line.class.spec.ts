@@ -954,5 +954,49 @@ describe('report line class', () => {
       const outputData = sut.transform()
       expect(outputData.BrowserType).toBeNull()
     })
+
+    test('an null browser family device obj reports correctly', () => {
+      const sut = new ReportLine(
+        null,
+        null,
+        null,
+        null,
+        {
+          browserFamily: null,
+          browserMajorVersion: 5,
+          browserMinorVersion: 4,
+          browserPatchVersion: null,
+          type: null,
+          typeModel: null,
+          deviceId: null
+        },
+        null,
+        pupilCompletedCheck,
+        school)
+      const outputData = sut.transform()
+      expect(outputData.BrowserType).toBe('5.4')
+    })
+
+    test('an null version field device obj reports correctly', () => {
+      const sut = new ReportLine(
+        null,
+        null,
+        null,
+        null,
+        {
+          browserFamily: 'Browser',
+          browserMajorVersion: null,
+          browserMinorVersion: null,
+          browserPatchVersion: null,
+          type: null,
+          typeModel: null,
+          deviceId: null
+        },
+        null,
+        pupilCompletedCheck,
+        school)
+      const outputData = sut.transform()
+      expect(outputData.BrowserType).toBe('Browser')
+    })
   })
 })

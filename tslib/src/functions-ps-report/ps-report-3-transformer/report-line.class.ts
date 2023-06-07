@@ -254,10 +254,10 @@ export class ReportLine {
       return null
     }
     const browserVersion = this.getBrowserVersion()
-    if (this.device.browserFamily !== null && browserVersion !== null) {
-      return `${this.device.browserFamily} ${this.getBrowserVersion()}`
-    }
-    return null
+    const output = [this.device?.browserFamily, browserVersion]
+      .filter(x => typeof x === 'string' && x.length > 0)
+      .join(' ')
+    return output.length > 0 ? output : null
   }
 
   private getTimeout (questionNumber: number): boolean {
