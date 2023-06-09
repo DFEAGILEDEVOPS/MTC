@@ -174,10 +174,10 @@
     fast-xml-parser "^4.0.8"
     tslib "^2.2.0"
 
-"@azure/data-tables@^13.2.1":
-  version "13.2.1"
-  resolved "https://registry.yarnpkg.com/@azure/data-tables/-/data-tables-13.2.1.tgz#4dfc896410ac107b44de88a60169ae630a0f1be7"
-  integrity sha512-5pboUpSpxjTgZ499MxkLLR0i+lyUUwN6M5pTLZ2D4mUfKVz+vqiCijvxij0V0OfknMxVpQ+NrZcUdarw6a1Few==
+"@azure/data-tables@^13.2.2":
+  version "13.2.2"
+  resolved "https://registry.yarnpkg.com/@azure/data-tables/-/data-tables-13.2.2.tgz#9aa82992d7317a779ecf66436ffa96b887d8e616"
+  integrity sha512-Dq2Aq0mMMF0BPzYQKdBY/OtO7VemP/foh6z+mJpUO1hRL+65C1rGQUJf20LJHotSyU8wHb4HJzOs+Z50GXSy1w==
   dependencies:
     "@azure/core-auth" "^1.3.0"
     "@azure/core-client" "^1.0.0"
