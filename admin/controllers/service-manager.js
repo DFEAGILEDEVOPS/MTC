@@ -21,6 +21,7 @@ const { validate } = require('uuid')
 const { PupilAnnulmentService } = require('../services/service-manager/pupil-annulment/pupil-annulment.service')
 const { TypeOfEstablishmentService } = require('../services/type-of-establishment-service/type-of-establishment-service')
 const { ServiceManagerSchoolService } = require('../services/service-manager/school/school.service')
+const { ServiceManagerAttendanceService } = require('../services/service-manager/attendance/service-manager.attendance.service')
 const { PupilFreezeService } = require('../services/service-manager/pupil-freeze/pupil-freeze.service')
 
 const controller = {
@@ -912,8 +913,32 @@ const controller = {
     } catch (error) {
       return thawPupilErrorHandler(req, res, next, error.message)
     }
-  }
+  },
 
+  getAttendanceCodes: async function getAttendanceCodes (req, res, next) {
+    res.locals.pageTitle = 'Attendance codes'
+    req.breadcrumbs(res.locals.pageTitle)
+    try {
+      const attendanceCodes = await ServiceManagerAttendanceService.getAttendanceCodes()
+      res.render('service-manager/attendance-codes', {
+        breadcrumbs: req.breadcrumbs(),
+        attendanceCodes
+      })
+    } catch (error) {
+      return next(error)
+    }
+  },
+
+  postUpdateAttendanceCodes: async function postUpdateAttendanceCodes (req, res, next) {
+    try {
+      const visibleCodes = req.body.attendanceCodes
+      await ServiceManagerAttendanceService.setVisibleAttendanceCodes(visibleCodes)
+    } catch (error) {
+      return next(error)
+    }
+    req.flash('info', 'Attendance code visibility changed')
+    res.redirect('/service-manager/attendance-codes')
+  }
 }
 
 module.exports = controller
