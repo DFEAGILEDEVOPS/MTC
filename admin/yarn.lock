@@ -7186,15 +7186,7 @@ js-sdsl@^4.1.4:
   resolved "https://registry.yarnpkg.com/js-tokens/-/js-tokens-4.0.0.tgz#19203fb59991df98e3a287050d4647cdeaf32499"
   integrity sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==
 
-js-yaml@3.14.0:
-  version "3.14.0"
-  resolved "https://registry.yarnpkg.com/js-yaml/-/js-yaml-3.14.0.tgz#a7a34170f26a21bb162424d8adacb4113a69e482"
-  integrity sha512-/4IbIeHcD9VMHFqDR/gQ7EdZdLimOvW2DdcxFjdyyZ9NsbS+ccrXqVWDtab/lRl5AlUqmpBx8EhPaWR+OtY17A==
-  dependencies:
-    argparse "^1.0.7"
-    esprima "^4.0.0"
-
-js-yaml@3.x, js-yaml@^3.13.1:
+js-yaml@3.14.1, js-yaml@3.x, js-yaml@^3.13.1:
   version "3.14.1"
   resolved "https://registry.yarnpkg.com/js-yaml/-/js-yaml-3.14.1.tgz#dae812fdb3825fa306609a8717383c50c36a0537"
   integrity sha512-okMH7OXXJ7YrN9Ok3/SXrnu4iX9yOk+25nqX4imS2npuvTYDmo/QEZoqwZkYaIDk3jVvBOTOIEgEhaLOynBS9g==
@@ -11287,16 +11279,15 @@ xml2js@^0.5.0:
     sax ">=0.6.0"
     xmlbuilder "~11.0.0"
 
-xmlbuilder2@^3.0.2:
-  version "3.0.2"
-  resolved "https://registry.yarnpkg.com/xmlbuilder2/-/xmlbuilder2-3.0.2.tgz#fc499688b35a916f269e7b459c2fa02bb5c0822a"
-  integrity sha512-h4MUawGY21CTdhV4xm3DG9dgsqyhDkZvVJBx88beqX8wJs3VgyGQgAn5VreHuae6unTQxh115aMK5InCVmOIKw==
+xmlbuilder2@^3.1.1:
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/xmlbuilder2/-/xmlbuilder2-3.1.1.tgz#b977ef8a6fb27a1ea7ffa7d850d2c007ff343bc0"
+  integrity sha512-WCSfbfZnQDdLQLiMdGUQpMxxckeQ4oZNMNhLVkcekTu7xhD4tuUDyAPoY8CwXvBYE6LwBHd6QW2WZXlOWr1vCw==
   dependencies:
     "@oozcitak/dom" "1.15.10"
     "@oozcitak/infra" "1.0.8"
     "@oozcitak/util" "8.3.8"
-    "@types/node" "*"
-    js-yaml "3.14.0"
+    js-yaml "3.14.1"
 
 xmlbuilder@~11.0.0:
   version "11.0.1"
