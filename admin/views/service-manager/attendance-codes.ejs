@@ -1,0 +1,50 @@
+<%- partial('partials/_gds_breadcrumbs_and_sign_out', { breadcrumbs }) %>
+  <main class="govuk-main-wrapper govuk-body" id="main-content" role="main">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl">Attendance Codes</h1>
+        <%- partial('partials/_gds_session_expiry') %>
+          <%- partial('partials/_flash-messages') %>
+            <form method="post" action="/service-manager/attendance-codes">
+              <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
+              <% if (attendanceCodes && attendanceCodes.length> 0) { %>
+                <div class="govuk-form-group">
+                  <fieldset class="govuk-fieldset" aria-describedby="waste-hint">
+                    <div class="govuk-hint">
+                      Select all that should be visible to school users.
+                    </div>
+                    <% for (let i=0; i < attendanceCodes.length; i++) { %>
+                      <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+                        <div class="govuk-checkboxes__item">
+                          <input class="govuk-checkboxes__input" id="<%= attendanceCodes[i].code %>" name="attendanceCodes"
+                            type="checkbox" value="<%= attendanceCodes[i].code %>" <% if (attendanceCodes[i].visible) { %>checked<% } %>
+                            >
+                            <label class="govuk-label govuk-checkboxes__label" for="<%= attendanceCodes[i].code %>">
+                              [<%= attendanceCodes[i].code %>] <%= attendanceCodes[i].reason %>
+                            </label>
+                        </div>
+                      </div>
+                      <% } %>
+                  </fieldset>
+                </div>
+              <% } %>
+              <button class="govuk-button" type="submit" value="Save">Save changes</button>
+            </form>
+      </div>
+      <div class="govuk-grid-column-one-third" aria-label="sidebar">
+        <aside class="app-related-items" role="complementary">
+          <h2 class="govuk-heading-m" id="subsection-title">
+            Related
+          </h2>
+          <nav role="navigation" aria-labelledby="subsection-title">
+            <ul class="govuk-list govuk-!-font-size-16">
+              <li>
+                <a class="govuk-link" href="<%- guidancePdf %>" target="_blank" rel="noopener noreferrer">Read the
+                  guidance and watch videos</a>
+              </li>
+            </ul>
+          </nav>
+        </aside>
+      </div>
+    </div>
+  </main>

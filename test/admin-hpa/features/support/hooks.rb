@@ -140,6 +140,14 @@ After("@pupil_not_taking_check") do
   SqlDbHelper.delete_pupils_not_taking_check
 end
 
+After("@attendance_code") do
+  visit ENV['ADMIN_BASE_URL'] + '/sign-out'
+  step "I am logged in with a service manager"
+  admin_page.manage_attendance_codes.click
+  manage_attendance_codes_page.enable_all_attendance_codes
+  visit ENV['ADMIN_BASE_URL'] + '/sign-out'
+end
+
 Before('@reset_hdf_submission') do
   school_id = SqlDbHelper.find_teacher(@username)['school_id']
   SqlDbHelper.delete_from_hdf(school_id)
