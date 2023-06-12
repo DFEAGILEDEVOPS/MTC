@@ -52,7 +52,6 @@ export class HttpService {
       const instanceDelay = Math.round(increaseFactor * retryConfig[i - 1]);
       retryConfig.push(instanceDelay);
     }
-    console.dir(retryConfig);
     const response = await polly()
       .handle(error => {
         // Any requests that don't give a 200 status code will raise an Exception that can be handled here.
