@@ -22,6 +22,7 @@ const { PupilAnnulmentService } = require('../services/service-manager/pupil-ann
 const { TypeOfEstablishmentService } = require('../services/type-of-establishment-service/type-of-establishment-service')
 const { ServiceManagerSchoolService } = require('../services/service-manager/school/school.service')
 const { PupilFreezeService } = require('../services/service-manager/pupil-freeze/pupil-freeze.service')
+const headteacherDeclarationService = require('../services/headteacher-declaration.service')
 
 const controller = {
   /**
@@ -462,6 +463,37 @@ const controller = {
         error: validationError,
         typeOfEstablishmentData,
         defaults
+      })
+    } catch (error) {
+      return next(error)
+    }
+  },
+
+  getHdfSummary: async function getHdfSummary (req, res, next) {
+    try {
+      req.breadcrumbs('Manage organisations', '/service-manager/organisations')
+      req.breadcrumbs('Search organisations', '/service-manager/organisations/search')
+      req.breadcrumbs('View organisation', `/service-manager/organisations/${req.params.slug}`)
+      res.locals.pageTitle = 'HDF Submission Summary'
+      req.breadcrumbs(res.locals.pageTitle)
+      const school = await schoolService.findOneBySlug(req.params.slug)
+      const includeDeleted = true
+      const hdf = await headteacherDeclarationService.findLatestHdfForSchool(school.dfeNumber, includeDeleted)
+      let hdfStatusSummary = ''
+      let deleted = false
+      if (!hdf) {
+        // no hdf submitted
+        hdfStatusSummary = 'No HDF submitted'
+      } else {
+        // hdf submitted, is it deleted?
+        deleted = hdf.isDeleted
+        hdfStatusSummary = `HDF submitted on ${hdf.signedDate}`
+      }
+      res.render('service-manager/hdf-summary', {
+        breadcrumbs: req.breadcrumbs(),
+        school,
+        hdfStatusSummary,
+        deleted
       })
     } catch (error) {
       return next(error)
@@ -913,7 +945,6 @@ const controller = {
       return thawPupilErrorHandler(req, res, next, error.message)
     }
   }
-
 }
 
 module.exports = controller
