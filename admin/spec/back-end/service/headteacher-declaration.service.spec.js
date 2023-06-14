@@ -288,4 +288,36 @@ describe('headteacherDeclarationService', () => {
       expect(redisCacheService.drop).toHaveBeenCalled()
     })
   })
+
+  describe('soft delete hdf signing', () => {
+    test('throws an error if schoolId undefined', async () => {
+      await expect(service.softDeleteHdfSigning(undefined, 1)).rejects.toThrow('schoolId and userId are required')
+    })
+
+    test('throws an error if userId undefined', async () => {
+      await expect(service.softDeleteHdfSigning(1, undefined)).rejects.toThrow('schoolId and userId are required')
+    })
+
+    test('calls data service to soft delete if arguments are valid', async () => {
+      jest.spyOn(headteacherDeclarationDataService, 'sqlSoftDeleteHdfEntry').mockResolvedValue()
+      await service.softDeleteHdfSigning(1, 1)
+      expect(headteacherDeclarationDataService.sqlSoftDeleteHdfEntry).toHaveBeenCalled()
+    })
+  })
+
+  describe('undo soft delete hdf signing', () => {
+    test('throws an error if schoolId undefined', async () => {
+      await expect(service.undoSoftDeleteHdfSigning(undefined, 1)).rejects.toThrow('schoolId and userId are required')
+    })
+
+    test('throws an error if userId undefined', async () => {
+      await expect(service.undoSoftDeleteHdfSigning(1, undefined)).rejects.toThrow('schoolId and userId are required')
+    })
+
+    test('calls data service to undo soft delete if arguments are valid', async () => {
+      jest.spyOn(headteacherDeclarationDataService, 'sqlUndoSoftDeleteHdfEntry').mockResolvedValue()
+      await service.undoSoftDeleteHdfSigning(1, 1)
+      expect(headteacherDeclarationDataService.sqlUndoSoftDeleteHdfEntry).toHaveBeenCalled()
+    })
+  })
 })

@@ -143,4 +143,46 @@ headteacherDeclarationDataService.sqlFindPupilsBlockingHdf = async (schoolId) =>
   return R.path(['pupilsCount'], R.head(result))
 }
 
+/**
+ * soft delete the hdf entry
+ * @param schoolId
+ * @param userId
+ * @return {Promise<any>}
+ */
+headteacherDeclarationDataService.sqlSoftDeleteHdfEntry = async (schoolId, userId) => {
+  const sql = `
+    UPDATE [mtc_admin].[hdf]
+    SET isDeleted = 1, deletedAt = GETUTCDATE(), deletedBy_userId = @userId
+    WHERE school_id = @schoolId
+  `
+
+  const params = [
+    { name: 'schoolId', type: TYPES.Int, value: schoolId },
+    { name: 'userId', type: TYPES.Int, value: userId },
+  ]
+
+  return sqlService.modify(sql, params)
+}
+
+/**
+ * soft delete the hdf entry
+ * @param schoolId
+ * @param userId
+ * @return {Promise<any>}
+ */
+headteacherDeclarationDataService.sqlUndoSoftDeleteHdfEntry = async (schoolId, userId) => {
+  const sql = `
+    UPDATE [mtc_admin].[hdf]
+    SET isDeleted = 0, deletedAt = NULL, deletedBy_userId = NULL
+    WHERE school_id = @schoolId
+  `
+
+  const params = [
+    { name: 'schoolId', type: TYPES.Int, value: schoolId },
+    { name: 'userId', type: TYPES.Int, value: userId },
+  ]
+
+  return sqlService.modify(sql, params)
+}
+
 module.exports = headteacherDeclarationDataService

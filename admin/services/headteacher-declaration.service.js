@@ -180,4 +180,30 @@ headteacherDeclarationService.updatePupilsAttendanceCode = async (pupilIds, code
   await redisCacheService.drop(redisKeyService.getSchoolResultsKey(schoolId))
 }
 
+/**
+ * soft delete the HDF signing
+ * @param schoolId
+ * @param userId
+ * @return {Promise<void>}
+ */
+headteacherDeclarationService.softDeleteHdfSigning = async (schoolId, userId) => {
+  if (!schoolId || !userId) {
+    throw new Error('schoolId and userId are required')
+  }
+  return headteacherDeclarationDataService.sqlSoftDeleteHdfEntry(schoolId, userId)
+}
+
+/**
+ * undo soft delete of the HDF signing
+ * @param schoolId
+ * @param userId
+ * @return {Promise<void>}
+ */
+headteacherDeclarationService.undoSoftDeleteHdfSigning = async (schoolId, userId) => {
+  if (!schoolId || !userId) {
+    throw new Error('schoolId and userId are required')
+  }
+  return headteacherDeclarationDataService.sqlUndoSoftDeleteHdfEntry(schoolId, userId)
+}
+
 module.exports = headteacherDeclarationService
