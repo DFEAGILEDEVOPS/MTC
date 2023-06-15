@@ -178,7 +178,7 @@ headteacherDeclarationDataService.sqlUndoSoftDeleteHdfEntry = async (schoolId, u
   const sql = `
     UPDATE [mtc_admin].[hdf]
     SET isDeleted = 0, deletedAt = NULL, deletedBy_userId = NULL
-    WHERE school_id = @schoolId
+    WHERE school_id = @schoolId AND isDeleted = 1
   `
 
   const params = [

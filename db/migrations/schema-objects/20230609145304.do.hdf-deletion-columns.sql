@@ -13,7 +13,7 @@ IF NOT EXISTS(SELECT *
                  AND col_name(object_ID, column_Id) = 'deletedAt')
   BEGIN
   ALTER TABLE [mtc_admin].[hdf]
-      ADD [deletedAt] DATETIME2 (3) NULL;
+      ADD [deletedAt] DATETIMEOFFSET (3) NULL;
   END
 
 IF NOT EXISTS(SELECT *
