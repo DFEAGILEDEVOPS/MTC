@@ -42,7 +42,8 @@ class PupilReasonPage < SitePrism::Page
 
 
   def attendance_code_mapping
-    {'attendance-code-INCRG' => 'Incorrect registration',
+    {'attendance-code-ABSNT' => 'Absent during check window',
+     'attendance-code-INCRG' => 'Incorrect registration',
      'attendance-code-LEFTT' => 'Left school',
      'attendance-code-NOACC' => 'Unable to access',
      'attendance-code-BLSTD' => 'Working below expectation',
