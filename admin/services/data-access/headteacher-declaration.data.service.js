@@ -98,7 +98,7 @@ headteacherDeclarationDataService.sqlFindLatestHdfBySchoolId = async (schoolId, 
   if (!includeDeleted) {
     sql += ' AND h.isDeleted = 0'
   }
-  sql += ` ORDER BY signedDate DESC`
+  sql += ' ORDER BY signedDate DESC'
   const paramSchoolId = { name: 'schoolId', type: TYPES.Int, value: schoolId }
   const rows = await sqlService.query(sql, [paramSchoolId])
   return R.head(rows)

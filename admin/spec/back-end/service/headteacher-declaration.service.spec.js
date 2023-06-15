@@ -135,7 +135,7 @@ describe('headteacherDeclarationService', () => {
       jest.spyOn(headteacherDeclarationDataService, 'sqlFindLatestHdfBySchoolId').mockResolvedValue(hdfMock)
       const res = await service.findLatestHdfForSchool(dfeNumber)
       expect(res).toEqual(hdfMock)
-      expect(headteacherDeclarationDataService.sqlFindLatestHdfBySchoolId).toHaveBeenCalledWith(schoolMock.id)
+      expect(headteacherDeclarationDataService.sqlFindLatestHdfBySchoolId).toHaveBeenCalledWith(schoolMock.id, false)
     })
   })
 
