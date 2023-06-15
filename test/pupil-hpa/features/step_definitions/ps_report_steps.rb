@@ -60,7 +60,6 @@ Then(/^I should see a record for the pupil in the ps report table$/) do
   expect(ps_report_record["BrowserType"]).to eql device_info.nil? ? nil : SqlDbHelper.browser_lookup(device_info['browserFamilyLookup_id'])['family'] + ' ' + device_info['browserMajorVersion'].to_s + '.' + device_info['browserMinorVersion'].to_s + '.' + device_info['browserPatchVersion'].to_s
   expect(ps_report_record["DeviceTypeModel"]).to eql nil
   expect(ps_report_record["DeviceId"]).to eql device_info.nil? ? nil : device_cookie[:value]
-
   25.times do |index|
     question = index + 1
     expect(ps_report_record["Q#{question}ID"]).to eql check_inputs.nil? ? nil : check_inputs.find {|inputs| inputs["questionNumber"] == question}["question"]
@@ -441,4 +440,65 @@ And(/^this is code is stored$/) do
   reason = SqlDbHelper.get_attendance_code_for_a_pupil(@stored_pupil_details['id'])
   attendance_code_name = SqlDbHelper.check_attendance_code(reason['attendanceCode_id'])
   @original_pupil_attendance = calculate_not_taking_reason_code(attendance_code_name['reason'])
+end
+
+And(/^the pupil has been annulled$/) do
+  annul_pupil(@details_hash[:upn], @school_id)
+end
+
+And(/^I should see that form mark is set to null$/) do
+  pupil_details = SqlDbHelper.pupil_details_using_school(@details_hash[:upn], @school_id)
+  ps_report_record = SqlDbHelper.get_ps_record_for_pupil(pupil_details['id'])
+  p "PS_REPORT RECORD - " + ps_report_record["PupilId"].to_s
+  ps_report_record = ps_report_record.map {|k, v| [k, (v.is_a?(BigDecimal) ? v.to_f : v)]}.to_h
+  expect(ps_report_record["formMark"]).to be_nil
+  expect(ps_report_record["AttemptId"]).to_not be_nil
+  expect(ps_report_record["TimeComplete"]).to_not be_nil
+  25.times do |index|
+    question = index + 1
+    expect(ps_report_record["Q#{question}Response"]).to_not be_nil
+  end
+end
+
+When(/^the pupil is set to not taking the check$/) do
+  visit ENV["ADMIN_BASE_URL"] + pupil_reason_page.url
+  pupil_reason_page.select_reason('Left school')
+  pupil_row = pupil_reason_page.pupil_list.rows.select {|row| row.name.text.include?(@name)}
+  pupil_row.first.checkbox.click
+  pupil_reason_page.sticky_banner.confirm.click
+end
+
+Then(/^the AttemptId for the ps record for that pupil is set to null$/) do
+  pupil_details = SqlDbHelper.pupil_details_using_school(@details_hash[:upn], @school_id)
+  ps_report_record = SqlDbHelper.get_ps_record_for_pupil(pupil_details['id'])
+  p "PS_REPORT RECORD - " + ps_report_record["PupilId"].to_s
+  ps_report_record = ps_report_record.map {|k, v| [k, (v.is_a?(BigDecimal) ? v.to_f : v)]}.to_h
+  expect(ps_report_record["AttemptId"]).to be_nil
+end
+
+Given(/^I have completed a check that has no device information$/) do
+  step 'I have generated a live pin'
+  pupil_detail = SqlDbHelper.pupil_details(@details_hash[:upn])
+  @pupil_id = pupil_detail['id']
+  pupil_pin_detail = SqlDbHelper.get_pupil_pin(@pupil_id, @school_id)
+  pupil_pin = pupil_pin_detail['val']
+  school_password = SqlDbHelper.find_school(pupil_detail['school_id'])['pin']
+  Timeout.timeout(ENV['WAIT_TIME'].to_i) {sleep 1 until RequestHelper.auth(school_password, pupil_pin).code == 200}
+  response_pupil_auth = RequestHelper.auth(school_password, pupil_pin)
+  @parsed_response_pupil_auth = JSON.parse(response_pupil_auth.body)
+  @submission_hash = RequestHelper.build_check_submission_message(@parsed_response_pupil_auth,10,1,nil)
+  AzureQueueHelper.create_check_submission_message(@submission_hash[:submission_message].to_json)
+  school_uuid = @parsed_response_pupil_auth['school']['uuid']
+  @check_code = @parsed_response_pupil_auth['checkCode']
+  AzureTableHelper.wait_for_received_check(school_uuid, @check_code)
+  p @check_code
+end
+
+Then(/^I should see the device is set to null$/) do
+  pupil_details = SqlDbHelper.pupil_details_using_school(@details_hash[:upn], @school_id)
+  ps_report_record = SqlDbHelper.get_ps_record_for_pupil(pupil_details['id'])
+  p "PS_REPORT RECORD - " + ps_report_record["PupilId"].to_s
+  ps_report_record = ps_report_record.map {|k, v| [k, (v.is_a?(BigDecimal) ? v.to_f : v)]}.to_h
+  expect(ps_report_record["DeviceId"]).to be_nil
+  expect(ps_report_record["BrowserType"]).to be_nil
 end

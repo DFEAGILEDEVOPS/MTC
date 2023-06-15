@@ -78,7 +78,7 @@ export class PsReportDataService {
     return this.sqlService.query(sql, params)
   }
 
-  private async sqlFindRestartReasonCode (pupilId: number, pupilRestartNumber: number): Promise<RestartReasonCode|null> {
+  private async sqlFindRestartReasonCode (pupilId: number, pupilRestartNumber: number): Promise<RestartReasonCode | null> {
     const pupilRestarts = await this.sqlFindPupilRestart(pupilId)
     if (Array.isArray(pupilRestarts)) {
       if (pupilRestartNumber <= pupilRestarts.length) {
@@ -242,11 +242,19 @@ export class PsReportDataService {
    * Retrieve the check and result from the database
    * @param checkId
    */
-  public async getCheck (checkId: number | null): Promise<CheckOrNull> {
+  public async getCheck (pupil: Pupil): Promise<CheckOrNull> {
+    const checkId = pupil.currentCheckId
     if (checkId === null) {
       // For pupils that have not taken a check, or are not attending
       return null
     }
+
+    // Deal with pupils marked as not attending that may have a currentCheckId
+    const NotTakingCheckAnnulledCode: NotTakingCheckCode = 'ANLLD'
+    if (pupil.notTakingCheckCode !== null && pupil.notTakingCheckCode !== NotTakingCheckAnnulledCode) {
+      return null
+    }
+
     const sql = `
         DECLARE @pupilId INT = (SELECT pupil_id FROM [mtc_admin].[check] WHERE id = @checkId);
         DECLARE @checksLoggedInCount INT = (SELECT count(*) FROM mtc_admin.[check] where isLiveCheck = 1 AND pupil_id = @pupilId AND pupilLoginDate IS NOT NULL);
@@ -521,6 +529,18 @@ export class PsReportDataService {
       ident: string | null
     }
 
+    /**
+     * Note that if there isn't any device information at all, DBDevice[0] will be this:
+     *
+     * {
+     *    browserFamily: null,
+     *    browserMajorVersion: null,
+     *    browserMinorVersion: null,
+     *    browserPatchVersion: null,
+     *    ident: null
+     * }
+     */
+
     const res: DBDevice[] = await this.sqlService.query(sql, [{ name: 'checkId', value: checkId, type: TYPES.Int }])
     const data = R.head(res)
     if (data === undefined) {
@@ -598,6 +618,15 @@ export class PsReportDataService {
   }
 
   /**
+   * Determine if a pupil is not taking a check
+   * @param pupil
+   * @returns boolean - true if the pupil is marked as not taking the check.
+   */
+  public pupilIsNotTakingCheck (pupil: Pupil): boolean {
+    return pupil.notTakingCheckCode !== null
+  }
+
+  /**
    * Entry point to create the data structure to pass to the transform step in the psychometric report generation
    * @param pupil
    */
@@ -610,7 +639,7 @@ export class PsReportDataService {
       Promise<EventsOrNull>
     ] = [
       this.getCheckConfig(pupil.currentCheckId),
-      this.getCheck(pupil.currentCheckId),
+      this.getCheck(pupil),
       this.getAnswers(pupil.currentCheckId),
       this.getDevice(pupil.currentCheckId),
       this.getEvents(pupil.currentCheckId)
