@@ -515,6 +515,16 @@ const controller = {
     }
   },
 
+  postDeleteHdfUndo: async function postDeleteHdfUndo (req, res, next) {
+    try {
+      const school = await schoolService.findOneBySlug(req.params.slug)
+      await headteacherDeclarationService.undoSoftDeleteHdfSigning(school.id, req.user.id)
+      return res.redirect(`/service-manager/organisations/${req.params.slug}/hdfstatus`)
+    } catch (error) {
+      return next(error)
+    }
+  },
+
   postEditOrganisation: async function postEditOrganisation (req, res, next) {
     try {
       const school = await schoolService.findOneBySlug(req.params.slug)

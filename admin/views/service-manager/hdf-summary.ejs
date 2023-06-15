@@ -47,7 +47,12 @@
             <div class="govuk-button-group">
               <% if (submitted && deleted) { %>
               <!-- button to undo delete -->
-              <a href="/service-manager/organisations/<%= school.urlSlug %>/undodelete" class="govuk-button">Undo Deletion</a>
+              <form method="post" action="/service-manager/organisations/<%= school.urlSlug %>/delete-hdf-undo">
+                <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
+                <div class="govuk-button-group">
+                  <button class="govuk-button govuk-button--warning" type="submit">Undo Deletion</button>
+                </div>
+              </form>
               <% } %>
               <% if (submitted && !deleted) { %>
                 <!-- button to delete submission -->

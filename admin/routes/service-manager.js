@@ -137,6 +137,11 @@ router.post('/organisations/:slug/delete-hdf',
   serviceManagerController.postDeleteHdf
 )
 
+router.post('/organisations/:slug/delete-hdf-undo',
+  isAuthenticated(roles.serviceManager),
+  serviceManagerController.postDeleteHdfUndo
+)
+
 // misc routes
 
 router.get('/job/:slug',
