@@ -59,7 +59,6 @@ Given(/^a pupil has completed the check with an answer that is not a string$/) d
   @check_code = @parsed_response_pupil_auth['checkCode']
   @received_check = AzureTableHelper.wait_for_received_check(@school_uuid, @check_code)
   p @check_code
-
 end
 
 Then(/^I should see an error stating validation failed as answers must be strings$/) do
