@@ -34,7 +34,8 @@
                   <%= hdfStatusSummary %>
                 </dd>
               </div>
-
+              <!-- disable undo until soft delete implemented fully -->
+              <% if (true === false) { %>
               <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">
                   Deleted:
@@ -43,6 +44,7 @@
                   <%= deleted ? 'YES' : 'No' %>
                 </dd>
               </div>
+              <% } %>
             </dl>
             <div class="govuk-button-group">
               <!-- disable undo until soft delete implemented fully -->
