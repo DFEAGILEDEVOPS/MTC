@@ -164,7 +164,6 @@ headteacherDeclarationDataService.sqlSoftDeleteHdfEntry = async (schoolId, userI
     { name: 'schoolId', type: TYPES.Int, value: schoolId },
     { name: 'userId', type: TYPES.Int, value: userId }
   ]
-
   return sqlService.modify(sql, params)
 }
 
@@ -185,7 +184,24 @@ headteacherDeclarationDataService.sqlUndoSoftDeleteHdfEntry = async (schoolId, u
     { name: 'schoolId', type: TYPES.Int, value: schoolId },
     { name: 'userId', type: TYPES.Int, value: userId }
   ]
+  return sqlService.modify(sql, params)
+}
 
+/**
+ * hard delete the hdf entry
+ * @param schoolId
+ * @param userId
+ * @return {Promise<any>}
+ */
+headteacherDeclarationDataService.sqlHardDeleteHdfEntry = async (schoolId) => {
+  const sql = `
+    DELETE [mtc_admin].[hdf]
+    WHERE school_id = @schoolId
+  `
+
+  const params = [
+    { name: 'schoolId', type: TYPES.Int, value: schoolId }
+  ]
   return sqlService.modify(sql, params)
 }
 

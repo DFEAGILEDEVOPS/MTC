@@ -45,7 +45,8 @@
               </div>
             </dl>
             <div class="govuk-button-group">
-              <% if (submitted && deleted) { %>
+              <!-- disable undo until soft delete implemented fully -->
+              <% if (true === false) { %>
               <!-- button to undo delete -->
               <form method="post" action="/service-manager/organisations/<%= school.urlSlug %>/delete-hdf-undo">
                 <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
@@ -54,7 +55,7 @@
                 </div>
               </form>
               <% } %>
-              <% if (submitted && !deleted) { %>
+              <% if (submitted) { %>
                 <!-- button to delete submission -->
                 <form method="post" action="/service-manager/organisations/<%= school.urlSlug %>/delete-hdf">
                   <input type="hidden" name="_csrf" value="<%= csrftoken %>" />

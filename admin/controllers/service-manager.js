@@ -491,7 +491,7 @@ const controller = {
         submitted = true
         deleted = hdf.isDeleted
         const hdfSignedDate = dateService.formatDateAndTime(hdf.signedDate)
-        submissionDate = hdfSignedDate
+        submissionDate = `${hdfSignedDate} (UTC)`
       }
       res.render('service-manager/hdf-summary', {
         breadcrumbs: req.breadcrumbs(),
@@ -508,7 +508,7 @@ const controller = {
   postDeleteHdf: async function postDeleteHdf (req, res, next) {
     try {
       const school = await schoolService.findOneBySlug(req.params.slug)
-      await headteacherDeclarationService.softDeleteHdfSigning(school.id, req.user.id)
+      await headteacherDeclarationService.hardDeleteHdfSigning(school.id)
       return res.redirect(`/service-manager/organisations/${req.params.slug}/hdfstatus`)
     } catch (error) {
       return next(error)

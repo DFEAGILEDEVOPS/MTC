@@ -320,4 +320,16 @@ describe('headteacherDeclarationService', () => {
       expect(headteacherDeclarationDataService.sqlUndoSoftDeleteHdfEntry).toHaveBeenCalled()
     })
   })
+
+  describe('hard delete hdf signing', () => {
+    test('throws an error if schoolId undefined', async () => {
+      await expect(service.hardDeleteHdfSigning(undefined)).rejects.toThrow('schoolId is required')
+    })
+
+    test('calls data service to hard delete if arguments are valid', async () => {
+      jest.spyOn(headteacherDeclarationDataService, 'sqlHardDeleteHdfEntry').mockResolvedValue()
+      await service.hardDeleteHdfSigning(123)
+      expect(headteacherDeclarationDataService.sqlHardDeleteHdfEntry).toHaveBeenCalled()
+    })
+  })
 })
