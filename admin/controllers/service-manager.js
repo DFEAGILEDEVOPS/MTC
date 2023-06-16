@@ -23,6 +23,8 @@ const { TypeOfEstablishmentService } = require('../services/type-of-establishmen
 const { ServiceManagerSchoolService } = require('../services/service-manager/school/school.service')
 const { ServiceManagerAttendanceService } = require('../services/service-manager/attendance/service-manager.attendance.service')
 const { PupilFreezeService } = require('../services/service-manager/pupil-freeze/pupil-freeze.service')
+const headteacherDeclarationService = require('../services/headteacher-declaration.service')
+const dateService = require('../services/date.service')
 
 const controller = {
   /**
@@ -464,6 +466,60 @@ const controller = {
         typeOfEstablishmentData,
         defaults
       })
+    } catch (error) {
+      return next(error)
+    }
+  },
+
+  getHdfSummary: async function getHdfSummary (req, res, next) {
+    try {
+      req.breadcrumbs('Manage organisations', '/service-manager/organisations')
+      req.breadcrumbs('Search organisations', '/service-manager/organisations/search')
+      req.breadcrumbs('View organisation', `/service-manager/organisations/${req.params.slug}`)
+      res.locals.pageTitle = 'HDF Submission Summary'
+      req.breadcrumbs(res.locals.pageTitle)
+      const school = await schoolService.findOneBySlug(req.params.slug)
+      const includeDeleted = true
+      const hdf = await headteacherDeclarationService.findLatestHdfForSchool(school.dfeNumber, includeDeleted)
+      let submissionDate = ''
+      let deleted = false
+      let submitted = false
+      if (!hdf) {
+        // no hdf submitted
+        submissionDate = '(No HDF submitted)'
+      } else {
+        submitted = true
+        deleted = hdf.isDeleted
+        const hdfSignedDate = dateService.formatDateAndTime(hdf.signedDate)
+        submissionDate = `${hdfSignedDate} (UTC)`
+      }
+      res.render('service-manager/hdf-summary', {
+        breadcrumbs: req.breadcrumbs(),
+        school,
+        hdfStatusSummary: submissionDate,
+        deleted,
+        submitted
+      })
+    } catch (error) {
+      return next(error)
+    }
+  },
+
+  postDeleteHdf: async function postDeleteHdf (req, res, next) {
+    try {
+      const school = await schoolService.findOneBySlug(req.params.slug)
+      await headteacherDeclarationService.hardDeleteHdfSigning(school.id)
+      return res.redirect(`/service-manager/organisations/${req.params.slug}/hdfstatus`)
+    } catch (error) {
+      return next(error)
+    }
+  },
+
+  postDeleteHdfUndo: async function postDeleteHdfUndo (req, res, next) {
+    try {
+      const school = await schoolService.findOneBySlug(req.params.slug)
+      await headteacherDeclarationService.undoSoftDeleteHdfSigning(school.id, req.user.id)
+      return res.redirect(`/service-manager/organisations/${req.params.slug}/hdfstatus`)
     } catch (error) {
       return next(error)
     }
