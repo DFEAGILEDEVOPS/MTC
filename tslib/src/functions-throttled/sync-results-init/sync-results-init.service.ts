@@ -58,10 +58,13 @@ export class SyncResultsInitService {
       throw new Error(`CheckCode ${check.checkCode} has an invalid archive`)
     }
     const payloadString = this.compressionService.decompress(archive)
+    if (payloadString === null) {
+      throw new Error('Decompressed receivedCheck archive payload is null')
+    }
     try {
       const payload: ValidatedCheck = JSON.parse(payloadString)
       return payload
-    } catch (error) {
+    } catch (error: any) {
       let errorMessage = 'unknown error'
       if (error instanceof Error) {
         errorMessage = error.message

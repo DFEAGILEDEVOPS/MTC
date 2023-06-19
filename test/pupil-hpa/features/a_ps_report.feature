@@ -32,6 +32,14 @@ Feature:
     Then I should see a record for the pupil in the ps report table
     And I should see the correct code for an annulled pupil
 
+  Scenario: Form mark is null for Pupils who have been annulled
+    Given I have completed the check
+    When the data sync and ps report function has run
+    Then I should see a record for the pupil in the ps report table
+    But the pupil has been annulled
+    When the data sync and ps report function has run
+    And I should see that form mark is set to null
+
   Scenario: Pupils who have had their annulled removed return to previous state
     Given I have removed a pupils annulment
     When the data sync and ps report function has run
@@ -111,3 +119,15 @@ Feature:
     Given I have completed the check for a pupil attending a test school
     When the data sync and ps report function has run for the test school
     Then I should not see any records for the test school
+
+  Scenario: AttemptId is not set when a pin has expired and the pupil has been set to NTC
+    Given I have generated a live pin
+    But the pin expires
+    When the pupil is set to not taking the check
+    And the data sync and ps report function has run
+    Then the AttemptId for the ps record for that pupil is set to null
+
+  Scenario: Device is set to null when no device information is collected
+    Given I have completed a check that has no device information
+    When the data sync and ps report function has run
+    Then I should see the device is set to null

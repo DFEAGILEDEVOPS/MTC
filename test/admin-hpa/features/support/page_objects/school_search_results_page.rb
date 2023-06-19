@@ -10,6 +10,7 @@ class SchoolSearchResultsPage < SitePrism::Page
   element :type_of_estab_name, '.govuk-summary-list__row:nth-of-type(7) dd'
   element :edit, '.govuk-button', text: 'Edit organisation'
   element :back_to_search, '.govuk-button', text: 'Back to search'
+  element :manage_hdf_submission, 'a', text: 'Manage HDF Submission'
 
   section :audit_history, '#school-audit' do
     sections :rows, 'tbody tr' do

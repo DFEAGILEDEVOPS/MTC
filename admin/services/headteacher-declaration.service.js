@@ -115,13 +115,12 @@ headteacherDeclarationService.submitDeclaration = async (form, userId, schoolId,
  * @param {number} dfeNumber
  * @return {Promise<any>}
  */
-headteacherDeclarationService.findLatestHdfForSchool = async (dfeNumber) => {
-  // TODO: hdf: role checks? Date checks?
+headteacherDeclarationService.findLatestHdfForSchool = async (dfeNumber, includeDeleted = false) => {
   const school = await schoolDataService.sqlFindOneByDfeNumber(dfeNumber)
   if (!school) {
     return null
   }
-  return headteacherDeclarationDataService.sqlFindLatestHdfBySchoolId(school.id)
+  return headteacherDeclarationDataService.sqlFindLatestHdfBySchoolId(school.id, includeDeleted)
 }
 
 /**
@@ -178,6 +177,45 @@ headteacherDeclarationService.updatePupilsAttendanceCode = async (pupilIds, code
   }
   await pupilAttendanceDataService.sqlUpdateBatch(pupilIds, attendanceCode.id, userId)
   await redisCacheService.drop(redisKeyService.getSchoolResultsKey(schoolId))
+}
+
+// sqlHardDeleteHdfEntry
+/**
+ * hard delete the HDF signing
+ * @param schoolId
+ * @return {Promise<void>}
+ */
+headteacherDeclarationService.hardDeleteHdfSigning = async (schoolId) => {
+  if (!schoolId) {
+    throw new Error('schoolId is required')
+  }
+  return headteacherDeclarationDataService.sqlHardDeleteHdfEntry(schoolId)
+}
+
+/**
+ * soft delete the HDF signing
+ * @param schoolId
+ * @param userId
+ * @return {Promise<void>}
+ */
+headteacherDeclarationService.softDeleteHdfSigning = async (schoolId, userId) => {
+  if (!schoolId || !userId) {
+    throw new Error('schoolId and userId are required')
+  }
+  return headteacherDeclarationDataService.sqlSoftDeleteHdfEntry(schoolId, userId)
+}
+
+/**
+ * undo soft delete of the HDF signing
+ * @param schoolId
+ * @param userId
+ * @return {Promise<void>}
+ */
+headteacherDeclarationService.undoSoftDeleteHdfSigning = async (schoolId, userId) => {
+  if (!schoolId || !userId) {
+    throw new Error('schoolId and userId are required')
+  }
+  return headteacherDeclarationDataService.sqlUndoSoftDeleteHdfEntry(schoolId, userId)
 }
 
 module.exports = headteacherDeclarationService

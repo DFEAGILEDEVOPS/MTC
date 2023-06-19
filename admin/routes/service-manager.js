@@ -42,6 +42,8 @@ router.get('/upload-pupil-census/delete/:pupilCensusId',
   serviceManagerController.getRemovePupilCensus
 )
 
+// mod settings routes
+
 router.get('/mod-settings',
   isAuthenticated(roles.serviceManager),
   serviceManagerController.getSceSettings
@@ -71,6 +73,8 @@ router.get('/mod-settings/remove-school/:urn',
   isAuthenticated(roles.serviceManager),
   serviceManagerController.getSceRemoveSchool
 )
+
+// organisation routes
 
 router.get('/organisations',
   isAuthenticated(roles.serviceManager),
@@ -123,6 +127,23 @@ router.post('/organisations/:slug/edit',
   serviceManagerController.postEditOrganisation
 )
 
+router.get('/organisations/:slug/hdfstatus',
+  isAuthenticated(roles.serviceManager),
+  serviceManagerController.getHdfSummary
+)
+
+router.post('/organisations/:slug/delete-hdf',
+  isAuthenticated(roles.serviceManager),
+  serviceManagerController.postDeleteHdf
+)
+
+router.post('/organisations/:slug/delete-hdf-undo',
+  isAuthenticated(roles.serviceManager),
+  serviceManagerController.postDeleteHdfUndo
+)
+
+// misc routes
+
 router.get('/job/:slug',
   isAuthenticated(roles.serviceManager),
   serviceManagerController.downloadJobOutput
@@ -145,6 +166,8 @@ router.get(
   isAuthenticated([roles.serviceManager]),
   serviceManagerController.getJobOutputs
 )
+
+// pupil routes
 
 router.get('/pupil/move/:pupilSlug/confirm/:schoolSlug',
   isAuthenticated([roles.serviceManager]),
