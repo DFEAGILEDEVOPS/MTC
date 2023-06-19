@@ -3721,6 +3721,11 @@ command-line-args@^5.0.2:
     lodash.camelcase "^4.3.0"
     typical "^4.0.0"
 
+commander@^9.1.0:
+  version "9.5.0"
+  resolved "https://registry.yarnpkg.com/commander/-/commander-9.5.0.tgz#bc08d1eb5cedf7ccb797a96199d41c7bc3e60d30"
+  integrity sha512-KRs7WVDKg86PWiuAqhDrAQnTXZKraVcCc6vFdL14qrZ/DcWwuRo7VoiYXalXO7S5GKpqYiVEwCbgFDfxNHKJBQ==
+
 component-emitter@^1.2.1, component-emitter@^1.3.0:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/component-emitter/-/component-emitter-1.3.0.tgz#16e4070fba8ae29b679f2215853ee181ab2eabc0"
@@ -8207,12 +8212,13 @@ ms@2.1.3, ms@^2.1.1:
   resolved "https://registry.yarnpkg.com/ms/-/ms-2.1.3.tgz#574c8138ce1d2b5861f0b44579dbadd60c6615b2"
   integrity sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==
 
-mssql@8.0.0:
-  version "8.0.0"
-  resolved "https://registry.yarnpkg.com/mssql/-/mssql-8.0.0.tgz#4177816b42b7e126f339c936b4660f570c12b5c9"
-  integrity sha512-6ePlyQuYlq3QCiN580sZvjEfrU+bo1wxXLzZFU9T59194XlMQIbjijeP3vyo/OyGPV6zIQYaCpvFurQR8itIFA==
+mssql@8.1.4:
+  version "8.1.4"
+  resolved "https://registry.yarnpkg.com/mssql/-/mssql-8.1.4.tgz#5eca0b515b3a0dc878f380460315fc8f73c40d80"
+  integrity sha512-nqkYYehETWVvFLB9zAGJV2kegOsdtLjUnkHA52aFhlE0ZIoOXC3BL8pLERwFicFypM4i3DX1hYeuM726EEIxjQ==
   dependencies:
     "@tediousjs/connection-string" "^0.3.0"
+    commander "^9.1.0"
     debug "^4.3.3"
     rfdc "^1.3.0"
     tarn "^3.0.2"
