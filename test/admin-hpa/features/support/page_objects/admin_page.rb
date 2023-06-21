@@ -18,9 +18,10 @@ class AdminPage < SitePrism::Page
   element :manage_service_message_text, 'p', text: 'Add or delete a global service message for the school homepage'
   element :school_search, 'a', text: 'Manage organisations'
   element :school_search_text, 'p', text: 'Upload, add or edit schools'
-  element :pupil_search, 'a', text: 'Pupil Search'
+  element :pupil_search, 'h2 a', text: 'Pupil Search'
   element :pupil_search_text, 'p', text: 'Administer Pupils'
-
+  element :manage_attendance_codes, 'a', text: 'Manage attendance codes'
+  element :manage_attendance_codes_text, 'p', text: 'Toggle availabilty of attendance codes'
 
 
   element :manage_access_arrangements, "a", text: 'Manage access arrangements'

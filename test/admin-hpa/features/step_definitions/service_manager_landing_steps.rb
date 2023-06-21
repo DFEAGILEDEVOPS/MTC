@@ -91,6 +91,11 @@ Then(/^I should be given the option to search for pupils/) do
   expect(admin_page).to have_pupil_search_text
 end
 
+Then(/^I should be given the option to manage attendance codes/) do
+  expect(admin_page).to have_manage_attendance_codes
+  expect(admin_page).to have_manage_attendance_codes_text
+end
+
 And(/^the service managers homepage should match design$/) do
   step "I should see service-manager's name"
   step "I should be given the option to manage check windows"
@@ -100,4 +105,5 @@ And(/^the service managers homepage should match design$/) do
   step "I should be given the option to manage service messages"
   step "I should be given some guidance"
   step "I should be given the option to manage organisations"
+  step 'I should be given the option to manage attendance codes'
 end

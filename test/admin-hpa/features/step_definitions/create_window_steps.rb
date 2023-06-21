@@ -730,12 +730,12 @@ end
 
 And(/^stored correctly in the db$/) do
   window_in_db = SqlDbHelper.check_window_details(@check_window_hash[:check_name])
-  expect(window_in_db['adminStartDate'].strftime('%-d %-m %Y')).to eql @check_window_hash[:admin_start_day].to_s + ' ' + @check_window_hash[:admin_start_month].to_s + ' ' + @check_window_hash[:admin_start_year].to_s
-  expect(window_in_db['adminEndDate'].strftime('%-d %-m %Y')).to eql @check_window_hash[:admin_end_day].to_s + ' ' + @check_window_hash[:admin_end_month].to_s + ' ' + @check_window_hash[:admin_end_year].to_s
-  expect(window_in_db['familiarisationCheckStartDate'].strftime('%-d %-m %Y')).to eql @check_window_hash[:familiarisation_start_day].to_s + ' ' + @check_window_hash[:familiarisation_start_month].to_s + ' ' + @check_window_hash[:familiarisation_start_year].to_s
-  expect(window_in_db['familiarisationCheckEndDate'].strftime('%-d %-m %Y')).to eql @check_window_hash[:familiarisation_end_day].to_s + ' ' + @check_window_hash[:familiarisation_end_month].to_s + ' ' + @check_window_hash[:familiarisation_end_year].to_s
-  expect(window_in_db['checkStartDate'].strftime('%-d %-m %Y')).to eql @check_window_hash[:live_start_day].to_s + ' ' + @check_window_hash[:live_start_month].to_s + ' ' + @check_window_hash[:live_start_year].to_s
-  expect(window_in_db['checkEndDate'].strftime('%-d %-m %Y')).to eql @check_window_hash[:live_end_day].to_s + ' ' + @check_window_hash[:live_end_month].to_s + ' ' + @check_window_hash[:live_end_year].to_s
+  expect(window_in_db['adminStartDate'].utc.strftime('%-d %-m %Y')).to eql @check_window_hash[:admin_start_day].to_s + ' ' + @check_window_hash[:admin_start_month].to_s + ' ' + @check_window_hash[:admin_start_year].to_s
+  expect(window_in_db['adminEndDate'].utc.strftime('%-d %-m %Y')).to eql @check_window_hash[:admin_end_day].to_s + ' ' + @check_window_hash[:admin_end_month].to_s + ' ' + @check_window_hash[:admin_end_year].to_s
+  expect(window_in_db['familiarisationCheckStartDate'].utc.strftime('%-d %-m %Y')).to eql @check_window_hash[:familiarisation_start_day].to_s + ' ' + @check_window_hash[:familiarisation_start_month].to_s + ' ' + @check_window_hash[:familiarisation_start_year].to_s
+  expect(window_in_db['familiarisationCheckEndDate'].utc.strftime('%-d %-m %Y')).to eql @check_window_hash[:familiarisation_end_day].to_s + ' ' + @check_window_hash[:familiarisation_end_month].to_s + ' ' + @check_window_hash[:familiarisation_end_year].to_s
+  expect(window_in_db['checkStartDate'].utc.strftime('%-d %-m %Y')).to eql @check_window_hash[:live_start_day].to_s + ' ' + @check_window_hash[:live_start_month].to_s + ' ' + @check_window_hash[:live_start_year].to_s
+  expect(window_in_db['checkEndDate'].utc.strftime('%-d %-m %Y')).to eql @check_window_hash[:live_end_day].to_s + ' ' + @check_window_hash[:live_end_month].to_s + ' ' + @check_window_hash[:live_end_year].to_s
 end
 
 When(/^I submit details of a valid check window$/) do

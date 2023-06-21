@@ -21,6 +21,10 @@ const { validate } = require('uuid')
 const { PupilAnnulmentService } = require('../services/service-manager/pupil-annulment/pupil-annulment.service')
 const { TypeOfEstablishmentService } = require('../services/type-of-establishment-service/type-of-establishment-service')
 const { ServiceManagerSchoolService } = require('../services/service-manager/school/school.service')
+const { ServiceManagerAttendanceService } = require('../services/service-manager/attendance/service-manager.attendance.service')
+const { PupilFreezeService } = require('../services/service-manager/pupil-freeze/pupil-freeze.service')
+const headteacherDeclarationService = require('../services/headteacher-declaration.service')
+const dateService = require('../services/date.service')
 
 const controller = {
   /**
@@ -467,6 +471,60 @@ const controller = {
     }
   },
 
+  getHdfSummary: async function getHdfSummary (req, res, next) {
+    try {
+      req.breadcrumbs('Manage organisations', '/service-manager/organisations')
+      req.breadcrumbs('Search organisations', '/service-manager/organisations/search')
+      req.breadcrumbs('View organisation', `/service-manager/organisations/${req.params.slug}`)
+      res.locals.pageTitle = 'HDF Submission Summary'
+      req.breadcrumbs(res.locals.pageTitle)
+      const school = await schoolService.findOneBySlug(req.params.slug)
+      const includeDeleted = true
+      const hdf = await headteacherDeclarationService.findLatestHdfForSchool(school.dfeNumber, includeDeleted)
+      let submissionDate = ''
+      let deleted = false
+      let submitted = false
+      if (!hdf) {
+        // no hdf submitted
+        submissionDate = '(No HDF submitted)'
+      } else {
+        submitted = true
+        deleted = hdf.isDeleted
+        const hdfSignedDate = dateService.formatDateAndTime(hdf.signedDate)
+        submissionDate = `${hdfSignedDate} (UTC)`
+      }
+      res.render('service-manager/hdf-summary', {
+        breadcrumbs: req.breadcrumbs(),
+        school,
+        hdfStatusSummary: submissionDate,
+        deleted,
+        submitted
+      })
+    } catch (error) {
+      return next(error)
+    }
+  },
+
+  postDeleteHdf: async function postDeleteHdf (req, res, next) {
+    try {
+      const school = await schoolService.findOneBySlug(req.params.slug)
+      await headteacherDeclarationService.hardDeleteHdfSigning(school.id)
+      return res.redirect(`/service-manager/organisations/${req.params.slug}/hdfstatus`)
+    } catch (error) {
+      return next(error)
+    }
+  },
+
+  postDeleteHdfUndo: async function postDeleteHdfUndo (req, res, next) {
+    try {
+      const school = await schoolService.findOneBySlug(req.params.slug)
+      await headteacherDeclarationService.undoSoftDeleteHdfSigning(school.id, req.user.id)
+      return res.redirect(`/service-manager/organisations/${req.params.slug}/hdfstatus`)
+    } catch (error) {
+      return next(error)
+    }
+  },
+
   postEditOrganisation: async function postEditOrganisation (req, res, next) {
     try {
       const school = await schoolService.findOneBySlug(req.params.slug)
@@ -843,6 +901,99 @@ const controller = {
     }
     req.flash('info', `Pupil moved to ${school.name} (${school.urn})`)
     res.redirect(`/service-manager/pupil-summary/${encodeURIComponent(pupilUrlSlug)}`)
+  },
+
+  getPupilFreeze: async function getPupilFreeze (req, res, next, validationError = new ValidationError()) {
+    const urlSlug = req.params.slug
+    res.locals.pageTitle = 'Freeze Pupil'
+    const pupil = await ServiceManagerPupilService.getPupilDetailsByUrlSlug(urlSlug)
+    req.breadcrumbs('Pupil Summary', `/service-manager/pupil-summary/${encodeURIComponent(urlSlug).toLowerCase()}`)
+    req.breadcrumbs(res.locals.pageTitle)
+    res.render('service-manager/pupil/freeze', {
+      breadcrumbs: req.breadcrumbs(),
+      error: validationError,
+      pupil
+    })
+  },
+
+  postPupilFreeze: async function postPupilFreeze (req, res, next) {
+    const freezePupilErrorHandler = (req, res, next, errorMsg = 'No matching pupil found with specified UPN') => {
+      const error = new ValidationError()
+      error.addError('upn', errorMsg)
+      return controller.getPupilFreeze(req, res, next, error)
+    }
+    try {
+      const confirmedUpn = req.body.upn
+      if (confirmedUpn === undefined || confirmedUpn === '') {
+        return freezePupilErrorHandler(req, res, next, 'No upn provided')
+      }
+      const urlSlug = req.params.slug
+      const pupil = await ServiceManagerPupilService.getPupilDetailsByUrlSlug(urlSlug)
+      if (pupil.upn !== confirmedUpn) return freezePupilErrorHandler(req, res, next, 'UPN does not match pupil')
+      await PupilFreezeService.applyFreeze(urlSlug, req.user.id, pupil.schoolId)
+      return res.redirect(`/service-manager/pupil-summary/${encodeURIComponent(urlSlug).toLowerCase()}`)
+    } catch (error) {
+      return freezePupilErrorHandler(req, res, next, error.message)
+    }
+  },
+
+  getPupilThaw: async function getPupilThaw (req, res, next, validationError = new ValidationError()) {
+    const urlSlug = req.params.slug
+    res.locals.pageTitle = 'Thaw Pupil'
+    const pupil = await ServiceManagerPupilService.getPupilDetailsByUrlSlug(urlSlug)
+    req.breadcrumbs('Pupil Summary', `/service-manager/pupil-summary/${encodeURIComponent(urlSlug).toLowerCase()}`)
+    req.breadcrumbs(res.locals.pageTitle)
+    res.render('service-manager/pupil/thaw', {
+      breadcrumbs: req.breadcrumbs(),
+      error: validationError,
+      pupil
+    })
+  },
+
+  postPupilThaw: async function postPupilThaw (req, res, next) {
+    const thawPupilErrorHandler = (req, res, next, errorMsg = 'No matching pupil found with specified UPN') => {
+      const error = new ValidationError()
+      error.addError('upn', errorMsg)
+      return controller.getPupilThaw(req, res, next, error)
+    }
+    try {
+      const confirmedUpn = req.body.upn
+      if (confirmedUpn === undefined || confirmedUpn === '') {
+        return thawPupilErrorHandler(req, res, next, 'No upn provided')
+      }
+      const urlSlug = req.params.slug
+      const pupil = await ServiceManagerPupilService.getPupilDetailsByUrlSlug(urlSlug)
+      if (pupil.upn !== confirmedUpn) return thawPupilErrorHandler(req, res, next, 'UPN does not match pupil')
+      await PupilFreezeService.applyThaw(urlSlug, req.user.id, pupil.schoolId)
+      return res.redirect(`/service-manager/pupil-summary/${encodeURIComponent(urlSlug).toLowerCase()}`)
+    } catch (error) {
+      return thawPupilErrorHandler(req, res, next, error.message)
+    }
+  },
+
+  getAttendanceCodes: async function getAttendanceCodes (req, res, next) {
+    res.locals.pageTitle = 'Attendance codes'
+    req.breadcrumbs(res.locals.pageTitle)
+    try {
+      const attendanceCodes = await ServiceManagerAttendanceService.getAttendanceCodes()
+      res.render('service-manager/attendance-codes', {
+        breadcrumbs: req.breadcrumbs(),
+        attendanceCodes
+      })
+    } catch (error) {
+      return next(error)
+    }
+  },
+
+  postUpdateAttendanceCodes: async function postUpdateAttendanceCodes (req, res, next) {
+    try {
+      const visibleCodes = req.body.attendanceCodes
+      await ServiceManagerAttendanceService.setVisibleAttendanceCodes(visibleCodes)
+    } catch (error) {
+      return next(error)
+    }
+    req.flash('info', 'Attendance code visibility changed')
+    res.redirect('/service-manager/attendance-codes')
   }
 }
 

@@ -152,7 +152,7 @@ pupilAttendanceDataService.markAsNotAttending = async (slugs, code, userId, scho
   -- Mark pupils as not attending
   --
 
-  DECLARE @attendanceCode_id Int = (SELECT id from [mtc_admin].[attendanceCode] where code = @code AND isPrivileged = 0);
+  DECLARE @attendanceCode_id Int = (SELECT id from [mtc_admin].[attendanceCode] where code = @code AND isPrivileged = 0 AND visible = 1);
 
   IF @attendanceCode_id IS NULL
     THROW 51000, 'unknown attendanceCode.code', 1;

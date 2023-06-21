@@ -251,7 +251,7 @@ const controller = {
       await pupilEditService.update(pupil, req.body, req.user.schoolId, req.user.id)
       req.flash('info', 'Changes to pupil details have been saved')
     } catch (error) {
-      next(error)
+      return next(error)
     }
     const highlight = JSON.stringify([pupil.urlSlug.toString()])
     res.locals.isSubmitMetaRedirectUrl = true

@@ -172,11 +172,17 @@ end
 When(/^I remove restart for that pupil$/) do
   pupil_row = restarts_page.restarts_pupil_list.rows.find {|row| row.name.text.eql?("#{@details_hash[:last_name]}, #{@details_hash[:first_name]}")}
   pupil_row.remove_restart.click
+  @time_removed = Time.now.utc
 end
 
 Then(/^I should see a flash message to state the pupil has been removed from restart$/) do
   expect(restarts_page).to have_flash_message
   expect(restarts_page.flash_message.text).to eql("Restart removed for #{@details_hash[:last_name]}, #{@details_hash[:first_name]}")
+  pupil_id = SqlDbHelper.pupil_details_by_upn(@details_hash[:upn])['id']
+  deleted_at = SqlDbHelper.find_pupil_restart(pupil_id)['deletedAt'].utc
+  expect(deleted_at).to_not be_nil
+  expect(@time_removed.strftime("%Y-%m-%d %H:%M")).to eql deleted_at.strftime("%Y-%m-%d %H:%M")
+
 end
 
 Then(/^I should not see this pupil removed from restart in Generate Pin Pupil list$/) do

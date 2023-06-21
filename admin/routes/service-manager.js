@@ -42,6 +42,8 @@ router.get('/upload-pupil-census/delete/:pupilCensusId',
   serviceManagerController.getRemovePupilCensus
 )
 
+// mod settings routes
+
 router.get('/mod-settings',
   isAuthenticated(roles.serviceManager),
   serviceManagerController.getSceSettings
@@ -71,6 +73,8 @@ router.get('/mod-settings/remove-school/:urn',
   isAuthenticated(roles.serviceManager),
   serviceManagerController.getSceRemoveSchool
 )
+
+// organisation routes
 
 router.get('/organisations',
   isAuthenticated(roles.serviceManager),
@@ -123,6 +127,23 @@ router.post('/organisations/:slug/edit',
   serviceManagerController.postEditOrganisation
 )
 
+router.get('/organisations/:slug/hdfstatus',
+  isAuthenticated(roles.serviceManager),
+  serviceManagerController.getHdfSummary
+)
+
+router.post('/organisations/:slug/delete-hdf',
+  isAuthenticated(roles.serviceManager),
+  serviceManagerController.postDeleteHdf
+)
+
+router.post('/organisations/:slug/delete-hdf-undo',
+  isAuthenticated(roles.serviceManager),
+  serviceManagerController.postDeleteHdfUndo
+)
+
+// misc routes
+
 router.get('/job/:slug',
   isAuthenticated(roles.serviceManager),
   serviceManagerController.downloadJobOutput
@@ -146,6 +167,8 @@ router.get(
   serviceManagerController.getJobOutputs
 )
 
+// pupil routes
+
 router.get('/pupil/move/:pupilSlug/confirm/:schoolSlug',
   isAuthenticated([roles.serviceManager]),
   serviceManagerController.getPupilMoveConfirm
@@ -164,6 +187,26 @@ router.get('/pupil/move/:slug',
 router.post('/pupil/move/:slug',
   isAuthenticated([roles.serviceManager]),
   serviceManagerController.postPupilMove
+)
+
+router.get('/pupil/freeze/:slug',
+  isAuthenticated([roles.serviceManager]),
+  serviceManagerController.getPupilFreeze
+)
+
+router.post('/pupil/freeze/:slug',
+  isAuthenticated([roles.serviceManager]),
+  serviceManagerController.postPupilFreeze
+)
+
+router.get('/pupil/thaw/:slug',
+  isAuthenticated([roles.serviceManager]),
+  serviceManagerController.getPupilThaw
+)
+
+router.post('/pupil/thaw/:slug',
+  isAuthenticated([roles.serviceManager]),
+  serviceManagerController.postPupilThaw
 )
 
 router.get('/pupil-search',
@@ -199,6 +242,16 @@ router.get('/annul-pupil-undo/:slug',
 router.post('/annul-pupil-undo/:slug',
   isAuthenticated([roles.serviceManager]),
   serviceManagerController.postPupilAnnulmentUndo
+)
+
+router.get('/attendance-codes',
+  isAuthenticated([roles.serviceManager]),
+  serviceManagerController.getAttendanceCodes
+)
+
+router.post('/attendance-codes',
+  isAuthenticated([roles.serviceManager]),
+  serviceManagerController.postUpdateAttendanceCodes
 )
 
 module.exports = router

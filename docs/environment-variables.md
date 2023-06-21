@@ -4,6 +4,7 @@
 
 * **FT** - functions throttled
 * **FC** - functions consumption
+* **FP** - functions PS Report
 * **AA** - admin app
 * **PA** - pupil app (SPA)
 * **PAPI** - pupil API

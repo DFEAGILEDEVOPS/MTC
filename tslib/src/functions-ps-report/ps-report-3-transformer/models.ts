@@ -11,11 +11,13 @@ export interface IReportLineBase {
   Surname: string
   ReasonNotTakingCheck: DfEAbsenceCode | null
   PupilStatus: string | null
+  ImportedFromCensus: boolean
   // School
   SchoolName: string
   Estab: number | null
   SchoolURN: number | null
   LAnum: number | null
+  ToECode: number | null
   // Settings
   QDisplayTime: number | null
   PauseLength: number | null
@@ -66,4 +68,4 @@ export interface WorkingReportLine extends IReportLineBase {
   answers: ReportLineAnswer[]
 }
 
-export type DfEAbsenceCode = 'Z' | 'A' | 'L' | 'U' | 'B' | 'J'
+export type DfEAbsenceCode = 'Z' | 'A' | 'L' | 'U' | 'B' | 'J' | 'Q'

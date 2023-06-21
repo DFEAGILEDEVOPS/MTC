@@ -39,9 +39,9 @@ export interface IRedisService {
   /**
    * @description drop a series of items from the cache
    * @param {Array<string>} keys an array of keys to invalidate
-   * @returns {Promise<void>}
+   * @returns {Promise<Array<[error: Error | null, result: unknown]> | null | undefined>}
    */
-  drop (keys: string[]): Promise<Array<[Error | null, any]> | undefined>
+  drop (keys: string[]): Promise<Array<[error: Error | null, result: unknown]> | null | undefined>
   /**
    * @description get the TTL of an existing item in the cache
    * @param key the key of the item in the cache
@@ -68,7 +68,7 @@ export class RedisService implements IRedisService {
     this.logger = logger ?? new Logger.ConsoleLogger()
   }
 
-  private async getRedis (): Promise<Redis.Redis> {
+  private async getRedis (): Promise<Redis> {
     return RedisSingleton.getRedisService()
   }
 
@@ -156,7 +156,7 @@ export class RedisService implements IRedisService {
     }
   }
 
-  async drop (keys: string[]): Promise<Array<[Error | null, any]> | undefined> {
+  async drop (keys: string[]): Promise<Array<[error: Error | null, result: unknown]> | null | undefined> {
     if (keys.length === 0) {
       return
     }
@@ -189,7 +189,7 @@ export class RedisService implements IRedisService {
 }
 
 class RedisSingleton {
-  private static redisService: Redis.Redis
+  private static redisService: Redis
 
   private static async getRemoteIp (): Promise<any> {
     const requestUrl = config.RemoteIpCheckUrl
@@ -218,7 +218,7 @@ class RedisSingleton {
     tls: config.Redis.useTLS ? { host: config.Redis.Host } : undefined
   }
 
-  public static async getRedisService (): Promise<Redis.Redis> {
+  public static async getRedisService (): Promise<Redis> {
     if (this.redisService !== undefined) {
       return this.redisService
     }

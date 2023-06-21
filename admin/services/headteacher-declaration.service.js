@@ -1,8 +1,5 @@
 'use strict'
 
-const moment = require('moment-timezone')
-
-const config = require('../config')
 const schoolDataService = require('../services/data-access/school.data.service')
 const checkWindowV2Service = require('../services/check-window-v2.service')
 const attendanceCodeDataService = require('./data-access/attendance-code.data.service')
@@ -15,6 +12,7 @@ const settingService = require('./setting.service')
 const redisCacheService = require('../services/data-access/redis-cache.service')
 const redisKeyService = require('../services/redis-key.service')
 const { PupilFrozenService } = require('./pupil-frozen.service/pupil-frozen.service')
+
 /**
  * @typedef {Object} hdfPupil
  * @property {number} pupilId
@@ -62,19 +60,11 @@ headteacherDeclarationService.findPupilBySlugAndSchoolId = async function findPu
 
 /**
  * Fetch pupils and return eligibility to generate HDF
- * @param schoolId
- * @param checkEndDate
- * @param timezone
- * @returns {Promise<boolean>}
+ * @param schoolId - the db school.id int value
+ * @returns {Promise<boolean>} Returns true if there the school is eligible to submit their HDF, false otherwise.
  */
-headteacherDeclarationService.getEligibilityForSchool = async (schoolId, checkEndDate, timezone) => {
-  if (!checkEndDate) {
-    throw new Error('Check end date missing or not found')
-  }
-  const currentDate = moment.tz(timezone || config.DEFAULT_TIMEZONE)
-  const ineligiblePupilsCount = currentDate.isBefore(checkEndDate)
-    ? await headteacherDeclarationDataService.sqlFindPupilsBlockingHdfBeforeCheckEndDate(schoolId)
-    : await headteacherDeclarationDataService.sqlFindPupilsBlockingHdfAfterCheckEndDate(schoolId)
+headteacherDeclarationService.getEligibilityForSchool = async (schoolId) => {
+  const ineligiblePupilsCount = await headteacherDeclarationDataService.sqlFindPupilsBlockingHdf(schoolId)
   return ineligiblePupilsCount === 0
 }
 
@@ -82,7 +72,6 @@ headteacherDeclarationService.getEligibilityForSchool = async (schoolId, checkEn
  * Declare the results of the check, to be used by the Headteacher or equivalent role
  * This is the personal sign-off from the head, and closes the check for their school.
  * @param {object} form
- * @param {number} schoolId
  * @param {number} userId
  * @param {number} schoolId
  * @param {object} checkEndDate
@@ -105,15 +94,17 @@ headteacherDeclarationService.submitDeclaration = async (form, userId, schoolId,
   if (!checkWindow || !checkWindow.id) {
     throw new Error('Active check window not found')
   }
+
   const data = {
     signedDate: new Date(),
     checkWindow_id: checkWindow.id,
     school_id: school.id,
     user_id: userId,
-    confirmed: form.confirm === 'Y',
     headTeacher: form.isHeadteacher === 'Y',
     jobTitle: form.jobTitle,
-    fullName: [form.firstName, form.lastName].join(' ')
+    fullName: [form.firstName, form.lastName].join(' '),
+    hdfStatusCode: form.confirm,
+    noPupilsFurtherInfo: form.noPupilsFurtherInfo
   }
 
   return headteacherDeclarationDataService.sqlCreate(data)
@@ -124,13 +115,12 @@ headteacherDeclarationService.submitDeclaration = async (form, userId, schoolId,
  * @param {number} dfeNumber
  * @return {Promise<any>}
  */
-headteacherDeclarationService.findLatestHdfForSchool = async (dfeNumber) => {
-  // TODO: hdf: role checks? Date checks?
+headteacherDeclarationService.findLatestHdfForSchool = async (dfeNumber, includeDeleted = false) => {
   const school = await schoolDataService.sqlFindOneByDfeNumber(dfeNumber)
   if (!school) {
     return null
   }
-  return headteacherDeclarationDataService.sqlFindLatestHdfBySchoolId(school.id)
+  return headteacherDeclarationDataService.sqlFindLatestHdfBySchoolId(school.id, includeDeleted)
 }
 
 /**
@@ -187,6 +177,45 @@ headteacherDeclarationService.updatePupilsAttendanceCode = async (pupilIds, code
   }
   await pupilAttendanceDataService.sqlUpdateBatch(pupilIds, attendanceCode.id, userId)
   await redisCacheService.drop(redisKeyService.getSchoolResultsKey(schoolId))
+}
+
+// sqlHardDeleteHdfEntry
+/**
+ * hard delete the HDF signing
+ * @param schoolId
+ * @return {Promise<void>}
+ */
+headteacherDeclarationService.hardDeleteHdfSigning = async (schoolId) => {
+  if (!schoolId) {
+    throw new Error('schoolId is required')
+  }
+  return headteacherDeclarationDataService.sqlHardDeleteHdfEntry(schoolId)
+}
+
+/**
+ * soft delete the HDF signing
+ * @param schoolId
+ * @param userId
+ * @return {Promise<void>}
+ */
+headteacherDeclarationService.softDeleteHdfSigning = async (schoolId, userId) => {
+  if (!schoolId || !userId) {
+    throw new Error('schoolId and userId are required')
+  }
+  return headteacherDeclarationDataService.sqlSoftDeleteHdfEntry(schoolId, userId)
+}
+
+/**
+ * undo soft delete of the HDF signing
+ * @param schoolId
+ * @param userId
+ * @return {Promise<void>}
+ */
+headteacherDeclarationService.undoSoftDeleteHdfSigning = async (schoolId, userId) => {
+  if (!schoolId || !userId) {
+    throw new Error('schoolId and userId are required')
+  }
+  return headteacherDeclarationDataService.sqlUndoSoftDeleteHdfEntry(schoolId, userId)
 }
 
 module.exports = headteacherDeclarationService

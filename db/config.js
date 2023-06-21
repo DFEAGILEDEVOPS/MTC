@@ -89,6 +89,10 @@ module.exports = {
         Min: parseInt(process.env.TECH_SUPPORT_SQL_POOL_MIN_COUNT, 10) || 0,
         Max: parseInt(process.env.TECH_SUPPORT_SQL_POOL_MIN_COUNT, 10) || 2
       }
+    },
+    SqlSupport: {
+      Username: process.env.SQL_SUPPORT_USER || 'SqlSupportUser',
+      Password: process.env.SQL_SUPPORT_USER_PASSWORD
     }
   },
   DatabaseRetry: {

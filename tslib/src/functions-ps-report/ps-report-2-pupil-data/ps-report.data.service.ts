@@ -78,7 +78,7 @@ export class PsReportDataService {
     return this.sqlService.query(sql, params)
   }
 
-  private async sqlFindRestartReasonCode (pupilId: number, pupilRestartNumber: number): Promise<RestartReasonCode|null> {
+  private async sqlFindRestartReasonCode (pupilId: number, pupilRestartNumber: number): Promise<RestartReasonCode | null> {
     const pupilRestarts = await this.sqlFindPupilRestart(pupilId)
     if (Array.isArray(pupilRestarts)) {
       if (pupilRestartNumber <= pupilRestarts.length) {
@@ -106,6 +106,7 @@ export class PsReportDataService {
                         p.currentCheckId,
                         p.school_id,
                         p.urlSlug,
+                        p.job_id,
                         ac.reason as notTakingCheckReason,
                         ac.code as notTakingCheckCode
           FROM mtc_admin.pupil p
@@ -124,6 +125,7 @@ export class PsReportDataService {
       foreName: string
       gender: 'M' | 'F'
       id: number
+      job_id: number
       lastName: string
       notTakingCheckReason: string | null
       notTakingCheckCode: NotTakingCheckCode
@@ -142,6 +144,7 @@ export class PsReportDataService {
         forename: o.foreName,
         gender: o.gender,
         id: o.id,
+        jobId: o.job_id,
         lastname: o.lastName,
         notTakingCheckReason: o.notTakingCheckReason,
         notTakingCheckCode: o.notTakingCheckCode,
@@ -164,9 +167,20 @@ export class PsReportDataService {
     // for a message to be placed on the queue manually (for consumption by this function ps-report-2-pupil-data) which
     // could be a test school.  This will cause the function to throw.
     const sql = `
-        SELECT estabCode, id, leaCode, name, urlSlug, urn, isTestSchool
-          FROM mtc_admin.school
-         WHERE school.id = @schoolId
+        SELECT
+        s.estabCode,
+        s.id,
+        s.leaCode,
+        s.name,
+        s.urlSlug,
+        s.urn,
+        s.isTestSchool,
+        toe.code as typeOfEstablishmentCode
+      FROM
+        mtc_admin.school s LEFT JOIN
+        mtc_admin.typeOfEstablishmentLookup toe ON (s.typeOfEstablishmentLookup_id = toe.id)
+      WHERE
+        s.id = @schoolId
     `
     interface DBSchool {
       estabCode: number
@@ -176,6 +190,7 @@ export class PsReportDataService {
       urlSlug: string
       urn: number
       isTestSchool: boolean
+      typeOfEstablishmentCode: number
     }
     const res: DBSchool[] = await this.sqlService.query(sql, [{ name: 'schoolId', value: schoolId, type: TYPES.Int }])
     const data = R.head(res)
@@ -191,7 +206,8 @@ export class PsReportDataService {
       laCode: data.leaCode,
       name: data.name,
       slug: data.urlSlug,
-      urn: data.urn
+      urn: data.urn,
+      typeOfEstablishmentCode: data.typeOfEstablishmentCode
     }
     return Object.freeze(school)
   }
@@ -226,12 +242,39 @@ export class PsReportDataService {
    * Retrieve the check and result from the database
    * @param checkId
    */
-  public async getCheck (checkId: number | null): Promise<CheckOrNull> {
+  public async getCheck (pupil: Pupil): Promise<CheckOrNull> {
+    const checkId = pupil.currentCheckId
     if (checkId === null) {
       // For pupils that have not taken a check, or are not attending
       return null
     }
+
+    // Deal with pupils marked as not attending that may have a currentCheckId
+    const NotTakingCheckAnnulledCode: NotTakingCheckCode = 'ANLLD'
+    if (pupil.notTakingCheckCode !== null && pupil.notTakingCheckCode !== NotTakingCheckAnnulledCode) {
+      return null
+    }
+
     const sql = `
+        DECLARE @pupilId INT = (SELECT pupil_id FROM [mtc_admin].[check] WHERE id = @checkId);
+        DECLARE @checksLoggedInCount INT = (SELECT count(*) FROM mtc_admin.[check] where isLiveCheck = 1 AND pupil_id = @pupilId AND pupilLoginDate IS NOT NULL);
+        DECLARE @restartReasonCode NVARCHAR(50) = NULL;
+
+        IF (@checksLoggedInCount > 1)
+          BEGIN
+            SET @restartReasonCode = (SELECT TOP 1
+                                    rrl.code
+                                  FROM
+                                    [mtc_admin].[pupilRestart] pr JOIN [mtc_admin].[restartReasonLookup] rrl ON (pr.restartReasonLookup_id = rrl.id)
+                                  WHERE
+                                    pr.pupil_id = @pupilId
+                                  AND
+                                    pr.isDeleted = 0
+                                  ORDER BY
+                                    pr.id DESC) -- grab the latest undeleted restart reason for the pupil
+          END
+
+
         SELECT
             c.id,
             c.checkCode,
@@ -246,12 +289,13 @@ export class PsReportDataService {
             c.pupilLoginDate,
             c.pupil_id as pupilId,
             c.received,
-            rr.code as restartReason,
-            (select count(*) from mtc_admin.pupilRestart where pupil_id = c.pupil_id and isDeleted = 0) as restartNumber
+            @restartReasonCode as restartReasonCode,
+            CASE
+              WHEN @checksLoggedInCount > 0 THEN @checksLoggedInCount - 1
+              WHEN @checksLoggedInCount = 0 THEN @checksLoggedInCount
+            END as restartNumber
           FROM mtc_admin.[check] c
                LEFT JOIN mtc_results.checkResult cr ON (c.id = cr.check_id)
-               LEFT JOIN mtc_admin.pupilRestart pr ON (c.id = pr.check_id)
-               LEFT JOIN mtc_admin.restartReasonLookUp rr ON (pr.restartReasonLookUp_Id = rr.id)
          WHERE c.id = @checkId
     `
 
@@ -485,6 +529,18 @@ export class PsReportDataService {
       ident: string | null
     }
 
+    /**
+     * Note that if there isn't any device information at all, DBDevice[0] will be this:
+     *
+     * {
+     *    browserFamily: null,
+     *    browserMajorVersion: null,
+     *    browserMinorVersion: null,
+     *    browserPatchVersion: null,
+     *    ident: null
+     * }
+     */
+
     const res: DBDevice[] = await this.sqlService.query(sql, [{ name: 'checkId', value: checkId, type: TYPES.Int }])
     const data = R.head(res)
     if (data === undefined) {
@@ -562,6 +618,15 @@ export class PsReportDataService {
   }
 
   /**
+   * Determine if a pupil is not taking a check
+   * @param pupil
+   * @returns boolean - true if the pupil is marked as not taking the check.
+   */
+  public pupilIsNotTakingCheck (pupil: Pupil): boolean {
+    return pupil.notTakingCheckCode !== null
+  }
+
+  /**
    * Entry point to create the data structure to pass to the transform step in the psychometric report generation
    * @param pupil
    */
@@ -574,7 +639,7 @@ export class PsReportDataService {
       Promise<EventsOrNull>
     ] = [
       this.getCheckConfig(pupil.currentCheckId),
-      this.getCheck(pupil.currentCheckId),
+      this.getCheck(pupil),
       this.getAnswers(pupil.currentCheckId),
       this.getDevice(pupil.currentCheckId),
       this.getEvents(pupil.currentCheckId)

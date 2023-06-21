@@ -133,7 +133,7 @@ end
 
 And(/^some pupils who have been marked as not taking the check$/) do
   step 'I am logged in'
-  ["Incorrect registration", "Absent during check window",
+  ["Incorrect registration",
    "Left school",
    "Unable to access",
    "Working below expectation",

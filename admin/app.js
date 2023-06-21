@@ -42,6 +42,8 @@ const authModes = require('./lib/consts/auth-modes')
 const dfeSignInStrategy = require('./authentication/dfe-signin-strategy')
 const redisCacheService = require('./services/data-access/redis-cache.service')
 const { CheckWindowPhaseService } = require('./services/check-window-phase/check-window-phase.service')
+const checkWindowPhaseConsts = require('./lib/consts/check-window-phase')
+const userInitErrorConsts = require('./lib/errors/user')
 
 const logger = require('./services/log.service').getLogger()
 const sqlService = require('./services/data-access/sql.service')
@@ -124,6 +126,7 @@ const results = require('./routes/results')
 const pupilStatus = require('./routes/pupil-status')
 const websiteOffline = require('./routes/website-offline')
 const techSupport = require('./routes/tech-support')
+const roles = require('./lib/consts/roles')
 
 setupBrowserSecurity(app)
 
@@ -341,6 +344,22 @@ if (WEBSITE_OFFLINE) {
   app.use('/tech-support', techSupport)
 }
 
+app.use(async function (req, res, next) {
+  try {
+    if (req.isAuthenticated() === false) return next()
+    if (!req.user) {
+      return next()
+    }
+    // if user is a teacher and system is unavailable, short circuit to the unavailable page
+    if (global.checkWindowPhase === checkWindowPhaseConsts.unavailable && req.user.role === roles.teacher) {
+      res.locals.pageTitle = 'The service is currently closed'
+      return res.render('availability/admin-window-unavailable', {})
+    }
+  } catch (error) {
+    next(error)
+  }
+})
+
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
   const err = new Error('Not Found')
@@ -357,6 +376,18 @@ app.use(function (err, req, res, next) {
 
   // catch CSRF errors and redirect to the previous location
   if (err.code === 'EBADCSRFTOKEN') return res.redirect('back')
+
+  // catch system unavailable errors and redirect to the relevant page
+  if (err.code === 'SYSTEM_UNAVAILABLE') {
+    res.locals.pageTitle = 'The service is currently closed'
+    return res.render('availability/admin-window-unavailable', {})
+  }
+
+  // catch school not found errors and redirect to the relevant page
+  if (err.code === userInitErrorConsts.schoolNotFound) {
+    res.locals.pageTitle = 'School not found'
+    return res.render('availability/school-not-found', {})
+  }
 
   // render the error page
   res.locals.message = 'An error occurred'

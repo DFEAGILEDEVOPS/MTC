@@ -8,11 +8,14 @@ const roles = require('../lib/consts/roles')
 const dfeSigninDataService = require('./data-access/dfe-signin.data.service')
 const adminLogonEventDataService = require('./data-access/admin-logon-event.data.service')
 const { DsiSchoolNotFoundError, DsiMissingSchoolInfoError } = require('../error-types/DsiSchoolNotFoundError')
+const checkWindowPhaseConsts = require('../lib/consts/check-window-phase')
+const { SystemUnavailableError } = require('../error-types/system-unavailable-error')
 
 const service = {
   /**
    * @description maps an authenticated dfe sign-in user to an MTC user, school and role
    * @param {object} dfeUser all decrypted user information sent in the request payload
+   * @param {object} tokenset identification data associated with login provider
    */
   initialiseUser: async (dfeUser, tokenset) => {
     if (!dfeUser) {
@@ -34,6 +37,10 @@ const service = {
     let schoolRecord
     // lookup school if in teacher or headteacher role
     if (dfeUser.role === roles.teacher) {
+      // short circuit out of this if the check window is closed
+      if (global.checkWindowPhase === checkWindowPhaseConsts.unavailable) {
+        throw new SystemUnavailableError()
+      }
       if (dfeUser.organisation && dfeUser.organisation.urn) {
         schoolRecord = await schoolDataService.sqlFindOneByUrn(dfeUser.organisation.urn)
         if (!schoolRecord) {
@@ -95,6 +102,9 @@ const service = {
 
     if (schoolRecord) {
       logonEvent.school_id = schoolRecord.id
+      logonEvent.urn = dfeUser.organisation.urn
+      logonEvent.mtcRole = dfeUser.role
+      logonEvent.dfeRole = dfeRole
     }
 
     await adminLogonEventDataService.sqlCreate(logonEvent)

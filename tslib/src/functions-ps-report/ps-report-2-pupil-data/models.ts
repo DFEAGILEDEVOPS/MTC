@@ -7,6 +7,7 @@ export interface Pupil {
   forename: string
   gender: 'M' | 'F'
   id: number
+  jobId: number | null
   lastname: string
   notTakingCheckReason: string | null
   notTakingCheckCode: NotTakingCheckCode | null
@@ -21,6 +22,7 @@ export interface School {
   laCode: number
   name: string
   slug: string
+  typeOfEstablishmentCode: number
   urn: number
 }
 
@@ -147,8 +149,9 @@ export interface PupilResult {
  * NOACC: Unable to access
  * BLSTD: Working below expectation
  * JSTAR: Just arrived and unable to establish abilities
+ * ANLLD: Pupil results were annulled
  */
-export type NotTakingCheckCode = 'ABSNT' | 'LEFTT' | 'INCRG' | 'NOACC' | 'BLSTD' | 'JSTAR'
+export type NotTakingCheckCode = 'ABSNT' | 'LEFTT' | 'INCRG' | 'NOACC' | 'BLSTD' | 'JSTAR' | 'ANLLD'
 
 /**
  * LOI: Loss of internet
