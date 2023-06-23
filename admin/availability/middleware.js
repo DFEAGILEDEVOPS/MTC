@@ -57,7 +57,6 @@ async function isPostLiveOrLaterCheckPhase (req, res, next) {
 
 async function refuseIfHdfSigned (req, res, next) {
   const school = await schoolService.findOneById(req.user.schoolId)
-  const checkWindow = await checkWindowV2Service.getActiveCheckWindow()
   const currentHdf = await hdfService.findLatestHdfForSchool(school.dfeNumber)
   if (currentHdf === undefined || currentHdf === null) return next()
   return next(new Error('HDF signed'))

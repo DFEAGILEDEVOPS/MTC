@@ -5,7 +5,6 @@ const isAuthenticated = require('../authentication/middleware')
 const { isAdminWindowAvailable, refuseIfHdfSigned } = require('../availability/middleware')
 const pupilsNotTakingTheCheck = require('../controllers/pupils-not-taking-the-check')
 
-
 router.get(
   '/select-pupils/:groupIds?',
   isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),
