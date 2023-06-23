@@ -2,14 +2,40 @@ import { MonotonicTimeService } from '../monotonic-time/monotonic-time.service'
 import { MonotonicTime } from '../../monotonic-time'
 import { Injectable } from '@angular/core'
 
-export type AuditEntryType = 'PupilPrefsAPICalled' | 'PupilPrefsAPICallSucceeded' | 'PupilPrefsAPICallFailed' |
-  'WarmupStarted' | 'WarmupIntroRendered' | 'WarmupCompleteRendered'  | 'QuestionIntroRendered'|
-  'CheckStartedApiCalled' | 'CheckStartedAPICallSucceeded' | 'CheckStartedAPICallFailed' |
-  'CheckSubmissionPending' | 'CheckSubmissionApiCalled' | 'CheckSubmissionAPICallSucceeded' |
-  'CheckSubmissionAPIFailed' | 'CheckSubmissionFailed' | 'SessionExpired' | 'CheckStarted' | 'QuestionRendered' | 'QuestionAnswered' |
-  'PauseRendered' | 'RefreshDetected' |'UtteranceStarted' | 'UtteranceEnded' | 'QuestionReadingStarted' | 'QuestionReadingEnded' |
-  'QuestionTimerStarted' | 'QuestionTimerEnded' | 'QuestionTimerCancelled' | 'AppError' |
-  'AppVisible' | 'AppHidden' | 'RefreshOrTabCloseDetected';
+export type AuditEntryType =
+  'AppError' |
+  'AppHidden' |
+  'AppVisible' |
+  'CheckStarted' |
+  'CheckStartedApiCalled' |
+  'CheckStartedAPICallFailed' |
+  'CheckStartedAPICallSucceeded' |
+  'CheckSubmissionApiCalled' |
+  'CheckSubmissionAPICallSucceeded' |
+  'CheckSubmissionAPIFailed' |
+  'CheckSubmissionFailed' |
+  'CheckSubmissionPending' |
+  'PauseRendered' |
+  'PupilPrefsAPICalled' |
+  'PupilPrefsAPICallFailed' |
+  'PupilPrefsAPICallSucceeded' |
+  'QuestionAnswered' |
+  'QuestionIntroRendered'|
+  'QuestionReadingEnded' |
+  'QuestionReadingStarted' |
+  'QuestionRendered' |
+  'QuestionTimerCancelled' |
+  'QuestionTimerEnded' |
+  'QuestionTimerStarted' |
+  'RefreshDetected' |
+  'RefreshOrTabCloseDetected' |
+  'SessionExpired' |
+  'UtteranceEnded' |
+  'UtteranceStarted' |
+  'WarmupCompleteRendered'  |
+  'WarmupIntroRendered' |
+  'WarmupStarted' 
+  ;
 
 @Injectable({
   providedIn: 'root'
