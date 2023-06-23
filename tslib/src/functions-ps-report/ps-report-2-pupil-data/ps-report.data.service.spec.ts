@@ -2,7 +2,7 @@ import { PsReportDataService } from './ps-report.data.service'
 import { MockLogger } from '../../common/logger'
 import { ISqlService } from '../../sql/sql.service'
 import moment from 'moment'
-import { School } from './models'
+import { Pupil, School } from './models'
 
 describe('ps-report.data.service', () => {
   let sut: PsReportDataService
@@ -184,8 +184,72 @@ describe('ps-report.data.service', () => {
   })
 
   describe('#getCheck', () => {
-    test('it returns nulls if no check was taken', async () => {
-      const check = await sut.getCheck(null)
+    const pupilMarkedAsNotAttending: Pupil = {
+      checkComplete: false,
+      currentCheckId: 1234,
+      dateOfBirth: moment(),
+      forename: 'Unit',
+      gender: 'F',
+      id: 1,
+      jobId: null,
+      lastname: 'Test',
+      notTakingCheckReason: 'Left school',
+      notTakingCheckCode: 'LEFTT',
+      slug: 'abcd-1234',
+      schoolId: 2,
+      upn: 'N999199900001'
+    }
+
+    const pupilResultsAnnulled: Pupil = {
+      checkComplete: false,
+      currentCheckId: 1234,
+      dateOfBirth: moment(),
+      forename: 'Unit',
+      gender: 'F',
+      id: 1,
+      jobId: null,
+      lastname: 'Test',
+      notTakingCheckReason: 'Results annulled',
+      notTakingCheckCode: 'ANLLD',
+      slug: 'abcd-1234',
+      schoolId: 2,
+      upn: 'N999199900001'
+    }
+
+    const pupilNoCheck: Pupil = {
+      checkComplete: false,
+      currentCheckId: null,
+      dateOfBirth: moment(),
+      forename: 'Unit',
+      gender: 'F',
+      id: 1,
+      jobId: null,
+      lastname: 'Test',
+      notTakingCheckReason: null,
+      notTakingCheckCode: null,
+      slug: 'abcd-1234',
+      schoolId: 2,
+      upn: 'N999199900001'
+    }
+
+    const pupilWithCheck: Pupil = {
+      checkComplete: true,
+      currentCheckId: 12345,
+      dateOfBirth: moment(),
+      forename: 'Unit',
+      gender: 'F',
+      id: 1,
+      jobId: null,
+      lastname: 'Test',
+      notTakingCheckReason: null,
+      notTakingCheckCode: null,
+      slug: 'abcd-1234',
+      schoolId: 2,
+      upn: 'N999199900001'
+    }
+
+    test('it returns null if no check was taken', async () => {
+      const check = await sut.getCheck(pupilNoCheck)
       expect(check).toBeNull()
     })
 
@@ -209,7 +273,7 @@ describe('ps-report.data.service', () => {
           restartReason: 'LOI'
         }
       ])
-      const check = await sut.getCheck(3)
+      const check = await sut.getCheck(pupilWithCheck)
       if (check === null) {
         fail('check is null')
       }
@@ -231,7 +295,7 @@ describe('ps-report.data.service', () => {
 
     test('returns null if the check result is not found', async () => {
       (mockSqlService.query as jest.Mock).mockResolvedValueOnce([])
-      const check = await sut.getCheck(1)
+      const check = await sut.getCheck(pupilWithCheck)
       expect(check).toBeNull()
     })
 
@@ -255,7 +319,7 @@ describe('ps-report.data.service', () => {
           restartReason: 'LOI'
         }
       ])
-      const check = await sut.getCheck(3)
+      const check = await sut.getCheck(pupilWithCheck)
       expect(Object.isFrozen(check)).toBe(true)
     })
 
@@ -281,13 +345,42 @@ describe('ps-report.data.service', () => {
           restartReason: null
         }
       ])
-      const check = await sut.getCheck(1)
+      const check = await sut.getCheck(pupilWithCheck)
       if (check === null) {
         fail('check is null')
       }
       expect(check.restartReason).toBe('LOI')
       // @ts-ignore ignore non-standard access to private method
       expect(sut.sqlFindPupilRestart as jest.Mock).toHaveBeenCalledWith(42)
+    })
+
+    test('getCheck() returns null if the pupil is marked as not attending and also has a currentCheckId', async () => {
+      const check = await sut.getCheck(pupilMarkedAsNotAttending)
+      expect(check).toBeNull()
+    })
+
+    test('getCheck() returns the check if the pupil has had their results annulled', async () => {
+      (mockSqlService.query as jest.Mock).mockResolvedValueOnce([
+        {
+          checkCode: 'abc',
+          checkForm_id: 1,
+          checkWindow_id: 2,
+          complete: true,
+          completedAt: moment('2021-01-04T10:07:12.345Z'),
+          id: 3,
+          inputAssistantAddedRetrospectively: false,
+          isLiveCheck: true,
+          mark: 20,
+          processingFailed: false,
+          pupilId: 42,
+          pupilLoginDate: moment('2021-01-04T10:00:00.123Z'),
+          received: true,
+          restartNumber: 0,
+          restartReason: null
+        }
+      ])
+      const check = await sut.getCheck(pupilResultsAnnulled)
+      expect(check).not.toBeNull()
     })
   })
 

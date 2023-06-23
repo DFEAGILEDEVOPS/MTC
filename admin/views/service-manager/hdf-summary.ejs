@@ -1,0 +1,87 @@
+<%- partial('partials/_gds_breadcrumbs_and_sign_out', { breadcrumbs }) %>
+  <main class="govuk-main-wrapper govuk-body" id="main-content" role="main">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl">
+          <%= school.name %>
+        </h1>
+        <%- partial('partials/_gds_session_expiry') %>
+          <%- partial('partials/_flash-messages') %>
+            <dl class="govuk-summary-list">
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                  DFE Number
+                </dt>
+                <dd class="govuk-summary-list__value">
+                  <%= school.dfeNumber%>
+                </dd>
+              </div>
+
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                  URN
+                </dt>
+                <dd class="govuk-summary-list__value">
+                  <%= school.urn%>
+                </dd>
+              </div>
+
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                  Submission Date:
+                </dt>
+                <dd class="govuk-summary-list__value">
+                  <%= hdfStatusSummary %>
+                </dd>
+              </div>
+              <!-- disable undo until soft delete implemented fully -->
+              <% if (true === false) { %>
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                  Deleted:
+                </dt>
+                <dd class="govuk-summary-list__value">
+                  <%= deleted ? 'YES' : 'No' %>
+                </dd>
+              </div>
+              <% } %>
+            </dl>
+            <div class="govuk-button-group">
+              <!-- disable undo until soft delete implemented fully -->
+              <% if (true === false) { %>
+              <!-- button to undo delete -->
+              <form method="post" action="/service-manager/organisations/<%= school.urlSlug %>/delete-hdf-undo">
+                <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
+                <div class="govuk-button-group">
+                  <button class="govuk-button govuk-button--warning" type="submit">Undo Deletion</button>
+                </div>
+              </form>
+              <% } %>
+              <% if (submitted) { %>
+                <!-- button to delete submission -->
+                <form method="post" action="/service-manager/organisations/<%= school.urlSlug %>/delete-hdf">
+                  <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
+                  <div class="govuk-button-group">
+                    <button class="govuk-button govuk-button--warning" type="submit">Delete Submission</button>
+                  </div>
+                </form>
+              <% } %>
+            </div>
+      </div>
+      <div class="govuk-grid-column-one-third" aria-label="sidebar">
+        <aside class="app-related-items" role="complementary">
+          <h2 class="govuk-heading-m" id="subsection-title">
+            Related
+          </h2>
+          <nav role="navigation" aria-labelledby="subsection-title">
+            <ul class="govuk-list govuk-!-font-size-16">
+              <li>
+                <a class="govuk-link" href="<%- guidancePdf %>" target="_blank" rel="noopener noreferrer">Read the
+                  guidance and watch videos</a>
+              </li>
+            </ul>
+          </nav>
+        </aside>
+      </div>
+    </div>
+  </main>

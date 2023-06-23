@@ -134,6 +134,8 @@ export class ReportLine {
         return 'B'
       case 'JSTAR':
         return 'J'
+      case 'ANLLD':
+        return 'Q'
     }
     return null
   }
@@ -251,7 +253,11 @@ export class ReportLine {
     if (this.device === null) {
       return null
     }
-    return `${this.device.browserFamily} ${this.getBrowserVersion()}`
+    const browserVersion = this.getBrowserVersion()
+    const output = [this.device?.browserFamily, browserVersion]
+      .filter(x => typeof x === 'string' && x.length > 0)
+      .join(' ')
+    return output.length > 0 ? output : null
   }
 
   private getTimeout (questionNumber: number): boolean {
@@ -309,6 +315,16 @@ export class ReportLine {
     return 'Incomplete'
   }
 
+  private getFormMark (): number | null {
+    if (this._pupil.notTakingCheckCode !== null) {
+      // Pupils marked as not taking the check should have a null FormMark.  This is generic case
+      // that also covers the specific case of annulled pupils.
+      return null
+    }
+
+    return this.check?.mark ?? null
+  }
+
   private _transform (): void {
     this._report.PupilDatabaseId = this.pupil.id
     this._report.DOB = this.pupil.dateOfBirth
@@ -332,7 +348,7 @@ export class ReportLine {
     this._report.TimeTaken = this.getTimeTaken()
     this._report.RestartNumber = this.check?.restartNumber ?? null // set to null if there is no check
     this._report.RestartReason = ReportLine.getRestartReason(this.check?.restartReason ?? null) // map the code to the number
-    this._report.FormMark = this.check?.mark ?? null
+    this._report.FormMark = this.getFormMark()
     this._report.BrowserType = this.getBrowser()
     this._report.DeviceID = this.device?.deviceId ?? null
     this._report.PupilStatus = this.getPupilStatus()

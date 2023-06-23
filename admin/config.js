@@ -125,7 +125,7 @@ module.exports = {
   Tokens: {
     // 12 hours default expiry
     jwtTimeOutHours: process.env.JWT_TIMEOUT_HOURS || 12,
-    sasTimeOutHours: process.env.SAS_TIMEOUT_HOURS || 25
+    sasTimeOutHours: process.env.SAS_TIMEOUT_HOURS || 120
   },
   Monitoring: {
     ApplicationInsights: {

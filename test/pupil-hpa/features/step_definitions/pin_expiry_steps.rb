@@ -24,7 +24,7 @@ Given(/^I have completed the check(?: using the (.+))?$/) do |input|
   warm_up_page.start_now.click
   step "I complete the warm up questions using the #{input_type}"
   warm_up_complete_page.start_check.click
-start_mtc
+  start_mtc
   questions = JSON.parse page.evaluate_script('window.localStorage.getItem("questions");')
   check_page.complete_check_with_correct_answers(questions.size, 'numpad')
   complete_page.wait_for_complete_page
@@ -90,7 +90,7 @@ end
 
 When(/^I completed the check anyway$/) do
   warm_up_complete_page.start_check.click
-start_mtc
+  start_mtc
   check_page.complete_check_with_correct_answers(@questions.size, 'numpad')
 end
 
@@ -129,7 +129,7 @@ end
 Then(/^I should not see the remove restart button$/) do
   visit ENV["ADMIN_BASE_URL"] + restarts_page.url
   pupil_name = @details_hash[:first_name]
-  wait_until(5,1){(visit current_url; restarts_page.restarts_pupil_list.rows.find{|row| row.status.text.include? 'Restart taken'})}
-  pupil_row = restarts_page.restarts_pupil_list.rows.find{|row| row.name.text.include? pupil_name}
+  wait_until(5, 1) {(visit current_url; restarts_page.restarts_pupil_list.rows.find {|row| row.status.text.include? 'Restart taken'})}
+  pupil_row = restarts_page.restarts_pupil_list.rows.find {|row| row.name.text.include? pupil_name}
   expect(pupil_row.status.text).to eql 'Restart taken'
 end

@@ -23,7 +23,7 @@ const timerTrigger: AzureFunction = async function (context: Context, timer: IFu
     const durationInMilliseconds = end - start
     const timeStamp = new Date().toISOString()
     context.log(`${functionName}: ${timeStamp} processed ${meta.messagesSent} records with ${meta.messagesErrored} messages failed to send, run took ${Math.round(durationInMilliseconds) / 1000} secs, total memory usage (heap used) ${Math.round(heapUsed * 100) / 100} MB`)
-  } catch (error) {
+  } catch (error: any) {
     context.log.error(`${functionName}: ERROR: ${error.message}`)
     throw error
   }

@@ -44,7 +44,14 @@ export class HttpService {
 
   public async postXml(url: string, body: any, headers: HttpHeaders, retryCount = this.defaultRetryCount): Promise<any> {
     const _that = this;
-    _that.config.retryTimes = retryCount;
+    const retryConfig = new Array<number>();
+    const baseDelay = 3000;
+    const increaseFactor = 1.5;
+    retryConfig.push(baseDelay);
+    for (let i = 1; i < retryCount; i++) {
+      const instanceDelay = Math.round(increaseFactor * retryConfig[i - 1]);
+      retryConfig.push(instanceDelay);
+    }
     const response = await polly()
       .handle(error => {
         // Any requests that don't give a 200 status code will raise an Exception that can be handled here.
@@ -86,7 +93,7 @@ export class HttpService {
         console.warn('http-service: error: unusual error response (will not retry):', error);
         return false; // shouldn't get here
       })
-      .waitAndRetry(_that.config.retryTimes)
+      .waitAndRetry(retryConfig)
       .executeForPromise(function () {
         return _that.http.request('POST', url, {
           headers: headers.set('Content-Type', 'text/xml'),

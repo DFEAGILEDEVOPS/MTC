@@ -96,3 +96,11 @@ Feature:
     Then I should see the breadcrumb as "Home > Upload pupil census"
     And I click the Home link on breadcrumb
     Then I should be taken to the admin page
+
+  Scenario: Verify breadcrumb for Cookies page when logged in
+    Given I am logged in
+    When I navigate to the cookies form page
+    Then I should see the breadcrumb as "Home > Cookies on MTC"
+    And I click the Home link on breadcrumb
+    Then I should be taken to the school landing page
+

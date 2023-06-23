@@ -29,6 +29,7 @@ const fiveMinutes = 'PT5M'
 const oneDay = 'P1D'
 const sixDays = 'P6D'
 const twentyThreeHours = 'PT23H'
+const sixHours = 'PT6H'
 
 const config = {
   QueueDefaults: {
@@ -98,7 +99,9 @@ const config = {
     },
     {
       name: 'ps-report-exec',
-      maxSizeInMegabytes: {}.hasOwnProperty.call(process.env, 'SERVICE_BUS_QUEUE_MAX_SIZE_MEGABYTES_PS_REPORT_EXEC') ? parseInt(process.env.SERVICE_BUS_QUEUE_MAX_SIZE_MEGABYTES_PS_REPORT_EXEC, 10) : oneGigabyte
+      maxSizeInMegabytes: {}.hasOwnProperty.call(process.env, 'SERVICE_BUS_QUEUE_MAX_SIZE_MEGABYTES_PS_REPORT_EXEC') ? parseInt(process.env.SERVICE_BUS_QUEUE_MAX_SIZE_MEGABYTES_PS_REPORT_EXEC, 10) : oneGigabyte,
+      defaultMessageTimeToLive: sixHours,
+      maxDeliveryCount: 1
     }
   ]
 }

@@ -2,7 +2,6 @@
 /* global describe expect beforeEach test jest afterEach */
 
 const R = require('ramda')
-const moment = require('moment')
 
 const headteacherDeclarationDataService = require('../../../services/data-access/headteacher-declaration.data.service')
 const pupilStatusDataService = require('../../../services/data-access/pupil-status.data.service')
@@ -26,52 +25,24 @@ describe('headteacherDeclarationService', () => {
   })
 
   describe('#getEligibilityForSchool', () => {
-    const dfeNumber = 123
+    const schoolId = 123
 
-    describe('when check end date is in the future', () => {
-      test('should call sqlFindPupilsBlockingHdfBeforeCheckEndDate', async () => {
-        jest.spyOn(headteacherDeclarationDataService, 'sqlFindPupilsBlockingHdfBeforeCheckEndDate').mockImplementation()
-        const checkEndDate = moment.utc().add(5, 'days')
-        await service.getEligibilityForSchool(dfeNumber, checkEndDate)
-        expect(headteacherDeclarationDataService.sqlFindPupilsBlockingHdfBeforeCheckEndDate).toHaveBeenCalled()
-      })
-
-      test('should return true if no pupils blocking are detected', async () => {
-        jest.spyOn(headteacherDeclarationDataService, 'sqlFindPupilsBlockingHdfBeforeCheckEndDate').mockResolvedValue(0)
-        const checkEndDate = moment.utc().add(5, 'days')
-        const result = await service.getEligibilityForSchool(dfeNumber, checkEndDate)
-        expect(result).toBeTruthy()
-      })
-
-      test('should return false if no pupils blocking are detected', async () => {
-        jest.spyOn(headteacherDeclarationDataService, 'sqlFindPupilsBlockingHdfBeforeCheckEndDate').mockResolvedValue(1)
-        const checkEndDate = moment.utc().add(5, 'days')
-        const result = await service.getEligibilityForSchool(dfeNumber, checkEndDate)
-        expect(result).toBeFalsy()
-      })
+    test('should call sqlFindPupilsBlockingHdf', async () => {
+      jest.spyOn(headteacherDeclarationDataService, 'sqlFindPupilsBlockingHdf').mockImplementation()
+      await service.getEligibilityForSchool(schoolId)
+      expect(headteacherDeclarationDataService.sqlFindPupilsBlockingHdf).toHaveBeenCalled()
     })
 
-    describe('when check end date is in the past', () => {
-      test('should call sqlFindPupilsBlockingHdfBeforeCheckEndDate', async () => {
-        jest.spyOn(headteacherDeclarationDataService, 'sqlFindPupilsBlockingHdfAfterCheckEndDate').mockImplementation()
-        const checkEndDate = moment.utc().subtract(5, 'days')
-        await service.getEligibilityForSchool(dfeNumber, checkEndDate)
-        expect(headteacherDeclarationDataService.sqlFindPupilsBlockingHdfAfterCheckEndDate).toHaveBeenCalled()
-      })
+    test('should return true if no blocking pupils are detected', async () => {
+      jest.spyOn(headteacherDeclarationDataService, 'sqlFindPupilsBlockingHdf').mockResolvedValue(0)
+      const result = await service.getEligibilityForSchool(schoolId)
+      expect(result).toBeTruthy()
+    })
 
-      test('should return true if no pupils blocking are detected', async () => {
-        jest.spyOn(headteacherDeclarationDataService, 'sqlFindPupilsBlockingHdfAfterCheckEndDate').mockResolvedValue(0)
-        const checkEndDate = moment.utc().subtract(5, 'days')
-        const result = await service.getEligibilityForSchool(dfeNumber, checkEndDate)
-        expect(result).toBeTruthy()
-      })
-
-      test('should return false if no pupils blocking are detected', async () => {
-        jest.spyOn(headteacherDeclarationDataService, 'sqlFindPupilsBlockingHdfAfterCheckEndDate').mockResolvedValue(1)
-        const checkEndDate = moment.utc().subtract(5, 'days')
-        const result = await service.getEligibilityForSchool(dfeNumber, checkEndDate)
-        expect(result).toBeFalsy()
-      })
+    test('should return false ifblocking  pupils  are detected', async () => {
+      jest.spyOn(headteacherDeclarationDataService, 'sqlFindPupilsBlockingHdf').mockResolvedValue(1)
+      const result = await service.getEligibilityForSchool(schoolId)
+      expect(result).toBeFalsy()
     })
   })
 
@@ -164,7 +135,7 @@ describe('headteacherDeclarationService', () => {
       jest.spyOn(headteacherDeclarationDataService, 'sqlFindLatestHdfBySchoolId').mockResolvedValue(hdfMock)
       const res = await service.findLatestHdfForSchool(dfeNumber)
       expect(res).toEqual(hdfMock)
-      expect(headteacherDeclarationDataService.sqlFindLatestHdfBySchoolId).toHaveBeenCalledWith(schoolMock.id)
+      expect(headteacherDeclarationDataService.sqlFindLatestHdfBySchoolId).toHaveBeenCalledWith(schoolMock.id, false)
     })
   })
 
@@ -315,6 +286,50 @@ describe('headteacherDeclarationService', () => {
       jest.spyOn(redisCacheService, 'drop').mockImplementation()
       await service.updatePupilsAttendanceCode(pupilIds, attendanceCode, userId, schoolId)
       expect(redisCacheService.drop).toHaveBeenCalled()
+    })
+  })
+
+  describe('soft delete hdf signing', () => {
+    test('throws an error if schoolId undefined', async () => {
+      await expect(service.softDeleteHdfSigning(undefined, 1)).rejects.toThrow('schoolId and userId are required')
+    })
+
+    test('throws an error if userId undefined', async () => {
+      await expect(service.softDeleteHdfSigning(1, undefined)).rejects.toThrow('schoolId and userId are required')
+    })
+
+    test('calls data service to soft delete if arguments are valid', async () => {
+      jest.spyOn(headteacherDeclarationDataService, 'sqlSoftDeleteHdfEntry').mockResolvedValue()
+      await service.softDeleteHdfSigning(1, 1)
+      expect(headteacherDeclarationDataService.sqlSoftDeleteHdfEntry).toHaveBeenCalled()
+    })
+  })
+
+  describe('undo soft delete hdf signing', () => {
+    test('throws an error if schoolId undefined', async () => {
+      await expect(service.undoSoftDeleteHdfSigning(undefined, 1)).rejects.toThrow('schoolId and userId are required')
+    })
+
+    test('throws an error if userId undefined', async () => {
+      await expect(service.undoSoftDeleteHdfSigning(1, undefined)).rejects.toThrow('schoolId and userId are required')
+    })
+
+    test('calls data service to undo soft delete if arguments are valid', async () => {
+      jest.spyOn(headteacherDeclarationDataService, 'sqlUndoSoftDeleteHdfEntry').mockResolvedValue()
+      await service.undoSoftDeleteHdfSigning(1, 1)
+      expect(headteacherDeclarationDataService.sqlUndoSoftDeleteHdfEntry).toHaveBeenCalled()
+    })
+  })
+
+  describe('hard delete hdf signing', () => {
+    test('throws an error if schoolId undefined', async () => {
+      await expect(service.hardDeleteHdfSigning(undefined)).rejects.toThrow('schoolId is required')
+    })
+
+    test('calls data service to hard delete if arguments are valid', async () => {
+      jest.spyOn(headteacherDeclarationDataService, 'sqlHardDeleteHdfEntry').mockResolvedValue()
+      await service.hardDeleteHdfSigning(123)
+      expect(headteacherDeclarationDataService.sqlHardDeleteHdfEntry).toHaveBeenCalled()
     })
   })
 })

@@ -13,14 +13,10 @@ import { CheckStatusService } from '../services/check-status/check-status.servic
 })
 export class FeedbackComponent implements OnInit, AfterViewInit, OnDestroy {
 
-  public inputTypes: object;
   public satisfactionRatings: object;
-  public selectedInputType: any;
   public selectedSatisfactionRating: any;
   public errorExists: boolean;
-  public errorInputType: boolean;
   public errorSatisfactionRating: boolean;
-  public errorCommentExists: boolean;
   public enableSubmit: boolean;
   public speechListenerEvent: any;
 
@@ -48,12 +44,6 @@ export class FeedbackComponent implements OnInit, AfterViewInit, OnDestroy {
       this.router.navigate(['check-start']);
     }
     this.pupilData = this.storageService.getPupil();
-    this.inputTypes = [
-      { id: 1, value: 'Touchscreen' },
-      { id: 2, value: 'Mouse' },
-      { id: 3, value: 'Keyboard' },
-      { id: 4, value: 'Mix of the above'}
-    ];
     this.satisfactionRatings = [
       { id: 1, value: 'Very easy' },
       { id: 2, value: 'Easy' },
@@ -62,9 +52,7 @@ export class FeedbackComponent implements OnInit, AfterViewInit, OnDestroy {
       { id: 5, value: 'Very difficult'}
     ];
     this.errorExists = false;
-    this.errorInputType = false;
     this.errorSatisfactionRating = false;
-    this.errorCommentExists = false;
     this.submitted = false;
     this.enableSubmit = false;
   }
@@ -80,10 +68,10 @@ export class FeedbackComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  ngOnDestroy(): void {
+  async ngOnDestroy(): Promise<void> {
     // stop the current speech process if the page is changed
     if (this.questionService.getConfig().questionReader) {
-      this.speechService.cancel();
+      await this.speechService.cancel();
       this.elRef.nativeElement.removeEventListener('focus', this.speechListenerEvent, true);
     }
   }
@@ -96,32 +84,26 @@ export class FeedbackComponent implements OnInit, AfterViewInit, OnDestroy {
 
   onSelectionChange(fieldType: string, fieldValue: any) {
     switch (fieldType) {
-      case 'inputType':
-        this.selectedInputType = fieldValue;
-        break;
       case 'satisfactionRating':
         this.selectedSatisfactionRating = fieldValue;
         break;
     }
 
-    if (this.selectedInputType !== undefined && this.selectedSatisfactionRating !== undefined) {
+    if (this.selectedSatisfactionRating !== undefined) {
       this.enableSubmit = true;
     }
   }
 
-   onSubmit(comments: string) {
+   onSubmit() {
     if (this.submitted === true) {
       return;
     }
 
-    this.errorInputType = (this.selectedInputType === undefined);
     this.errorSatisfactionRating = (this.selectedSatisfactionRating === undefined);
 
-    if (this.errorInputType === false && this.errorSatisfactionRating === false) {
+    if (this.errorSatisfactionRating === false) {
       this.feedbackData = {
-        'inputType': this.selectedInputType,
         'satisfactionRating': this.selectedSatisfactionRating,
-        'comments': comments,
         'createdAt': new Date(),
         'checkCode': this.pupilData['checkCode' as keyof Object]
       };
