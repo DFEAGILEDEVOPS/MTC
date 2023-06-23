@@ -2,9 +2,9 @@ const roles = require('../lib/consts/roles')
 const express = require('express')
 const router = express.Router()
 const isAuthenticated = require('../authentication/middleware')
-const { isAdminWindowAvailable } = require('../availability/middleware')
-
+const { isAdminWindowAvailable, refuseIfHdfSigned } = require('../availability/middleware')
 const pupilsNotTakingTheCheck = require('../controllers/pupils-not-taking-the-check')
+
 
 router.get(
   '/select-pupils/:groupIds?',
@@ -28,6 +28,7 @@ router.get(
   '/remove/:pupilId',
   isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),
   isAdminWindowAvailable,
+  refuseIfHdfSigned,
   (req, res, next) => pupilsNotTakingTheCheck.removePupilNotTakingCheck(req, res, next)
 )
 router.get(

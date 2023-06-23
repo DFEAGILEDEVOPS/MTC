@@ -5,6 +5,8 @@ const config = require('../config')
 const checkWindowV2Service = require('../services/check-window-v2.service')
 const settingsService = require('../services/setting.service')
 const checkWindowPhaseConsts = require('../lib/consts/check-window-phase')
+const hdfService = require('../services/headteacher-declaration.service')
+const schoolService = require('../services/school.service')
 
 async function isAdminWindowAvailable (req, res, next) {
   // If this env var is set it will ignore this check entirely
@@ -53,4 +55,12 @@ async function isPostLiveOrLaterCheckPhase (req, res, next) {
   }
 }
 
-module.exports = { isAdminWindowAvailable, isPostLiveOrLaterCheckPhase }
+async function refuseIfHdfSigned (req, res, next) {
+  const school = await schoolService.findOneById(req.user.schoolId)
+  const checkWindow = await checkWindowV2Service.getActiveCheckWindow()
+  const currentHdf = await hdfService.findLatestHdfForSchool(school.dfeNumber)
+  if (currentHdf === undefined || currentHdf === null) return next()
+  return next(new Error('HDF signed'))
+}
+
+module.exports = { isAdminWindowAvailable, isPostLiveOrLaterCheckPhase, refuseIfHdfSigned }
