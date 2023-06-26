@@ -8,7 +8,8 @@ import { StorageService } from '../storage/storage.service';
 import { TokenService } from '../token/token.service';
 import { AppUsageService } from '../app-usage/app-usage.service';
 import { CompressorService } from '../compressor/compressor.service';
-import { Meta } from '@angular/platform-browser'
+import { Meta } from '@angular/platform-browser';
+import { ApplicationInsights } from '@microsoft/applicationinsights-web';
 
 /**
  * Declaration of check start service
@@ -19,6 +20,7 @@ export class CheckCompleteService {
   checkSubmissionApiErrorDelay;
   checkSubmissionAPIErrorMaxAttempts;
   submissionPendingViewMinDisplay;
+  appInsightsInstrumentationKey;
 
   constructor(private auditService: AuditService,
               private azureQueueService: AzureQueueService,
@@ -31,11 +33,13 @@ export class CheckCompleteService {
     const {
       checkSubmissionApiErrorDelay,
       checkSubmissionAPIErrorMaxAttempts,
-      submissionPendingViewMinDisplay
+      submissionPendingViewMinDisplay,
+      applicationInsightsInstrumentationKey
     } = APP_CONFIG;
     this.checkSubmissionApiErrorDelay = checkSubmissionApiErrorDelay;
     this.checkSubmissionAPIErrorMaxAttempts = checkSubmissionAPIErrorMaxAttempts;
     this.submissionPendingViewMinDisplay = submissionPendingViewMinDisplay;
+    this.appInsightsInstrumentationKey = applicationInsightsInstrumentationKey;
   }
 
   /**
@@ -83,6 +87,7 @@ export class CheckCompleteService {
       this.auditService.addEntry(this.auditEntryFactory.createCheckSubmissionAPICallSucceeded());
       await this.onSuccess(startTime);
     } catch (error) {
+      this.logErrorInApplicationInsights(error);
       this.auditService.addEntry(this.auditEntryFactory.createCheckSubmissionAPIFailed());
       if (error.statusCode === 403
         && error.authenticationerrordetail.includes('Signature not valid in the specified time frame')) {
@@ -91,6 +96,14 @@ export class CheckCompleteService {
         this.router.navigate(['/submission-failed']);
       }
     }
+  }
+
+  logErrorInApplicationInsights(error: any) {
+    //log an error to application insights
+    const appInsights = new ApplicationInsights({ config: {
+      instrumentationKey: this.appInsightsInstrumentationKey
+    }});
+    appInsights.trackException({ exception: error });
   }
 
   /**
