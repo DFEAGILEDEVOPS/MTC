@@ -334,3 +334,13 @@ Then(/^I should see related content on the pupils not taking a check page$/) do
   expect(pupils_not_taking_check_page).to have_guidance
   expect(pupils_not_taking_check_page).to have_access_arrangements
 end
+
+Given(/^I the hdf has been signed$/) do
+  step 'I am logged in'
+  step 'I am on the declaration submitted page'
+end
+
+Then(/^I should not be able to remove pupils who are NTC$/) do
+  pupils_not_taking_check_page.load
+  expect(pupils_not_taking_check_page.pupil_list.rows.first).to_not have_remove
+end
