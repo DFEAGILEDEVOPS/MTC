@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing'
 import { APP_CONFIG, IAppConfig, loadConfigMockService } from '../config/config.service'
-import { AzureQueueService } from './azure-queue.service'
+import { AzureQueueService, QueueMessageRetryConfig } from './azure-queue.service'
 import { APP_INITIALIZER } from '@angular/core'
 import { HttpService } from '../http/http.service'
 
@@ -89,20 +89,23 @@ describe('AzureQueueService', () => {
       (<IAppConfig>APP_CONFIG).production = true
     })
 
-    it('should try to fallback when failing to send a message', async () => {
+    it('should throw error when queue submission fails', async () => {
       httpServiceSpy.postXml.and.throwError(new Error('fail'))
+      const attempts = 3
+      const retryConfig: QueueMessageRetryConfig = {
+        MaxAttempts: attempts,
+        DelayBetweenRetries: 100,
+      }
+      const storageAccountUrl = 'www.thequeue.com/queue'
       try {
-        await sut.addMessageToQueue('queue',
+        await sut.addMessageToQueue(storageAccountUrl,
           'token',
           { payloadItem: 'payloadItem' },
-          {
-            MaxAttempts: 1,
-            DelayBetweenRetries: 10000,
-          }
+          retryConfig
         )
         fail('should have failed')
       } catch (e) {
-        expect(httpServiceSpy.postXml).toHaveBeenCalledTimes(2)
+        expect(httpServiceSpy.postXml).toHaveBeenCalledTimes(1)
       }
     })
 

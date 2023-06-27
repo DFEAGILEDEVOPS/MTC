@@ -10,6 +10,7 @@ import { TokenService } from '../token/token.service';
 import { AppUsageService } from '../app-usage/app-usage.service';
 import { Meta } from '@angular/platform-browser'
 import { AuditEntryFactory } from '../audit/auditEntry'
+import { ApplicationInsightsService } from '../app-insights/app-insights.service';
 
 let auditService: AuditService;
 let azureQueueServiceSpy: {
@@ -20,6 +21,7 @@ let storageService: StorageService;
 let tokenService: TokenService;
 let appUsageService: AppUsageService;
 let metaService: Meta
+let appInsightsService: ApplicationInsightsService
 
 describe('CheckCompleteService', () => {
   let mockRouter;
@@ -54,6 +56,7 @@ describe('CheckCompleteService', () => {
     tokenService = testBed.inject(TokenService);
     auditService = testBed.inject(AuditService);
     storageService = TestBed.inject(StorageService);
+    appInsightsService = TestBed.inject(ApplicationInsightsService);
     checkCompleteService.checkSubmissionApiErrorDelay = 100;
     checkCompleteService.checkSubmissionAPIErrorMaxAttempts = 1;
   });
@@ -135,6 +138,7 @@ describe('CheckCompleteService', () => {
       practice: false
     });
     spyOn(appUsageService , 'store');
+    spyOn(appInsightsService, 'trackException');
     spyOn(tokenService, 'getToken').and.returnValue({url: 'url', token: 'token'});
     spyOn(storageService, 'setPendingSubmission');
     spyOn(storageService, 'setCompletedSubmission');
@@ -151,6 +155,7 @@ describe('CheckCompleteService', () => {
     expect(storageService.setCompletedSubmission).toHaveBeenCalledTimes(0);
     expect(storageService.getAllItems).toHaveBeenCalledTimes(1);
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/submission-failed']);
+    expect(appInsightsService.trackException).toHaveBeenCalledTimes(1);
   });
 
   it(`submit should call azure queue service service when sas token has expired and redirect to session expiry page`, async () => {
