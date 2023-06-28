@@ -18,7 +18,7 @@ class PupilsNotTakingCheckPage < SitePrism::Page
     sections :rows, 'tr' do
       element :name, 'label'
       element :reason, 'td:nth-of-type(2)'
-      element :remove, 'a', text: 'Remove'
+      element :remove, 'a', text: 'Remove reason'
       element :highlight, '.govuk-highlight-item'
     end
   end
