@@ -373,36 +373,35 @@ export class ReportLine {
       this._report.FormMark = this.getFormMark()
       this._report.BrowserType = this.getBrowser()
       this._report.DeviceID = this.device?.deviceId ?? null
+      // Question data
+      this.answers?.forEach(answer => {
+        const rla = new ReportLineAnswer()
+        rla.questionNumber = answer.questionNumber
+        rla.id = answer.question
+        rla.response = answer.response
+
+        if (answer.inputs !== null) {
+          rla.addInputs(answer.inputs)
+        }
+
+        rla.score = answer.isCorrect ? 1 : 0
+        rla.timeout = this.getTimeout(answer.questionNumber)
+        rla.timeoutResponse = this.getTimeoutResponse(answer)
+        rla.timeoutScore = this.getTimeoutScore(answer)
+        rla.loadTime = this.getLoadTime(answer)
+        rla.questionReaderStart = this.getQuestionReaderStart(answer)
+        rla.questionReaderEnd = this.getQuestionReaderEnd(answer)
+        rla.calculateOverallTime()
+        rla.calculateRecallTime()
+
+        // add to the report
+        this._report.answers.push(rla)
+      })
     }
     // other data
     this._report.PupilStatus = this.getPupilStatus()
     this._report.ImportedFromCensus = this.pupil.jobId !== null
     this._report.ToECode = this.school.typeOfEstablishmentCode
-
-    // Question data
-    this.answers?.forEach(answer => {
-      const rla = new ReportLineAnswer()
-      rla.questionNumber = answer.questionNumber
-      rla.id = answer.question
-      rla.response = answer.response
-
-      if (answer.inputs !== null) {
-        rla.addInputs(answer.inputs)
-      }
-
-      rla.score = answer.isCorrect ? 1 : 0
-      rla.timeout = this.getTimeout(answer.questionNumber)
-      rla.timeoutResponse = this.getTimeoutResponse(answer)
-      rla.timeoutScore = this.getTimeoutScore(answer)
-      rla.loadTime = this.getLoadTime(answer)
-      rla.questionReaderStart = this.getQuestionReaderStart(answer)
-      rla.questionReaderEnd = this.getQuestionReaderEnd(answer)
-      rla.calculateOverallTime()
-      rla.calculateRecallTime()
-
-      // add to the report
-      this._report.answers.push(rla)
-    })
   }
 
   public toObject (): IPsychometricReportLine {

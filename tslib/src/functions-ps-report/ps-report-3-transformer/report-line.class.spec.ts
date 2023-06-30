@@ -725,6 +725,7 @@ describe('report line class', () => {
         expect(out.FormMark).toBeNull()
         expect(out.BrowserType).toBeNull()
         expect(out.DeviceID).toBeNull()
+        expect(out.answers).toHaveLength(0)
       })
     })
 
