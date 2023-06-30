@@ -10,8 +10,9 @@ import { checkConfig } from './mocks/check-config'
 import { checkForm } from './mocks/check-form'
 import { device } from './mocks/device'
 import { events } from './mocks/events'
-import { NotTakingCheckCode, RestartReasonCode } from '../../functions-ps-report/ps-report-2-pupil-data/models'
+import { Check, NotTakingCheckCode, RestartReasonCode } from '../../functions-ps-report/ps-report-2-pupil-data/models'
 import { DfEAbsenceCode } from './models'
+import moment from 'moment'
 
 class ReportLineTest extends ReportLine {
   public getReasonNotTakingCheck (code: NotTakingCheckCode): string
@@ -557,9 +558,9 @@ describe('report line class', () => {
         )
       })
 
-      test('the attempt ID is mapped', () => {
+      test('the attempt ID is not mapped', () => {
         const out = sut.transform()
-        expect(out.AttemptID).toBe('xyz-def-988')
+        expect(out.AttemptID).toBeNull()
       })
 
       test('the form name is mapped', () => {

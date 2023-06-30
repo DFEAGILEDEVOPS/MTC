@@ -321,8 +321,17 @@ export class ReportLine {
       // that also covers the specific case of annulled pupils.
       return null
     }
-
     return this.check?.mark ?? null
+  }
+
+  private getAttemptId (): string | null {
+    if (this.check === null) {
+      return null
+    }
+    if (this.check?.pupilLoginDate === null) {
+      return null
+    }
+    return this.check.checkCode
   }
 
   private _transform (): void {
@@ -340,7 +349,7 @@ export class ReportLine {
     this._report.QDisplayTime = this.checkConfig?.questionTime ?? null // set to null rather than undefined
     this._report.PauseLength = this.checkConfig?.loadingTime ?? null // set to null rather than undefined
     this._report.AccessArr = this.getAccessArrangements()
-    this._report.AttemptID = this.check?.checkCode ?? null // set to null rather than undefined
+    this._report.AttemptID = this.getAttemptId()
     this._report.FormID = this.checkForm?.name ?? null // set to null rather than undefined
     this._report.TestDate = this.check?.pupilLoginDate ?? null // set to null if there is no check
     this._report.TimeStart = this.getTimeStart()
