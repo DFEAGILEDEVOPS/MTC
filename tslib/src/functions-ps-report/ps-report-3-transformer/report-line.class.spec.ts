@@ -10,9 +10,8 @@ import { checkConfig } from './mocks/check-config'
 import { checkForm } from './mocks/check-form'
 import { device } from './mocks/device'
 import { events } from './mocks/events'
-import { Check, NotTakingCheckCode, RestartReasonCode } from '../../functions-ps-report/ps-report-2-pupil-data/models'
+import { NotTakingCheckCode, RestartReasonCode } from '../../functions-ps-report/ps-report-2-pupil-data/models'
 import { DfEAbsenceCode } from './models'
-import moment from 'moment'
 
 class ReportLineTest extends ReportLine {
   public getReasonNotTakingCheck (code: NotTakingCheckCode): string
@@ -565,7 +564,7 @@ describe('report line class', () => {
 
       test('the form name is mapped', () => {
         const out = sut.transform()
-        expect(out.FormID).toBe('Test check form 9')
+        expect(out.FormID).toBeNull()
       })
 
       test('the date the test was taken is mapped', () => {
@@ -661,7 +660,7 @@ describe('report line class', () => {
       beforeEach(() => {
         sut = new ReportLine(
           null,
-          null,
+          check,
           null,
           null,
           null,
@@ -709,6 +708,23 @@ describe('report line class', () => {
       test('the pupil status is set to Not taking the Check', () => {
         const out = sut.transform()
         expect(out.PupilStatus).toBe('Not taking the Check')
+      })
+
+      test('the check data is all set to null', () => {
+        const out = sut.transform()
+        expect(out.PauseLength).toBeNull()
+        expect(out.QDisplayTime).toBeNull()
+        expect(out.AttemptID).toBeNull()
+        expect(out.FormID).toBeNull()
+        expect(out.TestDate).toBeNull()
+        expect(out.TimeStart).toBeNull()
+        expect(out.TimeComplete).toBeNull()
+        expect(out.TimeTaken).toBeNull()
+        expect(out.RestartNumber).toBeNull()
+        expect(out.RestartReason).toBeNull()
+        expect(out.FormMark).toBeNull()
+        expect(out.BrowserType).toBeNull()
+        expect(out.DeviceID).toBeNull()
       })
     })
 
