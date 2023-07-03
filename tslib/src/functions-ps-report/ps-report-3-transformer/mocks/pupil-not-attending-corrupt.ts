@@ -3,17 +3,17 @@ import moment from 'moment'
 
 export const pupil: Pupil = {
   checkComplete: true,
-  currentCheckId: 1,
-  dateOfBirth: moment.utc('2012-03-07'),
-  forename: 'test',
-  gender: 'F',
-  id: 2,
+  currentCheckId: null,
+  dateOfBirth: moment.utc('2012-04-01'),
+  forename: 'Tester',
+  gender: 'M',
+  id: 4,
   jobId: 1,
-  lastname: 'data',
-  notTakingCheckReason: null,
-  notTakingCheckCode: null,
+  lastname: 'Person',
+  notTakingCheckReason: 'Absent during check window',
+  notTakingCheckCode: 'ABSNT',
   restartAvailable: false,
   slug: 'abc-def-hij-klm',
-  schoolId: 3,
+  schoolId: 4,
   upn: 'TEST987'
 }

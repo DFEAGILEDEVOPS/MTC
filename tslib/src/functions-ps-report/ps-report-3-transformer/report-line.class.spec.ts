@@ -2,6 +2,8 @@ import { ReportLine } from './report-line.class'
 import { pupil as pupilCompletedCheck } from './mocks/pupil-who-completed-a-check'
 import { pupil as pupilNotAttending } from './mocks/pupil-not-attending'
 import { pupil as pupilIncomplete } from './mocks/pupil-with-incomplete-check'
+import { pupil as pupilIncompleteCorrupt } from './mocks/pupil-not-attending-corrupt'
+import { pupil as pupilCompleteRestartAvailableCorrupt } from './mocks/pupil-complete-and-restart-available-corrupt'
 import { school } from './mocks/school'
 import { answers } from './mocks/answers'
 import { check } from './mocks/check'
@@ -539,6 +541,36 @@ describe('report line class', () => {
         const out = sut.transform()
         expect(out.PupilStatus).toBe('Incomplete')
       })
+
+      test('in the event of both checkComplete and attendanceId being set the pupil status is shown as Not taking check', () => {
+        const report = new ReportLine(
+          null,
+          null,
+          checkConfig,
+          checkForm,
+          null,
+          null,
+          pupilIncompleteCorrupt,
+          school
+        )
+        const out = report.transform()
+        expect(out.PupilStatus).toBe('Not taking the Check')
+      })
+
+      test('if the pupil is complete and (somehow) the restartAvailable flag is set, the pupil status is Incomplete', () => {
+        const report = new ReportLine(
+          null,
+          null,
+          checkConfig,
+          checkForm,
+          null,
+          null,
+          pupilCompleteRestartAvailableCorrupt,
+          school
+        )
+        const out = report.transform()
+        expect(out.PupilStatus).toBe('Incomplete')
+      })
     })
 
     describe('check fields', () => {
@@ -557,14 +589,14 @@ describe('report line class', () => {
         )
       })
 
-      test('the attempt ID is mapped', () => {
+      test('the attempt ID is not mapped', () => {
         const out = sut.transform()
-        expect(out.AttemptID).toBe('xyz-def-988')
+        expect(out.AttemptID).toBeNull()
       })
 
       test('the form name is mapped', () => {
         const out = sut.transform()
-        expect(out.FormID).toBe('Test check form 9')
+        expect(out.FormID).toBeNull()
       })
 
       test('the date the test was taken is mapped', () => {
@@ -660,7 +692,7 @@ describe('report line class', () => {
       beforeEach(() => {
         sut = new ReportLine(
           null,
-          null,
+          check,
           null,
           null,
           null,
@@ -708,6 +740,24 @@ describe('report line class', () => {
       test('the pupil status is set to Not taking the Check', () => {
         const out = sut.transform()
         expect(out.PupilStatus).toBe('Not taking the Check')
+      })
+
+      test('the check data is all set to null', () => {
+        const out = sut.transform()
+        expect(out.PauseLength).toBeNull()
+        expect(out.QDisplayTime).toBeNull()
+        expect(out.AttemptID).toBeNull()
+        expect(out.FormID).toBeNull()
+        expect(out.TestDate).toBeNull()
+        expect(out.TimeStart).toBeNull()
+        expect(out.TimeComplete).toBeNull()
+        expect(out.TimeTaken).toBeNull()
+        expect(out.RestartNumber).toBeNull()
+        expect(out.RestartReason).toBeNull()
+        expect(out.FormMark).toBeNull()
+        expect(out.BrowserType).toBeNull()
+        expect(out.DeviceID).toBeNull()
+        expect(out.answers).toHaveLength(0)
       })
 
       test('the restart number is set to null', () => {
