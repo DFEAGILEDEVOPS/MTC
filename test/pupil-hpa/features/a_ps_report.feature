@@ -131,3 +131,8 @@ Feature:
     Given I have completed a check that has no device information
     When the data sync and ps report function has run
     Then I should see the device is set to null
+
+  Scenario: Pupil status is set to not taking the check if there is an attendance code
+    Given I have completed the check and have an unconsumed restart
+    When I set a reason for NTC
+    Then the correct pupil status is set

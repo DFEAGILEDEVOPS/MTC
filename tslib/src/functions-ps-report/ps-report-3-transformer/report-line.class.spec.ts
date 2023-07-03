@@ -2,6 +2,7 @@ import { ReportLine } from './report-line.class'
 import { pupil as pupilCompletedCheck } from './mocks/pupil-who-completed-a-check'
 import { pupil as pupilNotAttending } from './mocks/pupil-not-attending'
 import { pupil as pupilIncomplete } from './mocks/pupil-with-incomplete-check'
+import { pupil as pupilIncompleteCorrupt } from './mocks/pupil-not-attending-corrupt'
 import { school } from './mocks/school'
 import { answers } from './mocks/answers'
 import { check } from './mocks/check'
@@ -538,6 +539,21 @@ describe('report line class', () => {
       test('it determines the pupil status', () => {
         const out = sut.transform()
         expect(out.PupilStatus).toBe('Incomplete')
+      })
+
+      test('in the event of both checkComplete and attendanceId being set the pupil status is shown as Not taking check', () => {
+        const report = new ReportLine(
+          null,
+          null,
+          checkConfig,
+          checkForm,
+          null,
+          null,
+          pupilIncompleteCorrupt,
+          school
+        )
+        const out = report.transform()
+        expect(out.PupilStatus).toBe('Not taking the Check')
       })
     })
 
