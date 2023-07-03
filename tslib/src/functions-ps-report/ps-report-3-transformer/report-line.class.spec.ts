@@ -589,14 +589,14 @@ describe('report line class', () => {
         )
       })
 
-      test('the attempt ID is mapped', () => {
+      test('the attempt ID is not mapped', () => {
         const out = sut.transform()
-        expect(out.AttemptID).toBe('xyz-def-988')
+        expect(out.AttemptID).toBeNull()
       })
 
       test('the form name is mapped', () => {
         const out = sut.transform()
-        expect(out.FormID).toBe('Test check form 9')
+        expect(out.FormID).toBeNull()
       })
 
       test('the date the test was taken is mapped', () => {
@@ -692,7 +692,7 @@ describe('report line class', () => {
       beforeEach(() => {
         sut = new ReportLine(
           null,
-          null,
+          check,
           null,
           null,
           null,
@@ -740,6 +740,24 @@ describe('report line class', () => {
       test('the pupil status is set to Not taking the Check', () => {
         const out = sut.transform()
         expect(out.PupilStatus).toBe('Not taking the Check')
+      })
+
+      test('the check data is all set to null', () => {
+        const out = sut.transform()
+        expect(out.PauseLength).toBeNull()
+        expect(out.QDisplayTime).toBeNull()
+        expect(out.AttemptID).toBeNull()
+        expect(out.FormID).toBeNull()
+        expect(out.TestDate).toBeNull()
+        expect(out.TimeStart).toBeNull()
+        expect(out.TimeComplete).toBeNull()
+        expect(out.TimeTaken).toBeNull()
+        expect(out.RestartNumber).toBeNull()
+        expect(out.RestartReason).toBeNull()
+        expect(out.FormMark).toBeNull()
+        expect(out.BrowserType).toBeNull()
+        expect(out.DeviceID).toBeNull()
+        expect(out.answers).toHaveLength(0)
       })
     })
 
