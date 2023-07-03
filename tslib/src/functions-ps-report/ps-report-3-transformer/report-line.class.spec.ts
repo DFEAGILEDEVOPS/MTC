@@ -315,7 +315,7 @@ describe('report line class', () => {
         expect(out.TimeTaken).toBe(19.877)
       })
 
-      test('the number of restarts is mapped', () => {
+      test('the number of restarts is an integer', () => {
         const out = sut.transform()
         expect(out.RestartNumber).toBe(2)
       })
@@ -589,7 +589,7 @@ describe('report line class', () => {
 
       test('the number of restarts is mapped', () => {
         const out = sut.transform()
-        expect(out.RestartNumber).toBe(0)
+        expect(out.RestartNumber).toBeNull()
       })
 
       test('the restart reason is mapped', () => {
@@ -708,6 +708,11 @@ describe('report line class', () => {
       test('the pupil status is set to Not taking the Check', () => {
         const out = sut.transform()
         expect(out.PupilStatus).toBe('Not taking the Check')
+      })
+
+      test('the restart number is set to null', () => {
+        const out = sut.transform()
+        expect(out.RestartNumber).toBeNull()
       })
     })
 
