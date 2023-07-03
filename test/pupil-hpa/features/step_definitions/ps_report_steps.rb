@@ -532,3 +532,14 @@ Then(/^the correct pupil status is set$/) do
   expect(ps_report_record['PupilStatus']).to eql 'Not taking the Check'
   p "PS_REPORT RECORD - " + ps_report_record["PupilId"].to_s
 end
+
+Then(/^I should see AttemptId, TestDate and FormID as null in the ps report$/) do
+  step 'the data sync and ps report function has run'
+  pupil_details = SqlDbHelper.pupil_details_using_school(@details_hash[:upn], @school_id)
+  ps_report_record = SqlDbHelper.get_ps_record_for_pupil(pupil_details['id'])
+  p "PS_REPORT RECORD - " + ps_report_record["PupilId"].to_s
+  ps_report_record = ps_report_record.map {|k, v| [k, (v.is_a?(BigDecimal) ? v.to_f : v)]}.to_h
+  expect(ps_report_record["AttemptId"]).to be_nil
+  expect(ps_report_record["FormID"]).to be_nil
+  expect(ps_report_record["TestDate"]).to be_nil
+end
