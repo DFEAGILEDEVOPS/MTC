@@ -306,12 +306,14 @@ export class ReportLine {
   }
 
   private getPupilStatus (): string {
-    if (this._pupil.checkComplete === true) {
-      return 'Complete'
-    }
     if (this._pupil.notTakingCheckCode !== null) {
       return 'Not taking the Check'
     }
+
+    if (this._pupil.checkComplete === true) {
+      return 'Complete'
+    }
+
     return 'Incomplete'
   }
 
