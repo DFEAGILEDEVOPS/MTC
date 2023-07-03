@@ -736,12 +736,12 @@ describe('report line class', () => {
 
       beforeEach(() => {
         sut = new ReportLine(
-          null,
+          answers,
           check,
-          null,
-          null,
-          null,
-          null,
+          checkConfig,
+          checkForm,
+          device,
+          events,
           pupilNotAttending,
           school
         )
