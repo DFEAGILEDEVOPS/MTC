@@ -330,6 +330,14 @@ export class ReportLine {
     return this.check?.mark ?? null
   }
 
+  private getRestartNumber (): number | null {
+    const status = this.getPupilStatus()
+    if (status === 'Complete') {
+      return this.check?.restartNumber ?? null
+    }
+    return null
+  }
+
   private getAttemptId (): string | null {
     if (this.check === null) {
       return null
@@ -365,7 +373,7 @@ export class ReportLine {
     this._report.LAnum = this.school.laCode
     this._report.AccessArr = this.getAccessArrangements()
     // Check data
-    if (this._report.ReasonNotTakingCheck === null) {
+    if (this._report.ReasonNotTakingCheck === null || this._report.ReasonNotTakingCheck === 'Q') {
       this._report.QDisplayTime = this.checkConfig?.questionTime ?? null // set to null rather than undefined
       this._report.PauseLength = this.checkConfig?.loadingTime ?? null // set to null rather than undefined
       this._report.AttemptID = this.getAttemptId()
@@ -374,7 +382,7 @@ export class ReportLine {
       this._report.TimeStart = this.getTimeStart()
       this._report.TimeComplete = this.getTimeComplete()
       this._report.TimeTaken = this.getTimeTaken()
-      this._report.RestartNumber = this.check?.restartNumber ?? null // set to null if there is no check
+      this._report.RestartNumber = this.getRestartNumber()
       this._report.RestartReason = ReportLine.getRestartReason(this.check?.restartReason ?? null) // map the code to the number
       this._report.FormMark = this.getFormMark()
       this._report.BrowserType = this.getBrowser()
