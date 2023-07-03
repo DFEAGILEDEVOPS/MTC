@@ -1,12 +1,15 @@
 import moment from 'moment'
 import {
+  Answer,
   AnswersOrNull,
   CheckConfigOrNull,
   CheckFormOrNull,
   CheckOrNull, DeviceOrNull, EventsOrNull,
   Event,
+  NotTakingCheckCode,
   Pupil,
-  School, Answer, NotTakingCheckCode, RestartReasonCode
+  RestartReasonCode,
+  School
 } from '../../functions-ps-report/ps-report-2-pupil-data/models'
 import { deepFreeze } from '../../common/deep-freeze'
 import { ReportLineAnswer } from './report-line-answer.class'
@@ -310,7 +313,8 @@ export class ReportLine {
       return 'Not taking the Check'
     }
 
-    if (this._pupil.checkComplete === true) {
+    // 59543: fixed in 2023
+    if (this._pupil.checkComplete === true && !this._pupil.restartAvailable) {
       return 'Complete'
     }
 

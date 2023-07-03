@@ -12,6 +12,7 @@ export const pupil: Pupil = {
   lastname: 'def',
   notTakingCheckReason: null,
   notTakingCheckCode: null,
+  restartAvailable: false,
   slug: 'abc-def-hij-klm',
   schoolId: 3,
   upn: 'TEST985'
