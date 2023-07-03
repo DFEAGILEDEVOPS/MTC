@@ -3,6 +3,7 @@ import { pupil as pupilCompletedCheck } from './mocks/pupil-who-completed-a-chec
 import { pupil as pupilNotAttending } from './mocks/pupil-not-attending'
 import { pupil as pupilIncomplete } from './mocks/pupil-with-incomplete-check'
 import { pupil as pupilIncompleteCorrupt } from './mocks/pupil-not-attending-corrupt'
+import { pupil as pupilCompleteRestartAvailableCorrupt } from './mocks/pupil-complete-and-restart-available-corrupt'
 import { school } from './mocks/school'
 import { answers } from './mocks/answers'
 import { check } from './mocks/check'
@@ -554,6 +555,21 @@ describe('report line class', () => {
         )
         const out = report.transform()
         expect(out.PupilStatus).toBe('Not taking the Check')
+      })
+
+      test('if the pupil is complete and (somehow) the restartAvailable flag is set, the pupil status is Incomplete', () => {
+        const report = new ReportLine(
+          null,
+          null,
+          checkConfig,
+          checkForm,
+          null,
+          null,
+          pupilCompleteRestartAvailableCorrupt,
+          school
+        )
+        const out = report.transform()
+        expect(out.PupilStatus).toBe('Incomplete')
       })
     })
 
