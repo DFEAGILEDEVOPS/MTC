@@ -1,6 +1,7 @@
 import { ReportLine } from './report-line.class'
 import { pupil as pupilCompletedCheck } from './mocks/pupil-who-completed-a-check'
 import { pupil as pupilNotAttending } from './mocks/pupil-not-attending'
+import { pupil as pupilAnnulled } from './mocks/pupil-not-attending-annulled'
 import { pupil as pupilIncomplete } from './mocks/pupil-with-incomplete-check'
 import { pupil as pupilIncompleteCorrupt } from './mocks/pupil-not-attending-corrupt'
 import { pupil as pupilCompleteRestartAvailableCorrupt } from './mocks/pupil-complete-and-restart-available-corrupt'
@@ -682,6 +683,50 @@ describe('report line class', () => {
         const out = sut.transform()
         expect(out.answers).toStrictEqual([])
       })
+    })
+  })
+
+  describe('pupil is marked as annulled', () => {
+    let sut: ReportLine
+    beforeEach(() => {
+      sut = new ReportLine(
+        answers,
+        check,
+        checkConfig,
+        checkForm,
+        device,
+        events,
+        pupilAnnulled,
+        school
+      )
+    })
+
+    test('it is defined', () => {
+      expect(sut).toBeDefined()
+    })
+
+    test('the check data is initialised', () => {
+      const out = sut.transform()
+      expect(out.PauseLength).not.toBeNull()
+      expect(out.QDisplayTime).not.toBeNull()
+      expect(out.AttemptID).not.toBeNull()
+      expect(out.FormID).not.toBeNull()
+      expect(out.TestDate).not.toBeNull()
+      expect(out.TimeStart).not.toBeNull()
+      expect(out.FormMark).toBeNull()
+      expect(out.BrowserType).not.toBeNull()
+      expect(out.DeviceID).not.toBeNull()
+      expect(out.answers).not.toHaveLength(0)
+    })
+
+    test('the pupil has the annulled code', () => {
+      const out = sut.transform()
+      expect(out.ReasonNotTakingCheck).toBe('Q')
+    })
+
+    test('the pupil status is set to Not taking the Check', () => {
+      const out = sut.transform()
+      expect(out.PupilStatus).toBe('Not taking the Check')
     })
   })
 

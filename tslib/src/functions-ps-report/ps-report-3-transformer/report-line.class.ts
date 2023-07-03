@@ -373,7 +373,7 @@ export class ReportLine {
     this._report.LAnum = this.school.laCode
     this._report.AccessArr = this.getAccessArrangements()
     // Check data
-    if (this._report.ReasonNotTakingCheck === null) {
+    if (this._report.ReasonNotTakingCheck === null || this._report.ReasonNotTakingCheck === 'Q') {
       this._report.QDisplayTime = this.checkConfig?.questionTime ?? null // set to null rather than undefined
       this._report.PauseLength = this.checkConfig?.loadingTime ?? null // set to null rather than undefined
       this._report.AttemptID = this.getAttemptId()
