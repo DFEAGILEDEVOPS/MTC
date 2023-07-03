@@ -325,6 +325,14 @@ export class ReportLine {
     return this.check?.mark ?? null
   }
 
+  private getRestartNumber (): number | null {
+    const status = this.getPupilStatus()
+    if (status === 'Complete') {
+      return this.check?.restartNumber ?? null
+    }
+    return null
+  }
+
   private _transform (): void {
     this._report.PupilDatabaseId = this.pupil.id
     this._report.DOB = this.pupil.dateOfBirth
@@ -346,7 +354,7 @@ export class ReportLine {
     this._report.TimeStart = this.getTimeStart()
     this._report.TimeComplete = this.getTimeComplete()
     this._report.TimeTaken = this.getTimeTaken()
-    this._report.RestartNumber = this.check?.restartNumber ?? null // set to null if there is no check
+    this._report.RestartNumber = this.getRestartNumber()
     this._report.RestartReason = ReportLine.getRestartReason(this.check?.restartReason ?? null) // map the code to the number
     this._report.FormMark = this.getFormMark()
     this._report.BrowserType = this.getBrowser()
