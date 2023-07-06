@@ -1,12 +1,12 @@
 import * as RA from 'ramda-adjunct'
 import * as R from 'ramda'
-import { ReceivedCheckFunctionBindingEntity } from '../../schemas/models'
+import { type ReceivedCheckFunctionBindingEntity } from '../../schemas/models'
 import moment from 'moment'
-import { ICheckFormService, CheckFormService } from '../../services/check-form.service'
-import { ILogger } from '../../common/logger'
-import { ICheckMarkerFunctionBindings, MarkingData, CheckResult, MarkedAnswer } from './models'
-import { ICheckNotificationMessage, CheckNotificationType } from '../../schemas/check-notification-message'
-import { ITableService, TableService } from '../../azure/table-service'
+import { type ICheckFormService, CheckFormService } from '../../services/check-form.service'
+import { type ILogger } from '../../common/logger'
+import { type ICheckMarkerFunctionBindings, type MarkingData, type CheckResult, type MarkedAnswer } from './models'
+import { type ICheckNotificationMessage, CheckNotificationType } from '../../schemas/check-notification-message'
+import { type ITableService, TableService } from '../../azure/table-service'
 import { ReceivedCheckBindingEntityTransformer } from '../../services/receivedCheckBindingEntityTransformer'
 
 export class CheckMarkerV1 {
@@ -104,7 +104,11 @@ export class CheckMarkerV1 {
       rawCheckForm = await this.sqlService.getCheckFormDataByCheckCode(checkCode)
     } catch (error) {
       logger.error(error)
-      await this.updateReceivedCheckWithMarkingError(validatedCheck, `checkForm lookup failed:${error.message}`)
+      let errorMessage = 'unknown error'
+      if (error instanceof Error) {
+        errorMessage = error.message
+      }
+      await this.updateReceivedCheckWithMarkingError(validatedCheck, `checkForm lookup failed:${errorMessage}`)
       return
     }
 
@@ -139,7 +143,7 @@ export class CheckMarkerV1 {
   private markCheck (markingData: MarkingData, checkCode: string): CheckResult {
     const results: CheckResult = {
       mark: 0,
-      checkCode: checkCode,
+      checkCode,
       maxMarks: markingData.formQuestions.length,
       markedAnswers: [],
       markedAt: moment.utc().toDate() // even using the entityGenerator it appears to be impossible to make this a date in table storage

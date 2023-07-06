@@ -1,4 +1,5 @@
-import moment, { Moment } from 'moment-timezone'
+import { type Moment } from 'moment-timezone'
+import type moment from 'moment-timezone'
 import { TYPES } from '../../data-access/sql.service'
 const sqlService = require('../../data-access/sql.service')
 

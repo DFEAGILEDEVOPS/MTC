@@ -1,7 +1,7 @@
-import { ICheckCompletionMessage } from './models'
-import { ISyncResultsDataService, SyncResultsDataService } from './sync-results.data.service'
-import { ConsoleLogger, ILogger } from '../../common/logger'
-import { IRedisService, RedisService } from '../../caching/redis-service'
+import { type ICheckCompletionMessage } from './models'
+import { type ISyncResultsDataService, SyncResultsDataService } from './sync-results.data.service'
+import { ConsoleLogger, type ILogger } from '../../common/logger'
+import { type IRedisService, RedisService } from '../../caching/redis-service'
 import redisKeyService from '../../caching/redis-key.service'
 
 const name = 'SyncResultsService (throttled)'
@@ -41,8 +41,12 @@ export class SyncResultsService {
       await this.dropRedisSchoolResult(checkCompletionMessage?.validatedCheck?.schoolUUID)
       await this.syncResultsDataService.setCheckToResultsSyncComplete(checkCompletionMessage.markedCheck)
     } catch (error) {
-      this.logger.info(`${name}: marking run as failed, because: ${error.message}`)
-      await this.syncResultsDataService.setCheckToResultsSyncFailed(checkCompletionMessage.markedCheck, error.message)
+      let errorMessage = 'unknown error'
+      if (error instanceof Error) {
+        errorMessage = error.message
+      }
+      this.logger.info(`${name}: marking run as failed, because: ${errorMessage}`)
+      await this.syncResultsDataService.setCheckToResultsSyncFailed(checkCompletionMessage.markedCheck, errorMessage)
     }
   }
 

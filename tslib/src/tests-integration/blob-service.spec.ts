@@ -19,7 +19,7 @@ function getUniqueName (): string {
 async function createContainer (): Promise<string> {
   const containerName = getUniqueName()
   const client = BlobServiceClient.fromConnectionString(connectionString)
-  const containerClient = await client.getContainerClient(containerName)
+  const containerClient = client.getContainerClient(containerName)
   await containerClient.create()
   return containerName
 }

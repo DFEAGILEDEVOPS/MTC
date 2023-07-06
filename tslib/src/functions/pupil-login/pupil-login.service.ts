@@ -1,7 +1,7 @@
-import { IPupilLoginDataService, PupilLoginDataService } from './pupil-login.data.service'
+import { type IPupilLoginDataService, PupilLoginDataService } from './pupil-login.data.service'
 import { v4 as uuid } from 'uuid'
 import moment = require('moment')
-import { IModifyResult } from '../../sql/sql.service'
+import { type IModifyResult } from '../../sql/sql.service'
 export interface IPupilLoginMessage {
   version: number
   checkCode: string

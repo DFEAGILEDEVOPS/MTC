@@ -1,6 +1,6 @@
-import { AzureFunction, Context } from '@azure/functions'
+import { type AzureFunction, type Context } from '@azure/functions'
 import { performance } from 'perf_hooks'
-import { IQueueMessageReplayRequest } from './message-replay.service'
+import { type IQueueMessageReplayRequest } from './message-replay.service'
 
 const functionName = 'queue-replay-service-bus'
 

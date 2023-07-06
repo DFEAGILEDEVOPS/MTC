@@ -1,7 +1,7 @@
-import { AzureFunction, Context } from '@azure/functions'
+import { type AzureFunction, type Context } from '@azure/functions'
 import { performance } from 'perf_hooks'
 import { SchoolImportService } from './school-import.service'
-import * as mssql from 'mssql'
+import type * as mssql from 'mssql'
 import * as ConnectionPoolService from '../../sql/pool.service'
 import { SchoolImportJobOutput } from './SchoolImportJobOutput'
 

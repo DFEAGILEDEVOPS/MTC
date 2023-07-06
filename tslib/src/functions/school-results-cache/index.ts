@@ -1,11 +1,11 @@
-import { AzureFunction, Context } from '@azure/functions'
+import { type AzureFunction, type Context } from '@azure/functions'
 import { performance } from 'perf_hooks'
 import * as RA from 'ramda-adjunct'
 import * as sb from '@azure/service-bus'
 
 import config from '../../config'
 import { ResultService } from './services/result.service'
-import { IFunctionTimer } from '../../azure/functions'
+import { type IFunctionTimer } from '../../azure/functions'
 
 const functionName = 'school-results-cache'
 
@@ -43,7 +43,11 @@ const sbMessageReceiver: AzureFunction = async function sbMessageReceiver (conte
     })
     context.log(`${functionName}: connected to service bus instance ${busClient.fullyQualifiedNamespace}`)
   } catch (error) {
-    context.log.error(`${functionName}: unable to connect to service bus at this time:${error.message}`)
+    let errorMessage = 'unknown error'
+    if (error instanceof Error) {
+      errorMessage = error.message
+    }
+    context.log.error(`${functionName}: unable to connect to service bus at this time:${errorMessage}`)
     throw error
   }
 
@@ -96,10 +100,14 @@ async function completeMessages (messageBatch: sb.ServiceBusReceivedMessage[], r
     try {
       await receiver.completeMessage(msg)
     } catch (error) {
+      let errorMessage = 'unknown error'
+      if (error instanceof Error) {
+        errorMessage = error.message
+      }
       try {
         await receiver.abandonMessage(msg)
       } catch {
-        context.log.error(`${functionName}: unable to abandon message:${error.message}`)
+        context.log.error(`${functionName}: unable to abandon message:${errorMessage}`)
         // do nothing.
         // the lock will expire and message reprocessed at a later time
       }
@@ -113,7 +121,11 @@ async function abandonMessages (messageBatch: sb.ServiceBusReceivedMessage[], re
     try {
       await receiver.abandonMessage(msg)
     } catch (error) {
-      context.log.error(`${functionName}: abandonMessages(): unable to abandon message: ${error.message}`)
+      let errorMessage = 'unknown error'
+      if (error instanceof Error) {
+        errorMessage = error.message
+      }
+      context.log.error(`${functionName}: abandonMessages(): unable to abandon message: ${errorMessage}`)
     }
   }
 }

@@ -2,12 +2,12 @@ import moment from 'moment-timezone'
 import * as R from 'ramda'
 
 import config from '../../../config'
-import pupilIdentificationService, { IdentifiedPupilResult } from './pupil-identification.service'
+import pupilIdentificationService, { type IdentifiedPupilResult } from './pupil-identification.service'
 import redisKeyService from '../../../caching/redis-key.service'
 import sortService from '../../../common/table-sorting'
-import { ConsoleLogger, ILogger } from '../../../common/logger'
-import { IRedisService, RedisService } from '../../../caching/redis-service'
-import { ResultDataService, IResultDataService, IRawPupilResult } from './data-access/result.data.service'
+import { ConsoleLogger, type ILogger } from '../../../common/logger'
+import { type IRedisService, RedisService } from '../../../caching/redis-service'
+import { ResultDataService, type IResultDataService, type IRawPupilResult } from './data-access/result.data.service'
 
 const defaultTimeZone = 'Europe/London'
 const logPrefix = 'school-results-cache: result.service'
@@ -127,7 +127,11 @@ export class ResultService {
     try {
       await this.redisService.setex(redisKey, result, config.SchoolResultsCache.RedisResultsExpiryInSeconds)
     } catch (error) {
-      this.logger.error(`${logPrefix}: Failed to write to Redis: ${error.message}`)
+      let errorMessage = 'unknown error'
+      if (error instanceof Error) {
+        errorMessage = error.message
+      }
+      this.logger.error(`${logPrefix}: Failed to write to Redis: ${errorMessage}`)
       // This is likely a temporary error.  We should throw here, and let the message
       // be delivered and processed again.
       throw error

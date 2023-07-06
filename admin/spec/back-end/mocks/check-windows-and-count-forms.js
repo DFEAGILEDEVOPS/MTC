@@ -1,4 +1,3 @@
-
 module.exports = [
   {
     checkWindowName: 'Window Test 1',

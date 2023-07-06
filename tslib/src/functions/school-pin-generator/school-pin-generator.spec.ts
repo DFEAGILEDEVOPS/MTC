@@ -1,6 +1,6 @@
 import { SchoolPinGenerator } from './school-pin-generator'
-import { IConfigProvider } from './config-file-provider'
-import { IRandomGenerator } from './random-generator'
+import { type IConfigProvider } from './config-file-provider'
+import { type IRandomGenerator } from './random-generator'
 
 let sut: SchoolPinGenerator
 const configProviderMock: IConfigProvider = {

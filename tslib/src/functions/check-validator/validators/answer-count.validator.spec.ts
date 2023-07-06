@@ -1,5 +1,5 @@
 import { AnswerCountValidator } from './answer-count.validator'
-import { ICheckValidationError } from './validator-types'
+import { type ICheckValidationError } from './validator-types'
 import config from '../../../config'
 
 let sut: AnswerCountValidator
@@ -61,7 +61,7 @@ describe('answer-count.validator', () => {
       })
     }
     const error = sut.validate(check)
-    expect(error).not.toBeDefined()
+    expect(error).toBeUndefined()
   })
 
   test('more answers passes validation', () => {
@@ -80,7 +80,7 @@ describe('answer-count.validator', () => {
       })
     }
     const error = sut.validate(check)
-    expect(error).not.toBeDefined()
+    expect(error).toBeUndefined()
   })
 
   test('more answers but one answer is missing fails validation', () => {

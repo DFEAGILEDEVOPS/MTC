@@ -13,8 +13,8 @@ import { checkConfig } from './mocks/check-config'
 import { checkForm } from './mocks/check-form'
 import { device } from './mocks/device'
 import { events } from './mocks/events'
-import { NotTakingCheckCode, RestartReasonCode } from '../../functions-ps-report/ps-report-2-pupil-data/models'
-import { DfEAbsenceCode } from './models'
+import { type NotTakingCheckCode, type RestartReasonCode } from '../../functions-ps-report/ps-report-2-pupil-data/models'
+import { type DfEAbsenceCode } from './models'
 
 class ReportLineTest extends ReportLine {
   public getReasonNotTakingCheck (code: NotTakingCheckCode): string

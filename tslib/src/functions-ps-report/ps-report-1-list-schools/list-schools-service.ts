@@ -1,5 +1,5 @@
-import { ILogger } from '../../common/logger'
-import { ISqlService, SqlService } from '../../sql/sql.service'
+import { type ILogger } from '../../common/logger'
+import { type ISqlService, SqlService } from '../../sql/sql.service'
 
 export interface School {
   id: number

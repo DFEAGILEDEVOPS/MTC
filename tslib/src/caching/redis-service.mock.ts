@@ -1,4 +1,4 @@
-import { IRedisService } from './redis-service'
+import { type IRedisService } from './redis-service'
 
 export const RedisServiceMock = jest.fn<IRedisService, any>(() => ({
   get: jest.fn(),

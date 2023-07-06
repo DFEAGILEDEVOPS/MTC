@@ -39,7 +39,11 @@ export class CheckWindowPhaseService {
 
       return checkWindowPhaseConsts.unavailable
     } catch (error) {
-      logger.error(`Unable to determine current check window phase: ${error.message}`)
+      let msg = 'unknown error'
+      if (error instanceof Error) {
+        msg = error.message
+      }
+      logger.error(`Unable to determine current check window phase: ${msg}`)
 
       // Safe default - tbc
       return checkWindowPhaseConsts.unavailable

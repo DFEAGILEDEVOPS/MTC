@@ -1,4 +1,4 @@
-import { Context } from '@azure/functions'
+import { type Context } from '@azure/functions'
 import { readFile } from 'fs'
 import { promisify } from 'util'
 import { join } from 'path'

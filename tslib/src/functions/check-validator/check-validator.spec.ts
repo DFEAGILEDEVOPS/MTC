@@ -1,15 +1,15 @@
-import { CheckValidator, ICheckValidatorFunctionBindings } from './check-validator'
-import { ReceivedCheckTableEntity, ValidateCheckMessageV1, MarkCheckMessageV1 } from '../../schemas/models'
-import { ILogger } from '../../common/logger'
-import { ICompressionService } from '../../common/compression-service'
+import { CheckValidator, type ICheckValidatorFunctionBindings } from './check-validator'
+import { type ReceivedCheckTableEntity, type ValidateCheckMessageV1, type MarkCheckMessageV1 } from '../../schemas/models'
+import { type ILogger } from '../../common/logger'
+import { type ICompressionService } from '../../common/compression-service'
 import * as uuid from 'uuid'
 import moment from 'moment'
 import { CheckNotificationType } from '../../schemas/check-notification-message'
 import { getValidatedCheck } from '../../schemas/check-schemas/validated-check'
-import { ITableService } from '../../azure/table-service'
-import { TableEntity } from '@azure/data-tables'
-import { ICheckFormService } from '../../services/check-form.service'
-import { IValidatorProvider, ValidatorProvider } from './validators/validator.provider'
+import { type ITableService } from '../../azure/table-service'
+import { type TableEntity } from '@azure/data-tables'
+import { type ICheckFormService } from '../../services/check-form.service'
+import { type IValidatorProvider, ValidatorProvider } from './validators/validator.provider'
 
 const TableServiceMock = jest.fn<ITableService, any>(() => ({
   createEntity: jest.fn(),

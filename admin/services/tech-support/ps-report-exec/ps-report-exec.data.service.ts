@@ -1,5 +1,5 @@
 import { TYPES } from '../../data-access/sql.service'
-import { ServiceBusClient, ServiceBusSender } from '@azure/service-bus'
+import { ServiceBusClient, type ServiceBusSender } from '@azure/service-bus'
 const sqlService = require('../../data-access/sql.service')
 const config = require('../../../config')
 

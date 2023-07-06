@@ -1,5 +1,5 @@
 import config from '../../../config'
-import { ISubmittedCheckValidator, CheckValidationResult } from './validator-types'
+import { type ISubmittedCheckValidator, type CheckValidationResult } from './validator-types'
 
 export class AnswerCountValidator implements ISubmittedCheckValidator {
   validate (check: any): CheckValidationResult {

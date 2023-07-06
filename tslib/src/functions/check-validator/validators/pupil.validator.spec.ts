@@ -1,5 +1,5 @@
 import { PupilValidator } from './pupil.validator'
-import { ICheckValidationError } from './validator-types'
+import { type ICheckValidationError } from './validator-types'
 
 let sut: PupilValidator
 
@@ -29,6 +29,6 @@ describe('pupil-property.validator', () => {
       pupil: {}
     }
     const error = sut.validate(check)
-    expect(error).not.toBeDefined()
+    expect(error).toBeUndefined()
   })
 })

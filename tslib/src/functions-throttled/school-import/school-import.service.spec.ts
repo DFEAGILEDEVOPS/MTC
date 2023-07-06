@@ -2,10 +2,10 @@ import { SchoolImportService } from './school-import.service'
 import { ConnectionPool } from 'mssql'
 import config from '../../config'
 import { SchoolImportJobOutput } from './SchoolImportJobOutput'
-import { ISchoolDataService } from './data-access/school.data.service'
+import { type ISchoolDataService } from './data-access/school.data.service'
 import { SchoolImportError } from './SchoolImportError'
-import { ConsoleLogger, ILogger } from '../../common/logger'
-import { IJobDataService } from '../../services/data/job.data.service'
+import { ConsoleLogger, type ILogger } from '../../common/logger'
+import { type IJobDataService } from '../../services/data/job.data.service'
 import { JobStatusCode } from '../../common/job-status-code'
 
 let sut: SchoolImportService
@@ -51,7 +51,7 @@ describe('#SchoolImportService', () => {
       const blobName = 'aad9f3b5-7a77-44cd-96b6-dcdc41c9ea76'
       await sut.process('', blobName)
       fail('mapping should have failed due to no data')
-    } catch (error) {
+    } catch (error: any) {
       expect(error).toBeInstanceOf(SchoolImportError)
       expect(error.jobResult).toBeDefined()
       expect((error as SchoolImportError).jobResult.getErrorOutput()).toContain('Failed to map columns')
@@ -100,7 +100,7 @@ describe('#SchoolImportService', () => {
     expect(jobResult).toBeInstanceOf(SchoolImportJobOutput)
     expect(jobResult.getErrorOutput()).toHaveLength(0)
     expect(jobResult.stdout).toHaveLength(2)
-    expect(jobResult.stdout[1]).toStrictEqual('school records excluded in filtering:1. No records to persist, exiting.')
+    expect(jobResult.stdout[1]).toBe('school records excluded in filtering:1. No records to persist, exiting.')
     expect(schoolDataServiceMock.individualUpload).toHaveBeenCalledTimes(0)
   })
 
@@ -121,7 +121,11 @@ describe('#SchoolImportService', () => {
       await sut.process(csv, blobName)
       fail('expected to throw')
     } catch (error) {
-      expect(error.message).toBe('no header row found')
+      let errorMessage = 'unknown error'
+      if (error instanceof Error) {
+        errorMessage = error.message
+      }
+      expect(errorMessage).toBe('no header row found')
     }
   })
 
@@ -141,7 +145,11 @@ describe('#SchoolImportService', () => {
       await sut.process(csv, '')
       fail('should have thrown an error')
     } catch (error) {
-      expect(error.message).toStrictEqual('blobName is undefined. Unable to continue processing as cannot identify job record without blobName')
+      let errorMessage = 'unknown error'
+      if (error instanceof Error) {
+        errorMessage = error.message
+      }
+      expect(errorMessage).toBe('blobName is undefined. Unable to continue processing as cannot identify job record without blobName')
     }
     expect(jobDataServiceMock.setJobStarted).not.toHaveBeenCalled()
   })

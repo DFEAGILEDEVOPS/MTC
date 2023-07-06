@@ -1,5 +1,5 @@
 import { SchoolRequiresNewPinPredicate } from './school-requires-pin-predicate'
-import { School } from './school-pin-replenishment.service'
+import { type School } from './school-pin-replenishment.service'
 import moment = require('moment')
 
 describe('school-requires-new-pin-predicate', () => {

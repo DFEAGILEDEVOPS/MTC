@@ -1,11 +1,11 @@
 import { TYPES } from 'mssql'
 import * as R from 'ramda'
-import { Audit, Device, MarkedCheck, ValidatedCheck } from './models'
-import { IPrepareAnswersAndInputsDataService, PrepareAnswersAndInputsDataService } from './prepare-answers-and-inputs.data.service'
-import { IModifyResult, ISqlParameter, ISqlService, ITransactionRequest, SqlService } from '../../sql/sql.service'
+import { type Audit, type Device, type MarkedCheck, type ValidatedCheck } from './models'
+import { type IPrepareAnswersAndInputsDataService, PrepareAnswersAndInputsDataService } from './prepare-answers-and-inputs.data.service'
+import { type IModifyResult, type ISqlParameter, type ISqlService, type ITransactionRequest, SqlService } from '../../sql/sql.service'
 import { UserAgentParser } from './user-agent-parser'
-import { IPrepareEventService, PrepareEventService } from './prepare-event.service'
-import { ConsoleLogger, ILogger } from '../../common/logger'
+import { type IPrepareEventService, PrepareEventService } from './prepare-event.service'
+import { ConsoleLogger, type ILogger } from '../../common/logger'
 import { payloadSort } from '../../services/payload-sort'
 
 const name = 'sync-results-to-sql: data service'
@@ -471,7 +471,7 @@ export class SyncResultsDataService implements ISyncResultsDataService {
                 );
         END CATCH
     `
-    return { sql, params: params }
+    return { sql, params }
   }
 
   /**
@@ -517,7 +517,11 @@ export class SyncResultsDataService implements ISyncResultsDataService {
       await this.sqlService.modifyWithTransaction(requests)
     } catch (error) {
       const message = `${name}: ERROR: Failed to insert transaction to the database for checkCode [${checkCode}]`
-      this.logger.error(`${message}\nOriginal Error: ${error.message}`)
+      let errorMessage = 'unknown error'
+      if (error instanceof Error) {
+        errorMessage = error.message
+      }
+      this.logger.error(`${message}\nOriginal Error: ${errorMessage}`)
       // re-throw the original error
       throw error
     }

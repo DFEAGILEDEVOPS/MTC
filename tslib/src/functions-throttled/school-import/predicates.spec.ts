@@ -1,4 +1,4 @@
-import { EstabTypeCode, EstabTypeGroupCode, ISchoolRecord, EstabStatusCode } from './data-access/ISchoolRecord'
+import { EstabTypeCode, EstabTypeGroupCode, type ISchoolRecord, EstabStatusCode } from './data-access/ISchoolRecord'
 import { Predicates } from './predicates'
 
 let sut: Predicates
@@ -39,21 +39,21 @@ describe('School Import Predicates', () => {
       school.estabStatusCode = EstabStatusCode.Open
       const result = sut.isSchoolOpen(school)
       expect(result.isMatch).toBe(true)
-      expect(result.message).toStrictEqual('')
+      expect(result.message).toBe('')
     })
 
     test('returns true when the school is open but proposed to close', () => {
       school.estabStatusCode = EstabStatusCode.ProposedToClose
       const result = sut.isSchoolOpen(school)
       expect(result.isMatch).toBe(true)
-      expect(result.message).toStrictEqual('')
+      expect(result.message).toBe('')
     })
 
     test('returns false when the school is proposed to open', () => {
       school.estabStatusCode = EstabStatusCode.ProposedToOpen
       const result = sut.isSchoolOpen(school)
       expect(result.isMatch).toBe(false)
-      expect(result.message).toStrictEqual('Excluding school 1 it is proposed to open - estabStatusCode is [4]')
+      expect(result.message).toBe('Excluding school 1 it is proposed to open - estabStatusCode is [4]')
     })
   })
 
@@ -79,7 +79,7 @@ describe('School Import Predicates', () => {
       school.statHighAge = 12
       const result = sut.isAgeInRange(targetAge, school)
       expect(result.isMatch).toBe(true)
-      expect(result.message).toStrictEqual('')
+      expect(result.message).toBe('')
     })
 
     test('returns true for schools that only meet the target age range', () => {
@@ -87,7 +87,7 @@ describe('School Import Predicates', () => {
       school.statHighAge = 9
       const result = sut.isAgeInRange(targetAge, school)
       expect(result.isMatch).toBe(true)
-      expect(result.message).toStrictEqual('')
+      expect(result.message).toBe('')
     })
 
     test('excludes schools that don\'t provide low age information', () => {
@@ -112,7 +112,7 @@ describe('School Import Predicates', () => {
       school.estabTypeGroupCode = EstabTypeGroupCode.localAuthorityMaintainedSchool
       const result = sut.isRequiredEstablishmentTypeGroup(school)
       expect(result.isMatch).toBe(true)
-      expect(result.message).toStrictEqual('')
+      expect(result.message).toBe('')
     })
 
     test('does not load estabGroupCode 3', () => {
@@ -126,14 +126,14 @@ describe('School Import Predicates', () => {
       school.estabTypeGroupCode = EstabTypeGroupCode.academies
       const result = sut.isRequiredEstablishmentTypeGroup(school)
       expect(result.isMatch).toBe(true)
-      expect(result.message).toStrictEqual('')
+      expect(result.message).toBe('')
     })
 
     test('loads estabTypeGroupCode 11', () => {
       school.estabTypeGroupCode = EstabTypeGroupCode.freeSchool
       const result = sut.isRequiredEstablishmentTypeGroup(school)
       expect(result.isMatch).toBe(true)
-      expect(result.message).toStrictEqual('')
+      expect(result.message).toBe('')
     })
 
     test('loads estabTypeGroupCode 5 and TypeOfEstablishment = Community special school', () => {
@@ -141,7 +141,7 @@ describe('School Import Predicates', () => {
       school.estabTypeCode = EstabTypeCode.communitySpecialSchool
       const result = sut.isRequiredEstablishmentTypeGroup(school)
       expect(result.isMatch).toBe(true)
-      expect(result.message).toStrictEqual('')
+      expect(result.message).toBe('')
     })
 
     test('loads estabTypeGroupCode 5 and TypeOfEstablishment = Foundation special school', () => {
@@ -149,7 +149,7 @@ describe('School Import Predicates', () => {
       school.estabTypeCode = EstabTypeCode.foundationSpecialSchool
       const result = sut.isRequiredEstablishmentTypeGroup(school)
       expect(result.isMatch).toBe(true)
-      expect(result.message).toStrictEqual('')
+      expect(result.message).toBe('')
     })
 
     test('loads estabTypeGroupCode 5 and TypeOfEstablishment = Non maintained special school', () => {
@@ -157,7 +157,7 @@ describe('School Import Predicates', () => {
       school.estabTypeCode = EstabTypeCode.nonMaintainedSpecialSchool
       const result = sut.isRequiredEstablishmentTypeGroup(school)
       expect(result.isMatch).toBe(true)
-      expect(result.message).toStrictEqual('')
+      expect(result.message).toBe('')
     })
 
     test('loads estabTypeGroupCode 9 for estabTypeCode 26 only', () => {
@@ -165,7 +165,7 @@ describe('School Import Predicates', () => {
       school.estabTypeCode = EstabTypeCode.serviceChildrensEducation
       const result = sut.isRequiredEstablishmentTypeGroup(school)
       expect(result.isMatch).toBe(true)
-      expect(result.message).toStrictEqual('')
+      expect(result.message).toBe('')
     })
 
     test('does not loads estabTypeGroupCode 9 for estabTypeCode 25', () => {
@@ -189,7 +189,7 @@ describe('School Import Predicates', () => {
       school.leaCode = 703
       const result = sut.isRequiredEstablishmentTypeGroup(school)
       expect(result.isMatch).toBe(true)
-      expect(result.message).toStrictEqual('')
+      expect(result.message).toBe('')
     })
   })
 
