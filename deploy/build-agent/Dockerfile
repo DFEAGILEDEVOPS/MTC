@@ -112,8 +112,8 @@ RUN echo "export GEM_PATH=$GEM_HOME:/usr/local/lib/ruby/gems/$RUBY_VERSION" >> ~
 
 # install nvm and current node runtimes
 ENV NVM_DIR=/home/$BUILD_USER/.nvm
-ENV CURRENT_NODE_VERSION=16.17.1
-ENV PREVIOUS_NODE_VERSION=14.18.1
+ENV CURRENT_NODE_VERSION=18.12.0
+ENV PREVIOUS_NODE_VERSION=16.17.1
 
 RUN curl -sL https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash \
   && . $NVM_DIR/nvm.sh \

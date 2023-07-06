@@ -10,7 +10,7 @@
     "dummy:all": "node ./dummy-data/all.js"
   },
   "engines": {
-    "node": ">= 16"
+    "node": ">= 18"
   },
   "dependencies": {
     "axios": "^0.21.2",
