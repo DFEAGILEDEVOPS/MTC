@@ -1,4 +1,4 @@
-import { IRedisService } from './redis-service'
+import { type IRedisService } from './redis-service'
 import { RedisServiceMock } from './redis-service.mock'
 import { faker } from '@faker-js/faker'
 import redisKeyService from './redis-key.service'

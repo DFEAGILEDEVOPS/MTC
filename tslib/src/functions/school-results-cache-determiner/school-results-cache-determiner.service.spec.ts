@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/dot-notation */
 
 import { SchoolResultsCacheDeterminerService } from './school-results-cache-determiner.service'
-import { ConsoleLogger, ILogger } from '../../common/logger'
+import { ConsoleLogger, type ILogger } from '../../common/logger'
 import config from '../../config'
 import moment from 'moment'
 
@@ -177,7 +177,11 @@ describe('school-results-cache-determiner.service', () => {
       await sut.execute()
       fail('expected to throw')
     } catch (error) {
-      expect(error.message).toBe('schools is not an array')
+      let errorMessage = 'unknown error'
+      if (error instanceof Error) {
+        errorMessage = error.message
+      }
+      expect(errorMessage).toBe('schools is not an array')
     }
   })
 

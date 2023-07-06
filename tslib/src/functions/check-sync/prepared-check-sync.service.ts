@@ -1,7 +1,7 @@
-import { IPreparedCheckSyncDataService, PreparedCheckSyncDataService, IActiveCheckReference } from './prepared-check-sync.data.service'
-import { IPreparedCheckMergeService, PreparedCheckMergeService, IPreparedCheck } from './prepared-check-merge.service'
-import { IRedisService, RedisService } from '../../caching/redis-service'
-import { ILogger, ConsoleLogger } from '../../common/logger'
+import { type IPreparedCheckSyncDataService, PreparedCheckSyncDataService, type IActiveCheckReference } from './prepared-check-sync.data.service'
+import { type IPreparedCheckMergeService, PreparedCheckMergeService, type IPreparedCheck } from './prepared-check-merge.service'
+import { type IRedisService, RedisService } from '../../caching/redis-service'
+import { type ILogger, ConsoleLogger } from '../../common/logger'
 import { isNil } from 'ramda'
 
 export class PreparedCheckSyncService {
@@ -57,7 +57,11 @@ export class PreparedCheckSyncService {
       try {
         await this.dataService.sqlUpdateCheckConfig(ref.checkCode, updatedConfig)
       } catch (error) {
-        this.logger.error(`Error failed to update check ${ref.checkCode} with new access arrangements: ${error.message}`)
+        let errorMessage = 'unknown error'
+        if (error instanceof Error) {
+          errorMessage = error.message
+        }
+        this.logger.error(`Error failed to update check ${ref.checkCode} with new access arrangements: ${errorMessage}`)
       }
     }
   }

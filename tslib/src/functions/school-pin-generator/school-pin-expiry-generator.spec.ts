@@ -1,7 +1,7 @@
 import moment from 'moment'
 import { SchoolPinExpiryGenerator } from './school-pin-expiry-generator'
-import { IDateTimeService } from '../../common/datetime.service'
-import { IConfigProvider } from './config-file-provider'
+import { type IDateTimeService } from '../../common/datetime.service'
+import { type IConfigProvider } from './config-file-provider'
 
 const DateTimeServiceMock = jest.fn<IDateTimeService, any>(() => ({
   utcNow: jest.fn(),
@@ -40,7 +40,7 @@ describe('school-pin-expiry-generator', () => {
       return timeBefore4pm
     })
     const actual = sut.generate()
-    expect(actual.toISOString().substring(0, 16)).toStrictEqual('2020-02-06T16:00')
+    expect(actual.toISOString().substring(0, 16)).toBe('2020-02-06T16:00')
   })
 
   test('if current time between 1600 - 2359, set to 1600 next day', () => {
@@ -49,7 +49,7 @@ describe('school-pin-expiry-generator', () => {
       return timeAfter4pm
     })
     const actual = sut.generate()
-    expect(actual.toISOString().substring(0, 16)).toStrictEqual('2020-02-07T16:00')
+    expect(actual.toISOString().substring(0, 16)).toBe('2020-02-07T16:00')
   })
 
   test('if override expiry flag set to true, expire at end of day', () => {
@@ -82,7 +82,7 @@ describe('school-pin-expiry-generator', () => {
       })
       const timezoneFourHoursAheadOfUtc = 'Asia/Dubai'
       const actual = sut.generate(timezoneFourHoursAheadOfUtc)
-      expect(actual.toISOString().substring(0, 16)).toStrictEqual('2020-02-07T12:00')
+      expect(actual.toISOString().substring(0, 16)).toBe('2020-02-07T12:00')
     })
 
     test('if override expiry flag set to true, expire at end of day', () => {

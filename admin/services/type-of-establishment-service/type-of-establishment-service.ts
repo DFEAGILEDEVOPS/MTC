@@ -1,4 +1,4 @@
-import { TypeOfEstablishmentData, TypeOfEstablishmentDataService } from './type-of-establishment.data.service'
+import { type TypeOfEstablishmentData, TypeOfEstablishmentDataService } from './type-of-establishment.data.service'
 import * as sortService from '../../helpers/table-sorting'
 
 export class TypeOfEstablishmentService {

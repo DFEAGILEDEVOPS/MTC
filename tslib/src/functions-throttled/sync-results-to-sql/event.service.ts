@@ -1,5 +1,5 @@
-import { ISqlService, SqlService } from '../../sql/sql.service'
-import { DBEventType } from './models'
+import { type ISqlService, SqlService } from '../../sql/sql.service'
+import { type DBEventType } from './models'
 import { NVarChar } from 'mssql'
 
 export interface IEventService {
@@ -8,7 +8,7 @@ export interface IEventService {
 
 export class EventService implements IEventService {
   private readonly sqlService: ISqlService
-  private readonly eventTypeCache: Map<string, DBEventType> = new Map()
+  private readonly eventTypeCache = new Map<string, DBEventType>()
 
   constructor (sqlService?: ISqlService) {
     this.sqlService = sqlService ?? new SqlService()

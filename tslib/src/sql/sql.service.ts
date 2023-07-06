@@ -1,9 +1,9 @@
-import { Request, TYPES, Transaction, IResult, ISOLATION_LEVEL } from 'mssql'
-import { ILogger, ConsoleLogger } from '../common/logger'
+import { Request, TYPES, Transaction, type IResult, ISOLATION_LEVEL } from 'mssql'
+import { type ILogger, ConsoleLogger } from '../common/logger'
 import retry, { retryOnAllSoftErrorsPredicate } from './async-retry'
 import config from '../config'
 import * as R from 'ramda'
-import { DateTimeService, IDateTimeService } from '../common/datetime.service'
+import { DateTimeService, type IDateTimeService } from '../common/datetime.service'
 import * as connectionPool from './pool.service'
 
 const retryConfig = {

@@ -1,4 +1,4 @@
-import { ISchoolRecord } from './data-access/ISchoolRecord'
+import { type ISchoolRecord } from './data-access/ISchoolRecord'
 
 export class SchoolRecordMapper {
   /**

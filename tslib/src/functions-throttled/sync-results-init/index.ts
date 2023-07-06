@@ -1,7 +1,7 @@
-import { AzureFunction, Context } from '@azure/functions'
+import { type AzureFunction, type Context } from '@azure/functions'
 import { performance } from 'perf_hooks'
-import { ISyncResultsInitServiceOptions, SyncResultsInitService } from './sync-results-init.service'
-import { IFunctionTimer } from '../../azure/functions'
+import { type ISyncResultsInitServiceOptions, SyncResultsInitService } from './sync-results-init.service'
+import { type IFunctionTimer } from '../../azure/functions'
 
 const functionName = 'sync-results-init'
 
@@ -24,7 +24,11 @@ const timerTrigger: AzureFunction = async function (context: Context, timer: IFu
     const timeStamp = new Date().toISOString()
     context.log(`${functionName}: ${timeStamp} processed ${meta.messagesSent} records with ${meta.messagesErrored} messages failed to send, run took ${Math.round(durationInMilliseconds) / 1000} secs, total memory usage (heap used) ${Math.round(heapUsed * 100) / 100} MB`)
   } catch (error: any) {
-    context.log.error(`${functionName}: ERROR: ${error.message}`)
+    let errorMessage = 'unknown error'
+    if (error instanceof Error) {
+      errorMessage = error.message
+    }
+    context.log.error(`${functionName}: ERROR: ${errorMessage}`)
     throw error
   }
 }

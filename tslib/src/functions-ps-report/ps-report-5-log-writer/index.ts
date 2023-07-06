@@ -1,6 +1,6 @@
-import { AzureFunction, Context } from '@azure/functions'
+import { type AzureFunction, type Context } from '@azure/functions'
 import { performance } from 'perf_hooks'
-import { IFunctionTimer } from '../../azure/functions'
+import { type IFunctionTimer } from '../../azure/functions'
 import config from '../../config'
 import * as sb from '@azure/service-bus'
 import * as RA from 'ramda-adjunct'
@@ -37,7 +37,11 @@ const funcImplementation: AzureFunction = async function (context: Context, time
     })
     context.log(`${functionName}: connected to service bus instance ${busClient.fullyQualifiedNamespace}`)
   } catch (error) {
-    context.log.error(`${functionName}: unable to connect to service bus at this time:${error.message}`)
+    let errorMessage = 'unknown error'
+    if (error instanceof Error) {
+      errorMessage = error.message
+    }
+    context.log.error(`${functionName}: unable to connect to service bus at this time:${errorMessage}`)
     throw error
   }
 
@@ -57,7 +61,6 @@ const funcImplementation: AzureFunction = async function (context: Context, time
     context.log(`${functionName}: processed ${messageCount} messages...`)
     await disconnect()
     finish(start, context)
-    return
   } catch (error) {
     context.log.error(error)
     throw error

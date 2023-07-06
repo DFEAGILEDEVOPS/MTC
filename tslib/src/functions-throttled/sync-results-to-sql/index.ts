@@ -1,8 +1,8 @@
-import { AzureFunction, Context } from '@azure/functions'
+import { type AzureFunction, type Context } from '@azure/functions'
 import { performance } from 'perf_hooks'
 
 import config from '../../config'
-import { ICheckCompletionMessage } from './models'
+import { type ICheckCompletionMessage } from './models'
 import { SyncResultsServiceFactory } from './sync-results.service.factory'
 
 const functionName = 'sync-results-to-sql'
@@ -52,7 +52,11 @@ async function processV2 (message: ICheckCompletionMessage, context: Context, sy
     await syncResultsService.process(message)
     context.log(`[${functionName}] finished processing check ${message.markedCheck.checkCode}`)
   } catch (error) {
-    context.log.error(`${functionName}: Error syncing results for check ${message.markedCheck.checkCode}. Error:${error.message}`)
+    let errorMessage = 'unknown error'
+    if (error instanceof Error) {
+      errorMessage = error.message
+    }
+    context.log.error(`${functionName}: Error syncing results for check ${message.markedCheck.checkCode}. Error:${errorMessage}`)
     if (isLastDeliveryAttempt(context)) {
       handleLastDeliveryAttempt(context, message)
     }

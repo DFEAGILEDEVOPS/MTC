@@ -1,12 +1,12 @@
 import { ConnectionPool } from 'mssql'
 import { CensusImportV1 } from './v1'
 import config from '../../config'
-import { ICensusImportDataService } from './census-import.data.service'
-import { IBlobService } from '../../azure/blob-service'
-import { ILogger } from '../../common/logger'
+import { type ICensusImportDataService } from './census-import.data.service'
+import { type IBlobService } from '../../azure/blob-service'
+import { type ILogger } from '../../common/logger'
 import { RedisServiceMock } from '../../caching/redis-service.mock'
-import { IRedisService } from '../../caching/redis-service'
-import { IJobDataService } from '../../services/data/job.data.service'
+import { type IRedisService } from '../../caching/redis-service'
+import { type IJobDataService } from '../../services/data/job.data.service'
 import { JobStatusCode } from '../../common/job-status-code'
 
 const CensusImportDataServiceMock = jest.fn<ICensusImportDataService, any>(() => ({

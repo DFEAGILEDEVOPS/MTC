@@ -170,7 +170,7 @@ export function getValidatedCheck (): ValidCheck {
     })
   }
   const check: ValidCheck = {
-    answers: answers,
+    answers,
     audit: [],
     checkCode: '2f39b888-892e-4d0a-918b-c52288b1e54f',
     config: {

@@ -1,8 +1,8 @@
 import * as R from 'ramda'
-import moment from 'moment'
+import type moment from 'moment'
 import { TYPES } from 'mssql'
 
-import { SqlService, ISqlService } from '../../../../sql/sql.service'
+import { SqlService, type ISqlService } from '../../../../sql/sql.service'
 
 export interface IResultDataService {
   sqlFindPupilResultsForSchool (schoolId: number): Promise<IRawPupilResult[]>
