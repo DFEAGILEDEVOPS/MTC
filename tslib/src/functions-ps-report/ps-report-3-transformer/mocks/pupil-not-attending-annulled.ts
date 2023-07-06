@@ -1,4 +1,4 @@
-import { Pupil } from '../../ps-report-2-pupil-data/models'
+import type { Pupil } from '../../ps-report-2-pupil-data/models'
 import moment from 'moment'
 
 export const pupil: Pupil = {
