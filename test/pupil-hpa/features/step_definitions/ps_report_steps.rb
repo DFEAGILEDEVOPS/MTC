@@ -502,3 +502,44 @@ Then(/^I should see the device is set to null$/) do
   expect(ps_report_record["DeviceId"]).to be_nil
   expect(ps_report_record["BrowserType"]).to be_nil
 end
+
+Given(/^I have completed the check and have an unconsumed restart$/) do
+  step 'I have completed the check'
+  step 'I login to the admin app'
+  visit ENV["ADMIN_BASE_URL"] + restarts_page.url
+  restarts_page.select_pupil_to_restart_btn.click
+  restarts_page.reason_1.click
+  pupil = restarts_page.find_pupil_row(@details_hash[:first_name])
+  @pupil_name = pupil.name.text
+  pupil.checkbox.click
+  restarts_page.sticky_banner.confirm.click
+end
+
+When(/^I set a reason for NTC$/) do
+  visit ENV["ADMIN_BASE_URL"] + pupil_reason_page.url
+  pupil_reason_page.select_reason('Left school')
+  pupil_row = pupil_reason_page.pupil_list.rows.select {|row| row.name.text.include?(@name)}
+  pupil_row.first.checkbox.click
+  pupil_reason_page.sticky_banner.confirm.click
+end
+
+Then(/^the correct pupil status is set$/) do
+  step 'the data sync and ps report function has run'
+  pupil_details = SqlDbHelper.pupil_details_using_school(@details_hash[:upn], @school_id)
+  ps_report_record = SqlDbHelper.get_ps_record_for_pupil(pupil_details['id'])
+  expect(ps_report_record['ReasonNotTakingCheck']).to eql 'L'
+  expect(ps_report_record['AttemptId']).to be_nil
+  expect(ps_report_record['PupilStatus']).to eql 'Not taking the Check'
+  p "PS_REPORT RECORD - " + ps_report_record["PupilId"].to_s
+end
+
+Then(/^I should see AttemptId, TestDate and FormID as null in the ps report$/) do
+  step 'the data sync and ps report function has run'
+  pupil_details = SqlDbHelper.pupil_details_using_school(@details_hash[:upn], @school_id)
+  ps_report_record = SqlDbHelper.get_ps_record_for_pupil(pupil_details['id'])
+  p "PS_REPORT RECORD - " + ps_report_record["PupilId"].to_s
+  ps_report_record = ps_report_record.map {|k, v| [k, (v.is_a?(BigDecimal) ? v.to_f : v)]}.to_h
+  expect(ps_report_record["AttemptId"]).to be_nil
+  expect(ps_report_record["FormID"]).to be_nil
+  expect(ps_report_record["TestDate"]).to be_nil
+end

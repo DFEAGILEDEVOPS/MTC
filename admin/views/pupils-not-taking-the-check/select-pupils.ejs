@@ -49,7 +49,7 @@
                             </td>
                             <td><%= pupil.reason || '-' %></td>
                             <td class="">
-                                <% if ((!isReadOnly || !hdfSubmitted) && pupil.attendanceCodeIsPrivileged === false) { %>
+                                <% if ((!isReadOnly && !hdfSubmitted) && pupil.attendanceCodeIsPrivileged === false) { %>
                                     <a href="/pupils-not-taking-the-check/remove/<%= pupil.urlSlug %>" class="govuk-link modal-link font-small">Remove reason</a>
                                 <% } %>
                             </td>

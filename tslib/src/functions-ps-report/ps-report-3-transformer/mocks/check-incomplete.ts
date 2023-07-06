@@ -12,7 +12,7 @@ export const check: Check = {
   mark: null,
   processingFailed: false,
   pupilLoginDate: null,
-  received: true,
+  received: false,
   restartNumber: 0,
   restartReason: null
 }

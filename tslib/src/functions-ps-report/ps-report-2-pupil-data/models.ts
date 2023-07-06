@@ -11,6 +11,7 @@ export interface Pupil {
   lastname: string
   notTakingCheckReason: string | null
   notTakingCheckCode: NotTakingCheckCode | null
+  restartAvailable: boolean
   slug: string
   schoolId: number
   upn: string

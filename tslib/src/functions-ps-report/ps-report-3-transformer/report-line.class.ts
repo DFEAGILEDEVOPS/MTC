@@ -306,12 +306,15 @@ export class ReportLine {
   }
 
   private getPupilStatus (): string {
-    if (this._pupil.checkComplete === true) {
-      return 'Complete'
-    }
     if (this._pupil.notTakingCheckCode !== null) {
       return 'Not taking the Check'
     }
+
+    // 59543: fixed in 2023
+    if (this._pupil.checkComplete === true && !this._pupil.restartAvailable) {
+      return 'Complete'
+    }
+
     return 'Incomplete'
   }
 
@@ -321,11 +324,39 @@ export class ReportLine {
       // that also covers the specific case of annulled pupils.
       return null
     }
-
     return this.check?.mark ?? null
   }
 
+  private getRestartNumber (): number | null {
+    const status = this.getPupilStatus()
+    if (status === 'Complete') {
+      return this.check?.restartNumber ?? null
+    }
+    return null
+  }
+
+  private getAttemptId (): string | null {
+    if (this.check === null) {
+      return null
+    }
+    if (this.check?.pupilLoginDate === null) {
+      return null
+    }
+    return this.check.checkCode
+  }
+
+  private getFormId (): string | null {
+    if (this.check === null) {
+      return null
+    }
+    if (this.check?.pupilLoginDate === null) {
+      return null
+    }
+    return this.checkForm?.name ?? null
+  }
+
   private _transform (): void {
+    // Pupil data
     this._report.PupilDatabaseId = this.pupil.id
     this._report.DOB = this.pupil.dateOfBirth
     this._report.Gender = this.pupil.gender.toUpperCase()
@@ -337,48 +368,51 @@ export class ReportLine {
     this._report.Estab = this.school.estabCode
     this._report.SchoolURN = this.school.urn
     this._report.LAnum = this.school.laCode
-    this._report.QDisplayTime = this.checkConfig?.questionTime ?? null // set to null rather than undefined
-    this._report.PauseLength = this.checkConfig?.loadingTime ?? null // set to null rather than undefined
     this._report.AccessArr = this.getAccessArrangements()
-    this._report.AttemptID = this.check?.checkCode ?? null // set to null rather than undefined
-    this._report.FormID = this.checkForm?.name ?? null // set to null rather than undefined
-    this._report.TestDate = this.check?.pupilLoginDate ?? null // set to null if there is no check
-    this._report.TimeStart = this.getTimeStart()
-    this._report.TimeComplete = this.getTimeComplete()
-    this._report.TimeTaken = this.getTimeTaken()
-    this._report.RestartNumber = this.check?.restartNumber ?? null // set to null if there is no check
-    this._report.RestartReason = ReportLine.getRestartReason(this.check?.restartReason ?? null) // map the code to the number
-    this._report.FormMark = this.getFormMark()
-    this._report.BrowserType = this.getBrowser()
-    this._report.DeviceID = this.device?.deviceId ?? null
+    // Check data
+    if (this._report.ReasonNotTakingCheck === null || this._report.ReasonNotTakingCheck === 'Q') {
+      this._report.QDisplayTime = this.checkConfig?.questionTime ?? null // set to null rather than undefined
+      this._report.PauseLength = this.checkConfig?.loadingTime ?? null // set to null rather than undefined
+      this._report.AttemptID = this.getAttemptId()
+      this._report.FormID = this.getFormId()
+      this._report.TestDate = this.check?.pupilLoginDate ?? null // set to null if there is no check
+      this._report.TimeStart = this.getTimeStart()
+      this._report.TimeComplete = this.getTimeComplete()
+      this._report.TimeTaken = this.getTimeTaken()
+      this._report.RestartNumber = this.getRestartNumber()
+      this._report.RestartReason = ReportLine.getRestartReason(this.check?.restartReason ?? null) // map the code to the number
+      this._report.FormMark = this.getFormMark()
+      this._report.BrowserType = this.getBrowser()
+      this._report.DeviceID = this.device?.deviceId ?? null
+      // Question data
+      this.answers?.forEach(answer => {
+        const rla = new ReportLineAnswer()
+        rla.questionNumber = answer.questionNumber
+        rla.id = answer.question
+        rla.response = answer.response
+
+        if (answer.inputs !== null) {
+          rla.addInputs(answer.inputs)
+        }
+
+        rla.score = answer.isCorrect ? 1 : 0
+        rla.timeout = this.getTimeout(answer.questionNumber)
+        rla.timeoutResponse = this.getTimeoutResponse(answer)
+        rla.timeoutScore = this.getTimeoutScore(answer)
+        rla.loadTime = this.getLoadTime(answer)
+        rla.questionReaderStart = this.getQuestionReaderStart(answer)
+        rla.questionReaderEnd = this.getQuestionReaderEnd(answer)
+        rla.calculateOverallTime()
+        rla.calculateRecallTime()
+
+        // add to the report
+        this._report.answers.push(rla)
+      })
+    }
+    // other data
     this._report.PupilStatus = this.getPupilStatus()
     this._report.ImportedFromCensus = this.pupil.jobId !== null
     this._report.ToECode = this.school.typeOfEstablishmentCode
-
-    // Question data
-    this.answers?.forEach(answer => {
-      const rla = new ReportLineAnswer()
-      rla.questionNumber = answer.questionNumber
-      rla.id = answer.question
-      rla.response = answer.response
-
-      if (answer.inputs !== null) {
-        rla.addInputs(answer.inputs)
-      }
-
-      rla.score = answer.isCorrect ? 1 : 0
-      rla.timeout = this.getTimeout(answer.questionNumber)
-      rla.timeoutResponse = this.getTimeoutResponse(answer)
-      rla.timeoutScore = this.getTimeoutScore(answer)
-      rla.loadTime = this.getLoadTime(answer)
-      rla.questionReaderStart = this.getQuestionReaderStart(answer)
-      rla.questionReaderEnd = this.getQuestionReaderEnd(answer)
-      rla.calculateOverallTime()
-      rla.calculateRecallTime()
-
-      // add to the report
-      this._report.answers.push(rla)
-    })
   }
 
   public toObject (): IPsychometricReportLine {

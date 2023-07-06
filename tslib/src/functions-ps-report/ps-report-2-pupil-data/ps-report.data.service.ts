@@ -107,6 +107,7 @@ export class PsReportDataService {
                         p.school_id,
                         p.urlSlug,
                         p.job_id,
+                        p.restartAvailable,
                         ac.reason as notTakingCheckReason,
                         ac.code as notTakingCheckCode
           FROM mtc_admin.pupil p
@@ -129,6 +130,7 @@ export class PsReportDataService {
       lastName: string
       notTakingCheckReason: string | null
       notTakingCheckCode: NotTakingCheckCode
+      restartAvailable: boolean
       school_id: number
       urlSlug: string
       upn: string
@@ -146,6 +148,7 @@ export class PsReportDataService {
         id: o.id,
         jobId: o.job_id,
         lastname: o.lastName,
+        restartAvailable: o.restartAvailable,
         notTakingCheckReason: o.notTakingCheckReason,
         notTakingCheckCode: o.notTakingCheckCode,
         schoolId: o.school_id,

@@ -1,4 +1,4 @@
-import { type Pupil } from '../../../functions-ps-report/ps-report-2-pupil-data/models'
+import { Pupil } from '../../ps-report-2-pupil-data/models'
 import moment from 'moment'
 
 export const pupil: Pupil = {
@@ -10,8 +10,8 @@ export const pupil: Pupil = {
   id: 3,
   jobId: 1,
   lastname: 'Person',
-  notTakingCheckReason: 'Absent during check window',
-  notTakingCheckCode: 'ABSNT',
+  notTakingCheckReason: 'Results annulled',
+  notTakingCheckCode: 'ANLLD',
   restartAvailable: false,
   slug: 'abc-def-hij-klm',
   schoolId: 3,

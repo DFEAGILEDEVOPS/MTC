@@ -35,6 +35,7 @@ Then(/^I should be taken to the Manage a pupil page$/) do
 end
 
 Then(/^I should be taken to the Pupil register page$/) do
+  sleep 0.5
   expect(pupil_register_page).to be_displayed
 end
 
