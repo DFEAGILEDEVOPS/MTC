@@ -5,8 +5,13 @@ We typically upgrade to the most sensible LTS once or twice a year to stay align
 
 ## Files to update
 
-In order to upgrade the node runtime across the solution, you must update multiple files.
-The easiest way to do this is use your editor to search for the current version string across all files in the solution.
+In order to upgrade the node runtime across the solution, you must update multiple files across the solution.
+- .nvmrc files
+- package.json: engines attribute
+- Dockerfiles
+  - App Dockerfiles: source image version
+  - Circle CI images: source image version
+  - build agent: current and previous node version environment variables
 
 ## Update the build-agent Dockerfile
 
