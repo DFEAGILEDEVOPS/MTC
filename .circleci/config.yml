@@ -21,8 +21,6 @@ jobs:
       - restore_cache:
           key: v1-node-pupil-spa-deps-{{ checksum "pupil-spa/yarn.lock" }}
       - restore_cache:
-          key: v1-node-pupil-api-deps-{{ checksum "pupil-api/yarn.lock" }}
-      - restore_cache:
           key: v1-node-tslib-deps-{{ checksum "tslib/yarn.lock" }}
       - run: export NVM_DIR=${HOME}/.nvm && source ${NVM_DIR}/nvm.sh; cd admin; nvm use; yarn install --frozen-lockfile
       - run:
@@ -38,8 +36,6 @@ jobs:
             JEST_JUNIT_OUTPUT_DIR: "reports/junit/js-test-results.xml"
       - run: export NVM_DIR=${HOME}/.nvm && source ${NVM_DIR}/nvm.sh; cd pupil-spa;     nvm use; yarn install --frozen-lockfile
       - run: export NVM_DIR=${HOME}/.nvm && source ${NVM_DIR}/nvm.sh; cd pupil-spa;     nvm use; yarn run test-single
-      - run: export NVM_DIR=${HOME}/.nvm && source ${NVM_DIR}/nvm.sh; cd pupil-api;     nvm use; yarn install --frozen-lockfile
-      - run: export NVM_DIR=${HOME}/.nvm && source ${NVM_DIR}/nvm.sh; cd pupil-api;     nvm use; yarn run test
       - run: export NVM_DIR=${HOME}/.nvm && source ${NVM_DIR}/nvm.sh; cd tslib;         nvm use; yarn install --frozen-lockfile
       - run: export NVM_DIR=${HOME}/.nvm && source ${NVM_DIR}/nvm.sh; cd tslib;         nvm use; yarn test:throttle
       - run: export NVM_DIR=${HOME}/.nvm && source ${NVM_DIR}/nvm.sh; cd admin;         nvm use; yarn test:frontend
@@ -51,10 +47,6 @@ jobs:
           key: v1-node-pupil-spa-deps-{{ checksum "pupil-spa/yarn.lock" }}
           paths:
             - ~/repo/pupil-spa/node_modules
-      - save_cache:
-          key: v1-node-pupil-api-deps-{{ checksum "pupil-api/yarn.lock" }}
-          paths:
-            - ~/repo/pupil-api/node_modules
       - save_cache:
           key: v1-node-tslib-deps-{{ checksum "tslib/yarn.lock" }}
           paths:
