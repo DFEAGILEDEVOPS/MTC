@@ -7,7 +7,7 @@ We typically upgrade to the most sensible LTS once or twice a year to stay align
 
 1. In order to upgrade the node runtime across the solution, you must update multiple files across the solution...
 - .nvmrc files
-- package.json: engines attribute
+- package.json: engines attribute, @types/node package reference in devDependencies
 - Dockerfiles
   - App Dockerfiles: source image version
   - Circle CI images: source image version
