@@ -5,8 +5,8 @@
   "license": "GPL-3.0",
   "scripts": {
     "build": "yarn sync && yarn run gulp",
-    "clean": "rm -rf ./dist",
-    "start": "node ./dist/index.js",
+    "clean": "rm -rf dist rm -f .env",
+    "start": "node ./dist/pupil-api/index.js",
     "sync": "node ./sync-tslib-deps.js && yarn install"
   },
   "engines": {
