@@ -115,7 +115,7 @@ jobs:
   docker_build_pupil_api:
     working_directory: ~/repo/
     docker:
-      - image: cimg/base:stable
+      - image: stamtc/mtc_circleci:latest
     environment:
       TZ: Europe/London
     steps:
