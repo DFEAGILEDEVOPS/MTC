@@ -122,8 +122,7 @@ jobs:
       - checkout
       - setup_remote_docker:
           version: 20.10.17
-      - run: export NVM_DIR=${HOME}/.nvm && source ${NVM_DIR}/nvm.sh; cd ./pupil-api; nvm use;
-      - run: cd pupil-api && yarn build && BUILDKIT=1 docker build .
+      - run: export NVM_DIR=${HOME}/.nvm && source ${NVM_DIR}/nvm.sh; cd ./pupil-api; nvm use; yarn build; BUILDKIT=1 docker build .
       - run: docker images
 
   docker_build_admin_assets:
