@@ -18,7 +18,6 @@ function getUniqueName (): string {
 
 async function createContainer (): Promise<string> {
   const containerName = getUniqueName()
-  console.log(`GUY: creating container: ${containerName}`)
   const client = BlobServiceClient.fromConnectionString(connectionString)
   const containerClient = client.getContainerClient(containerName)
   await containerClient.create()
@@ -26,7 +25,6 @@ async function createContainer (): Promise<string> {
 }
 
 async function deleteContainer (containerName: string): Promise<any> {
-  console.log(`GUY: deleting container: ${containerName}`)
   const client = BlobServiceClient.fromConnectionString(connectionString)
   return client.deleteContainer(containerName)
 }
@@ -46,7 +44,6 @@ describe('Blob Service', () => {
         integrationTestContainers.push(container.name)
       }
     }
-    console.log(`GUY: ${integrationTestContainers.length} containers left over to delete before run...`)
     const deletions = integrationTestContainers.map(async t => {
       return client.deleteContainer(t)
     })
