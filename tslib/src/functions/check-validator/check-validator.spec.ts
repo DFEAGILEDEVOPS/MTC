@@ -11,35 +11,11 @@ import { type TableEntity } from '@azure/data-tables'
 import { type ICheckFormService } from '../../services/check-form.service'
 import { type IValidatorProvider, ValidatorProvider } from './validators/validator.provider'
 
-const TableServiceMock = jest.fn<ITableService, any>(() => ({
-  createEntity: jest.fn(),
-  getEntity: jest.fn(),
-  mergeUpdateEntity: jest.fn(),
-  replaceEntity: jest.fn()
-}))
-
-const LoggerMock = jest.fn<ILogger, any>(() => ({
-  error: jest.fn(),
-  warn: jest.fn(),
-  info: jest.fn(),
-  verbose: jest.fn()
-}))
-
-const CompressionServiceMock = jest.fn<ICompressionService, any>(() => ({
-  compress: jest.fn(),
-  decompress: jest.fn()
-}))
-
 let validateReceivedCheckQueueMessage: ValidateCheckMessageV1 = {
   schoolUUID: uuid.v4(),
   checkCode: uuid.v4(),
   version: 1
 }
-
-const CheckFormServiceMock = jest.fn<ICheckFormService, any>(() => ({
-  getCheckFormForCheckCode: jest.fn(),
-  getCheckFormDataByCheckCode: jest.fn()
-}))
 
 let sut: CheckValidator
 let loggerMock: ILogger
@@ -50,12 +26,28 @@ let validatorProvider: IValidatorProvider
 
 describe('check-validator', () => {
   beforeEach(() => {
-    tableServiceMock = new TableServiceMock()
-    compressionServiceMock = new CompressionServiceMock()
-    checkFormServiceMock = new CheckFormServiceMock()
+    tableServiceMock = {
+      createEntity: jest.fn(),
+      getEntity: jest.fn(),
+      mergeUpdateEntity: jest.fn(),
+      replaceEntity: jest.fn()
+    }
+    compressionServiceMock = {
+      compress: jest.fn(),
+      decompress: jest.fn()
+    }
+    checkFormServiceMock = {
+      getCheckFormForCheckCode: jest.fn(),
+      getCheckFormDataByCheckCode: jest.fn()
+    }
     validatorProvider = new ValidatorProvider(checkFormServiceMock)
     sut = new CheckValidator(tableServiceMock, compressionServiceMock, validatorProvider)
-    loggerMock = new LoggerMock()
+    loggerMock = {
+      error: jest.fn(),
+      warn: jest.fn(),
+      info: jest.fn(),
+      verbose: jest.fn()
+    }
     validateReceivedCheckQueueMessage = {
       schoolUUID: 'abc',
       checkCode: 'xyz',
