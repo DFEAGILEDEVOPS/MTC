@@ -6,6 +6,9 @@
 - `cleanup.sh` Removes any temporary files and 'dead weight' from the image before it is finished building.  You do not need to execute this script, as it is called from within the Dockerfile itself.
 - `create-instance.sh` creates a container instance using the latest image in docker hub, via the Azure CLI.
 
+## NOTE: Apple Silicon
+If you are building the image locally on an Apple Silicon device during developmet, you should use the `--platform linux/amd64` argument with the `docker build` command.  Otherwise, it will default to arm64, which lacks parity with the target hardware, and causes a lot of incompatibility issues during the image build.
+
 ## Steps
 1. update the `$AGENT_VERSION` variable in `./Dockerfile` to the [latest full release](https://github.com/microsoft/azure-pipelines-agent/releases)
 2. commit changes to ensure commit hash is aligned
