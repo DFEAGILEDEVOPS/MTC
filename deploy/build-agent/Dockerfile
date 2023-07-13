@@ -1,3 +1,7 @@
+# custom build agent for Azure Devops pipelines
+# https://github.com/microsoft/azure-pipelines-agent
+# see readme.md for usage
+
 FROM ubuntu:22.04
 
 ENV RUBY_VERSION=2.7.7
