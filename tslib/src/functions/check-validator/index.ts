@@ -1,7 +1,7 @@
-import { AzureFunction, Context } from '@azure/functions'
+import { type AzureFunction, type Context } from '@azure/functions'
 import { performance } from 'perf_hooks'
-import { CheckValidator, ICheckValidatorFunctionBindings } from './check-validator'
-import { ValidateCheckMessageV1 } from '../../schemas/models'
+import { CheckValidator, type ICheckValidatorFunctionBindings } from './check-validator'
+import { type ValidateCheckMessageV1 } from '../../schemas/models'
 
 const validator = new CheckValidator()
 const functionName = 'check-validator'

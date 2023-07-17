@@ -3,7 +3,7 @@ import { ServiceManagerPupilDataService } from './service-manager.pupil.data.ser
 import { validate } from 'uuid'
 import moment from 'moment'
 import { PupilAnnulmentDataService } from '../pupil-annulment/pupil-annulment.data.service'
-import { ServiceManagerSchoolResult } from '../school/school.data.service'
+import { type ServiceManagerSchoolResult } from '../school/school.data.service'
 const redisCacheService = require('../../../services/data-access/redis-cache.service')
 const redisKeyService = require('../../../services/redis-key.service')
 const dateService = require('../../date.service')

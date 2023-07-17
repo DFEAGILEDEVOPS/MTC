@@ -1,8 +1,8 @@
-import { AzureFunction, Context } from '@azure/functions'
+import { type AzureFunction, type Context } from '@azure/functions'
 import { performance } from 'perf_hooks'
 import { ReportLine } from './report-line.class'
 import { jsonReviver } from '../../common/json-reviver'
-import { PupilResult } from '../../functions-ps-report/ps-report-2-pupil-data/models'
+import { type PupilResult } from '../../functions-ps-report/ps-report-2-pupil-data/models'
 import { PsReportLogger } from '../common/ps-report-logger'
 import { PsReportSource } from '../common/ps-report-log-entry'
 
@@ -38,7 +38,11 @@ const serviceBusQueueTrigger: AzureFunction = async function (context: Context, 
     const outputData = reportLine.transform()
     context.bindings.outputData = outputData
   } catch (error: any) {
-    logger.error(`ERROR: ${error.message}`)
+    let errorMessage = 'unknown error'
+    if (error instanceof Error) {
+      errorMessage = error.message
+    }
+    logger.error(`ERROR: ${errorMessage}`)
     throw error
   }
 

@@ -18,7 +18,7 @@ export class PsReportLogsDataService {
 
   public static async getFileContents (containerName: string, logFileName: string): Promise<string | undefined> {
     const client = BlobServiceClient.fromConnectionString(config.AZURE_STORAGE_CONNECTION_STRING)
-    const containerClient = await client.getContainerClient(containerName)
+    const containerClient = client.getContainerClient(containerName)
     if (!await containerClient.exists()) return
     const blobClient = containerClient.getBlobClient(logFileName)
     if (!await blobClient.exists()) return
@@ -29,7 +29,7 @@ export class PsReportLogsDataService {
 
   public static async getContainerFileList (containerName: string): Promise<IPsReportLogFileData[]> {
     const client = BlobServiceClient.fromConnectionString(config.AZURE_STORAGE_CONNECTION_STRING)
-    const containerClient = await client.getContainerClient(containerName)
+    const containerClient = client.getContainerClient(containerName)
     if (!await containerClient.exists()) return []
     const files = new Array<IPsReportLogFileData>()
     // properties.contentLength unt is bytes

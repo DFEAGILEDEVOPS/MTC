@@ -13,7 +13,7 @@ describe('UserAgentParser', () => {
   })
 
   test('it returns `Chrome` for the browser family', () => {
-    expect(sut.getBrowserFamily()).toStrictEqual('Chrome') // would be nice if it recognised Brave
+    expect(sut.getBrowserFamily()).toBe('Chrome') // would be nice if it recognised Brave
   })
 
   test('it returns 86 for the browser major version', () => {

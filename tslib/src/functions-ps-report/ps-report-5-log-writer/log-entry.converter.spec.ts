@@ -14,12 +14,12 @@ describe('log entry converter', () => {
   test('if no entries, emtpy buffer is returned', () => {
     const input = new Array<string>()
     const output = sut.convert(input)
-    expect(output).not.toBeDefined()
+    expect(output).toBeUndefined()
   })
 
   test('entries should be prepended with a new line', () => {
     const input = ['foo']
     const output = sut.convert(input)
-    expect(output?.toString()).toStrictEqual('\nfoo')
+    expect(output?.toString()).toBe('\nfoo')
   })
 })

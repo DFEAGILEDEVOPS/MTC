@@ -1,9 +1,9 @@
-import { DBQuestion, Input, MarkedAnswer, MarkedCheck, ValidatedCheck, Answer, Audit } from './models'
-import { ISqlParameter, ITransactionRequest } from '../../sql/sql.service'
+import { type DBQuestion, type Input, type MarkedAnswer, type MarkedCheck, type ValidatedCheck, type Answer, type Audit } from './models'
+import { type ISqlParameter, type ITransactionRequest } from '../../sql/sql.service'
 import * as R from 'ramda'
 import { TYPES } from 'mssql'
-import { IQuestionService, QuestionService } from './question.service'
-import { IUserInputService, UserInputService } from './user-input.service'
+import { type IQuestionService, QuestionService } from './question.service'
+import { type IUserInputService, UserInputService } from './user-input.service'
 import { payloadSort } from '../../services/payload-sort'
 import moment from 'moment'
 

@@ -1,4 +1,4 @@
-import { SchoolImportJobOutput } from './SchoolImportJobOutput'
+import { type SchoolImportJobOutput } from './SchoolImportJobOutput'
 
 export class SchoolImportError extends Error {
   constructor (jobResult: SchoolImportJobOutput, innerError: Error) {

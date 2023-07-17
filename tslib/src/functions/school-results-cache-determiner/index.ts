@@ -1,4 +1,4 @@
-import { AzureFunction, Context } from '@azure/functions'
+import { type AzureFunction, type Context } from '@azure/functions'
 import { SchoolResultsCacheDeterminerService } from './school-results-cache-determiner.service'
 import { performance } from 'perf_hooks'
 

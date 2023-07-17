@@ -1,7 +1,7 @@
-import { AzureFunction, Context } from '@azure/functions'
+import { type AzureFunction, type Context } from '@azure/functions'
 import { performance } from 'perf_hooks'
 import { PsReportService } from './ps-report.service'
-import { PupilResult } from './models'
+import { type PupilResult } from './models'
 import { PsReportLogger } from '../common/ps-report-logger'
 import { PsReportSource } from '../common/ps-report-log-entry'
 

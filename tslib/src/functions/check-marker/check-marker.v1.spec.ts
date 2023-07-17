@@ -3,14 +3,14 @@ import moment = require('moment')
 import * as R from 'ramda'
 
 import * as Subject from './check-marker.v1'
-import { ICheckFormService } from '../../services/check-form.service'
-import { ILogger } from '../../common/logger'
-import { ICheckMarkerFunctionBindings } from './models'
+import { type ICheckFormService } from '../../services/check-form.service'
+import { type ILogger } from '../../common/logger'
+import { type ICheckMarkerFunctionBindings } from './models'
 import answersMock from './answers-mock.json'
-import { CheckNotificationType, ICheckNotificationMessage } from '../../schemas/check-notification-message'
-import { ReceivedCheckFunctionBindingEntity } from '../../schemas/models'
+import { CheckNotificationType, type ICheckNotificationMessage } from '../../schemas/check-notification-message'
+import { type ReceivedCheckFunctionBindingEntity } from '../../schemas/models'
 import { CompressionService } from '../../common/compression-service'
-import { ITableService } from '../../azure/table-service'
+import { type ITableService } from '../../azure/table-service'
 
 const compressionService = new CompressionService()
 
@@ -61,7 +61,11 @@ describe('check-marker/v1', () => {
       await sut.mark(functionBindings, loggerMock)
       fail('error should have been thrown due to empty receivedCheckData')
     } catch (error) {
-      expect(error.message).toBe('received check reference is empty')
+      let errorMessage = 'unknown error'
+      if (error instanceof Error) {
+        errorMessage = error.message
+      }
+      expect(errorMessage).toBe('received check reference is empty')
     }
   })
 

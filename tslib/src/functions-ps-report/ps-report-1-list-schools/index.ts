@@ -1,4 +1,4 @@
-import { AzureFunction, Context } from '@azure/functions'
+import { type AzureFunction, type Context } from '@azure/functions'
 import { performance } from 'perf_hooks'
 import { ListSchoolsService } from './list-schools-service'
 import { PsReportLogger } from '../common/ps-report-logger'
@@ -27,9 +27,13 @@ const serviceBusTrigger: AzureFunction = async function (context: Context, jobIn
     await jobDataService.setJobComplete(jobInfo.jobUuid,
       JobStatusCode.CompletedSuccessfully, `processed ${meta.processCount} records`)
   } catch (error) {
-    logger.error(error.message)
+    let errorMessage = 'unknown error'
+    if (error instanceof Error) {
+      errorMessage = error.message
+    }
+    logger.error(errorMessage)
     await jobDataService.setJobComplete(jobInfo.jobUuid, JobStatusCode.Failed,
-      `processed ${meta.processCount} records`, error.message)
+      `processed ${meta.processCount} records`, errorMessage)
     throw error
   }
   const end = performance.now()

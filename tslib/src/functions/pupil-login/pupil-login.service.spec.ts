@@ -1,5 +1,5 @@
-import { IPupilLoginDataService } from './pupil-login.data.service'
-import { PupilLoginService, IPupilLoginMessage, IPupilLoginFunctionBindings, IPupilEvent } from './pupil-login.service'
+import { type IPupilLoginDataService } from './pupil-login.data.service'
+import { PupilLoginService, type IPupilLoginMessage, type IPupilLoginFunctionBindings, type IPupilEvent } from './pupil-login.service'
 
 let sut: PupilLoginService
 let dataServiceMock: IPupilLoginDataService
@@ -32,7 +32,11 @@ describe('pupil-login.service', () => {
       await sut.process(message, bindings)
       fail('error should have been thrown')
     } catch (error) {
-      expect(error.message).toBe(`pupil-login message version:${message.version} unsupported`)
+      let errorMessage = 'unknown error'
+      if (error instanceof Error) {
+        errorMessage = error.message
+      }
+      expect(errorMessage).toBe(`pupil-login message version:${message.version} unsupported`)
     }
   })
 
@@ -70,7 +74,7 @@ describe('pupil-login.service', () => {
     const entry = bindings.pupilEventTable[0] as IPupilEvent
     expect(entry.PartitionKey).toStrictEqual(message.checkCode)
     expect(entry.RowKey).toBeDefined()
-    expect(entry.eventType).toStrictEqual('pupil-login')
+    expect(entry.eventType).toBe('pupil-login')
     expect(entry.payload).toStrictEqual(message)
     expect(entry.processedAt).toBeDefined()
   })
