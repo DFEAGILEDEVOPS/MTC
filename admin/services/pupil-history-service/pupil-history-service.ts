@@ -1,4 +1,4 @@
-import { IPupilHistoryCheckData, IPupilHistoryPupilData, IPupilHistoryRestartData, IPupilHistorySchoolData, PupilHistoryDataService } from './data-access/pupil-history.data.service'
+import { type IPupilHistoryCheckData, type IPupilHistoryPupilData, type IPupilHistoryRestartData, type IPupilHistorySchoolData, PupilHistoryDataService } from './data-access/pupil-history.data.service'
 import * as R from 'ramda'
 
 export interface IPupilHistory {

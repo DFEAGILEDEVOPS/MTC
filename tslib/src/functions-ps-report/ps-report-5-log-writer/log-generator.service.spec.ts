@@ -1,8 +1,8 @@
 import moment from 'moment'
-import { IPsReportLogEntry, PsReportSource } from '../common/ps-report-log-entry'
+import { type IPsReportLogEntry, PsReportSource } from '../common/ps-report-log-entry'
 import { PsLogEntryFormatter } from './log-entry-formatter'
 import { PsLogSetGeneratorService } from './log-generator.service'
-import { IPsReportLogSetBatch } from './ps-report-log-set'
+import { type IPsReportLogSetBatch } from './ps-report-log-set'
 
 let sut: PsLogSetGeneratorService
 let formatter: PsLogEntryFormatter
@@ -38,7 +38,7 @@ describe('log generator service', () => {
       level: 'warning'
     }
     const expected: IPsReportLogSetBatch = {
-      setId: setId,
+      setId,
       listSchoolsLog: [],
       pupilDataLog: [formatter.formatEntry(pupilGeneratorMessage)],
       transformerLog: [formatter.formatEntry(transformerMessage)],

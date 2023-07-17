@@ -1,4 +1,4 @@
-import { BlobServiceClient, ContainerClient } from '@azure/storage-blob'
+import { BlobServiceClient, type ContainerClient } from '@azure/storage-blob'
 import config from '../config'
 
 export interface IBlobService {
@@ -20,7 +20,7 @@ export class BlobService implements IBlobService {
     const client = await this.getContainerClient(containerName)
     await client.createIfNotExists()
     const blobClient = client.getBlobClient(blobName)
-    const blockClient = await blobClient.getBlockBlobClient()
+    const blockClient = blobClient.getBlockBlobClient()
     await blockClient.uploadData(data)
   }
 

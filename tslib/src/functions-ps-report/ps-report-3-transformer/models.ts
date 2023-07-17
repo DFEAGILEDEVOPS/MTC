@@ -1,5 +1,5 @@
-import { ReportLineAnswer } from './report-line-answer.class'
-import moment from 'moment'
+import { type ReportLineAnswer } from './report-line-answer.class'
+import type moment from 'moment'
 
 export interface IReportLineBase {
   // Pupil

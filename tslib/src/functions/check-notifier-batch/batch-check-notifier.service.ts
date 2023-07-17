@@ -1,6 +1,6 @@
-import { ICheckNotificationMessage, CheckNotificationType } from '../../schemas/check-notification-message'
-import { IBatchCheckNotifierDataService, BatchCheckNotifierDataService } from './batch-check-notifier.data.service'
-import { ITransactionRequest } from '../../sql/sql.service'
+import { type ICheckNotificationMessage, CheckNotificationType } from '../../schemas/check-notification-message'
+import { type IBatchCheckNotifierDataService, BatchCheckNotifierDataService } from './batch-check-notifier.data.service'
+import { type ITransactionRequest } from '../../sql/sql.service'
 
 export class BatchCheckNotifier {
   private readonly dataService: IBatchCheckNotifierDataService

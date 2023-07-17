@@ -1,14 +1,14 @@
-import { ISqlService, SqlService } from '../../sql/sql.service'
-import { ILogger } from '../../common/logger'
-import { ISyncResultsDataService, SyncResultsDataService } from './sync-results.data.service'
+import { type ISqlService, SqlService } from '../../sql/sql.service'
+import { type ILogger } from '../../common/logger'
+import { type ISyncResultsDataService, SyncResultsDataService } from './sync-results.data.service'
 import {
-  IPrepareAnswersAndInputsDataService,
+  type IPrepareAnswersAndInputsDataService,
   PrepareAnswersAndInputsDataService
 } from './prepare-answers-and-inputs.data.service'
-import { IPrepareEventService, PrepareEventService } from './prepare-event.service'
-import { IUserInputService, UserInputService } from './user-input.service'
-import { IQuestionService, QuestionService } from './question.service'
-import { EventService, IEventService } from './event.service'
+import { type IPrepareEventService, PrepareEventService } from './prepare-event.service'
+import { type IUserInputService, UserInputService } from './user-input.service'
+import { type IQuestionService, QuestionService } from './question.service'
+import { EventService, type IEventService } from './event.service'
 import { SyncResultsService } from './sync-results.service'
 
 export interface ISyncResultsServiceFactory {

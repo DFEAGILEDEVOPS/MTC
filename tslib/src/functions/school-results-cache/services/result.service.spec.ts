@@ -2,8 +2,8 @@ import moment from 'moment'
 import * as RA from 'ramda-adjunct'
 
 import { ConsoleLogger } from '../../../common/logger'
-import { IRawPupilResult, IResultDataService } from './data-access/result.data.service'
-import { IRedisService } from '../../../caching/redis-service'
+import { type IRawPupilResult, type IResultDataService } from './data-access/result.data.service'
+import { type IRedisService } from '../../../caching/redis-service'
 import { RedisServiceMock } from '../../../caching/redis-service.mock'
 import { ResultService } from './result.service'
 
@@ -122,7 +122,11 @@ describe('result.service', () => {
         await sut.getPupilResultDataFromDb('a fake guid')
         fail('expected to throw')
       } catch (error) {
-        expect(error.message).toBe('Unable to find school with Guid a fake guid')
+        let errorMessage = 'unknown error'
+        if (error instanceof Error) {
+          errorMessage = error.message
+        }
+        expect(errorMessage).toBe('Unable to find school with Guid a fake guid')
       }
     })
 
@@ -384,9 +388,9 @@ describe('result.service', () => {
 
       const res = await sut.getPupilResultDataFromDb(schoolGuid)
 
-      expect(res.pupils[0].middleNames).toStrictEqual('Bea')
-      expect(res.pupils[1].middleNames).toStrictEqual('Xani')
-      expect(res.pupils[2].middleNames).toStrictEqual('Zebra')
+      expect(res.pupils[0].middleNames).toBe('Bea')
+      expect(res.pupils[1].middleNames).toBe('Xani')
+      expect(res.pupils[2].middleNames).toBe('Zebra')
     })
 
     test('returns the pupil group_id', async () => {
@@ -640,7 +644,11 @@ describe('result.service', () => {
         await sut.cacheResultData(schoolGuid)
         fail()
       } catch (error) {
-        expect(error.message).toBe('schoolGuid not found')
+        let errorMessage = 'unknown error'
+        if (error instanceof Error) {
+          errorMessage = error.message
+        }
+        expect(errorMessage).toBe('schoolGuid not found')
       }
       expect(mockRedisService.setex).not.toHaveBeenCalled()
     })

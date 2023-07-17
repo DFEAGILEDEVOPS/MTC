@@ -1,7 +1,7 @@
-import { CompressionService, ICompressionService } from '../../common/compression-service'
+import { CompressionService, type ICompressionService } from '../../common/compression-service'
 import { validate as validateUuid } from 'uuid'
-import { IReceivedCheckPayloadDataService, ReceivedCheckPayloadDataService } from './received-check-payload.data.service'
-import { SubmittedCheckMessageV2 } from '../../schemas/models'
+import { type IReceivedCheckPayloadDataService, ReceivedCheckPayloadDataService } from './received-check-payload.data.service'
+import { type SubmittedCheckMessageV2 } from '../../schemas/models'
 
 export class ReceivedCheckPayloadService {
   private readonly compressionService: ICompressionService

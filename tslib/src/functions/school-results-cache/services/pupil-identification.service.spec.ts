@@ -1,5 +1,5 @@
 import moment from 'moment'
-import { IPupilIdentificationService, PupilIdentificationService } from './pupil-identification.service'
+import { type IPupilIdentificationService, PupilIdentificationService } from './pupil-identification.service'
 
 describe('pupil-identification.service', () => {
   let sut: IPupilIdentificationService

@@ -1,7 +1,7 @@
-import { UnsynchronisedCheck } from './models'
+import { type UnsynchronisedCheck } from './models'
 import { validate as validateUUID } from 'uuid'
 import { TYPES } from 'mssql'
-import { ISqlService, SqlService } from '../../sql/sql.service'
+import { type ISqlService, SqlService } from '../../sql/sql.service'
 
 export interface ISyncResultsInitDataService {
   getUnsynchronisedChecks (): Promise<UnsynchronisedCheck[]>

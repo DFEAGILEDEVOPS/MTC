@@ -1,6 +1,6 @@
 'use strict'
 
-import { AzureFunction, Context } from '@azure/functions'
+import { type AzureFunction, type Context } from '@azure/functions'
 import { performance } from 'perf_hooks'
 import { CensusImportV1 } from './v1'
 import * as mssql from 'mssql'

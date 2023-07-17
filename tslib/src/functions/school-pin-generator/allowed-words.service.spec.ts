@@ -16,7 +16,11 @@ describe('allowed-words.service', () => {
       sut.parse('foo,bar,baz,qix', '')
       fail('error should have thrown')
     } catch (error) {
-      expect(error.message).toBe('set of allowed words must be a minimum of 5')
+      let errorMessage = 'unknown error'
+      if (error instanceof Error) {
+        errorMessage = error.message
+      }
+      expect(errorMessage).toBe('set of allowed words must be a minimum of 5')
     }
   })
 

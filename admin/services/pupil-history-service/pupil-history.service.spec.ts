@@ -1,7 +1,7 @@
 
 import moment from 'moment-timezone'
 import { PupilHistoryDataService } from './data-access/pupil-history.data.service'
-import { IPupilHistory, PupilHistoryService } from './pupil-history-service'
+import { type IPupilHistory, PupilHistoryService } from './pupil-history-service'
 const R = require('ramda')
 
 const mockPupilHistoryDefault: IPupilHistory = {

@@ -1,6 +1,6 @@
-import { IModifyResult, ISqlParameter, ISqlService, SqlService } from '../../sql/sql.service'
-import { ConsoleLogger, ILogger } from '../../common/logger'
-import { IPsychometricReportLine, IReportLineAnswer } from '../ps-report-3-transformer/models'
+import { type IModifyResult, type ISqlParameter, type ISqlService, SqlService } from '../../sql/sql.service'
+import { ConsoleLogger, type ILogger } from '../../common/logger'
+import { type IPsychometricReportLine, type IReportLineAnswer } from '../ps-report-3-transformer/models'
 import { TYPES, MAX } from 'mssql'
 import * as R from 'ramda'
 

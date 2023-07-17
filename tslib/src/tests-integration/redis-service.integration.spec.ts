@@ -1,5 +1,5 @@
 import { RedisService } from '../caching/redis-service'
-import Redis, { RedisOptions } from 'ioredis'
+import Redis, { type RedisOptions } from 'ioredis'
 import config from '../config'
 import { v4 as uuidv4 } from 'uuid'
 

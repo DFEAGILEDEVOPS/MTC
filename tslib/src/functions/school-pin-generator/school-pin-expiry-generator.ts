@@ -1,7 +1,7 @@
 
 import * as momentTz from 'moment-timezone'
-import { IConfigProvider, ConfigFileProvider } from './config-file-provider'
-import { IDateTimeService, DateTimeService } from '../../common/datetime.service'
+import { type IConfigProvider, ConfigFileProvider } from './config-file-provider'
+import { type IDateTimeService, DateTimeService } from '../../common/datetime.service'
 
 export class SchoolPinExpiryGenerator {
   private readonly dateTimeService: IDateTimeService

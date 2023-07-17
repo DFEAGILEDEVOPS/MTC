@@ -1,7 +1,7 @@
-import { AzureFunction, Context } from '@azure/functions'
+import { type AzureFunction, type Context } from '@azure/functions'
 import { performance } from 'perf_hooks'
 import { PupilPrefsService } from './pupil-prefs.service'
-import { IPupilPrefsFunctionBindings } from './IPupilPrefsFunctionBindings'
+import { type IPupilPrefsFunctionBindings } from './IPupilPrefsFunctionBindings'
 
 const functionName = 'pupil-prefs'
 
@@ -17,7 +17,11 @@ const queueTrigger: AzureFunction = async function (context: Context, pupilPrefs
     const prefsService = new PupilPrefsService(undefined, context.log)
     await prefsService.update(pupilPrefsMessage, context.bindings as IPupilPrefsFunctionBindings)
   } catch (error) {
-    context.log.error(`${functionName}: ERROR: ${error.message}`)
+    let errorMessage = 'unknown error'
+    if (error instanceof Error) {
+      errorMessage = error.message
+    }
+    context.log.error(`${functionName}: ERROR: ${errorMessage}`)
     throw error
   }
 

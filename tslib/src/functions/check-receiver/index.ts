@@ -1,7 +1,7 @@
-import { AzureFunction, Context } from '@azure/functions'
+import { type AzureFunction, type Context } from '@azure/functions'
 import { performance } from 'perf_hooks'
 import { CheckReceiver } from './check-receiver'
-import { SubmittedCheckMessageV2 } from '../../schemas/models'
+import { type SubmittedCheckMessageV2 } from '../../schemas/models'
 
 const functionName = 'check-receiver'
 
@@ -17,7 +17,11 @@ const queueTrigger: AzureFunction = async function (context: Context, submittedC
     }
     await receiver.process(context, submittedCheck)
   } catch (error) {
-    context.log.error(`${functionName}: ERROR: ${error.message}`)
+    let errorMessage = 'unknown error'
+    if (error instanceof Error) {
+      errorMessage = error.message
+    }
+    context.log.error(`${functionName}: ERROR: ${errorMessage}`)
     throw error
   }
 

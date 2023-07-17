@@ -1,5 +1,5 @@
-import { SqlService, ISqlService } from '../../sql/sql.service'
-import { DBQuestion } from './models'
+import { SqlService, type ISqlService } from '../../sql/sql.service'
+import { type DBQuestion } from './models'
 
 export interface IQuestionService {
   findQuestion (question: string): Promise<DBQuestion>
@@ -7,7 +7,7 @@ export interface IQuestionService {
 
 export class QuestionService implements IQuestionService {
   private readonly sqlService: ISqlService
-  private readonly questionCache: Map<string, DBQuestion> = new Map()
+  private readonly questionCache = new Map<string, DBQuestion>()
   private initialised = false
 
   constructor (sqlService?: ISqlService) {

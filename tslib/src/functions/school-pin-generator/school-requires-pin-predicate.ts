@@ -1,5 +1,5 @@
 import moment from 'moment'
-import { School } from './school-pin-replenishment.service'
+import { type School } from './school-pin-replenishment.service'
 
 export class SchoolRequiresNewPinPredicate {
   isRequired (school: School): boolean {

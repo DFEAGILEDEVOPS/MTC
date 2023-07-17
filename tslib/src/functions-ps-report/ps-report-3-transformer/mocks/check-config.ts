@@ -1,4 +1,4 @@
-import { CheckConfig } from '../../../functions-ps-report/ps-report-2-pupil-data/models'
+import { type CheckConfig } from '../../../functions-ps-report/ps-report-2-pupil-data/models'
 
 export const checkConfig: CheckConfig = {
   audibleSounds: false,

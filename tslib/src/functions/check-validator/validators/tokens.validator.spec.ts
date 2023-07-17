@@ -1,5 +1,5 @@
 import { TokensValidator } from './tokens.validator'
-import { ICheckValidationError } from './validator-types'
+import { type ICheckValidationError } from './validator-types'
 
 let sut: TokensValidator
 
@@ -29,6 +29,6 @@ describe('tokens-property.validator', () => {
       tokens: {}
     }
     const error = sut.validate(check)
-    expect(error).not.toBeDefined()
+    expect(error).toBeUndefined()
   })
 })

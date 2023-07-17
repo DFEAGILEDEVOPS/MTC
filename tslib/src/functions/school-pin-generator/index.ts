@@ -1,4 +1,4 @@
-import { AzureFunction, Context } from '@azure/functions'
+import { type AzureFunction, type Context } from '@azure/functions'
 import { performance } from 'perf_hooks'
 import { SchoolPinReplenishmnentService } from './school-pin-replenishment.service'
 

@@ -35,7 +35,11 @@ describe('school-pin-sampler', () => {
       sut.generateSample(maximumSampleSize + 1, moment.utc())
       fail('should have thrown an error')
     } catch (error) {
-      expect(error.message).toBe(`maximum sample size is ${maximumSampleSize}`)
+      let errorMessage = 'unknown error'
+      if (error instanceof Error) {
+        errorMessage = error.message
+      }
+      expect(errorMessage).toBe(`maximum sample size is ${maximumSampleSize}`)
     }
   })
 

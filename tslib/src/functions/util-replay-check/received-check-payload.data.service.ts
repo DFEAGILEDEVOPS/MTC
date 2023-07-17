@@ -1,6 +1,6 @@
 import { TYPES } from 'mssql'
 import { isArray } from 'ramda-adjunct'
-import { ISqlParameter, ISqlService, SqlService } from '../../sql/sql.service'
+import { type ISqlParameter, type ISqlService, SqlService } from '../../sql/sql.service'
 
 export interface IReceivedCheckPayloadDataService {
   fetchCompressedArchives (checkCodes: string[]): Promise<string[]>
