@@ -25,4 +25,10 @@ describe('QrCodeUsageService', () => {
     service.qrCodeArrival()
     expect(service['qrCodeArrivalTimestamps'].length).toBeGreaterThan(0)
   })
+
+  it('qrCodeSubsequentAppUsage() should store the current date and time', () => {
+    spyOn(service, 'qrCodeSubsequentAppUsage').and.callThrough()
+    service.qrCodeSubsequentAppUsage()
+    expect(service['qrCodeSubsequentAppUses'].length).toBeGreaterThan(0)
+  })
 });
