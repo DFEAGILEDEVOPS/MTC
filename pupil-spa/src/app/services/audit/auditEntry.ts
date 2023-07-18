@@ -19,6 +19,8 @@ export type AuditEntryType =
   'PupilPrefsAPICalled' |
   'PupilPrefsAPICallFailed' |
   'PupilPrefsAPICallSucceeded' |
+  'QrCodeArrival' |
+  'QrCodeSubsequentUsage' |
   'QuestionAnswered' |
   'QuestionIntroRendered'|
   'QuestionReadingEnded' |
@@ -34,7 +36,7 @@ export type AuditEntryType =
   'UtteranceStarted' |
   'WarmupCompleteRendered'  |
   'WarmupIntroRendered' |
-  'WarmupStarted' 
+  'WarmupStarted'
   ;
 
 @Injectable({
@@ -204,6 +206,20 @@ export class AuditEntryFactory {
   createRefreshOrTabCloseDetected(data?: any): RefreshOrTabCloseDetected {
     const mtime = this.monotonicTimeService.getMonotonicDateTime()
     return new RefreshOrTabCloseDetected(mtime, data)
+  }
+
+  createQrCodeArrivalAuditEntryClass(mtime?: MonotonicTime, data?: any): QrCodeArrivalAuditEntryClass {
+    if (mtime === undefined) {
+      mtime = this.monotonicTimeService.getMonotonicDateTime()
+    }
+    return new QrCodeArrivalAuditEntryClass(mtime, data)
+  }
+
+  createQrCodeSubsequentUsageAuditEntryClass(mtime?: MonotonicTime, data?: any): QrCodeArrivalAuditEntryClass {
+    if (mtime === undefined) {
+      mtime = this.monotonicTimeService.getMonotonicDateTime()
+    }
+    return new QrCodeArrivalAuditEntryClass(mtime, data)
   }
 }
 
@@ -437,5 +453,19 @@ export class RefreshOrTabCloseDetected extends AuditEntry {
   constructor(mtime: MonotonicTime, data: any = {}) {
     data.monotonicTime = mtime.getDto()
     super('RefreshOrTabCloseDetected', mtime.getLegacyDate(), data);
+  }
+}
+
+export class QrCodeArrivalAuditEntryClass extends AuditEntry {
+  constructor(mtime: MonotonicTime, data: any = {}) {
+    data.monotonicTime = mtime.getDto()
+    super('QrCodeArrival', mtime.getLegacyDate(), data);
+  }
+}
+
+export class QrCodeSubsequentUsageAuditEntryClass extends AuditEntry {
+  constructor(mtime: MonotonicTime, data: any = {}) {
+    data.monotonicTime = mtime.getDto()
+    super('QrCodeSubsequentUsage', mtime.getLegacyDate(), data);
   }
 }
