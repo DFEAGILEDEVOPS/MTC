@@ -8,7 +8,8 @@ import { StorageService } from '../storage/storage.service';
 import { TokenService } from '../token/token.service';
 import { AppUsageService } from '../app-usage/app-usage.service';
 import { CompressorService } from '../compressor/compressor.service';
-import { Meta } from '@angular/platform-browser'
+import { Meta } from '@angular/platform-browser';
+import { ApplicationInsightsService } from '../app-insights/app-insights.service';
 
 /**
  * Declaration of check start service
@@ -27,7 +28,8 @@ export class CheckCompleteService {
               private tokenService: TokenService,
               private appUsageService: AppUsageService,
               private metaService: Meta,
-              private auditEntryFactory: AuditEntryFactory) {
+              private auditEntryFactory: AuditEntryFactory,
+              private appInsightsService: ApplicationInsightsService) {
     const {
       checkSubmissionApiErrorDelay,
       checkSubmissionAPIErrorMaxAttempts,
@@ -83,6 +85,7 @@ export class CheckCompleteService {
       this.auditService.addEntry(this.auditEntryFactory.createCheckSubmissionAPICallSucceeded());
       await this.onSuccess(startTime);
     } catch (error) {
+      this.appInsightsService.trackException(error);
       this.auditService.addEntry(this.auditEntryFactory.createCheckSubmissionAPIFailed());
       if (error.statusCode === 403
         && error.authenticationerrordetail.includes('Signature not valid in the specified time frame')) {

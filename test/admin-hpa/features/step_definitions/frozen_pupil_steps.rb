@@ -280,6 +280,7 @@ end
 
 
 Then(/^the pupils previous state of complete should be reinstated$/) do
+  sleep 5
   step 'I navigate to the pupil status page'
   pupil_status_page.completed_checks.count.click
   expect(pupil_status_page.completed_checks_details.pupil_list.pupil_row.first.names.text).to eql @details_hash[:last_name] + ", " + @details_hash[:first_name]
