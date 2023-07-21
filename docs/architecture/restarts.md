@@ -15,6 +15,18 @@ Discretionary restarts are also available, but can only be granted by the servic
 - There is no flag on the previous check to indicate that it is now void
 - original check submitted and restart created before submitted check is processed?
 - not straightforward to identify void checks
+- fragmented implementation: pupilRestart table, restartAvailable flag in pupil table, nothing in check table
 - restart deletion is complex and brittle
   - requires 'patching' the original check back to `mtc_admin.pupil.currentCheckId`
   - requires a multi stage process to revert the operation
+
+## Notes
+- we do not indicate on the pupil status page that the pupil is taking a 'restart'
+
+## Dependent processes / objects
+- pin generation
+- pupil status page
+- annulment
+- `[mtc_admin].[vewPupilsEligibleForRestart] - mtc_admin.pupil.restartAvailable`
+- `[mtc_admin].[vewPupilsEligibleForLivePinGeneration] - mtc_admin.pupil.restartAvailable`
+- results page
