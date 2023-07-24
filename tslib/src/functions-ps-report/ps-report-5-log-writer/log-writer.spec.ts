@@ -1,5 +1,5 @@
-import { IBlobService } from '../../azure/blob-service'
-import { IPsReportLogSetBatch } from './ps-report-log-set'
+import { type IBlobService } from '../../azure/blob-service'
+import { type IPsReportLogSetBatch } from './ps-report-log-set'
 import { PsLogWriter, LogContainerPrefix } from './log-writer'
 
 let sut: PsLogWriter

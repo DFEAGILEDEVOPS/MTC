@@ -1,6 +1,6 @@
 import moment from 'moment'
 import * as R from 'ramda'
-import { IPupilResult } from './result.service'
+import { type IPupilResult } from './result.service'
 
 /**
  * Utility function to format a date to the short GDS date format

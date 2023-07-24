@@ -1,5 +1,5 @@
 import { CheckConfigValidator } from './check-config.validator'
-import { ICheckValidationError } from './validator-types'
+import { type ICheckValidationError } from './validator-types'
 
 let sut: CheckConfigValidator
 
@@ -38,6 +38,6 @@ describe('check-config.validator', () => {
       config: {}
     }
     const error = sut.validate(check)
-    expect(error).not.toBeDefined()
+    expect(error).toBeUndefined()
   })
 })

@@ -1,8 +1,8 @@
-import { ITransactionRequest } from '../../sql/sql.service'
-import { Audit, DBQuestion } from './models'
+import { type ITransactionRequest } from '../../sql/sql.service'
+import { type Audit, type DBQuestion } from './models'
 import { TYPES } from 'mssql'
-import { EventService, IEventService } from './event.service'
-import { IQuestionService, QuestionService } from './question.service'
+import { EventService, type IEventService } from './event.service'
+import { type IQuestionService, QuestionService } from './question.service'
 
 export interface IPrepareEventService {
   prepareEvent (audit: Audit, checkCode: string, index: number): Promise<ITransactionRequest>
@@ -57,6 +57,6 @@ export class PrepareEventService {
                               @eventQuestionId${index},
                               @eventQuestionNumber${index});`
 
-    return { sql: sql, params: auditParams }
+    return { sql, params: auditParams }
   }
 }

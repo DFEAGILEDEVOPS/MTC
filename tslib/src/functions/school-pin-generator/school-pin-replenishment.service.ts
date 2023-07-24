@@ -1,9 +1,9 @@
-import moment from 'moment'
-import { SchoolPinReplenishmentDataService, ISchoolPinReplenishmentDataService } from './school-pin-replenishment.data.service'
-import { SchoolPinGenerator, ISchoolPinGenerator } from './school-pin-generator'
+import type moment from 'moment'
+import { SchoolPinReplenishmentDataService, type ISchoolPinReplenishmentDataService } from './school-pin-replenishment.data.service'
+import { SchoolPinGenerator, type ISchoolPinGenerator } from './school-pin-generator'
 import { SchoolPinExpiryGenerator } from './school-pin-expiry-generator'
-import { ILogger } from '../../common/logger'
-import { IConfigProvider, ConfigFileProvider } from './config-file-provider'
+import { type ILogger } from '../../common/logger'
+import { type IConfigProvider, ConfigFileProvider } from './config-file-provider'
 import { SchoolRequiresNewPinPredicate } from './school-requires-pin-predicate'
 import { MaxAttemptsCalculator } from './max-attempts-calculator'
 import { AllowedWordsService } from './allowed-words.service'
@@ -83,7 +83,11 @@ export class SchoolPinReplenishmnentService {
             pinUpdated = true
           } catch (error) {
             attemptsMade++
-            logger.error(`error thrown attempting sql update:${error.message}`)
+            let errorMessage = 'unknown error'
+            if (error instanceof Error) {
+              errorMessage = error.message
+            }
+            logger.error(`error thrown attempting sql update:${errorMessage}`)
             update.newPin = this.pinGenerator.generate()
           }
         }

@@ -1,5 +1,5 @@
-import { IUserInputService, UserInputService } from './user-input.service'
-import { ISqlService } from '../../sql/sql.service'
+import { type IUserInputService, UserInputService } from './user-input.service'
+import { type ISqlService } from '../../sql/sql.service'
 
 describe('UserInputService', () => {
   let sut: IUserInputService

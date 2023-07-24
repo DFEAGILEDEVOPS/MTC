@@ -10,9 +10,9 @@ import { QuestionsValidator } from './questions.validator'
 import { SchoolValidator } from './school.validator'
 import { TokensValidator } from './tokens.validator'
 import { LiveCheckValidator } from './live-check.validator'
-import { ISubmittedCheckValidator, IAsyncSubmittedCheckValidator } from './validator-types'
+import { type ISubmittedCheckValidator, type IAsyncSubmittedCheckValidator } from './validator-types'
 import { AnswerCountCheckFormValidator } from './answer-count-check-form.validator'
-import { CheckFormService, ICheckFormService } from '../../../services/check-form.service'
+import { CheckFormService, type ICheckFormService } from '../../../services/check-form.service'
 
 export interface IValidatorProvider {
   getValidators (): ISubmittedCheckValidator[]

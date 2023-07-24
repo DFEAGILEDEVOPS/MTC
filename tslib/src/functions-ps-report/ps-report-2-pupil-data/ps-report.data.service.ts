@@ -1,28 +1,28 @@
-import { ISqlService, SqlService } from '../../sql/sql.service'
+import { type ISqlService, SqlService } from '../../sql/sql.service'
 import { TYPES } from 'mssql'
 import {
-  Answer,
-  AnswersOrNull,
-  Check,
-  CheckConfigOrNull,
-  CheckForm,
-  CheckFormOrNull,
-  CheckOrNull,
-  Device,
-  DeviceOrNull,
-  Event,
-  EventsOrNull,
-  Input,
-  InputMap,
-  NotTakingCheckCode,
-  Pupil,
-  PupilResult, RestartReasonCode,
-  School
+  type Answer,
+  type AnswersOrNull,
+  type Check,
+  type CheckConfigOrNull,
+  type CheckForm,
+  type CheckFormOrNull,
+  type CheckOrNull,
+  type Device,
+  type DeviceOrNull,
+  type Event,
+  type EventsOrNull,
+  type Input,
+  type InputMap,
+  type NotTakingCheckCode,
+  type Pupil,
+  type PupilResult, type RestartReasonCode,
+  type School
 } from './models'
 import * as R from 'ramda'
 import * as RA from 'ramda-adjunct'
-import moment from 'moment'
-import { ILogger } from '../../common/logger'
+import type moment from 'moment'
+import { type ILogger } from '../../common/logger'
 
 const functionName = 'ps-report-2-pupil-data'
 
@@ -42,7 +42,7 @@ interface PupilRestart {
 export class PsReportDataService {
   private readonly sqlService: ISqlService
   private readonly logger: ILogger
-  private readonly checkFormCache: Map<number, CheckForm> = new Map()
+  private readonly checkFormCache = new Map<number, CheckForm>()
 
   constructor (logger: ILogger, sqlService?: ISqlService) {
     this.logger = logger
@@ -107,6 +107,7 @@ export class PsReportDataService {
                         p.school_id,
                         p.urlSlug,
                         p.job_id,
+                        p.restartAvailable,
                         ac.reason as notTakingCheckReason,
                         ac.code as notTakingCheckCode
           FROM mtc_admin.pupil p
@@ -129,6 +130,7 @@ export class PsReportDataService {
       lastName: string
       notTakingCheckReason: string | null
       notTakingCheckCode: NotTakingCheckCode
+      restartAvailable: boolean
       school_id: number
       urlSlug: string
       upn: string
@@ -146,6 +148,7 @@ export class PsReportDataService {
         id: o.id,
         jobId: o.job_id,
         lastname: o.lastName,
+        restartAvailable: o.restartAvailable,
         notTakingCheckReason: o.notTakingCheckReason,
         notTakingCheckCode: o.notTakingCheckCode,
         schoolId: o.school_id,
@@ -435,7 +438,7 @@ export class PsReportDataService {
         return
       }
       const input: Input = Object.freeze({
-        answerId: answerId,
+        answerId,
         browserTimestamp: o.browserTimestamp,
         input: o.userInput,
         inputType: o.inputType
@@ -652,12 +655,12 @@ export class PsReportDataService {
     return Object.freeze({
       pupil,
       school,
-      checkConfig: checkConfig,
-      check: check,
-      checkForm: checkForm,
-      answers: answers,
-      device: device,
-      events: events
+      checkConfig,
+      check,
+      checkForm,
+      answers,
+      device,
+      events
     })
   }
 }

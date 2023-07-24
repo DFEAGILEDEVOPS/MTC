@@ -1,4 +1,4 @@
-import { SqlService, ITransactionRequest, ISqlParameter } from '../../sql/sql.service'
+import { SqlService, type ITransactionRequest, type ISqlParameter } from '../../sql/sql.service'
 import * as mssql from 'mssql'
 
 export interface IBatchCheckNotifierDataService {

@@ -1,8 +1,8 @@
-import { SqlService, ITransactionRequest } from '../../sql/sql.service'
+import { SqlService, type ITransactionRequest } from '../../sql/sql.service'
 import { TYPES } from 'mssql'
-import { IPupilPrefsFunctionBindings } from './IPupilPrefsFunctionBindings'
+import { type IPupilPrefsFunctionBindings } from './IPupilPrefsFunctionBindings'
 import { RedisService } from '../../caching/redis-service'
-import { ILogger } from '../../common/logger'
+import { type ILogger } from '../../common/logger'
 
 export class PupilPrefsService {
   private readonly dataService: IPupilPrefsDataService
@@ -46,7 +46,7 @@ export class PupilPrefsService {
     const pupilUUID = await this.dataService.getPupilUUIDByCheckCode(preferenceUpdate.checkCode)
     functionBindings.checkSyncQueue = []
     functionBindings.checkSyncQueue.push({
-      pupilUUID: pupilUUID,
+      pupilUUID,
       version: 1
     })
   }
@@ -156,8 +156,8 @@ UPDATE mtc_admin.[pupilAccessArrangements]
       }
     ]
     return {
-      params: params,
-      sql: sql
+      params,
+      sql
     }
   }
 }

@@ -1,10 +1,10 @@
-import { SubmittedCheckMessageV2 } from '../../schemas/models'
-import { PreparedCheck } from '../../schemas/check-schemas/prepared-check'
-import { ICompletedCheckGeneratorService, FakeCompletedCheckGeneratorService } from './fake-completed-check-generator.service'
-import { CompressionService, ICompressionService } from '../../common/compression-service'
-import { IPreparedCheckService, PreparedCheckService } from '../../caching/prepared-check.service'
-import { IUtilSubmitCheckConfig } from './index'
-import { ILogger } from '../../common/logger'
+import { type SubmittedCheckMessageV2 } from '../../schemas/models'
+import { type PreparedCheck } from '../../schemas/check-schemas/prepared-check'
+import { type ICompletedCheckGeneratorService, FakeCompletedCheckGeneratorService } from './fake-completed-check-generator.service'
+import { CompressionService, type ICompressionService } from '../../common/compression-service'
+import { type IPreparedCheckService, PreparedCheckService } from '../../caching/prepared-check.service'
+import { type IUtilSubmitCheckConfig } from './index'
+import { type ILogger } from '../../common/logger'
 
 export class FakeSubmittedCheckMessageGeneratorService {
   private readonly completedCheckGenerator: ICompletedCheckGeneratorService
@@ -47,8 +47,8 @@ export class FakeSubmittedCheckMessageGeneratorService {
     const stringifiedJsonPayload = JSON.stringify(checkPayload)
     const archive = this.compressionService.compress(stringifiedJsonPayload)
     const submittedCheck: SubmittedCheckMessageV2 = {
-      checkCode: checkCode,
-      archive: archive,
+      checkCode,
+      archive,
       schoolUUID: preparedCheck.school.uuid,
       version: 2
     }

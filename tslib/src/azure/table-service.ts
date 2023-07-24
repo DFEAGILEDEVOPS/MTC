@@ -1,4 +1,4 @@
-import { TableClient, TableEntity } from '@azure/data-tables'
+import { TableClient, type TableEntity } from '@azure/data-tables'
 import config from '../config'
 
 export interface ITableService {

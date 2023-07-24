@@ -1,8 +1,8 @@
 import { FakeSubmittedCheckMessageGeneratorService } from './fake-submitted-check-generator.service'
 import mockPreparedCheck from '../../schemas/check-schemas/mock-prepared-check-2021.json'
-import { FakeCompletedCheckGeneratorService, ICompletedCheckGeneratorService } from './fake-completed-check-generator.service'
-import { ICompressionService } from '../../common/compression-service'
-import { IPreparedCheckService } from '../../caching/prepared-check.service'
+import { FakeCompletedCheckGeneratorService, type ICompletedCheckGeneratorService } from './fake-completed-check-generator.service'
+import { type ICompressionService } from '../../common/compression-service'
+import { type IPreparedCheckService } from '../../caching/prepared-check.service'
 
 let sut: FakeSubmittedCheckMessageGeneratorService
 let preparedCheckServiceMock: IPreparedCheckService
@@ -77,7 +77,7 @@ describe('fake-submitted-check-message-builder-service', () => {
       await sut.createSubmittedCheckMessage(checkCode)
       fail('error should have been thrown due to prepared check not being found in redis')
     } catch (error: any) {
-      expect(error.message).toStrictEqual(`prepared check not found in redis with checkCode:${checkCode}`)
+      expect(error.message).toBe(`prepared check not found in redis with checkCode:${checkCode}`)
     }
   })
 })

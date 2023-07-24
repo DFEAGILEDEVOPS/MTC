@@ -1,7 +1,7 @@
-import { AzureFunction, Context } from '@azure/functions'
+import { type AzureFunction, type Context } from '@azure/functions'
 import { performance } from 'perf_hooks'
 import { PreparedCheckSyncService } from './prepared-check-sync.service'
-import { IPreparedCheckSyncMessage } from './IPreparedCheckSyncMessage'
+import { type IPreparedCheckSyncMessage } from './IPreparedCheckSyncMessage'
 const functionName = 'check-sync'
 
 /**
@@ -23,7 +23,11 @@ const queueTrigger: AzureFunction = async function (context: Context, preparedCh
     const prepCheckSyncService = new PreparedCheckSyncService()
     await prepCheckSyncService.process(preparedCheckSyncMessage.pupilUUID)
   } catch (error) {
-    context.log.error(`${functionName}: ERROR: ${error.message}`)
+    let errorMessage = 'unknown error'
+    if (error instanceof Error) {
+      errorMessage = error.message
+    }
+    context.log.error(`${functionName}: ERROR: ${errorMessage}`)
     throw error
   }
 

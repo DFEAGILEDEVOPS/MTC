@@ -1,5 +1,5 @@
 import { ConnectionPool } from 'mssql'
-import { ConsoleLogger, ILogger } from '../common/logger'
+import { ConsoleLogger, type ILogger } from '../common/logger'
 import config from '../config'
 
 let pool: ConnectionPool

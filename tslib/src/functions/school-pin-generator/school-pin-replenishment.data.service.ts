@@ -1,5 +1,5 @@
-import { SqlService, ISqlParameter, IModifyResult } from '../../sql/sql.service'
-import { School, SchoolPinUpdate } from './school-pin-replenishment.service'
+import { SqlService, type ISqlParameter, type IModifyResult } from '../../sql/sql.service'
+import { type School, type SchoolPinUpdate } from './school-pin-replenishment.service'
 import { TYPES } from 'mssql'
 
 export interface ISchoolPinReplenishmentDataService {

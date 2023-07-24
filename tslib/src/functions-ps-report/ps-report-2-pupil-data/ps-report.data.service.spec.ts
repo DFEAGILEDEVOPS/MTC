@@ -1,8 +1,8 @@
 import { PsReportDataService } from './ps-report.data.service'
 import { MockLogger } from '../../common/logger'
-import { ISqlService } from '../../sql/sql.service'
+import type { ISqlService } from '../../sql/sql.service'
 import moment from 'moment'
-import { Pupil, School } from './models'
+import type { Pupil, School } from './models'
 
 describe('ps-report.data.service', () => {
   let sut: PsReportDataService
@@ -49,6 +49,7 @@ describe('ps-report.data.service', () => {
           gender: 'F',
           id: 3,
           lastName: 'def',
+          restartAvailable: false,
           notTakingCheckReason: 'ghi',
           notTakingCheckCode: 'JSTAR',
           school_id: 4,
@@ -66,6 +67,7 @@ describe('ps-report.data.service', () => {
       expect(p.forename).toBe('abc')
       expect(p.lastname).toBe('def')
       expect(p.notTakingCheckReason).toBe('ghi')
+      expect(p.restartAvailable).toBe(false)
       expect(p.schoolId).toBe(4)
       expect(p.slug).toBe('jkl')
       expect(p.upn).toBe('mno')
@@ -85,6 +87,7 @@ describe('ps-report.data.service', () => {
           lastName: 'def',
           notTakingCheckReason: 'ghi',
           notTakingCheckCode: 'JSTAR',
+          restartAvailable: false,
           school_id: 4,
           urlSlug: 'jkl',
           upn: 'mno'
@@ -195,6 +198,7 @@ describe('ps-report.data.service', () => {
       lastname: 'Test',
       notTakingCheckReason: 'Left school',
       notTakingCheckCode: 'LEFTT',
+      restartAvailable: false,
       slug: 'abcd-1234',
       schoolId: 2,
       upn: 'N999199900001'
@@ -211,6 +215,7 @@ describe('ps-report.data.service', () => {
       lastname: 'Test',
       notTakingCheckReason: 'Results annulled',
       notTakingCheckCode: 'ANLLD',
+      restartAvailable: false,
       slug: 'abcd-1234',
       schoolId: 2,
       upn: 'N999199900001'
@@ -227,6 +232,7 @@ describe('ps-report.data.service', () => {
       lastname: 'Test',
       notTakingCheckReason: null,
       notTakingCheckCode: null,
+      restartAvailable: false,
       slug: 'abcd-1234',
       schoolId: 2,
       upn: 'N999199900001'
@@ -243,6 +249,7 @@ describe('ps-report.data.service', () => {
       lastname: 'Test',
       notTakingCheckReason: null,
       notTakingCheckCode: null,
+      restartAvailable: false,
       slug: 'abcd-1234',
       schoolId: 2,
       upn: 'N999199900001'
@@ -633,7 +640,7 @@ describe('ps-report.data.service', () => {
       }
       expect(events).toHaveLength(1)
       const event = events[0]
-      expect(event.browserTimestamp.toISOString()).toStrictEqual('2021-01-05T05:56:01.122Z')
+      expect(event.browserTimestamp.toISOString()).toBe('2021-01-05T05:56:01.122Z')
       expect(event.data).toStrictEqual({ question: '1x1' })
       expect(event.id).toBe(1)
       expect(event.isWarmup).toBe(false)

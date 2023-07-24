@@ -1,5 +1,5 @@
-import { ISqlService, SqlService } from '../../sql/sql.service'
-import { ConsoleLogger, ILogger } from '../../common/logger'
+import { type ISqlService, SqlService } from '../../sql/sql.service'
+import { ConsoleLogger, type ILogger } from '../../common/logger'
 import { TYPES } from 'mssql'
 import * as R from 'ramda'
 // @ts-ignore - bcryptjs not very ts friendly

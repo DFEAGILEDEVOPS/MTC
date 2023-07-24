@@ -1,6 +1,6 @@
-import { IConfigProvider, ConfigFileProvider } from './config-file-provider'
+import { type IConfigProvider, ConfigFileProvider } from './config-file-provider'
 import { AllowedWordsService } from './allowed-words.service'
-import { IRandomGenerator, RandomGenerator } from './random-generator'
+import { type IRandomGenerator, RandomGenerator } from './random-generator'
 
 export class SchoolPinGenerator implements ISchoolPinGenerator {
   private readonly configProvider: IConfigProvider

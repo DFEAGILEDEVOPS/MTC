@@ -1,6 +1,6 @@
-import { Input } from '../../functions-ps-report/ps-report-2-pupil-data/models'
+import { type Input } from '../../functions-ps-report/ps-report-2-pupil-data/models'
 import * as R from 'ramda'
-import { IReportLineAnswer } from './models'
+import { type IReportLineAnswer } from './models'
 
 export class ReportLineAnswer {
   private _questionNumber: number | null = null
@@ -118,7 +118,7 @@ export class ReportLineAnswer {
     return this._loadTime
   }
 
-  set overallTime (f: number| null) {
+  set overallTime (f: number | null) {
     this._overallTime = f
   }
 

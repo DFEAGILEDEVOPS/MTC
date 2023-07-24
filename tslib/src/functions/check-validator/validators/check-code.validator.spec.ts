@@ -1,5 +1,5 @@
 import { CheckCodeValidator } from './check-code.validator'
-import { ICheckValidationError } from './validator-types'
+import { type ICheckValidationError } from './validator-types'
 
 let sut: CheckCodeValidator
 
@@ -30,6 +30,6 @@ describe('check-code.validator', () => {
       checkCode: v4UUID
     }
     const error = sut.validate(check)
-    expect(error).not.toBeDefined()
+    expect(error).toBeUndefined()
   })
 })

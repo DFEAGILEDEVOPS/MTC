@@ -101,7 +101,7 @@ describe('TableService', () => {
       const entity = {
         partitionKey: pk,
         rowKey: rk,
-        data: data
+        data
       }
       const client = TableClient.fromConnectionString(connectionString, tableName)
       await client.createEntity(entity)

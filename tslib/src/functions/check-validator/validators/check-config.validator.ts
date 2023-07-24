@@ -1,5 +1,5 @@
 import { isArray, isObj } from 'ramda-adjunct'
-import { CheckValidationResult, ISubmittedCheckValidator } from './validator-types'
+import { type CheckValidationResult, type ISubmittedCheckValidator } from './validator-types'
 
 export class CheckConfigValidator implements ISubmittedCheckValidator {
   validate (check: any): CheckValidationResult {

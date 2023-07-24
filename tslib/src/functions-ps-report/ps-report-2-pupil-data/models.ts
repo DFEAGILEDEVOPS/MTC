@@ -1,4 +1,4 @@
-import moment from 'moment'
+import type moment from 'moment'
 
 export interface Pupil {
   checkComplete: boolean | null
@@ -11,6 +11,7 @@ export interface Pupil {
   lastname: string
   notTakingCheckReason: string | null
   notTakingCheckCode: NotTakingCheckCode | null
+  restartAvailable: boolean
   slug: string
   schoolId: number
   upn: string

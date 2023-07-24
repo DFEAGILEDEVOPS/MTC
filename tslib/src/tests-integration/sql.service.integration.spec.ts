@@ -115,7 +115,11 @@ describe('SqlService', () => {
       await sut.modifyWithTransaction(requests)
       fail('an error should have been thrown due to transaction failure')
     } catch (error) {
-      expect(error.message).toBeDefined()
+      let errorMessage = 'unknown error'
+      if (error instanceof Error) {
+        errorMessage = error.message
+      }
+      expect(errorMessage).toBeDefined()
     }
     const sql = 'SELECT * FROM mtc_admin.integrationTest WHERE tNvarCharMax=@rowData'
     const params: sql.ISqlParameter[] = [{
@@ -147,7 +151,11 @@ describe('SqlService', () => {
     try {
       await sut.modifyWithTransaction(requests)
     } catch (error) {
-      fail(`an error should not have been thrown:${error.message}`)
+      let errorMessage = 'unknown error'
+      if (error instanceof Error) {
+        errorMessage = error.message
+      }
+      fail(`an error should not have been thrown:${errorMessage}`)
     }
     const sql = 'SELECT * FROM mtc_admin.integrationTest WHERE tNvarCharMax=@uuid'
     const params: sql.ISqlParameter[] = [{

@@ -3,9 +3,9 @@ import { SyncResultsService } from './sync-results.service'
 import { mockCompletionCheckMessage } from './mocks/completed-check.message'
 import { ConsoleLogger } from '../../common/logger'
 import { SyncResultsDataService } from './sync-results.data.service'
-import { ISqlService, ITransactionRequest } from '../../sql/sql.service'
+import { type ISqlService, type ITransactionRequest } from '../../sql/sql.service'
 import { RedisServiceMock } from '../../caching/redis-service.mock'
-import { IRedisService } from '../../caching/redis-service'
+import { type IRedisService } from '../../caching/redis-service'
 jest.mock('./sync-results.data.service')
 
 const mockQuestionData = new Map()

@@ -1,15 +1,15 @@
-import { ConnectionPool } from 'mssql'
+import { type ConnectionPool } from 'mssql'
 import * as csv from 'csv-string'
-import { ISchoolDataService, SchoolDataService } from './data-access/school.data.service'
-import { ConsoleLogger, ILogger } from '../../common/logger'
-import { SchoolImportJobOutput } from './SchoolImportJobOutput'
-import { ISchoolImportPredicates, Predicates } from './predicates'
+import { type ISchoolDataService, SchoolDataService } from './data-access/school.data.service'
+import { ConsoleLogger, type ILogger } from '../../common/logger'
+import { type SchoolImportJobOutput } from './SchoolImportJobOutput'
+import { type ISchoolImportPredicates, Predicates } from './predicates'
 import { SchoolRecordMapper } from './school-mapper'
 import { SchoolImportError } from './SchoolImportError'
-import { ISchoolRecord } from './data-access/ISchoolRecord'
+import { type ISchoolRecord } from './data-access/ISchoolRecord'
 import * as R from 'ramda'
 import * as RA from 'ramda-adjunct'
-import { IJobDataService, JobDataService } from '../../services/data/job.data.service'
+import { type IJobDataService, JobDataService } from '../../services/data/job.data.service'
 import { JobStatusCode } from '../../common/job-status-code'
 
 const name = 'school-import'
@@ -18,7 +18,7 @@ const targetAge = 9
 export class SchoolImportService {
   private readonly schoolDataService: ISchoolDataService
   private readonly logger: ILogger
-  private jobResult: SchoolImportJobOutput
+  private readonly jobResult: SchoolImportJobOutput
   private readonly predicates: ISchoolImportPredicates
   private readonly schoolRecordMapper: SchoolRecordMapper
   private readonly jobDataService: IJobDataService
@@ -79,8 +79,8 @@ export class SchoolImportService {
       columnHeaders = csvParsed.shift()
       mapping = this.getMapping(columnHeaders)
     } catch (error) {
-      await this.updateJobStatusToFailed(jobSlug, error)
-      throw new SchoolImportError(this.jobResult, error)
+      await this.updateJobStatusToFailed(jobSlug, error as Error)
+      throw new SchoolImportError(this.jobResult, error as Error)
     }
 
     try {
@@ -98,8 +98,8 @@ export class SchoolImportService {
       await this.updateJobStatusToCompleted(jobSlug)
       return this.jobResult
     } catch (error) {
-      await this.updateJobStatusToFailed(jobSlug, error)
-      throw new SchoolImportError(this.jobResult, error)
+      await this.updateJobStatusToFailed(jobSlug, error as Error)
+      throw new SchoolImportError(this.jobResult, error as Error)
     }
   }
 
@@ -164,8 +164,12 @@ export class SchoolImportService {
       }
       return this.schoolRecordMapper.mapColumns(columnHeaders, mapper)
     } catch (error) {
-      this.jobResult.stderr = [`Failed to map columns, error raised was ${error.message}`]
-      throw new SchoolImportError(this.jobResult, error)
+      let errorMessage = 'unknown error'
+      if (error instanceof Error) {
+        errorMessage = error.message
+      }
+      this.jobResult.stderr = [`Failed to map columns, error raised was ${errorMessage}`]
+      throw new SchoolImportError(this.jobResult, error as Error)
     }
   }
 
