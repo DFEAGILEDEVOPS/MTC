@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core'
 import { StorageService } from '../storage/storage.service'
 import { MonotonicTimeService } from '../monotonic-time/monotonic-time.service'
 import { MonotonicTime } from '../../monotonic-time'
+import { AuditEntryFactory } from '../audit/auditEntry'
+import { AuditService } from '../audit/audit.service'
 
 export interface IQrCodeUsageService {
   initialiseFromLocalStorage(): void
@@ -19,7 +21,9 @@ export class QrCodeUsageService implements IQrCodeUsageService {
 
   constructor(
     private storageService: StorageService,
-    private monotonicTimeService: MonotonicTimeService) {
+    private monotonicTimeService: MonotonicTimeService,
+    private auditEntryFactory:AuditEntryFactory,
+    private auditService: AuditService) {
     this.initialiseFromLocalStorage()
   }
 
@@ -29,9 +33,14 @@ export class QrCodeUsageService implements IQrCodeUsageService {
   }
 
   storeToLocalStorage () {
-    console.log('ToDo: actually store the monotonic time as EVENTS')
-    console.debug('qrCodeArrivalTimes: ', this.qrCodeArrivalTimestamps)
-    console.debug('qrCodeSubsequentAppUses: ', this.qrCodeSubsequentAppUses)
+    this.qrCodeArrivalTimestamps.forEach(ts => {
+      const auditEntry = this.auditEntryFactory.createQrCodeArrivalAuditEntryClass(ts)
+      this.auditService.addEntry(auditEntry)
+    })
+    this.qrCodeSubsequentAppUses.forEach(ts => {
+      const auditEntry = this.auditEntryFactory.createQrCodeSubsequentUsageAuditEntryClass(ts)
+      this.auditService.addEntry(auditEntry)
+    })
   }
 
   qrCodeArrival () {

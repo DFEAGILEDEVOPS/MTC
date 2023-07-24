@@ -6,9 +6,20 @@ import { Question } from '../question/question.model'
 import { IStorageService } from './storage.service'
 
 export class StorageServiceMock implements IStorageService {
+  private storage = {
+    audits: []
+  }
+
+  getAllItems () {
+    return this.storage
+  }
+
+  setAuditEntry (auditEntry: AuditEntry) {
+    this.storage.audits.push(auditEntry)
+  }
+
   clear() {}
   getAccessArrangements (key: AccessArrangementsStorageKey) { return }
-  getAllItems () { return }
   getCheckStartTime () { return }
   getCheckState (key: CheckStateStorageKey) { return }
   getCompletedSubmission () { return }
@@ -26,7 +37,6 @@ export class StorageServiceMock implements IStorageService {
   removeTimeout () {}
   setAccessArrangements (accessArrangements: AccessArrangements) {}
   setAnswer (answer: Answer) {}
-  setAuditEntry (auditEntry: AuditEntry) {}
   setCheckStartTime (checkStartTime: Number) {}
   setCheckState (state: Number) {}
   setCompletedSubmission (isCompleted: Boolean) {}

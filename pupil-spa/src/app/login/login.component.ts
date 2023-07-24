@@ -11,6 +11,7 @@ import { CheckStatusService } from '../services/check-status/check-status.servic
 import { Login } from './login.model'
 import { PupilPrefsService } from '../services/pupil-prefs/pupil-prefs.service'
 import { DeviceService } from '../services/device/device.service'
+import { QrCodeUsageService } from '../services/qr-code-usage/qr-code-usage.service'
 
 @Component({
   selector: 'app-login',
@@ -41,6 +42,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
     private elRef: ElementRef,
     private checkStatusService: CheckStatusService,
     private pupilPrefsService: PupilPrefsService,
+    private qrCodeUsageService: QrCodeUsageService,
   ) {
     const { loginPendingViewMinDisplay } = APP_CONFIG
     this.loginPendingViewMinDisplay = loginPendingViewMinDisplay
@@ -101,6 +103,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
             // only set the cookie for live checks
             this.deviceService.setupDeviceCookie()
           }
+          this.qrCodeUsageService.storeToLocalStorage()
           await this.displayMinTime(startTime)
           this.loginPending = false
           if (config.fontSize) {

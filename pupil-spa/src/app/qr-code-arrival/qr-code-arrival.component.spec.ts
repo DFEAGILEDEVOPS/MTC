@@ -5,6 +5,7 @@ import { QrCodeUsageService } from '../services/qr-code-usage/qr-code-usage.serv
 import { StorageServiceMock } from '../services/storage/mock-storage.service';
 import { StorageService } from '../services/storage/storage.service';
 import { ApplicationInsightsService } from '../services/app-insights/app-insights.service';
+import { AuditService } from '../services/audit/audit.service';
 describe('QrCodeArrivalComponent', () => {
   let sut: QrCodeArrivalComponent;
   let mockRouter;
@@ -24,7 +25,8 @@ describe('QrCodeArrivalComponent', () => {
         { provide: Router, useValue: mockRouter },
         { provide: ApplicationInsightsService, useValue: mockAppInsightsService },
         { provide: QrCodeUsageService, useClass: QrCodeUsageService },
-        { provide: StorageService, useClass: StorageServiceMock }
+        { provide: StorageService, useClass: StorageServiceMock },
+        { provide: AuditService, useClass: AuditService } // original
       ]
     }).compileComponents().catch(error => {
       console.error(error)
