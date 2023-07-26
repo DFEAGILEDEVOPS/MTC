@@ -10,6 +10,8 @@ export interface IQrCodeUsageService {
   storeToLocalStorage(): void
   qrCodeArrival(): void
   qrCodeSubsequentAppUsage(): void
+  closeQrCodeArrivalSession(): void
+  getQrCodeArrivalSession(): boolean
 }
 
 @Injectable({
@@ -18,6 +20,7 @@ export interface IQrCodeUsageService {
 export class QrCodeUsageService implements IQrCodeUsageService {
   private qrCodeArrivalTimestamps: MonotonicTime[] = []
   private qrCodeSubsequentAppUses: MonotonicTime[] = []
+  private isQrCodeArrivalSession: boolean = false
 
   constructor(
     private storageService: StorageService,
@@ -45,9 +48,18 @@ export class QrCodeUsageService implements IQrCodeUsageService {
 
   qrCodeArrival () {
     this.qrCodeArrivalTimestamps.push(this.monotonicTimeService.getMonotonicDateTime())
+    this.isQrCodeArrivalSession = true
   }
 
   qrCodeSubsequentAppUsage () {
     this.qrCodeSubsequentAppUses.push(this.monotonicTimeService.getMonotonicDateTime())
+  }
+
+  closeQrCodeArrivalSession () {
+    this.isQrCodeArrivalSession = false
+  }
+
+  getQrCodeArrivalSession () {
+    return this.isQrCodeArrivalSession
   }
 }

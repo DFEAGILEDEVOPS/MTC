@@ -219,7 +219,7 @@ export class AuditEntryFactory {
     if (mtime === undefined) {
       mtime = this.monotonicTimeService.getMonotonicDateTime()
     }
-    return new QrCodeArrivalAuditEntryClass(mtime, data)
+    return new QrCodeSubsequentUsageAuditEntryClass(mtime, data)
   }
 }
 
