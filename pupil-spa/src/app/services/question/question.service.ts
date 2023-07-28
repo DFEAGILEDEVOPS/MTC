@@ -24,7 +24,11 @@ export class QuestionService {
   }
 
   public getNumberOfQuestions(): number {
-    return this.questions.length;
+    try {
+      return this.questions.length;
+    } catch (error) {
+      return 0;
+    }
   }
 
   public getCurrentQuestionNumber(): number {
