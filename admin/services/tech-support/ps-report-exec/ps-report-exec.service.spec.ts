@@ -1,5 +1,5 @@
 import { JobService, JobStatus, JobType } from '../../job-service/job.service'
-import { IExecPsReportRequest, IUserInfoData, PsReportExecDataService } from './ps-report-exec.data.service'
+import { type IExecPsReportRequest, type IUserInfoData, PsReportExecDataService } from './ps-report-exec.data.service'
 import { PsReportExecService as sut } from './ps-report-exec.service'
 import moment from 'moment-timezone'
 const dateService = require('../../date.service')

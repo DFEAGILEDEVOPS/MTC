@@ -1,6 +1,6 @@
 import { PsReportService } from './ps-report.service'
-import { ILogger, MockLogger } from '../../common/logger'
-import { IPsReportDataService } from './ps-report.data.service'
+import { type ILogger, MockLogger } from '../../common/logger'
+import { type IPsReportDataService } from './ps-report.data.service'
 
 describe('PsReportService', () => {
   let sut: PsReportService

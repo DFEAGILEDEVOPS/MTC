@@ -1,5 +1,5 @@
 import { InputsValidator } from './inputs.validator'
-import { ICheckValidationError } from './validator-types'
+import { type ICheckValidationError } from './validator-types'
 
 let sut: InputsValidator
 

@@ -1,4 +1,4 @@
-import { IPsReportLogFileData, PsReportLogsDataService } from './data-access/ps-report-logs.data.service'
+import { type IPsReportLogFileData, PsReportLogsDataService } from './data-access/ps-report-logs.data.service'
 import { PsReportLogsDownloadService } from './ps-report-logs.service'
 
 const validContainerName = 'ps-report-log-20220412153502'

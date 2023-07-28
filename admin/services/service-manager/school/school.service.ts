@@ -1,4 +1,4 @@
-import { ServiceManagerSchoolDataService, ServiceManagerSchoolResult } from './school.data.service'
+import { ServiceManagerSchoolDataService, type ServiceManagerSchoolResult } from './school.data.service'
 
 export class ServiceManagerSchoolService {
   static async findSchoolByUrn (urn: number): Promise<ServiceManagerSchoolResult> {

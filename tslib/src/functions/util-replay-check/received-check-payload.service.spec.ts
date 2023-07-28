@@ -1,5 +1,5 @@
 import { CompressionService } from '../../common/compression-service'
-import { IReceivedCheckPayloadDataService } from './received-check-payload.data.service'
+import { type IReceivedCheckPayloadDataService } from './received-check-payload.data.service'
 import { ReceivedCheckPayloadService } from './received-check-payload.service'
 import mockCompleteCheck from '../../schemas/large-complete-check-V2.json'
 
@@ -51,7 +51,7 @@ describe('received-check-payload.service', () => {
       expect(response).toHaveLength(1)
       expect(response[0].checkCode).toStrictEqual(checkCodes[0])
       expect(response[0].schoolUUID).toStrictEqual(schoolUUID)
-      expect(response[0].version).toStrictEqual(2)
+      expect(response[0].version).toBe(2)
       expect(response[0].archive).toStrictEqual(mockArchive)
     })
   })
@@ -93,20 +93,20 @@ describe('received-check-payload.service', () => {
       if (messages === undefined) fail('message not defined')
       expect(messages).toHaveLength(3)
       const message1 = messages[0]
-      expect(message1.archive).toStrictEqual('abc')
-      expect(message1.checkCode).toStrictEqual('123')
+      expect(message1.archive).toBe('abc')
+      expect(message1.checkCode).toBe('123')
       expect(message1.schoolUUID).toStrictEqual(schoolUUID)
-      expect(message1.version).toStrictEqual(2)
+      expect(message1.version).toBe(2)
       const message2 = messages[1]
-      expect(message2.archive).toStrictEqual('def')
-      expect(message2.checkCode).toStrictEqual('456')
+      expect(message2.archive).toBe('def')
+      expect(message2.checkCode).toBe('456')
       expect(message2.schoolUUID).toStrictEqual(schoolUUID)
-      expect(message2.version).toStrictEqual(2)
+      expect(message2.version).toBe(2)
       const message3 = messages[2]
-      expect(message3.archive).toStrictEqual('ghi')
-      expect(message3.checkCode).toStrictEqual('789')
+      expect(message3.archive).toBe('ghi')
+      expect(message3.checkCode).toBe('789')
       expect(message3.schoolUUID).toStrictEqual(schoolUUID)
-      expect(message3.version).toStrictEqual(2)
+      expect(message3.version).toBe(2)
     })
   })
 })

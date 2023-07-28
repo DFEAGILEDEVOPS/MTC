@@ -1,4 +1,4 @@
-import { AzureFunction, Context, HttpRequest } from '@azure/functions'
+import { type AzureFunction, type Context, type HttpRequest } from '@azure/functions'
 import moment from 'moment'
 import { SchoolPinSampler } from './school-pin-sampler'
 import { performance } from 'perf_hooks'

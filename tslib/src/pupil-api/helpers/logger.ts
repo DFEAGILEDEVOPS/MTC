@@ -1,6 +1,6 @@
 import config from '../config'
 import logger from '../services/log.service'
-import * as morgan from 'morgan'
+import morgan from 'morgan'
 
 let initialised: boolean
 

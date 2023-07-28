@@ -2,10 +2,10 @@ import { SchoolImportService } from './school-import.service'
 import { ConnectionPool } from 'mssql'
 import config from '../../config'
 import { SchoolImportJobOutput } from './SchoolImportJobOutput'
-import { ISchoolDataService } from './data-access/school.data.service'
+import { type ISchoolDataService } from './data-access/school.data.service'
 import { SchoolImportError } from './SchoolImportError'
-import { ConsoleLogger, ILogger } from '../../common/logger'
-import { IJobDataService } from '../../services/data/job.data.service'
+import { ConsoleLogger, type ILogger } from '../../common/logger'
+import { type IJobDataService } from '../../services/data/job.data.service'
 import { JobStatusCode } from '../../common/job-status-code'
 
 let sut: SchoolImportService
@@ -14,25 +14,21 @@ let schoolDataServiceMock: ISchoolDataService
 let consoleLogger: ILogger
 let jobDataServiceMock: IJobDataService
 
-const SchoolDataServiceMock = jest.fn<ISchoolDataService, any>(() => ({
-  bulkUpload: jest.fn(),
-  individualUpload: jest.fn()
-}))
-
-const JobDataServiceMock = jest.fn<IJobDataService, any>(() => ({
-  getJobId: jest.fn(),
-  setJobComplete: jest.fn(),
-  setJobStarted: jest.fn()
-}))
-
 const csvHeaders = 'URN,LA (code),EstablishmentNumber,EstablishmentName,StatutoryLowAge,StatutoryHighAge,EstablishmentStatus (code),TypeOfEstablishment (code),EstablishmentTypeGroup (code),TypeOfEstablishment (name)'
 
 describe('#SchoolImportService', () => {
   beforeEach(() => {
-    schoolDataServiceMock = new SchoolDataServiceMock()
+    schoolDataServiceMock = {
+      bulkUpload: jest.fn(),
+      individualUpload: jest.fn()
+    }
     jobResult = new SchoolImportJobOutput()
     consoleLogger = new ConsoleLogger()
-    jobDataServiceMock = new JobDataServiceMock()
+    jobDataServiceMock = {
+      getJobId: jest.fn(),
+      setJobComplete: jest.fn(),
+      setJobStarted: jest.fn()
+    }
     sut = new SchoolImportService(new ConnectionPool(config.Sql), jobResult, consoleLogger, schoolDataServiceMock, undefined, jobDataServiceMock)
     // quieten down the console logs
     // jest.spyOn(console, 'log').mockImplementation()
@@ -51,7 +47,7 @@ describe('#SchoolImportService', () => {
       const blobName = 'aad9f3b5-7a77-44cd-96b6-dcdc41c9ea76'
       await sut.process('', blobName)
       fail('mapping should have failed due to no data')
-    } catch (error) {
+    } catch (error: any) {
       expect(error).toBeInstanceOf(SchoolImportError)
       expect(error.jobResult).toBeDefined()
       expect((error as SchoolImportError).jobResult.getErrorOutput()).toContain('Failed to map columns')
@@ -100,7 +96,7 @@ describe('#SchoolImportService', () => {
     expect(jobResult).toBeInstanceOf(SchoolImportJobOutput)
     expect(jobResult.getErrorOutput()).toHaveLength(0)
     expect(jobResult.stdout).toHaveLength(2)
-    expect(jobResult.stdout[1]).toStrictEqual('school records excluded in filtering:1. No records to persist, exiting.')
+    expect(jobResult.stdout[1]).toBe('school records excluded in filtering:1. No records to persist, exiting.')
     expect(schoolDataServiceMock.individualUpload).toHaveBeenCalledTimes(0)
   })
 
@@ -121,7 +117,11 @@ describe('#SchoolImportService', () => {
       await sut.process(csv, blobName)
       fail('expected to throw')
     } catch (error) {
-      expect(error.message).toBe('no header row found')
+      let errorMessage = 'unknown error'
+      if (error instanceof Error) {
+        errorMessage = error.message
+      }
+      expect(errorMessage).toBe('no header row found')
     }
   })
 
@@ -141,7 +141,11 @@ describe('#SchoolImportService', () => {
       await sut.process(csv, '')
       fail('should have thrown an error')
     } catch (error) {
-      expect(error.message).toStrictEqual('blobName is undefined. Unable to continue processing as cannot identify job record without blobName')
+      let errorMessage = 'unknown error'
+      if (error instanceof Error) {
+        errorMessage = error.message
+      }
+      expect(errorMessage).toBe('blobName is undefined. Unable to continue processing as cannot identify job record without blobName')
     }
     expect(jobDataServiceMock.setJobStarted).not.toHaveBeenCalled()
   })

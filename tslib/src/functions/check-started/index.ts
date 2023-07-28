@@ -1,6 +1,6 @@
-import { AzureFunction, Context } from '@azure/functions'
+import { type AzureFunction, type Context } from '@azure/functions'
 import { performance } from 'perf_hooks'
-import { ICheckStartedMessage, CheckStartedService } from './check-started.service'
+import { type ICheckStartedMessage, CheckStartedService } from './check-started.service'
 import * as os from 'os'
 const functionName = 'check-started'
 
@@ -18,7 +18,11 @@ const queueTrigger: AzureFunction = async function (context: Context, checkStart
     const checkStartedService = new CheckStartedService()
     await checkStartedService.process(checkStartedMessage)
   } catch (error) {
-    context.log.error(`${functionName}: ERROR: ${error.message}`)
+    let errorMessage = 'unknown error'
+    if (error instanceof Error) {
+      errorMessage = error.message
+    }
+    context.log.error(`${functionName}: ERROR: ${errorMessage}`)
     throw error
   }
 
@@ -38,7 +42,11 @@ function getIp (): string {
       })
     }
   } catch (error) {
-    return `unable to obtain IP addresses: ${error.message}`
+    let errorMessage = 'unknown error'
+    if (error instanceof Error) {
+      errorMessage = error.message
+    }
+    return `unable to obtain IP addresses: ${errorMessage}`
   }
   return addresses.join(', ')
 }

@@ -2,19 +2,19 @@ import * as R from 'ramda'
 import { parallelLimit } from 'async'
 import { v4 as uuidv4 } from 'uuid'
 import moment from 'moment'
-import { ServiceBusClient, ServiceBusMessage, ServiceBusSender } from '@azure/service-bus'
+import { ServiceBusClient, type ServiceBusMessage, type ServiceBusSender } from '@azure/service-bus'
 
-import { ConsoleLogger, ILogger } from '../../common/logger'
+import { ConsoleLogger, type ILogger } from '../../common/logger'
 import {
-  MarkedCheck,
-  ValidatedCheck
+  type MarkedCheck,
+  type ValidatedCheck
 } from '../sync-results-to-sql/models'
-import { UnsynchronisedCheck } from './models'
-import { MarkedCheckTableEntity } from '../../schemas/models'
-import { CompressionService, ICompressionService } from '../../common/compression-service'
+import { type UnsynchronisedCheck } from './models'
+import { type MarkedCheckTableEntity } from '../../schemas/models'
+import { CompressionService, type ICompressionService } from '../../common/compression-service'
 import config from '../../config'
-import { SyncResultsInitDataService, ISyncResultsInitDataService } from './sync-results-init-data.service'
-import { AzureTableEntity, ITableService, TableService } from '../../azure/table-service'
+import { SyncResultsInitDataService, type ISyncResultsInitDataService } from './sync-results-init-data.service'
+import { type AzureTableEntity, type ITableService, TableService } from '../../azure/table-service'
 
 const functionName = 'sync-results-init: SyncResultsInitService'
 
@@ -65,7 +65,11 @@ export class SyncResultsInitService {
       const payload: ValidatedCheck = JSON.parse(payloadString)
       return payload
     } catch (error: any) {
-      throw new Error(`JSON.parse failed in expandArchive(): ERROR ${error.message}`)
+      let errorMessage = 'unknown error'
+      if (error instanceof Error) {
+        errorMessage = error.message
+      }
+      throw new Error(`JSON.parse failed in expandArchive(): ERROR ${errorMessage}`)
     }
   }
 
@@ -88,7 +92,11 @@ export class SyncResultsInitService {
       const markedAnswersString = R.pathOr('', ['markedAnswers'], markedCheckEntity)
       markedAnswers = JSON.parse(markedAnswersString)
     } catch (error) {
-      throw new Error(`Failed to parse JSON in transformMarkedCheckEntityToMarkedCheck(): Error: ${error.message}`)
+      let errorMessage = 'unknown error'
+      if (error instanceof Error) {
+        errorMessage = error.message
+      }
+      throw new Error(`Failed to parse JSON in transformMarkedCheckEntityToMarkedCheck(): Error: ${errorMessage}`)
     }
     const checkCode: null | string = R.pathOr(null, ['rowKey'], markedCheckEntity)
     const mark: null | number = R.pathOr(null, ['mark'], markedCheckEntity)
@@ -134,8 +142,8 @@ export class SyncResultsInitService {
     const markedCheck = this.transformMarkedCheckEntityToMarkedCheck(check, markedCheckEntity)
 
     const messageBody = {
-      validatedCheck: validatedCheck,
-      markedCheck: markedCheck
+      validatedCheck,
+      markedCheck
     }
 
     try {
@@ -151,7 +159,11 @@ export class SyncResultsInitService {
         this.logProgress(meta)
       }
     } catch (error) {
-      this.logger.error(`${functionName} failed to send sync message for checkCode ${check.checkCode} ERROR: ${error.message}`)
+      let errorMessage = 'unknown error'
+      if (error instanceof Error) {
+        errorMessage = error.message
+      }
+      this.logger.error(`${functionName} failed to send sync message for checkCode ${check.checkCode} ERROR: ${errorMessage}`)
       meta.messagesErrored += 1
     }
   }

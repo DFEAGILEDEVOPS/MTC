@@ -1,9 +1,9 @@
-import { IPrepareAnswersAndInputsDataService, PrepareAnswersAndInputsDataService } from './prepare-answers-and-inputs.data.service'
+import { type IPrepareAnswersAndInputsDataService, PrepareAnswersAndInputsDataService } from './prepare-answers-and-inputs.data.service'
 import { mockCompletionCheckMessage } from './mocks/completed-check.message'
-import { IQuestionService, QuestionService } from './question.service'
-import { IUserInputService, UserInputService } from './user-input.service'
-import { ISqlService, ITransactionRequest } from '../../sql/sql.service'
-import { Answer, DBQuestion, Input, MarkedAnswer, ValidatedCheck } from './models'
+import { type IQuestionService, QuestionService } from './question.service'
+import { type IUserInputService, UserInputService } from './user-input.service'
+import { type ISqlService, type ITransactionRequest } from '../../sql/sql.service'
+import { type Answer, type DBQuestion, type Input, type MarkedAnswer, type ValidatedCheck } from './models'
 
 const mockQuestion: DBQuestion = {
   id: 1,

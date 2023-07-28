@@ -1,8 +1,8 @@
-import { AzureFunction, Context, HttpRequest } from '@azure/functions'
+import { type AzureFunction, type Context, type HttpRequest } from '@azure/functions'
 import moment from 'moment'
 import { performance } from 'perf_hooks'
 import config from '../../config'
-import { IPsReportLogEntry, PsReportSource } from '../../functions-ps-report/common/ps-report-log-entry'
+import { type IPsReportLogEntry, PsReportSource } from '../../functions-ps-report/common/ps-report-log-entry'
 import * as uuid from 'uuid'
 
 const functionName = 'util-gen-ps-report-logs'

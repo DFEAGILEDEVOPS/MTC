@@ -19,7 +19,7 @@ function getUniqueName (): string {
 async function createContainer (): Promise<string> {
   const containerName = getUniqueName()
   const client = BlobServiceClient.fromConnectionString(connectionString)
-  const containerClient = await client.getContainerClient(containerName)
+  const containerClient = client.getContainerClient(containerName)
   await containerClient.create()
   return containerName
 }
@@ -57,7 +57,12 @@ describe('Blob Service', () => {
       })
       await Promise.all(deletions)
     } catch (error) {
-      fail(`failed to delete one or more tables, azure storage may need manual clean up.\n${error}`)
+      let errorMessage = 'unknown error'
+      if (error instanceof Error) {
+        errorMessage = error.message
+      }
+      console.warn(`error deleting containers after test run: ${errorMessage}\n
+      This is not a fatal error, but you may want to manually delete the containers created by this test run.`)
     }
   })
 

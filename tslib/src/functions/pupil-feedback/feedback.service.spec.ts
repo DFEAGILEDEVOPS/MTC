@@ -1,4 +1,4 @@
-import { PupilFeedbackService, IPupilFeedbackFunctionBinding, IPupilFeedbackMessage, IPupilFeedbackTableEntity } from './feedback.service'
+import { PupilFeedbackService, type IPupilFeedbackFunctionBinding, type IPupilFeedbackMessage, type IPupilFeedbackTableEntity } from './feedback.service'
 import { v4 as uuidv4 } from 'uuid'
 
 let sut: PupilFeedbackService
@@ -30,7 +30,11 @@ describe('pupil feedback service', () => {
       sut.process(bindings, message)
       fail('error should have been thrown')
     } catch (error) {
-      expect(error.message).toBe(`version:${message.version} unsupported`)
+      let errorMessage = 'unknown error'
+      if (error instanceof Error) {
+        errorMessage = error.message
+      }
+      expect(errorMessage).toBe(`version:${message.version} unsupported`)
     }
   })
 

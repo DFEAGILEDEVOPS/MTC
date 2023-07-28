@@ -1,9 +1,9 @@
-import { AzureFunction, Context, HttpRequest } from '@azure/functions'
+import { type AzureFunction, type Context, type HttpRequest } from '@azure/functions'
 import { performance } from 'perf_hooks'
 import config from '../../config'
 import { TableService } from '../../azure/table-service'
 import { CompressionService } from '../../common/compression-service'
-import { ReceivedCheckTableEntity } from '../../schemas/models'
+import { type ReceivedCheckTableEntity } from '../../schemas/models'
 
 const functionName = 'util-received-check-reader'
 

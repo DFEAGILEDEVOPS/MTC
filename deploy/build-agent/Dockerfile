@@ -1,4 +1,8 @@
-FROM ubuntu:20.04
+# custom build agent for Azure Devops pipelines
+# https://github.com/microsoft/azure-pipelines-agent
+# see readme.md for usage
+
+FROM ubuntu:22.04
 
 ENV RUBY_VERSION=2.7.7
 ENV AZURE_FUNCTIONS_CORE_TOOLS_VERSION=4
@@ -19,7 +23,6 @@ RUN apt-get update && \
     iputils-ping \
     jq \
     libcurl4 \
-    libicu66 \
     libssl1.0 \
     libunwind8 \
     netcat \
@@ -52,25 +55,29 @@ RUN apt-get update && \
     zip \
     && rm -rf /var/lib/apt/lists/*
 
-# install google chrome 'the right way'
-RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
-RUN echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list
-RUN apt update && apt install -y google-chrome-stable
+# install chromium
+RUN apt-get update && apt-get install -y chromium-browser
 
 # install azure CLI for Azure Devops Agent & build tasks
 RUN curl -LsS https://aka.ms/InstallAzureCLIDeb | bash \
   && rm -rf /var/lib/apt/lists/*
 
-# download and register microsoft repo GPG keys & products (for dotnet & powershell)
-RUN curl https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb --output packages-microsoft-prod.deb
+# install dotnet & powershell
+RUN apt-get update && apt-get install -y dotnet-sdk-7.0
+
+# powershell
+# Update the list of packages
+RUN apt-get update
+# Download the Microsoft repository GPG keys
+RUN wget -q "https://packages.microsoft.com/config/ubuntu/$(lsb_release -rs)/packages-microsoft-prod.deb"
+# Register the Microsoft repository GPG keys
 RUN dpkg -i packages-microsoft-prod.deb
+# Delete the the Microsoft repository GPG keys file
 RUN rm packages-microsoft-prod.deb
-
-# install dotnet
-RUN apt-get update && apt-get install -y dotnet-sdk-5.0
-
-# install powershell
-RUN add-apt-repository universe && apt-get install -y powershell
+# Update the list of packages after we added packages.microsoft.com
+RUN apt-get update
+# Install PowerShell
+RUN apt-get install -y powershell
 
 # install azure functions core tools
 RUN curl https://packages.microsoft.com/keys/microsoft.asc | gpg2 --dearmor > microsoft.gpg
@@ -112,8 +119,8 @@ RUN echo "export GEM_PATH=$GEM_HOME:/usr/local/lib/ruby/gems/$RUBY_VERSION" >> ~
 
 # install nvm and current node runtimes
 ENV NVM_DIR=/home/$BUILD_USER/.nvm
-ENV CURRENT_NODE_VERSION=16.17.1
-ENV PREVIOUS_NODE_VERSION=14.18.1
+ENV CURRENT_NODE_VERSION=18.12.0
+ENV PREVIOUS_NODE_VERSION=16.17.1
 
 RUN curl -sL https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash \
   && . $NVM_DIR/nvm.sh \
@@ -124,7 +131,7 @@ RUN curl -sL https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | b
 # install azuredevops agent service
 # https://github.com/microsoft/azure-pipelines-agent/releases
 ARG TARGETARCH=amd64
-ARG AGENT_VERSION=2.210.0
+ARG AGENT_VERSION=3.220.5
 
 WORKDIR /azp
 RUN if [ "$TARGETARCH" = "amd64" ]; then \

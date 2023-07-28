@@ -147,3 +147,8 @@ Feature:
     When I want to add a reason for pupils not taking a check
     Then I can see pupil in the list for pupil for not taking check
 
+    @hdf
+    Scenario: Cannot remove reason for NTC when HDF has been signed
+      Given I the hdf has been signed
+      Then I should not be able to remove pupils who are NTC
+

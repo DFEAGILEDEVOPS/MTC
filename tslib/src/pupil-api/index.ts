@@ -1,5 +1,5 @@
 import * as http from 'http'
-import * as debug from 'debug'
+import debug from 'debug'
 import logger from './services/log.service'
 import config from './config'
 

@@ -1,5 +1,5 @@
 import AdmZip from 'adm-zip'
-import { JobDataService, IJobData } from './data-access/job.data.service'
+import { JobDataService, type IJobData } from './data-access/job.data.service'
 const dateService = require('../date.service')
 
 export interface ICreatedJob {

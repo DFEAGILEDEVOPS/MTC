@@ -1,4 +1,4 @@
-import { Check } from '../../../functions-ps-report/ps-report-2-pupil-data/models'
+import { type Check } from '../../../functions-ps-report/ps-report-2-pupil-data/models'
 
 export const check: Check = {
   id: 31,
@@ -12,7 +12,7 @@ export const check: Check = {
   mark: null,
   processingFailed: false,
   pupilLoginDate: null,
-  received: true,
+  received: false,
   restartNumber: 0,
   restartReason: null
 }

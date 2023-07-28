@@ -1,7 +1,7 @@
 class PupilRegisterPage < SitePrism::Page
   set_url '/pupil-register/pupils-list'
 
-  element :heading, '.heading-xlarge', text: 'Pupil Register'
+  element :heading, '.govuk-heading-xl', text: "View, add or edit pupils on your school's register"
   element :add_pupil, 'a', text: 'Add pupil'
   element :add_multiple_pupil, 'a', text: 'Add multiple pupils'
   element :info_message, '.govuk-info-message', text: 'Changes to pupil details have been saved'

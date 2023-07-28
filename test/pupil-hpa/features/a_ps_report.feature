@@ -131,3 +131,16 @@ Feature:
     Given I have completed a check that has no device information
     When the data sync and ps report function has run
     Then I should see the device is set to null
+
+  Scenario: Pupil status is set to not taking the check if there is an attendance code
+    Given I have completed the check and have an unconsumed restart
+    When I set a reason for NTC
+    Then the correct pupil status is set
+
+  Scenario: AttemptId, TestDate and FormID should only be recorded when a pupil logs in
+    Given I have generated a pin for a pupil
+    Then I should see AttemptId, TestDate and FormID as null in the ps report
+
+  Scenario: AttemptId, TestDate and FormID are set to null when there is a NTC reason
+    Given I have marked a pupil as not taking check with the Left school reason
+    Then I should see AttemptId, TestDate and FormID as null in the ps report

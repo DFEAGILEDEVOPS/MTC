@@ -1,6 +1,6 @@
-import { IPsReportDataService, PsReportDataService } from './ps-report.data.service'
-import { Pupil, PupilResult, School } from './models'
-import { ILogger } from '../../common/logger'
+import { type IPsReportDataService, PsReportDataService } from './ps-report.data.service'
+import { type Pupil, type PupilResult, type School } from './models'
+import { type ILogger } from '../../common/logger'
 
 export class PsReportService {
   private readonly dataService: IPsReportDataService

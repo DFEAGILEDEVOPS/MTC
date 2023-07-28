@@ -1,7 +1,7 @@
-import { IPrepareEventService, PrepareEventService } from './prepare-event.service'
-import { IEventService } from './event.service'
-import { Audit } from './models'
-import { IQuestionService } from './question.service'
+import { type IPrepareEventService, PrepareEventService } from './prepare-event.service'
+import { type IEventService } from './event.service'
+import { type Audit } from './models'
+import { type IQuestionService } from './question.service'
 
 describe('PrepareEventService', () => {
   let sut: IPrepareEventService

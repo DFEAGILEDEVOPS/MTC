@@ -1,4 +1,4 @@
-import { ReceivedCheckFunctionBindingEntity } from '../schemas/models'
+import { type ReceivedCheckFunctionBindingEntity } from '../schemas/models'
 import { v4 as uuid } from 'uuid'
 import { ReceivedCheckBindingEntityTransformer } from './receivedCheckBindingEntityTransformer'
 
@@ -26,17 +26,17 @@ describe('receivedCheckBindingEntityTransformer', () => {
     const input: ReceivedCheckFunctionBindingEntity = {
       PartitionKey: partitionKey,
       RowKey: rowKey,
-      archive: archive,
-      answers: answers,
-      checkReceivedAt: checkReceivedAt,
-      checkVersion: checkVersion,
-      isValid: isValid,
-      mark: mark,
-      markError: markError,
-      markedAt: markedAt,
-      maxMarks: maxMarks,
-      processingError: processingError,
-      validatedAt: validatedAt
+      archive,
+      answers,
+      checkReceivedAt,
+      checkVersion,
+      isValid,
+      mark,
+      markError,
+      markedAt,
+      maxMarks,
+      processingError,
+      validatedAt
     }
     const output = sut.transform(input)
     expect(output.partitionKey).toStrictEqual(partitionKey)

@@ -1,4 +1,3 @@
-
 module.exports = {
   checkWindowName: 'Failing check window',
   adminStartDay: '10',

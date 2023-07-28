@@ -1,4 +1,4 @@
-import retry, { IRetryStrategy, socketErrorPredicate, sqlAzureRequestTimeoutRetryPredicate, sqlAzureResourceLimitReachedPredicate, sqlAzureTimeoutRetryPredicate } from './async-retry'
+import retry, { type IRetryStrategy, socketErrorPredicate, sqlAzureRequestTimeoutRetryPredicate, sqlAzureResourceLimitReachedPredicate, sqlAzureTimeoutRetryPredicate } from './async-retry'
 import { ConnectionError, RequestError, PreparedStatementError, TransactionError } from 'mssql'
 
 let retryPolicy: IRetryStrategy
@@ -33,7 +33,11 @@ describe('async-retry', () => {
         fail('error should have been thrown')
       } catch (error) {
         expect(error).toBeDefined()
-        expect(error.message).toBe(errorMessage)
+        let errorMessage = 'unknown error'
+        if (error instanceof Error) {
+          errorMessage = error.message
+        }
+        expect(errorMessage).toBe(errorMessage)
       }
     })
 
@@ -90,7 +94,11 @@ describe('async-retry', () => {
         fail('should not have completed')
       } catch (error) {
         expect(error).toBeDefined()
-        expect(error.message).toBe(errorMessage)
+        let errorMessage = 'unknown error'
+        if (error instanceof Error) {
+          errorMessage = error.message
+        }
+        expect(errorMessage).toBe(errorMessage)
       }
     })
   })

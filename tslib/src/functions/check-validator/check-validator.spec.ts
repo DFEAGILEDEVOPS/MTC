@@ -1,45 +1,21 @@
-import { CheckValidator, ICheckValidatorFunctionBindings } from './check-validator'
-import { ReceivedCheckTableEntity, ValidateCheckMessageV1, MarkCheckMessageV1 } from '../../schemas/models'
-import { ILogger } from '../../common/logger'
-import { ICompressionService } from '../../common/compression-service'
+import { CheckValidator, type ICheckValidatorFunctionBindings } from './check-validator'
+import { type ReceivedCheckTableEntity, type ValidateCheckMessageV1, type MarkCheckMessageV1 } from '../../schemas/models'
+import { type ILogger } from '../../common/logger'
+import { type ICompressionService } from '../../common/compression-service'
 import * as uuid from 'uuid'
 import moment from 'moment'
 import { CheckNotificationType } from '../../schemas/check-notification-message'
 import { getValidatedCheck } from '../../schemas/check-schemas/validated-check'
-import { ITableService } from '../../azure/table-service'
-import { TableEntity } from '@azure/data-tables'
-import { ICheckFormService } from '../../services/check-form.service'
-import { IValidatorProvider, ValidatorProvider } from './validators/validator.provider'
-
-const TableServiceMock = jest.fn<ITableService, any>(() => ({
-  createEntity: jest.fn(),
-  getEntity: jest.fn(),
-  mergeUpdateEntity: jest.fn(),
-  replaceEntity: jest.fn()
-}))
-
-const LoggerMock = jest.fn<ILogger, any>(() => ({
-  error: jest.fn(),
-  warn: jest.fn(),
-  info: jest.fn(),
-  verbose: jest.fn()
-}))
-
-const CompressionServiceMock = jest.fn<ICompressionService, any>(() => ({
-  compress: jest.fn(),
-  decompress: jest.fn()
-}))
+import { type ITableService } from '../../azure/table-service'
+import { type TableEntity } from '@azure/data-tables'
+import { type ICheckFormService } from '../../services/check-form.service'
+import { type IValidatorProvider, ValidatorProvider } from './validators/validator.provider'
 
 let validateReceivedCheckQueueMessage: ValidateCheckMessageV1 = {
   schoolUUID: uuid.v4(),
   checkCode: uuid.v4(),
   version: 1
 }
-
-const CheckFormServiceMock = jest.fn<ICheckFormService, any>(() => ({
-  getCheckFormForCheckCode: jest.fn(),
-  getCheckFormDataByCheckCode: jest.fn()
-}))
 
 let sut: CheckValidator
 let loggerMock: ILogger
@@ -50,12 +26,28 @@ let validatorProvider: IValidatorProvider
 
 describe('check-validator', () => {
   beforeEach(() => {
-    tableServiceMock = new TableServiceMock()
-    compressionServiceMock = new CompressionServiceMock()
-    checkFormServiceMock = new CheckFormServiceMock()
+    tableServiceMock = {
+      createEntity: jest.fn(),
+      getEntity: jest.fn(),
+      mergeUpdateEntity: jest.fn(),
+      replaceEntity: jest.fn()
+    }
+    compressionServiceMock = {
+      compress: jest.fn(),
+      decompress: jest.fn()
+    }
+    checkFormServiceMock = {
+      getCheckFormForCheckCode: jest.fn(),
+      getCheckFormDataByCheckCode: jest.fn()
+    }
     validatorProvider = new ValidatorProvider(checkFormServiceMock)
     sut = new CheckValidator(tableServiceMock, compressionServiceMock, validatorProvider)
-    loggerMock = new LoggerMock()
+    loggerMock = {
+      error: jest.fn(),
+      warn: jest.fn(),
+      info: jest.fn(),
+      verbose: jest.fn()
+    }
     validateReceivedCheckQueueMessage = {
       schoolUUID: 'abc',
       checkCode: 'xyz',

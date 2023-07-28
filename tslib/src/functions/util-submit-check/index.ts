@@ -1,4 +1,4 @@
-import { AzureFunction, Context, HttpRequest } from '@azure/functions'
+import { type AzureFunction, type Context, type HttpRequest } from '@azure/functions'
 import config from '../../config'
 import { FakeSubmittedCheckMessageGeneratorService } from './fake-submitted-check-generator.service'
 import { SchoolChecksDataService } from './school-checks.data.service'

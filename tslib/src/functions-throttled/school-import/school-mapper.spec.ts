@@ -19,8 +19,8 @@ describe('SchoolDataService', () => {
       urn: 1
     }
     const mappedRecord = sut.mapRow(row, mapping)
-    expect(mappedRecord.urn).toStrictEqual(123456)
-    expect(mappedRecord.name).toStrictEqual('Town Primary School')
+    expect(mappedRecord.urn).toBe(123456)
+    expect(mappedRecord.name).toBe('Town Primary School')
   })
 
   test('returns the column index for the desired columns', () => {
@@ -70,6 +70,6 @@ describe('SchoolDataService', () => {
     }
     const mapping = sut.mapColumns(dataWithoutHeader, map)
     const mappedRow = sut.mapRow(csvParsed[0], mapping)
-    expect(mappedRow.estabTypeGroupCode).toStrictEqual(4)
+    expect(mappedRow.estabTypeGroupCode).toBe(4)
   })
 })
