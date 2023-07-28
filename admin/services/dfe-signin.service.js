@@ -7,7 +7,7 @@ const userDataService = require('./data-access/user.data.service')
 const roles = require('../lib/consts/roles')
 const dfeSigninDataService = require('./data-access/dfe-signin.data.service')
 const adminLogonEventDataService = require('./data-access/admin-logon-event.data.service')
-const { DsiSchoolNotFoundError } = require('../error-types/DsiSchoolNotFoundError')
+const { DsiSchoolNotFoundError, DsiMissingSchoolInfoError } = require('../error-types/DsiSchoolNotFoundError')
 const checkWindowPhaseConsts = require('../lib/consts/check-window-phase')
 const { SystemUnavailableError } = require('../error-types/system-unavailable-error')
 
@@ -47,7 +47,7 @@ const service = {
           throw new DsiSchoolNotFoundError(dfeUser.organisation.urn)
         }
       } else {
-        throw new Error('user.organisation or user.organisation.urn not found on dfeUser object')
+        throw new DsiMissingSchoolInfoError(dfeUser)
       }
     }
 
