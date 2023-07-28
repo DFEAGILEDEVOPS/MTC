@@ -19,6 +19,11 @@ You can then install all required dependencies by running:
 
 See the [package.json](./package.json) file for the full list of npm dependencies.
 
+## Please Note
+
+All code from this application is now contained within the `tslib/pupil-api` folder, as this lowers the overall cost of dependency management.
+Running `yarn build` will copy over any `dependencies` from `tslib/package.json` into `pupil-api/package.json`.  All `devDependencies` remain independent.  Once built the transpiled typescript will be in the `pupil-api/dist` folder, ready to run the app.
+
 ## Running the application
 
 `AZURE_STORAGE_CONNECTION_STRING=xxx AZURE_SERVICE_BUS_CONNECTION_STRING=xxx yarn start`
@@ -26,10 +31,6 @@ See the [package.json](./package.json) file for the full list of npm dependencie
 Will launch the app in development mode on http://localhost:3003/
 
 CORS is disabled in development. In production the whitelist can be configured using the CORS_WHITELIST environment variable.
-
-## Swagger API Documentation
-
-When running in development the api documentation can be found at http://localhost:3003/api-docs
 
 ## Environment Variables
 

@@ -33,12 +33,6 @@ yarn test-single
 mybanner 'SPA Unsupported browser tests'
 yarn runUnsupportedBrowserTests
 
-mybanner 'Testing API'
-cd ../pupil-api
-nvm use
-# yarn clean
-yarn test
-
 mybanner 'Testing TSLIB'
 cd ../tslib
 nvm use

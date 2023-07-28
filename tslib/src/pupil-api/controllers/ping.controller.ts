@@ -1,5 +1,5 @@
 import type { Request, Response } from 'express'
-import * as moment from 'moment'
+import moment from 'moment'
 import { DefaultSecurityHeaders } from '../routes/default-security-headers'
 import { PingService } from '../services/ping.service'
 
