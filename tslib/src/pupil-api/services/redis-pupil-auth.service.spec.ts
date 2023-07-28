@@ -1,4 +1,4 @@
-import * as moment from 'moment'
+import moment from 'moment'
 import type { IPupilLoginMessage } from './redis-pupil-auth.service'
 import { RedisPupilAuthenticationService } from './redis-pupil-auth.service'
 import type { IRedisService } from './redis.service'

@@ -1,10 +1,9 @@
 import * as path from 'path'
 import * as fs from 'fs'
 import * as dotenv from 'dotenv'
-
-import * as express from 'express'
+import express from 'express'
 import * as bodyParser from 'body-parser'
-import * as cors from 'cors'
+import cors from 'cors'
 import helmet from 'helmet'
 import { v4 as uuidv4 } from 'uuid'
 import * as appInsights from './helpers/app-insights'
@@ -14,8 +13,6 @@ import pingRoute from './routes/ping'
 import headRoute from './routes/head'
 import * as corsOptions from './helpers/cors-options'
 import { initLogger } from './helpers/logger'
-import * as swagger from 'swagger-ui-express'
-import swaggerConfig from './swagger.json'
 
 const globalDotEnvFile = path.join(__dirname, '..', '..', '.env')
 try {
@@ -52,12 +49,6 @@ class App {
 
     this.express.use(cors(corsOptions))
     this.express.use(helmet())
-
-    /* Swagger API documentation */
-
-    if (process.env.NODE_ENV !== 'production') {
-      this.express.use('/api-docs', swagger.serve, swagger.setup(swaggerConfig))
-    }
 
     // Sets request header "Strict-Transport-Security: max-age=31536000; includeSubDomains".
     const oneYearInSeconds = 31536000
