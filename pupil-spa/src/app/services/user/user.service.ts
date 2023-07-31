@@ -9,7 +9,7 @@ import {
   QuestionsStorageKey,
   SchoolStorageKey, TokensStorageKey
 } from '../storage/storageKey';
-import { AuditEntryFactory, AuditEntry } from '../audit/auditEntry';
+import { AuditEntryFactory } from '../audit/auditEntry';
 import { AuditService } from '../audit/audit.service';
 
 const questionsStorageKey = new QuestionsStorageKey();
