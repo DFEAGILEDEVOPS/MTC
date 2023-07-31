@@ -49,7 +49,7 @@ ENV['WAIT_TIME'] ||= '300'
 ENV['FUNC_CONSUMP_BASE_URL'] ||= 'http://localhost:7071'
 ENV["FUNC_CONSUMP_MASTER_KEY"] ||= nil
 
-Webdrivers::Chromedriver.required_version='114.0.5735.90'
+# Webdrivers::Chromedriver.required_version='114.0.5735.90'
 Webdrivers.logger.level = :FATAL
 Capybara.configure do |config|
   config.default_driver = ENV["DRIVER"].to_sym
