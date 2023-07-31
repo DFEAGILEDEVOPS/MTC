@@ -103,12 +103,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
             // only set the cookie for live checks
             this.deviceService.setupDeviceCookie()
           }
-          if (!this.qrCodeUsageService.getQrCodeArrivalSession()) {
-            // Only set a subsequent app usage if the current session did not use the QR code directly.
-            this.qrCodeUsageService.qrCodeSubsequentAppUsage()
-          }
-          this.qrCodeUsageService.closeQrCodeArrivalSession()
-          this.qrCodeUsageService.storeToLocalStorage()
+          this.qrCodeUsageService.postLoginHook()
           await this.displayMinTime(startTime)
           this.loginPending = false
           if (config.fontSize) {

@@ -24,15 +24,11 @@ describe('QrCodeUsageService', () => {
     expect(service).toBeTruthy();
   })
 
-  it('qrCodeArrival() should store the current date and time', () => {
-    spyOn(service, 'qrCodeArrival').and.callThrough()
-    service.qrCodeArrival()
-    expect(service['qrCodeArrivalTimestamps'].length).toBeGreaterThan(0)
-  })
-
-  it('qrCodeSubsequentAppUsage() should store the current date and time', () => {
-    spyOn(service, 'qrCodeSubsequentAppUsage').and.callThrough()
-    service.qrCodeSubsequentAppUsage()
+  it('qrCodeSubsequentAppUsageIfNeeded() should store the current date and time', () => {
+    // setup
+    service['_appWasOpenedUsingQrCode'] = true
+    spyOn(service, 'qrCodeSubsequentAppUsageIfNeeded').and.callThrough()
+    service.qrCodeSubsequentAppUsageIfNeeded()
     expect(service['qrCodeSubsequentAppUses'].length).toBeGreaterThan(0)
   })
 
@@ -40,8 +36,8 @@ describe('QrCodeUsageService', () => {
     beforeEach(() => {
       // set up some test data
       service.qrCodeArrival()
-      service.qrCodeSubsequentAppUsage()
-      service.qrCodeSubsequentAppUsage()
+      service.qrCodeSubsequentAppUsageIfNeeded()
+      service.qrCodeSubsequentAppUsageIfNeeded()
       spyOn(storageService, 'setAuditEntry').and.callThrough()
     })
 
@@ -51,4 +47,20 @@ describe('QrCodeUsageService', () => {
       expect(storageService.getAllItems().audits.length).toBe(3)
     })
   })
-});
+
+  describe('qrCodeArrival', () => {
+   it('stores the current date and time', () => {
+    spyOn(service, 'qrCodeArrival').and.callThrough()
+    service.qrCodeArrival()
+    expect(service['qrCodeArrivalTimestamps'].length).toBeGreaterThan(0)
+    })
+  })
+
+  describe('appWasOpenedUsingQrCode()', () => {
+    it('returns  if the app was opened with the QR code', () => {
+      //setup
+      service.qrCodeArrival()
+      expect(service.appWasOpenedUsingQrCode()).toBe(true)
+    })
+  })
+})

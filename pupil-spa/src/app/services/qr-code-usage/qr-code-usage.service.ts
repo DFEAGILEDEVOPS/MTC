@@ -6,12 +6,40 @@ import { AuditEntryFactory } from '../audit/auditEntry'
 import { AuditService } from '../audit/audit.service'
 
 export interface IQrCodeUsageService {
-  initialiseFromLocalStorage(): void
+  /**
+   * The QR code system is a memory based system, but also written to local storage in the event system.
+   */
+  initialiseFromLocalStorage(): void // FIXME: actually implement this.
+
+  /**
+   * Write the QR code memory-based data to the event log payload for the current check.
+   */
   storeToLocalStorage(): void
+
+  /**
+   * Store in memory that the QR code was just used.
+   */
   qrCodeArrival(): void
-  qrCodeSubsequentAppUsage(): void
+
+  /**
+   * Store in memory that a login just took place on an app that was originally opened using the QR code.
+   */
+  qrCodeSubsequentAppUsageIfNeeded(): void
+
+  /**
+   * Change the state of the QR code usage service so that subsequent users get QrCodeSubsequentUsage entries and not QrCodeArrival.
+   */
   closeQrCodeArrivalSession(): void
-  getQrCodeArrivalSession(): boolean
+
+  /**
+   * Returns true if the app was opened using the QR code by the original user.
+   */
+  appWasOpenedUsingQrCode(): boolean
+
+  /**
+   * Returns true if the current logged in user was the one who used the QR code.
+   */
+  didThisLoginSessionUsetheQrCode(): boolean
 }
 
 @Injectable({
@@ -20,7 +48,16 @@ export interface IQrCodeUsageService {
 export class QrCodeUsageService implements IQrCodeUsageService {
   private qrCodeArrivalTimestamps: MonotonicTime[] = []
   private qrCodeSubsequentAppUses: MonotonicTime[] = []
+
+  /**
+   * isQrCodeArrivalSession: a boolean flag to determine whether the
+   */
   private isQrCodeArrivalSession: boolean = false
+
+  /**
+   * Store that the app was opened using the QR code.  Once set to true this is permanent for the lifetime of the app.
+   */
+  private _appWasOpenedUsingQrCode = false
 
   constructor(
     private storageService: StorageService,
@@ -49,17 +86,30 @@ export class QrCodeUsageService implements IQrCodeUsageService {
   qrCodeArrival () {
     this.qrCodeArrivalTimestamps.push(this.monotonicTimeService.getMonotonicDateTime())
     this.isQrCodeArrivalSession = true
-  }
-
-  qrCodeSubsequentAppUsage () {
-    this.qrCodeSubsequentAppUses.push(this.monotonicTimeService.getMonotonicDateTime())
+    this._appWasOpenedUsingQrCode = true
   }
 
   closeQrCodeArrivalSession () {
     this.isQrCodeArrivalSession = false
   }
 
-  getQrCodeArrivalSession () {
+  qrCodeSubsequentAppUsageIfNeeded () {
+    if (this._appWasOpenedUsingQrCode) {
+      this.qrCodeSubsequentAppUses.push(this.monotonicTimeService.getMonotonicDateTime())
+    }
+  }
+
+  appWasOpenedUsingQrCode () {
+    return this._appWasOpenedUsingQrCode
+  }
+
+  didThisLoginSessionUsetheQrCode () {
     return this.isQrCodeArrivalSession
+  }
+
+  postLoginHook() {
+    this.qrCodeSubsequentAppUsageIfNeeded()
+    this.closeQrCodeArrivalSession()
+    this.storeToLocalStorage()
   }
 }

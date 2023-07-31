@@ -218,8 +218,8 @@ describe('LoginComponent', () => {
 
       // Test setup - populate the QrCodeUsage service with some variables
       qrCodeUsageService.qrCodeArrival()
-      qrCodeUsageService.qrCodeSubsequentAppUsage()
-      qrCodeUsageService.qrCodeSubsequentAppUsage()
+      qrCodeUsageService.qrCodeSubsequentAppUsageIfNeeded()
+      qrCodeUsageService.qrCodeSubsequentAppUsageIfNeeded()
       // Set up spies
       spyOn(qrCodeUsageService, 'storeToLocalStorage')
 
