@@ -9,6 +9,8 @@ import {
   QuestionsStorageKey,
   SchoolStorageKey, TokensStorageKey
 } from '../storage/storageKey';
+import { AuditEntryFactory, AuditEntry } from '../audit/auditEntry';
+import { AuditService } from '../audit/audit.service';
 
 const questionsStorageKey = new QuestionsStorageKey();
 const configStorageKey = new ConfigStorageKey();
@@ -21,7 +23,11 @@ export class UserService {
   private loggedIn = false;
   data: any = {};
 
-  constructor(private http: HttpService, private storageService: StorageService, private metaService: Meta) {
+  constructor(private http: HttpService,
+    private storageService: StorageService,
+    private metaService: Meta,
+    private auditEntryFactory: AuditEntryFactory,
+    private auditService: AuditService) {
     this.loggedIn = !!this.storageService.getAccessArrangements();
   }
 
@@ -33,6 +39,11 @@ export class UserService {
         .then(data => {
           this.loggedIn = true;
           this.storageService.clear();
+          // Create a login success event in the audit trail
+          this.auditService.addEntry(
+            this.auditEntryFactory.createLoginSuccessAuditEntryClass()
+          )
+          // Store other info to local storage, ready to be sent back in the payload
           this.storageService.setQuestions(data[questionsStorageKey.toString()]);
           this.storageService.setConfig(data[configStorageKey.toString()]);
           this.storageService.setPupil(data[pupilStorageKey.toString()]);

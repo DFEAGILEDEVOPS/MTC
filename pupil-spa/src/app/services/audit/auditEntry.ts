@@ -15,6 +15,7 @@ export type AuditEntryType =
   'CheckSubmissionAPIFailed' |
   'CheckSubmissionFailed' |
   'CheckSubmissionPending' |
+  'LoginSuccess' |
   'PauseRendered' |
   'PupilPrefsAPICalled' |
   'PupilPrefsAPICallFailed' |
@@ -220,6 +221,13 @@ export class AuditEntryFactory {
       mtime = this.monotonicTimeService.getMonotonicDateTime()
     }
     return new QrCodeSubsequentUsageAuditEntryClass(mtime, data)
+  }
+
+  createLoginSuccessAuditEntryClass(mtime?: MonotonicTime, data?: any): QrCodeArrivalAuditEntryClass {
+    if (mtime === undefined) {
+      mtime = this.monotonicTimeService.getMonotonicDateTime()
+    }
+    return new LoginSuccessAuditEntryClass(mtime, data)
   }
 }
 
@@ -467,5 +475,12 @@ export class QrCodeSubsequentUsageAuditEntryClass extends AuditEntry {
   constructor(mtime: MonotonicTime, data: any = {}) {
     data.monotonicTime = mtime.getDto()
     super('QrCodeSubsequentUsage', mtime.getLegacyDate(), data);
+  }
+}
+
+export class LoginSuccessAuditEntryClass extends AuditEntry {
+  constructor(mtime: MonotonicTime, data: any = {}) {
+    data.monotonicTime = mtime.getDto()
+    super('LoginSuccess', mtime.getLegacyDate(), data);
   }
 }
