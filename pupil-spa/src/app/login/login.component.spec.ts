@@ -212,7 +212,8 @@ describe('LoginComponent', () => {
       expect(mockPupilPrefsService.loadPupilPrefs).toHaveBeenCalled()
     }))
 
-    it('should store any in-memory transactions to local storage', async () => {
+    it('should call the QrCodeService to store in-memory transactions to local storage', async () => {
+      spyOn(qrCodeUsageService, 'postLoginHook').and.callThrough()
       // Reasons for storing them: 1) to pass them as auditEvents to the DB and
       // 2) to allow the app re-initialise should the app be reloaded whilst running.
 
@@ -227,6 +228,8 @@ describe('LoginComponent', () => {
       await component.onSubmit('goodPin', 'goodPin')
 
       // Verification
+      expect(qrCodeUsageService.postLoginHook).toHaveBeenCalled()
+      // deeper verification
       expect(qrCodeUsageService.storeToLocalStorage).toHaveBeenCalled()
     })
   })
