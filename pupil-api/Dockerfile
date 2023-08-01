@@ -1,17 +1,14 @@
-FROM node:16.17.1
+FROM node:18.12.0
 
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
-# copying just the package.json and lock file ensures this layer will only be rebuilt when
-# changes to package.json have been made
-COPY package.json .
-COPY yarn.lock .
-RUN yarn install --ignore-engines --frozen-lockfile
 
-COPY . .
-RUN yarn build
-RUN rm -rf ./node_modules
+COPY dist ./dist
+COPY pm2.json .
+COPY docker-start.sh .
+COPY package.json .
 RUN yarn install --ignore-engines --frozen-lockfile --production
+
 RUN yarn global add pm2
 
 # ssh

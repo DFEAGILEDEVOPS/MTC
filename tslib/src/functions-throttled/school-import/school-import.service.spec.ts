@@ -14,25 +14,21 @@ let schoolDataServiceMock: ISchoolDataService
 let consoleLogger: ILogger
 let jobDataServiceMock: IJobDataService
 
-const SchoolDataServiceMock = jest.fn<ISchoolDataService, any>(() => ({
-  bulkUpload: jest.fn(),
-  individualUpload: jest.fn()
-}))
-
-const JobDataServiceMock = jest.fn<IJobDataService, any>(() => ({
-  getJobId: jest.fn(),
-  setJobComplete: jest.fn(),
-  setJobStarted: jest.fn()
-}))
-
 const csvHeaders = 'URN,LA (code),EstablishmentNumber,EstablishmentName,StatutoryLowAge,StatutoryHighAge,EstablishmentStatus (code),TypeOfEstablishment (code),EstablishmentTypeGroup (code),TypeOfEstablishment (name)'
 
 describe('#SchoolImportService', () => {
   beforeEach(() => {
-    schoolDataServiceMock = new SchoolDataServiceMock()
+    schoolDataServiceMock = {
+      bulkUpload: jest.fn(),
+      individualUpload: jest.fn()
+    }
     jobResult = new SchoolImportJobOutput()
     consoleLogger = new ConsoleLogger()
-    jobDataServiceMock = new JobDataServiceMock()
+    jobDataServiceMock = {
+      getJobId: jest.fn(),
+      setJobComplete: jest.fn(),
+      setJobStarted: jest.fn()
+    }
     sut = new SchoolImportService(new ConnectionPool(config.Sql), jobResult, consoleLogger, schoolDataServiceMock, undefined, jobDataServiceMock)
     // quieten down the console logs
     // jest.spyOn(console, 'log').mockImplementation()

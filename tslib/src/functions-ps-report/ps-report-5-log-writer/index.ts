@@ -61,7 +61,6 @@ const funcImplementation: AzureFunction = async function (context: Context, time
     context.log(`${functionName}: processed ${messageCount} messages...`)
     await disconnect()
     finish(start, context)
-    return
   } catch (error) {
     context.log.error(error)
     throw error
