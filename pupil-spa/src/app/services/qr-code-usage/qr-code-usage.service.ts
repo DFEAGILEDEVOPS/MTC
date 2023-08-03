@@ -94,7 +94,7 @@ export class QrCodeUsageService implements IQrCodeUsageService {
   }
 
   qrCodeSubsequentAppUsageIfNeeded () {
-    if (this._appWasOpenedUsingQrCode) {
+    if (!this.isQrCodeArrivalSession) {
       this.qrCodeSubsequentAppUses.push(this.monotonicTimeService.getMonotonicDateTime())
     }
   }
@@ -108,8 +108,9 @@ export class QrCodeUsageService implements IQrCodeUsageService {
   }
 
   postLoginHook() {
+    // The sequencing is important here.
     this.qrCodeSubsequentAppUsageIfNeeded()
-    this.closeQrCodeArrivalSession()
+    this.closeQrCodeArrivalSession() // This must be after qrCodeSubsequentAppUsageIfNeeded() and not before
     this.storeToLocalStorage()
   }
 }

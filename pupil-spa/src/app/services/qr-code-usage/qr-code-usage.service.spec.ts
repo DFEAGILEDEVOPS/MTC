@@ -36,8 +36,9 @@ describe('QrCodeUsageService', () => {
     beforeEach(() => {
       // set up some test data
       service.qrCodeArrival()
-      service.qrCodeSubsequentAppUsageIfNeeded()
-      service.qrCodeSubsequentAppUsageIfNeeded()
+      service.closeQrCodeArrivalSession() // first user
+      service.qrCodeSubsequentAppUsageIfNeeded() // second user
+      service.qrCodeSubsequentAppUsageIfNeeded() // third user
       spyOn(storageService, 'setAuditEntry').and.callThrough()
     })
 
