@@ -2,8 +2,9 @@ import { Injectable } from '@angular/core'
 import { StorageService } from '../storage/storage.service'
 import { MonotonicTimeService } from '../monotonic-time/monotonic-time.service'
 import { MonotonicTime } from '../../monotonic-time'
-import { AuditEntryFactory } from '../audit/auditEntry'
+import { AuditEntry, AuditEntryFactory } from '../audit/auditEntry'
 import { AuditService } from '../audit/audit.service'
+import { AuditEntryType } from '../audit/auditEntry'
 
 export interface IQrCodeUsageService {
   /**
@@ -12,7 +13,7 @@ export interface IQrCodeUsageService {
   initialiseFromLocalStorage(): void // FIXME: actually implement this.
 
   /**
-   * Write the QR code memory-based data to the event log payload for the current check.
+   * Write the QR code memory-based data to the event  payload for the current check.
    */
   storeToLocalStorage(): void
 
@@ -69,7 +70,14 @@ export class QrCodeUsageService implements IQrCodeUsageService {
 
   initialiseFromLocalStorage () {
     console.log('ToDo: actually re-initialise from local storage on refresh')
-    this.storageService.getAllItems() // fixme
+    const storageItems = this.storageService.getAllItems()
+    console.log('StorageItems', storageItems)
+    const events: AuditEntry[] = []
+    Object.keys(storageItems).forEach((key: string) => {
+      if (storageItems[key].type === 'QrCodeArrival') {
+        this.qrCodeArrivalTimestamps.push(storageItems[key])
+      } // else if (storageItems[key].type === 'QrCodeSubsequentUsage')
+    })
   }
 
   storeToLocalStorage () {
@@ -112,5 +120,13 @@ export class QrCodeUsageService implements IQrCodeUsageService {
     this.qrCodeSubsequentAppUsageIfNeeded()
     this.closeQrCodeArrivalSession() // This must be after qrCodeSubsequentAppUsageIfNeeded() and not before
     this.storeToLocalStorage()
+  }
+
+  // Service method for unit testing
+  _utilReset() {
+    this.qrCodeArrivalTimestamps = []
+    this.qrCodeSubsequentAppUses = []
+    this._appWasOpenedUsingQrCode = false
+    this.isQrCodeArrivalSession = false
   }
 }
