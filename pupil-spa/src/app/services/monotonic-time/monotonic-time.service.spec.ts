@@ -32,4 +32,16 @@ describe('MonotonicTimeService', () => {
       expect(m3.getSequenceNumber()).toBe(2)
     })
   })
+
+  describe('set', () => {
+    it('the monotonic time can be set to a desired state', () => {
+      const mtime= service.getMonotonicDateTime()
+      const dto = mtime.getDto()
+      const m2time = service.getMonotonicDateTime()
+      m2time.set(dto.legacyDate, dto.milliseconds, dto.sequenceNumber)
+      expect(m2time.getLegacyDate().toISOString()).toEqual(mtime.getLegacyDate().toISOString())
+      expect(m2time.getSequenceNumber()).toEqual(mtime.getSequenceNumber())
+      expect(m2time.getDto().milliseconds).toEqual(mtime.getDto().milliseconds)
+    })
+  })
 })
