@@ -106,4 +106,15 @@ export class MonotonicTime {
     // Note: the MonotonicTimeService, which stores the sequence number will itself reinitialise the stored sequence number to 0, but
     // this is not likely to be an issue as the purpose of the sequence number is a secondary sort, after the primary datetime sort.
   }
+
+  public static comparator (a: MonotonicTime, b: MonotonicTime): number {
+    if (a.date.valueOf() < b.date.valueOf()) {
+      return -1
+    } else if (a.date.valueOf() > b.date.valueOf()) {
+      return 1
+    } else if (a.date.valueOf() === b.date.valueOf()) {
+      return a.sequenceNumber - b.sequenceNumber
+    }
+    return 0
+  }
 }
