@@ -15,7 +15,7 @@ export class QrCodeArrivalComponent implements OnInit {
   ngOnInit(): void {
     this.appInsightsService.trackPageView('QR code', '/qr')
     // Track the QR Code was used to access this page.  This stores the arrival in memory, to be
-    // written out as events after the
+    // written out in the event log after sign-in (which clears down localstorage)
     this.qrCodeUsageService.qrCodeArrival()
     this.router.navigate(['sign-in'])
   }

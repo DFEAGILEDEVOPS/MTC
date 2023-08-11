@@ -103,8 +103,8 @@ export class MonotonicTime {
     this.timeOrigin = milliseconds
     this.now = 0 // date lost in conversion, but the sum will be the same.
     this.sequenceNumber = sequenceNumber
-    // Note: the MonotonicTimeService, which stores the sequence number will itself reinitialise the stored sequence number to 0, but
-    // this is not likely to be an issue as the purpose of the sequence number is a secondary sort, after the primary datetime sort.
+    // Note: the MonotonicTimeService, which stores the sequence number, will itself reinitialise the stored sequence number to 0, but
+    // this is not likely to be an issue as the purpose of the sequence number is a secondary sort after the primary datetime sort.
   }
 
   public static comparator (a: MonotonicTime, b: MonotonicTime): number {
