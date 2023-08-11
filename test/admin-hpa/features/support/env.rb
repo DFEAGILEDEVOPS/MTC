@@ -13,7 +13,6 @@ require 'mongo'
 require 'csv'
 require 'fileutils'
 require 'date'
-require 'webdrivers'
 require 'waitutil'
 require 'tiny_tds'
 require 'httparty'
@@ -49,8 +48,6 @@ ENV['WAIT_TIME'] ||= '300'
 ENV['FUNC_CONSUMP_BASE_URL'] ||= 'http://localhost:7071'
 ENV["FUNC_CONSUMP_MASTER_KEY"] ||= nil
 
-# Webdrivers::Chromedriver.required_version='83.0.4103.39'
-Webdrivers.logger.level = :FATAL
 Capybara.configure do |config|
   config.default_driver = ENV["DRIVER"].to_sym
   config.app_host = ENV["ADMIN_BASE_URL"]

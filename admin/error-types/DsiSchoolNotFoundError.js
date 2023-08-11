@@ -11,6 +11,22 @@ class DsiSchoolNotFoundError extends mtcError {
   }
 }
 
+class DsiMissingSchoolInfoError extends mtcError {
+  constructor (dfeSignInUser) {
+    if (dfeSignInUser.organisation === undefined) {
+      const message = `User ${dfeSignInUser.providerUserId} has no organisation data`
+      super(message, 'No information about your associated school could be found')
+    } else if (dfeSignInUser.organisation.urn === undefined) {
+      const message = `User ${dfeSignInUser.providerUserId} has no urn associated with their organisation data`
+      super(message, 'We could not find a URN in your associated school data')
+    } else {
+      const message = `An unknown error occured when signing in user with ID:${dfeSignInUser.providerUserId}`
+      super(message, 'An unknown error occured')
+    }
+  }
+}
+
 module.exports = {
-  DsiSchoolNotFoundError
+  DsiSchoolNotFoundError,
+  DsiMissingSchoolInfoError
 }

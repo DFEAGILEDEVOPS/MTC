@@ -30,50 +30,60 @@ describe('QuestionService', () => {
     expect(service).toBeTruthy()
   }))
 
-  it('getQuestion() returns a Question', inject([QuestionService], (service: QuestionService) => {
-    service.initialise()
-    const q = service.getQuestion(1)
+  describe('getQuestion()', () => {
+    it('returns a Question', inject([QuestionService], (service: QuestionService) => {
+      service.initialise()
+      const q = service.getQuestion(1)
 
-    expect(q.constructor.name).toBe('Question')
-    expect(q.factor1).toBe(2)
-    expect(q.factor2).toBe(5)
-    expect(q.sequenceNumber).toBe(1)
-  }))
+      expect(q.constructor.name).toBe('Question')
+      expect(q.factor1).toBe(2)
+      expect(q.factor2).toBe(5)
+      expect(q.sequenceNumber).toBe(1)
+    }))
 
-  it('getQuestion() returns a Question', inject([QuestionService], (service: QuestionService) => {
-    service.initialise()
-    const q = service.getQuestion(8)
-    expect(q.constructor.name).toBe('Question')
-    expect(q.factor1).toBe(4)
-    expect(q.factor2).toBe(9)
-    expect(q.sequenceNumber).toBe(8)
-  }))
+    it('returns a Question', inject([QuestionService], (service: QuestionService) => {
+      service.initialise()
+      const q = service.getQuestion(8)
+      expect(q.constructor.name).toBe('Question')
+      expect(q.factor1).toBe(4)
+      expect(q.factor2).toBe(9)
+      expect(q.sequenceNumber).toBe(8)
+    }))
 
-  it('getQuestion() with an out-of-range parameter throws an error', inject([QuestionService], (service: QuestionService) => {
-    service.initialise()
-    expect(function () {
-      service.getQuestion(100)
-    }).toThrow(new Error('Out of range: question 100 does not exist'))
-  }))
+    it('with an out-of-range parameter throws an error', inject([QuestionService], (service: QuestionService) => {
+      service.initialise()
+      expect(function () {
+        service.getQuestion(100)
+      }).toThrow(new Error('Out of range: question 100 does not exist'))
+    }))
 
-  it('getQuestion() with an out-of-range parameter throws an error', inject([QuestionService], (service: QuestionService) => {
-    service.initialise()
-    expect(function () {
-      service.getQuestion(-1)
-    }).toThrow(new Error('Out of range: question -1 does not exist'))
-  }))
+    it('with an out-of-range parameter throws an error', inject([QuestionService], (service: QuestionService) => {
+      service.initialise()
+      expect(function () {
+        service.getQuestion(-1)
+      }).toThrow(new Error('Out of range: question -1 does not exist'))
+    }))
 
-  it('getQuestion() with a non-integer throws an error', inject([QuestionService], (service: QuestionService) => {
-    service.initialise()
-    expect(function () {
-      service.getQuestion(5.5)
-    }).toThrow(new Error('sequenceNumber is not an integer'))
-  }))
+    it('with a non-integer throws an error', inject([QuestionService], (service: QuestionService) => {
+      service.initialise()
+      expect(function () {
+        service.getQuestion(5.5)
+      }).toThrow(new Error('sequenceNumber is not an integer'))
+    }))
+  })
 
-  it('getNumberOfQuestions() returns the correct number of questions', inject([QuestionService], (service: QuestionService) => {
-    service.initialise()
-    expect(service.getNumberOfQuestions()).toBe(10)
-  }))
+  describe('getNumberOfQuestions()', () => {
+    it('returns the correct number of questions', inject([QuestionService], (service: QuestionService) => {
+      service.initialise()
+      expect(service.getNumberOfQuestions()).toBe(10)
+    }))
+
+    it('returns 0 if questions is undefined', inject([QuestionService], (service: QuestionService) => {
+      service.initialise()
+      service['questions'] = undefined
+      expect(service.getNumberOfQuestions()).toBe(0)
+    }))
+  })
 
   it('reset() clears the questions and config', inject([QuestionService], (service: QuestionService) => {
     service.initialise()
