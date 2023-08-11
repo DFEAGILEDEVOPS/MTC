@@ -6,14 +6,14 @@ const redisService = {
   batchTokenKeyTypes: [
     { type: 'checkForm', label: 'Check forms', keyPrefix: 'checkForm' },
     { type: 'checkWindow', label: 'Check window', keyPrefix: 'checkWindow' },
-    { type: 'lacodes', label: 'LA Codes', keyPrefix: 'lacode' },
     { type: 'group', label: 'Groups', keyPrefix: 'group' },
+    { type: 'lacodes', label: 'LA Codes', keyPrefix: 'lacode' },
     { type: 'pupilRegister', label: 'Pupil Registers', keyPrefix: 'pupilRegister' },
+    { type: 'qrcode', label: 'QR Codes', keyPrefix: 'qrCodeUrl' },
     { type: 'result', label: 'School results', keyPrefix: 'result' },
     { type: 'sasToken', label: 'SAS Tokens', keyPrefix: 'sasToken' },
     { type: 'schoolData', label: 'School data', keyPrefix: 'school' },
     { type: 'settings', label: 'Settings', keyPrefix: 'setting' },
-    { type: 'qrcode', label: 'QR Codes', keyPrefix: 'qrCodeUrl' }
   ],
 
   getServerInfo: async function getServerInfo () {
