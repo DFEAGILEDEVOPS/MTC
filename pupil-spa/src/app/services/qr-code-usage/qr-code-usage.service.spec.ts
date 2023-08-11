@@ -69,31 +69,48 @@ describe('QrCodeUsageService', () => {
     })
   })
 
-  fdescribe('initialiseFromLocalStorage', () => {
-
-    it('reloads the same state after a reset when initialiseFromLocalStorage() is called', () => {
+  describe('initialiseFromLocalStorage', () => {
+    beforeEach(() => {
       // set up some test data
       service.qrCodeArrival()
       service.closeQrCodeArrivalSession() // first user
       service.qrCodeSubsequentAppUsageIfNeeded() // second user
       service.qrCodeSubsequentAppUsageIfNeeded() // third user
       service.storeToLocalStorage()
+    })
 
+    it('reloads qrCodeArrivalTimestamps when initialiseFromLocalStorage() is called', () => {
       // store the values in memory for later comparision
-      const origQrCodeArrivalTimestamps = service['qrCodeArrivalTimestamps']
-      const origQrCodeSubsequentAppUses = service['qrCodeSubsequentAppUses']
-      const origIsQrCodeArrivalSession = service['isQrCodeArrivalSession']
-      const orig_appWasOpenedUsingQrCode = service['_appWasOpenedUsingQrCode']
+      const origQrArrivalDtos = service['qrCodeArrivalTimestamps'].map(a => a.getDto())
 
       // reset the service to mimic a page reload and service reinitialisation
-      console.error(
-        'service', service
-      )
       service._utilReset()
       service.initialiseFromLocalStorage()
 
-      // Compare the new state with the previous state from before the reset
-      expect(service['qrCodeArrivalTimestamps']).toEqual(origQrCodeArrivalTimestamps)
+      // Compare the new state with the previous state from before the reset. We can't just compare the raw objects as the split between
+      // timeOrigin and now is lost in the DTO object conversion which adds these params.
+      const reloadedDtos = service['qrCodeArrivalTimestamps'].map(a => a.getDto())
+      expect(reloadedDtos).toEqual(origQrArrivalDtos)
+    })
+
+    it('reloads qrCodeSubsequentAppUsages when initialiseFromLocalStorage() is called', () => {
+      // store the values in memory for later comparision
+      const origQrSubsequentDtos = service['qrCodeSubsequentAppUses'].map(a => a.getDto())
+
+      // reset the service to mimic a page reload and service reinitialisation
+      service._utilReset()
+      service.initialiseFromLocalStorage()
+
+      const reloadedSubsequentDtos = service['qrCodeSubsequentAppUses'].map(a => a.getDto())
+      expect(reloadedSubsequentDtos).toEqual(origQrSubsequentDtos)
+    })
+
+    it('restores the _appWasOpenedUsingQrCode variable', () => {
+      // reset the service to mimic a page reload and service reinitialisation
+      service._utilReset()
+      service.initialiseFromLocalStorage()
+
+      expect(service['_appWasOpenedUsingQrCode']).toBe(true)
     })
   })
 })

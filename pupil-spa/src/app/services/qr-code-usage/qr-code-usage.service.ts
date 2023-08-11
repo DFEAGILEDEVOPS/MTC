@@ -2,15 +2,14 @@ import { Injectable } from '@angular/core'
 import { StorageService } from '../storage/storage.service'
 import { MonotonicTimeService } from '../monotonic-time/monotonic-time.service'
 import { MonotonicTime } from '../../monotonic-time'
-import { AuditEntry, AuditEntryFactory } from '../audit/auditEntry'
+import { AuditEntryFactory } from '../audit/auditEntry'
 import { AuditService } from '../audit/audit.service'
-import { AuditEntryType } from '../audit/auditEntry'
 
 export interface IQrCodeUsageService {
   /**
    * The QR code system is a memory based system, but also written to local storage in the event system.
    */
-  initialiseFromLocalStorage(): void // FIXME: actually implement this.
+  initialiseFromLocalStorage(): void
 
   /**
    * Write the QR code memory-based data to the event  payload for the current check.
@@ -69,15 +68,35 @@ export class QrCodeUsageService implements IQrCodeUsageService {
   }
 
   initialiseFromLocalStorage () {
-    console.log('ToDo: actually re-initialise from local storage on refresh')
+    let qrCodeArrivalTimestamps: MonotonicTime[] = []
+    let qrCodeSubsequentAppUses: MonotonicTime[] = []
     const storageItems = this.storageService.getAllItems()
-    console.log('StorageItems', storageItems)
-    const events: AuditEntry[] = []
     Object.keys(storageItems).forEach((key: string) => {
       if (storageItems[key].type === 'QrCodeArrival') {
-        this.qrCodeArrivalTimestamps.push(storageItems[key])
-      } // else if (storageItems[key].type === 'QrCodeSubsequentUsage')
+        const mtime = this.monotonicTimeService.getMonotonicDateTime()
+        const ref = storageItems[key].data.monotonicTime
+        mtime.set(ref.legacyDate, ref.milliseconds, ref.sequenceNumber)
+        qrCodeArrivalTimestamps.push(mtime)
+      } else if (storageItems[key].type === 'QrCodeSubsequentUsage') {
+        const mtime = this.monotonicTimeService.getMonotonicDateTime()
+        const ref = storageItems[key].data.monotonicTime
+        mtime.set(ref.legacyDate, ref.milliseconds, ref.sequenceNumber)
+        qrCodeSubsequentAppUses.push(mtime)
+      }
     })
+
+    // Store sorted arrival uses
+    qrCodeArrivalTimestamps.sort(MonotonicTime.comparator)
+    this.qrCodeArrivalTimestamps = qrCodeArrivalTimestamps
+
+    // Store sorted subsequent use timestamps
+    qrCodeSubsequentAppUses.sort(MonotonicTime.comparator)
+    this.qrCodeSubsequentAppUses = qrCodeSubsequentAppUses
+
+    if (qrCodeArrivalTimestamps.length > 0 || qrCodeSubsequentAppUses.length > 0) {
+      // we have detected QR code uses, so we infer that the app was opened using a QR code
+      this._appWasOpenedUsingQrCode = true
+    }
   }
 
   storeToLocalStorage () {
