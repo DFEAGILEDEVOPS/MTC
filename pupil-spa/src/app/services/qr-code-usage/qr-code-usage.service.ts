@@ -35,11 +35,6 @@ export interface IQrCodeUsageService {
    * Returns true if the app was opened using the QR code by the original user.
    */
   appWasOpenedUsingQrCode(): boolean
-
-  /**
-   * Returns true if the current logged in user was the one who used the QR code.
-   */
-  didThisLoginSessionUsetheQrCode(): boolean
 }
 
 @Injectable({
@@ -128,10 +123,6 @@ export class QrCodeUsageService implements IQrCodeUsageService {
 
   appWasOpenedUsingQrCode () {
     return this._appWasOpenedUsingQrCode
-  }
-
-  didThisLoginSessionUsetheQrCode () {
-    return this.isQrCodeArrivalSession
   }
 
   postLoginHook() {
