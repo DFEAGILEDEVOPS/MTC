@@ -13,7 +13,7 @@ const redisService = {
     { type: 'result', label: 'School results', keyPrefix: 'result' },
     { type: 'sasToken', label: 'SAS Tokens', keyPrefix: 'sasToken' },
     { type: 'schoolData', label: 'School data', keyPrefix: 'school' },
-    { type: 'settings', label: 'Settings', keyPrefix: 'setting' },
+    { type: 'settings', label: 'Settings', keyPrefix: 'setting' }
   ],
 
   getServerInfo: async function getServerInfo () {
