@@ -149,7 +149,7 @@ Then(/^I should see all the data from the check stored in the DB$/) do
   end
 
   storage_questions = JSON.parse page.evaluate_script('window.localStorage.getItem("questions");')
-  check_result = AzureTableHelper.wait_for_received_check(storage_school['uuid'], storage_pupil['checkCode'])
+  check_result = SqlDbHelper.wait_for_received_check(storage_pupil['checkCode'])
   check = JSON.parse(LZString::UTF16.decompress(check_result['archive']))
   storage_answers.each {|answer| expect(check['answers']).to include answer}
   storage_inputs.each {|input| expect(check['inputs']).to include input}

@@ -31,7 +31,7 @@ When(/^I complete a check after a restart$/) do
   generate_pins_overview_page.generate_pin_using_name(@details_hash[:last_name] + ', ' + @details_hash[:first_name])
   pupil_pin_row = view_and_custom_print_live_check_page.pupil_list.rows.find {|row| row.name.text == @details_hash[:last_name] + ', ' + @details_hash[:first_name]}
   @pupil_credentials = {:school_password => pupil_pin_row.school_password.text, :pin => pupil_pin_row.pin.text}
-  AzureTableHelper.wait_for_prepared_check(@pupil_credentials[:school_password],@pupil_credentials[:pin])
+  RedisHelper.wait_for_prepared_check(@pupil_credentials[:school_password],@pupil_credentials[:pin])
   step 'I have logged in'
   confirmation_page.read_instructions.click
   access_arrangements_setting_page.input_assistance_first_name.set 'James'
@@ -51,7 +51,7 @@ Then(/^I should not have any retro input assistant recorded against the current 
   expect(retro_input_check_id_array).to_not include latest_check_taken
   storage_school = JSON.parse page.evaluate_script('window.localStorage.getItem("school");')
   storage_pupil = JSON.parse page.evaluate_script('window.localStorage.getItem("pupil");')
-  check_result = AzureTableHelper.wait_for_received_check(storage_school['uuid'], storage_pupil['checkCode'])
+  check_result = SqlDBHelper.wait_for_received_check(storage_pupil['checkCode'])
   check = JSON.parse(LZString::UTF16.decompress(check_result['archive']))
   expect(check['pupil']['inputAssistant']['firstName']).to eql 'James'
   expect(check['pupil']['inputAssistant']['lastName']).to eql 'Elliot'

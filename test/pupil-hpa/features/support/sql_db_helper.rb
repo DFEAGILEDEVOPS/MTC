@@ -463,4 +463,17 @@ class SqlDbHelper
     result = SQL_CLIENT.execute(sql)
     result.do
   end
+
+  def self.wait_for_received_check(check_code)
+    begin
+      retries ||= 0
+      sleep 1
+      p 'waiting for check to be received'
+      received_check(check_code)
+    rescue NoMethodError => e
+      p "retry number" + retries.to_s
+      retry if (retries += 1) < 60
+    end
+  end
+
 end

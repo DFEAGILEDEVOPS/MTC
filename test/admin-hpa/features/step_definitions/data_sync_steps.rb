@@ -49,7 +49,7 @@ Given(/^my check has been marked with (.+) correct answers$/) do |mark|
   AzureQueueHelper.create_check_submission_message(@submission_hash[:submission_message].to_json)
   school_uuid = @parsed_response_pupil_auth['school']['uuid']
   @check_code = @parsed_response_pupil_auth['checkCode']
-  AzureTableHelper.wait_for_received_check(school_uuid, @check_code)
+  SqlDbHelper.wait_for_received_check(@check_code)
   p @check_code
 end
 
@@ -104,7 +104,7 @@ Given(/^my check has been completed using a (.+)$/) do |input_type|
   AzureQueueHelper.create_check_submission_message(@submission_hash[:submission_message].to_json)
   school_uuid = @parsed_response_pupil_auth['school']['uuid']
   @check_code = @parsed_response_pupil_auth['checkCode']
-  AzureTableHelper.wait_for_received_check(school_uuid, @check_code)
+  SqlDbHelper.wait_for_received_check(@check_code)
 end
 
 
@@ -137,7 +137,7 @@ Given(/^I have check which has resulted in a hard failure$/) do
   AzureQueueHelper.create_check_submission_message(@submission_hash[:submission_message].to_json)
   school_uuid = @parsed_response_pupil_auth['school']['uuid']
   @check_code = @parsed_response_pupil_auth['checkCode']
-  AzureTableHelper.wait_for_received_check(school_uuid, @check_code)
+  SqlDbHelper.wait_for_received_check(@check_code)
   @no_answers = true
 end
 

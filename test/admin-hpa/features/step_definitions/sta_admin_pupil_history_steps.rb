@@ -187,7 +187,7 @@ Given(/^a pupil has consumed a discretionary restart$/) do
   check_entry = SqlDbHelper.check_details(@pupil_id)
   @check_code = check_entry['checkCode']
   FunctionsHelper.complete_check_via_check_code([@check_code]) if check_entry["isLiveCheck"]
-  AzureTableHelper.wait_for_received_check(@school['entity']['urlSlug'], @check_code) if check_entry["isLiveCheck"]
+  SqlDbHelper.wait_for_received_check(@check_code) if check_entry["isLiveCheck"]
 end
 
 

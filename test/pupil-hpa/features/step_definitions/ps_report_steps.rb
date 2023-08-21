@@ -145,7 +145,7 @@ When(/^I consume a restart using (.+) and complete the check a second time$/) do
   generate_pins_overview_page.generate_pin_using_name(@details_hash[:last_name] + ', ' + @details_hash[:first_name])
   pupil_pin_row = view_and_custom_print_live_check_page.pupil_list.rows.find {|row| row.name.text == @details_hash[:last_name] + ', ' + @details_hash[:first_name]}
   @pupil_credentials = {:school_password => pupil_pin_row.school_password.text, :pin => pupil_pin_row.pin.text}
-  AzureTableHelper.wait_for_prepared_check(@pupil_credentials[:school_password], @pupil_credentials[:pin])
+  RedisHelper.wait_for_prepared_check(@pupil_credentials[:school_password], @pupil_credentials[:pin])
   step 'I have logged in'
   confirmation_page.read_instructions.click
   start_page.start_warm_up.click
@@ -171,7 +171,7 @@ And(/^I consume another restart using IT issues and complete the check a third t
   generate_pins_overview_page.generate_pin_using_name(@details_hash[:last_name] + ', ' + @details_hash[:first_name])
   pupil_pin_row = view_and_custom_print_live_check_page.pupil_list.rows.find {|row| row.name.text == @details_hash[:last_name] + ', ' + @details_hash[:first_name]}
   @pupil_credentials = {:school_password => pupil_pin_row.school_password.text, :pin => pupil_pin_row.pin.text}
-  AzureTableHelper.wait_for_prepared_check(@pupil_credentials[:school_password], @pupil_credentials[:pin])
+  RedisHelper.wait_for_prepared_check(@pupil_credentials[:school_password], @pupil_credentials[:pin])
   step 'I have logged in'
   confirmation_page.read_instructions.click
   start_page.start_warm_up.click
@@ -300,7 +300,7 @@ Given(/^I generated a pin after applying a restart$/) do
   pupil_pin_row = view_and_custom_print_live_check_page.pupil_list.rows.find {|row| row.name.text == @details_hash[:last_name] + ', ' + @details_hash[:first_name]}
   @pupil_credentials = {:school_password => pupil_pin_row.school_password.text, :pin => pupil_pin_row.pin.text}
   p @pupil_credentials
-  AzureTableHelper.wait_for_prepared_check(@pupil_credentials[:school_password], @pupil_credentials[:pin])
+  RedisHelper.wait_for_prepared_check(@pupil_credentials[:school_password], @pupil_credentials[:pin])
 end
 
 But(/^the pin expires$/) do
@@ -315,7 +315,7 @@ When(/^I generate a new pin and complete the check$/) do
   pupil_pin_row = view_and_custom_print_live_check_page.pupil_list.rows.find {|row| row.name.text == @details_hash[:last_name] + ', ' + @details_hash[:first_name]}
   @pupil_credentials = {:school_password => pupil_pin_row.school_password.text, :pin => pupil_pin_row.pin.text}
   p @pupil_credentials
-  AzureTableHelper.wait_for_prepared_check(@pupil_credentials[:school_password], @pupil_credentials[:pin])
+  RedisHelper.wait_for_prepared_check(@pupil_credentials[:school_password], @pupil_credentials[:pin])
   step 'I have logged in'
   confirmation_page.read_instructions.click
   start_page.start_warm_up.click
@@ -370,7 +370,7 @@ Given(/^I have completed a check with duplicate questions$/) do
   pupil_pin_row = view_and_custom_print_live_check_page.pupil_list.rows.find {|row| row.name.text == @details_hash[:last_name] + ', ' + @details_hash[:first_name]}
   @pupil_credentials = {:school_password => pupil_pin_row.school_password.text, :pin => pupil_pin_row.pin.text}
   p @pupil_credentials
-  AzureTableHelper.wait_for_prepared_check(@pupil_credentials[:school_password], @pupil_credentials[:pin])
+  RedisHelper.wait_for_prepared_check(@pupil_credentials[:school_password], @pupil_credentials[:pin])
   @check_code = SqlDbHelper.check_details(@stored_pupil_details['id'])['checkCode']
   @pupil_id = @stored_pupil_details['id']
   check_entry = SqlDbHelper.check_details(@pupil_id)
@@ -378,7 +378,7 @@ Given(/^I have completed a check with duplicate questions$/) do
   RequestHelper.auth(@pupil_credentials[:school_password], @pupil_credentials[:pin])
   @check_code = check_entry['checkCode']
   FunctionsHelper.complete_check_with_duplicates([@check_code], 25, 0, rand(25)) if check_entry["isLiveCheck"]
-  @recieved_check = AzureTableHelper.wait_for_received_check(@school['entity']['urlSlug'], @check_code) if check_entry["isLiveCheck"]
+  @recieved_check = SqlDBHelper.wait_for_received_check(@check_code) if check_entry["isLiveCheck"]
   p @check_code
 end
 
@@ -490,7 +490,7 @@ Given(/^I have completed a check that has no device information$/) do
   AzureQueueHelper.create_check_submission_message(@submission_hash[:submission_message].to_json)
   school_uuid = @parsed_response_pupil_auth['school']['uuid']
   @check_code = @parsed_response_pupil_auth['checkCode']
-  AzureTableHelper.wait_for_received_check(school_uuid, @check_code)
+  SqlDBHelper.wait_for_received_check(@check_code)
   p @check_code
 end
 

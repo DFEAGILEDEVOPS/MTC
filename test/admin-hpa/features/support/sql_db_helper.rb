@@ -767,4 +767,24 @@ class SqlDbHelper
     result.do
   end
 
+  def self.received_check(check_code)
+    sql = "SELECT * FROM [mtc_admin].[check] WHERE checkCode = '#{check_code}' and received=1"
+    result = SQL_CLIENT.execute(sql)
+    check = result.first
+    result.cancel
+    check
+  end
+
+  def self.wait_for_received_check(check_code)
+    begin
+      retries ||= 0
+      sleep 1
+      p 'waiting for check to be received'
+      received_check(check_code)
+    rescue NoMethodError => e
+      p "retry number" + retries.to_s
+      retry if (retries += 1) < 60
+    end
+  end
+
 end
