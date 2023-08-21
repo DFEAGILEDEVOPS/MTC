@@ -116,7 +116,7 @@ export class QrCodeUsageService implements IQrCodeUsageService {
   }
 
   qrCodeSubsequentAppUsageIfNeeded () {
-    if (!this.isQrCodeArrivalSession) {
+    if (!this.isQrCodeArrivalSession  && this._appWasOpenedUsingQrCode) {
       this.qrCodeSubsequentAppUses.push(this.monotonicTimeService.getMonotonicDateTime())
     }
   }

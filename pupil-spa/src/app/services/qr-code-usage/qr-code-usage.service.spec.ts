@@ -28,13 +28,24 @@ describe('QrCodeUsageService', () => {
     expect(service).toBeTruthy();
   })
 
-  it('qrCodeSubsequentAppUsageIfNeeded() should store the current date and time', () => {
-    // setup
-    service['_appWasOpenedUsingQrCode'] = true
-    spyOn(service, 'qrCodeSubsequentAppUsageIfNeeded').and.callThrough()
-    service.qrCodeSubsequentAppUsageIfNeeded()
-    expect(service['qrCodeSubsequentAppUses'].length).toBeGreaterThan(0)
+  describe('qrCodeSubsequentAppUsageIfNeeded()', () => {
+    it('should store the current date and time', () => {
+      // setup
+      service['_appWasOpenedUsingQrCode'] = true
+      spyOn(service, 'qrCodeSubsequentAppUsageIfNeeded').and.callThrough()
+      service.qrCodeSubsequentAppUsageIfNeeded()
+      expect(service['qrCodeSubsequentAppUses'].length).toBeGreaterThan(0)
+    })
+
+    it('should not store anything if the app was not opened with QR code', () => {
+      // setup
+      service['_appWasOpenedUsingQrCode'] = false
+      spyOn(service, 'qrCodeSubsequentAppUsageIfNeeded').and.callThrough()
+      service.qrCodeSubsequentAppUsageIfNeeded()
+      expect(service['qrCodeSubsequentAppUses'].length).toBe(0)
+    })
   })
+
 
   describe('storeToLocalStorage', () => {
     beforeEach(() => {
