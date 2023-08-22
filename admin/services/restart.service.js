@@ -69,7 +69,7 @@ restartService.restart = async (
 
   // delete any remaining Prepared Checks to prevent pupils using these checks
   const checkIds = checkData.map(c => c.checkId)
-  await prepareCheckService.removeChecks(checkIds)
+  await prepareCheckService.dropChecksFromCache(checkIds)
   // do all the database work
   const pupilData = await restartDataService.restartTransactionForPupils(Object.values(restartData))
   return pupilData.map(p => { return { urlSlug: p.urlSlug } })
@@ -102,7 +102,7 @@ restartService.markDeleted = async (pupilUrlSlug, userId, schoolId) => {
 
   // If the above was successful we can remove any prepared checks in Redis that may exist.
   if (restart.check_id) {
-    await prepareCheckService.removeChecks([restart.check_id])
+    await prepareCheckService.dropChecksFromCache([restart.check_id])
   }
 
   return pupil

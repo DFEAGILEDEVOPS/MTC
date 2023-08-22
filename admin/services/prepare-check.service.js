@@ -72,7 +72,7 @@ const service = {
    * @param {Number[]} checks - array of check.id's
    * @return {Promise<*>}
    */
-  removeChecks: async function removeChecks (checks) {
+  dropChecksFromCache: async function dropChecksFromCache (checks) {
     if (!Array.isArray(checks)) {
       throw new Error('checks is not an array')
     }
