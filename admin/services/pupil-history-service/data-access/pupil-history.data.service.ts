@@ -53,7 +53,6 @@ export interface IPupilHistoryRestartData {
   restartReason: string
   restartReasonCode: string
   checkId: number
-  originCheckId: number
 }
 
 export interface IPupilHistoryData {
@@ -208,8 +207,7 @@ export class PupilHistoryDataService {
         restartReasonCode: o.code,
         createdAt: o.createdAt,
         updatedAt: o.updatedAt,
-        checkId: o.checkId,
-        originCheckId: o.originCheck_id
+        checkId: o.check_id
       }
     })
 

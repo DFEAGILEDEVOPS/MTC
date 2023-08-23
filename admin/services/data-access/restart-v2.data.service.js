@@ -170,7 +170,7 @@ module.exports.restartTransactionForPupils = async function restartTransactionFo
                                                          pupil_id,
                                                          restartReasonLookup_Id,
                                                          recordedByUser_id,
-                                                         originCheck_id)
+                                                         check_id)
                  VALUES (@cd${idx},
                          @dnc${idx},
                          @fi${idx},
