@@ -5,7 +5,7 @@
 const prepareCheckService = require('../../../services/prepare-check.service')
 const pupilDataService = require('../../../services/data-access/pupil.data.service')
 const pupilRestartDataService = require('../../../services/data-access/pupil-restart.data.service')
-const restartDataService = require('../../../services/data-access/restart-v2.data.service')
+const restartDataService = require('../../../services/data-access/restart.data.service')
 const restartService = require('../../../services/restart.service')
 const { PupilFrozenService } = require('../../../services/pupil-frozen.service/pupil-frozen.service')
 const pupilIdentificationFlagService = require('../../../services/pupil-identification-flag.service')

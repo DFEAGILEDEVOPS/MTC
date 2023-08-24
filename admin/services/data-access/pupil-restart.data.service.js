@@ -54,7 +54,7 @@ pupilRestartDataService.sqlMarkRestartAsDeleted = async (restartId, userId) => {
                SELECT
                  @pupilId = pupil_id,
                  @isDeleted = isDeleted,
-                 @originCheckId = check_id
+                 @originCheckId = voidCheck_id
                FROM
                 [mtc_admin].[pupilRestart]
                WHERE id = @restartId;
@@ -71,6 +71,7 @@ pupilRestartDataService.sqlMarkRestartAsDeleted = async (restartId, userId) => {
                -- See if there is a new check raised against the restart to consume it
                IF (@newCheckId IS NOT NULL)
                BEGIN
+                   -- a pin has been generated after the restart was created
                    -- Get the check status code
                    SELECT
                     @newCheckPupilLoginDate = c.pupilLoginDate,
@@ -87,6 +88,7 @@ pupilRestartDataService.sqlMarkRestartAsDeleted = async (restartId, userId) => {
 
                   -- delete check pin as it will never be used
                   DELETE FROM [mtc_admin].[checkPin] where check_id = @newCheckId;
+                  UPDATE [mtc_admin].[check] SET void = 0 WHERE id = @originCheckId;
                END
 
                -- Get the parent check complete flag, just so we can update the pupil.complete flag

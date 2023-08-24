@@ -1,1 +1,1 @@
-DROP TRIGGER IF EXISTS [mtc_admin].[hdfStatusLookupUpdatedAtTrigger]
+DROP TRIGGER IF EXISTS [mtc_admin].[hdfStatusUpdatedAtTrigger]

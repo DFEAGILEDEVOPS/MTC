@@ -5,7 +5,7 @@ const pupilDataService = require('../services/data-access/pupil.data.service')
 const { PupilFrozenService } = require('./pupil-frozen.service/pupil-frozen.service')
 const pupilIdentificationFlagService = require('../services/pupil-identification-flag.service')
 const pupilRestartDataService = require('../services/data-access/pupil-restart.data.service')
-const restartDataService = require('./data-access/restart-v2.data.service')
+const restartDataService = require('./data-access/restart.data.service')
 const setValidationService = require('./set-validation.service')
 const R = require('ramda')
 

@@ -161,7 +161,7 @@ module.exports.restartTransactionForPupils = async function restartTransactionFo
       { name: `pid${idx}`, value: d.pupil_id, type: TYPES.Int },
       { name: `prrCode${idx}`, value: d.pupilRestartReasonCode, type: TYPES.Char },
       { name: `rbu${idx}`, value: d.recordedByUser_id, type: TYPES.Int },
-      { name: `oc${idx}`, value: d.currentCheckId, type: TYPES.Int }
+      { name: `voidCheck${idx}`, value: d.currentCheckId, type: TYPES.Int }
     ]
 
     const sql = `INSERT INTO [mtc_admin].[pupilRestart] (classDisruptionInformation,
@@ -170,14 +170,14 @@ module.exports.restartTransactionForPupils = async function restartTransactionFo
                                                          pupil_id,
                                                          restartReasonLookup_Id,
                                                          recordedByUser_id,
-                                                         check_id)
+                                                         voidCheck_id)
                  VALUES (@cd${idx},
                          @dnc${idx},
                          @fi${idx},
                          @pid${idx},
                          (SELECT id from [mtc_admin].[restartReasonLookup] where code = @prrCode${idx}),
                          @rbu${idx},
-                         @oc${idx});`
+                         @voidCheck${idx});`
 
     return {
       sql, params
@@ -191,6 +191,10 @@ module.exports.restartTransactionForPupils = async function restartTransactionFo
       DELETE
         FROM [mtc_admin].[checkPin]
        WHERE check_id IN (${checkParamIdentifiers.join(', ')});
+
+      UPDATE [mtc_admin].[check]
+          SET void=1
+      WHERE id IN (${checkParamIdentifiers.join(', ')});
 
       ${pupilRestartSqls.join('\n')}
 
