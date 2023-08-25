@@ -67,6 +67,17 @@ BEGIN TRY
                   ORDER BY NEWID())
             );
 
+
+            IF @isLiveCheck = 1
+                BEGIN
+                    -- Update the pupil state
+                    UPDATE [mtc_admin].[pupil]
+                    SET currentCheckId = @checkId,
+                        checkComplete = 0,
+                        restartAvailable = 0
+                    WHERE id = @pupilId;
+                END
+
             -- Store the check.id in the output table
             INSERT INTO @output (id) (SELECT @checkId);
 

@@ -21,7 +21,9 @@ controller.getRestartOverview = async function getRestartOverview (req, res, nex
   let pinGenerationEligibilityData
   let availabilityData
   try {
+    console.log(`GUY: getting restarts...`)
     restarts = await restartService.getRestartsForSchool(req.user.schoolId)
+    console.log(`GUY: got restarts.`)
     checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
     pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData, req.user.timezone)
     availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.schoolId, checkWindowData, req.user.timezone)

@@ -93,7 +93,7 @@ module.exports.getRestartsForSchool = async function getRestartsForSchool (schoo
           p.dateOfBirth,
           p.urlSlug,
           p.isDiscretionaryRestartAvailable,
-          pr.check_id as restartCheckAllocation,
+          pr.voidCheck_id as restartCheckAllocation,
           vct.totalCheckCount,
           rc.id as restartCheckId,
           rc.pupilLoginDate as restartCheckPupilLoginDate,
@@ -104,7 +104,7 @@ module.exports.getRestartsForSchool = async function getRestartsForSchool (schoo
                WHERE isDeleted = 0) pr
              join      [mtc_admin].[pupil] p ON (pr.pupil_id = p.id)
              join      [mtc_admin].[restartReasonLookup] rr ON (pr.restartReasonLookup_Id = rr.id)
-             left join [mtc_admin].[check] rc ON (pr.check_id = rc.id)
+             left join [mtc_admin].[check] rc ON (pr.voidCheck_id = rc.id)
              left join [mtc_admin].[vewPupilLiveChecksTakenCount] vct ON (p.id = vct.pupil_id)
        WHERE pr.rank = 1
          AND p.school_id = @schoolId;
