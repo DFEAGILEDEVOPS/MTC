@@ -66,7 +66,6 @@ end
 
 Before('@school_import') do
   begin
-    fail 'needs a test util'
     AZURE_BLOB_CLIENT.create_container('school-import')
   rescue Azure::Core::Http::HTTPError => e
     p 'school-import container already exists' if e.status_code == 409
@@ -87,7 +86,6 @@ end
 Before("@delete_school_import") do
   SqlDbHelper.delete_schools_audit_history
   SqlDbHelper.delete_schools_imported
-  fail 'needs a test util'
   files = AZURE_BLOB_CLIENT.list_blobs('school-import').map {|a| a.name}
   files.each do |filename|
     AZURE_BLOB_CLIENT.delete_blob('school-import', filename)

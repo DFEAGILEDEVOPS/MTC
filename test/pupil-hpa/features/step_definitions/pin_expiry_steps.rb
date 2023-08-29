@@ -42,7 +42,7 @@ end
 
 Then(/^I should have an expired pin$/) do
   visit Capybara.app_host + '/sign-out'
-  SqlDBHelper.wait_for_received_check(@check_code)
+  SqlDbHelper.wait_for_received_check(@check_code)
   Timeout.timeout(ENV['WAIT_TIME'].to_i) do
     sign_in_page.load;
     sign_in_page.login(@pupil_credentials[:school_password], @pupil_credentials[:pin]);

@@ -88,7 +88,6 @@ After do |scenario|
     page.save_screenshot("screenshots/#{name}")
     p "Screenshot raised - " + "screenshots/#{name}"
     content = File.open("screenshots/#{name}", 'rb') {|file| file.read}
-    fail 'this needs a test util'
     AZURE_BLOB_CLIENT.create_block_blob(BLOB_CONTAINER, name, content)
     p "Screenshot uploaded to #{ENV["AZURE_ACCOUNT_NAME"]} - #{name}"
   end

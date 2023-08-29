@@ -51,7 +51,7 @@ Then(/^I should not have any retro input assistant recorded against the current 
   expect(retro_input_check_id_array).to_not include latest_check_taken
   storage_school = JSON.parse page.evaluate_script('window.localStorage.getItem("school");')
   storage_pupil = JSON.parse page.evaluate_script('window.localStorage.getItem("pupil");')
-  check_result = SqlDBHelper.wait_for_received_check(storage_pupil['checkCode'])
+  check_result = SqlDbHelper.wait_for_received_check(storage_pupil['checkCode'])
   check = JSON.parse(LZString::UTF16.decompress(check_result['archive']))
   expect(check['pupil']['inputAssistant']['firstName']).to eql 'James'
   expect(check['pupil']['inputAssistant']['lastName']).to eql 'Elliot'

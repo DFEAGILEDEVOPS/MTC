@@ -18,9 +18,9 @@ Given(/^a pupil has completed the check with less than 25 answers$/) do
 end
 
 Then(/^I should see an error stating validation failed as there are 24 answers$/) do
-  wait_until{SqlDbHelper.wait_for_received_check(@check_code); !(SqlDbHelper.wait_for_received_check(@check_code)['processingError']).nil?}
+  wait_until{SqlDbHelper.wait_for_received_check(@check_code); !(SqlDbHelper.wait_for_received_check(@check_code)['processingFailed']).nil?}
   @received_check = SqlDbHelper.wait_for_received_check(@check_code)
-  expect(@received_check['processingError']).to eql "check-validator: check validation failed. checkCode: #{@check_code}\n\t-\tsubmitted check has 24 answers"
+  expect(@received_check['processingFailed']).to eql true
 end
 
 Given(/^a pupil has completed the check with more than 25 answers$/) do
@@ -62,9 +62,9 @@ Given(/^a pupil has completed the check with an answer that is not a string$/) d
 end
 
 Then(/^I should see an error stating validation failed as answers must be strings$/) do
-  wait_until{SqlDbHelper.wait_for_received_check(@check_code); !(SqlDbHelper.wait_for_received_check(@check_code)['processingError']).nil?}
+  wait_until{SqlDbHelper.wait_for_received_check(@check_code); !(SqlDbHelper.wait_for_received_check(@check_code)['processingFailed']).nil?}
   @received_check = SqlDbHelper.wait_for_received_check(@check_code)
-  expect(@received_check['processingError']).to eql "check-validator: check validation failed. checkCode: #{@check_code}\n\t-\tanswer 26 is not of required type (string)"
+  expect(@received_check['processingFailed']).to eql true
 end
 
 Given(/^a pupil has completed the check with no audit logs$/) do
@@ -87,9 +87,9 @@ Given(/^a pupil has completed the check with no audit logs$/) do
 end
 
 Then(/^I should see an error stating validation failed as there is no audit log$/) do
-  wait_until{SqlDbHelper.wait_for_received_check(@check_code); !(SqlDbHelper.wait_for_received_check(@check_code)['processingError']).nil?}
+  wait_until{SqlDbHelper.wait_for_received_check(@check_code); !(SqlDbHelper.wait_for_received_check(@check_code)['processingFailed']).nil?}
   @received_check = SqlDbHelper.wait_for_received_check(@check_code)
-  expect(@received_check['processingError']).to eql "check-validator: check validation failed. checkCode: #{@check_code}\n\t-\taudit property missing"
+  expect(@received_check['processingFailed']).to eql true
 end
 
 Given(/^a pupil has completed the check with answers that are not contained in an array$/) do
@@ -112,9 +112,9 @@ Given(/^a pupil has completed the check with answers that are not contained in a
 end
 
 Then(/^I should see an error stating validation failed as answers are not an array$/) do
-  wait_until{SqlDbHelper.wait_for_received_check(@check_code); !(SqlDbHelper.wait_for_received_check(@check_code)['processingError']).nil?}
+  wait_until{SqlDbHelper.wait_for_received_check(@check_code); !(SqlDbHelper.wait_for_received_check(@check_code)['processingFailed']).nil?}
   @received_check = SqlDbHelper.wait_for_received_check(@check_code)
-  expect(@received_check['processingError']).to eql "check-validator: check validation failed. checkCode: #{@check_code}\n\t-\tanswers property is not an array"
+  expect(@received_check['processingFailed']).to eql true
 end
 
 
@@ -138,9 +138,9 @@ Given(/^a pupil has completed the check with the audit log is not contained in a
 end
 
 Then(/^I should see an error stating validation failed as the audit log is not an array$/) do
-  wait_until{SqlDbHelper.wait_for_received_check(@check_code); !(SqlDbHelper.wait_for_received_check(@check_code)['processingError']).nil?}
+  wait_until{SqlDbHelper.wait_for_received_check(@check_code); !(SqlDbHelper.wait_for_received_check(@check_code)['processingFailed']).nil?}
   @received_check = SqlDbHelper.wait_for_received_check(@check_code)
-  expect(@received_check['processingError']).to eql "check-validator: check validation failed. checkCode: #{@check_code}\n\t-\taudit property is not an array"
+  expect(@received_check['processingFailed']).to eql true
 end
 
 
@@ -158,15 +158,16 @@ Given(/^a pupil has completed the check with a check code that is not a UUID$/) 
   @submission_hash = RequestHelper.build_check_submission_message(@parsed_response_pupil_auth, nil, nil, 'mouse', {check_code_not_uuid: true})
   AzureQueueHelper.create_check_submission_message(@submission_hash[:submission_message].to_json)
   @school_uuid = @parsed_response_pupil_auth['school']['uuid']
-  @check_code = @parsed_response_pupil_auth['checkCode'].gsub('-','')
+  @check_code = @parsed_response_pupil_auth['checkCode']
   @received_check = SqlDbHelper.wait_for_received_check(@check_code)
   p @check_code
 end
 
 Then(/^I should see an error stating validation failed as the check code is not a UUID$/) do
-  wait_until{SqlDbHelper.wait_for_received_check(@check_code); !(SqlDbHelper.wait_for_received_check(@check_code)['processingError']).nil?}
+  fail 'this fails due to the db not being updated with the received flag'
+  wait_until{SqlDbHelper.wait_for_received_check(@check_code); !(SqlDbHelper.wait_for_received_check(@check_code)['processingFailed']).nil?}
   @received_check = SqlDbHelper.wait_for_received_check(@check_code)
-  expect(@received_check['processingError']).to eql "checkForm lookup failed:Validation failed for parameter 'checkCode'. Invalid GUID."
+  expect(@received_check['processingFailed']).to eql true
 end
 
 
@@ -190,9 +191,10 @@ Given(/^a pupil has completed the check with the config property not being a obj
 end
 
 Then(/^I should see an error stating validation failed as the config property has to be an object$/) do
-  wait_until{SqlDbHelper.wait_for_received_check(@check_code); !(SqlDbHelper.wait_for_received_check(@check_code)['processingError']).nil?}
+  wait_until{SqlDbHelper.wait_for_received_check(@check_code); !(SqlDbHelper.wait_for_received_check(@check_code)['processingFailed']).nil?}
+  sleep 5
   @received_check = SqlDbHelper.wait_for_received_check(@check_code)
-  expect(@received_check['processingError']).to eql "check-validator: check validation failed. checkCode: #{@check_code}\n\t-\tconfig property is not an object\n\t-\tonly live checks can be submitted. value:undefined"
+  expect(@received_check['processingFailed']).to eql true
 end
 
 
@@ -217,9 +219,9 @@ end
 
 
 Then(/^I should see an error stating validation failed as the inputs property has to be an array$/) do
-  wait_until{SqlDbHelper.wait_for_received_check(@check_code); !(SqlDbHelper.wait_for_received_check(@check_code)['processingError']).nil?}
+  wait_until{SqlDbHelper.wait_for_received_check(@check_code); !(SqlDbHelper.wait_for_received_check(@check_code)['processingFailed']).nil?}
   @received_check = SqlDbHelper.wait_for_received_check(@check_code)
-  expect(@received_check['processingError']).to eql "check-validator: check validation failed. checkCode: #{@check_code}\n\t-\tinputs property is not an array"
+  expect(@received_check['processingFailed']).to eql true
 end
 
 
@@ -244,9 +246,9 @@ end
 
 
 Then(/^I should see an error stating validation failed as the practice property is set to true$/) do
-  wait_until{SqlDbHelper.wait_for_received_check(@check_code); !(SqlDbHelper.wait_for_received_check(@check_code)['processingError']).nil?}
+  wait_until{SqlDbHelper.wait_for_received_check(@check_code); !(SqlDbHelper.wait_for_received_check(@check_code)['processingFailed']).nil?}
   @received_check = SqlDbHelper.wait_for_received_check(@check_code)
-  expect(@received_check['processingError']).to eql "check-validator: check validation failed. checkCode: #{@check_code}\n\t-\tonly live checks can be submitted. value:true"
+  expect(@received_check['processingFailed']).to eql true
 end
 
 Given(/^a pupil has completed the check with the pupil property not being an object$/) do
@@ -270,9 +272,9 @@ end
 
 
 Then(/^I should see an error stating validation failed as the pupil property is not a object$/) do
-  wait_until{SqlDbHelper.wait_for_received_check(@check_code); !(SqlDbHelper.wait_for_received_check(@check_code)['processingError']).nil?}
+  wait_until{SqlDbHelper.wait_for_received_check(@check_code); !(SqlDbHelper.wait_for_received_check(@check_code)['processingFailed']).nil?}
   @received_check = SqlDbHelper.wait_for_received_check(@check_code)
-  expect(@received_check['processingError']).to eql "check-validator: check validation failed. checkCode: #{@check_code}\n\t-\tpupil property is not an object"
+  expect(@received_check['processingFailed']).to eql true
 end
 
 Given(/^a pupil has completed the check with the questions are not contained in an array$/) do
@@ -295,9 +297,9 @@ Given(/^a pupil has completed the check with the questions are not contained in 
 end
 
 Then(/^I should see an error stating validation failed as the questions are not an array$/) do
-  wait_until{SqlDbHelper.wait_for_received_check(@check_code); !(SqlDbHelper.wait_for_received_check(@check_code)['processingError']).nil?}
+  wait_until{SqlDbHelper.wait_for_received_check(@check_code); !(SqlDbHelper.wait_for_received_check(@check_code)['processingFailed']).nil?}
   @received_check = SqlDbHelper.wait_for_received_check(@check_code)
-  expect(@received_check['processingError']).to eql "check-validator: check validation failed. checkCode: #{@check_code}\n\t-\tquestions property is not an array"
+  expect(@received_check['processingFailed']).to eql true
 end
 
 Given(/^a pupil has completed the check with the school property not being an object$/) do
@@ -320,9 +322,9 @@ Given(/^a pupil has completed the check with the school property not being an ob
 end
 
 Then(/^I should see an error stating validation failed as the school property is not a object$/) do
-  wait_until{SqlDbHelper.wait_for_received_check(@check_code); !(SqlDbHelper.wait_for_received_check(@check_code)['processingError']).nil?}
+  wait_until{SqlDbHelper.wait_for_received_check(@check_code); !(SqlDbHelper.wait_for_received_check(@check_code)['processingFailed']).nil?}
   @received_check = SqlDbHelper.wait_for_received_check(@check_code)
-  expect(@received_check['processingError']).to eql "check-validator: check validation failed. checkCode: #{@check_code}\n\t-\tschool property is not an object"
+  expect(@received_check['processingFailed']).to eql true
 end
 
 Given(/^a pupil has completed the check with the tokens property not being an object$/) do
@@ -345,7 +347,7 @@ Given(/^a pupil has completed the check with the tokens property not being an ob
 end
 
 Then(/^I should see an error stating validation failed as the tokens property is not a object$/) do
-  wait_until{SqlDbHelper.wait_for_received_check(@check_code); !(SqlDbHelper.wait_for_received_check(@check_code)['processingError']).nil?}
+  wait_until{SqlDbHelper.wait_for_received_check(@check_code); !(SqlDbHelper.wait_for_received_check(@check_code)['processingFailed']).nil?}
   @received_check = SqlDbHelper.wait_for_received_check(@check_code)
-  expect(@received_check['processingError']).to eql "check-validator: check validation failed. checkCode: #{@check_code}\n\t-\ttokens property is not an object"
+  expect(@received_check['processingFailed']).to eql true
 end

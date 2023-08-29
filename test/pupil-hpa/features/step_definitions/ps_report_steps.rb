@@ -378,7 +378,7 @@ Given(/^I have completed a check with duplicate questions$/) do
   RequestHelper.auth(@pupil_credentials[:school_password], @pupil_credentials[:pin])
   @check_code = check_entry['checkCode']
   FunctionsHelper.complete_check_with_duplicates([@check_code], 25, 0, rand(25)) if check_entry["isLiveCheck"]
-  @recieved_check = SqlDBHelper.wait_for_received_check(@check_code) if check_entry["isLiveCheck"]
+  @recieved_check = SqlDbHelper.wait_for_received_check(@check_code) if check_entry["isLiveCheck"]
   p @check_code
 end
 
@@ -490,7 +490,7 @@ Given(/^I have completed a check that has no device information$/) do
   AzureQueueHelper.create_check_submission_message(@submission_hash[:submission_message].to_json)
   school_uuid = @parsed_response_pupil_auth['school']['uuid']
   @check_code = @parsed_response_pupil_auth['checkCode']
-  SqlDBHelper.wait_for_received_check(@check_code)
+  SqlDbHelper.wait_for_received_check(@check_code)
   p @check_code
 end
 

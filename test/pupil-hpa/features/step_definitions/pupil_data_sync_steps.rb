@@ -15,7 +15,7 @@ end
 
 
 Then(/^all answers events and inputs match$/) do
-  check_result = SqlDBHelper.wait_for_received_check(@storage_pupil['checkCode'])
+  check_result = SqlDbHelper.wait_for_received_check(@storage_pupil['checkCode'])
   @archive = JSON.parse(LZString::UTF16.decompress(check_result['archive']))
   check_id = SqlDbHelper.get_check_id(@storage_pupil['checkCode'])
   SqlDbHelper.wait_for_check_result_row(check_id)
@@ -88,7 +88,7 @@ end
 Then(/^I should see all inputs recorded$/) do
   @storage_school = JSON.parse page.evaluate_script('window.localStorage.getItem("school");')
   @storage_pupil = JSON.parse page.evaluate_script('window.localStorage.getItem("pupil");')
-  SqlDBHelper.wait_for_received_check(@storage_pupil['checkCode'])
+  SqlDbHelper.wait_for_received_check(@storage_pupil['checkCode'])
   check_id = SqlDbHelper.get_check_id(@storage_pupil['checkCode'])
   SqlDbHelper.wait_for_check_result_row(check_id)
   check_result_id = SqlDbHelper.get_check_result_id(check_id)
