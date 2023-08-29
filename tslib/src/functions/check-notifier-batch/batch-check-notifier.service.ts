@@ -14,11 +14,14 @@ export class BatchCheckNotifier {
 
   async notify (messages: ICheckNotificationMessage[]): Promise<void> {
     const requests: ITransactionRequest[] = []
-    messages.forEach(message => {
+    for (const message of messages) {
       switch (message.notificationType) {
         case CheckNotificationType.checkComplete:
-          requests.push(...this.dataService.createCheckCompleteRequest(message.checkCode))
+        {
+          const req = await this.dataService.createCheckCompleteRequest(message.checkCode)
+          requests.push(...req)
           break
+        }
         case CheckNotificationType.checkInvalid:
           requests.push(this.dataService.createProcessingFailedRequest(message.checkCode))
           break
@@ -26,7 +29,7 @@ export class BatchCheckNotifier {
           requests.push(this.dataService.createCheckReceivedRequest(message.checkCode))
           break
       }
-    })
+    }
     return this.dataService.executeRequestsInTransaction(requests)
   }
 }
