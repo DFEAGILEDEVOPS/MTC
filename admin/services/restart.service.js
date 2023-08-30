@@ -6,6 +6,8 @@ const pupilRestartDataService = require('../services/data-access/pupil-restart.d
 const restartDataService = require('./data-access/restart-v2.data.service')
 const setValidationService = require('./set-validation.service')
 const { PupilFrozenService } = require('./pupil-frozen.service/pupil-frozen.service')
+const R = require('ramda')
+const pupilIdentificationFlagService = require('../services/pupil-identification-flag.service')
 
 const restartService = {}
 
@@ -69,7 +71,7 @@ restartService.restart = async (
 
   // delete any remaining Prepared Checks to prevent pupils using these checks
   const checkIds = checkData.map(c => c.checkId)
-  await prepareCheckService.removeChecks(checkIds)
+  await prepareCheckService.dropChecksFromCache(checkIds)
   // do all the database work
   const pupilData = await restartDataService.restartTransactionForPupils(Object.values(restartData))
   return pupilData.map(p => { return { urlSlug: p.urlSlug } })
@@ -102,7 +104,7 @@ restartService.markDeleted = async (pupilUrlSlug, userId, schoolId) => {
 
   // If the above was successful we can remove any prepared checks in Redis that may exist.
   if (restart.check_id) {
-    await prepareCheckService.removeChecks([restart.check_id])
+    await prepareCheckService.dropChecksFromCache([restart.check_id])
   }
 
   return pupil
@@ -126,6 +128,50 @@ restartService.validateIncomingPupils = async (schoolId, pupilIds) => {
     logger.error(`restartService.validateIncomingPupils: incoming pupiIds [${pupilIds.join(', ')}] not found for school ID [${schoolId}]: [${Array.from(difference).join(', ')}]`)
     throw new Error('One of the pupils is not eligible for a restart')
   }
+}
+
+/**
+ * Find restart for a particular school
+ * @param schoolId
+ * @returns {Promise<import('../services/pupil-identification-flag.service').IdentifiedPupil[]>}
+ */
+restartService.getRestartsForSchool = async function getRestartsForSchool (schoolId) {
+  const restarts = await restartDataService.getRestartsForSchool(schoolId)
+  const restartsWithStatus = restarts.map(r => {
+    const update = {
+      totalCheckCount: R.isNil(r.totalCheckCount) ? 0 : r.totalCheckCount,
+      status: ''
+    }
+
+    // if all restarts used and no discretionary restart available...
+    if ((r.totalCheckCount >= config.RESTART_MAX_ATTEMPTS + 1) && !r.isDiscretionaryRestartAvailable) {
+      update.status = 'Maximum number of restarts taken'
+      // if a pin has been generated against the restart...
+    } else if (r.restartCheckId !== null) {
+      update.status = 'Restart taken'
+    // if discretionary restart available or else pupil has logged in to the restart check...
+    } else if (r.isDiscretionaryRestartAvailable) {
+      update.status = 'Restart taken'
+    // if no check generated against restart or else restart check not received and restart check not marked as complete
+    } else if (r.restartCheckId === null || (r.restartCheckReceived === false && r.restartCheckComplete === false)) {
+      update.status = 'Remove restart'
+    } else {
+      update.status = 'Restart taken'
+    }
+    return R.mergeLeft(update, r)
+  })
+  return pupilIdentificationFlagService.sortAndAddIdentificationFlags(restartsWithStatus)
+}
+
+/**
+ * Find pupils who are eligible for a restart
+ * @param {number} schoolId
+ * @return {Promise<*>}
+ */
+restartService.getPupilsEligibleForRestart = async function getPupilsEligibleForRestart (schoolId) {
+  const pupils = await restartDataService.sqlFindPupilsEligibleForRestart(schoolId)
+  // Fix up the pupil names for the GUI
+  return pupilIdentificationFlagService.sortAndAddIdentificationFlags(pupils)
 }
 
 module.exports = restartService
