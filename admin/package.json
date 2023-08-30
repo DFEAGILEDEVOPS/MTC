@@ -46,7 +46,7 @@
     "@azure/storage-blob": "^12.8.0",
     "@azure/storage-queue": "^12.7.0",
     "adm-zip": "^0.5.10",
-    "applicationinsights": "^2.3.6",
+    "applicationinsights": "^2.7.0",
     "axios": "^1.3.4",
     "bcryptjs": "^2.4.3",
     "bluebird": "^3.5.1",
