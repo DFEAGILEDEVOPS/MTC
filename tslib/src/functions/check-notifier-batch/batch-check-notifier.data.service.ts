@@ -1,6 +1,7 @@
 import { SqlService, type ITransactionRequest, type ISqlParameter } from '../../sql/sql.service'
 import * as mssql from 'mssql'
 import { isNonEmptyArray } from 'ramda-adjunct'
+import { ConsoleLogger, type ILogger } from '../../common/logger'
 
 export interface IBatchCheckNotifierDataService {
   createCheckCompleteRequest (checkCode: string): Promise<ITransactionRequest[]>
@@ -14,12 +15,16 @@ export interface IBatchCheckNotifierDataService {
 
 export class BatchCheckNotifierDataService implements IBatchCheckNotifierDataService {
   private readonly sqlService: SqlService
+  private readonly logService: ILogger
+  private readonly serviceName = 'BatchCheckNotifierDataService'
 
-  constructor () {
+  constructor (logger?: ILogger) {
+    this.logService = logger ?? new ConsoleLogger()
     this.sqlService = new SqlService()
   }
 
   async createCheckCompleteRequest (checkCode: string): Promise<ITransactionRequest[]> {
+    this.logService?.verbose(`${this.serviceName}.checkCompleteRequest(): starting for checkCode [${checkCode}]`)
     const checkCodeParam: ISqlParameter = {
       type: mssql.UniqueIdentifier,
       name: 'checkCode',
@@ -54,9 +59,11 @@ export class BatchCheckNotifierDataService implements IBatchCheckNotifierDataSer
         checkCode = @checkCode
     `
     const checkData = await this.sqlService.query(checkCodeSql, [checkCodeParam])
+    this.logService.verbose(`checkData: ${JSON.stringify(checkData)}`)
     let checkIdToComplete: undefined | number
     if (isNonEmptyArray(checkData)) {
       checkIdToComplete = checkData[0]?.id
+      this.logService.verbose(`checkIdToComplete: ${checkIdToComplete}`)
     }
 
     const pupilSql: string = `
@@ -69,10 +76,16 @@ export class BatchCheckNotifierDataService implements IBatchCheckNotifierDataSer
         WHERE 
             c.checkCode = @checkCode`
 
-    const pupilData = await this.sqlService.query(pupilSql, [checkCodeParam])
     let pupil: undefined | { attendanceCode: string, restartAvailable: boolean, currentCheckId: number }
-    if (isNonEmptyArray(pupilData)) {
-      pupil = pupilData[0]
+    try {
+      const pupilData = await this.sqlService.query(pupilSql, [checkCodeParam])
+      this.logService.verbose(`pupilData: ${JSON.stringify(pupilData)}`)
+      if (isNonEmptyArray(pupilData)) {
+        pupil = pupilData[0]
+      }
+      this.logService.verbose(`pupil: ${JSON.stringify(pupil)}`)
+    } catch (error: any) {
+      this.logService.warn(`ERROR: ${error.message}`)
     }
 
     // Only set the pupil.checkComplete flag if the pupil is still set to the same check, and a restart has not been given, and the

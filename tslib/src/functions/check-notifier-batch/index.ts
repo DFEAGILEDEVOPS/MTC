@@ -70,7 +70,7 @@ const batchCheckNotifier: AzureFunction = async function (context: Context, time
 
 async function process (notifications: ICheckNotificationMessage[], context: Context, messages: sb.ServiceBusReceivedMessage[], receiver: sb.ServiceBusReceiver): Promise<void> {
   try {
-    const batchNotifier = new BatchCheckNotifier()
+    const batchNotifier = new BatchCheckNotifier(undefined, context.log)
     await batchNotifier.notify(notifications)
     await completeMessages(messages, receiver, context)
   } catch (error) {

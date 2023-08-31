@@ -1,15 +1,15 @@
 import { type ICheckNotificationMessage, CheckNotificationType } from '../../schemas/check-notification-message'
 import { type IBatchCheckNotifierDataService, BatchCheckNotifierDataService } from './batch-check-notifier.data.service'
 import { type ITransactionRequest } from '../../sql/sql.service'
+import { ConsoleLogger, type ILogger } from '../../common/logger'
 
 export class BatchCheckNotifier {
   private readonly dataService: IBatchCheckNotifierDataService
+  private readonly logService: ILogger
 
-  constructor (batchCheckNotifierDataService?: IBatchCheckNotifierDataService) {
-    if (batchCheckNotifierDataService === undefined) {
-      batchCheckNotifierDataService = new BatchCheckNotifierDataService()
-    }
-    this.dataService = batchCheckNotifierDataService
+  constructor (batchCheckNotifierDataService?: IBatchCheckNotifierDataService, logger?: ILogger) {
+    this.logService = logger ?? new ConsoleLogger()
+    this.dataService = batchCheckNotifierDataService ?? new BatchCheckNotifierDataService(this.logService)
   }
 
   async notify (messages: ICheckNotificationMessage[]): Promise<void> {
