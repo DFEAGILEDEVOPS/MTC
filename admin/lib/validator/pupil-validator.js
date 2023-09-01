@@ -112,8 +112,39 @@ module.exports.validate = async (pupilData, schoolId, isMultiplePupilsSubmission
     validationError.addError('dob-year', addPupilErrorMessages.dobOutOfRange)
   }
   // Age Reason
-  const requiredAgeReasonValidation = dob.isValid() && (dob.isBetween(moment.utc(`${academicYear - 11}-09-02`), moment.utc(`${academicYear - 10}-09-01`), null, '[]') ||
-    dob.isBetween(moment.utc(`${academicYear - 8}-09-02`), moment.utc(`${academicYear - 7}-09-01`), null, '[]'))
+  // The pupil is expected to be 8 or 9 years old.  Between 7 and 8 they can take the check but provide a reason,
+  // and between 9 and 10 they can take the check, but must provide a reason.
+  // const youngLow = moment.utc(`${academicYear - 11}-09-01`)
+  // const youngHigh = moment.utc(`${academicYear - 10}-08-31T23:59:59`)
+  // const oldLow = moment.utc(`${academicYear - 8}-09-02`)
+  // const oldHigh = moment.utc(`${academicYear - 7}-09-01T23:59:59`)
+  // const requiredAgeReasonValidation = dob.isValid() &&
+  //   (dob.isBetween(youngLow, youngHigh, null, '[]') || dob.isBetween(oldLow, oldHigh, null, '[]'))
+  const youngLow = 7
+  const expectedLow = 8
+  const expectedHigh = 9
+  const oldHigh = 10
+  const youngLowDate = currentUTCDate.clone().subtract(youngLow, 'years')
+  const expectedLowDate = currentUTCDate.clone().subtract(expectedLow, 'years')
+  const expectedHighDate = currentUTCDate.clone().subtract(expectedHigh, 'years')
+  const oldHighDate = currentUTCDate.clone().subtract(oldHigh, 'years')
+  let requiredAgeReasonValidation = false
+  // If the DoB is earlier than the expected low date, but greater than or equal to the young low date
+  if (dob.isValid() && dob.isBetween(youngLowDate, expectedLowDate, null, '[)')) {
+    // As the pupil is between 7 and 8 a reason is required
+    requiredAgeReasonValidation = true
+  }
+  if (dob.isValid() && dob.isBetween(expectedHighDate, oldHighDate, null, '(]')) {
+    // As the pupil is between 9 and 10 a reason is required
+    requiredAgeReasonValidation = true
+  }
+
+  if (requiredAgeReasonValidation) {
+    console.log(`Pupil age reason rqd for dob ${dob} as it is between ${youngLowDate} & ${expectedLowDate} or ${expectedHighDate} and ${oldHighDate}`)
+  } else {
+    console.log(`Pupil age reason not in range for reason for dob ${dob} as it is between ${youngLowDate} & ${expectedLowDate} or ${expectedHighDate} and ${oldHighDate}`)
+  }
+
   if (isMultiplePupilsSubmission && requiredAgeReasonValidation) {
     validationError.addError('dob-day', addPupilErrorMessages.dobMultipleRequiresReason)
     validationError.addError('dob-month', addPupilErrorMessages.dobMultipleRequiresReason)
