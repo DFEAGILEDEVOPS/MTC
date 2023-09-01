@@ -1,4 +1,4 @@
-import { RedisAuthController } from './redis.auth.controller'
+import { RedisAuthController } from './auth.controller'
 import * as httpMocks from 'node-mocks-http'
 import logger from '../services/log.service'
 import type { IPupilAuthenticationService } from '../services/redis-pupil-auth.service'
