@@ -68,7 +68,7 @@ export class BatchCheckNotifierDataService implements IBatchCheckNotifierDataSer
 
     const pupilSql: string = `
         SELECT 
-            p.attendanceCode, 
+            p.attendanceId, 
             p.restartAvailable,
             p.currentCheckId
         FROM 
@@ -76,7 +76,7 @@ export class BatchCheckNotifierDataService implements IBatchCheckNotifierDataSer
         WHERE 
             c.checkCode = @checkCode`
 
-    let pupil: undefined | { attendanceCode: string, restartAvailable: boolean, currentCheckId: number }
+    let pupil: undefined | { attendanceId: number, restartAvailable: boolean, currentCheckId: number }
     try {
       const pupilData = await this.sqlService.query(pupilSql, [checkCodeParam])
       this.logService.verbose(`pupilData: ${JSON.stringify(pupilData)}`)
@@ -91,7 +91,7 @@ export class BatchCheckNotifierDataService implements IBatchCheckNotifierDataSer
     // Only set the pupil.checkComplete flag if the pupil is still set to the same check, and a restart has not been given, and the
     // pupil has not been marked as not attending.
     if (pupil !== undefined &&
-      pupil.attendanceCode === null &&
+      pupil.attendanceId === null &&
       !pupil.restartAvailable &&
       checkIdToComplete !== undefined &&
       pupil.currentCheckId === checkIdToComplete) {
