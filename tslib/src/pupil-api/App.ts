@@ -1,6 +1,3 @@
-import * as path from 'path'
-import * as fs from 'fs'
-import * as dotenv from 'dotenv'
 import express from 'express'
 import * as bodyParser from 'body-parser'
 import cors from 'cors'
@@ -13,18 +10,6 @@ import pingRoute from './routes/ping'
 import headRoute from './routes/head'
 import * as corsOptions from './helpers/cors-options'
 import { initLogger } from './helpers/logger'
-
-const globalDotEnvFile = path.join(__dirname, '..', '..', '.env')
-try {
-  if (fs.existsSync(globalDotEnvFile)) {
-    console.log('globalDotEnvFile found', globalDotEnvFile)
-    dotenv.config({ path: globalDotEnvFile })
-  } else {
-    console.log('No .env file found at project root')
-  }
-} catch (error) {
-  console.error(error)
-}
 
 // Creates and configures an ExpressJS web server.
 class App {

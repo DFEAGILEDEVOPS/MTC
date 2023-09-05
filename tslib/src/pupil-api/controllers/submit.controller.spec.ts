@@ -1,12 +1,11 @@
 import { SubmitController } from './submit.controller'
 import * as httpMocks from 'node-mocks-http'
-import type { Request } from 'express'
-import { CheckSubmitService, type ICheckSubmitService } from '../services/check-submit.service'
+import type { Request, Response } from 'express'
+import logger from '../services/log.service'
 
 let req: Request
-let res: any
+let res: Response
 let sut: SubmitController
-let checkSubmitService: ICheckSubmitService
 
 function createMockRequest (contentType: string): any {
   return httpMocks.createRequest({
@@ -24,8 +23,34 @@ describe('submit controller', () => {
     req = createMockRequest('application/json')
     req.body = { checkCode: '38f666df-244c-4dff-828f-4ffad7e60e4b' }
     res = httpMocks.createResponse()
-    checkSubmitService = new CheckSubmitService()
-    sut = new SubmitController(checkSubmitService)
-    jest.spyOn(checkSubmitService, 'submit')
+    sut = new SubmitController()
+  })
+
+  test('returns an 400 error if the request is not JSON', async () => {
+    req = createMockRequest('text/html')
+    jest.spyOn(logger, 'error').mockImplementation()
+    await sut.postSubmit(req, res)
+    expect(res.statusCode).toBe(400)
+  })
+
+  test('allows a content-type of application/json', async () => {
+    req = createMockRequest('application/json')
+    req.headers.authorization = 'Bearer 123'
+    req.body = { checkCode: '38f666df-244c-4dff-828f-4ffad7e60e4b' }
+    await sut.postSubmit(req, res)
+    expect(res.statusCode).toBe(200)
+  })
+
+  test('returns 401 if the JWT is not present', async () => {
+    await sut.postSubmit(req, res)
+    expect(res.statusCode).toBe(401)
+  })
+
+  test('returns 401 if the JWT has exipred', async () => {
+    req = createMockRequest('application/json')
+    req.headers.authorization = 'Bearer 123'
+    req.body = { checkCode: '38f666df-244c-4dff-828f-4ffad7e60e4b' }
+    await sut.postSubmit(req, res)
+    expect(res.statusCode).toBe(401)
   })
 })
