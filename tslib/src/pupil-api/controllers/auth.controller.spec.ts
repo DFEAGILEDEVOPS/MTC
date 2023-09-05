@@ -12,7 +12,7 @@ class RedisPupilAuthServiceMock implements IPupilAuthenticationService {
 
 let req: Request
 let res: any
-let authController: RedisAuthController
+let sut: RedisAuthController
 let redisPupilAuthService: IPupilAuthenticationService
 
 describe('redis auth controller', () => {
@@ -21,7 +21,7 @@ describe('redis auth controller', () => {
     req.body = { schoolPin: 'pin1', pupilPin: 'pin2', buildVersion: '1' }
     res = httpMocks.createResponse()
     redisPupilAuthService = new RedisPupilAuthServiceMock()
-    authController = new RedisAuthController(redisPupilAuthService)
+    sut = new RedisAuthController(redisPupilAuthService)
     jest.spyOn(redisPupilAuthService, 'authenticate')
   })
 
@@ -32,7 +32,7 @@ describe('redis auth controller', () => {
   test('returns an 400 error if the request is not JSON', async () => {
     req = createMockRequest('text/html')
     jest.spyOn(logger, 'error').mockImplementation()
-    await authController.postAuth(req, res)
+    await sut.postAuth(req, res)
     expect(res.statusCode).toBe(400)
     const data = JSON.parse(res._getData())
     expect(data.error).toBe('Bad request')
@@ -46,7 +46,7 @@ describe('redis auth controller', () => {
       pupilPin: '1234',
       buildVersion: '123'
     }
-    await authController.postAuth(req, res)
+    await sut.postAuth(req, res)
     expect(res.statusCode).toBe(200)
   })
 
@@ -58,13 +58,13 @@ describe('redis auth controller', () => {
       pupilPin: '1234',
       buildVersion: '123'
     }
-    await authController.postAuth(req, res)
+    await sut.postAuth(req, res)
     expect(res.statusCode).toBe(200)
   })
 
   test('returns unauthorised if the login failed', async () => {
     jest.spyOn(logger, 'error').mockImplementation()
-    await authController.postAuth(req, res)
+    await sut.postAuth(req, res)
     const data = JSON.parse(res._getData())
     expect(res.statusCode).toBe(401)
     expect(data.error).toBe('Unauthorised')
@@ -76,7 +76,7 @@ describe('redis auth controller', () => {
       pupilPin: '1234',
       buildVersion: '123'
     }
-    await authController.postAuth(req, res)
+    await sut.postAuth(req, res)
     expect(redisPupilAuthService.authenticate).not.toHaveBeenCalled()
     const data = JSON.parse(res._getData())
     expect(res.statusCode).toBe(401)
@@ -89,7 +89,7 @@ describe('redis auth controller', () => {
       schoolPin: '1234',
       buildVersion: '123'
     }
-    await authController.postAuth(req, res)
+    await sut.postAuth(req, res)
     expect(redisPupilAuthService.authenticate).not.toHaveBeenCalled()
     const data = JSON.parse(res._getData())
     expect(res.statusCode).toBe(401)
@@ -103,7 +103,7 @@ describe('redis auth controller', () => {
       schoolPin: 'def4ger'
       // buildVersion: '42' // we do not want a build version
     }
-    await authController.postAuth(req, res)
+    await sut.postAuth(req, res)
     expect(redisPupilAuthService.authenticate).not.toHaveBeenCalled()
     const data = JSON.parse(res._getData())
     expect(res.statusCode).toBe(401)
@@ -113,7 +113,7 @@ describe('redis auth controller', () => {
   test('returns a data packet to the client if authorisation is successful', async () => {
     jest.spyOn(redisPupilAuthService, 'authenticate').mockResolvedValue({})
 
-    await authController.postAuth(req, res)
+    await sut.postAuth(req, res)
     const data = JSON.parse(res._getData())
     expect(res.statusCode).toBe(200)
     expect(data).toBeDefined()
@@ -121,7 +121,7 @@ describe('redis auth controller', () => {
 
   test('returns a 401 if no redis preparedCheck found', async () => {
     jest.spyOn(redisPupilAuthService, 'authenticate').mockResolvedValue(undefined)
-    await authController.postAuth(req, res)
+    await sut.postAuth(req, res)
     expect(res.statusCode).toBe(401)
     const data = JSON.parse(res._getData())
     expect(data.error).toBe('Unauthorised')
@@ -134,7 +134,7 @@ describe('redis auth controller', () => {
       buildVersion: '123'
     }
     const redisPupilAuthServiceMock = jest.spyOn(redisPupilAuthService, 'authenticate').mockResolvedValue({})
-    await authController.postAuth(req, res)
+    await sut.postAuth(req, res)
     expect(res.statusCode).toBe(200) // it succeeds even though the leading space is superflous
     const authArgs = redisPupilAuthServiceMock.mock.calls[0]
     expect(authArgs[0]).toBe('abc') // leading space removed
@@ -147,7 +147,7 @@ describe('redis auth controller', () => {
       buildVersion: '123'
     }
     const redisPupilAuthServiceMock = jest.spyOn(redisPupilAuthService, 'authenticate').mockResolvedValue({})
-    await authController.postAuth(req, res)
+    await sut.postAuth(req, res)
     expect(res.statusCode).toBe(200) // it succeeds even though the trailing space is superflous
     const authArgs = redisPupilAuthServiceMock.mock.calls[0]
     expect(authArgs[0]).toBe('def') // trailing space removed
@@ -160,7 +160,7 @@ describe('redis auth controller', () => {
       buildVersion: '123'
     }
     const redisPupilAuthServiceMock = jest.spyOn(redisPupilAuthService, 'authenticate').mockResolvedValue({})
-    await authController.postAuth(req, res)
+    await sut.postAuth(req, res)
     expect(res.statusCode).toBe(200) // it succeeds even though the trailing space is superflous
     const authArgs = redisPupilAuthServiceMock.mock.calls[0]
     expect(authArgs[0]).toBe('xyz') // trailing space removed

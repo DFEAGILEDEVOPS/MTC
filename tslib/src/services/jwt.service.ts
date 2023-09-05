@@ -1,31 +1,35 @@
 import * as jwt from 'jsonwebtoken'
 import config from '../config'
 
-const defaultJwtSignOptions: jwt.SignOptions = {
-  algorithm: 'ES256'
-}
-
-const createJwt = async (payload: any): Promise<any> => {
+const createJwtAsync = async (payload: any, signingOptions: jwt.SignOptions): Promise<any> => {
   return new Promise((resolve, reject) => {
-    jwt.sign(payload, config.PupilAuth.JwtSecret, defaultJwtSignOptions, (err, token) => {
+    jwt.sign(payload, config.PupilAuth.JwtSecret, signingOptions, (err, token) => {
       if (err !== undefined) return reject(err)
       resolve(token)
     })
   })
 }
 
-export class JwtService {
-  private readonly secret: string
+const verifyJwtAsync = async (token: string): Promise<any> => {
+  return new Promise((resolve, reject) => {
+    jwt.verify(token, config.PupilAuth.JwtSecret, (err, decoded) => {
+      if (err !== undefined) return reject(err)
+      resolve(decoded)
+    })
+  })
+}
 
-  constructor () {
-    this.secret = config.PupilAuth.JwtSecret
+export class JwtService implements IJwtService {
+  async sign (payload: object, signingOptions: jwt.SignOptions): Promise<string> {
+    return createJwtAsync(payload, signingOptions)
   }
 
-  async sign (payload: object): Promise<string> {
-    return createJwt(payload)
+  async verify (token: string): Promise<object | string> {
+    return verifyJwtAsync(token)
   }
+}
 
-  verify (token: string): object | string {
-    return jwt.verify(token, this.secret)
-  }
+export interface IJwtService {
+  sign (payload: object, signingOptions: jwt.SignOptions): Promise<string>
+  verify (token: string): Promise<object | string>
 }
