@@ -1,4 +1,3 @@
-
 export class RedisCacheItemMetadata {
   constructor (type: RedisItemDataType) {
     this.type = type

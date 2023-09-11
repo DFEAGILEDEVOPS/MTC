@@ -1,4 +1,3 @@
-
 import lzString from 'lz-string'
 
 export interface ICompressionService {
