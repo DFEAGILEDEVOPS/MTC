@@ -67,7 +67,7 @@
     "random-number-csprng": "^1.0.2",
     "ua-parser-js": "^1.0.33",
     "uuid": "^9.0.0",
-    "winston": "^3.9.0",
+    "winston": "^3.10.0",
     "winston-azure-application-insights": "^4.0.0"
   },
   "function-settings": {
