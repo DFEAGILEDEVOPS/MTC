@@ -1,4 +1,3 @@
-
 import { RandomGenerator } from './random-generator'
 
 let sut: RandomGenerator

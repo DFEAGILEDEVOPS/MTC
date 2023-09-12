@@ -1,4 +1,3 @@
-
 export enum JobStatusCode {
   Submitted = 'SUB',
   Processing = 'PRC',
