@@ -2,7 +2,7 @@ import type { Request, Response } from 'express'
 import logger from '../services/log.service'
 import * as apiResponse from '../helpers/api-response'
 import { type IJwtService, JwtService } from '../../services/jwt.service'
-import { CheckSubmitService, type ICheckSubmitService } from '../services/check-submit.service'
+import { CheckSubmitService, type ICheckSubmitService } from '../../services/check-submit.service'
 
 export class SubmitController {
   private readonly jwtService: IJwtService

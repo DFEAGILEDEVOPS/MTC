@@ -3,11 +3,13 @@ import * as httpMocks from 'node-mocks-http'
 import type { Request, Response } from 'express'
 import logger from '../services/log.service'
 import { type IJwtService } from '../../services/jwt.service'
+import { ICheckSubmitService } from '../../services/check-submit.service'
 
 let req: Request
 let res: Response
 let sut: SubmitController
 let jwtServiceMock: IJwtService
+let checkSubmitServiceMock: ICheckSubmitService
 
 function createMockRequest (contentType: string): any {
   return httpMocks.createRequest({
@@ -22,7 +24,7 @@ function createMockRequest (contentType: string): any {
 
 class JwtServiceMock implements IJwtService {
   async sign (payload: object, signingOptions: any): Promise<string> {
-    return '123'
+    return `${JSON.stringify(payload)}:${JSON.stringify(signingOptions)}`
   }
 
   async verify (token: string): Promise<string | object> {
@@ -30,13 +32,19 @@ class JwtServiceMock implements IJwtService {
   }
 }
 
+class CheckSubmitServiceMock implements ICheckSubmitService {
+  async submit (payload: any): Promise<void> {}
+}
+
+
 describe('submit controller', () => {
   beforeEach(() => {
     req = createMockRequest('application/json')
     req.body = { checkCode: '38f666df-244c-4dff-828f-4ffad7e60e4b' }
     res = httpMocks.createResponse()
     jwtServiceMock = new JwtServiceMock()
-    sut = new SubmitController(jwtServiceMock)
+    checkSubmitServiceMock = new CheckSubmitServiceMock()
+    sut = new SubmitController(jwtServiceMock, checkSubmitServiceMock)
   })
 
   test('returns an 400 error if the request is not JSON', async () => {

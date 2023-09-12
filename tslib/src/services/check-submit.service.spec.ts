@@ -14,6 +14,11 @@ describe('check submit service', () => {
     queueServiceMock = new SbQueueServiceMock()
     sut = new CheckSubmitService(queueServiceMock)
   })
+
+  test('throws an error if the payload is undefined', async () => {
+    await expect(sut.submit(undefined)).rejects.toThrow('payload is required')
+  })
+
   test('dispatches the payload onto the relevant queue as a message', async () => {
     const checkCode = 'ff69943f-143f-497a-b754-04d8376e2314'
     const payload = {

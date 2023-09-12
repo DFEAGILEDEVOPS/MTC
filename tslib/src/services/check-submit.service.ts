@@ -16,6 +16,9 @@ export class CheckSubmitService {
   }
 
   async submit (payload: any): Promise<void> {
+    if (payload === undefined) {
+      throw new Error('payload is required')
+    }
     return this.queueService.dispatch({ body: payload }, ServiceBusQueueName.checkSubmission)
   }
 }
