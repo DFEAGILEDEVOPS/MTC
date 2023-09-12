@@ -6,6 +6,7 @@ import { v4 as uuidv4 } from 'uuid'
 import * as appInsights from './helpers/app-insights'
 import logger from './services/log.service'
 import authRoutes from './routes/auth'
+import submitRoutes from './routes/submit'
 import pingRoute from './routes/ping'
 import headRoute from './routes/head'
 import * as corsOptions from './helpers/cors-options'
@@ -50,6 +51,7 @@ class App {
     /* API endpoints */
     this.express.use('/ping', pingRoute)
     this.express.use('/auth', authRoutes)
+    this.express.use('/submit', submitRoutes)
     this.express.use(headRoute)
 
     if (process.env.VERIFY_OWNER !== undefined) {

@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e
 
+env
+
 if [ -z "$AZP_URL" ]; then
   echo 1>&2 "error: missing AZP_URL environment variable"
   exit 1

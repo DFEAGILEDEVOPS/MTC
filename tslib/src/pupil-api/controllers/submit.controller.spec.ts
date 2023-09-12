@@ -3,7 +3,7 @@ import * as httpMocks from 'node-mocks-http'
 import type { Request, Response } from 'express'
 import logger from '../services/log.service'
 import { type IJwtService } from '../../services/jwt.service'
-import { ICheckSubmitService } from '../../services/check-submit.service'
+import { type ICheckSubmitService } from '../../services/check-submit.service'
 
 let req: Request
 let res: Response
@@ -35,7 +35,6 @@ class JwtServiceMock implements IJwtService {
 class CheckSubmitServiceMock implements ICheckSubmitService {
   async submit (payload: any): Promise<void> {}
 }
-
 
 describe('submit controller', () => {
   beforeEach(() => {
