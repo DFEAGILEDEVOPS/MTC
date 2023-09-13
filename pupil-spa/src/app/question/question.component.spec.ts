@@ -32,7 +32,7 @@ describe('QuestionComponent', () => {
   let storageServiceSetAnswerSpy: jasmine.Spy
 
   beforeEach(waitForAsync(() => {
-    storageService = new StorageServiceMock() as StorageService
+    storageService = new StorageServiceMock() as unknown as StorageService
     answerService = new AnswerService(storageService, new MonotonicTimeService(new WindowRefService()))
     TestBed.configureTestingModule({
       imports: [],

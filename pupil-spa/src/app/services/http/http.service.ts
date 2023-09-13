@@ -28,7 +28,7 @@ export class HttpService {
     try {
       return this.doPost(url, body, this.config.retryTimes, new HttpHeaders( { 'Content-Type': 'application/json' }));
     } catch (error) {
-      console.log(`http post error: status was ${error.status} - ${error.message}`, error);
+      console.error(`http post error: status was ${error.status} - ${error.message}`, error);
       throw error;
     }
   }
@@ -79,7 +79,7 @@ export class HttpService {
               case 502: /* Bad gateway */
               case 503: /* Service unavailable */
               case 504: /* Gateway timeout */
-                console.error('http-service: error: (will attempt retry):', error);
+                // console.error('http-service: error: (will attempt retry):', error);
                 return true;
               default:
                 /**
