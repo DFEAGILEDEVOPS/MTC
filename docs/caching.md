@@ -23,7 +23,7 @@ Key format | parameters | Description
  `checkForms:${checkWindowId}:live:${isLiveCheck}` | checkWindowId, isLiveCheck | returns active check forms for specified check window and form type
  `sasToken:${queueName}` | queueName | returns the active sas token for the specified storage queue
  `lacodes` | (none) | returns the set of LA codes for schools
+`qrcodeurl:${url}` | URL | The url the QR Code should use to direct users to the Pupil App
 `result:${schoolId}` | schoolId | returns the school results dataset
 `serviceMessage` | (none) | returns the current system wide service message
 `settings` | (none) | returns system wide settings
-
