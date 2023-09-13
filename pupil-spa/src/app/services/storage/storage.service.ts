@@ -201,7 +201,7 @@ export class StorageService implements IStorageService {
     this.setItem(tokensStorageKey, token);
   }
 
-  private setItem(key: StorageKeyTypesAll, value: Object | Array<Object>): void {
+  protected setItem(key: StorageKeyTypesAll, value: Object | Array<Object>): void {
     if (!key) {
       throw new Error('key is required');
     }
@@ -212,7 +212,7 @@ export class StorageService implements IStorageService {
     }
   }
 
-  private getItem(key: StorageKeyTypesAll): any {
+  protected getItem(key: StorageKeyTypesAll): any {
     if (!key) {
       throw new Error('key is required');
     }
@@ -229,7 +229,7 @@ export class StorageService implements IStorageService {
     return item;
   }
 
-  private removeItem(key: StorageKeyTypesAll): void {
+  protected removeItem(key: StorageKeyTypesAll): void {
     if (!key) {
       throw new Error('key is required');
     }

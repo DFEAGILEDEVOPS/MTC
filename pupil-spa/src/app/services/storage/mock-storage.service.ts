@@ -1,43 +1,77 @@
-import { AccessArrangementsStorageKey, CheckStateStorageKey } from './storageKey'
-import { AccessArrangements } from '../../access-arrangements'
-import { Answer } from '../answer/answer.model'
-import { AuditEntry } from '../audit/auditEntry'
-import { Question } from '../question/question.model'
-import { IStorageService } from './storage.service'
+import { Injectable } from '@angular/core';
+import { StorageKeyTypesAll } from './storageKey'
+import { IStorageService, StorageService } from './storage.service'
 
-export class StorageServiceMock implements IStorageService {
-  clear() {}
-  getAccessArrangements (key: AccessArrangementsStorageKey) { return }
-  getAllItems () { return }
-  getCheckStartTime () { return }
-  getCheckState (key: CheckStateStorageKey) { return }
-  getCompletedSubmission () { return }
-  getConfig () { return }
-  getDeviceData () { return }
-  getFeedback () { return }
-  getKeys () { return [] }
-  getPendingSubmission () { return }
-  getPupil () { return }
-  getQuestions () { return }
-  getSchool () { return }
-  getToken () { return }
-  removeCheckStartTime () {}
-  removeCheckState () {}
-  removeTimeout () {}
-  setAccessArrangements (accessArrangements: AccessArrangements) {}
-  setAnswer (answer: Answer) {}
-  setAuditEntry (auditEntry: AuditEntry) {}
-  setCheckStartTime (checkStartTime: Number) {}
-  setCheckState (state: Number) {}
-  setCompletedSubmission (isCompleted: Boolean) {}
-  setConfig (config: Object) {}
-  setDeviceData (deviceData: any) {}
-  setFeedback (feedback: Object) {}
-  setInput (questionInput: Object) {}
-  setPendingSubmission (isPending: Boolean) {}
-  setPupil (pupilData: Object) {}
-  setQuestions (questions: Question[]) {}
-  setSchool (school: Object) {}
-  setTimeout (timeout: Object) {}
-  setToken (token: string) {}
+@Injectable({
+  providedIn: 'root' // singleton - shared storage
+})
+export class StorageServiceMock extends StorageService implements IStorageService {
+  public _localStorage = new Map<string, string>()
+  public id: number
+
+  constructor () {
+    super()
+    this.id =  Math.floor(Math.random() * 9999)
+  }
+
+  // Extends StorageService, just swaps out the localStorage for an in-memory map.
+  protected setItem(key: StorageKeyTypesAll, value: Object | Array<Object>): void {
+    if (!key) {
+      throw new Error('key is required');
+    }
+    try {
+      this._localStorage.set(key.toString(), JSON.stringify(value))
+    } catch (error) {
+      console.error('Storage-service-mock: error setting key: ', error)
+    }
+  }
+
+  protected getItem(key: StorageKeyTypesAll): any {
+    if (!key) {
+      throw new Error('key is required')
+    }
+    let item: string
+    try {
+      item = this._localStorage.get(key.toString());
+    } catch (error) {
+      console.error('Storage-service: error getting key: ', error)
+    }
+    // try/catch as not all localstorage items are JSON, e.g. ai_session
+    try {
+      item = JSON.parse(item);
+    } catch (_) { }
+    return item;
+  }
+
+  protected removeItem(key: StorageKeyTypesAll): void {
+    if (!key) {
+      throw new Error('key is required');
+    }
+    this._localStorage.delete(key.toString());
+  }
+
+  clear(): void {
+    this._localStorage.clear()
+  }
+
+  getAllItems(): Record<string, any> {
+    const output: Record<string, any> = {}
+    const storageKeys = Array.from(this._localStorage.keys())
+    storageKeys.reduce((obj: any, key: string) => {
+      let item = this._localStorage.get(key)
+      // try/catch as not all localstorage items are JSON, e.g. ai_session
+      try {
+        item = JSON.parse(item)
+      } catch (_) {
+        // do nothing, it wasn't JSON
+        console.error(_)
+       }
+     output[key] = item
+    }, {})
+    return output
+  }
+
+  getKeys(): string[] {
+    return Array.from(this._localStorage.keys())
+  }
 }
