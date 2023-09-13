@@ -1,7 +1,7 @@
 source 'http://rubygems.org'
 ruby "2.7.7"
 
-gem 'activesupport', '>= 7.0.4.3'
+gem 'activesupport', '>= 7.0.7.1'
 gem 'capybara-screenshot', '>= 1.0.26'
 gem 'capybara', '>= 3.38.0'
 gem 'cucumber', '>= 4.0.0'
