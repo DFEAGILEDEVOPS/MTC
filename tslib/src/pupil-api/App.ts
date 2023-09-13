@@ -11,6 +11,7 @@ import pingRoute from './routes/ping'
 import headRoute from './routes/head'
 import * as corsOptions from './helpers/cors-options'
 import { initLogger } from './helpers/logger'
+import { JwtService } from '../services/jwt.service'
 
 // Creates and configures an ExpressJS web server.
 class App {
@@ -23,6 +24,7 @@ class App {
     this.middleware()
     this.routes()
     appInsights.startInsightsIfConfigured().catch(e => { logger.error(e) })
+    JwtService.ensureJwtSecretIsConfigured()
   }
 
   // Configure Express middleware.

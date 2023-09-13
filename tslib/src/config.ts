@@ -81,7 +81,7 @@ export default {
   PupilAuth: {
     PreparedCheckExpiryAfterLoginSeconds: parseInt(parser.valueOrSubstitute(process.env.PREPARED_CHECK_EXPIRY_SECONDS, 1800), 10),
     CorsWhitelist: process.env.CORS_WHITELIST ?? '',
-    JwtSecret: process.env.PUPIL_AUTH_JWT_SECRET ?? 'jwt-secret'
+    JwtSecret: process.env.PUPIL_AUTH_JWT_SECRET ?? ''
   },
   ServiceBus: {
     ConnectionString: process.env.AZURE_SERVICE_BUS_CONNECTION_STRING,
