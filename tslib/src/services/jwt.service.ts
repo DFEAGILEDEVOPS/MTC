@@ -31,12 +31,6 @@ export class JwtService implements IJwtService {
   async verify (token: string): Promise<object | string> {
     return verifyJwtAsync(token)
   }
-
-  static ensureJwtSecretIsConfigured (): void {
-    if (isNullOrUndefined(config.PupilAuth.JwtSecret) || config.PupilAuth.JwtSecret === '') {
-      throw new Error('JWT secret is not configured.\n PUPIL_AUTH_JWT_SECRET environment variable must be set.')
-    }
-  }
 }
 
 export interface IJwtService {
