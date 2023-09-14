@@ -6,7 +6,7 @@ const sut = require('../../../services/retro-input-assistant.service')
 const dataService = require('../../../services/data-access/retro-input-assistant.data.service.js')
 const pupilId = 123
 const currentCheckId = 456
-const { PupilFrozenService } = require('../../../services/pupil-frozen.service/pupil-frozen.service')
+const { PupilFrozenService } = require('../../../services/pupil-frozen/pupil-frozen.service')
 
 function setupDefaultSpies () {
   jest.spyOn(dataService, 'getPupilIdAndCurrentCheckIdByUrlSlug').mockResolvedValue([{

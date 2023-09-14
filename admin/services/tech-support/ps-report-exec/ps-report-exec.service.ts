@@ -1,5 +1,5 @@
 import { PsReportExecDataService } from './ps-report-exec.data.service'
-import { JobService, JobStatus, JobType } from '../../job-service/job.service'
+import { JobService, JobStatus, JobType } from '../../job/job.service'
 const dateService = require('../../date.service')
 
 export class PsReportExecService {

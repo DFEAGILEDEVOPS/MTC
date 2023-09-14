@@ -11,7 +11,7 @@ const moment = require('moment')
 const queueMgmtService = require('../services/tech-support-queue-management.service')
 const resultsResyncService = require('../services/tech-support/sync-results-resync.service')
 const { PsReportExecService } = require('../services/tech-support/ps-report-exec/ps-report-exec.service')
-const psReportLogsDownloadService = require('../services/tech-support/ps-report-logs.service/ps-report-logs.service').PsReportLogsDownloadService
+const psReportLogsDownloadService = require('../services/tech-support/ps-report-logs/ps-report-logs.service').PsReportLogsDownloadService
 
 const controller = {
   /**

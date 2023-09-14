@@ -11,7 +11,7 @@ const headteacherDeclarationService = {}
 const settingService = require('./setting.service')
 const redisCacheService = require('../services/data-access/redis-cache.service')
 const redisKeyService = require('../services/redis-key.service')
-const { PupilFrozenService } = require('./pupil-frozen.service/pupil-frozen.service')
+const { PupilFrozenService } = require('./pupil-frozen/pupil-frozen.service')
 
 /**
  * @typedef {Object} hdfPupil

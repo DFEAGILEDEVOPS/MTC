@@ -185,5 +185,8 @@ module.exports = {
       BaseAdminUrl: process.env.FUNCTIONS_THROTTLED_BASE_ADMIN_URL || 'http://localhost:7073/admin/functions',
       MasterKey: process.env.FUNCTIONS_THROTTLED_MASTER_KEY || ''
     }
+  },
+  PupilAuth: {
+    JwtSecret: process.env.PUPIL_AUTH_JWT_SECRET ?? ''
   }
 }

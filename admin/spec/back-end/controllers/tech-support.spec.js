@@ -7,7 +7,7 @@ const payloadService = require('../../../services/payload.service')
 const administrationMessageService = require('../../../services/administration-message.service')
 const queueMgmtService = require('../../../services/tech-support-queue-management.service')
 const resultsResyncService = require('../../../services/tech-support/sync-results-resync.service')
-const { PsReportLogsDownloadService } = require('../../../services/tech-support/ps-report-logs.service/ps-report-logs.service')
+const { PsReportLogsDownloadService } = require('../../../services/tech-support/ps-report-logs/ps-report-logs.service')
 const { PsReportExecService } = require('../../../services/tech-support/ps-report-exec/ps-report-exec.service')
 
 let sut

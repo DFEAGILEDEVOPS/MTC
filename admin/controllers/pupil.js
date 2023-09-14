@@ -16,7 +16,7 @@ const businessAvailabilityService = require('../services/business-availability.s
 const pupilEditService = require('../services/pupil-edit.service')
 const ValidationError = require('../lib/validation-error')
 const logger = require('../services/log.service').getLogger()
-const { PupilHistoryService } = require('../services/pupil-history-service/pupil-history-service')
+const { PupilHistoryService } = require('../services/pupil-history/pupil-history-service')
 
 const controller = {
   /**

@@ -12,7 +12,7 @@ const accessArrangementsErrorMessages = require('../../../lib/errors/access-arra
 const preparedCheckSyncService = require('../../../services/prepared-check-sync.service')
 const moment = require('moment-timezone')
 const checkWindowService = require('../../../services/check-window-v2.service')
-const { PupilFrozenService } = require('../../../services/pupil-frozen.service/pupil-frozen.service')
+const { PupilFrozenService } = require('../../../services/pupil-frozen/pupil-frozen.service')
 
 describe('accessArrangementsService', () => {
   afterEach(() => {

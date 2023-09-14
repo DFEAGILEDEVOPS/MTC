@@ -12,7 +12,7 @@ const groupService = require('../../../services/group.service')
 const headteacherDeclarationService = require('../../../services/headteacher-declaration.service')
 const resultPageAvailabilityService = require('../../../services/results-page-availability.service')
 const resultService = require('../../../services/result.service')
-const ctfService = require('../../../services/ctf-service/ctf.service')
+const ctfService = require('../../../services/ctf/ctf.service')
 const checkWindowPhaseConsts = require('../../../lib/consts/check-window-phase')
 
 describe('results controller:', () => {

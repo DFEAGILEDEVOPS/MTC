@@ -1,7 +1,7 @@
 import { DiscretionaryRestartService } from './discretionary-restart.service'
 import { DiscretionaryRestartDataService } from './data-access/discretionary-restart.data.service'
 import * as uuid from 'uuid'
-import { PupilFrozenService } from '../pupil-frozen.service/pupil-frozen.service'
+import { PupilFrozenService } from '../pupil-frozen/pupil-frozen.service'
 
 const userId = 456
 

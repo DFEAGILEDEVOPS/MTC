@@ -84,6 +84,7 @@ Env Var | Type | Default value | Required | Components | Description
  PS_REPORT_MAX_FILE_UPLOAD_MB | Int | 104857600 | Optional | AA | Not used?
  PUPIL_APP_URL | String | NULL | Required | AA | The URL of the pupil app - used to generate the QR code on the pin slips
  PUPIL_APP_USE_COMPRESSION | Boolean | true | Optional | AA | Determines whether the pupil app should compress the payload before sending it back.  Leave this as true.
+ PUPIL_AUTH_JWT_SECRET | String | NULL | Required | AA,PAPI | 32 char minimum value.  Secret used to sign and verify JWT token for pupil check submission.  Pupil API will fail to start without a configured value of minimum length.
  PUPIL_CENSUS_MAX_FILE_UPLOAD_MB | Int | 104857600 | Optional | AA | Not used?
  REDIS_HOST | String | NULL | Required | AA, FC, FC, PAPI | The redis hostname or IP address.
  REDIS_KEY | String | NULL | Optional | AA, FC, FT, PAPI | The redis secret key to use to connect to a password enabled Redis server.

@@ -6,7 +6,7 @@ const pupilAgeReasonService = require('../../../services/pupil-age-reason.servic
 const pupilDataService = require('../../../services/data-access/pupil.data.service')
 const pupilEditService = require('../../../services/pupil-edit.service')
 const redisCacheService = require('../../../services/data-access/redis-cache.service')
-const { PupilFrozenService } = require('../../../services/pupil-frozen.service/pupil-frozen.service')
+const { PupilFrozenService } = require('../../../services/pupil-frozen/pupil-frozen.service')
 
 describe('pupilEditService', () => {
   let pupil1

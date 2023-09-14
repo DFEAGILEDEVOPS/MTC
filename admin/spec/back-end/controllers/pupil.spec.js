@@ -19,7 +19,7 @@ const pupilEditService = require('../../../services/pupil-edit.service')
 const ValidationError = require('../../../lib/validation-error')
 const sut = require('../../../controllers/pupil')
 const csvService = require('../../../services/csv-file.service')
-const { PupilHistoryService } = require('../../../services/pupil-history-service/pupil-history-service')
+const { PupilHistoryService } = require('../../../services/pupil-history/pupil-history-service')
 
 describe('pupil controller:', () => {
   let next
