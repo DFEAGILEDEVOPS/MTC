@@ -1,4 +1,3 @@
-
 import * as mssql from 'mssql'
 import { SqlService } from '../sql/sql.service'
 import * as RA from 'ramda-adjunct'

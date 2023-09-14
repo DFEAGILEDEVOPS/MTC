@@ -23,6 +23,7 @@ describe('SpeechService', () => {
   describe('constructor', () => {
     beforeEach(() => {
       spyOn(window, 'addEventListener');
+      spyOn(console, 'log')
     });
 
     it('should be created', inject([SpeechService], (service: SpeechService) => {

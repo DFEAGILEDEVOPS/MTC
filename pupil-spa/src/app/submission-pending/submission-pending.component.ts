@@ -35,6 +35,7 @@ export class SubmissionPendingComponent implements OnInit, AfterViewInit, OnDest
     this.title = queryParams && queryParams.unfinishedCheck ?
       'Uploading previous check' : 'You have finished';
     const startTime = Date.now();
+    // Submit the payload to the queue endpoint
     await this.checkCompleteService.submit(startTime);
   }
 
