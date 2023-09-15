@@ -25,6 +25,8 @@ const redisKeyService = require('../redis-key.service')
 const oneMonthInSeconds = 2592000
 const schoolPinService = require('./school-pin.service')
 const sqlErrorMessages = require('../data-access/sql-mtc-error-codes')
+const { JwtService } = require('../jwt/jwt.service')
+const jwtService = JwtService.getInstance()
 
 const checkStartService = {
   validatePupilsAreStillEligible: async function (pupils, pupilIds, dfeNumber) {
@@ -269,6 +271,15 @@ const checkStartService = {
       const pupilConfig = pupilConfigs[o.pupil_id]
       pupilConfig.practice = !o.check_isLiveCheck
       pupilConfig.compressCompletedCheck = !!config.PupilAppUseCompression
+      const jwtSigningOptions = {
+        issuer: 'MTC Admin', // the issuer
+        subject: o.pupil_id.toString(), // the subject
+        expiresIn: moment().add(5, 'days').unix(), // expires in 5 days
+        // notBefore: Math.floor(Date.now() / 1000), // not before
+      }
+      const pupilJwtToken = await jwtService.sign({
+        checkCode: o.check_checkCode
+      }, jwtSigningOptions)
 
       const payload = {
         checkCode: o.check_checkCode,
@@ -291,9 +302,7 @@ const checkStartService = {
           checkStarted: tokens[queueNameService.NAMES.CHECK_STARTED],
           pupilPreferences: tokens[queueNameService.NAMES.PUPIL_PREFS],
           pupilFeedback: tokens[queueNameService.NAMES.PUPIL_FEEDBACK],
-          jwt: {
-            token: 'token-disabled' // o.pupil_jwtToken
-          }
+          jwt: pupilJwtToken
         },
         questions: checkFormService.prepareQuestionData(
           JSON.parse(o.checkForm_formData)

@@ -15,6 +15,9 @@ const queueNameService = require('../storage-queue-name-service')
 const schoolPinService = require('./school-pin.service')
 const pinService = require('../pin.service')
 const config = require('../../config')
+const { JwtService } = require('../jwt/jwt.service')
+const jwtService = JwtService.getInstance()
+const R = require('ramda')
 
 const checkFormMock = {
   id: 100,
@@ -310,6 +313,39 @@ describe('check-start.service', () => {
         expect(Object.keys(res[0].questions[0])).toContain('order')
         expect(Object.keys(res[0].questions[0])).toContain('factor1')
         expect(Object.keys(res[0].questions[0])).toContain('factor2')
+      })
+
+      test('generates a new jwt token for each pupil', async () => {
+        const checks = [
+          mockCheckFormAllocationLive,
+          mockCheckFormAllocationLive,
+          mockCheckFormAllocationLive
+        ]
+        jest.spyOn(jwtService, 'sign').mockReturnValue('my.jwt.token')
+        const res = await checkStartService.createPupilCheckPayloads(checks, 1)
+        expect(res[0].tokens.jwt).toBeDefined()
+        expect(jwtService.sign).toHaveBeenCalledTimes(checks.length)
+      })
+
+      test('check code in each token is unique to payload', async () => {
+        const checkformAllocation1 = R.clone(mockCheckFormAllocationLive)
+        checkformAllocation1.checkFormAllocation_checkCode = 'check_1'
+        const checkformAllocation2 = R.clone(mockCheckFormAllocationLive)
+        checkformAllocation2.checkFormAllocation_checkCode = 'check_2'
+        const checkformAllocation3 = R.clone(mockCheckFormAllocationLive)
+        checkformAllocation3.checkFormAllocation_checkCode = 'check_3'
+        const checks = [
+          checkformAllocation1,
+          checkformAllocation2,
+          checkformAllocation3
+        ]
+        const res = await checkStartService.createPupilCheckPayloads(checks, 1)
+        // console.dir(res)
+        expect(res).toHaveLength(3)
+        const jwt1 = res[0].tokens.jwt
+        const verified = await jwtService.verify(jwt1)
+        console.log(verified)
+        expect(res[0].tokens.jwt.checkCode).toEqual('check_1')
       })
     })
   })

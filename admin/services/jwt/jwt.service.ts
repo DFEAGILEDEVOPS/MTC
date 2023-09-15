@@ -31,6 +31,15 @@ export class JwtService implements IJwtService {
   async verify (token: string): Promise<object | string> {
     return verifyJwtAsync(token)
   }
+
+  static instance: JwtService
+
+  static getInstance (): JwtService {
+    if (this.instance === undefined) {
+      this.instance = new JwtService()
+    }
+    return this.instance
+  }
 }
 
 export interface IJwtService {
