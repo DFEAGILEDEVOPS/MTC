@@ -43,6 +43,7 @@ module.exports = async function (req, userIdentifier, password, done) {
       UserName: userIdentifier,
       UserType: 'SchoolNom',
       School: user.dfeNumber,
+      SchoolName: user.schoolName, // added so that we can display the school impersonation details for helpdesk and staAdmin roles
       schoolId: user.schoolId,
       timezone: user.timezone,
       role: user.roleName,
