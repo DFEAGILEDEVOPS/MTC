@@ -275,7 +275,7 @@ const checkStartService = {
         issuer: 'MTC Admin', // the issuer
         subject: o.pupil_id.toString(), // the subject
         expiresIn: moment().add(5, 'days').unix(), // expires in 5 days
-        // notBefore: Math.floor(Date.now() / 1000), // not before
+        notBefore: Math.floor(Date.now() / 1000) // not before
       }
       const pupilJwtToken = await jwtService.sign({
         checkCode: o.check_checkCode

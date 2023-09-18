@@ -20,6 +20,8 @@ import { UserService } from '../services/user/user.service'
 import { WarmupQuestionService } from '../services/question/warmup-question.service'
 import { WindowRefService } from '../services/window-ref/window-ref.service'
 import { loadConfigMockService } from '../services/config/config.service'
+import { QrCodeUsageService } from '../services/qr-code-usage/qr-code-usage.service'
+import { AuditService } from '../services/audit/audit.service'
 
 describe('LoginComponent', () => {
   let component: LoginComponent
@@ -35,6 +37,7 @@ describe('LoginComponent', () => {
   let loginErrorService
   let loginErrorDiagnosticsService
   let mockDeviceService
+  let qrCodeUsageService: QrCodeUsageService
 
   beforeEach(waitForAsync(() => {
     mockRouter = {
@@ -74,7 +77,9 @@ describe('LoginComponent', () => {
         { provide: QuestionService, useClass: QuestionServiceMock },
         { provide: Router, useValue: mockRouter },
         { provide: UserService, useValue: mockUserService },
-        { provide: WarmupQuestionService, useClass: QuestionServiceMock }
+        { provide: WarmupQuestionService, useClass: QuestionServiceMock },
+        { provide: QrCodeUsageService, useClass: QrCodeUsageService }, // original
+        { provide: AuditService, useClass: AuditService } // original
       ]
     })
     mockQuestionService = injector.inject(QuestionService)
@@ -89,6 +94,7 @@ describe('LoginComponent', () => {
     TestBed.inject(StorageService)
     injector.inject(WindowRefService)
     mockDeviceService = TestBed.inject(DeviceService)
+    qrCodeUsageService = TestBed.inject(QrCodeUsageService)
 
     spyOn(mockQuestionService, 'initialise')
     spyOn(mockWarmupQuestionService, 'initialise')
@@ -205,6 +211,27 @@ describe('LoginComponent', () => {
       expect(mockRouter.navigate).toHaveBeenCalledWith(['colour-choice'])
       expect(mockPupilPrefsService.loadPupilPrefs).toHaveBeenCalled()
     }))
+
+    it('should call the QrCodeService to store in-memory transactions to local storage', async () => {
+      spyOn(qrCodeUsageService, 'postLoginHook').and.callThrough()
+      // Reasons for storing them: 1) to pass them as auditEvents to the DB and
+      // 2) to allow the app re-initialise should the app be reloaded whilst running.
+
+      // Test setup - populate the QrCodeUsage service with some variables
+      qrCodeUsageService.qrCodeArrival()
+      qrCodeUsageService.qrCodeSubsequentAppUsageIfNeeded()
+      qrCodeUsageService.qrCodeSubsequentAppUsageIfNeeded()
+      // Set up spies
+      spyOn(qrCodeUsageService, 'storeToLocalStorage')
+
+      // Test Execution
+      await component.onSubmit('goodPin', 'goodPin')
+
+      // Verification
+      expect(qrCodeUsageService.postLoginHook).toHaveBeenCalled()
+      // deeper verification
+      expect(qrCodeUsageService.storeToLocalStorage).toHaveBeenCalled()
+    })
   })
 
   describe('should fail logging in when PIN(s) are invalid', () => {

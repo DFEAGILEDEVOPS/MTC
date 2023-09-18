@@ -30,6 +30,7 @@ describe('HttpService', () => {
     // service = new HttpService(new HttpClient(new HttpXhrBackend({ build: () => new XMLHttpRequest() })));
     httpClientSpy = jasmine.createSpyObj('HttpClient', ['get', 'post', 'request'])
     httpService = new HttpService(httpClientSpy as any)
+    spyOn(console, 'error') // service is quite verbose, so reduce the noise.
   })
 
   it('should be created', () => {

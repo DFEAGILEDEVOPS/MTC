@@ -35,17 +35,17 @@
     "@angular/platform-server": "^14.2.10",
     "@angular/router": "^14.2.10",
     "@babel/runtime": "^7.21.0",
-    "@microsoft/applicationinsights-web": "^2.8.10",
+    "@microsoft/applicationinsights-web": "^2.8.15",
     "core-js": "2.6.12",
     "dotenv": "^16.0.3",
     "lz-string": "^1.5.0",
     "ngx-cookie-service": "^14.0.1",
     "polly-js": "^1.8.2",
     "rxjs": "^6.5.3",
-    "sass": "^1.63.2",
+    "sass": "^1.66.1",
     "tslib": "^2.5.2",
     "uuid": "^9.0.0",
-    "zone.js": "~0.12.0"
+    "zone.js": "~0.13.1"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^14.2.5",

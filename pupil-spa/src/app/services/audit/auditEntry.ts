@@ -2,14 +2,43 @@ import { MonotonicTimeService } from '../monotonic-time/monotonic-time.service'
 import { MonotonicTime } from '../../monotonic-time'
 import { Injectable } from '@angular/core'
 
-export type AuditEntryType = 'PupilPrefsAPICalled' | 'PupilPrefsAPICallSucceeded' | 'PupilPrefsAPICallFailed' |
-  'WarmupStarted' | 'WarmupIntroRendered' | 'WarmupCompleteRendered'  | 'QuestionIntroRendered'|
-  'CheckStartedApiCalled' | 'CheckStartedAPICallSucceeded' | 'CheckStartedAPICallFailed' |
-  'CheckSubmissionPending' | 'CheckSubmissionApiCalled' | 'CheckSubmissionAPICallSucceeded' |
-  'CheckSubmissionAPIFailed' | 'CheckSubmissionFailed' | 'SessionExpired' | 'CheckStarted' | 'QuestionRendered' | 'QuestionAnswered' |
-  'PauseRendered' | 'RefreshDetected' |'UtteranceStarted' | 'UtteranceEnded' | 'QuestionReadingStarted' | 'QuestionReadingEnded' |
-  'QuestionTimerStarted' | 'QuestionTimerEnded' | 'QuestionTimerCancelled' | 'AppError' |
-  'AppVisible' | 'AppHidden' | 'RefreshOrTabCloseDetected';
+export type AuditEntryType =
+  'AppError' |
+  'AppHidden' |
+  'AppVisible' |
+  'CheckStarted' |
+  'CheckStartedApiCalled' |
+  'CheckStartedAPICallFailed' |
+  'CheckStartedAPICallSucceeded' |
+  'CheckSubmissionApiCalled' |
+  'CheckSubmissionAPICallSucceeded' |
+  'CheckSubmissionAPIFailed' |
+  'CheckSubmissionFailed' |
+  'CheckSubmissionPending' |
+  'LoginSuccess' |
+  'PauseRendered' |
+  'PupilPrefsAPICalled' |
+  'PupilPrefsAPICallFailed' |
+  'PupilPrefsAPICallSucceeded' |
+  'QrCodeArrival' |
+  'QrCodeSubsequentUsage' |
+  'QuestionAnswered' |
+  'QuestionIntroRendered'|
+  'QuestionReadingEnded' |
+  'QuestionReadingStarted' |
+  'QuestionRendered' |
+  'QuestionTimerCancelled' |
+  'QuestionTimerEnded' |
+  'QuestionTimerStarted' |
+  'RefreshDetected' |
+  'RefreshOrTabCloseDetected' |
+  'SessionExpired' |
+  'UtteranceEnded' |
+  'UtteranceStarted' |
+  'WarmupCompleteRendered'  |
+  'WarmupIntroRendered' |
+  'WarmupStarted'
+  ;
 
 @Injectable({
   providedIn: 'root'
@@ -178,6 +207,27 @@ export class AuditEntryFactory {
   createRefreshOrTabCloseDetected(data?: any): RefreshOrTabCloseDetected {
     const mtime = this.monotonicTimeService.getMonotonicDateTime()
     return new RefreshOrTabCloseDetected(mtime, data)
+  }
+
+  createQrCodeArrivalAuditEntryClass(mtime?: MonotonicTime, data?: any): QrCodeArrivalAuditEntryClass {
+    if (mtime === undefined) {
+      mtime = this.monotonicTimeService.getMonotonicDateTime()
+    }
+    return new QrCodeArrivalAuditEntryClass(mtime, data)
+  }
+
+  createQrCodeSubsequentUsageAuditEntryClass(mtime?: MonotonicTime, data?: any): QrCodeArrivalAuditEntryClass {
+    if (mtime === undefined) {
+      mtime = this.monotonicTimeService.getMonotonicDateTime()
+    }
+    return new QrCodeSubsequentUsageAuditEntryClass(mtime, data)
+  }
+
+  createLoginSuccessAuditEntryClass(mtime?: MonotonicTime, data?: any): QrCodeArrivalAuditEntryClass {
+    if (mtime === undefined) {
+      mtime = this.monotonicTimeService.getMonotonicDateTime()
+    }
+    return new LoginSuccessAuditEntryClass(mtime, data)
   }
 }
 
@@ -411,5 +461,26 @@ export class RefreshOrTabCloseDetected extends AuditEntry {
   constructor(mtime: MonotonicTime, data: any = {}) {
     data.monotonicTime = mtime.getDto()
     super('RefreshOrTabCloseDetected', mtime.getLegacyDate(), data);
+  }
+}
+
+export class QrCodeArrivalAuditEntryClass extends AuditEntry {
+  constructor(mtime: MonotonicTime, data: any = {}) {
+    data.monotonicTime = mtime.getDto()
+    super('QrCodeArrival', mtime.getLegacyDate(), data);
+  }
+}
+
+export class QrCodeSubsequentUsageAuditEntryClass extends AuditEntry {
+  constructor(mtime: MonotonicTime, data: any = {}) {
+    data.monotonicTime = mtime.getDto()
+    super('QrCodeSubsequentUsage', mtime.getLegacyDate(), data);
+  }
+}
+
+export class LoginSuccessAuditEntryClass extends AuditEntry {
+  constructor(mtime: MonotonicTime, data: any = {}) {
+    data.monotonicTime = mtime.getDto()
+    super('LoginSuccess', mtime.getLegacyDate(), data);
   }
 }

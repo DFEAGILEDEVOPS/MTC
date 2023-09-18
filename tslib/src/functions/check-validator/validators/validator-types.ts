@@ -1,4 +1,3 @@
-
 export interface ISubmittedCheckValidator {
   validate (check: any): CheckValidationResult
 }
