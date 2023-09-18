@@ -1,4 +1,3 @@
-
 export class AllowedWordsService {
   parse (wordset: string, bannedWords: string): Set<string> {
     const allowedWordsArray: string[] = wordset.split(',')

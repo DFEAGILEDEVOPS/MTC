@@ -8,10 +8,10 @@ export interface IMonotonicTimeDto {
 
 export class MonotonicTime {
   private readonly window: any;
-  private readonly timeOrigin: DOMHighResTimeStamp
-  private readonly now: DOMHighResTimeStamp
-  private readonly date: Date
-  private readonly sequenceNumber: number
+  private  timeOrigin: DOMHighResTimeStamp
+  private  now: DOMHighResTimeStamp
+  private  date: Date
+  private  sequenceNumber: number
 
   constructor (private windowRefService: WindowRefService, sequenceNumber: number) {
     this.window = this.windowRefService.nativeWindow
@@ -85,5 +85,36 @@ export class MonotonicTime {
 
   public toString (): string {
     return this.toJSON()
+  }
+
+  public set (date: string|Date, milliseconds: number, sequenceNumber: number): void {
+    let newDate: Date
+
+    if (typeof date === 'string') {
+      newDate = new Date(date)
+    }
+    if (date instanceof Date) {
+      newDate = date
+    }
+    if (!(newDate instanceof Date)) {
+      throw new Error(`Invalid date: ${date?.toString()}`)
+    }
+    this.date = newDate
+    this.timeOrigin = milliseconds
+    this.now = 0 // date lost in conversion, but the sum will be the same.
+    this.sequenceNumber = sequenceNumber
+    // Note: the MonotonicTimeService, which stores the sequence number, will itself reinitialise the stored sequence number to 0, but
+    // this is not likely to be an issue as the purpose of the sequence number is a secondary sort after the primary datetime sort.
+  }
+
+  public static comparator (a: MonotonicTime, b: MonotonicTime): number {
+    if (a.date.valueOf() < b.date.valueOf()) {
+      return -1
+    } else if (a.date.valueOf() > b.date.valueOf()) {
+      return 1
+    } else if (a.date.valueOf() === b.date.valueOf()) {
+      return a.sequenceNumber - b.sequenceNumber
+    }
+    return 0
   }
 }
