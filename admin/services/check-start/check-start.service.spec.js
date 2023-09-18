@@ -292,6 +292,10 @@ describe('check-start.service', () => {
           { queueName: queueNameService.NAMES.PUPIL_FEEDBACK, token: 'aab' },
           { queueName: queueNameService.NAMES.CHECK_SUBMIT, token: 'aab' }
         ])
+        const mockSignMethod = async (payload) => {
+          return payload.checkCode
+        }
+        jest.spyOn(jwtService, 'sign').mockImplementation(mockSignMethod)
       })
 
       test('throws an error if the check form allocation IDs are not supplied', async () => {
@@ -321,7 +325,6 @@ describe('check-start.service', () => {
           mockCheckFormAllocationLive,
           mockCheckFormAllocationLive
         ]
-        jest.spyOn(jwtService, 'sign').mockReturnValue('my.jwt.token')
         const res = await checkStartService.createPupilCheckPayloads(checks, 1)
         expect(res[0].tokens.jwt).toBeDefined()
         expect(jwtService.sign).toHaveBeenCalledTimes(checks.length)
@@ -329,23 +332,24 @@ describe('check-start.service', () => {
 
       test('check code in each token is unique to payload', async () => {
         const checkformAllocation1 = R.clone(mockCheckFormAllocationLive)
-        checkformAllocation1.checkFormAllocation_checkCode = 'check_1'
+        checkformAllocation1.checkCode = 'check_1'
         const checkformAllocation2 = R.clone(mockCheckFormAllocationLive)
-        checkformAllocation2.checkFormAllocation_checkCode = 'check_2'
+        checkformAllocation2.checkCode = 'check_2'
         const checkformAllocation3 = R.clone(mockCheckFormAllocationLive)
-        checkformAllocation3.checkFormAllocation_checkCode = 'check_3'
+        checkformAllocation3.checkCode = 'check_3'
         const checks = [
           checkformAllocation1,
           checkformAllocation2,
           checkformAllocation3
         ]
         const res = await checkStartService.createPupilCheckPayloads(checks, 1)
-        // console.dir(res)
         expect(res).toHaveLength(3)
         const jwt1 = res[0].tokens.jwt
-        const verified = await jwtService.verify(jwt1)
-        console.log(verified)
-        expect(res[0].tokens.jwt.checkCode).toEqual('check_1')
+        const jwt2 = res[1].tokens.jwt
+        const jwt3 = res[2].tokens.jwt
+        expect(jwt1).toStrictEqual('check_1')
+        expect(jwt2).toStrictEqual('check_2')
+        expect(jwt3).toStrictEqual('check_3')
       })
     })
   })

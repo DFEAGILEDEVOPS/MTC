@@ -235,11 +235,28 @@ const checkStartService = {
     return checkData
   },
   /**
-   * Return pupil login payloads
-   * The payload needs to contain everything the pupil needs to login and take the check
-   * @param {Array<any>} checks
-   * @param {number} schoolId - DB PK - school.id
-   * @return {Promise<Array>}
+    * @typedef {object} CheckData
+    * @property {string} check_checkCode
+    * @property {number} check_check_id
+    * @property {boolean} check_isLiveCheck
+    * @property {object} checkForm_formData
+    * @property {number} pupil_id
+    * @property {string} pupil_foreName
+    * @property {string} pupil_foreNameAlias
+    * @property {number} pupil_pin
+    * @property {string} pupil_lastName
+    * @property {string} pupil_lastNameAlias
+    * @property {moment.Moment} pupil_pinExpiresAt
+    * @property {string} pupil_uuid
+    * @property {string} school_name
+    * @property {string} school_pin
+    * @property {string} school_uuid
+    *
+    * Return pupil login payloads
+    * The payload needs to contain everything the pupil needs to login and take the check
+    * @param {Array<CheckData>} checks
+    * @param {number} schoolId - DB PK - school.id
+    * @return {Promise<Array>}
    */
   createPupilCheckPayloads: async function createPupilCheckPayloads (checks, schoolId) {
     if (!checks) {
