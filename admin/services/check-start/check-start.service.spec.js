@@ -349,6 +349,31 @@ describe('check-start.service', () => {
             notBefore: expect.any(Number)
           })
       })
+
+      test('jwt token should expire in 5 days', async () => {
+        const unixFiveDays = moment().add(5, 'days').unix()
+        const res = await checkStartService.createPupilCheckPayloads([mockCheckFormAllocationLive], 1)
+        expect(jwtService.sign).toHaveBeenCalledWith(expect.any(Object),
+          {
+            issuer: expect.any(String),
+            subject: expect.any(String),
+            expiresIn: unixFiveDays,
+            notBefore: expect.any(Number)
+          })
+      })
+
+      test('jwt token should have correct issuer', async () => {
+        const correctIssuer = 'MTC Admin'
+        const res = await checkStartService.createPupilCheckPayloads([mockCheckFormAllocationLive], 1)
+        console.dir(res)
+        expect(jwtService.sign).toHaveBeenCalledWith(expect.any(Object),
+          {
+            issuer: correctIssuer,
+            subject: expect.any(String),
+            expiresIn: expect.any(Number),
+            notBefore: expect.any(Number)
+          })
+      })
     })
   })
 })
