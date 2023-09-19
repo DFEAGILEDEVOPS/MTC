@@ -2,7 +2,6 @@
 
 const { JwtService } = require('../services/jwt/jwt.service')
 const config = require('../config')
-const { deepEqual } = require('assert')
 
 describe('jwt service', () => {
   let sut
