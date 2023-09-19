@@ -328,6 +328,7 @@ describe('check-start.service', () => {
           mockCheckFormAllocationLive
         ]
         const res = await checkStartService.createPupilCheckPayloads(checks, 1)
+        expect(res).toHaveLength(checks.length)
         expect(res[0].tokens.jwt).toBeDefined()
         expect(jwtService.sign).toHaveBeenCalledTimes(checks.length)
       })
@@ -339,8 +340,7 @@ describe('check-start.service', () => {
         const checks = [
           checkformAllocation1
         ]
-        const res = await checkStartService.createPupilCheckPayloads(checks, 1)
-        expect(res).toHaveLength(checks.length)
+        await checkStartService.createPupilCheckPayloads(checks, 1)
         expect(jwtService.sign).toHaveBeenCalledWith({ checkCode: checkCode1 },
           {
             issuer: 'MTC Admin',
@@ -352,7 +352,7 @@ describe('check-start.service', () => {
 
       test('jwt token should expire in 5 days', async () => {
         const unixFiveDays = moment().add(5, 'days').unix()
-        const res = await checkStartService.createPupilCheckPayloads([mockCheckFormAllocationLive], 1)
+        await checkStartService.createPupilCheckPayloads([mockCheckFormAllocationLive], 1)
         expect(jwtService.sign).toHaveBeenCalledWith(expect.any(Object),
           {
             issuer: expect.any(String),
@@ -364,8 +364,7 @@ describe('check-start.service', () => {
 
       test('jwt token should have correct issuer', async () => {
         const correctIssuer = 'MTC Admin'
-        const res = await checkStartService.createPupilCheckPayloads([mockCheckFormAllocationLive], 1)
-        console.dir(res)
+        await checkStartService.createPupilCheckPayloads([mockCheckFormAllocationLive], 1)
         expect(jwtService.sign).toHaveBeenCalledWith(expect.any(Object),
           {
             issuer: correctIssuer,
