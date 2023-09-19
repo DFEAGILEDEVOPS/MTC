@@ -17,8 +17,7 @@ if (user && (user.role === roles.helpdesk || user.role === roles.staAdmin) && !i
     <div class="signed-in-as">
         Signed in as <%= user.displayName %>
         <% if ((user && user.role === roles.helpdesk || user.role === role.staAdmin) && !isSubmitImpersonationUrl) { %>
-            <% console.log('user', user) %>
-            for <em><%= user.SchoolName %> DfE# <%= user.School %></em>
+            <p class="text-align-right">for <strong><%= user.SchoolName %></strong> DfE# <strong><%= user.School %></strong></p>
         <% } %>
     </div>
 <% } %>
