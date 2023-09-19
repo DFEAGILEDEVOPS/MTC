@@ -18,6 +18,8 @@ const config = require('../../config')
 const { JwtService } = require('../jwt/jwt.service')
 const jwtService = JwtService.getInstance()
 const R = require('ramda')
+const uuid = require('uuid')
+const moment = require('moment')
 
 const checkFormMock = {
   id: 100,
@@ -330,26 +332,22 @@ describe('check-start.service', () => {
         expect(jwtService.sign).toHaveBeenCalledTimes(checks.length)
       })
 
-      test('check code in each token is unique to payload', async () => {
+      test('payload should contain check code', async () => {
+        const checkCode1 = uuid.v4()
         const checkformAllocation1 = R.clone(mockCheckFormAllocationLive)
-        checkformAllocation1.checkCode = 'check_1'
-        const checkformAllocation2 = R.clone(mockCheckFormAllocationLive)
-        checkformAllocation2.checkCode = 'check_2'
-        const checkformAllocation3 = R.clone(mockCheckFormAllocationLive)
-        checkformAllocation3.checkCode = 'check_3'
+        checkformAllocation1.check_checkCode = checkCode1
         const checks = [
-          checkformAllocation1,
-          checkformAllocation2,
-          checkformAllocation3
+          checkformAllocation1
         ]
         const res = await checkStartService.createPupilCheckPayloads(checks, 1)
-        expect(res).toHaveLength(3)
-        const jwt1 = res[0].tokens.jwt
-        const jwt2 = res[1].tokens.jwt
-        const jwt3 = res[2].tokens.jwt
-        expect(jwt1).toStrictEqual('check_1')
-        expect(jwt2).toStrictEqual('check_2')
-        expect(jwt3).toStrictEqual('check_3')
+        expect(res).toHaveLength(checks.length)
+        expect(jwtService.sign).toHaveBeenCalledWith({ checkCode: checkCode1 },
+          {
+            issuer: 'MTC Admin',
+            subject: checkformAllocation1.pupil_id.toString(),
+            expiresIn: moment().add(5, 'days').unix(),
+            notBefore: expect.any(Number)
+          })
       })
     })
   })
