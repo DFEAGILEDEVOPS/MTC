@@ -37,4 +37,28 @@ describe('jwt service', () => {
     expect(decoded.sub).toBe(subject)
     expect(decoded.iat).toEqual(expect.any(Number))
   })
+
+  test('expired token fails verification', async () => {
+    const payload = { test: 'test' }
+    const options = {
+      expiresIn: '1ms'
+    }
+    const token = await sut.sign(payload, options)
+    await new Promise(resolve => setTimeout(resolve, 2))
+    await expect(sut.verify(token)).rejects.toThrow('jwt expired')
+  })
+
+  test('modified token fails verification', async () => {
+    const payload = { test: 'test' }
+    const token = await sut.sign(payload)
+    const modifiedToken = `${token}sdkfjsd`
+    await expect(sut.verify(modifiedToken)).rejects.toThrow('invalid signature')
+  })
+
+  test('same payload with different secret fails verification', async () => {
+    const payload = { test: 'test' }
+    const token = await sut.sign(payload)
+    config.PupilAuth.JwtSecret = 'different-secret'
+    await expect(sut.verify(token)).rejects.toThrow('invalid signature')
+  })
 })
