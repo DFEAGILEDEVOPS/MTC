@@ -283,16 +283,16 @@ const checkStartService = {
       throw error
     }
 
+    const fiveDays = '5d'
     for (const o of checks) {
       // Pass the isLiveCheck config in to the SPA
       const pupilConfig = pupilConfigs[o.pupil_id]
       pupilConfig.practice = !o.check_isLiveCheck
       pupilConfig.compressCompletedCheck = !!config.PupilAppUseCompression
       const jwtSigningOptions = {
-        issuer: 'MTC Admin', // the issuer
-        subject: o.pupil_id.toString(), // the subject
-        expiresIn: moment().add(5, 'days').unix(), // expires in 5 days
-        notBefore: Math.floor(Date.now() / 1000) // not before
+        issuer: 'MTC Admin',
+        subject: o.pupil_id.toString(),
+        expiresIn: fiveDays // expires in 5 days
       }
       const pupilJwtToken = await jwtService.sign({
         checkCode: o.check_checkCode

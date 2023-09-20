@@ -19,7 +19,6 @@ const { JwtService } = require('../jwt/jwt.service')
 const jwtService = JwtService.getInstance()
 const R = require('ramda')
 const uuid = require('uuid')
-const moment = require('moment')
 
 const checkFormMock = {
   id: 100,
@@ -345,20 +344,18 @@ describe('check-start.service', () => {
           {
             issuer: 'MTC Admin',
             subject: checkformAllocation1.pupil_id.toString(),
-            expiresIn: moment().add(5, 'days').unix(),
-            notBefore: expect.any(Number)
+            expiresIn: '5d'
           })
       })
 
       test('jwt token should expire in 5 days', async () => {
-        const unixFiveDays = moment().add(5, 'days').unix()
+        const fiveDays = '5d'
         await checkStartService.createPupilCheckPayloads([mockCheckFormAllocationLive], 1)
         expect(jwtService.sign).toHaveBeenCalledWith(expect.any(Object),
           {
             issuer: expect.any(String),
             subject: expect.any(String),
-            expiresIn: unixFiveDays,
-            notBefore: expect.any(Number)
+            expiresIn: fiveDays
           })
       })
 
@@ -369,8 +366,7 @@ describe('check-start.service', () => {
           {
             issuer: correctIssuer,
             subject: expect.any(String),
-            expiresIn: expect.any(Number),
-            notBefore: expect.any(Number)
+            expiresIn: expect.any(String)
           })
       })
     })

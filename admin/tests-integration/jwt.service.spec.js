@@ -18,4 +18,23 @@ describe('jwt service', () => {
     const decoded = await sut.verify(token)
     expect(decoded.test).toBe('test')
   })
+
+  test('all payload properties are correctly set', async () => {
+    const payload = {
+      foo: 'bar'
+    }
+    const subject = '1234567890'
+    const options = {
+      issuer: 'MTC Admin',
+      subject: subject,
+      expiresIn: '5d'
+    }
+    const token = await sut.sign(payload, options)
+    const decoded = await sut.verify(token)
+    expect(decoded.exp).toEqual(expect.any(Number))
+    expect(decoded.foo).toBe('bar')
+    expect(decoded.iss).toBe('MTC Admin')
+    expect(decoded.sub).toBe(subject)
+    expect(decoded.iat).toEqual(expect.any(Number))
+  })
 })
