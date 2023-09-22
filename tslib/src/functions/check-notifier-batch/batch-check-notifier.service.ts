@@ -1,24 +1,27 @@
 import { type ICheckNotificationMessage, CheckNotificationType } from '../../schemas/check-notification-message'
 import { type IBatchCheckNotifierDataService, BatchCheckNotifierDataService } from './batch-check-notifier.data.service'
 import { type ITransactionRequest } from '../../sql/sql.service'
+import { ConsoleLogger, type ILogger } from '../../common/logger'
 
 export class BatchCheckNotifier {
   private readonly dataService: IBatchCheckNotifierDataService
+  private readonly logService: ILogger
 
-  constructor (batchCheckNotifierDataService?: IBatchCheckNotifierDataService) {
-    if (batchCheckNotifierDataService === undefined) {
-      batchCheckNotifierDataService = new BatchCheckNotifierDataService()
-    }
-    this.dataService = batchCheckNotifierDataService
+  constructor (batchCheckNotifierDataService?: IBatchCheckNotifierDataService, logger?: ILogger) {
+    this.logService = logger ?? new ConsoleLogger()
+    this.dataService = batchCheckNotifierDataService ?? new BatchCheckNotifierDataService(this.logService)
   }
 
   async notify (messages: ICheckNotificationMessage[]): Promise<void> {
     const requests: ITransactionRequest[] = []
-    messages.forEach(message => {
+    for (const message of messages) {
       switch (message.notificationType) {
         case CheckNotificationType.checkComplete:
-          requests.push(...this.dataService.createCheckCompleteRequest(message.checkCode))
+        {
+          const req = await this.dataService.createCheckCompleteRequest(message.checkCode)
+          requests.push(...req)
           break
+        }
         case CheckNotificationType.checkInvalid:
           requests.push(this.dataService.createProcessingFailedRequest(message.checkCode))
           break
@@ -26,7 +29,7 @@ export class BatchCheckNotifier {
           requests.push(this.dataService.createCheckReceivedRequest(message.checkCode))
           break
       }
-    })
+    }
     return this.dataService.executeRequestsInTransaction(requests)
   }
 }
