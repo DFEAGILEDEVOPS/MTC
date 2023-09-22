@@ -5,66 +5,6 @@ const sqlService = require('./sql.service')
 
 const pupilRestartDataService = {}
 
-/** SQL METHODS **/
-
-/**
- * Find latest restart for pupil
- * @param pupilId
- * @return {Promise.<object>}
- */
-pupilRestartDataService.sqlFindLatestRestart = async function (pupilId) {
-  const sql = `SELECT TOP 1 *
-  FROM [mtc_admin].[pupilRestart]
-  WHERE pupil_id=@pupilId AND isDeleted=0
-  ORDER BY createdAt DESC`
-  const params = [
-    {
-      name: 'pupilId',
-      value: pupilId,
-      type: TYPES.Int
-    }
-  ]
-  const result = await sqlService.query(sql, params)
-  return R.head(result)
-}
-
-/**
- * Find pupil's restart codes
- * @return {Promise.<{id:number, code:string, description: string}[]>}
- */
-pupilRestartDataService.sqlFindRestartCodes = async function () {
-  const sql = `
-      SELECT id, code, description
-        FROM [mtc_admin].[pupilRestartCode]
-       ORDER BY description ASC`
-  return sqlService.query(sql)
-}
-
-/**
- * Find pupil's restart reason description by id
- * @param id
- * @return {Promise.<string>}
- */
-pupilRestartDataService.sqlFindRestartReasonDescById = async function (id) {
-  const sql = `
-  SELECT
-    description
-  FROM [mtc_admin].[restartReasonLookup]
-  WHERE id=@id
-  ORDER BY description ASC`
-  const params = [
-    {
-      name: 'id',
-      value: id,
-      type: TYPES.Int
-    }
-  ]
-  const result = await sqlService.query(sql, params)
-  const obj = R.head(result)
-  // @ts-ignore
-  return R.prop('description', obj)
-}
-
 /**
  * Find restart reasons
  * @return {Promise<any>}
