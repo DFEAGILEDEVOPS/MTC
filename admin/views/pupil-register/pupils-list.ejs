@@ -41,14 +41,20 @@
                 <caption class="govuk-body govuk-table__caption">List of available pupils (<%= pupils.length || 0 %>)</caption>
                 <thead class="govuk-table__head">
                 <tr class="govuk-table__row">
-                    <th scope="col" class="govuk-table__header govuk-!-width-one-half">
+                    <th scope="col" class="govuk-table__header">
                         <a class="no-underline sortingLink">Pupil<span class="sort-icon asc"><span>Sort by pupil</span></span></a>
                     </th>
-                    <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">
+                    <th scope="col" class="govuk-table__header">
+                        <a class="no-underline sortingLink">Date of birth<span class="sort-icon"></span></a>
+                    </th>
+                    <th scope="col" class="govuk-table__header">
+                        <a class="no-underline sortingLink">UPN<span class="sort-icon"></span></a>
+                    </th>
+                    <th scope="col" class="govuk-table__header">
                         <a class="no-underline sortingLink">Group<span class="sort-icon"><span>Sort by group</span></span></a>
                     </th>
                     <% if (showPupilAdminLink) { %>
-                        <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">
+                        <th scope="col" class="govuk-table__header">
                             Pupil history
                         </td>
                     <% } %>
@@ -57,21 +63,21 @@
                 <tbody class="govuk-table__body">
                 <% pupils.forEach((p, i) => { %>
                     <tr class="govuk-table__row">
-                        <td scope="row"
-                        <% if (highlight && highlight.has(p.urlSlug.toString())) { %> class="govuk-table__cell govuk-highlight-item"<% } %>
-                        >
+                        <td scope="row" <% if (highlight && highlight.has(p.urlSlug.toString())) { %> class="govuk-table__cell govuk-highlight-item"<% } %>>
                             <div class="govuk-highlight-wrapper">
                                 <% if (isFeatureEnabled('pupilEdit') && !availabilityData.hdfSubmitted && !availabilityData.checkWindowClosed && !p.frozen) { %>
                                     <a id="pupilName" class="govuk-link govuk-!-font-weight-bold name-text-wrap" href="/pupil-register/pupil/edit/<%= p.urlSlug %>" ><%= p.fullName %></a>
-                                <% } else { %>
-                                    <span id="pupilName" class="govuk-!-font-weight-bold name-text-wrap"><%= p.fullName %></span>
-                                <% } %>
-                                <% if (p.showDoB) { %>
-                                    <div class="govuk-font-greyed-out govuk-!-font-size-16">Date of birth: <%= p.formattedDateOfBirth %></div>
                                 <% } %>
                                 <input type="hidden" id="pupilUpn-<%= i %>" name="pupilUpn" value="<%= p.upn %>"/>
                             </div>
                         </td>
+                        <td scope="row" class="govuk-table__cell">
+                            <%= p.formattedDateOfBirth %>
+                        </td>
+                        <td scope="row" class="govuk-table__cell">
+                            <%= p.upn %>
+                        </td>
+
                         <td class="govuk-table__cell"><%= p.group %></td>
                         <% if (showPupilAdminLink) { %>
                             <td class="govuk-table__cell"> <a href="/pupil-register/history/<%= p.urlSlug.toLowerCase() %>"> View </a> </td>
