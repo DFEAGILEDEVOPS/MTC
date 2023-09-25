@@ -269,9 +269,9 @@ const checkStartService = {
 
     const payloads = []
 
-    const sasExpiryDate = moment().add(config.Tokens.sasTimeOutHours, 'hours')
+    const sasExpiryDate = moment().add(config.PupilApi.sasTimeOutHours, 'hours')
     const hasLiveChecks = R.all(c => R.equals(c.check_isLiveCheck, true))(checks)
-    const tokens = await sasTokenService.getTokens(hasLiveChecks, sasExpiryDate)
+    const sasTokens = await sasTokenService.getTokens(hasLiveChecks, sasExpiryDate)
 
     // Get check config for all pupils
     const pupilIds = checks.map(check => check.pupil_id)
@@ -284,19 +284,25 @@ const checkStartService = {
     }
 
     const fiveDays = '5d'
+
     for (const o of checks) {
       // Pass the isLiveCheck config in to the SPA
       const pupilConfig = pupilConfigs[o.pupil_id]
       pupilConfig.practice = !o.check_isLiveCheck
       pupilConfig.compressCompletedCheck = !!config.PupilAppUseCompression
-      const jwtSigningOptions = {
-        issuer: 'MTC Admin',
-        subject: o.pupil_id.toString(),
-        expiresIn: fiveDays // expires in 5 days
+      pupilConfig.submissionMode = config.FeatureToggles.checkSubmissionApi ? 'modern' : 'legacy'
+      let jwtToken
+
+      if (config.FeatureToggles.checkSubmissionApi) {
+        const jwtSigningOptions = {
+          issuer: 'MTC Admin',
+          subject: o.pupil_id.toString(),
+          expiresIn: fiveDays // expires in 5 days
+        }
+        jwtToken = await jwtService.sign({
+          checkCode: o.check_checkCode
+        }, jwtSigningOptions)
       }
-      const pupilJwtToken = await jwtService.sign({
-        checkCode: o.check_checkCode
-      }, jwtSigningOptions)
 
       const payload = {
         checkCode: o.check_checkCode,
@@ -316,10 +322,14 @@ const checkStartService = {
           uuid: o.school_uuid
         },
         tokens: {
-          checkStarted: tokens[queueNameService.NAMES.CHECK_STARTED],
-          pupilPreferences: tokens[queueNameService.NAMES.PUPIL_PREFS],
-          pupilFeedback: tokens[queueNameService.NAMES.PUPIL_FEEDBACK],
-          jwt: pupilJwtToken
+          checkStarted: sasTokens[queueNameService.NAMES.CHECK_STARTED],
+          pupilPreferences: sasTokens[queueNameService.NAMES.PUPIL_PREFS],
+          pupilFeedback: sasTokens[queueNameService.NAMES.PUPIL_FEEDBACK],
+          checkComplete: sasTokens[queueNameService.NAMES.CHECK_SUBMIT],
+          checkSubmission: {
+            url: `${config.PupilApi.baseUrl}/submit`,
+            token: jwtToken
+          }
         },
         questions: checkFormService.prepareQuestionData(
           JSON.parse(o.checkForm_formData)
@@ -327,7 +337,7 @@ const checkStartService = {
         config: pupilConfig
       }
       if (o.check_isLiveCheck) {
-        payload.tokens.checkComplete = tokens[queueNameService.NAMES.CHECK_SUBMIT]
+        payload.tokens.checkComplete = sasTokens[queueNameService.NAMES.CHECK_SUBMIT]
       }
       payloads.push(payload)
     }

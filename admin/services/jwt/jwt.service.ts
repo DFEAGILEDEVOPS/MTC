@@ -8,7 +8,7 @@ function isNullOrUndefined (o: any): boolean {
 export class JwtService implements IJwtService {
   async sign (payload: object, signingOptions: jwt.SignOptions): Promise<string> {
     return new Promise((resolve, reject) => {
-      jwt.sign(payload, config.PupilAuth.JwtSecret, signingOptions, (err, token) => {
+      jwt.sign(payload, config.PupilApi.Submission.JwtSecret, signingOptions, (err, token) => {
         if (!isNullOrUndefined(err)) { reject(err) }
         resolve(token ?? '')
       })
@@ -17,7 +17,7 @@ export class JwtService implements IJwtService {
 
   async verify (token: string): Promise<object | string> {
     return new Promise((resolve, reject) => {
-      jwt.verify(token, config.PupilAuth.JwtSecret, (err, decoded) => {
+      jwt.verify(token, config.PupilApi.Submission.JwtSecret, (err, decoded) => {
         if (!isNullOrUndefined(err)) { reject(err) }
         resolve(decoded ?? '')
       })

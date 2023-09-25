@@ -328,7 +328,7 @@ describe('check-start.service', () => {
         ]
         const res = await checkStartService.createPupilCheckPayloads(checks, 1)
         expect(res).toHaveLength(checks.length)
-        expect(res[0].tokens.jwt).toBeDefined()
+        expect(res[0].tokens.checkSubmission).toBeDefined()
         expect(jwtService.sign).toHaveBeenCalledTimes(checks.length)
       })
 
@@ -369,6 +369,10 @@ describe('check-start.service', () => {
             expiresIn: expect.any(String)
           })
       })
+
+      test.todo('jwt token should only be generated when feature active')
+      test.todo('submission url should be sourced from config when feature active')
+      test.todo('checkComplete data should be populated when submission feature inactive')
     })
   })
 })

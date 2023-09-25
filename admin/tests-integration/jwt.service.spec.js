@@ -26,7 +26,7 @@ describe('jwt service', () => {
     const subject = '1234567890'
     const options = {
       issuer: 'MTC Admin',
-      subject: subject,
+      subject,
       expiresIn: '5d'
     }
     const token = await sut.sign(payload, options)
