@@ -13,7 +13,15 @@ describe('jwt service', () => {
   })
 
   test('it preserves the payload', async () => {
-    const payload = { test: 'test' }
+    const payload = {
+      test: 'test',
+      other: {
+        foo: 'bar',
+        xyz: {
+          abc: '123'
+        }
+      }
+   }
     const token = await sut.sign(payload)
     const decoded = await sut.verify(token)
     expect(decoded.test).toBe('test')
