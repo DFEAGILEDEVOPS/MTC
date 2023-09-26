@@ -2,7 +2,6 @@ const checkWindowV2Service = require('../services/check-window-v2.service')
 const groupService = require('../services/group.service')
 
 const restartService = require('../services/restart.service')
-const restartV2Service = require('../services/restart-v2.service')
 const restartValidator = require('../lib/validator/restart-validator')
 const schoolHomeFeatureEligibilityPresenter = require('../helpers/school-home-feature-eligibility-presenter')
 const businessAvailabilityService = require('../services/business-availability.service')
@@ -22,7 +21,7 @@ controller.getRestartOverview = async function getRestartOverview (req, res, nex
   let pinGenerationEligibilityData
   let availabilityData
   try {
-    restarts = await restartV2Service.getRestartsForSchool(req.user.schoolId)
+    restarts = await restartService.getRestartsForSchool(req.user.schoolId)
     checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
     pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData, req.user.timezone)
     availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.schoolId, checkWindowData, req.user.timezone)
@@ -66,7 +65,7 @@ controller.getSelectRestartList = async function getSelectRestartList (req, res,
         breadcrumbs: req.breadcrumbs()
       })
     }
-    pupils = await restartV2Service.getPupilsEligibleForRestart(req.user.schoolId)
+    pupils = await restartService.getPupilsEligibleForRestart(req.user.schoolId)
     reasons = await restartService.getReasons()
 
     if (pupils.length > 0) {
@@ -117,7 +116,7 @@ controller.postSubmitRestartList = async function postSubmitRestartList (req, re
     const groupIds = req.params.groupIds || ''
 
     try {
-      pupils = await restartV2Service.getPupilsEligibleForRestart(req.user.schoolId)
+      pupils = await restartService.getPupilsEligibleForRestart(req.user.schoolId)
       reasons = await restartService.getReasons()
       if (pupils.length > 0) {
         groups = await groupService.findGroupsByPupil(req.user.schoolId, pupils)

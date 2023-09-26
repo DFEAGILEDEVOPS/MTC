@@ -6,7 +6,8 @@ import { type ITransactionRequest } from '../../sql/sql.service'
 const CheckNotifyDataServiceMock = jest.fn<IBatchCheckNotifierDataService, any>(() => ({
   createProcessingFailedRequest: jest.fn(),
   createCheckReceivedRequest: jest.fn(),
-  createCheckCompleteRequest: jest.fn(),
+  createCheckCompleteRequest: jest.fn(async () =>
+    Promise.resolve([])),
   executeRequestsInTransaction: jest.fn()
 }))
 
@@ -17,8 +18,8 @@ describe('batch-request-builder/v2', () => {
   beforeEach(() => {
     dataService = new CheckNotifyDataServiceMock()
     sut = new BatchCheckNotifier(dataService)
-    jest.spyOn(dataService, 'createCheckCompleteRequest').mockImplementation(() => {
-      return [
+    jest.spyOn(dataService, 'createCheckCompleteRequest').mockImplementation(async () => {
+      return Promise.resolve([
         {
           sql: '',
           params: []
@@ -27,7 +28,7 @@ describe('batch-request-builder/v2', () => {
           sql: '',
           params: []
         }
-      ]
+      ])
     })
     jest.spyOn(dataService, 'createCheckReceivedRequest').mockImplementation(() => {
       return {

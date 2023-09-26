@@ -21,7 +21,7 @@ describe('jwt service', () => {
           abc: '123'
         }
       }
-   }
+    }
     const token = await sut.sign(payload)
     const decoded = await sut.verify(token)
     expect(decoded.test).toBe('test')

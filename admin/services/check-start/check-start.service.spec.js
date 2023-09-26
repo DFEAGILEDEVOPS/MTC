@@ -305,6 +305,7 @@ describe('check-start.service', () => {
           return payload.checkCode
         }
         jest.spyOn(jwtService, 'sign').mockImplementation(mockSignMethod)
+        config.FeatureToggles.checkSubmissionApi = true
       })
 
       afterEach(() => {
