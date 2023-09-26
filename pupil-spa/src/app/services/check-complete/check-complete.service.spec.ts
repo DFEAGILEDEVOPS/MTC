@@ -69,7 +69,8 @@ describe('CheckCompleteService', () => {
     // test setup
     spyOn(appUsageService, 'store')
     spyOn(storageService, 'getConfig').and.returnValue({
-      practice: false
+      practice: false,
+      submissionMode: 'legacy'
     });
     spyOn(tokenService, 'getToken').and.returnValue({url: 'url', token: 'token'});
     const addEntrySpy = spyOn(auditService, 'addEntry');
@@ -111,7 +112,8 @@ describe('CheckCompleteService', () => {
 
   it('uses checkComplete token by default', async () => {
     spyOn(storageService, 'getConfig').and.returnValue({
-      practice: false
+      practice: false,
+      submissionMode: 'legacy'
     });
     spyOn(appUsageService , 'store');
     spyOn(tokenService, 'getToken').and.returnValue({url: 'url', token: 'token'});
@@ -135,7 +137,8 @@ describe('CheckCompleteService', () => {
     and redirect to submission failed page`, async () => {
     const addEntrySpy = spyOn(auditService, 'addEntry');
     spyOn(storageService, 'getConfig').and.returnValue({
-      practice: false
+      practice: false,
+      submissionMode: 'legacy'
     });
     spyOn(appUsageService , 'store');
     spyOn(appInsightsService, 'trackException');
@@ -161,7 +164,8 @@ describe('CheckCompleteService', () => {
   it(`submit should call azure queue service service when sas token has expired and redirect to session expiry page`, async () => {
     const addEntrySpy = spyOn(auditService, 'addEntry');
     spyOn(storageService, 'getConfig').and.returnValue({
-      practice: false
+      practice: false,
+      submissionMode: 'legacy'
     });
     spyOn(appUsageService , 'store');
     spyOn(tokenService, 'getToken').and.returnValue({url: 'url', token: 'token'});
@@ -190,7 +194,8 @@ describe('CheckCompleteService', () => {
   it('submit should return if the app is configured to run in practice mode', async () => {
     const addEntrySpy = spyOn(auditService, 'addEntry');
     spyOn(storageService, 'getConfig').and.returnValue({
-      practice: true
+      practice: true,
+      submissionMode: 'legacy'
     });
     spyOn(appUsageService , 'store');
     spyOn(tokenService, 'getToken');
