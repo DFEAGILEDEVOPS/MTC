@@ -287,16 +287,28 @@ describe('check-start.service', () => {
 
     describe('when live checks are generated', () => {
       beforeEach(() => {
-        jest.spyOn(sasTokenService, 'getTokens').mockResolvedValue([
-          { queueName: queueNameService.NAMES.CHECK_STARTED, token: 'aaa' },
-          { queueName: queueNameService.NAMES.PUPIL_PREFS, token: 'aab' },
-          { queueName: queueNameService.NAMES.PUPIL_FEEDBACK, token: 'aab' },
-          { queueName: queueNameService.NAMES.CHECK_SUBMIT, token: 'aab' }
-        ])
+        const tokenData = {}
+        tokenData[queueNameService.NAMES.CHECK_STARTED] = {
+          queueName: queueNameService.NAMES.CHECK_STARTED, token: 'aaa', url: 'xyz'
+        }
+        tokenData[queueNameService.NAMES.PUPIL_PREFS] = {
+          queueName: queueNameService.NAMES.PUPIL_PREFS, token: 'aab', url: 'xyz'
+        }
+        tokenData[queueNameService.NAMES.PUPIL_FEEDBACK] = {
+          queueName: queueNameService.NAMES.PUPIL_FEEDBACK, token: 'aab', url: 'xyz'
+        }
+        tokenData[queueNameService.NAMES.CHECK_SUBMIT] = {
+          queueName: queueNameService.NAMES.CHECK_SUBMIT, token: 'aab', url: 'xyz'
+        }
+        jest.spyOn(sasTokenService, 'getTokens').mockResolvedValue(tokenData)
         const mockSignMethod = async (payload) => {
           return payload.checkCode
         }
         jest.spyOn(jwtService, 'sign').mockImplementation(mockSignMethod)
+      })
+
+      afterEach(() => {
+        jest.restoreAllMocks()
       })
 
       test('throws an error if the check form allocation IDs are not supplied', async () => {
@@ -370,9 +382,32 @@ describe('check-start.service', () => {
           })
       })
 
-      test.todo('jwt token should only be generated when feature active')
-      test.todo('submission url should be sourced from config when feature active')
-      test.todo('checkComplete data should be populated when submission feature inactive')
+      test('jwt token should only be generated when feature active', async () => {
+        config.FeatureToggles.checkSubmissionApi = false
+        await checkStartService.createPupilCheckPayloads([mockCheckFormAllocationLive], 1)
+        expect(jwtService.sign).not.toHaveBeenCalled()
+        config.FeatureToggles.checkSubmissionApi = true
+      })
+
+      test('submission url should be sourced from config when feature active', async () => {
+        const expectedUrl = `${config.PupilApi.baseUrl}/submit`
+        const payload = await checkStartService.createPupilCheckPayloads([mockCheckFormAllocationLive], 1)
+        expect(payload[0].tokens.checkSubmission.url).toStrictEqual(expectedUrl)
+      })
+
+      test('checkComplete tokens data should be populated when submission feature inactive', async () => {
+        config.FeatureToggles.checkSubmissionApi = false
+        const payload = await checkStartService.createPupilCheckPayloads([mockCheckFormAllocationLive], 1)
+        expect(payload[0].tokens.checkSubmission).toBeUndefined()
+        expect(payload[0].tokens.checkComplete).toBeDefined()
+      })
+
+      test('checkSubmission tokens data should be populated when submission feature active', async () => {
+        config.FeatureToggles.checkSubmissionApi = true
+        const payload = await checkStartService.createPupilCheckPayloads([mockCheckFormAllocationLive], 1)
+        expect(payload[0].tokens.checkComplete).toBeUndefined()
+        expect(payload[0].tokens.checkSubmission).toBeDefined()
+      })
     })
   })
 })

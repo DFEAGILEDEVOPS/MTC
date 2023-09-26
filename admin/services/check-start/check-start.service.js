@@ -291,7 +291,7 @@ const checkStartService = {
       pupilConfig.practice = !o.check_isLiveCheck
       pupilConfig.compressCompletedCheck = !!config.PupilAppUseCompression
       pupilConfig.submissionMode = config.FeatureToggles.checkSubmissionApi ? 'modern' : 'legacy'
-      let jwtToken
+      let jwtToken, checkSubmissionData, checkCompleteData
 
       if (config.FeatureToggles.checkSubmissionApi) {
         const jwtSigningOptions = {
@@ -302,6 +302,12 @@ const checkStartService = {
         jwtToken = await jwtService.sign({
           checkCode: o.check_checkCode
         }, jwtSigningOptions)
+        checkSubmissionData = {
+          url: `${config.PupilApi.baseUrl}/submit`,
+          token: jwtToken
+        }
+      } else {
+        checkCompleteData = sasTokens[queueNameService.NAMES.CHECK_SUBMIT]
       }
 
       const payload = {
@@ -325,19 +331,13 @@ const checkStartService = {
           checkStarted: sasTokens[queueNameService.NAMES.CHECK_STARTED],
           pupilPreferences: sasTokens[queueNameService.NAMES.PUPIL_PREFS],
           pupilFeedback: sasTokens[queueNameService.NAMES.PUPIL_FEEDBACK],
-          checkComplete: sasTokens[queueNameService.NAMES.CHECK_SUBMIT],
-          checkSubmission: {
-            url: `${config.PupilApi.baseUrl}/submit`,
-            token: jwtToken
-          }
+          checkComplete: checkCompleteData,
+          checkSubmission: checkSubmissionData
         },
         questions: checkFormService.prepareQuestionData(
           JSON.parse(o.checkForm_formData)
         ),
         config: pupilConfig
-      }
-      if (o.check_isLiveCheck) {
-        payload.tokens.checkComplete = sasTokens[queueNameService.NAMES.CHECK_SUBMIT]
       }
       payloads.push(payload)
     }
