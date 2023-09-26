@@ -10,16 +10,24 @@ export class JwtService implements IJwtService {
     return new Promise((resolve, reject) => {
       jwt.sign(payload, config.PupilApi.Submission.JwtSecret, signingOptions, (err, token) => {
         if (!isNullOrUndefined(err)) { reject(err) }
-        resolve(token ?? '')
+        if (token !== undefined) {
+          resolve(token)
+        } else {
+          reject(new Error('unknown error: Payload could not be signed'))
+        }
       })
     })
   }
 
-  async verify (token: string): Promise<object | string> {
+  async verify (token: string): Promise<any> {
     return new Promise((resolve, reject) => {
       jwt.verify(token, config.PupilApi.Submission.JwtSecret, (err, decoded) => {
         if (!isNullOrUndefined(err)) { reject(err) }
-        resolve(decoded ?? '')
+        if (decoded !== undefined) {
+          resolve(decoded)
+        } else {
+          reject(new Error('payload could not be verified'))
+        }
       })
     })
   }
@@ -36,5 +44,5 @@ export class JwtService implements IJwtService {
 
 export interface IJwtService {
   sign (payload: object, signingOptions: jwt.SignOptions): Promise<string>
-  verify (token: string): Promise<object | string>
+  verify (token: string): Promise<any>
 }

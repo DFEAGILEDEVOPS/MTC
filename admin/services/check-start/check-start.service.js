@@ -269,7 +269,7 @@ const checkStartService = {
 
     const payloads = []
 
-    const sasExpiryDate = moment().add(config.PupilApi.sasTimeOutHours, 'hours')
+    const sasExpiryDate = moment().add(config.PupilApi.Submission.sasTimeOutHours, 'hours')
     const hasLiveChecks = R.all(c => R.equals(c.check_isLiveCheck, true))(checks)
     const sasTokens = await sasTokenService.getTokens(hasLiveChecks, sasExpiryDate)
 

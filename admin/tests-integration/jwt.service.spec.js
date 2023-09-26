@@ -8,7 +8,7 @@ describe('jwt service', () => {
   beforeEach(() => {
     // create a 32 character string for a valid secret
     const secret = '12345678901234567890123456789012'
-    config.PupilAuth.JwtSecret = secret
+    config.PupilApi.Submission.JwtSecret = secret
     sut = JwtService.getInstance()
   })
 
@@ -58,7 +58,15 @@ describe('jwt service', () => {
   test('same payload with different secret fails verification', async () => {
     const payload = { test: 'test' }
     const token = await sut.sign(payload)
-    config.PupilAuth.JwtSecret = 'different-secret'
+    config.PupilApi.Submission.JwtSecret = 'different-secret'
     await expect(sut.verify(token)).rejects.toThrow('invalid signature')
+  })
+
+  test('empty payload verification still outputs issued at timestamp', async () => {
+    const payload = {}
+    const token = await sut.sign(payload)
+    const decoded = await sut.verify(token)
+    expect(decoded).toBeDefined()
+    expect(decoded.iat).toBeDefined()
   })
 })

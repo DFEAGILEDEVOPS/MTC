@@ -80,19 +80,23 @@ export class CheckCompleteService {
       message = payload;
       message.version = 1;
     }
-    try {
-      await this.azureQueueService.addMessageToQueue(url, token, message, retryConfig);
-      this.auditService.addEntry(this.auditEntryFactory.createCheckSubmissionAPICallSucceeded());
-      await this.onSuccess(startTime);
-    } catch (error) {
-      this.appInsightsService.trackException(error);
-      this.auditService.addEntry(this.auditEntryFactory.createCheckSubmissionAPIFailed());
-      if (error.statusCode === 403
-        && error.authenticationerrordetail.includes('Signature not valid in the specified time frame')) {
-        this.router.navigate(['/session-expired']);
-      } else {
-        this.router.navigate(['/submission-failed']);
+    if (checkConfig.submissionMode === 'legacy') {
+      try {
+        await this.azureQueueService.addMessageToQueue(url, token, message, retryConfig);
+        this.auditService.addEntry(this.auditEntryFactory.createCheckSubmissionAPICallSucceeded());
+        await this.onSuccess(startTime);
+      } catch (error) {
+        this.appInsightsService.trackException(error);
+        this.auditService.addEntry(this.auditEntryFactory.createCheckSubmissionAPIFailed());
+        if (error.statusCode === 403
+          && error.authenticationerrordetail.includes('Signature not valid in the specified time frame')) {
+          this.router.navigate(['/session-expired']);
+        } else {
+          this.router.navigate(['/submission-failed']);
+        }
       }
+    } else {
+      // TODO: Implement new submission mode
     }
   }
 
