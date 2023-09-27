@@ -22,6 +22,7 @@ export interface IAppConfig {
   pupilPrefsAPIErrorDelay: number;
   pupilPrefsAPIErrorMaxAttempts: number;
   submissionPendingViewMinDisplay: number;
+  submissionUrl: string;
   submitsToCheckReceiver: boolean;
   supportNumber: string;
    testPupilConnectionDelay: number
@@ -49,6 +50,7 @@ export class AppConfig implements IAppConfig {
   readonly pupilPrefsAPIErrorDelay: number
   readonly pupilPrefsAPIErrorMaxAttempts: number
   readonly submissionPendingViewMinDisplay: number
+  readonly submissionUrl: string
   readonly submitsToCheckReceiver: boolean
   readonly supportNumber: string
   readonly testPupilConnectionDelay: number
@@ -76,6 +78,7 @@ class MockAppConfig implements IAppConfig {
   pupilPrefsAPIErrorDelay = 13
   pupilPrefsAPIErrorMaxAttempts = 3
   submissionPendingViewMinDisplay = 14
+  submissionUrl = 'submissionUrl'
   submitsToCheckReceiver = false
   supportNumber = '000'
   testPupilConnectionDelay = 15

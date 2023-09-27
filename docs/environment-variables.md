@@ -37,6 +37,8 @@ Env Var | Type | Default value | Required | Components | Description
  CHECK_COMPLETION_QUEUE_MAX_DELIVERY_COUNT | Int | 10 | Optional | FT | Taken from the `check-completion` Azure service bus queue: maxDeliveryCount
  CHECK_NOTIFIER_BATCH_COUNT | Int | 5 | Optional | FC | Tune the number of batches of messages the check-notifier service fetches per invocation.  The check-notifier service is run regularly from a timer trigger.
  CHECK_NOTIFIER_MESSAGES_PER_BATCH | Int | 32 | Optional |  FC | Tune the number of messages the check-notifier service fetches per query.
+ CHECK_SUBMIT_JWT_EXPIRY | String | '5d' | Optional | AA | Timeframe the check submission JWT token is valid for
+ CHECK_SUBMIT_JWT_SECRET | String | '' | Required | AA, PAPI | Secret or Private Key for signing JWT tokens used in the pupil check submission.  An error will be thrown on startup if a required app does not have the value set.
  CORS_WHITELIST | String | (empty string) | Required | AA, PAPI | Comma separated string of URLs allowed to access the service being protected.
  DEBUG_VERBOSITY | Int | 1 | Optional | AA,FC, FT | When LOG_LEVEL is set to 'debug' use DEBUG_VERBOSITY to increase or decrease the logging verbosity.  Set to 2 to have the SQL queries sent to the log.
  DFE_SIGNON_AUTH_URL | String | N/A | Optional | AA | Custom authentication
@@ -61,6 +63,7 @@ Env Var | Type | Default value | Required | Components | Description
  FEATURE_TOGGLE_SCHOOL_HOME_VIEW_V2 | Boolean | true | Optional | AA | Not used?
  FEATURE_TOGGLE_SCHOOL_PIN_GEN_FALLBACK | Boolean | false | Optional | AA | When enabled this feature flag will detect when a school does not a pin during pin generation and use a fallback method to create one.
  FEATURE_TOGGLE_SCHOOL_RESULTS_ALLOW_FETCH_FROM_DB | Boolean | true | Optional | AA | When enabled this feature flag will enable school results to be retrieved from the database in the event of a cache miss.
+ FEATURE_TOGGLE_CHECK_SUBMISSION_API | Boolean | true | Optional | AA | Enable / disable the check submission endpoint and token creation in check payload
  GIAS_WS_EXTRACT_ID | Int | 0 | Optional | none | Gias synchronisation.  **Not Used**.
  GIAS_WS_MESSAGE_EXPIRY_MS | Int | 10000 | Required | none | Gias synchronisation.  **Not Used**. XML Message expiry in milliseconds.
  GIAS_WS_NAMESPACE | String | NULL | Required | none | Gias synchronisation. **Not Used**. This value is used in the XML namespace when making requests.
@@ -126,6 +129,7 @@ Env Var | Type | Default value | Required | Components | Description
  SQL_TECH_SUPPORT_USER | String | N/A | Required | AA | Experimental setting.  The username to use when connecting to the SQL DB as this user.
  SQL_TECH_SUPPORT_USER_PASSWORD | String | N/A | Required | AA | Experimental setting.  The password to use when connecting to the SQL DB as this user.
  SQL_TRUST_SERVER_CERTIFICATE | Bool | true | Optional | AA | Used when establising a TLS connection to MSSQL Server.[See the docs.](https://docs.microsoft.com/en-us/sql/connect/jdbc/connecting-with-ssl-encryption?view=sql-server-ver15)
+ SUBMISSION_URL | String | http://localhost:3003 | Optional | PA | The target URL for submitting checks
  SUBMIT_CHECK_FUNCTION_ENABLED | Boolean | false | Optional | FC | Used by the Developer Test tools
  SYNC_RESULTS_INIT_MAX_PARALLEL_TASKS | Int | 5 | Optional | FT | Configure the number of parallel tasks when running the sync-results-init function.
  TECH_SUPPORT_SQL_POOL_MIN_COUNT | Int | 0 | Optional | AA | Experimental setting.  The minimum number of sql connections to hold in the tech-support sql connection pool.
