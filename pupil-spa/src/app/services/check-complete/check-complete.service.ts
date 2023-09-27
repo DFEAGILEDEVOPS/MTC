@@ -10,6 +10,7 @@ import { AppUsageService } from '../app-usage/app-usage.service';
 import { CompressorService } from '../compressor/compressor.service';
 import { Meta } from '@angular/platform-browser';
 import { ApplicationInsightsService } from '../app-insights/app-insights.service';
+import { SubmissionService } from '../submission/submission.service';
 
 /**
  * Declaration of check start service
@@ -29,7 +30,8 @@ export class CheckCompleteService {
               private appUsageService: AppUsageService,
               private metaService: Meta,
               private auditEntryFactory: AuditEntryFactory,
-              private appInsightsService: ApplicationInsightsService) {
+              private appInsightsService: ApplicationInsightsService,
+              private submissionService: SubmissionService) {
     const {
       checkSubmissionApiErrorDelay,
       checkSubmissionAPIErrorMaxAttempts,
@@ -69,19 +71,19 @@ export class CheckCompleteService {
     this.auditService.addEntry(this.auditEntryFactory.createCheckSubmissionApiCalled());
     const items = this.storageService.getAllItems();
     const payload = this.getPayload(items);
-    if (checkConfig.compressCompletedCheck) {
-      message = {
-        version: 2,
-        checkCode: payload['checkCode'],
-        schoolUUID: payload['schoolUUID'],
-        archive: CompressorService.compress(JSON.stringify(payload))
-      };
-    } else {
-      message = payload;
-      message.version = 1;
-    }
     if (checkConfig.submissionMode === 'legacy') {
       try {
+        if (checkConfig.compressCompletedCheck) {
+          message = {
+            version: 2,
+            checkCode: payload['checkCode'],
+            schoolUUID: payload['schoolUUID'],
+            archive: CompressorService.compress(JSON.stringify(payload))
+          };
+        } else {
+          message = payload;
+          message.version = 1;
+        }
         await this.azureQueueService.addMessageToQueue(url, token, message, retryConfig);
         this.auditService.addEntry(this.auditEntryFactory.createCheckSubmissionAPICallSucceeded());
         await this.onSuccess(startTime);
@@ -96,7 +98,14 @@ export class CheckCompleteService {
         }
       }
     } else {
-      // TODO: Implement new submission mode
+      try {
+        const compressedPayload = CompressorService.compress(JSON.stringify(payload));
+        const url = payload.tokens.checkSubmission.url;
+        const jwt = payload.tokens.checkSubmission.token;
+        await this.submissionService.submit(compressedPayload, url, jwt);
+      } catch (error) {
+
+      }
     }
   }
 

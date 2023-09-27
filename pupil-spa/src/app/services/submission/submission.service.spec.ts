@@ -7,9 +7,8 @@ import { APP_CONFIG, IAppConfig, loadConfigMockService } from '../config/config.
 describe('submission service', () => {
 
   let sut: SubmissionService
-  let initialProductionFlag: boolean
   let httpServiceSpy: {
-    submit: jasmine.Spy
+    post: jasmine.Spy
   }
 
   beforeEach(() => {
@@ -22,11 +21,15 @@ describe('submission service', () => {
       ]
     })
     .compileComponents()
-    initialProductionFlag = APP_CONFIG.production
     sut = TestBed.inject(SubmissionService)
   })
 
-  afterEach(() => {
-    (<IAppConfig>APP_CONFIG).production = initialProductionFlag
+  it('original error should bubble up when submission fails', async () => {
+    httpServiceSpy.post.and.throwError(new Error('submission-failed'))
+    try {
+      await sut.submit('payload', 'url', 'token')
+    } catch (e) {
+      expect(e.message).toEqual('submission-failed')
+    }
   })
 })

@@ -11,6 +11,7 @@ import { AppUsageService } from '../app-usage/app-usage.service';
 import { Meta } from '@angular/platform-browser'
 import { AuditEntryFactory } from '../audit/auditEntry'
 import { ApplicationInsightsService } from '../app-insights/app-insights.service';
+import { SubmissionService } from '../submission/submission.service'
 
 let auditService: AuditService;
 let azureQueueServiceSpy: {
@@ -20,8 +21,11 @@ let checkCompleteService: CheckCompleteService;
 let storageService: StorageService;
 let tokenService: TokenService;
 let appUsageService: AppUsageService;
-let metaService: Meta
-let appInsightsService: ApplicationInsightsService
+let metaService: Meta;
+let appInsightsService: ApplicationInsightsService;
+let submissionServiceSpy: {
+  submit: jasmine.Spy
+};
 
 describe('CheckCompleteService', () => {
   let mockRouter;
@@ -32,6 +36,9 @@ describe('CheckCompleteService', () => {
     };
     azureQueueServiceSpy = {
       addMessageToQueue: jasmine.createSpy('addMessageToQueue')
+    }
+    submissionServiceSpy = {
+      submit: jasmine.createSpy('submit')
     }
 
     const testBed = TestBed.configureTestingModule({
@@ -46,6 +53,7 @@ describe('CheckCompleteService', () => {
           { provide: APP_INITIALIZER, useFactory: loadConfigMockService, multi: true },
           { provide: Router, useValue: mockRouter },
           { provide: AzureQueueService, useValue: azureQueueServiceSpy },
+          { provide: SubmissionService, useValue: submissionServiceSpy },
           AuditEntryFactory
         ]
       }
