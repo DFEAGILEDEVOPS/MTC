@@ -8,8 +8,10 @@ export class SubmissionService {
 
   constructor(private http: HttpService) {}
 
-  async submit(compressedPayload: any, submissionUrl: string, jwtToken: string): Promise<any> {
-    await this.http.post(submissionUrl, compressedPayload,
+  async submit(payload: any): Promise<any> {
+    const submissionUrl = payload.tokens.checkSubmission.url
+    const jwtToken = payload.tokens.checkSubmission.token
+    await this.http.post(submissionUrl, payload,
       new HttpHeaders()
       .set('Content-Type', 'application/json')
       .set('Authorization', `Bearer ${jwtToken}`),

@@ -99,10 +99,9 @@ export class CheckCompleteService {
       }
     } else {
       try {
-        const compressedPayload = CompressorService.compress(JSON.stringify(payload));
         const url = payload.tokens.checkSubmission.url;
         const jwt = payload.tokens.checkSubmission.token;
-        await this.submissionService.submit(compressedPayload, url, jwt);
+        await this.submissionService.submit(payload);
       } catch (error) {
 
       }
