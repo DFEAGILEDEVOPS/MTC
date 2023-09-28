@@ -99,8 +99,6 @@ export class CheckCompleteService {
       }
     } else {
       try {
-        const url = payload.tokens.checkSubmission.url;
-        const jwt = payload.tokens.checkSubmission.token;
         await this.submissionService.submit(payload);
       } catch (error) {
 
