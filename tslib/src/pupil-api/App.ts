@@ -25,7 +25,7 @@ class App {
     this.middleware()
     this.routes()
     appInsights.startInsightsIfConfigured().catch(e => { logger.error(e) })
-    JwtSecretValidator.validate(config.PupilAuth.JwtSecret)
+    JwtSecretValidator.validate(config.PupilApi.JwtSecret)
   }
 
   // Configure Express middleware.

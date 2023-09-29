@@ -3,7 +3,7 @@ import config from '../config'
 
 const createJwtAsync = async (payload: any, signingOptions: jwt.SignOptions): Promise<any> => {
   return new Promise((resolve, reject) => {
-    jwt.sign(payload, config.PupilAuth.JwtSecret, signingOptions, (err, token) => {
+    jwt.sign(payload, config.PupilApi.JwtSecret, signingOptions, (err, token) => {
       if (!isNullOrUndefined(err)) { return reject(err) }
       resolve(token)
     })
@@ -12,7 +12,7 @@ const createJwtAsync = async (payload: any, signingOptions: jwt.SignOptions): Pr
 
 const verifyJwtAsync = async (token: string): Promise<any> => {
   return new Promise((resolve, reject) => {
-    jwt.verify(token, config.PupilAuth.JwtSecret, (err, decoded) => {
+    jwt.verify(token, config.PupilApi.JwtSecret, (err, decoded) => {
       if (!isNullOrUndefined(err)) { return reject(err) }
       return resolve(decoded)
     })

@@ -78,10 +78,10 @@ export default {
   CheckAllocation: {
     ExpiryTimeInSeconds: Number(parser.valueOrSubstitute(process.env.CHECK_ALLOCATION_EXPIRY_SECONDS, 15778476)) // 6 months
   },
-  PupilAuth: {
+  PupilApi: {
     PreparedCheckExpiryAfterLoginSeconds: parseInt(parser.valueOrSubstitute(process.env.PREPARED_CHECK_EXPIRY_SECONDS, 1800), 10),
     CorsWhitelist: process.env.CORS_WHITELIST ?? '',
-    JwtSecret: process.env.PUPIL_AUTH_JWT_SECRET ?? ''
+    JwtSecret: process.env.CHECK_SUBMIT_JWT_SECRET ?? ''
   },
   ServiceBus: {
     ConnectionString: process.env.AZURE_SERVICE_BUS_CONNECTION_STRING,
