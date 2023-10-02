@@ -5,7 +5,6 @@ const httpMocks = require('node-mocks-http')
 const logger = require('../../../services/log.service.js').getLogger()
 const checkWindowV2Service = require('../../../services/check-window-v2.service')
 const restartService = require('../../../services/restart.service')
-const restartV2Service = require('../../../services/restart-v2.service')
 const restartValidator = require('../../../lib/validator/restart-validator')
 const groupService = require('../../../services/group.service')
 const schoolHomeFeatureEligibilityPresenter = require('../../../helpers/school-home-feature-eligibility-presenter')
@@ -58,7 +57,7 @@ describe('restart controller:', () => {
       const req = getReq(goodReqParams)
       const controller = require('../../../controllers/restart').getRestartOverview
       jest.spyOn(res, 'render').mockImplementation()
-      jest.spyOn(restartV2Service, 'getRestartsForSchool').mockResolvedValue({ id: 'test' })
+      jest.spyOn(restartService, 'getRestartsForSchool').mockResolvedValue({ id: 'test' })
       jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockImplementation()
       jest.spyOn(schoolHomeFeatureEligibilityPresenter, 'getPresentationData').mockImplementation()
       jest.spyOn(businessAvailabilityService, 'getAvailabilityData').mockResolvedValue({ restartsAvailable: true })
@@ -74,7 +73,7 @@ describe('restart controller:', () => {
       const req = getReq(goodReqParams)
       const controller = require('../../../controllers/restart').getRestartOverview
       jest.spyOn(res, 'render').mockImplementation()
-      jest.spyOn(restartV2Service, 'getRestartsForSchool').mockRejectedValue(new Error())
+      jest.spyOn(restartService, 'getRestartsForSchool').mockRejectedValue(new Error())
       jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockImplementation()
       jest.spyOn(businessAvailabilityService, 'getAvailabilityData').mockResolvedValue({ restartsAvailable: true })
       jest.spyOn(schoolHomeFeatureEligibilityPresenter, 'getPresentationData').mockImplementation()
@@ -116,7 +115,7 @@ describe('restart controller:', () => {
       const controller = require('../../../controllers/restart').getSelectRestartList
       jest.spyOn(res, 'render').mockImplementation()
       jest.spyOn(restartService, 'getReasons').mockImplementation()
-      jest.spyOn(restartV2Service, 'getPupilsEligibleForRestart').mockResolvedValue(pupilsMock)
+      jest.spyOn(restartService, 'getPupilsEligibleForRestart').mockResolvedValue(pupilsMock)
       jest.spyOn(groupService, 'findGroupsByPupil').mockImplementation()
       jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockImplementation()
       jest.spyOn(businessAvailabilityService, 'getAvailabilityData').mockResolvedValue({ restartsAvailable: true })
@@ -132,7 +131,7 @@ describe('restart controller:', () => {
       const req = getReq(goodReqParams)
       const controller = require('../../../controllers/restart').getSelectRestartList
       jest.spyOn(res, 'render').mockImplementation()
-      jest.spyOn(restartV2Service, 'getPupilsEligibleForRestart').mockRejectedValue(new Error('mock error'))
+      jest.spyOn(restartService, 'getPupilsEligibleForRestart').mockRejectedValue(new Error('mock error'))
       jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockImplementation()
       jest.spyOn(businessAvailabilityService, 'getAvailabilityData').mockResolvedValue({ restartsAvailable: true })
       try {
@@ -182,7 +181,7 @@ describe('restart controller:', () => {
       const validationError = new ValidationError()
       validationError.addError('didNotCompleteInfo', 'Error: Please specify further information when "Did not complete" option is selected')
       jest.spyOn(restartValidator, 'validateReason').mockReturnValue(validationError)
-      jest.spyOn(restartV2Service, 'getPupilsEligibleForRestart').mockResolvedValue(pupilsMock)
+      jest.spyOn(restartService, 'getPupilsEligibleForRestart').mockResolvedValue(pupilsMock)
       jest.spyOn(restartService, 'getReasons').mockImplementation()
       jest.spyOn(groupService, 'findGroupsByPupil').mockResolvedValue(pupilsMock)
       jest.spyOn(res, 'render').mockImplementation()
