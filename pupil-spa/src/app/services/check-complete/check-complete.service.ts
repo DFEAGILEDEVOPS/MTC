@@ -69,12 +69,12 @@ export class CheckCompleteService {
     this.auditService.addEntry(this.auditEntryFactory.createCheckSubmissionApiCalled())
     const items = this.storageService.getAllItems()
     const payload = this.getPayload(items)
-    if (checkConfig.submissionMode === 'legacy') {
-      await this.legacySubmission(checkConfig, payload, retryConfig)
-    } else {
-      await this.submissionService.submit(payload)
-    }
     try {
+      if (checkConfig.submissionMode === 'legacy') {
+        await this.legacySubmission(checkConfig, payload, retryConfig)
+      } else {
+        await this.submissionService.submit(payload)
+      }
       this.auditService.addEntry(this.auditEntryFactory.createCheckSubmissionAPICallSucceeded())
       await this.onSuccess(startTime)
     } catch (error) {
