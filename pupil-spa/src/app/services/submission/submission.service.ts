@@ -11,6 +11,7 @@ export class SubmissionService {
   async submit(payload: any): Promise<any> {
     const submissionUrl = payload.tokens.checkSubmission.url
     const jwtToken = payload.tokens.checkSubmission.token
+    payload.version = 3
     await this.http.post(submissionUrl, payload,
       new HttpHeaders()
       .set('Content-Type', 'application/json')

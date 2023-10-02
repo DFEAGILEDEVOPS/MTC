@@ -1,8 +1,31 @@
+import { type CheckConfig } from './check-schemas/validated-check'
+
 export interface SubmittedCheckMessageV2 {
   version: number
   checkCode: string
   schoolUUID: string
   archive: string
+}
+
+export interface SubmittedCheckMessageV3 {
+  version: number
+  checkCode: string
+  schoolUUID: string
+  buildVersion: string
+  config: CheckConfig
+  device: Record<any, any>
+  pupil: {
+    checkCode: string
+  }
+  questions: Record<any, any>
+  school: {
+    name: string
+    uuid: string
+  }
+  tokens: Record<any, any>
+  audit: Record<any, any>
+  inputs: Record<any, any>
+  answers: Record<any, any>
 }
 
 export interface ValidateCheckMessageV1 {
@@ -17,10 +40,26 @@ export interface MarkCheckMessageV1 {
   version: number
 }
 
-export interface ReceivedCheckTableEntity {
+export interface ReceivedCheckTableEntityV1 {
   partitionKey: string // schoolUUID
   rowKey: string // checkCode
   archive?: string
+  answers?: string
+  checkReceivedAt: Date
+  checkVersion: number
+  isValid?: boolean
+  mark?: number
+  markedAt?: Date
+  markError?: string
+  maxMarks?: number
+  processingError?: string
+  validatedAt?: Date
+}
+
+export interface ReceivedCheckTableEntityV2 {
+  partitionKey: string // schoolUUID
+  rowKey: string // checkCode
+  payload: Record<any, any>
   answers?: string
   checkReceivedAt: Date
   checkVersion: number

@@ -1,0 +1,26 @@
+{
+  "bindings": [
+    {
+      "direction": "in",
+      "type": "serviceBusTrigger",
+      "name": "submittedCheckQueue",
+      "queueName": "check-submission",
+      "connection": "AZURE_SERVICE_BUS_CONNECTION_STRING"
+    },
+    {
+      "direction": "out",
+      "type": "serviceBus",
+      "name": "checkValidationQueue",
+      "queueName": "check-validation",
+      "connection": "AZURE_SERVICE_BUS_CONNECTION_STRING"
+    },
+    {
+      "direction": "out",
+      "type": "serviceBus",
+      "name": "checkNotificationQueue",
+      "queueName": "check-notification",
+      "connection": "AZURE_SERVICE_BUS_CONNECTION_STRING"
+    }
+  ],
+  "scriptFile": "../dist/functions/check-receiver/index.js"
+}

@@ -201,10 +201,11 @@ describe('CheckCompleteService', () => {
       const addEntrySpy = spyOn(auditService, 'addEntry');
       spyOn(storageService, 'setPendingSubmission');
       spyOn(storageService, 'setCompletedSubmission');
-      const expectedSchoolUUID = 'school_uuid';
+      const expectedSchoolUUID = '225af581-1d4d-4dd4-83f1-6b9871c1cd60';
+      const expectedCheckCode = 'c5082eb1-0855-4d26-9447-b5798243b640';
       spyOn(storageService, 'getAllItems').and.returnValue({
         pupil: {
-          checkCode: 'checkCode'
+          checkCode: expectedCheckCode
         },
         school: {
           uuid: expectedSchoolUUID
@@ -215,7 +216,10 @@ describe('CheckCompleteService', () => {
         capturedPayload = payload;
         return Promise.resolve()
       });
-      spyOn(checkCompleteService, 'getPayload').and.returnValue({ checkCode: 'checkCode', schoolUUID: expectedSchoolUUID });
+      spyOn(checkCompleteService, 'getPayload').and.returnValue({
+        checkCode: expectedCheckCode,
+        schoolUUID: expectedSchoolUUID
+      });
 
       // exec
       await checkCompleteService.submit(Date.now());
@@ -228,6 +232,7 @@ describe('CheckCompleteService', () => {
       expect(submissionServiceSpy.submit).toHaveBeenCalledTimes(1);
       expect(capturedPayload).toBeDefined();
       expect(capturedPayload.schoolUUID).toBe(expectedSchoolUUID);
+      expect(capturedPayload.checkCode).toBe(expectedCheckCode);
       expect(storageService.setPendingSubmission).toHaveBeenCalledTimes(1);
       expect(storageService.setCompletedSubmission).toHaveBeenCalledTimes(1);
       expect(storageService.getAllItems).toHaveBeenCalledTimes(1);

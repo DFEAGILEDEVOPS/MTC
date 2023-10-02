@@ -1,5 +1,5 @@
 import { CheckValidator, type ICheckValidatorFunctionBindings } from './check-validator'
-import { type ReceivedCheckTableEntity, type ValidateCheckMessageV1, type MarkCheckMessageV1 } from '../../schemas/models'
+import { type ReceivedCheckTableEntityV1, type ValidateCheckMessageV1, type MarkCheckMessageV1 } from '../../schemas/models'
 import { type ILogger } from '../../common/logger'
 import { type ICompressionService } from '../../common/compression-service'
 import * as uuid from 'uuid'
@@ -124,7 +124,7 @@ describe('check-validator', () => {
   })
 
   test('archive is decompressesed when archive property present', async () => {
-    const receivedCheckEntity: ReceivedCheckTableEntity = {
+    const receivedCheckEntity: ReceivedCheckTableEntityV1 = {
       partitionKey: uuid.v4(),
       rowKey: uuid.v4(),
       archive: 'foo',
@@ -141,7 +141,7 @@ describe('check-validator', () => {
   })
 
   test('submitted check with missing properties are recorded as validation errors against the entity', async () => {
-    const receivedCheckEntity: ReceivedCheckTableEntity = {
+    const receivedCheckEntity: ReceivedCheckTableEntityV1 = {
       partitionKey: uuid.v4(),
       rowKey: uuid.v4(),
       archive: 'foo',
@@ -172,7 +172,7 @@ describe('check-validator', () => {
   })
 
   test('validation errors are reported to check notification queue', async () => {
-    const receivedCheckEntity: ReceivedCheckTableEntity = {
+    const receivedCheckEntity: ReceivedCheckTableEntityV1 = {
       partitionKey: validateReceivedCheckQueueMessage.schoolUUID,
       rowKey: validateReceivedCheckQueueMessage.checkCode,
       archive: 'foo',
@@ -201,7 +201,7 @@ describe('check-validator', () => {
   })
 
   test('submitted check with no validation errors is marked as valid', async () => {
-    const receivedCheckEntity: ReceivedCheckTableEntity = {
+    const receivedCheckEntity: ReceivedCheckTableEntityV1 = {
       partitionKey: uuid.v4(),
       rowKey: uuid.v4(),
       archive: 'foo',
@@ -229,7 +229,7 @@ describe('check-validator', () => {
   })
 
   test('submitted check with no validation errors has answers added to receivedCheck entity', async () => {
-    const receivedCheckEntity: ReceivedCheckTableEntity = {
+    const receivedCheckEntity: ReceivedCheckTableEntityV1 = {
       partitionKey: uuid.v4(),
       rowKey: uuid.v4(),
       archive: 'foo',
@@ -258,7 +258,7 @@ describe('check-validator', () => {
   })
 
   test('check marking message is created and added to output binding array', async () => {
-    const receivedCheckEntity: ReceivedCheckTableEntity = {
+    const receivedCheckEntity: ReceivedCheckTableEntityV1 = {
       partitionKey: uuid.v4(),
       rowKey: uuid.v4(),
       archive: 'foo',

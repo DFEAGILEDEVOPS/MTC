@@ -2,12 +2,12 @@ import { type Context } from '@azure/functions'
 import { TableService } from '../../azure/table-service'
 import Moment from 'moment'
 import { CheckNotificationType, type ICheckNotificationMessage } from '../../schemas/check-notification-message'
-import { type SubmittedCheckMessageV2, type ReceivedCheckTableEntityV1, type ValidateCheckMessageV1 } from '../../schemas/models'
+import { type SubmittedCheckMessageV3, type ReceivedCheckTableEntityV2, type ValidateCheckMessageV1 } from '../../schemas/models'
 import { type IBatchCheckNotifierDataService, BatchCheckNotifierDataService } from '../check-notifier-batch/batch-check-notifier.data.service'
 import { ConsoleLogger, type ILogger } from '../../common/logger'
 const tableService = new TableService()
 
-export class CheckReceiver {
+export class CheckReceiverServiceBus {
   private readonly checkNotifierDataService: IBatchCheckNotifierDataService
   private readonly logService: ILogger
 
@@ -16,11 +16,11 @@ export class CheckReceiver {
     this.checkNotifierDataService = batchCheckNotifierDataService ?? new BatchCheckNotifierDataService(this.logService)
   }
 
-  async process (context: Context, receivedCheck: SubmittedCheckMessageV2): Promise<void> {
-    const receivedCheckEntity: ReceivedCheckTableEntityV1 = {
+  async process (context: Context, receivedCheck: SubmittedCheckMessageV3): Promise<void> {
+    const receivedCheckEntity: ReceivedCheckTableEntityV2 = {
       partitionKey: receivedCheck.schoolUUID.toLowerCase(),
       rowKey: receivedCheck.checkCode.toLowerCase(),
-      archive: receivedCheck.archive,
+      payload: receivedCheck,
       checkReceivedAt: Moment().toDate(),
       checkVersion: +receivedCheck.version,
       processingError: ''

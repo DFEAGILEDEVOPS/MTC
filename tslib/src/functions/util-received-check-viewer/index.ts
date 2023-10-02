@@ -3,7 +3,7 @@ import { performance } from 'perf_hooks'
 import config from '../../config'
 import { TableService } from '../../azure/table-service'
 import { CompressionService } from '../../common/compression-service'
-import { type ReceivedCheckTableEntity } from '../../schemas/models'
+import { type ReceivedCheckTableEntityV1 } from '../../schemas/models'
 
 const functionName = 'util-received-check-reader'
 
@@ -30,7 +30,7 @@ const checkRetriever: AzureFunction = async function (context: Context, req: Htt
   const tableService = new TableService()
   const schoolUUID = req.query.schoolUUID ?? ''
   const checkCode = req.query.checkCode ?? ''
-  const receivedCheck = await tableService.getEntity<ReceivedCheckTableEntity>('receivedCheck', schoolUUID, checkCode)
+  const receivedCheck = await tableService.getEntity<ReceivedCheckTableEntityV1>('receivedCheck', schoolUUID, checkCode)
   const archive = receivedCheck.archive ?? ''
   const compressionService = new CompressionService()
   const decompressed = compressionService.decompress(archive)

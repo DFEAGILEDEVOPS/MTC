@@ -3,6 +3,7 @@ import { HttpService } from '../http/http.service'
 import { SubmissionService } from './submission.service'
 import { APP_INITIALIZER } from '@angular/core'
 import { APP_CONFIG, loadConfigMockService } from '../config/config.service'
+import * as exp from 'constants'
 
 describe('submission service', () => {
 
@@ -69,6 +70,24 @@ describe('submission service', () => {
         }
       }
     }
+    await sut.submit(payload)
+    expect(httpServiceSpy.post).toHaveBeenCalledWith(payloadUrl, payload, jasmine.anything(), jasmine.anything())
+  })
+
+  it('should set correct version on payload', async () => {
+    const expectedPayloadVersion = 3
+    const payloadUrl = 'http://my-url'
+    const payload = {
+      tokens: {
+        checkSubmission: {
+          url: payloadUrl,
+          token: 'jwt'
+        }
+      }
+    }
+    httpServiceSpy.post.and.callFake((url: string, payload: any) => {
+      expect(payload.version).toEqual(expectedPayloadVersion)
+    })
     await sut.submit(payload)
     expect(httpServiceSpy.post).toHaveBeenCalledWith(payloadUrl, payload, jasmine.anything(), jasmine.anything())
   })
