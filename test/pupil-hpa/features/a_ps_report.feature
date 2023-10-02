@@ -144,3 +144,9 @@ Feature:
   Scenario: AttemptId, TestDate and FormID are set to null when there is a NTC reason
     Given I have marked a pupil as not taking check with the Left school reason
     Then I should see AttemptId, TestDate and FormID as null in the ps report
+
+  Scenario: Restart number is 0 and pupil is set to Incomplete when pin expires
+    Given my pin has expired after applying a restart
+    When the data sync and ps report function has run
+    Then the restart number should be zero
+    And the pupil status set to incomplete
