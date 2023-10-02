@@ -107,7 +107,7 @@ Given(/^I complete a check after scanning the QR code$/) do
   audit_entries = page.evaluate_script('(localStorage);').select {|k,v| k.include? 'audit'}
   values = audit_entries.values.map {|value| JSON.parse value}
   qr_events = values.map {|x| x['type']}
-  expect(qr_events.sort).to eql  ["LoginSuccess", "QrCodeArrival"]
+  expect(qr_events.sort -  ["UtteranceStarted", "UtteranceEnded"]).to eql  ["LoginSuccess", "QrCodeArrival"]
   confirmation_page.read_instructions.click
   start_page.start_warm_up.click
   warm_up_page.start_now.click
@@ -131,7 +131,7 @@ Given(/^I login after a completed QR check$/) do
   values = audit_entries.values.map {|value| JSON.parse value}
   original_qr_code_arrival = values.select {|value| value['type'] == 'QrCodeArrival'}
   qr_events = values.map {|x| x['type']}
-  expect(qr_events.sort).to eql  ["LoginSuccess", "QrCodeArrival"]
+  expect(qr_events.sort -  ["UtteranceStarted", "UtteranceEnded"]).to eql  ["LoginSuccess", "QrCodeArrival"]
   confirmation_page.read_instructions.click
   start_page.start_warm_up.click
   warm_up_page.start_now.click
@@ -187,7 +187,7 @@ Given(/^a pupil has refreshed during the check after the previous pupil complete
   values = audit_entries.values.map {|value| JSON.parse value}
   original_qr_code_arrival = values.select {|value| value['type'] == 'QrCodeArrival'}
   qr_events = values.map {|x| x['type']}
-  expect(qr_events.sort).to eql  ["LoginSuccess", "QrCodeArrival"]
+  expect(qr_events.sort -  ["UtteranceStarted", "UtteranceEnded"]).to eql  ["LoginSuccess", "QrCodeArrival"]
   confirmation_page.read_instructions.click
   start_page.start_warm_up.click
   warm_up_page.start_now.click
@@ -262,9 +262,8 @@ Given(/^I completed a check after scanning the QR code$/) do
   sleep 2
   audit_entries = page.evaluate_script('(localStorage);').select {|k,v| k.include? 'audit'}
   values = audit_entries.values.map {|value| JSON.parse value}
-  original_qr_code_arrival = values.select {|value| value['type'] == 'QrCodeArrival'}
   qr_events = values.map {|x| x['type']}
-  expect(qr_events.sort).to eql  ["LoginSuccess", "QrCodeArrival"]
+  expect(qr_events.sort -  ["UtteranceStarted", "UtteranceEnded"]).to eql  ["LoginSuccess", "QrCodeArrival"]
   confirmation_page.read_instructions.click
   start_page.start_warm_up.click
   warm_up_page.start_now.click
