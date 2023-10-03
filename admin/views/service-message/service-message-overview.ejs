@@ -11,7 +11,7 @@
             <h1 class="govuk-heading-xl">Service message</h1>
             <%- partial('partials/_gds_session_expiry') %>
             <p class="govuk-body">
-                Add or delete a global service message for the school homepage
+                Add or delete a service message for any area of the site.
             </p>
             <%if (serviceMessage) { %>
             <button disabled="disabled" aria-disabled="true" class="govuk-button govuk-button--disabled govuk-!-margin-top-4" data-module="govuk-button">
@@ -53,7 +53,7 @@
                     </tbody>
                 </table>
             <% } else { %>
-                <p class="govuk-body govuk-!-margin-top-4 govuk-!-margin-bottom-9">No service message created</p>
+                <p class="govuk-body govuk-!-margin-top-4 govuk-!-margin-bottom-9">There are no current service messages.</p>
             <% } %>
         </div>
     </div>
