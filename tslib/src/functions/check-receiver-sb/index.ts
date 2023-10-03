@@ -8,12 +8,13 @@ const functionName = 'check-receiver-sb'
 const queueTrigger: AzureFunction = async function (context: Context, submittedCheck: SubmittedCheckMessageV3): Promise<void> {
   const start = performance.now()
   const version = submittedCheck.version
+  const expectedVersion = 3
   context.log.info(`${functionName}: version:${version} message received for checkCode ${submittedCheck.checkCode}`)
   const receiver = new CheckReceiverServiceBus()
   try {
-    if (version !== 2) {
+    if (version.toString() !== expectedVersion.toString()) {
       // dead letter the message as we no longer support below v3
-      throw new Error(`Message schema version:${version} unsupported`)
+      throw new Error(`Message schema version:${version} unsupported. Expected version:${expectedVersion}.`)
     }
     await receiver.process(context, submittedCheck)
   } catch (error) {

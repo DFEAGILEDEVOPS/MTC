@@ -35,13 +35,25 @@ export class CheckValidator {
     // this should fail outside of the catch as we wont be able to update the entity
     // without a reference to it and should rightly go on the dead letter queue
     const receivedCheck = this.findReceivedCheck(functionBindings.receivedCheckTable)
+    logger.info(`${functionName}: received check to validate. checkVersion:${receivedCheck.checkVersion}`)
     let checkData
+
     try {
-      if (receivedCheck.archive === undefined) {
-        throw new Error(`${functionName}: message is missing [archive] property`)
+      if (receivedCheck.checkVersion === 2) {
+        // compressed archive payload
+        if (receivedCheck.archive === undefined) {
+          throw new Error(`${functionName}: message is missing [archive] property`)
+        }
+        const decompressedString = this.compressionService.decompress(receivedCheck.archive)
+        checkData = JSON.parse(decompressedString)
+      } else if (receivedCheck.checkVersion === 3) {
+        // JSON payload
+        if (receivedCheck.payload === undefined) {
+          throw new Error(`${functionName}: message is missing [payload] property`)
+        }
+      } else {
+        throw new Error(`${functionName}: unsupported check version:'${receivedCheck.checkVersion}'`)
       }
-      const decompressedString = this.compressionService.decompress(receivedCheck.archive)
-      checkData = JSON.parse(decompressedString)
       await this.validateCheckStructure(checkData)
     } catch (error: any) {
       await this.setReceivedCheckAsInvalid(error.message, receivedCheck)
@@ -83,7 +95,7 @@ export class CheckValidator {
     await this.tableService.mergeUpdateEntity(tableStorageTableName, transformedEntity)
   }
 
-  private findReceivedCheck (receivedCheckRef: any[]): ReceivedCheckFunctionBindingEntity {
+  private findReceivedCheck (receivedCheckRef: any[]): any {
     if (RA.isEmptyArray(receivedCheckRef)) {
       throw new Error(`${functionName}: received check reference is empty`)
     }

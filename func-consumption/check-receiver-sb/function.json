@@ -22,5 +22,5 @@
       "connection": "AZURE_SERVICE_BUS_CONNECTION_STRING"
     }
   ],
-  "scriptFile": "../dist/functions/check-receiver/index.js"
+  "scriptFile": "../dist/functions/check-receiver-sb/index.js"
 }

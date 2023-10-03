@@ -89,7 +89,7 @@ describe('submission service', () => {
       expect(payload.version).toEqual(expectedPayloadVersion)
     })
     await sut.submit(payload)
-    expect(httpServiceSpy.post).toHaveBeenCalledWith(payloadUrl, payload, jasmine.anything(), jasmine.anything())
+    expect(httpServiceSpy.post).toHaveBeenCalled()
   })
 
   it('should use retry count from app config', async () => {

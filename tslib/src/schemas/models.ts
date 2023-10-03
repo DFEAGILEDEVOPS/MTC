@@ -59,7 +59,7 @@ export interface ReceivedCheckTableEntityV1 {
 export interface ReceivedCheckTableEntityV2 {
   partitionKey: string // schoolUUID
   rowKey: string // checkCode
-  payload: Record<any, any>
+  payload?: string
   answers?: string
   checkReceivedAt: Date
   checkVersion: number
@@ -80,6 +80,22 @@ export interface ReceivedCheckFunctionBindingEntity {
   PartitionKey: string
   RowKey: string
   archive?: string
+  answers?: string
+  checkReceivedAt: Date
+  checkVersion: number
+  isValid?: boolean
+  mark?: number
+  markedAt?: Date
+  markError?: string
+  maxMarks?: number
+  processingError?: string
+  validatedAt?: Date
+}
+
+export interface ReceivedCheckFunctionBindingEntityV3 {
+  PartitionKey: string
+  RowKey: string
+  payload: string
   answers?: string
   checkReceivedAt: Date
   checkVersion: number

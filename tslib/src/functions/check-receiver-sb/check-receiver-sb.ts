@@ -20,7 +20,7 @@ export class CheckReceiverServiceBus {
     const receivedCheckEntity: ReceivedCheckTableEntityV2 = {
       partitionKey: receivedCheck.schoolUUID.toLowerCase(),
       rowKey: receivedCheck.checkCode.toLowerCase(),
-      payload: receivedCheck,
+      payload: JSON.stringify(receivedCheck),
       checkReceivedAt: Moment().toDate(),
       checkVersion: +receivedCheck.version,
       processingError: ''

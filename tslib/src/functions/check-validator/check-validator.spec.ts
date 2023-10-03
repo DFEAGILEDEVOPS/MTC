@@ -1,5 +1,5 @@
 import { CheckValidator, type ICheckValidatorFunctionBindings } from './check-validator'
-import { type ReceivedCheckTableEntityV1, type ValidateCheckMessageV1, type MarkCheckMessageV1 } from '../../schemas/models'
+import { type ReceivedCheckTableEntityV1, type MarkCheckMessageV1, ReceivedCheckTableEntityV2 } from '../../schemas/models'
 import { type ILogger } from '../../common/logger'
 import { type ICompressionService } from '../../common/compression-service'
 import * as uuid from 'uuid'
@@ -11,11 +11,8 @@ import { type TableEntity } from '@azure/data-tables'
 import { type ICheckFormService } from '../../services/check-form.service'
 import { type IValidatorProvider, ValidatorProvider } from './validators/validator.provider'
 
-let validateReceivedCheckQueueMessage: ValidateCheckMessageV1 = {
-  schoolUUID: uuid.v4(),
-  checkCode: uuid.v4(),
-  version: 1
-}
+const receivedCheckCompressedPayloadVersion = 2
+const receivedCheckJsonPayloadVersion = 3
 
 let sut: CheckValidator
 let loggerMock: ILogger
@@ -47,11 +44,6 @@ describe('check-validator', () => {
       warn: jest.fn(),
       info: jest.fn(),
       verbose: jest.fn()
-    }
-    validateReceivedCheckQueueMessage = {
-      schoolUUID: 'abc',
-      checkCode: 'xyz',
-      version: 1
     }
     jest.spyOn(checkFormServiceMock, 'getCheckFormForCheckCode').mockResolvedValue([
       { f1: 0, f2: 0 },
@@ -97,47 +89,136 @@ describe('check-validator', () => {
         checkMarkingQueue: [],
         checkNotificationQueue: []
       }
-      await sut.validate(functionBindings, validateReceivedCheckQueueMessage, loggerMock)
+      const message = {
+        schoolUUID: 'uuid',
+        checkCode: 'code',
+        version: 1
+      }
+      await sut.validate(functionBindings, message, loggerMock)
       fail('error should have been thrown due to empty receivedCheckData')
     } catch (error: any) {
       expect(error.message).toBe('check-validator: received check reference is empty')
     }
   })
 
-  test('validation error is recorded on receivedCheck entity when archive property is missing', async () => {
+  test('unsupported check version should be rejected', async () => {
     let actualTableName: string | undefined
     let actualEntity: any
     jest.spyOn(tableServiceMock, 'mergeUpdateEntity').mockImplementation(async (table: string, entity: TableEntity<object>) => {
       actualTableName = table
       actualEntity = entity
     })
-    const functionBindings: ICheckValidatorFunctionBindings = {
-      receivedCheckTable: [{}],
-      checkMarkingQueue: [],
-      checkNotificationQueue: []
-    }
-    await sut.validate(functionBindings, validateReceivedCheckQueueMessage, loggerMock)
-    expect(tableServiceMock.mergeUpdateEntity).toHaveBeenCalledTimes(1)
-    expect(actualTableName).toBe('receivedCheck')
-    expect(actualEntity.processingError).toBe('check-validator: message is missing [archive] property')
-    expect(actualEntity.isValid).toBe(false)
-  })
-
-  test('archive is decompressesed when archive property present', async () => {
+    const unsupportedCheckVersion = 1
     const receivedCheckEntity: ReceivedCheckTableEntityV1 = {
       partitionKey: uuid.v4(),
       rowKey: uuid.v4(),
       archive: 'foo',
       checkReceivedAt: moment().toDate(),
-      checkVersion: 1
+      checkVersion: unsupportedCheckVersion
     }
     const functionBindings: ICheckValidatorFunctionBindings = {
       receivedCheckTable: [receivedCheckEntity],
       checkMarkingQueue: [],
       checkNotificationQueue: []
     }
-    await sut.validate(functionBindings, validateReceivedCheckQueueMessage, loggerMock)
-    expect(compressionServiceMock.decompress).toHaveBeenCalledWith('foo')
+    const message = {
+      schoolUUID: 'uuid',
+      checkCode: 'code',
+      version: 123
+    }
+    await sut.validate(functionBindings, message, loggerMock)
+    expect(tableServiceMock.mergeUpdateEntity).toHaveBeenCalledTimes(1)
+    expect(actualTableName).toBe('receivedCheck')
+    expect(actualEntity.processingError).toBe(`check-validator: unsupported check version:'${unsupportedCheckVersion}'`)
+    expect(actualEntity.isValid).toBe(false)
+  })
+
+  describe('checkVersion:2 (compressed archive)', () => {
+    test('validation error is recorded on receivedCheck entity when archive property is missing', async () => {
+      let actualTableName: string | undefined
+      let actualEntity: any
+      const message = {
+        schoolUUID: 'uuid',
+        checkCode: 'code',
+        version: 1
+      }
+      jest.spyOn(tableServiceMock, 'mergeUpdateEntity').mockImplementation(async (table: string, entity: TableEntity<object>) => {
+        actualTableName = table
+        actualEntity = entity
+      })
+      const receivedCheckEntity: ReceivedCheckTableEntityV1 = {
+        partitionKey: uuid.v4(),
+        rowKey: uuid.v4(),
+        archive: undefined,
+        checkReceivedAt: moment().toDate(),
+        checkVersion: receivedCheckCompressedPayloadVersion
+      }
+      const functionBindings: ICheckValidatorFunctionBindings = {
+        receivedCheckTable: [receivedCheckEntity],
+        checkMarkingQueue: [],
+        checkNotificationQueue: []
+      }
+      await sut.validate(functionBindings, message, loggerMock)
+      expect(tableServiceMock.mergeUpdateEntity).toHaveBeenCalledTimes(1)
+      expect(actualTableName).toBe('receivedCheck')
+      expect(actualEntity.processingError).toBe('check-validator: message is missing [archive] property')
+      expect(actualEntity.isValid).toBe(false)
+    })
+
+    test('archive is decompressesed when archive property present', async () => {
+      const receivedCheckEntity: ReceivedCheckTableEntityV1 = {
+        partitionKey: uuid.v4(),
+        rowKey: uuid.v4(),
+        archive: 'foo',
+        checkReceivedAt: moment().toDate(),
+        checkVersion: receivedCheckCompressedPayloadVersion
+      }
+      const functionBindings: ICheckValidatorFunctionBindings = {
+        receivedCheckTable: [receivedCheckEntity],
+        checkMarkingQueue: [],
+        checkNotificationQueue: []
+      }
+      const message = {
+        schoolUUID: 'uuid',
+        checkCode: 'code',
+        version: 1
+      }
+      await sut.validate(functionBindings, message, loggerMock)
+      expect(compressionServiceMock.decompress).toHaveBeenCalledWith('foo')
+    })
+  })
+
+  describe('checkVersion:3 (raw JSON)', () => {
+    test('validation error is recorded on receivedCheck entity when payload is missing', async () => {
+      const message = {
+        schoolUUID: 'uuid',
+        checkCode: 'code',
+        version: 1
+      }
+      let actualTableName: string | undefined
+      let actualEntity: any
+      jest.spyOn(tableServiceMock, 'mergeUpdateEntity').mockImplementation(async (table: string, entity: TableEntity<object>) => {
+        actualTableName = table
+        actualEntity = entity
+      })
+      const receivedCheckEntity: ReceivedCheckTableEntityV2 = {
+        partitionKey: uuid.v4(),
+        rowKey: uuid.v4(),
+        payload: undefined,
+        checkReceivedAt: moment().toDate(),
+        checkVersion: receivedCheckJsonPayloadVersion
+      }
+      const functionBindings: ICheckValidatorFunctionBindings = {
+        receivedCheckTable: [receivedCheckEntity],
+        checkMarkingQueue: [],
+        checkNotificationQueue: []
+      }
+      await sut.validate(functionBindings, message, loggerMock)
+      expect(tableServiceMock.mergeUpdateEntity).toHaveBeenCalledTimes(1)
+      expect(actualTableName).toBe('receivedCheck')
+      expect(actualEntity.processingError).toBe('check-validator: message is missing [payload] property')
+      expect(actualEntity.isValid).toBe(false)
+    })
   })
 
   test('submitted check with missing properties are recorded as validation errors against the entity', async () => {
@@ -146,7 +227,7 @@ describe('check-validator', () => {
       rowKey: uuid.v4(),
       archive: 'foo',
       checkReceivedAt: moment().toDate(),
-      checkVersion: 1
+      checkVersion: receivedCheckCompressedPayloadVersion
     }
     let actualTableName: string | undefined
     let actualEntity: any
@@ -164,7 +245,12 @@ describe('check-validator', () => {
       checkMarkingQueue: [],
       checkNotificationQueue: []
     }
-    await sut.validate(functionBindings, validateReceivedCheckQueueMessage, loggerMock)
+    const message = {
+      schoolUUID: 'uuid',
+      checkCode: 'code',
+      version: 1
+    }
+    await sut.validate(functionBindings, message, loggerMock)
     expect(tableServiceMock.mergeUpdateEntity).toHaveBeenCalledTimes(1)
     expect(actualTableName).toBe('receivedCheck')
     expect(actualEntity.processingError).toBeDefined()
@@ -172,12 +258,17 @@ describe('check-validator', () => {
   })
 
   test('validation errors are reported to check notification queue', async () => {
+    const message = {
+      schoolUUID: 'uuid-123',
+      checkCode: 'code-456',
+      version: 1
+    }
     const receivedCheckEntity: ReceivedCheckTableEntityV1 = {
-      partitionKey: validateReceivedCheckQueueMessage.schoolUUID,
-      rowKey: validateReceivedCheckQueueMessage.checkCode,
+      partitionKey: message.schoolUUID,
+      rowKey: message.checkCode,
       archive: 'foo',
       checkReceivedAt: moment().toDate(),
-      checkVersion: 1
+      checkVersion: receivedCheckCompressedPayloadVersion
     }
 
     jest.spyOn(tableServiceMock, 'mergeUpdateEntity').mockImplementation()
@@ -191,11 +282,11 @@ describe('check-validator', () => {
       checkMarkingQueue: [],
       checkNotificationQueue: []
     }
-    await sut.validate(functionBindings, validateReceivedCheckQueueMessage, loggerMock)
+    await sut.validate(functionBindings, message, loggerMock)
     expect(functionBindings.checkNotificationQueue).toBeDefined()
     expect(functionBindings.checkNotificationQueue).toHaveLength(1)
     const validationFailureMessage = functionBindings.checkNotificationQueue[0]
-    expect(validationFailureMessage.checkCode).toStrictEqual(validateReceivedCheckQueueMessage.checkCode)
+    expect(validationFailureMessage.checkCode).toStrictEqual(message.checkCode)
     expect(validationFailureMessage.notificationType).toBe(CheckNotificationType.checkInvalid)
     expect(validationFailureMessage.version).toBe(1)
   })
@@ -206,7 +297,7 @@ describe('check-validator', () => {
       rowKey: uuid.v4(),
       archive: 'foo',
       checkReceivedAt: moment().toDate(),
-      checkVersion: 1
+      checkVersion: receivedCheckCompressedPayloadVersion
     }
     let actualTableName: string | undefined
     let actualEntity: any
@@ -222,7 +313,12 @@ describe('check-validator', () => {
       checkMarkingQueue: [],
       checkNotificationQueue: []
     }
-    await sut.validate(functionBindings, validateReceivedCheckQueueMessage, loggerMock)
+    const message = {
+      schoolUUID: 'uuid',
+      checkCode: 'code',
+      version: 1
+    }
+    await sut.validate(functionBindings, message, loggerMock)
     expect(actualTableName).toBe('receivedCheck')
     expect(actualEntity.processingError).toBeUndefined()
     expect(actualEntity.isValid).toBe(true)
@@ -234,7 +330,7 @@ describe('check-validator', () => {
       rowKey: uuid.v4(),
       archive: 'foo',
       checkReceivedAt: moment().toDate(),
-      checkVersion: 1
+      checkVersion: receivedCheckCompressedPayloadVersion
     }
     let actualTableName: string | undefined
     let actualEntity: any
@@ -251,7 +347,12 @@ describe('check-validator', () => {
       checkMarkingQueue: [],
       checkNotificationQueue: []
     }
-    await sut.validate(functionBindings, validateReceivedCheckQueueMessage, loggerMock)
+    const message = {
+      schoolUUID: 'uuid',
+      checkCode: 'code',
+      version: 1
+    }
+    await sut.validate(functionBindings, message, loggerMock)
     expect(actualTableName).toBe('receivedCheck')
     expect(actualEntity.processingError).toBeUndefined()
     expect(actualEntity.answers).toStrictEqual(JSON.stringify(validCheck.answers))
@@ -263,7 +364,7 @@ describe('check-validator', () => {
       rowKey: uuid.v4(),
       archive: 'foo',
       checkReceivedAt: moment().toDate(),
-      checkVersion: 1
+      checkVersion: receivedCheckCompressedPayloadVersion
     }
     jest.spyOn(compressionServiceMock, 'decompress').mockImplementation(() => {
       return JSON.stringify(getValidatedCheck())
@@ -273,11 +374,16 @@ describe('check-validator', () => {
       checkMarkingQueue: [],
       checkNotificationQueue: []
     }
-    await sut.validate(functionBindings, validateReceivedCheckQueueMessage, loggerMock)
+    const message = {
+      schoolUUID: 'uuid',
+      checkCode: 'code',
+      version: 1
+    }
+    await sut.validate(functionBindings, message, loggerMock)
     expect(functionBindings.checkMarkingQueue).toHaveLength(1)
     const checkMarkingMessage: MarkCheckMessageV1 = functionBindings.checkMarkingQueue[0]
-    expect(checkMarkingMessage.checkCode).toStrictEqual(validateReceivedCheckQueueMessage.checkCode)
-    expect(checkMarkingMessage.schoolUUID).toStrictEqual(validateReceivedCheckQueueMessage.schoolUUID)
+    expect(checkMarkingMessage.checkCode).toStrictEqual(message.checkCode)
+    expect(checkMarkingMessage.schoolUUID).toStrictEqual(message.schoolUUID)
     expect(checkMarkingMessage.version).toBe(1)
   })
 })
