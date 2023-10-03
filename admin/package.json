@@ -42,7 +42,7 @@
   },
   "dependencies": {
     "@azure/data-tables": "^13.2.1",
-    "@azure/service-bus": "^7.0.5",
+    "@azure/service-bus": "^7.9.1",
     "@azure/storage-blob": "^12.8.0",
     "@azure/storage-queue": "^12.7.0",
     "adm-zip": "^0.5.10",
