@@ -1,4 +1,9 @@
-import { type ValidateCheckMessageV1, type MarkCheckMessageV1, type ReceivedCheckFunctionBindingEntity } from '../../schemas/models'
+import {
+  type ValidateCheckMessageV1,
+  type MarkCheckMessageV1,
+  type ReceivedCheckFunctionBindingEntity,
+  type ReceivedCheckFunctionBindingEntityV3
+} from '../../schemas/models'
 import { type ILogger } from '../../common/logger'
 import * as RA from 'ramda-adjunct'
 import Moment from 'moment'
@@ -41,14 +46,16 @@ export class CheckValidator {
     try {
       if (receivedCheck.checkVersion === 2) {
         // compressed archive payload
-        if (receivedCheck.archive === undefined) {
+        const archive = (receivedCheck as ReceivedCheckFunctionBindingEntity).archive
+        if (archive === undefined) {
           throw new Error(`${functionName}: message is missing [archive] property`)
         }
-        const decompressedString = this.compressionService.decompress(receivedCheck.archive)
+        const decompressedString = this.compressionService.decompress(archive)
         checkData = JSON.parse(decompressedString)
       } else if (receivedCheck.checkVersion === 3) {
+        const payload = (receivedCheck as ReceivedCheckFunctionBindingEntityV3).payload
         // JSON payload
-        if (receivedCheck.payload === undefined) {
+        if (payload === undefined) {
           throw new Error(`${functionName}: message is missing [payload] property`)
         }
       } else {
@@ -75,7 +82,6 @@ export class CheckValidator {
       checkCode: validateCheckMessage.checkCode,
       version: 1
     }
-
     functionBindings.checkMarkingQueue = [markingMessage]
   }
 
@@ -95,7 +101,7 @@ export class CheckValidator {
     await this.tableService.mergeUpdateEntity(tableStorageTableName, transformedEntity)
   }
 
-  private findReceivedCheck (receivedCheckRef: any[]): any {
+  private findReceivedCheck (receivedCheckRef: any[]): ReceivedCheckFunctionBindingEntity | ReceivedCheckFunctionBindingEntityV3 {
     if (RA.isEmptyArray(receivedCheckRef)) {
       throw new Error(`${functionName}: received check reference is empty`)
     }

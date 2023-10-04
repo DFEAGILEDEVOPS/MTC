@@ -1,5 +1,5 @@
 import { CheckValidator, type ICheckValidatorFunctionBindings } from './check-validator'
-import { type ReceivedCheckTableEntityV1, type MarkCheckMessageV1, ReceivedCheckTableEntityV2 } from '../../schemas/models'
+import { type ReceivedCheckTableEntityV1, type MarkCheckMessageV1, type ReceivedCheckTableEntityV2 } from '../../schemas/models'
 import { type ILogger } from '../../common/logger'
 import { type ICompressionService } from '../../common/compression-service'
 import * as uuid from 'uuid'
