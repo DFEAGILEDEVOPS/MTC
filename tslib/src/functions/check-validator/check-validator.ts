@@ -58,6 +58,7 @@ export class CheckValidator {
         if (payload === undefined) {
           throw new Error(`${functionName}: message is missing [payload] property`)
         }
+        checkData = JSON.parse(payload)
       } else {
         throw new Error(`${functionName}: unsupported check version:'${receivedCheck.checkVersion}'`)
       }

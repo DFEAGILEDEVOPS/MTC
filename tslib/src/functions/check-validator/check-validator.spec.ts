@@ -1,5 +1,11 @@
 import { CheckValidator, type ICheckValidatorFunctionBindings } from './check-validator'
-import { type ReceivedCheckTableEntityV1, type MarkCheckMessageV1, type ReceivedCheckTableEntityV2 } from '../../schemas/models'
+import {
+  type ReceivedCheckTableEntityV1,
+  type MarkCheckMessageV1,
+  type ReceivedCheckTableEntityV2,
+  type ReceivedCheckFunctionBindingEntityV3,
+  type ValidateCheckMessageV1
+} from '../../schemas/models'
 import { type ILogger } from '../../common/logger'
 import { type ICompressionService } from '../../common/compression-service'
 import * as uuid from 'uuid'
@@ -10,6 +16,8 @@ import { type ITableService } from '../../azure/table-service'
 import { type TableEntity } from '@azure/data-tables'
 import { type ICheckFormService } from '../../services/check-form.service'
 import { type IValidatorProvider, ValidatorProvider } from './validators/validator.provider'
+import * as mockSubmittedCheckV3 from '../../schemas/check-schemas/mock-submitted-check.2023.json'
+import * as R from 'ramda'
 
 const receivedCheckCompressedPayloadVersion = 2
 const receivedCheckJsonPayloadVersion = 3
@@ -218,6 +226,49 @@ describe('check-validator', () => {
       expect(actualTableName).toBe('receivedCheck')
       expect(actualEntity.processingError).toBe('check-validator: message is missing [payload] property')
       expect(actualEntity.isValid).toBe(false)
+    })
+
+    test.only('should validate a valid v3 check', async () => {
+      let capturedIsValidFlag = false
+      let capturedAnswers = ''
+      jest.spyOn(tableServiceMock, 'mergeUpdateEntity').mockImplementation(async (table: string, entity: TableEntity<any>) => {
+        capturedIsValidFlag = entity.isValid
+        capturedAnswers = entity.answers
+        if (entity.processingError !== undefined) {
+          console.log(`processingError:${entity.processingError}`)
+        }
+      })
+
+      const stringifiedPayload = JSON.stringify(mockSubmittedCheckV3)
+
+      const receivedCheckEntry: ReceivedCheckFunctionBindingEntityV3 = {
+        checkReceivedAt: new Date(),
+        checkVersion: 3,
+        PartitionKey: mockSubmittedCheckV3.schoolUUID,
+        RowKey: mockSubmittedCheckV3.checkCode,
+        payload: stringifiedPayload,
+        answers: undefined,
+        isValid: undefined,
+        mark: undefined,
+        markedAt: undefined,
+        markError: undefined,
+        maxMarks: undefined,
+        processingError: undefined
+      }
+      const functionBindings: ICheckValidatorFunctionBindings = {
+        receivedCheckTable: [receivedCheckEntry],
+        checkMarkingQueue: [],
+        checkNotificationQueue: []
+      }
+      const message: ValidateCheckMessageV1 = {
+        checkCode: mockSubmittedCheckV3.checkCode,
+        schoolUUID: mockSubmittedCheckV3.schoolUUID,
+        version: 1
+      }
+      await sut.validate(functionBindings, message, loggerMock)
+      expect(tableServiceMock.mergeUpdateEntity).toHaveBeenCalledTimes(1)
+      expect(capturedIsValidFlag).toBe(true)
+      expect(capturedAnswers).toStrictEqual(JSON.stringify(mockSubmittedCheckV3.answers))
     })
   })
 
