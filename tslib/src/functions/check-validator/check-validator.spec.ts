@@ -11,14 +11,11 @@ import { type ICompressionService } from '../../common/compression-service'
 import * as uuid from 'uuid'
 import moment from 'moment'
 import { CheckNotificationType } from '../../schemas/check-notification-message'
-import { getValidatedCheck } from '../../schemas/check-schemas/validated-check'
 import { type ITableService } from '../../azure/table-service'
 import { type TableEntity } from '@azure/data-tables'
 import { type ICheckFormService } from '../../services/check-form.service'
 import { type IValidatorProvider, ValidatorProvider } from './validators/validator.provider'
-import * as mockSubmittedCheckV3 from '../../schemas/check-schemas/mock-submitted-check.2023.json'
-import * as R from 'ramda'
-
+import * as mockSubmittedCheckV3 from '../../schemas/check-schemas/mock-valid-submitted-check.2023.json'
 const receivedCheckCompressedPayloadVersion = 2
 const receivedCheckJsonPayloadVersion = 3
 
@@ -53,7 +50,16 @@ describe('check-validator', () => {
       info: jest.fn(),
       verbose: jest.fn()
     }
-    jest.spyOn(checkFormServiceMock, 'getCheckFormForCheckCode').mockResolvedValue([
+    const checkFormQuestionsFromAnswers = mockSubmittedCheckV3.answers.map((answer) => {
+      return {
+        f1: answer.factor1,
+        f2: answer.factor2
+      }
+    })
+    /* console.log(`checkFormQuestionsFromAnswers:${JSON.stringify(checkFormQuestionsFromAnswers)}`) */
+    jest.spyOn(checkFormServiceMock, 'getCheckFormForCheckCode').mockResolvedValue(checkFormQuestionsFromAnswers)
+  })
+  /*     jest.spyOn(checkFormServiceMock, 'getCheckFormForCheckCode').mockResolvedValue([
       { f1: 0, f2: 0 },
       { f1: 1, f2: 1 },
       { f1: 2, f2: 2 },
@@ -80,7 +86,7 @@ describe('check-validator', () => {
       { f1: 23, f2: 23 },
       { f1: 24, f2: 24 }
     ])
-  })
+  }) */
 
   afterEach(() => {
     jest.restoreAllMocks()
@@ -228,7 +234,7 @@ describe('check-validator', () => {
       expect(actualEntity.isValid).toBe(false)
     })
 
-    test.only('should validate a valid v3 check', async () => {
+    test('should validate a valid v3 check', async () => {
       let capturedIsValidFlag = false
       let capturedAnswers = ''
       jest.spyOn(tableServiceMock, 'mergeUpdateEntity').mockImplementation(async (table: string, entity: TableEntity<any>) => {
@@ -357,7 +363,7 @@ describe('check-validator', () => {
       actualEntity = entity
     })
     jest.spyOn(compressionServiceMock, 'decompress').mockImplementation(() => {
-      return JSON.stringify(getValidatedCheck())
+      return JSON.stringify(mockSubmittedCheckV3)
     })
     const functionBindings: ICheckValidatorFunctionBindings = {
       receivedCheckTable: [receivedCheckEntity],
@@ -389,9 +395,8 @@ describe('check-validator', () => {
       actualTableName = table
       actualEntity = entity
     })
-    const validCheck = getValidatedCheck()
     jest.spyOn(compressionServiceMock, 'decompress').mockImplementation(() => {
-      return JSON.stringify(validCheck)
+      return JSON.stringify(mockSubmittedCheckV3)
     })
     const functionBindings: ICheckValidatorFunctionBindings = {
       receivedCheckTable: [receivedCheckEntity],
@@ -406,7 +411,7 @@ describe('check-validator', () => {
     await sut.validate(functionBindings, message, loggerMock)
     expect(actualTableName).toBe('receivedCheck')
     expect(actualEntity.processingError).toBeUndefined()
-    expect(actualEntity.answers).toStrictEqual(JSON.stringify(validCheck.answers))
+    expect(actualEntity.answers).toStrictEqual(JSON.stringify(mockSubmittedCheckV3.answers))
   })
 
   test('check marking message is created and added to output binding array', async () => {
@@ -418,7 +423,7 @@ describe('check-validator', () => {
       checkVersion: receivedCheckCompressedPayloadVersion
     }
     jest.spyOn(compressionServiceMock, 'decompress').mockImplementation(() => {
-      return JSON.stringify(getValidatedCheck())
+      return JSON.stringify(mockSubmittedCheckV3)
     })
     const functionBindings: ICheckValidatorFunctionBindings = {
       receivedCheckTable: [receivedCheckEntity],

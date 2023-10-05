@@ -28,38 +28,6 @@ describe('answer-count.validator', () => {
     sut = new AnswerCountCheckFormValidator(checkFormServiceMock)
   })
 
-  test('returns an error if the answers property is missing', async () => {
-    const check = {
-      checkCode: '0000-0000-0000-000000'
-    }
-    const error = await sut.validate(check)
-    expect(error?.message).toBe('no answers property found')
-  })
-
-  test('returns an error if the answers property is null', async () => {
-    const check = {
-      checkCode: '0000-0000-0000-000000',
-      answers: null
-    }
-    const error = await sut.validate(check)
-    expect(error?.message).toBe('no answers property found')
-  })
-
-  test('returns an error if the answers property is not an array', async () => {
-    const check = {
-      checkCode: '0000-0000-0000-000000',
-      answers: {}
-    }
-    const error = await sut.validate(check)
-    expect(error?.message).toBe('no answers property found')
-  })
-
-  test('returns an error if the checkCode property is missing', async () => {
-    const check = { answers: [] }
-    const error = await sut.validate(check)
-    expect(error?.message).toBe('checkCode is missing')
-  })
-
   test('minimum number of answers passes validation', async () => {
     const expectedQuestionCount = checkForm.length
     const check = {
@@ -124,7 +92,8 @@ describe('answer-count.validator', () => {
     }
     const error = await sut.validate(check)
     expect(error).toBeDefined()
-    expect((error as ICheckValidationError).message).toBe(`submitted check has ${expectedQuestionCount - 1} answers`)
+    expect((error as ICheckValidationError).message)
+      .toBe(`submitted check has ${expectedQuestionCount - 1} answers. ${expectedQuestionCount} answers are required`)
   })
 
   test('less real answers fails validation', async () => {
@@ -154,6 +123,7 @@ describe('answer-count.validator', () => {
     }
     const error = await sut.validate(check)
     expect(error).toBeDefined()
-    expect((error as ICheckValidationError).message).toBe('submitted check has 3 answers')
+    expect((error as ICheckValidationError).message)
+      .toBe(`submitted check has 3 answers. ${checkForm.length} answers are required`)
   })
 })

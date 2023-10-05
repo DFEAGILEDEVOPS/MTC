@@ -26,7 +26,8 @@ describe('answer-count.validator', () => {
     }
     const error = sut.validate(check)
     expect(error).toBeDefined()
-    expect((error as ICheckValidationError).message).toBe(`submitted check has ${expectedQuestionCount - 1} answers`)
+    expect((error as ICheckValidationError).message)
+      .toBe(`submitted check has ${expectedQuestionCount - 1} answers. ${expectedQuestionCount} answers are required}`)
   })
 
   test('no answers property found fails validation', () => {
@@ -42,7 +43,8 @@ describe('answer-count.validator', () => {
     }
     const error = sut.validate(check)
     expect(error).toBeDefined()
-    expect((error as ICheckValidationError).message).toBe('submitted check has 0 answers')
+    expect((error as ICheckValidationError).message)
+      .toBe(`submitted check has 0 answers. ${config.LiveFormQuestionCount} answers are required}`)
   })
 
   test('correct answer count passes validation', () => {
