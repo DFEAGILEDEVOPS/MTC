@@ -1,0 +1,35 @@
+<%- partial('partials/_gds_breadcrumbs_and_sign_out', { breadcrumbs }) %>
+  <main class="govuk-main-wrapper govuk-body" id="main-content" role="main">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+        <form action="/tech-support/check-submit" method="post" autocomplete="off">
+          <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
+          <div class="govuk-form-group">
+            <h1 class="govuk-label-wrapper"><label class="govuk-label govuk-label--l" for="payload">
+                Submit a check direct to queue
+              </label>
+            </h1>
+            <textarea class="govuk-textarea" id="payload" name="payload"></textarea>
+          </div>
+          <button type="submit" id="submit-btn" class="govuk-button">Submit</button>
+          <a class="govuk-button govuk-button--secondary" href="/tech-support/home">Cancel</a>
+        </form>
+      </div>
+
+      <div class="govuk-grid-column-one-third" aria-label="sidebar">
+        <aside class="app-related-items" role="complementary">
+          <h2 class="govuk-heading-m" id="subsection-title">
+            Related
+          </h2>
+          <nav role="navigation" aria-labelledby="subsection-title">
+            <ul class="govuk-list govuk-!-font-size-16">
+              <li>
+                <a class="govuk-link" href="https://github.com/DFEAGILEDEVOPS/MTC/blob/master/docs/messaging/check-submission/readme.md"
+                  target="_blank">Check Submission Documentation</a>
+              </li>
+            </ul>
+          </nav>
+        </aside>
+      </div>
+    </div>
+  </main>

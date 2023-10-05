@@ -11,6 +11,7 @@ const moment = require('moment')
 const queueMgmtService = require('../services/tech-support-queue-management.service')
 const resultsResyncService = require('../services/tech-support/sync-results-resync.service')
 const { PsReportExecService } = require('../services/tech-support/ps-report-exec/ps-report-exec.service')
+const { CheckSubmitService } = require('../services/tech-support/check-submit/check-submit.service')
 const psReportLogsDownloadService = require('../services/tech-support/ps-report-logs/ps-report-logs.service').PsReportLogsDownloadService
 
 const controller = {
@@ -583,6 +584,36 @@ const controller = {
           runReport: req.body.runReport
         },
         response
+      })
+    } catch (error) {
+      return next(error)
+    }
+  },
+
+  getCheckSubmit: async function getCheckSubmit (req, res, next) {
+    try {
+      res.locals.pageTitle = 'Submit Check'
+      req.breadcrumbs('Submit Check')
+      res.render('tech-support/check-submit', {
+        breadcrumbs: req.breadcrumbs(),
+        response: ''
+      })
+    } catch (error) {
+      return next(error)
+    }
+  },
+
+  postCheckSubmit: async function postCheckSubmit (req, res, next) {
+    res.locals.pageTitle = 'Submit Check'
+    try {
+      await CheckSubmitService.submitV3CheckPayload(req.body.payload)
+      req.breadcrumbs('Submit Check')
+      res.render('tech-support/check-submit', {
+        breadcrumbs: req.breadcrumbs(),
+        formData: {
+          payload: req.body.payload
+        },
+        response: 'check submitted to service bus successfully'
       })
     } catch (error) {
       return next(error)
