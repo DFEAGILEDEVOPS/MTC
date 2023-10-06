@@ -70,7 +70,17 @@ install_db () {
   yarn install
 }
 
+check_func_version () {
+  V=$(func --version)
+  echo "func version ${V} found"
+  MAJOR=$(echo "$V" | cut -d . -f 1)
+  if ! [[ $MAJOR -ge 4 ]]; # need 4 and above
+    then mybanner "ERROR: func should be major version 4" >&2; exit 1
+  fi
+}
+
 start=`date +%s`
+check_func_version
 install_service_bus
 install_db
 install_admin
