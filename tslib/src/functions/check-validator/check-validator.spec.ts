@@ -275,111 +275,111 @@ describe('check-validator', () => {
       expect(actualEntity.processingError).toBe('check-validator: message is missing [payload] property')
       expect(actualEntity.isValid).toBe(false)
     })
-  })
 
-  test('submitted check with no validation errors is marked as valid', async () => {
-    const receivedCheckEntity: ReceivedCheckTableEntityV1 = {
-      partitionKey: uuid.v4(),
-      rowKey: uuid.v4(),
-      archive: 'foo',
-      checkReceivedAt: moment().toDate(),
-      checkVersion: receivedCheckCompressedPayloadVersion
-    }
-    let actualTableName: string | undefined
-    let actualEntity: any
-    jest.spyOn(tableServiceMock, 'mergeUpdateEntity').mockImplementation(async (table: string, entity: any) => {
-      actualTableName = table
-      actualEntity = entity
-    })
-    jest.spyOn(compressionServiceMock, 'decompress').mockImplementation(() => {
-      return JSON.stringify(mockV3SubmittedCheck)
-    })
-    const functionBindings: ICheckValidatorFunctionBindings = {
-      receivedCheckTable: [receivedCheckEntity],
-      checkMarkingQueue: [],
-      checkNotificationQueue: []
-    }
-    const message = {
-      schoolUUID: 'uuid',
-      checkCode: 'code',
-      version: 1
-    }
-    await sut.validate(functionBindings, message, loggerMock)
-    expect(actualTableName).toBe('receivedCheck')
-    expect(actualEntity.processingError).toBeUndefined()
-    expect(actualEntity.isValid).toBe(true)
-  })
-
-  test('check marking message is created and added to output binding array', async () => {
-    const receivedCheckEntity: ReceivedCheckTableEntityV1 = {
-      partitionKey: uuid.v4(),
-      rowKey: uuid.v4(),
-      archive: 'foo',
-      checkReceivedAt: moment().toDate(),
-      checkVersion: receivedCheckCompressedPayloadVersion
-    }
-    jest.spyOn(compressionServiceMock, 'decompress').mockImplementation(() => {
-      return JSON.stringify(mockV3SubmittedCheck)
-    })
-    const functionBindings: ICheckValidatorFunctionBindings = {
-      receivedCheckTable: [receivedCheckEntity],
-      checkMarkingQueue: [],
-      checkNotificationQueue: []
-    }
-    const message = {
-      schoolUUID: 'uuid',
-      checkCode: 'code',
-      version: 1
-    }
-    await sut.validate(functionBindings, message, loggerMock)
-    expect(functionBindings.checkMarkingQueue).toHaveLength(1)
-    const checkMarkingMessage: MarkCheckMessageV1 = functionBindings.checkMarkingQueue[0]
-    expect(checkMarkingMessage.checkCode).toStrictEqual(message.checkCode)
-    expect(checkMarkingMessage.schoolUUID).toStrictEqual(message.schoolUUID)
-    expect(checkMarkingMessage.version).toBe(1)
-  })
-
-  test('should validate a valid v3 check', async () => {
-    let capturedIsValidFlag = false
-    let capturedAnswers = ''
-    jest.spyOn(tableServiceMock, 'mergeUpdateEntity').mockImplementation(async (table: string, entity: TableEntity<any>) => {
-      capturedIsValidFlag = entity.isValid
-      capturedAnswers = entity.answers
-      if (entity.processingError !== undefined) {
-        console.log(`processingError:${entity.processingError}`)
+    test('submitted check with no validation errors is marked as valid', async () => {
+      const receivedCheckEntity: ReceivedCheckTableEntityV1 = {
+        partitionKey: uuid.v4(),
+        rowKey: uuid.v4(),
+        archive: 'foo',
+        checkReceivedAt: moment().toDate(),
+        checkVersion: receivedCheckCompressedPayloadVersion
       }
+      let actualTableName: string | undefined
+      let actualEntity: any
+      jest.spyOn(tableServiceMock, 'mergeUpdateEntity').mockImplementation(async (table: string, entity: any) => {
+        actualTableName = table
+        actualEntity = entity
+      })
+      jest.spyOn(compressionServiceMock, 'decompress').mockImplementation(() => {
+        return JSON.stringify(mockV3SubmittedCheck)
+      })
+      const functionBindings: ICheckValidatorFunctionBindings = {
+        receivedCheckTable: [receivedCheckEntity],
+        checkMarkingQueue: [],
+        checkNotificationQueue: []
+      }
+      const message = {
+        schoolUUID: 'uuid',
+        checkCode: 'code',
+        version: 1
+      }
+      await sut.validate(functionBindings, message, loggerMock)
+      expect(actualTableName).toBe('receivedCheck')
+      expect(actualEntity.processingError).toBeUndefined()
+      expect(actualEntity.isValid).toBe(true)
     })
 
-    const stringifiedPayload = JSON.stringify(mockV3SubmittedCheck)
+    test('check marking message is created and added to output binding array', async () => {
+      const receivedCheckEntity: ReceivedCheckTableEntityV1 = {
+        partitionKey: uuid.v4(),
+        rowKey: uuid.v4(),
+        archive: 'foo',
+        checkReceivedAt: moment().toDate(),
+        checkVersion: receivedCheckCompressedPayloadVersion
+      }
+      jest.spyOn(compressionServiceMock, 'decompress').mockImplementation(() => {
+        return JSON.stringify(mockV3SubmittedCheck)
+      })
+      const functionBindings: ICheckValidatorFunctionBindings = {
+        receivedCheckTable: [receivedCheckEntity],
+        checkMarkingQueue: [],
+        checkNotificationQueue: []
+      }
+      const message = {
+        schoolUUID: 'uuid',
+        checkCode: 'code',
+        version: 1
+      }
+      await sut.validate(functionBindings, message, loggerMock)
+      expect(functionBindings.checkMarkingQueue).toHaveLength(1)
+      const checkMarkingMessage: MarkCheckMessageV1 = functionBindings.checkMarkingQueue[0]
+      expect(checkMarkingMessage.checkCode).toStrictEqual(message.checkCode)
+      expect(checkMarkingMessage.schoolUUID).toStrictEqual(message.schoolUUID)
+      expect(checkMarkingMessage.version).toBe(1)
+    })
 
-    const receivedCheckEntry: ReceivedCheckFunctionBindingEntityV3 = {
-      checkReceivedAt: new Date(),
-      checkVersion: 3,
-      PartitionKey: mockV3SubmittedCheck.schoolUUID,
-      RowKey: mockV3SubmittedCheck.checkCode,
-      payload: stringifiedPayload,
-      answers: undefined,
-      isValid: undefined,
-      mark: undefined,
-      markedAt: undefined,
-      markError: undefined,
-      maxMarks: undefined,
-      processingError: undefined
-    }
-    const functionBindings: ICheckValidatorFunctionBindings = {
-      receivedCheckTable: [receivedCheckEntry],
-      checkMarkingQueue: [],
-      checkNotificationQueue: []
-    }
-    const message: ValidateCheckMessageV1 = {
-      checkCode: mockV3SubmittedCheck.checkCode,
-      schoolUUID: mockV3SubmittedCheck.schoolUUID,
-      version: 1
-    }
-    await sut.validate(functionBindings, message, loggerMock)
-    expect(tableServiceMock.mergeUpdateEntity).toHaveBeenCalledTimes(1)
-    expect(capturedIsValidFlag).toBe(true)
-    expect(capturedAnswers).toStrictEqual(JSON.stringify(mockV3SubmittedCheck.answers))
+    test('should validate a valid v3 check', async () => {
+      let capturedIsValidFlag = false
+      let capturedAnswers = ''
+      jest.spyOn(tableServiceMock, 'mergeUpdateEntity').mockImplementation(async (table: string, entity: TableEntity<any>) => {
+        capturedIsValidFlag = entity.isValid
+        capturedAnswers = entity.answers
+        if (entity.processingError !== undefined) {
+          console.log(`processingError:${entity.processingError}`)
+        }
+      })
+
+      const stringifiedPayload = JSON.stringify(mockV3SubmittedCheck)
+
+      const receivedCheckEntry: ReceivedCheckFunctionBindingEntityV3 = {
+        checkReceivedAt: new Date(),
+        checkVersion: 3,
+        PartitionKey: mockV3SubmittedCheck.schoolUUID,
+        RowKey: mockV3SubmittedCheck.checkCode,
+        payload: stringifiedPayload,
+        answers: undefined,
+        isValid: undefined,
+        mark: undefined,
+        markedAt: undefined,
+        markError: undefined,
+        maxMarks: undefined,
+        processingError: undefined
+      }
+      const functionBindings: ICheckValidatorFunctionBindings = {
+        receivedCheckTable: [receivedCheckEntry],
+        checkMarkingQueue: [],
+        checkNotificationQueue: []
+      }
+      const message: ValidateCheckMessageV1 = {
+        checkCode: mockV3SubmittedCheck.checkCode,
+        schoolUUID: mockV3SubmittedCheck.schoolUUID,
+        version: 1
+      }
+      await sut.validate(functionBindings, message, loggerMock)
+      expect(tableServiceMock.mergeUpdateEntity).toHaveBeenCalledTimes(1)
+      expect(capturedIsValidFlag).toBe(true)
+      expect(capturedAnswers).toStrictEqual(JSON.stringify(mockV3SubmittedCheck.answers))
+    })
   })
 
   test('submitted check with no validation errors has answers added to receivedCheck entity', async () => {
