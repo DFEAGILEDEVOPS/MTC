@@ -293,10 +293,10 @@
     "@opentelemetry/instrumentation" "^0.41.2"
     tslib "^2.2.0"
 
-"@azure/service-bus@^7.0.5":
-  version "7.9.0"
-  resolved "https://registry.yarnpkg.com/@azure/service-bus/-/service-bus-7.9.0.tgz#7c3387bbfd7a5196de74c3e2a3b0cbbc3a77c2ee"
-  integrity sha512-DzvWGmIertkF404nQ/AZQ6hwgXtOtabjBME7dsNvzXmBMfGRjviNWLD5yGyPT4x+clJzbMjRuzvTER+cbRwTYw==
+"@azure/service-bus@^7.9.1":
+  version "7.9.1"
+  resolved "https://registry.yarnpkg.com/@azure/service-bus/-/service-bus-7.9.1.tgz#d2ad965dfcf4d31717ad8e44af2bf3adc9851f14"
+  integrity sha512-4IqhCOV1aSA2ChqFPOWN/5Qh2V8GDBnYleAmtETcHgKkpTQ3PCKX42gP6ZdhUPdNkHET+eu+KkwKYxRZJjqadw==
   dependencies:
     "@azure/abort-controller" "^1.0.0"
     "@azure/core-amqp" "^3.3.0"
