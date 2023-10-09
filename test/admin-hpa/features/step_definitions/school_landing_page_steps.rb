@@ -46,7 +46,12 @@ Then(/^I should see option to manage check forms in the before you start section
 end
 
 Then(/^I should see (.*)'s name$/) do |teacher|
-  expect(school_landing_page.teacher_name.text).to eql "Signed in as " + teacher
+  if @dfe_number
+    school_info = SqlDbHelper.find_school_by_dfeNumber(@dfe_number.scan(/\d/).join(''))
+    expect(school_landing_page.teacher_name.text).to eql "Signed in as " + teacher + "\nfor " + school_info['name'] + " DfE# " + @dfe_number.scan(/\d/).join('')
+  else
+    expect(school_landing_page.teacher_name.text).to eql "Signed in as " + teacher
+  end
 end
 
 Then(/^I should see an option to view the pupil register$/) do
@@ -122,8 +127,8 @@ end
 
 
 And(/^I enter and submit a valid (.*) for impersonation$/) do |dfenumber|
-
-  helpdesk_impersonation_page.dfe_number.set dfenumber
+  @dfe_number = dfenumber
+  helpdesk_impersonation_page.dfe_number.set @dfe_number
   sleep 2
   helpdesk_impersonation_page.submit.click
 end
