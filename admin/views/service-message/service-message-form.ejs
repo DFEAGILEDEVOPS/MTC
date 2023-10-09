@@ -51,6 +51,9 @@
                            class="govuk-input govuk-!-width-three-quarters <%= err.isError('serviceMessageTitle') ? 'govuk-input--error' : '' %>"
                            name="serviceMessageTitle"
                            value="<%= formData['serviceMessageTitle'] %>"/>
+
+
+
                     <div class="govuk-!-margin-top-5 govuk-form-group <%= err.isError('serviceMessageContent') ? 'govuk-form-group--error' : '' %>">
                         <div class="govuk-label govuk-!-font-weight-bold" for="serviceMessageContent">Message</div>
                         <% if (err.isError('serviceMessageContent')) { %>

@@ -39,6 +39,7 @@ schoolImpersonationService.impersonateSchool = async (user, school) => {
   user.School = school.dfeNumber
   user.schoolId = school.id
   user.timezone = school.timezone
+  user.SchoolName = school.name
 }
 
 /**
