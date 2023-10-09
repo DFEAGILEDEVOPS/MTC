@@ -16,6 +16,7 @@ import { type TableEntity } from '@azure/data-tables'
 import { type ICheckFormService } from '../../services/check-form.service'
 import { type IValidatorProvider, ValidatorProvider } from './validators/validator.provider'
 import * as mockSubmittedCheckV3 from '../../schemas/check-schemas/mock-valid-submitted-check.2023.json'
+import * as R from 'ramda'
 const receivedCheckCompressedPayloadVersion = 2
 const receivedCheckJsonPayloadVersion = 3
 
@@ -25,9 +26,11 @@ let tableServiceMock: ITableService
 let compressionServiceMock: ICompressionService
 let checkFormServiceMock: ICheckFormService
 let validatorProvider: IValidatorProvider
+let mockV3SubmittedCheck: any
 
 describe('check-validator', () => {
   beforeEach(() => {
+    mockV3SubmittedCheck = R.clone(mockSubmittedCheckV3)
     tableServiceMock = {
       createEntity: jest.fn(),
       getEntity: jest.fn(),
@@ -50,7 +53,7 @@ describe('check-validator', () => {
       info: jest.fn(),
       verbose: jest.fn()
     }
-    const checkFormQuestionsFromAnswers = mockSubmittedCheckV3.answers.map((answer) => {
+    const checkFormQuestionsFromAnswers = mockV3SubmittedCheck.answers.map((answer: any) => {
       return {
         f1: answer.factor1,
         f2: answer.factor2
@@ -256,7 +259,7 @@ describe('check-validator', () => {
       actualEntity = entity
     })
     jest.spyOn(compressionServiceMock, 'decompress').mockImplementation(() => {
-      return JSON.stringify(mockSubmittedCheckV3)
+      return JSON.stringify(mockV3SubmittedCheck)
     })
     const functionBindings: ICheckValidatorFunctionBindings = {
       receivedCheckTable: [receivedCheckEntity],
@@ -289,7 +292,7 @@ describe('check-validator', () => {
       actualEntity = entity
     })
     jest.spyOn(compressionServiceMock, 'decompress').mockImplementation(() => {
-      return JSON.stringify(mockSubmittedCheckV3)
+      return JSON.stringify(mockV3SubmittedCheck)
     })
     const functionBindings: ICheckValidatorFunctionBindings = {
       receivedCheckTable: [receivedCheckEntity],
@@ -304,7 +307,7 @@ describe('check-validator', () => {
     await sut.validate(functionBindings, message, loggerMock)
     expect(actualTableName).toBe('receivedCheck')
     expect(actualEntity.processingError).toBeUndefined()
-    expect(actualEntity.answers).toStrictEqual(JSON.stringify(mockSubmittedCheckV3.answers))
+    expect(actualEntity.answers).toStrictEqual(JSON.stringify(mockV3SubmittedCheck.answers))
   })
 
   test('check marking message is created and added to output binding array', async () => {
@@ -316,7 +319,7 @@ describe('check-validator', () => {
       checkVersion: receivedCheckCompressedPayloadVersion
     }
     jest.spyOn(compressionServiceMock, 'decompress').mockImplementation(() => {
-      return JSON.stringify(mockSubmittedCheckV3)
+      return JSON.stringify(mockV3SubmittedCheck)
     })
     const functionBindings: ICheckValidatorFunctionBindings = {
       receivedCheckTable: [receivedCheckEntity],
@@ -379,13 +382,13 @@ describe('check-validator', () => {
         }
       })
 
-      const stringifiedPayload = JSON.stringify(mockSubmittedCheckV3)
+      const stringifiedPayload = JSON.stringify(mockV3SubmittedCheck)
 
       const receivedCheckEntry: ReceivedCheckFunctionBindingEntityV3 = {
         checkReceivedAt: new Date(),
         checkVersion: 3,
-        PartitionKey: mockSubmittedCheckV3.schoolUUID,
-        RowKey: mockSubmittedCheckV3.checkCode,
+        PartitionKey: mockV3SubmittedCheck.schoolUUID,
+        RowKey: mockV3SubmittedCheck.checkCode,
         payload: stringifiedPayload,
         answers: undefined,
         isValid: undefined,
@@ -401,14 +404,14 @@ describe('check-validator', () => {
         checkNotificationQueue: []
       }
       const message: ValidateCheckMessageV1 = {
-        checkCode: mockSubmittedCheckV3.checkCode,
-        schoolUUID: mockSubmittedCheckV3.schoolUUID,
+        checkCode: mockV3SubmittedCheck.checkCode,
+        schoolUUID: mockV3SubmittedCheck.schoolUUID,
         version: 1
       }
       await sut.validate(functionBindings, message, loggerMock)
       expect(tableServiceMock.mergeUpdateEntity).toHaveBeenCalledTimes(1)
       expect(capturedIsValidFlag).toBe(true)
-      expect(capturedAnswers).toStrictEqual(JSON.stringify(mockSubmittedCheckV3.answers))
+      expect(capturedAnswers).toStrictEqual(JSON.stringify(mockV3SubmittedCheck.answers))
     })
   })
 })
