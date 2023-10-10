@@ -54,7 +54,16 @@
 
                     <div class="govuk-form-group govuk-!-margin-top-5">
                             <fieldset class="govuk-fieldset" aria-describedby="service-message-area-hint">
-                                <label class="govuk-label govuk-!-font-weight-bold" for="serviceMessageArea">
+
+
+                              <details class="govuk-details" data-module="govuk-details">
+                                <summary class="govuk-details__summary">
+                                  <span class="govuk-details__summary-text">
+                                    Target the message to one or more specific areas of the site:
+                                  </span>
+                                </summary>
+                                <div class="govuk-details__text">
+                                  <label class="govuk-label govuk-!-font-weight-bold" for="serviceMessageArea">
                                     Area that the message applies to
                                 </label>
                               <div id="service-message-area-hint" class="govuk-hint">
@@ -110,6 +119,8 @@
                                     </label>
                                 </div>
                               </div>
+                                </div>
+                              </details>
                             </fieldset>
                     </div>
 
