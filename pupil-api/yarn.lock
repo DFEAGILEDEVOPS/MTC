@@ -315,10 +315,10 @@
     events "^3.0.0"
     tslib "^2.2.0"
 
-"@azure/storage-queue@^12.14.0":
-  version "12.14.0"
-  resolved "https://registry.yarnpkg.com/@azure/storage-queue/-/storage-queue-12.14.0.tgz#cb8732c235d51e345a0f39727e9803cd2f8506d9"
-  integrity sha512-1j6uxhzCcbEDVPOTNWIJ5CsLzOAU5U/bXgGZeT25fy6IghFTC1JlPGALez2CWJ9fBVj6AmSnsiBXL/77iXhSpg==
+"@azure/storage-queue@^12.15.0":
+  version "12.15.0"
+  resolved "https://registry.yarnpkg.com/@azure/storage-queue/-/storage-queue-12.15.0.tgz#c124d362f5aabb6d1f450cf644d0a7756cb45a77"
+  integrity sha512-qotyfMcmocaT1r9bfX7RyQQnkRJcTXGSG/m6LIchtEsNmqLu3ulVqkOlNM+O0XP9wwJ6Da1XQbWz5jQtrDe3DQ==
   dependencies:
     "@azure/abort-controller" "^1.0.0"
     "@azure/core-http" "^3.0.0"
