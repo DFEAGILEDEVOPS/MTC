@@ -54,8 +54,6 @@
 
                     <div class="govuk-form-group govuk-!-margin-top-5">
                             <fieldset class="govuk-fieldset" aria-describedby="service-message-area-hint">
-
-
                               <details class="govuk-details" data-module="govuk-details">
                                 <summary class="govuk-details__summary">
                                   <span class="govuk-details__summary-text">
@@ -67,61 +65,24 @@
                                     Area that the message applies to
                                 </label>
                               <div id="service-message-area-hint" class="govuk-hint">
-                                Select one or more areas for the service message to be shown in.
+                                Select one or more areas for the service message to be shown in, or leave blank to select all areas.
                               </div>
+
                               <div class="govuk-checkboxes" data-module="govuk-checkboxes">
-                                <div class="govuk-checkboxes__item">
-                                  <input class="govuk-checkboxes__input" id="areaGlobal" name="areaCode" type="checkbox" value="*">
-                                  <label class="govuk-label govuk-checkboxes__label" for="areaGlobal">
-                                   All areas (global)
-                                  </label>
-                                </div>
-                                <div class="govuk-checkboxes__item">
-                                  <input class="govuk-checkboxes__input" id="areaAccessArrangements" name="areaCode" type="checkbox" value="AA">
-                                  <label class="govuk-label govuk-checkboxes__label" for="areaAccessArrangements">
-                                    Access Arrangements
-                                  </label>
-                                </div>
-                                <div class="govuk-checkboxes__item">
-                                  <input class="govuk-checkboxes__input" id="areaHdf" name="areaCode" type="checkbox" value="HDF">
-                                  <label class="govuk-label govuk-checkboxes__label" for="areaHdf">
-                                    Headteacher's declaration
-                                  </label>
-                                </div>
-                                <div class="govuk-checkboxes__item">
-                                    <input class="govuk-checkboxes__input" id="areaNsc" name="areaCode" type="checkbox" value="NS">
-                                    <label class="govuk-label govuk-checkboxes__label" for="areaNsc">
-                                      Pupil's not taking the check
-                                    </label>
-                                </div>
-                                <div class="govuk-checkboxes__item">
-                                    <input class="govuk-checkboxes__input" id="areaPinGen" name="areaCode" type="checkbox" value="PIN">
-                                    <label class="govuk-label govuk-checkboxes__label" for="areaPinGen">
-                                      PIN generation
-                                    </label>
-                                </div>
-                                <div class="govuk-checkboxes__item">
-                                    <input class="govuk-checkboxes__input" id="areaPupilGroup" name="areaCode" type="checkbox" value="GRP">
-                                    <label class="govuk-label govuk-checkboxes__label" for="areaPupilGroup">
-                                      Pupil groups
-                                    </label>
-                                </div>
-                                <div class="govuk-checkboxes__item">
-                                    <input class="govuk-checkboxes__input" id="areaPupilStatus" name="areaCode" type="checkbox" value="ST">
-                                    <label class="govuk-label govuk-checkboxes__label" for="areaPupilStatus">
-                                      Pupil status
-                                    </label>
-                                </div>
-                                <div class="govuk-checkboxes__item">
-                                    <input class="govuk-checkboxes__input" id="areaRestarts" name="areaCode" type="checkbox" value="RST">
-                                    <label class="govuk-label govuk-checkboxes__label" for="areaRestarts">
-                                      Restarts
-                                    </label>
-                                </div>
+                                <% if (areaCodes && Array.isArray(areaCodes) && areaCodes.length > 0) { %>
+                                  <% areaCodes.forEach(areaCode => { %>
+                                    <div class="govuk-checkboxes__item">
+                                      <input class="govuk-checkboxes__input" id="<%= `area-${areaCode.code}` %>" name="areaCode" type="checkbox" value="<%= areaCode.code %>">
+                                      <label class="govuk-label govuk-checkboxes__label" for="<%= `area-${areaCode.code}` %>">
+                                        <%= areaCode.description %>
+                                      </label>
+                                    </div>
+                                  <% }) %>
+                                <% } %>
                               </div>
-                                </div>
-                              </details>
-                            </fieldset>
+
+                            </details>
+                        </fieldset>
                     </div>
 
 

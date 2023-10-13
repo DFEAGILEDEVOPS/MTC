@@ -1,5 +1,6 @@
 'use strict'
 
+import { ServiceMessageAreaCodeService } from '../services/serviceMessage/area-code.service'
 const administrationMessageService = require('../services/administration-message.service')
 const ValidationError = require('../lib/validation-error')
 
@@ -42,10 +43,18 @@ const controller = {
     req.breadcrumbs('Manage service message', '/service-message')
     res.locals.pageTitle = 'Create service message'
     req.breadcrumbs(res.locals.pageTitle)
+    const serviceMessageAreaCodeService = new ServiceMessageAreaCodeService()
+    let areaCodes = []
+    try {
+      areaCodes = await serviceMessageAreaCodeService.getAreaCodes()
+    } catch (error) {
+      console.error('Error fetching message Area Codes from the DB: ', error)
+    }
     res.render('service-message/service-message-form', {
       err: err || new ValidationError(),
       formData: req.body,
-      breadcrumbs: req.breadcrumbs()
+      breadcrumbs: req.breadcrumbs(),
+      areaCodes
     })
   },
 
@@ -59,6 +68,9 @@ const controller = {
   postSubmitServiceMessage: async function postSubmitServiceMessage (req, res, next) {
     const requestData = req.body
     try {
+      if (!Array.isArray(requestData.areaCode)) {
+        requestData.areaCode = requestData.areaCode?.length > 0 ? [requestData.areaCode] : []
+      }
       const result = await administrationMessageService.setMessage(requestData, req.user.id)
       if (result && result.hasError && result.hasError()) {
         if (requestData.id !== undefined) {
@@ -106,16 +118,21 @@ const controller = {
         res.redirect('/service-message/')
         return
       }
+      const serviceMessageAreaCodeService = new ServiceMessageAreaCodeService()
+      areaCodes = await serviceMessageAreaCodeService.getAreaCodes()
+
       req.breadcrumbs('Manage service message', '/service-message')
       res.locals.pageTitle = 'Edit service message'
       req.breadcrumbs(res.locals.pageTitle)
       res.render('service-message/service-message-form', {
         err,
+        areaCodes,
         formData: {
           serviceMessageTitle: serviceMessageMarkdown.title,
           serviceMessageContent: serviceMessageMarkdown.message,
           id: serviceMessageMarkdown.id,
-          borderColourCode: serviceMessageMarkdown.borderColourCode
+          borderColourCode: serviceMessageMarkdown.borderColourCode,
+          areaCodes: [] // TODO : fill in with chosen areaCodes
         },
         breadcrumbs: req.breadcrumbs()
       })
