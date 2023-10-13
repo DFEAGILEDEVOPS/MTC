@@ -119,7 +119,7 @@ const controller = {
         return
       }
       const serviceMessageAreaCodeService = new ServiceMessageAreaCodeService()
-      areaCodes = await serviceMessageAreaCodeService.getAreaCodes()
+      const areaCodes = await serviceMessageAreaCodeService.getAreaCodes()
 
       req.breadcrumbs('Manage service message', '/service-message')
       res.locals.pageTitle = 'Edit service message'
