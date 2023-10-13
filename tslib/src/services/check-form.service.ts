@@ -1,6 +1,7 @@
 import * as mssql from 'mssql'
 import { SqlService } from '../sql/sql.service'
 import * as RA from 'ramda-adjunct'
+import config from '../config'
 
 interface CheckFormItem {
   f1: number
@@ -10,6 +11,7 @@ interface CheckFormItem {
 export interface ICheckFormService {
   getCheckFormDataByCheckCode (checkCode: string): Promise<any>
   getCheckFormForCheckCode (checkCode: string): Promise<CheckFormItem[]>
+  getLiveFormQuestionCount (): number
 }
 
 export class CheckFormService implements ICheckFormService {
@@ -17,6 +19,10 @@ export class CheckFormService implements ICheckFormService {
 
   constructor () {
     this.sqlService = new SqlService()
+  }
+
+  getLiveFormQuestionCount (): number {
+    return config.LiveFormQuestionCount
   }
 
   async getCheckFormDataByCheckCode (checkCode: string): Promise<any> {

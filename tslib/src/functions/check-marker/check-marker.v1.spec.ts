@@ -24,6 +24,7 @@ const TableServiceMock = jest.fn<ITableService, any>(() => ({
 const SqlServiceMock = jest.fn<ICheckFormService, any>(() => ({
   getCheckFormDataByCheckCode: jest.fn(),
   getCheckFormForCheckCode: jest.fn(),
+  getLiveFormQuestionCount: jest.fn(),
   init: jest.fn()
 }))
 

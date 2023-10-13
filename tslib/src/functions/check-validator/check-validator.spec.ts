@@ -43,7 +43,8 @@ describe('check-validator', () => {
     }
     checkFormServiceMock = {
       getCheckFormForCheckCode: jest.fn(),
-      getCheckFormDataByCheckCode: jest.fn()
+      getCheckFormDataByCheckCode: jest.fn(),
+      getLiveFormQuestionCount: jest.fn()
     }
     validatorProvider = new ValidatorProvider(checkFormServiceMock)
     sut = new CheckValidator(tableServiceMock, compressionServiceMock, validatorProvider)
@@ -60,6 +61,7 @@ describe('check-validator', () => {
       }
     })
     jest.spyOn(checkFormServiceMock, 'getCheckFormForCheckCode').mockResolvedValue(checkFormQuestionsFromAnswers)
+    jest.spyOn(checkFormServiceMock, 'getLiveFormQuestionCount').mockReturnValue(checkFormQuestionsFromAnswers.length)
   })
 
   afterEach(() => {

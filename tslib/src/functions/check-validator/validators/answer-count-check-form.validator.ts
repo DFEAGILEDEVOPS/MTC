@@ -1,5 +1,4 @@
 import * as R from 'ramda'
-import config from '../../../config'
 import { type Answer } from '../../check-marker/models' // pulling in from a different service
 import { type IAsyncSubmittedCheckValidator, type CheckValidationResult } from './validator-types'
 import { CheckFormService, type ICheckFormService } from '../../../services/check-form.service'
@@ -47,7 +46,7 @@ export class AnswerCountCheckFormValidator implements IAsyncSubmittedCheckValida
 
     // there should be an answer for every item in the checkForm
     // Initialise an array of 25 items to 0
-    const foundAnswers = Array(config.LiveFormQuestionCount).fill(0)
+    const foundAnswers = Array(this.checkFormService.getLiveFormQuestionCount()).fill(0)
 
     // Loop through each Question (from the db) and check there is an answer
     // There must be answer, even if the question timed out with any input from the pupil.

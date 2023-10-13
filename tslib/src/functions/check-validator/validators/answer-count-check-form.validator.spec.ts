@@ -14,7 +14,8 @@ const checkForm = [
 
 const CheckFormServiceMock = jest.fn<ICheckFormService, any>(() => ({
   getCheckFormForCheckCode: jest.fn(),
-  getCheckFormDataByCheckCode: jest.fn()
+  getCheckFormDataByCheckCode: jest.fn(),
+  getLiveFormQuestionCount: jest.fn()
 }))
 
 describe('answer-count.validator', () => {
@@ -25,6 +26,7 @@ describe('answer-count.validator', () => {
   beforeEach(() => {
     const checkFormServiceMock = new CheckFormServiceMock()
     jest.spyOn(checkFormServiceMock, 'getCheckFormForCheckCode').mockResolvedValue(checkForm)
+    jest.spyOn(checkFormServiceMock, 'getLiveFormQuestionCount').mockReturnValue(checkForm.length)
     sut = new AnswerCountCheckFormValidator(checkFormServiceMock)
   })
 
