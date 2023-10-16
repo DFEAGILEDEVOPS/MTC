@@ -11,6 +11,10 @@
             </h1>
             <textarea class="govuk-textarea" id="payload" name="payload"></textarea>
           </div>
+          <div class="govuk-form-group">
+            <input type="checkbox" id="isJson" name="isJson" value="true">
+            <label class="govuk-label" for="isJson">Parse to JSON</label>
+          </div>
           <button type="submit" id="submit-btn" class="govuk-button">Submit</button>
           <a class="govuk-button govuk-button--secondary" href="/tech-support/home">Cancel</a>
           <span><%= response %></span>

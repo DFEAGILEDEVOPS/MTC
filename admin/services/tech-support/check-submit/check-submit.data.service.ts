@@ -1,4 +1,4 @@
-import { ServiceBusClient, type ServiceBusSender } from '@azure/service-bus'
+import { ServiceBusClient, type ServiceBusMessage, type ServiceBusSender } from '@azure/service-bus'
 const config = require('../../../config')
 
 export class CheckSubmitDataService {
@@ -10,8 +10,9 @@ export class CheckSubmitDataService {
       this.sbClient = new ServiceBusClient(config.ServiceBus.connectionString)
       this.sbSender = this.sbClient.createSender('check-submission')
     }
-    return this.sbSender.sendMessages({
+    const msg: ServiceBusMessage = {
       body: message
-    })
+    }
+    return this.sbSender.sendMessages(msg)
   }
 }

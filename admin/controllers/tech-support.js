@@ -611,7 +611,8 @@ const controller = {
       res.render('tech-support/check-submit', {
         breadcrumbs: req.breadcrumbs(),
         formData: {
-          payload: req.body.payload
+          payload: req.body.payload,
+          isJson: req.body.isJson
         },
         response: 'check submitted to service bus successfully'
       })
