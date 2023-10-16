@@ -296,7 +296,7 @@ const checkStartService = {
       if (config.FeatureToggles.checkSubmissionApi) {
         const jwtSigningOptions = {
           issuer: 'MTC Admin',
-          subject: o.pupil_id.toString(),
+          subject: o.pupil_uuid,
           expiresIn: fiveDays // expires in 5 days
         }
         jwtToken = await jwtService.sign({

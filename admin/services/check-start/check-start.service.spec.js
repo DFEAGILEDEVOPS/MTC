@@ -356,7 +356,7 @@ describe('check-start.service', () => {
         expect(jwtService.sign).toHaveBeenCalledWith({ checkCode: checkCode1 },
           {
             issuer: 'MTC Admin',
-            subject: checkformAllocation1.pupil_id.toString(),
+            subject: expect.any(String),
             expiresIn: '5d'
           })
       })
@@ -379,6 +379,18 @@ describe('check-start.service', () => {
           {
             issuer: correctIssuer,
             subject: expect.any(String),
+            expiresIn: expect.any(String)
+          })
+      })
+
+      test('jwt token should have pupil uuid as subject', async () => {
+        const pupiluuid = '85b68f2a-ddef-4d8f-bb97-a43311e45ff3'
+        mockCheckFormAllocationLive.pupil_uuid = pupiluuid
+        await checkStartService.createPupilCheckPayloads([mockCheckFormAllocationLive], 1)
+        expect(jwtService.sign).toHaveBeenCalledWith(expect.any(Object),
+          {
+            issuer: expect.any(String),
+            subject: pupiluuid,
             expiresIn: expect.any(String)
           })
       })
