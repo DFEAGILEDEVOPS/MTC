@@ -7,18 +7,43 @@ describe('Check Submit Service', () => {
   })
 
   describe('submitV3CheckPayload', () => {
-    test('if message undefined, sends empty string', async () => {
-      jest.spyOn(CheckSubmitDataService, 'submitCheckMessageV3').mockImplementation()
-      const payload = undefined
-      await sut.submitV3CheckPayload(payload)
-      expect(CheckSubmitDataService.submitCheckMessageV3).toHaveBeenCalledWith('')
+    describe('raw text', () => {
+      test('if message undefined, sends empty string', async () => {
+        jest.spyOn(CheckSubmitDataService, 'submitCheckMessageV3').mockImplementation()
+        const payload = undefined
+        await sut.submitV3CheckPayload(false, payload)
+        expect(CheckSubmitDataService.submitCheckMessageV3).toHaveBeenCalledWith('')
+      })
+
+      test('sends message as-is to queue', async () => {
+        jest.spyOn(CheckSubmitDataService, 'submitCheckMessageV3').mockImplementation()
+        const payload = 'lsdkfjsdfkjdskfjsd'
+        await sut.submitV3CheckPayload(false, payload)
+        expect(CheckSubmitDataService.submitCheckMessageV3).toHaveBeenCalledWith(payload)
+      })
     })
 
-    test('sends message as-is to queue', async () => {
-      jest.spyOn(CheckSubmitDataService, 'submitCheckMessageV3').mockImplementation()
-      const payload = 'lsdkfjsdfkjdskfjsd'
-      await sut.submitV3CheckPayload(payload)
-      expect(CheckSubmitDataService.submitCheckMessageV3).toHaveBeenCalledWith(payload)
+    describe('json', () => {
+      test('if message undefined, sends empty object', async () => {
+        jest.spyOn(CheckSubmitDataService, 'submitCheckMessageV3').mockImplementation()
+        const payload = undefined
+        await sut.submitV3CheckPayload(true, payload)
+        expect(CheckSubmitDataService.submitCheckMessageV3).toHaveBeenCalledWith(JSON.parse('{}'))
+      })
+
+      test('if message empty string, sends empty object', async () => {
+        jest.spyOn(CheckSubmitDataService, 'submitCheckMessageV3').mockImplementation()
+        const payload = ''
+        await sut.submitV3CheckPayload(true, payload)
+        expect(CheckSubmitDataService.submitCheckMessageV3).toHaveBeenCalledWith({})
+      })
+
+      test('converts string object to JSON for submission', async () => {
+        jest.spyOn(CheckSubmitDataService, 'submitCheckMessageV3').mockImplementation()
+        const payload = { foo: 'bar' }
+        await sut.submitV3CheckPayload(true, JSON.stringify(payload))
+        expect(CheckSubmitDataService.submitCheckMessageV3).toHaveBeenCalledWith(payload)
+      })
     })
   })
 })

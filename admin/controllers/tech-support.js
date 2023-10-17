@@ -606,7 +606,7 @@ const controller = {
   postCheckSubmit: async function postCheckSubmit (req, res, next) {
     res.locals.pageTitle = 'Submit Check'
     try {
-      await CheckSubmitService.submitV3CheckPayload(req.body.payload)
+      await CheckSubmitService.submitV3CheckPayload(req.body.isJson, req.body.payload)
       req.breadcrumbs('Submit Check')
       res.render('tech-support/check-submit', {
         breadcrumbs: req.breadcrumbs(),

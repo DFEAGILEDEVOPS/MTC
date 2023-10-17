@@ -361,7 +361,8 @@ describe('tech-support controller', () => {
       const reqParams = getReqParams('/tech-support/check-submit', 'POST')
       const req = getRequest(reqParams)
       req.body = {
-        payload: 'sfsdfkdsf'
+        payload: 'sfsdfkdsf',
+        isJson: true
       }
       const res = getResponse()
       jest.spyOn(CheckSubmitService, 'submitV3CheckPayload').mockImplementation()
@@ -374,7 +375,7 @@ describe('tech-support controller', () => {
       expect(res.statusCode).toBe(200)
       expect(res.render).toHaveBeenCalled()
       expect(next).not.toHaveBeenCalled()
-      expect(CheckSubmitService.submitV3CheckPayload).toHaveBeenCalledWith(req.body.payload)
+      expect(CheckSubmitService.submitV3CheckPayload).toHaveBeenCalledWith(req.body.isJson, req.body.payload)
     })
   })
 })

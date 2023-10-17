@@ -30,7 +30,7 @@
     "watch:integration": "yarn jest --watch --coverage=no --config ./tests-integration/jest.integration.config.js"
   },
   "mtc": {
-    "assets-version": "7b23a08c3f82a0bc95ec117e296ca74f"
+    "assets-version": "1826ad1466541e9827e727c5961ef46e"
   },
   "engines": {
     "node": ">= 18"
