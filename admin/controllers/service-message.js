@@ -1,6 +1,6 @@
 'use strict'
 
-import { ServiceMessageAreaCodeService } from '../services/serviceMessage/area-code.service'
+import { ServiceMessageAreaCodeService } from '../services/service-message/area-code.service'
 const administrationMessageService = require('../services/administration-message.service')
 const ValidationError = require('../lib/validation-error')
 

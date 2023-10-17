@@ -9,6 +9,7 @@ const logService = require('./log.service')
 const logger = logService.getLogger()
 const sanitiseService = require('./sanitise.service')
 const redisKeyService = require('./redis-key.service')
+import { ServiceMessageAreaCodeService } from './service-message/area-code.service'
 
 const administrationMessageService = {}
 const serviceMessageRedisKey = redisKeyService.getServiceMessageKey()
@@ -68,12 +69,18 @@ administrationMessageService.setMessage = async (requestData, userId) => {
   if (!userId) {
     throw new Error('User id not found in session')
   }
-  const { serviceMessageTitle, serviceMessageContent, borderColourCode } = requestData
+  console.log('requestData', requestData)
+  const { serviceMessageTitle, serviceMessageContent, borderColourCode, areaCode } = requestData
   const serviceMessageErrors = emptyFieldsValidator.validate([
     { fieldKey: 'serviceMessageTitle', fieldValue: serviceMessageTitle, errorMessage: serviceMessageErrorMessages.emptyServiceMessageTitle },
     { fieldKey: 'serviceMessageContent', fieldValue: serviceMessageContent, errorMessage: serviceMessageErrorMessages.emptyServiceMessageContent },
-    { fieldKey: 'borderColourCode', fieldValue: borderColourCode, errorMessage: serviceMessageErrorMessages.emptyServiceMessgeBorderColour }
+    { fieldKey: 'borderColourCode', fieldValue: borderColourCode, errorMessage: serviceMessageErrorMessages.emptyServiceMessgeBorderColour },
   ])
+  // validate incoming area codes - the single letter code must match what we have in the DB.
+  const serviceMessageAreaCodeService = new ServiceMessageAreaCodeService()
+  const areaCodes = await serviceMessageAreaCodeService.getAreaCodes()
+  console.log('validArea codes', areaCodes)
+
   if (serviceMessageErrors.hasError()) {
     return serviceMessageErrors
   }
