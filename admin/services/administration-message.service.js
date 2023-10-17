@@ -1,6 +1,6 @@
 'use strict'
+import { ServiceMessageAreaCodeService } from './service-message/area-code.service'
 const { marked } = require('marked')
-
 const administrationMessageDataService = require('./data-access/administration-message.data.service')
 const redisCacheService = require('./data-access/redis-cache.service')
 const emptyFieldsValidator = require('../lib/validator/common/empty-fields-validators')
@@ -9,7 +9,6 @@ const logService = require('./log.service')
 const logger = logService.getLogger()
 const sanitiseService = require('./sanitise.service')
 const redisKeyService = require('./redis-key.service')
-import { ServiceMessageAreaCodeService } from './service-message/area-code.service'
 
 const administrationMessageService = {}
 const serviceMessageRedisKey = redisKeyService.getServiceMessageKey()
@@ -70,16 +69,21 @@ administrationMessageService.setMessage = async (requestData, userId) => {
     throw new Error('User id not found in session')
   }
   console.log('requestData', requestData)
-  const { serviceMessageTitle, serviceMessageContent, borderColourCode, areaCode } = requestData
+  const { serviceMessageTitle, serviceMessageContent, borderColourCode } = requestData
+  const areaCode = requestData.areaCode ? requestData.areaCode : []
   const serviceMessageErrors = emptyFieldsValidator.validate([
     { fieldKey: 'serviceMessageTitle', fieldValue: serviceMessageTitle, errorMessage: serviceMessageErrorMessages.emptyServiceMessageTitle },
     { fieldKey: 'serviceMessageContent', fieldValue: serviceMessageContent, errorMessage: serviceMessageErrorMessages.emptyServiceMessageContent },
-    { fieldKey: 'borderColourCode', fieldValue: borderColourCode, errorMessage: serviceMessageErrorMessages.emptyServiceMessgeBorderColour },
+    { fieldKey: 'borderColourCode', fieldValue: borderColourCode, errorMessage: serviceMessageErrorMessages.emptyServiceMessgeBorderColour }
   ])
   // validate incoming area codes - the single letter code must match what we have in the DB.
   const serviceMessageAreaCodeService = new ServiceMessageAreaCodeService()
-  const areaCodes = await serviceMessageAreaCodeService.getAreaCodes()
-  console.log('validArea codes', areaCodes)
+  const validAreaCodes = await serviceMessageAreaCodeService.getAreaCodes()
+  console.log('validArea codes', validAreaCodes)
+  if (areaCode.length === 0) {
+    // The user has not chosen any area codes, which means the message applies to all of them
+    validAreaCodes.forEach(c => { areaCode.push(c) }) // copy the codes over
+  }
 
   if (serviceMessageErrors.hasError()) {
     return serviceMessageErrors
