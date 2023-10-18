@@ -20,7 +20,6 @@ export interface IUtilSubmitCheckConfig {
 const httpTrigger: AzureFunction = async function (context: Context, req: HttpRequest): Promise<void> {
   if (!config.DevTestUtils.TestSupportApi) {
     context.log(`${functionName} exiting as config.DevTestUtils.TestSupportApi is not enabled (default behaviour)`)
-    context.done()
     return
   }
 
@@ -40,7 +39,7 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
   if (funcConfig.schoolUuid !== undefined) {
     const liveCheckCodes = await liveSchoolChecksDataService.fetchBySchoolUuid(funcConfig.schoolUuid)
     const promises = liveCheckCodes.map(async record => {
-      return fakeSubmittedCheckBuilder.createSubmittedCheckMessage(record.checkCode)
+      return fakeSubmittedCheckBuilder.createV2Message(record.checkCode)
     })
     const messages = await Promise.all(promises)
     context.bindings.submittedCheckQueue = messages
@@ -61,7 +60,7 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
   const messages = []
   for (let index = 0; index < funcConfig.checkCodes.length; index++) {
     const checkCode = funcConfig.checkCodes[index]
-    messages.push(await fakeSubmittedCheckBuilder.createSubmittedCheckMessage(checkCode))
+    messages.push(await fakeSubmittedCheckBuilder.createV2Message(checkCode))
   }
   context.bindings.submittedCheckQueue = messages
 }
