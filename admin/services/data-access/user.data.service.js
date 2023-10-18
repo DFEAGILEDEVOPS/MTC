@@ -40,6 +40,7 @@ const userDataService = {
         r.title AS roleName,
         u.school_id AS schoolId,
         s.dfeNumber,
+        s.name as schoolName,
         sce.timezone
       FROM mtc_admin.[user] u
       INNER JOIN mtc_admin.[role] r
