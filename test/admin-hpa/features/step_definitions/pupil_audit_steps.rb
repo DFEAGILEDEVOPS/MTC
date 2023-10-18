@@ -184,9 +184,9 @@ Then(/^I should see a audit entry for the pupil with a restart$/) do
     parsed_audit_record = record.each {|k, v| record['newData'] = parsed_new_data}
     array_of_parsed_records << parsed_audit_record
   end
-  sleep 5
-  expect(array_of_parsed_records[2]['newData']['restartAvailable']).to be true
-  expect(array_of_parsed_records[2]['newData']['isDiscretionaryRestartAvailable']).to be false
+  p array_of_parsed_records
+  expect(array_of_parsed_records.last['newData']['restartAvailable']).to be true
+  expect(array_of_parsed_records.last['newData']['isDiscretionaryRestartAvailable']).to be false
 end
 
 
