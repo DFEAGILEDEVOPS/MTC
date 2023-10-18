@@ -109,6 +109,11 @@ administrationMessageService.prepareSubmissionData = (requestData, userId) => {
     serviceMessageData.id = requestData.id
   }
   serviceMessageData.borderColourCode = requestData.borderColourCode
+  if (Array.isArray(requestData.areaCode)) {
+    serviceMessageData.areaCode = requestData.areaCode
+  } else {
+    serviceMessageData.areaCode = [] // TODO [jms]: populate with full list of area codes to create a global system.
+  }
   return serviceMessageData
 }
 

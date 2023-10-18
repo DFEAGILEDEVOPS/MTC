@@ -65,13 +65,15 @@ describe('administrationMessageService', () => {
   describe('setMessage', () => {
     const serviceMessageTitle = 'serviceMessageTitle'
     const serviceMessageContent = 'serviceMessageContent'
-    const requestData = { serviceMessageTitle, serviceMessageContent }
+    const areaCode = ['H', 'P']
+    const requestData = { serviceMessageTitle, serviceMessageContent, areaCode }
 
     beforeEach(() => {
       jest.spyOn(administrationMessageService, 'prepareSubmissionData')
         .mockReturnValue({ title: 'serviceMessageTitle', message: 'serviceMessageContent' })
       jest.spyOn(administrationMessageDataService, 'sqlCreateOrUpdate').mockImplementation()
       jest.spyOn(redisCacheService, 'set').mockImplementation()
+      // jest.spyOn()// make areaCodeService static so we can spy
     })
 
     test('should not continue further if a user id is not present', async () => {
@@ -129,25 +131,29 @@ describe('administrationMessageService', () => {
   })
 
   describe('prepareSubmissionData', () => {
+    const areaCode = ['H', 'P']
     test('should return an object that includes title, message and createdByUser_id when creating a record', () => {
       const requestData = {
         serviceMessageTitle: 'serviceMessageTitle',
-        serviceMessageContent: 'serviceMessageContent'
+        serviceMessageContent: 'serviceMessageContent',
+        areaCode,
+        borderColourCode: 'B'
       }
       const userId = 1
       const result = administrationMessageService.prepareSubmissionData(requestData, userId)
-      expect(result).toEqual({ createdByUser_id: 1, title: 'serviceMessageTitle', message: 'serviceMessageContent' })
+      expect(result).toMatchObject({ createdByUser_id: 1, title: 'serviceMessageTitle', message: 'serviceMessageContent', areaCode: ['H', 'P'], borderColourCode: 'B' })
     })
 
     test('should return an object that includes title, message and id and createdByUser_id when editing a record', () => {
       const requestData = {
         serviceMessageTitle: 'serviceMessageTitle',
         serviceMessageContent: 'serviceMessageContent',
-        id: '1'
+        id: '1',
+        areaCode
       }
       const userId = 1
       const result = administrationMessageService.prepareSubmissionData(requestData, userId)
-      expect(result).toEqual({ createdByUser_id: 1, title: 'serviceMessageTitle', message: 'serviceMessageContent', id: '1' })
+      expect(result).toMatchObject({ createdByUser_id: 1, title: 'serviceMessageTitle', message: 'serviceMessageContent', id: '1', areaCode: ['H', 'P'] })
     })
   })
 
