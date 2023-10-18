@@ -7,6 +7,7 @@ const administrationMessageService = require('../../../services/administration-m
 const emptyFieldsValidator = require('../../../lib/validator/common/empty-fields-validators')
 const ValidationError = require('../../../lib/validation-error')
 const { marked } = require('marked')
+const { ServiceMessageAreaCodeService } = require('../../../services/service-message/area-code.service')
 
 const serviceMessageRedisKey = 'serviceMessage'
 
@@ -73,7 +74,7 @@ describe('administrationMessageService', () => {
         .mockReturnValue({ title: 'serviceMessageTitle', message: 'serviceMessageContent' })
       jest.spyOn(administrationMessageDataService, 'sqlCreateOrUpdate').mockImplementation()
       jest.spyOn(redisCacheService, 'set').mockImplementation()
-      // jest.spyOn()// make areaCodeService static so we can spy
+      jest.spyOn(ServiceMessageAreaCodeService, 'getAreaCodes').mockResolvedValue({ code: 'T', description: 'Test code' })
     })
 
     test('should not continue further if a user id is not present', async () => {

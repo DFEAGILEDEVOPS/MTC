@@ -7,7 +7,7 @@ export interface IAreaCode {
 }
 
 export class ServiceMessageAreaCodeService {
-  async getAreaCodes (): Promise<IAreaCode[]> {
+  public static async getAreaCodes (): Promise<IAreaCode[]> {
     const areaCodes = await ServiceMessageAreaCodeDataService.sqlGetAreaCodes()
     const sortedCodes = sort.sortByProps(['description'], areaCodes)
     return sortedCodes

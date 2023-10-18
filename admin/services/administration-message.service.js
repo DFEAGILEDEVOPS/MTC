@@ -77,9 +77,7 @@ administrationMessageService.setMessage = async (requestData, userId) => {
     { fieldKey: 'borderColourCode', fieldValue: borderColourCode, errorMessage: serviceMessageErrorMessages.emptyServiceMessgeBorderColour }
   ])
   // validate incoming area codes - the single letter code must match what we have in the DB.
-  const serviceMessageAreaCodeService = new ServiceMessageAreaCodeService()
-  const validAreaCodes = await serviceMessageAreaCodeService.getAreaCodes()
-  console.log('validArea codes', validAreaCodes)
+  const validAreaCodes = await ServiceMessageAreaCodeService.getAreaCodes()
   if (areaCode.length === 0) {
     // The user has not chosen any area codes, which means the message applies to all of them
     validAreaCodes.forEach(c => { areaCode.push(c) }) // copy the codes over
