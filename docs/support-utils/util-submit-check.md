@@ -104,7 +104,7 @@ example...
 ## Notes
 In order for the check to be properly processed, a successful request to the pupil auth API should be made (typically prior to the check submission), in order to set the pupil login date value.
 
-If not, a restart will be unavailable.
+If not, a restart will be unavailable, as it will not be possible to determine that the check has been consumed.
 
 If submitting a [check-started message](../messaging/message-schemas.md) is part of your automated process, you should set the `TEST_SUPPORT_DISABLE_PREPARED_CHECK_CACHE_DROP` environment variable to `true` so that the `check-started` function does not drop the prepared check before the `util-submit-check` function can use it to generate a complete check.
 
