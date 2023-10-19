@@ -82,8 +82,3 @@ export class FakeSubmittedCheckMessageGeneratorService {
     return submittedCheck
   }
 }
-
-export enum SubmittedCheckVersion {
-  V2 = 2,
-  V3 = 3
-}
