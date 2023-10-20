@@ -43,10 +43,9 @@ const controller = {
     req.breadcrumbs('Manage service message', '/service-message')
     res.locals.pageTitle = 'Create service message'
     req.breadcrumbs(res.locals.pageTitle)
-    const serviceMessageAreaCodeService = new ServiceMessageAreaCodeService()
     let areaCodes = []
     try {
-      areaCodes = await serviceMessageAreaCodeService.getAreaCodes()
+      areaCodes = await ServiceMessageAreaCodeService.getAreaCodes()
     } catch (error) {
       console.error('Error fetching message Area Codes from the DB: ', error)
     }

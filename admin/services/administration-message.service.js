@@ -1,5 +1,6 @@
 'use strict'
 import { ServiceMessageAreaCodeService } from './service-message/area-code.service'
+import ServiceMessageValidator from './service-message/service-message.validator'
 const { marked } = require('marked')
 const administrationMessageDataService = require('./data-access/administration-message.data.service')
 const redisCacheService = require('./data-access/redis-cache.service')
@@ -81,6 +82,9 @@ administrationMessageService.setMessage = async (requestData, userId) => {
   if (areaCode.length === 0) {
     // The user has not chosen any area codes, which means the message applies to all of them
     validAreaCodes.forEach(c => { areaCode.push(c) }) // copy the codes over
+  } else {
+    console.log('SMV', ServiceMessageValidator)
+    const serviceMessageErrors2 = ServiceMessageValidator.validate(requestData)
   }
 
   if (serviceMessageErrors.hasError()) {
