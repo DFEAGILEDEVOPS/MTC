@@ -6,12 +6,13 @@ import { Injectable } from '@angular/core'
 @Injectable()
 export class SubmissionService {
 
+  public static readonly SubmittedCheckVersion3 = 3
   constructor(private http: HttpService) {}
 
   async submit(payload: any): Promise<any> {
     const submissionUrl = payload.tokens.checkSubmission.url
     const jwtToken = payload.tokens.checkSubmission.token
-    payload.version = 3
+    payload.version = SubmissionService.SubmittedCheckVersion3
     await this.http.post(submissionUrl, payload,
       new HttpHeaders()
       .set('Content-Type', 'application/json')

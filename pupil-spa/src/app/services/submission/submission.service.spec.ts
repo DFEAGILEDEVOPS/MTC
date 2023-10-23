@@ -75,7 +75,7 @@ describe('submission service', () => {
   })
 
   it('should set correct version on payload', async () => {
-    const expectedPayloadVersion = 3
+    const expectedPayloadVersion = SubmissionService.SubmittedCheckVersion3
     const payloadUrl = 'http://my-url'
     const payload = {
       tokens: {

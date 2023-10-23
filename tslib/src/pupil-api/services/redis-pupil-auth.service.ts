@@ -54,14 +54,12 @@ export class RedisPupilAuthenticationService implements IPupilAuthenticationServ
     const cacheKey = this.buildCacheKey(schoolPin, pupilPin)
     const preparedCheckEntry = await this.redisService.get(cacheKey)
     if (preparedCheckEntry === undefined) {
-      console.log('GUY: no prepared check')
       return
     }
     const pinExpiresAtUtc = R.prop('pinExpiresAtUtc', preparedCheckEntry)
     const pinValidFromUtc = R.prop('pinValidFromUtc', preparedCheckEntry)
     const currentDateTime = moment.utc()
     if (moment.utc(pinValidFromUtc).isAfter(currentDateTime) || moment.utc(pinExpiresAtUtc).isBefore(currentDateTime)) {
-      console.log('GUY: its a time validity issue')
       return
     }
 

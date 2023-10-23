@@ -240,7 +240,7 @@ describe('CheckCompleteService', () => {
       expect(mockRouter.navigate).toHaveBeenCalledWith(['/check-complete']);
     });
 
-    it(`submission failure should be audited and redirect to submission failed page`, async () => {
+    it('submission failure should be audited and redirect to submission failed page', async () => {
     const addEntrySpy = spyOn(auditService, 'addEntry');
     spyOn(appInsightsService, 'trackException');
     spyOn(storageService, 'setPendingSubmission');

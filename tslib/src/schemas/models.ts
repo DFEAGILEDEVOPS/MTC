@@ -22,7 +22,27 @@ export interface SubmittedCheckMessageV3 {
     name: string
     uuid: string
   }
-  tokens: Record<any, any>
+  tokens: {
+    checkStarted: {
+      token: string
+      url: string
+      queueName: string
+    }
+    pupilPreferences: {
+      token: string
+      url: string
+      queueName: string
+    }
+    pupilFeedback: {
+      token: string
+      url: string
+      queueName: string
+    }
+    checkSubmission: {
+      token: string
+      url: string
+    }
+  }
   audit: Record<any, any>
   inputs: Record<any, any>
   answers: Record<any, any>

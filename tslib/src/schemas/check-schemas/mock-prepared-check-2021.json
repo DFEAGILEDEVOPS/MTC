@@ -96,8 +96,9 @@
       "url": "https://myqueue.queue.core.windows.net/pupil-feedback",
       "queueName": "pupil-feedback"
     },
-    "jwt": {
-      "token": "token-disabled"
+    "checkSubmission": {
+      "token": "token-disabled",
+      "url": "https://myqueue.queue.core.windows.net/check-submitted"
     },
     "checkComplete": {
       "token": "st=2021-06-02T07%3A07%3A26Z&se=2021-06-03T08%3A12%3A26Z&sp=a&sv=2018-03-28&sig=the-signature-of-the-token-object-value",

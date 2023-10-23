@@ -51,8 +51,9 @@ export interface TokenInfo {
   pupilPreferences: QueueAuthToken
   pupilFeedback: QueueAuthToken
   checkComplete?: QueueAuthToken
-  jwt: {
+  checkSubmission: {
     token: string
+    url: string
   }
 }
 
@@ -210,8 +211,9 @@ export function getValidatedCheck (): ValidCheck {
         token: '',
         url: ''
       },
-      jwt: {
-        token: ''
+      checkSubmission: {
+        token: '',
+        url: ''
       },
       pupilPreferences: {
         queueName: '',

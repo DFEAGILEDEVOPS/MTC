@@ -35,7 +35,6 @@ export class HttpService {
 
   public async post(url: string, body: any, headers: HttpHeaders, retryCount = this.defaultRetryCount) {
     try {
-      console.log(`posting: ${JSON.stringify(body)}`)
       return this.doPost(url, body, retryCount, headers);
     } catch (error) {
       console.log(`http post error: status was ${error.status} - ${error.message}`, error);
