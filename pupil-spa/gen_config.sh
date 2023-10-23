@@ -23,7 +23,6 @@ production=${PRODUCTION:-"false"}
 pupilPrefsAPIErrorDelay=${CHECK_SUBMISSION_ERROR_DELAY:-"3000"}
 pupilPrefsAPIErrorMaxAttempts=${CHECK_SUBMISSION_MAX_ATTEMPTS:-"3"}
 submissionPendingViewMinDisplay=${SUBMISSION_PENDING_MIN_DISPLAY:-"6000"}
-submissionUrl=${SUBMISSION_URL:-"http://localhost:3003/submit"}
 submitsToCheckReceiver=${SUBMITS_TO_CHECK_RECEIVER:-"false"}
 supportNumber=${SUPPORT_NUMBER:-"0300 303 3013"}
 testPupilConnectionDelay=${TEST_PUPIL_CONNECTION_ERROR_DELAY:-"3000"}
@@ -49,7 +48,6 @@ cat <<EOF > config.json
   "loginPendingViewMinDisplay": $loginPendingViewMinDisplay,
   "production": $production,
   "submissionPendingViewMinDisplay": $submissionPendingViewMinDisplay,
-  "submissionURL": "$submissionUrl",
   "submitsToCheckReceiver": $submitsToCheckReceiver,
   "supportNumber": "$supportNumber",
   "testPupilConnectionDelay": $testPupilConnectionDelay,
