@@ -50,7 +50,7 @@ export class CheckValidator {
         if (archive === undefined) {
           throw new Error(`${functionName}: message is missing [archive] property`)
         }
-        const decompressedString = this.compressionService.decompress(archive)
+        const decompressedString = this.compressionService.decompressFromUTF16(archive)
         checkData = JSON.parse(decompressedString)
       } else if (receivedCheck.checkVersion === 3) {
         const payload = (receivedCheck as ReceivedCheckFunctionBindingEntityV3).payload

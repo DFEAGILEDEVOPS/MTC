@@ -33,7 +33,7 @@ const checkRetriever: AzureFunction = async function (context: Context, req: Htt
   const receivedCheck = await tableService.getEntity<ReceivedCheckTableEntityV1>('receivedCheck', schoolUUID, checkCode)
   const archive = receivedCheck.archive ?? ''
   const compressionService = new CompressionService()
-  const decompressed = compressionService.decompress(archive)
+  const decompressed = compressionService.decompressFromUTF16(archive)
   context.res = {
     body: decompressed,
     headers: {

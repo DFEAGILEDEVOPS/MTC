@@ -27,7 +27,7 @@ export class ReceivedCheckPayloadService {
     const archives = await this.dataService.fetchCompressedArchives(checkCodes)
     console.log(`found ${archives.length} archives`)
     if (archives === undefined || archives.length === 0) return []
-    const decompressedArchives = archives.map(a => this.compressionService.decompress(a))
+    const decompressedArchives = archives.map(a => this.compressionService.decompressFromUTF16(a))
     const payloads: SubmittedCheckMessageV2[] = []
     for (let index = 0; index < decompressedArchives.length; index++) {
       const da = decompressedArchives[index]

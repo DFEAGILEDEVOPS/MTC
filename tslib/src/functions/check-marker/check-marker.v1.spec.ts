@@ -74,7 +74,7 @@ describe('check-marker/v1', () => {
     const validatedCheckEntity: ReceivedCheckFunctionBindingEntity = {
       PartitionKey: uuid.v4(),
       RowKey: uuid.v4(),
-      archive: compressionService.compress(JSON.stringify({})),
+      archive: compressionService.compressToUTF16(JSON.stringify({})),
       checkReceivedAt: moment().toDate(),
       checkVersion: 1,
       isValid: true,
@@ -106,7 +106,7 @@ describe('check-marker/v1', () => {
     const validatedCheckEntity: ReceivedCheckFunctionBindingEntity = {
       PartitionKey: uuid.v4(),
       RowKey: uuid.v4(),
-      archive: compressionService.compress(JSON.stringify({})),
+      archive: compressionService.compressToUTF16(JSON.stringify({})),
       checkReceivedAt: moment().toDate(),
       checkVersion: 1,
       isValid: true,
@@ -138,7 +138,7 @@ describe('check-marker/v1', () => {
     const validatedCheckEntity: ReceivedCheckFunctionBindingEntity = {
       PartitionKey: uuid.v4(),
       RowKey: uuid.v4(),
-      archive: compressionService.compress(JSON.stringify({})),
+      archive: compressionService.compressToUTF16(JSON.stringify({})),
       checkReceivedAt: moment().toDate(),
       checkVersion: 1,
       isValid: true,
@@ -172,7 +172,7 @@ describe('check-marker/v1', () => {
     const validatedCheckEntity: ReceivedCheckFunctionBindingEntity = {
       PartitionKey: uuid.v4(),
       RowKey: uuid.v4(),
-      archive: compressionService.compress(JSON.stringify({})),
+      archive: compressionService.compressToUTF16(JSON.stringify({})),
       checkReceivedAt: moment().toDate(),
       checkVersion: 1,
       isValid: true,
@@ -208,7 +208,7 @@ describe('check-marker/v1', () => {
     const validatedCheckEntity: ReceivedCheckFunctionBindingEntity = {
       PartitionKey: uuid.v4(),
       RowKey: uuid.v4(),
-      archive: compressionService.compress(JSON.stringify({})),
+      archive: compressionService.compressToUTF16(JSON.stringify({})),
       checkReceivedAt: moment().toDate(),
       checkVersion: 1,
       isValid: true,
@@ -245,7 +245,7 @@ describe('check-marker/v1', () => {
     const validatedCheckEntity: ReceivedCheckFunctionBindingEntity = {
       PartitionKey: uuid.v4(),
       RowKey: uuid.v4(),
-      archive: compressionService.compress(JSON.stringify({})),
+      archive: compressionService.compressToUTF16(JSON.stringify({})),
       checkReceivedAt: moment().toDate(),
       checkVersion: 1,
       isValid: true,
@@ -309,7 +309,7 @@ describe('check-marker/v1', () => {
     const validatedCheckEntity: ReceivedCheckFunctionBindingEntity = {
       PartitionKey: uuid.v4(),
       RowKey: uuid.v4(),
-      archive: compressionService.compress(JSON.stringify({})),
+      archive: compressionService.compressToUTF16(JSON.stringify({})),
       checkReceivedAt: moment().toDate(),
       checkVersion: 1,
       isValid: true,
@@ -371,7 +371,7 @@ describe('check-marker/v1', () => {
     const validatedCheckEntity: ReceivedCheckFunctionBindingEntity = {
       PartitionKey: uuid.v4(),
       RowKey: uuid.v4(),
-      archive: compressionService.compress(JSON.stringify({})),
+      archive: compressionService.compressToUTF16(JSON.stringify({})),
       checkReceivedAt: moment().toDate(),
       checkVersion: 1,
       isValid: true,
@@ -433,7 +433,7 @@ describe('check-marker/v1', () => {
     const validatedCheckEntity: ReceivedCheckFunctionBindingEntity = {
       PartitionKey: uuid.v4(),
       RowKey: uuid.v4(),
-      archive: compressionService.compress(JSON.stringify({})),
+      archive: compressionService.compressToUTF16(JSON.stringify({})),
       checkReceivedAt: moment().toDate(),
       checkVersion: 1,
       isValid: true,
@@ -489,7 +489,7 @@ describe('check-marker/v1', () => {
     const validatedCheckEntity: ReceivedCheckFunctionBindingEntity = {
       PartitionKey: uuid.v4(),
       RowKey: uuid.v4(),
-      archive: compressionService.compress(JSON.stringify({})),
+      archive: compressionService.compressToUTF16(JSON.stringify({})),
       checkReceivedAt: moment().toDate(),
       checkVersion: 1,
       isValid: true,
@@ -523,7 +523,7 @@ describe('check-marker/v1', () => {
     const validatedCheckEntity: ReceivedCheckFunctionBindingEntity = {
       PartitionKey: uuid.v4(),
       RowKey: checkCode,
-      archive: compressionService.compress(JSON.stringify({})),
+      archive: compressionService.compressToUTF16(JSON.stringify({})),
       checkReceivedAt: moment().toDate(),
       checkVersion: 1,
       isValid: true,
@@ -574,7 +574,7 @@ describe('check-marker/v1', () => {
     const validatedCheckEntity: ReceivedCheckFunctionBindingEntity = {
       PartitionKey: uuid.v4(),
       RowKey: uuid.v4(),
-      archive: compressionService.compress(JSON.stringify({})),
+      archive: compressionService.compressToUTF16(JSON.stringify({})),
       checkReceivedAt: moment().toDate(),
       checkVersion: 1,
       isValid: true,
@@ -664,7 +664,7 @@ describe('check-marker/v1', () => {
     const validatedCheckEntity: ReceivedCheckFunctionBindingEntity = {
       PartitionKey: uuid.v4(),
       RowKey: uuid.v4(),
-      archive: compressionService.compress(JSON.stringify({})),
+      archive: compressionService.compressToUTF16(JSON.stringify({})),
       checkReceivedAt: moment().toDate(),
       checkVersion: 1,
       isValid: true,
@@ -728,7 +728,7 @@ describe('check-marker/v1', () => {
     const validatedCheckEntity: ReceivedCheckFunctionBindingEntity = {
       PartitionKey: uuid.v4(),
       RowKey: uuid.v4(),
-      archive: compressionService.compress(JSON.stringify({})),
+      archive: compressionService.compressToUTF16(JSON.stringify({})),
       checkReceivedAt: moment().toDate(),
       checkVersion: 1,
       isValid: true,

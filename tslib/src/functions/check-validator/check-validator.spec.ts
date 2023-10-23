@@ -17,8 +17,7 @@ import { type ICheckFormService } from '../../services/check-form.service'
 import { type IValidatorProvider, ValidatorProvider } from './validators/validator.provider'
 import * as mockSubmittedCheckV3 from '../../schemas/check-schemas/mock-valid-submitted-check.2023.json'
 import * as R from 'ramda'
-const receivedCheckCompressedPayloadVersion = 2
-const receivedCheckJsonPayloadVersion = 3
+import { SubmittedCheckVersion } from '../../schemas/SubmittedCheckVersion'
 
 let sut: CheckValidator
 let loggerMock: ILogger
@@ -38,8 +37,10 @@ describe('check-validator', () => {
       replaceEntity: jest.fn()
     }
     compressionServiceMock = {
-      compress: jest.fn(),
-      decompress: jest.fn()
+      compressToUTF16: jest.fn(),
+      decompressFromUTF16: jest.fn(),
+      compressToBase64: jest.fn(),
+      decompressFromBase64: jest.fn()
     }
     checkFormServiceMock = {
       getCheckFormForCheckCode: jest.fn(),
@@ -140,7 +141,7 @@ describe('check-validator', () => {
       rowKey: uuid.v4(),
       archive: undefined,
       checkReceivedAt: moment().toDate(),
-      checkVersion: receivedCheckCompressedPayloadVersion
+      checkVersion: SubmittedCheckVersion.V2
     }
     const functionBindings: ICheckValidatorFunctionBindings = {
       receivedCheckTable: [receivedCheckEntity],
@@ -154,13 +155,13 @@ describe('check-validator', () => {
     expect(actualEntity.isValid).toBe(false)
   })
 
-  test('archive is decompressesed when archive property present', async () => {
+  test('v2 archive is decompressesed from UTF-16', async () => {
     const receivedCheckEntity: ReceivedCheckTableEntityV1 = {
       partitionKey: uuid.v4(),
       rowKey: uuid.v4(),
       archive: 'foo',
       checkReceivedAt: moment().toDate(),
-      checkVersion: receivedCheckCompressedPayloadVersion
+      checkVersion: SubmittedCheckVersion.V2
     }
     const functionBindings: ICheckValidatorFunctionBindings = {
       receivedCheckTable: [receivedCheckEntity],
@@ -173,7 +174,29 @@ describe('check-validator', () => {
       version: 1
     }
     await sut.validate(functionBindings, message, loggerMock)
-    expect(compressionServiceMock.decompress).toHaveBeenCalledWith('foo')
+    expect(compressionServiceMock.decompressFromUTF16).toHaveBeenCalledWith('foo')
+  })
+
+  test('v3 archive is decompressesed from base64', async () => {
+    const receivedCheckEntity: ReceivedCheckTableEntityV1 = {
+      partitionKey: uuid.v4(),
+      rowKey: uuid.v4(),
+      archive: 'foo',
+      checkReceivedAt: moment().toDate(),
+      checkVersion: SubmittedCheckVersion.V3
+    }
+    const functionBindings: ICheckValidatorFunctionBindings = {
+      receivedCheckTable: [receivedCheckEntity],
+      checkMarkingQueue: [],
+      checkNotificationQueue: []
+    }
+    const message = {
+      schoolUUID: 'uuid',
+      checkCode: 'code',
+      version: 1
+    }
+    await sut.validate(functionBindings, message, loggerMock)
+    expect(compressionServiceMock.decompressFromUTF16).toHaveBeenCalledWith('foo')
   })
 
   test('submitted check with missing properties are recorded as validation errors against the entity', async () => {
@@ -182,7 +205,7 @@ describe('check-validator', () => {
       rowKey: uuid.v4(),
       archive: 'foo',
       checkReceivedAt: moment().toDate(),
-      checkVersion: receivedCheckCompressedPayloadVersion
+      checkVersion: SubmittedCheckVersion.V2
     }
     let actualTableName: string | undefined
     let actualEntity: any
@@ -190,7 +213,7 @@ describe('check-validator', () => {
       actualTableName = table
       actualEntity = entity
     })
-    jest.spyOn(compressionServiceMock, 'decompress').mockImplementation(() => {
+    jest.spyOn(compressionServiceMock, 'decompressFromUTF16').mockImplementation(() => {
       return JSON.stringify({
         foo: 'bar'
       })
@@ -223,11 +246,11 @@ describe('check-validator', () => {
       rowKey: message.checkCode,
       archive: 'foo',
       checkReceivedAt: moment().toDate(),
-      checkVersion: receivedCheckCompressedPayloadVersion
+      checkVersion: SubmittedCheckVersion.V2
     }
 
     jest.spyOn(tableServiceMock, 'mergeUpdateEntity').mockImplementation()
-    jest.spyOn(compressionServiceMock, 'decompress').mockImplementation(() => {
+    jest.spyOn(compressionServiceMock, 'decompressFromUTF16').mockImplementation(() => {
       return JSON.stringify({
         foo: 'bar'
       })
@@ -263,7 +286,7 @@ describe('check-validator', () => {
       rowKey: uuid.v4(),
       payload: undefined,
       checkReceivedAt: moment().toDate(),
-      checkVersion: receivedCheckJsonPayloadVersion
+      checkVersion: SubmittedCheckVersion.V3
     }
     const functionBindings: ICheckValidatorFunctionBindings = {
       receivedCheckTable: [receivedCheckEntity],
@@ -283,7 +306,7 @@ describe('check-validator', () => {
       rowKey: uuid.v4(),
       archive: 'foo',
       checkReceivedAt: moment().toDate(),
-      checkVersion: receivedCheckCompressedPayloadVersion
+      checkVersion: SubmittedCheckVersion.V2
     }
     let actualTableName: string | undefined
     let actualEntity: any
@@ -291,7 +314,7 @@ describe('check-validator', () => {
       actualTableName = table
       actualEntity = entity
     })
-    jest.spyOn(compressionServiceMock, 'decompress').mockImplementation(() => {
+    jest.spyOn(compressionServiceMock, 'decompressFromUTF16').mockImplementation(() => {
       return JSON.stringify(mockV3SubmittedCheck)
     })
     const functionBindings: ICheckValidatorFunctionBindings = {
@@ -316,9 +339,9 @@ describe('check-validator', () => {
       rowKey: uuid.v4(),
       archive: 'foo',
       checkReceivedAt: moment().toDate(),
-      checkVersion: receivedCheckCompressedPayloadVersion
+      checkVersion: SubmittedCheckVersion.V2
     }
-    jest.spyOn(compressionServiceMock, 'decompress').mockImplementation(() => {
+    jest.spyOn(compressionServiceMock, 'decompressFromUTF16').mockImplementation(() => {
       return JSON.stringify(mockV3SubmittedCheck)
     })
     const functionBindings: ICheckValidatorFunctionBindings = {
@@ -388,7 +411,7 @@ describe('check-validator', () => {
       rowKey: uuid.v4(),
       archive: 'foo',
       checkReceivedAt: moment().toDate(),
-      checkVersion: receivedCheckCompressedPayloadVersion
+      checkVersion: SubmittedCheckVersion.V2
     }
     let actualTableName: string | undefined
     let actualEntity: any
@@ -396,7 +419,7 @@ describe('check-validator', () => {
       actualTableName = table
       actualEntity = entity
     })
-    jest.spyOn(compressionServiceMock, 'decompress').mockImplementation(() => {
+    jest.spyOn(compressionServiceMock, 'decompressFromUTF16').mockImplementation(() => {
       return JSON.stringify(mockV3SubmittedCheck)
     })
     const functionBindings: ICheckValidatorFunctionBindings = {

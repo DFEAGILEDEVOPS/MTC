@@ -57,7 +57,7 @@ export class SyncResultsInitService {
     if (archive === null || archive === undefined || archive === '') {
       throw new Error(`CheckCode ${check.checkCode} has an invalid archive`)
     }
-    const payloadString = this.compressionService.decompress(archive)
+    const payloadString = this.compressionService.decompressFromUTF16(archive)
     if (payloadString === null) {
       throw new Error('Decompressed receivedCheck archive payload is null')
     }

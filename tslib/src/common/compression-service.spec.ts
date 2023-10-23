@@ -11,7 +11,7 @@ describe('compression-service', () => {
 
   test('should compress a string', () => {
     const input = 'ALSDJFLSDKJFDSKJFSKDLJFSKJFSKLJFSDFJLKSDFJ'
-    const output = sut.compress(input)
+    const output = sut.compressToUTF16(input)
     expect(output).toBeDefined()
     expect(output.length).toBeLessThan(input.length)
   })

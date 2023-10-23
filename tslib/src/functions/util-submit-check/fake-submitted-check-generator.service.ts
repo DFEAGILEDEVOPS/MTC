@@ -52,7 +52,7 @@ export class FakeSubmittedCheckMessageGeneratorService {
   async createV2Message (checkCode: string): Promise<SubmittedCheckMessageV2> {
     const validCheck = await this.getValidCheck(checkCode)
     const stringifiedJsonPayload = JSON.stringify(validCheck)
-    const archive = this.compressionService.compress(stringifiedJsonPayload)
+    const archive = this.compressionService.compressToUTF16(stringifiedJsonPayload)
     const submittedCheck: SubmittedCheckMessageV2 = {
       checkCode: validCheck.checkCode,
       archive,

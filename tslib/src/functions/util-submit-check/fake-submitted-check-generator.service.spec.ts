@@ -17,8 +17,10 @@ const SubmittedCheckBuilderServiceMock = jest.fn<ICompletedCheckGeneratorService
 }))
 
 const CompressionServiceMock = jest.fn<ICompressionService, any>(() => ({
-  compress: jest.fn(),
-  decompress: jest.fn()
+  compressToUTF16: jest.fn(),
+  decompressFromUTF16: jest.fn(),
+  compressToBase64: jest.fn(),
+  decompressFromBase64: jest.fn()
 }))
 
 const PreparedCheckServiceMock = jest.fn<IPreparedCheckService, any>(() => ({
@@ -44,14 +46,14 @@ describe('fake-submitted-check-message-builder-service', () => {
   describe('create v2 message', () => {
     test('populates expected properties', async () => {
       const compressedObject = 'compressed-as-string'
-      jest.spyOn(compressionServiceMock, 'compress').mockReturnValue(compressedObject)
+      jest.spyOn(compressionServiceMock, 'compressToUTF16').mockReturnValue(compressedObject)
       const actual = await sut.createV2Message(checkCode)
       expect(actual).toBeDefined()
       expect(actual.checkCode).toStrictEqual(checkCode)
       expect(actual.schoolUUID).toStrictEqual(mockPreparedCheck.school.uuid)
       expect(actual.version).toBe(2)
       expect(actual.archive).toStrictEqual(compressedObject)
-      expect(compressionServiceMock.compress).toHaveBeenCalledTimes(1)
+      expect(compressionServiceMock.compressToUTF16).toHaveBeenCalledTimes(1)
     })
 
     test('fetches prepared check with expected check code', async () => {
@@ -71,7 +73,7 @@ describe('fake-submitted-check-message-builder-service', () => {
 
     test('produces a v2 submitted check when version not specified', async () => {
       const compressedObject = 'compressed-as-string'
-      jest.spyOn(compressionServiceMock, 'compress').mockReturnValue(compressedObject)
+      jest.spyOn(compressionServiceMock, 'compressToUTF16').mockReturnValue(compressedObject)
       const actual = await sut.createV2Message(checkCode)
       expect(actual).toBeDefined()
       expect(actual.version).toStrictEqual(SubmittedCheckVersion.V2)
@@ -80,12 +82,12 @@ describe('fake-submitted-check-message-builder-service', () => {
 
   describe('v3 message', () => {
     test('produces a v3 message when requested', async () => {
-      jest.spyOn(compressionServiceMock, 'compress')
+      jest.spyOn(compressionServiceMock, 'compressToUTF16')
       const version3Spec = SubmittedCheckVersion.V3
       const actual = await sut.createV3Message(checkCode)
       expect(actual).toBeDefined()
       expect(actual.version).toStrictEqual(version3Spec)
-      expect(compressionServiceMock.compress).not.toHaveBeenCalled()
+      expect(compressionServiceMock.compressToUTF16).not.toHaveBeenCalled()
     })
 
     test('fetches prepared check with expected check code', async () => {
