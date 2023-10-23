@@ -1,8 +1,10 @@
 import { SqlService, type ITransactionRequest, type ISqlParameter } from '../../sql/sql.service'
 import * as mssql from 'mssql'
+import { isNonEmptyArray } from 'ramda-adjunct'
+import { ConsoleLogger, type ILogger } from '../../common/logger'
 
 export interface IBatchCheckNotifierDataService {
-  createCheckCompleteRequest (checkCode: string): ITransactionRequest[]
+  createCheckCompleteRequest (checkCode: string): Promise<ITransactionRequest[]>
 
   createProcessingFailedRequest (checkCode: string): ITransactionRequest
 
@@ -13,12 +15,16 @@ export interface IBatchCheckNotifierDataService {
 
 export class BatchCheckNotifierDataService implements IBatchCheckNotifierDataService {
   private readonly sqlService: SqlService
+  private readonly logService: ILogger
+  private readonly serviceName = 'BatchCheckNotifierDataService'
 
-  constructor () {
+  constructor (logger?: ILogger) {
+    this.logService = logger ?? new ConsoleLogger()
     this.sqlService = new SqlService()
   }
 
-  createCheckCompleteRequest (checkCode: string): ITransactionRequest[] {
+  async createCheckCompleteRequest (checkCode: string): Promise<ITransactionRequest[]> {
+    this.logService?.verbose(`${this.serviceName}.checkCompleteRequest(): starting for checkCode [${checkCode}]`)
     const checkCodeParam: ISqlParameter = {
       type: mssql.UniqueIdentifier,
       name: 'checkCode',
@@ -35,18 +41,74 @@ export class BatchCheckNotifierDataService implements IBatchCheckNotifierDataSer
         checkCodeParam
       ]
     }
-    const pupilRequest: ITransactionRequest = {
-      sql: `UPDATE [mtc_admin].[pupil]
+
+    // The array of SQL statements we will return to the caller.
+    const sqlStatements: ITransactionRequest[] = []
+
+    // We always want to complete the check that we just received the payload for, so add it to the return statements
+    sqlStatements.push(checkRequest)
+
+    // Pupil Verification: we need to find the check id of the currentCheckId for the pupil, so that IF this checkCode that is now complete,
+    // and it is the same as the currentCheckId THEN we can consider setting the pupil to checkComplete as long as the other checks succeed.
+    const checkCodeSql: string = `
+      SELECT 
+        id
+      FROM
+         mtc_admin.[check] 
+      WHERE
+        checkCode = @checkCode
+    `
+    const checkData = await this.sqlService.query(checkCodeSql, [checkCodeParam])
+    this.logService.verbose(`checkData: ${JSON.stringify(checkData)}`)
+    let checkIdToComplete: undefined | number
+    if (isNonEmptyArray(checkData)) {
+      checkIdToComplete = checkData[0]?.id
+      this.logService.verbose(`checkIdToComplete: ${checkIdToComplete}`)
+    }
+
+    const pupilSql: string = `
+        SELECT 
+            p.attendanceId, 
+            p.restartAvailable,
+            p.currentCheckId
+        FROM 
+            mtc_admin.pupil p JOIN mtc_admin.[check] c on (c.pupil_id = p.id)
+        WHERE 
+            c.checkCode = @checkCode`
+
+    let pupil: undefined | { attendanceId: number, restartAvailable: boolean, currentCheckId: number }
+    try {
+      const pupilData = await this.sqlService.query(pupilSql, [checkCodeParam])
+      this.logService.verbose(`pupilData: ${JSON.stringify(pupilData)}`)
+      if (isNonEmptyArray(pupilData)) {
+        pupil = pupilData[0]
+      }
+      this.logService.verbose(`pupil: ${JSON.stringify(pupil)}`)
+    } catch (error: any) {
+      this.logService.warn(`ERROR: ${error.message}`)
+    }
+
+    // Only set the pupil.checkComplete flag if the pupil is still set to the same check, and a restart has not been given, and the
+    // pupil has not been marked as not attending.
+    if (pupil !== undefined &&
+      pupil.attendanceId === null &&
+      !pupil.restartAvailable &&
+      checkIdToComplete !== undefined &&
+      pupil.currentCheckId === checkIdToComplete) {
+      const pupilRequest: ITransactionRequest = {
+        sql: `UPDATE [mtc_admin].[pupil]
                SET checkComplete = 1
               FROM [mtc_admin].[pupil] p
                    INNER JOIN [mtc_admin].[check] c ON p.id = c.pupil_id
              WHERE c.checkCode = @checkCode
                AND checkComplete = 0`,
-      params: [
-        checkCodeParam
-      ]
+        params: [
+          checkCodeParam
+        ]
+      }
+      sqlStatements.push(pupilRequest)
     }
-    return [checkRequest, pupilRequest]
+    return sqlStatements
   }
 
   createProcessingFailedRequest (checkCode: string): ITransactionRequest {

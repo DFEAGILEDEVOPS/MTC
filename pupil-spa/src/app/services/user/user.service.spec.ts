@@ -13,6 +13,9 @@ import { HttpService } from '../http/http.service'
 import { APP_INITIALIZER } from '@angular/core'
 import { loadConfigMockService } from '../config/config.service'
 import { Meta } from '@angular/platform-browser'
+import { AuditServiceMock } from '../audit/audit.service.mock'
+import { AuditService } from '../audit/audit.service'
+import { AuditEntryFactory, LoginSuccessAuditEntryClass } from '../audit/auditEntry'
 
 let userService: UserService
 let storageService: StorageService
@@ -34,6 +37,7 @@ describe('UserService', () => {
   let metaServiceSpy: {
     getTag: jasmine.Spy
   }
+  let auditService: AuditServiceMock
 
   beforeEach(() => {
     httpServiceSpy = jasmine.createSpyObj('HttpService', ['postJson'])
@@ -49,12 +53,15 @@ describe('UserService', () => {
         UserService,
         { provide: StorageService, useValue: storageServiceSpy },
         { provide: HttpService, useValue: httpServiceSpy },
-        { provide: Meta, useValue: metaServiceSpy }
+        { provide: Meta, useValue: metaServiceSpy },
+        { provide: AuditService, useClass: AuditServiceMock},
+        { provide: AuditEntryFactory, useClass: AuditEntryFactory }
       ]
     })
 
     userService = TestBed.inject(UserService)
     storageService = TestBed.inject(StorageService)
+    auditService = TestBed.inject(AuditService)
   })
 
   describe('login', () => {
@@ -110,6 +117,18 @@ describe('UserService', () => {
 
       expect(storageService.setQuestions).not.toHaveBeenCalled()
       expect(httpServiceSpy.postJson).toHaveBeenCalledTimes(1)
+    })
+
+    it('should add a LoginSucess audit event on successful login', async () => {
+      const auditServiceSpy = spyOn(auditService, 'addEntry')
+      // setup
+      httpServiceSpy.postJson.and.returnValue(Promise.resolve(mockLoginResponseBody))
+      // execute
+      await userService.login('abc12345', '9999a')
+      // tests
+      expect(auditService.addEntry).toHaveBeenCalled()
+      const auditArgs = auditServiceSpy.calls.argsFor(0)
+      expect(auditArgs[0] instanceof LoginSuccessAuditEntryClass).toBeTrue()
     })
   })
 

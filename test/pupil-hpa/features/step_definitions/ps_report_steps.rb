@@ -543,3 +543,20 @@ Then(/^I should see AttemptId, TestDate and FormID as null in the ps report$/) d
   expect(ps_report_record["FormID"]).to be_nil
   expect(ps_report_record["TestDate"]).to be_nil
 end
+
+Given(/^my pin has expired after applying a restart$/) do
+  step 'I generated a pin after applying a restart'
+  step 'the pin expires'
+end
+
+Then(/^the restart number should be zero$/) do
+  pupil_details = SqlDbHelper.pupil_details_using_school(@details_hash[:upn], @school_id)
+  ps_report_record = SqlDbHelper.get_ps_record_for_pupil(pupil_details['id'])
+  p "PS_REPORT RECORD - " + ps_report_record["PupilId"].to_s
+  @ps_report_record = ps_report_record.map {|k, v| [k, (v.is_a?(BigDecimal) ? v.to_f : v)]}.to_h
+  expect(@ps_report_record["RestartNumber"]).to be_nil
+end
+
+And(/^the pupil status set to incomplete$/) do
+  expect(@ps_report_record["PupilStatus"]).to eql 'Incomplete'
+end

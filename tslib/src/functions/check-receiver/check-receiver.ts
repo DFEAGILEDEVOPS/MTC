@@ -4,16 +4,16 @@ import Moment from 'moment'
 import { CheckNotificationType, type ICheckNotificationMessage } from '../../schemas/check-notification-message'
 import { type SubmittedCheckMessageV2, type ReceivedCheckTableEntity, type ValidateCheckMessageV1 } from '../../schemas/models'
 import { type IBatchCheckNotifierDataService, BatchCheckNotifierDataService } from '../check-notifier-batch/batch-check-notifier.data.service'
+import { ConsoleLogger, type ILogger } from '../../common/logger'
 const tableService = new TableService()
 
 export class CheckReceiver {
   private readonly checkNotifierDataService: IBatchCheckNotifierDataService
+  private readonly logService: ILogger
 
-  constructor (batchCheckNotifierDataService?: IBatchCheckNotifierDataService) {
-    if (batchCheckNotifierDataService === undefined) {
-      batchCheckNotifierDataService = new BatchCheckNotifierDataService()
-    }
-    this.checkNotifierDataService = batchCheckNotifierDataService
+  constructor (batchCheckNotifierDataService?: IBatchCheckNotifierDataService, logger?: ILogger) {
+    this.logService = logger ?? new ConsoleLogger()
+    this.checkNotifierDataService = batchCheckNotifierDataService ?? new BatchCheckNotifierDataService(this.logService)
   }
 
   async process (context: Context, receivedCheck: SubmittedCheckMessageV2): Promise<void> {
