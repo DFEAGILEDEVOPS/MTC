@@ -70,7 +70,7 @@ See the [check-submission](./check-submission/readme.md) documentation for full 
 
 ```typescript
 {
-  version: number
+  version: 2
   checkCode: string
   schoolUUID: string
   archive: string //zipped copy of submitted check JSON structure
@@ -89,10 +89,10 @@ See the [check-submission](./check-submission/readme.md) documentation for full 
 
 ```typescript
 {
-  version: number
+  version: 3
   checkCode: string
   schoolUUID: string
-  archive: string //zipped copy of submitted check JSON structure
+  // TODO
 }
 ```
 

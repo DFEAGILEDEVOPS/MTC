@@ -51,7 +51,7 @@ describe('LoginErrorDiagnosticsService', () => {
         const err = { status: 0 }
         service.isBrowserStatusOnline = true
         await loginErrorDiagnosticsService.process(err)
-        expect(loginErrorService.changeMessage).toHaveBeenCalledWith('Connection refused to authPingUrl')
+        expect(loginErrorService.changeMessage).toHaveBeenCalledWith('Connection refused to apiBaseUrl/ping')
       })
     )
   })

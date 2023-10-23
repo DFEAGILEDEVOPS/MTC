@@ -7,6 +7,7 @@ scriptDir="$( cd "$( dirname "$0" )" >/dev/null && pwd )"
 envFile=${scriptDir}/../.env
 [[ -f ${envFile} ]] && source ${envFile}
 applicationInsightsCode=${APPINSIGHTS_INSTRUMENTATIONKEY}
+apiBaseUrl=${API_BASE_URL:-"http://localhost:3003"}
 authPingUrl=${AUTH_PING_URL:-"http://localhost:3003/ping"}
 authUrl=${AUTH_URL:-"http://localhost:3003/auth"}
 checkStartAPIErrorDelay=${CHECK_START_ERROR_DELAY:-"2000"}

@@ -34,8 +34,14 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
     }
   }
 
-  const messageVersion = req.body?.messageVersion ?? SubmittedCheckVersion.V2
-  if (messageVersion !== SubmittedCheckVersion.V2 || messageVersion !== SubmittedCheckVersion.V3) {
+  const messageVersion: string = req.body?.messageVersion ?? SubmittedCheckVersion.V3
+  context.log(`req.body.messageVersion - type:${typeof req.body?.messageVersion} value:${req.body?.messageVersion}`)
+  context.log(`messageVersion - type:${typeof messageVersion} value:${messageVersion}`)
+  context.log(`SubmittedCheckVersion.V3 - type:${typeof SubmittedCheckVersion.V3}
+    value:${SubmittedCheckVersion.V3} toString:${SubmittedCheckVersion.V3.toString()}`)
+
+  if (messageVersion !== SubmittedCheckVersion.V2.toString() &&
+    messageVersion !== SubmittedCheckVersion.V3.toString()) {
     context.res = {
       status: 400,
       body: 'unknown messageVersion specified'
@@ -50,7 +56,7 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
   if (funcConfig.schoolUuid !== undefined) {
     const liveCheckCodes = await liveSchoolChecksDataService.fetchBySchoolUuid(funcConfig.schoolUuid)
     const promises = liveCheckCodes.map(async record => {
-      if (messageVersion === SubmittedCheckVersion.V2) {
+      if (messageVersion === SubmittedCheckVersion.V2.toString()) {
         return fakeSubmittedCheckBuilder.createV2Message(record.checkCode)
       } else {
         return fakeSubmittedCheckBuilder.createV3Message(record.checkCode)
@@ -74,7 +80,7 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
   const messages = []
   for (let index = 0; index < funcConfig.checkCodes.length; index++) {
     const checkCode = funcConfig.checkCodes[index]
-    if (messageVersion === SubmittedCheckVersion.V2) {
+    if (messageVersion === SubmittedCheckVersion.V2.toString()) {
       messages.push(await fakeSubmittedCheckBuilder.createV2Message(checkCode))
     } else {
       messages.push(await fakeSubmittedCheckBuilder.createV3Message(checkCode))

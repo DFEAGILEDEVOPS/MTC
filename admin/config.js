@@ -188,6 +188,6 @@ module.exports = {
       JwtExpiry: process.env.CHECK_SUBMIT_JWT_EXPIRY ?? '5d',
       sasTimeOutHours: process.env.SAS_TIMEOUT_HOURS || 120
     },
-    baseUrl: process.env.PUPIL_API_SUBMISSION_URL || 'http://localhost:3003'
+    baseUrl: process.env.PUPIL_API_BASE_URL || 'http://localhost:3003'
   }
 }
