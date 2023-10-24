@@ -1,4 +1,4 @@
-import { type SubmittedCheckMessageV3, type SubmittedCheckMessageV2 } from '../../schemas/models'
+import { type SubmittedCheckMessage } from '../../schemas/models'
 import { type PreparedCheck } from '../../schemas/check-schemas/prepared-check'
 import { type ICompletedCheckGeneratorService, FakeCompletedCheckGeneratorService } from './fake-completed-check-generator.service'
 import { CompressionService, type ICompressionService } from '../../common/compression-service'
@@ -6,6 +6,7 @@ import { type IPreparedCheckService, PreparedCheckService } from '../../caching/
 import { type IUtilSubmitCheckConfig } from './index'
 import { type ILogger } from '../../common/logger'
 import { type ValidCheck } from '../../schemas/check-schemas/validated-check'
+import { SubmittedCheckVersion } from '../../schemas/SubmittedCheckVersion'
 
 export class FakeSubmittedCheckMessageGeneratorService {
   private readonly completedCheckGenerator: ICompletedCheckGeneratorService
@@ -49,35 +50,28 @@ export class FakeSubmittedCheckMessageGeneratorService {
     return validCheck
   }
 
-  async createV2Message (checkCode: string): Promise<SubmittedCheckMessageV2> {
+  async createV2Message (checkCode: string): Promise<SubmittedCheckMessage> {
     const validCheck = await this.getValidCheck(checkCode)
     const stringifiedJsonPayload = JSON.stringify(validCheck)
     const archive = this.compressionService.compressToUTF16(stringifiedJsonPayload)
-    const submittedCheck: SubmittedCheckMessageV2 = {
+    const submittedCheck: SubmittedCheckMessage = {
       checkCode: validCheck.checkCode,
       archive,
       schoolUUID: validCheck.schoolUUID,
-      version: 2
+      version: SubmittedCheckVersion.V2
     }
     return submittedCheck
   }
 
-  async createV3Message (checkCode: string): Promise<SubmittedCheckMessageV3> {
+  async createV3Message (checkCode: string): Promise<SubmittedCheckMessage> {
     const validCheck = await this.getValidCheck(checkCode)
-    const submittedCheck: SubmittedCheckMessageV3 = {
-      version: 3,
+    const stringifiedJsonPayload = JSON.stringify(validCheck)
+    const archive = this.compressionService.compressToBase64(stringifiedJsonPayload)
+    const submittedCheck: SubmittedCheckMessage = {
       checkCode: validCheck.checkCode,
-      schoolUUID: validCheck.school.uuid,
-      buildVersion: '',
-      config: validCheck.config,
-      device: validCheck.device,
-      pupil: validCheck.pupil,
-      questions: validCheck.questions,
-      school: validCheck.school,
-      tokens: validCheck.tokens,
-      audit: validCheck.audit,
-      inputs: validCheck.inputs,
-      answers: validCheck.answers
+      archive,
+      schoolUUID: validCheck.schoolUUID,
+      version: SubmittedCheckVersion.V3
     }
     return submittedCheck
   }

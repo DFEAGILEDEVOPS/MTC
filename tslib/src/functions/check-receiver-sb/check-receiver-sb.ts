@@ -2,7 +2,7 @@ import { type Context } from '@azure/functions'
 import { TableService } from '../../azure/table-service'
 import Moment from 'moment'
 import { CheckNotificationType, type ICheckNotificationMessage } from '../../schemas/check-notification-message'
-import { type SubmittedCheckMessageV3, type ReceivedCheckTableEntityV2, type ValidateCheckMessageV1 } from '../../schemas/models'
+import { type SubmittedCheckMessage, type ReceivedCheckTableEntityV2, type ValidateCheckMessageV1, ReceivedCheckTableEntity } from '../../schemas/models'
 import { type IBatchCheckNotifierDataService, BatchCheckNotifierDataService } from '../check-notifier-batch/batch-check-notifier.data.service'
 import { ConsoleLogger, type ILogger } from '../../common/logger'
 const tableService = new TableService()
@@ -16,11 +16,11 @@ export class CheckReceiverServiceBus {
     this.checkNotifierDataService = batchCheckNotifierDataService ?? new BatchCheckNotifierDataService(this.logService)
   }
 
-  async process (context: Context, receivedCheck: SubmittedCheckMessageV3): Promise<void> {
-    const receivedCheckEntity: ReceivedCheckTableEntityV2 = {
+  async process (context: Context, receivedCheck: SubmittedCheckMessage): Promise<void> {
+    const receivedCheckEntity: ReceivedCheckTableEntity = {
       partitionKey: receivedCheck.schoolUUID.toLowerCase(),
       rowKey: receivedCheck.checkCode.toLowerCase(),
-      payload: JSON.stringify(receivedCheck),
+      archive: receivedCheck.archive,
       checkReceivedAt: Moment().toDate(),
       checkVersion: +receivedCheck.version,
       processingError: ''

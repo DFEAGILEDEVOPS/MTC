@@ -1,4 +1,4 @@
-import { type ReceivedCheckFunctionBindingEntity, type ReceivedCheckTableEntityV1 } from '../schemas/models'
+import { type ReceivedCheckFunctionBindingEntity, type ReceivedCheckTableEntity } from '../schemas/models'
 
 /**
  * When you retrieve a table storage entity via an Azure functions binding
@@ -10,7 +10,7 @@ import { type ReceivedCheckFunctionBindingEntity, type ReceivedCheckTableEntityV
  * data tables package style
  */
 export class ReceivedCheckBindingEntityTransformer {
-  transform (entity: ReceivedCheckFunctionBindingEntity): ReceivedCheckTableEntityV1 {
+  transform (entity: ReceivedCheckFunctionBindingEntity): ReceivedCheckTableEntity {
     return {
       partitionKey: entity.PartitionKey,
       rowKey: entity.RowKey,
