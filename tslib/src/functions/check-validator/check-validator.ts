@@ -1,8 +1,7 @@
 import {
   type ValidateCheckMessageV1,
   type MarkCheckMessageV1,
-  type ReceivedCheckFunctionBindingEntity,
-  type ReceivedCheckFunctionBindingEntityV3
+  type ReceivedCheckFunctionBindingEntity
 } from '../../schemas/models'
 import { type ILogger } from '../../common/logger'
 import * as RA from 'ramda-adjunct'
@@ -13,6 +12,7 @@ import { type ICheckValidationError } from './validators/validator-types'
 import { ValidatorProvider, type IValidatorProvider } from './validators/validator.provider'
 import { type ITableService, TableService } from '../../azure/table-service'
 import { ReceivedCheckBindingEntityTransformer } from '../../services/receivedCheckBindingEntityTransformer'
+import { SubmittedCheckVersion } from '../../schemas/SubmittedCheckVersion'
 
 const functionName = 'check-validator'
 const tableStorageTableName = 'receivedCheck'
@@ -44,21 +44,17 @@ export class CheckValidator {
     let checkData
 
     try {
-      if (receivedCheck.checkVersion === 2) {
-        // compressed archive payload
-        const archive = (receivedCheck as ReceivedCheckFunctionBindingEntity).archive
-        if (archive === undefined) {
-          throw new Error(`${functionName}: message is missing [archive] property`)
-        }
-        const decompressedString = this.compressionService.decompressFromUTF16(archive)
-        checkData = JSON.parse(decompressedString)
-      } else if (receivedCheck.checkVersion === 3) {
-        const payload = (receivedCheck as ReceivedCheckFunctionBindingEntityV3).payload
-        // JSON payload
-        if (payload === undefined) {
-          throw new Error(`${functionName}: message is missing [payload] property`)
-        }
-        checkData = JSON.parse(payload)
+      if (receivedCheck.archive === undefined) {
+        throw new Error(`${functionName}: message is missing [archive] property`)
+      }
+      if (receivedCheck.checkVersion === SubmittedCheckVersion.V2) {
+        // UTF-16 compressed archive payload
+        const decompressedArchive = this.compressionService.decompressFromUTF16(receivedCheck.archive)
+        checkData = JSON.parse(decompressedArchive)
+      } else if (receivedCheck.checkVersion === SubmittedCheckVersion.V3) {
+        // base64 compressed archive payload
+        const decompressedArchive = this.compressionService.decompressFromBase64(receivedCheck.archive)
+        checkData = JSON.parse(decompressedArchive)
       } else {
         throw new Error(`${functionName}: unsupported check version:'${receivedCheck.checkVersion}'`)
       }
@@ -102,7 +98,7 @@ export class CheckValidator {
     await this.tableService.mergeUpdateEntity(tableStorageTableName, transformedEntity)
   }
 
-  private findReceivedCheck (receivedCheckRef: any[]): ReceivedCheckFunctionBindingEntity | ReceivedCheckFunctionBindingEntityV3 {
+  private findReceivedCheck (receivedCheckRef: any[]): ReceivedCheckFunctionBindingEntity {
     if (RA.isEmptyArray(receivedCheckRef)) {
       throw new Error(`${functionName}: received check reference is empty`)
     }

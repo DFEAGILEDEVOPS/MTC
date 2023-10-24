@@ -2,9 +2,9 @@ import lzString from 'lz-string'
 
 export interface ICompressionService {
   compressToUTF16 (input: string): string
-  decompressFromUTF16 (input: string): any | string | (string | null | undefined)
+  decompressFromUTF16 (input: string): string
   compressToBase64 (input: string): string
-  decompressFromBase64 (input: string): any | string | (string | null | undefined)
+  decompressFromBase64 (input: string): string
 }
 
 export class CompressionService implements ICompressionService {

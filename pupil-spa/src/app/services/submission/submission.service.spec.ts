@@ -3,10 +3,10 @@ import { HttpService } from '../http/http.service'
 import { SubmissionService } from './submission.service'
 import { APP_INITIALIZER } from '@angular/core'
 import { APP_CONFIG, loadConfigMockService } from '../config/config.service'
-import * as exp from 'constants'
+import { CompressorService } from '../compressor/compressor.service'
+import * as lzString from 'lz-string';
 
 describe('submission service', () => {
-
   let sut: SubmissionService
   let httpServiceSpy: {
     post: jasmine.Spy
@@ -34,6 +34,10 @@ describe('submission service', () => {
           url: payloadUrl,
           token: payloadJwt
         }
+      },
+      checkCode: 'check-code',
+      school: {
+        uuid: 'school-uuid'
       }
     }
     httpServiceSpy.post.and.callFake((url: string, payload: any, headers: any) => {
@@ -44,13 +48,17 @@ describe('submission service', () => {
     expect(httpServiceSpy.post).toHaveBeenCalled()
   })
 
-  it('payload should be submitted as JSON', async () => {
+  it('http content type should be set to JSON', async () => {
     const payload = {
       tokens: {
         checkSubmission: {
           url: 'url',
           token: 'jwt'
         }
+      },
+      checkCode: 'check-code',
+      school: {
+        uuid: 'school-uuid'
       }
     }
     httpServiceSpy.post.and.callFake((url: string, payload: any, headers: any) => {
@@ -60,7 +68,7 @@ describe('submission service', () => {
     expect(httpServiceSpy.post).toHaveBeenCalled()
   })
 
-  it('should post payload as request body', async () => {
+  it('should post payload as base64 compressed message', async () => {
     const payloadUrl = 'http://my-url'
     const payload = {
       tokens: {
@@ -68,16 +76,32 @@ describe('submission service', () => {
           url: payloadUrl,
           token: 'jwt'
         }
+      },
+      checkCode: 'check-code',
+      school: {
+        uuid: 'school-uuid'
       }
     }
+    const stringifiedPayload = JSON.stringify(payload)
+    const compressedPayload = CompressorService.compressToBase64(stringifiedPayload)
+    const expectedPostBody = {
+      archive: compressedPayload,
+      version: SubmissionService.SubmittedCheckVersion3,
+      checkCode: payload.checkCode,
+      schoolUUID: payload.school.uuid
+    }
     await sut.submit(payload)
-    expect(httpServiceSpy.post).toHaveBeenCalledWith(payloadUrl, payload, jasmine.anything(), jasmine.anything())
+    expect(httpServiceSpy.post).toHaveBeenCalledWith(payloadUrl, expectedPostBody, jasmine.anything(), jasmine.anything())
   })
 
-  it('should set correct version on payload', async () => {
+  it('should set correct attributes on posted Http body', async () => {
     const expectedPayloadVersion = SubmissionService.SubmittedCheckVersion3
     const payloadUrl = 'http://my-url'
     const payload = {
+      checkCode: 'check-code',
+      school: {
+        uuid: 'school-uuid'
+      },
       tokens: {
         checkSubmission: {
           url: payloadUrl,
@@ -85,8 +109,12 @@ describe('submission service', () => {
         }
       }
     }
-    httpServiceSpy.post.and.callFake((url: string, payload: any) => {
-      expect(payload.version).toEqual(expectedPayloadVersion)
+    httpServiceSpy.post.and.callFake((url: string, postBody: any) => {
+      const stringifiedPayload = lzString.decompressFromBase64(postBody.archive)
+      const jsonPayload = JSON.parse(stringifiedPayload)
+      expect(postBody.version).toEqual(expectedPayloadVersion)
+      expect(postBody.checkCode).toEqual(payload.checkCode)
+      expect(postBody.schoolUUID).toEqual(payload.school.uuid)
     })
     await sut.submit(payload)
     expect(httpServiceSpy.post).toHaveBeenCalled()
@@ -99,6 +127,10 @@ describe('submission service', () => {
           url: 'url',
           token: 'jwt'
         }
+      },
+      checkCode: 'check-code',
+      school: {
+        uuid: 'school-uuid'
       }
     }
     await sut.submit(payload)
@@ -113,6 +145,10 @@ describe('submission service', () => {
           url: 'url',
           token: 'jwt'
         }
+      },
+      checkCode: 'check-code',
+      school: {
+        uuid: 'school-uuid'
       }
     }
     try {

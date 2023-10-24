@@ -2,6 +2,7 @@ import { type AzureFunction, type Context } from '@azure/functions'
 import { performance } from 'perf_hooks'
 import { CheckReceiver } from './check-receiver'
 import { type SubmittedCheckMessageV2 } from '../../schemas/models'
+import { SubmittedCheckVersion } from '../../schemas/SubmittedCheckVersion'
 
 const functionName = 'check-receiver'
 
@@ -11,7 +12,7 @@ const queueTrigger: AzureFunction = async function (context: Context, submittedC
   context.log.info(`${functionName}: version:${version} message received for checkCode ${submittedCheck.checkCode}`)
   const receiver = new CheckReceiver()
   try {
-    if (version !== 2) {
+    if (version !== SubmittedCheckVersion.V2) {
       // dead letter the message as we no longer support below v3
       throw new Error(`Message schema version:${version} unsupported`)
     }

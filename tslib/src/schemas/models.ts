@@ -112,22 +112,6 @@ export interface ReceivedCheckFunctionBindingEntity {
   validatedAt?: Date
 }
 
-export interface ReceivedCheckFunctionBindingEntityV3 {
-  PartitionKey: string
-  RowKey: string
-  payload: string
-  answers?: string
-  checkReceivedAt: Date
-  checkVersion: number
-  isValid?: boolean
-  mark?: number
-  markedAt?: Date
-  markError?: string
-  maxMarks?: number
-  processingError?: string
-  validatedAt?: Date
-}
-
 // markedAt is actually a string inside the Azure Storage table
 export interface MarkedCheckTableEntity {
   PartitionKey: string // schoolUUID

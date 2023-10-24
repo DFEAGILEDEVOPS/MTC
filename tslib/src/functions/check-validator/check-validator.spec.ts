@@ -3,8 +3,8 @@ import {
   type ReceivedCheckTableEntityV1,
   type MarkCheckMessageV1,
   type ReceivedCheckTableEntityV2,
-  type ReceivedCheckFunctionBindingEntityV3,
-  type ValidateCheckMessageV1
+  type ValidateCheckMessageV1,
+  type ReceivedCheckFunctionBindingEntity
 } from '../../schemas/models'
 import { type ILogger } from '../../common/logger'
 import { type ICompressionService } from '../../common/compression-service'
@@ -196,7 +196,7 @@ describe('check-validator', () => {
       version: 1
     }
     await sut.validate(functionBindings, message, loggerMock)
-    expect(compressionServiceMock.decompressFromUTF16).toHaveBeenCalledWith('foo')
+    expect(compressionServiceMock.decompressFromBase64).toHaveBeenCalledWith('foo')
   })
 
   test('submitted check with missing properties are recorded as validation errors against the entity', async () => {
@@ -296,7 +296,7 @@ describe('check-validator', () => {
     await sut.validate(functionBindings, message, loggerMock)
     expect(tableServiceMock.mergeUpdateEntity).toHaveBeenCalledTimes(1)
     expect(actualTableName).toBe('receivedCheck')
-    expect(actualEntity.processingError).toBe('check-validator: message is missing [payload] property')
+    expect(actualEntity.processingError).toBe('check-validator: message is missing [archive] property')
     expect(actualEntity.isValid).toBe(false)
   })
 
@@ -368,19 +368,19 @@ describe('check-validator', () => {
     jest.spyOn(tableServiceMock, 'mergeUpdateEntity').mockImplementation(async (table: string, entity: TableEntity<any>) => {
       capturedIsValidFlag = entity.isValid
       capturedAnswers = entity.answers
-      if (entity.processingError !== undefined) {
-        console.log(`processingError:${entity.processingError}`)
-      }
     })
 
     const stringifiedPayload = JSON.stringify(mockV3SubmittedCheck)
+    jest.spyOn(compressionServiceMock, 'decompressFromBase64').mockImplementation(() => {
+      return stringifiedPayload
+    })
 
-    const receivedCheckEntry: ReceivedCheckFunctionBindingEntityV3 = {
+    const receivedCheckEntry: ReceivedCheckFunctionBindingEntity = {
       checkReceivedAt: new Date(),
       checkVersion: 3,
       PartitionKey: mockV3SubmittedCheck.schoolUUID,
       RowKey: mockV3SubmittedCheck.checkCode,
-      payload: stringifiedPayload,
+      archive: stringifiedPayload,
       answers: undefined,
       isValid: undefined,
       mark: undefined,
