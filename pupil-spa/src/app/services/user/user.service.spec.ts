@@ -11,7 +11,7 @@ import {
 } from '../storage/storageKey'
 import { HttpService } from '../http/http.service'
 import { APP_INITIALIZER } from '@angular/core'
-import { loadConfigMockService } from '../config/config.service'
+import { APP_CONFIG, loadConfigMockService } from '../config/config.service'
 import { Meta } from '@angular/platform-browser'
 import { AuditServiceMock } from '../audit/audit.service.mock'
 import { AuditService } from '../audit/audit.service'
@@ -95,6 +95,23 @@ describe('UserService', () => {
 
       expect(httpServiceSpy.postJson).toHaveBeenCalledTimes(1)
       expect(metaServiceSpy.getTag).toHaveBeenCalledTimes(1)
+    })
+
+    it('should post to the auth endpoint', () => {
+      let actualUrl: string
+      let actualBody: any
+      httpServiceSpy.postJson.and.callFake((url, body) => {
+        actualBody = body
+        actualUrl = url
+      })
+      userService.login('abc12345', '9999a').then((res) => {
+        expect(actualUrl).toEqual(`${APP_CONFIG.apiBaseUrl}/auth`)
+        expect(actualBody.schoolPin).toEqual('abc12345')
+        expect(actualBody.pupilPin).toEqual('9999a')
+        expect(actualBody.buildVersion).toEqual('some-build-number')
+      }, (err) => {
+        fail(err)
+      })
     })
 
     it('should return a promise that rejects on invalid login', () => {
