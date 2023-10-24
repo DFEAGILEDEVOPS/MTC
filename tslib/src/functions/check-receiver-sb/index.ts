@@ -1,12 +1,12 @@
 import { type AzureFunction, type Context } from '@azure/functions'
 import { performance } from 'perf_hooks'
 import { CheckReceiverServiceBus } from './check-receiver-sb'
-import { type SubmittedCheckMessageV3 } from '../../schemas/models'
+import { type SubmittedCheckMessage } from '../../schemas/models'
 import { SubmittedCheckVersion } from '../../schemas/SubmittedCheckVersion'
 
 const functionName = 'check-receiver-sb'
 
-const queueTrigger: AzureFunction = async function (context: Context, submittedCheck: SubmittedCheckMessageV3): Promise<void> {
+const queueTrigger: AzureFunction = async function (context: Context, submittedCheck: SubmittedCheckMessage): Promise<void> {
   const start = performance.now()
   const version = submittedCheck.version
   const expectedVersion = SubmittedCheckVersion.V3

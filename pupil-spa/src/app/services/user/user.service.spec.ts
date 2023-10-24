@@ -109,9 +109,11 @@ describe('UserService', () => {
         expect(actualBody.schoolPin).toEqual('abc12345')
         expect(actualBody.pupilPin).toEqual('9999a')
         expect(actualBody.buildVersion).toEqual('some-build-number')
+        return new Promise<any>((resolve, reject) => {})
       }, (err) => {
         fail(err)
       })
+      expect(httpServiceSpy.postJson).toHaveBeenCalledTimes(1)
     })
 
     it('should return a promise that rejects on invalid login', () => {

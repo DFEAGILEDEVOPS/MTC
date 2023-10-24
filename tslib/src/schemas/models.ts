@@ -1,52 +1,9 @@
-import { type CheckConfig } from './check-schemas/validated-check'
-
 export interface SubmittedCheckMessage {
   version: number
   checkCode: string
   schoolUUID: string
   archive: string
 }
-
-/* export interface SubmittedCheckMessageV3 {
-  version: number
-  checkCode: string
-  schoolUUID: string
-  buildVersion: string
-  config: CheckConfig
-  device: Record<any, any>
-  pupil: {
-    checkCode: string
-  }
-  questions: Record<any, any>
-  school: {
-    name: string
-    uuid: string
-  }
-  tokens: {
-    checkStarted: {
-      token: string
-      url: string
-      queueName: string
-    }
-    pupilPreferences: {
-      token: string
-      url: string
-      queueName: string
-    }
-    pupilFeedback: {
-      token: string
-      url: string
-      queueName: string
-    }
-    checkSubmission: {
-      token: string
-      url: string
-    }
-  }
-  audit: Record<any, any>
-  inputs: Record<any, any>
-  answers: Record<any, any>
-} */
 
 export interface ValidateCheckMessageV1 {
   checkCode: string
