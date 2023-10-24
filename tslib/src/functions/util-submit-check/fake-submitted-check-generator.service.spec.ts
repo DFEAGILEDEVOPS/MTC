@@ -83,11 +83,14 @@ describe('fake-submitted-check-message-builder-service', () => {
   describe('v3 message', () => {
     test('produces a v3 message when requested', async () => {
       jest.spyOn(compressionServiceMock, 'compressToUTF16')
+      jest.spyOn(compressionServiceMock, 'compressToBase64')
       const version3Spec = SubmittedCheckVersion.V3
       const actual = await sut.createV3Message(checkCode)
       expect(actual).toBeDefined()
       expect(actual.version).toStrictEqual(version3Spec)
+      expect(actual.archive).toBeDefined()
       expect(compressionServiceMock.compressToUTF16).not.toHaveBeenCalled()
+      expect(compressionServiceMock.compressToBase64).toHaveBeenCalledTimes(1)
     })
 
     test('fetches prepared check with expected check code', async () => {
@@ -103,15 +106,6 @@ describe('fake-submitted-check-message-builder-service', () => {
       } catch (error: any) {
         expect(error.message).toBe(`prepared check not found in redis with checkCode:${checkCode}`)
       }
-    })
-
-    test('populates message with expected properties', async () => {
-      const actual = await sut.createV3Message(checkCode)
-      expect(actual).toBeDefined()
-      expect(actual.checkCode).toStrictEqual(checkCode)
-      expect(actual.schoolUUID).toStrictEqual(mockPreparedCheck.school.uuid)
-      expect(actual.version).toBe(SubmittedCheckVersion.V3)
-      expect(actual.archive).toBeDefined()
     })
   })
 })

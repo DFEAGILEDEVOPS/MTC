@@ -1,4 +1,6 @@
 import { CompressionService } from './compression-service'
+import largeCheck from './mocks/large-submitted-check.json'
+
 let sut: CompressionService
 
 describe('compression-service', () => {
@@ -38,6 +40,16 @@ describe('compression-service', () => {
       const output = sut.compressToBase64(input)
       const decompressed = sut.decompressFromBase64(output)
       expect(decompressed).toStrictEqual(input)
+    })
+
+    test('handles a large check payload', () => {
+      const stringified = JSON.stringify(largeCheck)
+      const compressed = sut.compressToBase64(stringified)
+      expect(compressed).toBeDefined()
+      const decompressed = sut.decompressFromBase64(compressed)
+      expect(decompressed).toBeDefined()
+      const parsed = JSON.parse(decompressed)
+      expect(parsed).toStrictEqual(largeCheck)
     })
   })
 })
