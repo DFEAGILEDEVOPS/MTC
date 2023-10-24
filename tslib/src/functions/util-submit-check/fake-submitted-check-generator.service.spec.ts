@@ -81,14 +81,15 @@ describe('fake-submitted-check-message-builder-service', () => {
   })
 
   describe('v3 message', () => {
-    test('produces a v3 message when requested', async () => {
+    test('produces a v3 message', async () => {
       jest.spyOn(compressionServiceMock, 'compressToUTF16')
-      jest.spyOn(compressionServiceMock, 'compressToBase64')
+      const compressedString = 'compressed-string'
+      jest.spyOn(compressionServiceMock, 'compressToBase64').mockReturnValue(compressedString)
       const version3Spec = SubmittedCheckVersion.V3
       const actual = await sut.createV3Message(checkCode)
       expect(actual).toBeDefined()
       expect(actual.version).toStrictEqual(version3Spec)
-      expect(actual.archive).toBeDefined()
+      expect(actual.archive).toStrictEqual(compressedString)
       expect(compressionServiceMock.compressToUTF16).not.toHaveBeenCalled()
       expect(compressionServiceMock.compressToBase64).toHaveBeenCalledTimes(1)
     })
