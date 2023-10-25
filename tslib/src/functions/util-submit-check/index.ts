@@ -40,8 +40,8 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
   context.log(`SubmittedCheckVersion.V3 - type:${typeof SubmittedCheckVersion.V3}
     value:${SubmittedCheckVersion.V3} toString:${SubmittedCheckVersion.V3.toString()}`)
 
-  if (messageVersion !== SubmittedCheckVersion.V2.toString() &&
-    messageVersion !== SubmittedCheckVersion.V3.toString()) {
+  if (messageVersion.toString() !== SubmittedCheckVersion.V2.toString() &&
+    messageVersion.toString() !== SubmittedCheckVersion.V3.toString()) {
     context.res = {
       status: 400,
       body: 'unknown messageVersion specified'
@@ -82,11 +82,12 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
     const checkCode = funcConfig.checkCodes[index]
     if (messageVersion === SubmittedCheckVersion.V2.toString()) {
       messages.push(await fakeSubmittedCheckBuilder.createV2Message(checkCode))
+      context.bindings.submittedCheckQueue = messages
     } else {
       messages.push(await fakeSubmittedCheckBuilder.createV3Message(checkCode))
+      context.bindings.checkSubmissionQueue = messages
     }
   }
-  context.bindings.submittedCheckQueue = messages
 }
 
 export default httpTrigger
