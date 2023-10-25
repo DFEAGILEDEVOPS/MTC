@@ -92,7 +92,7 @@ See the [check-submission](./check-submission/readme.md) documentation for full 
   version: 3
   checkCode: string
   schoolUUID: string
-  // TODO
+  archive: string
 }
 ```
 

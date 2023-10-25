@@ -32,10 +32,7 @@ export class CompressionService implements ICompressionService {
    * @return {*|string}
    */
   compressToBase64 (input: string): string {
-    console.log(`compressing input: ${input.substring(0, 30)}...`)
-    const output = lzString.compressToBase64(input)
-    console.log(`output: ${output}`)
-    return output
+    return lzString.compressToBase64(input)
   }
 
   /**
