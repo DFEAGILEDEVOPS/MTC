@@ -66,12 +66,10 @@ describe('UserService', () => {
 
   describe('login', () => {
     it('should persist response body to storage', () => {
-      // setup
+
       httpServiceSpy.postJson.and.returnValue(Promise.resolve(mockLoginResponseBody))
-      // execute
       userService.login('abc12345', '9999a').then(() => {
 
-          // tests
           try {
             const questionSpyArgs = storageServiceSpy.setQuestions.calls.argsFor(0)
             const configSpyCalls = storageServiceSpy.setConfig.calls.argsFor(0)
@@ -97,25 +95,6 @@ describe('UserService', () => {
       expect(metaServiceSpy.getTag).toHaveBeenCalledTimes(1)
     })
 
-    it('should post to the auth endpoint', () => {
-      let actualUrl: string
-      let actualBody: any
-      httpServiceSpy.postJson.and.callFake((url, body) => {
-        actualBody = body
-        actualUrl = url
-      })
-      userService.login('abc12345', '9999a').then((res) => {
-        expect(actualUrl).toEqual(`${APP_CONFIG.apiBaseUrl}/auth`)
-        expect(actualBody.schoolPin).toEqual('abc12345')
-        expect(actualBody.pupilPin).toEqual('9999a')
-        expect(actualBody.buildVersion).toEqual('some-build-number')
-        return new Promise<any>((resolve, reject) => {})
-      }, (err) => {
-        fail(err)
-      })
-      expect(httpServiceSpy.postJson).toHaveBeenCalledTimes(1)
-    })
-
     it('should return a promise that rejects on invalid login', () => {
       httpServiceSpy.postJson.and.returnValue(Promise.reject(new HttpErrorResponse({
         error: { error: 'Unathorised' },
@@ -138,13 +117,30 @@ describe('UserService', () => {
       expect(httpServiceSpy.postJson).toHaveBeenCalledTimes(1)
     })
 
+    it('should post expected credentials to correct endpoint', async () => {
+      httpServiceSpy.postJson.and.returnValue(Promise.resolve(mockLoginResponseBody))
+      const schoolPin = 'abc12345'
+      const pupilPin = '9999a'
+      const expectedUrl = `${APP_CONFIG.apiBaseUrl}/auth`
+
+      await userService.login(schoolPin, pupilPin)
+
+      expect(httpServiceSpy.postJson).toHaveBeenCalledWith(expectedUrl, {
+        schoolPin,
+        pupilPin,
+        buildVersion: undefined
+      })
+    })
+
     it('should add a LoginSucess audit event on successful login', async () => {
       const auditServiceSpy = spyOn(auditService, 'addEntry')
-      // setup
+
       httpServiceSpy.postJson.and.returnValue(Promise.resolve(mockLoginResponseBody))
-      // execute
-      await userService.login('abc12345', '9999a')
-      // tests
+
+      const schoolPin = 'abc12345'
+      const pupilPin = '9999a'
+      await userService.login(schoolPin, pupilPin)
+
       expect(auditService.addEntry).toHaveBeenCalled()
       const auditArgs = auditServiceSpy.calls.argsFor(0)
       expect(auditArgs[0] instanceof LoginSuccessAuditEntryClass).toBeTrue()
