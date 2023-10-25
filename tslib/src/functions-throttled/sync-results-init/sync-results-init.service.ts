@@ -53,13 +53,18 @@ export class SyncResultsInitService {
     return this.tableService.getEntity(this.receivedCheckTableName, partitionKey, rowKey)
   }
 
-  private expandArchive (check: UnsynchronisedCheck, archive: string): ValidatedCheck {
+  private expandArchive (check: UnsynchronisedCheck, archive: string, version: number): ValidatedCheck {
     if (archive === null || archive === undefined || archive === '') {
       throw new Error(`CheckCode ${check.checkCode} has an invalid archive`)
     }
-    const payloadString = this.compressionService.decompressFromUTF16(archive)
-    if (payloadString === null) {
-      throw new Error('Decompressed receivedCheck archive payload is null')
+    let payloadString = ''
+    if (version === 2) {
+      payloadString = this.compressionService.decompressFromUTF16(archive)
+    } else if (version === 3) {
+      payloadString = this.compressionService.decompressFromBase64(archive)
+    }
+    if (payloadString === '' || payloadString === null) {
+      throw new Error('Decompressed receivedCheck archive payload is null or empty')
     }
     try {
       const payload: ValidatedCheck = JSON.parse(payloadString)
@@ -75,10 +80,14 @@ export class SyncResultsInitService {
 
   private transformReceivedCheckToValidatedCheck (check: UnsynchronisedCheck, receivedCheck: AzureTableEntity): ValidatedCheck {
     const archive = R.pathOr('', ['archive'], receivedCheck)
+    const version: string | undefined = R.pathOr(undefined, ['checkVersion'], receivedCheck)
     if (archive.length === 0) {
       throw new Error(`archive property not found.  checkCode:${check.checkCode}`)
     }
-    const validatedCheck = this.expandArchive(check, archive)
+    if (version === undefined) {
+      throw new Error(`receivedChck.checkVersion:${version} property not found.  checkCode:${check.checkCode}`)
+    }
+    const validatedCheck = this.expandArchive(check, archive, version)
     return validatedCheck
   }
 

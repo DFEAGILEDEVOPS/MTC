@@ -35,10 +35,6 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
   }
 
   const messageVersion: string = req.body?.messageVersion ?? SubmittedCheckVersion.V3
-  context.log(`req.body.messageVersion - type:${typeof req.body?.messageVersion} value:${req.body?.messageVersion}`)
-  context.log(`messageVersion - type:${typeof messageVersion} value:${messageVersion}`)
-  context.log(`SubmittedCheckVersion.V3 - type:${typeof SubmittedCheckVersion.V3}
-    value:${SubmittedCheckVersion.V3} toString:${SubmittedCheckVersion.V3.toString()}`)
 
   if (messageVersion.toString() !== SubmittedCheckVersion.V2.toString() &&
     messageVersion.toString() !== SubmittedCheckVersion.V3.toString()) {
