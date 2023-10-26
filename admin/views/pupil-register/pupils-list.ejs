@@ -63,7 +63,7 @@
                     </nav>
                 </aside>
             </div>
-            
+
             <div class="govuk-grid-column-full">
                 <h3 class="govuk-heading-m govuk-!-margin-top-7">Search pupils by name or UPN</h3>
                 <div class="govuk-form-group filter-name">
@@ -78,6 +78,30 @@
                     <caption class="govuk-body govuk-table__caption">List of available pupils (<%= pupils.length || 0 %>
                             )</caption>
                     <thead class="govuk-table__head">
+                      <tr class="govuk-table__row">
+                        <th></th>
+                        <th></th>
+                        <th  scope="col" class="govuk-table__header">
+                          <div class="tick-all-checkboxes-wrapper">
+                            <label class="tick-all-checkboxes" id="selectAll" for="tickAllCheckboxes">Show/Hide UPN</label>
+                            <div class="multiple-choice-mtc">
+                                <input id="tickAllCheckboxes" class="govuk-checkboxes__input" name="allPupils" type="checkbox"
+                                    aria-label="Select all pupils.">
+                                <div></div>
+                            </div>
+                        </div>
+                        </th>
+                        <th  scope="col" class="govuk-table__header">
+                          <div class="tick-all-checkboxes-wrapper">
+                            <label class="tick-all-checkboxes" id="selectAll" for="tickAllCheckboxes">Show/Hide Group</label>
+                            <div class="multiple-choice-mtc">
+                                <input id="tickAllCheckboxes" class="govuk-checkboxes__input" name="allPupils" type="checkbox"
+                                    aria-label="Select all pupils.">
+                                <div></div>
+                            </div>
+                        </div>
+                        </th>
+                      </tr>
                         <tr class="govuk-table__row">
                             <th scope="col" class="govuk-table__header">
                                 <a class="no-underline sortingLink">Pupil<span class="sort-icon asc"><span>Sort by
