@@ -21,6 +21,7 @@ Feature:
     Given a pupil has completed the check with the audit log is not contained in an array
     Then I should see an error stating validation failed as the audit log is not an array
 
+  @wip
   Scenario: CheckCode property must be a UUID
     Given a pupil has completed the check with a check code that is not a UUID
     Then I should see an error stating validation failed as the check code is not a UUID

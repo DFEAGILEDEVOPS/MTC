@@ -10,6 +10,7 @@ Then(/^I should see all my number pad inputs recorded$/) do
   storage_pupil = JSON.parse page.evaluate_script('window.localStorage.getItem("pupil");')
   storage_school = JSON.parse page.evaluate_script('window.localStorage.getItem("school");')
   check_result = SqlDbHelper.wait_for_received_check(storage_pupil['checkCode'])
+  fail 'archive not available in DB yet'
   check = JSON.parse(LZString::UTF16.decompress(check_result['archive']))
   local_storage = check['inputs']
 
@@ -35,6 +36,7 @@ Then(/^I should see all my keyboard inputs recorded$/) do
   storage_pupil = JSON.parse page.evaluate_script('window.localStorage.getItem("pupil");')
   storage_school = JSON.parse page.evaluate_script('window.localStorage.getItem("school");')
   check_result = SqlDbHelper.wait_for_received_check(storage_pupil['checkCode'])
+  fail 'archive not available in DB yet'
   check = JSON.parse(LZString::UTF16.decompress(check_result['archive']))
   local_storage = check['inputs']
 
@@ -62,6 +64,7 @@ Then(/^I should see backspace numpad event recorded$/) do
   storage_pupil = JSON.parse page.evaluate_script('window.localStorage.getItem("pupil");')
   storage_school = JSON.parse page.evaluate_script('window.localStorage.getItem("school");')
   check_result = SqlDbHelper.wait_for_received_check(storage_pupil['checkCode'])
+  fail 'archive not available in DB yet'
   check = JSON.parse(LZString::UTF16.decompress(check_result['archive']))
   local_storage = check['inputs']
   inputs1 = local_storage.compact
@@ -87,6 +90,7 @@ Then(/^I should see backspace keyboard event recorded$/) do
   storage_pupil = JSON.parse page.evaluate_script('window.localStorage.getItem("pupil");')
   storage_school = JSON.parse page.evaluate_script('window.localStorage.getItem("school");')
   check_result = SqlDbHelper.wait_for_received_check(storage_pupil['checkCode'])
+  fail 'archive not available in DB yet'
   check = JSON.parse(LZString::UTF16.decompress(check_result['archive']))
   local_storage = check['inputs']
 

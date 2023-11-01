@@ -15,6 +15,7 @@ end
 
 Then(/^all answers events and inputs match$/) do
   check_result = SqlDbHelper.wait_for_received_check(@storage_pupil['checkCode'])
+  fail 'archive not available in DB yet'
   @archive = JSON.parse(LZString::UTF16.decompress(check_result['archive']))
   check_id = SqlDbHelper.get_check_id(@storage_pupil['checkCode'])
   SqlDbHelper.wait_for_check_result_row(check_id)

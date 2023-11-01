@@ -8,6 +8,7 @@ Then(/^the device information should be persisted to the DB$/) do
   check_code = JSON.parse(page.evaluate_script('window.localStorage.getItem("pupil");'))['checkCode']
   school_uuid = JSON.parse(page.evaluate_script('window.localStorage.getItem("school");'))['uuid']
   check_result = SqlDbHelper.wait_for_received_check(check_code)
+  fail 'archive not available in DB yet'
   device_info_from_ts = JSON.parse(LZString::UTF16.decompress(check_result['archive']))['device']
   expect(device_info).to eql device_info_from_ts
 end
@@ -55,6 +56,7 @@ end
 
 Then(/^the app counter should be set to (\d+)$/) do |count|
   check_result = SqlDbHelper.wait_for_received_check(@check_code)
+  fail 'archive not available in DB yet'
   app_usage_from_ts = JSON.parse(LZString::UTF16.decompress(check_result['archive']))['device']['appUsageCounter']
   expect(app_usage_from_ts).to eql count
 end

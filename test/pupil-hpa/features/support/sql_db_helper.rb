@@ -464,6 +464,14 @@ class SqlDbHelper
     result.do
   end
 
+  def self.received_check(check_code)
+    sql = "SELECT * FROM [mtc_admin].[check] WHERE checkCode = '#{check_code}' and received=1"
+    result = SQL_CLIENT.execute(sql)
+    check = result.first
+    result.cancel
+    check
+  end
+
   def self.wait_for_received_check(check_code)
     begin
       retries ||= 0

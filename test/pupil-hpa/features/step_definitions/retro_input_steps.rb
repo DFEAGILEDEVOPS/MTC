@@ -52,6 +52,7 @@ Then(/^I should not have any retro input assistant recorded against the current 
   storage_school = JSON.parse page.evaluate_script('window.localStorage.getItem("school");')
   storage_pupil = JSON.parse page.evaluate_script('window.localStorage.getItem("pupil");')
   check_result = SqlDbHelper.wait_for_received_check(storage_pupil['checkCode'])
+  fail 'archive not available in DB yet'
   check = JSON.parse(LZString::UTF16.decompress(check_result['archive']))
   expect(check['pupil']['inputAssistant']['firstName']).to eql 'James'
   expect(check['pupil']['inputAssistant']['lastName']).to eql 'Elliot'
