@@ -1,10 +1,9 @@
 'use strict'
-import { ServiceMessageAreaCodeService } from './service-message/area-code.service'
-import ServiceMessageValidator from './service-message/service-message.validator'
+import { ServiceMessageCodesService } from './service-message/service-message.service'
+import { ServiceMessageValidator } from './service-message/service-message.validator'
 const { marked } = require('marked')
 const administrationMessageDataService = require('./data-access/administration-message.data.service')
 const redisCacheService = require('./data-access/redis-cache.service')
-const emptyFieldsValidator = require('../lib/validator/common/empty-fields-validators')
 const serviceMessageErrorMessages = require('../lib/errors/service-message')
 const logService = require('./log.service')
 const logger = logService.getLogger()
@@ -69,53 +68,53 @@ administrationMessageService.setMessage = async (requestData, userId) => {
   if (!userId) {
     throw new Error('User id not found in session')
   }
-  console.log('requestData', requestData)
   const { serviceMessageTitle, serviceMessageContent, borderColourCode } = requestData
   const areaCode = requestData.areaCode ? requestData.areaCode : []
-  const serviceMessageErrors = emptyFieldsValidator.validate([
-    { fieldKey: 'serviceMessageTitle', fieldValue: serviceMessageTitle, errorMessage: serviceMessageErrorMessages.emptyServiceMessageTitle },
-    { fieldKey: 'serviceMessageContent', fieldValue: serviceMessageContent, errorMessage: serviceMessageErrorMessages.emptyServiceMessageContent },
-    { fieldKey: 'borderColourCode', fieldValue: borderColourCode, errorMessage: serviceMessageErrorMessages.emptyServiceMessgeBorderColour }
-  ])
   // validate incoming area codes - the single letter code must match what we have in the DB.
-  const validAreaCodes = await ServiceMessageAreaCodeService.getAreaCodes()
+  const validAreaCodes = await ServiceMessageCodesService.getAreaCodes()
+  console.log('valid area codes', validAreaCodes)
+  const validBorderColourCodes = await ServiceMessageCodesService.getBorderColourCodes()
+  console.log('valid border codfes', validBorderColourCodes)
+  const validatorInput = {
+    serviceMessageTitle: { fieldKey: 'serviceMessageTitle', fieldValue: serviceMessageTitle, errorMessage: serviceMessageErrorMessages.emptyServiceMessageTitle },
+    serviceMessageContent: { fieldKey: 'serviceMessageContent', fieldValue: serviceMessageContent, errorMessage: serviceMessageErrorMessages.emptyServiceMessageContent },
+    borderColourCode: { fieldKey: 'borderColourCode', fieldValue: borderColourCode, errorMessage: serviceMessageErrorMessages.emptyServiceMessgeBorderColour, allowedValues: validBorderColourCodes.map(c => c.code) },
+    areaCode: { fieldKey: 'areaCode', fieldValue: areaCode, errorMessage: serviceMessageErrorMessages.invalidAreaCode, allowedValues: validAreaCodes.map(c => c.code) }
+  }
+  console.log('validator input 1 ', JSON.stringify(validatorInput, undefined, ' ', 4))
   if (areaCode.length === 0) {
     // The user has not chosen any area codes, which means the message applies to all of them
     validAreaCodes.forEach(c => { areaCode.push(c) }) // copy the codes over
-  } else {
-    console.log('SMV', ServiceMessageValidator)
-    const serviceMessageErrors2 = ServiceMessageValidator.validate(requestData)
   }
+  console.log('validator input 2 ', JSON.stringify(validatorInput, undefined, ' ', 4))
 
+  const serviceMessageErrors = ServiceMessageValidator.validate(validatorInput)
   if (serviceMessageErrors.hasError()) {
+    console.log('errors', serviceMessageErrors)
     return serviceMessageErrors
   }
 
-  const serviceMessageData = administrationMessageService.prepareSubmissionData(requestData, userId)
+  const serviceMessageData = administrationMessageService.prepareSubmissionData(validatorInput, userId)
   await administrationMessageDataService.sqlCreateOrUpdate(serviceMessageData)
   return redisCacheService.set(serviceMessageRedisKey, serviceMessageData)
 }
 
 /**
  * Prepare the service message data for sql transmission
- * @param {object} requestData
+ * @param {object} data
  * @param {number} userId
  * @returns {Object}
  */
-administrationMessageService.prepareSubmissionData = (requestData, userId) => {
+administrationMessageService.prepareSubmissionData = (data, userId) => {
   const serviceMessageData = {}
   serviceMessageData.createdByUser_id = userId
-  serviceMessageData.title = requestData.serviceMessageTitle
-  serviceMessageData.message = requestData.serviceMessageContent
-  if (requestData.id !== undefined) {
-    serviceMessageData.id = requestData.id
+  serviceMessageData.title = data.serviceMessageTitle.fieldValue
+  serviceMessageData.message = data.serviceMessageContent.fieldValue
+  if (data.id !== undefined) {
+    serviceMessageData.id = data.id
   }
-  serviceMessageData.borderColourCode = requestData.borderColourCode
-  if (Array.isArray(requestData.areaCode)) {
-    serviceMessageData.areaCode = requestData.areaCode
-  } else {
-    serviceMessageData.areaCode = [] // TODO [jms]: populate with full list of area codes to create a global system.
-  }
+  serviceMessageData.borderColourCode = data.borderColourCode.fieldValue
+  serviceMessageData.areaCode = data.areaCode.fieldValue
   return serviceMessageData
 }
 

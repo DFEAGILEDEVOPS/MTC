@@ -1,5 +1,5 @@
-import { ServiceMessageAreaCodeService } from './area-code.service'
-import { ServiceMessageAreaCodeDataService } from './area-code.data.service'
+import { ServiceMessageCodesService } from './service-message.service'
+import { ServiceMessageAreaCodeDataService } from './service-message.data.service'
 
 describe('ServiceMessageAreaCodeService class', () => {
   describe('getAreaCodes', () => {
@@ -8,7 +8,7 @@ describe('ServiceMessageAreaCodeService class', () => {
         { code: 'Z', description: 'Z test' },
         { code: 'A', description: 'A test' }
       ])
-      const result = await ServiceMessageAreaCodeService.getAreaCodes()
+      const result = await ServiceMessageCodesService.getAreaCodes()
       expect(result[0].code).toBe('A')
       expect(result[0].description).toBe('A test')
       expect(result[1].code).toBe('Z')
@@ -17,7 +17,7 @@ describe('ServiceMessageAreaCodeService class', () => {
 
     test('when the table is empty', async () => {
       jest.spyOn(ServiceMessageAreaCodeDataService, 'sqlGetAreaCodes').mockResolvedValue([])
-      const result = await ServiceMessageAreaCodeService.getAreaCodes()
+      const result = await ServiceMessageCodesService.getAreaCodes()
       expect(result).toStrictEqual([])
     })
   })

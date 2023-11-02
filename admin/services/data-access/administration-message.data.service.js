@@ -34,15 +34,38 @@ administrationMessageDataService.sqlCreateOrUpdate = async (data) => {
     await sqlService.modify(sql, params)
   } else {
     // create
-    const sql = `
-      INSERT INTO [mtc_admin].[serviceMessage] (createdByUser_id, title, message, borderColourLookupId) values (
-        @createdByUserId, @title, @message, (SELECT id FROM [mtc_admin].[serviceMessageBorderColourLookup] where code = @code)
+    let sql = `
+      DECLARE @serviceMessageId INT;
+
+      INSERT INTO [mtc_admin].[serviceMessage] (
+        createdByUser_id,
+        title,
+        message,
+        borderColourLookupId
       )
+      VALUES (
+        @createdByUserId,
+        @title,
+        @message,
+        (SELECT id FROM [mtc_admin].[serviceMessageBorderColourLookup] where code = @code)
+      );
+
+      SET @serviceMessageId = SCOPE_IDENTITY();
+
     `
     params.push(
       { name: 'createdByUserId', value: data.createdByUser_id, type: TYPES.Int }
     )
 
+    data.areaCode.forEach((code, i) => {
+      sql += `INSERT INTO [mtc_admin].[serviceMessageServiceMessageArea] VALUES
+              (@serviceMessageId, (SELECT id FROM [mtc_admin].[serviceMessageAreaLookup] WHERE code = @p${i}));
+        `
+      params.push({
+        name: `p${i}`, value: code, type: TYPES.Char(1)
+      })
+    })
+    
     await sqlService.modify(sql, params)
   }
 }
@@ -52,9 +75,7 @@ administrationMessageDataService.sqlCreateOrUpdate = async (data) => {
  * @returns {Promise.<void>}
  */
 administrationMessageDataService.sqlDeleteServiceMessage = async () => {
-  const sql = `
-    DELETE FROM [mtc_admin].serviceMessage;
-  `
+  const sql = 'DELETE FROM [mtc_admin].serviceMessage'
   await sqlService.modify(sql)
 }
 

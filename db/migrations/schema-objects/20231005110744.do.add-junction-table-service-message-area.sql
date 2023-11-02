@@ -4,10 +4,10 @@ IF NOT EXISTS(
 	FROM
 		INFORMATION_SCHEMA.TABLES
 	WHERE
-		TABLE_NAME = 'serviceMessageServiceMessageAreaLookup'
+		TABLE_NAME = 'serviceMessageServiceMessageArea'
 		AND TABLE_SCHEMA = 'mtc_admin'
 ) BEGIN
-	CREATE TABLE mtc_admin.serviceMessageServiceMessageAreaLookup (
+	CREATE TABLE mtc_admin.serviceMessageServiceMessageArea (
 		serviceMessageId INT NOT NULL,
 		serviceMessageAreaLookupId INT NOT NULL,
 		CONSTRAINT PK_serviceMessageServiceMessageArea PRIMARY KEY (

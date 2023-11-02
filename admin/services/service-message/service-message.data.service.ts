@@ -1,4 +1,4 @@
-import { type IAreaCode } from './area-code.service'
+import { type IBorderColourCode, type IAreaCode } from './service-message.service'
 const sqlService = require('../data-access/sql.service')
 
 // statics can't be declared in interfaces, so this doesn't work.  See: https://github.com/microsoft/TypeScript/issues/14600
@@ -18,5 +18,18 @@ export class ServiceMessageAreaCodeDataService {
     const data = await sqlService.query(sql)
     const areaCodes = data.map((r: any) => { return { code: r.code, description: r.description } })
     return areaCodes
+  }
+
+  public static async sqlGetBorderColourCodes (): Promise<IBorderColourCode[]> {
+    const sql = `
+      SELECT
+        code,
+        description
+      FROM
+        [mtc_admin].[serviceMessageBorderColourLookup]
+    `
+    const data = await sqlService.query(sql)
+    const borderColourCodes = data.map((r: any) => { return { code: r.code, description: r.description } })
+    return borderColourCodes
   }
 }

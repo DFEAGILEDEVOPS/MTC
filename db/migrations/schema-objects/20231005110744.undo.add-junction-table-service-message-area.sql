@@ -1,1 +1,1 @@
-DROP TABLE IF EXISTS mtc_admin.serviceMessageServiceMessageAreaLookup;
+DROP TABLE IF EXISTS mtc_admin.serviceMessageServiceMessageArea;

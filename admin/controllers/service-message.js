@@ -1,14 +1,12 @@
 'use strict'
 
-import { ServiceMessageAreaCodeService } from '../services/service-message/area-code.service'
+import { ServiceMessageCodesService } from '../services/service-message/service-message.service'
 const administrationMessageService = require('../services/administration-message.service')
 const ValidationError = require('../lib/validation-error')
-
 const serviceMessagePresenter = require('../helpers/service-message-presenter')
 const logger = require('../services/log.service').getLogger()
 
 const controller = {
-
   /**
    * Renders manage service message page
    * @param req
@@ -45,7 +43,7 @@ const controller = {
     req.breadcrumbs(res.locals.pageTitle)
     let areaCodes = []
     try {
-      areaCodes = await ServiceMessageAreaCodeService.getAreaCodes()
+      areaCodes = await ServiceMessageCodesService.getAreaCodes()
     } catch (error) {
       console.error('Error fetching message Area Codes from the DB: ', error)
     }
@@ -117,7 +115,7 @@ const controller = {
         res.redirect('/service-message/')
         return
       }
-      const serviceMessageAreaCodeService = new ServiceMessageAreaCodeService()
+      const serviceMessageAreaCodeService = new ServiceMessageCodesService()
       const areaCodes = await serviceMessageAreaCodeService.getAreaCodes()
 
       req.breadcrumbs('Manage service message', '/service-message')
