@@ -3,6 +3,8 @@
 const R = require('ramda')
 const service = require('../../../services/payload.service')
 const payloadDataService = require('../../../services/data-access/payload.data.service')
+const compressionService = require('../../../services/compression.service')
+const { compress } = require('lz-string')
 const mockCheckCode = '5d557d6a-b1d9-406e-b5d0-7c26e5f2bdb5'
 describe('payload.service', () => {
   afterEach(() => {
@@ -111,6 +113,24 @@ describe('payload.service', () => {
       }
       service.addRelativeTimings(mock)
       expect(service.addRelativeTimingsToSection).toHaveBeenCalledTimes(2)
+    })
+  })
+
+  describe('base64 compressed payloads', () => {
+    test('uses base64 decompression when check is version 3', async () => {
+      const archiveContents = 'contents-of-archive'
+      jest.spyOn(payloadDataService, 'sqlFindOneByCheckCode').mockResolvedValue({
+        inputs: [],
+        audit: [],
+        archive: archiveContents,
+        checkVersion: 3
+      })
+      jest.spyOn(compressionService, 'decompressFromBase64').mockReturnValueOnce(JSON.stringify({
+        inputs: [],
+        audit: []
+      }))
+      await service.getPayload(mockCheckCode)
+      expect(compressionService.decompressFromBase64).toHaveBeenCalledWith(archiveContents)
     })
   })
 })
