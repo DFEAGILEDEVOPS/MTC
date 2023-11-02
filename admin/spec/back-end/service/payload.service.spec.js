@@ -4,8 +4,8 @@ const R = require('ramda')
 const service = require('../../../services/payload.service')
 const payloadDataService = require('../../../services/data-access/payload.data.service')
 const compressionService = require('../../../services/compression.service')
-const { compress } = require('lz-string')
 const mockCheckCode = '5d557d6a-b1d9-406e-b5d0-7c26e5f2bdb5'
+
 describe('payload.service', () => {
   afterEach(() => {
     jest.restoreAllMocks()
@@ -22,6 +22,11 @@ describe('payload.service', () => {
 
     test('adds relativeTimings', async () => {
       jest.spyOn(service, 'addRelativeTimings').mockImplementation()
+      const mockArchive = {
+        inputs: [],
+        audit: []
+      }
+      jest.spyOn(compressionService, 'decompressFromUTF16').mockReturnValueOnce(JSON.stringify(mockArchive))
       jest.spyOn(payloadDataService, 'sqlFindOneByCheckCode').mockResolvedValue({
         inputs: [],
         audit: [],
