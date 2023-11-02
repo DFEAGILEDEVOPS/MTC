@@ -65,7 +65,6 @@ administrationMessageDataService.sqlCreateOrUpdate = async (data) => {
         name: `p${i}`, value: code, type: TYPES.Char(1)
       })
     })
-    
     await sqlService.modify(sql, params)
   }
 }
