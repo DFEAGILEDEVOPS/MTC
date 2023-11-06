@@ -37,7 +37,7 @@ const listPupils = async function listPupils (req, res, next) {
     pupils: pupilsFormatted,
     breadcrumbs: req.breadcrumbs(),
     availabilityData,
-    showPupilAdminLink: req.user.role === roles.staAdmin,
+    showPupilAdminLink: req.user.role === roles.staAdmin || req.user.role === roles.helpdesk,
     showAddPupilButtons
   })
 }
