@@ -8,7 +8,7 @@ const logger = require('../services/log.service').getLogger()
 
 const controller = {
   /**
-   * Renders manage service message page
+   * Renders manage service message overview page
    * @param req
    * @param res
    * @param next
@@ -17,12 +17,13 @@ const controller = {
   getServiceMessage: async function getServiceMessage (req, res, next) {
     res.locals.pageTitle = 'Manage service message'
     req.breadcrumbs(res.locals.pageTitle)
-    let serviceMessage
+    let serviceMessages
     try {
-      serviceMessage = await administrationMessageService.getMessage()
+      serviceMessages = await administrationMessageService.getMessages()
+      console.log('controller getServiceMessage(): service messages ', serviceMessages)
       res.render('service-message/service-message-overview', {
         breadcrumbs: req.breadcrumbs(),
-        serviceMessage
+        serviceMessages
       })
     } catch (error) {
       return next(error)
@@ -115,8 +116,6 @@ const controller = {
         res.redirect('/service-message/')
         return
       }
-      const serviceMessageAreaCodeService = new ServiceMessageCodesService()
-      const areaCodes = await serviceMessageAreaCodeService.getAreaCodes()
 
       req.breadcrumbs('Manage service message', '/service-message')
       res.locals.pageTitle = 'Edit service message'

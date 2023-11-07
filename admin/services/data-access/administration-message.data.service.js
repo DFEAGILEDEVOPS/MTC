@@ -80,20 +80,52 @@ administrationMessageDataService.sqlDeleteServiceMessage = async () => {
 
 /**
  * Fetch active service message
- * @return {Promise<{ title: string, message: string, id: number, borderColourCode: string }>}
+ * @return {Promise<{ title: string, message: string, urlSlug: srtring, borderColourCode: string, areaCodes: string[], areaDescriptions: string[], createdAt: moment.Moment, updatedAt: moment.Moment }>}
  */
-administrationMessageDataService.sqlFindActiveServiceMessage = async () => {
+administrationMessageDataService.sqlFindServiceMessages = async () => {
+  console.log('sqlFindServiceMessages() called')
   const sql = `
-    SELECT TOP 1
+  SELECT
     sm.id,
+    sm.createdAt,
+    sm.updatedAt,
     sm.title,
     sm.message,
-    smbcl.code as borderColourCode
-    FROM [mtc_admin].serviceMessage sm JOIN [mtc_admin].serviceMessageBorderColourLookup smbcl ON (sm.borderColourLookupId = smbcl.id)
+    sm.urlSlug,
+    bcl.code as borderColourCode,
+    bcl.description as borderColourCodeDescription,
+    STRING_AGG(area.code, ',') AS areaCodes,
+    STRING_AGG(area.description, ',') AS areaDescriptions
+  FROM
+    mtc_admin.serviceMessage sm
+    JOIN mtc_admin.serviceMessageBorderColourLookup bcl ON (sm.borderColourLookupId = bcl.id)
+    JOIN mtc_admin.serviceMessageServiceMessageArea map ON (map.serviceMessageId = sm.id)
+    JOIN mtc_admin.serviceMessageAreaLookup area ON (map.serviceMessageAreaLookupId = area.id)
+  GROUP BY
+    sm.id,
+    sm.createdAt,
+    sm.updatedAt,
+    sm.title,
+    sm.message,
+    bcl.code,
+    bcl.description,
+    sm.urlSlug
   `
-  const result = await sqlService.readonlyQuery(sql)
-  // @ts-ignore
-  return R.head(result)
+  const data = await sqlService.readonlyQuery(sql)
+  const results = data.map(o => {
+    return {
+      title: o.title,
+      message: o.message,
+      createdAt: o.createdAt,
+      updatedAt: o.updatedAt,
+      borderColourCode: o.borderColourCode,
+      areaCodes: R.split(',', o.areaCodes),
+      areaDescriptions: R.split(',', o.areaDescriptions),
+      urlSlug: o.urlSlug
+    }
+  })
+  console.log('sqlFindServiceMessages returning', results)
+  return results
 }
 
 module.exports = administrationMessageDataService

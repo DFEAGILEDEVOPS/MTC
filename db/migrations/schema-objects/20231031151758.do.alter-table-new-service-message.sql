@@ -7,6 +7,7 @@ CREATE TABLE [mtc_admin].[serviceMessage] (
   title nvarchar(max) NOT NULL,
   message nvarchar(max) NOT NULL,
   borderColourLookupId int NOT NULL,
+  urlSlug UNIQUEIDENTIFIER NOT NULL CONSTRAINT DF_serviceMessage_urlSlug DEFAULT (newid()),
   CONSTRAINT PK_serviceMessage PRIMARY KEY (id),
   CONSTRAINT FK_serviceMessage_borderColourLookupId_serviceMessageBorderColourLookup_id FOREIGN KEY (borderColourLookupId) REFERENCES mtc_admin.serviceMessageBorderColourLookup (id),
   CONSTRAINT FK_serviceMessage_createdByUser_id FOREIGN KEY (createdByUser_id) REFERENCES mtc_admin.[user] (id)
