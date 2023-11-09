@@ -3,15 +3,18 @@ const redis = new Redis()
 const R = require('ramda')
 const pipeline = redis.pipeline()
 const perf = require('perf_hooks')
+// TODO add perf timings to output
+// TODO connect to azure redis
 
 const keyPrefix = 'school.home.overdue'
+const checkCount = 150000
 
 function clearRedis (cb) {
   var stream = redis.scanStream({
     match: `${keyPrefix}:*`
   })
   stream.on('data', function (keys) {
-    // `keys` is an array of strings representing key names
+    // TODO render an average of key batch length at end
     if (keys.length) {
       console.log(`length of keys batch: ${keys.length}`)
       var pipeline = redis.pipeline()
@@ -38,14 +41,16 @@ function runDataExercise () {
   clearRedis(() => {
     console.log('starting data exercise')
     // datasets
-    const oldOverdueChecks = randomIntArrayInRange(1, 1000, 500)
-    const currentOverdueChecks = randomIntArrayInRange(1, 1000, 500)
+    const oldOverdueChecks = randomIntArrayInRange(1, checkCount * 2, checkCount)
+    const currentOverdueChecks = randomIntArrayInRange(1, checkCount * 2, checkCount)
 
-    // add oldOverdueChecks to redis
+    // add oldOverdueChecks to redis (dont measure this)
     oldOverdueChecks.forEach((schoolUuid) => {
       pipeline.set(`${keyPrefix}:${schoolUuid}`, 'old')
     })
     pipeline.exec()
+
+    // TODO start timing here, and fetch existing overdue checks first
 
     console.log(`oldOverdueChecks in redis: ${oldOverdueChecks.length}`)
     console.log(`currentOverdueChecks from query: ${currentOverdueChecks.length}`)
