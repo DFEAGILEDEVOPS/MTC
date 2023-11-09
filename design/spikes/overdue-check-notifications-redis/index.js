@@ -2,21 +2,33 @@ const Redis = require('ioredis')
 const redis = new Redis()
 const R = require('ramda')
 const pipeline = redis.pipeline()
-const perf = require('perf_hooks')
-// TODO add perf timings to output
+const perf = require('perf_hooks').performance
+
+// perf timers
+let overallTimerStart
+let overallTimerEnd
+let fetchExistingOverdueSchoolsTimerStart
+let fetchExistingOverdueSchoolsTimerEnd
+let addNewOverdueChecksTimerStart
+let addNewOverdueChecksTimerEnd
+let setWorkTimerStart
+let setWorkTimerEnd
+
 // TODO connect to azure redis
 
 const keyPrefix = 'school.home.overdue'
-const checkCount = 150000
+const schoolCount = 150000
 
 function clearRedis (cb) {
+  console.log('purging redis...')
   var stream = redis.scanStream({
     match: `${keyPrefix}:*`
   })
+
+  const keyLengths = []
   stream.on('data', function (keys) {
-    // TODO render an average of key batch length at end
     if (keys.length) {
-      console.log(`length of keys batch: ${keys.length}`)
+      keyLengths.push(keys.length)
       var pipeline = redis.pipeline()
       keys.forEach(function (key) {
         pipeline.del(key)
@@ -25,41 +37,51 @@ function clearRedis (cb) {
     }
   })
   stream.on('end', function () {
-    console.log('redis purged')
+    const average = keyLengths.reduce((a, b) => a + b, 0) / keyLengths.length
+    console.log('redis purged - average key batch length: ', average.toFixed(0))
     cb()
   })
 }
 
 function randomIntArrayInRange (min, max, length = 1) {
   return Array.from(
-    { length },
+    { length},
     () => Math.floor(Math.random() * (max - min + 1)) + min
-  );
+  )
+}
+
+function outputTimings () {
+  console.log(`fetch existing from redis: ${((fetchExistingOverdueSchoolsTimerEnd - fetchExistingOverdueSchoolsTimerStart)/1000).toFixed(2)}s`)
+  console.log(`add new to redis: ${((addNewOverdueChecksTimerEnd - addNewOverdueChecksTimerStart)/1000).toFixed(2)}s`)
+  console.log(`set work duration: ${((setWorkTimerEnd - setWorkTimerStart)/1000).toFixed(2)}s`)
+  console.log(`overall duration: ${((overallTimerEnd - overallTimerStart)/1000).toFixed(2)}s`)
 }
 
 function runDataExercise () {
   clearRedis(() => {
-    console.log('starting data exercise')
+    console.log('starting exercise...')
     // datasets
-    const oldOverdueChecks = randomIntArrayInRange(1, checkCount * 2, checkCount)
-    const currentOverdueChecks = randomIntArrayInRange(1, checkCount * 2, checkCount)
+    const oldOverdueSchools = randomIntArrayInRange(1, schoolCount * 2, schoolCount)
+    const currentOverdueSchools = randomIntArrayInRange(1, schoolCount * 2, schoolCount)
 
     // add oldOverdueChecks to redis (dont measure this)
-    oldOverdueChecks.forEach((schoolUuid) => {
+    oldOverdueSchools.forEach((schoolUuid) => {
       pipeline.set(`${keyPrefix}:${schoolUuid}`, 'old')
     })
     pipeline.exec()
 
-    // TODO start timing here, and fetch existing overdue checks first
+    // TODO fetch existing overdue checks first
+    fetchExistingOverdueSchoolsTimerStart = NaN
+    fetchExistingOverdueSchoolsTimerEnd = NaN
 
-    console.log(`oldOverdueChecks in redis: ${oldOverdueChecks.length}`)
-    console.log(`currentOverdueChecks from query: ${currentOverdueChecks.length}`)
-    // get the items in oldOverdueChecks that are not in newOverdueChecks
-    const noLongerOverdue = R.difference(oldOverdueChecks, currentOverdueChecks)
+    console.log(`configured school count: ${schoolCount}`)
+    setWorkTimerStart = perf.now()
+    const noLongerOverdue = R.difference(oldOverdueSchools, currentOverdueSchools)
+    const stillOverdue = R.difference(oldOverdueSchools, noLongerOverdue)
+    const newOverdue = R.difference(currentOverdueSchools, stillOverdue)
+    setWorkTimerEnd = perf.now()
     console.log(`noLongerOverdue: ${noLongerOverdue.length}`)
-    const stillOverdue = R.difference(oldOverdueChecks, noLongerOverdue)
     console.log(`stillOverdue: ${stillOverdue.length}`)
-    const newOverdue = R.difference(currentOverdueChecks, stillOverdue)
     console.log(`newOverdue: ${newOverdue.length}`)
 
     // remove noLongerOverdue from redis
@@ -69,17 +91,22 @@ function runDataExercise () {
     pipeline.exec()
 
     // add newOverdue to redis
+    addNewOverdueChecksTimerStart = perf.now()
     newOverdue.forEach((schoolUuid) => {
       pipeline.set(`${keyPrefix}:${schoolUuid}`, 'new')
     })
     pipeline.exec()
-    // TODO process exit
+    addNewOverdueChecksTimerEnd = perf.now()
+    overallTimerEnd = perf.now()
+    outputTimings()
   })
 }
 
 redis.ping().then(() => {
   console.log('Redis is connected')
+  overallTimerStart = perf.now()
   runDataExercise()
+// process.exit()
 }).catch((err) => {
   console.log('Redis is not connected')
 })
