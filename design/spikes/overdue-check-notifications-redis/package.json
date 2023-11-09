@@ -1,0 +1,12 @@
+{
+  "name": "overdue-checks",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "ioredis": "^5.3.2",
+    "ramda": "^0.29.1"
+  },
+  "scripts": {
+    "start": "node index.js"}
+}
