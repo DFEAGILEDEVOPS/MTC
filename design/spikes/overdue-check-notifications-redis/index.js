@@ -73,6 +73,7 @@ function runDataExercise () {
       pipeline.set(`${keyPrefix}:${schoolUuid}`, 'new')
     })
     pipeline.exec()
+    // TODO process exit
   })
 }
 
