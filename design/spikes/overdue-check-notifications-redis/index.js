@@ -21,7 +21,11 @@ let setWorkTimerEnd
 // TODO work with sets?
 
 const keyPrefix = 'school.home.overdue'
-const schoolCount = 150000
+const schoolCount = 20000
+
+function flushRedis (done) {
+  redis.flushall(done)
+}
 
 function clearRedis (done) {
   console.log('purging redis...')
@@ -84,7 +88,7 @@ function outputTimings () {
 }
 
 function runDataExercise () {
-  clearRedis(() => {
+  flushRedis(() => {
     console.log('starting exercise...')
     // datasets
     const oldOverdueSchools = generateArrayOfRandomNumbers(1, schoolCount * 2, schoolCount)
@@ -97,11 +101,10 @@ function runDataExercise () {
     pipeline.exec()
 
     console.log(`configured school count: ${schoolCount}`)
-    setWorkTimerStart = perf.now()
     const existingOverdueChecks = []
 
     fetchExistingOverdueSchools(existingOverdueChecks, () => {
-      console.dir(existingOverdueChecks[0])
+      setWorkTimerStart = perf.now()
       const noLongerOverdue = R.difference(oldOverdueSchools, currentOverdueSchools)
       const stillOverdue = R.difference(oldOverdueSchools, noLongerOverdue)
       const newOverdue = R.difference(currentOverdueSchools, stillOverdue)
@@ -124,6 +127,7 @@ function runDataExercise () {
       pipeline.exec()
       addNewOverdueChecksTimerEnd = perf.now()
       overallTimerEnd = perf.now()
+      console.log('exercise complete')
       outputTimings()
     })
   })
