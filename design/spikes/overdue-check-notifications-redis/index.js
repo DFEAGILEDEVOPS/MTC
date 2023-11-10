@@ -18,8 +18,6 @@ let addNewOverdueChecksTimerEnd
 let setWorkTimerStart
 let setWorkTimerEnd
 
-// TODO work with sets?
-
 const keyPrefix = 'school.home.overdue'
 const schoolCount = 20000
 
