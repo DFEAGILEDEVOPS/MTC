@@ -38,12 +38,10 @@ const controller = {
     try {
       res.locals.pageTitle = 'MTC Administration Homepage'
       const isNewCheckWindow = featureToggles.isFeatureEnabled('newCheckWindow')
-      const serviceMessages = await administrationMessageService.getMessages()
       req.breadcrumbs(res.locals.pageTitle)
       res.render('service-manager/service-manager-home', {
         breadcrumbs: req.breadcrumbs(),
-        isNewCheckWindow,
-        serviceMessages
+        isNewCheckWindow
       })
     } catch (error) {
       next(error)

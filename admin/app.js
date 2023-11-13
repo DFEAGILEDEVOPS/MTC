@@ -44,6 +44,7 @@ const redisCacheService = require('./services/data-access/redis-cache.service')
 const { CheckWindowPhaseService } = require('./services/check-window-phase/check-window-phase.service')
 const checkWindowPhaseConsts = require('./lib/consts/check-window-phase')
 const userInitErrorConsts = require('./lib/errors/user')
+const administrationMessageService = require('./services/administration-message.service')
 
 const logger = require('./services/log.service').getLogger()
 const sqlService = require('./services/data-access/sql.service')
@@ -285,6 +286,22 @@ app.use(async function (req, res, next) {
   // @ts-ignore - var declared in server.js
   global.checkWindowPhase = await CheckWindowPhaseService.getPhase()
   logger.info(`CheckWindow Phase is ${global.checkWindowPhase}`)
+  next()
+})
+
+app.use(async function (req, res, next) {
+  // fetch system messages so they can be shown to the users.
+  // do this for every request.
+  try {
+    const serviceMessages = await administrationMessageService.getFilteredMessagesForRequest(req.path)
+    console.log('Filtered service messages', serviceMessages)
+    console.log('Path: ', req.path)
+    res.locals.serviceMessages = serviceMessages
+    console.log('App service messages', serviceMessages)
+  } catch (error) {
+    console.error(error)
+    logger.error('Error setting the serviceMessages: ' + error.message)
+  }
   next()
 })
 

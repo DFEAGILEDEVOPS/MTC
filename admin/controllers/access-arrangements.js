@@ -38,7 +38,8 @@ const controller = {
           title: res.locals.pageTitle,
           breadcrumbs: req.breadcrumbs(),
           aaViewMode,
-          availabilityData
+          availabilityData,
+          serviceMessages: res.locals.serviceMessages
         })
       }
     } catch (error) {
@@ -57,7 +58,8 @@ const controller = {
       aaViewMode,
       title: res.locals.pageTitle,
       availabilityData,
-      retroInputAssistantText
+      retroInputAssistantText,
+      serviceMessages: res.locals.serviceMessages
     })
   },
   /**

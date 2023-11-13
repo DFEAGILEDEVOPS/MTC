@@ -13,6 +13,9 @@ const redisKeyService = require('./redis-key.service')
 const administrationMessageService = {}
 const serviceMessageRedisKey = redisKeyService.getServiceMessageKey()
 
+const accessArrangementsPathRe = /^\/access-arrangements\/.*/
+const hdfPathRe = /^\/attendance\/.*/
+
 /**
  * @typedef serviceMessage
  * @property message string
@@ -22,20 +25,19 @@ const serviceMessageRedisKey = redisKeyService.getServiceMessageKey()
  * @property areaCodes string[]
  */
 
-
 /**
  * Get the current service message
  * @returns {Promise<serviceMessage | undefined>}
  */
 administrationMessageService.getMessage = async () => {
   let html
-  let rawMessages // object[] with .message => markdown
+  let rawMessage // object[] with .message => markdown
   try {
-    rawMessages = await administrationMessageService.fetchMessages()
-    if (rawMessages === undefined) {
+    rawMessage = await administrationMessageService.fetchMessages()
+    if (rawMessage === undefined) {
       return undefined
     }
-    html = marked.parse(rawMessages.message)
+    html = marked.parse(rawMessage.message)
   } catch (error) {
     logger.alert(`serviceMessage: failed to render.  Error: ${error.message}`)
     return undefined // show the page at least, without the service message
@@ -45,24 +47,58 @@ administrationMessageService.getMessage = async () => {
 }
 
 /**
+ * Return the service messages filtered by path.
+ * @param {string} path - from req.path
+ * @returns {Promise<serviceMessage[]>}
+ */
+administrationMessageService.getFilteredMessagesForRequest = async function getFilteredMessagesForRequest (path) {
+  try {
+    const messages = await administrationMessageService.getMessages()
+    const allAreaCodes = await ServiceMessageCodesService.getAreaCodes()
+    const filteredMessages = []
+    for (let msg of messages) {
+      if (msg.areaCodes.length === allAreaCodes.length) {
+        // This message applies to all sections. Let everyone see it.
+        filteredMessages.push(msg)
+      } else {
+        // check each area against the current path to see if it should be shown.
+        for (let areaCode of msg.areaCodes) {
+          console.log(`Testing areacode ${areaCode} for msg ${msg.title}`)
+          switch (true) {
+            case accessArrangementsPathRe.test(path):
+              console.log(`Checking ${areaCode} against ${path} for 'A'`)
+              if (areaCode === 'A') filteredMessages.push(msg)
+              break
+
+            case hdfPathRe.test(path):
+              console.log(`Checking ${areaCode} against ${path} for 'H'`)
+              if (areaCode === 'H') filteredMessages.push(msg)
+              break
+          }
+        }
+      }
+    }
+    return filteredMessages
+  } catch (error) {
+    console.error('Error getting filtered messages', error)
+    return []
+  }
+}
+
+/**
  * Get the current service message
  * @returns {Promise<serviceMessage | undefined>}
  */
 administrationMessageService.getMessages = async () => {
-  console.log('getMessages() called')
-  let htmls = [] // string[]
   let rawMessages = [] // object[] with .message => markdown
   try {
     rawMessages = await administrationMessageService.fetchMessages()
     if (rawMessages === undefined) {
       return undefined
     }
-    console.log('adminService.getMessages() rawMessages', rawMessages)
-    // htmls = rawMessages.map(o => marked.parse(o.message))
     rawMessages.forEach(msg => {
       msg.uncleanHtml = marked.parse(msg.message)
     })
-    console.log('rawMessages with sanitisation', rawMessages)
   } catch (error) {
     logger.alert(`serviceMessage: failed to render.  Error: ${error.message}`)
     return undefined // show the page at least, without the service message
@@ -70,9 +106,9 @@ administrationMessageService.getMessages = async () => {
   rawMessages.forEach(msg => {
     msg.cleanMessage = sanitiseService.sanitise(msg.uncleanHtml)
   })
-  console.log('getMessages()  data with cleanMessages', rawMessages)
-  const result = rawMessages.map(o => { return {title: o.title, message: o.cleanMessage, borderColourCode: o.borderColourCode, areaCodes: o.areaCodes} })
-  console.log('getMessages() returning ', result)
+  const result = rawMessages.map(o => { return { title: o.title, message: o.cleanMessage, borderColourCode: o.borderColourCode, areaCodes: o.areaCodes } })
+  console.log('getMessages returning: ', result)
+  return result
 }
 
 /**
@@ -81,7 +117,7 @@ administrationMessageService.getMessages = async () => {
  */
 administrationMessageService.fetchMessages = async function fetchServiceMessage () {
   console.log('fetchMessages called()')
-  let cachedServiceMessages
+  // let cachedServiceMessages
   // const result = await redisCacheService.get(serviceMessageRedisKey)
   // try {
   //   cachedServiceMessages = JSON.parse(result)

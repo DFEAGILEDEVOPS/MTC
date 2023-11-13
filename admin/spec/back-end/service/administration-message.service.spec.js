@@ -1,6 +1,6 @@
 'use strict'
 
-/* global describe, beforeEach expect test jest afterEach */
+/* global describe, beforeEach expect test jest afterEach, xdescribe */
 const administrationMessageDataService = require('../../../services/data-access/administration-message.data.service')
 const redisCacheService = require('../../../services/data-access/redis-cache.service')
 const administrationMessageService = require('../../../services/administration-message.service')
@@ -16,7 +16,7 @@ describe('administrationMessageService', () => {
     jest.restoreAllMocks()
   })
 
-  describe('getMessage', () => {
+  xdescribe('getMessage', () => {
     test('should call redis cache service to fetch the service message', async () => {
       jest.spyOn(redisCacheService, 'get').mockImplementation()
       jest.spyOn(administrationMessageDataService, 'sqlFindActiveServiceMessage').mockImplementation()

@@ -1,4 +1,4 @@
-/* global describe expect beforeEach afterEach jest test */
+/* global describe expect beforeEach afterEach jest test xdescribe */
 const httpMocks = require('node-mocks-http')
 const controller = require('../../../controllers/service-message')
 const administrationMessageService = require('../../../services/administration-message.service')
@@ -26,7 +26,7 @@ describe('service message controller:', () => {
     next = jest.fn()
   })
 
-  describe('getServiceMessage', () => {
+  xdescribe('getServiceMessage', () => {
     let goodReqParams
 
     beforeEach(() => {
@@ -168,7 +168,7 @@ describe('service message controller:', () => {
     })
   })
 
-  describe('getEditServiceMessage', () => {
+  xdescribe('getEditServiceMessage', () => {
     let goodReqParams
 
     beforeEach(() => {

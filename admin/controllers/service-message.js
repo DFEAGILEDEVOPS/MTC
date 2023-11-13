@@ -116,7 +116,7 @@ const controller = {
         res.redirect('/service-message/')
         return
       }
-
+      const areaCodes = await ServiceMessageCodesService.getAreaCodes()
       req.breadcrumbs('Manage service message', '/service-message')
       res.locals.pageTitle = 'Edit service message'
       req.breadcrumbs(res.locals.pageTitle)

@@ -1,14 +1,14 @@
-<% if (serviceMessages && Array.isArray(serviceMessages) && serviceMessages.length > 0) {
-   <% for (let serviceMessage of serviceMessages) { %>
-      let borderColour = 'mtc-notification-banner-blue'
-      if (serviceMessage.borderColourCode === 'G') {
-          borderColour = 'mtc-notification-banner-green'
-      } else if (serviceMessage.borderColourCode === 'R') {
-          borderColour = 'mtc-notification-banner-red'
-      } else if (serviceMessage.borderColourCode === 'O') {
-          borderColour = 'mtc-notification-banner-orange'
-      }
-      %>
+<% if (serviceMessages && Array.isArray(serviceMessages) && serviceMessages.length > 0) { %>
+   <% for (let serviceMessage of serviceMessages) {
+        let borderColour = 'mtc-notification-banner-blue'
+        if (serviceMessage.borderColourCode === 'G') {
+            borderColour = 'mtc-notification-banner-green'
+        } else if (serviceMessage.borderColourCode === 'R') {
+            borderColour = 'mtc-notification-banner-red'
+        } else if (serviceMessage.borderColourCode === 'O') {
+            borderColour = 'mtc-notification-banner-orange'
+        }
+    %>
 
       <div class="<%= borderColour %>" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
         <div class="govuk-notification-banner__header">

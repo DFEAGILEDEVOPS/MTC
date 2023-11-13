@@ -36,7 +36,8 @@ controller.getSchoolLandingPage = async function getSchoolLandingPage (req, res,
       restartPupilSlot: content.restartPupilSlot,
       hdfSlot: content.hdfSlot,
       resultsSlot: content.resultsSlot,
-      pupilStatusSlot: content.pupilStatusSlot
+      pupilStatusSlot: content.pupilStatusSlot,
+      serviceMessages: res.locals.serviceMessages // created from app.js middleware
     })
   } catch (error) {
     return next(error)

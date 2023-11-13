@@ -83,7 +83,6 @@ administrationMessageDataService.sqlDeleteServiceMessage = async () => {
  * @return {Promise<{ title: string, message: string, urlSlug: srtring, borderColourCode: string, areaCodes: string[], areaDescriptions: string[], createdAt: moment.Moment, updatedAt: moment.Moment }>}
  */
 administrationMessageDataService.sqlFindServiceMessages = async () => {
-  console.log('sqlFindServiceMessages() called')
   const sql = `
   SELECT
     sm.id,
@@ -124,7 +123,6 @@ administrationMessageDataService.sqlFindServiceMessages = async () => {
       urlSlug: o.urlSlug
     }
   })
-  console.log('sqlFindServiceMessages returning', results)
   return results
 }
 
