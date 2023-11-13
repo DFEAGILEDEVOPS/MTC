@@ -1,6 +1,5 @@
 const moment = require('moment-timezone')
 
-const administrationMessageService = require('../administration-message.service')
 const checkWindowV2Service = require('../check-window-v2.service')
 const config = require('../../config')
 const ejsUtil = require('../../lib/ejs-util')

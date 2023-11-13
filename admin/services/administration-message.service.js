@@ -56,13 +56,13 @@ administrationMessageService.getFilteredMessagesForRequest = async function getF
     const messages = await administrationMessageService.getMessages()
     const allAreaCodes = await ServiceMessageCodesService.getAreaCodes()
     const filteredMessages = []
-    for (let msg of messages) {
+    for (const msg of messages) {
       if (msg.areaCodes.length === allAreaCodes.length) {
         // This message applies to all sections. Let everyone see it.
         filteredMessages.push(msg)
       } else {
         // check each area against the current path to see if it should be shown.
-        for (let areaCode of msg.areaCodes) {
+        for (const areaCode of msg.areaCodes) {
           console.log(`Testing areacode ${areaCode} for msg ${msg.title}`)
           switch (true) {
             case accessArrangementsPathRe.test(path):
