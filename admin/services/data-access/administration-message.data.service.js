@@ -83,7 +83,7 @@ administrationMessageDataService.sqlDeleteServiceMessage = async (slug) => {
     DELETE FROM [mtc_admin].serviceMessage WHERE id = @id;
   `
   console.log('DROP SQL ', sql)
-  const params = [ { name: 'slug', value: slug, type: TYPES.UniqueIdentifier }]
+  const params = [{ name: 'slug', value: slug, type: TYPES.UniqueIdentifier }]
   await sqlService.modifyWithTransaction(sql, params)
 }
 

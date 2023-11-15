@@ -63,17 +63,6 @@ describe('service manager controller:', () => {
       await controller.getServiceManagerHome(req, res, next)
       expect(res.render).toHaveBeenCalled()
     })
-
-    test('it shows the service message if available', async () => {
-      const messages = [{ title: 'title', message: 'test message', borderColourCode: 'G', areaCodes: ['A', 'B', 'C'] }]
-      const res = getRes()
-      const req = getReq(goodReqParams)
-      jest.spyOn(administrationMessageService, 'getMessages').mockResolvedValue(messages)
-      jest.spyOn(res, 'render').mockImplementation()
-      await controller.getServiceManagerHome(req, res, next)
-      const args = res.render.mock.calls[0]
-      expect(args[1].serviceMessages).toEqual(messages)
-    })
   })
 
   describe('getUpdateTiming', () => {

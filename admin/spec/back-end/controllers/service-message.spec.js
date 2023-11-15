@@ -147,6 +147,9 @@ describe('service message controller:', () => {
         url: '/service-message/remove-service-message',
         user: {
           id: 1
+        },
+        params: {
+          slug: '8519fd9f-e7e6-482f-b5cd-9e7690e48251'
         }
       }
     })

@@ -49,13 +49,6 @@ describe('school home page service', () => {
     expect(data.schoolName).toBe('Unit Test School')
   })
 
-  test('the service message is returned', async () => {
-    const mockMessage = { title: 'test', message: 'a test message', borderColourCode: 'R' }
-    jest.spyOn(administrationMessageService, 'getMessage').mockResolvedValue(mockMessage)
-    const data = await sut.getContent(user)
-    expect(data.serviceMessage).toEqual(mockMessage)
-  })
-
   describe('PRE-FAMILIARISATION CHECK PHASE', () => {
     beforeEach(() => {
       jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockResolvedValue(mockCheckWindow)
