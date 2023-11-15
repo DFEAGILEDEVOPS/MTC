@@ -71,11 +71,20 @@ administrationMessageDataService.sqlCreateOrUpdate = async (data) => {
 
 /**
  * Delete the service message (single) row.
+ * @param string slug
  * @returns {Promise.<void>}
  */
-administrationMessageDataService.sqlDeleteServiceMessage = async () => {
-  const sql = 'DELETE FROM [mtc_admin].serviceMessage'
-  await sqlService.modify(sql)
+administrationMessageDataService.sqlDeleteServiceMessage = async (slug) => {
+  const sql = `
+    DECLARE @id INT = (SELECT id FROM [mtc_admin].serviceMessage WHERE urlSlug = @slug);
+    IF @id IS NULL
+      THROW 51049, 'ERROR 51049: Unable to find id of service message', 1;
+    DELETE FROM [mtc_admin].serviceMessageServiceMessageArea WHERE serviceMessageId = @id;
+    DELETE FROM [mtc_admin].serviceMessage WHERE id = @id;
+  `
+  console.log('DROP SQL ', sql)
+  const params = [ { name: 'slug', value: slug, type: TYPES.UniqueIdentifier }]
+  await sqlService.modifyWithTransaction(sql, params)
 }
 
 /**
@@ -124,6 +133,60 @@ administrationMessageDataService.sqlFindServiceMessages = async () => {
     }
   })
   return results
+}
+
+/**
+ * Fetch active service message
+ * @return {Promise<{ title: string, message: string, urlSlug: srtring, borderColourCode: string, areaCodes: string[], areaDescriptions: string[], createdAt: moment.Moment, updatedAt: moment.Moment }>}
+ */
+administrationMessageDataService.sqlFindServiceMessageBySlug = async (slug) => {
+  const sql = `
+  SELECT
+    sm.id,
+    sm.createdAt,
+    sm.updatedAt,
+    sm.title,
+    sm.message,
+    sm.urlSlug,
+    bcl.code as borderColourCode,
+    bcl.description as borderColourCodeDescription,
+    STRING_AGG(area.code, ',') AS areaCodes,
+    STRING_AGG(area.description, ',') AS areaDescriptions
+  FROM
+    mtc_admin.serviceMessage sm
+    JOIN mtc_admin.serviceMessageBorderColourLookup bcl ON (sm.borderColourLookupId = bcl.id)
+    JOIN mtc_admin.serviceMessageServiceMessageArea map ON (map.serviceMessageId = sm.id)
+    JOIN mtc_admin.serviceMessageAreaLookup area ON (map.serviceMessageAreaLookupId = area.id)
+  GROUP BY
+    sm.id,
+    sm.createdAt,
+    sm.updatedAt,
+    sm.title,
+    sm.message,
+    bcl.code,
+    bcl.description,
+    sm.urlSlug
+  HAVING
+    sm.urlSlug = @slug
+  `
+  const params = [
+    { name: 'slug', value: slug, type: TYPES.UniqueIdentifier }
+  ]
+
+  const data = await sqlService.readonlyQuery(sql, params)
+  const results = data.map(o => {
+    return {
+      title: o.title,
+      message: o.message,
+      createdAt: o.createdAt,
+      updatedAt: o.updatedAt,
+      borderColourCode: o.borderColourCode,
+      areaCodes: R.split(',', o.areaCodes),
+      areaDescriptions: R.split(',', o.areaDescriptions),
+      urlSlug: o.urlSlug
+    }
+  })
+  return R.head(results)
 }
 
 module.exports = administrationMessageDataService

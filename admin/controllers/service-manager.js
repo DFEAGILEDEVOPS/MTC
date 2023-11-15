@@ -2,7 +2,6 @@
 
 const settingsErrorMessages = require('../lib/errors/settings')
 const settingsValidator = require('../lib/validator/settings-validator')
-
 const settingService = require('../services/setting.service')
 const pupilCensusService = require('../services/pupil-census.service')
 const sceService = require('../services/sce.service')
@@ -662,12 +661,12 @@ const controller = {
   },
 
   /**
- * @description Renders pupil search
- * @param {object} req
- * @param {object} res
- * @param {object} next
- * @param {object} validationError
- */
+   * @description Renders pupil search
+   * @param {object} req
+   * @param {object} res
+   * @param {object} next
+   * @param {object} validationError
+   */
   getPupilSearch: async function getPupilSearch (req, res, next, validationError = new ValidationError()) {
     res.locals.pageTitle = 'Pupil Search'
     req.breadcrumbs(res.locals.pageTitle)
@@ -686,11 +685,11 @@ const controller = {
   },
 
   /**
- * @description Renders pupil search
- * @param {object} req
- * @param {object} res
- * @param {object} next
- */
+   * @description Renders pupil search
+   * @param {object} req
+   * @param {object} res
+   * @param {object} next
+   */
   postPupilSearch: async function postPupilSearch (req, res, next) {
     const pupilSearchErrorHandler = (req, res, next, errorMsg = 'No pupil found') => {
       const error = new ValidationError()

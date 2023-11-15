@@ -5,6 +5,7 @@ const administrationMessageService = require('../services/administration-message
 const ValidationError = require('../lib/validation-error')
 const serviceMessagePresenter = require('../helpers/service-message-presenter')
 const logger = require('../services/log.service').getLogger()
+const uuidValidator = require('../lib/validator/common/uuid-validator')
 
 const controller = {
   /**
@@ -94,7 +95,14 @@ const controller = {
    */
   postRemoveServiceMessage: async function postRemoveServiceMessage (req, res, next) {
     try {
-      await administrationMessageService.dropMessage(req.user.id)
+      const slug = req.params.slug
+      const validationError = uuidValidator.validate(slug, 'slug')
+      if (validationError && validationError.hasError && validationError.hasError()) {
+        req.flash('info', validationError.get('slug'))
+        res.redirect('/service-message/')
+        return
+      }
+      await administrationMessageService.dropMessage(req.user.id, slug)
       req.flash('info', 'Service message has successfully been removed')
       return res.redirect('/service-message')
     } catch (error) {
@@ -110,7 +118,14 @@ const controller = {
    */
   getEditServiceMessage: async function getEditServiceMessage (req, res, next, err = new ValidationError()) {
     try {
-      const serviceMessageMarkdown = await administrationMessageService.fetchMessage()
+      const slug = req.params.slug
+      const validationError = uuidValidator.validate(slug, 'slug')
+      if (validationError && validationError.hasError && validationError.hasError()) {
+        req.flash('info', validationError.get('slug'))
+        res.redirect('/service-message/')
+        return
+      }
+      const serviceMessageMarkdown = await administrationMessageService.fetchMessageBySlug(slug)
       if (serviceMessageMarkdown === undefined) {
         req.flash('info', 'No service message to edit')
         res.redirect('/service-message/')

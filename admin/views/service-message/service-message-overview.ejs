@@ -22,7 +22,7 @@
                 Create service message
             </a>
             <% } %>
-            <%if (serviceMessages) { %>
+            <%if (serviceMessages.length > 0) { %>
                 <table id="submitted-service-message" class="govuk-table govuk-spacious govuk-!-margin-bottom-9">
                     <caption class="govuk-body govuk-table__caption">Service Message</caption>
                     <thead class="govuk-table__head">
@@ -42,10 +42,10 @@
                                 </div>
                             </td>
                             <td>
-                                <a href="/service-message/edit/<%= msg.urlSlug %>">Edit</a>
+                                <a href="/service-message/edit/<%= msg.urlSlug.toLowerCase() %>">Edit</a>
                             </td>
                             <td>
-                                <form action="/service-message/remove/<%= msg.urlSlug %>" id="js-modal-form" method="post" autocomplete="off">
+                                <form action="/service-message/remove/<%= msg.urlSlug.toLowerCase() %>" id="js-modal-form" method="post" autocomplete="off">
                                     <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
                                     <button class="govuk-button-as-link no-underline govuk-!-font-size-16 modal-link" id="js-modal-link" type="submit">Remove</button>
                                 </form>

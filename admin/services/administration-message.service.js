@@ -106,7 +106,15 @@ administrationMessageService.getMessages = async () => {
   rawMessages.forEach(msg => {
     msg.cleanMessage = sanitiseService.sanitise(msg.uncleanHtml)
   })
-  const result = rawMessages.map(o => { return { title: o.title, message: o.cleanMessage, borderColourCode: o.borderColourCode, areaCodes: o.areaCodes } })
+  const result = rawMessages.map(o => {
+    return {
+      title: o.title,
+      message: o.cleanMessage,
+      borderColourCode: o.borderColourCode,
+      areaCodes: o.areaCodes,
+      urlSlug: o.urlSlug
+    }
+  })
   console.log('getMessages returning: ', result)
   return result
 }
@@ -128,6 +136,22 @@ administrationMessageService.fetchMessages = async function fetchServiceMessage 
   //   console.log('redis cache miss for service messages')
   // }
   return administrationMessageDataService.sqlFindServiceMessages()
+}
+
+administrationMessageService.fetchMessageBySlug = async function fetchMessageBySlug (slug) {
+  console.log('fetchMessageBySlug called()')
+  // let cachedServiceMessages
+  // const result = await redisCacheService.get(serviceMessageRedisKey)
+  // try {
+  //   cachedServiceMessages = JSON.parse(result)
+  //   if (cachedServiceMessages) {
+  //     return cachedServiceMessages
+  //   }
+  // } catch (ignore) {
+  //   console.log('redis cache miss for service messages')
+  // }
+
+  return administrationMessageDataService.sqlFindServiceMessageBySlug(slug)
 }
 
 /**
@@ -200,11 +224,11 @@ administrationMessageService.prepareSubmissionData = (data, userId) => {
  * Drops the service message
  * @returns {Promise<*>}
  */
-administrationMessageService.dropMessage = async (userId) => {
+administrationMessageService.dropMessage = async (userId, slug) => {
   if (!userId) {
     throw new Error('User id not found in session')
   }
-  await administrationMessageDataService.sqlDeleteServiceMessage()
+  await administrationMessageDataService.sqlDeleteServiceMessage(slug)
   return redisCacheService.drop(serviceMessageRedisKey)
 }
 
