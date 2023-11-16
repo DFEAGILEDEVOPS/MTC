@@ -15,6 +15,7 @@ const serviceMessageRedisKey = redisKeyService.getServiceMessageKey()
 
 const accessArrangementsPathRe = /^\/access-arrangements\/.*/
 const hdfPathRe = /^\/attendance\/.*/
+const nonSittingCodesPathRe = /^\/pupils-not-taking-the-check\/.*/
 
 /**
  * @typedef serviceMessage
@@ -73,6 +74,10 @@ administrationMessageService.getFilteredMessagesForRequest = async function getF
             case hdfPathRe.test(path):
               console.log(`Checking ${areaCode} against ${path} for 'H'`)
               if (areaCode === 'H') filteredMessages.push(msg)
+              break
+
+            case nonSittingCodesPathRe.test(path):
+              if (areaCode === 'N') filteredMessages.push(msg)
               break
           }
         }
