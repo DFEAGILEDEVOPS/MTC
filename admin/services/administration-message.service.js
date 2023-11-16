@@ -19,6 +19,7 @@ const nonSittingCodesPathRe = /^\/pupils-not-taking-the-check\/.*/
 const pinGenPathRe = /^\/pupil-pin\/.*/
 const pupilGroupPathRe = /^\/group\/.*/
 const pupilStatusPathRe =  /^\/pupil-status$/
+const restartPathRe = /^\/restart\//
 
 /**
  * @typedef serviceMessage
@@ -91,6 +92,10 @@ administrationMessageService.getFilteredMessagesForRequest = async function getF
 
             case pupilStatusPathRe.test(path):
               if (areaCode === 'S') filteredMessages.push(msg)
+              break
+
+            case restartPathRe.test(path):
+              if (areaCode === 'R') filteredMessages.push(msg)
               break
           }
         }
