@@ -18,6 +18,7 @@ const hdfPathRe = /^\/attendance\/.*/
 const nonSittingCodesPathRe = /^\/pupils-not-taking-the-check\/.*/
 const pinGenPathRe = /^\/pupil-pin\/.*/
 const pupilGroupPathRe = /^\/group\/.*/
+const pupilStatusPathRe =  /^\/pupil-status$/
 
 /**
  * @typedef serviceMessage
@@ -86,6 +87,10 @@ administrationMessageService.getFilteredMessagesForRequest = async function getF
 
             case pupilGroupPathRe.test(path):
               if (areaCode === 'G') filteredMessages.push(msg)
+              break
+
+            case pupilStatusPathRe.test(path):
+              if (areaCode === 'S') filteredMessages.push(msg)
               break
           }
         }

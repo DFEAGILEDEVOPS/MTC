@@ -2,6 +2,7 @@
 <main class="govuk-main-wrapper" id="main-content" role="main">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
+            <%- partial('partials/_service_message', { serviceMessages }) %>
             <% if (pupilStatusViewData.pupilsWithErrorsCount > 0) { %>
                 <div class="govuk-body govuk-warning-message govuk-!-margin-bottom-7">
                     <%= pupilStatusViewData.pupilsWithErrorsCount %> <%= pupilStatusViewData.pupilsWithErrorsCount > 1 ? 'Checks' : 'Check' %>
