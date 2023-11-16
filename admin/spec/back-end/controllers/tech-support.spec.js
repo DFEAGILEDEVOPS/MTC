@@ -7,8 +7,9 @@ const payloadService = require('../../../services/payload.service')
 const administrationMessageService = require('../../../services/administration-message.service')
 const queueMgmtService = require('../../../services/tech-support-queue-management.service')
 const resultsResyncService = require('../../../services/tech-support/sync-results-resync.service')
-const { PsReportLogsDownloadService } = require('../../../services/tech-support/ps-report-logs.service/ps-report-logs.service')
+const { PsReportLogsDownloadService } = require('../../../services/tech-support/ps-report-logs/ps-report-logs.service')
 const { PsReportExecService } = require('../../../services/tech-support/ps-report-exec/ps-report-exec.service')
+const { CheckSubmitService } = require('../../../services/tech-support/check-submit/check-submit.service')
 
 let sut
 let next
@@ -341,6 +342,40 @@ describe('tech-support controller', () => {
       expect(res.render).toHaveBeenCalled()
       expect(next).not.toHaveBeenCalled()
       expect(PsReportExecService.requestReportGeneration).toHaveBeenCalledWith(userId)
+    })
+  })
+
+  describe('/check-submit', () => {
+    test('GET: should render page', async () => {
+      const reqParams = getReqParams('/tech-support/check-submit', 'GET')
+      const req = getRequest(reqParams)
+      const res = getResponse()
+      jest.spyOn(res, 'render').mockImplementation()
+      await sut.getCheckSubmit(req, res, next)
+      expect(res.statusCode).toBe(200)
+      expect(res.render).toHaveBeenCalled()
+      expect(next).not.toHaveBeenCalled()
+    })
+
+    test('POST: should submit check to service', async () => {
+      const reqParams = getReqParams('/tech-support/check-submit', 'POST')
+      const req = getRequest(reqParams)
+      req.body = {
+        payload: 'sfsdfkdsf',
+        isJson: true
+      }
+      const res = getResponse()
+      jest.spyOn(CheckSubmitService, 'submitV3CheckPayload').mockImplementation()
+      let response
+      jest.spyOn(res, 'render').mockImplementation((view, data) => {
+        response = data.response
+      })
+      await sut.postCheckSubmit(req, res, next)
+      expect(response).toEqual('check submitted to service bus successfully')
+      expect(res.statusCode).toBe(200)
+      expect(res.render).toHaveBeenCalled()
+      expect(next).not.toHaveBeenCalled()
+      expect(CheckSubmitService.submitV3CheckPayload).toHaveBeenCalledWith(req.body.isJson, req.body.payload)
     })
   })
 })

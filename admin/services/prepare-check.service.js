@@ -10,7 +10,7 @@ const prepareCheckDataService = require('./data-access/prepare-check.data.servic
 const redisCacheService = require('./data-access/redis-cache.service')
 const redisKeyService = require('./redis-key.service')
 const redisService = require('./data-access/redis-cache.service')
-const { PupilFrozenService } = require('./pupil-frozen.service/pupil-frozen.service')
+const { PupilFrozenService } = require('./pupil-frozen/pupil-frozen.service')
 
 /**
  * Unprepared Check

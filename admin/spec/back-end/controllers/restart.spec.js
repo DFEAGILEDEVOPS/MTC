@@ -14,7 +14,7 @@ const ValidationError = require('../../../lib/validation-error')
 const pupilMock = require('../mocks/pupil')
 const pupilsMock = require('../mocks/pupils')
 const pupilService = require('../../../services/pupil.service')
-const { DiscretionaryRestartService } = require('../../../services/discretionary-restart.service/discretionary-restart.service')
+const { DiscretionaryRestartService } = require('../../../services/discretionary-restart/discretionary-restart.service')
 
 describe('restart controller:', () => {
   function getRes () {

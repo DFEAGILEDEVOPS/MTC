@@ -42,7 +42,7 @@ describe('received-check-payload.service', () => {
     })
 
     test('returns array containing json message with expected properties when found', async () => {
-      const mockArchive = compressionService.compress(JSON.stringify(mockCompleteCheck))
+      const mockArchive = compressionService.compressToUTF16(JSON.stringify(mockCompleteCheck))
       jest.spyOn(dataServiceMock, 'fetchCompressedArchives').mockResolvedValue([mockArchive])
       const checkCodes = [mockCompleteCheck.checkCode]
       const schoolUUID: string = mockCompleteCheck.schoolUUID

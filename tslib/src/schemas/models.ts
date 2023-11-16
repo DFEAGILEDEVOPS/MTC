@@ -1,4 +1,4 @@
-export interface SubmittedCheckMessageV2 {
+export interface SubmittedCheckMessage {
   version: number
   checkCode: string
   schoolUUID: string

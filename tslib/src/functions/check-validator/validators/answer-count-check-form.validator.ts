@@ -1,6 +1,4 @@
 import * as R from 'ramda'
-
-import config from '../../../config'
 import { type Answer } from '../../check-marker/models' // pulling in from a different service
 import { type IAsyncSubmittedCheckValidator, type CheckValidationResult } from './validator-types'
 import { CheckFormService, type ICheckFormService } from '../../../services/check-form.service'
@@ -33,19 +31,7 @@ export class AnswerCountCheckFormValidator implements IAsyncSubmittedCheckValida
 
   async validate (check: any): Promise<CheckValidationResult> {
     const answers = check?.answers
-    if (answers === null || answers === undefined || !Array.isArray(answers)) {
-      return {
-        message: 'no answers property found'
-      }
-    }
-
     const checkCode = check?.checkCode
-    if (checkCode === undefined) {
-      return {
-        message: 'checkCode is missing'
-      }
-    }
-
     const checkForm = await this.checkFormService.getCheckFormForCheckCode(checkCode)
 
     if (checkForm === undefined) {
@@ -60,7 +46,7 @@ export class AnswerCountCheckFormValidator implements IAsyncSubmittedCheckValida
 
     // there should be an answer for every item in the checkForm
     // Initialise an array of 25 items to 0
-    const foundAnswers = Array(config.LiveFormQuestionCount).fill(0)
+    const foundAnswers = Array(this.checkFormService.getLiveFormQuestionCount()).fill(0)
 
     // Loop through each Question (from the db) and check there is an answer
     // There must be answer, even if the question timed out with any input from the pupil.
@@ -79,7 +65,7 @@ export class AnswerCountCheckFormValidator implements IAsyncSubmittedCheckValida
 
     if (answerCount < checkForm.length) {
       return {
-        message: `submitted check has ${answerCount} answers`
+        message: `submitted check has ${answerCount} answers. ${checkForm.length} answers are required`
       }
     }
   }

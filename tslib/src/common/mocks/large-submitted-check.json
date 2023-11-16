@@ -1,0 +1,3236 @@
+{
+  "checkCode": "1134d050-3830-48b6-b888-82429bbaa962",
+  "schoolUUID": "1134d050-3830-48b6-b888-82429bbaa962",
+  "buildVersion": "dev-build-111111111.2",
+  "config": {
+      "audibleSounds": false,
+      "checkTime": 30,
+      "colourContrast": false,
+      "fontSize": false,
+      "inputAssistance": false,
+      "loadingTime": 3,
+      "nextBetweenQuestions": false,
+      "numpadRemoval": false,
+      "practice": false,
+      "questionReader": false,
+      "questionTime": 6,
+      "compressCompletedCheck": true
+  },
+  "device": {
+      "navigator": {
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.1 Safari/605.1.15",
+          "platform": "LinuxMint",
+          "language": "en-gb",
+          "cookieEnabled": true
+      },
+      "screen": {
+          "screenWidth": 810,
+          "screenHeight": 1080,
+          "outerWidth": 1080,
+          "outerHeight": 707,
+          "innerWidth": 1080,
+          "innerHeight": 707,
+          "colorDepth": 32
+      },
+      "deviceId": "",
+      "appUsageCounter": 1
+  },
+  "pupil": {
+      "checkCode": "1134d050-3830-48b6-b888-82429bbaa962"
+  },
+  "questions": [
+      {
+          "order": 1,
+          "factor1": 7,
+          "factor2": 2
+      },
+      {
+          "order": 2,
+          "factor1": 4,
+          "factor2": 3
+      },
+      {
+          "order": 3,
+          "factor1": 12,
+          "factor2": 5
+      },
+      {
+          "order": 4,
+          "factor1": 6,
+          "factor2": 9
+      },
+      {
+          "order": 5,
+          "factor1": 8,
+          "factor2": 12
+      },
+      {
+          "order": 6,
+          "factor1": 9,
+          "factor2": 5
+      },
+      {
+          "order": 7,
+          "factor1": 2,
+          "factor2": 4
+      },
+      {
+          "order": 8,
+          "factor1": 3,
+          "factor2": 7
+      },
+      {
+          "order": 9,
+          "factor1": 8,
+          "factor2": 5
+      },
+      {
+          "order": 10,
+          "factor1": 12,
+          "factor2": 4
+      },
+      {
+          "order": 11,
+          "factor1": 5,
+          "factor2": 11
+      },
+      {
+          "order": 12,
+          "factor1": 4,
+          "factor2": 8
+      },
+      {
+          "order": 13,
+          "factor1": 7,
+          "factor2": 10
+      },
+      {
+          "order": 14,
+          "factor1": 9,
+          "factor2": 12
+      },
+      {
+          "order": 15,
+          "factor1": 5,
+          "factor2": 6
+      },
+      {
+          "order": 16,
+          "factor1": 10,
+          "factor2": 9
+      },
+      {
+          "order": 17,
+          "factor1": 11,
+          "factor2": 12
+      },
+      {
+          "order": 18,
+          "factor1": 5,
+          "factor2": 2
+      },
+      {
+          "order": 19,
+          "factor1": 8,
+          "factor2": 11
+      },
+      {
+          "order": 20,
+          "factor1": 4,
+          "factor2": 9
+      },
+      {
+          "order": 21,
+          "factor1": 6,
+          "factor2": 8
+      },
+      {
+          "order": 22,
+          "factor1": 10,
+          "factor2": 5
+      },
+      {
+          "order": 23,
+          "factor1": 2,
+          "factor2": 11
+      },
+      {
+          "order": 24,
+          "factor1": 9,
+          "factor2": 9
+      },
+      {
+          "order": 25,
+          "factor1": 8,
+          "factor2": 3
+      }
+  ],
+  "school": {
+      "name": "A Primary School",
+      "uuid": "1134d050-3830-48b6-b888-82429bbaa962"
+  },
+  "tokens": {
+      "checkStarted": {
+          "token": "sv=1134d050-3830-48b6-b888-82429bbaa9621134d050-3830-48b6-b888-82429bbaa962&sig=1134d050-3830-48b6-b888-82429bbaa962",
+          "url": "https://my.queue.core.windows.net/check-started",
+          "queueName": "check-started"
+      },
+      "pupilPreferences": {
+          "token": "sv=1134d050-3830-48b6-b888-82429bbaa9621134d050-3830-48b6-b888-82429bbaa962&sig=1134d050-3830-48b6-b888-82429bbaa962%3D",
+          "url": "https://my.queue.core.windows.net/pupil-prefs",
+          "queueName": "pupil-prefs"
+      },
+      "pupilFeedback": {
+          "token": "sv=1134d050-3830-48b6-b888-82429bbaa9621134d050-3830-48b6-b888-82429bbaa962&sig=1134d050-3830-48b6-b888-82429bbaa962%3D",
+          "url": "https://my.queue.core.windows.net/pupil-feedback",
+          "queueName": "pupil-feedback"
+      },
+      "jwt": {
+          "token": "token-disabled"
+      },
+      "checkComplete": {
+          "token": "sv=1134d050-3830-48b6-b888-82429bbaa9621134d050-3830-48b6-b888-82429bbaa962&sig=1134d050-3830-48b6-b888-82429bbaa962%3D",
+          "url": "https://my.queue.core.windows.net/check-submitted",
+          "queueName": "check-submitted"
+      }
+  },
+  "audit": [
+      {
+          "type": "WarmupStarted",
+          "clientTimestamp": "2023-06-05T08:31:39.596Z",
+          "data": {
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:31:39.596Z",
+                  "sequenceNumber": 254
+              }
+          },
+          "relativeTiming": "+0.00"
+      },
+      {
+          "type": "WarmupIntroRendered",
+          "clientTimestamp": "2023-06-05T08:31:39.622Z",
+          "data": {
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:31:39.622Z",
+                  "sequenceNumber": 255
+              }
+          },
+          "relativeTiming": "+0.026"
+      },
+      {
+          "type": "PauseRendered",
+          "clientTimestamp": "2023-06-05T08:31:40.826Z",
+          "data": {
+              "sequenceNumber": 1,
+              "question": "1x12",
+              "isWarmup": true,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:31:40.826Z",
+                  "sequenceNumber": 256
+              }
+          },
+          "relativeTiming": "+1.204"
+      },
+      {
+          "type": "QuestionRendered",
+          "clientTimestamp": "2023-06-05T08:31:43.844Z",
+          "data": {
+              "sequenceNumber": 1,
+              "question": "1x12",
+              "isWarmup": true,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:31:43.844Z",
+                  "sequenceNumber": 257
+              }
+          },
+          "relativeTiming": "+3.018"
+      },
+      {
+          "type": "QuestionTimerStarted",
+          "clientTimestamp": "2023-06-05T08:31:43.845Z",
+          "data": {
+              "sequenceNumber": 1,
+              "question": "1x12",
+              "isWarmup": true,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:31:43.845Z",
+                  "sequenceNumber": 258
+              }
+          },
+          "relativeTiming": "+0.001"
+      },
+      {
+          "type": "QuestionTimerCancelled",
+          "clientTimestamp": "2023-06-05T08:31:46.387Z",
+          "data": {
+              "sequenceNumber": 1,
+              "question": "1x12",
+              "isWarmup": true,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:31:46.387Z",
+                  "sequenceNumber": 259
+              }
+          },
+          "relativeTiming": "+2.542"
+      },
+      {
+          "type": "QuestionAnswered",
+          "clientTimestamp": "2023-06-05T08:31:46.387Z",
+          "data": {
+              "sequenceNumber": 1,
+              "question": "1x12",
+              "isWarmup": true,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:31:46.387Z",
+                  "sequenceNumber": 260
+              }
+          },
+          "relativeTiming": "+0"
+      },
+      {
+          "type": "PauseRendered",
+          "clientTimestamp": "2023-06-05T08:31:46.393Z",
+          "data": {
+              "sequenceNumber": 2,
+              "question": "2x2",
+              "isWarmup": true,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:31:46.393Z",
+                  "sequenceNumber": 261
+              }
+          },
+          "relativeTiming": "+0.006"
+      },
+      {
+          "type": "QuestionRendered",
+          "clientTimestamp": "2023-06-05T08:31:49.410Z",
+          "data": {
+              "sequenceNumber": 2,
+              "question": "2x2",
+              "isWarmup": true,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:31:49.410Z",
+                  "sequenceNumber": 262
+              }
+          },
+          "relativeTiming": "+3.017"
+      },
+      {
+          "type": "QuestionTimerStarted",
+          "clientTimestamp": "2023-06-05T08:31:49.411Z",
+          "data": {
+              "sequenceNumber": 2,
+              "question": "2x2",
+              "isWarmup": true,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:31:49.411Z",
+                  "sequenceNumber": 263
+              }
+          },
+          "relativeTiming": "+0.001"
+      },
+      {
+          "type": "QuestionTimerCancelled",
+          "clientTimestamp": "2023-06-05T08:31:51.563Z",
+          "data": {
+              "sequenceNumber": 2,
+              "question": "2x2",
+              "isWarmup": true,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:31:51.563Z",
+                  "sequenceNumber": 264
+              }
+          },
+          "relativeTiming": "+2.152"
+      },
+      {
+          "type": "QuestionAnswered",
+          "clientTimestamp": "2023-06-05T08:31:51.564Z",
+          "data": {
+              "sequenceNumber": 2,
+              "question": "2x2",
+              "isWarmup": true,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:31:51.564Z",
+                  "sequenceNumber": 265
+              }
+          },
+          "relativeTiming": "+0.001"
+      },
+      {
+          "type": "PauseRendered",
+          "clientTimestamp": "2023-06-05T08:31:51.569Z",
+          "data": {
+              "sequenceNumber": 3,
+              "question": "10x10",
+              "isWarmup": true,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:31:51.569Z",
+                  "sequenceNumber": 266
+              }
+          },
+          "relativeTiming": "+0.005"
+      },
+      {
+          "type": "QuestionRendered",
+          "clientTimestamp": "2023-06-05T08:31:54.582Z",
+          "data": {
+              "sequenceNumber": 3,
+              "question": "10x10",
+              "isWarmup": true,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:31:54.582Z",
+                  "sequenceNumber": 267
+              }
+          },
+          "relativeTiming": "+3.013"
+      },
+      {
+          "type": "QuestionTimerStarted",
+          "clientTimestamp": "2023-06-05T08:31:54.583Z",
+          "data": {
+              "sequenceNumber": 3,
+              "question": "10x10",
+              "isWarmup": true,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:31:54.583Z",
+                  "sequenceNumber": 268
+              }
+          },
+          "relativeTiming": "+0.001"
+      },
+      {
+          "type": "QuestionTimerCancelled",
+          "clientTimestamp": "2023-06-05T08:31:56.757Z",
+          "data": {
+              "sequenceNumber": 3,
+              "question": "10x10",
+              "isWarmup": true,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:31:56.757Z",
+                  "sequenceNumber": 269
+              }
+          },
+          "relativeTiming": "+2.174"
+      },
+      {
+          "type": "QuestionAnswered",
+          "clientTimestamp": "2023-06-05T08:31:56.758Z",
+          "data": {
+              "sequenceNumber": 3,
+              "question": "10x10",
+              "isWarmup": true,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:31:56.758Z",
+                  "sequenceNumber": 270
+              }
+          },
+          "relativeTiming": "+0.001"
+      },
+      {
+          "type": "WarmupCompleteRendered",
+          "clientTimestamp": "2023-06-05T08:31:56.764Z",
+          "data": {
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:31:56.764Z",
+                  "sequenceNumber": 271
+              }
+          },
+          "relativeTiming": "+0.006"
+      },
+      {
+          "type": "QuestionIntroRendered",
+          "clientTimestamp": "2023-06-05T08:32:01.981Z",
+          "data": {
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:32:01.981Z",
+                  "sequenceNumber": 272
+              }
+          },
+          "relativeTiming": "+5.217"
+      },
+      {
+          "type": "CheckStarted",
+          "clientTimestamp": "2023-06-05T08:32:03.165Z",
+          "data": {
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:32:03.165Z",
+                  "sequenceNumber": 273
+              }
+          },
+          "relativeTiming": "+1.184"
+      },
+      {
+          "type": "CheckStartedApiCalled",
+          "clientTimestamp": "2023-06-05T08:32:03.166Z",
+          "data": {
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:32:03.166Z",
+                  "sequenceNumber": 274
+              }
+          },
+          "relativeTiming": "+0.001"
+      },
+      {
+          "type": "PauseRendered",
+          "clientTimestamp": "2023-06-05T08:32:03.178Z",
+          "data": {
+              "sequenceNumber": 1,
+              "question": "7x2",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:32:03.178Z",
+                  "sequenceNumber": 275
+              }
+          },
+          "relativeTiming": "+0.012"
+      },
+      {
+          "type": "CheckStartedAPICallSucceeded",
+          "clientTimestamp": "2023-06-05T08:32:03.416Z",
+          "data": {
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:32:03.416Z",
+                  "sequenceNumber": 276
+              }
+          },
+          "relativeTiming": "+0.238"
+      },
+      {
+          "type": "QuestionRendered",
+          "clientTimestamp": "2023-06-05T08:32:06.192Z",
+          "data": {
+              "sequenceNumber": 1,
+              "question": "7x2",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:32:06.192Z",
+                  "sequenceNumber": 277
+              }
+          },
+          "relativeTiming": "+2.776"
+      },
+      {
+          "type": "QuestionTimerStarted",
+          "clientTimestamp": "2023-06-05T08:32:06.193Z",
+          "data": {
+              "sequenceNumber": 1,
+              "question": "7x2",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:32:06.193Z",
+                  "sequenceNumber": 278
+              }
+          },
+          "relativeTiming": "+0.001"
+      },
+      {
+          "type": "QuestionTimerCancelled",
+          "clientTimestamp": "2023-06-05T08:32:08.685Z",
+          "data": {
+              "sequenceNumber": 1,
+              "question": "7x2",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:32:08.685Z",
+                  "sequenceNumber": 283
+              }
+          },
+          "relativeTiming": "+2.492"
+      },
+      {
+          "type": "QuestionAnswered",
+          "clientTimestamp": "2023-06-05T08:32:08.685Z",
+          "data": {
+              "sequenceNumber": 1,
+              "question": "7x2",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:32:08.685Z",
+                  "sequenceNumber": 284
+              }
+          },
+          "relativeTiming": "+0"
+      },
+      {
+          "type": "PauseRendered",
+          "clientTimestamp": "2023-06-05T08:32:08.690Z",
+          "data": {
+              "sequenceNumber": 2,
+              "question": "4x3",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:32:08.690Z",
+                  "sequenceNumber": 285
+              }
+          },
+          "relativeTiming": "+0.005"
+      },
+      {
+          "type": "QuestionRendered",
+          "clientTimestamp": "2023-06-05T08:32:11.702Z",
+          "data": {
+              "sequenceNumber": 2,
+              "question": "4x3",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:32:11.702Z",
+                  "sequenceNumber": 286
+              }
+          },
+          "relativeTiming": "+3.012"
+      },
+      {
+          "type": "QuestionTimerStarted",
+          "clientTimestamp": "2023-06-05T08:32:11.704Z",
+          "data": {
+              "sequenceNumber": 2,
+              "question": "4x3",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:32:11.704Z",
+                  "sequenceNumber": 287
+              }
+          },
+          "relativeTiming": "+0.002"
+      },
+      {
+          "type": "QuestionTimerCancelled",
+          "clientTimestamp": "2023-06-05T08:32:17.306Z",
+          "data": {
+              "sequenceNumber": 2,
+              "question": "4x3",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:32:17.306Z",
+                  "sequenceNumber": 292
+              }
+          },
+          "relativeTiming": "+5.602"
+      },
+      {
+          "type": "QuestionAnswered",
+          "clientTimestamp": "2023-06-05T08:32:17.306Z",
+          "data": {
+              "sequenceNumber": 2,
+              "question": "4x3",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:32:17.306Z",
+                  "sequenceNumber": 293
+              }
+          },
+          "relativeTiming": "+0"
+      },
+      {
+          "type": "PauseRendered",
+          "clientTimestamp": "2023-06-05T08:32:17.315Z",
+          "data": {
+              "sequenceNumber": 3,
+              "question": "12x5",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:32:17.315Z",
+                  "sequenceNumber": 294
+              }
+          },
+          "relativeTiming": "+0.009"
+      },
+      {
+          "type": "QuestionRendered",
+          "clientTimestamp": "2023-06-05T08:32:20.332Z",
+          "data": {
+              "sequenceNumber": 3,
+              "question": "12x5",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:32:20.332Z",
+                  "sequenceNumber": 295
+              }
+          },
+          "relativeTiming": "+3.017"
+      },
+      {
+          "type": "QuestionTimerStarted",
+          "clientTimestamp": "2023-06-05T08:32:20.333Z",
+          "data": {
+              "sequenceNumber": 3,
+              "question": "12x5",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:32:20.333Z",
+                  "sequenceNumber": 296
+              }
+          },
+          "relativeTiming": "+0.001"
+      },
+      {
+          "type": "QuestionTimerCancelled",
+          "clientTimestamp": "2023-06-05T08:32:24.680Z",
+          "data": {
+              "sequenceNumber": 3,
+              "question": "12x5",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:32:24.680Z",
+                  "sequenceNumber": 301
+              }
+          },
+          "relativeTiming": "+4.347"
+      },
+      {
+          "type": "QuestionAnswered",
+          "clientTimestamp": "2023-06-05T08:32:24.680Z",
+          "data": {
+              "sequenceNumber": 3,
+              "question": "12x5",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:32:24.680Z",
+                  "sequenceNumber": 302
+              }
+          },
+          "relativeTiming": "+0"
+      },
+      {
+          "type": "PauseRendered",
+          "clientTimestamp": "2023-06-05T08:32:24.687Z",
+          "data": {
+              "sequenceNumber": 4,
+              "question": "6x9",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:32:24.687Z",
+                  "sequenceNumber": 303
+              }
+          },
+          "relativeTiming": "+0.007"
+      },
+      {
+          "type": "QuestionRendered",
+          "clientTimestamp": "2023-06-05T08:32:27.701Z",
+          "data": {
+              "sequenceNumber": 4,
+              "question": "6x9",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:32:27.701Z",
+                  "sequenceNumber": 304
+              }
+          },
+          "relativeTiming": "+3.014"
+      },
+      {
+          "type": "QuestionTimerStarted",
+          "clientTimestamp": "2023-06-05T08:32:27.703Z",
+          "data": {
+              "sequenceNumber": 4,
+              "question": "6x9",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:32:27.703Z",
+                  "sequenceNumber": 305
+              }
+          },
+          "relativeTiming": "+0.002"
+      },
+      {
+          "type": "QuestionTimerCancelled",
+          "clientTimestamp": "2023-06-05T08:32:33.285Z",
+          "data": {
+              "sequenceNumber": 4,
+              "question": "6x9",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:32:33.285Z",
+                  "sequenceNumber": 310
+              }
+          },
+          "relativeTiming": "+5.582"
+      },
+      {
+          "type": "QuestionAnswered",
+          "clientTimestamp": "2023-06-05T08:32:33.285Z",
+          "data": {
+              "sequenceNumber": 4,
+              "question": "6x9",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:32:33.285Z",
+                  "sequenceNumber": 311
+              }
+          },
+          "relativeTiming": "+0"
+      },
+      {
+          "type": "PauseRendered",
+          "clientTimestamp": "2023-06-05T08:32:33.290Z",
+          "data": {
+              "sequenceNumber": 5,
+              "question": "8x12",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:32:33.290Z",
+                  "sequenceNumber": 312
+              }
+          },
+          "relativeTiming": "+0.005"
+      },
+      {
+          "type": "QuestionRendered",
+          "clientTimestamp": "2023-06-05T08:32:36.302Z",
+          "data": {
+              "sequenceNumber": 5,
+              "question": "8x12",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:32:36.302Z",
+                  "sequenceNumber": 313
+              }
+          },
+          "relativeTiming": "+3.012"
+      },
+      {
+          "type": "QuestionTimerStarted",
+          "clientTimestamp": "2023-06-05T08:32:36.303Z",
+          "data": {
+              "sequenceNumber": 5,
+              "question": "8x12",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:32:36.303Z",
+                  "sequenceNumber": 314
+              }
+          },
+          "relativeTiming": "+0.001"
+      },
+      {
+          "type": "QuestionTimerEnded",
+          "clientTimestamp": "2023-06-05T08:32:42.310Z",
+          "data": {
+              "sequenceNumber": 5,
+              "question": "8x12",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:32:42.310Z",
+                  "sequenceNumber": 317
+              }
+          },
+          "relativeTiming": "+6.007"
+      },
+      {
+          "type": "PauseRendered",
+          "clientTimestamp": "2023-06-05T08:32:42.317Z",
+          "data": {
+              "sequenceNumber": 6,
+              "question": "9x5",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:32:42.317Z",
+                  "sequenceNumber": 318
+              }
+          },
+          "relativeTiming": "+0.007"
+      },
+      {
+          "type": "QuestionRendered",
+          "clientTimestamp": "2023-06-05T08:32:45.330Z",
+          "data": {
+              "sequenceNumber": 6,
+              "question": "9x5",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:32:45.330Z",
+                  "sequenceNumber": 319
+              }
+          },
+          "relativeTiming": "+3.013"
+      },
+      {
+          "type": "QuestionTimerStarted",
+          "clientTimestamp": "2023-06-05T08:32:45.331Z",
+          "data": {
+              "sequenceNumber": 6,
+              "question": "9x5",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:32:45.331Z",
+                  "sequenceNumber": 320
+              }
+          },
+          "relativeTiming": "+0.001"
+      },
+      {
+          "type": "QuestionTimerCancelled",
+          "clientTimestamp": "2023-06-05T08:32:49.823Z",
+          "data": {
+              "sequenceNumber": 6,
+              "question": "9x5",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:32:49.823Z",
+                  "sequenceNumber": 325
+              }
+          },
+          "relativeTiming": "+4.492"
+      },
+      {
+          "type": "QuestionAnswered",
+          "clientTimestamp": "2023-06-05T08:32:49.823Z",
+          "data": {
+              "sequenceNumber": 6,
+              "question": "9x5",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:32:49.823Z",
+                  "sequenceNumber": 326
+              }
+          },
+          "relativeTiming": "+0"
+      },
+      {
+          "type": "PauseRendered",
+          "clientTimestamp": "2023-06-05T08:32:49.827Z",
+          "data": {
+              "sequenceNumber": 7,
+              "question": "2x4",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:32:49.827Z",
+                  "sequenceNumber": 327
+              }
+          },
+          "relativeTiming": "+0.004"
+      },
+      {
+          "type": "QuestionRendered",
+          "clientTimestamp": "2023-06-05T08:32:52.840Z",
+          "data": {
+              "sequenceNumber": 7,
+              "question": "2x4",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:32:52.840Z",
+                  "sequenceNumber": 328
+              }
+          },
+          "relativeTiming": "+3.013"
+      },
+      {
+          "type": "QuestionTimerStarted",
+          "clientTimestamp": "2023-06-05T08:32:52.841Z",
+          "data": {
+              "sequenceNumber": 7,
+              "question": "2x4",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:32:52.841Z",
+                  "sequenceNumber": 329
+              }
+          },
+          "relativeTiming": "+0.001"
+      },
+      {
+          "type": "QuestionTimerCancelled",
+          "clientTimestamp": "2023-06-05T08:32:56.846Z",
+          "data": {
+              "sequenceNumber": 7,
+              "question": "2x4",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:32:56.846Z",
+                  "sequenceNumber": 333
+              }
+          },
+          "relativeTiming": "+4.005"
+      },
+      {
+          "type": "QuestionAnswered",
+          "clientTimestamp": "2023-06-05T08:32:56.846Z",
+          "data": {
+              "sequenceNumber": 7,
+              "question": "2x4",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:32:56.846Z",
+                  "sequenceNumber": 334
+              }
+          },
+          "relativeTiming": "+0"
+      },
+      {
+          "type": "PauseRendered",
+          "clientTimestamp": "2023-06-05T08:32:56.852Z",
+          "data": {
+              "sequenceNumber": 8,
+              "question": "3x7",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:32:56.852Z",
+                  "sequenceNumber": 335
+              }
+          },
+          "relativeTiming": "+0.006"
+      },
+      {
+          "type": "QuestionRendered",
+          "clientTimestamp": "2023-06-05T08:32:59.866Z",
+          "data": {
+              "sequenceNumber": 8,
+              "question": "3x7",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:32:59.866Z",
+                  "sequenceNumber": 336
+              }
+          },
+          "relativeTiming": "+3.014"
+      },
+      {
+          "type": "QuestionTimerStarted",
+          "clientTimestamp": "2023-06-05T08:32:59.871Z",
+          "data": {
+              "sequenceNumber": 8,
+              "question": "3x7",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:32:59.871Z",
+                  "sequenceNumber": 337
+              }
+          },
+          "relativeTiming": "+0.005"
+      },
+      {
+          "type": "QuestionTimerEnded",
+          "clientTimestamp": "2023-06-05T08:33:05.873Z",
+          "data": {
+              "sequenceNumber": 8,
+              "question": "3x7",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:33:05.873Z",
+                  "sequenceNumber": 339
+              }
+          },
+          "relativeTiming": "+6.002"
+      },
+      {
+          "type": "PauseRendered",
+          "clientTimestamp": "2023-06-05T08:33:05.883Z",
+          "data": {
+              "sequenceNumber": 9,
+              "question": "8x5",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:33:05.883Z",
+                  "sequenceNumber": 340
+              }
+          },
+          "relativeTiming": "+0.01"
+      },
+      {
+          "type": "QuestionRendered",
+          "clientTimestamp": "2023-06-05T08:33:08.888Z",
+          "data": {
+              "sequenceNumber": 9,
+              "question": "8x5",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:33:08.888Z",
+                  "sequenceNumber": 341
+              }
+          },
+          "relativeTiming": "+3.005"
+      },
+      {
+          "type": "QuestionTimerStarted",
+          "clientTimestamp": "2023-06-05T08:33:08.888Z",
+          "data": {
+              "sequenceNumber": 9,
+              "question": "8x5",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:33:08.888Z",
+                  "sequenceNumber": 342
+              }
+          },
+          "relativeTiming": "+0"
+      },
+      {
+          "type": "QuestionTimerCancelled",
+          "clientTimestamp": "2023-06-05T08:33:11.617Z",
+          "data": {
+              "sequenceNumber": 9,
+              "question": "8x5",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:33:11.617Z",
+                  "sequenceNumber": 347
+              }
+          },
+          "relativeTiming": "+2.729"
+      },
+      {
+          "type": "QuestionAnswered",
+          "clientTimestamp": "2023-06-05T08:33:11.617Z",
+          "data": {
+              "sequenceNumber": 9,
+              "question": "8x5",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:33:11.617Z",
+                  "sequenceNumber": 348
+              }
+          },
+          "relativeTiming": "+0"
+      },
+      {
+          "type": "PauseRendered",
+          "clientTimestamp": "2023-06-05T08:33:11.622Z",
+          "data": {
+              "sequenceNumber": 10,
+              "question": "12x4",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:33:11.622Z",
+                  "sequenceNumber": 349
+              }
+          },
+          "relativeTiming": "+0.005"
+      },
+      {
+          "type": "QuestionRendered",
+          "clientTimestamp": "2023-06-05T08:33:14.633Z",
+          "data": {
+              "sequenceNumber": 10,
+              "question": "12x4",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:33:14.633Z",
+                  "sequenceNumber": 350
+              }
+          },
+          "relativeTiming": "+3.011"
+      },
+      {
+          "type": "QuestionTimerStarted",
+          "clientTimestamp": "2023-06-05T08:33:14.633Z",
+          "data": {
+              "sequenceNumber": 10,
+              "question": "12x4",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:33:14.633Z",
+                  "sequenceNumber": 351
+              }
+          },
+          "relativeTiming": "+0"
+      },
+      {
+          "type": "QuestionTimerEnded",
+          "clientTimestamp": "2023-06-05T08:33:20.636Z",
+          "data": {
+              "sequenceNumber": 10,
+              "question": "12x4",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:33:20.636Z",
+                  "sequenceNumber": 353
+              }
+          },
+          "relativeTiming": "+6.003"
+      },
+      {
+          "type": "PauseRendered",
+          "clientTimestamp": "2023-06-05T08:33:20.644Z",
+          "data": {
+              "sequenceNumber": 11,
+              "question": "5x11",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:33:20.644Z",
+                  "sequenceNumber": 354
+              }
+          },
+          "relativeTiming": "+0.008"
+      },
+      {
+          "type": "QuestionRendered",
+          "clientTimestamp": "2023-06-05T08:33:23.658Z",
+          "data": {
+              "sequenceNumber": 11,
+              "question": "5x11",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:33:23.658Z",
+                  "sequenceNumber": 355
+              }
+          },
+          "relativeTiming": "+3.014"
+      },
+      {
+          "type": "QuestionTimerStarted",
+          "clientTimestamp": "2023-06-05T08:33:23.659Z",
+          "data": {
+              "sequenceNumber": 11,
+              "question": "5x11",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:33:23.659Z",
+                  "sequenceNumber": 356
+              }
+          },
+          "relativeTiming": "+0.001"
+      },
+      {
+          "type": "QuestionTimerCancelled",
+          "clientTimestamp": "2023-06-05T08:33:25.805Z",
+          "data": {
+              "sequenceNumber": 11,
+              "question": "5x11",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:33:25.805Z",
+                  "sequenceNumber": 361
+              }
+          },
+          "relativeTiming": "+2.146"
+      },
+      {
+          "type": "QuestionAnswered",
+          "clientTimestamp": "2023-06-05T08:33:25.805Z",
+          "data": {
+              "sequenceNumber": 11,
+              "question": "5x11",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:33:25.805Z",
+                  "sequenceNumber": 362
+              }
+          },
+          "relativeTiming": "+0"
+      },
+      {
+          "type": "PauseRendered",
+          "clientTimestamp": "2023-06-05T08:33:25.810Z",
+          "data": {
+              "sequenceNumber": 12,
+              "question": "4x8",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:33:25.810Z",
+                  "sequenceNumber": 363
+              }
+          },
+          "relativeTiming": "+0.005"
+      },
+      {
+          "type": "QuestionRendered",
+          "clientTimestamp": "2023-06-05T08:33:28.822Z",
+          "data": {
+              "sequenceNumber": 12,
+              "question": "4x8",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:33:28.822Z",
+                  "sequenceNumber": 364
+              }
+          },
+          "relativeTiming": "+3.012"
+      },
+      {
+          "type": "QuestionTimerStarted",
+          "clientTimestamp": "2023-06-05T08:33:28.822Z",
+          "data": {
+              "sequenceNumber": 12,
+              "question": "4x8",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:33:28.822Z",
+                  "sequenceNumber": 365
+              }
+          },
+          "relativeTiming": "+0"
+      },
+      {
+          "type": "QuestionTimerEnded",
+          "clientTimestamp": "2023-06-05T08:33:34.824Z",
+          "data": {
+              "sequenceNumber": 12,
+              "question": "4x8",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:33:34.824Z",
+                  "sequenceNumber": 368
+              }
+          },
+          "relativeTiming": "+6.002"
+      },
+      {
+          "type": "PauseRendered",
+          "clientTimestamp": "2023-06-05T08:33:34.830Z",
+          "data": {
+              "sequenceNumber": 13,
+              "question": "7x10",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:33:34.830Z",
+                  "sequenceNumber": 369
+              }
+          },
+          "relativeTiming": "+0.006"
+      },
+      {
+          "type": "QuestionRendered",
+          "clientTimestamp": "2023-06-05T08:33:37.842Z",
+          "data": {
+              "sequenceNumber": 13,
+              "question": "7x10",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:33:37.842Z",
+                  "sequenceNumber": 370
+              }
+          },
+          "relativeTiming": "+3.012"
+      },
+      {
+          "type": "QuestionTimerStarted",
+          "clientTimestamp": "2023-06-05T08:33:37.843Z",
+          "data": {
+              "sequenceNumber": 13,
+              "question": "7x10",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:33:37.843Z",
+                  "sequenceNumber": 371
+              }
+          },
+          "relativeTiming": "+0.001"
+      },
+      {
+          "type": "QuestionTimerCancelled",
+          "clientTimestamp": "2023-06-05T08:33:40.636Z",
+          "data": {
+              "sequenceNumber": 13,
+              "question": "7x10",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:33:40.636Z",
+                  "sequenceNumber": 376
+              }
+          },
+          "relativeTiming": "+2.793"
+      },
+      {
+          "type": "QuestionAnswered",
+          "clientTimestamp": "2023-06-05T08:33:40.636Z",
+          "data": {
+              "sequenceNumber": 13,
+              "question": "7x10",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:33:40.636Z",
+                  "sequenceNumber": 377
+              }
+          },
+          "relativeTiming": "+0"
+      },
+      {
+          "type": "PauseRendered",
+          "clientTimestamp": "2023-06-05T08:33:40.642Z",
+          "data": {
+              "sequenceNumber": 14,
+              "question": "9x12",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:33:40.642Z",
+                  "sequenceNumber": 378
+              }
+          },
+          "relativeTiming": "+0.006"
+      },
+      {
+          "type": "QuestionRendered",
+          "clientTimestamp": "2023-06-05T08:33:43.656Z",
+          "data": {
+              "sequenceNumber": 14,
+              "question": "9x12",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:33:43.656Z",
+                  "sequenceNumber": 379
+              }
+          },
+          "relativeTiming": "+3.014"
+      },
+      {
+          "type": "QuestionTimerStarted",
+          "clientTimestamp": "2023-06-05T08:33:43.657Z",
+          "data": {
+              "sequenceNumber": 14,
+              "question": "9x12",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:33:43.657Z",
+                  "sequenceNumber": 380
+              }
+          },
+          "relativeTiming": "+0.001"
+      },
+      {
+          "type": "QuestionTimerEnded",
+          "clientTimestamp": "2023-06-05T08:33:49.660Z",
+          "data": {
+              "sequenceNumber": 14,
+              "question": "9x12",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:33:49.660Z",
+                  "sequenceNumber": 383
+              }
+          },
+          "relativeTiming": "+6.003"
+      },
+      {
+          "type": "PauseRendered",
+          "clientTimestamp": "2023-06-05T08:33:49.669Z",
+          "data": {
+              "sequenceNumber": 15,
+              "question": "5x6",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:33:49.669Z",
+                  "sequenceNumber": 384
+              }
+          },
+          "relativeTiming": "+0.009"
+      },
+      {
+          "type": "QuestionRendered",
+          "clientTimestamp": "2023-06-05T08:33:52.683Z",
+          "data": {
+              "sequenceNumber": 15,
+              "question": "5x6",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:33:52.683Z",
+                  "sequenceNumber": 385
+              }
+          },
+          "relativeTiming": "+3.014"
+      },
+      {
+          "type": "QuestionTimerStarted",
+          "clientTimestamp": "2023-06-05T08:33:52.684Z",
+          "data": {
+              "sequenceNumber": 15,
+              "question": "5x6",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:33:52.684Z",
+                  "sequenceNumber": 386
+              }
+          },
+          "relativeTiming": "+0.001"
+      },
+      {
+          "type": "QuestionTimerCancelled",
+          "clientTimestamp": "2023-06-05T08:33:56.723Z",
+          "data": {
+              "sequenceNumber": 15,
+              "question": "5x6",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:33:56.723Z",
+                  "sequenceNumber": 391
+              }
+          },
+          "relativeTiming": "+4.039"
+      },
+      {
+          "type": "QuestionAnswered",
+          "clientTimestamp": "2023-06-05T08:33:56.723Z",
+          "data": {
+              "sequenceNumber": 15,
+              "question": "5x6",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:33:56.723Z",
+                  "sequenceNumber": 392
+              }
+          },
+          "relativeTiming": "+0"
+      },
+      {
+          "type": "PauseRendered",
+          "clientTimestamp": "2023-06-05T08:33:56.728Z",
+          "data": {
+              "sequenceNumber": 16,
+              "question": "10x9",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:33:56.728Z",
+                  "sequenceNumber": 393
+              }
+          },
+          "relativeTiming": "+0.005"
+      },
+      {
+          "type": "QuestionRendered",
+          "clientTimestamp": "2023-06-05T08:33:59.741Z",
+          "data": {
+              "sequenceNumber": 16,
+              "question": "10x9",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:33:59.741Z",
+                  "sequenceNumber": 394
+              }
+          },
+          "relativeTiming": "+3.013"
+      },
+      {
+          "type": "QuestionTimerStarted",
+          "clientTimestamp": "2023-06-05T08:33:59.742Z",
+          "data": {
+              "sequenceNumber": 16,
+              "question": "10x9",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:33:59.742Z",
+                  "sequenceNumber": 395
+              }
+          },
+          "relativeTiming": "+0.001"
+      },
+      {
+          "type": "QuestionTimerCancelled",
+          "clientTimestamp": "2023-06-05T08:34:04.615Z",
+          "data": {
+              "sequenceNumber": 16,
+              "question": "10x9",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:34:04.615Z",
+                  "sequenceNumber": 400
+              }
+          },
+          "relativeTiming": "+4.873"
+      },
+      {
+          "type": "QuestionAnswered",
+          "clientTimestamp": "2023-06-05T08:34:04.615Z",
+          "data": {
+              "sequenceNumber": 16,
+              "question": "10x9",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:34:04.615Z",
+                  "sequenceNumber": 401
+              }
+          },
+          "relativeTiming": "+0"
+      },
+      {
+          "type": "PauseRendered",
+          "clientTimestamp": "2023-06-05T08:34:04.621Z",
+          "data": {
+              "sequenceNumber": 17,
+              "question": "11x12",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:34:04.621Z",
+                  "sequenceNumber": 402
+              }
+          },
+          "relativeTiming": "+0.006"
+      },
+      {
+          "type": "QuestionRendered",
+          "clientTimestamp": "2023-06-05T08:34:07.633Z",
+          "data": {
+              "sequenceNumber": 17,
+              "question": "11x12",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:34:07.633Z",
+                  "sequenceNumber": 403
+              }
+          },
+          "relativeTiming": "+3.012"
+      },
+      {
+          "type": "QuestionTimerStarted",
+          "clientTimestamp": "2023-06-05T08:34:07.634Z",
+          "data": {
+              "sequenceNumber": 17,
+              "question": "11x12",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:34:07.634Z",
+                  "sequenceNumber": 404
+              }
+          },
+          "relativeTiming": "+0.001"
+      },
+      {
+          "type": "QuestionTimerEnded",
+          "clientTimestamp": "2023-06-05T08:34:13.636Z",
+          "data": {
+              "sequenceNumber": 17,
+              "question": "11x12",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:34:13.636Z",
+                  "sequenceNumber": 408
+              }
+          },
+          "relativeTiming": "+6.002"
+      },
+      {
+          "type": "PauseRendered",
+          "clientTimestamp": "2023-06-05T08:34:13.642Z",
+          "data": {
+              "sequenceNumber": 18,
+              "question": "5x2",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:34:13.642Z",
+                  "sequenceNumber": 409
+              }
+          },
+          "relativeTiming": "+0.006"
+      },
+      {
+          "type": "QuestionRendered",
+          "clientTimestamp": "2023-06-05T08:34:16.655Z",
+          "data": {
+              "sequenceNumber": 18,
+              "question": "5x2",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:34:16.655Z",
+                  "sequenceNumber": 410
+              }
+          },
+          "relativeTiming": "+3.013"
+      },
+      {
+          "type": "QuestionTimerStarted",
+          "clientTimestamp": "2023-06-05T08:34:16.657Z",
+          "data": {
+              "sequenceNumber": 18,
+              "question": "5x2",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:34:16.657Z",
+                  "sequenceNumber": 411
+              }
+          },
+          "relativeTiming": "+0.002"
+      },
+      {
+          "type": "QuestionTimerCancelled",
+          "clientTimestamp": "2023-06-05T08:34:19.566Z",
+          "data": {
+              "sequenceNumber": 18,
+              "question": "5x2",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:34:19.566Z",
+                  "sequenceNumber": 416
+              }
+          },
+          "relativeTiming": "+2.909"
+      },
+      {
+          "type": "QuestionAnswered",
+          "clientTimestamp": "2023-06-05T08:34:19.566Z",
+          "data": {
+              "sequenceNumber": 18,
+              "question": "5x2",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:34:19.566Z",
+                  "sequenceNumber": 417
+              }
+          },
+          "relativeTiming": "+0"
+      },
+      {
+          "type": "PauseRendered",
+          "clientTimestamp": "2023-06-05T08:34:19.571Z",
+          "data": {
+              "sequenceNumber": 19,
+              "question": "8x11",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:34:19.571Z",
+                  "sequenceNumber": 418
+              }
+          },
+          "relativeTiming": "+0.005"
+      },
+      {
+          "type": "QuestionRendered",
+          "clientTimestamp": "2023-06-05T08:34:22.587Z",
+          "data": {
+              "sequenceNumber": 19,
+              "question": "8x11",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:34:22.587Z",
+                  "sequenceNumber": 419
+              }
+          },
+          "relativeTiming": "+3.016"
+      },
+      {
+          "type": "QuestionTimerStarted",
+          "clientTimestamp": "2023-06-05T08:34:22.588Z",
+          "data": {
+              "sequenceNumber": 19,
+              "question": "8x11",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:34:22.588Z",
+                  "sequenceNumber": 420
+              }
+          },
+          "relativeTiming": "+0.001"
+      },
+      {
+          "type": "QuestionTimerCancelled",
+          "clientTimestamp": "2023-06-05T08:34:24.756Z",
+          "data": {
+              "sequenceNumber": 19,
+              "question": "8x11",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:34:24.756Z",
+                  "sequenceNumber": 425
+              }
+          },
+          "relativeTiming": "+2.168"
+      },
+      {
+          "type": "QuestionAnswered",
+          "clientTimestamp": "2023-06-05T08:34:24.756Z",
+          "data": {
+              "sequenceNumber": 19,
+              "question": "8x11",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:34:24.756Z",
+                  "sequenceNumber": 426
+              }
+          },
+          "relativeTiming": "+0"
+      },
+      {
+          "type": "PauseRendered",
+          "clientTimestamp": "2023-06-05T08:34:24.759Z",
+          "data": {
+              "sequenceNumber": 20,
+              "question": "4x9",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:34:24.759Z",
+                  "sequenceNumber": 427
+              }
+          },
+          "relativeTiming": "+0.003"
+      },
+      {
+          "type": "QuestionRendered",
+          "clientTimestamp": "2023-06-05T08:34:27.772Z",
+          "data": {
+              "sequenceNumber": 20,
+              "question": "4x9",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:34:27.772Z",
+                  "sequenceNumber": 428
+              }
+          },
+          "relativeTiming": "+3.013"
+      },
+      {
+          "type": "QuestionTimerStarted",
+          "clientTimestamp": "2023-06-05T08:34:27.774Z",
+          "data": {
+              "sequenceNumber": 20,
+              "question": "4x9",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:34:27.774Z",
+                  "sequenceNumber": 429
+              }
+          },
+          "relativeTiming": "+0.002"
+      },
+      {
+          "type": "QuestionTimerEnded",
+          "clientTimestamp": "2023-06-05T08:34:33.777Z",
+          "data": {
+              "sequenceNumber": 20,
+              "question": "4x9",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:34:33.777Z",
+                  "sequenceNumber": 431
+              }
+          },
+          "relativeTiming": "+6.003"
+      },
+      {
+          "type": "PauseRendered",
+          "clientTimestamp": "2023-06-05T08:34:33.787Z",
+          "data": {
+              "sequenceNumber": 21,
+              "question": "6x8",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:34:33.787Z",
+                  "sequenceNumber": 432
+              }
+          },
+          "relativeTiming": "+0.01"
+      },
+      {
+          "type": "QuestionRendered",
+          "clientTimestamp": "2023-06-05T08:34:36.800Z",
+          "data": {
+              "sequenceNumber": 21,
+              "question": "6x8",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:34:36.800Z",
+                  "sequenceNumber": 433
+              }
+          },
+          "relativeTiming": "+3.013"
+      },
+      {
+          "type": "QuestionTimerStarted",
+          "clientTimestamp": "2023-06-05T08:34:36.801Z",
+          "data": {
+              "sequenceNumber": 21,
+              "question": "6x8",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:34:36.801Z",
+                  "sequenceNumber": 434
+              }
+          },
+          "relativeTiming": "+0.001"
+      },
+      {
+          "type": "QuestionTimerEnded",
+          "clientTimestamp": "2023-06-05T08:34:42.803Z",
+          "data": {
+              "sequenceNumber": 21,
+              "question": "6x8",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:34:42.803Z",
+                  "sequenceNumber": 437
+              }
+          },
+          "relativeTiming": "+6.002"
+      },
+      {
+          "type": "PauseRendered",
+          "clientTimestamp": "2023-06-05T08:34:42.811Z",
+          "data": {
+              "sequenceNumber": 22,
+              "question": "10x5",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:34:42.811Z",
+                  "sequenceNumber": 438
+              }
+          },
+          "relativeTiming": "+0.008"
+      },
+      {
+          "type": "QuestionRendered",
+          "clientTimestamp": "2023-06-05T08:34:45.823Z",
+          "data": {
+              "sequenceNumber": 22,
+              "question": "10x5",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:34:45.823Z",
+                  "sequenceNumber": 439
+              }
+          },
+          "relativeTiming": "+3.012"
+      },
+      {
+          "type": "QuestionTimerStarted",
+          "clientTimestamp": "2023-06-05T08:34:45.825Z",
+          "data": {
+              "sequenceNumber": 22,
+              "question": "10x5",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:34:45.825Z",
+                  "sequenceNumber": 440
+              }
+          },
+          "relativeTiming": "+0.002"
+      },
+      {
+          "type": "QuestionTimerCancelled",
+          "clientTimestamp": "2023-06-05T08:34:48.145Z",
+          "data": {
+              "sequenceNumber": 22,
+              "question": "10x5",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:34:48.145Z",
+                  "sequenceNumber": 445
+              }
+          },
+          "relativeTiming": "+2.32"
+      },
+      {
+          "type": "QuestionAnswered",
+          "clientTimestamp": "2023-06-05T08:34:48.145Z",
+          "data": {
+              "sequenceNumber": 22,
+              "question": "10x5",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:34:48.145Z",
+                  "sequenceNumber": 446
+              }
+          },
+          "relativeTiming": "+0"
+      },
+      {
+          "type": "PauseRendered",
+          "clientTimestamp": "2023-06-05T08:34:48.151Z",
+          "data": {
+              "sequenceNumber": 23,
+              "question": "2x11",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:34:48.151Z",
+                  "sequenceNumber": 447
+              }
+          },
+          "relativeTiming": "+0.006"
+      },
+      {
+          "type": "QuestionRendered",
+          "clientTimestamp": "2023-06-05T08:34:51.164Z",
+          "data": {
+              "sequenceNumber": 23,
+              "question": "2x11",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:34:51.164Z",
+                  "sequenceNumber": 448
+              }
+          },
+          "relativeTiming": "+3.013"
+      },
+      {
+          "type": "QuestionTimerStarted",
+          "clientTimestamp": "2023-06-05T08:34:51.165Z",
+          "data": {
+              "sequenceNumber": 23,
+              "question": "2x11",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:34:51.165Z",
+                  "sequenceNumber": 449
+              }
+          },
+          "relativeTiming": "+0.001"
+      },
+      {
+          "type": "QuestionTimerCancelled",
+          "clientTimestamp": "2023-06-05T08:34:53.429Z",
+          "data": {
+              "sequenceNumber": 23,
+              "question": "2x11",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:34:53.429Z",
+                  "sequenceNumber": 454
+              }
+          },
+          "relativeTiming": "+2.264"
+      },
+      {
+          "type": "QuestionAnswered",
+          "clientTimestamp": "2023-06-05T08:34:53.429Z",
+          "data": {
+              "sequenceNumber": 23,
+              "question": "2x11",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:34:53.429Z",
+                  "sequenceNumber": 455
+              }
+          },
+          "relativeTiming": "+0"
+      },
+      {
+          "type": "PauseRendered",
+          "clientTimestamp": "2023-06-05T08:34:53.434Z",
+          "data": {
+              "sequenceNumber": 24,
+              "question": "9x9",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:34:53.434Z",
+                  "sequenceNumber": 456
+              }
+          },
+          "relativeTiming": "+0.005"
+      },
+      {
+          "type": "QuestionRendered",
+          "clientTimestamp": "2023-06-05T08:34:56.446Z",
+          "data": {
+              "sequenceNumber": 24,
+              "question": "9x9",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:34:56.446Z",
+                  "sequenceNumber": 457
+              }
+          },
+          "relativeTiming": "+3.012"
+      },
+      {
+          "type": "QuestionTimerStarted",
+          "clientTimestamp": "2023-06-05T08:34:56.448Z",
+          "data": {
+              "sequenceNumber": 24,
+              "question": "9x9",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:34:56.448Z",
+                  "sequenceNumber": 458
+              }
+          },
+          "relativeTiming": "+0.002"
+      },
+      {
+          "type": "QuestionTimerEnded",
+          "clientTimestamp": "2023-06-05T08:35:02.450Z",
+          "data": {
+              "sequenceNumber": 24,
+              "question": "9x9",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:35:02.450Z",
+                  "sequenceNumber": 460
+              }
+          },
+          "relativeTiming": "+6.002"
+      },
+      {
+          "type": "PauseRendered",
+          "clientTimestamp": "2023-06-05T08:35:02.461Z",
+          "data": {
+              "sequenceNumber": 25,
+              "question": "8x3",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:35:02.461Z",
+                  "sequenceNumber": 461
+              }
+          },
+          "relativeTiming": "+0.011"
+      },
+      {
+          "type": "QuestionRendered",
+          "clientTimestamp": "2023-06-05T08:35:05.476Z",
+          "data": {
+              "sequenceNumber": 25,
+              "question": "8x3",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:35:05.476Z",
+                  "sequenceNumber": 462
+              }
+          },
+          "relativeTiming": "+3.015"
+      },
+      {
+          "type": "QuestionTimerStarted",
+          "clientTimestamp": "2023-06-05T08:35:05.478Z",
+          "data": {
+              "sequenceNumber": 25,
+              "question": "8x3",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:35:05.478Z",
+                  "sequenceNumber": 463
+              }
+          },
+          "relativeTiming": "+0.002"
+      },
+      {
+          "type": "QuestionTimerEnded",
+          "clientTimestamp": "2023-06-05T08:35:11.480Z",
+          "data": {
+              "sequenceNumber": 25,
+              "question": "8x3",
+              "isWarmup": false,
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:35:11.480Z",
+                  "sequenceNumber": 465
+              }
+          },
+          "relativeTiming": "+6.002"
+      },
+      {
+          "type": "CheckSubmissionPending",
+          "clientTimestamp": "2023-06-05T08:35:11.481Z",
+          "data": {
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:35:11.481Z",
+                  "sequenceNumber": 466
+              }
+          },
+          "relativeTiming": "+0.001"
+      },
+      {
+          "type": "CheckSubmissionApiCalled",
+          "clientTimestamp": "2023-06-05T08:35:11.496Z",
+          "data": {
+              "monotonicTime": {
+                  "milliseconds": null,
+                  "legacyDate": "2023-06-05T08:35:11.496Z",
+                  "sequenceNumber": 467
+              }
+          },
+          "relativeTiming": "+0.015"
+      }
+  ],
+  "inputs": [
+      {
+          "input": "1",
+          "eventType": "touch",
+          "clientTimestamp": "2023-06-05T08:32:08.045Z",
+          "question": "7x2",
+          "sequenceNumber": 1,
+          "monotonicTime": {
+              "milliseconds": null,
+              "legacyDate": "2023-06-05T08:32:08.045Z",
+              "sequenceNumber": 279
+          },
+          "relativeTiming": "+0.00"
+      },
+      {
+          "input": "4",
+          "eventType": "touch",
+          "clientTimestamp": "2023-06-05T08:32:08.253Z",
+          "question": "7x2",
+          "sequenceNumber": 1,
+          "monotonicTime": {
+              "milliseconds": null,
+              "legacyDate": "2023-06-05T08:32:08.253Z",
+              "sequenceNumber": 280
+          },
+          "relativeTiming": "+0.208"
+      },
+      {
+          "input": "Enter",
+          "eventType": "touch",
+          "clientTimestamp": "2023-06-05T08:32:08.684Z",
+          "question": "7x2",
+          "sequenceNumber": 1,
+          "monotonicTime": {
+              "milliseconds": null,
+              "legacyDate": "2023-06-05T08:32:08.684Z",
+              "sequenceNumber": 281
+          },
+          "relativeTiming": "+0.431"
+      },
+      {
+          "input": "1",
+          "eventType": "touch",
+          "clientTimestamp": "2023-06-05T08:32:16.342Z",
+          "question": "4x3",
+          "sequenceNumber": 2,
+          "monotonicTime": {
+              "milliseconds": null,
+              "legacyDate": "2023-06-05T08:32:16.342Z",
+              "sequenceNumber": 288
+          },
+          "relativeTiming": "+7.658"
+      },
+      {
+          "input": "2",
+          "eventType": "touch",
+          "clientTimestamp": "2023-06-05T08:32:16.735Z",
+          "question": "4x3",
+          "sequenceNumber": 2,
+          "monotonicTime": {
+              "milliseconds": null,
+              "legacyDate": "2023-06-05T08:32:16.735Z",
+              "sequenceNumber": 289
+          },
+          "relativeTiming": "+0.393"
+      },
+      {
+          "input": "Enter",
+          "eventType": "touch",
+          "clientTimestamp": "2023-06-05T08:32:17.305Z",
+          "question": "4x3",
+          "sequenceNumber": 2,
+          "monotonicTime": {
+              "milliseconds": null,
+              "legacyDate": "2023-06-05T08:32:17.305Z",
+              "sequenceNumber": 290
+          },
+          "relativeTiming": "+0.57"
+      },
+      {
+          "input": "6",
+          "eventType": "touch",
+          "clientTimestamp": "2023-06-05T08:32:24.030Z",
+          "question": "12x5",
+          "sequenceNumber": 3,
+          "monotonicTime": {
+              "milliseconds": null,
+              "legacyDate": "2023-06-05T08:32:24.030Z",
+              "sequenceNumber": 297
+          },
+          "relativeTiming": "+6.725"
+      },
+      {
+          "input": "0",
+          "eventType": "touch",
+          "clientTimestamp": "2023-06-05T08:32:24.401Z",
+          "question": "12x5",
+          "sequenceNumber": 3,
+          "monotonicTime": {
+              "milliseconds": null,
+              "legacyDate": "2023-06-05T08:32:24.401Z",
+              "sequenceNumber": 298
+          },
+          "relativeTiming": "+0.371"
+      },
+      {
+          "input": "Enter",
+          "eventType": "touch",
+          "clientTimestamp": "2023-06-05T08:32:24.679Z",
+          "question": "12x5",
+          "sequenceNumber": 3,
+          "monotonicTime": {
+              "milliseconds": null,
+              "legacyDate": "2023-06-05T08:32:24.679Z",
+              "sequenceNumber": 299
+          },
+          "relativeTiming": "+0.278"
+      },
+      {
+          "input": "5",
+          "eventType": "touch",
+          "clientTimestamp": "2023-06-05T08:32:31.500Z",
+          "question": "6x9",
+          "sequenceNumber": 4,
+          "monotonicTime": {
+              "milliseconds": null,
+              "legacyDate": "2023-06-05T08:32:31.500Z",
+              "sequenceNumber": 306
+          },
+          "relativeTiming": "+6.821"
+      },
+      {
+          "input": "3",
+          "eventType": "touch",
+          "clientTimestamp": "2023-06-05T08:32:32.550Z",
+          "question": "6x9",
+          "sequenceNumber": 4,
+          "monotonicTime": {
+              "milliseconds": null,
+              "legacyDate": "2023-06-05T08:32:32.550Z",
+              "sequenceNumber": 307
+          },
+          "relativeTiming": "+1.05"
+      },
+      {
+          "input": "Enter",
+          "eventType": "touch",
+          "clientTimestamp": "2023-06-05T08:32:33.284Z",
+          "question": "6x9",
+          "sequenceNumber": 4,
+          "monotonicTime": {
+              "milliseconds": null,
+              "legacyDate": "2023-06-05T08:32:33.284Z",
+              "sequenceNumber": 308
+          },
+          "relativeTiming": "+0.734"
+      },
+      {
+          "input": "9",
+          "eventType": "touch",
+          "clientTimestamp": "2023-06-05T08:32:41.842Z",
+          "question": "8x12",
+          "sequenceNumber": 5,
+          "monotonicTime": {
+              "milliseconds": null,
+              "legacyDate": "2023-06-05T08:32:41.842Z",
+              "sequenceNumber": 315
+          },
+          "relativeTiming": "+8.558"
+      },
+      {
+          "input": "4",
+          "eventType": "touch",
+          "clientTimestamp": "2023-06-05T08:32:49.181Z",
+          "question": "9x5",
+          "sequenceNumber": 6,
+          "monotonicTime": {
+              "milliseconds": null,
+              "legacyDate": "2023-06-05T08:32:49.181Z",
+              "sequenceNumber": 321
+          },
+          "relativeTiming": "+7.339"
+      },
+      {
+          "input": "5",
+          "eventType": "touch",
+          "clientTimestamp": "2023-06-05T08:32:49.431Z",
+          "question": "9x5",
+          "sequenceNumber": 6,
+          "monotonicTime": {
+              "milliseconds": null,
+              "legacyDate": "2023-06-05T08:32:49.431Z",
+              "sequenceNumber": 322
+          },
+          "relativeTiming": "+0.25"
+      },
+      {
+          "input": "Enter",
+          "eventType": "touch",
+          "clientTimestamp": "2023-06-05T08:32:49.822Z",
+          "question": "9x5",
+          "sequenceNumber": 6,
+          "monotonicTime": {
+              "milliseconds": null,
+              "legacyDate": "2023-06-05T08:32:49.822Z",
+              "sequenceNumber": 323
+          },
+          "relativeTiming": "+0.391"
+      },
+      {
+          "input": "8",
+          "eventType": "touch",
+          "clientTimestamp": "2023-06-05T08:32:56.482Z",
+          "question": "2x4",
+          "sequenceNumber": 7,
+          "monotonicTime": {
+              "milliseconds": null,
+              "legacyDate": "2023-06-05T08:32:56.482Z",
+              "sequenceNumber": 330
+          },
+          "relativeTiming": "+6.66"
+      },
+      {
+          "input": "Enter",
+          "eventType": "touch",
+          "clientTimestamp": "2023-06-05T08:32:56.846Z",
+          "question": "2x4",
+          "sequenceNumber": 7,
+          "monotonicTime": {
+              "milliseconds": null,
+              "legacyDate": "2023-06-05T08:32:56.846Z",
+              "sequenceNumber": 331
+          },
+          "relativeTiming": "+0.364"
+      },
+      {
+          "input": "4",
+          "eventType": "touch",
+          "clientTimestamp": "2023-06-05T08:33:10.940Z",
+          "question": "8x5",
+          "sequenceNumber": 9,
+          "monotonicTime": {
+              "milliseconds": null,
+              "legacyDate": "2023-06-05T08:33:10.940Z",
+              "sequenceNumber": 343
+          },
+          "relativeTiming": "+14.094"
+      },
+      {
+          "input": "0",
+          "eventType": "touch",
+          "clientTimestamp": "2023-06-05T08:33:11.314Z",
+          "question": "8x5",
+          "sequenceNumber": 9,
+          "monotonicTime": {
+              "milliseconds": null,
+              "legacyDate": "2023-06-05T08:33:11.314Z",
+              "sequenceNumber": 344
+          },
+          "relativeTiming": "+0.374"
+      },
+      {
+          "input": "Enter",
+          "eventType": "touch",
+          "clientTimestamp": "2023-06-05T08:33:11.616Z",
+          "question": "8x5",
+          "sequenceNumber": 9,
+          "monotonicTime": {
+              "milliseconds": null,
+              "legacyDate": "2023-06-05T08:33:11.616Z",
+              "sequenceNumber": 345
+          },
+          "relativeTiming": "+0.302"
+      },
+      {
+          "input": "5",
+          "eventType": "touch",
+          "clientTimestamp": "2023-06-05T08:33:25.084Z",
+          "question": "5x11",
+          "sequenceNumber": 11,
+          "monotonicTime": {
+              "milliseconds": null,
+              "legacyDate": "2023-06-05T08:33:25.084Z",
+              "sequenceNumber": 357
+          },
+          "relativeTiming": "+13.468"
+      },
+      {
+          "input": "5",
+          "eventType": "touch",
+          "clientTimestamp": "2023-06-05T08:33:25.297Z",
+          "question": "5x11",
+          "sequenceNumber": 11,
+          "monotonicTime": {
+              "milliseconds": null,
+              "legacyDate": "2023-06-05T08:33:25.297Z",
+              "sequenceNumber": 358
+          },
+          "relativeTiming": "+0.213"
+      },
+      {
+          "input": "Enter",
+          "eventType": "touch",
+          "clientTimestamp": "2023-06-05T08:33:25.805Z",
+          "question": "5x11",
+          "sequenceNumber": 11,
+          "monotonicTime": {
+              "milliseconds": null,
+              "legacyDate": "2023-06-05T08:33:25.805Z",
+              "sequenceNumber": 359
+          },
+          "relativeTiming": "+0.508"
+      },
+      {
+          "input": "3",
+          "eventType": "touch",
+          "clientTimestamp": "2023-06-05T08:33:34.770Z",
+          "question": "4x8",
+          "sequenceNumber": 12,
+          "monotonicTime": {
+              "milliseconds": null,
+              "legacyDate": "2023-06-05T08:33:34.770Z",
+              "sequenceNumber": 366
+          },
+          "relativeTiming": "+8.965"
+      },
+      {
+          "input": "7",
+          "eventType": "touch",
+          "clientTimestamp": "2023-06-05T08:33:39.996Z",
+          "question": "7x10",
+          "sequenceNumber": 13,
+          "monotonicTime": {
+              "milliseconds": null,
+              "legacyDate": "2023-06-05T08:33:39.996Z",
+              "sequenceNumber": 372
+          },
+          "relativeTiming": "+5.226"
+      },
+      {
+          "input": "0",
+          "eventType": "touch",
+          "clientTimestamp": "2023-06-05T08:33:40.341Z",
+          "question": "7x10",
+          "sequenceNumber": 13,
+          "monotonicTime": {
+              "milliseconds": null,
+              "legacyDate": "2023-06-05T08:33:40.341Z",
+              "sequenceNumber": 373
+          },
+          "relativeTiming": "+0.345"
+      },
+      {
+          "input": "Enter",
+          "eventType": "touch",
+          "clientTimestamp": "2023-06-05T08:33:40.636Z",
+          "question": "7x10",
+          "sequenceNumber": 13,
+          "monotonicTime": {
+              "milliseconds": null,
+              "legacyDate": "2023-06-05T08:33:40.636Z",
+              "sequenceNumber": 374
+          },
+          "relativeTiming": "+0.295"
+      },
+      {
+          "input": "1",
+          "eventType": "touch",
+          "clientTimestamp": "2023-06-05T08:33:46.764Z",
+          "question": "9x12",
+          "sequenceNumber": 14,
+          "monotonicTime": {
+              "milliseconds": null,
+              "legacyDate": "2023-06-05T08:33:46.764Z",
+              "sequenceNumber": 381
+          },
+          "relativeTiming": "+6.128"
+      },
+      {
+          "input": "3",
+          "eventType": "touch",
+          "clientTimestamp": "2023-06-05T08:33:55.962Z",
+          "question": "5x6",
+          "sequenceNumber": 15,
+          "monotonicTime": {
+              "milliseconds": null,
+              "legacyDate": "2023-06-05T08:33:55.962Z",
+              "sequenceNumber": 387
+          },
+          "relativeTiming": "+9.198"
+      },
+      {
+          "input": "0",
+          "eventType": "touch",
+          "clientTimestamp": "2023-06-05T08:33:56.410Z",
+          "question": "5x6",
+          "sequenceNumber": 15,
+          "monotonicTime": {
+              "milliseconds": null,
+              "legacyDate": "2023-06-05T08:33:56.410Z",
+              "sequenceNumber": 388
+          },
+          "relativeTiming": "+0.448"
+      },
+      {
+          "input": "Enter",
+          "eventType": "touch",
+          "clientTimestamp": "2023-06-05T08:33:56.723Z",
+          "question": "5x6",
+          "sequenceNumber": 15,
+          "monotonicTime": {
+              "milliseconds": null,
+              "legacyDate": "2023-06-05T08:33:56.723Z",
+              "sequenceNumber": 389
+          },
+          "relativeTiming": "+0.313"
+      },
+      {
+          "input": "9",
+          "eventType": "touch",
+          "clientTimestamp": "2023-06-05T08:34:03.060Z",
+          "question": "10x9",
+          "sequenceNumber": 16,
+          "monotonicTime": {
+              "milliseconds": null,
+              "legacyDate": "2023-06-05T08:34:03.060Z",
+              "sequenceNumber": 396
+          },
+          "relativeTiming": "+6.337"
+      },
+      {
+          "input": "0",
+          "eventType": "touch",
+          "clientTimestamp": "2023-06-05T08:34:03.523Z",
+          "question": "10x9",
+          "sequenceNumber": 16,
+          "monotonicTime": {
+              "milliseconds": null,
+              "legacyDate": "2023-06-05T08:34:03.523Z",
+              "sequenceNumber": 397
+          },
+          "relativeTiming": "+0.463"
+      },
+      {
+          "input": "Enter",
+          "eventType": "touch",
+          "clientTimestamp": "2023-06-05T08:34:04.614Z",
+          "question": "10x9",
+          "sequenceNumber": 16,
+          "monotonicTime": {
+              "milliseconds": null,
+              "legacyDate": "2023-06-05T08:34:04.614Z",
+              "sequenceNumber": 398
+          },
+          "relativeTiming": "+1.091"
+      },
+      {
+          "input": "1",
+          "eventType": "touch",
+          "clientTimestamp": "2023-06-05T08:34:11.509Z",
+          "question": "11x12",
+          "sequenceNumber": 17,
+          "monotonicTime": {
+              "milliseconds": null,
+              "legacyDate": "2023-06-05T08:34:11.509Z",
+              "sequenceNumber": 405
+          },
+          "relativeTiming": "+6.895"
+      },
+      {
+          "input": "2",
+          "eventType": "touch",
+          "clientTimestamp": "2023-06-05T08:34:13.610Z",
+          "question": "11x12",
+          "sequenceNumber": 17,
+          "monotonicTime": {
+              "milliseconds": null,
+              "legacyDate": "2023-06-05T08:34:13.610Z",
+              "sequenceNumber": 406
+          },
+          "relativeTiming": "+2.101"
+      },
+      {
+          "input": "1",
+          "eventType": "touch",
+          "clientTimestamp": "2023-06-05T08:34:18.796Z",
+          "question": "5x2",
+          "sequenceNumber": 18,
+          "monotonicTime": {
+              "milliseconds": null,
+              "legacyDate": "2023-06-05T08:34:18.796Z",
+              "sequenceNumber": 412
+          },
+          "relativeTiming": "+5.186"
+      },
+      {
+          "input": "0",
+          "eventType": "touch",
+          "clientTimestamp": "2023-06-05T08:34:19.298Z",
+          "question": "5x2",
+          "sequenceNumber": 18,
+          "monotonicTime": {
+              "milliseconds": null,
+              "legacyDate": "2023-06-05T08:34:19.298Z",
+              "sequenceNumber": 413
+          },
+          "relativeTiming": "+0.502"
+      },
+      {
+          "input": "Enter",
+          "eventType": "touch",
+          "clientTimestamp": "2023-06-05T08:34:19.565Z",
+          "question": "5x2",
+          "sequenceNumber": 18,
+          "monotonicTime": {
+              "milliseconds": null,
+              "legacyDate": "2023-06-05T08:34:19.565Z",
+              "sequenceNumber": 414
+          },
+          "relativeTiming": "+0.267"
+      },
+      {
+          "input": "8",
+          "eventType": "touch",
+          "clientTimestamp": "2023-06-05T08:34:24.155Z",
+          "question": "8x11",
+          "sequenceNumber": 19,
+          "monotonicTime": {
+              "milliseconds": null,
+              "legacyDate": "2023-06-05T08:34:24.155Z",
+              "sequenceNumber": 421
+          },
+          "relativeTiming": "+4.59"
+      },
+      {
+          "input": "8",
+          "eventType": "touch",
+          "clientTimestamp": "2023-06-05T08:34:24.348Z",
+          "question": "8x11",
+          "sequenceNumber": 19,
+          "monotonicTime": {
+              "milliseconds": null,
+              "legacyDate": "2023-06-05T08:34:24.348Z",
+              "sequenceNumber": 422
+          },
+          "relativeTiming": "+0.193"
+      },
+      {
+          "input": "Enter",
+          "eventType": "touch",
+          "clientTimestamp": "2023-06-05T08:34:24.756Z",
+          "question": "8x11",
+          "sequenceNumber": 19,
+          "monotonicTime": {
+              "milliseconds": null,
+              "legacyDate": "2023-06-05T08:34:24.756Z",
+              "sequenceNumber": 423
+          },
+          "relativeTiming": "+0.408"
+      },
+      {
+          "input": "4",
+          "eventType": "touch",
+          "clientTimestamp": "2023-06-05T08:34:41.963Z",
+          "question": "6x8",
+          "sequenceNumber": 21,
+          "monotonicTime": {
+              "milliseconds": null,
+              "legacyDate": "2023-06-05T08:34:41.963Z",
+              "sequenceNumber": 435
+          },
+          "relativeTiming": "+17.207"
+      },
+      {
+          "input": "5",
+          "eventType": "touch",
+          "clientTimestamp": "2023-06-05T08:34:47.341Z",
+          "question": "10x5",
+          "sequenceNumber": 22,
+          "monotonicTime": {
+              "milliseconds": null,
+              "legacyDate": "2023-06-05T08:34:47.341Z",
+              "sequenceNumber": 441
+          },
+          "relativeTiming": "+5.378"
+      },
+      {
+          "input": "0",
+          "eventType": "touch",
+          "clientTimestamp": "2023-06-05T08:34:47.790Z",
+          "question": "10x5",
+          "sequenceNumber": 22,
+          "monotonicTime": {
+              "milliseconds": null,
+              "legacyDate": "2023-06-05T08:34:47.790Z",
+              "sequenceNumber": 442
+          },
+          "relativeTiming": "+0.449"
+      },
+      {
+          "input": "Enter",
+          "eventType": "touch",
+          "clientTimestamp": "2023-06-05T08:34:48.145Z",
+          "question": "10x5",
+          "sequenceNumber": 22,
+          "monotonicTime": {
+              "milliseconds": null,
+              "legacyDate": "2023-06-05T08:34:48.145Z",
+              "sequenceNumber": 443
+          },
+          "relativeTiming": "+0.355"
+      },
+      {
+          "input": "2",
+          "eventType": "touch",
+          "clientTimestamp": "2023-06-05T08:34:52.730Z",
+          "question": "2x11",
+          "sequenceNumber": 23,
+          "monotonicTime": {
+              "milliseconds": null,
+              "legacyDate": "2023-06-05T08:34:52.730Z",
+              "sequenceNumber": 450
+          },
+          "relativeTiming": "+4.585"
+      },
+      {
+          "input": "2",
+          "eventType": "touch",
+          "clientTimestamp": "2023-06-05T08:34:52.918Z",
+          "question": "2x11",
+          "sequenceNumber": 23,
+          "monotonicTime": {
+              "milliseconds": null,
+              "legacyDate": "2023-06-05T08:34:52.918Z",
+              "sequenceNumber": 451
+          },
+          "relativeTiming": "+0.188"
+      },
+      {
+          "input": "Enter",
+          "eventType": "touch",
+          "clientTimestamp": "2023-06-05T08:34:53.429Z",
+          "question": "2x11",
+          "sequenceNumber": 23,
+          "monotonicTime": {
+              "milliseconds": null,
+              "legacyDate": "2023-06-05T08:34:53.429Z",
+              "sequenceNumber": 452
+          },
+          "relativeTiming": "+0.511"
+      }
+  ],
+  "answers": [
+      {
+          "factor1": 7,
+          "factor2": 2,
+          "answer": "14",
+          "sequenceNumber": 1,
+          "clientTimestamp": "2023-06-05T08:32:08.684Z",
+          "monotonicTime": {
+              "milliseconds": null,
+              "legacyDate": "2023-06-05T08:32:08.684Z",
+              "sequenceNumber": 282
+          },
+          "question": "7x2"
+      },
+      {
+          "factor1": 4,
+          "factor2": 3,
+          "answer": "12",
+          "sequenceNumber": 2,
+          "clientTimestamp": "2023-06-05T08:32:17.305Z",
+          "monotonicTime": {
+              "milliseconds": null,
+              "legacyDate": "2023-06-05T08:32:17.305Z",
+              "sequenceNumber": 291
+          },
+          "question": "4x3"
+      },
+      {
+          "factor1": 12,
+          "factor2": 5,
+          "answer": "60",
+          "sequenceNumber": 3,
+          "clientTimestamp": "2023-06-05T08:32:24.680Z",
+          "monotonicTime": {
+              "milliseconds": null,
+              "legacyDate": "2023-06-05T08:32:24.680Z",
+              "sequenceNumber": 300
+          },
+          "question": "12x5"
+      },
+      {
+          "factor1": 6,
+          "factor2": 9,
+          "answer": "53",
+          "sequenceNumber": 4,
+          "clientTimestamp": "2023-06-05T08:32:33.285Z",
+          "monotonicTime": {
+              "milliseconds": null,
+              "legacyDate": "2023-06-05T08:32:33.285Z",
+              "sequenceNumber": 309
+          },
+          "question": "6x9"
+      },
+      {
+          "factor1": 8,
+          "factor2": 12,
+          "answer": "9",
+          "sequenceNumber": 5,
+          "clientTimestamp": "2023-06-05T08:32:42.307Z",
+          "monotonicTime": {
+              "milliseconds": null,
+              "legacyDate": "2023-06-05T08:32:42.307Z",
+              "sequenceNumber": 316
+          },
+          "question": "8x12"
+      },
+      {
+          "factor1": 9,
+          "factor2": 5,
+          "answer": "45",
+          "sequenceNumber": 6,
+          "clientTimestamp": "2023-06-05T08:32:49.823Z",
+          "monotonicTime": {
+              "milliseconds": null,
+              "legacyDate": "2023-06-05T08:32:49.823Z",
+              "sequenceNumber": 324
+          },
+          "question": "9x5"
+      },
+      {
+          "factor1": 2,
+          "factor2": 4,
+          "answer": "8",
+          "sequenceNumber": 7,
+          "clientTimestamp": "2023-06-05T08:32:56.846Z",
+          "monotonicTime": {
+              "milliseconds": null,
+              "legacyDate": "2023-06-05T08:32:56.846Z",
+              "sequenceNumber": 332
+          },
+          "question": "2x4"
+      },
+      {
+          "factor1": 3,
+          "factor2": 7,
+          "answer": "",
+          "sequenceNumber": 8,
+          "clientTimestamp": "2023-06-05T08:33:05.872Z",
+          "monotonicTime": {
+              "milliseconds": null,
+              "legacyDate": "2023-06-05T08:33:05.872Z",
+              "sequenceNumber": 338
+          },
+          "question": "3x7"
+      },
+      {
+          "factor1": 8,
+          "factor2": 5,
+          "answer": "40",
+          "sequenceNumber": 9,
+          "clientTimestamp": "2023-06-05T08:33:11.617Z",
+          "monotonicTime": {
+              "milliseconds": null,
+              "legacyDate": "2023-06-05T08:33:11.617Z",
+              "sequenceNumber": 346
+          },
+          "question": "8x5"
+      },
+      {
+          "factor1": 12,
+          "factor2": 4,
+          "answer": "",
+          "sequenceNumber": 10,
+          "clientTimestamp": "2023-06-05T08:33:20.635Z",
+          "monotonicTime": {
+              "milliseconds": null,
+              "legacyDate": "2023-06-05T08:33:20.635Z",
+              "sequenceNumber": 352
+          },
+          "question": "12x4"
+      },
+      {
+          "factor1": 5,
+          "factor2": 11,
+          "answer": "55",
+          "sequenceNumber": 11,
+          "clientTimestamp": "2023-06-05T08:33:25.805Z",
+          "monotonicTime": {
+              "milliseconds": null,
+              "legacyDate": "2023-06-05T08:33:25.805Z",
+              "sequenceNumber": 360
+          },
+          "question": "5x11"
+      },
+      {
+          "factor1": 4,
+          "factor2": 8,
+          "answer": "3",
+          "sequenceNumber": 12,
+          "clientTimestamp": "2023-06-05T08:33:34.824Z",
+          "monotonicTime": {
+              "milliseconds": null,
+              "legacyDate": "2023-06-05T08:33:34.824Z",
+              "sequenceNumber": 367
+          },
+          "question": "4x8"
+      },
+      {
+          "factor1": 7,
+          "factor2": 10,
+          "answer": "70",
+          "sequenceNumber": 13,
+          "clientTimestamp": "2023-06-05T08:33:40.636Z",
+          "monotonicTime": {
+              "milliseconds": null,
+              "legacyDate": "2023-06-05T08:33:40.636Z",
+              "sequenceNumber": 375
+          },
+          "question": "7x10"
+      },
+      {
+          "factor1": 9,
+          "factor2": 12,
+          "answer": "1",
+          "sequenceNumber": 14,
+          "clientTimestamp": "2023-06-05T08:33:49.659Z",
+          "monotonicTime": {
+              "milliseconds": null,
+              "legacyDate": "2023-06-05T08:33:49.659Z",
+              "sequenceNumber": 382
+          },
+          "question": "9x12"
+      },
+      {
+          "factor1": 5,
+          "factor2": 6,
+          "answer": "30",
+          "sequenceNumber": 15,
+          "clientTimestamp": "2023-06-05T08:33:56.723Z",
+          "monotonicTime": {
+              "milliseconds": null,
+              "legacyDate": "2023-06-05T08:33:56.723Z",
+              "sequenceNumber": 390
+          },
+          "question": "5x6"
+      },
+      {
+          "factor1": 10,
+          "factor2": 9,
+          "answer": "90",
+          "sequenceNumber": 16,
+          "clientTimestamp": "2023-06-05T08:34:04.615Z",
+          "monotonicTime": {
+              "milliseconds": null,
+              "legacyDate": "2023-06-05T08:34:04.615Z",
+              "sequenceNumber": 399
+          },
+          "question": "10x9"
+      },
+      {
+          "factor1": 11,
+          "factor2": 12,
+          "answer": "12",
+          "sequenceNumber": 17,
+          "clientTimestamp": "2023-06-05T08:34:13.635Z",
+          "monotonicTime": {
+              "milliseconds": null,
+              "legacyDate": "2023-06-05T08:34:13.635Z",
+              "sequenceNumber": 407
+          },
+          "question": "11x12"
+      },
+      {
+          "factor1": 5,
+          "factor2": 2,
+          "answer": "10",
+          "sequenceNumber": 18,
+          "clientTimestamp": "2023-06-05T08:34:19.565Z",
+          "monotonicTime": {
+              "milliseconds": null,
+              "legacyDate": "2023-06-05T08:34:19.565Z",
+              "sequenceNumber": 415
+          },
+          "question": "5x2"
+      },
+      {
+          "factor1": 8,
+          "factor2": 11,
+          "answer": "88",
+          "sequenceNumber": 19,
+          "clientTimestamp": "2023-06-05T08:34:24.756Z",
+          "monotonicTime": {
+              "milliseconds": null,
+              "legacyDate": "2023-06-05T08:34:24.756Z",
+              "sequenceNumber": 424
+          },
+          "question": "8x11"
+      },
+      {
+          "factor1": 4,
+          "factor2": 9,
+          "answer": "",
+          "sequenceNumber": 20,
+          "clientTimestamp": "2023-06-05T08:34:33.776Z",
+          "monotonicTime": {
+              "milliseconds": null,
+              "legacyDate": "2023-06-05T08:34:33.776Z",
+              "sequenceNumber": 430
+          },
+          "question": "4x9"
+      },
+      {
+          "factor1": 6,
+          "factor2": 8,
+          "answer": "4",
+          "sequenceNumber": 21,
+          "clientTimestamp": "2023-06-05T08:34:42.802Z",
+          "monotonicTime": {
+              "milliseconds": null,
+              "legacyDate": "2023-06-05T08:34:42.802Z",
+              "sequenceNumber": 436
+          },
+          "question": "6x8"
+      },
+      {
+          "factor1": 10,
+          "factor2": 5,
+          "answer": "50",
+          "sequenceNumber": 22,
+          "clientTimestamp": "2023-06-05T08:34:48.145Z",
+          "monotonicTime": {
+              "milliseconds": null,
+              "legacyDate": "2023-06-05T08:34:48.145Z",
+              "sequenceNumber": 444
+          },
+          "question": "10x5"
+      },
+      {
+          "factor1": 2,
+          "factor2": 11,
+          "answer": "22",
+          "sequenceNumber": 23,
+          "clientTimestamp": "2023-06-05T08:34:53.429Z",
+          "monotonicTime": {
+              "milliseconds": null,
+              "legacyDate": "2023-06-05T08:34:53.429Z",
+              "sequenceNumber": 453
+          },
+          "question": "2x11"
+      },
+      {
+          "factor1": 9,
+          "factor2": 9,
+          "answer": "",
+          "sequenceNumber": 24,
+          "clientTimestamp": "2023-06-05T08:35:02.450Z",
+          "monotonicTime": {
+              "milliseconds": null,
+              "legacyDate": "2023-06-05T08:35:02.450Z",
+              "sequenceNumber": 459
+          },
+          "question": "9x9"
+      },
+      {
+          "factor1": 8,
+          "factor2": 3,
+          "answer": "",
+          "sequenceNumber": 25,
+          "clientTimestamp": "2023-06-05T08:35:11.480Z",
+          "monotonicTime": {
+              "milliseconds": null,
+              "legacyDate": "2023-06-05T08:35:11.480Z",
+              "sequenceNumber": 464
+          },
+          "question": "8x3"
+      }
+  ]
+}

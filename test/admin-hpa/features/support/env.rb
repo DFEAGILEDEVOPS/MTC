@@ -33,6 +33,7 @@ require 'lz_string'
 require_relative '../../features/support/azure_blob_helper'
 require_relative 'helpers'
 require_relative '../../features/support/app'
+require 'jwt'
 include Helpers
 
 Dotenv.load('../../.env')

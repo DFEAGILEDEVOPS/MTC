@@ -1,10 +1,12 @@
-import { type SubmittedCheckMessageV2 } from '../../schemas/models'
+import { type SubmittedCheckMessage } from '../../schemas/models'
 import { type PreparedCheck } from '../../schemas/check-schemas/prepared-check'
 import { type ICompletedCheckGeneratorService, FakeCompletedCheckGeneratorService } from './fake-completed-check-generator.service'
 import { CompressionService, type ICompressionService } from '../../common/compression-service'
 import { type IPreparedCheckService, PreparedCheckService } from '../../caching/prepared-check.service'
 import { type IUtilSubmitCheckConfig } from './index'
 import { type ILogger } from '../../common/logger'
+import { type ValidCheck } from '../../schemas/check-schemas/validated-check'
+import { SubmittedCheckVersion } from '../../schemas/SubmittedCheckVersion'
 
 export class FakeSubmittedCheckMessageGeneratorService {
   private readonly completedCheckGenerator: ICompletedCheckGeneratorService
@@ -37,20 +39,39 @@ export class FakeSubmittedCheckMessageGeneratorService {
     this.logger = logger
   }
 
-  async createSubmittedCheckMessage (checkCode: string): Promise<SubmittedCheckMessageV2> {
+  private async getValidCheck (checkCode: string): Promise<ValidCheck> {
     const preparedCheckCacheValue = await this.prepCheckService.fetch(checkCode)
     if (preparedCheckCacheValue === undefined) {
       throw new Error(`prepared check not found in redis with checkCode:${checkCode}`)
     }
     const preparedCheck: PreparedCheck = preparedCheckCacheValue as PreparedCheck
-    const checkPayload = this.completedCheckGenerator.create(preparedCheck, this.funcConfig)
-    const stringifiedJsonPayload = JSON.stringify(checkPayload)
-    const archive = this.compressionService.compress(stringifiedJsonPayload)
-    const submittedCheck: SubmittedCheckMessageV2 = {
-      checkCode,
+    const validCheck = this.completedCheckGenerator.create(preparedCheck, this.funcConfig)
+    validCheck.checkCode = checkCode
+    return validCheck
+  }
+
+  async createV2Message (checkCode: string): Promise<SubmittedCheckMessage> {
+    const validCheck = await this.getValidCheck(checkCode)
+    const stringifiedJsonPayload = JSON.stringify(validCheck)
+    const archive = this.compressionService.compressToUTF16(stringifiedJsonPayload)
+    const submittedCheck: SubmittedCheckMessage = {
+      checkCode: validCheck.checkCode,
       archive,
-      schoolUUID: preparedCheck.school.uuid,
-      version: 2
+      schoolUUID: validCheck.schoolUUID,
+      version: SubmittedCheckVersion.V2
+    }
+    return submittedCheck
+  }
+
+  async createV3Message (checkCode: string): Promise<SubmittedCheckMessage> {
+    const validCheck = await this.getValidCheck(checkCode)
+    const stringifiedJsonPayload = JSON.stringify(validCheck)
+    const archive = this.compressionService.compressToBase64(stringifiedJsonPayload)
+    const submittedCheck: SubmittedCheckMessage = {
+      checkCode: validCheck.checkCode,
+      archive,
+      schoolUUID: validCheck.schoolUUID,
+      version: SubmittedCheckVersion.V3
     }
     return submittedCheck
   }

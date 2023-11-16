@@ -1,14 +1,10 @@
 import { Router } from 'express'
 import type { Request, Response } from 'express'
-import { RedisAuthController } from '../controllers/redis.auth.controller'
-
-export interface IAuthController {
-  postAuth (req: Request, res: Response): Promise<Response>
-}
+import { RedisAuthController } from '../controllers/auth.controller'
 
 export class AuthRouter {
   router: Router
-  authController: IAuthController
+  authController: RedisAuthController
 
   constructor () {
     this.authController = new RedisAuthController()

@@ -4,7 +4,7 @@
 const httpMocks = require('node-mocks-http')
 
 const businessAvailabilityService = require('../../../services/business-availability.service')
-const checkStartService = require('../../../services/check-start.service/check-start.service')
+const checkStartService = require('../../../services/check-start/check-start.service')
 const checkWindowSanityCheckService = require('../../../services/check-window-sanity-check.service')
 const checkWindowV2Service = require('../../../services/check-window-v2.service')
 const dateService = require('../../../services/date.service')

@@ -4,7 +4,7 @@ const R = require('ramda')
 
 const checkWindowV2Service = require('../services/check-window-v2.service')
 const config = require('../config')
-const ctfService = require('../services/ctf-service/ctf.service')
+const ctfService = require('../services/ctf/ctf.service')
 const groupService = require('../services/group.service')
 const headteacherDeclarationService = require('../services/headteacher-declaration.service')
 const resultPageAvailabilityService = require('../services/results-page-availability.service')

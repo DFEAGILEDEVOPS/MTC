@@ -2,7 +2,7 @@ import { type Context } from '@azure/functions'
 import { TableService } from '../../azure/table-service'
 import Moment from 'moment'
 import { CheckNotificationType, type ICheckNotificationMessage } from '../../schemas/check-notification-message'
-import { type SubmittedCheckMessageV2, type ReceivedCheckTableEntity, type ValidateCheckMessageV1 } from '../../schemas/models'
+import { type SubmittedCheckMessage, type ReceivedCheckTableEntity, type ValidateCheckMessageV1 } from '../../schemas/models'
 import { type IBatchCheckNotifierDataService, BatchCheckNotifierDataService } from '../check-notifier-batch/batch-check-notifier.data.service'
 import { ConsoleLogger, type ILogger } from '../../common/logger'
 const tableService = new TableService()
@@ -16,7 +16,7 @@ export class CheckReceiver {
     this.checkNotifierDataService = batchCheckNotifierDataService ?? new BatchCheckNotifierDataService(this.logService)
   }
 
-  async process (context: Context, receivedCheck: SubmittedCheckMessageV2): Promise<void> {
+  async process (context: Context, receivedCheck: SubmittedCheckMessage): Promise<void> {
     const receivedCheckEntity: ReceivedCheckTableEntity = {
       partitionKey: receivedCheck.schoolUUID.toLowerCase(),
       rowKey: receivedCheck.checkCode.toLowerCase(),

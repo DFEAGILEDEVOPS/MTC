@@ -57,6 +57,10 @@ const config = {
       maxSizeInMegabytes: {}.hasOwnProperty.call(process.env, 'SERVICE_BUS_QUEUE_MAX_SIZE_MEGABYTES_CHECK_NOTIFICATION') ? parseInt(process.env.SERVICE_BUS_QUEUE_MAX_SIZE_MEGABYTES_CHECK_NOTIFICATION, 10) : twentyGigabytes
     },
     {
+      name: 'check-submission',
+      maxSizeInMegabytes: {}.hasOwnProperty.call(process.env, 'SERVICE_BUS_QUEUE_MAX_SIZE_MEGABYTES_CHECK_SUBMISSION') ? parseInt(process.env.SERVICE_BUS_QUEUE_MAX_SIZE_MEGABYTES_CHECK_SUBMISSION, 10) : twentyGigabytes
+    },
+    {
       name: 'check-sync',
       maxSizeInMegabytes: {}.hasOwnProperty.call(process.env, 'SERVICE_BUS_QUEUE_MAX_SIZE_MEGABYTES_CHECK_SYNC') ? parseInt(process.env.SERVICE_BUS_QUEUE_MAX_SIZE_MEGABYTES_CHECK_SYNC, 10) : twentyGigabytes
     },

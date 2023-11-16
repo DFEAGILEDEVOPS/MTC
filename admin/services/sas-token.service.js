@@ -6,7 +6,7 @@ const dataService = require('./data-access/queue-sas-token.data.service')
 const logger = require('./log.service').getLogger()
 const redisKeyService = require('./redis-key.service')
 const redisCacheService = require('./data-access/redis-cache.service')
-const queueNameService = require('./queue-name-service')
+const queueNameService = require('./storage-queue-name-service')
 
 const oneHourInSeconds = 1 * 60 * 60
 

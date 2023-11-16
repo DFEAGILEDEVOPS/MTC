@@ -1,7 +1,7 @@
 import { ServiceManagerPupilService, type ServiceManagerPupilDetails } from './service-manager.pupil.service'
 import { type PupilSearchResult, type PupilStatusData, ServiceManagerPupilDataService } from './service-manager.pupil.data.service'
 import moment from 'moment-timezone'
-import redisCacheService from '../../../services/data-access/redis-cache.service'
+import redisCacheService from '../../data-access/redis-cache.service'
 import { type ServiceManagerSchoolResult } from '../school/school.data.service'
 const settingService = require('../../setting.service')
 const dateService = require('../../date.service')
