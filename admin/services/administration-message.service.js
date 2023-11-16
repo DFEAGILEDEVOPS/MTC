@@ -17,6 +17,7 @@ const accessArrangementsPathRe = /^\/access-arrangements\/.*/
 const hdfPathRe = /^\/attendance\/.*/
 const nonSittingCodesPathRe = /^\/pupils-not-taking-the-check\/.*/
 const pinGenPathRe = /^\/pupil-pin\/.*/
+const pupilGroupPathRe = /^\/group\/.*/
 
 /**
  * @typedef serviceMessage
@@ -68,12 +69,10 @@ administrationMessageService.getFilteredMessagesForRequest = async function getF
           console.log(`Testing areacode ${areaCode} for msg ${msg.title}`)
           switch (true) {
             case accessArrangementsPathRe.test(path):
-              console.log(`Checking ${areaCode} against ${path} for 'A'`)
               if (areaCode === 'A') filteredMessages.push(msg)
               break
 
             case hdfPathRe.test(path):
-              console.log(`Checking ${areaCode} against ${path} for 'H'`)
               if (areaCode === 'H') filteredMessages.push(msg)
               break
 
@@ -83,6 +82,10 @@ administrationMessageService.getFilteredMessagesForRequest = async function getF
 
             case pinGenPathRe.test(path):
               if (areaCode === 'P') filteredMessages.push(msg)
+              break
+
+            case pupilGroupPathRe.test(path):
+              if (areaCode === 'G') filteredMessages.push(msg)
               break
           }
         }
