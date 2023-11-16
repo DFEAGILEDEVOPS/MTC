@@ -16,6 +16,7 @@ const serviceMessageRedisKey = redisKeyService.getServiceMessageKey()
 const accessArrangementsPathRe = /^\/access-arrangements\/.*/
 const hdfPathRe = /^\/attendance\/.*/
 const nonSittingCodesPathRe = /^\/pupils-not-taking-the-check\/.*/
+const pinGenPathRe = /^\/pupil-pin\/.*/
 
 /**
  * @typedef serviceMessage
@@ -78,6 +79,10 @@ administrationMessageService.getFilteredMessagesForRequest = async function getF
 
             case nonSittingCodesPathRe.test(path):
               if (areaCode === 'N') filteredMessages.push(msg)
+              break
+
+            case pinGenPathRe.test(path):
+              if (areaCode === 'P') filteredMessages.push(msg)
               break
           }
         }
