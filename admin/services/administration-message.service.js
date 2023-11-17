@@ -20,6 +20,7 @@ const pinGenPathRe = /^\/pupil-pin\/.*/
 const pupilGroupPathRe = /^\/group\/.*/
 const pupilStatusPathRe = /^\/pupil-status$/
 const restartPathRe = /^\/restart\//
+const pupilRegisterPathRe = /^\/pupil-register\//
 
 /**
  * @typedef serviceMessage
@@ -96,6 +97,10 @@ administrationMessageService.getFilteredMessagesForRequest = async function getF
 
             case restartPathRe.test(path):
               if (areaCode === 'R') filteredMessages.push(msg)
+              break
+
+            case pupilRegisterPathRe.test(path):
+              if (areaCode === 'T') filteredMessages.push(msg)
               break
           }
         }

@@ -5,5 +5,6 @@ INSERT INTO mtc_admin.serviceMessageAreaLookup (code, description) VALUES
 ('P', 'Pin generation'),
 ('G', 'Pupil groups'),
 ('S', 'Pupil status'),
-('R', 'Restarts')
+('R', 'Restarts'),
+('T', 'Pupil register')
 ;
