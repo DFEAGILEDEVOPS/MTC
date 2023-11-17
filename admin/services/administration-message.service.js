@@ -18,7 +18,7 @@ const hdfPathRe = /^\/attendance\/.*/
 const nonSittingCodesPathRe = /^\/pupils-not-taking-the-check\/.*/
 const pinGenPathRe = /^\/pupil-pin\/.*/
 const pupilGroupPathRe = /^\/group\/.*/
-const pupilStatusPathRe =  /^\/pupil-status$/
+const pupilStatusPathRe = /^\/pupil-status$/
 const restartPathRe = /^\/restart\//
 
 /**
