@@ -10,7 +10,7 @@ export class CompressorService {
     return lzString.compressToUTF16(data);
   }
 
-  static decompress(archiveData: string): string {
-    return lzString.decompressFromUTF16(archiveData);
+  static compressToBase64(data: string): string {
+    return lzString.compressToBase64(data);
   }
 }

@@ -317,10 +317,10 @@
     rhea-promise "^2.1.0"
     tslib "^2.2.0"
 
-"@azure/storage-blob@^12.15.0":
-  version "12.15.0"
-  resolved "https://registry.yarnpkg.com/@azure/storage-blob/-/storage-blob-12.15.0.tgz#6c0e15bf837f4daa2739a17a7762ba3774932b26"
-  integrity sha512-e7JBKLOFi0QVJqqLzrjx1eL3je3/Ug2IQj24cTM9b85CsnnFjLGeGjJVIjbGGZaytewiCEG7r3lRwQX7fKj0/w==
+"@azure/storage-blob@^12.16.0":
+  version "12.16.0"
+  resolved "https://registry.yarnpkg.com/@azure/storage-blob/-/storage-blob-12.16.0.tgz#c41fb1e538d6f6e2a6756bfcc69382eededf4fa1"
+  integrity sha512-jz33rUSUGUB65FgYrTRgRDjG6hdPHwfvHe+g/UrwVG8MsyLqSxg9TaW7Yuhjxu1v1OZ5xam2NU6+IpCN0xJO8Q==
   dependencies:
     "@azure/abort-controller" "^1.0.0"
     "@azure/core-http" "^3.0.0"
@@ -331,10 +331,10 @@
     events "^3.0.0"
     tslib "^2.2.0"
 
-"@azure/storage-queue@^12.14.0":
-  version "12.14.0"
-  resolved "https://registry.yarnpkg.com/@azure/storage-queue/-/storage-queue-12.14.0.tgz#cb8732c235d51e345a0f39727e9803cd2f8506d9"
-  integrity sha512-1j6uxhzCcbEDVPOTNWIJ5CsLzOAU5U/bXgGZeT25fy6IghFTC1JlPGALez2CWJ9fBVj6AmSnsiBXL/77iXhSpg==
+"@azure/storage-queue@^12.15.0":
+  version "12.15.0"
+  resolved "https://registry.yarnpkg.com/@azure/storage-queue/-/storage-queue-12.15.0.tgz#c124d362f5aabb6d1f450cf644d0a7756cb45a77"
+  integrity sha512-qotyfMcmocaT1r9bfX7RyQQnkRJcTXGSG/m6LIchtEsNmqLu3ulVqkOlNM+O0XP9wwJ6Da1XQbWz5jQtrDe3DQ==
   dependencies:
     "@azure/abort-controller" "^1.0.0"
     "@azure/core-http" "^3.0.0"
@@ -576,10 +576,10 @@ append-buffer@^1.0.2:
   dependencies:
     buffer-equal "^1.0.0"
 
-applicationinsights@^2.7.3:
-  version "2.7.3"
-  resolved "https://registry.yarnpkg.com/applicationinsights/-/applicationinsights-2.7.3.tgz#8781454d29c0b14c9773f2e892b4cf5e7468ffa5"
-  integrity sha512-JY8+kTEkjbA+kAVNWDtpfW2lqsrDALfDXuxOs74KLPu2y13fy/9WB52V4LfYVTVcW1/jYOXjTxNS2gPZIDh1iw==
+applicationinsights@^2.8.0:
+  version "2.9.0"
+  resolved "https://registry.yarnpkg.com/applicationinsights/-/applicationinsights-2.9.0.tgz#62d6fb0d7cdcdbd2dd0a38a085943f9c262ff317"
+  integrity sha512-W90WNjtvZ10GUInpkyNM0xBGe2qRYChHhdb44SE5KU7hXtCZLxs3IZjWw1gJINQem0qGAgtZlxrVvKPj5SlTbQ==
   dependencies:
     "@azure/core-auth" "^1.5.0"
     "@azure/core-rest-pipeline" "1.10.1"
@@ -1702,10 +1702,10 @@ fast-xml-parser@^4.0.8:
   dependencies:
     strnum "^1.0.5"
 
-fast-xml-parser@^4.2.7:
-  version "4.2.7"
-  resolved "https://registry.yarnpkg.com/fast-xml-parser/-/fast-xml-parser-4.2.7.tgz#871f2ca299dc4334b29f8da3658c164e68395167"
-  integrity sha512-J8r6BriSLO1uj2miOk1NW0YVm8AGOOu3Si2HQp/cSmo6EA4m3fcwu2WKjJ4RK9wMLBtg69y1kS8baDiQBR41Ig==
+fast-xml-parser@^4.3.1:
+  version "4.3.2"
+  resolved "https://registry.yarnpkg.com/fast-xml-parser/-/fast-xml-parser-4.3.2.tgz#761e641260706d6e13251c4ef8e3f5694d4b0d79"
+  integrity sha512-rmrXUXwbJedoXkStenj1kkljNF7ugn5ZjR9FJcwmCfcCbtOMDghPajbc+Tck6vE6F5XsDmx+Pr2le9fw8+pXBg==
   dependencies:
     strnum "^1.0.5"
 
@@ -2694,6 +2694,22 @@ jsonwebtoken@^8.5.1:
     lodash.once "^4.0.0"
     ms "^2.1.1"
     semver "^5.6.0"
+
+jsonwebtoken@^9.0.2:
+  version "9.0.2"
+  resolved "https://registry.yarnpkg.com/jsonwebtoken/-/jsonwebtoken-9.0.2.tgz#65ff91f4abef1784697d40952bb1998c504caaf3"
+  integrity sha512-PRp66vJ865SSqOlgqS8hujT5U4AOgMfhrwYIuIhfKaoSCZcirrmASQr8CX7cUg+RMih+hgznrjp99o+W4pJLHQ==
+  dependencies:
+    jws "^3.2.2"
+    lodash.includes "^4.3.0"
+    lodash.isboolean "^3.0.3"
+    lodash.isinteger "^4.0.4"
+    lodash.isnumber "^3.0.3"
+    lodash.isplainobject "^4.0.6"
+    lodash.isstring "^4.0.1"
+    lodash.once "^4.0.0"
+    ms "^2.1.1"
+    semver "^7.5.4"
 
 jssha@^3.1.0:
   version "3.3.0"
@@ -3840,7 +3856,7 @@ semver-greatest-satisfied-range@^1.1.0:
   resolved "https://registry.yarnpkg.com/semver/-/semver-5.7.2.tgz#48d55db737c3287cd4835e17fa13feace1c41ef8"
   integrity sha512-cBznnQ9KjJqU67B52RMC65CMarK2600WFnbkcaiwWq3xy/5haFJlshgnpjovMVJ+Hff49d8GEn0b87C5pDQ10g==
 
-semver@^7.5.1, semver@^7.5.3:
+semver@^7.5.1, semver@^7.5.3, semver@^7.5.4:
   version "7.5.4"
   resolved "https://registry.yarnpkg.com/semver/-/semver-7.5.4.tgz#483986ec4ed38e1c6c48c34894a9182dbff68a6e"
   integrity sha512-1bCSESV6Pv+i21Hvpxp3Dx+pSD8lIPt8uVjRrxAUt/nbswYc+tK6Y2btiULjd4+fnq15PX+nqQDC7Oft7WkwcA==

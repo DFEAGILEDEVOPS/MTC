@@ -2,22 +2,26 @@ class RequestHelper
   include HTTParty
 
   def self.auth(school_pin, pupil_pin)
-    HTTParty.post(ENV['PUPIL_API_BASE_URL'] + "/auth", :body => {'schoolPin' => "#{school_pin}", 'pupilPin' => "#{pupil_pin}", 'buildVersion' => 1}.to_json, headers: {'Content-Type' => 'application/json', 'Origin' => ENV['PUPIL_BASE_URL']})
+    HTTParty.post(ENV['PUPIL_API_BASE_URL'] + "/auth", :body => { 'schoolPin' => "#{school_pin}", 'pupilPin' => "#{pupil_pin}", 'buildVersion' => 1 }.to_json, headers: { 'Content-Type' => 'application/json', 'Origin' => ENV['PUPIL_APP_URL'] })
+  end
+
+  def self.submit_check(jwt, payload)
+    HTTParty.post(ENV['PUPIL_API_BASE_URL'] + "/submit", :body => payload.to_json, headers: { 'Content-Type' => 'application/json', 'Origin' => ENV['PUPIL_BASE_URL'], "Authorization" => "Bearer #{jwt}" })
   end
 
   def self.check_start_call(check_code, checkStartUrl, checkStartToken)
     ct = Time.now.strftime("%Y-%m-%dT%H:%M:%S.%LZ")
-    body_hash = {"version": "1", "checkCode": "#{check_code}", "clientCheckStartedAt": "#{ct}"}
+    body_hash = { "version": "1", "checkCode": "#{check_code}", "clientCheckStartedAt": "#{ct}" }
     body_json = JSON.generate(body_hash)
     base64_encoded_body_josn = Base64.encode64(body_json)
     check_start_body_xml = get_message_api_xml(base64_encoded_body_josn)
 
-    HTTParty.post("#{checkStartUrl}/messages?#{checkStartToken}", :body => check_start_body_xml, headers: {'Content-Type' => 'application/xml'})
+    HTTParty.post("#{checkStartUrl}/messages?#{checkStartToken}", :body => check_start_body_xml, headers: { 'Content-Type' => 'application/xml' })
   end
 
   def self.check_complete_call(pupil_auth_response)
     check_complete_body_xml = get_check_complete_json(pupil_auth_response)
-    HTTParty.post("#{pupil_auth_response['tokens']['checkComplete']['url']}/messages?#{pupil_auth_response['tokens']['checkComplete']['token']}", :body => check_complete_body_xml, headers: {'Content-Type' => 'application/xml'})
+    HTTParty.post("#{pupil_auth_response['tokens']['checkComplete']['url']}/messages?#{pupil_auth_response['tokens']['checkComplete']['token']}", :body => check_complete_body_xml, headers: { 'Content-Type' => 'application/xml' })
   end
 
   def self.get_message_api_xml(message)
@@ -32,208 +36,65 @@ class RequestHelper
   def self.build_payload_json(parsed_response_pupil_auth, input_type = 'mouse')
     seconds = 1
     {
-      "answers": [
-        {
-          "factor1": 1,
-          "factor2": 1,
-          "answer": "2",
-          "sequenceNumber": 1,
-          "question": "1x1",
-          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}"
+      "checkCode": parsed_response_pupil_auth['checkCode'],
+      "schoolUUID": parsed_response_pupil_auth['school']['uuid'],
+      "buildVersion": "#mtc.build#",
+      "config": {
+        "audibleSounds": false,
+        "checkTime": 30,
+        "colourContrast": false,
+        "fontSize": false,
+        "inputAssistance": false,
+        "loadingTime": 3,
+        "nextBetweenQuestions": false,
+        "numpadRemoval": false,
+        "practice": false,
+        "questionReader": false,
+        "questionTime": 6,
+        "compressCompletedCheck": true,
+        "submissionMode": "modern"
+      },
+      "device": {
+        "battery": {
+          "isCharging": true,
+          "levelPercent": 100,
+          "chargingTime": 0,
+          "dischargingTime": nil
         },
-        {
-          "factor1": 1,
-          "factor2": 2,
-          "answer": "0",
-          "sequenceNumber": 2,
-          "question": "1x2",
-          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}"
+        "cpu": {
+          "hardwareConcurrency": 12
         },
-        {
-          "factor1": 1,
-          "factor2": 3,
-          "answer": "0",
-          "sequenceNumber": 3,
-          "question": "1x3",
-          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}"
+        "navigator": {
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/86.0.4240.111 Safari/537.36",
+          "platform": "MacIntel",
+          "language": "en-US",
+          "cookieEnabled": true,
+          "doNotTrack": nil
         },
-        {
-          "factor1": 1,
-          "factor2": 4,
-          "answer": "0",
-          "sequenceNumber": 4,
-          "question": "1x4",
-          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}"
+        "networkConnection": {
+          "downlink": 9.2,
+          "effectiveType": "4g",
+          "rtt": 0
         },
-        {
-          "factor1": 1,
-          "factor2": 5,
-          "answer": "0",
-          "sequenceNumber": 5,
-          "question": "1x5",
-          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}"
+        "screen": {
+          "screenWidth": 2560,
+          "screenHeight": 1440,
+          "outerWidth": 1270,
+          "outerHeight": 768,
+          "innerWidth": 1270,
+          "innerHeight": 768,
+          "colorDepth": 24,
+          "orientation": "landscape-primary"
         },
-        {
-          "factor1": 1,
-          "factor2": 6,
-          "answer": "0",
-          "sequenceNumber": 6,
-          "question": "1x6",
-          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}"
-        },
-        {
-          "factor1": 1,
-          "factor2": 7,
-          "answer": "0",
-          "sequenceNumber": 7,
-          "question": "1x7",
-          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}"
-        },
-        {
-          "factor1": 1,
-          "factor2": 8,
-          "answer": "0",
-          "sequenceNumber": 8,
-          "question": "1x8",
-          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}"
-        },
-        {
-          "factor1": 1,
-          "factor2": 9,
-          "answer": "0",
-          "sequenceNumber": 9,
-          "question": "1x9",
-          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}"
-        },
-        {
-          "factor1": 1,
-          "factor2": 10,
-          "answer": "0",
-          "sequenceNumber": 10,
-          "question": "1x10",
-          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}"
-        },
-        {
-          "factor1": 1,
-          "factor2": 11,
-          "answer": "",
-          "sequenceNumber": 11,
-          "question": "1x11",
-          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}"
-        },
-        {
-          "factor1": 1,
-          "factor2": 12,
-          "answer": "0",
-          "sequenceNumber": 12,
-          "question": "1x12",
-          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}"
-        },
-        {
-          "factor1": 2,
-          "factor2": 1,
-          "answer": "0",
-          "sequenceNumber": 13,
-          "question": "2x1",
-          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}"
-        },
-        {
-          "factor1": 2,
-          "factor2": 2,
-          "answer": "0",
-          "sequenceNumber": 14,
-          "question": "2x2",
-          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}"
-        },
-        {
-          "factor1": 2,
-          "factor2": 3,
-          "answer": "",
-          "sequenceNumber": 15,
-          "question": "2x3",
-          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}"
-        },
-        {
-          "factor1": 2,
-          "factor2": 4,
-          "answer": "0",
-          "sequenceNumber": 16,
-          "question": "2x4",
-          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}"
-        },
-        {
-          "factor1": 2,
-          "factor2": 5,
-          "answer": "0",
-          "sequenceNumber": 17,
-          "question": "2x5",
-          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}"
-        },
-        {
-          "factor1": 2,
-          "factor2": 6,
-          "answer": "0",
-          "sequenceNumber": 18,
-          "question": "2x6",
-          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}"
-        },
-        {
-          "factor1": 2,
-          "factor2": 7,
-          "answer": "0",
-          "sequenceNumber": 19,
-          "question": "2x7",
-          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}"
-        },
-        {
-          "factor1": 2,
-          "factor2": 8,
-          "answer": "0",
-          "sequenceNumber": 20,
-          "question": "2x8",
-          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}"
-        },
-        {
-          "factor1": 2,
-          "factor2": 9,
-          "answer": "0",
-          "sequenceNumber": 21,
-          "question": "2x9",
-          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}"
-        },
-        {
-          "factor1": 2,
-          "factor2": 10,
-          "answer": "0",
-          "sequenceNumber": 22,
-          "question": "2x10",
-          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}"
-        },
-        {
-          "factor1": 2,
-          "factor2": 11,
-          "answer": "0",
-          "sequenceNumber": 23,
-          "question": "2x11",
-          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}"
-        },
-        {
-          "factor1": 2,
-          "factor2": 12,
-          "answer": "0",
-          "sequenceNumber": 24,
-          "question": "2x12",
-          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}"
-        },
-        {
-          "factor1": 3,
-          "factor2": 1,
-          "answer": "0",
-          "sequenceNumber": 25,
-          "question": "3x1",
-          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}"
-        }
-      ],
+        "deviceId": "01e3d742-2b52-4772-901b-3b8d535375e8",
+        "appUsageCounter": 1
+      },
+      "pupil": {
+        "checkCode": parsed_response_pupil_auth['checkCode']
+      },
+      "questions": parsed_response_pupil_auth['questions'],
+      "school": parsed_response_pupil_auth['school'],
+      "tokens": parsed_response_pupil_auth['tokens'],
       "audit": [
         {
           "type": "WarmupStarted",
@@ -1532,41 +1393,6 @@ class RequestHelper
           "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}"
         }
       ],
-      "device": {
-        "battery": {
-          "isCharging": true,
-          "levelPercent": 100,
-          "chargingTime": 0,
-          "dischargingTime": nil
-        },
-        "cpu": {
-          "hardwareConcurrency": 12
-        },
-        "navigator": {
-          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/86.0.4240.111 Safari/537.36",
-          "platform": "MacIntel",
-          "language": "en-US",
-          "cookieEnabled": true,
-          "doNotTrack": nil
-        },
-        "networkConnection": {
-          "downlink": 9.2,
-          "effectiveType": "4g",
-          "rtt": 0
-        },
-        "screen": {
-          "screenWidth": 2560,
-          "screenHeight": 1440,
-          "outerWidth": 1270,
-          "outerHeight": 768,
-          "innerWidth": 1270,
-          "innerHeight": 768,
-          "colorDepth": 24,
-          "orientation": "landscape-primary"
-        },
-        "deviceId": "01e3d742-2b52-4772-901b-3b8d535375e8",
-        "appUsageCounter": 1
-      },
       "inputs": [
         {
           "input": "2",
@@ -1954,31 +1780,334 @@ class RequestHelper
           "sequenceNumber": 25
         }
       ],
-      "config": {
-        "audibleSounds": false,
-        "checkTime": 30,
-        "colourContrast": false,
-        "fontSize": false,
-        "inputAssistance": false,
-        "loadingTime": 3,
-        "nextBetweenQuestions": false,
-        "numpadRemoval": false,
-        "practice": false,
-        "questionReader": false,
-        "questionTime": 6,
-        "compressCompletedCheck": true
-      },
-      "createdAt": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
-      "pinExpiresAt": "2022-01-10T23:59:59.999Z",
-      "pupil": {
-        "checkCode": parsed_response_pupil_auth['checkCode']
-      },
-      "questions": parsed_response_pupil_auth['questions'],
-      "school": parsed_response_pupil_auth['school'],
-      "tokens": parsed_response_pupil_auth['tokens'],
-      "updatedAt": "2021-01-10T10:27:49.196Z",
-      "checkCode": parsed_response_pupil_auth['checkCode'],
-      "schoolUUID": parsed_response_pupil_auth['school']['uuid']
+      "answers": [
+        {
+          "factor1": 1,
+          "factor2": 1,
+          "answer": "2",
+          "sequenceNumber": 1,
+          "question": '1x1',
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+          "monotonicTime": {
+            "milliseconds": "#{(Time.now + seconds += 1).strftime('%s%L')}".to_i,
+            "legacyDate": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+            "sequenceNumber": 30
+          }
+        },
+        {
+          "factor1": 1,
+          "factor2": 2,
+          "answer": "0",
+          "sequenceNumber": 2,
+          "question": "1x2",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+          "monotonicTime": {
+            "milliseconds": "#{(Time.now + seconds += 1).strftime('%s%L')}".to_i,
+            "legacyDate": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+            "sequenceNumber": 38
+          }
+        },
+        {
+          "factor1": 1,
+          "factor2": 3,
+          "answer": "0",
+          "sequenceNumber": 3,
+          "question": "1x3",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+          "monotonicTime": {
+            "milliseconds": "#{(Time.now + seconds += 1).strftime('%s%L')}".to_i,
+            "legacyDate": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+            "sequenceNumber": 46
+          }
+        },
+        {
+          "factor1": 1,
+          "factor2": 4,
+          "answer": "0",
+          "sequenceNumber": 4,
+          "question": "1x4",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+          "monotonicTime": {
+            "milliseconds": "#{(Time.now + seconds += 1).strftime('%s%L')}".to_i,
+            "legacyDate": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+            "sequenceNumber": 54
+          }
+        },
+        {
+          "factor1": 1,
+          "factor2": 5,
+          "answer": "0",
+          "sequenceNumber": 5,
+          "question": "1x5",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+          "monotonicTime": {
+            "milliseconds": "#{(Time.now + seconds += 1).strftime('%s%L')}".to_i,
+            "legacyDate": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+            "sequenceNumber": 63
+          }
+        },
+        {
+          "factor1": 1,
+          "factor2": 6,
+          "answer": "0",
+          "sequenceNumber": 6,
+          "question": "1x6",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+          "monotonicTime": {
+            "milliseconds": "#{(Time.now + seconds += 1).strftime('%s%L')}".to_i,
+            "legacyDate": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+            "sequenceNumber": 72
+          }
+        },
+        {
+          "factor1": 1,
+          "factor2": 7,
+          "answer": "0",
+          "sequenceNumber": 7,
+          "question": "1x7",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+          "monotonicTime": {
+            "milliseconds": "#{(Time.now + seconds += 1).strftime('%s%L')}".to_i,
+            "legacyDate": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+            "sequenceNumber": 81
+          }
+        },
+        {
+          "factor1": 1,
+          "factor2": 8,
+          "answer": "0",
+          "sequenceNumber": 8,
+          "question": "1x8",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+          "monotonicTime": {
+            "milliseconds": "#{(Time.now + seconds += 1).strftime('%s%L')}".to_i,
+            "legacyDate": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+            "sequenceNumber": 90
+          }
+        },
+        {
+          "factor1": 1,
+          "factor2": 9,
+          "answer": "0",
+          "sequenceNumber": 9,
+          "question": "1x9",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+          "monotonicTime": {
+            "milliseconds": "#{(Time.now + seconds += 1).strftime('%s%L')}".to_i,
+            "legacyDate": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+            "sequenceNumber": 99
+          }
+        },
+        {
+          "factor1": 1,
+          "factor2": 10,
+          "answer": "0",
+          "sequenceNumber": 10,
+          "question": "1x10",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+          "monotonicTime": {
+            "milliseconds": "#{(Time.now + seconds += 1).strftime('%s%L')}".to_i,
+            "legacyDate": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+            "sequenceNumber": 108
+          }
+        },
+        {
+          "factor1": 1,
+          "factor2": 11,
+          "answer": "",
+          "sequenceNumber": 11,
+          "question": "1x11",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+          "monotonicTime": {
+            "milliseconds": "#{(Time.now + seconds += 1).strftime('%s%L')}".to_i,
+            "legacyDate": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+            "sequenceNumber": 117
+          }
+        },
+        {
+          "factor1": 1,
+          "factor2": 12,
+          "answer": "0",
+          "sequenceNumber": 12,
+          "question": "1x12",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+          "monotonicTime": {
+            "milliseconds": "#{(Time.now + seconds += 1).strftime('%s%L')}".to_i,
+            "legacyDate": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+            "sequenceNumber": 126
+          }
+        },
+        {
+          "factor1": 2,
+          "factor2": 1,
+          "answer": "0",
+          "sequenceNumber": 13,
+          "question": "2x1",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+          "monotonicTime": {
+            "milliseconds": "#{(Time.now + seconds += 1).strftime('%s%L')}".to_i,
+            "legacyDate": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+            "sequenceNumber": 134
+          }
+        },
+        {
+          "factor1": 2,
+          "factor2": 2,
+          "answer": "0",
+          "sequenceNumber": 14,
+          "question": "2x2",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+          "monotonicTime": {
+            "milliseconds": "#{(Time.now + seconds += 1).strftime('%s%L')}".to_i,
+            "legacyDate": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+            "sequenceNumber": 142
+          }
+        },
+        {
+          "factor1": 2,
+          "factor2": 3,
+          "answer": "",
+          "sequenceNumber": 15,
+          "question": "2x3",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+          "monotonicTime": {
+            "milliseconds": "#{(Time.now + seconds += 1).strftime('%s%L')}".to_i,
+            "legacyDate": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+            "sequenceNumber": 151
+          }
+        },
+        {
+          "factor1": 2,
+          "factor2": 4,
+          "answer": "0",
+          "sequenceNumber": 16,
+          "question": "2x4",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+          "monotonicTime": {
+            "milliseconds": "#{(Time.now + seconds += 1).strftime('%s%L')}".to_i,
+            "legacyDate": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+            "sequenceNumber": 160
+          }
+        },
+        {
+          "factor1": 2,
+          "factor2": 5,
+          "answer": "0",
+          "sequenceNumber": 17,
+          "question": "2x5",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+          "monotonicTime": {
+            "milliseconds": "#{(Time.now + seconds += 1).strftime('%s%L')}".to_i,
+            "legacyDate": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+            "sequenceNumber": 169
+          }
+        },
+        {
+          "factor1": 2,
+          "factor2": 6,
+          "answer": "0",
+          "sequenceNumber": 18,
+          "question": "2x6",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+          "monotonicTime": {
+            "milliseconds": "#{(Time.now + seconds += 1).strftime('%s%L')}".to_i,
+            "legacyDate": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+            "sequenceNumber": 178
+          }
+        },
+        {
+          "factor1": 2,
+          "factor2": 7,
+          "answer": "0",
+          "sequenceNumber": 19,
+          "question": "2x7",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+          "monotonicTime": {
+            "milliseconds": "#{(Time.now + seconds += 1).strftime('%s%L')}".to_i,
+            "legacyDate": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+            "sequenceNumber": 187
+          }
+        },
+        {
+          "factor1": 2,
+          "factor2": 8,
+          "answer": "0",
+          "sequenceNumber": 20,
+          "question": "2x8",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+          "monotonicTime": {
+            "milliseconds": "#{(Time.now + seconds += 1).strftime('%s%L')}".to_i,
+            "legacyDate": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+            "sequenceNumber": 196
+          }
+        },
+        {
+          "factor1": 2,
+          "factor2": 9,
+          "answer": "0",
+          "sequenceNumber": 21,
+          "question": "2x9",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+          "monotonicTime": {
+            "milliseconds": "#{(Time.now + seconds += 1).strftime('%s%L')}".to_i,
+            "legacyDate": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+            "sequenceNumber": 205
+          }
+        },
+        {
+          "factor1": 2,
+          "factor2": 10,
+          "answer": "0",
+          "sequenceNumber": 22,
+          "question": "2x10",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+          "monotonicTime": {
+            "milliseconds": "#{(Time.now + seconds += 1).strftime('%s%L')}".to_i,
+            "legacyDate": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+            "sequenceNumber": 214
+          }
+        },
+        {
+          "factor1": 2,
+          "factor2": 11,
+          "answer": "0",
+          "sequenceNumber": 23,
+          "question": "2x11",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+          "monotonicTime": {
+            "milliseconds": "#{(Time.now + seconds += 1).strftime('%s%L')}".to_i,
+            "legacyDate": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+            "sequenceNumber": 223
+          }
+        },
+        {
+          "factor1": 2,
+          "factor2": 12,
+          "answer": "0",
+          "sequenceNumber": 24,
+          "question": "2x12",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+          "monotonicTime": {
+            "milliseconds": "#{(Time.now + seconds += 1).strftime('%s%L')}".to_i,
+            "legacyDate": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+            "sequenceNumber": 232
+          }
+        },
+        {
+          "factor1": 3,
+          "factor2": 1,
+          "answer": "0",
+          "sequenceNumber": 25,
+          "question": "3x1",
+          "clientTimestamp": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+          "monotonicTime": {
+            "milliseconds": "#{(Time.now + seconds += 1).strftime('%s%L')}".to_i,
+            "legacyDate": "#{(Time.now + seconds += 1).strftime("%Y-%m-%dT%H:%M:%S.%LZ")}",
+            "sequenceNumber": 240
+          }
+        }
+      ],
+      "checkVersion": 3
     }
   end
 
@@ -1986,11 +2115,11 @@ class RequestHelper
     correct_answers = nil if correct_answers == '0'
     correct_answers = (correct_answers.to_i) - 1 unless correct_answers.nil?
     @payload = build_payload_json(parsed_response_pupil_auth, input_type)
-    @payload[:answers] << {:factor1=>3, :factor2=>7, :answer=>0, :sequenceNumber=>26, :question=>"3x7", :clientTimestamp=>"2021-10-04T11:22:45.015Z"} if validator_opts[:answer_not_a_string]
+    @payload[:answers] << { :factor1 => 3, :factor2 => 7, :answer => 0, :sequenceNumber => 26, :question => "3x7", :clientTimestamp => "2021-10-04T11:22:45.015Z" } if validator_opts[:answer_not_a_string]
     @payload[:answers].pop if validator_opts[:decreased_answers_set]
-    @payload[:answers][0..correct_answers].each {|q| q[:answer] = (q[:factor1] * q[:factor2]).to_s} unless correct_answers.nil?
-    @payload[:answers] = Hash[@payload[:answers].map {|key, value| [key, value]}] if validator_opts[:answers_not_array]
-    @payload[:audit] = Hash[@payload[:audit].map {|key, value| [key, value]}] if validator_opts[:audit_not_array]
+    @payload[:answers][0..correct_answers].each { |q| q[:answer] = (q[:factor1] * q[:factor2]).to_s } unless correct_answers.nil?
+    @payload[:answers] = Hash[@payload[:answers].map { |key, value| [key, value] }] if validator_opts[:answers_not_array]
+    @payload[:audit] = Hash[@payload[:audit].map { |key, value| [key, value] }] if validator_opts[:audit_not_array]
     @payload.delete(:answers) unless remove_answers.nil?
     @payload.delete(:audit) if validator_opts[:remove_audit]
     @payload[:config] = [@payload[:config].to_s] if validator_opts[:config_not_object]
@@ -2002,13 +2131,9 @@ class RequestHelper
     @payload[:config] = [@payload[:config].to_s] if validator_opts[:config_not_object]
     @payload[:config] = @payload[:config].each { |k, v| @payload[:config][:practice] = true } if validator_opts[:practice]
 
-    check_code = validator_opts[:check_code_not_uuid] ? parsed_response_pupil_auth['checkCode'].gsub('-','') : parsed_response_pupil_auth['checkCode']
-    {"version": 2, "checkCode": check_code,
-     "schoolUUID": parsed_response_pupil_auth['school']['uuid'],
-     "archive": LZString::UTF16.compress(@payload.to_json)
-    }
-    {payload: @payload, submission_message: {"version": 2, "checkCode": check_code,
-                                             "schoolUUID": parsed_response_pupil_auth['school']['uuid'],
-                                             "archive": LZString::UTF16.compress(@payload.to_json)}}
+    check_code = validator_opts[:check_code_not_uuid] ? parsed_response_pupil_auth['checkCode'].gsub('-', '') : parsed_response_pupil_auth['checkCode']
+    { payload: @payload, submission_message: { "version": 3, "checkCode": check_code,
+                                               "schoolUUID": parsed_response_pupil_auth['school']['uuid'],
+                                               "archive": LZString::Base64.compress(@payload.to_json) } }
   end
 end

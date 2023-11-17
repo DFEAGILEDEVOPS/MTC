@@ -8,7 +8,7 @@ const redisCacheService = require('../../../services/data-access/redis-cache.ser
 
 const service = require('../../../services/attendance.service')
 const attendanceCodeDataService = require('../../../services/data-access/attendance-code.data.service')
-const { PupilFrozenService } = require('../../../services/pupil-frozen.service/pupil-frozen.service')
+const { PupilFrozenService } = require('../../../services/pupil-frozen/pupil-frozen.service')
 
 describe('attendanceService', () => {
   afterEach(() => {

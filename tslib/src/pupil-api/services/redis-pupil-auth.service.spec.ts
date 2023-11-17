@@ -2,11 +2,11 @@ import moment from 'moment'
 import type { IPupilLoginMessage } from './redis-pupil-auth.service'
 import { RedisPupilAuthenticationService } from './redis-pupil-auth.service'
 import type { IRedisService } from './redis.service'
-import type { IQueueMessageService } from './queue-message.service'
+import type { IServiceBusQueueService } from '../../azure/service-bus.queue.service'
 
 let sut: RedisPupilAuthenticationService
 let redisServiceMock: IRedisService
-let messageDispatchMock: IQueueMessageService
+let messageDispatchMock: IServiceBusQueueService
 
 const RedisServiceMock = jest.fn<IRedisService, any>(() => ({
   get: jest.fn(),
@@ -17,7 +17,7 @@ const RedisServiceMock = jest.fn<IRedisService, any>(() => ({
   expire: jest.fn()
 }))
 
-const MessageDispatchMock = jest.fn<IQueueMessageService, any>(() => ({
+const MessageDispatchMock = jest.fn<IServiceBusQueueService, any>(() => ({
   dispatch: jest.fn()
 }))
 

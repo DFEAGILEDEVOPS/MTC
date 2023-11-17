@@ -5,7 +5,7 @@ const sut = require('../../../services/prepare-check.service')
 const pinService = require('../../../services/pin.service')
 const redisService = require('../../../services/data-access/redis-cache.service')
 const moment = require('moment')
-const { PupilFrozenService } = require('../../../services/pupil-frozen.service/pupil-frozen.service')
+const { PupilFrozenService } = require('../../../services/pupil-frozen/pupil-frozen.service')
 
 let check
 

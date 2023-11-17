@@ -7,8 +7,7 @@ scriptDir="$( cd "$( dirname "$0" )" >/dev/null && pwd )"
 envFile=${scriptDir}/../.env
 [[ -f ${envFile} ]] && source ${envFile}
 applicationInsightsCode=${APPINSIGHTS_INSTRUMENTATIONKEY}
-authPingUrl=${AUTH_PING_URL:-"http://localhost:3003/ping"}
-authUrl=${AUTH_URL:-"http://localhost:3003/auth"}
+apiBaseUrl=${PUPIL_API_BASE_URL:-"http://localhost:3003"}
 checkStartAPIErrorDelay=${CHECK_START_ERROR_DELAY:-"2000"}
 checkStartAPIErrorMaxAttempts=${CHECK_START_MAX_ATTEMPTS:-"3"}
 checkSubmissionAPIErrorDelay=${CHECK_SUBMISSION_ERROR_DELAY:-"30000"}
@@ -34,8 +33,7 @@ websiteOffline=${WEBSITE_OFFLINE:-"false"}
 cat <<EOF > config.json
 {
   "applicationInsightsInstrumentationKey": "$applicationInsightsCode",
-  "authPingURL": "$authPingUrl",
-  "authURL": "$authUrl",
+  "apiBaseUrl": "$apiBaseUrl",
   "checkStartAPIErrorDelay": $checkStartAPIErrorDelay,
   "checkStartAPIErrorMaxAttempts": $checkStartAPIErrorMaxAttempts,
   "checkSubmissionAPIErrorMaxAttempts": $checkSubmissionAPIErrorMaxAttempts,

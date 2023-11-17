@@ -122,11 +122,6 @@ module.exports = {
     },
     SendToAppInsights: process.env.APPINSIGHTS_WINSTON_LOGGER || false
   },
-  Tokens: {
-    // 12 hours default expiry
-    jwtTimeOutHours: process.env.JWT_TIMEOUT_HOURS || 12,
-    sasTimeOutHours: process.env.SAS_TIMEOUT_HOURS || 120
-  },
   Monitoring: {
     ApplicationInsights: {
       Key: process.env.APPINSIGHTS_INSTRUMENTATIONKEY,
@@ -175,7 +170,8 @@ module.exports = {
     pupilEdit: {}.hasOwnProperty.call(process.env, 'FEATURE_TOGGLE_PUPIL_EDIT') ? toBool(process.env.FEATURE_TOGGLE_PUPIL_EDIT) : true,
     schoolHomeViewV2: {}.hasOwnProperty.call(process.env, 'FEATURE_TOGGLE_SCHOOL_HOME_VIEW_V2') ? toBool(process.env.FEATURE_TOGGLE_SCHOOL_HOME_VIEW_V2) : true,
     schoolPinGenFallbackEnabled: {}.hasOwnProperty.call(process.env, 'FEATURE_TOGGLE_SCHOOL_PIN_GEN_FALLBACK') ? toBool(process.env.FEATURE_TOGGLE_SCHOOL_PIN_GEN_FALLBACK) : false,
-    schoolResultFetchFromDbEnabled: {}.hasOwnProperty.call(process.env, 'FEATURE_TOGGLE_SCHOOL_RESULTS_ALLOW_FETCH_FROM_DB') ? toBool(process.env.FEATURE_TOGGLE_SCHOOL_RESULTS_ALLOW_FETCH_FROM_DB) : true
+    schoolResultFetchFromDbEnabled: {}.hasOwnProperty.call(process.env, 'FEATURE_TOGGLE_SCHOOL_RESULTS_ALLOW_FETCH_FROM_DB') ? toBool(process.env.FEATURE_TOGGLE_SCHOOL_RESULTS_ALLOW_FETCH_FROM_DB) : true,
+    checkSubmissionApi: {}.hasOwnProperty.call(process.env, 'FEATURE_TOGGLE_CHECK_SUBMISSION_API') ? toBool(process.env.FEATURE_TOGGLE_CHECK_SUBMISSION_API) : true
   },
   SchoolPinGeneratorFunction: {
     FunctionUrl: process.env.SCHOOL_PIN_GEN_FUNCTION_URL || 'http://localhost:7071/api/school-pin-http-service'
@@ -185,5 +181,13 @@ module.exports = {
       BaseAdminUrl: process.env.FUNCTIONS_THROTTLED_BASE_ADMIN_URL || 'http://localhost:7073/admin/functions',
       MasterKey: process.env.FUNCTIONS_THROTTLED_MASTER_KEY || ''
     }
+  },
+  PupilApi: {
+    Submission: {
+      JwtSecret: process.env.CHECK_SUBMIT_JWT_SECRET ?? '',
+      JwtExpiry: process.env.CHECK_SUBMIT_JWT_EXPIRY ?? '5d',
+      sasTimeOutHours: process.env.SAS_TIMEOUT_HOURS || 120
+    },
+    baseUrl: process.env.PUPIL_API_BASE_URL || 'http://localhost:3003'
   }
 }

@@ -383,7 +383,7 @@ Given(/^I have completed a check with duplicate questions$/) do
 end
 
 Then(/^I should see the ps report showing the first input$/) do
-  @answers = JSON.parse(LZString::UTF16.decompress(@recieved_check['archive']))['answers']
+  @answers = JSON.parse(LZString::Base64.decompress(@recieved_check['archive']))['answers']
   grouped = @answers.group_by {|row| [row['sequenceNumber'], row['question']]}
   duplicates = grouped.values.select {|a| a.size > 1}
   expected_answers = duplicates.map {|d| d.first['answer']}
@@ -487,7 +487,9 @@ Given(/^I have completed a check that has no device information$/) do
   response_pupil_auth = RequestHelper.auth(school_password, pupil_pin)
   @parsed_response_pupil_auth = JSON.parse(response_pupil_auth.body)
   @submission_hash = RequestHelper.build_check_submission_message(@parsed_response_pupil_auth,10,1,nil)
-  AzureQueueHelper.create_check_submission_message(@submission_hash[:submission_message].to_json)
+  payload = @submission_hash[:submission_message]
+  jwt =  @submission_hash[:payload][:tokens]['checkSubmission']["token"]
+  RequestHelper.submit_check(jwt, payload)
   school_uuid = @parsed_response_pupil_auth['school']['uuid']
   @check_code = @parsed_response_pupil_auth['checkCode']
   AzureTableHelper.wait_for_received_check(school_uuid, @check_code)

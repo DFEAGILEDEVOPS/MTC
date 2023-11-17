@@ -9,10 +9,10 @@ const functionName = 'check-validator'
 const serviceBusQueueTrigger: AzureFunction = async function (context: Context, validateCheckMessage: ValidateCheckMessageV1): Promise<void> {
   const start = performance.now()
   const version = validateCheckMessage.version
-  context.log.info(`${functionName}: version:${version} message received for checkCode ${validateCheckMessage.checkCode}`)
+  context.log.info(`${functionName}: version:${version} check validation message received for checkCode ${validateCheckMessage.checkCode}`)
   try {
     if (version !== 1) {
-      throw new Error(`Message schema version ${version} unsupported`)
+      throw new Error(`Check validation message schema version ${version} unsupported`)
     }
     await validator.validate(context.bindings as ICheckValidatorFunctionBindings, validateCheckMessage, context.log)
   } catch (error: any) {

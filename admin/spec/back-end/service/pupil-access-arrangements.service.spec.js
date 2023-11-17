@@ -5,7 +5,7 @@ const preparedCheckSyncService = require('../../../services/prepared-check-sync.
 const pupilAccessArrangementsService = require('../../../services/pupil-access-arrangements.service')
 const pupilDataService = require('../../../services/data-access/pupil.data.service')
 const pupilAccessArrangementsDataService = require('../../../services/data-access/pupil-access-arrangements.data.service')
-const { PupilFrozenService } = require('../../../services/pupil-frozen.service/pupil-frozen.service')
+const { PupilFrozenService } = require('../../../services/pupil-frozen/pupil-frozen.service')
 const uuid = require('uuid')
 const moment = require('moment')
 
