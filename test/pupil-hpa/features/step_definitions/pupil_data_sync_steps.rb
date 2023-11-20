@@ -15,7 +15,7 @@ end
 
 Then(/^all answers events and inputs match$/) do
   check_result = AzureTableHelper.wait_for_received_check(@storage_school['uuid'], @storage_pupil['checkCode'])
-  @archive = JSON.parse(LZString::UTF16.decompress(check_result['archive']))
+  @archive = JSON.parse(LZString::Base64.decompress(check_result['archive']))
   check_id = SqlDbHelper.get_check_id(@storage_pupil['checkCode'])
   SqlDbHelper.wait_for_check_result_row(check_id)
   check_result_id = SqlDbHelper.get_check_result_id(check_id)

@@ -1,6 +1,7 @@
 import { type AzureFunction, type Context, type HttpRequest } from '@azure/functions'
 import config from '../../config'
 import { FakeSubmittedCheckMessageGeneratorService } from './fake-submitted-check-generator.service'
+import { SubmittedCheckVersion } from '../../schemas/SubmittedCheckVersion'
 import { SchoolChecksDataService } from './school-checks.data.service'
 
 const functionName = 'util-submit-check'
@@ -20,7 +21,6 @@ export interface IUtilSubmitCheckConfig {
 const httpTrigger: AzureFunction = async function (context: Context, req: HttpRequest): Promise<void> {
   if (!config.DevTestUtils.TestSupportApi) {
     context.log(`${functionName} exiting as config.DevTestUtils.TestSupportApi is not enabled (default behaviour)`)
-    context.done()
     return
   }
 
@@ -33,6 +33,18 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
       numberOfDuplicateAnswers: req.body?.answerNumberOfDuplicates
     }
   }
+
+  const messageVersion: string = req.body?.messageVersion ?? SubmittedCheckVersion.V3
+
+  if (messageVersion.toString() !== SubmittedCheckVersion.V2.toString() &&
+    messageVersion.toString() !== SubmittedCheckVersion.V3.toString()) {
+    context.res = {
+      status: 400,
+      body: 'unknown messageVersion specified'
+    }
+    return
+  }
+
   context.log(`${functionName} config parsed as: ${JSON.stringify(funcConfig)})`)
   const fakeSubmittedCheckBuilder = new FakeSubmittedCheckMessageGeneratorService()
   fakeSubmittedCheckBuilder.setLogger(context.log)
@@ -40,11 +52,14 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
   if (funcConfig.schoolUuid !== undefined) {
     const liveCheckCodes = await liveSchoolChecksDataService.fetchBySchoolUuid(funcConfig.schoolUuid)
     const promises = liveCheckCodes.map(async record => {
-      return fakeSubmittedCheckBuilder.createSubmittedCheckMessage(record.checkCode)
+      if (messageVersion === SubmittedCheckVersion.V2.toString()) {
+        return fakeSubmittedCheckBuilder.createV2Message(record.checkCode)
+      } else {
+        return fakeSubmittedCheckBuilder.createV3Message(record.checkCode)
+      }
     })
     const messages = await Promise.all(promises)
     context.bindings.submittedCheckQueue = messages
-    context.done()
     return
   }
 
@@ -61,9 +76,14 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
   const messages = []
   for (let index = 0; index < funcConfig.checkCodes.length; index++) {
     const checkCode = funcConfig.checkCodes[index]
-    messages.push(await fakeSubmittedCheckBuilder.createSubmittedCheckMessage(checkCode))
+    if (messageVersion === SubmittedCheckVersion.V2.toString()) {
+      messages.push(await fakeSubmittedCheckBuilder.createV2Message(checkCode))
+      context.bindings.submittedCheckQueue = messages
+    } else {
+      messages.push(await fakeSubmittedCheckBuilder.createV3Message(checkCode))
+      context.bindings.checkSubmissionQueue = messages
+    }
   }
-  context.bindings.submittedCheckQueue = messages
 }
 
 export default httpTrigger

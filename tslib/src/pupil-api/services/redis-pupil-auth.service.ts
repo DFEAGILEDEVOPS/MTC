@@ -3,9 +3,10 @@ import * as moment from 'moment'
 import type { IRedisService } from './redis.service'
 import { RedisService } from './redis.service'
 import config from '../config'
-import { SbQueueMessageService } from './queue-message.service'
-import type { IQueueMessageService } from './queue-message.service'
+import { ServiceBusQueueService } from '../../azure/service-bus.queue.service'
+import type { IServiceBusQueueService } from '../../azure/service-bus.queue.service'
 import { PingService } from './ping.service'
+import { ServiceBusQueueName } from '../../azure/service-bus-queue.names'
 
 export interface IPupilAuthenticationService {
   authenticate (schoolPin?: string, pupilPin?: string, buildVersion?: string): Promise<object | undefined>
@@ -22,16 +23,16 @@ export interface IPupilLoginMessage {
 
 export class RedisPupilAuthenticationService implements IPupilAuthenticationService {
   private readonly redisService: IRedisService
-  private readonly queueService: IQueueMessageService
+  private readonly queueService: IServiceBusQueueService
   private readonly pingService: PingService
 
-  constructor (redisService?: IRedisService, queueService?: IQueueMessageService) {
+  constructor (redisService?: IRedisService, queueService?: IServiceBusQueueService) {
     if (redisService === undefined) {
       redisService = new RedisService()
     }
     this.redisService = redisService
     if (queueService === undefined) {
-      queueService = new SbQueueMessageService()
+      queueService = new ServiceBusQueueService()
     }
     this.queueService = queueService
     this.pingService = new PingService()
@@ -76,7 +77,7 @@ export class RedisPupilAuthenticationService implements IPupilAuthenticationServ
     }
     await this.queueService.dispatch({
       body: pupilLoginMessage
-    })
+    }, ServiceBusQueueName.pupilLogin)
     return preparedCheckEntry
   }
 

@@ -99,6 +99,7 @@ GEM
       multi_xml (>= 0.5.2)
     i18n (1.14.1)
       concurrent-ruby (~> 1.0)
+    jwt (2.7.1)
     launchy (2.5.2)
       addressable (~> 2.8)
     lz_string (0.1.2)
@@ -198,6 +199,7 @@ DEPENDENCIES
   cucumber (>= 4.0.0)
   dotenv
   httparty (>= 0.21.0)
+  jwt
   lz_string
   mongo
   numbers_in_words (>= 0.4.0)

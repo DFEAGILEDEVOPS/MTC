@@ -11,7 +11,7 @@ import {
 } from '../storage/storageKey'
 import { HttpService } from '../http/http.service'
 import { APP_INITIALIZER } from '@angular/core'
-import { loadConfigMockService } from '../config/config.service'
+import { APP_CONFIG, loadConfigMockService } from '../config/config.service'
 import { Meta } from '@angular/platform-browser'
 import { AuditServiceMock } from '../audit/audit.service.mock'
 import { AuditService } from '../audit/audit.service'
@@ -66,12 +66,10 @@ describe('UserService', () => {
 
   describe('login', () => {
     it('should persist response body to storage', () => {
-      // setup
+
       httpServiceSpy.postJson.and.returnValue(Promise.resolve(mockLoginResponseBody))
-      // execute
       userService.login('abc12345', '9999a').then(() => {
 
-          // tests
           try {
             const questionSpyArgs = storageServiceSpy.setQuestions.calls.argsFor(0)
             const configSpyCalls = storageServiceSpy.setConfig.calls.argsFor(0)
@@ -119,13 +117,30 @@ describe('UserService', () => {
       expect(httpServiceSpy.postJson).toHaveBeenCalledTimes(1)
     })
 
+    it('should post expected credentials to correct endpoint', async () => {
+      httpServiceSpy.postJson.and.returnValue(Promise.resolve(mockLoginResponseBody))
+      const schoolPin = 'abc12345'
+      const pupilPin = '9999a'
+      const expectedUrl = `${APP_CONFIG.apiBaseUrl}/auth`
+
+      await userService.login(schoolPin, pupilPin)
+
+      expect(httpServiceSpy.postJson).toHaveBeenCalledWith(expectedUrl, {
+        schoolPin,
+        pupilPin,
+        buildVersion: undefined
+      })
+    })
+
     it('should add a LoginSucess audit event on successful login', async () => {
       const auditServiceSpy = spyOn(auditService, 'addEntry')
-      // setup
+
       httpServiceSpy.postJson.and.returnValue(Promise.resolve(mockLoginResponseBody))
-      // execute
-      await userService.login('abc12345', '9999a')
-      // tests
+
+      const schoolPin = 'abc12345'
+      const pupilPin = '9999a'
+      await userService.login(schoolPin, pupilPin)
+
       expect(auditService.addEntry).toHaveBeenCalled()
       const auditArgs = auditServiceSpy.calls.argsFor(0)
       expect(auditArgs[0] instanceof LoginSuccessAuditEntryClass).toBeTrue()

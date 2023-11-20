@@ -28,8 +28,8 @@ class ReceivedCheckDecompressor
 
   def self.decompress_archive_message
     archive = get_archive
-    LZString::UTF16.decompress(archive)
+    LZString::Base64.decompress(archive)
     out_file = File.new(ENV['HOME'] + "/received_check_message_#{ARGV[1]}.json", "w")
-    out_file.puts(LZString::UTF16.decompress(archive))
+    out_file.puts(LZString::Base64.decompress(archive))
   end
 end

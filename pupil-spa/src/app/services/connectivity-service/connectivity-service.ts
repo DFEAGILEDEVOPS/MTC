@@ -54,7 +54,7 @@ export class ConnectivityService {
 
   async canAccessPupilAuthURL() {
     return new Promise(async (resolve) => {
-      await this.http.get(APP_CONFIG.authPingURL, { observe: 'response' })
+      await this.http.get(`${APP_CONFIG.apiBaseUrl}/ping`, { observe: 'response' })
         .pipe(first())
         .toPromise()
         .then(data => {

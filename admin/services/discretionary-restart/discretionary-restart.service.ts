@@ -1,4 +1,4 @@
-import { PupilFrozenService } from '../pupil-frozen.service/pupil-frozen.service'
+import { PupilFrozenService } from '../pupil-frozen/pupil-frozen.service'
 import * as uuid from 'uuid'
 import { DiscretionaryRestartDataService } from './data-access/discretionary-restart.data.service'
 import { isNumber } from 'ramda-adjunct'

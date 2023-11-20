@@ -186,4 +186,16 @@ router.post(
   techSupportController.postPsReportRun
 )
 
+router.get(
+  '/check-submit',
+  isAuthenticated([roles.techSupport]),
+  techSupportController.getCheckSubmit
+)
+
+router.post(
+  '/check-submit',
+  isAuthenticated([roles.techSupport]),
+  techSupportController.postCheckSubmit
+)
+
 module.exports = router

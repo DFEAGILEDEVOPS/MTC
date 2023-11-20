@@ -28,9 +28,9 @@ export class LoginErrorDiagnosticsService {
       this.loginErrorService.changeMessage('Internet disconnected');
       return;
     }
-    const canAccessAuthURL = await this.canAccessURL(APP_CONFIG.authPingURL);
+    const canAccessAuthURL = await this.canAccessURL(`${APP_CONFIG.apiBaseUrl}/ping`);
     if (!canAccessAuthURL) {
-      this.loginErrorService.changeMessage(`Connection refused to ${APP_CONFIG.authPingURL}`);
+      this.loginErrorService.changeMessage(`Connection refused to ${APP_CONFIG.apiBaseUrl}/ping`);
     }
   }
 

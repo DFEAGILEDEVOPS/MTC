@@ -28,8 +28,9 @@ export interface PreparedCheck {
     pupilPreferences: QueueAuthToken
     pupilFeedback: QueueAuthToken
     checkComplete?: QueueAuthToken
-    jwt: {
+    checkSubmission: {
       token: string
+      url: string
     }
   }
 }
