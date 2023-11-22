@@ -16,7 +16,7 @@
 
             <div id="red-card" class="govuk-panel govuk-panel custom-card red-card" tabindex="0">
                 <div class="govuk-panel__body custom-card-small-text">
-                    Checks with errors
+                    Checks that require action
                 </div>
                 <div class="custom-card-large-text">
                     <%= pupilStatusViewData.pupilsWithErrorsCount %>
@@ -28,7 +28,7 @@
 
             <div id="orange-card" class="govuk-panel govuk-panel custom-card orange-card" tabindex="0">
                 <div class="govuk-panel__body custom-card-small-text">
-                    Checks not completed
+                    Pupils not started
                 </div>
                 <div class="custom-card-large-text">
                     <%= pupilStatusViewData.pupilsNotStartedCount %>
@@ -40,7 +40,7 @@
 
             <div id="blue-card" class="govuk-panel govuk-panel custom-card blue-card" tabindex="0">
                 <div class="govuk-panel__body custom-card-small-text">
-                    Checks not being taken
+                    Pupils in progress
                 </div>
                 <div class="custom-card-large-text">
                     <%= pupilStatusViewData.pupilsNotAttendingCount %>
@@ -52,7 +52,7 @@
 
             <div id="green-card" class="govuk-panel govuk-panel custom-card green-card" tabindex="0">
                 <div class="govuk-panel__body custom-card-small-text">
-                    Checks completed
+                    Pupils completed
                 </div>
                 <div class="custom-card-large-text">
                     <%= pupilStatusViewData.pupilsCompletedCount %>
@@ -66,7 +66,7 @@
                      data-module="govuk-details">
                 <summary class="govuk-details__summary">
                         <span class="govuk-details__summary-text">
-                          Checks with errors
+                          Checks that require action
                         </span>
                 </summary>
                 <div class="govuk-details__text">
@@ -112,7 +112,7 @@
             <details id="orange-card-details" class="govuk-details orange-card-details" data-module="govuk-details">
                 <summary class="govuk-details__summary">
                         <span class="govuk-details__summary-text">
-                            Pupils that have not completed the check
+                            Pupils not started
                         </span>
                 </summary>
                 <div class="govuk-details__text">
@@ -174,7 +174,7 @@
             <details id="blue-card-details" class="govuk-details blue-card-details" data-module="govuk-details">
                 <summary class="govuk-details__summary">
                         <span class="govuk-details__summary-text">
-                            Pupils not taking the check
+                            Pupils in progress
                         </span>
                 </summary>
                 <div class="govuk-details__text">
@@ -217,7 +217,7 @@
             <details id="green-card-details" class="govuk-details green-card-details" data-module="govuk-details">
                 <summary class="govuk-details__summary">
                         <span class="govuk-details__summary-text">
-                          Checks completed
+                          Pupils completed
                         </span>
                 </summary>
                 <div class="govuk-details__text">
@@ -301,7 +301,7 @@
                                             aria-expanded="true"
                                             aria-controls="step-panel-1">
                                         <span class="js-step-title-text">
-                                            Checks with errors
+                                            Checks that require action
                                         </span>
                                         <span
                                                 class="app-step-nav__toggle-link js-toggle-link"
@@ -356,7 +356,7 @@
                               <button class="app-step-nav__button app-step-nav__button--title js-step-title-button"
                                       aria-expanded="true" aria-controls="step-panel-2">
                                   <span class="js-step-title-text">
-                                    Pupils that have not completed the check
+                                    Pupils not started
                                    </span>
                                   <span class="app-step-nav__toggle-link js-toggle-link"
                                         aria-hidden="true">hide
@@ -410,7 +410,7 @@
                                 <button class="app-step-nav__button app-step-nav__button--title js-step-title-button"
                                         aria-expanded="true" aria-controls="step-panel-3">
                                       <span class="js-step-title-text">
-                                        Pupils not taking the check
+                                        Pupils in progress
                                        </span>
                                       <span class="app-step-nav__toggle-link js-toggle-link"
                                             aria-hidden="true">hide
@@ -442,7 +442,7 @@
                                   <button class="app-step-nav__button app-step-nav__button--title js-step-title-button"
                                           aria-expanded="true" aria-controls="step-panel-4">
                                       <span class="js-step-title-text">
-                                        Checks completed
+                                        Pupils completed
                                        </span>
                                       <span class="app-step-nav__toggle-link js-toggle-link"
                                             aria-hidden="true">hide
