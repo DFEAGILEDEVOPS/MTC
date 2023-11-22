@@ -22,7 +22,7 @@ describe('pupilStatusPresenter', () => {
       status: 'Not started'
     },
     {
-      status: 'Incomplete'
+      status: 'Check started'
     },
     {
       status: 'Processing'
@@ -47,6 +47,9 @@ describe('pupilStatusPresenter', () => {
     },
     {
       status: 'Complete'
+    },
+    {
+      status: 'Check started'
     }
   ]
   describe('getPresentationData', () => {
@@ -56,19 +59,19 @@ describe('pupilStatusPresenter', () => {
     }
     test('collects pupils with errors', () => {
       const pupilStatusViewData = pupilStatusPresenter.getPresentationData(pupils, checkWindowData)
-      expect(pupilStatusViewData.pupilsWithErrors.length).toBe(3)
+      expect(pupilStatusViewData.pupilsRequireAction.length).toBe(2)
     })
     test('collects pupils that have not started', () => {
       const pupilStatusViewData = pupilStatusPresenter.getPresentationData(pupils, checkWindowData)
-      expect(pupilStatusViewData.pupilsNotStarted.length).toBe(4)
+      expect(pupilStatusViewData.pupilsNotStarted.length).toBe(3)
     })
     test('collects pupils that are not attending', () => {
       const pupilStatusViewData = pupilStatusPresenter.getPresentationData(pupils, checkWindowData)
-      expect(pupilStatusViewData.pupilsNotAttending.length).toBe(6)
+      expect(pupilStatusViewData.pupilsInProgress.length).toBe(1)
     })
     test('collects pupils that are complete', () => {
       const pupilStatusViewData = pupilStatusPresenter.getPresentationData(pupils, checkWindowData)
-      expect(pupilStatusViewData.pupilsCompleted.length).toBe(1)
+      expect(pupilStatusViewData.pupilsCompleted.length).toBe(7)
     })
     test('displays pupils that have pin generated as not started', () => {
       const notStartedPupils = [
@@ -81,7 +84,6 @@ describe('pupilStatusPresenter', () => {
       ]
       const pupilStatusViewData = pupilStatusPresenter.getPresentationData(notStartedPupils, checkWindowData)
       expect(pupilStatusViewData.pupilsNotStarted[0].status).toBe('Not started')
-      expect(pupilStatusViewData.pupilsNotStarted[1].status).toBe('Not started')
     })
     test('displays pupils that have logged in as not started', () => {
       const notStartedPupils = [
@@ -94,7 +96,6 @@ describe('pupilStatusPresenter', () => {
       ]
       const pupilStatusViewData = pupilStatusPresenter.getPresentationData(notStartedPupils, checkWindowData)
       expect(pupilStatusViewData.pupilsNotStarted[0].status).toBe('Not started')
-      expect(pupilStatusViewData.pupilsNotStarted[1].status).toBe('Not started')
     })
     test('displays pupils that have unused restarts as not started', () => {
       const notStartedPupils = [
@@ -109,22 +110,22 @@ describe('pupilStatusPresenter', () => {
       expect(pupilStatusViewData.pupilsNotStarted[0].status).toBe('Not started')
       expect(pupilStatusViewData.pupilsNotStarted[1].status).toBe('Not started')
     })
-    test('displays pupils with incomplete status as "Pupil check not received"', () => {
-      const pupilsWithErrors = [
+    test('displays pupils with Overdue status as "Pupil check not received"', () => {
+      const pupilsRequireAction = [
         {
           status: 'Error in processing'
         },
         {
-          status: 'Incomplete'
+          status: 'Overdue'
         }
       ]
-      const pupilStatusViewData = pupilStatusPresenter.getPresentationData(pupilsWithErrors, checkWindowData)
-      expect(pupilStatusViewData.pupilsWithErrors[0].status).toBe('Error in processing')
-      expect(pupilStatusViewData.pupilsWithErrors[1].status).toBe('Pupil check not received')
+      const pupilStatusViewData = pupilStatusPresenter.getPresentationData(pupilsRequireAction, checkWindowData)
+      expect(pupilStatusViewData.pupilsRequireAction[0].status).toBe('Error in processing')
+      expect(pupilStatusViewData.pupilsRequireAction[1].status).toBe('Pupil check not received')
     })
     test('collects total pupil count', () => {
       const pupilStatusViewData = pupilStatusPresenter.getPresentationData(pupils, checkWindowData)
-      expect(pupilStatusViewData.totalPupilsCount).toBe(14)
+      expect(pupilStatusViewData.totalPupilsCount).toBe(15)
     })
     test('collects formatted checkEndDate', () => {
       const pupilStatusViewData = pupilStatusPresenter.getPresentationData(pupils, checkWindowData)

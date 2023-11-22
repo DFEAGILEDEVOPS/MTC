@@ -46,7 +46,8 @@ const pupilStatusService = {
       pupilLoginDate: pupil.pupilLoginDate,
       restartAvailable: pupil.restartAvailable,
       processingFailed: pupil.processingFailed,
-      reason: pupil.reason
+      reason: pupil.reason,
+      checkStartedAt: pupil.checkStartedAt
     })
     return newPupil
   },
@@ -66,6 +67,7 @@ const pupilStatusService = {
    * @property {Date} pupilLoginDate
    * @property {Boolean} restartAvailable
    * @property {String} reason
+   * @property {Date} checkStartedAt
    */
 
   /**
@@ -88,7 +90,8 @@ const pupilStatusService = {
       pupilLoginDate,
       restartAvailable,
       processingFailed,
-      reason
+      reason,
+      checkStartedAt
     } = processStatus
 
     if (pinExpiresAt && !moment.isMoment(pinExpiresAt)) {
@@ -119,6 +122,15 @@ const pupilStatusService = {
     } else if (
       isPositive(currentCheckId) &&
       isNotNil(pupilLoginDate) &&
+      isNotNil(checkStartedAt) &&
+      isFalse(checkReceived) &&
+      isFalse(checkComplete)
+    ) {
+      status = 'Check started'
+    } else if (
+      isPositive(currentCheckId) &&
+      isNotNil(pupilLoginDate) &&
+      isNil(checkStartedAt) &&
       isFalse(checkReceived) &&
       isFalse(checkComplete)
     ) {
@@ -126,7 +138,7 @@ const pupilStatusService = {
       if (
         isNotReceived(pupilLoginDate, notReceivedExpiryInMinutes, moment.utc())
       ) {
-        status = 'Incomplete'
+        status = 'Overdue'
       }
     } else if (
       isNotNil(pupilLoginDate) &&

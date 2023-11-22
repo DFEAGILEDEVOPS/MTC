@@ -126,6 +126,7 @@ describe('pupil-status.service', () => {
         checkComplete: false,
         checkReceived: false,
         pupilLoginDate: moment(),
+        checkStartedAt: null,
         notReceivedExpiryInMinutes: 30,
         pupilCheckComplete: false,
         pinExpiresAt: moment().add(4, 'hours')
@@ -206,7 +207,7 @@ describe('pupil-status.service', () => {
         pupilCheckComplete: false,
         pinExpiresAt: moment().add(3, 'hours')
       })
-      expect(status).toBe('Incomplete')
+      expect(status).toBe('Overdue')
     })
 
     test('it can detect a pupil was allocated a check that then expired', () => {
@@ -258,6 +259,22 @@ describe('pupil-status.service', () => {
       // this would need the 'restartAvailable' flag to be true, or alternatively an 'isRestart' or a 'checkCount' field
       // on the restart e.g. Restart = checkCount > 1
       expect(status).toBe('Not started')
+    })
+
+    test('it detects an official check that has been started but not submitted', () => {
+      const status = pupilStatusService.getProcessStatusV2({
+        attendanceId: null,
+        currentCheckId: 1,
+        restartAvailable: false,
+        checkComplete: false,
+        checkReceived: false,
+        checkStartedAt: moment().subtract(2, 'minutes'),
+        pupilLoginDate: moment().subtract(3, 'minutes'),
+        notReceivedExpiryInMinutes: 30,
+        pupilCheckComplete: false,
+        pinExpiresAt: null
+      })
+      expect(status).toBe('Check started')
     })
   })
 

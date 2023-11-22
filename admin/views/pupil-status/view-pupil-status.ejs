@@ -2,9 +2,9 @@
 <main class="govuk-main-wrapper" id="main-content" role="main">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            <% if (pupilStatusViewData.pupilsWithErrorsCount > 0) { %>
+            <% if (pupilStatusViewData.pupilsRequireActionCount > 0) { %>
                 <div class="govuk-body govuk-warning-message govuk-!-margin-bottom-7">
-                    <%= pupilStatusViewData.pupilsWithErrorsCount %> <%= pupilStatusViewData.pupilsWithErrorsCount > 1 ? 'Checks' : 'Check' %>
+                    <%= pupilStatusViewData.pupilsRequireActionCount %> <%= pupilStatusViewData.pupilsRequireActionCount > 1 ? 'Checks' : 'Check' %>
                     with errors
                 </div>
             <% } %>
@@ -19,7 +19,7 @@
                     Checks that require action
                 </div>
                 <div class="custom-card-large-text">
-                    <%= pupilStatusViewData.pupilsWithErrorsCount %>
+                    <%= pupilStatusViewData.pupilsRequireActionCount %>
                 </div>
                 <div class="govuk-panel__body custom-card-small-text">
                     of <%= pupilStatusViewData.totalPupilsCount %> pupils
@@ -43,7 +43,7 @@
                     Pupils in progress
                 </div>
                 <div class="custom-card-large-text">
-                    <%= pupilStatusViewData.pupilsNotAttendingCount %>
+                    <%= pupilStatusViewData.pupilsInProgressCount %>
                 </div>
                 <div class="govuk-panel__body custom-card-small-text">
                     of <%= pupilStatusViewData.totalPupilsCount %> pupils
@@ -70,7 +70,7 @@
                         </span>
                 </summary>
                 <div class="govuk-details__text">
-                    <% if (pupilStatusViewData.pupilsWithErrors && pupilStatusViewData.pupilsWithErrors.length > 0) { %>
+                    <% if (pupilStatusViewData.pupilsRequireAction && pupilStatusViewData.pupilsRequireAction.length > 0) { %>
                         <% if (pupilStatusViewData.remainingLiveCheckDays < 0) {%>
                             <%- partial('partials/pupil-register/_check-window-has-closed') %>
                         <% } %>
@@ -87,7 +87,7 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <% pupilStatusViewData.pupilsWithErrors.forEach((p) => { %>
+                            <% pupilStatusViewData.pupilsRequireAction.forEach((p) => { %>
                                 <tr class="govuk-table__row">
                                     <td scope="row" class="govuk-!-display-block govuk-table__cell govuk-warning-item">
                                         <span class="govuk-!-font-weight-bold name-text-wrap"><%= p.fullName %></span>
@@ -178,7 +178,7 @@
                         </span>
                 </summary>
                 <div class="govuk-details__text">
-                    <% if (pupilStatusViewData.pupilsNotAttending && pupilStatusViewData.pupilsNotAttending.length > 0) { %>
+                    <% if (pupilStatusViewData.pupilsInProgress && pupilStatusViewData.pupilsInProgress.length > 0) { %>
                         <table id="pupil-status" data-name="filterablePupilsList"
                                class="govuk-!-margin-top-0 govuk-table govuk-spacious">
                             <caption class="govuk-body govuk-table__caption"></caption>
@@ -192,7 +192,7 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <% pupilStatusViewData.pupilsNotAttending.forEach((p) => { %>
+                            <% pupilStatusViewData.pupilsInProgress.forEach((p) => { %>
                                 <tr class="govuk-table__row">
                                     <td class="govuk-table__cell">
                                         <span class="govuk-!-font-weight-bold name-text-wrap"><%= p.fullName %></span>
@@ -202,7 +202,7 @@
                                         <% } %>
                                     </td>
                                     <td class="govuk-table__cell">
-                                        <%= p.reason %>
+                                        <%= p.status %>
                                     </td>
                                 </tr>
                             <% }) %>
