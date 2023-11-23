@@ -5,75 +5,98 @@ const moment = require('moment')
 const pupilStatusPresenter = require('../../../helpers/pupil-status-presenter')
 
 describe('pupilStatusPresenter', () => {
-  const pupils = [
-    {
-      status: 'Error in processing'
-    },
-    {
-      status: 'Error in processing'
-    },
-    {
-      status: 'Not started'
-    },
-    {
-      status: 'Not started'
-    },
-    {
-      status: 'Not started'
-    },
-    {
-      status: 'Check started'
-    },
-    {
-      status: 'Processing'
-    },
-    {
-      reason: 'Incorrect registration'
-    },
-    {
-      reason: 'Just arrived with EAL'
-    },
-    {
-      reason: 'Incorrect registration'
-    },
-    {
-      reason: 'Just arrived with EAL'
-    },
-    {
-      reason: 'Incorrect registration'
-    },
-    {
-      reason: 'Just arrived with EAL'
-    },
-    {
-      status: 'Complete'
-    },
-    {
-      status: 'Check started'
-    }
-  ]
   describe('getPresentationData', () => {
     const checkWindowData = {
       checkStartDate: moment.utc().subtract(3, 'days'),
       checkEndDate: moment.utc().add(1, 'days')
     }
     test('collects pupils with errors', () => {
-      const pupilStatusViewData = pupilStatusPresenter.getPresentationData(pupils, checkWindowData)
+      const pupilData = [
+        {
+          status: 'Error in processing'
+        },
+        {
+          status: 'Error in processing'
+        },
+        {
+          status: 'Complete'
+        }
+      ]
+      const pupilStatusViewData = pupilStatusPresenter.getPresentationData(pupilData, checkWindowData)
       expect(pupilStatusViewData.pupilsRequireAction.length).toBe(2)
     })
     test('collects pupils that have not started', () => {
-      const pupilStatusViewData = pupilStatusPresenter.getPresentationData(pupils, checkWindowData)
-      expect(pupilStatusViewData.pupilsNotStarted.length).toBe(3)
+      const pupilData = [
+        {
+          status: 'Error in processing'
+        },
+        {
+          status: 'Restart'
+        },
+        {
+          status: 'Not started'
+        },
+        {
+          reason: 'Not attending'
+        }
+      ]
+      const pupilStatusViewData = pupilStatusPresenter.getPresentationData(pupilData, checkWindowData)
+      expect(pupilStatusViewData.pupilsNotStarted.length).toBe(2)
+    })
+    test('collects pupils that have started the check', () => {
+      const pupilData = [
+        {
+          status: 'Check started'
+        },
+        {
+          status: 'Error in processing'
+        },
+        {
+          status: 'PIN generated'
+        },
+        {
+          reason: 'Not attending'
+        }
+      ]
+      const pupilStatusViewData = pupilStatusPresenter.getPresentationData(pupilData, checkWindowData)
+      expect(pupilStatusViewData.pupilsInProgress.length).toBe(2)
     })
     test('collects pupils that are not attending', () => {
-      const pupilStatusViewData = pupilStatusPresenter.getPresentationData(pupils, checkWindowData)
-      expect(pupilStatusViewData.pupilsInProgress.length).toBe(1)
+      const pupilData = [
+        {
+          status: 'Error in processing'
+        },
+        {
+          status: 'Error in processing'
+        },
+        {
+          reason: 'Not attending'
+        },
+        {
+          reason: 'Left School'
+        }
+      ]
+      const pupilStatusViewData = pupilStatusPresenter.getPresentationData(pupilData, checkWindowData)
+      expect(pupilStatusViewData.pupilsCompleted.length).toBe(2)
     })
     test('collects pupils that are complete', () => {
-      const pupilStatusViewData = pupilStatusPresenter.getPresentationData(pupils, checkWindowData)
-      expect(pupilStatusViewData.pupilsCompleted.length).toBe(7)
+      const pupilData = [
+        {
+          status: 'Complete'
+        },
+        {
+          status: 'Error in processing'
+        },
+        {
+          reason: 'Not attending'
+        }
+      ]
+      const pupilStatusViewData = pupilStatusPresenter.getPresentationData(pupilData, checkWindowData)
+      expect(pupilStatusViewData.pupilsCompleted[0].status).toBe('Complete')
+      expect(pupilStatusViewData.pupilsCompleted[1].reason).toBe('Not attending')
+      expect(pupilStatusViewData.pupilsCompleted.length).toBe(2)
     })
-    test('displays pupils that have pin generated as not started', () => {
+    test('displays pupils that have pin generated as in progress', () => {
       const notStartedPupils = [
         {
           status: 'Not started'
@@ -83,10 +106,11 @@ describe('pupilStatusPresenter', () => {
         }
       ]
       const pupilStatusViewData = pupilStatusPresenter.getPresentationData(notStartedPupils, checkWindowData)
-      expect(pupilStatusViewData.pupilsNotStarted[0].status).toBe('Not started')
+      expect(pupilStatusViewData.pupilsInProgress[0].status).toBe('PIN generated')
+      expect(pupilStatusViewData.pupilsInProgress.length).toBe(1)
     })
-    test('displays pupils that have logged in as not started', () => {
-      const notStartedPupils = [
+    test('displays pupils that have logged in as logged in', () => {
+      const pupilData = [
         {
           status: 'Not started'
         },
@@ -94,8 +118,9 @@ describe('pupilStatusPresenter', () => {
           status: 'Logged in'
         }
       ]
-      const pupilStatusViewData = pupilStatusPresenter.getPresentationData(notStartedPupils, checkWindowData)
-      expect(pupilStatusViewData.pupilsNotStarted[0].status).toBe('Not started')
+      const pupilStatusViewData = pupilStatusPresenter.getPresentationData(pupilData, checkWindowData)
+      expect(pupilStatusViewData.pupilsInProgress[0].status).toBe('Logged in')
+      expect(pupilStatusViewData.pupilsInProgress.length).toBe(1)
     })
     test('displays pupils that have unused restarts as not started', () => {
       const notStartedPupils = [
@@ -124,14 +149,27 @@ describe('pupilStatusPresenter', () => {
       expect(pupilStatusViewData.pupilsRequireAction[1].status).toBe('Pupil check not received')
     })
     test('collects total pupil count', () => {
+      const pupils = [
+        {
+          status: 'Error in processing'
+        },
+        {
+          status: 'Overdue'
+        },
+        {
+          reason: 'Not attending'
+        }
+      ]
       const pupilStatusViewData = pupilStatusPresenter.getPresentationData(pupils, checkWindowData)
-      expect(pupilStatusViewData.totalPupilsCount).toBe(15)
+      expect(pupilStatusViewData.totalPupilsCount).toBe(pupils.length)
     })
     test('collects formatted checkEndDate', () => {
+      const pupils = []
       const pupilStatusViewData = pupilStatusPresenter.getPresentationData(pupils, checkWindowData)
       expect(pupilStatusViewData.liveCheckEndDate).toBe(checkWindowData.checkEndDate.format('D MMMM YYYY'))
     })
     test('collects remaining live check days', () => {
+      const pupils = []
       const pupilStatusViewData = pupilStatusPresenter.getPresentationData(pupils, checkWindowData)
       expect(pupilStatusViewData.remainingLiveCheckDays).toBe(checkWindowData.checkEndDate.diff(moment.utc(), 'days'))
     })

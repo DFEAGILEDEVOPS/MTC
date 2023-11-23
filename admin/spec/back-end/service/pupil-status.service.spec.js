@@ -42,7 +42,7 @@ describe('pupil-status.service', () => {
       }).not.toThrow()
     })
 
-    test('it can detect a pupil not taking the check', () => {
+    test('it identifies a pupil not taking the check', () => {
       const status = pupilStatusService.getProcessStatusV2({
         attendanceId: 1,
         currentCheckId: null,
@@ -58,7 +58,7 @@ describe('pupil-status.service', () => {
       expect(status).toBe('Just arrived with EAL')
     })
 
-    test('it can detect a Not Started pupil with an expired pin', () => {
+    test('it identifies a Not Started pupil with an expired pin', () => {
       const status = pupilStatusService.getProcessStatusV2({
         attendanceId: null,
         currentCheckId: 1,
@@ -73,7 +73,7 @@ describe('pupil-status.service', () => {
       expect(status).toBe('Not started')
     })
 
-    test('it can detect a Not Started pupil with an expired and deleted pin', () => {
+    test('it identifies a Not Started pupil with an expired and deleted pin', () => {
       const status = pupilStatusService.getProcessStatusV2({
         attendanceId: null,
         currentCheckId: 1,
@@ -88,7 +88,7 @@ describe('pupil-status.service', () => {
       expect(status).toBe('Not started')
     })
 
-    test('it can detect a Not Started pupil with no pin generated ever', () => {
+    test('it identifies a Not Started pupil with no pin generated ever', () => {
       const status = pupilStatusService.getProcessStatusV2({
         attendanceId: null,
         currentCheckId: null,
@@ -103,7 +103,7 @@ describe('pupil-status.service', () => {
       expect(status).toBe('Not started')
     })
 
-    test('it can detect a PIN Generated pupil', () => {
+    test('it identifies a PIN Generated pupil', () => {
       const status = pupilStatusService.getProcessStatusV2({
         attendanceId: null,
         currentCheckId: 1,
@@ -118,7 +118,7 @@ describe('pupil-status.service', () => {
       expect(status).toBe('PIN generated')
     })
 
-    test('it can detect a Logged In pupil', () => {
+    test('it identifies a Logged In pupil', () => {
       const status = pupilStatusService.getProcessStatusV2({
         attendanceId: null,
         currentCheckId: 1,
@@ -126,15 +126,15 @@ describe('pupil-status.service', () => {
         checkComplete: false,
         checkReceived: false,
         pupilLoginDate: moment(),
-        checkStartedAt: null,
         notReceivedExpiryInMinutes: 30,
         pupilCheckComplete: false,
+        checkStartedAt: null,
         pinExpiresAt: moment().add(4, 'hours')
       })
       expect(status).toBe('Logged in')
     })
 
-    test('it can detect a pupil that has a check in processing phase', () => {
+    test('it identifies a pupil that has a check in processing phase', () => {
       const status = pupilStatusService.getProcessStatusV2({
         attendanceId: null,
         currentCheckId: 1,
@@ -149,7 +149,7 @@ describe('pupil-status.service', () => {
       expect(status).toBe('Processing')
     })
 
-    test('it can detect a pupil that has a check with error in processing', () => {
+    test('it identifies a pupil that has a check with error in processing', () => {
       const status = pupilStatusService.getProcessStatusV2({
         attendanceId: null,
         currentCheckId: 1,
@@ -160,12 +160,13 @@ describe('pupil-status.service', () => {
         notReceivedExpiryInMinutes: 30,
         pupilCheckComplete: false,
         pinExpiresAt: null,
+        checkStartedAt: moment(),
         processingFailed: true
       })
       expect(status).toBe('Error in processing')
     })
 
-    test('it can detect a Complete pupil', () => {
+    test('it identifies a Complete pupil', () => {
       const status = pupilStatusService.getProcessStatusV2({
         attendanceId: null,
         currentCheckId: 1,
@@ -175,19 +176,21 @@ describe('pupil-status.service', () => {
         pupilLoginDate: moment(),
         notReceivedExpiryInMinutes: 30,
         pupilCheckComplete: true,
-        pinExpiresAt: null
+        pinExpiresAt: null,
+        checkStartedAt: moment()
       })
       expect(status).toBe('Complete')
     })
 
-    test('it can detect a restart', () => {
+    test('it identifies a restart', () => {
       const status = pupilStatusService.getProcessStatusV2({
         attendanceId: null,
         currentCheckId: null,
         restartAvailable: true,
         checkComplete: false,
         checkReceived: false,
-        pupilLoginDate: moment(),
+        pupilLoginDate: moment().subtract(31, 'minutes'),
+        checkStartedAt: moment().subtract(20, 'minutes'),
         notReceivedExpiryInMinutes: 30,
         pupilCheckComplete: false,
         pinExpiresAt: null
@@ -195,7 +198,7 @@ describe('pupil-status.service', () => {
       expect(status).toBe('Restart')
     })
 
-    test('it can detect an Incomplete check', () => {
+    test('it identifies an Overdue check', () => {
       const status = pupilStatusService.getProcessStatusV2({
         attendanceId: null,
         currentCheckId: 1,
@@ -205,12 +208,13 @@ describe('pupil-status.service', () => {
         pupilLoginDate: moment().subtract(31, 'minutes'),
         notReceivedExpiryInMinutes: 30,
         pupilCheckComplete: false,
-        pinExpiresAt: moment().add(3, 'hours')
+        pinExpiresAt: moment().add(3, 'hours'),
+        checkStartedAt: moment().subtract(20, 'minutes')
       })
       expect(status).toBe('Overdue')
     })
 
-    test('it can detect a pupil was allocated a check that then expired', () => {
+    test('it identifies a pupil was allocated a check that then expired', () => {
       const status = pupilStatusService.getProcessStatusV2({
         attendanceId: null,
         currentCheckId: 1,
@@ -251,6 +255,7 @@ describe('pupil-status.service', () => {
         checkComplete: false,
         checkReceived: false,
         pupilLoginDate: null,
+        checkStartedAt: null,
         notReceivedExpiryInMinutes: 30,
         pupilCheckComplete: false,
         pinExpiresAt: moment().subtract(3, 'minutes')
@@ -261,15 +266,15 @@ describe('pupil-status.service', () => {
       expect(status).toBe('Not started')
     })
 
-    test('it detects an official check that has been started but not submitted', () => {
+    test('it detects a check that has been started but not submitted', () => {
       const status = pupilStatusService.getProcessStatusV2({
         attendanceId: null,
         currentCheckId: 1,
         restartAvailable: false,
         checkComplete: false,
         checkReceived: false,
-        checkStartedAt: moment().subtract(2, 'minutes'),
-        pupilLoginDate: moment().subtract(3, 'minutes'),
+        checkStartedAt: moment().subtract(20, 'minutes'),
+        pupilLoginDate: moment().subtract(30, 'minutes'),
         notReceivedExpiryInMinutes: 30,
         pupilCheckComplete: false,
         pinExpiresAt: null

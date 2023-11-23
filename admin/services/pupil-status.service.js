@@ -127,6 +127,11 @@ const pupilStatusService = {
       isFalse(checkComplete)
     ) {
       status = 'Check started'
+      if (
+        isNotReceived(pupilLoginDate, notReceivedExpiryInMinutes, moment.utc())
+      ) {
+        status = 'Overdue'
+      }
     } else if (
       isPositive(currentCheckId) &&
       isNotNil(pupilLoginDate) &&
@@ -135,11 +140,6 @@ const pupilStatusService = {
       isFalse(checkComplete)
     ) {
       status = 'Logged in'
-      if (
-        isNotReceived(pupilLoginDate, notReceivedExpiryInMinutes, moment.utc())
-      ) {
-        status = 'Overdue'
-      }
     } else if (
       isNotNil(pupilLoginDate) &&
       isTrue(checkReceived) &&

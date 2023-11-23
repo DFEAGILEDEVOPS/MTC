@@ -26,7 +26,7 @@ pupilStatusPresenter.getPresentationData = (pupilStatusData, checkWindowData) =>
     ['Restart'],
     'Not started'
   )
-  pupilStatusViewData.pupilsInProgress = R.filter(p => R.includes(p.status, ['PIN generated', 'Logged in', 'Processing'], p), pupilStatusData)
+  pupilStatusViewData.pupilsInProgress = R.filter(p => R.includes(p.status, ['PIN generated', 'Logged in', 'Processing', 'Check started'], p), pupilStatusData)
   // @ts-ignore
   pupilStatusViewData.pupilsCompleted = R.filter(p => R.includes(p.status, ['Complete'], p) || !!p.reason, pupilStatusData)
 
