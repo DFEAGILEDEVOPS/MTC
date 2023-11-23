@@ -46,6 +46,7 @@ ENV['PS_REPORT_WAIT_TIME'] ||= '300'
 ENV['FUNC_CONSUMP_BASE_URL'] ||= 'http://localhost:7071'
 ENV["FUNC_CONSUMP_MASTER_KEY"] ||= nil
 ENV['PS_REPORT_WAIT_TIME'] ||= '300'
+ENV['CHECK_SUBMIT_JWT_SECRET'] ||= Dotenv.parse("../../.env")['CHECK_SUBMIT_JWT_SECRET']
 
 Capybara.configure do |config|
   config.default_driver = ENV["DRIVER"].to_sym
