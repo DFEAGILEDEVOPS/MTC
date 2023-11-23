@@ -45,7 +45,7 @@
                     <% if (err.isError('serviceMessageTitle')) { %>
                         <span class="govuk-error-message"><%= err.get('serviceMessageTitle') %></span>
                     <% } %>
-                    <% if (formData.id) { %><input type="hidden" name="id" value="<%= formData.id %>"><% } %>
+                    <% if (formData.urlSlug) { %><input type="hidden" name="urlSlug" value="<%= formData.urlSlug %>"><% } %>
                     <input type="text"
                            id="serviceMessageTitle"
                            class="govuk-input govuk-!-width-three-quarters <%= err.isError('serviceMessageTitle') ? 'govuk-input--error' : '' %>"
@@ -72,7 +72,8 @@
                                 <% if (areaCodes && Array.isArray(areaCodes) && areaCodes.length > 0) { %>
                                   <% areaCodes.forEach(areaCode => { %>
                                     <div class="govuk-checkboxes__item">
-                                      <input class="govuk-checkboxes__input" id="<%= `area-${areaCode.code}` %>" name="areaCode" type="checkbox" value="<%= areaCode.code %>">
+                                      <input class="govuk-checkboxes__input" id="<%= `area-${areaCode.code}` %>" name="areaCode" type="checkbox" value="<%= areaCode.code %>"
+                                        <% if (Array.isArray(formData.areaCodes) && formData.areaCodes.includes(areaCode.code)) { %> checked <% } else { console.log(`${areaCode.code} is not checked`)} %>>
                                       <label class="govuk-label govuk-checkboxes__label" for="<%= `area-${areaCode.code}` %>">
                                         <%= areaCode.description %>
                                       </label>

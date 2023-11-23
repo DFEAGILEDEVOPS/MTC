@@ -13,6 +13,7 @@ const redisKeyService = require('./redis-key.service')
 const administrationMessageService = {}
 const serviceMessageRedisKey = redisKeyService.getServiceMessageKey()
 
+// Regular expressions for all the various top level paths in the app.
 const accessArrangementsPathRe = /^\/access-arrangements\/.*/
 const hdfPathRe = /^\/attendance\/.*/
 const nonSittingCodesPathRe = /^\/pupils-not-taking-the-check\/.*/
@@ -69,7 +70,6 @@ administrationMessageService.getFilteredMessagesForRequest = async function getF
       } else {
         // check each area against the current path to see if it should be shown.
         for (const areaCode of msg.areaCodes) {
-          console.log(`Testing areacode ${areaCode} for msg ${msg.title}`)
           switch (true) {
             case accessArrangementsPathRe.test(path):
               if (areaCode === 'A') filteredMessages.push(msg)
@@ -143,7 +143,6 @@ administrationMessageService.getMessages = async () => {
       urlSlug: o.urlSlug
     }
   })
-  console.log('getMessages returning: ', result)
   return result
 }
 
@@ -189,18 +188,17 @@ administrationMessageService.fetchMessageBySlug = async function fetchMessageByS
  * @returns {Promise<*>}
  */
 administrationMessageService.setMessage = async (requestData, userId) => {
+  console.log('setMessage() called')
   if (!userId) {
     throw new Error('User id not found in session')
   }
   // validate incoming area codes - the single letter code must match what we have in the DB.
   const validAreaCodes = await ServiceMessageCodesService.getAreaCodes()
-  console.log('valid area codes', validAreaCodes)
 
   // Get lookup values for border codes - needed for validation
   const validBorderColourCodes = await ServiceMessageCodesService.getBorderColourCodes()
-  console.log('valid border codes', validBorderColourCodes)
 
-  const { serviceMessageTitle, serviceMessageContent, borderColourCode } = requestData
+  const { serviceMessageTitle, serviceMessageContent, borderColourCode, urlSlug } = requestData
   let areaCode = requestData.areaCode ? requestData.areaCode : []
   if (!Array.isArray(areaCode)) areaCode = [areaCode]
   if (areaCode.length === 0) {
@@ -214,14 +212,15 @@ administrationMessageService.setMessage = async (requestData, userId) => {
     borderColourCode: { fieldKey: 'borderColourCode', fieldValue: borderColourCode, errorMessage: serviceMessageErrorMessages.emptyServiceMessgeBorderColour, allowedValues: validBorderColourCodes.map(c => c.code) },
     areaCode: { fieldKey: 'areaCode', fieldValue: areaCode, errorMessage: serviceMessageErrorMessages.invalidAreaCode, allowedValues: validAreaCodes.map(c => c.code) }
   }
-  console.log('validator input 1 ', JSON.stringify(validatorInput, undefined, ' ', 4))
-
-  console.log('validator input 2 ', JSON.stringify(validatorInput, undefined, ' ', 4))
 
   const serviceMessageErrors = ServiceMessageValidator.validate(validatorInput)
   if (serviceMessageErrors.hasError()) {
     console.log('errors', serviceMessageErrors)
     return serviceMessageErrors
+  }
+
+  if (requestData.urlSlug !== undefined) {
+    validatorInput.urlSlug = requestData.urlSlug
   }
 
   const serviceMessageData = administrationMessageService.prepareSubmissionData(validatorInput, userId)
@@ -240,8 +239,8 @@ administrationMessageService.prepareSubmissionData = (data, userId) => {
   serviceMessageData.createdByUser_id = userId
   serviceMessageData.title = data.serviceMessageTitle.fieldValue
   serviceMessageData.message = data.serviceMessageContent.fieldValue
-  if (data.id !== undefined) {
-    serviceMessageData.id = data.id
+  if (data.urlSlug !== undefined) {
+    serviceMessageData.urlSlug = data.urlSlug
   }
   serviceMessageData.borderColourCode = data.borderColourCode.fieldValue
   serviceMessageData.areaCode = data.areaCode.fieldValue

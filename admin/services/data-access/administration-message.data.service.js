@@ -18,18 +18,33 @@ administrationMessageDataService.sqlCreateOrUpdate = async (data) => {
     { name: 'code', value: data.borderColourCode, type: TYPES.Char(1) }
   ]
 
-  if (data.id !== undefined) {
+  if (data.urlSlug !== undefined) {
     // edit / update
-    const sql = `
+    let sql = `
+      DECLARE @serviceMessageId INT = (SELECT id FROM [mtc_admin].[serviceMessage] WHERE urlSlug = @urlSlug);
+
       UPDATE [mtc_admin].[serviceMessage]
       SET title = @title,
           message = @message,
           borderColourLookupId = (SELECT id FROM [mtc_admin].[serviceMessageBorderColourLookup] WHERE code = @code)
-      WHERE id = @id`
+      WHERE urlSlug = @urlSlug;
+
+      -- delete all the rows for this message in the junction table
+      DELETE FROM [mtc_admin].[serviceMessageServiceMessageArea] WHERE serviceMessageId = @serviceMessageId;
+      `
 
     params.push(
-      { name: 'id', value: data.id, type: TYPES.Int }
+      { name: 'urlSlug', value: data.urlSlug, type: TYPES.UniqueIdentifier }
     )
+
+    data.areaCode.forEach((code, i) => {
+      sql += `INSERT INTO [mtc_admin].[serviceMessageServiceMessageArea] VALUES
+              (@serviceMessageId, (SELECT id FROM [mtc_admin].[serviceMessageAreaLookup] WHERE code = @p${i}));
+        `
+      params.push({
+        name: `p${i}`, value: code, type: TYPES.Char(1)
+      })
+    })
 
     await sqlService.modify(sql, params)
   } else {
@@ -82,7 +97,6 @@ administrationMessageDataService.sqlDeleteServiceMessage = async (slug) => {
     DELETE FROM [mtc_admin].serviceMessageServiceMessageArea WHERE serviceMessageId = @id;
     DELETE FROM [mtc_admin].serviceMessage WHERE id = @id;
   `
-  console.log('DROP SQL ', sql)
   const params = [{ name: 'slug', value: slug, type: TYPES.UniqueIdentifier }]
   await sqlService.modifyWithTransaction(sql, params)
 }

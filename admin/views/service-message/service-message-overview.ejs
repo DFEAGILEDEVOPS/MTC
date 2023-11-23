@@ -13,16 +13,12 @@
             <p class="govuk-body">
                 Add or delete a service message for any area of the site.
             </p>
-            <% if (false && serviceMessages) { %>
-            <button disabled="disabled" aria-disabled="true" class="govuk-button govuk-button--disabled govuk-!-margin-top-4" data-module="govuk-button">
-                Create service message
-            </button>
-            <% } else { %>
+
             <a href="/service-message/service-message-form" role="button" draggable="false" class="govuk-button govuk-!-margin-top-4" data-module="govuk-button">
                 Create service message
             </a>
-            <% } %>
-            <%if (serviceMessages.length > 0) { %>
+
+            <%if (Array.isArray(allServiceMessages) && allServiceMessages.length > 0) { %>
                 <table id="submitted-service-message" class="govuk-table govuk-spacious govuk-!-margin-bottom-9">
                     <caption class="govuk-body govuk-table__caption">Service Message</caption>
                     <thead class="govuk-table__head">
@@ -33,7 +29,7 @@
                     </tr>
                     </thead>
                     <tbody class="govuk-table__body">
-                        <% for (let msg of serviceMessages) { %>
+                        <% for (let msg of allServiceMessages) { %>
                         <tr class="govuk-table__row">
                             <td scope="row">
                                 <div>
