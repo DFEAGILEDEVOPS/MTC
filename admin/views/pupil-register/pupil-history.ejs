@@ -103,7 +103,7 @@
         </form>
         <% } %>
 
-        <% if (pupilHistory.pupil.isDiscretionaryRestartAvailable) { %>
+        <% if (pupilHistory.pupil.isDiscretionaryRestartAvailable && isStaAdmin) { %>
         <form action="/restart/remove-discretionary-restart" method="post" novalidate class="govuk-form-button">
             <input type="hidden" name="pupilSlug" value="<%= pupilHistory.pupil.urlSlug %>"/>
             <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
