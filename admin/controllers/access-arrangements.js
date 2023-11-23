@@ -38,8 +38,7 @@ const controller = {
           title: res.locals.pageTitle,
           breadcrumbs: req.breadcrumbs(),
           aaViewMode,
-          availabilityData,
-          serviceMessages: res.locals.serviceMessages
+          availabilityData
         })
       }
     } catch (error) {

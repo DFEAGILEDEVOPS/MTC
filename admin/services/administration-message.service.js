@@ -33,27 +33,6 @@ const pupilRegisterPathRe = /^\/pupil-register\//
  */
 
 /**
- * Get the current service message
- * @returns {Promise<serviceMessage | undefined>}
- */
-administrationMessageService.getMessage = async () => {
-  let html
-  let rawMessage // object[] with .message => markdown
-  try {
-    rawMessage = await administrationMessageService.fetchMessages()
-    if (rawMessage === undefined) {
-      return undefined
-    }
-    html = marked.parse(rawMessage.message)
-  } catch (error) {
-    logger.alert(`serviceMessage: failed to render.  Error: ${error.message}`)
-    return undefined // show the page at least, without the service message
-  }
-  const cleanMessage = sanitiseService.sanitise(html)
-  return { title: rawMessage.title, message: cleanMessage, borderColourCode: rawMessage.borderColourCode }
-}
-
-/**
  * Return the service messages filtered by path.
  * @param {string} path - from req.path
  * @returns {Promise<serviceMessage[]>}
@@ -114,13 +93,39 @@ administrationMessageService.getFilteredMessagesForRequest = async function getF
 }
 
 /**
- * Get the current service message
+ * Fetch the service message from DB or cache with the message property as raw markdown, or plain text.
  * @returns {Promise<serviceMessage | undefined>}
  */
-administrationMessageService.getMessages = async () => {
-  let rawMessages = [] // object[] with .message => markdown
+administrationMessageService.getMessages = async function getMessages () {
+  const result = await redisCacheService.get(serviceMessageRedisKey)
   try {
-    rawMessages = await administrationMessageService.fetchMessages()
+    if (!(result === undefined || result === false)) {
+      const cachedServiceMessages = JSON.parse(result)
+      if (cachedServiceMessages !== undefined) {
+        return cachedServiceMessages
+      }
+    }
+  } catch (error) {
+    console.log('redis cache miss for service messages', error)
+  }
+  const messages = await administrationMessageDataService.sqlFindServiceMessages()
+
+  if (Array.isArray(messages) && messages.length > 0) {
+    const htmlMessages = administrationMessageService.parseAndSanitise(messages)
+    await redisCacheService.set(serviceMessageRedisKey, htmlMessages)
+    return htmlMessages
+  }
+
+  // otherwise implicitly return undefined
+}
+
+/**
+ * Convert an array of markdown messages into sanitised HTML
+ * @param {} slug
+ * @returns
+ */
+administrationMessageService.parseAndSanitise = function parseAndSanitise (rawMessages) {
+  try {
     if (rawMessages === undefined) {
       return undefined
     }
@@ -134,6 +139,7 @@ administrationMessageService.getMessages = async () => {
   rawMessages.forEach(msg => {
     msg.cleanMessage = sanitiseService.sanitise(msg.uncleanHtml)
   })
+
   const result = rawMessages.map(o => {
     return {
       title: o.title,
@@ -143,40 +149,22 @@ administrationMessageService.getMessages = async () => {
       urlSlug: o.urlSlug
     }
   })
+
   return result
 }
 
-/**
- * Fetch the service message from DB or cache with the message property as raw markdown, or plain text.
- * @returns {Promise<serviceMessage | undefined>}
- */
-administrationMessageService.fetchMessages = async function fetchServiceMessage () {
-  console.log('fetchMessages called()')
-  // let cachedServiceMessages
-  // const result = await redisCacheService.get(serviceMessageRedisKey)
-  // try {
-  //   cachedServiceMessages = JSON.parse(result)
-  //   if (cachedServiceMessages) {
-  //     return cachedServiceMessages
-  //   }
-  // } catch (ignore) {
-  //   console.log('redis cache miss for service messages')
-  // }
-  return administrationMessageDataService.sqlFindServiceMessages()
-}
-
 administrationMessageService.fetchMessageBySlug = async function fetchMessageBySlug (slug) {
-  console.log('fetchMessageBySlug called()')
-  // let cachedServiceMessages
-  // const result = await redisCacheService.get(serviceMessageRedisKey)
-  // try {
-  //   cachedServiceMessages = JSON.parse(result)
-  //   if (cachedServiceMessages) {
-  //     return cachedServiceMessages
-  //   }
-  // } catch (ignore) {
-  //   console.log('redis cache miss for service messages')
-  // }
+  let cachedServiceMessages
+  const result = await redisCacheService.get(serviceMessageRedisKey)
+  try {
+    cachedServiceMessages = JSON.parse(result)
+    if (cachedServiceMessages) {
+      const msg = cachedServiceMessages.filter(m => m.urlSlug.toLowercase() === slug.toLowercase())
+      return msg ?? undefined // return undef rather than []
+    }
+  } catch (ignore) {
+    console.log('redis cache miss for service messages')
+  }
 
   return administrationMessageDataService.sqlFindServiceMessageBySlug(slug)
 }
@@ -188,7 +176,6 @@ administrationMessageService.fetchMessageBySlug = async function fetchMessageByS
  * @returns {Promise<*>}
  */
 administrationMessageService.setMessage = async (requestData, userId) => {
-  console.log('setMessage() called')
   if (!userId) {
     throw new Error('User id not found in session')
   }
@@ -198,7 +185,7 @@ administrationMessageService.setMessage = async (requestData, userId) => {
   // Get lookup values for border codes - needed for validation
   const validBorderColourCodes = await ServiceMessageCodesService.getBorderColourCodes()
 
-  const { serviceMessageTitle, serviceMessageContent, borderColourCode, urlSlug } = requestData
+  const { serviceMessageTitle, serviceMessageContent, borderColourCode } = requestData
   let areaCode = requestData.areaCode ? requestData.areaCode : []
   if (!Array.isArray(areaCode)) areaCode = [areaCode]
   if (areaCode.length === 0) {
@@ -215,7 +202,6 @@ administrationMessageService.setMessage = async (requestData, userId) => {
 
   const serviceMessageErrors = ServiceMessageValidator.validate(validatorInput)
   if (serviceMessageErrors.hasError()) {
-    console.log('errors', serviceMessageErrors)
     return serviceMessageErrors
   }
 
@@ -225,7 +211,9 @@ administrationMessageService.setMessage = async (requestData, userId) => {
 
   const serviceMessageData = administrationMessageService.prepareSubmissionData(validatorInput, userId)
   await administrationMessageDataService.sqlCreateOrUpdate(serviceMessageData)
-  return redisCacheService.set(serviceMessageRedisKey, serviceMessageData)
+
+  // Just drop the cache as it is now invalidated.  The next page load will refresh the cache.
+  return redisCacheService.drop(serviceMessageRedisKey)
 }
 
 /**
@@ -256,7 +244,9 @@ administrationMessageService.dropMessage = async (userId, slug) => {
     throw new Error('User id not found in session')
   }
   await administrationMessageDataService.sqlDeleteServiceMessage(slug)
-  return redisCacheService.drop(serviceMessageRedisKey)
+
+  // Just drop the cache as it is now invalidated.  The next page load will refresh the cache.
+  await redisCacheService.drop(serviceMessageRedisKey)
 }
 
 module.exports = administrationMessageService

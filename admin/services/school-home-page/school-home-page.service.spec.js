@@ -29,7 +29,7 @@ describe('school home page service', () => {
 
   beforeEach(() => {
     jest.spyOn(schoolService, 'findSchoolNameByDfeNumber').mockResolvedValue('Unit Test School')
-    jest.spyOn(administrationMessageService, 'getMessage').mockResolvedValue(undefined)
+    jest.spyOn(administrationMessageService, 'getMessages').mockResolvedValue(undefined)
     // For the tests in the general section the check window dates are not important, as these values are
     // the same for all life-cycle phases of the check window.  We still need to mock it to prevent real calls.
     jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockResolvedValue(mockCheckWindow)

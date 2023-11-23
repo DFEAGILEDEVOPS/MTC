@@ -13,7 +13,6 @@ const settingsValidator = require('../../../lib/validator/settings-validator')
 const ValidationError = require('../../../lib/validation-error')
 const schoolService = require('../../../services/school.service')
 const organisationBulkUploadService = require('../../../services/organisation-bulk-upload.service')
-const administrationMessageService = require('../../../services/administration-message.service')
 const auditOperationTypes = require('../../../lib/consts/audit-entry-types')
 const { JobService } = require('../../../services/job/job.service')
 const { ServiceManagerPupilDataService } = require('../../../services/service-manager/pupil/service-manager.pupil.data.service')
@@ -44,7 +43,6 @@ describe('service manager controller:', () => {
 
   beforeEach(() => {
     next = jest.fn()
-    jest.spyOn(administrationMessageService, 'getMessage').mockResolvedValue(undefined)
   })
 
   afterEach(() => {

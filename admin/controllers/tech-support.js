@@ -25,10 +25,10 @@ const controller = {
   getHomePage: async function getHomePage (req, res, next) {
     res.locals.pageTitle = 'Tech Support Homepage'
     try {
-      const serviceMessage = await administrationMessageService.getMessage()
+      const serviceMessages = await administrationMessageService.getMessages()
       return res.render('tech-support/home', {
         breadcrumbs: req.breadcrumbs(),
-        serviceMessage
+        serviceMessages
       })
     } catch (error) {
       return next(error)

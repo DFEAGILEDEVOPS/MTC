@@ -1,6 +1,6 @@
 'use strict'
 
-/* global describe, beforeEach expect test jest afterEach, xdescribe */
+/* global describe, beforeEach expect test jest afterEach */
 const administrationMessageDataService = require('../../../services/data-access/administration-message.data.service')
 const redisCacheService = require('../../../services/data-access/redis-cache.service')
 const administrationMessageService = require('../../../services/administration-message.service')
@@ -16,50 +16,69 @@ describe('administrationMessageService', () => {
     jest.restoreAllMocks()
   })
 
-  xdescribe('getMessage', () => {
+  describe('getMessages', () => {
+    const mockServiceMessages = [
+      {
+        title: 'title 1',
+        message: 'message 1',
+        borderColourCode: 'B',
+        areaCodes: ['A', 'P'],
+        urlSlug: 'abc-defe'
+      },
+      {
+        title: 'Global message',
+        message: '# title\n**bold** *italic*',
+        borderColourCode: 'G',
+        areaCodes: ['A', 'B', 'C'],
+        urlSlug: 'def-hij'
+      }
+    ]
+
+    beforeEach(() => {
+      jest.spyOn(administrationMessageDataService, 'sqlFindServiceMessages').mockImplementation()
+      jest.spyOn(redisCacheService, 'get').mockImplementation()
+      jest.spyOn(redisCacheService, 'set').mockImplementation()
+    })
+
     test('should call redis cache service to fetch the service message', async () => {
-      jest.spyOn(redisCacheService, 'get').mockImplementation()
-      jest.spyOn(administrationMessageDataService, 'sqlFindActiveServiceMessage').mockImplementation()
-      await administrationMessageService.getMessage()
+      await administrationMessageService.getMessages()
       expect(redisCacheService.get).toHaveBeenCalled()
     })
 
-    test('should not call administrationMessageDataService.sqlFindActiveServiceMessage if service message is fetched from redis', async () => {
-      jest.spyOn(redisCacheService, 'get').mockResolvedValue(JSON.stringify({ title: 'title', message: 'message' }))
-      jest.spyOn(administrationMessageDataService, 'sqlFindActiveServiceMessage').mockImplementation()
-      await administrationMessageService.getMessage()
+    test('should not call administrationMessageDataService.sqlFindServiceMessages if service message is fetched from redis', async () => {
+      jest.spyOn(redisCacheService, 'get').mockResolvedValue(JSON.stringify(mockServiceMessages))
+      await administrationMessageService.getMessages()
       expect(redisCacheService.get).toHaveBeenCalled()
-      expect(administrationMessageDataService.sqlFindActiveServiceMessage).not.toHaveBeenCalled()
+      expect(administrationMessageDataService.sqlFindServiceMessages).not.toHaveBeenCalled()
     })
 
-    test('should call administrationMessageDataService.sqlFindActiveServiceMessage if redis service returns false while attempting to fetch the serviceMessage', async () => {
+    test('should call administrationMessageDataService.sqlFindServiceMessages if redis service returns false while attempting to fetch the serviceMessage', async () => {
       jest.spyOn(redisCacheService, 'get').mockResolvedValue(false)
-      jest.spyOn(administrationMessageDataService, 'sqlFindActiveServiceMessage').mockImplementation()
-      await administrationMessageService.getMessage()
+      await administrationMessageService.getMessages()
       expect(redisCacheService.get).toHaveBeenCalled()
-      expect(administrationMessageDataService.sqlFindActiveServiceMessage).toHaveBeenCalled()
+      expect(administrationMessageDataService.sqlFindServiceMessages).toHaveBeenCalled()
     })
 
-    test('should call administrationMessageDataService.sqlFindActiveServiceMessage if undefined is returned from redis service', async () => {
-      jest.spyOn(redisCacheService, 'get').mockImplementation()
-      jest.spyOn(administrationMessageDataService, 'sqlFindActiveServiceMessage').mockImplementation()
-      await administrationMessageService.getMessage()
+    test('should call administrationMessageDataService.sqlFindServiceMessages if undefined is returned from redis service', async () => {
+      jest.spyOn(redisCacheService, 'get').mockResolvedValue(undefined)
+      await administrationMessageService.getMessages()
       expect(redisCacheService.get).toHaveBeenCalled()
-      expect(administrationMessageDataService.sqlFindActiveServiceMessage).toHaveBeenCalled()
+      expect(administrationMessageDataService.sqlFindServiceMessages).toHaveBeenCalled()
     })
 
     test('should convert the markdown to html', async () => {
-      jest.spyOn(redisCacheService, 'get').mockResolvedValue(JSON.stringify({ title: 'title', message: '# title\n**bold** *italic*' }))
-      const msg = await administrationMessageService.getMessage()
-      expect(msg.message).toContain('<h1>title</h1>')
-      expect(msg.message).toContain('<strong>bold</strong>')
-      expect(msg.message).toContain('<em>italic</em>')
+      jest.spyOn(redisCacheService, 'get').mockResolvedValue(undefined)
+      jest.spyOn(administrationMessageDataService, 'sqlFindServiceMessages').mockResolvedValue(mockServiceMessages)
+      const msgs = await administrationMessageService.getMessages()
+      expect(msgs[1].message).toContain('<h1>title</h1>')
+      expect(msgs[1].message).toContain('<strong>bold</strong>')
+      expect(msgs[1].message).toContain('<em>italic</em>')
     })
 
     test('it returns undefined if the markdown parser throws an error', async () => {
-      jest.spyOn(administrationMessageService, 'fetchMessage').mockResolvedValue({ title: 'test', message: 'some unparsable content' })
+      jest.spyOn(administrationMessageDataService, 'sqlFindServiceMessages').mockResolvedValue([{ title: 'test', message: 'some unparsable content' }])
       jest.spyOn(marked, 'parse').mockImplementation(() => { throw new Error('test error') })
-      await expect(administrationMessageService.getMessage()).resolves.toBeUndefined()
+      await expect(administrationMessageService.getMessages()).resolves.toBeUndefined()
     })
   })
 
@@ -75,7 +94,7 @@ describe('administrationMessageService', () => {
           { title: 'serviceMessageTitle', message: 'serviceMessageContent', borderColour: 'B', areaCode: ['A', 'B'] }
         )
       jest.spyOn(administrationMessageDataService, 'sqlCreateOrUpdate').mockImplementation()
-      jest.spyOn(redisCacheService, 'set').mockImplementation()
+      jest.spyOn(redisCacheService, 'drop').mockImplementation()
       jest.spyOn(ServiceMessageCodesService, 'getAreaCodes').mockResolvedValue([
         { code: 'A', description: 'A Test code' },
         { code: 'B', description: 'B Test code' },
@@ -98,7 +117,7 @@ describe('administrationMessageService', () => {
       expect(ServiceMessageValidator.validate).not.toHaveBeenCalled()
       expect(administrationMessageService.prepareSubmissionData).not.toHaveBeenCalled()
       expect(administrationMessageDataService.sqlCreateOrUpdate).not.toHaveBeenCalled()
-      expect(redisCacheService.set).not.toHaveBeenCalled()
+      expect(redisCacheService.drop).not.toHaveBeenCalled()
     })
 
     test('should call call the validator', async () => {
@@ -118,7 +137,6 @@ describe('administrationMessageService', () => {
       expect(ServiceMessageValidator.validate).toHaveBeenCalled()
       expect(administrationMessageService.prepareSubmissionData).not.toHaveBeenCalled()
       expect(administrationMessageDataService.sqlCreateOrUpdate).not.toHaveBeenCalled()
-      expect(redisCacheService.set).not.toHaveBeenCalled()
     })
 
     test('should call administrationMessageDataService.sqlCreateOrUpdate', async () => {
@@ -131,7 +149,7 @@ describe('administrationMessageService', () => {
       expect(administrationMessageDataService.sqlCreateOrUpdate).toHaveBeenCalled()
     })
 
-    test('should call redisCacheService.set after a successful database transmission', async () => {
+    test('should call redisCacheService.drop after creating or editing a message', async () => {
       const validationError = new ValidationError()
       jest.spyOn(ServiceMessageValidator, 'validate').mockReturnValue(validationError)
       const userId = 1
@@ -139,13 +157,7 @@ describe('administrationMessageService', () => {
       expect(ServiceMessageValidator.validate).toHaveBeenCalled()
       expect(administrationMessageService.prepareSubmissionData).toHaveBeenCalled()
       expect(administrationMessageDataService.sqlCreateOrUpdate).toHaveBeenCalled()
-      expect(redisCacheService.set).toHaveBeenCalledWith(serviceMessageRedisKey,
-        {
-          title: 'serviceMessageTitle',
-          message: 'serviceMessageContent',
-          borderColour: 'B',
-          areaCode: ['A', 'B']
-        })
+      expect(redisCacheService.drop).toHaveBeenCalledWith(serviceMessageRedisKey)
     })
   })
 
@@ -174,16 +186,16 @@ describe('administrationMessageService', () => {
       })
     })
 
-    test('should return an object that includes title, message and id and createdByUser_id when editing a record', () => {
-      serviceMessageInput.id = '1' // add userId for the edit
+    test('should return an object that includes title, message, urlSlug and createdByUser_id when editing a record', () => {
+      serviceMessageInput.urlSlug = 'edea6edf-91c2-4749-8500-24fdf202e871' // add urlSlug for the edit
       const userId = 1
       const result = administrationMessageService.prepareSubmissionData(serviceMessageInput, userId)
       expect(result).toMatchObject({
         createdByUser_id: 1,
         title: 'title',
         message: 'content',
-        id: '1',
-        areaCode: ['A', 'B']
+        areaCode: ['A', 'B'],
+        urlSlug: 'edea6edf-91c2-4749-8500-24fdf202e871'
       })
     })
   })

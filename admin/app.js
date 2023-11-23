@@ -295,7 +295,6 @@ app.use(async function (req, res, next) {
   try {
     const serviceMessages = await administrationMessageService.getFilteredMessagesForRequest(req.path)
     res.locals.serviceMessages = serviceMessages
-    console.log('Filtered service messages', serviceMessages)
   } catch (error) {
     console.error(error)
     logger.error('Error setting the serviceMessages: ' + error.message)

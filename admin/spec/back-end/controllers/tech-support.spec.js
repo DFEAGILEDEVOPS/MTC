@@ -51,7 +51,7 @@ describe('tech-support controller', () => {
     test('GET: should render the home page', async () => {
       const req = getRequest(getReqParams)
       const res = getResponse()
-      jest.spyOn(administrationMessageService, 'getMessage').mockResolvedValue(Promise.resolve(''))
+      jest.spyOn(administrationMessageService, 'getMessages').mockResolvedValue(Promise.resolve(undefined))
       jest.spyOn(res, 'render').mockResolvedValue(null)
       await sut.getHomePage(req, res, next)
       expect(res.statusCode).toBe(200)
