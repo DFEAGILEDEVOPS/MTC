@@ -23,9 +23,9 @@ Then('I should see the pupils history') do
   expect(pupil_history_page.pupil_history.discretionary_restart.text).to eql 'N'
 end
 
-When(/^I view the pupils history using the sta admin role$/) do
+When(/^I view the pupils history using the (sta admin|helpdesk) role$/) do |role|
   visit ENV['ADMIN_BASE_URL'] + '/sign-out'
-  step 'I am on the school landing page for a school using an account with the STA admin role'
+  step "I am on the school landing page for a school using an account with the #{role} role"
   pupil_register_page.load
   @pupil_details = SqlDbHelper.pupil_details(@details_hash[:upn], @school_id)
   pupil_name = @pupil_details['lastName']
@@ -71,6 +71,7 @@ Given(/^I have a pupil who has a discretionary restart$/) do
 end
 
 When(/^I remove the discretionary restart$/) do
+  binding.pry
   pupil_history_page.remove_discretionary_restart_button.click
 end
 
@@ -195,6 +196,29 @@ Then(/^I should see a list of all checks including the consumed discretionary re
   expect(pupil_history_page.pupil_history.number_of_restarts_taken.text).to eql '3'
   expect(pupil_history_page.pupil_history.discretionary_restart.text).to eql 'N'
   expect(pupil_history_page).to have_discretionary_restart_button
+  pupil_checks = SqlDbHelper.get_all_checks_from_school(@school_id).select {|check| check['pupil_id'] == @pupil_details['id']}.sort_by {|check| check['id']}
+  latest_check = pupil_checks.last
+  pupil_history_page.check_history.rows.each_with_index do |check, index|
+    expect(check.pin_gen.text).to eql pupil_checks[index]['createdAt'].utc.strftime("%-d %b %l:%M %P").gsub("  ", " ")
+    expect(check.login.text).to eql pupil_checks[index]['pupilLoginDate'].utc.strftime("%-d %b %l:%M %P").gsub("  ", " ")
+    expect(check.recieved.text).to eql pupil_checks[index]['receivedByServerAt'].utc.strftime("%-d %b %l:%M %P").gsub("  ", " ")
+    expect(check.active.text).to eql pupil_checks[index] == latest_check ? '*' : ''
+    expect(check.type.text).to eql 'Official'
+    expect(check.status.text).to eql 'Check complete'
+  end
+end
+
+And(/^I should not have the ability to apply a discretionary restart$/) do
+  expect(pupil_history_page).to_not have_discretionary_restart_button
+end
+
+Then(/^I should not have the ability to remove the discretionary restart$/) do
+  expect(pupil_history_page).to_not have_remove_discretionary_restart_button
+end
+
+Then(/^I should see a list of all checks including the consumed discretionary restart in the helpdesk view$/) do
+  expect(pupil_history_page.pupil_history.number_of_restarts_taken.text).to eql '3'
+  expect(pupil_history_page.pupil_history.discretionary_restart.text).to eql 'N'
   pupil_checks = SqlDbHelper.get_all_checks_from_school(@school_id).select {|check| check['pupil_id'] == @pupil_details['id']}.sort_by {|check| check['id']}
   latest_check = pupil_checks.last
   pupil_history_page.check_history.rows.each_with_index do |check, index|
