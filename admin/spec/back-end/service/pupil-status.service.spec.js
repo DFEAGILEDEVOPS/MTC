@@ -146,7 +146,7 @@ describe('pupil-status.service', () => {
         pupilCheckComplete: false,
         pinExpiresAt: null
       })
-      expect(status).toBe('Processing')
+      expect(status).toBe('Check processing')
     })
 
     test('it identifies a pupil that has a check with error in processing', () => {
@@ -211,7 +211,7 @@ describe('pupil-status.service', () => {
         pinExpiresAt: moment().add(3, 'hours'),
         checkStartedAt: moment().subtract(20, 'minutes')
       })
-      expect(status).toBe('Overdue')
+      expect(status).toBe('Check overdue')
     })
 
     test('it identifies a pupil was allocated a check that then expired', () => {
@@ -279,7 +279,7 @@ describe('pupil-status.service', () => {
         pupilCheckComplete: false,
         pinExpiresAt: null
       })
-      expect(status).toBe('Check started')
+      expect(status).toBe('Check in progress')
     })
   })
 

@@ -14,19 +14,21 @@ const pupilStatusPresenter = {}
  */
 pupilStatusPresenter.getPresentationData = (pupilStatusData, checkWindowData) => {
   const pupilStatusViewData = {}
+  const overdue = 'Check overdue'
+  const notStarted = 'Not started'
   pupilStatusViewData.pupilsRequireAction = pupilStatusPresenter.applyStatusDescriptionChange(
     // @ts-ignore
-    R.filter(p => R.includes(p.status, ['Error in processing', 'Overdue'], p), pupilStatusData),
-    ['Overdue'],
+    R.filter(p => R.includes(p.status, ['Error in processing', overdue], p), pupilStatusData),
+    [overdue],
     'Pupil check not received'
   )
   pupilStatusViewData.pupilsNotStarted = pupilStatusPresenter.applyStatusDescriptionChange(
     // @ts-ignore
-    R.filter(p => R.includes(p.status, ['Not started', 'Restart'], p), pupilStatusData),
+    R.filter(p => R.includes(p.status, [notStarted, 'Restart'], p), pupilStatusData),
     ['Restart'],
-    'Not started'
+    notStarted
   )
-  pupilStatusViewData.pupilsInProgress = R.filter(p => R.includes(p.status, ['PIN generated', 'Logged in', 'Processing', 'Check started'], p), pupilStatusData)
+  pupilStatusViewData.pupilsInProgress = R.filter(p => R.includes(p.status, ['PIN generated', 'Logged in', 'Check processing', 'Check in progress'], p), pupilStatusData)
   // @ts-ignore
   pupilStatusViewData.pupilsCompleted = R.filter(p => R.includes(p.status, ['Complete'], p) || !!p.reason, pupilStatusData)
 

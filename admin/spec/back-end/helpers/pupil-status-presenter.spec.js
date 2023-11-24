@@ -46,7 +46,7 @@ describe('pupilStatusPresenter', () => {
     test('collects pupils that have started the check', () => {
       const pupilData = [
         {
-          status: 'Check started'
+          status: 'Check in progress'
         },
         {
           status: 'Error in processing'
@@ -141,7 +141,7 @@ describe('pupilStatusPresenter', () => {
           status: 'Error in processing'
         },
         {
-          status: 'Overdue'
+          status: 'Check overdue'
         }
       ]
       const pupilStatusViewData = pupilStatusPresenter.getPresentationData(pupilsRequireAction, checkWindowData)
@@ -154,7 +154,7 @@ describe('pupilStatusPresenter', () => {
           status: 'Error in processing'
         },
         {
-          status: 'Overdue'
+          status: 'Check overdue'
         },
         {
           reason: 'Not attending'

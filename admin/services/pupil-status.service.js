@@ -126,11 +126,11 @@ const pupilStatusService = {
       isFalse(checkReceived) &&
       isFalse(checkComplete)
     ) {
-      status = 'Check started'
+      status = 'Check in progress'
       if (
         isNotReceived(pupilLoginDate, notReceivedExpiryInMinutes, moment.utc())
       ) {
-        status = 'Overdue'
+        status = 'Check overdue'
       }
     } else if (
       isPositive(currentCheckId) &&
@@ -145,7 +145,7 @@ const pupilStatusService = {
       isTrue(checkReceived) &&
       isFalse(checkComplete)
     ) {
-      status = 'Processing'
+      status = 'Check processing'
     } else if (
       isNotNil(pupilLoginDate) &&
       isTrue(checkReceived) &&
