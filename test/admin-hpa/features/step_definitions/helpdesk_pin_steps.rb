@@ -92,8 +92,15 @@ But(/^the pupil pin should be visible$/) do
 end
 
 
-Given(/^I am on the school landing page for a school using an account with the STA admin role$/) do
-  step 'I have signed in with sta-admin'
+Given(/^I am on the school landing page for a school using an account with the (sta admin|helpdesk) role$/) do |role|
+  case role
+  when "sta admin"
+    step 'I have signed in with sta-admin'
+  when "helpdesk"
+    step "I have signed in with helpdesk"
+  else
+    fail role + " role not found "
+  end
   p @school['entity']['dfeNumber']
   step "I enter and submit a valid #{@school['entity']['dfeNumber']} for impersonation"
 end

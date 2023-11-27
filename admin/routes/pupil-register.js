@@ -59,7 +59,7 @@ router.post(
 )
 router.get(
   '/history/:urlSlug',
-  isAuthenticated([roles.staAdmin]),
+  isAuthenticated([roles.staAdmin, roles.helpdesk]),
   isAdminWindowAvailable,
   pupilController.getViewPupilHistory
 )
