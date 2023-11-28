@@ -17,68 +17,79 @@ describe('administrationMessageService', () => {
   })
 
   describe('getMessages', () => {
-    const mockServiceMessages = [
-      {
-        title: 'title 1',
-        message: 'message 1',
-        borderColourCode: 'B',
-        areaCodes: ['A', 'P'],
-        urlSlug: 'abc-defe'
-      },
-      {
-        title: 'Global message',
-        message: '# title\n**bold** *italic*',
-        borderColourCode: 'G',
-        areaCodes: ['A', 'B', 'C'],
-        urlSlug: 'def-hij'
-      }
-    ]
+    const mockServiceMessages = {
+      areaCodes: [
+        { code: 'A', description: 'A desc' },
+        { code: 'B', description: 'B desc' },
+        { code: 'C', description: 'C desc' },
+        { code: 'P', description: 'P desc' }
+      ],
+      messages: [
+        {
+          title: 'title 1',
+          message: 'message 1',
+          borderColourCode: 'B',
+          areaCodes: ['A', 'P'],
+          urlSlug: 'abc-defe'
+        },
+        {
+          title: 'Global message',
+          message: '# title\n**bold** *italic*',
+          borderColourCode: 'G',
+          areaCodes: ['A', 'B', 'C'],
+          urlSlug: 'def-hij'
+        }
+      ]
+    }
 
     beforeEach(() => {
       jest.spyOn(administrationMessageDataService, 'sqlFindServiceMessages').mockImplementation()
+      jest.spyOn(ServiceMessageCodesService, 'getAreaCodes').mockImplementation()
       jest.spyOn(redisCacheService, 'get').mockImplementation()
       jest.spyOn(redisCacheService, 'set').mockImplementation()
     })
 
     test('should call redis cache service to fetch the service message', async () => {
-      await administrationMessageService.getMessages()
+      await administrationMessageService.getMessagesAndAreaCodes()
       expect(redisCacheService.get).toHaveBeenCalled()
     })
 
     test('should not call administrationMessageDataService.sqlFindServiceMessages if service message is fetched from redis', async () => {
-      jest.spyOn(redisCacheService, 'get').mockResolvedValue(JSON.stringify(mockServiceMessages))
-      await administrationMessageService.getMessages()
+      jest.spyOn(redisCacheService, 'get').mockResolvedValue(mockServiceMessages)
+      await administrationMessageService.getMessagesAndAreaCodes()
       expect(redisCacheService.get).toHaveBeenCalled()
       expect(administrationMessageDataService.sqlFindServiceMessages).not.toHaveBeenCalled()
     })
 
     test('should call administrationMessageDataService.sqlFindServiceMessages if redis service returns false while attempting to fetch the serviceMessage', async () => {
       jest.spyOn(redisCacheService, 'get').mockResolvedValue(false)
-      await administrationMessageService.getMessages()
+      await administrationMessageService.getMessagesAndAreaCodes()
       expect(redisCacheService.get).toHaveBeenCalled()
       expect(administrationMessageDataService.sqlFindServiceMessages).toHaveBeenCalled()
     })
 
     test('should call administrationMessageDataService.sqlFindServiceMessages if undefined is returned from redis service', async () => {
       jest.spyOn(redisCacheService, 'get').mockResolvedValue(undefined)
-      await administrationMessageService.getMessages()
+      await administrationMessageService.getMessagesAndAreaCodes()
       expect(redisCacheService.get).toHaveBeenCalled()
       expect(administrationMessageDataService.sqlFindServiceMessages).toHaveBeenCalled()
     })
 
     test('should convert the markdown to html', async () => {
       jest.spyOn(redisCacheService, 'get').mockResolvedValue(undefined)
-      jest.spyOn(administrationMessageDataService, 'sqlFindServiceMessages').mockResolvedValue(mockServiceMessages)
-      const msgs = await administrationMessageService.getMessages()
-      expect(msgs[1].message).toContain('<h1>title</h1>')
-      expect(msgs[1].message).toContain('<strong>bold</strong>')
-      expect(msgs[1].message).toContain('<em>italic</em>')
+      jest.spyOn(administrationMessageDataService, 'sqlFindServiceMessages').mockResolvedValue(mockServiceMessages.messages)
+      jest.spyOn(ServiceMessageCodesService, 'getAreaCodes').mockResolvedValue(mockServiceMessages.areaCodes)
+      const data = await administrationMessageService.getMessagesAndAreaCodes()
+      expect(data.messages[1].message).toContain('<h1>title</h1>')
+      expect(data.messages[1].message).toContain('<strong>bold</strong>')
+      expect(data.messages[1].message).toContain('<em>italic</em>')
     })
 
     test('it returns undefined if the markdown parser throws an error', async () => {
       jest.spyOn(administrationMessageDataService, 'sqlFindServiceMessages').mockResolvedValue([{ title: 'test', message: 'some unparsable content' }])
-      jest.spyOn(marked, 'parse').mockImplementation(() => { throw new Error('test error') })
-      await expect(administrationMessageService.getMessages()).resolves.toBeUndefined()
+      jest.spyOn(marked, 'parse').mockImplementation(() => { throw new Error('test parse error') })
+      jest.spyOn(console, 'log').mockImplementation() // hush the alert raised as part of the test
+      await expect(administrationMessageService.getMessagesAndAreaCodes()).resolves.toBeUndefined()
     })
   })
 

@@ -24,23 +24,17 @@ const restartPathRe = /^\/restart\//
 const pupilRegisterPathRe = /^\/pupil-register\//
 
 /**
- * @typedef serviceMessage
- * @property message string
- * @property title string
- * @property borderColourCode string
- * @property [id] number optional
- * @property areaCodes string[]
- */
-
-/**
  * Return the service messages filtered by path.
  * @param {string} path - from req.path
  * @returns {Promise<serviceMessage[]>}
  */
 administrationMessageService.getFilteredMessagesForRequest = async function getFilteredMessagesForRequest (path) {
   try {
-    const messages = await administrationMessageService.getMessages()
-    const allAreaCodes = await ServiceMessageCodesService.getAreaCodes()
+    /** @var ServiceMessagesAndAreaCodes */
+    const messageData = await administrationMessageService.getMessagesAndAreaCodes()
+    const messages = messageData.messages
+    const allAreaCodes = messageData.areaCodes
+
     const filteredMessages = []
     for (const msg of messages) {
       if (msg.areaCodes.length === allAreaCodes.length) {
@@ -87,35 +81,62 @@ administrationMessageService.getFilteredMessagesForRequest = async function getF
     }
     return filteredMessages
   } catch (error) {
-    console.error('Error getting filtered messages', error)
+    logger.error('Error getting filtered messages', error)
     return []
   }
 }
+/**
+ * @typedef ServiceMessage
+ * @property message string
+ * @property title string
+ * @property borderColourCode string
+ * @property [id] number optional
+ * @property areaCodes string[]
+ */
 
 /**
- * Fetch the service message from DB or cache with the message property as raw markdown, or plain text.
- * @returns {Promise<serviceMessage | undefined>}
+ * @typedef AreaCode
+ * @property code string
+ * @property description string
  */
-administrationMessageService.getMessages = async function getMessages () {
-  const result = await redisCacheService.get(serviceMessageRedisKey)
+
+/**
+ * @typedef ServiceMessagesAndAreaCodes
+ * @property messages ServiceMessage[]
+ * @property areaCodes: AreaCode[]
+ */
+
+/**
+ * Fetch the service messages from DB or cache with the message property as raw markdown, or plain text.
+ * Also returns all the known AreaCodes to optimise the getFilteredMessages() call
+ * @returns {Promise<ServiceMessagesAndAreaCodes | undefined>}
+ */
+administrationMessageService.getMessagesAndAreaCodes = async function getMessagesAndAreaCodes () {
+  let data
   try {
-    if (!(result === undefined || result === false)) {
-      const cachedServiceMessages = JSON.parse(result)
-      if (cachedServiceMessages !== undefined) {
-        return cachedServiceMessages
+    const result = await redisCacheService.get(serviceMessageRedisKey)
+    // Object.hasOwn() available since node v16.9
+    if (result !== undefined && typeof result === 'object' && result.hasOwn('messages') &&
+      Array.isArray(result.messages) && result.hasOwn('areaCodes') && Array.isArray(result.areaCodes)) {
+      return result
+    }
+    // Fetch service messages and all area codes from the DB
+    const messages = await administrationMessageDataService.sqlFindServiceMessages()
+    if (Array.isArray(messages) && messages.length > 0) {
+      const htmlMessages = administrationMessageService.parseAndSanitise(messages)
+      const allAreaCodes = await ServiceMessageCodesService.getAreaCodes()
+      if (Array.isArray(allAreaCodes)) {
+        data = {
+          areaCodes: allAreaCodes,
+          messages: htmlMessages
+        }
+        await redisCacheService.set(serviceMessageRedisKey, data)
       }
+      return data
     }
   } catch (error) {
-    console.log('redis cache miss for service messages', error)
+    logger.error('Error getting messages and areaCodes: ', JSON.stringify(error))
   }
-  const messages = await administrationMessageDataService.sqlFindServiceMessages()
-
-  if (Array.isArray(messages) && messages.length > 0) {
-    const htmlMessages = administrationMessageService.parseAndSanitise(messages)
-    await redisCacheService.set(serviceMessageRedisKey, htmlMessages)
-    return htmlMessages
-  }
-
   // otherwise implicitly return undefined
 }
 
