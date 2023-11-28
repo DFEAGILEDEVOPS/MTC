@@ -24,8 +24,14 @@ export class PingService {
   private getAppRootDir (): string {
     if (this.appRootDir !== '') return this.appRootDir
     let currentDir = __dirname
+    const failSafe = 20
+    let count = 0
     while (!fs.existsSync(path.join(currentDir, 'package.json'))) {
       currentDir = path.join(currentDir, '..')
+      count++
+      if (count === failSafe) {
+        throw new Error('Could not find package.json')
+      }
     }
     this.appRootDir = currentDir
     return currentDir
@@ -49,7 +55,6 @@ export class PingService {
     const rootDir = this.getAppRootDir()
     return new Promise(function (resolve) {
       const buildFilePath = path.join(rootDir, 'build.txt')
-      console.log(buildFilePath)
       fs.readFile(buildFilePath, 'utf8', function (err, data) {
         if (err == null) {
           resolve(data)
