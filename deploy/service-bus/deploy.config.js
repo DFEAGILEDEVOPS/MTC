@@ -98,10 +98,6 @@ const config = {
       maxSizeInMegabytes: {}.hasOwnProperty.call(process.env, 'SERVICE_BUS_QUEUE_MAX_SIZE_MEGABYTES_SYNC_RESULTS_COMPLETE') ? parseInt(process.env.SERVICE_BUS_QUEUE_MAX_SIZE_MEGABYTES_SYNC_RESULTS_COMPLETE, 10) : twentyGigabytes
     },
     {
-      name: 'ps-report-log',
-      maxSizeInMegabytes: {}.hasOwnProperty.call(process.env, 'SERVICE_BUS_QUEUE_MAX_SIZE_MEGABYTES_PS_REPORT_LOG') ? parseInt(process.env.SERVICE_BUS_QUEUE_MAX_SIZE_MEGABYTES_PS_REPORT_LOG, 10) : twentyGigabytes
-    },
-    {
       name: 'ps-report-exec',
       maxSizeInMegabytes: {}.hasOwnProperty.call(process.env, 'SERVICE_BUS_QUEUE_MAX_SIZE_MEGABYTES_PS_REPORT_EXEC') ? parseInt(process.env.SERVICE_BUS_QUEUE_MAX_SIZE_MEGABYTES_PS_REPORT_EXEC, 10) : oneGigabyte,
       defaultMessageTimeToLive: sixHours,

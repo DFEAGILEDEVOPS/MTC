@@ -71,7 +71,6 @@ Given(/^I have a pupil who has a discretionary restart$/) do
 end
 
 When(/^I remove the discretionary restart$/) do
-  binding.pry
   pupil_history_page.remove_discretionary_restart_button.click
 end
 

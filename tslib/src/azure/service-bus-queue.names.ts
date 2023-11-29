@@ -12,6 +12,5 @@ export enum ServiceBusQueueName {
   queueReplay = 'queue-replay',
   schoolResultsCache = 'school-results-cache',
   syncResultsToDbComplete = 'sync-results-to-db-complete',
-  psReportLog = 'ps-report-log',
   psReportExec = 'ps-report-exec'
 }
