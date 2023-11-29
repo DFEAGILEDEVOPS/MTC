@@ -157,24 +157,6 @@ router.post(
 )
 
 router.get(
-  '/ps-report-logs',
-  isAuthenticated([roles.techSupport]),
-  techSupportController.getPsReportFolders
-)
-
-router.get(
-  '/ps-report-log-folder/:folder',
-  isAuthenticated([roles.techSupport]),
-  techSupportController.getPsReportFolderFileList
-)
-
-router.get(
-  '/ps-report-log-folder/:folder/:file',
-  isAuthenticated([roles.techSupport]),
-  techSupportController.getPsReportLogFileContents
-)
-
-router.get(
   '/ps-report-run',
   isAuthenticated([roles.techSupport]),
   techSupportController.getPsReportRun
