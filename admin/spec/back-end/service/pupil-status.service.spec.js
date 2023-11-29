@@ -247,7 +247,7 @@ describe('pupil-status.service', () => {
       expect(logger.error).toHaveBeenCalled()
     })
 
-    test('it detects a restart that was allocated a new check that then expired', () => {
+    test('it identifies a restart that was allocated a new check that then expired', () => {
       const status = pupilStatusService.getProcessStatusV2({
         attendanceId: null,
         currentCheckId: 1,
@@ -266,7 +266,7 @@ describe('pupil-status.service', () => {
       expect(status).toBe('Not started')
     })
 
-    test('it detects a check that has been started but not submitted', () => {
+    test('it identifies a check that has been started but not submitted', () => {
       const status = pupilStatusService.getProcessStatusV2({
         attendanceId: null,
         currentCheckId: 1,
