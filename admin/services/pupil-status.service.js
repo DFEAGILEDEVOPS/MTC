@@ -119,6 +119,7 @@ const pupilStatusService = {
       isFalse(checkComplete)
     ) {
       status = 'PIN generated'
+    // started
     } else if (
       isPositive(currentCheckId) &&
       isNotNil(pupilLoginDate) &&
@@ -128,10 +129,11 @@ const pupilStatusService = {
     ) {
       status = 'Check in progress'
       if (
-        isNotReceived(pupilLoginDate, notReceivedExpiryInMinutes, moment.utc())
+        isOverdue(checkStartedAt, notReceivedExpiryInMinutes, moment.utc())
       ) {
-        status = 'Check overdue'
+        status = 'Overdue - check started but not received'
       }
+    // logged in
     } else if (
       isPositive(currentCheckId) &&
       isNotNil(pupilLoginDate) &&
@@ -140,6 +142,11 @@ const pupilStatusService = {
       isFalse(checkComplete)
     ) {
       status = 'Logged in'
+      if (
+        isOverdue(pupilLoginDate, notReceivedExpiryInMinutes, moment.utc())
+      ) {
+        status = 'Overdue - logged in but check not started'
+      }
     } else if (
       isNotNil(pupilLoginDate) &&
       isTrue(checkReceived) &&
@@ -161,7 +168,7 @@ const pupilStatusService = {
   }
 }
 
-function isNotReceived (date, minutesToAdd, now) {
+function isOverdue (date, minutesToAdd, now) {
   if (!date || !moment.isMoment(date)) {
     // can be undefined
     return false
@@ -172,8 +179,8 @@ function isNotReceived (date, minutesToAdd, now) {
   if (!isPositive(minutesToAdd)) {
     throw new Error('minutesToAdd is not a positive number')
   }
-  const expiry = date.add(minutesToAdd, 'minutes')
-  return expiry.isBefore(now)
+  const overdue = date.add(minutesToAdd, 'minutes')
+  return overdue.isBefore(now)
 }
 
 /**

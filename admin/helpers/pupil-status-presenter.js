@@ -14,14 +14,12 @@ const pupilStatusPresenter = {}
  */
 pupilStatusPresenter.getPresentationData = (pupilStatusData, checkWindowData) => {
   const pupilStatusViewData = {}
-  const overdue = 'Check overdue'
+  const overdueLoggedIn = 'Overdue - logged in but check not started'
+  const overdueStarted = 'Overdue - check started but not received'
   const notStarted = 'Not started'
-  pupilStatusViewData.pupilsRequireAction = pupilStatusPresenter.applyStatusDescriptionChange(
-    // @ts-ignore
-    R.filter(p => R.includes(p.status, ['Error in processing', overdue], p), pupilStatusData),
-    [overdue],
-    'Pupil check not received'
-  )
+
+  pupilStatusViewData.pupilsRequireAction = R.filter(p => R.includes(p.status, ['Error in processing', overdueLoggedIn, overdueStarted], p), pupilStatusData)
+
   pupilStatusViewData.pupilsNotStarted = pupilStatusPresenter.applyStatusDescriptionChange(
     // @ts-ignore
     R.filter(p => R.includes(p.status, [notStarted, 'Restart'], p), pupilStatusData),

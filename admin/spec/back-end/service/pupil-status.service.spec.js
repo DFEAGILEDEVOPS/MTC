@@ -198,7 +198,8 @@ describe('pupil-status.service', () => {
       expect(status).toBe('Restart')
     })
 
-    test('it identifies an Overdue check', () => {
+    test('it identifies a check that is logged in but not started, and is Overdue', () => {
+      const expiryInMinutes = 30
       const status = pupilStatusService.getProcessStatusV2({
         attendanceId: null,
         currentCheckId: 1,
@@ -206,12 +207,12 @@ describe('pupil-status.service', () => {
         checkComplete: false,
         checkReceived: false,
         pupilLoginDate: moment().subtract(31, 'minutes'),
-        notReceivedExpiryInMinutes: 30,
+        notReceivedExpiryInMinutes: expiryInMinutes,
         pupilCheckComplete: false,
         pinExpiresAt: moment().add(3, 'hours'),
-        checkStartedAt: moment().subtract(20, 'minutes')
+        checkStartedAt: null
       })
-      expect(status).toBe('Check overdue')
+      expect(status).toBe('Overdue - logged in but check not started')
     })
 
     test('it identifies a pupil was allocated a check that then expired', () => {
@@ -281,6 +282,23 @@ describe('pupil-status.service', () => {
       })
       expect(status).toBe('Check in progress')
     })
+  })
+
+  test('it identifies a check that has been started but not submitted and is overdue', () => {
+    const expiryInMinutes = 30
+    const status = pupilStatusService.getProcessStatusV2({
+      attendanceId: null,
+      currentCheckId: 1,
+      restartAvailable: false,
+      checkComplete: false,
+      checkReceived: false,
+      checkStartedAt: moment().subtract(31, 'minutes'),
+      pupilLoginDate: moment().subtract(35, 'minutes'),
+      notReceivedExpiryInMinutes: expiryInMinutes,
+      pupilCheckComplete: false,
+      pinExpiresAt: null
+    })
+    expect(status).toBe('Overdue - check started but not received')
   })
 
   describe('#getPupilStatusData', () => {
