@@ -40,7 +40,6 @@ Feature:
     When I enter the checkCode from the completed check
     Then I should see N/A for the marked and recieved check
 
-
   Scenario: Marked and recieved checks are N/A when a try it out pin has been generated
     Given a Try it out pin has been generated for a pupil
     When I enter the checkCode from the completed check

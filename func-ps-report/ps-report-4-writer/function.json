@@ -6,13 +6,6 @@
       "direction": "in",
       "queueName": "ps-report-export",
       "connection": "AZURE_SERVICE_BUS_CONNECTION_STRING"
-    },
-    {
-      "direction": "out",
-      "type": "serviceBus",
-      "name": "logs",
-      "queueName": "ps-report-log",
-      "connection": "AZURE_SERVICE_BUS_CONNECTION_STRING"
     }
   ],
   "scriptFile": "../dist/functions-ps-report/ps-report-4-writer/index.js"

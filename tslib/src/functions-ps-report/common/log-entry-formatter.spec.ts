@@ -1,5 +1,5 @@
 import moment from 'moment'
-import { type IPsReportLogEntry, PsReportSource } from '../common/ps-report-log-entry'
+import { type IPsReportLogEntry, PsReportSource } from './ps-report-log-entry'
 import { PsLogEntryFormatter } from './log-entry-formatter'
 
 let sut: PsLogEntryFormatter

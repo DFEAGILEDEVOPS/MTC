@@ -1,7 +1,7 @@
 import moment from 'moment'
 import { type IContextLike } from '../../common/ContextLike'
 import { type ILogger } from '../../common/logger'
-import { PsLogEntryFormatter } from '../ps-report-5-log-writer/log-entry-formatter'
+import { PsLogEntryFormatter } from './log-entry-formatter'
 import { type IPsReportLogEntry, type PsReportLogLevel, type PsReportSource } from './ps-report-log-entry'
 
 const formatter = new PsLogEntryFormatter()
@@ -22,10 +22,6 @@ export class PsReportLogger implements ILogger {
       source: this.source,
       level
     }
-    if (this.context.bindings.logs === undefined) {
-      this.context.bindings.logs = []
-    }
-    this.context.bindings.logs.push(entry)
     return formatter.formatEntry(entry)
   }
 
