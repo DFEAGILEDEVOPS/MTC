@@ -18,7 +18,7 @@
                 Create service message
             </a>
 
-            <%if (Array.isArray(allServiceMessages) && allServiceMessages.length > 0) { %>
+            <%if (Array.isArray(rawServiceMessages) && rawServiceMessages.length > 0) { %>
                 <table id="submitted-service-message" class="govuk-table govuk-spacious govuk-!-margin-bottom-9">
                     <caption class="govuk-body govuk-table__caption">Service Message</caption>
                     <thead class="govuk-table__head">
@@ -29,7 +29,7 @@
                     </tr>
                     </thead>
                     <tbody class="govuk-table__body">
-                        <% for (let msg of allServiceMessages) { %>
+                        <% for (let msg of rawServiceMessages) { %>
                         <tr class="govuk-table__row">
                             <td scope="row">
                                 <div>

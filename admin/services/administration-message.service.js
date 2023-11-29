@@ -26,14 +26,16 @@ const pupilRegisterPathRe = /^\/pupil-register\//
 /**
  * Return the service messages filtered by path.
  * @param {string} path - from req.path
- * @returns {Promise<serviceMessage[]>}
+ * @returns {Promise<serviceMessage[] | []>}
  */
 administrationMessageService.getFilteredMessagesForRequest = async function getFilteredMessagesForRequest (path) {
   try {
     /** @var ServiceMessagesAndAreaCodes */
     const messageData = await administrationMessageService.getMessagesAndAreaCodes()
+    if (messageData === undefined) return []
+    if (!Object.hasOwn(messageData, 'messages') || !Object.hasOwn(messageData, 'areaCodes')) return []
     const messages = messageData.messages
-    const allAreaCodes = messageData.areaCodes
+    const allAreaCodes = Array.isArray(messageData.areaCodes) ? messageData.areaCodes : []
 
     const filteredMessages = []
     for (const msg of messages) {
@@ -116,8 +118,8 @@ administrationMessageService.getMessagesAndAreaCodes = async function getMessage
   try {
     const result = await redisCacheService.get(serviceMessageRedisKey)
     // Object.hasOwn() available since node v16.9
-    if (result !== undefined && typeof result === 'object' && result.hasOwn('messages') &&
-      Array.isArray(result.messages) && result.hasOwn('areaCodes') && Array.isArray(result.areaCodes)) {
+    if (result !== undefined && typeof result === 'object' && Object.hasOwn(result, 'messages') &&
+      Array.isArray(result.messages) && Object.hasOwn(result, 'areaCodes') && Array.isArray(result.areaCodes)) {
       return result
     }
     // Fetch service messages and all area codes from the DB
@@ -135,9 +137,14 @@ administrationMessageService.getMessagesAndAreaCodes = async function getMessage
       return data
     }
   } catch (error) {
-    logger.error('Error getting messages and areaCodes: ', JSON.stringify(error))
+    console.error(error)
+    logger.error('Error getting messages and areaCodes: ' + JSON.stringify(error))
   }
   // otherwise implicitly return undefined
+}
+
+administrationMessageService.getRawServiceMessages = async function getRawServiceMessages () {
+  return administrationMessageDataService.sqlFindServiceMessages()
 }
 
 /**
@@ -174,20 +181,13 @@ administrationMessageService.parseAndSanitise = function parseAndSanitise (rawMe
   return result
 }
 
-administrationMessageService.fetchMessageBySlug = async function fetchMessageBySlug (slug) {
-  let cachedServiceMessages
-  const result = await redisCacheService.get(serviceMessageRedisKey)
+administrationMessageService.getRawMessageBySlug = async function getRawMessageBySlug (slug) {
   try {
-    cachedServiceMessages = JSON.parse(result)
-    if (cachedServiceMessages) {
-      const msg = cachedServiceMessages.filter(m => m.urlSlug.toLowercase() === slug.toLowercase())
-      return msg ?? undefined // return undef rather than []
-    }
-  } catch (ignore) {
-    console.log('redis cache miss for service messages')
+    const rawMessage = await administrationMessageDataService.sqlFindServiceMessageBySlug(slug)
+    return rawMessage
+  } catch (error) {
+    logger.error('getRawMessageBySlug() Failed to get message: ' + JSON.stringify(error))
   }
-
-  return administrationMessageDataService.sqlFindServiceMessageBySlug(slug)
 }
 
 /**

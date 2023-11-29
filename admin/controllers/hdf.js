@@ -261,8 +261,7 @@ controller.getDeclarationForm = async function getDeclarationForm (req, res, nex
     if (!availabilityData.hdfAvailable) {
       return res.render('availability/section-unavailable', {
         title: res.locals.pageTitle,
-        breadcrumbs: req.breadcrumbs(),
-        serviceMessages: res.locals.serviceMessages
+        breadcrumbs: req.breadcrumbs()
       })
     }
     if (hdfSubmitted) {
@@ -278,8 +277,7 @@ controller.getDeclarationForm = async function getDeclarationForm (req, res, nex
     formData: req.body,
     checkEndDate: dateService.formatDayAndDate(checkWindowData.checkEndDate),
     error: new ValidationError(),
-    breadcrumbs: req.breadcrumbs(),
-    serviceMessages: res.locals.serviceMessages
+    breadcrumbs: req.breadcrumbs()
   })
 }
 

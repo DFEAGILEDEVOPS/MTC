@@ -18,12 +18,13 @@ const controller = {
   getServiceMessage: async function getServiceMessage (req, res, next) {
     res.locals.pageTitle = 'Manage service message'
     req.breadcrumbs(res.locals.pageTitle)
-    // Dont rely on the global filtered messages in res.locals. As they are filtered.
-    const allServiceMessages = await administrationMessageService.getMessages()
+    // Ensure the service-manager sees content from the DB rather than the cache, as the cache is not the source of truth.
+    const rawServiceMessages = await administrationMessageService.getRawServiceMessages()
+
     try {
       res.render('service-message/service-message-overview', {
         breadcrumbs: req.breadcrumbs(),
-        allServiceMessages
+        rawServiceMessages
       })
     } catch (error) {
       return next(error)
@@ -124,7 +125,7 @@ const controller = {
         res.redirect('/service-message/')
         return
       }
-      const serviceMessageMarkdown = await administrationMessageService.fetchMessageBySlug(slug)
+      const serviceMessageMarkdown = await administrationMessageService.getRawMessageBySlug(slug)
       if (serviceMessageMarkdown === undefined) {
         req.flash('info', 'No service message to edit')
         res.redirect('/service-message/')
