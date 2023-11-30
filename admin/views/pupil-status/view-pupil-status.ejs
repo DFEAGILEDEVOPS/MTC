@@ -1,465 +1,511 @@
 <%- partial('partials/_gds_breadcrumbs_and_sign_out', { breadcrumbs }) %>
-<main class="govuk-main-wrapper" id="main-content" role="main">
+  <main class="govuk-main-wrapper" id="main-content" role="main">
     <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-            <% if (pupilStatusViewData.pupilsRequireActionCount > 0) { %>
-                <div class="govuk-body govuk-warning-message govuk-!-margin-bottom-7">
-                    <%= pupilStatusViewData.pupilsRequireActionCount %> <%= pupilStatusViewData.pupilsRequireActionCount > 1 ? 'Checks' : 'Check' %>
-                    with errors
-                </div>
-            <% } %>
+      <div class="govuk-grid-column-two-thirds">
+        <% if (pupilStatusViewData.pupilsRequireActionCount> 0) { %>
+          <div class="govuk-body govuk-warning-message govuk-!-margin-bottom-7">
+            <%= pupilStatusViewData.pupilsRequireActionCount %>
+              <%= pupilStatusViewData.pupilsRequireActionCount> 1 ? 'Checks' : 'Check' %>
+                with errors
+          </div>
+          <% } %>
             <h1 class="govuk-heading-xl">See how many pupils have completed the official check</h1>
             <%- partial('partials/_gds_session_expiry') %>
-            <p class="govuk-body-l">
-                Review the status of your pupils to ensure all participating pupils have successfully completed the check.
-            </p>
+              <p class="govuk-body-l">
+                Review the status of your pupils to ensure all participating pupils have successfully completed the
+                check.
+              </p>
 
-            <div id="red-card" class="govuk-panel govuk-panel custom-card red-card" tabindex="0">
+              <div id="red-card" class="govuk-panel govuk-panel custom-card red-card" tabindex="0">
                 <div class="govuk-panel__body custom-card-small-text">
+                  Checks that require action
+                </div>
+                <div class="custom-card-large-text">
+                  <%= pupilStatusViewData.pupilsRequireActionCount %>
+                </div>
+                <div class="govuk-panel__body custom-card-small-text">
+                  of <%= pupilStatusViewData.totalPupilsCount %> pupils
+                </div>
+              </div>
+
+              <div id="orange-card" class="govuk-panel govuk-panel custom-card orange-card" tabindex="0">
+                <div class="govuk-panel__body custom-card-small-text">
+                  Pupils not started
+                </div>
+                <div class="custom-card-large-text">
+                  <%= pupilStatusViewData.pupilsNotStartedCount %>
+                </div>
+                <div class="govuk-panel__body custom-card-small-text">
+                  of <%= pupilStatusViewData.totalPupilsCount %> pupils
+                </div>
+              </div>
+
+              <div id="blue-card" class="govuk-panel govuk-panel custom-card blue-card" tabindex="0">
+                <div class="govuk-panel__body custom-card-small-text">
+                  Pupils in progress
+                </div>
+                <div class="custom-card-large-text">
+                  <%= pupilStatusViewData.pupilsInProgressCount %>
+                </div>
+                <div class="govuk-panel__body custom-card-small-text">
+                  of <%= pupilStatusViewData.totalPupilsCount %> pupils
+                </div>
+              </div>
+
+              <div id="green-card" class="govuk-panel govuk-panel custom-card green-card" tabindex="0">
+                <div class="govuk-panel__body custom-card-small-text">
+                  Pupils completed
+                </div>
+                <div class="custom-card-large-text">
+                  <%= pupilStatusViewData.pupilsCompletedCount %>
+                </div>
+                <div class="govuk-panel__body custom-card-small-text">
+                  of <%= pupilStatusViewData.totalPupilsCount %> pupils
+                </div>
+              </div>
+
+              <details id="red-card-details" class=" govuk-!-margin-top-5 govuk-details red-card-details"
+                data-module="govuk-details">
+                <summary class="govuk-details__summary">
+                  <span class="govuk-details__summary-text">
                     Checks that require action
-                </div>
-                <div class="custom-card-large-text">
-                    <%= pupilStatusViewData.pupilsRequireActionCount %>
-                </div>
-                <div class="govuk-panel__body custom-card-small-text">
-                    of <%= pupilStatusViewData.totalPupilsCount %> pupils
-                </div>
-            </div>
-
-            <div id="orange-card" class="govuk-panel govuk-panel custom-card orange-card" tabindex="0">
-                <div class="govuk-panel__body custom-card-small-text">
-                    Pupils not started
-                </div>
-                <div class="custom-card-large-text">
-                    <%= pupilStatusViewData.pupilsNotStartedCount %>
-                </div>
-                <div class="govuk-panel__body custom-card-small-text">
-                    of <%= pupilStatusViewData.totalPupilsCount %> pupils
-                </div>
-            </div>
-
-            <div id="blue-card" class="govuk-panel govuk-panel custom-card blue-card" tabindex="0">
-                <div class="govuk-panel__body custom-card-small-text">
-                    Pupils in progress
-                </div>
-                <div class="custom-card-large-text">
-                    <%= pupilStatusViewData.pupilsInProgressCount %>
-                </div>
-                <div class="govuk-panel__body custom-card-small-text">
-                    of <%= pupilStatusViewData.totalPupilsCount %> pupils
-                </div>
-            </div>
-
-            <div id="green-card" class="govuk-panel govuk-panel custom-card green-card" tabindex="0">
-                <div class="govuk-panel__body custom-card-small-text">
-                    Pupils completed
-                </div>
-                <div class="custom-card-large-text">
-                    <%= pupilStatusViewData.pupilsCompletedCount %>
-                </div>
-                <div class="govuk-panel__body custom-card-small-text">
-                    of <%= pupilStatusViewData.totalPupilsCount %> pupils
-                </div>
-            </div>
-
-            <details id="red-card-details" class=" govuk-!-margin-top-5 govuk-details red-card-details"
-                     data-module="govuk-details">
-                <summary class="govuk-details__summary">
-                        <span class="govuk-details__summary-text">
-                          Checks that require action
-                        </span>
+                  </span>
                 </summary>
                 <div class="govuk-details__text">
-                    <% if (pupilStatusViewData.pupilsRequireAction && pupilStatusViewData.pupilsRequireAction.length > 0) { %>
-                        <% if (pupilStatusViewData.remainingLiveCheckDays < 0) {%>
-                            <%- partial('partials/pupil-register/_check-window-has-closed') %>
+                  <% if (pupilStatusViewData.pupilsRequireAction && pupilStatusViewData.pupilsRequireAction.length> 0) {
+                    %>
+                    <% if (pupilStatusViewData.remainingLiveCheckDays < 0) {%>
+                      <%- partial('partials/pupil-register/_check-window-has-closed') %>
                         <% } %>
-                        <table id="pupil-status" data-name="filterablePupilsList"
-                               class="govuk-!-margin-top-0 govuk-table govuk-spacious">
+                          <table id="pupil-status" data-name="filterablePupilsList"
+                            class="govuk-!-margin-top-0 govuk-table govuk-spacious">
                             <caption class="govuk-body govuk-table__caption"></caption>
                             <thead class="govuk-table__head">
-                            <tr class="govuk-table__row">
+                              <tr class="govuk-table__row">
                                 <th scope="col" class="govuk-table__header govuk-!-width-one-half">
-                                    Pupil
+                                  Pupil
                                 </th>
                                 <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">
                                 </th>
-                            </tr>
+                              </tr>
                             </thead>
                             <tbody>
-                            <% pupilStatusViewData.pupilsRequireAction.forEach((p) => { %>
+                              <% pupilStatusViewData.pupilsRequireAction.forEach((p)=> { %>
                                 <tr class="govuk-table__row">
-                                    <td scope="row" class="govuk-!-display-block govuk-table__cell govuk-warning-item">
-                                        <span class="govuk-!-font-weight-bold name-text-wrap"><%= p.fullName %></span>
-                                        <% if (p.showDoB) { %>
-                                            <div class="govuk-font-greyed-out govuk-!-font-size-16">Date of
-                                                birth: <%= p.formattedDateOfBirth %></div>
-                                        <% } %>
-                                    </td>
-                                    <td class="govuk-table__cell">
-                                        <%= p.status %>
-                                    </td>
-                                </tr>
-                            <% }) %>
-                            </tbody>
-                        </table>
-                    <% } else { %>
-                        No pupils found
-                    <% } %>
-                </div>
-            </details>
-
-            <details id="orange-card-details" class="govuk-details orange-card-details" data-module="govuk-details">
-                <summary class="govuk-details__summary">
-                        <span class="govuk-details__summary-text">
-                            Pupils not started
-                        </span>
-                </summary>
-                <div class="govuk-details__text">
-                    <% if (pupilStatusViewData.pupilsNotStarted && pupilStatusViewData.pupilsNotStarted.length > 0) { %>
-
-                        <% if (pupilStatusViewData.pupilsNotStartedCount > 0) { %>
-                            <% if (pupilStatusViewData.remainingLiveCheckDays >= 0) {%>
-                                <p class="govuk-body govuk-!-font-weight-bold">
-                                        <span class="govuk-warning-text__icon warning-text__icon-small"
-                                              aria-hidden="true">!</span>
-
-                                    The check window ends in <%= pupilStatusViewData.remainingLiveCheckDays %>
-                                    day<%-pupilStatusViewData.remainingLiveCheckDays !== 1 ? 's' : '' %>.
-                                    Please ensure pupils have taken the official check before 4pm
-                                    on <%= pupilStatusViewData.liveCheckEndDate %>.
-                                    Go to <a href="/pupil-pin/generate-live-pins-overview">generate school password and
-                                        PINs for the check</a> to continue.
-                                </p>
-                            <% } else { %>
-                                <%- partial('partials/pupil-register/_check-window-has-closed') %>
-                            <% } %>
-                        <% } %>
-
-                        <table id="pupil-status" data-name="filterablePupilsList"
-                               class="govuk-!-margin-top-0 govuk-table govuk-spacious">
-                            <caption class="govuk-body govuk-table__caption"></caption>
-                            <thead class="govuk-table__head">
-                            <tr class="govuk-table__row">
-                                <th scope="col" class="govuk-table__header govuk-!-width-one-half">
-                                    Pupil
-                                </th>
-                                <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">
-                                </th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <% pupilStatusViewData.pupilsNotStarted.forEach((p) => { %>
-                                <tr class="govuk-table__row">
-                                    <td class="govuk-table__cell">
-                                        <span class="govuk-!-font-weight-bold name-text-wrap"><%= p.fullName %></span>
-                                        <% if (p.showDoB) { %>
-                                            <div class="govuk-font-greyed-out govuk-!-font-size-16">Date of
-                                                birth: <%= p.formattedDateOfBirth %></div>
-                                        <% } %>
-                                    </td>
-                                    <td class="govuk-table__cell">
-                                        <%= p.status %>
-                                    </td>
-                                </tr>
-                            <% }) %>
-                            </tbody>
-                        </table>
-                    <% } else { %>
-                        No pupils found
-                    <% } %>
-                </div>
-            </details>
-
-            <details id="blue-card-details" class="govuk-details blue-card-details" data-module="govuk-details">
-                <summary class="govuk-details__summary">
-                        <span class="govuk-details__summary-text">
-                            Pupils in progress
-                        </span>
-                </summary>
-                <div class="govuk-details__text">
-                    <% if (pupilStatusViewData.pupilsInProgress && pupilStatusViewData.pupilsInProgress.length > 0) { %>
-                        <table id="pupil-status" data-name="filterablePupilsList"
-                               class="govuk-!-margin-top-0 govuk-table govuk-spacious">
-                            <caption class="govuk-body govuk-table__caption"></caption>
-                            <thead class="govuk-table__head">
-                            <tr class="govuk-table__row">
-                                <th scope="col" class="govuk-table__header govuk-!-width-one-half">
-                                    Pupil
-                                </th>
-                                <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">
-                                </th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <% pupilStatusViewData.pupilsInProgress.forEach((p) => { %>
-                                <tr class="govuk-table__row">
-                                    <td class="govuk-table__cell">
-                                        <span class="govuk-!-font-weight-bold name-text-wrap"><%= p.fullName %></span>
-                                        <% if (p.showDoB) { %>
-                                            <div class="govuk-font-greyed-out govuk-!-font-size-16">Date of
-                                                birth: <%= p.formattedDateOfBirth %></div>
-                                        <% } %>
-                                    </td>
-                                    <td class="govuk-table__cell">
-                                        <%= p.status %>
-                                    </td>
-                                </tr>
-                            <% }) %>
-                            </tbody>
-                        </table>
-                    <% } else { %>
-                        No pupils found
-                    <% } %>
-                </div>
-            </details>
-
-            <details id="green-card-details" class="govuk-details green-card-details" data-module="govuk-details">
-                <summary class="govuk-details__summary">
-                        <span class="govuk-details__summary-text">
-                          Pupils completed
-                        </span>
-                </summary>
-                <div class="govuk-details__text">
-                    <% if (pupilStatusViewData.pupilsCompleted && pupilStatusViewData.pupilsCompleted.length > 0) { %>
-                        <table id="pupil-status" data-name="filterablePupilsList"
-                               class="govuk-!-margin-top-0 govuk-table govuk-spacious">
-                            <caption class="govuk-body govuk-table__caption"></caption>
-                            <thead class="govuk-table__head">
-                            <tr class="govuk-table__row">
-                                <th scope="col" class="govuk-table__header govuk-!-width-one-half">
-                                    Pupil
-                                </th>
-                                <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">
-                                </th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <% pupilStatusViewData.pupilsCompleted.forEach((p) => { %>
-                                <tr class="govuk-table__row">
-                                    <td class="govuk-table__cell">
-                                        <span class="govuk-!-font-weight-bold name-text-wrap"><%= p.fullName %></span>
-                                        <% if (p.showDoB) { %>
-                                            <div class="govuk-font-greyed-out govuk-!-font-size-16">Date of
-                                                birth: <%= p.formattedDateOfBirth %></div>
-                                        <% } %>
-                                    </td>
-                                    <td class="govuk-table__cell">
-                                        <div class="check-icon-background">
-                                            <div class="check-icon">
-                                            </div>
-                                        </div>
-                                        <%= p.status %>
-                                    </td>
-                                </tr>
-                            <% }) %>
-                            </tbody>
-                        </table>
-                    <% } else { %>
-                        No pupils found
-                    <% } %>
-                </div>
-            </details>
-
-            <div class="govuk-back-to-top">
-                <a class="govuk-link govuk-link--no-visited-state app-back-to-top__link" href="#top">
-                    <svg role="presentation" focusable="false" class="app-back-to-top__icon"
-                         xmlns="http://www.w3.org/2000/svg" width="13" height="17" viewBox="0 0 13 17">
-                        <path fill="currentColor" d="M6.5 0L0 6.5 1.4 8l4-4v12.7h2V4l4.3 4L13 6.4z"></path>
-                    </svg>
-                    Back to top
-                </a>
-            </div>
-        </div>
-
-        <div class="govuk-grid-column-one-third" aria-label="sidebar">
-            <div class="app-step-nav-related app-step-nav-related--singular-v2">
-                <h2 class="app-step-nav-related__heading">
-                    <span class="app-step-nav-related__pretitle govuk-heading-m">What does each status mean?</span>
-                </h2>
-            </div>
-            <div id="step-by-step-navigation" data-module="gemstepnav"
-                 class="app-step-nav app-step-nav--active govuk-!-margin-top-0"
-                 data-id="e01e924b-9c7c-4c71-8241-66a575c2f62f" data-show-text="show" data-hide-text="hide"
-                 data-show-all-text="Show all" data-hide-all-text="Hide all">
-                <ol class="app-step-nav__steps">
-                    <li class="app-step-nav__step js-step step-is-shown" id="check-with-errors">
-                        <div class="app-step-nav__header js-toggle-panel" data-position="1">
-                            <h3 class="app-step-nav__title">
-                                <span class="app-step-nav__circle app-step-nav__circle--number">
-                                    <span class="app-step-nav__circle-inner">
-                                      <span class="app-step-nav__circle-background">
-                                        <span class="app-step-nav__circle-step-label govuk-visually-hidden">Step</span> 1
-                                        <span class="app-step-nav__circle-step-colon govuk-visually-hidden"
-                                              aria-hidden="true">:</span>
-                                      </span>
+                                  <td scope="row" class="govuk-!-display-block govuk-table__cell govuk-warning-item">
+                                    <span class="govuk-!-font-weight-bold name-text-wrap">
+                                      <%= p.fullName %>
                                     </span>
-                                </span>
-                                <span class="js-step-title">
-                                    <button
-                                            class="app-step-nav__button app-step-nav__button--title js-step-title-button"
-                                            aria-expanded="true"
-                                            aria-controls="step-panel-1">
-                                        <span class="js-step-title-text">
-                                            Checks that require action
-                                        </span>
-                                        <span
-                                                class="app-step-nav__toggle-link js-toggle-link"
-                                                aria-hidden="true">hide
-                                        </span>
-                                    </button>
-                                </span>
-                            </h3>
-                        </div>
-                        <div class="app-step-nav__panel js-panel" id="step-panel-1">
-                            <p class="app-step-nav__paragraph">
-                                <span class="govuk-!-font-weight-bold">Pupil check not received:</span> you may find the check is still held on the device the pupil used to take the check.
-                                If this device is known, you should go to the check home page and the device will attempt to recover the data if possible.
+                                    <% if (p.showDoB) { %>
+                                      <div class="govuk-font-greyed-out govuk-!-font-size-16">Date of
+                                        birth: <%= p.formattedDateOfBirth %>
+                                      </div>
+                                      <% } %>
+                                  </td>
+                                  <td class="govuk-table__cell">
+                                    <%= p.status %>
+                                  </td>
+                                </tr>
+                                <% }) %>
+                            </tbody>
+                          </table>
+                          <% } else { %>
+                            No pupils found
+                            <% } %>
+                </div>
+              </details>
 
-                                <% if (pupilStatusViewData.remainingLiveCheckDays >= 0) { %>
-                                    If this does not work the pupil will need to sit the check again.
-                                    To enable this <a href="/restart/select-restart-list">select pupils to restart the
-                                      check</a>
-                                    then
-                                    <a href="/pupil-pin/generate-live-pins-overview">generate school password and PINs for the official check.</a>
-                                <% } else { %>
-                                    The check window has now closed. <a href="/pupils-not-taking-the-check/pupils-list">Give a reason why pupils are not taking the check</a>. You can then sign the HDF.
-                                <% } %>
-                            </p>
-                            <p class="app-step-nav__paragraph">
-                                <span class="govuk-!-font-weight-bold">Error in processing:</span> the check was received but was corrupt or unreadable.
-                                <% if (pupilStatusViewData.remainingLiveCheckDays >= 0) { %>
-                                    The pupil will need to sit the check again.
-                                    To enable this <a href="/restart/select-restart-list">select pupils to restart the
-                                        check</a>
-                                    then
-                                    <a href="/pupil-pin/generate-live-pins-overview">generate school password and PINs for the official check.</a>
-                                <% } else { %>
-                                    The check window has now closed. <a href="/pupils-not-taking-the-check/pupils-list">Give a reason why pupils are not taking the check</a>. You can then sign the HDF.
-                                <% } %>
-                            </p>
-                        </div>
-                    </li>
-                    <li class="app-step-nav__step js-step step-is-shown" id="pupils-not-started-check">
-                        <div class="app-step-nav__header js-toggle-panel" data-position="2">
-                            <h3 class="app-step-nav__title">
-                          <span class="app-step-nav__circle app-step-nav__circle--number">
-                            <span class="app-step-nav__circle-inner">
-                              <span class="app-step-nav__circle-background">
-                                <span class="app-step-nav__circle-step-label govuk-visually-hidden">Step</span> 2
-                                <span class="app-step-nav__circle-step-colon govuk-visually-hidden"
-                                      aria-hidden="true">:</span>
-                              </span>
-                            </span>
-                          </span>
-                                <span class="js-step-title">
-                              <button class="app-step-nav__button app-step-nav__button--title js-step-title-button"
-                                      aria-expanded="true" aria-controls="step-panel-2">
-                                  <span class="js-step-title-text">
-                                    Pupils not started
-                                   </span>
-                                  <span class="app-step-nav__toggle-link js-toggle-link"
-                                        aria-hidden="true">hide
-                                  </span>
-                              </button>
-                            </span>
-                            </h3>
-                        </div>
-                        <div class="app-step-nav__panel js-panel" id="step-panel-2">
-                            <p class="app-step-nav__paragraph">
-                                <% if (pupilStatusViewData.remainingLiveCheckDays >= 0) { %>
-                                    <span class="govuk-!-font-weight-bold">Not started</span>: the pupil has not started the
-                                    official check, you may need to <a href="/pupil-pin/generate-live-pins-overview">generate school
-                                    password and PINs</a> for the official check.
-                                <% } else { %>
-                                        <span class="govuk-!-font-weight-bold">Not started</span>: the pupil has yet to take the
-                                        official check. The check window has now closed.  <a href="/pupils-not-taking-the-check/pupils-list">Give a reason why pupils are not taking the check</a>. You can then sign the HDF.
-                                <% } %>
-                            </p>
-                            <p class="app-step-nav__paragraph">
-                                <span class="govuk-!-font-weight-bold">Processing</span>: we are aware the pupil has
-                                taken the official check.
-                                The service may be in high demand and taking longer than normal to process. Please check later
-                                to ensure the status has updated to 'Complete'.
-                            </p>
-                            <p class="app-step-nav__paragraph">
-                                <% if (pupilStatusViewData.remainingLiveCheckDays >= 0) { %>
-                                    <span class="govuk-!-font-weight-bold">Restart</span>: you have generated a restart for this pupil.
-                                    <br/>When the pupil is ready to take the check again you must <a href="/pupil-pin/generate-live-pins-overview">generate a new PIN</a> for the official check.
-                                <% } else { %>
-                                        <span class="govuk-!-font-weight-bold">Restart</span>: When the pupil is ready to take the check again you must <a href="/pupil-pin/generate-live-pins-overview">generate a new PIN</a> for the official check.
-                                        <br/> The check window has now closed. <a href="/pupils-not-taking-the-check/pupils-list">Give a reason why pupils are not
-                                            taking the check</a>. You can then sign the HDF.
-                                <% } %>
-                            </p>
-                        </div>
-                    </li>
-                    <li class="app-step-nav__step js-step step-is-shown" id="pupils-not-taking-check">
-                        <div class="app-step-nav__header js-toggle-panel" data-position="3">
-                            <h3 class="app-step-nav__title">
-                              <span class="app-step-nav__circle app-step-nav__circle--number">
-                                <span class="app-step-nav__circle-inner">
-                                  <span class="app-step-nav__circle-background">
-                                    <span class="app-step-nav__circle-step-label govuk-visually-hidden">Step</span> 3
-                                    <span class="app-step-nav__circle-step-colon govuk-visually-hidden"
-                                          aria-hidden="true">:</span>
-                                  </span>
-                                </span>
-                              </span>
-                                <span class="js-step-title">
-                                <button class="app-step-nav__button app-step-nav__button--title js-step-title-button"
-                                        aria-expanded="true" aria-controls="step-panel-3">
-                                      <span class="js-step-title-text">
-                                        Pupils in progress
-                                       </span>
-                                      <span class="app-step-nav__toggle-link js-toggle-link"
-                                            aria-hidden="true">hide
-                                      </span>
-                                </button>
-                              </span>
-                            </h3>
-                        </div>
+              <details id="orange-card-details" class="govuk-details orange-card-details" data-module="govuk-details">
+                <summary class="govuk-details__summary">
+                  <span class="govuk-details__summary-text">
+                    Pupils not started
+                  </span>
+                </summary>
+                <div class="govuk-details__text">
+                  <% if (pupilStatusViewData.pupilsNotStarted && pupilStatusViewData.pupilsNotStarted.length> 0) { %>
 
-                        <div class="app-step-nav__panel js-panel" id="step-panel-3">
-                            <p class="app-step-nav__paragraph">
-                                The pupil is recorded as not taking the check, you can <a href="/pupils-not-taking-the-check/pupils-list">remove if required.</a>
-                            </p>
-                        </div>
-                    </li>
-                    <li class="app-step-nav__step js-step step-is-shown" id="completed-checks">
-                        <div class="app-step-nav__header js-toggle-panel" data-position="4">
-                            <h3 class="app-step-nav__title">
-                              <span class="app-step-nav__circle app-step-nav__circle--number">
-                                <span class="app-step-nav__circle-inner">
-                                  <span class="app-step-nav__circle-background">
-                                    <span class="app-step-nav__circle-step-label govuk-visually-hidden">Step</span> 4
-                                    <span class="app-step-nav__circle-step-colon govuk-visually-hidden"
-                                          aria-hidden="true">:</span>
-                                  </span>
-                                </span>
+                    <% if (pupilStatusViewData.pupilsNotStartedCount> 0) { %>
+                      <% if (pupilStatusViewData.remainingLiveCheckDays>= 0) {%>
+                        <p class="govuk-body govuk-!-font-weight-bold">
+                          <span class="govuk-warning-text__icon warning-text__icon-small" aria-hidden="true">!</span>
+
+                          The check window ends in <%= pupilStatusViewData.remainingLiveCheckDays %>
+                            day<%-pupilStatusViewData.remainingLiveCheckDays !==1 ? 's' : '' %>.
+                              Please ensure pupils have taken the official check before 4pm
+                              on <%= pupilStatusViewData.liveCheckEndDate %>.
+                                Go to <a href="/pupil-pin/generate-live-pins-overview">generate school password and
+                                  PINs for the check</a> to continue.
+                        </p>
+                        <% } else { %>
+                          <%- partial('partials/pupil-register/_check-window-has-closed') %>
+                            <% } %>
+                              <% } %>
+
+                                <table id="pupil-status" data-name="filterablePupilsList"
+                                  class="govuk-!-margin-top-0 govuk-table govuk-spacious">
+                                  <caption class="govuk-body govuk-table__caption"></caption>
+                                  <thead class="govuk-table__head">
+                                    <tr class="govuk-table__row">
+                                      <th scope="col" class="govuk-table__header govuk-!-width-one-half">
+                                        Pupil
+                                      </th>
+                                      <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">
+                                      </th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    <% pupilStatusViewData.pupilsNotStarted.forEach((p)=> { %>
+                                      <tr class="govuk-table__row">
+                                        <td class="govuk-table__cell">
+                                          <span class="govuk-!-font-weight-bold name-text-wrap">
+                                            <%= p.fullName %>
+                                          </span>
+                                          <% if (p.showDoB) { %>
+                                            <div class="govuk-font-greyed-out govuk-!-font-size-16">Date of
+                                              birth: <%= p.formattedDateOfBirth %>
+                                            </div>
+                                            <% } %>
+                                        </td>
+                                        <td class="govuk-table__cell">
+                                          <%= p.status %>
+                                        </td>
+                                      </tr>
+                                      <% }) %>
+                                  </tbody>
+                                </table>
+                                <% } else { %>
+                                  No pupils found
+                                  <% } %>
+                </div>
+              </details>
+
+              <details id="blue-card-details" class="govuk-details blue-card-details" data-module="govuk-details">
+                <summary class="govuk-details__summary">
+                  <span class="govuk-details__summary-text">
+                    Pupils in progress
+                  </span>
+                </summary>
+                <div class="govuk-details__text">
+                  <% if (pupilStatusViewData.pupilsInProgress && pupilStatusViewData.pupilsInProgress.length> 0) { %>
+                    <table id="pupil-status" data-name="filterablePupilsList"
+                      class="govuk-!-margin-top-0 govuk-table govuk-spacious">
+                      <caption class="govuk-body govuk-table__caption"></caption>
+                      <thead class="govuk-table__head">
+                        <tr class="govuk-table__row">
+                          <th scope="col" class="govuk-table__header govuk-!-width-one-half">
+                            Pupil
+                          </th>
+                          <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <% pupilStatusViewData.pupilsInProgress.forEach((p)=> { %>
+                          <tr class="govuk-table__row">
+                            <td class="govuk-table__cell">
+                              <span class="govuk-!-font-weight-bold name-text-wrap">
+                                <%= p.fullName %>
                               </span>
-                                <span class="js-step-title">
-                                  <button class="app-step-nav__button app-step-nav__button--title js-step-title-button"
-                                          aria-expanded="true" aria-controls="step-panel-4">
-                                      <span class="js-step-title-text">
-                                        Pupils completed
-                                       </span>
-                                      <span class="app-step-nav__toggle-link js-toggle-link"
-                                            aria-hidden="true">hide
-                                      </span>
-                                  </button>
+                              <% if (p.showDoB) { %>
+                                <div class="govuk-font-greyed-out govuk-!-font-size-16">Date of
+                                  birth: <%= p.formattedDateOfBirth %>
+                                </div>
+                                <% } %>
+                            </td>
+                            <td class="govuk-table__cell">
+                              <%= p.status %>
+                            </td>
+                          </tr>
+                          <% }) %>
+                      </tbody>
+                    </table>
+                    <% } else { %>
+                      No pupils found
+                      <% } %>
+                </div>
+              </details>
+
+              <details id="green-card-details" class="govuk-details green-card-details" data-module="govuk-details">
+                <summary class="govuk-details__summary">
+                  <span class="govuk-details__summary-text">
+                    Pupils completed
+                  </span>
+                </summary>
+                <div class="govuk-details__text">
+                  <% if (pupilStatusViewData.pupilsCompleted && pupilStatusViewData.pupilsCompleted.length> 0) { %>
+                    <table id="pupil-status" data-name="filterablePupilsList"
+                      class="govuk-!-margin-top-0 govuk-table govuk-spacious">
+                      <caption class="govuk-body govuk-table__caption"></caption>
+                      <thead class="govuk-table__head">
+                        <tr class="govuk-table__row">
+                          <th scope="col" class="govuk-table__header govuk-!-width-one-half">
+                            Pupil
+                          </th>
+                          <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <% pupilStatusViewData.pupilsCompleted.forEach((p)=> { %>
+                          <tr class="govuk-table__row">
+                            <td class="govuk-table__cell">
+                              <span class="govuk-!-font-weight-bold name-text-wrap">
+                                <%= p.fullName %>
                               </span>
-                            </h3>
-                        </div>
-                        <div class="app-step-nav__panel js-panel" id="step-panel-4">
-                            <p class="app-step-nav__paragraph">
-                                The pupil has successfully completed the check. Once all pupils have completed the check or have a reason for not taking the check you can complete the headteacher declaration form.
-                            </p>
-                        </div>
-                    </li>
-                </ol>
-            </div>
+                              <% if (p.showDoB) { %>
+                                <div class="govuk-font-greyed-out govuk-!-font-size-16">Date of
+                                  birth: <%= p.formattedDateOfBirth %>
+                                </div>
+                                <% } %>
+                            </td>
+                            <td class="govuk-table__cell">
+                              <div class="check-icon-background">
+                                <div class="check-icon">
+                                </div>
+                              </div>
+                              <%= p.status %>
+                            </td>
+                          </tr>
+                          <% }) %>
+                      </tbody>
+                    </table>
+                    <% } else { %>
+                      No pupils found
+                      <% } %>
+                </div>
+              </details>
+
+              <div class="govuk-back-to-top">
+                <a class="govuk-link govuk-link--no-visited-state app-back-to-top__link" href="#top">
+                  <svg role="presentation" focusable="false" class="app-back-to-top__icon"
+                    xmlns="http://www.w3.org/2000/svg" width="13" height="17" viewBox="0 0 13 17">
+                    <path fill="currentColor" d="M6.5 0L0 6.5 1.4 8l4-4v12.7h2V4l4.3 4L13 6.4z"></path>
+                  </svg>
+                  Back to top
+                </a>
+              </div>
+      </div>
+
+      <div class="govuk-grid-column-one-third" aria-label="sidebar">
+        <div class="app-step-nav-related app-step-nav-related--singular-v2">
+          <h2 class="app-step-nav-related__heading">
+            <span class="app-step-nav-related__pretitle govuk-heading-m">What does each status mean?</span>
+          </h2>
         </div>
+        <div id="step-by-step-navigation" data-module="gemstepnav"
+          class="app-step-nav app-step-nav--active govuk-!-margin-top-0" data-id="e01e924b-9c7c-4c71-8241-66a575c2f62f"
+          data-show-text="show" data-hide-text="hide" data-show-all-text="Show all" data-hide-all-text="Hide all">
+          <ol class="app-step-nav__steps">
+            <li class="app-step-nav__step js-step step-is-shown" id="check-with-errors">
+              <div class="app-step-nav__header js-toggle-panel" data-position="1">
+                <h3 class="app-step-nav__title">
+                  <span class="app-step-nav__circle app-step-nav__circle--number">
+                    <span class="app-step-nav__circle-inner">
+                      <span class="app-step-nav__circle-background">
+                        <span class="app-step-nav__circle-step-label govuk-visually-hidden">Step</span> 1
+                        <span class="app-step-nav__circle-step-colon govuk-visually-hidden" aria-hidden="true">:</span>
+                      </span>
+                    </span>
+                  </span>
+                  <span class="js-step-title">
+                    <button class="app-step-nav__button app-step-nav__button--title js-step-title-button"
+                      aria-expanded="true" aria-controls="step-panel-1">
+                      <span class="js-step-title-text">
+                        Checks that require action
+                      </span>
+                      <span class="app-step-nav__toggle-link js-toggle-link" aria-hidden="true">hide
+                      </span>
+                    </button>
+                  </span>
+                </h3>
+              </div>
+              <div class="app-step-nav__panel js-panel" id="step-panel-1">
+                <p class="app-step-nav__paragraph">
+                  <span class="govuk-!-font-weight-bold">Overdue - logged in check not started:</span> the pupil logged
+                  in over 30 minutes ago and has not yet started the official check questions.
+                  <% if (pupilStatusViewData.remainingLiveCheckDays>= 0) { %>
+                    The PIN has now expired, and the pupil will need a new PIN to start the official check.
+                    To enable this <a href="/restart/select-restart-list">select pupils to restart the
+                      check</a>
+                    then
+                    <a href="/pupil-pin/generate-live-pins-overview">generate school password and PINs for the official
+                      check.</a>
+                    <% } else { %>
+                      The check window has now closed. <a href="/pupils-not-taking-the-check/pupils-list">Give a reason
+                        why pupils are not taking the check</a>. You can then sign the HDF.
+                      <% } %>
+                </p>
+                <p class="app-step-nav__paragraph">
+                  <span class="govuk-!-font-weight-bold">Overdue - check started but not received:</span> the pupil has
+                  logged in, started the official check but the data has not been received.
+                  The pupil may have closed the tab or browser before their check was submitted.
+                  You may find the check is still held on the device the pupil used to take the check.
+                  If this device is known, you should go to the check home page and the device will attempt to recover
+                  the data if possible.
+                  <% if (pupilStatusViewData.remainingLiveCheckDays>= 0) { %>
+                    If this does not work the pupil will need to sit the check again.
+                    To enable this <a href="/restart/select-restart-list">select pupils to restart the
+                      check</a>
+                    then
+                    <a href="/pupil-pin/generate-live-pins-overview">generate school password and PINs for the official
+                      check.</a>
+                    <% } else { %>
+                      The check window has now closed. <a href="/pupils-not-taking-the-check/pupils-list">Give a reason
+                        why pupils are not taking the check</a>. You can then sign the HDF.
+                      <% } %>
+                </p>
+                <p class="app-step-nav__paragraph">
+                  <span class="govuk-!-font-weight-bold">Error in processing:</span> the check was received but could
+                  not be processed.
+                  <% if (pupilStatusViewData.remainingLiveCheckDays>= 0) { %>
+                    The pupil will need to sit the check again.
+                    To enable this <a href="/restart/select-restart-list">select pupils to restart the
+                      check</a>
+                    then
+                    <a href="/pupil-pin/generate-live-pins-overview">generate school password and PINs for the official
+                      check.</a> on the day the pupil is to resit the check.
+                    <% } else { %>
+                      The check window has now closed. <a href="/pupils-not-taking-the-check/pupils-list">Give a reason
+                        why pupils are not taking the check</a>. You can then sign the HDF.
+                      <% } %>
+                </p>
+              </div>
+            </li>
+            <li class="app-step-nav__step js-step step-is-shown" id="pupils-not-started-check">
+              <div class="app-step-nav__header js-toggle-panel" data-position="2">
+                <h3 class="app-step-nav__title">
+                  <span class="app-step-nav__circle app-step-nav__circle--number">
+                    <span class="app-step-nav__circle-inner">
+                      <span class="app-step-nav__circle-background">
+                        <span class="app-step-nav__circle-step-label govuk-visually-hidden">Step</span> 2
+                        <span class="app-step-nav__circle-step-colon govuk-visually-hidden" aria-hidden="true">:</span>
+                      </span>
+                    </span>
+                  </span>
+                  <span class="js-step-title">
+                    <button class="app-step-nav__button app-step-nav__button--title js-step-title-button"
+                      aria-expanded="true" aria-controls="step-panel-2">
+                      <span class="js-step-title-text">
+                        Pupils not started
+                      </span>
+                      <span class="app-step-nav__toggle-link js-toggle-link" aria-hidden="true">hide
+                      </span>
+                    </button>
+                  </span>
+                </h3>
+              </div>
+              <div class="app-step-nav__panel js-panel" id="step-panel-2">
+                <p class="app-step-nav__paragraph">
+                  <% if (pupilStatusViewData.remainingLiveCheckDays>= 0) { %>
+                    <span class="govuk-!-font-weight-bold">Not started</span>: the pupil has not started the
+                    official check. If the pupil is sitting the official check you need to <a
+                      href="/pupil-pin/generate-live-pins-overview">generate school
+                      password and PINs</a> for the official check.
+                    <% } else { %>
+                      <span class="govuk-!-font-weight-bold">Not started</span>: the pupil has yet to take the
+                      official check. The check window has now closed. <a
+                        href="/pupils-not-taking-the-check/pupils-list">Give a reason why pupils are not taking the
+                        check</a>. You can then sign the HDF.
+                      <% } %>
+                </p>
+                <p class="app-step-nav__paragraph">
+                  <% if (pupilStatusViewData.remainingLiveCheckDays>= 0) { %>
+                    <span class="govuk-!-font-weight-bold">Restart</span>: you have generated a restart for this pupil.
+                    <br />When the pupil is ready to take the check again you must <a
+                      href="/pupil-pin/generate-live-pins-overview">generate a new PIN</a> for the official check.
+                    <% } else { %>
+                      <span class="govuk-!-font-weight-bold">Restart</span>: When the pupil is ready to take the check
+                      again you must <a href="/pupil-pin/generate-live-pins-overview">generate a new PIN</a> for the
+                      official check.
+                      <br /> The check window has now closed. <a href="/pupils-not-taking-the-check/pupils-list">Give a
+                        reason why pupils are not
+                        taking the check</a>. You can then sign the HDF.
+                      <% } %>
+                </p>
+              </div>
+            </li>
+            <li class="app-step-nav__step js-step step-is-shown" id="pupils-not-taking-check">
+              <div class="app-step-nav__header js-toggle-panel" data-position="3">
+                <h3 class="app-step-nav__title">
+                  <span class="app-step-nav__circle app-step-nav__circle--number">
+                    <span class="app-step-nav__circle-inner">
+                      <span class="app-step-nav__circle-background">
+                        <span class="app-step-nav__circle-step-label govuk-visually-hidden">Step</span> 3
+                        <span class="app-step-nav__circle-step-colon govuk-visually-hidden" aria-hidden="true">:</span>
+                      </span>
+                    </span>
+                  </span>
+                  <span class="js-step-title">
+                    <button class="app-step-nav__button app-step-nav__button--title js-step-title-button"
+                      aria-expanded="true" aria-controls="step-panel-3">
+                      <span class="js-step-title-text">
+                        Pupils in progress
+                      </span>
+                      <span class="app-step-nav__toggle-link js-toggle-link" aria-hidden="true">hide
+                      </span>
+                    </button>
+                  </span>
+                </h3>
+              </div>
+              <div class="app-step-nav__panel js-panel" id="step-panel-3">
+                <p class="app-step-nav__paragraph">
+                  <span class="govuk-!-font-weight-bold">PIN generated</span>: An official check PIN has been generated
+                  for this pupil,
+                  but the pupil has not yet logged in to the official check.
+                </p>
+                <p class="app-step-nav__paragraph">
+                  <span class="govuk-!-font-weight-bold">Logged in</span>: the pupil has logged in but has not yet
+                  started the official check questions.
+                  The pupil has 30 minutes from logging in to complete the official check.
+                </p>
+                <p class="app-step-nav__paragraph">
+                  <span class="govuk-!-font-weight-bold">Check in progress</span>: the pupil is currently taking their
+                  check but has yet to complete it.
+                </p>
+                <p class="app-step-nav__paragraph">
+                  <span class="govuk-!-font-weight-bold">Check processing</span>: the pupil's official check has been
+                  submitted and received and is currently being processed.
+                  During peak hours, it may take longer than normal to process the official check.
+                  Please check later to ensure the status has updated to 'Complete'
+                </p>
+              </div>
+            </li>
+            <li class="app-step-nav__step js-step step-is-shown" id="completed-checks">
+              <div class="app-step-nav__header js-toggle-panel" data-position="4">
+                <h3 class="app-step-nav__title">
+                  <span class="app-step-nav__circle app-step-nav__circle--number">
+                    <span class="app-step-nav__circle-inner">
+                      <span class="app-step-nav__circle-background">
+                        <span class="app-step-nav__circle-step-label govuk-visually-hidden">Step</span> 4
+                        <span class="app-step-nav__circle-step-colon govuk-visually-hidden" aria-hidden="true">:</span>
+                      </span>
+                    </span>
+                  </span>
+                  <span class="js-step-title">
+                    <button class="app-step-nav__button app-step-nav__button--title js-step-title-button"
+                      aria-expanded="true" aria-controls="step-panel-4">
+                      <span class="js-step-title-text">
+                        Pupils completed
+                      </span>
+                      <span class="app-step-nav__toggle-link js-toggle-link" aria-hidden="true">hide
+                      </span>
+                    </button>
+                  </span>
+                </h3>
+              </div>
+              <div class="app-step-nav__panel js-panel" id="step-panel-4">
+                <p class="app-step-nav__paragraph">
+                  <span class="govuk-!-font-weight-bold">Complete</span>: The pupil has successfully completed the check.
+                </p>
+                <p class="app-step-nav__paragraph">
+                  <span class="govuk-!-font-weight-bold">Not taking the check:</span> The pupil has been recorded as not taking the check,
+                  you can <a href="/pupils-not-taking-the-check/pupils-list">remove the reason if required.</a>
+                </p>
+              </div>
+            </li>
+          </ol>
+        </div>
+      </div>
     </div>
-</main>
-<script src="<%= assetPath %>javascripts/pupil-status.js?version=<%= assetsVersion %>"></script>
+  </main>
+  <script src="<%= assetPath %>javascripts/pupil-status.js?version=<%= assetsVersion %>"></script>
