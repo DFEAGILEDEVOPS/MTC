@@ -13,13 +13,6 @@
       "direction": "out",
       "queueName": "ps-report-staging",
       "connection": "AZURE_SERVICE_BUS_CONNECTION_STRING"
-    },
-    {
-      "direction": "out",
-      "type": "serviceBus",
-      "name": "logs",
-      "queueName": "ps-report-log",
-      "connection": "AZURE_SERVICE_BUS_CONNECTION_STRING"
     }
   ],
   "scriptFile": "../dist/functions-ps-report/ps-report-2-pupil-data/index.js"
