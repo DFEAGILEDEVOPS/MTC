@@ -47,7 +47,7 @@ const controller = {
     try {
       areaCodes = await ServiceMessageCodesService.getAreaCodes()
     } catch (error) {
-      console.error('Error fetching message Area Codes from the DB: ', error)
+      logger.error('Error fetching message Area Codes from the DB: ' + JSON.stringify(error))
     }
     res.render('service-message/service-message-form', {
       err: err || new ValidationError(),
@@ -67,9 +67,6 @@ const controller = {
   postSubmitServiceMessage: async function postSubmitServiceMessage (req, res, next) {
     const requestData = req.body
     try {
-      if (!Array.isArray(requestData.areaCode)) {
-        requestData.areaCode = requestData.areaCode?.length > 0 ? [requestData.areaCode] : []
-      }
       const result = await administrationMessageService.setMessage(requestData, req.user.id)
       if (result && result.hasError && result.hasError()) {
         if (requestData.urlSlug !== undefined) {
