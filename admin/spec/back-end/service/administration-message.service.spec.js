@@ -244,4 +244,63 @@ describe('administrationMessageService', () => {
       expect(redisCacheService.drop).toHaveBeenCalledWith(serviceMessageRedisKey)
     })
   })
+
+  describe('getFilteredMessagesForRequest', () => {
+    const sut = administrationMessageService
+
+    beforeEach(() => {
+      jest.spyOn(administrationMessageService, 'getMessagesAndAreaCodes').mockImplementation()
+    })
+
+    test('if no message data is retrieved then it returns an empty array', async () => {
+      jest.spyOn(administrationMessageService, 'getMessagesAndAreaCodes').mockResolvedValue(undefined)
+      const result = await sut.getFilteredMessagesForRequest('/')
+      expect(result).toEqual([])
+    })
+
+    test('if the message data does not have a `messages` property it shortcircuits and an empty array is returned', async () => {
+      jest.spyOn(administrationMessageService, 'getMessagesAndAreaCodes').mockResolvedValue({ wrong: {}, shape: {} })
+      const result = await sut.getFilteredMessagesForRequest('/')
+      expect(result).toEqual([])
+    })
+
+    test('if the message data does not have a `areaCodes` property it shortcircuits and an empty array is returned', async () => {
+      jest.spyOn(administrationMessageService, 'getMessagesAndAreaCodes').mockResolvedValue({ messages: [], wrong: {} })
+      const result = await sut.getFilteredMessagesForRequest('/')
+      expect(result).toEqual([])
+    })
+
+    test('it filters the messages to those targeted at the website section', async () => {
+      jest.spyOn(administrationMessageService, 'getMessagesAndAreaCodes').mockResolvedValue({
+        messages: [
+          {
+            title: 'Title A',
+            message: '<p>message body a</p>\n',
+            borderColourCode: 'B',
+            areaCodes: ['A'],
+            urlSlug: '8F8E9B51-A95F-4233-A4B4-8B4859749CD3'
+          },
+          {
+            title: 'Title B',
+            message: '<p>message body b</p>\n',
+            borderColourCode: 'B',
+            areaCodes: ['G'],
+            urlSlug: '8F8E9B51-A95F-4233-A4B4-8B4859749CD3'
+          }
+        ],
+        areaCodes: [
+          { code: 'A', description: 'A section' },
+          { code: 'G', description: 'G section' }
+        ]
+      })
+      const result = await sut.getFilteredMessagesForRequest('/group/')
+      expect(result).toEqual([{
+        title: 'Title B',
+        message: '<p>message body b</p>\n',
+        borderColourCode: 'B',
+        areaCodes: ['G'],
+        urlSlug: '8F8E9B51-A95F-4233-A4B4-8B4859749CD3'
+      }])
+    })
+  })
 })

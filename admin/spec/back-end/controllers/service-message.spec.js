@@ -6,6 +6,7 @@ const serviceMessagePresenter = require('../../../helpers/service-message-presen
 const ValidationError = require('../../../lib/validation-error')
 const { ServiceMessageCodesService } = require('../../../services/service-message/service-message.service')
 const logger = require('../../../services/log.service').getLogger()
+const R = require('ramda')
 
 describe('service message controller:', () => {
   let next
@@ -176,6 +177,17 @@ describe('service message controller:', () => {
       await controller.postRemoveServiceMessage(req, res, next)
       expect(req.flash).toHaveBeenCalled()
     })
+
+    test('it calls redirect with a flash message if validation fails', async () => {
+      const reqConfig = R.clone(goodReqParams)
+      reqConfig.params.slug = 'invalid-uuid-to-fail-validation'
+      const res = getRes()
+      const req = getReq(reqConfig)
+      jest.spyOn(administrationMessageService, 'dropMessage').mockImplementation()
+      await controller.postRemoveServiceMessage(req, res, next)
+      expect(res.redirect).toHaveBeenCalledWith('/service-message/')
+      expect(req.flash).toHaveBeenCalledWith('info', 'slug is not a valid UUID')
+    })
   })
 
   describe('getEditServiceMessage', () => {
@@ -231,6 +243,16 @@ describe('service message controller:', () => {
       jest.spyOn(administrationMessageService, 'getRawMessageBySlug').mockRejectedValue(new Error('a mock error test'))
       await controller.getEditServiceMessage(req, res, next)
       expect(next).toHaveBeenCalledTimes(1)
+    })
+
+    test('it calls redirect with a flash message if validation fails', async () => {
+      const reqConfig = R.clone(goodReqParams)
+      reqConfig.params.slug = 'invalid-uuid-to-fail-validation'
+      const res = getRes()
+      const req = getReq(reqConfig)
+      await controller.getEditServiceMessage(req, res, next)
+      expect(res.redirect).toHaveBeenCalledWith('/service-message/')
+      expect(req.flash).toHaveBeenCalledWith('info', 'slug is not a valid UUID')
     })
   })
 })

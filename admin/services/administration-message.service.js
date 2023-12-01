@@ -33,7 +33,7 @@ administrationMessageService.getFilteredMessagesForRequest = async function getF
     /** @var ServiceMessagesAndAreaCodes */
     const messageData = await administrationMessageService.getMessagesAndAreaCodes()
     if (messageData === undefined) return []
-    if (!Object.hasOwn(messageData, 'messages') || !Object.hasOwn(messageData, 'areaCodes')) return []
+    if (!('messages' in messageData) || !('areaCodes' in messageData)) return []
     const messages = messageData.messages
     const allAreaCodes = Array.isArray(messageData.areaCodes) ? messageData.areaCodes : []
 
