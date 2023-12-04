@@ -5,9 +5,9 @@ const administrationMessageDataService = require('../../../services/data-access/
 const redisCacheService = require('../../../services/data-access/redis-cache.service')
 const administrationMessageService = require('../../../services/administration-message.service')
 const ValidationError = require('../../../lib/validation-error')
-const { marked } = require('marked')
 const { ServiceMessageCodesService } = require('../../../services/service-message/service-message.service')
 const { ServiceMessageValidator } = require('../../../services/service-message/service-message.validator')
+const logger = require('../../../services/log.service').getLogger()
 
 const serviceMessageRedisKey = 'serviceMessage'
 
@@ -16,7 +16,7 @@ describe('administrationMessageService', () => {
     jest.restoreAllMocks()
   })
 
-  describe('getMessages', () => {
+  describe('getMessagesAndAreaCodes', () => {
     const mockServiceMessages = {
       areaCodes: [
         { code: 'A', description: 'A desc' },
@@ -43,8 +43,9 @@ describe('administrationMessageService', () => {
     }
 
     beforeEach(() => {
-      jest.spyOn(administrationMessageDataService, 'sqlFindServiceMessages').mockImplementation()
-      jest.spyOn(ServiceMessageCodesService, 'getAreaCodes').mockImplementation()
+      jest.spyOn(administrationMessageDataService, 'sqlFindServiceMessages').mockResolvedValue(mockServiceMessages)
+      jest.spyOn(administrationMessageService, 'parseAndSanitise').mockResolvedValue([])
+      jest.spyOn(ServiceMessageCodesService, 'getAreaCodes').mockResolvedValue([])
       jest.spyOn(redisCacheService, 'get').mockImplementation()
       jest.spyOn(redisCacheService, 'set').mockImplementation()
     })
@@ -76,20 +77,10 @@ describe('administrationMessageService', () => {
     })
 
     test('should convert the markdown to html', async () => {
-      jest.spyOn(redisCacheService, 'get').mockResolvedValue(undefined)
       jest.spyOn(administrationMessageDataService, 'sqlFindServiceMessages').mockResolvedValue(mockServiceMessages.messages)
       jest.spyOn(ServiceMessageCodesService, 'getAreaCodes').mockResolvedValue(mockServiceMessages.areaCodes)
-      const data = await administrationMessageService.getMessagesAndAreaCodes()
-      expect(data.messages[1].message).toContain('<h1>title</h1>')
-      expect(data.messages[1].message).toContain('<strong>bold</strong>')
-      expect(data.messages[1].message).toContain('<em>italic</em>')
-    })
-
-    test('it returns undefined if the markdown parser throws an error', async () => {
-      jest.spyOn(administrationMessageDataService, 'sqlFindServiceMessages').mockResolvedValue([{ title: 'test', message: 'some unparsable content' }])
-      jest.spyOn(marked, 'parse').mockImplementation(() => { throw new Error('test parse error') })
-      jest.spyOn(console, 'log').mockImplementation() // hush the alert raised as part of the test
-      await expect(administrationMessageService.getMessagesAndAreaCodes()).resolves.toBeUndefined()
+      await administrationMessageService.getMessagesAndAreaCodes()
+      expect(administrationMessageService.parseAndSanitise).toHaveBeenCalledTimes(1)
     })
   })
 
@@ -270,7 +261,7 @@ describe('administrationMessageService', () => {
       expect(result).toEqual([])
     })
 
-    test('it filters the messages to those targeted at the website section', async () => {
+    test('it filters the messages when in the Groups section', async () => {
       jest.spyOn(administrationMessageService, 'getMessagesAndAreaCodes').mockResolvedValue({
         messages: [
           {
@@ -285,7 +276,7 @@ describe('administrationMessageService', () => {
             message: '<p>message body b</p>\n',
             borderColourCode: 'B',
             areaCodes: ['G'],
-            urlSlug: '8F8E9B51-A95F-4233-A4B4-8B4859749CD3'
+            urlSlug: '8F8E9B51-A95F-4233-A4B4-8B4859749CD4'
           }
         ],
         areaCodes: [
@@ -299,8 +290,336 @@ describe('administrationMessageService', () => {
         message: '<p>message body b</p>\n',
         borderColourCode: 'B',
         areaCodes: ['G'],
+        urlSlug: '8F8E9B51-A95F-4233-A4B4-8B4859749CD4'
+      }])
+    })
+
+    test('it filters the messages when in the Access Arrangements section', async () => {
+      jest.spyOn(administrationMessageService, 'getMessagesAndAreaCodes').mockResolvedValue({
+        messages: [
+          {
+            title: 'Title A',
+            message: '<p>message body a</p>\n',
+            borderColourCode: 'B',
+            areaCodes: ['A'],
+            urlSlug: '8F8E9B51-A95F-4233-A4B4-8B4859749CD3'
+          },
+          {
+            title: 'Title B',
+            message: '<p>message body b</p>\n',
+            borderColourCode: 'B',
+            areaCodes: ['G'],
+            urlSlug: '8F8E9B51-A95F-4233-A4B4-8B4859749CD4'
+          }
+        ],
+        areaCodes: [
+          { code: 'A', description: 'A section' },
+          { code: 'G', description: 'G section' }
+        ]
+      })
+      const result = await sut.getFilteredMessagesForRequest('/access-arrangements/')
+      expect(result).toEqual([{
+        title: 'Title A',
+        message: '<p>message body a</p>\n',
+        borderColourCode: 'B',
+        areaCodes: ['A'],
         urlSlug: '8F8E9B51-A95F-4233-A4B4-8B4859749CD3'
       }])
+    })
+
+    test('it filters the messages when in the HDF section', async () => {
+      jest.spyOn(administrationMessageService, 'getMessagesAndAreaCodes').mockResolvedValue({
+        messages: [
+          {
+            title: 'Title A',
+            message: '<p>message body a</p>\n',
+            borderColourCode: 'B',
+            areaCodes: ['A'],
+            urlSlug: '8F8E9B51-A95F-4233-A4B4-8B4859749CD3'
+          },
+          {
+            title: 'Title H',
+            message: '<p>message body b</p>\n',
+            borderColourCode: 'B',
+            areaCodes: ['H'],
+            urlSlug: '8F8E9B51-A95F-4233-A4B4-8B4859749CD4'
+          }
+        ],
+        areaCodes: [
+          { code: 'A', description: 'A section' },
+          { code: 'H', description: 'H section' }
+        ]
+      })
+      const result = await sut.getFilteredMessagesForRequest('/attendance/')
+      expect(result).toEqual([{
+        title: 'Title H',
+        message: '<p>message body b</p>\n',
+        borderColourCode: 'B',
+        areaCodes: ['H'],
+        urlSlug: '8F8E9B51-A95F-4233-A4B4-8B4859749CD4'
+      }])
+    })
+
+    test('it filters the messages when in the non-sitings-codes section', async () => {
+      jest.spyOn(administrationMessageService, 'getMessagesAndAreaCodes').mockResolvedValue({
+        messages: [
+          {
+            title: 'Title A',
+            message: '<p>message body a</p>\n',
+            borderColourCode: 'B',
+            areaCodes: ['A'],
+            urlSlug: '8F8E9B51-A95F-4233-A4B4-8B4859749CD3'
+          },
+          {
+            title: 'Title N',
+            message: '<p>message body n</p>\n',
+            borderColourCode: 'B',
+            areaCodes: ['N'],
+            urlSlug: 'DEE0DE69-C4C1-48B1-9D03-D1180832AAA6'
+          }
+        ],
+        areaCodes: [
+          { code: 'A', description: 'A section' },
+          { code: 'H', description: 'H section' }
+        ]
+      })
+      const result = await sut.getFilteredMessagesForRequest('/pupils-not-taking-the-check/')
+      expect(result).toEqual([{
+        title: 'Title N',
+        message: '<p>message body n</p>\n',
+        borderColourCode: 'B',
+        areaCodes: ['N'],
+        urlSlug: 'DEE0DE69-C4C1-48B1-9D03-D1180832AAA6'
+      }])
+    })
+
+    test('it filters the messages when in the pin generation section', async () => {
+      jest.spyOn(administrationMessageService, 'getMessagesAndAreaCodes').mockResolvedValue({
+        messages: [
+          {
+            title: 'Title A',
+            message: '<p>message body a</p>\n',
+            borderColourCode: 'B',
+            areaCodes: ['A'],
+            urlSlug: '8F8E9B51-A95F-4233-A4B4-8B4859749CD3'
+          },
+          {
+            title: 'Title P',
+            message: '<p>message body p</p>\n',
+            borderColourCode: 'B',
+            areaCodes: ['P'],
+            urlSlug: '5632F7E1-0954-44A8-BB10-C070E2A74906'
+          }
+        ],
+        areaCodes: [
+          { code: 'A', description: 'A section' },
+          { code: 'H', description: 'H section' }
+        ]
+      })
+      const result = await sut.getFilteredMessagesForRequest('/pupil-pin/')
+      expect(result).toEqual([{
+        title: 'Title P',
+        message: '<p>message body p</p>\n',
+        borderColourCode: 'B',
+        areaCodes: ['P'],
+        urlSlug: '5632F7E1-0954-44A8-BB10-C070E2A74906'
+      }])
+    })
+
+    test('it filters the messages when in the pupil status section', async () => {
+      jest.spyOn(administrationMessageService, 'getMessagesAndAreaCodes').mockResolvedValue({
+        messages: [
+          {
+            title: 'Title A',
+            message: '<p>message body a</p>\n',
+            borderColourCode: 'B',
+            areaCodes: ['A'],
+            urlSlug: '8F8E9B51-A95F-4233-A4B4-8B4859749CD3'
+          },
+          {
+            title: 'Title S',
+            message: '<p>message body s</p>\n',
+            borderColourCode: 'B',
+            areaCodes: ['S'],
+            urlSlug: '73A4203B-3D98-49FC-A7D3-600F87A00360'
+          }
+        ],
+        areaCodes: [
+          { code: 'A', description: 'A section' },
+          { code: 'H', description: 'H section' }
+        ]
+      })
+      const result = await sut.getFilteredMessagesForRequest('/pupil-status')
+      expect(result).toEqual([{
+        title: 'Title S',
+        message: '<p>message body s</p>\n',
+        borderColourCode: 'B',
+        areaCodes: ['S'],
+        urlSlug: '73A4203B-3D98-49FC-A7D3-600F87A00360'
+      }])
+    })
+
+    test('it filters the messages when in the restart section', async () => {
+      jest.spyOn(administrationMessageService, 'getMessagesAndAreaCodes').mockResolvedValue({
+        messages: [
+          {
+            title: 'Title A',
+            message: '<p>message body a</p>\n',
+            borderColourCode: 'B',
+            areaCodes: ['A'],
+            urlSlug: '8F8E9B51-A95F-4233-A4B4-8B4859749CD3'
+          },
+          {
+            title: 'Title R',
+            message: '<p>message body r</p>\n',
+            borderColourCode: 'B',
+            areaCodes: ['R'],
+            urlSlug: '34E1A831-7A18-41D7-8159-BE4787107A0B'
+          }
+        ],
+        areaCodes: [
+          { code: 'A', description: 'A section' },
+          { code: 'S', description: 'S section' }
+        ]
+      })
+      const result = await sut.getFilteredMessagesForRequest('/restart/')
+      expect(result).toEqual([{
+        title: 'Title R',
+        message: '<p>message body r</p>\n',
+        borderColourCode: 'B',
+        areaCodes: ['R'],
+        urlSlug: '34E1A831-7A18-41D7-8159-BE4787107A0B'
+      }])
+    })
+
+    test('it filters the messages when in the pupil register section', async () => {
+      jest.spyOn(administrationMessageService, 'getMessagesAndAreaCodes').mockResolvedValue({
+        messages: [
+          {
+            title: 'Title A',
+            message: '<p>message body a</p>\n',
+            borderColourCode: 'B',
+            areaCodes: ['A'],
+            urlSlug: '8F8E9B51-A95F-4233-A4B4-8B4859749CD3'
+          },
+          {
+            title: 'Title T',
+            message: '<p>message body t</p>\n',
+            borderColourCode: 'B',
+            areaCodes: ['T'],
+            urlSlug: 'E21BC54E-E663-4B9B-9BEE-9C31093F9F2E'
+          }
+        ],
+        areaCodes: [
+          { code: 'A', description: 'A section' },
+          { code: 'T', description: 'T section' }
+        ]
+      })
+      const result = await sut.getFilteredMessagesForRequest('/pupil-register/')
+      expect(result).toEqual([{
+        title: 'Title T',
+        message: '<p>message body t</p>\n',
+        borderColourCode: 'B',
+        areaCodes: ['T'],
+        urlSlug: 'E21BC54E-E663-4B9B-9BEE-9C31093F9F2E'
+      }])
+    })
+
+    test('filters to empty array when no messages are specified', async () => {
+      jest.spyOn(administrationMessageService, 'getMessagesAndAreaCodes').mockResolvedValue({
+        messages: [
+          {
+            title: 'Title A',
+            message: '<p>message body a</p>\n',
+            borderColourCode: 'B',
+            areaCodes: ['A'],
+            urlSlug: '8F8E9B51-A95F-4233-A4B4-8B4859749CD3'
+          },
+          {
+            title: 'Title T',
+            message: '<p>message body t</p>\n',
+            borderColourCode: 'B',
+            areaCodes: ['T'],
+            urlSlug: 'E21BC54E-E663-4B9B-9BEE-9C31093F9F2E'
+          }
+        ],
+        areaCodes: [
+          { code: 'A', description: 'A section' },
+          { code: 'T', description: 'T section' }
+        ]
+      })
+      const result = await sut.getFilteredMessagesForRequest('/school/school-home')
+      expect(result).toEqual([])
+    })
+
+    test('a global message (for every section) will be shown other pages too', async () => {
+      jest.spyOn(administrationMessageService, 'getMessagesAndAreaCodes').mockResolvedValue({
+        messages: [
+          {
+            title: 'Global title',
+            message: '<p>Global message</p>\n',
+            borderColourCode: 'O',
+            areaCodes: ['A', 'H', 'N', 'P', 'G', 'S', 'R', 'T'],
+            urlSlug: '0C710428-51ED-4BB6-8E81-32D40FFFB1C9'
+          }
+        ],
+        areaCodes: [
+          { code: 'A', description: 'A section' },
+          { code: 'H', description: 'H section' },
+          { code: 'N', description: 'N section' },
+          { code: 'P', description: 'P section' },
+          { code: 'G', description: 'G section' },
+          { code: 'S', description: 'S section' },
+          { code: 'R', description: 'R section' },
+          { code: 'T', description: 'T section' }
+        ]
+      })
+      const result = await sut.getFilteredMessagesForRequest('/service-manager/')
+      expect(result).toEqual([{
+        title: 'Global title',
+        message: '<p>Global message</p>\n',
+        borderColourCode: 'O',
+        areaCodes: ['A', 'H', 'N', 'P', 'G', 'S', 'R', 'T'],
+        urlSlug: '0C710428-51ED-4BB6-8E81-32D40FFFB1C9'
+      }])
+    })
+
+    test('if an error is thrown it is not re-thrown and an empty array is returned', async () => {
+      jest.spyOn(administrationMessageService, 'getMessagesAndAreaCodes').mockRejectedValue(new Error('mock error'))
+      jest.spyOn(logger, 'error').mockImplementation()
+      const result = await sut.getFilteredMessagesForRequest('/service-manager/')
+      expect(result).toEqual([])
+    })
+  })
+
+  describe('getRawServiceMessages', () => {
+    test('it calls the database', async () => {
+      jest.spyOn(administrationMessageDataService, 'sqlFindServiceMessages').mockImplementation()
+      await administrationMessageService.getRawServiceMessages()
+      expect(administrationMessageDataService.sqlFindServiceMessages).toHaveBeenCalledTimes(1)
+    })
+  })
+
+  describe('parseAndSanitise', () => {
+    test('it returns undefined if passed undefined', () => {
+      expect(administrationMessageService.parseAndSanitise(undefined)).toBeUndefined()
+    })
+  })
+
+  describe('getRawMessageBySlug', () => {
+    beforeEach(() => {
+      jest.spyOn(administrationMessageDataService, 'sqlFindServiceMessageBySlug').mockImplementation()
+      jest.spyOn(logger, 'error').mockImplementation()
+    })
+    test('it calls the data service to get the raw message from the db', async () => {
+      await administrationMessageService.getRawMessageBySlug('707d2405-70cf-4275-9f83-a7b2736cf62e')
+      expect(administrationMessageDataService.sqlFindServiceMessageBySlug).toHaveBeenCalledTimes(1)
+    })
+
+    test('it returns undefined if the service throws an error', async () => {
+      jest.spyOn(administrationMessageDataService, 'sqlFindServiceMessageBySlug').mockRejectedValue(new Error('mock error'))
+      const res = await administrationMessageService.getRawMessageBySlug('707d2405-70cf-4275-9f83-a7b2736cf62e')
+      expect(res).toBeUndefined()
     })
   })
 })

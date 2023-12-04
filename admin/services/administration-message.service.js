@@ -36,7 +36,6 @@ administrationMessageService.getFilteredMessagesForRequest = async function getF
     if (!('messages' in messageData) || !('areaCodes' in messageData)) return []
     const messages = messageData.messages
     const allAreaCodes = Array.isArray(messageData.areaCodes) ? messageData.areaCodes : []
-
     const filteredMessages = []
     for (const msg of messages) {
       if (msg.areaCodes.length === allAreaCodes.length) {
@@ -118,8 +117,8 @@ administrationMessageService.getMessagesAndAreaCodes = async function getMessage
   try {
     const result = await redisCacheService.get(serviceMessageRedisKey)
     // Object.hasOwn() available since node v16.9
-    if (result !== undefined && typeof result === 'object' && Object.hasOwn(result, 'messages') &&
-      Array.isArray(result.messages) && Object.hasOwn(result, 'areaCodes') && Array.isArray(result.areaCodes)) {
+    if (result !== undefined && typeof result === 'object' && ('messages' in result) &&
+      Array.isArray(result.messages) && ('areaCodes' in result) && Array.isArray(result.areaCodes)) {
       return result
     }
     // Fetch service messages and all area codes from the DB
@@ -149,7 +148,7 @@ administrationMessageService.getRawServiceMessages = async function getRawServic
 
 /**
  * Convert an array of markdown messages into sanitised HTML
- * @param {} slug
+ * @param {} rawMessage[]
  * @returns
  */
 administrationMessageService.parseAndSanitise = function parseAndSanitise (rawMessages) {
