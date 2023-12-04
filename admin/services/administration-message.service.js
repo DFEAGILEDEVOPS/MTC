@@ -108,7 +108,7 @@ administrationMessageService.getFilteredMessagesForRequest = async function getF
  */
 
 /**
- * Fetch the service messages from DB or cache with the message property as raw markdown, or plain text.
+ * Fetch the service messages from DB or cache with as HTML messages ready to insert into the page.
  * Also returns all the known AreaCodes to optimise the getFilteredMessages() call
  * @returns {Promise<ServiceMessagesAndAreaCodes | undefined>}
  */
@@ -116,7 +116,6 @@ administrationMessageService.getMessagesAndAreaCodes = async function getMessage
   let data
   try {
     const result = await redisCacheService.get(serviceMessageRedisKey)
-    // Object.hasOwn() available since node v16.9
     if (result !== undefined && typeof result === 'object' && ('messages' in result) &&
       Array.isArray(result.messages) && ('areaCodes' in result) && Array.isArray(result.areaCodes)) {
       return result
@@ -136,7 +135,6 @@ administrationMessageService.getMessagesAndAreaCodes = async function getMessage
       return data
     }
   } catch (error) {
-    console.error(error)
     logger.error('Error getting messages and areaCodes: ' + JSON.stringify(error))
   }
   // otherwise implicitly return undefined
