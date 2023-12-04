@@ -59,7 +59,7 @@
     "ejs": "^3.1.8",
     "express": "^4.16.2",
     "express-breadcrumbs": "https://github.com/DFEAGILEDEVOPS/express-breadcrumbs.git",
-    "express-busboy": "^8.0.2",
+    "express-busboy": "^9.0.0",
     "express-partials": "^0.3.0",
     "express-session": "^1.17.3",
     "express-winston": "^4.1.0",
