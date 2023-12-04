@@ -149,7 +149,7 @@ administrationMessageService.getRawServiceMessages = async function getRawServic
 /**
  * Convert an array of markdown messages into sanitised HTML
  * @param {} rawMessage[]
- * @returns
+ * @returns undefined | purifiedMessage[]
  */
 administrationMessageService.parseAndSanitise = function parseAndSanitise (rawMessages) {
   try {

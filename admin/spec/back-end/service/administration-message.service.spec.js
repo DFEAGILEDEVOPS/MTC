@@ -8,6 +8,8 @@ const ValidationError = require('../../../lib/validation-error')
 const { ServiceMessageCodesService } = require('../../../services/service-message/service-message.service')
 const { ServiceMessageValidator } = require('../../../services/service-message/service-message.validator')
 const logger = require('../../../services/log.service').getLogger()
+const { marked } = require('marked')
+const sanitiseService = require('../../../services/sanitise.service')
 
 const serviceMessageRedisKey = 'serviceMessage'
 
@@ -603,6 +605,29 @@ describe('administrationMessageService', () => {
   describe('parseAndSanitise', () => {
     test('it returns undefined if passed undefined', () => {
       expect(administrationMessageService.parseAndSanitise(undefined)).toBeUndefined()
+    })
+
+    test('if there is a parsing error it returns undefined', () => {
+      jest.spyOn(marked, 'parse').mockImplementation(() => { throw Error('mock parsing error') })
+      jest.spyOn(logger, 'alert')
+      expect(administrationMessageService.parseAndSanitise([
+        { title: 'a title', message: 'the msg', borderColourCode: 'O', areaCodes: ['A', 'P'], urlSlug: '222b8699-7040-41f2-9879-749b729db22c' }
+      ])).toBe(undefined)
+      expect(logger.alert).toHaveBeenCalledTimes(1)
+    })
+
+    test('it turns markdown into html', () => {
+      const rawMsg = { title: 'a title', message: '# heading\n body', borderColourCode: 'O', areaCodes: ['A', 'P'], urlSlug: '222b8699-7040-41f2-9879-749b729db22c' }
+      jest.spyOn(sanitiseService, 'sanitise').mockImplementation(a => a)
+      const clean = administrationMessageService.parseAndSanitise([rawMsg])
+      expect(clean[0].message).toBe('<h1 id="heading">heading</h1>\n<p> body</p>\n')
+    })
+
+    test('it sanitises the html', () => {
+      const rawMsg = { title: 'a title', message: '# heading\n body', borderColourCode: 'O', areaCodes: ['A', 'P'], urlSlug: '222b8699-7040-41f2-9879-749b729db22c' }
+      jest.spyOn(sanitiseService, 'sanitise')
+      administrationMessageService.parseAndSanitise([rawMsg])
+      expect(sanitiseService.sanitise).toHaveBeenCalledTimes(1)
     })
   })
 
