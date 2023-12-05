@@ -46,24 +46,28 @@ administrationMessageService.getFilteredMessagesForRequest = async function getF
         // check each area against the current path to see if it should be shown.
         for (const areaCode of msg.areaCodes) {
           switch (true) {
-            case accessArrangementsPathRe.test(path):
-              if (areaCode === 'A') filteredMessages.push(msg)
-              break
-
-            case hdfPathRe.test(path):
-              if (areaCode === 'H') filteredMessages.push(msg)
-              break
-
-            case nonSittingCodesPathRe.test(path):
-              if (areaCode === 'N') filteredMessages.push(msg)
+            case teacherHomePagePathRe.test(path):
+              if (areaCode === 'L') filteredMessages.push(msg)
               break
 
             case pinGenPathRe.test(path):
               if (areaCode === 'P') filteredMessages.push(msg)
               break
 
+            case pupilRegisterPathRe.test(path):
+              if (areaCode === 'T') filteredMessages.push(msg)
+              break
+
             case pupilGroupPathRe.test(path):
               if (areaCode === 'G') filteredMessages.push(msg)
+              break
+
+            case accessArrangementsPathRe.test(path):
+              if (areaCode === 'A') filteredMessages.push(msg)
+              break
+
+            case nonSittingCodesPathRe.test(path):
+              if (areaCode === 'N') filteredMessages.push(msg)
               break
 
             case pupilStatusPathRe.test(path):
@@ -74,12 +78,8 @@ administrationMessageService.getFilteredMessagesForRequest = async function getF
               if (areaCode === 'R') filteredMessages.push(msg)
               break
 
-            case pupilRegisterPathRe.test(path):
-              if (areaCode === 'T') filteredMessages.push(msg)
-              break
-
-            case teacherHomePagePathRe.test(path):
-              if (areaCode === 'L') filteredMessages.push(msg)
+            case hdfPathRe.test(path):
+              if (areaCode === 'H') filteredMessages.push(msg)
               break
           }
         }
