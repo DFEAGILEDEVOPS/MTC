@@ -9,10 +9,10 @@
   dependencies:
     tslib "^2.2.0"
 
-"@azure/core-amqp@^4.0.0":
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/@azure/core-amqp/-/core-amqp-4.0.0.tgz#abeebe76b9d1dd55a5d31e84fd9c9c062c5ba1f7"
-  integrity sha512-5QhtJ69qLbTKTL3arLHkQCN96C7tqENF4oKkPYp5Pqb+YA5Gh0aREL2aqp98sAT/YB/G8wAfvFLnYB7bUyzFVw==
+"@azure/core-amqp@^4.1.0":
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/@azure/core-amqp/-/core-amqp-4.1.0.tgz#1da57b3a259409fb8004e5705db3ed6945b8afc7"
+  integrity sha512-tjnviDypSAgjGBZCPw+sH7vDWz27N+z0xtQewp7+xH17/eb67VH4sApl3XHuxVBro6Y6pOfxCDpqFenOoGWz6Q==
   dependencies:
     "@azure/abort-controller" "^1.0.0"
     "@azure/core-auth" "^1.3.0"
@@ -268,13 +268,13 @@
     "@opentelemetry/instrumentation" "^0.41.2"
     tslib "^2.2.0"
 
-"@azure/service-bus@^7.8.1":
-  version "7.9.2"
-  resolved "https://registry.yarnpkg.com/@azure/service-bus/-/service-bus-7.9.2.tgz#013ad19b9e1df85e532ba70c2bbf2a91d5f1d1e1"
-  integrity sha512-w8d1/KhlbUz8DvY3Ca7GvoU5cJ8ONV4QBW25OfUk4Br6waAKWY+1wugEThQNCueRKvNlJlJyRbr9T14ibYMZeQ==
+"@azure/service-bus@^7.9.3":
+  version "7.9.3"
+  resolved "https://registry.yarnpkg.com/@azure/service-bus/-/service-bus-7.9.3.tgz#c2c6ed2e1506d0423a4141d5ea56649e6e11205e"
+  integrity sha512-6g37YpVTzRHI75BkYPiB4zqbYhQHM1Jvd+sNfRCbXeRW5FLsWoXgFVTw3Jv5kkMMX1pUNtrkaQhEoeTwtm5v3w==
   dependencies:
     "@azure/abort-controller" "^1.0.0"
-    "@azure/core-amqp" "^4.0.0"
+    "@azure/core-amqp" "^4.1.0"
     "@azure/core-auth" "^1.3.0"
     "@azure/core-client" "^1.0.0"
     "@azure/core-paging" "^1.4.0"
