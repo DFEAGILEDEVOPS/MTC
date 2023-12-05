@@ -6,5 +6,6 @@ INSERT INTO mtc_admin.serviceMessageAreaLookup (code, description) VALUES
 ('G', 'Pupil groups'),
 ('S', 'Pupil status'),
 ('R', 'Restarts'),
-('T', 'Pupil register')
+('T', 'Pupil register'),
+('L', 'Teacher home page')
 ;
