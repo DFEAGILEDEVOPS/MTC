@@ -17,7 +17,7 @@
     "@azure/data-tables": "^13.2.1",
     "@azure/service-bus": "^7.8.1",
     "@azure/storage-blob": "^12.16.0",
-    "@azure/storage-queue": "^12.15.0",
+    "@azure/storage-queue": "^12.16.0",
     "adm-zip": "^0.5.10",
     "applicationinsights": "^2.8.0",
     "async": "^3.2.4",
@@ -40,7 +40,7 @@
     "random-number-csprng": "^1.0.2",
     "ua-parser-js": "^1.0.36",
     "uuid": "^9.0.1",
-    "winston": "^3.10.0",
+    "winston": "^3.11.0",
     "winston-azure-application-insights": "^4.0.0"
   },
   "devDependencies": {
