@@ -15,7 +15,7 @@ describe('ServiceMessageAreaCodeService class', () => {
       expect(result[1].description).toBe('Z test')
     })
 
-    test('when the table is empty', async () => {
+    test('it returns an empty array when the database returns an empty array', async () => {
       jest.spyOn(ServiceMessageAreaCodeDataService, 'sqlGetAreaCodes').mockResolvedValue([])
       const result = await ServiceMessageCodesService.getAreaCodes()
       expect(result).toStrictEqual([])
