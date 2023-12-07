@@ -62,11 +62,18 @@ Check processing failures are raised via a service bus message to the check noti
 The ‘checkInvalid’ message is handled by the batch check notifier, and it will create a redis entry for the notification that will be collected by the admin app for display on the home page of a user assigned to the specified school.
 
 #### Destroying a notification
+
+##### Idea 1
 The pupil should be included in the school notification until one of the following events occur…
 -	A restart is created (while also handling undo upon restart deletion)
 -	An attendance code is assigned to the pupil
 
 These events should trigger a task which removes the pupils UUID from the list in the school notification message, if one exists.
+
+The problem with this solution is that it requires managing the notifications.  Looking them up in redis is expensive - why not just set a TTL?
+
+##### Idea 2
+When a notification is added to the redis cache, giving it a TTL that is slightly longer than the interval between the overall process will ensure that notifications are automatically purged.  Leaving us with a narrower set of concerns focused solely on ensuring those schools that need a notification have one.
 
 ### Overdue Checks
 Overdue checks prior to 2024 were classed as any check that was logged into over 30 minutes ago that had not yet been received.  For 2024 this is to be reconfigured to something more like 24-48 hours.  A function should be executed periodically that runs a SQL query (see example below) to identify whi ch schools have active overdue checks.
