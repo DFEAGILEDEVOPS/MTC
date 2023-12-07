@@ -64,7 +64,7 @@ end
 
 And(/^I should see a red error box at the top of the page$/) do
   expect(pupil_status_page).to have_warning_message
-  expect(pupil_status_page.warning_message.text).to eql "#{pupil_status_page.checks_with_errors.count.text} Check with errors"
+  expect(pupil_status_page.warning_message.text).to eql "#{pupil_status_page.checks_that_require_action.count.text} Check with errors"
 end
 
 
@@ -75,10 +75,10 @@ Given(/^I have logged in to the check$/) do
 end
 
 Then(/^the counts should equal the total number of pupils in the school$/) do
- page_total = (pupil_status_page.checks_with_errors.count.text.to_i +
-  pupil_status_page.not_started_checks.count.text.to_i +
-  pupil_status_page.not_taking_checks.count.text.to_i +
-  pupil_status_page.completed_checks.count.text.to_i)
+ page_total = (pupil_status_page.checks_that_require_action.count.text.to_i +
+  pupil_status_page.pupils_not_started.count.text.to_i +
+  pupil_status_page.pupils_in_progress.count.text.to_i +
+  pupil_status_page.pupils_completed.count.text.to_i)
   db_total = SqlDbHelper.list_of_pupils_from_school(SqlDbHelper.find_teacher(@user)['school_id']).count
   expect(page_total).to eql db_total
 end

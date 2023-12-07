@@ -46,7 +46,8 @@ const pupilStatusService = {
       pupilLoginDate: pupil.pupilLoginDate,
       restartAvailable: pupil.restartAvailable,
       processingFailed: pupil.processingFailed,
-      reason: pupil.reason
+      reason: pupil.reason,
+      checkStartedAt: pupil.checkStartedAt
     })
     return newPupil
   },
@@ -66,6 +67,7 @@ const pupilStatusService = {
    * @property {Date} pupilLoginDate
    * @property {Boolean} restartAvailable
    * @property {String} reason
+   * @property {Date} checkStartedAt
    */
 
   /**
@@ -88,7 +90,8 @@ const pupilStatusService = {
       pupilLoginDate,
       restartAvailable,
       processingFailed,
-      reason
+      reason,
+      checkStartedAt
     } = processStatus
 
     if (pinExpiresAt && !moment.isMoment(pinExpiresAt)) {
@@ -116,24 +119,40 @@ const pupilStatusService = {
       isFalse(checkComplete)
     ) {
       status = 'PIN generated'
+    // started
     } else if (
       isPositive(currentCheckId) &&
       isNotNil(pupilLoginDate) &&
+      isNotNil(checkStartedAt) &&
+      isFalse(checkReceived) &&
+      isFalse(checkComplete)
+    ) {
+      status = 'Check in progress'
+      if (
+        isOverdue(checkStartedAt, notReceivedExpiryInMinutes, moment.utc())
+      ) {
+        status = 'Overdue - check started but not received'
+      }
+    // logged in
+    } else if (
+      isPositive(currentCheckId) &&
+      isNotNil(pupilLoginDate) &&
+      isNil(checkStartedAt) &&
       isFalse(checkReceived) &&
       isFalse(checkComplete)
     ) {
       status = 'Logged in'
       if (
-        isNotReceived(pupilLoginDate, notReceivedExpiryInMinutes, moment.utc())
+        isOverdue(pupilLoginDate, notReceivedExpiryInMinutes, moment.utc())
       ) {
-        status = 'Incomplete'
+        status = 'Overdue - logged in but check not started'
       }
     } else if (
       isNotNil(pupilLoginDate) &&
       isTrue(checkReceived) &&
       isFalse(checkComplete)
     ) {
-      status = 'Processing'
+      status = 'Check processing'
     } else if (
       isNotNil(pupilLoginDate) &&
       isTrue(checkReceived) &&
@@ -149,7 +168,7 @@ const pupilStatusService = {
   }
 }
 
-function isNotReceived (date, minutesToAdd, now) {
+function isOverdue (date, minutesToAdd, now) {
   if (!date || !moment.isMoment(date)) {
     // can be undefined
     return false
@@ -160,8 +179,8 @@ function isNotReceived (date, minutesToAdd, now) {
   if (!isPositive(minutesToAdd)) {
     throw new Error('minutesToAdd is not a positive number')
   }
-  const expiry = date.add(minutesToAdd, 'minutes')
-  return expiry.isBefore(now)
+  const overdue = date.add(minutesToAdd, 'minutes')
+  return overdue.isBefore(now)
 }
 
 /**

@@ -1,5 +1,0 @@
--APPINSIGHTS_INSTRUMENTATIONKEY $(AppInsights.InstrumentationKey)
--AUTH_PING_URL $(Pupil.Auth.Ping.Url)
--AUTH_URL $(Pupil-AUTH_URL)
--AZURE_ACCOUNT_NAME $(StorageAccountName)
--PRODUCTION true

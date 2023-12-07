@@ -46,9 +46,10 @@ And(/^I choose to edit the first pupil in the list$/) do
 end
 
 Then(/^I can see the status for the pupil is '(.*)'$/) do |status|
-  unless status == 'Not started'
-    Timeout.timeout(ENV['WAIT_TIME'].to_i) {sleep 1 until SqlDbHelper.check_details(SqlDbHelper.pupil_details(@details_hash[:upn], @school_id)['id'])['complete']} unless status == 'Error in processing' || status == 'Pupil check not received'
+  unless status == 'Not started'  || "Overdue - logged in but check not started"
+    Timeout.timeout(ENV['WAIT_TIME'].to_i) {sleep 1 until SqlDbHelper.check_details(SqlDbHelper.pupil_details(@details_hash[:upn], @school_id)['id'])['complete']} unless status == 'Error in processing' || status == 'Pupil check not received' || status == 'Logged in'
     Timeout.timeout(ENV['WAIT_TIME'].to_i) {sleep 1 until SqlDbHelper.check_details(SqlDbHelper.pupil_details(@details_hash[:upn], @school_id)['id'])['processingFailed']} if status == 'Error in processing'
+    Timeout.timeout(ENV['WAIT_TIME'].to_i) {sleep 1 until (SqlDbHelper.check_details(SqlDbHelper.pupil_details(@details_hash[:upn], @school_id)['id'])['pupilLoginDate']).is_a?(Time)} if status == 'Logged in'
   end
   status == 'Restart' ? status = 'Not started' : status = status
   pupil_status_page.load
@@ -58,8 +59,8 @@ Then(/^I can see the status for the pupil is '(.*)'$/) do |status|
 end
 
 Then(/^I can see the status for the pupil is (.*) for pupil not taking the check$/) do |status|
-  Timeout.timeout(20) {pupil_status_page.not_taking_checks.count.click until pupil_status_page.not_taking_checks_details.pupil_list.visible?}
-  pupil_row = pupil_status_page.not_taking_checks_details.pupil_list.pupil_row.find {|r| r.text.include? @pupil['lastName']}
+  Timeout.timeout(20) {pupil_status_page.pupils_completed.count.click until pupil_status_page.pupils_completed_details.pupil_list.visible?}
+  pupil_row = pupil_status_page.pupils_completed_details.pupil_list.pupil_row.find {|r| r.text.include? @pupil['lastName']}
   expect(pupil_row.status.text).to include status
 end
 
