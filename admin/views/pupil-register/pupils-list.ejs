@@ -119,10 +119,10 @@
                             <th scope="col" class="govuk-table__header">
                                 <a class="no-underline sortingLink">Date of birth<span class="sort-icon"></span></a>
                             </th>
-                            <th scope="col" class="govuk-table__headern hidden">
+                            <th id="jqUpnHeader" scope="col" class="govuk-table__header hidden">
                                 <a class="no-underline sortingLink">UPN<span class="sort-icon"></span></a>
                             </th>
-                            <th scope="col" class="govuk-table__header hidden">
+                            <th id="jqGroupHeader" scope="col" class="govuk-table__header hidden">
                                 <a class="no-underline sortingLink">Group<span class="sort-icon"><span>Sort by
                                             group</span></span></a>
                             </th>
@@ -154,11 +154,11 @@
                                 <td scope="row" class="govuk-table__cell">
                                     <%= p.formattedDateOfBirth %>
                                 </td>
-                                <td scope="row" class="govuk-table__cell hidden">
+                                <td scope="row" class="govuk-table__cell jqUpnRow hidden">
                                     <%= p.upn %>
                                 </td>
 
-                                <td class="govuk-table__cell hidden">
+                                <td class="govuk-table__cell jqGroupRow hidden">
                                     <%= p.group %>
                                 </td>
                                 <% if (showPupilAdminLink) { %>
