@@ -30,9 +30,9 @@ Given(/^I have a new pupil with a reason for not taking a check$/) do
 
   step 'the Incorrect registration reason should be stored against the pupils'
   pupil_status_page.load
-  Timeout.timeout(20) {pupil_status_page.not_taking_checks.count.click until pupil_status_page.not_taking_checks_details.pupil_list.visible? }
-  pupil_row = pupil_status_page.not_taking_checks_details.pupil_list.pupil_row.find { |r| r.text.include? @pupil_forename}
-  expect(pupil_row.status.text).to_not be_nil
+  Timeout.timeout(20) {pupil_status_page.pupils_completed.count.click until pupil_status_page.pupils_completed_details.pupil_list.visible? }
+  pupil_row = pupil_status_page.pupils_completed_details.pupil_list.pupil_row.find { |r| r.text.include? @pupil_forename}
+  expect(pupil_row.status.text).to eql 'Incorrect registration'
 end
 
 And(/^headteacher updates the pupils reason for not taking a check$/)do
