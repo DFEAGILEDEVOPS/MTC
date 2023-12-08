@@ -14,25 +14,25 @@ const pupilStatusPresenter = {}
  */
 pupilStatusPresenter.getPresentationData = (pupilStatusData, checkWindowData) => {
   const pupilStatusViewData = {}
-  pupilStatusViewData.pupilsWithErrors = pupilStatusPresenter.applyStatusDescriptionChange(
-    // @ts-ignore
-    R.filter(p => R.includes(p.status, ['Error in processing', 'Incomplete'], p), pupilStatusData),
-    ['Incomplete'],
-    'Pupil check not received'
-  )
+  const overdueLoggedIn = 'Overdue - logged in but check not started'
+  const overdueStarted = 'Overdue - check started but not received'
+  const notStarted = 'Not started'
+
+  pupilStatusViewData.pupilsRequireAction = R.filter(p => R.includes(p.status, ['Error in processing', overdueLoggedIn, overdueStarted], p), pupilStatusData)
+
   pupilStatusViewData.pupilsNotStarted = pupilStatusPresenter.applyStatusDescriptionChange(
     // @ts-ignore
-    R.filter(p => R.includes(p.status, ['Not started', 'PIN generated', 'Logged in', 'Processing', 'Restart'], p), pupilStatusData),
-    ['Restart', 'PIN generated', 'Logged in'],
-    'Not started'
+    R.filter(p => R.includes(p.status, [notStarted, 'Restart'], p), pupilStatusData),
+    ['Restart'],
+    notStarted
   )
-  pupilStatusViewData.pupilsNotAttending = R.filter(p => !!p.reason, pupilStatusData)
+  pupilStatusViewData.pupilsInProgress = R.filter(p => R.includes(p.status, ['PIN generated', 'Logged in', 'Check processing', 'Check in progress'], p), pupilStatusData)
   // @ts-ignore
-  pupilStatusViewData.pupilsCompleted = R.filter(p => R.includes(p.status, ['Complete'], p), pupilStatusData)
+  pupilStatusViewData.pupilsCompleted = R.filter(p => R.includes(p.status, ['Complete'], p) || !!p.reason, pupilStatusData)
 
-  pupilStatusViewData.pupilsWithErrorsCount = pupilStatusViewData.pupilsWithErrors.length || 0
+  pupilStatusViewData.pupilsRequireActionCount = pupilStatusViewData.pupilsRequireAction.length || 0
   pupilStatusViewData.pupilsNotStartedCount = pupilStatusViewData.pupilsNotStarted.length || 0
-  pupilStatusViewData.pupilsNotAttendingCount = pupilStatusViewData.pupilsNotAttending.length || 0
+  pupilStatusViewData.pupilsInProgressCount = pupilStatusViewData.pupilsInProgress.length || 0
   pupilStatusViewData.pupilsCompletedCount = pupilStatusViewData.pupilsCompleted.length || 0
   pupilStatusViewData.totalPupilsCount = pupilStatusData.length || 0
 

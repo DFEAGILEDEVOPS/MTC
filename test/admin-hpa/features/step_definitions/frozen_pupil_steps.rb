@@ -126,9 +126,9 @@ end
 
 
 Then(/^I should see the annulled pupil$/) do
-  pupil_status_page.not_taking_checks.count.click
-  expect(pupil_status_page.not_taking_checks_details.pupil_list.pupil_row.first.names.text).to eql @pupil_details['lastName'] + ", " + @pupil_details['foreName']
-  expect(pupil_status_page.not_taking_checks_details.pupil_list.pupil_row.first.status.text).to eql "Results annulled"
+  pupil_status_page.pupils_completed.count.click
+  expect(pupil_status_page.pupils_completed_details.pupil_list.pupil_row.first.names.text).to eql @pupil_details['lastName'] + ", " + @pupil_details['foreName']
+  expect(pupil_status_page.pupils_completed_details.pupil_list.pupil_row.first.status.text).to eql "Results annulled"
 end
 
 
@@ -273,18 +273,17 @@ Given(/^a pupil completes a check and then is annulled$/) do
   annul_pupil(@details_hash[:upn], @school_id)
   step "I am logged in"
   step "I am on the Pupil Status page"
-  pupil_status_page.not_taking_checks.count.click
-  expect(pupil_status_page.not_taking_checks_details.pupil_list.pupil_row.first.names.text).to eql @details_hash[:last_name] + ", " + @details_hash[:first_name]
-  expect(pupil_status_page.not_taking_checks_details.pupil_list.pupil_row.first.status.text).to eql "Results annulled"
+  pupil_status_page.pupils_completed.count.click
+  expect(pupil_status_page.pupils_completed_details.pupil_list.pupil_row.first.names.text).to eql @details_hash[:last_name] + ", " + @details_hash[:first_name]
+  expect(pupil_status_page.pupils_completed_details.pupil_list.pupil_row.first.status.text).to eql "Results annulled"
 end
-
 
 Then(/^the pupils previous state of complete should be reinstated$/) do
   sleep 5
   step 'I navigate to the pupil status page'
-  pupil_status_page.completed_checks.count.click
-  expect(pupil_status_page.completed_checks_details.pupil_list.pupil_row.first.names.text).to eql @details_hash[:last_name] + ", " + @details_hash[:first_name]
-  expect(pupil_status_page.completed_checks_details.pupil_list.pupil_row.first.status.text).to eql "Complete"
+  pupil_status_page.pupils_completed.count.click
+  expect(pupil_status_page.pupils_completed_details.pupil_list.pupil_row.first.names.text).to eql @details_hash[:last_name] + ", " + @details_hash[:first_name]
+  expect(pupil_status_page.pupils_completed_details.pupil_list.pupil_row.first.status.text).to eql "Complete"
 end
 
 
