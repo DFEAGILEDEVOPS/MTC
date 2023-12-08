@@ -19,28 +19,28 @@ export class PingService {
     return this.buildNumber
   }
 
-  private appRootDir: string = ''
+  private distDir: string = ''
 
-  private getAppRootDir (): string {
-    if (this.appRootDir !== '') return this.appRootDir
+  private getDistDirectoryPath (): string {
+    if (this.distDir !== '') return this.distDir
     let currentDir = __dirname
     const failSafe = 20
     let count = 0
-    while (!fs.existsSync(path.join(currentDir, 'package.json'))) {
+    while (!fs.existsSync(path.join(currentDir, 'config.js'))) {
       currentDir = path.join(currentDir, '..')
       count++
       if (count === failSafe) {
-        throw new Error('Could not find package.json')
+        return './'
       }
     }
-    this.appRootDir = currentDir
+    this.distDir = currentDir
     return currentDir
   }
 
   private async loadCommitId (): Promise<any> {
-    const rootDir = this.getAppRootDir()
+    const distDir = this.getDistDirectoryPath()
     return new Promise(function (resolve) {
-      const commitFilePath = path.join(rootDir, 'commit.txt')
+      const commitFilePath = path.join(distDir, 'commit.txt')
       fs.readFile(commitFilePath, 'utf8', function (err, data) {
         if (err == null) {
           resolve(data)
@@ -52,9 +52,9 @@ export class PingService {
   }
 
   private async loadBuildNumber (): Promise<any> {
-    const rootDir = this.getAppRootDir()
+    const distDir = this.getDistDirectoryPath()
     return new Promise(function (resolve) {
-      const buildFilePath = path.join(rootDir, 'build.txt')
+      const buildFilePath = path.join(distDir, 'build.txt')
       fs.readFile(buildFilePath, 'utf8', function (err, data) {
         if (err == null) {
           resolve(data)
