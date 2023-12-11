@@ -146,6 +146,8 @@
                                                     href="/pupil-register/pupil/edit/<%= p.urlSlug %>">
                                                     <%= p.fullName %>
                                                 </a>
+                                                <% } else { %>
+                                                    <span id="pupilName" class="govuk-!-font-weight-bold name-text-wrap"><%= p.fullName %></span>
                                                 <% } %>
                                                 <input type="hidden" id="pupilUpn-<%= i %>" name="pupilUpn"
                                                   value="<%= p.upn %>" />
