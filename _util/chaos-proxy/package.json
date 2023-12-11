@@ -10,7 +10,7 @@
     "start": "node index.js"
   },
   "dependencies": {
-    "axios": "^0.21.2",
+    "axios": "^1.6.0",
     "faker": "^5.5.3"
   }
 }
