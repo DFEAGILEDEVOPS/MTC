@@ -9,10 +9,10 @@
   dependencies:
     tslib "^2.2.0"
 
-"@azure/core-amqp@^4.0.0":
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/@azure/core-amqp/-/core-amqp-4.0.0.tgz#abeebe76b9d1dd55a5d31e84fd9c9c062c5ba1f7"
-  integrity sha512-5QhtJ69qLbTKTL3arLHkQCN96C7tqENF4oKkPYp5Pqb+YA5Gh0aREL2aqp98sAT/YB/G8wAfvFLnYB7bUyzFVw==
+"@azure/core-amqp@^4.1.0":
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/@azure/core-amqp/-/core-amqp-4.1.0.tgz#1da57b3a259409fb8004e5705db3ed6945b8afc7"
+  integrity sha512-tjnviDypSAgjGBZCPw+sH7vDWz27N+z0xtQewp7+xH17/eb67VH4sApl3XHuxVBro6Y6pOfxCDpqFenOoGWz6Q==
   dependencies:
     "@azure/abort-controller" "^1.0.0"
     "@azure/core-auth" "^1.3.0"
@@ -268,13 +268,13 @@
     "@opentelemetry/instrumentation" "^0.41.2"
     tslib "^2.2.0"
 
-"@azure/service-bus@^7.8.1":
-  version "7.9.2"
-  resolved "https://registry.yarnpkg.com/@azure/service-bus/-/service-bus-7.9.2.tgz#013ad19b9e1df85e532ba70c2bbf2a91d5f1d1e1"
-  integrity sha512-w8d1/KhlbUz8DvY3Ca7GvoU5cJ8ONV4QBW25OfUk4Br6waAKWY+1wugEThQNCueRKvNlJlJyRbr9T14ibYMZeQ==
+"@azure/service-bus@^7.9.3":
+  version "7.9.3"
+  resolved "https://registry.yarnpkg.com/@azure/service-bus/-/service-bus-7.9.3.tgz#c2c6ed2e1506d0423a4141d5ea56649e6e11205e"
+  integrity sha512-6g37YpVTzRHI75BkYPiB4zqbYhQHM1Jvd+sNfRCbXeRW5FLsWoXgFVTw3Jv5kkMMX1pUNtrkaQhEoeTwtm5v3w==
   dependencies:
     "@azure/abort-controller" "^1.0.0"
-    "@azure/core-amqp" "^4.0.0"
+    "@azure/core-amqp" "^4.1.0"
     "@azure/core-auth" "^1.3.0"
     "@azure/core-client" "^1.0.0"
     "@azure/core-paging" "^1.4.0"
@@ -292,10 +292,10 @@
     rhea-promise "^3.0.0"
     tslib "^2.2.0"
 
-"@azure/storage-blob@^12.16.0":
-  version "12.16.0"
-  resolved "https://registry.yarnpkg.com/@azure/storage-blob/-/storage-blob-12.16.0.tgz#c41fb1e538d6f6e2a6756bfcc69382eededf4fa1"
-  integrity sha512-jz33rUSUGUB65FgYrTRgRDjG6hdPHwfvHe+g/UrwVG8MsyLqSxg9TaW7Yuhjxu1v1OZ5xam2NU6+IpCN0xJO8Q==
+"@azure/storage-blob@^12.17.0":
+  version "12.17.0"
+  resolved "https://registry.yarnpkg.com/@azure/storage-blob/-/storage-blob-12.17.0.tgz#04aad7f59cb08dbbe5b1b672a9f5b6256c8c9006"
+  integrity sha512-sM4vpsCpcCApagRW5UIjQNlNylo02my2opgp0Emi8x888hZUvJ3dN69Oq20cEGXkMUWnoCrBaB0zyS3yeB87sQ==
   dependencies:
     "@azure/abort-controller" "^1.0.0"
     "@azure/core-http" "^3.0.0"
@@ -306,10 +306,10 @@
     events "^3.0.0"
     tslib "^2.2.0"
 
-"@azure/storage-queue@^12.15.0":
-  version "12.15.0"
-  resolved "https://registry.yarnpkg.com/@azure/storage-queue/-/storage-queue-12.15.0.tgz#c124d362f5aabb6d1f450cf644d0a7756cb45a77"
-  integrity sha512-qotyfMcmocaT1r9bfX7RyQQnkRJcTXGSG/m6LIchtEsNmqLu3ulVqkOlNM+O0XP9wwJ6Da1XQbWz5jQtrDe3DQ==
+"@azure/storage-queue@^12.16.0":
+  version "12.16.0"
+  resolved "https://registry.yarnpkg.com/@azure/storage-queue/-/storage-queue-12.16.0.tgz#06ce127c8871058c85139d2ba4788390df54f2a0"
+  integrity sha512-HzwzMsNAh2PwLtx9WfXndj9elUr6duDFak5CjM6BxdWhLqf37VywPCWmEzjxuFfrq30c1T34+MjMXnN6YgqRUw==
   dependencies:
     "@azure/abort-controller" "^1.0.0"
     "@azure/core-http" "^3.0.0"
@@ -714,10 +714,15 @@ async-settle@^1.0.0:
   dependencies:
     async-done "^1.2.2"
 
-async@^3.2.3, async@^3.2.4:
+async@^3.2.3:
   version "3.2.4"
   resolved "https://registry.yarnpkg.com/async/-/async-3.2.4.tgz#2d22e00f8cddeb5fde5dd33522b56d1cf569a81c"
   integrity sha512-iAB+JbDEGXhyIUavoDl9WP/Jj106Kz9DEn1DPgYw5ruDn0e3Wgi3sKFm55sASdGBNOQB8F59d9qQ7deqrHA8wQ==
+
+async@^3.2.5:
+  version "3.2.5"
+  resolved "https://registry.yarnpkg.com/async/-/async-3.2.5.tgz#ebd52a8fdaf7a2289a24df399f8d8485c8a46b66"
+  integrity sha512-baNZyqaaLhyLVKm/DlvdW051MSgO6b8eVfIezl9E5PqWxFgzLm/wQntEW4zOytVburDEr0JlALEpdOFwvErLsg==
 
 asynckit@^0.4.0:
   version "0.4.0"
@@ -4480,7 +4485,7 @@ winston-transport@^4.2.0, winston-transport@^4.5.0:
     readable-stream "^3.6.0"
     triple-beam "^1.3.0"
 
-winston@^3.10.0:
+winston@^3.11.0:
   version "3.11.0"
   resolved "https://registry.yarnpkg.com/winston/-/winston-3.11.0.tgz#2d50b0a695a2758bb1c95279f0a88e858163ed91"
   integrity sha512-L3yR6/MzZAOl0DsysUXHVjOwv8mKZ71TrA/41EIduGpOOV5LQVodqN+QdQ6BS6PJ/RdIshZhq84P/fStEZkk7g==

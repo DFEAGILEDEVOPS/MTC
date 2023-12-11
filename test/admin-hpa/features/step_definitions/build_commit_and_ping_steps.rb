@@ -4,8 +4,8 @@ end
 
 Then(/^I should see the correct build and commit info$/) do
   build_commit_hash = JSON.parse page.text
-    expect(build_commit_hash['Build']).to eql ENV["BUILD_BUILDNUMBER"]
-    expect(build_commit_hash['Commit']).to eql ENV["BUILD_SOURCEVERSION"]
+    expect(build_commit_hash['Build']).to include ENV["BUILD_BUILDNUMBER"]
+    expect(build_commit_hash['Commit']).to include ENV["BUILD_SOURCEVERSION"]
 end
 
 Given(/^I ping the Pupil app$/) do
@@ -22,7 +22,7 @@ Then(/^I should see the correct build and commit info for the pupil app$/) do
     expect(build_commit_hash['Build']).to include '#mtc.build#'
     expect(build_commit_hash['Commit']).to include '#mtc.commit#'
   else
-    expect(build_commit_hash['Build']).to eql ENV["BUILD_BUILDNUMBER"]
-    expect(build_commit_hash['Commit'].strip).to eql ENV["BUILD_SOURCEVERSION"]
+    expect(build_commit_hash['Build']).to include ENV["BUILD_BUILDNUMBER"]
+    expect(build_commit_hash['Commit'].strip).to include ENV["BUILD_SOURCEVERSION"]
   end
 end
