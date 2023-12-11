@@ -19,28 +19,9 @@ export class PingService {
     return this.buildNumber
   }
 
-  private distDir: string = ''
-
-  private getDistDirectoryPath (): string {
-    if (this.distDir !== '') return this.distDir
-    let currentDir = __dirname
-    const failSafe = 20
-    let count = 0
-    while (!fs.existsSync(path.join(currentDir, 'config.js'))) {
-      currentDir = path.join(currentDir, '..')
-      count++
-      if (count === failSafe) {
-        return './'
-      }
-    }
-    this.distDir = currentDir
-    return currentDir
-  }
-
   private async loadCommitId (): Promise<any> {
-    const distDir = this.getDistDirectoryPath()
     return new Promise(function (resolve) {
-      const commitFilePath = path.join(distDir, 'commit.txt')
+      const commitFilePath = path.join('./dist', 'commit.txt')
       fs.readFile(commitFilePath, 'utf8', function (err, data) {
         if (err == null) {
           resolve(data)
@@ -52,9 +33,8 @@ export class PingService {
   }
 
   private async loadBuildNumber (): Promise<any> {
-    const distDir = this.getDistDirectoryPath()
     return new Promise(function (resolve) {
-      const buildFilePath = path.join(distDir, 'build.txt')
+      const buildFilePath = path.join('./dist', 'build.txt')
       fs.readFile(buildFilePath, 'utf8', function (err, data) {
         if (err == null) {
           resolve(data)
