@@ -13,7 +13,7 @@
     "node": ">= 18"
   },
   "dependencies": {
-    "axios": "^0.21.2",
+    "axios": "^1.6.0",
     "command-line-args": "^5.1.1",
     "dotenv": "^8.2.0",
     "fast-csv": "^3.6.0",
