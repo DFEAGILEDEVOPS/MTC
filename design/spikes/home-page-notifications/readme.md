@@ -9,15 +9,16 @@ A notification will remain on the school home page until such time that all conc
 When a check is submitted it enters the MTC backend pipeline for validation and marking.  If the check fails either of these stages, any admin user (teacher) for the associated school should be shown a notification on their home page (school home).
 
 #### Notification lifetime
-The notification should exist until one of the following criteria are met…
+Ideally, the notification should exist until one of the following criteria are met…
 -	A restart is created for a new check, essentially voiding the failed check
 -	The pupil is given an attendance code
+
 
 ### Overdue Checks
 An overdue check is one that has been logged into, but the check has not been received within a specified timeframe.  Prior to 2024 the specified timeframe was 30 minutes.  For 2024 this is to be reconfigured to something in the region of 24-48 hours, to allow more time for it be submitted by the school.
 
 #### Notification lifetime
-The notification should exist until one of the following criteria are met…
+Ideally, the notification should exist until one of the following criteria are met…
 -	A restart is created for a new check, essentially voiding the overdue check
 -	The pupil is given an attendance code
 -	The check is received
@@ -35,6 +36,9 @@ schoolUUID	Unique identifier for the school
 dateTimeCreated	When notification created
 processingErrorPupilUUIDs	List of pupil UUIDs who have checks with errors
 overdueChecksUUIDs	List of check codes / UUIDs that are overdue
+
+### Notification lifetime
+Due to performance implications caused by the need to lookup existing notifications and determine those that are now expired, we will set a lifetime for the notification (typically via a TTL on the redis cache entry).  This lifetime will align with the interval of looking up new overdue items.
 
 
 ### Message example
@@ -72,7 +76,7 @@ These events should trigger a task which removes the pupils UUID from the list i
 
 The problem with this solution is that it requires managing the notifications.  Looking them up in redis is expensive - why not just set a TTL?
 
-##### Idea 2
+##### Idea 2 (preferred)
 When a notification is added to the redis cache, giving it a TTL that is slightly longer than the interval between the overall process will ensure that notifications are automatically purged.  Leaving us with a narrower set of concerns focused solely on ensuring those schools that need a notification have one.
 
 ### Overdue Checks

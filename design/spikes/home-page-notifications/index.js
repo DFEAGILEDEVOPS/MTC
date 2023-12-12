@@ -25,6 +25,8 @@ function flushRedis (done) {
   redis.flushall(done)
 }
 
+// This only exercises idea 1 - manually destroying notifications
+
 function clearRedis (done) {
   console.log('purging redis...')
   var stream = redis.scanStream({
