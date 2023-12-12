@@ -8,7 +8,7 @@ const businessAvailabilityService = require('../services/business-availability.s
 const ValidationError = require('../lib/validation-error')
 const logger = require('../services/log.service').getLogger()
 const pupilService = require('../services/pupil.service')
-const { DiscretionaryRestartService } = require('../services/discretionary-restart.service/discretionary-restart.service')
+const { DiscretionaryRestartService } = require('../services/discretionary-restart/discretionary-restart.service')
 
 const controller = {}
 

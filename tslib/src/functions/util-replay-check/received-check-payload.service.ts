@@ -1,7 +1,7 @@
 import { CompressionService, type ICompressionService } from '../../common/compression-service'
 import { validate as validateUuid } from 'uuid'
 import { type IReceivedCheckPayloadDataService, ReceivedCheckPayloadDataService } from './received-check-payload.data.service'
-import { type SubmittedCheckMessageV2 } from '../../schemas/models'
+import { type SubmittedCheckMessage } from '../../schemas/models'
 
 export class ReceivedCheckPayloadService {
   private readonly compressionService: ICompressionService
@@ -12,7 +12,7 @@ export class ReceivedCheckPayloadService {
     this.dataService = dataService ?? new ReceivedCheckPayloadDataService()
   }
 
-  async fetch (checkCodes: string[]): Promise<SubmittedCheckMessageV2[]> {
+  async fetch (checkCodes: string[]): Promise<SubmittedCheckMessage[]> {
     if (checkCodes.length === 0) {
       throw new Error('at least 1 checkCode is required')
     }
@@ -25,10 +25,9 @@ export class ReceivedCheckPayloadService {
     }
 
     const archives = await this.dataService.fetchCompressedArchives(checkCodes)
-    console.log(`found ${archives.length} archives`)
     if (archives === undefined || archives.length === 0) return []
-    const decompressedArchives = archives.map(a => this.compressionService.decompress(a))
-    const payloads: SubmittedCheckMessageV2[] = []
+    const decompressedArchives = archives.map(a => this.compressionService.decompressFromUTF16(a))
+    const payloads: SubmittedCheckMessage[] = []
     for (let index = 0; index < decompressedArchives.length; index++) {
       const da = decompressedArchives[index]
       const jsonData = JSON.parse(da)
@@ -42,7 +41,7 @@ export class ReceivedCheckPayloadService {
     return payloads
   }
 
-  async fetchBySchool (schoolUuid: string): Promise<SubmittedCheckMessageV2[]> {
+  async fetchBySchool (schoolUuid: string): Promise<SubmittedCheckMessage[]> {
     if (schoolUuid === '') {
       throw new Error('schoolUuid is required')
     }
@@ -51,7 +50,7 @@ export class ReceivedCheckPayloadService {
     }
     const response = await this.dataService.fetchArchivesForSchool(schoolUuid)
     if (response.length === 0) return []
-    const toReturn: SubmittedCheckMessageV2[] = response.map(item => {
+    const toReturn: SubmittedCheckMessage[] = response.map(item => {
       return {
         version: 2,
         checkCode: item.checkCode,

@@ -1,6 +1,3 @@
-import * as path from 'path'
-import * as fs from 'fs'
-import * as dotenv from 'dotenv'
 import express from 'express'
 import * as bodyParser from 'body-parser'
 import cors from 'cors'
@@ -9,22 +6,13 @@ import { v4 as uuidv4 } from 'uuid'
 import * as appInsights from './helpers/app-insights'
 import logger from './services/log.service'
 import authRoutes from './routes/auth'
+import submitRoutes from './routes/submit'
 import pingRoute from './routes/ping'
 import headRoute from './routes/head'
 import * as corsOptions from './helpers/cors-options'
 import { initLogger } from './helpers/logger'
-
-const globalDotEnvFile = path.join(__dirname, '..', '..', '.env')
-try {
-  if (fs.existsSync(globalDotEnvFile)) {
-    console.log('globalDotEnvFile found', globalDotEnvFile)
-    dotenv.config({ path: globalDotEnvFile })
-  } else {
-    console.log('No .env file found at project root')
-  }
-} catch (error) {
-  console.error(error)
-}
+import { JwtSecretValidator } from '../services/jwt-secret.validator'
+import config from '../config'
 
 // Creates and configures an ExpressJS web server.
 class App {
@@ -37,6 +25,7 @@ class App {
     this.middleware()
     this.routes()
     appInsights.startInsightsIfConfigured().catch(e => { logger.error(e) })
+    JwtSecretValidator.validate(config.PupilApi.JwtSecret)
   }
 
   // Configure Express middleware.
@@ -65,6 +54,7 @@ class App {
     /* API endpoints */
     this.express.use('/ping', pingRoute)
     this.express.use('/auth', authRoutes)
+    this.express.use('/submit', submitRoutes)
     this.express.use(headRoute)
 
     if (process.env.VERIFY_OWNER !== undefined) {

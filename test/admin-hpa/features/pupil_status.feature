@@ -19,11 +19,10 @@ Feature: Pupil Status Outcome
     When I am on the Pupil Status page
     Then I can see the status for the pupil is 'Not started'
 
-  Scenario: Pupil status is 'Not started' when a pupil has logged in
+  Scenario: Pupil status is 'Logged in' when a pupil has logged in
     Given I have logged in to the check
     When I am on the Pupil Status page
-    Then I can see the status for the pupil is 'Not started'
-    And I should see how many days I have left and when the check window closes
+    Then I can see the status for the pupil is 'Logged in'
 
   @pupil_not_taking_check
   Scenario Outline: Pupil Status is Not Taking the Check when a pupil is not taking the check
@@ -50,10 +49,10 @@ Feature: Pupil Status Outcome
     Then I can see the status for the pupil is 'Restart'
 
   @incomplete_pupil
-  Scenario: Pupil status is Incomplete when a check is not completed
+  Scenario: Pupil status is 'Overdue - logged in but check not started' when a pupil logs in but has not started the check
     Given there is a pupil with an incomplete status
     When I am on the Pupil Status page
-    Then I can see the status for the pupil is 'Pupil check not received'
+    Then I can see the status for the pupil is 'Overdue - logged in but check not started'
     And I should see a red error box at the top of the page
 
   Scenario: Pupil status changes to Complete when pupil take 2nd check

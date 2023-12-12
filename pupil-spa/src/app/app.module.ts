@@ -46,6 +46,7 @@ import { RouteService } from './services/route/route.service';
 import { SoundComponent } from './sound/sound.component';
 import { SpeechService } from './services/speech/speech.service';
 import { StorageService } from './services/storage/storage.service';
+import { SubmissionService } from './services/submission/submission.service';
 import { TokenService } from './services/token/token.service';
 import { UserService } from './services/user/user.service';
 import { WarmupCompleteComponent } from './warmup-complete/warmup-complete.component';
@@ -202,6 +203,7 @@ const appRoutes: Routes = [
         RouteService,
         SpeechService,
         StorageService,
+        SubmissionService,
         TimerService,
         TokenService,
         UserService,

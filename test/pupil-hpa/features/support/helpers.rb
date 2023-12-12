@@ -171,4 +171,8 @@ module Helpers
     visit ENV['ADMIN_BASE_URL'] + '/sign-out'
   end
 
+  def decode_jwt_token(token)
+    JWT.decode token, ENV['CHECK_SUBMIT_JWT_SECRET'], true, { algorithm: 'HS256' }
+  end
+
 end

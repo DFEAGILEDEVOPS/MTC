@@ -39,7 +39,6 @@ async function main () {
   await busClient.close()
 }
 
-// let's get the party started
 main()
   .then(() => {
     console.log('all done')

@@ -18,6 +18,7 @@ import { TokenService } from '../services/token/token.service'
 import { APP_INITIALIZER, NO_ERRORS_SCHEMA } from '@angular/core'
 import { AppUsageService } from '../services/app-usage/app-usage.service'
 import { loadConfigMockService } from '../services/config/config.service'
+import { SubmissionService } from '../services/submission/submission.service'
 
 describe('SubmissionPendingComponent', () => {
   let fixture: ComponentFixture<SubmissionPendingComponent>
@@ -28,9 +29,15 @@ describe('SubmissionPendingComponent', () => {
   let component
   let activatedRoute: ActivatedRoute
   let azureQueueServiceSpy: IAzureQueueService
+  let submissionServiceSpy: {
+    submit: jasmine.Spy
+  }
   beforeEach(waitForAsync(() => {
     azureQueueServiceSpy = {
       addMessageToQueue: jasmine.createSpy('addMessageToQueue')
+    }
+    submissionServiceSpy = {
+      submit: jasmine.createSpy('submit')
     }
     TestBed.configureTestingModule({
       declarations: [SubmissionPendingComponent],
@@ -41,6 +48,7 @@ describe('SubmissionPendingComponent', () => {
         TokenService,
         AppUsageService,
         { provide: AzureQueueService, useValue: azureQueueServiceSpy },
+        { provide: SubmissionService, useValue: submissionServiceSpy },
         { provide: AuditService, useClass: AuditServiceMock },
         { provide: CheckStatusService, useClass: CheckStatusServiceMock },
         { provide: SpeechService, useClass: SpeechServiceMock },

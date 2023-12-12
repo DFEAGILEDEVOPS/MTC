@@ -21,7 +21,7 @@ export class PingService {
 
   private async loadCommitId (): Promise<any> {
     return new Promise(function (resolve) {
-      const commitFilePath = path.join(__dirname, '..', 'commit.txt')
+      const commitFilePath = path.join('./dist', 'commit.txt')
       fs.readFile(commitFilePath, 'utf8', function (err, data) {
         if (err == null) {
           resolve(data)
@@ -34,7 +34,7 @@ export class PingService {
 
   private async loadBuildNumber (): Promise<any> {
     return new Promise(function (resolve) {
-      const buildFilePath = path.join(__dirname, '..', 'build.txt')
+      const buildFilePath = path.join('./dist', 'build.txt')
       fs.readFile(buildFilePath, 'utf8', function (err, data) {
         if (err == null) {
           resolve(data)

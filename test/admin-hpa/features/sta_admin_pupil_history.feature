@@ -2,7 +2,7 @@ Feature:
   STA Admin user can view pupils' check history
 
   Scenario: Pupils who have not generated any pins have no check history
-    Given I am on the school landing page for a school using an account with the STA admin role
+    Given I am on the school landing page for a school using an account with the sta admin role
     When I view a pupils history
     Then I should not see any check history
     But I should see the pupils history

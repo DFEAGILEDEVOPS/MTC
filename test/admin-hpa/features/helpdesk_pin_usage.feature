@@ -32,13 +32,13 @@ Feature:
     But the pupil pin should be visible
 
   Scenario: Live school passwords are unmasked for STA Admin users
-    Given I am on the school landing page for a school using an account with the STA admin role
+    Given I am on the school landing page for a school using an account with the sta admin role
     When I generate a live pin for a pupil
     Then the school password should be unmasked
     And the pupil pin should be visible
 
   Scenario: TIO school passwords are unmasked for STA Admin users
-    Given I am on the school landing page for a school using an account with the STA admin role
+    Given I am on the school landing page for a school using an account with the sta admin role
     When I generate a tio pin for a pupil
     Then the school password should be unmasked
     And the pupil pin should be visible

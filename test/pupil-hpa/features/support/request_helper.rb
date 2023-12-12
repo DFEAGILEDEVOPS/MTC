@@ -7,6 +7,10 @@ class RequestHelper
     HTTParty.post(ENV['PUPIL_API_BASE_URL'] + "/auth", :body => body.to_json, headers: { 'Content-Type' => 'application/json', 'Origin' => ENV['PUPIL_BASE_URL'] })
   end
 
+  def self.submit_check(jwt, payload)
+    HTTParty.post(ENV['PUPIL_API_BASE_URL'] + "/submit", :body => payload.to_json, headers: { 'Content-Type' => 'application/json', 'Origin' => ENV['PUPIL_BASE_URL'], "Authorization" => "Bearer #{jwt}" })
+  end
+
   def self.check_start_call(check_code, checkStartUrl, checkStartToken)
     ct = Time.now.strftime("%Y-%m-%dT%H:%M:%S.%LZ")
     body_hash = { "version": "1", "checkCode": "#{check_code}", "clientCheckStartedAt": "#{ct}" }
@@ -2006,13 +2010,9 @@ class RequestHelper
     @payload[:config] = @payload[:config].each { |k, v| @payload[:config][:practice] = true } if validator_opts[:practice]
 
     check_code = validator_opts[:check_code_not_uuid] ? parsed_response_pupil_auth['checkCode'].gsub('-', '') : parsed_response_pupil_auth['checkCode']
-    { "version": 2, "checkCode": check_code,
-      "schoolUUID": parsed_response_pupil_auth['school']['uuid'],
-      "archive": LZString::UTF16.compress(@payload.to_json)
-    }
-    { payload: @payload, submission_message: { "version": 2, "checkCode": check_code,
+    { payload: @payload, submission_message: { "version": 3, "checkCode": check_code,
                                                "schoolUUID": parsed_response_pupil_auth['school']['uuid'],
-                                               "archive": LZString::UTF16.compress(@payload.to_json) } }
+                                               "archive": LZString::Base64.compress(@payload.to_json) } }
   end
 end
 

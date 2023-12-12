@@ -17,7 +17,7 @@ const settingsService = require('../../../services/setting.service')
 const pupilStatusService = require('../../../services/pupil-status.service')
 const redisCacheService = require('../../../services/data-access/redis-cache.service')
 const service = require('../../../services/headteacher-declaration.service')
-const { PupilFrozenService } = require('../../../services/pupil-frozen.service/pupil-frozen.service')
+const { PupilFrozenService } = require('../../../services/pupil-frozen/pupil-frozen.service')
 
 describe('headteacherDeclarationService', () => {
   afterEach(() => {

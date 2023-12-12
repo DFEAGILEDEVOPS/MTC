@@ -28,7 +28,7 @@ Then(/^all the events should be captured$/) do
   storage_school = JSON.parse page.evaluate_script('window.localStorage.getItem("school");')
   storage_pupil = JSON.parse page.evaluate_script('window.localStorage.getItem("pupil");')
   check_result = AzureTableHelper.wait_for_received_check(storage_school['uuid'], storage_pupil['checkCode'])
-  check = JSON.parse(LZString::UTF16.decompress(check_result['archive']))
+  check = JSON.parse(LZString::Base64.decompress(check_result['archive']))
   local_storage = check['audit']
 
   expect(local_storage.first['type']).to eql 'WarmupStarted'

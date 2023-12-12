@@ -9,7 +9,7 @@ const config = require('../config')
 const moment = require('moment-timezone')
 const checkWindowService = require('./check-window-v2.service')
 const aaViewModes = require('../lib/consts/access-arrangements-view-mode')
-const { PupilFrozenService } = require('./pupil-frozen.service/pupil-frozen.service')
+const { PupilFrozenService } = require('./pupil-frozen/pupil-frozen.service')
 
 const accessArrangementsService = {
 /**
