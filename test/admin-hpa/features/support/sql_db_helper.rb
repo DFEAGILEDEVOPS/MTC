@@ -767,4 +767,13 @@ class SqlDbHelper
     result.do
   end
 
+  def self.group_details(group_id)
+    sql = "SELECT * FROM [mtc_admin].[group] WHERE id='#{group_id}'"
+    result = SQL_CLIENT.execute(sql)
+    group_details_res = result.first
+    result.cancel
+    group_details_res
+  end
+
+
 end

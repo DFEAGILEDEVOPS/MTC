@@ -1,116 +1,187 @@
 <%- partial('partials/_gds_breadcrumbs_and_sign_out', { breadcrumbs }) %>
-<main class="govuk-main-wrapper" id="main-content" role="main">
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-            <% if (messages && messages.info && messages.info.length) { %>
-                <div class="govuk-body govuk-info-message govuk-!-margin-bottom-7">
-                    <%= messages.info %>
-                </div>
-            <% } %>
-            <%- partial('partials/_readonly', {availabilityData}) %>
-            <h1 class="govuk-heading-xl">View, add or edit pupils on your school's register</h1>
-            <%- partial('partials/_gds_session_expiry') %>
-
-            <% if (showAddPupilButtons) { %>
-
-            <div class="govuk-!-margin-bottom-7">
-                <p class="govuk-body-l">
-                    You can review and add pupils on this page.
-                    If a pupil is not taking the check, or has left the school, you must <a href="/pupils-not-taking-the-check">provide a reason why the pupil is not taking the check.</a>
-                </p>
-            </div>
-
-            <a href="/pupil-register/pupil/add/" role="button" draggable="false" class="govuk-button govuk-button--secondary govuk-form-button govuk-!-margin-right-2" data-module="govuk-button">
-                Add pupil
-            </a>
-            <a href="/pupil-register/pupil/add-batch-pupils/" role="button" draggable="false" class="govuk-button govuk-button--secondary govuk-form-button" data-module="govuk-button">
-                Add multiple pupils
-            </a>
-            <% } %>
-
-            <h3 class="govuk-heading-m govuk-!-margin-top-7">Search pupils by name or UPN</h3>
-            <div class="govuk-form-group filter-name">
-                <label for="search-name">
-                    <img src="/images/icon-search.png"/>
-                </label>
-                <span>
-                    <input class="govuk-input" id="search-name" type="text" name="search-name">
-                </span>
-            </div>
-            <table id="register-pupils" data-name="filterablePupilsList" class="govuk-table govuk-spacious">
-                <caption class="govuk-body govuk-table__caption">List of available pupils (<%= pupils.length || 0 %>)</caption>
-                <thead class="govuk-table__head">
-                <tr class="govuk-table__row">
-                    <th scope="col" class="govuk-table__header govuk-!-width-one-half">
-                        <a class="no-underline sortingLink">Pupil<span class="sort-icon asc"><span>Sort by pupil</span></span></a>
-                    </th>
-                    <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">
-                        <a class="no-underline sortingLink">Group<span class="sort-icon"><span>Sort by group</span></span></a>
-                    </th>
-                    <% if (showPupilAdminLink) { %>
-                        <th scope="col" class="govuk-table__header govuk-!-width-one-quarter">
-                            Pupil history
-                        </td>
+    <main class="govuk-main-wrapper" id="main-content" role="main">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds">
+                <% if (messages && messages.info && messages.info.length) { %>
+                    <div class="govuk-body govuk-info-message govuk-!-margin-bottom-7">
+                        <%= messages.info %>
+                    </div>
                     <% } %>
-                </tr>
-                </thead>
-                <tbody class="govuk-table__body">
-                <% pupils.forEach((p, i) => { %>
-                    <tr class="govuk-table__row">
-                        <td scope="row"
-                        <% if (highlight && highlight.has(p.urlSlug.toString())) { %> class="govuk-table__cell govuk-highlight-item"<% } %>
-                        >
-                            <div class="govuk-highlight-wrapper">
-                                <% if (isFeatureEnabled('pupilEdit') && !availabilityData.hdfSubmitted && !availabilityData.checkWindowClosed && !p.frozen) { %>
-                                    <a id="pupilName" class="govuk-link govuk-!-font-weight-bold name-text-wrap" href="/pupil-register/pupil/edit/<%= p.urlSlug %>" ><%= p.fullName %></a>
-                                <% } else { %>
-                                    <span id="pupilName" class="govuk-!-font-weight-bold name-text-wrap"><%= p.fullName %></span>
+                        <%- partial('partials/_readonly', {availabilityData}) %>
+                            <h1 class="govuk-heading-xl">View, add or edit pupils on your school's register</h1>
+                            <%- partial('partials/_gds_session_expiry') %>
+
+                                <% if (showAddPupilButtons) { %>
+                                    <div class="govuk-!-margin-bottom-7">
+                                        <p class="govuk-body-l">
+                                            You can review and add pupils on this page.
+                                            If a pupil is not taking the check, or has left the school, you must <a
+                                                href="/pupils-not-taking-the-check">provide a reason why the pupil is
+                                                not taking the check.</a>
+                                        </p>
+                                    </div>
+
+                                    <a href="/pupil-register/pupil/add/" role="button" draggable="false"
+                                        class="govuk-button govuk-button--secondary govuk-form-button govuk-!-margin-right-2"
+                                        data-module="govuk-button">
+                                        Add pupil
+                                    </a>
+                                    <a href="/pupil-register/pupil/add-batch-pupils/" role="button" draggable="false"
+                                        class="govuk-button govuk-button--secondary govuk-form-button"
+                                        data-module="govuk-button">
+                                        Add multiple pupils
+                                    </a>
+                                    <% } %>
+
+
+            </div>
+            <div class="govuk-grid-column-one-third" aria-label="sidebar">
+                <aside class="app-related-items" role="complementary">
+                    <h2 class="govuk-heading-m" id="subsection-title">
+                        Related
+                    </h2>
+                    <nav role="navigation" aria-labelledby="subsection-title">
+                        <ul class="govuk-list govuk-!-font-size-16">
+                            <li>
+                                <a class="govuk-link" href="<%- guidancePdf %>" target="_blank"
+                                    rel="noopener noreferrer">Read the
+                                    guidance and watch videos</a>
+                            </li>
+                            <li>
+                                <a class="govuk-link" href="/group/pupils-list" rel="noopener noreferrer">Organise
+                                    pupils into groups</a>
+                            </li>
+                            <li>
+                                <a class="govuk-link" href="/pupils-not-taking-the-check/pupils-list"
+                                    rel="noopener noreferrer">Provide
+                                    a reason why pupil is not taking the check</a>
+                            </li>
+                            <li>
+                                <a class="govuk-link" href="/access-arrangements/overview"
+                                    rel="noopener noreferrer">Enable access
+                                    arrangements for pupils who need them</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </aside>
+            </div>
+
+            <div class="govuk-grid-column-full">
+                <h3 class="govuk-heading-m govuk-!-margin-top-7">Search pupils by name or UPN</h3>
+                <div class="govuk-form-group filter-name">
+                    <label for="search-name">
+                        <img src="/images/icon-search.png" />
+                    </label>
+                    <span>
+                        <input class="govuk-input" id="search-name" type="text" name="search-name">
+                    </span>
+                </div>
+                <details class="govuk-details" data-module="govuk-details">
+                    <summary class="govuk-details__summary">
+                        <span class="govuk-details__summary-text">
+                            Choose which information to show in the list below
+                        </span>
+                    </summary>
+                    <div class="govuk-details__text">
+                        <div class="govuk-form-group">
+                            <fieldset class="govuk-fieldset" aria-describedby="optcol-hint">
+                                <div id="optcol-hint" class="govuk-hint">
+                                    Select the optional columns you would like to see in the list
+                                </div>
+                                <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+                                    <div class="govuk-checkboxes__item">
+                                        <input class="govuk-checkboxes__input" id="optcolUpn" name="optcol" type="checkbox"
+                                            value="upn">
+                                        <label class="govuk-label govuk-checkboxes__label" for="optcolUpn">
+                                            UPN
+                                        </label>
+                                    </div>
+                                    <div class="govuk-checkboxes__item">
+                                        <input class="govuk-checkboxes__input" id="optcolGroup" name="optcol" type="checkbox"
+                                            value="group" checked>
+                                        <label class="govuk-label govuk-checkboxes__label" for="optcolGroup">
+                                            Group
+                                        </label>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+                </details>
+                <table id="register-pupils" data-name="filterablePupilsList" class="govuk-table govuk-spacious">
+                    <caption class="govuk-body govuk-table__caption">List of available pupils (<%= pupils.length || 0 %>)</caption>
+                    <thead class="govuk-table__head">
+                        <tr class="govuk-table__row">
+                            <th scope="col" class="govuk-table__header">
+                                <a class="no-underline sortingLink">Pupil<span class="sort-icon asc"><span>Sort by
+                                            pupil</span></span></a>
+                            </th>
+                            <th scope="col" class="govuk-table__header">
+                                <a class="no-underline sortingLink">Date of birth<span class="sort-icon"></span></a>
+                            </th>
+                            <th id="jqUpnHeader" scope="col" class="govuk-table__header hidden">
+                                <a class="no-underline sortingLink">UPN<span class="sort-icon"></span></a>
+                            </th>
+                            <th id="jqGroupHeader" scope="col" class="govuk-table__header">
+                                <a class="no-underline sortingLink">Group<span class="sort-icon"><span>Sort by
+                                            group</span></span></a>
+                            </th>
+                            <% if (showPupilAdminLink) { %>
+                                <th scope="col" class="govuk-table__header">
+                                    Pupil history
+                                    </td>
+                            <% } %>
+                        </tr>
+                    </thead>
+                    <tbody class="govuk-table__body">
+                        <% pupils.forEach((p, i)=> { %>
+                            <tr class="govuk-table__row">
+                                <td scope="row" <% if (highlight && highlight.has(p.urlSlug.toString())) { %>
+                                    class="govuk-table__cell govuk-highlight-item"<% } %>>
+                                        <div class="govuk-highlight-wrapper">
+                                            <% if (isFeatureEnabled('pupilEdit') && !availabilityData.hdfSubmitted &&
+                                                !availabilityData.checkWindowClosed && !p.frozen) { %>
+                                                <a id="pupilName"
+                                                    class="govuk-link govuk-!-font-weight-bold name-text-wrap"
+                                                    href="/pupil-register/pupil/edit/<%= p.urlSlug %>">
+                                                    <%= p.fullName %>
+                                                </a>
+                                                <% } else { %>
+                                                    <span id="pupilName" class="govuk-!-font-weight-bold name-text-wrap"><%= p.fullName %></span>
+                                                <% } %>
+                                                <input type="hidden" id="pupilUpn-<%= i %>" name="pupilUpn"
+                                                  value="<%= p.upn %>" />
+                                        </div>
+                                </td>
+                                <td scope="row" class="govuk-table__cell">
+                                    <%= p.formattedDateOfBirth %>
+                                </td>
+                                <td scope="row" class="govuk-table__cell jqUpnRow hidden">
+                                    <%= p.upn %>
+                                </td>
+
+                                <td class="govuk-table__cell jqGroupRow">
+                                    <%= p.group %>
+                                </td>
+                                <% if (showPupilAdminLink) { %>
+                                    <td class="govuk-table__cell"> <a
+                                            href="/pupil-register/history/<%= p.urlSlug.toLowerCase() %>"> View
+                                        </a>
+                                    </td>
                                 <% } %>
-                                <% if (p.showDoB) { %>
-                                    <div class="govuk-font-greyed-out govuk-!-font-size-16">Date of birth: <%= p.formattedDateOfBirth %></div>
-                                <% } %>
-                                <input type="hidden" id="pupilUpn-<%= i %>" name="pupilUpn" value="<%= p.upn %>"/>
-                            </div>
-                        </td>
-                        <td class="govuk-table__cell"><%= p.group %></td>
-                        <% if (showPupilAdminLink) { %>
-                            <td class="govuk-table__cell"> <a href="/pupil-register/history/<%= p.urlSlug.toLowerCase() %>"> View </a> </td>
-                        <% } %>
-                    </tr>
-                <% }) %>
-                </tbody>
-            </table>
-            <div class="govuk-back-to-top">
-                <a class="govuk-link govuk-link--no-visited-state app-back-to-top__link" href="#top">
-                    <svg role="presentation" focusable="false" class="app-back-to-top__icon" xmlns="http://www.w3.org/2000/svg" width="13" height="17" viewBox="0 0 13 17">
-                        <path fill="currentColor" d="M6.5 0L0 6.5 1.4 8l4-4v12.7h2V4l4.3 4L13 6.4z"></path>
-                    </svg>Back to top
-                </a>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+                <div class="govuk-back-to-top">
+                    <a class="govuk-link govuk-link--no-visited-state app-back-to-top__link" href="#top">
+                        <svg role="presentation" focusable="false" class="app-back-to-top__icon"
+                            xmlns="http://www.w3.org/2000/svg" width="13" height="17" viewBox="0 0 13 17">
+                            <path fill="currentColor" d="M6.5 0L0 6.5 1.4 8l4-4v12.7h2V4l4.3 4L13 6.4z"></path>
+                        </svg>Back to top
+                    </a>
+                </div>
             </div>
         </div>
-        <div class="govuk-grid-column-one-third" aria-label="sidebar">
-            <aside class="app-related-items" role="complementary">
-                <h2 class="govuk-heading-m" id="subsection-title">
-                    Related
-                </h2>
-                <nav role="navigation" aria-labelledby="subsection-title">
-                    <ul class="govuk-list govuk-!-font-size-16">
-                        <li>
-                            <a class="govuk-link" href="<%- guidancePdf %>" target="_blank" rel="noopener noreferrer">Read the guidance and watch videos</a>
-                        </li>
-                        <li>
-                            <a class="govuk-link" href="/group/pupils-list" rel="noopener noreferrer">Organise pupils into groups</a>
-                        </li>
-                        <li>
-                            <a class="govuk-link" href="/pupils-not-taking-the-check/pupils-list" rel="noopener noreferrer">Provide a reason why pupil is not taking the check</a>
-                        </li>
-                        <li>
-                            <a class="govuk-link" href="/access-arrangements/overview" rel="noopener noreferrer">Enable access arrangements for pupils who need them</a>
-                        </li>
-                    </ul>
-                </nav>
-            </aside>
-        </div>
-    </div>
-</main>
-<script src="<%= assetPath %>javascripts/pupil-register.js?version=<%= assetsVersion %>"></script>
+    </main>
+    <script src="<%= assetPath %>javascripts/pupil-register.js?version=<%= assetsVersion %>"></script>

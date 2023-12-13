@@ -32,7 +32,7 @@ try {
 const config = require('./config')
 const jsVendorBundleFiles = [
   './node_modules/govuk-frontend/govuk/all.js',
-  './assets/vendor-js/jquery-3.6.1.min.js',
+  './assets/vendor-js/jquery-3.7.1.min.js',
   './assets/vendor-js/gds-cookie-functions.js',
   './assets/vendor-js/gds-cookie-settings.js',
   './assets/vendor-js/gds-cookie-banner.js',
