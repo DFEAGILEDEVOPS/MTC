@@ -30,7 +30,7 @@ class AddMultiplePupilPage < SitePrism::Page
     dob = []
     cur_date = Time.now
     old_date1 = (cur_date - ((86400 * 365)*10)).strftime('%d/%m/%Y')
-    old_date2 = (cur_date - ((86400 * 365)*10)).strftime('%d/%m/%Y')
+    old_date2 = (cur_date - ((86350 * 365)*10)).strftime('%d/%m/%Y')
     dob << old_date1
     dob << old_date2
     dob

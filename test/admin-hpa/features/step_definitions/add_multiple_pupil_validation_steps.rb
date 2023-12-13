@@ -364,9 +364,9 @@ end
 
 And(/^I can see the new pupils added to the list$/) do
   hightlighted_rows = pupil_register_page.pupil_list.pupil_row.find_all {|row| row.has_edited_pupil?}
-  hightlighted_row_list = hightlighted_rows.map {|x| x.names.text}
-  expect(hightlighted_row_list).to include("#{@pupil_name}, #{@pupil_name}\nDate of birth: #{(Date.parse(@old_date1)).strftime('%e %b %Y').strip}")
-  expect(hightlighted_row_list).to include("#{@pupil_name}, #{@pupil_name}\nDate of birth: #{(Date.parse(@old_date2)).strftime('%e %b %Y').strip}")
+  hightlighted_row_list = hightlighted_rows.map {|x| x.text}
+  expect(hightlighted_row_list).to include("#{@pupil_name}, #{@pupil_name}\n#{(Date.parse(@old_date1)).strftime('%e %b %Y').strip}")
+  expect(hightlighted_row_list).to include("#{@pupil_name}, #{@pupil_name}\n#{(Date.parse(@old_date2)).strftime('%e %b %Y').strip}")
 end
 
 
