@@ -60,7 +60,7 @@ jobs:
       scriptType: bash
       scriptPath: 'deploy/keys/service-bus.sh'
       arguments: $(ResourceGroup.Name) $(KeyVault.Name) $(ServiceBus.Name) ${{ parameters.keyType }} $(ServiceBus.User.Consumer) ${{ parameters.updateKeyVault }}
-      failOnStandardError: false
+      failOnStandardError: true
 - job: StorageAccountKey
   steps:
   - task: AzureCLI@2
