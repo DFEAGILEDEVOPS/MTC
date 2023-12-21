@@ -45,6 +45,11 @@ class PupilRegisterPage < SitePrism::Page
     end
   end
 
+  section :service_message, 'div[class^="mtc-notification-banner"]' do
+    element :service_message_heading, '#govuk-notification-banner-title'
+    element :service_message_text, '.govuk-notification-banner__content'
+  end
+
   def find_pupil_row(name)
     wait_until{!(pupil_list.pupil_row.find {|pupil| pupil.text.include? name}).nil?}
     pupil_list.pupil_row.find {|pupil| pupil.text.include? name}
