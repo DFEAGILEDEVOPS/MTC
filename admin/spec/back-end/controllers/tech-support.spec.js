@@ -4,7 +4,6 @@
 const httpMocks = require('node-mocks-http')
 const checkDiagnosticService = require('../../../services/check-diagnostic.service')
 const payloadService = require('../../../services/payload.service')
-const administrationMessageService = require('../../../services/administration-message.service')
 const queueMgmtService = require('../../../services/tech-support-queue-management.service')
 const resultsResyncService = require('../../../services/tech-support/sync-results-resync.service')
 const { PsReportExecService } = require('../../../services/tech-support/ps-report-exec/ps-report-exec.service')
@@ -50,7 +49,6 @@ describe('tech-support controller', () => {
     test('GET: should render the home page', async () => {
       const req = getRequest(getReqParams)
       const res = getResponse()
-      jest.spyOn(administrationMessageService, 'getMessage').mockResolvedValue(Promise.resolve(''))
       jest.spyOn(res, 'render').mockResolvedValue(null)
       await sut.getHomePage(req, res, next)
       expect(res.statusCode).toBe(200)

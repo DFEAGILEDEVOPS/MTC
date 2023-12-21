@@ -1,6 +1,5 @@
 const moment = require('moment-timezone')
 
-const administrationMessageService = require('../administration-message.service')
 const checkWindowV2Service = require('../check-window-v2.service')
 const config = require('../../config')
 const ejsUtil = require('../../lib/ejs-util')
@@ -13,9 +12,8 @@ const schoolHomePageService = {
     // Get async base data
     const checkWindowDataPromise = checkWindowV2Service.getActiveCheckWindow(true)
     const schoolNamePromise = schoolService.findSchoolNameByDfeNumber(user.School)
-    const serviceMessagePromise = await administrationMessageService.getMessage()
-    const allPromises = await Promise.all([checkWindowDataPromise, schoolNamePromise, serviceMessagePromise])
-    const [checkWindowData, schoolName, serviceMessage] = allPromises
+    const allPromises = await Promise.all([checkWindowDataPromise, schoolNamePromise])
+    const [checkWindowData, schoolName] = allPromises
 
     // Business logic - no data IO
     const featureEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData, user.timezone)
@@ -38,8 +36,7 @@ const schoolHomePageService = {
       pupilStatusSlot,
       restartPupilSlot,
       resultsSlot,
-      schoolName,
-      serviceMessage
+      schoolName
     }
   },
 

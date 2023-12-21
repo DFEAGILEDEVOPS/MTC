@@ -57,7 +57,8 @@ const controller = {
       aaViewMode,
       title: res.locals.pageTitle,
       availabilityData,
-      retroInputAssistantText
+      retroInputAssistantText,
+      serviceMessages: res.locals.serviceMessages
     })
   },
   /**

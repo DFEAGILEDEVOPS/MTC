@@ -99,6 +99,11 @@ class PupilStatusPage < SitePrism::Page
     end
   end
 
+  section :service_message, 'div[class^="mtc-notification-banner"]' do
+    element :service_message_heading, '#govuk-notification-banner-title'
+    element :service_message_text, '.govuk-notification-banner__content'
+  end
+
   def find_status_for_pupil(status, name)
     case status
     when 'Logged in'

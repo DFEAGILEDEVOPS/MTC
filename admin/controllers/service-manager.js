@@ -2,7 +2,6 @@
 
 const settingsErrorMessages = require('../lib/errors/settings')
 const settingsValidator = require('../lib/validator/settings-validator')
-
 const settingService = require('../services/setting.service')
 const pupilCensusService = require('../services/pupil-census.service')
 const sceService = require('../services/sce.service')
@@ -14,7 +13,6 @@ const schoolService = require('../services/school.service')
 const featureToggles = require('feature-toggles')
 const { formUtil, formUtilTypes } = require('../lib/form-util')
 const organisationBulkUploadService = require('../services/organisation-bulk-upload.service')
-const administrationMessageService = require('../services/administration-message.service')
 const { JobService } = require('../services/job/job.service')
 const { ServiceManagerPupilService } = require('../services/service-manager/pupil/service-manager.pupil.service')
 const { validate } = require('uuid')
@@ -38,12 +36,10 @@ const controller = {
     try {
       res.locals.pageTitle = 'MTC Administration Homepage'
       const isNewCheckWindow = featureToggles.isFeatureEnabled('newCheckWindow')
-      const serviceMessage = await administrationMessageService.getMessage()
       req.breadcrumbs(res.locals.pageTitle)
       res.render('service-manager/service-manager-home', {
         breadcrumbs: req.breadcrumbs(),
-        isNewCheckWindow,
-        serviceMessage
+        isNewCheckWindow
       })
     } catch (error) {
       next(error)
@@ -665,12 +661,12 @@ const controller = {
   },
 
   /**
- * @description Renders pupil search
- * @param {object} req
- * @param {object} res
- * @param {object} next
- * @param {object} validationError
- */
+   * @description Renders pupil search
+   * @param {object} req
+   * @param {object} res
+   * @param {object} next
+   * @param {object} validationError
+   */
   getPupilSearch: async function getPupilSearch (req, res, next, validationError = new ValidationError()) {
     res.locals.pageTitle = 'Pupil Search'
     req.breadcrumbs(res.locals.pageTitle)
@@ -689,11 +685,11 @@ const controller = {
   },
 
   /**
- * @description Renders pupil search
- * @param {object} req
- * @param {object} res
- * @param {object} next
- */
+   * @description Renders pupil search
+   * @param {object} req
+   * @param {object} res
+   * @param {object} next
+   */
   postPupilSearch: async function postPupilSearch (req, res, next) {
     const pupilSearchErrorHandler = (req, res, next, errorMsg = 'No pupil found') => {
       const error = new ValidationError()

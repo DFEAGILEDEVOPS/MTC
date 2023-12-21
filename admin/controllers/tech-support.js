@@ -5,7 +5,6 @@ const uuidValidator = require('../lib/validator/common/uuid-validator')
 const checkDiagnosticsService = require('../services/check-diagnostic.service')
 const payloadService = require('../services/payload.service')
 const redisService = require('../services/tech-support/redis.service')
-const administrationMessageService = require('../services/administration-message.service')
 const redisErrorMessages = require('../lib/errors/redis').redis
 const moment = require('moment')
 const queueMgmtService = require('../services/tech-support-queue-management.service')
@@ -24,10 +23,8 @@ const controller = {
   getHomePage: async function getHomePage (req, res, next) {
     res.locals.pageTitle = 'Tech Support Homepage'
     try {
-      const serviceMessage = await administrationMessageService.getMessage()
       return res.render('tech-support/home', {
-        breadcrumbs: req.breadcrumbs(),
-        serviceMessage
+        breadcrumbs: req.breadcrumbs()
       })
     } catch (error) {
       return next(error)

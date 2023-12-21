@@ -15,9 +15,9 @@ Feature: Service manager message
     When I decide to delete the message
     Then it should be removed from the system
 
-  Scenario: Service manager should only be able to create one message
+  Scenario: Service manager should be able to create multiple messages
     Given I have created a service message
-    Then I should not be able to create another
+    Then I should be able to create another
 
   Scenario: Service message should be visible on school homepage
     Given I have created a service message
@@ -40,4 +40,22 @@ Feature: Service manager message
       | red    |
       | green  |
       | orange |
+
+  Scenario Outline: Service manager can target the page where the service message will be displayed
+    Given I have created a service message for the <specified_area>
+    When I navigate to the <specified_area> area
+    Then I should only see the service message on the <specified_area>
+
+    Examples:
+      | specified_area               |
+      | access_arrangements_page     |
+      | declaration_page             |
+      | tio_or_live_pins_page        |
+      | group_pupils_page            |
+      | pupil_register_page          |
+      | pupil_status_page            |
+      | pupils_not_taking_check_page |
+      | restarts_page                |
+      | school_landing_page          |
+
 

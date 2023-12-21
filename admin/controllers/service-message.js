@@ -1,15 +1,15 @@
 'use strict'
 
+import { ServiceMessageCodesService } from '../services/service-message/service-message.service'
 const administrationMessageService = require('../services/administration-message.service')
 const ValidationError = require('../lib/validation-error')
-
 const serviceMessagePresenter = require('../helpers/service-message-presenter')
 const logger = require('../services/log.service').getLogger()
+const uuidValidator = require('../lib/validator/common/uuid-validator')
 
 const controller = {
-
   /**
-   * Renders manage service message page
+   * Renders manage service message overview page
    * @param req
    * @param res
    * @param next
@@ -18,12 +18,13 @@ const controller = {
   getServiceMessage: async function getServiceMessage (req, res, next) {
     res.locals.pageTitle = 'Manage service message'
     req.breadcrumbs(res.locals.pageTitle)
-    let serviceMessage
+    // Ensure the service-manager sees content from the DB rather than the cache, as the cache is not the source of truth.
+    const rawServiceMessages = await administrationMessageService.getRawServiceMessages()
+
     try {
-      serviceMessage = await administrationMessageService.getMessage()
       res.render('service-message/service-message-overview', {
         breadcrumbs: req.breadcrumbs(),
-        serviceMessage
+        rawServiceMessages
       })
     } catch (error) {
       return next(error)
@@ -42,15 +43,22 @@ const controller = {
     req.breadcrumbs('Manage service message', '/service-message')
     res.locals.pageTitle = 'Create service message'
     req.breadcrumbs(res.locals.pageTitle)
+    let areaCodes = []
+    try {
+      areaCodes = await ServiceMessageCodesService.getAreaCodes()
+    } catch (error) {
+      logger.error('Error fetching message Area Codes from the DB: ' + JSON.stringify(error))
+    }
     res.render('service-message/service-message-form', {
       err: err || new ValidationError(),
       formData: req.body,
-      breadcrumbs: req.breadcrumbs()
+      breadcrumbs: req.breadcrumbs(),
+      areaCodes
     })
   },
 
   /**
-   * Submits service message data
+   * Submits service message data: handles create and update
    * @param req
    * @param res
    * @param next
@@ -61,7 +69,7 @@ const controller = {
     try {
       const result = await administrationMessageService.setMessage(requestData, req.user.id)
       if (result && result.hasError && result.hasError()) {
-        if (requestData.id !== undefined) {
+        if (requestData.urlSlug !== undefined) {
           return controller.getEditServiceMessage(req, res, next, result)
         } else {
           return controller.getServiceMessageForm(req, res, next, result)
@@ -84,7 +92,14 @@ const controller = {
    */
   postRemoveServiceMessage: async function postRemoveServiceMessage (req, res, next) {
     try {
-      await administrationMessageService.dropMessage(req.user.id)
+      const slug = req.params.slug
+      const validationError = uuidValidator.validate(slug, 'slug')
+      if (validationError && validationError.hasError && validationError.hasError()) {
+        req.flash('info', validationError.get('slug'))
+        res.redirect('/service-message/')
+        return
+      }
+      await administrationMessageService.dropMessage(req.user.id, slug)
       req.flash('info', 'Service message has successfully been removed')
       return res.redirect('/service-message')
     } catch (error) {
@@ -100,22 +115,32 @@ const controller = {
    */
   getEditServiceMessage: async function getEditServiceMessage (req, res, next, err = new ValidationError()) {
     try {
-      const serviceMessageMarkdown = await administrationMessageService.fetchMessage()
+      const slug = req.params.slug
+      const validationError = uuidValidator.validate(slug, 'slug')
+      if (validationError && validationError.hasError && validationError.hasError()) {
+        req.flash('info', validationError.get('slug'))
+        res.redirect('/service-message/')
+        return
+      }
+      const serviceMessageMarkdown = await administrationMessageService.getRawMessageBySlug(slug)
       if (serviceMessageMarkdown === undefined) {
         req.flash('info', 'No service message to edit')
         res.redirect('/service-message/')
         return
       }
+      const areaCodes = await ServiceMessageCodesService.getAreaCodes()
       req.breadcrumbs('Manage service message', '/service-message')
       res.locals.pageTitle = 'Edit service message'
       req.breadcrumbs(res.locals.pageTitle)
       res.render('service-message/service-message-form', {
         err,
+        areaCodes,
         formData: {
           serviceMessageTitle: serviceMessageMarkdown.title,
           serviceMessageContent: serviceMessageMarkdown.message,
-          id: serviceMessageMarkdown.id,
-          borderColourCode: serviceMessageMarkdown.borderColourCode
+          urlSlug: slug,
+          borderColourCode: serviceMessageMarkdown.borderColourCode,
+          areaCodes: serviceMessageMarkdown.areaCodes
         },
         breadcrumbs: req.breadcrumbs()
       })

@@ -1,15 +1,16 @@
 <%- partial('partials/_gds_breadcrumbs_and_sign_out', { breadcrumbs }) %>
-    <main class="govuk-main-wrapper" id="main-content" role="main">
-        <div class="govuk-grid-row">
-            <div class="govuk-grid-column-two-thirds">
-                <% if (messages && messages.info && messages.info.length) { %>
-                    <div class="govuk-body govuk-info-message govuk-!-margin-bottom-7">
-                        <%= messages.info %>
-                    </div>
-                    <% } %>
-                        <%- partial('partials/_readonly', {availabilityData}) %>
-                            <h1 class="govuk-heading-xl">View, add or edit pupils on your school's register</h1>
-                            <%- partial('partials/_gds_session_expiry') %>
+<main class="govuk-main-wrapper" id="main-content" role="main">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <%- partial('partials/_service_message', { serviceMessages }) %>
+            <% if (messages && messages.info && messages.info.length) { %>
+                <div class="govuk-body govuk-info-message govuk-!-margin-bottom-7">
+                    <%= messages.info %>
+                </div>
+            <% } %>
+            <%- partial('partials/_readonly', {availabilityData}) %>
+            <h1 class="govuk-heading-xl">View, add or edit pupils on your school's register</h1>
+            <%- partial('partials/_gds_session_expiry') %>
 
                                 <% if (showAddPupilButtons) { %>
                                     <div class="govuk-!-margin-bottom-7">

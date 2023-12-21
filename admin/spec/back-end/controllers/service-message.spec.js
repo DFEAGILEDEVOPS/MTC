@@ -1,9 +1,12 @@
-/* global describe expect beforeEach afterEach jest test */
+/* global describe expect beforeEach afterEach jest test describe */
 const httpMocks = require('node-mocks-http')
 const controller = require('../../../controllers/service-message')
 const administrationMessageService = require('../../../services/administration-message.service')
 const serviceMessagePresenter = require('../../../helpers/service-message-presenter')
 const ValidationError = require('../../../lib/validation-error')
+const { ServiceMessageCodesService } = require('../../../services/service-message/service-message.service')
+const logger = require('../../../services/log.service').getLogger()
+const R = require('ramda')
 
 describe('service message controller:', () => {
   let next
@@ -12,6 +15,7 @@ describe('service message controller:', () => {
     const res = httpMocks.createResponse()
     res.locals = {}
     jest.spyOn(res, 'render').mockImplementation()
+    jest.spyOn(res, 'redirect').mockImplementation()
     return res
   }
 
@@ -26,6 +30,10 @@ describe('service message controller:', () => {
     next = jest.fn()
   })
 
+  afterEach(() => {
+    jest.restoreAllMocks()
+  })
+
   describe('getServiceMessage', () => {
     let goodReqParams
 
@@ -36,24 +44,20 @@ describe('service message controller:', () => {
       }
     })
 
-    afterEach(() => {
-      jest.restoreAllMocks()
-    })
-
     test('should render the service message overview page', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      jest.spyOn(administrationMessageService, 'getMessage').mockImplementation()
+      jest.spyOn(administrationMessageService, 'getRawServiceMessages').mockImplementation()
       await controller.getServiceMessage(req, res, next)
       expect(res.render).toHaveBeenCalled()
     })
 
-    test('should call administrationMessageService.getMessage', async () => {
+    test('should call administrationMessageService.getRawServiceMessages', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      jest.spyOn(administrationMessageService, 'getMessage').mockImplementation()
+      jest.spyOn(administrationMessageService, 'getRawServiceMessages').mockImplementation()
       await controller.getServiceMessage(req, res, next)
-      expect(administrationMessageService.getMessage).toHaveBeenCalled()
+      expect(administrationMessageService.getRawServiceMessages).toHaveBeenCalled()
     })
   })
 
@@ -65,6 +69,7 @@ describe('service message controller:', () => {
         method: 'GET',
         url: '/service-message/service-message-form'
       }
+      jest.spyOn(ServiceMessageCodesService, 'getAreaCodes').mockResolvedValue([])
     })
 
     test('should render the create service message page', async () => {
@@ -72,6 +77,15 @@ describe('service message controller:', () => {
       const req = getReq(goodReqParams)
       await controller.getServiceMessageForm(req, res, next)
       expect(res.render).toHaveBeenCalled()
+    })
+
+    test('writes to the log when getAreaCodes() throws', async () => {
+      const res = getRes()
+      const req = getReq(goodReqParams)
+      jest.spyOn(logger, 'error').mockImplementation()
+      jest.spyOn(ServiceMessageCodesService, 'getAreaCodes').mockRejectedValue(new Error('test error'))
+      await controller.getServiceMessageForm(req, res, next)
+      expect(logger.error).toHaveBeenCalledTimes(1)
     })
   })
 
@@ -87,13 +101,15 @@ describe('service message controller:', () => {
         },
         body: {}
       }
+      jest.spyOn(administrationMessageService, 'setMessage').mockImplementation()
+      jest.spyOn(controller, 'getEditServiceMessage').mockImplementation()
+      jest.spyOn(controller, 'getServiceMessageForm').mockImplementation()
+      jest.spyOn(serviceMessagePresenter, 'getFlashMessage').mockImplementation()
     })
 
     test('should call administrationMessageService.setMessage', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      jest.spyOn(administrationMessageService, 'setMessage').mockImplementation()
-      jest.spyOn(controller, 'getServiceMessage').mockImplementation()
       await controller.postSubmitServiceMessage(req, res, next)
       expect(administrationMessageService.setMessage).toHaveBeenCalled()
     })
@@ -104,7 +120,6 @@ describe('service message controller:', () => {
       const validationError = new ValidationError()
       validationError.addError('serviceMessageTitle', 'error')
       jest.spyOn(administrationMessageService, 'setMessage').mockResolvedValue(validationError)
-      jest.spyOn(controller, 'getServiceMessageForm').mockImplementation()
       await controller.postSubmitServiceMessage(req, res, next)
       expect(controller.getServiceMessageForm).toHaveBeenCalled()
     })
@@ -112,9 +127,6 @@ describe('service message controller:', () => {
     test('should call serviceMessagePresenter.getFlashMessage to identify the appropriate flash message', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      jest.spyOn(administrationMessageService, 'setMessage').mockImplementation()
-      jest.spyOn(serviceMessagePresenter, 'getFlashMessage').mockImplementation()
-      jest.spyOn(res, 'redirect').mockImplementation()
       await controller.postSubmitServiceMessage(req, res, next)
       expect(serviceMessagePresenter.getFlashMessage).toHaveBeenCalled()
     })
@@ -122,8 +134,6 @@ describe('service message controller:', () => {
     test('should redirect to the overview page if a validation error is not present', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      jest.spyOn(administrationMessageService, 'setMessage').mockImplementation()
-      jest.spyOn(res, 'redirect').mockImplementation()
       await controller.postSubmitServiceMessage(req, res, next)
       expect(res.redirect).toHaveBeenCalled()
     })
@@ -131,8 +141,6 @@ describe('service message controller:', () => {
     test('should call req.flash', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      jest.spyOn(administrationMessageService, 'setMessage').mockImplementation()
-      jest.spyOn(res, 'redirect').mockImplementation()
       await controller.postSubmitServiceMessage(req, res, next)
       expect(req.flash).toHaveBeenCalled()
     })
@@ -147,6 +155,9 @@ describe('service message controller:', () => {
         url: '/service-message/remove-service-message',
         user: {
           id: 1
+        },
+        params: {
+          slug: '8519fd9f-e7e6-482f-b5cd-9e7690e48251'
         }
       }
     })
@@ -166,6 +177,17 @@ describe('service message controller:', () => {
       await controller.postRemoveServiceMessage(req, res, next)
       expect(req.flash).toHaveBeenCalled()
     })
+
+    test('it calls redirect with a flash message if validation fails', async () => {
+      const reqConfig = R.clone(goodReqParams)
+      reqConfig.params.slug = 'invalid-uuid-to-fail-validation'
+      const res = getRes()
+      const req = getReq(reqConfig)
+      jest.spyOn(administrationMessageService, 'dropMessage').mockImplementation()
+      await controller.postRemoveServiceMessage(req, res, next)
+      expect(res.redirect).toHaveBeenCalledWith('/service-message/')
+      expect(req.flash).toHaveBeenCalledWith('info', 'slug is not a valid UUID')
+    })
   })
 
   describe('getEditServiceMessage', () => {
@@ -177,39 +199,60 @@ describe('service message controller:', () => {
         url: '/service-message/edit-service-message',
         user: {
           id: 1
+        },
+        params: {
+          slug: 'd5e5df99-a69b-409c-8c2e-4adffd9f4254'
         }
       }
+      jest.spyOn(administrationMessageService, 'getRawMessageBySlug').mockImplementation()
+      jest.spyOn(ServiceMessageCodesService, 'getAreaCodes').mockImplementation()
+      jest.spyOn(logger, 'error').mockImplementation()
     })
 
     test('it fetches the raw service message so it can be edited', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      jest.spyOn(administrationMessageService, 'fetchMessage').mockResolvedValue({
+      jest.spyOn(administrationMessageService, 'getRawMessageBySlug').mockResolvedValue({
         title: 'A message title',
         message: '# subheading \n and markdown here',
-        id: 1
+        urlSlug: 'd5e5df99-a69b-409c-8c2e-4adffd9f4254',
+        borderColour: 'G',
+        areaCodes: ['A']
       })
+      jest.spyOn(ServiceMessageCodesService, 'getAreaCodes').mockResolvedValue([
+        { code: 'A', description: 'A code' }
+      ])
+      jest.spyOn(logger, 'error').mockImplementation() // hush the outpt from the catch block
       await controller.getEditServiceMessage(req, res, next)
-      expect(administrationMessageService.fetchMessage).toHaveBeenCalledTimes(1)
+      expect(administrationMessageService.getRawMessageBySlug).toHaveBeenCalledTimes(1)
     })
 
     test('it redirects back to the overview page if the service-message is not set', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
       jest.spyOn(res, 'redirect').mockImplementation()
-      jest.spyOn(administrationMessageService, 'fetchMessage').mockResolvedValue(undefined)
+      jest.spyOn(administrationMessageService, 'getRawMessageBySlug').mockResolvedValue(undefined)
       await controller.getEditServiceMessage(req, res, next)
       expect(res.redirect).toHaveBeenLastCalledWith('/service-message/')
     })
 
     test('it calls next if there is an error', async () => {
       const res = getRes()
-      const req = getReq()
-      // arbitrarily choose `fetchMessage` to throw
-      jest.spyOn(administrationMessageService, 'fetchMessage').mockRejectedValue(new Error('a mock error from unit' +
-        ' test'))
+      const req = getReq(goodReqParams)
+      // arbitrarily choose `getRawMessageBySlug` to throw
+      jest.spyOn(administrationMessageService, 'getRawMessageBySlug').mockRejectedValue(new Error('a mock error test'))
       await controller.getEditServiceMessage(req, res, next)
       expect(next).toHaveBeenCalledTimes(1)
+    })
+
+    test('it calls redirect with a flash message if validation fails', async () => {
+      const reqConfig = R.clone(goodReqParams)
+      reqConfig.params.slug = 'invalid-uuid-to-fail-validation'
+      const res = getRes()
+      const req = getReq(reqConfig)
+      await controller.getEditServiceMessage(req, res, next)
+      expect(res.redirect).toHaveBeenCalledWith('/service-message/')
+      expect(req.flash).toHaveBeenCalledWith('info', 'slug is not a valid UUID')
     })
   })
 })
