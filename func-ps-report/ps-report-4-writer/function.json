@@ -1,14 +1,12 @@
 {
   "bindings": [
     {
-      "name": "psReportCsvFile",
-      "type": "blobTrigger",
+      "name": "inputData",
+      "type": "serviceBusTrigger",
       "direction": "in",
-      "path": "ps-report-bulk-upload"
+      "queueName": "ps-report-export",
+      "connection": "AZURE_SERVICE_BUS_CONNECTION_STRING"
     }
   ],
-  "tracing": {
-    "consoleLevel": "verbose"
-  },
   "scriptFile": "../dist/functions-ps-report/ps-report-4-writer/index.js"
 }

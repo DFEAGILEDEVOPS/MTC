@@ -1,21 +1,37 @@
 import { type AzureFunction, type Context } from '@azure/functions'
 import { performance } from 'perf_hooks'
+import { type PsReport4WriterMesssage } from './PsReport4WriterMessage'
+import { PsReportWriterService } from './ps-report-writer.service'
+const funcName = 'ps-report-4-writer'
 
-const blobTrigger: AzureFunction = async function (context: Context, blob: any): Promise<void> {
+const serviceBusQueueTrigger: AzureFunction = async function (context: Context, incomingMessage: PsReport4WriterMesssage): Promise<void> {
   const start = performance.now()
-  const funcName = 'ps-report-4-writer'
-  context.log(`${funcName}: new blob detected: ${context.bindingData.uri}`)
-  context.log(`${funcName}: bindingData: ` + JSON.stringify(context.bindingData))
-  context.log(`Blob ${blob}`)
-  await bulkUpload(context)
+  await bulkUpload(context, incomingMessage.fileName)
   const end = performance.now()
   const durationInMilliseconds = end - start
   context.log(`${funcName} complete:run took ${durationInMilliseconds} ms`)
 }
 
-async function bulkUpload (context: Context): Promise<void> {
-  const baseName = context.bindingData.uri.substring(context.bindingData.uri.lastIndexOf('/') + 1)
-  context.log(`baseName ${baseName}`)
+async function bulkUpload (context: Context, fileName: string): Promise<void> {
+  try {
+    const service = new PsReportWriterService(context.log)
+    context.log.verbose(`${funcName}: creating new destination table in SQL Server`)
+    await service.createDestinationTable()
+    context.log.verbose(`${funcName}: new table created`)
+    // context.log(`${funcName}: bulkUpload() uploading ${fileName}`)
+  } catch (error: any) {
+    if (error instanceof Error) {
+      context.log.warn(error.message)
+      context.log.warn(JSON.stringify(error))
+    }
+    await cleanup()
+  }
 }
 
-export default blobTrigger
+async function cleanup (): Promise<void> {
+  // Remove CSV file
+  // Remove ? new table (may not have been created)
+  // Ensure the view table alias points to the last good PS report.
+}
+
+export default serviceBusQueueTrigger
