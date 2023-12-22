@@ -22,12 +22,12 @@ router.post('/submit-service-message',
   serviceMessageController.postSubmitServiceMessage
 )
 
-router.post('/remove-service-message',
+router.post('/remove/:slug',
   isAuthenticated(roles.serviceManager),
   serviceMessageController.postRemoveServiceMessage
 )
 
-router.get('/edit-service-message',
+router.get('/edit/:slug',
   isAuthenticated(roles.serviceManager),
   serviceMessageController.getEditServiceMessage
 )

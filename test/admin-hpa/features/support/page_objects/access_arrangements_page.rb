@@ -23,6 +23,11 @@ class AccessArrangementsPage < SitePrism::Page
     element :link, "a[href='/access-arrangements/retro-add-input-assistant']"
   end
 
+  section :service_message, 'div[class^="mtc-notification-banner"]' do
+    element :service_message_heading, '#govuk-notification-banner-title'
+    element :service_message_text, '.govuk-notification-banner__content'
+  end
+
   section :modal, '.modal-box.show' do
     element :heading, '#modal-title'
     element :contents, '.modal-content p'

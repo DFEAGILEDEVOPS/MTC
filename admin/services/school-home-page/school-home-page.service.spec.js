@@ -29,7 +29,7 @@ describe('school home page service', () => {
 
   beforeEach(() => {
     jest.spyOn(schoolService, 'findSchoolNameByDfeNumber').mockResolvedValue('Unit Test School')
-    jest.spyOn(administrationMessageService, 'getMessage').mockResolvedValue(undefined)
+    jest.spyOn(administrationMessageService, 'getMessagesAndAreaCodes').mockResolvedValue(undefined)
     // For the tests in the general section the check window dates are not important, as these values are
     // the same for all life-cycle phases of the check window.  We still need to mock it to prevent real calls.
     jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockResolvedValue(mockCheckWindow)
@@ -47,13 +47,6 @@ describe('school home page service', () => {
   test('school name is returned', async () => {
     const data = await sut.getContent(user)
     expect(data.schoolName).toBe('Unit Test School')
-  })
-
-  test('the service message is returned', async () => {
-    const mockMessage = { title: 'test', message: 'a test message', borderColourCode: 'R' }
-    jest.spyOn(administrationMessageService, 'getMessage').mockResolvedValue(mockMessage)
-    const data = await sut.getContent(user)
-    expect(data.serviceMessage).toEqual(mockMessage)
   })
 
   describe('PRE-FAMILIARISATION CHECK PHASE', () => {
@@ -247,6 +240,5 @@ function setupFakeTime (baseTime) {
 }
 
 function tearDownFakeTime () {
-  const realTime = jest.getRealSystemTime()
-  jest.setSystemTime(realTime)
+  jest.useRealTimers()
 }
