@@ -8,6 +8,7 @@ import moment from 'moment'
 export class PsReportWriterService {
   private readonly sqlService: ISqlService
   private readonly logger: ILogger
+  private readonly logServiceName = 'PsReportWriterService'
 
   constructor (logger?: ILogger, sqlService?: ISqlService) {
     if (logger === undefined) {
@@ -485,17 +486,19 @@ export class PsReportWriterService {
         PupilUPN ASC
       ) WITH ( PAD_INDEX = OFF,FILLFACTOR = 100,SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, STATISTICS_NORECOMPUTE = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON  ) ON [PRIMARY]
     `
-    this.logger.verbose(`Creating table ${newTableName}`)
+    this.logger.verbose(`${this.logServiceName}: creating table ${newTableName}`)
     await this.sqlService.modify(sql, [])
 
-    this.logger.verbose('Creating trigger')
+    this.logger.verbose(`${this.logServiceName}: Creating trigger`)
     await this.sqlService.modify(triggerSql, [])
 
-    this.logger.verbose('Creating IX1')
+    this.logger.verbose(`${this.logServiceName}: Creating IX1`)
     await this.sqlService.modify(ix1Sql, [])
 
-    this.logger.verbose('Creating IX2')
+    this.logger.verbose(`${this.logServiceName}: Creating IX2`)
     await this.sqlService.modify(ix2Sql, [])
+
+    this.logger.info(`${this.logServiceName}: new table ${newTableName} created`)
   }
 
   private parseTimeout (answers: IReportLineAnswer[], index: number, prop: 'timeout' | 'timeoutResponse' | 'timeoutScore'): number | null {
