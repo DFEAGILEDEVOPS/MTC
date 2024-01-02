@@ -21,7 +21,7 @@ export class PsReportWriterService {
     this.sqlService = sqlService
   }
 
-  public async createDestinationTable(): Promise<void> {
+  public async createDestinationTable (): Promise<void> {
     const ds = moment().format('YYYY_M_DTHHmm')
     const newTableName = `psychometricReport_${ds}`
     const sql = `
