@@ -23,7 +23,7 @@ export class PsReportWriterService {
   }
 
   public async createDestinationTableAndView (): Promise<void> {
-    const ds = moment().format('YYYY_M_DTHHmm')
+    const ds = moment().format('YYYY_MM_DDTHHmm')
     const newTableName = `psychometricReport_${ds}`
     const sql = `
       CREATE TABLE mtc_results.${newTableName} (
