@@ -8,5 +8,6 @@ module.exports.generateSql = function () {
     -- permissions in the UP migration.
     REVOKE ALTER on schema::mtc_results to [${config.Sql.FunctionsApp.Username}];
     REVOKE CREATE TABLE TO [${config.Sql.FunctionsApp.Username}];
+    REVOKE CREATE VIEW TO [${config.Sql.FunctionsApp.Username}];
   `
 }

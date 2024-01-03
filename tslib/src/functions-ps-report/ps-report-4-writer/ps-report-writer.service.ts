@@ -22,7 +22,7 @@ export class PsReportWriterService {
     this.sqlService = sqlService
   }
 
-  public async createDestinationTable (): Promise<void> {
+  public async createDestinationTableAndView (): Promise<void> {
     const ds = moment().format('YYYY_M_DTHHmm')
     const newTableName = `psychometricReport_${ds}`
     const sql = `
@@ -499,6 +499,14 @@ export class PsReportWriterService {
     await this.sqlService.modify(ix2Sql, [])
 
     this.logger.info(`${this.logServiceName}: new table ${newTableName} created`)
+
+    const viewSql = `
+        CREATE OR ALTER VIEW [mtc_results].[vewPsychometricReport]
+        AS
+          SELECT * FROM [mtc_results].[${newTableName}]
+    `
+    await this.sqlService.modify(viewSql, [])
+    this.logger.info(`${this.logServiceName}: psychometricReport view recreated`)
   }
 
   private parseTimeout (answers: IReportLineAnswer[], index: number, prop: 'timeout' | 'timeoutResponse' | 'timeoutScore'): number | null {

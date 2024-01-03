@@ -16,7 +16,7 @@ async function bulkUpload (context: Context, fileName: string): Promise<void> {
   try {
     const service = new PsReportWriterService(context.log)
     context.log.verbose(`${funcName}: creating new destination table in SQL Server`)
-    await service.createDestinationTable()
+    await service.createDestinationTableAndView()
     context.log.verbose(`${funcName}: new table created`)
     // context.log(`${funcName}: bulkUpload() uploading ${fileName}`)
   } catch (error: any) {
