@@ -190,14 +190,6 @@
     "@azure/abort-controller" "^1.0.0"
     tslib "^2.2.0"
 
-"@azure/core-util@^1.6.1":
-  version "1.6.1"
-  resolved "https://registry.yarnpkg.com/@azure/core-util/-/core-util-1.6.1.tgz#fea221c4fa43c26543bccf799beb30c1c7878f5a"
-  integrity sha512-h5taHeySlsV9qxuK64KZxy4iln1BtMYlNt5jbuEFN3UFSAd1EwKg/Gjl5a6tZ/W8t6li3xPnutOx7zbDyXnPmQ==
-  dependencies:
-    "@azure/abort-controller" "^1.0.0"
-    tslib "^2.2.0"
-
 "@azure/core-xml@^1.0.0":
   version "1.3.2"
   resolved "https://registry.yarnpkg.com/@azure/core-xml/-/core-xml-1.3.2.tgz#10e08771f803bb6451b06397774762eed32f1c33"
@@ -221,25 +213,27 @@
     tslib "^2.2.0"
     uuid "^8.3.0"
 
-"@azure/identity@^3.4.1":
-  version "3.4.1"
-  resolved "https://registry.yarnpkg.com/@azure/identity/-/identity-3.4.1.tgz#18ba48b7421c818ef8116e8eec3c03ec1a62649a"
-  integrity sha512-oQ/r5MBdfZTMIUcY5Ch8G7Vv9aIXDkEYyU4Dfqjim4MQN+LY2uiQ57P1JDopMLeHCsZxM4yy8lEdne3tM9Xhzg==
+"@azure/identity@^2.0.4":
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/@azure/identity/-/identity-2.1.0.tgz#89f0bfc1d1264dfd3d0cb19837c33a9c6706d548"
+  integrity sha512-BPDz1sK7Ul9t0l9YKLEa8PHqWU4iCfhGJ+ELJl6c8CP3TpJt2urNCbm0ZHsthmxRsYoMPbz2Dvzj30zXZVmAFw==
   dependencies:
     "@azure/abort-controller" "^1.0.0"
-    "@azure/core-auth" "^1.5.0"
+    "@azure/core-auth" "^1.3.0"
     "@azure/core-client" "^1.4.0"
     "@azure/core-rest-pipeline" "^1.1.0"
     "@azure/core-tracing" "^1.0.0"
-    "@azure/core-util" "^1.6.1"
+    "@azure/core-util" "^1.0.0"
     "@azure/logger" "^1.0.0"
-    "@azure/msal-browser" "^3.5.0"
-    "@azure/msal-node" "^2.5.1"
+    "@azure/msal-browser" "^2.26.0"
+    "@azure/msal-common" "^7.0.0"
+    "@azure/msal-node" "^1.10.0"
     events "^3.0.0"
     jws "^4.0.0"
     open "^8.0.0"
     stoppable "^1.1.0"
     tslib "^2.2.0"
+    uuid "^8.3.0"
 
 "@azure/keyvault-keys@^4.4.0":
   version "4.5.0"
@@ -265,24 +259,29 @@
   dependencies:
     tslib "^2.2.0"
 
-"@azure/msal-browser@^3.5.0":
-  version "3.6.0"
-  resolved "https://registry.yarnpkg.com/@azure/msal-browser/-/msal-browser-3.6.0.tgz#06ad33c82af4f24f2fcf8a8a61a3a1cbe3dd7fad"
-  integrity sha512-FrFBJXRJMyWXjAjg4cUNZwEKktzfzD/YD9+S1kj2ors67hKoveam4aL0bZuCZU/jTiHTn0xDQGQh2ksCMXTXtA==
+"@azure/msal-browser@^2.26.0":
+  version "2.38.3"
+  resolved "https://registry.yarnpkg.com/@azure/msal-browser/-/msal-browser-2.38.3.tgz#2f131fa9b7a8a9546fc8d34e5d99ce4c18b04147"
+  integrity sha512-2WuLFnWWPR1IdvhhysT18cBbkXx1z0YIchVss5AwVA95g7CU5CpT3d+5BcgVGNXDXbUU7/5p0xYHV99V5z8C/A==
   dependencies:
-    "@azure/msal-common" "14.5.0"
+    "@azure/msal-common" "13.3.1"
 
-"@azure/msal-common@14.5.0":
-  version "14.5.0"
-  resolved "https://registry.yarnpkg.com/@azure/msal-common/-/msal-common-14.5.0.tgz#5a891e5f8eaf23f598bdb4e285e938fb606cd716"
-  integrity sha512-Gx5rZbiZV/HiZ2nEKfjfAF/qDdZ4/QWxMvMo2jhIFVz528dVKtaZyFAOtsX2Ak8+TQvRsGCaEfuwJFuXB6tu1A==
+"@azure/msal-common@13.3.1":
+  version "13.3.1"
+  resolved "https://registry.yarnpkg.com/@azure/msal-common/-/msal-common-13.3.1.tgz#012465bf940d12375dc47387b754ccf9d6b92180"
+  integrity sha512-Lrk1ozoAtaP/cp53May3v6HtcFSVxdFrg2Pa/1xu5oIvsIwhxW6zSPibKefCOVgd5osgykMi5jjcZHv8XkzZEQ==
 
-"@azure/msal-node@^2.5.1":
-  version "2.6.0"
-  resolved "https://registry.yarnpkg.com/@azure/msal-node/-/msal-node-2.6.0.tgz#44bad20a1523c92d79de24fb225da86abaeedb6c"
-  integrity sha512-RWAWCYYrSldIYC47oWtofIun41e6SB9TBYgGYsezq6ednagwo9ZRFyRsvl1NabmdTkdDDXRAABIdveeN2Gtd8w==
+"@azure/msal-common@^7.0.0":
+  version "7.6.0"
+  resolved "https://registry.yarnpkg.com/@azure/msal-common/-/msal-common-7.6.0.tgz#b52e97ef540275f72611cff57937dfa0b34cdcca"
+  integrity sha512-XqfbglUTVLdkHQ8F9UQJtKseRr3sSnr9ysboxtoswvaMVaEfvyLtMoHv9XdKUfOc0qKGzNgRFd9yRjIWVepl6Q==
+
+"@azure/msal-node@^1.10.0":
+  version "1.18.4"
+  resolved "https://registry.yarnpkg.com/@azure/msal-node/-/msal-node-1.18.4.tgz#c921b0447c92fb3b0cb1ebf5a9a76fcad2ec7c21"
+  integrity sha512-Kc/dRvhZ9Q4+1FSfsTFDME/v6+R2Y1fuMty/TfwqE5p9GTPw08BPbKgeWinE8JRHRp+LemjQbUZsn4Q4l6Lszg==
   dependencies:
-    "@azure/msal-common" "14.5.0"
+    "@azure/msal-common" "13.3.1"
     jsonwebtoken "^9.0.0"
     uuid "^8.3.0"
 
@@ -372,7 +371,7 @@
   resolved "https://registry.yarnpkg.com/@ioredis/commands/-/commands-1.2.0.tgz#6d61b3097470af1fdbbe622795b8921d42018e11"
   integrity sha512-Sx1pU8EM64o2BrqNpEO1CNLtKQwyhuXuqyfH7oGKCk+1a33d2r5saW8zNwm3j6BTExtjrv2BxTgzzkMwts6vGg==
 
-"@js-joda/core@^5.5.3":
+"@js-joda/core@^5.2.0":
   version "5.6.1"
   resolved "https://registry.yarnpkg.com/@js-joda/core/-/core-5.6.1.tgz#03e2453d877b61c3f593cf031fd18b375bd548b6"
   integrity sha512-Xla/d7ZMMR6+zRd6lTio0wRZECfcfFJP7GGe9A9L4tDOlD5CX4YcZ4YZle9w58bBYzssojVapI84RraKWDQZRg==
@@ -432,15 +431,22 @@
   resolved "https://registry.yarnpkg.com/@opentelemetry/semantic-conventions/-/semantic-conventions-1.16.0.tgz#40b8261802ba76174100bdc3f04761c27b817b6b"
   integrity sha512-jpbpOY0ahD/uTF16h4/NkFatwlulCpkvecK8zVJgHRfjK/ymJAw1Cg45KXiVSJML8uiMmRBciea/+gebrD398g==
 
-"@tediousjs/connection-string@^0.5.0":
-  version "0.5.0"
-  resolved "https://registry.yarnpkg.com/@tediousjs/connection-string/-/connection-string-0.5.0.tgz#9b3d858c040aac6bdf5584bf45370cef5b6522b4"
-  integrity sha512-7qSgZbincDDDFyRweCIEvZULFAw5iz/DeunhvuxpL31nfntX3P4Yd4HkHBRg9H8CdqY1e5WFN1PZIz/REL9MVQ==
+"@tediousjs/connection-string@^0.3.0":
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/@tediousjs/connection-string/-/connection-string-0.3.0.tgz#23f7af793a365cc3b6a149ec1320f1e28c4242ff"
+  integrity sha512-d/keJiNKfpHo+GmSB8QcsAwBx8h+V1UbdozA5TD+eSLXprNY53JAYub47J9evsSKWDdNG5uVj0FiMozLKuzowQ==
 
 "@tootallnate/once@2":
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/@tootallnate/once/-/once-2.0.0.tgz#f544a148d3ab35801c1f633a7441fd87c2e484bf"
   integrity sha512-XCuKFP5PS55gnMVu3dty8KPatLqUoy/ZYzDzAGCQ8JNFCkLXzmI7vNHCR+XpbZaMWQK/vQubr7PkYq8g470J/A==
+
+"@types/es-aggregate-error@^1.0.2":
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/@types/es-aggregate-error/-/es-aggregate-error-1.0.6.tgz#1472dfb0fb1cb4c3f2bd3b2a7b7e19f60a1d66c0"
+  integrity sha512-qJ7LIFp06h1QE1aVxbVd+zJP2wdaugYXYfd6JxsyRMrYHaxb6itXPogW2tz+ylUJ1n1b+JF1PHyYCfYHm0dvUg==
+  dependencies:
+    "@types/node" "*"
 
 "@types/is-buffer@^2.0.0":
   version "2.0.0"
@@ -478,13 +484,6 @@
   integrity sha512-sOUTGn6h1SfQ+gbgqC364jLFBw2lnFqkgF3q0WovEHRLMrVD1sd5aufqi/aJObLekJO+Aq5z646U4Oxy6shXMA==
   dependencies:
     "@types/node" "*"
-
-abort-controller@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/abort-controller/-/abort-controller-3.0.0.tgz#eaf54d53b62bae4138e809ca225c8439a6efb392"
-  integrity sha512-h8lQ8tacZYnR3vNQTgibj+tODHI5/+l06Au2Pcriv/Gmet0eaj4TwWH41sO9wnHDiQsEj19q0drzdWdeAHtweg==
-  dependencies:
-    event-target-shim "^5.0.0"
 
 accepts@~1.3.8:
   version "1.3.8"
@@ -586,10 +585,10 @@ append-buffer@^1.0.2:
   dependencies:
     buffer-equal "^1.0.0"
 
-applicationinsights@^2.8.0:
-  version "2.9.0"
-  resolved "https://registry.yarnpkg.com/applicationinsights/-/applicationinsights-2.9.0.tgz#62d6fb0d7cdcdbd2dd0a38a085943f9c262ff317"
-  integrity sha512-W90WNjtvZ10GUInpkyNM0xBGe2qRYChHhdb44SE5KU7hXtCZLxs3IZjWw1gJINQem0qGAgtZlxrVvKPj5SlTbQ==
+applicationinsights@^2.9.1:
+  version "2.9.1"
+  resolved "https://registry.yarnpkg.com/applicationinsights/-/applicationinsights-2.9.1.tgz#769412f809d6a072487e4b41c4c3a29678344d82"
+  integrity sha512-hrpe/OvHFZlq+SQERD1fxaYICyunxzEBh9SolJebzYnIXkyA9zxIR87dZAh+F3+weltbqdIP8W038cvtpMNhQg==
   dependencies:
     "@azure/core-auth" "^1.5.0"
     "@azure/core-rest-pipeline" "1.10.1"
@@ -853,14 +852,14 @@ bindings@^1.5.0:
   dependencies:
     file-uri-to-path "1.0.0"
 
-bl@^6.0.3:
-  version "6.0.9"
-  resolved "https://registry.yarnpkg.com/bl/-/bl-6.0.9.tgz#df8fcb2ef7be2e5ee8f65afa493502914e0d816f"
-  integrity sha512-Vh+M9HMfeTST9rkkQ1utRnOeABNcBO3i0dJMFkenCv7JIp76XWx8uQOGpaXyXVyenrLDZsdAHXbf0Cz18Eb0fw==
+bl@^5.0.0:
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/bl/-/bl-5.1.0.tgz#183715f678c7188ecef9fe475d90209400624273"
+  integrity sha512-tv1ZJHLfTDnXE6tMHv73YgSJaWR2AFuPwMntBe7XL/GBFHnT0CLnsHMogfk5+GzCDC5ZWarSCYaIGATZt9dNsQ==
   dependencies:
     buffer "^6.0.3"
     inherits "^2.0.4"
-    readable-stream "^4.2.0"
+    readable-stream "^3.4.0"
 
 bluebird@^3.3.3:
   version "3.7.2"
@@ -1171,10 +1170,10 @@ combined-stream@^1.0.8:
   dependencies:
     delayed-stream "~1.0.0"
 
-commander@^11.0.0:
-  version "11.1.0"
-  resolved "https://registry.yarnpkg.com/commander/-/commander-11.1.0.tgz#62fdce76006a68e5c1ab3314dc92e800eb83d906"
-  integrity sha512-yPVavfyCcRhmorC7rWlkHn15b4wDVgVmBA7kV4QVBsF7kv/9TKJAbAXVTxvTnwP8HHKjRCJDClKbciiYS7p0DQ==
+commander@^9.1.0:
+  version "9.5.0"
+  resolved "https://registry.yarnpkg.com/commander/-/commander-9.5.0.tgz#bc08d1eb5cedf7ccb797a96199d41c7bc3e60d30"
+  integrity sha512-KRs7WVDKg86PWiuAqhDrAQnTXZKraVcCc6vFdL14qrZ/DcWwuRo7VoiYXalXO7S5GKpqYiVEwCbgFDfxNHKJBQ==
 
 component-emitter@^1.2.1:
   version "1.3.0"
@@ -1557,7 +1556,7 @@ es-abstract@^1.22.1:
     unbox-primitive "^1.0.2"
     which-typed-array "^1.1.13"
 
-es-aggregate-error@^1.0.9:
+es-aggregate-error@^1.0.8:
   version "1.0.11"
   resolved "https://registry.yarnpkg.com/es-aggregate-error/-/es-aggregate-error-1.0.11.tgz#013d6b205a1875044e8ddb8592aa8bd5b6cb21c5"
   integrity sha512-DCiZiNlMlbvofET/cE55My387NiLvuGToBEZDdK9U2G3svDCjL8WOgO5Il6lO83nQ8qmag/R9nArdpaFQ/m3lA==
@@ -1640,12 +1639,7 @@ etag@~1.8.1:
   resolved "https://registry.yarnpkg.com/etag/-/etag-1.8.1.tgz#41ae2eeb65efa62268aebfea83ac7d79299b0887"
   integrity sha512-aIL5Fx7mawVa300al2BnEE4iNvo1qETxLrPI/o05L7z6go7fCw1J6EQmbK4FmJ2AS7kgVF/KEZWufBfdClMcPg==
 
-event-target-shim@^5.0.0:
-  version "5.0.1"
-  resolved "https://registry.yarnpkg.com/event-target-shim/-/event-target-shim-5.0.1.tgz#5d4d3ebdf9583d63a5333ce2deb7480ab2b05789"
-  integrity sha512-i/2XbnSz/uxRCU6+NdVJgKWDTM427+MqYbkQzD321DuCQJUqOuJKIA0IM2+W2xtYHdKOmZ4dR6fExsd4SXL+WQ==
-
-events@^3.0.0, events@^3.3.0:
+events@^3.0.0:
   version "3.3.0"
   resolved "https://registry.yarnpkg.com/events/-/events-3.3.0.tgz#31a95ad0a924e2d2c419a813aeb2c4e878ea7400"
   integrity sha512-mQw+2fkQbALzQ7V0MY0IqdnXNOeTtP4r0lN9z7AAawCXgqea7bDii20AYrIBrFd/Hx0M2Ocz6S111CaFkUcb0Q==
@@ -3161,17 +3155,17 @@ ms@2.1.3, ms@^2.1.1:
   resolved "https://registry.yarnpkg.com/ms/-/ms-2.1.3.tgz#574c8138ce1d2b5861f0b44579dbadd60c6615b2"
   integrity sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==
 
-mssql@^10.0.0:
-  version "10.0.1"
-  resolved "https://registry.yarnpkg.com/mssql/-/mssql-10.0.1.tgz#96053ae91b96fdc0469b9d8ca34663d448075bdf"
-  integrity sha512-k0Xkav/3OppZs8Kj+FIo7k7ejbcsVNxp5/ePayxfXzuBZhxD/Y/RhIhrtfHyH6FmlJnBQPj7eDI2IN7B0BiSxQ==
+mssql@^8.1.4:
+  version "8.1.4"
+  resolved "https://registry.yarnpkg.com/mssql/-/mssql-8.1.4.tgz#5eca0b515b3a0dc878f380460315fc8f73c40d80"
+  integrity sha512-nqkYYehETWVvFLB9zAGJV2kegOsdtLjUnkHA52aFhlE0ZIoOXC3BL8pLERwFicFypM4i3DX1hYeuM726EEIxjQ==
   dependencies:
-    "@tediousjs/connection-string" "^0.5.0"
-    commander "^11.0.0"
+    "@tediousjs/connection-string" "^0.3.0"
+    commander "^9.1.0"
     debug "^4.3.3"
     rfdc "^1.3.0"
     tarn "^3.0.2"
-    tedious "^16.4.0"
+    tedious "^14.0.0"
 
 mute-stdout@^1.0.0:
   version "1.0.1"
@@ -3215,7 +3209,7 @@ next-tick@^1.1.0:
   resolved "https://registry.yarnpkg.com/next-tick/-/next-tick-1.1.0.tgz#1836ee30ad56d67ef281b22bd199f709449b35eb"
   integrity sha512-CXdUiJembsNjuToQvxayPZF9Vqht7hewsvy2sOWafLvi2awflj9mOC6bHIg50orX8IJvWKY9wYQ/zB2kogPslQ==
 
-node-abort-controller@^3.1.1:
+node-abort-controller@^3.0.1:
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/node-abort-controller/-/node-abort-controller-3.1.1.tgz#a94377e964a9a37ac3976d848cb5c765833b8548"
   integrity sha512-AGK2yQKIjRuqnc6VkX2Xj5d+QW8xZ87pa1UK6yA6ouUyuxfHuMP6umE5QK7UmTeOAymo+Zx1Fxiuw9rVx8taHQ==
@@ -3600,7 +3594,7 @@ pumpify@^1.3.5:
     inherits "^2.0.3"
     pump "^2.0.0"
 
-punycode@^2.3.0:
+punycode@^2.1.0:
   version "2.3.1"
   resolved "https://registry.yarnpkg.com/punycode/-/punycode-2.3.1.tgz#027422e2faec0b25e1549c3e1bd8309b9133b6e5"
   integrity sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg==
@@ -3716,17 +3710,6 @@ readable-stream@^3.6.0:
     inherits "^2.0.3"
     string_decoder "^1.1.1"
     util-deprecate "^1.0.1"
-
-readable-stream@^4.2.0:
-  version "4.5.1"
-  resolved "https://registry.yarnpkg.com/readable-stream/-/readable-stream-4.5.1.tgz#3f2e4e66eab45606ac8f31597b9edb80c13b12ab"
-  integrity sha512-uQjbf34vmf/asGnOHQEw07Q4llgMACQZTWWa4MmICS0IKJoHbLwKCy71H3eR99Dw5iYejc6W+pqZZEeqRtUFAw==
-  dependencies:
-    abort-controller "^3.0.0"
-    buffer "^6.0.3"
-    events "^3.3.0"
-    process "^0.11.10"
-    string_decoder "^1.3.0"
 
 readdirp@^2.2.1:
   version "2.2.1"
@@ -4271,7 +4254,7 @@ string.prototype.trimstart@^1.0.7:
     define-properties "^1.2.0"
     es-abstract "^1.22.1"
 
-string_decoder@^1.1.1, string_decoder@^1.3.0:
+string_decoder@^1.1.1:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/string_decoder/-/string_decoder-1.3.0.tgz#42f114594a46cf1a8e30b0a84f56c78c3edac21e"
   integrity sha512-hkRX8U1WjJFd8LsDJ2yQ/wWWxaopEsABU1XfkM8A+j0+85JAGppt16cr1Whg6KIbb4okU6Mql6BOj+uup/wKeA==
@@ -4343,22 +4326,23 @@ tarn@^3.0.2:
   resolved "https://registry.yarnpkg.com/tarn/-/tarn-3.0.2.tgz#73b6140fbb881b71559c4f8bfde3d9a4b3d27693"
   integrity sha512-51LAVKUSZSVfI05vjPESNc5vwqqZpbXCsU+/+wxlOrUjk2SnFTt97v9ZgQrD4YmxYW1Px6w2KjaDitCfkvgxMQ==
 
-tedious@^16.4.0:
-  version "16.6.1"
-  resolved "https://registry.yarnpkg.com/tedious/-/tedious-16.6.1.tgz#50571aa48c93996676fb44ab43fcd5e7a54d4b3e"
-  integrity sha512-KKSDB1OPrPk0WbMPug9YqRbPl44zMjdL2hFyzLEidr2IkItzpV0ZbzW8VA47QIS2oyWhCU7ifIEQY12n23IRDA==
+tedious@^14.0.0:
+  version "14.7.0"
+  resolved "https://registry.yarnpkg.com/tedious/-/tedious-14.7.0.tgz#4126eab68aa3f24ef42406f2e74af5aa96b64e50"
+  integrity sha512-d3qlmZcvZyt7akyPHiOdR+knfzObWZH3mW+gouQTSb7YTSwtpHuYHcvsQabfbY7oOvgbs51xRb7CwOahWK/t9w==
   dependencies:
-    "@azure/identity" "^3.4.1"
+    "@azure/identity" "^2.0.4"
     "@azure/keyvault-keys" "^4.4.0"
-    "@js-joda/core" "^5.5.3"
-    bl "^6.0.3"
-    es-aggregate-error "^1.0.9"
+    "@js-joda/core" "^5.2.0"
+    "@types/es-aggregate-error" "^1.0.2"
+    bl "^5.0.0"
+    es-aggregate-error "^1.0.8"
     iconv-lite "^0.6.3"
     js-md4 "^0.3.2"
     jsbi "^4.3.0"
     native-duplexpair "^1.0.0"
-    node-abort-controller "^3.1.1"
-    punycode "^2.3.0"
+    node-abort-controller "^3.0.1"
+    punycode "^2.1.0"
     sprintf-js "^1.1.2"
 
 text-hex@1.0.x:
