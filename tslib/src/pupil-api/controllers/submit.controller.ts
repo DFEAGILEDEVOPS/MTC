@@ -39,6 +39,7 @@ export class SubmitController {
       logger.error(`JWT verification failed: ${error.message} for check:${req.body.checkCode}}`)
       return apiResponse.unauthorised(res)
     }
+    console.dir(req.body)
     await this.checkSubmitService.submit(req.body)
     return apiResponse.sendJson(res, {})
   }

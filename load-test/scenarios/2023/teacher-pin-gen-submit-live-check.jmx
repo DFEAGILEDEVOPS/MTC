@@ -92,8 +92,8 @@ vars.put(&quot;teacherIndex&quot;, thisTeacher.toString());</stringProp>
           <intProp name="HTTPSampler.ipSourceType">0</intProp>
         </HTTPSamplerProxy>
         <hashTree>
-          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Wait 10 - 20 seconds" enabled="true">
-            <stringProp name="ConstantTimer.delay">${__Random(10000,20000)}</stringProp>
+          <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Wait 3 - 15 seconds" enabled="true">
+            <stringProp name="ConstantTimer.delay">${__Random(3000,15000)}</stringProp>
           </ConstantTimer>
           <hashTree/>
         </hashTree>
@@ -669,7 +669,8 @@ vars.put(&quot;teacherIndex&quot;, thisTeacher.toString());</stringProp>
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.value">{&#xd;
 	&quot;schoolPin&quot;: &quot;${SCHOOL_PIN_1}&quot;,&#xd;
-	&quot;pupilPin&quot;:&quot;${pupilPin}&quot;&#xd;
+	&quot;pupilPin&quot;:&quot;${pupilPin}&quot;,&#xd;
+	&quot;buildVersion&quot;: &quot;123456&quot;&#xd;
 }&#xd;
 </stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
@@ -740,6 +741,12 @@ vars.put(&quot;teacherIndex&quot;, thisTeacher.toString());</stringProp>
               <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
             </JSONPostProcessor>
             <hashTree/>
+            <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="extract check submit JWT token" enabled="true">
+              <stringProp name="JSONPostProcessor.referenceNames">checkSubmitJwtToken</stringProp>
+              <stringProp name="JSONPostProcessor.jsonPathExprs">$.tokens.checkSubmission.token</stringProp>
+              <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
+            </JSONPostProcessor>
+            <hashTree/>
             <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="create queue vars" enabled="true">
               <stringProp name="cacheKey">true</stringProp>
               <stringProp name="filename"></stringProp>
@@ -802,20 +809,17 @@ vars.put(&quot;queueDomain&quot;, domain);</stringProp>
             </HeaderManager>
             <hashTree/>
           </hashTree>
-          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST check submission API" enabled="true">
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST check submit API" enabled="true">
             <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
               <collectionProp name="Arguments.arguments">
                 <elementProp name="" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.value">{&#xd;
-   &quot;schoolUuid&quot;: &quot;undefined&quot;,&#xd;
-   &quot;checkCodes&quot;: &quot;undefined&quot;,&#xd;
-   &quot;answers&quot;: {&#xd;
-     &quot;numberFromCorrectCheckForm&quot;: &quot;undefined&quot;,&#xd;
-     &quot;numberFromIncorrectCheckForm&quot;: &quot;undefined&quot;,&#xd;
-     &quot;numberOfDuplicateAnswers&quot;: 0&#xd;
-   }&#xd;
+  &quot;version&quot;: &quot;3&quot;,&#xd;
+  &quot;checkCode&quot;: &quot;${checkCode}&quot;,&#xd;
+  &quot;schoolUUID&quot;: &quot;${schoolUUID}&quot;,&#xd;
+  &quot;archive&quot;: &quot;${checkPayload}&quot;&#xd;
 }</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
                 </elementProp>
@@ -843,6 +847,10 @@ vars.put(&quot;queueDomain&quot;, domain);</stringProp>
                 <elementProp name="" elementType="Header">
                   <stringProp name="Header.name">Content-Type</stringProp>
                   <stringProp name="Header.value">application/json</stringProp>
+                </elementProp>
+                <elementProp name="" elementType="Header">
+                  <stringProp name="Header.name">Authorization</stringProp>
+                  <stringProp name="Header.value">Bearer ${checkSubmitJwtToken}</stringProp>
                 </elementProp>
               </collectionProp>
             </HeaderManager>
