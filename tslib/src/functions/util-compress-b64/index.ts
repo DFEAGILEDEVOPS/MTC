@@ -1,9 +1,10 @@
 import { type Context } from '@azure/functions'
 import { CompressionService } from '../../common/compression-service'
+
 const svc = new CompressionService()
 
 export default async function (context: Context): Promise<void> {
-  const input = context?.req?.body
+  let input = context?.req?.body
   if (input === undefined) {
     context.res = {
       status: 400,
@@ -13,6 +14,9 @@ export default async function (context: Context): Promise<void> {
   }
   let compressed: string = ''
   try {
+    if (context.req?.headers['content-type'] === 'application/json') {
+      input = JSON.stringify(input)
+    }
     compressed = svc.compressToBase64(input)
   } catch (error) {
     let msg = 'unknown error'
