@@ -4,6 +4,7 @@ import { type IPsychometricReportLine, type IReportLineAnswer } from '../ps-repo
 import { TYPES, MAX } from 'mssql'
 import * as R from 'ramda'
 import moment from 'moment'
+import { BlobService } from '../../azure/blob-service'
 
 export class PsReportWriterService {
   private readonly sqlService: ISqlService
@@ -507,6 +508,42 @@ export class PsReportWriterService {
     `
     await this.sqlService.modify(viewSql, [])
     this.logger.info(`${this.logServiceName}: psychometricReport view recreated`)
+  }
+
+  /**
+   * Configure the External Data Source with a new short-lived SAS token, and set the location on the external data source.
+   *
+   */
+  public async prepareForUpload () {
+    // todo: replace with a real 1 hour sas token that allows reading, and deleting.
+    const blobService = new BlobService()
+    const containerName = 'ps-report-bulk-upload'
+    const containerUrl = await blobService.getContainerUrl(containerName)
+    this.logger.verbose(`${this.logServiceName}: container url is ${containerUrl}`)
+    const sasToken = 'newSasToken'
+    const sql = `
+      IF (SELECT COUNT(*) FROM sys.database_scoped_credentials WHERE name = 'PsReportBulkUploadCredential') = 0
+        BEGIN
+          CREATE DATABASE SCOPED CREDENTIAL PsReportBulkUploadCredential
+          WITH IDENTITY = 'SHARED ACCESS SIGNATURE', SECRET = '${sasToken}';
+        END
+      ELSE
+        BEGIN
+          ALTER DATABASE SCOPED CREDENTIAL PsReportBulkUploadCredential
+          WITH IDENTITY = 'SHARED ACCESS SIGNATURE', SECRET = '${sasToken}'
+        END
+
+    IF (SELECT COUNT(*) FROM sys.external_data_sources WHERE name = 'PsReportData') = 0
+      BEGIN
+        CREATE EXTERNAL DATA SOURCE PsReportData
+        WITH (
+            TYPE = BLOB_STORAGE,
+            LOCATION = '${containerUrl}',
+            CREDENTIAL = PsReportBulkUploadCredential
+        );
+      END
+    `
+    await this.sqlService.modify(sql, [])
   }
 
   private parseTimeout (answers: IReportLineAnswer[], index: number, prop: 'timeout' | 'timeoutResponse' | 'timeoutScore'): number | null {

@@ -34,4 +34,9 @@ export class BlobService implements IBlobService {
     const blobClient = client.getBlobClient(blobName)
     await blobClient.deleteIfExists()
   }
+
+  async getContainerUrl (containerName: string): Promise<string> {
+    const client = await this.getContainerClient(containerName)
+    return client.url
+  }
 }

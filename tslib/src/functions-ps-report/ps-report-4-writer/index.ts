@@ -19,6 +19,7 @@ async function bulkUpload (context: Context, fileName: string): Promise<void> {
     await service.createDestinationTableAndView()
     context.log.verbose(`${funcName}: new table created`)
     // context.log(`${funcName}: bulkUpload() uploading ${fileName}`)
+    await service.prepareForUpload()
   } catch (error: any) {
     if (error instanceof Error) {
       context.log.warn(error.message)
