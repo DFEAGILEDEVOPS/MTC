@@ -27,6 +27,11 @@ class GroupPupilsPage < SitePrism::Page
     element :confirm, '#js-modal-confirmation-button'
   end
 
+  section :service_message, 'div[class^="mtc-notification-banner"]' do
+    element :service_message_heading, '#govuk-notification-banner-title'
+    element :service_message_text, '.govuk-notification-banner__content'
+  end
+
   def remove_all_groups
     (groups = group_list.rows.count
     groups.to_i.times do

@@ -13,7 +13,6 @@ const settingsValidator = require('../../../lib/validator/settings-validator')
 const ValidationError = require('../../../lib/validation-error')
 const schoolService = require('../../../services/school.service')
 const organisationBulkUploadService = require('../../../services/organisation-bulk-upload.service')
-const administrationMessageService = require('../../../services/administration-message.service')
 const auditOperationTypes = require('../../../lib/consts/audit-entry-types')
 const { JobService } = require('../../../services/job/job.service')
 const { ServiceManagerPupilDataService } = require('../../../services/service-manager/pupil/service-manager.pupil.data.service')
@@ -44,7 +43,6 @@ describe('service manager controller:', () => {
 
   beforeEach(() => {
     next = jest.fn()
-    jest.spyOn(administrationMessageService, 'getMessage').mockResolvedValue(undefined)
   })
 
   afterEach(() => {
@@ -62,17 +60,6 @@ describe('service manager controller:', () => {
       const req = getReq(goodReqParams)
       await controller.getServiceManagerHome(req, res, next)
       expect(res.render).toHaveBeenCalled()
-    })
-
-    test('it shows the service message if available', async () => {
-      const message = { title: 'title', message: 'test message' }
-      const res = getRes()
-      const req = getReq(goodReqParams)
-      jest.spyOn(administrationMessageService, 'getMessage').mockResolvedValue(message)
-      jest.spyOn(res, 'render').mockImplementation()
-      await controller.getServiceManagerHome(req, res, next)
-      const args = res.render.mock.calls[0]
-      expect(args[1].serviceMessage).toEqual(message)
     })
   })
 

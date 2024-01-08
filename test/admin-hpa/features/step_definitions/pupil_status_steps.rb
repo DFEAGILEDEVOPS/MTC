@@ -32,7 +32,6 @@ When(/^I am on the Pupil Status page$/) do
   pupil_status_page.load
 end
 
-
 Given(/^there is a processing error with a check$/) do
   step 'I have generated a live pin for a pupil'
   pupil_detail = SqlDbHelper.pupil_details(@details_hash[:upn], @school_id)
@@ -41,7 +40,6 @@ Given(/^there is a processing error with a check$/) do
   pupil_pin_detail = SqlDbHelper.get_pupil_pin(check_entry['id'])
   pupil_pin = pupil_pin_detail['val']
   school_password = SqlDbHelper.find_school(pupil_detail['school_id'])['pin']
-
   Timeout.timeout(ENV['WAIT_TIME'].to_i) {sleep 1 until RequestHelper.auth(school_password, pupil_pin).code == 200}
   response_pupil_auth = RequestHelper.auth(school_password, pupil_pin)
   @parsed_response_pupil_auth = JSON.parse(response_pupil_auth.body)
