@@ -1,11 +1,11 @@
-import { FakeSubmittedCheckMessageGeneratorService } from './fake-submitted-check-generator.service'
+import { FakeCompletedCheckMessageGeneratorService } from './fake-submitted-check-generator.service'
 import { SubmittedCheckVersion } from '../../schemas/SubmittedCheckVersion'
 import mockPreparedCheck from '../../schemas/check-schemas/mock-prepared-check-2021.json'
 import { FakeCompletedCheckGeneratorService, type ICompletedCheckGeneratorService } from './fake-completed-check-generator.service'
 import { type ICompressionService } from '../../common/compression-service'
 import { type IPreparedCheckService } from '../../caching/prepared-check.service'
 
-let sut: FakeSubmittedCheckMessageGeneratorService
+let sut: FakeCompletedCheckMessageGeneratorService
 let preparedCheckServiceMock: IPreparedCheckService
 let submittedCheckBuilderMock: ICompletedCheckGeneratorService
 let compressionServiceMock: ICompressionService
@@ -32,7 +32,7 @@ describe('fake-submitted-check-message-builder-service', () => {
     preparedCheckServiceMock = new PreparedCheckServiceMock()
     submittedCheckBuilderMock = new SubmittedCheckBuilderServiceMock()
     compressionServiceMock = new CompressionServiceMock()
-    sut = new FakeSubmittedCheckMessageGeneratorService(submittedCheckBuilderMock, compressionServiceMock, preparedCheckServiceMock)
+    sut = new FakeCompletedCheckMessageGeneratorService(submittedCheckBuilderMock, compressionServiceMock, preparedCheckServiceMock)
     const fakeSubmittedCheckBuilder = new FakeCompletedCheckGeneratorService()
     const fakeSubmittedCheck = fakeSubmittedCheckBuilder.create(mockPreparedCheck)
     jest.spyOn(submittedCheckBuilderMock, 'create').mockReturnValue(fakeSubmittedCheck)
@@ -40,7 +40,7 @@ describe('fake-submitted-check-message-builder-service', () => {
   })
 
   test('subject should be defined', () => {
-    expect(sut).toBeInstanceOf(FakeSubmittedCheckMessageGeneratorService)
+    expect(sut).toBeInstanceOf(FakeCompletedCheckMessageGeneratorService)
   })
 
   describe('create v2 message', () => {

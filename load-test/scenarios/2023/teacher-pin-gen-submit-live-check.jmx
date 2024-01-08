@@ -809,13 +809,15 @@ vars.put(&quot;queueDomain&quot;, domain);</stringProp>
             </HeaderManager>
             <hashTree/>
           </hashTree>
-          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST util base64 compress" enabled="true">
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST create taken check" enabled="true">
             <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
             <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
               <collectionProp name="Arguments.arguments">
                 <elementProp name="" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                  <stringProp name="Argument.value">${checkPayload}</stringProp>
+                  <stringProp name="Argument.value">{&#xd;
+	&quot;checkCode&quot;: &quot;${checkCode}&quot;&#xd;
+}</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
                 </elementProp>
               </collectionProp>
@@ -823,7 +825,7 @@ vars.put(&quot;queueDomain&quot;, domain);</stringProp>
             <stringProp name="HTTPSampler.domain">${__P(funcConsHost,localhost)}</stringProp>
             <stringProp name="HTTPSampler.port">${__P(port,7071)}</stringProp>
             <stringProp name="HTTPSampler.protocol">${__P(protocol,http)}</stringProp>
-            <stringProp name="HTTPSampler.path">/api/util-compress-b64</stringProp>
+            <stringProp name="HTTPSampler.path">/api/util-create-taken-check</stringProp>
             <stringProp name="HTTPSampler.method">POST</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
             <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -847,8 +849,8 @@ vars.put(&quot;queueDomain&quot;, domain);</stringProp>
             </HeaderManager>
             <hashTree/>
             <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="extract base64 compressed output" enabled="true">
-              <stringProp name="JSONPostProcessor.referenceNames">b64Payload</stringProp>
-              <stringProp name="JSONPostProcessor.jsonPathExprs">$.compressed</stringProp>
+              <stringProp name="JSONPostProcessor.referenceNames">takenCheckMessage</stringProp>
+              <stringProp name="JSONPostProcessor.jsonPathExprs">$</stringProp>
               <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
             </JSONPostProcessor>
             <hashTree/>
@@ -859,12 +861,7 @@ vars.put(&quot;queueDomain&quot;, domain);</stringProp>
               <collectionProp name="Arguments.arguments">
                 <elementProp name="" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                  <stringProp name="Argument.value">{&#xd;
-  &quot;version&quot;: &quot;3&quot;,&#xd;
-  &quot;checkCode&quot;: &quot;${checkCode}&quot;,&#xd;
-  &quot;schoolUUID&quot;: &quot;${schoolUUID}&quot;,&#xd;
-  &quot;archive&quot;: &quot;${b64Payload}&quot;&#xd;
-}</stringProp>
+                  <stringProp name="Argument.value">${takenCheckMessage}</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
                 </elementProp>
               </collectionProp>
