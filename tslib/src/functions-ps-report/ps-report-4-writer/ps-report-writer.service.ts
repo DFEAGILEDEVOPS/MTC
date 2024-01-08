@@ -514,7 +514,7 @@ export class PsReportWriterService {
    * Configure the External Data Source with a new short-lived SAS token, and set the location on the external data source.
    *
    */
-  public async prepareForUpload () {
+  public async prepareForUpload (): Promise<void> {
     // todo: replace with a real 1 hour sas token that allows reading, and deleting.
     const blobService = new BlobService()
     const containerName = 'ps-report-bulk-upload'

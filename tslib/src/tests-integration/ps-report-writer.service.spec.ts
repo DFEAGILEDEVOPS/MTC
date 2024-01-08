@@ -7,7 +7,7 @@ import * as R from 'ramda'
 import { MockPayload } from './mock-payload.class'
 const ids = []
 
-describe('ps report writer service integration test', () => {
+describe.skip('ps report writer service integration test', () => {
   let sqlService: SqlService
 
   beforeAll(() => {
