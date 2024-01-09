@@ -1,5 +1,7 @@
 # MTC load testing
 
+See [/docs](./docs) directory for more help files
+
 ## JMeter setup
 
 We use JMeter 5, as this is now the default for flood.io
