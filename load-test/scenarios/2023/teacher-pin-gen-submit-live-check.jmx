@@ -15,7 +15,7 @@
           <collectionProp name="Arguments.arguments"/>
         </elementProp>
         <stringProp name="HTTPSampler.domain">${__P(adminAppHost,localhost)}</stringProp>
-        <stringProp name="HTTPSampler.port">${__P(port,3001)}</stringProp>
+        <stringProp name="HTTPSampler.port">${__P(adminAppPort,3001)}</stringProp>
         <stringProp name="HTTPSampler.protocol">${__P(protocol,http)}</stringProp>
       </ConfigTestElement>
       <hashTree/>
@@ -678,7 +678,7 @@ vars.put(&quot;teacherIndex&quot;, thisTeacher.toString());</stringProp>
               </collectionProp>
             </elementProp>
             <stringProp name="HTTPSampler.domain">${__P(pupilApiHost,localhost)}</stringProp>
-            <stringProp name="HTTPSampler.port">${__P(port,3003)}</stringProp>
+            <stringProp name="HTTPSampler.port">${__P(pupilApiPort,3003)}</stringProp>
             <stringProp name="HTTPSampler.protocol">${__P(protocol,http)}</stringProp>
             <stringProp name="HTTPSampler.path">/auth</stringProp>
             <stringProp name="HTTPSampler.method">POST</stringProp>
@@ -762,7 +762,7 @@ vars.put(&quot;encodedCheckStartedMessage&quot;, encoded);
 String url = vars.get(&quot;queueUrl&quot;).toString();
 URI uri = new URI(url);
 String domain = uri.getHost();
-vars.put(&quot;queueDomain&quot;, domain);</stringProp>
+vars.put(&quot;storageAccountHost&quot;, domain);</stringProp>
               <stringProp name="scriptLanguage">java</stringProp>
             </JSR223PostProcessor>
             <hashTree/>
@@ -778,7 +778,7 @@ vars.put(&quot;queueDomain&quot;, domain);</stringProp>
                 </elementProp>
               </collectionProp>
             </elementProp>
-            <stringProp name="HTTPSampler.domain">${queueDomain}</stringProp>
+            <stringProp name="HTTPSampler.domain">${storageAccountHost}</stringProp>
             <stringProp name="HTTPSampler.port">443</stringProp>
             <stringProp name="HTTPSampler.protocol">https</stringProp>
             <stringProp name="HTTPSampler.path">/check-started/messages?${checkStartedSasToken}</stringProp>
@@ -823,7 +823,7 @@ vars.put(&quot;queueDomain&quot;, domain);</stringProp>
               </collectionProp>
             </elementProp>
             <stringProp name="HTTPSampler.domain">${__P(funcConsHost,localhost)}</stringProp>
-            <stringProp name="HTTPSampler.port">${__P(port,7071)}</stringProp>
+            <stringProp name="HTTPSampler.port">${__P(funcConsPort,7071)}</stringProp>
             <stringProp name="HTTPSampler.protocol">${__P(protocol,http)}</stringProp>
             <stringProp name="HTTPSampler.path">/api/util-create-taken-check</stringProp>
             <stringProp name="HTTPSampler.method">POST</stringProp>
@@ -866,8 +866,8 @@ vars.put(&quot;queueDomain&quot;, domain);</stringProp>
                 </elementProp>
               </collectionProp>
             </elementProp>
-            <stringProp name="HTTPSampler.domain">${__P(proxyFunctionHost,localhost)}</stringProp>
-            <stringProp name="HTTPSampler.port">${__P(port,3003)}</stringProp>
+            <stringProp name="HTTPSampler.domain">${__P(pupilApiHost,localhost)}</stringProp>
+            <stringProp name="HTTPSampler.port">${__P(pupilApiPort,3003)}</stringProp>
             <stringProp name="HTTPSampler.protocol">${__P(protocol,http)}</stringProp>
             <stringProp name="HTTPSampler.path">/submit</stringProp>
             <stringProp name="HTTPSampler.method">POST</stringProp>
