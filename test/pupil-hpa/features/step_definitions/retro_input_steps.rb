@@ -4,7 +4,7 @@ Given(/^I have retrospectively added an input assistant$/) do
   visit ENV["ADMIN_BASE_URL"] + access_arrangements_page.url
   access_arrangements_page.retro_input.link.click
   Timeout.timeout(ENV['WAIT_TIME'].to_i) {(visit current_url; retro_input_page.search_pupil.set(@details_hash[:first_name])) until
-    retro_input_page.auto_search_list[0].text.include? @details_hash[:first_name]}
+  retro_input_page.auto_search_list[0].text.include? @details_hash[:first_name]}
   retro_input_page.search_pupil.set(@details_hash[:first_name])
   retro_input_page.auto_search_list[0].click
   retro_input_page.enter_input_assistant_details
@@ -41,7 +41,7 @@ When(/^I complete a check after a restart$/) do
   warm_up_page.start_now.click
   step "I complete the warm up questions using the keyboard"
   warm_up_complete_page.start_check.click
-start_mtc
+  start_mtc
   step 'I should be able to use the on screen keyboard to complete the test'
 end
 
@@ -53,7 +53,7 @@ Then(/^I should not have any retro input assistant recorded against the current 
   storage_pupil = JSON.parse page.evaluate_script('window.localStorage.getItem("pupil");')
   check_result = SqlDbHelper.wait_for_received_check(storage_pupil['checkCode'])
   fail 'archive not available in DB yet'
-  check = JSON.parse(LZString::UTF16.decompress(check_result['archive']))
+  check = JSON.parse(LZString::Base64.decompress(check_result['archive']))
   expect(check['pupil']['inputAssistant']['firstName']).to eql 'James'
   expect(check['pupil']['inputAssistant']['lastName']).to eql 'Elliot'
 end

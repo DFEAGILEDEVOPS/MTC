@@ -59,3 +59,9 @@ Feature: Check questions
       | 13              |
       | 21              |
       | 25              |
+
+
+  Scenario: JWT token contains correct information
+    Given I have just completed the check with only 5 correct answers
+    When I decode the JWT token
+    Then it should contain the correct information

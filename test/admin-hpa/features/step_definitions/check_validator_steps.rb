@@ -10,7 +10,9 @@ Given(/^a pupil has completed the check with less than 25 answers$/) do
   response_pupil_auth = RequestHelper.auth(school_password, pupil_pin)
   @parsed_response_pupil_auth = JSON.parse(response_pupil_auth.body)
   @submission_hash = RequestHelper.build_check_submission_message(@parsed_response_pupil_auth, nil, nil, 'mouse', {decreased_answers_set: true})
-  AzureQueueHelper.create_check_submission_message(@submission_hash[:submission_message].to_json)
+  payload = @submission_hash[:submission_message]
+  jwt =  @submission_hash[:payload][:tokens]['checkSubmission']["token"]
+  RequestHelper.submit_check(jwt, payload)
   @school_uuid = @parsed_response_pupil_auth['school']['uuid']
   @check_code = @parsed_response_pupil_auth['checkCode']
   @received_check = SqlDbHelper.wait_for_received_check(@check_code)
@@ -20,7 +22,8 @@ end
 Then(/^I should see an error stating validation failed as there are 24 answers$/) do
   wait_until{SqlDbHelper.wait_for_received_check(@check_code); !(SqlDbHelper.wait_for_received_check(@check_code)['processingFailed']).nil?}
   @received_check = SqlDbHelper.wait_for_received_check(@check_code)
-  expect(@received_check['processingFailed']).to eql true
+  expect(@received_check['checkVersion']).to eql 3
+  expect(@received_check['processingError']).to eql "check-validator: check validation failed. checkCode: #{@check_code}\n\t-\tsubmitted check has 24 answers. 25 answers are required}"
 end
 
 Given(/^a pupil has completed the check with more than 25 answers$/) do
@@ -35,7 +38,9 @@ Given(/^a pupil has completed the check with more than 25 answers$/) do
   response_pupil_auth = RequestHelper.auth(school_password, pupil_pin)
   @parsed_response_pupil_auth = JSON.parse(response_pupil_auth.body)
   @submission_hash = RequestHelper.build_check_submission_message(@parsed_response_pupil_auth, nil, nil, 'mouse', {increased_answers_set: true})
-  AzureQueueHelper.create_check_submission_message(@submission_hash[:submission_message].to_json)
+  payload = @submission_hash[:submission_message]
+  jwt =  @submission_hash[:payload][:tokens]['checkSubmission']["token"]
+  RequestHelper.submit_check(jwt, payload)
   @school_uuid = @parsed_response_pupil_auth['school']['uuid']
   @check_code = @parsed_response_pupil_auth['checkCode']
   @received_check = SqlDbHelper.wait_for_received_check(@check_code)
@@ -54,7 +59,9 @@ Given(/^a pupil has completed the check with an answer that is not a string$/) d
   response_pupil_auth = RequestHelper.auth(school_password, pupil_pin)
   @parsed_response_pupil_auth = JSON.parse(response_pupil_auth.body)
   @submission_hash = RequestHelper.build_check_submission_message(@parsed_response_pupil_auth, nil, nil, 'mouse', {answer_not_a_string: true})
-  AzureQueueHelper.create_check_submission_message(@submission_hash[:submission_message].to_json)
+  payload = @submission_hash[:submission_message]
+  jwt =  @submission_hash[:payload][:tokens]['checkSubmission']["token"]
+  RequestHelper.submit_check(jwt, payload)
   @school_uuid = @parsed_response_pupil_auth['school']['uuid']
   @check_code = @parsed_response_pupil_auth['checkCode']
   @received_check = SqlDbHelper.wait_for_received_check(@check_code)
@@ -79,7 +86,9 @@ Given(/^a pupil has completed the check with no audit logs$/) do
   response_pupil_auth = RequestHelper.auth(school_password, pupil_pin)
   @parsed_response_pupil_auth = JSON.parse(response_pupil_auth.body)
   @submission_hash = RequestHelper.build_check_submission_message(@parsed_response_pupil_auth, nil, nil, 'mouse', {remove_audit: true})
-  AzureQueueHelper.create_check_submission_message(@submission_hash[:submission_message].to_json)
+  payload = @submission_hash[:submission_message]
+  jwt =  @submission_hash[:payload][:tokens]['checkSubmission']["token"]
+  RequestHelper.submit_check(jwt, payload)
   @school_uuid = @parsed_response_pupil_auth['school']['uuid']
   @check_code = @parsed_response_pupil_auth['checkCode']
   @received_check = SqlDbHelper.wait_for_received_check(@check_code)
@@ -104,7 +113,9 @@ Given(/^a pupil has completed the check with answers that are not contained in a
   response_pupil_auth = RequestHelper.auth(school_password, pupil_pin)
   @parsed_response_pupil_auth = JSON.parse(response_pupil_auth.body)
   @submission_hash = RequestHelper.build_check_submission_message(@parsed_response_pupil_auth, nil, nil, 'mouse', {answers_not_array: true})
-  AzureQueueHelper.create_check_submission_message(@submission_hash[:submission_message].to_json)
+  payload = @submission_hash[:submission_message]
+  jwt =  @submission_hash[:payload][:tokens]['checkSubmission']["token"]
+  RequestHelper.submit_check(jwt, payload)
   @school_uuid = @parsed_response_pupil_auth['school']['uuid']
   @check_code = @parsed_response_pupil_auth['checkCode']
   @received_check = SqlDbHelper.wait_for_received_check(@check_code)
@@ -130,7 +141,9 @@ Given(/^a pupil has completed the check with the audit log is not contained in a
   response_pupil_auth = RequestHelper.auth(school_password, pupil_pin)
   @parsed_response_pupil_auth = JSON.parse(response_pupil_auth.body)
   @submission_hash = RequestHelper.build_check_submission_message(@parsed_response_pupil_auth, nil, nil, 'mouse', {audit_not_array: true})
-  AzureQueueHelper.create_check_submission_message(@submission_hash[:submission_message].to_json)
+  payload = @submission_hash[:submission_message]
+  jwt =  @submission_hash[:payload][:tokens]['checkSubmission']["token"]
+  RequestHelper.submit_check(jwt, payload)
   @school_uuid = @parsed_response_pupil_auth['school']['uuid']
   @check_code = @parsed_response_pupil_auth['checkCode']
   @received_check = SqlDbHelper.wait_for_received_check(@check_code)
@@ -156,7 +169,9 @@ Given(/^a pupil has completed the check with a check code that is not a UUID$/) 
   response_pupil_auth = RequestHelper.auth(school_password, pupil_pin)
   @parsed_response_pupil_auth = JSON.parse(response_pupil_auth.body)
   @submission_hash = RequestHelper.build_check_submission_message(@parsed_response_pupil_auth, nil, nil, 'mouse', {check_code_not_uuid: true})
-  AzureQueueHelper.create_check_submission_message(@submission_hash[:submission_message].to_json)
+  payload = @submission_hash[:submission_message]
+  jwt =  @submission_hash[:payload][:tokens]['checkSubmission']["token"]
+  RequestHelper.submit_check(jwt, payload)
   @school_uuid = @parsed_response_pupil_auth['school']['uuid']
   @check_code = @parsed_response_pupil_auth['checkCode']
   @received_check = SqlDbHelper.wait_for_received_check(@check_code)
@@ -183,7 +198,9 @@ Given(/^a pupil has completed the check with the config property not being a obj
   response_pupil_auth = RequestHelper.auth(school_password, pupil_pin)
   @parsed_response_pupil_auth = JSON.parse(response_pupil_auth.body)
   @submission_hash = RequestHelper.build_check_submission_message(@parsed_response_pupil_auth, nil, nil, 'mouse', {config_not_object: true})
-  AzureQueueHelper.create_check_submission_message(@submission_hash[:submission_message].to_json)
+  payload = @submission_hash[:submission_message]
+  jwt =  @submission_hash[:payload][:tokens]['checkSubmission']["token"]
+  RequestHelper.submit_check(jwt, payload)
   @school_uuid = @parsed_response_pupil_auth['school']['uuid']
   @check_code = @parsed_response_pupil_auth['checkCode']
   @received_check = SqlDbHelper.wait_for_received_check(@check_code)
@@ -210,7 +227,9 @@ Given(/^a pupil has completed the check with the inputs property not being a arr
   response_pupil_auth = RequestHelper.auth(school_password, pupil_pin)
   @parsed_response_pupil_auth = JSON.parse(response_pupil_auth.body)
   @submission_hash = RequestHelper.build_check_submission_message(@parsed_response_pupil_auth, nil, nil, 'mouse', {inputs_not_array: true})
-  AzureQueueHelper.create_check_submission_message(@submission_hash[:submission_message].to_json)
+  payload = @submission_hash[:submission_message]
+  jwt =  @submission_hash[:payload][:tokens]['checkSubmission']["token"]
+  RequestHelper.submit_check(jwt, payload)
   @school_uuid = @parsed_response_pupil_auth['school']['uuid']
   @check_code = @parsed_response_pupil_auth['checkCode']
   @received_check = SqlDbHelper.wait_for_received_check(@check_code)
@@ -237,7 +256,9 @@ Given(/^a pupil has completed the check with the practice property is set to tru
   response_pupil_auth = RequestHelper.auth(school_password, pupil_pin)
   @parsed_response_pupil_auth = JSON.parse(response_pupil_auth.body)
   @submission_hash = RequestHelper.build_check_submission_message(@parsed_response_pupil_auth, nil, nil, 'mouse', {practice: true})
-  AzureQueueHelper.create_check_submission_message(@submission_hash[:submission_message].to_json)
+  payload = @submission_hash[:submission_message]
+  jwt =  @submission_hash[:payload][:tokens]['checkSubmission']["token"]
+  RequestHelper.submit_check(jwt, payload)
   @school_uuid = @parsed_response_pupil_auth['school']['uuid']
   @check_code = @parsed_response_pupil_auth['checkCode']
   @received_check = SqlDbHelper.wait_for_received_check(@check_code)
@@ -263,7 +284,9 @@ Given(/^a pupil has completed the check with the pupil property not being an obj
   response_pupil_auth = RequestHelper.auth(school_password, pupil_pin)
   @parsed_response_pupil_auth = JSON.parse(response_pupil_auth.body)
   @submission_hash = RequestHelper.build_check_submission_message(@parsed_response_pupil_auth, nil, nil, 'mouse', {pupil_not_object: true})
-  AzureQueueHelper.create_check_submission_message(@submission_hash[:submission_message].to_json)
+  payload = @submission_hash[:submission_message]
+  jwt =  @submission_hash[:payload][:tokens]['checkSubmission']["token"]
+  RequestHelper.submit_check(jwt, payload)
   @school_uuid = @parsed_response_pupil_auth['school']['uuid']
   @check_code = @parsed_response_pupil_auth['checkCode']
   @received_check = SqlDbHelper.wait_for_received_check(@check_code)
@@ -289,7 +312,9 @@ Given(/^a pupil has completed the check with the questions are not contained in 
   response_pupil_auth = RequestHelper.auth(school_password, pupil_pin)
   @parsed_response_pupil_auth = JSON.parse(response_pupil_auth.body)
   @submission_hash = RequestHelper.build_check_submission_message(@parsed_response_pupil_auth, nil, nil, 'mouse', {questions_not_array: true})
-  AzureQueueHelper.create_check_submission_message(@submission_hash[:submission_message].to_json)
+  payload = @submission_hash[:submission_message]
+  jwt =  @submission_hash[:payload][:tokens]['checkSubmission']["token"]
+  RequestHelper.submit_check(jwt, payload)
   @school_uuid = @parsed_response_pupil_auth['school']['uuid']
   @check_code = @parsed_response_pupil_auth['checkCode']
   @received_check = SqlDbHelper.wait_for_received_check(@check_code)
@@ -314,8 +339,10 @@ Given(/^a pupil has completed the check with the school property not being an ob
   response_pupil_auth = RequestHelper.auth(school_password, pupil_pin)
   @parsed_response_pupil_auth = JSON.parse(response_pupil_auth.body)
   @submission_hash = RequestHelper.build_check_submission_message(@parsed_response_pupil_auth, nil, nil, 'mouse', {school_not_object: true})
-  AzureQueueHelper.create_check_submission_message(@submission_hash[:submission_message].to_json)
   @school_uuid = @parsed_response_pupil_auth['school']['uuid']
+  payload = @submission_hash[:submission_message]
+  jwt =  @submission_hash[:payload][:tokens]['checkSubmission']["token"]
+  RequestHelper.submit_check(jwt, payload)
   @check_code = @parsed_response_pupil_auth['checkCode']
   @received_check = SqlDbHelper.wait_for_received_check(@check_code)
   p @check_code
@@ -339,7 +366,9 @@ Given(/^a pupil has completed the check with the tokens property not being an ob
   response_pupil_auth = RequestHelper.auth(school_password, pupil_pin)
   @parsed_response_pupil_auth = JSON.parse(response_pupil_auth.body)
   @submission_hash = RequestHelper.build_check_submission_message(@parsed_response_pupil_auth, nil, nil, 'mouse', {tokens_not_object: true})
-  AzureQueueHelper.create_check_submission_message(@submission_hash[:submission_message].to_json)
+  payload = @submission_hash[:submission_message]
+  jwt =   @parsed_response_pupil_auth["tokens"]['checkSubmission']['token']
+  RequestHelper.submit_check(jwt, payload)
   @school_uuid = @parsed_response_pupil_auth['school']['uuid']
   @check_code = @parsed_response_pupil_auth['checkCode']
   @received_check = SqlDbHelper.wait_for_received_check(@check_code)
@@ -350,4 +379,9 @@ Then(/^I should see an error stating validation failed as the tokens property is
   wait_until{SqlDbHelper.wait_for_received_check(@check_code); !(SqlDbHelper.wait_for_received_check(@check_code)['processingFailed']).nil?}
   @received_check = SqlDbHelper.wait_for_received_check(@check_code)
   expect(@received_check['processingFailed']).to eql true
+end
+
+Then(/^I should see the check is recieved and is set to version (\d+)$/) do |version|
+  @received_check = AzureTableHelper.wait_for_received_check( @school['entity']['urlSlug'], @check_code)
+  expect(@received_check['checkVersion']).to eql version
 end

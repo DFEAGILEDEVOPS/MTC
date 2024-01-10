@@ -33,6 +33,7 @@ require 'lz_string'
 require_relative '../../features/support/azure_blob_helper'
 require_relative 'helpers'
 require_relative '../../features/support/app'
+require 'jwt'
 include Helpers
 
 Dotenv.load('../../.env')
@@ -47,6 +48,8 @@ ENV["FUNC_THROTTLED_MASTER_KEY"] ||= nil
 ENV['WAIT_TIME'] ||= '300'
 ENV['FUNC_CONSUMP_BASE_URL'] ||= 'http://localhost:7071'
 ENV["FUNC_CONSUMP_MASTER_KEY"] ||= nil
+ENV["BUILD_BUILDNUMBER"] ||= 'NOT FOUND'
+ENV["BUILD_SOURCEVERSION"] ||= 'NOT FOUND'
 
 Capybara.configure do |config|
   config.default_driver = ENV["DRIVER"].to_sym

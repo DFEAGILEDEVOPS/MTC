@@ -5,13 +5,12 @@ const uuidValidator = require('../lib/validator/common/uuid-validator')
 const checkDiagnosticsService = require('../services/check-diagnostic.service')
 const payloadService = require('../services/payload.service')
 const redisService = require('../services/tech-support/redis.service')
-const administrationMessageService = require('../services/administration-message.service')
 const redisErrorMessages = require('../lib/errors/redis').redis
 const moment = require('moment')
 const queueMgmtService = require('../services/tech-support-queue-management.service')
 const resultsResyncService = require('../services/tech-support/sync-results-resync.service')
 const { PsReportExecService } = require('../services/tech-support/ps-report-exec/ps-report-exec.service')
-const psReportLogsDownloadService = require('../services/tech-support/ps-report-logs.service/ps-report-logs.service').PsReportLogsDownloadService
+const { CheckSubmitService } = require('../services/tech-support/check-submit/check-submit.service')
 
 const controller = {
   /**
@@ -24,10 +23,8 @@ const controller = {
   getHomePage: async function getHomePage (req, res, next) {
     res.locals.pageTitle = 'Tech Support Homepage'
     try {
-      const serviceMessage = await administrationMessageService.getMessage()
       return res.render('tech-support/home', {
-        breadcrumbs: req.breadcrumbs(),
-        serviceMessage
+        breadcrumbs: req.breadcrumbs()
       })
     } catch (error) {
       return next(error)
@@ -511,50 +508,6 @@ const controller = {
     }
   },
 
-  getPsReportFolders: async function getPsReportFolders (req, res, next) {
-    try {
-      const logs = await psReportLogsDownloadService.getLogFoldersList()
-      res.locals.pageTitle = 'PS Report Logs'
-      req.breadcrumbs('PS Report Logs')
-      res.render('tech-support/ps-report-logs', {
-        breadcrumbs: req.breadcrumbs(),
-        logs
-      })
-    } catch (error) {
-      return next(error)
-    }
-  },
-
-  getPsReportFolderFileList: async function getPsReportFolderFileList (req, res, next) {
-    try {
-      const files = await psReportLogsDownloadService.getLogFolderFileList(req.params.folder)
-      res.locals.pageTitle = 'PS Report Log Folder Files'
-      req.breadcrumbs('PS Report Logs', '/tech-support/ps-report-logs')
-      req.breadcrumbs('PS Report Log Folder Files')
-      res.render('tech-support/ps-report-log-folder', {
-        breadcrumbs: req.breadcrumbs(),
-        files,
-        folder: req.params.folder
-      })
-    } catch (error) {
-      return next(error)
-    }
-  },
-
-  getPsReportLogFileContents: async function getPsReportLogFileContents (req, res, next) {
-    try {
-      const fileContents = await psReportLogsDownloadService.downloadLogFile(req.params.folder, req.params.file)
-      res.set({
-        'Content-Disposition': `attachment; filename="${req.params.file}"`,
-        'Content-type': 'application/octet-stream',
-        'Content-Length': fileContents.length
-      })
-      res.send(fileContents)
-    } catch (error) {
-      return next(error)
-    }
-  },
-
   getPsReportRun: async function getPsReportRun (req, res, next) {
     try {
       res.locals.pageTitle = 'PS Report Run'
@@ -583,6 +536,37 @@ const controller = {
           runReport: req.body.runReport
         },
         response
+      })
+    } catch (error) {
+      return next(error)
+    }
+  },
+
+  getCheckSubmit: async function getCheckSubmit (req, res, next) {
+    try {
+      res.locals.pageTitle = 'Submit Check'
+      req.breadcrumbs('Submit Check')
+      res.render('tech-support/check-submit', {
+        breadcrumbs: req.breadcrumbs(),
+        response: ''
+      })
+    } catch (error) {
+      return next(error)
+    }
+  },
+
+  postCheckSubmit: async function postCheckSubmit (req, res, next) {
+    res.locals.pageTitle = 'Submit Check'
+    try {
+      await CheckSubmitService.submitV3CheckPayload(req.body.isJson, req.body.payload)
+      req.breadcrumbs('Submit Check')
+      res.render('tech-support/check-submit', {
+        breadcrumbs: req.breadcrumbs(),
+        formData: {
+          payload: req.body.payload,
+          isJson: req.body.isJson
+        },
+        response: 'check submitted to service bus successfully'
       })
     } catch (error) {
       return next(error)

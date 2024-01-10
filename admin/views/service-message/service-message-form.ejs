@@ -45,13 +45,46 @@
                     <% if (err.isError('serviceMessageTitle')) { %>
                         <span class="govuk-error-message"><%= err.get('serviceMessageTitle') %></span>
                     <% } %>
-                    <% if (formData.id) { %><input type="hidden" name="id" value="<%= formData.id %>"><% } %>
+                    <% if (formData.urlSlug) { %><input type="hidden" name="urlSlug" value="<%= formData.urlSlug %>"><% } %>
                     <input type="text"
                            id="serviceMessageTitle"
                            class="govuk-input govuk-!-width-three-quarters <%= err.isError('serviceMessageTitle') ? 'govuk-input--error' : '' %>"
                            name="serviceMessageTitle"
                            value="<%= formData['serviceMessageTitle'] %>"/>
 
+                    <div class="govuk-form-group govuk-!-margin-top-5">
+                            <fieldset class="govuk-fieldset" aria-describedby="service-message-area-hint">
+                              <details class="govuk-details" data-module="govuk-details">
+                                <summary class="govuk-details__summary">
+                                  <span class="govuk-details__summary-text">
+                                    Target the message to one or more specific areas of the site:
+                                  </span>
+                                </summary>
+                                <div class="govuk-details__text">
+                                  <label class="govuk-label govuk-!-font-weight-bold" for="serviceMessageArea">
+                                    Area that the message applies to
+                                </label>
+                              <div id="service-message-area-hint" class="govuk-hint">
+                                Select one or more areas for the service message to be shown in, or leave blank to select all areas.
+                              </div>
+
+                              <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+                                <% if (areaCodes && Array.isArray(areaCodes) && areaCodes.length > 0) { %>
+                                  <% areaCodes.forEach(areaCode => { %>
+                                    <div class="govuk-checkboxes__item">
+                                      <input class="govuk-checkboxes__input" id="<%= `area-${areaCode.code}` %>" name="areaCode" type="checkbox" value="<%= areaCode.code %>"
+                                        <% if (Array.isArray(formData.areaCodes) && formData.areaCodes.includes(areaCode.code)) { %> checked <% } else { console.log(`${areaCode.code} is not checked`)} %>>
+                                      <label class="govuk-label govuk-checkboxes__label" for="<%= `area-${areaCode.code}` %>">
+                                        <%= areaCode.description %>
+                                      </label>
+                                    </div>
+                                  <% }) %>
+                                <% } %>
+                              </div>
+
+                            </details>
+                        </fieldset>
+                    </div>
 
 
                     <div class="govuk-!-margin-top-5 govuk-form-group <%= err.isError('serviceMessageContent') ? 'govuk-form-group--error' : '' %>">

@@ -5,7 +5,7 @@ const pupilAttendanceDataService = require('./data-access/pupil-attendance.data.
 const pupilDataService = require('./data-access/pupil.data.service')
 const redisCacheService = require('./data-access/redis-cache.service')
 const redisKeyService = require('./redis-key.service')
-const { PupilFrozenService } = require('./pupil-frozen.service/pupil-frozen.service')
+const { PupilFrozenService } = require('./pupil-frozen/pupil-frozen.service')
 const { isNumber } = require('ramda-adjunct')
 
 const attendanceService = {

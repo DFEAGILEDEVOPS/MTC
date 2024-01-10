@@ -170,7 +170,7 @@ Before("@hdf") do
   pupil_reason_page.sticky_banner.confirm.click
   pupil_status_page.load
   @number_of_pupils = SqlDbHelper.list_of_pupils_from_school(SqlDbHelper.find_teacher(@username)['school_id']).count
-  expect(pupil_status_page.not_taking_checks.count.text.to_i + pupil_status_page.completed_checks.count.text.to_i).to eql @number_of_pupils
+  expect(pupil_status_page.pupils_completed.count.text.to_i).to eql @number_of_pupils
   visit ENV['ADMIN_BASE_URL'] + '/sign-out'
 end
 

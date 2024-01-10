@@ -90,15 +90,20 @@ const payloadService = {
     }
 
     const entity = await payloadDataService.sqlFindOneByCheckCode(checkCode)
-
     const archive = entity.archive
 
     if (archive.length === 0) {
       throw new Error('archive not found')
     }
 
-    const payloadString = compressionService.decompress(archive)
+    let payloadString = ''
+    if (entity.checkVersion !== undefined && entity.checkVersion === 3) {
+      payloadString = compressionService.decompressFromBase64(archive)
+    } else {
+      payloadString = compressionService.decompressFromUTF16(archive)
+    }
     const payload = JSON.parse(payloadString)
+    payload.checkVersion = entity.checkVersion
     return this.addRelativeTimings(payload)
   }
 }

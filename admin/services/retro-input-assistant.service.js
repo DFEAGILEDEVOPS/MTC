@@ -3,7 +3,7 @@
 const validator = require('../lib/validator/retro-input-assistant-validator')
 const dataService = require('./data-access/retro-input-assistant.data.service')
 const validateUuid = require('uuid-validate')
-const { PupilFrozenService } = require('./pupil-frozen.service/pupil-frozen.service')
+const { PupilFrozenService } = require('./pupil-frozen/pupil-frozen.service')
 
 const service = {
   /**

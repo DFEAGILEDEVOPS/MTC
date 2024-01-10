@@ -2,6 +2,7 @@
 <main class="govuk-main-wrapper" id="main-content" role="main">
     <div class="govuk-grid-row" id="pupils-not-taking-checks">
         <div class="govuk-grid-column-two-thirds">
+            <%- partial('partials/_service_message', { serviceMessages }) %>
             <% if (messages.info && messages.info.length > 0) { %>
                 <div class="govuk-body govuk-info-message govuk-!-margin-bottom-7">
                     <%= messages.info.join('<br/>') %>

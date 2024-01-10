@@ -32,7 +32,6 @@ When(/^I am on the Pupil Status page$/) do
   pupil_status_page.load
 end
 
-
 Given(/^there is a processing error with a check$/) do
   step 'I have generated a live pin for a pupil'
   pupil_detail = SqlDbHelper.pupil_details(@details_hash[:upn], @school_id)
@@ -41,12 +40,13 @@ Given(/^there is a processing error with a check$/) do
   pupil_pin_detail = SqlDbHelper.get_pupil_pin(check_entry['id'])
   pupil_pin = pupil_pin_detail['val']
   school_password = SqlDbHelper.find_school(pupil_detail['school_id'])['pin']
-
   Timeout.timeout(ENV['WAIT_TIME'].to_i) {sleep 1 until RequestHelper.auth(school_password, pupil_pin).code == 200}
   response_pupil_auth = RequestHelper.auth(school_password, pupil_pin)
   @parsed_response_pupil_auth = JSON.parse(response_pupil_auth.body)
   @submission_hash = RequestHelper.build_check_submission_message(@parsed_response_pupil_auth, nil, true)
-  AzureQueueHelper.create_check_submission_message(@submission_hash[:submission_message].to_json)
+  payload = @submission_hash[:submission_message]
+  jwt =  @submission_hash[:payload][:tokens]['checkSubmission']["token"]
+  RequestHelper.submit_check(jwt, payload)
   school_uuid = @parsed_response_pupil_auth['school']['uuid']
   @check_code = @parsed_response_pupil_auth['checkCode']
   SqlDbHelper.wait_for_received_check(@check_code)
@@ -62,7 +62,7 @@ end
 
 And(/^I should see a red error box at the top of the page$/) do
   expect(pupil_status_page).to have_warning_message
-  expect(pupil_status_page.warning_message.text).to eql "#{pupil_status_page.checks_with_errors.count.text} Check with errors"
+  expect(pupil_status_page.warning_message.text).to eql "#{pupil_status_page.checks_that_require_action.count.text} Check with errors"
 end
 
 
@@ -73,10 +73,10 @@ Given(/^I have logged in to the check$/) do
 end
 
 Then(/^the counts should equal the total number of pupils in the school$/) do
- page_total = (pupil_status_page.checks_with_errors.count.text.to_i +
-  pupil_status_page.not_started_checks.count.text.to_i +
-  pupil_status_page.not_taking_checks.count.text.to_i +
-  pupil_status_page.completed_checks.count.text.to_i)
+ page_total = (pupil_status_page.checks_that_require_action.count.text.to_i +
+  pupil_status_page.pupils_not_started.count.text.to_i +
+  pupil_status_page.pupils_in_progress.count.text.to_i +
+  pupil_status_page.pupils_completed.count.text.to_i)
   db_total = SqlDbHelper.list_of_pupils_from_school(SqlDbHelper.find_teacher(@user)['school_id']).count
   expect(page_total).to eql db_total
 end

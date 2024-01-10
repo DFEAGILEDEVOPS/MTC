@@ -29,13 +29,13 @@ Feature:
     Then I should see the added pupil details on the pupil register page
 
   @remove_all_groups
-  Scenario: Group coloumn is populated with group name when pupil is part of a group
+  Scenario: Group column is populated with group name when pupil is part of a group
     Given I have a group of pupils
     When I am on the Pupil Register page
-    Then I should see each pupil row have the group coloumn populated with the group name
+    Then I should see each pupil row have the group column populated with the group name
 
   @remove_all_groups
-  Scenario: Pupils with no group have no entry in the group coloumn
+  Scenario: Pupils with no group have no entry in the group column
     Given I have a group of pupils
     When I am on the Pupil Register page
     Then any pupils not part of a group should not have an entry for group
@@ -60,3 +60,59 @@ Feature:
     Given I am logged in
     When I am on the Pupil Register page
     Then I can search for a pupil via upn
+
+  Scenario: Optional Columns can be shown
+    Given I have a group of pupils
+    And I am on the Pupil Register page
+    And I choose to show the UPN column
+    Then the optional columns along with the additional pupil info is added to the register table
+
+  Scenario: Pupil register can be sorted by name
+    Given I have a group of pupils
+    And I am on the Pupil Register page with optional fields displayed
+    And I choose to sort the pupil register by name in reverse order
+    Then the pupil register is sorted by name in reverse order
+
+  Scenario: Pupil register can be sorted by dob in order of oldest to newest
+    Given I have a group of pupils
+    And I am on the Pupil Register page with optional fields displayed
+    And I choose to sort the pupil register by dob in order of oldest to newest
+    Then the pupil register is sorted by dob in order of oldest to newest
+
+  Scenario: Pupil register can be sorted by dob in order of newest to oldest
+    Given I have a group of pupils
+    And I am on the Pupil Register page with optional fields displayed
+    And I choose to sort the pupil register by dob in order of newest to oldest
+    Then the pupil register is sorted by dob in order of newest to oldest
+
+  Scenario: Pupil register can be sorted by UPN in z-a order
+    Given I have a group of pupils
+    And I am on the Pupil Register page with optional fields displayed
+    And I choose to sort the pupil register by upn in z-a order
+    Then the pupil register is sorted by upn in z-a order
+
+  Scenario: Pupil register can be sorted by UPN in a-z order
+    Given I have a group of pupils
+    And I am on the Pupil Register page with optional fields displayed
+    And I choose to sort the pupil register by upn in a-z order
+    Then the pupil register is sorted by upn in a-z order
+
+  Scenario: Pupil register can be sorted by Group in z-a order
+    Given I have pupils in 2 groups
+    And I am on the Pupil Register page with optional fields displayed
+    And I choose to sort the pupil register by group in z-a order
+    Then the pupil register is sorted by group in z-a order
+
+  Scenario: Pupil register can be sorted by Group in a-z order
+    Given I have pupils in 2 groups
+    And I am on the Pupil Register page with optional fields displayed
+    And I choose to sort the pupil register by group in a-z order
+    Then the pupil register is sorted by group in a-z order
+
+  Scenario: Group column can be hidden
+    Given I am logged in
+    When I am on the Pupil Register page
+    Then I can choose to hide the Group column
+
+
+

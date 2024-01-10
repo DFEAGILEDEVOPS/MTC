@@ -1,4 +1,5 @@
 import { FakeSubmittedCheckMessageGeneratorService } from './fake-submitted-check-generator.service'
+import { SubmittedCheckVersion } from '../../schemas/SubmittedCheckVersion'
 import mockPreparedCheck from '../../schemas/check-schemas/mock-prepared-check-2021.json'
 import { FakeCompletedCheckGeneratorService, type ICompletedCheckGeneratorService } from './fake-completed-check-generator.service'
 import { type ICompressionService } from '../../common/compression-service'
@@ -16,8 +17,10 @@ const SubmittedCheckBuilderServiceMock = jest.fn<ICompletedCheckGeneratorService
 }))
 
 const CompressionServiceMock = jest.fn<ICompressionService, any>(() => ({
-  compress: jest.fn(),
-  decompress: jest.fn()
+  compressToUTF16: jest.fn(),
+  decompressFromUTF16: jest.fn(),
+  compressToBase64: jest.fn(),
+  decompressFromBase64: jest.fn()
 }))
 
 const PreparedCheckServiceMock = jest.fn<IPreparedCheckService, any>(() => ({
@@ -40,44 +43,70 @@ describe('fake-submitted-check-message-builder-service', () => {
     expect(sut).toBeInstanceOf(FakeSubmittedCheckMessageGeneratorService)
   })
 
-  test('calls prepared check service with expected check code', async () => {
-    await sut.createSubmittedCheckMessage(checkCode)
-    expect(preparedCheckServiceMock.fetch).toHaveBeenCalledWith(checkCode)
+  describe('create v2 message', () => {
+    test('populates expected properties', async () => {
+      const compressedObject = 'compressed-as-string'
+      jest.spyOn(compressionServiceMock, 'compressToUTF16').mockReturnValue(compressedObject)
+      const actual = await sut.createV2Message(checkCode)
+      expect(actual).toBeDefined()
+      expect(actual.checkCode).toStrictEqual(checkCode)
+      expect(actual.schoolUUID).toStrictEqual(mockPreparedCheck.school.uuid)
+      expect(actual.version).toBe(2)
+      expect(actual.archive).toStrictEqual(compressedObject)
+      expect(compressionServiceMock.compressToUTF16).toHaveBeenCalledTimes(1)
+    })
+
+    test('fetches prepared check with expected check code', async () => {
+      await sut.createV2Message(checkCode)
+      expect(preparedCheckServiceMock.fetch).toHaveBeenCalledWith(checkCode)
+    })
+
+    test('if prepared check not found an error should be thrown', async () => {
+      jest.spyOn(preparedCheckServiceMock, 'fetch').mockReturnValue(Promise.resolve())
+      try {
+        await sut.createV2Message(checkCode)
+        fail('error should have been thrown due to prepared check not being found in redis')
+      } catch (error: any) {
+        expect(error.message).toBe(`prepared check not found in redis with checkCode:${checkCode}`)
+      }
+    })
+
+    test('produces a v2 submitted check when version not specified', async () => {
+      const compressedObject = 'compressed-as-string'
+      jest.spyOn(compressionServiceMock, 'compressToUTF16').mockReturnValue(compressedObject)
+      const actual = await sut.createV2Message(checkCode)
+      expect(actual).toBeDefined()
+      expect(actual.version).toStrictEqual(SubmittedCheckVersion.V2)
+    })
   })
 
-  test('populates version, checkCode and schoolUUID at top level', async () => {
-    const actual = await sut.createSubmittedCheckMessage(checkCode)
-    expect(actual).toBeDefined()
-    expect(actual.checkCode).toStrictEqual(checkCode)
-    expect(actual.schoolUUID).toStrictEqual(mockPreparedCheck.school.uuid)
-    expect(actual.version).toBe(2)
-  })
+  describe('v3 message', () => {
+    test('produces a v3 message', async () => {
+      jest.spyOn(compressionServiceMock, 'compressToUTF16')
+      const compressedString = 'compressed-string'
+      jest.spyOn(compressionServiceMock, 'compressToBase64').mockReturnValue(compressedString)
+      const version3Spec = SubmittedCheckVersion.V3
+      const actual = await sut.createV3Message(checkCode)
+      expect(actual).toBeDefined()
+      expect(actual.version).toStrictEqual(version3Spec)
+      expect(actual.archive).toStrictEqual(compressedString)
+      expect(compressionServiceMock.compressToUTF16).not.toHaveBeenCalled()
+      expect(compressionServiceMock.compressToBase64).toHaveBeenCalledTimes(1)
+    })
 
-  test('obtains submitted check payload from builder', async () => {
-    const fakeSubmittedCheckBuilder = new FakeCompletedCheckGeneratorService()
-    const mockSubmittedCheck = fakeSubmittedCheckBuilder.create(mockPreparedCheck)
-    jest.spyOn(submittedCheckBuilderMock, 'create').mockReturnValue(mockSubmittedCheck)
-    const actual = await sut.createSubmittedCheckMessage(checkCode)
-    expect(actual).toBeDefined()
-    expect(submittedCheckBuilderMock.create).toHaveBeenCalledTimes(1)
-  })
+    test('fetches prepared check with expected check code', async () => {
+      await sut.createV3Message(checkCode)
+      expect(preparedCheckServiceMock.fetch).toHaveBeenCalledWith(checkCode)
+    })
 
-  test('uses compression service to create archive property', async () => {
-    const compressedObject = 'compressed-as-string'
-    jest.spyOn(compressionServiceMock, 'compress').mockReturnValue(compressedObject)
-    const actual = await sut.createSubmittedCheckMessage(checkCode)
-    expect(actual).toBeDefined()
-    expect(actual.archive).toStrictEqual(compressedObject)
-    expect(compressionServiceMock.compress).toHaveBeenCalledTimes(1)
-  })
-
-  test('if prepared check not found an error should be thrown', async () => {
-    jest.spyOn(preparedCheckServiceMock, 'fetch').mockReturnValue(Promise.resolve())
-    try {
-      await sut.createSubmittedCheckMessage(checkCode)
-      fail('error should have been thrown due to prepared check not being found in redis')
-    } catch (error: any) {
-      expect(error.message).toBe(`prepared check not found in redis with checkCode:${checkCode}`)
-    }
+    test('if prepared check not found an error should be thrown', async () => {
+      jest.spyOn(preparedCheckServiceMock, 'fetch').mockReturnValue(Promise.resolve())
+      try {
+        await sut.createV3Message(checkCode)
+        fail('error should have been thrown due to prepared check not being found in redis')
+      } catch (error: any) {
+        expect(error.message).toBe(`prepared check not found in redis with checkCode:${checkCode}`)
+      }
+    })
   })
 })

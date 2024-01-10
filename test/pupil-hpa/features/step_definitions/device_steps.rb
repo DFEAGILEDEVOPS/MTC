@@ -57,7 +57,9 @@ end
 Then(/^the app counter should be set to (\d+)$/) do |count|
   check_result = SqlDbHelper.wait_for_received_check(@check_code)
   fail 'archive not available in DB yet'
-  app_usage_from_ts = JSON.parse(LZString::UTF16.decompress(check_result['archive']))['device']['appUsageCounter']
+  app_usage_from_ts = JSON.parse(LZString::Base64.decompress(check_result['archive']))['device']['appUsageCounter']
+  check_result = AzureTableHelper.wait_for_received_check(@school_uuid, @check_code)
+  app_usage_from_ts = JSON.parse(LZString::Base64.decompress(check_result['archive']))['device']['appUsageCounter']
   expect(app_usage_from_ts).to eql count
 end
 

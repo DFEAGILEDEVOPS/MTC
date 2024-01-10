@@ -4,11 +4,10 @@
 const httpMocks = require('node-mocks-http')
 const checkDiagnosticService = require('../../../services/check-diagnostic.service')
 const payloadService = require('../../../services/payload.service')
-const administrationMessageService = require('../../../services/administration-message.service')
 const queueMgmtService = require('../../../services/tech-support-queue-management.service')
 const resultsResyncService = require('../../../services/tech-support/sync-results-resync.service')
-const { PsReportLogsDownloadService } = require('../../../services/tech-support/ps-report-logs.service/ps-report-logs.service')
 const { PsReportExecService } = require('../../../services/tech-support/ps-report-exec/ps-report-exec.service')
+const { CheckSubmitService } = require('../../../services/tech-support/check-submit/check-submit.service')
 
 let sut
 let next
@@ -50,7 +49,6 @@ describe('tech-support controller', () => {
     test('GET: should render the home page', async () => {
       const req = getRequest(getReqParams)
       const res = getResponse()
-      jest.spyOn(administrationMessageService, 'getMessage').mockResolvedValue(Promise.resolve(''))
       jest.spyOn(res, 'render').mockResolvedValue(null)
       await sut.getHomePage(req, res, next)
       expect(res.statusCode).toBe(200)
@@ -246,49 +244,6 @@ describe('tech-support controller', () => {
     })
   })
 
-  describe('/ps-report-logs', () => {
-    test('GET: should render the page', async () => {
-      const req = getRequest(getReqParams('/tech-support/ps-report-logs', 'GET'))
-      const res = getResponse()
-      jest.spyOn(res, 'render').mockResolvedValue(null)
-      jest.spyOn(PsReportLogsDownloadService, 'getLogFoldersList').mockResolvedValue(['one', 'two', 'three'])
-      await sut.getPsReportFolders(req, res, next)
-      expect(res.statusCode).toBe(200)
-      expect(res.locals.pageTitle).toBe('PS Report Logs')
-      expect(res.render).toHaveBeenCalled()
-      expect(next).not.toHaveBeenCalled()
-    })
-  })
-
-  describe('/ps-report-log-folder/folder', () => {
-    test('GET: should render the page', async () => {
-      const req = getRequest(getReqParams('/tech-support/ps-report-log-folder/myfolder', 'GET'))
-      const res = getResponse()
-      jest.spyOn(res, 'render').mockResolvedValue(null)
-      jest.spyOn(PsReportLogsDownloadService, 'getLogFolderFileList').mockResolvedValue(['one.txt', 'two.txt', 'three.txt'])
-      await sut.getPsReportFolderFileList(req, res, next)
-      expect(res.statusCode).toBe(200)
-      expect(res.locals.pageTitle).toBe('PS Report Log Folder Files')
-      expect(res.render).toHaveBeenCalled()
-      expect(next).not.toHaveBeenCalled()
-    })
-  })
-
-  describe('/ps-report-log-folder/folder/file', () => {
-    test('GET: should render the page', async () => {
-      const req = getRequest(getReqParams('/tech-support/ps-report-log-folder/myfolder/myfile.txt', 'GET'))
-      const res = getResponse()
-      jest.spyOn(res, 'send').mockResolvedValue(null)
-      jest.spyOn(res, 'set').mockResolvedValue(null)
-      jest.spyOn(PsReportLogsDownloadService, 'downloadLogFile').mockResolvedValue('slifjdsfjsdlkfjsdlkjfdsk')
-      await sut.getPsReportLogFileContents(req, res, next)
-      expect(res.statusCode).toBe(200)
-      expect(res.send).toHaveBeenCalled()
-      expect(res.set).toHaveBeenCalled()
-      expect(next).not.toHaveBeenCalled()
-    })
-  })
-
   describe('/ps-report-run', () => {
     test('GET: should render page', async () => {
       const reqParams = getReqParams('/tech-support/ps-report-run', 'GET')
@@ -341,6 +296,40 @@ describe('tech-support controller', () => {
       expect(res.render).toHaveBeenCalled()
       expect(next).not.toHaveBeenCalled()
       expect(PsReportExecService.requestReportGeneration).toHaveBeenCalledWith(userId)
+    })
+  })
+
+  describe('/check-submit', () => {
+    test('GET: should render page', async () => {
+      const reqParams = getReqParams('/tech-support/check-submit', 'GET')
+      const req = getRequest(reqParams)
+      const res = getResponse()
+      jest.spyOn(res, 'render').mockImplementation()
+      await sut.getCheckSubmit(req, res, next)
+      expect(res.statusCode).toBe(200)
+      expect(res.render).toHaveBeenCalled()
+      expect(next).not.toHaveBeenCalled()
+    })
+
+    test('POST: should submit check to service', async () => {
+      const reqParams = getReqParams('/tech-support/check-submit', 'POST')
+      const req = getRequest(reqParams)
+      req.body = {
+        payload: 'sfsdfkdsf',
+        isJson: true
+      }
+      const res = getResponse()
+      jest.spyOn(CheckSubmitService, 'submitV3CheckPayload').mockImplementation()
+      let response
+      jest.spyOn(res, 'render').mockImplementation((view, data) => {
+        response = data.response
+      })
+      await sut.postCheckSubmit(req, res, next)
+      expect(response).toEqual('check submitted to service bus successfully')
+      expect(res.statusCode).toBe(200)
+      expect(res.render).toHaveBeenCalled()
+      expect(next).not.toHaveBeenCalled()
+      expect(CheckSubmitService.submitV3CheckPayload).toHaveBeenCalledWith(req.body.isJson, req.body.payload)
     })
   })
 })

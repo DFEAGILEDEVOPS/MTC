@@ -5,7 +5,7 @@ const moment = require('moment')
 
 const redisKeyService = require('../services/redis-key.service')
 const { QueueServiceClient } = require('@azure/storage-queue')
-const queueNameService = require('../services/queue-name-service')
+const queueNameService = require('../services/storage-queue-name-service')
 const sut = require('../services/sas-token.service')
 const redisCacheService = require('../services/data-access/redis-cache.service')
 

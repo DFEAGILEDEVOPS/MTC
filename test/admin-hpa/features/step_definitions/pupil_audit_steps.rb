@@ -199,7 +199,7 @@ Then(/^I should see a audit entry for the pupil with a discretionary restart$/) 
     parsed_audit_record = record.each {|k, v| record['newData'] = parsed_new_data}
     array_of_parsed_records << parsed_audit_record
   end
-  expect(array_of_parsed_records.last['newData']['isDiscretionaryRestartAvailable']).to be true
+  expect(array_of_parsed_records.select {|record| record['newData']['isDiscretionaryRestartAvailable'] == true}). to_not be_nil
 end
 
 

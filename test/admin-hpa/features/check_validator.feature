@@ -54,3 +54,7 @@ Feature:
     Given a pupil has completed the check with the tokens property not being an object
     Then I should see an error stating validation failed as the tokens property is not a object
 
+  Scenario: Check version is set to version 3
+    Given a pupil has completed a check
+    Then I should see the check is recieved and is set to version 3
+

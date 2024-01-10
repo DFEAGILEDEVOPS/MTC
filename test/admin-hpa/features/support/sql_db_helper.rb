@@ -767,6 +767,7 @@ class SqlDbHelper
     result.do
   end
 
+
   def self.received_check(check_code)
     sql = "SELECT * FROM [mtc_admin].[check] WHERE checkCode = '#{check_code}' and received=1"
     result = SQL_CLIENT.execute(sql)
@@ -785,6 +786,14 @@ class SqlDbHelper
       p "retry number" + retries.to_s
       retry if (retries += 1) < 60
     end
+  end
+
+  def self.group_details(group_id)
+    sql = "SELECT * FROM [mtc_admin].[group] WHERE id='#{group_id}'"
+    result = SQL_CLIENT.execute(sql)
+    group_details_res = result.first
+    result.cancel
+    group_details_res
   end
 
 end

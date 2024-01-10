@@ -151,7 +151,7 @@ Then(/^I should see all the data from the check stored in the DB$/) do
   storage_questions = JSON.parse page.evaluate_script('window.localStorage.getItem("questions");')
   check_result = SqlDbHelper.wait_for_received_check(storage_pupil['checkCode'])
   fail 'archive not available in DB yet'
-  check = JSON.parse(LZString::UTF16.decompress(check_result['archive']))
+  check = JSON.parse(LZString::Base64.decompress(check_result['archive']))
   storage_answers.each {|answer| expect(check['answers']).to include answer}
   storage_inputs.each {|input| expect(check['inputs']).to include input}
   [storage_school].each {|audit| expect(check['school']).to include audit}
@@ -209,4 +209,16 @@ Then(/^my score should be calculated as (\d+) and stored$/) do |expected_score|
   incorrect_answers = JSON.parse(check_result.properties['markedAnswers']).select {|x| x['isCorrect'] == false}
   expect(correct_answers.count).to eql expected_score
   expect(incorrect_answers.count).to eql (25 -expected_score)
+end
+
+When(/^I decode the JWT token$/) do
+  received_check = AzureTableHelper.wait_for_received_check(@school['entity']['urlSlug'], @check_code)
+  jwt_token = JSON.parse(LZString::Base64.decompress(received_check['archive']))['tokens']['checkSubmission']['token']
+  @decoded_jwt = decode_jwt_token(jwt_token)
+end
+
+Then(/^it should contain the correct information$/) do
+  expect(@decoded_jwt.first['checkCode']).to eql @check_code
+  expect(@decoded_jwt.first['iss']).to eql 'MTC Admin'
+  expect(@decoded_jwt.first['sub']).to eql SqlDbHelper.pupil_details(@details_hash[:upn])['urlSlug']
 end

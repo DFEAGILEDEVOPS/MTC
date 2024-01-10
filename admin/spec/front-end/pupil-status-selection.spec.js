@@ -9,7 +9,7 @@ describe('A pupil status', function () {
         <div class="govuk-grid-column-two-thirds">
             <div id="red-card" class="govuk-panel govuk-panel custom-card red-card">
                 <div class="govuk-panel__body custom-card-small-text">
-                    Checks with errors
+                    Checks that require action
                 </div>
                 <h1 class="custom-card-large-text">
                     0
@@ -21,7 +21,7 @@ describe('A pupil status', function () {
             <details id="red-card-details" class="govuk-details red-card-details" data-module="govuk-details">
                 <summary class="govuk-details__summary">
                         <span class="govuk-details__summary-text">
-                          Checks with errors
+                          Checks that require action
                         </span>
                 </summary>
                 <div class="govuk-details__text">

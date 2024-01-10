@@ -23,7 +23,7 @@ export class AnswerCountValidator implements ISubmittedCheckValidator {
     const answerCount = foundAnswers.filter(isOne).length
     if (answerCount < config.LiveFormQuestionCount) {
       return {
-        message: `submitted check has ${answerCount} answers`
+        message: `submitted check has ${answerCount} answers. ${config.LiveFormQuestionCount} answers are required}`
       }
     }
   }

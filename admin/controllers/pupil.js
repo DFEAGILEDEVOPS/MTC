@@ -16,7 +16,8 @@ const businessAvailabilityService = require('../services/business-availability.s
 const pupilEditService = require('../services/pupil-edit.service')
 const ValidationError = require('../lib/validation-error')
 const logger = require('../services/log.service').getLogger()
-const { PupilHistoryService } = require('../services/pupil-history-service/pupil-history-service')
+const { PupilHistoryService } = require('../services/pupil-history/pupil-history-service')
+const roles = require('../lib/consts/roles')
 
 const controller = {
   /**
@@ -268,9 +269,12 @@ const controller = {
       req.breadcrumbs('View, add or edit pupils on your school\'s register', '/pupil-register/pupils-list')
       req.breadcrumbs(res.locals.pageTitle)
       const pupilHistory = await PupilHistoryService.getHistory(req.params.urlSlug)
+      const isStaAdmin = (req.user.role === roles.staAdmin)
+      console.log('isStaAdmin', isStaAdmin)
       return res.render('pupil-register/pupil-history', {
         breadcrumbs: req.breadcrumbs(),
-        pupilHistory
+        pupilHistory,
+        isStaAdmin
       })
     } catch (error) {
       next(error)

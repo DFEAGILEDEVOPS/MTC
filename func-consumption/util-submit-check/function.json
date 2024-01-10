@@ -1,10 +1,10 @@
 {
   "bindings": [
     {
+      "name": "req",
       "authLevel": "anonymous",
       "type": "httpTrigger",
       "direction": "in",
-      "name": "req",
       "methods": [
         "post"
       ]
@@ -15,11 +15,18 @@
       "name": "res"
     },
     {
-      "type": "queue",
       "name": "submittedCheckQueue",
+      "type": "queue",
       "direction": "out",
       "queueName": "check-submitted",
       "connection": "AZURE_STORAGE_CONNECTION_STRING"
+    },
+    {
+      "name": "checkSubmissionQueue",
+      "type": "serviceBus",
+      "direction": "out",
+      "queueName": "check-submission",
+      "connection": "AZURE_SERVICE_BUS_CONNECTION_STRING"
     }
   ],
   "scriptFile": "../dist/functions/util-submit-check/index.js"
