@@ -23,7 +23,11 @@ export class PsReportWriterService {
     this.sqlService = sqlService
   }
 
-  public async createDestinationTableAndView (): Promise<void> {
+  /**
+   *
+   * @returns Create a new ps report table and return the table name
+   */
+  public async createDestinationTableAndView (): Promise<string> {
     const ds = moment().format('YYYY_MM_DDTHHmm')
     const newTableName = `psychometricReport_${ds}`
     const sql = `
@@ -508,6 +512,7 @@ export class PsReportWriterService {
     `
     await this.sqlService.modify(viewSql, [])
     this.logger.info(`${this.logServiceName}: psychometricReport view recreated`)
+    return newTableName;
   }
 
   /**
@@ -520,7 +525,7 @@ export class PsReportWriterService {
     const containerName = 'ps-report-bulk-upload'
     const containerUrl = await blobService.getContainerUrl(containerName)
     this.logger.verbose(`${this.logServiceName}: container url is ${containerUrl}`)
-    const sasToken = 'newSasToken'
+    const sasToken = await blobService.getContainerReadWriteSasToken(containerName)
     const sql = `
       IF (SELECT COUNT(*) FROM sys.database_scoped_credentials WHERE name = 'PsReportBulkUploadCredential') = 0
         BEGIN
@@ -544,6 +549,27 @@ export class PsReportWriterService {
       END
     `
     await this.sqlService.modify(sql, [])
+  }
+
+  public async bulkUpload (fileName: string, tableName: string): Promise<void> {
+    const sanitise = (sTainted: string): string => sTainted.replace(/[^a-zA-Z0-9-_]+/, '')
+    const sFileName = sanitise(fileName)
+    const sTableName = sanitise(tableName)
+
+    const sql = `
+      BULK INSERT mtc_results.[${sTableName}]
+      FROM '${sFileName}'
+      WITH (DATA_SOURCE = 'PsReportData', FORMAT = 'CSV');`
+
+  }
+
+  public async cleanup (fileName: string, dbTable: string): Promise<void> {
+    // Remove CSV file
+    // Remove ? new table (may not have been created)
+    // Ensure the view table alias points to the last good PS report.
+    this.logger.info(`${this.logServiceName}: cleanup() called`)
+    this.logger.info(`${this.logServiceName}: removing blob file: ${fileName}`)
+    // const blobService = new BlobService() // delete
   }
 
   private parseTimeout (answers: IReportLineAnswer[], index: number, prop: 'timeout' | 'timeoutResponse' | 'timeoutScore'): number | null {

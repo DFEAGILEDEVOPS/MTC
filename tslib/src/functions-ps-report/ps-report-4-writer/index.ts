@@ -13,26 +13,25 @@ const serviceBusQueueTrigger: AzureFunction = async function (context: Context, 
 }
 
 async function bulkUpload (context: Context, fileName: string): Promise<void> {
+  let dbTable: string = ''
+  const service = new PsReportWriterService(context.log)
+  // Do we just delete the last upload and repoint the table alias.
   try {
-    const service = new PsReportWriterService(context.log)
     context.log.verbose(`${funcName}: creating new destination table in SQL Server`)
-    await service.createDestinationTableAndView()
-    context.log.verbose(`${funcName}: new table created`)
+    dbTable = await service.createDestinationTableAndView()
+    context.log.verbose(`${funcName}: new table created ${dbTable}`)
     // context.log(`${funcName}: bulkUpload() uploading ${fileName}`)
     await service.prepareForUpload()
+    context.log(`${funcName}: starting bulk upload from ${fileName} into table ${dbTable}`)
+    await service.bulkUpload(fileName, dbTable) // the container is *known* and is stored in the location path of the database 'EXTERNAL DATA SOURCE'.
+    context.log(`${funcName}: bulk upload complete.`)
   } catch (error: any) {
     if (error instanceof Error) {
-      context.log.warn(error.message)
-      context.log.warn(JSON.stringify(error))
+      context.log.warn(`${funcName}: bulkUpload() failed: ${error.message}`)
+      context.log.warn(`${funcName} : ` + JSON.stringify(error))
     }
-    await cleanup()
+    await service.cleanup(fileName, dbTable)
   }
-}
-
-async function cleanup (): Promise<void> {
-  // Remove CSV file
-  // Remove ? new table (may not have been created)
-  // Ensure the view table alias points to the last good PS report.
 }
 
 export default serviceBusQueueTrigger

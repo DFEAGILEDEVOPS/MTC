@@ -1,5 +1,6 @@
-import { BlobServiceClient, type ContainerClient } from '@azure/storage-blob'
+import { BlobServiceClient, ContainerSASPermissions, type ContainerClient } from '@azure/storage-blob'
 import config from '../config'
+import moment from 'moment'
 
 export interface IBlobService {
   deleteBlob (blobName: string, containerName: string): Promise<void>
@@ -38,5 +39,19 @@ export class BlobService implements IBlobService {
   async getContainerUrl (containerName: string): Promise<string> {
     const client = await this.getContainerClient(containerName)
     return client.url
+  }
+
+  async getContainerReadWriteSasToken (containerName: string): Promise<string> {
+    const client = await this.getContainerClient(containerName)
+    const startDate = moment().subtract(5, 'minutes')
+    const expiryDate = moment().add(2, 'hours') // Educated guess at the time of writing.  Needs to be long enough for 650K records to be transferred and loaded.
+    const permissions = new ContainerSASPermissions()
+    permissions.read = true
+    permissions.delete = true
+    return client.generateSasUrl({
+      permissions,
+      startsOn: startDate.toDate(),
+      expiresOn: expiryDate.toDate()
+    })
   }
 }
