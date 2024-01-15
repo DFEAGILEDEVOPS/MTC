@@ -512,7 +512,7 @@ export class PsReportWriterService {
     `
     await this.sqlService.modify(viewSql, [])
     this.logger.info(`${this.logServiceName}: psychometricReport view recreated`)
-    return newTableName;
+    return newTableName
   }
 
   /**
@@ -561,6 +561,7 @@ export class PsReportWriterService {
       FROM '${sFileName}'
       WITH (DATA_SOURCE = 'PsReportData', FORMAT = 'CSV');`
 
+    await this.sqlService.modify(sql, [])
   }
 
   public async cleanup (fileName: string, dbTable: string): Promise<void> {
