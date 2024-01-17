@@ -8,7 +8,7 @@ import { type ILogger } from '../../common/logger'
 import { type ValidCheck } from '../../schemas/check-schemas/validated-check'
 import { SubmittedCheckVersion } from '../../schemas/SubmittedCheckVersion'
 
-export class FakeSubmittedCheckMessageGeneratorService {
+export class FakeCompletedCheckMessageGeneratorService {
   private readonly completedCheckGenerator: ICompletedCheckGeneratorService
   private readonly compressionService: ICompressionService
   private readonly prepCheckService: IPreparedCheckService
