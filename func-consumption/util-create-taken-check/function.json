@@ -1,0 +1,19 @@
+{
+  "bindings": [
+    {
+      "name": "req",
+      "authLevel": "anonymous",
+      "type": "httpTrigger",
+      "direction": "in",
+      "methods": [
+        "post"
+      ]
+    },
+    {
+      "type": "http",
+      "direction": "out",
+      "name": "res"
+    }
+  ],
+  "scriptFile": "../dist/functions/util-create-taken-check/index.js"
+}
