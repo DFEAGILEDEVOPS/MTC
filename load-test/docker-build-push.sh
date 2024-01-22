@@ -8,6 +8,8 @@ if [ -n "$GIT_STATUS_OUTPUT" ]; then
   exit 1
 fi
 
+IMAGE_NAME="stamtc/mtc-flood-agent"
+
 GIT_COMMIT_SHORT=$(git log -1 --format=%h)
-docker build -t stamtc/devops-build-agent:latest -t stamtc/devops-build-agent:$GIT_COMMIT_SHORT --platform linux/amd64 .
-docker push --all-tags stamtc/devops-build-agent
+docker build -t $IMAGE_NAME:latest -t $IMAGE_NAME:$GIT_COMMIT_SHORT --platform linux/amd64 .
+docker push --all-tags $IMAGE_NAME
