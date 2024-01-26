@@ -21,7 +21,7 @@ async function bulkUpload (context: Context, fileName: string): Promise<void> {
     dbTable = await service.createDestinationTableAndView()
     context.log.verbose(`${funcName}: new table created ${dbTable}`)
     // context.log(`${funcName}: bulkUpload() uploading ${fileName}`)
-    await service.prepareForUpload()
+    await service.prepareForUpload(fileName)
     context.log(`${funcName}: starting bulk upload from ${fileName} into table ${dbTable}`)
     await service.bulkUpload(fileName, dbTable) // the container is *known* and is stored in the location path of the database 'EXTERNAL DATA SOURCE'.
     context.log(`${funcName}: bulk upload complete.`)

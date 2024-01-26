@@ -62,6 +62,11 @@ export default {
     PupilCensus: {
       Username: process.env.SQL_PUPIL_CENSUS_USER ?? 'CensusImportUser',
       Password: process.env.SQL_PUPIL_CENSUS_USER_PASSWORD
+    },
+    LocalAdmin: {
+      // User and password for the local docker instance on local dev environments.
+      user: process.env.SQL_LOCAL_ADMIN_USER,
+      password: process.env.SQL_LOCAL_ADMIN_PASS
     }
   },
   DatabaseRetry: {

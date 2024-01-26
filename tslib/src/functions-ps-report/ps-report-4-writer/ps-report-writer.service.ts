@@ -5,6 +5,8 @@ import { TYPES, MAX } from 'mssql'
 import * as R from 'ramda'
 import moment from 'moment'
 import { BlobService } from '../../azure/blob-service'
+import * as mssql from 'mssql'
+import config from '../../config'
 
 export class PsReportWriterService {
   private readonly sqlService: ISqlService
@@ -519,13 +521,13 @@ export class PsReportWriterService {
    * Configure the External Data Source with a new short-lived SAS token, and set the location on the external data source.
    *
    */
-  public async prepareForUpload (): Promise<void> {
-    // todo: replace with a real 1 hour sas token that allows reading, and deleting.
+  public async prepareForUpload (blobFile: string): Promise<void> {
     const blobService = new BlobService()
     const containerName = 'ps-report-bulk-upload'
     const containerUrl = await blobService.getContainerUrl(containerName)
     this.logger.verbose(`${this.logServiceName}: container url is ${containerUrl}`)
-    const sasToken = await blobService.getContainerReadWriteSasToken(containerName)
+    const sasToken = await blobService.getBlobReadWriteSasToken(containerName, blobFile)
+    this.logger.verbose('sasToken ' + sasToken)
     const sql = `
       IF (SELECT COUNT(*) FROM sys.database_scoped_credentials WHERE name = 'PsReportBulkUploadCredential') = 0
         BEGIN
@@ -552,16 +554,49 @@ export class PsReportWriterService {
   }
 
   public async bulkUpload (fileName: string, tableName: string): Promise<void> {
-    const sanitise = (sTainted: string): string => sTainted.replace(/[^a-zA-Z0-9-_]+/, '')
+    const res = await this.sqlService.query('SELECT CURRENT_USER')
+    this.logger.verbose('PRE USER ' + JSON.stringify(res))
+    const sanitise = (sTainted: string): string => sTainted.replace(/[^a-zA-Z0-9-_\.]+/, '')
     const sFileName = sanitise(fileName)
     const sTableName = sanitise(tableName)
 
+    // Find out the operating system that the SQL Server is running on due to capability mis-matches in SQL Versions on linux.
+    const sql2 = `
+      SELECT
+        host_platform
+      FROM
+        sys.dm_os_host_info
+    `
+    const result = await this.sqlService.query(sql2, [])
+    this.logger.verbose('result ' + JSON.stringify(result))
+    if (result[0].host_platform === 'Linux') {
+      this.logger.verbose('SQL Server is running on Linux')
+      // SQL Server on Linux does not have a Bulk Upload permission, you have to use the `sa` user.
+      // This is only suitable for local dev.
+      const sqlConfig: mssql.config = {
+        database: config.Sql.database,
+        server: config.Sql.server,
+        port: config.Sql.port,
+        requestTimeout: config.Sql.censusRequestTimeout,
+        connectionTimeout: config.Sql.connectionTimeout,
+        user: config.Sql.LocalAdmin.user,
+        password: config.Sql.LocalAdmin.password,
+        options: config.Sql.options
+      }
+      await mssql.connect(sqlConfig)
+    }
+
+    // This file format is extremely finicky.
+    // 1. The row must end in '\n'
+    // 2. The DOB should be in YYYY-MM-DD format
     const sql = `
       BULK INSERT mtc_results.[${sTableName}]
       FROM '${sFileName}'
-      WITH (DATA_SOURCE = 'PsReportData', FORMAT = 'CSV');`
-
-    await this.sqlService.modify(sql, [])
+      WITH (DATA_SOURCE = 'PsReportData',
+                 FORMAT = 'CSV',
+          ROWTERMINATOR = '\n')
+      ;`
+    await mssql.query(sql)
   }
 
   public async cleanup (fileName: string, dbTable: string): Promise<void> {
@@ -569,7 +604,7 @@ export class PsReportWriterService {
     // Remove ? new table (may not have been created)
     // Ensure the view table alias points to the last good PS report.
     this.logger.info(`${this.logServiceName}: cleanup() called`)
-    this.logger.info(`${this.logServiceName}: removing blob file: ${fileName}`)
+    // this.logger.info(`${this.logServiceName}: removing blob file: ${fileName}`)
     // const blobService = new BlobService() // delete
   }
 
