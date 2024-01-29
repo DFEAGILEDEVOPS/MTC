@@ -556,7 +556,7 @@ export class PsReportWriterService {
   public async bulkUpload (fileName: string, tableName: string): Promise<void> {
     const res = await this.sqlService.query('SELECT CURRENT_USER')
     this.logger.verbose('PRE USER ' + JSON.stringify(res))
-    const sanitise = (sTainted: string): string => sTainted.replace(/[^a-zA-Z0-9-_\.]+/, '')
+    const sanitise = (sTainted: string): string => sTainted.replace(/[^a-zA-Z0-9-_.]+/g, '')
     const sFileName = sanitise(fileName)
     const sTableName = sanitise(tableName)
 
