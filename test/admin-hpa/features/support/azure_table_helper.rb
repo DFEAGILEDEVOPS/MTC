@@ -1,7 +1,10 @@
 class AzureTableHelper
 
-  def self.get_row(table_name, partition_key, row_key)
-    AZURE_TABLE_CLIENT.get_entity(table_name, partition_key, row_key).properties
+
+  def self.get_row(table_name, p_key, r_key)
+    query = { :filter => "RowKey eq '#{r_key.downcase}' and PartitionKey eq '#{p_key.downcase}'" }
+    Timeout.timeout(ENV['WAIT_TIME'].to_i) { sleep 1 until !AZURE_TABLE_CLIENT.query_entities(table_name, query).empty? }
+    AZURE_TABLE_CLIENT.query_entities(table_name, query).first.properties
   end
 
   def self.wait_for_received_check(partition_key, row_key)

@@ -1,3 +1,4 @@
+
 require 'rubygems'
 require 'active_support'
 require 'active_support/all'
@@ -35,6 +36,7 @@ require_relative 'helpers'
 require_relative '../../features/support/app'
 require 'jwt'
 include Helpers
+
 
 Dotenv.load('../../.env')
 
@@ -91,7 +93,6 @@ Capybara.register_driver :headless_chrome do |app|
   browser_options.args << '--disable-gpu'
   browser_options.args << '--allow-insecure-localhost'
   browser_options.args << '--no-sandbox'
-  browser_options.args << '--window-size=1280,1696'
   browser_options.add_preference(:download, directory_upgrade: true,
                  prompt_for_download: false,
                  default_directory:
@@ -99,6 +100,7 @@ Capybara.register_driver :headless_chrome do |app|
   browser_options.add_preference(:browser, set_download_behavior: { behavior: 'allow' })
 
   driver = Capybara::Selenium::Driver.new(app, browser: :chrome, options: browser_options)
+
   bridge = driver.browser.send(:bridge)
 
   path = '/session/:session_id/chromium/send_command'
@@ -113,8 +115,7 @@ Capybara.register_driver :headless_chrome do |app|
 end
 
 Dir.mkdir("reports") unless File.directory?("reports")
-Capybara.javascript_driver = ENV["DRIVER"].to_sym
-
+Capybara.javascript_driver = :headless
 
 database = ENV['SQL_DATABASE'] || 'mtc'
 server = ENV['SQL_SERVER'] || 'localhost'
@@ -161,7 +162,7 @@ AZURE_BLOB_CLIENT = Azure::Storage::Blob::BlobService.create(storage_account_nam
 AZURE_TABLE_CLIENT = Azure::Storage::Table::TableService.create(storage_account_name: ENV["AZURE_ACCOUNT_NAME"], storage_access_key: ENV["AZURE_ACCOUNT_KEY"])
 AZURE_QUEUE_CLIENT = Azure::Storage::Queue::QueueService.create(storage_account_name: ENV["AZURE_ACCOUNT_NAME"], storage_access_key: ENV["AZURE_ACCOUNT_KEY"])
 BLOB_CONTAINER = AzureBlobHelper.no_fail_create_container("screenshots-#{Time.now.strftime("%d-%m-%y")}")
-# AzureBlobHelper.remove_old_containers
+AzureBlobHelper.remove_old_containers
 SqlDbHelper.update_to_25_questions
 
 
@@ -178,13 +179,5 @@ if azure_test == 'true'
   REDIS_CLIENT = Redis.new(host: "#{redis_host}", port: redis_port, password: "#{redis_key}", :ssl => :true)
 else
   REDIS_CLIENT = Redis.new(host: "#{redis_host}", port: redis_port)
-end
-
-# BrowserStack env vars
-if (File.exist?('../../.env')) && (File.read('../../.env').include? 'BROWSERSTACK')
-  ENV['BROWSERSTACK_ACCESS_KEY'] ||= File.read('../../.env').split("\n").find {|key| (key.include?('BROWSERSTACK_ACCESS_KEY'))}.split('=').last
-  ENV['BROWSERSTACK_USERNAME'] ||= File.read('../../.env').split("\n").find {|key| (key.include?('BROWSERSTACK_USERNAME'))}.split('=').last
-  fail 'Browserstack access key should be alphanumeric and between 8 - 20 characters long' if ENV['BROWSERSTACK_ACCESS_KEY'].match(/\A[a-zA-Z0-9]{8,20}\z/).nil?
-  fail 'Browserstack username should be alphanumeric and between 8 - 20 characters long' if ENV['BROWSERSTACK_USERNAME'].match(/\A[a-zA-Z0-9]{8,20}\z/).nil?
 end
 

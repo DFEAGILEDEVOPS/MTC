@@ -16,8 +16,8 @@ end
 Then(/^all answers events and inputs match$/) do
 
   check_result = SqlDbHelper.wait_for_received_check(@storage_pupil['checkCode'])
-  fail 'archive not available in DB yet'
-  @archive = JSON.parse(LZString::Base64.decompress(check_result['archive']))
+  storage_row = AzureTableHelper.get_row('receivedCheck', @school['entity']['urlSlug'], @storage_pupil['checkCode'])
+  @archive = JSON.parse(LZString::Base64.decompress(storage_row['archive']))
   check_id = SqlDbHelper.get_check_id(@storage_pupil['checkCode'])
   SqlDbHelper.wait_for_check_result_row(check_id)
   check_result_id = SqlDbHelper.get_check_result_id(check_id)

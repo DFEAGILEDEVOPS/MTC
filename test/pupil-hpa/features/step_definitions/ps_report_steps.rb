@@ -378,11 +378,13 @@ Given(/^I have completed a check with duplicate questions$/) do
   RequestHelper.auth(@pupil_credentials[:school_password], @pupil_credentials[:pin])
   @check_code = check_entry['checkCode']
   FunctionsHelper.complete_check_with_duplicates([@check_code], 25, 0, rand(25)) if check_entry["isLiveCheck"]
-  @recieved_check = SqlDbHelper.wait_for_received_check(@check_code) if check_entry["isLiveCheck"]
+  SqlDbHelper.wait_for_received_check(@check_code) if check_entry["isLiveCheck"]
   p @check_code
 end
 
 Then(/^I should see the ps report showing the first input$/) do
+  @recieved_check = AzureTableHelper.get_row('receivedCheck', @school['entity']['urlSlug'], @check_code)
+
   @answers = JSON.parse(LZString::Base64.decompress(@recieved_check['archive']))['answers']
   grouped = @answers.group_by {|row| [row['sequenceNumber'], row['question']]}
   duplicates = grouped.values.select {|a| a.size > 1}

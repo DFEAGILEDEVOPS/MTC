@@ -71,20 +71,11 @@ Capybara.register_driver :headless_chrome do |app|
   browser_options.args << '--disable-gpu'
   browser_options.args << '--allow-insecure-localhost'
   browser_options.args << '--no-sandbox'
-  browser_options.args << '--window-size=1280,1696'
   Capybara::Selenium::Driver.new(app, browser: :chrome, options: browser_options)
 end
 
 Dir.mkdir("reports") unless File.directory?("reports")
 Capybara.javascript_driver = :headless
-
-Mongo::Logger.logger.level = ::Logger::FATAL
-
-if ENV['MONGO_CONNECTION_STRING']
-  CLIENT = Mongo::Client.new(ENV['MONGO_CONNECTION_STRING'])
-else
-  CLIENT = Mongo::Client.new('mongodb://mongo/mtc')
-end
 
 database = ENV['SQL_DATABASE'] || 'mtc'
 server = ENV['SQL_SERVER'] || 'localhost'
@@ -147,12 +138,4 @@ if azure_test == 'true'
   REDIS_CLIENT = Redis.new(host: "#{redis_host}", port: redis_port, password: "#{redis_key}", :ssl => :true)
 else
   REDIS_CLIENT = Redis.new(host: "#{redis_host}", port: redis_port)
-end
-
-# BrowserStack env vars
-if (File.exist?('../../.env')) && (File.read('../../.env').include? 'BROWSERSTACK')
-  ENV['BROWSERSTACK_ACCESS_KEY'] ||= File.read('../../.env').split("\n").find {|key| (key.include?('BROWSERSTACK_ACCESS_KEY'))}.split('=').last
-  ENV['BROWSERSTACK_USERNAME'] ||= File.read('../../.env').split("\n").find {|key| (key.include?('BROWSERSTACK_USERNAME'))}.split('=').last
-  fail 'Browserstack access key should be alphanumeric and between 8 - 20 characters long' if ENV['BROWSERSTACK_ACCESS_KEY'].match(/\A[a-zA-Z0-9]{8,20}\z/).nil?
-  fail 'Browserstack username should be alphanumeric and between 8 - 20 characters long' if ENV['BROWSERSTACK_USERNAME'].match(/\A[a-zA-Z0-9]{8,20}\z/).nil?
 end
