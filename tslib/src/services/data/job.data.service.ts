@@ -3,6 +3,7 @@ import { type IModifyResult, type ISqlParameter, type ISqlService, SqlService } 
 import { JobStatusCode } from '../../common/job-status-code'
 import moment from 'moment'
 import { isArray } from 'ramda-adjunct'
+import { type ILogger } from '../../common/logger'
 
 export type JobStatusOutcomes = (JobStatusCode.Failed | JobStatusCode.CompletedWithErrors | JobStatusCode.CompletedSuccessfully)
 
@@ -11,7 +12,7 @@ export interface JobOutcomeDetails {
   errorInfo?: string
 }
 export interface IJobDataService {
-  setJobStarted (jobSlug: string): Promise<IModifyResult>
+  setJobStarted (jobSlug: string, options?: { meta?: object }): Promise<IModifyResult>
   setJobComplete (jobSlug: string, jobStatus: JobStatusOutcomes, jobOutput?: string, errorInfo?: string): Promise<IModifyResult>
   getJobId (jobSlug: string): Promise<number | undefined>
 }
@@ -23,7 +24,7 @@ export class JobDataService implements IJobDataService {
     this.sqlService = new SqlService()
   }
 
-  async setJobStarted (jobSlug: string): Promise<IModifyResult> {
+  async setJobStarted (jobSlug: string, options?: { meta?: object }, logger?: ILogger): Promise<IModifyResult> {
     const params: ISqlParameter[] = [
       {
         name: 'startedAt',
@@ -39,11 +40,30 @@ export class JobDataService implements IJobDataService {
         name: 'jobStatusCode',
         type: TYPES.Char(3),
         value: JobStatusCode.Processing
-      }]
-    const sql = `UPDATE mtc_admin.[job] SET
-                  startedAt = @startedAt,
-                  jobStatus_id = (SELECT id FROM [mtc_admin].[jobStatus] WHERE jobStatusCode = @jobStatusCode)
+      }
+    ]
+
+    const updateFields = [
+      'startedAt = @startedAt',
+      'jobStatus_id = (SELECT id FROM [mtc_admin].[jobStatus] WHERE jobStatusCode = @jobStatusCode)'
+    ]
+
+    if (options !== undefined && Object.hasOwn(options, 'meta')) {
+      updateFields.push('meta = @meta')
+      params.push({
+        name: 'meta',
+        type: TYPES.NVarChar(128),
+        value: JSON.stringify(options.meta)
+      })
+    }
+
+    const sql = `UPDATE
+                  mtc_admin.[job]
+                 SET
+                  ${updateFields.join(',\n')}
                 WHERE urlSlug = @urlSlug`
+    logger?.verbose('sql ' + sql)
+    logger?.verbose('params ' + JSON.stringify(params))
     return this.sqlService.modify(sql, params)
   }
 

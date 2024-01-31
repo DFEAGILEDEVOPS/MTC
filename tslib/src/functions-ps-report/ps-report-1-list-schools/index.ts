@@ -5,6 +5,7 @@ import { PsReportLogger } from '../common/ps-report-logger'
 import { PsReportSource } from '../common/ps-report-log-entry'
 import { JobDataService } from '../../services/data/job.data.service'
 import { JobStatusCode } from '../../common/job-status-code'
+import moment from 'moment'
 
 interface IncomingMessage {
   requestedBy: string
@@ -19,13 +20,16 @@ const serviceBusTrigger: AzureFunction = async function (context: Context, jobIn
   const meta = { processCount: 0, errorCount: 0 }
   const jobDataService = new JobDataService()
   try {
-    await jobDataService.setJobStarted(jobInfo.jobUuid)
+    // We need to store a filename for all the data to be written to during the staging process.
+    const now = moment()
+    const filename = `ps-report-staging-${now.format('YYYY-MM-DD-HHmm')}`
+    await jobDataService.setJobStarted(jobInfo.jobUuid, { meta: { filename } }, context.log)
     const schoolListService = new ListSchoolsService(logger)
     const messages = await schoolListService.getSchoolMessages()
     context.bindings.schoolMessages = messages
     meta.processCount = messages.length
-    await jobDataService.setJobComplete(jobInfo.jobUuid,
-      JobStatusCode.CompletedSuccessfully, `processed ${meta.processCount} records`)
+    // await jobDataService.setJobComplete(jobInfo.jobUuid,
+    //   JobStatusCode.CompletedSuccessfully, `processed ${meta.processCount} records`)
   } catch (error) {
     let errorMessage = 'unknown error'
     if (error instanceof Error) {
