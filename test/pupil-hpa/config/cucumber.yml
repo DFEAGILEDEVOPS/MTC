@@ -1,6 +1,6 @@
 #default: -t ~@wip -t ~@manual PUPIL_BASE_URL='http://localhost:3000' DRIVER='selenium_chrome' --format pretty --format html --out reports/report.html
-parallel_chrome: -t 'not @wip' -t 'not @manual' DRIVER='selenium_chrome' --format pretty --format html --out reports/report<%= ENV['TEST_ENV_NUMBER'] %>.html
-parallel: -t 'not @wip' -t 'not @manual' DRIVER='poltergeist' --format pretty --format html --out reports/report<%= ENV['TEST_ENV_NUMBER'] %>.html
-default: -t 'not @wip' -t 'not @manual' -t 'not @weekend' DRIVER='headless_chrome' --publish-quiet --out reports/report.txt -f pretty
-ie11: -t 'not @ie11' -t 'not @wip'
-weekend: -t '@weekend' -t 'not @wip' -t 'not @manual' DRIVER='headless_chrome' --publish-quiet
+parallel_chrome: SITEPRISM_DSL_VALIDATION_DISABLED=true -t 'not @wip' -t 'not @manual' DRIVER='selenium_chrome' --format pretty --format html --out reports/report<%= ENV['TEST_ENV_NUMBER'] %>.html
+parallel: SITEPRISM_DSL_VALIDATION_DISABLED=true -t 'not @wip' -t 'not @manual' DRIVER='poltergeist' --format pretty --format html --out reports/report<%= ENV['TEST_ENV_NUMBER'] %>.html
+default: SITEPRISM_DSL_VALIDATION_DISABLED=true -t 'not @wip' -t 'not @manual' -t 'not @weekend' DRIVER='headless_chrome' --publish-quiet --out reports/report.txt -f pretty
+ie11: SITEPRISM_DSL_VALIDATION_DISABLED=true -t 'not @ie11' -t 'not @wip'
+weekend: SITEPRISM_DSL_VALIDATION_DISABLED=true -t '@weekend' -t 'not @wip' -t 'not @manual' DRIVER='headless_chrome' --publish-quiet

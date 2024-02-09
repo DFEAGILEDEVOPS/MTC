@@ -18,7 +18,6 @@ Feature:
     When I enter dates that are in the past
     Then I should see error messages stating the dates must be in the future
 
-  @wip
   Scenario: Dates entered must not collide with actice check window
     Given I navigate to the create check window page
     When I enter dates that are inside of active check window

@@ -54,19 +54,18 @@ Capybara.configure do |config|
   config.exact = true
   config.ignore_hidden_elements = false
   config.visible_text_only = true
+  config.default_max_wait_time = 7
 end
-Capybara.default_max_wait_time = 7
 
 Capybara.register_driver(:chrome) do |app|
-  Capybara::Selenium::Driver.new(app, browser: :chrome)
-end
-
-Capybara.register_driver :poltergeist do |app|
-  Capybara::Poltergeist::Driver.new(app, js_errors: false, timeout: 60)
+  browser_options = Selenium::WebDriver::Options.chrome
+  browser_options.page_load_strategy = :normal
+  Capybara::Selenium::Driver.new(app, browser: :chrome, options: browser_options)
 end
 
 Capybara.register_driver :headless_chrome do |app|
-  browser_options = ::Selenium::WebDriver::Chrome::Options.new
+  browser_options = Selenium::WebDriver::Options.chrome
+  browser_options.page_load_strategy = :normal
   browser_options.args << '--headless'
   browser_options.args << '--disable-gpu'
   browser_options.args << '--allow-insecure-localhost'
@@ -75,7 +74,7 @@ Capybara.register_driver :headless_chrome do |app|
 end
 
 Dir.mkdir("reports") unless File.directory?("reports")
-Capybara.javascript_driver = :headless
+Capybara.javascript_driver = ENV["DRIVER"].to_sym
 
 database = ENV['SQL_DATABASE'] || 'mtc'
 server = ENV['SQL_SERVER'] || 'localhost'

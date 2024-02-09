@@ -59,10 +59,12 @@ Capybara.configure do |config|
   config.exact = true
   config.ignore_hidden_elements = false
   config.visible_text_only = true
+  config.default_max_wait_time = 7
 end
 
 Capybara.register_driver(:chrome) do |app|
-  browser_options = ::Selenium::WebDriver::Chrome::Options.new
+  browser_options = Selenium::WebDriver::Options.chrome
+  browser_options.page_load_strategy = :normal
   browser_options.add_preference(:download, directory_upgrade: true,
                                  prompt_for_download: false,
                                  default_directory:
@@ -83,24 +85,20 @@ Capybara.register_driver(:chrome) do |app|
   driver
 end
 
-Capybara.register_driver :poltergeist do |app|
-  Capybara::Poltergeist::Driver.new(app, js_errors: false, timeout: 60)
-end
-
 Capybara.register_driver :headless_chrome do |app|
-  browser_options = ::Selenium::WebDriver::Chrome::Options.new
+  browser_options = Selenium::WebDriver::Options.chrome
   browser_options.args << '--headless'
   browser_options.args << '--disable-gpu'
   browser_options.args << '--allow-insecure-localhost'
   browser_options.args << '--no-sandbox'
+  browser_options.args << '--window-size=1280,1696'
   browser_options.add_preference(:download, directory_upgrade: true,
-                 prompt_for_download: false,
-                 default_directory:
+                                 prompt_for_download: false,
+                                 default_directory:
                                    File.expand_path("#{File.dirname(__FILE__)}/../../data/download"))
   browser_options.add_preference(:browser, set_download_behavior: { behavior: 'allow' })
 
   driver = Capybara::Selenium::Driver.new(app, browser: :chrome, options: browser_options)
-
   bridge = driver.browser.send(:bridge)
 
   path = '/session/:session_id/chromium/send_command'
@@ -115,7 +113,7 @@ Capybara.register_driver :headless_chrome do |app|
 end
 
 Dir.mkdir("reports") unless File.directory?("reports")
-Capybara.javascript_driver = :headless
+Capybara.javascript_driver = ENV["DRIVER"].to_sym
 
 database = ENV['SQL_DATABASE'] || 'mtc'
 server = ENV['SQL_SERVER'] || 'localhost'
