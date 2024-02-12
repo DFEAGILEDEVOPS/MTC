@@ -1,5 +1,5 @@
 IF NOT EXISTS (SELECT id from [mtc_admin].[checkWindow] WHERE name = 'Development Phase')
 BEGIN
 INSERT INTO [mtc_admin].[checkWindow] ([name], adminStartDate, adminEndDate, checkStartDate, checkEndDate, familiarisationCheckStartDate, familiarisationCheckEndDate)
-VALUES ('Development Phase', '2017-12-01', '2024-06-01', '2017-12-22', '2024-02-01', '2017-11-22', '2024-02-01')
+VALUES ('Development Phase', '2017-12-01', '2027-06-01', '2017-12-22', '2027-02-01', '2017-11-22', '2027-02-01')
 END
