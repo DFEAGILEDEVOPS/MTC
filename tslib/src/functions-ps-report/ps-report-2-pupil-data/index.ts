@@ -4,6 +4,7 @@ import { PsReportService } from './ps-report.service'
 import { type PupilResult } from './models'
 import { PsReportLogger } from '../common/ps-report-logger'
 import { PsReportSource } from '../common/ps-report-log-entry'
+import { type PsReportStagingStartMessage } from '../ps-report-3b-stage-csv-file/interfaces'
 
 /**
  * Incoming message is just the name and UUID of the school to process
@@ -14,18 +15,22 @@ interface IncomingMessage {
   name: string
   uuid: string
 }
+export interface IMultipleOutputBinding {
+  psReportPupilMessage: PupilResult[]
+  psReportStagingStart: PsReportStagingStartMessage[]
+}
 
 const serviceBusQueueTrigger: AzureFunction = async function (context: Context, incomingMessage: IncomingMessage): Promise<void> {
   const start = performance.now()
   const logger = new PsReportLogger(context, PsReportSource.PupilGenerator)
   logger.verbose(`called for school ${incomingMessage.name}`)
-  const outputBinding: PupilResult[] = []
-  context.bindings.psReportPupilMessage = outputBinding
+  const outputBinding: IMultipleOutputBinding = { psReportPupilMessage: [], psReportStagingStart: [] }
+  context.bindings = outputBinding
   const psReportService = new PsReportService(outputBinding, logger)
   await psReportService.process(incomingMessage.uuid)
   const end = performance.now()
   const durationInMilliseconds = end - start
-  logger.info(`processed ${outputBinding.length} pupils, run took ${durationInMilliseconds} ms`)
+  logger.info(`processed ${outputBinding.psReportPupilMessage.length} pupils, run took ${durationInMilliseconds} ms`)
 }
 
 export default serviceBusQueueTrigger

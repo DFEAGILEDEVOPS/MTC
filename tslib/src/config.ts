@@ -143,7 +143,10 @@ export default {
     MaxParallelTasks: parseInt(parser.valueOrSubstitute(process.env.SYNC_RESULTS_INIT_MAX_PARALLEL_TASKS, 5), 10)
   },
   LiveFormQuestionCount: getLinesPerCheck(),
-  PsReportLogWriter: {
-    MessagesPerBatch: parseInt(parser.valueOrSubstitute(process.env.PS_REPORT_LOG_WRITER_MESSAGE_BATCH_SIZE, 100), 10)
+  PsReport: {
+    StagingFile: {
+      ReadMessagesPerBatch: parseInt(parser.valueOrSubstitute(process.env.PS_REPORT_STAGING_MESSAGE_BATCH_SIZE, 32), 10),
+      WriteMessagesPerBatch: parseInt(parser.valueOrSubstitute(process.env.PS_REPORT_STAGING_MESSAGE_BATCH_SIZE, 32), 10) // 32 x 32 = 1024 csv rows written per write
+    }
   }
 }

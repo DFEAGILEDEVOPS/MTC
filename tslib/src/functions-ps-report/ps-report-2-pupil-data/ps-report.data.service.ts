@@ -32,6 +32,8 @@ export interface IPsReportDataService {
   getPupilData (pupil: Pupil, school: School): Promise<PupilResult>
 
   getSchool (schoolId: number): Promise<School>
+
+  getTotalPupilCount (): Promise<number>
 }
 
 interface PupilRestart {
@@ -96,20 +98,20 @@ export class PsReportDataService {
   public async getPupils (schoolUuid: string): Promise<readonly Pupil[]> {
     const sql = `
         SELECT
-                        p.id,
-                        p.foreName,
-                        p.lastName,
-                        p.upn,
-                        p.gender,
-                        p.dateOfBirth,
-                        p.checkComplete,
-                        p.currentCheckId,
-                        p.school_id,
-                        p.urlSlug,
-                        p.job_id,
-                        p.restartAvailable,
-                        ac.reason as notTakingCheckReason,
-                        ac.code as notTakingCheckCode
+                p.id,
+                p.foreName,
+                p.lastName,
+                p.upn,
+                p.gender,
+                p.dateOfBirth,
+                p.checkComplete,
+                p.currentCheckId,
+                p.school_id,
+                p.urlSlug,
+                p.job_id,
+                p.restartAvailable,
+                ac.reason as notTakingCheckReason,
+                ac.code as notTakingCheckCode
           FROM mtc_admin.pupil p
                JOIN      mtc_admin.school s ON (p.school_id = s.id)
                LEFT JOIN mtc_admin.attendanceCode ac ON (p.attendanceId = ac.id)
@@ -662,5 +664,21 @@ export class PsReportDataService {
       device,
       events
     })
+  }
+
+  /**
+   * Find the expected total number of pupils
+   */
+  public async getTotalPupilCount (): Promise<number> {
+    const sql = `
+      SELECT
+        COUNT(*) as totalPupilCount
+      FROM
+        mtc_admin.[pupil] p join mtc_admin.[school] s on (p.school_id = s.id)
+      WHERE
+        s.isTestSchool = 0
+    `
+    const result = await this.sqlService.query(sql)
+    return result[0].totalPupilCount
   }
 }

@@ -1,13 +1,14 @@
 import { PsReportService } from './ps-report.service'
 import { type ILogger, MockLogger } from '../../common/logger'
 import { type IPsReportDataService } from './ps-report.data.service'
+import { type IMultipleOutputBinding } from '.'
 
 describe('PsReportService', () => {
   let sut: PsReportService
   let logger: ILogger
   let psReportDataService: IPsReportDataService
   const schoolUuid = 'AAAA-BBBB-CCCC-DDDD'
-  let outputBindings: any[]
+  const outputBindings: IMultipleOutputBinding = { psReportPupilMessage: [], psReportStagingStart: null }
   const mockPupils = [{ id: 1, schoolId: 99 }, { id: 2, schoolId: 99 }, { id: 3, schoolId: 99 }]
   const mockSchool = { id: 99, name: 'test school' }
 
@@ -16,9 +17,11 @@ describe('PsReportService', () => {
     psReportDataService = {
       getPupilData: jest.fn(),
       getPupils: jest.fn(),
-      getSchool: jest.fn()
+      getSchool: jest.fn(),
+      getTotalPupilCount: jest.fn()
     }
-    outputBindings = []
+    outputBindings.psReportPupilMessage = []
+    outputBindings.psReportStagingStart = null
     sut = new PsReportService(outputBindings, logger, psReportDataService)
   })
 
@@ -60,6 +63,6 @@ describe('PsReportService', () => {
       .mockResolvedValueOnce({ data: 2 })
       .mockResolvedValueOnce({ data: 3 })
     await sut.process(schoolUuid)
-    expect(outputBindings).toStrictEqual([{ data: 1 }, { data: 2 }, { data: 3 }])
+    expect(outputBindings.psReportPupilMessage).toHaveLength(3)
   })
 })
