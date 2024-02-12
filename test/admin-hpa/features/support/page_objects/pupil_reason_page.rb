@@ -27,7 +27,7 @@ class PupilReasonPage < SitePrism::Page
   section :explanation_section, 'details' do
     element :toggle, '.govuk-details__summary'
     element :absent, 'strong', text: 'Absent during the check window'
-    element :absent_explanation, 'div', text: 'Pupil is absent during the entire 3-week window.'
+    element :absent_explanation, 'div', text: 'Pupil is absent and therefore the school are unable to administer the check during the 3-week check window.'
     element :left_school, 'strong', text: 'Left school'
     element :left_school_explanation, 'div', text: 'Pupil has left the school.'
     element :unable_to_access, 'strong', text: 'Unable to access'
