@@ -8,7 +8,7 @@ describe('PsReportService', () => {
   let logger: ILogger
   let psReportDataService: IPsReportDataService
   const schoolUuid = 'AAAA-BBBB-CCCC-DDDD'
-  const outputBindings: IMultipleOutputBinding = { psReportPupilMessage: [], psReportStagingStart: null }
+  const outputBindings: IMultipleOutputBinding = { psReportPupilMessage: [], psReportStagingStart: [] }
   const mockPupils = [{ id: 1, schoolId: 99 }, { id: 2, schoolId: 99 }, { id: 3, schoolId: 99 }]
   const mockSchool = { id: 99, name: 'test school' }
 
@@ -21,7 +21,7 @@ describe('PsReportService', () => {
       getTotalPupilCount: jest.fn()
     }
     outputBindings.psReportPupilMessage = []
-    outputBindings.psReportStagingStart = null
+    outputBindings.psReportStagingStart = []
     sut = new PsReportService(outputBindings, logger, psReportDataService)
   })
 
