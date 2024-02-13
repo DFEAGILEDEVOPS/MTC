@@ -51,6 +51,9 @@
                   You can <a class="govuk-link" href="/pupil-pin/generate-<%= pinEnv %>-pins-list">generate additional <%= pinEnv === 'live' ? 'official' : 'try it out' %> check PINs</a> for pupils you have missed.
               <% } %>
           </p>
+            <p>
+                Pupils will access the try it out and official check at: <a class="govuk-link" target="_blank" rel="noopener noreferrer" href="<%= pupilAppURL %>"><%= pupilAppURL %></a>
+            </p>
             <div class="no-print">
                 <h3 class="govuk-heading-m">Filter by name</h3>
                 <div class="govuk-form-group filter-name">
