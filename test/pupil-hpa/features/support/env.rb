@@ -34,6 +34,7 @@ Dotenv.load('../../.env')
 
 (abort "LIVE_FORM_QUESTION_COUNT is set to #{ENV['LIVE_FORM_QUESTION_COUNT']}. The tests require this to be set to 25. Please update this value to 25 and rebuild the apps") unless ENV['LIVE_FORM_QUESTION_COUNT'].to_i == 25
 
+ENV['SE_CACHE_PATH']=File.expand_path("#{File.dirname(__FILE__)}/../../../se_manager/.cache/selenium")
 ENV["ADMIN_BASE_URL"] ||= 'http://localhost:3001'
 ENV["PUPIL_BASE_URL"] ||= 'http://localhost:4200'
 ENV["PUPIL_API_BASE_URL"] ||= 'http://localhost:3003'
@@ -69,6 +70,8 @@ Capybara.register_driver :headless_chrome do |app|
   browser_options.args << '--headless'
   browser_options.args << '--disable-gpu'
   browser_options.args << '--allow-insecure-localhost'
+  browser_options.args << '--allow-file-access-from-files'
+
   browser_options.args << '--no-sandbox'
   Capybara::Selenium::Driver.new(app, browser: :chrome, options: browser_options)
 end
