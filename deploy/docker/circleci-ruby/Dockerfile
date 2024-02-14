@@ -1,4 +1,4 @@
-FROM cimg/ruby:2.7.7-browsers
+FROM cimg/ruby:3.2.2-browsers
 # Get the latest Google GPG key and import it
 #RUN wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo tee /etc/apt/trusted.gpg.d/google.com.asc
 # Update the system
