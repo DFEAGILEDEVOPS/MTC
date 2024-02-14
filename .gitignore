@@ -134,3 +134,6 @@ deploy.zip
 
 # Emacs save files
 *~
+
+# firewall rules containing IP addresses
+mtc-firewall-rules.csv
