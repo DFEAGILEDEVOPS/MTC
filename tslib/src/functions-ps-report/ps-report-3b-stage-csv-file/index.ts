@@ -2,9 +2,10 @@ import { type AzureFunction, type Context } from '@azure/functions'
 import { performance } from 'perf_hooks'
 import * as sb from '@azure/service-bus'
 import config from '../../config'
-// import { type ICheckNotificationMessage } from '../../schemas/check-notification-message'
 import * as RA from 'ramda-adjunct'
 import { type IFunctionTimer } from '../../azure/functions'
+import { type IPsychometricReportLine } from '../ps-report-3-transformer/models'
+import { jsonReviver } from '../../common/json-reviver'
 
 const functionName = 'ps-report-3b-stage-csv-file'
 const receiveQueueName = 'ps-report-export'
@@ -51,9 +52,10 @@ const PsReportStageCsvFile: AzureFunction = async function (context: Context, ti
 
   let done = false
   let batchIndex = 0
+
   while (!done) {
     context.log(`${functionName}: starting batch ${batchIndex + 1}`)
-    const messageBatch = await receiver.receiveMessages(config.CheckNotifier.MessagesPerBatch)
+    const messageBatch = await receiver.receiveMessages(config.PsReport.StagingFile.ReadMessagesPerBatch)
     if (RA.isNilOrEmpty(messageBatch)) {
       context.log(`${functionName}: no messages to process`)
       if (emptyPollTime === undefined) {
@@ -62,24 +64,25 @@ const PsReportStageCsvFile: AzureFunction = async function (context: Context, ti
       }
       const nowEpoch = getEpoch()
       const timeSinceLastMessage = nowEpoch - emptyPollTime
-      const tenMinutesInSeconds = 10 * 60
-      context.log(`${functionName}: nowEpoch: ${nowEpoch} emptyPollTime: ${emptyPollTime} timeSinceLastMessage: ${timeSinceLastMessage} target wait time is ${tenMinutesInSeconds}`)
-      if (timeSinceLastMessage >= tenMinutesInSeconds) {
-        context.log(`${functionName}: exiting, as queue has been empty for 10 minutes.`)
+      context.log(`${functionName}: nowEpoch: ${nowEpoch} emptyPollTime: ${emptyPollTime} timeSinceLastMessage: ${timeSinceLastMessage} target wait time is ${config.PsReport.StagingFile.WaitTimeToTriggerStagingComplete}`)
+      if (timeSinceLastMessage >= config.PsReport.StagingFile.WaitTimeToTriggerStagingComplete) {
+        context.log(`${functionName}: exiting as no new messages in ${config.PsReport.StagingFile.WaitTimeToTriggerStagingComplete} seconds.`)
         done = true
         await disconnect()
         return finish(start, context)
       } else {
         context.log(`${functionName}: waiting for messages...`)
-        await sleep(10000) // wait 10 seconds before polling again
+        await sleep(config.PsReport.StagingFile.PollInterval) // wait n seconds before polling again. Default is 10.
       }
     } else {
-      // reset the timer
+      // Messages were received
+      // so, 1st reset the timer, as it may have been set previously
       emptyPollTime = undefined
+      // and process the messages
+      context.log(`${functionName}: received batch of ${messageBatch.length} messages`)
+      await process(context, messageBatch, receiver)
     }
-    context.log(`${functionName}: received batch of ${messageBatch.length} messages`)
-    // const notifications = messageBatch.map(m => m.body as {ICheckNotificationMessage})
-    await process(context, messageBatch, receiver)
+
     batchIndex += 1
   } // end while
 
@@ -135,14 +138,23 @@ async function abandonMessages (messageBatch: sb.ServiceBusReceivedMessage[], re
   }
 }
 
-async function process (context: Context, messages: sb.ServiceBusReceivedMessage[], receiver: sb.ServiceBusReceiver): Promise<void> {
+async function process (context: Context, messageBatch: sb.ServiceBusReceivedMessage[], receiver: sb.ServiceBusReceiver): Promise<void> {
   try {
-    // await batchNotifier.notify(notifications)
-    await completeMessages(messages, receiver, context)
+    const psReportData = messageBatch.map(m => { return revive(m.body as IPsychometricReportLine) })
+    context.log.verbose(`data line 0: ${JSON.stringify(psReportData[0])}`)
+    await completeMessages(messageBatch, receiver, context)
   } catch (error) {
     // sql transaction failed, abandon...
-    await abandonMessages(messages, receiver, context)
+    await abandonMessages(messageBatch, receiver, context)
   }
+}
+
+/**
+ * JSON reviver for Date instantiation.  Message bodies are already JSON revived, but not to moment objects.
+ * @param incomingMessage
+ */
+function revive (message: IPsychometricReportLine): IPsychometricReportLine {
+  return JSON.parse(JSON.stringify(message), jsonReviver) as IPsychometricReportLine
 }
 
 export default PsReportStageCsvFile
