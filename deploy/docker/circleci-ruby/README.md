@@ -13,8 +13,12 @@ This docker image needs to be made publicly available so we can pull it in when 
 
 1. Build it
 
-$ docker build . -t stamtc/mtc_circleci_ruby
+`docker build . -t stamtc/mtc_circleci_ruby`
+
+**Note:** if you are building on Apple Silicon you also need to specify the target architecture...
+
+`docker build . -t stamtc/mtc_circleci_ruby --platform linux/amd64`
 
 2. Push it
 
-$ docker push stamtc/mtc_circleci_ruby:latest
+`docker push stamtc/mtc_circleci_ruby:latest`
