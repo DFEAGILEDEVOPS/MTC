@@ -6,12 +6,15 @@ import * as RA from 'ramda-adjunct'
 import { type IFunctionTimer } from '../../azure/functions'
 import { type IPsychometricReportLine } from '../ps-report-3-transformer/models'
 import { jsonReviver } from '../../common/json-reviver'
+import { PsReportStagingDataService } from './ps-report-staging.data.service'
 
 const functionName = 'ps-report-3b-stage-csv-file'
 const receiveQueueName = 'ps-report-export'
 const sleep = async (ms: number): Promise<void> => { return new Promise((resolve) => setTimeout(resolve, ms)) }
 let emptyPollTime: undefined | number
 const getEpoch = (): number => { const dt = +new Date(); return Math.floor(dt / 1000) }
+let psReportStagingDataService: PsReportStagingDataService
+
 /*
  * The function is running as a singleton, and the receiver is therefore exclusive
   we do not expect another receive operation to be in progress.
@@ -27,6 +30,8 @@ const PsReportStageCsvFile: AzureFunction = async function (context: Context, ti
 
   let busClient: sb.ServiceBusClient
   let receiver: sb.ServiceBusReceiver
+  const containerName = 'ps-report-bulk-upload'
+  const blobName = 'file.csv'
 
   const disconnect = async (): Promise<void> => {
     await receiver.close()
@@ -46,7 +51,21 @@ const PsReportStageCsvFile: AzureFunction = async function (context: Context, ti
     if (error instanceof Error) {
       errorMessage = error.message
     }
-    context.log.error(`${functionName}: unable to connect to service bus at this time:${errorMessage}`)
+    context.log.error(`${functionName}: unable to connect to service bus at this time: ${errorMessage}`)
+    throw error
+  }
+
+  // Create the data service to upload to a blob file
+  try {
+    psReportStagingDataService = new PsReportStagingDataService(context.log, containerName, blobName)
+    // At this point the file has not yet been created
+    await psReportStagingDataService.createAppendBlock()
+  } catch (error) {
+    let errorMessage = 'unknown error'
+    if (error instanceof Error) {
+      errorMessage = error.message
+    }
+    context.log.error(`${functionName}: unable to connect to service bus at this time: ${errorMessage}`)
     throw error
   }
 
@@ -141,6 +160,8 @@ async function abandonMessages (messageBatch: sb.ServiceBusReceivedMessage[], re
 async function process (context: Context, messageBatch: sb.ServiceBusReceivedMessage[], receiver: sb.ServiceBusReceiver): Promise<void> {
   try {
     const psReportData = messageBatch.map(m => { return revive(m.body as IPsychometricReportLine) })
+    const linesOfData = messageBatch.map(m => 'some line of data')
+    await psReportStagingDataService.appendDataToBlob(linesOfData)
     context.log.verbose(`data line 0: ${JSON.stringify(psReportData[0])}`)
     await completeMessages(messageBatch, receiver, context)
   } catch (error) {
