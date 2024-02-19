@@ -1,12 +1,4 @@
-/****** Script for SelectTopNRows command from SSMS  ******/
---SELECT * FROM [mtc_admin].[pupil]
 
--- select * from information_schema.routines where routine_type='dbo.upnCheckLetter'
-
-select * from information_schema.routines
-
-/*
---- Start of Jon's Code ==================
 CREATE OR ALTER FUNCTION upnCheckLetter (
     @protoUpn BIGINT
 )
@@ -108,9 +100,7 @@ BEGIN
     RETURN CONCAT(@checkLetter, CAST(@protoUpn AS VARCHAR))
 END
 GO
-*/
-EXECUTE as USER = '<LOADTEST_USER>';
-GO
+
 --
 -- INSERT 30 random pupils per school
 --
@@ -135,7 +125,6 @@ SELECT
 			CONCAT(YEAR(GETDATE()), '-09-01') -- E.g. The date to start our subtractions from: e.g. '2021-09-01' which is the start of the school year
 		)
 	) as dateOfBirth,
-	    --[mtc-dev].dbo.upnCheckLetter(
 		[mtc_admin].[upnCheckLetter](
         CAST(CONCAT(
             CAST(temp30.laCode as VARCHAR),    -- 3 digit lea code
@@ -159,8 +148,4 @@ FROM
         CROSS JOIN [mtc_admin].[laCodeLookup] lea
         WHERE lea.laCode <> 0 -- this lea code means that the lea code does not apply, but we want 3 digit leaCodes to make a upn
 	) as temp30
---WHERE school.id = 5
-ORDER BY school.id, temp30.rowNumber
-;
-
---- End of Jon's Code ==================
+ORDER BY school.id, temp30.rowNumber;

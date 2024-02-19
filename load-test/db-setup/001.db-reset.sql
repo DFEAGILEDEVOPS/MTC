@@ -1,48 +1,3 @@
-SELECT * FROM [mtc_admin].[pupilAccessArrangements]
-
-SELECT * FROM [mtc_admin].[check]
-
-SELECT * FROM [mtc_admin].[check] where complete = 0;
-
-SELECT * FROM [mtc_admin].[check] where pupilLoginDate is NULL
-
-SELECT * FROM [mtc_admin].[check] where receivedByServerAt is NULL
-
-SELECT * FROM [mtc_admin].[check] where completedAt is NULL
-
-
-
-SELECT count(*) FROM [mtc_admin].[check]
-
-SELECT count(*) FROM [mtc_admin].[check] where complete = 0
-
-SELECT count(*) FROM [mtc_admin].[check] where pupilLoginDate is NULL
-
-SELECT count(*) FROM [mtc_admin].[check] where receivedByServerAt is NULL
-
-SELECT count(*) FROM [mtc_admin].[check] where completedAt is NULL
-
-SELECT count(*) FROM [mtc_admin].[check] where processingFailed = 0
-
-
-SELECT * FROM [mtc_admin].[accessArrangements]
-
-SELECT count(*) FROM [mtc_admin].[pupil] where lastname like 'Pupillastnameedit'
-
-SELECT count(*) FROM [mtc_admin].[pupilAccessArrangements]
-
--- Pre Test Execution Get Counts--scripts
-SELECT count(*) FROM [mtc_admin].[check]
-
-SELECT count(*) FROM [mtc_admin].[pupil] where lastname like 'Pupillastnameedit'
-
-SELECT count(*) FROM [mtc_admin].[pupilAccessArrangements]
-
-
-
-EXECUTE as USER = '<LOADTEST_USER>';
-GO
-
 --
 -- Load test helper: resets common tables after a load-test
 -- NB some statements should be excluded if you want to build up volume data
@@ -54,7 +9,7 @@ GO
 TRUNCATE TABLE mtc_results.checkResultSyncError
 TRUNCATE TABLE mtc_results.psychometricReport
 TRUNCATE TABLE mtc_results.userInput;
-DELETE FROM mtc_results.userInputTypeLookup;
+--DELETE FROM mtc_results.userInputTypeLookup;
 DELETE FROM  mtc_results.answer;
 TRUNCATE TABLE mtc_results.event;
 DELETE FROM mtc_results.userDevice;
@@ -65,7 +20,7 @@ DELETE FROM mtc_results.navigatorPlatformLookup
 DELETE FROM mtc_results.networkConnectionEffectiveTypeLookup
 DELETE FROM mtc_results.uaOperatingSystemLookup
 DELETE FROM mtc_results.userAgentLookup
-DELETE FROM mtc_results.eventTypeLookup
+--DELETE FROM mtc_results.eventTypeLookup
 DELETE FROM mtc_results.checkResult
 
 
@@ -99,4 +54,4 @@ TRUNCATE TABLE mtc_admin.settingsLog
 -- DELETE FROM mtc_admin.[user]
 -- DELETE FROM mtc_admin.school
 -- Delete new schools uploaded without pupils
---DELETE FROM mtc_admin.school WHERE leaCode <> 999;
+-- DELETE FROM mtc_admin.school WHERE leaCode <> 999;
