@@ -109,20 +109,20 @@ describe('pupilStatusPresenter', () => {
       expect(pupilStatusViewData.pupilsInProgress[0].status).toBe('PIN generated')
       expect(pupilStatusViewData.pupilsInProgress.length).toBe(1)
     })
-    test('displays pupils that have logged in as logged in', () => {
+    test('displays pupils that have Signed in as Signed in', () => {
       const pupilData = [
         {
           status: 'Not started'
         },
         {
-          status: 'Logged in'
+          status: 'Signed in'
         }
       ]
       const pupilStatusViewData = pupilStatusPresenter.getPresentationData(pupilData, checkWindowData)
-      expect(pupilStatusViewData.pupilsInProgress[0].status).toBe('Logged in')
+      expect(pupilStatusViewData.pupilsInProgress[0].status).toBe('Signed in')
       expect(pupilStatusViewData.pupilsInProgress.length).toBe(1)
     })
-    test('displays pupils that have unused restarts as not started', () => {
+    test('displays pupils that have unused restarts as Restart (STA change request #63510 Jan 2024)', () => {
       const notStartedPupils = [
         {
           status: 'Not started'
@@ -133,7 +133,7 @@ describe('pupilStatusPresenter', () => {
       ]
       const pupilStatusViewData = pupilStatusPresenter.getPresentationData(notStartedPupils, checkWindowData)
       expect(pupilStatusViewData.pupilsNotStarted[0].status).toBe('Not started')
-      expect(pupilStatusViewData.pupilsNotStarted[1].status).toBe('Not started')
+      expect(pupilStatusViewData.pupilsNotStarted[1].status).toBe('Restart applied')
     })
     test('displays pupils with Overdue status in correct section', () => {
       const pupilsRequireAction = [
@@ -144,13 +144,13 @@ describe('pupilStatusPresenter', () => {
           status: 'Overdue - check started but not received'
         },
         {
-          status: 'Overdue - logged in but check not started'
+          status: 'Overdue - signed in but check not started'
         }
       ]
       const pupilStatusViewData = pupilStatusPresenter.getPresentationData(pupilsRequireAction, checkWindowData)
       expect(pupilStatusViewData.pupilsRequireAction[0].status).toBe('Error in processing')
       expect(pupilStatusViewData.pupilsRequireAction[1].status).toBe('Overdue - check started but not received')
-      expect(pupilStatusViewData.pupilsRequireAction[2].status).toBe('Overdue - logged in but check not started')
+      expect(pupilStatusViewData.pupilsRequireAction[2].status).toBe('Overdue - signed in but check not started')
     })
     test('collects total pupil count', () => {
       const pupils = [
