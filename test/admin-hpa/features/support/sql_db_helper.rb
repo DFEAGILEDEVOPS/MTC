@@ -22,7 +22,7 @@ class SqlDbHelper
     result.cancel
     pupil_details_res
   end
-#
+
   def self.find_pupil_from_school(first_name, school_id)
     sql = "SELECT * FROM [mtc_admin].[pupil] WHERE foreName='#{first_name}' AND school_id='#{school_id}'"
     result = SQL_CLIENT.execute(sql)

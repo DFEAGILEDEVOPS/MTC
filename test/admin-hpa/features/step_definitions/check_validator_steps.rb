@@ -180,10 +180,9 @@ Given(/^a pupil has completed the check with a check code that is not a UUID$/) 
 end
 
 Then(/^I should see an error stating validation failed as the check code is not a UUID$/) do
-  fail 'this fails due to the db not being updated with the received flag'
-  wait_until{SqlDbHelper.wait_for_received_check(@check_code); !(SqlDbHelper.wait_for_received_check(@check_code)['processingFailed']).nil?}
-  @received_check = SqlDbHelper.wait_for_received_check(@check_code)
-  expect(@received_check['processingFailed']).to eql true
+  SqlDbHelper.wait_for_received_check(@check_code)
+  received_check = AzureTableHelper.get_row('receivedCheck', @school['entity']['urlSlug'], @check_code.gsub("-", ''))
+  expect(received_check['processingError']).to eql "checkForm lookup failed:Validation failed for parameter 'checkCode'. Invalid GUID."
 end
 
 
