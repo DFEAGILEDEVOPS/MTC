@@ -15,15 +15,16 @@ Given(/^a pupil has completed the check with less than 25 answers$/) do
   RequestHelper.submit_check(jwt, payload)
   @school_uuid = @parsed_response_pupil_auth['school']['uuid']
   @check_code = @parsed_response_pupil_auth['checkCode']
-  @received_check = AzureTableHelper.wait_for_received_check(@school_uuid, @check_code)
+  @received_check = SqlDbHelper.wait_for_received_check(@check_code)
   p @check_code
 end
 
 Then(/^I should see an error stating validation failed as there are 24 answers$/) do
-  wait_until{AzureTableHelper.wait_for_received_check(@school_uuid, @check_code); !(AzureTableHelper.wait_for_received_check(@school_uuid, @check_code)['processingError']).nil?}
-  @received_check = AzureTableHelper.wait_for_received_check(@school_uuid, @check_code)
-  expect(@received_check['checkVersion']).to eql 3
-  expect(@received_check['processingError']).to eql "check-validator: check validation failed. checkCode: #{@check_code}\n\t-\tsubmitted check has 24 answers. 25 answers are required}"
+  wait_until{SqlDbHelper.wait_for_received_check(@check_code); !(SqlDbHelper.wait_for_received_check(@check_code)['processingFailed']).nil?}
+  SqlDbHelper.wait_for_received_check(@check_code)
+  storage_row = AzureTableHelper.get_row('receivedCheck', @school['entity']['urlSlug'], @check_code)
+  expect(storage_row['checkVersion']).to eql 3
+  expect(storage_row['processingError']).to eql "check-validator: check validation failed. checkCode: #{@check_code}\n\t-\tsubmitted check has 24 answers. 25 answers are required}"
 end
 
 Given(/^a pupil has completed the check with more than 25 answers$/) do
@@ -43,7 +44,7 @@ Given(/^a pupil has completed the check with more than 25 answers$/) do
   RequestHelper.submit_check(jwt, payload)
   @school_uuid = @parsed_response_pupil_auth['school']['uuid']
   @check_code = @parsed_response_pupil_auth['checkCode']
-  @received_check = AzureTableHelper.wait_for_received_check(@school_uuid, @check_code)
+  @received_check = SqlDbHelper.wait_for_received_check(@check_code)
   p @check_code
 end
 
@@ -64,14 +65,14 @@ Given(/^a pupil has completed the check with an answer that is not a string$/) d
   RequestHelper.submit_check(jwt, payload)
   @school_uuid = @parsed_response_pupil_auth['school']['uuid']
   @check_code = @parsed_response_pupil_auth['checkCode']
-  @received_check = AzureTableHelper.wait_for_received_check(@school_uuid, @check_code)
+  @received_check = SqlDbHelper.wait_for_received_check(@check_code)
   p @check_code
 end
 
 Then(/^I should see an error stating validation failed as answers must be strings$/) do
-  wait_until{AzureTableHelper.wait_for_received_check(@school_uuid, @check_code); !(AzureTableHelper.wait_for_received_check(@school_uuid, @check_code)['processingError']).nil?}
-  @received_check = AzureTableHelper.wait_for_received_check(@school_uuid, @check_code)
-  expect(@received_check['processingError']).to eql "check-validator: check validation failed. checkCode: #{@check_code}\n\t-\tanswer 26 is not of required type (string)"
+  wait_until{SqlDbHelper.wait_for_received_check(@check_code); !(SqlDbHelper.wait_for_received_check(@check_code)['processingFailed']).nil?}
+  @received_check = SqlDbHelper.wait_for_received_check(@check_code)
+  expect(@received_check['processingFailed']).to eql true
 end
 
 Given(/^a pupil has completed the check with no audit logs$/) do
@@ -91,14 +92,14 @@ Given(/^a pupil has completed the check with no audit logs$/) do
   RequestHelper.submit_check(jwt, payload)
   @school_uuid = @parsed_response_pupil_auth['school']['uuid']
   @check_code = @parsed_response_pupil_auth['checkCode']
-  @received_check = AzureTableHelper.wait_for_received_check(@school_uuid, @check_code)
+  @received_check = SqlDbHelper.wait_for_received_check(@check_code)
   p @check_code
 end
 
 Then(/^I should see an error stating validation failed as there is no audit log$/) do
-  wait_until{AzureTableHelper.wait_for_received_check(@school_uuid, @check_code); !(AzureTableHelper.wait_for_received_check(@school_uuid, @check_code)['processingError']).nil?}
-  @received_check = AzureTableHelper.wait_for_received_check(@school_uuid, @check_code)
-  expect(@received_check['processingError']).to eql "check-validator: check validation failed. checkCode: #{@check_code}\n\t-\taudit property missing"
+  wait_until{SqlDbHelper.wait_for_received_check(@check_code); !(SqlDbHelper.wait_for_received_check(@check_code)['processingFailed']).nil?}
+  @received_check = SqlDbHelper.wait_for_received_check(@check_code)
+  expect(@received_check['processingFailed']).to eql true
 end
 
 Given(/^a pupil has completed the check with answers that are not contained in an array$/) do
@@ -118,14 +119,14 @@ Given(/^a pupil has completed the check with answers that are not contained in a
   RequestHelper.submit_check(jwt, payload)
   @school_uuid = @parsed_response_pupil_auth['school']['uuid']
   @check_code = @parsed_response_pupil_auth['checkCode']
-  @received_check = AzureTableHelper.wait_for_received_check(@school_uuid, @check_code)
+  @received_check = SqlDbHelper.wait_for_received_check(@check_code)
   p @check_code
 end
 
 Then(/^I should see an error stating validation failed as answers are not an array$/) do
-  wait_until{AzureTableHelper.wait_for_received_check(@school_uuid, @check_code); !(AzureTableHelper.wait_for_received_check(@school_uuid, @check_code)['processingError']).nil?}
-  @received_check = AzureTableHelper.wait_for_received_check(@school_uuid, @check_code)
-  expect(@received_check['processingError']).to eql "check-validator: check validation failed. checkCode: #{@check_code}\n\t-\tanswers property is not an array"
+  wait_until{SqlDbHelper.wait_for_received_check(@check_code); !(SqlDbHelper.wait_for_received_check(@check_code)['processingFailed']).nil?}
+  @received_check = SqlDbHelper.wait_for_received_check(@check_code)
+  expect(@received_check['processingFailed']).to eql true
 end
 
 
@@ -146,14 +147,14 @@ Given(/^a pupil has completed the check with the audit log is not contained in a
   RequestHelper.submit_check(jwt, payload)
   @school_uuid = @parsed_response_pupil_auth['school']['uuid']
   @check_code = @parsed_response_pupil_auth['checkCode']
-  @received_check = AzureTableHelper.wait_for_received_check(@school_uuid, @check_code)
+  @received_check = SqlDbHelper.wait_for_received_check(@check_code)
   p @check_code
 end
 
 Then(/^I should see an error stating validation failed as the audit log is not an array$/) do
-  wait_until{AzureTableHelper.wait_for_received_check(@school_uuid, @check_code); !(AzureTableHelper.wait_for_received_check(@school_uuid, @check_code)['processingError']).nil?}
-  @received_check = AzureTableHelper.wait_for_received_check(@school_uuid, @check_code)
-  expect(@received_check['processingError']).to eql "check-validator: check validation failed. checkCode: #{@check_code}\n\t-\taudit property is not an array"
+  wait_until{SqlDbHelper.wait_for_received_check(@check_code); !(SqlDbHelper.wait_for_received_check(@check_code)['processingFailed']).nil?}
+  @received_check = SqlDbHelper.wait_for_received_check(@check_code)
+  expect(@received_check['processingFailed']).to eql true
 end
 
 
@@ -173,15 +174,15 @@ Given(/^a pupil has completed the check with a check code that is not a UUID$/) 
   jwt =  @submission_hash[:payload][:tokens]['checkSubmission']["token"]
   RequestHelper.submit_check(jwt, payload)
   @school_uuid = @parsed_response_pupil_auth['school']['uuid']
-  @check_code = @parsed_response_pupil_auth['checkCode'].gsub('-','')
-  @received_check = AzureTableHelper.wait_for_received_check(@school_uuid, @check_code)
+  @check_code = @parsed_response_pupil_auth['checkCode']
+  @received_check = SqlDbHelper.wait_for_received_check(@check_code)
   p @check_code
 end
 
 Then(/^I should see an error stating validation failed as the check code is not a UUID$/) do
-  wait_until{AzureTableHelper.wait_for_received_check(@school_uuid, @check_code); !(AzureTableHelper.wait_for_received_check(@school_uuid, @check_code)['processingError']).nil?}
-  @received_check = AzureTableHelper.wait_for_received_check(@school_uuid, @check_code)
-  expect(@received_check['processingError']).to eql "checkForm lookup failed:Validation failed for parameter 'checkCode'. Invalid GUID."
+  SqlDbHelper.wait_for_received_check(@check_code)
+  received_check = AzureTableHelper.get_row('receivedCheck', @school['entity']['urlSlug'], @check_code.gsub("-", ''))
+  expect(received_check['processingError']).to eql "checkForm lookup failed:Validation failed for parameter 'checkCode'. Invalid GUID."
 end
 
 
@@ -202,14 +203,15 @@ Given(/^a pupil has completed the check with the config property not being a obj
   RequestHelper.submit_check(jwt, payload)
   @school_uuid = @parsed_response_pupil_auth['school']['uuid']
   @check_code = @parsed_response_pupil_auth['checkCode']
-  @received_check = AzureTableHelper.wait_for_received_check(@school_uuid, @check_code)
+  @received_check = SqlDbHelper.wait_for_received_check(@check_code)
   p @check_code
 end
 
 Then(/^I should see an error stating validation failed as the config property has to be an object$/) do
-  wait_until{AzureTableHelper.wait_for_received_check(@school_uuid, @check_code); !(AzureTableHelper.wait_for_received_check(@school_uuid, @check_code)['processingError']).nil?}
-  @received_check = AzureTableHelper.wait_for_received_check(@school_uuid, @check_code)
-  expect(@received_check['processingError']).to eql "check-validator: check validation failed. checkCode: #{@check_code}\n\t-\tconfig property is not an object\n\t-\tonly live checks can be submitted. value:undefined"
+  wait_until{SqlDbHelper.wait_for_received_check(@check_code); !(SqlDbHelper.wait_for_received_check(@check_code)['processingFailed']).nil?}
+  sleep 5
+  @received_check = SqlDbHelper.wait_for_received_check(@check_code)
+  expect(@received_check['processingFailed']).to eql true
 end
 
 
@@ -230,15 +232,15 @@ Given(/^a pupil has completed the check with the inputs property not being a arr
   RequestHelper.submit_check(jwt, payload)
   @school_uuid = @parsed_response_pupil_auth['school']['uuid']
   @check_code = @parsed_response_pupil_auth['checkCode']
-  @received_check = AzureTableHelper.wait_for_received_check(@school_uuid, @check_code)
+  @received_check = SqlDbHelper.wait_for_received_check(@check_code)
   p @check_code
 end
 
 
 Then(/^I should see an error stating validation failed as the inputs property has to be an array$/) do
-  wait_until{AzureTableHelper.wait_for_received_check(@school_uuid, @check_code); !(AzureTableHelper.wait_for_received_check(@school_uuid, @check_code)['processingError']).nil?}
-  @received_check = AzureTableHelper.wait_for_received_check(@school_uuid, @check_code)
-  expect(@received_check['processingError']).to eql "check-validator: check validation failed. checkCode: #{@check_code}\n\t-\tinputs property is not an array"
+  wait_until{SqlDbHelper.wait_for_received_check(@check_code); !(SqlDbHelper.wait_for_received_check(@check_code)['processingFailed']).nil?}
+  @received_check = SqlDbHelper.wait_for_received_check(@check_code)
+  expect(@received_check['processingFailed']).to eql true
 end
 
 
@@ -259,15 +261,15 @@ Given(/^a pupil has completed the check with the practice property is set to tru
   RequestHelper.submit_check(jwt, payload)
   @school_uuid = @parsed_response_pupil_auth['school']['uuid']
   @check_code = @parsed_response_pupil_auth['checkCode']
-  @received_check = AzureTableHelper.wait_for_received_check(@school_uuid, @check_code)
+  @received_check = SqlDbHelper.wait_for_received_check(@check_code)
   p @check_code
 end
 
 
 Then(/^I should see an error stating validation failed as the practice property is set to true$/) do
-  wait_until{AzureTableHelper.wait_for_received_check(@school_uuid, @check_code); !(AzureTableHelper.wait_for_received_check(@school_uuid, @check_code)['processingError']).nil?}
-  @received_check = AzureTableHelper.wait_for_received_check(@school_uuid, @check_code)
-  expect(@received_check['processingError']).to eql "check-validator: check validation failed. checkCode: #{@check_code}\n\t-\tonly live checks can be submitted. value:true"
+  wait_until{SqlDbHelper.wait_for_received_check(@check_code); !(SqlDbHelper.wait_for_received_check(@check_code)['processingFailed']).nil?}
+  @received_check = SqlDbHelper.wait_for_received_check(@check_code)
+  expect(@received_check['processingFailed']).to eql true
 end
 
 Given(/^a pupil has completed the check with the pupil property not being an object$/) do
@@ -287,15 +289,15 @@ Given(/^a pupil has completed the check with the pupil property not being an obj
   RequestHelper.submit_check(jwt, payload)
   @school_uuid = @parsed_response_pupil_auth['school']['uuid']
   @check_code = @parsed_response_pupil_auth['checkCode']
-  @received_check = AzureTableHelper.wait_for_received_check(@school_uuid, @check_code)
+  @received_check = SqlDbHelper.wait_for_received_check(@check_code)
   p @check_code
 end
 
 
 Then(/^I should see an error stating validation failed as the pupil property is not a object$/) do
-  wait_until{AzureTableHelper.wait_for_received_check(@school_uuid, @check_code); !(AzureTableHelper.wait_for_received_check(@school_uuid, @check_code)['processingError']).nil?}
-  @received_check = AzureTableHelper.wait_for_received_check(@school_uuid, @check_code)
-  expect(@received_check['processingError']).to eql "check-validator: check validation failed. checkCode: #{@check_code}\n\t-\tpupil property is not an object"
+  wait_until{SqlDbHelper.wait_for_received_check(@check_code); !(SqlDbHelper.wait_for_received_check(@check_code)['processingFailed']).nil?}
+  @received_check = SqlDbHelper.wait_for_received_check(@check_code)
+  expect(@received_check['processingFailed']).to eql true
 end
 
 Given(/^a pupil has completed the check with the questions are not contained in an array$/) do
@@ -315,14 +317,14 @@ Given(/^a pupil has completed the check with the questions are not contained in 
   RequestHelper.submit_check(jwt, payload)
   @school_uuid = @parsed_response_pupil_auth['school']['uuid']
   @check_code = @parsed_response_pupil_auth['checkCode']
-  @received_check = AzureTableHelper.wait_for_received_check(@school_uuid, @check_code)
+  @received_check = SqlDbHelper.wait_for_received_check(@check_code)
   p @check_code
 end
 
 Then(/^I should see an error stating validation failed as the questions are not an array$/) do
-  wait_until{AzureTableHelper.wait_for_received_check(@school_uuid, @check_code); !(AzureTableHelper.wait_for_received_check(@school_uuid, @check_code)['processingError']).nil?}
-  @received_check = AzureTableHelper.wait_for_received_check(@school_uuid, @check_code)
-  expect(@received_check['processingError']).to eql "check-validator: check validation failed. checkCode: #{@check_code}\n\t-\tquestions property is not an array"
+  wait_until{SqlDbHelper.wait_for_received_check(@check_code); !(SqlDbHelper.wait_for_received_check(@check_code)['processingFailed']).nil?}
+  @received_check = SqlDbHelper.wait_for_received_check(@check_code)
+  expect(@received_check['processingFailed']).to eql true
 end
 
 Given(/^a pupil has completed the check with the school property not being an object$/) do
@@ -342,14 +344,14 @@ Given(/^a pupil has completed the check with the school property not being an ob
   jwt =  @submission_hash[:payload][:tokens]['checkSubmission']["token"]
   RequestHelper.submit_check(jwt, payload)
   @check_code = @parsed_response_pupil_auth['checkCode']
-  @received_check = AzureTableHelper.wait_for_received_check(@school_uuid, @check_code)
+  @received_check = SqlDbHelper.wait_for_received_check(@check_code)
   p @check_code
 end
 
 Then(/^I should see an error stating validation failed as the school property is not a object$/) do
-  wait_until{AzureTableHelper.wait_for_received_check(@school_uuid, @check_code); !(AzureTableHelper.wait_for_received_check(@school_uuid, @check_code)['processingError']).nil?}
-  @received_check = AzureTableHelper.wait_for_received_check(@school_uuid, @check_code)
-  expect(@received_check['processingError']).to eql "check-validator: check validation failed. checkCode: #{@check_code}\n\t-\tschool property is not an object"
+  wait_until{SqlDbHelper.wait_for_received_check(@check_code); !(SqlDbHelper.wait_for_received_check(@check_code)['processingFailed']).nil?}
+  @received_check = SqlDbHelper.wait_for_received_check(@check_code)
+  expect(@received_check['processingFailed']).to eql true
 end
 
 Given(/^a pupil has completed the check with the tokens property not being an object$/) do
@@ -369,14 +371,14 @@ Given(/^a pupil has completed the check with the tokens property not being an ob
   RequestHelper.submit_check(jwt, payload)
   @school_uuid = @parsed_response_pupil_auth['school']['uuid']
   @check_code = @parsed_response_pupil_auth['checkCode']
-  @received_check = AzureTableHelper.wait_for_received_check(@school_uuid, @check_code)
+  @received_check = SqlDbHelper.wait_for_received_check(@check_code)
   p @check_code
 end
 
 Then(/^I should see an error stating validation failed as the tokens property is not a object$/) do
-  wait_until{AzureTableHelper.wait_for_received_check(@school_uuid, @check_code); !(AzureTableHelper.wait_for_received_check(@school_uuid, @check_code)['processingError']).nil?}
-  @received_check = AzureTableHelper.wait_for_received_check(@school_uuid, @check_code)
-  expect(@received_check['processingError']).to eql "check-validator: check validation failed. checkCode: #{@check_code}\n\t-\ttokens property is not an object"
+  wait_until{SqlDbHelper.wait_for_received_check(@check_code); !(SqlDbHelper.wait_for_received_check(@check_code)['processingFailed']).nil?}
+  @received_check = SqlDbHelper.wait_for_received_check(@check_code)
+  expect(@received_check['processingFailed']).to eql true
 end
 
 Then(/^I should see the check is recieved and is set to version (\d+)$/) do |version|

@@ -106,7 +106,7 @@ Given(/^I have multiple pupils for restart$/) do
     RequestHelper.auth(school_password, pupil_pin)
     @check_code = check_entry['checkCode']
     FunctionsHelper.complete_check_via_check_code([@check_code])
-    AzureTableHelper.wait_for_received_check(@school['entity']['urlSlug'], @check_code)
+    SqlDbHelper.wait_for_received_check(@check_code)
   end
   step 'I am on the Restarts Page'
 end
@@ -213,7 +213,7 @@ When(/^they become eligable for a restart$/) do
     RequestHelper.auth(school_password, pupil_pin)
     @check_code = check_entry['checkCode']
     FunctionsHelper.complete_check_via_check_code([@check_code])
-    AzureTableHelper.wait_for_received_check(@school['entity']['urlSlug'], @check_code)
+    SqlDbHelper.wait_for_received_check(@check_code)
   end
   step 'I am on the Restarts Page'
 end
@@ -273,7 +273,7 @@ Given(/^pupil logs in and completed the check$/) do
   RequestHelper.auth(school_password, pupil_pin)
   @check_code = check_entry['checkCode']
   FunctionsHelper.complete_check_via_check_code([@check_code]) if check_entry["isLiveCheck"]
-  AzureTableHelper.wait_for_received_check(@school['entity']['urlSlug'], @check_code) if check_entry["isLiveCheck"]
+  SqlDbHelper.wait_for_received_check(@check_code) if check_entry["isLiveCheck"]
 end
 
 And(/^I generate a pin for that pupil$/) do
@@ -325,7 +325,7 @@ Given(/^I have more than (\d+) pupils eligible for a restart$/) do |number_of_re
     @parsed_response_pupil_auth = JSON.parse(response_pupil_auth.body)
     @check_code = check_entry['checkCode']
     FunctionsHelper.complete_check_via_check_code([@check_code])
-    AzureTableHelper.wait_for_received_check(@school['entity']['urlSlug'], @check_code)
+    SqlDbHelper.wait_for_received_check(@check_code)
   end
 end
 
