@@ -14,11 +14,13 @@ export class CsvTransformer {
   }
 
   private transformLine (d: IPsychometricReportLine): any[] {
+    const createdAt = moment()
+    const updatedAt = createdAt.clone()
     const data = [
       d.PupilDatabaseId,
       d.PupilUPN,
-      moment().toISOString(), // createdAt
-      moment().toISOString(), // updatedAt
+      createdAt.toISOString(),
+      updatedAt.toISOString(),
       d.DOB?.format('YYYY-MM-DD'),
       d.Gender,
       d.Forename,
