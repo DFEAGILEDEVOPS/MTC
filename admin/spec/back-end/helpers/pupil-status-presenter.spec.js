@@ -122,7 +122,7 @@ describe('pupilStatusPresenter', () => {
       expect(pupilStatusViewData.pupilsInProgress[0].status).toBe('Signed in')
       expect(pupilStatusViewData.pupilsInProgress.length).toBe(1)
     })
-    test('displays pupils that have unused restarts as Restart (STA change request #63510 Jan 2024)', () => {
+    test('displays pupils that have unused restarts as Restart applied', () => {
       const notStartedPupils = [
         {
           status: 'Not started'
