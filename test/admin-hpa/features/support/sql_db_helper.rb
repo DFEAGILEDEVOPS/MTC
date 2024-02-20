@@ -22,7 +22,7 @@ class SqlDbHelper
     result.cancel
     pupil_details_res
   end
-#
+
   def self.find_pupil_from_school(first_name, school_id)
     sql = "SELECT * FROM [mtc_admin].[pupil] WHERE foreName='#{first_name}' AND school_id='#{school_id}'"
     result = SQL_CLIENT.execute(sql)
@@ -767,6 +767,27 @@ class SqlDbHelper
     result.do
   end
 
+
+  def self.received_check(check_code)
+    sql = "SELECT * FROM [mtc_admin].[check] WHERE checkCode = '#{check_code}' and received=1"
+    result = SQL_CLIENT.execute(sql)
+    check = result.first
+    result.cancel
+    check
+  end
+
+  def self.wait_for_received_check(check_code)
+    begin
+      retries ||= 0
+      sleep 1
+      p 'waiting for check to be received'
+      received_check(check_code)
+    rescue NoMethodError => e
+      p "retry number" + retries.to_s
+      retry if (retries += 1) < 60
+    end
+  end
+
   def self.group_details(group_id)
     sql = "SELECT * FROM [mtc_admin].[group] WHERE id='#{group_id}'"
     result = SQL_CLIENT.execute(sql)
@@ -774,6 +795,5 @@ class SqlDbHelper
     result.cancel
     group_details_res
   end
-
 
 end

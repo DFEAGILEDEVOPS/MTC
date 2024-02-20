@@ -75,7 +75,7 @@ When(/^I download the Multiple Pupil upload CSV file with error$/) do
   page.execute_script("window.getFile = function(url) { var xhr = new XMLHttpRequest();  xhr.open('GET', url, false);  xhr.send(null); return xhr.responseText; }")
   data = page.evaluate_script("downloadCSVXHR()")
   File.open(File.join(File.expand_path("#{File.dirname(__FILE__)}/../../data/"), "multiple_pupils_errors.csv"), "w") { |f| f.write(data) }
-  data = CSV.read(File.expand_path("#{File.dirname(__FILE__)}/../../data/multiple_pupils_errors.csv"), { encoding: "UTF-8", headers: true, header_converters: :symbol, converters: :all, liberal_parsing: true})
+  data = CSV.read(File.expand_path("#{File.dirname(__FILE__)}/../../data/multiple_pupils_errors.csv"), **options={ encoding: "UTF-8", headers: true, header_converters: :symbol, converters: :all, liberal_parsing: true})
   @hashed_data = data.map { |d| d.to_hash }
 end
 

@@ -63,7 +63,7 @@ Given(/^I have some pupils that have completed the check$/) do
     @parsed_response_pupil_auth = JSON.parse(response_pupil_auth.body)
     @check_code = check_entry['checkCode']
     FunctionsHelper.complete_check_via_check_code([@check_code])
-    AzureTableHelper.wait_for_received_check(@school['entity']['urlSlug'], @check_code)
+    SqlDbHelper.wait_for_received_check(@check_code)
   end
 end
 
