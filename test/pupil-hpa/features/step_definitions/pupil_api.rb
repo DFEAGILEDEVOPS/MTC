@@ -10,7 +10,7 @@ Given(/^I have generated a pin via the admin app$/) do
   generate_pins_overview_page.sticky_banner.confirm.click
   @school_password = view_and_custom_print_live_check_page.find_pupil_row(pupil_name).school_password.text
   @pupil_pin = view_and_custom_print_live_check_page.find_pupil_row(pupil_name).pin.text
-  AzureTableHelper.wait_for_prepared_check(@school_password,@pupil_pin)
+  RedisHelper.wait_for_prepared_check(@school_password,@pupil_pin)
 end
 
 Given(/^I make a request with valid credentials$/) do

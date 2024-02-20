@@ -1,3 +1,4 @@
+
 require 'rubygems'
 require 'active_support'
 require 'active_support/all'
@@ -36,10 +37,11 @@ require_relative '../../features/support/app'
 require 'jwt'
 include Helpers
 
-Dotenv.load('../../.env')
 
+Dotenv.load('../../.env')
 (abort "LIVE_FORM_QUESTION_COUNT is set to #{ENV['LIVE_FORM_QUESTION_COUNT']}. The tests require this to be set to 25. Please update this value to 25 and rebuild the apps") unless ENV['LIVE_FORM_QUESTION_COUNT'].to_i == 25
 
+ENV['SE_CACHE_PATH'] ||=File.expand_path("#{File.dirname(__FILE__)}/../../../se_manager/.cache/selenium")
 ENV["ADMIN_BASE_URL"] ||= 'http://localhost:3001'
 ENV["PUPIL_BASE_URL"] ||= 'http://localhost:4200'
 ENV["PUPIL_API_BASE_URL"] ||= 'http://localhost:3003'
@@ -57,10 +59,12 @@ Capybara.configure do |config|
   config.exact = true
   config.ignore_hidden_elements = false
   config.visible_text_only = true
+  config.default_max_wait_time = 7
 end
 
 Capybara.register_driver(:chrome) do |app|
-  browser_options = ::Selenium::WebDriver::Chrome::Options.new
+  browser_options = Selenium::WebDriver::Options.chrome
+  browser_options.page_load_strategy = :normal
   browser_options.add_preference(:download, directory_upgrade: true,
                                  prompt_for_download: false,
                                  default_directory:
@@ -81,20 +85,17 @@ Capybara.register_driver(:chrome) do |app|
   driver
 end
 
-Capybara.register_driver :poltergeist do |app|
-  Capybara::Poltergeist::Driver.new(app, js_errors: false, timeout: 60)
-end
 
 Capybara.register_driver :headless_chrome do |app|
-  browser_options = ::Selenium::WebDriver::Chrome::Options.new
+  browser_options = Selenium::WebDriver::Options.chrome
   browser_options.args << '--headless'
   browser_options.args << '--disable-gpu'
   browser_options.args << '--allow-insecure-localhost'
   browser_options.args << '--no-sandbox'
   browser_options.args << '--window-size=1280,1696'
   browser_options.add_preference(:download, directory_upgrade: true,
-                 prompt_for_download: false,
-                 default_directory:
+                                 prompt_for_download: false,
+                                 default_directory:
                                    File.expand_path("#{File.dirname(__FILE__)}/../../data/download"))
   browser_options.add_preference(:browser, set_download_behavior: { behavior: 'allow' })
 
@@ -114,7 +115,6 @@ end
 
 Dir.mkdir("reports") unless File.directory?("reports")
 Capybara.javascript_driver = ENV["DRIVER"].to_sym
-
 
 database = ENV['SQL_DATABASE'] || 'mtc'
 server = ENV['SQL_SERVER'] || 'localhost'
@@ -178,13 +178,5 @@ if azure_test == 'true'
   REDIS_CLIENT = Redis.new(host: "#{redis_host}", port: redis_port, password: "#{redis_key}", :ssl => :true)
 else
   REDIS_CLIENT = Redis.new(host: "#{redis_host}", port: redis_port)
-end
-
-# BrowserStack env vars
-if (File.exist?('../../.env')) && (File.read('../../.env').include? 'BROWSERSTACK')
-  ENV['BROWSERSTACK_ACCESS_KEY'] ||= File.read('../../.env').split("\n").find {|key| (key.include?('BROWSERSTACK_ACCESS_KEY'))}.split('=').last
-  ENV['BROWSERSTACK_USERNAME'] ||= File.read('../../.env').split("\n").find {|key| (key.include?('BROWSERSTACK_USERNAME'))}.split('=').last
-  fail 'Browserstack access key should be alphanumeric and between 8 - 20 characters long' if ENV['BROWSERSTACK_ACCESS_KEY'].match(/\A[a-zA-Z0-9]{8,20}\z/).nil?
-  fail 'Browserstack username should be alphanumeric and between 8 - 20 characters long' if ENV['BROWSERSTACK_USERNAME'].match(/\A[a-zA-Z0-9]{8,20}\z/).nil?
 end
 
