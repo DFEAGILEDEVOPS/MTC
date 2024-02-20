@@ -7,6 +7,7 @@ import { type IFunctionTimer } from '../../azure/functions'
 import { type IPsychometricReportLine } from '../ps-report-3-transformer/models'
 import { jsonReviver } from '../../common/json-reviver'
 import { PsReportStagingDataService } from './ps-report-staging.data.service'
+import { CsvTransformer } from './csv-transformer'
 
 const functionName = 'ps-report-3b-stage-csv-file'
 const receiveQueueName = 'ps-report-export'
@@ -87,11 +88,12 @@ const PsReportStageCsvFile: AzureFunction = async function (context: Context, ti
       if (timeSinceLastMessage >= config.PsReport.StagingFile.WaitTimeToTriggerStagingComplete) {
         context.log(`${functionName}: exiting as no new messages in ${config.PsReport.StagingFile.WaitTimeToTriggerStagingComplete} seconds.`)
         done = true
+        context.bindings.outputData = [{ fileName: 'file.csv' }]
         await disconnect()
         return finish(start, context)
       } else {
         context.log(`${functionName}: waiting for messages...`)
-        await sleep(config.PsReport.StagingFile.PollInterval) // wait n seconds before polling again. Default is 10.
+        await sleep(config.PsReport.StagingFile.PollInterval * 1000) // wait n seconds before polling again. Default is 10.
       }
     } else {
       // Messages were received
@@ -159,10 +161,10 @@ async function abandonMessages (messageBatch: sb.ServiceBusReceivedMessage[], re
 
 async function process (context: Context, messageBatch: sb.ServiceBusReceivedMessage[], receiver: sb.ServiceBusReceiver): Promise<void> {
   try {
-    const psReportData = messageBatch.map(m => { return revive(m.body as IPsychometricReportLine) })
-    const linesOfData = messageBatch.map(m => 'some line of data')
+    const psReportData: IPsychometricReportLine[] = messageBatch.map(m => { return revive(m.body as IPsychometricReportLine) })
+    const csvTransformer = new CsvTransformer(psReportData)
+    const linesOfData = csvTransformer.transform()
     await psReportStagingDataService.appendDataToBlob(linesOfData)
-    context.log.verbose(`data line 0: ${JSON.stringify(psReportData[0])}`)
     await completeMessages(messageBatch, receiver, context)
   } catch (error) {
     // sql transaction failed, abandon...

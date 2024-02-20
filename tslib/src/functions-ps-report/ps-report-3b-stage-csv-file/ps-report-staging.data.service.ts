@@ -8,7 +8,7 @@ export class PsReportStagingDataService {
   private readonly containerService: ContainerClient
   private readonly appendBlobService: AppendBlobClient
   private readonly blobName: string
-  private readonly csvLineTerminator = '\n'
+  private readonly csvLineTerminator = '\r\n'
 
   constructor (private readonly logger: ILogger, containerName = 'ps-report-bulk-upload', blobName = 'ps-report-staging.csv') {
     if (config.ServiceBus.ConnectionString === undefined) {
@@ -31,10 +31,13 @@ export class PsReportStagingDataService {
   /**
    * Appends data to a file in blob storage, creating the file if needed.
    */
-  public async appendDataToBlob (data: string[]): Promise<void> {
+  public async appendDataToBlob (data: string): Promise<void> {
     try {
-      const s = data.join(this.csvLineTerminator) + this.csvLineTerminator
-      await this.appendBlobService.appendBlock(s, s.length)
+      // Add a newLine if there isn't one at the end.
+      if (data.slice(-this.csvLineTerminator.length) !== this.csvLineTerminator) {
+        data += this.csvLineTerminator
+      }
+      await this.appendBlobService.appendBlock(data, data.length)
     } catch (e: any) {
       this.logger.error(`${this.logName}: Failed to append data to ${this.blobName}\n${e?.message}\n`)
     }
