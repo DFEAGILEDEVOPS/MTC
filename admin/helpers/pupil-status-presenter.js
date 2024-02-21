@@ -47,13 +47,13 @@ pupilStatusPresenter.getPresentationData = (pupilStatusData, checkWindowData) =>
  * Change status description for specific pupil statuses
  * @param {Array} pupilData
  * @param {Array} statuses
- * @param {String} statusDescription
+ * @param {String} newStatusDescription
  * @returns {Array}
  */
-pupilStatusPresenter.applyStatusDescriptionChange = (pupilData, statuses, statusDescription) => {
+pupilStatusPresenter.applyStatusDescriptionChange = (pupilData, statuses, newStatusDescription) => {
   const changeDescription = p => {
     if (statuses.includes(p.status)) {
-      p.status = statusDescription
+      p.status = newStatusDescription
     }
     return p
   }
