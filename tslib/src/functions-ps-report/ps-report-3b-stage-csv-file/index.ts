@@ -59,7 +59,8 @@ const PsReportStageCsvFile: AzureFunction = async function (context: Context, ti
   // Create the data service to upload to a blob file
   try {
     psReportStagingDataService = new PsReportStagingDataService(context.log, containerName, blobName)
-    // At this point the file has not yet been created
+    // At this point the file has not yet been created, so it needs to be created. An existing file will be
+    // overwritten (erasing old data).
     await psReportStagingDataService.createAppendBlock()
   } catch (error) {
     let errorMessage = 'unknown error'
