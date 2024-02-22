@@ -1,16 +1,47 @@
-import { type IPsychometricReportLine } from '../ps-report-3-transformer/models'
+import type { IReportLineAnswer, IPsychometricReportLine } from '../ps-report-3-transformer/models'
 import * as CSV from 'csv-string'
 import moment from 'moment'
+import { type ILogger } from '../../common/logger'
 
 /**
+ * CsvTransformer
+ *
  * This class outputs strings of csv data from an array of PS Report Lines.  The
  * data is in a format suitable for bulk upload into the mtc_results.pschometricReport_YYYYMMDD_HH_MM table.
  */
 export class CsvTransformer {
   private readonly psReportLineData: IPsychometricReportLine[]
+  private readonly logger: ILogger
 
-  constructor (psReportLineData: IPsychometricReportLine[]) {
+  constructor (logger: ILogger, psReportLineData: IPsychometricReportLine[]) {
+    this.logger = logger
     this.psReportLineData = psReportLineData
+    this.logger.verbose(`PS Report for: ${JSON.stringify(psReportLineData)}`)
+  }
+
+  private transformAnswer (a: IReportLineAnswer | undefined): any[] {
+    this.logger.verbose(`transformAnswer: ${JSON.stringify(a)}`)
+    if (a === undefined) {
+      return Array.from(Array(14)).fill(null)
+    }
+    const data = [
+      a.id,
+      a.response,
+      a.inputMethods,
+      a.keystrokes,
+      a.score,
+      a.responseTime,
+      a.timeout === true ? 1 : 0, // convert boolean for sql server bit field
+      a.timeoutResponse === true ? 1 : 0, // convert boolean for sql server bit field
+      a.timeoutScore === true ? 1 : 0,
+      a.loadTime?.toISOString(),
+      a.firstKey?.toISOString(),
+      a.lastKey?.toISOString(),
+      a.overallTime,
+      a.recallTime
+    ]
+    this.logger.verbose(`transformAnswer: ${JSON.stringify(data)}`)
+    return data
   }
 
   private transformLine (d: IPsychometricReportLine): any[] {
@@ -48,11 +79,23 @@ export class CsvTransformer {
       d.ToECode,
       d.ImportedFromCensus ? 1 : 0
     ]
+
+    const answers: any[] = []
+    // We need 25 answers, even if they are null
+    for (let i = 0; i < 25; i++) {
+      answers[i] = this.transformAnswer(d.answers[i])
+    }
+    this.logger.verbose(`Answers: ${JSON.stringify(answers)}`)
+
+    // flatten the answers array and add it to data.
+    answers.forEach(ans => {
+      ans.forEach((datum: any) => data.push(datum))
+    })
     return data
   }
 
   public transform (): string {
-    const data: any[] = this.psReportLineData.map(this.transformLine)
+    const data: any[] = this.psReportLineData.map(this.transformLine, this)
     return CSV.stringify(data)
   }
 }

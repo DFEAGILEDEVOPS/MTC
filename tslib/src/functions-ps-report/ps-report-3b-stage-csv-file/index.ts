@@ -162,7 +162,7 @@ async function abandonMessages (messageBatch: sb.ServiceBusReceivedMessage[], re
 async function process (context: Context, messageBatch: sb.ServiceBusReceivedMessage[], receiver: sb.ServiceBusReceiver): Promise<void> {
   try {
     const psReportData: IPsychometricReportLine[] = messageBatch.map(m => { return revive(m.body as IPsychometricReportLine) })
-    const csvTransformer = new CsvTransformer(psReportData)
+    const csvTransformer = new CsvTransformer(context.log, psReportData)
     const linesOfData = csvTransformer.transform()
     await psReportStagingDataService.appendDataToBlob(linesOfData)
     await completeMessages(messageBatch, receiver, context)

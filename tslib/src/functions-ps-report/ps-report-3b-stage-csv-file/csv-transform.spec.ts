@@ -1,6 +1,7 @@
 import moment from 'moment'
 import { CsvTransformer } from './csv-transformer'
 import * as CSV from 'csv-string'
+import { ConsoleLogger } from '../../common/logger'
 
 let sut: CsvTransformer
 
@@ -35,10 +36,28 @@ describe('CsvTransformer Class', () => {
         TimeTaken: 223.45,
         ReasonNotTakingCheck: 'reasonNotTakingCheck',
         ToECode: 'ToE code',
-        ImportedFromCensus: true
+        ImportedFromCensus: true,
+        answers: [
+          {
+            id: 123,
+            response: 10,
+            inputMethods: 't',
+            keystrokes: 't[1], t[0], t[Enter]',
+            score: 1,
+            responseTime: 0.256,
+            timeout: 0,
+            timeoutResponse: true,
+            timeoutScore: true,
+            loadTime: moment('2021-06-24T15:04:57.972Z'),
+            firstKey: moment('2021-06-24T15:04:59.554Z'),
+            lastKey: moment('2021-06-24T15:04:59.803Z'),
+            overallTime: 6.01,
+            recallTime: 1.618
+          }
+        ]
       }
     ]
-    sut = new CsvTransformer(psReportLineData)
+    sut = new CsvTransformer(new ConsoleLogger(), psReportLineData)
   })
 
   describe('top level info', () => {
@@ -220,6 +239,92 @@ describe('CsvTransformer Class', () => {
       const s = sut.transform()
       const res = CSV.parse(s)
       expect(res[0][29]).toBe('1')
+    })
+  })
+
+  describe('Answer data', () => {
+    test('it outputs the id', () => {
+      const s = sut.transform()
+      const res = CSV.parse(s)
+      expect(res[0][30]).toBe('123')
+    })
+
+    test('it outputs the response', () => {
+      const s = sut.transform()
+      const res = CSV.parse(s)
+      expect(res[0][31]).toBe('10')
+    })
+
+    test('it outputs the input methods', () => {
+      const s = sut.transform()
+      const res = CSV.parse(s)
+      expect(res[0][32]).toBe('t')
+    })
+
+    test('it outputs the users inputs', () => {
+      const s = sut.transform()
+      const res = CSV.parse(s)
+      expect(res[0][33]).toBe('t[1], t[0], t[Enter]')
+    })
+
+    test('it outputs the questions score', () => {
+      const s = sut.transform()
+      const res = CSV.parse(s)
+      expect(res[0][34]).toBe('1')
+    })
+
+    test('it outputs response time', () => {
+      const s = sut.transform()
+      const res = CSV.parse(s)
+      expect(res[0][35]).toBe('0.256')
+    })
+
+    test('it outputs whether the question timed out', () => {
+      const s = sut.transform()
+      const res = CSV.parse(s)
+      expect(res[0][36]).toBe('0')
+    })
+
+    test('it outputs whether the time out also had a response', () => {
+      const s = sut.transform()
+      const res = CSV.parse(s)
+      expect(res[0][37]).toBe('1')
+    })
+
+    test('it outputs whether there was a timeout and a score', () => {
+      const s = sut.transform()
+      const res = CSV.parse(s)
+      expect(res[0][38]).toBe('1')
+    })
+
+    test('it outputs the load time', () => {
+      const s = sut.transform()
+      const res = CSV.parse(s)
+      expect(res[0][39]).toBe('2021-06-24T15:04:57.972Z')
+    })
+
+    test('it outputs the elapsed time of the first key press', () => {
+      const s = sut.transform()
+      const res = CSV.parse(s)
+      expect(res[0][40]).toBe('2021-06-24T15:04:59.554Z')
+    })
+
+    test('it outputs the elapsed time of the last key', () => {
+      const s = sut.transform()
+      const res = CSV.parse(s)
+      expect(res[0][41]).toBe('2021-06-24T15:04:59.803Z')
+    })
+
+    test('it outputs the overall time', () => {
+      const s = sut.transform()
+      const res = CSV.parse(s)
+      expect(res[0][42]).toBe('6.01')
+    })
+
+    test('it outputs the recall time', () => {
+      const s = sut.transform()
+      const res = CSV.parse(s)
+      expect(res[0][43]).toBe('1.618')
     })
   })
 })
