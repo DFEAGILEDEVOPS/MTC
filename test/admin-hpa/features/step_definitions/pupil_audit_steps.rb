@@ -191,7 +191,7 @@ end
 
 
 Then(/^I should see a audit entry for the pupil with a discretionary restart$/) do
-  wait_until(10,2){SqlDbHelper.pupil_audit_record(@pupil_id).size > 8}
+  wait_until(10,2){SqlDbHelper.pupil_audit_record(@pupil_id).size >= 8}
   pupil_audit_records = SqlDbHelper.pupil_audit_record(@pupil_id).flatten.select {|row| row['auditOperationTypeLookup_id'] == 2}.sort_by{|hash| hash['id']}
   array_of_parsed_records = []
   pupil_audit_records.each do |record|
