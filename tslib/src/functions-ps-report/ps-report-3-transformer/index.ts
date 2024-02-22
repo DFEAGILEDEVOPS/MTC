@@ -1,5 +1,4 @@
 import { type AzureFunction, type Context } from '@azure/functions'
-// import { performance } from 'perf_hooks'
 import { ReportLine } from './report-line.class'
 import { jsonReviver } from '../../common/json-reviver'
 import { type PupilResult } from '../../functions-ps-report/ps-report-2-pupil-data/models'
@@ -18,9 +17,7 @@ import { PsReportSource } from '../common/ps-report-log-entry'
  */
 
 const serviceBusQueueTrigger: AzureFunction = async function (context: Context, inputData: PupilResult): Promise<void> {
-  // const start = performance.now()
   const logger = new PsReportLogger(context, PsReportSource.Transformer)
-  // logger.info(`message received for pupil ${inputData.pupil.slug}`)
   try {
     /**
      * The inputData type is not absolutely correctly typed.  The Moment datetime's are still strings as the JSON parsing happens
@@ -45,10 +42,6 @@ const serviceBusQueueTrigger: AzureFunction = async function (context: Context, 
     logger.error(`ERROR: ${errorMessage}`)
     throw error
   }
-
-  // const end = performance.now()
-  // const durationInMilliseconds = end - start
-  // logger.info(`run complete: ${durationInMilliseconds} ms`)
 }
 
 /**
