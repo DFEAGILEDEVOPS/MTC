@@ -4,6 +4,7 @@ import moment from 'moment'
 import { BlobService } from '../../azure/blob-service'
 import * as mssql from 'mssql'
 import config from '../../config'
+import type { PsReportStagingCompleteMessage } from '../common/ps-report-service-bus-messages'
 
 export class PsReportWriterService {
   private readonly sqlService: ISqlService
@@ -172,10 +173,10 @@ export class PsReportWriterService {
     await this.sqlService.modify(sql, [])
   }
 
-  public async bulkUpload (fileName: string, tableName: string): Promise<void> {
+  public async bulkUpload (incomingMessage: PsReportStagingCompleteMessage, tableName: string): Promise<void> {
     const sanitise = (sTainted: string): string => sTainted.replace(/[^a-zA-Z0-9-_.]+/g, '')
-    const sFileName = sanitise(fileName)
-    const sTableName = sanitise(tableName)
+    const sFilename = sanitise(incomingMessage.filename)
+    const sTablename = sanitise(tableName)
 
     // Find out the operating system that the SQL Server is running on due to capability mis-matches in SQL Versions on linux.
     const sql2 = `
@@ -207,8 +208,8 @@ export class PsReportWriterService {
     // 1. The row must end in '\r\n'
     // 2. Dates should be in ISO format: YYYY-MM-DD
     const sql = `
-      BULK INSERT mtc_results.[${sTableName}]
-      FROM '${sFileName}'
+      BULK INSERT mtc_results.[${sTablename}]
+      FROM '${sFilename}'
       WITH (DATA_SOURCE = 'PsReportData',
                  FORMAT = 'CSV',
         FIELDTERMINATOR = ',',
@@ -217,7 +218,7 @@ export class PsReportWriterService {
     await mssql.query(sql)
   }
 
-  public async cleanup (fileName: string, dbTable: string): Promise<void> {
+  public async cleanup (filename: string, dbTable: string): Promise<void> {
     // Remove CSV file
     // Remove ? new table (may not have been created)
     // Ensure the view table alias points to the last good PS report.

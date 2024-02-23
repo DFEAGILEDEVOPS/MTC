@@ -3,11 +3,11 @@ import { performance } from 'perf_hooks'
 import * as sb from '@azure/service-bus'
 import config from '../../config'
 import * as RA from 'ramda-adjunct'
-import { type IFunctionTimer } from '../../azure/functions'
 import { type IPsychometricReportLine } from '../ps-report-3-transformer/models'
 import { jsonReviver } from '../../common/json-reviver'
 import { PsReportStagingDataService } from './ps-report-staging.data.service'
 import { CsvTransformer } from './csv-transformer'
+import type { PsReportStagingStartMessage, PsReportStagingCompleteMessage } from '../common/ps-report-service-bus-messages'
 
 const functionName = 'ps-report-3b-stage-csv-file'
 const receiveQueueName = 'ps-report-export'
@@ -16,13 +16,14 @@ let emptyPollTime: undefined | number
 const getEpoch = (): number => { const dt = +new Date(); return Math.floor(dt / 1000) }
 let psReportStagingDataService: PsReportStagingDataService
 
-/*
+/**
  * The function is running as a singleton, and the receiver is therefore exclusive
-  we do not expect another receive operation to be in progress.
-  if the message is abandoned 10 times (the current 'max delivery count') it will be
-  put on the dead letter queue automatically.
+ * we do not expect another receive operation to be in progress. if the message
+ * is abandoned 10 times (the current 'max delivery count') it will be
+ * put on the dead letter queue automatically.
+ *
 */
-const PsReportStageCsvFile: AzureFunction = async function (context: Context, timer: IFunctionTimer): Promise<void> {
+const PsReportStageCsvFile: AzureFunction = async function (context: Context, incomingMessage: PsReportStagingStartMessage): Promise<void> {
   const start = performance.now()
 
   if (config.ServiceBus.ConnectionString === undefined) {
@@ -89,7 +90,11 @@ const PsReportStageCsvFile: AzureFunction = async function (context: Context, ti
       if (timeSinceLastMessage >= config.PsReport.StagingFile.WaitTimeToTriggerStagingComplete) {
         context.log(`${functionName}: exiting as no new messages in ${config.PsReport.StagingFile.WaitTimeToTriggerStagingComplete} seconds.`)
         done = true
-        context.bindings.outputData = [{ fileName: 'file.csv' }]
+        const completeMessage: PsReportStagingCompleteMessage = {
+          filename: 'file.csv',
+          jobUuid: '000'
+        }
+        context.bindings.outputData = [completeMessage]
         await disconnect()
         return finish(start, context)
       } else {

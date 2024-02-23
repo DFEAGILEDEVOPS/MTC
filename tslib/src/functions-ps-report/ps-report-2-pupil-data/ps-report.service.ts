@@ -1,8 +1,8 @@
 import { type IPsReportDataService, PsReportDataService } from './ps-report.data.service'
 import { type Pupil, type PupilResult, type School } from './models'
 import { type ILogger } from '../../common/logger'
-import { type PsReportStagingStartMessage } from '../ps-report-3b-stage-csv-file/interfaces'
 import { type IMultipleOutputBinding } from '.'
+import type { PsReportSchoolFanOutMessage, PsReportStagingStartMessage } from '../common/ps-report-service-bus-messages'
 
 let pupilCounter = 0
 const logName = 'ps-report-2-pupil-data: PsReportService'
@@ -18,14 +18,14 @@ export class PsReportService {
     this.dataService = dataService ?? new PsReportDataService(this.logger)
   }
 
-  async process (schoolUuid: string): Promise<void> {
+  async process (incomingMessage: PsReportSchoolFanOutMessage): Promise<void> {
     let pupils: readonly Pupil[]
     let school: School | undefined
     let totalPupilCount: number | undefined
     try {
-      pupils = await this.dataService.getPupils(schoolUuid)
+      pupils = await this.dataService.getPupils(incomingMessage.uuid)
     } catch (error) {
-      this.logger.error(`ERROR - unable to fetch pupils for school ${schoolUuid}`)
+      this.logger.error(`ERROR - unable to fetch pupils for school ${incomingMessage.uuid}`)
       throw error
     }
     try {
@@ -59,13 +59,15 @@ export class PsReportService {
           // send a message to the ps-report-3b-staging function to start up and start creating the csv file in blob storage.
           const msg: PsReportStagingStartMessage = {
             startTime: new Date(),
-            totalNumberOfPupils: totalPupilCount
+            totalNumberOfPupils: totalPupilCount,
+            jobUuid: incomingMessage.jobUuid,
+            filename: incomingMessage.filename
           }
           this.outputBinding.psReportStagingStart.push(msg)
         }
       } catch (error: any) {
         // Ignore the error on the particular pupil and carry on so it reports on the rest of the school
-        this.logger.error(`${logName}: ERROR: Failed to retrieve pupil data for pupil ${pupil.slug} in school ${schoolUuid}
+        this.logger.error(`${logName}: ERROR: Failed to retrieve pupil data for pupil ${pupil.slug} in school ${incomingMessage.uuid}
           Error was ${error.message}`)
       }
     }
