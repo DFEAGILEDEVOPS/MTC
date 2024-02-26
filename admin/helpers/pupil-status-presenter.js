@@ -14,7 +14,7 @@ const pupilStatusPresenter = {}
  */
 pupilStatusPresenter.getPresentationData = (pupilStatusData, checkWindowData) => {
   const pupilStatusViewData = {}
-  const overdueLoggedIn = 'Overdue - logged in but check not started'
+  const overdueLoggedIn = 'Overdue - signed in but check not started'
   const overdueStarted = 'Overdue - check started but not received'
   const notStarted = 'Not started'
 
@@ -24,9 +24,11 @@ pupilStatusPresenter.getPresentationData = (pupilStatusData, checkWindowData) =>
     // @ts-ignore
     R.filter(p => R.includes(p.status, [notStarted, 'Restart'], p), pupilStatusData),
     ['Restart'],
-    notStarted
+    'Restart applied'
   )
-  pupilStatusViewData.pupilsInProgress = R.filter(p => R.includes(p.status, ['PIN generated', 'Logged in', 'Check processing', 'Check in progress'], p), pupilStatusData)
+
+  pupilStatusViewData.pupilsInProgress = R.filter(p => R.includes(p.status, ['PIN generated', 'Signed in', 'Check processing', 'Check in progress'], p), pupilStatusData)
+
   // @ts-ignore
   pupilStatusViewData.pupilsCompleted = R.filter(p => R.includes(p.status, ['Complete'], p) || !!p.reason, pupilStatusData)
 
@@ -45,13 +47,13 @@ pupilStatusPresenter.getPresentationData = (pupilStatusData, checkWindowData) =>
  * Change status description for specific pupil statuses
  * @param {Array} pupilData
  * @param {Array} statuses
- * @param {String} statusDescription
+ * @param {String} newStatusDescription
  * @returns {Array}
  */
-pupilStatusPresenter.applyStatusDescriptionChange = (pupilData, statuses, statusDescription) => {
+pupilStatusPresenter.applyStatusDescriptionChange = (pupilData, statuses, newStatusDescription) => {
   const changeDescription = p => {
     if (statuses.includes(p.status)) {
-      p.status = statusDescription
+      p.status = newStatusDescription
     }
     return p
   }
