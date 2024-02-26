@@ -133,7 +133,7 @@ const pupilStatusService = {
       ) {
         status = 'Overdue - check started but not received'
       }
-    // logged in
+    // signed in
     } else if (
       isPositive(currentCheckId) &&
       isNotNil(pupilLoginDate) &&
@@ -141,11 +141,11 @@ const pupilStatusService = {
       isFalse(checkReceived) &&
       isFalse(checkComplete)
     ) {
-      status = 'Logged in'
+      status = 'Signed in'
       if (
         isOverdue(pupilLoginDate, notReceivedExpiryInMinutes, moment.utc())
       ) {
-        status = 'Overdue - logged in but check not started'
+        status = 'Overdue - signed in but check not started'
       }
     } else if (
       isNotNil(pupilLoginDate) &&

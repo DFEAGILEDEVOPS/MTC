@@ -106,7 +106,7 @@ class PupilStatusPage < SitePrism::Page
 
   def find_status_for_pupil(status, name)
     case status
-    when 'Logged in'
+    when 'Signed in'
       Timeout.timeout(20) { pupils_in_progress.count.click until pupils_in_progress_details.pupil_list.visible? }
       pupils_in_progress_details.pupil_list.pupil_row.find { |r| r.text.include? name }
     when 'Not started'
@@ -115,10 +115,10 @@ class PupilStatusPage < SitePrism::Page
     when 'Complete'
       Timeout.timeout(20) { pupils_completed.count.click until pupils_completed_details.pupil_list.visible? }
       pupils_completed_details.pupil_list.pupil_row.find { |r| r.text.include? name }
-    when 'Restart'
+    when 'Restart applied'
       Timeout.timeout(20) { pupils_not_started.count.click until pupils_not_started_details.pupil_list.visible? }
       pupils_not_started_details.pupil_list.pupil_row.find { |r| r.text.include? name }
-    when "Pupil check not received", "Error in processing", 'Overdue - logged in but check not started'
+    when "Pupil check not received", "Error in processing", 'Overdue - signed in but check not started'
       Timeout.timeout(20) { checks_that_require_action.count.click until checks_that_require_action_details.pupil_list.visible? }
       checks_that_require_action_details.pupil_list.pupil_row.find { |r| r.text.include? name }
     else
