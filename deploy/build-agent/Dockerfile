@@ -4,7 +4,7 @@
 
 FROM ubuntu:22.04
 
-ENV RUBY_VERSION=2.7.7
+ENV RUBY_VERSION=3.2.2
 ENV AZURE_FUNCTIONS_CORE_TOOLS_VERSION=4
 
 # to make it easier for build and release pipelines to run apt-get,
