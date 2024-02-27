@@ -33,7 +33,7 @@ const PsReportStageCsvFile: AzureFunction = async function (context: Context, in
   let busClient: sb.ServiceBusClient
   let receiver: sb.ServiceBusReceiver
   const containerName = 'ps-report-bulk-upload'
-  const blobName = 'file.csv'
+  const blobName = incomingMessage.filename
 
   const disconnect = async (): Promise<void> => {
     await receiver.close()
@@ -91,8 +91,8 @@ const PsReportStageCsvFile: AzureFunction = async function (context: Context, in
         context.log(`${functionName}: exiting as no new messages in ${config.PsReport.StagingFile.WaitTimeToTriggerStagingComplete} seconds.`)
         done = true
         const completeMessage: PsReportStagingCompleteMessage = {
-          filename: 'file.csv',
-          jobUuid: '000'
+          filename: incomingMessage.filename,
+          jobUuid: incomingMessage.jobUuid
         }
         context.bindings.outputData = [completeMessage]
         await disconnect()

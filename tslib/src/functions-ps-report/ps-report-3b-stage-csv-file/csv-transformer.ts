@@ -16,11 +16,10 @@ export class CsvTransformer {
   constructor (logger: ILogger, psReportLineData: IPsychometricReportLine[]) {
     this.logger = logger
     this.psReportLineData = psReportLineData
-    this.logger.verbose(`PS Report for: ${JSON.stringify(psReportLineData)}`)
+    this.logger.verbose('CsvTransformer initialised')
   }
 
   private transformAnswer (a: IReportLineAnswer | undefined): any[] {
-    this.logger.verbose(`transformAnswer: ${JSON.stringify(a)}`)
     if (a === undefined) {
       return Array.from(Array(14)).fill(null)
     }
@@ -40,7 +39,6 @@ export class CsvTransformer {
       a.overallTime,
       a.recallTime
     ]
-    this.logger.verbose(`transformAnswer: ${JSON.stringify(data)}`)
     return data
   }
 
@@ -85,7 +83,6 @@ export class CsvTransformer {
     for (let i = 0; i < 25; i++) {
       answers[i] = this.transformAnswer(d.answers[i])
     }
-    this.logger.verbose(`Answers: ${JSON.stringify(answers)}`)
 
     // flatten the answers array and add it to data.
     answers.forEach(ans => {

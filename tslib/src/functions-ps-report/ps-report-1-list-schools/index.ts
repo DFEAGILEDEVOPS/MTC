@@ -17,7 +17,7 @@ const serviceBusTrigger: AzureFunction = async function (context: Context, jobIn
   try {
     // We need to store a filename for all the data to be written to during the staging process.
     const now = moment()
-    const filename = `ps-report-staging-${now.format('YYYY-MM-DD-HHmm')}`
+    const filename = `ps-report-staging-${now.format('YYYY-MM-DD-HHmm')}.csv`
     await jobDataService.setJobStarted(jobInfo.jobUuid, { meta: { filename } }, context.log)
     const schoolListService = new ListSchoolsService(logger)
     const messages = await schoolListService.getSchoolMessages(jobInfo.jobUuid, filename)

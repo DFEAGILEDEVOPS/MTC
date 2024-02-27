@@ -17,6 +17,12 @@ export class BlobService implements IBlobService {
     await blobClient.appendBlock(data, data.length)
   }
 
+  async deleteAppendBlob (blobName: string, containerName: string): Promise<void> {
+    const client = await this.getContainerClient(containerName)
+    const blobClient = client.getAppendBlobClient(blobName)
+    await blobClient.deleteIfExists()
+  }
+
   async createBlob (data: Buffer, blobName: string, containerName: string): Promise<void> {
     const client = await this.getContainerClient(containerName)
     await client.createIfNotExists()

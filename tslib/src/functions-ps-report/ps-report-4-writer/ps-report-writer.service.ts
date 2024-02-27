@@ -5,6 +5,7 @@ import { BlobService } from '../../azure/blob-service'
 import * as mssql from 'mssql'
 import config from '../../config'
 import type { PsReportStagingCompleteMessage } from '../common/ps-report-service-bus-messages'
+const containerName = 'ps-report-bulk-upload'
 
 export class PsReportWriterService {
   private readonly sqlService: ISqlService
@@ -27,8 +28,13 @@ export class PsReportWriterService {
    *
    * @returns Create a new ps report table and return the table name
    */
-  public async createDestinationTableAndView (): Promise<string> {
-    const ds = moment().format('YYYY_MM_DDTHHmm')
+  public async createDestinationTableAndView (incomingMessage: PsReportStagingCompleteMessage): Promise<string> {
+    let ds = moment().format('YYYY_MM_DDTHHmm') // default
+    // Match 'ps-report-staging-2024-02-27-1510.csv'
+    const matches = incomingMessage.filename.match(/\d\d\d\d-\d\d-\d\d-\d\d\d\d/)
+    if (matches !== null) {
+      ds = matches[0].replaceAll('-', '_')
+    }
     const newTableName = `psychometricReport_${ds}`
     const sql1 = `
       CREATE TABLE mtc_results.${newTableName} (
@@ -112,7 +118,6 @@ export class PsReportWriterService {
         PupilUPN ASC
       ) WITH ( PAD_INDEX = OFF,FILLFACTOR = 100,SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, STATISTICS_NORECOMPUTE = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON  ) ON [PRIMARY]
     `
-    this.logger.verbose(`${this.logServiceName}: sql is ${fullSql}`)
     this.logger.verbose(`${this.logServiceName}: creating table ${newTableName}`)
     await this.sqlService.modify(fullSql, [])
 
@@ -143,11 +148,9 @@ export class PsReportWriterService {
    */
   public async prepareForUpload (blobFile: string): Promise<void> {
     const blobService = new BlobService()
-    const containerName = 'ps-report-bulk-upload'
     const containerUrl = await blobService.getContainerUrl(containerName)
     this.logger.verbose(`${this.logServiceName}: container url is ${containerUrl}`)
     const sasToken = await blobService.getBlobReadWriteSasToken(containerName, blobFile)
-    this.logger.verbose('sasToken ' + sasToken)
     const sql = `
       IF (SELECT COUNT(*) FROM sys.database_scoped_credentials WHERE name = 'PsReportBulkUploadCredential') = 0
         BEGIN
@@ -216,14 +219,14 @@ export class PsReportWriterService {
           ROWTERMINATOR = '\r\n')
       ;`
     await mssql.query(sql)
+    await this.cleanup(sFilename)
   }
 
-  public async cleanup (filename: string, dbTable: string): Promise<void> {
-    // Remove CSV file
-    // Remove ? new table (may not have been created)
-    // Ensure the view table alias points to the last good PS report.
+  public async cleanup (filename: string): Promise<void> {
     this.logger.info(`${this.logServiceName}: cleanup() called`)
-    // this.logger.info(`${this.logServiceName}: removing blob file: ${fileName}`)
-    // const blobService = new BlobService() // delete
+    // Remove CSV file
+    const blobService = new BlobService()
+    await blobService.deleteBlob(filename, containerName)
+    this.logger.info(`${this.logServiceName}: csv file ${filename} deleted.`)
   }
 }
