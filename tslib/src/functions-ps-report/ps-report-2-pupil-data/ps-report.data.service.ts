@@ -32,8 +32,6 @@ export interface IPsReportDataService {
   getPupilData (pupil: Pupil, school: School): Promise<PupilResult>
 
   getSchool (schoolId: number): Promise<School>
-
-  getTotalPupilCount (): Promise<number>
 }
 
 interface PupilRestart {
@@ -664,21 +662,5 @@ export class PsReportDataService {
       device,
       events
     })
-  }
-
-  /**
-   * Find the expected total number of pupils
-   */
-  public async getTotalPupilCount (): Promise<number> {
-    const sql = `
-      SELECT
-        COUNT(*) as totalPupilCount
-      FROM
-        mtc_admin.[pupil] p join mtc_admin.[school] s on (p.school_id = s.id)
-      WHERE
-        s.isTestSchool = 0
-    `
-    const result = await this.sqlService.query(sql)
-    return result[0].totalPupilCount
   }
 }

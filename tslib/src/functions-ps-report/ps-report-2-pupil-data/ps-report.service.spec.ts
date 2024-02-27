@@ -16,7 +16,8 @@ describe('PsReportService', () => {
     uuid: schoolUuid,
     name: mockSchool.name,
     jobUuid: 'job-uuid',
-    filename: 'somefile.data'
+    filename: 'somefile.data',
+    totalNumberOfSchools: 5
   }
 
   beforeEach(() => {
@@ -24,8 +25,7 @@ describe('PsReportService', () => {
     psReportDataService = {
       getPupilData: jest.fn(),
       getPupils: jest.fn(),
-      getSchool: jest.fn(),
-      getTotalPupilCount: jest.fn()
+      getSchool: jest.fn()
     }
     outputBindings.psReportPupilMessage = []
     outputBindings.psReportStagingStart = []

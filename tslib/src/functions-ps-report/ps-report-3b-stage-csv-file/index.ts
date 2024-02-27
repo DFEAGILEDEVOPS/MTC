@@ -24,6 +24,7 @@ let psReportStagingDataService: PsReportStagingDataService
  *
 */
 const PsReportStageCsvFile: AzureFunction = async function (context: Context, incomingMessage: PsReportStagingStartMessage): Promise<void> {
+  context.log(`${functionName}: starting`)
   const start = performance.now()
 
   if (config.ServiceBus.ConnectionString === undefined) {

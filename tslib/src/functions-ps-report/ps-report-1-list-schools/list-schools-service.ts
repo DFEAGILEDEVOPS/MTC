@@ -35,7 +35,8 @@ export class ListSchoolsService implements IListSchoolsService {
         uuid: school.uuid,
         name: school.name,
         jobUuid,
-        filename
+        filename,
+        totalNumberOfSchools: schools.length
       }
     })
     this.logger.info(`getSchoolMessages() retrieved ${schoolMessages.length} schools`)

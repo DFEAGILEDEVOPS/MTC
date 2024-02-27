@@ -15,6 +15,7 @@ export interface PsReportSchoolFanOutMessage {
   name: string
   jobUuid: string
   filename: string
+  totalNumberOfSchools: number
 }
 
 /**
@@ -22,7 +23,6 @@ export interface PsReportSchoolFanOutMessage {
  * Starts the function which is not run on a timer.  Issued at the end of ps-report-2-pupil-data.
  */
 export interface PsReportStagingStartMessage {
-  totalNumberOfPupils: number
   startTime: Date
   filename: string
   jobUuid: string

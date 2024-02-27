@@ -2,7 +2,7 @@ import { type AzureFunction, type Context } from '@azure/functions'
 import { performance } from 'perf_hooks'
 import { PsReportWriterService } from './ps-report-writer.service'
 import { type PsReportStagingCompleteMessage } from '../common/ps-report-service-bus-messages'
-import { JobDataService } from  '../../services/data/job.data.service'
+import { JobDataService } from '../../services/data/job.data.service'
 import { JobStatusCode } from '../../common/job-status-code'
 const funcName = 'ps-report-4-writer'
 
@@ -28,14 +28,13 @@ async function bulkUpload (context: Context, incomingMessage: PsReportStagingCom
     context.log(`${funcName}: starting bulk upload from ${incomingMessage.filename} into table ${dbTable}`)
     await service.bulkUpload(incomingMessage, dbTable) // the container is *known* and is stored in the location path of the database 'EXTERNAL DATA SOURCE'.
 
-
     context.log(`${funcName}: bulk upload complete.`)
     await jobDataService.setJobComplete(incomingMessage.jobUuid,
-      JobStatusCode.CompletedSuccessfully, `bulk upload complete`)
+      JobStatusCode.CompletedSuccessfully, 'bulk upload complete')
   } catch (error: any) {
     if (error instanceof Error) {
       context.log.warn(`${funcName}: bulkUpload() failed: ${error.message}`)
-      context.log.warn(`${funcName} : ` + JSON.stringify(error))
+      context.log.warn(`${funcName}: ${JSON.stringify(error)}`)
       await jobDataService.setJobComplete(incomingMessage.jobUuid,
         JobStatusCode.Failed, JSON.stringify(error))
     }

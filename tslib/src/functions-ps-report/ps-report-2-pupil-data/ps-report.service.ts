@@ -4,7 +4,12 @@ import { type ILogger } from '../../common/logger'
 import { type IMultipleOutputBinding } from '.'
 import type { PsReportSchoolFanOutMessage, PsReportStagingStartMessage } from '../common/ps-report-service-bus-messages'
 
-let pupilCounter = 0
+/**
+ * pupilCounter: count the number of pupis processed across multiple invocations.  This is key, as it allows the end of pupil data to be detected
+ *               which sends off a message to start the ps-report-3b-transformer.  The transform process is in between these two processes, but it
+ *               should already have finished quite a bit of work, which is enough for the csv assembler to work on.
+ */
+let schoolCounter = 0
 const logName = 'ps-report-2-pupil-data: PsReportService'
 
 export class PsReportService {
@@ -21,25 +26,26 @@ export class PsReportService {
   async process (incomingMessage: PsReportSchoolFanOutMessage): Promise<void> {
     let pupils: readonly Pupil[]
     let school: School | undefined
-    let totalPupilCount: number | undefined
+    schoolCounter += 1
+    /**
+     *  This function is triggered by an incoming service bus message.
+     *
+     */
+
     try {
+      // Get pupil data for all pupils in a single school identified by the UUID in the incoming message.
       pupils = await this.dataService.getPupils(incomingMessage.uuid)
     } catch (error) {
       this.logger.error(`ERROR - unable to fetch pupils for school ${incomingMessage.uuid}`)
       throw error
     }
-    try {
-      totalPupilCount = await this.dataService.getTotalPupilCount()
-    } catch (error: any) {
-      this.logger.error(`ERROR - unable to determine total pupil count: ${error?.message}`)
-    }
+
     for (let i = 0; i < pupils.length; i++) {
       const pupil = pupils[i]
       if (school === undefined) {
         school = await this.dataService.getSchool(pupil.schoolId)
       }
       try {
-        pupilCounter += 1
         const result: PupilResult = await this.dataService.getPupilData(pupil, school)
         const output: PupilResult = {
           answers: result.answers,
@@ -52,24 +58,35 @@ export class PsReportService {
           school: result.school
         }
         this.outputBinding.psReportPupilMessage.push(output)
-        if (pupilCounter === totalPupilCount) {
-          this.logger.verbose(`${logName}: pupil ${pupilCounter} seen out of ${totalPupilCount}`)
-          // reset conter
-          pupilCounter = 0
-          // send a message to the ps-report-3b-staging function to start up and start creating the csv file in blob storage.
-          const msg: PsReportStagingStartMessage = {
-            startTime: new Date(),
-            totalNumberOfPupils: totalPupilCount,
-            jobUuid: incomingMessage.jobUuid,
-            filename: incomingMessage.filename
-          }
-          this.outputBinding.psReportStagingStart.push(msg)
-        }
       } catch (error: any) {
         // Ignore the error on the particular pupil and carry on so it reports on the rest of the school
         this.logger.error(`${logName}: ERROR: Failed to retrieve pupil data for pupil ${pupil.slug} in school ${incomingMessage.uuid}
           Error was ${error.message}`)
       }
     }
+
+    if (this.isLastSchool(incomingMessage)) {
+      this.logger.verbose(`${logName}: school ${schoolCounter} seen out of ${incomingMessage.totalNumberOfSchools}`)
+      // Reset ready for the next run.
+      this.resetSchoolCounter()
+      // send a message to the ps-report-3b-staging function to start up and start creating the csv file in blob storage.
+      const msg: PsReportStagingStartMessage = {
+        startTime: new Date(),
+        jobUuid: incomingMessage.jobUuid,
+        filename: incomingMessage.filename
+      }
+      this.outputBinding.psReportStagingStart.push(msg)
+    }
+  }
+
+  private isLastSchool (incomingMessage: PsReportSchoolFanOutMessage): boolean {
+    if (schoolCounter >= incomingMessage.totalNumberOfSchools) {
+      return true
+    }
+    return false
+  }
+
+  private resetSchoolCounter (): void {
+    schoolCounter = 0
   }
 }

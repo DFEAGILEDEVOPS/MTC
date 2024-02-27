@@ -23,8 +23,6 @@ const serviceBusTrigger: AzureFunction = async function (context: Context, jobIn
     const messages = await schoolListService.getSchoolMessages(jobInfo.jobUuid, filename)
     context.bindings.schoolMessages = messages
     meta.processCount = messages.length
-    // await jobDataService.setJobComplete(jobInfo.jobUuid,
-    //   JobStatusCode.CompletedSuccessfully, `processed ${meta.processCount} records`)
   } catch (error) {
     let errorMessage = 'unknown error'
     if (error instanceof Error) {

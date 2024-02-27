@@ -62,8 +62,6 @@ export class JobDataService implements IJobDataService {
                  SET
                   ${updateFields.join(',\n')}
                 WHERE urlSlug = @urlSlug`
-    logger?.verbose('sql ' + sql)
-    logger?.verbose('params ' + JSON.stringify(params))
     return this.sqlService.modify(sql, params)
   }
 
