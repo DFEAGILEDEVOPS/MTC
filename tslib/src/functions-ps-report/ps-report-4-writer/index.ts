@@ -18,12 +18,10 @@ async function bulkUpload (context: Context, incomingMessage: PsReportStagingCom
   let dbTable: string = ''
   const service = new PsReportWriterService(context.log)
   const jobDataService = new JobDataService()
-  // Do we just delete the last upload and repoint the table alias.
   try {
     context.log.verbose(`${funcName}: creating new destination table in SQL Server`)
     dbTable = await service.createDestinationTableAndView(incomingMessage)
     context.log.verbose(`${funcName}: new table created ${dbTable}`)
-    // context.log(`${funcName}: bulkUpload() uploading ${fileName}`)
     await service.prepareForUpload(incomingMessage.filename)
     context.log(`${funcName}: starting bulk upload from ${incomingMessage.filename} into table ${dbTable}`)
     await service.bulkUpload(incomingMessage, dbTable) // the container is *known* and is stored in the location path of the database 'EXTERNAL DATA SOURCE'.
