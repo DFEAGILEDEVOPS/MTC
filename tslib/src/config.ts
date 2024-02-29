@@ -148,7 +148,7 @@ export default {
       ReadMessagesPerBatch: parseInt(parser.valueOrSubstitute(process.env.PS_REPORT_STAGING_READ_MESSAGE_BATCH_SIZE, 32), 10),
       WriteMessagesPerBatch: parseInt(parser.valueOrSubstitute(process.env.PS_REPORT_STAGING_WRITE_MESSAGE_BATCH_SIZE, 32), 10), // 32 x 32 = 1024 csv rows written per write
       WaitTimeToTriggerStagingComplete: parseInt(parser.valueOrSubstitute(process.env.PS_REPORT_STAGING_WAIT_TIME_COMPLETE, 600), 10), // 600 seconds = 10 * 60 = 10 minutes
-      PollInterval: parseInt(parser.valueOrSubstitute(process.env.PS_REPORT_STAGING_POLL_INTERVAL, 10), 10) // Default is 10 seconds between polls when writing to the CSV file.
+      PollInterval: parseInt(parser.valueOrSubstitute(process.env.PS_REPORT_STAGING_POLL_INTERVAL, 10), 10) // Default is 10 milliseconds between polls when writing to the CSV file.
     }
   }
 }

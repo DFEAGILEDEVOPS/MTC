@@ -100,7 +100,7 @@ const PsReportStageCsvFile: AzureFunction = async function (context: Context, in
         return finish(start, context)
       } else {
         context.log(`${functionName}: waiting for messages...`)
-        await sleep(config.PsReport.StagingFile.PollInterval * 1000) // wait n seconds before polling again. Default is 10.
+        await sleep(config.PsReport.StagingFile.PollInterval) // wait n milliseconds before polling again. Default is 10.
       }
     } else {
       // Messages were received
