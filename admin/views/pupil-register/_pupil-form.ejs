@@ -215,7 +215,7 @@ if (formData.urlSlug) {
 
                 <div class="govuk-form-group <%= err.isError('gender') ? 'govuk-form-group--error' : '' %>" id="gender">
                     <fieldset class="govuk-fieldset" role="radiogroup">
-                        <legend class="govuk-label govuk-!-font-weight-bold">Gender
+                        <legend class="govuk-label govuk-!-font-weight-bold">Sex
                             <% if (err.isError('gender')) { %>
                                 <span class="govuk-error-message"><%= err.get('gender') %></span>
                             <% } %>
