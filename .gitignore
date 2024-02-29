@@ -104,6 +104,7 @@ test-output/*/*
 
 
 *.log
+func.out
 
 .env*
 *.env
