@@ -17,6 +17,7 @@
           </div>
         </div>
       <% } %>
+
         <h1 class="govuk-heading-xl"><%= pageTitle %></h1>
         <%- partial('partials/_gds_session_expiry') %>
         <form id="submitAccessArrangements" method="post" action="/access-arrangements/submit" autocomplete="off">
@@ -231,8 +232,7 @@
               </svg>Back to top
           </a>
         </div>
-    </div
-
+    </div>
   </div>
 </main>
 <% if(formData['isEditView']) { %>
