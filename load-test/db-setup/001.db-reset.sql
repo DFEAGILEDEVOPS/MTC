@@ -2,10 +2,9 @@
 -- Load test helper: resets common tables after a load-test
 -- NB some statements should be excluded if you want to build up volume data
 --
-
---
 -- MTC RESULTS
 --
+DELETE FROM mtc_results.checkResult
 TRUNCATE TABLE mtc_results.checkResultSyncError
 TRUNCATE TABLE mtc_results.psychometricReport
 TRUNCATE TABLE mtc_results.userInput;
@@ -21,9 +20,6 @@ DELETE FROM mtc_results.networkConnectionEffectiveTypeLookup
 DELETE FROM mtc_results.uaOperatingSystemLookup
 DELETE FROM mtc_results.userAgentLookup
 --DELETE FROM mtc_results.eventTypeLookup
-DELETE FROM mtc_results.checkResult
-
-
 --
 -- MTC ADMIN
 --
@@ -39,8 +35,14 @@ TRUNCATE TABLE mtc_admin.pupilAttendance
 DELETE FROM mtc_admin.pupilRestart
 DELETE FROM mtc_admin.[hdf]
 DELETE FROM mtc_admin.[serviceMessage]
-UPDATE mtc_admin.pupil SET pupilAgeReason_id=NULL, group_id=NULL, attendanceId=NULL, currentCheckId=NULL,
-                           checkComplete=0, job_id=null;
+
+UPDATE mtc_admin.pupil SET group_id=NULL where group_id IS NOT NULL
+UPDATE mtc_admin.pupil SET attendanceId=NULL where attendanceId IS NOT NULL
+UPDATE mtc_admin.pupil SET pupilAgeReason_id=NULL where pupilAgeReason_id IS NOT NULL
+UPDATE mtc_admin.pupil SET job_id=NULL where job_id IS NOT NULL
+UPDATE mtc_admin.pupil SET checkComplete=0 where checkComplete=1
+UPDATE mtc_admin.pupil SET currentCheckId=NULL where currentCheckId IS NOT NULL
+
 DELETE FROM mtc_admin.pupilAgeReason
 DELETE FROM mtc_admin.[check]
 DELETE FROM mtc_admin.[job]
