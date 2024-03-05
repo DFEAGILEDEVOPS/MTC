@@ -113,7 +113,6 @@ describe('pupilAccessArrangementsService', () => {
           foreName: 'foreName',
           lastName: 'lastName',
           inputAssistanceInformation: '',
-          nextButtonInformation: '',
           questionReaderOtherInformation: '',
           accessArrangementCode: 'CCT',
           questionReaderReasonCode: null
@@ -123,7 +122,6 @@ describe('pupilAccessArrangementsService', () => {
           foreName: 'foreName',
           lastName: 'lastName',
           inputAssistanceInformation: 'inputAssistanceInformation',
-          nextButtonInformation: 'nextButtonInformation',
           questionReaderOtherInformation: '',
           accessArrangementCode: 'ITA',
           questionReaderReasonCode: null
@@ -137,7 +135,6 @@ describe('pupilAccessArrangementsService', () => {
           foreName: 'foreName',
           lastName: 'lastName',
           inputAssistanceInformation: 'inputAssistanceInformation',
-          nextButtonInformation: 'nextButtonInformation',
           questionReaderOtherInformation: '',
           accessArrangements: ['CCT', 'ITA'],
           questionReaderReason: null,
@@ -153,7 +150,6 @@ describe('pupilAccessArrangementsService', () => {
           foreName: 'foreName',
           lastName: 'lastName',
           inputAssistanceInformation: '',
-          nextButtonInformation: '',
           questionReaderOtherInformation: '',
           accessArrangementCode: 'CCT',
           questionReaderReasonCode: null
@@ -163,7 +159,6 @@ describe('pupilAccessArrangementsService', () => {
           foreName: 'foreName',
           lastName: 'lastName',
           inputAssistanceInformation: '',
-          nextButtonInformation: '',
           questionReaderOtherInformation: 'questionReaderOtherInformation',
           accessArrangementCode: 'QNR',
           questionReaderReasonCode: 'OTH'
@@ -177,7 +172,6 @@ describe('pupilAccessArrangementsService', () => {
           foreName: 'foreName',
           lastName: 'lastName',
           inputAssistanceInformation: '',
-          nextButtonInformation: '',
           questionReaderOtherInformation: 'questionReaderOtherInformation',
           accessArrangements: ['CCT', 'QNR'],
           questionReaderReason: 'OTH',

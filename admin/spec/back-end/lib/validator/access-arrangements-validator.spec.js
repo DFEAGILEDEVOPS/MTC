@@ -54,19 +54,7 @@ describe('Access arrangements validator', function () {
       expect(validationError.hasError()).toBeTruthy()
       expect(validationError.isError('inputAssistanceInformation')).toBeTruthy()
     })
-    test('requires next button information when relevant access arrangement is selected', () => {
-      const requestData = {
-        pupilUrlSlug: 'pupilUrlSlug',
-        accessArrangements: ['NBQ'],
-        questionReaderReason: 'VIM',
-        inputAssistanceInformation: '',
-        nextButtonInforamtion: '',
-        questionReaderOtherInformation: ''
-      }
-      const validationError = accessArrangementsValidator.validate(requestData)
-      expect(validationError.hasError()).toBeTruthy()
-      expect(validationError.isError('nextButtonInformation')).toBeTruthy()
-    })
+
     test('requires question reader reason when relevant access arrangement is selected', () => {
       const requestData = {
         pupilUrlSlug: 'pupilUrlSlug',

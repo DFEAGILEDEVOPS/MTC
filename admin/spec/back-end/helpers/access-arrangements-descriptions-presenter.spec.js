@@ -165,7 +165,7 @@ describe('accessArrangementsDescriptionsPresenter', () => {
       expect(accessArrangementsPresentationData[4]).toEqual(
         {
           id: 5,
-          description: 'Pause - \'next\' button between questions (reason required)',
+          description: 'Pause - \'next\' button between questions',
           code: 'NBQ'
         }
       )

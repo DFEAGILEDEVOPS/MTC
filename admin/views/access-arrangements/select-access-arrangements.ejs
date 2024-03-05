@@ -10,7 +10,7 @@
           <div class="govuk-error-summary__body">
             <p>See highlighted errors below.</p>
             <ul class="govuk-list govuk-error-summary__list">
-            <% error.getUniqueFields(['pupil-autocomplete-container', 'accessArrangementsList', 'inputAssistanceInformation', 'nextButtonInformation', 'questionReaderReasonsList', 'questionReaderOtherInformation']).map(f => { %>
+            <% error.getUniqueFields(['pupil-autocomplete-container', 'accessArrangementsList', 'inputAssistanceInformation', 'questionReaderReasonsList', 'questionReaderOtherInformation']).map(f => { %>
               <li><a href="#<%= f %>"><%= error.get(f) %></a></li>
             <% }) %>
             </ul>
@@ -125,26 +125,6 @@
                                         <span class="govuk-warning-text__assistive">Warning</span>
                                         Name of input assistant will need to be provided during the pupil's multiplication tables check
                                     </strong>
-                                </div>
-                            </div>
-                        <% } %>
-                        <% if (accessArrangement.code === 'NBQ') { %>
-                            <div class="hide-checkbox-content">
-                                <div class="govuk-inset-text">
-                                    <div class="govuk-form-group <%= error.isError('nextButtonInformation') ? 'govuk-form-group--error' : '' %>">
-                                        <label class="govuk-label" for='nextButtonInformation'>Please explain why the pupil needs this
-                                            arrangement
-                                        </label>
-                                        <% if (error.isError('nextButtonInformation')) { %>
-                                            <span class="govuk-error-message"> <%= error.get('nextButtonInformation') %></span>
-                                        <% } %>
-                                        <textarea
-                                                id="nextButtonInformation"
-                                                name="nextButtonInformation"
-                                                class="govuk-textarea govuk-!-width-three-quarters access-arrangements-textarea <%= error.isError('nextButtonInformation') ? 'govuk-textarea--error' : '' %>"
-                                                rows="3"
-                                                maxlength="1000"><%= formData['nextButtonInformation'] && formData['nextButtonInformation'].trim() %></textarea>
-                                    </div>
                                 </div>
                             </div>
                         <% } %>

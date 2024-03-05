@@ -42,7 +42,6 @@ pupilAccessArrangementsDataService.sqlInsertAccessArrangements = async (data, is
     accessArrangementsIdsWithCodes,
     questionReaderReasonCode,
     inputAssistanceInformation,
-    nextButtonInformation,
     questionReaderOtherInformation
   } = data
 
@@ -66,7 +65,6 @@ pupilAccessArrangementsDataService.sqlInsertAccessArrangements = async (data, is
       @accessArrangements_id${idx},
       @questionReaderReasons_id${idx},
       @inputAssistanceInformation${idx},
-      @nextButtonInformation${idx},
       @questionReaderOtherInformation${idx},
       @fontSizeLookup_id${idx},
       @colourContrastLookup_id${idx}
@@ -97,11 +95,6 @@ pupilAccessArrangementsDataService.sqlInsertAccessArrangements = async (data, is
       type: TYPES.NVarChar
     })
     params.push({
-      name: `nextButtonInformation${idx}`,
-      value: aa.code === 'NBQ' ? nextButtonInformation : '',
-      type: TYPES.NVarChar
-    })
-    params.push({
       name: `questionReaderOtherInformation${idx}`,
       value: aa.code === 'QNR' && questionReaderReasonCode === 'OTH' ? questionReaderOtherInformation : '',
       type: TYPES.NVarChar
@@ -124,7 +117,6 @@ pupilAccessArrangementsDataService.sqlInsertAccessArrangements = async (data, is
       accessArrangements_id,
       questionReaderReasons_id,
       inputAssistanceInformation,
-      nextButtonInformation,
       questionReaderOtherInformation,
       fontSizeLookup_Id,
       colourContrastLookup_Id
@@ -218,7 +210,6 @@ pupilAccessArrangementsDataService.sqlFindAccessArrangementsByUrlSlug = async (u
     p.foreName,
     p.lastName,
     paa.inputAssistanceInformation,
-    paa.nextButtonInformation,
     paa.questionReaderOtherInformation,
     aa.code as accessArrangementCode,
     qrr.code as questionReaderReasonCode

@@ -126,7 +126,6 @@ const controller = {
       const submittedData = R.pick([
         'accessArrangements',
         'inputAssistanceInformation',
-        'nextButtonInformation',
         'questionReaderReason',
         'questionReaderOtherInformation',
         'isEditView',
@@ -178,7 +177,6 @@ const controller = {
       const submittedData = R.pick([
         'accessArrangements',
         'inputAssistanceInformation',
-        'nextButtonInformation',
         'questionReaderReason',
         'questionReaderOtherInformation',
         'isEditView',
