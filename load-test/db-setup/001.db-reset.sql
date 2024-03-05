@@ -4,9 +4,8 @@
 --
 -- MTC RESULTS
 --
-DELETE FROM mtc_results.checkResult
 TRUNCATE TABLE mtc_results.checkResultSyncError
-TRUNCATE TABLE mtc_results.psychometricReport
+--TRUNCATE TABLE mtc_results.psychometricReport
 TRUNCATE TABLE mtc_results.userInput;
 --DELETE FROM mtc_results.userInputTypeLookup;
 DELETE FROM  mtc_results.answer;
@@ -19,6 +18,7 @@ DELETE FROM mtc_results.navigatorPlatformLookup
 DELETE FROM mtc_results.networkConnectionEffectiveTypeLookup
 DELETE FROM mtc_results.uaOperatingSystemLookup
 DELETE FROM mtc_results.userAgentLookup
+DELETE FROM mtc_results.checkResult
 --DELETE FROM mtc_results.eventTypeLookup
 --
 -- MTC ADMIN

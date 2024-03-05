@@ -46,8 +46,8 @@
           <stringProp name="parameters"></stringProp>
           <boolProp name="resetInterpreter">false</boolProp>
           <stringProp name="script">int machineIndex = 0;
-if (props.get(&quot;grid_index&quot;) != null) {
-	machineIndex = Integer.parseInt(props.get(&quot;grid_index&quot;));
+if (props.get(&quot;node_index&quot;) != null) {
+	machineIndex = Integer.parseInt(props.get(&quot;node_index&quot;));
 }
 
 int lastTeacher = (machineIndex + 1) * 1000;
