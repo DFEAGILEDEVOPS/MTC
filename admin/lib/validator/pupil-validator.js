@@ -111,17 +111,7 @@ module.exports.validate = async (pupilData, schoolId, isMultiplePupilsSubmission
     validationError.addError('dob-month', addPupilErrorMessages.dobOutOfRange)
     validationError.addError('dob-year', addPupilErrorMessages.dobOutOfRange)
   }
-  // Age Reason
-  const requiredAgeReasonValidation = dob.isValid() && (dob.isBetween(moment.utc(`${academicYear - 11}-09-02`), moment.utc(`${academicYear - 10}-09-01`), null, '[]') ||
-    dob.isBetween(moment.utc(`${academicYear - 8}-09-02`), moment.utc(`${academicYear - 7}-09-01`), null, '[]'))
-  if (isMultiplePupilsSubmission && requiredAgeReasonValidation) {
-    validationError.addError('dob-day', addPupilErrorMessages.dobMultipleRequiresReason)
-    validationError.addError('dob-month', addPupilErrorMessages.dobMultipleRequiresReason)
-    validationError.addError('dob-year', addPupilErrorMessages.dobMultipleRequiresReason)
-  }
-  if (!isMultiplePupilsSubmission && requiredAgeReasonValidation && (pupilData.ageReason.length < 1 || pupilData.ageReason.length > 1000)) {
-    validationError.addError('ageReason', addPupilErrorMessages.ageReasonLength)
-  }
+
   // Gender Validation
   if (!(/^(m|f)$/i).test(pupilData.gender)) {
     validationError.addError('gender', addPupilErrorMessages.genderRequired)

@@ -186,7 +186,7 @@ const controller = {
     res.locals.pageTitle = 'Edit pupil data'
     let pupilExampleYear
     try {
-      const pupil = await pupilService.fetchOneBySlugWithAgeReason(req.params.id, req.user.schoolId)
+      const pupil = await pupilService.fetchOnePupilBySlug(req.params.id, req.user.schoolId)
       pupilExampleYear = pupilPresenter.getPupilExampleYear()
       if (!pupil) {
         return next(new Error(`Pupil ${req.params.id} not found`))
@@ -221,7 +221,7 @@ const controller = {
     res.locals.pageTitle = 'Edit pupil data'
 
     try {
-      pupil = await pupilService.fetchOneBySlugWithAgeReason(req.body.urlSlug, req.user.schoolId)
+      pupil = await pupilService.fetchOnePupilBySlug(req.body.urlSlug, req.user.schoolId)
       if (!pupil) {
         return next(new Error(`Pupil ${req.body.urlSlug} not found`))
       }
