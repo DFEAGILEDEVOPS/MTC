@@ -34,14 +34,16 @@ TRUNCATE TABLE mtc_admin.pupilAccessArrangements
 TRUNCATE TABLE mtc_admin.pupilAttendance
 DELETE FROM mtc_admin.pupilRestart
 DELETE FROM mtc_admin.[hdf]
-DELETE FROM mtc_admin.[serviceMessage]
+DELETE FROM mtc_admin.[serviceMessage];
 
+DISABLE TRIGGER mtc_admin.pupilInsertUpdateAuditTrigger ON mtc_admin.pupil;
 UPDATE mtc_admin.pupil SET group_id=NULL where group_id IS NOT NULL
 UPDATE mtc_admin.pupil SET attendanceId=NULL where attendanceId IS NOT NULL
 UPDATE mtc_admin.pupil SET pupilAgeReason_id=NULL where pupilAgeReason_id IS NOT NULL
 UPDATE mtc_admin.pupil SET job_id=NULL where job_id IS NOT NULL
 UPDATE mtc_admin.pupil SET checkComplete=0 where checkComplete=1
-UPDATE mtc_admin.pupil SET currentCheckId=NULL where currentCheckId IS NOT NULL
+UPDATE mtc_admin.pupil SET currentCheckId=NULL where currentCheckId IS NOT NULL;
+ENABLE TRIGGER mtc_admin.pupilInsertUpdateAuditTrigger ON mtc_admin.pupil;
 
 DELETE FROM mtc_admin.pupilAgeReason
 DELETE FROM mtc_admin.[check]
