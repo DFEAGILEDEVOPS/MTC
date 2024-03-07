@@ -11,24 +11,12 @@ describe('restart-validator', () => {
         const result = restartValidator.validateReason(restartReason, didNotCompleteInfo)
         expect(result.hasError()).toBeFalsy()
       })
-      test('if reason value is classroom disruption and further information textarea has at least one character', async () => {
-        const restartReason = 'CLD'
-        const classDisruptionInfo = '1'
-        const result = restartValidator.validateReason(restartReason, classDisruptionInfo)
-        expect(result.hasError()).toBeFalsy()
-      })
     })
     describe('returns false', () => {
       test('if reason value is did not complete and further information textarea is empty', async () => {
         const restartReason = 'DNC'
         const didNotCompleteInfo = ''
         const result = restartValidator.validateReason(restartReason, didNotCompleteInfo)
-        expect(result.hasError()).toBeTruthy()
-      })
-      test('if reason value is classroom disruption and further information textarea is empty', async () => {
-        const restartReason = 'CLD'
-        const classDisruptionInfo = ''
-        const result = restartValidator.validateReason(restartReason, classDisruptionInfo)
         expect(result.hasError()).toBeTruthy()
       })
     })

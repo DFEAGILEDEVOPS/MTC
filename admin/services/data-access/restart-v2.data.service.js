@@ -155,7 +155,6 @@ module.exports.restartTransactionForPupils = async function restartTransactionFo
 
   const pupilRestartData = restartData.map((d, idx) => {
     const params = [
-      { name: `cd${idx}`, value: d.classDisruptionInformation, type: TYPES.NVarChar },
       { name: `dnc${idx}`, value: d.didNotCompleteInformation, type: TYPES.NVarChar },
       { name: `fi${idx}`, value: d.furtherInformation, type: TYPES.NVarChar },
       { name: `pid${idx}`, value: d.pupil_id, type: TYPES.Int },
@@ -164,15 +163,13 @@ module.exports.restartTransactionForPupils = async function restartTransactionFo
       { name: `oc${idx}`, value: d.currentCheckId, type: TYPES.Int }
     ]
 
-    const sql = `INSERT INTO [mtc_admin].[pupilRestart] (classDisruptionInformation,
-                                                         didNotCompleteInformation,
+    const sql = `INSERT INTO [mtc_admin].[pupilRestart] (didNotCompleteInformation,
                                                          furtherInformation,
                                                          pupil_id,
                                                          restartReasonLookup_Id,
                                                          recordedByUser_id,
                                                          originCheck_id)
-                 VALUES (@cd${idx},
-                         @dnc${idx},
+                 VALUES (@dnc${idx},
                          @fi${idx},
                          @pid${idx},
                          (SELECT id from [mtc_admin].[restartReasonLookup] where code = @prrCode${idx}),

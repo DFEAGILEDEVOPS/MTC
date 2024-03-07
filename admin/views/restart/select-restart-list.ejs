@@ -27,8 +27,7 @@
                     <div class="govuk-radios govuk-!-margin-top-6">
                      <% reasons.forEach( (reason, index) => { %>
                         <div class="govuk-radios__item govuk-!-margin-top-6">
-                        <% if ((error.isError('didNotCompleteInfo') && reason.code === 'DNC') ||
-                                (error.isError('classDisruptionInfo') && reason.code === 'CLD')) { %>
+                        <% if (error.isError('didNotCompleteInfo') && reason.code === 'DNC') { %>
                             <input id="restart-reason-<%= index %>"
                                    class="govuk-radios__input"
                                    type="radio"
@@ -51,8 +50,8 @@
                             <label class="govuk-label govuk-radios__label" for="restart-reason-<%= index %>">
                                 <%= reason.description %>
                             </label>
-                            <% if (reason.code === 'DNC' || reason.code === 'CLD') { %>
-                                <% const errorType = reason.code === 'DNC' ? 'didNotCompleteInfo': 'classDisruptionInfo' %>
+                            <% if (reason.code === 'DNC') { %>
+                                <% const errorType = 'didNotCompleteInfo' %>
                                 <div class="hide">
                                     <div class="govuk-inset-text govuk-!-padding-left-2 govuk-!-padding-bottom-0 govuk-!-padding-top-0">
                                         <div class="govuk-form-group <%= error.isError(errorType) ? 'govuk-form-group--error' : '' %>">

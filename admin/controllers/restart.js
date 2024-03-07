@@ -85,7 +85,7 @@ controller.getSelectRestartList = async function getSelectRestartList (req, res,
 }
 
 controller.postSubmitRestartList = async function postSubmitRestartList (req, res, next) {
-  const { pupil: pupilsList, restartReason, classDisruptionInfo, didNotCompleteInfo, restartFurtherInfo } = req.body
+  const { pupil: pupilsList, restartReason, didNotCompleteInfo, restartFurtherInfo } = req.body
   if (!pupilsList || pupilsList.length === 0) {
     return res.redirect('/restart/select-restart-list')
   }
@@ -103,7 +103,7 @@ controller.postSubmitRestartList = async function postSubmitRestartList (req, re
     return next(error)
   }
 
-  const info = classDisruptionInfo || didNotCompleteInfo
+  const info = didNotCompleteInfo
   const validationError = restartValidator.validateReason(restartReason, info)
   if (validationError.hasError()) {
     const pageTitle = 'Select pupils for restart'
@@ -137,7 +137,7 @@ controller.postSubmitRestartList = async function postSubmitRestartList (req, re
   try {
     const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
     await businessAvailabilityService.determineRestartsEligibility(checkWindowData)
-    pupilsRestarted = await restartService.restart(processedPupilsIds, restartReason, classDisruptionInfo, didNotCompleteInfo, restartFurtherInfo, req.user.id, req.user.schoolId)
+    pupilsRestarted = await restartService.restart(processedPupilsIds, restartReason, didNotCompleteInfo, restartFurtherInfo, req.user.id, req.user.schoolId)
   } catch (error) {
     return next(error)
   }

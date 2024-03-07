@@ -27,7 +27,6 @@ restartService.getReasons = async () => {
  * @param {number[]} pupilsList
  * @param restartReasonCode
  * @param didNotCompleteInfo
- * @param classDisruptionInfo
  * @param restartFurtherInfo
  * @param userName
  * @param {Number} schoolId - `school.id` database ID
@@ -36,7 +35,6 @@ restartService.getReasons = async () => {
 restartService.restart = async (
   pupilsList,
   restartReasonCode,
-  classDisruptionInfo,
   didNotCompleteInfo,
   restartFurtherInfo,
   userName,
@@ -56,7 +54,6 @@ restartService.restart = async (
       pupil_id: pupilId,
       recordedByUser_id: userName,
       pupilRestartReasonCode: restartReasonCode,
-      classDisruptionInformation: classDisruptionInfo,
       didNotCompleteInformation: didNotCompleteInfo,
       furtherInformation: restartFurtherInfo
     }
