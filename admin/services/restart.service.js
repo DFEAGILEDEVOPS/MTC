@@ -26,8 +26,6 @@ restartService.getReasons = async () => {
  * Perform restart for a list of pupils
  * @param {number[]} pupilsList
  * @param restartReasonCode
- * @param didNotCompleteInfo
- * @param restartFurtherInfo
  * @param userName
  * @param {Number} schoolId - `school.id` database ID
  * @returns {Promise.<any>}
@@ -35,8 +33,6 @@ restartService.getReasons = async () => {
 restartService.restart = async (
   pupilsList,
   restartReasonCode,
-  didNotCompleteInfo,
-  restartFurtherInfo,
   userName,
   schoolId) => {
   if (!schoolId) {
@@ -53,9 +49,7 @@ restartService.restart = async (
     restartData[pupilId] = {
       pupil_id: pupilId,
       recordedByUser_id: userName,
-      pupilRestartReasonCode: restartReasonCode,
-      didNotCompleteInformation: didNotCompleteInfo,
-      furtherInformation: restartFurtherInfo
+      pupilRestartReasonCode: restartReasonCode
     }
   })
   const checkData = await restartDataService.getLiveCheckDataByPupilId(pupilsList)

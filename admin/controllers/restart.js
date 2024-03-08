@@ -2,7 +2,6 @@ const checkWindowV2Service = require('../services/check-window-v2.service')
 const groupService = require('../services/group.service')
 
 const restartService = require('../services/restart.service')
-const restartValidator = require('../lib/validator/restart-validator')
 const schoolHomeFeatureEligibilityPresenter = require('../helpers/school-home-feature-eligibility-presenter')
 const businessAvailabilityService = require('../services/business-availability.service')
 const ValidationError = require('../lib/validation-error')
@@ -85,7 +84,7 @@ controller.getSelectRestartList = async function getSelectRestartList (req, res,
 }
 
 controller.postSubmitRestartList = async function postSubmitRestartList (req, res, next) {
-  const { pupil: pupilsList, restartReason, didNotCompleteInfo, restartFurtherInfo } = req.body
+  const { pupil: pupilsList, restartReason } = req.body
   if (!pupilsList || pupilsList.length === 0) {
     return res.redirect('/restart/select-restart-list')
   }
@@ -103,41 +102,11 @@ controller.postSubmitRestartList = async function postSubmitRestartList (req, re
     return next(error)
   }
 
-  const info = didNotCompleteInfo
-  const validationError = restartValidator.validateReason(restartReason, info)
-  if (validationError.hasError()) {
-    const pageTitle = 'Select pupils for restart'
-    res.locals.pageTitle = `Error: ${pageTitle}`
-    req.breadcrumbs('Select pupils to restart the check', '/restart/overview')
-    req.breadcrumbs(pageTitle)
-    let pupils
-    let reasons
-    let groups = []
-    const groupIds = req.params.groupIds || ''
-
-    try {
-      pupils = await restartService.getPupilsEligibleForRestart(req.user.schoolId)
-      reasons = await restartService.getReasons()
-      if (pupils.length > 0) {
-        groups = await groupService.findGroupsByPupil(req.user.schoolId, pupils)
-      }
-    } catch (error) {
-      return next(error)
-    }
-    return res.render('restart/select-restart-list', {
-      breadcrumbs: req.breadcrumbs(),
-      pupils,
-      reasons,
-      groups,
-      groupIds,
-      error: validationError
-    })
-  }
   let pupilsRestarted
   try {
     const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
     await businessAvailabilityService.determineRestartsEligibility(checkWindowData)
-    pupilsRestarted = await restartService.restart(processedPupilsIds, restartReason, didNotCompleteInfo, restartFurtherInfo, req.user.id, req.user.schoolId)
+    pupilsRestarted = await restartService.restart(processedPupilsIds, restartReason, req.user.id, req.user.schoolId)
   } catch (error) {
     return next(error)
   }
