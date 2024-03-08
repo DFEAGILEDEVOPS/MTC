@@ -10,7 +10,7 @@
           <div class="govuk-error-summary__body">
             <p>See highlighted errors below.</p>
             <ul class="govuk-list govuk-error-summary__list">
-            <% error.getUniqueFields(['pupil-autocomplete-container', 'accessArrangementsList', 'inputAssistanceInformation', 'questionReaderReasonsList', 'questionReaderOtherInformation']).map(f => { %>
+            <% error.getUniqueFields(['pupil-autocomplete-container', 'accessArrangementsList', 'questionReaderReasonsList', 'questionReaderOtherInformation']).map(f => { %>
               <li><a href="#<%= f %>"><%= error.get(f) %></a></li>
             <% }) %>
             </ul>
@@ -103,22 +103,6 @@
                         </div>
                         <% if (accessArrangement.code === 'ITA') { %>
                             <div class="hide-checkbox-content">
-                                <div class="govuk-inset-text">
-                                    <div class="govuk-form-group <%= error.isError('inputAssistanceInformation') ? 'govuk-form-group--error' : '' %>">
-                                        <label class="govuk-label" for='inputAssistanceInformation'>Please explain why the pupil needs this
-                                            arrangement
-                                        </label>
-                                        <% if (error.isError('inputAssistanceInformation')) { %>
-                                            <span class="govuk-error-message"> <%= error.get('inputAssistanceInformation') %></span>
-                                        <% } %>
-                                        <textarea
-                                                id="inputAssistanceInformation"
-                                                name="inputAssistanceInformation"
-                                                class="govuk-textarea govuk-!-width-three-quarters access-arrangements-textarea <%= error.isError('inputAssistanceInformation') ? 'govuk-textarea--error' : '' %>"
-                                                rows="3"
-                                                maxlength="1000"><%= formData['inputAssistanceInformation'] && formData['inputAssistanceInformation'].trim() %></textarea>
-                                    </div>
-                                </div>
                                 <div class="govuk-warning-text">
                                     <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
                                     <strong class="govuk-warning-text__text">

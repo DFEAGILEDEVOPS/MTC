@@ -23,9 +23,6 @@ accessArrangementsDescriptionsPresenter.addReasonRequiredIndication = (accessArr
     if (aa.code === 'QNR') {
       aa.description = `${aa.description} (reason required)`
     }
-    if (aa.code === 'ITA') {
-      aa.description = `${aa.description} (reason and input assistant's name required)`
-    }
     return aa
   })
 }

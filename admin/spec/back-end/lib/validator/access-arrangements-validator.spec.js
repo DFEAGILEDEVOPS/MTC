@@ -10,7 +10,6 @@ describe('Access arrangements validator', function () {
         pupilUrlSlug: 'pupilUrlSlug',
         accessArrangements: ['ATA'],
         questionReaderReason: 'VIM',
-        inputAssistanceInformation: '',
         nextButtonInforamtion: '',
         questionReaderOtherInformation: ''
       }
@@ -21,7 +20,6 @@ describe('Access arrangements validator', function () {
       const requestData = {
         accessArrangements: ['ATA'],
         questionReaderReason: 'VIM',
-        inputAssistanceInformation: '',
         nextButtonInforamtion: '',
         questionReaderOtherInformation: ''
       }
@@ -33,7 +31,6 @@ describe('Access arrangements validator', function () {
       const requestData = {
         pupilUrlSlug: 'pupilUrlSlug',
         questionReaderReason: 'VIM',
-        inputAssistanceInformation: '',
         nextButtonInforamtion: '',
         questionReaderOtherInformation: ''
       }
@@ -41,26 +38,12 @@ describe('Access arrangements validator', function () {
       expect(validationError.hasError()).toBeTruthy()
       expect(validationError.isError('accessArrangementsList')).toBeTruthy()
     })
-    test('requires input assistance information when relevant access arrangement is selected', () => {
-      const requestData = {
-        pupilUrlSlug: 'pupilUrlSlug',
-        accessArrangements: ['ITA'],
-        questionReaderReason: 'VIM',
-        inputAssistanceInformation: '',
-        nextButtonInforamtion: '',
-        questionReaderOtherInformation: ''
-      }
-      const validationError = accessArrangementsValidator.validate(requestData)
-      expect(validationError.hasError()).toBeTruthy()
-      expect(validationError.isError('inputAssistanceInformation')).toBeTruthy()
-    })
 
     test('requires question reader reason when relevant access arrangement is selected', () => {
       const requestData = {
         pupilUrlSlug: 'pupilUrlSlug',
         accessArrangements: ['QNR'],
         questionReaderReason: '',
-        inputAssistanceInformation: '',
         nextButtonInforamtion: '',
         questionReaderOtherInformation: ''
       }
@@ -73,7 +56,6 @@ describe('Access arrangements validator', function () {
         pupilUrlSlug: 'pupilUrlSlug',
         accessArrangements: ['QNR'],
         questionReaderReason: 'OTH',
-        inputAssistanceInformation: '',
         nextButtonInforamtion: '',
         questionReaderOtherInformation: ''
       }
@@ -86,7 +68,6 @@ describe('Access arrangements validator', function () {
         isEditView: 'true',
         accessArrangements: ['ATA'],
         questionReaderReason: 'VIM',
-        inputAssistanceInformation: '',
         nextButtonInforamtion: '',
         questionReaderOtherInformation: ''
       }
@@ -98,7 +79,6 @@ describe('Access arrangements validator', function () {
         pupilUrlSlug: 'pupilUrlSlug',
         isEditView: 'true',
         questionReaderReason: 'VIM',
-        inputAssistanceInformation: '',
         nextButtonInforamtion: '',
         questionReaderOtherInformation: ''
       }

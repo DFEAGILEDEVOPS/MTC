@@ -14,7 +14,6 @@ module.exports.validate = (accessArrangementsData) => {
     pupilUrlSlug,
     accessArrangements: accessArrangementsCodes,
     questionReaderReason: questionReaderReasonCode,
-    inputAssistanceInformation,
     questionReaderOtherInformation,
     isEditView
   } = accessArrangementsData
@@ -24,9 +23,6 @@ module.exports.validate = (accessArrangementsData) => {
   }
   if ((!accessArrangementsCodes || accessArrangementsCodes.length === 0) && !toBool(isEditView)) {
     validationError.addError('accessArrangementsList', accessArrangementsErrorMessages.missingAccessArrangements)
-  }
-  if (accessArrangementsCodes && accessArrangementsCodes.includes('ITA') && !inputAssistanceInformation) {
-    validationError.addError('inputAssistanceInformation', accessArrangementsErrorMessages.missingInputAssistanceExplanation)
   }
   if (accessArrangementsCodes && accessArrangementsCodes.includes('QNR') && !questionReaderReasonCode) {
     validationError.addError('questionReaderReasonsList', accessArrangementsErrorMessages.missingQuestionReaderReason)

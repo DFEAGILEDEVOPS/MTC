@@ -62,9 +62,6 @@ const accessArrangementsService = {
     pupilAccessArrangements.pupil_id = pupil.id
     pupilAccessArrangements.recordedBy_user_id = userId
     pupilAccessArrangements.questionReaderReasonCode = questionReaderReason
-    if (!pupilAccessArrangements.accessArrangements.includes(accessArrangementsDataService.CODES.INPUT_ASSISTANCE)) {
-      omittedFields.push('inputAssistanceInformation')
-    }
     if (pupilAccessArrangements.questionReaderReason !== questionReaderReasonsDataService.CODES.OTHER) {
       omittedFields.push('questionReaderOtherInformation')
     }

@@ -41,7 +41,6 @@ pupilAccessArrangementsDataService.sqlInsertAccessArrangements = async (data, is
     recordedBy_user_id: recordedByUserId,
     accessArrangementsIdsWithCodes,
     questionReaderReasonCode,
-    inputAssistanceInformation,
     questionReaderOtherInformation
   } = data
 
@@ -64,7 +63,6 @@ pupilAccessArrangementsDataService.sqlInsertAccessArrangements = async (data, is
       @recordedBy_user_id${idx},
       @accessArrangements_id${idx},
       @questionReaderReasons_id${idx},
-      @inputAssistanceInformation${idx},
       @questionReaderOtherInformation${idx},
       @fontSizeLookup_id${idx},
       @colourContrastLookup_id${idx}
@@ -90,11 +88,6 @@ pupilAccessArrangementsDataService.sqlInsertAccessArrangements = async (data, is
       type: TYPES.Int
     })
     params.push({
-      name: `inputAssistanceInformation${idx}`,
-      value: aa.code === 'ITA' ? inputAssistanceInformation : '',
-      type: TYPES.NVarChar
-    })
-    params.push({
       name: `questionReaderOtherInformation${idx}`,
       value: aa.code === 'QNR' && questionReaderReasonCode === 'OTH' ? questionReaderOtherInformation : '',
       type: TYPES.NVarChar
@@ -116,7 +109,6 @@ pupilAccessArrangementsDataService.sqlInsertAccessArrangements = async (data, is
       recordedBy_user_id,
       accessArrangements_id,
       questionReaderReasons_id,
-      inputAssistanceInformation,
       questionReaderOtherInformation,
       fontSizeLookup_Id,
       colourContrastLookup_Id
@@ -209,7 +201,6 @@ pupilAccessArrangementsDataService.sqlFindAccessArrangementsByUrlSlug = async (u
     p.urlSlug,
     p.foreName,
     p.lastName,
-    paa.inputAssistanceInformation,
     paa.questionReaderOtherInformation,
     aa.code as accessArrangementCode,
     qrr.code as questionReaderReasonCode

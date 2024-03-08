@@ -112,7 +112,6 @@ describe('pupilAccessArrangementsService', () => {
           urlSlug: 'urlSlug',
           foreName: 'foreName',
           lastName: 'lastName',
-          inputAssistanceInformation: '',
           questionReaderOtherInformation: '',
           accessArrangementCode: 'CCT',
           questionReaderReasonCode: null
@@ -121,7 +120,6 @@ describe('pupilAccessArrangementsService', () => {
           urlSlug: 'urlSlug',
           foreName: 'foreName',
           lastName: 'lastName',
-          inputAssistanceInformation: 'inputAssistanceInformation',
           questionReaderOtherInformation: '',
           accessArrangementCode: 'ITA',
           questionReaderReasonCode: null
@@ -134,7 +132,6 @@ describe('pupilAccessArrangementsService', () => {
           pupilUrlSlug: 'urlSlug',
           foreName: 'foreName',
           lastName: 'lastName',
-          inputAssistanceInformation: 'inputAssistanceInformation',
           questionReaderOtherInformation: '',
           accessArrangements: ['CCT', 'ITA'],
           questionReaderReason: null,
@@ -149,7 +146,6 @@ describe('pupilAccessArrangementsService', () => {
           urlSlug: 'urlSlug',
           foreName: 'foreName',
           lastName: 'lastName',
-          inputAssistanceInformation: '',
           questionReaderOtherInformation: '',
           accessArrangementCode: 'CCT',
           questionReaderReasonCode: null
@@ -158,7 +154,6 @@ describe('pupilAccessArrangementsService', () => {
           urlSlug: 'urlSlug',
           foreName: 'foreName',
           lastName: 'lastName',
-          inputAssistanceInformation: '',
           questionReaderOtherInformation: 'questionReaderOtherInformation',
           accessArrangementCode: 'QNR',
           questionReaderReasonCode: 'OTH'
@@ -171,7 +166,6 @@ describe('pupilAccessArrangementsService', () => {
           pupilUrlSlug: 'urlSlug',
           foreName: 'foreName',
           lastName: 'lastName',
-          inputAssistanceInformation: '',
           questionReaderOtherInformation: 'questionReaderOtherInformation',
           accessArrangements: ['CCT', 'QNR'],
           questionReaderReason: 'OTH',
