@@ -92,7 +92,6 @@ Capybara.register_driver :headless_chrome do |app|
   browser_options.args << '--disable-gpu'
   browser_options.args << '--allow-insecure-localhost'
   browser_options.args << '--no-sandbox'
-  browser_options.args << '--disable-dev-shm-usage'
   browser_options.args << '--window-size=1280,1696'
   browser_options.add_preference(:download, directory_upgrade: true,
                                  prompt_for_download: false,
