@@ -51,6 +51,7 @@ RUN apt-get update && \
     libgdbm-dev \
     libncurses5-dev \
     libyaml-dev \
+    libnss3 \
     # for zipping up function apps
     zip \
     && rm -rf /var/lib/apt/lists/*
