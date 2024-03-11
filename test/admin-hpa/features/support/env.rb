@@ -88,9 +88,8 @@ end
 
 Capybara.register_driver :headless_chrome do |app|
   browser_options = Selenium::WebDriver::Options.chrome
-  browser_options.args << '--headless'
+  browser_options.args << '--headless=new'
   browser_options.args << '--disable-gpu'
-  browser_options.args << '--allow-insecure-localhost'
   browser_options.args << '--remote-debugging-pipe'
   browser_options.args << '--no-sandbox'
   browser_options.args << '--window-size=1280,1696'
