@@ -128,7 +128,8 @@
                                 <% if (qrDataURL) { %>
                                     <div class="print-only qr"><img src="<%= qrDataURL %>" /></div>
                                 <% } %>
-                                <div class="print-only url"><%= url %></div>
+                                <div class="print-only url"><%= url %></div><br>
+                                <div class="print-only url">Expires at <%= formatPinExpiryTime(pupil.pinExpiresAt) %> on <%= formatPinDate(pupil.pinExpiresAt) %></div>
                             </td>
                             <td class="govuk-table__cell group-name no-print"><%= pupil.group %></td>
                             <td>

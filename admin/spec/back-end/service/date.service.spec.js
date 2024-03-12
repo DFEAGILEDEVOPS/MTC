@@ -4,6 +4,7 @@
 const dateService = require('../../../services/date.service')
 const requestMock = require('../mocks/dates-req-mock')
 const moment = require('moment')
+const momentTz = require('moment-timezone')
 const logger = require('../../../services/log.service.js').getLogger()
 
 function invalidInputTests (method) {
@@ -406,6 +407,48 @@ describe('date service', () => {
       const dt = dateService.tzEndOfDay('Europe/London')
       expect(dt.toISOString()).toBe('2021-04-12T22:59:59.999Z') //  11pm GMT is 12PM BST.
       tearDownFakeTime()
+    })
+  })
+
+  describe('formatPinDate', () => {
+    test('it formats the date', () => {
+      const tdate = moment('2024-03-12T16:00:00')
+      const slot = dateService.formatPinDate(tdate)
+      expect(slot).toBe('Tuesday 12 March')
+    })
+
+    test('it formats the date single digit', () => {
+      const tdate = moment('2024-03-02T16:00:00')
+      const slot = dateService.formatPinDate(tdate)
+      expect(slot).toBe('Saturday 2 March')
+    })
+
+    test('it formats the date in local time', () => {
+      const tz = 'Europe/Nicosia'
+      const nicosia = moment('2024-03-02T23:00:00') // GMT from the db
+      const slot = dateService.formatPinDate(nicosia, tz)
+      expect(slot).toBe('Sunday 3 March') // Cyprus is 2 hours ahead
+    })
+  })
+
+  describe('formatPinExpiryDate', () => {
+    test('it formats the date on the hour simply in 12 hour clock', () => {
+      const tdate = '2024-12-12T16:00:00Z'
+      const slot = dateService.formatPinExpiryTime(tdate)
+      expect(slot).toBe('4 pm')
+    })
+
+    test('it formats the date with minutes in 12 hour clock (if there are minutes)', () => {
+      const tdate = '2024-12-12T23:59:59Z'
+      const slot = dateService.formatPinExpiryTime(tdate)
+      expect(slot).toBe('11:59 pm')
+    })
+
+    test('it formats the date with minutes in 12 hour clock', () => {
+      const tz = 'Europe/Nicosia'
+      const nicosia = moment('2024-03-02T23:00:00Z') // GMT from the db
+      const slot = dateService.formatPinExpiryTime(nicosia, tz)
+      expect(slot).toBe('1 am') // Nicosia time
     })
   })
 })
