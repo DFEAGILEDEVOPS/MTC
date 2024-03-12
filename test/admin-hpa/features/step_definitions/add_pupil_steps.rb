@@ -154,10 +154,11 @@ Then(/^I should see a validation error$/) do
 end
 
 When(/^I have submitted valid pupil details$/) do
-  today_date = Date.today + 1 
+  today_date = Date.today + 1
+  today_date = today_date - 9.years
   @upn = UpnGenerator.generate
   pupil_name = (0...8).map {(65 + rand(26)).chr}.join
-  @details_hash = {first_name: pupil_name, middle_name: pupil_name, last_name: pupil_name, upn: @upn, female: true, day: "#{today_date.day}", month: "#{today_date.month}", year: "#{today_date.year - 9}"}
+  @details_hash = {first_name: pupil_name, middle_name: pupil_name, last_name: pupil_name, upn: @upn, female: true, day: "#{today_date.day}", month: "#{today_date.month}", year: "#{today_date.year}"}
   @page.enter_details(@details_hash)
   @page.add_pupil.click unless @page == edit_pupil_page
   @page.save_changes.click if @page == edit_pupil_page
@@ -196,8 +197,9 @@ end
 
 When(/^I submit the form with the name fields set as (.*)$/) do |value|
   today_date = Date.today + 1
+  today_date = today_date - 9.years
   @upn = UpnGenerator.generate unless @page == edit_pupil_page
-  @details_hash = {first_name: value, middle_name: value, last_name: value, first_name_alias: value, last_name_alias: value,  upn: @upn, female: true, day: "#{today_date.day}", month: "#{today_date.month}", year: "#{today_date.year - 9}"}
+  @details_hash = {first_name: value, middle_name: value, last_name: value, first_name_alias: value, last_name_alias: value,  upn: @upn, female: true, day: "#{today_date.day}", month: "#{today_date.month}", year: "#{today_date.year}"}
   @page.enter_details(@details_hash)
   @page.add_pupil.click unless @page == edit_pupil_page
   @page.save_changes.click if @page == edit_pupil_page
@@ -574,9 +576,10 @@ end
 
 When(/^I have submitted valid pupil details including a temporary upn$/) do
     today_date = Date.today + 1
+    today_date = today_date - 9.years
     @upn = UpnGenerator.generate_temporary
     pupil_name = (0...8).map {(65 + rand(26)).chr}.join
-    @details_hash = {first_name: pupil_name, middle_name: pupil_name, last_name: pupil_name, upn: @upn, female: true, day: "#{today_date.day}", month: "#{today_date.month}", year: "#{today_date.year - 9}"}
+    @details_hash = {first_name: pupil_name, middle_name: pupil_name, last_name: pupil_name, upn: @upn, female: true, day: "#{today_date.day}", month: "#{today_date.month}", year: "#{today_date.year}"}
     @page.enter_details(@details_hash)
     @page.add_pupil.click unless @page == edit_pupil_page
     @page.save_changes.click if @page == edit_pupil_page

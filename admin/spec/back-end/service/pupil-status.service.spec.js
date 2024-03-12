@@ -131,7 +131,7 @@ describe('pupil-status.service', () => {
         checkStartedAt: null,
         pinExpiresAt: moment().add(4, 'hours')
       })
-      expect(status).toBe('Logged in')
+      expect(status).toBe('Signed in')
     })
 
     test('it identifies a pupil that has a check in processing phase', () => {
@@ -212,7 +212,7 @@ describe('pupil-status.service', () => {
         pinExpiresAt: moment().add(3, 'hours'),
         checkStartedAt: null
       })
-      expect(status).toBe('Overdue - logged in but check not started')
+      expect(status).toBe('Overdue - signed in but check not started')
     })
 
     test('it identifies a pupil was allocated a check that then expired', () => {
