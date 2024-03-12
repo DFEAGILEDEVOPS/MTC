@@ -4,7 +4,6 @@
 const dateService = require('../../../services/date.service')
 const requestMock = require('../mocks/dates-req-mock')
 const moment = require('moment')
-const momentTz = require('moment-timezone')
 const logger = require('../../../services/log.service.js').getLogger()
 
 function invalidInputTests (method) {
