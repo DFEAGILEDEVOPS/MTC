@@ -217,6 +217,7 @@ const getViewAndCustomPrintPins = async function getViewAndCustomPrintPins (req,
   } catch (error) {
     return next(error)
   }
+  const defaultTimezone = 'Europe/London'
   return res.render('pupil-pin/view-and-custom-print-pins', {
     breadcrumbs: req.breadcrumbs(),
     school,
@@ -226,7 +227,8 @@ const getViewAndCustomPrintPins = async function getViewAndCustomPrintPins (req,
     error,
     helplineNumber,
     qrDataURL,
-    url: config.PUPIL_APP_URL
+    url: config.PUPIL_APP_URL,
+    tz: req.user.timezone ?? defaultTimezone
   })
 }
 
