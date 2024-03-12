@@ -12,6 +12,7 @@ Before do
   @school_id = @school_user['entity']['school_id']
   FunctionsHelper.generate_school_pin(@school_id)
   p "Login for #{@school_name} created as - #{@username}"
+  binding.pry
   step 'I am logged in'
   step 'I am on the add multiple pupil page'
   @upns_for_school = add_multiple_pupil_page.upload_pupils(5, @school_name)
