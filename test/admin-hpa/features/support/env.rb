@@ -94,6 +94,7 @@ Capybara.register_driver :headless_chrome do |app|
   browser_options.args << '--headless=new'
   browser_options.args << '--disable-gpu'
   browser_options.args << '--remote-debugging-pipe'
+  browser_options.args << '--disable-ipv6'
   browser_options.args << '--disable-dev-shm-usage'
   browser_options.args << '--remote-debugging-port=9222'
   browser_options.args << '--window-size=1280,1696'
