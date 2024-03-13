@@ -4,7 +4,7 @@
 
 FROM ubuntu:22.04
 
-ENV RUBY_VERSION=2.7.7
+ENV RUBY_VERSION=3.2.2
 ENV AZURE_FUNCTIONS_CORE_TOOLS_VERSION=4
 
 # to make it easier for build and release pipelines to run apt-get,
@@ -51,6 +51,7 @@ RUN apt-get update && \
     libgdbm-dev \
     libncurses5-dev \
     libyaml-dev \
+    libnss3 \
     # for zipping up function apps
     zip \
     && rm -rf /var/lib/apt/lists/*
@@ -131,7 +132,7 @@ RUN curl -sL https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | b
 # install azuredevops agent service
 # https://github.com/microsoft/azure-pipelines-agent/releases
 ARG TARGETARCH=amd64
-ARG AGENT_VERSION=3.220.5
+ARG AGENT_VERSION=3.236.0
 
 WORKDIR /azp
 RUN if [ "$TARGETARCH" = "amd64" ]; then \
