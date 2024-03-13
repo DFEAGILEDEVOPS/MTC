@@ -766,7 +766,7 @@ const controller = {
     }
     try {
       const confirmedUpn = req.body.upn
-      const annulmentType = req.body.annulmentType
+      // const annulmentType = req.body.annulmentType
       if (confirmedUpn === undefined || confirmedUpn === '') {
         return annulPupilErrorHandler(req, res, next, 'No upn provided')
       }
