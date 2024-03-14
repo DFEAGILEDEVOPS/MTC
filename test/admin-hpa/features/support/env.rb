@@ -61,7 +61,6 @@ Capybara.configure do |config|
   config.exact = true
   config.ignore_hidden_elements = false
   config.visible_text_only = true
-  config.default_max_wait_time = 7
 end
 
 Capybara.register_driver(:chrome) do |app|

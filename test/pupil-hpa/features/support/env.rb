@@ -58,7 +58,6 @@ Capybara.configure do |config|
   config.exact = true
   config.ignore_hidden_elements = false
   config.visible_text_only = true
-  config.default_max_wait_time = 7
 end
 
 Capybara.register_driver(:chrome) do |app|
@@ -73,8 +72,6 @@ Capybara.register_driver :headless_chrome do |app|
   browser_options.args << '--headless'
   browser_options.args << '--disable-gpu'
   browser_options.args << '--allow-insecure-localhost'
-  browser_options.args << '--allow-file-access-from-files'
-
   browser_options.args << '--no-sandbox'
   Capybara::Selenium::Driver.new(app, browser: :chrome, options: browser_options)
 end
