@@ -33,7 +33,7 @@ include Helpers
 Dotenv.load('../../.env')
 
 logger = Selenium::WebDriver.logger
-logger.level = :debug
+logger.level = :info
 
 (abort "LIVE_FORM_QUESTION_COUNT is set to #{ENV['LIVE_FORM_QUESTION_COUNT']}. The tests require this to be set to 25. Please update this value to 25 and rebuild the apps") unless ENV['LIVE_FORM_QUESTION_COUNT'].to_i == 25
 
@@ -69,10 +69,11 @@ end
 Capybara.register_driver :headless_chrome do |app|
   browser_options = Selenium::WebDriver::Options.chrome
   browser_options.page_load_strategy = :normal
-  browser_options.args << '--headless'
+  browser_options.args << '--headless=new'
+  browser_options.args << '--no-sandbox'
+  browser_options.args << '--disable-dev-shm-usage'
   browser_options.args << '--disable-gpu'
   browser_options.args << '--allow-insecure-localhost'
-  browser_options.args << '--no-sandbox'
   Capybara::Selenium::Driver.new(app, browser: :chrome, options: browser_options)
 end
 

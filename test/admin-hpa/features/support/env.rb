@@ -38,7 +38,7 @@ require 'jwt'
 include Helpers
 
  logger = Selenium::WebDriver.logger
- logger.level = :debug
+ logger.level = :info
 
 Dotenv.load('../../.env')
 (abort "LIVE_FORM_QUESTION_COUNT is set to #{ENV['LIVE_FORM_QUESTION_COUNT']}. The tests require this to be set to 25. Please update this value to 25 and rebuild the apps") unless ENV['LIVE_FORM_QUESTION_COUNT'].to_i == 25
@@ -89,10 +89,11 @@ end
 
 Capybara.register_driver :headless_chrome do |app|
   browser_options = Selenium::WebDriver::Options.chrome
-  browser_options.args << '--headless'
+  browser_options.args << '--headless=new'
   browser_options.args << '--disable-gpu'
   browser_options.args << '--allow-insecure-localhost'
   browser_options.args << '--no-sandbox'
+  browser_options.args << '--disable-dev-shm-usage'
   browser_options.args << '--window-size=1280,1696'
   browser_options.add_preference(:download, directory_upgrade: true,
                                  prompt_for_download: false,
