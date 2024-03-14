@@ -32,6 +32,9 @@ include Helpers
 
 Dotenv.load('../../.env')
 
+logger = Selenium::WebDriver.logger
+logger.level = :debug
+
 (abort "LIVE_FORM_QUESTION_COUNT is set to #{ENV['LIVE_FORM_QUESTION_COUNT']}. The tests require this to be set to 25. Please update this value to 25 and rebuild the apps") unless ENV['LIVE_FORM_QUESTION_COUNT'].to_i == 25
 
 ENV['SE_CACHE_PATH'] ||=File.expand_path("#{File.dirname(__FILE__)}/../../../se_manager/.cache/selenium")
