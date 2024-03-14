@@ -2,7 +2,6 @@ class RedisHelper
 
   def self.wait_for_prepared_check(school_password,pin)
     p school_password, pin
-    found = false
     begin
       retries ||= 0
       sleep 5
