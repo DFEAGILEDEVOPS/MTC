@@ -37,8 +37,8 @@ require_relative '../../features/support/app'
 require 'jwt'
 include Helpers
 
-# logger = Selenium::WebDriver.logger
-# logger.level = :debug
+ logger = Selenium::WebDriver.logger
+ logger.level = :debug
 
 Dotenv.load('../../.env')
 (abort "LIVE_FORM_QUESTION_COUNT is set to #{ENV['LIVE_FORM_QUESTION_COUNT']}. The tests require this to be set to 25. Please update this value to 25 and rebuild the apps") unless ENV['LIVE_FORM_QUESTION_COUNT'].to_i == 25
