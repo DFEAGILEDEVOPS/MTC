@@ -182,3 +182,10 @@ else
   REDIS_CLIENT = Redis.new(host: "#{redis_host}", port: redis_port)
 end
 
+
+begin
+  REDIS_CLIENT.ping
+rescue Redis::BaseError => e
+  fail "REDIS connection issue - #{e.inspect}"
+end
+
