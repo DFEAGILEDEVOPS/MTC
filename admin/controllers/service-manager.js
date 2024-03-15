@@ -16,7 +16,7 @@ const organisationBulkUploadService = require('../services/organisation-bulk-upl
 const { JobService } = require('../services/job/job.service')
 const { ServiceManagerPupilService } = require('../services/service-manager/pupil/service-manager.pupil.service')
 const { validate } = require('uuid')
-const { PupilAnnulmentService } = require('../services/service-manager/pupil-annulment/pupil-annulment.service')
+const { PupilAnnulmentService, AnnulmentType } = require('../services/service-manager/pupil-annulment/pupil-annulment.service')
 const { TypeOfEstablishmentService } = require('../services/type-of-establishment/type-of-establishment-service')
 const { ServiceManagerSchoolService } = require('../services/service-manager/school/school.service')
 const { ServiceManagerAttendanceService } = require('../services/service-manager/attendance/service-manager.attendance.service')
@@ -766,14 +766,14 @@ const controller = {
     }
     try {
       const confirmedUpn = req.body.upn
-      // const annulmentType = req.body.annulmentType
+      const annulmentType = req.body.annulmentType
       if (confirmedUpn === undefined || confirmedUpn === '') {
         return annulPupilErrorHandler(req, res, next, 'No upn provided')
       }
       const urlSlug = req.params.slug
       const pupil = await ServiceManagerPupilService.getPupilDetailsByUrlSlug(urlSlug)
       if (pupil.upn !== confirmedUpn) return annulPupilErrorHandler(req, res, next, 'UPN does not match pupil')
-      await PupilAnnulmentService.applyAnnulment(urlSlug, req.user.id, pupil.schoolId)
+      await PupilAnnulmentService.applyAnnulment(urlSlug, req.user.id, pupil.schoolId, annulmentType)
       return res.redirect(`/service-manager/pupil-summary/${encodeURIComponent(urlSlug).toLowerCase()}`)
     } catch (error) {
       return annulPupilErrorHandler(req, res, next, error.message)
