@@ -1,3 +1,4 @@
+@build_commit_ping
 Feature: Build and commit info
 
   Scenario: Check Admin app displays correct build and commit info
