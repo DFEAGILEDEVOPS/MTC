@@ -17,6 +17,8 @@ If you are building the image locally on an Apple Silicon device during developm
 5. run `./create-instance.sh` to create new build servers
 6. once new agents are up and running, assign a 'user defined capability' to each one via the build agent management screen in VSO.
 7. Add name as `mtc-instance` and number them consecutively, starting at 1.  This allows us to source and whitelist the IP address of each.
+8. Source the IPv4 address of each build server using the build definitions located in the MTC Azure DevOps instance
+9. Add these IP addresses to the necessary firewalls using the build tasks provided in the MTC Azure DevOps instance
 
 example execution of `create-instance.sh`...
 
