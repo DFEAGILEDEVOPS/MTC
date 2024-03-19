@@ -4,7 +4,7 @@
 
 FROM ubuntu:22.04
 
-ENV RUBY_VERSION=2.7.7
+ENV RUBY_VERSION=3.2.2
 ENV AZURE_FUNCTIONS_CORE_TOOLS_VERSION=4
 
 # to make it easier for build and release pipelines to run apt-get,
@@ -35,7 +35,32 @@ RUN apt-get update && \
     unixodbc \
     zlib1g-dev \
     # ruby -> chrome
+    fonts-liberation \
+    libasound2 \
+    libatk1.0-0 \
+    libatspi2.0-0 \
+    libc6 \
+    libcairo2 \
+    libcups2 \
+    libdrm2 \
+    libexpat1 \
+    libgbm1 \
+    libglib2.0-0 \
+    libgtk-3-0 \
+    libnspr4 \
+    libpango-1.0-0 \
+    libu2f-udev \
+    libvulkan1 \
+    libx11-6 \
+    libxcb1 \
+    libxcomposite1 \
+    libxdamage1 \
+    libxext6 \
+    libxfixes3 \
+    libxkbcommon0 \
+    libxrandr2 \
     wget \
+    xdg-utils \
     # dotnet, powershell
     apt-transport-https \
     # dotnet, azure functions core tools
@@ -51,9 +76,11 @@ RUN apt-get update && \
     libgdbm-dev \
     libncurses5-dev \
     libyaml-dev \
+    libnss3 \
     # for zipping up function apps
     zip \
     && rm -rf /var/lib/apt/lists/*
+
 
 # install chromium
 RUN apt-get update && apt-get install -y chromium-browser
@@ -131,7 +158,7 @@ RUN curl -sL https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | b
 # install azuredevops agent service
 # https://github.com/microsoft/azure-pipelines-agent/releases
 ARG TARGETARCH=amd64
-ARG AGENT_VERSION=3.220.5
+ARG AGENT_VERSION=3.236.0
 
 WORKDIR /azp
 RUN if [ "$TARGETARCH" = "amd64" ]; then \
