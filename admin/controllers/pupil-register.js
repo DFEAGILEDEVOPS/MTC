@@ -30,7 +30,7 @@ const listPupils = async function listPupils (req, res, next) {
   }
 
   // const showAddPupilButtons = global.checkWindowPhase <= checkWindowPhaseConsts.officialCheck // Add buttons allowed up to the official check, but not after in the admin period, or the post admin period.
-  const showAddPupilButtons = global.checkWindowPhase !== checkWindowPhaseConsts.readOnlyAdmin && global.checkWindowPhase !== checkWindowPhaseConsts.unavailable && global.checkWindowPhase !== checkWindowPhaseConsts.postCheckAdmin
+  const showAddPupilButtons = req.user.role === roles.staAdmin || (global.checkWindowPhase !== checkWindowPhaseConsts.readOnlyAdmin && global.checkWindowPhase !== checkWindowPhaseConsts.unavailable && global.checkWindowPhase !== checkWindowPhaseConsts.postCheckAdmin)
 
   res.render(pupilsListView, {
     highlight: hl && new Set(hl),

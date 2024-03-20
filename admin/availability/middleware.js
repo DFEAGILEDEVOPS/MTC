@@ -41,7 +41,7 @@ async function isPostLiveOrLaterCheckPhase (req, res, next) {
     return next()
   }
   /**
-   * global.checkWindowPhase is an int. Later phases have larger number.
+   * global.checkWindowPhase is an int. Later phases have larger numbers.
    */
   try {
     if (global.checkWindowPhase >= checkWindowPhaseConsts.postCheckAdmin) {

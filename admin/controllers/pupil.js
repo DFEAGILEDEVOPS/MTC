@@ -36,12 +36,14 @@ const controller = {
       req.breadcrumbs(res.locals.pageTitle)
       const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
       const availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.schoolId, checkWindowData, req.user.timezone)
-      if (availabilityData.hdfSubmitted) {
+
+      if (availabilityData.hdfSubmitted && !req.user.role === roles.staAdmin) {
         return res.render('availability/section-unavailable', {
           title: res.locals.pageTitle,
           breadcrumbs: req.breadcrumbs()
         })
       }
+      
       res.render('pupil-register/add-pupil', {
         formData: req.body,
         error: error || new ValidationError(),
