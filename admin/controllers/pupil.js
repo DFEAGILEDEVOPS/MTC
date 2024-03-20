@@ -43,7 +43,6 @@ const controller = {
           breadcrumbs: req.breadcrumbs()
         })
       }
-      
       res.render('pupil-register/add-pupil', {
         formData: req.body,
         error: error || new ValidationError(),
