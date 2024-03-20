@@ -72,23 +72,6 @@ If you want to run the tests on a different url:
 
 `cucumber ADMIN_BASE_URL='https://check-development.herokuapp.com'`
 
-##### Parallel
-
-If you want to run the tests in parallel to save time:
-
- `parallel_cucumber features/ -n 4 -o "-p parallel" `
-
- The above command will run the tests headless in 4 processes ( -n option) and uses the 'parallel' profile defined in config/cucumber.yml file.
- Html reports are generated in report folder with names as report.html, report1.html, report2.html, report3.html ( one html report per process)
-
-If you want to change the url while executing parallel tests ( use the -o option in parallel gem to give cucumber command line options):
-
- `parallel_cucumber features/ -n 4 -o "-p parallel ADMIN_BASE_URL=‘https://check-development.herokuapp.com’"`
-
-If you want to run a set of tests in parallel tagged with a tag for example @smoke:
-
- `parallel_cucumber features/ -n 2 -o "-p parallel_chrome -t @smoke"`
-
 ##### Rerun failing scenarios
 
 To run the tests with re run turned on use the following:
