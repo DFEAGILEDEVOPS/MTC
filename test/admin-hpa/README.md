@@ -29,7 +29,11 @@ Use ruby version 3.2.2 and set it as your default:
 
 ## Install FreeTDS dependency
 
-run `brew install FreeTDS`
+### macOS (via [homebrew](https://brew.sh/))
+`brew install FreeTDS`
+
+### windows (WSL) or linux
+`sudo apt-get -y install freetds-dev`
 
 ## Install prerequisites
 
