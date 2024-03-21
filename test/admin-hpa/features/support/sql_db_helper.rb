@@ -651,7 +651,7 @@ class SqlDbHelper
     sql = "select top 1 lacode from mtc_admin.laCodeLookup order by NEWID()"
     result = SQL_CLIENT.execute(sql)
     la_codes = result.each {|row| row.map}
-    la_codes.map {|code| code['lacode'].to_s}
+    la_codes.map {|code| code['lacode'].to_s}.first
   end
 
   def self.get_list_of_la_codes
