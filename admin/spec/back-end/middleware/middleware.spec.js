@@ -13,7 +13,7 @@ describe('availablility/middleware', () => {
   beforeEach(() => {
     next = jest.fn().mockImplementation()
     jest.spyOn(res, 'render').mockImplementation()
-    config.OVERRIDE_AVAILABILITY_MIDDLEWARE = false
+    config.OVERRIDE_AVAILABILITY_MIDDLEWARE = false    
     reqParams = {
       method: 'GET',
       isAuthenticated: () => {},
@@ -108,6 +108,36 @@ describe('availablility/middleware', () => {
       await middleware.isPostLiveOrLaterCheckPhase(req, res, next)
       expect(next).toHaveBeenCalledWith() // no args
       expect(res.render).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('ifNotRole', () => {
+    test('it calls the func param if the role is not the guard role', async () => {
+      reqParams.user = {
+        id: 1,
+        UserName: 'UserName',
+        role: roles.teacher
+      }
+      const req = httpMocks.createRequest(reqParams)
+      req.breadcrumbs = () => {}
+      const thenFunc = jest.fn()
+      const func = middleware.ifNotRole(roles.staAdmin, thenFunc)
+      await func(req, res, next)
+      expect(thenFunc).toHaveBeenCalled()
+    })
+
+    test('it does not call the func param if the role is the guard role', async () => {
+      reqParams.user = {
+        id: 1,
+        UserName: 'UserName',
+        role: roles.staAdmin
+      }
+      const req = httpMocks.createRequest(reqParams)
+      req.breadcrumbs = () => {}
+      const thenFunc = jest.fn()
+      const func = middleware.ifNotRole(roles.staAdmin, thenFunc)
+      await func(req, res, next)
+      expect(thenFunc).not.toHaveBeenCalled()
     })
   })
 })
