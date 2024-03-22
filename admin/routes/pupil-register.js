@@ -17,7 +17,7 @@ router.get(
 )
 router.get(
   '/pupil/add',
-  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),   
+  isAuthenticated([roles.teacher, roles.helpdesk, roles.staAdmin]),
   ifNotRole(roles.staAdmin, isPostLiveOrLaterCheckPhase),
   pupilController.getAddPupil
 )

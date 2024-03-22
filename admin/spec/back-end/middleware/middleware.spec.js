@@ -13,7 +13,7 @@ describe('availablility/middleware', () => {
   beforeEach(() => {
     next = jest.fn().mockImplementation()
     jest.spyOn(res, 'render').mockImplementation()
-    config.OVERRIDE_AVAILABILITY_MIDDLEWARE = false    
+    config.OVERRIDE_AVAILABILITY_MIDDLEWARE = false
     reqParams = {
       method: 'GET',
       isAuthenticated: () => {},

@@ -62,7 +62,7 @@ async function refuseIfHdfSigned (req, res, next) {
   return next(new Error('HDF signed'))
 }
 
-function ifNotRole(role, func) {
+function ifNotRole (role, func) {
   return async function (req, res, next) {
     if (req.user.role !== role) {
       await func(req, res, next)

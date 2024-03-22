@@ -13,6 +13,7 @@ const listPupils = async function listPupils (req, res, next) {
   let availabilityData
   let pupilsFormatted = []
   let pupilsListView
+
   try {
     checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
     availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.schoolId, checkWindowData)
@@ -29,8 +30,12 @@ const listPupils = async function listPupils (req, res, next) {
     hl = typeof hl === 'string' ? JSON.parse(hl) : hl
   }
 
-  // const showAddPupilButtons = global.checkWindowPhase <= checkWindowPhaseConsts.officialCheck // Add buttons allowed up to the official check, but not after in the admin period, or the post admin period.
-  const showAddPupilButtons = req.user.role === roles.staAdmin || (global.checkWindowPhase !== checkWindowPhaseConsts.readOnlyAdmin && global.checkWindowPhase !== checkWindowPhaseConsts.unavailable && global.checkWindowPhase !== checkWindowPhaseConsts.postCheckAdmin)
+  /**
+   * During the end admin phase, or the read only phase, STA ADMIN can still add single pupils.  We therefore need to
+   * disable the add multiple pupils button if the role = STA-ADMIN and checkWindowPase is after the live check period.
+   */
+  const showAddPupilButton = req.user.role === roles.staAdmin || (global.checkWindowPhase !== checkWindowPhaseConsts.readOnlyAdmin && global.checkWindowPhase !== checkWindowPhaseConsts.unavailable && global.checkWindowPhase !== checkWindowPhaseConsts.postCheckAdmin)
+  const showAddMultiplePupilButton = global.checkWindowPhase !== checkWindowPhaseConsts.readOnlyAdmin && global.checkWindowPhase !== checkWindowPhaseConsts.unavailable && global.checkWindowPhase !== checkWindowPhaseConsts.postCheckAdmin
 
   res.render(pupilsListView, {
     highlight: hl && new Set(hl),
@@ -38,7 +43,8 @@ const listPupils = async function listPupils (req, res, next) {
     breadcrumbs: req.breadcrumbs(),
     availabilityData,
     showPupilAdminLink: req.user.role === roles.staAdmin || req.user.role === roles.helpdesk,
-    showAddPupilButtons
+    showAddPupilButton,
+    showAddMultiplePupilButton
   })
 }
 
