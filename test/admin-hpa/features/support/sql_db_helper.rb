@@ -805,7 +805,9 @@ class SqlDbHelper
   end
 
   def self.get_school_teacher(school_urn)
-    sql = "SELECT TOP 1 * FROM [mtc_admin].[user] WHERE urn='#{school_urn}' AND role_id=3"
+    sql = "SELECT TOP 1 u.* FROM [mtc_admin].[user] u
+      INNER JOIN mtc_admin.school s on u.school_id = s.id
+      WHERE s.urn='#{school_urn}' AND u.role_id=3"
     result = SQL_CLIENT.execute(sql)
     user = result.first
     result.cancel

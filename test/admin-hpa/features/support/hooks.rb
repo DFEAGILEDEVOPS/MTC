@@ -1,13 +1,18 @@
+require 'pp'
+
 Before do
   @school = SqlDbHelper.get_random_school
   if @school.nil?
     fail "unable to obtain random school via SqlDbHelper.get_random_school"
   end
+
   @urn = @school['urn']
   @school_name = @school['name']
-  @school_id = @school_user['school_id']
+  @school_id = @school['id']
   @school_uuid = @school['urlSlug']
   @school_user = SqlDbHelper.get_school_teacher(@urn)
+  @username = @school_user['identifier']
+
 
   FunctionsHelper.generate_school_pin(@school_id)
   p "Login for #{@school_name} created as - #{@username}"
@@ -33,7 +38,7 @@ Before('@empty_new_school') do
 
   @urn = @school['urn']
   @school_name = @school['name']
-  @school_id = @school_user['school_id']
+  @school_id = @school['school_id']
   @school_uuid = @school['urlSlug']
   @school_user = SqlDbHelper.get_school_teacher(@urn)
   @username = @school_user['identifier']
@@ -50,7 +55,7 @@ Before('@new_school_no_password') do
 
   @urn = @school['urn']
   @school_name = @school['name']
-  @school_id = @school_user['school_id']
+  @school_id = @school['school_id']
   @school_uuid = @school['urlSlug']
   @school_user = SqlDbHelper.get_school_teacher(@urn)
   @username = @school_user['identifier']
