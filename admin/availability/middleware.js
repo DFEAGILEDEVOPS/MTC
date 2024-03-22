@@ -41,7 +41,7 @@ async function isPostLiveOrLaterCheckPhase (req, res, next) {
     return next()
   }
   /**
-   * global.checkWindowPhase is an int. Later phases have larger number.
+   * global.checkWindowPhase is an int. Later phases have larger numbers.
    */
   try {
     if (global.checkWindowPhase >= checkWindowPhaseConsts.postCheckAdmin) {
@@ -62,4 +62,14 @@ async function refuseIfHdfSigned (req, res, next) {
   return next(new Error('HDF signed'))
 }
 
-module.exports = { isAdminWindowAvailable, isPostLiveOrLaterCheckPhase, refuseIfHdfSigned }
+function ifNotRole (role, func) {
+  return async function (req, res, next) {
+    if (req.user.role !== role) {
+      await func(req, res, next)
+      return
+    }
+    next()
+  }
+}
+
+module.exports = { isAdminWindowAvailable, isPostLiveOrLaterCheckPhase, refuseIfHdfSigned, ifNotRole }
