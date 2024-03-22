@@ -39,6 +39,18 @@ Use ruby version 3.2.2 and set it as your default:
 
 Set up the solution as per the [root readme](../../README.md)
 
+Once your database is setup and online, open a shell in the `db` directory and run `yarn dummy-data`.
+This will populate your local database with 18k schools, and a user for each.
+
+Ensure the `ALLOWED_WORDS` environment variable is populated with at least 100 three letter words to create a unique 7 character pin for each school.
+
+Invoke the school pin generator function to populate each school with a pin.
+```
+POST /admin/functions/school-pin-generator HTTP/1.1
+Content-Type: application/json
+Host: localhost:7071
+```
+
 ## Install required gems
 
 Go to the folder /test/admin-hpa and run the following commands:
