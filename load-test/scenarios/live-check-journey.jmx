@@ -46,8 +46,8 @@
           <stringProp name="parameters"></stringProp>
           <boolProp name="resetInterpreter">false</boolProp>
           <stringProp name="script">int machineIndex = 0;
-if (props.get(&quot;grid_index&quot;) != null) {
-	machineIndex = Integer.parseInt(props.get(&quot;grid_index&quot;));
+if (props.get(&quot;node_index&quot;) != null) {
+	machineIndex = Integer.parseInt(props.get(&quot;node_index&quot;));
 }
 
 int lastTeacher = (machineIndex + 1) * 1000;
@@ -899,9 +899,9 @@ vars.put(&quot;storageAccountHost&quot;, domain);</stringProp>
           </hashTree>
         </hashTree>
         <DebugSampler guiclass="TestBeanGUI" testclass="DebugSampler" testname="Debug Sampler" enabled="false">
-          <boolProp name="displayJMeterProperties">false</boolProp>
+          <boolProp name="displayJMeterProperties">true</boolProp>
           <boolProp name="displayJMeterVariables">true</boolProp>
-          <boolProp name="displaySystemProperties">false</boolProp>
+          <boolProp name="displaySystemProperties">true</boolProp>
         </DebugSampler>
         <hashTree/>
         <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
