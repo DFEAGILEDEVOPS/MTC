@@ -1,6 +1,9 @@
 class FunctionsHelper
   include HTTParty
 
+  deprecate :create_school, SqlDbHelper.get_random_school, 2024, 04
+  deprecate :create_user, SqlDbHelper.get_school_teacher, 2024, 04
+
   def self.sync_check_code(check_code)
     HTTParty.post(ENV['FUNC_THROTTLED_BASE_URL'] + "/sync-results-init", :body => {'checkCode' => check_code}.to_json, headers: {'Content-Type' => 'application/json', 'x-functions-key' => ENV['FUNC_THROTTLED_MASTER_KEY']})
   end

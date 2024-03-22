@@ -25,14 +25,6 @@ module Helpers
     academic_year
   end
 
-  def get_highest_estab_code
-    SqlDbHelper.get_schools_list.map {|school| school['estabCode']}.sort.last
-  end
-
-  def get_highest_urn
-    SqlDbHelper.get_schools_list.map {|school| school['urn']}.sort.last
-  end
-
   def calculate_ctf_reason_code(reason)
     case reason
     when 'Working below expectation'
@@ -156,25 +148,6 @@ module Helpers
     pupil_annulment_confirmation_page.upn.set upn
     pupil_annulment_confirmation_page.confirm.click
     visit ENV['ADMIN_BASE_URL'] + '/sign-out'
-  end
-
-  def create_dfe_number
-    # @lea_code = '999'
-    @lea_code = SqlDbHelper.get_random_la_code
-    if SqlDbHelper.get_schools_list.map {|school| school['estabCode']}.sort.last == 9999
-      estab_counter = 1000
-      lea_code_change = true
-    else
-      estab_counter = SqlDbHelper.get_schools_list.map {|school| school['estabCode']}.sort.last
-    end
-    @estab_code = estab_counter + 1
-    if lea_code_change
-      lea_code_list = UpnHelper.collection_of_la_codes
-      lea_code_list.delete(SqlDbHelper.get_schools_list.map {|school| school['leaCode']}.sort.last.to_s)
-      lea_code_list.delete('201')
-      @lea_code =  lea_code_list.sample
-    end
-    {estab_code: @estab_code, lea_code: @lea_code}
   end
 
 end

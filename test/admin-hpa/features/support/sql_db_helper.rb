@@ -647,13 +647,6 @@ class SqlDbHelper
     id
   end
 
-  def self.get_random_la_code
-    sql = "select top 1 lacode from mtc_admin.laCodeLookup order by NEWID()"
-    result = SQL_CLIENT.execute(sql)
-    la_codes = result.each {|row| row.map}
-    la_codes.map {|code| code['lacode'].to_s}.first
-  end
-
   def self.get_list_of_la_codes
     sql = "select lacode from mtc_admin.laCodeLookup where lacode != 0"
     result = SQL_CLIENT.execute(sql)
@@ -801,6 +794,22 @@ class SqlDbHelper
     group_details_res = result.first
     result.cancel
     group_details_res
+  end
+
+  def self.get_random_school()
+    sql = "SELECT TOP 1 * FROM [mtc_admin].[school] ORDER BY NEWID()"
+    result = SQL_CLIENT.execute(sql)
+    school_details = result.first
+    result.cancel
+    school_details
+  end
+
+  def self.get_school_teacher(school_urn)
+    sql = "SELECT TOP 1 * FROM [mtc_admin].[user] WHERE urn='#{school_urn}' AND role_id=3"
+    result = SQL_CLIENT.execute(sql)
+    user = result.first
+    result.cancel
+    user
   end
 
 end
