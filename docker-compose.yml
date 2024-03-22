@@ -1,8 +1,8 @@
 version: '3'
 services:
   sqldb:
-    #image: "mcr.microsoft.com/mssql/server:2022-latest"
-    image: "mcr.microsoft.com/azure-sql-edge"
+    image: "mcr.microsoft.com/mssql/server:2022-latest"
+    #image: "mcr.microsoft.com/azure-sql-edge"
     container_name: mtc_mssql
     ports:
       - "1433:1433"
