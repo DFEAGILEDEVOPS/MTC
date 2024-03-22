@@ -37,6 +37,8 @@ require_relative '../../features/support/app'
 require 'jwt'
 include Helpers
 
+ logger = Selenium::WebDriver.logger
+ logger.level = :info
 
 Dotenv.load('../../.env')
 (abort "LIVE_FORM_QUESTION_COUNT is set to #{ENV['LIVE_FORM_QUESTION_COUNT']}. The tests require this to be set to 25. Please update this value to 25 and rebuild the apps") unless ENV['LIVE_FORM_QUESTION_COUNT'].to_i == 25
@@ -59,7 +61,6 @@ Capybara.configure do |config|
   config.exact = true
   config.ignore_hidden_elements = false
   config.visible_text_only = true
-  config.default_max_wait_time = 7
 end
 
 Capybara.register_driver(:chrome) do |app|
@@ -88,10 +89,11 @@ end
 
 Capybara.register_driver :headless_chrome do |app|
   browser_options = Selenium::WebDriver::Options.chrome
-  browser_options.args << '--headless'
+  browser_options.args << '--headless=new'
   browser_options.args << '--disable-gpu'
   browser_options.args << '--allow-insecure-localhost'
   browser_options.args << '--no-sandbox'
+  browser_options.args << '--disable-dev-shm-usage'
   browser_options.args << '--window-size=1280,1696'
   browser_options.add_preference(:download, directory_upgrade: true,
                                  prompt_for_download: false,
@@ -178,5 +180,11 @@ if azure_test == 'true'
   REDIS_CLIENT = Redis.new(host: "#{redis_host}", port: redis_port, password: "#{redis_key}", :ssl => :true)
 else
   REDIS_CLIENT = Redis.new(host: "#{redis_host}", port: redis_port)
+end
+
+begin
+  REDIS_CLIENT.ping
+rescue Redis::BaseError => e
+  fail "REDIS connection issue - #{e.inspect}"
 end
 
