@@ -37,12 +37,19 @@ Use ruby version 3.2.2 and set it as your default:
 
 ## Install prerequisites
 
+### Apps & Services
 Set up the solution as per the [root readme](../../README.md)
+
+### Dummy Data
 
 Once your database is setup and online, open a shell in the `db` directory and run `yarn dummy-data`.
 This will populate your local database with 18k schools, and a user for each.
 
+### School pin dataset
+
 Ensure the `ALLOWED_WORDS` environment variable is populated with at least 100 three letter words to create a unique 7 character pin for each school.
+
+### Generate school pins
 
 Invoke the school pin generator function to populate each school with a pin.
 ```
