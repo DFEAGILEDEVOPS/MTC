@@ -51,11 +51,19 @@ Ensure the `ALLOWED_WORDS` environment variable is populated with at least 100 t
 
 ### Generate school pins
 
-Invoke the school pin generator function to populate each school with a pin.
+It may be necessary to invoke the school pin generator function to populate each school with a pin, if this has not been done already.  The function may execute upon startup of the `func-consumption` app, but this is not guaranteed due to the nature of the timer trigger.
+
+The raw HTTP request looks like this...
 ```
 POST /admin/functions/school-pin-generator HTTP/1.1
 Content-Type: application/json
 Host: localhost:7071
+```
+and via curl...
+```
+curl -X "POST" "http://localhost:7071/admin/functions/school-pin-generator" \
+     -H 'Content-Type: application/json' \
+     -d $'{}'
 ```
 
 ## Install required gems
