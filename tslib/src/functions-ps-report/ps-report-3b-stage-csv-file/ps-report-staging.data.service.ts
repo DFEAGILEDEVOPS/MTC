@@ -7,7 +7,7 @@ export class PsReportStagingDataService {
   private readonly blobService: BlobServiceClient
   private readonly blobName: string
   private readonly csvLineTerminator = '\r\n'
-  private containerName
+  private readonly containerName
 
   constructor (private readonly logger: ILogger, containerName = 'ps-report-bulk-upload', blobName = 'ps-report-staging.csv') {
     if (config.ServiceBus.ConnectionString === undefined) {
@@ -24,7 +24,7 @@ export class PsReportStagingDataService {
    */
   public async createAppendBlock (): Promise<void> {
     const containerService = this.blobService.getContainerClient(this.containerName)
-    await containerService.createIfNotExists();
+    await containerService.createIfNotExists()
     const appendBlobService = containerService.getAppendBlobClient(this.blobName)
     await appendBlobService.create()
   }
