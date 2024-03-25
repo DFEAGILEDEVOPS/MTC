@@ -324,8 +324,8 @@ class SqlDbHelper
     result.do
   end
 
-  def self.delete_all_from_group
-    sql = "DELETE FROM [mtc_admin].[group]"
+  def self.delete_all_school_groups(urn)
+    sql = "DELETE FROM [mtc_admin].[group] WHERE school_id IN (SELECT id FROM [mtc_admin].[school] WHERE urn = '#{urn}')"
     result = SQL_CLIENT.execute(sql)
     result.do
   end

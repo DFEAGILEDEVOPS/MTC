@@ -230,7 +230,7 @@ end
 
 Before("@remove_all_groups") do
   SqlDbHelper.remove_all_pupil_from_group
-  SqlDbHelper.delete_all_from_group
+  SqlDbHelper.delete_all_school_groups(@urn)
 end
 
 Before("@no_active_check_window") do
