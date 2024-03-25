@@ -79,6 +79,8 @@ module.exports = {
       Timeout: parseInt(process.env.SQL_MIGRATION_TIMEOUT, 10) || threeMinutesInMilliseconds
     },
     Azure: {
+      // https://learn.microsoft.com/en-us/azure/azure-sql/database/resource-limits-vcore-single-databases?view=azuresql
+      // https://learn.microsoft.com/en-us/sql/relational-databases/system-catalog-views/sys-database-service-objectives-azure-sql-database?view=azuresqldb-current
       Scale: process.env.SQL_AZURE_SCALE
     },
     AllowReadsFromReplica: {}.hasOwnProperty.call(process.env, 'SQL_ALLOW_REPLICA_FOR_READS') ? toBool(process.env.SQL_ALLOW_REPLICA_FOR_READS) : false,
