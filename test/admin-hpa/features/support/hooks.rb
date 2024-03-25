@@ -142,7 +142,7 @@ Before("@poltergeist") do
 end
 
 After("@pupil_not_taking_check") do
-  SqlDbHelper.delete_pupils_not_taking_check
+  SqlDbHelper.delete_pupils_not_taking_check(@school_id)
 end
 
 After("@attendance_code") do
@@ -164,8 +164,8 @@ After('@reset_hdf_submission') do
 end
 
 Before("@hdf") do
-  SqlDbHelper.delete_pupils_not_taking_check
-  SqlDbHelper.set_pupil_attendance_via_school(@school_user['entity']['school_id'], 'null')
+  SqlDbHelper.delete_pupils_not_taking_check(@school_user['school_id'])
+  SqlDbHelper.set_pupil_attendance_via_school(@school_user['school_id'], 'null')
   step "I have signed in with #{@username}"
   pupils_not_taking_check_page.load
   step 'I want to add a reason'
@@ -190,7 +190,7 @@ After("@live_tio_expired") do
 end
 
 After("@hdf") do
-  SqlDbHelper.delete_pupils_not_taking_check
+  SqlDbHelper.delete_pupils_not_taking_check(@school_id)
 end
 
 Before("@create_new_window") do

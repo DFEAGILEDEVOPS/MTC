@@ -8,7 +8,7 @@ When(/^I change all the details of the school$/) do
   @before = SqlDbHelper.find_school(@school_id)
   school_search_results_page.edit.click
   @toe = SqlDbHelper.type_of_establishment.sample
-  @hash = {name: 'Changed School Name', dfe: (@school['entity']['dfeNumber'] + 1000), urn: @urn + 1000, lea_code: SqlDbHelper.get_list_of_la_codes.sample, estab_code: @estab_code, type_of_establishment: @toe}
+  @hash = {name: 'Changed School Name', dfe: (@school['dfeNumber'] + 1000), urn: @urn + 1000, lea_code: SqlDbHelper.get_list_of_la_codes.sample, estab_code: @estab_code, type_of_establishment: @toe}
   edit_school_page.edit_details(@hash)
 end
 
