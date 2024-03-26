@@ -40,7 +40,6 @@ function fakePupilData () {
     foreNameAlias: '',
     lastNameAlias: '',
     gender,
-    ageReason: '',
     'dob-year': dob.year().toString(),
     'dob-month': (dob.month() + 1).toString().padStart(2, '0'), // months are zero-indexed
     'dob-day': dob.date().toString().padStart(2, '0')
