@@ -502,8 +502,6 @@ When(/^I submit the form with the pupil dob (\d+) years ago$/) do |years_old|
   end
   @details_hash = {first_name: pupil_name, middle_name: pupil_name, last_name: pupil_name, upn: @upn, female: true, day: dob.day.to_s, month: dob.month.to_s, year: dob.year.to_s}
   @page.enter_details(@details_hash)
-  @reason_text = "Reason for adding pupil #{@details_hash[:first_name]}"
-  @page.reason.text_area.set "Reason for adding pupil #{@details_hash[:first_name]}" if @page.has_reason?
   @page.add_pupil.click unless @page == edit_pupil_page
   @page.save_changes.click if @page == edit_pupil_page
   @time_stored = Helpers.time_to_nearest_hour(Time.now.utc)
@@ -513,18 +511,6 @@ end
 Then(/^I should see an error with the DOB$/) do
   expect(@page.error_messages.map {|message| message.text}).to include "Enter a valid date of birth"
   expect(@page.error_summary.year.text).to include "Enter a valid date of birth"
-end
-
-
-Then(/^I should still be able to add the pupil after filling in the reason box$/) do
-  step 'the pupil details should be stored'
-  pupil_reason_row = SqlDbHelper.pupil_reason(@stored_pupil_details['id'])
-  expect(pupil_reason_row['reason']).to eql @reason_text
-  user = SqlDbHelper.find_teacher(@username)
-  expect(pupil_reason_row['recordedBy_userId']).to eql user['id']
-  expect(pupil_reason_row['lastUpdatedBy_userId']).to eql user['id']
-  expect(pupil_reason_row['updatedAt']).to_not be_nil
-  expect(pupil_reason_row['createdAt']).to_not be_nil
 end
 
 When(/^I fill in the form with the pupil dob (\d+) years ago$/) do |years_old|
