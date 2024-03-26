@@ -25,7 +25,7 @@
     "cors": "^2.8.5",
     "csv-string": "^4.1.0",
     "dotenv": "^16.3.1",
-    "express": "^4.18.2",
+    "express": "^4.19.2",
     "fast-xml-parser": "^4.3.1",
     "helmet": "6.0.1",
     "ioredis": "^5.3.1",
