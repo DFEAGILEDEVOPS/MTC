@@ -1,13 +1,12 @@
 import sqlService, { TYPES } from '../../../services/data-access/sql.service'
+import { type AnnulmentType } from './pupil-annulment.service'
 
 export class PupilAnnulmentDataService {
-  public static readonly annulmentCode = 'ANLLD'
-
-  static async setAnnulmentByUrlSlug (pupilUrlSlug: string, currentUserId: number): Promise<void> {
+  static async setAnnulmentByUrlSlug (pupilUrlSlug: string, currentUserId: number, annulmentType: AnnulmentType): Promise<void> {
     const params = [{
       name: 'annuledAttendanceCode',
       type: TYPES.Char(5),
-      value: PupilAnnulmentDataService.annulmentCode
+      value: annulmentType
     }, {
       name: 'pupilUrlSlug',
       type: TYPES.UniqueIdentifier,
@@ -147,15 +146,9 @@ export class PupilAnnulmentDataService {
       name: 'userId',
       type: TYPES.Int,
       value: currentUserId
-    },
-    {
-      name: 'annuledAttendanceCode',
-      type: TYPES.Char(5),
-      value: PupilAnnulmentDataService.annulmentCode
     }]
 
     const sql = `
-    DECLARE @attendanceCode_id Int = (SELECT id from [mtc_admin].[attendanceCode] where code = @annuledAttendanceCode)
     DECLARE @pupilId Int = (SELECT id from [mtc_admin].[pupil] where urlSlug = @pupilUrlSlug)
 
     -- get values of rollback info into variables
@@ -166,7 +159,7 @@ export class PupilAnnulmentDataService {
     DECLARE @annulmentPupilAttendanceId int
     DECLARE @previousAttendanceId int
 
-    SELECT
+    SELECT TOP 1
       @annulmentPupilAttendanceId = pa.id,
       @previousCheckCompleteValue = pa.previousCheckCompleteValue,
       @previousRestartAvailableValue = pa.previousRestartAvailableValue,
@@ -177,9 +170,8 @@ export class PupilAnnulmentDataService {
     WHERE
       pa.pupil_id = @pupilId
     AND
-      pa.attendanceCode_id = @attendanceCode_id
-    AND
       pa.isDeleted = 0
+    ORDER BY pa.createdAt DESC
 
     SELECT
       @previousAttendanceId = attendanceCode_id

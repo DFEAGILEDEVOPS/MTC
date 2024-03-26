@@ -134,8 +134,10 @@ export class ReportLine {
         return 'B'
       case 'JSTAR':
         return 'J'
-      case 'ANLLD':
+      case 'ANLLQ':
         return 'Q'
+      case 'ANLLH':
+        return 'H'
     }
     return null
   }
