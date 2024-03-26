@@ -34,10 +34,6 @@ input[type=radio]:checked ~ .hide {
   min-width: govuk-em(380px, $govuk-root-font-size);
 }
 
-#classDisruptionInfo {
-  margin-bottom: govuk-em(20px, $govuk-root-font-size);
-}
-
 .link-button {
   padding-left: 0;
   background: none;

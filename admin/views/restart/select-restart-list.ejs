@@ -10,11 +10,6 @@
                 </h2>
                 <div class="govuk-error-summary__body">
                     <p class="govuk-body">See highlighted errors below.</p>
-                    <ul class="govuk-list govuk-error-summary__list">
-                        <% error.getUniqueFields(['didNotCompleteInfo']).map(f => { %>
-                            <li><a href="#<%= f %>"><%= error.get(f) %></a></li>
-                        <% }); %>
-                    </ul>
                 </div>
             </div>
         <% } %>
@@ -23,22 +18,12 @@
             <h2 class="govuk-heading-l">1. Select reason for restart</h2>
             <form method="post" action="/restart/submit-restart-list" autocomplete="off" name="stickyBannerForm">
                 <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
+
                 <div class="govuk-form-group">
                     <div class="govuk-radios govuk-!-margin-top-6">
+
                      <% reasons.forEach( (reason, index) => { %>
                         <div class="govuk-radios__item govuk-!-margin-top-6">
-                        <% if ((error.isError('didNotCompleteInfo') && reason.code === 'DNC') ||
-                                (error.isError('classDisruptionInfo') && reason.code === 'CLD')) { %>
-                            <input id="restart-reason-<%= index %>"
-                                   class="govuk-radios__input"
-                                   type="radio"
-                                   role="radio"
-                                   aria-checked="false"
-                                   name="restartReason"
-                                   value="<%= reason.code %>"
-                                   checked
-                            >
-                        <% } else { %>
                             <input id="restart-reason-<%= index %>"
                                    class="govuk-radios__input"
                                    type="radio"
@@ -47,43 +32,14 @@
                                    name="restartReason"
                                    value="<%= reason.code %>"
                             >
-                            <% } %>
                             <label class="govuk-label govuk-radios__label" for="restart-reason-<%= index %>">
                                 <%= reason.description %>
                             </label>
-                            <% if (reason.code === 'DNC' || reason.code === 'CLD') { %>
-                                <% const errorType = reason.code === 'DNC' ? 'didNotCompleteInfo': 'classDisruptionInfo' %>
-                                <div class="hide">
-                                    <div class="govuk-inset-text govuk-!-padding-left-2 govuk-!-padding-bottom-0 govuk-!-padding-top-0">
-                                        <div class="govuk-form-group <%= error.isError(errorType) ? 'govuk-form-group--error' : '' %>">
-                                            <label class="govuk-label" for=<%= errorType %>>Please provide further details:</label>
-                                            <% if (error.isError(errorType)) { %>
-                                                <span class="govuk-error-message"> <%= error.get(errorType) %></span>
-                                            <% } %>
-                                            <textarea
-                                                    class="govuk-textarea govuk-!-width-three-quarters govuk-!-margin-bottom-0 restart-reason-info <%= error.isError(errorType) ? 'govuk-textarea--error' : '' %>"
-                                                    name=<%= errorType %>
-                                                    id= <%= errorType %>
-                                                    rows="1"
-                                                    maxlength="100"></textarea>
-                                        </div>
-                                    </div>
-                                </div>
-                            <% } %>
                         </div>
                      <% }) %>
                     </div>
                 </div>
-                <div class="govuk-form-group">
-                    <label class="govuk-label" for="restartFurtherInfo">
-                       If applicable, please provide further information:
-                    </label>
-                    <textarea class="govuk-textarea govuk-!-width-three-quarters"
-                              name="restartFurtherInfo"
-                              id="restartFurtherInfo"
-                              rows="5"
-                              maxlength="1000"></textarea>
-                </div>
+
                 <details class="govuk-details" data-module="govuk-details">
                     <summary class="govuk-details__summary govuk-!-margin-top-5">
                             <span class="govuk-details__summary-text">
@@ -111,8 +67,11 @@
                         </dl>
                     </div>
                 </details>
+
                 <h2 class="govuk-heading-l">2. Select Pupils</h2>
+
                 <%- partial('partials/_gds_groups_filter', { groups: groups }) %>
+
                 <% if (pupils && pupils.length > 0) { %>
                 <table id="pupilsRestartList" class="govuk-table govuk-spacious" role="listbox" aria-label="Select pupils.">
                     <caption class="govuk-body govuk-table__caption">List of available pupils for restart</caption>

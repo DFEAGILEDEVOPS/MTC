@@ -73,16 +73,6 @@ pupilService.findOneBySlugAndSchool = async function findOneBySlugAndSchool (url
 }
 
 /**
- * Fetch one pupil with age reason filtered by pupil url slug and school id
- * @param pupilUuid
- * @param schoolId
- * @returns {Promise.<*>}
- */
-pupilService.fetchOneBySlugWithAgeReason = function fetchOneBySlugWithAgeReason (pupilUuid, schoolId) {
-  return pupilDataService.sqlFindOneBySlugWithAgeReason(pupilUuid, schoolId)
-}
-
-/**
  * Find pupils by ids
  * @param ids
  * @param {Number} schoolId - `school.id` database ID

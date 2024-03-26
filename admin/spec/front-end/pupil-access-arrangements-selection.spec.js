@@ -55,14 +55,6 @@ function initAAElements () {
   ]
 
   const $inputAssistanceTextArea = `<div class="hide-checkbox-content">
-            <div class="govuk-inset-text">
-                <div class="form-group">
-                    <div class="form-label">Please explain why the pupil needs this arrangement</div>
-                    <textarea id="inputAssistanceInformation" name="inputAssistanceInformation"
-                              class="form-control form-control-3-4 restart-reason-info" rows="3"
-                              maxlength="1000"></textarea>
-                </div>
-            </div>
             <br>
             <div class="notice">
                 <i class="icon icon-important small">
@@ -109,8 +101,8 @@ function initAAElements () {
                        aria-label="Tick accessArrangement ${aa.title}." aria-checked="false" role="checkbox">
                 <div></div>
             </div>
-            ${aa.code === 'ITA' ? $inputAssistanceTextArea : ''}          
-            ${aa.code === 'QNR' ? $questionReaderReasons : ''}          
+            ${aa.code === 'ITA' ? $inputAssistanceTextArea : ''}
+            ${aa.code === 'QNR' ? $questionReaderReasons : ''}
         </li>`
   })
   $accessArrangementsList.append($accessArrangementsListItems)

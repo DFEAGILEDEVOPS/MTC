@@ -29,7 +29,6 @@ const service = {
       accessArrangements_id: inputAssistantTypeId,
       retroInputAssistantFirstName: data.firstName,
       retroInputAssistantLastName: data.lastName,
-      inputAssistanceInformation: data.reason,
       retroInputAssistant_check_id: data.checkId
     }
     return sqlService.create('pupilAccessArrangements', insertData)

@@ -23,8 +23,7 @@ describe('pupil validator', function () {
       'dob-day': '01',
       'dob-month': '02',
       'dob-year': ((new Date()).getFullYear() - 9).toString(),
-      gender: 'M',
-      ageReason: ''
+      gender: 'M'
     }
   }
 
@@ -556,26 +555,6 @@ describe('pupil validator', function () {
         expect(validationError.get('dob-month')).toBe(pupilErrors.addPupil.dobOutOfRange)
         expect(validationError.get('dob-year')).toBe(pupilErrors.addPupil.dobOutOfRange)
       })
-      test('should display for multiple pupils submission an error message when a pupil is 7 years on the academic year', async () => {
-        const currentYear = (new Date()).getFullYear()
-        const baseTime = new Date(currentYear, 11, 31)
-        const schoolId = 2
-        Date.now = jest.fn(() => {
-          return baseTime
-        })
-        req.body = getBody()
-        req.body['dob-day'] = '31'
-        req.body['dob-month'] = '08'
-        req.body['dob-year'] = (baseTime.getFullYear() - 7).toString()
-        const validationError = await pupilValidator.validate(req.body, schoolId, true)
-        expect(validationError.hasError()).toBe(true)
-        expect(validationError.isError('dob-day')).toBeTruthy()
-        expect(validationError.isError('dob-month')).toBeTruthy()
-        expect(validationError.isError('dob-year')).toBeTruthy()
-        expect(validationError.get('dob-day')).toBe(pupilErrors.addPupil.dobMultipleRequiresReason)
-        expect(validationError.get('dob-month')).toBe(pupilErrors.addPupil.dobMultipleRequiresReason)
-        expect(validationError.get('dob-year')).toBe(pupilErrors.addPupil.dobMultipleRequiresReason)
-      })
       test('should be within the accepted range if the input date is after 2nd September of 11 years before the academic year', async () => {
         const currentYear = (new Date()).getFullYear()
         const baseTime = new Date(currentYear, 11, 31)
@@ -591,62 +570,6 @@ describe('pupil validator', function () {
         expect(validationError.isError('dob-day')).toBeFalsy()
         expect(validationError.isError('dob-month')).toBeFalsy()
         expect(validationError.isError('dob-year')).toBeFalsy()
-      })
-      test('should require age reason if the input date is at 2nd September of 11 years before the academic year', async () => {
-        const currentYear = (new Date()).getFullYear()
-        const baseTime = new Date(currentYear, 11, 31)
-        const schoolId = 2
-        Date.now = jest.fn(() => {
-          return baseTime
-        })
-        req.body = getBody()
-        req.body['dob-day'] = '02'
-        req.body['dob-month'] = '09'
-        req.body['dob-year'] = (baseTime.getFullYear() - 11).toString()
-        const validationError = await pupilValidator.validate(req.body, schoolId)
-        expect(validationError.isError('ageReason')).toBeTruthy()
-      })
-      test('should require age reason if the input date is at 31st August of 7 years before the academic year', async () => {
-        const currentYear = (new Date()).getFullYear()
-        const baseTime = new Date(currentYear, 11, 31)
-        const schoolId = 2
-        Date.now = jest.fn(() => {
-          return baseTime
-        })
-        req.body = getBody()
-        req.body['dob-day'] = '31'
-        req.body['dob-month'] = '08'
-        req.body['dob-year'] = (baseTime.getFullYear() - 7).toString()
-        const validationError = await pupilValidator.validate(req.body, schoolId)
-        expect(validationError.isError('ageReason')).toBeTruthy()
-      })
-      test('should not require age reason if the input date is before 2nd September of 11 years before the academic year', async () => {
-        const currentYear = (new Date()).getFullYear()
-        const baseTime = new Date(currentYear, 11, 31)
-        const schoolId = 2
-        Date.now = jest.fn(() => {
-          return baseTime
-        })
-        req.body = getBody()
-        req.body['dob-day'] = '01'
-        req.body['dob-month'] = '09'
-        req.body['dob-year'] = (baseTime.getFullYear() - 11).toString()
-        const validationError = await pupilValidator.validate(req.body, schoolId)
-        expect(validationError.isError('ageReason')).toBeFalsy()
-      })
-      test('should not require age reason if the input date is after 1nd September of 7 years before the academic year', async () => {
-        const currentYear = (new Date()).getFullYear()
-        const baseTime = new Date(currentYear, 11, 31)
-        const schoolId = 2
-        Date.now = jest.fn(() => {
-          return baseTime
-        })
-        req.body = getBody()
-        req.body['dob-day'] = '02'
-        req.body['dob-month'] = '09'
-        req.body['dob-year'] = (baseTime.getFullYear() - 7).toString()
-        const validationError = await pupilValidator.validate(req.body, schoolId)
-        expect(validationError.isError('ageReason')).toBeFalsy()
       })
     })
 

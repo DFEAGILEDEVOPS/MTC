@@ -32,7 +32,6 @@ if (!window.MTCAdmin) {
         $('.hide-age-content').addClass('show-age-content')
         $('.show-age-content').removeClass('hide-age-content')
       } else if ($('.show-age-content').length > 0) {
-        $('#ageReason').val('')
         $('.show-age-content').addClass('hide-age-content')
         $('.hide-age-content').removeClass('show-age-content')
       }

@@ -97,8 +97,6 @@ describe('accessArrangementsService', () => {
         pupilUrlSlug: 'pupilUrlSlug',
         accessArrangements: [accessArrangementsDataService.CODES.AUDIBLE_SOUNDS],
         questionReaderReason: '',
-        inputAssistanceInformation: '',
-        nextButtonInformation: '',
         questionReaderOtherInformation: ''
       }
       jest.spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsIdsWithCodes').mockResolvedValue([{ id: 1, code: 'ATA' }])
@@ -120,8 +118,6 @@ describe('accessArrangementsService', () => {
         pupilUrlSlug: 'pupilUrlSlug',
         accessArrangements: ['NONSENSE_CODE'],
         questionReaderReason: '',
-        inputAssistanceInformation: '',
-        nextButtonInformation: '',
         questionReaderOtherInformation: ''
       }
       jest.spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsIdsWithCodes').mockImplementation(() => {
@@ -136,8 +132,6 @@ describe('accessArrangementsService', () => {
         pupilUrlSlug: 'pupilUrlSlug',
         accessArrangements: [accessArrangementsDataService.CODES.AUDIBLE_SOUNDS],
         questionReaderReason: '',
-        inputAssistanceInformation: '',
-        nextButtonInformation: '',
         questionReaderOtherInformation: ''
       }
       jest.spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsIdsWithCodes').mockResolvedValue([1])
@@ -145,57 +139,7 @@ describe('accessArrangementsService', () => {
         .rejects
         .toThrow('Pupil object is not found')
     })
-    test('expects inputAssistanceInformation to be defined when the accessArrangements is matched', async () => {
-      const requestData = {
-        pupilUrlSlug: 'pupilUrlSlug',
-        accessArrangements: [
-          accessArrangementsDataService.CODES.AUDIBLE_SOUNDS,
-          accessArrangementsDataService.CODES.INPUT_ASSISTANCE
-        ],
-        questionReaderReason: '',
-        inputAssistanceInformation: 'inputAssistanceInformation',
-        nextButtonInformation: '',
-        questionReaderOtherInformation: ''
-      }
-      jest.spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsIdsWithCodes').mockResolvedValue([{ id: 1, code: 'ATA' }, { id: 2, code: 'ITA' }])
-      const result = await sut.prepareData(requestData, { id: 1 }, 12345, 1)
-      expect(result).toEqual(Object({
-        pupil_id: 1,
-        accessArrangementsIdsWithCodes: [
-          { id: 1, code: accessArrangementsDataService.CODES.AUDIBLE_SOUNDS },
-          { id: 2, code: accessArrangementsDataService.CODES.INPUT_ASSISTANCE }
-        ],
-        recordedBy_user_id: 1,
-        inputAssistanceInformation: 'inputAssistanceInformation',
-        questionReaderReasonCode: ''
-      }))
-    })
-    test('expects nextButtonInformation to be defined when the accessArrangements is matched', async () => {
-      const requestData = {
-        pupilUrlSlug: 'pupilUrlSlug',
-        accessArrangements: [
-          accessArrangementsDataService.CODES.AUDIBLE_SOUNDS,
-          accessArrangementsDataService.CODES.NEXT_BETWEEN_QUESTIONS
-        ],
-        questionReaderReason: '',
-        inputAssistanceInformation: '',
-        nextButtonInformation: 'nextButtonInformation',
-        questionReaderOtherInformation: ''
-      }
-      jest.spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsIdsWithCodes')
-        .mockResolvedValue([{ id: 1, code: 'ATA' }, { id: 2, code: 'NBQ' }])
-      const result = await sut.prepareData(requestData, { id: 1 }, 12345, 1)
-      expect(result).toEqual(Object({
-        pupil_id: 1,
-        accessArrangementsIdsWithCodes: [
-          { id: 1, code: accessArrangementsDataService.CODES.AUDIBLE_SOUNDS },
-          { id: 2, code: accessArrangementsDataService.CODES.NEXT_BETWEEN_QUESTIONS }
-        ],
-        recordedBy_user_id: 1,
-        nextButtonInformation: 'nextButtonInformation',
-        questionReaderReasonCode: ''
-      }))
-    })
+
     test('expects questionReaderReasons_id to be defined when the accessArrangements is matched', async () => {
       const requestData = {
         pupilUrlSlug: 'pupilUrlSlug',
@@ -204,8 +148,6 @@ describe('accessArrangementsService', () => {
           accessArrangementsDataService.CODES.QUESTION_READER
         ],
         questionReaderReason: questionReaderReasonsDataService.CODES.VISUAL_IMPAIRMENTS,
-        inputAssistanceInformation: '',
-        nextButtonInformation: '',
         questionReaderOtherInformation: ''
       }
       jest.spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsIdsWithCodes').mockResolvedValue([
@@ -234,8 +176,6 @@ describe('accessArrangementsService', () => {
           accessArrangementsDataService.CODES.QUESTION_READER
         ],
         questionReaderReason: questionReaderReasonsDataService.CODES.OTHER,
-        inputAssistanceInformation: '',
-        nextButtonInformation: '',
         questionReaderOtherInformation: 'questionReaderOtherInformation'
       }
       jest.spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsIdsWithCodes').mockResolvedValue([
@@ -264,8 +204,6 @@ describe('accessArrangementsService', () => {
           accessArrangementsDataService.CODES.COLOUR_CONTRAST
         ],
         questionReaderReason: '',
-        inputAssistanceInformation: '',
-        nextButtonInformation: '',
         questionReaderOtherInformation: ''
       }
       jest.spyOn(pupilAccessArrangementsDataService, 'sqlFindPupilColourContrastsId').mockResolvedValue(2)

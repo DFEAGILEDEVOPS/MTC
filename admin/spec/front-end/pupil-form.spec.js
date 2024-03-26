@@ -22,9 +22,7 @@ function initPupilFormElements () {
       <div class="hide-age-content">
           <div class="panel panel-border-wide">
               <div class="">
-                  <div class="form-label" for="ageReason"><div>The expected age range of pupils taking the check is 8 to 9 years old. Please provide a reason why this pupil's age is outside of this range.</div>
-  
-                      <textarea id="ageReason" name="ageReason" class="form-control form-control-3-4 age-reason-textarea " rows="3" maxlength="1000"></textarea>
+                  <div class="form-label"><div>The expected age range of pupils taking the check is 8 to 9 years old.</div>
                   </div>
               </div>
           </div>
@@ -83,21 +81,6 @@ describe('pupil-form', function () {
       $('#dob-month').trigger('input')
       $('#dob-year').val(pupilAgeSevenYear)
       $('#dob-year').trigger('input')
-      expect($('.show-age-content').length).toEqual(0)
-      expect($('.hide-age-content').length).toBeGreaterThan(0)
-    })
-    it('should clear the textarea value when hiding', function () {
-      var pupilAgeSevenYear = ((new Date()).getFullYear() - 10).toString()
-      $('.hide-age-content').addClass('show-age-content')
-      $('.show-age-content').removeClass('hide-age-content')
-      $('#ageReason').val('reason')
-      $('#dob-day').val('02')
-      $('#dob-day').trigger('input')
-      $('#dob-month').val('09')
-      $('#dob-month').trigger('input')
-      $('#dob-year').val(pupilAgeSevenYear)
-      $('#dob-year').trigger('input')
-      expect($('#ageReason').val()).toEqual('')
       expect($('.show-age-content').length).toEqual(0)
       expect($('.hide-age-content').length).toBeGreaterThan(0)
     })

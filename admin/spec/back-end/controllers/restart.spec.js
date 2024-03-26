@@ -5,12 +5,10 @@ const httpMocks = require('node-mocks-http')
 const logger = require('../../../services/log.service.js').getLogger()
 const checkWindowV2Service = require('../../../services/check-window-v2.service')
 const restartService = require('../../../services/restart.service')
-const restartValidator = require('../../../lib/validator/restart-validator')
 const groupService = require('../../../services/group.service')
 const schoolHomeFeatureEligibilityPresenter = require('../../../helpers/school-home-feature-eligibility-presenter')
 const headteacherDeclarationService = require('../../../services/headteacher-declaration.service')
 const businessAvailabilityService = require('../../../services/business-availability.service')
-const ValidationError = require('../../../lib/validation-error')
 const pupilMock = require('../mocks/pupil')
 const pupilsMock = require('../mocks/pupils')
 const pupilService = require('../../../services/pupil.service')
@@ -172,35 +170,12 @@ describe('restart controller:', () => {
       expect(res.redirect).toHaveBeenCalledWith('/restart/select-restart-list')
     })
 
-    test('renders again the restart list page if the validation fails', async () => {
-      const res = getRes()
-      const req = getReq(goodReqParams)
-      req.body = {
-        pupil: [pupilMock._id]
-      }
-      const validationError = new ValidationError()
-      validationError.addError('didNotCompleteInfo', 'Error: Please specify further information when "Did not complete" option is selected')
-      jest.spyOn(restartValidator, 'validateReason').mockReturnValue(validationError)
-      jest.spyOn(restartService, 'getPupilsEligibleForRestart').mockResolvedValue(pupilsMock)
-      jest.spyOn(restartService, 'getReasons').mockImplementation()
-      jest.spyOn(groupService, 'findGroupsByPupil').mockResolvedValue(pupilsMock)
-      jest.spyOn(res, 'render').mockImplementation()
-      jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockImplementation()
-      jest.spyOn(businessAvailabilityService, 'determineRestartsEligibility').mockImplementation()
-      const controller = require('../../../controllers/restart').postSubmitRestartList
-      await controller(req, res, next)
-      expect(res.locals.pageTitle).toBe('Error: Select pupils for restart')
-      expect(res.render).toHaveBeenCalled()
-    })
-
     test('renders the restart overview page when successfully submitted restarts', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
       req.body = {
         pupil: [pupilMock._id]
       }
-      const validationError = new ValidationError()
-      jest.spyOn(restartValidator, 'validateReason').mockReturnValue(validationError)
       jest.spyOn(restartService, 'restart').mockResolvedValue([{ ok: 1, n: 1 }, { ok: 1, n: 1 }])
       jest.spyOn(res, 'redirect').mockImplementation()
       jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockImplementation()
@@ -217,8 +192,6 @@ describe('restart controller:', () => {
       req.body = {
         pupil: [pupilMock._id]
       }
-      const validationError = new ValidationError()
-      jest.spyOn(restartValidator, 'validateReason').mockReturnValue(validationError)
       jest.spyOn(restartService, 'restart').mockResolvedValue([{ ok: 1, n: 1 }])
       jest.spyOn(checkWindowV2Service, 'getActiveCheckWindow').mockImplementation()
       jest.spyOn(businessAvailabilityService, 'determineRestartsEligibility').mockImplementation()
