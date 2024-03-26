@@ -15,6 +15,8 @@ async function executeRequest (pool, sql) {
 async function createDatabase (pool) {
     let azureOnlyScaleSetting = ''
     if (config.Sql.Azure.Scale) {
+      // https://learn.microsoft.com/en-us/azure/azure-sql/database/resource-limits-vcore-single-databases?view=azuresql
+      // https://learn.microsoft.com/en-us/sql/relational-databases/system-catalog-views/sys-database-service-objectives-azure-sql-database?view=azuresqldb-current
       azureOnlyScaleSetting = `(SERVICE_OBJECTIVE = '${config.Sql.Azure.Scale}')`
     }
     logger.info(`attempting to create database ${config.Sql.Database}${azureOnlyScaleSetting} if it does not already exist (timeout:${config.Sql.Migrator.Timeout}ms)...`)
