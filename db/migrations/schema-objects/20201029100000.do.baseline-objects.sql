@@ -3243,7 +3243,7 @@ AS
       SELECT @operation = ''INSERT''
       SELECT @json = (SELECT * FROM inserted FOR JSON PATH, ROOT(''' + @table +  '''))
     END
-    ElSE IF EXISTS(SELECT * FROM deleted)
+    ELSE IF EXISTS(SELECT * FROM deleted)
     BEGIN
       SELECT @operation = ''DELETE''
       SELECT @json = (SELECT * FROM deleted FOR JSON PATH, ROOT(''' + @table +  '''))
