@@ -47,7 +47,7 @@ class UploadPupilCensusPage < SitePrism::Page
 
   def upload__pupil_census(filename, pupil_array1, pupil_array2=nil)
     CSV.open(File.expand_path("#{File.dirname(__FILE__)}/../../../data/fixtures/#{filename}"), 'wb') do |csv_object|
-      csv_object << ["LEA","Estab", "UPN","Surname","Forename","Middlenames","Gender","DOB"]
+      csv_object << ["LEA","Estab", "UPN","Surname","Forename","Middlenames","Sex","DOB"]
       csv_object << pupil_array1
       csv_object << pupil_array2 if !pupil_array2.nil?
     end

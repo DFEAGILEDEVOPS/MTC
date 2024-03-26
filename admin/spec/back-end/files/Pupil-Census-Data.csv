@@ -1,4 +1,4 @@
-LEA,Estab,UPN,Surname,Forename,Middlenames,Gender,DOB,NCyearActual,EnrolStatus,FSMeligible,Language,SENProvision
+LEA,Estab,UPN,Surname,Forename,Middlenames,Sex,DOB,NCyearActual,EnrolStatus,FSMeligible,Language,SENProvision
 999,1001,A999999500000,Surname9991001,Pupil1, ,M,1/1/05,6,C,0,OTH,K
 999,1001,A999999500001,Surname9991001,Pupil2, ,F,1/2/05,6,C,0,OTH,N
 999,1001,A999999500002,Surname9991001,Pupil3, ,F,1/3/05,6,C,1,OTH,N

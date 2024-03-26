@@ -1,4 +1,4 @@
-LEA,Estab,UPN,Surname,Forename,Middlenames,Gender,DOB,NCyearActual,EnrolStatus,FSMeligible,Language,SENProvision
+LEA,Estab,UPN,Surname,Forename,Middlenames,Sex,DOB,NCyearActual,EnrolStatus,FSMeligible,Language,SENProvision
 999,1001,A999999609170,Surname9991001,Mohsen, ,M,01/01/2005,6,C,0,OTH,K
 999,1001,A999100109011,Surname9991001,Pupil2, ,F,01/02/2005,6,C,0,OTH,N
 999,1001,A999100109038,Surname9991001,Pupil3, ,F,01/03/2005,6,C,1,OTH,N
