@@ -126,6 +126,8 @@ GEM
       connection_pool (~> 2.2)
     nokogiri (1.16.0-x86_64-darwin)
       racc (~> 1.4)
+    nokogiri (1.16.0-x86_64-linux)
+      racc (~> 1.4)
     numbers_in_words (1.0.1)
     parallel (1.24.0)
     parallel_tests (4.4.0)
@@ -139,7 +141,7 @@ GEM
       method_source (~> 1.0)
     public_suffix (5.0.4)
     racc (1.7.3)
-    rack (3.0.9)
+    rack (3.0.9.1)
     rack-test (2.1.0)
       rack (>= 1.3)
     rake (13.1.0)
@@ -192,6 +194,7 @@ GEM
 
 PLATFORMS
   x86_64-darwin-21
+  x86_64-linux
 
 DEPENDENCIES
   activesupport (>= 7.0.7.1)
@@ -212,7 +215,7 @@ DEPENDENCIES
   parallel_tests
   poltergeist (>= 1.18.1)
   pry
-  rack (>= 3.0.6.1)
+  rack (>= 3.0.9.1)
   rake
   rb-readline
   redis
@@ -228,4 +231,4 @@ RUBY VERSION
    ruby 3.2.2p53
 
 BUNDLED WITH
-   2.4.18
+   2.4.6
