@@ -85,18 +85,6 @@ class SqlDbHelper
     @array_of_pins.map {|row| row['val']}
   end
 
-  def self.delete_all_checks
-    sql = "DELETE FROM [mtc_admin].[check]"
-    result = SQL_CLIENT.execute(sql)
-    result.do
-  end
-
-  def self.delete_all_restarts
-    sql = "DELETE FROM [mtc_admin].[pupilRestart]"
-    result = SQL_CLIENT.execute(sql)
-    result.do
-  end
-
   def self.get_settings
     sql = "SELECT * FROM [mtc_admin].[settings]"
     result = SQL_CLIENT.execute(sql)
@@ -324,8 +312,8 @@ class SqlDbHelper
     result.do
   end
 
-  def self.delete_all_from_group
-    sql = "DELETE FROM [mtc_admin].[group]"
+  def self.delete_all_school_groups(school_id)
+    sql = "DELETE FROM [mtc_admin].[group] WHERE school_id=#{school_id}"
     result = SQL_CLIENT.execute(sql)
     result.do
   end
@@ -342,8 +330,10 @@ class SqlDbHelper
     result.do
   end
 
-  def self.delete_pupils_not_taking_check
-    sql = "DELETE FROM [mtc_admin].[pupilAttendance]"
+  def self.delete_pupils_not_taking_check(school_id)
+    sql = "DELETE pa FROM [mtc_admin].[pupilAttendance] pa
+            INNER JOIN [mtc_admin].[pupil] p ON pa.pupil_id = p.id
+            WHERE p.school_id =#{school_id}"
     result = SQL_CLIENT.execute(sql)
     result.do
   end
@@ -794,6 +784,24 @@ class SqlDbHelper
     group_details_res = result.first
     result.cancel
     group_details_res
+  end
+
+  def self.get_random_school()
+    sql = "SELECT TOP 1 * FROM [mtc_admin].[school] ORDER BY NEWID()"
+    result = SQL_CLIENT.execute(sql)
+    school_details = result.first
+    result.cancel
+    school_details
+  end
+
+  def self.get_school_teacher(school_urn)
+    sql = "SELECT TOP 1 u.* FROM [mtc_admin].[user] u
+      INNER JOIN mtc_admin.school s on u.school_id = s.id
+      WHERE s.urn='#{school_urn}' AND u.role_id=3"
+    result = SQL_CLIENT.execute(sql)
+    user = result.first
+    result.cancel
+    user
   end
 
 end

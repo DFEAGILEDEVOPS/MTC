@@ -344,7 +344,7 @@ Then(/^I should see the restart reason in the ps report record$/) do
 end
 
 Given(/^I have completed the check for a pupil attending a test school$/) do
-  SqlDbHelper.set_school_as_test_school(@school['entity']['dfeNumber'])
+  SqlDbHelper.set_school_as_test_school(@school['dfeNumber'])
   step 'I have completed the check'
 end
 
@@ -383,7 +383,7 @@ Given(/^I have completed a check with duplicate questions$/) do
 end
 
 Then(/^I should see the ps report showing the first input$/) do
-  @recieved_check = AzureTableHelper.get_row('receivedCheck', @school['entity']['urlSlug'], @check_code)
+  @recieved_check = AzureTableHelper.get_row('receivedCheck', @school['urlSlug'], @check_code)
 
   @answers = JSON.parse(LZString::Base64.decompress(@recieved_check['archive']))['answers']
   grouped = @answers.group_by {|row| [row['sequenceNumber'], row['question']]}

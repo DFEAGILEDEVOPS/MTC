@@ -123,7 +123,7 @@ When(/^I click view all pins button$/) do
 end
 
 Given(/^I have generated pin for all pupil$/) do
-  SqlDbHelper.delete_pupils_not_taking_check
+  SqlDbHelper.delete_pupils_not_taking_check(@school_id)
   SqlDbHelper.set_pupil_attendance_via_school(5, 'null')
   step "I have signed in with #{@username}"
   step "I am on the generate pupil live pins page"

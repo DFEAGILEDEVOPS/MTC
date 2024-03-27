@@ -14,7 +14,8 @@
     "new": "node ./engine/create-migration.js",
     "new-seed": "node ./engine/create-seed.js",
     "migrate": "node ./engine/migrate.js",
-    "seed": "node ./engine/seed.js"
+    "seed": "node ./engine/seed.js",
+    "dummy-data": "node ./engine/dummy-data.js"
   },
   "dependencies": {
     "command-line-args": "^5.1.1",

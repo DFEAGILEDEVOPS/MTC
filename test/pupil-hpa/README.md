@@ -15,11 +15,15 @@ Follow installation instructions for installing RVM here:
 
 https://rvm.io/rvm/install
 
-Once rvm is installed, we need ruby version 2.7.7, to install use the following:
- `rvm install 2.7.7`
+Once rvm is installed, we need ruby version 3.2.2, to install use the following:
+ `rvm install 3.2.2`
+
+*NOTE:* If you are using Apple Silicon and the install fails, this is typically due to it using
+the newer version of openssl which is not yet supported in Ruby 3.  You must direct rvm to target
+the older version...
 
 Use ruby version 2.7.6 and set it as your default:
- `rvm use 2.7.7 --default`
+ `rvm use 3.2.2 --default`
 
 ##Installing required gems
 
@@ -36,7 +40,7 @@ To run in BrowserStack mode, please enter you username and password to the root 
 ```
 BROWSERSTACK_ACCESS_KEY=XYZ
 BROWSERSTACK_USERNAME=xyz
-``` 
+```
 
 #####Basic
 

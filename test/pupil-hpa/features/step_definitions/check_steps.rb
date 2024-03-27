@@ -212,7 +212,7 @@ Then(/^my score should be calculated as (\d+) and stored$/) do |expected_score|
 end
 
 When(/^I decode the JWT token$/) do
-  received_check = AzureTableHelper.wait_for_received_check(@school['entity']['urlSlug'], @check_code)
+  received_check = AzureTableHelper.wait_for_received_check(@school['urlSlug'], @check_code)
   jwt_token = JSON.parse(LZString::Base64.decompress(received_check['archive']))['tokens']['checkSubmission']['token']
   @decoded_jwt = decode_jwt_token(jwt_token)
 end

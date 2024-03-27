@@ -1,15 +1,19 @@
+require 'pp'
+
 Before do
-  @urn = SqlDbHelper.get_schools_list.map {|school| school['urn']}.sort.last + 1
-  dfe_number = create_dfe_number
-  @school_name = "Test School - #{@urn}"
-  @school = FunctionsHelper.create_school(dfe_number[:lea_code],dfe_number[:estab_code], @school_name, @urn)
-  if @school['result'] == 'Failed'
-    fail "#{@school['message']}"
+  @school = SqlDbHelper.get_random_school
+  if @school.nil?
+    fail "unable to obtain random school via SqlDbHelper.get_random_school"
   end
-  school_uuid = @school['entity']['urlSlug']
-  @username = "teacher#{@urn}"
-  @school_user = FunctionsHelper.create_user(school_uuid, @username)
-  @school_id = @school_user['entity']['school_id']
+
+  @urn = @school['urn']
+  @school_name = @school['name']
+  @school_id = @school['id']
+  @school_uuid = @school['urlSlug']
+  @school_user = SqlDbHelper.get_school_teacher(@urn)
+  @username = @school_user['identifier']
+
+
   FunctionsHelper.generate_school_pin(@school_id)
   p "Login for #{@school_name} created as - #{@username}"
   step 'I am logged in'
@@ -27,34 +31,34 @@ Before do
 end
 
 Before('@empty_new_school') do
-  @urn = SqlDbHelper.get_schools_list.map {|school| school['urn']}.sort.last + 1
-  dfe_number = create_dfe_number
-  @school_name = "Test School - #{@urn}"
-  @school = FunctionsHelper.create_school(dfe_number[:lea_code],dfe_number[:estab_code], @school_name, @urn)
-  if @school['result'] == 'Failed'
-    fail "#{@school['message']}"
+  @school = SqlDbHelper.get_random_school
+  if @school.nil?
+    fail "unable to obtain random school via SqlDbHelper.get_random_school"
   end
-  school_uuid = @school['entity']['urlSlug']
-  @username = "teacher#{@urn}"
-  @school_user = FunctionsHelper.create_user(school_uuid, @username)
-  @school_id = @school_user['entity']['school_id']
+
+  @urn = @school['urn']
+  @school_name = @school['name']
+  @school_id = @school['school_id']
+  @school_uuid = @school['urlSlug']
+  @school_user = SqlDbHelper.get_school_teacher(@urn)
+  @username = @school_user['identifier']
+
   FunctionsHelper.generate_school_pin(@school_id)
   p "Login for #{@school_name} created as - #{@username}"
 end
 
 Before('@new_school_no_password') do
-  @urn = SqlDbHelper.get_schools_list.map {|school| school['urn']}.sort.last + 1
-  dfe_number = create_dfe_number
-  @school_name = "Test School - #{@urn}"
-  @school = FunctionsHelper.create_school(dfe_number[:lea_code],dfe_number[:estab_code], @school_name, @urn)
-  if @school['result'] == 'Failed'
-    fail "#{@school['message']}"
+  @school = SqlDbHelper.get_random_school
+  if @school.nil?
+    fail "unable to obtain random school via SqlDbHelper.get_random_school"
   end
-  school_uuid = @school['entity']['urlSlug']
-  @username = "teacher#{@urn}"
-  @school_user = FunctionsHelper.create_user(school_uuid, @username)
-  @school_id = @school_user['entity']['school_id']
-  # FunctionsHelper.generate_school_pin(@school_id)
+
+  @urn = @school['urn']
+  @school_name = @school['name']
+  @school_id = @school['school_id']
+  @school_uuid = @school['urlSlug']
+  @school_user = SqlDbHelper.get_school_teacher(@urn)
+  @username = @school_user['identifier']
   p "Login for #{@school_name} created as - #{@username}"
 end
 
@@ -138,7 +142,7 @@ Before("@poltergeist") do
 end
 
 After("@pupil_not_taking_check") do
-  SqlDbHelper.delete_pupils_not_taking_check
+  SqlDbHelper.delete_pupils_not_taking_check(@school_id)
 end
 
 After("@attendance_code") do
@@ -160,8 +164,8 @@ After('@reset_hdf_submission') do
 end
 
 Before("@hdf") do
-  SqlDbHelper.delete_pupils_not_taking_check
-  SqlDbHelper.set_pupil_attendance_via_school(@school_user['entity']['school_id'], 'null')
+  SqlDbHelper.delete_pupils_not_taking_check(@school_user['school_id'])
+  SqlDbHelper.set_pupil_attendance_via_school(@school_user['school_id'], 'null')
   step "I have signed in with #{@username}"
   pupils_not_taking_check_page.load
   step 'I want to add a reason'
@@ -186,7 +190,7 @@ After("@live_tio_expired") do
 end
 
 After("@hdf") do
-  SqlDbHelper.delete_pupils_not_taking_check
+  SqlDbHelper.delete_pupils_not_taking_check(@school_id)
 end
 
 Before("@create_new_window") do
@@ -226,7 +230,7 @@ end
 
 Before("@remove_all_groups") do
   SqlDbHelper.remove_all_pupil_from_group
-  SqlDbHelper.delete_all_from_group
+  SqlDbHelper.delete_all_school_groups(@urn)
 end
 
 Before("@no_active_check_window") do

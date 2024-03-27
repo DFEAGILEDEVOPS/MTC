@@ -22,7 +22,7 @@ end
 Then(/^I should see an error stating validation failed as there are 24 answers$/) do
   wait_until{SqlDbHelper.wait_for_received_check(@check_code); !(SqlDbHelper.wait_for_received_check(@check_code)['processingFailed']).nil?}
   SqlDbHelper.wait_for_received_check(@check_code)
-  storage_row = AzureTableHelper.get_row('receivedCheck', @school['entity']['urlSlug'], @check_code)
+  storage_row = AzureTableHelper.get_row('receivedCheck', @school['urlSlug'], @check_code)
   expect(storage_row['checkVersion']).to eql 3
   expect(storage_row['processingError']).to eql "check-validator: check validation failed. checkCode: #{@check_code}\n\t-\tsubmitted check has 24 answers. 25 answers are required}"
 end
@@ -181,7 +181,7 @@ end
 
 Then(/^I should see an error stating validation failed as the check code is not a UUID$/) do
   SqlDbHelper.wait_for_received_check(@check_code)
-  received_check = AzureTableHelper.get_row('receivedCheck', @school['entity']['urlSlug'], @check_code.gsub("-", ''))
+  received_check = AzureTableHelper.get_row('receivedCheck', @school['urlSlug'], @check_code.gsub("-", ''))
   expect(received_check['processingError']).to eql "checkForm lookup failed:Validation failed for parameter 'checkCode'. Invalid GUID."
 end
 
@@ -382,6 +382,6 @@ Then(/^I should see an error stating validation failed as the tokens property is
 end
 
 Then(/^I should see the check is recieved and is set to version (\d+)$/) do |version|
-  @received_check = AzureTableHelper.wait_for_received_check( @school['entity']['urlSlug'], @check_code)
+  @received_check = AzureTableHelper.wait_for_received_check( @school['urlSlug'], @check_code)
   expect(@received_check['checkVersion']).to eql version
 end
