@@ -269,6 +269,5 @@ Then(/^I should see the version set to the correct academic year when downloaded
 end
 
 Then(/^I should see the version set to the correct academic year when downloaded in September$/) do
-  binding.pry
   expect(@doc.css('CTFversion').text).to eql (@academic_year).strftime("%y.0")
 end
