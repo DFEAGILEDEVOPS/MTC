@@ -329,6 +329,7 @@ app.use(preventDuplicateFormSubmission)
 // Makes the session expiry time available in the res object so we can insert it into the html, so javascript can
 // access it: used by the session expiry modal.
 app.use((req, res, next) => {
+  console.log('session expiry middleware entered')
   if (req.isAuthenticated()) {
     res.locals.sessionExpiresAt = +Date.now() + (config.ADMIN_SESSION_EXPIRATION_TIME_IN_SECONDS * 1000)
   }
@@ -358,6 +359,7 @@ if (WEBSITE_OFFLINE) {
 }
 
 app.use(async function (req, res, next) {
+  console.log('site available middleware entered')
   try {
     if (req.isAuthenticated() === false) return next()
     if (!req.user) {
@@ -368,6 +370,7 @@ app.use(async function (req, res, next) {
       res.locals.pageTitle = 'The service is currently closed'
       return res.render('availability/admin-window-unavailable', {})
     }
+    next()
   } catch (error) {
     next(error)
   }
@@ -375,14 +378,14 @@ app.use(async function (req, res, next) {
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
-  const err = new Error('Not Found')
-  // @ts-ignore
-  err.status = 404
+  console.log('404 middleware entered')
+  const err = { message: 'Page not found', statusCode: 404  }
   next(err)
 })
 
 // error handler
 app.use(function (err, req, res, next) {
+  console.log('error handler middleware entered')
   const errorId = uuidv4()
   // set locals, only providing error in development
   logger.error(`ERROR: ${err.message} ID: ${errorId}`, err)
@@ -402,13 +405,19 @@ app.use(function (err, req, res, next) {
     return res.render('availability/school-not-found', {})
   }
 
+  if (err.statusCode === 404) {
+    res.locals.pageTitle = 'Page not found'
+    res.status(404)
+    return res.render('availability/page-not-found', {})
+  }
+
   // render the error page
   res.locals.message = 'An error occurred'
   res.locals.userMessage = err.userMessage
   res.locals.error = req.app.get('env') === 'development' ? err : {}
   res.locals.errorId = errorId
   res.locals.errorCode = ''
-  res.status(err.status || 500)
+  res.status(err.statusCode || 500)
   res.locals.pageTitle = 'Error'
   res.render('error')
 })
