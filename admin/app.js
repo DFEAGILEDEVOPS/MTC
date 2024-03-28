@@ -368,6 +368,7 @@ app.use(async function (req, res, next) {
       res.locals.pageTitle = 'The service is currently closed'
       return res.render('availability/admin-window-unavailable', {})
     }
+    next()
   } catch (error) {
     next(error)
   }
@@ -375,9 +376,7 @@ app.use(async function (req, res, next) {
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
-  const err = new Error('Not Found')
-  // @ts-ignore
-  err.status = 404
+  const err = { message: 'Page not found', statusCode: 404 }
   next(err)
 })
 
@@ -402,13 +401,19 @@ app.use(function (err, req, res, next) {
     return res.render('availability/school-not-found', {})
   }
 
+  if (err.statusCode === 404) {
+    res.locals.pageTitle = 'Page not found'
+    res.status(404)
+    return res.render('availability/page-not-found', {})
+  }
+
   // render the error page
   res.locals.message = 'An error occurred'
   res.locals.userMessage = err.userMessage
   res.locals.error = req.app.get('env') === 'development' ? err : {}
   res.locals.errorId = errorId
   res.locals.errorCode = ''
-  res.status(err.status || 500)
+  res.status(err.statusCode || 500)
   res.locals.pageTitle = 'Error'
   res.render('error')
 })
