@@ -25,17 +25,6 @@ Then(/^I should see the select access arrangements page matches design$/) do
   expect(select_access_arrangements_page).to have_save
   expect(select_access_arrangements_page).to have_cancel
   expect(select_access_arrangements_page).to have_back_to_top
-
-  select_access_arrangements_page.select_access_arrangement("Input assistance (reason and input assistant's name required)")
-  expect(select_access_arrangements_page).to have_input_assistance_info
-  expect(select_access_arrangements_page).to have_input_assistance_reason
-  expect(select_access_arrangements_page).to have_input_assistance_notice
-
-  select_access_arrangements_page.select_access_arrangement("Audio version (reason required)")
-  expected_list = SqlDbHelper.question_reader_reasons.map{|a| a['description']}
-  question_reader_access_arrangement_row =select_access_arrangements_page.find_access_arrangement_row("Audio version (reason required)")
-  actual_list = question_reader_access_arrangement_row.question_reader_reason.map {|a| a.question_reader_reason_name.text}
-  expect(actual_list).to eql expected_list
 end
 
 When(/^I search for pupil '(.*)'$/) do |pupil_search|
@@ -163,8 +152,6 @@ Given(/^I have a pupil who needs all possible access arrangements$/) do
   SqlDbHelper.access_arrangements.map{|a| a['description']}.each do |aa|
     select_access_arrangements_page.select_access_arrangement(aa) unless aa == 'Retrospective Input assistance'
   end
-  select_access_arrangements_page.input_assistance_reason.set 'This is a reason for input assistance'
-  select_access_arrangements_page.next_button_reason.set 'This is a reason for next between questions'
   question_reader_row =select_access_arrangements_page.find_access_arrangement_row("Audio version (reason required)")
   question_reader_row.question_reader_reason[2].question_reader_reason_radio.click
   select_access_arrangements_page.save.click

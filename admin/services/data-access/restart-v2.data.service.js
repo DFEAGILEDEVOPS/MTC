@@ -124,9 +124,6 @@ module.exports.getRestartsForSchool = async function getRestartsForSchool (schoo
  * @param {number} restartData.pupil_id
  * @param {string} restartData.recordedByUser_id
  * @param {string} restartData.pupilRestartReasonCode
- * @param {string} restartData.classDisruptionInformation
- * @param {string} restartData.didNotCompleteInformation
- * @param {string} restartData.furtherInformation
  * @return {Promise<*>}
  */
 module.exports.restartTransactionForPupils = async function restartTransactionForPupils (restartData) {
@@ -155,26 +152,17 @@ module.exports.restartTransactionForPupils = async function restartTransactionFo
 
   const pupilRestartData = restartData.map((d, idx) => {
     const params = [
-      { name: `cd${idx}`, value: d.classDisruptionInformation, type: TYPES.NVarChar },
-      { name: `dnc${idx}`, value: d.didNotCompleteInformation, type: TYPES.NVarChar },
-      { name: `fi${idx}`, value: d.furtherInformation, type: TYPES.NVarChar },
       { name: `pid${idx}`, value: d.pupil_id, type: TYPES.Int },
       { name: `prrCode${idx}`, value: d.pupilRestartReasonCode, type: TYPES.Char },
       { name: `rbu${idx}`, value: d.recordedByUser_id, type: TYPES.Int },
       { name: `oc${idx}`, value: d.currentCheckId, type: TYPES.Int }
     ]
 
-    const sql = `INSERT INTO [mtc_admin].[pupilRestart] (classDisruptionInformation,
-                                                         didNotCompleteInformation,
-                                                         furtherInformation,
-                                                         pupil_id,
+    const sql = `INSERT INTO [mtc_admin].[pupilRestart] (pupil_id,
                                                          restartReasonLookup_Id,
                                                          recordedByUser_id,
                                                          originCheck_id)
-                 VALUES (@cd${idx},
-                         @dnc${idx},
-                         @fi${idx},
-                         @pid${idx},
+                 VALUES (@pid${idx},
                          (SELECT id from [mtc_admin].[restartReasonLookup] where code = @prrCode${idx}),
                          @rbu${idx},
                          @oc${idx});`

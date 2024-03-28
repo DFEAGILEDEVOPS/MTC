@@ -5,6 +5,7 @@ const { getBuildNumber } = require('./healthcheck')
 const config = require('../config')
 const roles = require('../lib/consts/roles.js')
 const pjson = require('../package.json')
+const dateService = require('../services/date.service')
 
 const formatPageTitle = function (pageTitle) {
   let title = 'GOV.UK'
@@ -72,6 +73,8 @@ module.exports = async function (app) {
   app.locals.formatFullGdsDate = formatFullGdsDate
   app.locals.formatGdsDateAndTime = formatGdsDateAndTime
   app.locals.formatFullGdsDateAndTime = formatFullGdsDateAndTime
+  app.locals.formatPinDate = dateService.formatPinDate
+  app.locals.formatPinExpiryTime = dateService.formatPinExpiryTime
   app.locals.guidancePdf = 'https://www.gov.uk/government/collections/multiplication-tables-check'
   app.locals.roles = roles
   app.locals.isSubmitImpersonationUrl = false

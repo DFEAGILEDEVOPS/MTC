@@ -129,7 +129,7 @@ const ctfService = {
         .ele('Surname').txt(p.lastName.toUpperCase()).up()
         .ele('Forename').txt(p.foreName.toUpperCase()).up()
         .ele('DOB').txt(dob).up()
-        .ele('Gender').txt(p.gender.toUpperCase()).up()
+        .ele('Sex').txt(p.gender.toUpperCase()).up()
         .ele('StageAssessments')
         .ele('KeyStage')
         .ele('Stage').txt('KS2').up()
