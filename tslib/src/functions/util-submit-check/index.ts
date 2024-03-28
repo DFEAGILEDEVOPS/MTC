@@ -1,6 +1,6 @@
 import { type AzureFunction, type Context, type HttpRequest } from '@azure/functions'
 import config from '../../config'
-import { FakeSubmittedCheckMessageGeneratorService } from './fake-submitted-check-generator.service'
+import { FakeCompletedCheckMessageGeneratorService } from './fake-submitted-check-generator.service'
 import { SubmittedCheckVersion } from '../../schemas/SubmittedCheckVersion'
 import { SchoolChecksDataService } from './school-checks.data.service'
 
@@ -46,7 +46,7 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
   }
 
   context.log(`${functionName} config parsed as: ${JSON.stringify(funcConfig)})`)
-  const fakeSubmittedCheckBuilder = new FakeSubmittedCheckMessageGeneratorService()
+  const fakeSubmittedCheckBuilder = new FakeCompletedCheckMessageGeneratorService()
   fakeSubmittedCheckBuilder.setLogger(context.log)
   fakeSubmittedCheckBuilder.setConfig(funcConfig)
   if (funcConfig.schoolUuid !== undefined) {

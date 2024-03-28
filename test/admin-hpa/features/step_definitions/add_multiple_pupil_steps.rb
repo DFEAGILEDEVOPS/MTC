@@ -62,7 +62,7 @@ And(/^I can see the new pupil in the list$/) do
 end
 
 And(/^I can see the error message for adding Multiple Pupil$/) do
-  expect(add_multiple_pupil_page.error_message.text.include?("You need to fix the errors on this page before continuing.\nDownload the file below with errors indicated.\nCorrect the errors and upload the updated file.\nPupil details file with errors (CSV, 0.2KB)")).to be_truthy, "Got the message: #{add_multiple_pupil_page.error_message.text}"
+  expect(add_multiple_pupil_page.error_message.text.include?("You need to fix the errors on this page before continuing.\nDownload the file below with errors indicated.\nCorrect the errors and upload the updated file.\nPupil details file with errors (CSV, 0.19KB)")).to be_truthy, "Got the message: #{add_multiple_pupil_page.error_message.text}"
 end
 
 And(/^I can see link to download Error File$/) do
@@ -75,7 +75,7 @@ When(/^I download the Multiple Pupil upload CSV file with error$/) do
   page.execute_script("window.getFile = function(url) { var xhr = new XMLHttpRequest();  xhr.open('GET', url, false);  xhr.send(null); return xhr.responseText; }")
   data = page.evaluate_script("downloadCSVXHR()")
   File.open(File.join(File.expand_path("#{File.dirname(__FILE__)}/../../data/"), "multiple_pupils_errors.csv"), "w") { |f| f.write(data) }
-  data = CSV.read(File.expand_path("#{File.dirname(__FILE__)}/../../data/multiple_pupils_errors.csv"), { encoding: "UTF-8", headers: true, header_converters: :symbol, converters: :all, liberal_parsing: true})
+  data = CSV.read(File.expand_path("#{File.dirname(__FILE__)}/../../data/multiple_pupils_errors.csv"), **options={ encoding: "UTF-8", headers: true, header_converters: :symbol, converters: :all, liberal_parsing: true})
   @hashed_data = data.map { |d| d.to_hash }
 end
 

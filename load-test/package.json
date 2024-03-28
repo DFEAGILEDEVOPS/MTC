@@ -16,20 +16,19 @@
     "**/**/lodash": "^4.17.21"
   },
   "dependencies": {
-    "@azure/data-tables": "^13.1.1",
-    "@azure/storage-queue": "^12.7.0",
-    "artillery": "^2.0.1",
-    "axios": "^1.6.0",
+    "@azure/data-tables": "^13.2.2",
+    "@azure/storage-queue": "^12.16.0",
+    "axios": "^1.6.4",
     "bcryptjs": "^2.4.3",
     "bluebird": "^3.5.3",
-    "dotenv": "^16.0.0",
+    "dotenv": "^16.4.5",
     "fast-csv": "^4.3.6",
-    "fs-extra": "^10.0.0",
-    "ioredis": "^5.0.4",
+    "fs-extra": "^11.2.0",
+    "ioredis": "^5.3.2",
     "number-to-words": "^1.2.3",
     "ramda": "^0.28.0",
-    "tedious": "^16.6.1",
-    "uuid": "^8.3.2",
-    "winston": "^3.2.1"
+    "tedious": "^18.1.0",
+    "uuid": "^9.0.1",
+    "winston": "^3.13.0"
   }
 }

@@ -159,18 +159,13 @@ Feature:
     When I submit valid details with a temporary UPN has a lowercase alpha character
     Then the pupil details should be stored
 
-  Scenario: Reason field must be entered if displayed
-    When I fill in the form with the pupil dob 10 years ago
-    And I submit
-    Then I should see an error with the reason field
-
   Scenario: 11 year old pupils cannot be added
     When I submit the form with the pupil dob 11 years ago
     Then I should see an error with the DOB
 
-  Scenario: 10 year old pupils can be added by adding a reason
+  Scenario: 10 year old pupils can be added
     When I submit the form with the pupil dob 10 years ago
-    Then I should still be able to add the pupil after filling in the reason box
+    Then the pupil details should be stored
 
   Scenario: 9 year old pupils can be added
     When I submit the form with the pupil dob 9 years ago
@@ -180,9 +175,9 @@ Feature:
     When I submit the form with the pupil dob 8 years ago
     Then the pupil details should be stored
 
-  Scenario: 7 year old pupils can be added by adding a reason
+  Scenario: 7 year old pupils can be added
     When I submit the form with the pupil dob 7 years ago
-    Then I should still be able to add the pupil after filling in the reason box
+    Then the pupil details should be stored
 
   Scenario: 6 year old pupils cannot be added
     When I submit the form with the pupil dob 6 years ago

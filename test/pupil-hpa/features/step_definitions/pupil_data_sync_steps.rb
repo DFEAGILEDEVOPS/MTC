@@ -14,8 +14,10 @@ Given(/^I have completed the check with only (\d+) correct answers$/) do |correc
 end
 
 Then(/^all answers events and inputs match$/) do
-  check_result = AzureTableHelper.wait_for_received_check(@storage_school['uuid'], @storage_pupil['checkCode'])
-  @archive = JSON.parse(LZString::Base64.decompress(check_result['archive']))
+
+  check_result = SqlDbHelper.wait_for_received_check(@storage_pupil['checkCode'])
+  storage_row = AzureTableHelper.get_row('receivedCheck', @school['entity']['urlSlug'], @storage_pupil['checkCode'])
+  @archive = JSON.parse(LZString::Base64.decompress(storage_row['archive']))
   check_id = SqlDbHelper.get_check_id(@storage_pupil['checkCode'])
   SqlDbHelper.wait_for_check_result_row(check_id)
   check_result_id = SqlDbHelper.get_check_result_id(check_id)
@@ -87,7 +89,7 @@ end
 Then(/^I should see all inputs recorded$/) do
   @storage_school = JSON.parse page.evaluate_script('window.localStorage.getItem("school");')
   @storage_pupil = JSON.parse page.evaluate_script('window.localStorage.getItem("pupil");')
-  AzureTableHelper.wait_for_received_check(@storage_school['uuid'], @storage_pupil['checkCode'])
+  SqlDbHelper.wait_for_received_check(@storage_pupil['checkCode'])
   check_id = SqlDbHelper.get_check_id(@storage_pupil['checkCode'])
   SqlDbHelper.wait_for_check_result_row(check_id)
   check_result_id = SqlDbHelper.get_check_result_id(check_id)

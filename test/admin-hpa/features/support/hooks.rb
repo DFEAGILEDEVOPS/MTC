@@ -18,6 +18,7 @@ Before do
   page.current_window.resize_to(1270, 768)
   Capybara.visit Capybara.app_host
   p Time.now
+  expect(sign_in_page.cookies_banner.accept_all)
   sign_in_page.cookies_banner.accept_all.click if sign_in_page.cookies_banner.accept_all.visible?
   visit ENV['ADMIN_BASE_URL'] + '/sign-out'
   Dir.glob(File.expand_path("#{File.dirname(__FILE__)}/../../data/download/*")).each {|file| File.delete file}
@@ -80,6 +81,11 @@ end
 After('@post_check_window_settings') do
   SqlDbHelper.update_check_end_date((Date.today) + 30)
   SqlDbHelper.update_admin_end_date((Date.today) + 30)
+  REDIS_CLIENT. del 'checkWindow.sqlFindActiveCheckWindow'
+end
+
+After('@live_check_window_closed') do
+  SqlDbHelper.update_check_end_date((Date.today) + 5)
   REDIS_CLIENT. del 'checkWindow.sqlFindActiveCheckWindow'
 end
 

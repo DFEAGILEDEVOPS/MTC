@@ -21,7 +21,6 @@ Then(/^the input assistant should be stored$/) do
   db_record = SqlDbHelper.get_access_arrangements_for_a_pupil(@pupil_id)
   expect(db_record.first['retroInputAssistantFirstName']).to eql 'Input'
   expect(db_record.first['retroInputAssistantLastName']).to eql 'Assistant'
-  expect(db_record.first['inputAssistanceInformation']).to eql 'Input Assistant Reason'
   check_id = SqlDbHelper.check_details(@pupil_id)['id']
   expect(db_record.first['retroInputAssistant_check_id']).to eql check_id
 end

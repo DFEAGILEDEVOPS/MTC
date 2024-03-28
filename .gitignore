@@ -87,6 +87,8 @@ test/pupil-hpa/rerun.txt
 
 
 #admin
+test/se_manager/.cache/selenium/chrome/*
+test/se_manager/.cache/selenium/chromedriver/*
 test/admin-hpa/reports/
 test/admin-hpa/data/fixtures/pupil-census-data-*
 test/admin-hpa/data/school_testschool*
