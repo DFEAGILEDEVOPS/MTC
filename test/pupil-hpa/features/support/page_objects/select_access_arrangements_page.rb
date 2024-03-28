@@ -48,7 +48,6 @@ class SelectAccessArrangementsPage < SitePrism::Page
         question_reader = select_access_arrangements_page.find_access_arrangement_row('Audio version (reason required)')
         question_reader.question_reader_reason[1].question_reader_reason_radio.click
     when "Pause - 'next' button between questions"
-      next_button_reason.set 'Info on next button reason'
     when "Remove on-screen number pad"
     when "Colour contrast"
     when "Font size"
