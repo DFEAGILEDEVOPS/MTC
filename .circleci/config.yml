@@ -96,8 +96,7 @@ jobs:
       TZ: Europe/London
     steps:
       - checkout
-      - setup_remote_docker:
-          version: 20.10.17
+      - setup_remote_docker
       - run: cd admin && BUILDKIT=1 docker build .
       - run: docker images
 
@@ -109,8 +108,7 @@ jobs:
       TZ: Europe/London
     steps:
       - checkout
-      - setup_remote_docker:
-            version: 20.10.17
+      - setup_remote_docker
       - run: cd pupil-spa && BUILDKIT=1 docker build .
       - run: docker images
 
@@ -122,8 +120,7 @@ jobs:
       TZ: Europe/London
     steps:
       - checkout
-      - setup_remote_docker:
-          version: 20.10.17
+      - setup_remote_docker
       - run: export NVM_DIR=${HOME}/.nvm && source ${NVM_DIR}/nvm.sh; cd ./pupil-api; nvm use; yarn install; yarn build; BUILDKIT=1 docker build .
       - run: docker images
 
@@ -135,8 +132,7 @@ jobs:
       TZ: Europe/London
     steps:
       - checkout
-      - setup_remote_docker:
-          version: 20.10.17
+      - setup_remote_docker
       - run: export NVM_DIR=${HOME}/.nvm && source ${NVM_DIR}/nvm.sh; cd ./admin; nvm use; cd ../admin-assets; ./copy-assets.sh
       - run: cd admin-assets && BUILDKIT=1 docker build .
       - run: docker images

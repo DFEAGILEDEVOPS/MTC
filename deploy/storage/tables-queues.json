@@ -19,6 +19,7 @@
     "csvuploads",
     "ps-report",
     "ps-report-staging",
-    "school-import"
+    "school-import",
+    "ps-report-bulk-upload"
   ]
 }

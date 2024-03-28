@@ -1,5 +1,6 @@
 import { type ILogger } from '../../common/logger'
 import { type ISqlService, SqlService } from '../../sql/sql.service'
+import { type PsReportSchoolFanOutMessage } from '../common/ps-report-service-bus-messages'
 
 export interface School {
   id: number
@@ -7,13 +8,8 @@ export interface School {
   name: string
 }
 
-export interface SchoolMessage {
-  uuid: string
-  name: string
-}
-
 export interface IListSchoolsService {
-  getSchoolMessages (): Promise<SchoolMessage[]>
+  getSchoolMessages (jobUuid: string, filename: string): Promise<PsReportSchoolFanOutMessage[]>
 }
 
 export class ListSchoolsService implements IListSchoolsService {
@@ -31,13 +27,16 @@ export class ListSchoolsService implements IListSchoolsService {
     return this.sqlService.query(sql)
   }
 
-  public async getSchoolMessages (): Promise<SchoolMessage[]> {
+  public async getSchoolMessages (jobUuid: string, filename: string): Promise<PsReportSchoolFanOutMessage[]> {
     this.logger.verbose('ListSchoolsService called - retrieving all schools')
     const schools = await this.getSchools()
-    const schoolMessages: SchoolMessage[] = schools.map(school => {
+    const schoolMessages: PsReportSchoolFanOutMessage[] = schools.map(school => {
       return {
         uuid: school.uuid,
-        name: school.name
+        name: school.name,
+        jobUuid,
+        filename,
+        totalNumberOfSchools: schools.length
       }
     })
     this.logger.info(`getSchoolMessages() retrieved ${schoolMessages.length} schools`)
