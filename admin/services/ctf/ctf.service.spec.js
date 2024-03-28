@@ -303,8 +303,8 @@ describe('ctfService', () => {
     })
 
     test('the Pupil element has a Gender', () => {
-      expect(obj.CTfile.CTFpupilData.Pupil).toHaveProperty('Gender')
-      expect(obj.CTfile.CTFpupilData.Pupil.Gender).toEqual(mockPupilData[0].gender)
+      expect(obj.CTfile.CTFpupilData.Pupil).toHaveProperty('Sex')
+      expect(obj.CTfile.CTFpupilData.Pupil.Sex).toEqual(mockPupilData[0].gender)
     })
 
     test('the Pupil element has a StageAssessments element', () => {

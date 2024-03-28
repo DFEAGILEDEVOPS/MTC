@@ -246,7 +246,6 @@ Given(/^I submitted pupils for Restart using reason Classroom disruption$/) do
   step 'I have single pupils for restart'
   step 'I select a pupil for restarts'
   restarts_page.reason_3.click
-  restarts_page.reason_3_textbox.set 'Noisy classroom'
   restarts_page.sticky_banner.confirm.click
 end
 

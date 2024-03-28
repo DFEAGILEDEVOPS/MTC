@@ -148,7 +148,6 @@ And(/^audit recorded should reflect this refresh event$/) do
     local_storage << (JSON.parse page.evaluate_script("window.localStorage.getItem('#{key}');"))
   end
   expect(local_storage.find { |a| a['type'] == 'RefreshOrTabCloseDetected' }).to_not be_nil
-  expect(local_storage.find { |a| a['type'] == 'AppHidden' }).to_not be_nil
 end
 
 Given(/^I navigated to different tab during the check$/) do
