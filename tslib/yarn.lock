@@ -1728,24 +1728,24 @@ anymatch@^3.0.3:
     normalize-path "^3.0.0"
     picomatch "^2.0.4"
 
-applicationinsights@^2.8.0:
-  version "2.9.5"
-  resolved "https://registry.yarnpkg.com/applicationinsights/-/applicationinsights-2.9.5.tgz#34bcf71ad596721c520987a252e40d7495aa3503"
-  integrity sha512-APQ8IWyYDHFvKbitFKpsmZXxkzQh0yYTFacQqoVW7HwlPo3eeLprwnq5RFNmmG6iqLmvQ+xRJSDLEQCgqPh+bw==
+applicationinsights@^2.9.1:
+  version "2.9.1"
+  resolved "https://registry.yarnpkg.com/applicationinsights/-/applicationinsights-2.9.1.tgz#769412f809d6a072487e4b41c4c3a29678344d82"
+  integrity sha512-hrpe/OvHFZlq+SQERD1fxaYICyunxzEBh9SolJebzYnIXkyA9zxIR87dZAh+F3+weltbqdIP8W038cvtpMNhQg==
   dependencies:
     "@azure/core-auth" "^1.5.0"
     "@azure/core-rest-pipeline" "1.10.1"
     "@azure/core-util" "1.2.0"
     "@azure/opentelemetry-instrumentation-azure-sdk" "^1.0.0-beta.5"
-    "@microsoft/applicationinsights-web-snippet" "1.0.1"
-    "@opentelemetry/api" "^1.7.0"
-    "@opentelemetry/core" "^1.19.0"
-    "@opentelemetry/sdk-trace-base" "^1.19.0"
-    "@opentelemetry/semantic-conventions" "^1.19.0"
+    "@microsoft/applicationinsights-web-snippet" "^1.0.1"
+    "@opentelemetry/api" "^1.4.1"
+    "@opentelemetry/core" "^1.15.2"
+    "@opentelemetry/sdk-trace-base" "^1.15.2"
+    "@opentelemetry/semantic-conventions" "^1.15.2"
     cls-hooked "^4.2.2"
     continuation-local-storage "^3.2.1"
     diagnostic-channel "1.1.1"
-    diagnostic-channel-publishers "1.0.8"
+    diagnostic-channel-publishers "1.0.7"
 
 argparse@^1.0.7:
   version "1.0.10"
