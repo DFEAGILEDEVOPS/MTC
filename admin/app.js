@@ -329,7 +329,6 @@ app.use(preventDuplicateFormSubmission)
 // Makes the session expiry time available in the res object so we can insert it into the html, so javascript can
 // access it: used by the session expiry modal.
 app.use((req, res, next) => {
-  console.log('session expiry middleware entered')
   if (req.isAuthenticated()) {
     res.locals.sessionExpiresAt = +Date.now() + (config.ADMIN_SESSION_EXPIRATION_TIME_IN_SECONDS * 1000)
   }
@@ -359,7 +358,6 @@ if (WEBSITE_OFFLINE) {
 }
 
 app.use(async function (req, res, next) {
-  console.log('site available middleware entered')
   try {
     if (req.isAuthenticated() === false) return next()
     if (!req.user) {
@@ -378,14 +376,12 @@ app.use(async function (req, res, next) {
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
-  console.log('404 middleware entered')
   const err = { message: 'Page not found', statusCode: 404 }
   next(err)
 })
 
 // error handler
 app.use(function (err, req, res, next) {
-  console.log('error handler middleware entered')
   const errorId = uuidv4()
   // set locals, only providing error in development
   logger.error(`ERROR: ${err.message} ID: ${errorId}`, err)
