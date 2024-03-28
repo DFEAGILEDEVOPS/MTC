@@ -379,7 +379,7 @@ app.use(async function (req, res, next) {
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
   console.log('404 middleware entered')
-  const err = { message: 'Page not found', statusCode: 404  }
+  const err = { message: 'Page not found', statusCode: 404 }
   next(err)
 })
 
