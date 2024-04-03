@@ -35,6 +35,8 @@ require_relative '../../features/support/azure_blob_helper'
 require_relative 'helpers'
 require_relative '../../features/support/app'
 require 'jwt'
+require 'securerandom'
+
 include Helpers
 
  logger = Selenium::WebDriver.logger

@@ -30,3 +30,4 @@ gem 'redis'
 gem "rack", ">= 3.0.6.1"
 gem 'dotenv'
 gem 'jwt'
+gem 'securerandom'

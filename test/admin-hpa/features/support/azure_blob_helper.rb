@@ -1,5 +1,3 @@
-require 'SecureRandom'
-
 class AzureBlobHelper
 
   def self.no_fail_create_container()
