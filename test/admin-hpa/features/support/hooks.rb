@@ -337,7 +337,7 @@ After do |scenario|
     p "Screenshot raised - " + "screenshots/#{name}"
     content = File.open("screenshots/#{name}", 'rb') {|file| file.read}
     AZURE_BLOB_CLIENT.create_block_blob(BLOB_CONTAINER, name, content)
-    p "Screenshot uploaded to #{ENV["AZURE_ACCOUNT_NAME"]} - #{name}"
+    p "Screenshot uploaded to #{BLOB_CONTAINER}/#{name}"
   end
   SqlDbHelper.add_fam_form
   SqlDbHelper.assign_fam_form_to_window if SqlDbHelper.get_default_assigned_fam_form == nil
