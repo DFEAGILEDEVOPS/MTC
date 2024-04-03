@@ -22,7 +22,7 @@ describe('restart.service', () => {
 
   describe('restart', () => {
     test('throws an error if the schoolId is not provided', async () => {
-      await expect(restartService.restart([1, 2], 'Test', '', '', '', '59c38bcf3cd57f97b7da2002', undefined)).rejects.toThrow('Missing parameter: `schoolId`')
+      await expect(restartService.restart([1, 2], 'Test', '59c38bcf3cd57f97b7da2002', undefined)).rejects.toThrow('Missing parameter: `schoolId`')
     })
 
     test('it should call restartTransactionForPupils if the pupil can be restarted', async () => {
@@ -52,7 +52,7 @@ describe('restart.service', () => {
         ]
       )
       jest.spyOn(prepareCheckService, 'dropChecksFromCache').mockImplementation()
-      await expect(restartService.restart([1, 2], 'IT issues', '', '', '', '59c38bcf3cd57f97b7da2002', schoolId))
+      await expect(restartService.restart([1, 2], 'IT issues', '59c38bcf3cd57f97b7da2002', schoolId))
         .resolves
         .toHaveLength(2)
       expect(restartDataService.restartTransactionForPupils).toHaveBeenCalledTimes(1)
@@ -62,7 +62,7 @@ describe('restart.service', () => {
     test('it should throw an error if the pupil cannot be restarted', async () => {
       const schoolId = 42
       jest.spyOn(restartDataService, 'sqlFindPupilsEligibleForRestartByPupilId').mockResolvedValue([{ id: 1 }]) // #2 is missing
-      await expect(restartService.restart([pupilMock.id], 'IT issues', '', '', '', '59c38bcf3cd57f97b7da2002', schoolId))
+      await expect(restartService.restart([pupilMock.id], 'IT issues', '59c38bcf3cd57f97b7da2002', schoolId))
         .rejects
         .toThrow('One of the pupils is not eligible for a restart')
     })

@@ -158,14 +158,14 @@ describe('accessArrangementsDescriptionsPresenter', () => {
       expect(accessArrangementsPresentationData[3]).toEqual(
         {
           id: 4,
-          description: 'Input assistance (reason and input assistant\'s name required)',
+          description: 'Input assistance',
           code: 'ITA'
         }
       )
       expect(accessArrangementsPresentationData[4]).toEqual(
         {
           id: 5,
-          description: 'Pause - \'next\' button between questions (reason required)',
+          description: 'Pause - \'next\' button between questions',
           code: 'NBQ'
         }
       )

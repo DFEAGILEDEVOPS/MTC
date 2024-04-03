@@ -135,8 +135,6 @@ When(/^I consume a restart using (.+) and complete the check a second time$/) do
     fail reason + ' not found'
   end
   restart_reason.click
-  restarts_page.reason_3_textbox.set 'This is a test' if restart_reason == restarts_page.reason_3
-  restarts_page.reason4_explanation_input.set 'This is a another test' if restart_reason == restarts_page.reason_4
   pupil = restarts_page.find_pupil_row(@details_hash[:first_name])
   @pupil_name = pupil.name.text
   pupil.checkbox.click

@@ -15,7 +15,7 @@ class AddMultiplePupilPage < SitePrism::Page
 
   def upload_multiple_pupil(pupil_array1, pupil_array2=nil)
     CSV.open(File.expand_path("#{File.dirname(__FILE__)}/../../../data/multiple_pupils_template.csv"), 'wb') do |csv_object|
-      csv_object << ["Surname","Forename","Middle name(s)","Date of birth","Gender", "UPN"]
+      csv_object << ["Surname","Forename","Middle name(s)","Date of birth","Sex", "UPN"]
       csv_object << pupil_array1
       csv_object << pupil_array2 if !pupil_array2.nil?
     end
@@ -39,7 +39,7 @@ class AddMultiplePupilPage < SitePrism::Page
   def upload_pupils(number_of_pupils,school_name)
     @new_upn_list = []
     CSV.open("data/school_#{school_name.gsub(' ', '').downcase}.csv", "wb") do |csv|
-      csv << ["Surname","Forename","Middle name(s)","Date of birth","Gender", "UPN"]
+      csv << ["Surname","Forename","Middle name(s)","Date of birth","Sex", "UPN"]
       @dob = Time.now
       @gender = ['M','F']
       number_of_pupils.times do
@@ -60,7 +60,7 @@ class AddMultiplePupilPage < SitePrism::Page
   def create_and_upload_multiple_pupils(number,file_name)
     @upn_list = []
     CSV.open("data/#{file_name}", "wb") do |csv|
-      csv << ["Surname","Forename","Middle name(s)","Date of birth","Gender","UPN"]
+      csv << ["Surname","Forename","Middle name(s)","Date of birth","Sex","UPN"]
       number.to_i.times do
         upn = UpnGenerator.generate
         @upn_list << upn

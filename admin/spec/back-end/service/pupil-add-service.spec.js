@@ -3,7 +3,6 @@
 
 const pupilValidator = require('../../../lib/validator/pupil-validator')
 const pupilDataService = require('../../../services/data-access/pupil.data.service')
-const pupilAgeReasonDataService = require('../../../services/data-access/pupil-age-reason.data.service')
 const ValidationError = require('../../../lib/validation-error')
 const redisCacheService = require('../../../services/data-access/redis-cache.service')
 
@@ -32,8 +31,7 @@ describe('pupil-add-service', () => {
       gender: 'M',
       'dob-month': '6',
       'dob-day': '30',
-      'dob-year': '2009',
-      ageReason: null
+      'dob-year': '2009'
     }
   })
 
@@ -86,7 +84,6 @@ describe('pupil-add-service', () => {
       jest.spyOn(pupilValidator, 'validate').mockImplementation(validationFunctionSucceeds)
       jest.spyOn(pupilDataService, 'sqlCreate').mockResolvedValue({ insertId: 1 })
       jest.spyOn(pupilDataService, 'sqlFindOneById').mockImplementation()
-      jest.spyOn(pupilAgeReasonDataService, 'sqlInsertPupilAgeReason').mockImplementation()
       jest.spyOn(redisCacheService, 'drop').mockImplementation()
 
       await service.addPupil(reqBody, schoolId, userId)
@@ -101,41 +98,13 @@ describe('pupil-add-service', () => {
       expect(saveArg['dob-day']).toBeUndefined()
       expect(saveArg['dob-month']).toBeUndefined()
       expect(saveArg['dob-year']).toBeUndefined()
-
-      expect(pupilAgeReasonDataService.sqlInsertPupilAgeReason).not.toHaveBeenCalled()
-    })
-
-    test('calls sqlInsertPupilAgeReason before it saves the pupil data if ageReason is supplied', async () => {
-      jest.spyOn(pupilValidator, 'validate').mockImplementation(validationFunctionSucceeds)
-      jest.spyOn(pupilDataService, 'sqlCreate').mockResolvedValue({ insertId: 1 })
-      jest.spyOn(pupilDataService, 'sqlFindOneById').mockImplementation()
-      jest.spyOn(pupilAgeReasonDataService, 'sqlInsertPupilAgeReason').mockImplementation()
-      jest.spyOn(redisCacheService, 'drop').mockImplementation()
-      reqBody.ageReason = 'reason'
-
-      await service.addPupil(reqBody, schoolId, userId)
-
-      expect(pupilDataService.sqlCreate).toHaveBeenCalled()
-      const saveArg = pupilDataService.sqlCreate.mock.calls[0][0]
-
-      // Check that the data of birth has been added
-      expect(saveArg.dateOfBirth).toBeDefined()
-      expect(saveArg.dateOfBirth.toISOString()).toBe('2009-06-30T00:00:00.000Z')
-
-      // Check that the UI fields have been removed
-      expect(saveArg['dob-day']).toBeUndefined()
-      expect(saveArg['dob-month']).toBeUndefined()
-      expect(saveArg['dob-year']).toBeUndefined()
-      expect(pupilAgeReasonDataService.sqlInsertPupilAgeReason).toHaveBeenCalled()
     })
 
     test('validates the UPN with the trimmed and uppercased UPN', async () => {
       jest.spyOn(pupilValidator, 'validate').mockImplementation(validationFunctionSucceeds)
       jest.spyOn(pupilDataService, 'sqlCreate').mockResolvedValue({ insertId: 1 })
       jest.spyOn(pupilDataService, 'sqlFindOneById').mockImplementation()
-      jest.spyOn(pupilAgeReasonDataService, 'sqlInsertPupilAgeReason').mockImplementation()
       jest.spyOn(redisCacheService, 'drop').mockImplementation()
-      reqBody.ageReason = 'reason'
       reqBody.upn = ' l860100210012 ' // what the user typed into the form
       const transformedUPN = 'L860100210012' // what is expected to get passed to the validator and the sqlCreate functions
       await service.addPupil(reqBody, schoolId, userId)

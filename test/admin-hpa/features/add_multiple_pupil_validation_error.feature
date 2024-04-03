@@ -110,9 +110,11 @@ Feature: Add Multiple Pupil validation Error
     When I attempt to upload a valid CSV file to add Multiple Pupil with a pupil aged 11
     Then I should see an error with the upload stating the DOB is invalid
 
-  Scenario: 10 year old pupils can't be added
+  Scenario: 10 year old pupils can be added
     When I attempt to upload a valid CSV file to add Multiple Pupil with a pupil aged 10
-    Then I should see an error with the upload stating i need to use the single upload function
+    Then I should be taken to the Pupil register page
+    And I should see a flash message for the multiple pupil upload
+    And I can see the new pupils added to the list
 
   Scenario: 9 year old pupils can be added
     When I attempt to upload a valid CSV file to add Multiple Pupil with a pupil aged 9
@@ -126,9 +128,11 @@ Feature: Add Multiple Pupil validation Error
     And I should see a flash message for the multiple pupil upload
     And I can see the new pupils added to the list
 
-  Scenario: 7 year old pupils can't be added
+  Scenario: 7 year old pupils can be added
     When I attempt to upload a valid CSV file to add Multiple Pupil with a pupil aged 7
-    Then I should see an error with the upload stating i need to use the single upload function
+    Then I should be taken to the Pupil register page
+    And I should see a flash message for the multiple pupil upload
+    And I can see the new pupils added to the list
 
   Scenario: 6 year old pupils cannot be added
     When I attempt to upload a valid CSV file to add Multiple Pupil with a pupil aged 6
