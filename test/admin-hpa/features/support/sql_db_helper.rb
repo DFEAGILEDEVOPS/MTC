@@ -795,7 +795,7 @@ class SqlDbHelper
   end
 
   def self.get_random_school()
-    sql = "SELECT TOP 1 * FROM [mtc_admin].[school] ORDER BY NEWID()"
+    sql = "SELECT TOP 1 * FROM [mtc_admin].[school] WHERE id NOT IN (SELECT school_id FROM mtc_admin.adminLogonEvent) ORDER BY NEWID()"
     result = SQL_CLIENT.execute(sql)
     school_details = result.first
     result.cancel
