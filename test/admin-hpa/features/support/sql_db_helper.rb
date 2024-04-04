@@ -260,24 +260,28 @@ class SqlDbHelper
     chk_form_res
   end
 
+  # requires review
   def self.update_check_end_date(check_end_date)
     sql = "UPDATE [mtc_admin].[checkWindow] set familiarisationCheckEndDate = '#{check_end_date}', checkEndDate = '#{check_end_date}' WHERE id IN (1)"
     result = SQL_CLIENT.execute(sql)
     result.do
   end
 
+  # requires review
   def self.update_admin_end_date(check_end_date)
     sql = "UPDATE [mtc_admin].[checkWindow] set adminEndDate = '#{check_end_date}' WHERE id IN (1)"
     result = SQL_CLIENT.execute(sql)
     result.do
   end
 
+  # requires review
   def self.activate_or_deactivate_active_check_window(check_end_date)
     sql = "UPDATE [mtc_admin].[checkWindow] set adminEndDate = '#{check_end_date}' WHERE id NOT IN (2)"
     result = SQL_CLIENT.execute(sql)
     result.do
   end
 
+  # requires review
   def self.deactivate_all_test_check_window()
     sql = "UPDATE [mtc_admin].[checkWindow] set isDeleted = 1 WHERE id NOT IN (1,2)"
     result = SQL_CLIENT.execute(sql)
@@ -307,7 +311,7 @@ class SqlDbHelper
   end
 
   def self.remove_all_pupil_from_group(school_id)
-    sql = "UPDATE [mtc_admin].[pupil] SET group_id = null WHERE school_id = #{school_id}"
+    sql = "UPDATE [mtc_admin].[pupil] SET group_id=NULL WHERE school_id=#{school_id}"
     result = SQL_CLIENT.execute(sql)
     result.do
   end
@@ -318,12 +322,14 @@ class SqlDbHelper
     result.do
   end
 
+  # requires review
   def self.delete_forms
     sql = "DELETE FROM [mtc_admin].[checkForm] where name like 'test-check-form%'"
     result = SQL_CLIENT.execute(sql)
     result.do
   end
 
+  # requires review
   def self.delete_assigned_forms
     sql = "DELETE FROM [mtc_admin].[checkFormWindow] where id <> 1"
     result = SQL_CLIENT.execute(sql)
@@ -397,7 +403,7 @@ class SqlDbHelper
     school_res
   end
 
-
+  # requires review
   def self.get_mod_schools
     sql = "SELECT * FROM [mtc_admin].[school] WHERE leaCode='702'"
     result = SQL_CLIENT.execute(sql)
@@ -674,12 +680,14 @@ class SqlDbHelper
     result.each {|row| row.map}
   end
 
+  # requires review (and isDeleted=0?)
   def self.update_attendance_code_id_for_pupil(pupil_id,new_attendance_code)
     sql = "update mtc_admin.pupilAttendance set attendanceCode_id = #{new_attendance_code} where pupil_id=#{pupil_id}"
     result = SQL_CLIENT.execute(sql)
     result.do
   end
 
+  # requires review (a lot of logic is being bypassed, why not do via UI?)
   def self.set_pupil_as_frozen(pupil_id,new_attendance_code)
     sql = "update mtc_admin.pupil set frozen = 1, attendanceId = #{new_attendance_code} where id=#{pupil_id}"
     result = SQL_CLIENT.execute(sql)
