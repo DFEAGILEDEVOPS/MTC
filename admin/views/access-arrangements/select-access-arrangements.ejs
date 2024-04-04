@@ -112,47 +112,6 @@
                                 </div>
                             </div>
                         <% } %>
-                        <% if (accessArrangement.code === 'QNR') { %>
-                            <div class="hide-checkbox-content">
-                                <div class="govuk-form-group <%= error.isError('questionReaderReasonsList') ? 'govuk-form-group--error' : '' %>"
-                                     id="questionReaderReasonsList">
-                                    <span class="govuk-error-message"> <%= error.get('questionReaderReasonsList') %></span>
-                                    <% if (error.get('questionReaderReasonsList')) { %>
-                                        <br/>
-                                    <% } %>
-                                    <% Array.isArray(questionReaderReasons) && questionReaderReasons.forEach( (questionReaderReason, index) => { %>
-                                        <div class="multiple-choice">
-                                            <input
-                                                    id="questionReaderReason-<%= index %>"
-                                                    type="radio" name="questionReaderReason"
-                                                    class='govuk-radios__input question-reader-reason'
-                                                    value="<%= questionReaderReason.code %>"
-                                                    <%= formData['questionReaderReason'] && formData['questionReaderReason'].includes(questionReaderReason.code) && 'checked' %>
-                                            >
-                                            <label class="govuk-label" for="questionReaderReason-<%= index %>"><%= questionReaderReason.description %></label>
-                                        </div>
-                                        <% if (questionReaderReason.code === 'OTH') { %>
-                                        <div class="govuk-inset-text govuk-visually-hidden">
-                                            <div class="govuk-form-group <%= error.isError('questionReaderOtherInformation') ? 'govuk-form-group--error' : '' %>">
-                                                <label class="govuk-label" for='questionReaderOtherInformation'>Please explain why the pupil needs this
-                                                    arrangement
-                                                </label>
-                                                <% if (error.isError('questionReaderOtherInformation')) { %>
-                                                    <span class="govuk-error-message"> <%= error.get('questionReaderOtherInformation') %></span>
-                                                <% } %>
-                                                    <textarea
-                                                            id="questionReaderOtherInformation"
-                                                            name="questionReaderOtherInformation"
-                                                            class="govuk-textarea govuk-!-width-three-quarters access-arrangements-textarea <%= error.isError('questionReaderOtherInformation') ? 'govuk-textarea--error' : '' %>"
-                                                            rows="3"
-                                                            maxlength="1000"><%= formData['questionReaderOtherInformation'] %></textarea>
-                                            </div>
-                                        </div>
-                                        <% } %>
-                                    <% }) %>
-                                </div>
-                            </div>
-                        <% } %>
                     </li>
                     <% }) %>
                 </ul>

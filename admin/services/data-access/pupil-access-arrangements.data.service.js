@@ -201,16 +201,12 @@ pupilAccessArrangementsDataService.sqlFindAccessArrangementsByUrlSlug = async (u
     p.urlSlug,
     p.foreName,
     p.lastName,
-    paa.questionReaderOtherInformation,
     aa.code as accessArrangementCode,
-    qrr.code as questionReaderReasonCode
     FROM [mtc_admin].pupilAccessArrangements paa
     INNER JOIN [mtc_admin].pupil p
       ON p.id = paa.pupil_id
     INNER JOIN [mtc_admin].accessArrangements aa
       ON aa.id = paa.accessArrangements_id
-    LEFT JOIN [mtc_admin].questionReaderReasons qrr
-      ON qrr.id = paa.questionReaderReasons_id
     WHERE p.urlSlug = @urlSlug`
   return sqlService.readonlyQuery(sql, params)
 }
