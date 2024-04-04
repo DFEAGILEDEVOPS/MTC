@@ -311,6 +311,7 @@ class SqlDbHelper
   end
 
   def self.remove_all_pupil_from_group(school_id)
+    p "removing all pupils from group. school_id:#{school_id}"
     sql = "UPDATE [mtc_admin].[pupil] SET group_id=NULL WHERE school_id=#{school_id}"
     result = SQL_CLIENT.execute(sql)
     result.do
