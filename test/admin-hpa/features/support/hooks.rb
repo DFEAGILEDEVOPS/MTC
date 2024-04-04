@@ -5,7 +5,6 @@ Before do
   if @school.nil?
     fail "unable to obtain random school via SqlDbHelper.get_random_school"
   end
-
   @urn = @school['urn']
   @school_name = @school['name']
   @school_id = @school['id']
@@ -234,8 +233,8 @@ Before("@upload_new_fam_form") do
 end
 
 Before("@remove_all_groups") do
-  SqlDbHelper.remove_all_pupil_from_group(@school_id)
-  SqlDbHelper.delete_all_school_groups(@school_id)
+  SqlDbHelper.remove_all_pupil_from_group(@school['id'])
+  SqlDbHelper.delete_all_school_groups(@school['id'])
 end
 
 Before("@no_active_check_window") do
