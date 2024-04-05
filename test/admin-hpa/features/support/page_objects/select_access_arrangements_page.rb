@@ -14,10 +14,6 @@ class SelectAccessArrangementsPage < SitePrism::Page
     sections :row, 'li' do
       element :arrangement_name, 'div[class="govuk-!-font-size-16"] .govuk-label'
       element :checkbox, '.multiple-choice-mtc'
-      sections :question_reader_reason, '.show-checkbox-content .multiple-choice' do
-        element :question_reader_reason_radio , 'input'
-        element :question_reader_reason_name , 'label'
-      end
     end
   end
 
@@ -28,9 +24,6 @@ class SelectAccessArrangementsPage < SitePrism::Page
     element :confirm, '#js-modal-confirmation-button'
   end
 
-  element :input_assistance_info, '.show-checkbox-content .govuk-label'
-  element :input_assistance_reason, '#inputAssistanceInformation'
-  element :next_button_reason, '#nextButtonInformation'
   element :input_assistance_notice, '.govuk-warning-text'
 
   section :error_summary, 'div[aria-labelledby="error-summary-title"]' do

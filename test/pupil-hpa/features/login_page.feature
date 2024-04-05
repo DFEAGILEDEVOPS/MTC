@@ -48,7 +48,7 @@ Feature: Login page
     Then I should see a failed login message
 
   Scenario: Question Reader is set to true when a pupil requiring it logs in
-    Given I logged in with user with access arrangement 'Audio version (reason required)'
+    Given I logged in with user with access arrangement 'Audio version'
     Then I should see question reader set to true in the local storage
 
   @generate_live_pin

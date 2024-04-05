@@ -13,8 +13,6 @@ module.exports.validate = (accessArrangementsData) => {
   const {
     pupilUrlSlug,
     accessArrangements: accessArrangementsCodes,
-    questionReaderReason: questionReaderReasonCode,
-    questionReaderOtherInformation,
     isEditView
   } = accessArrangementsData
 
@@ -23,12 +21,6 @@ module.exports.validate = (accessArrangementsData) => {
   }
   if ((!accessArrangementsCodes || accessArrangementsCodes.length === 0) && !toBool(isEditView)) {
     validationError.addError('accessArrangementsList', accessArrangementsErrorMessages.missingAccessArrangements)
-  }
-  if (accessArrangementsCodes && accessArrangementsCodes.includes('QNR') && !questionReaderReasonCode) {
-    validationError.addError('questionReaderReasonsList', accessArrangementsErrorMessages.missingQuestionReaderReason)
-  }
-  if (accessArrangementsCodes && accessArrangementsCodes.includes('QNR') && questionReaderReasonCode === 'OTH' && !questionReaderOtherInformation) {
-    validationError.addError('questionReaderOtherInformation', accessArrangementsErrorMessages.missingScreenReaderExplanation)
   }
   return validationError
 }
