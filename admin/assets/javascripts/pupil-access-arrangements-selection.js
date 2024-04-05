@@ -22,17 +22,9 @@ if (!window.MTCAdmin) {
       if (el.checked && (el.value === 'ITA')) {
         $(el).closest('li').find('.hide-checkbox-content').addClass('show-checkbox-content')
         $(el).closest('li').find('.hide-checkbox-content').removeClass('hide-checkbox-content')
-      }
-    })
-    // Reveal/Hide hidden content when appropriate radio button is selected/deselected
-    $(accessArrangementsList).find('input:radio').change(function (i) {
-      var el = i.currentTarget
-      if (el.checked && el.value === 'OTH') {
-        $($(el).parent().siblings('.govuk-inset-text')).removeClass('govuk-visually-hidden')
-      }
-      if (el.checked && el.value !== 'OTH') {
-        $($(el).parent().siblings('.govuk-inset-text')).addClass('govuk-visually-hidden')
-        questionReaderOtherInformation.val('')
+      } else if (el.checked === false && el.value === 'ITA') {
+        $(el).closest('li').find('.show-checkbox-content').addClass('hide-checkbox-content')
+        $(el).closest('li').find('.show-checkbox-content').removeClass('show-checkbox-content')
       }
     })
     // Add/Remove red border to autocomplete input container
