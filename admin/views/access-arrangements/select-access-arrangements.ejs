@@ -10,7 +10,7 @@
           <div class="govuk-error-summary__body">
             <p>See highlighted errors below.</p>
             <ul class="govuk-list govuk-error-summary__list">
-            <% error.getUniqueFields(['pupil-autocomplete-container', 'accessArrangementsList', 'questionReaderReasonsList', 'questionReaderOtherInformation']).map(f => { %>
+            <% error.getUniqueFields(['pupil-autocomplete-container', 'accessArrangementsList']).map(f => { %>
               <li><a href="#<%= f %>"><%= error.get(f) %></a></li>
             <% }) %>
             </ul>
