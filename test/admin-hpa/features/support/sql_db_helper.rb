@@ -797,12 +797,15 @@ class SqlDbHelper
 
   def self.get_random_school()
     begin
-      sql = "SELECT TOP 1 * FROM [mtc_admin].[school] WHERE id NOT IN (SELECT school_id FROM mtc_admin.adminLogonEvent) ORDER BY NEWID()"
+      sql = "SELECT TOP 1 t.* FROM (SELECT s.id FROM mtc_admin.school s
+        WHERE s.id NOT IN
+        (SELECT school_id FROM mtc_admin.adminLogonEvent WHERE school_id IS NOT NULL)) as t
+        ORDER BY NEWID()"
       result = SQL_CLIENT.execute(sql)
       school_details = result.first
       result.cancel
       school_details
-    rescue TinyTds::Error => e
+    rescue => e
       abort "sql_db_helper.get_random_school failed.
       Error: #{e.to_s}"
     end
