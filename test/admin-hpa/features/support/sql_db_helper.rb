@@ -797,9 +797,8 @@ class SqlDbHelper
 
   def self.get_random_school()
     begin
-      sql = "SELECT TOP 1 t.* FROM (SELECT s.id FROM mtc_admin.school s
-        WHERE s.id NOT IN
-        (SELECT school_id FROM mtc_admin.adminLogonEvent WHERE school_id IS NOT NULL)) as t
+      sql = "SELECT TOP 1 t1.* FROM (SELECT * FROM mtc_admin.school s
+        WHERE s.id NOT IN (SELECT school_id FROM mtc_admin.adminLogonEvent WHERE school_id IS NOT NULL)) as t1
         ORDER BY NEWID()"
       result = SQL_CLIENT.execute(sql)
       school_details = result.first
