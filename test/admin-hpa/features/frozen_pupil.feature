@@ -1,3 +1,4 @@
+@frozen_pupil
 Feature:
   Frozen pupil
 

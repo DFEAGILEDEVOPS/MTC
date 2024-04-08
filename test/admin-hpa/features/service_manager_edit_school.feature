@@ -1,3 +1,4 @@
+@service_manager_edit_school
 Feature:
   Service manager edit school
 

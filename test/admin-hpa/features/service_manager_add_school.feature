@@ -1,3 +1,4 @@
+@add_school
 Feature:
   Add School
 

@@ -1,3 +1,4 @@
+@service_manager_pupil_search
 Feature:
   Service manager pupil search
 

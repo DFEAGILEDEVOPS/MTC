@@ -1,3 +1,4 @@
+@service_manager_hdf
 Feature: Service manager HDF
 
   Scenario: Service manager has no actions when the hdf has not been signed

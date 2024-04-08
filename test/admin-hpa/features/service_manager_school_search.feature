@@ -1,3 +1,4 @@
+@service_manager_school_search
 Feature:
   Service manager school search
 

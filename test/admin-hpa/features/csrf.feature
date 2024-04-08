@@ -1,3 +1,4 @@
+@csrf_token
 Feature: CSRF token
 
   Scenario: Add pupils form has hidden csrf field
