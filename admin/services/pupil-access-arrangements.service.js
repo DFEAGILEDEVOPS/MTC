@@ -64,8 +64,6 @@ pupilAccessArrangementsService.getPupilEditFormData = async (urlSlug) => {
     acc.pupilUrlSlug = acc.pupilUrlSlug || item.urlSlug
     acc.foreName = acc.foreName || item.foreName
     acc.lastName = acc.lastName || item.lastName
-    acc.questionReaderOtherInformation = acc.questionReaderOtherInformation || item.questionReaderOtherInformation
-    acc.questionReaderReason = acc.questionReaderReason || item.questionReaderReasonCode
     acc.accessArrangements.push(item.accessArrangementCode)
     return acc
   }, { accessArrangements: [] })
