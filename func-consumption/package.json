@@ -54,7 +54,7 @@
     "csv-string": "^4.1.0",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
-    "fast-xml-parser": "^4.3.1",
+    "fast-xml-parser": "^4.3.6",
     "helmet": "6.0.1",
     "ioredis": "^5.3.1",
     "jsonwebtoken": "^9.0.2",
