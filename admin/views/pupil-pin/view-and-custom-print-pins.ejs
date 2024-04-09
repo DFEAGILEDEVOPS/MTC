@@ -32,28 +32,49 @@
         <% } %>
             <h1 class="no-print govuk-heading-xl">View and print <%= pinEnv === 'live' ? 'official' : 'try it out' %> check password and PINs</h1>
             <%- partial('partials/_gds_session_expiry') %>
+
+            <!-- para 1 -->
             <p class="no-print govuk-body">
               Your school password and <%= pinEnv === 'live' ? 'official' : 'try it out' %> check PINs have been generated for selected pupils.
-              You can print the PINs by selecting the pupils, or groups, then selecting ‘Print selected’.</p>
-            <p class="no-print govuk-body">
-              You will notice that the printed slips have '<%= pinEnv === 'live' ? 'Official' : 'Try it out' %>' on them.
+            <!-- para 2 -->
+              You can print the PINs by selecting the pupils, or groups, then selecting ‘Print selected’.
             </p>
-            <% if (pinEnv !== 'live') { %>
-              <p>Pupils can use their PINs for the try it out check multiple times throughout the day.</p>
-            <% } else { %>
-              <p>This list contains all active PINs, once pupils have started the official check the PIN will no longer be active.</p>
-            <% } %>
+
+            <!-- para 3 -->
             <p>
-              Your school password and pupil PINs will expire at 4pm each day.
+                Your school password and pupil PINs will expire at 4pm each day.
+                <% if (pinEnv !== 'live') { %>
+                    However, pupils can use their PINs for the try it out check multiple times throughout the day.
+                <% } %>
             </p>
+
+            <!-- para 4 -->
+            <p class="no-print govuk-body">
+              You will notice that the printed slips say they are for the <%= pinEnv === 'live' ? 'official' : '‘try it out’' %> check
+              and the date they will expire.
+            </p>
+
+              <!-- para 4b (official only) -->
+            <% if (pinEnv === 'live') { %>
+                <p>This list only contains PINs for pupils who have not yet started the check. Once pupils have started the official check the PIN
+                    will be removed from this list.
+                </p>
+            <% } %>
+
+
+            <!-- para 5 -->
             <p>
               <% if (pupils && pupils.length > 0) { %>
                   You can <a class="govuk-link" href="/pupil-pin/generate-<%= pinEnv %>-pins-list">generate additional <%= pinEnv === 'live' ? 'official' : 'try it out' %> check PINs</a> for pupils you have missed.
               <% } %>
-          </p>
-            <p>
-                Pupils will access the try it out and official check at: <a class="govuk-link" target="_blank" rel="noopener noreferrer" href="<%= pupilAppURL %>"><%= pupilAppURL %></a>
             </p>
+
+           <!-- para 6 -->
+            <p>
+                Pupils can access the <%= pinEnv === 'live' ? 'official' : 'try it out' %> check at:
+                <a class="govuk-link" target="_blank" rel="noopener noreferrer" href="<%= pupilAppURL %>"><%= pupilAppURL %></a>
+            </p>
+
             <div class="no-print">
                 <h3 class="govuk-heading-m">Filter by name</h3>
                 <div class="govuk-form-group filter-name">
