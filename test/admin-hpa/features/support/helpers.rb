@@ -150,4 +150,22 @@ module Helpers
     visit ENV['ADMIN_BASE_URL'] + '/sign-out'
   end
 
+  def create_dfe_number
+    @lea_code = '999'
+    if SqlDbHelper.get_schools_list.map {|school| school['estabCode']}.sort.last == 9999
+      estab_counter = 1000
+      lea_code_change = true
+    else
+      estab_counter = SqlDbHelper.get_schools_list.map {|school| school['estabCode']}.sort.last
+    end
+    @estab_code = estab_counter + 1
+    if lea_code_change
+      lea_code_list = UpnHelper.collection_of_la_codes
+      lea_code_list.delete(SqlDbHelper.get_schools_list.map {|school| school['leaCode']}.sort.last.to_s)
+      lea_code_list.delete('201')
+      @lea_code =  lea_code_list.sample
+    end
+    {estab_code: @estab_code, lea_code: @lea_code}
+  end
+
 end

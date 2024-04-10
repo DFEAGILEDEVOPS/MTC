@@ -98,12 +98,12 @@ end
 Given(/^I have updated the Dfe number for a school$/) do
   step "I have searched for a school"
   school_search_results_page.edit.click
-  @hash = {name: @school_name, dfe: @school['dfeNumber'] + 1000}
+  @hash = {name: @school_name, dfe: @school['entity']['dfeNumber'] + 1000}
   edit_school_page.dfe.set @hash[:dfe]
   @toe = SqlDbHelper.type_of_establishment.sample
   edit_school_page.type_of_establishment.select @toe
   step 'I save these changes'
-  @school['dfeNumber'] = @hash[:dfe]
+  @school['entity']['dfeNumber'] = @hash[:dfe]
   visit ENV['ADMIN_BASE_URL'] + '/sign-out'
 end
 
@@ -139,7 +139,7 @@ Given(/^I have updated the URN for a school$/) do
   @toe = SqlDbHelper.type_of_establishment.sample
   edit_school_page.type_of_establishment.select @toe
   step 'I save these changes'
-  @school['urn'] = @hash[:urn]
+  @school['entity']['urn'] = @hash[:urn]
   @urn = @hash[:urn]
   visit ENV['ADMIN_BASE_URL'] + '/sign-out'
 end
@@ -175,7 +175,7 @@ Given(/^I have updated the LEA code for a school$/) do
   @toe = SqlDbHelper.type_of_establishment.sample
   edit_school_page.type_of_establishment.select @toe
   step 'I save these changes'
-  @school['leaCode'] = @hash[:lea_code]
+  @school['entity']['leaCode'] = @hash[:lea_code]
   visit ENV['ADMIN_BASE_URL'] + '/sign-out'
 end
 
@@ -211,7 +211,7 @@ Given(/^I have updated the Estab code for a school$/) do
   @toe = SqlDbHelper.type_of_establishment.sample
   edit_school_page.type_of_establishment.select @toe
   step 'I save these changes'
-  @school['estabCode'] = @hash[:estab_code]
+  @school['entity']['estabCode'] = @hash[:estab_code]
   visit ENV['ADMIN_BASE_URL'] + '/sign-out'
 end
 

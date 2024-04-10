@@ -36,15 +36,17 @@ end
 
 Given(/^I have (\d+) pupils with the same upns but at different schools$/) do |arg|
   @same_upn = @upns_for_school.first
-  @school = SqlDbHelper.get_random_school
-  if @school.nil?
-    fail "unable to obtain random school via SqlDbHelper.get_random_school"
+  @urn = SqlDbHelper.get_schools_list.map {|school| school['urn']}.sort.last + 1
+  dfe_number = create_dfe_number
+  @school_name = "Test School - #{@urn}"
+  @school = FunctionsHelper.create_school(dfe_number[:lea_code],dfe_number[:estab_code], @school_name, @urn)
+  if @school['result'] == 'Failed'
+    fail "#{@school['message']}"
   end
-  @urn = @school['urn']
-  @school_name = @school['name']
-  @school_uuid = @school['urlSlug']
-  @school_user = SqlDbHelper.get_school_teacher(@urn)
-  @new_school_id = @school_user['school_id']
+  school_uuid = @school['entity']['urlSlug']
+  @username = "teacher#{@urn}"
+  @school_user = FunctionsHelper.create_user(school_uuid, @username)
+  @new_school_id = @school_user['entity']['school_id']
   FunctionsHelper.generate_school_pin(@new_school_id)
   p "Login for #{@school_name} created as - #{@username}"
   step 'I am logged in'
