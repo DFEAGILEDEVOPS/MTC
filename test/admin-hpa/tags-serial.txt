@@ -1,6 +1,7 @@
 # tags in this file are candidates for not running in parallel due to their nature
 @assign_to_check_window
 @attendance_code
+@build_commit_ping
 @check_time_limits
 @create_new_window_v2
 @deactivate_all_test_check_window
