@@ -1,4 +1,4 @@
-@service_manager_move_pupil
+@service_manager_move_pupil_feature
 Feature:
   Service manager move pupil
 

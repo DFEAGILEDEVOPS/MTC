@@ -1,4 +1,4 @@
-@helpdesk_view_pupil_history
+@helpdesk_view_pupil_history_feature
 Feature:
   Helpdesk user can view pupils' check history
 

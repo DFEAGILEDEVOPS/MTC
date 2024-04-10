@@ -1,4 +1,4 @@
-@sta_admin_view_pupil_history
+@sta_admin_view_pupil_history_feature
 Feature:
   STA Admin user can view pupils' check history
 

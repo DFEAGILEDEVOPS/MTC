@@ -1,4 +1,4 @@
-@retro_input_assistant
+@retro_input_assistant_feature
 Feature:
   Retrospective input assistance
 
@@ -28,12 +28,12 @@ Feature:
     When I am on the retro input page
     Then I should be able to add input assistant against the third check
 
-  @pupil_not_taking_check @live_tio_expired @declaration_confirm @hdf @reset_hdf_submission
+  @pupil_not_taking_check_hook @live_tio_expired_hook @hdf_hook @reset_hdf_submission_hook
   Scenario: Retro input assistance cant be added after the HDF is signed
     Given I have signed the hdf
     Then I should not be able to add retro input assistance to any pupils
 
-  @pupil_not_taking_check @live_tio_expired @declaration_confirm @hdf @reset_hdf_submission
+  @pupil_not_taking_check_hook @live_tio_expired_hook @hdf_hook @reset_hdf_submission_hook
   Scenario: Retro input assistance can be added if the check window is closed
     Given the check window is now closed
     Then I should be able to add an input assistant retrospectively

@@ -1,4 +1,4 @@
-@wip
+@service_bus_queue_config_feature @wip
 Feature:
   Service Bus queue configuration
 

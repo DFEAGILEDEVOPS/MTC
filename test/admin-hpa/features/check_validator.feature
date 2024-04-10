@@ -1,4 +1,4 @@
-@check_validator
+@check_validator_feature
 Feature:
   Check Validator
 

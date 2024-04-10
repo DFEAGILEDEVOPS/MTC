@@ -1,4 +1,4 @@
-@csrf_token
+@csrf_token_feature
 Feature: CSRF token
 
   Scenario: Add pupils form has hidden csrf field
@@ -19,7 +19,7 @@ Feature: CSRF token
     Given I am on the create group page
     Then I should see the create group form has a hidden csrf field
 
-  @deactivate_all_test_check_window
+  @deactivate_all_test_check_window_hook
   Scenario: Generate pins form has hidden csrf field
     Given I am logged in
     When I am on the generate pupil live pins page
@@ -50,7 +50,7 @@ Feature: CSRF token
     When I am on the Upload new forms page
     Then I should see the upload new form has a hidden csrf field
 
-  @create_new_window_v2
+  @create_new_window_hook
   Scenario: Assign check form has hidden csrf field
     Given I am logged in with a test developer
     When I am on the assign check window page

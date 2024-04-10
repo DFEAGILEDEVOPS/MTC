@@ -29,7 +29,7 @@ Before do
   p "MTC0103 = #{JSON.parse(SqlDbHelper.get_form(4)['formData']).size} questions"
 end
 
-Before('@empty_new_school') do
+Before('@empty_new_school_hook') do
   @urn = SqlDbHelper.get_schools_list.map {|school| school['urn']}.sort.last + 1
   dfe_number = create_dfe_number
   @school_name = "Test School - #{@urn}"
@@ -45,7 +45,7 @@ Before('@empty_new_school') do
   p "Login for #{@school_name} created as - #{@username}"
 end
 
-Before('@new_school_no_password') do
+Before('@new_school_no_password_hook') do
   @urn = SqlDbHelper.get_schools_list.map {|school| school['urn']}.sort.last + 1
   dfe_number = create_dfe_number
   @school_name = "Test School - #{@urn}"
@@ -61,14 +61,14 @@ Before('@new_school_no_password') do
   p "Login for #{@school_name} created as - #{@username}"
 end
 
-Before('@service_manager_message') do
+Before('@service_manager_message_hook') do
   step 'I am on the manage service message page'
   manage_service_message_page.remove_service_message if manage_service_message_page.has_remove_message?
   visit ENV['ADMIN_BASE_URL'] + '/sign-out'
   visit ENV['ADMIN_BASE_URL']
 end
 
-Before('@school_import') do
+Before('@school_import_hook') do
   begin
     AZURE_BLOB_CLIENT.create_container('school-import')
   rescue Azure::Core::Http::HTTPError => e
@@ -81,18 +81,18 @@ After('@check_start_date_reset') do
   SqlDbHelper.update_check_window(@check_window['id'], 'checkStartDate', @original_check_start_date.strftime("%Y-%m-%d %H:%M:%S.%LZ"))
 end
 
-After('@post_check_window_settings') do
+After('@post_check_window_settings_feature') do
   SqlDbHelper.update_check_end_date((Date.today) + 30)
   SqlDbHelper.update_admin_end_date((Date.today) + 30)
   REDIS_CLIENT. del 'checkWindow.sqlFindActiveCheckWindow'
 end
 
-After('@live_check_window_closed') do
+After('@live_check_window_closed_hook') do
   SqlDbHelper.update_check_end_date((Date.today) + 5)
   REDIS_CLIENT. del 'checkWindow.sqlFindActiveCheckWindow'
 end
 
-Before("@delete_school_import") do
+Before("@delete_school_import_hook") do
   SqlDbHelper.delete_schools_audit_history
   SqlDbHelper.delete_schools_imported
   files = AZURE_BLOB_CLIENT.list_blobs('school-import').map {|a| a.name}
@@ -102,11 +102,11 @@ Before("@delete_school_import") do
 end
 
 
-After("@processing_error_hdf") do
+After("@processing_error_hdf_hook") do
   SqlDbHelper.update_check_end_date((Date.today) + 2)
 end
 
-Before('@incomplete_pupil') do
+Before('@incomplete_pupil_hook') do
   REDIS_CLIENT.del 'settings'
   SqlDbHelper.set_check_time_limit(1)
   step "I am logged in with a service manager"
@@ -115,14 +115,14 @@ Before('@incomplete_pupil') do
   visit ENV['ADMIN_BASE_URL']
 end
 
-After('@service_manager_message') do
+After('@service_manager_message_hook') do
   step 'I am on the manage service message page'
   manage_service_message_page.remove_service_message if manage_service_message_page.has_remove_message?
   visit ENV['ADMIN_BASE_URL'] + '/sign-out'
   visit ENV['ADMIN_BASE_URL']
 end
 
-Before("@add_a_pupil") do
+Before("@add_a_pupil_hook") do
   step "I am logged in"
   @name = (0...8).map {(65 + rand(26)).chr}.join
   step "I am on the add pupil page"
@@ -132,7 +132,7 @@ Before("@add_a_pupil") do
   visit ENV['ADMIN_BASE_URL']
 end
 
-Before("@timer_reset") do
+Before("@timer_reset_hook") do
   step "I am logged in with a service manager"
   step 'I am on the admin page'
   step 'I am on the check settings page'
@@ -145,11 +145,11 @@ Before("@poltergeist") do
   Capybara.current_driver = :poltergeist
 end
 
-After("@pupil_not_taking_check") do
+After("@pupil_not_taking_check_hook") do
   SqlDbHelper.delete_pupils_not_taking_check(@school_id)
 end
 
-After("@attendance_code") do
+After("@attendance_code_hook") do
   visit ENV['ADMIN_BASE_URL'] + '/sign-out'
   step "I am logged in with a service manager"
   admin_page.manage_attendance_codes.click
@@ -157,17 +157,17 @@ After("@attendance_code") do
   visit ENV['ADMIN_BASE_URL'] + '/sign-out'
 end
 
-Before('@reset_hdf_submission') do
+Before('@reset_hdf_submission_hook') do
   school_id = SqlDbHelper.find_teacher(@username)['school_id']
   SqlDbHelper.delete_from_hdf(school_id)
 end
 
-After('@reset_hdf_submission') do
+After('@reset_hdf_submission_hook') do
   school_id = SqlDbHelper.find_teacher(@username)['school_id']
   SqlDbHelper.delete_from_hdf(school_id)
 end
 
-Before("@hdf") do
+Before("@hdf_hook") do
   SqlDbHelper.delete_pupils_not_taking_check(@school_user['school_id'])
   SqlDbHelper.set_pupil_attendance_via_school(@school_user['school_id'], 'null')
   step "I have signed in with #{@username}"
@@ -183,7 +183,7 @@ Before("@hdf") do
   visit ENV['ADMIN_BASE_URL'] + '/sign-out'
 end
 
-After("@live_tio_expired") do
+After("@live_tio_expired_hook") do
   SqlDbHelper.update_check_end_date((Date.today) + 7)
   visit ENV['ADMIN_BASE_URL'] + '/sign-out'
   step "I am logged in with a service manager"
@@ -193,7 +193,7 @@ After("@live_tio_expired") do
   add_edit_check_window_page.save_changes.click
 end
 
-After("@hdf") do
+After("@hdf_hook") do
   SqlDbHelper.delete_pupils_not_taking_check(@school_id)
 end
 
@@ -202,7 +202,7 @@ Before("@create_new_window") do
   visit ENV['ADMIN_BASE_URL'] + '/sign-out'
 end
 
-Before("@create_new_window_v2") do
+Before("@create_new_window_hook") do
   step "I navigate to the create check window page"
   step "I submit details of a valid check window"
   step "I should see it added to the list of check windows"
@@ -215,7 +215,7 @@ Before(" not @poltergeist") do
   Capybara.current_driver = ENV['DRIVER']
 end
 
-Before("@upload_new_live_form") do
+Before("@upload_new_live_form_hook") do
   step 'I have signed in with test-developer'
   step 'I am on the Upload and View forms page v2'
   step 'I have uploaded a valid live form'
@@ -232,7 +232,7 @@ Before("@upload_new_fam_form") do
   visit ENV['ADMIN_BASE_URL'] + '/sign-out'
 end
 
-Before("@remove_all_groups") do
+Before("@remove_all_groups_hook") do
   SqlDbHelper.remove_all_pupil_from_group(@school['id'])
   SqlDbHelper.delete_all_school_groups(@school['id'])
 end
@@ -243,7 +243,7 @@ Before("@no_active_check_window") do
   SqlDbHelper.activate_or_deactivate_active_check_window(check_end_date)
 end
 
-Before("@deactivate_all_test_check_window") do
+Before("@deactivate_all_test_check_window_hook") do
   SqlDbHelper.deactivate_all_test_check_window()
   REDIS_CLIENT.keys.each do |key|
     if key.include?('checkWindow.sqlFindActiveCheckWindow')
@@ -252,18 +252,18 @@ Before("@deactivate_all_test_check_window") do
   end
 end
 
-Before("@remove_assigned_form") do
+Before("@remove_assigned_form_hook") do
   SqlDbHelper.delete_assigned_forms
 end
 
 
-After('@remove_mod_school') do
+After('@remove_mod_school_hook') do
   step "I am logged in with a service manager"
   step 'I navigate to the settings for MOD schools page'
   mod_schools_page.remove_school(@school)
 end
 
-After('@incomplete_pupil') do
+After('@incomplete_pupil_hook') do
   REDIS_CLIENT.del 'settings'
   SqlDbHelper.set_check_time_limit(30)
   step "I am logged in with a service manager"
@@ -278,17 +278,17 @@ After("@no_active_check_window") do
   SqlDbHelper.activate_or_deactivate_active_check_window(check_end_date)
 end
 
-After("@multiple_pupil_upload") do
+After("@multiple_pupil_upload_hook") do
   File.delete(File.expand_path("#{File.dirname(__FILE__)}/../../data/multiple_pupils_template.csv")) if File.exist? (File.expand_path("#{File.dirname(__FILE__)}/../../data/multiple_pupils_template.csv"))
 end
 
-After("@remove_uploaded_forms or @upload_new_live_form or @upload_new_fam_form") do
+After("@remove_uploaded_forms or @upload_new_live_form_hook or @upload_new_fam_form") do
   SqlDbHelper.delete_assigned_forms
   SqlDbHelper.delete_forms
   SqlDbHelper.assign_fam_form_to_window if SqlDbHelper.get_default_assigned_fam_form == nil
 end
 
-Before("@redis") do
+Before("@redis_hook") do
   REDIS_CLIENT.keys.each do |key|
     if key.include?('checkWindow.sqlFindActiveCheckWindow')
       REDIS_CLIENT.del key
@@ -301,7 +301,7 @@ Before("@pupil_register_v2") do
   skip_this_scenario
 end
 
-After("@redis") do
+After("@redis_hook") do
   REDIS_CLIENT.keys.each do |key|
     if key.include?('checkWindow.sqlFindActiveCheckWindow')
       REDIS_CLIENT.del key
@@ -309,7 +309,7 @@ After("@redis") do
   end
 end
 
-After("@results") do
+After("@results_hook") do
   today_date = Date.today
   check_end_date = today_date + 35
   SqlDbHelper.update_check_end_date(check_end_date)

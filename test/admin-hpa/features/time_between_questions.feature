@@ -1,5 +1,4 @@
-#These tests are having issues with travis
-@timer_reset @time_between_questions
+@time_between_questions_feature @timer_reset_hook
 Feature: Time between questions
   I want to be able to vary the time given to pupils between questions during the check
   As a STA Researcher

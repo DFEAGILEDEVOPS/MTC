@@ -1,4 +1,4 @@
-@edit_check_window
+@edit_check_window_feature
 Feature:
   Edit check window
 

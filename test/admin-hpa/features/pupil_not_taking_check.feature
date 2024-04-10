@@ -1,4 +1,4 @@
-@pupils_not_taking_check
+@pupils_not_taking_check_feature
 Feature:
   Pupil not taking check
 
@@ -42,13 +42,13 @@ Feature:
     When I select a pupil
     Then I should see a sticky banner
 
-  @pupil_not_taking_check
+  @pupil_not_taking_check_hook
   Scenario: Sticky banner displays pupil count
     Given I am on the pupil reason page
     When I select multiple pupils with the Incorrect registration reason
     Then the sticky banner should display the pupil count
 
-  @pupil_not_taking_check
+  @pupil_not_taking_check_hook
   Scenario: Sticky banner displays total pupil count when all pupils are selected for pupil not taking check
     Given I am on the pupil reason page
     And I select a reason
@@ -67,7 +67,7 @@ Feature:
     When I choose to cancel
     Then I should be taken to the pupil not taking check page
 
-  @pupil_not_taking_check
+  @pupil_not_taking_check_hook
   Scenario Outline: Teachers can add a reason for pupils not taking a check
     Given I am on the pupil reason page for new pupil
     When I add <reason> as a reason for a particular pupil
@@ -82,7 +82,7 @@ Feature:
       | Working below expectation                      |
       | Just arrived and unable to establish abilities |
 
-  @pupil_not_taking_check
+  @pupil_not_taking_check_hook
   Scenario: Teachers can add multiple pupils
     Given I am on the pupil reason page for multiple new pupil
     When I add Incorrect registration as a reason for multiple pupils
@@ -102,37 +102,37 @@ Feature:
     Given I am on the pupil reason page
     Then I should be able to select all pupils
 
-  @pupil_not_taking_check
+  @pupil_not_taking_check_hook
   Scenario: List of pupils not taking check is displayed on the hub page
     Given I have previously added a reason for a pupil
     When I have navigated away and then return to the pupil not taking check page
     Then I should see a list of pupils
 
-  @pupil_not_taking_check
+  @pupil_not_taking_check_hook
   Scenario: Pupil reasons for not taking the check can be removed
     Given I have previously added a reason for a pupil
     When I have navigated away and then return to the pupil not taking check page
     And I remove a pupil from the list of pupils not taking a check
     Then the pupil should be removed and any attendance code cleared from the db against the pupil
 
-  @pupil_not_taking_check
+  @pupil_not_taking_check_hook
   Scenario: Message displayed when there are no pupils that are not taking the check
     Given I am on the pupil not taking check page
     Then I should see a message stating there are no pupils not taking the check
 
-  @remove_all_groups
+  @remove_all_groups_hook
   Scenario: Pupils can be filtered by group
     Given I have a group of pupils
     When I choose to filter pupils via group on the pupil reason page
     Then only those pupils from the group should be displayed
     And I should be able to see a count of pupils in the group
 
-  @remove_all_groups
+  @remove_all_groups_hook
   Scenario: Group filter is not displayed when there are no groups
     Given I am on the pupil reason page
     Then I should not see the group filter
 
-  @remove_all_groups
+  @remove_all_groups_hook
   Scenario: Group filter is open by default
     Given I have a group of pupils
     Then the group filter should be opened by default
@@ -147,7 +147,7 @@ Feature:
     When I want to add a reason for pupils not taking a check
     Then I can see pupil in the list for pupil for not taking check
 
-    @hdf
+    @hdf_hook
     Scenario: Cannot remove reason for NTC when HDF has been signed
       Given I the hdf has been signed
       Then I should not be able to remove pupils who are NTC

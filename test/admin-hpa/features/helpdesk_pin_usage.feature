@@ -1,4 +1,4 @@
-@helpdesk_view_pin_usage
+@helpdesk_view_pin_usage_feature
 Feature:
   View Pin Usage
 
