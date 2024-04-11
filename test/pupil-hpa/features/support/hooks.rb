@@ -6,10 +6,10 @@ Before do
   if @school['result'] == 'Failed'
     fail "#{@school['message']}"
   end
-  school_uuid = @school['urlSlug']
+  school_uuid = @school['entity']['urlSlug']
   @username = "teacher#{@urn}"
   @school_user = FunctionsHelper.create_user(school_uuid, @username)
-  @school_id = @school_user['school_id']
+  @school_id = @school_user['entity']['school_id']
   FunctionsHelper.generate_school_pin(@school_id)
   p "Login for #{@school_name} created as - #{@username}"
   step 'I login to the admin app'
@@ -41,10 +41,10 @@ Before('@empty_new_school') do
   if @school['result'] == 'Failed'
     fail "#{@school['message']}"
   end
-  school_uuid = @school['urlSlug']
+  school_uuid = @school['entity']['urlSlug']
   @username = "teacher#{@urn}"
   @school_user = FunctionsHelper.create_user(school_uuid, @username)
-  @school_id = @school_user['school_id']
+  @school_id = @school_user['entity']['school_id']
   FunctionsHelper.generate_school_pin(@school_id)
   p "Login for #{@school_name} created as - #{@username}"
 end
@@ -92,4 +92,3 @@ After do |scenario|
     p "Screenshot uploaded to #{ENV["AZURE_ACCOUNT_NAME"]} - #{name}"
   end
 end
-

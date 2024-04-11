@@ -342,7 +342,7 @@ Then(/^I should see the restart reason in the ps report record$/) do
 end
 
 Given(/^I have completed the check for a pupil attending a test school$/) do
-  SqlDbHelper.set_school_as_test_school(@school['dfeNumber'])
+  SqlDbHelper.set_school_as_test_school(@school['entity']['dfeNumber'])
   step 'I have completed the check'
 end
 
