@@ -1,4 +1,4 @@
-@declaration_form @hdf
+@declaration_form_feature @hdf_hook
 Feature: Declaration form
   As a head teacher
   I need to submit the declaration form
@@ -90,7 +90,7 @@ Feature: Declaration form
     And I submit the form with the hdf name fields set as Test
     Then I should see a validation error for job title
 
-  @live_tio_expired
+  @live_tio_expired_hook
   Scenario: HDF cannot be signed when a pupil has an expired pin and the live check window is closed
     Given I generate a live pin
     But the pin expires

@@ -72,7 +72,7 @@ end
 
 Given(/^I am on the school landing page for a school$/) do
   step 'I have signed in with helpdesk'
-  step "I enter and submit a valid #{@school['entity']['dfeNumber']} for impersonation"
+  step "I enter and submit a valid #{@school['dfeNumber']} for impersonation"
 end
 
 
@@ -101,8 +101,8 @@ Given(/^I am on the school landing page for a school using an account with the (
   else
     fail role + " role not found "
   end
-  p @school['entity']['dfeNumber']
-  step "I enter and submit a valid #{@school['entity']['dfeNumber']} for impersonation"
+  p @school['dfeNumber']
+  step "I enter and submit a valid #{@school['dfeNumber']} for impersonation"
 end
 
 Then(/^the school password should be unmasked$/) do

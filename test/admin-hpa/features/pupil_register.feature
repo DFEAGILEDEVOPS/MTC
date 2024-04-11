@@ -1,4 +1,4 @@
-@pupil_register
+@pupil_register_feature
 Feature:
   As part of test development
   I want to be able to register a pupil
@@ -28,13 +28,13 @@ Feature:
     And I choose to add a pupil by clicking Add Pupils link
     Then I should see the added pupil details on the pupil register page
 
-  @remove_all_groups
+  @remove_all_groups_hook
   Scenario: Group column is populated with group name when pupil is part of a group
     Given I have a group of pupils
     When I am on the Pupil Register page
     Then I should see each pupil row have the group column populated with the group name
 
-  @remove_all_groups
+  @remove_all_groups_hook
   Scenario: Pupils with no group have no entry in the group column
     Given I have a group of pupils
     When I am on the Pupil Register page
@@ -45,7 +45,7 @@ Feature:
     When I am on the Pupil Register page
     Then I should see a count of pupils in the school
 
-  @pupil_register_v2
+  @pupil_register_v2_hook
   Scenario: Pupil register data stored in redis
     Given I am logged in
     And I am on the Pupil Register page

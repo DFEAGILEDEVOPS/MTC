@@ -1,3 +1,4 @@
+@pupil_audit_feature
 Feature:
   Pupil Audit
 

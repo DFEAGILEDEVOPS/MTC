@@ -73,7 +73,7 @@ And(/^the check window closed last friday$/) do
 end
 
 Then(/^I should see the school results$/) do
-  checks_ids_from_school = SqlDbHelper.get_all_checks_from_school(@school_user['entity']['school_id']).map {|check| check['id']}
+  checks_ids_from_school = SqlDbHelper.get_all_checks_from_school(@school_user['school_id']).map {|check| check['id']}
   checks_ids_from_school.each {|id| SqlDbHelper.wait_for_check_result(id)}
   school_landing_page.load
   Timeout.timeout(10){visit current_url until school_landing_page.has_results?}
@@ -115,7 +115,7 @@ end
 
 
 Then(/^I should be able to view school results but not download the ctf$/) do
-  checks_ids_from_school = SqlDbHelper.get_all_checks_from_school(@school_user['entity']['school_id']).map {|check| check['id']}
+  checks_ids_from_school = SqlDbHelper.get_all_checks_from_school(@school_user['school_id']).map {|check| check['id']}
   checks_ids_from_school.each {|id| SqlDbHelper.wait_for_check_result(id)}
   school_landing_page.load
   Timeout.timeout(10){visit current_url until school_landing_page.has_results?}
@@ -155,7 +155,7 @@ And(/^some pupils who have been marked as not taking the check$/) do
 end
 
 Then(/^I should see the results and reasons for not taking the check$/) do
-  checks_ids_from_school = SqlDbHelper.get_all_checks_from_school(@school_user['entity']['school_id']).map {|check| check['id']}
+  checks_ids_from_school = SqlDbHelper.get_all_checks_from_school(@school_user['school_id']).map {|check| check['id']}
   checks_ids_from_school.each {|id| SqlDbHelper.wait_for_check_result(id)}
   school_landing_page.load
   Timeout.timeout(10){visit current_url until school_landing_page.has_results?}
