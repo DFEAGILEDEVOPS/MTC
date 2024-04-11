@@ -12,7 +12,6 @@ Before do
   @school_user = SqlDbHelper.get_school_teacher(@urn)
   @username = @school_user['identifier']
 
-
   FunctionsHelper.generate_school_pin(@school_id)
   p "Login for #{@school_name} created as - #{@username}"
   step 'I am logged in'
@@ -33,11 +32,11 @@ Before('@empty_new_school_hook') do
   @urn = SqlDbHelper.get_schools_list.map {|school| school['urn']}.sort.last + 1
   dfe_number = create_dfe_number
   @school_name = "Test School - #{@urn}"
-  @school = FunctionsHelper.create_school(dfe_number[:lea_code],dfe_number[:estab_code], @school_name, @urn)
+  @school = FunctionsHelper.create_school(dfe_number[:lea_code],dfe_number[:estab_code], @school_name, @urn)['entity']
   if @school['result'] == 'Failed'
     fail "#{@school['message']}"
   end
-  school_uuid = @school['entity']['urlSlug']
+  school_uuid = @school['urlSlug']
   @username = "teacher#{@urn}"
   @school_user = FunctionsHelper.create_user(school_uuid, @username)
   @school_id = @school_user['entity']['school_id']
@@ -49,11 +48,11 @@ Before('@new_school_no_password_hook') do
   @urn = SqlDbHelper.get_schools_list.map {|school| school['urn']}.sort.last + 1
   dfe_number = create_dfe_number
   @school_name = "Test School - #{@urn}"
-  @school = FunctionsHelper.create_school(dfe_number[:lea_code],dfe_number[:estab_code], @school_name, @urn)
+  @school = FunctionsHelper.create_school(dfe_number[:lea_code],dfe_number[:estab_code], @school_name, @urn)['entity']
   if @school['result'] == 'Failed'
     fail "#{@school['message']}"
   end
-  school_uuid = @school['entity']['urlSlug']
+  school_uuid = @school['urlSlug']
   @username = "teacher#{@urn}"
   @school_user = FunctionsHelper.create_user(school_uuid, @username)
   @school_id = @school_user['entity']['school_id']
@@ -168,7 +167,7 @@ After('@reset_hdf_submission_hook') do
 end
 
 Before("@hdf_hook") do
-  SqlDbHelper.delete_pupils_not_taking_check(@school_user['school_id'])
+  SqlDbHelper.delete_pupils_not_taking_check(@school['id'])
   SqlDbHelper.set_pupil_attendance_via_school(@school_user['school_id'], 'null')
   step "I have signed in with #{@username}"
   pupils_not_taking_check_page.load
