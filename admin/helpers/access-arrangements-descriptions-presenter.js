@@ -20,9 +20,6 @@ accessArrangementsDescriptionsPresenter.getPresentationData = (accessArrangement
  */
 accessArrangementsDescriptionsPresenter.addReasonRequiredIndication = (accessArrangements) => {
   return accessArrangements.map(aa => {
-    if (aa.code === 'QNR') {
-      aa.description = `${aa.description} (reason required)`
-    }
     return aa
   })
 }

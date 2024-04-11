@@ -18,7 +18,7 @@ func_one() {
    echo $RESULT
 }
 
-while ! `func_one`
+while ! `func_one | tee -a func.out`
 do
     sleep 1
     echo "Restarting..."

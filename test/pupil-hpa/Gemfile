@@ -28,6 +28,6 @@ gem 'azure-storage-queue', '>= 2.0.4'
 gem 'azure-storage-blob', '>= 2.0.3'
 gem 'redis'
 gem 'lz_string'
-gem "rack", ">= 3.0.6.1"
+gem "rack", ">= 3.0.9.1"
 gem 'dotenv'
 gem 'jwt'
