@@ -311,7 +311,7 @@
     "@opentelemetry/instrumentation" "^0.41.2"
     tslib "^2.2.0"
 
-"@azure/service-bus@^7.9.3":
+"@azure/service-bus@^7.9.4":
   version "7.9.4"
   resolved "https://registry.yarnpkg.com/@azure/service-bus/-/service-bus-7.9.4.tgz#e0d3a9e79b30025f5b590eb410602ed678bf7ab9"
   integrity sha512-LxFx6gVpMmxfVpTUEN4++CfXejGCCFvuFNSBovz70upmvZ/urBmqQoPOriXwezEQtaEo/NlFMIjR9AnJDmQIdA==
@@ -1511,7 +1511,7 @@ diagnostic-channel@1.1.1:
   dependencies:
     semver "^7.5.3"
 
-dotenv@^16.3.1:
+dotenv@^16.4.5:
   version "16.4.5"
   resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-16.4.5.tgz#cdd3b3b604cb327e286b4762e13502f717cb099f"
   integrity sha512-ZmdL2rui+eB2YwhsWzjInR8LldtZHGDoQ1ugH85ppHKwpUHL7j7rN0Ti9NCnGiQbhaZ11FpR+7ao1dNsmduNUg==
