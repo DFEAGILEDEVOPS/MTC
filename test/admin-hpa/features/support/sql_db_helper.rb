@@ -85,18 +85,6 @@ class SqlDbHelper
     @array_of_pins.map {|row| row['val']}
   end
 
-  def self.delete_all_checks
-    sql = "DELETE FROM [mtc_admin].[check]"
-    result = SQL_CLIENT.execute(sql)
-    result.do
-  end
-
-  def self.delete_all_restarts
-    sql = "DELETE FROM [mtc_admin].[pupilRestart]"
-    result = SQL_CLIENT.execute(sql)
-    result.do
-  end
-
   def self.get_settings
     sql = "SELECT * FROM [mtc_admin].[settings]"
     result = SQL_CLIENT.execute(sql)
@@ -272,24 +260,28 @@ class SqlDbHelper
     chk_form_res
   end
 
+  # requires review
   def self.update_check_end_date(check_end_date)
     sql = "UPDATE [mtc_admin].[checkWindow] set familiarisationCheckEndDate = '#{check_end_date}', checkEndDate = '#{check_end_date}' WHERE id IN (1)"
     result = SQL_CLIENT.execute(sql)
     result.do
   end
 
+  # requires review
   def self.update_admin_end_date(check_end_date)
     sql = "UPDATE [mtc_admin].[checkWindow] set adminEndDate = '#{check_end_date}' WHERE id IN (1)"
     result = SQL_CLIENT.execute(sql)
     result.do
   end
 
+  # requires review
   def self.activate_or_deactivate_active_check_window(check_end_date)
     sql = "UPDATE [mtc_admin].[checkWindow] set adminEndDate = '#{check_end_date}' WHERE id NOT IN (2)"
     result = SQL_CLIENT.execute(sql)
     result.do
   end
 
+  # requires review
   def self.deactivate_all_test_check_window()
     sql = "UPDATE [mtc_admin].[checkWindow] set isDeleted = 1 WHERE id NOT IN (1,2)"
     result = SQL_CLIENT.execute(sql)
@@ -318,32 +310,37 @@ class SqlDbHelper
     pupil_pin_res
   end
 
-  def self.remove_all_pupil_from_group
-    sql = "UPDATE [mtc_admin].[pupil] SET group_id = null"
+  def self.remove_all_pupil_from_group(school_id)
+    p "removing all pupils from group. school_id:#{school_id}"
+    sql = "UPDATE [mtc_admin].[pupil] SET group_id=NULL WHERE school_id=#{school_id}"
     result = SQL_CLIENT.execute(sql)
     result.do
   end
 
-  def self.delete_all_from_group
-    sql = "DELETE FROM [mtc_admin].[group]"
+  def self.delete_all_school_groups(school_id)
+    sql = "DELETE FROM [mtc_admin].[group] WHERE school_id=#{school_id}"
     result = SQL_CLIENT.execute(sql)
     result.do
   end
 
+  # requires review
   def self.delete_forms
     sql = "DELETE FROM [mtc_admin].[checkForm] where name like 'test-check-form%'"
     result = SQL_CLIENT.execute(sql)
     result.do
   end
 
+  # requires review
   def self.delete_assigned_forms
     sql = "DELETE FROM [mtc_admin].[checkFormWindow] where id <> 1"
     result = SQL_CLIENT.execute(sql)
     result.do
   end
 
-  def self.delete_pupils_not_taking_check
-    sql = "DELETE FROM [mtc_admin].[pupilAttendance]"
+  def self.delete_pupils_not_taking_check(school_id)
+    sql = "DELETE pa FROM [mtc_admin].[pupilAttendance] pa
+            INNER JOIN [mtc_admin].[pupil] p ON pa.pupil_id = p.id
+            WHERE p.school_id =#{school_id}"
     result = SQL_CLIENT.execute(sql)
     result.do
   end
@@ -407,7 +404,7 @@ class SqlDbHelper
     school_res
   end
 
-
+  # requires review
   def self.get_mod_schools
     sql = "SELECT * FROM [mtc_admin].[school] WHERE leaCode='702'"
     result = SQL_CLIENT.execute(sql)
@@ -684,12 +681,14 @@ class SqlDbHelper
     result.each {|row| row.map}
   end
 
+  # requires review (and isDeleted=0?)
   def self.update_attendance_code_id_for_pupil(pupil_id,new_attendance_code)
     sql = "update mtc_admin.pupilAttendance set attendanceCode_id = #{new_attendance_code} where pupil_id=#{pupil_id}"
     result = SQL_CLIENT.execute(sql)
     result.do
   end
 
+  # requires review (a lot of logic is being bypassed, why not do via UI?)
   def self.set_pupil_as_frozen(pupil_id,new_attendance_code)
     sql = "update mtc_admin.pupil set frozen = 1, attendanceId = #{new_attendance_code} where id=#{pupil_id}"
     result = SQL_CLIENT.execute(sql)
@@ -794,6 +793,31 @@ class SqlDbHelper
     group_details_res = result.first
     result.cancel
     group_details_res
+  end
+
+  def self.get_random_school()
+    begin
+      sql = "SELECT TOP 1 t1.* FROM (SELECT * FROM mtc_admin.school s
+        WHERE s.id NOT IN (SELECT school_id FROM mtc_admin.adminLogonEvent WHERE school_id IS NOT NULL)) as t1
+        ORDER BY NEWID()"
+      result = SQL_CLIENT.execute(sql)
+      school_details = result.first
+      result.cancel
+      school_details
+    rescue => e
+      abort "sql_db_helper.get_random_school failed.
+      Error: #{e.to_s}"
+    end
+  end
+
+  def self.get_school_teacher(school_urn)
+    sql = "SELECT TOP 1 u.* FROM [mtc_admin].[user] u
+      INNER JOIN mtc_admin.school s on u.school_id = s.id
+      WHERE s.urn='#{school_urn}' AND u.role_id=3"
+    result = SQL_CLIENT.execute(sql)
+    user = result.first
+    result.cancel
+    user
   end
 
 end

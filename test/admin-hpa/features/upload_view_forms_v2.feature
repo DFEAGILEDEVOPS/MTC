@@ -1,4 +1,4 @@
-@upload_view_forms @remove_assigned_form
+@upload_view_forms_feature @remove_assigned_form_hook
 Feature: Upload and View Forms
 
   Background:

@@ -1,4 +1,4 @@
-@generate_pupil_pins @reset_checks @deactivate_all_test_check_window
+@generate_pupil_pins_feature @deactivate_all_test_check_window_hook
 Feature: Generate Pupil PINs
 
   Scenario: Generate Pins overview page displays heading and info section
@@ -92,7 +92,7 @@ Feature: Generate Pupil PINs
     And the pin should be stored against the pupil
     And check form should be assigned to the pupil
 
-  @bug_18993 @manual
+  @manual
   Scenario: Pupil pins must be generated from the specified pool of characters
     Given I have generated pin for all pupil
     Then all pupil pins should be generated from the specified pool of characters
@@ -115,7 +115,7 @@ Feature: Generate Pupil PINs
     When I want to add a reason for pupils not taking a check
     Then I cannot see pupil in the list for pupil for not taking check
 
-  @remove_all_groups @pupil_not_taking_check
+  @remove_all_groups_hook @pupil_not_taking_check_hook
   Scenario: Pupils can be filtered by group
     Given I have a group of pupils
     When I choose to filter via group on the generate pins page
@@ -123,7 +123,7 @@ Feature: Generate Pupil PINs
     And I should be able to see a count of pupils
     And I should be able to generate pins for all pupils in this group
 
-  @remove_all_groups @pupil_not_taking_check
+  @remove_all_groups_hook @pupil_not_taking_check_hook
   Scenario: Pupils not taking the check should not be in filtered group list
     Given I have a pupil not taking the check
     And that pupil is apart of a group
@@ -131,12 +131,12 @@ Feature: Generate Pupil PINs
     Then I should only see pupils available for taking the check
     And I should be able to generate pins for all pupils in this group
 
-  @remove_all_groups
+  @remove_all_groups_hook
   Scenario: Group is no longer present in the filter when all pupils in the group have had a pin generated
     Given I have generated pins for all pupils in a group
     Then I can no longer use this group to filter on the generate pins page
 
-  @remove_all_groups @pupil_not_taking_check @manual
+  @remove_all_groups_hook @pupil_not_taking_check_hook @manual
   Scenario: Groups reappear when their are available pupils for pin generation
     Given I have generated pins for all pupils in a group
     When a pupil becomes available for pin generation again
@@ -157,7 +157,7 @@ Feature: Generate Pupil PINs
     And I am on the generate pupil live pins overview page
     Then generated pin overview page for live check with some pin generated is displayed as per design
 
-  @remove_all_groups @empty_new_school
+  @remove_all_groups_hook @empty_new_school_hook
   Scenario: Generate pins for 255 pupils
     Given I want to generate pins for a group of 255 pupils with a teacher
     When I select all 255 pupils

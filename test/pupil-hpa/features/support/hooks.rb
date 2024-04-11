@@ -92,4 +92,3 @@ After do |scenario|
     p "Screenshot uploaded to #{ENV["AZURE_ACCOUNT_NAME"]} - #{name}"
   end
 end
-

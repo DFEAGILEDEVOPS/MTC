@@ -1,4 +1,4 @@
-@edit_pupil
+@edit_pupil_feature
 Feature:
   As part of test development
   I want to be able to edit a pupil
@@ -183,7 +183,7 @@ Feature:
     When I submit the form with the pupil dob 6 years ago
     Then I should see an error with the DOB
 
-  @pupil_register_v2
+  @pupil_register_v2_hook
   Scenario: Redis cache is updated upon editing a pupil
     When I update with valid pupil data
     When I check the redis cache

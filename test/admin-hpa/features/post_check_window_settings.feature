@@ -1,4 +1,4 @@
-@post_check_window_settings
+@post_check_window_settings_feature
 Feature:
   Service manager post check window settings
 
