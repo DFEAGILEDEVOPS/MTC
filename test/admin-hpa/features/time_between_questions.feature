@@ -1,4 +1,4 @@
-@time_between_questions_feature @timer_reset_hook
+@time_between_questions_feature @timer_reset_hook @serial
 Feature: Time between questions
   I want to be able to vary the time given to pupils between questions during the check
   As a STA Researcher

@@ -1,4 +1,4 @@
-@upload_pupil_census_feature
+@upload_pupil_census_feature @serial
 Feature:
   Upload Pupil Census
 

@@ -1,4 +1,4 @@
-@generate_pupil_pins_feature @deactivate_all_test_check_window_hook
+@generate_pupil_pins_feature @deactivate_all_test_check_window_hook @serial
 Feature: Generate Pupil PINs
 
   Scenario: Generate Pins overview page displays heading and info section

@@ -1,4 +1,4 @@
-@create_check_window_feature
+@create_check_window_feature @serial
 Feature:
   Create check window
 
