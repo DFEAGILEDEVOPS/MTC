@@ -1,4 +1,4 @@
-@upload_view_forms_feature @remove_assigned_form_hook
+@upload_view_forms_feature @remove_assigned_form_hook @serial
 Feature: Upload and View Forms
 
   Background:

@@ -1,4 +1,4 @@
-@csrf_token_feature
+@csrf_token_feature @serial
 Feature: CSRF token
 
   Scenario: Add pupils form has hidden csrf field

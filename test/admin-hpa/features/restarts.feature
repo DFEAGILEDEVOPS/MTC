@@ -1,4 +1,4 @@
-@restarts_feature @deactivate_all_test_check_window_hook
+@restarts_feature @deactivate_all_test_check_window_hook @serial
 Feature: Restarts
 
   Scenario: Restarts Landing page displays heading and info section

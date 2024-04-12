@@ -1,4 +1,4 @@
-@declaration_submitted_feature @reset_hdf_submission_hook
+@declaration_submitted_feature @reset_hdf_submission_hook @serial
 Feature: Declaration form submitted
 
   Background:

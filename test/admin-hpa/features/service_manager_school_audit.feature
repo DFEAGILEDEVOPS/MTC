@@ -1,4 +1,4 @@
-@service_manager_school_audit_feature @new_school_no_password_hook
+@service_manager_school_audit_feature @new_school_no_password_hook @serial
 Feature:
   Service manager school audit
 

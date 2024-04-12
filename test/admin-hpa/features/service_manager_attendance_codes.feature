@@ -1,4 +1,4 @@
-@service_manager_attendance_code_feature @attendance_code_hook
+@service_manager_attendance_code_feature @attendance_code_hook @serial
 Feature: Service manager attendance codes
 
   Scenario Outline: Service manager enable and disable attendance codes

@@ -1,4 +1,4 @@
-@mod_schools_feature
+@mod_schools_feature @serial
 Feature:
   MOD Schools
 
