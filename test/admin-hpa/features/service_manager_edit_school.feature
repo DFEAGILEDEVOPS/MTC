@@ -1,4 +1,4 @@
-@service_manager_edit_school_feature
+@service_manager_edit_school_feature @serial
 Feature:
   Service manager edit school
 

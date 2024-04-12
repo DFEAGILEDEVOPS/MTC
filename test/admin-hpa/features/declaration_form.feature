@@ -1,4 +1,4 @@
-@declaration_form_feature @hdf_hook
+@declaration_form_feature @hdf_hook @serial
 Feature: Declaration form
   As a head teacher
   I need to submit the declaration form

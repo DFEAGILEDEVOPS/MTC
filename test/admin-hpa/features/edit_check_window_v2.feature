@@ -1,4 +1,4 @@
-@edit_check_window_feature
+@edit_check_window_feature @serial
 Feature:
   Edit check window
 

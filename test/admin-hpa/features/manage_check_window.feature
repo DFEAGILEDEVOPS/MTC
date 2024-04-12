@@ -1,4 +1,4 @@
-@manage_check_window_feature
+@manage_check_window_feature @serial
 Feature:
   Manage check windows
 

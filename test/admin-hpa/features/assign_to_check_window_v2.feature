@@ -1,4 +1,4 @@
-@assign_to_check_window_feature @create_new_window_hook
+@assign_to_check_window_feature @create_new_window_hook @serial
 Feature:
   As a test developer
   I want to assign a window for a check form

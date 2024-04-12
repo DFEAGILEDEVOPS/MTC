@@ -1,4 +1,4 @@
-@retro_input_assistant_feature
+@retro_input_assistant_feature @serial
 Feature:
   Retrospective input assistance
 

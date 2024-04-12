@@ -1,4 +1,4 @@
-@generate_pupil_pins_familiarisation_feature @deactivate_all_test_check_window_hook
+@generate_pupil_pins_familiarisation_feature @deactivate_all_test_check_window_hook @serial
 Feature: Generate Pupil PINs Familiarisation
 
   Scenario: Generate pupil pin familiarisation is rendered as per design
