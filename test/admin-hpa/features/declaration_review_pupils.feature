@@ -1,4 +1,4 @@
-@declaration_review_pupils @hdf
+@declaration_review_pupils_feature @hdf_hook
 Feature: Declaration review pupils
 
   Background:

@@ -1,4 +1,4 @@
-@access_arrangements @feature_toggle @add_a_pupil
+@access_arrangements_feature @add_a_pupil_hook
 Feature: Access Arrangements
 
   Scenario: Access Arrangements page is displayed as per the design
@@ -78,7 +78,7 @@ Feature: Access Arrangements
     Given I have added a pupil with an access arrangement
     Then I should be able to remove any access arrangements for the pupil from the edit page
 
-  @deactivate_all_test_check_window
+  @deactivate_all_test_check_window_hook
   Scenario: Access arrangements can be updated after pin generation
     Given I have generated a live pin for a pupil
     And I have applied the Audible time alert access arrangement to the pupil

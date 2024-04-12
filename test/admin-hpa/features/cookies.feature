@@ -1,3 +1,4 @@
+@cookies_feature
 Feature:
   Cookies policy
 

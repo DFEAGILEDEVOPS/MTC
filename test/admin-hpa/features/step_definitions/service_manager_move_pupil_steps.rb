@@ -14,7 +14,7 @@ When(/^I move the pupil to a different school$/) do
   move_pupil_page.confirm.click
   expect(confirm_move_pupil_page.pupil_name.text).to eql "#{@pupil_details_before_move['lastName']}, #{@pupil_details_before_move['foreName']}"
   expect(confirm_move_pupil_page.moving_pupil_text.text).to eql "Moving #{@pupil_details_before_move['lastName']}, #{@pupil_details_before_move['middleNames']} #{@pupil_details_before_move['foreName']} (DOB: #{@pupil_details_before_move['dateOfBirth'].strftime("%-d %b %Y")})"
-  expect(confirm_move_pupil_page.from_school_text.text).to eql "From school: #{@school['entity']['name']} (DfE# #{@school['entity']['dfeNumber']})"
+  expect(confirm_move_pupil_page.from_school_text.text).to eql "From school: #{@school['name']} (DfE# #{@school['dfeNumber']})"
   @target_school_details = SqlDbHelper.find_school_by_urn(@target_urn)
   expect(confirm_move_pupil_page.to_school_text.text).to eql "To school: #{@target_school_details['name']} URN: #{@target_school_details['urn']} DFE number: #{@target_school_details['dfeNumber']}"
   confirm_move_pupil_page.confirm_move_pupil.click
@@ -38,7 +38,7 @@ When(/^I cancel moving a pupil to a different school$/) do
   move_pupil_page.confirm.click
   expect(confirm_move_pupil_page.pupil_name.text).to eql "#{@pupil_details_before_move['lastName']}, #{@pupil_details_before_move['foreName']}"
   expect(confirm_move_pupil_page.moving_pupil_text.text).to eql "Moving #{@pupil_details_before_move['lastName']}, #{@pupil_details_before_move['middleNames']} #{@pupil_details_before_move['foreName']} (DOB: #{@pupil_details_before_move['dateOfBirth'].strftime("%-d %b %Y")})"
-  expect(confirm_move_pupil_page.from_school_text.text).to eql "From school: #{@school['entity']['name']} (DfE# #{@school['entity']['dfeNumber']})"
+  expect(confirm_move_pupil_page.from_school_text.text).to eql "From school: #{@school['name']} (DfE# #{@school['dfeNumber']})"
   @target_school_details = SqlDbHelper.find_school_by_urn(@target_urn)
   expect(confirm_move_pupil_page.to_school_text.text).to eql "To school: #{@target_school_details['name']} URN: #{@target_school_details['urn']} DFE number: #{@target_school_details['dfeNumber']}"
   confirm_move_pupil_page.cancel.click

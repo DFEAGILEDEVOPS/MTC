@@ -1,3 +1,4 @@
+@frozen_pupil_feature
 Feature:
   Frozen pupil
 
@@ -24,7 +25,6 @@ Feature:
     Given the service manager has set a pupil to be annulled
     When I am on the pupil reason page
     Then the annulled pupil is not in the list of available pupils
-
 
   Scenario: annulled pupils are not eligble for TIO pin generation
     Given the service manager has set a pupil to be annulled
