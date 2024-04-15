@@ -11,9 +11,10 @@ Then(/^I should see a device cookie has been created$/) do
 end
 
 When(/^the data sync function has run$/) do
-  (wait_until(ENV['WAIT_TIME'].to_i,2){SqlDbHelper.get_check(@check_code)['complete'] == true}) unless @check_code.nil?
-  response = FunctionsHelper.sync_check_code(@check_code)
+  # (wait_until(ENV['WAIT_TIME'].to_i,2){SqlDbHelper.get_check(@check_code)['complete'] == true}) unless @check_code.nil?
+  response = FunctionsHelper.sync_all
   expect(response.code).to eql 202
+  sleep 300
 end
 
 Then(/^the device cookie is stored$/) do

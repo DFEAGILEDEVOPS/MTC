@@ -222,7 +222,7 @@ Before("@upload_new_live_form_hook") do
   visit ENV['ADMIN_BASE_URL'] + '/sign-out'
 end
 
-Before("@upload_new_fam_form") do
+Before("@upload_new_fam_form_hook") do
   SqlDbHelper.delete_assigned_forms
   step 'I have signed in with test-developer'
   step 'I am on the Upload and View forms page v2'
