@@ -1,4 +1,4 @@
-@add_multiple_pupils
+@add_multiple_pupils_feature
 Feature: Add Multiple Pupil
 
   Background:
@@ -13,21 +13,21 @@ Feature: Add Multiple Pupil
     Then I should be taken to the Pupil register page
     And I should see no flash message displayed
 
-  @multiple_pupil_upload
+  @multiple_pupil_upload_hook
   Scenario: User can see success message after uploading valid file for adding multiple pupil
     When I Upload a valid CSV file to add Multiple Pupil
     Then I should be taken to the Pupil register page
     And I should see a flash message for the multiple pupil upload
     And I can see the new pupil in the list
 
-  @multiple_pupil_upload
+  @multiple_pupil_upload_hook
   Scenario: User can see success message after uploading valid file for adding multiple pupil using a temporary upn
     When I Upload a valid CSV file to add Multiple Pupil using temporary upns
     Then I should be taken to the Pupil register page
     And I should see a flash message for the multiple pupil upload
     And I can see the new pupil in the list
 
-  @multiple_pupil_upload
+  @multiple_pupil_upload_hook
   Scenario: User uploading a CSV files with errors can see error message
     When I Upload a CSV file with errors to add Multiple Pupil
     Then I can see the error message for adding Multiple Pupil

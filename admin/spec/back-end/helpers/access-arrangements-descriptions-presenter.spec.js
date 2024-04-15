@@ -172,7 +172,7 @@ describe('accessArrangementsDescriptionsPresenter', () => {
       expect(accessArrangementsPresentationData[5]).toEqual(
         {
           id: 6,
-          description: 'Audio version (reason required)',
+          description: 'Audio version',
           code: 'QNR'
         }
       )

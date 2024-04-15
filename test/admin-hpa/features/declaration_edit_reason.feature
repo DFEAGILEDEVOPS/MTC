@@ -1,4 +1,4 @@
-@declaration_edit_reason @hdf
+@declaration_edit_reason_feature @hdf_hook
 Feature: Declaration edit attendance reason
 
   Background:

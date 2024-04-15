@@ -25,14 +25,6 @@ module Helpers
     academic_year
   end
 
-  def get_highest_estab_code
-    SqlDbHelper.get_schools_list.map {|school| school['estabCode']}.sort.last
-  end
-
-  def get_highest_urn
-    SqlDbHelper.get_schools_list.map {|school| school['urn']}.sort.last
-  end
-
   def calculate_ctf_reason_code(reason)
     case reason
     when 'Working below expectation'

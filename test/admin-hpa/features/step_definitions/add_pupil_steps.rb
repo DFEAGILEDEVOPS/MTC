@@ -552,7 +552,8 @@ end
 
 
 When(/^I check the redis cache$/) do
-  @pupils_from_redis = (JSON.parse(JSON.parse(REDIS_CLIENT.get('pupilRegisterViewData:2'))['value'])).map{|x| x['fullName']}
+  wait_until {!(REDIS_CLIENT.get("pupilRegisterViewData:#{@school_id}")).nil?}
+  @pupils_from_redis = (JSON.parse(JSON.parse(REDIS_CLIENT.get("pupilRegisterViewData:#{@school_id}"))['value'])).map{|x| x['fullName']}
 end
 
 

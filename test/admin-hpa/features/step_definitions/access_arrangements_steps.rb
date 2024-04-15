@@ -86,15 +86,15 @@ end
 When(/^I save access arrangements without selecting any question reader reason$/) do
   select_access_arrangements_page.search_pupil.set(@details_hash[:first_name])
   select_access_arrangements_page.auto_search_list[0].click
-  select_access_arrangements_page.select_access_arrangement("Audio version (reason required)")
+  select_access_arrangements_page.select_access_arrangement("Audio version")
   select_access_arrangements_page.save.click
 end
 
 When(/^I save access arrangements without providing explanation for other reason for question reader$/) do
   select_access_arrangements_page.search_pupil.set(@details_hash[:first_name])
   select_access_arrangements_page.auto_search_list[0].click
-  select_access_arrangements_page.select_access_arrangement("Audio version (reason required)")
-  question_reader_access_arrangement_row =select_access_arrangements_page.find_access_arrangement_row("Audio version (reason required)")
+  select_access_arrangements_page.select_access_arrangement("Audio version")
+  question_reader_access_arrangement_row =select_access_arrangements_page.find_access_arrangement_row("Audio version")
   question_reader_access_arrangement_row.question_reader_reason[3].question_reader_reason_radio.click
   select_access_arrangements_page.save.click
 end
@@ -152,8 +152,7 @@ Given(/^I have a pupil who needs all possible access arrangements$/) do
   SqlDbHelper.access_arrangements.map{|a| a['description']}.each do |aa|
     select_access_arrangements_page.select_access_arrangement(aa) unless aa == 'Retrospective Input assistance'
   end
-  question_reader_row =select_access_arrangements_page.find_access_arrangement_row("Audio version (reason required)")
-  question_reader_row.question_reader_reason[2].question_reader_reason_radio.click
+  select_access_arrangements_page.find_access_arrangement_row("Audio version")
   select_access_arrangements_page.save.click
 end
 
