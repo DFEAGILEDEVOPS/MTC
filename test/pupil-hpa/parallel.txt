@@ -1,1 +1,19 @@
 # all scenarios that can be executed safely in parallel
+@check
+@complete_page?
+@generate_live_pin?
+@device_information
+@familiarisation_check
+@feedback
+@header_footer
+@instructions
+@loading_page
+@generate_live_pin
+@login
+@page_not_found
+@pin_expiry
+@access_arrangement_setting
+@pupil_auth
+@registered_inputs
+@state
+@warm_up
