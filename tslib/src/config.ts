@@ -60,6 +60,11 @@ export default {
     PupilCensus: {
       Username: process.env.SQL_PUPIL_CENSUS_USER ?? 'CensusImportUser',
       Password: process.env.SQL_PUPIL_CENSUS_USER_PASSWORD
+    },
+    LocalAdmin: {
+      // User and password for the local docker instance on local dev environments.
+      user: process.env.SQL_LOCAL_ADMIN_USER,
+      password: process.env.SQL_LOCAL_ADMIN_PASS
     }
   },
   DatabaseRetry: {
@@ -128,7 +133,12 @@ export default {
     MaxParallelTasks: parseInt(parser.valueOrSubstitute(process.env.SYNC_RESULTS_INIT_MAX_PARALLEL_TASKS, 5), 10)
   },
   LiveFormQuestionCount: getLinesPerCheck(),
-  PsReportLogWriter: {
-    MessagesPerBatch: parseInt(parser.valueOrSubstitute(process.env.PS_REPORT_LOG_WRITER_MESSAGE_BATCH_SIZE, 100), 10)
+  PsReport: {
+    StagingFile: {
+      ReadMessagesPerBatch: parseInt(parser.valueOrSubstitute(process.env.PS_REPORT_STAGING_READ_MESSAGE_BATCH_SIZE, 32), 10),
+      WriteMessagesPerBatch: parseInt(parser.valueOrSubstitute(process.env.PS_REPORT_STAGING_WRITE_MESSAGE_BATCH_SIZE, 32), 10), // 32 x 32 = 1024 csv rows written per write
+      WaitTimeToTriggerStagingComplete: parseInt(parser.valueOrSubstitute(process.env.PS_REPORT_STAGING_WAIT_TIME_COMPLETE, 600), 10), // 600 seconds = 10 * 60 = 10 minutes
+      PollInterval: parseInt(parser.valueOrSubstitute(process.env.PS_REPORT_STAGING_POLL_INTERVAL, 10), 10) // Default is 10 milliseconds between polls when writing to the CSV file.
+    }
   }
 }

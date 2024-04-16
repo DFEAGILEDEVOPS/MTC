@@ -222,7 +222,7 @@ Before("@upload_new_live_form_hook") do
   visit ENV['ADMIN_BASE_URL'] + '/sign-out'
 end
 
-Before("@upload_new_fam_form") do
+Before("@upload_new_fam_form_hook") do
   SqlDbHelper.delete_assigned_forms
   step 'I have signed in with test-developer'
   step 'I am on the Upload and View forms page v2'
@@ -332,10 +332,10 @@ After do |scenario|
     attach(Capybara.current_session.driver.browser.screenshot_as(:png), 'image/png')
     name = "#{scenario.name.downcase.gsub(' ', '_')}_#{time}.png"
     page.save_screenshot("screenshots/#{name}")
-    p "Screenshot raised - " + "screenshots/#{name}"
-    content = File.open("screenshots/#{name}", 'rb') {|file| file.read}
-    AZURE_BLOB_CLIENT.create_block_blob(BLOB_CONTAINER, name, content)
-    p "Screenshot uploaded to #{BLOB_CONTAINER}/#{name}"
+    # p "Screenshot raised - " + "screenshots/#{name}"
+    # content = File.open("screenshots/#{name}", 'rb') {|file| file.read}
+    # AZURE_BLOB_CLIENT.create_block_blob(BLOB_CONTAINER, name, content)
+    # p "Screenshot uploaded to #{BLOB_CONTAINER}/#{name}"
   end
   SqlDbHelper.add_fam_form
   SqlDbHelper.assign_fam_form_to_window if SqlDbHelper.get_default_assigned_fam_form == nil

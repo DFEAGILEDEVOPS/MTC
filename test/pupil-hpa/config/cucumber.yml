@@ -3,4 +3,4 @@ parallel_chrome: SITEPRISM_DSL_VALIDATION_DISABLED=true -t 'not @wip' -t 'not @m
 parallel: SITEPRISM_DSL_VALIDATION_DISABLED=true -t 'not @wip' -t 'not @manual' DRIVER='poltergeist' --format pretty --format html --out reports/report<%= ENV['TEST_ENV_NUMBER'] %>.html
 default: SITEPRISM_DSL_VALIDATION_DISABLED=true -t 'not @wip' -t 'not @manual' -t 'not @weekend_feature' DRIVER='headless_chrome' --publish-quiet --out reports/report.txt -f pretty
 ie11: SITEPRISM_DSL_VALIDATION_DISABLED=true -t 'not @ie11' -t 'not @wip'
-weekend: SITEPRISM_DSL_VALIDATION_DISABLED=true -t '@weekend' -t 'not @wip' -t 'not @manual' DRIVER='headless_chrome' --publish-quiet
+weekend: SITEPRISM_DSL_VALIDATION_DISABLED=true -t '@weekend_feature' -t 'not @wip' -t 'not @manual' DRIVER='headless_chrome' --publish-quiet
