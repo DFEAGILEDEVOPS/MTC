@@ -32,7 +32,6 @@ const getLinesPerCheck = (): number => {
 
 const oneMinuteInMilliseconds = 60000
 const twoHoursInMilliseconds = oneMinuteInMilliseconds * 120
-const sixMonthsInSeconds = 15778800
 
 export default {
   Environment: getEnvironment(),
