@@ -1,4 +1,4 @@
-@ps_report @weekend_feature
+@weekend_feature @ps_report_hook
 Feature:
   PS Report
 #

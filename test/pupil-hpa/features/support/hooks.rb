@@ -32,6 +32,11 @@ Before("not @event_auditing", "not @feedback", "not @local_storage") do
   end
 end
 
+Before('@ps_report_hook') do
+  File.delete(File.expand_path("#{File.dirname(__FILE__)}/../../data/ps_report_data_set_1.csv")) if File.exist? (File.expand_path("#{File.dirname(__FILE__)}/../../data/ps_report_data_set_1.csv"))
+  File.delete(File.expand_path("#{File.dirname(__FILE__)}/../../data/ps_report_data_set_2.csv")) if File.exist? (File.expand_path("#{File.dirname(__FILE__)}/../../data/ps_report_data_set_2.csv"))
+end
+
 Before('@empty_new_school') do
   @urn = SqlDbHelper.get_schools_list.map {|school| school['urn']}.sort.last + 1
   dfe_number = create_dfe_number
