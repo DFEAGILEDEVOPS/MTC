@@ -92,7 +92,6 @@ Env Var | Type | Default value | Required | Components | Description
  REDIS_HOST | String | NULL | Required | AA, FC, FC, PAPI | The redis hostname or IP address.
  REDIS_KEY | String | NULL | Optional | AA, FC, FT, PAPI | The redis secret key to use to connect to a password enabled Redis server.
  REDIS_PORT | Int | 6379 | Optional | AA, FC, FT, PAPI | The redis port to connect to.
- REDIS_RESULTS_EXPIRY_IN_SECONDS | Int | 15778800 | Optional | FC | The TTL of the school results object in Redis.Default is six months.
  RETRY_MAX_ATTEMPTS | Int | 3 | Optional | FC, FT,AA | The number of retry attempts to make is the SQL Server is unavailable due to resource constraints.
  RETRY_PAUSE_MS | Int | 5000 | Optional | AA, FC, FT | The number of milliseconds to pause because making the first retry attempt to the Database.  FC and FT default to 5 seconds.
  RETRY_PAUSE_MULTIPLIER | Float | 1.5 | Optional| AA, FC, FT | The multipland to multiply the RETRY_PAUSE_MS number by for successive retry attempts after the first one.  So using the defaults provided: the initial query will have 0 ms delay, then 5000 ms delay, then 7,500 ms delay then 11,250 for FC and FT.
@@ -101,9 +100,6 @@ Env Var | Type | Default value | Required | Components | Description
  SCHOOL_PIN_FUNCTION_ENABLED | Boolean | false | Optional | FC | Used by the Developer Test tools
  SCHOOL_PIN_GEN_FUNCTION_URL | String | http://localhost:7071/api/school-pin-http-service | Optional | AA | The URL of the school pin http service.
  SCHOOL_PIN_SAMPLER_FUNCTION_ENABLED | Boolean | false | Optional | FC | Used by the Developer Test tools
- SCHOOL_RESULTS_CACHE | Int | 1 | Optional | FC | Used by the school results cache determiner.  Set to 0 to never cache, 1 to cache if the date is between the end of the check and the first Monday after the check has ended, or 2 to never cache.
- SCHOOL_RESULTS_CACHE_BATCHS_PER_EXEC | Int | 10 |  Optional | FC | Tune the number of batches of messages the school-results-cache service fetches per invocation.  The  service is run regularly from a timer trigger.
- SCHOOL_RESULTS_CACHE_MSGS_PER_BATCH | Int | 32 | Optional | FC | Tune the number of messages the school-results-cache service fetches per query.
  SESSION_SECRET | String |  | Required | AA | A secret comprised of random characters used to sign session cookies.
  SQL_ALLOW_REPLICA_FOR_READS | Bool | false | Optional | AA | Experimental setting
  SQL_APP_NAME | String | Various | Suggested | AA, FC, FT | Used to provide the app name to SQL Server

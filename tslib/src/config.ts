@@ -3,7 +3,6 @@ import * as os from 'os'
 import * as fs from 'fs'
 import * as dotenv from 'dotenv'
 import * as parser from './common/parsing'
-import * as schoolResultsCacheDeterminerConfig from './functions/school-results-cache-determiner/config'
 
 const globalDotEnvFile = path.join(__dirname, '..', '..', '.env')
 try {
@@ -107,14 +106,6 @@ export default {
     Username: process.env.GIAS_WS_USERNAME,
     Password: process.env.GIAS_WS_PASSWORD,
     ExtractId: parseInt(parser.valueOrSubstitute(process.env.GIAS_WS_EXTRACT_ID, 0), 10)
-  },
-  SchoolResultsCacheDeterminer: {
-    cache: Number(parser.valueOrSubstitute(process.env.SCHOOL_RESULTS_CACHE, schoolResultsCacheDeterminerConfig.cache.cacheIfInDate))
-  },
-  SchoolResultsCache: {
-    BatchesPerExecution: Number(parser.valueOrSubstitute(process.env.SCHOOL_RESULTS_CACHE_BATCHS_PER_EXEC, 10)),
-    MessagesPerBatch: Number(parser.valueOrSubstitute(process.env.SCHOOL_RESULTS_CACHE_MSGS_PER_BATCH, 32)),
-    RedisResultsExpiryInSeconds: Number(parser.valueOrSubstitute(process.env.REDIS_RESULTS_EXPIRY_IN_SECONDS, sixMonthsInSeconds))
   },
   AzureStorage: {
     ConnectionString: process.env.AZURE_STORAGE_CONNECTION_STRING ?? ''
