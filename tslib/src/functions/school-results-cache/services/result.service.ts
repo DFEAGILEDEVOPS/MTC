@@ -63,7 +63,8 @@ export class ResultService {
       if (pupil.attendanceReason !== undefined && pupil.attendanceReason !== null) {
         return pupil.attendanceReason
       } else {
-        return this.status.didNotParticipate
+        // 64154: change 'Did not participate' to 'Incomplete'
+        return this.status.incomplete
       }
     }
   }

@@ -756,7 +756,7 @@ describe('result.service', () => {
         urlSlug: 'aaa-bbb'
       }
       const status = sut.assignStatus(pupil)
-      expect(status).toBe('Did not participate')
+      expect(status).toBe('Incomplete')
     })
 
     test('it describes pupils who are marked as not attending', () => {
