@@ -83,6 +83,7 @@ class SqlDbHelper
     pupil_details
   end
 
+  # this is too fragile for parallel use
   def self.find_next_pupil
     sql = "SELECT * FROM [mtc_admin].[pupil] WHERE pin is Null"
     result = SQL_CLIENT.execute(sql)
@@ -482,6 +483,31 @@ class SqlDbHelper
       p "retry number" + retries.to_s
       retry if (retries += 1) < 60
     end
+  end
+
+  def self.get_random_school()
+    begin
+      sql = "SELECT TOP 1 t1.* FROM (SELECT * FROM mtc_admin.school s
+        WHERE s.id NOT IN (SELECT school_id FROM mtc_admin.adminLogonEvent WHERE school_id IS NOT NULL)) as t1
+        ORDER BY NEWID()"
+      result = SQL_CLIENT.execute(sql)
+      school_details = result.first
+      result.cancel
+      school_details
+    rescue => e
+      abort "sql_db_helper.get_random_school failed.
+      Error: #{e.to_s}"
+    end
+  end
+
+  def self.get_school_teacher(school_urn)
+    sql = "SELECT TOP 1 u.* FROM [mtc_admin].[user] u
+      INNER JOIN mtc_admin.school s on u.school_id = s.id
+      WHERE s.urn='#{school_urn}' AND u.role_id=3"
+    result = SQL_CLIENT.execute(sql)
+    user = result.first
+    result.cancel
+    user
   end
 
 end

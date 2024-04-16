@@ -1,7 +1,7 @@
 # all scenarios that can be executed safely in parallel
-@check
 @complete_page?
 @generate_live_pin?
+@check
 @device_information
 @familiarisation_check
 @feedback
