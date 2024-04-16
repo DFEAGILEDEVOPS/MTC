@@ -48,7 +48,7 @@ module Helpers
   end
 
   def prior_fridays(date, fridays_ago)
-    days_before = (date.wday + 1) % 7 + 1
+    days_before = (date.wday + 1) % 7 + 10
     most_recent = date.to_date - days_before
     diff = (date.mjd - most_recent.mjd)
     case fridays_ago
