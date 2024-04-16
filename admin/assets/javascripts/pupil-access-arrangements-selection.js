@@ -11,52 +11,20 @@ if (!window.MTCAdmin) {
 (function () {
   window.MTCAdmin.accessArrangements = function () {
     var accessArrangementsList = ('#accessArrangementsList')
-    var questionReaderOtherInformation = $('#questionReaderOtherInformation')
     // Reveal hidden content if the checkbox or radio button appears selected on page load
     if ($('input[value=ITA]').is(':checked')) {
       $($('input[value=ITA]').closest('li')).find('.hide-checkbox-content').addClass('show-checkbox-content')
       $($('input[value=ITA]').closest('li')).find('.show-checkbox-content').removeClass('hide-checkbox-content')
     }
-    if ($('input[value=QNR]').is(':checked')) {
-      $($('input[value=QNR]').closest('li')).find('.hide-checkbox-content').addClass('show-checkbox-content')
-      $($('input[value=QNR]').closest('li')).find('.show-checkbox-content').removeClass('hide-checkbox-content')
-    }
-    if ($('input[value=NBQ]').is(':checked')) {
-      $($('input[value=NBQ]').closest('li')).find('.hide-checkbox-content').addClass('show-checkbox-content')
-      $($('input[value=NBQ]').closest('li')).find('.show-checkbox-content').removeClass('hide-checkbox-content')
-    }
-    if ($('input[value=OTH]').is(':checked')) {
-      $($('input[value=OTH]').parent().siblings('.govuk-inset-text')).removeClass('govuk-visually-hidden')
-    }
     // Reveal hidden content when appropriate checkbox is checked
     $(accessArrangementsList).find('input:checkbox').click(function (i) {
       var el = i.currentTarget
-      if (el.checked && (el.value === 'ITA' || el.value === 'QNR' || el.value === 'NBQ')) {
+      if (el.checked && (el.value === 'ITA')) {
         $(el).closest('li').find('.hide-checkbox-content').addClass('show-checkbox-content')
         $(el).closest('li').find('.hide-checkbox-content').removeClass('hide-checkbox-content')
-      }
-      if (!el.checked && (el.value === 'ITA' || el.value === 'NBQ')) {
+      } else if (el.checked === false && el.value === 'ITA') {
         $(el).closest('li').find('.show-checkbox-content').addClass('hide-checkbox-content')
         $(el).closest('li').find('.show-checkbox-content').removeClass('show-checkbox-content')
-        $('#inputAssistanceInformation').val('')
-      }
-      if (!el.checked && el.value === 'QNR') {
-        $(el).closest('li').find('.show-checkbox-content').addClass('hide-checkbox-content')
-        $(el).closest('li').find('.show-checkbox-content').removeClass('show-checkbox-content')
-        $('.question-reader-reason').prop('checked', false)
-        questionReaderOtherInformation.val('')
-        questionReaderOtherInformation.parents('.govuk-inset-text').addClass('govuk-visually-hidden')
-      }
-    })
-    // Reveal/Hide hidden content when appropriate radio button is selected/deselected
-    $(accessArrangementsList).find('input:radio').change(function (i) {
-      var el = i.currentTarget
-      if (el.checked && el.value === 'OTH') {
-        $($(el).parent().siblings('.govuk-inset-text')).removeClass('govuk-visually-hidden')
-      }
-      if (el.checked && el.value !== 'OTH') {
-        $($(el).parent().siblings('.govuk-inset-text')).addClass('govuk-visually-hidden')
-        questionReaderOtherInformation.val('')
       }
     })
     // Add/Remove red border to autocomplete input container

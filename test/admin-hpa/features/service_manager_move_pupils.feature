@@ -1,3 +1,4 @@
+@service_manager_move_pupil_feature @serial
 Feature:
   Service manager move pupil
 

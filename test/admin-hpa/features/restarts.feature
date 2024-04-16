@@ -1,4 +1,4 @@
-@restarts @reset_pin_restart_check @deactivate_all_test_check_window
+@restarts_feature @deactivate_all_test_check_window_hook @serial
 Feature: Restarts
 
   Scenario: Restarts Landing page displays heading and info section
@@ -10,12 +10,10 @@ Feature: Restarts
     Given I have single pupils for restart
     Then I should be able to select them via a checkbox for restarts
 
-  @ie11
   Scenario: Teachers can select all pupils on Restarts page
     Given I have multiple pupils for restart
     Then I should have a option to select all pupils for restarts
 
-  @ie11
   Scenario: Sticky banner displays total pupil count for restarts when all pupil is selected
     Given I have multiple pupils for restart
     When I select all pupils for Restarts
@@ -31,16 +29,6 @@ Feature: Restarts
   Scenario: Confirmation Message is displayed when Pupil is submitted successfully for Restarts
     Given I submitted pupils for Restart
     Then I should see a flash message to state the pupil has been submitted for restart
-
-  Scenario: Error message is displayed if no info is provided for the reason Did Not Complete
-    Given I have single pupils for restart
-    When I submit the pupil for restart with a reason 'Did not complete' for restarts
-    Then I should see the error message for further information for 'Did not complete' reason
-
-  Scenario: Error message is displayed if no info is provided for the reason Classroom disruption
-    Given I have single pupils for restart
-    When I submit the pupil for restart with a reason 'Classroom disruption' for restarts
-    Then I should see the error message for further information for 'Classroom disruption' reason
 
   Scenario: Pupil added to the restart list after Pupil is submitted using reason Classroom disruption
     Given I submitted pupils for Restart using reason Classroom disruption
@@ -78,7 +66,7 @@ Feature: Restarts
     And I navigate to the restarts page
     Then I should not be able to remove the restart
 
-  @no_pin @remove_all_groups @ie11
+  @remove_all_groups_hook @ie11
   Scenario: Group filtering enabled for selecting pupils for restart
     Given I have generated pins for multiple pupils
     When I add these pupils to a group
@@ -86,7 +74,7 @@ Feature: Restarts
     Then I should be able to filter the pupil list by the group
     And I should be able to see the number of pupils in the group
 
-  @empty_new_school
+  @empty_new_school_hook
   Scenario: Restarting more than 25 pupils is possible
     Given I have more than 25 pupils eligible for a restart
     Then I can select all

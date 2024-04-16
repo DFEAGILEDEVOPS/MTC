@@ -9,7 +9,7 @@ const userRoles = require('../../../lib/consts/roles')
 
 /* global describe beforeEach expect test jest afterEach */
 
-describe('pupilPin controller:', () => {
+describe('pupil-register controller:', () => {
   let next
   function getRes () {
     const res = httpMocks.createResponse()
@@ -56,7 +56,8 @@ describe('pupilPin controller:', () => {
       await sut.listPupils(req, res, next)
       expect(res.render).toHaveBeenCalledTimes(1)
       const args = renderSpy.mock.calls[0]
-      expect(args[1].showAddPupilButtons).toBe(true)
+      expect(args[1].showAddPupilButton).toBe(true)
+      expect(args[1].showAddMultiplePupilButton).toBe(true)
     })
 
     test('during the try it out check window phase the add pupil buttons are available', async () => {
@@ -67,7 +68,8 @@ describe('pupilPin controller:', () => {
       await sut.listPupils(req, res, next)
       expect(res.render).toHaveBeenCalledTimes(1)
       const args = renderSpy.mock.calls[0]
-      expect(args[1].showAddPupilButtons).toBe(true)
+      expect(args[1].showAddPupilButton).toBe(true)
+      expect(args[1].showAddMultiplePupilButton).toBe(true)
     })
 
     test('during the live check window phase the add pupil buttons are available', async () => {
@@ -78,7 +80,8 @@ describe('pupilPin controller:', () => {
       await sut.listPupils(req, res, next)
       expect(res.render).toHaveBeenCalledTimes(1)
       const args = renderSpy.mock.calls[0]
-      expect(args[1].showAddPupilButtons).toBe(true)
+      expect(args[1].showAddPupilButton).toBe(true)
+      expect(args[1].showAddMultiplePupilButton).toBe(true)
     })
 
     test('during the post check window phase the add pupil buttons are not available', async () => {
@@ -89,7 +92,21 @@ describe('pupilPin controller:', () => {
       await sut.listPupils(req, res, next)
       expect(res.render).toHaveBeenCalledTimes(1)
       const args = renderSpy.mock.calls[0]
-      expect(args[1].showAddPupilButtons).toBe(false)
+      expect(args[1].showAddPupilButton).toBe(false)
+      expect(args[1].showAddMultiplePupilButton).toBe(false)
+    })
+
+    test('during the post check window phase the add pupil button is available for STA-ADMIN', async () => {
+      global.checkWindowPhase = checkWindowPhaseConsts.postCheckAdmin
+      const res = getRes()
+      const renderSpy = jest.spyOn(res, 'render')
+      const req = getReq(goodReqParamsLive)
+      req.user.role = userRoles.staAdmin
+      await sut.listPupils(req, res, next)
+      expect(res.render).toHaveBeenCalledTimes(1)
+      const args = renderSpy.mock.calls[0]
+      expect(args[1].showAddPupilButton).toBe(true)
+      expect(args[1].showAddMultiplePupilButton).toBe(false)
     })
 
     test('during the post check window phase (readonly mode) the add pupil buttons are not available', async () => {
@@ -100,7 +117,21 @@ describe('pupilPin controller:', () => {
       await sut.listPupils(req, res, next)
       expect(res.render).toHaveBeenCalledTimes(1)
       const args = renderSpy.mock.calls[0]
-      expect(args[1].showAddPupilButtons).toBe(false)
+      expect(args[1].showAddPupilButton).toBe(false)
+      expect(args[1].showAddMultiplePupilButton).toBe(false)
+    })
+
+    test('during the post check window phase (readonly mode) the add pupil button is available for STA-ADMIN', async () => {
+      global.checkWindowPhase = checkWindowPhaseConsts.readOnlyAdmin
+      const res = getRes()
+      const renderSpy = jest.spyOn(res, 'render')
+      const req = getReq(goodReqParamsLive)
+      req.user.role = userRoles.staAdmin
+      await sut.listPupils(req, res, next)
+      expect(res.render).toHaveBeenCalledTimes(1)
+      const args = renderSpy.mock.calls[0]
+      expect(args[1].showAddPupilButton).toBe(true)
+      expect(args[1].showAddMultiplePupilButton).toBe(false)
     })
 
     test('during the post check window phase (unavailable mode) the add pupil buttons are not available', async () => {
@@ -111,7 +142,21 @@ describe('pupilPin controller:', () => {
       await sut.listPupils(req, res, next)
       expect(res.render).toHaveBeenCalledTimes(1)
       const args = renderSpy.mock.calls[0]
-      expect(args[1].showAddPupilButtons).toBe(false)
+      expect(args[1].showAddPupilButton).toBe(false)
+      expect(args[1].showAddMultiplePupilButton).toBe(false)
+    })
+
+    test('during the post check window phase (unavailable mode) the add pupil button is available for STA-ADMINs', async () => {
+      global.checkWindowPhase = checkWindowPhaseConsts.unavailable
+      const res = getRes()
+      const renderSpy = jest.spyOn(res, 'render')
+      const req = getReq(goodReqParamsLive)
+      req.user.role = userRoles.staAdmin
+      await sut.listPupils(req, res, next)
+      expect(res.render).toHaveBeenCalledTimes(1)
+      const args = renderSpy.mock.calls[0]
+      expect(args[1].showAddPupilButton).toBe(true)
+      expect(args[1].showAddMultiplePupilButton).toBe(false)
     })
 
     async function testRoleAgainstLink (role) {

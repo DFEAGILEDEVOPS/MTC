@@ -3,7 +3,6 @@ const accessArrangementsService = require('../services/access-arrangements.servi
 const checkWindowV2Service = require('../services/check-window-v2.service')
 const pupilAccessArrangementsService = require('../services/pupil-access-arrangements.service')
 const pupilAccessArrangementsEditService = require('../services/pupil-access-arrangements-edit.service')
-const questionReaderReasonsService = require('../services/question-reader-reasons.service')
 const schoolHomeFeatureEligibilityPresenter = require('../helpers/school-home-feature-eligibility-presenter')
 const accessArrangementsOverviewPresenter = require('../helpers/access-arrangements-overview-presenter')
 const businessAvailabilityService = require('../services/business-availability.service')
@@ -75,14 +74,12 @@ const controller = {
     req.breadcrumbs('Select pupils and access arrangements')
     let accessArrangements
     let accessArrangementsViewData
-    let questionReaderReasons
     let pupils
     try {
       const checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
       accessArrangements = await accessArrangementsService.getAccessArrangements()
       accessArrangementsViewData = accessArrangementsDescriptionsPresenter
         .addReasonRequiredIndication(accessArrangementsDescriptionsPresenter.getPresentationData(accessArrangements))
-      questionReaderReasons = await questionReaderReasonsService.getQuestionReaderReasons()
       pupils = await pupilAccessArrangementsService.getEligiblePupilsWithFullNames(req.user.schoolId)
       const availabilityData = await businessAvailabilityService.getAvailabilityData(req.user.schoolId, checkWindowData, req.user.timezone)
       if (!availabilityData.accessArrangementsAvailable) {
@@ -97,7 +94,6 @@ const controller = {
     return res.render('access-arrangements/select-access-arrangements', {
       breadcrumbs: req.breadcrumbs(),
       accessArrangementsViewData,
-      questionReaderReasons,
       pupils,
       formData: req.body,
       error: error || new ValidationError()
@@ -125,10 +121,6 @@ const controller = {
     try {
       const submittedData = R.pick([
         'accessArrangements',
-        'inputAssistanceInformation',
-        'nextButtonInformation',
-        'questionReaderReason',
-        'questionReaderOtherInformation',
         'isEditView',
         'pupilUrlSlug',
         'urlSlug'
@@ -141,6 +133,7 @@ const controller = {
       }
       return next(error)
     }
+
     req.flash('info', `Access arrangements applied to ${pupil.lastName}, ${pupil.foreName}`)
     return res.redirect(`/access-arrangements/overview?hl=${pupil.urlSlug}`)
   },
@@ -170,17 +163,12 @@ const controller = {
 
     let accessArrangements
     let accessArrangementsViewData
-    let questionReaderReasons
     let formData
     const pupilUrlSlug = req.params.pupilUrlSlug || req.body.urlSlug
     const schoolId = req.user.schoolId
     try {
       const submittedData = R.pick([
         'accessArrangements',
-        'inputAssistanceInformation',
-        'nextButtonInformation',
-        'questionReaderReason',
-        'questionReaderOtherInformation',
         'isEditView',
         'urlSlug'
       ], req.body)
@@ -188,14 +176,12 @@ const controller = {
       accessArrangements = await accessArrangementsService.getAccessArrangements()
       accessArrangementsViewData = accessArrangementsDescriptionsPresenter
         .addReasonRequiredIndication(accessArrangementsDescriptionsPresenter.getPresentationData(accessArrangements))
-      questionReaderReasons = await questionReaderReasonsService.getQuestionReaderReasons()
     } catch (error) {
       return next(error)
     }
     return res.render('access-arrangements/select-access-arrangements', {
       breadcrumbs: req.breadcrumbs(),
       accessArrangementsViewData,
-      questionReaderReasons,
       formData,
       error: error || new ValidationError()
     })

@@ -1,4 +1,4 @@
-@generate_pupil_pins_familiarisation @deactivate_all_test_check_window
+@generate_pupil_pins_familiarisation_feature @deactivate_all_test_check_window_hook @serial
 Feature: Generate Pupil PINs Familiarisation
 
   Scenario: Generate pupil pin familiarisation is rendered as per design
@@ -18,14 +18,14 @@ Feature: Generate Pupil PINs Familiarisation
     When I click Generate tio PINs button
     Then I cannot see this pupil in the list of Pupil on Generate Pin list page
 
-  @pupil_not_taking_check
+  @pupil_not_taking_check_hook
   Scenario: Generate Pins familiarisation Pupil List Page display pupil not taking check
     Given I have a pupil not taking the check
     And I am on the generate pupil pins familiarisation page
     When I click Generate tio PINs button
     Then I cannot see this pupil in the list of Pupil on Generate Pin familiarisation list page
 
-  @pupil_not_taking_check
+  @pupil_not_taking_check_hook
   Scenario: Generate Pins familiarisation Pupil List Page does not display pupil with reason left school
     Given I have a pupil not taking the check with reason 'Left school'
     And I am on the generate pupil pins familiarisation page

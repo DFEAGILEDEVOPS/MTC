@@ -7,8 +7,8 @@ class SignInPage < SitePrism::Page
   section :phase_banner, PhaseBanner, '.js-content .phase-banner'
 
   section :login_failure, '.error-summary' do
-    element :heading, '#error-summary-heading-1', text: 'Unable to confirm details'
-    element :message, 'p' , text: 'The details entered do not match our records. Please check with your teacher that you used the correct school password and PIN.'
+    element :heading, '#error-summary-heading-1', text: 'Details entered do not match our records'
+    element :message, 'p' , text: "Please check with your teacher that you used the correct school password and PIN. Your teacher may also find it useful to view your check status on the ‘Check how many pupils have completed the check’ page within in the MTC service."
   end
 
   element :logo, '.organisation-logo'

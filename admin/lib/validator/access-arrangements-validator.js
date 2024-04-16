@@ -13,10 +13,6 @@ module.exports.validate = (accessArrangementsData) => {
   const {
     pupilUrlSlug,
     accessArrangements: accessArrangementsCodes,
-    questionReaderReason: questionReaderReasonCode,
-    inputAssistanceInformation,
-    nextButtonInformation,
-    questionReaderOtherInformation,
     isEditView
   } = accessArrangementsData
 
@@ -25,18 +21,6 @@ module.exports.validate = (accessArrangementsData) => {
   }
   if ((!accessArrangementsCodes || accessArrangementsCodes.length === 0) && !toBool(isEditView)) {
     validationError.addError('accessArrangementsList', accessArrangementsErrorMessages.missingAccessArrangements)
-  }
-  if (accessArrangementsCodes && accessArrangementsCodes.includes('ITA') && !inputAssistanceInformation) {
-    validationError.addError('inputAssistanceInformation', accessArrangementsErrorMessages.missingInputAssistanceExplanation)
-  }
-  if (accessArrangementsCodes && accessArrangementsCodes.includes('NBQ') && !nextButtonInformation) {
-    validationError.addError('nextButtonInformation', accessArrangementsErrorMessages.missingNextButtonExplanation)
-  }
-  if (accessArrangementsCodes && accessArrangementsCodes.includes('QNR') && !questionReaderReasonCode) {
-    validationError.addError('questionReaderReasonsList', accessArrangementsErrorMessages.missingQuestionReaderReason)
-  }
-  if (accessArrangementsCodes && accessArrangementsCodes.includes('QNR') && questionReaderReasonCode === 'OTH' && !questionReaderOtherInformation) {
-    validationError.addError('questionReaderOtherInformation', accessArrangementsErrorMessages.missingScreenReaderExplanation)
   }
   return validationError
 }

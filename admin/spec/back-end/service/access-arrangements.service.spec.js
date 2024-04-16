@@ -3,7 +3,6 @@
 
 const sut = require('../../../services/access-arrangements.service')
 const accessArrangementsDataService = require('../../../services/data-access/access-arrangements.data.service')
-const questionReaderReasonsDataService = require('../../../services/data-access/question-reader-reasons.data.service')
 const pupilAccessArrangementsDataService = require('../../../services/data-access/pupil-access-arrangements.data.service')
 const pupilDataService = require('../../../services/data-access/pupil.data.service')
 const accessArrangementsValidator = require('../../../lib/validator/access-arrangements-validator.js')
@@ -46,6 +45,7 @@ describe('accessArrangementsService', () => {
     beforeEach(() => {
       jest.spyOn(PupilFrozenService, 'throwIfFrozenByUrlSlugs').mockResolvedValue()
     })
+
     test('calls preparedCheckSync service and returns access arrangements list', async () => {
       jest.spyOn(accessArrangementsValidator, 'validate').mockReturnValue((new ValidationError()))
       jest.spyOn(sut, 'prepareData').mockImplementation()
@@ -59,6 +59,7 @@ describe('accessArrangementsService', () => {
       expect(sut.save).toHaveBeenCalled()
       expect(preparedCheckSyncService.addMessages).toHaveBeenCalled()
     })
+
     test('throws a validation error if validation is unsuccessful', async () => {
       const validationError = new ValidationError()
       validationError.addError('pupil-autocomplete-container', accessArrangementsErrorMessages.missingPupilName)
@@ -95,11 +96,7 @@ describe('accessArrangementsService', () => {
     test('returns a processed access arrangements submission object', async () => {
       const requestData = {
         pupilUrlSlug: 'pupilUrlSlug',
-        accessArrangements: [accessArrangementsDataService.CODES.AUDIBLE_SOUNDS],
-        questionReaderReason: '',
-        inputAssistanceInformation: '',
-        nextButtonInformation: '',
-        questionReaderOtherInformation: ''
+        accessArrangements: [accessArrangementsDataService.CODES.AUDIBLE_SOUNDS]
       }
       jest.spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsIdsWithCodes').mockResolvedValue([{ id: 1, code: 'ATA' }])
       jest.spyOn(pupilAccessArrangementsDataService, 'sqlFindPupilColourContrastsId').mockImplementation()
@@ -109,8 +106,7 @@ describe('accessArrangementsService', () => {
       expect(result).toEqual(Object({
         pupil_id: 1,
         accessArrangementsIdsWithCodes: [{ id: 1, code: accessArrangementsDataService.CODES.AUDIBLE_SOUNDS }],
-        recordedBy_user_id: 1,
-        questionReaderReasonCode: ''
+        recordedBy_user_id: 1
       }))
       expect(pupilAccessArrangementsDataService.sqlFindPupilColourContrastsId).not.toHaveBeenCalled()
       expect(pupilAccessArrangementsDataService.sqlFindPupilFontSizesId).not.toHaveBeenCalled()
@@ -118,11 +114,7 @@ describe('accessArrangementsService', () => {
     test('throws an error if accessArrangement are not found based on codes provided', async () => {
       const requestData = {
         pupilUrlSlug: 'pupilUrlSlug',
-        accessArrangements: ['NONSENSE_CODE'],
-        questionReaderReason: '',
-        inputAssistanceInformation: '',
-        nextButtonInformation: '',
-        questionReaderOtherInformation: ''
+        accessArrangements: ['NONSENSE_CODE']
       }
       jest.spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsIdsWithCodes').mockImplementation(() => {
         throw new Error('Code does not exist')
@@ -134,127 +126,12 @@ describe('accessArrangementsService', () => {
     test('throws an error if pupil record is not found', async () => {
       const requestData = {
         pupilUrlSlug: 'pupilUrlSlug',
-        accessArrangements: [accessArrangementsDataService.CODES.AUDIBLE_SOUNDS],
-        questionReaderReason: '',
-        inputAssistanceInformation: '',
-        nextButtonInformation: '',
-        questionReaderOtherInformation: ''
+        accessArrangements: [accessArrangementsDataService.CODES.AUDIBLE_SOUNDS]
       }
       jest.spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsIdsWithCodes').mockResolvedValue([1])
       await expect(sut.prepareData(requestData, undefined, 12345, 1))
         .rejects
         .toThrow('Pupil object is not found')
-    })
-    test('expects inputAssistanceInformation to be defined when the accessArrangements is matched', async () => {
-      const requestData = {
-        pupilUrlSlug: 'pupilUrlSlug',
-        accessArrangements: [
-          accessArrangementsDataService.CODES.AUDIBLE_SOUNDS,
-          accessArrangementsDataService.CODES.INPUT_ASSISTANCE
-        ],
-        questionReaderReason: '',
-        inputAssistanceInformation: 'inputAssistanceInformation',
-        nextButtonInformation: '',
-        questionReaderOtherInformation: ''
-      }
-      jest.spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsIdsWithCodes').mockResolvedValue([{ id: 1, code: 'ATA' }, { id: 2, code: 'ITA' }])
-      const result = await sut.prepareData(requestData, { id: 1 }, 12345, 1)
-      expect(result).toEqual(Object({
-        pupil_id: 1,
-        accessArrangementsIdsWithCodes: [
-          { id: 1, code: accessArrangementsDataService.CODES.AUDIBLE_SOUNDS },
-          { id: 2, code: accessArrangementsDataService.CODES.INPUT_ASSISTANCE }
-        ],
-        recordedBy_user_id: 1,
-        inputAssistanceInformation: 'inputAssistanceInformation',
-        questionReaderReasonCode: ''
-      }))
-    })
-    test('expects nextButtonInformation to be defined when the accessArrangements is matched', async () => {
-      const requestData = {
-        pupilUrlSlug: 'pupilUrlSlug',
-        accessArrangements: [
-          accessArrangementsDataService.CODES.AUDIBLE_SOUNDS,
-          accessArrangementsDataService.CODES.NEXT_BETWEEN_QUESTIONS
-        ],
-        questionReaderReason: '',
-        inputAssistanceInformation: '',
-        nextButtonInformation: 'nextButtonInformation',
-        questionReaderOtherInformation: ''
-      }
-      jest.spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsIdsWithCodes')
-        .mockResolvedValue([{ id: 1, code: 'ATA' }, { id: 2, code: 'NBQ' }])
-      const result = await sut.prepareData(requestData, { id: 1 }, 12345, 1)
-      expect(result).toEqual(Object({
-        pupil_id: 1,
-        accessArrangementsIdsWithCodes: [
-          { id: 1, code: accessArrangementsDataService.CODES.AUDIBLE_SOUNDS },
-          { id: 2, code: accessArrangementsDataService.CODES.NEXT_BETWEEN_QUESTIONS }
-        ],
-        recordedBy_user_id: 1,
-        nextButtonInformation: 'nextButtonInformation',
-        questionReaderReasonCode: ''
-      }))
-    })
-    test('expects questionReaderReasons_id to be defined when the accessArrangements is matched', async () => {
-      const requestData = {
-        pupilUrlSlug: 'pupilUrlSlug',
-        accessArrangements: [
-          accessArrangementsDataService.CODES.AUDIBLE_SOUNDS,
-          accessArrangementsDataService.CODES.QUESTION_READER
-        ],
-        questionReaderReason: questionReaderReasonsDataService.CODES.VISUAL_IMPAIRMENTS,
-        inputAssistanceInformation: '',
-        nextButtonInformation: '',
-        questionReaderOtherInformation: ''
-      }
-      jest.spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsIdsWithCodes').mockResolvedValue([
-        { id: 1, code: accessArrangementsDataService.CODES.AUDIBLE_SOUNDS },
-        { id: 3, code: accessArrangementsDataService.CODES.QUESTION_READER }
-      ])
-      jest.spyOn(questionReaderReasonsDataService, 'sqlFindQuestionReaderReasonIdByCode').mockResolvedValue(1)
-      const result = await sut.prepareData(requestData, { id: 1 }, 12345, 1)
-      expect(questionReaderReasonsDataService.sqlFindQuestionReaderReasonIdByCode).toHaveBeenCalled()
-      expect(result).toEqual(Object({
-        pupil_id: 1,
-        accessArrangementsIdsWithCodes: [
-          { id: 1, code: accessArrangementsDataService.CODES.AUDIBLE_SOUNDS },
-          { id: 3, code: accessArrangementsDataService.CODES.QUESTION_READER }
-        ],
-        recordedBy_user_id: 1,
-        questionReaderReasonCode: questionReaderReasonsDataService.CODES.VISUAL_IMPAIRMENTS,
-        questionReaderReasons_id: 1
-      }))
-    })
-    test('expects questionReaderOtherInformation to be defined when the accessArrangements and questionReaderReason is matched', async () => {
-      const requestData = {
-        pupilUrlSlug: 'pupilUrlSlug',
-        accessArrangements: [
-          accessArrangementsDataService.CODES.AUDIBLE_SOUNDS,
-          accessArrangementsDataService.CODES.QUESTION_READER
-        ],
-        questionReaderReason: questionReaderReasonsDataService.CODES.OTHER,
-        inputAssistanceInformation: '',
-        nextButtonInformation: '',
-        questionReaderOtherInformation: 'questionReaderOtherInformation'
-      }
-      jest.spyOn(accessArrangementsDataService, 'sqlFindAccessArrangementsIdsWithCodes').mockResolvedValue([
-        { id: 1, code: accessArrangementsDataService.CODES.AUDIBLE_SOUNDS },
-        { id: 3, code: accessArrangementsDataService.CODES.QUESTION_READER }
-      ])
-      jest.spyOn(questionReaderReasonsDataService, 'sqlFindQuestionReaderReasonIdByCode').mockResolvedValue(4)
-      const result = await sut.prepareData(requestData, { id: 1 }, 12345, 1)
-      expect(result).toEqual(Object({
-        pupil_id: 1,
-        accessArrangementsIdsWithCodes: [
-          { id: 1, code: accessArrangementsDataService.CODES.AUDIBLE_SOUNDS },
-          { id: 3, code: accessArrangementsDataService.CODES.QUESTION_READER }
-        ],
-        recordedBy_user_id: 1,
-        questionReaderReasonCode: questionReaderReasonsDataService.CODES.OTHER,
-        questionReaderReasons_id: 4,
-        questionReaderOtherInformation: 'questionReaderOtherInformation'
-      }))
     })
     test('expects pupilFontSizes_id property and pupilColourContrasts_id property to be set from existing ', async () => {
       const requestData = {
@@ -262,11 +139,7 @@ describe('accessArrangementsService', () => {
         accessArrangements: [
           accessArrangementsDataService.CODES.FONT_SIZE,
           accessArrangementsDataService.CODES.COLOUR_CONTRAST
-        ],
-        questionReaderReason: '',
-        inputAssistanceInformation: '',
-        nextButtonInformation: '',
-        questionReaderOtherInformation: ''
+        ]
       }
       jest.spyOn(pupilAccessArrangementsDataService, 'sqlFindPupilColourContrastsId').mockResolvedValue(2)
       jest.spyOn(pupilAccessArrangementsDataService, 'sqlFindPupilFontSizesId').mockResolvedValue(4)
@@ -283,8 +156,7 @@ describe('accessArrangementsService', () => {
           { id: 2, code: accessArrangementsDataService.CODES.COLOUR_CONTRAST, colourContrastLookup_Id: 2 },
           { id: 3, code: accessArrangementsDataService.CODES.FONT_SIZE, fontSizeLookup_Id: 4 }
         ],
-        recordedBy_user_id: 1,
-        questionReaderReasonCode: ''
+        recordedBy_user_id: 1
       })
       )
     })

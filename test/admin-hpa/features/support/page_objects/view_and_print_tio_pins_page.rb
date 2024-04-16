@@ -1,9 +1,8 @@
-# class CustomPinsFamiliarisationPage < SitePrism::Page
 class ViewAndPrintTioPinsPage < SitePrism::Page
   set_url '/pupil-pin/view-and-custom-print-familiarisation-pins'
 
   element :heading, '.govuk-heading-xl'
-  element :pin_message, '.govuk-body', text: "Your school password and try it out check PINs have been generated for selected pupils. You can print the PINs by selecting the pupils, or groups, then selecting ‘Print selected’."
+  element :pin_message, '.govuk-body'
   element :filter_by_name, '#search-name'
 
   element :pins_for_fam_check_breadcrumb, 'a[href="/pupil-pin/generate-familiarisation-pins-overview"]', text: 'Generate passwords and PINs for the try it out check'

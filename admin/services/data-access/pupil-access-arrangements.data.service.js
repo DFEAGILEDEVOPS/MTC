@@ -39,11 +39,7 @@ pupilAccessArrangementsDataService.sqlInsertAccessArrangements = async (data, is
   const {
     pupil_id: pupilId,
     recordedBy_user_id: recordedByUserId,
-    accessArrangementsIdsWithCodes,
-    questionReaderReasonCode,
-    inputAssistanceInformation,
-    nextButtonInformation,
-    questionReaderOtherInformation
+    accessArrangementsIdsWithCodes
   } = data
 
   const params = []
@@ -64,10 +60,6 @@ pupilAccessArrangementsDataService.sqlInsertAccessArrangements = async (data, is
       @pupil_id${idx},
       @recordedBy_user_id${idx},
       @accessArrangements_id${idx},
-      @questionReaderReasons_id${idx},
-      @inputAssistanceInformation${idx},
-      @nextButtonInformation${idx},
-      @questionReaderOtherInformation${idx},
       @fontSizeLookup_id${idx},
       @colourContrastLookup_id${idx}
     )`)
@@ -87,26 +79,6 @@ pupilAccessArrangementsDataService.sqlInsertAccessArrangements = async (data, is
       type: TYPES.Int
     })
     params.push({
-      name: `questionReaderReasons_id${idx}`,
-      value: aa.code === 'QNR' ? data.questionReaderReasons_id : null,
-      type: TYPES.Int
-    })
-    params.push({
-      name: `inputAssistanceInformation${idx}`,
-      value: aa.code === 'ITA' ? inputAssistanceInformation : '',
-      type: TYPES.NVarChar
-    })
-    params.push({
-      name: `nextButtonInformation${idx}`,
-      value: aa.code === 'NBQ' ? nextButtonInformation : '',
-      type: TYPES.NVarChar
-    })
-    params.push({
-      name: `questionReaderOtherInformation${idx}`,
-      value: aa.code === 'QNR' && questionReaderReasonCode === 'OTH' ? questionReaderOtherInformation : '',
-      type: TYPES.NVarChar
-    })
-    params.push({
       name: `fontSizeLookup_id${idx}`,
       value: aa.fontSizeLookup_Id || null,
       type: TYPES.Int
@@ -122,10 +94,6 @@ pupilAccessArrangementsDataService.sqlInsertAccessArrangements = async (data, is
       pupil_id,
       recordedBy_user_id,
       accessArrangements_id,
-      questionReaderReasons_id,
-      inputAssistanceInformation,
-      nextButtonInformation,
-      questionReaderOtherInformation,
       fontSizeLookup_Id,
       colourContrastLookup_Id
       ) VALUES`
@@ -214,21 +182,13 @@ pupilAccessArrangementsDataService.sqlFindAccessArrangementsByUrlSlug = async (u
   ]
   const sql =
     `SELECT
-    p.urlSlug,
-    p.foreName,
-    p.lastName,
-    paa.inputAssistanceInformation,
-    paa.nextButtonInformation,
-    paa.questionReaderOtherInformation,
-    aa.code as accessArrangementCode,
-    qrr.code as questionReaderReasonCode
+      p.urlSlug,
+      p.foreName,
+      p.lastName,
+      aa.code as accessArrangementCode
     FROM [mtc_admin].pupilAccessArrangements paa
-    INNER JOIN [mtc_admin].pupil p
-      ON p.id = paa.pupil_id
-    INNER JOIN [mtc_admin].accessArrangements aa
-      ON aa.id = paa.accessArrangements_id
-    LEFT JOIN [mtc_admin].questionReaderReasons qrr
-      ON qrr.id = paa.questionReaderReasons_id
+    INNER JOIN [mtc_admin].pupil p ON (p.id = paa.pupil_id)
+    INNER JOIN [mtc_admin].accessArrangements aa ON (aa.id = paa.accessArrangements_id)
     WHERE p.urlSlug = @urlSlug`
   return sqlService.readonlyQuery(sql, params)
 }

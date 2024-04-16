@@ -4,7 +4,7 @@
       "name": "inputData",
       "type": "serviceBusTrigger",
       "direction": "in",
-      "queueName": "ps-report-export",
+      "queueName": "ps-report-staging-complete",
       "connection": "AZURE_SERVICE_BUS_CONNECTION_STRING"
     }
   ],

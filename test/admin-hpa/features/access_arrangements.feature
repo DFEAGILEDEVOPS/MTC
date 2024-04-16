@@ -1,4 +1,4 @@
-@access_arrangements @feature_toggle @add_a_pupil
+@access_arrangements_feature @add_a_pupil_hook
 Feature: Access Arrangements
 
   Scenario: Access Arrangements page is displayed as per the design
@@ -28,26 +28,6 @@ Feature: Access Arrangements
     Given I am on the select access arrangements page
     When I save access arrangements without selecting any access arrangements
     Then I can see the error message for access arrangmenets 'Select at least one access arrangement'
-
-  Scenario: Validation error is displayed if no explanation is provided for input assistance
-    Given I am on the select access arrangements page
-    When I save access arrangements without providing explanation for input assistance
-    Then I can see the error message for access arrangmenets 'Enter an explanation for input assistance'
-
-  Scenario: Validation error is displayed if no explanation is provided for next between questions
-    Given I am on the select access arrangements page
-    When I save access arrangements without providing explanation for next between questions
-    Then I can see the error message for access arrangmenets 'Enter an explanation for next button between questions'
-
-  Scenario: Validation error is displayed if no question reader reason is selected
-    Given I am on the select access arrangements page
-    When I save access arrangements without selecting any question reader reason
-    Then I can see the error message for access arrangmenets 'Select a reason'
-
-  Scenario: Validation error is displayed if other is selected for question reader but no explanation is provided
-    Given I am on the select access arrangements page
-    When I save access arrangements without providing explanation for other reason for question reader
-    Then I can see the error message for access arrangmenets 'Enter an explanation for question reader'
 
   Scenario: Pupil list is displayed with access arrangment on landing page
     Given I have selected access arrangement 'Audible time alert' for a pupil
@@ -98,7 +78,7 @@ Feature: Access Arrangements
     Given I have added a pupil with an access arrangement
     Then I should be able to remove any access arrangements for the pupil from the edit page
 
-  @deactivate_all_test_check_window
+  @deactivate_all_test_check_window_hook
   Scenario: Access arrangements can be updated after pin generation
     Given I have generated a live pin for a pupil
     And I have applied the Audible time alert access arrangement to the pupil

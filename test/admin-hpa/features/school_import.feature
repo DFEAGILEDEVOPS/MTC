@@ -1,4 +1,4 @@
-@delete_school_import @school_import
+@school_import_feature @school_import_hook @delete_school_import_hook @serial
 Feature:
   School import
 

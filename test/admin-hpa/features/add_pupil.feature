@@ -1,4 +1,4 @@
-@add_pupil
+@add_pupil_feature
 Feature:
   As part of test development
   I want to be able to add a pupil
@@ -96,13 +96,11 @@ Feature:
     When I submit the form with the name fields set as M4ry
     Then the pupil details should be stored
 
-  @ie11
   Scenario: Names can include apostrophes
     Given I am on the add pupil page
     When I submit the form with the name fields set as Mary'Jane
     Then the pupil details should be stored
 
-  @ie11
   Scenario: Names can include accents
     Given I am on the add pupil page
     When I submit the form with the name fields set as Maryçáéíóúñü
@@ -186,21 +184,15 @@ Feature:
     When I submit valid details with a temporary UPN has a lowercase alpha character
     Then the pupil details should be stored
 
-  Scenario: Reason field must be entered if displayed
-    Given I am on the add pupil page
-    When I fill in the form with the pupil dob 10 years ago
-    And I submit
-    Then I should see an error with the reason field
-
   Scenario: 11 year old pupils cannot be added
     Given I am on the add pupil page
     When I submit the form with the pupil dob 11 years ago
     Then I should see an error with the DOB
 
-  Scenario: 10 year old pupils can be added by adding a reason
+  Scenario: 10 year old pupils can be added
     Given I am on the add pupil page
     When I submit the form with the pupil dob 10 years ago
-    Then I should still be able to add the pupil after filling in the reason box
+    Then the pupil details should be stored
 
   Scenario: 9 year old pupils can be added
     Given I am on the add pupil page
@@ -215,14 +207,14 @@ Feature:
   Scenario: 7 year old pupils can be added by adding a reason
     Given I am on the add pupil page
     When I submit the form with the pupil dob 7 years ago
-    Then I should still be able to add the pupil after filling in the reason box
+    Then the pupil details should be stored
 
   Scenario: 6 year old pupils cannot be added
     Given I am on the add pupil page
     When I submit the form with the pupil dob 6 years ago
     Then I should see an error with the DOB
 
-  @pupil_register_v2
+  @pupil_register_v2_hook
   Scenario: Redis cache is updated upon adding a new pupil
     Given I have added a pupil
     When I check the redis cache

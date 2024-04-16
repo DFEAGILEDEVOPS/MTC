@@ -112,21 +112,13 @@ describe('pupilAccessArrangementsService', () => {
           urlSlug: 'urlSlug',
           foreName: 'foreName',
           lastName: 'lastName',
-          inputAssistanceInformation: '',
-          nextButtonInformation: '',
-          questionReaderOtherInformation: '',
-          accessArrangementCode: 'CCT',
-          questionReaderReasonCode: null
+          accessArrangementCode: 'CCT'
         },
         {
           urlSlug: 'urlSlug',
           foreName: 'foreName',
           lastName: 'lastName',
-          inputAssistanceInformation: 'inputAssistanceInformation',
-          nextButtonInformation: 'nextButtonInformation',
-          questionReaderOtherInformation: '',
-          accessArrangementCode: 'ITA',
-          questionReaderReasonCode: null
+          accessArrangementCode: 'ITA'
         }
       ]
       jest.spyOn(pupilAccessArrangementsDataService, 'sqlFindAccessArrangementsByUrlSlug').mockResolvedValue(accessArrangementsData)
@@ -136,37 +128,25 @@ describe('pupilAccessArrangementsService', () => {
           pupilUrlSlug: 'urlSlug',
           foreName: 'foreName',
           lastName: 'lastName',
-          inputAssistanceInformation: 'inputAssistanceInformation',
-          nextButtonInformation: 'nextButtonInformation',
-          questionReaderOtherInformation: '',
           accessArrangements: ['CCT', 'ITA'],
-          questionReaderReason: null,
           isEditView: true
         }
       )
     })
 
-    test('returns pupil access arrangement data with question reader reason', async () => {
+    test('returns pupil access arrangement data', async () => {
       const accessArrangementsData = [
         {
           urlSlug: 'urlSlug',
           foreName: 'foreName',
           lastName: 'lastName',
-          inputAssistanceInformation: '',
-          nextButtonInformation: '',
-          questionReaderOtherInformation: '',
-          accessArrangementCode: 'CCT',
-          questionReaderReasonCode: null
+          accessArrangementCode: 'CCT'
         },
         {
           urlSlug: 'urlSlug',
           foreName: 'foreName',
           lastName: 'lastName',
-          inputAssistanceInformation: '',
-          nextButtonInformation: '',
-          questionReaderOtherInformation: 'questionReaderOtherInformation',
-          accessArrangementCode: 'QNR',
-          questionReaderReasonCode: 'OTH'
+          accessArrangementCode: 'QNR'
         }
       ]
       jest.spyOn(pupilAccessArrangementsDataService, 'sqlFindAccessArrangementsByUrlSlug').mockResolvedValue(accessArrangementsData)
@@ -176,11 +156,7 @@ describe('pupilAccessArrangementsService', () => {
           pupilUrlSlug: 'urlSlug',
           foreName: 'foreName',
           lastName: 'lastName',
-          inputAssistanceInformation: '',
-          nextButtonInformation: '',
-          questionReaderOtherInformation: 'questionReaderOtherInformation',
           accessArrangements: ['CCT', 'QNR'],
-          questionReaderReason: 'OTH',
           isEditView: true
         }
       )

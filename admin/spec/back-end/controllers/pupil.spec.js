@@ -338,15 +338,15 @@ describe('pupil controller:', () => {
     test('retrieves the pupil data', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      jest.spyOn(pupilService, 'fetchOneBySlugWithAgeReason').mockResolvedValue(populatedPupilMock)
+      jest.spyOn(pupilService, 'fetchOnePupilBySlug').mockResolvedValue(populatedPupilMock)
       await sut.getEditPupilById(req, res, next)
-      expect(pupilService.fetchOneBySlugWithAgeReason).toHaveBeenCalled()
+      expect(pupilService.fetchOnePupilBySlug).toHaveBeenCalled()
     })
 
     test('bails out if the pupil is not found', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      jest.spyOn(pupilService, 'fetchOneBySlugWithAgeReason').mockReturnValue(null)
+      jest.spyOn(pupilService, 'fetchOnePupilBySlug').mockReturnValue(null)
       await sut.getEditPupilById(req, res, next)
       expect(next).toHaveBeenCalledWith(new Error(`Pupil ${req.params.id} not found`))
     })
@@ -354,7 +354,7 @@ describe('pupil controller:', () => {
     test('bails out if any of the method raises an exception', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      jest.spyOn(pupilService, 'fetchOneBySlugWithAgeReason').mockImplementation(() => {
+      jest.spyOn(pupilService, 'fetchOnePupilBySlug').mockImplementation(() => {
         throw new Error('dummy error')
       })
       sut.getEditPupilById(req, res, next)
@@ -377,7 +377,7 @@ describe('pupil controller:', () => {
     test('makes a call to retrieve the pupil', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      jest.spyOn(pupilService, 'fetchOneBySlugWithAgeReason').mockResolvedValue(pupilMock)
+      jest.spyOn(pupilService, 'fetchOnePupilBySlug').mockResolvedValue(pupilMock)
       jest.spyOn(schoolService, 'findOneById').mockResolvedValue(schoolMock)
       // As we do not want to run any more of the controller code than we need to we can trigger an
       // exception to bail out early, which saves mocking the remaining calls.
@@ -385,13 +385,13 @@ describe('pupil controller:', () => {
         throw new Error('unit test early exit')
       })
       await sut.postEditPupil(req, res, next)
-      expect(pupilService.fetchOneBySlugWithAgeReason).toHaveBeenCalled()
+      expect(pupilService.fetchOnePupilBySlug).toHaveBeenCalled()
     })
 
     test('bails out if the pupil if not found', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      jest.spyOn(pupilService, 'fetchOneBySlugWithAgeReason').mockResolvedValue(null)
+      jest.spyOn(pupilService, 'fetchOnePupilBySlug').mockResolvedValue(null)
       await sut.postEditPupil(req, res, next)
       expect(next).toHaveBeenCalledWith(new Error(`Pupil ${req.body.urlSlug} not found`))
     })
@@ -399,7 +399,7 @@ describe('pupil controller:', () => {
     test('makes a call to retrieve the school', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      jest.spyOn(pupilService, 'fetchOneBySlugWithAgeReason').mockResolvedValue(pupilMock)
+      jest.spyOn(pupilService, 'fetchOnePupilBySlug').mockResolvedValue(pupilMock)
       jest.spyOn(schoolService, 'findOneById').mockResolvedValue(schoolMock)
       // As we do not want to run any more of the controller code than we need to we can trigger an
       // exception to bail out early, which saves mocking the remaining calls.
@@ -407,13 +407,14 @@ describe('pupil controller:', () => {
         throw new Error('unit test early exit')
       })
       await sut.postEditPupil(req, res, next)
-      expect(pupilService.fetchOneBySlugWithAgeReason).toHaveBeenCalled()
+      expect(pupilService.fetchOnePupilBySlug).toHaveBeenCalled()
       expect(schoolService.findOneById).toHaveBeenCalledWith(pupilMock.school_id)
     })
+
     test('calls pupilRegisterCachingService.dropPupilRegisterCache if pupil has been successfully edited', async () => {
       const res = getRes()
       const req = getReq(goodReqParams)
-      jest.spyOn(pupilService, 'fetchOneBySlugWithAgeReason').mockResolvedValue(pupilMock)
+      jest.spyOn(pupilService, 'fetchOnePupilBySlug').mockResolvedValue(pupilMock)
       jest.spyOn(schoolService, 'findOneById').mockResolvedValue(schoolMock)
       jest.spyOn(pupilValidator, 'validate').mockResolvedValue(new ValidationError())
       jest.spyOn(pupilEditService, 'update').mockImplementation()
@@ -421,7 +422,7 @@ describe('pupil controller:', () => {
       // As we do not want to run any more of the controller code than we need to we can trigger an
       // exception to bail out early, which saves mocking the remaining calls.
       await sut.postEditPupil(req, res, next)
-      expect(pupilService.fetchOneBySlugWithAgeReason).toHaveBeenCalled()
+      expect(pupilService.fetchOnePupilBySlug).toHaveBeenCalled()
       expect(schoolService.findOneById).toHaveBeenCalledWith(pupilMock.school_id)
       expect(pupilEditService.update).toHaveBeenCalled()
       expect(res.render).toHaveBeenCalled()
