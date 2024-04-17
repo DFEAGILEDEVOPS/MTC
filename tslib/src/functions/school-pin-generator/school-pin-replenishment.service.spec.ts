@@ -12,7 +12,7 @@ const SchoolPinGeneratorDataServiceMock = jest.fn<ISchoolPinReplenishmentDataSer
   getSchoolById: jest.fn()
 }))
 
-const AllowedWordsServiceMock= jest.fn<IAllowedWordsService, any>(() => ({
+const AllowedWordsServiceMock = jest.fn<IAllowedWordsService, any>(() => ({
   getAllowedWords: jest.fn()
 }))
 

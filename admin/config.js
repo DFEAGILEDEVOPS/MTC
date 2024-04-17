@@ -60,7 +60,6 @@ module.exports = {
   WaitTimeBeforeExitInSeconds: parseInt(process.env.WAIT_TIME_BEFORE_EXIT, 10) || 30,
   WaitTimeBeforeMetaRedirectInSeconds: parseInt(process.env.WAIT_TIME_BEFORE_REDIRECT, 10) || 2,
   Data: {
-    allowedWords: process.env.ALLOWED_WORDS || 'aaa,bcd,dcd,tfg,bxx',
     pinSubmissionMaxAttempts: process.env.PIN_SUBMISSION_MAX_ATTEMPTS || 100,
     helplineNumber: process.env.HELPLINE_NUMBER || '0300 303 3013',
     pupilCensusMaxSizeFileUploadMb: process.env.PUPIL_CENSUS_MAX_FILE_UPLOAD_MB || 100 * 1024 * 1024,
