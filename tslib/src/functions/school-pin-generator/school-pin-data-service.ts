@@ -12,7 +12,7 @@ export class SchoolPinDataService implements ISchoolPinDataService {
   }
 
   async getAllowedWords (): Promise<string[]> {
-    const sql = 'SELECT val FROM mtc_admin.school_pin'
+    const sql = 'SELECT val FROM [mtc_admin].[schoolPin]'
     const results = await this.sqlService.query(sql)
     return results.map((result: any) => result.val)
   }
