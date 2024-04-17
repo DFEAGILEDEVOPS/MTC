@@ -1,5 +1,3 @@
-require 'pp'
-
 Before do
   @school = SqlDbHelper.get_random_school
   if @school.nil?
