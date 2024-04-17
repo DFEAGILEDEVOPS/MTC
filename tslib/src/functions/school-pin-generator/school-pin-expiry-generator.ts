@@ -1,5 +1,6 @@
 import * as momentTz from 'moment-timezone'
-import { type IConfigProvider, ConfigFileProvider } from './config-file-provider'
+import { PinConfigProvider } from './pin-config-provider'
+import { type IConfigProvider } from './config-provider'
 import { type IDateTimeService, DateTimeService } from '../../common/datetime.service'
 
 export class SchoolPinExpiryGenerator {
@@ -12,7 +13,7 @@ export class SchoolPinExpiryGenerator {
     }
     this.dateTimeService = dateTimeService
     if (configProvider === undefined) {
-      configProvider = new ConfigFileProvider()
+      configProvider = new PinConfigProvider()
     }
     this.configProvider = configProvider
   }

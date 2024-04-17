@@ -1,5 +1,5 @@
 import { SchoolPinGenerator } from './school-pin-generator'
-import { type IConfigProvider } from './config-file-provider'
+import { type IConfigProvider } from './config-provider'
 import { type IRandomGenerator } from './random-generator'
 
 let sut: SchoolPinGenerator

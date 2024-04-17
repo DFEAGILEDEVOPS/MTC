@@ -1,4 +1,5 @@
-import { type IConfigProvider, ConfigFileProvider } from './config-file-provider'
+import { PinConfigProvider } from './pin-config-provider'
+import { type IConfigProvider } from './config-provider'
 import { AllowedWordsService } from './allowed-words.service'
 import { type IRandomGenerator, RandomGenerator } from './random-generator'
 
@@ -9,7 +10,7 @@ export class SchoolPinGenerator implements ISchoolPinGenerator {
 
   constructor (configProvider?: IConfigProvider, randomGenerator?: IRandomGenerator) {
     if (configProvider === undefined) {
-      configProvider = new ConfigFileProvider()
+      configProvider = new PinConfigProvider()
     }
     this.configProvider = configProvider
     if (randomGenerator === undefined) {

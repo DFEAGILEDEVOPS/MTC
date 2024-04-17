@@ -1,6 +1,6 @@
 import config from '../../config'
 
-export interface IConfigProvider {
+export interface IPinConfigProvider {
   OverridePinExpiry: boolean
   AllowedWords: string
   BannedWords: string
@@ -8,7 +8,7 @@ export interface IConfigProvider {
   DigitChars: string
 }
 
-export class ConfigFileProvider implements IConfigProvider {
+export class PinConfigProvider implements IPinConfigProvider {
   constructor () {
     this.AllowedWords = config.SchoolPinGenerator.AllowedWords
     this.OverridePinExpiry = config.SchoolPinGenerator.OverridePinExpiry

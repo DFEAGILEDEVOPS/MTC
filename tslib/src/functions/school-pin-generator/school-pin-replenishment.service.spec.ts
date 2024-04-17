@@ -2,7 +2,7 @@ import { SchoolPinReplenishmnentService, type School, type SchoolPinUpdate } fro
 import moment from 'moment'
 import { type ISchoolPinReplenishmentDataService } from './school-pin-replenishment.data.service'
 import { type ILogger, ConsoleLogger } from '../../common/logger'
-import { type IConfigProvider } from './config-file-provider'
+import { type IConfigProvider } from './config-provider'
 import { type IModifyResult } from '../../sql/sql.service'
 
 const SchoolPinGeneratorDataServiceMock = jest.fn<ISchoolPinReplenishmentDataService, any>(() => ({

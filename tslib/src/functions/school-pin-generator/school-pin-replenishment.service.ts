@@ -3,7 +3,8 @@ import { SchoolPinReplenishmentDataService, type ISchoolPinReplenishmentDataServ
 import { SchoolPinGenerator, type ISchoolPinGenerator } from './school-pin-generator'
 import { SchoolPinExpiryGenerator } from './school-pin-expiry-generator'
 import { type ILogger } from '../../common/logger'
-import { type IConfigProvider, ConfigFileProvider } from './config-file-provider'
+import { PinConfigProvider } from './pin-config-provider'
+import { type IConfigProvider } from './config-provider'
 import { SchoolRequiresNewPinPredicate } from './school-requires-pin-predicate'
 import { MaxAttemptsCalculator } from './max-attempts-calculator'
 import { AllowedWordsService } from './allowed-words.service'
@@ -28,7 +29,7 @@ export class SchoolPinReplenishmnentService {
     this.pinGenerator = pinGenerator
 
     if (configProvider === undefined) {
-      configProvider = new ConfigFileProvider()
+      configProvider = new PinConfigProvider()
     }
     this.configProvider = configProvider
     this.maxAttemptsCalculator = new MaxAttemptsCalculator()
