@@ -2,7 +2,6 @@ import config from '../../config'
 
 export interface IPinConfigProvider {
   OverridePinExpiry: boolean
-  AllowedWords: string
   BannedWords: string
   PinUpdateMaxAttempts: number
   DigitChars: string
@@ -10,7 +9,6 @@ export interface IPinConfigProvider {
 
 export class PinConfigProvider implements IPinConfigProvider {
   constructor () {
-    this.AllowedWords = config.SchoolPinGenerator.AllowedWords
     this.OverridePinExpiry = config.SchoolPinGenerator.OverridePinExpiry
     this.BannedWords = config.SchoolPinGenerator.BannedWords
     this.PinUpdateMaxAttempts = config.SchoolPinGenerator.PinUpdateMaxAttempts
@@ -18,7 +16,6 @@ export class PinConfigProvider implements IPinConfigProvider {
   }
 
   OverridePinExpiry: boolean
-  AllowedWords: string
   BannedWords: string
   PinUpdateMaxAttempts: number
   DigitChars: string
