@@ -1,0 +1,19 @@
+{
+  "bindings": [
+    {
+      "direction": "in",
+      "type": "serviceBusTrigger",
+      "name": "inputData",
+      "queueName": "ps-report-staging-start",
+      "connection": "AZURE_SERVICE_BUS_CONNECTION_STRING"
+    },
+    {
+      "direction": "out",
+      "type": "serviceBus",
+      "name": "outputData",
+      "queueName": "ps-report-staging-complete",
+      "connection": "AZURE_SERVICE_BUS_CONNECTION_STRING"
+    }
+  ],
+  "scriptFile": "../dist/functions-ps-report/ps-report-3b-stage-csv-file/index.js"
+}

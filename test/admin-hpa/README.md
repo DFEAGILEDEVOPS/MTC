@@ -15,19 +15,56 @@ Follow installation instructions for installing RVM here:
 
 https://rvm.io/rvm/install
 
-Once rvm is installed, we need ruby version 2.7.7, to install use the following:
- `rvm install 2.7.7`
+Once rvm is installed, we need ruby version 3.2.2, to install use the following:
+ `rvm install 3.2.2`
 
-Use ruby version 2.7.7 and set it as your default:
- `rvm use 2.7.7 --default`
+*NOTE:* If you are using Apple Silicon and the install fails, this is typically due to it using
+the newer version of openssl which is not yet supported in Ruby 3.  You must direct rvm to target
+the older version...
+
+`rvm install ruby-3.2.2 --with-openssl-dir=/opt/homebrew/opt/openssl@1.1/`
+
+Use ruby version 3.2.2 and set it as your default:
+ `rvm use 3.2.2 --default`
 
 ## Install FreeTDS dependency
 
-run `brew install FreeTDS`
+### macOS (via [homebrew](https://brew.sh/))
+`brew install FreeTDS`
+
+### windows (WSL) or linux
+`sudo apt-get -y install freetds-dev`
 
 ## Install prerequisites
 
+### Apps & Services
 Set up the solution as per the [root readme](../../README.md)
+
+### Dummy Data
+
+Once your database is setup and online, open a shell in the `db` directory and run `yarn dummy-data`.
+This will populate your local database with 18k schools, and a user for each.
+
+### School pin dataset
+
+Ensure the `ALLOWED_WORDS` environment variable is populated with at least 100 three letter words to create a unique 7 character pin for each school.
+
+### Generate school pins
+
+It may be necessary to invoke the school pin generator function to populate each school with a pin, if this has not been done already.  The function may execute upon startup of the `func-consumption` app, but this is not guaranteed due to the nature of the timer trigger.
+
+The raw HTTP request looks like this...
+```
+POST /admin/functions/school-pin-generator HTTP/1.1
+Content-Type: application/json
+Host: localhost:7071
+```
+and via curl...
+```
+curl -X "POST" "http://localhost:7071/admin/functions/school-pin-generator" \
+     -H 'Content-Type: application/json' \
+     -d $'{}'
+```
 
 ## Install required gems
 
@@ -65,23 +102,6 @@ If you want to run a particular test, then tag the scenario with a tag like @tes
 If you want to run the tests on a different url:
 
 `cucumber ADMIN_BASE_URL='https://check-development.herokuapp.com'`
-
-##### Parallel
-
-If you want to run the tests in parallel to save time:
-
- `parallel_cucumber features/ -n 4 -o "-p parallel" `
-
- The above command will run the tests headless in 4 processes ( -n option) and uses the 'parallel' profile defined in config/cucumber.yml file.
- Html reports are generated in report folder with names as report.html, report1.html, report2.html, report3.html ( one html report per process)
-
-If you want to change the url while executing parallel tests ( use the -o option in parallel gem to give cucumber command line options):
-
- `parallel_cucumber features/ -n 4 -o "-p parallel ADMIN_BASE_URL=‘https://check-development.herokuapp.com’"`
-
-If you want to run a set of tests in parallel tagged with a tag for example @smoke:
-
- `parallel_cucumber features/ -n 2 -o "-p parallel_chrome -t @smoke"`
 
 ##### Rerun failing scenarios
 

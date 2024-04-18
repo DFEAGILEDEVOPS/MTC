@@ -1,4 +1,4 @@
-@service_manager_message
+@service_manager_message_feature @service_manager_message_hook @serial
 Feature: Service manager message
 
   Scenario: Service manager can manage service messages

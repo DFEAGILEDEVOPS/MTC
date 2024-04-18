@@ -1,4 +1,4 @@
-@remove_all_groups
+@groups_feature @remove_all_groups_hook
 Feature:
   Pupil groups
 

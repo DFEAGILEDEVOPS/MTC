@@ -1,3 +1,4 @@
+@tech_support_feature
 Feature:
   Tech support
 

@@ -6,6 +6,8 @@ describe('ListSchoolsService', () => {
   let sut: ListSchoolsService
   let mockSqlService: ISqlService
   let mockLogger: ILogger
+  const uuid = 'test-uuid'
+  const filename = 'test.dat'
 
   const mockResponse = [
     { id: 1, uuid: 'uuid1', name: 'School One' },
@@ -27,7 +29,7 @@ describe('ListSchoolsService', () => {
   })
 
   test('getSchoolMessages returns messages', async () => {
-    const resp = await sut.getSchoolMessages()
+    const resp = await sut.getSchoolMessages(uuid, filename)
     expect(resp).toHaveLength(2)
     expect(resp[0].name).toBe('School One')
     expect(resp[0].uuid).toBe('uuid1')

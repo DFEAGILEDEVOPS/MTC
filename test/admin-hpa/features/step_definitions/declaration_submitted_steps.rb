@@ -37,8 +37,8 @@ Then(/^I can see the declaration submitted form page not confirmed as per the de
 end
 
 Given(/^I have no pupils not taking the check for the school$/) do
-  SqlDbHelper.delete_pupils_not_taking_check
-  SqlDbHelper.set_pupil_attendance_via_school(@school_user['entity']['school_id'], 'null')
+  SqlDbHelper.delete_pupils_not_taking_check(@school_id)
+  SqlDbHelper.set_pupil_attendance_via_school(@school_user['school_id'], 'null')
 end
 
 Given(/^I have some pupils that have completed the check$/) do

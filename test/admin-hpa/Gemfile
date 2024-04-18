@@ -27,6 +27,7 @@ gem 'numbers_in_words', '>= 0.4.0'
 gem 'colorize'
 gem 'lz_string'
 gem 'redis'
-gem "rack", ">= 3.0.6.1"
+gem "rack", ">= 3.0.9.1"
 gem 'dotenv'
 gem 'jwt'
+gem 'securerandom'

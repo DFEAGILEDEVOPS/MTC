@@ -1,4 +1,4 @@
-@live_check_window_closed
+@sta_admin_add_pupils_feature @live_check_window_closed_hook @serial
 Feature: STA Admin use can add pupils
 
   Scenario: STA Admin can add a pupil when live check window is closed
