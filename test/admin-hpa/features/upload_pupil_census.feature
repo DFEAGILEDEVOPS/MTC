@@ -1,4 +1,4 @@
-@upload_pupil_census @delete_census
+@upload_pupil_census_feature @empty_new_school_hook @serial
 Feature:
   Upload Pupil Census
 

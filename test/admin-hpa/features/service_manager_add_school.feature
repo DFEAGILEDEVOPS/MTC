@@ -1,3 +1,4 @@
+@service_manager_add_school_feature
 Feature:
   Add School
 

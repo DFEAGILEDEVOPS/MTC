@@ -1,4 +1,4 @@
-@add_pupil
+@add_pupil_feature
 Feature:
   As part of test development
   I want to be able to add a pupil
@@ -96,13 +96,11 @@ Feature:
     When I submit the form with the name fields set as M4ry
     Then the pupil details should be stored
 
-  @ie11
   Scenario: Names can include apostrophes
     Given I am on the add pupil page
     When I submit the form with the name fields set as Mary'Jane
     Then the pupil details should be stored
 
-  @ie11
   Scenario: Names can include accents
     Given I am on the add pupil page
     When I submit the form with the name fields set as Maryçáéíóúñü
@@ -216,7 +214,7 @@ Feature:
     When I submit the form with the pupil dob 6 years ago
     Then I should see an error with the DOB
 
-  @pupil_register_v2
+  @pupil_register_v2_hook
   Scenario: Redis cache is updated upon adding a new pupil
     Given I have added a pupil
     When I check the redis cache

@@ -96,7 +96,8 @@ end
 
 Then(/^I should see the pupil register data stored in redis$/) do
   pupils_from_register = pupil_register_page.pupil_list.pupil_row.map { |x| x.names.text.split("\n")[0] }
-  pupils_from_redis = (JSON.parse(JSON.parse(REDIS_CLIENT.get('pupilRegisterViewData:2'))['value'])).map { |x| x['fullName'] }
+  wait_until {!(REDIS_CLIENT.get("pupilRegisterViewData:#{@school_id}")).nil?}
+  pupils_from_redis = (JSON.parse(JSON.parse(REDIS_CLIENT.get("pupilRegisterViewData:#{@school_id}"))['value'])).map { |x| x['fullName'] }
   expect(pupils_from_redis.sort).to eql pupils_from_register.sort
 end
 

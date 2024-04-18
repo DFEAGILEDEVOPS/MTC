@@ -1,4 +1,4 @@
-@feature-toggle
+@create_check_window_feature @serial
 Feature:
   Create check window
 
