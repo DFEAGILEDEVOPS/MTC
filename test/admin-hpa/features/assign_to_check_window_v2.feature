@@ -1,4 +1,4 @@
-@assign_to_check_window_feature @create_new_window_hook
+@assign_to_check_window_feature @create_new_window_hook @serial
 Feature:
   As a test developer
   I want to assign a window for a check form
@@ -15,7 +15,7 @@ Feature:
   Scenario: Users can assign a live check form to a inactive window
     Then I can assign live check forms to inactive window
 
-  @upload_new_fam_form
+  @upload_new_fam_form_hook
   Scenario: Users can assign a familiarisation check form to a inactive window
     Then I can assign familiarisation check forms to inactive window
 
@@ -24,7 +24,7 @@ Feature:
     Then I should not be allowed to do so
     And form assigned to 'Live check' check window display 'yes'
 
-  @upload_new_fam_form
+  @upload_new_fam_form_hook
   Scenario: No fam forms can be assigned to a active check window
     When I attempt to assign a familiarisation form to a active check window
     Then I should not be allowed to do so
@@ -36,7 +36,7 @@ Feature:
     But decide to cancel assigning
     Then I should be taken back to the assign check window v2 page
 
-  @upload_new_fam_form
+  @upload_new_fam_form_hook
   Scenario: Users can cancel assigning a familiarisation check form to a inactive window
     When I attempt to assign a familiarisation form to a inactive check window
     But decide to cancel assigning

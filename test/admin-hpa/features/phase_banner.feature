@@ -1,4 +1,4 @@
-@phase_banner_feature
+@phase_banner_feature @serial
 Feature:
   As a member of the development team
   I want users to be aware which phase the application is in and also offer feedback

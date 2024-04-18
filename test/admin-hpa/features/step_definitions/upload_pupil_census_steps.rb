@@ -29,12 +29,10 @@ When(/^I have chosen a file to submit$/) do
   @upn2 = UpnGenerator.generate
   @pupil_name2 = (0...8).map {(65 + rand(26)).chr}.join
   pupil_detail_array2 = [@school['leaCode'].to_s, @school['estabCode'].to_s, @upn2, @pupil_name2, @pupil_name2, @pupil_name2, "M", @old_date2]
-
   upload_pupil_census_page.upload__pupil_census(@file_name, pupil_detail_array, pupil_detail_array2)
   upload_pupil_census_page.upload.click
 
   upload_and_view_forms_page.delete_csv_file(@file_path)
-
 end
 
 Then(/^I should see the file uploaded$/) do

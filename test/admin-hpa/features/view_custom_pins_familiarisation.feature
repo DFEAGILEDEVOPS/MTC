@@ -1,4 +1,4 @@
-@view_custom_pins_familiarisation_feature @deactivate_all_test_check_window_hook
+@view_custom_pins_familiarisation_feature @deactivate_all_test_check_window_hook @serial
 Feature: View custom pins familiarisation
 
   Scenario: Familiarisation view and custom print pin page is displayed as per design

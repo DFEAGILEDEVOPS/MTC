@@ -1,4 +1,4 @@
-@view_and_custom_print_live_pin_feature @deactivate_all_test_check_window_hook
+@view_and_custom_print_live_pin_feature @deactivate_all_test_check_window_hook @serial
 Feature: View and Custom Print Live Check Pin
 
 

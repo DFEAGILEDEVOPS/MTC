@@ -1,4 +1,4 @@
-@post_check_window_settings_feature
+@post_check_window_settings_feature @serial
 Feature:
   Service manager post check window settings
 
