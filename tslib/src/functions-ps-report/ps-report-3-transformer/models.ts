@@ -8,10 +8,12 @@ export interface IReportLineBase {
   Gender: string
   PupilUPN: string
   Forename: string
+  MiddleNames: string | null
   Surname: string
   ReasonNotTakingCheck: DfEAbsenceCode | null
   PupilStatus: string | null
   ImportedFromCensus: boolean
+  IsEdited: boolean
   // School
   SchoolName: string
   Estab: number | null
