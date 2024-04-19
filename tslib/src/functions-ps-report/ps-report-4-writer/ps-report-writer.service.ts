@@ -45,6 +45,7 @@ export class PsReportWriterService {
         DOB date MASKED WITH (FUNCTION = 'default()') NULL,
         Gender char(1) MASKED WITH (FUNCTION = 'default()') NULL,
         Forename nvarchar(128) MASKED WITH (FUNCTION = 'default()') NULL,
+        MiddleNames nvarchar(128) MASKED WITH (FUNCTION = 'default()') NULL,
         Surname nvarchar(128) MASKED WITH (FUNCTION = 'default()') NULL,
         FormMark int MASKED WITH (FUNCTION = 'default()') NULL,
         QDisplayTime decimal(5,2) NULL,
@@ -68,6 +69,7 @@ export class PsReportWriterService {
         ReasonNotTakingCheck char(1) NULL,
         ToECode int NULL,
         ImportedFromCensus bit NOT NULL CONSTRAINT [DF_${newTableName}_ImportedFromCensus] DEFAULT (0),
+        IsEdited bit NOT NULL CONSTRAINT [DF_${newTableName}_IsEdited] DEFAULT (0)
     `
 
     const sqlParts = []
