@@ -27,7 +27,7 @@ export class FakeCompletedCheckGeneratorService implements ICompletedCheckGenera
   private readonly connectionTypes = ['slow-2g', '2g', '3g', '4g']
 
   private readonly randomScreenValue = (): number => {
-    return faker.datatype.number({
+    return faker.number.int({
       min: 800,
       max: 1600
     })
@@ -54,7 +54,7 @@ export class FakeCompletedCheckGeneratorService implements ICompletedCheckGenera
 
   private createMockResponse (questionNumber: number, question: CheckQuestion, baseTime: moment.Moment, wantRandomAnswer: boolean = false): { answer: CompleteCheckAnswer, inputs: CompleteCheckInputEntry[], audits: CompleteCheckAuditEntry[] } {
     // the answer as a string
-    const input: string = wantRandomAnswer ? faker.datatype.number({ min: 1, max: 150 }).toString() : (question.factor1 * question.factor2).toString()
+    const input: string = wantRandomAnswer ? faker.number.int({ min: 1, max: 150 }).toString() : (question.factor1 * question.factor2).toString()
     const audits: CompleteCheckAuditEntry[] = []
 
     // Add 3 seconds to mimic the load screen
@@ -66,7 +66,7 @@ export class FakeCompletedCheckGeneratorService implements ICompletedCheckGenera
 
     // Capture the inputs and the question
     const inputs = [...input].map(num => {
-      const thinkingDelayMs = faker.datatype.number({ min: 150, max: 1800 })
+      const thinkingDelayMs = faker.number.int({ min: 150, max: 1800 })
       baseTime.add(thinkingDelayMs, 'milliseconds')
 
       return {
@@ -79,7 +79,7 @@ export class FakeCompletedCheckGeneratorService implements ICompletedCheckGenera
     })
 
     // And add an Enter button keypress to the tail of the inputs
-    const thinkingDelayMs = faker.datatype.number({ min: 500, max: 1800 })
+    const thinkingDelayMs = faker.number.int({ min: 500, max: 1800 })
     baseTime.add(thinkingDelayMs, 'milliseconds')
     inputs.push({
       input: 'Enter',
@@ -128,9 +128,9 @@ export class FakeCompletedCheckGeneratorService implements ICompletedCheckGenera
 
     for (let i = 0; i < numberFromIncorrectCheckForm; i++) {
       const randomQuestion = {
-        order: faker.datatype.number({ min: 1, max: 25 }),
+        order: faker.number.int({ min: 1, max: 25 }),
         factor1: 13, // Using 13 provides a way of ensuring that this question is not in the questions array provided as the first arg to this function.
-        factor2: faker.datatype.number({ min: 1, max: 12 })
+        factor2: faker.number.int({ min: 1, max: 12 })
       }
       const resp = this.createMockResponse(i + 1, randomQuestion, dt, faker.datatype.boolean())
       responses.answers.push(resp.answer)
@@ -177,12 +177,12 @@ export class FakeCompletedCheckGeneratorService implements ICompletedCheckGenera
           chargingTime: 0,
           dischargingTime: 0,
           isCharging: faker.datatype.boolean(),
-          levelPercent: faker.datatype.number({ min: 1, max: 100 })
+          levelPercent: faker.number.int({ min: 1, max: 100 })
         },
         cpu: {
-          hardwareConcurrency: faker.datatype.number({ min: 1, max: 10 })
+          hardwareConcurrency: faker.number.int({ min: 1, max: 10 })
         },
-        deviceId: faker.datatype.uuid(),
+        deviceId: faker.string.uuid(),
         navigator: {
           cookieEnabled: faker.datatype.boolean(),
           doNotTrack: faker.datatype.boolean(),
