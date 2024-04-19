@@ -4,7 +4,7 @@ module.exports.generateSql = function () {
 
   if (process.env.ALLOWED_WORDS_SET !== undefined) {
     const sql = process.env.ALLOWED_WORDS_SET.split(',').map(word => {
-      return `INSERT INTO mtc_admin.[schoolPin] (val) VALUES ('${word}')`
+      return `INSERT INTO mtc_admin.[schoolPin] (val) VALUES ('${word.trim().toLowerCase()}')`
     })
     return sql.join('\n')
   }
