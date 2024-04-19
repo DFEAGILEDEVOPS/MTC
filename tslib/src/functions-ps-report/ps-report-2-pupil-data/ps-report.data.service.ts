@@ -98,6 +98,7 @@ export class PsReportDataService {
         SELECT
                 p.id,
                 p.foreName,
+                p.middleNames,
                 p.lastName,
                 p.upn,
                 p.gender,
@@ -126,8 +127,10 @@ export class PsReportDataService {
       foreName: string
       gender: 'M' | 'F'
       id: number
+      isEdited: boolean
       job_id: number
       lastName: string
+      middleNames: string
       notTakingCheckReason: string | null
       notTakingCheckCode: NotTakingCheckCode
       restartAvailable: boolean
@@ -146,8 +149,10 @@ export class PsReportDataService {
         forename: o.foreName,
         gender: o.gender,
         id: o.id,
+        isEdited: o.isEdited,
         jobId: o.job_id,
         lastname: o.lastName,
+        middlenames: o.middleNames,
         restartAvailable: o.restartAvailable,
         notTakingCheckReason: o.notTakingCheckReason,
         notTakingCheckCode: o.notTakingCheckCode,

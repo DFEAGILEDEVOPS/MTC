@@ -48,7 +48,9 @@ describe('ps-report.data.service', () => {
           foreName: 'abc',
           gender: 'F',
           id: 3,
+          isEdited: true,
           lastName: 'def',
+          middleNames: 'middle name',
           restartAvailable: false,
           notTakingCheckReason: 'ghi',
           notTakingCheckCode: 'JSTAR',
@@ -72,6 +74,8 @@ describe('ps-report.data.service', () => {
       expect(p.slug).toBe('jkl')
       expect(p.upn).toBe('mno')
       expect(p.notTakingCheckCode).toBe('JSTAR')
+      expect(p.isEdited).toBe(true)
+      expect(p.middlenames).toBe('middle name')
     })
 
     test('the pupil array is readonly', async () => {
@@ -194,8 +198,10 @@ describe('ps-report.data.service', () => {
       forename: 'Unit',
       gender: 'F',
       id: 1,
+      isEdited: false,
       jobId: null,
       lastname: 'Test',
+      middlenames: null,
       notTakingCheckReason: 'Left school',
       notTakingCheckCode: 'LEFTT',
       restartAvailable: false,
@@ -211,8 +217,10 @@ describe('ps-report.data.service', () => {
       forename: 'Unit',
       gender: 'F',
       id: 1,
+      isEdited: false,
       jobId: null,
       lastname: 'Test',
+      middlenames: null,
       notTakingCheckReason: 'Results annulled',
       notTakingCheckCode: 'ANLLD',
       restartAvailable: false,
@@ -228,8 +236,10 @@ describe('ps-report.data.service', () => {
       forename: 'Unit',
       gender: 'F',
       id: 1,
+      isEdited: true,
       jobId: null,
       lastname: 'Test',
+      middlenames: 'Middle',
       notTakingCheckReason: null,
       notTakingCheckCode: null,
       restartAvailable: false,
@@ -245,8 +255,10 @@ describe('ps-report.data.service', () => {
       forename: 'Unit',
       gender: 'F',
       id: 1,
+      isEdited: false,
       jobId: null,
       lastname: 'Test',
+      middlenames: 'Of',
       notTakingCheckReason: null,
       notTakingCheckCode: null,
       restartAvailable: false,
