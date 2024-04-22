@@ -6,7 +6,7 @@ import { PreparedCheckService } from './prepared-check.service'
 
 let sut: PreparedCheckService
 let redisServiceMock: IRedisService
-const checkCode = faker.datatype.uuid()
+const checkCode = faker.string.uuid()
 
 describe('prepared-check.service', () => {
   beforeEach(() => {
@@ -20,7 +20,7 @@ describe('prepared-check.service', () => {
 
   test('should obtain prepared check lookup key first', async () => {
     const lookupKey = redisKeyService.getPreparedCheckLookupKey(checkCode)
-    const preparedCheckKey = `prepared-check-key-${faker.datatype.uuid()}`
+    const preparedCheckKey = `prepared-check-key-${faker.string.uuid()}`
     jest.spyOn(redisServiceMock, 'get').mockReturnValueOnce(Promise.resolve(preparedCheckKey))
     await sut.fetch(checkCode)
     expect(redisServiceMock.get).toHaveBeenNthCalledWith(1, lookupKey)
