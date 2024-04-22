@@ -69,7 +69,7 @@ export class PsReportWriterService {
         ReasonNotTakingCheck char(1) NULL,
         ToECode int NULL,
         ImportedFromCensus bit NOT NULL CONSTRAINT [DF_${newTableName}_ImportedFromCensus] DEFAULT (0),
-        IsEdited bit NOT NULL CONSTRAINT [DF_${newTableName}_IsEdited] DEFAULT (0)
+        IsEdited bit NOT NULL CONSTRAINT [DF_${newTableName}_IsEdited] DEFAULT (0), -- must end in comma
     `
 
     const sqlParts = []
