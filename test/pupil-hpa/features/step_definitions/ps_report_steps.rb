@@ -351,12 +351,12 @@ Given(/^I have marked a pupil as not taking check with the (.+) reason for the p
   pupil_reason_page.sticky_banner.confirm.click
 end
 
-Given(/^I have annulled a pupil$/) do
+Given(/^I have annulled a pupil for the reason of (.+)$/) do |annul_reason|
   step 'I add a pupil'
   PsReportHelper.store_pupil(@details_hash, @school_id)
   pupil_upn = @details_hash[:upn]
   @pupil_details = SqlDbHelper.pupil_details(pupil_upn)
-  annul_pupil(pupil_upn, @school_id)
+  annul_pupil(pupil_upn, @school_id,annul_reason)
 end
 
 Given(/^my pin has expired after applying a restart$/) do
