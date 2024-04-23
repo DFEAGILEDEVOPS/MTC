@@ -1,3 +1,4 @@
+@retro_input_assistant_feature
 Feature:
   Retrospective input assistance
 

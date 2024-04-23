@@ -1,3 +1,4 @@
+@data_sync_feature
 Feature:
   Data sync
 

@@ -1,4 +1,4 @@
-@page_not_found
+@page_not_found_feature
 Feature: Page not found page
 
   Scenario: Page not found for unhandled url

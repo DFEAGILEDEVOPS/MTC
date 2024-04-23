@@ -1,4 +1,4 @@
-@complete_page
+@complete_page_feature
 Feature: Complete page
 
   Scenario: Completion page matches design

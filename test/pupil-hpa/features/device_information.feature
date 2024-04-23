@@ -1,6 +1,5 @@
-@device_information
+@device_information_feature
 Feature: Record device information in local storage and persist to DB
-
 
   Scenario: Device information recorded contains battery, cpu, navigation, network, screen information
     Given I am on the instructions page
