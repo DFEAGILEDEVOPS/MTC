@@ -766,13 +766,14 @@ const controller = {
     }
     try {
       const confirmedUpn = req.body.upn
+      const annulmentType = req.body.annulmentType
       if (confirmedUpn === undefined || confirmedUpn === '') {
         return annulPupilErrorHandler(req, res, next, 'No upn provided')
       }
       const urlSlug = req.params.slug
       const pupil = await ServiceManagerPupilService.getPupilDetailsByUrlSlug(urlSlug)
       if (pupil.upn !== confirmedUpn) return annulPupilErrorHandler(req, res, next, 'UPN does not match pupil')
-      await PupilAnnulmentService.applyAnnulment(urlSlug, req.user.id, pupil.schoolId)
+      await PupilAnnulmentService.applyAnnulment(urlSlug, req.user.id, pupil.schoolId, annulmentType)
       return res.redirect(`/service-manager/pupil-summary/${encodeURIComponent(urlSlug).toLowerCase()}`)
     } catch (error) {
       return annulPupilErrorHandler(req, res, next, error.message)
