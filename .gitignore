@@ -139,3 +139,5 @@ deploy.zip
 
 # Emacs save files
 *~
+test/pupil-hpa/data/*.csv
+test/pupil-hpa/data/*.csv

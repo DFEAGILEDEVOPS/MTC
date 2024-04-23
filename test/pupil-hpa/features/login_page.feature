@@ -1,4 +1,4 @@
-@login
+@login_feature
 Feature: Login page
 
   Scenario: Sign in page has a STA logo
@@ -18,14 +18,14 @@ Feature: Login page
     When I attempt to login with just a pupil pin
     Then the sign in button should be disabled
 
-  @generate_live_pin
+  @generate_live_pin_hook
   Scenario: Users can login with valid credentials
     Given I have logged in
     Then I should be taken to the confirmation page
     And I should see all the correct pupil details
     And pupil name is removed from local storage
 
-  @generate_live_pin
+  @generate_live_pin_hook
   Scenario: Users can login with a space in the password
     Given I have logged in with a space in the password
     Then I should be taken to the confirmation page
@@ -37,7 +37,7 @@ Feature: Login page
     When I want to try login with invalid credentials
     Then I should see a failed login message
 
-  @generate_live_pin
+  @generate_live_pin_hook
   Scenario: Local storage is cleared when I have logged in but I return to login page as details are not correct
     Given I have logged in
     But I have chosen that the details are not correct
@@ -51,7 +51,7 @@ Feature: Login page
     Given I logged in with user with access arrangement 'Audio version'
     Then I should see question reader set to true in the local storage
 
-  @generate_live_pin
+  @generate_live_pin_hook
   Scenario: Question Reader is set to false when a pupil who doesn't require it logs in
     Given I am logged in with a user who does not need question reader
     Then I should see question reader set to false in the local storage
