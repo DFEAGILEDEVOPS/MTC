@@ -76,6 +76,8 @@ test/pupil/*.html
 test/pupil-hpa/reports/
 test/pupil-hpa/screenshots/*.png
 test/pupil-hpa/data/school_testschool*
+test/pupil-hpa/data/ps_report_data_set_1.csv
+test/pupil-hpa/data/ps_report_data_set_2.csv
 test/pupil-hpa/test/screenshots/*.html
 test/pupil-hpa/test/screenshots/*/*.png
 test/pupil-hpa/screenshots/*/*.png
@@ -137,3 +139,5 @@ deploy.zip
 
 # Emacs save files
 *~
+test/pupil-hpa/data/*.csv
+test/pupil-hpa/data/*.csv
