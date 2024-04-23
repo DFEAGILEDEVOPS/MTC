@@ -33,8 +33,8 @@ Before("not @event_auditing", "not @feedback", "not @local_storage") do
 end
 
 Before('@ps_report_hook') do
-  File.delete(File.expand_path("#{File.dirname(__FILE__)}/../../data/ps_report_data_set_1.csv")) if File.exist? (File.expand_path("#{File.dirname(__FILE__)}/../../data/ps_report_data_set_1.csv"))
-  File.delete(File.expand_path("#{File.dirname(__FILE__)}/../../data/ps_report_data_set_2.csv")) if File.exist? (File.expand_path("#{File.dirname(__FILE__)}/../../data/ps_report_data_set_2.csv"))
+  # File.truncate(File.expand_path("#{File.dirname(__FILE__)}/../../data/ps_report_data_set_1.csv"), 0) if File.exist?(File.expand_path("#{File.dirname(__FILE__)}/../../data/ps_report_data_set_1.csv"))
+  # File.truncate(File.expand_path("#{File.dirname(__FILE__)}/../../data/ps_report_data_set_2.csv"), 0) if File.exist?(File.expand_path("#{File.dirname(__FILE__)}/../../data/ps_report_data_set_2.csv"))
 end
 
 Before('@empty_new_school') do
