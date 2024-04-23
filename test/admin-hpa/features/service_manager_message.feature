@@ -11,8 +11,8 @@ Feature: Service manager message
     Then the service message should be saved
 
   Scenario: Service manager can delete a service message
-    Given I have created a service message
-    When I decide to delete the message
+    Given I have created multiple service messages
+    When I decide to delete one of the messages
     Then it should be removed from the system
 
   Scenario: Service manager should be able to create multiple messages
