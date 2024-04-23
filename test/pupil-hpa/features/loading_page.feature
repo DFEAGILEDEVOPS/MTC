@@ -1,4 +1,4 @@
-@loading_page @generate_live_pin
+@loading_page_feature @generate_live_pin_hook
 Feature: Loading Page
 
   Scenario: Warm up questions start after a 2 second delay

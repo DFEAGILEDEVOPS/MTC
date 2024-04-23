@@ -1,4 +1,4 @@
-@instructions
+@instructions_feature
 Feature:
   As a pupil I want a page of instructions
   So I know what to do

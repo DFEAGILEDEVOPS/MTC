@@ -1,4 +1,4 @@
-@feedback
+@feedback_feature @feedback_hook
 Feature: Feedback page
 
   Scenario: Feedback page matches design
@@ -6,7 +6,6 @@ Feature: Feedback page
     When I choose to give feedback
     Then I should be able to give feedback on how difficult it was to enter answers
 
-  @travis
   Scenario: Users can submit their feedback
     Given I am on the complete page
     When I choose to give feedback

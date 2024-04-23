@@ -1,6 +1,5 @@
-@familiarisation_check
+@familiarisation_check_feature
 Feature: Familiarisation Check
-
 
   Scenario: Familiarisation header is displayed when pupil logs in using familisarisation pin
     Given I am logged with familiarisation pin
