@@ -48,6 +48,7 @@ const administrationMessageService = require('./services/administration-message.
 
 const logger = require('./services/log.service').getLogger()
 const sqlService = require('./services/data-access/sql.service')
+const { formAlreadySubmittedErrorCode } = require('./error-types/form-already-submitted-error')
 
 const app = express()
 setupLogging(app)
@@ -393,6 +394,11 @@ app.use(function (err, req, res, next) {
   if (err.code === 'SYSTEM_UNAVAILABLE') {
     res.locals.pageTitle = 'The service is currently closed'
     return res.render('availability/admin-window-unavailable', {})
+  }
+
+  if (err.code === formAlreadySubmittedErrorCode) {
+    res.locals.pageTitle = 'Form already submitted'
+    return res.render('form-already-submitted', {})
   }
 
   // catch school not found errors and redirect to the relevant page
