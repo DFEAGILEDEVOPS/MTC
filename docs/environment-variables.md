@@ -84,7 +84,10 @@ Env Var | Type | Default value | Required | Components | Description
  PORT | Int | 3001 | Optional | AA | The port the app will listen on.
  PREPARED_CHECK_EXPIRY_SECONDS | Int | 1800 | Optional | PAPI | Once a pupil logs in a live check the expiry in Redis is set to this value. Default is 1800 seconds (30 minutes).
  PREPARE_CHECK_MESSAGE_BATCH_SIZE | Int | 5 | Optional | AA | Appears to be **unused**.
- PS_REPORT_MAX_FILE_UPLOAD_MB | Int | 104857600 | Optional | AA | Not used?
+ PS_REPORT_STAGING_WAIT_TIME_COMPLETE | Int | 600 | Optional | FP | The amount of time to elapse where no new messages appear on the queue before determining that the CSV file assembly is complete and it can be uploaded to the Database.
+ PS_REPORT_STAGING_READ_MESSAGE_BATCH_SIZE | Int | 32 | Optional | FP | The numbers of messages to read in one batch when reading from the `ps_report_export` service bus queue when aseembling the staging CSV file.
+ PS_REPORT_STAGING_WRITE_MESSAGE_BATCH_SIZE | Int | 32 | Optional | FP | The number of messages to read before writing to the CSV file in blob storage.
+ PS_REPORT_STAGING_POLL_INTERVAL | Int | 10 milliseconds | Optional | FP | The number of milliseconds to sleep betwen batch reads. Unknown if required, set between 1 and 500.
  PUPIL_APP_URL | String | NULL | Required | AA | The URL of the pupil app - used to generate the QR code on the pin slips
  PUPIL_APP_USE_COMPRESSION | Boolean | true | Optional | AA | Determines whether the pupil app should compress the payload before sending it back.  Leave this as true.
  PUPIL_AUTH_JWT_SECRET | String | NULL | Required | AA,PAPI | 32 char minimum value.  Secret used to sign and verify JWT token for pupil check submission.  Pupil API will fail to start without a configured value of minimum length.
@@ -92,7 +95,6 @@ Env Var | Type | Default value | Required | Components | Description
  REDIS_HOST | String | NULL | Required | AA, FC, FC, PAPI | The redis hostname or IP address.
  REDIS_KEY | String | NULL | Optional | AA, FC, FT, PAPI | The redis secret key to use to connect to a password enabled Redis server.
  REDIS_PORT | Int | 6379 | Optional | AA, FC, FT, PAPI | The redis port to connect to.
- REDIS_RESULTS_EXPIRY_IN_SECONDS | Int | 15778800 | Optional | FC | The TTL of the school results object in Redis.Default is six months.
  RETRY_MAX_ATTEMPTS | Int | 3 | Optional | FC, FT,AA | The number of retry attempts to make is the SQL Server is unavailable due to resource constraints.
  RETRY_PAUSE_MS | Int | 5000 | Optional | AA, FC, FT | The number of milliseconds to pause because making the first retry attempt to the Database.  FC and FT default to 5 seconds.
  RETRY_PAUSE_MULTIPLIER | Float | 1.5 | Optional| AA, FC, FT | The multipland to multiply the RETRY_PAUSE_MS number by for successive retry attempts after the first one.  So using the defaults provided: the initial query will have 0 ms delay, then 5000 ms delay, then 7,500 ms delay then 11,250 for FC and FT.
@@ -101,9 +103,6 @@ Env Var | Type | Default value | Required | Components | Description
  SCHOOL_PIN_FUNCTION_ENABLED | Boolean | false | Optional | FC | Used by the Developer Test tools
  SCHOOL_PIN_GEN_FUNCTION_URL | String | http://localhost:7071/api/school-pin-http-service | Optional | AA | The URL of the school pin http service.
  SCHOOL_PIN_SAMPLER_FUNCTION_ENABLED | Boolean | false | Optional | FC | Used by the Developer Test tools
- SCHOOL_RESULTS_CACHE | Int | 1 | Optional | FC | Used by the school results cache determiner.  Set to 0 to never cache, 1 to cache if the date is between the end of the check and the first Monday after the check has ended, or 2 to never cache.
- SCHOOL_RESULTS_CACHE_BATCHS_PER_EXEC | Int | 10 |  Optional | FC | Tune the number of batches of messages the school-results-cache service fetches per invocation.  The  service is run regularly from a timer trigger.
- SCHOOL_RESULTS_CACHE_MSGS_PER_BATCH | Int | 32 | Optional | FC | Tune the number of messages the school-results-cache service fetches per query.
  SESSION_SECRET | String |  | Required | AA | A secret comprised of random characters used to sign session cookies.
  SQL_ALLOW_REPLICA_FOR_READS | Bool | false | Optional | AA | Experimental setting
  SQL_APP_NAME | String | Various | Suggested | AA, FC, FT | Used to provide the app name to SQL Server

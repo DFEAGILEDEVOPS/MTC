@@ -76,7 +76,7 @@ Then(/^I should see the school results$/) do
   checks_ids_from_school = SqlDbHelper.get_all_checks_from_school(@school_user['school_id']).map {|check| check['id']}
   checks_ids_from_school.each {|id| SqlDbHelper.wait_for_check_result(id)}
   school_landing_page.load
-  Timeout.timeout(10){visit current_url until school_landing_page.has_results?}
+  wait_until(10,2){visit current_url; school_landing_page.has_results?}
   school_landing_page.results.click
   expect(results_page).to have_heading
   expect(results_page).to_not have_no_hdf_message
@@ -87,8 +87,8 @@ Then(/^I should see the school results$/) do
   db_pupil_results = checks_ids_from_school.map {|check| {id: check.to_s, mark: SqlDbHelper.get_check_result(check)['mark'].to_s}}.sort_by {|hsh| hsh[:id]}
   expect(db_pupil_results).to eql pupil_results
   results_page.ctf_download.click
-  ctf_path = File.expand_path("#{File.dirname(__FILE__)}/../../data/download/999#{@estab_code}_KS2_999#{@estab_code}_001.xml")
-  Timeout.timeout(120) {sleep 2 until File.exist?(ctf_path)}
+  ctf_path = File.expand_path("#{File.dirname(__FILE__)}/../../data/download/#{@school['dfeNumber']}_KS2_#{@school['dfeNumber']}_001.xml")
+  wait_until(120,5){File.exist?(ctf_path)}
   ctf_file = File.read(ctf_path)
   doc = Nokogiri::XML ctf_file
   ctf_results_hash = doc.css('Pupil').map {|p| {name: p.children.css('Forename').text + ", " + p.children.css('Surname').text, mark: p.children.css('Result').text}}.sort_by {|hsh| hsh[:name]}
@@ -158,7 +158,7 @@ Then(/^I should see the results and reasons for not taking the check$/) do
   checks_ids_from_school = SqlDbHelper.get_all_checks_from_school(@school_user['school_id']).map {|check| check['id']}
   checks_ids_from_school.each {|id| SqlDbHelper.wait_for_check_result(id)}
   school_landing_page.load
-  Timeout.timeout(10){visit current_url until school_landing_page.has_results?}
+  wait_until(10,2){visit current_url; school_landing_page.has_results?}
   school_landing_page.results.click
   expect(results_page).to have_heading
   expect(results_page).to_not have_no_hdf_message
@@ -176,8 +176,8 @@ Then(/^I should see the results and reasons for not taking the check$/) do
   db_pupil_results = checks_ids_from_school.map {|check| {id: check.to_s, mark: SqlDbHelper.get_check_result(check)['mark'].to_s}}.sort_by {|hsh| hsh[:id]}
   expect(db_pupil_results).to eql pupil_results.sort_by {|hsh| hsh[:id]}
   results_page.ctf_download.click
-  ctf_path = File.expand_path("#{File.dirname(__FILE__)}/../../data/download/999#{@estab_code}_KS2_999#{@estab_code}_001.xml")
-  Timeout.timeout(120) {sleep 2 until File.exist?(ctf_path)}
+  ctf_path = File.expand_path("#{File.dirname(__FILE__)}/../../data/download/#{@school['dfeNumber']}_KS2_#{@school['dfeNumber']}_001.xml")
+  wait_until(120,5){File.exist?(ctf_path)}
   ctf_file = File.read(ctf_path)
   @doc = Nokogiri::XML ctf_file
   pupil_results_with_code = pupils_not_taking.map {|pupil| {name: pupil[:name], mark: calculate_ctf_reason_code(pupil[:reason])}}
@@ -221,8 +221,8 @@ end
 
 Then('the results reflect these changes') do
   results_page.ctf_download.click
-  ctf_path = File.expand_path("#{File.dirname(__FILE__)}/../../data/download/999#{@estab_code}_KS2_999#{@estab_code}_001.xml")
-  Timeout.timeout(120) {sleep 2 until File.exist?(ctf_path)}
+  ctf_path = File.expand_path("#{File.dirname(__FILE__)}/../../data/download/#{@school['dfeNumber']}_KS2_#{@school['dfeNumber']}_001.xml")
+  wait_until(120,5){File.exist?(ctf_path)}
   ctf_file = File.read(ctf_path)
   doc = Nokogiri::XML ctf_file
   pupils_not_taking = results_page.results.pupil_list.map {|pupil| {name: pupil.name.text, reason: pupil.status.text}}
@@ -270,4 +270,14 @@ end
 
 Then(/^I should see the version set to the correct academic year when downloaded in September$/) do
   expect(@doc.css('CTFversion').text).to eql (@academic_year).strftime("%y.0")
+end
+
+Given(/^I have pupils have not completed a check and no reason for not taking the check$/) do
+end
+
+And(/^I should see their status set to Incomplete$/) do
+  step "I am logged in"
+  results_page.load
+  statuses = results_page.results.pupil_list.map {|pupil| pupil.status.text}
+  expect(statuses).to eql ["Incomplete", "Incomplete", "Incomplete", "Incomplete", "Incomplete"]
 end

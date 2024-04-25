@@ -416,20 +416,20 @@ class SqlDbHelper
     result.each {|row| row.map}
   end
 
-  def self.get_ps_record_for_pupil(pupil_id)
-    sql = "SELECT * FROM [mtc_results].[psychometricReport] WHERE PupilId='#{pupil_id}'"
-    result = SQL_CLIENT.execute(sql)
-    ps_report = result.first
-    result.cancel
-    ps_report
-  end
+  # def self.get_ps_record_for_pupil(pupil_id)
+  #   sql = "SELECT * FROM [mtc_results].[psychometricReport] WHERE PupilId='#{pupil_id}'"
+  #   result = SQL_CLIENT.execute(sql)
+  #   ps_report = result.first
+  #   result.cancel
+  #   ps_report
+  # end
 
   def self.browser_lookup(browser_id)
     sql = "SELECT * FROM [mtc_results].[browserFamilyLookup] WHERE id='#{browser_id}'"
     result = SQL_CLIENT.execute(sql)
-    ps_report = result.first
+    browser_lookup = result.first
     result.cancel
-    ps_report
+    browser_lookup
   end
 
   def self.pupil_restarts(pupil_id)
@@ -485,6 +485,22 @@ class SqlDbHelper
     end
   end
 
+  def self.get_ps_report_job
+    sql = "SELECT * FROM [mtc_admin].[job] WHERE jobType_id = 2 ORDER BY completedAt DESC"
+    result = SQL_CLIENT.execute(sql)
+    ps_report = result.first
+    result.cancel
+    ps_report
+  end
+
+  def self.get_ps_record_for_pupil(table_name,pupil_id)
+    sql = "SELECT * FROM mtc_results.#{table_name} WHERE PupilId = #{pupil_id}"
+    result = SQL_CLIENT.execute(sql)
+    ps_report = result.first
+    result.cancel
+    ps_report
+  end
+
   def self.get_random_school()
     begin
       sql = "SELECT TOP 1 t1.* FROM (SELECT * FROM mtc_admin.school s
@@ -508,6 +524,12 @@ class SqlDbHelper
     user = result.first
     result.cancel
     user
+  end
+
+  def self.get_school_records_from_ps_report(school_urn,ps_report_table_name)
+    sql = "SELECT * FROM [mtc_results].[#{ps_report_table_name}] WHERE SchoolURN='#{school_urn}'"
+    result = SQL_CLIENT.execute(sql)
+    result.each {|row| row.map}
   end
 
 end

@@ -27,7 +27,7 @@ end
 Then(/^the service message should be saved$/) do
   expect(manage_service_message_page).to have_flash_message
   expect(manage_service_message_page).to have_message
-  expect(manage_service_message_page.message.text).to eql @message[:title]
+  expect(manage_service_message_page.message[0].text).to eql @message[:title]
   expect(manage_service_message_page).to have_remove_message
   db_record = SqlDbHelper.get_service_message(@message[:title])
   expect(db_record['title']).to eql @message[:title]
@@ -43,17 +43,28 @@ Given(/^I have created a service message$/) do
   step 'the service message should be saved'
 end
 
-When(/^I decide to delete the message$/) do
-  manage_service_message_page.remove_service_message
+
+Given(/^I have created multiple service messages$/) do
+  step 'I am on the create service message page'
+  step 'I submit the form with the service message I require'
+  @message_1 = @message
+  create_message_page.load
+  step 'I submit the form with the service message I require'
+  @message_2 = @message
+end
+
+When(/^I decide to delete one of the messages$/) do
+  manage_service_message_page.remove_specific_service_message(@message_1[:title])
 end
 
 Then(/^it should be removed from the system$/) do
   expect(manage_service_message_page).to have_flash_message
-  expect(manage_service_message_page).to have_no_message
-  db_record = SqlDbHelper.get_service_message(@message[:title])
+  db_record = SqlDbHelper.get_service_message(@message_1[:title])
   expect(db_record).to be_nil
   redis_record = REDIS_CLIENT.get('serviceMessage')
-  expect(redis_record).to be_nil
+  redis_record = JSON.parse(redis_record)
+  service_messages = JSON.parse(redis_record['value'])['messages']
+  expect(service_messages.map {|message| message['title']}).to_not include @message_1[:title]
 end
 
 Then(/^I should be able to create another$/) do
@@ -89,7 +100,7 @@ end
 Then(/^the service message should be updated$/) do
   expect(manage_service_message_page).to have_flash_message
   expect(manage_service_message_page).to have_message
-  expect(manage_service_message_page.message.text).to eql @message[:title]
+  expect(manage_service_message_page.message[0].text).to eql @message[:title]
   expect(manage_service_message_page).to have_remove_message
   db_record = SqlDbHelper.get_service_message(@message[:title])
   expect(db_record['title']).to eql @message[:title]

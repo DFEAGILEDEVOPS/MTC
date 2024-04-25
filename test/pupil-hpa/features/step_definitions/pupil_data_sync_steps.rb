@@ -166,7 +166,7 @@ end
 Then(/^I should see the following QR code related events$/) do |table|
   check_id = SqlDbHelper.get_check_id(@check_code)
   p check_id
-  step 'the data sync function has run'
+  step 'the data sync function has run for a check'
   (wait_until(ENV['WAIT_TIME'].to_i,2){!SqlDbHelper.get_check_result(check_id).nil?})
   check_result_id = SqlDbHelper.get_check_result_id(check_id)
   events = SqlDbHelper.get_event_types_for_check(check_result_id)
@@ -244,7 +244,7 @@ end
 Then(/^I should see no QR code events$/) do
   check_id = SqlDbHelper.get_check_id(@check_code)
   p check_id
-  step 'the data sync function has run'
+  step 'the data sync function has run for a check'
   (wait_until(ENV['WAIT_TIME'].to_i,2){!SqlDbHelper.get_check_result(check_id).nil?})
   check_result_id = SqlDbHelper.get_check_result_id(check_id)
   events = SqlDbHelper.get_event_types_for_check(check_result_id)

@@ -3,7 +3,6 @@ import * as os from 'os'
 import * as fs from 'fs'
 import * as dotenv from 'dotenv'
 import * as parser from './common/parsing'
-import * as schoolResultsCacheDeterminerConfig from './functions/school-results-cache-determiner/config'
 
 const globalDotEnvFile = path.join(__dirname, '..', '..', '.env')
 try {
@@ -33,7 +32,6 @@ const getLinesPerCheck = (): number => {
 
 const oneMinuteInMilliseconds = 60000
 const twoHoursInMilliseconds = oneMinuteInMilliseconds * 120
-const sixMonthsInSeconds = 15778800
 
 export default {
   Environment: getEnvironment(),
@@ -62,6 +60,11 @@ export default {
     PupilCensus: {
       Username: process.env.SQL_PUPIL_CENSUS_USER ?? 'CensusImportUser',
       Password: process.env.SQL_PUPIL_CENSUS_USER_PASSWORD
+    },
+    LocalAdmin: {
+      // User and password for the local docker instance on local dev environments.
+      user: process.env.SQL_LOCAL_ADMIN_USER,
+      password: process.env.SQL_LOCAL_ADMIN_PASS
     }
   },
   DatabaseRetry: {
@@ -108,14 +111,6 @@ export default {
     Password: process.env.GIAS_WS_PASSWORD,
     ExtractId: parseInt(parser.valueOrSubstitute(process.env.GIAS_WS_EXTRACT_ID, 0), 10)
   },
-  SchoolResultsCacheDeterminer: {
-    cache: Number(parser.valueOrSubstitute(process.env.SCHOOL_RESULTS_CACHE, schoolResultsCacheDeterminerConfig.cache.cacheIfInDate))
-  },
-  SchoolResultsCache: {
-    BatchesPerExecution: Number(parser.valueOrSubstitute(process.env.SCHOOL_RESULTS_CACHE_BATCHS_PER_EXEC, 10)),
-    MessagesPerBatch: Number(parser.valueOrSubstitute(process.env.SCHOOL_RESULTS_CACHE_MSGS_PER_BATCH, 32)),
-    RedisResultsExpiryInSeconds: Number(parser.valueOrSubstitute(process.env.REDIS_RESULTS_EXPIRY_IN_SECONDS, sixMonthsInSeconds))
-  },
   AzureStorage: {
     ConnectionString: process.env.AZURE_STORAGE_CONNECTION_STRING ?? ''
   },
@@ -138,7 +133,12 @@ export default {
     MaxParallelTasks: parseInt(parser.valueOrSubstitute(process.env.SYNC_RESULTS_INIT_MAX_PARALLEL_TASKS, 5), 10)
   },
   LiveFormQuestionCount: getLinesPerCheck(),
-  PsReportLogWriter: {
-    MessagesPerBatch: parseInt(parser.valueOrSubstitute(process.env.PS_REPORT_LOG_WRITER_MESSAGE_BATCH_SIZE, 100), 10)
+  PsReport: {
+    StagingFile: {
+      ReadMessagesPerBatch: parseInt(parser.valueOrSubstitute(process.env.PS_REPORT_STAGING_READ_MESSAGE_BATCH_SIZE, 32), 10),
+      WriteMessagesPerBatch: parseInt(parser.valueOrSubstitute(process.env.PS_REPORT_STAGING_WRITE_MESSAGE_BATCH_SIZE, 32), 10), // 32 x 32 = 1024 csv rows written per write
+      WaitTimeToTriggerStagingComplete: parseInt(parser.valueOrSubstitute(process.env.PS_REPORT_STAGING_WAIT_TIME_COMPLETE, 600), 10), // 600 seconds = 10 * 60 = 10 minutes
+      PollInterval: parseInt(parser.valueOrSubstitute(process.env.PS_REPORT_STAGING_POLL_INTERVAL, 10), 10) // Default is 10 milliseconds between polls when writing to the CSV file.
+    }
   }
 }

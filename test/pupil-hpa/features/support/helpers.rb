@@ -1,7 +1,6 @@
 module Helpers
 
-  def wait_until(timeout_sec=5,delay_sec=0.5, &block)
-    # could we pass in a predicate function that represents the condition we are waiting for?
+  def wait_until(timeout_sec = 5, delay_sec = 0.5, &block)
     WaitUtil.wait_for_condition("waiting for condition", :timeout_sec => timeout_sec, :delay_sec => delay_sec) do
       block.call
     end
@@ -19,24 +18,24 @@ module Helpers
     device_info['battery'].nil? ? (p "Battery information not available with current driver: #{Capybara.current_driver}") : (expect(device_info['battery'].keys).to eql ["isCharging", "levelPercent", "chargingTime", "dischargingTime"])
     device_info['cpu'].nil? ? (p "CPU information not available with current driver: #{Capybara.current_driver}") : (expect(device_info['cpu'].keys).to eql ["hardwareConcurrency"])
     device_info['navigator'].nil? ? (p "Navigator information not available with current driver: #{Capybara.current_driver}") : (expect(device_info['navigator'].keys).to eql ["userAgent", "platform", "language", "cookieEnabled", "doNotTrack"])
-    device_info['networkConnection'].nil? ? (p "Network connection information not available with current driver: #{Capybara.current_driver}") :  (expect(device_info['networkConnection'].keys).to eql ["downlink", "effectiveType", "rtt"])
+    device_info['networkConnection'].nil? ? (p "Network connection information not available with current driver: #{Capybara.current_driver}") : (expect(device_info['networkConnection'].keys).to eql ["downlink", "effectiveType", "rtt"])
     device_info['screen'].nil? ? (p "Screen information not available with current driver: #{Capybara.current_driver}") : (expect(device_info['screen'].keys).to eql ["screenWidth", "screenHeight", "outerWidth", "outerHeight", "innerWidth", "innerHeight", "colorDepth", "orientation"])
   end
 
   def create_pupil_details_hash(pupil_details)
-    {'firstName' => pupil_details['foreName'], 'lastName' => pupil_details['lastName'],
-     'dob' => pupil_details['dateOfBirth'].strftime("%-d %B %Y"),
-     'checkCode' => SqlDbHelper.get_check_using_pupil(pupil_details['id'])['checkCode'],
-     'uuid' => pupil_details['urlSlug']
+    { 'firstName' => pupil_details['foreName'], 'lastName' => pupil_details['lastName'],
+      'dob' => pupil_details['dateOfBirth'].strftime("%-d %B %Y"),
+      'checkCode' => SqlDbHelper.get_check_using_pupil(pupil_details['id'])['checkCode'],
+      'uuid' => pupil_details['urlSlug']
     }
   end
 
   def create_school_details_hash(school_id)
-    {"name"=>SqlDbHelper.find_school(school_id)['name'], "uuid"=>SqlDbHelper.find_school(school_id)['urlSlug']}
+    { "name" => SqlDbHelper.find_school(school_id)['name'], "uuid" => SqlDbHelper.find_school(school_id)['urlSlug'] }
   end
 
   def create_config_details_hash
-    {"questionTime"=>SqlDbHelper.get_settings['questionTimeLimit'].to_i, "loadingTime"=>SqlDbHelper.get_settings['loadingTimeLimit'].to_i, "checkTime"=>SqlDbHelper.get_settings['checkTimeLimit'].to_i, "audibleSounds"=>false, "inputAssistance"=>false, "numpadRemoval"=>false, "fontSize"=>false, "colourContrast"=>false, "questionReader"=>false, "nextBetweenQuestions"=>false, "practice"=>false}
+    { "questionTime" => SqlDbHelper.get_settings['questionTimeLimit'].to_i, "loadingTime" => SqlDbHelper.get_settings['loadingTimeLimit'].to_i, "checkTime" => SqlDbHelper.get_settings['checkTimeLimit'].to_i, "audibleSounds" => false, "inputAssistance" => false, "numpadRemoval" => false, "fontSize" => false, "colourContrast" => false, "questionReader" => false, "nextBetweenQuestions" => false, "practice" => false }
   end
 
   def time_to_nearest_hour(time)
@@ -63,7 +62,7 @@ module Helpers
     access_arrangement_array.each do |access_arrangement|
       case access_arrangement
       when 'audibleSounds'
-       code_array << '[1]'
+        code_array << '[1]'
       when 'colourContrast'
         code_array << '[2]'
       when 'fontSize'
@@ -98,8 +97,10 @@ module Helpers
       'B'
     when 'Just arrived and unable to establish abilities'
       'J'
-    when 'Results annulled'
+    when 'Maladministration'
       'Q'
+    when 'Pupil cheating'
+      'H'
     else
       fail "Reason ID #{reason} - not found"
     end
@@ -129,23 +130,23 @@ module Helpers
 
   def create_dfe_number
     @lea_code = '999'
-    if SqlDbHelper.get_schools_list.map {|school| school['estabCode']}.sort.last == 9999
+    if SqlDbHelper.get_schools_list.map { |school| school['estabCode'] }.sort.last == 9999
       estab_counter = 1000
       lea_code_change = true
     else
-      estab_counter = SqlDbHelper.get_schools_list.map {|school| school['estabCode']}.sort.last
+      estab_counter = SqlDbHelper.get_schools_list.map { |school| school['estabCode'] }.sort.last
     end
     @estab_code = estab_counter + 1
     if lea_code_change
       lea_code_list = UpnHelper.collection_of_la_codes
-      lea_code_list.delete(SqlDbHelper.get_schools_list.map {|school| school['leaCode']}.sort.last.to_s)
+      lea_code_list.delete(SqlDbHelper.get_schools_list.map { |school| school['leaCode'] }.sort.last.to_s)
       lea_code_list.delete('201')
-      @lea_code =  lea_code_list.sample
+      @lea_code = lea_code_list.sample
     end
-    {estab_code: @estab_code, lea_code: @lea_code}
+    { estab_code: @estab_code, lea_code: @lea_code }
   end
 
-  def annul_pupil(upn, school_id)
+  def annul_pupil(upn, school_id, annul_reason = 'maladmin')
     visit ENV['ADMIN_BASE_URL'] + '/sign-out'
     visit ENV['ADMIN_BASE_URL']
     admin_sign_in_page.login('service-manager', 'password')
@@ -154,10 +155,10 @@ module Helpers
     pupil_search_page.search.click
     pupil_summary_page.annul_results.click
     pupil_annulment_confirmation_page.upn.set upn
+    pupil_annulment_confirmation_page.send(annul_reason).click
     pupil_annulment_confirmation_page.confirm.click
     visit ENV['ADMIN_BASE_URL'] + '/sign-out'
   end
-
 
   def undo_annulment(upn, school_id)
     visit ENV['ADMIN_BASE_URL'] + '/sign-out'
