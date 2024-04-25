@@ -22,11 +22,9 @@ Before do
 end
 
 Before('@generate_live_pin_hook') do
-Before('@generate_live_pin_hook') do
   step 'I have generated a live pin'
 end
 
-Before("not @event_auditing", "not @feedback_hook", "not @local_storage_hook") do
 Before("not @event_auditing", "not @feedback_hook", "not @local_storage_hook") do
   step 'I am on the sign in page'
   begin
@@ -38,24 +36,18 @@ end
 Before('@ps_report_hook') do
   # File.truncate(File.expand_path("#{File.dirname(__FILE__)}/../../data/ps_report_data_set_1.csv"), 0) if File.exist?(File.expand_path("#{File.dirname(__FILE__)}/../../data/ps_report_data_set_1.csv"))
   # File.truncate(File.expand_path("#{File.dirname(__FILE__)}/../../data/ps_report_data_set_2.csv"), 0) if File.exist?(File.expand_path("#{File.dirname(__FILE__)}/../../data/ps_report_data_set_2.csv"))
-Before('@ps_report_hook') do
-  # File.truncate(File.expand_path("#{File.dirname(__FILE__)}/../../data/ps_report_data_set_1.csv"), 0) if File.exist?(File.expand_path("#{File.dirname(__FILE__)}/../../data/ps_report_data_set_1.csv"))
-  # File.truncate(File.expand_path("#{File.dirname(__FILE__)}/../../data/ps_report_data_set_2.csv"), 0) if File.exist?(File.expand_path("#{File.dirname(__FILE__)}/../../data/ps_report_data_set_2.csv"))
 end
 
-Before('@admin_logout_hook') do
 Before('@admin_logout_hook') do
   visit ENV['ADMIN_BASE_URL']
   page.click_link('Sign out') if page.has_link?('Sign out')
 end
 
 After('@window_date_time_reset_hook') do
-After('@window_date_time_reset_hook') do
   SqlDbHelper.update_check_window(@original['id'], 'checkEndDate', @original_end_date)
   SqlDbHelper.update_check_window(@original['id'], 'checkStartDate', @original_start_date)
 end
 
-After('@check_started_hook') do
 After('@check_started_hook') do
   p @check_code
   (wait_until(60, 1) {SqlDbHelper.get_check(@check_code)['startedAt'].is_a?(Time)}) unless @check_code.nil?
