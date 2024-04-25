@@ -178,21 +178,7 @@ Azure Storage queue for submitting access arrangement preferences from the pupil
 
 **Consumers**: pupil-prefs function
 
-**Publishers**: pupil check application
-
-## school-results-cache
-Azure Service Bus queue for signalling that results for a school should be created and cached, as all pupils have a marked check.
-
-```typescript
-{
-  schoolGuid: string
-  schoolName: string
-}
-```
-
-**Consumers**: school-results-cache function
-
-**Publishers**: school-results-cache-determiner
+**Publishers**: pupil check applicationr
 
 ## sync-results-to-db-complete
 Azure Service Bus queue for signalling that all checks are processed after the check window has closed.

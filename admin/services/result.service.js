@@ -43,7 +43,8 @@ const resultService = {
         return resultsStrings.incomplete
       }
     } else {
-      return resultsStrings.didNotParticipate
+      // 64154: change 'Did not participate' to 'Incomplete'
+      return resultsStrings.incomplete
     }
   },
 
