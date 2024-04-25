@@ -15,6 +15,7 @@ export class SchoolPinReplenishmnentService {
   private readonly configProvider: IPinConfigProvider
   private readonly maxAttemptsCalculator: MaxAttemptsCalculator
   private readonly allowedWordsService: IAllowedWordsService
+  private readonly logName = 'SchoolPinReplenishmentService'
 
   constructor (dataService?: ISchoolPinReplenishmentDataService, pinGenerator?: ISchoolPinGenerator,
     configProvider?: IPinConfigProvider, allowedWordsService?: IAllowedWordsService) {
@@ -45,21 +46,25 @@ export class SchoolPinReplenishmnentService {
     let schoolsToProcess: School[]
     let returnGeneratedPin = false
     let pinToReturn = ''
+    logger.verbose(`${this.logName}: process() called for schoolId [${schoolId}]`)
+
     if (schoolId === undefined) {
+      logger.info(`${this.logName}: generating pins for all schools`)
       schoolsToProcess = await this.dataService.getAllSchools()
     } else {
       returnGeneratedPin = true
       const school = await this.dataService.getSchoolById(schoolId)
+      logger.verbose(`${this.logName} school found in db ${JSON.stringify(school)}`)
       schoolsToProcess = []
       if (school !== undefined) {
         schoolsToProcess.push(school)
       }
     }
     if (schoolsToProcess.length === 0) {
-      logger.info('no schools to process, exiting...')
+      logger.info(`${this.logName}: no schools to process, exiting and returning undefined pin`)
       return undefined
     }
-    logger.info(`identified ${schoolsToProcess.length} schools to process...`)
+    logger.info(`${this.logName}: identified ${schoolsToProcess.length} schools to process...`)
     const allowedWordSet = await this.allowedWordsService.getAllowedWords()
     let maxAttemptsAtSchoolPinUpdate = this.configProvider.PinUpdateMaxAttempts
     if (maxAttemptsAtSchoolPinUpdate === 0) {
@@ -68,7 +73,7 @@ export class SchoolPinReplenishmnentService {
     for (let index = 0; index < schoolsToProcess.length; index++) {
       const school = schoolsToProcess[index]
       if (this.newPinRequiredPredicate.isRequired(school)) {
-        logger.info(`new pin required for school.id:${school.id}`)
+        logger.info(`${this.logName} new pin required for school.id:${school.id}`)
         let pinUpdated = false
         const update: SchoolPinUpdate = {
           id: school.id,
@@ -82,7 +87,7 @@ export class SchoolPinReplenishmnentService {
         let attemptsMade = 0
         while (!pinUpdated && (attemptsMade < update.attempts)) {
           try {
-            logger.info(`school update attempt #${attemptsMade + 1} - id:${update.id} expiry:${update.pinExpiresAt.toISOString()} pin:${update.newPin}`)
+            logger.info(`${this.logName} school update attempt #${attemptsMade + 1} - id:${update.id} expiry:${update.pinExpiresAt.toISOString()} pin:${update.newPin}`)
             await this.dataService.updatePin(update)
             pinUpdated = true
           } catch (error) {
@@ -91,7 +96,7 @@ export class SchoolPinReplenishmnentService {
             if (error instanceof Error) {
               errorMessage = error.message
             }
-            logger.error(`error thrown attempting sql update:${errorMessage}`)
+            logger.error(`${this.logName}: error thrown attempting sql update:${errorMessage}`)
             update.newPin = this.pinGenerator.generate(allowedWordSet)
           }
         }

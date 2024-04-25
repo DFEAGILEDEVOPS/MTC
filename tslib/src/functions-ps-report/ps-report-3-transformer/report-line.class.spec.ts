@@ -980,8 +980,13 @@ describe('report line class', () => {
       expect(res).toBe('J')
     })
 
-    test('returns Q for pupils who are anulled', () => {
-      const res = ReportLineTest.getReasonNotTakingCheck('ANLLD')
+    test('returns H for pupils who are annulled as pupil cheating', () => {
+      const res = ReportLineTest.getReasonNotTakingCheck('ANLLH')
+      expect(res).toBe('H')
+    })
+
+    test('returns Q for pupils who are annulled as Maladministration', () => {
+      const res = ReportLineTest.getReasonNotTakingCheck('ANLLQ')
       expect(res).toBe('Q')
     })
 

@@ -25,7 +25,8 @@ end
 
 Then(/^I should see set of reasons I can choose$/) do
   expected_reason_hash = SqlDbHelper.get_attendance_codes.map {|code| code['reason']}
-  expected_reason_hash.delete("Results annulled")
+  expected_reason_hash.delete("Maladministration")
+  expected_reason_hash.delete("Pupil cheating")
   expect(pupil_reason_page.attendance_code_mapping.keys.sort).to eql pupil_reason_page.attendance_codes.map {|code| code['id']}.sort
   actual_reason_hash = pupil_reason_page.attendance_code_mapping.values
   expect(actual_reason_hash.sort).to eql expected_reason_hash.sort

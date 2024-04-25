@@ -1,9 +1,10 @@
 @weekend_feature @ps_report_hook
 Feature:
   PS Report
-#
+
   Scenario: Pupils that have completed the check with 25 correct answers are included in the report
     Given I have completed the check for the ps report
+#    And I am ready for the PS report to run
 #    When the data sync and ps report function has run
 #    Then I should see a record for the pupil in the ps report table
 
@@ -27,7 +28,8 @@ Feature:
       | Just arrived and unable to establish abilities |
 
   Scenario: Pupils who have been annulled are included in the report
-    Given I have annulled a pupil
+    Given I have annulled a pupil for the reason of maladmin
+    And I have annulled a pupil for the reason of pupil_cheating
 #    When the data sync and ps report function has run
 #    Then I should see a record for the pupil in the ps report table
 #    And I should see the correct code for an annulled pupil
@@ -152,6 +154,6 @@ Feature:
 #    And the pupil status set to incomplete
 
   Scenario: Assertion
-    Given the data sync function has run
-    And the PS report has been triggered
+#    Given the data sync function has run
+#    And the PS report has been triggered
     Then I assert the data in the PS report to ensure its correct

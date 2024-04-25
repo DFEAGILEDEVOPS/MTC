@@ -133,3 +133,21 @@ Then(/^I should not see the remove restart button$/) do
   pupil_row = restarts_page.restarts_pupil_list.rows.find {|row| row.name.text.include? pupil_name}
   expect(pupil_row.status.text).to eql 'Restart taken'
 end
+
+Given(/^I generated a pin after applying a restart$/) do
+  step "I have completed the check"
+  step 'I login to the admin app'
+  visit ENV["ADMIN_BASE_URL"] + restarts_page.url
+  restarts_page.select_pupil_to_restart_btn.click
+  restarts_page.reason_2.click
+  pupil = restarts_page.find_pupil_row(@details_hash[:first_name])
+  @pupil_name = pupil.name.text
+  pupil.checkbox.click
+  restarts_page.sticky_banner.confirm.click
+  navigate_to_pupil_list_for_pin_gen('live')
+  generate_pins_overview_page.generate_pin_using_name(@details_hash[:last_name] + ', ' + @details_hash[:first_name])
+  pupil_pin_row = view_and_custom_print_live_check_page.pupil_list.rows.find { |row| row.name.text == @details_hash[:last_name] + ', ' + @details_hash[:first_name] }
+  @pupil_credentials = { :school_password => pupil_pin_row.school_password.text, :pin => pupil_pin_row.pin.text }
+  p @pupil_credentials
+  RedisHelper.wait_for_prepared_check(@pupil_credentials[:school_password], @pupil_credentials[:pin])
+end

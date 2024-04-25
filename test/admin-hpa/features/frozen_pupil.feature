@@ -118,7 +118,15 @@ Feature:
     Then the pupil is set to read only
     And the pupils results are annulled
 
+  Scenario Outline: Pupil results can be annulled for specific reasons
+    Given the service manager has set a pupil to be annulled because of <reason>
+    Then the pupil is set to read only
+    And the pupils results are annulled because of <reason>
 
+    Examples:
+      | reason                                         |
+      | maladmin                                       |
+      | pupil_cheating                                 |
 
 
 

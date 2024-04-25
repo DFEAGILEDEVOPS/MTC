@@ -1,6 +1,7 @@
+@cookies_feature
 Feature: Cookies
 
-  @generate_live_pin
+  @generate_live_pin_hook
   Scenario: Device cookie created when pupil has logged in
     Given I am on the sign in page
     Then I should see no device cookie
