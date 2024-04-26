@@ -1,4 +1,3 @@
--ALLOWED_WORDS $(SchoolPinWordSet)
 -APPINSIGHTS_INSTRUMENTATIONKEY $(AppInsights.InstrumentationKey)
 -AZURE_SERVICE_BUS_CONNECTION_STRING $(ServiceBusConnectionString)
 -AZURE_STORAGE_CONNECTION_STRING $(StorageAccountConnectionString)

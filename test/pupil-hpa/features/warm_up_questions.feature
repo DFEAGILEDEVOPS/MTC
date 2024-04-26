@@ -1,4 +1,4 @@
-@warm_up
+@warm_up_feature
 Feature: Warm up questions
   As a pupil I want some warm up questions
   So that I can prepare myself for the check
@@ -12,7 +12,7 @@ Feature: Warm up questions
     Given I am on the warm up complete page
     Then I should see the warm up complete page meets design
 
-  @generate_live_pin
+  @generate_live_pin_hook
   Scenario: Users can see the answer box with numpad removal enabled
     Given I logged in with user with access arrangement 'Remove on-screen number pad'
     And I start the check with no numpad

@@ -62,7 +62,7 @@ end
 
 Before('@service_manager_message_hook') do
   step 'I am on the manage service message page'
-  manage_service_message_page.remove_service_message if manage_service_message_page.has_remove_message?
+  manage_service_message_page.remove_all_service_messages if manage_service_message_page.has_remove_message?
   visit ENV['ADMIN_BASE_URL'] + '/sign-out'
   visit ENV['ADMIN_BASE_URL']
 end
@@ -116,7 +116,7 @@ end
 
 After('@service_manager_message_hook') do
   step 'I am on the manage service message page'
-  manage_service_message_page.remove_service_message if manage_service_message_page.has_remove_message?
+  manage_service_message_page.remove_all_service_messages if manage_service_message_page.has_remove_message?
   visit ENV['ADMIN_BASE_URL'] + '/sign-out'
   visit ENV['ADMIN_BASE_URL']
 end
@@ -332,10 +332,10 @@ After do |scenario|
     attach(Capybara.current_session.driver.browser.screenshot_as(:png), 'image/png')
     name = "#{scenario.name.downcase.gsub(' ', '_')}_#{time}.png"
     page.save_screenshot("screenshots/#{name}")
-    # p "Screenshot raised - " + "screenshots/#{name}"
-    # content = File.open("screenshots/#{name}", 'rb') {|file| file.read}
-    # AZURE_BLOB_CLIENT.create_block_blob(BLOB_CONTAINER, name, content)
-    # p "Screenshot uploaded to #{BLOB_CONTAINER}/#{name}"
+    p "Screenshot raised - " + "screenshots/#{name}"
+    content = File.open("screenshots/#{name}", 'rb') {|file| file.read}
+    AZURE_BLOB_CLIENT.create_block_blob(BLOB_CONTAINER, name, content)
+    p "Screenshot uploaded to #{BLOB_CONTAINER}/#{name}"
   end
   SqlDbHelper.add_fam_form
   SqlDbHelper.assign_fam_form_to_window if SqlDbHelper.get_default_assigned_fam_form == nil

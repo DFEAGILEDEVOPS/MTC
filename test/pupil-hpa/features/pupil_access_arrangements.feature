@@ -1,4 +1,4 @@
-@access_arrangement_setting
+@access_arrangements_feature
 Feature: Access Arrangements
 
   Scenario: Setting page is displayed as per design

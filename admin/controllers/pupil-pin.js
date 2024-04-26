@@ -196,7 +196,7 @@ const getViewAndCustomPrintPins = async function getViewAndCustomPrintPins (req,
   let school
   let error
   let qrDataURL
-  let date = moment() // default to today
+  let date = dateService.formatPinDate(moment()) // default to today (but formatted)
   let checkWindowData
   try {
     checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
@@ -208,7 +208,7 @@ const getViewAndCustomPrintPins = async function getViewAndCustomPrintPins (req,
       })
     }
     pupils = await pinGenerationV2Service.getPupilsWithActivePins(req.user.schoolId, isLiveCheck)
-    if (Array.isArray(pupils) && pupils.length > 1) {
+    if (Array.isArray(pupils) && pupils.length > 0) {
       // Format the pin expiry date as "Wednesday 13 March" in wall clock time for all schools, including MOD.
       const defaultTimezone = 'Europe/London'
       const tz = req.user.timezone ?? defaultTimezone

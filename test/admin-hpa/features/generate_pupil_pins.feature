@@ -167,3 +167,7 @@ Feature: Generate Pupil PINs
     Given I have generated a live pin for a pupil
     Then the user should be stored to identify who created the check
 
+  @manual
+  Scenario: Form already submitted if generate pins button is double clicked
+    Given I have double clicked on the generate pin button
+    Then I should see the form already submitted page

@@ -24,15 +24,18 @@ describe('school-pin-sampler', () => {
 
   test('returns a set of generated pins equal to the size requested', () => {
     const sampleSizeRequested = 5
-    const samples = sut.generateSample(sampleSizeRequested, moment.utc())
+    const allowedWords = new Set<string>(['foo', 'bar', 'baz', 'qix', 'mix'])
+    const samples = sut.generateSample(sampleSizeRequested, moment.utc(), allowedWords)
     expect(samples).toHaveLength(sampleSizeRequested)
   })
 
   test('throws error if sample size is larger than all available timezones', async () => {
     const tzUtil = new TimezoneUtil()
     const maximumSampleSize = tzUtil.getTimezoneList().length
+    const allowedWords = new Set<string>(['foo', 'bar', 'baz', 'qix', 'mix'])
+
     try {
-      sut.generateSample(maximumSampleSize + 1, moment.utc())
+      sut.generateSample(maximumSampleSize + 1, moment.utc(), allowedWords)
       fail('should have thrown an error')
     } catch (error) {
       let errorMessage = 'unknown error'
@@ -45,7 +48,8 @@ describe('school-pin-sampler', () => {
 
   test('each sample has a pin and expiry time', () => {
     const sampleSizeRequested = 5
-    const samples = sut.generateSample(sampleSizeRequested, moment.utc())
+    const allowedWords = new Set<string>(['foo', 'bar', 'baz', 'qix', 'mix'])
+    const samples = sut.generateSample(sampleSizeRequested, moment.utc(), allowedWords)
     for (let index = 0; index < sampleSizeRequested; index++) {
       const sample = samples[index]
       expect(sample.pin).toBeDefined()
@@ -57,7 +61,8 @@ describe('school-pin-sampler', () => {
 
   test('does not randomise if not specified', () => {
     const sampleSizeRequested = 5
-    const samples = sut.generateSample(sampleSizeRequested, moment.utc())
+    const allowedWords = new Set<string>(['foo', 'bar', 'baz', 'qix', 'mix'])
+    const samples = sut.generateSample(sampleSizeRequested, moment.utc(), allowedWords)
     expect(samples).toHaveLength(sampleSizeRequested)
     const tzUtil = new TimezoneUtil()
     const zones = tzUtil.getTimezoneList()
@@ -70,8 +75,9 @@ describe('school-pin-sampler', () => {
 
   test('does randomise if specified', () => {
     const sampleSizeRequested = 10
-    const nonRandomSamples = sut.generateSample(sampleSizeRequested, moment.utc(), false)
-    const randomSamples = sut.generateSample(sampleSizeRequested, moment.utc(), true)
+    const allowedWords = new Set<string>(['foo', 'bar', 'baz', 'qix', 'mix', 'qux', 'quux', 'quuz', 'corge', 'grault'])
+    const nonRandomSamples = sut.generateSample(sampleSizeRequested, moment.utc(), allowedWords, false)
+    const randomSamples = sut.generateSample(sampleSizeRequested, moment.utc(), allowedWords, true)
     expect(nonRandomSamples).toHaveLength(sampleSizeRequested)
     expect(randomSamples).toHaveLength(sampleSizeRequested)
     const nonRandomZones = nonRandomSamples.map(s => s.timezone).join('-')

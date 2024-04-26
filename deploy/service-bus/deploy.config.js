@@ -102,9 +102,6 @@ const config = {
       name: 'queue-replay'
     },
     {
-      name: 'school-results-cache'
-    },
-    {
       name: 'sync-results-to-db-complete',
       maxSizeInMegabytes: {}.hasOwnProperty.call(process.env, 'SERVICE_BUS_QUEUE_MAX_SIZE_MEGABYTES_SYNC_RESULTS_COMPLETE') ? parseInt(process.env.SERVICE_BUS_QUEUE_MAX_SIZE_MEGABYTES_SYNC_RESULTS_COMPLETE, 10) : twentyGigabytes
     },
