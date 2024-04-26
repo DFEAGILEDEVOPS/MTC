@@ -1,7 +1,7 @@
 import moment from 'moment'
 import { SchoolPinExpiryGenerator } from './school-pin-expiry-generator'
 import { type IDateTimeService } from '../../common/datetime.service'
-import { type IConfigProvider } from './config-file-provider'
+import { type IPinConfigProvider } from './pin-config-provider'
 
 const DateTimeServiceMock = jest.fn<IDateTimeService, any>(() => ({
   utcNow: jest.fn(),
@@ -10,8 +10,7 @@ const DateTimeServiceMock = jest.fn<IDateTimeService, any>(() => ({
   formatIso8601: jest.fn()
 }))
 
-const configProviderMock: IConfigProvider = {
-  AllowedWords: '',
+const configProviderMock: IPinConfigProvider = {
   BannedWords: '',
   OverridePinExpiry: false,
   PinUpdateMaxAttempts: 5,
@@ -25,7 +24,6 @@ describe('school-pin-expiry-generator', () => {
   beforeEach(() => {
     dateTimeServiceMock = new DateTimeServiceMock()
     configProviderMock.OverridePinExpiry = false
-    configProviderMock.AllowedWords = 'foo,bar,baz,qix,mix'
     configProviderMock.BannedWords = 'dim'
     sut = new SchoolPinExpiryGenerator(dateTimeServiceMock, configProviderMock)
   })
