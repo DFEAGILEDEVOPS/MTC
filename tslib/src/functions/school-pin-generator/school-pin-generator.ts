@@ -1,27 +1,23 @@
-import { type IConfigProvider, ConfigFileProvider } from './config-file-provider'
-import { AllowedWordsService } from './allowed-words.service'
+import { type IPinConfigProvider, PinConfigProvider } from './pin-config-provider'
 import { type IRandomGenerator, RandomGenerator } from './random-generator'
 
 export class SchoolPinGenerator implements ISchoolPinGenerator {
-  private readonly configProvider: IConfigProvider
+  private readonly configProvider: IPinConfigProvider
   private readonly randomGenerator: IRandomGenerator
-  private readonly allowedWordsService: AllowedWordsService
 
-  constructor (configProvider?: IConfigProvider, randomGenerator?: IRandomGenerator) {
+  constructor (configProvider?: IPinConfigProvider, randomGenerator?: IRandomGenerator) {
     if (configProvider === undefined) {
-      configProvider = new ConfigFileProvider()
+      configProvider = new PinConfigProvider()
     }
     this.configProvider = configProvider
     if (randomGenerator === undefined) {
       randomGenerator = new RandomGenerator()
     }
     this.randomGenerator = randomGenerator
-    this.allowedWordsService = new AllowedWordsService()
   }
 
-  generate (): string {
-    const wordSet = this.allowedWordsService.parse(this.configProvider.AllowedWords, this.configProvider.BannedWords)
-    const wordArray = Array.from(wordSet)
+  generate (allowedWordSet: Set<string>): string {
+    const wordArray = Array.from(allowedWordSet)
     const twoDigitNum = this.randomGenerator.generateFromChars(2, this.configProvider.DigitChars)
     const firstRandomIndex = this.randomGenerator.generateNumberFromRangeInclusive(0, wordArray.length - 1)
     const firstRandomWord = wordArray[firstRandomIndex]
@@ -32,5 +28,5 @@ export class SchoolPinGenerator implements ISchoolPinGenerator {
 }
 
 export interface ISchoolPinGenerator {
-  generate (): string
+  generate (allowedWordSet: Set<string>): string
 }

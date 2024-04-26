@@ -13,8 +13,7 @@ function finish (start: number, context: Context): void {
 
 const schoolPinHttpService: AzureFunction = async function (context: Context, req: HttpRequest): Promise<void> {
   if (!config.DevTestUtils.TestSupportApi) {
-    context.log('exiting as not enabled (default behaviour)')
-    context.done()
+    context.log(`${functionName}:exiting as not enabled (default behaviour)`)
     return
   }
 
@@ -27,13 +26,12 @@ const schoolPinHttpService: AzureFunction = async function (context: Context, re
     }
     return
   }
-  const schoolId = req.body.school_id
 
   const start = performance.now()
   const schoolPinReplenishmentService = new SchoolPinReplenishmnentService()
-  context.log(`requesting pin for school:${schoolId}`)
-  const newPin = await schoolPinReplenishmentService.process(context.log, schoolId)
-  context.log(`pin:${newPin} generated for school:${schoolId}`)
+  context.log(`${functionName}: requesting pin for school:${schoolIdParam}`)
+  const newPin = await schoolPinReplenishmentService.process(context.log, schoolIdParam)
+  context.log(`${functionName}: pin:${newPin} generated for school:${schoolIdParam}`)
   context.res = {
     status: 200,
     body: {

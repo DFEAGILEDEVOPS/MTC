@@ -48,7 +48,7 @@ module Helpers
   end
 
   def prior_fridays(date, fridays_ago)
-    days_before = (date.wday + 1) % 7 + 10
+    days_before = (date.wday + 1) % 7 + 1
     most_recent = date.to_date - days_before
     diff = (date.mjd - most_recent.mjd)
     case fridays_ago
@@ -126,7 +126,7 @@ module Helpers
   end
 
 
-  def annul_pupil(upn, school_id)
+  def annul_pupil(upn, school_id, annul_reason='maladmin')
     visit ENV['ADMIN_BASE_URL'] + '/sign-out'
     step 'I have signed in with service-manager'
     admin_page.pupil_search.click
@@ -134,6 +134,7 @@ module Helpers
     pupil_search_page.search.click
     pupil_summary_page.annul_results.click
     pupil_annulment_confirmation_page.upn.set upn
+    pupil_annulment_confirmation_page.send(annul_reason).click
     pupil_annulment_confirmation_page.confirm.click
     visit ENV['ADMIN_BASE_URL'] + '/sign-out'
   end

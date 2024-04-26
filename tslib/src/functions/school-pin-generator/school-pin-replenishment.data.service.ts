@@ -16,11 +16,20 @@ export class SchoolPinReplenishmentDataService implements ISchoolPinReplenishmen
 
   async getSchoolById (id: number): Promise<School | undefined> {
     const sql = `
-    SELECT s.id, s.name,  s.pinExpiresAt, s.pin, sce.timezone
-    FROM mtc_admin.school s
-    LEFT OUTER JOIN mtc_admin.sce ON s.id = sce.school_id
-    WHERE s.id = @school_id AND
-    (s.pinExpiresAt <= GETUTCDATE() OR s.pinExpiresAt IS NULL)`
+    SELECT
+      s.id,
+      s.name,
+      s.pinExpiresAt,
+      s.pin,
+      sce.timezone
+    FROM
+      mtc_admin.school s
+    LEFT OUTER JOIN
+      mtc_admin.sce ON (s.id = sce.school_id)
+    WHERE
+      s.id = @school_id
+    AND
+      (s.pinExpiresAt <= GETUTCDATE() OR s.pinExpiresAt IS NULL)`
     const param: ISqlParameter = {
       name: 'school_id',
       type: TYPES.Int,

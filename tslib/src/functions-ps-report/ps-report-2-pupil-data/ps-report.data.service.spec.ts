@@ -210,7 +210,7 @@ describe('ps-report.data.service', () => {
       upn: 'N999199900001'
     }
 
-    const pupilResultsAnnulled: Pupil = {
+    const pupilMaladministration: Pupil = {
       checkComplete: false,
       currentCheckId: 1234,
       dateOfBirth: moment(),
@@ -220,9 +220,28 @@ describe('ps-report.data.service', () => {
       isEdited: false,
       jobId: null,
       lastname: 'Test',
-      middlenames: null,
-      notTakingCheckReason: 'Results annulled',
-      notTakingCheckCode: 'ANLLD',
+      middlenames: 'middle name',
+      notTakingCheckReason: 'Maladministration',
+      notTakingCheckCode: 'ANLLQ',
+      restartAvailable: false,
+      slug: 'abcd-1234',
+      schoolId: 2,
+      upn: 'N999199900001'
+    }
+
+    const pupilCheating: Pupil = {
+      checkComplete: false,
+      currentCheckId: 1234,
+      dateOfBirth: moment(),
+      forename: 'Unit',
+      gender: 'F',
+      id: 1,
+      isEdited: false,
+      jobId: null,
+      lastname: 'Test',
+      middlenames: 'middle name',
+      notTakingCheckReason: 'Pupil Cheathing',
+      notTakingCheckCode: 'ANLLH',
       restartAvailable: false,
       slug: 'abcd-1234',
       schoolId: 2,
@@ -378,7 +397,7 @@ describe('ps-report.data.service', () => {
       expect(check).toBeNull()
     })
 
-    test('getCheck() returns the check if the pupil has had their results annulled', async () => {
+    test('getCheck() returns the check if the pupil has had their results annulled for maladministration', async () => {
       (mockSqlService.query as jest.Mock).mockResolvedValueOnce([
         {
           checkCode: 'abc',
@@ -398,7 +417,31 @@ describe('ps-report.data.service', () => {
           restartReason: null
         }
       ])
-      const check = await sut.getCheck(pupilResultsAnnulled)
+      const check = await sut.getCheck(pupilMaladministration)
+      expect(check).not.toBeNull()
+    })
+
+    test('getCheck() returns the check if the pupil is annulled for cheating', async () => {
+      (mockSqlService.query as jest.Mock).mockResolvedValueOnce([
+        {
+          checkCode: 'abc',
+          checkForm_id: 1,
+          checkWindow_id: 2,
+          complete: true,
+          completedAt: moment('2021-01-04T10:07:12.345Z'),
+          id: 3,
+          inputAssistantAddedRetrospectively: false,
+          isLiveCheck: true,
+          mark: 20,
+          processingFailed: false,
+          pupilId: 42,
+          pupilLoginDate: moment('2021-01-04T10:00:00.123Z'),
+          received: true,
+          restartNumber: 0,
+          restartReason: null
+        }
+      ])
+      const check = await sut.getCheck(pupilCheating)
       expect(check).not.toBeNull()
     })
   })

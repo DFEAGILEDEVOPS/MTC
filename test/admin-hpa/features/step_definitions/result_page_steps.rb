@@ -271,3 +271,13 @@ end
 Then(/^I should see the version set to the correct academic year when downloaded in September$/) do
   expect(@doc.css('CTFversion').text).to eql (@academic_year).strftime("%y.0")
 end
+
+Given(/^I have pupils have not completed a check and no reason for not taking the check$/) do
+end
+
+And(/^I should see their status set to Incomplete$/) do
+  step "I am logged in"
+  results_page.load
+  statuses = results_page.results.pupil_list.map {|pupil| pupil.status.text}
+  expect(statuses).to eql ["Incomplete", "Incomplete", "Incomplete", "Incomplete", "Incomplete"]
+end

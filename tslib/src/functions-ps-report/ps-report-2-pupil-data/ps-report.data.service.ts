@@ -258,8 +258,9 @@ export class PsReportDataService {
     }
 
     // Deal with pupils marked as not attending that may have a currentCheckId
-    const NotTakingCheckAnnulledCode: NotTakingCheckCode = 'ANLLD'
-    if (pupil.notTakingCheckCode !== null && pupil.notTakingCheckCode !== NotTakingCheckAnnulledCode) {
+    const maladminAnnulledCode: NotTakingCheckCode = 'ANLLQ'
+    const cheatingAnnulledCode: NotTakingCheckCode = 'ANLLH'
+    if (pupil.notTakingCheckCode !== null && (pupil.notTakingCheckCode !== maladminAnnulledCode && pupil.notTakingCheckCode !== cheatingAnnulledCode)) {
       return null
     }
 

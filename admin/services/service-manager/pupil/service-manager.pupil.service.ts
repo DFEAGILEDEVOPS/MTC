@@ -2,8 +2,8 @@ import XRegExp from 'xregexp'
 import { ServiceManagerPupilDataService } from './service-manager.pupil.data.service'
 import { validate } from 'uuid'
 import moment from 'moment'
-import { PupilAnnulmentDataService } from '../pupil-annulment/pupil-annulment.data.service'
 import { type ServiceManagerSchoolResult } from '../school/school.data.service'
+import { AnnulmentType } from '../pupil-annulment/pupil-annulment.service'
 const redisCacheService = require('../../../services/data-access/redis-cache.service')
 const redisKeyService = require('../../../services/redis-key.service')
 const dateService = require('../../date.service')
@@ -48,7 +48,8 @@ export class ServiceManagerPupilService {
     if (p.length === 0) throw new Error(`no pupil found with specified urlSlug '${urlSlug}'`)
 
     const status = await this.getPupilStatus(p[0].id)
-    const isAnnulled = p[0].attendanceCode === PupilAnnulmentDataService.annulmentCode
+    const isAnnulled = (p[0].attendanceCode === AnnulmentType.Maladministration) ||
+      (p[0].attendanceCode === AnnulmentType.PupilCheating)
 
     return {
       dateOfBirth: dateService.formatShortGdsDate(moment(p[0].dateOfBirth)),

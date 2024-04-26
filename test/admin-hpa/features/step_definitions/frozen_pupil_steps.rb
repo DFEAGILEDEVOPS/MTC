@@ -48,7 +48,7 @@ end
 Then(/^I should see the annulled pupil is read only$/) do
   frozen_pupil_row = pupils_not_taking_check_page.pupil_list.rows.find {|row| row.name.text.include?  @pupil_details['foreName']}
   expect(frozen_pupil_row).to_not have_remove
-  expect(frozen_pupil_row.reason.text).to eql "Results annulled"
+  expect(frozen_pupil_row.reason.text).to eql "Maladministration"
 end
 
 
@@ -128,7 +128,7 @@ end
 Then(/^I should see the annulled pupil$/) do
   pupil_status_page.pupils_completed.count.click
   expect(pupil_status_page.pupils_completed_details.pupil_list.pupil_row.first.names.text).to eql @pupil_details['lastName'] + ", " + @pupil_details['foreName']
-  expect(pupil_status_page.pupils_completed_details.pupil_list.pupil_row.first.status.text).to eql "Results annulled"
+  expect(pupil_status_page.pupils_completed_details.pupil_list.pupil_row.first.status.text).to eql "Maladministration"
 end
 
 
@@ -257,7 +257,7 @@ Given(/^a pupil who had a reason for not taking the check and was then annulled$
   pupils_not_taking_check_page.load
   frozen_pupil_row = pupils_not_taking_check_page.pupil_list.rows.find {|row| row.name.text.include?  @details_hash[:first_name]}
   expect(frozen_pupil_row).to_not have_remove
-  expect(frozen_pupil_row.reason.text).to eql "Results annulled"
+  expect(frozen_pupil_row.reason.text).to eql "Maladministration"
 end
 
 Then(/^the pupil is returned to not taking the check for the reason that was initially selected$/) do
@@ -275,7 +275,7 @@ Given(/^a pupil completes a check and then is annulled$/) do
   step "I am on the Pupil Status page"
   pupil_status_page.pupils_completed.count.click
   expect(pupil_status_page.pupils_completed_details.pupil_list.pupil_row.first.names.text).to eql @details_hash[:last_name] + ", " + @details_hash[:first_name]
-  expect(pupil_status_page.pupils_completed_details.pupil_list.pupil_row.first.status.text).to eql "Results annulled"
+  expect(pupil_status_page.pupils_completed_details.pupil_list.pupil_row.first.status.text).to eql "Maladministration"
 end
 
 Then(/^the pupils previous state of complete should be reinstated$/) do
@@ -413,4 +413,19 @@ end
 And(/^the pupils results are annulled$/) do
   pupils_not_taking_check_page.load
   step 'I should see the annulled pupil is read only'
+end
+
+Given(/^the service manager has set a pupil to be annulled because of (.*)$/) do |annul_reason|
+  pupil_upn = @upns_for_school.sample
+  @pupil_details = SqlDbHelper.pupil_details(pupil_upn, @school_id)
+  annul_pupil(pupil_upn, @school_id,annul_reason)
+end
+
+And(/^the pupils results are annulled because of (.*)$/) do |reason|
+  reason = 'Maladministration' if reason == 'maladmin'
+  reason = 'Pupil cheating' if reason == 'pupil_cheating'
+  pupils_not_taking_check_page.load
+  frozen_pupil_row = pupils_not_taking_check_page.pupil_list.rows.find {|row| row.name.text.include?  @pupil_details['foreName']}
+  expect(frozen_pupil_row).to_not have_remove
+  expect(frozen_pupil_row.reason.text).to eql reason
 end

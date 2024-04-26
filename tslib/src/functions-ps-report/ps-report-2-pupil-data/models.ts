@@ -152,9 +152,10 @@ export interface PupilResult {
  * NOACC: Unable to access
  * BLSTD: Working below expectation
  * JSTAR: Just arrived and unable to establish abilities
- * ANLLD: Pupil results were annulled
+ * ANLLH: Pupil cheating (annulled)
+ * ANLLQ: Maladministration (annulled)
  */
-export type NotTakingCheckCode = 'ABSNT' | 'LEFTT' | 'INCRG' | 'NOACC' | 'BLSTD' | 'JSTAR' | 'ANLLD'
+export type NotTakingCheckCode = 'ABSNT' | 'LEFTT' | 'INCRG' | 'NOACC' | 'BLSTD' | 'JSTAR' | 'ANLLH' | 'ANLLQ'
 
 /**
  * LOI: Loss of internet

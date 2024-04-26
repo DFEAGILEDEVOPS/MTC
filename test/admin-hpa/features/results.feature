@@ -69,3 +69,9 @@ Feature: Results tests
     When a reason for not taking the check is applied to the pupils
     Then the HDF reflects these changes
     And the results reflect these changes
+
+ Scenario: Pupils who have not been set to NTC or have not completed the check are set to Incomplete
+   Given I have pupils have not completed a check and no reason for not taking the check
+   When the data sync function has run
+   And we are in 2nd week of check end date
+   And I should see their status set to Incomplete

@@ -3,21 +3,22 @@ import { SchoolPinReplenishmentDataService, type ISchoolPinReplenishmentDataServ
 import { SchoolPinGenerator, type ISchoolPinGenerator } from './school-pin-generator'
 import { SchoolPinExpiryGenerator } from './school-pin-expiry-generator'
 import { type ILogger } from '../../common/logger'
-import { type IConfigProvider, ConfigFileProvider } from './config-file-provider'
+import { type IPinConfigProvider, PinConfigProvider } from './pin-config-provider'
 import { SchoolRequiresNewPinPredicate } from './school-requires-pin-predicate'
 import { MaxAttemptsCalculator } from './max-attempts-calculator'
-import { AllowedWordsService } from './allowed-words.service'
+import { AllowedWordsService, type IAllowedWordsService } from './allowed-words.service'
 export class SchoolPinReplenishmnentService {
   private readonly dataService: ISchoolPinReplenishmentDataService
   private readonly newPinRequiredPredicate: SchoolRequiresNewPinPredicate
   private readonly pinGenerator: ISchoolPinGenerator
   private readonly expiryGenerator: SchoolPinExpiryGenerator
-  private readonly configProvider: IConfigProvider
+  private readonly configProvider: IPinConfigProvider
   private readonly maxAttemptsCalculator: MaxAttemptsCalculator
-  private readonly allowedWordsService: AllowedWordsService
+  private readonly allowedWordsService: IAllowedWordsService
+  private readonly logName = 'SchoolPinReplenishmentService'
 
   constructor (dataService?: ISchoolPinReplenishmentDataService, pinGenerator?: ISchoolPinGenerator,
-    configProvider?: IConfigProvider) {
+    configProvider?: IPinConfigProvider, allowedWordsService?: IAllowedWordsService) {
     if (dataService === undefined) {
       dataService = new SchoolPinReplenishmentDataService()
     }
@@ -28,48 +29,56 @@ export class SchoolPinReplenishmnentService {
     this.pinGenerator = pinGenerator
 
     if (configProvider === undefined) {
-      configProvider = new ConfigFileProvider()
+      configProvider = new PinConfigProvider()
     }
+
+    if (allowedWordsService === undefined) {
+      allowedWordsService = new AllowedWordsService()
+    }
+    this.allowedWordsService = allowedWordsService
     this.configProvider = configProvider
     this.maxAttemptsCalculator = new MaxAttemptsCalculator()
     this.newPinRequiredPredicate = new SchoolRequiresNewPinPredicate()
     this.expiryGenerator = new SchoolPinExpiryGenerator()
-    this.allowedWordsService = new AllowedWordsService()
   }
 
   async process (logger: ILogger, schoolId?: number): Promise<string | undefined> {
     let schoolsToProcess: School[]
     let returnGeneratedPin = false
     let pinToReturn = ''
+    logger.verbose(`${this.logName}: process() called for schoolId [${schoolId}]`)
+
     if (schoolId === undefined) {
+      logger.info(`${this.logName}: generating pins for all schools`)
       schoolsToProcess = await this.dataService.getAllSchools()
     } else {
       returnGeneratedPin = true
       const school = await this.dataService.getSchoolById(schoolId)
+      logger.verbose(`${this.logName} school found in db ${JSON.stringify(school)}`)
       schoolsToProcess = []
       if (school !== undefined) {
         schoolsToProcess.push(school)
       }
     }
     if (schoolsToProcess.length === 0) {
-      logger.info('no schools to process, exiting...')
+      logger.info(`${this.logName}: no schools to process, exiting and returning undefined pin`)
       return undefined
     }
-    logger.info(`identified ${schoolsToProcess.length} schools to process...`)
-    const allowedWords = this.allowedWordsService.parse(this.configProvider.AllowedWords, this.configProvider.BannedWords)
+    logger.info(`${this.logName}: identified ${schoolsToProcess.length} schools to process...`)
+    const allowedWordSet = await this.allowedWordsService.getAllowedWords()
     let maxAttemptsAtSchoolPinUpdate = this.configProvider.PinUpdateMaxAttempts
     if (maxAttemptsAtSchoolPinUpdate === 0) {
-      maxAttemptsAtSchoolPinUpdate = this.maxAttemptsCalculator.calculate(allowedWords.size, this.configProvider.DigitChars.length)
+      maxAttemptsAtSchoolPinUpdate = this.maxAttemptsCalculator.calculate(allowedWordSet.size, this.configProvider.DigitChars.length)
     }
     for (let index = 0; index < schoolsToProcess.length; index++) {
       const school = schoolsToProcess[index]
       if (this.newPinRequiredPredicate.isRequired(school)) {
-        logger.info(`new pin required for school.id:${school.id}`)
+        logger.info(`${this.logName} new pin required for school.id:${school.id}`)
         let pinUpdated = false
         const update: SchoolPinUpdate = {
           id: school.id,
           pinExpiresAt: this.expiryGenerator.generate(),
-          newPin: this.pinGenerator.generate(),
+          newPin: this.pinGenerator.generate(allowedWordSet),
           attempts: maxAttemptsAtSchoolPinUpdate
         }
         if (returnGeneratedPin) {
@@ -78,7 +87,7 @@ export class SchoolPinReplenishmnentService {
         let attemptsMade = 0
         while (!pinUpdated && (attemptsMade < update.attempts)) {
           try {
-            logger.info(`school update attempt #${attemptsMade + 1} - id:${update.id} expiry:${update.pinExpiresAt.toISOString()} pin:${update.newPin}`)
+            logger.info(`${this.logName} school update attempt #${attemptsMade + 1} - id:${update.id} expiry:${update.pinExpiresAt.toISOString()} pin:${update.newPin}`)
             await this.dataService.updatePin(update)
             pinUpdated = true
           } catch (error) {
@@ -87,8 +96,8 @@ export class SchoolPinReplenishmnentService {
             if (error instanceof Error) {
               errorMessage = error.message
             }
-            logger.error(`error thrown attempting sql update:${errorMessage}`)
-            update.newPin = this.pinGenerator.generate()
+            logger.error(`${this.logName}: error thrown attempting sql update:${errorMessage}`)
+            update.newPin = this.pinGenerator.generate(allowedWordSet)
           }
         }
       }
