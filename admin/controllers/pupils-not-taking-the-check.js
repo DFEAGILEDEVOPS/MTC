@@ -128,7 +128,9 @@ const savePupilNotTakingCheck = async function savePupilNotTakingCheck (req, res
       postedPupilSlugs,
       req.body.attendanceCode,
       req.user.id,
-      req.user.schoolId)
+      req.user.schoolId,
+      req.user.role
+    )
 
     const reasonText = postedPupilSlugs.length > 1 ? 'reasons' : 'reason'
     req.flash('info', `${postedPupilSlugs.length} ${reasonText} updated`)
@@ -154,7 +156,7 @@ const removePupilNotTakingCheck = async function removePupilNotTakingCheck (req,
   }
   const pupilSlug = req.params.pupilId
   try {
-    await attendanceCodeService.unsetAttendanceCode(pupilSlug, req.user.schoolId, req.user.id)
+    await attendanceCodeService.unsetAttendanceCode(pupilSlug, req.user.schoolId, req.user.id, req.user.role)
     const pupil = await pupilService.findOneBySlugAndSchool(pupilSlug, req.user.schoolId)
     req.flash('info', `Reason removed for ${pupil.lastName}, ${pupil.foreName}`)
     const highlight = JSON.stringify(pupilSlug)

@@ -175,7 +175,7 @@ describe('attendance controller:', () => {
       method: 'POST',
       url: '/attendance/submit-edit-reason',
       body: { urlSlug: 'xxx-xxx-xxx-xxx', attendanceCode: 'XXX' },
-      user: { id: 1, School: 1, schoolId: 2 }
+      user: { id: 1, School: 1, schoolId: 2, role: 'TEACHER' }
     }
 
     test('redirects to the review pupils page', async () => {
@@ -190,7 +190,8 @@ describe('attendance controller:', () => {
         [1],
         reqParams.body.attendanceCode,
         reqParams.user.id,
-        reqParams.user.schoolId
+        reqParams.user.schoolId,
+        reqParams.user.role
       )
       expect(req.flash).toHaveBeenCalledTimes(2)
       expect(res.redirect).toHaveBeenCalled()

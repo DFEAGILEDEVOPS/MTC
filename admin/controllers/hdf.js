@@ -179,7 +179,7 @@ controller.postSubmitEditReason = async function postSubmitEditReason (req, res,
   const { urlSlug, attendanceCode } = req.body
   try {
     const pupil = await headteacherDeclarationService.findPupilBySlugAndSchoolId(urlSlug, req.user.schoolId)
-    await headteacherDeclarationService.updatePupilsAttendanceCode([pupil.pupilId], attendanceCode, req.user.id, req.user.schoolId)
+    await headteacherDeclarationService.updatePupilsAttendanceCode([pupil.pupilId], attendanceCode, req.user.id, req.user.schoolId, req.user.role)
     req.flash('info', `Outcome updated for ${pupil.lastName}, ${pupil.foreName} `)
     req.flash('urlSlug', pupil.urlSlug)
     return res.redirect('/attendance/review-pupil-details')
