@@ -83,6 +83,7 @@ class SqlDbHelper
     pupil_details
   end
 
+  # this is too fragile for parallel use
   def self.find_next_pupil
     sql = "SELECT * FROM [mtc_admin].[pupil] WHERE pin is Null"
     result = SQL_CLIENT.execute(sql)
