@@ -1,3 +1,0 @@
-# all scenarios that should not be executed in parallel
-@ps_report
-@weekend_feature
