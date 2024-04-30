@@ -19,7 +19,6 @@ Env Var | Type | Default value | Required | Components | Description
 --- | --- | --- | --- | --- | ---
  ADMIN_SESSION_DISPLAY_NOTICE_AFTER | Int | 300 | Optional | AA | Show a notice to the user that their session is about to end this many seconds before the session expires.
  ADMIN_SESSION_EXPIRATION_TIME_IN_SECONDS | Int | 600 | Optional | AA | The session will expire after this many seconds of inactivity.
- ALLOWED_WORDS | String | FC:'aaa,bbb,ccc,ddd,eee,dim'<br />AA:'aaa,bcd,dcd,tfg,bxx' | Required | FC | Required to generated random school pins in the form WORD + NUMBER + NUMBER + WORD
  APPINSIGHTS_COLLECT_DEPS | Boolean | true | Optional | AA | Set to false if you do not want App Insights to collect dependency information.
  APPINSIGHTS_COLLECT_EXCEPTIONS | Boolean | true | Optional | AA | Set to false if you do not want App Insights to collect exception information.
  APPINSIGHTS_INSTRUMENTATIONKEY | String | NULL | Optional | AA,PA | The Azure Application Insights account key, required for logging / monitoring.

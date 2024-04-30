@@ -6,7 +6,7 @@ import { RandomGenerator } from '../school-pin-generator/random-generator'
 import moment = require('moment')
 
 export class SchoolPinSampler {
-  generateSample (size: number, utcNow: moment.Moment, randomiseSample?: boolean): SchoolPinSample[] {
+  generateSample (size: number, utcNow: moment.Moment, allowedWordSet: Set<string>, randomiseSample?: boolean): SchoolPinSample[] {
     const tzUtil = new tzutil.TimezoneUtil()
     const pinGenerator = new SchoolPinGenerator()
     const dateTimeService: IDateTimeService = {
@@ -47,7 +47,7 @@ export class SchoolPinSampler {
 
     return reducedZoneset.map((z: tzutil.Timezone) => {
       const upd: SchoolPinSample = {
-        pin: pinGenerator.generate(),
+        pin: pinGenerator.generate(allowedWordSet),
         pinExpiresAt: expiryGenerator.generate(z.zone),
         timezone: z.name
       }

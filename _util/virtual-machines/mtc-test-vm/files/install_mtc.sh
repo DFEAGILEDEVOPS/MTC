@@ -41,7 +41,6 @@ echo
 cat > .env  << ENV
 # DEBUG_VERBOSITY=2
 # LOG_LEVEL='debug'
-ALLOWED_WORDS='aaa,bbb,ccc,ddd,fff,ggg,hhh,iii,fff'
 AZURE_SERVICE_BUS_CONNECTION_STRING='${AzureServiceBusConnectionString}'
 AZURE_STORAGE_CONNECTION_STRING='${AzureStorageConnectionString}'
 CORS_WHITELIST='http://localhost:4200'

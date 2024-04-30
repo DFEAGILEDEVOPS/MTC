@@ -2,8 +2,9 @@ import { SchoolPinReplenishmnentService, type School, type SchoolPinUpdate } fro
 import moment from 'moment'
 import { type ISchoolPinReplenishmentDataService } from './school-pin-replenishment.data.service'
 import { type ILogger, ConsoleLogger } from '../../common/logger'
-import { type IConfigProvider } from './config-file-provider'
+import { type IPinConfigProvider } from './pin-config-provider'
 import { type IModifyResult } from '../../sql/sql.service'
+import { type IAllowedWordsService } from './allowed-words.service'
 
 const SchoolPinGeneratorDataServiceMock = jest.fn<ISchoolPinReplenishmentDataService, any>(() => ({
   getAllSchools: jest.fn(),
@@ -11,8 +12,11 @@ const SchoolPinGeneratorDataServiceMock = jest.fn<ISchoolPinReplenishmentDataSer
   getSchoolById: jest.fn()
 }))
 
-const configProviderMock: IConfigProvider = {
-  AllowedWords: 'aaa,bbb,ccc,ddd,eee',
+const AllowedWordsServiceMock = jest.fn<IAllowedWordsService, any>(() => ({
+  getAllowedWords: jest.fn()
+}))
+
+const configProviderMock: IPinConfigProvider = {
   BannedWords: 'dim',
   OverridePinExpiry: false,
   PinUpdateMaxAttempts: 5,
@@ -21,12 +25,14 @@ const configProviderMock: IConfigProvider = {
 
 let sut: SchoolPinReplenishmnentService
 let dataService: ISchoolPinReplenishmentDataService
+let allowedWordsServiceMock: IAllowedWordsService
 const logger: ILogger = new ConsoleLogger()
 
 describe('school-pin-replenishment.service', () => {
   beforeEach(() => {
     dataService = new SchoolPinGeneratorDataServiceMock()
-    sut = new SchoolPinReplenishmnentService(dataService, undefined, configProviderMock)
+    allowedWordsServiceMock = new AllowedWordsServiceMock()
+    sut = new SchoolPinReplenishmnentService(dataService, undefined, configProviderMock, allowedWordsServiceMock)
   })
 
   test('should be defined', () => {
@@ -66,6 +72,9 @@ describe('school-pin-replenishment.service', () => {
       const result: IModifyResult = {}
       return result
     })
+    jest.spyOn(allowedWordsServiceMock, 'getAllowedWords').mockImplementation(async () => {
+      return new Set<string>(['foo', 'bar', 'baz', 'qix', 'pix'])
+    })
     await sut.process(logger)
     expect(dataService.updatePin).toHaveBeenCalledTimes(1)
     expect(update).toBeDefined()
@@ -90,6 +99,9 @@ describe('school-pin-replenishment.service', () => {
     jest.spyOn(dataService, 'updatePin').mockImplementation(async () => {
       throw new Error('mock error')
     })
+    jest.spyOn(allowedWordsServiceMock, 'getAllowedWords').mockImplementation(async () => {
+      return new Set<string>(['foo', 'bar', 'baz', 'qix', 'pix'])
+    })
     await sut.process(logger)
     expect(dataService.updatePin).toHaveBeenCalledTimes(configProviderMock.PinUpdateMaxAttempts)
   })
@@ -110,6 +122,9 @@ describe('school-pin-replenishment.service', () => {
       }
       return school
     })
+    jest.spyOn(allowedWordsServiceMock, 'getAllowedWords').mockImplementation(async () => {
+      return new Set<string>(['foo', 'bar', 'baz', 'qix', 'pix'])
+    })
     const schoolId = 42
     await sut.process(logger, schoolId)
     expect(dataService.getSchoolById).toHaveBeenCalledTimes(1)
@@ -123,6 +138,9 @@ describe('school-pin-replenishment.service', () => {
         name: 'x'
       }
       return school
+    })
+    jest.spyOn(allowedWordsServiceMock, 'getAllowedWords').mockImplementation(async () => {
+      return new Set<string>(['foo', 'bar', 'baz', 'qix', 'pix'])
     })
     const schoolId = 42
     const generatedPin = await sut.process(logger, schoolId)
