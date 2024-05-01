@@ -5,6 +5,7 @@ export interface PsReportListSchoolsIncomingMessage {
   requestedBy: string
   dateTimeRequested: string
   jobUuid: string
+  urns?: number[]
 }
 
 /**
