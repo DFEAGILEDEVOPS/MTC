@@ -109,6 +109,7 @@ export class PsReportDataService {
                 p.urlSlug,
                 p.job_id,
                 p.restartAvailable,
+                p.isEdited,
                 ac.reason as notTakingCheckReason,
                 ac.code as notTakingCheckCode
           FROM mtc_admin.pupil p
