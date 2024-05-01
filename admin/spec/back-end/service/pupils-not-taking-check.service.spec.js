@@ -35,9 +35,10 @@ describe('Pupils are not taking the check. Service', () => {
   })
 
   describe('#getPupilsWithReasons', () => {
+    const role = 'TEACHER'
     test('should return a list of pupils', async () => {
       jest.spyOn(pupilsNotTakingCheckDataService, 'sqlFindPupilsWithReasons').mockResolvedValue(pupilsWithReasonsFormattedMock)
-      const pupils = await pupilNotTakingCheckService.getPupilsWithReasons(1)
+      const pupils = await pupilNotTakingCheckService.getPupilsWithReasons(1, role)
       expect(pupils[0].foreName).toBe('Sarah')
       expect(pupils[0].lastName).toBe('Connor')
       expect(pupilsNotTakingCheckDataService.sqlFindPupilsWithReasons).toHaveBeenCalled()

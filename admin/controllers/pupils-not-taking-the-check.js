@@ -26,7 +26,7 @@ const getPupilNotTakingCheck = async function getPupilNotTakingCheck (req, res, 
   let hdfSubmitted
   try {
     // Get pupils for active school
-    pupils = await pupilsNotTakingCheckService.getPupilsWithReasons(req.user.schoolId)
+    pupils = await pupilsNotTakingCheckService.getPupilsWithReasons(req.user.schoolId, req.user.role)
     checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
     pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData, req.user.timezone)
     hdfSubmitted = await headteacherDeclarationService.isHdfSubmittedForCurrentCheck(req.user.schoolId, checkWindowData && checkWindowData.id)
@@ -76,7 +76,7 @@ const getSelectPupilNotTakingCheck = async function getSelectPupilNotTakingCheck
         breadcrumbs: req.breadcrumbs()
       })
     }
-    attendanceCodes = await attendanceCodeService.getAttendanceCodes()
+    attendanceCodes = await attendanceCodeService.getAttendanceCodes(req.user.role)
     if (availabilityData.inAdminEndPeriod) {
       // When we are in the post-check final admin period, pupils who have not been marked as complete are allowed
       // to be marked as not attending, as there is no other option for them, and this allows the HDF to be signed.
@@ -181,7 +181,7 @@ const viewPupilsNotTakingTheCheck = async function viewPupilsNotTakingTheCheck (
   let pinGenerationEligibilityData
   let hdfSubmitted
   try {
-    const pupilsList = await pupilsNotTakingCheckService.getPupilsWithReasons(req.user.schoolId)
+    const pupilsList = await pupilsNotTakingCheckService.getPupilsWithReasons(req.user.schoolId, req.user.role)
     checkWindowData = await checkWindowV2Service.getActiveCheckWindow()
     pinGenerationEligibilityData = schoolHomeFeatureEligibilityPresenter.getPresentationData(checkWindowData, req.user.timezone)
     hdfSubmitted = await headteacherDeclarationService.isHdfSubmittedForCurrentCheck(req.user.schoolId, checkWindowData && checkWindowData.id)

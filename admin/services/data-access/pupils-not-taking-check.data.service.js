@@ -9,23 +9,29 @@ const pupilsNotTakingCheckDataService = {
  * @description returns all pupils with specified school that have a record of attendance
  * @returns {Promise.<*>}
  */
-  sqlFindPupilsWithReasons: async (schoolId) => {
+  sqlFindPupilsWithReasons: async (schoolId, role) => {
     const sql = `
       SELECT
         p.*,
         ac.reason,
-        ac.isPrivileged as attendanceCodeIsPrivileged
+        (SELECT
+          CASE
+            WHEN count(*) > 1 THEN CAST(1 AS BIT) ELSE CAST(0 AS BIT)
+          END
+        FROM
+          [mtc_admin].[vewAttendanceCodePermissions] WHERE roleTitle = @role
+        ) as pupilAttendanceCodeIsPrivileged
+
       FROM [mtc_admin].[pupil] p
         INNER JOIN [mtc_admin].[pupilAttendance] pa ON p.id = pa.pupil_id
         INNER JOIN [mtc_admin].[attendanceCode] ac ON pa.attendanceCode_id = ac.id
       WHERE p.school_id = @schoolId AND pa.isDeleted = 0
     `
 
-    const params = [{
-      name: 'schoolId',
-      value: schoolId,
-      type: TYPES.Int
-    }]
+    const params = [
+      { name: 'schoolId', value: schoolId, type: TYPES.Int },
+      { name: 'role', value: role, type: TYPES.NVarChar }
+    ]
 
     return sqlService.query(sql, params)
   },

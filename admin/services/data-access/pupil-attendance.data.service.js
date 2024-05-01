@@ -1,9 +1,9 @@
 'use strict'
 
-import { isNotEmptyString } from 'ramda-adjunct'
 const { TYPES } = require('./sql.service')
 const sqlService = require('./sql.service')
 const R = require('ramda')
+const RA = require('ramda-adjunct')
 const logger = require('../log.service').getLogger()
 
 const table = '[pupilAttendance]'
@@ -114,7 +114,7 @@ pupilAttendanceDataService.findOneByPupilId = async (pupilId) => {
  * @param {String} role
  * @return {Promise<*>}
  */
-pupilAttendanceDataService.markAsNotAttending = async (slugs, code, userId, schoolId, role) => {
+pupilAttendanceDataService.markAsNotAttending = async function markAsNotAttending (slugs, code, userId, schoolId, role) {
   logger.debug(`pupilAttendanceDataService.markAsNotAttending called with code ${code}`)
   if (!Array.isArray(slugs)) {
     throw new Error('slugs is not an array')
@@ -136,7 +136,7 @@ pupilAttendanceDataService.markAsNotAttending = async (slugs, code, userId, scho
     throw new Error('code param is missing')
   }
 
-  if (!isNotEmptyString(role)) {
+  if (!RA.isNonEmptyString(role)) {
     throw new Error('role param is missing')
   }
 
@@ -159,7 +159,7 @@ pupilAttendanceDataService.markAsNotAttending = async (slugs, code, userId, scho
   -- Mark pupils as not attending
   --
 
-  DECLARE @attendanceCode_id Int = (SELECT id from [mtc_admin].[attendanceCode] where code = @code AND isPrivileged = 0 AND visible = 1);
+  DECLARE @attendanceCode_id Int = (SELECT id from [mtc_admin].[attendanceCode] where code = @code AND visible = 1);
 
   IF @attendanceCode_id IS NULL
     THROW 51000, 'unknown attendanceCode.code', 1;
@@ -256,7 +256,7 @@ pupilAttendanceDataService.getAttendanceCodes = async function getAttendanceCode
   const params = [
     { name: 'role', type: TYPES.NVarChar, value: role }
   ]
-  const data = await this.sqlService.readonlyQuery(sql, params)
+  const data = await sqlService.readonlyQuery(sql, params)
   const allowedCodes = data.map(d => d.attendanceCode)
   return allowedCodes
 }
