@@ -14,6 +14,22 @@ describe('PS Report Exec Service', () => {
       await expect(sut.requestReportGeneration(-1)).rejects.toThrow('currentUserId must be greater than zero')
     })
 
+    test('does not throw if single urn provided', async () => {
+      await expect(sut.requestReportGeneration(123, 'abc')).resolves.not.toThrow()
+    })
+
+    test('does not throw if multiple valid urns provided', async () => {
+      await expect(sut.requestReportGeneration(123, '1,2,3')).resolves.not.toThrow()
+    })
+
+    test('does not throw if spaces are included', async () => {
+      await expect(sut.requestReportGeneration(123, '12345, 2245,34534,4345345 ,545454')).resolves.not.toThrow()
+    })
+
+    test('throws if invalid urn provided amongst valid URNs', async () => {
+      await expect(sut.requestReportGeneration(123, '1,abc,2,3')).rejects.toThrow('Invalid URN: abc')
+    })
+
     test('creates job and sends message', async () => {
       const userId = 123
       const userInfoData: IUserInfoData = {

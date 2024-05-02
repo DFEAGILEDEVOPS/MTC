@@ -1,29 +1,40 @@
 <%- partial('partials/_gds_breadcrumbs_and_sign_out', { breadcrumbs }) %>
-<main class="govuk-main-wrapper govuk-body" id="main-content" role="main">
-  <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-      <h1 class="govuk-heading-xl"><%= pageTitle %></h1>
-      <%- partial('partials/_gds_session_expiry') %>
-      <form action="/tech-support/ps-report-run" id="runPsReportForm" method="post" autocomplete="off">
-        <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
-        <div class="govuk-form-group">
-          <div class="govuk-checkboxes">
-            <div class="govuk-checkboxes__item">
-              <input class="govuk-checkboxes__input" id="runReport" name="runReport" type="checkbox" value="true">
-              <label class="govuk-label govuk-checkboxes__label" for="runReport">
-                Confirm execution of PS Report
+  <main class="govuk-main-wrapper govuk-body" id="main-content" role="main">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl">
+          <%= pageTitle %>
+        </h1>
+        <%- partial('partials/_gds_session_expiry') %>
+          <form action="/tech-support/ps-report-run" id="runPsReportForm" method="post" autocomplete="off">
+            <input type="hidden" name="_csrf" value="<%= csrftoken %>" />
+            <div class="govuk-form-group">
+              <label class="govuk-label" for="urns">
+                Comma separated list of school URNs (optional)
               </label>
+              <textarea class="govuk-textarea govuk-!-width-three-quarters" rows="3" id="urns" name="urns" aria-required="false"
+              aria-label="Enter comma separated list of URNs." spellcheck="false" autocorrect="off"></textarea>
             </div>
-          </div>
-        </div>
-        <button type="submit" id="submit-runReport" class="govuk-button">Run</button>
-      </form>
-      <% if (response && response.length > 0) { %>
-        <div class="govuk-form-group">
-          <label class="govuk-label govuk-!-font-weight-bold" for="runReport">Response</label>
-          <span><%= response %></span>
-        </div>
-      <% } %>
+            <div class="govuk-form-group">
+              <div class="govuk-checkboxes">
+                <div class="govuk-checkboxes__item">
+                  <input class="govuk-checkboxes__input" id="runReport" name="runReport" type="checkbox" value="true">
+                  <label class="govuk-label govuk-checkboxes__label" for="runReport">
+                    Confirm execution of PS Report
+                  </label>
+                </div>
+              </div>
+            </div>
+            <button type="submit" id="submit-runReport" class="govuk-button">Run</button>
+          </form>
+          <% if (response && response.length> 0) { %>
+            <div class="govuk-form-group">
+              <label class="govuk-label govuk-!-font-weight-bold" for="runReport">Response</label>
+              <span>
+                <%= response %>
+              </span>
+            </div>
+            <% } %>
+      </div>
     </div>
-  </div>
-</main>
+  </main>

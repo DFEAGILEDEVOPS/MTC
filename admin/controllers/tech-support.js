@@ -525,8 +525,21 @@ const controller = {
   postPsReportRun: async function postPsReportRun (req, res, next) {
     const response = req.body.runReport === 'true' ? 'PS Report Requested' : 'Report NOT Requested - checkbox tick required'
     res.locals.pageTitle = 'PS Report Run'
+    let urnsValid = false
+    let urns = []
+    if (req.body.urns?.length > 0) {
+      try {
+        urns = req.body.urns.split(',')
+        urnsValid = true
+      } catch (error) {
+        response = 'Error parsing URNs:' + error.message
+        urnsValid = false
+      }
+    } else {
+      urnsValid = true
+    }
     try {
-      if (req.body.runReport === 'true') {
+      if (req.body.runReport === 'true' && urnsValid) {
         await PsReportExecService.requestReportGeneration(req.user.id)
       }
       req.breadcrumbs('PS Report Run')
