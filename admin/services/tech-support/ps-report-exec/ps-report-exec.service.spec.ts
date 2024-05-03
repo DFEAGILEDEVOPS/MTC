@@ -5,6 +5,23 @@ import moment from 'moment-timezone'
 const dateService = require('../../date.service')
 
 describe('PS Report Exec Service', () => {
+  const userId = 123
+  const userInfoData: IUserInfoData = {
+    displayName: 'John Smith',
+    identifier: 'jsmith@xyz.com'
+  }
+  const createdJobUuid = '7b20429d-b9bb-4e9d-bd4d-58090e1b49dd'
+  const currentDateTimeMock = moment('2022-11-10 15:30')
+
+  beforeEach(() => {
+    jest.spyOn(PsReportExecDataService, 'sendPsReportExecMessage').mockImplementation()
+    jest.spyOn(dateService, 'utcNowAsMoment').mockReturnValue(currentDateTimeMock)
+    jest.spyOn(PsReportExecDataService, 'getUserInfo').mockResolvedValue(userInfoData)
+    jest.spyOn(JobService, 'createJob').mockResolvedValue({
+      jobUuid: createdJobUuid
+    })
+  })
+
   afterEach(() => {
     jest.restoreAllMocks()
   })
@@ -31,19 +48,6 @@ describe('PS Report Exec Service', () => {
     })
 
     test('creates job and sends message', async () => {
-      const userId = 123
-      const userInfoData: IUserInfoData = {
-        displayName: 'John Smith',
-        identifier: 'jsmith@xyz.com'
-      }
-      const createdJobUuid = '7b20429d-b9bb-4e9d-bd4d-58090e1b49dd'
-      jest.spyOn(PsReportExecDataService, 'sendPsReportExecMessage').mockImplementation()
-      const currentDateTimeMock = moment('2022-11-10 15:30')
-      jest.spyOn(dateService, 'utcNowAsMoment').mockReturnValue(currentDateTimeMock)
-      jest.spyOn(PsReportExecDataService, 'getUserInfo').mockResolvedValue(userInfoData)
-      jest.spyOn(JobService, 'createJob').mockResolvedValue({
-        jobUuid: createdJobUuid
-      })
       const expectedRequestorDetails = `${userInfoData.displayName} (${userInfoData.identifier})`
       await sut.requestReportGeneration(userId)
       expect(PsReportExecDataService.getUserInfo).toHaveBeenCalledWith(userId)

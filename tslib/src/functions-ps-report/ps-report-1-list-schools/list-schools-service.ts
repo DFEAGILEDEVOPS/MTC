@@ -16,7 +16,7 @@ export interface IListSchoolsService {
 export interface ISchoolMessageSpecification {
   jobUuid: string
   filename: string
-  urns?: number[]
+  urns?: number[] | undefined
 }
 
 export class ListSchoolsService implements IListSchoolsService {
