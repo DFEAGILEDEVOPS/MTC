@@ -28,10 +28,12 @@ export class ReportLine {
     Gender: '',
     PupilUPN: '',
     Forename: '',
+    MiddleNames: null,
     Surname: '',
     ReasonNotTakingCheck: null,
     PupilStatus: null,
     ImportedFromCensus: false,
+    IsEdited: false,
 
     // School fields
     SchoolName: '',
@@ -364,6 +366,7 @@ export class ReportLine {
     this._report.Gender = this.pupil.gender.toUpperCase()
     this._report.PupilUPN = this.pupil.upn
     this._report.Forename = this.pupil.forename
+    this._report.MiddleNames = this.pupil.middlenames
     this._report.Surname = this.pupil.lastname
     this._report.ReasonNotTakingCheck = ReportLine.getReasonNotTakingCheck(this._pupil.notTakingCheckCode)
     this._report.SchoolName = this.school.name
@@ -371,6 +374,7 @@ export class ReportLine {
     this._report.SchoolURN = this.school.urn
     this._report.LAnum = this.school.laCode
     this._report.AccessArr = this.getAccessArrangements()
+    this._report.IsEdited = this.pupil.isEdited
     // Check data
     if (this._report.ReasonNotTakingCheck === null || this._report.ReasonNotTakingCheck === 'Q') {
       this._report.QDisplayTime = this.checkConfig?.questionTime ?? null // set to null rather than undefined
@@ -424,6 +428,8 @@ export class ReportLine {
       Gender: this._report.Gender,
       PupilUPN: this._report.PupilUPN,
       Forename: this._report.Forename,
+      MiddleNames: this._report.MiddleNames,
+      IsEdited: this._report.IsEdited,
       Surname: this._report.Surname,
       ReasonNotTakingCheck: this._report.ReasonNotTakingCheck,
       PupilStatus: this._report.PupilStatus,
