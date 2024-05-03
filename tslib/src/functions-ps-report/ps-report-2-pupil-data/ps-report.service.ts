@@ -5,7 +5,7 @@ import { type IMultipleOutputBinding } from '.'
 import type { PsReportSchoolFanOutMessage, PsReportStagingStartMessage } from '../common/ps-report-service-bus-messages'
 
 /**
- * pupilCounter: count the number of pupis processed across multiple invocations.  This is key, as it allows the end of pupil data to be detected
+ * pupilCounter: count the number of pupils processed across multiple invocations.  This is key, as it allows the end of pupil data to be detected
  *               which sends off a message to start the ps-report-3b-transformer.  The transform process is in between these two processes, but it
  *               should already have finished quite a bit of work, which is enough for the csv assembler to work on.
  */
