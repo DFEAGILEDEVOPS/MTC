@@ -7,6 +7,7 @@ const RA = require('ramda-adjunct')
 const logger = require('../log.service').getLogger()
 
 const table = '[pupilAttendance]'
+const logName = 'pupilAttendanceDataService'
 const pupilAttendanceDataService = {}
 
 pupilAttendanceDataService.sqlUpdateBatch = async (pupilIds, attendanceCodeId, userId) => {
@@ -33,7 +34,7 @@ pupilAttendanceDataService.sqlUpdateBatch = async (pupilIds, attendanceCodeId, u
   return sqlService.modifyWithTransaction(update, R.concat(params, where.params))
 }
 
-pupilAttendanceDataService.sqlDeleteOneByPupilId = async (pupilId, userId, role) => {
+pupilAttendanceDataService.sqlDeleteOneByPupilId = async function sqlDeleteOneByPupilId (pupilId, userId, role) {
   if (!pupilId) {
     throw new Error('pupilId is required for a DELETE')
   }
@@ -48,7 +49,7 @@ pupilAttendanceDataService.sqlDeleteOneByPupilId = async (pupilId, userId, role)
 
   // Permission guard - you can only delete permissions you are allowed to set via the Role.
   const pupil = await this.findOneByPupilId(pupilId)
-  this.throwIfAttendanceCodeIsForbidden(pupil.code, role)
+  await this.throwIfAttendanceCodeIsForbidden(pupil.code, role)
 
   const sql = `
   --
@@ -141,7 +142,7 @@ pupilAttendanceDataService.markAsNotAttending = async function markAsNotAttendin
   }
 
   // Check this role has permission to use this code.
-  this.throwIfAttendanceCodeIsForbidden(code, role)
+  await this.throwIfAttendanceCodeIsForbidden(code, role)
 
   const insertSql = slugs.map((s, idx) =>
     `INSERT into #pupilsToSet (slug, school_id, attendanceCode_id, recordedBy_user_id)
@@ -243,6 +244,7 @@ pupilAttendanceDataService.markAsNotAttending = async function markAsNotAttendin
  * @returns string[] - array of attendance codes
  */
 pupilAttendanceDataService.getAttendanceCodes = async function getAttendanceCodes (role) {
+  logger.info(`${logName}: getAttendanceCodes(): called with role [${role}]`)
   const sql = `
     SELECT
       *
@@ -251,13 +253,14 @@ pupilAttendanceDataService.getAttendanceCodes = async function getAttendanceCode
     WHERE
       roleTitle = @role
     ORDER BY
-      [displayOrder] ASC
+      [attendanceCodeDisplayOrder] ASC
   `
   const params = [
     { name: 'role', type: TYPES.NVarChar, value: role }
   ]
   const data = await sqlService.readonlyQuery(sql, params)
   const allowedCodes = data.map(d => d.attendanceCode)
+  logger.info(`${logName}: getAttendanceCodes() returning ${JSON.stringify(allowedCodes)}`)
   return allowedCodes
 }
 
@@ -268,7 +271,7 @@ pupilAttendanceDataService.getAttendanceCodes = async function getAttendanceCode
  * @returns
  */
 pupilAttendanceDataService.throwIfAttendanceCodeIsForbidden = async function throwIfAttendanceCodeIsForbidden (code, role) {
-  const allowedCodes = this.getAttendanceCodes(role)
+  const allowedCodes = await this.getAttendanceCodes(role)
   if (allowedCodes.includes(code)) {
     return
   }

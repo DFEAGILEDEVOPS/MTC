@@ -16,11 +16,13 @@ const pupilsNotTakingCheckDataService = {
         ac.reason,
         (SELECT
           CASE
-            WHEN count(*) > 1 THEN CAST(1 AS BIT) ELSE CAST(0 AS BIT)
+            WHEN count(*) > 0 THEN CAST(0 AS BIT) ELSE CAST(1 AS BIT)
           END
         FROM
           [mtc_admin].[vewAttendanceCodePermissions] WHERE roleTitle = @role
-        ) as pupilAttendanceCodeIsPrivileged
+        AND
+          attendanceCode = ac.code
+        ) as attendanceCodeIsPrivileged
 
       FROM [mtc_admin].[pupil] p
         INNER JOIN [mtc_admin].[pupilAttendance] pa ON p.id = pa.pupil_id
