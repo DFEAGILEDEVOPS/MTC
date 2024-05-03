@@ -7,8 +7,10 @@ export interface Pupil {
   forename: string
   gender: 'M' | 'F'
   id: number
+  isEdited: boolean
   jobId: number | null
   lastname: string
+  middlenames: string | null
   notTakingCheckReason: string | null
   notTakingCheckCode: NotTakingCheckCode | null
   restartAvailable: boolean
