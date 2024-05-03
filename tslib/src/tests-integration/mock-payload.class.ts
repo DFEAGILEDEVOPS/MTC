@@ -150,6 +150,8 @@ export class MockReportLineAnswer implements IReportLineAnswer {
   }
 }
 
+type Sex = 'male' | 'female'
+
 export class MockPayload implements IPsychometricReportLine {
   // Pupil
   PupilDatabaseId: number
@@ -157,10 +159,12 @@ export class MockPayload implements IPsychometricReportLine {
   Gender: string
   PupilUPN: string
   Forename: string
+  MiddleNames: string | null
   Surname: string
   ReasonNotTakingCheck: DfEAbsenceCode | null
   PupilStatus: string | null
   ImportedFromCensus: boolean
+  IsEdited: boolean
   // School',
   SchoolName: string
   Estab: number | null
@@ -193,32 +197,35 @@ export class MockPayload implements IPsychometricReportLine {
     this.PupilUPN = veryFakeUpn()
     const tenYearsAgo = moment().subtract(10, 'years')
     const nineYearsAgo = moment().subtract(9, 'years')
-    this.DOB = moment.utc(faker.date.between(tenYearsAgo.toDate(), nineYearsAgo.toDate())).startOf('day')
+    this.DOB = moment.utc(faker.date.between({ from: tenYearsAgo.toDate(), to: nineYearsAgo.toDate() })).startOf('day')
     this.Gender = faker.helpers.arrayElement(['M', 'F'])
-    this.Forename = faker.name.firstName()
-    this.Surname = faker.name.lastName()
+    const sex: Sex = this.Gender === 'M' ? 'male' : 'female'
+    this.Forename = faker.person.firstName(sex)
+    this.MiddleNames = faker.person.middleName(sex)
+    this.Surname = faker.person.lastName(sex)
     this.ReasonNotTakingCheck = faker.helpers.arrayElement(['A', 'Z', 'L', 'U', 'B', 'J'])
     this.PupilStatus = faker.helpers.shuffle(['Incomplete', 'Complete', 'Not taking the Check'])[0]
     this.SchoolName = faker.helpers.arrayElement(schools)
-    this.Estab = faker.datatype.number({ min: 1000, max: 9999 })
-    this.SchoolURN = faker.datatype.number({ min: 89000, max: 89999 })
-    this.LAnum = faker.datatype.number({ min: 201, max: 999 })
-    this.QDisplayTime = faker.datatype.float({ min: 5.00, max: 9.00 })
-    this.PauseLength = faker.datatype.float({ min: 3.00, max: 6.00 })
-    this.AccessArr = faker.datatype.number({ min: 1, max: 6 }).toString()
-    this.AttemptID = faker.datatype.uuid()
+    this.Estab = faker.number.int({ min: 1000, max: 9999 })
+    this.SchoolURN = faker.number.int({ min: 89000, max: 89999 })
+    this.LAnum = faker.number.int({ min: 201, max: 999 })
+    this.QDisplayTime = faker.number.float({ min: 5.00, max: 9.00 })
+    this.PauseLength = faker.number.float({ min: 3.00, max: 6.00 })
+    this.AccessArr = faker.number.int({ min: 1, max: 6 }).toString()
+    this.AttemptID = faker.string.uuid()
     this.FormID = faker.helpers.arrayElement(['MTC001', 'MTC002', 'MTC003', 'MTC004', 'MTC005', 'MTC006', 'MTC007'])
     this.TestDate = moment().subtract(13, 'minutes')
-    this.TimeStart = moment().subtract(faker.datatype.number({ min: 1, max: 30 }), 'minutes')
+    this.TimeStart = moment().subtract(faker.number.int({ min: 1, max: 30 }), 'minutes')
     this.TimeComplete = moment()
     this.TimeTaken = (this.TimeComplete.valueOf() - this.TimeStart.valueOf()) / 1000
-    this.RestartNumber = faker.datatype.number({ min: 0, max: 2 })
-    this.RestartReason = faker.datatype.number({ min: 1, max: 4 })
-    this.FormMark = faker.datatype.number({ min: 0, max: 25 })
+    this.RestartNumber = faker.number.int({ min: 0, max: 2 })
+    this.RestartReason = faker.number.int({ min: 1, max: 4 })
+    this.FormMark = faker.number.int({ min: 0, max: 25 })
     this.BrowserType = `${faker.lorem.words(2)} ${faker.system.semver()}`
-    this.DeviceID = faker.datatype.uuid()
+    this.DeviceID = faker.string.uuid()
     this.ImportedFromCensus = faker.datatype.boolean()
     this.ToECode = faker.helpers.arrayElement([1, 2, 3, 5, 6, 7, 8, 42, 43, 44])
+    this.IsEdited = faker.datatype.boolean()
 
     for (let i = 0; i < 25; i++) {
       const answer = new MockReportLineAnswer(i + 1)

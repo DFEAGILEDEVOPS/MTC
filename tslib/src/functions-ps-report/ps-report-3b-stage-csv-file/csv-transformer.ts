@@ -53,6 +53,7 @@ export class CsvTransformer {
       d.DOB?.format('YYYY-MM-DD'),
       d.Gender,
       d.Forename,
+      d.MiddleNames,
       d.Surname,
       d.FormMark,
       d.QDisplayTime,
@@ -75,7 +76,8 @@ export class CsvTransformer {
       d.TimeTaken,
       d.ReasonNotTakingCheck,
       d.ToECode,
-      d.ImportedFromCensus ? 1 : 0
+      d.ImportedFromCensus ? 1 : 0,
+      d.IsEdited ? 1 : 0
     ]
 
     const answers: any[] = []

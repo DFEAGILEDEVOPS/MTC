@@ -9,6 +9,7 @@ Before do
   @school_uuid = @school['urlSlug']
   @school_user = SqlDbHelper.get_school_teacher(@urn)
   @username = @school_user['identifier']
+
   FunctionsHelper.generate_school_pin(@school_id)
   p "Login for #{@school_name} created as - #{@username}"
   step 'I login to the admin app'
