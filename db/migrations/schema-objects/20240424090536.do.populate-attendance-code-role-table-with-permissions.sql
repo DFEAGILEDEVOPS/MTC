@@ -55,6 +55,17 @@ INSERT INTO [mtc_admin].[attendanceCodeRolePermission] (roleId, attendanceCodeId
   (@teacherRoleId, @justArrivedId)
 ;
 
--- helpdesk role - no perms required
+-- helpdesk role
+-- teacher role
+DECLARE @helpdeskRoleId INT = (SELECT id FROM [mtc_admin].[role] WHERE title = 'HELPDESK');
+INSERT INTO [mtc_admin].[attendanceCodeRolePermission] (roleId, attendanceCodeId) VALUES
+  (@helpdeskRoleId, @absentId),
+  (@helpdeskRoleId, @leftId),
+  (@helpdeskRoleId, @incorrectRegistrationId),
+  (@helpdeskRoleId, @unableToAccessId),
+  (@helpdeskRoleId, @workingBelowId),
+  (@helpdeskRoleId, @justArrivedId)
+;
+
 -- Tech Support role - no perms required
 -- Test developer role - no perms required
