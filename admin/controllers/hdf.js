@@ -159,7 +159,7 @@ controller.getEditReason = async function getEditReason (req, res, next) {
   let pupil, attendanceCodes
   try {
     pupil = await headteacherDeclarationService.findPupilBySlugAndSchoolId(req.params.urlSlug, req.user.schoolId)
-    attendanceCodes = await attendanceCodeService.getAttendanceCodes()
+    attendanceCodes = await attendanceCodeService.getAttendanceCodes(req.user.role)
   } catch (error) {
     return next(error)
   }

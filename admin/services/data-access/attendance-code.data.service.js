@@ -2,7 +2,6 @@
 
 const { TYPES } = require('./sql.service')
 const R = require('ramda')
-
 const sqlService = require('./sql.service')
 
 const attendanceCodeDataService = {
@@ -43,7 +42,7 @@ const attendanceCodeDataService = {
     FROM
       [mtc_admin].[vewAttendanceCodePermissions]
     WHERE
-      [code] = @pcode
+      [attendanceCode] = @pcode
     AND
       roleTitle = @role`
     const params = [

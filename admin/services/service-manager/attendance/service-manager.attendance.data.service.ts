@@ -3,6 +3,11 @@ import { TYPES } from '../../data-access/sql.service'
 const sqlService = require('../../data-access/sql.service')
 
 export class ServiceManagerAttendanceDataService {
+  /**
+   * Fetch the TEACHERs attendance codes for the serivce manager, so the SM can set its visibility property.
+   * So role here is a static property.
+   *
+   */
   static async getAttendanceCodes (): Promise<AttendanceCode[]> {
     const sql = `
       SELECT
