@@ -61,7 +61,7 @@ const ctfService = {
         return ctfResults.pupilCheating.code
 
       case pupilAttendanceCodes.maladministration.code:
-          return ctfResults.maladministration.code
+        return ctfResults.maladministration.code
     }
 
     // If they have a score they took the check
