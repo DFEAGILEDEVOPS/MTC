@@ -10,13 +10,13 @@ set -e
 echo "currently unable to update master key via CLI, please perform manual renew via portal" >&2
 return -1
 
-# renews key for azure redis and updates key vault
+# renews master key for azure function app and updates key vault
 
 # input parameters
 RES_GROUP=$1 # target resource group
 KEY_VAULT_NAME=$2 # key vault instance
 FUNCTION_APP_NAME=$3 # function app instance
-UPDATE_KV_SECRET="${5:-false}" # updates the key vault secret if true
+UPDATE_KV_SECRET="${4:-false}" # updates the key vault secret if true
 
 # https://learn.microsoft.com/en-us/cli/azure/functionapp/keys?view=azure-cli-latest#az-functionapp-keys-set
 az functionapp keys set -g $RES_GROUP -n $FUNCTION_APP_NAME --key-type masterKey
