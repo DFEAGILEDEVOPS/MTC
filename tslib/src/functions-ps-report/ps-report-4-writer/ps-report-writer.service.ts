@@ -66,7 +66,7 @@ export class PsReportWriterService {
         TimeStart datetimeoffset(7) NULL,
         TimeComplete datetimeoffset(7) NULL,
         TimeTaken decimal(9,3) NULL,
-        ReasonNotTakingCheck char(1) NULL,
+        ReasonNotTakingCheck varchar(3) NULL,
         ToECode int NULL,
         ImportedFromCensus bit NOT NULL CONSTRAINT [DF_${newTableName}_ImportedFromCensus] DEFAULT (0),
         IsEdited bit NOT NULL CONSTRAINT [DF_${newTableName}_IsEdited] DEFAULT (0), -- must end in comma
