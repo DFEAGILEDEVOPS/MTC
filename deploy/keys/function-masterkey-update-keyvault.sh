@@ -35,6 +35,10 @@ KEY_VAULT_NAME=$2 # key vault instance
 TARGET_SECRET_NAME=$3 # name of target secret in key vault
 FUNCTION_APP_NAME=$4 # function app instance
 
+# TODO add param for optional regeneration of master key, prior to updating key vault
+# https://learn.microsoft.com/en-us/cli/azure/functionapp/keys?view=azure-cli-latest#az-functionapp-keys-set
+# az functionapp keys set -g $RES_GROUP -n $FUNCTION_APP_NAME --key-type masterKey
+
 echo "obtaining master key for function app $FUNCTION_APP_NAME..."
 # https://learn.microsoft.com/en-us/cli/azure/functionapp/keys?view=azure-cli-latest#az-functionapp-keys-list
 KEY_VALUE=$(az functionapp keys list -g $RES_GROUP -n $FUNCTION_APP_NAME --query masterKey | jq -r)
