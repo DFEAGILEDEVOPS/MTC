@@ -183,17 +183,36 @@ export class PsReportWriterService {
     const sFilename = sanitise(incomingMessage.filename)
     const sTablename = sanitise(tableName)
 
-    // Find out the operating system that the SQL Server is running on due to capability mis-matches in SQL Versions on linux.
+    // Find out system that the SQL Server is running on.  When SQL Server is running on Linux BULK_UPLOAD is not an assignable permission
+    // and we have to use the admin account `sa`.  The usual way of getting the OS uses a sys table that is not available to the Azure database
+    // user, so this is a workaround exploiting the difference between SQL Server products.
+    // Dev, Test, Pre-Prod, Prod => 'Sql Database'
+    // Local => 'Enterprise'
     const sql2 = `
       SELECT
-        host_platform
-      FROM
-        sys.dm_os_host_info
+        CASE ServerProperty('EngineEdition')
+          WHEN 1 THEN 'Personal'
+          WHEN 2 THEN 'Standard'
+          WHEN 3 THEN 'Enterprise'
+          WHEN 4 THEN 'Express'
+          WHEN 5 THEN 'SQL Database'
+          WHEN 6 THEN 'Azure Synapse Analytics'
+          WHEN 8 THEN 'Azure SQL Managed Instance'
+          WHEN 9 THEN 'Azure SQL Edge'
+          WHEN 11 THEN 'Azure Synapse serverless SQL pool'
+        ELSE 'Unknown'
+      END as engineEdition;
     `
+
+    /**
+     * If running on SQL Azure the user will not have access to the sys tables, so we assume that an
+     * error in this block means we are running in Azure.
+     */
     const result = await this.sqlService.query(sql2, [])
+
     this.logger.verbose(`${this.logServiceName} OS is ${JSON.stringify(result)}`)
-    if (result[0].host_platform === 'Linux') {
-      this.logger.info(`${this.logServiceName}: SQL Server is running on Linux`)
+    if (result[0].engineEdition === 'Enterprise') {
+      this.logger.info(`${this.logServiceName}: SQL Server is (likely) running on Linux`)
       // SQL Server on Linux does not have a Bulk Upload permission, you have to use the `sa` user.
       // This is only suitable for local dev.
       const sqlConfig: mssql.config = {
