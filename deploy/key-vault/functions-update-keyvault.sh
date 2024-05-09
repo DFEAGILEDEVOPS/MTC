@@ -35,10 +35,10 @@ KEY_VAULT_NAME=$2 # key vault instance
 TARGET_SECRET_NAME=$3 # name of target secret in key vault
 FUNCTION_APP_NAME=$4 # function app instance
 
+echo "obtaining master key for function app $FUNCTION_APP_NAME..."
 # https://learn.microsoft.com/en-us/cli/azure/functionapp/keys?view=azure-cli-latest#az-functionapp-keys-list
 KEY_VALUE=$(az functionapp keys list -g $RES_GROUP -n $FUNCTION_APP_NAME --query masterKey | jq -r)
 
-echo "Updating key vault secret with current master key..."
-
-az keyvault secret set --vault-name $KEY_VAULT_NAME --name $TARGET_SECRET_NAME --value $KEY_VALUE  -o none
+echo "Updating key vault $KEY_VAULT_NAME secret '$TARGET_SECRET_NAME' with current master key..."
+az keyvault secret set --vault-name $KEY_VAULT_NAME --name $TARGET_SECRET_NAME --value "$KEY_VALUE" -o none
 echo "secret updated for key vault $KEY_VAULT_NAME"
