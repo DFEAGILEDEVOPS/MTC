@@ -211,7 +211,7 @@ export class PsReportWriterService {
     const result = await this.sqlService.query(sql2, [])
 
     this.logger.verbose(`${this.logServiceName} OS is ${JSON.stringify(result)}`)
-    if (result[0].engineEdition === 'Enterprise') {
+    if (result[0].engineEdition === 'Enterprise' || result[0].engineEdition === 'Azure SQL Edge') {
       this.logger.info(`${this.logServiceName}: SQL Server is (likely) running on Linux`)
       // SQL Server on Linux does not have a Bulk Upload permission, you have to use the `sa` user.
       // This is only suitable for local dev.
