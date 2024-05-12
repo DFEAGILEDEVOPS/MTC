@@ -444,8 +444,8 @@ class SqlDbHelper
     result.each {|row| row.map}
   end
 
-  def self.count_all_ps_records_for_school(school_id)
-    sql =  "select count(*) from mtc_results.psychometricReport where PupilUPN in (Select mtc_admin.pupil.upn from mtc_admin.pupil where school_id=#{school_id})"
+  def self.count_all_ps_records_for_school(ps_report_table_name,school_id)
+    sql =  "select count(*) from [mtc_results].[#{ps_report_table_name}] where PupilUPN in (Select mtc_admin.pupil.upn from mtc_admin.pupil where school_id=#{school_id})"
     result = SQL_CLIENT.execute(sql)
     school_res = result.first
     result.cancel
@@ -486,7 +486,7 @@ class SqlDbHelper
   end
 
   def self.get_ps_report_job
-    sql = "SELECT * FROM [mtc_admin].[job] WHERE jobType_id = 2 ORDER BY completedAt DESC"
+    sql = "SELECT * FROM [mtc_admin].[job] WHERE jobType_id = 2 ORDER BY id DESC"
     result = SQL_CLIENT.execute(sql)
     ps_report = result.first
     result.cancel
