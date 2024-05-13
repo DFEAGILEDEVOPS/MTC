@@ -3,7 +3,7 @@ const R = require('ramda')
 
 const schoolDataService = require('../services/data-access/school.data.service')
 const schoolImpersonationValidator = require('../lib/validator/school-impersonation-validator')
-
+const schoolAuditDataService = require('../services/data-access/school-audit.data.service')
 const schoolImpersonationService = {}
 
 /**
@@ -32,6 +32,7 @@ schoolImpersonationService.setSchoolImpersonation = async (user, dfeNumber) => {
   if (schoolValidationError.hasError()) {
     return schoolValidationError
   }
+  schoolAuditDataService.auditImpersonation(user.id, school.id)
   return schoolImpersonationService.impersonateSchool(user, school)
 }
 

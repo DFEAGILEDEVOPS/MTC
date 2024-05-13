@@ -6,6 +6,7 @@ const schoolDataService = require('../../../services/data-access/school.data.ser
 const schoolImpersonationService = require('../../../services/school-impersonation.service')
 const schoolImpersonationValidator = require('../../../lib/validator/school-impersonation-validator')
 const ValidationError = require('../../../lib/validation-error')
+const schoolAuditDataService = require('../../../services/data-access/school-audit.data.service')
 
 describe('schoolImpersonationService', () => {
   afterEach(() => {
@@ -13,16 +14,29 @@ describe('schoolImpersonationService', () => {
   })
 
   describe('setSchoolImpersonation', () => {
-    test('calls schoolImpersonationService.impersonateSchool if no validation occurred', async () => {
+    test('calls schoolImpersonationService.impersonateSchool if no validation error occurred', async () => {
       const validationError = new ValidationError()
       jest.spyOn(schoolImpersonationValidator, 'isDfeNumberValid').mockReturnValue(validationError)
       jest.spyOn(schoolDataService, 'sqlFindOneByDfeNumber').mockResolvedValue({ dfeNumber: '1230000', id: 1, timezone: '' })
       jest.spyOn(schoolImpersonationValidator, 'isSchoolRecordValid').mockReturnValue(validationError)
       jest.spyOn(schoolImpersonationService, 'impersonateSchool').mockImplementation()
+      jest.spyOn(schoolAuditDataService, 'auditImpersonation').mockImplementation()
       const user = {}
       const dfeNumber = '1230000'
       await schoolImpersonationService.setSchoolImpersonation(user, dfeNumber)
       expect(schoolImpersonationService.impersonateSchool).toHaveBeenCalled()
+    })
+    test('impersonation events are audited', async () => {
+      const validationError = new ValidationError()
+      jest.spyOn(schoolImpersonationValidator, 'isDfeNumberValid').mockReturnValue(validationError)
+      jest.spyOn(schoolDataService, 'sqlFindOneByDfeNumber').mockResolvedValue({ dfeNumber: '1230000', id: 1, timezone: '' })
+      jest.spyOn(schoolImpersonationValidator, 'isSchoolRecordValid').mockReturnValue(validationError)
+      jest.spyOn(schoolImpersonationService, 'impersonateSchool').mockImplementation()
+      jest.spyOn(schoolAuditDataService, 'auditImpersonation').mockImplementation()
+      const user = {}
+      const dfeNumber = '1230000'
+      await schoolImpersonationService.setSchoolImpersonation(user, dfeNumber)
+      expect(schoolAuditDataService.auditImpersonation).toHaveBeenCalled()
     })
     test('returns a validation error if schoolImpersonationValidator.isDfeNumberValid returned a validation error', async () => {
       const validationError = new ValidationError()
@@ -62,6 +76,7 @@ describe('schoolImpersonationService', () => {
       jest.spyOn(schoolImpersonationValidator, 'isDfeNumberValid').mockReturnValue(new ValidationError())
       jest.spyOn(schoolDataService, 'sqlFindOneByDfeNumber').mockResolvedValue({ dfeNumber: '1230000', id: 1, timezone: '' })
       jest.spyOn(schoolImpersonationService, 'impersonateSchool').mockImplementation()
+      jest.spyOn(schoolAuditDataService, 'auditImpersonation').mockImplementation()
       const user = {}
       const dfeNumber = ' 1230000'
       await schoolImpersonationService.setSchoolImpersonation(user, dfeNumber)
@@ -71,6 +86,7 @@ describe('schoolImpersonationService', () => {
       jest.spyOn(schoolImpersonationValidator, 'isDfeNumberValid').mockReturnValue(new ValidationError())
       jest.spyOn(schoolDataService, 'sqlFindOneByDfeNumber').mockResolvedValue({ dfeNumber: '1230000', id: 1, timezone: '' })
       jest.spyOn(schoolImpersonationService, 'impersonateSchool').mockImplementation()
+      jest.spyOn(schoolAuditDataService, 'auditImpersonation').mockImplementation()
       const user = {}
       const dfeNumber = '1230000 '
       await schoolImpersonationService.setSchoolImpersonation(user, dfeNumber)
@@ -80,6 +96,7 @@ describe('schoolImpersonationService', () => {
       jest.spyOn(schoolImpersonationValidator, 'isDfeNumberValid').mockReturnValue(new ValidationError())
       jest.spyOn(schoolDataService, 'sqlFindOneByDfeNumber').mockResolvedValue({ dfeNumber: '1230000', id: 1, timezone: '' })
       jest.spyOn(schoolImpersonationService, 'impersonateSchool').mockImplementation()
+      jest.spyOn(schoolAuditDataService, 'auditImpersonation').mockImplementation()
       const user = {}
       await schoolImpersonationService.setSchoolImpersonation(user, '123-0000')
       expect(schoolImpersonationValidator.isDfeNumberValid).toHaveBeenCalledWith('1230000')

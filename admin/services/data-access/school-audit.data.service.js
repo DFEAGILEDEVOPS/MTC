@@ -48,6 +48,10 @@ const service = {
       WHERE sa.id=@auditEntryId
     `
     return sqlService.readonlyQuery(sql, params)
+  },
+
+  auditImpersonation: async function auditImpersonation (userId, schoolId) {
+    throw new Error('Not implemented')
   }
 }
 
