@@ -45,4 +45,4 @@ KEY_VALUE=$(az functionapp keys list -g $RES_GROUP -n $FUNCTION_APP_NAME --query
 
 echo "Updating key vault $KEY_VAULT_NAME secret '$TARGET_SECRET_NAME' with current master key..."
 az keyvault secret set --vault-name $KEY_VAULT_NAME --name $TARGET_SECRET_NAME --value "$KEY_VALUE" -o none
-echo "secret updated for key vault $KEY_VAULT_NAME"
+echo "secret '$TARGET_SECRET_NAME' updated for key vault $KEY_VAULT_NAME"
