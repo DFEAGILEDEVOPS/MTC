@@ -60,7 +60,7 @@ const service = {
       type: TYPES.Int,
       value: schoolId
     }]
-    const sql = `INSERT mtc_admin.schoolImpersonationAudit (user_id, school_id) VALUES (@userId, @schoolId)`
+    const sql = 'INSERT mtc_admin.schoolImpersonationAudit (user_id, school_id) VALUES (@userId, @schoolId)'
     return sqlService.modify(sql, params)
   }
 }
