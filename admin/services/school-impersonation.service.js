@@ -32,7 +32,7 @@ schoolImpersonationService.setSchoolImpersonation = async (user, dfeNumber) => {
   if (schoolValidationError.hasError()) {
     return schoolValidationError
   }
-  schoolAuditDataService.auditImpersonation(user.id, school.id)
+  await schoolAuditDataService.auditImpersonation(user.id, school.id)
   return schoolImpersonationService.impersonateSchool(user, school)
 }
 
