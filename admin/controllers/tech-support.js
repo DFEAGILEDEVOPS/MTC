@@ -527,7 +527,7 @@ const controller = {
     res.locals.pageTitle = 'PS Report Run'
     try {
       if (req.body.runReport === 'true') {
-        await PsReportExecService.requestReportGeneration(req.user.id)
+        await PsReportExecService.requestReportGeneration(req.user.id, req.body.urns)
       }
       req.breadcrumbs('PS Report Run')
       res.render('tech-support/ps-report-run', {
