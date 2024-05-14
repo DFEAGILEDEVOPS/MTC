@@ -278,7 +278,8 @@ describe('tech-support controller', () => {
       const reqParams = getReqParams('/tech-support/ps-report-run', 'GET')
       const req = getRequest(reqParams)
       req.body = {
-        runReport: 'true'
+        runReport: 'true',
+        urns: undefined
       }
       const userId = 4359
       req.user = {
@@ -295,7 +296,33 @@ describe('tech-support controller', () => {
       expect(res.statusCode).toBe(200)
       expect(res.render).toHaveBeenCalled()
       expect(next).not.toHaveBeenCalled()
-      expect(PsReportExecService.requestReportGeneration).toHaveBeenCalledWith(userId)
+      expect(PsReportExecService.requestReportGeneration).toHaveBeenCalledWith(userId, undefined)
+    })
+
+    test('POST: should pass URNs if inputted', async () => {
+      const reqParams = getReqParams('/tech-support/ps-report-run', 'GET')
+      const req = getRequest(reqParams)
+      const urnList = '12345,67890'
+      req.body = {
+        runReport: 'true',
+        urns: urnList
+      }
+      const userId = 4359
+      req.user = {
+        id: userId
+      }
+      const res = getResponse()
+      let responseMessage = 'not set'
+      jest.spyOn(PsReportExecService, 'requestReportGeneration').mockImplementation()
+      jest.spyOn(res, 'render').mockImplementation((view, data) => {
+        responseMessage = data.response
+      })
+      await sut.postPsReportRun(req, res, next)
+      expect(responseMessage).toEqual('PS Report Requested')
+      expect(res.statusCode).toBe(200)
+      expect(res.render).toHaveBeenCalled()
+      expect(next).not.toHaveBeenCalled()
+      expect(PsReportExecService.requestReportGeneration).toHaveBeenCalledWith(userId, urnList)
     })
   })
 
