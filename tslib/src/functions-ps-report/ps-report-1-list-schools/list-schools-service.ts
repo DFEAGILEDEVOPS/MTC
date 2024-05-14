@@ -1,3 +1,4 @@
+import { TYPES } from 'mssql'
 import { type ILogger } from '../../common/logger'
 import { type ISqlService, SqlService } from '../../sql/sql.service'
 import { type PsReportSchoolFanOutMessage } from '../common/ps-report-service-bus-messages'
@@ -9,7 +10,13 @@ export interface School {
 }
 
 export interface IListSchoolsService {
-  getSchoolMessages (jobUuid: string, filename: string): Promise<PsReportSchoolFanOutMessage[]>
+  getSchoolMessages (messageSpecification: ISchoolMessageSpecification): Promise<PsReportSchoolFanOutMessage[]>
+}
+
+export interface ISchoolMessageSpecification {
+  jobUuid: string
+  filename: string
+  urns?: number[] | undefined
 }
 
 export class ListSchoolsService implements IListSchoolsService {
@@ -21,21 +28,31 @@ export class ListSchoolsService implements IListSchoolsService {
     this.sqlService = sqlService ?? new SqlService()
   }
 
-  private async getSchools (): Promise<School[]> {
+  private async getSchools (urns?: number[]): Promise<School[]> {
     // 54227: Do not include test schools in the PS Report
-    const sql = 'SELECT id, name, urlSlug as uuid from mtc_admin.school WHERE isTestSchool = 0'
-    return this.sqlService.query(sql)
+    let sql = 'SELECT id, name, urlSlug as uuid from mtc_admin.school WHERE isTestSchool = 0'
+    const params = new Array<any>()
+    const paramIds = new Array<string>()
+    if (urns !== undefined && urns?.length > 0) {
+      const paramPrefix = 'urn'
+      urns.forEach((urn, index) => {
+        params.push({ name: `${paramPrefix}${index}`, type: TYPES.Int, value: urn })
+        paramIds.push(`@${paramPrefix}${index}`)
+      })
+      sql += ` AND urn IN (${paramIds.join(', ')})`
+    }
+    return this.sqlService.query(sql, params)
   }
 
-  public async getSchoolMessages (jobUuid: string, filename: string): Promise<PsReportSchoolFanOutMessage[]> {
+  public async getSchoolMessages (specification: ISchoolMessageSpecification): Promise<PsReportSchoolFanOutMessage[]> {
     this.logger.verbose('ListSchoolsService called - retrieving all schools')
-    const schools = await this.getSchools()
+    const schools = await this.getSchools(specification.urns)
     const schoolMessages: PsReportSchoolFanOutMessage[] = schools.map(school => {
       return {
         uuid: school.uuid,
         name: school.name,
-        jobUuid,
-        filename,
+        jobUuid: specification.jobUuid,
+        filename: specification.filename,
         totalNumberOfSchools: schools.length
       }
     })
