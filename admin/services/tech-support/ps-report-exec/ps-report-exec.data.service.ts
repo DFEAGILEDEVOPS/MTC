@@ -8,10 +8,12 @@ export interface IUserInfoData {
   displayName: string
 }
 
+// mirror of tslib/src/functions-ps-report/common/ps-report-service-bus-messages.ts:PsReportListSchoolsIncomingMessage
 export interface IExecPsReportRequest {
   requestedBy: string
   dateTimeRequested: moment.Moment
   jobUuid: string
+  urns?: number[]
 }
 
 export class PsReportExecDataService {

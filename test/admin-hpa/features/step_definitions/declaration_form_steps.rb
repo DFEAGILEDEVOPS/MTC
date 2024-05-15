@@ -77,7 +77,6 @@ Given(/^I generate a live pin$/) do
   @check_code = SqlDbHelper.check_details(@stored_pupil_details['id'])['checkCode']
 end
 
-
 Given('the pin expires') do
   @pupil_details = SqlDbHelper.pupil_details_using_school(@details_hash[:upn], @school_id)
   @check_details = SqlDbHelper.get_all_pupil_checks(@pupil_details['id']).sort_by {|hsh| hsh['createdAt']}.last

@@ -1,6 +1,6 @@
 import { type AzureFunction, type Context } from '@azure/functions'
 import { performance } from 'perf_hooks'
-import { ListSchoolsService } from './list-schools-service'
+import { type ISchoolMessageSpecification, ListSchoolsService } from './list-schools-service'
 import { PsReportLogger } from '../common/ps-report-logger'
 import { PsReportSource } from '../common/ps-report-log-entry'
 import { JobDataService } from '../../services/data/job.data.service'
@@ -20,7 +20,12 @@ const serviceBusTrigger: AzureFunction = async function (context: Context, jobIn
     const filename = `ps-report-staging-${now.format('YYYY-MM-DD-HHmm')}.csv`
     await jobDataService.setJobStarted(jobInfo.jobUuid, { meta: { filename } }, context.log)
     const schoolListService = new ListSchoolsService(logger)
-    const messages = await schoolListService.getSchoolMessages(jobInfo.jobUuid, filename)
+    const messageSpec: ISchoolMessageSpecification = {
+      jobUuid: jobInfo.jobUuid,
+      filename,
+      urns: jobInfo.urns
+    }
+    const messages = await schoolListService.getSchoolMessages(messageSpec)
     context.bindings.schoolMessages = messages
     meta.processCount = messages.length
   } catch (error) {
