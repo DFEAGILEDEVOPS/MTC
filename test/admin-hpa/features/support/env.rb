@@ -185,6 +185,9 @@ else
 end
 
 begin
+  p 'Redis connection details'
+  p redis_host
+  p redis_port
   REDIS_CLIENT.ping
 rescue Redis::BaseError => e
   fail "REDIS connection issue - #{e.inspect}"
