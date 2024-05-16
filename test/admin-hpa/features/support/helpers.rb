@@ -152,7 +152,7 @@ module Helpers
   end
 
   def create_dfe_number
-    @lea_code = '999'
+    @lea_code = SqlDbHelper.get_list_of_la_codes.sample
     if SqlDbHelper.get_schools_list.map {|school| school['estabCode']}.sort.last == 9999
       estab_counter = 1000
       lea_code_change = true
