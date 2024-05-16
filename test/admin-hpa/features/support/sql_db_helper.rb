@@ -820,4 +820,20 @@ class SqlDbHelper
     user
   end
 
+  def self.get_ps_report_job
+    sql = "SELECT * FROM [mtc_admin].[job] WHERE jobType_id = 2 ORDER BY id DESC"
+    result = SQL_CLIENT.execute(sql)
+    ps_report = result.first
+    result.cancel
+    ps_report
+  end
+
+  def self.get_ps_record_for_pupil(table_name,pupil_id)
+    sql = "SELECT * FROM mtc_results.#{table_name} WHERE PupilId = #{pupil_id}"
+    result = SQL_CLIENT.execute(sql)
+    ps_report = result.first
+    result.cancel
+    ps_report
+  end
+
 end

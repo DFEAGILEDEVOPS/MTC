@@ -28,8 +28,11 @@ Then(/^I should see set of reasons I can choose$/) do
   expected_reason_hash.delete("Maladministration")
   expected_reason_hash.delete("Pupil cheating")
   expected_reason_hash.delete("Not able to administer")
-  expect(pupil_reason_page.attendance_code_mapping.keys.sort).to eql pupil_reason_page.attendance_codes.map {|code| code['id']}.sort
+  db_attend_codes = pupil_reason_page.attendance_code_mapping.keys.sort
+  db_attend_codes.delete 'attendance-code-NOABA' if db_attend_codes.include? 'attendance-code-NOABA'
+  expect(db_attend_codes).to eql pupil_reason_page.attendance_codes.map {|code| code['id']}.sort
   actual_reason_hash = pupil_reason_page.attendance_code_mapping.values
+  actual_reason_hash.delete("Not able to administer")
   expect(actual_reason_hash.sort).to eql expected_reason_hash.sort
 end
 
@@ -345,4 +348,14 @@ end
 Then(/^I should not be able to remove pupils who are NTC$/) do
   pupils_not_taking_check_page.load
   expect(pupils_not_taking_check_page.pupil_list.rows.first).to_not have_remove
+end
+
+Then(/^I should not be able to select the Not able to administer reason$/) do
+  pupil_reason_page.load
+  expect(pupil_reason_page.attendance_codes.map {|code| code['id']}.sort).to_not include 'attendance-code-NOABA'
+end
+
+Then(/^I should be able to select the Not able to administer reason$/) do
+  pupil_reason_page.load
+  expect(pupil_reason_page.attendance_codes.map {|code| code['id']}.sort).to include 'attendance-code-NOABA'
 end
