@@ -33,8 +33,8 @@ const pupilsNotTakingCheckService = {
    * @param schoolId
    * @returns {Promise<*>}
    */
-  getPupilsWithReasons: async (schoolId) => {
-    const pupils = await pupilsNotTakingCheckDataService.sqlFindPupilsWithReasons(schoolId)
+  getPupilsWithReasons: async (schoolId, role) => {
+    const pupils = await pupilsNotTakingCheckDataService.sqlFindPupilsWithReasons(schoolId, role)
     return pupilIdentificationFlag.sortAndAddIdentificationFlags(pupils)
   },
 

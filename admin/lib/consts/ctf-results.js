@@ -1,12 +1,18 @@
 const deepFreeze = require('../deep-freeze')
 
+/**
+ * Dfe Codes
+ */
+
 module.exports = deepFreeze({
   absent: { code: 'A' },
+  leftSchool: { code: 'L' },
+  incorrectRegistration: { code: 'Z' },
+  unableToAccess: { code: 'U' },
   workingBelowExpectation: { code: 'B' },
   justArrived: { code: 'J' },
-  leftSchool: { code: 'L' },
-  annulled: { code: 'Q' },
-  unableToAccess: { code: 'U' },
   notTaken: { code: 'X' },
-  incorrectRegistration: { code: 'Z' }
+  notAbleToAdminister: { code: 'NAA' },
+  maladministration: { code: 'Q' },
+  pupilCheating: { code: 'H' }
 })

@@ -155,6 +155,36 @@ describe('ctfService', () => {
       const res = sut.getCtfResult(mockCtfResult)
       expect(res).toBe('X')
     })
+
+    test('returns "NAA" if they are marked as not attending with a code of NOABA (Not able to take the check)', () => {
+      const mockCtfResult = {
+        score: null,
+        attendanceCode: 'NOABA',
+        status: ''
+      }
+      const res = sut.getCtfResult(mockCtfResult)
+      expect(res).toBe('NAA')
+    })
+
+    test('returns "H" if they were annulled with a pupil cheating code (ANLLH)', () => {
+      const mockCtfResult = {
+        score: 25,
+        attendanceCode: 'ANLLH',
+        status: 'Pupil cheating'
+      }
+      const res = sut.getCtfResult(mockCtfResult)
+      expect(res).toBe('H')
+    })
+
+    test('returns "Q" if they were annulled with a maladministration code (ANLLQ)', () => {
+      const mockCtfResult = {
+        score: 5,
+        attendanceCode: 'ANLLQ',
+        status: 'Maladministration'
+      }
+      const res = sut.getCtfResult(mockCtfResult)
+      expect(res).toBe('Q')
+    })
   })
 
   describe('buildXmlString', () => {

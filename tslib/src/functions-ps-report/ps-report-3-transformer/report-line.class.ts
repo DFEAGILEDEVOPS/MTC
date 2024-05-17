@@ -140,6 +140,8 @@ export class ReportLine {
         return 'Q'
       case 'ANLLH':
         return 'H'
+      case 'NOABA':
+        return 'NAA'
     }
     return null
   }
