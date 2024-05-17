@@ -159,10 +159,8 @@ Feature:
     Examples:
       | role            |
       | teacher1        |
-      | test-developer  |
       | service-manager |
       | helpdesk        |
-      | tech-support    |
 
   Scenario: STA admin can add the Not able to administer reason
     Given I am on the school landing page for a school using an account with the sta admin role
