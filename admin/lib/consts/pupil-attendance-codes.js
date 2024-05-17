@@ -1,5 +1,8 @@
 const deepFreeze = require('../deep-freeze')
 
+/**
+ * MTC Codes
+ */
 module.exports = deepFreeze(
   {
     absent: { code: 'ABSNT' },
@@ -7,6 +10,9 @@ module.exports = deepFreeze(
     incorrectRegistration: { code: 'INCRG' },
     unableToAccess: { code: 'NOACC' },
     workingBelowExpectation: { code: 'BLSTD' },
-    justArrived: { code: 'JSTAR' }
+    justArrived: { code: 'JSTAR' },
+    notAbleToAdminister: { code: 'NOABA' },
+    maladministration: { code: 'ANLLQ' },
+    pupilCheating: { code: 'ANLLH' }
   }
 )
