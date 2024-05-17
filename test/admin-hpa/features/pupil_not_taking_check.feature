@@ -147,8 +147,21 @@ Feature:
     When I want to add a reason for pupils not taking a check
     Then I can see pupil in the list for pupil for not taking check
 
-    @hdf_hook
-    Scenario: Cannot remove reason for NTC when HDF has been signed
-      Given I the hdf has been signed
-      Then I should not be able to remove pupils who are NTC
+  @hdf_hook
+  Scenario: Cannot remove reason for NTC when HDF has been signed
+    Given I the hdf has been signed
+    Then I should not be able to remove pupils who are NTC
 
+  Scenario Outline: Roles other than STA admin do not have the option to add the Not able to administer reason
+    Given I have logged in with <role>
+    Then I should not be able to select the Not able to administer reason
+
+    Examples:
+      | role            |
+      | teacher1        |
+      | service-manager |
+      | helpdesk        |
+
+  Scenario: STA admin can add the Not able to administer reason
+    Given I am on the school landing page for a school using an account with the sta admin role
+    Then I should be able to select the Not able to administer reason

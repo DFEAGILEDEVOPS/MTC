@@ -155,7 +155,7 @@ export interface PupilResult {
  * ANLLH: Pupil cheating (annulled)
  * ANLLQ: Maladministration (annulled)
  */
-export type NotTakingCheckCode = 'ABSNT' | 'LEFTT' | 'INCRG' | 'NOACC' | 'BLSTD' | 'JSTAR' | 'ANLLH' | 'ANLLQ'
+export type NotTakingCheckCode = 'ABSNT' | 'LEFTT' | 'INCRG' | 'NOACC' | 'BLSTD' | 'JSTAR' | 'ANLLH' | 'ANLLQ' | 'NOABA'
 
 /**
  * LOI: Loss of internet
