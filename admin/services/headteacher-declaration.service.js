@@ -164,14 +164,19 @@ headteacherDeclarationService.isHdfSubmittedForCheck = async (schoolId, checkWin
  * @param pupilIds
  * @param code
  * @param userId
+ * @param schoolId
+ * @param {string} role e.g TEACHER, HELPDESK etc.
  * @return {Promise<object>}
  */
-headteacherDeclarationService.updatePupilsAttendanceCode = async (pupilIds, code, userId, schoolId) => {
+headteacherDeclarationService.updatePupilsAttendanceCode = async (pupilIds, code, userId, schoolId, role) => {
   if (!pupilIds || !code || !userId) {
     throw new Error('pupilIds, code and userId are required')
   }
+  if (!role) {
+    throw new Error('role is required')
+  }
   await PupilFrozenService.throwIfFrozenByIds(pupilIds)
-  const attendanceCode = await attendanceCodeDataService.sqlFindOneAttendanceCodeByCode(code)
+  const attendanceCode = await attendanceCodeDataService.sqlFindOneAttendanceCodeByCode(code, role)
   if (!attendanceCode) {
     throw new Error(`attendanceCode not found: ${code}`)
   }

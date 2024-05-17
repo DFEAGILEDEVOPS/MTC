@@ -3,9 +3,11 @@
 const { TYPES } = require('./sql.service')
 const sqlService = require('./sql.service')
 const R = require('ramda')
+const RA = require('ramda-adjunct')
 const logger = require('../log.service').getLogger()
 
 const table = '[pupilAttendance]'
+const logName = 'pupilAttendanceDataService'
 const pupilAttendanceDataService = {}
 
 pupilAttendanceDataService.sqlUpdateBatch = async (pupilIds, attendanceCodeId, userId) => {
@@ -32,26 +34,24 @@ pupilAttendanceDataService.sqlUpdateBatch = async (pupilIds, attendanceCodeId, u
   return sqlService.modifyWithTransaction(update, R.concat(params, where.params))
 }
 
-pupilAttendanceDataService.sqlDeleteOneByPupilId = async (pupilId, userId) => {
+pupilAttendanceDataService.sqlDeleteOneByPupilId = async function sqlDeleteOneByPupilId (pupilId, userId, role) {
   if (!pupilId) {
     throw new Error('pupilId is required for a DELETE')
   }
+
   if (!userId) {
     throw new Error('userId is required for a DELETE')
   }
-  const sql = `
-  --
-  -- Ensure the attendance code we are about to unset is not privileged
-  --
-  DECLARE @isPrivileged Bit = (
-      SELECT ac.isPrivileged
-      FROM [mtc_admin].[attendanceCode] ac
-      JOIN [mtc_admin].[pupilAttendance] pa ON (ac.id = pa.attendanceCode_id)
-      WHERE pa.pupil_id = @pupilId AND pa.isDeleted = 0
-  )
-  IF @isPrivileged = 1
-    THROW 51000, 'attempt to remove a privileged attendance code', 1;
 
+  if (!role) {
+    throw new Error('role is required for a DELETE')
+  }
+
+  // Permission guard - you can only delete permissions you are allowed to set via the Role.
+  const pupil = await this.findOneByPupilId(pupilId)
+  await this.throwIfAttendanceCodeIsForbidden(pupil.code, role)
+
+  const sql = `
   --
   -- Remove the attendance code
   --
@@ -112,9 +112,10 @@ pupilAttendanceDataService.findOneByPupilId = async (pupilId) => {
  * @param {String} code - 5 letter attendanceCode.code
  * @param {Number} userId
  * @param {Number} schoolId
+ * @param {String} role
  * @return {Promise<*>}
  */
-pupilAttendanceDataService.markAsNotAttending = async (slugs, code, userId, schoolId) => {
+pupilAttendanceDataService.markAsNotAttending = async function markAsNotAttending (slugs, code, userId, schoolId, role) {
   logger.debug(`pupilAttendanceDataService.markAsNotAttending called with code ${code}`)
   if (!Array.isArray(slugs)) {
     throw new Error('slugs is not an array')
@@ -136,6 +137,13 @@ pupilAttendanceDataService.markAsNotAttending = async (slugs, code, userId, scho
     throw new Error('code param is missing')
   }
 
+  if (!RA.isNonEmptyString(role)) {
+    throw new Error('role param is missing')
+  }
+
+  // Check this role has permission to use this code.
+  await this.throwIfAttendanceCodeIsForbidden(code, role)
+
   const insertSql = slugs.map((s, idx) =>
     `INSERT into #pupilsToSet (slug, school_id, attendanceCode_id, recordedBy_user_id)
     VALUES (@slug${idx}, @school_id, @attendanceCode_Id, @userId);`)
@@ -152,7 +160,7 @@ pupilAttendanceDataService.markAsNotAttending = async (slugs, code, userId, scho
   -- Mark pupils as not attending
   --
 
-  DECLARE @attendanceCode_id Int = (SELECT id from [mtc_admin].[attendanceCode] where code = @code AND isPrivileged = 0 AND visible = 1);
+  DECLARE @attendanceCode_id Int = (SELECT id from [mtc_admin].[attendanceCode] where code = @code AND visible = 1);
 
   IF @attendanceCode_id IS NULL
     THROW 51000, 'unknown attendanceCode.code', 1;
@@ -228,6 +236,47 @@ pupilAttendanceDataService.markAsNotAttending = async (slugs, code, userId, scho
   ;`
 
   return sqlService.modifyWithTransaction(sql, params.concat(insertParams))
+}
+
+/**
+ * Return an array of attendance codes for a particular role (TEACHER, SERVICE-MANAGER etc)
+ * @param {string} role - TEACHER, HELPDESK, SERVICE_MANAGER ...
+ * @returns string[] - array of attendance codes
+ */
+pupilAttendanceDataService.getAttendanceCodes = async function getAttendanceCodes (role) {
+  logger.info(`${logName}: getAttendanceCodes(): called with role [${role}]`)
+  const sql = `
+    SELECT
+      *
+    FROM
+      [mtc_admin].[vewAttendanceCodePermissions]
+    WHERE
+      roleTitle = @role
+    ORDER BY
+      [attendanceCodeDisplayOrder] ASC
+  `
+  const params = [
+    { name: 'role', type: TYPES.NVarChar, value: role }
+  ]
+  const data = await sqlService.readonlyQuery(sql, params)
+  const allowedCodes = data.map(d => d.attendanceCode)
+  logger.info(`${logName}: getAttendanceCodes() returning ${JSON.stringify(allowedCodes)}`)
+  return allowedCodes
+}
+
+/**
+ * Throws an error id an attendance code is not allowed for a role
+ * @param {string} code
+ * @param {string} role
+ * @returns
+ */
+pupilAttendanceDataService.throwIfAttendanceCodeIsForbidden = async function throwIfAttendanceCodeIsForbidden (code, role) {
+  const allowedCodes = await this.getAttendanceCodes(role)
+  if (allowedCodes.includes(code)) {
+    return
+  }
+  const msg = `Attendance code [${code}] is not allowed for role [${role}]`
+  throw new Error(msg)
 }
 
 module.exports = pupilAttendanceDataService

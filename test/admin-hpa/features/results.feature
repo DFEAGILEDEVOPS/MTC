@@ -43,12 +43,12 @@ Feature: Results tests
     When I have submitted the HDF
     Then I should see the results and reasons for not taking the check
 
-  @hdf_hook @check_start_date_reset
+  @hdf_hook @check_start_date_reset_hook
   Scenario: CTF Version is dynamic
     Given I download a ctf file in August
     Then I should see the version set to the correct academic year when downloaded in August
 
-  @hdf_hook @check_start_date_reset
+  @hdf_hook @check_start_date_reset_hook
   Scenario: CTF Version is dynamic
     Given I download a ctf file in September
     Then I should see the version set to the correct academic year when downloaded in September
@@ -70,8 +70,36 @@ Feature: Results tests
     Then the HDF reflects these changes
     And the results reflect these changes
 
- Scenario: Pupils who have not been set to NTC or have not completed the check are set to Incomplete
-   Given I have pupils have not completed a check and no reason for not taking the check
-   When the data sync function has run
-   And we are in 2nd week of check end date
-   And I should see their status set to Incomplete
+  Scenario: Pupils who have not been set to NTC or have not completed the check are set to Incomplete
+    Given I have pupils have not completed a check and no reason for not taking the check
+    When the data sync function has run
+    And we are in 2nd week of check end date
+    And I should see their status set to Incomplete
+
+  @hdf_hook
+  Scenario: Not able to administer code is added to the CTF file and PS report
+    Given I have a pupil who has the Not able to administer attendance code
+    And the data sync function has run
+    And we are in 1st week of check end date
+    When I have submitted the HDF
+    Then I should see the pupil has the Not able to administer attendance code
+    And the PS report should have the Not able to administer attendance code
+
+  @hdf_hook
+  Scenario: Maladmin code is added to the CTF file and PS report
+    Given I have a pupil who has the Maladmin attendance code
+    And the data sync function has run
+    And we are in 1st week of check end date
+    When I have submitted the HDF
+    Then I should see the pupil has the Maladministration attendance code
+    And the PS report should have the Maladministration attendance code
+
+  @hdf_hook
+  Scenario: H code is added to the CTF file and PS Report
+    Given I have a pupil who has the Pupil cheating attendance code
+    And the data sync function has run
+    And we are in 1st week of check end date
+    When I have submitted the HDF
+    Then I should see the pupil has the Pupil cheating attendance code
+    And the PS report should have the Pupil cheating attendance code
+

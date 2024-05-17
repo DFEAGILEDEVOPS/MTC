@@ -74,7 +74,7 @@ Before('@school_import_hook') do
   end
 end
 
-After('@check_start_date_reset') do
+After('@check_start_date_reset_hook') do
   SqlDbHelper.update_check_window(@check_window['id'], 'checkStartDate', @original_check_start_date.strftime("%Y-%m-%d %H:%M:%S.%LZ"))
 end
 
