@@ -154,7 +154,8 @@ GEM
       connection_pool
     regexp_parser (2.9.2)
     require_all (3.0.0)
-    rexml (3.2.6)
+    rexml (3.2.8)
+      strscan (>= 3.0.9)
     rspec (3.12.0)
       rspec-core (~> 3.12.0)
       rspec-expectations (~> 3.12.0)
@@ -170,7 +171,7 @@ GEM
     rspec-support (3.12.1)
     ruby2_keywords (0.0.5)
     rubyzip (2.3.2)
-    selenium-webdriver (4.17.0)
+    selenium-webdriver (4.21.1)
       base64 (~> 0.2)
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2, < 3.0)
@@ -181,6 +182,7 @@ GEM
       capybara (~> 3.31)
       site_prism-all_there (> 2, < 5)
     site_prism-all_there (3.0.4)
+    strscan (3.1.0)
     sys-uname (1.2.3)
       ffi (~> 1.1)
     tiny_tds (2.1.7)
@@ -225,7 +227,7 @@ DEPENDENCIES
   redis
   require_all
   rspec
-  selenium-webdriver (~> 4.6)
+  selenium-webdriver (~> 4.18, >= 4.18.0)
   settingslogic
   site_prism (>= 5.0.2)
   tiny_tds
