@@ -226,6 +226,7 @@ pupilAttendanceDataService.markAsNotAttending = async function markAsNotAttendin
   SET
     pr.isDeleted = 1,
     pr.deletedByUser_id = @userId
+    pr.deletedAt = GETUTCDATE()
   FROM
        [mtc_admin].[pupil] p JOIN
        #pupilsToSet t1 ON (p.id = t1.id) LEFT JOIN
