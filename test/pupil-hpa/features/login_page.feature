@@ -56,6 +56,11 @@ Feature: Login page
     Given I am logged in with a user who does not need question reader
     Then I should see question reader set to false in the local storage
 
+  @no_local_storage_hook
+  Scenario: Local storage error is displayed when local storage is disabled
+    Given I navigate to the sign in page with local storage disabled
+    Then I should see the local storage error page
+
   @wip
   Scenario: Connection test occurs before loading of the sign in page
     Given I navigate to the pupil spa

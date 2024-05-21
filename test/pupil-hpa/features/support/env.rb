@@ -79,6 +79,18 @@ Capybara.register_driver :headless_chrome do |app|
   Capybara::Selenium::Driver.new(app, browser: :chrome, options: browser_options)
 end
 
+Capybara.register_driver :no_local_storage do |app|
+  browser_options = Selenium::WebDriver::Options.chrome
+  browser_options.page_load_strategy = :normal
+  browser_options.args << '--headless=new'
+  browser_options.args << '--no-sandbox'
+  browser_options.args << '--disable-local-storage'
+  browser_options.args << '--disable-dev-shm-usage'
+  browser_options.args << '--disable-gpu'
+  browser_options.args << '--allow-insecure-localhost'
+  Capybara::Selenium::Driver.new(app, browser: :chrome, options: browser_options)
+end
+
 Dir.mkdir("reports") unless File.directory?("reports")
 Capybara.javascript_driver = ENV["DRIVER"].to_sym
 
